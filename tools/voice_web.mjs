@@ -13,6 +13,10 @@
 //   3. «дальше» → M01_1 (Tamara): her voice plays, output RMS well above silence;
 //   4. «дальше» mid-line → M01_1 is cut (event stop/advance), M01_2 plays;
 //   5. after the scene no voice plays and the output falls silent again;
+//   5a. voice-over (ZAKADR): click the letters (Z1) → the narrator reads Z1.letters.look (kind narration),
+//       the signal leaves the page, the music is ducked; «дальше» cuts it;
+//   5b. bag: the pointer rests on the letter's pocket — no voice at 0.3 s, item.letter_tamara by ≈1 s;
+//       leaving the pocket fades it out (stop hover_end); resting again at once — no voice (30 s rule);
 //   6. menu slider «Голос» at 50 % → Voice bus ≈ −12 dB;
 //   7. the whole run: 0 console errors / page errors.
 // Output: build/shots/voice/{report.json, console.log, tamara.png}. Exit code 0 only when every check passed.
@@ -236,6 +240,55 @@ async function main() {
     await sleep(500);
     const quiet1 = await rms(600);
     check(quiet1.rms_db < -60, "the output falls silent again", `${quiet1.rms_db.toFixed(1)} dBFS`);
+
+    // 5a. Voice-over: the letters on the post office wall.
+    s = await state();
+    await click("hotspot letters", s.hotspots.letters);
+    v = await waitFor("narrator: Z1.letters.look", voice, (x) => x.line === "Z1.letters.look" && x.playing, 30000);
+    check(v.line === "Z1.letters.look" && v.playing && v.kind === "narration" && v.speaker === "narrator",
+      "the narrator (ZAKADR) reads the look", JSON.stringify({ line: v.line, kind: v.kind, speaker: v.speaker, length: v.length }));
+    const n1 = await rms(900);
+    report.steps.narration = { voice: v, rms: n1 };
+    check(n1.rms_db > -40, "the voice-over leaves the page", `${n1.rms_db.toFixed(1)} dBFS`);
+    const mn = await music();
+    check(mn.dialogue === true, "the music ducks under the voice-over", `dialogue ${mn.dialogue}, duck ${mn.duck_db?.toFixed(2)} dB`);
+    s = await state();
+    await click("continue → cut the narrator", s.ui.dialogue_click);
+    v = await waitFor("narrator cut", voice, (x) => !x.playing, 4000);
+    const ncut = (v.events || []).filter((e) => e.kind === "stop" && e.line === "Z1.letters.look");
+    check(!v.playing && ncut.length >= 1 && ncut[ncut.length - 1].reason === "advance", "«дальше» cuts the voice-over", JSON.stringify(ncut.slice(-1)));
+
+    // 5b. Bag: rest the pointer on the letter's pocket.
+    s = await state();
+    const pocket = s.ui.inventory && s.ui.inventory.letter_tamara;
+    if (!pocket) { failures.push("bag: no pocket for letter_tamara"); logLine("FAIL bag: no pocket for letter_tamara"); }
+    else {
+      await page.mouse.move(960 * S, 600 * S);
+      await sleep(300);
+      const tHover = Date.now();
+      await page.mouse.move(pocket.x * S, pocket.y * S, { steps: 4 });
+      await sleep(300);
+      v = await voice();
+      check(!(v.playing && v.kind === "item"), "no item voice 0.3 s after the pointer came", JSON.stringify({ line: v.line, kind: v.kind }));
+      v = await waitFor("item voice after the dwell", voice, (x) => x.line === "item.letter_tamara" && x.playing, 3000);
+      const dwell = (Date.now() - tHover) / 1000;
+      check(v.line === "item.letter_tamara" && v.playing && v.kind === "item", "the item's line after the pointer rests on its pocket",
+        `${JSON.stringify({ line: v.line, kind: v.kind })}, ≈${dwell.toFixed(2)} s after the pointer came`);
+      const i1 = await rms(500);
+      check(i1.rms_db > -40, "the item's line leaves the page", `${i1.rms_db.toFixed(1)} dBFS`);
+      await page.mouse.move(960 * S, 600 * S, { steps: 4 });
+      v = await waitFor("item voice faded out", voice, (x) => !x.playing, 2000);
+      const istop = (v.events || []).filter((e) => e.kind === "stop" && e.line === "item.letter_tamara");
+      check(!v.playing && istop.length >= 1 && istop[istop.length - 1].reason === "hover_end", "leaving the pocket fades it out", JSON.stringify(istop.slice(-1)));
+      await page.mouse.move(pocket.x * S, pocket.y * S, { steps: 4 });
+      await sleep(1300);
+      v = await voice();
+      const skip = (v.events || []).filter((e) => e.kind === "item_skip" && e.line === "item.letter_tamara");
+      check(!v.playing && skip.length >= 1 && skip[skip.length - 1].reason === "cooldown", "the same item again at once: no voice (30 s rule)",
+        JSON.stringify({ playing: v.playing, skip: skip.slice(-1) }));
+      await page.mouse.move(960 * S, 600 * S, { steps: 4 });
+      report.steps.item = { voice: v, rms: i1, dwell_s: dwell };
+    }
 
     // 6. «Голос» at 50 %.
     s = await state();
