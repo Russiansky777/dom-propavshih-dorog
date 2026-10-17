@@ -9,5 +9,6 @@
   "texture_resolution": "2k",
   "elev": 14,
   "front_yaw": 0,
-  "rev": 3
+  "redo_stages": ["anim"],
+  "rev": 4
 }

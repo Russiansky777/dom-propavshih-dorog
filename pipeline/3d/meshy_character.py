@@ -30,12 +30,14 @@ STATE = ROOT / "pipeline" / "3d" / "state"
 
 # Пресеты Meshy подбираются по ключевым словам в library; порядок — приоритет.
 ACTION_KEYWORDS = {
-    "idle": ["idle", "stand", "breathing"],
-    "walk": ["walk", "walking"],
-    "run": ["run", "jog"],
-    "pick": ["pick", "pickup", "pick up", "grab"],
-    "talk": ["talk", "speak", "gesture"],
+    "idle": ["standing idle", "breathing idle", "neutral idle", "idle"],
+    "walk": ["walking woman", "walking", "walk"],
+    "run": ["running", "run", "jog"],
+    "pick": ["picking up", "pick up", "pickup", "pick", "grab"],
+    "talk": ["talking", "talk", "speak", "gesture"],
 }
+# пресеты с этими словами не подходят под бытовую адвенчуру
+ACTION_STOPWORDS = ["swim", "sit", "crouch", "combat", "fight", "sword", "gun", "rifle", "zombie", "dance", "injured", "drunk", "sneak", "crawl", "jump", "fall", "fly"]
 
 
 def split_sheet(sheet: Path, out_dir: Path, min_width: int = 60, pad: int = 24) -> list[Path]:
@@ -88,8 +90,8 @@ def pick_actions(wanted: list[str]) -> dict[str, dict]:
         best = None
         for kw in kws:
             for item in seen.values():
-                hay = f"{item.get('name','')} {item.get('key','')}".lower()
-                if kw in hay:
+                hay = f"{item.get('name','')} {item.get('key','')}".lower().replace("_", " ")
+                if kw in hay and not any(sw in hay for sw in ACTION_STOPWORDS):
                     best = item
                     break
             if best:
@@ -110,6 +112,16 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
     st = load_state(name)
     log = lambda m: print(m, flush=True)
+    # redo_stages: ["model"|"rig"|"anim"] — сбросить стадию и всё после неё (кредиты за эти стадии спишутся заново)
+    order = ["model", "rig", "anim"]
+    for stage in req.get("redo_stages", []):
+        for later in order[order.index(stage):]:
+            for k in (f"{later}_task", f"{later}_credits"):
+                st.pop(k, None)
+            if later == "anim":
+                st.pop("actions", None)
+        log(f"[{name}] стадия {stage} и последующие будут выполнены заново")
+    save_state(name, st)
 
     log(f"[{name}] баланс: {mc.balance()}")
 

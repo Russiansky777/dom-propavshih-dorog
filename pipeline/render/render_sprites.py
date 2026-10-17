@@ -31,13 +31,19 @@ def parse_frames(items: list[str]) -> dict[str, int]:
 
 
 def scene_bounds(objs):
+    """Габарит по реально деформированной сетке (скиннинг учтён), а не по bound_box в bind-пространстве."""
+    dg = bpy.context.evaluated_depsgraph_get()
     mins = Vector((1e9, 1e9, 1e9)); maxs = Vector((-1e9, -1e9, -1e9))
     for o in objs:
         if o.type != "MESH":
             continue
-        for c in o.bound_box:
-            w = o.matrix_world @ Vector(c)
+        ev = o.evaluated_get(dg)
+        me = ev.to_mesh()
+        mw = ev.matrix_world
+        for v in me.vertices:
+            w = mw @ v.co
             mins = Vector(map(min, mins, w)); maxs = Vector(map(max, maxs, w))
+        ev.to_mesh_clear()
     return mins, maxs
 
 
@@ -59,8 +65,20 @@ def main() -> int:
     frames_by_action = parse_frames(args.frames)
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    bpy.ops.import_scene.gltf(filepath=str(Path(args.glb).resolve()))
-    objs = list(bpy.context.scene.objects)
+    # в режиме модуля сцена может быть не пустой — вычищаем всё, что было до импорта
+    for o in list(bpy.context.scene.objects):
+        bpy.data.objects.remove(o, do_unlink=True)
+    before = set(bpy.data.objects)
+    bpy.ops.import_scene.gltf(filepath=str(Path(args.glb).resolve()), disable_bone_shape=True)
+    # импортёр кладёт служебные объекты (форма костей) в коллекцию glTF_not_exported — их не считаем и не рендерим
+    objs = []
+    for o in bpy.context.scene.objects:
+        if o in before:
+            continue
+        if any(c.name == "glTF_not_exported" for c in o.users_collection):
+            o.hide_render = True
+            continue
+        objs.append(o)
     arm = next((o for o in objs if o.type == "ARMATURE"), None)
     meshes = [o for o in objs if o.type == "MESH"]
     if not meshes:
@@ -87,7 +105,7 @@ def main() -> int:
     # камера: ортографическая, под углом elev, смотрит на середину роста
     scene = bpy.context.scene
     cam_data = bpy.data.cameras.new("SpriteCam"); cam_data.type = "ORTHO"
-    extent = max(height, width) * args.margin
+    extent = height * args.margin
     cam_data.ortho_scale = extent
     cam = bpy.data.objects.new("SpriteCam", cam_data); scene.collection.objects.link(cam); scene.camera = cam
     dist = extent * 4
@@ -97,16 +115,19 @@ def main() -> int:
     cam.rotation_euler = (look - cam.location).to_track_quat("-Z", "Y").to_euler()
 
     # свет: мягкий ключевой + заполняющий, нейтральный мир
-    sun = bpy.data.lights.new("Key", "SUN"); sun.energy = 3.0; sun.angle = math.radians(20)
+    sun = bpy.data.lights.new("Key", "SUN"); sun.energy = 4.5; sun.angle = math.radians(20)
     so = bpy.data.objects.new("Key", sun); scene.collection.objects.link(so)
     so.rotation_euler = (math.radians(55), 0, math.radians(-35))
-    fill = bpy.data.lights.new("Fill", "SUN"); fill.energy = 1.2; fill.angle = math.radians(40)
+    fill = bpy.data.lights.new("Fill", "SUN"); fill.energy = 2.0; fill.angle = math.radians(40)
     fo = bpy.data.objects.new("Fill", fill); scene.collection.objects.link(fo)
     fo.rotation_euler = (math.radians(70), 0, math.radians(140))
+    rim = bpy.data.lights.new("Rim", "SUN"); rim.energy = 2.5; rim.angle = math.radians(10)
+    ro = bpy.data.objects.new("Rim", rim); scene.collection.objects.link(ro)
+    ro.rotation_euler = (math.radians(120), 0, math.radians(20))
     world = bpy.data.worlds.new("W"); scene.world = world; world.use_nodes = True
     bg = world.node_tree.nodes.get("Background")
     if bg:
-        bg.inputs[0].default_value = (0.5, 0.5, 0.55, 1); bg.inputs[1].default_value = 0.6
+        bg.inputs[0].default_value = (0.6, 0.6, 0.65, 1); bg.inputs[1].default_value = 1.0
 
     # рендер
     scene.render.engine = "CYCLES"
@@ -116,8 +137,8 @@ def main() -> int:
     scene.render.resolution_percentage = 100
     scene.render.image_settings.file_format = "PNG"; scene.render.image_settings.color_mode = "RGBA"
     scene.view_settings.view_transform = "Standard"
-    # ортокамера с соотношением 3:4: ortho_scale применяется к большей стороне → по высоте подгоняем
-    cam_data.ortho_scale = extent * max(1.0, scene.render.resolution_x / scene.render.resolution_y) if scene.render.resolution_x > scene.render.resolution_y else extent
+    # ortho_scale в Blender относится к большей стороне кадра; кадр вертикальный → это высота
+    cam_data.ortho_scale = height * args.margin
 
     actions = list(bpy.data.actions)
     print("клипы в файле:", [a.name for a in actions])
