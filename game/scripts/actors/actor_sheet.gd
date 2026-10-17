@@ -23,6 +23,17 @@ var direction_threshold_px: float = 0.5
 var foot_lock: bool = true
 var idle_action: String = "idle"
 var walk_action: String = "walk"
+var talk_action: String = "talk"
+## NPC placement (data `npc`): where the figure faces when nothing happens, a multiplier on the
+## room's depth scale (height relative to Agata) and a feet offset from the hotspot's bottom centre.
+var facing: String = "down"
+var scale_factor: float = 1.0
+var feet_offset: Vector2 = Vector2.ZERO
+## Contact shadow (data `shadow`): ellipse width in model metres, height as a fraction of the width,
+## peak opacity. Every actor gets one (ActorShadow); zero alpha disables it.
+var shadow_width_m: float = 0.55
+var shadow_height_ratio: float = 0.3
+var shadow_alpha: float = 0.42
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null
@@ -61,6 +72,16 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 	a.foot_lock = bool(walk.get("foot_lock", a.foot_lock))
 	a.idle_action = String(spec.get("idle_action", "idle"))
 	a.walk_action = String(spec.get("walk_action", "walk"))
+	a.talk_action = String(spec.get("talk_action", "talk"))
+	var npc: Dictionary = spec.get("npc", {})
+	a.facing = String(npc.get("facing", "down"))
+	a.scale_factor = float(npc.get("scale_factor", 1.0))
+	var fo: Array = npc.get("feet_offset", [0, 0])
+	a.feet_offset = Vector2(float(fo[0]), float(fo[1]))
+	var shadow: Dictionary = spec.get("shadow", {})
+	a.shadow_width_m = float(shadow.get("width_m", a.shadow_width_m))
+	a.shadow_height_ratio = float(shadow.get("height_ratio", a.shadow_height_ratio))
+	a.shadow_alpha = float(shadow.get("alpha", a.shadow_alpha))
 	a.idle_static_frame = int(spec.get("idle_static_frame", -1))
 	var sprites = _read_json(a.sheet_dir + "/" + String(spec.get("sprites", "sprites.json")))
 	if typeof(sprites) != TYPE_DICTIONARY:
@@ -167,3 +188,20 @@ func stride_px_unit() -> float:
 
 func anim_name(action: String, dir: int) -> String:
 	return "%s_%d" % [action, dir]
+
+
+func has_action(action: String) -> bool:
+	return actions.has(action) and frames != null and frames.has_animation(anim_name(action, 0))
+
+
+## Compass word → screen vector (y down): "down" = towards the viewer.
+static func facing_vector(word: String) -> Vector2:
+	match word:
+		"up", "n": return Vector2(0, -1)
+		"left", "w": return Vector2(-1, 0)
+		"right", "e": return Vector2(1, 0)
+		"down_left", "sw": return Vector2(-1, 1)
+		"down_right", "se": return Vector2(1, 1)
+		"up_left", "nw": return Vector2(-1, -1)
+		"up_right", "ne": return Vector2(1, -1)
+	return Vector2(0, 1)

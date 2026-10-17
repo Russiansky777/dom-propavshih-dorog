@@ -102,6 +102,7 @@ func _publish_probe_state() -> void:
 		"goal": StoryRunner.journal_goal(),
 		"player": {"x": player.global_position.x, "y": player.global_position.y, "walking": player.is_walking()},
 		"actor": _actor_state(),
+		"npcs": _npc_states(room),
 		"busy": StoryRunner.is_busy(),
 		"beat": StoryRunner.current_beat.duplicate() if not StoryRunner.current_beat.is_empty() else {},
 		"last_hint": _last_hint,
@@ -130,6 +131,15 @@ func _actor_state() -> Dictionary:
 		"stride_px": player.stride_px(), "speed_px": player.current_speed_px(), "fps": player.current_walk_fps(),
 		"direction": player.direction, "paused": get_tree().paused, "walk_time": player.walk_time,
 	}
+
+
+func _npc_states(room: Node) -> Dictionary:
+	var out := {}
+	for n in NpcActor.all_in(room):
+		var spr: AnimatedSprite2D = n.get_node_or_null("Sprite")
+		out[n.actor_id] = {"x": n.global_position.x, "y": n.global_position.y, "scale": n.scale.y, "visible": n.visible,
+			"anim": String(spr.animation) if spr else "", "frame": spr.frame if spr else -1, "talking": n.talking}
+	return out
 
 
 func _hotspot_rect(area: Area2D) -> Rect2:

@@ -1,0 +1,15 @@
+{
+  "_comment": "Тамара (почта, Z1): листы idle (8 кадров, pingpong, окно 0–20 % клипа «Idle») и talk (12 кадров, «Listening_Gesture») из assets/characters/tamara (копия в game/assets, tools/sync_characters.sh). Строки = направления как у Агаты (0 анфас, против часовой). Ставится NpcActor на хотспот kind npc с тем же id: ноги в нижней середине rect, масштаб — глубина комнаты × scale_factor (рост относительно Агаты: 1.586 м ≈ тот же), z = y.",
+  "id": "tamara",
+  "sheet_dir": "res://assets/characters/tamara",
+  "sprites": "sprites.json",
+  "direction_zero": "down",
+  "direction_order": "ccw",
+  "idle_action": "idle",
+  "talk_action": "talk",
+  "npc": {
+    "facing": "down",
+    "scale_factor": 1.0,
+    "feet_offset": [0, 0]
+  }
+}

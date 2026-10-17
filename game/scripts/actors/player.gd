@@ -138,6 +138,8 @@ func _setup_sprite() -> void:
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	sprite.frame_changed.connect(_on_frame_changed)
 	add_child(sprite)
+	if sheet.shadow_alpha > 0.0:
+		sprite.add_child(ActorShadow.make(sheet))  # child of the sprite: follows the foot-lock offset
 	body.visible = false
 	_play_idle()
 

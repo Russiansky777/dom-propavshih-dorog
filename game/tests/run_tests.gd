@@ -50,6 +50,8 @@ func _run() -> void:
 	await _test("Bot walkthrough M01→M08 via StoryRunner/Room API with mid-way save/load", _test_walkthrough)
 	await _test("H1: Agata sprite from sheets (288x384, 8 walk + 8 idle), directions, table occluder z-sort", _test_h1_real)
 	await _test("Stride: fps from speed, stride = sheet stride, foot lock holds the drawn figure between frames", _test_stride)
+	await _test("NPC actors: Tamara/Pelageya from sheets on their hotspots, depth scale, y-sort, talk during their lines", _test_npc_actors)
+	await _test("Shadows: soft ellipse under the feet of Agata and NPCs, behind the figure, scaled by depth", _test_shadows)
 	_cleanup_m1()
 	_finish()
 
@@ -977,5 +979,109 @@ func _test_stride() -> void:
 	_check(clamped <= 3, "too many frame changes clamped to the logical position (%d): physics could not keep up" % clamped)
 	_check(spr.position == Vector2.ZERO, "sprite offset must be zero once standing")
 	_check(absf(player.global_position.x - 820.0) < stride_screen + 12.0, "stops within one stride of the target (820), at x=%.1f" % player.global_position.x)
+	gs.reset()
+	_cleanup_m1()
+
+
+## Items 4/7 of the Director's list: NPCs are sheet actors (idle pingpong + talk), not cut-out frames.
+func _test_npc_actors() -> void:
+	gs.reset()
+	await _spawn_main()
+	rm.autosave_enabled = false
+	sr = root.get_node("StoryRunner")
+	rm.change_room("Z1", "default")
+	await physics_frame
+	await physics_frame
+	var room: Node = rm.current_room
+	var npcs: Array = load("res://scripts/actors/npc_actor.gd").all_in(room)
+	_check(npcs.size() == 1 and npcs[0].actor_id == "tamara", "Z1 should hold one NPC actor (tamara), got %d" % npcs.size())
+	if npcs.is_empty():
+		_cleanup_m1()
+		return
+	var t: Node2D = npcs[0]
+	var spr: AnimatedSprite2D = t.get_node("Sprite")
+	_check(spr.sprite_frames.get_frame_count("idle_0") == 14 and spr.sprite_frames.get_frame_count("talk_0") == 12, "tamara: idle 14 pingpong frames and talk 12 frames, got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
+	_check(spr.animation == "idle_0" and spr.is_playing(), "tamara idles facing the viewer (idle_0), got %s" % spr.animation)
+	var hs: Node2D = room.get_node("Hotspots/tamara")
+	var shape: CollisionShape2D = hs.get_node("Shape")
+	var feet: Vector2 = hs.global_position + Vector2(0, shape.shape.size.y / 2)
+	_check(t.global_position.is_equal_approx(feet), "tamara's feet at the hotspot's bottom centre %s, got %s" % [str(feet), str(t.global_position)])
+	_check(is_equal_approx(t.scale.y, room.depth_scale(feet.y)), "tamara scale = room depth scale at her feet (%.3f), got %.3f" % [room.depth_scale(feet.y), t.scale.y])
+	_check(t.z_index == int(feet.y), "tamara z_index = int(feet y)")
+	var counter: Node2D = room.get_node_or_null("Occluders/counter")
+	if counter != null:
+		_check(counter.z_index > t.z_index, "the post counter (z %d) must cover Tamara (z %d)" % [counter.z_index, t.z_index])
+	var img: Node = hs.get_node_or_null("Image")
+	_check(img == null or not img.visible, "the static front view of the hotspot is hidden when the actor exists")
+	# M01: Tamara's line → talk animation, Agata's lines → idle.
+	player.call("enter_room", room, Vector2(1100, 1040))
+	sr.start_scene("M01")
+	await process_frame
+	var seen := []
+	var guard := 0
+	while not sr.current_beat.is_empty() and guard < 50:
+		guard += 1
+		var b: Dictionary = sr.current_beat
+		if b.get("type") == "line":
+			seen.append("%s→%s" % [String(b.get("speaker", "")), spr.animation])
+			if String(b.get("speaker", "")) == "tamara":
+				_check(spr.animation == "talk_0" and spr.is_playing(), "during Tamara's line the talk sheet must play, got %s" % spr.animation)
+			else:
+				_check(spr.animation.begins_with("idle_"), "during another speaker's line Tamara idles, got %s" % spr.animation)
+			sr.advance()
+		elif b.get("type") == "options":
+			sr.choose(String(b.get("options", [])[0].get("id", "")))
+		await process_frame
+	_check(seen.size() >= 3, "M01 should show at least 3 lines, saw %s" % str(seen))
+	print("    M01 lines → Tamara's animation: %s" % str(seen))
+	_check(spr.animation.begins_with("idle_"), "after the dialogue Tamara idles again")
+	# R1: Pelageya, slightly taller than Agata (scale_factor), same mechanics.
+	rm.change_room("R1", "default")
+	await physics_frame
+	await physics_frame
+	room = rm.current_room
+	npcs = load("res://scripts/actors/npc_actor.gd").all_in(room)
+	_check(npcs.size() == 1 and npcs[0].actor_id == "pelageya", "R1 should hold Pelageya's actor")
+	if not npcs.is_empty():
+		var p: Node2D = npcs[0]
+		_check(is_equal_approx(p.scale.y, room.depth_scale(p.global_position.y) * 1.03), "pelageya scale = depth scale × 1.03")
+		_check(p.get_node("Sprite").sprite_frames.get_frame_count("talk_0") == 12, "pelageya talk sheet has 12 frames")
+	gs.reset()
+	_cleanup_m1()
+
+
+## Item 6: contact shadow for every actor (data `shadow`, defaults 0.55 m wide, 0.3 ratio, alpha 0.42).
+func _test_shadows() -> void:
+	gs.reset()
+	await _spawn_main()
+	rm.autosave_enabled = false
+	rm.change_room("H1", "default")
+	await physics_frame
+	await physics_frame
+	var room: Node = rm.current_room
+	var shadow: Sprite2D = player.get_node_or_null("Sprite/Shadow")
+	_check(shadow != null, "Agata's sprite must carry a Shadow child")
+	if shadow == null:
+		_cleanup_m1()
+		return
+	_check(shadow.show_behind_parent, "shadow draws behind the figure")
+	_check(shadow.texture is GradientTexture2D and (shadow.texture as GradientTexture2D).fill == GradientTexture2D.FILL_RADIAL, "shadow is a radial gradient (soft edge)")
+	var grad: Gradient = (shadow.texture as GradientTexture2D).gradient
+	_check(grad.get_color(0).a > 0.3 and grad.get_color(0).a < 0.6 and grad.get_color(grad.get_point_count() - 1).a == 0.0, "shadow fades from semi-transparent black to transparent")
+	# Ellipse size: 0.55 m × 240.6 px/m = 132 px wide at scale 1, 40 px high; grows with the depth scale.
+	var expect: Vector2 = load("res://scripts/actors/actor_shadow.gd").size_at(player.sheet, 1.0)
+	_check(expect.x > 120.0 and expect.x < 145.0 and is_equal_approx(expect.y, expect.x * 0.3), "shadow ellipse ≈ 132×40 px at scale 1, got %s" % str(expect))
+	player.call("enter_room", room, Vector2(1200, 700))
+	var far: Vector2 = shadow.get_global_transform().get_scale() * 64.0
+	player.call("enter_room", room, Vector2(1200, 1070))
+	var near: Vector2 = shadow.get_global_transform().get_scale() * 64.0
+	_check(is_equal_approx(near.x / far.x, 2.0 / 1.3), "shadow width scales with depth like the figure (near/far = 2.0/1.3), got %.3f" % (near.x / far.x))
+	_check(absf(shadow.global_position.y - player.global_position.y) < 8.0, "shadow sits at the feet (origin), got dy %.1f" % (shadow.global_position.y - player.global_position.y))
+	# NPCs get the same shadow.
+	rm.change_room("Z1", "default")
+	await physics_frame
+	await physics_frame
+	var npcs: Array = load("res://scripts/actors/npc_actor.gd").all_in(rm.current_room)
+	_check(npcs.size() == 1 and npcs[0].get_node_or_null("Sprite/Shadow") != null, "Tamara's actor must carry a shadow too")
 	gs.reset()
 	_cleanup_m1()

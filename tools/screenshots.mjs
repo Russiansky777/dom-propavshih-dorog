@@ -349,7 +349,28 @@ async function main() {
       await waitFor("M01 dialogue", (t) => t.beat && t.beat.type === "line", 8000);
       await sleep(400);
       await shot("dialogue_M01");
+      // Tamara's own line: her talk sheet must be playing (probe `npcs.tamara.anim` = talk_*).
+      {
+        const s0 = await state();
+        const key0 = beatKey(s0);
+        await click("M01: continue to Tamara's line", s0.ui.dialogue_click || { x: 960, y: 780 });
+        await waitFor("Tamara's line", (t) => beatKey(t) !== key0 && t.beat && t.beat.speaker === "tamara", 8000);
+        await sleep(500);
+        const s1 = await state();
+        const tam = s1.npcs && s1.npcs.tamara;
+        if (!tam || !/^talk_/.test(tam.anim) || !tam.talking) failures.push(`Tamara should play her talk sheet during her line, got ${JSON.stringify(tam)}`);
+        await shot("dialogue_M01_tamara_talks");
+        const f0 = tam ? tam.frame : -1;
+        await sleep(300);
+        const s2 = await state();
+        if (s2.npcs && s2.npcs.tamara && s2.npcs.tamara.frame === f0 && /^talk_/.test(s2.npcs.tamara.anim)) failures.push("Tamara's talk animation did not advance in 300 ms");
+      }
       await finishDialogue("M01");
+      {
+        const s3 = await state();
+        const tam = s3.npcs && s3.npcs.tamara;
+        if (!tam || !/^idle_/.test(tam.anim)) failures.push(`after M01 Tamara should idle, got ${JSON.stringify(tam)}`);
+      }
     }
     await waitFor("M01 done", (s) => s.flags.done_M01 && s.inventory.includes("key_house"));
 

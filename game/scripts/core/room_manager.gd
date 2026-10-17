@@ -78,6 +78,8 @@ func change_room(room_id: String, spawn_id: String, override_pos: Vector2 = Vect
 	room_container.add_child(current_room)
 	# Rooms draw under the player; keep the room first among the container's children.
 	room_container.move_child(current_room, 0)
+	# Animated NPCs on `npc` hotspots that have actor data (sheets like Agata's).
+	NpcActor.attach_all(current_room, player)
 
 	# Place the player.
 	var pos: Vector2 = override_pos

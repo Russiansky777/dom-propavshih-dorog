@@ -1,0 +1,15 @@
+{
+  "_comment": "Пелагея (причал, R1): листы idle (8 кадров, pingpong, окно 0–20 % клипа «Idle») и talk (12 кадров, «Listening_Gesture») из assets/characters/pelageya. Строки = направления как у Агаты. NpcActor на хотспоте pelageya: ноги в нижней середине rect, масштаб — глубина комнаты × scale_factor (1.599 м — рост Агаты; чуть выше — через scale_factor), z = y.",
+  "id": "pelageya",
+  "sheet_dir": "res://assets/characters/pelageya",
+  "sprites": "sprites.json",
+  "direction_zero": "down",
+  "direction_order": "ccw",
+  "idle_action": "idle",
+  "talk_action": "talk",
+  "npc": {
+    "facing": "down",
+    "scale_factor": 1.03,
+    "feet_offset": [0, 0]
+  }
+}
