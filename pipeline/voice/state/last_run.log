@@ -1,0 +1,17 @@
+run 39072146967 2026-10-17T21:44:14Z requests: pipeline/requests/voice_list.json 
+ключ: есть, длина 51, формат sk_…: да
+план: creator (active), израсходовано 12118 из 124889 символов
+ключ принят API (GET /v2/voices → 200)
+=== pipeline/requests/voice_list.json
+ключ: есть, длина 51, формат sk_…: да
+план: creator (active), израсходовано 12118 из 124889 символов
+ключ принят API (GET /v2/voices → 200)
+голосов: 27, из них моих (My Voices): 6 → pipeline/voice/voices.json
+  [мой] 'Agata'                          ReYqW64ePwZHQReEArbt  generated  {"language": "ru"}
+  [мой] 'CAT'                            WVYD8dGGwhoMGyKwgFd7  generated  {"language": "ru"}
+  [мой] 'CAT-2'                          RRgQuGjVvCeyNderlonu  generated  {"language": "ru"}
+  [мой] 'PELAGEYA'                       mIbPOSXtLeiaroofXc7O  generated  {"language": "ru"}
+  [мой] 'TAMARA-1'                       GqJPI8zhNM5CF7q8EJ6l  generated  {"language": "ru"}
+  [мой] 'Агата'                          B7zh39YGejeLEJzmFkHR  generated  {"language": "ru"}
+validate_voice: манифест 0 записей (0 актуальных), сцены к озвучке: —; персонажей в cast.json: 0
+[voice] validate_voice.py: OK (0 ошибок, 0 предупреждений, strict; самопроверка 5/5)
