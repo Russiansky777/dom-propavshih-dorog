@@ -18,16 +18,13 @@ void vertex() {
 }
 
 void fragment() {
+	// Four diagonal taps (a soft edge for a quarter of the cost of a 3×3 kernel: the shadow quad is
+	// large and mostly transparent); the sprite's mipmaps also soften a strongly squashed silhouette.
 	vec2 d = TEXTURE_PIXEL_SIZE * blur_px;
-	float a = texture(TEXTURE, UV).a * 0.28;
-	a += texture(TEXTURE, UV + vec2(d.x, 0.0)).a * 0.12;
-	a += texture(TEXTURE, UV - vec2(d.x, 0.0)).a * 0.12;
-	a += texture(TEXTURE, UV + vec2(0.0, d.y)).a * 0.12;
-	a += texture(TEXTURE, UV - vec2(0.0, d.y)).a * 0.12;
-	a += texture(TEXTURE, UV + d).a * 0.06;
-	a += texture(TEXTURE, UV - d).a * 0.06;
-	a += texture(TEXTURE, UV + vec2(d.x, -d.y)).a * 0.06;
-	a += texture(TEXTURE, UV + vec2(-d.x, d.y)).a * 0.06;
+	float a = texture(TEXTURE, UV + d).a;
+	a += texture(TEXTURE, UV - d).a;
+	a += texture(TEXTURE, UV + vec2(d.x, -d.y)).a;
+	a += texture(TEXTURE, UV + vec2(-d.x, d.y)).a;
 	float fade = mix(1.0, 1.0 - head_fade, hfrac);
-	COLOR = vec4(0.0, 0.0, 0.0, a * alpha * fade);
+	COLOR = vec4(0.0, 0.0, 0.0, a * 0.25 * alpha * fade);
 }

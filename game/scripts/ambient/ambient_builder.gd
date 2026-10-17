@@ -43,6 +43,10 @@ static func quality() -> Dictionary:
 ## Switches high ↔ low (or to `id`), saves the choice and rebuilds the ambient layer of `room`.
 static func set_quality(id: String, room: Node = null) -> void:
 	quality_id = id
+	if room == null:
+		var tree := Engine.get_main_loop() as SceneTree
+		var rm := tree.root.get_node_or_null("RoomManager") if tree != null else null
+		room = rm.get("current_room") if rm != null else null
 	var cfg := ConfigFile.new()
 	cfg.load(SETTINGS)
 	cfg.set_value("ambient", "quality", id)

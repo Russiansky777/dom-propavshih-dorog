@@ -10,6 +10,14 @@
     "dust": "[{id, polygon|rect, amount, size_px, alpha, color, speed_px_s, lifetime_s, z}] — пылинки в луче из окна (лучи — агент света)",
     "footfall": "переопределение footfall_defaults в комнате"
   },
+  "quality": {
+    "_note": "Качество эффектов (F4 в оверлее F3; выбор игрока хранится в user://ambient.cfg). low — вдвое меньше слоёв дождя (3 → 2, без дальнего, самого густого) и частиц (капли дождя, пыль, брызги), без волн по траве (большие площади земли).",
+    "default": "high",
+    "levels": {
+      "high": {"label": "Высокое", "rain_layers": 3, "particles": 1.0, "grass": true},
+      "low": {"label": "Низкое", "rain_layers": 2, "particles": 0.5, "grass": false}
+    }
+  },
   "camera": {
     "fov_deg": 50,
     "_note": "Плоскость пола для колец, брызг и следов: масштаб глубины комнаты (rooms/<LOC>.json depth) ∝ 1/расстояние, горизонт — где прямая глубины дошла до 0; сжатие пола по вертикали = (y − горизонт) / фокус, фокус = 960 / tan(fov/2). px на метр при scale 1 — из rooms/_index.json agata_ref (figure_px / height_m), той же линейки, что рост Агаты."

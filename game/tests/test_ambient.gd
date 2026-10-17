@@ -15,7 +15,10 @@ extends SceneTree
 ##   6. Agata walking in Z2: steps only on contact frames, a splash in each puddle step (drops sorted
 ##      in front of her, sized by the room depth scale), a print in each mud step, nothing on grass;
 ##   7. prints: at most prints_max, fade to nothing in print_fade_s; a splash lives 0.3–0.5 s;
-##   8. flag conditions: H1 window panes and dust only with the shutters open.
+##   8. flag conditions: H1 window panes and dust only with the shutters open;
+##   9. quality low: rain layers 3 → 2 (far one dropped), streaks/dust/splash drops halved, no grass;
+##  10. F3 overlay: hidden by default, text with FPS, frame ms and the room's counts, F4 switches quality;
+##  11. no sway region lies mostly under an occluder layer (Z2: the post office corner hid a birch).
 ## Note: a `-s` script is compiled before autoloads exist: they are reached through the tree and the
 ## room/ambient classes are loaded at runtime (see run_tests.gd).
 
@@ -66,6 +69,7 @@ func _run() -> void:
 	RoomBuilderScript = load("res://scripts/rooms/room_builder.gd")
 	AmbData = load("res://scripts/ambient/ambient_data.gd")
 	rm.autosave_enabled = false
+	Builder.quality_id = "high"
 	await _test("Ambient: every room with data builds its regions; interiors without rain/water/mud; Z4 by one entry", _test_build)
 	await _test("Ambient: nothing takes input; a hotspot under the rain is still clicked", _test_no_input)
 	await _test("Ambient: draw order — rain over all, regions on the picture, prints on the floor", _test_draw_order)
@@ -74,6 +78,9 @@ func _run() -> void:
 	await _test("Ambient: Agata in Z2 — splash in puddles, prints in mud, only on contact frames, sized by depth", _test_footfall)
 	await _test("Ambient: prints capped and fading in print_fade_s; a splash lives 0.3–0.5 s", _test_prints_and_splash)
 	await _test("Ambient: H1 panes and dust only with the shutters open", _test_flags)
+	await _test("Ambient: quality low — half the rain layers and particles, no grass waves; high restores", _test_quality)
+	await _test("Ambient: F3 overlay — hidden, shows FPS/ms and the room's effects, F4 quality, no mouse capture", _test_overlay)
+	await _test("Ambient: no sway region hidden under an occluder layer (wasted pixels)", _test_occluded)
 	_cleanup()
 	var failed := 0
 	for r in _results:
@@ -271,22 +278,22 @@ func _test_params() -> void:
 	var amb = Builder.of(room)
 	var spec: Dictionary = AmbData.room("Z2")
 	var rain: Dictionary = spec["rain"]
-	var r = amb.rain
-	_check(absf(r.slant - tan(deg_to_rad(float(rain["slant_deg"])))) < 0.0001, "rain slant not from data")
-	_check(r.emitters.size() == rain["layers"].size(), "rain layers %d, data %d (quality high)" % [r.emitters.size(), rain["layers"].size()])
-	if r.emitters.size() == 3:
-		var far: CPUParticles2D = r.emitters[0]
-		var near: CPUParticles2D = r.emitters[2]
+	var rn = amb.rain
+	_check(absf(rn.slant - tan(deg_to_rad(float(rain["slant_deg"])))) < 0.0001, "rain slant not from data")
+	_check(rn.emitters.size() == rain["layers"].size(), "rain layers %d, data %d (quality high)" % [rn.emitters.size(), rain["layers"].size()])
+	if rn.emitters.size() == 3:
+		var far: CPUParticles2D = rn.emitters[0]
+		var near: CPUParticles2D = rn.emitters[2]
 		_check(far.initial_velocity_max < near.initial_velocity_min, "far drizzle must fall slower than near")
 		_check(far.texture.get_height() < near.texture.get_height() and far.texture.get_width() <= near.texture.get_width(), "far streaks must be shorter and thinner")
 		_check(far.amount > near.amount, "far layer is the densest (%d vs %d)" % [far.amount, near.amount])
 		_check(far.particle_flag_align_y and near.particle_flag_align_y, "streaks align with their motion")
 		# Count = density × intensity × columns × rows of the layer (frame width with the slant).
 		var L: Dictionary = rain["layers"][2]
-		var t := absf(r.slant) + absf(r.gust_slant)
+		var t := absf(rn.slant) + absf(rn.gust_slant)
 		var expect := float(L["density"]) * float(rain["intensity"]) * ((1920.0 + 1080.0 * t + 80.0) / float(L["cell_px"])) * (1080.0 / (float(L["len_px"]) + float(L["gap_px"])))
 		_check(absf(near.amount - expect) <= 1.0, "near layer %d streaks, expected %.1f from data" % [near.amount, expect])
-	_check(r.particle_count() <= 2500, "rain budget: %d streaks" % r.particle_count())
+	_check(rn.particle_count() <= 2500, "rain budget: %d streaks" % rn.particle_count())
 	var strength := float(spec.get("wind", {}).get("strength", 1.0))
 	for r in spec["sway_regions"]:
 		var n: Node = amb.get_node_or_null("Sway/" + String(r["id"]))
@@ -595,3 +602,133 @@ func _test_flags() -> void:
 	_check(not amb.sway[0].visible, "shutters closed again: panes off")
 	_free(room)
 	gs.reset()
+
+
+# --- 9. Quality -------------------------------------------------------------------------------------
+
+func _test_quality() -> void:
+	Builder.quality_id = "high"
+	var hi := _build("Z2")
+	var a_hi = Builder.of(hi)
+	var hi_rain: Array = []
+	for e in a_hi.rain.emitters:
+		hi_rain.append(e.amount)
+	var hi_grass := 0
+	for n in a_hi.sway:
+		if int(n.material.get_shader_parameter("kind")) == 1:
+			hi_grass += 1
+	var hi_drops := int(a_hi.footfall.cfg["splash"]["drops_max"])
+	_free(hi)
+	var h1 := _build("H1")
+	var dust_hi: int = Builder.of(h1).dust[0].amount
+	_free(h1)
+	Builder.quality_id = "low"
+	var q: Dictionary = Builder.quality()
+	_check(q.get("id") == "low" and int(q.get("rain_layers", 0)) == 2 and is_equal_approx(float(q.get("particles", 0)), 0.5), "quality low from data: %s" % str(q))
+	var lo := _build("Z2")
+	var a_lo = Builder.of(lo)
+	_check(a_lo.rain.emitters.size() == 2, "low: 2 rain layers, got %d" % a_lo.rain.emitters.size())
+	if a_lo.rain.emitters.size() == 2:
+		# The far layer is dropped; the remaining ones carry half the streaks.
+		_check(absi(a_lo.rain.emitters[0].amount - int(round(hi_rain[1] * 0.5))) <= 1, "low mid layer %d vs high %d / 2" % [a_lo.rain.emitters[0].amount, hi_rain[1]])
+		_check(absi(a_lo.rain.emitters[1].amount - int(round(hi_rain[2] * 0.5))) <= 1, "low near layer %d vs high %d / 2" % [a_lo.rain.emitters[1].amount, hi_rain[2]])
+	var lo_grass := 0
+	for n in a_lo.sway:
+		if int(n.material.get_shader_parameter("kind")) == 1:
+			lo_grass += 1
+	_check(hi_grass > 0 and lo_grass == 0, "low: no grass waves (high %d, low %d)" % [hi_grass, lo_grass])
+	_check(int(a_lo.footfall.cfg["splash"]["drops_max"]) == int(round(hi_drops * 0.5)), "low: half the splash drops")
+	_check(a_lo.stats()["quality"] == "low", "stats report the quality")
+	_free(lo)
+	var h1l := _build("H1")
+	_check(Builder.of(h1l).dust[0].amount == int(round(dust_hi * 0.5)), "low: half the dust motes (%d vs %d)" % [Builder.of(h1l).dust[0].amount, dust_hi])
+	_free(h1l)
+	Builder.quality_id = "high"
+
+
+# --- 10. Overlay ------------------------------------------------------------------------------------
+
+func _key(code: Key) -> void:
+	var ev := InputEventKey.new()
+	ev.physical_keycode = code
+	ev.keycode = code
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await process_frame
+	var up := ev.duplicate()
+	up.pressed = false
+	Input.parse_input_event(up)
+	await process_frame
+
+
+func _test_overlay() -> void:
+	gs.reset()
+	await _spawn_main()
+	rm.change_room("Z2", "default")
+	await process_frame
+	await process_frame
+	var Perf = load("res://scripts/ambient/perf_overlay.gd")
+	var ov = Perf.instance()
+	_check(ov != null, "AmbientPerf overlay not created by the first room build")
+	if ov == null:
+		return
+	_check(not ov.visible, "overlay must be hidden until F3")
+	_check(ov.label.mouse_filter == Control.MOUSE_FILTER_IGNORE, "overlay label must ignore the mouse")
+	await _key(KEY_F3)
+	_check(ov.visible, "F3 must show the overlay")
+	var txt: String = ov.text()
+	print("    " + txt.replace("\n", "\n    "))
+	for part in ["FPS", "мс", "Z2", "дождь", "ветер", "лужи", "F4"]:
+		_check(txt.find(part) >= 0, "overlay text lacks '%s'" % part)
+	await _key(KEY_F4)
+	_check(Builder.quality().get("id") == "low", "F4 must switch the quality to low")
+	var amb = Builder.of(rm.current_room)
+	_check(amb != null and amb.rain != null and amb.rain.emitters.size() == 2, "F4 must rebuild the room's ambient layer at low quality")
+	await _key(KEY_F4)
+	_check(Builder.quality().get("id") == "high", "F4 again must switch back to high")
+	await _key(KEY_F3)
+	_check(not ov.visible, "F3 again must hide the overlay")
+	Builder.set_quality("high", null)
+
+
+# --- 11. Occluders ----------------------------------------------------------------------------------
+
+func _test_occluded() -> void:
+	for rid in _ambient_rooms():
+		if not sd.has_room(rid):
+			continue
+		var room := _build(rid)
+		var amb = Builder.of(room)
+		var occ: Array = []
+		var box := room.get_node_or_null("Occluders")
+		if box != null:
+			for n in box.get_children():
+				var spr := n.get_node_or_null("Image") as Sprite2D
+				if spr != null and spr.texture != null and n.visible:
+					var img: Image = Image.load_from_file(ProjectSettings.globalize_path(spr.texture.resource_path))
+					if img != null and not img.is_empty():
+						occ.append([img, n.position + spr.position, spr.scale, n.z_index])
+		if amb != null and not occ.is_empty():
+			for reg in amb.sway:
+				if reg.z_index >= 0:
+					continue
+				var pts: PackedVector2Array = reg.polygon
+				var bb: Rect2 = AmbData.bbox(pts)
+				var total := 0
+				var hidden := 0
+				for y in range(int(bb.position.y), int(bb.end.y), 8):
+					for x in range(int(bb.position.x), int(bb.end.x), 8):
+						var q := Vector2(x, y)
+						if not Geometry2D.is_point_in_polygon(q, pts):
+							continue
+						total += 1
+						for o in occ:
+							var img: Image = o[0]
+							var t: Vector2 = (q - o[1]) / o[2]
+							if t.x >= 0 and t.y >= 0 and t.x < img.get_width() and t.y < img.get_height() and img.get_pixel(int(t.x), int(t.y)).a > 0.8:
+								hidden += 1
+								break
+				var share := float(hidden) / maxf(float(total), 1.0)
+				_check(share < 0.5, "%s: sway %s is %.0f %% under an occluder layer — trim it to the visible part" % [rid, reg.name, share * 100.0])
+		_free(room)
+
