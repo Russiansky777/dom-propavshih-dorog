@@ -23,7 +23,7 @@
     },
     "walk": {
       "sheet": "walk.png",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
       "clip": "Walking_Woman"
     }
