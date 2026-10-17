@@ -1,0 +1,82 @@
+{
+  "_comment": "Фоновая музыка (Suno, инструментал; решение Директора 17.10). Тема задаётся зоной комнаты; переход между комнатами одной темы музыку не перезапускает. Файлы — res://assets/music/<file>. Громкость треков выровнена к −18 LUFS (pipeline/audio/prepare_music.sh).",
+  "themes": {
+    "home": {
+      "file": "01_home.ogg",
+      "title": "Дом",
+      "loop": true,
+      "volume_db": -6.0,
+      "source_track": "Suno id 9f42b23d (19:10Z)"
+    },
+    "roads": {
+      "file": "02_roads.ogg",
+      "title": "Деревня и дорога",
+      "loop": true,
+      "volume_db": -7.0,
+      "source_track": "Quiet Northern Roads, Suno id fd4151f1"
+    },
+    "mill": {
+      "file": "03_mill.ogg",
+      "title": "Река и мельница",
+      "loop": true,
+      "volume_db": -7.0,
+      "source_track": "The Gusli Circle, Suno id 397391d6"
+    },
+    "school": {
+      "file": "04_school.ogg",
+      "title": "Школьный класс",
+      "loop": true,
+      "volume_db": -6.0,
+      "source_track": "Frost in the Schoolroom, Suno id 2c0105a9"
+    },
+    "mirror": {
+      "file": "05_mirror.ogg",
+      "title": "Зеркало",
+      "loop": true,
+      "volume_db": -6.0,
+      "source_track": "Suno id afddd82a (19:20Z, перегенерация)"
+    },
+    "finale": {
+      "file": "06_finale.ogg",
+      "title": "Последняя нота",
+      "loop": false,
+      "volume_db": -4.0,
+      "source_track": "Последняя нота, Suno id 76b81a2b"
+    }
+  },
+  "rooms": {
+    "H1": "home",
+    "H2": "home",
+    "H3": "home",
+    "H4": "home",
+    "Z1": "roads",
+    "Z2": "roads",
+    "Z3": "roads",
+    "Z4": "roads",
+    "R1": "roads",
+    "R2": "roads",
+    "R3": "roads",
+    "R4": "roads",
+    "M1": "mill",
+    "M2": "mill",
+    "M3": "mill",
+    "M4": "mill",
+    "O1": "school",
+    "O2": "school",
+    "O3": "home",
+    "O4": "roads",
+    "S1": "mill"
+  },
+  "events": {
+    "_comment": "Тема по событию поверх комнатной, затем возврат к комнатной. Ключи — реальные флаги из flags.json или scene:<id>; зеркала (ЗМ/ЗГ/ЗП) — с E2, финал — E7. Подобрать по данным при интеграции, не выдумывать.",
+    "scene:M10": "mirror",
+    "scene:M33": "finale",
+    "scene:M34": "finale"
+  },
+  "crossfade_s": 2.5,
+  "loop_crossfade_s": 4.0,
+  "duck_dialogue_db": -5.0,
+  "duck_except": [
+    "finale"
+  ]
+}
