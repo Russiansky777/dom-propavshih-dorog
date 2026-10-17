@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - "pipeline/requests/icons_*.json"
+      - "pipeline/requests/images_*.json"
   workflow_dispatch:
     inputs:
       request:
@@ -40,7 +41,7 @@ jobs:
           if [ -n "${{ github.event.inputs.request }}" ]; then
             echo "files=${{ github.event.inputs.request }}" >> "$GITHUB_OUTPUT"
           else
-            files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'pipeline/requests/icons_*.json' | tr '\n' ' ' || true)
+            files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'pipeline/requests/icons_*.json' 'pipeline/requests/images_*.json' | tr '\n' ' ' || true)
             echo "files=$files" >> "$GITHUB_OUTPUT"
           fi
           echo "requests: $(cat $GITHUB_OUTPUT)"
@@ -62,7 +63,7 @@ jobs:
         run: |
           git config user.name "pipeline-bot"
           git config user.email "pipeline-bot@users.noreply.github.com"
-          git add assets/icons pipeline/2d/state
+          git add assets pipeline/2d/state
           if git diff --cached --quiet; then echo "нечего коммитить"; exit 0; fi
           git commit -q -m "pipeline: иконки предметов из Meshy (run ${{ github.run_id }}) [skip ci]"
           for i in 1 2 3 4 5 6; do
