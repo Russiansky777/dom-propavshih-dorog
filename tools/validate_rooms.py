@@ -303,9 +303,11 @@ for rid, room in rooms.items():
         if l.get("occluder") and "z" not in l:
             warn(f"{lctx}: окклюдер без явного z (будет 1080)")
     # 9. стоянка у NPC не закрывает его (дефект ui_10: в разговоре Агата встала прямо перед Тамарой).
-    # Ширина фигуры: figure_half_width_px × масштаб глубины (у NPC × npc.scale_factor из
-    # game/data/actors/<id>.json); если Агата ближе к зрителю (её y больше) и фигуры перекрываются
-    # больше чем на npc_overlap_max ширины NPC — ошибка.
+    # Рамки фигур: Агата — figure_half_width_px × масштаб глубины в ширину, figure_px × масштаб в высоту,
+    # ноги на стоянке. NPC (game/data/actors/<id>.json): обычный — ноги в нижней середине rect хотспота,
+    # тот же размер × npc.scale_factor; кукла (type puppet, place.<LOC>: feet на экране, depth_y — пол
+    # под ним) — высота height_rel_agata × figure_px × масштаб глубины, ширина ≈ высоте. Если Агата
+    # ближе к зрителю (её y больше пола под NPC) и закрывает больше npc_overlap_max площади его рамки — ошибка.
     aref9 = index.get("agata_ref", {})
     kind9 = room.get("background", {}).get("kind", "interior")
     dep9 = room.get("depth", index["defaults"].get("depth_exterior" if kind9 == "exterior" else "depth", {}))
@@ -320,21 +322,32 @@ for rid, room in rooms.items():
         if h.get("kind") != "npc" or "rect" not in h or "stand" not in h or not aref9.get("figure_half_width_px"):
             continue
         r = h["rect"]
-        fx, fy = r[0] + r[2] / 2, r[1] + r[3]
         sx, sy = h["stand"]
-        npc_factor = 1.0
+        hw, fig = aref9["figure_half_width_px"], aref9["figure_px"]
         actor_path = GAME_DIR / "data" / "actors" / f"{h.get('id')}.json"
-        if not actor_path.exists() and "image" not in h:
-            continue  # фигуры нет (Тихон пока невидимый хотспот на печи) — закрывать нечего
-        if actor_path.exists():
-            npc_factor = float(load(actor_path).get("npc", {}).get("scale_factor", 1.0))
-        hw = aref9["figure_half_width_px"]
-        a_hw = hw * depth_scale(sy)
-        n_hw = hw * depth_scale(fy) * npc_factor
-        overlap = min(sx + a_hw, fx + n_hw) - max(sx - a_hw, fx - n_hw)
-        if sy > fy and overlap > aref9.get("npc_overlap_max", 0.25) * 2 * n_hw:
+        actor = load(actor_path) if actor_path.exists() else None
+        if actor is None and "image" not in h:
+            continue  # фигуры нет — закрывать нечего
+        place = (actor or {}).get("place", {}).get(rid) if (actor or {}).get("type") == "puppet" else None
+        if place:
+            fx, fy = place["feet"]
+            floor_y = place.get("depth_y", fy)
+            n_h = float(actor.get("height_rel_agata", 1.0)) * fig * depth_scale(floor_y)
+            n_hw = n_h / 2
+        else:
+            fx, fy = r[0] + r[2] / 2, r[1] + r[3]
+            floor_y = fy
+            factor = float((actor or {}).get("npc", {}).get("scale_factor", 1.0))
+            n_h = fig * depth_scale(fy) * factor
+            n_hw = hw * depth_scale(fy) * factor
+        a_s = depth_scale(sy)
+        a_hw, a_h = hw * a_s, fig * a_s
+        ox = min(sx + a_hw, fx + n_hw) - max(sx - a_hw, fx - n_hw)
+        oy = min(sy, fy) - max(sy - a_h, fy - n_h)
+        covered = max(0.0, ox) / (2 * n_hw) * max(0.0, oy) / n_h if n_hw > 0 and n_h > 0 else 0.0
+        if sy > floor_y and covered > aref9.get("npc_overlap_max", 0.25):
             err(f"{ctx}.{h.get('id')}: стоянка {h['stand']} прямо перед NPC (ноги {fx:.0f},{fy:.0f}) — Агата закроет "
-                f"собой {overlap / (2 * n_hw):.0%} фигуры; поставьте стоянку сбоку (видны обе)")
+                f"собой {covered:.0%} фигуры; поставьте стоянку сбоку (видны обе)")
 
     # 8. рост Агаты против ориентиров
     aref = index.get("agata_ref", {})
