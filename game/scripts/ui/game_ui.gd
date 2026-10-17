@@ -52,6 +52,8 @@ var music_slider: HSlider               # menu: music volume 0–100 % (MusicDir
 var music_value_label: Label
 var sfx_slider: HSlider                 # menu: sound effects volume 0–100 % (SfxDirector, user://settings.cfg)
 var sfx_value_label: Label
+var voice_slider: HSlider               # menu: voice volume 0–100 % (VoiceDirector, user://settings.cfg)
+var voice_value_label: Label
 var _hover_node: Node = null
 
 var _hint_serial: int = 0
@@ -346,6 +348,30 @@ func _build() -> void:
 	sfx_value_label.theme_type_variation = &"SmallLabel"
 	sfx_value_label.text = "%d %%" % int(sfx_slider.value)
 	sfx_row.add_child(sfx_value_label)
+	var voice_row := HBoxContainer.new()
+	voice_row.add_theme_constant_override("separation", 12)
+	mv.add_child(voice_row)
+	var voice_l := Label.new()
+	voice_l.text = StoryData.text("@ui.voice_volume")
+	voice_l.custom_minimum_size = Vector2(120, 0)
+	voice_l.theme_type_variation = &"SlotNameLabel"
+	voice_row.add_child(voice_l)
+	voice_slider = HSlider.new()
+	voice_slider.name = "VoiceSlider"
+	voice_slider.min_value = 0
+	voice_slider.max_value = 100
+	voice_slider.step = 1
+	voice_slider.custom_minimum_size = Vector2(420, 40)
+	voice_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	voice_slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	voice_slider.value = roundf(VoiceDirector.voice_volume * 100.0)
+	voice_slider.value_changed.connect(_on_voice_slider)
+	voice_row.add_child(voice_slider)
+	voice_value_label = Label.new()
+	voice_value_label.custom_minimum_size = Vector2(90, 0)
+	voice_value_label.theme_type_variation = &"SmallLabel"
+	voice_value_label.text = "%d %%" % int(voice_slider.value)
+	voice_row.add_child(voice_value_label)
 	var bottom := HBoxContainer.new()
 	bottom.add_theme_constant_override("separation", 12)
 	mv.add_child(bottom)
@@ -566,6 +592,8 @@ func toggle_menu() -> void:
 		music_value_label.text = "%d %%" % int(music_slider.value)
 		sfx_slider.set_value_no_signal(roundf(SfxDirector.sfx_volume * 100.0))
 		sfx_value_label.text = "%d %%" % int(sfx_slider.value)
+		voice_slider.set_value_no_signal(roundf(VoiceDirector.voice_volume * 100.0))
+		voice_value_label.text = "%d %%" % int(voice_slider.value)
 	_update_modal()
 
 
@@ -584,6 +612,11 @@ func _on_music_slider(value: float) -> void:
 func _on_sfx_slider(value: float) -> void:
 	sfx_value_label.text = "%d %%" % int(value)
 	SfxDirector.set_sfx_volume(value / 100.0)
+
+
+func _on_voice_slider(value: float) -> void:
+	voice_value_label.text = "%d %%" % int(value)
+	VoiceDirector.set_voice_volume(value / 100.0)
 
 
 func _refresh_slots() -> void:
@@ -723,6 +756,8 @@ func probe_positions() -> Dictionary:
 		out["music_slider"] = {"x": mr.position.x, "y": mr.position.y, "w": mr.size.x, "h": mr.size.y, "value": music_slider.value}
 		var sr := sfx_slider.get_global_rect()
 		out["sfx_slider"] = {"x": sr.position.x, "y": sr.position.y, "w": sr.size.x, "h": sr.size.y, "value": sfx_slider.value}
+		var vr := voice_slider.get_global_rect()
+		out["voice_slider"] = {"x": vr.position.x, "y": vr.position.y, "w": vr.size.x, "h": vr.size.y, "value": voice_slider.value}
 	# inventory: item -> centre of its pocket (only items on the bag's current page are clickable).
 	var bp: Dictionary = bag.probe()
 	for item_id in bp["items"].keys():

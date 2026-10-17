@@ -1215,6 +1215,8 @@ func _test_loop_seams() -> void:
 		if not fname.ends_with(".json"):
 			continue
 		var id := fname.get_basename()
+		if _is_puppet(id):
+			continue  # one-picture bone rig (Tikhon): no sheet, checked by its own test
 		var sheet = load("res://scripts/actors/actor_sheet.gd").load_actor(id)
 		if not sheet.is_loaded():
 			_check(false, "%s: sheet not loaded (%s)" % [id, sheet.load_error])
@@ -1514,6 +1516,8 @@ func _test_idle_sway() -> void:
 		if not fname.ends_with(".json"):
 			continue
 		var id := fname.get_basename()
+		if _is_puppet(id):
+			continue  # one-picture bone rig (Tikhon): no sheet, checked by its own test
 		var sheet = load("res://scripts/actors/actor_sheet.gd").load_actor(id)
 		_check(String(sheet.actions.get(sheet.idle_action, {}).get("playback", "")) == "pingpong_eased", "%s: idle must play pingpong_eased (data actions.idle)" % id)
 		for action in sheet.actions.keys():
@@ -1596,3 +1600,8 @@ func _check_eased(sheet, id: String, action: String) -> int:
 	print("    %s/%s: %d rows, worst middle→extreme asymmetry %.1f %%, worst extreme-hold difference %.1f %%; row 0: %s" % [id, action, rows, worst_travel * 100.0, worst_dwell * 100.0, str(sheet.eased_timeline(action, 0).map(func(seg): return "%d:%.2f" % [int(seg[0]), float(seg[1])]))])
 	return rows
 
+
+
+func _is_puppet(id: String) -> bool:
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	return typeof(spec) == TYPE_DICTIONARY and String(spec.get("type", "")) == "puppet"

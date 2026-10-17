@@ -166,11 +166,14 @@ func start_scene(scene_id: String) -> bool:
 	GameState.set_flag("started_" + scene_id, true)
 	scene_started.emit(scene_id)
 	var beats: Array[Dictionary] = []
-	for line in sc.get("mandatory_lines", []):
+	var lines: Array = sc.get("mandatory_lines", [])
+	for i in lines.size():
+		var line: Dictionary = lines[i]
 		if line.has("context"):
 			beats.append({"type": "options", "scene": scene_id, "prompt": "",
 				"options": [{"id": "ask", "label": String(line["context"])}], "callback": Callable()})
-		beats.append({"type": "line", "scene": scene_id, "speaker": String(line.get("speaker", "")),
+		# line_id <scene>_<index>: the stable id of the recorded voice (VoiceDirector, assets/voice/ru).
+		beats.append({"type": "line", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "speaker": String(line.get("speaker", "")),
 			"speaker_name": StoryData.character_name(String(line.get("speaker", ""))), "text": String(line.get("text", ""))})
 	beats.append({"type": "call", "scene": scene_id, "fn": _complete_scene.bind(scene_id)})
 	if active_scene == "":

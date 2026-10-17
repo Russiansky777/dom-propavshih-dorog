@@ -14,7 +14,7 @@
   5. data/story/voice.json: известные персонажи в pan, panning_strength ∈ [0, 3], volume_db ∈ [−20, 12].
 Самопроверка (каждый запуск): испорченные копии — реплика, которой нет; изменённый текст без stale; персонаж без
 голоса; тихая реплика — должны дать ошибку.
-Код 0 — ошибок нет. Запуск: python3 tools/validate_voice.py [--quiet] [--strict]
+Код 0 — ошибок нет. Запуск: python3 tools/validate_voice.py [--quiet] [--strict] [--source-only — без проверки копии игры]
 """
 from __future__ import annotations
 
@@ -88,7 +88,7 @@ def expected_voice(cast_map: dict, rel: str, speaker: str) -> str:
 
 
 def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: dict | None, voice_cfg: dict | None,
-          scenes: set[str], strict: bool, files: bool = True) -> tuple[list[str], list[str]]:
+          scenes: set[str], strict: bool, files: bool = True, game_copy: bool = True) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warns: list[str] = []
     chars = {c["id"] for c in load(STORY / "characters.json")["characters"]}
@@ -164,6 +164,8 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
             if not f.is_file():
                 errors.append(f"{tag}: нет файла {f.relative_to(ROOT)}")
                 continue
+            if not game_copy:
+                continue
             g = game_dir / f.name
             if not g.is_file() or g.read_bytes() != f.read_bytes():
                 errors.append(f"{tag}: копия игры {g.relative_to(ROOT)} отсутствует или отличается — tools/sync_voice.sh")
@@ -171,7 +173,7 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 imp = g.with_name(g.name + ".import")
                 if not imp.is_file() or "loop=false" not in imp.read_text(encoding="utf-8"):
                     errors.append(f"{tag}: у копии нет .import с loop=false")
-        if files:
+        if files and game_copy:
             gm = game_dir / "manifest.json"
             if not gm.is_file() or gm.read_bytes() != (src_dir / "manifest.json").read_bytes():
                 errors.append(f"{gm.relative_to(ROOT)} отсутствует или отличается — tools/sync_voice.sh")
@@ -250,13 +252,14 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
 def main() -> int:
     quiet = "--quiet" in sys.argv
     strict = "--strict" in sys.argv
+    source_only = "--source-only" in sys.argv   # workflow озвучки: копии игры там нет (её делает tools/sync_voice.sh)
     lines = story_lines()
     manifests = manifests_on_disk()
     cast = load(CAST)
     voices = load(VOICES)
     voice_cfg = load(STORY / "voice.json")
     scenes = requested_scenes()
-    errors, warns = check(lines, manifests, cast, voices, voice_cfg, scenes, strict)
+    errors, warns = check(lines, manifests, cast, voices, voice_cfg, scenes, strict, game_copy=not source_only)
     missed = selftest(lines, cast, voice_cfg, scenes)
     for m in missed:
         errors.append(f"самопроверка: порча «{m}» не поймана")

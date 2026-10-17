@@ -1,0 +1,715 @@
+{
+  "_comment": "Озвученные реплики: id = <scene>_<index> (index — позиция в mandatory_lines/lines). Пишет pipeline/voice/eleven_voice.py; игра читает копию (tools/sync_voice.sh) и играет файл, только если sha1 текста совпадает с текущей репликой. stale — реплики больше нет или текст изменён.",
+  "language": "ru",
+  "variant": "",
+  "format": "ogg_vorbis_mono_44100",
+  "loudness_target_lufs": -17.0,
+  "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
+  "updated_at": "2026-10-17T21:51:08+00:00",
+  "lines": {
+    "M01_0": {
+      "scene": "M01",
+      "index": 0,
+      "speaker": "agata",
+      "text": "От тёти ничего?",
+      "text_sha1": "85b43d6042b0c946b9ab6399fa9c70e0f3e2ac81",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M01_0.ogg",
+      "source": "src/M01_0.mp3",
+      "characters": 15,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 1.527,
+      "lufs": -17.0,
+      "true_peak_db": -5.2,
+      "gain_db": 3.2,
+      "source_lufs": -20.2,
+      "source_true_peak_db": -8.4,
+      "generated_at": "2026-10-17T21:50:47+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "UZrIgIvPRxXbIR6bvrA7",
+        "history_item_id": "0j7ksCLnzGFIZpmoHlqy",
+        "character_cost": "7",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1633513578
+        }
+      }
+    },
+    "M01_1": {
+      "scene": "M01",
+      "index": 1,
+      "speaker": "tamara",
+      "text": "Нет. Но вот этого камня год не было видно. Она хотела его осмотреть.",
+      "text_sha1": "8efff83f238cf93816644fcb1869b4b6f5d2b1e5",
+      "voice_id": "GqJPI8zhNM5CF7q8EJ6l",
+      "voice_name": "TAMARA-1",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.45,
+        "similarity_boost": 0.75
+      },
+      "file": "M01_1.ogg",
+      "source": "src/M01_1.mp3",
+      "characters": 68,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 6.12,
+      "lufs": -17.0,
+      "true_peak_db": -3.5,
+      "gain_db": -0.9,
+      "source_lufs": -16.1,
+      "source_true_peak_db": -3.0,
+      "generated_at": "2026-10-17T21:50:49+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "ntlae0aICduB4E5flyb7",
+        "history_item_id": "WKKgOv83fp9ipjVyEfpu",
+        "character_cost": "30",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3632069579
+        }
+      }
+    },
+    "M01_2": {
+      "scene": "M01",
+      "index": 2,
+      "speaker": "agata",
+      "text": "Начну с её записей.",
+      "text_sha1": "5c53b94adde3c293d4c472bd6f1522272a88e2f7",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M01_2.ogg",
+      "source": "src/M01_2.mp3",
+      "characters": 19,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 1.524,
+      "lufs": -17.0,
+      "true_peak_db": -7.2,
+      "gain_db": -0.4,
+      "source_lufs": -16.6,
+      "source_true_peak_db": -6.8,
+      "generated_at": "2026-10-17T21:50:50+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "EQFnraNcDHeukFB51E9G",
+        "history_item_id": "ltwMKSK4qhRkHwXpIpni",
+        "character_cost": "8",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2657468065
+        }
+      }
+    },
+    "M02_0": {
+      "scene": "M02",
+      "index": 0,
+      "speaker": "pelageya",
+      "text": "Берег вижу. Плыву — к своему причалу возвращаюсь.",
+      "text_sha1": "e1d349d6b5c8ed2bc787c9d8d75ab075def849c5",
+      "voice_id": "mIbPOSXtLeiaroofXc7O",
+      "voice_name": "PELAGEYA",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "M02_0.ogg",
+      "source": "src/M02_0.mp3",
+      "characters": 49,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.234,
+      "lufs": -17.0,
+      "true_peak_db": -5.3,
+      "gain_db": -0.2,
+      "source_lufs": -16.8,
+      "source_true_peak_db": -5.0,
+      "generated_at": "2026-10-17T21:50:52+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "79yiqOB2R6xgshFp4qRq",
+        "history_item_id": "Xei20v2oXdJ4foMLYPLx",
+        "character_cost": "22",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 895259657
+        }
+      }
+    },
+    "M02_1": {
+      "scene": "M02",
+      "index": 1,
+      "speaker": "agata",
+      "text": "А другая опора?",
+      "text_sha1": "903b6a9b3e457aa958d869a1245fd791112aea79",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M02_1.ogg",
+      "source": "src/M02_1.mp3",
+      "characters": 15,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 1.339,
+      "lufs": -17.0,
+      "true_peak_db": -7.9,
+      "gain_db": 0.4,
+      "source_lufs": -17.4,
+      "source_true_peak_db": -8.3,
+      "generated_at": "2026-10-17T21:50:53+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "E1uDhvPPNkIyNYyphsgh",
+        "history_item_id": "GRf9A2E5VQ0Wb6i5h9Io",
+        "character_cost": "7",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 4105829717
+        }
+      }
+    },
+    "M02_2": {
+      "scene": "M02",
+      "index": 2,
+      "speaker": "pelageya",
+      "text": "Нужен настоящий школьный рейс, не нынешняя схема. У управляющего мельницей были журналы.",
+      "text_sha1": "23d4140c332266a3cfac055b24bd0fb716840ae0",
+      "voice_id": "mIbPOSXtLeiaroofXc7O",
+      "voice_name": "PELAGEYA",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "M02_2.ogg",
+      "source": "src/M02_2.mp3",
+      "characters": 88,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 6.547,
+      "lufs": -17.0,
+      "true_peak_db": -5.7,
+      "gain_db": -2.0,
+      "source_lufs": -15.0,
+      "source_true_peak_db": -3.7,
+      "generated_at": "2026-10-17T21:50:55+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "W4iwWIQ2WEybqAqTIzcP",
+        "history_item_id": "JI7X16W4JvvwrCUD3mMl",
+        "character_cost": "39",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2707160960
+        }
+      }
+    },
+    "M03_0": {
+      "scene": "M03",
+      "index": 0,
+      "speaker": "tikhon",
+      "text": "На сухое мокрое не кладут.",
+      "text_sha1": "cc414ec673b7b0b8d53f071f772aef1370e858b3",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "M03_0.ogg",
+      "source": "src/M03_0.mp3",
+      "characters": 26,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.772,
+      "lufs": -17.0,
+      "true_peak_db": -6.1,
+      "gain_db": -0.6,
+      "source_lufs": -16.4,
+      "source_true_peak_db": -5.7,
+      "generated_at": "2026-10-17T21:50:56+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "aWBYD9r4uU5b22Yp142Q",
+        "history_item_id": "Taqv9hdk78vbRRWdy0Do",
+        "character_cost": "11",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 27862874
+        }
+      }
+    },
+    "M03_1": {
+      "scene": "M03",
+      "index": 1,
+      "speaker": "agata",
+      "text": "Ты здесь один?",
+      "text_sha1": "faf36cb71c7cd89f2455327c999e1da7b23c3962",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M03_1.ogg",
+      "source": "src/M03_1.mp3",
+      "characters": 14,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 1.12,
+      "lufs": -17.0,
+      "true_peak_db": -7.8,
+      "gain_db": 2.6,
+      "source_lufs": -19.6,
+      "source_true_peak_db": -10.4,
+      "generated_at": "2026-10-17T21:50:57+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "YPGb78iUd5zibxaGj1QE",
+        "history_item_id": "8wObdDvulua9xiKjgO7F",
+        "character_cost": "6",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2170686020
+        }
+      }
+    },
+    "M03_2": {
+      "scene": "M03",
+      "index": 2,
+      "speaker": "tikhon",
+      "text": "Печь тоже здесь.",
+      "text_sha1": "61588875fcedc659e8ad72196cf79ec687e039a5",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "M03_2.ogg",
+      "source": "src/M03_2.mp3",
+      "characters": 16,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 1.516,
+      "lufs": -17.1,
+      "true_peak_db": -4.6,
+      "gain_db": 0.1,
+      "source_lufs": -17.1,
+      "source_true_peak_db": -4.8,
+      "generated_at": "2026-10-17T21:50:58+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "fciGCvlYz8zuPSXfzUfC",
+        "history_item_id": "wyR6COBFEKgObEpaV9JL",
+        "character_cost": "7",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 147487111
+        }
+      }
+    },
+    "M03_3": {
+      "scene": "M03",
+      "index": 3,
+      "speaker": "tikhon",
+      "text": "Ушла к Нине. Я жду.",
+      "text_sha1": "2a7d39e3bc2a1e7e73a5de630b0419f9a26bb7ef",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "M03_3.ogg",
+      "source": "src/M03_3.mp3",
+      "characters": 19,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.137,
+      "lufs": -17.0,
+      "true_peak_db": -3.3,
+      "gain_db": 0.1,
+      "source_lufs": -17.1,
+      "source_true_peak_db": -3.3,
+      "generated_at": "2026-10-17T21:50:59+00:00",
+      "run": "39072575687",
+      "context_not_voiced": "На вопрос о Евдокии",
+      "api": {
+        "request_id": "SagSHwE6GM1BrwXidRE8",
+        "history_item_id": "XWky6arROAsLLMtSbDIP",
+        "character_cost": "8",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3744497266
+        }
+      }
+    },
+    "M04_0": {
+      "scene": "M04",
+      "index": 0,
+      "speaker": "agata",
+      "text": "Она готовила это ещё до того, как пропала дорога.",
+      "text_sha1": "5adb718eb0f16855eb230eb56c8032c6a9391131",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M04_0.ogg",
+      "source": "src/M04_0.mp3",
+      "characters": 49,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.257,
+      "lufs": -17.0,
+      "true_peak_db": -6.4,
+      "gain_db": 0.4,
+      "source_lufs": -17.4,
+      "source_true_peak_db": -6.5,
+      "generated_at": "2026-10-17T21:51:00+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "E1gTGihsKhuYtOMA1HyS",
+        "history_item_id": "2sFTSsEvC2hh73RXbjrO",
+        "character_cost": "22",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3367074767
+        }
+      }
+    },
+    "M05_0": {
+      "scene": "M05",
+      "index": 0,
+      "speaker": "agata",
+      "text": "Это наша школа.",
+      "text_sha1": "21576cee5e384c0ee11656b7fbc6a0ac84dc830e",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M05_0.ogg",
+      "source": "src/M05_0.mp3",
+      "characters": 15,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 1.264,
+      "lufs": -17.0,
+      "true_peak_db": -7.3,
+      "gain_db": -1.6,
+      "source_lufs": -15.4,
+      "source_true_peak_db": -5.7,
+      "generated_at": "2026-10-17T21:51:01+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "asgrwI3xz9x7DLR2zg75",
+        "history_item_id": "la7ADHhu1GiTcxm7dzQG",
+        "character_cost": "7",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1157453992
+        }
+      }
+    },
+    "M06_0": {
+      "scene": "M06",
+      "index": 0,
+      "speaker": "agata",
+      "text": "Кто-то продолжал здесь учиться.",
+      "text_sha1": "d20e78526d7386620c21b2f30b3c40b56555f671",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M06_0.ogg",
+      "source": "src/M06_0.mp3",
+      "characters": 31,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.116,
+      "lufs": -17.2,
+      "true_peak_db": -4.4,
+      "gain_db": 0.4,
+      "source_lufs": -17.4,
+      "source_true_peak_db": -5.0,
+      "generated_at": "2026-10-17T21:51:02+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "buNnDoNtQKQ2d1OYDNPe",
+        "history_item_id": "qQ5rr0Nm8dGjsII30B7A",
+        "character_cost": "14",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3563084187
+        }
+      }
+    },
+    "M07_0": {
+      "scene": "M07",
+      "index": 0,
+      "speaker": "agata",
+      "text": "Вот какой рейс нужен Пелагее. Осталось найти его схему.",
+      "text_sha1": "157396884724de9475986af14eb013fd325d85bb",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M07_0.ogg",
+      "source": "src/M07_0.mp3",
+      "characters": 55,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.057,
+      "lufs": -17.0,
+      "true_peak_db": -3.7,
+      "gain_db": -0.4,
+      "source_lufs": -16.6,
+      "source_true_peak_db": -3.4,
+      "generated_at": "2026-10-17T21:51:03+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "qK12U3buGCf10rc3T1Bg",
+        "history_item_id": "GhOhNTwF1fJSNVabXdtr",
+        "character_cost": "24",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 726176668
+        }
+      }
+    },
+    "M08_0": {
+      "scene": "M08",
+      "index": 0,
+      "speaker": "agata",
+      "text": "До класса я дошла. До деревни — ещё нет.",
+      "text_sha1": "d296d292716dc753eb324ec0b79dad8f79bd8a17",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "M08_0.ogg",
+      "source": "src/M08_0.mp3",
+      "characters": 40,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.635,
+      "lufs": -17.1,
+      "true_peak_db": -1.9,
+      "gain_db": 1.9,
+      "source_lufs": -18.9,
+      "source_true_peak_db": -3.6,
+      "generated_at": "2026-10-17T21:51:04+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "K4eCdLlC8ppB8Zs8iXRy",
+        "history_item_id": "p9LTyclTx2oStKSL8LvD",
+        "character_cost": "18",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2369150081
+        }
+      }
+    },
+    "Q04_0": {
+      "scene": "Q04",
+      "index": 0,
+      "speaker": "tikhon",
+      "text": "Это кабинет. Просто двери пока нет.",
+      "text_sha1": "8468bb8a2b53a143e549e8ea75f05b6a56d9b2c1",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "Q04_0.ogg",
+      "source": "src/Q04_0.mp3",
+      "characters": 35,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.507,
+      "lufs": -17.0,
+      "true_peak_db": -4.2,
+      "gain_db": -0.7,
+      "source_lufs": -16.3,
+      "source_true_peak_db": -3.4,
+      "generated_at": "2026-10-17T21:51:05+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "aX8ebWKtWdIC5ytAEzYm",
+        "history_item_id": "TcmuAOoJMnotLmDwAkm9",
+        "character_cost": "15",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 656439892
+        }
+      }
+    },
+    "Q04_1": {
+      "scene": "Q04",
+      "index": 1,
+      "speaker": "tikhon",
+      "text": "Теперь у меня есть приёмные часы.",
+      "text_sha1": "9a26bc87c9f6a0f6d6902daad27a5ed96c24749b",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "Q04_1.ogg",
+      "source": "src/Q04_1.mp3",
+      "characters": 33,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.873,
+      "lufs": -17.1,
+      "true_peak_db": -5.7,
+      "gain_db": -1.3,
+      "source_lufs": -15.7,
+      "source_true_peak_db": -4.0,
+      "generated_at": "2026-10-17T21:51:06+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "qXjEsSafUfOy7JTQd0Ex",
+        "history_item_id": "sHpVPNxbxjRrGB5w0ep5",
+        "character_cost": "15",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1694141876
+        }
+      }
+    },
+    "Q04_2": {
+      "scene": "Q04",
+      "index": 2,
+      "speaker": "agata",
+      "text": "Какие?",
+      "text_sha1": "7e96ebbdd43c3a40dacb00438aeafa1b0d506a37",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "Q04_2.ogg",
+      "source": "src/Q04_2.mp3",
+      "characters": 6,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 0.729,
+      "lufs": -16.9,
+      "true_peak_db": -7.9,
+      "gain_db": 0.5,
+      "source_lufs": -17.5,
+      "source_true_peak_db": -8.4,
+      "generated_at": "2026-10-17T21:51:07+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "UCd9xx1lZnEpjWf0uUHc",
+        "history_item_id": "qyyK6tNUscEypIPdgzAr",
+        "character_cost": "3",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1783509986
+        }
+      }
+    },
+    "Q04_3": {
+      "scene": "Q04",
+      "index": 3,
+      "speaker": "tikhon",
+      "text": "Когда я не сплю. Иногда.",
+      "text_sha1": "e08b58b43fd38541de219088211cdb093618e87c",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "Q04_3.ogg",
+      "source": "src/Q04_3.mp3",
+      "characters": 24,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.48,
+      "lufs": -17.0,
+      "true_peak_db": -2.9,
+      "gain_db": -0.4,
+      "source_lufs": -16.6,
+      "source_true_peak_db": -1.9,
+      "generated_at": "2026-10-17T21:51:08+00:00",
+      "run": "39072575687",
+      "api": {
+        "request_id": "BaI9onJdZRhn0CpxeD2t",
+        "history_item_id": "ixEZRSY8zNJqkLLXh7ok",
+        "character_cost": "11",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3901075254
+        }
+      }
+    }
+  }
+}

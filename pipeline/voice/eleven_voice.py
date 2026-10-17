@@ -530,14 +530,19 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
            "reprocessed": [f"{it['id']}{'@' + it['set']['variant'] if it['set']['variant'] else ''}" for it in done if it["action"] != "synth"],
            "characters_text": sum(len(it["line"]["text"]) for it in done if it["action"] == "synth"), "failed": failed,
            "subscription_before": sub_before, "subscription_after": sub_after}
+    # Списание по ответам API (заголовок character-cost); счётчик подписки обновляется с задержкой.
+    costs = [str(it["set"]["manifest"]["lines"].get(it["id"], {}).get("api", {}).get("character_cost", "")) for it in done if it["action"] == "synth"]
+    if costs and all(c.isdigit() for c in costs):
+        run["credits_spent"] = sum(int(c) for c in costs)
     if sub_before and sub_after and sub_before.get("character_count") is not None and sub_after.get("character_count") is not None:
-        run["credits_spent"] = int(sub_after["character_count"]) - int(sub_before["character_count"])
+        run["subscription_delta"] = int(sub_after["character_count"]) - int(sub_before["character_count"])
     st_path = STATE_DIR / f"{set_name}.json"
     st = read_json(st_path, {"set": set_name, "runs": []})
     st["runs"].append(run)
     write_json(st_path, st)
     log(f"[{set_name}] синтезировано {len(synthesized)}, переобработано {len(run['reprocessed'])}, ошибок {len(failed)}; "
-        f"символов текста {run['characters_text']}; списано по балансу: {run.get('credits_spent', 'н/д')}")
+        f"символов текста {run['characters_text']}; списано кредитов (character-cost): {run.get('credits_spent', 'н/д')}, "
+        f"изменение счётчика подписки: {run.get('subscription_delta', 'н/д')}")
     return 1 if failed else 0
 
 

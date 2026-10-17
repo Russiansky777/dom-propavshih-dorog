@@ -29,6 +29,18 @@ static func attach_all(room: Node, the_player: Node2D) -> Array:
 		var id: String = h.hotspot_id
 		if not FileAccess.file_exists("res://data/actors/%s.json" % id):
 			continue
+		var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+		if typeof(spec) == TYPE_DICTIONARY and String(spec.get("type", "")) == "puppet":
+			# One-picture bone rig (Tikhon): its own actor class, same placement/visibility contract.
+			var pup := PuppetActor.new()
+			pup.name = "puppet_" + id
+			room.add_child(pup)
+			if pup.setup(id, h, room, the_player):
+				made.append(pup)
+			else:
+				room.remove_child(pup)
+				pup.free()
+			continue
 		var npc := NpcActor.new()
 		npc.name = "npc_" + id
 		room.add_child(npc)

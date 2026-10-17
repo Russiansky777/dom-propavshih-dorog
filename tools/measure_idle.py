@@ -81,6 +81,8 @@ def main():
         path = os.path.join(data_dir, actor + ".json")
         with open(path, encoding="utf-8") as f:
             spec = json.load(f)
+        if spec.get("type") == "puppet":
+            continue  # bone rig on one picture, no sheet
         sheet_dir = os.path.join(ROOT, "game", spec.get("sheet_dir", f"res://assets/characters/{actor}").replace("res://", ""))
         with open(os.path.join(sheet_dir, spec.get("sprites", "sprites.json")), encoding="utf-8") as f:
             sprites = json.load(f)

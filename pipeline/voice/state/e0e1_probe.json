@@ -43,7 +43,9 @@
         "character_limit": 124889,
         "next_character_count_reset_unix": 1794939642
       },
-      "credits_spent": 0
+      "subscription_delta": 0,
+      "credits_spent": 274,
+      "_note": "credits_spent — сумма заголовков character-cost ответов API (617 символов → 274 кредита); счётчик подписки сразу после прогона не изменился (обновляется с задержкой). Исправлено вручную 17.10."
     }
   ]
 }

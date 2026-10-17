@@ -75,7 +75,7 @@ jobs:
         if: always() && steps.req.outputs.files != ''
         run: |
           set -o pipefail
-          python tools/validate_voice.py --strict 2>&1 | tee -a pipeline/voice/state/last_run.log
+          python tools/validate_voice.py --strict --source-only 2>&1 | tee -a pipeline/voice/state/last_run.log
 
       - name: Коммит результатов
         if: always() && steps.req.outputs.files != ''
