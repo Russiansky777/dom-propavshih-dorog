@@ -37,7 +37,7 @@
       "sheet": "open_b.png",
       "frames": 16,
       "fps": 8,
-      "clip": "open_door"
+      "clip": "open_door_1"
     },
     "pick": {
       "sheet": "pick.png",
@@ -49,7 +49,7 @@
       "sheet": "reach.png",
       "frames": 16,
       "fps": 8,
-      "clip": "Walking_Woman"
+      "clip": "Female_Stand_Pick_Fruit_Basket"
     }
   }
 }
