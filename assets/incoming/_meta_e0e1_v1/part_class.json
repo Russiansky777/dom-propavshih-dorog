@@ -1,0 +1,161 @@
+{
+  "part": "O1 — Зимний класс",
+  "date": "2026-10-17",
+  "tool": "built-in image_gen",
+  "model": "built-in imagegen; exact model identifier not exposed",
+  "model_version": null,
+  "input_references_viewed": [
+    "assets/reference/H1_bg.png",
+    "assets/reference/agata_sheet.png",
+    "assets/reference/tikhon_sheet.png"
+  ],
+  "visual_reference_used": "assets/reference/H1_bg.png",
+  "generation_prompts": {
+    "O1_bg": "Use case: historical-scene.\nAsset type: O1_bg.png, background-only game room for a 2D point-and-click adventure. Request canvas 2048 x 1152, 16:9.\nInput images: image 1 is the APPROVED painting-style reference H1 room, not the room to copy.\nCreate a rural school classroom in the Russian North, approximately 1900–1920s, which has continued to be used, patched and mended for twenty years. The room is unoccupied but cared for; not a ruin. Match the reference's softly painted wooden architecture, restrained visible brushstrokes, degree of detail, eye-level side-on camera and horizon at about 45% canvas height. Change the lighting to a single cold winter daylight source from tall windows on the LEFT wall, with static settled snow and bare trees visible outside. Dark brown worn and repaired boards, muted blue-gray daylight, very restrained earthy colors; no orange artificial lighting.\nComposition and gameplay: the central band of plank floor across the full room is EMPTY and clearly walkable, occupying the lower half. Back wall: a large clean blank dark-green school chalkboard in a simple repaired wooden frame centered slightly right, x 41%-68%, y 20%-44%. Completely blank board with old wiped chalk texture, NO lettering or task; code handles ordinary task writing. A patched old cloth school sack rests against left/back wall around x 19%, y 55%. Small teacher's desk rests entirely against back wall left of board, around x 28%-40%, y 49%-64%, with a visible CLOSED drawer with an old school-stamp emblem on its face, pieces of white chalk on top. A neat stack of worn exercise books is on a low shelf or side table against back wall toward x 78%, y 57%. A faded educational illustration of a small northern songbird hangs on right back wall around x 88%, y 34%, without any readable text. Simple doorway at far left back corner and a clear exit at far right. Thoughtful traces of repairs, reused nails, mended school furniture and worn paint, no theatrical decay.\nCRITICAL layers: NO foreground student desks or chairs whatsoever: they will be generated as a separate transparent layer. Do not put the teacher desk in the center of the floor. No people or animals, no UI, cursor, labels, captions, readable text or watermarks. No particles, falling snow, steam, lit lamps, fire, cinematic shafts or fog. Produce only the clean opaque background room.",
+    "O1_fg_desks": "Use case: compositing. Produce a transparent full-canvas foreground furniture layer for the supplied school classroom image. Same 1672 x 941 canvas as the image, do not crop. Only two ordinary old Russian school desks with attached bench backs, same painterly woodwork and cold light from left as image. CRITICAL layout: all visible furniture must lie ENTIRELY in the bottom 25 percent of the canvas, y=706 through941, across x=300 through1450; all the top 75 percent MUST stay fully transparent. Furniture remains modest in scale, approximately 230 pixels high. They are foreground desks seen from the rear looking toward the blackboard. One left at x300-850, one right x900-1450. Legs can exit bottom boundary. Desktops should only begin at y710, NOT y480. No room, board, wall, window, floor, paper, background shadow, ground plane, lettering or people. True alpha cutout background, same camera perspective, full-canvas coordinates.",
+    "O1_state_board_written": "Use case: precise-object-edit.\nAsset type: O1_state_board_written.png, CHALK MARKS ONLY transparent overlay for exact input school classroom.\nInput image 1 is the target room and board positioning. Keep full canvas 1672x940 pixels, landscape16:9. This is not a new illustration of a chalkboard. Render ONLY a short handwritten white chalk note on fully transparent alpha canvas, positioned over the existing board face. Do not draw ANY board face, frame, scene, paper or opaque rectangle.\nExact Russian text, natural legible slightly uneven handwriting by Agata: \"Я была здесь. Агата\". Arrange two modest lines, first \"Я была здесь.\", second \"Агата\". Place text block approximately x=795 to1115 and y=235 to355 so it lies completely inside the existing board in the reference. The message should be small enough to fit comfortably on that original board, not a giant title. Chalk strokes slightly dusty with subtle broken grain and tapering handwriting. Keep every other pixel genuinely transparent, including the rest of board area. No extra words, no sketch, no shadow, no colored background, no blackboard texture, no frame, no checkerboard, no full room. The requested deliverable consists of the handwritten chalk strokes alone, full canvas maintained at its original origin."
+  },
+  "iteration_prompts": {
+    "final_patched_sack_edit": "Use case: precise-object-edit.\nAsset type: O1_bg.png, surgical game-background correction.\nInput image 1 is the EXISTING TARGET background; retain it.\nEdit ONLY the small school bag resting on the floor against the back wall near the left doorway, around x=294–386 and y=513–627 on this 1672×940 canvas. Replace that backpack-shaped flap-and-straps object with an old soft BURLAP SACK with a gathered tied mouth. It has been repaired many times over twenty years: three or four clearly visible mismatched cloth patches in muted gray, ochre and faded brown, attached with distinct large hand-sewn stitches. One patch overlaps an older worn patch. Ordinary practical rural school supply sack, not a decorative bag or leather backpack. Keep the sack the same modest screen size and exact floor position; fit naturally to the existing cold daylight and painterly textures.\nEVERYTHING ELSE IS AN INVARIANT: preserve the full camera framing, canvas shape and size, perspective, left windows, winter snow outside, all doors, wall boards, all background props, teacher's desk and its chalk, notebook stacks, bird picture, empty walkable floor, and especially the large blank chalkboard and wooden frame at their exact original coordinates. Do not recompose, zoom, crop, recolor or relight the room. Do not add any foreground desks, people, particles, UI, writing, labels, or any new props. Background stays opaque, no transparency. Return the same whole room with just that one small patched burlap sack changed.",
+    "initial_layers": {
+      "O1_fg_desks": "Use case: compositing.\nAsset type: O1_fg_desks.png foreground occlusion layer for this exact classroom game background.\nInput image 1 is the target composition, camera, painting style and single cold daylight direction to MATCH exactly.\nGenerate ONLY two old wooden school desks with their attached simple benches, about 1900–1920s Russian North, repaired and used for twenty years. Softly painted rich dark wood, muted blue-gray daylight falling from the LEFT, reference detail level. No writing, no paper, no human.\nCRITICAL output: genuine alpha transparency across all empty canvas. Keep the same full-canvas 16:9 composition (requested 2048x1152), do not tightly crop around furniture. Place both desks in the foreground LOWER EDGE, together spanning x 27% to 77% and y 77% to 100%, slightly unequal depth, with floor band y 64%-77% remaining clear behind them so the heroine can walk behind. Show the desks from behind as if looking toward the classroom chalkboard, preserving the reference's perspective and eye level/horizon. The nearest legs may reach the lower edge but do not crop tabletops.\nDraw ONLY furniture and its own self-shadowing, not the floor, classroom, background, board, reference objects, scene or a checkerboard. No cast shadow plane, no opaque colored backdrop. Keep foreground restrained rather than dominating whole screen. This is a compositable transparent layer, not a picture of desks in a room.",
+      "O1_state_board_written": "Use case: precise-object-edit.\nAsset type: O1_state_board_written.png, a transparent overlay for the blackboard in the exact input classroom.\nInput image 1 is the TARGET room background and exact layout. Keep full canvas identical composition, scale and aspect ratio, requested 2048x1152. Do not crop or enlarge.\nRender ONLY the face of the existing large dark school blackboard with the following handwritten chalk message centered on it, in natural modest Russian handwriting, exact text: \"Я была здесь. Агата\". Two lines are allowed: \"Я была здесь.\" then \"Агата\". Correct Cyrillic letters, no extra words or labels. Keep the painted chalkboard texture, light and slightly irregular paint, with its existing wooden frame if necessary, exactly at its current reference position (approximately x 43%-71%, y 15%-46%); do NOT shift camera, change size, change perspective or create a new board.\nEverything outside the chalkboard and its frame must be genuinely transparent alpha, including floor, walls, windows, doors, desks and props: remove those entirely from output while preserving the original full-canvas coordinates. No colored background or checkerboard. Image must serve as a board-state overlay on top of input room, not a scene with rewritten walls and not a tightly cropped board illustration."
+    },
+    "board_frame_alignment_attempt": "Use case: precise-object-edit. Input image is the exact target composition. Produce a full-canvas 1672 x 941 transparent board overlay. Remove everything except the EXISTING blackboard exactly where it is: outer wooden frame occupies approximately pixel rectangle x=715 through1185, y=138 through435. The top of the frame MUST be at y138 (15 percent of total height) and bottom at y435 (46 percent of total height). Its width approximately470 pixels, height297 pixels. Do not enlarge the board or shift it downward. Preserve the original dark-green board and wood frame perspective and size from reference. Add a single natural modest white-chalk handwritten Russian message across the face: \"Я была здесь. Агата\", allowed as two lines \"Я была здесь.\" then \"Агата\". Exact Cyrillic spelling and punctuation. Every pixel outside the exact original blackboard rectangle and frame should be transparent; full 1672x941 canvas must remain. Nothing else, no floor, walls, furniture, opaque backdrop or checkerboard. The board must slot on top of the board in the provided background at the same full-canvas coordinates."
+  },
+  "files": [
+    {
+      "file": "assets/incoming/O1_bg.png",
+      "original_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-19c756cd-89e9-40fb-a5af-1add4567a8ae.png",
+      "size": [
+        1672,
+        940
+      ],
+      "mode": "RGB",
+      "alpha_extrema": null,
+      "alpha_bbox": null,
+      "transparent_pixels": 0,
+      "sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "postprocessed": false
+    },
+    {
+      "file": "assets/incoming/O1_fg_desks.png",
+      "original_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-9df24fde-6a29-4fac-91a5-e146ff4fddfc.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        258,
+        110,
+        1562,
+        941
+      ],
+      "transparent_pixels": 1301077,
+      "sha256": "71b9a7d7e078089165bb41c3e60a73d7d88dc69a04f31165af4d91a88021d3cb",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "postprocessed": false,
+      "alpha_bbox_threshold_16": [
+        305,
+        657,
+        1546,
+        941
+      ],
+      "alpha_bbox_threshold_128": [
+        306,
+        657,
+        1545,
+        941
+      ],
+      "alpha_low_value_pixels_1_15": 20299
+    },
+    {
+      "file": "assets/incoming/O1_state_board_written.png",
+      "original_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-1fdf153f-40d7-4f4b-a52c-53f96b0fee4f.png",
+      "size": [
+        1672,
+        940
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        253
+      ],
+      "alpha_bbox": [
+        97,
+        131,
+        1427,
+        914
+      ],
+      "alpha_bbox_threshold_16": [
+        789,
+        258,
+        1148,
+        374
+      ],
+      "alpha_bbox_threshold_128": [
+        791,
+        259,
+        1147,
+        372
+      ],
+      "transparent_pixels": 1555841,
+      "alpha_low_value_pixels_1_15": 9969,
+      "sha256": "907bc6cba6d0c2c5e2bc20e1406f1417df82740a107ba41f075ad899d51fbb81",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "postprocessed": false
+    }
+  ],
+  "qa": {
+    "passed": [
+      "Все три файла соответствуют теме O1: сельский класс, холодный зимний свет слева, большой свободный пол, парты отдельным слоем.",
+      "В фоне видны школьная доска, учительский стол с ящиком, мел, мешок, тетради, учебная птица. Нет людей, UI, снега в воздухе.",
+      "Слой доски содержит только рукописную надпись «Я была здесь. Агата»; саму доску/раму не заменяет.",
+      "У обоих слоёв настоящий RGBA alpha: парты 0–255, надпись 0–253.",
+      "После отдельной узкой правки школьная сумка заменена мешком с завязанной горловиной, несколькими явно видимыми разноцветными заплатами и ручными стежками; положение основных объектов визуально сохранено."
+    ],
+    "limitations": [
+      "Генератор не выдал 2048×1152: фон 1672×940, слой надписи 1672×940, парты 1672×941. Размеры не подгонялись.",
+      "Это кандидаты для приёмки и импорта, не проверенная в Godot сборка; нужно привязать хотспоты и зону ходьбы к фактической композиции.",
+      "Две попытки нарисовать полную доску со словами не обеспечили совпадение рам. Финальный слой — только мел в пределах исходной доски, что устраняет двойную раму.",
+      "Парты начинаются примерно с y=657 (70% высоты), выше запрошенных 75%; проход за ними нужно проверить со спрайтом героини.",
+      "Низкозначные полупрозрачные пиксели присутствуют вне основных силуэтов; PNG сохранены как сгенерированы. При импорте проверить на тёмном/светлом фоне.",
+      "На основном фоне доска пустая. Исходную учебную задачу M06 следует накладывать кодом; это соответствует запрету случайных нечитаемых надписей.",
+      "Отметка на учительском ящике декоративная, не читаемая надпись. После правки мешка визуальное совпадение остальных объектов проверено; побитовое совпадение изображения не заявляется."
+    ],
+    "alignment_status": "full-canvas best-effort; no pixel-perfect or native-size compliance claim",
+    "previous_background_before_sack_edit": {
+      "file": "assets/incoming/O1_bg.png",
+      "original_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-adf5a9f7-774a-49dc-9f6b-ea7b2b23e2fe.png",
+      "size": [
+        1672,
+        940
+      ],
+      "mode": "RGB",
+      "alpha_extrema": null,
+      "alpha_bbox": null,
+      "transparent_pixels": 0,
+      "sha256": "493f78eec2da763fc990f57c151c7e8dc0976a554e1f7336eed212289ece7e43",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "postprocessed": false
+    }
+  }
+}

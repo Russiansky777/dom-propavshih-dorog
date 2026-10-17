@@ -1,0 +1,250 @@
+{
+  "agent": "e0_art_zarechye",
+  "date": "2026-10-17",
+  "files": [
+    {
+      "filename": "Z1_bg.png",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-4d087a8c-2d77-4028-bf68-988bc00577e4.png",
+      "saved_path": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/Z1_bg.png",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "model": "ChatGPT built-in imagegen",
+      "version": null,
+      "refpaths": [
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/H1_bg.png",
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/agata_sheet.png",
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/tikhon_sheet.png"
+      ],
+      "prompt": [
+        "Use case: historical-scene. Asset: Z1_bg.png, complete 2D point-and-click game background, landscape PNG requested 2048 x 1152. Reference image 1 is the APPROVED painting style and camera-height anchor, images 2 and 3 show compatible character rendering ONLY, do not put these characters or any characters in the image. Paint a small ordinary post office in Zarechye, Russian North circa 1900–1920, simple purchased ordinary furnishings, not fantasy old Rus. The room has warm worn timber and restrained cream plaster, softly visible brush strokes exactly like the approved interior. One daylight source: window on LEFT; the small ordinary kerosene lamp is off, no glow. Door to street at RIGHT. On rear-left wall a clearly visible shelf of sorted paper letters and pigeonholes. On rear-right wall before the door a large pinned geographic plan/map, visible river bend, paths and blocks, but no readable text or lettering. Fixed eye-level adventure camera; horizon/vanishing height about 45 percent from top, perspective similar to reference H1. Open unobstructed wooden floor across the entire middle and lower band so an adult character can walk side to side. The foreground post counter and the two drawings are separate files: DO NOT draw a counter, desk or any foreground furniture or papers in this background. The central wall may have simple storage but keep foreground floor completely clear. No people, animals, text, UI, cursor, glow, fire, snow, steam, ornaments of fantasy folklore. Muted ochres, warm brown, cool left-window daylight, painterly texture, not blocky, no black outlines, not flat cartoon, not photorealistic photograph. Full bleed room, no border."
+      ],
+      "knownissues": [
+        "Native generation is not the requested 2048x1152; no resizing/cropping performed.",
+        "Visual approval and Godot placement/hotspot review pending."
+      ],
+      "actualsize": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "alpha": false,
+      "sha256": "8f52d28cf513a517c83513c3bf96e6ae439ba4d687a65c4a9352a44f6073ea89"
+    },
+    {
+      "filename": "Z1_fg_counter.png",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-6e97d91d-3233-4fa5-8349-ca039fb46baf.png",
+      "saved_path": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/Z1_fg_counter.png",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "model": "ChatGPT built-in imagegen",
+      "version": null,
+      "refpaths": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-4d087a8c-2d77-4028-bf68-988bc00577e4.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-3d630ee4-39f7-47fd-8a75-c2045097fa64.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-e7dda4a7-3ccc-4a28-8029-6cea6cc65d07.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-b1139765-aa1d-45fa-bd00-68e5485e6d2f.png"
+      ],
+      "prompt": [
+        "Use case: stylized-concept. Create a separate transparent foreground prop layer for the post office in reference image 1, matching its camera perspective, soft visible painterly strokes, muted wood brown palette, and left-window daylight EXACTLY. Asset Z1_fg_counter.png. Reference 1 is the Z1 room for compositing; reference 2 is the Z3 pier foundation the drawings must depict. Output a wide PNG at 2048x1152 requested, genuine alpha transparency, retain a full 16:9 scene-sized canvas with no background. Draw ONLY a plain ordinary 1900–1920 northern Russian small-town post-office service counter, simple purchased carpentry, waist-high solid dark wooden front, slight wear, no ornate folklore ornament, viewed from front and slightly above. Position it across the lower central frame, roughly x=28–72% of width, its top at y=58%, its bottom at y=92%, leaving ample alpha around it. On its top two separate large paper drawings side by side, visibly CLICKABLE: one older yellowed creased drawing with faded graphite, one fresh cream paper recent charcoal sketch. BOTH show the SAME distinctive ruined pier base (stone blocks and three timber stubs in river), matching reference2 from same viewpoint; old sketch shows the less decayed sturdier base, new sketch shows weathered, partly missing stones, identical relative arrangement unmistakable. No words, letters, labels, numbers, captions on either sketch. Two papers need be visibly separate and sufficiently exposed on counter top. No lamp, cash register, people, walls, floor, ground shadow rectangle, background scene, border, transparency checkerboard. Preserve realistic everyday scale, not a toy or icon. Counter with the papers as one alpha object; plain scene-sized alpha elsewhere.",
+        "Use case: precise-object-edit. Edit reference1, a transparent painted post-office counter layer. Keep the identical simple dark wooden counter, its brushwork and brown patina, the two large papers on its top, perspective and left daylight. Reference2 is the room into which the layer must fit. Reference3 is the NEW appearance of the pier remnant depicted in the RIGHT-HAND recent drawing. Changes: (1) scale the ENTIRE counter with papers down inside the unchanged full wide canvas so the whole counter occupies ONLY the middle44 percent of image width, from x28% to x72%, and lower34 percent of image height, approximately y58% to y92%. The remainder of the entire image must be true alpha-transparent padding. DO NOT crop in to fill the frame with the object, DO NOT fill the transparent area with the room. Camera is same as before and room. (2) on the RIGHT sheet ONLY, redraw the same pier foundation now barely emerging from the river surface as in reference3: the same timber stubs and old stones but much lower, more decayed and partially submerged. Preserve the LEFT faded yellow older drawing which depicts its earlier taller sturdier appearance. No text, no labels, no extra objects. Output ONLY the smaller counter and its two pictures on a full scene-sized wide canvas with actual transparent background; requested2048x1152, keep native canvas ratio."
+      ],
+      "knownissues": [
+        "Native generation is not the requested 2048x1152; no resizing/cropping performed.",
+        "Visual approval and Godot placement/hotspot review pending.",
+        "Generated layer is not guaranteed pixel-perfect with the background; retain native canvas and verify transform before use.",
+        "Counter scale and position are approximate; two sketches depict the same pier remnant before and after decay, without labels.",
+        "Very low nonzero alpha pixels (1–15) extend beyond the main object; not cleaned because original generation is preserved. Check on light background before final production."
+      ],
+      "actualsize": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        37,
+        1597,
+        872
+      ],
+      "sha256": "8619b8ff755b130bc24b601154784985a05f53c4e6e4dd08dc93e01297334a3b",
+      "alpha_low_nonzero_pixels": 7531,
+      "alpha_bbox_threshold16": [
+        320,
+        465,
+        1352,
+        866
+      ]
+    },
+    {
+      "filename": "Z2_bg.png",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-2f0a67b4-0691-4fa6-9933-b4c5a801a664.png",
+      "saved_path": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/Z2_bg.png",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "model": "ChatGPT built-in imagegen",
+      "version": null,
+      "refpaths": [
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/H1_bg.png",
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/agata_sheet.png",
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/tikhon_sheet.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-cce819fc-c1ae-49f8-a6f5-7958b43d27e0.png"
+      ],
+      "prompt": [
+        "Use case: historical-scene. Asset: Z2_bg.png, complete 2D point-and-click outdoor background, landscape PNG requested 2048 x 1152. Reference image 1 defines soft painterly hand, brushwork, detail and perspective; refs 2 and 3 only confirm character-compatible rendering, DO NOT draw characters. A modest inhabited small-town street in Zarechye in the Russian North circa 1900–1920, LATE AUTUMN, NO SNOW anywhere. Simple ordinary purchased household world, no fantasy or fairytale architecture. Evdokia's wooden house dominates the left-middle of the view: mature timber walls, simple windows and an easily readable side porch with door and few steps facing the street, ordinary plain construction visually matching the timber and windows of reference 1. The nearest projecting house corner at extreme lower-left will be a SEPARATE transparent occlusion layer, so do not place a large foreground wall, post, foliage or fence obstructing the middle walkable street. House body and side porch remain visibly complete in the background. Open wet earth street/path runs laterally across lower-middle, with a visible path descending towards the river at right; in the distance on RIGHT by the river a small wooden watermill, clearly readable silhouette and waterwheel, not a windmill. Gray sky, bare trees, flattened brown grasses, damp earth, soft dull puddles, no falling rain. One broad overcast sky light from upper left, cool gray daylight, muted timber brown, restrained moss green and earth ochres. Fixed adventure camera, horizon at approximately 45% down image; walkable band open from left to right through the lower central half. No people, animals, text, signs with lettering, UI, cursor, snow, bright lamp glow, fantasy ornament. Soft painterly brushwork and edges as in H1, not angular, not photograph, no deep cinematic lens blur. Full bleed.",
+        "Use case: precise-object-edit. Edit only the supplied Z2 street painting to make the clean background plate for a layered point-and-click game. Remove completely the NEAREST log house corner at the extreme LEFT FRAME EDGE (the large cropped vertical stack of log ends and roof/eave, about first 12 percent width), and remove the immediately adjoining foreground fence bottom-left. Reveal the continuation of the wet open earth street and low grass behind those removed near objects. Preserve Evdokia's complete main house at mid-depth, its side porch and door, the distant watermill at right, river, sky, all lighting, detail level, painterly brushwork, full original composition and image dimensions. All near corner geometry will be a separate alpha layer, so none must remain baked in this background. No characters, no new objects or text, no change of season. Full opaque background."
+      ],
+      "knownissues": [
+        "Native generation is not the requested 2048x1152; no resizing/cropping performed.",
+        "Visual approval and Godot placement/hotspot review pending.",
+        "Some residual autumn leaves remain on trees; scene is snow-free late autumn."
+      ],
+      "actualsize": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "alpha": false,
+      "sha256": "638b063210754823e8c8d78919c0aec25ef53ba7e1a251a31135bae2e469ae39"
+    },
+    {
+      "filename": "Z2_fg_house_corner.png",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-bd76d8c3-0477-41b5-ad05-297a6a1b58c1.png",
+      "saved_path": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/Z2_fg_house_corner.png",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "model": "ChatGPT built-in imagegen",
+      "version": null,
+      "refpaths": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-cce819fc-c1ae-49f8-a6f5-7958b43d27e0.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-2f0a67b4-0691-4fa6-9933-b4c5a801a664.png"
+      ],
+      "prompt": [
+        "Use case: background-extraction. Asset Z2_fg_house_corner.png. Reference1 is the ORIGINAL street painting containing a near log house corner touching the far LEFT edge; reference2 is the cleaned background without it. Extract ONLY the NEAR HOUSE CORNER from reference1 into a genuine alpha transparent PNG on the same full wide 16:9 scene-sized canvas, requested2048x1152. Keep the corner in its original position touching LEFT border, thin cropped vertical log-end stack with small overhanging eave at upper-left and timber foundation at bottom-left, occupying at most leftmost13 percent of width. Preserve original size, position, perspective, brush strokes, colors and cool overcast left daylight. The large complete house with porch in the middle distance must NOT be included. Exclude all ground, leaves, trees, background, sky, distant buildings, mill and river; only the foreground structural corner itself. This is a painted foreground occluder to place atop reference2; entire right87 percent is transparent. No people, no text, no checkerboard, no glow, no rendered scene. Exact alignment is important, do not center or enlarge the extracted object."
+      ],
+      "knownissues": [
+        "Native generation is not the requested 2048x1152; no resizing/cropping performed.",
+        "Visual approval and Godot placement/hotspot review pending.",
+        "Generated layer is not guaranteed pixel-perfect with the background; retain native canvas and verify transform before use.",
+        "Very low nonzero alpha pixels (1–15) extend beyond the main object; not cleaned because original generation is preserved. Check on light background before final production."
+      ],
+      "actualsize": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        0,
+        233,
+        896
+      ],
+      "sha256": "eefff2efe514b3851dbd61d3f01014a9cb369ad5e9986e4fabedd09c55a107a0",
+      "alpha_low_nonzero_pixels": 2423,
+      "alpha_bbox_threshold16": [
+        0,
+        0,
+        231,
+        894
+      ]
+    },
+    {
+      "filename": "Z3_bg.png",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-e7dda4a7-3ccc-4a28-8029-6cea6cc65d07.png",
+      "saved_path": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/Z3_bg.png",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "model": "ChatGPT built-in imagegen",
+      "version": null,
+      "refpaths": [
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/H1_bg.png",
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/agata_sheet.png",
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/tikhon_sheet.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-3d630ee4-39f7-47fd-8a75-c2045097fa64.png"
+      ],
+      "prompt": [
+        "Use case: historical-scene. Asset: Z3_bg.png, complete 2D point-and-click riverbank background, landscape PNG requested 2048 x 1152. Reference image 1 defines the exact soft painterly style, visible brushwork and level of detail; reference character sheets 2 and 3 only define compatible rendering; NO characters appear. Russian North circa 1900–1920, a quiet bend of riverbank near Zarechye in late autumn, no snow. Fixed eye-level adventure-game camera with horizon/vanishing level around 45% from top. Composition: a wide clear damp dirt and short flattened-grass walking path arcs across the LOWER MIDDLE from left to right, a river beyond it and around its lower-right edge; soft distant bare riverbank trees under gray overcast sky. Near RIGHT of center in the water an OLD PIER FOUNDATION is plainly identifiable: a squat rectangular grouping of weathered stone blocks supported by three dark worn timber stubs, barely protruding above water, remains of a former landing, no intact dock or modern structure. On the near bank just RIGHT of this foundation, an upright old metal plaque embedded in the ground, broad easily clickable rectangular shape, blank worn face WITHOUT TEXT so game code can add inscription. Keep plaque and foundation visually distinct and separated. The foreground water that curls into extreme bottom-right will be delivered separately as an alpha occlusion layer, so here it is merely a calm base tone with very subtle static broad texture. No animated wave/foam effects, no character reflections, no people or animals, no lettering, no UI or cursor. One cool overcast daylight source from upper left; restrained blue-gray water, muted green/ochre bank, damp brown earth. Match H1 brushwork exactly, soft painterly, not blocky and not photo, no glowing magical effects, no snow, no rain particles. Full bleed scene.",
+        "Use case: precise-object-edit. Modify the supplied painted Russian North riverbank game background while preserving the scene, painterly style, lighting and camera. Two linked waterline fixes: (1) the old pier remnants at center-right must be substantially LOWER and more decayed: only a few weathered stone tops and three low timber stubs barely break the water surface, about one third their current height, keep their exact position and recognizable grouping; (2) bend the near-bank dirt path gently inward so a small calm wedge of gray-blue WATER reaches into extreme BOTTOM RIGHT, at most the rightmost 20 percent of width and bottom20 percent of height. Keep the path broad, continuous and clear through the lower-middle, with enough earth foreground left and center for walking. Preserve the blank metal plaque near right, do not write text. Preserve the far river, sky, left birch and muted late autumn palette, no snow or people. Water is a quiet static painted base, no foam, spray, dramatic waves, animated effects or character reflections. Same wide canvas and view."
+      ],
+      "knownissues": [
+        "Native generation is not the requested 2048x1152; no resizing/cropping performed.",
+        "Visual approval and Godot placement/hotspot review pending.",
+        "River has painted static surface tones; code should own animation. Walking path bends diagonally rather than being horizontal."
+      ],
+      "actualsize": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "alpha": false,
+      "sha256": "3e9183ec922a82947c8c15445ba037d8ff4f6141b0f32a0097c071e47c6e035c"
+    },
+    {
+      "filename": "Z3_fg_water.png",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-657f5319-2801-4f80-a0df-d019fca299a4.png",
+      "saved_path": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/Z3_fg_water.png",
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "model": "ChatGPT built-in imagegen",
+      "version": null,
+      "refpaths": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-e7dda4a7-3ccc-4a28-8029-6cea6cc65d07.png"
+      ],
+      "prompt": [
+        "Use case: background-extraction. Asset Z3_fg_water.png. Extract from the supplied Z3 riverbank painting ONLY the small foreground wedge of calm blue-gray river water entering from the extreme BOTTOM-RIGHT, approximately x=74–100% width and y=76–100% height, on a full scene-sized16:9 transparent PNG requested2048x1152. This is a separate static painterly water substrate for code animation, not a new environment illustration. Preserve exact source hue, overcast light, viewpoint, brushwork and coordinate placement of this near-water region. Very soft broad horizontal tonal brush strokes, calm surface, no foam, spray, circular splashes, no animated waves or ripples, no character or object reflections. Keep the irregular inner shore edge alpha-soft so code can blend it to the source background; it may include a minimal quiet shoreline boundary but do not include dirt path, trees, plaque, old pier, grasses, sky, distant river or any other scene objects. Entire upper and left majority of the canvas is actual alpha transparency, not black paint or checkerboard. Do not center, crop or enlarge this wedge. Output ONLY the foreground water wedge at lower right, same full canvas and scale as supplied image."
+      ],
+      "knownissues": [
+        "Native generation is not the requested 2048x1152; no resizing/cropping performed.",
+        "Visual approval and Godot placement/hotspot review pending.",
+        "Generated layer is not guaranteed pixel-perfect with the background; retain native canvas and verify transform before use.",
+        "Static water substrate only; shader animation is not delivered. Inner edge should be blend-tested in Godot.",
+        "Very low nonzero alpha pixels (1–15) extend beyond the main object; not cleaned because original generation is preserved. Check on light background before final production."
+      ],
+      "actualsize": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        210,
+        137,
+        1672,
+        941
+      ],
+      "sha256": "1e7c97a4e5fc6f70f7553aea49e0f50a1faafead3395e8ec9b47fa8cb3b44679",
+      "alpha_low_nonzero_pixels": 4196,
+      "alpha_bbox_threshold16": [
+        1165,
+        696,
+        1672,
+        941
+      ]
+    }
+  ]
+}

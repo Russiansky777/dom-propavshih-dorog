@@ -87,21 +87,26 @@
         "tikhon_shelf_b"
       ],
       "notes": "Каждое состояние — отдельный PNG с прозрачностью, в координатах фона",
-      "status": "requested",
+      "status": "delivered",
       "owner": "pipeline",
-      "delivered": null,
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      },
       "files": [
         "incoming/H1_state_stove_open.png",
         "incoming/H1_state_shutter_open.png",
         "incoming/H1_state_hook_coat.png",
         "incoming/H1_state_shelf_stove.png",
-        "incoming/H1_state_shelf_table.png"
+        "incoming/H1_state_shelf_table.png",
+        "incoming/H1_state_shutter_closed.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md"
     },
     {
       "id": "Z1_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон Z1 2048×1152 + слои переднего плана; бриф §B",
       "files": [
@@ -109,11 +114,16 @@
         "incoming/Z1_fg_counter.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "Z2_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон Z2 2048×1152 + слои переднего плана; бриф §B",
       "files": [
@@ -121,11 +131,16 @@
         "incoming/Z2_fg_house_corner.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "Z3_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон Z3 2048×1152 + слои переднего плана; бриф §B",
       "files": [
@@ -133,11 +148,16 @@
         "incoming/Z3_fg_water.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "R1_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон R1 2048×1152 + слои переднего плана; бриф §B",
       "files": [
@@ -146,11 +166,16 @@
         "incoming/R1_fg_water.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "H2_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон H2 2048×1152 + слои переднего плана; бриф §B",
       "files": [
@@ -158,22 +183,32 @@
         "incoming/H2_fg_bench_front.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "H3_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон H3 2048×1152 + слои переднего плана; бриф §B",
       "files": [
         "incoming/H3_bg.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "H4_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон H4 2048×1152 + слои переднего плана; бриф §B",
       "files": [
@@ -181,11 +216,16 @@
         "incoming/H4_fg_boxes.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "O1_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон O1 2048×1152 + слои переднего плана; бриф §B",
       "files": [
@@ -193,11 +233,16 @@
         "incoming/O1_fg_desks.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "O2_bg",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_layers",
       "spec": "Фон O2 2048×1152 + слои переднего плана; бриф §B",
       "files": [
@@ -206,11 +251,16 @@
         "incoming/O2_fg_wall.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "H3_states",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "spec": "Проём H3: пустая рама / установленная дверь",
       "files": [
@@ -218,55 +268,80 @@
         "incoming/H3_state_door_installed.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "O1_states",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "spec": "Доска O1 с надписью мелом",
       "files": [
         "incoming/O1_state_board_written.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "O2_states",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "spec": "Варежка на ступени O2",
       "files": [
         "incoming/O2_state_mitten.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "tamara_sheet",
-      "status": "requested",
+      "status": "delivered",
       "kind": "character_sheet",
       "spec": "Тамара 53, почта Заречья; лист для Meshy",
       "files": [
         "incoming/tamara_sheet.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "pelageya_sheet",
-      "status": "requested",
+      "status": "delivered",
       "kind": "character_sheet",
       "spec": "Пелагея 40, лодочница; лист для Meshy",
       "files": [
         "incoming/pelageya_sheet.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     },
     {
       "id": "M05_closeup",
-      "status": "requested",
+      "status": "delivered",
       "kind": "closeup_layers",
       "spec": "Слои крупного плана загадки двери: полотно, рама, брус, петля, рисунок",
       "files": [
@@ -277,7 +352,12 @@
         "incoming/M05_drawing.png"
       ],
       "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
-      "owner": "ChatGPT + Директор"
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
+        "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
+      }
     }
   ]
 }

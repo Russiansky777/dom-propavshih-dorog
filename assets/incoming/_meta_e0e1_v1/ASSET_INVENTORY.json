@@ -1,0 +1,876 @@
+{
+  "source_commit": "f0818b79753532045d52ad289969b4250bfdda81",
+  "date": "2026-10-17",
+  "requested_png_count": 35,
+  "delivered_png_count": 36,
+  "extra": [
+    "H1_state_shutter_closed.png"
+  ],
+  "status": "art_and_text_handoff_not_game_integration",
+  "assets": [
+    {
+      "file": "assets/incoming/H1_state_hook_coat.png",
+      "width": 1602,
+      "height": 981,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        991,
+        232,
+        1142,
+        608
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_h1.json",
+      "sha256": "27fe0418bc698c2bd2fa319004749235b795648d412a03535725b967a098416c",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H1_state_shelf_stove.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        285,
+        373,
+        791,
+        586
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_h1.json",
+      "sha256": "a1edccc2c9d64edcdc5fe7dd6eed8bbf609048cc6ade720dcec2e56f62a9e3a0",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H1_state_shelf_table.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        47,
+        266,
+        334,
+        388
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_h1.json",
+      "sha256": "f1cc83d4c888fff45da30ef133a83f065a618aca0009738e62a7ca13defe8a80",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H1_state_shutter_closed.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        1131,
+        72,
+        1609,
+        716
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_h1.json",
+      "sha256": "260b5018f410dc858f0f533e5a7476b8a02b7fb89a15c30c520f230022c35118",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H1_state_shutter_open.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        1172,
+        90,
+        1651,
+        550
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_h1.json",
+      "sha256": "a904163808c3668566dd771837889084f177ac20bdf9ed498161215412dcd599",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H1_state_stove_open.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        64,
+        384,
+        440,
+        626
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_h1.json",
+      "sha256": "f11e481f013abd5cde73a9c5c4c7a9d5d0bc0106d3fd2b994d8f4d3dd35e8f0c",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H2_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_workshop_cast.json",
+      "sha256": "ff7b36b81203faa7f99a0e0ddb9e4e068e38709b132dd2dc6e0c14fe113ea653",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H2_fg_bench_front.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        787,
+        547,
+        1672,
+        941
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_workshop_cast.json",
+      "sha256": "7bc2dd0c9b0afc9adc932ac9b477553070f91c740c1cecec9c1d09dee0f65262",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H3_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_gallery_puzzle.json",
+      "sha256": "e270090ec6d3b9f7d20b536196b2f559536bb85adee9494d52c270e786ae4901",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H3_state_door_installed.png",
+      "width": 1671,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        494,
+        64,
+        872,
+        814
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_gallery_puzzle.json",
+      "sha256": "59bfc08dcac6c042502b03f73f20a255b9a09fd83e0005015f74fff8189f7127",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H3_state_frame_empty.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        189,
+        67,
+        870,
+        824
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_gallery_puzzle.json",
+      "sha256": "39b5724248f554bb98d3fc253e980ceb9705be0d0aafc9342cd86f861b4e18de",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H4_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_workshop_cast.json",
+      "sha256": "4fb2d419edafb3fc990722adaf62bbffb777b56fa4dedf15058435084cfdda9b",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/H4_fg_boxes.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        998,
+        592,
+        1645,
+        936
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_workshop_cast.json",
+      "sha256": "c96e3c02dc8bd087ea3891bb7d0cdce6dc0f6a97d019e23e1cbf391ffefe6d38",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/M05_beam.png",
+      "width": 1671,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        390,
+        772,
+        1281,
+        897
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_gallery_puzzle.json",
+      "sha256": "da310cc7f196ed2d953874800e2056add43c3c6e9fcfcdeef129ab4f005276ef",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/M05_door_leaf.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        646,
+        41,
+        1024,
+        897
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_gallery_puzzle.json",
+      "sha256": "dd457dd319b676eafda5e4212bed946717370304865396673ed2e42403110821",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/M05_drawing.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        97,
+        61,
+        808,
+        881
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_gallery_puzzle.json",
+      "sha256": "fa789983ec8e49578dc0edb8c15f99068310d7c54fc8490ca9272f297e6dfb0c",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/M05_frame.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        599,
+        16,
+        1074,
+        926
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_gallery_puzzle.json",
+      "sha256": "eac0dd001abbd8a23793d125a6802e5a8b3d5a1da6cdc354b1279de8b8c08a18",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/M05_hinge.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        863,
+        246,
+        1185,
+        715
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_gallery_puzzle.json",
+      "sha256": "4caa1d180116f4526b1d36e8f2159e8ff6d5c18a0011ddd4dd12cf0d0f34e0d6",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/O1_bg.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_class.json",
+      "sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/O1_fg_desks.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        306,
+        657,
+        1545,
+        941
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_class.json",
+      "sha256": "71b9a7d7e078089165bb41c3e60a73d7d88dc69a04f31165af4d91a88021d3cb",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/O1_state_board_written.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        253
+      ],
+      "visible_bbox_alpha_128": [
+        791,
+        259,
+        1147,
+        372
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_class.json",
+      "sha256": "907bc6cba6d0c2c5e2bc20e1406f1417df82740a107ba41f075ad899d51fbb81",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/O2_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_river_yard.json",
+      "sha256": "78fbbb9e0cc2471632a7325c0c68e2e135170942510372e5a954264ef975d620",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/O2_fg_snow_front.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        0,
+        712,
+        1672,
+        941
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_river_yard.json",
+      "sha256": "c0c04fa544d7d767ebf90c6c2a0e44a551ddff56ce518a0eda733932f3f867dd",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/O2_fg_wall.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        0,
+        0,
+        512,
+        745
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_river_yard.json",
+      "sha256": "5946b582d4a7a9398ed47adeaeb56acc091f3fa98fd3936fe6e4138517c13ebb",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/O2_state_mitten.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        522,
+        562,
+        643,
+        623
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_river_yard.json",
+      "sha256": "d14c4228b666f6caf4d26a0891bbe71a56f82eb3d933a55d39d54ce3a778eddd",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/R1_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_river_yard.json",
+      "sha256": "67497ad2e729f0f1a99c731a065a5d923e14c6843cd61d635d1664abc9ecbf77",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/R1_fg_pier_edge.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        768,
+        525,
+        1307,
+        636
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_river_yard.json",
+      "sha256": "01cc352c488251414c80993ead8ab2417ae0e78afe5555ccd82f465907424967",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/R1_fg_water.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        1340,
+        605,
+        1672,
+        727
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_river_yard.json",
+      "sha256": "8a9deedf34ddce634a0b7addec91f46b847a7d2fd170844e33796a86a42b0866",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/Z1_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_zarechye.json",
+      "sha256": "8f52d28cf513a517c83513c3bf96e6ae439ba4d687a65c4a9352a44f6073ea89",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/Z1_fg_counter.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        321,
+        466,
+        1351,
+        866
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_zarechye.json",
+      "sha256": "8619b8ff755b130bc24b601154784985a05f53c4e6e4dd08dc93e01297334a3b",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/Z2_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_zarechye.json",
+      "sha256": "638b063210754823e8c8d78919c0aec25ef53ba7e1a251a31135bae2e469ae39",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/Z2_fg_house_corner.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        0,
+        0,
+        230,
+        893
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_zarechye.json",
+      "sha256": "eefff2efe514b3851dbd61d3f01014a9cb369ad5e9986e4fabedd09c55a107a0",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/Z3_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "true_alpha": false,
+      "alpha_extrema": null,
+      "visible_bbox_alpha_128": null,
+      "kind": "background",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_zarechye.json",
+      "sha256": "3e9183ec922a82947c8c15445ba037d8ff4f6141b0f32a0097c071e47c6e035c",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/Z3_fg_water.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        1168,
+        697,
+        1672,
+        941
+      ],
+      "kind": "transparent_layer",
+      "status": "needs_registration",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_zarechye.json",
+      "sha256": "1e7c97a4e5fc6f70f7553aea49e0f50a1faafead3395e8ec9b47fa8cb3b44679",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/pelageya_sheet.png",
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        64,
+        23,
+        1382,
+        1049
+      ],
+      "kind": "character_sheet",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_workshop_cast.json",
+      "sha256": "ae97f5a8f73a4d3de115c296704ae4b4c592215cc26e36df2007841e8ebd8a7f",
+      "original_bytes_verified": true
+    },
+    {
+      "file": "assets/incoming/tamara_sheet.png",
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "true_alpha": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        80,
+        27,
+        1405,
+        1069
+      ],
+      "kind": "character_sheet",
+      "status": "visual_review",
+      "tool": "ChatGPT built-in image_gen.imagegen",
+      "model": null,
+      "model_version": null,
+      "model_note": "Exact model/version not exposed by the tool.",
+      "provenance_file": "metadata/part_workshop_cast.json",
+      "sha256": "891bece6bd6d85af981e41d912261f2cee4570a859df26383883ece746ec6fc6",
+      "original_bytes_verified": true
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "png_required": 35,
+  "png_delivered": 36,
+  "missing_pngs": [],
+  "extra_pngs": [
+    "H1_state_shutter_closed.png"
+  ],
+  "all_pngs_decode": true,
+  "all_original_byte_hashes_match": true,
+  "all_transparent_layers_have_real_alpha": true,
+  "text_entries": 220,
+  "text_rewritten": 177,
+  "text_draft_true": 0,
+  "json_keys_order_placeholders_preserved": true,
+  "scenario_scene_id_sequence_preserved": true,
+  "M19_exact_line_count": 1,
+  "gallery_local_links_valid": true,
+  "game_integration_tested": false,
+  "pixel_perfect_registration_passed": false
+}

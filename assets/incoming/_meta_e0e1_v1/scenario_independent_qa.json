@@ -1,0 +1,26 @@
+{
+  "review": "independent scenario age and continuity review",
+  "status": "passed",
+  "agata_now": 18,
+  "agata_at_break": 17,
+  "ilya_at_break": 12,
+  "ilya_now": 32,
+  "ilya_now_older_by": 14,
+  "nina_at_break": 47,
+  "nina_now": 67,
+  "mitya_at_break": 17,
+  "mitya_now": 37,
+  "evdokia_at_break": 54,
+  "evdokia_at_death": 72,
+  "evdokia_dead_for_local_years": 2,
+  "ulyana_now": 8,
+  "M19_exact_line": "Мне восемнадцать. Я искала тебя год",
+  "scene_ids_and_order_preserved": true,
+  "scene_counts": {
+    "main": 34,
+    "minor": 12,
+    "optional_quests": 10
+  },
+  "unapproved_county_town_schooling_added": false,
+  "reviewer_changed_files": false
+}

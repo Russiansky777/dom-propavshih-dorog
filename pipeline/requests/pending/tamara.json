@@ -1,0 +1,24 @@
+{
+  "character": "tamara",
+  "sheet": "assets/incoming/tamara_sheet.png",
+  "height_m": 1.62,
+  "actions": [
+    "idle",
+    "talk"
+  ],
+  "action_ids": {
+    "idle": 0,
+    "talk": 47
+  },
+  "frames": {
+    "idle": 8,
+    "talk": 12
+  },
+  "ai_model": "latest",
+  "pose_mode": "a-pose",
+  "texture_resolution": "2k",
+  "elev": 14,
+  "front_yaw": 0,
+  "rev": 1,
+  "_note": "talk = Listening Gesture (id 47) из каталога Meshy; переместить в pipeline/requests/ для запуска (41 кредит)"
+}

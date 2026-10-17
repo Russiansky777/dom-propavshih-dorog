@@ -1,0 +1,390 @@
+{
+  "batch": "H3_gallery_and_M05_puzzle",
+  "status": "incoming_requires_visual_approval_and_geometry_integration",
+  "tool": "built-in image_gen.imagegen",
+  "model_version": null,
+  "model_version_note": "Built-in tool does not expose precise model/version.",
+  "generated_date": "2026-10-17",
+  "requested_size": [
+    2048,
+    1152
+  ],
+  "raw_bytes_policy": "Every delivered PNG is an unchanged byte-for-byte copy of selected imagegen output. No resize, crop, color change, compositing, alpha processing or Python image editing performed.",
+  "global_gate": "No claim of pixel-perfect registration or validated puzzle geometry. The correct logic is 2 hinges in top+bottom sockets and third of 4 threshold positions.",
+  "files": [
+    {
+      "filename": "H3_bg.png",
+      "key": "bg_final",
+      "promptkeys": [
+        "bg",
+        "bgfix"
+      ],
+      "refs": [
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/H1_bg.png",
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/agata_sheet.png"
+      ],
+      "issues": [
+        "Requested 2048x1152 not guaranteed; see measured dimensions.",
+        "Central recess deliberately excludes removable school leaf and fitted frame, supplied together in empty state to avoid duplicate leaning door after installation.",
+        "Mirror currently contains a muted static surface; live reflection must be implemented/masked in code.",
+        "School pier photograph is a small unlettered image; historical school detail is not mechanically validated."
+      ],
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-420b93d0-9c52-46fd-99c5-7d0ab9a6703f.png",
+      "destination": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/H3_bg.png",
+      "prompt_chain": [
+        "Use case: historical-scene. Asset H3_bg.png, 2D point-and-click game room background. Requested canvas exactly 2048x1152, 16:9. Reference image 1 is approved neighboring room H1: match its visible painterly brushwork, warm worn wood and plaster, material detail and eye-level camera; reference 2 is approved Agata for painted world consistency only, DO NOT depict her or any people. Russian North, provincial house circa 1900–1920, ordinary lived-in architecture, not fairy tale. Broad corridor-gallery of doorways in Evdokia's house. Back wall spans full width; floor begins around 60 percent down, perspective horizon about 45 percent; entire bottom 35 percent and center unobstructed for walking. On far left wall an old rectangular wooden framed home mirror with a quiet muted gray blank glass surface for code-rendered reflection, no reflected person or magical world. On back wall at center, a tall plain wall recess, about x39–61 percent y16–66 percent: THIS CENTRAL RECESS MUST HAVE NO DOOR LEAF AND NO WOODEN FRAME YET, as game overlays add the empty prepared doorframe or installed school door. Make the recess normal dark tan plaster, not a black hole or portal. To its right, a small framed unlettered sepia photograph showing a simple rural school landing stage over water, then a second prepared plain wooden doorframe against ordinary house wall for a future route. At far right a conventional passage to H1, glimpsed wall only. The closest floor is broad warm worn boards, clear everywhere. One soft warm light source comes from H1 offscreen right; no lamps, no sunbeams, no effect lights. No leaning door anywhere on this BASE image: a removable state overlay will carry it so it can disappear when installed. No stools, foreground furniture, tools on floor, people, animals, text, symbols, snow, fire, vapor, glow, interface or cursor. Soft painterly realism exactly as reference, coherent modest proportions, no fisheye, no exaggerated deep tunnel.",
+        "Use case: precise-object-edit. Edit this H3 gallery background. Remove ONLY the CLOSED WOODEN DOOR LEAF currently in the right-hand prepared frame (the big door to the right of the photograph). Leave its existing thick wooden frame and threshold, fill inside the frame with the same warm ordinary tan plaster wall as the central wall recess. This is a prepared future doorway against a blank house wall, no black cavity, no new room visible. Preserve literally everything else: left mirror, empty central plaster recess, photograph, floor, lighting, walls, beams, crop and dimensions. Do not add a leaning door, people, text, symbols, fire, magical effects, props. Requested full 2048x1152 landscape if supported; preserve reference 16:9 layout."
+      ],
+      "actual_size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "alpha_extrema": null,
+      "alpha_bbox": null,
+      "has_real_transparency": false,
+      "sha256": "e270090ec6d3b9f7d20b536196b2f559536bb85adee9494d52c270e786ae4901",
+      "byte_count": 2245725
+    },
+    {
+      "filename": "H3_state_frame_empty.png",
+      "key": "empty",
+      "promptkeys": [
+        "empty"
+      ],
+      "refs": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-420b93d0-9c52-46fd-99c5-7d0ab9a6703f.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-c5cca73a-74d3-40b6-a5df-3762cd5af763.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-e613fbf6-a089-4a0b-9aaa-76192790e04d.png"
+      ],
+      "issues": [
+        "Not pixel-aligned with H3_bg: generator enlarged state components despite coordinate prompt; fit/translation required before import.",
+        "Contains BOTH prepared empty frame and leaning detachable school leaf; hide entire layer when installed state is active.",
+        "Three hinge sockets visually present on right jamb.",
+        "Faint low-alpha fringe/stray pixels exist outside the main visible silhouette; no alpha cleanup has been performed. See alpha bounding boxes."
+      ],
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-12ed85d5-3d7e-4ea2-a49e-45b46a01a404.png",
+      "destination": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/H3_state_frame_empty.png",
+      "prompt_chain": [
+        "Use case: compositing. H3_state_frame_empty.png: transparent OVERLAY for reference image 1 (H3 gallery background). Reference 2 is exact school door leaf, preserve its two-panel muted olive appearance, left iron handle, three child cut marks, bottom V, right hinge seats. Reference 3 shows a three-socket frame. Requested 2048x1152, full landscape canvas identical framing to ref1. Draw ONLY these components, all else TRANSPARENT: at the central plain plaster recess in image1 (approx canvas x31.5–49.2%, y13.5–67%), a prepared ordinary warm aged pine frame surrounding the recess, with EXACTLY THREE empty rectangular hinge sockets on RIGHT jamb (top/middle/bottom); a notched wooden threshold at its bottom. INSIDE FRAME IS TRANSPARENT so base plaster wall shows through, do not draw dark backplate. Immediately LEFT beside this frame, x17–31% of canvas, the exact olive school door of ref2 leans gently against wall, its feet at floor line y67%, front facing viewer, same natural door scale and room warm light from right. No extra frame or duplication. This leaning leaf is part of the removable EMPTY state, will be removed after installation. Full canvas has huge transparency at top/bottom/right/left; do not crop or enlarge. Do not include room walls, floor, mirror, photo, extra doors, cast shadows extending to room, labels, letters, people, glow or black fill. Soft painterly realism matching approved room. One set of parts placed in scene coordinates, not a centered product showcase."
+      ],
+      "actual_size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        49,
+        1636,
+        917
+      ],
+      "has_real_transparency": true,
+      "sha256": "39b5724248f554bb98d3fc253e980ceb9705be0d0aafc9342cd86f861b4e18de",
+      "byte_count": 686852,
+      "alpha_ge_128_bbox": [
+        189,
+        67,
+        870,
+        824
+      ],
+      "low_alpha_pixel_count": 15528,
+      "fully_transparent_fraction": 0.784885
+    },
+    {
+      "filename": "H3_state_door_installed.png",
+      "key": "installed_final",
+      "promptkeys": [
+        "installed",
+        "installed_fix"
+      ],
+      "refs": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-420b93d0-9c52-46fd-99c5-7d0ab9a6703f.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-c5cca73a-74d3-40b6-a5df-3762cd5af763.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-e613fbf6-a089-4a0b-9aaa-76192790e04d.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-12ed85d5-3d7e-4ea2-a49e-45b46a01a404.png"
+      ],
+      "issues": [
+        "Not pixel-aligned with H3_bg; generator enlarged state components.",
+        "Frame position and warm brown color were corrected to approximate empty-state frame, but pixel identity across states is not verified.",
+        "Painted hardware is visually approximate and does not substitute for M05 puzzle geometry validation.",
+        "Faint low-alpha fringe/stray pixels exist outside the main visible silhouette; no alpha cleanup has been performed. See alpha bounding boxes."
+      ],
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-953add2e-2986-4d34-9fe6-62b8a4f7c024.png",
+      "destination": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/H3_state_door_installed.png",
+      "prompt_chain": [
+        "Use case: compositing. H3_state_door_installed.png: true transparent full-canvas state OVERLAY for reference1 H3 gallery. Reference2 exact canonical school door leaf with muted olive two inset panels, left iron handle, three child's diagonal scratches below handle and bottom V; reference3 the three-socket frame design. Requested2048x1152 16:9. Draw ONLY one installed CLOSED school door and its ordinary wood frame, at central plaster recess of reference1: outer frame approx x31.5–49.2% y13.5–67% of fullcanvas. Door is exactly ref2 in smaller room scale, fits frame, same perspective/camera as ref1; hinges on RIGHT at top and bottom, middle socket unused, left handle. Threshold wooden bar with subtle V alignment mark. SINGLE warm light from right, soft painted strokes matching room. Entire rest of canvas genuinely transparent; no wall, floor, mirror, photo or otherroomobjects. Absolutely no leaning spare door. Preserve generous empty transparent margins and exact scene position; no centered productshot, crop or zoom. No blackrectangle outside geometry, text, instructions, symbols, people, magic, glow or dynamic effects.",
+        "Use case: precise-object-edit. Edit reference1 empty school-door state to produce its INSTALLED state. CRITICAL: keep the BROWN WOODEN DOORFRAME, threshold and all its pixels at exactly the SAME canvas position, scale, shape and warm brown color as in reference1. Do NOT center, zoom, enlarge or move the brown frame. Remove the loose olive door that leans left of the brown frame, leaving real transparent pixels there. Place that SAME olive two-panel door, with three diagonal child scratches and left dark handle, closed INSIDE the existing brown frame's opening. Fit it naturally into the opening, show two simple small dark iron hinges on RIGHT at upper and lower old socket positions, leave middle socket unused. Preserve bottom alignment V. Reference2 gives same door's detail only. Output ONE frame with installed closed door at the original frame location; nowhere else anything, entire rest transparent. Exactly same wide canvas framing as ref1, no shadows outside wood, no walls floor newpieces text magicaleffects."
+      ],
+      "actual_size": [
+        1671,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        113,
+        35,
+        1528,
+        915
+      ],
+      "has_real_transparency": true,
+      "sha256": "59bfc08dcac6c042502b03f73f20a255b9a09fd83e0005015f74fff8189f7127",
+      "byte_count": 587084,
+      "alpha_ge_128_bbox": [
+        494,
+        64,
+        872,
+        814
+      ],
+      "low_alpha_pixel_count": 11390,
+      "fully_transparent_fraction": 0.812384
+    },
+    {
+      "filename": "M05_door_leaf.png",
+      "key": "leaf",
+      "promptkeys": [
+        "leaf"
+      ],
+      "refs": [
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/H1_bg.png",
+        "/workspace/scratch/daf7e33cb49f/dom-propavshih-dorog/assets/reference/agata_sheet.png"
+      ],
+      "issues": [
+        "Canonical painted door: muted olive two panels, left iron handle, three child scratches, right top/bottom hinge mortises, V mark near bottom.",
+        "Not a mechanically registered drop-in layer for the separately generated frame; opening fit must be validated.",
+        "Faint low-alpha fringe/stray pixels exist outside the main visible silhouette; no alpha cleanup has been performed. See alpha bounding boxes."
+      ],
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-c5cca73a-74d3-40b6-a5df-3762cd5af763.png",
+      "destination": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/M05_door_leaf.png",
+      "prompt_chain": [
+        "Use case: stylized-concept. Asset M05_door_leaf.png, a single original school door for a 2D game mechanical puzzle. Requested 2048x1152 landscape transparent PNG. Approved H1 image gives the paint texture, warm wood shadows, early twentieth-century Russian North atmosphere, not its architecture; approved Agata gives style, no people. Render ONE tall narrow ordinary school door leaf in exact straight-on elevation, no perspective tilt, no frame. Weathered very muted olive-green painted pine, simple rectangular rails enclosing two tall recessed rectangular panels stacked vertically, worn pale wood exposed at edges. Two hinge attachment mortises ONLY on the RIGHT vertical edge, near y25% and y75% of leaf; no hinge mounted yet. A small dull dark iron oval latch plate and simple lever on LEFT edge at midheight. Recognizable child's three short diagonal cut marks on left stile just below handle, and ONE small V alignment notch centered near bottom edge slightly to the right of center. Plain practical purchased school carpentry 1900–1920, not ornate or medieval. Soft painterly realistic brushwork matched to reference, single gentle warm illumination from upper right. Layout intended for overlay puzzle: leaf spans approximately canvas x35–56%, y10–85%; entire rest of canvas genuinely transparent, preserve wide empty margins, do not autocrop. Whole door visible, no cast shadow outside door, no floor, wall, props, numbers, letters, watermark, lighting effects or text."
+      ],
+      "actual_size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        31,
+        1652,
+        941
+      ],
+      "has_real_transparency": true,
+      "sha256": "dd457dd319b676eafda5e4212bed946717370304865396673ed2e42403110821",
+      "byte_count": 700599,
+      "alpha_ge_128_bbox": [
+        646,
+        41,
+        1024,
+        897
+      ],
+      "low_alpha_pixel_count": 7672,
+      "fully_transparent_fraction": 0.788781
+    },
+    {
+      "filename": "M05_frame.png",
+      "key": "frame",
+      "promptkeys": [
+        "frame"
+      ],
+      "refs": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-c5cca73a-74d3-40b6-a5df-3762cd5af763.png"
+      ],
+      "issues": [
+        "Exactly three right-side sockets visually present.",
+        "Generator reused olive paint despite plain warm-pine request; room-state frame is brown.",
+        "Opening does not exactly fit separately generated door silhouette or scale; requires geometry integration review.",
+        "Faint low-alpha fringe/stray pixels exist outside the main visible silhouette; no alpha cleanup has been performed. See alpha bounding boxes."
+      ],
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-e613fbf6-a089-4a0b-9aaa-76192790e04d.png",
+      "destination": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/M05_frame.png",
+      "prompt_chain": [
+        "Use case: stylized-concept. M05_frame.png, SINGLE doorframe mechanical puzzle art, transparent PNG, requested 2048x1152 canvas. Image 1 is M05_door_leaf; this frame must receive EXACTLY that door with same warm painterly early-1900s Russian North finish. Straight-on front elevation; ONE simple substantial unpainted warm aged pine wooden rectangular doorframe, two upright jambs and top lintel only, no threshold beam (separate asset). Inside of frame and all background genuinely transparent. Frame designed around reference door silhouette at SAME SCALE and canvas position, leaf approximately x38.5%–61.3%, y4.4%–95.5%. Opening must enclose it with a few pixels clearance; frame outer approx x34.5–65.5% y1–97%. RIGHT jamb has EXACTLY THREE visibly empty rectangular hinge mortises, neatly ordered at top, middle, bottom. Top and bottom are old-fitting sockets with old screw holes and wear; middle is a plausible newer socket but no fitted hinge. Keep all 3 sockets equally readable. No door leaf, metal hinges, threshold, wall, floor, lettering, symbols, tool props or shadow outside the wood. Soft brush-painted realism matched reference; single warm light upper-right. Full canvas, no crop."
+      ],
+      "actual_size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        349,
+        13,
+        1499,
+        929
+      ],
+      "has_real_transparency": true,
+      "sha256": "eac0dd001abbd8a23793d125a6802e5a8b3d5a1da6cdc354b1279de8b8c08a18",
+      "byte_count": 434987,
+      "alpha_ge_128_bbox": [
+        599,
+        16,
+        1074,
+        926
+      ],
+      "low_alpha_pixel_count": 7773,
+      "fully_transparent_fraction": 0.873801
+    },
+    {
+      "filename": "M05_beam.png",
+      "key": "beam",
+      "promptkeys": [
+        "beam"
+      ],
+      "refs": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-c5cca73a-74d3-40b6-a5df-3762cd5af763.png"
+      ],
+      "issues": [
+        "Exactly four position marks visually present, third is V-shaped.",
+        "Generator enlarged beam width despite same-scale instructions; not registered to frame/door.",
+        "Mechanical correct mark is index 2 (third from left), per data/story/rooms/H3.json.",
+        "Faint low-alpha fringe/stray pixels exist outside the main visible silhouette; no alpha cleanup has been performed. See alpha bounding boxes."
+      ],
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-59f7e68f-dab4-457f-966d-675fb0510373.png",
+      "destination": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/M05_beam.png",
+      "prompt_chain": [
+        "Use case: stylized-concept. M05_beam.png. Transparent 2048x1152 landscape layer for mechanical door puzzle. Reference image is exact canonical school door: match scale, warm painterly finish and front-on elevation. Produce ONE separate low wide solid old pine threshold beam, front-on with a subtly visible top surface, designed for under this door, spanning canvas x34.5–65.5% and y91–98%. Entire remaining canvas transparent; retain full margins. Along top lip are exactly FOUR discrete shallow socket positions evenly spaced from left to right, matching four possible peg placements. Third position from left has the old V-shaped alignment nick that matches the canonical door bottom V at about x53.7% canvas; other three small positions have simple straight faint ticks. The V mark must be visible, no extra notches/ornament. Weathered plain carpentry, warm right lighting, soft brushwork, no attached frame or door, no nails, floating peg, text, instructions, numerals, arrows, hands, floor or backdrop. One asset only, not a contact sheet."
+      ],
+      "actual_size": [
+        1671,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        236,
+        143,
+        1563,
+        909
+      ],
+      "has_real_transparency": true,
+      "sha256": "da310cc7f196ed2d953874800e2056add43c3c6e9fcfcdeef129ab4f005276ef",
+      "byte_count": 300474,
+      "alpha_ge_128_bbox": [
+        390,
+        772,
+        1281,
+        897
+      ],
+      "low_alpha_pixel_count": 4722,
+      "fully_transparent_fraction": 0.926138
+    },
+    {
+      "filename": "M05_hinge.png",
+      "key": "hinge",
+      "promptkeys": [
+        "hinge"
+      ],
+      "refs": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-c5cca73a-74d3-40b6-a5df-3762cd5af763.png"
+      ],
+      "issues": [
+        "Generator enlarged hinge substantially despite same-scale instructions; code must size this draggable piece to sockets.",
+        "Single original-style butt hinge can be instantiated twice; correct positions top and bottom, not middle.",
+        "Faint low-alpha fringe/stray pixels exist outside the main visible silhouette; no alpha cleanup has been performed. See alpha bounding boxes."
+      ],
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-04693fb0-5787-49a9-932b-9fdb5ce14ecd.png",
+      "destination": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/M05_hinge.png",
+      "prompt_chain": [
+        "Use case: stylized-concept. M05_hinge.png. ONE old school-door hinge, genuine transparent background on 2048x1152 landscape canvas. Reference exact canonical school door: match weathered plain early1900s Russian North hardware, warm upper-right painterly lighting. Single dark hand-forged iron rectangular butt hinge OPEN FLAT, two rectangular slightly irregular leaves joined by ONE vertical pin, two screw holes in each leaf, simple utilitarian worn iron not ornate medieval strapwork. Straight-on frontal view, fit right-edge sockets of reference. At actual puzzle scale, render hinge small about canvas x65–70%, y43–51%, leaving all remaining canvas transparent, do not zoom to fill. Clean unambiguous silhouette and real alpha, no cast shadow, no other props, screws, labels, numbers or text."
+      ],
+      "actual_size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        105,
+        86,
+        1425,
+        844
+      ],
+      "has_real_transparency": true,
+      "sha256": "4caa1d180116f4526b1d36e8f2159e8ff6d5c18a0011ddd4dd12cf0d0f34e0d6",
+      "byte_count": 354182,
+      "alpha_ge_128_bbox": [
+        863,
+        246,
+        1185,
+        715
+      ],
+      "low_alpha_pixel_count": 4831,
+      "fully_transparent_fraction": 0.910998
+    },
+    {
+      "filename": "M05_drawing.png",
+      "key": "drawing_final",
+      "promptkeys": [
+        "drawing",
+        "drawing_fix"
+      ],
+      "refs": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-c5cca73a-74d3-40b6-a5df-3762cd5af763.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-e613fbf6-a089-4a0b-9aaa-76192790e04d.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-fc8fad96-fa8a-4a9c-9e32-26f670febbc6.png"
+      ],
+      "issues": [
+        "Initial fifth threshold mark was removed with targeted image edit: now exactly four marks, third indicated by V.",
+        "No readable text.",
+        "Diagram construction guide is not exactly vertically registered with door-bottom V; not mechanically validated and must not be treated as an exact dimensional blueprint.",
+        "Sheet is larger than requested location, placement must be set in puzzle UI.",
+        "Faint low-alpha fringe/stray pixels exist outside the main visible silhouette; no alpha cleanup has been performed. See alpha bounding boxes."
+      ],
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-dfb7deef-5219-47c5-bd3a-2f0e5010ed5c.png",
+      "destination": "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/M05_drawing.png",
+      "prompt_chain": [
+        "Use case: stylized-concept. M05_drawing.png, an aged paper carpenter's hand-drawn door-fitting diagram by Evdokia, a readable environmental game prop in early twentieth-century Russian North. Genuine transparent background, requested2048x1152. Reference1 is exact muted olive two-panel school door with handleLEFT and hinge seatsRIGHT. Reference2 three-socket frame. Draw ONE rectangular slightly creased offwhite sheet of paper, front-on, flat, on left half of fullcanvas (roughly x7–30%, y20–73%), no other objects. Warm upper-right illumination and soft painterly realism. On paper ONLY charcoal/pencil geometric drawing without ANY readable text or numbers: main small frontal two-panel door drawing, right upright with three small outlined hinge sockets; two original butt-hinges indicated in TOP and BOTTOM sockets only, middle socket remains empty outline. Below it a separate horizontal threshold diagram with EXACTLY FOUR marked candidate positions; third from left has a distinctive V nick. A vertical faint construction guide from the door bottom V aligns with third threshold mark. A little enlarged drawing of ONE original iron butt hinge in a corner, two simple curved arrows indicating the original pieces return, no arrows to middle socket. Intent is 'keep original pieces, align threshold marks' conveyed visually with no prose. Nothing written, no faux-language scribbles, no seal, no date, no blackboard, no door in realworldoutsidepaper, no shadow beyond paper edge. Match handmade period working sketch, not modern CAD, infographic or vector UI. Large transparent margins, do not autozoom.",
+        "Use case: precise-object-edit. Edit ONLY the bottom threshold sketch on this paper. It currently has FIVE star-like position marks and vertical construction lines along the threshold. DELETE the FAR RIGHT (fifth) star mark and its short vertical construction line, replacing them with plain beam pencil shading. KEEP the other FOUR marks exactly as they are. Counting left-to-right after deletion: first straight mark, second straight mark, third has the V alignment mark underneath, fourth straight mark. Precisely FOUR positions total, third is correct. Do not add any other marks, labels or numbers. Everything else in the image must stay unchanged: aged paper, main door sketch, two arrows to top and bottom, enlarged hinge drawing, paper location, alpha transparency, canvas size and all other drawing detail."
+      ],
+      "actual_size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        93,
+        19,
+        1160,
+        917
+      ],
+      "has_real_transparency": true,
+      "sha256": "fa789983ec8e49578dc0edb8c15f99068310d7c54fc8490ca9272f297e6dfb0c",
+      "byte_count": 1180733,
+      "alpha_ge_128_bbox": [
+        97,
+        61,
+        808,
+        881
+      ],
+      "low_alpha_pixel_count": 11355,
+      "fully_transparent_fraction": 0.629344
+    }
+  ]
+}

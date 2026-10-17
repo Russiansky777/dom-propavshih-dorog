@@ -1,0 +1,367 @@
+{
+  "part": "river_yard",
+  "date": "2026-10-17",
+  "tool_mode": "built-in",
+  "license_note": "Generated using built-in imagegen from project-owned references; no separate license verification performed.",
+  "files": [
+    {
+      "name": "R1_bg.png",
+      "path": "assets/incoming/R1_bg.png",
+      "source_file": "/workspace/scratch/daf7e33cb49f/generated_images/exec-111723e0-d42f-4c94-9ee5-e01b91ad11af.png",
+      "actual_size": [
+        1672,
+        941
+      ],
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "alpha": null,
+      "alpha_bbox": null,
+      "bytes": 2590029,
+      "model": "built-in imagegen",
+      "model_version": null,
+      "model_version_note": "Exact model/version not exposed by tool",
+      "refs": [
+        "assets/reference/H1_bg.png",
+        "assets/reference/agata_sheet.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Edit this existing Russian North late-autumn ferry pier game background. ONE targeted correction only: ADD THE FUNCTIONAL CROSS-RIVER FERRY ROPE AND ITS NEAR-SIDE STOPPER. Preserve all existing composition, framing, painterly brushwork, cold grey light, lantern left, blank instruction board, wooden pier, boat at right, wet shore and free central walking area. Do NOT move or replace any existing object. Keep requested 2048×1152 canvas/aspect ratio.\nCurrent image has only a loose boat mooring rope from a pier post to the boat. KEEP that existing short loose mooring rope exactly as is. ADD a visibly distinct thick taut hemp FERRY CABLE that starts at a clearly readable near-side wooden-and-iron stopper/locking cleat attached to the TOP of the pier's FAR RIGHT REAR POST (post immediately behind the boat mooring post, around x79%, y46–50%). This added rope must run diagonally LEFT AND AWAY over the WATER to a small anchor on the opposite river bank around x40%, y40%. The cable crosses the river's full width, tapering in perspective, with only slight tension sag. It must be visibly an operational ferry guide/hauling rope across the river, NOT another line tied to the boat and NOT a loop hanging over the pier. Make the near-side locking stopper a distinct simple weathered wood block with a dark iron clasp at waist/hand height on that post, clear enough to click. Rope naturally passes through/over the stopper and continues across water. Period rural mechanism around 1910, no modern fittings. The rope and stopper should be easy to distinguish from existing mooring rope. Leave foreground pier edge and right foreground water exactly unchanged for overlay compatibility. Nothing else changes. No people, text, snow, fire, glow, particles or UI.",
+      "unchanged_generator_output": true,
+      "status": "candidate_for_review",
+      "issues": [
+        "Requested 2048×1152 was not produced; no resize/crop/postprocessing applied.",
+        "Actual size 1672×941; unchanged imagegen correction output.",
+        "Existing prototype hotspot rectangles require adjustment to the new composition.",
+        "Functional thick ferry rope across the river and distinct near wooden/iron stopper added after visual QA, separate from existing loose boat mooring.",
+        "Generated correction preserves overall composition but is not guaranteed pixel-identical outside edited object; foreground layer registration remains approximate."
+      ],
+      "previous_source_file": "/workspace/scratch/daf7e33cb49f/generated_images/exec-dda713b4-9860-4e53-a9ff-94a97418f9d4.png",
+      "original_prompt": "Use case: historical-scene. Asset type: fixed-camera 2D point-and-click game background, R1 near river ferry pier. Generate ONE opaque PNG, requested exact 2048×1152, 16:9.\nImage 1 is APPROVED ART STYLE and camera/detail reference only: match its soft painterly realistic natural materials, visible brushwork, restrained colors, no hard low-poly edges. Do NOT copy the house interior. Image 2 is the character costume-era reference only; do NOT render her or any other person.\nScene: Russian North around 1900–1920, purchased ordinary period things, late autumn, NO SNOW. A broad muddy shore and a sturdy wooden ferry landing. Horizon about 45% down the canvas, fixed camera like the approved room, enough open ground to walk across the lower central area. Cold diffuse grey daylight from overcast sky, wet earth, bare trees, muted blue-grey water. Opposite bank visible across the river but softly indistinct.\nComposition and clickable objects: the river stretches across the middle background; at right a short wooden landing with an old wooden rowboat tied alongside, its gunwales and interior visible; thick ferry rope with a clearly visible near-side wooden stopper/cleat beside the landing at right. At left, near the path, a tall timber post holds an UNLIT old oil signal lantern; a separate small wooden instruction board on a post beside it, blank without any lettering. Bare-bank path exits left and gently recedes towards the village out of frame. Leave open walkable shore across the lower middle. All gameplay objects clear enough to inspect. Complete ground plane, quiet static water substrate, no decorative extras obscuring objects.\nLayer contract: this is BACKGROUND only. Do NOT put an occluding near edge of the landing in the bottom foreground; it will be a separate transparent layer. Do NOT add high foreground waves or reeds. No characters, humans, animals, text, readable writing, lettering, UI, cursor, logos, glow, fire, smoke, airborne particles or falling snow. Nothing modern, no electricity, no fantasy ornament.",
+      "correction_refs": [
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-dda713b4-9860-4e53-a9ff-94a97418f9d4.png"
+      ]
+    },
+    {
+      "name": "R1_fg_pier_edge.png",
+      "path": "assets/incoming/R1_fg_pier_edge.png",
+      "source_file": "/workspace/scratch/daf7e33cb49f/generated_images/exec-0f51c668-8ca0-4267-8a3b-ff150568d9d3.png",
+      "actual_size": [
+        1672,
+        941
+      ],
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        47,
+        178,
+        1649,
+        848
+      ],
+      "alpha_bbox_128": [
+        768,
+        525,
+        1307,
+        636
+      ],
+      "alpha_bbox_8": [
+        767,
+        522,
+        1308,
+        637
+      ],
+      "faint_pixels_alpha_1_7": 3826,
+      "bytes": 160475,
+      "model": "built-in imagegen",
+      "model_version": null,
+      "model_version_note": "Exact model/version not exposed by tool",
+      "refs": [
+        "assets/incoming/R1_bg.png"
+      ],
+      "prompt": "Use case: background-extraction. Asset type: ONE transparent PNG layer for a fixed-camera 2D painterly adventure game. Input image is the composition/edit target; preserve its same camera, material handling, lighting, perspective and on-canvas object position. Requested canvas 2048×1152, same 16:9 framing as input. Real alpha transparency for ALL pixels outside the specified object. Do not paint a checkerboard or solid color backdrop. Do not include the full scene, labels, text, UI, people or particles. Do not enlarge or center the selected element; preserve full-scene canvas placement. Extract ONLY the closest/front edge timber and the immediately adjacent one or two landing planks of the wooden pier, the thin weathered beam beginning near 50% width, 61% height and ending near 74% width, 65% height. Keep that edge in its scene position. All shore, water, sky, lantern, boat, distant bank, rope and vertical posts must be completely transparent. This is the small front rim layer that can occlude a character's feet when walking over the landing, not an entire dock or a new large foreground platform. Match grey-brown wet wood, irregular plank ends, subdued cold daylight. Only that narrow pier-edge cutout.",
+      "unchanged_generator_output": true,
+      "status": "candidate_for_review",
+      "issues": [
+        "Requested 2048×1152 was not produced; no resize/crop/postprocessing applied.",
+        "Genuine alpha 0–255; low-alpha residual pixels outside main silhouette present. See thresholded bbox for visible placement.",
+        "Pixel-perfect registration is not established; review compositing in Godot before marking production-ready.",
+        "Generated rim is a visual match rather than a pixel-exact extraction; align to landing in engine before using as occluder.",
+        "Background was subsequently edited to add cross-river ferry rope/stopper; recheck layer registration against corrected R1_bg."
+      ]
+    },
+    {
+      "name": "R1_fg_water.png",
+      "path": "assets/incoming/R1_fg_water.png",
+      "source_file": "/workspace/scratch/daf7e33cb49f/generated_images/exec-bac1d966-eaef-46ef-832c-467b36132050.png",
+      "actual_size": [
+        1672,
+        941
+      ],
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        548,
+        293,
+        1672,
+        732
+      ],
+      "alpha_bbox_128": [
+        1340,
+        605,
+        1672,
+        727
+      ],
+      "alpha_bbox_8": [
+        1336,
+        603,
+        1672,
+        729
+      ],
+      "faint_pixels_alpha_1_7": 2459,
+      "bytes": 107092,
+      "model": "built-in imagegen",
+      "model_version": null,
+      "model_version_note": "Exact model/version not exposed by tool",
+      "refs": [
+        "assets/incoming/R1_bg.png"
+      ],
+      "prompt": "Use case: background-extraction. Correct the transparent water layer in image 2 using the exact scene in image 1. Image 1 is source composition. Image 2 is flawed because it paints water OVER the dock and boat areas. Output ONE transparent PNG requested 2048×1152, same full 16:9 canvas. Change only this: output a SMALL FOREGROUND WATER PATCH in the far right below the boat, not the entire river. Visible water only between the shoreline and boat bottom at x 83%–100% canvas width and y 66%–77% canvas height, a narrow tapered blue-grey patch. Everything outside this far-right patch fully transparent, especially dock, rope, boat, mud, all upper and middle river and sky. Quiet static subdued grey-blue water brushwork, no waves, foam or reflected objects. Keep full-scene position and scale, no recentering. This will overlay the source scene without covering any boat or landing. True alpha, no checkerboard, no text, no new objects.",
+      "original_prompt": "Use case: background-extraction. Asset type: ONE transparent PNG layer for a fixed-camera 2D painterly adventure game. Input image is the composition/edit target; preserve its same camera, material handling, lighting, perspective and on-canvas object position. Requested canvas 2048×1152, same 16:9 framing as input. Real alpha transparency for ALL pixels outside the specified object. Do not paint a checkerboard or solid color backdrop. Do not include the full scene, labels, text, UI, people or particles. Do not enlarge or center the selected element; preserve full-scene canvas placement. Extract the visible water surface ONLY, as one water substrate layer in its existing scene placement, mainly river band between approximately 40% and 69% canvas height, extending into right-edge near water down to 79% height. Mask out bank, mud, pier, posts, rope and boat, leaving those spaces transparent. Static quiet grey-blue water painted in the same subdued horizontal brush strokes. NO new waves, foam, particles, animated reflection patterns, bright glints or moving-object reflections; code will add motion and dynamic reflections. Every non-water pixel is fully transparent. No scenery.",
+      "correction_refs": [
+        "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/R1_bg.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-49cae62f-da9a-42c7-8d20-1d116adbe8e8.png"
+      ],
+      "unchanged_generator_output": true,
+      "status": "candidate_for_review",
+      "issues": [
+        "Requested 2048×1152 was not produced; no resize/crop/postprocessing applied.",
+        "Genuine alpha 0–255; low-alpha residual pixels outside main silhouette present. See thresholded bbox for visible placement.",
+        "Pixel-perfect registration is not established; review compositing in Godot before marking production-ready.",
+        "Final layer deliberately covers only near water at far right beneath the boat. Full river surface remains in background; code owns motion/dynamic reflections.",
+        "Registration along shore/boat edge requires visual checking and masking in integration; not a guaranteed exact extraction.",
+        "Background was subsequently edited to add cross-river ferry rope/stopper; recheck layer registration against corrected R1_bg."
+      ]
+    },
+    {
+      "name": "O2_bg.png",
+      "path": "assets/incoming/O2_bg.png",
+      "source_file": "/workspace/scratch/daf7e33cb49f/generated_images/exec-00aef57e-cc05-47c2-94ae-8f2c19df8103.png",
+      "actual_size": [
+        1672,
+        941
+      ],
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "alpha": null,
+      "alpha_bbox": null,
+      "bytes": 3041247,
+      "model": "built-in imagegen",
+      "model_version": null,
+      "model_version_note": "Exact model/version not exposed by tool",
+      "refs": [
+        "assets/reference/H1_bg.png",
+        "assets/reference/agata_sheet.png"
+      ],
+      "prompt": "Use case: historical-scene. Asset type: fixed-camera 2D point-and-click game background, O2 winter school courtyard. Generate ONE opaque PNG, requested exact 2048×1152, 16:9.\nImage 1 is APPROVED ART STYLE and camera/detail reference only: match its soft painterly natural materials, visible brushwork and muted believable textures. Do not copy the interior. Image 2 is a costume/era reference only; DO NOT include Agata or any people.\nScene: rural Russian North school around 1900–1920, everyday timber building maintained with visible repairs over twenty years, no old-Rus fantasy decoration. WINTER with static snow cover on ground, roof and fence, absolutely no snowflakes in the air. Single cold diffuse daylight from overcast sky, pale blue-grey shadows. Fixed camera, horizon about 45% down canvas, full readable environment.\nComposition: school timber wall and a small porch at LEFT, visible closed plain wooden entrance door with broad wooden steps descending to courtyard. Steps are clearly readable and empty, to later receive one mitten as separate state. A SECOND small school window visibly beside the porch further left on the wall; cold glass, no lit interior. A large old bare tree stands towards right of center beyond the walkable path. Fence and an open gate at FAR RIGHT lead toward the distant village, only indistinct winter roofs past gate. Packed snow walking path crosses the lower central area from porch to right gate, sufficiently wide and unobstructed for heroine. Modest snow banks along edges only.\nLayer contract: background contains building, porch, steps, tree, fence, gate and snowy ground, but NO large foreground snowbank across bottom, and NO near wall corner occluding the extreme left foreground; those are separate layers. No mitten yet. No people, animals, writing, signs with text, UI, cursor, lantern glow, sparks, fire, falling snow, floating dust, or atmospheric particles. No modern fittings. No abandoned horror ruin; a worn but cared-for school.",
+      "unchanged_generator_output": true,
+      "status": "candidate_for_review",
+      "issues": [
+        "Requested 2048×1152 was not produced; no resize/crop/postprocessing applied.",
+        "Existing prototype hotspot rectangles require adjustment to new composition.",
+        "Visible side window is the requested other school window; a second additional exterior window was not added."
+      ]
+    },
+    {
+      "name": "O2_fg_snow_front.png",
+      "path": "assets/incoming/O2_fg_snow_front.png",
+      "source_file": "/workspace/scratch/daf7e33cb49f/generated_images/exec-0438b7f1-484d-486f-9f74-70b10e76277c.png",
+      "actual_size": [
+        1672,
+        941
+      ],
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        263,
+        1672,
+        941
+      ],
+      "alpha_bbox_128": [
+        0,
+        712,
+        1672,
+        941
+      ],
+      "alpha_bbox_8": [
+        0,
+        711,
+        1672,
+        941
+      ],
+      "faint_pixels_alpha_1_7": 4367,
+      "bytes": 360010,
+      "model": "built-in imagegen",
+      "model_version": null,
+      "model_version_note": "Exact model/version not exposed by tool",
+      "refs": [
+        "assets/incoming/O2_bg.png"
+      ],
+      "prompt": "Use case: background-extraction. Asset type: ONE transparent PNG layer for a fixed-camera 2D painterly adventure game. Input image is the composition/edit target; preserve its same camera, material handling, lighting, perspective and on-canvas object position. Requested canvas 2048×1152, same 16:9 framing as input. Real alpha transparency for ALL pixels outside the specified object. Do not paint a checkerboard or solid color backdrop. Do not include the full scene, labels, text, UI, people or particles. Do not enlarge or center the selected element; preserve full-scene canvas placement. Extract ONLY low foreground snow-bank patches at the bottom left and bottom right edges of the provided school courtyard. Bottom left snow extends from 0% to about 30% width and from 78% height to bottom; bottom right extends from 78% to 100% width and from 78% height to bottom. Keep the middle walking path transparent and unobstructed. Do not include school, fence, tree, shrubs, footprints, gate, distant snow or sky. Preserve existing pale blue-white snow texture and cold light. The two snow mounds belong together on one full-size canvas, lower corners only. The entire top three quarters must be transparent. No falling snow.",
+      "unchanged_generator_output": true,
+      "status": "candidate_for_review",
+      "issues": [
+        "Requested 2048×1152 was not produced; no resize/crop/postprocessing applied.",
+        "Genuine alpha 0–255; low-alpha residual pixels outside main silhouette present. See thresholded bbox for visible placement.",
+        "Pixel-perfect registration is not established; review compositing in Godot before marking production-ready.",
+        "Low snow mounds occupy bottom corners; keep central route transparent. Exact boundary alignment must be checked in engine."
+      ]
+    },
+    {
+      "name": "O2_fg_wall.png",
+      "path": "assets/incoming/O2_fg_wall.png",
+      "source_file": "/workspace/scratch/daf7e33cb49f/generated_images/exec-b9fa4fb6-5ab7-41b8-b864-a53e95024efa.png",
+      "actual_size": [
+        1672,
+        941
+      ],
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        0,
+        1636,
+        884
+      ],
+      "alpha_bbox_128": [
+        0,
+        0,
+        512,
+        745
+      ],
+      "alpha_bbox_8": [
+        0,
+        0,
+        513,
+        746
+      ],
+      "faint_pixels_alpha_1_7": 6497,
+      "bytes": 631909,
+      "model": "built-in imagegen",
+      "model_version": null,
+      "model_version_note": "Exact model/version not exposed by tool",
+      "refs": [
+        "assets/incoming/O2_bg.png"
+      ],
+      "prompt": "Use case: background-extraction. Asset type: ONE transparent PNG layer for a fixed-camera 2D painterly adventure game. Input image is the composition/edit target; preserve its same camera, material handling, lighting, perspective and on-canvas object position. Requested canvas 2048×1152, same 16:9 framing as input. Real alpha transparency for ALL pixels outside the specified object. Do not paint a checkerboard or solid color backdrop. Do not include the full scene, labels, text, UI, people or particles. Do not enlarge or center the selected element; preserve full-scene canvas placement. Extract ONLY the closest left-hand section/corner of the wooden school wall on the EXTREME LEFT of the provided courtyard composition, in its existing position. Keep the wall section from left edge to the vertical corner timber just LEFT of the porch, roughly x=0% to 18% width and y=0% to 65% height, with the small side window contained in that section. Include its connected shallow roof eave and timber/stone base silhouette only where naturally attached. Everything to the right of this wall section must be transparent: no porch, steps, door, tree, ground, fence, gate or sky. Clean true-alpha edge; same cold light and weathered brown wood. Do not create a new wall elsewhere.",
+      "unchanged_generator_output": true,
+      "status": "candidate_for_review",
+      "issues": [
+        "Requested 2048×1152 was not produced; no resize/crop/postprocessing applied.",
+        "Genuine alpha 0–255; low-alpha residual pixels outside main silhouette present. See thresholded bbox for visible placement.",
+        "Pixel-perfect registration is not established; review compositing in Godot before marking production-ready.",
+        "Wall section includes the side window and extends to x≈512/y≈745. It differs in scale from background's left wall; requires placement/scale registration before use.",
+        "This is a generated matching wall cutout, not pixel-identical background extraction."
+      ]
+    },
+    {
+      "name": "O2_state_mitten.png",
+      "path": "assets/incoming/O2_state_mitten.png",
+      "source_file": "/workspace/scratch/daf7e33cb49f/generated_images/exec-8a5dcaac-0f1d-4131-997a-6bb4f4ed8c3b.png",
+      "actual_size": [
+        1672,
+        941
+      ],
+      "requested_size": [
+        2048,
+        1152
+      ],
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        497,
+        558,
+        1142,
+        747
+      ],
+      "alpha_bbox_128": [
+        522,
+        562,
+        643,
+        623
+      ],
+      "alpha_bbox_8": [
+        521,
+        561,
+        644,
+        624
+      ],
+      "faint_pixels_alpha_1_7": 452,
+      "bytes": 72270,
+      "model": "built-in imagegen",
+      "model_version": null,
+      "model_version_note": "Exact model/version not exposed by tool",
+      "refs": [
+        "assets/incoming/O2_bg.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Correct ONLY the size and position of the isolated mitten layer in image 2, using image 1 as location reference. Keep the same plain worn rust-brown wool mitten design, material, angle, cold lighting and true transparency. Output ONE full 16:9 transparent PNG requested 2048×1152. The previous mitten is far too large. Shrink it to ONE THIRD of its previous width and height. On this full scene canvas the mitten must be just 4% of canvas width (about 70 pixels at the reference's 1672-pixel width), approximately 2% of canvas height, with center at x=31% width y=62% height, resting visually on the middle school step. Output only that TINY mitten at this exact scene position. All other pixels transparent; no stair, snow, ground patch, people or text. Do not enlarge the mitten to fill the image. Preserve canvas framing.",
+      "original_prompt": "Use case: background-extraction. Asset type: ONE transparent PNG layer for a fixed-camera 2D painterly adventure game. Input image is the composition/edit target; preserve its same camera, material handling, lighting, perspective and on-canvas object position. Requested canvas 2048×1152, same 16:9 framing as input. Real alpha transparency for ALL pixels outside the specified object. Do not paint a checkerboard or solid color backdrop. Do not include the full scene, labels, text, UI, people or particles. Do not enlarge or center the selected element; preserve full-scene canvas placement. Add one small plain wool travel mitten belonging to Agata, and output ONLY that mitten on transparent canvas. Mitten lies flat with thumb visible on the middle porch step of the supplied courtyard, approximately at x=31% canvas width, y=62% canvas height. Its long axis slightly diagonal, about 4% of canvas width in length; realistic hand size relative to stair boards. Worn muted rust-brown knitted wool, simple cuff, plausible Russian North 1900–1920 purchased practical item, no decorative motifs, no other items. This is HER OWN marker deliberately left on the step, not evidence of an absent child; render no character or text. Match the same perspective and cold daylight. Absolutely NO fragment of step, floor, snow patch or rectangle around it—only one mitten, all surroundings fully transparent. Preserve its full-scene position, do not enlarge into an icon.",
+      "correction_refs": [
+        "/workspace/scratch/daf7e33cb49f/e0_e1_delivery/assets/incoming/O2_bg.png",
+        "/workspace/scratch/daf7e33cb49f/generated_images/exec-bea8aca2-fbc9-4a00-bfc4-d4f75a20e229.png"
+      ],
+      "unchanged_generator_output": true,
+      "status": "candidate_for_review",
+      "issues": [
+        "Requested 2048×1152 was not produced; no resize/crop/postprocessing applied.",
+        "Genuine alpha 0–255; low-alpha residual pixels outside main silhouette present. See thresholded bbox for visible placement.",
+        "Pixel-perfect registration is not established; review compositing in Godot before marking production-ready.",
+        "Mitten is Agata’s own wool travel mitten intentionally left as a marker.",
+        "After correction visible alpha>=128 bbox is 121×61 pixels, still larger than requested≈70px; adjust display scale and position in engine.",
+        "Do not place via full-image center; anchor visible mitten to middle porch step. No floor patch is included."
+      ]
+    }
+  ]
+}
