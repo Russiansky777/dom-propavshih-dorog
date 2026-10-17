@@ -1,0 +1,112 @@
+name: build-and-publish
+
+# Каждый пуш в main, меняющий игру или данные: тесты → веб-сборка → GitHub Pages
+# (постоянная ссылка, всегда текущая версия) → Windows-exe в релиз «latest».
+# Одноразовая настройка Директором: Settings → Pages → Build and deployment → Source: «GitHub Actions».
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "game/**"
+      - "data/**"
+      - "tools/**"
+      - ".github/workflows/build_and_publish.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: build-and-publish
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_ZIP_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+  TEMPLATES_SHA256: f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot and export templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-web-windows-linux-v1
+
+      - name: Download Godot ${{ env.GODOT_VERSION }} (hashes from Docs/PROBE_M0.md)
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          cd ~/godot
+          base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable"
+          curl -sSL --retry 3 -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          echo "${GODOT_ZIP_SHA256}  godot.zip" | sha256sum -c -
+          unzip -q -o godot.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          curl -sSL --retry 3 -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          echo "${TEMPLATES_SHA256}  templates.tpz" | sha256sum -c -
+          unzip -q -o templates.tpz "templates/version.txt" "templates/web_*" "templates/windows_*" "templates/linux_*" -d tpz
+          cp tpz/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          rm -rf godot.zip templates.tpz tpz
+
+      - name: Tests (validators + headless Godot)
+        env:
+          GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+        run: tools/run_tests.sh
+
+      - name: Export web
+        env:
+          GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+        run: tools/export_web.sh
+
+      - name: Export Windows
+        env:
+          GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+        run: tools/export_windows.sh
+
+      - name: Stamp build
+        run: |
+          echo "${GITHUB_SHA::7} $(date -u +%Y-%m-%dT%H:%MZ)" > build/web/version.txt
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+      - name: Publish Windows exe to rolling release «latest»
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          notes="Текущая сборка main @ ${GITHUB_SHA::7} ($(date -u +%Y-%m-%d\ %H:%M) UTC). Не подписана: SmartScreen → «Подробнее» → «Выполнить в любом случае». Веб-версия: https://russiansky777.github.io/dom-propavshih-dorog/"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f latest "$GITHUB_SHA"
+          git push -f origin refs/tags/latest
+          if gh release view latest >/dev/null 2>&1; then
+            gh release edit latest --title "Текущая сборка (main)" --notes "$notes" --target "$GITHUB_SHA"
+          else
+            gh release create latest --title "Текущая сборка (main)" --notes "$notes" --target "$GITHUB_SHA"
+          fi
+          gh release upload latest build/windows/DomPropavshihDorog.exe --clobber
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
