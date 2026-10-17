@@ -5,9 +5,9 @@
   "rig_credits": 5,
   "actions": {
     "idle": {
-      "action_id": 576,
-      "name": "Idle Turn Left",
-      "key": "Idle_Turn_Left"
+      "action_id": 0,
+      "name": "Idle",
+      "key": "Idle"
     },
     "walk": {
       "action_id": 1,
@@ -15,6 +15,6 @@
       "key": "Walking_Woman"
     }
   },
-  "anim_task": "01a14a26-4d8e-7256-8a2f-ee46bba2eeb3",
+  "anim_task": "01a14a67-97e9-758c-9c6b-1a6a753048ab",
   "anim_credits": 6
 }
