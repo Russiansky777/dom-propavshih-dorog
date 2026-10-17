@@ -126,7 +126,7 @@ func _publish_probe_state() -> void:
 		"inventory": GameState.inventory,
 		"selected_item": StoryRunner.selected_item,
 		"goal": StoryRunner.journal_goal(),
-		"player": {"x": player.global_position.x, "y": player.global_position.y, "walking": player.is_walking()},
+		"player": {"x": player.global_position.x, "y": player.global_position.y, "walking": player.is_walking(), "acting": player.is_acting()},
 		"actor": _actor_state(),
 		"npcs": _npc_states(room),
 		"busy": StoryRunner.is_busy(),

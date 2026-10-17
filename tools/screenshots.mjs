@@ -125,9 +125,18 @@ async function main() {
     await page.mouse.click(pt.x, pt.y);
     return true;
   };
+  // After a click the probe may still show the standing state for a moment: first wait (briefly) for
+  // the walk to start or for an immediate reaction, then for walking AND any action to be over.
   const waitWalk = async (label) => {
-    await sleep(250);
-    return waitFor(`${label}: walk finished`, (s) => s.player && !s.player.walking);
+    const before = await state();
+    const t0 = Date.now();
+    while (Date.now() - t0 < 4000) {
+      const s = await state();
+      if (s && (s.player.walking || s.player.acting || beatKey(s) !== beatKey(before) || (s.puzzle && s.puzzle.open) || s.room !== before.room ||
+          Math.hypot(s.player.x - before.player.x, s.player.y - before.player.y) > 2)) break;
+      await sleep(100);
+    }
+    return waitFor(`${label}: walk finished`, (s) => s.player && !s.player.walking && !s.player.acting, 60000);
   };
   const beatKey = (s) => (s && s.beat && s.beat.type ? `${s.beat.type}|${s.beat.text || ""}|${s.beat.prompt || ""}` : "");
   /** Clicks through the dialogue; option choices are taken from `choices` in order (default: first). */
@@ -159,7 +168,7 @@ async function main() {
     if (!h || !h.visible) { failures.push(`hotspot ${id} missing/hidden in ${s.room}`); logLine(`FAIL hotspot ${id}`); return []; }
     await click(`hotspot ${id}`, h);
     await waitWalk(`hotspot ${id}`);
-    await waitFor(`hotspot ${id}: reaction`, (t) => beatKey(t) !== "" || t.puzzle?.open, 6000);
+    await waitFor(`hotspot ${id}: reaction`, (t) => beatKey(t) !== "" || t.puzzle?.open, 15000);
     return finishDialogue(`hotspot ${id}`, choices);
   };
   const useItemOn = async (item, id, choices = []) => {
@@ -187,7 +196,7 @@ async function main() {
     await click(`exit → ${target}`, e);
     await waitWalk(`exit → ${target}`);
     if (expectChange) {
-      await waitFor(`room == ${target}`, (t) => t.room === target, 20000);
+      await waitFor(`room == ${target}`, (t) => t.room === target, 45000);
       await sleep(700);
       const ok = (await state()).room === target;
       if (ok) await roomShot(target);
