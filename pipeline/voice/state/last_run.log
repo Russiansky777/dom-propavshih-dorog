@@ -1,38 +1,18 @@
-run 39074220670 2026-10-17T22:14:47Z requests: pipeline/requests/voice_e0e1.json 
+run 39077632329 2026-10-17T23:05:39Z requests: pipeline/requests/voice_list.json 
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 12392 из 124889 символов
+план: creator (active), израсходовано 13722 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_e0e1.json
-[e0e1_probe] реплик в сценах запроса: 19; файлов с вариантами голосов: 19; к синтезу: 14 (636 символов); переобработка: 0
-  M01_0   agata     ru           Agata      eleven_v4    [hesitant] От тёти ничего?
-  M01_1   tamara    ru           TAMARA-1   eleven_v4    [concerned] Нет. [animated] Но вот этого камня год не было видно. Она хотела его осмотреть.
-  M02_0   pelageya  ru           PELAGEYA   eleven_v4    [sighs] Берег вижу. Плыву — к своему причалу возвращаюсь.
-  M02_1   agata     ru           Agata      eleven_v4    [curious] А другая опора?
-  M02_2   pelageya  ru           PELAGEYA   eleven_v4    [firm] Нужен настоящий школьный рейс, не нынешняя схема. У управляющего мельницей были журналы.
-  M03_0   tikhon    ru           CAT-2      eleven_v4    [grumbling] На сухое мокрое не кладут.
-  M03_1   agata     ru           Agata      eleven_v4    [curious] Ты здесь один?
-  M03_2   tikhon    ru           CAT-2      eleven_v4    [sarcastic] Печь тоже здесь.
-  M04_0   agata     ru           Agata      eleven_v4    [hesitant] Она готовила это ещё до того, как пропала дорога.
-  M05_0   agata     ru           Agata      eleven_v4    [excited] Это наша школа.
-  M06_0   agata     ru           Agata      eleven_v4    [curious] Кто-то продолжал здесь учиться.
-  M07_0   agata     ru           Agata      eleven_v4    [excited] Вот какой рейс нужен Пелагее. Осталось найти его схему.
-  Q04_2   agata     ru           Agata      eleven_v4    [curious] Какие?
-  Q04_3   tikhon    ru           CAT-2      eleven_v4    [sleepy] Когда я не сплю. [sarcastic] Иногда.
-  M01_0              синтез: 1.87 с, -16.8 LUFS, TP -7.5 dB (усиление +5.3 dB)
-  M01_1              синтез: 5.76 с, -16.9 LUFS, TP -5.4 dB (усиление -2.4 dB)
-  ПОДОЗРЕНИЕ M02_0: длиннее прежнего дубля на 0.84 с при 1 тег(ах) — тег мог прозвучать вслух
-  M02_0              синтез: 5.07 с, -16.9 LUFS, TP -5.1 dB (усиление -1.3 dB)
-  M02_1              синтез: 1.41 с, -16.9 LUFS, TP -5.4 dB (усиление +0.9 dB)
-  M02_2              синтез: 6.26 с, -17.0 LUFS, TP -5.7 dB (усиление -2.6 dB)
-  M03_0              синтез: 2.62 с, -17.0 LUFS, TP -5.4 dB (усиление +1.2 dB)
-  M03_1              синтез: 1.07 с, -16.9 LUFS, TP -6.2 dB (усиление +2.8 dB)
-  M03_2              синтез: 1.70 с, -17.1 LUFS, TP -4.9 dB (усиление -1.7 dB)
-  M04_0              синтез: 3.49 с, -17.0 LUFS, TP -6.5 dB (усиление +1.6 dB)
-  M05_0              синтез: 1.54 с, -17.0 LUFS, TP -7.6 dB (усиление -6.0 dB)
-  M06_0              синтез: 2.08 с, -16.9 LUFS, TP -2.6 dB (усиление +0.2 dB)
-  M07_0              синтез: 4.16 с, -17.0 LUFS, TP -5.9 dB (усиление -3.8 dB)
-  Q04_2              синтез: 0.93 с, -16.9 LUFS, TP -7.6 dB (усиление -0.6 dB)
-  Q04_3              синтез: 3.08 с, -17.1 LUFS, TP -3.3 dB (усиление +1.6 dB)
-[e0e1_probe] синтезировано 14, переобработано 0, ошибок 0; символов текста 636; списано кредитов (character-cost): 280, изменение счётчика подписки: 0
+=== pipeline/requests/voice_list.json
+ключ: есть, длина 51, формат sk_…: да
+план: creator (active), израсходовано 13722 из 124889 символов
+ключ принят API (GET /v2/voices → 200)
+голосов: 28, из них моих (My Voices): 7 → pipeline/voice/voices.json
+  [мой] 'Agata'                          ReYqW64ePwZHQReEArbt  generated  создан: 2026-10-17T20:38:17+00:00 (по порядку 2)  {"language": "ru"}
+  [мой] 'CAT'                            WVYD8dGGwhoMGyKwgFd7  generated  создан: 2026-10-17T21:09:40+00:00 (по порядку 5)  {"language": "ru"}
+  [мой] 'CAT-2'                          RRgQuGjVvCeyNderlonu  generated  создан: 2026-10-17T21:17:11+00:00 (по порядку 6)  {"language": "ru"}
+  [мой] 'PELAGEYA'                       mIbPOSXtLeiaroofXc7O  generated  создан: 2026-10-17T20:52:59+00:00 (по порядку 4)  {"language": "ru"}
+  [мой] 'TAMARA-1'                       GqJPI8zhNM5CF7q8EJ6l  generated  создан: 2026-10-17T20:47:58+00:00 (по порядку 3)  {"language": "ru"}
+  [мой] 'ZAKADR'                         kPaCtwsoLpkcqnqv9PyA  generated  создан: 2026-10-17T22:56:31+00:00 (по порядку 7)  {"language": "ru"}
+  [мой] 'Агата'                          B7zh39YGejeLEJzmFkHR  generated  создан: 2026-10-17T12:18:38+00:00 (по порядку 1)  {"language": "ru"}
 validate_voice: манифесты: ru 19 (19 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 4; реплик с тегами: 14
 [voice] validate_voice.py: OK (0 ошибок, 0 предупреждений, strict; самопроверка 7/7)

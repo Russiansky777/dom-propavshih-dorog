@@ -1,8 +1,8 @@
 {
   "_comment": "Голоса аккаунта ElevenLabs (GET /v2/voices; personal — раздел My Voices, voice_type=personal). Пишет pipeline/voice/eleven_voice.py list; ключа здесь нет. Сопоставление с персонажами — cast.json.",
-  "fetched_at": "2026-10-17T21:46:22+00:00",
-  "count": 27,
-  "personal_count": 6,
+  "fetched_at": "2026-10-17T23:05:43+00:00",
+  "count": 28,
+  "personal_count": 7,
   "voices": [
     {
       "name": "Agata",
@@ -68,6 +68,19 @@
       "created_at_unix": 1792270078,
       "created_at": "2026-10-17T20:47:58+00:00",
       "created_order": 3
+    },
+    {
+      "name": "ZAKADR",
+      "voice_id": "kPaCtwsoLpkcqnqv9PyA",
+      "category": "generated",
+      "personal": true,
+      "labels": {
+        "language": "ru"
+      },
+      "description": "Русский мужской закадровый голос с литературным произношением. Красивый, чистый, насыщенный баритон с лёгкой басовой глубиной и приятным грудным резонансом.ZAKADR",
+      "created_at_unix": 1792277791,
+      "created_at": "2026-10-17T22:56:31+00:00",
+      "created_order": 7
     },
     {
       "name": "Агата",
