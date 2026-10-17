@@ -16,7 +16,7 @@ void vertex() {
 }
 
 void fragment() {
-	vec4 c = texture(TEXTURE, UV) * COLOR;
+	vec4 c = COLOR;  // Godot 4: COLOR in fragment() already holds texture × modulate
 	vec3 l = texture(room_light_tex, clamp(lm_uv, vec2(0.0), vec2(1.0))).rgb * 2.0;
 	COLOR = vec4(c.rgb * l, c.a);
 }

@@ -1,0 +1,142 @@
+{
+  "web_dir": "web export of main @ f045230 (tools/export_web.sh equivalent)",
+  "renderer": "headless Chromium, ANGLE SwiftShader (software WebGL2)",
+  "viewport": "960x540",
+  "seconds": 4,
+  "rooms": {
+    "Z2": {
+      "fps_on": 2.7,
+      "fps_off": 5.9,
+      "cost_pct": 54.5,
+      "godot_fps_on": 1,
+      "sway": 10,
+      "water": 1,
+      "puddles": 5,
+      "rain": true,
+      "dust_particles": 0
+    },
+    "Z3": {
+      "fps_on": 4.4,
+      "fps_off": 6.7,
+      "cost_pct": 34.7,
+      "godot_fps_on": 5,
+      "sway": 4,
+      "water": 2,
+      "puddles": 0,
+      "rain": true,
+      "dust_particles": 0
+    },
+    "R1": {
+      "fps_on": 3.6,
+      "fps_off": 5.5,
+      "cost_pct": 34.2,
+      "godot_fps_on": 6,
+      "sway": 4,
+      "water": 2,
+      "puddles": 7,
+      "rain": true,
+      "dust_particles": 0
+    },
+    "H1": {
+      "fps_on": 1.6,
+      "fps_off": 2,
+      "cost_pct": 20.1,
+      "godot_fps_on": 4,
+      "sway": 4,
+      "water": 0,
+      "puddles": 0,
+      "rain": false,
+      "dust_particles": 26
+    },
+    "H2": {
+      "fps_on": 1.2,
+      "fps_off": 1.4,
+      "cost_pct": 13.7,
+      "godot_fps_on": 1,
+      "sway": 3,
+      "water": 0,
+      "puddles": 0,
+      "rain": false,
+      "dust_particles": 20
+    },
+    "O1": {
+      "fps_on": 16.1,
+      "fps_off": 14.3,
+      "cost_pct": -12.7,
+      "godot_fps_on": 17,
+      "sway": 8,
+      "water": 0,
+      "puddles": 0,
+      "rain": false,
+      "dust_particles": 24
+    },
+    "O2": {
+      "fps_on": 11.6,
+      "fps_off": 12,
+      "cost_pct": 2.9,
+      "godot_fps_on": 11,
+      "sway": 1,
+      "water": 0,
+      "puddles": 0,
+      "rain": false,
+      "dust_particles": 0
+    }
+  },
+  "z2_walk": {
+    "steps": 7,
+    "splashes": 3,
+    "prints_made": 4,
+    "events": [
+      {
+        "frame": 10,
+        "scale": 0.93181103515625,
+        "surface": "mud",
+        "x": 1059.07275390625,
+        "y": 835.905517578125
+      },
+      {
+        "frame": 4,
+        "scale": 0.913185791015625,
+        "surface": "mud",
+        "x": 1189.28283691406,
+        "y": 826.592895507812
+      },
+      {
+        "frame": 10,
+        "scale": 0.913553588867188,
+        "surface": "mud",
+        "x": 1295.33911132812,
+        "y": 826.776794433594
+      },
+      {
+        "frame": 4,
+        "scale": 0.923885009765625,
+        "surface": "puddle",
+        "x": 1427.56762695312,
+        "y": 831.942504882812
+      },
+      {
+        "frame": 10,
+        "scale": 0.936866455078125,
+        "surface": "puddle",
+        "x": 1559.59619140625,
+        "y": 838.433227539062
+      },
+      {
+        "frame": 4,
+        "scale": 0.947441772460937,
+        "surface": "puddle",
+        "x": 1695.18103027344,
+        "y": 843.720886230469
+      },
+      {
+        "frame": 10,
+        "scale": 0.960808227539062,
+        "surface": "mud",
+        "x": 1830.37023925781,
+        "y": 850.404113769531
+      }
+    ]
+  },
+  "errors": []
+}
