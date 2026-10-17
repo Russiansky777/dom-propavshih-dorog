@@ -302,6 +302,38 @@ for rid, room in rooms.items():
         check_flags(lctx + ".unless", l.get("unless"))
         if l.get("occluder") and "z" not in l:
             warn(f"{lctx}: окклюдер без явного z (будет 1080)")
+    # 9. стоянка у NPC не закрывает его (дефект ui_10: в разговоре Агата встала прямо перед Тамарой).
+    # Ширина фигуры: figure_half_width_px × масштаб глубины (у NPC × npc.scale_factor из
+    # game/data/actors/<id>.json); если Агата ближе к зрителю (её y больше) и фигуры перекрываются
+    # больше чем на npc_overlap_max ширины NPC — ошибка.
+    aref9 = index.get("agata_ref", {})
+    kind9 = room.get("background", {}).get("kind", "interior")
+    dep9 = room.get("depth", index["defaults"].get("depth_exterior" if kind9 == "exterior" else "depth", {}))
+
+    def depth_scale(y: float) -> float:
+        """Повторяет Room.depth_scale (с зажимом: так рисуется фигура)."""
+        span = dep9["bottom_y"] - dep9["top_y"]
+        t = 1.0 if span == 0 else min(1.0, max(0.0, (y - dep9["top_y"]) / span))
+        return dep9["scale_top"] + (dep9["scale_bottom"] - dep9["scale_top"]) * t
+
+    for h in room.get("hotspots", []):
+        if h.get("kind") != "npc" or "rect" not in h or "stand" not in h or not aref9.get("figure_half_width_px"):
+            continue
+        r = h["rect"]
+        fx, fy = r[0] + r[2] / 2, r[1] + r[3]
+        sx, sy = h["stand"]
+        npc_factor = 1.0
+        actor_path = GAME_DIR / "data" / "actors" / f"{h.get('id')}.json"
+        if actor_path.exists():
+            npc_factor = float(load(actor_path).get("npc", {}).get("scale_factor", 1.0))
+        hw = aref9["figure_half_width_px"]
+        a_hw = hw * depth_scale(sy)
+        n_hw = hw * depth_scale(fy) * npc_factor
+        overlap = min(sx + a_hw, fx + n_hw) - max(sx - a_hw, fx - n_hw)
+        if sy > fy and overlap > aref9.get("npc_overlap_max", 0.25) * 2 * n_hw:
+            err(f"{ctx}.{h.get('id')}: стоянка {h['stand']} прямо перед NPC (ноги {fx:.0f},{fy:.0f}) — Агата закроет "
+                f"собой {overlap / (2 * n_hw):.0%} фигуры; поставьте стоянку сбоку (видны обе)")
+
     # 8. рост Агаты против ориентиров
     aref = index.get("agata_ref", {})
     kind = room.get("background", {}).get("kind", "interior")

@@ -16,11 +16,11 @@
   "props": [],
   "hotspots": [
     {
-      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [980, 250, 180, 450], "stand": [1080, 940], "color": "#c47a5a", "draw": false, "pick_priority": 2, "image": "res://assets/characters/tamara/front.png",
+      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [980, 250, 180, 450], "stand": [1440, 790], "_stand_note": "у правого торца стойки, сбоку от Тамары: при разговоре видны обе, Агата повёрнута к ней (стоянка прямо перед Тамарой закрывала её — кадр ui_10)", "color": "#c47a5a", "draw": false, "pick_priority": 2, "image": "res://assets/characters/tamara/front.png",
       "talk": {"scene": "M01", "after_text": "@Z1.tamara.after"}
     },
     {
-      "id": "drawings", "action_anim": "reach", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 576, 638, 132], "stand": [940, 945], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
+      "id": "drawings", "action_anim": "reach", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 576, 638, 132], "stand": [840, 940], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
       "use": {"sets": ["z1_compared_drawings"], "text": "@Z1.drawings.use", "once_flag": "z1_compared_drawings"},
       "look": "@Z1.drawings.look"
     },

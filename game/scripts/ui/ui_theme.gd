@@ -156,6 +156,11 @@ static func _build() -> Theme:
 	# Panels.
 	t.set_stylebox(&"panel", &"PanelContainer", panel_style())
 	t.set_stylebox(&"panel", &"Panel", panel_style())
+	# Dialogue: lighter so the room shows through, a little tighter.
+	t.set_type_variation(&"DialoguePanel", &"PanelContainer")
+	var dlg := panel_style(Color(0.09, 0.066, 0.048, 0.80), BORDER, 28.0, 12.0)
+	dlg.content_margin_bottom = 14
+	t.set_stylebox(&"panel", &"DialoguePanel", dlg)
 	t.set_type_variation(&"TopBarPanel", &"PanelContainer")
 	var bar := StyleBoxFlat.new()
 	bar.bg_color = BAR_BG

@@ -16,6 +16,11 @@ const QUICK_SLOT: String = "quick"
 const HINT_SECONDS: float = 7.0
 const TOP_H: float = 80.0
 const CURSOR_ITEM_SIZE: float = 52.0
+## Dialogue box: 60 % of the width, centred, as tall as its text, pressed to the bottom edge —
+## the characters above it stay visible (Director/coordinator 17.10, frame ui_10).
+const DIALOGUE_W: float = 1152.0
+const DIALOGUE_BOTTOM: float = 1062.0
+const HINT_Y: float = 996.0
 const CURSOR_ITEM_OFFSET := Vector2(12, 16)   # below-right of the pointer tip
 
 var top_bar: PanelContainer
@@ -142,7 +147,7 @@ func _build() -> void:
 	# Hint line (bottom, click-through)
 	hint_line = Label.new()
 	hint_line.name = "HintLine"
-	hint_line.position = Vector2(0, 996)
+	hint_line.position = Vector2(0, HINT_Y)
 	hint_line.size = Vector2(1920, 52)
 	hint_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_line.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -163,38 +168,46 @@ func _build() -> void:
 	# Dialogue box
 	dialogue = PanelContainer.new()
 	dialogue.name = "Dialogue"
-	dialogue.position = Vector2(200, 740)
-	dialogue.size = Vector2(1520, 300)
+	dialogue.theme_type_variation = &"DialoguePanel"
+	dialogue.position = Vector2(roundf((1920.0 - DIALOGUE_W) / 2.0), 900)
+	dialogue.size = Vector2(DIALOGUE_W, 0)
 	dialogue.visible = false
 	dialogue.mouse_filter = Control.MOUSE_FILTER_STOP
 	dialogue.gui_input.connect(_on_modal_input)
+	dialogue.minimum_size_changed.connect(func(): _fit_dialogue.call_deferred())
 	add_child(dialogue)
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 8)
+	v.add_theme_constant_override("separation", 4)
 	dialogue.add_child(v)
 	speaker_label = Label.new()
 	speaker_label.name = "Speaker"
 	speaker_label.theme_type_variation = &"SpeakerLabel"
 	v.add_child(speaker_label)
+	# Text and «Дальше» share a row: no extra line of height for the prompt to continue.
+	var text_row := HBoxContainer.new()
+	text_row.name = "TextRow"
+	text_row.add_theme_constant_override("separation", 18)
+	v.add_child(text_row)
 	text_label = RichTextLabel.new()
 	text_label.name = "Text"
 	text_label.bbcode_enabled = false
 	text_label.fit_content = true
 	text_label.scroll_active = false
 	text_label.theme_type_variation = &"DialogueText"
-	text_label.custom_minimum_size = Vector2(0, 60)
+	text_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	v.add_child(text_label)
-	options_box = VBoxContainer.new()
-	options_box.name = "Options"
-	options_box.add_theme_constant_override("separation", 6)
-	v.add_child(options_box)
+	text_row.add_child(text_label)
 	continue_label = Label.new()
 	continue_label.name = "Continue"
 	continue_label.text = StoryData.text("@ui.continue")
 	continue_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	continue_label.size_flags_vertical = Control.SIZE_SHRINK_END
 	continue_label.theme_type_variation = &"MutedLabel"
-	v.add_child(continue_label)
+	text_row.add_child(continue_label)
+	options_box = VBoxContainer.new()
+	options_box.name = "Options"
+	options_box.add_theme_constant_override("separation", 6)
+	v.add_child(options_box)
 
 	# Journal panel
 	journal_panel = PanelContainer.new()
@@ -420,6 +433,7 @@ func _render_dialogue() -> void:
 	if beat.is_empty():
 		dialogue.visible = false
 		_update_modal()
+		_fit_dialogue()
 		return
 	dialogue.visible = true
 	var t := String(beat.get("type", ""))
@@ -440,6 +454,18 @@ func _render_dialogue() -> void:
 		text_label.text = String(beat.get("text", ""))
 		continue_label.visible = true
 	_update_modal()
+	_fit_dialogue.call_deferred()
+
+
+## As tall as the content (name + 1–3 lines, or the options), centred, pressed to the bottom; the
+## hint line moves above it while it is open.
+func _fit_dialogue() -> void:
+	if dialogue.visible:
+		dialogue.size = Vector2(DIALOGUE_W, 0)
+		dialogue.position = Vector2(roundf((1920.0 - DIALOGUE_W) / 2.0), roundf(DIALOGUE_BOTTOM - dialogue.size.y))
+		hint_line.position.y = dialogue.position.y - hint_line.size.y - 6.0
+	else:
+		hint_line.position.y = HINT_Y
 
 
 func _update_modal() -> void:
@@ -652,7 +678,7 @@ func probe_positions() -> Dictionary:
 	out["bag"] = bp
 	out["cursor_item"] = cursor_item.item_id if cursor_item.visible else ""
 	if dialogue.visible:
-		out["dialogue_click"] = {"x": 960, "y": 780}
+		out["dialogue_click"] = _center(dialogue)
 		for c in options_box.get_children():
 			if c is Button:
 				out["options"][String(c.name).trim_prefix("Option_")] = _center(c)
