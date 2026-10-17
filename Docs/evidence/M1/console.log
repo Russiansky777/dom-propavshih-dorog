@@ -1,143 +1,147 @@
-[2026-10-17T15:34:49.929Z] chromium: /opt/pw-browsers/chromium-1194/chrome-linux/chrome; gl mode: angle
-[2026-10-17T15:34:50.279Z] open http://127.0.0.1:8765/index.html
-[2026-10-17T15:34:51.419Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-[2026-10-17T15:34:51.760Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
-[2026-10-17T15:34:52.144Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
-[2026-10-17T15:34:53.762Z] probeReady after 2968 ms; room=Z1
-[2026-10-17T15:34:57.338Z] screenshot build/shots/m1/01_Z1_post.png
-[2026-10-17T15:35:00.493Z] screenshot build/shots/m1/real_Z1.png
-[2026-10-17T15:35:00.755Z] click hotspot drawings at (960, 640)
-[2026-10-17T15:35:05.134Z] click hotspot drawings: continue at (960, 780)
-[2026-10-17T15:35:07.351Z] click hotspot tamara at (1070, 475)
-[2026-10-17T15:35:11.591Z] screenshot build/shots/m1/02_dialogue_M01.png
-[2026-10-17T15:35:11.864Z] click M01: continue at (960, 780)
-[2026-10-17T15:35:13.019Z] click M01: continue at (960, 780)
-[2026-10-17T15:35:13.941Z] click M01: continue at (960, 780)
-[2026-10-17T15:35:16.820Z] click exit → Z2 at (1700, 430)
-[2026-10-17T15:35:24.760Z] screenshot build/shots/m1/real_Z2.png
-[2026-10-17T15:35:27.135Z] screenshot build/shots/m1/03_Z2_street.png
-[2026-10-17T15:35:27.367Z] click exit → H3 at (210, 450)
-[2026-10-17T15:35:29.691Z] click exit → H3: continue at (960, 780)
-[2026-10-17T15:35:32.132Z] click exit → Z3 at (1415, 605)
-[2026-10-17T15:35:48.520Z] screenshot build/shots/m1/real_Z3.png
-[2026-10-17T15:35:50.791Z] screenshot build/shots/m1/04_Z3_shore.png
-[2026-10-17T15:35:51.024Z] click exit → R1 at (1150, 1040)
-[2026-10-17T15:35:59.844Z] screenshot build/shots/m1/real_R1.png
-[2026-10-17T15:36:02.666Z] screenshot build/shots/m1/05_R1_pier.png
-[2026-10-17T15:36:02.932Z] click hotspot instruction at (380, 440)
-[2026-10-17T15:36:05.369Z] click hotspot instruction: continue at (960, 780)
-[2026-10-17T15:36:08.002Z] click hotspot pelageya at (1205, 590)
-[2026-10-17T15:36:16.082Z] click hotspot pelageya: continue at (960, 780)
-[2026-10-17T15:36:16.907Z] click hotspot pelageya: continue at (960, 780)
-[2026-10-17T15:36:17.787Z] click hotspot pelageya: continue at (960, 780)
-[2026-10-17T15:36:20.662Z] click exit → Z2 at (140, 500)
-[2026-10-17T15:36:30.759Z] click exit → H1 at (1005, 475)
-[2026-10-17T15:36:41.162Z] screenshot build/shots/m1/real_H1.png
-[2026-10-17T15:36:43.999Z] screenshot build/shots/m1/06_H1_room.png
-[2026-10-17T15:36:44.438Z] click hotspot shutter at (1650, 320)
-[2026-10-17T15:36:48.858Z] click hotspot shutter: continue at (960, 780)
-[2026-10-17T15:36:50.935Z] click hotspot stove at (295, 265)
-[2026-10-17T15:36:57.285Z] click hotspot stove: continue at (960, 780)
-[2026-10-17T15:36:59.950Z] click hotspot scarf at (580, 575)
-[2026-10-17T15:37:00.990Z] click hotspot scarf: continue at (960, 780)
-[2026-10-17T15:37:02.457Z] click hotspot scarf: continue at (960, 780)
-[2026-10-17T15:37:03.408Z] click hotspot scarf: continue at (960, 780)
-[2026-10-17T15:37:04.365Z] click hotspot scarf: continue at (960, 780)
-[2026-10-17T15:37:05.286Z] click hotspot scarf: option ask at (960, 774)
-[2026-10-17T15:37:06.307Z] click hotspot scarf: continue at (960, 780)
-[2026-10-17T15:37:12.524Z] screenshot build/shots/m1/07_H1_tikhon.png
-[2026-10-17T15:37:12.830Z] click hotspot cups at (730, 335)
-[2026-10-17T15:37:15.107Z] click hotspot cups: option blue at (960, 842)
-[2026-10-17T15:37:18.553Z] click hotspot photo at (1270, 195)
-[2026-10-17T15:37:22.991Z] click hotspot photo: option table at (960, 842)
-[2026-10-17T15:37:23.933Z] click hotspot photo: continue at (960, 780)
-[2026-10-17T15:37:27.074Z] click hotspot shelf at (220, 370)
-[2026-10-17T15:37:32.486Z] click hotspot shelf: option A at (960, 842)
-[2026-10-17T15:37:33.613Z] click hotspot shelf: continue at (960, 780)
-[2026-10-17T15:37:34.965Z] click hotspot shelf: continue at (960, 780)
-[2026-10-17T15:37:35.909Z] click hotspot shelf: continue at (960, 780)
-[2026-10-17T15:37:37.241Z] click hotspot shelf: continue at (960, 780)
-[2026-10-17T15:37:40.854Z] click exit → H4 at (1650, 1040)
-[2026-10-17T15:37:52.278Z] screenshot build/shots/m1/real_H4.png
-[2026-10-17T15:37:52.526Z] click V02: continue at (960, 780)
-[2026-10-17T15:37:57.245Z] screenshot build/shots/m1/08_H4_attic.png
-[2026-10-17T15:37:57.438Z] click exit → H1 at (700, 1040)
-[2026-10-17T15:37:59.603Z] click exit → H2 at (1855, 820)
-[2026-10-17T15:38:05.255Z] screenshot build/shots/m1/real_H2.png
-[2026-10-17T15:38:07.699Z] screenshot build/shots/m1/09_H2_workshop.png
-[2026-10-17T15:38:07.938Z] click hotspot bench at (800, 280)
-[2026-10-17T15:38:11.248Z] click hotspot bench: continue at (960, 780)
-[2026-10-17T15:38:14.018Z] click hotspot hinges_box at (865, 470)
-[2026-10-17T15:38:15.083Z] click hotspot hinges_box: continue at (960, 780)
-[2026-10-17T15:38:17.731Z] click hotspot bell at (1685, 430)
-[2026-10-17T15:38:22.317Z] click hotspot bell: continue at (960, 780)
-[2026-10-17T15:38:24.696Z] click exit → H1 at (150, 415)
-[2026-10-17T15:38:32.422Z] click exit → H3 at (1100, 1040)
-[2026-10-17T15:38:41.163Z] screenshot build/shots/m1/real_H3.png
-[2026-10-17T15:38:43.507Z] screenshot build/shots/m1/10_H3_gallery.png
-[2026-10-17T15:38:43.726Z] click hotspot school_door at (480, 420)
-[2026-10-17T15:38:49.390Z] click hotspot school_door: continue at (960, 780)
-[2026-10-17T15:38:49.908Z] click hotspot school_door: continue at (960, 780)
-[2026-10-17T15:38:52.023Z] click hotspot mirror_home at (150, 340)
-[2026-10-17T15:38:53.760Z] click hotspot mirror_home: continue at (960, 780)
-[2026-10-17T15:38:55.842Z] click inventory door_hinges at (770, 42)
-[2026-10-17T15:38:56.765Z] click hotspot school_door at (480, 420)
-[2026-10-17T15:39:04.960Z] screenshot build/shots/m1/11_puzzle_closeup.png
-[2026-10-17T15:39:05.315Z] click piece hinge_1 at (1485, 575)
-[2026-10-17T15:39:05.844Z] click slot top at (916, 196)
-[2026-10-17T15:39:06.526Z] click piece hinge_2 at (1635, 575)
-[2026-10-17T15:39:06.730Z] click slot middle at (916, 406)
-[2026-10-17T15:39:07.220Z] click mark 0 at (516, 900)
-[2026-10-17T15:39:07.496Z] click check (wrong) at (1520, 970)
-[2026-10-17T15:39:10.521Z] screenshot build/shots/m1/12_puzzle_wrong_wall.png
-[2026-10-17T15:39:10.521Z] click check (wrong again) at (1520, 970)
-[2026-10-17T15:39:11.806Z] click slot middle (return piece) at (916, 406)
-[2026-10-17T15:39:12.690Z] click piece hinge_2 at (1485, 575)
-[2026-10-17T15:39:13.300Z] click slot bottom at (916, 616)
-[2026-10-17T15:39:13.746Z] click mark 2 at (819, 900)
-[2026-10-17T15:39:14.040Z] click check (correct) at (1520, 970)
-[2026-10-17T15:39:17.581Z] screenshot build/shots/m1/13_puzzle_solved_winter.png
-[2026-10-17T15:39:21.068Z] click M05: continue at (960, 780)
-[2026-10-17T15:39:23.375Z] click exit → O1 at (775, 430)
-[2026-10-17T15:39:29.018Z] screenshot build/shots/m1/real_O1.png
-[2026-10-17T15:39:31.323Z] screenshot build/shots/m1/14_O1_winter_class.png
-[2026-10-17T15:39:31.628Z] click hotspot sack at (395, 645)
-[2026-10-17T15:39:32.773Z] click hotspot sack: continue at (960, 780)
-[2026-10-17T15:39:35.044Z] click hotspot notebooks at (1575, 575)
-[2026-10-17T15:39:41.202Z] click hotspot notebooks: continue at (960, 780)
-[2026-10-17T15:39:42.326Z] click hotspot notebooks: continue at (960, 780)
-[2026-10-17T15:39:44.628Z] click hotspot teacher_drawer at (715, 555)
-[2026-10-17T15:39:49.476Z] click hotspot teacher_drawer: continue at (960, 780)
-[2026-10-17T15:39:50.009Z] click hotspot teacher_drawer: continue at (960, 780)
-[2026-10-17T15:39:52.337Z] click hotspot chalk at (635, 485)
-[2026-10-17T15:39:53.325Z] click hotspot chalk: continue at (960, 780)
-[2026-10-17T15:39:55.706Z] click hotspot bird_drawing at (1545, 300)
-[2026-10-17T15:40:01.072Z] click hotspot bird_drawing: option leave at (960, 887)
-[2026-10-17T15:40:02.040Z] click hotspot bird_drawing: continue at (960, 780)
-[2026-10-17T15:40:04.665Z] click exit → O2 at (1855, 395)
-[2026-10-17T15:40:10.694Z] screenshot build/shots/m1/real_O2.png
-[2026-10-17T15:40:13.569Z] screenshot build/shots/m1/15_O2_yard.png
-[2026-10-17T15:40:13.892Z] click inventory mitten at (698, 42)
-[2026-10-17T15:40:15.015Z] click hotspot porch_step at (650, 680)
-[2026-10-17T15:40:16.581Z] click hotspot porch_step: continue at (960, 780)
-[2026-10-17T15:40:19.692Z] click exit → O4 (gate) at (1630, 550)
-[2026-10-17T15:40:31.544Z] click loop reaction: continue at (960, 780)
-[2026-10-17T15:40:38.364Z] screenshot build/shots/m1/16_O2_after_loop.png
-[2026-10-17T15:40:38.673Z] click exit → O1 at (540, 405)
-[2026-10-17T15:40:40.852Z] click inventory chalk at (914, 42)
-[2026-10-17T15:40:41.652Z] click hotspot board at (1100, 325)
-[2026-10-17T15:40:46.526Z] click hotspot board: continue at (960, 780)
-[2026-10-17T15:40:47.382Z] click hotspot board: continue at (960, 780)
-[2026-10-17T15:40:52.445Z] screenshot build/shots/m1/17_O1_board_written.png
-[2026-10-17T15:40:52.717Z] click exit → H3 at (445, 395)
-[2026-10-17T15:41:00.509Z] screenshot build/shots/m1/18_H3_back_home.png
-[2026-10-17T15:41:00.695Z] click ui JournalButton at (1524, 42)
-[2026-10-17T15:41:04.248Z] screenshot build/shots/m1/19_journal.png
-[2026-10-17T15:41:04.498Z] click ui CloseJournal at (960, 867)
-[2026-10-17T15:41:05.523Z] click ui HintButton at (1690, 42)
-[2026-10-17T15:41:08.759Z] screenshot build/shots/m1/20_hint_tier1.png
-[2026-10-17T15:41:08.974Z] click ui MenuButton at (1846, 42)
-[2026-10-17T15:41:10.133Z] click ui Save1 at (1159, 311)
-[2026-10-17T15:41:13.463Z] screenshot build/shots/m1/21_menu_slots.png
-[2026-10-17T15:41:13.730Z] click ui CloseMenu at (836, 464)
-[2026-10-17T15:41:14.207Z] final: room=H3 inventory=["key_house","letter_tamara","pocket_watch","mitten","invoice_chalk","photo_school_pier","chalk"] flags=done_M01,done_M02,done_M03,done_M04,done_M05,done_M06,done_M07,done_M08,done_Q04,done_V01,done_V02,done_V03,door_school_installed,h1_scarf_removed,h1_shutter_open,has_bell,has_chalk,has_door_hinges,has_invoice_chalk,has_key_house,has_letter_tamara,has_mirror_home,has_mitten,has_photo_school_pier,has_pocket_watch,has_school_door,house_open,knows_journal_target,knows_pier_trace,knows_rule_things_remember,knows_trip_14,met_pelageya,met_tamara,met_tikhon,mitten_placed,o1_seen_notebooks,o1_seen_sack,observed_path_loop,q04_corner_stove,seen_bell,seen_class_traces,seen_ferry_instruction,seen_mirror_home,seen_school_door,seen_workshop,started_M01,started_M02,started_M03,started_M04,started_M05,started_M06,started_M07,started_M08,started_Q04,started_V01,started_V02,started_V03,stove_lit,v01_cup_blue,v01_photo_table,v03_left,wrote_on_board,z1_compared_drawings
+[2026-10-17T20:56:58.692Z] chromium: /opt/pw-browsers/chromium-1194/chrome-linux/chrome; gl mode: angle
+[2026-10-17T20:56:59.004Z] open http://127.0.0.1:8771/index.html
+[2026-10-17T20:57:00.193Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-17T20:57:00.544Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-17T20:57:00.936Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-17T20:57:04.172Z] probeReady after 4727 ms; room=Z1
+[2026-10-17T20:57:08.325Z] screenshot build/shots/m1/01_Z1_post.png
+[2026-10-17T20:57:11.697Z] screenshot build/shots/m1/real_Z1.png
+[2026-10-17T20:57:11.973Z] click hotspot drawings at (1007, 642)
+[2026-10-17T20:57:23.432Z] click hotspot drawings: continue at (960, 780)
+[2026-10-17T20:57:26.851Z] click hotspot tamara at (1070, 475)
+[2026-10-17T20:57:34.672Z] screenshot build/shots/m1/02_dialogue_M01.png
+[2026-10-17T20:57:35.006Z] click M01: continue to Tamara's line at (960, 780)
+[2026-10-17T20:57:39.335Z] screenshot build/shots/m1/03_dialogue_M01_tamara_talks.png
+[2026-10-17T20:57:40.135Z] click M01: continue at (960, 780)
+[2026-10-17T20:57:41.731Z] click M01: continue at (960, 780)
+[2026-10-17T20:57:46.410Z] click exit → Z4 at (1700, 430)
+[2026-10-17T20:57:56.175Z] screenshot build/shots/m1/real_Z4.png
+[2026-10-17T20:57:58.607Z] screenshot build/shots/m1/04_Z4_lane.png
+[2026-10-17T20:57:58.903Z] click exit → H3 at (455, 560)
+[2026-10-17T20:58:09.105Z] click exit → H3: continue at (960, 780)
+[2026-10-17T20:58:12.712Z] click exit → Z2 at (960, 533)
+[2026-10-17T20:58:26.757Z] screenshot build/shots/m1/real_Z2.png
+[2026-10-17T20:58:30.388Z] screenshot build/shots/m1/05_Z2_street.png
+[2026-10-17T20:58:31.195Z] click exit → Z3 at (1415, 605)
+[2026-10-17T20:58:55.213Z] screenshot build/shots/m1/real_Z3.png
+[2026-10-17T20:58:59.084Z] screenshot build/shots/m1/06_Z3_shore.png
+[2026-10-17T20:58:59.411Z] click exit → R1 at (1150, 1040)
+[2026-10-17T20:59:18.515Z] screenshot build/shots/m1/real_R1.png
+[2026-10-17T20:59:22.523Z] screenshot build/shots/m1/07_R1_pier.png
+[2026-10-17T20:59:22.909Z] click hotspot instruction at (380, 440)
+[2026-10-17T20:59:31.146Z] click hotspot instruction: continue at (960, 780)
+[2026-10-17T20:59:36.231Z] click hotspot pelageya at (1205, 590)
+[2026-10-17T20:59:49.114Z] click hotspot pelageya: continue at (960, 780)
+[2026-10-17T20:59:50.504Z] click hotspot pelageya: continue at (960, 780)
+[2026-10-17T20:59:51.948Z] click hotspot pelageya: continue at (960, 780)
+[2026-10-17T20:59:56.850Z] click exit → Z2 at (140, 500)
+[2026-10-17T21:00:15.551Z] click exit → H1 at (1005, 475)
+[2026-10-17T21:00:31.949Z] screenshot build/shots/m1/real_H1.png
+[2026-10-17T21:00:35.149Z] screenshot build/shots/m1/08_H1_room.png
+[2026-10-17T21:00:35.456Z] click hotspot shutter at (1650, 320)
+[2026-10-17T21:00:45.360Z] click hotspot shutter: continue at (960, 780)
+[2026-10-17T21:00:48.548Z] click hotspot stove at (295, 265)
+[2026-10-17T21:01:00.883Z] click hotspot stove: continue at (960, 780)
+[2026-10-17T21:01:04.725Z] click hotspot scarf at (580, 575)
+[2026-10-17T21:01:12.121Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T21:01:13.976Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T21:01:16.232Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T21:01:17.111Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T21:01:18.458Z] click hotspot scarf: option ask at (960, 783)
+[2026-10-17T21:01:19.876Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T21:01:27.302Z] screenshot build/shots/m1/09_H1_tikhon.png
+[2026-10-17T21:01:27.710Z] click hotspot cups at (730, 335)
+[2026-10-17T21:01:35.634Z] click hotspot cups: option blue at (960, 851)
+[2026-10-17T21:01:39.122Z] click hotspot photo at (1270, 195)
+[2026-10-17T21:01:45.912Z] click hotspot photo: option table at (960, 851)
+[2026-10-17T21:01:47.656Z] click hotspot photo: continue at (960, 780)
+[2026-10-17T21:01:52.892Z] click hotspot shelf at (220, 370)
+[2026-10-17T21:02:05.464Z] click hotspot shelf: option A at (960, 851)
+[2026-10-17T21:02:07.921Z] click hotspot shelf: continue at (960, 780)
+[2026-10-17T21:02:09.487Z] click hotspot shelf: continue at (960, 780)
+[2026-10-17T21:02:11.063Z] click hotspot shelf: continue at (960, 780)
+[2026-10-17T21:02:13.241Z] click hotspot shelf: continue at (960, 780)
+[2026-10-17T21:02:18.076Z] click exit → H4 at (1650, 1040)
+[2026-10-17T21:02:34.289Z] screenshot build/shots/m1/real_H4.png
+[2026-10-17T21:02:34.604Z] click V02: continue at (960, 780)
+[2026-10-17T21:02:40.311Z] screenshot build/shots/m1/10_H4_attic.png
+[2026-10-17T21:02:40.588Z] click exit → H1 at (700, 1040)
+[2026-10-17T21:02:45.971Z] click exit → H2 at (1855, 820)
+[2026-10-17T21:02:55.014Z] screenshot build/shots/m1/real_H2.png
+[2026-10-17T21:02:58.382Z] screenshot build/shots/m1/11_H2_workshop.png
+[2026-10-17T21:02:58.661Z] click hotspot bench at (800, 280)
+[2026-10-17T21:03:04.381Z] click hotspot bench: continue at (960, 780)
+[2026-10-17T21:03:06.977Z] click hotspot hinges_box at (865, 470)
+[2026-10-17T21:03:12.728Z] click hotspot hinges_box: continue at (960, 780)
+[2026-10-17T21:03:15.803Z] click hotspot bell at (1685, 430)
+[2026-10-17T21:03:25.570Z] click hotspot bell: continue at (960, 780)
+[2026-10-17T21:03:31.358Z] click exit → H1 at (150, 415)
+[2026-10-17T21:03:45.092Z] click exit → H3 at (1100, 1040)
+[2026-10-17T21:03:56.524Z] screenshot build/shots/m1/real_H3.png
+[2026-10-17T21:03:59.260Z] screenshot build/shots/m1/12_H3_gallery.png
+[2026-10-17T21:03:59.471Z] click hotspot school_door at (480, 420)
+[2026-10-17T21:04:10.818Z] click hotspot school_door: continue at (960, 780)
+[2026-10-17T21:04:12.114Z] click hotspot school_door: continue at (960, 780)
+[2026-10-17T21:04:16.257Z] click hotspot mirror_home at (150, 340)
+[2026-10-17T21:04:19.938Z] click hotspot mirror_home: continue at (960, 780)
+[2026-10-17T21:04:22.887Z] click inventory door_hinges at (991, 40)
+[2026-10-17T21:04:23.986Z] click hotspot school_door at (480, 420)
+[2026-10-17T21:04:41.464Z] screenshot build/shots/m1/13_puzzle_closeup.png
+[2026-10-17T21:04:41.905Z] click piece hinge_1 at (1485, 575)
+[2026-10-17T21:04:42.502Z] click slot top at (916, 196)
+[2026-10-17T21:04:43.296Z] click piece hinge_2 at (1635, 575)
+[2026-10-17T21:04:43.903Z] click slot middle at (916, 406)
+[2026-10-17T21:04:44.461Z] click mark 0 at (516, 900)
+[2026-10-17T21:04:44.855Z] click check (wrong) at (1520, 970)
+[2026-10-17T21:04:50.415Z] screenshot build/shots/m1/14_puzzle_wrong_wall.png
+[2026-10-17T21:04:50.416Z] click check (wrong again) at (1520, 970)
+[2026-10-17T21:04:51.646Z] click slot middle (return piece) at (916, 406)
+[2026-10-17T21:04:52.901Z] click piece hinge_2 at (1485, 575)
+[2026-10-17T21:04:53.110Z] click slot bottom at (916, 616)
+[2026-10-17T21:04:53.715Z] click mark 2 at (819, 900)
+[2026-10-17T21:04:53.982Z] click check (correct) at (1520, 970)
+[2026-10-17T21:04:59.403Z] screenshot build/shots/m1/15_puzzle_solved_winter.png
+[2026-10-17T21:05:03.315Z] click M05: continue at (960, 780)
+[2026-10-17T21:05:06.645Z] click exit → O1 at (775, 430)
+[2026-10-17T21:05:20.594Z] screenshot build/shots/m1/real_O1.png
+[2026-10-17T21:05:24.598Z] screenshot build/shots/m1/16_O1_winter_class.png
+[2026-10-17T21:05:24.902Z] click hotspot sack at (395, 645)
+[2026-10-17T21:05:31.852Z] click hotspot sack: continue at (960, 780)
+[2026-10-17T21:05:38.176Z] click hotspot notebooks at (1575, 575)
+[2026-10-17T21:06:03.856Z] click hotspot notebooks: continue at (960, 780)
+[2026-10-17T21:06:04.677Z] click hotspot notebooks: continue at (960, 780)
+[2026-10-17T21:06:08.761Z] click hotspot teacher_drawer at (715, 555)
+[2026-10-17T21:06:22.886Z] click hotspot teacher_drawer: continue at (960, 780)
+[2026-10-17T21:06:24.389Z] click hotspot teacher_drawer: continue at (960, 780)
+[2026-10-17T21:06:32.199Z] click hotspot chalk at (635, 485)
+[2026-10-17T21:06:47.639Z] click hotspot chalk: continue at (960, 780)
+[2026-10-17T21:06:59.726Z] click hotspot bird_drawing at (1545, 300)
+[2026-10-17T21:07:09.884Z] click hotspot bird_drawing: option leave at (960, 910)
+[2026-10-17T21:07:11.085Z] click hotspot bird_drawing: continue at (960, 780)
+[2026-10-17T21:07:15.847Z] click exit → O2 at (1855, 395)
+[2026-10-17T21:07:33.655Z] screenshot build/shots/m1/real_O2.png
+[2026-10-17T21:07:37.786Z] screenshot build/shots/m1/17_O2_yard.png
+[2026-10-17T21:07:38.353Z] click inventory mitten at (919, 40)
+[2026-10-17T21:07:40.204Z] click hotspot porch_step at (650, 680)
+[2026-10-17T21:07:53.529Z] click hotspot porch_step: continue at (960, 780)
+[2026-10-17T21:08:04.357Z] click exit → O4 (gate) at (1630, 550)
+[2026-10-17T21:08:57.560Z] click loop reaction: continue at (960, 780)
+[2026-10-17T21:09:22.473Z] screenshot build/shots/m1/18_O2_after_loop.png
+[2026-10-17T21:09:23.425Z] click exit → O1 at (540, 405)
+[2026-10-17T21:09:31.806Z] click inventory chalk at (1135, 40)
+[2026-10-17T21:09:35.323Z] click hotspot board at (1100, 325)
+[2026-10-17T21:10:00.901Z] click hotspot board: continue at (960, 780)
+[2026-10-17T21:10:03.768Z] click hotspot board: continue at (960, 780)
+[2026-10-17T21:10:35.839Z] screenshot build/shots/m1/19_O1_board_written.png
+[2026-10-17T21:10:36.031Z] click exit → H3 at (445, 395)
+[2026-10-17T21:11:00.242Z] screenshot build/shots/m1/20_H3_back_home.png
+[2026-10-17T21:11:02.570Z] click ui JournalButton at (1519, 40)
+[2026-10-17T21:11:11.165Z] screenshot build/shots/m1/21_journal.png
+[2026-10-17T21:11:12.351Z] click ui CloseJournal at (960, 863)
+[2026-10-17T21:11:14.711Z] click ui HintButton at (1688, 40)
+[2026-10-17T21:11:23.892Z] screenshot build/shots/m1/22_hint_tier1.png
+[2026-10-17T21:11:23.898Z] click ui MenuButton at (1846, 40)
+[2026-10-17T21:11:25.165Z] click ui Save1 at (1159, 477)
+[2026-10-17T21:11:32.516Z] screenshot build/shots/m1/23_menu_slots.png
+[2026-10-17T21:11:33.052Z] click ui CloseMenu at (844, 743)
+[2026-10-17T21:11:33.978Z] final: room=H3 inventory=["key_house","letter_tamara","pocket_watch","mitten","invoice_chalk","photo_school_pier","chalk"] flags=done_M01,done_M02,done_M03,done_M04,done_M05,done_M06,done_M07,done_M08,done_Q04,done_V01,done_V02,done_V03,door_school_installed,h1_scarf_removed,h1_shutter_open,has_bell,has_chalk,has_door_hinges,has_invoice_chalk,has_key_house,has_letter_tamara,has_mirror_home,has_mitten,has_photo_school_pier,has_pocket_watch,has_school_door,house_open,knows_journal_target,knows_pier_trace,knows_rule_things_remember,knows_trip_14,met_pelageya,met_tamara,met_tikhon,mitten_placed,o1_seen_notebooks,o1_seen_sack,observed_path_loop,q04_corner_stove,seen_bell,seen_class_traces,seen_ferry_instruction,seen_mirror_home,seen_school_door,seen_workshop,started_M01,started_M02,started_M03,started_M04,started_M05,started_M06,started_M07,started_M08,started_Q04,started_V01,started_V02,started_V03,stove_lit,v01_cup_blue,v01_photo_table,v03_left,wrote_on_board,z1_compared_drawings
