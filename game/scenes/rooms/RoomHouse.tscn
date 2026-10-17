@@ -1,0 +1,147 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/rooms/room.gd" id="1_room"]
+[ext_resource type="Script" path="res://scripts/rooms/hotspot.gd" id="2_hotspot"]
+[ext_resource type="Script" path="res://scripts/rooms/room_exit.gd" id="3_exit"]
+[ext_resource type="Script" path="res://scripts/rooms/mirror.gd" id="4_mirror"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/RoomOfficeView.tscn" id="5_view"]
+[ext_resource type="Shader" path="res://shaders/mirror_glass.gdshader" id="6_shader"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/bg_house.png" id="7_bg"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/table.png" id="8_table"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/door_closed.png" id="9_door_closed"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/door_open.png" id="10_door_open"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/mirror_frame.png" id="11_frame"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/exit_right.png" id="12_exit"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_floor"]
+vertices = PackedVector2Array(140, 640, 1780, 640, 1900, 1070, 20, 1070)
+polygons = [PackedInt32Array(0, 1, 2, 3)]
+outlines = [PackedVector2Array(140, 640, 1780, 640, 1900, 1070, 20, 1070)]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glass"]
+shader = ExtResource("6_shader")
+shader_parameter/wobble_enabled = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mirror"]
+size = Vector2(540, 380)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_door"]
+size = Vector2(200, 400)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(120, 460)
+
+[node name="RoomHouse" type="Node2D"]
+script = ExtResource("1_room")
+room_id = "RoomHouse"
+room_name = "Дом (H1, заглушка)"
+depth_top_y = 640.0
+depth_bottom_y = 1070.0
+scale_top = 0.6
+scale_bottom = 1.1
+flag_visibility = {
+"Hotspots/Door/DoorClosed": "!office_latch_open",
+"Hotspots/Door/DoorOpen": "office_latch_open"
+}
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("7_bg")
+centered = false
+scale = Vector2(4, 4)
+
+[node name="Walkable" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_floor")
+
+[node name="Mirror" type="Node2D" parent="."]
+position = Vector2(560, 330)
+script = ExtResource("4_mirror")
+
+[node name="SubViewport" type="SubViewport" parent="Mirror"]
+disable_3d = true
+size = Vector2i(480, 320)
+render_target_update_mode = 4
+
+[node name="OfficeView" parent="Mirror/SubViewport" instance=ExtResource("5_view")]
+scale = Vector2(0.25, 0.296296)
+
+[node name="Glass" type="Sprite2D" parent="Mirror"]
+material = SubResource("ShaderMaterial_glass")
+
+[node name="Frame" type="Sprite2D" parent="Mirror"]
+texture = ExtResource("11_frame")
+scale = Vector2(4, 4)
+
+[node name="Hotspots" type="Node2D" parent="."]
+
+[node name="MirrorFrame" type="Area2D" parent="Hotspots"]
+position = Vector2(560, 330)
+script = ExtResource("2_hotspot")
+hotspot_id = "mirror_frame"
+sets_flag = "mirror_mounted"
+hint = "Зеркало закреплено на стене. Стекло успокоилось."
+hint_flag = "mirror_mounted"
+hint_when_flag = "Зеркало держится крепко. В нём — кабинет мельницы, сейчас."
+
+[node name="Shape" type="CollisionShape2D" parent="Hotspots/MirrorFrame"]
+shape = SubResource("RectangleShape2D_mirror")
+
+[node name="StandPoint" type="Marker2D" parent="Hotspots/MirrorFrame"]
+position = Vector2(0, 400)
+
+[node name="Door" type="Area2D" parent="Hotspots"]
+position = Vector2(1350, 400)
+script = ExtResource("2_hotspot")
+hotspot_id = "office_door"
+hint = "Дверь заперта. Щеколда с той стороны."
+hint_flag = "office_latch_open"
+hint_when_flag = "Щеколда откинута — дверь открыта."
+
+[node name="DoorClosed" type="Sprite2D" parent="Hotspots/Door"]
+texture = ExtResource("9_door_closed")
+scale = Vector2(4, 4)
+
+[node name="DoorOpen" type="Sprite2D" parent="Hotspots/Door"]
+visible = false
+texture = ExtResource("10_door_open")
+scale = Vector2(4, 4)
+
+[node name="Shape" type="CollisionShape2D" parent="Hotspots/Door"]
+shape = SubResource("RectangleShape2D_door")
+
+[node name="StandPoint" type="Marker2D" parent="Hotspots/Door"]
+position = Vector2(0, 330)
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="ToOffice" type="Area2D" parent="Exits"]
+position = Vector2(1860, 850)
+script = ExtResource("3_exit")
+target_room = "RoomOffice"
+target_spawn = "from_house"
+
+[node name="Arrow" type="Sprite2D" parent="Exits/ToOffice"]
+texture = ExtResource("12_exit")
+scale = Vector2(4, 4)
+
+[node name="Shape" type="CollisionShape2D" parent="Exits/ToOffice"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="StandPoint" type="Marker2D" parent="Exits/ToOffice"]
+position = Vector2(-60, 50)
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="start" type="Marker2D" parent="Spawns"]
+position = Vector2(520, 880)
+
+[node name="from_office" type="Marker2D" parent="Spawns"]
+position = Vector2(1720, 900)
+
+[node name="Occluders" type="Node2D" parent="."]
+
+[node name="Table" type="Sprite2D" parent="Occluders"]
+z_index = 1000
+position = Vector2(704, 808)
+scale = Vector2(4, 4)
+texture = ExtResource("8_table")
+centered = false

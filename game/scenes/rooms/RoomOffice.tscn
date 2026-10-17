@@ -1,0 +1,96 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/rooms/room.gd" id="1_room"]
+[ext_resource type="Script" path="res://scripts/rooms/hotspot.gd" id="2_hotspot"]
+[ext_resource type="Script" path="res://scripts/rooms/room_exit.gd" id="3_exit"]
+[ext_resource type="PackedScene" path="res://scenes/actors/Echo.tscn" id="4_echo"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/bg_office.png" id="5_bg"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/latch_closed.png" id="6_latch_closed"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/latch_open.png" id="7_latch_open"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/exit_left.png" id="8_exit"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_floor"]
+vertices = PackedVector2Array(140, 640, 1780, 640, 1900, 1070, 20, 1070)
+polygons = [PackedInt32Array(0, 1, 2, 3)]
+outlines = [PackedVector2Array(140, 640, 1780, 640, 1900, 1070, 20, 1070)]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_latch"]
+size = Vector2(110, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(120, 460)
+
+[node name="RoomOffice" type="Node2D"]
+script = ExtResource("1_room")
+room_id = "RoomOffice"
+room_name = "Кабинет мельницы (заглушка)"
+depth_top_y = 640.0
+depth_bottom_y = 1070.0
+scale_top = 0.6
+scale_bottom = 1.1
+flag_visibility = {
+"Hotspots/Latch/LatchClosed": "!office_latch_open",
+"Hotspots/Latch/LatchOpen": "office_latch_open"
+}
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("5_bg")
+centered = false
+scale = Vector2(4, 4)
+
+[node name="Walkable" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_floor")
+
+[node name="Echo" parent="." instance=ExtResource("4_echo")]
+position = Vector2(1000, 780)
+
+[node name="Hotspots" type="Node2D" parent="."]
+
+[node name="Latch" type="Area2D" parent="Hotspots"]
+position = Vector2(300, 420)
+script = ExtResource("2_hotspot")
+hotspot_id = "office_latch"
+sets_flag = "office_latch_open"
+hint = "Щеколда откинута. Дверь в дом больше не заперта."
+hint_flag = "office_latch_open"
+hint_when_flag = "Щеколда уже откинута."
+
+[node name="LatchClosed" type="Sprite2D" parent="Hotspots/Latch"]
+texture = ExtResource("6_latch_closed")
+scale = Vector2(4, 4)
+
+[node name="LatchOpen" type="Sprite2D" parent="Hotspots/Latch"]
+visible = false
+texture = ExtResource("7_latch_open")
+scale = Vector2(4, 4)
+
+[node name="Shape" type="CollisionShape2D" parent="Hotspots/Latch"]
+shape = SubResource("RectangleShape2D_latch")
+
+[node name="StandPoint" type="Marker2D" parent="Hotspots/Latch"]
+position = Vector2(0, 300)
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="ToHouse" type="Area2D" parent="Exits"]
+position = Vector2(60, 850)
+script = ExtResource("3_exit")
+target_room = "RoomHouse"
+target_spawn = "from_office"
+
+[node name="Arrow" type="Sprite2D" parent="Exits/ToHouse"]
+texture = ExtResource("8_exit")
+scale = Vector2(4, 4)
+
+[node name="Shape" type="CollisionShape2D" parent="Exits/ToHouse"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="StandPoint" type="Marker2D" parent="Exits/ToHouse"]
+position = Vector2(60, 50)
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="from_house" type="Marker2D" parent="Spawns"]
+position = Vector2(200, 900)
+
+[node name="Occluders" type="Node2D" parent="."]

@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/actors/player.gd" id="1_player"]
+
+[node name="Player" type="Node2D"]
+script = ExtResource("1_player")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 10.0
+target_desired_distance = 6.0
+path_max_distance = 200.0
+avoidance_enabled = false
+
+[node name="Body" type="Node2D" parent="."]
+
+[node name="Shadow" type="Polygon2D" parent="Body"]
+color = Color(0, 0, 0, 0.25)
+polygon = PackedVector2Array(34, 0, 29.4, 5, 17, 8.7, 0, 10, -17, 8.7, -29.4, 5, -34, 0, -29.4, -5, -17, -8.7, 0, -10, 17, -8.7, 29.4, -5)
+
+[node name="Legs" type="Node2D" parent="Body"]
+
+[node name="StepA" type="Polygon2D" parent="Body/Legs"]
+color = Color(0.227, 0.247, 0.353, 1)
+polygon = PackedVector2Array(-14, 0, 14, 0, 10, -72, -10, -72)
+
+[node name="StepB" type="Polygon2D" parent="Body/Legs"]
+self_modulate = Color(1, 1, 1, 0)
+color = Color(0.227, 0.247, 0.353, 1)
+polygon = PackedVector2Array(-30, 0, -16, 0, 0, -46, 16, 0, 30, 0, 10, -72, -10, -72)
+
+[node name="Torso" type="Polygon2D" parent="Body"]
+color = Color(0.71, 0.325, 0.235, 1)
+polygon = PackedVector2Array(-24, -70, 24, -70, 28, -140, -28, -140)
+
+[node name="Head" type="Polygon2D" parent="Body"]
+color = Color(0.902, 0.765, 0.627, 1)
+polygon = PackedVector2Array(20, -160, 14, -146, 0, -140, -14, -146, -20, -160, -14, -174, 0, -180, 14, -174)
+
+[node name="Front" type="Node2D" parent="Body"]
+
+[node name="Nose" type="Polygon2D" parent="Body/Front"]
+color = Color(0.96, 0.9, 0.78, 1)
+polygon = PackedVector2Array(16, -168, 32, -158, 16, -148)
+
+[node name="Stripe" type="Polygon2D" parent="Body/Front"]
+color = Color(0.96, 0.9, 0.78, 1)
+polygon = PackedVector2Array(12, -136, 26, -136, 23, -76, 12, -76)
