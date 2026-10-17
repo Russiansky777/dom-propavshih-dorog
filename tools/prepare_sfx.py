@@ -227,9 +227,7 @@ def write_ogg(name: str, x: np.ndarray) -> Path:
 
 def main() -> int:
     DST.mkdir(parents=True, exist_ok=True)
-    for old in list(DST.glob("sfx_*.wav")) + list(DST.glob("amb_*.ogg")):
-        old.unlink()
-        Path(str(old) + ".import").unlink(missing_ok=True) if old.suffix == ".wav" else None
+    previous = set(DST.glob("sfx_*.wav")) | set(DST.glob("amb_*.ogg"))
     made: list[Path] = []
     for name in ("sfx_door_passage", "sfx_door_variant_01", "sfx_door_variant_02"):
         x = trim_silence(highpass(read(name + ".wav"), 40.0))
@@ -255,6 +253,11 @@ def main() -> int:
     made.append(write_ogg("amb_rain.ogg", rain))
     fire = to_loudness(seamless_loop(highpass(read("amb_stove_fire.wav"), 150.0), 1.5), -24.0)
     made.append(write_ogg("amb_stove_fire.ogg", fire))
+    # Takes that are no longer produced (fewer slices than last time) go, with their .import; the
+    # .import of a rewritten file is kept (Godot re-imports by checksum, the uid stays).
+    for old in previous - set(made):
+        old.unlink()
+        Path(str(old) + ".import").unlink(missing_ok=True)
     levels = {"_comment": "Измерения tools/prepare_sfx.py (ffmpeg ebur128): peak_db, lufs_i, lufs_m_max (громчайшее окно 400 мс), duration_s. Короткие файлы измерены с 0,5 с тишины по краям."}
     for p in made:
         levels[p.name] = measure(p)

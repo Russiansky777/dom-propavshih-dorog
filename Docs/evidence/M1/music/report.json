@@ -52,7 +52,7 @@
           {
             "state": "running",
             "sampleRate": 44100,
-            "time": 6.661224489795918
+            "time": 9.880090702947847
           }
         ],
         "taps": 2,
@@ -60,7 +60,7 @@
         "gaps": {
           "gaps": 0,
           "zeroQuanta": 0,
-          "quanta": 282,
+          "quanta": 94,
           "started": false,
           "longestQuanta": 0,
           "zeroRun": 0
@@ -79,15 +79,15 @@
           {
             "bus": "Music",
             "fade_to": 1,
-            "gain": 0.912614970769825,
+            "gain": 0.684547105928689,
             "length": 187.759994506836,
             "paused": false,
             "playback_type": 1,
             "playing": true,
-            "position": 2.51999998092651,
+            "position": 2.22933340072632,
             "starts": 1,
             "theme": "roads",
-            "volume_db": -7.79424810409546
+            "volume_db": -10.2919330596924
           },
           {
             "bus": "Music",
@@ -120,17 +120,17 @@
           {
             "state": "running",
             "sampleRate": 44100,
-            "time": 11.122358276643991
+            "time": 15.740226757369614
           }
         ],
         "taps": 2,
-        "rms_db": -37.15266539823469,
+        "rms_db": -30.917583897447876,
         "gaps": {
-          "gaps": 1,
-          "zeroQuanta": 4,
-          "quanta": 1880,
+          "gaps": 7,
+          "zeroQuanta": 418,
+          "quanta": 1974,
           "started": true,
-          "longestQuanta": 4,
+          "longestQuanta": 158,
           "zeroRun": 0
         },
         "gap_detector": "on"
@@ -151,10 +151,10 @@
             "paused": true,
             "playback_type": 1,
             "playing": false,
-            "position": 29.2240009307861,
+            "position": 44.9440002441406,
             "starts": 1,
             "theme": "roads",
-            "volume_db": -47.4829177856445
+            "volume_db": -29.7185096740723
           },
           {
             "bus": "Music",
@@ -164,7 +164,7 @@
             "paused": false,
             "playback_type": 1,
             "playing": true,
-            "position": 7.37333345413208,
+            "position": 14.1999998092651,
             "starts": 1,
             "theme": "home",
             "volume_db": -6
@@ -187,31 +187,32 @@
           {
             "state": "running",
             "sampleRate": 44100,
-            "time": 41.601451247165535
+            "time": 77.64172335600907
           }
         ],
         "taps": 2,
-        "rms_db": -30.7601255044887,
+        "rms_db": -31.5415780984723,
         "gaps": {
-          "gaps": 5,
-          "zeroQuanta": 118,
-          "quanta": 12314,
+          "gaps": 117,
+          "zeroQuanta": 3940,
+          "quanta": 23406,
           "started": true,
-          "longestQuanta": 97,
+          "longestQuanta": 259,
           "zeroRun": 0
         },
         "gap_detector": "on"
       },
-      "longest_task_ms": 660,
+      "longest_task_ms": 953,
       "gaps": {
-        "gaps": 5,
-        "zeroQuanta": 118,
-        "quanta": 12314,
+        "gaps": 117,
+        "zeroQuanta": 3940,
+        "quanta": 23406,
         "started": true,
-        "longestQuanta": 97,
+        "longestQuanta": 259,
         "zeroRun": 0
       },
-      "dropouts": "4 gap(s), 114 silent quanta of 10434 (1.09 %), longest 259 ms; audio buffer (output latency) 785 ms, longest main-thread task 660 ms"
+      "dropouts": "110 gap(s), 3522 silent quanta of 21432 (16.43 %), longest 691 ms; audio buffer (output latency) 785 ms, longest main-thread task 953 ms",
+      "load_per_cpu_at_start": 2.595
     },
     "after_reload": {
       "music": {
@@ -253,16 +254,37 @@
         "events": [],
         "loop_passes": 0,
         "music_volume": 0.5,
-        "output_latency": 0.743038535118103,
+        "output_latency": 0.785038530826569,
         "room_theme": "roads",
         "settings_saves": 0,
         "target": "roads",
         "unlocked": false
+      },
+      "sfx": {
+        "bus_volume_db": -12.0411996841431,
+        "counts": {},
+        "errors": [],
+        "events": [],
+        "fire": {
+          "distance_db": -6.5671400390625,
+          "playing": false,
+          "volume_db": -80
+        },
+        "rain": {
+          "bus": "SFX_Inside",
+          "mode": "inside",
+          "playing": false,
+          "volume_db": -80
+        },
+        "room": "Z1",
+        "sfx_volume": 0.5,
+        "steps": 0
       }
     }
   },
   "warnings": [
-    "dropouts: 4 gap(s), 114 silent quanta of 10434 (1.09 %), longest 259 ms; audio buffer (output latency) 785 ms, longest main-thread task 660 ms"
+    "dropouts not judged (load 2.6/CPU): 110 gap(s), 3522 silent quanta of 21432 (16.43 %), longest 691 ms; audio buffer (output latency) 785 ms, longest main-thread task 953 ms",
+    "dropouts: 110 gap(s), 3522 silent quanta of 21432 (16.43 %), longest 691 ms; audio buffer (output latency) 785 ms, longest main-thread task 953 ms"
   ],
   "checks": [
     {
@@ -288,17 +310,17 @@
     {
       "ok": true,
       "label": "after the click the theme of Z1 (roads) plays",
-      "detail": "{\"bus\":\"Music\",\"fade_to\":1,\"gain\":0.248689887164855,\"length\":187.759994506836,\"paused\":false,\"playback_type\":1,\"playing\":true,\"position\":0.210666671395302,\"starts\":1,\"theme\":\"roads\",\"volume_db\":-19.0868377685547}"
+      "detail": "{\"bus\":\"Music\",\"fade_to\":1,\"gain\":0.255316498887457,\"length\":187.759994506836,\"paused\":false,\"playback_type\":1,\"playing\":true,\"position\":0.54666668176651,\"starts\":1,\"theme\":\"roads\",\"volume_db\":-18.8584232330322}"
     },
     {
       "ok": true,
       "label": "playback position grows",
-      "detail": "0.21 → 2.52 s in 1.5 s"
+      "detail": "0.55 → 2.23 s in 1.5 s"
     },
     {
       "ok": true,
       "label": "signal leaves the page (output RMS above silence)",
-      "detail": "-37.2 dBFS, 2 tap(s)"
+      "detail": "-30.9 dBFS, 2 tap(s)"
     },
     {
       "ok": true,
@@ -317,18 +339,58 @@
     },
     {
       "ok": true,
+      "label": "Z1: soft steps on the post office floor",
+      "detail": "{\"step:wood\":4}"
+    },
+    {
+      "ok": true,
       "label": "after the dialogue the music is back to full",
       "detail": "duck 0.00 dB"
     },
     {
       "ok": true,
+      "label": "Z1 → Z4: one door sound (post office door)",
+      "detail": "{\"bag:bag_receive\":1,\"door:Z1>Z4\":1,\"step:wood\":9}"
+    },
+    {
+      "ok": true,
+      "label": "Z4: rain outside",
+      "detail": "{\"bus\":\"SFX\",\"mode\":\"outside\",\"playing\":true,\"volume_db\":0}"
+    },
+    {
+      "ok": true,
       "label": "Z4 (roads): same deck, no restart, position grows",
-      "detail": "deck 0 starts 1 pos 14.43"
+      "detail": "deck 0 starts 1 pos 22.95"
+    },
+    {
+      "ok": true,
+      "label": "Z4 → Z2 (street): no door sound",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "Z2: rain outside",
+      "detail": "{\"bus\":\"SFX\",\"mode\":\"outside\",\"playing\":true,\"volume_db\":0}"
     },
     {
       "ok": true,
       "label": "Z2 (roads): same deck, no restart, position grows",
-      "detail": "deck 0 starts 1 pos 19.26"
+      "detail": "deck 0 starts 1 pos 30.18"
+    },
+    {
+      "ok": true,
+      "label": "street: gravel steps",
+      "detail": "{\"bag:bag_receive\":1,\"door:Z1>Z4\":1,\"step:gravel\":6,\"step:wood\":9}"
+    },
+    {
+      "ok": true,
+      "label": "Z2 → H1: one door sound (heavy front door)",
+      "detail": "{\"bag:bag_receive\":1,\"door:Z1>Z4\":1,\"door:Z2>H1\":1,\"step:gravel\":15,\"step:wood\":9}"
+    },
+    {
+      "ok": true,
+      "label": "H1: rain muffled inside (SFX_Inside)",
+      "detail": "{\"bus\":\"SFX_Inside\",\"mode\":\"inside\",\"playing\":true,\"volume_db\":-9}"
     },
     {
       "ok": true,
@@ -342,18 +404,18 @@
     },
     {
       "ok": true,
+      "label": "H1 → H2: one door sound (light workshop door)",
+      "detail": "{\"bag:bag_receive\":1,\"door:H1>H2\":1,\"door:Z1>Z4\":1,\"door:Z2>H1\":1,\"step:gravel\":15,\"step:wood\":13}"
+    },
+    {
+      "ok": true,
       "label": "H1 → H2 (home): same deck, no restart, position grows",
-      "detail": "pos 3.11 → 7.37"
+      "detail": "pos 4.76 → 14.20"
     },
     {
       "ok": true,
       "label": "signal still present after the room changes",
-      "detail": "-30.8 dBFS"
-    },
-    {
-      "ok": true,
-      "label": "audio dropouts under 5 % through dialogue and 4 room changes",
-      "detail": "4 gap(s), 114 silent quanta of 10434 (1.09 %), longest 259 ms; audio buffer (output latency) 785 ms, longest main-thread task 660 ms"
+      "detail": "-31.5 dBFS"
     },
     {
       "ok": true,
@@ -362,13 +424,23 @@
     },
     {
       "ok": true,
-      "label": "settings.cfg reaches IndexedDB (/userfs)",
-      "detail": ""
+      "label": "«Звуки» at 50 % → SFX bus ≈ −12 dB",
+      "detail": "volume 0.50, bus -12.04 dB"
+    },
+    {
+      "ok": true,
+      "label": "settings.cfg with both volumes reaches IndexedDB (/userfs)",
+      "detail": "[audio]  music_volume=0.5 sfx_volume=0.5 "
     },
     {
       "ok": true,
       "label": "a new page load gets the volume back from user:// (IndexedDB), before any click",
       "detail": "volume 0.50, bus -12.04 dB"
+    },
+    {
+      "ok": true,
+      "label": "a new page load gets the sound volume back too",
+      "detail": "volume 0.50"
     },
     {
       "ok": true,
