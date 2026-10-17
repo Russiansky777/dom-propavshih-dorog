@@ -1,0 +1,8 @@
+{
+  "zarechye_plan": {
+    "task": "01a14b85-6872-759d-9809-d9cfbe813762",
+    "prompt": "A small riverside village plan: a wide river flows from the upper left to the lower right; on the near (lower) bank a short main village street with a dozen log houses and gardens; one larger house with a fenced yard and a side porch (Evdokia's house) in the middle of the street; next to it a narrow lane leading to a small post office building; a path from the street down to a bend of the shore with old stone pier foundations in the water; a small wooden pier with a boat a little downstream; a watermill with a wheel and a dam upstream at the upper left; on the far (upper) bank, faint and partly washed out, a schoolhouse with a yard and a few houses of another village. Hand-drawn village plan on old yellowed paper pinned to a wall, watercolor and ink in the style of a 1900s Russian provincial survey map, soft painterly look, warm faded colors, top-down view, no text, no letters, no numbers, no labels, no legend, no compass text",
+    "model": "nano-banana-2",
+    "credits": 6
+  }
+}

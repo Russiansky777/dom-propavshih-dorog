@@ -1,0 +1,14 @@
+{
+  "tamara": {
+    "task": "01a14b85-0e7b-70ac-bf93-5096732359a5",
+    "prompt": "Tamara, a 53-year-old village postmistress: tall, thin, very upright posture; long narrow face with fine wrinkles and a strict attentive look; grey hair pinned in a neat bun; small round wire glasses on a thin chain; a long fitted dark navy-blue wool dress reaching the floor with a small white collar, a dark knitted waistcoat over it, black cloth cuff-sleeves on the forearms, a pencil in the waistcoat pocket, black lace-up ankle boots; cool palette of navy, blue-grey, white and silver; no shawl, no coat. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "pelageya": {
+    "task": "01a14b85-1160-75c9-98b0-4a7320d186fa",
+    "prompt": "Pelageya, a 40-year-old river ferrywoman: short and sturdy with broad shoulders and strong working hands; round weathered tanned face with rosy cheeks and a direct calm gaze; a rust-red kerchief tied tightly at the back of the head so the hair is almost hidden; a short quilted mustard-ochre padded work jacket (telogreika) ending at the hips, sleeves rolled up to the forearms, olive-green wool skirt to mid-calf, tall dark leather boots, a pair of leather work mittens tucked into a belt; warm palette of ochre, olive and rust red; no shawl, no long coat. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
+    "model": "nano-banana-2",
+    "credits": 6
+  }
+}
