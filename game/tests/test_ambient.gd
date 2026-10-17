@@ -4,7 +4,7 @@ extends SceneTree
 ## Data: data/story/ambient/*.json (tools/validate_ambient.py checks the schema). Exit code 0 only
 ## when every check passed.
 ##   1. every room with an ambient file builds its layer with exactly the regions of its data;
-##      interiors get no rain, water, puddles, mud or footfall; a new street needs one entry (Z4);
+##      interiors get no rain, water, puddles, mud or footfall; a new street takes weather from its preset (Z4);
 ##   2. nothing in the ambient layer takes input (no CollisionObject2D / Control, no input processing)
 ##      and a click on a hotspot under the rain still finds the hotspot;
 ##   3. draw order: rain over everything in the room (z 4096 > any actor), regions on the picture
@@ -70,7 +70,7 @@ func _run() -> void:
 	AmbData = load("res://scripts/ambient/ambient_data.gd")
 	rm.autosave_enabled = false
 	Builder.quality_id = "high"
-	await _test("Ambient: every room with data builds its regions; interiors without rain/water/mud; Z4 by one entry", _test_build)
+	await _test("Ambient: every room with data builds its regions; interiors without rain/water/mud; Z4 weather from preset street", _test_build)
 	await _test("Ambient: nothing takes input; a hotspot under the rain is still clicked", _test_no_input)
 	await _test("Ambient: draw order — rain over all, regions on the picture, prints on the floor", _test_draw_order)
 	await _test("Ambient: shader parameters come from the data", _test_params)
