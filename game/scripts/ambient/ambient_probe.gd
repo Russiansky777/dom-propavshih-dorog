@@ -6,6 +6,7 @@ extends RefCounted
 ##   ambientWalk(x, y)         — Agata walks there (footfall through puddles and mud)
 ##   ambientEnable(on)         — ambient layer on/off in the current and next rooms (FPS comparison)
 ##   ambientFlag(flag, on)     — set a story flag (H1: shutters open → beam dust)
+##   ambientParts(rain, sway, water) — show only some parts (cost of each part, FPS)
 ##   ambientState              — JSON-able stats, refreshed every 0.25 s: room, counts, fps
 
 static var _registered: bool = false
@@ -25,11 +26,13 @@ static func register() -> void:
 	var walk_cb := JavaScriptBridge.create_callback(_walk)
 	var en_cb := JavaScriptBridge.create_callback(_enable)
 	var flag_cb := JavaScriptBridge.create_callback(_flag)
-	_cbs = [goto_cb, walk_cb, en_cb, flag_cb]
+	var parts_cb := JavaScriptBridge.create_callback(_parts)
+	_cbs = [goto_cb, walk_cb, en_cb, flag_cb, parts_cb]
 	win.ambientGoto = goto_cb
 	win.ambientWalk = walk_cb
 	win.ambientEnable = en_cb
 	win.ambientFlag = flag_cb
+	win.ambientParts = parts_cb
 	var tree := Engine.get_main_loop() as SceneTree
 	_timer = Timer.new()
 	_timer.wait_time = 0.25
@@ -76,6 +79,20 @@ static func _flag(args: Array) -> void:
 	var gs := tree.root.get_node_or_null("GameState")
 	if gs != null and args.size() > 0:
 		gs.call("set_flag", String(args[0]), bool(args[1]) if args.size() > 1 else true)
+
+
+static func _parts(args: Array) -> void:
+	var rm := _rm()
+	var amb := AmbientBuilder.of(rm.get("current_room")) if rm != null else null
+	if amb == null:
+		return
+	var show := [bool(args[0]) if args.size() > 0 else true, bool(args[1]) if args.size() > 1 else true, bool(args[2]) if args.size() > 2 else true]
+	if amb.rain != null:
+		amb.rain.visible = show[0]
+	for n in amb.sway:
+		n.visible = show[1]
+	for n in amb.water:
+		n.visible = show[2]
 
 
 static func _publish() -> void:

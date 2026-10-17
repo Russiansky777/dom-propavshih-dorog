@@ -45,6 +45,13 @@ func setup(p_root: AmbientRoot) -> void:
 	root = p_root
 	ground = root.ground
 	cfg = AmbientData.merge(AmbientData.index().get("footfall_defaults", {}), root.spec.get("footfall", {}))
+	# Quality: fewer drops per splash (low = half).
+	var share := float(root.quality.get("particles", 1.0))
+	var sp: Dictionary = cfg.get("splash", {})
+	for k in ["drops_min", "drops_max"]:
+		if sp.has(k):
+			sp[k] = maxi(int(round(float(sp[k]) * share)), 2)
+	cfg["splash"] = sp
 	for e in root.spec.get("puddles", []):
 		var pts := AmbientData.shape_of(e)
 		if pts.size() >= 3:

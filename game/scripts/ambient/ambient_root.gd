@@ -6,7 +6,7 @@ extends Node2D
 ##   Sway/<id>  Polygon2D per `sway_regions` entry, ambient_sway.gdshader              (z −9, drawn
 ##              after the water: a bush on the shore sways over the water behind it)
 ##   Dust/<id>  CPUParticles2D per `dust` entry                                        (z per entry)
-##   Rain       Polygon2D over the frame, ambient_rain.gdshader                     (z 4096)
+##   Rain       AmbientRain: streak particles in depth layers                        (z 4096)
 ##   Footfall   splashes in puddles, prints in mud when Agata's foot is planted        (see its doc)
 ## A region redraws the background picture; with `source: "layer:<id>"` it redraws that room layer
 ## instead (R1/Z3: the water at the shore is a separate layer over the background) and is drawn
@@ -16,14 +16,14 @@ extends Node2D
 
 const SWAY_SHADER: Shader = preload("res://shaders/ambient_sway.gdshader")
 const WATER_SHADER: Shader = preload("res://shaders/ambient_water.gdshader")
-const RAIN_SHADER: Shader = preload("res://shaders/ambient_rain.gdshader")
 const MAX_POLY: int = 32
 
 var room: Room = null
 var room_id: String = ""
 var spec: Dictionary = {}
 var ground: AmbientGround = null
-var rain: Polygon2D = null
+var rain: AmbientRain = null
+var quality: Dictionary = {}     # AmbientBuilder.quality(): rain_layers, particles, grass
 var footfall: AmbientFootfall = null
 var sway: Array[Polygon2D] = []
 var water: Array[Polygon2D] = []
@@ -39,6 +39,7 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 	room_id = p_room_id
 	spec = p_spec
 	ground = AmbientGround.for_room(room)
+	quality = AmbientBuilder.quality()
 	_find_background()
 	var wind: Dictionary = spec.get("wind", {})
 	var water_box := _group("Water")
@@ -58,6 +59,9 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 	var sway_box := _group("Sway")
 	var i := 0
 	for r in spec.get("sway_regions", []):
+		if String(r.get("kind", "tree")) == "grass" and not bool(quality.get("grass", true)):
+			i += 1
+			continue  # low quality: no grass waves (large ground areas)
 		var n := _make_sway(r, wind, i)
 		if n != null:
 			sway_box.add_child(n)
@@ -72,8 +76,11 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 			dust.append(n)
 			_conditional(n, d)
 	if spec.has("rain"):
-		rain = _make_rain(spec["rain"], wind)
+		rain = AmbientRain.new()
+		rain.name = "Rain"
+		rain.z_index = AmbientBuilder.Z_RAIN
 		add_child(rain)
+		rain.setup(spec["rain"], wind, quality)
 	if not spec.get("puddles", []).is_empty() or not spec.get("mud", []).is_empty():
 		footfall = AmbientFootfall.new()
 		footfall.name = "Footfall"
@@ -385,28 +392,6 @@ func _make_water(w: Dictionary, style: Dictionary, rain_amount: float, mode: int
 	return n
 
 
-func _make_rain(r: Dictionary, wind: Dictionary) -> Polygon2D:
-	var n := Polygon2D.new()
-	n.name = "Rain"
-	n.polygon = AmbientData.rect_poly([0, 0, 1920, 1080])
-	n.z_index = AmbientBuilder.Z_RAIN
-	var m := ShaderMaterial.new()
-	m.shader = RAIN_SHADER
-	m.set_shader_parameter("intensity", clampf(float(r.get("intensity", 0.5)), 0.0, 1.0))
-	m.set_shader_parameter("slant", tan(deg_to_rad(float(r.get("slant_deg", 10.0)))))
-	m.set_shader_parameter("gust_slant", tan(deg_to_rad(float(r.get("gust_slant_deg", 3.0)))))
-	m.set_shader_parameter("gust_rate", float(wind.get("gust_rate", 0.12)))
-	if r.has("color"):
-		m.set_shader_parameter("color", Color.html(String(r["color"])))
-	var layers: Array = r.get("layers", [])
-	for k in mini(layers.size(), 3):
-		var L: Dictionary = layers[k]
-		m.set_shader_parameter("layer%d" % k, Vector4(float(L.get("len_px", 18)), float(L.get("width_px", 1.1)), float(L.get("speed_px_s", 800)), float(L.get("alpha", 0.2))))
-		m.set_shader_parameter("cells%d" % k, Vector3(float(L.get("cell_px", 17)), float(L.get("gap_px", 110)), float(L.get("density", 0.5))))
-	n.material = m
-	return n
-
-
 ## Dust motes in a light beam: slow, sparse, soft, fading in and out (emission points inside the area).
 func _make_dust(d: Dictionary) -> CPUParticles2D:
 	var pts := AmbientData.shape_of(d)
@@ -415,7 +400,7 @@ func _make_dust(d: Dictionary) -> CPUParticles2D:
 	var p := CPUParticles2D.new()
 	p.name = String(d.get("id", "dust"))
 	p.z_index = clampi(int(d.get("z", 2)), -10, 4096)
-	p.amount = clampi(int(d.get("amount", 18)), 1, 80)
+	p.amount = clampi(int(round(float(d.get("amount", 18)) * float(quality.get("particles", 1.0)))), 1, 80)
 	p.lifetime = float(d.get("lifetime_s", 9.0))
 	p.preprocess = p.lifetime
 	p.randomness = 0.5
@@ -482,6 +467,8 @@ func set_active(on: bool) -> void:
 	visible = on
 	for d in dust:
 		d.emitting = on
+	if rain != null:
+		rain.set_active(on)
 	if footfall != null:
 		footfall.active = on
 	_refresh_conditions()
@@ -490,7 +477,8 @@ func set_active(on: bool) -> void:
 ## Counts for tests and the web probe.
 func stats() -> Dictionary:
 	var out := {"room": room_id, "rain": rain != null, "sway": sway.size(), "water": 0, "puddles": 0,
-		"dust": dust.size(), "dust_particles": 0, "visible": visible}
+		"dust": dust.size(), "dust_particles": 0, "visible": visible, "quality": String(quality.get("id", "high")),
+		"rain_layers": rain.emitters.size() if rain != null else 0, "rain_particles": rain.particle_count() if rain != null else 0}
 	for w in water:
 		if String(w.get_meta("ambient_kind", "water")) == "puddle":
 			out["puddles"] += 1

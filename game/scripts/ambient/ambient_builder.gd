@@ -16,12 +16,54 @@ const Z_GROUND: int = -9
 const Z_DECAL: int = -8
 const Z_RAIN: int = 4096
 
-## Off → rooms are built without the ambient layer (FPS comparison, ?ambientprobe in the web build).
+## Off → rooms are built without the ambient layer (F2 in the F3 overlay, ?ambientprobe in the web build).
 static var enabled: bool = true
+
+## Effects quality, data/story/ambient/_index.json `quality.levels` (high / low). The player's choice
+## (F4 in the F3 overlay) is kept in user://ambient.cfg; otherwise `quality.default`.
+const SETTINGS: String = "user://ambient.cfg"
+static var quality_id: String = ""
+
+
+static func quality() -> Dictionary:
+	var q: Dictionary = AmbientData.index().get("quality", {})
+	var levels: Dictionary = q.get("levels", {})
+	if quality_id == "":
+		var cfg := ConfigFile.new()
+		quality_id = String(q.get("default", "high"))
+		if cfg.load(SETTINGS) == OK:
+			quality_id = String(cfg.get_value("ambient", "quality", quality_id))
+	if not levels.has(quality_id):
+		quality_id = String(q.get("default", "high")) if levels.has(String(q.get("default", "high"))) else "high"
+	var out: Dictionary = levels.get(quality_id, {}).duplicate()
+	out["id"] = quality_id
+	return out
+
+
+## Switches high ↔ low (or to `id`), saves the choice and rebuilds the ambient layer of `room`.
+static func set_quality(id: String, room: Node = null) -> void:
+	quality_id = id
+	var cfg := ConfigFile.new()
+	cfg.load(SETTINGS)
+	cfg.set_value("ambient", "quality", id)
+	cfg.save(SETTINGS)
+	rebuild(room)
+
+
+## Rebuilds the ambient layer of a built room (quality or on/off changed).
+static func rebuild(room: Node) -> void:
+	if room == null or not (room is Room):
+		return
+	var old := of(room)
+	if old != null:
+		room.remove_child(old)
+		old.queue_free()
+	build(room as Room, String(room.get("room_id")))
 
 
 static func build(room: Room, room_id: String) -> AmbientRoot:
 	AmbientProbe.register()  # web only, with ?ambientprobe in the URL; once
+	AmbientPerf.ensure()     # hidden performance overlay, F3; once
 	if not enabled or room == null:
 		return null
 	var spec := AmbientData.room(room_id)

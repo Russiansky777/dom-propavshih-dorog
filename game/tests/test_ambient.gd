@@ -271,12 +271,22 @@ func _test_params() -> void:
 	var amb = Builder.of(room)
 	var spec: Dictionary = AmbData.room("Z2")
 	var rain: Dictionary = spec["rain"]
-	var m: ShaderMaterial = amb.rain.material
-	_check(is_equal_approx(float(m.get_shader_parameter("intensity")), float(rain["intensity"])), "rain intensity not from data")
-	_check(absf(float(m.get_shader_parameter("slant")) - tan(deg_to_rad(float(rain["slant_deg"])))) < 0.0001, "rain slant not from data")
-	var l0: Vector4 = m.get_shader_parameter("layer0")
-	var l2: Vector4 = m.get_shader_parameter("layer2")
-	_check(l0.z < l2.z and l0.x < l2.x and l0.y < l2.y, "far drizzle layer must be slower, shorter and thinner than the near one (%s vs %s)" % [str(l0), str(l2)])
+	var r = amb.rain
+	_check(absf(r.slant - tan(deg_to_rad(float(rain["slant_deg"])))) < 0.0001, "rain slant not from data")
+	_check(r.emitters.size() == rain["layers"].size(), "rain layers %d, data %d (quality high)" % [r.emitters.size(), rain["layers"].size()])
+	if r.emitters.size() == 3:
+		var far: CPUParticles2D = r.emitters[0]
+		var near: CPUParticles2D = r.emitters[2]
+		_check(far.initial_velocity_max < near.initial_velocity_min, "far drizzle must fall slower than near")
+		_check(far.texture.get_height() < near.texture.get_height() and far.texture.get_width() <= near.texture.get_width(), "far streaks must be shorter and thinner")
+		_check(far.amount > near.amount, "far layer is the densest (%d vs %d)" % [far.amount, near.amount])
+		_check(far.particle_flag_align_y and near.particle_flag_align_y, "streaks align with their motion")
+		# Count = density × intensity × columns × rows of the layer (frame width with the slant).
+		var L: Dictionary = rain["layers"][2]
+		var t := absf(r.slant) + absf(r.gust_slant)
+		var expect := float(L["density"]) * float(rain["intensity"]) * ((1920.0 + 1080.0 * t + 80.0) / float(L["cell_px"])) * (1080.0 / (float(L["len_px"]) + float(L["gap_px"])))
+		_check(absf(near.amount - expect) <= 1.0, "near layer %d streaks, expected %.1f from data" % [near.amount, expect])
+	_check(r.particle_count() <= 2500, "rain budget: %d streaks" % r.particle_count())
 	var strength := float(spec.get("wind", {}).get("strength", 1.0))
 	for r in spec["sway_regions"]:
 		var n: Node = amb.get_node_or_null("Sway/" + String(r["id"]))

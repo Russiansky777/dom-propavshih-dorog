@@ -49,37 +49,46 @@ void fragment() {
 	vec2 p = room_pos;
 	float t = TIME;
 	float edge = amb_edge(p);
-	// Gusts: slow smooth noise, its own phase per region (neighbours never move in step).
-	float g = amb_noise1(t * gust_rate + phase * 17.0);
-	float wind = mix(1.0 - gust_depth, 1.0, g);
-	vec2 d = vec2(0.0);
-	if (kind == 1) {
-		// Grass: a gust wave runs across the field downwind; blades lean with it.
-		float wave = 0.5 + 0.5 * sin((p.x * wind_dir / wave_px - t * freq_hz) * 6.2831853 + phase * 6.2831853);
-		float n = amb_noise2(vec2(p.x * 0.015 - t * 0.5 * wind_dir, p.y * 0.04));
-		d.x = amp_px * wind * wave * (0.4 + 0.9 * n) * wind_dir;
-		d.y = amp_px * 0.15 * (n - 0.5);
-	} else {
+	float w = 1.0;
+	if (kind != 1) {
 		float shift = anchor_slope * (p.x - anchor_x0);
-		float w = clamp((anchor_y + shift - p.y) / max(anchor_y - top_y, 1.0), 0.0, 1.0);
+		w = clamp((anchor_y + shift - p.y) / max(anchor_y - top_y, 1.0), 0.0, 1.0);
 		w = w * sqrt(w);  // a trunk bends more and more towards the crown
-		float s = sin(6.2831853 * (freq_hz * t + phase)) * 0.7
-			+ sin(6.2831853 * (freq_hz * 2.13 * t + phase * 1.7)) * 0.3;
-		d.x = amp_px * w * (wind * s + 0.45 * (wind - 0.6) * wind_dir);
-		vec2 fl = vec2(amb_noise2(p * 0.06 + vec2(t * 1.7, 0.0)), amb_noise2(p * 0.06 + vec2(5.3, -t * 1.3))) - 0.5;
-		d += fl * (amp_px * flutter * w * wind * 2.0);
 	}
-	d *= edge;
-	// Window panes: the moved sample never comes from the frame round the glass (but a pixel on the
-	// glass edge itself is never pulled inwards either).
-	vec2 lo = clip_rect.xy;
-	vec2 hi = clip_rect.xy + clip_rect.zw;
-	vec2 sp = clamp(p - d, min(p, lo), max(p, hi));
-	vec4 c = amb_src(sp);
-	if (keep_below_sat > 0.0) {
-		vec4 b = amb_src(p);
-		float keep = 1.0 - smoothstep(keep_below_sat - 0.1, keep_below_sat, min(amb_sat(b.rgb), amb_sat(c.rgb)));
-		c = mix(c, b, keep);
+	if (amp_px * edge * w < 0.04) {
+		// Near the roots or the outline nothing moves visibly: the picture as painted, no noise.
+		vec4 c0 = amb_src(p);
+		COLOR = src_alpha ? c0 * COLOR : vec4(c0.rgb * COLOR.rgb, COLOR.a);
+	} else {
+		// Gusts: slow smooth noise, its own phase per region (neighbours never move in step).
+		float g = amb_noise1(t * gust_rate + phase * 17.0);
+		float wind = mix(1.0 - gust_depth, 1.0, g);
+		vec2 d = vec2(0.0);
+		if (kind == 1) {
+			// Grass: a gust wave runs across the field downwind; blades lean with it.
+			float wave = 0.5 + 0.5 * sin((p.x * wind_dir / wave_px - t * freq_hz) * 6.2831853 + phase * 6.2831853);
+			float n = amb_noise2(vec2(p.x * 0.015 - t * 0.5 * wind_dir, p.y * 0.04));
+			d.x = amp_px * wind * wave * (0.4 + 0.9 * n) * wind_dir;
+			d.y = amp_px * 0.15 * (n - 0.5);
+		} else {
+			float s = sin(6.2831853 * (freq_hz * t + phase)) * 0.7
+				+ sin(6.2831853 * (freq_hz * 2.13 * t + phase * 1.7)) * 0.3;
+			d.x = amp_px * w * (wind * s + 0.45 * (wind - 0.6) * wind_dir);
+			vec2 fl = vec2(amb_noise2(p * 0.06 + vec2(t * 1.7, 0.0)), amb_noise2(p * 0.06 + vec2(5.3, -t * 1.3))) - 0.5;
+			d += fl * (amp_px * flutter * w * wind * 2.0);
+		}
+		d *= edge;
+		// Window panes: the moved sample never comes from the frame round the glass (but a pixel on the
+		// glass edge itself is never pulled inwards either).
+		vec2 lo = clip_rect.xy;
+		vec2 hi = clip_rect.xy + clip_rect.zw;
+		vec2 sp = clamp(p - d, min(p, lo), max(p, hi));
+		vec4 c = amb_src(sp);
+		if (keep_below_sat > 0.0) {
+			vec4 b = amb_src(p);
+			float keep = 1.0 - smoothstep(keep_below_sat - 0.1, keep_below_sat, min(amb_sat(b.rgb), amb_sat(c.rgb)));
+			c = mix(c, b, keep);
+		}
+		COLOR = src_alpha ? c * COLOR : vec4(c.rgb * COLOR.rgb, COLOR.a);
 	}
-	COLOR = src_alpha ? c * COLOR : vec4(c.rgb * COLOR.rgb, COLOR.a);
 }
