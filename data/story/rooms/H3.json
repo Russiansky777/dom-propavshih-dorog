@@ -16,7 +16,7 @@
   "props": [],
   "hotspots": [
     {
-      "id": "school_door", "kind": "object", "label": "@H3.school_door.label", "rect": [330, 140, 300, 560], "stand": [560, 840], "color": "#7a5a3a", "draw": false,
+      "id": "school_door", "action_anim": "open", "kind": "object", "label": "@H3.school_door.label", "rect": [330, 140, 300, 560], "stand": [560, 840], "color": "#7a5a3a", "draw": false,
       "pick_priority": 2,
       "hidden_if": ["door_school_installed"],
       "states": [{"if": ["seen_school_door"], "label": "@H3.school_door.label_seen"}],

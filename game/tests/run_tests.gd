@@ -55,6 +55,7 @@ func _run() -> void:
 	await _test("No straight-line walking: a click right after entering Z1 waits for the nav map and goes round the counter", _test_no_straight_line)
 	await _test("Loop seams: every repeating animation of every actor sheet returns to its first frame smoothly", _test_loop_seams)
 	await _test("Cross-fade: switching idle↔walk (Agata) and idle↔talk (Tamara) dissolves the old pose in ≈0.12 s", _test_crossfade)
+	await _test("Actions: hotspot action_anim plays once, the effect lands on the key frame exactly once; save mid-action is safe", _test_actions)
 	_cleanup_m1()
 	_finish()
 
@@ -399,7 +400,7 @@ class Bot:
 
 	func wait_idle() -> int:
 		var frames := 0
-		while (player.call("is_walking") or sr.get("_loop_running")) and frames < MAX_FRAMES:
+		while (player.call("is_walking") or player.call("is_acting") or sr.get("_loop_running")) and frames < MAX_FRAMES:
 			await t.physics_frame
 			frames += 1
 		await t.process_frame
@@ -1353,5 +1354,113 @@ func _test_crossfade() -> void:
 			saw_fade = tf != null and tf.visible and String(tf.animation).begins_with("idle_")
 		await process_frame
 	_check(saw_fade, "Tamara's idle→talk switch must cross-fade from the idle pose")
+	gs.reset()
+	_cleanup_m1()
+
+
+## Director 17.10 («как Агата открывает ставни»): hotspot `action_anim` (open / pick / reach).
+func _test_actions() -> void:
+	gs.reset()
+	await _spawn_main()
+	rm.autosave_enabled = false
+	sr = root.get_node("StoryRunner")
+	var sheet = player.sheet
+	# 1. Every action_anim used by a room exists in Agata's sheets, with its key frame inside the clip.
+	var used := {}
+	for rid in root.get_node("StoryData").rooms.keys():
+		for h in root.get_node("StoryData").rooms[rid].get("hotspots", []):
+			var a := String(h.get("action_anim", ""))
+			if a != "":
+				used[a] = int(used.get(a, 0)) + 1
+				_check(sheet.has_action(a), "%s.%s: action_anim '%s' has no sheet in data/actors/agata.json" % [rid, String(h.get("id", "")), a])
+	for a in used.keys():
+		if sheet.has_action(a):
+			var n: int = sheet.action_sequence(a).size()
+			var kf: int = sheet.action_key_frame(a)
+			_check(kf > 0 and kf < n, "%s: key frame %d outside 1..%d" % [a, kf, n - 1])
+			_check(not sheet.action_loops(a), "%s must play once (loop false)" % a)
+	print("    action_anim in rooms: %s; key frames %s" % [str(used), str(sheet.action_key_frames)])
+	_check(used.size() >= 3, "expected open, pick and reach to be used by hotspots, got %s" % str(used))
+	# 2. Shutter in H1: walk there, the open action plays, the flag lands on the key frame, once.
+	rm.change_room("H1", "default")
+	await physics_frame
+	await physics_frame
+	var room: Node = rm.current_room
+	var spr: AnimatedSprite2D = player.get_node("Sprite")
+	var shutter: Node2D = room.get_node("Hotspots/shutter")
+	var flag_sets := [0]
+	var on_flag := func(f, v): if f == "h1_shutter_open" and v: flag_sets[0] += 1
+	gs.flag_changed.connect(on_flag)
+	player.speed_factor = 3.0
+	player.call("walk_to_and_interact", shutter)
+	var n := 0
+	while not player.call("is_acting") and n < 2000:
+		await process_frame
+		n += 1
+	_check(player.call("is_acting") and String(spr.animation).begins_with("open_"), "arriving at the shutter must start the open action, got %s" % String(spr.animation))
+	_check(not gs.has_flag("h1_shutter_open"), "the shutter must not open before the key frame")
+	var kf: int = sheet.action_key_frame("open")
+	var seen_before_key := false
+	var fire_frame := -1
+	var fires0: int = player.action_fire_count
+	n = 0
+	while player.call("is_acting") and n < 2000:
+		if not gs.has_flag("h1_shutter_open") and spr.frame < kf:
+			seen_before_key = true
+		if gs.has_flag("h1_shutter_open") and fire_frame < 0:
+			fire_frame = spr.frame
+		await process_frame
+		n += 1
+	print("    shutter: open action, flag set at sheet frame %d (key frame %d), fires %d, flag_changed %d" % [fire_frame, kf, player.action_fire_count - fires0, flag_sets[0]])
+	_check(seen_before_key and fire_frame >= kf and fire_frame <= kf + 1, "the effect must land on the key frame %d (got %d)" % [kf, fire_frame])
+	_check(gs.has_flag("h1_shutter_open") and flag_sets[0] == 1 and player.action_fire_count - fires0 == 1, "the shutter opens exactly once")
+	_check(String(spr.animation).begins_with("idle_"), "after the action Agata idles, got %s" % String(spr.animation))
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	# A second click on the open shutter is only a look: no action, no second effect.
+	player.call("walk_to_and_interact", shutter)
+	n = 0
+	while (player.call("is_walking") or player.call("is_acting")) and n < 2000:
+		await process_frame
+		n += 1
+	_check(player.action_fire_count - fires0 == 1 and flag_sets[0] == 1, "clicking the open shutter again must not replay the action or its effect")
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	gs.flag_changed.disconnect(on_flag)
+	# 3. Save in the middle of the stove action (before its key frame): the save has no effect in it;
+	#    loading it leaves Agata standing, and the stove can be lit — once — afterwards.
+	var stove: Node2D = room.get_node("Hotspots/stove")
+	player.call("walk_to_and_interact", stove)
+	n = 0
+	while not player.call("is_acting") and n < 3000:
+		await process_frame
+		n += 1
+	_check(player.call("is_acting") and not gs.has_flag("stove_lit"), "stove: action running, not lit yet")
+	_check(rm.save_game(MID_SLOT), "save during the action")
+	n = 0
+	while player.call("is_acting") and n < 2000:
+		await process_frame
+		n += 1
+	_check(gs.has_flag("stove_lit"), "the action lit the stove")
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	_check(rm.load_game(MID_SLOT), "load the mid-action save")
+	await process_frame
+	await process_frame
+	_check(not gs.has_flag("stove_lit") and not player.call("is_acting") and String(spr.animation).begins_with("idle_"), "after loading the mid-action save: stove not lit, Agata standing (acting=%s, anim %s)" % [str(player.call("is_acting")), String(spr.animation)])
+	var fires1: int = player.action_fire_count
+	player.call("walk_to_and_interact", rm.current_room.get_node("Hotspots/stove"))
+	n = 0
+	while (player.call("is_walking") or player.call("is_acting")) and n < 3000:
+		await process_frame
+		n += 1
+	_check(gs.has_flag("stove_lit") and player.action_fire_count - fires1 == 1, "after load the stove can be lit, exactly once")
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	player.speed_factor = 1.0
 	gs.reset()
 	_cleanup_m1()

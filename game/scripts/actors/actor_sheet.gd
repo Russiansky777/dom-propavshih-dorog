@@ -44,6 +44,9 @@ var shadow_alpha: float = 0.5
 ## Cross-fade between two different animations (idle↔walk↔talk↔action): the old pose fades out
 ## over this many seconds on top of the new one (ActorCrossfade). 0 disables.
 var crossfade_s: float = 0.12
+## One-shot actions (data `action_key_frame`): the sheet frame at which the action's effect is
+## applied (the hand reaches the shutter, the item leaves the floor).
+var action_key_frames: Dictionary = {}
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null
@@ -125,6 +128,10 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 					merged[k] = over[act_name][k]
 			a.actions[act_name] = merged
 	a.crossfade_s = float(spec.get("crossfade_s", a.crossfade_s))
+	var kf: Dictionary = spec.get("action_key_frame", {})
+	for k in kf.keys():
+		if not String(k).begins_with("_"):
+			a.action_key_frames[String(k)] = int(kf[k])
 	a._build_frames()
 	return a
 
@@ -136,7 +143,10 @@ func _build_frames() -> void:
 		var act: Dictionary = actions[action]
 		var path := sheet_dir + "/" + String(act.get("sheet", action + ".png"))
 		if not ResourceLoader.exists(path):
-			load_error = "missing sheet " + path
+			if String(action) == idle_action or String(action) == walk_action:
+				load_error = "missing sheet " + path
+			else:
+				push_warning("ActorSheet %s: no sheet for action '%s' (%s) — action skipped" % [id, action, path])
 			continue
 		var tex: Texture2D = load(path)
 		var n := int(act.get("frames", 1))
@@ -259,6 +269,13 @@ func stride_px_unit() -> float:
 
 func anim_name(action: String, dir: int) -> String:
 	return "%s_%d" % [action, dir]
+
+
+## Key frame of a one-shot action (index in the played sequence); defaults to the middle.
+func action_key_frame(action: String) -> int:
+	if action_key_frames.has(action):
+		return int(action_key_frames[action])
+	return action_sequence(action).size() / 2
 
 
 func has_action(action: String) -> bool:

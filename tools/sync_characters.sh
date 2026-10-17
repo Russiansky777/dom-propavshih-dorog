@@ -15,10 +15,20 @@ for id in "${ids[@]}"; do
   [[ -d "$SRC/$id" ]] || { echo "sync_characters: no assets/characters/$id" >&2; exit 1; }
   mkdir -p "$DST/$id"
   changed=0
+  declare -A seen=()
   for f in "$SRC/$id"/*.png "$SRC/$id"/sprites.json; do
     [[ -f "$f" ]] || continue
     name="$(basename "$f")"
     [[ "$name" == view_*.png ]] && continue
+    # A sheet byte-identical to one already copied (e.g. a clip mix-up in the pipeline) is not
+    # copied: it would only add megabytes to the web build. ActorSheet skips actions without a sheet.
+    sum="$(md5sum "$f" | cut -d' ' -f1)"
+    if [[ "$name" == *.png && -n "${seen[$sum]:-}" ]]; then
+      echo "  $id/$name is identical to ${seen[$sum]} — skipped"
+      rm -f "$DST/$id/$name" "$DST/$id/$name.import"
+      continue
+    fi
+    seen[$sum]="$name"
     if ! cmp -s "$f" "$DST/$id/$name"; then
       cp "$f" "$DST/$id/$name"
       changed=$((changed + 1))

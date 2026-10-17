@@ -16,30 +16,30 @@
   "props": [],
   "hotspots": [
     {
-      "id": "board", "kind": "object", "label": "@O1.board.label", "rect": [860, 170, 480, 310], "stand": [1100, 740], "color": "#2e3e3a", "draw": false,
+      "id": "board", "action_anim": "reach", "kind": "object", "label": "@O1.board.label", "rect": [860, 170, 480, 310], "stand": [1100, 740], "color": "#2e3e3a", "draw": false,
       "states": [{"if": ["wrote_on_board"], "label": "@O1.board.label_written"}],
       "use": {"sets": ["o1_seen_board_task"], "text": "@O1.board.use", "once_flag": "o1_seen_board_task", "scene": "M06"},
       "item_use": {"chalk": {"sets": ["wrote_on_board"], "text": "@O1.board.chalk", "scene": "M08", "once_flag": "wrote_on_board"}},
       "look": "@O1.board.look"
     },
     {
-      "id": "sack", "kind": "object", "label": "@O1.sack.label", "rect": [330, 570, 130, 150], "pick_priority": 2, "stand": [470, 760], "color": "#8a7a5a", "draw": false,
+      "id": "sack", "action_anim": "pick", "kind": "object", "label": "@O1.sack.label", "rect": [330, 570, 130, 150], "pick_priority": 2, "stand": [470, 760], "color": "#8a7a5a", "draw": false,
       "use": {"sets": ["o1_seen_sack"], "text": "@O1.sack.use", "once_flag": "o1_seen_sack", "scene": "M06"},
       "look": "@O1.sack.look"
     },
     {
-      "id": "notebooks", "kind": "object", "label": "@O1.notebooks.label", "rect": [1460, 480, 230, 190], "stand": [1560, 770], "color": "#c8c0a8", "draw": false,
+      "id": "notebooks", "action_anim": "reach", "kind": "object", "label": "@O1.notebooks.label", "rect": [1460, 480, 230, 190], "stand": [1560, 770], "color": "#c8c0a8", "draw": false,
       "use": {"sets": ["o1_seen_notebooks"], "text": "@O1.notebooks.use", "once_flag": "o1_seen_notebooks", "scene": "M06"},
       "look": "@O1.notebooks.look"
     },
     {
-      "id": "teacher_drawer", "kind": "object", "label": "@O1.teacher_drawer.label", "rect": [560, 500, 310, 110], "stand": [720, 780], "color": "#5a4a3a", "draw": false,
+      "id": "teacher_drawer", "action_anim": "open", "kind": "object", "label": "@O1.teacher_drawer.label", "rect": [560, 500, 310, 110], "stand": [720, 780], "color": "#5a4a3a", "draw": false,
       "states": [{"if": ["has_invoice_chalk"], "label": "@O1.teacher_drawer.label_open"}],
       "use": {"gives": ["invoice_chalk", "photo_school_pier"], "text": "@O1.teacher_drawer.use", "once_flag": "has_invoice_chalk", "scene": "M07"},
       "look": "@O1.teacher_drawer.look"
     },
     {
-      "id": "chalk", "kind": "pickup", "label": "@O1.chalk.label", "rect": [590, 470, 90, 30], "stand": [640, 780], "color": "#f0f0e8", "draw": false,
+      "id": "chalk", "action_anim": "reach", "kind": "pickup", "label": "@O1.chalk.label", "rect": [590, 470, 90, 30], "stand": [640, 780], "color": "#f0f0e8", "draw": false,
       "hidden_if": ["has_chalk"],
       "use": {"gives": ["chalk"], "text": "@O1.chalk.use", "scene": "M08"},
       "look": "@O1.chalk.look"

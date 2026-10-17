@@ -20,7 +20,7 @@
       "talk": {"scene": "M01", "after_text": "@Z1.tamara.after"}
     },
     {
-      "id": "drawings", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 576, 638, 132], "stand": [940, 945], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
+      "id": "drawings", "action_anim": "reach", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 576, 638, 132], "stand": [940, 945], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
       "use": {"sets": ["z1_compared_drawings"], "text": "@Z1.drawings.use", "once_flag": "z1_compared_drawings"},
       "look": "@Z1.drawings.look"
     },

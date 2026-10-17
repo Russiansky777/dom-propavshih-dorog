@@ -20,13 +20,13 @@
       "look": "@H2.bench.look"
     },
     {
-      "id": "hinges_box", "kind": "pickup", "label": "@H2.hinges_box.label", "rect": [800, 430, 130, 80], "stand": [860, 760], "color": "#c9a86a", "draw": false,
+      "id": "hinges_box", "action_anim": "reach", "kind": "pickup", "label": "@H2.hinges_box.label", "rect": [800, 430, 130, 80], "stand": [860, 760], "color": "#c9a86a", "draw": false,
       "hidden_if": ["has_door_hinges"],
       "use": {"gives": ["door_hinges"], "text": "@H2.hinges_box.use", "scene": "M04"},
       "look": "@H2.hinges_box.look"
     },
     {
-      "id": "bell", "kind": "object", "label": "@H2.bell.label", "rect": [1590, 300, 190, 260], "stand": [1450, 692], "color": "#b8a040", "draw": false,
+      "id": "bell", "action_anim": "reach", "kind": "object", "label": "@H2.bell.label", "rect": [1590, 300, 190, 260], "stand": [1450, 692], "color": "#b8a040", "draw": false,
       "use": {"sets": ["seen_bell"], "text": "@H2.bell.use", "once_flag": "seen_bell", "scene": "M04"},
       "look": "@H2.bell.look"
     },

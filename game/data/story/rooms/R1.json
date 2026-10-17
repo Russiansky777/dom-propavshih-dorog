@@ -21,12 +21,12 @@
       "talk": {"scene": "M02", "after_text": "@R1.pelageya.after"}
     },
     {
-      "id": "rope", "kind": "object", "label": "@R1.rope.label", "rect": [1470, 420, 75, 280], "stand": [1580, 815], "color": "#b09a70", "draw": false,
+      "id": "rope", "action_anim": "reach", "kind": "object", "label": "@R1.rope.label", "rect": [1470, 420, 75, 280], "stand": [1580, 815], "color": "#b09a70", "draw": false,
       "use": {"sets": ["r1_seen_rope"], "text": "@R1.rope.use", "once_flag": "r1_seen_rope", "scene": "M02"},
       "look": "@R1.rope.look"
     },
     {
-      "id": "lantern", "kind": "object", "label": "@R1.lantern.label", "rect": [340, 130, 90, 150], "stand": [380, 700], "color": "#d8c070", "draw": false,
+      "id": "lantern", "action_anim": "reach", "kind": "object", "label": "@R1.lantern.label", "rect": [340, 130, 90, 150], "stand": [380, 700], "color": "#d8c070", "draw": false,
       "use": {"sets": ["r1_seen_lantern"], "text": "@R1.lantern.use", "once_flag": "r1_seen_lantern", "scene": "M02"},
       "look": "@R1.lantern.look"
     },

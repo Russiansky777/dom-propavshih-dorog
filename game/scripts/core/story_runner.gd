@@ -290,6 +290,45 @@ func _use_state(d: Dictionary) -> String:
 	return "ready"
 
 
+## What a click on `h` would do right now, without doing it (mirrors interact()):
+## "item_use" | "item_none" | "talk" | "talk_text" | "puzzle" | "choice" | "use" | "text" | "busy".
+## The player plays a hotspot's action animation (data action_anim) only for "use", "item_use" and
+## "choice" — the interactions that change something; a look or a repeated click just shows text.
+func planned_interaction(h: StoryHotspot) -> String:
+	if is_busy():
+		return "busy"
+	var d := h.data
+	if selected_item != "":
+		return "item_use" if d.get("item_use", {}).has(selected_item) else "item_none"
+	if d.has("talk"):
+		var t: Dictionary = d["talk"]
+		var scn := String(t.get("scene", ""))
+		if scn != "" and can_start(scn):
+			return "talk"
+		if (scn != "" and not is_done(scn) and t.has("before_text")) or t.has("after_text"):
+			return "talk_text"
+	if d.has("puzzle"):
+		var pz: Dictionary = d["puzzle"]
+		var success_scene := String(pz.get("success", {}).get("scene", ""))
+		if requires_met(pz.get("requires", {})) and (success_scene == "" or not is_done(success_scene)):
+			return "puzzle"
+		if _use_state(d) != "ready":
+			return "text"
+	if d.has("choice"):
+		var ch: Dictionary = d["choice"]
+		if requires_met(ch.get("requires", {})):
+			var already := false
+			if bool(ch.get("once_any", false)):
+				for o in ch.get("options", []):
+					if GameState.has_flag(String(o.get("sets", ""))):
+						already = true
+			if not already:
+				return "choice"
+		elif ch.has("fail_text"):
+			return "text"
+	return "use" if _use_state(d) == "ready" else "text"
+
+
 func interact(h: StoryHotspot) -> void:
 	if is_busy():
 		return

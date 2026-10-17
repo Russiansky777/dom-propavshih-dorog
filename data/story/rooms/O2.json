@@ -67,7 +67,7 @@
       "draw": false
     },
     {
-      "id": "porch_step",
+      "id": "porch_step", "action_anim": "pick",
       "kind": "object",
       "label": "@O2.porch_step.label",
       "rect": [420, 600, 460, 160],

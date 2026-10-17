@@ -87,7 +87,7 @@
   "props": [],
   "hotspots": [
     {
-      "id": "stove",
+      "id": "stove", "action_anim": "open",
       "kind": "object",
       "label": "@H1.stove.label",
       "rect": [60, 140, 470, 250],
@@ -110,7 +110,7 @@
       "look": "@H1.stove.look"
     },
     {
-      "id": "shutter",
+      "id": "shutter", "action_anim": "open",
       "kind": "object",
       "label": "@H1.shutter.label",
       "rect": [1400, 100, 500, 440],
@@ -133,7 +133,7 @@
       "look": "@H1.shutter.look"
     },
     {
-      "id": "scarf",
+      "id": "scarf", "action_anim": "pick",
       "kind": "object",
       "label": "@H1.scarf.label",
       "rect": [490, 520, 180, 110],
@@ -197,7 +197,7 @@
       "look": "@H1.photo.look"
     },
     {
-      "id": "cups",
+      "id": "cups", "action_anim": "reach",
       "kind": "object",
       "label": "@H1.cups.label",
       "rect": [660, 290, 140, 90],
@@ -236,7 +236,7 @@
       "look": "@H1.cups.look"
     },
     {
-      "id": "shelf",
+      "id": "shelf", "action_anim": "reach",
       "kind": "object",
       "label": "@H1.shelf.label",
       "rect": [60, 300, 320, 140],

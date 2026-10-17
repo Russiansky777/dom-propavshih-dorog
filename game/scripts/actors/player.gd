@@ -20,6 +20,8 @@ extends Node2D
 signal walk_started(target: Vector2)
 signal arrived(position: Vector2)
 signal interaction_performed(node: Node2D)
+signal action_started(action: String, node: Node2D)
+signal action_finished(action: String, node: Node2D)
 
 ## Walking speed in px/s at scale 1 for the placeholder body. With an actor sheet the speed comes
 ## from the sheet data (metres per second × px per metre at the current depth scale).
@@ -57,6 +59,12 @@ var _dist_drawn: float = 0.0
 var _last_walk_frame: int = -1
 var lock_resyncs: int = 0       # times the drawn figure had to be clamped/re-synced (diagnostics)
 var _frame_pending: bool = false  # a frame change seen this frame; settled after the logical step
+# One-shot action at a hotspot (data action_anim): plays once, the interaction fires on the key frame.
+var _acting: bool = false
+var _action: String = ""
+var _action_node: Node2D = null
+var _action_fired: bool = false
+var action_fire_count: int = 0    # interactions fired by actions (tests: exactly once per action)
 var _settling: bool = false       # logical position arrived; the drawn figure is finishing its steps
 var walk_time: float = 0.0      # game seconds spent in the current walk (probe/measurements)
 var _distance_walked: float = 0.0
@@ -215,6 +223,8 @@ func _setup_sprite() -> void:
 	sprite.sprite_frames = sheet.frames
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	sprite.frame_changed.connect(_on_frame_changed)
+	sprite.frame_changed.connect(_on_action_frame)
+	sprite.animation_finished.connect(_on_animation_finished)
 	add_child(sprite)
 	if sheet.shadow_alpha > 0.0:
 		sprite.add_child(ActorShadow.make(sheet))  # child of the sprite: follows the foot-lock offset
@@ -307,8 +317,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## One click on the room: hotspot/exit → walk to its stand point and interact; else walk there.
 func click_at(world_pos: Vector2) -> void:
-	if StoryRunner.is_busy():
-		return  # dialogue, puzzle or transition owns the input
+	if StoryRunner.is_busy() or _acting:
+		return  # dialogue, puzzle, transition or an action in progress owns the input
 	var target_node: Node2D = null
 	if room != null:
 		target_node = room.pick(world_pos)
@@ -370,6 +380,7 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 	room = new_room
 	_walking = false
 	_pending = null
+	_cancel_action()
 	_lock_active = false
 	if sprite != null:
 		sprite.position = Vector2.ZERO
@@ -441,14 +452,95 @@ func _arrive() -> void:
 	_update_depth()
 	var node := _pending
 	_pending = null
-	if node != null and is_instance_valid(node):
+	var act := _action_for(node)
+	if act != "":
+		var v := node.global_position - global_position
+		if v.length_squared() > 1.0:
+			direction = sheet.direction_index(v)
+	elif node != null and is_instance_valid(node):
 		face_towards(node.global_position)
 	else:
 		_play_idle()
 	arrived.emit(global_position)
 	if node != null and is_instance_valid(node) and node.has_method("trigger"):
+		if act != "":
+			_start_action(act, node)
+			return
 		node.call("trigger")
 		interaction_performed.emit(node)
+
+
+# --- One-shot actions at hotspots ------------------------------------------
+
+## The hotspot's action animation (rooms data `action_anim`: open / pick / reach), when the click
+## would change something (use, item use, choice) and the sheet has that action; else "".
+func _action_for(node: Node2D) -> String:
+	if sheet == null or node == null or not is_instance_valid(node) or not (node is StoryHotspot):
+		return ""
+	var act := String((node as StoryHotspot).data.get("action_anim", ""))
+	if act == "" or not sheet.has_action(act):
+		return ""
+	var plan: String = StoryRunner.planned_interaction(node)
+	return act if plan in ["use", "item_use", "choice"] else ""
+
+
+func _start_action(act: String, node: Node2D) -> void:
+	_acting = true
+	_action = act
+	_action_node = node
+	_action_fired = false
+	var anim := sheet.anim_name(act, direction)
+	if sprite.animation != anim:
+		ActorCrossfade.begin(sprite, sheet.crossfade_s)
+	sprite.speed_scale = 1.0
+	sprite.play(anim)
+	action_started.emit(act, node)
+
+
+func is_acting() -> bool:
+	return _acting
+
+
+func current_action() -> String:
+	return _action if _acting else ""
+
+
+## Key frame reached (or the clip ended without it): the interaction happens — exactly once.
+func _fire_action() -> void:
+	if _action_fired:
+		return
+	_action_fired = true
+	var node := _action_node
+	if node != null and is_instance_valid(node) and node.has_method("trigger"):
+		action_fire_count += 1
+		node.call("trigger")
+		interaction_performed.emit(node)
+
+
+func _on_action_frame() -> void:
+	if _acting and not _action_fired and sprite.animation.begins_with(_action + "_") and sprite.frame >= sheet.action_key_frame(_action):
+		_fire_action()
+
+
+func _on_animation_finished() -> void:
+	if not _acting:
+		return
+	_fire_action()
+	var act := _action
+	var node := _action_node
+	_acting = false
+	_action = ""
+	_action_node = null
+	_play_idle()
+	action_finished.emit(act, node)
+
+
+## Room change / load: the action is dropped without its effect (nothing half-applied).
+func _cancel_action() -> void:
+	_acting = false
+	_action = ""
+	_action_node = null
+	_action_fired = false
 
 
 # --- Step animation (distance driven) -------------------------------------
