@@ -8,13 +8,18 @@
   },
   "directions": 8,
   "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.643,
+  "character_height_m": 1.586,
   "actions": {
     "idle": {
       "sheet": "idle.png",
       "frames": 8,
       "fps": 8,
-      "clip": "Idle"
+      "clip": "Idle",
+      "window": [
+        0.0,
+        0.2
+      ],
+      "playback": "pingpong"
     },
     "talk": {
       "sheet": "talk.png",
