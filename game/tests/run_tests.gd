@@ -65,6 +65,7 @@ func _run() -> void:
 	await _test("Loop seams: every repeating animation of every actor sheet returns to its first frame smoothly", _test_loop_seams)
 	await _test("Cross-fade: switching idle↔walk (Agata) and idle↔talk (Tamara) dissolves the old pose in ≈0.12 s", _test_crossfade)
 	await _test("Actions: hotspot action_anim plays once, the effect lands on the key frame exactly once; save mid-action is safe", _test_actions)
+	await _test("Idle sway: even back-and-forth — equal time to both extreme poses (±5 %), equal holds, easing to rest at both ends", _test_idle_sway)
 	_cleanup_m1()
 	_finish()
 
@@ -823,15 +824,17 @@ func _test_h1_real() -> void:
 	var tex := spr.sprite_frames.get_frame_texture("walk_0", 0)
 	_check(tex != null and tex.get_size() == Vector2(288, 384), "frame size should be 288x384, got %s" % str(tex.get_size() if tex else null))
 	_check(spr.sprite_frames.get_frame_count("walk_0") == 12, "walk animations should have 12 frames")
-	# Idle rev 8 (window 0–20 % of the clip) plays pingpong from sprites.json: 0..7 then 6..1 = 14 frames.
-	_check(spr.sprite_frames.get_frame_count("idle_0") == 14, "idle should have 14 pingpong frames (8 forward, 6 back), got %d" % spr.sprite_frames.get_frame_count("idle_0"))
+	# Idle rev 8: eased back-and-forth over the evenly-moving frames (data idle_motion, test «Idle sway»).
+	var tl: Array = player.sheet.eased_timeline("idle", 3)
+	_check(spr.sprite_frames.get_frame_count("idle_3") == tl.size() and tl.size() >= 6, "idle_3 is built from the eased timeline (%d segments), got %d frames" % [tl.size(), spr.sprite_frames.get_frame_count("idle_3")])
 	var seq: Array = player.sheet.frame_sequence(8, "pingpong")
 	_check(seq == [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1], "pingpong sequence for 8 frames, got %s" % str(seq))
 	_check(player.sheet.frame_sequence(12, "loop") == range(12), "loop sequence is 0..n-1")
-	var r8: Rect2 = (spr.sprite_frames.get_frame_texture("idle_3", 8) as AtlasTexture).region
-	var r13: Rect2 = (spr.sprite_frames.get_frame_texture("idle_3", 13) as AtlasTexture).region
-	_check(r8.position == Vector2(6 * 288, 3 * 384) and r13.position == Vector2(1 * 288, 3 * 384), "pingpong frames 8 and 13 must be sheet columns 6 and 1 of row 3, got %s / %s" % [str(r8.position), str(r13.position)])
-	_check(is_equal_approx(spr.sprite_frames.get_animation_speed("idle_0"), 8.0), "idle fps comes from sprites.json (8)")
+	for i in tl.size():
+		var reg: Rect2 = (spr.sprite_frames.get_frame_texture("idle_3", i) as AtlasTexture).region
+		_check(reg.position == Vector2(int(tl[i][0]) * 288, 3 * 384), "idle_3 frame %d must be sheet column %d of row 3, got %s" % [i, int(tl[i][0]), str(reg.position)])
+		_check(is_equal_approx(spr.sprite_frames.get_frame_duration("idle_3", i), float(tl[i][2])), "idle_3 frame %d holds %d timeline steps" % [i, int(tl[i][2])])
+	_check(is_equal_approx(spr.sprite_frames.get_animation_speed("idle_0"), 30.0), "eased idle runs on a 30 steps/s timeline")
 	var st = load("res://scripts/actors/actor_sheet.gd").load_actor("agata", {"idle_static_frame": 0})
 	_check(st.is_loaded() and st.frames.get_frame_count("idle_0") == 1, "idle_static_frame still pins the idle to one frame when set")
 	_check(spr.offset.is_equal_approx(Vector2(-144.0, -0.9464285714285714 * 384.0)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
@@ -1010,7 +1013,7 @@ func _test_npc_actors() -> void:
 		return
 	var t: Node2D = npcs[0]
 	var spr: AnimatedSprite2D = t.get_node("Sprite")
-	_check(spr.sprite_frames.get_frame_count("idle_0") == 14 and spr.sprite_frames.get_frame_count("talk_0") == 22, "tamara: idle 14 and talk 22 pingpong frames (talk: data override), got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
+	_check(spr.sprite_frames.get_frame_count("idle_0") == t.sheet.eased_timeline("idle", 0).size() and spr.sprite_frames.get_frame_count("talk_0") == 22, "tamara: eased idle timeline and talk 22 pingpong frames (talk: data override), got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
 	_check(spr.animation == "idle_0" and spr.is_playing(), "tamara idles facing the viewer (idle_0), got %s" % spr.animation)
 	var hs: Node2D = room.get_node("Hotspots/tamara")
 	var shape: CollisionShape2D = hs.get_node("Shape")
@@ -1198,7 +1201,7 @@ func _test_loop_seams() -> void:
 		for action in sheet.actions.keys():
 			if not sheet.action_loops(action):
 				continue  # one-shot actions end in a cross-fade, not a seam
-			var seq: Array = sheet.action_sequence(action)
+			var seq: Array = sheet.action_sequence(action, 0)
 			if action == sheet.idle_action and sheet.idle_static_frame >= 0:
 				continue
 			if seq.size() < 3:
@@ -1216,6 +1219,7 @@ func _test_loop_seams() -> void:
 			var rooted: bool = action == sheet.walk_action and sheet.has_stride_table()
 			var elev := deg_to_rad(float(_actor_walk_elev(id)))
 			for r in sheet.directions:
+				seq = sheet.action_sequence(action, r)
 				var cache := {}
 				var phi := deg_to_rad(90.0 - 360.0 / sheet.directions * r)
 				var axis := Vector2(cos(phi), sin(phi) * sin(elev)).normalized()
@@ -1472,3 +1476,93 @@ func _test_actions() -> void:
 	player.speed_factor = 1.0
 	gs.reset()
 	_cleanup_m1()
+
+
+## Director 17.10 (idle): «качание должно быть равномерным реверс-движением: разворот влево занимал
+## столько же, сколько обратный вправо». For every actor and direction row, from the built timeline:
+##   * the time from the middle pose (frame nearest the path midpoint) to each extreme pose is the
+##     same both ways (±5 %), and the total time spent in each extreme pose is the same (±5 %);
+##   * the motion eases to rest at both ends: frames next to an extreme are held longer than the
+##     middle frame, and an extreme is held at least twice as long as the middle frame;
+##   * the period is 3–4 s, the timeline loops on the same pose (no seam), only evenly-moving frames
+##     are used (data idle_motion, measured on this very sheet — md5).
+func _test_idle_sway() -> void:
+	var dir := DirAccess.open("res://data/actors")
+	var checked := 0
+	for fname in dir.get_files():
+		if not fname.ends_with(".json"):
+			continue
+		var id := fname.get_basename()
+		var sheet = load("res://scripts/actors/actor_sheet.gd").load_actor(id)
+		var act: Dictionary = sheet.actions.get(sheet.idle_action, {})
+		_check(String(act.get("playback", "")) == "pingpong_eased", "%s: idle must play pingpong_eased (data actions.idle)" % id)
+		var ipath: String = sheet.sheet_dir + "/" + String(act.get("sheet", "idle.png"))
+		_check(sheet.idle_motion_md5 == FileAccess.get_md5(ipath), "%s: idle_motion measured on another idle.png — run tools/measure_idle.py --write" % id)
+		var worst_travel := 0.0
+		var worst_dwell := 0.0
+		for r in sheet.directions:
+			var tl: Array = sheet.eased_timeline(sheet.idle_action, r)
+			var mrow: Dictionary = sheet.idle_motion_rows[r] if r < sheet.idle_motion_rows.size() else {}
+			var cols: Array = mrow.get("frames", [])
+			var path: Array = mrow.get("path", [])
+			if cols.size() < 3:
+				_check(false, "%s row %d: idle_motion needs ≥ 3 frames" % [id, r])
+				continue
+			var a: int = int(cols[0])
+			var b: int = int(cols[cols.size() - 1])
+			var mid := 0
+			for k in cols.size():
+				if absf(float(path[k]) - 0.5) < absf(float(path[mid]) - 0.5):
+					mid = k
+			var m: int = int(cols[mid])
+			# Segment start times; the period starts in the middle of the hold on pose a.
+			var period := 0.0
+			var starts: Array = []
+			for seg in tl:
+				starts.append(period)
+				period += float(seg[1])
+			_check(period >= 3.0 and period <= 4.0, "%s row %d: idle period %.2f s outside 3–4 s" % [id, r, period])
+			_check(int(tl[0][0]) == a and int(tl[tl.size() - 1][0]) == a, "%s row %d: the loop starts and ends on the same pose (no seam)" % [id, r])
+			var dwell_a := 0.0
+			var dwell_b := 0.0
+			var b_center := -1.0
+			var mids: Array = []      # centres of the middle-pose segments (rising, falling)
+			var mid_dur := 0.0
+			for i in tl.size():
+				var c: int = int(tl[i][0])
+				var d: float = float(tl[i][1])
+				if c == a:
+					dwell_a += d
+				elif c == b:
+					dwell_b += d
+					b_center = starts[i] + d * 0.5
+				elif c == m:
+					mids.append(starts[i] + d * 0.5)
+					mid_dur = maxf(mid_dur, d)
+			if mids.size() != 2 or b_center < 0.0:
+				_check(false, "%s row %d: timeline must pass the middle pose twice and reach the far pose once: %s" % [id, r, str(tl)])
+				continue
+			# Travel times: a-centre(0) → middle (rising) → b-centre → middle (falling) → a-centre(period).
+			var t1: float = mids[0] - 0.0
+			var t2: float = b_center - mids[0]
+			var t3: float = mids[1] - b_center
+			var t4: float = period - mids[1]
+			var travel_dev := maxf(maxf(t1, t2), maxf(t3, t4)) / minf(minf(t1, t2), minf(t3, t4)) - 1.0
+			var dwell_dev := absf(dwell_a - dwell_b) / maxf(dwell_a, dwell_b)
+			worst_travel = maxf(worst_travel, travel_dev)
+			worst_dwell = maxf(worst_dwell, dwell_dev)
+			_check(travel_dev <= 0.05, "%s row %d: middle→extreme times differ by %.1f %% (%.2f / %.2f / %.2f / %.2f s)" % [id, r, travel_dev * 100.0, t1, t2, t3, t4])
+			_check(dwell_dev <= 0.05, "%s row %d: time in the two extreme poses differs by %.1f %% (%.2f vs %.2f s)" % [id, r, dwell_dev * 100.0, dwell_a, dwell_b])
+			# Easing to rest at both ends: neighbours of the extremes are held longer than the middle frame.
+			var near_a := 0.0
+			var near_b := 0.0
+			for seg in tl:
+				if int(seg[0]) == int(cols[1]):
+					near_a = maxf(near_a, float(seg[1]))
+				if int(seg[0]) == int(cols[cols.size() - 2]):
+					near_b = maxf(near_b, float(seg[1]))
+			_check(near_a >= mid_dur * 0.999 and near_b >= mid_dur * 0.999, "%s row %d: frames next to the extremes must be held at least as long as the middle one (%.3f / %.3f vs %.3f s)" % [id, r, near_a, near_b, mid_dur])
+			_check(dwell_a >= 2.0 * mid_dur and dwell_b >= 2.0 * mid_dur, "%s row %d: the sway must come to rest at both extremes" % [id, r])
+			checked += 1
+		print("    %s: %d rows, worst middle→extreme asymmetry %.1f %%, worst extreme-hold difference %.1f %%; row 0 timeline %s" % [id, sheet.directions, worst_travel * 100.0, worst_dwell * 100.0, str(sheet.eased_timeline(sheet.idle_action, 0).map(func(seg): return "%d:%.2f" % [int(seg[0]), float(seg[1])]))])
+	_check(checked >= 24, "expected 3 actors × 8 rows checked, got %d" % checked)

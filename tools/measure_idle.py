@@ -91,9 +91,25 @@ def main():
         img = np.asarray(Image.open(sheet).convert("RGBA"))
         rows = []
         print(f"{actor}: {os.path.relpath(sheet, ROOT)} ({n} frames, md5 {md5[:10]}…)")
-        for r in range(int(sprites.get("directions", 8))):
-            st = steps_of(img, r, n, fw, fh)
-            a, b, ratio = best_run(st)
+        dirs = int(sprites.get("directions", 8))
+        all_steps = [steps_of(img, r, n, fw, fh) for r in range(dirs)]
+        # One frame range for every row (turning in place must not change the sway's amplitude):
+        # the longest run of ≥ 4 frames whose steps stay even (max/min ≤ 1.6) in ALL rows.
+        common = None
+        for length in range(n, 3, -1):
+            for a in range(0, n - length + 1):
+                b = a + length - 1
+                worst = max(max(st[a:b]) / max(min(st[a:b]), 1e-6) for st in all_steps)
+                if worst <= 1.6 and (common is None or (length, -worst) > (common[2], -common[3])):
+                    common = (a, b, length, worst)
+            if common is not None:
+                break
+        for r in range(dirs):
+            st = all_steps[r]
+            if common is not None:
+                a, b, ratio = common[0], common[1], 1.6
+            else:
+                a, b, ratio = best_run(st)
             seg = st[a:b]
             cum = np.concatenate([[0.0], np.cumsum(seg)]) / max(sum(seg), 1e-6)
             rows.append({"frames": list(range(a, b + 1)), "path": [round(float(x), 4) for x in cum]})

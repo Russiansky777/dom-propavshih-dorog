@@ -50,6 +50,9 @@ var action_key_frames: Dictionary = {}
 ## Actions of the pipeline's sprites.json the game does not use (data `skip_actions`, e.g. a sheet
 ## that duplicates another): not built, no warning.
 var skip_actions: Array = []
+## Even idle sway (data idle_motion, tools/measure_idle.py): per row {frames, path}.
+var idle_motion_rows: Array = []
+var idle_motion_md5: String = ""
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null
@@ -132,6 +135,9 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 			a.actions[act_name] = merged
 	a.crossfade_s = float(spec.get("crossfade_s", a.crossfade_s))
 	a.skip_actions = spec.get("skip_actions", [])
+	var im: Dictionary = spec.get("idle_motion", {})
+	a.idle_motion_rows = im.get("rows", [])
+	a.idle_motion_md5 = String(im.get("sheet_md5", ""))
 	var kf: Dictionary = spec.get("action_key_frame", {})
 	for k in kf.keys():
 		if not String(k).begins_with("_"):
@@ -160,11 +166,22 @@ func _build_frames() -> void:
 		var frame_ids: Array = frame_sequence(n, String(act.get("playback", "loop")))
 		if String(action) == idle_action and idle_static_frame >= 0 and idle_static_frame < n:
 			frame_ids = [idle_static_frame]
+		var eased: bool = String(act.get("playback", "")) == "pingpong_eased" and frame_ids.size() > 1
 		for d in directions:
 			var anim := "%s_%d" % [action, d]
 			frames.add_animation(anim)
-			frames.set_animation_speed(anim, fps)
 			frames.set_animation_loop(anim, bool(act.get("loop", true)))
+			if eased:
+				# Eased back-and-forth: timeline steps of 1/EASE_FPS s, each sheet frame held as long
+				# as the eased path stays nearest to it (per-frame duration in steps).
+				frames.set_animation_speed(anim, EASE_FPS)
+				for seg in eased_timeline(String(action), d):
+					var at := AtlasTexture.new()
+					at.atlas = tex
+					at.region = Rect2(int(seg[0]) * frame_w, d * frame_h, frame_w, frame_h)
+					frames.add_frame(anim, at, float(seg[2]))
+				continue
+			frames.set_animation_speed(anim, fps)
 			for i in frame_ids:
 				var at := AtlasTexture.new()
 				at.atlas = tex
@@ -172,9 +189,78 @@ func _build_frames() -> void:
 				frames.add_frame(anim, at)
 
 
-## Played sequence of an action (sheet columns, before any idle_static_frame pinning).
-func action_sequence(action: String) -> Array:
+const EASE_FPS: float = 30.0
+
+
+## Eased back-and-forth of an action on row `row` (playback "pingpong_eased"; data idle_motion: the
+## frames kept for this row and their path fractions 0..1). One period starts and ends in the middle
+## of the hold on the first pose: hold → cosine ease along the path to the last pose → hold → ease
+## back. Each moment shows the frame nearest to the eased path position. The two holds are adjusted
+## so the total time spent in each extreme pose is the same. Returns [[column, seconds, steps], ...].
+func eased_timeline(action: String, row: int) -> Array:
 	var act: Dictionary = actions.get(action, {})
+	var mrow: Dictionary = {}
+	if row < idle_motion_rows.size():
+		mrow = idle_motion_rows[row]
+	var cols: Array = mrow.get("frames", range(int(act.get("frames", 1))))
+	var path: Array = mrow.get("path", [])
+	if path.size() != cols.size():
+		path = []
+		for i in cols.size():
+			path.append(float(i) / maxf(cols.size() - 1, 1))
+	# Symmetrise the measured path about its midpoint (average with its mirror; moves no frame by
+	# more than a few % of the path): the middle frame sits at 0.5 and both end gaps are equal, so
+	# travel times and holds come out the same towards both extremes.
+	var sym: Array = []
+	for k in path.size():
+		sym.append((float(path[k]) + 1.0 - float(path[path.size() - 1 - k])) * 0.5)
+	path = sym
+	var period: float = float(act.get("period_s", 3.6))
+	var hold: float = float(act.get("hold_s", 0.35))
+	var ease: float = maxf((period - 2.0 * hold) / 2.0, 0.2)
+	# Time the ease spends in each extreme pose (nearest-frame boundaries at half the end gaps).
+	var n := cols.size()
+	var tau0 := 0.0
+	var tau1 := 0.0
+	if n > 1:
+		tau0 = ease * acos(clampf(1.0 - float(path[1]), -1.0, 1.0)) / PI
+		tau1 = ease * acos(clampf(float(path[n - 2]), -1.0, 1.0)) / PI
+	var h0 := hold + maxf(0.0, 2.0 * (tau1 - tau0))
+	var h1 := hold + maxf(0.0, 2.0 * (tau0 - tau1))
+	var total := 2.0 * ease + h0 + h1
+	var steps := int(round(total * EASE_FPS))
+	var dt := total / float(steps)
+	var out: Array = []
+	for i in steps:
+		var t := (float(i) + 0.5) * dt
+		var u := 0.0
+		if t < h0 * 0.5:
+			u = 0.0
+		elif t < h0 * 0.5 + ease:
+			u = (1.0 - cos(PI * (t - h0 * 0.5) / ease)) * 0.5
+		elif t < h0 * 0.5 + ease + h1:
+			u = 1.0
+		elif t < h0 * 0.5 + 2.0 * ease + h1:
+			u = (1.0 + cos(PI * (t - h0 * 0.5 - ease - h1) / ease)) * 0.5
+		var best := 0
+		for k in n:
+			if absf(float(path[k]) - u) < absf(float(path[best]) - u):
+				best = k
+		var col := int(cols[best])
+		if not out.is_empty() and int(out[-1][0]) == col:
+			out[-1][1] = float(out[-1][1]) + dt
+			out[-1][2] = int(out[-1][2]) + 1
+		else:
+			out.append([col, dt, 1])
+	return out
+
+
+## Played sequence of an action (sheet columns, before any idle_static_frame pinning). For an eased
+## back-and-forth, the columns of `row`'s timeline (each shown for its own duration).
+func action_sequence(action: String, row: int = 0) -> Array:
+	var act: Dictionary = actions.get(action, {})
+	if String(act.get("playback", "")) == "pingpong_eased":
+		return eased_timeline(action, row).map(func(seg): return int(seg[0]))
 	return frame_sequence(int(act.get("frames", 1)), String(act.get("playback", "loop")))
 
 
