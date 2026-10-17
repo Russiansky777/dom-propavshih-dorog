@@ -1,0 +1,25 @@
+{
+  "id": "H4",
+  "background": {"kind": "interior", "wall": "#4e4238", "floor": "#6a5a44", "accent": "#8a7a5a", "horizon": 640},
+  "spawns": {"default": [960, 920], "from_H1": [960, 1000]},
+  "props": [
+    {"id": "boxes", "label": "@H4.boxes.label", "rect": [1300, 820, 360, 140], "color": "#6a5a44", "occluder": true}
+  ],
+  "hotspots": [
+    {
+      "id": "window", "kind": "object", "label": "@H4.window.label", "rect": [800, 220, 320, 220], "stand": [960, 710], "color": "#9fb8cc",
+      "look": "@H4.window.look"
+    },
+    {
+      "id": "chest", "kind": "object", "label": "@H4.chest.label", "rect": [300, 480, 300, 160], "stand": [450, 710], "color": "#7a5a3a",
+      "look": "@H4.chest.look"
+    }
+  ],
+  "exits": [
+    {"to": "H1", "label": "@H4.exit_H1.label", "side": "bottom", "x": 960, "spawn": "from_H4"}
+  ],
+  "scenes": {
+    "V02": {"trigger": "enter", "complete_text": "@H4.v02.done"}
+  },
+  "flags": {}
+}
