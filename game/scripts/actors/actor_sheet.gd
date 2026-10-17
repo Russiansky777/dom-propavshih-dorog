@@ -31,9 +31,9 @@ var scale_factor: float = 1.0
 var feet_offset: Vector2 = Vector2.ZERO
 ## Contact shadow (data `shadow`): ellipse width in model metres, height as a fraction of the width,
 ## peak opacity. Every actor gets one (ActorShadow); zero alpha disables it.
-var shadow_width_m: float = 0.55
+var shadow_width_m: float = 0.6
 var shadow_height_ratio: float = 0.3
-var shadow_alpha: float = 0.42
+var shadow_alpha: float = 0.5
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null

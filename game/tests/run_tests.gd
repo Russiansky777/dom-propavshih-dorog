@@ -1050,7 +1050,7 @@ func _test_npc_actors() -> void:
 	_cleanup_m1()
 
 
-## Item 6: contact shadow for every actor (data `shadow`, defaults 0.55 m wide, 0.3 ratio, alpha 0.42).
+## Item 6: contact shadow for every actor (data `shadow`, defaults 0.6 m wide, 0.3 ratio, alpha 0.5).
 func _test_shadows() -> void:
 	gs.reset()
 	await _spawn_main()
@@ -1068,9 +1068,9 @@ func _test_shadows() -> void:
 	_check(shadow.texture is GradientTexture2D and (shadow.texture as GradientTexture2D).fill == GradientTexture2D.FILL_RADIAL, "shadow is a radial gradient (soft edge)")
 	var grad: Gradient = (shadow.texture as GradientTexture2D).gradient
 	_check(grad.get_color(0).a > 0.3 and grad.get_color(0).a < 0.6 and grad.get_color(grad.get_point_count() - 1).a == 0.0, "shadow fades from semi-transparent black to transparent")
-	# Ellipse size: 0.55 m × 240.6 px/m = 132 px wide at scale 1, 40 px high; grows with the depth scale.
+	# Ellipse size: 0.6 m × 240.6 px/m = 144 px wide at scale 1, 43 px high; grows with the depth scale.
 	var expect: Vector2 = load("res://scripts/actors/actor_shadow.gd").size_at(player.sheet, 1.0)
-	_check(expect.x > 120.0 and expect.x < 145.0 and is_equal_approx(expect.y, expect.x * 0.3), "shadow ellipse ≈ 132×40 px at scale 1, got %s" % str(expect))
+	_check(expect.x > 130.0 and expect.x < 160.0 and is_equal_approx(expect.y, expect.x * 0.3), "shadow ellipse ≈ 144×43 px at scale 1 (0.6 m), got %s" % str(expect))
 	player.call("enter_room", room, Vector2(1200, 700))
 	var far: Vector2 = shadow.get_global_transform().get_scale() * 64.0
 	player.call("enter_room", room, Vector2(1200, 1070))
