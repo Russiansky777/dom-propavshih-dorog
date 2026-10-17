@@ -1,6 +1,6 @@
 {
   "_comment": "Голоса аккаунта ElevenLabs (GET /v2/voices; personal — раздел My Voices, voice_type=personal). Пишет pipeline/voice/eleven_voice.py list; ключа здесь нет. Сопоставление с персонажами — cast.json.",
-  "fetched_at": "2026-10-17T21:44:19+00:00",
+  "fetched_at": "2026-10-17T21:46:22+00:00",
   "count": 27,
   "personal_count": 6,
   "voices": [
@@ -12,7 +12,10 @@
       "labels": {
         "language": "ru"
       },
-      "description": "Агата молодая девушка"
+      "description": "Агата молодая девушка",
+      "created_at_unix": 1792269497,
+      "created_at": "2026-10-17T20:38:17+00:00",
+      "created_order": 2
     },
     {
       "name": "CAT",
@@ -22,7 +25,10 @@
       "labels": {
         "language": "ru"
       },
-      "description": "Русский язык — родной. Голос сказочного кота-домового: явно кошачий, нечеловеческий, с разборчивой речью. Мужская основа среднего регистра, мягкий носовой оттенок и выраженный мурчащий резонанс. Лениво тянет гласные, но на отдельных словах "
+      "description": "Русский язык — родной. Голос сказочного кота-домового: явно кошачий, нечеловеческий, с разборчивой речью. Мужская основа среднего регистра, мягкий носовой оттенок и выраженный мурчащий резонанс. Лениво тянет гласные, но на отдельных словах ",
+      "created_at_unix": 1792271380,
+      "created_at": "2026-10-17T21:09:40+00:00",
+      "created_order": 5
     },
     {
       "name": "CAT-2",
@@ -32,7 +38,10 @@
       "labels": {
         "language": "ru"
       },
-      "description": "Русский язык — родной. Ярко выраженный голос сказочного кота-домового из кукольной сказки. Необычный кошачий тембр: гортанный, гнусавый, CAT2"
+      "description": "Русский язык — родной. Ярко выраженный голос сказочного кота-домового из кукольной сказки. Необычный кошачий тембр: гортанный, гнусавый, CAT2",
+      "created_at_unix": 1792271831,
+      "created_at": "2026-10-17T21:17:11+00:00",
+      "created_order": 6
     },
     {
       "name": "PELAGEYA",
@@ -42,7 +51,10 @@
       "labels": {
         "language": "ru"
       },
-      "description": "Русский язык — родной. Низкий женский голос зрелой женщины, близкий к контральто. Плотный, выразительный, с небольшим грудным резонансом и лёгкой естественной шероховатостью. Pelageya"
+      "description": "Русский язык — родной. Низкий женский голос зрелой женщины, близкий к контральто. Плотный, выразительный, с небольшим грудным резонансом и лёгкой естественной шероховатостью. Pelageya",
+      "created_at_unix": 1792270379,
+      "created_at": "2026-10-17T20:52:59+00:00",
+      "created_order": 4
     },
     {
       "name": "TAMARA-1",
@@ -52,7 +64,10 @@
       "labels": {
         "language": "ru"
       },
-      "description": "Русский язык — родной. Tamara-1"
+      "description": "Русский язык — родной. Tamara-1",
+      "created_at_unix": 1792270078,
+      "created_at": "2026-10-17T20:47:58+00:00",
+      "created_order": 3
     },
     {
       "name": "Агата",
@@ -62,7 +77,10 @@
       "labels": {
         "language": "ru"
       },
-      "description": "Русскоязычный голос девушки как из сказки. Светлый, лёгкий, звонкий тембр, высокий разговорный регистр, мягкое звучание и ясная артикуляция. Подвижная интонация: заметные подъёмы на вопросах, короткие задумчивые паузы, неожиданное оживление"
+      "description": "Русскоязычный голос девушки как из сказки. Светлый, лёгкий, звонкий тембр, высокий разговорный регистр, мягкое звучание и ясная артикуляция. Подвижная интонация: заметные подъёмы на вопросах, короткие задумчивые паузы, неожиданное оживление",
+      "created_at_unix": 1792239518,
+      "created_at": "2026-10-17T12:18:38+00:00",
+      "created_order": 1
     },
     {
       "name": "Adam - Dominant, Firm",
@@ -106,7 +124,9 @@
         "age": "middle_aged",
         "language": "en"
       },
-      "description": "This voice is warm, bright, and professional, characterized by a Standard American accent and a polished, narrative quality. It features a medium-high pitch with crisp diction and a deliberate, rhythmic pace that makes it highly intelligibl"
+      "description": "This voice is warm, bright, and professional, characterized by a Standard American accent and a polished, narrative quality. It features a medium-high pitch with crisp diction and a deliberate, rhythmic pace that makes it highly intelligibl",
+      "created_at_unix": 1768922505,
+      "created_at": "2026-01-20T15:21:45+00:00"
     },
     {
       "name": "Bill - Wise, Mature, Balanced",
