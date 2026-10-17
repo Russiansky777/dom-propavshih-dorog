@@ -78,9 +78,10 @@ func _bind() -> void:
 	if _sprite != null:
 		return
 	var rm := get_node_or_null("/root/RoomManager")
-	var p: Node2D = rm.get("player") if rm != null else null
-	if p == null or not is_instance_valid(p):
-		return
+	var pv: Variant = rm.get("player") if rm != null else null
+	if pv == null or not is_instance_valid(pv) or not (pv is Node2D):
+		return  # no player yet, or a freed one (tests free the Main scene)
+	var p: Node2D = pv
 	var spr := p.get("sprite") as AnimatedSprite2D
 	var sheet = p.get("sheet")
 	if spr == null or sheet == null:
@@ -171,19 +172,22 @@ func surface_at(pos: Vector2) -> String:
 func foot_down(pos: Vector2, k: int = 0, frame: int = -1, feet_y: float = NAN) -> String:
 	steps += 1
 	var surf := surface_at(pos)
+	var sort_y := pos.y if is_nan(feet_y) else maxf(feet_y, pos.y)
+	var drops_z := 0
 	if surf == "puddle":
-		_splash(pos, pos.y if is_nan(feet_y) else maxf(feet_y, pos.y))
+		drops_z = _splash(pos, sort_y)
 		splashes += 1
 	elif surf == "mud":
 		prints.add(pos, ground.floor_dir(_dir, pos.y), 1.0 if k % 2 == 0 else -1.0)
 		prints_made += 1
-	events.append({"frame": frame, "pos": pos, "surface": surf, "scale": ground.size_scale(pos.y)})
+	events.append({"frame": frame, "pos": pos, "surface": surf, "scale": ground.size_scale(pos.y),
+		"feet_y": sort_y, "drops_z": drops_z})
 	if events.size() > 32:
 		events.pop_front()
 	return surf
 
 
-func _splash(pos: Vector2, feet_y: float) -> void:
+func _splash(pos: Vector2, feet_y: float) -> int:
 	var drops := AmbientSplash.new()
 	drops.name = "SplashDrops"
 	drops.part = AmbientSplash.DROPS
@@ -200,6 +204,7 @@ func _splash(pos: Vector2, feet_y: float) -> void:
 		n.forward = ground.floor_dir(_dir, pos.y)
 		root.add_child(n)
 		n.start()
+	return drops.z_index
 
 
 func stats() -> Dictionary:

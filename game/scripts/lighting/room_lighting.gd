@@ -202,6 +202,7 @@ func actors() -> Array[Node]:
 func scan_actors() -> void:
 	if not is_inside_tree():
 		return
+	_update_tones(0.0)  # new actors are toned before their first drawn frame (snap)
 	var casters := shadow_sources()
 	if casters.is_empty():
 		return

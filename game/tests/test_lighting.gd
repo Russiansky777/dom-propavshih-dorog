@@ -12,7 +12,11 @@ extends SceneTree
 ##   - actor shadows (`actor_light_shadow`): Agata gets one per shadow-casting source, child of her
 ##     sprite, behind the figure, showing the SAME frame texture as the sprite (also right after a
 ##     frame change), leaning AWAY from the source, fainter and longer farther away; they leave the
-##     player when the room changes; NPCs (Tamara in Z1) get theirs from Z1's lamp.
+##     player when the room changes; NPCs (Tamara in Z1) get theirs from Z1's lamp;
+##   - actor tone (coordinator 17.10: «Агата светлая, как вклеенная, в тёмной комнате»): the figure is
+##     not lit per pixel (unshaded) but toned by the light at her feet × actor_tint — dark in the dark
+##     H1, warmer by the fire, eased; a room without lighting gives her colours back. The rendered
+##     check (brightness within ±15 % of the floor by her) is tools/measure_tone.py on Xvfb frames.
 ## Exit code 0 only when every check passed. A `-s` script is compiled before autoloads exist: they
 ## are reached through the tree, classes are loaded at runtime (see run_tests.gd).
 
@@ -62,6 +66,7 @@ func _run() -> void:
 	await _test("H1 stove: fire, flickering light and shadows only with stove_lit", _test_stove)
 	await _test("Actor light shadow: same frame as the sprite, behind it, away from the source, by distance", _test_actor_shadow)
 	await _test("Actor light shadow: removed from Agata on room change; NPCs get theirs", _test_shadow_lifecycle)
+	await _test("Actor tone: Agata darkened like the floor in the dark H1, warmer by the fire, no jumps", _test_actor_tone)
 	gs.reset()
 	gs.delete_save("test_lighting")
 	if main_node != null and is_instance_valid(main_node):
@@ -285,7 +290,11 @@ func _test_shadow_lifecycle() -> void:
 	var rl2 = _lighting(rm.current_room)
 	var expected: int = rl2.shadow_sources().size() if rl2 != null else 0
 	_check(names.size() == expected, "after H1 → H2 Agata carries only H2's light shadows (%d expected, got %s)" % [expected, str(names)])
-	_check(not names.has("LightShadow_stove_light"), "the H1 stove shadow left Agata with the room")
+	_check(not names.has("LightShadow_stove_floor"), "the H1 stove shadow left Agata with the room")
+	# A room without lights gives Agata her own colours and lighting back.
+	await _enter("H3", [], Vector2.INF)
+	await process_frame
+	_check(sprite.self_modulate == Color.WHITE and sprite.material == null, "a room without lighting: Agata untoned (modulate %s, material %s)" % [str(sprite.self_modulate), str(sprite.material)])
 	if FileAccess.file_exists("res://data/story/lights/Z1.json"):
 		var z1: Node = await _enter("Z1", [], Vector2(300, 900))
 		await process_frame
@@ -295,3 +304,35 @@ func _test_shadow_lifecycle() -> void:
 		if npcs.size() >= 1 and rl != null:
 			_check(rl.shadows_of(npcs[0]).size() == rl.shadow_sources().size(), "Z1: Tamara gets a light shadow from every casting source")
 			_check(rl.shadows_of(player).size() == rl.shadow_sources().size(), "Z1: Agata too")
+
+
+static func _lum(c: Color) -> float:
+	return c.r * 0.2126 + c.g * 0.7152 + c.b * 0.0722
+
+
+func _test_actor_tone() -> void:
+	var room: Node = await _enter("H1", [], Vector2(1250, 900))
+	var rl = _lighting(room)
+	var sprite: AnimatedSprite2D = player.get("sprite")
+	await _wait_light(rl, 0.3)
+	var mat := sprite.material as CanvasItemMaterial
+	_check(mat != null and mat.light_mode == CanvasItemMaterial.LIGHT_MODE_UNSHADED, "Agata is toned, not lit per pixel (unshaded material on her sprite)")
+	var dark: Color = sprite.self_modulate
+	var expect: Color = rl.actor_tone_at(sprite.global_position, 500.0)
+	_check(_lum(dark) < 0.4, "closed shutters: Agata darkened with the room (tone %s)" % str(dark))
+	_check(absf(_lum(dark) - _lum(expect)) < 0.03, "tone follows the light at her feet (%s vs %s)" % [str(dark), str(expect)])
+	gs.set_flag("h1_shutter_open", true)
+	await process_frame
+	var step1: Color = sprite.self_modulate
+	_check(_lum(step1) - _lum(dark) < 0.25, "opening: no jump of Agata's tone in one frame (%.3f → %.3f)" % [_lum(dark), _lum(step1)])
+	await _wait_light(rl, 1.2)
+	var day: Color = sprite.self_modulate
+	_check(_lum(day) > 0.85, "daylight: Agata back to (about) her own colours (tone %s)" % str(day))
+	# Warmth by the fire (closed shutters): redder than far from it.
+	room = await _enter("H1", ["stove_lit"], Vector2(640, 800))
+	rl = _lighting(room)
+	await _wait_light(rl, 0.8)
+	var near: Color = rl.actor_tone_at(Vector2(640, 800), 500.0)
+	var far: Color = rl.actor_tone_at(Vector2(1700, 950), 500.0)
+	_check((near.r - near.b) > (far.r - far.b) + 0.1, "by the fire Agata is warmer (R−B %.2f) than across the room (%.2f)" % [near.r - near.b, far.r - far.b])
+	_check(_lum(near) > _lum(far), "by the fire Agata is brighter than across the dark room")

@@ -53,7 +53,7 @@ static func _walk(args: Array) -> void:
 	if rm == null or args.size() < 2:
 		return
 	var p = rm.get("player")
-	if p != null:
+	if p != null and is_instance_valid(p):
 		p.call("walk_to", Vector2(float(args[0]), float(args[1])))
 
 
@@ -83,6 +83,6 @@ static func _publish() -> void:
 					ev.append({"frame": e["frame"], "x": e["pos"].x, "y": e["pos"].y, "surface": e["surface"], "scale": e["scale"]})
 				state["events"] = ev
 		var p = rm.get("player")
-		if p != null:
+		if p != null and is_instance_valid(p):
 			state["player"] = {"x": p.global_position.x, "y": p.global_position.y, "walking": p.call("is_walking")}
 	JavaScriptBridge.eval("window.ambientState = %s;" % JSON.stringify(state), true)

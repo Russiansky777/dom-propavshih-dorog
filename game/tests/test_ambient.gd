@@ -448,10 +448,12 @@ func _test_footfall() -> void:
 		return
 	var ff = amb.footfall
 	var spec: Dictionary = AmbData.room("Z2")
-	var contacts: Array = AmbData.footfall("agata")["contact_frames"]
+	var contacts: Array[int] = []
+	for f in AmbData.footfall("agata")["contact_frames"]:
+		contacts.append(int(f))
 	# Through the big puddle on the right (puddles and the road between them).
 	await _walk(Vector2(1200, 835), Vector2(1790, 862))
-	_check(ff.get("_sprite") != null or ff.stats()["bound"], "footfall did not bind to Agata's walk sheet")
+	_check(ff.stats()["bound"], "footfall did not bind to Agata's walk sheet")
 	var ev: Array = ff.events.duplicate()
 	print("    puddle walk: %d steps, %d splashes, %d prints" % [ff.steps, ff.splashes, ff.prints_made])
 	_check(ev.size() >= 3, "expected ≥ 3 steps over 590 px, got %d" % ev.size())
@@ -469,12 +471,12 @@ func _test_footfall() -> void:
 			_check(in_any, "splash at %s is not inside a puddle polygon" % str(pos))
 			_check(int(e["drops_z"]) >= int(e["feet_y"]) + 1, "drops z %d must be in front of Agata (feet y %d + 1)" % [int(e["drops_z"]), int(e["feet_y"])])
 	_check(puddle_steps >= 1 and ff.splashes == puddle_steps, "expected splashes in the puddles: %d puddle steps, %d splashes" % [puddle_steps, ff.splashes])
-	# Splash nodes are sized by depth (as Agata) and gone after their life.
-	for i in 30:
-		await process_frame
+	# Splash nodes are gone after their life (≤ 0.5 s).
+	await create_timer(0.6).timeout
 	var left := 0
+	var splash_script = load("res://scripts/ambient/ambient_splash.gd")
 	for c in amb.get_children():
-		if String(c.name).begins_with("SplashDrops") or String(c.name).begins_with("SplashRing"):
+		if c.get_script() == splash_script:
 			left += 1
 	_check(left == 0, "%d splash nodes still alive 0.5 s after the walk" % left)
 	# Mud: across the road on the left — prints, no splash.
@@ -487,10 +489,6 @@ func _test_footfall() -> void:
 	# Grass corner (no mud, no puddle): steps leave nothing.
 	var g0: int = ff.prints_made + ff.splashes
 	await _walk(Vector2(200, 1000), Vector2(450, 1040))
-	var last: Array = ff.events.slice(-2)
-	for e in last:
-		if Geometry2D.is_point_in_polygon(e["pos"], _poly(spec["sway_regions"].filter(func(r): return r["id"] == "grass_corner")[0])) and e["surface"] == "":
-			pass
 	_check(ff.prints_made + ff.splashes - g0 <= 1, "steps on the grass corner left %d prints/splashes" % (ff.prints_made + ff.splashes - g0))
 
 
@@ -532,13 +530,12 @@ func _test_prints_and_splash() -> void:
 				sizes.append(s.get("_ppm"))
 	_check(sizes[0] < sizes[1], "a far splash must be smaller than a near one (%s)" % str(sizes))
 	_check(absf(sizes[1] - room.depth_scale(1000.0) * amb.ground.px_per_m) < 0.01, "splash px/m = room depth scale × Agata's px/m")
-	for i in 40:
-		await process_frame
+	await create_timer(0.6).timeout
 	var alive := 0
 	for c in amb.get_children():
 		if c.get_script() == Splash:
 			alive += 1
-	_check(alive == 0, "%d splashes alive after 0.65 s" % alive)
+	_check(alive == 0, "%d splashes alive after 0.6 s" % alive)
 	_free(room)
 
 
