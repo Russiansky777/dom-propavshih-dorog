@@ -808,17 +808,17 @@ func _test_h1_real() -> void:
 	var tex := spr.sprite_frames.get_frame_texture("walk_0", 0)
 	_check(tex != null and tex.get_size() == Vector2(288, 384), "frame size should be 288x384, got %s" % str(tex.get_size() if tex else null))
 	_check(spr.sprite_frames.get_frame_count("walk_0") == 12, "walk animations should have 12 frames")
-	_check(spr.sprite_frames.get_frame_count("idle_0") == 1, "idle is a static frame until the turn clip is replaced (idle_static_frame)")
-	# Pingpong playback (sprites.json rev 7: idle plays 0..7 then 6..1); the window field is ignored.
+	# Idle rev 8 (window 0–20 % of the clip) plays pingpong from sprites.json: 0..7 then 6..1 = 14 frames.
+	_check(spr.sprite_frames.get_frame_count("idle_0") == 14, "idle should have 14 pingpong frames (8 forward, 6 back), got %d" % spr.sprite_frames.get_frame_count("idle_0"))
 	var seq: Array = player.sheet.frame_sequence(8, "pingpong")
 	_check(seq == [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1], "pingpong sequence for 8 frames, got %s" % str(seq))
 	_check(player.sheet.frame_sequence(12, "loop") == range(12), "loop sequence is 0..n-1")
-	var pp = load("res://scripts/actors/actor_sheet.gd").load_actor("agata", {"idle_static_frame": -1})
-	_check(pp.is_loaded() and pp.frames.get_frame_count("idle_3") == 14, "without the static frame the idle animation has 14 pingpong frames, got %d" % (pp.frames.get_frame_count("idle_3") if pp.is_loaded() else -1))
-	if pp.is_loaded():
-		var r8: Rect2 = (pp.frames.get_frame_texture("idle_3", 8) as AtlasTexture).region
-		var r13: Rect2 = (pp.frames.get_frame_texture("idle_3", 13) as AtlasTexture).region
-		_check(r8.position == Vector2(6 * 288, 3 * 384) and r13.position == Vector2(1 * 288, 3 * 384), "pingpong frames 8 and 13 must be sheet columns 6 and 1 of row 3, got %s / %s" % [str(r8.position), str(r13.position)])
+	var r8: Rect2 = (spr.sprite_frames.get_frame_texture("idle_3", 8) as AtlasTexture).region
+	var r13: Rect2 = (spr.sprite_frames.get_frame_texture("idle_3", 13) as AtlasTexture).region
+	_check(r8.position == Vector2(6 * 288, 3 * 384) and r13.position == Vector2(1 * 288, 3 * 384), "pingpong frames 8 and 13 must be sheet columns 6 and 1 of row 3, got %s / %s" % [str(r8.position), str(r13.position)])
+	_check(is_equal_approx(spr.sprite_frames.get_animation_speed("idle_0"), 8.0), "idle fps comes from sprites.json (8)")
+	var st = load("res://scripts/actors/actor_sheet.gd").load_actor("agata", {"idle_static_frame": 0})
+	_check(st.is_loaded() and st.frames.get_frame_count("idle_0") == 1, "idle_static_frame still pins the idle to one frame when set")
 	_check(spr.offset.is_equal_approx(Vector2(-144.0, -0.9464285714285714 * 384.0)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
 	_check(not player.get_node("Body").visible, "placeholder body hidden when the sheet is used")
 	# Direction mapping (data/actors/agata.json; verified against the sheet by eye):
