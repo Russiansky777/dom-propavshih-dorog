@@ -347,6 +347,7 @@ func fly_in(item_id: String, from: Vector2) -> void:
 		page = p
 	var delay := _batch * FLY_STAGGER
 	var first := _batch == 0
+	from += Vector2(_batch * 36.0, -_batch * 10.0)   # a batch starts fanned out, not stacked
 	_batch += 1
 	if not _batch_reset_queued:
 		_batch_reset_queued = true

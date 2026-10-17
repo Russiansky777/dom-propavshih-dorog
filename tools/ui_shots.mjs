@@ -155,7 +155,7 @@ async function main() {
         await waitFor("M01 next", (t) => beatKey(t) !== beatKey(s) || (t.ui.bag && t.ui.bag.animating), 8000);
       }
       await waitFor("icons flying", (t) => t.ui && t.ui.bag && t.ui.bag.animating, 8000);
-      await sleep(1800);   // ≈0.36 s of game time: icons lifted and on their way
+      await sleep(3200);   // ≈0.6 s of game time: icons lifted and on their way
       await page.evaluate(() => window.probePause(true, 0.2));
       await shot("03_items_fly_in");
       await page.evaluate(() => window.probePause(false, 1));
