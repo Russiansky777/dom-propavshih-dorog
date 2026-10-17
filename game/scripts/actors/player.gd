@@ -50,12 +50,13 @@ var walk_time: float = 0.0      # game seconds spent in the current walk (probe/
 var _distance_walked: float = 0.0
 var _step_phase: int = 0
 var _path_ready: bool = false
-var _path_retries: int = 0
-var _path_fallback: bool = false
+var _path_wait_frames: int = 0   # physics frames spent waiting for the navigation map / a path
 
-## Physics frames to wait for the navigation map before walking in a straight line.
-## (Godot 4.7.2 needs ~5 frames after a region is added before paths are available.)
-const PATH_RETRY_FRAMES: int = 30
+## Agata never walks without a navigation path (a straight line would cross furniture and water).
+## A freshly added region is queryable only after the map's second sync (~5 physics frames): the
+## agent re-queries every frame on its own and she simply stands until the path exists. Only a map
+## with no floor at all gives up, after this many frames, without moving or interacting.
+const PATH_GIVE_UP_FRAMES: int = 180
 
 
 func _ready() -> void:
@@ -246,8 +247,7 @@ func _start_walk(target: Vector2) -> void:
 		_adopt_drawn_position()  # a new target mid-walk: continue from where the figure is drawn
 	_target = target
 	_path_ready = false
-	_path_retries = 0
-	_path_fallback = false
+	_path_wait_frames = 0
 	nav_agent.target_position = target
 	_walking = true
 	walk_time = 0.0
@@ -264,9 +264,9 @@ func _adopt_drawn_position() -> void:
 	_motion_dir = Vector2.ZERO
 
 
-## True when the navigation path is usable (or the straight-line fallback is active).
-func is_path_fallback() -> bool:
-	return _path_fallback
+## True once the navigation path for the current walk has been received.
+func has_path() -> bool:
+	return _path_ready
 
 
 ## Called by RoomManager when a room is entered: binds depth parameters and places the figure.
@@ -288,25 +288,19 @@ func _physics_process(delta: float) -> void:
 	if not _walking:
 		return
 	walk_time += delta
-	var next: Vector2
-	if _path_fallback:
-		next = _target
-	else:
-		if nav_agent.is_navigation_finished():
-			_arrive()
+	if nav_agent.is_navigation_finished():
+		_arrive()
+		return
+	var next: Vector2 = nav_agent.get_next_path_position()
+	if not _path_ready:
+		if nav_agent.get_current_navigation_path().is_empty():
+			# Map not synced yet (the agent re-queries each physics frame): stand and wait.
+			_path_wait_frames += 1
+			if _path_wait_frames >= PATH_GIVE_UP_FRAMES:
+				push_warning("Player: no navigation path to %s after %d frames; staying put" % [str(_target), _path_wait_frames])
+				_cancel_walk()
 			return
-		next = nav_agent.get_next_path_position()
-		if not _path_ready:
-			if nav_agent.get_current_navigation_path().is_empty():
-				# Map not synced yet: re-request the path for a few frames, then walk straight.
-				_path_retries += 1
-				if _path_retries < PATH_RETRY_FRAMES:
-					nav_agent.target_position = _target
-					return
-				_path_fallback = true
-				next = _target
-			else:
-				_path_ready = true
+		_path_ready = true
 	var to_next := next - global_position
 	var dist := to_next.length()
 	var step := minf(current_speed_px() * delta, dist)
@@ -321,10 +315,18 @@ func _physics_process(delta: float) -> void:
 			direction = sheet.direction_index(motion)
 			_motion_dir = motion / step
 		_update_walk_anim()
-	if _path_fallback and global_position.distance_to(_target) <= 2.0:
-		_arrive()
-		return
 	_update_depth()
+
+
+## Stops without reaching the target: no interaction is triggered.
+func _cancel_walk() -> void:
+	_walking = false
+	_pending = null
+	_adopt_drawn_position()
+	_set_step_phase(0)
+	_play_idle()
+	_update_depth()
+	arrived.emit(global_position)
 
 
 func _arrive() -> void:

@@ -52,6 +52,7 @@ func _run() -> void:
 	await _test("Stride: fps from speed, stride = sheet stride, foot lock holds the drawn figure between frames", _test_stride)
 	await _test("NPC actors: Tamara/Pelageya from sheets on their hotspots, depth scale, y-sort, talk during their lines", _test_npc_actors)
 	await _test("Shadows: soft ellipse under the feet of Agata and NPCs, behind the figure, scaled by depth", _test_shadows)
+	await _test("No straight-line walking: a click right after entering Z1 waits for the nav map and goes round the counter", _test_no_straight_line)
 	_cleanup_m1()
 	_finish()
 
@@ -312,7 +313,7 @@ func _test_walk_to_exit() -> void:
 		frames += 1
 	Engine.time_scale = 1.0
 	_check(gs.has_flag("office_latch_open"), "office_latch_open not set after walking to the latch")
-	_check(not player.call("is_path_fallback"), "player used the straight-line fallback instead of the navigation path")
+	_check(player.call("has_path"), "player must have walked along a navigation path (no straight-line fallback exists)")
 	_check(player.z_index == int(player.global_position.y), "z_index must equal int(y) (y-sort)")
 	var expected_scale: float = rm.current_room.depth_scale(player.global_position.y)
 	_check(is_equal_approx(absf(player.scale.y), expected_scale), "player scale %f != depth scale %f" % [player.scale.y, expected_scale])
@@ -1083,5 +1084,59 @@ func _test_shadows() -> void:
 	await physics_frame
 	var npcs: Array = load("res://scripts/actors/npc_actor.gd").all_in(rm.current_room)
 	_check(npcs.size() == 1 and npcs[0].get_node_or_null("Sprite/Shadow") != null, "Tamara's actor must carry a shadow too")
+	gs.reset()
+	_cleanup_m1()
+
+
+## Director's defect: Agata walked through the post counter when a click came before the navigation
+## map was synced (the old 30-frame straight-line fallback). Now she waits for the path.
+func _test_no_straight_line() -> void:
+	gs.reset()
+	await _spawn_main()
+	rm.autosave_enabled = false
+	var spec: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rooms/Z1.json"))
+	var holes: Array = []
+	for hole in spec.get("walkable_holes", []):
+		var poly := PackedVector2Array()
+		for pt in hole:
+			poly.append(Vector2(float(pt[0]), float(pt[1])))
+		holes.append(poly)
+	_check(holes.size() >= 1, "Z1 must have the counter cut-out in walkable_holes")
+	for trial in 2:
+		rm.change_room("Z1", "default")
+		# Same physics frame as the room change: the map cannot have synced yet.
+		var start: Vector2 = player.global_position
+		var target := Vector2(1260, 712)  # behind the counter, on the far side of the cut-out
+		player.call("click_at", target)
+		# A straight line from the spawn to the target crosses the counter: make sure that is what we test.
+		var crosses := false
+		for i in range(1, 50):
+			var q: Vector2 = start.lerp(target, float(i) / 50.0)
+			for h in holes:
+				if Geometry2D.is_point_in_polygon(q, h):
+					crosses = true
+		_check(crosses, "test setup: the straight line spawn→target must cross the counter cut-out")
+		var waited := 0
+		var moved_before_path := false
+		var inside := []
+		var frames := 0
+		var speed_factor_old: float = player.speed_factor
+		player.speed_factor = 4.0
+		while player.call("is_walking") and frames < 1500:
+			await physics_frame
+			frames += 1
+			if not player.call("has_path"):
+				waited += 1
+				if player.global_position.distance_to(start) > 0.5:
+					moved_before_path = true
+			for h in holes:
+				if Geometry2D.is_point_in_polygon(player.global_position, h):
+					inside.append(player.global_position)
+		player.speed_factor = speed_factor_old
+		print("    trial %d: waited %d physics frames for the path, walked %d frames, ended at %s" % [trial, waited, frames, str(player.global_position)])
+		_check(not moved_before_path, "Agata must stand still until the navigation path exists")
+		_check(player.call("has_path"), "the walk must use a navigation path")
+		_check(inside.is_empty(), "Agata went through the counter: %d samples inside the cut-out, first %s" % [inside.size(), str(inside[0]) if not inside.is_empty() else ""])
+		_check(player.global_position.distance_to(target) < 60.0, "should arrive behind the counter near %s, got %s" % [str(target), str(player.global_position)])
 	gs.reset()
 	_cleanup_m1()
