@@ -11,9 +11,12 @@
      true peak ≤ −1 dBTP; персонаж записи совпадает с персонажем реплики;
   4. копия игры (game/assets/voice/ru, tools/sync_voice.sh) совпадает с assets/voice/ru побайтно; у каждого OGG есть
      .import с loop=false;
-  5. data/story/voice.json: известные персонажи в pan, panning_strength ∈ [0, 3], volume_db ∈ [−20, 12].
+  5. data/story/voice.json: известные персонажи в pan, panning_strength ∈ [0, 3], volume_db ∈ [−20, 12];
+  6. теги подачи у реплик (tags, voice_text): тег из pipeline/voice/tags.json; voice_text без тегов = text (слова
+     сценария не меняются); теги voice_text = tags; запись манифеста с другим voice_sha1 (теги изменены) — ждёт
+     перегенерации (ошибка с --strict).
 Самопроверка (каждый запуск): испорченные копии — реплика, которой нет; изменённый текст без stale; персонаж без
-голоса; тихая реплика — должны дать ошибку.
+голоса; тихая реплика; тег не из списка; voice_text с чужими словами — должны дать ошибку.
 Код 0 — ошибок нет. Запуск: python3 tools/validate_voice.py [--quiet] [--strict] [--source-only — без проверки копии игры]
 """
 from __future__ import annotations
@@ -21,6 +24,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -30,6 +34,8 @@ VOICE_SRC = ROOT / "assets" / "voice" / "ru"
 VOICE_GAME = ROOT / "game" / "assets" / "voice" / "ru"
 CAST = ROOT / "pipeline" / "voice" / "cast.json"
 VOICES = ROOT / "pipeline" / "voice" / "voices.json"
+TAGS = ROOT / "pipeline" / "voice" / "tags.json"
+TAG_RE = re.compile(r"\[([^\[\]]+)\]")
 REQUESTS = ROOT / "pipeline" / "requests"
 LUFS_TOL = 1.5
 
@@ -51,11 +57,53 @@ def story_lines() -> dict[str, dict]:
     for ep in sorted((STORY / "scenes").glob("E*.json")):
         for sc in load(ep)["scenes"]:
             for i, ln in enumerate(sc.get("mandatory_lines", [])):
-                out[f"{sc['id']}_{i}"] = {"scene": sc["id"], "speaker": ln.get("speaker", ""), "text": ln.get("text", "")}
+                out[f"{sc['id']}_{i}"] = _line(sc["id"], ln)
     for q in load(STORY / "quests.json")["quests"]:
         for i, ln in enumerate(q.get("mandatory_lines", q.get("lines", []))):
-            out[f"{q['id']}_{i}"] = {"scene": q["id"], "speaker": ln.get("speaker", ""), "text": ln.get("text", "")}
+            out[f"{q['id']}_{i}"] = _line(q["id"], ln)
     return out
+
+
+def _line(scene: str, ln: dict) -> dict:
+    e = {"scene": scene, "speaker": ln.get("speaker", ""), "text": ln.get("text", "")}
+    for k in ("tags", "voice_text"):
+        if k in ln:
+            e[k] = ln[k]
+    return e
+
+
+def api_text(ln: dict) -> str:
+    """Как pipeline/voice/eleven_voice.py: voice_text или теги перед текстом."""
+    if ln.get("voice_text"):
+        return str(ln["voice_text"])
+    return "".join(f"[{t}] " for t in ln.get("tags", [])) + str(ln["text"])
+
+
+def check_tags(lines: dict, allowed: set[str] | None) -> list[str]:
+    """Теги подачи в данных сцен: из разрешённого списка; voice_text — те же слова, что субтитры."""
+    errors: list[str] = []
+    for lid, ln in sorted(lines.items()):
+        tags = ln.get("tags")
+        vt = ln.get("voice_text")
+        if tags is None and vt is None:
+            continue
+        if tags is not None and (not isinstance(tags, list) or not all(isinstance(t, str) and t.strip() for t in tags)):
+            errors.append(f"{lid}: tags — массив непустых строк")
+            continue
+        used = list(tags or [])
+        if vt is not None:
+            in_text = [t.strip() for t in TAG_RE.findall(str(vt))]
+            if tags is not None and in_text != used:
+                errors.append(f"{lid}: теги voice_text {in_text} ≠ tags {used}")
+            used = in_text
+            bare = " ".join(TAG_RE.sub(" ", str(vt)).split())
+            if bare != " ".join(str(ln["text"]).split()):
+                errors.append(f"{lid}: voice_text без тегов ≠ text (слова сценария менять нельзя): «{bare}»")
+        if allowed is not None:
+            for t in used:
+                if t not in allowed:
+                    errors.append(f"{lid}: тег [{t}] не в pipeline/voice/tags.json")
+    return errors
 
 
 def requested_scenes() -> set[str]:
@@ -143,6 +191,8 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 continue
             if "stale" in e:
                 errors.append(f"{tag}: помечена stale ({e['stale']}), но совпадает с текущей репликой")
+            if e.get("voice_sha1", e.get("text_sha1")) != sha1(api_text(cur)):
+                (errors if strict else warns).append(f"{tag}: теги подачи изменены — ждёт перегенерации (pipeline-voice); пока звучит прежний дубль")
             if e.get("text") != cur["text"]:
                 errors.append(f"{tag}: text записи ≠ text реплики при равном sha1")
             if only and e.get("speaker") != only:
@@ -213,7 +263,7 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
         return []
     ln = lines[first]
     good = {"scene": ln["scene"], "speaker": ln["speaker"], "text": ln["text"], "text_sha1": sha1(ln["text"]),
-            "voice_id": "v_test", "file": "x.ogg", "duration_s": 1.0, "lufs": -17.0, "true_peak_db": -3.0}
+            "voice_sha1": sha1(api_text(ln)), "voice_id": "v_test", "file": "x.ogg", "duration_s": 1.0, "lufs": -17.0, "true_peak_db": -3.0}
     test_cast = copy.deepcopy(cast) if cast else {"cast": {}}
     test_cast.setdefault("cast", {})[ln["speaker"]] = {"voice_id": "v_test"}
     base = {"loudness_target_lufs": -17.0, "lines": {}}
@@ -231,6 +281,12 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
     def quiet(m, c):
         m["lines"][first] = dict(good, lufs=-30.0)
 
+    # теги в данных сцен
+    bad_tag = copy.deepcopy(lines)
+    bad_tag[first]["tags"] = ["no_such_tag_x"]
+    bad_words = copy.deepcopy(lines)
+    bad_words[first]["voice_text"] = "[curious] " + ln["text"] + " лишнее"
+
     missed = []
     for name, fn in (("реплика, которой нет", orphan), ("изменённый текст без stale", changed),
                      ("персонаж без голоса", no_voice), ("тихая реплика", quiet)):
@@ -240,6 +296,11 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
         errs, _ = check(lines, {"ru": m}, c, None, voice_cfg, scenes, strict=True, files=False)
         if not errs:
             missed.append(name)
+    allowed = set((load(TAGS, {}) or {}).get("tags", {}).keys())
+    if not check_tags(bad_tag, allowed):
+        missed.append("тег не из списка")
+    if not check_tags(bad_words, allowed | {"curious"}):
+        missed.append("voice_text меняет слова")
     # контроль: неиспорченная запись ошибок не даёт (иначе самопроверка ловила бы что угодно)
     m = copy.deepcopy(base)
     m["lines"][first] = dict(good)
@@ -260,6 +321,11 @@ def main() -> int:
     voice_cfg = load(STORY / "voice.json")
     scenes = requested_scenes()
     errors, warns = check(lines, manifests, cast, voices, voice_cfg, scenes, strict, game_copy=not source_only)
+    tags_doc = load(TAGS)
+    if tags_doc is None:
+        errors.append("нет pipeline/voice/tags.json — список разрешённых тегов")
+    errors += check_tags(lines, set(tags_doc.get("tags", {}).keys()) if tags_doc else None)
+    tagged = sum(1 for ln in lines.values() if ln.get("tags") or ln.get("voice_text"))
     missed = selftest(lines, cast, voice_cfg, scenes)
     for m in missed:
         errors.append(f"самопроверка: порча «{m}» не поймана")
@@ -271,9 +337,9 @@ def main() -> int:
                      for rel, m in sorted(manifests.items())) or "нет"
     if not quiet or errors:
         print(f"validate_voice: манифесты: {sets}; сцены к озвучке: {', '.join(sorted(scenes)) or '—'}; "
-              f"персонажей в cast.json: {len((cast or {}).get('cast', {}))}")
+              f"персонажей в cast.json: {len((cast or {}).get('cast', {}))}; реплик с тегами: {tagged}")
     print(f"[voice] validate_voice.py: {'OK' if not errors else 'FAIL'} ({len(errors)} ошибок, {len(warns)} предупреждений"
-          f"{', strict' if strict else ''}; самопроверка {5 - len(missed)}/5)")
+          f"{', strict' if strict else ''}; самопроверка {7 - len(missed)}/7)")
     return 1 if errors else 0
 
 

@@ -65,6 +65,14 @@ func setup(id: String, h: Node2D, room: Node, the_player: Node2D) -> bool:
 	_place(room, h)
 	_build_shadow()
 	_build_animations()
+	# The puppet replaces the placeholder box with the name (like NpcActor hides the static image);
+	# the hotspot itself (shape, hover label, clicks) stays as it is.
+	var placeholder := h.get_node_or_null("Visual")
+	if placeholder != null:
+		placeholder.visible = false
+	var img := h.get_node_or_null("Image")
+	if img != null:
+		img.visible = false
 	visible = h.visible
 	h.visibility_changed.connect(func(): visible = hotspot.visible)
 	StoryRunner.beat_changed.connect(_on_beat_changed)

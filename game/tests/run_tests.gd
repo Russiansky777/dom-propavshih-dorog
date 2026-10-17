@@ -1706,5 +1706,11 @@ func _test_tikhon() -> void:
 	await physics_frame
 	var picked = room.pick(hs.global_position)
 	_check(picked == hs, "the tikhon hotspot must still be picked at its centre, got %s" % str(picked))
+	# A click on the drawn figure (middle of his body) reaches him, and the old name box is gone.
+	var body_mid: Vector2 = t.global_position + Vector2(0, -t.figure_height_px() * 0.5)
+	picked = room.pick(body_mid)
+	_check(picked == hs, "a click on Tikhon's body %s must pick his hotspot, got %s" % [str(body_mid), str(picked)])
+	var ph: Node = hs.get_node_or_null("Visual")
+	_check(ph == null or not (ph as CanvasItem).visible, "the placeholder name box is hidden under the puppet")
 	gs.reset()
 	_cleanup_m1()

@@ -108,6 +108,9 @@ def story_lines() -> dict[str, dict]:
     return out
 
 
+TAG_IN_TEXT = re.compile(r"\[[^\[\]]+\]")
+
+
 def api_text(ln: dict) -> str:
     """Текст запроса к API: voice_text (теги внутри фразы) или теги перед текстом; субтитры — text без тегов."""
     if ln.get("voice_text"):
@@ -527,6 +530,17 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                  "run": os.environ.get("GITHUB_RUN_ID", "local") if fresh_audio else prev.get("run")}
         if "context" in ln:
             entry["context_not_voiced"] = ln["context"]
+        # Тег прочитан вслух? Тот же текст без тегов звучал prev.duration_s; английское слово тега добавило бы
+        # ≈0,5–0,8 с на тег. Подозрение — в журнал и в запись (проверить на слух).
+        n_tags = len(TAG_IN_TEXT.findall(api_text(ln)))
+        if fresh_audio and n_tags and prev.get("text_sha1") == sha and prev.get("duration_s"):
+            delta = round(meas["duration_s"] - float(prev["duration_s"]), 3)
+            suspect = delta > 0.45 * n_tags + 0.35
+            entry["tag_check"] = {"tags": n_tags, "prev_duration_s": prev["duration_s"], "delta_s": delta, "suspect": suspect}
+            if suspect:
+                log(f"  ПОДОЗРЕНИЕ {tag}: длиннее прежнего дубля на {delta:.2f} с при {n_tags} тег(ах) — тег мог прозвучать вслух")
+        elif prev.get("tag_check") and not fresh_audio:
+            entry["tag_check"] = prev["tag_check"]
         if fresh_audio:
             entry["api"] = info
         elif prev.get("api"):
