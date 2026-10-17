@@ -21,6 +21,7 @@ static var enabled: bool = true
 
 
 static func build(room: Room, room_id: String) -> AmbientRoot:
+	AmbientProbe.register()  # web only, with ?ambientprobe in the URL; once
 	if not enabled or room == null:
 		return null
 	var spec := AmbientData.room(room_id)
@@ -30,7 +31,6 @@ static func build(room: Room, room_id: String) -> AmbientRoot:
 	root.name = "Ambient"
 	room.add_child(root)
 	root.setup(room, room_id, spec)
-	AmbientProbe.register()
 	return root
 
 
