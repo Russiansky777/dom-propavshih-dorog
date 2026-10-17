@@ -467,6 +467,13 @@ func _process(_delta: float) -> void:
 
 
 func _set_hover(node: Node) -> void:
+	# A hotspot from the previous room is freed on room change; a freed instance compares equal
+	# to null, so without this reset the old label would stay on screen.
+	if not is_instance_valid(_hover_node):
+		_hover_node = null
+		if node == null:
+			hover_label.visible = false
+			return
 	if node == _hover_node and (node == null or hover_label.visible):
 		return
 	_hover_node = node
