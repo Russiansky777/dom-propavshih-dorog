@@ -1,0 +1,16 @@
+{
+  "set": "icons_e0e1",
+  "ai_model": "nano-banana-2",
+  "style": "Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+  "items": {
+    "key_house": "An old hand-forged iron house key with a simple round ring bow and a long shaft, slightly rusty, a short faded red cord tied to the ring",
+    "letter_tamara": "A folded handwritten paper letter tucked into a plain worn paper envelope, a small postage stamp in the corner, illegible faded ink handwriting marks",
+    "pocket_watch": "A worn brass pocket watch with its hinged lid open, white enamel dial with simple hour marks and two black hands, a short brass chain",
+    "mitten": "A single hand-knitted wool mitten, dark brown with a cream band pattern at the cuff, soft and slightly worn",
+    "door_hinges": "Two old forged iron strap door hinges with a few square nails, lying crossed, dark metal with worn edges",
+    "invoice_chalk": "A small crumpled paper shipping invoice slip with a faded violet ink round stamp and illegible handwritten lines",
+    "photo_school_pier": "An old sepia photograph print with a white deckled border showing a small wooden river pier with posts, one corner slightly curled",
+    "chalk": "A short stick of white school chalk with a little chalk dust around it"
+  },
+  "redo": []
+}
