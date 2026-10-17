@@ -448,7 +448,11 @@ async function main() {
       await waitFor("hint after the second error", (s) => s.puzzle.errors === 2 && s.puzzle.hint, 8000);
       // Fix: move hinge_2 to the bottom socket, notch 2.
       p = (await state()).puzzle;
-      await click("slot middle (return piece)", p.slots.middle); await sleep(300);
+      await click("slot middle (return piece)", p.slots.middle);
+      const mid = p.slots.middle;
+      // The probe republishes after layout; wait until hinge_2 is back in the tray, not on the slot.
+      await waitFor("hinge_2 back in the tray", (t) => t.puzzle && t.puzzle.pieces.hinge_2 &&
+        Math.hypot(t.puzzle.pieces.hinge_2.x - mid.x, t.puzzle.pieces.hinge_2.y - mid.y) > 40, 5000);
       p = (await state()).puzzle;
       await click("piece hinge_2", p.pieces.hinge_2); await sleep(200);
       await click("slot bottom", p.slots.bottom); await sleep(300);
