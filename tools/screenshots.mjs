@@ -75,7 +75,7 @@ async function main() {
   fs.mkdirSync(SHOTS_DIR, { recursive: true });
   if (MODE === "full") {
     for (const f of fs.readdirSync(SHOTS_DIR)) {
-      if (/^\d\d_/.test(f) || f === "console.log") fs.rmSync(path.join(SHOTS_DIR, f), { force: true });
+      if (/^\d\d_/.test(f) || /^real_/.test(f) || f === "console.log") fs.rmSync(path.join(SHOTS_DIR, f), { force: true });
     }
   }
   const consoleLog = [];
@@ -167,6 +167,17 @@ async function main() {
     await waitFor(`select ${item}`, (t) => t.selected_item === item, 5000);
     return useHotspot(id, choices);
   };
+  const roomShots = new Set();
+  /** One `real_<ROOM>.png` per room, taken after Agata has settled on arrival. */
+  const roomShot = async (room) => {
+    if (MODE !== "full" || roomShots.has(room)) return;
+    roomShots.add(room);
+    await sleep(500);
+    const file = path.join(SHOTS_DIR, `real_${room}.png`);
+    await page.screenshot({ path: file });
+    shots.push(file);
+    logLine(`screenshot ${path.relative(ROOT, file)}`);
+  };
   const goExit = async (target, expectChange = true) => {
     const s = await state();
     const e = s.exits[target];
@@ -177,7 +188,9 @@ async function main() {
     if (expectChange) {
       await waitFor(`room == ${target}`, (t) => t.room === target, 20000);
       await sleep(700);
-      return (await state()).room === target;
+      const ok = (await state()).room === target;
+      if (ok) await roomShot(target);
+      return ok;
     }
     await waitFor(`exit → ${target}: reaction`, (t) => beatKey(t) !== "" || (t.flags && t.flags.observed_path_loop), 8000);
     await finishDialogue(`exit → ${target}`);
@@ -261,6 +274,7 @@ async function main() {
 
     // --- Z1: Tamara (M01) ---
     await shot("Z1_post");
+    await roomShot("Z1");
     await useHotspot("drawings");
     {
       const s = await state();

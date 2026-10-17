@@ -31,7 +31,8 @@ func setup(p_data: Dictionary) -> void:
 func _setup_fire(rect: Rect2) -> void:
 	glow = Polygon2D.new()
 	glow.name = "Glow"
-	glow.color = Color(1.0, 0.55, 0.15, 0.35)
+	glow.color = Color(1.0, 0.55, 0.15, 1.0)
+	glow.self_modulate = Color(1, 1, 1, 0.35)
 	glow.polygon = PackedVector2Array([rect.position, rect.position + Vector2(rect.size.x, 0), rect.end, rect.position + Vector2(0, rect.size.y)])
 	add_child(glow)
 	particles.position = Vector2(rect.position.x + rect.size.x / 2, rect.end.y - 6)
@@ -73,7 +74,8 @@ func _setup_snow(rect: Rect2) -> void:
 func _process(delta: float) -> void:
 	if glow != null and visible:
 		_t += delta
-		glow.color.a = 0.25 + 0.12 * sin(_t * 9.0) + 0.06 * sin(_t * 23.0)
+		# Flicker through self_modulate: changing Polygon2D.color would re-upload the polygon every frame.
+		glow.self_modulate.a = 0.25 + 0.12 * sin(_t * 9.0) + 0.06 * sin(_t * 23.0)
 
 
 func _exit_tree() -> void:

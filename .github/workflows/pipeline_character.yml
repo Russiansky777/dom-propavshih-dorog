@@ -72,8 +72,9 @@ jobs:
             args=$(python -c "import json,sys;r=json.load(open(sys.argv[1]));print(' '.join(f'{a}={r.get(\"frames\",{}).get(a, 12 if a==\"walk\" else 8)}' for a in r.get('actions',['idle','walk'])))" "$f")
             elev=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('elev',14))" "$f")
             yaw=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('front_yaw',0))" "$f")
+            win=$(python -c "import json,sys;r=json.load(open(sys.argv[1]));print(' '.join(f'{k}={v[0]}:{v[1]}' for k,v in r.get('clip_window',{}).items()))" "$f")
             python pipeline/render/render_sprites.py --glb "pipeline/3d/out/$name/animations.glb" --name "$name" \
-              --out "assets/characters/$name" --directions 8 --frames $args --size 384 --samples 24 --elev "$elev" --front-yaw "$yaw"
+              --out "assets/characters/$name" --directions 8 --frames $args --size 384 --samples 24 --elev "$elev" --front-yaw "$yaw" ${win:+--window $win}
             cp "pipeline/3d/out/$name/meshy_manifest.json" "assets/characters/$name/"
             cp "pipeline/3d/out/$name/views/"*.png "assets/characters/$name/" 2>/dev/null || true
           done

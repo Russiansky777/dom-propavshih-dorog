@@ -59,7 +59,11 @@ def main() -> int:
     ap.add_argument("--front-yaw", type=float, default=0.0, help="поправка, если анфас не на d=0")
     ap.add_argument("--samples", type=int, default=24)
     ap.add_argument("--margin", type=float, default=1.12)
+    ap.add_argument("--window", nargs="*", default=[], help="доля клипа на действие: idle=0:0.35 — кадры берутся только из этого отрезка (для клипов с лишним движением), в манифест пишется playback=pingpong")
     args = ap.parse_args()
+    windows: dict[str, tuple[float, float]] = {}
+    for w in args.window:
+        k, v = w.split("=", 1); a, b = v.split(":"); windows[k] = (float(a), float(b))
 
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     frames_by_action = parse_frames(args.frames)
@@ -161,6 +165,10 @@ def main() -> int:
                 arm.animation_data_create()
             arm.animation_data.action = act
         f0, f1 = act.frame_range
+        if action_name in windows:
+            wa, wb = windows[action_name]
+            f0, f1 = f0 + (f1 - f0) * wa, f0 + (f1 - f0) * wb
+            print(f"  {action_name}: окно клипа {wa:.2f}–{wb:.2f} → кадры {f0:.1f}–{f1:.1f}", flush=True)
         strip = None
         from PIL import Image  # локальный импорт: Pillow не нужен Blender'у
         sheet = Image.new("RGBA", (scene.render.resolution_x * nframes, scene.render.resolution_y * args.directions), (0, 0, 0, 0))
@@ -178,6 +186,9 @@ def main() -> int:
         path = out / f"{action_name}.png"
         sheet.save(path)
         manifest["actions"][action_name] = {"sheet": path.name, "frames": nframes, "fps": 12 if action_name == "walk" else 8, "clip": act.name}
+        if action_name in windows:
+            manifest["actions"][action_name]["window"] = list(windows[action_name])
+            manifest["actions"][action_name]["playback"] = "pingpong"
     (out / "sprites.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print("готово:", out)
     return 0

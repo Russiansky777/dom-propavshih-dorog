@@ -15,12 +15,17 @@
   "texture_resolution": "2k",
   "elev": 14,
   "front_yaw": 0,
-  "redo_stages": [
-    "anim"
-  ],
-  "rev": 6,
+  "redo_stages": [],
+  "rev": 7,
   "action_ids": {
     "idle": 0,
     "walk": 1
-  }
+  },
+  "clip_window": {
+    "idle": [
+      0.0,
+      0.35
+    ]
+  },
+  "_note": "rev 7: без новых задач Meshy (0 кредитов) — только перерендер idle из первых 35 % клипа «Idle» (до поворота), playback pingpong"
 }

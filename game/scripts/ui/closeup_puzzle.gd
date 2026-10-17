@@ -126,7 +126,7 @@ func _build() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(root)
 	root.add_child(_rect(Color(0.05, 0.05, 0.06, 1.0), Rect2(0, 0, 1920, 1080)))
-	title_label = _label(StoryData.text(String(spec.get("title", ""))), Rect2(320, 110, 1480, 60), 34, false)
+	title_label = _label(StoryData.text(String(spec.get("title", ""))), Rect2(40, 20, 470, 120), 30, false)
 	title_label.name = "Title"
 	root.add_child(title_label)
 

@@ -487,6 +487,21 @@ func _test_story_data() -> void:
 	_check(sd.scenes.has("M01") and sd.scenes.has("M08") and sd.scenes.has("Q04"), "scenes M01/M08/Q04 missing")
 	_check(sd.start_location == "Z1", "start location should be Z1, got %s" % sd.start_location)
 	_check(not sd.text("@ui.not_built").begins_with("["), "ui texts not resolved")
+	# Every in-scope room has a real background file and every layer/state/hotspot/puzzle image exists.
+	for rid in sd.rooms_index.get("in_scope", []):
+		var spec: Dictionary = sd.room(rid)
+		var bg_img := String(spec.get("background", {}).get("image", ""))
+		_check(bg_img != "" and ResourceLoader.exists(bg_img), "%s: background.image missing or not found (%s)" % [rid, bg_img])
+		for l in spec.get("layers", []):
+			var img := String(l.get("image", ""))
+			_check(ResourceLoader.exists(img), "%s: layer %s image not found: %s" % [rid, String(l.get("id", "?")), img])
+		for h in spec.get("hotspots", []):
+			if h.has("image"):
+				_check(ResourceLoader.exists(String(h["image"])), "%s/%s: hotspot image not found" % [rid, String(h.get("id", "?"))])
+			for key in h.get("puzzle", {}).get("art", {}).keys():
+				var a = h["puzzle"]["art"][key]
+				if a is Dictionary and a.has("image"):
+					_check(ResourceLoader.exists(String(a["image"])), "%s puzzle art %s not found: %s" % [rid, key, String(a["image"])])
 	# Build every in-scope room standalone and verify structure. (Loaded at runtime: a -s script
 	# must not name classes whose scripts depend on autoloads, see the note at the top.)
 	var builder = load("res://scripts/rooms/room_builder.gd")

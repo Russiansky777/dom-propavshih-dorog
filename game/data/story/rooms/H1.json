@@ -1,6 +1,6 @@
 {
   "id": "H1",
-  "_art": "Настоящий фон assets/reference/H1_bg.png (1672x941 → 1920x1080) и передний план H1_fg_table_chair.png (стол со стулом, окклюдер). Координаты ниже — в 1920x1080. Хотспоты не рисуются (draw: false), подписи показываются при наведении. Выходы тоже не рисуются: подпись выхода появляется при наведении курсора.",
+  "_art": "Настоящий фон assets/reference/H1_bg.png (1672x941 → 1920x1080) и передний план H1_fg_table_chair.png (стол со стулом, окклюдер z=950). Состояния (слои из assets/incoming, совмещены вручную offset/scale): закрытые ставни пока h1_shutter_open=false (эталон уже с открытыми), открытая печная дверца и программный огонь при stove_lit, платок на крючках после h1_scarf_removed, полка у печи / у стола по выбору Q04. Хотспоты и выходы не рисуются, подпись — при наведении.",
   "background": {
     "kind": "interior",
     "image": "res://assets/rooms/H1/bg.png",
@@ -17,6 +17,55 @@
     "scale_bottom": 2.0
   },
   "_depth_note": "Агата: кадр 384 px, фигура 337 px. У дальней стены (y=700) рост 1.3×337 ≈ 440 px (дверной проём на фоне ≈ 540 px ≈ 2 м); у ближнего края (y=1070) 2.0×337 ≈ 675 px ≈ 62% высоты кадра. Ориентир — стол (ножки до y≈950, высота столешницы ≈ 0.75 м ≈ 310 px).",
+  "layers": [
+    {
+      "id": "table_chair",
+      "image": "res://assets/rooms/H1/fg_table_chair.png",
+      "occluder": true,
+      "z": 950,
+      "_z_note": "ножки стола на полу при y≈950"
+    },
+    {
+      "id": "shutter_closed",
+      "image": "res://assets/rooms/H1/state_shutter_closed.png",
+      "offset": [220, 25],
+      "scale": 0.91,
+      "unless": ["h1_shutter_open"]
+    },
+    {
+      "id": "stove_open",
+      "image": "res://assets/rooms/H1/state_stove_open.png",
+      "offset": [-120, -120],
+      "scale": 0.9,
+      "if": ["stove_lit"]
+    },
+    {
+      "id": "hook_coat",
+      "image": "res://assets/rooms/H1/state_hook_coat.png",
+      "if": ["h1_scarf_removed"]
+    },
+    {
+      "id": "shelf_stove",
+      "image": "res://assets/rooms/H1/state_shelf_stove.png",
+      "if": ["q04_corner_stove"]
+    },
+    {
+      "id": "shelf_table",
+      "image": "res://assets/rooms/H1/state_shelf_table.png",
+      "if": ["q04_shelf_table"]
+    }
+  ],
+  "effects": [
+    {
+      "id": "stove_fire",
+      "type": "fire",
+      "rect": [150, 400, 140, 110],
+      "if": ["stove_lit"],
+      "z": 2,
+      "amount": 50,
+      "_note": "проём открытой печной дверцы после подгонки слоя stove_open (≈150..290 x 400..510)"
+    }
+  ],
   "spawns": {
     "default": [1200, 900],
     "from_Z2": [980, 770],
@@ -24,18 +73,7 @@
     "from_H3": [1100, 1000],
     "from_H4": [1650, 1000]
   },
-  "props": [
-    {
-      "id": "table_chair",
-      "label": "@H1.table.label",
-      "image": "res://assets/rooms/H1/fg_table_chair.png",
-      "rect": [0, 0, 1920, 1080],
-      "color": "#5a3c22",
-      "occluder": true,
-      "z": 950,
-      "_z_note": "ножки стола стоят на полу при y≈950: игрок выше по экрану (y<950) перекрывается столом и креслом, ниже — рисуется перед ними"
-    }
-  ],
+  "props": [],
   "hotspots": [
     {
       "id": "stove",
@@ -190,8 +228,8 @@
       "id": "shelf",
       "kind": "object",
       "label": "@H1.shelf.label",
-      "rect": [1190, 230, 160, 70],
-      "stand": [1290, 740],
+      "rect": [60, 300, 320, 140],
+      "stand": [600, 735],
       "color": "#7a5a3a",
       "draw": false,
       "states": [
@@ -231,8 +269,8 @@
       "id": "shelf_done",
       "kind": "object",
       "label": "@H1.shelf.label_done",
-      "rect": [1190, 230, 160, 70],
-      "stand": [1290, 740],
+      "rect": [60, 300, 320, 140],
+      "stand": [600, 735],
       "color": "#7a5a3a",
       "draw": false,
       "visible_if": ["done_Q04"],
