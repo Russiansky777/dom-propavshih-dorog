@@ -72,8 +72,12 @@ async function main() {
     console.error(`No web build at ${WEB_DIR}. Run tools/export_web.sh first.`);
     process.exit(2);
   }
-  if (MODE === "full") fs.rmSync(SHOTS_DIR, { recursive: true, force: true });
   fs.mkdirSync(SHOTS_DIR, { recursive: true });
+  if (MODE === "full") {
+    for (const f of fs.readdirSync(SHOTS_DIR)) {
+      if (/^\d\d_/.test(f) || f === "console.log") fs.rmSync(path.join(SHOTS_DIR, f), { force: true });
+    }
+  }
   const consoleLog = [];
   const logLine = (s) => { const line = `[${new Date().toISOString()}] ${s}`; consoleLog.push(line); console.log(line); };
 
@@ -356,8 +360,7 @@ async function main() {
     // --- O2 (M08 loop) ---
     if (!(await goExit("O2"))) failures.push("O1→O2 failed");
     await shot("O2_yard");
-    await useHotspot("mitten");
-    await useItemOn("mitten", "porch_step");
+    await useItemOn("mitten", "porch_step");  // the mitten comes from Agata's bag (M01)
     {
       const s = await state();
       await click("exit → O4 (gate)", s.exits.O4);

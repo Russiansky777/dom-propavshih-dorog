@@ -37,7 +37,7 @@ ACTION_KEYWORDS = {
     "talk": ["talking", "talk", "speak", "gesture"],
 }
 # пресеты с этими словами не подходят под бытовую адвенчуру
-ACTION_STOPWORDS = ["swim", "sit", "crouch", "combat", "fight", "sword", "gun", "rifle", "zombie", "dance", "injured", "drunk", "sneak", "crawl", "jump", "fall", "fly"]
+ACTION_STOPWORDS = ["swim", "sit", "crouch", "combat", "fight", "sword", "gun", "rifle", "zombie", "dance", "injured", "drunk", "sneak", "crawl", "jump", "fall", "fly", "turn", "look", "phone", "texting", "bored", "angry", "scared"]
 
 
 def split_sheet(sheet: Path, out_dir: Path, min_width: int = 60, pad: int = 24) -> list[Path]:
@@ -178,7 +178,24 @@ def main() -> int:
     # 4. анимации из библиотеки
     wanted = req.get("actions", ["idle", "walk"])
     if "anim_task" not in st:
-        chosen = pick_actions(wanted)
+        # action_ids в запросе — явный выбор пресета по публичному каталогу
+        # https://api.meshy.ai/web/public/animations/resources (напр. 0 = Idle, 1 = Walking Woman);
+        # без него — подбор по ключевым словам (pick_actions).
+        explicit = req.get("action_ids") or {}
+        if explicit:
+            lib = {}
+            for item in mc.library(category="WalkAndRun") + mc.library(category="BodyMovements") + mc.library(category="DailyActions"):
+                lib.setdefault(item.get("action_id"), item)
+            chosen = {}
+            for w in wanted:
+                if w in explicit:
+                    aid = int(explicit[w])
+                    item = lib.get(aid) or {"action_id": aid, "name": f"action {aid}", "key": f"action_{aid}"}
+                    chosen[w] = item
+                else:
+                    chosen[w] = pick_actions([w])[w]
+        else:
+            chosen = pick_actions(wanted)
         st["actions"] = {w: {"action_id": c["action_id"], "name": c.get("name"), "key": c.get("key")} for w, c in chosen.items()}
         st["anim_task"] = mc.create("/animations", {"rig_task_id": st["rig_task"], "action_ids": [c["action_id"] for c in chosen.values()]})
         save_state(name, st)

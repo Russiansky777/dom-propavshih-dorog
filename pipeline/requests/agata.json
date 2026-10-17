@@ -2,13 +2,25 @@
   "character": "agata",
   "sheet": "assets/reference/agata_sheet.png",
   "height_m": 1.65,
-  "actions": ["idle", "walk"],
-  "frames": {"idle": 8, "walk": 12},
+  "actions": [
+    "idle",
+    "walk"
+  ],
+  "frames": {
+    "idle": 8,
+    "walk": 12
+  },
   "ai_model": "latest",
   "pose_mode": "a-pose",
   "texture_resolution": "2k",
   "elev": 14,
   "front_yaw": 0,
-  "redo_stages": ["anim"],
-  "rev": 4
+  "redo_stages": [
+    "anim"
+  ],
+  "rev": 5,
+  "action_ids": {
+    "idle": 0,
+    "walk": 1
+  }
 }
