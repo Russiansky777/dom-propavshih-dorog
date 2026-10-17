@@ -1,14 +1,14 @@
 {
-  "web_dir": "web export of main @ f045230 (tools/export_web.sh equivalent)",
+  "web_dir": "web export of main @ 2fd1025 (particle rain)",
   "renderer": "headless Chromium, ANGLE SwiftShader (software WebGL2)",
   "viewport": "960x540",
   "seconds": 4,
   "rooms": {
     "Z2": {
-      "fps_on": 2.7,
-      "fps_off": 5.9,
-      "cost_pct": 54.5,
-      "godot_fps_on": 1,
+      "fps_on": 4.5,
+      "fps_off": 3.9,
+      "cost_pct": -14.2,
+      "godot_fps_on": 4,
       "sway": 10,
       "water": 1,
       "puddles": 5,
@@ -16,10 +16,10 @@
       "dust_particles": 0
     },
     "Z3": {
-      "fps_on": 4.4,
-      "fps_off": 6.7,
-      "cost_pct": 34.7,
-      "godot_fps_on": 5,
+      "fps_on": 4,
+      "fps_off": 6.9,
+      "cost_pct": 41.7,
+      "godot_fps_on": 2,
       "sway": 4,
       "water": 2,
       "puddles": 0,
@@ -27,10 +27,10 @@
       "dust_particles": 0
     },
     "R1": {
-      "fps_on": 3.6,
-      "fps_off": 5.5,
-      "cost_pct": 34.2,
-      "godot_fps_on": 6,
+      "fps_on": 4.2,
+      "fps_off": 4,
+      "cost_pct": -4.6,
+      "godot_fps_on": 5,
       "sway": 4,
       "water": 2,
       "puddles": 7,
@@ -38,10 +38,10 @@
       "dust_particles": 0
     },
     "H1": {
-      "fps_on": 1.6,
-      "fps_off": 2,
-      "cost_pct": 20.1,
-      "godot_fps_on": 4,
+      "fps_on": 5.5,
+      "fps_off": 5,
+      "cost_pct": -9.2,
+      "godot_fps_on": 2,
       "sway": 4,
       "water": 0,
       "puddles": 0,
@@ -49,10 +49,10 @@
       "dust_particles": 26
     },
     "H2": {
-      "fps_on": 1.2,
-      "fps_off": 1.4,
-      "cost_pct": 13.7,
-      "godot_fps_on": 1,
+      "fps_on": 5.5,
+      "fps_off": 3.2,
+      "cost_pct": -73.6,
+      "godot_fps_on": 8,
       "sway": 3,
       "water": 0,
       "puddles": 0,
@@ -60,10 +60,10 @@
       "dust_particles": 20
     },
     "O1": {
-      "fps_on": 16.1,
-      "fps_off": 14.3,
-      "cost_pct": -12.7,
-      "godot_fps_on": 17,
+      "fps_on": 6.4,
+      "fps_off": 4.8,
+      "cost_pct": -33.7,
+      "godot_fps_on": 4,
       "sway": 8,
       "water": 0,
       "puddles": 0,
@@ -71,10 +71,10 @@
       "dust_particles": 24
     },
     "O2": {
-      "fps_on": 11.6,
-      "fps_off": 12,
-      "cost_pct": 2.9,
-      "godot_fps_on": 11,
+      "fps_on": 5.3,
+      "fps_off": 4.8,
+      "cost_pct": -8.9,
+      "godot_fps_on": 5,
       "sway": 1,
       "water": 0,
       "puddles": 0,
@@ -89,54 +89,55 @@
     "events": [
       {
         "frame": 10,
-        "scale": 0.93181103515625,
+        "scale": 0.931810668945313,
         "surface": "mud",
-        "x": 1059.07275390625,
-        "y": 835.905517578125
+        "x": 1059.078125,
+        "y": 835.905334472656
       },
       {
         "frame": 4,
-        "scale": 0.913185791015625,
+        "scale": 0.913177978515625,
         "surface": "mud",
-        "x": 1189.28283691406,
-        "y": 826.592895507812
+        "x": 1189.30334472656,
+        "y": 826.588989257812
       },
       {
         "frame": 10,
-        "scale": 0.913553588867188,
+        "scale": 0.9138115234375,
         "surface": "mud",
-        "x": 1295.33911132812,
-        "y": 826.776794433594
+        "x": 1292.55505371094,
+        "y": 826.90576171875
       },
       {
         "frame": 4,
-        "scale": 0.923885009765625,
+        "scale": 0.924055297851562,
         "surface": "puddle",
-        "x": 1427.56762695312,
-        "y": 831.942504882812
+        "x": 1424.63793945312,
+        "y": 832.027648925781
       },
       {
         "frame": 10,
-        "scale": 0.936866455078125,
+        "scale": 0.936907958984375,
         "surface": "puddle",
-        "x": 1559.59619140625,
-        "y": 838.433227539062
+        "x": 1556.66296386719,
+        "y": 838.453979492188
       },
       {
         "frame": 4,
-        "scale": 0.947441772460937,
+        "scale": 0.94733935546875,
         "surface": "puddle",
-        "x": 1695.18103027344,
-        "y": 843.720886230469
+        "x": 1692.17626953125,
+        "y": 843.669677734375
       },
       {
         "frame": 10,
-        "scale": 0.960808227539062,
+        "scale": 0.9605458984375,
         "surface": "mud",
-        "x": 1830.37023925781,
-        "y": 850.404113769531
+        "x": 1827.34521484375,
+        "y": 850.27294921875
       }
     ]
   },
-  "errors": []
+  "errors": [],
+  "_note": "Headless Chromium + ANGLE SwiftShader (программный WebGL2) в песочнице на 2 ядрах, где одновременно работали ещё 3 агента (load average 6–13): абсолютные FPS 1–16 и даже разность «вкл/выкл» шумят сильнее эффекта (повторные замеры одной комнаты расходятся вдвое). Покомпонентно (Z2, 960x540): до замены морось-шейдер один снижал 6,6 → 3,2 fps (полноэкранный проход); после замены на частицы дождь не отличим от шума. Цифры с настоящей видеокарты — оверлей F3 в игре."
 }
