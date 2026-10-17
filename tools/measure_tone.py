@@ -10,6 +10,9 @@
 Запуск: python3 tools/measure_tone.py <папка кадров> <сценарий>:<x>:<y>[:x0,y0,x1,y1] [...]  [--check 0.85 1.15]
 (x0,y0,x1,y1 — прямоугольник чистого пола рядом, когда у ступней мебель)
 Код 1, если задан --check и хоть одно отношение вне границ.
+Если рядом есть <имя>_neutral.png (тот же миг без тона комнаты), печатает насыщенность «пальто»
+(тёмная половина фигуры) в тоне против нейтрального света; --sat-min 0.8 — порог (координатор 18.10:
+тон комнаты не обесцвечивает актёров, ≥ 80 %).
 """
 from __future__ import annotations
 
@@ -41,7 +44,23 @@ def measure(folder: Path, name: str, x: int, y: int, floor_rect: list[int] | Non
         return {"name": name, "error": "фигура не найдена (%d px)" % int(fig.sum())}
     f_rgb = a[fig].mean(axis=0)
     p_rgb = b[floor].mean(axis=0)
+    sat = None
+    neutral_path = folder / f"{name}_neutral.png"
+    if neutral_path.exists():
+        # Coat = the darker half of the figure on neutral light (no shawl, hands, face); saturation
+        # (max − min) / max per pixel, mean — toned frame against the same pixels on neutral light.
+        n = np.asarray(Image.open(neutral_path).convert("RGB")).astype(float)
+        nl = lum(n)
+        coat = fig & (nl <= np.median(nl[fig]))
+        def s_of(img):
+            px = img[coat]
+            mx = px.max(axis=1)
+            return float(((mx - px.min(axis=1)) / np.maximum(mx, 1.0)).mean())
+        sat = {"toned": s_of(a), "neutral": s_of(n), "ratio": s_of(a) / max(s_of(n), 1e-6),
+               "coat_rgb": [round(float(v), 1) for v in a[coat].mean(axis=0)],
+               "coat_rgb_neutral": [round(float(v), 1) for v in n[coat].mean(axis=0)]}
     return {
+        "sat": sat,
         "name": name,
         "figure_px": int(fig.sum()),
         "figure_lum": float(lum(f_rgb)),
@@ -60,6 +79,11 @@ def main() -> int:
         i = args.index("--check")
         check = (float(args[i + 1]), float(args[i + 2]))
         args = args[:i] + args[i + 3:]
+    sat_min = None
+    if "--sat-min" in args:
+        i = args.index("--sat-min")
+        sat_min = float(args[i + 1])
+        args = args[:i] + args[i + 2:]
     folder = Path(args[0])
     bad = 0
     for spec in args[1:]:
@@ -76,6 +100,12 @@ def main() -> int:
         print(f"{name}: фигура {r['figure_lum']:.1f} / пол {r['floor_lum']:.1f} = {r['ratio']:.2f}"
               f"{'' if check is None else (' OK' if ok else ' ВНЕ ' + str(check))}; тёплый сдвиг R−B {r['warm']:.1f};"
               f" фигура RGB {r['figure_rgb']}, пол RGB {r['floor_rgb']} ({r['figure_px']} px)")
+        if r.get("sat"):
+            sa = r["sat"]
+            sat_ok = sat_min is None or sa["ratio"] >= sat_min
+            bad += 0 if sat_ok else 1
+            print(f"    насыщенность пальто {sa['toned']:.3f} против {sa['neutral']:.3f} на нейтральном свете = {sa['ratio']:.2f}"
+                  f"{'' if sat_min is None else (' OK' if sat_ok else ' НИЖЕ ' + str(sat_min))}; пальто RGB {sa['coat_rgb']} (нейтр. {sa['coat_rgb_neutral']})")
     return 1 if bad else 0
 
 

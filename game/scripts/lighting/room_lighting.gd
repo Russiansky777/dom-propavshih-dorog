@@ -31,6 +31,8 @@ const LM_DIV := 4
 const RECEIVERS := ["Background", "Layers", "Occluders", "Props", "Hotspots"]
 ## Off only for measurements (LightProbe: FPS with and without lighting).
 static var enabled: bool = true
+## Off only for measurements (shots_lighting.gd "pair": the same instant on neutral light).
+static var tone_enabled: bool = true
 const RESCAN_S := 0.5
 
 var room_id: String = ""
@@ -304,7 +306,7 @@ func _update_tones(delta: float) -> void:
 		if not (spr is AnimatedSprite2D) or not is_instance_valid(spr):
 			continue
 		var fig_h: float = -spr.offset.y * absf(spr.get_global_transform().get_scale().y)
-		var target := actor_tone_at(spr.global_position, fig_h)
+		var target := actor_tone_at(spr.global_position, fig_h) if tone_enabled else Color.WHITE
 		var key: int = a.get_instance_id()
 		var cur: Color = tones[key].lerp(target, w) if tones.has(key) else target
 		tones[key] = cur

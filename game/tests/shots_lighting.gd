@@ -29,6 +29,9 @@ const SCENARIOS := {
 	"H1_tone_dark_nostove_mid": {"room": "H1", "flags": [], "pos": [1100, 860], "pair": true},
 	"H1_tone_dark_door": {"room": "H1", "flags": ["stove_lit"], "pos": [980, 775], "pair": true},
 	"H1_tone_open": {"room": "H1", "flags": ["h1_shutter_open"], "pos": [1250, 900], "pair": true},
+	"H1_tone_day_stove": {"room": "H1", "flags": ["stove_lit", "h1_shutter_open", "started_M03"], "pos": [640, 740], "pair": true},
+	"H1_tone_day_mid": {"room": "H1", "flags": ["stove_lit", "h1_shutter_open"], "pos": [1100, 860], "pair": true},
+	"H1_tone_day_window": {"room": "H1", "flags": ["h1_shutter_open"], "pos": [1450, 880], "pair": true},
 	"H2_tone": {"room": "H2", "flags": [], "pos": [520, 880], "pair": true},
 	"H2_door": {"room": "H2", "flags": [], "pos": [520, 880]},
 	"H2_shadow_walk": {"room": "H2", "flags": [], "pos": [300, 820], "walk_to": [800, 1000], "frames": 14, "dt": 0.18, "time_scale": 0.35},
@@ -125,6 +128,18 @@ func _scenario(sname: String, sc: Dictionary, gs, rm) -> int:
 				bg.resize(1920, 1080, Image.INTERPOLATE_LANCZOS)
 			bg.save_png(path.get_basename() + "_bg.png")
 			_player.visible = true
+			# …and on neutral light (no room tone): the figure's own colours for the saturation check.
+			var rl_script = load("res://scripts/lighting/room_lighting.gd")
+			rl_script.tone_enabled = false
+			await process_frame
+			await process_frame
+			await RenderingServer.frame_post_draw
+			var neu := root.get_viewport().get_texture().get_image()
+			if neu.get_width() != 1920:
+				neu.resize(1920, 1080, Image.INTERPOLATE_LANCZOS)
+			neu.save_png(path.get_basename() + "_neutral.png")
+			rl_script.tone_enabled = true
+			await process_frame
 	Engine.time_scale = 1.0
 	print("lighting shots %s: %d frame(s) → %s" % [sname, made, _out_dir])
 	return made
