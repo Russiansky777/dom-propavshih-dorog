@@ -104,7 +104,9 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 	a.talk_action = String(spec.get("talk_action", "talk"))
 	var npc: Dictionary = spec.get("npc", {})
 	a.facing = String(npc.get("facing", "down"))
-	a.scale_factor = float(npc.get("scale_factor", 1.0))
+	var sf = npc.get("scale_factor", 1.0)
+	var auto_scale: bool = typeof(sf) == TYPE_STRING and String(sf) == "auto"
+	a.scale_factor = 1.0 if auto_scale else float(sf)
 	var fo: Array = npc.get("feet_offset", [0, 0])
 	a.feet_offset = Vector2(float(fo[0]), float(fo[1]))
 	var shadow: Dictionary = spec.get("shadow", {})
@@ -122,6 +124,18 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 	a.pivot = Vector2(float(p.get("x", 0.5)), float(p.get("y", 0.946)))
 	a.directions = int(sprites.get("directions", 8))
 	a.character_height_m = float(sprites.get("character_height_m", a.character_height_m))
+	if auto_scale:
+		# Every sheet is rendered with the figure filling the same frame height, so on screen an NPC's
+		# height relative to the reference actor is the ratio of the model heights in the sprites.json.
+		var ref_id := String(npc.get("height_reference", "agata"))
+		var ref_spec = _read_json("res://data/actors/%s.json" % ref_id)
+		var ref_dir := "res://assets/characters/" + ref_id
+		if typeof(ref_spec) == TYPE_DICTIONARY:
+			ref_dir = String(ref_spec.get("sheet_dir", ref_dir))
+		var ref_sprites = _read_json(ref_dir + "/sprites.json")
+		var ref_h: float = float(ref_sprites.get("character_height_m", 0.0)) if typeof(ref_sprites) == TYPE_DICTIONARY else 0.0
+		if ref_h > 0.0:
+			a.scale_factor = a.character_height_m / ref_h
 	a.actions = sprites.get("actions", {})
 	# Actor data may override per-action playback (e.g. a non-cyclic talk clip → pingpong) without
 	# touching the pipeline's sprites.json.

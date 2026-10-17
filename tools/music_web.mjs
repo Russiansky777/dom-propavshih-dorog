@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Background music in the WEB build with REAL clicks (MusicDirector, data/story/music.json).
+// Background music and sound effects in the WEB build with REAL clicks (MusicDirector,
+// data/story/music.json; SfxDirector, data/story/sfx.json — `window.sfxState`).
 //
 //   node tools/music_web.mjs            (after tools/export_web.sh; port MUSIC_PORT, default 8773)
 //
@@ -22,7 +23,11 @@
 //   5. menu slider «Музыка» clicked at 50 % → Music bus −12 dB; the page is reloaded and the
 //      setting comes back from user:// (IndexedDB) before any click;
 //   6. the whole run: 0 console errors / page errors; dropouts and the longest main-thread task
-//      during the room changes are reported next to the audio buffer length.
+//      during the room changes are reported next to the audio buffer length;
+//   7. sounds on the same walk: soft steps on the post office floor (Z1), gravel in the street, one
+//      door per door exit (Z1→Z4 passage, Z2→H1 heavy, H1→H2 light), none for Z4→Z2; rain outside
+//      in Z4/Z2 and muffled (SFX_Inside) in H1; «Звуки» slider at 50 % → SFX bus −12 dB, kept after
+//      a new page load.
 // Output: build/shots/music/{report.json, console.log, menu_slider.png}. Exit code 0 only when every
 // check passed.
 
@@ -144,15 +149,21 @@ const INIT_SCRIPT = () => {
     }
     return origConnect.call(this, dest, ...rest);
   };
-  window.__idbKeys = () => new Promise((res) => {
+  window.__idbSettings = () => new Promise((res) => {
     const rq = indexedDB.open("/userfs");
-    rq.onerror = () => res([]);
+    rq.onerror = () => res("");
     rq.onsuccess = () => {
       try {
-        const k = rq.result.transaction("FILE_DATA", "readonly").objectStore("FILE_DATA").getAllKeys();
-        k.onsuccess = () => { res(k.result.map(String)); rq.result.close(); };
-        k.onerror = () => res([]);
-      } catch (_) { res([]); }
+        const st = rq.result.transaction("FILE_DATA", "readonly").objectStore("FILE_DATA");
+        const keys = st.getAllKeys();
+        keys.onsuccess = () => {
+          const key = keys.result.map(String).find((k) => k.endsWith("/settings.cfg"));
+          if (!key) { res(""); rq.result.close(); return; }
+          const g = st.get(key);
+          g.onsuccess = () => { const c = g.result && g.result.contents; res(c ? new TextDecoder().decode(c) : ""); rq.result.close(); };
+          g.onerror = () => res("");
+        };
+      } catch (_) { res(""); }
     };
   });
   window.__longTasks = [];
@@ -229,6 +240,8 @@ async function main() {
 
   const state = () => page.evaluate(() => (window.probeState ? JSON.parse(JSON.stringify(window.probeState)) : null));
   const music = () => page.evaluate(() => (window.musicState ? JSON.parse(JSON.stringify(window.musicState)) : null));
+  const sfx = () => page.evaluate(() => (window.sfxState ? JSON.parse(JSON.stringify(window.sfxState)) : null));
+  const cnt = (x, key) => (x && x.counts ? x.counts[key] || 0 : 0);
   const audio = () => page.evaluate(() => window.__audioProbe());
   const waitFor = async (label, fn, pred, timeout = STEP_TIMEOUT_MS) => {
     const t0 = Date.now();
@@ -326,6 +339,8 @@ async function main() {
     check(Math.abs(activeDeck(m).volume_db - (full - 5)) < 0.3, "roads under the dialogue at −12 dB", `${activeDeck(m).volume_db.toFixed(2)} dB`);
     const roadsDeck = m.active_deck;
     const roadsStarts = activeDeck(m).starts;
+    let fx = await sfx();
+    check(cnt(fx, "step:wood") >= 2 && cnt(fx, "step:gravel") === 0, "Z1: soft steps on the post office floor", JSON.stringify(fx?.counts));
     await finishDialogue("M01");
     await waitFor("M01 done", state, (t) => t.flags.done_M01, 10000);
     await sleep(800);
@@ -336,13 +351,26 @@ async function main() {
     const longT0 = await page.evaluate(() => performance.now());
     let pos = activeDeck(m).position;
     for (const room of ["Z4", "Z2"]) {
+      const fx0 = await sfx();
       if (!(await goExit(room))) { check(false, `reach ${room}`); break; }
+      await sleep(600);
+      fx = await sfx();
+      const door = room === "Z4" ? "door:Z1>Z4" : "door:Z4>Z2";
+      if (room === "Z4") check(cnt(fx, door) - cnt(fx0, door) === 1, "Z1 → Z4: one door sound (post office door)", JSON.stringify(fx.counts));
+      else check(Object.keys(fx.counts).filter((k) => k.startsWith("door:")).reduce((a, k) => a + fx.counts[k], 0) ===
+        Object.keys(fx0.counts).filter((k) => k.startsWith("door:")).reduce((a, k) => a + fx0.counts[k], 0), "Z4 → Z2 (street): no door sound");
+      check(fx.rain.playing && fx.rain.mode === "outside" && fx.rain.bus === "SFX", `${room}: rain outside`, JSON.stringify(fx.rain));
       m = await music();
       check(m.active_deck === roadsDeck && activeDeck(m).theme === "roads" && activeDeck(m).starts === roadsStarts && activeDeck(m).position > pos,
         `${room} (roads): same deck, no restart, position grows`, `deck ${m.active_deck} starts ${activeDeck(m).starts} pos ${activeDeck(m).position.toFixed(2)}`);
       pos = activeDeck(m).position;
     }
+    const fxBeforeH1 = await sfx();
+    check(cnt(fxBeforeH1, "step:gravel") >= 2, "street: gravel steps", JSON.stringify(fxBeforeH1?.counts));
     if (await goExit("H1")) {
+      fx = await sfx();
+      check(cnt(fx, "door:Z2>H1") - cnt(fxBeforeH1, "door:Z2>H1") === 1, "Z2 → H1: one door sound (heavy front door)", JSON.stringify(fx.counts));
+      check(fx.rain.playing && fx.rain.mode === "inside" && fx.rain.bus === "SFX_Inside", "H1: rain muffled inside (SFX_Inside)", JSON.stringify(fx.rain));
       m = await music();
       check(m.target === "home" && activeDeck(m).theme === "home" && m.active_deck !== roadsDeck, "H1: home starts on the other deck (crossfade)", `target ${m.target}`);
       m = await waitFor("home settled", music, (x) => settled(x, "home"), 8000);
@@ -350,8 +378,11 @@ async function main() {
       const homeDeck = m.active_deck;
       const homeStarts = activeDeck(m).starts;
       pos = activeDeck(m).position;
+      const fxBeforeH2 = await sfx();
       if (await goExit("H2")) {
         await sleep(600);
+        fx = await sfx();
+        check(cnt(fx, "door:H1>H2") - cnt(fxBeforeH2, "door:H1>H2") === 1, "H1 → H2: one door sound (light workshop door)", JSON.stringify(fx.counts));
         m = await music();
         check(m.active_deck === homeDeck && activeDeck(m).starts === homeStarts && activeDeck(m).position > pos + 0.5 && m.target === "home",
           "H1 → H2 (home): same deck, no restart, position grows", `pos ${pos.toFixed(2)} → ${activeDeck(m).position.toFixed(2)}`);
@@ -390,15 +421,22 @@ async function main() {
     m = await waitFor("volume ≈ 50 %", music, (x) => Math.abs(x.music_volume - 0.5) <= 0.03, 4000);
     check(Math.abs(m.music_volume - 0.5) <= 0.03 && Math.abs(m.bus_volume_db - 20 * Math.log10(m.music_volume * m.music_volume)) < 0.05,
       "slider at 50 % → music volume ≈ 0.5, Music bus ≈ −12 dB", `volume ${m.music_volume.toFixed(2)}, bus ${m.bus_volume_db.toFixed(2)} dB`);
+    const rs = s.ui.sfx_slider;
+    await click("sound slider at 50 %", { x: rs.x + rs.w * 0.5, y: rs.y + rs.h * 0.5 });
+    fx = await waitFor("sound volume ≈ 50 %", sfx, (x) => Math.abs(x.sfx_volume - 0.5) <= 0.03, 4000);
+    check(Math.abs(fx.sfx_volume - 0.5) <= 0.03 && Math.abs(fx.bus_volume_db - 20 * Math.log10(fx.sfx_volume * fx.sfx_volume)) < 0.05,
+      "«Звуки» at 50 % → SFX bus ≈ −12 dB", `volume ${fx.sfx_volume.toFixed(2)}, bus ${fx.bus_volume_db.toFixed(2)} dB`);
+    const chosenSfx = fx.sfx_volume;
     await sleep(500);
     await page.screenshot({ path: path.join(OUT_DIR, "menu_slider.png") });
     const chosen = m.music_volume;
     // Settings are written 0.5 s after the last change; Godot syncs user:// to IndexedDB on the
     // next frames.
     await waitFor("settings saved", music, (x) => x.settings_saves >= 1, 10000);
-    const keys = await waitFor("settings.cfg in IndexedDB", () => page.evaluate(() => (window.__idbKeys ? window.__idbKeys() : [])),
-      (k) => Array.isArray(k) && k.some((x) => x.endsWith("/settings.cfg")), 30000);
-    check(Array.isArray(keys) && keys.some((x) => x.endsWith("/settings.cfg")), "settings.cfg reaches IndexedDB (/userfs)");
+    const cfg = await waitFor("settings.cfg with both volumes in IndexedDB", () => page.evaluate(() => window.__idbSettings()),
+      (t) => typeof t === "string" && /music_volume=0\.\d+/.test(t) && /sfx_volume=0\.\d+/.test(t), 30000);
+    check(typeof cfg === "string" && /music_volume=0\.\d+/.test(cfg) && /sfx_volume=0\.\d+/.test(cfg), "settings.cfg with both volumes reaches IndexedDB (/userfs)",
+      String(cfg).replace(/\n/g, " ").slice(0, 120));
     leaving = true;
     await page.close();
     page = await context.newPage();
@@ -409,7 +447,9 @@ async function main() {
     m = await waitFor("musicState after reload", music, (x) => x && x.target, 10000);
     check(Math.abs(m.music_volume - chosen) < 0.001 && m.unlocked === false, "a new page load gets the volume back from user:// (IndexedDB), before any click",
       `volume ${m.music_volume?.toFixed(2)}, bus ${m.bus_volume_db?.toFixed(2)} dB`);
-    report.steps.after_reload = { music: m };
+    fx = await waitFor("sfxState after reload", sfx, (x) => x && x.room, 10000);
+    check(Math.abs(fx.sfx_volume - chosenSfx) < 0.001, "a new page load gets the sound volume back too", `volume ${fx.sfx_volume?.toFixed(2)}`);
+    report.steps.after_reload = { music: m, sfx: fx };
   } catch (e) {
     failures.push(`exception: ${e && e.stack ? e.stack : e}`);
     logLine(`exception: ${e && e.stack ? e.stack : e}`);

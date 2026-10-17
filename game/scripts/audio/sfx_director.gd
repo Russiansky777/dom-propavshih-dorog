@@ -479,8 +479,12 @@ func state() -> Dictionary:
 	var light: Array = []
 	for e in last:
 		light.append({"kind": e["kind"], "sound": e["sound"], "file": e["file"], "room": e["room"],
-			"surface": e.get("surface", ""), "frame": e.get("frame", -1), "ms": e["ms"]})
-	return {"room": current_room, "steps": step_count, "events": light, "sfx_volume": sfx_volume,
+			"surface": e.get("surface", ""), "frame": e.get("frame", -1), "exit": e.get("exit", ""), "ms": e["ms"]})
+	var counts := {}
+	for e in events:
+		var key := "%s:%s" % [e["kind"], e.get("exit", e.get("surface", e["sound"]))]
+		counts[key] = int(counts.get(key, 0)) + 1
+	return {"room": current_room, "steps": step_count, "events": light, "counts": counts, "sfx_volume": sfx_volume,
 		"bus_volume_db": AudioServer.get_bus_volume_db(idx) if idx >= 0 else 0.0,
 		"fire": {"playing": _fire.playing, "volume_db": _fire.volume_db, "distance_db": fire_gain_db},
 		"rain": {"playing": _rain.playing, "mode": _rain_mode, "bus": String(_rain.bus), "volume_db": _rain.volume_db},
