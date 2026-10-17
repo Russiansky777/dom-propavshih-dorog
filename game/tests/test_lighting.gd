@@ -332,7 +332,9 @@ func _test_actor_tone() -> void:
 	_check(_lum(step1) - _lum(dark) < 0.25, "opening: no jump of Agata's tone in one frame (%.3f → %.3f)" % [_lum(dark), _lum(step1)])
 	await _wait_light(rl, 1.2)
 	var day: Color = sprite.self_modulate
-	_check(_lum(day) > 0.85, "daylight: Agata back to (about) her own colours (tone %s)" % str(day))
+	var rt: Array = rl.data.get("actor_tint", [1, 1, 1])
+	var room_tone := Color(float(rt[0]), float(rt[1]), float(rt[2]))
+	_check(absf(_lum(day) - _lum(room_tone)) < 0.06, "daylight: Agata in the room's own tone %s (got %s)" % [str(room_tone), str(day)])
 	# Warmth by the fire (closed shutters): redder than far from it.
 	room = await _enter("H1", ["stove_lit"], Vector2(640, 800))
 	rl = _lighting(room)
@@ -370,6 +372,7 @@ func _test_actor_tone() -> void:
 	for c in room.get_children():
 		if c.get_class() != "" and c.get_script() != null and String(c.get_script().resource_path).ends_with("puppet_actor.gd"):
 			puppet = c
+	print("        (Tikhon puppet in H1: %s)" % ("found" if puppet != null else "absent — check skipped"))
 	if puppet != null and puppet.get("poly") != null:
 		var want: Color = rl.actor_tone_at(puppet.global_position, float(puppet.call("figure_height_px")))
 		var got: Color = puppet.get("poly").self_modulate
