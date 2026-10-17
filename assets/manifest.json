@@ -1,0 +1,13 @@
+{
+  "_comment": "Контракт между Claude Code (пишет requests) и Codex (заполняет delivered). Статусы: requested | in_progress | delivered | accepted | rejected. Пути относительно assets/. Все размеры для базы 1920×1080.",
+  "version": 1,
+  "style_bible": "Docs/STYLE_BIBLE.md",
+  "defaults": {"background_size": [2048, 1152], "export_size": [1920, 1080], "format": "png", "alpha_for_props": true},
+  "requests": [
+    {"id": "sample_agata_sheet", "kind": "character_sheet", "subject": "Агата, 25", "views": ["front", "side", "back"], "notes": "Лист персонажа для утверждения стиля и для Meshy image-to-3D; нейтральная поза, руки видны, обувь видна; без фона", "status": "requested", "owner": "ChatGPT+Director", "delivered": null},
+    {"id": "sample_tikhon_sheet", "kind": "character_sheet", "subject": "Тихон", "views": ["front", "side", "back", "4 expressions"], "notes": "Печной зверёк по канону characters.json; размер относительно Агаты — как небольшая кошка", "status": "requested", "owner": "ChatGPT+Director", "delivered": null},
+    {"id": "H1_bg", "kind": "background", "room": "H1", "size": [2048, 1152], "horizon_pct": null, "notes": "Жилая комната без мебели переднего плана; свободная середина пола; печь, окно со ставней, крючок у двери, полка; без персонажей, курсоров, подписей", "status": "requested", "owner": "ChatGPT+Director", "delivered": null},
+    {"id": "H1_fg_table", "kind": "prop_layer", "room": "H1", "notes": "Стол и кресло переднего плана на прозрачном фоне; за ними проходит Агата", "status": "requested", "owner": "ChatGPT+Director", "delivered": null},
+    {"id": "H1_states", "kind": "prop_states", "room": "H1", "states": ["stove_door_open", "stove_door_closed", "shutter_open", "shutter_closed", "hook_empty", "hook_coat_nina", "bag_nina", "tikhon_shelf_a", "tikhon_shelf_b"], "notes": "Каждое состояние — отдельный PNG с прозрачностью, в координатах фона", "status": "requested", "owner": "pipeline", "delivered": null}
+  ]
+}

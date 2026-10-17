@@ -1,0 +1,15 @@
+.env
+*.env
+.godot/
+build/
+game/.godot/
+game/export/
+pipeline/**/out/
+pipeline/**/cache/
+meshy_output/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.import.tmp
