@@ -1,0 +1,9 @@
+{
+  "story_version": "v3-data-1",
+  "source": "story_source/full_scenario_v3.md (17.10.2026)",
+  "text_freeze": false,
+  "main_path_target_minutes": [45, 60],
+  "full_target_minutes": [65, 95],
+  "law_of_world": ["Вещи помнят место, которому служили", "Дорогу держат с двух концов (предложение 4.1, ожидает решения)"],
+  "pending_director_decisions": "См. поля proposed_change в сценах и Docs/DECISIONS.md"
+}

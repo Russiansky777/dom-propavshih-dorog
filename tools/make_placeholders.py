@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Generate tiny placeholder PNGs for the M0 probe.
+"""Generate placeholder PNGs.
 
-Output: game/assets/placeholders/*.png (quarter-resolution; scaled x4 in-game).
+M0 probe:  game/assets/placeholders/*.png (quarter-resolution; scaled x4 in-game).
+M1 rooms:  game/assets/placeholders/rooms/<LOC>.png — background per data/story/rooms/<LOC>.json
+           (wall/floor/accent colours, horizon, room id + name label). Hotspots, exits and props are
+           drawn by the game at runtime from the same JSON, so only the backdrop lives here.
 Requires Pillow. Run from anywhere: python3 tools/make_placeholders.py
 """
 from __future__ import annotations
@@ -104,6 +107,86 @@ def exit_arrow(flip: bool) -> None:
     save(img, "exit_left.png" if flip else "exit_right.png")
 
 
+ROOMS_DIR = os.path.join(ROOT, "data", "story", "rooms")
+ROOMS_OUT = os.path.join(OUT, "rooms")
+FONT_CANDIDATES = [
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "/usr/share/fonts/TTF/DejaVuSans.ttf",
+]
+
+
+def _font(size: int):
+    from PIL import ImageFont
+    for path in FONT_CANDIDATES:
+        if os.path.exists(path):
+            return ImageFont.truetype(path, size)
+    return ImageFont.load_default(size=size)
+
+
+def _hex(c: str) -> tuple:
+    c = c.lstrip("#")
+    return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def _shade(c: tuple, k: float) -> tuple:
+    return tuple(max(0, min(255, int(v * k))) for v in c)
+
+
+def room_background(room: dict, locations: dict) -> None:
+    """Half-resolution (960x540) backdrop: wall, floor with perspective boards, horizon, labels."""
+    import json as _json
+    bg = room.get("background", {})
+    kind = bg.get("kind", "interior")
+    wall = _hex(bg.get("wall", "#555555"))
+    floor = _hex(bg.get("floor", "#777777"))
+    accent = _hex(bg.get("accent", "#444444"))
+    horizon = int(bg.get("horizon", 640)) // 2
+    w, h = 960, 540
+    img = Image.new("RGB", (w, h), wall)
+    d = ImageDraw.Draw(img)
+    if kind == "exterior":
+        # Sky gradient + distant band.
+        for y in range(horizon):
+            k = 0.85 + 0.3 * (y / max(1, horizon))
+            d.line([(0, y), (w, y)], fill=_shade(wall, k))
+        d.rectangle([0, horizon - 40, w, horizon], fill=_shade(accent, 0.9))
+    else:
+        for x in range(0, w, 32):
+            d.line([(x, 0), (x, horizon)], fill=_shade(wall, 0.85), width=1)
+    d.rectangle([0, horizon - 5, w, horizon], fill=_shade(accent, 0.7))
+    d.rectangle([0, horizon, w, h], fill=floor)
+    cx = w // 2
+    for i in range(-14, 15):
+        d.line([(cx + i * 24, horizon), (cx + i * 70, h)], fill=_shade(floor, 0.85), width=1)
+    for y in range(horizon, h, 18):
+        d.line([(0, y), (w, y)], fill=_shade(floor, 0.85), width=1)
+    rid = room["id"]
+    name = locations.get(rid, rid)
+    d.text((24, 16), rid, fill=_shade(wall, 1.6), font=_font(56))
+    d.text((24, 84), name, fill=_shade(wall, 1.5), font=_font(28))
+    os.makedirs(ROOMS_OUT, exist_ok=True)
+    path = os.path.join(ROOMS_OUT, f"{rid}.png")
+    img.save(path, optimize=True)
+    print(f"wrote {os.path.relpath(path, ROOT)} {w}x{h}")
+
+
+def rooms() -> None:
+    import json as _json
+    if not os.path.isdir(ROOMS_DIR):
+        return
+    locs = {}
+    loc_path = os.path.join(ROOT, "data", "story", "locations.json")
+    if os.path.exists(loc_path):
+        with open(loc_path, encoding="utf-8") as f:
+            locs = {l["id"]: l["name"] for l in _json.load(f)["locations"]}
+    for name in sorted(os.listdir(ROOMS_DIR)):
+        if not name.endswith(".json") or name.startswith("_"):
+            continue
+        with open(os.path.join(ROOMS_DIR, name), encoding="utf-8") as f:
+            room_background(_json.load(f), locs)
+
+
 def main() -> int:
     os.makedirs(OUT, exist_ok=True)
     background((120, 80, 50), (96, 62, 38), (150, 110, 64), (122, 88, 50), "bg_house.png")
@@ -116,6 +199,7 @@ def main() -> int:
     latch(True)
     exit_arrow(False)
     exit_arrow(True)
+    rooms()
     return 0
 
 

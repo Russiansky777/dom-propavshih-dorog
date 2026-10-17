@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/actors/Player.tscn" id="2_player"]
-[ext_resource type="PackedScene" path="res://scenes/ui/Hud.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/ui/game_ui.gd" id="3_ui"]
+[ext_resource type="Script" path="res://scripts/ui/closeup_puzzle.gd" id="4_closeup"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -12,4 +13,8 @@ script = ExtResource("1_main")
 [node name="Player" parent="World" instance=ExtResource("2_player")]
 position = Vector2(960, 900)
 
-[node name="Hud" parent="." instance=ExtResource("3_hud")]
+[node name="GameUi" type="CanvasLayer" parent="."]
+script = ExtResource("3_ui")
+
+[node name="Closeup" type="CanvasLayer" parent="."]
+script = ExtResource("4_closeup")

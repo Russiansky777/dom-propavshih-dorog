@@ -1,0 +1,127 @@
+{
+  "_comment": "Комнаты, собираемые RoomBuilder из data/story/rooms/<LOC>.json. in_scope — построенные в текущей вехе; выход в локацию вне списка даёт техническую реакцию ui.not_built, а не ошибку. Геометрия: 1920x1080, горизонт (стык стены и пола) задаётся в background.horizon. Все пользовательские строки — ключи вида @section.key в data/story/text/ru_E0_E1.json.",
+  "milestone": "M1",
+  "in_scope": [
+    "Z1",
+    "Z2",
+    "Z3",
+    "R1",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "O1",
+    "O2"
+  ],
+  "defaults": {
+    "walkable_interior": [
+      [
+        140,
+        640
+      ],
+      [
+        1780,
+        640
+      ],
+      [
+        1900,
+        1070
+      ],
+      [
+        20,
+        1070
+      ]
+    ],
+    "walkable_exterior": [
+      [
+        100,
+        580
+      ],
+      [
+        1820,
+        580
+      ],
+      [
+        1900,
+        1070
+      ],
+      [
+        20,
+        1070
+      ]
+    ],
+    "depth": {
+      "top_y": 640,
+      "bottom_y": 1070,
+      "scale_top": 0.6,
+      "scale_bottom": 1.1
+    },
+    "depth_exterior": {
+      "top_y": 580,
+      "bottom_y": 1070,
+      "scale_top": 0.55,
+      "scale_bottom": 1.1
+    }
+  },
+  "hotspot_schema": {
+    "id": "строка, уникальна в комнате",
+    "label": "подпись-заглушка (@ключ)",
+    "kind": "object | npc | pickup",
+    "rect": "[x, y, w, h] область клика и рисунка",
+    "stand": "[x, y] куда подходит Агата",
+    "visible_if / hidden_if": "списки флагов",
+    "states": "[{if: [флаги], label, color}] — визуальное состояние по флагам",
+    "look": "текст осмотра по умолчанию",
+    "use": "{requires:{flags,items}, sets:[флаги], gives:[предметы], text, once_flag, scene, fail_text}",
+    "item_use": "{<item_id>: {sets, gives, consumes, text, scene}}",
+    "talk": "{scene, before_text, after_text}",
+    "choice": "{prompt, options:[{id, label, sets}], scene, done_flag}",
+    "puzzle": "см. H3.school_door"
+  },
+  "interaction_order": "выбран предмет → item_use; иначе talk → puzzle → choice → use (если requires выполнены и once_flag не стоит) → look",
+  "sides": {
+    "_comment": "Геометрия выходов по стороне комнаты. back/bottom требуют x; back использует horizon комнаты: rect=[x-100, 220, 200, horizon-220], stand=[x, horizon+60].",
+    "left": {
+      "rect": [
+        0,
+        560,
+        130,
+        520
+      ],
+      "stand": [
+        110,
+        900
+      ]
+    },
+    "right": {
+      "rect": [
+        1790,
+        560,
+        130,
+        520
+      ],
+      "stand": [
+        1810,
+        900
+      ]
+    },
+    "back": {
+      "half_w": 100,
+      "top": 220,
+      "stand_below_horizon": 60
+    },
+    "bottom": {
+      "half_w": 200,
+      "top": 1000,
+      "h": 80,
+      "stand_y": 1030
+    }
+  },
+  "auto_flag_prefixes": [
+    "done_",
+    "has_",
+    "started_",
+    "q0",
+    "q1"
+  ]
+}

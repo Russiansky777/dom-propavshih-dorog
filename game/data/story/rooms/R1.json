@@ -1,0 +1,46 @@
+{
+  "id": "R1",
+  "background": {"kind": "exterior", "wall": "#7f94a6", "floor": "#6a6456", "accent": "#4a6676", "horizon": 580},
+  "spawns": {"default": [960, 920], "from_Z3": [190, 900], "from_Z2": [960, 720], "from_R2": [1500, 760]},
+  "props": [
+    {"id": "water", "label": "@R1.water.label", "rect": [0, 400, 1920, 180], "color": "#4a6676"},
+    {"id": "pier", "label": "@R1.pier.label", "rect": [1240, 520, 560, 90], "color": "#6a5236"}
+  ],
+  "hotspots": [
+    {
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [820, 380, 110, 260], "stand": [870, 760], "color": "#6a8aa0",
+      "talk": {"scene": "M02", "after_text": "@R1.pelageya.after"}
+    },
+    {
+      "id": "boat", "kind": "object", "label": "@R1.boat.label", "rect": [1300, 440, 260, 90], "stand": [1430, 700], "color": "#5a4a3a",
+      "look": "@R1.boat.look"
+    },
+    {
+      "id": "rope", "kind": "object", "label": "@R1.rope.label", "rect": [1620, 300, 120, 240], "stand": [1680, 700], "color": "#b09a70",
+      "use": {"sets": ["r1_seen_rope"], "text": "@R1.rope.use", "once_flag": "r1_seen_rope", "scene": "M02"},
+      "look": "@R1.rope.look"
+    },
+    {
+      "id": "lantern", "kind": "object", "label": "@R1.lantern.label", "rect": [380, 300, 90, 120], "stand": [425, 700], "color": "#d8c070",
+      "use": {"sets": ["r1_seen_lantern"], "text": "@R1.lantern.use", "once_flag": "r1_seen_lantern", "scene": "M02"},
+      "look": "@R1.lantern.look"
+    },
+    {
+      "id": "instruction", "kind": "object", "label": "@R1.instruction.label", "rect": [200, 280, 150, 110], "stand": [275, 700], "color": "#e0d8c0",
+      "use": {"sets": ["seen_ferry_instruction"], "text": "@R1.instruction.use", "once_flag": "seen_ferry_instruction", "scene": "M02"},
+      "look": "@R1.instruction.look"
+    }
+  ],
+  "exits": [
+    {"to": "Z3", "label": "@R1.exit_Z3.label", "side": "left", "spawn": "from_R1"},
+    {"to": "Z2", "label": "@R1.exit_Z2.label", "side": "back", "x": 1000, "spawn": "from_R1", "closed_text": "@R1.exit_Z2.closed"},
+    {"to": "R2", "label": "@R1.exit_R2.label", "rect": [1240, 600, 560, 70], "stand": [1500, 760], "spawn": "from_R1", "closed_text": "@R1.exit_R2.closed"}
+  ],
+  "scenes": {
+    "M02": {"trigger": "talk:pelageya"}
+  },
+  "flags": {
+    "r1_seen_rope": "Осмотрен канат и ближний стопор на причале",
+    "r1_seen_lantern": "Осмотрен сигнальный фонарь на причале"
+  }
+}

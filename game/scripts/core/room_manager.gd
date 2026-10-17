@@ -1,14 +1,15 @@
 extends Node
 ## Autoload `RoomManager`: owns the lifecycle of room scenes and the player's placement.
 ##
-## `Main` registers the world container and the player with `setup()`. Rooms live at
-## `res://scenes/rooms/<room_id>.tscn`. After every room change the state is autosaved
-## to `autosave_slot` and the room's flag-driven visuals are re-applied.
+## `Main` registers the world container and the player with `setup()`. A room is built from
+## data (`data/story/rooms/<id>.json` via RoomBuilder) when it exists there, otherwise loaded from
+## `res://scenes/rooms/<id>.tscn` or the probe fixtures in `res://scenes/probe/`. After every room
+## change the state is autosaved to `autosave_slot` and flag-driven visuals are re-applied.
 
 signal room_changed(room_id: String)
 signal room_change_failed(room_id: String, reason: String)
 
-const ROOMS_DIR: String = "res://scenes/rooms"
+const SCENE_DIRS: Array[String] = ["res://scenes/rooms", "res://scenes/probe"]
 
 var autosave_slot: String = "auto"
 var autosave_enabled: bool = true
@@ -24,11 +25,25 @@ func setup(container: Node, the_player: Node2D) -> void:
 
 
 func room_scene_path(room_id: String) -> String:
-	return "%s/%s.tscn" % [ROOMS_DIR, room_id]
+	for d in SCENE_DIRS:
+		var p := "%s/%s.tscn" % [d, room_id]
+		if ResourceLoader.exists(p):
+			return p
+	return ""
 
 
 func has_room(room_id: String) -> bool:
-	return ResourceLoader.exists(room_scene_path(room_id))
+	return StoryData.has_room(room_id) or room_scene_path(room_id) != ""
+
+
+func _instantiate_room(room_id: String) -> Node:
+	if StoryData.has_room(room_id):
+		return RoomBuilder.build(room_id)
+	var path := room_scene_path(room_id)
+	if path == "":
+		return null
+	var packed: PackedScene = load(path)
+	return packed.instantiate() if packed != null else null
 
 
 ## Frees the current room, instantiates `room_id`, places the player at spawn `spawn_id`
@@ -38,14 +53,9 @@ func change_room(room_id: String, spawn_id: String, override_pos: Vector2 = Vect
 		push_error("RoomManager.change_room: call setup() first")
 		room_change_failed.emit(room_id, "not_setup")
 		return false
-	var path := room_scene_path(room_id)
-	if not ResourceLoader.exists(path):
-		push_error("RoomManager.change_room: no scene for room '%s' (%s)" % [room_id, path])
+	if not has_room(room_id):
+		push_error("RoomManager.change_room: no data or scene for room '%s'" % room_id)
 		room_change_failed.emit(room_id, "missing_scene")
-		return false
-	var packed: PackedScene = load(path)
-	if packed == null:
-		room_change_failed.emit(room_id, "load_failed")
 		return false
 
 	if current_room != null and is_instance_valid(current_room):
@@ -53,9 +63,12 @@ func change_room(room_id: String, spawn_id: String, override_pos: Vector2 = Vect
 		current_room.free()  # synchronous: next room must not coexist with the old one
 	current_room = null
 
-	var inst := packed.instantiate()
+	var inst := _instantiate_room(room_id)
+	if inst == null:
+		room_change_failed.emit(room_id, "load_failed")
+		return false
 	if not (inst is Room):
-		push_error("RoomManager.change_room: scene %s root is not a Room" % path)
+		push_error("RoomManager.change_room: room %s root is not a Room" % room_id)
 		inst.free()
 		room_change_failed.emit(room_id, "not_a_room")
 		return false
@@ -89,7 +102,15 @@ func change_room(room_id: String, spawn_id: String, override_pos: Vector2 = Vect
 
 	if autosave_enabled:
 		GameState.save(autosave_slot)
+	StoryRunner.on_room_entered(room_id)
 	return true
+
+
+## Autosave after a story beat (scene completion); no-op while autosave is disabled.
+func autosave() -> bool:
+	if not autosave_enabled:
+		return false
+	return save_game(autosave_slot)
 
 
 ## Saves the running game (player position is captured live).
@@ -116,7 +137,9 @@ func load_game(slot: String) -> bool:
 	return ok
 
 
-## Clears story state and starts from `room_id`/`spawn_id`.
-func new_game(room_id: String = "RoomHouse", spawn_id: String = "start") -> bool:
+## Clears story state and starts from `room_id`/`spawn_id` (defaults: locations.json `start`).
+func new_game(room_id: String = "", spawn_id: String = "default") -> bool:
 	GameState.reset()
+	if room_id == "":
+		room_id = StoryData.start_location
 	return change_room(room_id, spawn_id)

@@ -1,0 +1,266 @@
+extends Node
+## Autoload `StoryData`: read-only access to data/story (copied into res://data/story by tools/sync_story_data.sh).
+##
+## Loads locations, items, flags, characters, scenes (E*.json + quests), rooms/*.json and text/*.json.
+## Nothing here knows about specific scene ids: the game logic reads this data generically.
+
+const DATA_DIR: String = "res://data/story"
+
+var locations: Dictionary = {}          # id -> location dict
+var edges: Dictionary = {}              # room id -> {other id -> requires: Array[String]}
+var start_location: String = "Z1"
+var items: Dictionary = {}              # id -> item dict
+var flag_desc: Dictionary = {}          # flag -> {desc, min_episode?}
+var characters: Dictionary = {}         # id -> character dict
+var scenes: Dictionary = {}             # id -> scene dict (quests normalised to the same shape)
+var scene_order: Array[String] = []     # ids in file order (episodes first, then quests)
+var rooms: Dictionary = {}              # room id -> room dict
+var rooms_index: Dictionary = {}
+var texts: Dictionary = {}              # key -> {text, draft}
+var loaded: bool = false
+var load_errors: Array[String] = []
+
+
+func _ready() -> void:
+	reload()
+
+
+func reload() -> void:
+	load_errors.clear()
+	_load_locations()
+	_load_items()
+	_load_flags()
+	_load_characters()
+	_load_scenes()
+	_load_rooms()
+	_load_texts()
+	loaded = load_errors.is_empty()
+	for e in load_errors:
+		push_error("StoryData: " + e)
+
+
+# --- Loading helpers -------------------------------------------------------
+
+func _read_json(path: String) -> Variant:
+	if not FileAccess.file_exists(path):
+		load_errors.append("missing file " + path)
+		return null
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		load_errors.append("cannot open " + path)
+		return null
+	var text := f.get_as_text()
+	f.close()
+	var json := JSON.new()
+	var err := json.parse(text)
+	if err != OK:
+		load_errors.append("%s: JSON error at line %d: %s" % [path, json.get_error_line(), json.get_error_message()])
+		return null
+	return json.data
+
+
+func _list_files(dir_path: String, suffix: String) -> Array[String]:
+	var out: Array[String] = []
+	var dir := DirAccess.open(dir_path)
+	if dir == null:
+		load_errors.append("missing dir " + dir_path)
+		return out
+	dir.list_dir_begin()
+	var name := dir.get_next()
+	while name != "":
+		if not dir.current_is_dir() and name.ends_with(suffix) and not name.begins_with("_"):
+			out.append(name)
+		name = dir.get_next()
+	dir.list_dir_end()
+	out.sort()
+	return out
+
+
+func _load_locations() -> void:
+	var doc = _read_json(DATA_DIR + "/locations.json")
+	if doc == null:
+		return
+	locations.clear()
+	edges.clear()
+	start_location = String(doc.get("start", "Z1"))
+	for l in doc.get("locations", []):
+		locations[String(l["id"])] = l
+		edges[String(l["id"])] = {}
+	for e in doc.get("edges", []):
+		var a := String(e["from"])
+		var b := String(e["to"])
+		var req: Array = e.get("requires", [])
+		if not edges.has(a):
+			edges[a] = {}
+		if not edges.has(b):
+			edges[b] = {}
+		edges[a][b] = {"requires": req, "crossing": bool(e.get("crossing", false)), "how": String(e.get("how", ""))}
+		edges[b][a] = {"requires": req, "crossing": bool(e.get("crossing", false)), "how": String(e.get("how", ""))}
+
+
+func _load_items() -> void:
+	var doc = _read_json(DATA_DIR + "/items.json")
+	if doc == null:
+		return
+	items.clear()
+	for it in doc.get("items", []):
+		items[String(it["id"])] = it
+
+
+func _load_flags() -> void:
+	var doc = _read_json(DATA_DIR + "/flags.json")
+	if doc == null:
+		return
+	flag_desc = doc.get("flags", {})
+
+
+func _load_characters() -> void:
+	var doc = _read_json(DATA_DIR + "/characters.json")
+	if doc == null:
+		return
+	characters.clear()
+	for c in doc.get("characters", []):
+		characters[String(c["id"])] = c
+
+
+func _load_scenes() -> void:
+	scenes.clear()
+	scene_order.clear()
+	for name in _list_files(DATA_DIR + "/scenes", ".json"):
+		var doc = _read_json(DATA_DIR + "/scenes/" + name)
+		if doc == null:
+			continue
+		for sc in doc.get("scenes", []):
+			var id := String(sc["id"])
+			sc["episode"] = int(doc.get("episode", 0))
+			scenes[id] = sc
+			scene_order.append(id)
+	var qdoc = _read_json(DATA_DIR + "/quests.json")
+	if qdoc != null:
+		for q in qdoc.get("quests", []):
+			var id := String(q["id"])
+			q["type"] = "quest"
+			if not q.has("grants"):
+				q["grants"] = {"flags": [], "items": []}
+			if not q.has("mandatory_lines"):
+				q["mandatory_lines"] = q.get("lines", [])
+			scenes[id] = q
+			scene_order.append(id)
+
+
+func _load_rooms() -> void:
+	rooms.clear()
+	var idx = _read_json(DATA_DIR + "/rooms/_index.json")
+	rooms_index = idx if idx != null else {}
+	for name in _list_files(DATA_DIR + "/rooms", ".json"):
+		var doc = _read_json(DATA_DIR + "/rooms/" + name)
+		if doc == null:
+			continue
+		rooms[String(doc.get("id", name.get_basename()))] = doc
+
+
+func _load_texts() -> void:
+	texts.clear()
+	for name in _list_files(DATA_DIR + "/text", ".json"):
+		var doc = _read_json(DATA_DIR + "/text/" + name)
+		if doc == null:
+			continue
+		for k in doc.get("texts", {}).keys():
+			texts[String(k)] = doc["texts"][k]
+
+
+# --- Queries ----------------------------------------------------------------
+
+func has_room(room_id: String) -> bool:
+	return rooms.has(room_id)
+
+
+func room(room_id: String) -> Dictionary:
+	return rooms.get(room_id, {})
+
+
+func in_scope(room_id: String) -> bool:
+	return rooms_index.get("in_scope", []).has(room_id)
+
+
+func location_name(loc_id: String) -> String:
+	var l: Dictionary = locations.get(loc_id, {})
+	return String(l.get("name", loc_id))
+
+
+func scene(scene_id: String) -> Dictionary:
+	return scenes.get(scene_id, {})
+
+
+func scenes_in(room_id: String) -> Array[String]:
+	var out: Array[String] = []
+	for id in scene_order:
+		var sc: Dictionary = scenes[id]
+		if sc.get("locations", []).has(room_id):
+			out.append(id)
+	return out
+
+
+func item(item_id: String) -> Dictionary:
+	return items.get(item_id, {})
+
+
+func item_name(item_id: String) -> String:
+	return String(items.get(item_id, {}).get("name", item_id))
+
+
+func item_is_inventory(item_id: String) -> bool:
+	return bool(items.get(item_id, {}).get("inventory", false))
+
+
+func character_name(char_id: String) -> String:
+	var c: Dictionary = characters.get(char_id, {})
+	var n = c.get("name", null)
+	return String(n) if n != null else char_id
+
+
+## Resolves "@key" references through data/story/text; plain strings pass through.
+## `params` substitutes "{name}" placeholders.
+func text(key_or_text: String, params: Dictionary = {}) -> String:
+	var out := key_or_text
+	if key_or_text.begins_with("@"):
+		var key := key_or_text.substr(1)
+		if key.begins_with("char."):
+			out = character_name(key.substr(5))
+		elif texts.has(key):
+			out = String(texts[key].get("text", key_or_text))
+		else:
+			push_warning("StoryData: missing text for " + key_or_text)
+			out = "[" + key + "]"
+	for p in params.keys():
+		out = out.replace("{%s}" % p, str(params[p]))
+	return out
+
+
+func text_is_draft(key_or_text: String) -> bool:
+	if not key_or_text.begins_with("@"):
+		return false
+	var entry: Dictionary = texts.get(key_or_text.substr(1), {})
+	return bool(entry.get("draft", false))
+
+
+func flag_description(flag: String) -> String:
+	var d: Dictionary = flag_desc.get(flag, {})
+	return String(d.get("desc", ""))
+
+
+## Hints for a scene as a 3-tier list (data `hints` array, or single `hint`, padded by generic UI hints).
+func scene_hints(scene_id: String) -> Array[String]:
+	var out: Array[String] = []
+	var sc := scene(scene_id)
+	if sc.has("hints"):
+		for h in sc["hints"]:
+			out.append(String(h))
+	elif sc.has("hint"):
+		out.append(String(sc["hint"]))
+	var generic := ["@ui.hint_generic_1", "@ui.hint_generic_2", "@ui.hint_generic_3"]
+	var gi := 0
+	while out.size() < 3 and gi < generic.size():
+		out.append(text(generic[gi]))
+		gi += 1
+	return out

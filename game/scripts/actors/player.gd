@@ -51,6 +51,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## One click on the room: hotspot/exit → walk to its stand point and interact; else walk there.
 func click_at(world_pos: Vector2) -> void:
+	if StoryRunner.is_busy():
+		return  # dialogue, puzzle or transition owns the input
 	var target_node: Node2D = null
 	if room != null:
 		target_node = room.pick(world_pos)

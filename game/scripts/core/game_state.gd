@@ -12,14 +12,21 @@ signal state_reset()
 signal state_loaded(slot: String)
 signal state_saved(slot: String)
 signal hint_shown(text: String)
+signal goal_changed(text: String)
 
-const SAVE_VERSION: int = 1
+const SAVE_VERSION: int = 2
 const SAVE_DIR: String = "user://saves"
+## Slot kinds: "auto" (after room change / scene beat), "quick" (F5/F9), "1".."3" (menu),
+## "pre_finale" (reserved for the point of no return; unused in M1).
+const MANUAL_SLOTS: Array[String] = ["1", "2", "3"]
 
 var flags: Dictionary = {}          # String -> bool
 var inventory: Array[String] = []   # item ids, no duplicates
 var current_room: String = ""
 var player_pos: Vector2 = Vector2.ZERO
+var journal_goal: String = ""       # current goal text (from the last main scene result)
+var journal_goal_scene: String = "" # scene id that set the goal
+var counters: Dictionary = {}       # String -> int (puzzle errors, hint tiers, ...)
 
 
 # --- Flags -----------------------------------------------------------------
@@ -66,6 +73,28 @@ func show_hint(text: String) -> void:
 	hint_shown.emit(text)
 
 
+# --- Journal goal / counters ----------------------------------------------
+
+func set_goal(text: String, scene_id: String = "") -> void:
+	journal_goal = text
+	journal_goal_scene = scene_id
+	goal_changed.emit(text)
+
+
+func get_counter(key: String) -> int:
+	return int(counters.get(key, 0))
+
+
+func set_counter(key: String, value: int) -> void:
+	counters[key] = value
+
+
+func inc_counter(key: String) -> int:
+	var v := get_counter(key) + 1
+	counters[key] = v
+	return v
+
+
 # --- Reset / persistence ---------------------------------------------------
 
 func reset() -> void:
@@ -73,6 +102,9 @@ func reset() -> void:
 	inventory.clear()
 	current_room = ""
 	player_pos = Vector2.ZERO
+	journal_goal = ""
+	journal_goal_scene = ""
+	counters.clear()
 	state_reset.emit()
 
 
@@ -84,13 +116,18 @@ func to_dict() -> Dictionary:
 		"inventory": Array(inventory),
 		"current_room": current_room,
 		"player_pos": {"x": player_pos.x, "y": player_pos.y},
+		"journal_goal": journal_goal,
+		"journal_goal_scene": journal_goal_scene,
+		"counters": counters.duplicate(),
 	}
 
 
 func from_dict(data: Dictionary) -> bool:
-	if int(data.get("version", 0)) != SAVE_VERSION:
+	var version := int(data.get("version", 0))
+	if version < 1 or version > SAVE_VERSION:
 		push_error("GameState: unsupported save version %s" % str(data.get("version")))
 		return false
+	# version 1 (M0 probe) lacks journal/counters: defaults below cover it.
 	flags.clear()
 	var raw_flags: Dictionary = data.get("flags", {})
 	for k in raw_flags.keys():
@@ -101,6 +138,12 @@ func from_dict(data: Dictionary) -> bool:
 	current_room = String(data.get("current_room", ""))
 	var p: Dictionary = data.get("player_pos", {})
 	player_pos = Vector2(float(p.get("x", 0.0)), float(p.get("y", 0.0)))
+	journal_goal = String(data.get("journal_goal", ""))
+	journal_goal_scene = String(data.get("journal_goal_scene", ""))
+	counters.clear()
+	var raw_counters: Dictionary = data.get("counters", {})
+	for k in raw_counters.keys():
+		counters[String(k)] = int(raw_counters[k])
 	return true
 
 
@@ -146,10 +189,26 @@ func load(slot: String) -> bool:
 	if not from_dict(parsed):
 		return false
 	state_loaded.emit(slot)
+	goal_changed.emit(journal_goal)
 	# Re-announce every flag so listeners (rooms, HUD, mirror) resync.
 	for k in flags.keys():
 		flag_changed.emit(k, flags[k])
 	return true
+
+
+## Summary of a slot for menus: {} when empty.
+func save_info(slot: String) -> Dictionary:
+	if not has_save(slot):
+		return {}
+	var f := FileAccess.open(save_path(slot), FileAccess.READ)
+	if f == null:
+		return {}
+	var parsed = JSON.parse_string(f.get_as_text())
+	f.close()
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+	return {"saved_at": String(parsed.get("saved_at", "")), "room": String(parsed.get("current_room", "")),
+		"goal": String(parsed.get("journal_goal", ""))}
 
 
 func delete_save(slot: String) -> void:

@@ -1,0 +1,43 @@
+{
+  "id": "O2",
+  "background": {"kind": "exterior", "wall": "#aab8c8", "floor": "#c8d0d8", "accent": "#6a7a8a", "horizon": 580},
+  "spawns": {"default": [500, 900], "from_O1": [190, 900], "porch": [500, 900], "from_O4": [1730, 900]},
+  "props": [
+    {"id": "school_wall", "label": "@O2.school_wall.label", "rect": [0, 160, 760, 420], "color": "#6a7a8a"},
+    {"id": "snow_front", "label": "", "rect": [1000, 900, 500, 120], "color": "#d8e0e8", "occluder": true}
+  ],
+  "hotspots": [
+    {
+      "id": "tree", "kind": "object", "label": "@O2.tree.label", "rect": [1100, 120, 200, 460], "stand": [1200, 700], "color": "#4a5a4a",
+      "look": "@O2.tree.look"
+    },
+    {
+      "id": "porch_step", "kind": "object", "label": "@O2.porch_step.label", "rect": [300, 520, 260, 60], "stand": [430, 700], "color": "#8a8a80",
+      "states": [{"if": ["mitten_placed"], "label": "@O2.porch_step.label_mitten", "color": "#b06060"}],
+      "item_use": {"mitten": {"sets": ["mitten_placed"], "text": "@O2.porch_step.mitten", "scene": "M08", "once_flag": "mitten_placed"}},
+      "look": "@O2.porch_step.look"
+    },
+    {
+      "id": "mitten", "kind": "pickup", "label": "@O2.mitten.label", "rect": [600, 500, 60, 50], "stand": [630, 700], "color": "#b06060",
+      "hidden_if": ["has_mitten"],
+      "use": {"gives": ["mitten"], "text": "@O2.mitten.use", "scene": "M08"},
+      "look": "@O2.mitten.look"
+    },
+    {
+      "id": "window_other", "kind": "object", "label": "@O2.window_other.label", "rect": [80, 260, 200, 160], "stand": [180, 700], "color": "#9fb8cc",
+      "visible_if": ["observed_path_loop"],
+      "look": "@O2.window_other.look"
+    }
+  ],
+  "exits": [
+    {"to": "O1", "label": "@O2.exit_O1.label", "side": "left", "spawn": "from_O2"},
+    {"to": "O4", "label": "@O2.exit_O4.label", "side": "right", "spawn": "from_O2", "closed_text": "@O2.exit_O4.loop",
+      "on_closed": {"type": "loop", "spawn": "porch", "sets": ["observed_path_loop"], "scene": "M08", "fade": true}}
+  ],
+  "scenes": {
+    "M08": {"complete_when": [{"all": ["observed_path_loop", "wrote_on_board"]}]}
+  },
+  "flags": {
+    "mitten_placed": "Варежка оставлена у ступени крыльца как метка"
+  }
+}
