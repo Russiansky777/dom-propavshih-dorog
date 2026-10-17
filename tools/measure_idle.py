@@ -71,6 +71,8 @@ def main():
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--period", type=float, default=3.6)
     ap.add_argument("--hold", type=float, default=0.35)
+    ap.add_argument("--action", default="", help="action to measure (default: the actor's idle); e.g. talk")
+    ap.add_argument("--all-frames", action="store_true", help="keep every frame (a gesture clip: time follows the measured path instead of dropping uneven steps)")
     args = ap.parse_args()
     data_dir = os.path.join(ROOT, "game", "data", "actors")
     actors = args.actors or sorted(f[:-5] for f in os.listdir(data_dir) if f.endswith(".json"))
@@ -82,7 +84,10 @@ def main():
         sheet_dir = os.path.join(ROOT, "game", spec.get("sheet_dir", f"res://assets/characters/{actor}").replace("res://", ""))
         with open(os.path.join(sheet_dir, spec.get("sprites", "sprites.json")), encoding="utf-8") as f:
             sprites = json.load(f)
-        idle_name = spec.get("idle_action", "idle")
+        idle_name = args.action or spec.get("idle_action", "idle")
+        if idle_name not in sprites["actions"]:
+            print(f"{actor}: no action '{idle_name}' — skipped")
+            continue
         act = sprites["actions"][idle_name]
         sheet = os.path.join(sheet_dir, act.get("sheet", idle_name + ".png"))
         with open(sheet, "rb") as f:
@@ -90,13 +95,13 @@ def main():
         fw, fh, n = int(sprites["frame_w"]), int(sprites["frame_h"]), int(act["frames"])
         img = np.asarray(Image.open(sheet).convert("RGBA"))
         rows = []
-        print(f"{actor}: {os.path.relpath(sheet, ROOT)} ({n} frames, md5 {md5[:10]}…)")
+        print(f"{actor}/{idle_name}: {os.path.relpath(sheet, ROOT)} ({n} frames, md5 {md5[:10]}…)")
         dirs = int(sprites.get("directions", 8))
         all_steps = [steps_of(img, r, n, fw, fh) for r in range(dirs)]
         # One frame range for every row (turning in place must not change the sway's amplitude):
         # the longest run of ≥ 4 frames whose steps stay even (max/min ≤ 1.6) in ALL rows.
-        common = None
-        for length in range(n, 3, -1):
+        common = (0, n - 1, n, 0.0) if args.all_frames else None
+        for length in ([] if args.all_frames else range(n, 3, -1)):
             for a in range(0, n - length + 1):
                 b = a + length - 1
                 worst = max(max(st[a:b]) / max(min(st[a:b]), 1e-6) for st in all_steps)
@@ -107,7 +112,7 @@ def main():
         for r in range(dirs):
             st = all_steps[r]
             if common is not None:
-                a, b, ratio = common[0], common[1], 1.6
+                a, b, ratio = common[0], common[1], (None if args.all_frames else 1.6)
             else:
                 a, b, ratio = best_run(st)
             seg = st[a:b]
@@ -115,17 +120,18 @@ def main():
             rows.append({"frames": list(range(a, b + 1)), "path": [round(float(x), 4) for x in cum]})
             print(f"  row {r}: steps {[round(x, 1) for x in st]} → frames {a}..{b} (max/min {max(seg) / min(seg):.2f}, limit {ratio}), path {[round(float(x), 2) for x in cum]}")
         motion = {
-            "_comment": "Ровное качание idle (tools/measure_idle.py): для каждой строки — кадры с ровными шагами движения (крупные рывки конца окна клипа отброшены) и их доля пути 0..1. ActorSheet играет их туда-обратно по косинусу (playback pingpong_eased): одинаковое время до обеих крайних поз, замедление до нуля и одинаковая выдержка у обоих краёв. Перемерить после замены idle.png: python3 tools/measure_idle.py --write.",
+            "_comment": f"Ровное качание «{idle_name}» (tools/measure_idle.py): для каждой строки — кадры с ровными шагами движения (рывки клипа отброшены) и их доля пути 0..1. ActorSheet играет их туда-обратно по косинусу (playback pingpong_eased): одинаковое время до обеих крайних поз, замедление до нуля и одинаковая выдержка у обоих краёв. Перемерить после замены листа: python3 tools/measure_idle.py --write" + (f" --action {idle_name}" if args.action else "") + ".",
             "sheet_md5": md5,
             "rows": rows,
         }
         if args.check:
-            cur = spec.get("idle_motion", {})
+            cur = spec.get("eased_motion", {}).get(idle_name, {})
             stale = cur.get("sheet_md5") != md5 or [r["frames"] for r in cur.get("rows", [])] != [r["frames"] for r in rows]
-            print(("FAIL" if stale else "OK") + f" {actor}: idle_motion " + ("is stale — run with --write" if stale else "matches the sheet"))
+            print(("FAIL" if stale else "OK") + f" {actor}: eased_motion.{idle_name} " + ("is stale — run with --write" if stale else "matches the sheet"))
             code = max(code, 1 if stale else 0)
         if args.write:
-            spec["idle_motion"] = motion
+            spec.pop("idle_motion", None)
+            spec.setdefault("eased_motion", {})[idle_name] = motion
             acts = spec.setdefault("actions", {})
             idle = acts.setdefault(idle_name, {})
             idle["playback"] = "pingpong_eased"

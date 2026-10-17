@@ -53,6 +53,11 @@ var _hint_serial: int = 0
 func _ready() -> void:
 	layer = 5
 	_build()
+	# One look for the whole UI (UiTheme: Old Standard TT + PT Serif, warm panels). A CanvasLayer
+	# breaks theme inheritance, so each top-level Control gets the theme itself.
+	for c in get_children():
+		if c is Control:
+			(c as Control).theme = UiTheme.get_theme()
 	StoryRunner.beat_changed.connect(_render_dialogue)
 	StoryRunner.item_selection_changed.connect(func(_i): _render_inventory())
 	StoryRunner.item_received.connect(_on_item_received)
@@ -71,20 +76,12 @@ func _ready() -> void:
 
 # --- Building ------------------------------------------------------------------
 
-func _panel_style(bg: Color = Color(0.08, 0.07, 0.06, 0.92)) -> StyleBoxFlat:
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = bg
-	sb.border_color = Color(0.75, 0.65, 0.45, 0.6)
-	sb.set_border_width_all(2)
-	sb.set_corner_radius_all(6)
-	sb.set_content_margin_all(14)
-	return sb
-
-
-func _button(text: String, min_w: float = 0.0) -> Button:
+func _button(text: String, min_w: float = 0.0, variation: StringName = &"") -> Button:
 	var b := Button.new()
 	b.text = text
-	b.add_theme_font_size_override("font_size", 22)
+	b.focus_mode = Control.FOCUS_NONE
+	if variation != &"":
+		b.theme_type_variation = variation
 	if min_w > 0:
 		b.custom_minimum_size = Vector2(min_w, 0)
 	return b
@@ -94,10 +91,7 @@ func _build() -> void:
 	# Top bar
 	top_bar = PanelContainer.new()
 	top_bar.name = "TopBar"
-	var bar_style := _panel_style(Color(0.06, 0.05, 0.04, 0.9))
-	bar_style.content_margin_top = 4      # 64 px pockets + 2×4 strip margins + 2×4 = TOP_H
-	bar_style.content_margin_bottom = 4
-	top_bar.add_theme_stylebox_override("panel", bar_style)
+	top_bar.theme_type_variation = &"TopBarPanel"   # 64 px pockets + 2×4 strip + 2×4 bar margins = TOP_H
 	top_bar.position = Vector2(0, 0)
 	top_bar.size = Vector2(1920, TOP_H)
 	add_child(top_bar)
@@ -112,7 +106,6 @@ func _build() -> void:
 	room_label = Label.new()
 	room_label.name = "RoomLabel"
 	room_label.theme_type_variation = &"RoomTitle"
-	room_label.add_theme_font_size_override("font_size", 24)
 	room_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.add_child(room_label)   # longest name (Кабинет управляющего) fits the 440 px title box
 	# Location code (H1, Z2 …): small and muted — players read the name, testers quote the code.
@@ -120,7 +113,7 @@ func _build() -> void:
 	room_code_label.name = "RoomCode"
 	room_code_label.theme_type_variation = &"RoomCode"
 	room_code_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	room_code_label.modulate = Color(1, 1, 1, 0.55)
+	room_code_label.modulate = Color(1, 1, 1, 0.6)
 	title.add_child(room_code_label)
 	var bag_center := CenterContainer.new()
 	bag_center.name = "BagCenter"
@@ -131,15 +124,15 @@ func _build() -> void:
 	bag.tooltip_top = TOP_H
 	bag.sound_requested.connect(func(kind): bag_sound_requested.emit(kind))
 	bag_center.add_child(bag)
-	journal_button = _button(StoryData.text("@ui.button_journal"), 140)
+	journal_button = _button(StoryData.text("@ui.button_journal"), 140, &"BarButton")
 	journal_button.name = "JournalButton"
 	journal_button.pressed.connect(toggle_journal)
 	h.add_child(journal_button)
-	hint_button = _button(StoryData.text("@ui.button_hint"), 160)
+	hint_button = _button(StoryData.text("@ui.button_hint"), 160, &"BarButton")
 	hint_button.name = "HintButton"
 	hint_button.pressed.connect(_on_hint_pressed)
 	h.add_child(hint_button)
-	menu_button = _button(StoryData.text("@ui.button_menu"), 120)
+	menu_button = _button(StoryData.text("@ui.button_menu"), 120, &"BarButton")
 	menu_button.name = "MenuButton"
 	menu_button.pressed.connect(toggle_menu)
 	h.add_child(menu_button)
@@ -147,13 +140,11 @@ func _build() -> void:
 	# Hint line (bottom, click-through)
 	hint_line = Label.new()
 	hint_line.name = "HintLine"
-	hint_line.position = Vector2(0, 1000)
-	hint_line.size = Vector2(1920, 44)
+	hint_line.position = Vector2(0, 996)
+	hint_line.size = Vector2(1920, 52)
 	hint_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_line.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	hint_line.add_theme_font_size_override("font_size", 24)
-	hint_line.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
-	hint_line.add_theme_constant_override("outline_size", 6)
+	hint_line.theme_type_variation = &"HintLabel"
 	hint_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(hint_line)
 
@@ -170,7 +161,6 @@ func _build() -> void:
 	# Dialogue box
 	dialogue = PanelContainer.new()
 	dialogue.name = "Dialogue"
-	dialogue.add_theme_stylebox_override("panel", _panel_style())
 	dialogue.position = Vector2(200, 740)
 	dialogue.size = Vector2(1520, 300)
 	dialogue.visible = false
@@ -182,15 +172,14 @@ func _build() -> void:
 	dialogue.add_child(v)
 	speaker_label = Label.new()
 	speaker_label.name = "Speaker"
-	speaker_label.add_theme_font_size_override("font_size", 24)
-	speaker_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.55))
+	speaker_label.theme_type_variation = &"SpeakerLabel"
 	v.add_child(speaker_label)
 	text_label = RichTextLabel.new()
 	text_label.name = "Text"
 	text_label.bbcode_enabled = false
 	text_label.fit_content = true
 	text_label.scroll_active = false
-	text_label.add_theme_font_size_override("normal_font_size", 28)
+	text_label.theme_type_variation = &"DialogueText"
 	text_label.custom_minimum_size = Vector2(0, 60)
 	text_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(text_label)
@@ -202,14 +191,12 @@ func _build() -> void:
 	continue_label.name = "Continue"
 	continue_label.text = StoryData.text("@ui.continue")
 	continue_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	continue_label.add_theme_font_size_override("font_size", 20)
-	continue_label.modulate = Color(1, 1, 1, 0.7)
+	continue_label.theme_type_variation = &"MutedLabel"
 	v.add_child(continue_label)
 
 	# Journal panel
 	journal_panel = PanelContainer.new()
 	journal_panel.name = "Journal"
-	journal_panel.add_theme_stylebox_override("panel", _panel_style())
 	journal_panel.position = Vector2(360, 140)
 	journal_panel.size = Vector2(1200, 760)
 	journal_panel.visible = false
@@ -219,28 +206,26 @@ func _build() -> void:
 	journal_panel.add_child(jv)
 	var jt := Label.new()
 	jt.text = StoryData.text("@ui.journal_title")
-	jt.add_theme_font_size_override("font_size", 32)
+	jt.theme_type_variation = &"HeaderLarge"
 	jv.add_child(jt)
 	var jg := Label.new()
 	jg.text = StoryData.text("@ui.journal_goal")
-	jg.add_theme_font_size_override("font_size", 22)
-	jg.add_theme_color_override("font_color", Color(0.95, 0.82, 0.55))
+	jg.theme_type_variation = &"HeaderSmall"
 	jv.add_child(jg)
 	journal_goal_label = Label.new()
 	journal_goal_label.name = "Goal"
 	journal_goal_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	journal_goal_label.add_theme_font_size_override("font_size", 26)
+	journal_goal_label.theme_type_variation = &"BodyLabel"
 	jv.add_child(journal_goal_label)
 	var jf := Label.new()
 	jf.text = StoryData.text("@ui.journal_facts")
-	jf.add_theme_font_size_override("font_size", 22)
-	jf.add_theme_color_override("font_color", Color(0.95, 0.82, 0.55))
+	jf.theme_type_variation = &"HeaderSmall"
 	jv.add_child(jf)
 	journal_facts_label = RichTextLabel.new()
 	journal_facts_label.name = "Facts"
 	journal_facts_label.bbcode_enabled = false
 	journal_facts_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	journal_facts_label.add_theme_font_size_override("normal_font_size", 22)
+	journal_facts_label.theme_type_variation = &"JournalText"
 	jv.add_child(journal_facts_label)
 	var jclose := _button(StoryData.text("@ui.close"), 200)
 	jclose.name = "CloseJournal"
@@ -250,7 +235,6 @@ func _build() -> void:
 	# Menu panel (save slots)
 	menu_panel = PanelContainer.new()
 	menu_panel.name = "Menu"
-	menu_panel.add_theme_stylebox_override("panel", _panel_style())
 	menu_panel.position = Vector2(510, 220)
 	menu_panel.size = Vector2(900, 560)
 	menu_panel.visible = false
@@ -260,7 +244,7 @@ func _build() -> void:
 	menu_panel.add_child(mv)
 	var mt := Label.new()
 	mt.text = StoryData.text("@ui.menu_title")
-	mt.add_theme_font_size_override("font_size", 32)
+	mt.theme_type_variation = &"HeaderLarge"
 	mv.add_child(mt)
 	for slot in GameState.MANUAL_SLOTS:
 		var row := HBoxContainer.new()
@@ -269,11 +253,11 @@ func _build() -> void:
 		var name_l := Label.new()
 		name_l.text = StoryData.text("@ui.slot", {"n": slot})
 		name_l.custom_minimum_size = Vector2(120, 0)
-		name_l.add_theme_font_size_override("font_size", 24)
+		name_l.theme_type_variation = &"SlotNameLabel"
 		row.add_child(name_l)
 		var info := Label.new()
 		info.custom_minimum_size = Vector2(400, 0)
-		info.add_theme_font_size_override("font_size", 20)
+		info.theme_type_variation = &"SmallLabel"
 		info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(info)
@@ -293,7 +277,7 @@ func _build() -> void:
 	var music_l := Label.new()
 	music_l.text = StoryData.text("@ui.music_volume")
 	music_l.custom_minimum_size = Vector2(120, 0)
-	music_l.add_theme_font_size_override("font_size", 24)
+	music_l.theme_type_variation = &"SlotNameLabel"
 	music_row.add_child(music_l)
 	music_slider = HSlider.new()
 	music_slider.name = "MusicSlider"
@@ -308,7 +292,7 @@ func _build() -> void:
 	music_row.add_child(music_slider)
 	music_value_label = Label.new()
 	music_value_label.custom_minimum_size = Vector2(90, 0)
-	music_value_label.add_theme_font_size_override("font_size", 22)
+	music_value_label.theme_type_variation = &"SmallLabel"
 	music_value_label.text = "%d %%" % int(music_slider.value)
 	music_row.add_child(music_value_label)
 	var sfx_row := HBoxContainer.new()
@@ -317,7 +301,7 @@ func _build() -> void:
 	var sfx_l := Label.new()
 	sfx_l.text = StoryData.text("@ui.sfx_volume")
 	sfx_l.custom_minimum_size = Vector2(120, 0)
-	sfx_l.add_theme_font_size_override("font_size", 24)
+	sfx_l.theme_type_variation = &"SlotNameLabel"
 	sfx_row.add_child(sfx_l)
 	sfx_slider = HSlider.new()
 	sfx_slider.name = "SfxSlider"
@@ -332,7 +316,7 @@ func _build() -> void:
 	sfx_row.add_child(sfx_slider)
 	sfx_value_label = Label.new()
 	sfx_value_label.custom_minimum_size = Vector2(90, 0)
-	sfx_value_label.add_theme_font_size_override("font_size", 22)
+	sfx_value_label.theme_type_variation = &"SmallLabel"
 	sfx_value_label.text = "%d %%" % int(sfx_slider.value)
 	sfx_row.add_child(sfx_value_label)
 	var bottom := HBoxContainer.new()
@@ -351,9 +335,7 @@ func _build() -> void:
 	hover_label = Label.new()
 	hover_label.name = "Hover"
 	hover_label.visible = false
-	hover_label.add_theme_font_size_override("font_size", 24)
-	hover_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
-	hover_label.add_theme_constant_override("outline_size", 6)
+	hover_label.theme_type_variation = &"HoverLabel"
 	hover_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(hover_label)
 
@@ -446,7 +428,7 @@ func _render_dialogue() -> void:
 		text_label.visible = text_label.text != ""
 		continue_label.visible = false
 		for o in beat.get("options", []):
-			var b := _button(String(o.get("label", o.get("id", ""))))
+			var b := _button(String(o.get("label", o.get("id", ""))), 0.0, &"DialogueOption")
 			b.name = "Option_" + String(o.get("id", ""))
 			b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			b.pressed.connect(func(): StoryRunner.choose(String(o.get("id", ""))))

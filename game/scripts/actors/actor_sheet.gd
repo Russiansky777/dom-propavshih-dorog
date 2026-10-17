@@ -50,9 +50,9 @@ var action_key_frames: Dictionary = {}
 ## Actions of the pipeline's sprites.json the game does not use (data `skip_actions`, e.g. a sheet
 ## that duplicates another): not built, no warning.
 var skip_actions: Array = []
-## Even idle sway (data idle_motion, tools/measure_idle.py): per row {frames, path}.
-var idle_motion_rows: Array = []
-var idle_motion_md5: String = ""
+## Even back-and-forth of repeating clips (data eased_motion.<action>, tools/measure_idle.py):
+## per action {sheet_md5, rows: [{frames, path}]}.
+var eased_motion: Dictionary = {}
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null
@@ -149,9 +149,7 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 			a.actions[act_name] = merged
 	a.crossfade_s = float(spec.get("crossfade_s", a.crossfade_s))
 	a.skip_actions = spec.get("skip_actions", [])
-	var im: Dictionary = spec.get("idle_motion", {})
-	a.idle_motion_rows = im.get("rows", [])
-	a.idle_motion_md5 = String(im.get("sheet_md5", ""))
+	a.eased_motion = spec.get("eased_motion", {})
 	var kf: Dictionary = spec.get("action_key_frame", {})
 	for k in kf.keys():
 		if not String(k).begins_with("_"):
@@ -214,8 +212,9 @@ const EASE_FPS: float = 30.0
 func eased_timeline(action: String, row: int) -> Array:
 	var act: Dictionary = actions.get(action, {})
 	var mrow: Dictionary = {}
-	if row < idle_motion_rows.size():
-		mrow = idle_motion_rows[row]
+	var mrows: Array = eased_motion.get(action, {}).get("rows", [])
+	if row < mrows.size():
+		mrow = mrows[row]
 	var cols: Array = mrow.get("frames", range(int(act.get("frames", 1))))
 	var path: Array = mrow.get("path", [])
 	if path.size() != cols.size():
@@ -271,6 +270,15 @@ func eased_timeline(action: String, row: int) -> Array:
 
 ## Played sequence of an action (sheet columns, before any idle_static_frame pinning). For an eased
 ## back-and-forth, the columns of `row`'s timeline (each shown for its own duration).
+## Rows of an action's measured eased motion ([] when not measured).
+func eased_rows(action: String) -> Array:
+	return eased_motion.get(action, {}).get("rows", [])
+
+
+func eased_md5(action: String) -> String:
+	return String(eased_motion.get(action, {}).get("sheet_md5", ""))
+
+
 func action_sequence(action: String, row: int = 0) -> Array:
 	var act: Dictionary = actions.get(action, {})
 	if String(act.get("playback", "")) == "pingpong_eased":

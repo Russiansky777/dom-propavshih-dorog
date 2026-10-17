@@ -10,7 +10,9 @@ extends SceneTree
 ##     second click / right click: back in the bag; sounds select / deselect requested;
 ##   - a granted item flies into its pocket (one "receive" per batch); loading a save never does;
 ##   - more items than pockets: pages, ‹ › and a received item turns to its page;
-##   - probe_positions().inventory: pocket centres the web walkthrough clicks.
+##   - probe_positions().inventory: pocket centres the web walkthrough clicks;
+##   - fonts (Director: «стилизованные под игру шрифты в меню и на верхней панели»): the OFL faces are
+##     really loaded (not the engine fallback), have Cyrillic, and the dialogue reads at 1280×720.
 ## Exit code 0 only when every check passed.
 
 const E0E1_ITEMS := ["key_house", "letter_tamara", "pocket_watch", "mitten", "door_hinges",
@@ -70,6 +72,7 @@ func _run() -> void:
 	await _test("Received item flies into its pocket; one 'receive' per batch; load never replays it", _test_receive)
 	await _test("More items than pockets: pages, ‹ ›, wheel; a received item turns the bag to its page", _test_pages)
 	await _test("probe_positions().inventory: centres of visible pockets inside the bar", _test_probe)
+	await _test("Theme: Old Standard TT (bar, buttons, headings) + PT Serif (dialogue, journal, tooltips), Cyrillic, sizes", _test_theme)
 	gs.reset()
 	gs.delete_save(SLOT)
 	if main_node != null and is_instance_valid(main_node):
@@ -332,3 +335,45 @@ func _test_probe() -> void:
 			_check(s.get_global_rect().has_point(Vector2(pt["x"], pt["y"])), "%s probe point inside its pocket" % id)
 			_check(float(pt["y"]) < float(ui.get("TOP_H")), "%s probe point in the bar" % id)
 	_check(p.has("bag") and int(p["bag"]["pages"]) == 1, "probe bag info")
+
+
+func _font_name(c: Control, item: String = "font") -> String:
+	var f: Font = c.get_theme_font(item)
+	return f.get_font_name() if f != null else ""
+
+
+func _test_theme() -> void:
+	await _fresh(["key_house"])
+	ui.call("_on_room_changed", "H1")
+	await _frames(2)
+	var top_bar: Control = ui.get("top_bar")
+	_check(absf(top_bar.size.y - float(ui.get("TOP_H"))) < 0.5, "top bar stays %d px (%.0f)" % [int(ui.get("TOP_H")), top_bar.size.y])
+	var head := "Old Standard TT"
+	var body := "PT Serif"
+	_check(_font_name(ui.get("room_label")) == head, "room name: %s" % _font_name(ui.get("room_label")))
+	for b in ["journal_button", "hint_button", "menu_button"]:
+		_check(_font_name(ui.get(b)) == head, "%s: %s" % [b, _font_name(ui.get(b))])
+	var text: Control = ui.get("text_label")
+	_check(_font_name(text, "normal_font") == body, "dialogue text: %s" % _font_name(text, "normal_font"))
+	var dsize: int = text.get_theme_font_size("normal_font_size")
+	_check(dsize * 720.0 / 1080.0 >= 20.0, "dialogue %d px → %.1f px at 1280×720 (≥ 20)" % [dsize, dsize * 720.0 / 1080.0])
+	_check(_font_name(ui.get("speaker_label")) == head, "speaker name: %s" % _font_name(ui.get("speaker_label")))
+	_check(_font_name(ui.get("journal_facts_label"), "normal_font") == body, "journal facts")
+	_check(_font_name(ui.get("journal_goal_label")) == body, "journal goal")
+	_check(_font_name(ui.get("hover_label")) == body, "hover label")
+	_check(_font_name(ui.get("hint_line")) == body, "hint line")
+	_check(_font_name(bag.tip_name) == head and _font_name(bag.tip_desc) == body, "bag tooltip: %s / %s" % [_font_name(bag.tip_name), _font_name(bag.tip_desc)])
+	var menu: Control = ui.get("menu_panel")
+	var ng: Control = menu.find_child("NewGame", true, false)
+	_check(ng != null and _font_name(ng) == head, "menu buttons")
+	# Every face has the whole Russian alphabet with ё/Ё/ъ/Ъ and the typographic marks the texts use.
+	var probe_chars := "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ«»—…№"
+	for c in [ui.get("room_label"), ui.get("hover_label"), ui.get("hint_line")]:
+		var f: Font = (c as Control).get_theme_font("font")
+		var missing := ""
+		for ch in probe_chars:
+			if not f.has_char(ch.unicode_at(0)):
+				missing += ch
+		_check(missing == "", "%s lacks: %s" % [f.get_font_name(), missing])
+	var fi: Font = text.get_theme_font("italics_font")
+	_check(fi != null and fi.get_font_name() == body and fi.get_font_style() & TextServer.FONT_ITALIC, "dialogue italic = PT Serif Italic")

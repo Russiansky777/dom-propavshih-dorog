@@ -152,6 +152,16 @@ func _build() -> void:
 	close_button.name = "Close"
 	close_button.pressed.connect(func(): StoryRunner.close_puzzle())
 	root.add_child(close_button)
+	# Game typefaces for the text and the two buttons (UiTheme). Not on `root`: the invisible
+	# click targets over the art keep the engine look they were tuned with.
+	var t := UiTheme.get_theme()
+	for l in [[title_label, &"CloseupTitle"], [message_label, &"CloseupLabel"], [hint_label, &"CloseupLabel"]]:
+		(l[0] as Label).theme = t
+		(l[0] as Label).theme_type_variation = l[1]
+		(l[0] as Label).remove_theme_font_size_override("font_size")
+	for b in [check_button, close_button]:
+		b.theme = t
+		b.remove_theme_font_size_override("font_size")
 
 
 func _render() -> void:

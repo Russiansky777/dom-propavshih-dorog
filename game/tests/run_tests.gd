@@ -1013,13 +1013,13 @@ func _test_npc_actors() -> void:
 		return
 	var t: Node2D = npcs[0]
 	var spr: AnimatedSprite2D = t.get_node("Sprite")
-	_check(spr.sprite_frames.get_frame_count("idle_0") == t.sheet.eased_timeline("idle", 0).size() and spr.sprite_frames.get_frame_count("talk_0") == 22, "tamara: eased idle timeline and talk 22 pingpong frames (talk: data override), got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
+	_check(spr.sprite_frames.get_frame_count("idle_0") == t.sheet.eased_timeline("idle", 0).size() and spr.sprite_frames.get_frame_count("talk_0") == t.sheet.eased_timeline("talk", 0).size(), "tamara: eased idle and eased talk timelines (data overrides), got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
 	_check(spr.animation == "idle_0" and spr.is_playing(), "tamara idles facing the viewer (idle_0), got %s" % spr.animation)
 	var hs: Node2D = room.get_node("Hotspots/tamara")
 	var shape: CollisionShape2D = hs.get_node("Shape")
 	var feet: Vector2 = hs.global_position + Vector2(0, shape.shape.size.y / 2)
 	_check(t.global_position.is_equal_approx(feet), "tamara's feet at the hotspot's bottom centre %s, got %s" % [str(feet), str(t.global_position)])
-	_check(is_equal_approx(t.scale.y, room.depth_scale(feet.y)), "tamara scale = room depth scale at her feet (%.3f), got %.3f" % [room.depth_scale(feet.y), t.scale.y])
+	_check(is_equal_approx(t.scale.y, room.depth_scale(feet.y) * 1.055), "tamara scale = room depth scale at her feet × 1.055 (1,74 м при Агате 1,65 м — по замыслу): %.3f, got %.3f" % [room.depth_scale(feet.y) * 1.055, t.scale.y])
 	_check(t.z_index == int(feet.y), "tamara z_index = int(feet y)")
 	var counter: Node2D = room.get_node_or_null("Occluders/counter")
 	if counter != null:
@@ -1057,8 +1057,8 @@ func _test_npc_actors() -> void:
 	_check(npcs.size() == 1 and npcs[0].actor_id == "pelageya", "R1 should hold Pelageya's actor")
 	if not npcs.is_empty():
 		var p: Node2D = npcs[0]
-		_check(is_equal_approx(p.scale.y, room.depth_scale(p.global_position.y) * 1.03), "pelageya scale = depth scale × 1.03")
-		_check(p.get_node("Sprite").sprite_frames.get_frame_count("talk_0") == 22, "pelageya talk plays pingpong (12 sheet frames → 22)")
+		_check(is_equal_approx(p.scale.y, room.depth_scale(p.global_position.y) * 0.94), "pelageya scale = depth scale × 0.94 (1,55 м при Агате 1,65 м — по замыслу)")
+		_check(p.get_node("Sprite").sprite_frames.get_frame_count("talk_0") == p.sheet.eased_timeline("talk", 0).size(), "pelageya talk plays the eased back-and-forth")
 	gs.reset()
 	_cleanup_m1()
 
@@ -1494,15 +1494,19 @@ func _test_idle_sway() -> void:
 			continue
 		var id := fname.get_basename()
 		var sheet = load("res://scripts/actors/actor_sheet.gd").load_actor(id)
-		var act: Dictionary = sheet.actions.get(sheet.idle_action, {})
-		_check(String(act.get("playback", "")) == "pingpong_eased", "%s: idle must play pingpong_eased (data actions.idle)" % id)
-		var ipath: String = sheet.sheet_dir + "/" + String(act.get("sheet", "idle.png"))
-		_check(sheet.idle_motion_md5 == FileAccess.get_md5(ipath), "%s: idle_motion measured on another idle.png — run tools/measure_idle.py --write" % id)
-		var worst_travel := 0.0
-		var worst_dwell := 0.0
-		for r in sheet.directions:
-			var tl: Array = sheet.eased_timeline(sheet.idle_action, r)
-			var mrow: Dictionary = sheet.idle_motion_rows[r] if r < sheet.idle_motion_rows.size() else {}
+		_check(String(sheet.actions.get(sheet.idle_action, {}).get("playback", "")) == "pingpong_eased", "%s: idle must play pingpong_eased (data actions.idle)" % id)
+		for action in sheet.actions.keys():
+		  if String(sheet.actions[action].get("playback", "")) != "pingpong_eased":
+			continue
+		  var act: Dictionary = sheet.actions[action]
+		  var ipath: String = sheet.sheet_dir + "/" + String(act.get("sheet", action + ".png"))
+		  _check(sheet.eased_md5(action) == FileAccess.get_md5(ipath), "%s/%s: eased_motion measured on another sheet — run tools/measure_idle.py --write" % [id, action])
+		  var worst_travel := 0.0
+		  var worst_dwell := 0.0
+		  for r in sheet.directions:
+			var tl: Array = sheet.eased_timeline(action, r)
+			var mrows: Array = sheet.eased_rows(action)
+			var mrow: Dictionary = mrows[r] if r < mrows.size() else {}
 			var cols: Array = mrow.get("frames", [])
 			var path: Array = mrow.get("path", [])
 			if cols.size() < 3:
