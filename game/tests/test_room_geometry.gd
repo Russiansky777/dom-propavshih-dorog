@@ -185,6 +185,41 @@ func _test_room(rid: String) -> void:
 	await physics_frame
 
 
+## Background: uniform 1920/width, whole picture in the frame. Layers: the background's scale × data scale,
+## and exactly the background's scale unless the data explains a different one (scale_reason).
+func _check_scales(room: Node, spec: Dictionary) -> void:
+	var bg: Sprite2D = room.get_node_or_null("Background/Image")
+	if bg == null:
+		_check(not spec.get("background", {}).has("image"), "background image node missing")
+		return
+	var ts: Vector2 = bg.texture.get_size()
+	var expect := 1920.0 / ts.x
+	_check(absf(bg.scale.x - expect) <= 0.001, "background scale %.5f, expected 1920/%d = %.5f" % [bg.scale.x, int(ts.x), expect])
+	_check(absf(bg.scale.y - bg.scale.x) <= 0.000001, "background scale must be uniform, got %s" % str(bg.scale))
+	_check(absf(float(room.get("art_scale")) - bg.scale.x) <= 0.000001, "room.art_scale %.5f ≠ background scale %.5f" % [float(room.get("art_scale")), bg.scale.x])
+	var drawn_h := ts.y * bg.scale.y
+	_check(absf(drawn_h - 1080.0) <= 2.0 and absf(bg.position.y - roundf((1080.0 - drawn_h) / 2.0)) <= 0.5 and bg.position.x == 0.0,
+		"background must fill 1920x1080 without crop or zoom: drawn %dx%d at %s" % [int(ts.x * bg.scale.x), int(drawn_h), str(bg.position)])
+	for l in spec.get("layers", []):
+		var lid := String(l.get("id", ""))
+		var node: Node = room.get_node_or_null("Occluders/" + lid)
+		if node == null:
+			node = room.get_node_or_null("Layers/" + lid)
+		_check(node != null, "layer %s not built" % lid)
+		if node == null:
+			continue
+		var img: Sprite2D = node.get_node_or_null("Image")
+		if img == null:
+			_check(false, "layer %s has no Image" % lid)
+			continue
+		var sc := float(l.get("scale", 1.0))
+		var want := bg.scale.x * sc
+		_check(absf(img.scale.x - want) <= 0.001 and absf(img.scale.y - img.scale.x) <= 0.000001,
+			"layer %s scale %s, expected uniform background scale × %.3f = %.4f" % [lid, str(img.scale), sc, want])
+		if String(l.get("scale_reason", "")).strip_edges() == "":
+			_check(absf(img.scale.x - bg.scale.x) <= 0.001, "layer %s is drawn at %.4f, not the background's %.4f, and the data gives no scale_reason" % [lid, img.scale.x, bg.scale.x])
+
+
 ## No vertex and no 8-px step of a path lies inside an obstacle or outside the floor outline.
 func _check_path(path: PackedVector2Array, outline: PackedVector2Array, holes: Array[PackedVector2Array], what: String) -> void:
 	for i in path.size():
