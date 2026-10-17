@@ -89,7 +89,195 @@
       "notes": "Каждое состояние — отдельный PNG с прозрачностью, в координатах фона",
       "status": "requested",
       "owner": "pipeline",
-      "delivered": null
+      "delivered": null,
+      "files": [
+        "incoming/H1_state_stove_open.png",
+        "incoming/H1_state_shutter_open.png",
+        "incoming/H1_state_hook_coat.png",
+        "incoming/H1_state_shelf_stove.png",
+        "incoming/H1_state_shelf_table.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md"
+    },
+    {
+      "id": "Z1_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон Z1 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/Z1_bg.png",
+        "incoming/Z1_fg_counter.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "Z2_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон Z2 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/Z2_bg.png",
+        "incoming/Z2_fg_house_corner.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "Z3_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон Z3 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/Z3_bg.png",
+        "incoming/Z3_fg_water.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "R1_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон R1 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/R1_bg.png",
+        "incoming/R1_fg_pier_edge.png",
+        "incoming/R1_fg_water.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "H2_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон H2 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/H2_bg.png",
+        "incoming/H2_fg_bench_front.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "H3_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон H3 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/H3_bg.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "H4_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон H4 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/H4_bg.png",
+        "incoming/H4_fg_boxes.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "O1_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон O1 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/O1_bg.png",
+        "incoming/O1_fg_desks.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "O2_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "spec": "Фон O2 2048×1152 + слои переднего плана; бриф §B",
+      "files": [
+        "incoming/O2_bg.png",
+        "incoming/O2_fg_snow_front.png",
+        "incoming/O2_fg_wall.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "H3_states",
+      "status": "requested",
+      "kind": "prop_states",
+      "spec": "Проём H3: пустая рама / установленная дверь",
+      "files": [
+        "incoming/H3_state_frame_empty.png",
+        "incoming/H3_state_door_installed.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "O1_states",
+      "status": "requested",
+      "kind": "prop_states",
+      "spec": "Доска O1 с надписью мелом",
+      "files": [
+        "incoming/O1_state_board_written.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "O2_states",
+      "status": "requested",
+      "kind": "prop_states",
+      "spec": "Варежка на ступени O2",
+      "files": [
+        "incoming/O2_state_mitten.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "tamara_sheet",
+      "status": "requested",
+      "kind": "character_sheet",
+      "spec": "Тамара 53, почта Заречья; лист для Meshy",
+      "files": [
+        "incoming/tamara_sheet.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "pelageya_sheet",
+      "status": "requested",
+      "kind": "character_sheet",
+      "spec": "Пелагея 40, лодочница; лист для Meshy",
+      "files": [
+        "incoming/pelageya_sheet.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
+    },
+    {
+      "id": "M05_closeup",
+      "status": "requested",
+      "kind": "closeup_layers",
+      "spec": "Слои крупного плана загадки двери: полотно, рама, брус, петля, рисунок",
+      "files": [
+        "incoming/M05_door_leaf.png",
+        "incoming/M05_frame.png",
+        "incoming/M05_beam.png",
+        "incoming/M05_hinge.png",
+        "incoming/M05_drawing.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_E0_E1.md",
+      "owner": "ChatGPT + Директор"
     }
   ]
 }
