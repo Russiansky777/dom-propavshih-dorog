@@ -226,7 +226,7 @@ async function main() {
       await sleep(600);
       const pause = (p) => page.evaluate((v) => { window.probePause(v); }, p);
       const series = [];
-      const capture = async (label, target, maxFrames = 60) => {
+      const capture = async (label, target, maxFrames = 60, sleepMs = 80) => {
         await click(`stride ${label}`, target);
         await sleep(60);
         for (let i = 0; i < maxFrames; i++) {
@@ -234,11 +234,11 @@ async function main() {
           const s = await state();
           const file = path.join(STRIDE_DIR, `${label}_${String(i).padStart(2, "0")}.png`);
           await page.screenshot({ path: file });
-          series.push({ label, index: i, file: path.basename(file), ticks: s.ticks, player: s.player, actor: s.actor });
+          series.push({ label, index: i, file: path.basename(file), ticks: s.ticks, physics_frames: s.physics_frames, player: s.player, actor: s.actor });
           const walking = s.player.walking;
           await pause(false);
           if (!walking) break;
-          await sleep(100);
+          await sleep(sleepMs);  // + ~20 ms of bridge calls ≈ 100 ms of game time between captures
         }
         await waitWalk(label);
       };
@@ -250,6 +250,7 @@ async function main() {
       await page.screenshot({ path: path.join(STRIDE_DIR, "ref.png") });
       const ref = await state();
       await pause(false);
+      if (ref.room !== "H1") failures.push(`stride: expected H1 for the reference frame, got ${ref.room}`);
       // Floor points clear of exits (H2: x ≥ 1790; H3/H4: y ≥ 1000) and hotspots.
       await click("floor start right", { x: 1700, y: 985 });
       await waitWalk("start right");
@@ -257,6 +258,10 @@ async function main() {
       await capture("left", { x: 880, y: 985 });
       await sleep(300);
       await capture("right", { x: 1700, y: 985 });
+      await sleep(300);
+      // Dense series (~30 ms of game time apart): several captures fall inside one sheet frame and
+      // must be pixel-identical around the figure (the drawn figure only moves when the frame changes).
+      await capture("hold", { x: 1100, y: 985 }, 30, 10);
       const fin = await state();
       if (fin.room !== "H1") failures.push(`stride series must stay in H1, ended in ${fin.room}`);
       const first = series.find((x) => x.actor && x.actor.stride_px);

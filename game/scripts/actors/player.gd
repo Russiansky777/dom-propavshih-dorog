@@ -46,6 +46,7 @@ var _motion_dir: Vector2 = Vector2.ZERO   # unit direction of the last physics s
 var _lock_anchor: Vector2 = Vector2.ZERO  # where the figure is drawn while the current walk frame is shown
 var _lock_active: bool = false
 var _lock_hold: bool = false    # true while an animation switch replays the same frame
+var walk_time: float = 0.0      # game seconds spent in the current walk (probe/measurements)
 var _distance_walked: float = 0.0
 var _step_phase: int = 0
 var _path_ready: bool = false
@@ -246,6 +247,7 @@ func _start_walk(target: Vector2) -> void:
 	_path_fallback = false
 	nav_agent.target_position = target
 	_walking = true
+	walk_time = 0.0
 	_lock_start()
 	walk_started.emit(target)
 
@@ -282,6 +284,7 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 func _physics_process(delta: float) -> void:
 	if not _walking:
 		return
+	walk_time += delta
 	var next: Vector2
 	if _path_fallback:
 		next = _target
