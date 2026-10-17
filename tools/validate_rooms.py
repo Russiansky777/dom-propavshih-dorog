@@ -11,7 +11,13 @@
      gives — только предметы, чей source_scene совпадает со сценой шага и чья сцена идёт в этой комнате;
      sets со сценой — только флаги из grants сцены или локальные флаги комнаты;
   4. все текстовые ключи @… есть в data/story/text/*.json (кроме @char.<id> из characters.json);
-  5. геометрия: полигон ≥ 3 точек; точки stand хотспотов/выходов и спавны лежат внутри полигона.
+  5. геометрия: полигон ≥ 3 точек; точки stand хотспотов/выходов и спавны лежат внутри полигона;
+     вырезы (walkable_holes) лежат в кадре и пересекают пол;
+  6. геометрия по картинке (дефект «Агата проходит сквозь стойку/стол/воду»): у каждой комнаты
+     in_scope есть no_walk_samples (≥ 2 точки заведомо внутри препятствий/воды — вне пола или в
+     вырезе) и walk_samples (≥ 3 точки свободного пола — на полу и не в вырезе); nearest_checks
+     ({from, in:[x,y,w,h]}) — from вне пола. Те же точки проверяет навигацией Godot
+     game/tests/test_room_geometry.gd.
 
 Код 0 — ошибок нет. Запуск: python3 tools/validate_rooms.py [--quiet]
 """
@@ -248,14 +254,51 @@ for rid, room in rooms.items():
         check_flags(ectx + ".if", e.get("if"))
         check_flags(ectx + ".unless", e.get("unless"))
     holes = room.get("walkable_holes", [])
+    for i, h in enumerate(holes):
+        if len(h) < 3:
+            err(f"{ctx}: вырез walkable_holes[{i}] короче 3 точек")
+            continue
+        if not any(point_in_poly(p, poly) for p in h) and not any(point_in_poly(p, h) for p in poly):
+            err(f"{ctx}: вырез walkable_holes[{i}] не пересекает пол — опечатка в координатах?")
 
-    holes = room.get("walkable_holes", [])
     # спавны
     spawns = room.get("spawns", {})
     if "default" not in spawns:
         err(f"{ctx}: нет спавна default")
     def walkable_point(pt) -> bool:
         return point_in_poly(pt, poly) and not any(point_in_poly(pt, h) for h in holes)
+
+    # 6. точки-образцы по картинке
+    def in_frame(pt) -> bool:
+        return 0 <= pt[0] <= 1920 and 0 <= pt[1] <= 1080
+
+    no_walk = room.get("no_walk_samples", [])
+    walk = room.get("walk_samples", [])
+    if rid in in_scope:
+        if len(no_walk) < 2:
+            err(f"{ctx}: нужно ≥ 2 no_walk_samples (точки внутри препятствий/воды), есть {len(no_walk)}")
+        if len(walk) < 3:
+            err(f"{ctx}: нужно ≥ 3 walk_samples (точки свободного пола), есть {len(walk)}")
+    for s in no_walk:
+        what = s[2] if len(s) > 2 else ""
+        if not in_frame(s):
+            err(f"{ctx}: no_walk_sample {s[:2]} вне кадра 1920x1080")
+        elif walkable_point(s[:2]):
+            err(f"{ctx}: no_walk_sample {s[:2]} ({what}) лежит на полу — Агата пройдёт сквозь препятствие")
+    for s in walk:
+        if not in_frame(s):
+            err(f"{ctx}: walk_sample {s[:2]} вне кадра 1920x1080")
+        elif not walkable_point(s[:2]):
+            err(f"{ctx}: walk_sample {s[:2]} не на полу (или в вырезе)")
+    for nc in room.get("nearest_checks", []):
+        frm, box = nc.get("from"), nc.get("in")
+        if not frm or not box or len(box) != 4:
+            err(f"{ctx}: nearest_checks без from/in[x,y,w,h]: {nc}")
+        elif walkable_point(frm):
+            err(f"{ctx}: nearest_checks.from {frm} на полу — проверка ближайшей точки бессмысленна")
+        elif not any(walkable_point([x, y]) for x in range(int(box[0]), int(box[0] + box[2]) + 1, 5)
+                     for y in range(int(box[1]), int(box[1] + box[3]) + 1, 5)):
+            err(f"{ctx}: nearest_checks.in {box} не содержит пола")
 
     for sid, pos in spawns.items():
         if not walkable_point(pos):

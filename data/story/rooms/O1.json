@@ -2,7 +2,9 @@
   "id": "O1",
   "_art": "Фон O1_bg.png (зимний класс): доска, учительский стол с ящиком и мелом, мешок у левой двери, тетради на лавке справа, картинка с птицей, две двери (левая — обратно в H3, правая — на крыльцо). Слой O1_fg_desks.png — парты на переднем плане (окклюдер z=1080, пол перед ними не проходим). Состояние O1_state_board_written.png — надпись мелом при wrote_on_board.",
   "background": {"kind": "interior", "image": "res://assets/rooms/O1/bg.png", "wall": "#5a6c80", "floor": "#6f7d8c", "accent": "#8aa0b8", "horizon": 700},
-  "walkable": [[200, 700], [1800, 700], [1900, 1070], [1810, 1070], [1810, 780], [350, 780], [350, 1070], [20, 1070]],
+  "walkable": [[20, 1070], [20, 812], [330, 730], [345, 738], [462, 738], [470, 700], [540, 700], [540, 752], [900, 752], [900, 700], [1495, 700], [1495, 742], [1745, 742], [1745, 700], [1830, 700], [1915, 765], [1915, 1070], [1825, 1070], [1825, 830], [345, 830], [345, 1070]],
+  "no_walk_samples": [[700, 950, "парта"], [1400, 950, "парта"], [1050, 900, "проход между партами"], [700, 725, "учительский стол"], [1600, 715, "лавка с тетрадями"], [400, 705, "мешок"]],
+  "walk_samples": [[1000, 740], [1760, 740], [490, 745], [640, 780], [1100, 790], [1870, 1000], [150, 1000]],
   "depth": {"top_y": 700, "bottom_y": 1070, "scale_top": 1.3, "scale_bottom": 2.0},
   "_depth_note": "двери ≈ 610 px ≈ 2 м у стены → рост Агаты ≈ 1.3×337 ≈ 440 px",
   "layers": [
@@ -25,24 +27,24 @@
       "look": "@O1.sack.look"
     },
     {
-      "id": "notebooks", "kind": "object", "label": "@O1.notebooks.label", "rect": [1460, 480, 230, 190], "stand": [1560, 740], "color": "#c8c0a8", "draw": false,
+      "id": "notebooks", "kind": "object", "label": "@O1.notebooks.label", "rect": [1460, 480, 230, 190], "stand": [1560, 770], "color": "#c8c0a8", "draw": false,
       "use": {"sets": ["o1_seen_notebooks"], "text": "@O1.notebooks.use", "once_flag": "o1_seen_notebooks", "scene": "M06"},
       "look": "@O1.notebooks.look"
     },
     {
-      "id": "teacher_drawer", "kind": "object", "label": "@O1.teacher_drawer.label", "rect": [560, 500, 310, 110], "stand": [720, 745], "color": "#5a4a3a", "draw": false,
+      "id": "teacher_drawer", "kind": "object", "label": "@O1.teacher_drawer.label", "rect": [560, 500, 310, 110], "stand": [720, 780], "color": "#5a4a3a", "draw": false,
       "states": [{"if": ["has_invoice_chalk"], "label": "@O1.teacher_drawer.label_open"}],
       "use": {"gives": ["invoice_chalk", "photo_school_pier"], "text": "@O1.teacher_drawer.use", "once_flag": "has_invoice_chalk", "scene": "M07"},
       "look": "@O1.teacher_drawer.look"
     },
     {
-      "id": "chalk", "kind": "pickup", "label": "@O1.chalk.label", "rect": [590, 470, 90, 30], "stand": [640, 745], "color": "#f0f0e8", "draw": false,
+      "id": "chalk", "kind": "pickup", "label": "@O1.chalk.label", "rect": [590, 470, 90, 30], "stand": [640, 780], "color": "#f0f0e8", "draw": false,
       "hidden_if": ["has_chalk"],
       "use": {"gives": ["chalk"], "text": "@O1.chalk.use", "scene": "M08"},
       "look": "@O1.chalk.look"
     },
     {
-      "id": "bird_drawing", "kind": "object", "label": "@O1.bird_drawing.label", "rect": [1440, 150, 210, 300], "stand": [1540, 740], "color": "#e0d8c0", "draw": false,
+      "id": "bird_drawing", "kind": "object", "label": "@O1.bird_drawing.label", "rect": [1440, 150, 210, 300], "stand": [1540, 770], "color": "#e0d8c0", "draw": false,
       "visible_if": ["seen_class_traces"],
       "states": [{"if": ["v03_marked"], "label": "@O1.bird_drawing.label_marked"}],
       "choice": {"prompt": "@O1.bird_drawing.prompt", "scene": "V03", "once_any": true,
@@ -54,7 +56,7 @@
     }
   ],
   "exits": [
-    {"to": "H3", "label": "@O1.exit_H3.label", "rect": [380, 90, 130, 610], "stand": [450, 740], "spawn": "from_O1", "closed_text": "@O1.exit_H3.closed", "draw": false},
+    {"to": "H3", "label": "@O1.exit_H3.label", "rect": [380, 90, 130, 610], "stand": [490, 745], "spawn": "from_O1", "closed_text": "@O1.exit_H3.closed", "draw": false},
     {"to": "O2", "label": "@O1.exit_O2.label", "rect": [1790, 90, 130, 610], "stand": [1790, 740], "spawn": "from_O1", "draw": false}
   ],
   "scenes": {

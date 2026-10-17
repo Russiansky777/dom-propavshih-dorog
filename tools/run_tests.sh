@@ -3,6 +3,7 @@
 #   1. python3 tools/validate_story.py   — story data integrity
 #      python3 tools/validate_rooms.py   — rooms JSON vs story (test (a) of M1)
 #   2. godot --headless -s res://tests/run_tests.gd — GameState/RoomManager/navigation, bot walkthrough
+#      godot --headless -s res://tests/test_room_geometry.gd — floor vs art in every room (samples)
 # Output is also written to build/logs/tests.log
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/godot_env.sh"
@@ -26,5 +27,14 @@ gcode=${PIPESTATUS[0]}
 set -e
 [[ "$gcode" -ne 0 ]] && code=1
 echo "[godot] tests exit code: $gcode"
+
+# Room geometry against the art: obstacles/water not walkable, floor connected (data: *_samples).
+echo "[godot] geometry: $GODOT --headless --path $GAME_DIR -s res://tests/test_room_geometry.gd" | tee -a "$BUILD_DIR/logs/tests.log"
+set +e
+"$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_room_geometry.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"
+geo_code=${PIPESTATUS[0]}
+set -e
+[[ "$geo_code" -ne 0 ]] && code=1
+echo "[godot] geometry exit code: $geo_code"
 echo "[tests] overall exit code: $code"
 exit "$code"

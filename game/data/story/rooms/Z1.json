@@ -2,8 +2,10 @@
   "id": "Z1",
   "_art": "Фон assets/incoming/Z1_bg.png (1672x941 → 1920x1080), передний план Z1_fg_counter.png — стойка почты (окклюдер, ножки на полу y≈1000). Координаты в 1920x1080. Хотспоты и выходы не рисуются, подпись — при наведении.",
   "background": {"kind": "interior", "image": "res://assets/rooms/Z1/bg.png", "wall": "#7a6a52", "floor": "#8a7250", "accent": "#b89c6a", "horizon": 660},
-  "walkable": [[30, 660], [1890, 660], [1910, 1070], [20, 1070]],
-  "walkable_holes": [[[400, 700], [1560, 700], [1560, 1000], [400, 1000]]],
+  "walkable": [[20, 1070], [20, 752], [440, 680], [1010, 682], [1530, 690], [1880, 694], [1900, 700], [1910, 1070]],
+  "walkable_holes": [[[405, 772], [1518, 772], [1522, 1002], [400, 1002]]],
+  "no_walk_samples": [[960, 880, "стойка"], [460, 960, "стойка, левый край"], [1470, 800, "стойка, правый край"], [700, 620, "сундук у стены"], [1690, 560, "дверь"]],
+  "walk_samples": [[250, 900], [1700, 780], [960, 1040], [740, 725], [1600, 1000], [300, 760]],
   "depth": {"top_y": 660, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 1.7},
   "_depth_note": "дверь на улицу ≈ 560 px ≈ 2 м у дальней стены → рост Агаты ≈ 1.2×337 ≈ 400 px; у ближнего края 1.7",
   "layers": [
@@ -22,11 +24,11 @@
       "look": "@Z1.drawings.look"
     },
     {
-      "id": "letters", "kind": "object", "label": "@Z1.letters.label", "rect": [500, 160, 480, 300], "stand": [740, 685], "color": "#d9cfae", "draw": false,
+      "id": "letters", "kind": "object", "label": "@Z1.letters.label", "rect": [500, 160, 480, 300], "stand": [740, 725], "color": "#d9cfae", "draw": false,
       "look": "@Z1.letters.look"
     },
     {
-      "id": "plan", "kind": "object", "label": "@Z1.plan.label", "rect": [1070, 160, 380, 360], "stand": [1260, 685], "color": "#cfc3a0", "draw": false,
+      "id": "plan", "kind": "object", "label": "@Z1.plan.label", "rect": [1070, 160, 380, 360], "stand": [1260, 725], "color": "#cfc3a0", "draw": false,
       "look": "@Z1.plan.look"
     }
   ],

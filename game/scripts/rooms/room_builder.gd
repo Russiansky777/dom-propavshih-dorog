@@ -114,18 +114,21 @@ static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dic
 	for i in pts.size():
 		verts.append(Vector2(float(pts[i][0]), float(pts[i][1])))
 	poly.add_outline(verts)
-	# Optional holes (furniture the player walks around): nested outlines are subtracted when baking.
+	# Holes (furniture standing on the floor: the Z1 counter, desks, a table) are OBSTRUCTION outlines.
+	# A second traversable outline is merged with the floor by the 4.7 baker, not subtracted — that
+	# was the defect «Агата проходит сквозь стойку Z1» (the hole was in the data but not in the mesh).
+	var source := NavigationMeshSourceGeometryData2D.new()
 	for hole in spec.get("walkable_holes", []):
 		var hv := PackedVector2Array()
 		for p in hole:
 			hv.append(Vector2(float(p[0]), float(p[1])))
-		poly.add_outline(hv)
+		source.add_obstruction_outline(hv)
 	poly.agent_radius = 0.0
 	# Bake synchronously: the outline may be concave (e.g. H1 floor around the armchair) and the
 	# navigation server needs convex polygons.
-	NavigationServer2D.bake_from_source_geometry_data(poly, NavigationMeshSourceGeometryData2D.new())
+	NavigationServer2D.bake_from_source_geometry_data(poly, source)
 	if poly.get_polygon_count() == 0:
-		push_warning("RoomBuilder: baking produced no polygons; using the raw outline")
+		push_error("RoomBuilder: baking produced no polygons in %s; using the raw outline WITHOUT holes" % String(spec.get("id", "?")))
 		var indices := PackedInt32Array()
 		for i in pts.size():
 			indices.append(i)
@@ -273,6 +276,9 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 			var sc := hgt / maxf(ts.y, 1.0)
 			spr.scale = Vector2(sc, sc)
 			spr.position = Vector2(-ts.x * sc / 2, -hgt / 2)
+			# Sorted by the feet (rect bottom) like the player and the occluders: Agata walking on the
+			# R1 pier behind Pelageya is drawn behind her, Tamara stays behind the Z1 counter.
+			spr.z_index = clampi(int(float(r[1]) + hgt), 0, 4096)
 			hs.add_child(spr)
 		if kind == "npc":
 			var head := Polygon2D.new()

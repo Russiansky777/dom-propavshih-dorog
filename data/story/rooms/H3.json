@@ -2,7 +2,9 @@
   "id": "H3",
   "_art": "Фон H3_bg.png (галерея порогов): зеркало ЗГ слева, пустая ниша-рама в центре (школьная дверь), фото пристани, вторая рама справа, проход в комнату справа. Состояния: H3_state_frame_empty.png (рама с гнёздами + прислонённое полотно) пока дверь не установлена, H3_state_door_installed.png после; оба с подгонкой offset/scale под нишу.",
   "background": {"kind": "interior", "image": "res://assets/rooms/H3/bg.png", "wall": "#66584a", "floor": "#846c4c", "accent": "#a88c60", "horizon": 720},
-  "walkable": [[260, 720], [1800, 720], [1910, 1070], [20, 1070]],
+  "walkable": [[20, 1070], [20, 815], [265, 735], [322, 735], [322, 812], [600, 812], [608, 800], [660, 800], [660, 768], [880, 768], [880, 800], [935, 800], [940, 733], [1900, 728], [1910, 1070]],
+  "no_walk_samples": [[460, 780, "прислонённое полотно двери"], [630, 780, "косяк рамы"], [150, 700, "стена"], [1100, 650, "стена"]],
+  "walk_samples": [[960, 920], [770, 790], [300, 800], [1470, 800], [560, 840], [1810, 900]],
   "depth": {"top_y": 720, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 1.9},
   "_depth_note": "ниша ≈ 580 px ≈ 2.1 м у стены → рост Агаты ≈ 1.2×337 ≈ 405 px",
   "layers": [
@@ -13,7 +15,7 @@
   "props": [],
   "hotspots": [
     {
-      "id": "school_door", "kind": "object", "label": "@H3.school_door.label", "rect": [330, 140, 300, 560], "stand": [560, 800], "color": "#7a5a3a", "draw": false,
+      "id": "school_door", "kind": "object", "label": "@H3.school_door.label", "rect": [330, 140, 300, 560], "stand": [560, 840], "color": "#7a5a3a", "draw": false,
       "pick_priority": 2,
       "hidden_if": ["door_school_installed"],
       "states": [{"if": ["seen_school_door"], "label": "@H3.school_door.label_seen"}],
