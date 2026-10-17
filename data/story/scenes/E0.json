@@ -8,7 +8,7 @@
       "id": "M01", "type": "main", "title": "Ключ, который берегли",
       "locations": ["Z1"],
       "requires": {"flags": [], "items": []},
-      "grants": {"flags": ["done_M01", "met_tamara", "knows_pier_trace"], "items": ["key_house", "letter_tamara", "pocket_watch"]},
+      "grants": {"flags": ["done_M01", "met_tamara", "knows_pier_trace"], "items": ["key_house", "letter_tamara", "pocket_watch", "mitten"]},
       "actions": ["Взять ключ", "Сравнить рисунок Евдокии с наброском Тамары: на старом листе опора скрыта водой, на новом виден край"],
       "mandatory_lines": [
         {"speaker": "agata", "text": "От тёти ничего?"},

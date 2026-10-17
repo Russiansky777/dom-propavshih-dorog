@@ -724,9 +724,8 @@ func _test_walkthrough() -> void:
 
 	# --- O2: mitten, loop ---
 	_check(await bot.go("O2"), "O1→O2")
-	await bot.use("mitten")
 	await bot.finish()
-	_check(gs.has_item("mitten"), "mitten picked up")
+	_check(gs.has_item("mitten"), "mitten is in the bag since M01")
 	await bot.use_item("mitten", "porch_step")
 	await bot.finish()
 	_check(gs.has_flag("mitten_placed"), "mitten placed")

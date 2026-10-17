@@ -1,0 +1,149 @@
+[2026-10-17T13:46:53.218Z] chromium: /opt/pw-browsers/chromium-1194/chrome-linux/chrome; gl mode: angle
+[2026-10-17T13:46:53.547Z] open http://127.0.0.1:8765/index.html
+[2026-10-17T13:46:54.406Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-17T13:46:54.791Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-17T13:46:55.068Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-17T13:46:55.699Z] probeReady after 1702 ms; room=Z1
+[2026-10-17T13:46:58.185Z] screenshot build/shots/m1/01_Z1_post.png
+[2026-10-17T13:46:58.381Z] click hotspot drawings at (750, 515)
+[2026-10-17T13:47:00.729Z] click hotspot drawings: continue at (960, 780)
+[2026-10-17T13:47:02.529Z] click hotspot tamara at (1135, 510)
+[2026-10-17T13:47:07.189Z] screenshot build/shots/m1/02_dialogue_M01.png
+[2026-10-17T13:47:07.394Z] click M01: continue at (960, 780)
+[2026-10-17T13:47:08.146Z] click M01: continue at (960, 780)
+[2026-10-17T13:47:08.727Z] click M01: continue at (960, 780)
+[2026-10-17T13:47:08.951Z] console.warning: WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target
+[2026-10-17T13:47:08.951Z] console.warning: WebGL: INVALID_OPERATION: bufferSubData: no buffer
+[2026-10-17T13:47:10.728Z] click exit → Z2 at (1855, 820)
+[2026-10-17T13:47:17.587Z] screenshot build/shots/m1/03_Z2_street.png
+[2026-10-17T13:47:17.790Z] click exit → H3 at (1300, 400)
+[2026-10-17T13:47:24.859Z] click exit → H3: continue at (960, 780)
+[2026-10-17T13:47:27.229Z] click exit → Z3 at (1500, 1040)
+[2026-10-17T13:47:32.450Z] screenshot build/shots/m1/04_Z3_shore.png
+[2026-10-17T13:47:32.456Z] click exit → R1 at (1855, 820)
+[2026-10-17T13:47:44.976Z] screenshot build/shots/m1/05_R1_pier.png
+[2026-10-17T13:47:45.187Z] click hotspot instruction at (275, 335)
+[2026-10-17T13:47:47.278Z] click hotspot instruction: continue at (960, 780)
+[2026-10-17T13:47:48.858Z] click hotspot pelageya at (755, 510)
+[2026-10-17T13:47:51.998Z] click hotspot pelageya: continue at (960, 780)
+[2026-10-17T13:47:52.420Z] click hotspot pelageya: continue at (960, 780)
+[2026-10-17T13:47:53.036Z] click hotspot pelageya: continue at (960, 780)
+[2026-10-17T13:47:55.069Z] click exit → Z2 at (1000, 400)
+[2026-10-17T13:47:58.312Z] click exit → H1 at (700, 400)
+[2026-10-17T13:48:04.235Z] screenshot build/shots/m1/06_H1_room.png
+[2026-10-17T13:48:04.460Z] click hotspot shutter at (1020, 400)
+[2026-10-17T13:48:07.122Z] console.warning: WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target
+[2026-10-17T13:48:07.127Z] console.warning: WebGL: INVALID_OPERATION: bufferSubData: no buffer
+[2026-10-17T13:48:07.898Z] click hotspot shutter: continue at (960, 780)
+[2026-10-17T13:48:09.799Z] click hotspot stove at (410, 430)
+[2026-10-17T13:48:13.221Z] console.warning: WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target
+[2026-10-17T13:48:13.221Z] console.warning: WebGL: INVALID_OPERATION: bufferSubData: no buffer
+[2026-10-17T13:48:14.106Z] click hotspot stove: continue at (960, 780)
+[2026-10-17T13:48:15.968Z] click hotspot scarf at (660, 595)
+[2026-10-17T13:48:18.413Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T13:48:19.030Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T13:48:19.662Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T13:48:20.275Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T13:48:20.928Z] click hotspot scarf: option ask at (960, 774)
+[2026-10-17T13:48:21.543Z] click hotspot scarf: continue at (960, 780)
+[2026-10-17T13:48:24.782Z] screenshot build/shots/m1/07_H1_tikhon.png
+[2026-10-17T13:48:24.964Z] click hotspot cups at (1430, 515)
+[2026-10-17T13:48:30.423Z] click hotspot cups: option blue at (960, 842)
+[2026-10-17T13:48:30.626Z] console.warning: WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target
+[2026-10-17T13:48:30.627Z] console.warning: WebGL: INVALID_OPERATION: bufferSubData: no buffer
+[2026-10-17T13:48:32.409Z] click hotspot photo at (1300, 445)
+[2026-10-17T13:48:33.852Z] click hotspot photo: option table at (960, 842)
+[2026-10-17T13:48:34.760Z] click hotspot photo: continue at (960, 780)
+[2026-10-17T13:48:36.883Z] click hotspot shelf at (195, 590)
+[2026-10-17T13:48:44.151Z] click hotspot shelf: option A at (960, 842)
+[2026-10-17T13:48:45.162Z] click hotspot shelf: continue at (960, 780)
+[2026-10-17T13:48:45.939Z] click hotspot shelf: continue at (960, 780)
+[2026-10-17T13:48:46.629Z] click hotspot shelf: continue at (960, 780)
+[2026-10-17T13:48:47.337Z] click hotspot shelf: continue at (960, 780)
+[2026-10-17T13:48:49.123Z] click exit → H4 at (1620, 430)
+[2026-10-17T13:48:58.642Z] click V02: continue at (960, 780)
+[2026-10-17T13:49:01.848Z] screenshot build/shots/m1/08_H4_attic.png
+[2026-10-17T13:49:02.035Z] click exit → H1 at (960, 1040)
+[2026-10-17T13:49:03.877Z] click exit → H2 at (1855, 820)
+[2026-10-17T13:49:08.735Z] screenshot build/shots/m1/09_H2_workshop.png
+[2026-10-17T13:49:08.928Z] click hotspot bench at (560, 530)
+[2026-10-17T13:49:11.908Z] click hotspot bench: continue at (960, 780)
+[2026-10-17T13:49:13.774Z] click hotspot hinges_box at (955, 585)
+[2026-10-17T13:49:16.930Z] click hotspot hinges_box: continue at (960, 780)
+[2026-10-17T13:49:18.882Z] click hotspot bell at (1440, 390)
+[2026-10-17T13:49:22.468Z] click hotspot bell: continue at (960, 780)
+[2026-10-17T13:49:24.618Z] click exit → H1 at (65, 820)
+[2026-10-17T13:49:33.595Z] click exit → H3 at (65, 820)
+[2026-10-17T13:49:45.257Z] screenshot build/shots/m1/10_H3_gallery.png
+[2026-10-17T13:49:45.461Z] click hotspot school_door at (960, 420)
+[2026-10-17T13:49:50.741Z] click hotspot school_door: continue at (960, 780)
+[2026-10-17T13:49:51.601Z] click hotspot school_door: continue at (960, 780)
+[2026-10-17T13:49:53.787Z] click hotspot mirror_home at (450, 350)
+[2026-10-17T13:49:57.606Z] click hotspot mirror_home: continue at (960, 780)
+[2026-10-17T13:49:59.115Z] click inventory door_hinges at (698, 42)
+[2026-10-17T13:49:59.725Z] click hotspot school_door at (960, 420)
+[2026-10-17T13:50:08.156Z] screenshot build/shots/m1/11_puzzle_closeup.png
+[2026-10-17T13:50:08.422Z] click piece hinge_1 at (1485, 600)
+[2026-10-17T13:50:08.928Z] click slot top at (1120, 300)
+[2026-10-17T13:50:09.612Z] click piece hinge_2 at (1485, 600)
+[2026-10-17T13:50:10.118Z] click slot middle at (1120, 520)
+[2026-10-17T13:50:10.487Z] click mark 0 at (620, 900)
+[2026-10-17T13:50:10.706Z] click check (wrong) at (1520, 970)
+[2026-10-17T13:50:13.373Z] screenshot build/shots/m1/12_puzzle_wrong_wall.png
+[2026-10-17T13:50:13.373Z] click check (wrong again) at (1520, 970)
+[2026-10-17T13:50:14.246Z] click slot middle (return piece) at (1120, 520)
+[2026-10-17T13:50:15.134Z] click piece hinge_2 at (1485, 600)
+[2026-10-17T13:50:15.644Z] click slot bottom at (1120, 740)
+[2026-10-17T13:50:16.014Z] click mark 2 at (860, 900)
+[2026-10-17T13:50:16.443Z] click check (correct) at (1520, 970)
+[2026-10-17T13:50:19.585Z] screenshot build/shots/m1/13_puzzle_solved_winter.png
+[2026-10-17T13:50:21.933Z] click M05: continue at (960, 780)
+[2026-10-17T13:50:21.941Z] console.warning: WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target
+[2026-10-17T13:50:21.942Z] console.warning: WebGL: INVALID_OPERATION: bufferSubData: no buffer
+[2026-10-17T13:50:23.891Z] click exit → O1 at (960, 420)
+[2026-10-17T13:50:27.273Z] screenshot build/shots/m1/14_O1_winter_class.png
+[2026-10-17T13:50:27.502Z] click hotspot sack at (380, 570)
+[2026-10-17T13:50:29.371Z] click hotspot sack: continue at (960, 780)
+[2026-10-17T13:50:31.209Z] click hotspot notebooks at (1510, 575)
+[2026-10-17T13:50:37.892Z] click hotspot notebooks: continue at (960, 780)
+[2026-10-17T13:50:38.293Z] click hotspot notebooks: continue at (960, 780)
+[2026-10-17T13:50:40.211Z] click hotspot teacher_drawer at (600, 590)
+[2026-10-17T13:50:46.139Z] click hotspot teacher_drawer: continue at (960, 780)
+[2026-10-17T13:50:47.032Z] click hotspot teacher_drawer: continue at (960, 780)
+[2026-10-17T13:50:48.957Z] click hotspot chalk at (770, 580)
+[2026-10-17T13:50:50.282Z] click hotspot chalk: continue at (960, 780)
+[2026-10-17T13:50:52.186Z] click hotspot bird_drawing at (1710, 355)
+[2026-10-17T13:50:58.232Z] click hotspot bird_drawing: option leave at (960, 887)
+[2026-10-17T13:50:58.887Z] click hotspot bird_drawing: continue at (960, 780)
+[2026-10-17T13:51:00.782Z] click exit → O2 at (1855, 820)
+[2026-10-17T13:51:04.884Z] screenshot build/shots/m1/15_O2_yard.png
+[2026-10-17T13:51:05.063Z] click hotspot mitten at (630, 525)
+[2026-10-17T13:51:08.470Z] click hotspot mitten: continue at (960, 780)
+[2026-10-17T13:51:10.195Z] click inventory mitten at (914, 42)
+[2026-10-17T13:51:10.826Z] click hotspot porch_step at (430, 550)
+[2026-10-17T13:51:11.994Z] console.warning: WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target
+[2026-10-17T13:51:11.999Z] console.warning: WebGL: INVALID_OPERATION: bufferSubData: no buffer
+[2026-10-17T13:51:12.821Z] click hotspot porch_step: continue at (960, 780)
+[2026-10-17T13:51:14.814Z] click exit → O4 (gate) at (1855, 820)
+[2026-10-17T13:51:25.684Z] click loop reaction: continue at (960, 780)
+[2026-10-17T13:51:29.561Z] screenshot build/shots/m1/16_O2_after_loop.png
+[2026-10-17T13:51:29.776Z] click exit → O1 at (65, 820)
+[2026-10-17T13:51:33.398Z] click inventory chalk at (842, 42)
+[2026-10-17T13:51:33.974Z] click hotspot board at (1040, 350)
+[2026-10-17T13:51:38.009Z] console.warning: WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target
+[2026-10-17T13:51:38.009Z] console.warning: WebGL: INVALID_OPERATION: bufferSubData: no buffer
+[2026-10-17T13:51:38.558Z] click hotspot board: continue at (960, 780)
+[2026-10-17T13:51:38.984Z] click hotspot board: continue at (960, 780)
+[2026-10-17T13:51:42.494Z] screenshot build/shots/m1/17_O1_board_written.png
+[2026-10-17T13:51:42.716Z] click exit → H3 at (140, 430)
+[2026-10-17T13:51:50.730Z] screenshot build/shots/m1/18_H3_back_home.png
+[2026-10-17T13:51:50.741Z] click ui JournalButton at (1524, 42)
+[2026-10-17T13:51:53.076Z] screenshot build/shots/m1/19_journal.png
+[2026-10-17T13:51:53.281Z] click ui CloseJournal at (960, 867)
+[2026-10-17T13:51:54.113Z] click ui HintButton at (1690, 42)
+[2026-10-17T13:51:56.092Z] screenshot build/shots/m1/20_hint_tier1.png
+[2026-10-17T13:51:56.239Z] click ui MenuButton at (1846, 42)
+[2026-10-17T13:51:57.028Z] click ui Save1 at (1159, 311)
+[2026-10-17T13:51:59.053Z] screenshot build/shots/m1/21_menu_slots.png
+[2026-10-17T13:51:59.243Z] click ui CloseMenu at (836, 464)
+[2026-10-17T13:51:59.655Z] final: room=H3 inventory=["key_house","letter_tamara","pocket_watch","invoice_chalk","photo_school_pier","chalk","mitten"] flags=done_M01,done_M02,done_M03,done_M04,done_M05,done_M06,done_M07,done_M08,done_Q04,done_V01,done_V02,done_V03,door_school_installed,h1_scarf_removed,h1_shutter_open,has_bell,has_chalk,has_door_hinges,has_invoice_chalk,has_key_house,has_letter_tamara,has_mirror_home,has_mitten,has_photo_school_pier,has_pocket_watch,has_school_door,house_open,knows_journal_target,knows_pier_trace,knows_rule_things_remember,knows_trip_14,met_pelageya,met_tamara,met_tikhon,mitten_placed,o1_seen_notebooks,o1_seen_sack,observed_path_loop,q04_corner_stove,seen_bell,seen_class_traces,seen_ferry_instruction,seen_mirror_home,seen_school_door,seen_workshop,started_M01,started_M02,started_M03,started_M04,started_M05,started_M06,started_M07,started_M08,started_Q04,started_V01,started_V02,started_V03,stove_lit,v01_cup_blue,v01_photo_table,v03_left,wrote_on_board,z1_compared_drawings

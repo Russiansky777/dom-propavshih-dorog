@@ -1,33 +1,259 @@
 {
   "_comment": "Предметы. inventory=false — тяжёлые или закреплённые вещи, которые не попадают в инвентарь (перевозятся помощниками или остаются на месте). source_scene — единственная сцена, где предмет получают.",
   "items": [
-    {"id": "key_house", "name": "Ключ от дома Евдокии", "inventory": true, "source_location": "Z1", "source_scene": "M01", "use": "Открывает дом; остаётся у Агаты", "consumed": false},
-    {"id": "letter_tamara", "name": "Письмо Тамары", "inventory": true, "source_location": "Z1", "source_scene": "M01", "use": "Причина приезда; лежит в дорожной сумке", "consumed": false},
-    {"id": "school_door", "name": "Школьная дверь", "inventory": false, "source_location": "H3", "source_scene": "M04", "use": "Полотно, петли и зарубки; устанавливается в раму H3 в M05", "consumed": false},
-    {"id": "door_hinges", "name": "Родные петли школьной двери", "inventory": true, "source_location": "H2", "source_scene": "M04", "use": "Подписанная коробка в мастерской; ставятся в M05", "consumed": true},
-    {"id": "invoice_chalk", "name": "Накладная на мел, рейс 14", "inventory": true, "source_location": "O1", "source_scene": "M07", "use": "Даёт дату и номер реально выполненного рейса; сравнивается с журналом", "consumed": false},
-    {"id": "photo_school_pier", "name": "Фотография школьной пристани", "inventory": true, "source_location": "O1", "source_scene": "M07", "use": "Сравнение свай и дерева с Z3 и R3", "consumed": false},
-    {"id": "chalk", "name": "Мел", "inventory": true, "source_location": "O1", "source_scene": "M08", "use": "Надпись на доске «Я была здесь. Агата»", "consumed": false},
-    {"id": "mitten", "name": "Варежка", "inventory": true, "source_location": "O2", "source_scene": "M08", "use": "Метка при проверке петли тропы; необязательно", "consumed": false, "optional": true},
-    {"id": "mirror_mill", "name": "Мельничное зеркало ЗМ", "inventory": false, "source_location": "M2", "source_scene": "M09", "use": "Целое стекло, разошедшаяся рама; устанавливается на стойку в H2 (M10), показывает M3", "consumed": false},
-    {"id": "bell", "name": "Мельничный колокол", "inventory": false, "source_location": "H2", "source_scene": "M04", "use": "После возврата языка даёт вечерний сигнал кабинету мельницы; остаётся в H2", "consumed": false},
-    {"id": "bell_clapper", "name": "Язык колокола", "inventory": true, "source_location": "H2", "source_scene": "M12", "use": "Подписанная коробка рядом с колоколом; ставится в M12", "consumed": true},
-    {"id": "journal_manager", "name": "Журнал управляющего", "inventory": true, "source_location": "M3", "source_scene": "M13", "use": "Старые маршруты и подписанный наряд; вместе с накладной определяет переправу", "consumed": false},
-    {"id": "work_order_pavel", "name": "Наряд Павла на перенос знака", "inventory": true, "source_location": "M3", "source_scene": "M13", "use": "Вложен в журнал; улика о снятом знаке", "consumed": false},
-    {"id": "key_sluice", "name": "Ключ затвора", "inventory": true, "source_location": "M3", "source_scene": "M13", "use": "Доступ к управлению затвором M4", "consumed": false},
-    {"id": "scheme_sluice", "name": "Схема затвора", "inventory": true, "source_location": "M3", "source_scene": "M13", "use": "Положение рычага и допустимый уровень", "consumed": false},
-    {"id": "clamp", "name": "Исправный зажим", "inventory": true, "source_location": "M3", "source_scene": "M13", "use": "Дополняет мастерскую; не обязателен для первого ремонта зеркала", "consumed": false, "optional": true},
-    {"id": "pier_plate_imprint", "name": "Оттиск пластины школьной пристани", "inventory": true, "source_location": "Z3", "source_scene": "M15", "use": "Пластину унести нельзя; оттиск для сопоставления у Пелагеи", "consumed": false},
-    {"id": "rope_lantern", "name": "Канат и фонарь переправы", "inventory": false, "source_location": "R1", "source_scene": "M16", "use": "Принадлежность переправы: ближний стопор, сигнал, пустая лодка", "consumed": false},
-    {"id": "school_ribbon", "name": "Школьная лента с дальнего берега", "inventory": true, "source_location": "R1", "source_scene": "M17", "use": "Доказательство живого человека на том берегу", "consumed": false},
-    {"id": "pocket_watch", "name": "Карманные часы Агаты", "inventory": true, "source_location": "Z1", "source_scene": "M01", "use": "Сравнение хода с местными часами в M19 и M22", "consumed": false},
-    {"id": "key_gate", "name": "Ключ хозяйственной калитки", "inventory": true, "source_location": "H3", "source_scene": "M22", "use": "Открывает обычный путь O3–S1", "consumed": false},
-    {"id": "notebooks_evdokia", "name": "Тетради Евдокии", "inventory": true, "source_location": "O3", "source_scene": "M21", "use": "Связывают действия Павла, отсечение и порядок восстановления", "consumed": false},
-    {"id": "closing_sign", "name": "Особый закрывающий знак", "inventory": false, "source_location": "S1", "source_scene": "M23", "use": "Найден под кожухом насоса; возвращается в исходное основание S1 в M25", "consumed": false},
-    {"id": "mirror_home", "name": "Домашнее зеркало ЗГ", "inventory": false, "source_location": "H3", "source_scene": "M04", "use": "Перевозится со своей рамой в R4 (M27); после установки показывает H3", "consumed": false},
-    {"id": "mirror_pier", "name": "Пристанское зеркало ЗП", "inventory": false, "source_location": "R4", "source_scene": "M18", "use": "Перевозится со своей рамой в H3 (M27); после установки показывает R4", "consumed": false},
-    {"id": "pier_door_leaf", "name": "Полотно пристанской двери", "inventory": false, "source_location": "R4", "source_scene": "M29", "use": "Перевозится в H3; коробка и порог остаются в R4", "consumed": false},
-    {"id": "signal_cards", "name": "Карточки с символами", "inventory": true, "source_location": "O3", "source_scene": "M29", "use": "Немая связь через зеркала: круг, черта, угол", "consumed": false},
-    {"id": "resident_list", "name": "Список жителей Нины", "inventory": true, "source_location": "O3", "source_scene": "M20", "use": "22 живых жителя; организация доступа в M32", "consumed": false}
+    {
+      "id": "key_house",
+      "name": "Ключ от дома Евдокии",
+      "inventory": true,
+      "source_location": "Z1",
+      "source_scene": "M01",
+      "use": "Открывает дом; остаётся у Агаты",
+      "consumed": false
+    },
+    {
+      "id": "letter_tamara",
+      "name": "Письмо Тамары",
+      "inventory": true,
+      "source_location": "Z1",
+      "source_scene": "M01",
+      "use": "Причина приезда; лежит в дорожной сумке",
+      "consumed": false
+    },
+    {
+      "id": "school_door",
+      "name": "Школьная дверь",
+      "inventory": false,
+      "source_location": "H3",
+      "source_scene": "M04",
+      "use": "Полотно, петли и зарубки; устанавливается в раму H3 в M05",
+      "consumed": false
+    },
+    {
+      "id": "door_hinges",
+      "name": "Родные петли школьной двери",
+      "inventory": true,
+      "source_location": "H2",
+      "source_scene": "M04",
+      "use": "Подписанная коробка в мастерской; ставятся в M05",
+      "consumed": true
+    },
+    {
+      "id": "invoice_chalk",
+      "name": "Накладная на мел, рейс 14",
+      "inventory": true,
+      "source_location": "O1",
+      "source_scene": "M07",
+      "use": "Даёт дату и номер реально выполненного рейса; сравнивается с журналом",
+      "consumed": false
+    },
+    {
+      "id": "photo_school_pier",
+      "name": "Фотография школьной пристани",
+      "inventory": true,
+      "source_location": "O1",
+      "source_scene": "M07",
+      "use": "Сравнение свай и дерева с Z3 и R3",
+      "consumed": false
+    },
+    {
+      "id": "chalk",
+      "name": "Мел",
+      "inventory": true,
+      "source_location": "O1",
+      "source_scene": "M08",
+      "use": "Надпись на доске «Я была здесь. Агата»",
+      "consumed": false
+    },
+    {
+      "id": "mitten",
+      "name": "Варежка",
+      "inventory": true,
+      "source_location": "Z1",
+      "source_scene": "M01",
+      "use": "Своя варежка из дорожной сумки; метка при проверке петли тропы в O2 (необязательно)",
+      "consumed": false,
+      "optional": true
+    },
+    {
+      "id": "mirror_mill",
+      "name": "Мельничное зеркало ЗМ",
+      "inventory": false,
+      "source_location": "M2",
+      "source_scene": "M09",
+      "use": "Целое стекло, разошедшаяся рама; устанавливается на стойку в H2 (M10), показывает M3",
+      "consumed": false
+    },
+    {
+      "id": "bell",
+      "name": "Мельничный колокол",
+      "inventory": false,
+      "source_location": "H2",
+      "source_scene": "M04",
+      "use": "После возврата языка даёт вечерний сигнал кабинету мельницы; остаётся в H2",
+      "consumed": false
+    },
+    {
+      "id": "bell_clapper",
+      "name": "Язык колокола",
+      "inventory": true,
+      "source_location": "H2",
+      "source_scene": "M12",
+      "use": "Подписанная коробка рядом с колоколом; ставится в M12",
+      "consumed": true
+    },
+    {
+      "id": "journal_manager",
+      "name": "Журнал управляющего",
+      "inventory": true,
+      "source_location": "M3",
+      "source_scene": "M13",
+      "use": "Старые маршруты и подписанный наряд; вместе с накладной определяет переправу",
+      "consumed": false
+    },
+    {
+      "id": "work_order_pavel",
+      "name": "Наряд Павла на перенос знака",
+      "inventory": true,
+      "source_location": "M3",
+      "source_scene": "M13",
+      "use": "Вложен в журнал; улика о снятом знаке",
+      "consumed": false
+    },
+    {
+      "id": "key_sluice",
+      "name": "Ключ затвора",
+      "inventory": true,
+      "source_location": "M3",
+      "source_scene": "M13",
+      "use": "Доступ к управлению затвором M4",
+      "consumed": false
+    },
+    {
+      "id": "scheme_sluice",
+      "name": "Схема затвора",
+      "inventory": true,
+      "source_location": "M3",
+      "source_scene": "M13",
+      "use": "Положение рычага и допустимый уровень",
+      "consumed": false
+    },
+    {
+      "id": "clamp",
+      "name": "Исправный зажим",
+      "inventory": true,
+      "source_location": "M3",
+      "source_scene": "M13",
+      "use": "Дополняет мастерскую; не обязателен для первого ремонта зеркала",
+      "consumed": false,
+      "optional": true
+    },
+    {
+      "id": "pier_plate_imprint",
+      "name": "Оттиск пластины школьной пристани",
+      "inventory": true,
+      "source_location": "Z3",
+      "source_scene": "M15",
+      "use": "Пластину унести нельзя; оттиск для сопоставления у Пелагеи",
+      "consumed": false
+    },
+    {
+      "id": "rope_lantern",
+      "name": "Канат и фонарь переправы",
+      "inventory": false,
+      "source_location": "R1",
+      "source_scene": "M16",
+      "use": "Принадлежность переправы: ближний стопор, сигнал, пустая лодка",
+      "consumed": false
+    },
+    {
+      "id": "school_ribbon",
+      "name": "Школьная лента с дальнего берега",
+      "inventory": true,
+      "source_location": "R1",
+      "source_scene": "M17",
+      "use": "Доказательство живого человека на том берегу",
+      "consumed": false
+    },
+    {
+      "id": "pocket_watch",
+      "name": "Карманные часы Агаты",
+      "inventory": true,
+      "source_location": "Z1",
+      "source_scene": "M01",
+      "use": "Сравнение хода с местными часами в M19 и M22",
+      "consumed": false
+    },
+    {
+      "id": "key_gate",
+      "name": "Ключ хозяйственной калитки",
+      "inventory": true,
+      "source_location": "H3",
+      "source_scene": "M22",
+      "use": "Открывает обычный путь O3–S1",
+      "consumed": false
+    },
+    {
+      "id": "notebooks_evdokia",
+      "name": "Тетради Евдокии",
+      "inventory": true,
+      "source_location": "O3",
+      "source_scene": "M21",
+      "use": "Связывают действия Павла, отсечение и порядок восстановления",
+      "consumed": false
+    },
+    {
+      "id": "closing_sign",
+      "name": "Особый закрывающий знак",
+      "inventory": false,
+      "source_location": "S1",
+      "source_scene": "M23",
+      "use": "Найден под кожухом насоса; возвращается в исходное основание S1 в M25",
+      "consumed": false
+    },
+    {
+      "id": "mirror_home",
+      "name": "Домашнее зеркало ЗГ",
+      "inventory": false,
+      "source_location": "H3",
+      "source_scene": "M04",
+      "use": "Перевозится со своей рамой в R4 (M27); после установки показывает H3",
+      "consumed": false
+    },
+    {
+      "id": "mirror_pier",
+      "name": "Пристанское зеркало ЗП",
+      "inventory": false,
+      "source_location": "R4",
+      "source_scene": "M18",
+      "use": "Перевозится со своей рамой в H3 (M27); после установки показывает R4",
+      "consumed": false
+    },
+    {
+      "id": "pier_door_leaf",
+      "name": "Полотно пристанской двери",
+      "inventory": false,
+      "source_location": "R4",
+      "source_scene": "M29",
+      "use": "Перевозится в H3; коробка и порог остаются в R4",
+      "consumed": false
+    },
+    {
+      "id": "signal_cards",
+      "name": "Карточки с символами",
+      "inventory": true,
+      "source_location": "O3",
+      "source_scene": "M29",
+      "use": "Немая связь через зеркала: круг, черта, угол",
+      "consumed": false
+    },
+    {
+      "id": "resident_list",
+      "name": "Список жителей Нины",
+      "inventory": true,
+      "source_location": "O3",
+      "source_scene": "M20",
+      "use": "22 живых жителя; организация доступа в M32",
+      "consumed": false
+    }
   ]
 }

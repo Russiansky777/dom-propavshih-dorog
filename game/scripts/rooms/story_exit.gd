@@ -85,10 +85,15 @@ func refresh() -> void:
 			c.a = 0.45
 		elif not is_open():
 			c.a = 0.12
-		fill.color = c
+		if fill.color != c:
+			fill.color = c
 	if caption != null:
-		caption.text = label_text()
-		caption.modulate = Color(1, 1, 1, 1.0 if is_open() else 0.6)
+		var t := label_text()
+		if caption.text != t:
+			caption.text = t
+		var m := Color(1, 1, 1, 1.0 if is_open() else 0.6)
+		if caption.modulate != m:
+			caption.modulate = m
 
 
 func trigger() -> void:

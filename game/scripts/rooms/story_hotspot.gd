@@ -78,9 +78,12 @@ func refresh() -> void:
 		var c := base_color
 		if st.has("color"):
 			c = Color.html(String(st["color"]))
-		fill.color = c
+		if fill.color != c:
+			fill.color = c  # assigning an equal colour still forces a polygon re-upload (WebGL noise)
 	if caption != null:
-		caption.text = label_text()
+		var t := label_text()
+		if caption.text != t:
+			caption.text = t
 
 
 func trigger() -> void:
