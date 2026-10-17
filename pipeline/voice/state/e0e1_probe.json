@@ -46,6 +46,46 @@
       "subscription_delta": 0,
       "credits_spent": 274,
       "_note": "credits_spent — сумма заголовков character-cost ответов API (617 символов → 274 кредита); счётчик подписки сразу после прогона не изменился (обновляется с задержкой). Исправлено вручную 17.10."
+    },
+    {
+      "run": "39074220670",
+      "at": "2026-10-17T22:15:09+00:00",
+      "request": "pipeline/requests/voice_e0e1.json",
+      "synthesized": [
+        "M01_0",
+        "M01_1",
+        "M02_0",
+        "M02_1",
+        "M02_2",
+        "M03_0",
+        "M03_1",
+        "M03_2",
+        "M04_0",
+        "M05_0",
+        "M06_0",
+        "M07_0",
+        "Q04_2",
+        "Q04_3"
+      ],
+      "reprocessed": [],
+      "characters_text": 636,
+      "failed": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 12392,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 12392,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 280,
+      "subscription_delta": 0
     }
   ]
 }
