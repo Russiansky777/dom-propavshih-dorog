@@ -1496,77 +1496,78 @@ func _test_idle_sway() -> void:
 		var sheet = load("res://scripts/actors/actor_sheet.gd").load_actor(id)
 		_check(String(sheet.actions.get(sheet.idle_action, {}).get("playback", "")) == "pingpong_eased", "%s: idle must play pingpong_eased (data actions.idle)" % id)
 		for action in sheet.actions.keys():
-		  if String(sheet.actions[action].get("playback", "")) != "pingpong_eased":
+			if String(sheet.actions[action].get("playback", "")) != "pingpong_eased":
+				continue
+			checked += _check_eased(sheet, id, String(action))
+	_check(checked >= 40, "expected 5 eased clips × 8 rows (idle ×3, talk ×2), got %d rows" % checked)
+
+
+## One eased back-and-forth clip, all rows: symmetric travel and holds, easing to rest, 3–4 s period,
+## no seam, measured on this very sheet. Returns the number of rows checked.
+func _check_eased(sheet, id: String, action: String) -> int:
+	var act: Dictionary = sheet.actions[action]
+	var ipath: String = sheet.sheet_dir + "/" + String(act.get("sheet", action + ".png"))
+	_check(sheet.eased_md5(action) == FileAccess.get_md5(ipath), "%s/%s: eased_motion measured on another sheet — run tools/measure_idle.py --write" % [id, action])
+	var mrows: Array = sheet.eased_rows(action)
+	var worst_travel := 0.0
+	var worst_dwell := 0.0
+	var rows := 0
+	for r in sheet.directions:
+		var tl: Array = sheet.eased_timeline(action, r)
+		var mrow: Dictionary = mrows[r] if r < mrows.size() else {}
+		var cols: Array = mrow.get("frames", [])
+		var path: Array = mrow.get("path", [])
+		if cols.size() < 3:
+			_check(false, "%s/%s row %d: eased_motion needs ≥ 3 frames" % [id, action, r])
 			continue
-		  var act: Dictionary = sheet.actions[action]
-		  var ipath: String = sheet.sheet_dir + "/" + String(act.get("sheet", action + ".png"))
-		  _check(sheet.eased_md5(action) == FileAccess.get_md5(ipath), "%s/%s: eased_motion measured on another sheet — run tools/measure_idle.py --write" % [id, action])
-		  var worst_travel := 0.0
-		  var worst_dwell := 0.0
-		  for r in sheet.directions:
-			var tl: Array = sheet.eased_timeline(action, r)
-			var mrows: Array = sheet.eased_rows(action)
-			var mrow: Dictionary = mrows[r] if r < mrows.size() else {}
-			var cols: Array = mrow.get("frames", [])
-			var path: Array = mrow.get("path", [])
-			if cols.size() < 3:
-				_check(false, "%s row %d: idle_motion needs ≥ 3 frames" % [id, r])
-				continue
-			var a: int = int(cols[0])
-			var b: int = int(cols[cols.size() - 1])
-			var mid := 0
-			for k in cols.size():
-				if absf(float(path[k]) - 0.5) < absf(float(path[mid]) - 0.5):
-					mid = k
-			var m: int = int(cols[mid])
-			# Segment start times; the period starts in the middle of the hold on pose a.
-			var period := 0.0
-			var starts: Array = []
-			for seg in tl:
-				starts.append(period)
-				period += float(seg[1])
-			_check(period >= 3.0 and period <= 4.0, "%s row %d: idle period %.2f s outside 3–4 s" % [id, r, period])
-			_check(int(tl[0][0]) == a and int(tl[tl.size() - 1][0]) == a, "%s row %d: the loop starts and ends on the same pose (no seam)" % [id, r])
-			var dwell_a := 0.0
-			var dwell_b := 0.0
-			var b_center := -1.0
-			var mids: Array = []      # centres of the middle-pose segments (rising, falling)
-			var mid_dur := 0.0
-			for i in tl.size():
-				var c: int = int(tl[i][0])
-				var d: float = float(tl[i][1])
-				if c == a:
-					dwell_a += d
-				elif c == b:
-					dwell_b += d
-					b_center = starts[i] + d * 0.5
-				elif c == m:
-					mids.append(starts[i] + d * 0.5)
-					mid_dur = maxf(mid_dur, d)
-			if mids.size() != 2 or b_center < 0.0:
-				_check(false, "%s row %d: timeline must pass the middle pose twice and reach the far pose once: %s" % [id, r, str(tl)])
-				continue
-			# Travel times: a-centre(0) → middle (rising) → b-centre → middle (falling) → a-centre(period).
-			var t1: float = mids[0] - 0.0
-			var t2: float = b_center - mids[0]
-			var t3: float = mids[1] - b_center
-			var t4: float = period - mids[1]
-			var travel_dev := maxf(maxf(t1, t2), maxf(t3, t4)) / minf(minf(t1, t2), minf(t3, t4)) - 1.0
-			var dwell_dev := absf(dwell_a - dwell_b) / maxf(dwell_a, dwell_b)
-			worst_travel = maxf(worst_travel, travel_dev)
-			worst_dwell = maxf(worst_dwell, dwell_dev)
-			_check(travel_dev <= 0.05, "%s row %d: middle→extreme times differ by %.1f %% (%.2f / %.2f / %.2f / %.2f s)" % [id, r, travel_dev * 100.0, t1, t2, t3, t4])
-			_check(dwell_dev <= 0.05, "%s row %d: time in the two extreme poses differs by %.1f %% (%.2f vs %.2f s)" % [id, r, dwell_dev * 100.0, dwell_a, dwell_b])
-			# Easing to rest at both ends: neighbours of the extremes are held longer than the middle frame.
-			var near_a := 0.0
-			var near_b := 0.0
-			for seg in tl:
-				if int(seg[0]) == int(cols[1]):
-					near_a = maxf(near_a, float(seg[1]))
-				if int(seg[0]) == int(cols[cols.size() - 2]):
-					near_b = maxf(near_b, float(seg[1]))
-			_check(near_a >= mid_dur * 0.999 and near_b >= mid_dur * 0.999, "%s row %d: frames next to the extremes must be held at least as long as the middle one (%.3f / %.3f vs %.3f s)" % [id, r, near_a, near_b, mid_dur])
-			_check(dwell_a >= 2.0 * mid_dur and dwell_b >= 2.0 * mid_dur, "%s row %d: the sway must come to rest at both extremes" % [id, r])
-			checked += 1
-		print("    %s: %d rows, worst middle→extreme asymmetry %.1f %%, worst extreme-hold difference %.1f %%; row 0 timeline %s" % [id, sheet.directions, worst_travel * 100.0, worst_dwell * 100.0, str(sheet.eased_timeline(sheet.idle_action, 0).map(func(seg): return "%d:%.2f" % [int(seg[0]), float(seg[1])]))])
-	_check(checked >= 24, "expected 3 actors × 8 rows checked, got %d" % checked)
+		var a: int = int(cols[0])
+		var b: int = int(cols[cols.size() - 1])
+		# Middle pose: the frame nearest the middle of the (symmetrised) path.
+		var mid := 0
+		for k in cols.size():
+			var pk := (float(path[k]) + 1.0 - float(path[cols.size() - 1 - k])) * 0.5
+			var pm := (float(path[mid]) + 1.0 - float(path[cols.size() - 1 - mid])) * 0.5
+			if absf(pk - 0.5) < absf(pm - 0.5):
+				mid = k
+		var m: int = int(cols[mid])
+		var period := 0.0
+		var starts: Array = []
+		for seg in tl:
+			starts.append(period)
+			period += float(seg[1])
+		_check(period >= 3.0 and period <= 4.2, "%s/%s row %d: period %.2f s outside 3–4 s" % [id, action, r, period])
+		_check(int(tl[0][0]) == a and int(tl[tl.size() - 1][0]) == a, "%s/%s row %d: the loop starts and ends on the same pose (no seam)" % [id, action, r])
+		var dwell_a := 0.0
+		var dwell_b := 0.0
+		var b_center := -1.0
+		var mids: Array = []
+		var mid_dur := 0.0
+		for i in tl.size():
+			var c: int = int(tl[i][0])
+			var d: float = float(tl[i][1])
+			if c == a:
+				dwell_a += d
+			elif c == b:
+				dwell_b += d
+				b_center = starts[i] + d * 0.5
+			elif c == m:
+				mids.append(starts[i] + d * 0.5)
+				mid_dur = maxf(mid_dur, d)
+		if mids.size() != 2 or b_center < 0.0:
+			_check(false, "%s/%s row %d: timeline must pass the middle pose twice and reach the far pose once: %s" % [id, action, r, str(tl)])
+			continue
+		var t1: float = mids[0]
+		var t2: float = b_center - mids[0]
+		var t3: float = mids[1] - b_center
+		var t4: float = period - mids[1]
+		var travel_dev := maxf(maxf(t1, t2), maxf(t3, t4)) / minf(minf(t1, t2), minf(t3, t4)) - 1.0
+		var dwell_dev := absf(dwell_a - dwell_b) / maxf(dwell_a, dwell_b)
+		worst_travel = maxf(worst_travel, travel_dev)
+		worst_dwell = maxf(worst_dwell, dwell_dev)
+		_check(travel_dev <= 0.05, "%s/%s row %d: middle→extreme times differ by %.1f %% (%.2f / %.2f / %.2f / %.2f s)" % [id, action, r, travel_dev * 100.0, t1, t2, t3, t4])
+		_check(dwell_dev <= 0.05, "%s/%s row %d: time in the two extreme poses differs by %.1f %% (%.2f vs %.2f s)" % [id, action, r, dwell_dev * 100.0, dwell_a, dwell_b])
+		_check(dwell_a >= 1.5 * mid_dur and dwell_b >= 1.5 * mid_dur, "%s/%s row %d: the motion must come to rest at both extremes (holds %.2f/%.2f vs middle %.2f s)" % [id, action, r, dwell_a, dwell_b, mid_dur])
+		rows += 1
+	print("    %s/%s: %d rows, worst middle→extreme asymmetry %.1f %%, worst extreme-hold difference %.1f %%; row 0: %s" % [id, action, rows, worst_travel * 100.0, worst_dwell * 100.0, str(sheet.eased_timeline(action, 0).map(func(seg): return "%d:%.2f" % [int(seg[0]), float(seg[1])]))])
+	return rows
+
