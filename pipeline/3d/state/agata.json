@@ -13,8 +13,28 @@
       "action_id": 1,
       "name": "Walking Woman",
       "key": "Walking_Woman"
+    },
+    "open": {
+      "action_id": 285,
+      "name": "Open Door",
+      "key": "open_door"
+    },
+    "open_b": {
+      "action_id": 286,
+      "name": "Open Door 1",
+      "key": "open_door_1"
+    },
+    "pick": {
+      "action_id": 281,
+      "name": "Female Bend Over Pick Up Inspect",
+      "key": "Female_Bend_Over_Pick_Up_Inspect"
+    },
+    "reach": {
+      "action_id": 278,
+      "name": "Female Stand Pick Fruit Basket",
+      "key": "Female_Stand_Pick_Fruit_Basket"
     }
   },
-  "anim_task": "01a14a67-97e9-758c-9c6b-1a6a753048ab",
-  "anim_credits": 6
+  "anim_task": "01a14b10-a31d-7216-bbfe-23ceb7818666",
+  "anim_credits": 18
 }
