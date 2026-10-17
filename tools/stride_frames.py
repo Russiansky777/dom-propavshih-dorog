@@ -42,8 +42,14 @@ N_FRAMES = 12
 
 
 def silhouette(img, ref, box, thresh=38):
+    """Figure pixels: difference against ref.png, or — when ref is a colour tuple (isolated
+    measurement view, flat grey screen) — against that colour with a low threshold."""
     a = np.asarray(img.crop(box), dtype=np.int16)
-    b = np.asarray(ref.crop(box), dtype=np.int16)
+    if isinstance(ref, tuple):
+        b = np.array(ref, dtype=np.int16)[None, None, :]
+        thresh = 10
+    else:
+        b = np.asarray(ref.crop(box), dtype=np.int16)
     d = np.abs(a - b).max(axis=2) > thresh
     if ndimage is not None:
         d = ndimage.binary_opening(d, iterations=1)
@@ -140,11 +146,14 @@ def main():
     d = args.dir
     with open(os.path.join(d, "series.json"), encoding="utf-8") as f:
         series = json.load(f)
-    ref = Image.open(os.path.join(d, "ref.png")).convert("RGB")
+    ref_img = Image.open(os.path.join(d, "ref.png")).convert("RGB")
+    isolated = set(series.get("isolated", []))
     labels = []
     for s in series["samples"]:
         if s["label"] not in labels:
             labels.append(s["label"])
+    measured = [l for l in labels if not isolated or l in isolated]
+    grey = None
     imgs = {}
 
     def load(s):
@@ -155,8 +164,13 @@ def main():
     transitions = []
     engine_violations = []
     same_frame_pairs = 0
-    for lab in labels:
+    for lab in measured:
         samples = [s for s in series["samples"] if s["label"] == lab and s["actor"].get("anim", "").startswith("walk_")]
+        if lab in isolated and samples and grey is None:
+            g = np.asarray(load(samples[0]), dtype=np.int16)
+            border = np.concatenate([g[:20].reshape(-1, 3), g[-20:].reshape(-1, 3)])
+            grey = tuple(int(v) for v in np.median(border, axis=0))
+        ref = grey if lab in isolated else ref_img
         for a, b in zip(samples, samples[1:]):
             fa, fb = a["actor"]["frame"], b["actor"]["frame"]
             if a["actor"]["anim"] != b["actor"]["anim"]:
@@ -197,7 +211,9 @@ def main():
                 cands.append({"dx": ddx, "dy": ddy, "along": along, "perp": perp, "rms": rms, "x0": box[0] + ft["x0"], "x1": box[0] + ft["x1"], "y1": box[1] + ft["y1"]})
             if not cands:
                 continue
-            good = [c for c in cands if c["rms"] < 40] or cands
+            good = [c for c in cands if c["rms"] < (22 if lab in isolated else 40)]
+            if not good:
+                continue
             stance = min(good, key=lambda c: c["along"])  # most backward = worst planted-foot case
             others = [c for c in cands if c is not stance]
             transitions.append({
@@ -217,7 +233,7 @@ def main():
     worst = 0.0
     violations = []
     summary = {}
-    for lab in labels:
+    for lab in measured:
         tr = [t for t in transitions if t["label"] == lab]
         if not tr:
             continue

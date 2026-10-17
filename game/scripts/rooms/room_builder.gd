@@ -33,10 +33,12 @@ static func build(room_id: String) -> Room:
 	_build_walkable(room, spec, kind, idx)
 	_build_props(room, spec)
 	_build_layers(room, spec)
+	AmbientBuilder.build(room, room_id)  # живой мир: дождь, ветер, вода, лужи и следы — data/story/ambient/<LOC>.json
 	_build_effects(room, spec)
 	_build_spawns(room, spec)
 	_build_hotspots(room, room_id, spec)
 	_build_exits(room, room_id, spec, idx, horizon)
+	RoomLighting.build(room, room_id)  # свет, огонь, тени от источников: data/story/lights/<LOC>.json
 	return room
 
 

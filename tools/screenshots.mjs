@@ -221,10 +221,13 @@ async function main() {
       fs.mkdirSync(STRIDE_DIR, { recursive: true });
       await useHotspot("tamara");
       await waitFor("M01 done", (s) => s.flags.done_M01);
-      if (!(await goExit("Z2"))) failures.push("Z1→Z2 failed");
+      if (!(await goExit("Z4"))) failures.push("Z1→Z4 failed");   // post → lane (Z4) → street
+      if (!(await goExit("Z2"))) failures.push("Z4→Z2 failed");
       if (!(await goExit("H1"))) failures.push("Z2→H1 failed");
       await sleep(600);
-      const pause = (p, ts = 1) => page.evaluate(([v, t]) => { window.probePause(v, t); }, [p, ts]);
+      // Shadows off for the whole series: the analysis diffs every capture against ref.png and the
+      // soft shadow would be read as part of the feet (third argument; older builds ignore it).
+      const pause = (p, ts = 1) => page.evaluate(([v, t]) => { window.probePause(v, t, false); }, [p, ts]);
       const series = [];
       // After a pause the next game frame runs the clamped maximum of 8 physics ticks (133 ms of
       // game time); timeScale < 1 shortens that (0.25 → ~33 ms between captures).
@@ -254,10 +257,21 @@ async function main() {
       const ref = await state();
       await pause(false);
       if (ref.room !== "H1") failures.push(`stride: expected H1 for the reference frame, got ${ref.room}`);
+      const STRIDE_MAX = Number(process.env.STRIDE_MAX || 140);
+      const STRIDE_MAX_ROOM = 70;
+      // In-room series for the eye (GIF only): left along the near edge, room visible.
+      await click("floor start right", { x: 1700, y: 985 });
+      await waitWalk("start right");
+      await sleep(300);
+      await capture("room_left", { x: 880, y: 985 }, STRIDE_MAX_ROOM, 0.5);
+      await sleep(300);
+      // Measurement view: room hidden, flat grey screen — every non-grey pixel is the figure, so the
+      // feet are found exactly (the boots are nearly floor-coloured and partly transparent in-room).
+      await page.evaluate(() => { if (window.probeIsolate) window.probeIsolate(true); });
+      await sleep(200);
       // Four straight walks, one per cardinal row, captured ~33 ms of game time apart (timeScale 0.25):
       // every sheet-frame change falls between two captures, several captures fall inside each frame.
       // Floor points clear of exits (H2: x ≥ 1790; H3/H4: y ≥ 1000) and hotspots.
-      const STRIDE_MAX = Number(process.env.STRIDE_MAX || 140);
       await click("floor start right", { x: 1700, y: 985 });
       await waitWalk("start right");
       await sleep(300);
@@ -271,11 +285,12 @@ async function main() {
       await capture("up", { x: 1650, y: 760 }, STRIDE_MAX, 0.25);      // row 4
       await sleep(300);
       await capture("down", { x: 1650, y: 990 }, STRIDE_MAX, 0.25);    // row 0
+      await page.evaluate(() => { if (window.probeIsolate) window.probeIsolate(false); });
       const fin = await state();
       if (fin.room !== "H1") failures.push(`stride series must stay in H1, ended in ${fin.room}`);
       const first = series.find((x) => x.actor && x.actor.stride_px);
       fs.writeFileSync(path.join(STRIDE_DIR, "series.json"), JSON.stringify({
-        room: "H1", interval_game_ms: 33, ref: { player: ref.player, actor: ref.actor },
+        room: "H1", interval_game_ms: 33, isolated: ["left", "right", "up", "down"], ref: { player: ref.player, actor: ref.actor },
         stride_px: first ? first.actor.stride_px : null, samples: series,
       }, null, 2));
       logLine(`stride series: ${series.length} frames in ${path.relative(ROOT, STRIDE_DIR)}`);
@@ -288,7 +303,8 @@ async function main() {
       for (const f of fs.readdirSync(SHOTS_DIR)) if (f.startsWith("H1_real_")) fs.rmSync(path.join(SHOTS_DIR, f), { force: true });
       await useHotspot("tamara");
       await waitFor("M01 done", (s) => s.flags.done_M01);
-      if (!(await goExit("Z2"))) failures.push("Z1→Z2 failed");
+      if (!(await goExit("Z4"))) failures.push("Z1→Z4 failed");   // post → lane (Z4) → street
+      if (!(await goExit("Z2"))) failures.push("Z4→Z2 failed");
       if (!(await goExit("H1"))) failures.push("Z2→H1 failed");
       await sleep(600);
       const walkShot = async (label, target, waitMs) => {
@@ -381,10 +397,12 @@ async function main() {
     await waitFor("M01 done", (s) => s.flags.done_M01 && s.inventory.includes("key_house"));
 
     // --- Z2 ---
-    if (!(await goExit("Z2"))) failures.push("Z1→Z2 failed");
+    if (!(await goExit("Z4"))) failures.push("Z1→Z4 failed");
+    await shot("Z4_lane");
+    await goExit("H3", false);  // the gallery's side porch in the lane is closed: reaction text only
+    await waitFor("still Z4", (s) => s.room === "Z4", 2000);
+    if (!(await goExit("Z2"))) failures.push("Z4→Z2 failed");
     await shot("Z2_street");
-    await goExit("H3", false);  // closed: reaction text only
-    await waitFor("still Z2", (s) => s.room === "Z2", 2000);
 
     // --- Z3 → R1 (M02) ---
     if (!(await goExit("Z3"))) failures.push("Z2→Z3 failed");

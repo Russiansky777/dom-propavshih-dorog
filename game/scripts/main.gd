@@ -10,6 +10,8 @@ extends Node
 var _last_hint: String = ""
 var _probe_dirty: bool = false
 var _js_pause_cb: JavaScriptObject = null
+var _js_isolate_cb: JavaScriptObject = null
+var _clear_color_saved: Color = Color.BLACK
 
 
 func _ready() -> void:
@@ -37,6 +39,8 @@ func _ready() -> void:
 		_js_pause_cb = JavaScriptBridge.create_callback(_on_probe_pause)
 		var win: JavaScriptObject = JavaScriptBridge.get_interface("window")
 		win.probePause = _js_pause_cb
+		_js_isolate_cb = JavaScriptBridge.create_callback(_on_probe_isolate)
+		win.probeIsolate = _js_isolate_cb
 		JavaScriptBridge.eval("window.probeReady = true;", true)
 		# UI-only changes (journal/menu toggles, layout settling) have no signal: refresh periodically.
 		var t := Timer.new()
@@ -48,10 +52,32 @@ func _ready() -> void:
 
 ## window.probePause(paused, time_scale = 1): a long pause (screenshot) makes the next frame run the
 ## clamped maximum of physics steps (8 → 133 ms); a time_scale below 1 shortens that game-time step.
+## window.probeIsolate(true/false): measurement view — the room (background, layers, occluders,
+## effects) is hidden and the screen cleared to flat grey, so only the actors are drawn and every
+## pixel that differs from grey belongs to a figure. Used by the stride stroboscope.
+func _on_probe_isolate(args: Array) -> void:
+	var on: bool = bool(args[0]) if args.size() > 0 else false
+	var room := RoomManager.current_room
+	if room != null:
+		room.visible = not on
+	if on:
+		_clear_color_saved = RenderingServer.get_default_clear_color()
+		RenderingServer.set_default_clear_color(Color(0.5, 0.5, 0.5))
+	else:
+		RenderingServer.set_default_clear_color(_clear_color_saved)
+	_publish_probe_state()
+
+
 func _on_probe_pause(args: Array) -> void:
 	var paused: bool = bool(args[0]) if args.size() > 0 else false
 	if args.size() > 1 and args[1] != null:
 		Engine.time_scale = clampf(float(args[1]), 0.05, 1.0)
+	# Third argument: show actor shadows (the stride analysis hides them so the floor difference
+	# against the reference frame is the figure alone).
+	if args.size() > 2 and args[2] != null:
+		var sh: Node = player.get_node_or_null("Sprite/Shadow")
+		if sh is CanvasItem:
+			sh.visible = bool(args[2])
 	get_tree().paused = paused
 	_publish_probe_state()
 

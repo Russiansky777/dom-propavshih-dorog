@@ -1,0 +1,70 @@
+{
+  "_comment": "«Живой мир» — погода, ветер, вода, лужи и следы. По файлу на комнату: data/story/ambient/<LOC>.json (координаты 1920x1080, как в rooms/<LOC>.json). Файл комнаты накладывается на свой preset (словари сливаются, массивы заменяются): новая улица — одна запись {\"id\": \"Z4\", \"preset\": \"street\"}. Комната без файла — без эффектов. Проверка: tools/validate_ambient.py, поведение: game/tests/test_ambient.gd. Код: game/scripts/ambient/*, шейдеры game/shaders/ambient_*.",
+  "schema": {
+    "rain": "{intensity 0..1, slant_deg (+ — косо вправо), gust_slant_deg, color, layers: [дальний, средний, ближний] {len_px, width_px, speed_px_s, alpha, cell_px, gap_px, density}} — морось поверх всего в комнате (z 4096)",
+    "wind": "{dir +1/−1 (куда дует), strength — множитель амплитуд, gust_rate — порывов в секунду, gust_depth 0..1}",
+    "sway_regions": "[{id, polygon [[x,y]…] ≤32 точек ИЛИ layer {image, offset, scale} (отдельный слой того, что качается; polygon тогда необязателен), kind tree|grass, anchor_y — линия корней (там смещение 0), top_y — где смещение полное (по умолчанию верх области), amp_px, freq_hz, phase 0..1 (иначе от id), feather_px — растушёвка края, clip — не брать пиксели из-за рамки (стёкла окна), flutter — дрожь листвы, z}]",
+    "water": "[{id, polygon, flow [px/s], ripple_px [даль, близь], glint, rings — доля капель дождя, exclude [[x,y,w,h]…] ≤4 — что неподвижно (мельница, сваи), protect_sat}] — река/вода; стиль по умолчанию water_style",
+    "puddles": "[{id, polygon}] — лужи на дороге: кольца капель, брызги и кольцо от шага; стиль puddle_style",
+    "mud": "[{id, polygon}] — сырая земля: след ботинка от шага (лужа важнее грязи)",
+    "dust": "[{id, polygon|rect, amount, size_px, alpha, color, speed_px_s, lifetime_s, z}] — пылинки в луче из окна (лучи — агент света)",
+    "footfall": "переопределение footfall_defaults в комнате"
+  },
+  "camera": {
+    "fov_deg": 50,
+    "_note": "Плоскость пола для колец, брызг и следов: масштаб глубины комнаты (rooms/<LOC>.json depth) ∝ 1/расстояние, горизонт — где прямая глубины дошла до 0; сжатие пола по вертикали = (y − горизонт) / фокус, фокус = 960 / tan(fov/2). px на метр при scale 1 — из rooms/_index.json agata_ref (figure_px / height_m), той же линейки, что рост Агаты."
+  },
+  "footfall": {
+    "agata": {
+      "sheet": "res://assets/characters/agata/walk.png",
+      "frames": 12,
+      "contact_frames": [3, 9],
+      "foot_ahead_px": 75,
+      "_method": "Постановка ноги (пятка встала) — кадр, где ведущая ступня дальше всего впереди: нижняя полоса 40 px кадра (альфа > 64), как в tools/measure_stride.py; строки профиля 2 (вправо) и 6 (влево) дают оба кадры 3 и 9 из 12 (диагонали 1/5 — те же, 3/7 — 3 и 8). foot_ahead_px — центр этой ступни впереди точки опоры (pivot) при scale 1: носок − половина ступни 0,13 м × 240,6 px/м, среднее по строкам 2/6 и обоим касаниям (72, 79, 73, 76). Перемерить: game/tests/test_ambient.gd (тест сверяет данные с листом и падает при расхождении)."
+    }
+  },
+  "footfall_defaults": {
+    "prints_max": 24,
+    "print_fade_s": 25,
+    "print_color": "#1e140c",
+    "print_alpha": 0.34,
+    "splash": {
+      "life_min_s": 0.3,
+      "life_max_s": 0.5,
+      "drops_min": 6,
+      "drops_max": 10,
+      "speed_min_mps": 0.3,
+      "speed_max_mps": 0.9,
+      "ring_m": 0.24,
+      "drop_color": "#d2ccc2d8",
+      "ring_color": "#e2e6ee80"
+    }
+  },
+  "presets": {
+    "street": {
+      "_note": "Улицы Заречья осенью: морось, ветер с реки (дует вправо, как падает дождь), вода и лужи.",
+      "rain": {
+        "intensity": 0.55,
+        "slant_deg": 11,
+        "gust_slant_deg": 4,
+        "color": "#d8dfe8",
+        "layers": [
+          {"len_px": 9, "width_px": 0.9, "speed_px_s": 520, "alpha": 0.16, "cell_px": 9, "gap_px": 60, "density": 0.55},
+          {"len_px": 18, "width_px": 1.1, "speed_px_s": 820, "alpha": 0.22, "cell_px": 17, "gap_px": 110, "density": 0.5},
+          {"len_px": 34, "width_px": 1.5, "speed_px_s": 1250, "alpha": 0.26, "cell_px": 37, "gap_px": 200, "density": 0.45}
+        ]
+      },
+      "wind": {"dir": 1, "strength": 1.0, "gust_rate": 0.11, "gust_depth": 0.65},
+      "water_style": {"flow": [14, 0], "ripple_px": [0.4, 1.8], "glint": 0.22, "rings": 0.55, "ring_m": 0.06, "ring_cell_m": 0.5, "ring_period_s": 1.2},
+      "puddle_style": {"ripple_px": [0.4, 0.7], "glint": 0.1, "rings": 0.9, "ring_m": 0.05, "ring_cell_m": 0.3, "ring_period_s": 1.0, "feather_px": 4, "protect_sat": 1.5}
+    },
+    "yard_winter": {
+      "_note": "Школьный двор зимой: снег в воздухе уже есть (rooms/O2 effects), здесь только ветер в дереве.",
+      "wind": {"dir": 1, "strength": 0.8, "gust_rate": 0.09, "gust_depth": 0.6}
+    },
+    "interior": {
+      "_note": "Помещения: только деревья за окнами (сквозь стекло) и пылинки в луче; ни дождя, ни луж, ни следов.",
+      "wind": {"dir": 1, "strength": 0.9, "gust_rate": 0.1, "gust_depth": 0.6}
+    }
+  }
+}
