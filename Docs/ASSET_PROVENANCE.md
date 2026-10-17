@@ -23,6 +23,7 @@
 ## 2026-10-17 — звуки (ElevenLabs Sound Effects)
 - Источник: ElevenLabs (генерация Директором), WAV 48 кГц стерео; имена по таблице Директора 17.10 22:09. Исходные имена файлов: `FOLYMisc-door_open_and_close` → `sfx_door_passage.wav`; `FEETHmn-foot_steps_on_gravel` → `sfx_steps_gravel.wav`; `FEETHmn-Soft_isolated_foots…` → `sfx_steps_soft.wav`; `A_worn_soft_leather…` → `sfx_bag_leather.wav`; `AMBRoom-A_quiet_old_library…` → `amb_stove_fire.wav` (по таблице — единственный кандидат на «огонь в печи»; судя по имени это тон тихой комнаты — проверить на слух); `RAINWatr-Gentle_relaxing_rai…` → `amb_rain.wav`; `OBJHsehld-opening_old_door` → `sfx_door_variant_01.wav`; `DOORWood-A_subtle_realistic_w…` → `sfx_door_variant_02.wav`.
 - Оригиналы в `assets/sfx_src/` (≈20 МБ); в игру идут обработанные версии (нарезка шагов, выравнивание громкости, OGG для петель).
+- Обработка: `tools/prepare_sfx.sh` (→ `tools/prepare_sfx.py`) пишет прямо в `game/assets/sfx/` — 24 файла: двери (3), шаги гравий 8 и мягкие 7 (нарезка по атакам), сумка (1 + 3 жеста), петли `amb_rain.ogg` (28 с) и `amb_stove_fire.ogg` (18,5 с); измерения громкости — `game/assets/sfx/levels.json`.
 - Права: коммерческое использование звуков ElevenLabs — по условиям плана Директора на момент генерации; сверить перед релизом.
 
 ## 2026-10-17 — шрифты интерфейса (SIL OFL 1.1)
