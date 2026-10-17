@@ -20,5 +20,11 @@
   "elev": 14,
   "front_yaw": 0,
   "rev": 1,
-  "_note": "talk = Listening Gesture (id 47) из каталога Meshy; переместить в pipeline/requests/ для запуска (41 кредит)"
+  "_note": "talk = Listening Gesture (id 47) из каталога Meshy; переместить в pipeline/requests/ для запуска (41 кредит)",
+  "clip_window": {
+    "idle": [
+      0.0,
+      0.2
+    ]
+  }
 }

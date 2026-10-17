@@ -16,7 +16,7 @@
   "elev": 14,
   "front_yaw": 0,
   "redo_stages": [],
-  "rev": 7,
+  "rev": 8,
   "action_ids": {
     "idle": 0,
     "walk": 1
@@ -24,8 +24,8 @@
   "clip_window": {
     "idle": [
       0.0,
-      0.35
+      0.2
     ]
   },
-  "_note": "rev 7: без новых задач Meshy (0 кредитов) — только перерендер idle из первых 35 % клипа «Idle» (до поворота), playback pingpong"
+  "_note": "rev 8: окно idle 0–20 % клипа «Idle» (rev 7 с 35 % захватил начало поворота в кадрах 5–7); 0 кредитов"
 }
