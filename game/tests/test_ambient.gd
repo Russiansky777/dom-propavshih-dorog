@@ -340,6 +340,25 @@ func _test_params() -> void:
 		var expected := float(rain["intensity"]) * float(spec.get("puddle_style", {}).get("rings", 1.0))
 		_check(absf(rings - expected) < 0.001, "puddle %s drop rings %.3f, expected intensity × rings %.3f" % [w["id"], rings, expected])
 	_free(room)
+	# A separate picture of what sways (a layer from ChatGPT) instead of an outline: drawn from that
+	# picture with its alpha, over its own rect, anchored like a tree.
+	room = _build("Z2")
+	var lr = load("res://scripts/ambient/ambient_root.gd").new()
+	lr.name = "LayerSwayTest"
+	room.add_child(lr)
+	var img_path := "res://assets/rooms/Z2/fg_house_corner.png"
+	lr.setup(room, "Z2", {"sway_regions": [{"id": "layer_test", "layer": {"image": img_path}, "anchor_y": 900, "amp_px": 3.0}]})
+	_check(lr.sway.size() == 1, "a sway region from a layer picture must build")
+	if lr.sway.size() == 1:
+		var lm: ShaderMaterial = lr.sway[0].material
+		_check(bool(lm.get_shader_parameter("src_alpha")), "layer sway keeps the picture's alpha")
+		_check(lm.get_shader_parameter("src_tex") == load(img_path), "layer sway draws the layer picture, not the background")
+		var lsz: Vector2 = lm.get_shader_parameter("src_size")
+		_check(absf(lsz.x - 1920.0) < 1.0, "layer drawn with the room art scale (width %.1f)" % lsz.x)
+		_check(AmbData.bbox(lr.sway[0].polygon).size.x > 1900.0, "without an outline the region is the layer's rect")
+	room.remove_child(lr)
+	lr.free()
+	_free(room)
 	# Interiors: no drop rings anywhere.
 	var h2 := _build("H2")
 	var a2 = Builder.of(h2)
