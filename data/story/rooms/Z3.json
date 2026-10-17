@@ -1,67 +1,28 @@
 {
   "id": "Z3",
-  "background": {
-    "kind": "exterior",
-    "wall": "#8a9aa8",
-    "floor": "#6a7a6a",
-    "accent": "#4e6a7a",
-    "horizon": 580
-  },
-  "spawns": {
-    "default": [960, 920],
-    "from_Z2": [190, 900],
-    "from_R1": [1730, 900],
-    "from_M1": [960, 720]
-  },
-  "props": [
-    {
-      "id": "water",
-      "label": "@Z3.water.label",
-      "rect": [0, 420, 1920, 160],
-      "color": "#4e6a7a"
-    }
+  "_art": "Фон Z3_bg.png (береговой поворот), слой Z3_fg_water.png — вода у ближнего берега (окклюдер, поверх ног у кромки). Старая опора — камни в воде, пластина — плита у воды.",
+  "background": {"kind": "exterior", "image": "res://assets/rooms/Z3/bg.png", "wall": "#8a9aa8", "floor": "#6a7a6a", "accent": "#4e6a7a", "horizon": 620},
+  "walkable": [[400, 620], [900, 610], [1150, 680], [1480, 860], [1400, 1000], [1100, 1070], [560, 1070], [380, 850]],
+  "depth": {"top_y": 610, "bottom_y": 1070, "scale_top": 0.6, "scale_bottom": 1.4},
+  "layers": [
+    {"id": "water", "image": "res://assets/rooms/Z3/fg_water.png", "occluder": true, "z": 1080}
   ],
+  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [1050, 1000], "from_M1": [600, 980]},
+  "props": [],
   "hotspots": [
     {
-      "id": "old_pier_base",
-      "kind": "object",
-      "label": "@Z3.old_pier_base.label",
-      "rect": [1180, 470, 180, 110],
-      "stand": [1270, 700],
-      "color": "#6f6a5a",
+      "id": "old_pier_base", "kind": "object", "label": "@Z3.old_pier_base.label", "rect": [1160, 510, 320, 100], "stand": [1150, 700], "color": "#6f6a5a", "draw": false,
       "look": "@Z3.old_pier_base.look"
     },
     {
-      "id": "plate",
-      "kind": "object",
-      "label": "@Z3.plate.label",
-      "rect": [1400, 520, 90, 60],
-      "stand": [1445, 700],
-      "color": "#8a8a7a",
+      "id": "plate", "kind": "object", "label": "@Z3.plate.label", "rect": [1480, 600, 200, 190], "stand": [1430, 870], "color": "#8a8a7a", "draw": false,
       "look": "@Z3.plate.look"
     }
   ],
   "exits": [
-    {
-      "to": "Z2",
-      "label": "@Z3.exit_Z2.label",
-      "side": "left",
-      "spawn": "from_Z3"
-    },
-    {
-      "to": "R1",
-      "label": "@Z3.exit_R1.label",
-      "side": "right",
-      "spawn": "from_Z3"
-    },
-    {
-      "to": "M1",
-      "label": "@Z3.exit_M1.label",
-      "side": "back",
-      "x": 700,
-      "spawn": "from_Z3",
-      "closed_text": "@Z3.exit_M1.closed"
-    }
+    {"to": "Z2", "label": "@Z3.exit_Z2.label", "rect": [380, 560, 320, 90], "stand": [560, 660], "spawn": "from_Z3", "draw": false},
+    {"to": "R1", "label": "@Z3.exit_R1.label", "rect": [900, 1000, 500, 80], "stand": [1100, 1030], "spawn": "from_Z3", "draw": false},
+    {"to": "M1", "label": "@Z3.exit_M1.label", "rect": [380, 900, 200, 180], "stand": [560, 1000], "spawn": "from_Z3", "closed_text": "@Z3.exit_M1.closed", "draw": false}
   ],
   "scenes": {},
   "flags": {}
