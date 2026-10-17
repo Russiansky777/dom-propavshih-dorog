@@ -22,6 +22,8 @@ extends Node2D
 ## Nothing here takes input: lights, quads and shadows are not in the physics picking.
 
 const DATA_DIR := "res://data/story/lights"
+## Off only for measurements (LightProbe: FPS with and without lighting).
+static var enabled: bool = true
 const RESCAN_S := 0.5
 
 var room_id: String = ""
@@ -59,6 +61,9 @@ static func load_data(id: String) -> Dictionary:
 
 ## Hook for RoomBuilder: adds `Lighting` to the room when lights/<room_id>.json exists.
 static func build(room: Node2D, id: String) -> RoomLighting:
+	LightProbe.register()  # web only, with ?lightprobe in the URL (tools/light_fps.mjs); once
+	if not enabled:
+		return null
 	var spec := load_data(id)
 	if spec.is_empty():
 		return null

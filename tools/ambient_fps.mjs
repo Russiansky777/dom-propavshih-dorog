@@ -9,7 +9,8 @@
 // so the ON/OFF ratio matters more than the absolute fps), uses the probe hooks of
 // game/scripts/ambient/ambient_probe.gd (ambientGoto / ambientEnable / ambientFlag / ambientWalk /
 // ambientState). FPS = requestAnimationFrame callbacks per second in the page (Godot draws once per
-// rAF). Report: build/reports/ambient_fps.json, frames build/shots/ambient/<room>.png, console log.
+// rAF); ON and OFF alternate twice (ON OFF ON OFF), the mean of each is reported. AMBIENT_VIEWPORT=960x540
+// for a slow machine. Report: build/reports/ambient_fps.json, frames build/shots/ambient/<room>.png, console log.
 // Exit code 1 on a page error, a shader error in the console, or a room that did not load.
 
 import http from "node:http";
@@ -26,6 +27,8 @@ const REPORT = path.join(ROOT, "build", "reports", "ambient_fps.json");
 const PORT = Number(process.env.AMBIENT_PORT || 8771);
 const SECONDS = Number(process.env.AMBIENT_SECONDS || 5);
 const ROOMS = (process.env.AMBIENT_ROOMS || "Z2,Z3,R1,H1,H2,O1,O2").split(",");
+// Canvas size (the game stretches 1920x1080 to it): a smaller one keeps software GL out of 1 fps.
+const [VW, VH] = (process.env.AMBIENT_VIEWPORT || "1920x1080").split("x").map(Number);
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -78,7 +81,7 @@ async function main() {
   const browser = await chromium.launch({ headless: true, executablePath: findChromium(),
     args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist",
       "--no-sandbox", "--disable-dev-shm-usage"] });
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: VW, height: VH }, deviceScaleFactor: 1 });
   page.on("console", (m) => {
     const t = m.text();
     line(`console.${m.type()}: ${t}`);
@@ -103,20 +106,27 @@ async function main() {
     requestAnimationFrame(tick);
   }), sec);
 
-  const report = { web_dir: path.relative(ROOT, WEB_DIR), renderer: "headless Chromium, ANGLE SwiftShader (software WebGL2)", seconds: SECONDS, rooms: {} };
+  const report = { web_dir: WEB_DIR, renderer: "headless Chromium, ANGLE SwiftShader (software WebGL2)", viewport: `${VW}x${VH}`, seconds: SECONDS, rooms: {} };
   for (const room of ROOMS) {
     await page.evaluate((r) => { window.ambientEnable(true); if (r === "H1") window.ambientFlag("h1_shutter_open", true); window.ambientGoto(r, "default"); }, room);
     let s = {};
     for (let i = 0; i < 40; i++) { await sleep(250); s = await state(); if (s.room === room) break; }
     if (s.room !== room) { errors.push(`${room}: did not load (state.room=${s.room})`); line(`FAIL ${room}: not loaded`); continue; }
     await sleep(1500);
-    const on = await fps(SECONDS);
     const son = await state();
     await page.screenshot({ path: path.join(OUT_DIR, `${room}.png`) });
-    await page.evaluate(() => window.ambientEnable(false));
-    await sleep(800);
-    const off = await fps(SECONDS);
+    const ons = [], offs = [];
+    for (let k = 0; k < 2; k++) {
+      await page.evaluate(() => window.ambientEnable(true));
+      await sleep(600);
+      ons.push(await fps(SECONDS));
+      await page.evaluate(() => window.ambientEnable(false));
+      await sleep(600);
+      offs.push(await fps(SECONDS));
+    }
     await page.evaluate(() => window.ambientEnable(true));
+    const on = (ons[0] + ons[1]) / 2;
+    const off = (offs[0] + offs[1]) / 2;
     report.rooms[room] = { fps_on: +on.toFixed(1), fps_off: +off.toFixed(1), cost_pct: +(100 * (1 - on / off)).toFixed(1),
       godot_fps_on: son.fps, sway: son.sway, water: son.water, puddles: son.puddles, rain: son.rain, dust_particles: son.dust_particles };
     line(`${room}: ambient on ${on.toFixed(1)} fps, off ${off.toFixed(1)} fps (${report.rooms[room].cost_pct} %) — sway ${son.sway}, water ${son.water}, puddles ${son.puddles}, rain ${son.rain}, dust ${son.dust_particles}`);
