@@ -218,17 +218,27 @@ def cmd_list() -> int:
     if cmd_check() != 0:
         return 1
     voices = _all_voices()
+    order: dict[str, int] = {}
     try:
-        personal = {v["voice_id"] for v in _all_voices({"voice_type": "personal"})}
+        mine = _all_voices({"voice_type": "personal", "sort": "created_at_unix", "sort_direction": "asc"})
+        personal = {v["voice_id"] for v in mine}
+        order = {v["voice_id"]: i + 1 for i, v in enumerate(mine)}   # 1 — создан первым
     except VoiceError as e:
         log(f"  voice_type=personal не принят ({e}); отметка «мой голос» — по категории")
         personal = {v["voice_id"] for v in voices if v.get("category") in ("cloned", "generated", "professional")}
     rows = []
     for v in voices:
         desc = (v.get("description") or "").strip()
-        rows.append({"name": v.get("name", ""), "voice_id": v.get("voice_id", ""), "category": v.get("category", ""),
-                     "personal": v.get("voice_id") in personal, "labels": v.get("labels") or {},
-                     "description": desc[:240]})
+        row = {"name": v.get("name", ""), "voice_id": v.get("voice_id", ""), "category": v.get("category", ""),
+               "personal": v.get("voice_id") in personal, "labels": v.get("labels") or {},
+               "description": desc[:240]}
+        created = v.get("created_at_unix")
+        if isinstance(created, (int, float)) and created > 0:
+            row["created_at_unix"] = int(created)
+            row["created_at"] = datetime.fromtimestamp(int(created), timezone.utc).isoformat()
+        if row["voice_id"] in order:
+            row["created_order"] = order[row["voice_id"]]
+        rows.append(row)
     rows.sort(key=lambda r: (not r["personal"], r["category"], r["name"].lower()))
     write_json(VOICES_PATH, {
         "_comment": "Голоса аккаунта ElevenLabs (GET /v2/voices; personal — раздел My Voices, voice_type=personal). "
@@ -237,7 +247,8 @@ def cmd_list() -> int:
     log(f"голосов: {len(rows)}, из них моих (My Voices): {sum(r['personal'] for r in rows)} → {VOICES_PATH.relative_to(ROOT)}")
     for r in rows:
         if r["personal"]:
-            log(f"  [мой] {r['name']!r:32} {r['voice_id']}  {r['category']}  {json.dumps(r['labels'], ensure_ascii=False)}")
+            log(f"  [мой] {r['name']!r:32} {r['voice_id']}  {r['category']}  создан: {r.get('created_at', '?')} "
+                f"(по порядку {r.get('created_order', '?')})  {json.dumps(r['labels'], ensure_ascii=False)}")
     return 0
 
 
