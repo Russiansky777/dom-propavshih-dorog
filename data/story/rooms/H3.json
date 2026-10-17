@@ -8,8 +8,8 @@
   "depth": {"top_y": 720, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 1.9},
   "_depth_note": "ниша ≈ 580 px ≈ 2.1 м у стены → рост Агаты ≈ 1.2×337 ≈ 405 px",
   "layers": [
-    {"id": "frame_empty", "image": "res://assets/rooms/H3/state_frame_empty.png", "offset": [161, 82], "scale": 0.77, "unless": ["door_school_installed"]},
-    {"id": "door_installed", "image": "res://assets/rooms/H3/state_door_installed.png", "offset": [161, 82], "scale": 0.77, "if": ["door_school_installed"]}
+    {"id": "frame_empty", "image": "res://assets/rooms/H3/state_frame_empty.png", "offset": [161, 82], "scale": 0.77, "scale_reason": "кадр состояния нарисован крупнее фона (рама почти на весь кадр); 0.77 и offset вписывают раму в нишу фона — подгонка по косякам ниши", "unless": ["door_school_installed"]},
+    {"id": "door_installed", "image": "res://assets/rooms/H3/state_door_installed.png", "offset": [161, 82], "scale": 0.77, "scale_reason": "кадр состояния нарисован крупнее фона (рама почти на весь кадр); 0.77 и offset вписывают раму в нишу фона — подгонка по косякам ниши", "if": ["door_school_installed"]}
   ],
   "spawns": {"default": [960, 920], "from_H1": [1730, 900], "from_Z2": [700, 1000], "from_O1": [770, 810], "from_R4": [1470, 800]},
   "props": [],

@@ -1,8 +1,8 @@
 class_name StateLayer
 extends Node2D
 ## Image layer of a room built from `layers[]` in rooms/<id>.json. Visible when every `if` flag
-## holds and no `unless` flag holds (both optional). Drawn at `offset` with `scale` relative to
-## the 1920x1080 base (the whole PNG is mapped to 1920x1080 first, as the art is 1672x941).
+## holds and no `unless` flag holds (both optional). Drawn with the room's art scale (the same as
+## the background), moved by `offset`; an extra `scale` only with `scale_reason` (RoomBuilder).
 
 var data: Dictionary = {}
 

@@ -130,7 +130,18 @@ func _actor_state() -> Dictionary:
 		"drawn_x": drawn.x, "drawn_y": drawn.y, "scale": player.scale.y,
 		"stride_px": player.stride_px(), "speed_px": player.current_speed_px(), "fps": player.current_walk_fps(),
 		"direction": player.direction, "paused": get_tree().paused, "walk_time": player.walk_time,
+		"shadow": _shadow_state(spr),
 	}
+
+
+func _shadow_state(spr: AnimatedSprite2D) -> Dictionary:
+	var sh: Sprite2D = spr.get_node_or_null("Shadow")
+	if sh == null:
+		return {}
+	var gs: Vector2 = sh.get_global_transform().get_scale()
+	var tw: int = sh.texture.get_width() if sh.texture else 0
+	return {"visible": sh.is_visible_in_tree(), "x": sh.global_position.x, "y": sh.global_position.y,
+		"w": gs.x * tw, "h": gs.y * tw, "behind": sh.show_behind_parent, "tex": tw}
 
 
 func _npc_states(room: Node) -> Dictionary:

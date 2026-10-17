@@ -78,7 +78,12 @@ static func _build_background(room: Room, room_id: String, bg: Dictionary, horiz
 		s.centered = false
 		var tex_size: Vector2 = s.texture.get_size()
 		if tex_size.x > 0:
-			s.scale = Vector2(1920.0 / tex_size.x, 1080.0 / tex_size.y)
+			# The whole picture fits the 1920-wide frame: one uniform scale, no crop, no zoom
+			# (1672x941 → 1.1483; 2048x1152 → 0.9375). It is the room's art scale: every layer and
+			# state is drawn with it too (see _build_layers). Off-16:9 art is centred vertically.
+			room.art_scale = 1920.0 / tex_size.x
+			s.scale = Vector2(room.art_scale, room.art_scale)
+			s.position = Vector2(0.0, roundf((1080.0 - tex_size.y * room.art_scale) / 2.0))
 		container.add_child(s)
 		return
 	# Fallback: flat colours.
@@ -180,7 +185,11 @@ static func _build_props(room: Room, spec: Dictionary) -> void:
 			props.add_child(node)
 
 
-## `layers[]`: full-canvas PNGs (art is 1672x941, mapped to 1920x1080, then `offset`/`scale`).
+## `layers[]`: PNGs drawn with the room's art scale (the background's 1920/width) — the same pixel
+## size as the background, whatever the layer canvas is — then moved by `offset` (screen px).
+## `scale` multiplies it only for art drawn at a different size than the background; such a layer
+## must say why in `scale_reason` (tools/validate_rooms.py, tests/test_room_geometry.gd). The old
+## rule stretched every canvas to 1920x1080 on its own, which distorted a 1602x981 state by 9 %.
 ## `occluder` + `z` → drawn in Occluders with that z (y-sort line); otherwise z 0 under the player.
 ## `if`/`unless` make it a state layer (StateLayer refreshes on flag changes).
 static func _build_layers(room: Room, spec: Dictionary) -> void:
@@ -201,8 +210,9 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 		spr.centered = false
 		var ts: Vector2 = spr.texture.get_size()
 		var sc := float(l.get("scale", 1.0))
-		if ts.x > 0 and ts.y > 0:
-			spr.scale = Vector2(1920.0 / ts.x * sc, 1080.0 / ts.y * sc)
+		# No background picture (placeholder room): the layer's own width defines the art scale.
+		var art := room.art_scale if room.art_scale > 0.0 else (1920.0 / ts.x if ts.x > 0 else 1.0)
+		spr.scale = Vector2(art * sc, art * sc)
 		var off: Array = l.get("offset", [0, 0])
 		spr.position = Vector2(float(off[0]), float(off[1]))
 		node.add_child(spr)

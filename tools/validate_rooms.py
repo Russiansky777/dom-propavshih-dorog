@@ -17,7 +17,11 @@
      in_scope есть no_walk_samples (≥ 2 точки заведомо внутри препятствий/воды — вне пола или в
      вырезе) и walk_samples (≥ 3 точки свободного пола — на полу и не в вырезе); nearest_checks
      ({from, in:[x,y,w,h]}) — from вне пола. Те же точки проверяет навигацией Godot
-     game/tests/test_room_geometry.gd.
+     game/tests/test_room_geometry.gd;
+  7. масштаб (Директор: «стул слишком большой, сцена приближена»): фон вписан в 1920x1080 целиком —
+     масштаб 1920/ширина ± 0.001, по высоте без обрезки и полос (± 2 px); каждый слой и состояние
+     рисуются тем же масштабом (RoomBuilder: art_scale × scale) — scale ≠ 1 только с scale_reason.
+     Фактические масштабы узлов сверяет test_room_geometry.gd.
 
 Код 0 — ошибок нет. Запуск: python3 tools/validate_rooms.py [--quiet]
 """
@@ -213,6 +217,29 @@ def walkable_of(room: dict):
 
 stubs: list[str] = []
 GAME_DIR = ROOT / "game"
+FRAME_W, FRAME_H = 1920, 1080
+SCALE_TOL = 0.001
+
+
+def png_size(res: str):
+    """(w, h) из заголовка PNG по пути res://… (без Pillow: CI ставит только Godot)."""
+    path = GAME_DIR / res[len("res://"):]
+    try:
+        with open(path, "rb") as f:
+            head = f.read(24)
+    except OSError:
+        return None
+    if head[:8] != b"\x89PNG\r\n\x1a\n":
+        return None
+    import struct
+    return struct.unpack(">II", head[16:24])
+
+
+def art_scale(room: dict):
+    """Повторяет RoomBuilder._build_background: масштаб фона = 1920 / ширина картинки."""
+    img = room.get("background", {}).get("image")
+    size = png_size(img) if img else None
+    return (FRAME_W / size[0], size) if size and size[0] > 0 else (None, size)
 
 
 def check_res_path(ctx: str, res: str) -> None:
@@ -237,12 +264,36 @@ for rid, room in rooms.items():
             check_res_path(f"{ctx}.props.{p.get('id')}.image", p["image"])
         if p.get("occluder") and "z" in p and not (0 <= int(p["z"]) <= 4096):
             err(f"{ctx}.props.{p.get('id')}: z вне 0..4096")
+    # 7. масштаб фона и слоёв
+    bg_scale, bg_size = art_scale(room)
+    if "image" in room.get("background", {}):
+        if bg_scale is None:
+            err(f"{ctx}.background.image: не читается как PNG")
+        else:
+            if abs(bg_scale - FRAME_W / bg_size[0]) > SCALE_TOL:
+                err(f"{ctx}: масштаб фона {bg_scale:.5f} ≠ 1920/{bg_size[0]}")
+            if abs(bg_size[1] * bg_scale - FRAME_H) > 2.0:
+                err(f"{ctx}: фон {bg_size[0]}x{bg_size[1]} при масштабе 1920/ширина даёт высоту "
+                    f"{bg_size[1] * bg_scale:.0f} px — кадр 1920x1080 будет обрезан или с полосами (нужен 16:9)")
     for l in room.get("layers", []):
         lctx = f"{ctx}.layers.{l.get('id', '?')}"
+        sc = float(l.get("scale", 1.0))
+        if abs(sc - 1.0) > SCALE_TOL and not str(l.get("scale_reason", "")).strip():
+            err(f"{lctx}: scale {sc} без scale_reason — слои и состояния рисуются масштабом фона "
+                f"({bg_scale:.4f}), отдельный масштаб только с объяснением")
+        if "scale_reason" in l and abs(sc - 1.0) <= SCALE_TOL:
+            warn(f"{lctx}: scale_reason при scale 1 — лишнее поле")
+        if sc <= 0:
+            err(f"{lctx}: scale {sc} ≤ 0")
         if "image" not in l:
             err(f"{lctx}: нет image")
         else:
             check_res_path(lctx + ".image", l["image"])
+            lsize = png_size(l["image"])
+            if (lsize and bg_size and "offset" not in l
+                    and (abs(lsize[0] - bg_size[0]) > 2 or abs(lsize[1] - bg_size[1]) > 2)):
+                warn(f"{lctx}: холст слоя {lsize[0]}x{lsize[1]} ≠ фон {bg_size[0]}x{bg_size[1]} и нет offset — "
+                     f"при общем масштабе слой сдвинется, подгоните offset")
         check_flags(lctx + ".if", l.get("if"))
         check_flags(lctx + ".unless", l.get("unless"))
         if l.get("occluder") and "z" not in l:

@@ -15,6 +15,9 @@ extends Node2D
 
 @export var room_id: String = ""
 @export var room_name: String = ""
+## Background pixels → screen pixels: 1920 / background width (set by RoomBuilder; 0 = no picture).
+## Every layer and state of the room is drawn with this same scale.
+var art_scale: float = 0.0
 
 @export_group("Depth / perspective")
 ## Player y at the far edge of the floor (scale == scale_top there).
