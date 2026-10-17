@@ -1522,14 +1522,12 @@ func _check_eased(sheet, id: String, action: String) -> int:
 			continue
 		var a: int = int(cols[0])
 		var b: int = int(cols[cols.size() - 1])
-		# Middle pose: the frame nearest the middle of the (symmetrised) path.
-		var mid := 0
+		# Position of each frame along the (symmetrised) path; the middle of the motion is where the
+		# shown pose crosses 0.5 — the centre of the middle frame (odd count) or the switch between
+		# the two middle frames (even count).
+		var pos := {}
 		for k in cols.size():
-			var pk := (float(path[k]) + 1.0 - float(path[cols.size() - 1 - k])) * 0.5
-			var pm := (float(path[mid]) + 1.0 - float(path[cols.size() - 1 - mid])) * 0.5
-			if absf(pk - 0.5) < absf(pm - 0.5):
-				mid = k
-		var m: int = int(cols[mid])
+			pos[int(cols[k])] = (float(path[k]) + 1.0 - float(path[cols.size() - 1 - k])) * 0.5
 		var period := 0.0
 		var starts: Array = []
 		for seg in tl:
@@ -1545,14 +1543,20 @@ func _check_eased(sheet, id: String, action: String) -> int:
 		for i in tl.size():
 			var c: int = int(tl[i][0])
 			var d: float = float(tl[i][1])
+			var pc: float = float(pos.get(c, 0.0))
 			if c == a:
 				dwell_a += d
 			elif c == b:
 				dwell_b += d
 				b_center = starts[i] + d * 0.5
-			elif c == m:
+			if absf(pc - 0.5) < 0.001:
 				mids.append(starts[i] + d * 0.5)
 				mid_dur = maxf(mid_dur, d)
+			elif i > 0:
+				var pp: float = float(pos.get(int(tl[i - 1][0]), 0.0))
+				if absf(pp - 0.5) >= 0.001 and ((pp < 0.5 and pc > 0.5) or (pp > 0.5 and pc < 0.5)):
+					mids.append(starts[i])
+					mid_dur = maxf(mid_dur, maxf(d, float(tl[i - 1][1])))
 		if mids.size() != 2 or b_center < 0.0:
 			_check(false, "%s/%s row %d: timeline must pass the middle pose twice and reach the far pose once: %s" % [id, action, r, str(tl)])
 			continue

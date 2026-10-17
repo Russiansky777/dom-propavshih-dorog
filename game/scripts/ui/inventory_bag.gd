@@ -91,13 +91,28 @@ func _init() -> void:
 	next_button = _arrow("›", "BagNext", 1)
 	_row.add_child(next_button)
 
+	# "The bag is empty" on a small dark plate over the middle pockets (not across the seams).
+	var empty_center := CenterContainer.new()
+	empty_center.name = "EmptyCenter"
+	empty_center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(empty_center)
 	empty_label = Label.new()
 	empty_label.name = "Empty"
 	empty_label.theme_type_variation = &"BagEmptyLabel"
 	empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(empty_label)
+	var plate := StyleBoxFlat.new()
+	plate.bg_color = Color(0.10, 0.065, 0.04, 0.92)
+	plate.border_color = Color(0.84, 0.70, 0.47, 0.35)
+	plate.set_border_width_all(1)
+	plate.set_corner_radius_all(6)
+	plate.content_margin_left = 16
+	plate.content_margin_right = 16
+	plate.content_margin_top = 3
+	plate.content_margin_bottom = 5
+	empty_label.add_theme_stylebox_override("normal", plate)
+	empty_center.add_child(empty_label)
 
 	tooltip = PanelContainer.new()
 	tooltip.name = "BagTooltip"

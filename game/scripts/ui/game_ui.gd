@@ -82,6 +82,8 @@ func _button(text: String, min_w: float = 0.0, variation: StringName = &"") -> B
 	b.focus_mode = Control.FOCUS_NONE
 	if variation != &"":
 		b.theme_type_variation = variation
+	if variation == &"BarButton":
+		b.size_flags_vertical = Control.SIZE_SHRINK_CENTER   # a plate on the bar, not a full-height box
 	if min_w > 0:
 		b.custom_minimum_size = Vector2(min_w, 0)
 	return b
@@ -485,11 +487,19 @@ func toggle_menu() -> void:
 	journal_panel.visible = false
 	if menu_panel.visible:
 		_refresh_slots()
+		_fit_panel.call_deferred(menu_panel)
 		music_slider.set_value_no_signal(roundf(MusicDirector.music_volume * 100.0))
 		music_value_label.text = "%d %%" % int(music_slider.value)
 		sfx_slider.set_value_no_signal(roundf(SfxDirector.sfx_volume * 100.0))
 		sfx_value_label.text = "%d %%" % int(sfx_slider.value)
 	_update_modal()
+
+
+## Panel as tall as its content, centred under the top bar.
+func _fit_panel(p: PanelContainer) -> void:
+	p.size = Vector2(p.size.x, 0)
+	p.reset_size()
+	p.position.y = roundf(TOP_H + (1080.0 - TOP_H - p.size.y) / 2.0)
 
 
 func _on_music_slider(value: float) -> void:
