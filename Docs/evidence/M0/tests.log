@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: GameState: no save in slot 'missing_slot_xyz'
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] load (res://scripts/core/game_state.gd:134)
+         [1] _test_save_load (res://tests/run_tests.gd:132)
+         [2] _test (res://tests/run_tests.gd:55)
+         [3] _run (res://tests/run_tests.gd:36)
+PASS  GameState save → modify → load restores flags/inventory/room  (0 ms)
+PASS  RoomManager.change_room loads RoomOffice and places player at spawn  (9 ms)
+PASS  RoomManager autosaves to slot after room change  (6 ms)
+PASS  Room.apply_flags toggles door state nodes on office_latch_open  (2 ms)
+        nav map ready after 5 physics frames (iteration 3)
+PASS  NavigationServer2D returns a path inside RoomHouse.Walkable  (81 ms)
+PASS  Room.pick finds hotspot/exit under a point  (34 ms)
+PASS  Mirror shows RoomOfficeView through a ViewportTexture with Echo looping  (304 ms)
+PASS  Player walks to the exit and RoomManager switches rooms  (1117 ms)
+PASS  Save/load round-trip survives room change and restores player position  (13 ms)
+PASS  InputMap: F5 → quick_save, F9 → quick_load  (0 ms)
+
+==== 10 tests, 10 passed, 0 failed ====

@@ -72,14 +72,14 @@ func show_hint(text: String) -> void:
 
 func _on_save() -> void:
 	if RoomManager.save_game(QUICK_SLOT):
-		show_hint("Сохранено (слот '%s')." % QUICK_SLOT)
+		GameState.show_hint("Сохранено (слот '%s')." % QUICK_SLOT)
 	else:
-		show_hint("Не удалось сохранить.")
+		GameState.show_hint("Не удалось сохранить.")
 
 
 func _on_load() -> void:
 	if not GameState.has_save(QUICK_SLOT):
-		show_hint("Нет сохранения в слоте '%s'." % QUICK_SLOT)
+		GameState.show_hint("Нет сохранения в слоте '%s'." % QUICK_SLOT)
 		return
 	# Deferred: rebuilding the room frees nodes, which must not happen inside input dispatch.
 	_do_load.call_deferred()
@@ -87,9 +87,9 @@ func _on_load() -> void:
 
 func _do_load() -> void:
 	if RoomManager.load_game(QUICK_SLOT):
-		show_hint("Загружено (слот '%s')." % QUICK_SLOT)
+		GameState.show_hint("Загружено (слот '%s')." % QUICK_SLOT)
 	else:
-		show_hint("Не удалось загрузить.")
+		GameState.show_hint("Не удалось загрузить.")
 
 
 func _on_new_game() -> void:
@@ -98,4 +98,4 @@ func _on_new_game() -> void:
 
 func _do_new_game() -> void:
 	RoomManager.new_game()
-	show_hint("Новая игра.")
+	GameState.show_hint("Новая игра.")

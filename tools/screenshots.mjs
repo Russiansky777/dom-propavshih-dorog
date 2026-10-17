@@ -229,11 +229,10 @@ async function main() {
 
     // 6. Keyboard save (F5) → "New game" button → keyboard load (F9): flags must come back.
     //    Also proves the canvas swallows F5 instead of letting the browser reload the page.
-    await page.mouse.click(1600, 700); // focus the canvas without hitting a hotspot
-    await sleep(300);
-    await page.keyboard.press("F5");
-    await sleep(800);
-    const afterF5 = await probe();
+    await waitIdle("before F5");
+    const beforeF5 = await probe();
+    await page.keyboard.press("F5"); // canvas already has focus (focus_canvas_on_start + prior clicks)
+    const afterF5 = await waitFor("F5 saved (hint)", (s) => s.last_hint && s.last_hint.startsWith("Сохранено"));
     if (!afterF5) failures.push("page reloaded or probe lost after pressing F5 (browser reload not prevented)");
     await clickGame("New game button", CLICKS.new_game_button);
     await waitFor("new game cleared flags", (s) => s.flags && Object.keys(s.flags).length === 0 && s.room === "RoomHouse");
@@ -244,8 +243,10 @@ async function main() {
     await sleep(600);
     await shot("after_f9_load");
     const loaded = await probe();
-    if (!loaded || loaded.room !== "RoomHouse" || Math.round(loaded.player?.x) !== 1720) {
-      failures.push(`state after F9 unexpected: ${JSON.stringify(loaded)}`);
+    const samePos =
+      loaded && beforeF5 && Math.abs(loaded.player.x - beforeF5.player.x) < 1 && Math.abs(loaded.player.y - beforeF5.player.y) < 1;
+    if (!loaded || loaded.room !== "RoomHouse" || !samePos) {
+      failures.push(`state after F9 unexpected (expected player at ${JSON.stringify(beforeF5?.player)}): ${JSON.stringify(loaded)}`);
     }
   } catch (e) {
     failures.push(`exception: ${e.stack || e.message}`);
