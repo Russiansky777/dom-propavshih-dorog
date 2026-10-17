@@ -135,7 +135,27 @@ static func _build() -> Theme:
 	_label_variation(t, &"BagTooltipTitle", "head_bold", 28, GOLD)
 	_label_variation(t, &"BagTooltipText", "body", 23, CREAM)
 	_label_variation(t, &"BagTooltipHint", "body_italic", 20, MUTED)
-	_label_variation(t, &"MapLabel", "head_bold", 27, Color(0.20, 0.13, 0.07), 0)
+	# Plan of Zarechye: dark ink names on small paper plates; the current place in red ochre.
+	_label_variation(t, &"MapLabel", "head_bold", 26, Color(0.20, 0.12, 0.06))
+	_label_variation(t, &"MapLabelHere", "head_bold", 28, Color(0.50, 0.11, 0.06))
+	_label_variation(t, &"MapHereLabel", "body_italic", 22, Color(1.0, 0.95, 0.88))
+	_label_variation(t, &"MapHint", "body_italic", 21, Color(0.96, 0.92, 0.84), 6)
+	for v in [[&"MapLabel", Color(0.96, 0.91, 0.80, 0.90), Color(0.40, 0.27, 0.15, 0.85), 1],
+			[&"MapLabelHere", Color(0.99, 0.94, 0.84, 0.95), Color(0.62, 0.15, 0.08, 1.0), 2],
+			[&"MapHereLabel", Color(0.62, 0.15, 0.08, 0.92), Color(0.35, 0.08, 0.04, 1.0), 1]]:
+		var plate := StyleBoxFlat.new()
+		plate.bg_color = v[1]
+		plate.border_color = v[2]
+		plate.set_border_width_all(v[3])
+		plate.set_corner_radius_all(4)
+		plate.shadow_color = Color(0, 0, 0, 0.28)
+		plate.shadow_size = 3
+		plate.shadow_offset = Vector2(1, 2)
+		plate.content_margin_left = 10
+		plate.content_margin_right = 10
+		plate.content_margin_top = 1
+		plate.content_margin_bottom = 3
+		t.set_stylebox(&"normal", v[0], plate)
 	_label_variation(t, &"CloseupLabel", "body", 24, CREAM, 5)
 	_label_variation(t, &"CloseupTitle", "head_bold", 34, GOLD, 5)
 

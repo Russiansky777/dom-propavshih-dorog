@@ -134,6 +134,37 @@ async function main() {
     await sleep(800);
   };
 
+  // --- Zarechye plan: Z1 plan hotspot → ride-in → open; Esc; journal «План» → open → Esc → journal ---
+  const mapFrames = async () => {
+    const s0 = await state();
+    if (!s0.hotspots.plan || !("map_open" in s0.ui)) { fail("this build has no plan"); return; }
+    await page.evaluate(() => window.probePause(false, 0.25));   // slow motion for the ride-in frame
+    await click("hotspot plan", s0.hotspots.plan);
+    await waitFor("plan open", (t) => t.ui.map_open, 20000);
+    await sleep(700);
+    await page.evaluate(() => window.probePause(true, 0.25));
+    await shot("12_plan_ride_in");
+    await page.evaluate(() => window.probePause(false, 1));
+    const sm = await waitFor("plan settled", (t) => t.ui.map && t.ui.map.settled, 8000);
+    await sleep(300);
+    const m = sm.ui.map;
+    if (m.here !== "post" || m.here_room !== "Z1") fail(`plan: «Вы здесь» should be the post office (Z1), got ${m.here}/${m.here_room}`);
+    if (!m.labels.olkhovka || m.labels.olkhovka.visible) fail("plan: Olkhovka must be hidden before a visit");
+    await shot("13_plan_open");
+    await page.keyboard.press("Escape");
+    await waitFor("plan closed (Esc)", (t) => !t.ui.map_open, 6000);
+    await click("Journal", (await state()).ui.buttons.JournalButton);
+    const sj = await waitFor("journal with «План»", (t) => t.ui.journal_open && t.ui.buttons.JournalPlan, 6000);
+    await sleep(300);
+    await shot("14_journal_plan_button");
+    await click("Journal → План", sj.ui.buttons.JournalPlan);
+    await waitFor("plan from the journal", (t) => t.ui.map_open && t.ui.map && t.ui.map.settled, 8000);
+    await click("click closes the plan", { x: 960, y: 540 });
+    await waitFor("back in the journal", (t) => !t.ui.map_open && t.ui.journal_open, 6000);
+    await click("Close journal", (await state()).ui.buttons.CloseJournal);
+    await waitFor("journal closed", (t) => !t.ui.journal_open, 5000);
+  };
+
   try {
     if (ONLY !== "map") {
       // --- Empty bag, fonts in the top bar ---
@@ -206,6 +237,7 @@ async function main() {
       await shot("08_menu");
       await click("Close menu", (await state()).ui.buttons.CloseMenu);
       await waitFor("menu closed", (t) => !t.ui.menu_open, 5000);
+      await mapFrames();
       await page.close();
 
       // --- 1280×720: the dialogue must read at this size ---
@@ -227,23 +259,7 @@ async function main() {
       await shot("11_bag_1280x720");
     }
 
-    // --- Zarechye plan (if this build has it) ---
-    const sm = await state();
-    if (sm.hotspots && sm.hotspots.plan && sm.ui && "map_open" in sm.ui) {
-      if (scale !== 1) { await page.close(); page = await open(1920, 1080); scale = 1; }
-      await useHotspot("plan");
-      await waitFor("plan open", (t) => t.ui.map_open, 8000);
-      await sleep(150);
-      await shot("12_plan_zoom_in");
-      await waitFor("plan settled", (t) => t.ui.map && t.ui.map.settled, 6000);
-      await sleep(200);
-      const m = (await state()).ui.map;
-      if (m.here !== "Z1") fail(`plan: «вы здесь» should be Z1, got ${m.here}`);
-      if ((m.labels || {}).O1 && m.labels.O1.visible) fail("plan: Olkhovka (O1) must be hidden before a visit");
-      await shot("13_plan_open");
-      await page.keyboard.press("Escape");
-      await waitFor("plan closed", (t) => !t.ui.map_open, 6000);
-    }
+    if (ONLY === "map") await mapFrames();
   } catch (e) {
     fail(`exception: ${e.stack || e.message}`);
     try { await shot("error"); } catch (_) {}

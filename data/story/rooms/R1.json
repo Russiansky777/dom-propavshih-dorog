@@ -17,7 +17,7 @@
   "props": [],
   "hotspots": [
     {
-      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [1140, 440, 130, 300], "stand": [1200, 820], "color": "#6a8aa0", "draw": false, "image": "res://assets/characters/pelageya/front.png", "pick_priority": 2,
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [1140, 440, 130, 300], "stand": [950, 800], "_stand_note": "слева от Пелагеи у корня причала: в разговоре видны обе (стоянка прямо перед ней закрывала её)", "color": "#6a8aa0", "draw": false, "image": "res://assets/characters/pelageya/front.png", "pick_priority": 2,
       "talk": {"scene": "M02", "after_text": "@R1.pelageya.after"}
     },
     {

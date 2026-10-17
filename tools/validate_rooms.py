@@ -324,6 +324,8 @@ for rid, room in rooms.items():
         sx, sy = h["stand"]
         npc_factor = 1.0
         actor_path = GAME_DIR / "data" / "actors" / f"{h.get('id')}.json"
+        if not actor_path.exists() and "image" not in h:
+            continue  # фигуры нет (Тихон пока невидимый хотспот на печи) — закрывать нечего
         if actor_path.exists():
             npc_factor = float(load(actor_path).get("npc", {}).get("scale_factor", 1.0))
         hw = aref9["figure_half_width_px"]

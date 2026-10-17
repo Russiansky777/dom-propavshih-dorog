@@ -46,6 +46,8 @@ var menu_panel: PanelContainer
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
 var fade: ColorRect
 var hover_label: Label
+var map_view: ZarechyeMap       # the Zarechye plan up close (hotspot panel / journal «План»)
+var journal_plan_button: Button
 var music_slider: HSlider               # menu: music volume 0–100 % (MusicDirector, user://settings.cfg)
 var music_value_label: Label
 var sfx_slider: HSlider                 # menu: sound effects volume 0–100 % (SfxDirector, user://settings.cfg)
@@ -72,6 +74,7 @@ func _ready() -> void:
 	GameState.state_reset.connect(func(): bag.cancel_flights())
 	GameState.state_loaded.connect(func(_s): bag.cancel_flights())
 	GameState.hint_shown.connect(show_hint)
+	StoryRunner.panel_requested.connect(_on_panel_requested)
 	RoomManager.room_changed.connect(_on_room_changed)
 	_render_inventory()
 	_render_dialogue()
@@ -242,10 +245,19 @@ func _build() -> void:
 	journal_facts_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	journal_facts_label.theme_type_variation = &"JournalText"
 	jv.add_child(journal_facts_label)
+	var jbuttons := HBoxContainer.new()
+	jbuttons.add_theme_constant_override("separation", 12)
+	jv.add_child(jbuttons)
 	var jclose := _button(StoryData.text("@ui.close"), 200)
 	jclose.name = "CloseJournal"
+	jclose.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	jclose.pressed.connect(toggle_journal)
-	jv.add_child(jclose)
+	jbuttons.add_child(jclose)
+	# «План»: the Zarechye plan, once it has been looked at on the post-office wall (map journal_flag).
+	journal_plan_button = _button(StoryData.text("@ui.button_plan"), 220)
+	journal_plan_button.name = "JournalPlan"
+	journal_plan_button.pressed.connect(_open_map_from_journal)
+	jbuttons.add_child(journal_plan_button)
 
 	# Menu panel (save slots)
 	menu_panel = PanelContainer.new()
@@ -353,6 +365,11 @@ func _build() -> void:
 	hover_label.theme_type_variation = &"HoverLabel"
 	hover_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(hover_label)
+
+	# The Zarechye plan: above the panels, catches every click while open.
+	map_view = ZarechyeMap.new()
+	map_view.closed.connect(_on_map_closed)
+	add_child(map_view)
 
 	# Flying icons ("item flies into the bag"): above the panels, under the fade.
 	fx_layer = Control.new()
@@ -494,12 +511,43 @@ func _on_hint_pressed() -> void:
 	StoryRunner.next_hint()
 
 
+# --- The Zarechye plan ---------------------------------------------------------------
+
+## A hotspot with `panel` (rooms data) was clicked: the plan rides in from where it hangs on the wall.
+func _on_panel_requested(panel_id: String, source: Node) -> void:
+	if panel_id != map_view.panel_id():
+		push_warning("GameUi: unknown panel '%s'" % panel_id)
+		return
+	var src := Rect2()
+	if source != null and is_instance_valid(source) and source.get("data") is Dictionary:
+		var r: Array = (source.get("data") as Dictionary).get("rect", [])
+		if r.size() == 4:
+			src = Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
+	_set_hover(null)
+	map_view.open_from(src)
+
+
+func _open_map_from_journal() -> void:
+	if not map_view.available_in_journal():
+		return
+	var from := journal_plan_button.get_global_rect()
+	journal_panel.visible = false
+	_update_modal()
+	map_view.open_from(from, true)
+
+
+func _on_map_closed(reopen_journal: bool) -> void:
+	if reopen_journal and not journal_panel.visible:
+		toggle_journal()
+
+
 func toggle_journal() -> void:
 	if StoryRunner.is_busy() and not journal_panel.visible:
 		return
 	journal_panel.visible = not journal_panel.visible
 	menu_panel.visible = false
 	if journal_panel.visible:
+		journal_plan_button.visible = map_view.available_in_journal()
 		journal_goal_label.text = StoryRunner.journal_goal()
 		var facts := StoryRunner.journal_facts()
 		journal_facts_label.text = "\n".join(PackedStringArray(facts.map(func(f): return "• " + f))) if not facts.is_empty() else StoryData.text("@ui.journal_empty")
@@ -603,12 +651,12 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(_delta: float) -> void:
 	if StoryRunner.selected_item != "":
 		_update_cursor_item()
-		if modal.visible:
+		if modal.visible or map_view.visible:
 			cursor_item.visible = false
 	elif cursor_item.visible:
 		cursor_item.visible = false
 	var room := RoomManager.current_room
-	if room == null or not is_instance_valid(room) or StoryRunner.is_busy() or modal.visible:
+	if room == null or not is_instance_valid(room) or StoryRunner.is_busy() or modal.visible or map_view.visible:
 		_set_hover(null)
 		return
 	var mouse := room.get_global_mouse_position()
@@ -656,11 +704,14 @@ func _on_loop_transition(_spec: Dictionary) -> void:
 
 func probe_positions() -> Dictionary:
 	var out := {"buttons": {}, "inventory": {}, "options": {}, "dialogue_open": dialogue.visible,
+		"map_open": map_view.visible, "map": map_view.probe() if map_view.visible else {},
 		"journal_open": journal_panel.visible, "menu_open": menu_panel.visible}
 	for b in [journal_button, hint_button, menu_button]:
 		out["buttons"][b.name] = _center(b)
 	if journal_panel.visible:
 		out["buttons"]["CloseJournal"] = _center(journal_panel.find_child("CloseJournal", true, false))
+		if journal_plan_button.visible:
+			out["buttons"]["JournalPlan"] = _center(journal_plan_button)
 	if menu_panel.visible:
 		for slot in slot_rows.keys():
 			out["buttons"]["Save" + slot] = _center(slot_rows[slot]["save"])
