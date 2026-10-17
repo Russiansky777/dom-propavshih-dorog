@@ -1,204 +1,67 @@
 {
   "id": "O1",
-  "background": {
-    "kind": "interior",
-    "wall": "#5a6c80",
-    "floor": "#6f7d8c",
-    "accent": "#8aa0b8",
-    "horizon": 640
-  },
-  "spawns": {
-    "default": [960, 920],
-    "from_H3": [150, 730],
-    "from_O2": [1730, 900]
-  },
-  "props": [
-    {
-      "id": "desks_front",
-      "label": "@O1.desks_front.label",
-      "rect": [600, 860, 720, 120],
-      "color": "#4a5666",
-      "occluder": true
-    }
+  "_art": "Фон O1_bg.png (зимний класс): доска, учительский стол с ящиком и мелом, мешок у левой двери, тетради на лавке справа, картинка с птицей, две двери (левая — обратно в H3, правая — на крыльцо). Слой O1_fg_desks.png — парты на переднем плане (окклюдер z=1080, пол перед ними не проходим). Состояние O1_state_board_written.png — надпись мелом при wrote_on_board.",
+  "background": {"kind": "interior", "image": "res://assets/rooms/O1/bg.png", "wall": "#5a6c80", "floor": "#6f7d8c", "accent": "#8aa0b8", "horizon": 700},
+  "walkable": [[200, 700], [1800, 700], [1900, 1070], [1810, 1070], [1810, 780], [350, 780], [350, 1070], [20, 1070]],
+  "depth": {"top_y": 700, "bottom_y": 1070, "scale_top": 1.3, "scale_bottom": 2.0},
+  "_depth_note": "двери ≈ 610 px ≈ 2 м у стены → рост Агаты ≈ 1.3×337 ≈ 440 px",
+  "layers": [
+    {"id": "board_written", "image": "res://assets/rooms/O1/state_board_written.png", "if": ["wrote_on_board"]},
+    {"id": "desks", "image": "res://assets/rooms/O1/fg_desks.png", "occluder": true, "z": 1080}
   ],
+  "spawns": {"default": [1000, 740], "from_H3": [450, 760], "from_O2": [1760, 740]},
+  "props": [],
   "hotspots": [
     {
-      "id": "board",
-      "kind": "object",
-      "label": "@O1.board.label",
-      "rect": [780, 220, 520, 260],
-      "stand": [1040, 710],
-      "color": "#2e3e3a",
-      "states": [
-        {
-          "if": ["wrote_on_board"],
-          "label": "@O1.board.label_written",
-          "color": "#3a4e48"
-        }
-      ],
-      "use": {
-        "sets": ["o1_seen_board_task"],
-        "text": "@O1.board.use",
-        "once_flag": "o1_seen_board_task",
-        "scene": "M06"
-      },
-      "item_use": {
-        "chalk": {
-          "sets": ["wrote_on_board"],
-          "text": "@O1.board.chalk",
-          "scene": "M08",
-          "once_flag": "wrote_on_board"
-        }
-      },
+      "id": "board", "kind": "object", "label": "@O1.board.label", "rect": [860, 170, 480, 310], "stand": [1100, 740], "color": "#2e3e3a", "draw": false,
+      "states": [{"if": ["wrote_on_board"], "label": "@O1.board.label_written"}],
+      "use": {"sets": ["o1_seen_board_task"], "text": "@O1.board.use", "once_flag": "o1_seen_board_task", "scene": "M06"},
+      "item_use": {"chalk": {"sets": ["wrote_on_board"], "text": "@O1.board.chalk", "scene": "M08", "once_flag": "wrote_on_board"}},
       "look": "@O1.board.look"
     },
     {
-      "id": "sack",
-      "kind": "object",
-      "label": "@O1.sack.label",
-      "rect": [300, 500, 160, 140],
-      "stand": [380, 710],
-      "color": "#8a7a5a",
-      "use": {
-        "sets": ["o1_seen_sack"],
-        "text": "@O1.sack.use",
-        "once_flag": "o1_seen_sack",
-        "scene": "M06"
-      },
+      "id": "sack", "kind": "object", "label": "@O1.sack.label", "rect": [330, 570, 130, 150], "pick_priority": 2, "stand": [470, 760], "color": "#8a7a5a", "draw": false,
+      "use": {"sets": ["o1_seen_sack"], "text": "@O1.sack.use", "once_flag": "o1_seen_sack", "scene": "M06"},
       "look": "@O1.sack.look"
     },
     {
-      "id": "notebooks",
-      "kind": "object",
-      "label": "@O1.notebooks.label",
-      "rect": [1420, 520, 180, 110],
-      "stand": [1510, 710],
-      "color": "#c8c0a8",
-      "use": {
-        "sets": ["o1_seen_notebooks"],
-        "text": "@O1.notebooks.use",
-        "once_flag": "o1_seen_notebooks",
-        "scene": "M06"
-      },
+      "id": "notebooks", "kind": "object", "label": "@O1.notebooks.label", "rect": [1460, 480, 230, 190], "stand": [1560, 740], "color": "#c8c0a8", "draw": false,
+      "use": {"sets": ["o1_seen_notebooks"], "text": "@O1.notebooks.use", "once_flag": "o1_seen_notebooks", "scene": "M06"},
       "look": "@O1.notebooks.look"
     },
     {
-      "id": "teacher_drawer",
-      "kind": "object",
-      "label": "@O1.teacher_drawer.label",
-      "rect": [480, 540, 240, 100],
-      "stand": [600, 710],
-      "color": "#5a4a3a",
-      "states": [
-        {
-          "if": ["has_invoice_chalk"],
-          "label": "@O1.teacher_drawer.label_open"
-        }
-      ],
-      "use": {
-        "gives": ["invoice_chalk", "photo_school_pier"],
-        "text": "@O1.teacher_drawer.use",
-        "once_flag": "has_invoice_chalk",
-        "scene": "M07"
-      },
+      "id": "teacher_drawer", "kind": "object", "label": "@O1.teacher_drawer.label", "rect": [560, 500, 310, 110], "stand": [720, 745], "color": "#5a4a3a", "draw": false,
+      "states": [{"if": ["has_invoice_chalk"], "label": "@O1.teacher_drawer.label_open"}],
+      "use": {"gives": ["invoice_chalk", "photo_school_pier"], "text": "@O1.teacher_drawer.use", "once_flag": "has_invoice_chalk", "scene": "M07"},
       "look": "@O1.teacher_drawer.look"
     },
     {
-      "id": "chalk",
-      "kind": "pickup",
-      "label": "@O1.chalk.label",
-      "rect": [740, 560, 60, 40],
-      "stand": [770, 710],
-      "color": "#f0f0e8",
+      "id": "chalk", "kind": "pickup", "label": "@O1.chalk.label", "rect": [590, 470, 90, 30], "stand": [640, 745], "color": "#f0f0e8", "draw": false,
       "hidden_if": ["has_chalk"],
-      "use": {
-        "gives": ["chalk"],
-        "text": "@O1.chalk.use",
-        "scene": "M08"
-      },
+      "use": {"gives": ["chalk"], "text": "@O1.chalk.use", "scene": "M08"},
       "look": "@O1.chalk.look"
     },
     {
-      "id": "bird_drawing",
-      "kind": "object",
-      "label": "@O1.bird_drawing.label",
-      "rect": [1640, 300, 140, 110],
-      "stand": [1700, 710],
-      "color": "#e0d8c0",
+      "id": "bird_drawing", "kind": "object", "label": "@O1.bird_drawing.label", "rect": [1440, 150, 210, 300], "stand": [1540, 740], "color": "#e0d8c0", "draw": false,
       "visible_if": ["seen_class_traces"],
-      "states": [
-        {
-          "if": ["v03_marked"],
-          "label": "@O1.bird_drawing.label_marked"
-        }
-      ],
-      "choice": {
-        "prompt": "@O1.bird_drawing.prompt",
-        "scene": "V03",
-        "once_any": true,
+      "states": [{"if": ["v03_marked"], "label": "@O1.bird_drawing.label_marked"}],
+      "choice": {"prompt": "@O1.bird_drawing.prompt", "scene": "V03", "once_any": true,
         "options": [
-          {
-            "id": "mark",
-            "label": "@O1.bird_drawing.opt_mark",
-            "sets": "v03_marked"
-          },
-          {
-            "id": "leave",
-            "label": "@O1.bird_drawing.opt_leave",
-            "sets": "v03_left"
-          }
-        ]
-      },
+          {"id": "mark", "label": "@O1.bird_drawing.opt_mark", "sets": "v03_marked"},
+          {"id": "leave", "label": "@O1.bird_drawing.opt_leave", "sets": "v03_left"}
+        ]},
       "look": "@O1.bird_drawing.look"
     }
   ],
   "exits": [
-    {
-      "to": "H3",
-      "label": "@O1.exit_H3.label",
-      "side": "back",
-      "x": 140,
-      "spawn": "from_O1",
-      "closed_text": "@O1.exit_H3.closed"
-    },
-    {
-      "to": "O2",
-      "label": "@O1.exit_O2.label",
-      "side": "right",
-      "spawn": "from_O1"
-    }
+    {"to": "H3", "label": "@O1.exit_H3.label", "rect": [380, 90, 130, 610], "stand": [450, 740], "spawn": "from_O1", "closed_text": "@O1.exit_H3.closed", "draw": false},
+    {"to": "O2", "label": "@O1.exit_O2.label", "rect": [1790, 90, 130, 610], "stand": [1790, 740], "spawn": "from_O1", "draw": false}
   ],
   "scenes": {
-    "M06": {
-      "complete_when": [
-        {
-          "any_n": 2,
-          "flags": ["o1_seen_sack", "o1_seen_notebooks", "o1_seen_board_task"]
-        }
-      ]
-    },
-    "M07": {
-      "complete_when": [
-        {
-          "all": ["has_invoice_chalk"]
-        }
-      ]
-    },
-    "M08": {
-      "complete_when": [
-        {
-          "all": ["observed_path_loop", "wrote_on_board"]
-        }
-      ]
-    },
-    "V03": {
-      "complete_when": [
-        {
-          "any": ["v03_marked", "v03_left"]
-        }
-      ],
-      "complete_text": "@O1.v03.done"
-    }
+    "M06": {"complete_when": [{"any_n": 2, "flags": ["o1_seen_sack", "o1_seen_notebooks", "o1_seen_board_task"]}]},
+    "M07": {"complete_when": [{"all": ["has_invoice_chalk"]}]},
+    "M08": {"complete_when": [{"all": ["observed_path_loop", "wrote_on_board"]}]},
+    "V03": {"complete_when": [{"any": ["v03_marked", "v03_left"]}], "complete_text": "@O1.v03.done"}
   },
   "flags": {
     "o1_seen_sack": "Замечен залатанный мешок в классе",

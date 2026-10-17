@@ -1,59 +1,29 @@
 {
   "id": "H4",
-  "background": {
-    "kind": "interior",
-    "wall": "#4e4238",
-    "floor": "#6a5a44",
-    "accent": "#8a7a5a",
-    "horizon": 640
-  },
-  "spawns": {
-    "default": [960, 920],
-    "from_H1": [960, 1000]
-  },
-  "props": [
-    {
-      "id": "boxes",
-      "label": "@H4.boxes.label",
-      "rect": [1300, 820, 360, 140],
-      "color": "#6a5a44",
-      "occluder": true
-    }
+  "_art": "Фон H4_bg.png (чердак): слуховое окно, сундук слева, слой H4_fg_boxes.png — пустые коробки на переднем плане справа (окклюдер z=1000).",
+  "background": {"kind": "interior", "image": "res://assets/rooms/H4/bg.png", "wall": "#4e4238", "floor": "#6a5a44", "accent": "#8a7a5a", "horizon": 620},
+  "walkable": [[600, 620], [1380, 620], [1500, 700], [1140, 720], [1140, 1000], [1900, 1010], [1910, 1070], [20, 1070], [20, 900], [300, 720]],
+  "depth": {"top_y": 620, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 2.0},
+  "layers": [
+    {"id": "boxes", "image": "res://assets/rooms/H4/fg_boxes.png", "occluder": true, "z": 1000}
   ],
+  "spawns": {"default": [800, 900], "from_H1": [700, 1000]},
+  "props": [],
   "hotspots": [
     {
-      "id": "window",
-      "kind": "object",
-      "label": "@H4.window.label",
-      "rect": [800, 220, 320, 220],
-      "stand": [960, 710],
-      "color": "#9fb8cc",
+      "id": "window", "kind": "object", "label": "@H4.window.label", "rect": [780, 70, 500, 540], "stand": [1020, 680], "color": "#9fb8cc", "draw": false,
       "look": "@H4.window.look"
     },
     {
-      "id": "chest",
-      "kind": "object",
-      "label": "@H4.chest.label",
-      "rect": [300, 480, 300, 160],
-      "stand": [450, 710],
-      "color": "#7a5a3a",
+      "id": "chest", "kind": "object", "label": "@H4.chest.label", "rect": [130, 470, 440, 240], "stand": [560, 740], "color": "#7a5a3a", "draw": false,
       "look": "@H4.chest.look"
     }
   ],
   "exits": [
-    {
-      "to": "H1",
-      "label": "@H4.exit_H1.label",
-      "side": "bottom",
-      "x": 960,
-      "spawn": "from_H4"
-    }
+    {"to": "H1", "label": "@H4.exit_H1.label", "rect": [500, 1000, 400, 80], "stand": [700, 1030], "spawn": "from_H4", "draw": false}
   ],
   "scenes": {
-    "V02": {
-      "trigger": "enter",
-      "complete_text": "@H4.v02.done"
-    }
+    "V02": {"trigger": "enter", "complete_text": "@H4.v02.done"}
   },
   "flags": {}
 }

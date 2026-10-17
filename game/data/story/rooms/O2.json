@@ -1,162 +1,136 @@
 {
   "id": "O2",
+  "_art": "Фон O2_bg.png (школьный двор): крыльцо со ступенями и дверью слева, дерево, калитка справа. Слои: O2_fg_wall.png — угол стены слева (окклюдер z=1080), O2_fg_snow_front.png — сугроб на переднем плане (окклюдер z=1080), состояние O2_state_mitten.png — варежка у ступени при mitten_placed. Снег в воздухе — программный (effects: snow).",
   "background": {
     "kind": "exterior",
+    "image": "res://assets/rooms/O2/bg.png",
     "wall": "#aab8c8",
     "floor": "#c8d0d8",
     "accent": "#6a7a8a",
-    "horizon": 580
+    "horizon": 690
   },
-  "spawns": {
-    "default": [
-      500,
-      900
-    ],
-    "from_O1": [
-      190,
-      900
-    ],
-    "porch": [
-      500,
-      900
-    ],
-    "from_O4": [
-      1730,
-      900
-    ]
+  "walkable": [[880, 700], [1440, 690], [1800, 690], [1910, 760], [1910, 1070], [20, 1070], [20, 820], [420, 760]],
+  "depth": {
+    "top_y": 690,
+    "bottom_y": 1070,
+    "scale_top": 0.75,
+    "scale_bottom": 1.5
   },
-  "props": [
+  "_depth_note": "дверь класса ≈ 370 px ≈ 2 м у крыльца (y≈760) → рост Агаты ≈ 0.8×337 ≈ 270 px",
+  "layers": [
     {
-      "id": "school_wall",
-      "label": "@O2.school_wall.label",
-      "rect": [
-        0,
-        160,
-        760,
-        420
-      ],
-      "color": "#6a7a8a"
+      "id": "wall",
+      "image": "res://assets/rooms/O2/fg_wall.png",
+      "occluder": true,
+      "z": 1080
     },
     {
       "id": "snow_front",
-      "label": "",
-      "rect": [
-        1000,
-        900,
-        500,
-        120
-      ],
-      "color": "#d8e0e8",
-      "occluder": true
+      "image": "res://assets/rooms/O2/fg_snow_front.png",
+      "occluder": true,
+      "z": 1080
+    },
+    {
+      "id": "mitten",
+      "image": "res://assets/rooms/O2/state_mitten.png",
+      "if": ["mitten_placed"]
     }
   ],
+  "effects": [
+    {
+      "id": "snowfall",
+      "type": "snow",
+      "rect": [0, 0, 1920, 1080],
+      "z": 1079,
+      "amount": 220
+    }
+  ],
+  "spawns": {
+    "default": [900, 850],
+    "from_O1": [560, 820],
+    "porch": [560, 820],
+    "from_O4": [1600, 780]
+  },
+  "props": [],
   "hotspots": [
     {
       "id": "tree",
       "kind": "object",
       "label": "@O2.tree.label",
-      "rect": [
-        1100,
-        120,
-        200,
-        460
-      ],
-      "stand": [
-        1200,
-        700
-      ],
+      "rect": [1090, 0, 220, 630],
+      "stand": [1200, 720],
       "color": "#4a5a4a",
-      "look": "@O2.tree.look"
+      "look": "@O2.tree.look",
+      "draw": false
     },
     {
       "id": "porch_step",
       "kind": "object",
       "label": "@O2.porch_step.label",
-      "rect": [
-        300,
-        520,
-        260,
-        60
-      ],
-      "stand": [
-        430,
-        700
-      ],
+      "rect": [420, 600, 460, 160],
+      "stand": [640, 800],
       "color": "#8a8a80",
       "states": [
         {
-          "if": [
-            "mitten_placed"
-          ],
+          "if": ["mitten_placed"],
           "label": "@O2.porch_step.label_mitten",
           "color": "#b06060"
         }
       ],
       "item_use": {
         "mitten": {
-          "sets": [
-            "mitten_placed"
-          ],
+          "sets": ["mitten_placed"],
           "text": "@O2.porch_step.mitten",
           "scene": "M08",
           "once_flag": "mitten_placed"
         }
       },
-      "look": "@O2.porch_step.look"
+      "look": "@O2.porch_step.look",
+      "draw": false
     },
     {
       "id": "window_other",
       "kind": "object",
       "label": "@O2.window_other.label",
-      "rect": [
-        80,
-        260,
-        200,
-        160
-      ],
-      "stand": [
-        180,
-        700
-      ],
+      "rect": [70, 190, 200, 360],
+      "stand": [300, 830],
       "color": "#9fb8cc",
-      "visible_if": [
-        "observed_path_loop"
-      ],
-      "look": "@O2.window_other.look"
+      "visible_if": ["observed_path_loop"],
+      "look": "@O2.window_other.look",
+      "draw": false
     }
   ],
   "exits": [
     {
       "to": "O1",
       "label": "@O2.exit_O1.label",
-      "side": "left",
-      "spawn": "from_O2"
+      "spawn": "from_O2",
+      "draw": false,
+      "rect": [430, 230, 220, 350],
+      "stand": [560, 800]
     },
     {
       "to": "O4",
       "label": "@O2.exit_O4.label",
-      "side": "right",
       "spawn": "from_O2",
       "closed_text": "@O2.exit_O4.loop",
       "on_closed": {
         "type": "loop",
         "spawn": "porch",
-        "sets": [
-          "observed_path_loop"
-        ],
+        "sets": ["observed_path_loop"],
         "scene": "M08",
         "fade": true
-      }
+      },
+      "draw": false,
+      "rect": [1450, 410, 360, 280],
+      "stand": [1600, 760]
     }
   ],
   "scenes": {
     "M08": {
       "complete_when": [
         {
-          "all": [
-            "observed_path_loop",
-            "wrote_on_board"
-          ]
+          "all": ["observed_path_loop", "wrote_on_board"]
         }
       ]
     }

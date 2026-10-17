@@ -1,179 +1,78 @@
 {
   "id": "H3",
-  "background": {
-    "kind": "interior",
-    "wall": "#66584a",
-    "floor": "#846c4c",
-    "accent": "#a88c60",
-    "horizon": 640
-  },
-  "spawns": {
-    "default": [960, 920],
-    "from_H1": [1730, 900],
-    "from_Z2": [700, 1000],
-    "from_O1": [960, 730],
-    "from_R4": [1500, 730]
-  },
+  "_art": "Фон H3_bg.png (галерея порогов): зеркало ЗГ слева, пустая ниша-рама в центре (школьная дверь), фото пристани, вторая рама справа, проход в комнату справа. Состояния: H3_state_frame_empty.png (рама с гнёздами + прислонённое полотно) пока дверь не установлена, H3_state_door_installed.png после; оба с подгонкой offset/scale под нишу.",
+  "background": {"kind": "interior", "image": "res://assets/rooms/H3/bg.png", "wall": "#66584a", "floor": "#846c4c", "accent": "#a88c60", "horizon": 720},
+  "walkable": [[260, 720], [1800, 720], [1910, 1070], [20, 1070]],
+  "depth": {"top_y": 720, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 1.9},
+  "_depth_note": "ниша ≈ 580 px ≈ 2.1 м у стены → рост Агаты ≈ 1.2×337 ≈ 405 px",
+  "layers": [
+    {"id": "frame_empty", "image": "res://assets/rooms/H3/state_frame_empty.png", "offset": [161, 82], "scale": 0.77, "unless": ["door_school_installed"]},
+    {"id": "door_installed", "image": "res://assets/rooms/H3/state_door_installed.png", "offset": [161, 82], "scale": 0.77, "if": ["door_school_installed"]}
+  ],
+  "spawns": {"default": [960, 920], "from_H1": [1730, 900], "from_Z2": [700, 1000], "from_O1": [770, 810], "from_R4": [1470, 800]},
   "props": [],
   "hotspots": [
     {
-      "id": "school_door",
-      "kind": "object",
-      "label": "@H3.school_door.label",
-      "rect": [740, 200, 440, 440],
-      "stand": [960, 720],
-      "color": "#7a5a3a",
+      "id": "school_door", "kind": "object", "label": "@H3.school_door.label", "rect": [330, 140, 300, 560], "stand": [560, 800], "color": "#7a5a3a", "draw": false,
       "pick_priority": 2,
       "hidden_if": ["door_school_installed"],
-      "states": [
-        {
-          "if": ["seen_school_door"],
-          "label": "@H3.school_door.label_seen"
-        }
-      ],
-      "use": {
-        "sets": ["seen_school_door"],
-        "text": "@H3.school_door.use",
-        "once_flag": "seen_school_door",
-        "scene": "M04"
-      },
-      "item_use": {
-        "door_hinges": {
-          "puzzle": true
-        }
-      },
+      "states": [{"if": ["seen_school_door"], "label": "@H3.school_door.label_seen"}],
+      "use": {"sets": ["seen_school_door"], "text": "@H3.school_door.use", "once_flag": "seen_school_door", "scene": "M04"},
+      "item_use": {"door_hinges": {"puzzle": true}},
       "puzzle": {
-        "id": "school_door_fit",
-        "type": "match_marks",
-        "title": "@H3.puzzle.title",
-        "requires": {
-          "flags": ["done_M04"],
-          "items": ["door_hinges"]
-        },
+        "id": "school_door_fit", "type": "match_marks", "title": "@H3.puzzle.title",
+        "requires": {"flags": ["done_M04"], "items": ["door_hinges"]},
         "fail_text": "@H3.puzzle.need",
         "intro": "@H3.puzzle.intro",
+        "art": {
+          "_note": "Слои крупного плана из assets/incoming/M05_*.png (1672x941 → 1920x1080, затем offset/scale). Гнёзда — на правой стойке рамы, зарубки — на брусе; верная зарубка — третья (индекс 2).",
+          "frame": {"image": "res://assets/puzzle/M05/frame.png", "offset": [5, 46], "scale": 0.75},
+          "door_leaf": {"image": "res://assets/puzzle/M05/door_leaf.png", "offset": [5, 46], "scale": 0.75},
+          "beam": {"image": "res://assets/puzzle/M05/beam.png", "offset": [5, 177], "scale": 0.75},
+          "drawing": {"image": "res://assets/puzzle/M05/drawing.png", "offset": [1353, 31], "scale": 0.42},
+          "hinge": {"image": "res://assets/puzzle/M05/hinge.png", "scale": 0.22},
+          "opening": [560, 81, 325, 736],
+          "tray": [1400, 500, 440, 150]
+        },
         "slots": [
-          {
-            "id": "top",
-            "label": "@H3.puzzle.slot_top",
-            "pos": [1120, 300],
-            "correct": true
-          },
-          {
-            "id": "middle",
-            "label": "@H3.puzzle.slot_middle",
-            "pos": [1120, 520],
-            "correct": false
-          },
-          {
-            "id": "bottom",
-            "label": "@H3.puzzle.slot_bottom",
-            "pos": [1120, 740],
-            "correct": true
-          }
+          {"id": "top", "label": "@H3.puzzle.slot_top", "pos": [916, 196], "correct": true},
+          {"id": "middle", "label": "@H3.puzzle.slot_middle", "pos": [916, 406], "correct": false},
+          {"id": "bottom", "label": "@H3.puzzle.slot_bottom", "pos": [916, 616], "correct": true}
         ],
         "pieces": [
-          {
-            "id": "hinge_1",
-            "label": "@H3.puzzle.hinge"
-          },
-          {
-            "id": "hinge_2",
-            "label": "@H3.puzzle.hinge"
-          }
+          {"id": "hinge_1", "label": "@H3.puzzle.hinge"},
+          {"id": "hinge_2", "label": "@H3.puzzle.hinge"}
         ],
-        "marks": {
-          "label": "@H3.puzzle.marks",
-          "positions": [[620, 900], [740, 900], [860, 900], [980, 900]],
-          "correct": 2,
-          "drawing_label": "@H3.puzzle.drawing"
-        },
+        "marks": {"label": "@H3.puzzle.marks", "positions": [[516, 900], [666, 900], [819, 900], [969, 900]], "correct": 2, "drawing_label": "@H3.puzzle.drawing"},
         "check_label": "@H3.puzzle.check",
         "close_label": "@ui.close",
         "error_text": "@H3.puzzle.error",
         "error_hint_after": 2,
         "success_text": "@H3.puzzle.success",
-        "success": {
-          "scene": "M05",
-          "view": "winter"
-        }
+        "success": {"scene": "M05", "view": "winter"}
       },
       "look": "@H3.school_door.look"
     },
     {
-      "id": "mirror_home",
-      "kind": "object",
-      "label": "@H3.mirror_home.label",
-      "rect": [300, 240, 300, 220],
-      "stand": [450, 720],
-      "color": "#9fb4c8",
-      "use": {
-        "sets": ["seen_mirror_home"],
-        "text": "@H3.mirror_home.use",
-        "once_flag": "seen_mirror_home",
-        "scene": "M04"
-      },
+      "id": "mirror_home", "kind": "object", "label": "@H3.mirror_home.label", "rect": [70, 90, 160, 500], "stand": [300, 800], "color": "#9fb4c8", "draw": false,
+      "use": {"sets": ["seen_mirror_home"], "text": "@H3.mirror_home.use", "once_flag": "seen_mirror_home", "scene": "M04"},
       "look": "@H3.mirror_home.look"
     },
     {
-      "id": "photo_school",
-      "kind": "object",
-      "label": "@H3.photo_school.label",
-      "rect": [1260, 300, 120, 90],
-      "stand": [1320, 720],
-      "color": "#e8e0c8",
+      "id": "photo_school", "kind": "object", "label": "@H3.photo_school.label", "rect": [1060, 250, 150, 150], "stand": [1130, 790], "color": "#e8e0c8", "draw": false,
       "look": "@H3.photo_school.look"
     }
   ],
   "exits": [
-    {
-      "to": "H1",
-      "label": "@H3.exit_H1.label",
-      "side": "right",
-      "spawn": "from_H3"
-    },
-    {
-      "to": "Z2",
-      "label": "@H3.exit_Z2.label",
-      "side": "bottom",
-      "x": 700,
-      "spawn": "from_H3"
-    },
-    {
-      "to": "O1",
-      "label": "@H3.exit_O1.label",
-      "rect": [760, 200, 400, 440],
-      "stand": [960, 720],
-      "spawn": "from_H3",
-      "closed_text": "@H3.exit_O1.closed",
-      "states": [
-        {
-          "if": ["door_school_installed"],
-          "label": "@H3.exit_O1.label_open",
-          "color": "#8fb0d0"
-        }
-      ]
-    },
-    {
-      "to": "R4",
-      "label": "@H3.exit_R4.label",
-      "rect": [1420, 200, 360, 440],
-      "stand": [1600, 720],
-      "spawn": "from_H3",
-      "closed_text": "@H3.exit_R4.closed"
-    }
+    {"to": "H1", "label": "@H3.exit_H1.label", "rect": [1800, 560, 120, 520], "stand": [1810, 900], "spawn": "from_H3", "draw": false},
+    {"to": "Z2", "label": "@H3.exit_Z2.label", "side": "bottom", "x": 700, "spawn": "from_H3", "draw": false},
+    {"to": "O1", "label": "@H3.exit_O1.label", "rect": [610, 140, 330, 580], "stand": [770, 790], "spawn": "from_H3", "closed_text": "@H3.exit_O1.closed", "draw": false,
+      "states": [{"if": ["door_school_installed"], "label": "@H3.exit_O1.label_open"}]},
+    {"to": "R4", "label": "@H3.exit_R4.label", "rect": [1300, 160, 340, 560], "stand": [1470, 790], "spawn": "from_H3", "closed_text": "@H3.exit_R4.closed", "draw": false}
   ],
   "scenes": {
-    "M05": {
-      "trigger": "puzzle:school_door"
-    },
-    "M04": {
-      "complete_when": [
-        {
-          "all": ["seen_school_door", "seen_workshop", "has_door_hinges"]
-        }
-      ]
-    }
+    "M05": {"trigger": "puzzle:school_door"},
+    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges"]}]}
   },
   "flags": {}
 }

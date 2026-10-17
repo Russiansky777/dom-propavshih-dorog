@@ -529,15 +529,19 @@ func _test_exit_gate() -> void:
 	_check(gs.current_room == "H3", "closed exit must not change the room")
 	sr.advance()
 	await process_frame
-	# Door hotspot is pickable in front of the exit before installation, hidden after.
+	# The leaning door leaf is pickable before installation and hidden after; the frame itself is the exit.
 	var door = rm.current_room.get_node_or_null("Hotspots/school_door")
 	_check(door != null and door.visible, "school_door hotspot should be visible before M05")
-	_check(rm.current_room.pick(e.global_position) == door, "click on the frame should hit the door hotspot before M05")
+	_check(rm.current_room.pick(door.global_position) == door, "click on the leaning leaf should hit the door hotspot before M05")
+	var frame_empty = rm.current_room.get_node_or_null("Layers/frame_empty")
+	var frame_installed = rm.current_room.get_node_or_null("Layers/door_installed")
+	_check(frame_empty != null and frame_empty.visible and frame_installed != null and not frame_installed.visible, "state layers: empty frame visible, installed door hidden before M05")
 	gs.set_flag("door_school_installed", true)
 	await process_frame
 	_check(e.is_open(), "H3→O1 must be open once door_school_installed is set")
 	_check(door != null and not door.visible, "school_door hotspot should hide after installation")
 	_check(rm.current_room.pick(e.global_position) == e, "click on the frame should hit the exit after M05")
+	_check(not frame_empty.visible and frame_installed.visible, "state layers swap when the door is installed")
 	gs.reset()
 	await process_frame
 	_cleanup_m1()
