@@ -1,11 +1,11 @@
 {
-  "_comment": "Озвученные реплики: id = <scene>_<index> (index — позиция в mandatory_lines/lines); закадровые фразы (kind narration, голос narrator): id = ключ текста data/story/text, файл narrator/<ключ>.ogg. Пишет pipeline/voice/eleven_voice.py; игра читает копию (tools/sync_voice.sh) и играет файл, только если sha1 текста совпадает с текущей репликой. stale — реплики больше нет или текст изменён.",
+  "_comment": "Озвученные реплики: id = <scene>_<index> (index — позиция в mandatory_lines/lines); закадровые фразы (kind narration, голос narrator): id = ключ текста data/story/text, файл narrator/<ключ>.ogg; мысли персонажа (data/story/voice.json → narration.by_speaker): id <персонаж>:<ключ>, файл <subdir>/<ключ>.ogg. Пишет pipeline/voice/eleven_voice.py; игра читает копию (tools/sync_voice.sh) и играет файл, только если sha1 текста совпадает с текущей репликой. stale — реплики больше нет или текст изменён.",
   "language": "ru",
   "variant": "",
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-17T23:14:15+00:00",
+  "updated_at": "2026-10-17T23:44:31+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -4236,6 +4236,858 @@
         "sent": {
           "language_code": "ru",
           "seed": 2060086738
+        }
+      }
+    },
+    "agata:H1.cups.prompt": {
+      "kind": "narration",
+      "key": "H1.cups.prompt",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Какая чашка будет моей?",
+      "text_sha1": "bda785779fc076aa8e9bad38da4255bcb51365d0",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/H1.cups.prompt.ogg",
+      "source": "src/agata_thoughts/H1.cups.prompt.mp3",
+      "voice_text": "Какая чашка будет моей?",
+      "voice_sha1": "bda785779fc076aa8e9bad38da4255bcb51365d0",
+      "tags": [],
+      "characters": 23,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 1.663,
+      "lufs": -17.0,
+      "true_peak_db": -4.1,
+      "gain_db": -0.8,
+      "source_lufs": -16.2,
+      "source_true_peak_db": -3.5,
+      "generated_at": "2026-10-17T23:44:10+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "9AM8YG0bWYfYBRp0OQyS",
+        "history_item_id": "TPHUKE9AJIg1UVVrzaUd",
+        "character_cost": "10",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3834693506
+        }
+      }
+    },
+    "agata:H2.bell.use": {
+      "kind": "narration",
+      "key": "H2.bell.use",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Колокол с мельницы, без языка; рядом подписанная коробка. Оставлю его на подвесе — место уже приготовлено.",
+      "text_sha1": "e710ca99893bdb2b1bfde57a68f3e3a4ccb43713",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/H2.bell.use.ogg",
+      "source": "src/agata_thoughts/H2.bell.use.mp3",
+      "voice_text": "Колокол с мельницы, без языка; рядом подписанная коробка. Оставлю его на подвесе — место уже приготовлено.",
+      "voice_sha1": "e710ca99893bdb2b1bfde57a68f3e3a4ccb43713",
+      "tags": [],
+      "characters": 106,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 7.862,
+      "lufs": -16.9,
+      "true_peak_db": -4.2,
+      "gain_db": -0.5,
+      "source_lufs": -16.5,
+      "source_true_peak_db": -3.7,
+      "generated_at": "2026-10-17T23:44:12+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "t8N2qvIwszoUL8R5N4Jo",
+        "history_item_id": "29UcONkVelLCDFzIf16v",
+        "character_cost": "47",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2545571179
+        }
+      }
+    },
+    "agata:H3.mirror_home.use": {
+      "kind": "narration",
+      "key": "H3.mirror_home.use",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "На старом снимке зеркало висит здесь же. В нём — я и галерея за спиной.",
+      "text_sha1": "a199de07e544724b47a5507edbdbc701240476d1",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/H3.mirror_home.use.ogg",
+      "source": "src/agata_thoughts/H3.mirror_home.use.mp3",
+      "voice_text": "[softly] На старом снимке зеркало висит здесь же. В нём — я и галерея за спиной.",
+      "voice_sha1": "079959ff18886bc7522b9dcc2b805f9464ea711f",
+      "tags": [
+        "softly"
+      ],
+      "characters": 80,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 5.639,
+      "lufs": -17.1,
+      "true_peak_db": -3.4,
+      "gain_db": 6.0,
+      "source_lufs": -23.0,
+      "source_true_peak_db": -9.5,
+      "generated_at": "2026-10-17T23:44:16+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "iOw9BgIMWUyYWQM7R3Ph",
+        "history_item_id": "6Z3NVGCObhWhkBDHi1mG",
+        "character_cost": "35",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3194434248
+        }
+      }
+    },
+    "agata:H3.school_door.use": {
+      "kind": "narration",
+      "key": "H3.school_door.use",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Петли и зарубка на брусе совпадают со снимком — дверь из нашей школы. На бирке: «Передача на ремонт до паводка».",
+      "text_sha1": "1987844e1aae62bf1347ba8558b3b8f02538bcb4",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/H3.school_door.use.ogg",
+      "source": "src/agata_thoughts/H3.school_door.use.mp3",
+      "voice_text": "Петли и зарубка на брусе совпадают со снимком — дверь из нашей школы. На бирке: «Передача на ремонт до паводка».",
+      "voice_sha1": "1987844e1aae62bf1347ba8558b3b8f02538bcb4",
+      "tags": [],
+      "characters": 112,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 8.278,
+      "lufs": -17.0,
+      "true_peak_db": -4.8,
+      "gain_db": 0.5,
+      "source_lufs": -17.5,
+      "source_true_peak_db": -5.4,
+      "generated_at": "2026-10-17T23:44:15+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "EHCR4gDFFqERsSD73t26",
+        "history_item_id": "5tYFqIdy5VHNSfdxIT9n",
+        "character_cost": "49",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 530204122
+        }
+      }
+    },
+    "agata:O1.bird_drawing.prompt": {
+      "kind": "narration",
+      "key": "O1.bird_drawing.prompt",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Шапку этой птице нарисовала я. А сапоги ей кто-то добавил после.",
+      "text_sha1": "c90e58f922569a8e64fd31445cf32a6618e40aa9",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/O1.bird_drawing.prompt.ogg",
+      "source": "src/agata_thoughts/O1.bird_drawing.prompt.mp3",
+      "voice_text": "[softly] Шапку этой птице нарисовала я. А сапоги ей кто-то добавил после.",
+      "voice_sha1": "8a6a8086f7169f72772f1e74f2458f9423c08427",
+      "tags": [
+        "softly"
+      ],
+      "characters": 73,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 5.282,
+      "lufs": -17.1,
+      "true_peak_db": -2.3,
+      "gain_db": 6.3,
+      "source_lufs": -23.3,
+      "source_true_peak_db": -8.7,
+      "generated_at": "2026-10-17T23:44:21+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "DWIA6e9Lq3lNiCyWRpZE",
+        "history_item_id": "ek2Jmx7c3w4GXl7MwmvH",
+        "character_cost": "32",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2527271110
+        }
+      }
+    },
+    "agata:O1.board.chalk": {
+      "kind": "narration",
+      "key": "O1.board.chalk",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "В углу доски теперь мой след: «Я была здесь. Агата».",
+      "text_sha1": "6d54d7b365273a913f3265da845bbf2354c70800",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/O1.board.chalk.ogg",
+      "source": "src/agata_thoughts/O1.board.chalk.mp3",
+      "voice_text": "[softly] В углу доски теперь мой след: «Я была здесь. Агата».",
+      "voice_sha1": "631b16b85404c882d80bb08ef8e800af189a2310",
+      "tags": [
+        "softly"
+      ],
+      "characters": 61,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.29,
+      "lufs": -17.0,
+      "true_peak_db": -2.0,
+      "gain_db": 9.7,
+      "source_lufs": -26.7,
+      "source_true_peak_db": -10.8,
+      "generated_at": "2026-10-17T23:44:19+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "felNWf3SF0JfAdKt6zIo",
+        "history_item_id": "ry59dHcO3y0MOmrANaqd",
+        "character_cost": "27",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1949076637
+        }
+      }
+    },
+    "agata:O1.board.use": {
+      "kind": "narration",
+      "key": "O1.board.use",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Задачу довели до ответа. Почерк я не узнаю.",
+      "text_sha1": "1b466dcd16910f1b9ccf04fd267bf73ad47d3e87",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/O1.board.use.ogg",
+      "source": "src/agata_thoughts/O1.board.use.mp3",
+      "voice_text": "Задачу довели до ответа. Почерк я не узнаю.",
+      "voice_sha1": "1b466dcd16910f1b9ccf04fd267bf73ad47d3e87",
+      "tags": [],
+      "characters": 43,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.649,
+      "lufs": -17.0,
+      "true_peak_db": -2.1,
+      "gain_db": 1.3,
+      "source_lufs": -18.3,
+      "source_true_peak_db": -3.2,
+      "generated_at": "2026-10-17T23:44:18+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "FODl79paeAKBP9ifd3xr",
+        "history_item_id": "556IKRHyCXQ93EUmRPfz",
+        "character_cost": "19",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1475685049
+        }
+      }
+    },
+    "agata:O2.exit_O4.loop": {
+      "kind": "narration",
+      "key": "O2.exit_O4.loop",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "За калиткой дорожка свернула — и вот я у другого окна той же школы.",
+      "text_sha1": "b93df8a7b234010341f39545140b235ccc5b5b3f",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/O2.exit_O4.loop.ogg",
+      "source": "src/agata_thoughts/O2.exit_O4.loop.mp3",
+      "voice_text": "За калиткой дорожка свернула — и вот я у другого окна той же школы.",
+      "voice_sha1": "b93df8a7b234010341f39545140b235ccc5b5b3f",
+      "tags": [],
+      "characters": 67,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.861,
+      "lufs": -17.0,
+      "true_peak_db": -4.0,
+      "gain_db": -1.4,
+      "source_lufs": -15.6,
+      "source_true_peak_db": -2.6,
+      "generated_at": "2026-10-17T23:44:27+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "LoVrSVUGoX8Zcs47QAzO",
+        "history_item_id": "Y6GYcchiRC6EF9DDGha4",
+        "character_cost": "29",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1206455670
+        }
+      }
+    },
+    "agata:O2.porch_step.mitten": {
+      "kind": "narration",
+      "key": "O2.porch_step.mitten",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Оставлю свою варежку на ступени. По ней узнаю, сюда ли вернулась.",
+      "text_sha1": "b81ae1b8c874a07463ba06c18386dfdbad0af8fc",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/O2.porch_step.mitten.ogg",
+      "source": "src/agata_thoughts/O2.porch_step.mitten.mp3",
+      "voice_text": "Оставлю свою варежку на ступени. По ней узнаю, сюда ли вернулась.",
+      "voice_sha1": "b81ae1b8c874a07463ba06c18386dfdbad0af8fc",
+      "tags": [],
+      "characters": 65,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.546,
+      "lufs": -17.0,
+      "true_peak_db": -3.1,
+      "gain_db": -2.1,
+      "source_lufs": -14.9,
+      "source_true_peak_db": -1.1,
+      "generated_at": "2026-10-17T23:44:24+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "vBTm8XQmQtYcPVSWyreH",
+        "history_item_id": "6GqXU3gQVVVVaVmknp1d",
+        "character_cost": "29",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2162479124
+        }
+      }
+    },
+    "agata:O2.tree.look": {
+      "kind": "narration",
+      "key": "O2.tree.look",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Помню это дерево ниже. Теперь ветки поднялись над крыльцом.",
+      "text_sha1": "9bea3647f5f83812ef4ae971217fbb620f12aa79",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/O2.tree.look.ogg",
+      "source": "src/agata_thoughts/O2.tree.look.mp3",
+      "voice_text": "[softly] Помню это дерево ниже. Теперь ветки поднялись над крыльцом.",
+      "voice_sha1": "1de0c18123eee03ddb5ee353bdc9d4536b1df2b6",
+      "tags": [
+        "softly"
+      ],
+      "characters": 68,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.414,
+      "lufs": -16.9,
+      "true_peak_db": -3.0,
+      "gain_db": 3.4,
+      "source_lufs": -20.4,
+      "source_true_peak_db": -6.4,
+      "generated_at": "2026-10-17T23:44:22+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "yM1C7hsX9favpaDjcQ77",
+        "history_item_id": "bf0mTW8gIcLSe7uGjePa",
+        "character_cost": "30",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3324318722
+        }
+      }
+    },
+    "agata:O2.window_other.look": {
+      "kind": "narration",
+      "key": "O2.window_other.look",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Окно другое, а школа та же. Дорожка вывела меня сюда.",
+      "text_sha1": "b01bb7354dfb46219317c1d30bd0227fb1eb9dbf",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/O2.window_other.look.ogg",
+      "source": "src/agata_thoughts/O2.window_other.look.mp3",
+      "voice_text": "Окно другое, а школа та же. Дорожка вывела меня сюда.",
+      "voice_sha1": "b01bb7354dfb46219317c1d30bd0227fb1eb9dbf",
+      "tags": [],
+      "characters": 53,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.487,
+      "lufs": -16.9,
+      "true_peak_db": -3.7,
+      "gain_db": -0.1,
+      "source_lufs": -16.9,
+      "source_true_peak_db": -3.7,
+      "generated_at": "2026-10-17T23:44:25+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "R0V81JxvV03RXSWGAxQz",
+        "history_item_id": "OimgIB8fE6NfNOEomjIl",
+        "character_cost": "23",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2132198879
+        }
+      }
+    },
+    "agata:R1.exit_Z2.closed": {
+      "kind": "narration",
+      "key": "R1.exit_Z2.closed",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Тамара всё ещё ждёт меня на почте.",
+      "text_sha1": "45ca6758a5c707a7feb04bcb1f3e2e1b72ef4244",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/R1.exit_Z2.closed.ogg",
+      "source": "src/agata_thoughts/R1.exit_Z2.closed.mp3",
+      "voice_text": "Тамара всё ещё ждёт меня на почте.",
+      "voice_sha1": "45ca6758a5c707a7feb04bcb1f3e2e1b72ef4244",
+      "tags": [],
+      "characters": 34,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.27,
+      "lufs": -17.0,
+      "true_peak_db": -5.7,
+      "gain_db": 0.3,
+      "source_lufs": -17.3,
+      "source_true_peak_db": -6.0,
+      "generated_at": "2026-10-17T23:44:09+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "GDO1mJJvj4NSDxvbokLa",
+        "history_item_id": "31zPb5jggFF02BgwmJz2",
+        "character_cost": "15",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2825636666
+        }
+      }
+    },
+    "agata:Z1.exit_Z4.closed": {
+      "kind": "narration",
+      "key": "Z1.exit_Z4.closed",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Я ещё не поговорила с Тамарой. Ключ у неё.",
+      "text_sha1": "5bc5364829bfdafa2cd974dc98e6ed727f1c5e3b",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/Z1.exit_Z4.closed.ogg",
+      "source": "src/agata_thoughts/Z1.exit_Z4.closed.mp3",
+      "voice_text": "Я ещё не поговорила с Тамарой. Ключ у неё.",
+      "voice_sha1": "5bc5364829bfdafa2cd974dc98e6ed727f1c5e3b",
+      "tags": [],
+      "characters": 42,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.038,
+      "lufs": -17.1,
+      "true_peak_db": -5.7,
+      "gain_db": -0.6,
+      "source_lufs": -16.4,
+      "source_true_peak_db": -5.2,
+      "generated_at": "2026-10-17T23:44:04+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "j7yvhgTfQg0qgnb3Hqhq",
+        "history_item_id": "U5VkMlVTHZFrZMXWpwFe",
+        "character_cost": "18",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3759759741
+        }
+      }
+    },
+    "agata:Z2.exit_M1.closed": {
+      "kind": "narration",
+      "key": "Z2.exit_M1.closed",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Без ключа я и в тётин дом не попаду. Сначала к Тамаре.",
+      "text_sha1": "03b9aa7a902f4bf9917fa20f43f0779fe9444157",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/Z2.exit_M1.closed.ogg",
+      "source": "src/agata_thoughts/Z2.exit_M1.closed.mp3",
+      "voice_text": "Без ключа я и в тётин дом не попаду. Сначала к Тамаре.",
+      "voice_sha1": "03b9aa7a902f4bf9917fa20f43f0779fe9444157",
+      "tags": [],
+      "characters": 54,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.834,
+      "lufs": -17.0,
+      "true_peak_db": -4.2,
+      "gain_db": -0.3,
+      "source_lufs": -16.7,
+      "source_true_peak_db": -4.1,
+      "generated_at": "2026-10-17T23:44:05+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "PzP446bmwzqduPqc8VZZ",
+        "history_item_id": "VlA8IFMNDDWW1OfWuh9e",
+        "character_cost": "24",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1835305651
+        }
+      }
+    },
+    "agata:Z2.exit_R1.closed": {
+      "kind": "narration",
+      "key": "Z2.exit_R1.closed",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Сначала узнаю, что у Тамары. На причал ещё успею.",
+      "text_sha1": "a6c018bf20915eb5575a9efb6a9b7b08d5cba0a8",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/Z2.exit_R1.closed.ogg",
+      "source": "src/agata_thoughts/Z2.exit_R1.closed.mp3",
+      "voice_text": "Сначала узнаю, что у Тамары. На причал ещё успею.",
+      "voice_sha1": "a6c018bf20915eb5575a9efb6a9b7b08d5cba0a8",
+      "tags": [],
+      "characters": 49,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.707,
+      "lufs": -17.0,
+      "true_peak_db": -4.5,
+      "gain_db": -0.8,
+      "source_lufs": -16.2,
+      "source_true_peak_db": -3.7,
+      "generated_at": "2026-10-17T23:44:08+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "JdFzCu4GVZPLeyJEhl0A",
+        "history_item_id": "jLwgYT483AKFvuJ60Fn3",
+        "character_cost": "22",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2690846231
+        }
+      }
+    },
+    "agata:Z2.exit_Z3.closed": {
+      "kind": "narration",
+      "key": "Z2.exit_Z3.closed",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Тамара ждёт меня на почте. Не стану уходить, не поговорив с ней.",
+      "text_sha1": "f771a93723040e6bfc39d27a01c475d1dba01a4e",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/Z2.exit_Z3.closed.ogg",
+      "source": "src/agata_thoughts/Z2.exit_Z3.closed.mp3",
+      "voice_text": "Тамара ждёт меня на почте. Не стану уходить, не поговорив с ней.",
+      "voice_sha1": "f771a93723040e6bfc39d27a01c475d1dba01a4e",
+      "tags": [],
+      "characters": 64,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.216,
+      "lufs": -16.9,
+      "true_peak_db": -3.9,
+      "gain_db": 1.0,
+      "source_lufs": -18.0,
+      "source_true_peak_db": -4.9,
+      "generated_at": "2026-10-17T23:44:07+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "j0LEa1UFAF0IQXwACSZL",
+        "history_item_id": "jqNMmZSZXkIpL0rgrjT1",
+        "character_cost": "28",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2110236900
+        }
+      }
+    },
+    "agata:item.key_house": {
+      "kind": "narration",
+      "key": "item.key_house",
+      "source_text": "ru_bag",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Тамара сберегла его для меня.",
+      "text_sha1": "4ec398cb36b1167b55771a3c3992c0eb22382151",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/item.key_house.ogg",
+      "source": "src/agata_thoughts/item.key_house.mp3",
+      "voice_text": "Тамара сберегла его для меня.",
+      "voice_sha1": "4ec398cb36b1167b55771a3c3992c0eb22382151",
+      "tags": [],
+      "characters": 29,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 1.832,
+      "lufs": -17.0,
+      "true_peak_db": -4.8,
+      "gain_db": 0.8,
+      "source_lufs": -17.8,
+      "source_true_peak_db": -5.6,
+      "generated_at": "2026-10-17T23:44:28+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "rYHTuBfNFlft3oMs62bI",
+        "history_item_id": "88LvhGL2xR1upAo836u9",
+        "character_cost": "13",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 369821676
+        }
+      }
+    },
+    "agata:item.letter_tamara": {
+      "kind": "narration",
+      "key": "item.letter_tamara",
+      "source_text": "ru_bag",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "С этого письма началась моя дорога сюда.",
+      "text_sha1": "f4c8d7ca9e43917e35f90e0c3900db22ba7cdc06",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/item.letter_tamara.ogg",
+      "source": "src/agata_thoughts/item.letter_tamara.mp3",
+      "voice_text": "[softly] С этого письма началась моя дорога сюда.",
+      "voice_sha1": "7218de37db5aaf116af4bbf59d0240909b4c21de",
+      "tags": [
+        "softly"
+      ],
+      "characters": 49,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.956,
+      "lufs": -17.1,
+      "true_peak_db": -5.0,
+      "gain_db": 7.5,
+      "source_lufs": -24.5,
+      "source_true_peak_db": -12.0,
+      "generated_at": "2026-10-17T23:44:29+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "RoKSudV5HshsPoqzoq5v",
+        "history_item_id": "YqckfbJJ6T0vEiwpK05B",
+        "character_cost": "22",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2535572434
+        }
+      }
+    },
+    "agata:item.mitten": {
+      "kind": "narration",
+      "key": "item.mitten",
+      "source_text": "ru_bag",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Своя, шерстяная — ни с чем не спутаю.",
+      "text_sha1": "5922acce808cba24ce78bd85b81508fcfee41350",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/item.mitten.ogg",
+      "source": "src/agata_thoughts/item.mitten.mp3",
+      "voice_text": "Своя, шерстяная — ни с чем не спутаю.",
+      "voice_sha1": "5922acce808cba24ce78bd85b81508fcfee41350",
+      "tags": [],
+      "characters": 37,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.46,
+      "lufs": -17.0,
+      "true_peak_db": -2.7,
+      "gain_db": 0.8,
+      "source_lufs": -17.8,
+      "source_true_peak_db": -3.7,
+      "generated_at": "2026-10-17T23:44:31+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "qGPD77A9RpCQdFCHwaBK",
+        "history_item_id": "eoeJmKAK1ZvAFYyb6g8P",
+        "character_cost": "16",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2825239982
+        }
+      }
+    },
+    "agata:item.pocket_watch": {
+      "kind": "narration",
+      "key": "item.pocket_watch",
+      "source_text": "ru_bag",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Знакомое тиканье, куда бы я ни шла.",
+      "text_sha1": "8f9b0b297c18d5ccf3c1b887c9b9f0684bdc02e1",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/item.pocket_watch.ogg",
+      "source": "src/agata_thoughts/item.pocket_watch.mp3",
+      "voice_text": "[softly] Знакомое тиканье, куда бы я ни шла.",
+      "voice_sha1": "d8c4c92adbef5663f58bf66c6b5c7c373ab8a2c1",
+      "tags": [
+        "softly"
+      ],
+      "characters": 44,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.008,
+      "lufs": -17.7,
+      "true_peak_db": -1.8,
+      "gain_db": 11.3,
+      "source_lufs": -28.3,
+      "source_true_peak_db": -7.3,
+      "generated_at": "2026-10-17T23:44:30+00:00",
+      "run": "39080103639",
+      "api": {
+        "request_id": "eNoMflv54lMtSH6mVKGt",
+        "history_item_id": "LXcBQdNeR8OGa8mvCoyJ",
+        "character_cost": "19",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2716405685
         }
       }
     },

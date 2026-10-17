@@ -1,39 +1,44 @@
-[2026-10-17T23:25:00.575Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-[2026-10-17T23:25:01.011Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
-[2026-10-17T23:25:01.560Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
-[2026-10-17T23:25:06.935Z] OK   web build carries the voice manifest — 109 lines, errors []
-[2026-10-17T23:25:07.639Z] click ui MenuButton at (1846, 40)
-[2026-10-17T23:25:07.851Z] click music slider at 0 % at (665, 612)
-[2026-10-17T23:25:08.016Z] click sound slider at 0 % at (665, 664)
-[2026-10-17T23:25:09.029Z] OK   music and sounds at 0 % for a clean voice measurement — music 0.00, sounds 0.00
-[2026-10-17T23:25:09.029Z] OK   menu shows «Голос» at 100 % — {"h":40,"value":100,"w":649,"x":664,"y":696}
-[2026-10-17T23:25:09.029Z] click CloseMenu at (844, 769)
-[2026-10-17T23:25:10.832Z] OK   before the dialogue the output is silent — -200.0 dBFS, 2 tap(s)
-[2026-10-17T23:25:10.962Z] click hotspot tamara at (1070, 475)
-[2026-10-17T23:25:15.310Z] OK   M01_0: Agata's voice plays with her line — {"line":"M01_0","speaker":"agata","mode":"plain"}
-[2026-10-17T23:25:16.008Z] OK   Agata's voice leaves the page — -11.9 dBFS
-[2026-10-17T23:25:16.217Z] click continue → M01_1 at (960, 1006)
-[2026-10-17T23:25:16.407Z] OK   M01_1: Tamara's voice plays — {"line":"M01_1","speaker":"tamara","length":5.76004552841187}
-[2026-10-17T23:25:17.730Z] OK   Tamara's voice leaves the page (output RMS) — -12.1 dBFS
-[2026-10-17T23:25:17.903Z] OK   music stays ducked while she speaks — duck -5.00 dB
-[2026-10-17T23:25:19.264Z] click continue mid-line → M01_2 at (960, 982)
-[2026-10-17T23:25:19.490Z] OK   the click cuts Tamara mid-line — at 1.28 of 5.76 s; [{"kind":"stop","line":"M01_1","ms":18934,"reason":"advance","speaker":"tamara","voice":"line"}]
-[2026-10-17T23:25:19.490Z] OK   M01_2 (Agata) starts at once — {"line":"M01_2","speaker":"agata"}
-[2026-10-17T23:25:19.603Z] click continue → end of M01 at (960, 1006)
-[2026-10-17T23:25:20.013Z] OK   after the scene no voice plays — {"line":"","plays":3}
-[2026-10-17T23:25:21.354Z] OK   the output falls silent again — -200.0 dBFS
-[2026-10-17T23:25:21.526Z] click hotspot letters at (740, 310)
-[2026-10-17T23:25:25.193Z] OK   the narrator (ZAKADR) reads the look — {"line":"Z1.letters.look","kind":"narration","speaker":"narrator","length":5.25396823883057}
-[2026-10-17T23:25:26.564Z] OK   the voice-over leaves the page — -14.5 dBFS
-[2026-10-17T23:25:26.688Z] OK   the music ducks under the voice-over — dialogue true, duck -5.00 dB
-[2026-10-17T23:25:26.783Z] click continue → cut the narrator at (960, 1000)
-[2026-10-17T23:25:26.971Z] OK   «дальше» cuts the voice-over — [{"kind":"stop","line":"Z1.letters.look","ms":26460,"reason":"advance","speaker":"narrator","voice":"narration"}]
-[2026-10-17T23:25:28.241Z] OK   no item voice 0.3 s after the pointer came — {"line":"","kind":""}
-[2026-10-17T23:25:28.535Z] OK   the item's line after the pointer rests on its pocket — {"line":"item.letter_tamara","kind":"item"}, ≈1.04 s after the pointer came
-[2026-10-17T23:25:29.208Z] OK   the item's line leaves the page — -12.7 dBFS
-[2026-10-17T23:25:29.642Z] OK   leaving the pocket fades it out — [{"kind":"stop","line":"item.letter_tamara","ms":29125,"reason":"hover_end","speaker":"narrator","voice":"item"}]
-[2026-10-17T23:25:31.320Z] OK   the same item again at once: no voice (30 s rule) — {"playing":false,"skip":[{"kind":"item_skip","line":"item.letter_tamara","ms":30207,"reason":"cooldown"}]}
-[2026-10-17T23:25:31.920Z] click ui MenuButton at (1846, 40)
-[2026-10-17T23:25:32.726Z] click voice slider at 50 % at (989, 716)
-[2026-10-17T23:25:33.038Z] OK   «Голос» at 50 % → Voice bus ≈ −12 dB — volume 0.50, bus -12.04 dB
-[2026-10-17T23:25:33.038Z] OK   console: 0 errors / page errors
+[2026-10-17T23:56:46.430Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-17T23:56:46.741Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-17T23:56:47.129Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-17T23:56:51.100Z] OK   web build carries the voice manifest — 129 lines, errors []
+[2026-10-17T23:56:51.221Z] click ui MenuButton at (1846, 40)
+[2026-10-17T23:56:51.837Z] click music slider at 0 % at (665, 612)
+[2026-10-17T23:56:51.846Z] click sound slider at 0 % at (665, 664)
+[2026-10-17T23:56:52.454Z] OK   music and sounds at 0 % for a clean voice measurement — music 0.00, sounds 0.00
+[2026-10-17T23:56:52.454Z] OK   menu shows «Голос» at 100 % — {"h":40,"value":100,"w":649,"x":664,"y":696}
+[2026-10-17T23:56:52.454Z] click CloseMenu at (844, 769)
+[2026-10-17T23:56:54.209Z] OK   before the dialogue the output is silent — -200.0 dBFS, 2 tap(s)
+[2026-10-17T23:56:54.339Z] click exit Z4 (closed before Tamara) at (1700, 430)
+[2026-10-17T23:56:58.681Z] OK   «Я ещё не поговорила с Тамарой» — Agata's voice, not the narrator — {"line":"agata:Z1.exit_Z4.closed","speaker":"agata","kind":"narration","length":3.03752827644348}
+[2026-10-17T23:56:59.518Z] OK   Agata's thought leaves the page — -13.9 dBFS
+[2026-10-17T23:56:59.631Z] click continue → cut the thought at (960, 1024)
+[2026-10-17T23:56:59.796Z] OK   «дальше» cuts Agata's thought — [{"kind":"stop","line":"agata:Z1.exit_Z4.closed","ms":13395,"reason":"advance","speaker":"agata","voice":"narration"}]
+[2026-10-17T23:57:00.255Z] click hotspot tamara at (1070, 475)
+[2026-10-17T23:57:01.324Z] OK   M01_0: Agata's voice plays with her line — {"line":"M01_0","speaker":"agata","mode":"plain"}
+[2026-10-17T23:57:01.965Z] OK   Agata's voice leaves the page — -22.1 dBFS
+[2026-10-17T23:57:02.103Z] click continue → M01_1 at (960, 1006)
+[2026-10-17T23:57:02.317Z] OK   M01_1: Tamara's voice plays — {"line":"M01_1","speaker":"tamara","length":5.76004552841187}
+[2026-10-17T23:57:03.766Z] OK   Tamara's voice leaves the page (output RMS) — -13.7 dBFS
+[2026-10-17T23:57:03.865Z] OK   music stays ducked while she speaks — duck -5.00 dB
+[2026-10-17T23:57:05.248Z] click continue mid-line → M01_2 at (960, 982)
+[2026-10-17T23:57:05.362Z] OK   the click cuts Tamara mid-line — at 2.14 of 5.76 s; [{"kind":"stop","line":"M01_1","ms":18940,"reason":"advance","speaker":"tamara","voice":"line"}]
+[2026-10-17T23:57:05.377Z] OK   M01_2 (Agata) starts at once — {"line":"M01_2","speaker":"agata"}
+[2026-10-17T23:57:05.440Z] click continue → end of M01 at (960, 1006)
+[2026-10-17T23:57:05.901Z] OK   after the scene no voice plays — {"line":"","plays":4}
+[2026-10-17T23:57:07.180Z] OK   the output falls silent again — -200.0 dBFS
+[2026-10-17T23:57:07.291Z] click hotspot letters at (740, 310)
+[2026-10-17T23:57:09.924Z] OK   the narrator (ZAKADR) reads the look — {"line":"Z1.letters.look","kind":"narration","speaker":"narrator","length":5.25396823883057}
+[2026-10-17T23:57:11.018Z] OK   the voice-over leaves the page — -14.0 dBFS
+[2026-10-17T23:57:11.144Z] OK   the music ducks under the voice-over — dialogue true, duck -5.00 dB
+[2026-10-17T23:57:11.259Z] click continue → cut the narrator at (960, 1000)
+[2026-10-17T23:57:11.345Z] OK   «дальше» cuts the voice-over — [{"kind":"stop","line":"Z1.letters.look","ms":24952,"reason":"advance","speaker":"narrator","voice":"narration"}]
+[2026-10-17T23:57:12.637Z] OK   no item voice 0.3 s after the pointer came — {"line":"","kind":""}
+[2026-10-17T23:57:12.973Z] OK   the letter's line (Agata's thought) after the pointer rests on its pocket — {"line":"agata:item.letter_tamara","kind":"item","speaker":"agata"}, ≈1.14 s after the pointer came
+[2026-10-17T23:57:13.702Z] OK   the item's line leaves the page — -15.0 dBFS
+[2026-10-17T23:57:14.150Z] OK   leaving the pocket fades it out — [{"kind":"stop","line":"agata:item.letter_tamara","ms":27641,"reason":"hover_end","speaker":"agata","voice":"item"}]
+[2026-10-17T23:57:15.925Z] OK   the same item again at once: no voice (30 s rule) — {"playing":false,"skip":[{"kind":"item_skip","line":"agata:item.letter_tamara","ms":28986,"reason":"cooldown"}]}
+[2026-10-17T23:57:16.352Z] click ui MenuButton at (1846, 40)
+[2026-10-17T23:57:16.565Z] click voice slider at 50 % at (989, 716)
+[2026-10-17T23:57:16.791Z] OK   «Голос» at 50 % → Voice bus ≈ −12 dB — volume 0.50, bus -12.04 dB
+[2026-10-17T23:57:16.792Z] OK   console: 0 errors / page errors

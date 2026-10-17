@@ -5,6 +5,44 @@
       "rms_db": -200,
       "taps": 2
     },
+    "thought": {
+      "voice": {
+        "after_puzzle": "",
+        "bus_mute": false,
+        "bus_volume_db": 0,
+        "errors": [],
+        "events": [
+          {
+            "kind": "start",
+            "line": "agata:Z1.exit_Z4.closed",
+            "mode": "plain",
+            "ms": 12259,
+            "pan": 0,
+            "speaker": "agata",
+            "voice": "narration"
+          }
+        ],
+        "fading": false,
+        "hover_item": "",
+        "kind": "narration",
+        "length": 3.03752827644348,
+        "line": "agata:Z1.exit_Z4.closed",
+        "manifest_lines": 129,
+        "mode": "plain",
+        "pan": 0,
+        "pending": "",
+        "playing": true,
+        "plays": 1,
+        "position": 0,
+        "settings_saves": 0,
+        "speaker": "agata",
+        "voice_volume": 1
+      },
+      "rms": {
+        "rms_db": -13.893429304215898,
+        "taps": 2
+      }
+    },
     "tamara": {
       "voice": {
         "after_puzzle": "",
@@ -14,9 +52,26 @@
         "events": [
           {
             "kind": "start",
+            "line": "agata:Z1.exit_Z4.closed",
+            "mode": "plain",
+            "ms": 12259,
+            "pan": 0,
+            "speaker": "agata",
+            "voice": "narration"
+          },
+          {
+            "kind": "stop",
+            "line": "agata:Z1.exit_Z4.closed",
+            "ms": 13395,
+            "reason": "advance",
+            "speaker": "agata",
+            "voice": "narration"
+          },
+          {
+            "kind": "start",
             "line": "M01_0",
             "mode": "plain",
-            "ms": 14696,
+            "ms": 14927,
             "pan": 0,
             "speaker": "agata",
             "voice": "line"
@@ -24,7 +79,7 @@
           {
             "kind": "stop",
             "line": "M01_0",
-            "ms": 15813,
+            "ms": 15882,
             "reason": "advance",
             "speaker": "agata",
             "voice": "line"
@@ -33,7 +88,7 @@
             "kind": "start",
             "line": "M01_1",
             "mode": "plain",
-            "ms": 15846,
+            "ms": 15906,
             "pan": 0,
             "speaker": "tamara",
             "voice": "line"
@@ -44,19 +99,19 @@
         "kind": "line",
         "length": 5.76004552841187,
         "line": "M01_1",
-        "manifest_lines": 109,
+        "manifest_lines": 129,
         "mode": "plain",
         "pan": 0,
         "pending": "",
         "playing": true,
-        "plays": 2,
+        "plays": 3,
         "position": 0,
         "settings_saves": 0,
         "speaker": "tamara",
         "voice_volume": 1
       },
       "rms": {
-        "rms_db": -12.068468815280637,
+        "rms_db": -13.67003980481565,
         "taps": 2
       }
     },
@@ -69,9 +124,26 @@
         "events": [
           {
             "kind": "start",
+            "line": "agata:Z1.exit_Z4.closed",
+            "mode": "plain",
+            "ms": 12259,
+            "pan": 0,
+            "speaker": "agata",
+            "voice": "narration"
+          },
+          {
+            "kind": "stop",
+            "line": "agata:Z1.exit_Z4.closed",
+            "ms": 13395,
+            "reason": "advance",
+            "speaker": "agata",
+            "voice": "narration"
+          },
+          {
+            "kind": "start",
             "line": "M01_0",
             "mode": "plain",
-            "ms": 14696,
+            "ms": 14927,
             "pan": 0,
             "speaker": "agata",
             "voice": "line"
@@ -79,7 +151,7 @@
           {
             "kind": "stop",
             "line": "M01_0",
-            "ms": 15813,
+            "ms": 15882,
             "reason": "advance",
             "speaker": "agata",
             "voice": "line"
@@ -88,7 +160,7 @@
             "kind": "start",
             "line": "M01_1",
             "mode": "plain",
-            "ms": 15846,
+            "ms": 15906,
             "pan": 0,
             "speaker": "tamara",
             "voice": "line"
@@ -96,7 +168,7 @@
           {
             "kind": "stop",
             "line": "M01_1",
-            "ms": 18934,
+            "ms": 18940,
             "reason": "advance",
             "speaker": "tamara",
             "voice": "line"
@@ -105,7 +177,7 @@
             "kind": "start",
             "line": "M01_2",
             "mode": "plain",
-            "ms": 18952,
+            "ms": 18962,
             "pan": 0,
             "speaker": "agata",
             "voice": "line"
@@ -113,7 +185,7 @@
           {
             "kind": "stop",
             "line": "M01_2",
-            "ms": 19284,
+            "ms": 19247,
             "reason": "advance",
             "speaker": "agata",
             "voice": "line"
@@ -122,7 +194,7 @@
             "kind": "start",
             "line": "Z1.letters.look",
             "mode": "plain",
-            "ms": 24443,
+            "ms": 23491,
             "pan": 0,
             "speaker": "narrator",
             "voice": "narration"
@@ -133,19 +205,19 @@
         "kind": "narration",
         "length": 5.25396823883057,
         "line": "Z1.letters.look",
-        "manifest_lines": 109,
+        "manifest_lines": 129,
         "mode": "plain",
         "pan": 0,
         "pending": "",
         "playing": true,
-        "plays": 4,
+        "plays": 5,
         "position": 0,
         "settings_saves": 0,
         "speaker": "narrator",
         "voice_volume": 1
       },
       "rms": {
-        "rms_db": -14.460301967149507,
+        "rms_db": -14.019262674379188,
         "taps": 2
       }
     },
@@ -160,7 +232,7 @@
             "kind": "start",
             "line": "M01_0",
             "mode": "plain",
-            "ms": 14696,
+            "ms": 14927,
             "pan": 0,
             "speaker": "agata",
             "voice": "line"
@@ -168,7 +240,7 @@
           {
             "kind": "stop",
             "line": "M01_0",
-            "ms": 15813,
+            "ms": 15882,
             "reason": "advance",
             "speaker": "agata",
             "voice": "line"
@@ -177,7 +249,7 @@
             "kind": "start",
             "line": "M01_1",
             "mode": "plain",
-            "ms": 15846,
+            "ms": 15906,
             "pan": 0,
             "speaker": "tamara",
             "voice": "line"
@@ -185,7 +257,7 @@
           {
             "kind": "stop",
             "line": "M01_1",
-            "ms": 18934,
+            "ms": 18940,
             "reason": "advance",
             "speaker": "tamara",
             "voice": "line"
@@ -194,7 +266,7 @@
             "kind": "start",
             "line": "M01_2",
             "mode": "plain",
-            "ms": 18952,
+            "ms": 18962,
             "pan": 0,
             "speaker": "agata",
             "voice": "line"
@@ -202,7 +274,7 @@
           {
             "kind": "stop",
             "line": "M01_2",
-            "ms": 19284,
+            "ms": 19247,
             "reason": "advance",
             "speaker": "agata",
             "voice": "line"
@@ -211,7 +283,7 @@
             "kind": "start",
             "line": "Z1.letters.look",
             "mode": "plain",
-            "ms": 24443,
+            "ms": 23491,
             "pan": 0,
             "speaker": "narrator",
             "voice": "narration"
@@ -219,39 +291,39 @@
           {
             "kind": "stop",
             "line": "Z1.letters.look",
-            "ms": 26460,
+            "ms": 24952,
             "reason": "advance",
             "speaker": "narrator",
             "voice": "narration"
           },
           {
             "kind": "start",
-            "line": "item.letter_tamara",
+            "line": "agata:item.letter_tamara",
             "mode": "plain",
-            "ms": 28037,
+            "ms": 26575,
             "pan": 0,
-            "speaker": "narrator",
+            "speaker": "agata",
             "voice": "item"
           },
           {
             "kind": "fade",
-            "line": "item.letter_tamara",
-            "ms": 28802,
+            "line": "agata:item.letter_tamara",
+            "ms": 27421,
             "reason": "hover_end",
             "seconds": 0.3
           },
           {
             "kind": "stop",
-            "line": "item.letter_tamara",
-            "ms": 29125,
+            "line": "agata:item.letter_tamara",
+            "ms": 27641,
             "reason": "hover_end",
-            "speaker": "narrator",
+            "speaker": "agata",
             "voice": "item"
           },
           {
             "kind": "item_skip",
-            "line": "item.letter_tamara",
-            "ms": 30207,
+            "line": "agata:item.letter_tamara",
+            "ms": 28986,
             "reason": "cooldown"
           }
         ],
@@ -260,22 +332,22 @@
         "kind": "",
         "length": 0,
         "line": "",
-        "manifest_lines": 109,
+        "manifest_lines": 129,
         "mode": "",
         "pan": 0,
         "pending": "",
         "playing": false,
-        "plays": 5,
+        "plays": 6,
         "position": 0,
         "settings_saves": 0,
         "speaker": "",
         "voice_volume": 1
       },
       "rms": {
-        "rms_db": -12.658871843141444,
+        "rms_db": -14.965239490137352,
         "taps": 2
       },
-      "dwell_s": 1.043
+      "dwell_s": 1.141
     },
     "final_voice": {
       "after_puzzle": "",
@@ -287,7 +359,7 @@
           "kind": "start",
           "line": "M01_0",
           "mode": "plain",
-          "ms": 14696,
+          "ms": 14927,
           "pan": 0,
           "speaker": "agata",
           "voice": "line"
@@ -295,7 +367,7 @@
         {
           "kind": "stop",
           "line": "M01_0",
-          "ms": 15813,
+          "ms": 15882,
           "reason": "advance",
           "speaker": "agata",
           "voice": "line"
@@ -304,7 +376,7 @@
           "kind": "start",
           "line": "M01_1",
           "mode": "plain",
-          "ms": 15846,
+          "ms": 15906,
           "pan": 0,
           "speaker": "tamara",
           "voice": "line"
@@ -312,7 +384,7 @@
         {
           "kind": "stop",
           "line": "M01_1",
-          "ms": 18934,
+          "ms": 18940,
           "reason": "advance",
           "speaker": "tamara",
           "voice": "line"
@@ -321,7 +393,7 @@
           "kind": "start",
           "line": "M01_2",
           "mode": "plain",
-          "ms": 18952,
+          "ms": 18962,
           "pan": 0,
           "speaker": "agata",
           "voice": "line"
@@ -329,7 +401,7 @@
         {
           "kind": "stop",
           "line": "M01_2",
-          "ms": 19284,
+          "ms": 19247,
           "reason": "advance",
           "speaker": "agata",
           "voice": "line"
@@ -338,7 +410,7 @@
           "kind": "start",
           "line": "Z1.letters.look",
           "mode": "plain",
-          "ms": 24443,
+          "ms": 23491,
           "pan": 0,
           "speaker": "narrator",
           "voice": "narration"
@@ -346,39 +418,39 @@
         {
           "kind": "stop",
           "line": "Z1.letters.look",
-          "ms": 26460,
+          "ms": 24952,
           "reason": "advance",
           "speaker": "narrator",
           "voice": "narration"
         },
         {
           "kind": "start",
-          "line": "item.letter_tamara",
+          "line": "agata:item.letter_tamara",
           "mode": "plain",
-          "ms": 28037,
+          "ms": 26575,
           "pan": 0,
-          "speaker": "narrator",
+          "speaker": "agata",
           "voice": "item"
         },
         {
           "kind": "fade",
-          "line": "item.letter_tamara",
-          "ms": 28802,
+          "line": "agata:item.letter_tamara",
+          "ms": 27421,
           "reason": "hover_end",
           "seconds": 0.3
         },
         {
           "kind": "stop",
-          "line": "item.letter_tamara",
-          "ms": 29125,
+          "line": "agata:item.letter_tamara",
+          "ms": 27641,
           "reason": "hover_end",
-          "speaker": "narrator",
+          "speaker": "agata",
           "voice": "item"
         },
         {
           "kind": "item_skip",
-          "line": "item.letter_tamara",
-          "ms": 30207,
+          "line": "agata:item.letter_tamara",
+          "ms": 28986,
           "reason": "cooldown"
         }
       ],
@@ -387,12 +459,12 @@
       "kind": "",
       "length": 0,
       "line": "",
-      "manifest_lines": 109,
+      "manifest_lines": 129,
       "mode": "",
       "pan": 0,
       "pending": "",
       "playing": false,
-      "plays": 5,
+      "plays": 6,
       "position": 0,
       "settings_saves": 0,
       "speaker": "",
@@ -403,7 +475,7 @@
     {
       "ok": true,
       "label": "web build carries the voice manifest",
-      "detail": "109 lines, errors []"
+      "detail": "129 lines, errors []"
     },
     {
       "ok": true,
@@ -422,13 +494,28 @@
     },
     {
       "ok": true,
+      "label": "«Я ещё не поговорила с Тамарой» — Agata's voice, not the narrator",
+      "detail": "{\"line\":\"agata:Z1.exit_Z4.closed\",\"speaker\":\"agata\",\"kind\":\"narration\",\"length\":3.03752827644348}"
+    },
+    {
+      "ok": true,
+      "label": "Agata's thought leaves the page",
+      "detail": "-13.9 dBFS"
+    },
+    {
+      "ok": true,
+      "label": "«дальше» cuts Agata's thought",
+      "detail": "[{\"kind\":\"stop\",\"line\":\"agata:Z1.exit_Z4.closed\",\"ms\":13395,\"reason\":\"advance\",\"speaker\":\"agata\",\"voice\":\"narration\"}]"
+    },
+    {
+      "ok": true,
       "label": "M01_0: Agata's voice plays with her line",
       "detail": "{\"line\":\"M01_0\",\"speaker\":\"agata\",\"mode\":\"plain\"}"
     },
     {
       "ok": true,
       "label": "Agata's voice leaves the page",
-      "detail": "-11.9 dBFS"
+      "detail": "-22.1 dBFS"
     },
     {
       "ok": true,
@@ -438,7 +525,7 @@
     {
       "ok": true,
       "label": "Tamara's voice leaves the page (output RMS)",
-      "detail": "-12.1 dBFS"
+      "detail": "-13.7 dBFS"
     },
     {
       "ok": true,
@@ -448,7 +535,7 @@
     {
       "ok": true,
       "label": "the click cuts Tamara mid-line",
-      "detail": "at 1.28 of 5.76 s; [{\"kind\":\"stop\",\"line\":\"M01_1\",\"ms\":18934,\"reason\":\"advance\",\"speaker\":\"tamara\",\"voice\":\"line\"}]"
+      "detail": "at 2.14 of 5.76 s; [{\"kind\":\"stop\",\"line\":\"M01_1\",\"ms\":18940,\"reason\":\"advance\",\"speaker\":\"tamara\",\"voice\":\"line\"}]"
     },
     {
       "ok": true,
@@ -458,7 +545,7 @@
     {
       "ok": true,
       "label": "after the scene no voice plays",
-      "detail": "{\"line\":\"\",\"plays\":3}"
+      "detail": "{\"line\":\"\",\"plays\":4}"
     },
     {
       "ok": true,
@@ -473,7 +560,7 @@
     {
       "ok": true,
       "label": "the voice-over leaves the page",
-      "detail": "-14.5 dBFS"
+      "detail": "-14.0 dBFS"
     },
     {
       "ok": true,
@@ -483,7 +570,7 @@
     {
       "ok": true,
       "label": "«дальше» cuts the voice-over",
-      "detail": "[{\"kind\":\"stop\",\"line\":\"Z1.letters.look\",\"ms\":26460,\"reason\":\"advance\",\"speaker\":\"narrator\",\"voice\":\"narration\"}]"
+      "detail": "[{\"kind\":\"stop\",\"line\":\"Z1.letters.look\",\"ms\":24952,\"reason\":\"advance\",\"speaker\":\"narrator\",\"voice\":\"narration\"}]"
     },
     {
       "ok": true,
@@ -492,23 +579,23 @@
     },
     {
       "ok": true,
-      "label": "the item's line after the pointer rests on its pocket",
-      "detail": "{\"line\":\"item.letter_tamara\",\"kind\":\"item\"}, ≈1.04 s after the pointer came"
+      "label": "the letter's line (Agata's thought) after the pointer rests on its pocket",
+      "detail": "{\"line\":\"agata:item.letter_tamara\",\"kind\":\"item\",\"speaker\":\"agata\"}, ≈1.14 s after the pointer came"
     },
     {
       "ok": true,
       "label": "the item's line leaves the page",
-      "detail": "-12.7 dBFS"
+      "detail": "-15.0 dBFS"
     },
     {
       "ok": true,
       "label": "leaving the pocket fades it out",
-      "detail": "[{\"kind\":\"stop\",\"line\":\"item.letter_tamara\",\"ms\":29125,\"reason\":\"hover_end\",\"speaker\":\"narrator\",\"voice\":\"item\"}]"
+      "detail": "[{\"kind\":\"stop\",\"line\":\"agata:item.letter_tamara\",\"ms\":27641,\"reason\":\"hover_end\",\"speaker\":\"agata\",\"voice\":\"item\"}]"
     },
     {
       "ok": true,
       "label": "the same item again at once: no voice (30 s rule)",
-      "detail": "{\"playing\":false,\"skip\":[{\"kind\":\"item_skip\",\"line\":\"item.letter_tamara\",\"ms\":30207,\"reason\":\"cooldown\"}]}"
+      "detail": "{\"playing\":false,\"skip\":[{\"kind\":\"item_skip\",\"line\":\"agata:item.letter_tamara\",\"ms\":28986,\"reason\":\"cooldown\"}]}"
     },
     {
       "ok": true,

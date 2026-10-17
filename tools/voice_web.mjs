@@ -9,13 +9,16 @@
 // clicks set «Музыка» and «Звуки» to 0 % in the menu (they also unlock audio); the voice bus stays 100 %.
 // Steps and expectations:
 //   1. menu: music and sounds at 0 % → their buses muted; output silent;
+//   1b. Agata's thought (voice.json → narration.by_speaker.agata): the closed street exit before Tamara —
+//       «Я ещё не поговорила с Тамарой» in Agata's voice (agata:Z1.exit_Z4.closed), not the narrator's; «дальше» cuts it;
 //   2. click Tamara (Z1): M01 starts; the voice of M01_0 (Agata) plays — voiceState.line, playing;
 //   3. «дальше» → M01_1 (Tamara): her voice plays, output RMS well above silence;
 //   4. «дальше» mid-line → M01_1 is cut (event stop/advance), M01_2 plays;
 //   5. after the scene no voice plays and the output falls silent again;
 //   5a. voice-over (ZAKADR): click the letters (Z1) → the narrator reads Z1.letters.look (kind narration),
 //       the signal leaves the page, the music is ducked; «дальше» cuts it;
-//   5b. bag: the pointer rests on the letter's pocket — no voice at 0.3 s, item.letter_tamara by ≈1 s;
+//   5b. bag: the pointer rests on the letter's pocket — no voice at 0.3 s, the letter's line by ≈1 s (Agata's
+//       thought «…моя дорога сюда» — agata:item.letter_tamara);
 //       leaving the pocket fades it out (stop hover_end); resting again at once — no voice (30 s rule);
 //   6. menu slider «Голос» at 50 % → Voice bus ≈ −12 dB;
 //   7. the whole run: 0 console errors / page errors.
@@ -195,6 +198,21 @@ async function main() {
     report.steps.silence_before = quiet0;
     check(quiet0.rms_db < -60, "before the dialogue the output is silent", `${quiet0.rms_db.toFixed(1)} dBFS, ${quiet0.taps} tap(s)`);
 
+    // 1b. Agata's thought at the closed street exit.
+    s = await state();
+    await click("exit Z4 (closed before Tamara)", s.exits.Z4);
+    v = await waitFor("Agata's thought: agata:Z1.exit_Z4.closed", voice, (x) => x.line === "agata:Z1.exit_Z4.closed" && x.playing, 30000);
+    check(v.line === "agata:Z1.exit_Z4.closed" && v.playing && v.speaker === "agata" && v.kind === "narration",
+      "«Я ещё не поговорила с Тамарой» — Agata's voice, not the narrator", JSON.stringify({ line: v.line, speaker: v.speaker, kind: v.kind, length: v.length }));
+    const th = await rms(700);
+    report.steps.thought = { voice: v, rms: th };
+    check(th.rms_db > -40, "Agata's thought leaves the page", `${th.rms_db.toFixed(1)} dBFS`);
+    s = await state();
+    await click("continue → cut the thought", s.ui.dialogue_click);
+    v = await waitFor("thought cut", voice, (x) => !x.playing, 4000);
+    check(!v.playing, "«дальше» cuts Agata's thought", JSON.stringify((v.events || []).filter((e) => e.kind === "stop").slice(-1)));
+    await sleep(400);
+
     // 2. Tamara → M01, Agata's first line.
     s = await state();
     await click("hotspot tamara", s.hotspots.tamara);
@@ -270,20 +288,21 @@ async function main() {
       await sleep(300);
       v = await voice();
       check(!(v.playing && v.kind === "item"), "no item voice 0.3 s after the pointer came", JSON.stringify({ line: v.line, kind: v.kind }));
-      v = await waitFor("item voice after the dwell", voice, (x) => x.line === "item.letter_tamara" && x.playing, 3000);
+      const LETTER = "agata:item.letter_tamara";
+      v = await waitFor("item voice after the dwell", voice, (x) => x.line === LETTER && x.playing, 3000);
       const dwell = (Date.now() - tHover) / 1000;
-      check(v.line === "item.letter_tamara" && v.playing && v.kind === "item", "the item's line after the pointer rests on its pocket",
-        `${JSON.stringify({ line: v.line, kind: v.kind })}, ≈${dwell.toFixed(2)} s after the pointer came`);
+      check(v.line === LETTER && v.playing && v.kind === "item" && v.speaker === "agata", "the letter's line (Agata's thought) after the pointer rests on its pocket",
+        `${JSON.stringify({ line: v.line, kind: v.kind, speaker: v.speaker })}, ≈${dwell.toFixed(2)} s after the pointer came`);
       const i1 = await rms(500);
       check(i1.rms_db > -40, "the item's line leaves the page", `${i1.rms_db.toFixed(1)} dBFS`);
       await page.mouse.move(960 * S, 600 * S, { steps: 4 });
       v = await waitFor("item voice faded out", voice, (x) => !x.playing, 2000);
-      const istop = (v.events || []).filter((e) => e.kind === "stop" && e.line === "item.letter_tamara");
+      const istop = (v.events || []).filter((e) => e.kind === "stop" && e.line === LETTER);
       check(!v.playing && istop.length >= 1 && istop[istop.length - 1].reason === "hover_end", "leaving the pocket fades it out", JSON.stringify(istop.slice(-1)));
       await page.mouse.move(pocket.x * S, pocket.y * S, { steps: 4 });
       await sleep(1300);
       v = await voice();
-      const skip = (v.events || []).filter((e) => e.kind === "item_skip" && e.line === "item.letter_tamara");
+      const skip = (v.events || []).filter((e) => e.kind === "item_skip" && e.line === LETTER);
       check(!v.playing && skip.length >= 1 && skip[skip.length - 1].reason === "cooldown", "the same item again at once: no voice (30 s rule)",
         JSON.stringify({ playing: v.playing, skip: skip.slice(-1) }));
       await page.mouse.move(960 * S, 600 * S, { steps: 4 });
