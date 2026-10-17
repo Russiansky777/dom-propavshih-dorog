@@ -24,7 +24,13 @@ var _redraw_acc: float = 0.0
 
 
 func add(pos: Vector2, floor_fwd: Vector2, side: float) -> void:
-	_prints.append({"pos": pos, "fwd": floor_fwd, "side": side, "age": 0.0})
+	# Each print a little different: the mud gives way unevenly (±8 % per outline point, seeded).
+	var jit := PackedFloat32Array()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(pos.round())
+	for i in SOLE.size() + HEEL.size():
+		jit.append(rng.randf_range(0.92, 1.08))
+	_prints.append({"pos": pos, "fwd": floor_fwd, "side": side, "age": 0.0, "jit": jit})
 	while _prints.size() > max_prints:
 		_prints.pop_front()
 	queue_redraw()
@@ -74,6 +80,8 @@ func _draw() -> void:
 		var sq := ground.squash(pos.y)
 		var centre := pos + _to_screen(lat * FOOT_GAP_M * float(p["side"]), k, sq)
 		var c := Color(color, a)
+		var jit: PackedFloat32Array = p["jit"]
+		var ji := 0
 		for shape in [SOLE, HEEL]:
 			var pts := PackedVector2Array()
 			var inner := PackedVector2Array()
@@ -82,6 +90,8 @@ func _draw() -> void:
 				mid += Vector2(float(uv[0]), float(uv[1])) / float(shape.size())
 			for uv in shape:
 				var u := Vector2(float(uv[0]), float(uv[1]))
+				u = mid + (u - mid) * jit[ji]
+				ji += 1
 				var g: Vector2 = fwd * u.x + lat * u.y
 				pts.append(centre + _to_screen(g, k, sq))
 				# Water held in the pressed mud: a smaller glossy patch towards the far side.
@@ -90,12 +100,12 @@ func _draw() -> void:
 				inner.append(centre + _to_screen(gi, k, sq) + Vector2(0, -0.01 * k * sq))
 			draw_colored_polygon(pts, c)
 			draw_colored_polygon(inner, Color(sheen, a * sheen.a))
-			# Mud pushed up round the print: a faint light rim one pixel below its near edge.
+			# Mud pushed up round the print catches the light on its near side.
 			var rim := pts.duplicate()
 			rim.append(pts[0])
 			for i in rim.size():
 				rim[i] = rim[i] + Vector2(0, 1)
-			draw_polyline(rim, Color(1.0, 0.93, 0.82, a * 0.22), 1.0, true)
+			draw_polyline(rim, Color(1.0, 0.9, 0.78, a * 0.18), 1.0, true)
 
 
 static func _to_screen(g: Vector2, k: float, sq: float) -> Vector2:

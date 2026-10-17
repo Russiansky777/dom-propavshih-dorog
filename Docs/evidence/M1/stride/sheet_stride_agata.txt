@@ -1,6 +1,0 @@
-sheet assets/characters/agata/walk.png: 12 frames × 288x384, 1.596 m → 240.6 px/m at scale 1
-  row 2 (travel +x): stride per frame [26, 25, 23, 14, 27, 26, 26, -28, -4, 19, 26, 28]  median 25.5  defects [3, 7, 8, 9]
-  row 6 (travel -x): stride per frame [15, 27, -6, 19, 27, 25, 24, 12, 19, 5, 26, 27]  median 21.5  defects [0, 2, 7, 9]
-  stride 26.00 px/frame → cycle 312 px = 1.297 m; data cycle_meters = 1.3
-  report: build/reports/stride_agata.json
-  WARN 8 frame transition(s) deviate from the median stride by > 6 px: the foot skates there (sheet defect, regenerate)

@@ -80,19 +80,18 @@ func _draw() -> void:
 			var vz: float = d["vz"]
 			var h := maxf(vz * t - 0.5 * G * t * t, 0.0)
 			var p := _to_screen(v * t, h)
-			var t0 := maxf(t - 0.05, 0.0)
+			var t0 := maxf(t - 0.04, 0.0)
 			var h0 := maxf(vz * t0 - 0.5 * G * t0 * t0, 0.0)
 			var p0 := _to_screen(v * t0, h0)
 			var w := maxf(float(d["r"]) * 2.0 * _ppm, 1.6)
-			# Two tones: a dark rim reads on the bright sky in a puddle, a light core on dark mud.
+			# A round drop with a short fading trail; two tones: a dark rim reads on the bright sky in
+			# a puddle, a light core on dark mud.
 			var dark := Color(_dark_color, _dark_color.a * fade)
 			var light := Color(_color, _color.a * fade)
-			if p.distance_to(p0) > 0.5:
-				draw_line(p0, p, dark, w + 1.2, true)
-				draw_line(p0, p, light, w, true)
-			else:
-				draw_circle(p, (w + 1.2) * 0.5, dark, true, -1.0, true)
-				draw_circle(p, w * 0.5, light, true, -1.0, true)
+			if p.distance_to(p0) > 1.0:
+				draw_line(p0, p, Color(light, light.a * 0.45), w * 0.55, true)
+			draw_circle(p, (w + 1.0) * 0.5, dark, true, -1.0, true)
+			draw_circle(p, w * 0.5, light, true, -1.0, true)
 	else:
 		# Two rings (outer, then a smaller one 0.12 s later), ease-out spread, fading; each a dark
 		# trough outside and a light crest inside, like the drop rings of the water shader.

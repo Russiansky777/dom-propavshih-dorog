@@ -35,9 +35,9 @@
   "footfall_defaults": {
     "prints_max": 24,
     "print_fade_s": 25,
-    "print_color": "#1e140c",
-    "print_alpha": 0.5,
-    "print_sheen": "#c6ccd860",
+    "print_color": "#22150b",
+    "print_alpha": 0.46,
+    "print_sheen": "#aeb6c22e",
     "splash": {
       "life_min_s": 0.3,
       "life_max_s": 0.5,
