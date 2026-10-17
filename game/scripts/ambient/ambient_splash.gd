@@ -26,6 +26,7 @@ var _color := Color(0.82, 0.8, 0.76, 0.85)
 var _ring_color := Color(0.88, 0.9, 0.94, 0.5)
 var _dark_color := Color(0.25, 0.18, 0.12, 0.45)
 var _ring_m: float = 0.24
+var _crown_s: float = 0.15
 
 
 func start() -> void:
@@ -41,6 +42,7 @@ func start() -> void:
 	_ring_color = Color.html(String(sp.get("ring_color", "#e2e6ee80")))
 	_dark_color = Color.html(String(sp.get("dark_color", "#40302073")))
 	_ring_m = float(sp.get("ring_m", 0.24))
+	_crown_s = float(sp.get("crown_s", 0.15))
 	if part == DROPS:
 		var n := rng.randi_range(int(sp.get("drops_min", 6)), int(sp.get("drops_max", 10)))
 		for i in n:
@@ -67,6 +69,7 @@ func _to_screen(g: Vector2, h: float) -> Vector2:
 
 
 func _draw() -> void:
+	_crown()
 	if part == DROPS:
 		var fade := 1.0 - smoothstep(0.6, 1.0, age / life)
 		for d in _drops:
@@ -77,7 +80,7 @@ func _draw() -> void:
 			var vz: float = d["vz"]
 			var h := maxf(vz * t - 0.5 * G * t * t, 0.0)
 			var p := _to_screen(v * t, h)
-			var t0 := maxf(t - 0.035, 0.0)
+			var t0 := maxf(t - 0.05, 0.0)
 			var h0 := maxf(vz * t0 - 0.5 * G * t0 * t0, 0.0)
 			var p0 := _to_screen(v * t0, h0)
 			var w := maxf(float(d["r"]) * 2.0 * _ppm, 1.6)
@@ -103,6 +106,25 @@ func _draw() -> void:
 			var lw := maxf(1.2, 0.006 * _ppm)
 			_ellipse(r + lw, (r + lw) * _sq, Color(_dark_color, _dark_color.a * fade * 0.8), lw)
 			_ellipse(r, r * _sq, Color(_ring_color, _ring_color.a * fade), lw)
+
+
+## The water thrown up round the boot in the first ~0.15 s: a low ring of spray. Its near half is
+## drawn by DROPS (in front of the boot), its far half by RING (on the floor, behind the boot).
+func _crown() -> void:
+	var k := age / _crown_s
+	if k >= 1.0:
+		return
+	var r := lerpf(0.06, 0.16, 1.0 - (1.0 - k) * (1.0 - k)) * _ppm
+	var h := 0.035 * sin(k * PI) * _ppm
+	var fade := (1.0 - k)
+	var lw := maxf(1.5, 0.014 * _ppm)
+	var a0 := 0.0 if part == DROPS else PI
+	var pts := PackedVector2Array()
+	for i in 17:
+		var a := a0 + PI * float(i) / 16.0
+		pts.append(Vector2(cos(a) * r, sin(a) * r * _sq - h))
+	draw_polyline(pts, Color(_dark_color, _dark_color.a * fade), lw + 1.2, true)
+	draw_polyline(pts, Color(_color, _color.a * fade), lw, true)
 
 
 func _ellipse(rx: float, ry: float, c: Color, w: float) -> void:

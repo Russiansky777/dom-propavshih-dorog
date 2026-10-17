@@ -53,6 +53,8 @@ func _run() -> void:
 	await _test("NPC actors: Tamara/Pelageya from sheets on their hotspots, depth scale, y-sort, talk during their lines", _test_npc_actors)
 	await _test("Shadows: soft ellipse under the feet of Agata and NPCs, behind the figure, scaled by depth", _test_shadows)
 	await _test("No straight-line walking: a click right after entering Z1 waits for the nav map and goes round the counter", _test_no_straight_line)
+	await _test("Loop seams: every repeating animation of every actor sheet returns to its first frame smoothly", _test_loop_seams)
+	await _test("Cross-fade: switching idle↔walk (Agata) and idle↔talk (Tamara) dissolves the old pose in ≈0.12 s", _test_crossfade)
 	_cleanup_m1()
 	_finish()
 
@@ -999,7 +1001,7 @@ func _test_npc_actors() -> void:
 		return
 	var t: Node2D = npcs[0]
 	var spr: AnimatedSprite2D = t.get_node("Sprite")
-	_check(spr.sprite_frames.get_frame_count("idle_0") == 14 and spr.sprite_frames.get_frame_count("talk_0") == 12, "tamara: idle 14 pingpong frames and talk 12 frames, got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
+	_check(spr.sprite_frames.get_frame_count("idle_0") == 14 and spr.sprite_frames.get_frame_count("talk_0") == 22, "tamara: idle 14 and talk 22 pingpong frames (talk: data override), got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
 	_check(spr.animation == "idle_0" and spr.is_playing(), "tamara idles facing the viewer (idle_0), got %s" % spr.animation)
 	var hs: Node2D = room.get_node("Hotspots/tamara")
 	var shape: CollisionShape2D = hs.get_node("Shape")
@@ -1044,7 +1046,7 @@ func _test_npc_actors() -> void:
 	if not npcs.is_empty():
 		var p: Node2D = npcs[0]
 		_check(is_equal_approx(p.scale.y, room.depth_scale(p.global_position.y) * 1.03), "pelageya scale = depth scale × 1.03")
-		_check(p.get_node("Sprite").sprite_frames.get_frame_count("talk_0") == 12, "pelageya talk sheet has 12 frames")
+		_check(p.get_node("Sprite").sprite_frames.get_frame_count("talk_0") == 22, "pelageya talk plays pingpong (12 sheet frames → 22)")
 	gs.reset()
 	_cleanup_m1()
 
@@ -1163,3 +1165,179 @@ static func _edge_distance(p: Vector2, poly: PackedVector2Array) -> float:
 		var b: Vector2 = poly[(i + 1) % poly.size()]
 		best = minf(best, p.distance_to(Geometry2D.get_closest_point_to_segment(p, a, b)))
 	return best
+
+
+## Director 17.10: «анимации не должны прерываться и начинаться с совершенно другой точки».
+## For every actor (data/actors/*.json) and every repeating action, the played sequence (loop or
+## pingpong) is checked per direction row: the difference last→first frame must not exceed 1.5 × the
+## median difference of neighbouring frames. A failing sheet is named (fix: pingpong in the data, or
+## a re-render). Frames are compared at 1/4 size: colour+alpha, over the union of opaque pixels.
+func _test_loop_seams() -> void:
+	var dir := DirAccess.open("res://data/actors")
+	_check(dir != null, "res://data/actors missing")
+	if dir == null:
+		return
+	var checked := 0
+	for fname in dir.get_files():
+		if not fname.ends_with(".json"):
+			continue
+		var id := fname.get_basename()
+		var sheet = load("res://scripts/actors/actor_sheet.gd").load_actor(id)
+		if not sheet.is_loaded():
+			_check(false, "%s: sheet not loaded (%s)" % [id, sheet.load_error])
+			continue
+		for action in sheet.actions.keys():
+			if not sheet.action_loops(action):
+				continue  # one-shot actions end in a cross-fade, not a seam
+			var seq: Array = sheet.action_sequence(action)
+			if action == sheet.idle_action and sheet.idle_static_frame >= 0:
+				continue
+			if seq.size() < 3:
+				continue
+			var path: String = sheet.sheet_dir + "/" + String(sheet.actions[action].get("sheet", action + ".png"))
+			var img := Image.load_from_file(ProjectSettings.globalize_path(path))
+			if img == null or img.is_empty():
+				_check(false, "%s/%s: cannot read %s" % [id, action, path])
+				continue
+			img.convert(Image.FORMAT_RGBA8)
+			var worst := 0.0
+			var worst_row := -1
+			# The walk is seen with root motion: at each frame change the drawn figure advances by the
+			# stride table, so frame k+1 is compared shifted forward by stride[row][k] along the row's axis.
+			var rooted: bool = action == sheet.walk_action and sheet.has_stride_table()
+			var elev := deg_to_rad(float(_actor_walk_elev(id)))
+			for r in sheet.directions:
+				var cache := {}
+				var phi := deg_to_rad(90.0 - 360.0 / sheet.directions * r)
+				var axis := Vector2(cos(phi), sin(phi) * sin(elev)).normalized()
+				var neighbours: Array = []
+				for i in seq.size() - 1:
+					var off: Vector2 = axis * float(sheet.stride_at(r, int(seq[i]))) if rooted else Vector2.ZERO
+					neighbours.append(_frame_diff(img, sheet, r, int(seq[i]), int(seq[i + 1]), cache, off))
+				neighbours.sort()
+				var med: float = neighbours[neighbours.size() / 2]
+				var off_seam: Vector2 = axis * float(sheet.stride_at(r, int(seq[seq.size() - 1]))) if rooted else Vector2.ZERO
+				var seam := _frame_diff(img, sheet, r, int(seq[seq.size() - 1]), int(seq[0]), cache, off_seam)
+				var ratio := seam / maxf(med, 0.001)
+				if ratio > worst:
+					worst = ratio
+					worst_row = r
+			checked += 1
+			print("    %s/%s (%s, %d frames played): worst seam/median %.2f (row %d)" % [id, action, String(sheet.actions[action].get("playback", "loop")), seq.size(), worst, worst_row])
+			_check(worst <= 1.5, "%s/%s: loop seam %.2f × the median frame step (row %d) — the clip jumps back to its start; play it pingpong (data actions.%s.playback) or re-render" % [id, path.get_file(), worst, worst_row, action])
+	_check(checked >= 5, "expected at least 5 repeating actions across actors, checked %d" % checked)
+
+
+## Mean max-channel difference over the union of opaque pixels; frame b is shifted by `off`
+## (sheet px; drawn forward by the root motion) before the comparison.
+func _frame_diff(img: Image, sheet, row: int, a: int, b: int, cache: Dictionary, off: Vector2 = Vector2.ZERO) -> float:
+	var da: PackedByteArray = _small_frame(img, sheet, row, a, cache)
+	var db: PackedByteArray = _small_frame(img, sheet, row, b, cache)
+	var w: int = sheet.frame_w / 4
+	var h: int = sheet.frame_h / 4
+	var ox := int(round(off.x / 4.0))
+	var oy := int(round(off.y / 4.0))
+	var sum := 0.0
+	var n := 0
+	for y in h:
+		var yb := y - oy
+		for x in w:
+			var i := (y * w + x) * 4
+			var xb := x - ox
+			var j := -1
+			if xb >= 0 and xb < w and yb >= 0 and yb < h:
+				j = (yb * w + xb) * 4
+			var a_a: int = da[i + 3]
+			var a_b: int = db[j + 3] if j >= 0 else 0
+			if a_a <= 32 and a_b <= 32:
+				continue
+			if j < 0:
+				sum += a_a
+			else:
+				sum += maxi(maxi(absi(da[i] - db[j]), absi(da[i + 1] - db[j + 1])), maxi(absi(da[i + 2] - db[j + 2]), absi(a_a - a_b)))
+			n += 1
+	return sum / maxf(n, 1)
+
+
+func _actor_walk_elev(id: String) -> float:
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	if typeof(spec) != TYPE_DICTIONARY:
+		return 14.0
+	return float(spec.get("walk", {}).get("stride_table", {}).get("camera_elev_deg", spec.get("walk", {}).get("camera_elev_deg", 14.0)))
+
+
+func _small_frame(img: Image, sheet, row: int, col: int, cache: Dictionary) -> PackedByteArray:
+	if cache.has(col):
+		return cache[col]
+	var fr := img.get_region(Rect2i(col * sheet.frame_w, row * sheet.frame_h, sheet.frame_w, sheet.frame_h))
+	fr.resize(sheet.frame_w / 4, sheet.frame_h / 4, Image.INTERPOLATE_BILINEAR)
+	cache[col] = fr.get_data()
+	return cache[col]
+
+
+func _test_crossfade() -> void:
+	gs.reset()
+	await _spawn_main()
+	rm.autosave_enabled = false
+	sr = root.get_node("StoryRunner")
+	rm.change_room("H1", "default")
+	await physics_frame
+	await physics_frame
+	var spr: AnimatedSprite2D = player.get_node("Sprite")
+	player.call("enter_room", rm.current_room, Vector2(1500, 990))
+	await process_frame
+	var fade0 = player.get_node_or_null("Crossfade")
+	_check(fade0 == null or not fade0.visible, "no cross-fade right after entering a room")
+	var idle_anim := String(spr.animation)
+	player.call("walk_to", Vector2(1000, 990))
+	var fade: AnimatedSprite2D = null
+	var n := 0
+	while n < 120 and not String(spr.animation).begins_with("walk_"):
+		await process_frame
+		n += 1
+	fade = player.get_node_or_null("Crossfade")
+	_check(fade != null and fade.visible, "idle→walk must start a cross-fade node 'Crossfade'")
+	if fade != null:
+		_check(String(fade.animation) == idle_anim and not fade.is_playing(), "the fade shows the frozen old pose (%s), got %s" % [idle_anim, String(fade.animation)])
+		_check(fade.top_level, "the fading pose stays in place in the world (top_level)")
+		var a0: float = fade.modulate.a
+		var t0 := Time.get_ticks_msec()
+		while fade.visible and Time.get_ticks_msec() - t0 < 1000:
+			await process_frame
+		var took := Time.get_ticks_msec() - t0
+		print("    idle→walk fade: alpha %.2f at start, gone after %d ms (crossfade_s %.2f)" % [a0, took, player.sheet.crossfade_s])
+		_check(not fade.visible and took <= 300, "the fade must be gone within ~0.12 s (took %d ms)" % took)
+	while player.call("is_walking"):
+		await process_frame
+	fade = player.get_node_or_null("Crossfade")
+	_check(fade != null and String(fade.animation).begins_with("walk_"), "walk→idle on arrival cross-fades from the last walk pose")
+	# Tamara: idle→talk on her line, talk→idle after.
+	rm.change_room("Z1", "default")
+	await physics_frame
+	await physics_frame
+	var npcs: Array = load("res://scripts/actors/npc_actor.gd").all_in(rm.current_room)
+	if npcs.is_empty():
+		_check(false, "no Tamara actor in Z1")
+		_cleanup_m1()
+		return
+	var t: Node2D = npcs[0]
+	sr.start_scene("M01")
+	await process_frame
+	var saw_fade := false
+	var guard := 0
+	while not sr.current_beat.is_empty() and guard < 50:
+		guard += 1
+		var b: Dictionary = sr.current_beat
+		if b.get("type") == "options":
+			sr.choose(String(b.get("options", [])[0].get("id", "")))
+		else:
+			sr.advance()
+		# Checked synchronously: the beat change has just switched Tamara's animation.
+		var nb: Dictionary = sr.current_beat
+		if nb.get("type") == "line" and String(nb.get("speaker", "")) == "tamara":
+			var tf = t.get_node_or_null("Crossfade")
+			saw_fade = tf != null and tf.visible and String(tf.animation).begins_with("idle_")
+		await process_frame
+	_check(saw_fade, "Tamara's idle→talk switch must cross-fade from the idle pose")
+	gs.reset()
+	_cleanup_m1()

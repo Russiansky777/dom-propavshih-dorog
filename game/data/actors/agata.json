@@ -7,6 +7,8 @@
   "idle_action": "idle",
   "walk_action": "walk",
   "_idle_note": "Лист idle.png rev 8 (окно 0–20 % клипа Meshy «Idle», playback pingpong из sprites.json): 8 кадров вперёд и назад (0..7, 6..1 = 14 кадров, 8 fps) — дыхание без поворота. Поле idle_static_frame (один кадр) больше не нужно; оставлено как механизм для листов с лишним движением.",
+  "crossfade_s": 0.12,
+  "_crossfade_note": "Смена анимации (стоит↔идёт↔действие, поворот на другую строку) — короткий наплыв: прежняя поза гаснет поверх новой за crossfade_s секунд (ActorCrossfade), поза не прыгает.",
   "direction_zero": "down",
   "direction_order": "ccw",
   "walk": {

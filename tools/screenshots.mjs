@@ -248,7 +248,7 @@ async function main() {
           await sleep(40);
         }
         await pause(false, 1);
-        await waitWalk(label);
+        await waitFor(`${label}: arrived`, (t) => t.player && !t.player.walking && Math.hypot(t.player.x - target.x, t.player.y - target.y) < 20, 60000);
       };
       // Reference frame (floor without the figure near the front edge): Agata at the far strip.
       await click("floor far strip", { x: 1300, y: 720 });
@@ -277,18 +277,21 @@ async function main() {
       // Four straight walks, one per cardinal row, captured ~33 ms of game time apart (timeScale 0.25):
       // every sheet-frame change falls between two captures, several captures fall inside each frame.
       // Floor points clear of exits (H2: x ≥ 1790; H3/H4: y ≥ 1000) and hotspots.
-      await click("floor start right", { x: 1700, y: 985 });
-      await waitWalk("start right");
-      await sleep(300);
+      // walkTo: the probe may still show the previous (standing) state right after a click, so wait
+      // until she is near the point and standing.
+      const walkTo = async (label, pt) => {
+        await click(label, pt);
+        await waitFor(`${label}: arrived`, (t) => t.player && !t.player.walking && Math.hypot(t.player.x - pt.x, t.player.y - pt.y) < 20, 60000);
+        await sleep(300);
+      };
+      await walkTo("floor start right", { x: 1700, y: 985 });
       const H_BAND = { x: 0, y: 640, width: 1920, height: 440 };      // feet and skirt along y ≈ 985
       const V_BAND = { x: 1400, y: 420, width: 500, height: 660 };    // feet column at x ≈ 1650
       await capture("left", { x: 880, y: 985 }, STRIDE_MAX, 0.25, H_BAND);     // row 6
       await sleep(300);
       await capture("right", { x: 1700, y: 985 }, STRIDE_MAX, 0.25, H_BAND);   // row 2
       await sleep(300);
-      await click("floor start bottom", { x: 1650, y: 990 });
-      await waitWalk("start bottom");
-      await sleep(300);
+      await walkTo("floor start bottom", { x: 1650, y: 990 });
       await capture("up", { x: 1650, y: 760 }, STRIDE_MAX, 0.25, V_BAND);      // row 4
       await sleep(300);
       await capture("down", { x: 1650, y: 990 }, STRIDE_MAX, 0.25, V_BAND);    // row 0

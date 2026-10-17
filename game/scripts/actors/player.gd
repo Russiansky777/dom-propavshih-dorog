@@ -241,8 +241,18 @@ func face_towards(target: Vector2) -> void:
 func _play_idle() -> void:
 	if sprite == null:
 		return
+	var anim := sheet.anim_name(sheet.idle_action, direction)
+	if sprite.animation != anim:
+		ActorCrossfade.begin(sprite, sheet.crossfade_s)
 	sprite.speed_scale = 1.0
-	sprite.play(sheet.anim_name(sheet.idle_action, direction))
+	sprite.play(anim)
+
+
+## Drops a running cross-fade (room change: the old pose must not linger in the new room).
+func _cut_fade() -> void:
+	var fade := get_node_or_null("Crossfade") as CanvasItem
+	if fade != null:
+		fade.visible = false
 
 
 ## Effective speed in px/s at the current depth and direction row (farther = slower on screen;
@@ -271,6 +281,8 @@ func _update_walk_anim() -> void:
 	sprite.speed_scale = fps / base_fps if base_fps > 0.0 else 1.0
 	if sprite.animation != anim or not sprite.is_playing():
 		var was_walk := String(sprite.animation).begins_with(sheet.walk_action)
+		if sprite.animation != anim:
+			ActorCrossfade.begin(sprite, sheet.crossfade_s)  # idle→walk or a new direction row
 		var frame := sprite.frame
 		var progress := sprite.frame_progress
 		_lock_hold = true  # switching rows is not a stride: keep the drawn figure where it is
@@ -365,6 +377,7 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 	global_position = pos
 	_set_step_phase(0)
 	_play_idle()
+	_cut_fade()
 	_update_depth()
 
 

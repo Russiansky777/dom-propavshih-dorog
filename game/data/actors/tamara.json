@@ -10,6 +10,16 @@
   "npc": {
     "facing": "down",
     "scale_factor": 1.0,
-    "feet_offset": [0, 0]
-  }
+    "feet_offset": [
+      0,
+      0
+    ]
+  },
+  "actions": {
+    "_comment": "Переопределение воспроизведения поверх sprites.json конвейера: клип «Listening_Gesture» не цикличный (последний кадр не переходит в первый) — играть туда-обратно, чтобы поза не прыгала.",
+    "talk": {
+      "playback": "pingpong"
+    }
+  },
+  "crossfade_s": 0.12
 }

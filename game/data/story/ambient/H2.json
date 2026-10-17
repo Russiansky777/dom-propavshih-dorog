@@ -8,6 +8,6 @@
     {"id": "pane_bottom_right", "kind": "tree", "rect": [1575, 232, 57, 98], "clip": true, "feather_px": 2, "anchor_y": 420, "top_y": 150, "amp_px": 3.0, "freq_hz": 0.33, "phase": 0.2}
   ],
   "dust": [
-    {"id": "window_light_dust", "polygon": [[1470, 160], [1650, 160], [1660, 340], [1520, 700], [1340, 700], [1450, 340]], "amount": 20, "size_px": 6.5, "alpha": 0.55, "color": "#ffeccc", "speed_px_s": 5, "lifetime_s": 10, "z": 2}
+    {"id": "window_light_dust", "polygon": [[1470, 160], [1650, 160], [1660, 340], [1520, 700], [1340, 700], [1450, 340]], "amount": 20, "size_px": 7.5, "alpha": 0.7, "color": "#ffeccc", "speed_px_s": 5, "lifetime_s": 10, "z": 2}
   ]
 }

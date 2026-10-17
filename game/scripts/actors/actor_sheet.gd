@@ -41,6 +41,9 @@ var feet_offset: Vector2 = Vector2.ZERO
 var shadow_width_m: float = 0.6
 var shadow_height_ratio: float = 0.3
 var shadow_alpha: float = 0.5
+## Cross-fade between two different animations (idle↔walk↔talk↔action): the old pose fades out
+## over this many seconds on top of the new one (ActorCrossfade). 0 disables.
+var crossfade_s: float = 0.12
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null
@@ -111,6 +114,17 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 	a.directions = int(sprites.get("directions", 8))
 	a.character_height_m = float(sprites.get("character_height_m", a.character_height_m))
 	a.actions = sprites.get("actions", {})
+	# Actor data may override per-action playback (e.g. a non-cyclic talk clip → pingpong) without
+	# touching the pipeline's sprites.json.
+	var over: Dictionary = spec.get("actions", {})
+	for act_name in over.keys():
+		if a.actions.has(act_name) and typeof(over[act_name]) == TYPE_DICTIONARY:
+			var merged: Dictionary = (a.actions[act_name] as Dictionary).duplicate()
+			for k in over[act_name].keys():
+				if not String(k).begins_with("_"):
+					merged[k] = over[act_name][k]
+			a.actions[act_name] = merged
+	a.crossfade_s = float(spec.get("crossfade_s", a.crossfade_s))
 	a._build_frames()
 	return a
 
@@ -134,12 +148,23 @@ func _build_frames() -> void:
 			var anim := "%s_%d" % [action, d]
 			frames.add_animation(anim)
 			frames.set_animation_speed(anim, fps)
-			frames.set_animation_loop(anim, true)
+			frames.set_animation_loop(anim, bool(act.get("loop", true)))
 			for i in frame_ids:
 				var at := AtlasTexture.new()
 				at.atlas = tex
 				at.region = Rect2(i * frame_w, d * frame_h, frame_w, frame_h)
 				frames.add_frame(anim, at)
+
+
+## Played sequence of an action (sheet columns, before any idle_static_frame pinning).
+func action_sequence(action: String) -> Array:
+	var act: Dictionary = actions.get(action, {})
+	return frame_sequence(int(act.get("frames", 1)), String(act.get("playback", "loop")))
+
+
+## True when the action repeats (idle, walk, talk); one-shot actions (`"loop": false`) play once.
+func action_loops(action: String) -> bool:
+	return bool(actions.get(action, {}).get("loop", true))
 
 
 ## Sheet columns played per cycle. "loop": 0..n-1. "pingpong": 0..n-1 then n-2..1 (the clip is

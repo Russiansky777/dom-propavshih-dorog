@@ -103,15 +103,22 @@ func face_towards(target: Vector2) -> void:
 
 func _play_idle() -> void:
 	talking = false
-	sprite.play(sheet.anim_name(sheet.idle_action, direction))
+	_play(sheet.anim_name(sheet.idle_action, direction))
 
 
 func _play_talk() -> void:
 	talking = true
 	if sheet.has_action(sheet.talk_action):
-		sprite.play(sheet.anim_name(sheet.talk_action, direction))
+		_play(sheet.anim_name(sheet.talk_action, direction))
 	else:
-		sprite.play(sheet.anim_name(sheet.idle_action, direction))
+		_play(sheet.anim_name(sheet.idle_action, direction))
+
+
+## Switches animation with a short cross-fade from the current pose (no jump between clips).
+func _play(anim: String) -> void:
+	if sprite.animation != anim and sprite.is_playing():
+		ActorCrossfade.begin(sprite, sheet.crossfade_s)
+	sprite.play(anim)
 
 
 ## A line of this character → talk (facing the player); anything else → idle.
