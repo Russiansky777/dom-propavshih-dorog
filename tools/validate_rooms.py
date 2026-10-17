@@ -21,7 +21,11 @@
   7. масштаб (Директор: «стул слишком большой, сцена приближена»): фон вписан в 1920x1080 целиком —
      масштаб 1920/ширина ± 0.001, по высоте без обрезки и полос (± 2 px); каждый слой и состояние
      рисуются тем же масштабом (RoomBuilder: art_scale × scale) — scale ≠ 1 только с scale_reason.
-     Фактические масштабы узлов сверяет test_room_geometry.gd.
+     Фактические масштабы узлов сверяет test_room_geometry.gd;
+  8. рост Агаты (Директор: «соразмерна дверным проёмам, стойке, партам»): для каждого ориентира
+     height_refs комнаты рост Агаты agata_ref.figure_px × scale(y) отличается от
+     agata_ref.height_m × px / m не больше чем на agata_ref.tolerance; scale(y) — прямая глубины
+     (Room.depth_scale без зажима: ориентиры у стены стоят дальше кромки пола). Таблица — без --quiet.
 
 Код 0 — ошибок нет. Запуск: python3 tools/validate_rooms.py [--quiet]
 """
@@ -298,6 +302,30 @@ for rid, room in rooms.items():
         check_flags(lctx + ".unless", l.get("unless"))
         if l.get("occluder") and "z" not in l:
             warn(f"{lctx}: окклюдер без явного z (будет 1080)")
+    # 8. рост Агаты против ориентиров
+    aref = index.get("agata_ref", {})
+    kind = room.get("background", {}).get("kind", "interior")
+    dep = room.get("depth", index["defaults"].get("depth_exterior" if kind == "exterior" else "depth", {}))
+    for i, hr in enumerate(room.get("height_refs", [])):
+        hctx = f"{ctx}.height_refs[{i}] ({hr.get('what', '?')})"
+        if not aref:
+            err(f"{hctx}: нет agata_ref в _index.json")
+            break
+        if not all(k in hr for k in ("y", "px", "m")) or hr["px"] <= 0 or hr["m"] <= 0:
+            err(f"{hctx}: нужны y, px > 0, m > 0")
+            continue
+        span = dep["bottom_y"] - dep["top_y"]
+        s = dep["scale_top"] + (dep["scale_bottom"] - dep["scale_top"]) * ((hr["y"] - dep["top_y"]) / span if span else 1.0)
+        agata = aref["figure_px"] * s
+        want = aref["height_m"] * hr["px"] / hr["m"]
+        ratio = agata / want
+        notes.append(f"{rid}: рост Агаты у «{hr.get('what')}» (y {hr['y']}): {agata:.0f} px при ожидаемых {want:.0f} "
+                     f"(scale {s:.3f}, ×{ratio:.2f})")
+        if abs(ratio - 1.0) > aref["tolerance"]:
+            err(f"{hctx}: рост Агаты {agata:.0f} px (scale {s:.3f}) против ожидаемых {want:.0f} px "
+                f"({aref['height_m']} м при {hr['px']} px = {hr['m']} м) — ×{ratio:.2f}, допуск ±{aref['tolerance']:.0%}; "
+                f"нужный scale у y {hr['y']} ≈ {want / aref['figure_px']:.3f}")
+
     for e in room.get("effects", []):
         ectx = f"{ctx}.effects.{e.get('id', e.get('type', '?'))}"
         if e.get("type") not in ("fire", "snow"):
