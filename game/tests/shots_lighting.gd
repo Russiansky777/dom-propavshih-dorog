@@ -1,10 +1,15 @@
 extends SceneTree
-## Evidence frames for room lighting (not a test; needs a display — tools/shots_lighting.sh runs it
-## under Xvfb with the OpenGL renderer, the same GL Compatibility path as the web build):
+## Evidence frames for room lighting (not a test; needs a display — run it under Xvfb with the OpenGL
+## renderer, the same GL Compatibility path as the web build):
 ##   xvfb-run -s "-screen 0 1920x1080x24" godot --path game --display-driver x11 \
 ##     --rendering-driver opengl3 -s res://tests/shots_lighting.gd -- <out_dir> [scenario ...]
 ## The real game (Main.tscn): flags are set, the room is entered, Agata is placed, frames are saved as
-## <out_dir>/<scenario>[_NN].png. Series (`frames` > 1) are for GIFs (tools/shots_lighting.sh).
+## <out_dir>/<scenario>[_NN].png. Series (`frames` > 1) are for GIFs (Docs/evidence/M1/light_*.gif).
+## `pair` scenarios also save <scenario>_bg.png (the same instant without Agata) and
+## <scenario>_neutral.png (Agata without the room's tone, RoomLighting.tone_enabled = false):
+##   python3 tools/measure_tone.py <out_dir> H1_tone_day_mid:1100:860 --check 0.85 1.15 --sat-min 0.8
+## — her brightness against the floor by her and her coat's saturation against neutral light
+## (Docs/evidence/M1/light_actor_tone.txt, coordinator's criteria 17.10 / 18.10).
 
 var _out_dir := ""
 var _main: Node = null
