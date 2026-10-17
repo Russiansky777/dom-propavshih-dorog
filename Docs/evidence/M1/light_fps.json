@@ -1,0 +1,110 @@
+{
+  "web_dir": "../../../tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/web",
+  "renderer": "headless Chromium, ANGLE SwiftShader (software WebGL2)",
+  "seconds": 4,
+  "cases": {
+    "H1_dark_fire": {
+      "fps_on": 1.39,
+      "fps_off": 1.42,
+      "cost_pct": 2.5,
+      "runs_on": [
+        1.39,
+        1.39,
+        0.99
+      ],
+      "runs_off": [
+        0.97,
+        1.69,
+        1.42
+      ],
+      "sources": 8,
+      "shadows": 1,
+      "tone": [
+        0.38,
+        0.34,
+        0.33
+      ]
+    },
+    "H1_day_fire_beam": {
+      "fps_on": 0.91,
+      "fps_off": 1.19,
+      "cost_pct": 23.8,
+      "runs_on": [
+        1.65,
+        0.91,
+        0.71
+      ],
+      "runs_off": [
+        1.92,
+        0.73,
+        1.19
+      ],
+      "sources": 8,
+      "shadows": 1,
+      "tone": [
+        1.01,
+        1.01,
+        1.01
+      ]
+    },
+    "H2_door": {
+      "fps_on": 0.92,
+      "fps_off": 1.28,
+      "cost_pct": 28.1,
+      "runs_on": [
+        1.01,
+        0.64,
+        0.92
+      ],
+      "runs_off": [
+        1.38,
+        0.65,
+        1.28
+      ],
+      "sources": 3,
+      "shadows": 1,
+      "tone": [
+        1.02,
+        0.89,
+        0.72
+      ]
+    },
+    "Z1_lamp": {
+      "fps_on": 1.82,
+      "fps_off": 2.16,
+      "cost_pct": 15.5,
+      "runs_on": [
+        1.17,
+        1.82,
+        2.21
+      ],
+      "runs_off": [
+        2.16,
+        2.22,
+        2.13
+      ],
+      "sources": 3,
+      "shadows": 2,
+      "tone": [
+        1.07,
+        0.99,
+        0.89
+      ]
+    }
+  },
+  "h1_walk": {
+    "fps": 1.2,
+    "player": {
+      "tone": [
+        0.22,
+        0.21,
+        0.21
+      ],
+      "walking": true,
+      "x": 1235.34997558594,
+      "y": 888.23779296875
+    },
+    "shadows": 1
+  },
+  "errors": []
+}
