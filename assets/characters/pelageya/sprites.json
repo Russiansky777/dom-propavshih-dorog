@@ -1,0 +1,26 @@
+{
+  "name": "pelageya",
+  "frame_w": 288,
+  "frame_h": 384,
+  "pivot": {
+    "x": 0.5,
+    "y": 0.9464285714285714
+  },
+  "directions": 8,
+  "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
+  "character_height_m": 1.62,
+  "actions": {
+    "idle": {
+      "sheet": "idle.png",
+      "frames": 8,
+      "fps": 8,
+      "clip": "Idle"
+    },
+    "talk": {
+      "sheet": "talk.png",
+      "frames": 12,
+      "fps": 8,
+      "clip": "Listening_Gesture"
+    }
+  }
+}
