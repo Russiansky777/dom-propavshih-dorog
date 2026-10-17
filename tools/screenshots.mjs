@@ -203,7 +203,7 @@ async function main() {
       await sleep(600);
       await shot("H1_real_arrival");
       // Walk towards the viewer: mid-walk frame, then idle facing front.
-      await click("floor front", { x: 1250, y: 1040 });
+      await click("floor front", { x: 1420, y: 960 });
       await sleep(900);
       await shot("H1_real_walking");
       await waitWalk("floor front");
@@ -229,7 +229,7 @@ async function main() {
       await shot("H1_real_at_stove");
       await finishDialogue("stove");
       // In front of the table: fully visible.
-      await click("floor in front of table", { x: 950, y: 1010 });
+      await click("floor in front of table", { x: 880, y: 985 });
       await waitWalk("front of table");
       await sleep(400);
       await shot("H1_real_front_of_table");
