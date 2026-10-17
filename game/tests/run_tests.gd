@@ -1226,6 +1226,20 @@ func _test_loop_seams() -> void:
 			print("    %s/%s (%s, %d frames played): worst seam/median %.2f (row %d)" % [id, action, String(sheet.actions[action].get("playback", "loop")), seq.size(), worst, worst_row])
 			_check(worst <= 1.5, "%s/%s: loop seam %.2f × the median frame step (row %d) — the clip jumps back to its start; play it pingpong (data actions.%s.playback) or re-render" % [id, path.get_file(), worst, worst_row, action])
 	_check(checked >= 5, "expected at least 5 repeating actions across actors, checked %d" % checked)
+	# The check itself must catch a real seam: Agata's idle played as a plain loop jumps 7 → 0.
+	var ag = load("res://scripts/actors/actor_sheet.gd").load_actor("agata")
+	var ipath: String = ag.sheet_dir + "/" + String(ag.actions[ag.idle_action].get("sheet", "idle.png"))
+	var iimg := Image.load_from_file(ProjectSettings.globalize_path(ipath))
+	iimg.convert(Image.FORMAT_RGBA8)
+	var n_idle: int = int(ag.actions[ag.idle_action].get("frames", 8))
+	var c := {}
+	var nb: Array = []
+	for i in n_idle - 1:
+		nb.append(_frame_diff(iimg, ag, 0, i, i + 1, c))
+	nb.sort()
+	var loop_ratio := _frame_diff(iimg, ag, 0, n_idle - 1, 0, c) / maxf(nb[nb.size() / 2], 0.001)
+	print("    self-check: agata/idle played as a loop would jump %.2f × the median step (must be caught)" % loop_ratio)
+	_check(loop_ratio > 1.5, "self-check: the seam metric must flag idle played as a loop (got %.2f)" % loop_ratio)
 
 
 ## Mean max-channel difference over the union of opaque pixels; frame b is shifted by `off`
