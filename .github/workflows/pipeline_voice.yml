@@ -1,0 +1,90 @@
+name: pipeline-voice
+
+# Озвучка реплик: ElevenLabs text-to-speech → ffmpeg (срез тишины, −17 LUFS, OGG Vorbis).
+# Запуск: изменить pipeline/requests/voice_<набор>.json и запушить (поле "mode": list | generate | check),
+# или вручную (workflow_dispatch). Секрет Eleven_API (имена секретов нечувствительны к регистру).
+# Результат коммитится в assets/voice/ и pipeline/voice/ (voices.json, state/). Скрипт: pipeline/voice/eleven_voice.py.
+
+on:
+  push:
+    paths:
+      - "pipeline/requests/voice_*.json"
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "путь к запросу, напр. pipeline/requests/voice_e0e1.json"
+        required: true
+        default: "pipeline/requests/voice_e0e1.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-voice
+  cancel-in-progress: false
+
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Определить запросы
+        id: req
+        run: |
+          if [ -n "${{ github.event.inputs.request }}" ]; then
+            echo "files=${{ github.event.inputs.request }}" >> "$GITHUB_OUTPUT"
+          else
+            files=$(git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} -- 'pipeline/requests/voice_*.json' | tr '\n' ' ' || true)
+            echo "files=$files" >> "$GITHUB_OUTPUT"
+          fi
+          echo "requests: $(cat $GITHUB_OUTPUT)"
+
+      - name: ffmpeg
+        if: steps.req.outputs.files != ''
+        run: |
+          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; fi
+          ffmpeg -hide_banner -version | head -1
+          ffmpeg -hide_banner -encoders 2>/dev/null | grep -q libvorbis && echo "libvorbis: есть"
+
+      - name: ElevenLabs
+        if: steps.req.outputs.files != ''
+        env:
+          ELEVEN_API: ${{ secrets.ELEVEN_API }}
+        run: |
+          set -e
+          python pipeline/voice/eleven_voice.py check
+          for f in ${{ steps.req.outputs.files }}; do
+            echo "=== $f"
+            python pipeline/voice/eleven_voice.py run --request "$f"
+          done
+
+      - name: Проверка манифеста
+        if: steps.req.outputs.files != ''
+        run: python tools/validate_voice.py --strict
+
+      - name: Коммит результатов
+        if: always() && steps.req.outputs.files != ''
+        run: |
+          git config user.name "pipeline-bot"
+          git config user.email "pipeline-bot@users.noreply.github.com"
+          git add assets/voice pipeline/voice 2>/dev/null || true
+          if git diff --cached --quiet; then echo "нечего коммитить"; exit 0; fi
+          git commit -q -m "pipeline: озвучка ElevenLabs (run ${{ github.run_id }}) [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git fetch -q origin main
+            if git rebase --autostash origin/main; then
+              if git push origin HEAD:main; then echo "запушено с попытки $i"; exit 0; fi
+            else
+              git rebase --abort || true
+            fi
+            sleep 15
+          done
+          exit 1
