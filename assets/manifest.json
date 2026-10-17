@@ -358,6 +358,113 @@
         "by": "ChatGPT (image_gen), пакет Dom_Propavshih_Dorog_E0_E1_Art_Text_v1.zip",
         "note": "размеры 1672×941 (не 2048×1152); слои-состояния требуют совмещения вручную; см. assets/incoming/_meta_e0e1_v1/START_HERE.md"
       }
+    },
+    {
+      "id": "Z4_bg",
+      "status": "delivered",
+      "kind": "background_layers",
+      "spec": "Переулок у почты",
+      "files": [
+        "incoming/Z4_bg.png",
+        "incoming/Z4_fg_fence.png",
+        "incoming/Z4_sway_tree.png",
+        "incoming/Z4_sway_grass.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v3.md",
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT imagegen, пакет Brief_v3",
+        "note": "см. assets/incoming/_meta_v3/START_HERE.md"
+      }
+    },
+    {
+      "id": "M1_bg",
+      "status": "delivered",
+      "kind": "background_layers",
+      "spec": "Двор мельницы + колесо отдельно",
+      "files": [
+        "incoming/M1_bg.png",
+        "incoming/M1_wheel.png",
+        "incoming/M1_fg_sacks.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v3.md",
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT imagegen, пакет Brief_v3",
+        "note": "см. assets/incoming/_meta_v3/START_HERE.md"
+      }
+    },
+    {
+      "id": "M2_bg",
+      "status": "delivered",
+      "kind": "background_layers",
+      "spec": "Сени мельницы + полный фон без зеркала",
+      "files": [
+        "incoming/M2_bg.png",
+        "incoming/M2_bg_mirror_removed.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v3.md",
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT imagegen, пакет Brief_v3",
+        "note": "см. assets/incoming/_meta_v3/START_HERE.md"
+      }
+    },
+    {
+      "id": "M3_bg",
+      "status": "delivered",
+      "kind": "background_layers",
+      "spec": "Кабинет управляющего",
+      "files": [
+        "incoming/M3_bg.png",
+        "incoming/M3_fg_desk_front.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v3.md",
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT imagegen, пакет Brief_v3",
+        "note": "см. assets/incoming/_meta_v3/START_HERE.md"
+      }
+    },
+    {
+      "id": "M4_bg",
+      "status": "delivered",
+      "kind": "background_layers",
+      "spec": "Затвор + рычаг",
+      "files": [
+        "incoming/M4_bg.png",
+        "incoming/M4_lever_up.png",
+        "incoming/M4_lever_work.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v3.md",
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT imagegen, пакет Brief_v3",
+        "note": "см. assets/incoming/_meta_v3/START_HERE.md"
+      }
+    },
+    {
+      "id": "tikhon_parts",
+      "status": "delivered",
+      "kind": "character_parts",
+      "spec": "Тихон: собранный + голова + хвост (запасной вариант брифа)",
+      "files": [
+        "incoming/tikhon_assembled.png",
+        "incoming/tikhon_head.png",
+        "incoming/tikhon_tail.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v3.md",
+      "owner": "ChatGPT + Директор",
+      "delivered": {
+        "date": "2026-10-17",
+        "by": "ChatGPT imagegen, пакет Brief_v3",
+        "note": "см. assets/incoming/_meta_v3/START_HERE.md"
+      }
     }
   ]
 }

@@ -196,7 +196,7 @@
     },
     "Z2.exit_Z4.label": {
       "text": "В переулок к почте",
-      "draft": true
+      "draft": false
     },
     "Z2.exit_H1.label": {
       "text": "На крыльцо дома",
@@ -232,11 +232,11 @@
     },
     "Z4.exit_Z1.label": {
       "text": "На почту",
-      "draft": true
+      "draft": false
     },
     "Z4.exit_Z2.label": {
       "text": "На улицу",
-      "draft": true
+      "draft": false
     },
     "Z4.exit_H3.label": {
       "text": "Боковое крыльцо",
@@ -248,19 +248,19 @@
     },
     "Z4.post_sign.label": {
       "text": "Вывеска почты",
-      "draft": true
+      "draft": false
     },
     "Z4.post_sign.look": {
-      "text": "«Почта». Буквы на доске подновляли не раз.",
-      "draft": true
+      "text": "«Почта». На старой доске не раз подновляли буквы.",
+      "draft": false
     },
     "Z4.lantern.label": {
       "text": "Фонарь над дверью",
-      "draft": true
+      "draft": false
     },
     "Z4.lantern.look": {
-      "text": "Фонарь над дверью почты. Стекло мокрое.",
-      "draft": true
+      "text": "Морось осела на стекле мелкими каплями.",
+      "draft": false
     },
     "Z3.water.label": {
       "text": "Река",

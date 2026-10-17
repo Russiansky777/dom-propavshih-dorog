@@ -1,0 +1,159 @@
+[
+  {
+    "file": "Z4_bg.png",
+    "path": "/workspace/scratch/daf7e33cb49f/v3_delivery/assets/incoming/Z4_bg.png",
+    "source": "/workspace/scratch/daf7e33cb49f/generated_images/exec-108f28da-3070-4485-a347-2fb53e544d5f.png",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  },
+  {
+    "file": "Z4_fg_fence.png",
+    "path": "/workspace/scratch/daf7e33cb49f/v3_delivery/assets/incoming/Z4_fg_fence.png",
+    "source": "/workspace/scratch/daf7e33cb49f/generated_images/exec-07dab9cb-55ca-4669-88d0-b1495ba6e70d.png",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "alpha_bbox": [
+      0,
+      336,
+      1614,
+      941
+    ],
+    "transparent_fraction": 0.9517,
+    "semi_fraction": 0.048,
+    "opaque_fraction": 0.0003,
+    "positive_alpha_median": 253.0,
+    "visible_saturated_red_pixels": 0,
+    "alpha_gt_8_bbox": [
+      0,
+      649,
+      414,
+      941
+    ],
+    "alpha_gt_64_bbox": [
+      0,
+      650,
+      413,
+      941
+    ],
+    "alpha_gt_128_bbox": [
+      0,
+      650,
+      413,
+      941
+    ],
+    "alpha_gt_224_bbox": [
+      0,
+      651,
+      412,
+      941
+    ]
+  },
+  {
+    "file": "Z4_sway_tree.png",
+    "path": "/workspace/scratch/daf7e33cb49f/v3_delivery/assets/incoming/Z4_sway_tree.png",
+    "source": "/workspace/scratch/daf7e33cb49f/generated_images/exec-4a4c3132-c7e2-49f9-a9c0-19ddceab9cf2.png",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "alpha_bbox": [
+      0,
+      0,
+      500,
+      761
+    ],
+    "transparent_fraction": 0.9627,
+    "semi_fraction": 0.0372,
+    "opaque_fraction": 0.0002,
+    "positive_alpha_median": 206.0,
+    "visible_saturated_red_pixels": 0,
+    "alpha_gt_8_bbox": [
+      0,
+      0,
+      358,
+      340
+    ],
+    "alpha_gt_64_bbox": [
+      0,
+      0,
+      358,
+      340
+    ],
+    "alpha_gt_128_bbox": [
+      0,
+      0,
+      357,
+      339
+    ],
+    "alpha_gt_224_bbox": [
+      0,
+      0,
+      355,
+      337
+    ]
+  },
+  {
+    "file": "Z4_sway_grass.png",
+    "path": "/workspace/scratch/daf7e33cb49f/v3_delivery/assets/incoming/Z4_sway_grass.png",
+    "source": "/workspace/scratch/daf7e33cb49f/generated_images/exec-35c8ce8b-010e-4a9b-8ea7-6530f94e79fb.png",
+    "dimensions": [
+      1671,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "alpha_bbox": [
+      0,
+      411,
+      918,
+      941
+    ],
+    "transparent_fraction": 0.9329,
+    "semi_fraction": 0.0671,
+    "opaque_fraction": 0.0,
+    "positive_alpha_median": 252.0,
+    "visible_saturated_red_pixels": 0,
+    "alpha_gt_8_bbox": [
+      0,
+      625,
+      566,
+      941
+    ],
+    "alpha_gt_64_bbox": [
+      0,
+      626,
+      565,
+      941
+    ],
+    "alpha_gt_128_bbox": [
+      0,
+      626,
+      565,
+      941
+    ],
+    "alpha_gt_224_bbox": [
+      0,
+      627,
+      561,
+      941
+    ]
+  }
+]

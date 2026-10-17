@@ -1,0 +1,29 @@
+[
+  {
+    "file": "Z4_sway_grass.png",
+    "red_pixels_total": 4296,
+    "red_alpha_max": 7,
+    "red_alpha_gt128": 0,
+    "red_alpha_gt200": 0,
+    "red_alpha_gt8": 0,
+    "red_alpha_gt0": 4296
+  },
+  {
+    "file": "Z4_fg_fence.png",
+    "red_pixels_total": 106,
+    "red_alpha_max": 7,
+    "red_alpha_gt128": 0,
+    "red_alpha_gt200": 0,
+    "red_alpha_gt8": 0,
+    "red_alpha_gt0": 106
+  },
+  {
+    "file": "Z4_sway_tree.png",
+    "red_pixels_total": 1057,
+    "red_alpha_max": 7,
+    "red_alpha_gt128": 0,
+    "red_alpha_gt200": 0,
+    "red_alpha_gt8": 0,
+    "red_alpha_gt0": 1057
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "task": "BRIEF_CHATGPT_v3 A",
+  "tool": "image_gen.imagegen (built-in)",
+  "model_version": "not exposed by tool",
+  "reference": "assets/reference/tikhon_sheet.png",
+  "style_reference": "assets/reference/H1_bg.png",
+  "selected": [
+    {
+      "name": "tikhon_assembled.png",
+      "prompt": "Use case: identity-preserve. Game character asset, transparent PNG. The first reference is the EXACT approved identity of Tikhon, a small smoky-gray northern Russian stove creature with large upright ears, short legs, very fluffy long tail, pale warm gray chest and belly, amber eyes, soot-dark nose. The second reference is the game's painterly visual style. Create ONE large fully assembled seated Tikhon in a three-quarter view FACING LEFT, entire silhouette in frame, on transparent background. Target square canvas 1536x1536. He sits comfortably on his haunches, broad round belly, tiny front paws resting separately on his belly, short near hind foot visible. His tail extends gently behind him towards the right, fully visible. Expression quietly serious, a little sleepy and grumbly, restrained almost sarcastic lowered brows; closed mouth, subtle normal-sized eyes. Preserve exact muzzle, ear, fur colors and proportions from approved reference. Cat-sized mythical house caretaker, dignified and endearing, not a cartoon redesign. Same hand-painted soft brush edges and subdued earthy palette. Relaxed static neutral pose suitable for a 2D cutout puppet, clear shapes at joints and no motion blur. Layout: body center about x44%, head center x40% y32%, seated ground at y87%, tail extends to right edge with margin. No objects, no costume, no pedestal, no floor, no cast shadow, no room, no lettering, no duplicate poses, no contact sheet. Real alpha background.",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-14c27551-ce17-493a-89cc-f26ef97c188c.png"
+    },
+    {
+      "name": "tikhon_head.png",
+      "prompt": "Identity-preserving character extraction asset. Reference is the approved new seated Tikhon. Create one LARGE isolated COMPLETE HEAD INCLUDING BOTH EARS and short neck tuft on genuine transparent square canvas. Keep precisely the same serious sleepy cat-like face, the left-facing three-quarter angle, amber eyes, soot nose, muzzle and whiskers, smoky gray fur, pale muzzle, large upright brown-inner ears. Entire head and ear tips must fit with ample margin. Same natural restrained expression, same painterly shading and fur style. No body, no hands, no tail. Target square 1254x1254; centered isolated head is acceptable for this fallback asset, do not crop ears. This is a detailed source part for manual placement on a cutout puppet, not a sprite sheet. No lettering, no extra heads, no background, no ground shadow.",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-b6c8ec74-dfb4-4b6c-b285-28067bc9b380.png"
+    },
+    {
+      "name": "tikhon_tail.png",
+      "prompt": "One isolated FULLY STRAIGHT fluffy tail belonging to the exact gray stove creature in the reference, matching smoky gray outer fur and subdued pale warm gray tip. Genuine transparent square background, 1254x1254 target. Tail centerline must be one absolutely straight diagonal from root bottom-left around (300,1000) to tip upper-right around (980,230); no C curve, no hook, no curled tip. Tail thick fluffy like the approved reference, with a clean rounded taper at tip and fully painted narrow root overlap. All edges covered by natural fur. Detailed soft hand-painted asset in exactly the same fur texture and lighting. One tail only, all of it fits with margin, no character, no other body parts, no text, no diagram, no drop shadow. Intended for deformation with 2D bones, so the neutral tail is straight.",
+      "source_path": "/workspace/scratch/daf7e33cb49f/generated_images/exec-ab8e5800-91bb-4bef-9443-354e788fcdbd.png"
+    }
+  ],
+  "attempts": [
+    {
+      "name": "tikhon_head_neutral.png",
+      "prompt": "Precise extraction edit for 2D cutout puppet. EDIT the reference image, do not redraw a new animal. Keep only Tikhon's HEAD, WITHOUT EARS, on the identical square full-size canvas. Delete the body, paws, legs and tail entirely to real transparency. Remove both ears at their roots and paint a short natural furry upper head edge; keep the two ear attachment regions behind the crown covered by a small extra fur overlap. Preserve EXACT head size, position, left-facing three-quarter direction, muzzle, amber eyes, sober sleepy neutral expression, whiskers, fur colors, brushwork. Neck fur must extend down a little as hidden overlap. Head must stay at its current coordinates, not centered or enlarged. Full canvas must retain 1254x1254 pixel dimensions, with transparency everywhere except this earless head and short neck overlap. No ears, no chest, no new face, no text, no shadow.",
+      "source_path": "exec-4111978e-700f-4a96-aefa-60b2f09162ca.png",
+      "status": "unregistered attempt, not production part"
+    },
+    {
+      "name": "tikhon_body.png",
+      "prompt": "Precise extraction and completion edit for 2D cutout puppet. EDIT the provided assembled Tikhon. Keep only his SEATED TORSO/BELLY, at EXACT original size and location on identical 1254x1254 square canvas. Remove the head, both ears, the complete tail, BOTH FRONT PAWS/ARMS and BOTH HIND FEET/LEGS to real transparency. Behind removed front paws continue pale belly fur seamlessly; upper torso must have short fluffy neck stub with extra overlap hidden under head. At hips continue gray torso fur a little behind the removed hind leg attachment. Preserve exact seated torso silhouette, pale belly patch, fur texture, subdued palette, lighting and viewpoint. The torso occupies the original lower-left/center portion, never recenter or resize it. All surrounding canvas transparent. No head or facial features, no limbs, no tail, no text, no pedestal. A painless toy/illustration puppet part, not injury.",
+      "source_path": "exec-455e0da0-1aac-43db-ab77-71a456dd697d.png",
+      "status": "unregistered attempt, not production part"
+    },
+    {
+      "name": "tikhon_tail.png",
+      "prompt": "Create a single complete STRAIGHT detachable tail for the exact Tikhon creature shown. Real transparent background, square full canvas 1254x1254. Smoky gray/brown hand-painted fur, same soft detailed brushwork and light as reference, very fluffy long tail with pale warm gray tip. Tail is mostly straight from ROOT at (710,1030) to fluffy TIP at (1160,520), so it can be rigged and curved with bones. Preserve original tail thickness and approximate length/scale; include a short fully painted root overlap. Only the tail, no animal body, no head, no paws, no scene, no labels. It occupies the right-lower half of the full square canvas at the described coordinates with margin. Do not center, enlarge or crop it. Natural tapered furry silhouette, no flat cut across fur. Not the original C curled tail: one almost straight flexible tail in relaxed neutral form.",
+      "source_path": "exec-b61d9118-210c-4b59-969a-8e7d61298ee3.png",
+      "status": "unregistered attempt, not production part"
+    }
+  ],
+  "result": "Brief-authorized fallback: assembled figure + separate full head with ears + straight tail. Not an assembled-from-parts rig."
+}

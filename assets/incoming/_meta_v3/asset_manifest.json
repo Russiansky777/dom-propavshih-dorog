@@ -1,0 +1,706 @@
+{
+  "brief": "Docs/BRIEF_CHATGPT_v3.md",
+  "source_commit": "f3bc29d51de1c5929906e13288fbd14baec38bf6",
+  "date": "2026-10-17",
+  "images": [
+    {
+      "file": "alternatives/M2_state_mirror_removed.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 324728,
+      "sha256": "f0e5b936da44d7398d6db1cf6185717ddc43ecde41ce6d18437dd7b55f0de247",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "alternative_not_for_automatic_import",
+      "notes": "Попытка генерации с нарушением масштаба, позиции или качества стыка. Не импортировать автоматически.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 254,
+        "fully_transparent_pct": 89.8078,
+        "bbox_alpha_ge_128": [
+          830,
+          104,
+          1106,
+          542
+        ],
+        "pixels_alpha_1_to_15": 17392,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "alternatives/M2_state_mirror_removed_hard_edge_attempt.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 323508,
+      "sha256": "0a3f8d71da5e953bca14613b4fb8676b6f6b773d434c12f8697b987cfad64223",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "alternative_not_for_automatic_import",
+      "notes": "Попытка генерации с нарушением масштаба, позиции или качества стыка. Не импортировать автоматически.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 90.794,
+        "bbox_alpha_ge_128": [
+          822,
+          83,
+          1126,
+          548
+        ],
+        "pixels_alpha_1_to_15": 2603,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "alternatives/tikhon_body_unregistered.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 1074881,
+      "sha256": "e875c11bfbc3a62d3dbc42d187970d3c0aea04adaa7225bed2291da1dabc1d05",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "alternative_not_for_automatic_import",
+      "notes": "Попытка генерации с нарушением масштаба, позиции или качества стыка. Не импортировать автоматически.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 69.796,
+        "bbox_alpha_ge_128": [
+          108,
+          399,
+          876,
+          1180
+        ],
+        "pixels_alpha_1_to_15": 11541,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "alternatives/tikhon_head_neutral_unregistered.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 1022592,
+      "sha256": "211dcaff586d86f3ebc779982e065e9f30f835558ef575c862b8b8a4603c6e2d",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "alternative_not_for_automatic_import",
+      "notes": "Попытка генерации с нарушением масштаба, позиции или качества стыка. Не импортировать автоматически.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 254,
+        "fully_transparent_pct": 74.0807,
+        "bbox_alpha_ge_128": [
+          125,
+          297,
+          965,
+          1002
+        ],
+        "pixels_alpha_1_to_15": 22472,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "alternatives/tikhon_tail_curved_attempt.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 800201,
+      "sha256": "6fa81d06727e2027cde1d330cca72aa4c0f36c40bd5c156cf1f737cc3c6e93f8",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "alternative_not_for_automatic_import",
+      "notes": "Попытка генерации с нарушением масштаба, позиции или качества стыка. Не импортировать автоматически.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 80.7171,
+        "bbox_alpha_ge_128": [
+          413,
+          454,
+          1235,
+          1176
+        ],
+        "pixels_alpha_1_to_15": 14134,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/M1_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "format": "PNG",
+      "bytes": 3364590,
+      "sha256": "1ef6219ab8d434505aec13a878d9db5d51d887cb1b76dc82d318b62eb764489e",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "background_for_review",
+      "notes": "Двор мельницы без колеса; крепление под перспективным углом.",
+      "alpha": {
+        "has_channel": false,
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pct": 0.0,
+        "bbox_alpha_ge_128": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "pixels_alpha_1_to_15": 0,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/M1_fg_sacks.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 621643,
+      "sha256": "adad4c907b648e87f69c697152f5bc1957c02dc5461a626dcd8477be1ec578f0",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "requires_manual_registration",
+      "notes": "Мешки крупнее заданного; начальный масштаб около 0.55–0.65, нижний левый якорь, проверить вручную.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 86.7908,
+        "bbox_alpha_ge_128": [
+          0,
+          415,
+          632,
+          940
+        ],
+        "pixels_alpha_1_to_15": 10901,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/M1_wheel.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 453431,
+      "sha256": "093d99d0dc4ef4a2bdbfec3c547bf8bab32e30cd0cc353d0a654879542d62b5d",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "requires_manual_registration",
+      "notes": "Колесо отдельно, концентрический hub; нужно совмещение и проверка вращения. Фронтальная проекция художественно упрощена.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 89.4368,
+        "bbox_alpha_ge_128": [
+          899,
+          236,
+          1387,
+          720
+        ],
+        "pixels_alpha_1_to_15": 11721,
+        "bright_red_pixels_alpha_gt_128": 0
+      },
+      "approx_registration": {
+        "source_pivot_px": [
+          1144,
+          479
+        ],
+        "background_pivot_px": [
+          1215,
+          438
+        ],
+        "initial_scale": 0.8,
+        "basis": "visual estimate only",
+        "verified_in_engine": false
+      }
+    },
+    {
+      "file": "assets/incoming/M2_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "format": "PNG",
+      "bytes": 2127684,
+      "sha256": "15ec3da439264580a2ba9e8763d01d034d7b8485bf16949e0ef736d74df0b60d",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "background_for_review",
+      "notes": "Сени с зеркалом, фотографией, дверью кабинета и стеллажом. Перекос стеллажа/рама выражены слабо.",
+      "alpha": {
+        "has_channel": false,
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pct": 0.0,
+        "bbox_alpha_ge_128": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "pixels_alpha_1_to_15": 0,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/M2_bg_mirror_removed.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "format": "PNG",
+      "bytes": 2161599,
+      "sha256": "c00f640473ad77811a61cb914b572daa02f7819fa30c9e36ea7bb17dc41de560",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "background_for_review",
+      "notes": "Полный альтернативный фон без зеркала, рекомендуемая замена неудачного patch. Текстуры слегка перерисованы.",
+      "alpha": {
+        "has_channel": false,
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pct": 0.0,
+        "bbox_alpha_ge_128": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "pixels_alpha_1_to_15": 0,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/M3_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "format": "PNG",
+      "bytes": 2649485,
+      "sha256": "bffb9ddda970d076257b663eb4139c8e30c55a5df6fd843be218209bc622c8b4",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "background_for_review",
+      "notes": "Кабинет с журналами/нарядом, ключом и рейкой за окном; ключ получился крупным.",
+      "alpha": {
+        "has_channel": false,
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pct": 0.0,
+        "bbox_alpha_ge_128": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "pixels_alpha_1_to_15": 0,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/M3_fg_desk_front.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 342488,
+      "sha256": "3bec1b9cc4bb3c23cf665c005d74c2ed01bf654547c198dd6a14f918aa0f09ff",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "requires_manual_registration",
+      "notes": "Ближний край стола; нужна проверка шва и глубины с персонажем.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 90.4907,
+        "bbox_alpha_ge_128": [
+          0,
+          632,
+          818,
+          941
+        ],
+        "pixels_alpha_1_to_15": 2629,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/M4_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "format": "PNG",
+      "bytes": 3010238,
+      "sha256": "ee74a1585f34b1bdea1a2d53313dcd4b2b33962bcefe4fd6c7137714e0d96231",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "background_for_review",
+      "notes": "Затвор без рычага, с рабочей красной меткой. Шестерня и вода статичны.",
+      "alpha": {
+        "has_channel": false,
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pct": 0.0,
+        "bbox_alpha_ge_128": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "pixels_alpha_1_to_15": 0,
+        "bright_red_pixels_alpha_gt_128": 32
+      }
+    },
+    {
+      "file": "assets/incoming/M4_lever_up.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 94278,
+      "sha256": "7f9bd4f8ba77a27378402d0e004c1ca1304e896bf8d496d5f434787d7d627015",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "requires_manual_registration",
+      "notes": "Основной исходник рычага. Требует позиции, масштаба и pivot; желательно вращать этот один слой.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 98.9423,
+        "bbox_alpha_ge_128": [
+          704,
+          298,
+          774,
+          643
+        ],
+        "pixels_alpha_1_to_15": 1536,
+        "bright_red_pixels_alpha_gt_128": 0
+      },
+      "approx_registration": {
+        "source_pivot_px": [
+          739,
+          607
+        ],
+        "background_pivot_px": [
+          700,
+          524
+        ],
+        "basis": "visual estimate only",
+        "verified_in_engine": false
+      }
+    },
+    {
+      "file": "assets/incoming/M4_lever_work.png",
+      "width": 1671,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 112637,
+      "sha256": "a02cd591df5e8f2066ac0dff0df2138aa66b04d1a55d6e517581b0a70d22bb65",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "requires_manual_registration",
+      "notes": "Образец рабочего положения; холст 1671×941, длина и pivot дрейфуют. Не точная сменная пара up.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 98.6062,
+        "bbox_alpha_ge_128": [
+          715,
+          316,
+          978,
+          649
+        ],
+        "pixels_alpha_1_to_15": 2042,
+        "bright_red_pixels_alpha_gt_128": 0
+      },
+      "approx_registration": {
+        "source_pivot_px": [
+          759,
+          606
+        ],
+        "background_pivot_px": [
+          700,
+          524
+        ],
+        "basis": "visual estimate only",
+        "verified_in_engine": false
+      }
+    },
+    {
+      "file": "assets/incoming/Z4_bg.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "format": "PNG",
+      "bytes": 2888877,
+      "sha256": "1a495ea2fc548d3ea42bafd65d5801efb06ffc8d7f8339e9f78c9ba44114591b",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "background_for_review",
+      "notes": "Переулок: боковое крыльцо, фасад почты, отдельные лужи; без людей и текста.",
+      "alpha": {
+        "has_channel": false,
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pct": 0.0,
+        "bbox_alpha_ge_128": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "pixels_alpha_1_to_15": 0,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/Z4_fg_fence.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 224742,
+      "sha256": "be1097a46d960fd9d6ec589b48aa6a4c7c2bff4bf2ce6546b3e93ef9b1d6caa7",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "requires_manual_registration",
+      "notes": "Прозрачный нижний левый край; проверить ступени и проход при наложении.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 95.1725,
+        "bbox_alpha_ge_128": [
+          0,
+          650,
+          413,
+          941
+        ],
+        "pixels_alpha_1_to_15": 3449,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/Z4_sway_grass.png",
+      "width": 1671,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 325617,
+      "sha256": "853d1cb94a3cb19e255da87b4f13b737c13e94c6af0cada9d98dcd951a4bf100",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "requires_manual_registration",
+      "notes": "Прозрачная нижняя левая трава; холст на 1 px уже фона, слабый alpha-шум.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 93.2941,
+        "bbox_alpha_ge_128": [
+          0,
+          626,
+          565,
+          941
+        ],
+        "pixels_alpha_1_to_15": 11835,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/Z4_sway_tree.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 231684,
+      "sha256": "f9da9f938bb3dba1eee321245f866ed8073b5021dc2a17d9da507f28c69abb13",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "requires_manual_registration",
+      "notes": "Прозрачные верхние левые ветви; слабый цветной alpha-шум.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 96.2682,
+        "bbox_alpha_ge_128": [
+          0,
+          0,
+          357,
+          339
+        ],
+        "pixels_alpha_1_to_15": 17700,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/tikhon_assembled.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 1988131,
+      "sha256": "c0c65ba68795cd05e6c69314eb8bd7348a683bfdecd14eaeb459743c5533139f",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "brief_authorized_fallback",
+      "notes": "Fallback: цельная сидячая фигура. Не сборка из поставленных частей.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 48.5784,
+        "bbox_alpha_ge_128": [
+          134,
+          55,
+          1234,
+          1205
+        ],
+        "pixels_alpha_1_to_15": 28995,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/tikhon_head.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 2159876,
+      "sha256": "3f8ae48b881a9302b2300f6610e434f1563e8ce710db3eb27229e7f1c108d131",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "brief_authorized_fallback",
+      "notes": "Fallback: крупная отдельная голова с ушами. Требует ручной посадки; небольшая перерисовка пропорций.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 45.0063,
+        "bbox_alpha_ge_128": [
+          45,
+          54,
+          1157,
+          1221
+        ],
+        "pixels_alpha_1_to_15": 28527,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    },
+    {
+      "file": "assets/incoming/tikhon_tail.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "format": "PNG",
+      "bytes": 1087038,
+      "sha256": "b87bf72754425040dd5a2a294b85e7c178891620340964a11537dacc7010a9e8",
+      "tool": "image_gen.imagegen (built-in)",
+      "model_version": null,
+      "model_note": "Exact model version is not returned by the tool.",
+      "status": "brief_authorized_fallback",
+      "notes": "Fallback: отдельный почти прямой хвост для костей, требует ручной посадки.",
+      "alpha": {
+        "has_channel": true,
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pct": 72.5432,
+        "bbox_alpha_ge_128": [
+          157,
+          199,
+          1237,
+          1181
+        ],
+        "pixels_alpha_1_to_15": 20737,
+        "bright_red_pixels_alpha_gt_128": 0
+      }
+    }
+  ],
+  "texts": [
+    {
+      "file": "data/story/text/ru_bag.json",
+      "source_sha256": "11ecb8078e68806e213c9841aca8f4ad9708b21371f3f5b94ffe89ebcc8f93ff",
+      "sha256": "5b53fde9b37e2570f7bb63a9b08795befaa368f997fdcae923f23fcb2e045561",
+      "changed_ids": [
+        "ui.bag_take",
+        "ui.bag_put_back",
+        "item.key_house",
+        "item.letter_tamara",
+        "item.pocket_watch",
+        "item.mitten",
+        "item.door_hinges",
+        "item.invoice_chalk",
+        "item.photo_school_pier",
+        "item.chalk"
+      ],
+      "only_text_and_draft_changed": true,
+      "bytes": 2264
+    },
+    {
+      "file": "data/story/text/ru_E0_E1.json",
+      "source_sha256": "ff475ecf145810d03e29a95341e3db8abcc55c990ff0a0350f2636e9b033db1b",
+      "sha256": "56cd3826cbd4af9f4a6806c816ea9bf3af33776778d57a23299779f527eabeb0",
+      "changed_ids": [
+        "Z2.exit_Z4.label",
+        "Z4.exit_Z1.label",
+        "Z4.exit_Z2.label",
+        "Z4.post_sign.label",
+        "Z4.post_sign.look",
+        "Z4.lantern.label",
+        "Z4.lantern.look"
+      ],
+      "only_text_and_draft_changed": true,
+      "bytes": 30999
+    }
+  ],
+  "reference_git_blobs": {
+    "assets/reference/H1_bg.png": "a085c331be5936e5f1143185cc04a51cb9d612f7",
+    "assets/reference/tikhon_sheet.png": "df577685ea60cbdfba6daa9c05d1358927618c6b",
+    "assets/reference/agata_sheet.png": "4fd249823c254baf283d32e0383bdc34352dbe3f",
+    "assets/incoming/Z2_bg.png": "b8e9a2248022640b046f1e4b718eb257456fbbfe",
+    "assets/incoming/Z3_bg.png": "aec57ab07dc8c5aa69ad9199f51f3fa940478e8d"
+  },
+  "in_engine_tests_performed": false,
+  "raster_resizing_or_pixel_cleanup_performed": false
+}
