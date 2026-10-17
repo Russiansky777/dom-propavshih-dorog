@@ -1,0 +1,32 @@
+stance-foot drift on screen [после: root motion]: 127 single-frame transitions, 264 pairs inside one frame
+left   (row 6, scale ≈1.23); along/perp px per transition k→k+1, k = 0..11:
+    0→1        1→2        2→3        3→4        4→5        5→6        6→7        7→8        8→9        9→10      10→11      11→0      
+   +28.0/+0.8  +22.8/-0.7   +0.5/+4.3   -1.0/-3.1   +2.6/+0.1   +1.7/+0.5   +0.9/-0.2   +0.2/+0.4   +0.9/+0.3   -1.1/-6.0   +0.2/-1.8   +1.1/-0.2
+   max |drift| 28.0 px (along 28.0); transitions covered 12/12
+right  (row 2, scale ≈1.23); along/perp px per transition k→k+1, k = 0..11:
+    0→1        1→2        2→3        3→4        4→5        5→6        6→7        7→8        8→9        9→10      10→11      11→0      
+    +1.4/+0.7   +0.2/+0.1   -0.4/+0.7   -1.1/+2.7   -0.4/-1.2   +1.1/-0.3   -1.3/-3.0   -0.1/-0.7   +0.0/-0.4   -0.4/+4.8   +1.7/+1.4   +0.1/-0.3
+   max |drift| 4.8 px (along 1.7); transitions covered 12/12
+up     (row 4, scale ≈1.21); along/perp px per transition k→k+1, k = 0..11:
+    0→1        1→2        2→3        3→4        4→5        5→6        6→7        7→8        8→9        9→10      10→11      11→0      
+    +0.5/+0.8   +1.3/-0.6   +8.2/-0.4  +26.6/-0.5  +22.4/+3.3   +2.6/-1.0   +3.0/-0.3   +2.9/+0.8   +8.4/+0.7  +21.4/-1.4  +18.5/-0.1   -0.3/-0.6
+   max |drift| 26.6 px (along 26.6); transitions covered 12/12
+down   (row 0, scale ≈0.81); along/perp px per transition k→k+1, k = 0..11:
+    0→1        1→2        2→3        3→4        4→5        5→6        6→7        7→8        8→9        9→10      10→11      11→0      
+    +1.2/+1.0   +0.6/+0.9  +10.0/+1.8      —       +0.8/-0.4   +0.3/-0.2  -21.7/+3.7   -5.5/-3.4   +0.7/-2.7   -8.3/+10.6   +1.7/+0.3   +0.0/+0.4
+   max |drift| 22.1 px (along 21.7); transitions covered 11/12
+foot lock between frame changes: 264 pairs, engine violations: 0
+worst stance-foot drift: 28.0 px (limit 6)
+DRIFT left 0→1: stance foot moved 28.0 px (along +28.0, across +0.8)
+DRIFT left 1→2: stance foot moved 22.8 px (along +22.8, across -0.7)
+DRIFT left 9→10: stance foot moved 6.1 px (along -1.1, across -6.0)
+DRIFT up 2→3: stance foot moved 8.3 px (along +8.2, across -0.4)
+DRIFT up 3→4: stance foot moved 26.6 px (along +26.6, across -0.5)
+DRIFT up 4→5: stance foot moved 22.6 px (along +22.4, across +3.3)
+DRIFT up 8→9: stance foot moved 8.5 px (along +8.4, across +0.7)
+DRIFT up 9→10: stance foot moved 21.5 px (along +21.4, across -1.4)
+DRIFT up 10→11: stance foot moved 18.5 px (along +18.5, across -0.1)
+DRIFT down 2→3: stance foot moved 10.2 px (along +10.0, across +1.8)
+DRIFT down 6→7: stance foot moved 22.1 px (along -21.7, across +3.7)
+DRIFT down 7→8: stance foot moved 6.5 px (along -5.5, across -3.4)
+DRIFT down 9→10: stance foot moved 13.5 px (along -8.3, across +10.6)

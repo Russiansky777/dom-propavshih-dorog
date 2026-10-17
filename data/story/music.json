@@ -1,5 +1,5 @@
 {
-  "_comment": "Фоновая музыка (Suno, инструментал; решение Директора 17.10). Тема задаётся зоной комнаты; переход между комнатами одной темы музыку не перезапускает. Файлы — res://assets/music/<file>. Громкость треков выровнена к −18 LUFS (pipeline/audio/prepare_music.sh).",
+  "_comment": "Фоновая музыка (Suno, инструментал; решение Директора 17.10). Тема задаётся комнатой (rooms); переход между комнатами одной темы музыку не перезапускает, другой — кроссфейд crossfade_s. Файлы — res://assets/music/<file> (копия assets/music, tools/sync_music.sh; импорт loop=false). loop: true — бесшовный цикл кроссфейдом loop_crossfade_s от конца трека к его началу (MusicDirector, game/scripts/audio/music_director.gd); loop: false — дослушивается до конца, последние end_fade_s секунд затухают. Громкость треков выровнена к −18 LUFS (pipeline/audio/prepare_music.sh); volume_db — поправка темы. Проверка — tools/validate_music.py.",
   "themes": {
     "home": {
       "file": "01_home.ogg",
@@ -68,13 +68,17 @@
     "S1": "mill"
   },
   "events": {
-    "_comment": "Тема по событию поверх комнатной, затем возврат к комнатной. Ключи — реальные флаги из flags.json или scene:<id>; зеркала (ЗМ/ЗГ/ЗП) — с E2, финал — E7. Подобрать по данным при интеграции, не выдумывать.",
+    "_comment": "Тема поверх комнатной, затем возврат к комнатной; из нескольких активных звучит последняя начавшаяся. Ключ — scene:<id> (сцена из scenes/*.json или quests.json): тема с StoryRunner.scene_started. Значение — тема или {theme, until}: until «scene_end» — до scene_completed (по умолчанию для цикличных тем), «track_end» — до конца трека, через смены комнат и следующие сцены (по умолчанию и единственно допустимо для loop: false). Зеркала — сцены, где зеркало показывает другое место сейчас: M10 (ЗМ — кабинет мельницы), M11 (эхо в кабинете через ЗМ), M27 (ЗГ и ЗП меняются местами, взгляд в обе стороны), M30 (карточки Нине через ЗГ). Финал — последние сцены E7: M33 (первый общий день), M34 (эпилог).",
     "scene:M10": "mirror",
-    "scene:M33": "finale",
-    "scene:M34": "finale"
+    "scene:M11": "mirror",
+    "scene:M27": "mirror",
+    "scene:M30": "mirror",
+    "scene:M33": {"theme": "finale", "until": "track_end"},
+    "scene:M34": {"theme": "finale", "until": "track_end"}
   },
   "crossfade_s": 2.5,
   "loop_crossfade_s": 4.0,
+  "end_fade_s": 2.0,
   "duck_dialogue_db": -5.0,
   "duck_except": [
     "finale"

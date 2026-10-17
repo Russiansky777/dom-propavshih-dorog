@@ -1,15 +1,19 @@
 class_name LightSource
 extends Node2D
 ## One entry of `sources[]` in data/story/lights/<LOC>.json. Types:
-##   ambient — room-wide darkening: DirectionalLight2D in SUB mode (every lit item × (1 − subtract));
-##             unshaded effects (fire, glows) keep their brightness, the UI (CanvasLayer) is untouched;
-##   point   — PointLight2D (ADD; `mode: "sub"` darkens) with a radial falloff: `pos`, `radius`,
-##             optional non-uniform `scale` [sx, sy] (a light pool on the floor is an ellipse);
-##   mask    — PointLight2D with a soft polygon texture (`polygons`, `feather`): light or darkness
-##             exactly where the painted light is (a window patch, a lit doorway);
+##   ambient — room-wide darkening: the room's light map is lowered by `subtract` (every lit surface
+##             × (1 − subtract)); fire, glows and the UI keep their brightness;
+##   point   — radial light (`mode: "sub"` darkens): `pos`, `radius`, optional non-uniform `scale`
+##             [sx, sy] (a light pool on the floor is an ellipse), `falloff`;
+##   mask    — soft polygon (`polygons`, `feather`): light or darkness exactly where the painted
+##             light is (a window patch, a lit doorway);
 ##   shaft   — visible beam: additive unshaded sprite of a soft polygon with a `gradient`;
 ##   fire    — the stove fire: quad over the opening (`rect`) with shaders/fire_stove.gdshader;
 ##   glow    — lamp glass / bloom: quad (`rect`) with shaders/light_glow.gdshader.
+## ambient / point / mask draw into the room's LIGHT MAP (RoomLighting: a 1/4-resolution SubViewport,
+## value = light × 0.5, cleared to 0.5 = daylight as painted); the room's art multiplies by it
+## (shaders/light_receive.gdshader). Godot's Light2D is not used: under GL Compatibility in WebGL2
+## one Light2D cost 85–93 % of the frame rate in the software-GL measurement (tools/light_fps.mjs).
 ## Common: `if` / `unless` flags (all `if` set, no `unless` set → on), `fade_s` (on/off and energy
 ## changes ease over that time — 0.8 s for the H1 shutters; entering a room or loading a save shows
 ## the final state at once: no replayed transitions), `flicker` {group, amount, speed} — sources of
@@ -34,7 +38,12 @@ var flicker_value: float = 0.0  # last raw −1..1 sample
 var casts_shadow: bool = false
 var shadow: Dictionary = {}
 
-var light: Light2D = null
+const LM_SCALE := 0.5            # light map value = light × LM_SCALE (room art × 2 × value)
+
+var lm: Sprite2D = null           # this source's sprite in the room's light map (ambient/point/mask)
+var lm_color: Color = Color.WHITE
+var lm_sub: bool = false
+var lm_strength: float = 0.0      # current energy × presence × flicker
 var sprite: Sprite2D = null
 var _mat: ShaderMaterial = null
 var _base_pos: Vector2 = Vector2.ZERO
@@ -42,6 +51,7 @@ var _alpha: float = 1.0
 var _mask: Dictionary = {}      # LightMask.build result of a mask (sampled for actor tones)
 var _radius: float = 0.0
 var _falloff: float = 1.6
+var _scale: Vector2 = Vector2.ONE
 
 
 func setup(spec: Dictionary, group_flicker: LightFlicker) -> void:
@@ -91,48 +101,72 @@ static func _vec(v, fallback: Vector2) -> Vector2:
 	return fallback
 
 
-func _setup_light(l: Light2D) -> void:
-	l.name = "Light"
-	l.range_z_min = -4096
-	l.range_z_max = 4096
-	l.blend_mode = Light2D.BLEND_MODE_SUB if String(data.get("mode", "add")) == "sub" else Light2D.BLEND_MODE_ADD
-	l.color = _color(data.get("color", "#ffffff"), Color.WHITE)
-	l.shadow_enabled = false
-	light = l
-	add_child(l)
+static var _blend_add: CanvasItemMaterial = null
+static var _blend_sub: CanvasItemMaterial = null
+static var _white: ImageTexture = null
+
+
+## Drops the shared resources (tests call it before quitting: no "resources still in use").
+static func release_shared() -> void:
+	_blend_add = null
+	_blend_sub = null
+	_white = null
+	LightMask.clear_cache()
+
+
+static func white_texture() -> ImageTexture:
+	if _white == null:
+		var img := Image.create(QUAD_SIZE, QUAD_SIZE, false, Image.FORMAT_RGBA8)
+		img.fill(Color.WHITE)
+		_white = ImageTexture.create_from_image(img)
+	return _white
+
+
+## A sprite for the light map (drawn into RoomLighting's SubViewport, not into the room).
+func _make_lm(tex: Texture2D, sub: bool) -> Sprite2D:
+	if _blend_add == null:
+		_blend_add = CanvasItemMaterial.new()
+		_blend_add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		_blend_sub = CanvasItemMaterial.new()
+		_blend_sub.blend_mode = CanvasItemMaterial.BLEND_MODE_SUB
+	var s := Sprite2D.new()
+	s.name = source_id
+	s.texture = tex
+	s.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	s.material = _blend_sub if sub else _blend_add
+	lm_sub = sub
+	lm = s
+	return s
 
 
 func _build_ambient() -> void:
-	var d := DirectionalLight2D.new()
-	_setup_light(d)
-	d.blend_mode = Light2D.BLEND_MODE_SUB
-	d.color = _color(data.get("subtract", [0.5, 0.5, 0.5]), Color(0.5, 0.5, 0.5))
+	lm_color = _color(data.get("subtract", [0.5, 0.5, 0.5]), Color(0.5, 0.5, 0.5))
+	var s := _make_lm(white_texture(), true)
+	s.centered = false
+	s.scale = Vector2(1920.0, 1080.0) / float(QUAD_SIZE)
 
 
 func _build_point() -> void:
-	var p := PointLight2D.new()
-	_setup_light(p)
-	var radius := float(data.get("radius", 400.0))
-	_radius = radius
+	lm_color = _color(data.get("color", "#ffffff"), Color.WHITE)
+	_radius = float(data.get("radius", 400.0))
 	_falloff = float(data.get("falloff", 1.6))
-	p.texture = LightMask.radial(256, _falloff)
-	p.texture_scale = radius * 2.0 / 256.0
+	var s := _make_lm(LightMask.radial(256, _falloff), String(data.get("mode", "add")) == "sub")
 	_base_pos = _vec(data.get("pos", [960, 540]), Vector2(960, 540))
-	p.position = _base_pos
-	var sc := _vec(data.get("scale", [1, 1]), Vector2.ONE)
-	p.scale = sc
+	_scale = _vec(data.get("scale", [1, 1]), Vector2.ONE)
+	s.position = _base_pos
+	s.scale = _scale * (_radius * 2.0 / 256.0)
 
 
 func _build_mask() -> void:
-	var p := PointLight2D.new()
-	_setup_light(p)
+	lm_color = _color(data.get("color", "#ffffff"), Color.WHITE)
 	var m := LightMask.build(data.get("polygons", []), float(data.get("feather", 40.0)), data.get("gradient", {}))
 	_mask = m
 	var r: Rect2 = m["rect"]
-	p.texture = m["texture"]
-	p.texture_scale = float(m["texel"])
+	var s := _make_lm(m["texture"], String(data.get("mode", "add")) == "sub")
+	s.centered = false
+	s.position = r.position
+	s.scale = Vector2(float(m["texel"]), float(m["texel"]))
 	_base_pos = r.get_center()
-	p.position = _base_pos
 
 
 func _build_shaft() -> void:
@@ -163,11 +197,9 @@ func _build_shaft() -> void:
 
 func _build_quad(shader_path: String) -> void:
 	var r: Array = data.get("rect", [0, 0, 100, 100])
-	var img := Image.create(QUAD_SIZE, QUAD_SIZE, false, Image.FORMAT_RGBA8)
-	img.fill(Color.WHITE)
 	var s := Sprite2D.new()
 	s.name = "Quad"
-	s.texture = ImageTexture.create_from_image(img)
+	s.texture = white_texture()
 	s.centered = false
 	s.position = Vector2(float(r[0]), float(r[1]))
 	s.scale = Vector2(float(r[2]), float(r[3])) / float(QUAD_SIZE)
@@ -263,26 +295,25 @@ func shadow_floor() -> Vector2:
 	return p
 
 
-## What this light does to a figure (signed, per channel; SUB is negative), the same quantity
-## Light2D adds to a lit surface ÷ its albedo: colour × current energy × coverage. Masks (floor
-## patches) are read under the feet, point lights at the chest (`chest`), the ambient everywhere.
-## Actors are toned by the sum of this over the room's sources instead of being lit per pixel —
-## per pixel their upper body would take the light of the wall behind them.
+## What this light does to a figure (signed, per channel; SUB is negative), the same quantity it adds
+## to a lit surface of the room ÷ the surface's albedo: colour × current strength × coverage. Masks
+## (floor patches) and point lights are read under the feet (what the floor by her gets), the ambient
+## everywhere. Actors are toned by the sum of this over the room's sources instead of being lit per
+## pixel — per pixel their upper body would take the light of the wall behind them.
 func light_on_actor(feet: Vector2, chest: Vector2) -> Color:
-	if light == null or not light.enabled:
+	if lm == null or lm_strength <= 0.0005:
 		return Color(0, 0, 0, 0)
 	var k := 0.0
-	if light is DirectionalLight2D:
+	if kind == "ambient":
 		k = 1.0
 	elif not _mask.is_empty():
 		k = LightMask.sample(_mask, feet)
-	elif light is PointLight2D and _radius > 0.0:
-		var sc: Vector2 = light.scale
-		var local := (chest - light.position) / Vector2(maxf(absf(sc.x), 0.001), maxf(absf(sc.y), 0.001))
+	elif kind == "point" and _radius > 0.0:
+		var local := (chest - lm.position) / Vector2(maxf(absf(_scale.x), 0.001), maxf(absf(_scale.y), 0.001))
 		var t := local.length() / _radius
 		k = 0.0 if t >= 1.0 else pow(1.0 - t, _falloff) * (1.0 - t * t * 0.15)
-	var e := light.energy * k * (-1.0 if light.blend_mode == Light2D.BLEND_MODE_SUB else 1.0)
-	return Color(light.color.r * e, light.color.g * e, light.color.b * e, 0.0)
+	var e := lm_strength * k * (-1.0 if lm_sub else 1.0)
+	return Color(lm_color.r * e, lm_color.g * e, lm_color.b * e, 0.0)
 
 
 ## Floor distance (floor units: screen y ÷ foreshortening `c`) from the source's floor point.
@@ -319,11 +350,13 @@ func actor_warm(feet: Vector2, c: float) -> Color:
 func _apply() -> void:
 	var pr := presence()
 	var ff := flicker_factor()
-	if light != null:
-		light.energy = energy * pr * ff
-		light.enabled = light.energy > 0.001
-		if light is PointLight2D and data.has("jitter_px"):
-			light.position = _base_pos + Vector2(flicker_value, -absf(flicker_value) * 0.5) * float(data["jitter_px"])
+	if lm != null:
+		lm_strength = energy * pr * ff
+		var e := lm_strength * LM_SCALE
+		lm.self_modulate = Color(lm_color.r * e, lm_color.g * e, lm_color.b * e, 1.0)
+		lm.visible = lm_strength > 0.0005
+		if kind == "point" and data.has("jitter_px"):
+			lm.position = _base_pos + Vector2(flicker_value, -absf(flicker_value) * 0.5) * float(data["jitter_px"])
 	if sprite != null:
 		if kind == "shaft":
 			_mat.set_shader_parameter("intensity", _alpha * energy * pr * ff)

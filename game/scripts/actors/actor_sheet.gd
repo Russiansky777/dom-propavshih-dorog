@@ -47,6 +47,9 @@ var crossfade_s: float = 0.12
 ## One-shot actions (data `action_key_frame`): the sheet frame at which the action's effect is
 ## applied (the hand reaches the shutter, the item leaves the floor).
 var action_key_frames: Dictionary = {}
+## Actions of the pipeline's sprites.json the game does not use (data `skip_actions`, e.g. a sheet
+## that duplicates another): not built, no warning.
+var skip_actions: Array = []
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null
@@ -128,6 +131,7 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 					merged[k] = over[act_name][k]
 			a.actions[act_name] = merged
 	a.crossfade_s = float(spec.get("crossfade_s", a.crossfade_s))
+	a.skip_actions = spec.get("skip_actions", [])
 	var kf: Dictionary = spec.get("action_key_frame", {})
 	for k in kf.keys():
 		if not String(k).begins_with("_"):
@@ -140,6 +144,8 @@ func _build_frames() -> void:
 	frames = SpriteFrames.new()
 	frames.remove_animation("default")
 	for action in actions.keys():
+		if skip_actions.has(String(action)):
+			continue
 		var act: Dictionary = actions[action]
 		var path := sheet_dir + "/" + String(act.get("sheet", action + ".png"))
 		if not ResourceLoader.exists(path):

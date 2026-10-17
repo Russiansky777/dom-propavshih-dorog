@@ -1,0 +1,13 @@
+    cycle 277.1 px (scale 1) = 1.1518 m; fps 11.67 (= 12 × 1.12 m/s / cycle); start frame 7
+    row 0: Σ 67.0 px (expected 67.0 = cycle × 0.242) speed at scale 1: 65.2 px/s; strides [6.27, 6.05, 5.62, 4.54, 6.3, 6.14, 6.04, 2.94, 5.71, 4.58, 6.3, 6.55]
+    row 1: Σ 201.6 px (expected 201.6 = cycle × 0.728) speed at scale 1: 196.0 px/s; strides [18.84, 18.2, 16.9, 13.67, 18.94, 18.47, 18.15, 8.84, 17.17, 13.78, 18.95, 19.7]
+    row 2: Σ 277.1 px (expected 277.1 = cycle × 1.000) speed at scale 1: 269.5 px/s; strides [25.9, 25.01, 23.23, 18.79, 26.04, 25.39, 24.95, 12.15, 23.6, 18.94, 26.04, 27.09]
+    row 3: Σ 201.6 px (expected 201.6 = cycle × 0.728) speed at scale 1: 196.0 px/s; strides [18.84, 18.2, 16.9, 13.67, 18.94, 18.47, 18.15, 8.84, 17.17, 13.78, 18.95, 19.7]
+    row 4: Σ 67.0 px (expected 67.0 = cycle × 0.242) speed at scale 1: 65.2 px/s; strides [6.27, 6.05, 5.62, 4.54, 6.3, 6.14, 6.04, 2.94, 5.71, 4.58, 6.3, 6.55]
+    row 5: Σ 201.6 px (expected 201.6 = cycle × 0.728) speed at scale 1: 196.0 px/s; strides [18.84, 18.2, 16.9, 13.67, 18.94, 18.47, 18.15, 8.84, 17.17, 13.78, 18.95, 19.7]
+    row 6: Σ 277.1 px (expected 277.1 = cycle × 1.000) speed at scale 1: 269.5 px/s; strides [25.9, 25.01, 23.23, 18.79, 26.04, 25.39, 24.95, 12.15, 23.6, 18.94, 26.04, 27.09]
+    row 7: Σ 201.6 px (expected 201.6 = cycle × 0.728) speed at scale 1: 196.0 px/s; strides [18.84, 18.2, 16.9, 13.67, 18.94, 18.47, 18.15, 8.84, 17.17, 13.78, 18.95, 19.7]
+    walk left (row 6): 19 frame changes, fps 11.69 (formula 11.67), drawn still within a frame: max 0.00 px; advance per change [22.5, 43.6, 35.0, 48.1, 50.1, 47.9, 46.2, 42.9, 34.7, 48.1, 46.9, 46.1, 22.5, 43.6, 35.0, 48.1, 50.1, 47.9, 46.2]; max |advance − table×scale| 0.00 px; max lag behind logical 121.3 px; resyncs 1
+    left: stopped at (825.0, 990.0) (target (820.0, 990.0))
+    walk up (row 4): 27 frame changes, fps 11.67 (formula 11.67), drawn still within a frame: max 0.00 px; advance per change [5.4, 10.3, 8.2, 11.2, 11.5, 10.9, 10.4, 9.5, 7.6, 10.5, 10.1, 9.8, 4.7, 9.1, 7.2, 9.8, 10.1, 9.6, 9.1, 8.4, 6.7, 9.2, 8.9, 8.7, 4.2, 8.0, 6.4]; max |advance − table×scale| 0.00 px; max lag behind logical 16.8 px; resyncs 0
+    up: stopped at (1650.0, 746.0) (target (1650.0, 740.0))

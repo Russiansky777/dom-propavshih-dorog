@@ -1,0 +1,861 @@
+{
+  "tag": "до: постоянный шаг",
+  "max_drift": 6.0,
+  "worst": 74.3,
+  "violations": [
+    "left 0→1: stance foot moved 40.5 px (along +40.4, across -3.1)",
+    "left 1→2: stance foot moved 36.0 px (along +35.7, across -4.7)",
+    "left 2→3: stance foot moved 9.4 px (along +5.5, across -7.6)",
+    "left 5→6: stance foot moved 12.6 px (along +5.1, across -11.5)",
+    "left 6→7: stance foot moved 13.6 px (along +5.1, across -12.6)",
+    "left 7→8: stance foot moved 24.1 px (along +23.4, across -5.7)",
+    "left 8→9: stance foot moved 13.8 px (along +7.0, across -11.9)",
+    "left 9→10: stance foot moved 10.8 px (along +6.7, across +8.5)",
+    "left 10→11: stance foot moved 16.9 px (along +3.8, across -16.5)",
+    "left 11→0: stance foot moved 15.1 px (along +2.4, across -14.9)",
+    "right 3→4: stance foot moved 13.0 px (along +12.0, across +5.0)",
+    "right 7→8: stance foot moved 74.3 px (along -73.0, across -14.2)",
+    "right 9→10: stance foot moved 15.1 px (along +12.6, across +8.4)",
+    "up 1→2: stance foot moved 35.0 px (along +35.0, across -1.2)",
+    "up 2→3: stance foot moved 43.3 px (along +43.3, across -0.6)",
+    "up 3→4: stance foot moved 41.1 px (along +39.7, across +10.6)",
+    "down 1→2: stance foot moved 28.0 px (along +27.0, across -7.3)"
+  ],
+  "engine_violations": [],
+  "summary": {
+    "left": {
+      "row": 6,
+      "covered": [
+        0,
+        1,
+        2,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "max_drift": 40.5,
+      "max_along": 40.4,
+      "per_transition": {
+        "0": {
+          "along": 40.4,
+          "perp": -3.1,
+          "drift": 40.5
+        },
+        "1": {
+          "along": 35.7,
+          "perp": -4.7,
+          "drift": 36.0
+        },
+        "2": {
+          "along": 5.5,
+          "perp": -7.6,
+          "drift": 9.4
+        },
+        "5": {
+          "along": 5.1,
+          "perp": -11.5,
+          "drift": 12.6
+        },
+        "6": {
+          "along": 5.1,
+          "perp": -12.6,
+          "drift": 13.6
+        },
+        "7": {
+          "along": 23.4,
+          "perp": -5.7,
+          "drift": 24.1
+        },
+        "8": {
+          "along": 7.0,
+          "perp": -11.9,
+          "drift": 13.8
+        },
+        "9": {
+          "along": 6.7,
+          "perp": 8.5,
+          "drift": 10.8
+        },
+        "10": {
+          "along": 3.8,
+          "perp": -16.5,
+          "drift": 16.9
+        },
+        "11": {
+          "along": 2.4,
+          "perp": -14.9,
+          "drift": 15.1
+        }
+      }
+    },
+    "right": {
+      "row": 2,
+      "covered": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "max_drift": 74.3,
+      "max_along": 73.0,
+      "per_transition": {
+        "0": {
+          "along": 2.3,
+          "perp": 2.4,
+          "drift": 3.3
+        },
+        "1": {
+          "along": 2.4,
+          "perp": 1.5,
+          "drift": 2.8
+        },
+        "2": {
+          "along": 4.6,
+          "perp": 2.5,
+          "drift": 5.2
+        },
+        "3": {
+          "along": 12.0,
+          "perp": 5.0,
+          "drift": 13.0
+        },
+        "4": {
+          "along": -0.7,
+          "perp": -0.6,
+          "drift": 0.9
+        },
+        "5": {
+          "along": 3.2,
+          "perp": 0.9,
+          "drift": 3.3
+        },
+        "6": {
+          "along": -0.1,
+          "perp": -3.3,
+          "drift": 3.3
+        },
+        "7": {
+          "along": -73.0,
+          "perp": -14.2,
+          "drift": 74.3
+        },
+        "8": {
+          "along": 4.7,
+          "perp": 0.6,
+          "drift": 4.7
+        },
+        "9": {
+          "along": 12.6,
+          "perp": 8.4,
+          "drift": 15.1
+        },
+        "10": {
+          "along": 3.2,
+          "perp": 3.5,
+          "drift": 4.7
+        },
+        "11": {
+          "along": -1.7,
+          "perp": 1.1,
+          "drift": 2.0
+        }
+      }
+    },
+    "up": {
+      "row": 4,
+      "covered": [
+        1,
+        2,
+        3
+      ],
+      "max_drift": 43.3,
+      "max_along": 43.3,
+      "per_transition": {
+        "1": {
+          "along": 35.0,
+          "perp": -1.2,
+          "drift": 35.0
+        },
+        "2": {
+          "along": 43.3,
+          "perp": -0.6,
+          "drift": 43.3
+        },
+        "3": {
+          "along": 39.7,
+          "perp": 10.6,
+          "drift": 41.1
+        }
+      }
+    },
+    "down": {
+      "row": 0,
+      "covered": [
+        1
+      ],
+      "max_drift": 28.0,
+      "max_along": 27.0,
+      "per_transition": {
+        "1": {
+          "along": 27.0,
+          "perp": -7.3,
+          "drift": 28.0
+        }
+      }
+    }
+  },
+  "transitions": [
+    {
+      "label": "left",
+      "pair": [
+        1,
+        2
+      ],
+      "row": 6,
+      "from_frame": 5,
+      "to_frame": 6,
+      "scale": 1.538,
+      "drawn_step": 40.3,
+      "drift_along": 5.1,
+      "drift_perp": -11.5,
+      "drift": 12.6,
+      "rms": 8.6,
+      "stance_x": [
+        1260,
+        1357
+      ],
+      "stance_y": 803,
+      "other_feet_along": []
+    },
+    {
+      "label": "left",
+      "pair": [
+        4,
+        5
+      ],
+      "row": 6,
+      "from_frame": 6,
+      "to_frame": 7,
+      "scale": 1.565,
+      "drawn_step": 41.0,
+      "drift_along": 5.1,
+      "drift_perp": -12.6,
+      "drift": 13.6,
+      "rms": 9.7,
+      "stance_x": [
+        1259,
+        1360
+      ],
+      "stance_y": 814,
+      "other_feet_along": []
+    },
+    {
+      "label": "left",
+      "pair": [
+        7,
+        8
+      ],
+      "row": 6,
+      "from_frame": 7,
+      "to_frame": 8,
+      "scale": 1.592,
+      "drawn_step": 41.7,
+      "drift_along": 23.4,
+      "drift_perp": -5.7,
+      "drift": 24.1,
+      "rms": 8.8,
+      "stance_x": [
+        1258,
+        1364
+      ],
+      "stance_y": 827,
+      "other_feet_along": []
+    },
+    {
+      "label": "left",
+      "pair": [
+        10,
+        11
+      ],
+      "row": 6,
+      "from_frame": 8,
+      "to_frame": 9,
+      "scale": 1.616,
+      "drawn_step": 42.4,
+      "drift_along": 7.0,
+      "drift_perp": -11.9,
+      "drift": 13.8,
+      "rms": 16.7,
+      "stance_x": [
+        1238,
+        1346
+      ],
+      "stance_y": 840,
+      "other_feet_along": []
+    },
+    {
+      "label": "left",
+      "pair": [
+        13,
+        14
+      ],
+      "row": 6,
+      "from_frame": 9,
+      "to_frame": 10,
+      "scale": 1.644,
+      "drawn_step": 43.1,
+      "drift_along": 6.7,
+      "drift_perp": 8.5,
+      "drift": 10.8,
+      "rms": 23.4,
+      "stance_x": [
+        1239,
+        1347
+      ],
+      "stance_y": 852,
+      "other_feet_along": [
+        15.3
+      ]
+    },
+    {
+      "label": "left",
+      "pair": [
+        16,
+        17
+      ],
+      "row": 6,
+      "from_frame": 10,
+      "to_frame": 11,
+      "scale": 1.672,
+      "drawn_step": 43.8,
+      "drift_along": 3.8,
+      "drift_perp": -16.5,
+      "drift": 16.9,
+      "rms": 10.2,
+      "stance_x": [
+        1005,
+        1103
+      ],
+      "stance_y": 868,
+      "other_feet_along": [
+        40.6
+      ]
+    },
+    {
+      "label": "left",
+      "pair": [
+        19,
+        20
+      ],
+      "row": 6,
+      "from_frame": 11,
+      "to_frame": 0,
+      "scale": 1.7,
+      "drawn_step": 44.6,
+      "drift_along": 2.4,
+      "drift_perp": -14.9,
+      "drift": 15.1,
+      "rms": 8.8,
+      "stance_x": [
+        1002,
+        1103
+      ],
+      "stance_y": 881,
+      "other_feet_along": []
+    },
+    {
+      "label": "left",
+      "pair": [
+        22,
+        23
+      ],
+      "row": 6,
+      "from_frame": 0,
+      "to_frame": 1,
+      "scale": 1.729,
+      "drawn_step": 45.3,
+      "drift_along": 40.4,
+      "drift_perp": -3.1,
+      "drift": 40.5,
+      "rms": 24.9,
+      "stance_x": [
+        1004,
+        1149
+      ],
+      "stance_y": 895,
+      "other_feet_along": []
+    },
+    {
+      "label": "left",
+      "pair": [
+        25,
+        26
+      ],
+      "row": 6,
+      "from_frame": 1,
+      "to_frame": 2,
+      "scale": 1.758,
+      "drawn_step": 46.1,
+      "drift_along": 35.7,
+      "drift_perp": -4.7,
+      "drift": 36.0,
+      "rms": 27.7,
+      "stance_x": [
+        947,
+        1114
+      ],
+      "stance_y": 908,
+      "other_feet_along": []
+    },
+    {
+      "label": "left",
+      "pair": [
+        28,
+        29
+      ],
+      "row": 6,
+      "from_frame": 2,
+      "to_frame": 3,
+      "scale": 1.788,
+      "drawn_step": 46.9,
+      "drift_along": 5.5,
+      "drift_perp": -7.6,
+      "drift": 9.4,
+      "rms": 22.3,
+      "stance_x": [
+        1005,
+        1119
+      ],
+      "stance_y": 920,
+      "other_feet_along": [
+        59.6
+      ]
+    },
+    {
+      "label": "right",
+      "pair": [
+        2,
+        3
+      ],
+      "row": 2,
+      "from_frame": 1,
+      "to_frame": 2,
+      "scale": 1.8,
+      "drawn_step": 47.0,
+      "drift_along": 2.4,
+      "drift_perp": 1.5,
+      "drift": 2.8,
+      "rms": 26.2,
+      "stance_x": [
+        910,
+        1023
+      ],
+      "stance_y": 942,
+      "other_feet_along": []
+    },
+    {
+      "label": "right",
+      "pair": [
+        4,
+        5
+      ],
+      "row": 2,
+      "from_frame": 2,
+      "to_frame": 3,
+      "scale": 1.802,
+      "drawn_step": 47.0,
+      "drift_along": 4.4,
+      "drift_perp": 2.4,
+      "drift": 5.1,
+      "rms": 19.5,
+      "stance_x": [
+        910,
+        1024
+      ],
+      "stance_y": 944,
+      "other_feet_along": [
+        58.5
+      ]
+    },
+    {
+      "label": "right",
+      "pair": [
+        7,
+        8
+      ],
+      "row": 2,
+      "from_frame": 3,
+      "to_frame": 4,
+      "scale": 1.805,
+      "drawn_step": 47.1,
+      "drift_along": 12.0,
+      "drift_perp": 5.0,
+      "drift": 13.0,
+      "rms": 8.7,
+      "stance_x": [
+        1166,
+        1243
+      ],
+      "stance_y": 941,
+      "other_feet_along": [
+        8.3
+      ]
+    },
+    {
+      "label": "right",
+      "pair": [
+        11,
+        12
+      ],
+      "row": 2,
+      "from_frame": 4,
+      "to_frame": 5,
+      "scale": 1.809,
+      "drawn_step": 47.2,
+      "drift_along": -0.7,
+      "drift_perp": -0.6,
+      "drift": 0.9,
+      "rms": 10.0,
+      "stance_x": [
+        1180,
+        1288
+      ],
+      "stance_y": 946,
+      "other_feet_along": [
+        75.7
+      ]
+    },
+    {
+      "label": "right",
+      "pair": [
+        14,
+        15
+      ],
+      "row": 2,
+      "from_frame": 5,
+      "to_frame": 6,
+      "scale": 1.812,
+      "drawn_step": 47.3,
+      "drift_along": 3.2,
+      "drift_perp": 0.9,
+      "drift": 3.3,
+      "rms": 18.4,
+      "stance_x": [
+        1179,
+        1294
+      ],
+      "stance_y": 944,
+      "other_feet_along": []
+    },
+    {
+      "label": "right",
+      "pair": [
+        16,
+        17
+      ],
+      "row": 2,
+      "from_frame": 6,
+      "to_frame": 7,
+      "scale": 1.814,
+      "drawn_step": 47.3,
+      "drift_along": -0.1,
+      "drift_perp": -3.3,
+      "drift": 3.3,
+      "rms": 17.5,
+      "stance_x": [
+        1162,
+        1297
+      ],
+      "stance_y": 948,
+      "other_feet_along": []
+    },
+    {
+      "label": "right",
+      "pair": [
+        19,
+        20
+      ],
+      "row": 2,
+      "from_frame": 7,
+      "to_frame": 8,
+      "scale": 1.817,
+      "drawn_step": 47.4,
+      "drift_along": -73.0,
+      "drift_perp": -14.2,
+      "drift": 74.3,
+      "rms": 22.2,
+      "stance_x": [
+        1316,
+        1419
+      ],
+      "stance_y": 943,
+      "other_feet_along": [
+        25.2
+      ]
+    },
+    {
+      "label": "right",
+      "pair": [
+        24,
+        25
+      ],
+      "row": 2,
+      "from_frame": 8,
+      "to_frame": 9,
+      "scale": 1.821,
+      "drawn_step": 47.5,
+      "drift_along": 4.7,
+      "drift_perp": 0.6,
+      "drift": 4.7,
+      "rms": 16.5,
+      "stance_x": [
+        1203,
+        1324
+      ],
+      "stance_y": 938,
+      "other_feet_along": [
+        55.1
+      ]
+    },
+    {
+      "label": "right",
+      "pair": [
+        26,
+        27
+      ],
+      "row": 2,
+      "from_frame": 9,
+      "to_frame": 10,
+      "scale": 1.823,
+      "drawn_step": 47.5,
+      "drift_along": 12.6,
+      "drift_perp": 8.4,
+      "drift": 15.1,
+      "rms": 15.9,
+      "stance_x": [
+        1465,
+        1559
+      ],
+      "stance_y": 950,
+      "other_feet_along": []
+    },
+    {
+      "label": "right",
+      "pair": [
+        30,
+        31
+      ],
+      "row": 2,
+      "from_frame": 10,
+      "to_frame": 11,
+      "scale": 1.826,
+      "drawn_step": 47.6,
+      "drift_along": 3.2,
+      "drift_perp": 3.5,
+      "drift": 4.7,
+      "rms": 11.1,
+      "stance_x": [
+        1481,
+        1586
+      ],
+      "stance_y": 957,
+      "other_feet_along": []
+    },
+    {
+      "label": "right",
+      "pair": [
+        33,
+        34
+      ],
+      "row": 2,
+      "from_frame": 11,
+      "to_frame": 0,
+      "scale": 1.829,
+      "drawn_step": 47.7,
+      "drift_along": -1.7,
+      "drift_perp": 1.1,
+      "drift": 2.0,
+      "rms": 4.8,
+      "stance_x": [
+        1481,
+        1590
+      ],
+      "stance_y": 958,
+      "other_feet_along": []
+    },
+    {
+      "label": "right",
+      "pair": [
+        35,
+        36
+      ],
+      "row": 2,
+      "from_frame": 0,
+      "to_frame": 1,
+      "scale": 1.831,
+      "drawn_step": 47.8,
+      "drift_along": 2.3,
+      "drift_perp": 2.4,
+      "drift": 3.3,
+      "rms": 13.5,
+      "stance_x": [
+        1478,
+        1589
+      ],
+      "stance_y": 958,
+      "other_feet_along": []
+    },
+    {
+      "label": "right",
+      "pair": [
+        38,
+        39
+      ],
+      "row": 2,
+      "from_frame": 1,
+      "to_frame": 2,
+      "scale": 1.834,
+      "drawn_step": 47.8,
+      "drift_along": 2.4,
+      "drift_perp": 1.5,
+      "drift": 2.8,
+      "rms": 25.8,
+      "stance_x": [
+        1477,
+        1591
+      ],
+      "stance_y": 959,
+      "other_feet_along": []
+    },
+    {
+      "label": "right",
+      "pair": [
+        42,
+        43
+      ],
+      "row": 2,
+      "from_frame": 2,
+      "to_frame": 3,
+      "scale": 1.838,
+      "drawn_step": 47.9,
+      "drift_along": 4.6,
+      "drift_perp": 2.5,
+      "drift": 5.2,
+      "rms": 19.5,
+      "stance_x": [
+        1477,
+        1593
+      ],
+      "stance_y": 961,
+      "other_feet_along": [
+        59.6
+      ]
+    },
+    {
+      "label": "up",
+      "pair": [
+        1,
+        2
+      ],
+      "row": 4,
+      "from_frame": 1,
+      "to_frame": 2,
+      "scale": 1.687,
+      "drawn_step": 43.2,
+      "drift_along": 35.0,
+      "drift_perp": -1.2,
+      "drift": 35.0,
+      "rms": 9.9,
+      "stance_x": [
+        1655,
+        1692
+      ],
+      "stance_y": 931,
+      "other_feet_along": [
+        48.5
+      ]
+    },
+    {
+      "label": "up",
+      "pair": [
+        4,
+        5
+      ],
+      "row": 4,
+      "from_frame": 2,
+      "to_frame": 3,
+      "scale": 1.603,
+      "drawn_step": 41.1,
+      "drift_along": 43.3,
+      "drift_perp": -0.6,
+      "drift": 43.3,
+      "rms": 17.9,
+      "stance_x": [
+        1654,
+        1690
+      ],
+      "stance_y": 893,
+      "other_feet_along": [
+        44.1
+      ]
+    },
+    {
+      "label": "up",
+      "pair": [
+        7,
+        8
+      ],
+      "row": 4,
+      "from_frame": 3,
+      "to_frame": 4,
+      "scale": 1.523,
+      "drawn_step": 39.0,
+      "drift_along": 39.7,
+      "drift_perp": 10.6,
+      "drift": 41.1,
+      "rms": 25.3,
+      "stance_x": [
+        1652,
+        1687
+      ],
+      "stance_y": 851,
+      "other_feet_along": []
+    },
+    {
+      "label": "down",
+      "pair": [
+        1,
+        2
+      ],
+      "row": 0,
+      "from_frame": 1,
+      "to_frame": 2,
+      "scale": 1.577,
+      "drawn_step": 41.8,
+      "drift_along": 27.0,
+      "drift_perp": -7.3,
+      "drift": 28.0,
+      "rms": 26.6,
+      "stance_x": [
+        1650,
+        1704
+      ],
+      "stance_y": 796,
+      "other_feet_along": [
+        32.6
+      ]
+    }
+  ]
+}

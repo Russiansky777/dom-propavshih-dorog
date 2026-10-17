@@ -141,7 +141,7 @@ def feet_of(img, ref, actor, vertical=False):
                 m[:, axis:] = False
             else:
                 m[:, :axis] = False
-            if m.sum() >= int(25 * sc * sc):
+            if m.sum() >= int(60 * sc * sc):  # a boot, not a sliver of heel or hem
                 masks.append(m)
     for m in masks:
         ys, xs = np.where(m)
@@ -234,7 +234,9 @@ def main():
                 cands.append({"dx": ddx, "dy": ddy, "along": along, "perp": perp, "rms": rms, "x0": box[0] + ft["x0"], "x1": box[0] + ft["x1"], "y1": box[1] + ft["y1"]})
             if not cands:
                 continue
-            good = [c for c in cands if c["rms"] < (22 if lab in isolated else 40)]
+            # A stance foot neither lifts nor jumps sideways: across-travel motion over 10 px × scale
+            # means a foot leaving the ground (toe-off/swing), not the planted one.
+            good = [c for c in cands if c["rms"] < 40 and abs(c["perp"]) <= 10 * sc]
             if not good:
                 continue
             stance = min(good, key=lambda c: c["along"])  # most backward = worst planted-foot case

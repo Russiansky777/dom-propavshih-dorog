@@ -14,7 +14,7 @@ extends SceneTree
 ##     frame change), leaning AWAY from the source, fainter and longer farther away; they leave the
 ##     player when the room changes; NPCs (Tamara in Z1) get theirs from Z1's lamp;
 ##   - actor tone (coordinator 17.10: «Агата светлая, как вклеенная, в тёмной комнате»): the figure is
-##     not lit per pixel (unshaded) but toned by the light at her feet × actor_tint — dark in the dark
+##     not lit per pixel but toned by the light at her feet × actor_tint — dark in the dark
 ##     H1, warmer by the fire, eased; a room without lighting gives her colours back. The rendered
 ##     check (brightness within ±15 % of the floor by her) is tools/measure_tone.py on Xvfb frames.
 ## Exit code 0 only when every check passed. A `-s` script is compiled before autoloads exist: they
@@ -72,6 +72,7 @@ func _run() -> void:
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
 		main_node.free()
+	load("res://scripts/lighting/light_source.gd").release_shared()
 	var failed := 0
 	for r in _results:
 		if not r[1]:
@@ -133,8 +134,14 @@ func _test_build() -> void:
 			var n: Node = stack.pop_back()
 			_check(not (n is CollisionObject2D) and not (n is Control), "%s: %s in Lighting could take input" % [rid, n.get_path()])
 			stack.append_array(n.get_children())
-		for s in rl.sources:
-			_check(s.light == null or (s.light.range_z_min <= -1080 and s.light.range_z_max >= 1080), "%s:%s light must reach every z (actors are z = y up to 1080)" % [rid, s.source_id])
+		# Godot's Light2D is not used (one cost 85–93 % fps in the WebGL measurement): the art takes the
+		# room's light map instead.
+		var lights := room.find_children("*", "Light2D", true, false)
+		_check(lights.is_empty(), "%s: no Light2D in the room (found %d)" % [rid, lights.size()])
+		if rl.light_map != null:
+			var bg: CanvasItem = room.get_node_or_null("Background/Image")
+			_check(bg != null and bg.material == rl.receive_material, "%s: the background takes the light map" % rid)
+			_check(rl.light_map.size == Vector2i(480, 270), "%s: light map at 1/4 resolution, got %s" % [rid, str(rl.light_map.size)])
 	_check(built > 0, "no lights files built")
 	# H1: the stove hotspot is still clicked through the fire.
 	var h1: Node = await _enter("H1", ["stove_lit"], Vector2(1200, 900))
@@ -157,9 +164,9 @@ func _test_shutters() -> void:
 	if dark == null or patch == null or beam == null:
 		return
 	_check(dark.presence() == 1.0 and patch.presence() == 1.0, "closed shutters: room darkened on entry (presence %.2f / %.2f)" % [dark.presence(), patch.presence()])
-	_check(dark.light is DirectionalLight2D and dark.light.blend_mode == Light2D.BLEND_MODE_SUB and dark.light.energy > 0.9, "darkness = SUB directional light at full energy, got %s %.2f" % [str(dark.light), dark.light.energy if dark.light else -1.0])
+	_check(dark.lm != null and dark.lm_sub and dark.lm.visible and dark.lm_strength > 0.9, "darkness = subtracted from the light map at full strength, got %.2f" % dark.lm_strength)
 	_check(beam.presence() == 0.0 and not beam.sprite.visible, "closed shutters: no window beam")
-	var c: Color = dark.light.color
+	var c: Color = dark.lm_color
 	_check(c.r > 0.3 and c.g > 0.3 and c.b > 0.3, "closed shutters: the room is NOTICEABLY darker (subtract ≥ 0.3 per channel), got %s" % str(c))
 	gs.set_flag("h1_shutter_open", true)
 	await _wait_light(rl, 0.4)
@@ -167,7 +174,7 @@ func _test_shutters() -> void:
 	_check(mid > 0.5 - FADE_TOL - 0.1 and mid < 0.5 + FADE_TOL + 0.1, "0.4 s after opening the fade is half-way (level %.2f, expected ≈0.5)" % mid)
 	_check(beam.level > 0.2 and beam.level < 0.8, "the beam fades in together (level %.2f)" % beam.level)
 	await _wait_light(rl, 0.6)
-	_check(dark.level == 0.0 and not dark.light.enabled, "1.0 s after opening: no darkness left (level %.2f)" % dark.level)
+	_check(dark.level == 0.0 and not dark.lm.visible, "1.0 s after opening: no darkness left (level %.2f)" % dark.level)
 	_check(beam.level == 1.0 and beam.sprite.visible, "1.0 s after opening: the beam is on (level %.2f)" % beam.level)
 	# Save in the open state; reload from a closed room: final state at once, no replayed fade.
 	rm.save_game("test_lighting")
@@ -194,7 +201,7 @@ func _test_stove() -> void:
 	_check(fire != null and light != null, "H1 must have stove_fire and stove_light")
 	if fire == null or light == null:
 		return
-	_check(not fire.sprite.visible and not light.light.enabled, "cold stove: no fire, no light")
+	_check(not fire.sprite.visible and not light.lm.visible, "cold stove: no fire, no light")
 	_check(rl.shadows_of(player).size() >= 1, "Agata carries the stove shadow node even while the stove is cold")
 	for sh in rl.shadows_of(player):
 		await process_frame
@@ -204,13 +211,13 @@ func _test_stove() -> void:
 	_check(fire.sprite.visible and fire.presence() == 1.0, "lit stove: the fire burns")
 	var mat: ShaderMaterial = fire.sprite.material
 	_check(mat != null and mat.shader != null and mat.shader.code.contains("blend_add") and mat.shader.code.contains("unshaded"), "fire shader: additive and unshaded (the room's darkness does not dim it)")
-	_check(light.light is PointLight2D and light.light.blend_mode == Light2D.BLEND_MODE_ADD, "stove light: additive point light")
+	_check(light.lm != null and not light.lm_sub and light.lm.get_parent() != null and light.lm.get_parent().get_parent() == rl.light_map, "stove light: additive point in the room's light map")
 	var lo := 99.0
 	var hi := -1.0
 	for i in 60:
 		await process_frame
-		lo = minf(lo, light.light.energy)
-		hi = maxf(hi, light.light.energy)
+		lo = minf(lo, light.lm_strength)
+		hi = maxf(hi, light.lm_strength)
 	var amount: float = light.flicker_amount
 	_check(hi - lo > 0.01, "the stove light flickers (energy %.3f..%.3f)" % [lo, hi])
 	_check(lo >= light.energy * (1.0 - amount) - 0.001 and hi <= light.energy * (1.0 + amount) + 0.001, "flicker stays within ±%.2f of energy %.2f (%.3f..%.3f)" % [amount, light.energy, lo, hi])
@@ -294,7 +301,7 @@ func _test_shadow_lifecycle() -> void:
 	# A room without lights gives Agata her own colours and lighting back.
 	await _enter("H3", [], Vector2.INF)
 	await process_frame
-	_check(sprite.self_modulate == Color.WHITE and sprite.material == null, "a room without lighting: Agata untoned (modulate %s, material %s)" % [str(sprite.self_modulate), str(sprite.material)])
+	_check(sprite.self_modulate == Color.WHITE, "a room without lighting: Agata untoned (modulate %s)" % str(sprite.self_modulate))
 	if FileAccess.file_exists("res://data/story/lights/Z1.json"):
 		var z1: Node = await _enter("Z1", [], Vector2(300, 900))
 		await process_frame
@@ -315,8 +322,6 @@ func _test_actor_tone() -> void:
 	var rl = _lighting(room)
 	var sprite: AnimatedSprite2D = player.get("sprite")
 	await _wait_light(rl, 0.3)
-	var mat := sprite.material as CanvasItemMaterial
-	_check(mat != null and mat.light_mode == CanvasItemMaterial.LIGHT_MODE_UNSHADED, "Agata is toned, not lit per pixel (unshaded material on her sprite)")
 	var dark: Color = sprite.self_modulate
 	var expect: Color = rl.actor_tone_at(sprite.global_position, 500.0)
 	_check(_lum(dark) < 0.4, "closed shutters: Agata darkened with the room (tone %s)" % str(dark))

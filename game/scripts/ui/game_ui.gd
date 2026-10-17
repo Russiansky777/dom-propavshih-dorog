@@ -28,6 +28,8 @@ var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: But
 var fade: ColorRect
 var hover_label: Label
 var inventory_buttons: Dictionary = {}  # item -> Button
+var music_slider: HSlider               # menu: music volume 0–100 % (MusicDirector, user://settings.cfg)
+var music_value_label: Label
 var _hover_node: Node = null
 
 var _hint_serial: int = 0
@@ -249,6 +251,31 @@ func _build() -> void:
 		lb.pressed.connect(_on_load_slot.bind(slot))
 		row.add_child(lb)
 		slot_rows[slot] = {"info": info, "save": sb, "load": lb}
+	# Music volume: a setting (user://settings.cfg), not part of a save slot.
+	var music_row := HBoxContainer.new()
+	music_row.add_theme_constant_override("separation", 12)
+	mv.add_child(music_row)
+	var music_l := Label.new()
+	music_l.text = StoryData.text("@ui.music_volume")
+	music_l.custom_minimum_size = Vector2(120, 0)
+	music_l.add_theme_font_size_override("font_size", 24)
+	music_row.add_child(music_l)
+	music_slider = HSlider.new()
+	music_slider.name = "MusicSlider"
+	music_slider.min_value = 0
+	music_slider.max_value = 100
+	music_slider.step = 1
+	music_slider.custom_minimum_size = Vector2(420, 40)
+	music_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	music_slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	music_slider.value = roundf(MusicDirector.music_volume * 100.0)
+	music_slider.value_changed.connect(_on_music_slider)
+	music_row.add_child(music_slider)
+	music_value_label = Label.new()
+	music_value_label.custom_minimum_size = Vector2(90, 0)
+	music_value_label.add_theme_font_size_override("font_size", 22)
+	music_value_label.text = "%d %%" % int(music_slider.value)
+	music_row.add_child(music_value_label)
 	var bottom := HBoxContainer.new()
 	bottom.add_theme_constant_override("separation", 12)
 	mv.add_child(bottom)
@@ -397,7 +424,14 @@ func toggle_menu() -> void:
 	journal_panel.visible = false
 	if menu_panel.visible:
 		_refresh_slots()
+		music_slider.set_value_no_signal(roundf(MusicDirector.music_volume * 100.0))
+		music_value_label.text = "%d %%" % int(music_slider.value)
 	_update_modal()
+
+
+func _on_music_slider(value: float) -> void:
+	music_value_label.text = "%d %%" % int(value)
+	MusicDirector.set_music_volume(value / 100.0)
 
 
 func _refresh_slots() -> void:
@@ -511,6 +545,8 @@ func probe_positions() -> Dictionary:
 			out["buttons"]["Load" + slot] = _center(slot_rows[slot]["load"])
 		out["buttons"]["NewGame"] = _center(menu_panel.find_child("NewGame", true, false))
 		out["buttons"]["CloseMenu"] = _center(menu_panel.find_child("CloseMenu", true, false))
+		var mr := music_slider.get_global_rect()
+		out["music_slider"] = {"x": mr.position.x, "y": mr.position.y, "w": mr.size.x, "h": mr.size.y, "value": music_slider.value}
 	for item_id in inventory_buttons.keys():
 		out["inventory"][item_id] = _center(inventory_buttons[item_id])
 	if dialogue.visible:

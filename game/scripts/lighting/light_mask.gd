@@ -14,6 +14,10 @@ extends RefCounted
 static var _cache: Dictionary = {}
 
 
+static func clear_cache() -> void:
+	_cache.clear()
+
+
 ## Returns {"texture": ImageTexture, "rect": Rect2 (screen px), "texel": float (px per texel)}.
 static func build(polys: Array, feather: float, gradient: Dictionary = {}) -> Dictionary:
 	var key := JSON.stringify([polys, feather, gradient])

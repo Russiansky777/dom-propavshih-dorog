@@ -98,6 +98,10 @@
       "text": "Новая игра",
       "draft": false
     },
+    "ui.music_volume": {
+      "text": "Музыка",
+      "draft": false
+    },
     "ui.close": {
       "text": "Закрыть",
       "draft": false

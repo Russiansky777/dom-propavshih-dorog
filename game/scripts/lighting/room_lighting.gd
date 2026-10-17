@@ -11,7 +11,10 @@ extends Node2D
 ##   - attaches an ActorLightShadow to every actor sprite (the player when this room is the current
 ##     one, NpcActor children of the room) for every source with `casts_actor_shadow`; the ones on
 ##     the player are removed when the room leaves the tree (the player outlives rooms);
-##   - tones the actors' sprites instead of lighting them per pixel (unshaded material + self_modulate;
+##   - holds the room's LIGHT MAP (SubViewport, 1/4 resolution) where ambient / point / mask sources
+##     draw; the room's art (Background, Layers, Occluders, Props, Hotspot images) gets
+##     shaders/light_receive.gdshader and multiplies by it — one extra texture read per pixel;
+##   - tones the actors' sprites instead of lighting them per pixel (self_modulate;
 ##     children such as the shadows are untouched): the light the room's sources give at the
 ##     figure (ambient, the masks under the feet, the point lights at the chest — the same field the
 ##     floor gets) × the `actor_tint` of present sources (the art of the figures is lighter than the
@@ -22,6 +25,10 @@ extends Node2D
 ## Nothing here takes input: lights, quads and shadows are not in the physics picking.
 
 const DATA_DIR := "res://data/story/lights"
+const RECEIVE_SHADER: Shader = preload("res://shaders/light_receive.gdshader")
+const LM_DIV := 4
+## Room parts whose art takes the light map (RoomBuilder's containers).
+const RECEIVERS := ["Background", "Layers", "Occluders", "Props", "Hotspots"]
 ## Off only for measurements (LightProbe: FPS with and without lighting).
 static var enabled: bool = true
 const RESCAN_S := 0.5
@@ -34,7 +41,8 @@ var groups: Dictionary = {}          # group id -> LightFlicker
 var shadows: Dictionary = {}         # "<actor instance id>:<source id>" -> ActorLightShadow
 var extra_actors: Array[Node] = []   # tests: actors tracked besides the player / NpcActors
 var tones: Dictionary = {}          # actor instance id -> current tone (Color)
-static var _unshaded: CanvasItemMaterial = null
+var light_map: SubViewport = null    # ambient / point / mask sources draw here
+var receive_material: ShaderMaterial = null
 var time_s: float = 0.0
 const TONE_RATE := 8.0
 var _rescan_t: float = 0.0
@@ -86,7 +94,55 @@ static func build(room: Node2D, id: String) -> RoomLighting:
 		rl.add_child(src)
 		src.setup(s, rl._group_flicker(s.get("flicker", {})))
 		rl.sources.append(src)
+		if src.lm != null:
+			rl._lm_root().add_child(src.lm)
+	if rl.light_map != null:
+		rl.receive_material = ShaderMaterial.new()
+		rl.receive_material.shader = RECEIVE_SHADER
+		for part in RECEIVERS:
+			var n := room.get_node_or_null(NodePath(part))
+			if n != null:
+				rl._receive(n)
 	return rl
+
+
+## The light map: a SubViewport at 1/LM_DIV of the canvas, its content scaled to match, cleared to
+## LightSource.LM_SCALE (light 1 = the art as painted) by a full-frame base sprite.
+func _lm_root() -> Node2D:
+	if light_map != null:
+		return light_map.get_node("Root")
+	light_map = SubViewport.new()
+	light_map.name = "LightMap"
+	light_map.size = Vector2i(1920 / LM_DIV, 1080 / LM_DIV)
+	light_map.disable_3d = true
+	light_map.transparent_bg = false
+	light_map.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	light_map.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR
+	add_child(light_map)
+	var root := Node2D.new()
+	root.name = "Root"
+	root.scale = Vector2.ONE / float(LM_DIV)
+	light_map.add_child(root)
+	var base := Sprite2D.new()
+	base.name = "Base"
+	base.texture = LightSource.white_texture()
+	base.centered = false
+	base.scale = Vector2(1920.0, 1080.0) / float(LightSource.QUAD_SIZE)
+	var v := LightSource.LM_SCALE
+	base.self_modulate = Color(v, v, v, 1.0)
+	root.add_child(base)
+	return root
+
+
+## Room art drawn under the light map: every Sprite2D / Polygon2D below `n` that has no material of
+## its own (labels, other systems' shaded nodes and this lighting are left alone).
+func _receive(n: Node) -> void:
+	if n == self:
+		return
+	if (n is Sprite2D or n is Polygon2D or n is AnimatedSprite2D) and (n as CanvasItem).material == null:
+		(n as CanvasItem).material = receive_material
+	for c in n.get_children():
+		_receive(c)
 
 
 func _group_flicker(spec) -> LightFlicker:
@@ -101,9 +157,8 @@ func _group_flicker(spec) -> LightFlicker:
 
 
 func _ready() -> void:
-	if _unshaded == null:
-		_unshaded = CanvasItemMaterial.new()
-		_unshaded.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	if receive_material != null and light_map != null:
+		receive_material.set_shader_parameter("light_map", light_map.get_texture())
 	process_priority = 20  # after the player's foot lock (10): shadows read this frame's position
 	GameState.flag_changed.connect(_on_flag_changed)
 	GameState.state_reset.connect(_on_state_snap)
@@ -127,8 +182,6 @@ func _exit_tree() -> void:
 		var spr = pl.get("sprite")
 		if spr is CanvasItem and tones.has(pl.get_instance_id()):
 			spr.self_modulate = Color.WHITE
-			if spr.material == _unshaded:
-				spr.material = null
 	tones.clear()
 	# Shadows on actors that outlive the room (the player) go now, not at the end of the frame.
 	for key in shadows.keys():
@@ -250,10 +303,6 @@ func _update_tones(delta: float) -> void:
 		var spr = a.get("sprite")
 		if not (spr is AnimatedSprite2D) or not is_instance_valid(spr):
 			continue
-		# Toned as a whole (below), not lit per pixel by the room's Light2D. (light_mask 0 is not
-		# enough: the DirectionalLight2D of the darkness ignores it — measured under GL Compatibility.)
-		if spr.material == null:
-			spr.material = _unshaded
 		var fig_h: float = -spr.offset.y * absf(spr.get_global_transform().get_scale().y)
 		var target := actor_tone_at(spr.global_position, fig_h)
 		var key: int = a.get_instance_id()

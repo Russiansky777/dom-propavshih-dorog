@@ -5,6 +5,7 @@ extends RefCounted
 ##   lightGoto(room, "f1,f2", x, y) — fresh state with these flags, enter the room, Agata at (x, y)
 ##   lightEnable(on)                — lighting on/off (the room is re-entered at the same spot)
 ##   lightWalk(x, y)                — Agata walks there (cast shadows while moving)
+##   lightOnly("id1,id2")           — keep only these sources on (cost of each source)
 ##   lightState                     — JSON, refreshed every 0.25 s: room, fps, sources and their
 ##                                    levels, cast shadows attached, Agata's tone
 
@@ -23,7 +24,9 @@ static func register() -> void:
 	var goto_cb := JavaScriptBridge.create_callback(_goto)
 	var en_cb := JavaScriptBridge.create_callback(_enable)
 	var walk_cb := JavaScriptBridge.create_callback(_walk)
-	_cbs = [goto_cb, en_cb, walk_cb]
+	var only_cb := JavaScriptBridge.create_callback(_only)
+	_cbs = [goto_cb, en_cb, walk_cb, only_cb]
+	win.lightOnly = only_cb
 	win.lightGoto = goto_cb
 	win.lightEnable = en_cb
 	win.lightWalk = walk_cb
@@ -64,6 +67,23 @@ static func _enable(args: Array) -> void:
 		rm.call("change_room", String(room.get("room_id")), "", p.global_position)
 
 
+## lightOnly("id1,id2"): every other source of the current room is switched off (cost per source).
+static func _only(args: Array) -> void:
+	var rm := _node("RoomManager")
+	if rm == null:
+		return
+	var room: Node = rm.get("current_room")
+	var rl: RoomLighting = room.get_node_or_null("Lighting") as RoomLighting if room != null else null
+	if rl == null:
+		return
+	var keep := String(args[0]).split(",", false) if args.size() > 0 and args[0] != null else PackedStringArray()
+	for s in rl.sources:
+		if not keep.has(s.source_id):
+			s.set_process(false)
+			s.data["if"] = ["__probe_off__"]
+			s.refresh(true)
+
+
 static func _walk(args: Array) -> void:
 	var rm := _node("RoomManager")
 	if rm == null or args.size() < 2:
@@ -83,7 +103,7 @@ static func _publish() -> void:
 		if rl != null:
 			var src := {}
 			for s in rl.sources:
-				src[s.source_id] = {"type": s.kind, "level": snappedf(s.level, 0.01), "energy": snappedf(s.light.energy, 0.001) if s.light != null else null}
+				src[s.source_id] = {"type": s.kind, "level": snappedf(s.level, 0.01), "strength": snappedf(s.lm_strength, 0.001) if s.lm != null else null}
 			state["sources"] = src
 			state["shadows"] = rl.shadows.size()
 		var p = rm.get("player")
