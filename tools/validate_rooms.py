@@ -206,12 +206,31 @@ def walkable_of(room: dict):
 
 
 stubs: list[str] = []
+GAME_DIR = ROOT / "game"
+
+
+def check_res_path(ctx: str, res: str) -> None:
+    """res://… должен существовать в game/ (иначе экспорт останется без картинки)."""
+    if not res.startswith("res://"):
+        err(f"{ctx}: путь {res} должен начинаться с res://")
+        return
+    if not (GAME_DIR / res[len("res://"):]).exists():
+        err(f"{ctx}: файла {res} нет в game/")
+
+
 for rid, room in rooms.items():
     ctx = rid
     poly = walkable_of(room)
     if len(poly) < 3:
         err(f"{ctx}: полигон Walkable короче 3 точек")
     walk_texts(ctx, room)
+    if "image" in room.get("background", {}):
+        check_res_path(f"{ctx}.background.image", room["background"]["image"])
+    for p in room.get("props", []):
+        if "image" in p:
+            check_res_path(f"{ctx}.props.{p.get('id')}.image", p["image"])
+        if p.get("occluder") and "z" in p and not (0 <= int(p["z"]) <= 4096):
+            err(f"{ctx}.props.{p.get('id')}: z вне 0..4096")
 
     # спавны
     spawns = room.get("spawns", {})

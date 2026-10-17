@@ -48,6 +48,7 @@ func _run() -> void:
 	await _test("StoryData loads every JSON and every room builds without errors", _test_story_data)
 	await _test("Negative: exit H3→O1 is closed before M05 and open after", _test_exit_gate)
 	await _test("Bot walkthrough M01→M08 via StoryRunner/Room API with mid-way save/load", _test_walkthrough)
+	await _test("H1: Agata sprite from sheets (288x384, 8 walk + 8 idle), directions, table occluder z-sort", _test_h1_real)
 	_cleanup_m1()
 	_finish()
 
@@ -761,4 +762,66 @@ func _test_walkthrough() -> void:
 		_check(gs.has_flag("done_" + sid), "scene %s not done" % sid)
 	_check(bot.log.is_empty(), "bot log: %s" % str(bot.log))
 	Engine.time_scale = 1.0
+	_cleanup_m1()
+
+
+func _test_h1_real() -> void:
+	gs.reset()
+	await _spawn_main()
+	rm.autosave_enabled = false
+	# Sprite built from the sheets.
+	_check(player.call("uses_sheet"), "player should use the actor sheet (data/actors/agata.json)")
+	var spr: AnimatedSprite2D = player.get_node_or_null("Sprite")
+	_check(spr != null, "AnimatedSprite2D 'Sprite' missing")
+	if spr == null:
+		return
+	var names := spr.sprite_frames.get_animation_names()
+	var walk_n := 0
+	var idle_n := 0
+	for n in names:
+		if String(n).begins_with("walk_"):
+			walk_n += 1
+		elif String(n).begins_with("idle_"):
+			idle_n += 1
+	_check(walk_n == 8 and idle_n == 8, "expected 8 walk + 8 idle animations, got %d/%d (%s)" % [walk_n, idle_n, str(names)])
+	var tex := spr.sprite_frames.get_frame_texture("walk_0", 0)
+	_check(tex != null and tex.get_size() == Vector2(288, 384), "frame size should be 288x384, got %s" % str(tex.get_size() if tex else null))
+	_check(spr.sprite_frames.get_frame_count("walk_0") == 12 and spr.sprite_frames.get_frame_count("idle_0") == 8, "walk 12 / idle 8 frames")
+	_check(spr.offset.is_equal_approx(Vector2(-144.0, -0.9464285714285714 * 384.0)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
+	_check(not player.get_node("Body").visible, "placeholder body hidden when the sheet is used")
+	# Direction mapping (data/actors/agata.json): screen left → row 2, up → 4, right → 6, down → 0.
+	_check(player.call("direction_index", Vector2(-1, 0)) == 2, "left should map to row 2")
+	_check(player.call("direction_index", Vector2(0, -1)) == 4, "up (back) should map to row 4")
+	_check(player.call("direction_index", Vector2(1, 0)) == 6, "right should map to row 6")
+	_check(player.call("direction_index", Vector2(0, 1)) == 0, "down (front) should map to row 0")
+	_check(player.call("direction_index", Vector2(-1, -1)) == 3, "up-left should map to row 3")
+	# Real H1: background image, occluder with explicit z, player scale from room depth.
+	rm.change_room("H1", "default")
+	await physics_frame
+	await physics_frame
+	var room: Node = rm.current_room
+	_check(room.get_node_or_null("Background/Image") != null, "H1 should use the real background image")
+	var table: Node2D = room.get_node_or_null("Occluders/table_chair")
+	_check(table != null and table.get_node_or_null("Image") != null, "H1 table/chair occluder with image missing")
+	if table != null:
+		_check(table.z_index == 950, "occluder z should be the data value 950, got %d" % table.z_index)
+		player.call("enter_room", room, Vector2(900, 800))
+		_check(table.z_index > player.z_index, "player above the table (y=800) must be drawn behind it (z %d vs %d)" % [player.z_index, table.z_index])
+		player.call("enter_room", room, Vector2(900, 1000))
+		_check(player.z_index > table.z_index, "player below the table (y=1000) must be drawn in front of it")
+	_check(is_equal_approx(room.depth_scale(700.0), 1.3) and is_equal_approx(room.depth_scale(1070.0), 2.0), "H1 depth scale from data (1.3..2.0)")
+	# Walking drives the walk animation by distance and sets the direction row.
+	player.walk_speed = 400.0
+	player.call("enter_room", room, Vector2(1400, 900))
+	player.call("walk_to", Vector2(900, 900))
+	var frames := 0
+	var seen_frames := {}
+	while player.call("is_walking") and frames < 400:
+		await physics_frame
+		frames += 1
+		if frames > 5:
+			seen_frames[spr.frame] = true
+	_check(player.direction == 2 and spr.animation.begins_with("idle_2"), "after walking left: row 2 and idle_2, got dir %d anim %s" % [player.direction, spr.animation])
+	_check(seen_frames.size() >= 6, "walk frames should advance with distance, saw %d distinct" % seen_frames.size())
+	gs.reset()
 	_cleanup_m1()

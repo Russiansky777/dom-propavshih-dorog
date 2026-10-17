@@ -184,7 +184,11 @@ def rooms() -> None:
         if not name.endswith(".json") or name.startswith("_"):
             continue
         with open(os.path.join(ROOMS_DIR, name), encoding="utf-8") as f:
-            room_background(_json.load(f), locs)
+            room = _json.load(f)
+        if "image" in room.get("background", {}):
+            print(f"skip {room['id']}: real background {room['background']['image']}")
+            continue
+        room_background(room, locs)
 
 
 def main() -> int:

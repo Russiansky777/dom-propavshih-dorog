@@ -1,0 +1,11 @@
+{
+  "_comment": "Актёр Агата: листы из assets/characters/agata (копия в game/assets). Строки листа = направления, столбцы = кадры (проверено по PNG: walk 3456x3072 = 12 кадров x 288, 8 направлений x 384). Маппинг направлений — единственное место: экранный угол движения (atan2(dy, dx), y вниз, градусы) → индекс строки. zero_screen_angle_deg=90 — строка 0 смотрит на зрителя (вниз по экрану); шаг 45° по часовой на экране: 0=S(анфас) 1=SW 2=W 3=NW 4=N(спина) 5=NE 6=E 7=SE.",
+  "id": "agata",
+  "sheet_dir": "res://assets/characters/agata",
+  "sprites": "sprites.json",
+  "direction_map": {"zero_screen_angle_deg": 90, "step_deg": 45, "clockwise_on_screen": true},
+  "figure_height_px": 337,
+  "walk_px_per_frame": 12,
+  "idle_action": "idle",
+  "walk_action": "walk"
+}

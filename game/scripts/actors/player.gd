@@ -1,18 +1,22 @@
 class_name Player
 extends Node2D
-## Click-to-walk player. Origin is at the feet; the figure is ~180 px tall at scale 1.
+## Click-to-walk player. Origin is at the feet.
 ##
+## Visual: an AnimatedSprite2D built from the actor's sheets (data/actors/<id>.json + sprites.json,
+## 8 directions × N frames); the placeholder polygon `Body` is the fallback when no sheet loads.
 ## Scale and z_index come from the room's depth parameters (z_index = int(y) for y-sort).
-## The two-frame step is driven by distance travelled, never by time, so feet never slide.
+## Walk frames are driven by distance travelled, never by time, so feet never slide.
 
 signal walk_started(target: Vector2)
 signal arrived(position: Vector2)
 signal interaction_performed(node: Node2D)
 
 @export var walk_speed: float = 260.0
-## Distance (in body units, i.e. divided by the current scale) per step frame.
+## Distance (in body units, i.e. divided by the current scale) per step frame (placeholder body).
 @export var step_length: float = 36.0
 @export var bob_height: float = 5.0
+## Actor whose sheets are used (data/actors/<id>.json). Empty = placeholder polygon only.
+@export var actor_id: String = "agata"
 
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var body: Node2D = $Body
@@ -21,6 +25,9 @@ signal interaction_performed(node: Node2D)
 
 var room: Room = null
 var facing: int = 1
+var sheet: ActorSheet = null
+var sprite: AnimatedSprite2D = null
+var direction: int = 0          # sheet row of the current facing (0 = towards the viewer)
 
 var _walking: bool = false
 var _target: Vector2 = Vector2.ZERO
@@ -37,8 +44,62 @@ const PATH_RETRY_FRAMES: int = 30
 
 
 func _ready() -> void:
+	_setup_sprite()
 	_set_step_phase(0)
 	_update_depth()
+
+
+func _setup_sprite() -> void:
+	if actor_id == "":
+		return
+	sheet = ActorSheet.load_actor(actor_id)
+	if sheet == null or not sheet.is_loaded():
+		push_warning("Player: actor '%s' sheet not loaded (%s); using placeholder body" % [actor_id, sheet.load_error if sheet else "?"])
+		sheet = null
+		return
+	sprite = AnimatedSprite2D.new()
+	sprite.name = "Sprite"
+	sprite.centered = false
+	sprite.offset = sheet.sprite_offset()
+	sprite.sprite_frames = sheet.frames
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	add_child(sprite)
+	body.visible = false
+	_play_idle()
+
+
+func uses_sheet() -> bool:
+	return sprite != null
+
+
+## Screen motion → sheet direction row (mapping lives in data/actors/<id>.json).
+func direction_index(motion: Vector2) -> int:
+	return sheet.direction_index(motion) if sheet != null else 0
+
+
+func face_towards(target: Vector2) -> void:
+	var v := target - global_position
+	if sheet != null and v.length_squared() > 1.0:
+		direction = sheet.direction_index(v)
+		_play_idle()
+
+
+func _play_idle() -> void:
+	if sprite == null:
+		return
+	sprite.play(sheet.anim_name(sheet.idle_action, direction))
+
+
+func _update_walk_frame() -> void:
+	if sprite == null:
+		return
+	var anim := sheet.anim_name(sheet.walk_action, direction)
+	if sprite.animation != anim:
+		sprite.animation = anim
+	sprite.stop()
+	var n := sprite.sprite_frames.get_frame_count(anim)
+	if n > 0:
+		sprite.frame = int(floor(_distance_walked / sheet.walk_px_per_frame)) % n
 
 
 # --- Input -----------------------------------------------------------------
@@ -103,6 +164,7 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 	_pending = null
 	global_position = pos
 	_set_step_phase(0)
+	_play_idle()
 	_update_depth()
 
 
@@ -137,6 +199,9 @@ func _physics_process(delta: float) -> void:
 		_advance_steps(step)
 		if absf(motion.x) > 0.01:
 			facing = 1 if motion.x > 0.0 else -1
+		if sheet != null and motion.length_squared() > 0.0001:
+			direction = sheet.direction_index(motion)
+		_update_walk_frame()
 	if _path_fallback and global_position.distance_to(_target) <= 2.0:
 		_arrive()
 		return
@@ -147,9 +212,13 @@ func _arrive() -> void:
 	_walking = false
 	_set_step_phase(0)
 	_update_depth()
-	arrived.emit(global_position)
 	var node := _pending
 	_pending = null
+	if node != null and is_instance_valid(node):
+		face_towards(node.global_position)
+	else:
+		_play_idle()
+	arrived.emit(global_position)
 	if node != null and is_instance_valid(node) and node.has_method("trigger"):
 		node.call("trigger")
 		interaction_performed.emit(node)
@@ -182,5 +251,6 @@ func _update_depth() -> void:
 	var s := 1.0
 	if room != null:
 		s = room.depth_scale(global_position.y)
-	scale = Vector2(s * facing, s)
+	# Sheets carry every direction, so no mirroring; the placeholder body flips on `facing`.
+	scale = Vector2(s, s) if sprite != null else Vector2(s * facing, s)
 	z_index = clampi(int(global_position.y), -4096, 4096)

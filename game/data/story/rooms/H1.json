@@ -1,288 +1,120 @@
 {
   "id": "H1",
+  "_art": "Настоящий фон assets/reference/H1_bg.png (1672x941 → 1920x1080) и передний план H1_fg_table_chair.png (стол со стулом, окклюдер). Координаты ниже — в 1920x1080. Хотспоты не рисуются (draw: false), подписи показываются при наведении.",
   "background": {
     "kind": "interior",
+    "image": "res://assets/rooms/H1/bg.png",
     "wall": "#6e4e34",
     "floor": "#8c6a3f",
     "accent": "#b07a4a",
-    "horizon": 640
+    "horizon": 700
   },
+  "walkable": [[560, 700], [1900, 700], [1910, 1070], [790, 1070], [790, 770], [560, 770]],
+  "depth": {"top_y": 700, "bottom_y": 1070, "scale_top": 1.3, "scale_bottom": 2.0},
+  "_depth_note": "Агата: кадр 384 px, фигура 337 px. У дальней стены (y=700) рост 1.3×337 ≈ 440 px (дверной проём на фоне ≈ 540 px ≈ 2 м); у ближнего края (y=1070) 2.0×337 ≈ 675 px ≈ 62% высоты кадра. Ориентир — стол (ножки до y≈950, высота столешницы ≈ 0.75 м ≈ 310 px).",
   "spawns": {
-    "default": [960, 920],
-    "from_Z2": [700, 1000],
+    "default": [1200, 900],
+    "from_Z2": [980, 770],
     "from_H2": [1730, 900],
-    "from_H3": [190, 900],
-    "from_H4": [1500, 720]
+    "from_H3": [1100, 1000],
+    "from_H4": [1650, 1000]
   },
   "props": [
     {
-      "id": "table",
+      "id": "table_chair",
       "label": "@H1.table.label",
-      "rect": [760, 820, 440, 150],
+      "image": "res://assets/rooms/H1/fg_table_chair.png",
+      "rect": [0, 0, 1920, 1080],
       "color": "#5a3c22",
-      "occluder": true
+      "occluder": true,
+      "z": 950,
+      "_z_note": "ножки стола стоят на полу при y≈950: игрок выше по экрану (y<950) перекрывается столом и креслом, ниже — рисуется перед ними"
     }
   ],
   "hotspots": [
     {
-      "id": "stove",
-      "kind": "object",
-      "label": "@H1.stove.label",
-      "rect": [260, 220, 300, 420],
-      "stand": [410, 700],
-      "color": "#8c8278",
-      "states": [
-        {
-          "if": ["stove_lit"],
-          "label": "@H1.stove.label_lit",
-          "color": "#c8723a"
-        }
-      ],
-      "use": {
-        "sets": ["stove_lit"],
-        "text": "@H1.stove.use",
-        "once_flag": "stove_lit",
-        "scene": "M03"
-      },
+      "id": "stove", "kind": "object", "label": "@H1.stove.label", "rect": [60, 140, 470, 250], "stand": [580, 730], "color": "#8c8278", "draw": false,
+      "states": [{"if": ["stove_lit"], "label": "@H1.stove.label_lit", "color": "#c8723a"}],
+      "use": {"sets": ["stove_lit"], "text": "@H1.stove.use", "once_flag": "stove_lit", "scene": "M03"},
       "look": "@H1.stove.look"
     },
     {
-      "id": "shutter",
-      "kind": "object",
-      "label": "@H1.shutter.label",
-      "rect": [900, 250, 240, 300],
-      "stand": [1020, 700],
-      "color": "#4a3a2a",
-      "states": [
-        {
-          "if": ["h1_shutter_open"],
-          "label": "@H1.shutter.label_open",
-          "color": "#a9c4d8"
-        }
-      ],
-      "use": {
-        "sets": ["h1_shutter_open"],
-        "text": "@H1.shutter.use",
-        "once_flag": "h1_shutter_open",
-        "scene": "M03"
-      },
+      "id": "shutter", "kind": "object", "label": "@H1.shutter.label", "rect": [1400, 100, 500, 440], "stand": [1650, 740], "color": "#4a3a2a", "draw": false,
+      "states": [{"if": ["h1_shutter_open"], "label": "@H1.shutter.label_open", "color": "#a9c4d8"}],
+      "use": {"sets": ["h1_shutter_open"], "text": "@H1.shutter.use", "once_flag": "h1_shutter_open", "scene": "M03"},
       "look": "@H1.shutter.look"
     },
     {
-      "id": "scarf",
-      "kind": "object",
-      "label": "@H1.scarf.label",
-      "rect": [580, 560, 160, 70],
-      "stand": [660, 710],
-      "color": "#7a4a5a",
+      "id": "scarf", "kind": "object", "label": "@H1.scarf.label", "rect": [490, 520, 180, 110], "stand": [600, 730], "color": "#7a4a5a", "draw": false,
       "hidden_if": ["h1_scarf_removed"],
-      "use": {
-        "sets": ["h1_scarf_removed"],
-        "text": "@H1.scarf.use",
-        "once_flag": "h1_scarf_removed",
-        "scene": "M03"
-      },
+      "use": {"sets": ["h1_scarf_removed"], "text": "@H1.scarf.use", "once_flag": "h1_scarf_removed", "scene": "M03"},
       "look": "@H1.scarf.look"
     },
     {
-      "id": "tikhon",
-      "kind": "npc",
-      "label": "@char.tikhon",
-      "rect": [600, 560, 70, 80],
-      "stand": [640, 710],
-      "color": "#9a7a5a",
+      "id": "tikhon", "kind": "npc", "label": "@char.tikhon", "rect": [480, 400, 70, 80], "stand": [620, 735], "color": "#9a7a5a",
       "visible_if": ["started_M03"],
       "look": "@H1.tikhon.look"
     },
     {
-      "id": "photo",
-      "kind": "object",
-      "label": "@H1.photo.label",
-      "rect": [1240, 400, 120, 90],
-      "stand": [1300, 700],
-      "color": "#e8e0c8",
+      "id": "photo", "kind": "object", "label": "@H1.photo.label", "rect": [1230, 150, 80, 90], "stand": [1270, 740], "color": "#e8e0c8", "draw": false,
       "states": [
-        {
-          "if": ["v01_photo_table"],
-          "label": "@H1.photo.label_table"
-        },
-        {
-          "if": ["v01_photo_shelf"],
-          "label": "@H1.photo.label_shelf"
-        }
+        {"if": ["v01_photo_table"], "label": "@H1.photo.label_table"},
+        {"if": ["v01_photo_shelf"], "label": "@H1.photo.label_shelf"}
       ],
-      "choice": {
-        "prompt": "@H1.photo.prompt",
-        "exclusive": true,
-        "scene": "V01",
+      "choice": {"prompt": "@H1.photo.prompt", "exclusive": true, "scene": "V01",
         "options": [
-          {
-            "id": "table",
-            "label": "@H1.photo.opt_table",
-            "sets": "v01_photo_table"
-          },
-          {
-            "id": "shelf",
-            "label": "@H1.photo.opt_shelf",
-            "sets": "v01_photo_shelf"
-          }
-        ]
-      },
+          {"id": "table", "label": "@H1.photo.opt_table", "sets": "v01_photo_table"},
+          {"id": "shelf", "label": "@H1.photo.opt_shelf", "sets": "v01_photo_shelf"}
+        ]},
       "look": "@H1.photo.look"
     },
     {
-      "id": "cups",
-      "kind": "object",
-      "label": "@H1.cups.label",
-      "rect": [1360, 480, 140, 70],
-      "stand": [1430, 700],
-      "color": "#d8d0c0",
+      "id": "cups", "kind": "object", "label": "@H1.cups.label", "rect": [660, 290, 140, 90], "stand": [730, 730], "color": "#d8d0c0", "draw": false,
       "states": [
-        {
-          "if": ["v01_cup_blue"],
-          "label": "@H1.cups.label_blue",
-          "color": "#7090c0"
-        },
-        {
-          "if": ["v01_cup_white"],
-          "label": "@H1.cups.label_white",
-          "color": "#f0ece0"
-        }
+        {"if": ["v01_cup_blue"], "label": "@H1.cups.label_blue", "color": "#7090c0"},
+        {"if": ["v01_cup_white"], "label": "@H1.cups.label_white", "color": "#f0ece0"}
       ],
-      "choice": {
-        "prompt": "@H1.cups.prompt",
-        "exclusive": true,
-        "scene": "V01",
+      "choice": {"prompt": "@H1.cups.prompt", "exclusive": true, "scene": "V01",
         "options": [
-          {
-            "id": "blue",
-            "label": "@H1.cups.opt_blue",
-            "sets": "v01_cup_blue"
-          },
-          {
-            "id": "white",
-            "label": "@H1.cups.opt_white",
-            "sets": "v01_cup_white"
-          }
-        ]
-      },
+          {"id": "blue", "label": "@H1.cups.opt_blue", "sets": "v01_cup_blue"},
+          {"id": "white", "label": "@H1.cups.opt_white", "sets": "v01_cup_white"}
+        ]},
       "look": "@H1.cups.look"
     },
     {
-      "id": "shelf",
-      "kind": "object",
-      "label": "@H1.shelf.label",
-      "rect": [140, 560, 110, 60],
-      "stand": [195, 710],
-      "color": "#7a5a3a",
+      "id": "shelf", "kind": "object", "label": "@H1.shelf.label", "rect": [1190, 230, 160, 70], "stand": [1290, 740], "color": "#7a5a3a", "draw": false,
       "states": [
-        {
-          "if": ["q04_corner_stove"],
-          "label": "@H1.shelf.label_stove"
-        },
-        {
-          "if": ["q04_shelf_table"],
-          "label": "@H1.shelf.label_table"
-        }
+        {"if": ["q04_corner_stove"], "label": "@H1.shelf.label_stove"},
+        {"if": ["q04_shelf_table"], "label": "@H1.shelf.label_table"}
       ],
       "hidden_if": ["done_Q04"],
-      "choice": {
-        "prompt": "@H1.shelf.prompt",
-        "requires": {
-          "flags": ["met_tikhon"]
-        },
-        "fail_text": "@H1.shelf.look",
-        "scene": "Q04",
+      "choice": {"prompt": "@H1.shelf.prompt", "requires": {"flags": ["met_tikhon"]}, "fail_text": "@H1.shelf.look", "scene": "Q04",
         "options": [
-          {
-            "id": "A",
-            "label": "@H1.shelf.opt_a",
-            "sets": "q04_corner_stove"
-          },
-          {
-            "id": "B",
-            "label": "@H1.shelf.opt_b",
-            "sets": "q04_shelf_table"
-          }
-        ]
-      },
+          {"id": "A", "label": "@H1.shelf.opt_a", "sets": "q04_corner_stove"},
+          {"id": "B", "label": "@H1.shelf.opt_b", "sets": "q04_shelf_table"}
+        ]},
       "look": "@H1.shelf.look"
     },
     {
-      "id": "shelf_done",
-      "kind": "object",
-      "label": "@H1.shelf.label_done",
-      "rect": [140, 560, 110, 60],
-      "stand": [195, 710],
-      "color": "#7a5a3a",
+      "id": "shelf_done", "kind": "object", "label": "@H1.shelf.label_done", "rect": [1190, 230, 160, 70], "stand": [1290, 740], "color": "#7a5a3a", "draw": false,
       "visible_if": ["done_Q04"],
       "states": [
-        {
-          "if": ["q04_corner_stove"],
-          "label": "@H1.shelf.label_stove"
-        },
-        {
-          "if": ["q04_shelf_table"],
-          "label": "@H1.shelf.label_table"
-        }
+        {"if": ["q04_corner_stove"], "label": "@H1.shelf.label_stove"},
+        {"if": ["q04_shelf_table"], "label": "@H1.shelf.label_table"}
       ],
       "look": "@H1.shelf.look_done"
     }
   ],
   "exits": [
-    {
-      "to": "Z2",
-      "label": "@H1.exit_Z2.label",
-      "side": "bottom",
-      "x": 700,
-      "spawn": "from_H1"
-    },
-    {
-      "to": "H2",
-      "label": "@H1.exit_H2.label",
-      "side": "right",
-      "spawn": "from_H1"
-    },
-    {
-      "to": "H3",
-      "label": "@H1.exit_H3.label",
-      "side": "left",
-      "spawn": "from_H1"
-    },
-    {
-      "to": "H4",
-      "label": "@H1.exit_H4.label",
-      "side": "back",
-      "x": 1620,
-      "spawn": "from_H1"
-    }
+    {"to": "Z2", "label": "@H1.exit_Z2.label", "rect": [860, 150, 240, 540], "stand": [980, 740], "spawn": "from_H1", "draw": false},
+    {"to": "H2", "label": "@H1.exit_H2.label", "side": "right", "spawn": "from_H1"},
+    {"to": "H3", "label": "@H1.exit_H3.label", "side": "bottom", "x": 1100, "spawn": "from_H1"},
+    {"to": "H4", "label": "@H1.exit_H4.label", "side": "bottom", "x": 1650, "spawn": "from_H1"}
   ],
   "scenes": {
-    "M03": {
-      "complete_when": [
-        {
-          "all": ["h1_shutter_open", "stove_lit", "h1_scarf_removed"]
-        }
-      ]
-    },
-    "V01": {
-      "complete_when": [
-        {
-          "any": ["v01_cup_blue", "v01_cup_white"]
-        },
-        {
-          "any": ["v01_photo_table", "v01_photo_shelf"]
-        }
-      ],
-      "complete_text": "@H1.v01.done"
-    },
-    "Q04": {
-      "complete_when": [
-        {
-          "any": ["q04_corner_stove", "q04_shelf_table"]
-        }
-      ]
-    }
+    "M03": {"complete_when": [{"all": ["h1_shutter_open", "stove_lit", "h1_scarf_removed"]}]},
+    "V01": {"complete_when": [{"any": ["v01_cup_blue", "v01_cup_white"]}, {"any": ["v01_photo_table", "v01_photo_shelf"]}], "complete_text": "@H1.v01.done"},
+    "Q04": {"complete_when": [{"any": ["q04_corner_stove", "q04_shelf_table"]}]}
   },
   "flags": {
     "h1_shutter_open": "Ставня в жилой комнате открыта",

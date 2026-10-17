@@ -23,6 +23,7 @@ const WEB_DIR = path.join(ROOT, "build", "web");
 const SHOTS_DIR = path.join(ROOT, "build", "shots", "m1");
 const PORT = Number(process.env.SHOTS_PORT || 8765);
 const GL_MODE = process.env.SHOTS_GL || "angle";
+const MODE = process.env.SHOTS_MODE || "full";   // "full" = M01→M08 walkthrough, "h1" = real-art H1 frames
 const STEP_TIMEOUT_MS = 40000;
 
 const MIME = {
@@ -71,7 +72,7 @@ async function main() {
     console.error(`No web build at ${WEB_DIR}. Run tools/export_web.sh first.`);
     process.exit(2);
   }
-  fs.rmSync(SHOTS_DIR, { recursive: true, force: true });
+  if (MODE === "full") fs.rmSync(SHOTS_DIR, { recursive: true, force: true });
   fs.mkdirSync(SHOTS_DIR, { recursive: true });
   const consoleLog = [];
   const logLine = (s) => { const line = `[${new Date().toISOString()}] ${s}`; consoleLog.push(line); console.log(line); };
@@ -95,7 +96,7 @@ async function main() {
   let shotIndex = 0;
   const shot = async (name) => {
     shotIndex += 1;
-    const file = path.join(SHOTS_DIR, `${String(shotIndex).padStart(2, "0")}_${name}.png`);
+    const file = path.join(SHOTS_DIR, MODE === "h1" ? `${name}.png` : `${String(shotIndex).padStart(2, "0")}_${name}.png`);
     await page.screenshot({ path: file });
     shots.push(file);
     logLine(`screenshot ${path.relative(ROOT, file)}`);
@@ -192,6 +193,51 @@ async function main() {
       .catch((e) => failures.push(`probeReady not set within 90 s: ${e.message}`));
     logLine(`probeReady after ${Date.now() - t0} ms; room=${(await state())?.room}`);
     await sleep(1200);
+
+    if (MODE === "h1") {
+      // Real Agata in the real H1: reach H1 (M01 → Z2 → H1), then frames for the direction/occlusion check.
+      await useHotspot("tamara");
+      await waitFor("M01 done", (s) => s.flags.done_M01);
+      if (!(await goExit("Z2"))) failures.push("Z1→Z2 failed");
+      if (!(await goExit("H1"))) failures.push("Z2→H1 failed");
+      await sleep(600);
+      await shot("H1_real_arrival");
+      // Walk towards the viewer: mid-walk frame, then idle facing front.
+      await click("floor front", { x: 1250, y: 1040 });
+      await sleep(900);
+      await shot("H1_real_walking");
+      await waitWalk("floor front");
+      await sleep(400);
+      await shot("H1_real_front");
+      // Shutter: walks up-right, ends with her back to the viewer, facing the window.
+      let s1 = await state();
+      await click("hotspot shutter", s1.hotspots.shutter);
+      await waitWalk("shutter");
+      await sleep(300);
+      await shot("H1_real_back_at_shutter");
+      await finishDialogue("shutter");
+      // Behind the table: partially covered by the foreground.
+      await click("floor behind table", { x: 900, y: 790 });
+      await waitWalk("behind table");
+      await sleep(400);
+      await shot("H1_real_behind_table");
+      // Stove: walks left along the far strip, faces the stove on arrival.
+      s1 = await state();
+      await click("hotspot stove", s1.hotspots.stove);
+      await waitWalk("stove");
+      await sleep(300);
+      await shot("H1_real_at_stove");
+      await finishDialogue("stove");
+      // In front of the table: fully visible.
+      await click("floor in front of table", { x: 950, y: 1010 });
+      await waitWalk("front of table");
+      await sleep(400);
+      await shot("H1_real_front_of_table");
+      const fin = await state();
+      if (fin.room !== "H1") failures.push(`expected H1, got ${fin.room}`);
+      if (!fin.flags.stove_lit || !fin.flags.h1_shutter_open) failures.push("stove/shutter interactions did not register");
+      throw { h1done: true };
+    }
 
     // --- Z1: Tamara (M01) ---
     await shot("Z1_post");
@@ -357,11 +403,13 @@ async function main() {
     }
     if (fin.room !== "H3") failures.push(`final room ${fin.room} != H3`);
   } catch (e) {
-    failures.push(`exception: ${e.stack || e.message}`);
-    logLine(`exception: ${e.stack || e.message}`);
-    try { await shot("error"); } catch (_) {}
+    if (!(e && e.h1done)) {
+      failures.push(`exception: ${e.stack || e.message}`);
+      logLine(`exception: ${e.stack || e.message}`);
+      try { await shot("error"); } catch (_) {}
+    }
   } finally {
-    fs.writeFileSync(path.join(SHOTS_DIR, "console.log"), consoleLog.join("\n") + "\n");
+    fs.writeFileSync(path.join(SHOTS_DIR, MODE === "h1" ? "console_h1.log" : "console.log"), consoleLog.join("\n") + "\n");
     await browser.close();
     server.close();
   }

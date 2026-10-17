@@ -26,7 +26,9 @@ var journal_facts_label: RichTextLabel
 var menu_panel: PanelContainer
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
 var fade: ColorRect
+var hover_label: Label
 var inventory_buttons: Dictionary = {}  # item -> Button
+var _hover_node: Node = null
 
 var _hint_serial: int = 0
 
@@ -259,6 +261,16 @@ func _build() -> void:
 	mclose.pressed.connect(toggle_menu)
 	bottom.add_child(mclose)
 
+	# Hover label: name of the hotspot/exit under the cursor (real-art rooms draw no placeholders).
+	hover_label = Label.new()
+	hover_label.name = "Hover"
+	hover_label.visible = false
+	hover_label.add_theme_font_size_override("font_size", 24)
+	hover_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	hover_label.add_theme_constant_override("outline_size", 6)
+	hover_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(hover_label)
+
 	# Fade overlay
 	fade = ColorRect.new()
 	fade.name = "Fade"
@@ -434,6 +446,35 @@ func _unhandled_input(event: InputEvent) -> void:
 		if not StoryRunner.is_busy():
 			_on_load_slot(QUICK_SLOT)
 		get_viewport().set_input_as_handled()
+
+
+# --- Hover ------------------------------------------------------------------------
+
+func _process(_delta: float) -> void:
+	var room := RoomManager.current_room
+	if room == null or not is_instance_valid(room) or StoryRunner.is_busy() or modal.visible:
+		_set_hover(null)
+		return
+	var mouse := room.get_global_mouse_position()
+	if mouse.y < TOP_H:
+		_set_hover(null)
+		return
+	var node = room.pick(mouse)
+	_set_hover(node)
+	if node != null:
+		var screen := get_viewport().get_mouse_position()
+		hover_label.position = Vector2(clampf(screen.x + 18, 0, 1920 - hover_label.size.x - 8), clampf(screen.y - 34, TOP_H, 1040))
+
+
+func _set_hover(node: Node) -> void:
+	if node == _hover_node and (node == null or hover_label.visible):
+		return
+	_hover_node = node
+	if node == null or not node.has_method("label_text"):
+		hover_label.visible = false
+		return
+	hover_label.text = node.call("label_text")
+	hover_label.visible = true
 
 
 # --- Fade (loop transition) -----------------------------------------------------

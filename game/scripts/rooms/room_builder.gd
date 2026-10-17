@@ -68,7 +68,7 @@ static func _build_background(room: Room, room_id: String, bg: Dictionary, horiz
 	container.name = "Background"
 	container.z_index = -10
 	room.add_child(container)
-	var png := "%s/%s.png" % [BG_DIR, room_id]
+	var png := String(bg.get("image", "%s/%s.png" % [BG_DIR, room_id]))
 	if ResourceLoader.exists(png):
 		var s := Sprite2D.new()
 		s.name = "Image"
@@ -109,13 +109,20 @@ static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dic
 	region.name = "Walkable"
 	var poly := NavigationPolygon.new()
 	var verts := PackedVector2Array()
-	var indices := PackedInt32Array()
 	for i in pts.size():
 		verts.append(Vector2(float(pts[i][0]), float(pts[i][1])))
-		indices.append(i)
-	poly.vertices = verts
-	poly.add_polygon(indices)
 	poly.add_outline(verts)
+	poly.agent_radius = 0.0
+	# Bake synchronously: the outline may be concave (e.g. H1 floor around the armchair) and the
+	# navigation server needs convex polygons.
+	NavigationServer2D.bake_from_source_geometry_data(poly, NavigationMeshSourceGeometryData2D.new())
+	if poly.get_polygon_count() == 0:
+		push_warning("RoomBuilder: baking produced no polygons; using the raw outline")
+		var indices := PackedInt32Array()
+		for i in pts.size():
+			indices.append(i)
+		poly.vertices = verts
+		poly.add_polygon(indices)
 	region.navigation_polygon = poly
 	room.add_child(region)
 
@@ -134,16 +141,29 @@ static func _build_props(room: Room, spec: Dictionary) -> void:
 		var w := float(r[2])
 		var h := float(r[3])
 		node.position = Vector2(float(r[0]) + w / 2, float(r[1]) + h / 2)
-		var fill := Polygon2D.new()
-		fill.name = "Fill"
-		fill.color = Color.html(String(p.get("color", "#666666")))
-		fill.polygon = _rect_polygon(w, h)
-		node.add_child(fill)
-		var label_key := String(p.get("label", ""))
-		if label_key != "":
-			node.add_child(_make_label(StoryData.text(label_key), w, h))
+		var image := String(p.get("image", ""))
+		if image != "" and ResourceLoader.exists(image):
+			var spr := Sprite2D.new()
+			spr.name = "Image"
+			spr.texture = load(image)
+			spr.centered = false
+			spr.position = Vector2(-w / 2, -h / 2)
+			var ts: Vector2 = spr.texture.get_size()
+			if ts.x > 0 and ts.y > 0:
+				spr.scale = Vector2(w / ts.x, h / ts.y)
+			node.add_child(spr)
+		else:
+			var fill := Polygon2D.new()
+			fill.name = "Fill"
+			fill.color = Color.html(String(p.get("color", "#666666")))
+			fill.polygon = _rect_polygon(w, h)
+			node.add_child(fill)
+			var label_key := String(p.get("label", ""))
+			if label_key != "":
+				node.add_child(_make_label(StoryData.text(label_key), w, h))
 		if bool(p.get("occluder", false)):
-			node.z_index = clampi(int(float(r[1]) + h), 0, 4096)
+			# Sorting line: explicit `z` (e.g. the feet of a table drawn in a full-screen PNG), else the rect bottom.
+			node.z_index = clampi(int(p.get("z", float(r[1]) + h)), 0, 4096)
 			occluders.add_child(node)
 		else:
 			props.add_child(node)
@@ -203,6 +223,7 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 			caption.position = Vector2(-w / 2 - 60, -hgt / 2 - 44)
 			caption.size = Vector2(w + 120, 40)
 		visual.add_child(caption)
+		visual.visible = bool(h.get("draw", true))  # real-art rooms: invisible, discovered by hover
 		hs.add_child(visual)
 		var stand := Marker2D.new()
 		stand.name = "StandPoint"
@@ -296,6 +317,7 @@ static func _build_exits(room: Room, room_id: String, spec: Dictionary, idx: Dic
 			caption.position.x = 10.0 - node.position.x
 			caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		visual.add_child(caption)
+		visual.visible = bool(ex.get("draw", true))
 		node.add_child(visual)
 		var stand := Marker2D.new()
 		stand.name = "StandPoint"
