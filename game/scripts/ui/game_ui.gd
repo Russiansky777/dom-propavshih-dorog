@@ -431,7 +431,9 @@ func _build() -> void:
 func _on_room_changed(room_id: String) -> void:
 	var name := StoryData.location_name(room_id)
 	room_label.text = name
-	room_code_label.text = room_id if name != room_id else ""
+	# Служебный код комнаты игроку не показываем (решение 17.10: в тексте для игрока нет кодов);
+	# виден только при отладке (OS.is_debug_build — сборка из редактора) или если имени нет.
+	room_code_label.text = room_id if (name == room_id or OS.has_feature("editor")) else ""
 
 
 func _render_inventory() -> void:
