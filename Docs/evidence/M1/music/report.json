@@ -1,0 +1,382 @@
+{
+  "url": "http://127.0.0.1:8773/index.html",
+  "steps": {
+    "before_click": {
+      "music": {
+        "active": "",
+        "active_deck": -1,
+        "bus_mute": false,
+        "bus_volume_db": 0,
+        "decks": [
+          {
+            "bus": "Music",
+            "fade_to": 0,
+            "gain": 0,
+            "length": 0,
+            "paused": false,
+            "playback_type": 1,
+            "playing": false,
+            "position": 0,
+            "starts": 0,
+            "theme": "",
+            "volume_db": -80
+          },
+          {
+            "bus": "Music",
+            "fade_to": 0,
+            "gain": 0,
+            "length": 0,
+            "paused": false,
+            "playback_type": 1,
+            "playing": false,
+            "position": 0,
+            "starts": 0,
+            "theme": "",
+            "volume_db": -80
+          }
+        ],
+        "dialogue": false,
+        "duck_db": 0,
+        "errors": [],
+        "events": [],
+        "loop_passes": 0,
+        "music_volume": 1,
+        "output_latency": 0.785038530826569,
+        "room_theme": "roads",
+        "settings_saves": 0,
+        "target": "roads",
+        "unlocked": false
+      },
+      "audio": {
+        "contexts": [
+          {
+            "state": "running",
+            "sampleRate": 44100,
+            "time": 6.661224489795918
+          }
+        ],
+        "taps": 2,
+        "rms_db": -200,
+        "gaps": {
+          "gaps": 0,
+          "zeroQuanta": 0,
+          "quanta": 282,
+          "started": false,
+          "longestQuanta": 0,
+          "zeroRun": 0
+        },
+        "gap_detector": "on"
+      },
+      "note": "AudioContext before the first click: running (headless Chromium granted activation; real browsers keep it suspended — the music waits for the click either way)"
+    },
+    "after_click": {
+      "music": {
+        "active": "roads",
+        "active_deck": 0,
+        "bus_mute": false,
+        "bus_volume_db": 0,
+        "decks": [
+          {
+            "bus": "Music",
+            "fade_to": 1,
+            "gain": 0.912614970769825,
+            "length": 187.759994506836,
+            "paused": false,
+            "playback_type": 1,
+            "playing": true,
+            "position": 2.51999998092651,
+            "starts": 1,
+            "theme": "roads",
+            "volume_db": -7.79424810409546
+          },
+          {
+            "bus": "Music",
+            "fade_to": 0,
+            "gain": 0,
+            "length": 0,
+            "paused": false,
+            "playback_type": 1,
+            "playing": false,
+            "position": 0,
+            "starts": 0,
+            "theme": "",
+            "volume_db": -80
+          }
+        ],
+        "dialogue": false,
+        "duck_db": 0,
+        "errors": [],
+        "events": [],
+        "loop_passes": 0,
+        "music_volume": 1,
+        "output_latency": 0.785038530826569,
+        "room_theme": "roads",
+        "settings_saves": 0,
+        "target": "roads",
+        "unlocked": true
+      },
+      "audio": {
+        "contexts": [
+          {
+            "state": "running",
+            "sampleRate": 44100,
+            "time": 11.122358276643991
+          }
+        ],
+        "taps": 2,
+        "rms_db": -37.15266539823469,
+        "gaps": {
+          "gaps": 1,
+          "zeroQuanta": 4,
+          "quanta": 1880,
+          "started": true,
+          "longestQuanta": 4,
+          "zeroRun": 0
+        },
+        "gap_detector": "on"
+      }
+    },
+    "rooms": {
+      "music": {
+        "active": "home",
+        "active_deck": 1,
+        "bus_mute": false,
+        "bus_volume_db": 0,
+        "decks": [
+          {
+            "bus": "Music",
+            "fade_to": 0,
+            "gain": 0,
+            "length": 187.759994506836,
+            "paused": true,
+            "playback_type": 1,
+            "playing": false,
+            "position": 29.2240009307861,
+            "starts": 1,
+            "theme": "roads",
+            "volume_db": -47.4829177856445
+          },
+          {
+            "bus": "Music",
+            "fade_to": 1,
+            "gain": 1,
+            "length": 162,
+            "paused": false,
+            "playback_type": 1,
+            "playing": true,
+            "position": 7.37333345413208,
+            "starts": 1,
+            "theme": "home",
+            "volume_db": -6
+          }
+        ],
+        "dialogue": false,
+        "duck_db": 0,
+        "errors": [],
+        "events": [],
+        "loop_passes": 0,
+        "music_volume": 1,
+        "output_latency": 0.785038530826569,
+        "room_theme": "home",
+        "settings_saves": 0,
+        "target": "home",
+        "unlocked": true
+      },
+      "audio": {
+        "contexts": [
+          {
+            "state": "running",
+            "sampleRate": 44100,
+            "time": 41.601451247165535
+          }
+        ],
+        "taps": 2,
+        "rms_db": -30.7601255044887,
+        "gaps": {
+          "gaps": 5,
+          "zeroQuanta": 118,
+          "quanta": 12314,
+          "started": true,
+          "longestQuanta": 97,
+          "zeroRun": 0
+        },
+        "gap_detector": "on"
+      },
+      "longest_task_ms": 660,
+      "gaps": {
+        "gaps": 5,
+        "zeroQuanta": 118,
+        "quanta": 12314,
+        "started": true,
+        "longestQuanta": 97,
+        "zeroRun": 0
+      },
+      "dropouts": "4 gap(s), 114 silent quanta of 10434 (1.09 %), longest 259 ms; audio buffer (output latency) 785 ms, longest main-thread task 660 ms"
+    },
+    "after_reload": {
+      "music": {
+        "active": "",
+        "active_deck": -1,
+        "bus_mute": false,
+        "bus_volume_db": -12.0411996841431,
+        "decks": [
+          {
+            "bus": "Music",
+            "fade_to": 0,
+            "gain": 0,
+            "length": 0,
+            "paused": false,
+            "playback_type": 1,
+            "playing": false,
+            "position": 0,
+            "starts": 0,
+            "theme": "",
+            "volume_db": -80
+          },
+          {
+            "bus": "Music",
+            "fade_to": 0,
+            "gain": 0,
+            "length": 0,
+            "paused": false,
+            "playback_type": 1,
+            "playing": false,
+            "position": 0,
+            "starts": 0,
+            "theme": "",
+            "volume_db": -80
+          }
+        ],
+        "dialogue": false,
+        "duck_db": 0,
+        "errors": [],
+        "events": [],
+        "loop_passes": 0,
+        "music_volume": 0.5,
+        "output_latency": 0.743038535118103,
+        "room_theme": "roads",
+        "settings_saves": 0,
+        "target": "roads",
+        "unlocked": false
+      }
+    }
+  },
+  "warnings": [
+    "dropouts: 4 gap(s), 114 silent quanta of 10434 (1.09 %), longest 259 ms; audio buffer (output latency) 785 ms, longest main-thread task 660 ms"
+  ],
+  "checks": [
+    {
+      "ok": true,
+      "label": "page created an AudioContext",
+      "detail": "1"
+    },
+    {
+      "ok": true,
+      "label": "before the first click: music locked, target roads",
+      "detail": "unlocked=false target=roads"
+    },
+    {
+      "ok": true,
+      "label": "before the first click no deck plays",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "after the first click the AudioContext is running",
+      "detail": "running"
+    },
+    {
+      "ok": true,
+      "label": "after the click the theme of Z1 (roads) plays",
+      "detail": "{\"bus\":\"Music\",\"fade_to\":1,\"gain\":0.248689887164855,\"length\":187.759994506836,\"paused\":false,\"playback_type\":1,\"playing\":true,\"position\":0.210666671395302,\"starts\":1,\"theme\":\"roads\",\"volume_db\":-19.0868377685547}"
+    },
+    {
+      "ok": true,
+      "label": "playback position grows",
+      "detail": "0.21 → 2.52 s in 1.5 s"
+    },
+    {
+      "ok": true,
+      "label": "signal leaves the page (output RMS above silence)",
+      "detail": "-37.2 dBFS, 2 tap(s)"
+    },
+    {
+      "ok": true,
+      "label": "dropout detector runs in the audio thread",
+      "detail": "on"
+    },
+    {
+      "ok": true,
+      "label": "M01 line: music ducked by duck_dialogue_db",
+      "detail": "duck -5.00 dB"
+    },
+    {
+      "ok": true,
+      "label": "roads under the dialogue at −12 dB",
+      "detail": "-12.00 dB"
+    },
+    {
+      "ok": true,
+      "label": "after the dialogue the music is back to full",
+      "detail": "duck 0.00 dB"
+    },
+    {
+      "ok": true,
+      "label": "Z4 (roads): same deck, no restart, position grows",
+      "detail": "deck 0 starts 1 pos 14.43"
+    },
+    {
+      "ok": true,
+      "label": "Z2 (roads): same deck, no restart, position grows",
+      "detail": "deck 0 starts 1 pos 19.26"
+    },
+    {
+      "ok": true,
+      "label": "H1: home starts on the other deck (crossfade)",
+      "detail": "target home"
+    },
+    {
+      "ok": true,
+      "label": "H1: crossfade done, roads paused",
+      "detail": "[[\"roads\",false,true,\"0.00\"],[\"home\",true,false,\"1.00\"]]"
+    },
+    {
+      "ok": true,
+      "label": "H1 → H2 (home): same deck, no restart, position grows",
+      "detail": "pos 3.11 → 7.37"
+    },
+    {
+      "ok": true,
+      "label": "signal still present after the room changes",
+      "detail": "-30.8 dBFS"
+    },
+    {
+      "ok": true,
+      "label": "audio dropouts under 5 % through dialogue and 4 room changes",
+      "detail": "4 gap(s), 114 silent quanta of 10434 (1.09 %), longest 259 ms; audio buffer (output latency) 785 ms, longest main-thread task 660 ms"
+    },
+    {
+      "ok": true,
+      "label": "slider at 50 % → music volume ≈ 0.5, Music bus ≈ −12 dB",
+      "detail": "volume 0.50, bus -12.04 dB"
+    },
+    {
+      "ok": true,
+      "label": "settings.cfg reaches IndexedDB (/userfs)",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "a new page load gets the volume back from user:// (IndexedDB), before any click",
+      "detail": "volume 0.50, bus -12.04 dB"
+    },
+    {
+      "ok": true,
+      "label": "console: 0 errors / page errors",
+      "detail": ""
+    }
+  ],
+  "console_errors": [],
+  "console_warnings": [],
+  "failures": []
+}

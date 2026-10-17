@@ -23,7 +23,7 @@
       "feather": 80,
       "gradient": {"from": [170, 260], "to": [600, 870], "alpha_from": 1.0, "alpha_to": 0.35},
       "color": "#dbe6ff",
-      "alpha": 0.15,
+      "alpha": 0.2,
       "streak_amount": 0.4,
       "streak_px": 30,
       "z": 1,

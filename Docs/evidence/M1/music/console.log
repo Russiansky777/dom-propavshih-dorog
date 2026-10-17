@@ -1,0 +1,43 @@
+[2026-10-17T20:18:04.049Z] chromium: /opt/pw-browsers/chromium-1194/chrome-linux/chrome; autoplay policy: user-gesture-required
+[2026-10-17T20:18:04.569Z] open http://127.0.0.1:8773/index.html
+[2026-10-17T20:18:05.835Z] requestfailed: http://127.0.0.1:8773/index.pck net::ERR_ABORTED
+[2026-10-17T20:18:06.096Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-17T20:18:06.485Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-17T20:18:07.354Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-17T20:18:13.281Z] OK   page created an AudioContext — 1
+[2026-10-17T20:18:13.282Z] AudioContext before the first click: running (headless Chromium granted activation; real browsers keep it suspended — the music waits for the click either way)
+[2026-10-17T20:18:13.283Z] OK   before the first click: music locked, target roads — unlocked=false target=roads
+[2026-10-17T20:18:13.283Z] OK   before the first click no deck plays
+[2026-10-17T20:18:13.449Z] click first click: hotspot tamara at (1070, 475)
+[2026-10-17T20:18:13.791Z] OK   after the first click the AudioContext is running — running
+[2026-10-17T20:18:14.342Z] OK   after the click the theme of Z1 (roads) plays — {"bus":"Music","fade_to":1,"gain":0.248689887164855,"length":187.759994506836,"paused":false,"playback_type":1,"playing":true,"position":0.210666671395302,"starts":1,"theme":"roads","volume_db":-19.0868377685547}
+[2026-10-17T20:18:16.165Z] OK   playback position grows — 0.21 → 2.52 s in 1.5 s
+[2026-10-17T20:18:17.750Z] OK   signal leaves the page (output RMS above silence) — -37.2 dBFS, 2 tap(s)
+[2026-10-17T20:18:17.750Z] OK   dropout detector runs in the audio thread — on
+[2026-10-17T20:18:18.807Z] OK   M01 line: music ducked by duck_dialogue_db — duck -5.00 dB
+[2026-10-17T20:18:18.807Z] OK   roads under the dialogue at −12 dB — -12.00 dB
+[2026-10-17T20:18:19.063Z] click M01: continue at (960, 780)
+[2026-10-17T20:18:20.175Z] click M01: continue at (960, 780)
+[2026-10-17T20:18:21.055Z] click M01: continue at (960, 780)
+[2026-10-17T20:18:24.155Z] OK   after the dialogue the music is back to full — duck 0.00 dB
+[2026-10-17T20:18:24.304Z] click exit → Z4 at (1700, 430)
+[2026-10-17T20:18:28.157Z] OK   Z4 (roads): same deck, no restart, position grows — deck 0 starts 1 pos 14.43
+[2026-10-17T20:18:28.272Z] click exit → Z2 at (960, 533)
+[2026-10-17T20:18:33.478Z] OK   Z2 (roads): same deck, no restart, position grows — deck 0 starts 1 pos 19.26
+[2026-10-17T20:18:33.648Z] click exit → H1 at (1005, 475)
+[2026-10-17T20:18:41.124Z] OK   H1: home starts on the other deck (crossfade) — target home
+[2026-10-17T20:18:43.068Z] OK   H1: crossfade done, roads paused — [["roads",false,true,"0.00"],["home",true,false,"1.00"]]
+[2026-10-17T20:18:43.202Z] click exit → H2 at (1855, 820)
+[2026-10-17T20:18:47.498Z] OK   H1 → H2 (home): same deck, no restart, position grows — pos 3.11 → 7.37
+[2026-10-17T20:18:48.217Z] OK   signal still present after the room changes — -30.8 dBFS
+[2026-10-17T20:18:48.303Z] OK   audio dropouts under 5 % through dialogue and 4 room changes — 4 gap(s), 114 silent quanta of 10434 (1.09 %), longest 259 ms; audio buffer (output latency) 785 ms, longest main-thread task 660 ms
+[2026-10-17T20:18:48.303Z] WARN 4 short dropout(s) in this environment: 4 gap(s), 114 silent quanta of 10434 (1.09 %), longest 259 ms; audio buffer (output latency) 785 ms, longest main-thread task 660 ms
+[2026-10-17T20:18:48.403Z] click ui MenuButton at (1846, 42)
+[2026-10-17T20:18:48.708Z] click music slider at 50 % at (975, 464)
+[2026-10-17T20:18:49.106Z] OK   slider at 50 % → music volume ≈ 0.5, Music bus ≈ −12 dB — volume 0.50, bus -12.04 dB
+[2026-10-17T20:19:02.378Z] OK   settings.cfg reaches IndexedDB (/userfs)
+[2026-10-17T20:19:04.895Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-17T20:19:05.083Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-17T20:19:05.441Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-17T20:19:10.682Z] OK   a new page load gets the volume back from user:// (IndexedDB), before any click — volume 0.50, bus -12.04 dB
+[2026-10-17T20:19:10.683Z] OK   console: 0 errors / page errors

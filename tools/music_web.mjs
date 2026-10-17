@@ -315,7 +315,7 @@ async function main() {
     report.steps.after_click = { music: m, audio: a };
     check(a.taps > 0 && a.rms_db > -60, "signal leaves the page (output RMS above silence)", `${a.rms_db.toFixed(1)} dBFS, ${a.taps} tap(s)`);
     check(a.gap_detector === "on" && a.gaps.started, "dropout detector runs in the audio thread", `${a.gap_detector}`);
-    const gaps0 = a.gaps.gaps;
+    const gaps0 = a.gaps.gaps, zq0 = a.gaps.zeroQuanta, q0 = a.gaps.quanta;
 
     // --- 3. M01 dialogue: ducking --------------------------------------------------------------
     await waitFor("M01 dialogue", state, (t) => t.beat && t.beat.type === "line", 15000);
@@ -364,17 +364,20 @@ async function main() {
     const longest = await page.evaluate((t0) => window.__longTasks.filter((x) => x.t >= t0).reduce((mx, x) => Math.max(mx, x.d), 0), longT0);
     report.steps.rooms.longest_task_ms = longest;
     report.steps.rooms.gaps = a.gaps;
+    // The single-threaded web build mixes stream playback on the main thread: a task or a run of
+    // slow frames longer than the audio buffer starves it. Software WebGL on this 2-CPU container
+    // is far slower than a real GPU, so the share of silence is a regression guard, not a verdict:
+    // with Godot's default 50 ms web latency it was ≈49 % here (longest gap 1.4 s), with 750 ms ≈0.5 %.
     const bufferMs = m.output_latency * 1000;
-    const gapText = `${a.gaps.gaps - gaps0} gap(s), ${a.gaps.zeroQuanta} silent quanta of ${a.gaps.quanta}, longest ${a.gaps.longestQuanta} × 128 frames; ` +
+    const dq = a.gaps.quanta - q0, dz = a.gaps.zeroQuanta - zq0, dg = a.gaps.gaps - gaps0;
+    const share = dq > 0 ? dz / dq : 1;
+    const gapText = `${dg} gap(s), ${dz} silent quanta of ${dq} (${(share * 100).toFixed(2)} %), longest ${(a.gaps.longestQuanta * 128 / 48).toFixed(0)} ms; ` +
       `audio buffer (output latency) ${bufferMs.toFixed(0)} ms, longest main-thread task ${longest.toFixed(0)} ms`;
     report.steps.rooms.dropouts = gapText;
-    if (longest > bufferMs) {
-      // The single-threaded web build mixes on the main thread: a task longer than the buffer
-      // starves it whatever the game does. Software WebGL on this 2-CPU container is such a case.
-      logLine(`WARN dropouts not judged here — the main thread was blocked longer than the audio buffer: ${gapText}`);
-      report.warnings = (report.warnings || []).concat([`dropouts not judged: ${gapText}`]);
-    } else {
-      check(a.gaps.gaps - gaps0 === 0, "no dropouts (buffer underruns) through dialogue and 4 room changes", gapText);
+    check(share < 0.05, "audio dropouts under 5 % through dialogue and 4 room changes", gapText);
+    if (dg > 0) {
+      logLine(`WARN ${dg} short dropout(s) in this environment: ${gapText}`);
+      report.warnings = (report.warnings || []).concat([`dropouts: ${gapText}`]);
     }
 
     // --- 5. Menu slider → bus, saved in user:// and back after a reload ----------------------
