@@ -224,22 +224,25 @@ async function main() {
       if (!(await goExit("Z2"))) failures.push("Z1→Z2 failed");
       if (!(await goExit("H1"))) failures.push("Z2→H1 failed");
       await sleep(600);
-      const pause = (p) => page.evaluate((v) => { window.probePause(v); }, p);
+      const pause = (p, ts = 1) => page.evaluate(([v, t]) => { window.probePause(v, t); }, [p, ts]);
       const series = [];
-      const capture = async (label, target, maxFrames = 60, sleepMs = 80) => {
+      // After a pause the next game frame runs the clamped maximum of 8 physics ticks (133 ms of
+      // game time); timeScale < 1 shortens that (0.25 → ~33 ms between captures).
+      const capture = async (label, target, maxFrames = 60, timeScale = 1) => {
         await click(`stride ${label}`, target);
         await sleep(60);
         for (let i = 0; i < maxFrames; i++) {
-          await pause(true);
+          await pause(true, timeScale);
           const s = await state();
           const file = path.join(STRIDE_DIR, `${label}_${String(i).padStart(2, "0")}.png`);
           await page.screenshot({ path: file });
           series.push({ label, index: i, file: path.basename(file), ticks: s.ticks, physics_frames: s.physics_frames, player: s.player, actor: s.actor });
           const walking = s.player.walking;
-          await pause(false);
+          await pause(false, timeScale);
           if (!walking) break;
-          await sleep(sleepMs);  // + ~20 ms of bridge calls ≈ 100 ms of game time between captures
+          await sleep(40);
         }
+        await pause(false, 1);
         await waitWalk(label);
       };
       // Reference frame (floor without the figure near the front edge): Agata at the far strip.
@@ -259,9 +262,9 @@ async function main() {
       await sleep(300);
       await capture("right", { x: 1700, y: 985 });
       await sleep(300);
-      // Dense series (~30 ms of game time apart): several captures fall inside one sheet frame and
+      // Dense series (~33 ms of game time apart): several captures fall inside one sheet frame and
       // must be pixel-identical around the figure (the drawn figure only moves when the frame changes).
-      await capture("hold", { x: 1100, y: 985 }, 30, 10);
+      await capture("hold", { x: 1250, y: 985 }, 36, 0.25);
       const fin = await state();
       if (fin.room !== "H1") failures.push(`stride series must stay in H1, ended in ${fin.room}`);
       const first = series.find((x) => x.actor && x.actor.stride_px);

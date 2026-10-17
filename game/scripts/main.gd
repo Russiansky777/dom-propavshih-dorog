@@ -46,8 +46,12 @@ func _ready() -> void:
 		add_child(t)
 
 
+## window.probePause(paused, time_scale = 1): a long pause (screenshot) makes the next frame run the
+## clamped maximum of physics steps (8 → 133 ms); a time_scale below 1 shortens that game-time step.
 func _on_probe_pause(args: Array) -> void:
 	var paused: bool = bool(args[0]) if args.size() > 0 else false
+	if args.size() > 1 and args[1] != null:
+		Engine.time_scale = clampf(float(args[1]), 0.05, 1.0)
 	get_tree().paused = paused
 	_publish_probe_state()
 
