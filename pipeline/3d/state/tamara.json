@@ -1,7 +1,7 @@
 {
-  "model_task": "01a14a8d-8c33-7724-b653-6e15be7c86d0",
+  "model_task": "01a14b8c-b1d2-746f-bea6-44f4a7806a32",
   "model_credits": 30,
-  "rig_task": "01a14a90-d833-702e-9243-8625e6c0fb14",
+  "rig_task": "01a14b8e-e5c7-735a-b1b3-b9feb4f9f797",
   "rig_credits": 5,
   "actions": {
     "idle": {
@@ -15,6 +15,6 @@
       "key": "Listening_Gesture"
     }
   },
-  "anim_task": "01a14a93-c76b-7343-9867-90a8be613300",
+  "anim_task": "01a14b8f-cdd8-7489-8e60-668446894e59",
   "anim_credits": 6
 }
