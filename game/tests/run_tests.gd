@@ -1104,9 +1104,15 @@ func _test_no_straight_line() -> void:
 	_check(holes.size() >= 1, "Z1 must have the counter cut-out in walkable_holes")
 	for trial in 2:
 		rm.change_room("Z1", "default")
-		# Same physics frame as the room change: the map cannot have synced yet.
+		# Same physics frame as the room change: the map cannot have synced yet. Trial 1 also keeps
+		# the floor region disabled for 45 frames (longer than the old 30-frame fallback) before the
+		# map becomes usable — Agata must wait, not walk straight.
 		var start: Vector2 = player.global_position
 		var target := Vector2(1260, 712)  # behind the counter, on the far side of the cut-out
+		var region: NavigationRegion2D = rm.current_room.get_walkable()
+		var hold_frames := 45 if trial == 1 else 0
+		if hold_frames > 0:
+			region.enabled = false
 		player.call("click_at", target)
 		# A straight line from the spawn to the target crosses the counter: make sure that is what we test.
 		var crosses := false
@@ -1125,12 +1131,17 @@ func _test_no_straight_line() -> void:
 		while player.call("is_walking") and frames < 1500:
 			await physics_frame
 			frames += 1
+			if hold_frames > 0 and frames == hold_frames:
+				_check(player.call("is_walking") and not player.call("has_path") and player.global_position.distance_to(start) < 0.5,
+					"with the floor region disabled for %d frames Agata must still be waiting in place (walking=%s path=%s moved=%.1f)" % [hold_frames, str(player.call("is_walking")), str(player.call("has_path")), player.global_position.distance_to(start)])
+				region.enabled = true
 			if not player.call("has_path"):
 				waited += 1
 				if player.global_position.distance_to(start) > 0.5:
 					moved_before_path = true
 			for h in holes:
-				if Geometry2D.is_point_in_polygon(player.global_position, h):
+				# Paths hug the cut-out's edge; only points clearly inside count (> 3 px from every edge).
+				if Geometry2D.is_point_in_polygon(player.global_position, h) and _edge_distance(player.global_position, h) > 3.0:
 					inside.append(player.global_position)
 		player.speed_factor = speed_factor_old
 		print("    trial %d: waited %d physics frames for the path, walked %d frames, ended at %s" % [trial, waited, frames, str(player.global_position)])
@@ -1140,3 +1151,12 @@ func _test_no_straight_line() -> void:
 		_check(player.global_position.distance_to(target) < 60.0, "should arrive behind the counter near %s, got %s" % [str(target), str(player.global_position)])
 	gs.reset()
 	_cleanup_m1()
+
+
+static func _edge_distance(p: Vector2, poly: PackedVector2Array) -> float:
+	var best := INF
+	for i in poly.size():
+		var a: Vector2 = poly[i]
+		var b: Vector2 = poly[(i + 1) % poly.size()]
+		best = minf(best, p.distance_to(Geometry2D.get_closest_point_to_segment(p, a, b)))
+	return best
