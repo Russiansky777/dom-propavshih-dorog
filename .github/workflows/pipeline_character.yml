@@ -47,8 +47,8 @@ jobs:
           if [ -n "${{ github.event.inputs.request }}" ]; then
             echo "files=${{ github.event.inputs.request }}" >> "$GITHUB_OUTPUT"
           else
-            # только запросы персонажей (icons_* — свой workflow); пусто — ничего не делаем
-            files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'pipeline/requests/*.json' | grep -v '/icons_' | grep -v '/images_' | grep -v '/pending/' | tr '\n' ' ' || true)
+            # только запросы персонажей (icons_*/images_*/voice_* — свои workflow); пусто — ничего не делаем
+            files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'pipeline/requests/*.json' | grep -v '/icons_' | grep -v '/images_' | grep -v '/voice_' | grep -v '/pending/' | tr '\n' ' ' || true)
             echo "files=$files" >> "$GITHUB_OUTPUT"
           fi
           echo "requests: $(cat $GITHUB_OUTPUT)"
