@@ -200,8 +200,8 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 			visual.add_child(star)
 		var caption := _make_label("", w, hgt)
 		if kind == "npc":
-			caption.position = Vector2(-w / 2 - 40, hgt / 2)
-			caption.size = Vector2(w + 80, 40)
+			caption.position = Vector2(-w / 2 - 60, -hgt / 2 - 44)
+			caption.size = Vector2(w + 120, 40)
 		visual.add_child(caption)
 		hs.add_child(visual)
 		var stand := Marker2D.new()
@@ -287,6 +287,14 @@ static func _build_exits(room: Room, room_id: String, spec: Dictionary, idx: Dic
 		visual.add_child(arrow)
 		var caption := _make_label("", rect.size.x + 160, 60)
 		caption.position = Vector2(-(rect.size.x + 160) / 2, rect.size.y / 2 - 70 if side != "bottom" else -rect.size.y / 2 - 60)
+		if side == "right":
+			caption.size = Vector2(250, 60)
+			caption.position.x = (1910.0 - 250.0) - node.position.x
+			caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		elif side == "left":
+			caption.size = Vector2(250, 60)
+			caption.position.x = 10.0 - node.position.x
+			caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		visual.add_child(caption)
 		node.add_child(visual)
 		var stand := Marker2D.new()

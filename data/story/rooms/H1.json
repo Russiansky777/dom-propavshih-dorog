@@ -8,37 +8,17 @@
     "horizon": 640
   },
   "spawns": {
-    "default": [
-      960,
-      920
-    ],
-    "from_Z2": [
-      700,
-      1000
-    ],
-    "from_H2": [
-      1730,
-      900
-    ],
-    "from_H3": [
-      190,
-      900
-    ],
-    "from_H4": [
-      1500,
-      720
-    ]
+    "default": [960, 920],
+    "from_Z2": [700, 1000],
+    "from_H2": [1730, 900],
+    "from_H3": [190, 900],
+    "from_H4": [1500, 720]
   },
   "props": [
     {
       "id": "table",
       "label": "@H1.table.label",
-      "rect": [
-        760,
-        820,
-        440,
-        150
-      ],
+      "rect": [760, 820, 440, 150],
       "color": "#5a3c22",
       "occluder": true
     }
@@ -48,30 +28,18 @@
       "id": "stove",
       "kind": "object",
       "label": "@H1.stove.label",
-      "rect": [
-        260,
-        220,
-        300,
-        420
-      ],
-      "stand": [
-        410,
-        700
-      ],
+      "rect": [260, 220, 300, 420],
+      "stand": [410, 700],
       "color": "#8c8278",
       "states": [
         {
-          "if": [
-            "stove_lit"
-          ],
+          "if": ["stove_lit"],
           "label": "@H1.stove.label_lit",
           "color": "#c8723a"
         }
       ],
       "use": {
-        "sets": [
-          "stove_lit"
-        ],
+        "sets": ["stove_lit"],
         "text": "@H1.stove.use",
         "once_flag": "stove_lit",
         "scene": "M03"
@@ -82,30 +50,18 @@
       "id": "shutter",
       "kind": "object",
       "label": "@H1.shutter.label",
-      "rect": [
-        900,
-        250,
-        240,
-        300
-      ],
-      "stand": [
-        1020,
-        700
-      ],
+      "rect": [900, 250, 240, 300],
+      "stand": [1020, 700],
       "color": "#4a3a2a",
       "states": [
         {
-          "if": [
-            "h1_shutter_open"
-          ],
+          "if": ["h1_shutter_open"],
           "label": "@H1.shutter.label_open",
           "color": "#a9c4d8"
         }
       ],
       "use": {
-        "sets": [
-          "h1_shutter_open"
-        ],
+        "sets": ["h1_shutter_open"],
         "text": "@H1.shutter.use",
         "once_flag": "h1_shutter_open",
         "scene": "M03"
@@ -116,24 +72,12 @@
       "id": "scarf",
       "kind": "object",
       "label": "@H1.scarf.label",
-      "rect": [
-        580,
-        560,
-        160,
-        70
-      ],
-      "stand": [
-        660,
-        710
-      ],
+      "rect": [580, 560, 160, 70],
+      "stand": [660, 710],
       "color": "#7a4a5a",
-      "hidden_if": [
-        "h1_scarf_removed"
-      ],
+      "hidden_if": ["h1_scarf_removed"],
       "use": {
-        "sets": [
-          "h1_scarf_removed"
-        ],
+        "sets": ["h1_scarf_removed"],
         "text": "@H1.scarf.use",
         "once_flag": "h1_scarf_removed",
         "scene": "M03"
@@ -144,48 +88,26 @@
       "id": "tikhon",
       "kind": "npc",
       "label": "@char.tikhon",
-      "rect": [
-        600,
-        560,
-        70,
-        80
-      ],
-      "stand": [
-        640,
-        710
-      ],
+      "rect": [600, 560, 70, 80],
+      "stand": [640, 710],
       "color": "#9a7a5a",
-      "visible_if": [
-        "started_M03"
-      ],
+      "visible_if": ["started_M03"],
       "look": "@H1.tikhon.look"
     },
     {
       "id": "photo",
       "kind": "object",
       "label": "@H1.photo.label",
-      "rect": [
-        1240,
-        400,
-        120,
-        90
-      ],
-      "stand": [
-        1300,
-        700
-      ],
+      "rect": [1240, 400, 120, 90],
+      "stand": [1300, 700],
       "color": "#e8e0c8",
       "states": [
         {
-          "if": [
-            "v01_photo_table"
-          ],
+          "if": ["v01_photo_table"],
           "label": "@H1.photo.label_table"
         },
         {
-          "if": [
-            "v01_photo_shelf"
-          ],
+          "if": ["v01_photo_shelf"],
           "label": "@H1.photo.label_shelf"
         }
       ],
@@ -212,29 +134,17 @@
       "id": "cups",
       "kind": "object",
       "label": "@H1.cups.label",
-      "rect": [
-        1360,
-        480,
-        140,
-        70
-      ],
-      "stand": [
-        1430,
-        700
-      ],
+      "rect": [1360, 480, 140, 70],
+      "stand": [1430, 700],
       "color": "#d8d0c0",
       "states": [
         {
-          "if": [
-            "v01_cup_blue"
-          ],
+          "if": ["v01_cup_blue"],
           "label": "@H1.cups.label_blue",
           "color": "#7090c0"
         },
         {
-          "if": [
-            "v01_cup_white"
-          ],
+          "if": ["v01_cup_white"],
           "label": "@H1.cups.label_white",
           "color": "#f0ece0"
         }
@@ -262,40 +172,24 @@
       "id": "shelf",
       "kind": "object",
       "label": "@H1.shelf.label",
-      "rect": [
-        140,
-        560,
-        110,
-        60
-      ],
-      "stand": [
-        195,
-        710
-      ],
+      "rect": [140, 560, 110, 60],
+      "stand": [195, 710],
       "color": "#7a5a3a",
       "states": [
         {
-          "if": [
-            "q04_corner_stove"
-          ],
+          "if": ["q04_corner_stove"],
           "label": "@H1.shelf.label_stove"
         },
         {
-          "if": [
-            "q04_shelf_table"
-          ],
+          "if": ["q04_shelf_table"],
           "label": "@H1.shelf.label_table"
         }
       ],
-      "hidden_if": [
-        "done_Q04"
-      ],
+      "hidden_if": ["done_Q04"],
       "choice": {
         "prompt": "@H1.shelf.prompt",
         "requires": {
-          "flags": [
-            "met_tikhon"
-          ]
+          "flags": ["met_tikhon"]
         },
         "fail_text": "@H1.shelf.look",
         "scene": "Q04",
@@ -318,31 +212,17 @@
       "id": "shelf_done",
       "kind": "object",
       "label": "@H1.shelf.label_done",
-      "rect": [
-        140,
-        560,
-        110,
-        60
-      ],
-      "stand": [
-        195,
-        710
-      ],
+      "rect": [140, 560, 110, 60],
+      "stand": [195, 710],
       "color": "#7a5a3a",
-      "visible_if": [
-        "done_Q04"
-      ],
+      "visible_if": ["done_Q04"],
       "states": [
         {
-          "if": [
-            "q04_corner_stove"
-          ],
+          "if": ["q04_corner_stove"],
           "label": "@H1.shelf.label_stove"
         },
         {
-          "if": [
-            "q04_shelf_table"
-          ],
+          "if": ["q04_shelf_table"],
           "label": "@H1.shelf.label_table"
         }
       ],
@@ -381,27 +261,17 @@
     "M03": {
       "complete_when": [
         {
-          "all": [
-            "h1_shutter_open",
-            "stove_lit",
-            "h1_scarf_removed"
-          ]
+          "all": ["h1_shutter_open", "stove_lit", "h1_scarf_removed"]
         }
       ]
     },
     "V01": {
       "complete_when": [
         {
-          "any": [
-            "v01_cup_blue",
-            "v01_cup_white"
-          ]
+          "any": ["v01_cup_blue", "v01_cup_white"]
         },
         {
-          "any": [
-            "v01_photo_table",
-            "v01_photo_shelf"
-          ]
+          "any": ["v01_photo_table", "v01_photo_shelf"]
         }
       ],
       "complete_text": "@H1.v01.done"
@@ -409,10 +279,7 @@
     "Q04": {
       "complete_when": [
         {
-          "any": [
-            "q04_corner_stove",
-            "q04_shelf_table"
-          ]
+          "any": ["q04_corner_stove", "q04_shelf_table"]
         }
       ]
     }

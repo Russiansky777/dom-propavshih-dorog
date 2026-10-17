@@ -18,17 +18,17 @@
     {
       "id": "sample_agata_sheet",
       "kind": "character_sheet",
-      "subject": "Агата, 25",
+      "subject": "Агата, 18",
       "views": [
         "front",
         "side",
         "back"
       ],
       "notes": "Лист персонажа для утверждения стиля и для Meshy image-to-3D; нейтральная поза, руки видны, обувь видна; без фона",
-      "status": "delivered",
+      "status": "accepted",
       "owner": "ChatGPT+Director",
-      "delivered": "assets/incoming/agata_sheet_v2_costume_ok_face_todo.png",
-      "review": "Костюм и ракурсы утверждены Директором 17.10; лицо/пропорции подростка — переделать на 25–28 лет редактированием того же изображения. 1448×1086 RGBA, три фигуры по 1012–1014 px"
+      "delivered": "assets/reference/agata_sheet.png",
+      "review": "Утверждён Директором 17.10 целиком (лицо и костюм); канон возраста изменён на 18. 1448×1086 RGBA, три фигуры по 1012–1014 px — готов для Meshy image-to-3D"
     },
     {
       "id": "sample_tikhon_sheet",

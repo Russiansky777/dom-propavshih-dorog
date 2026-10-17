@@ -225,10 +225,10 @@ func _render() -> void:
 			tray_i += 1
 		b.button_pressed = selected_piece == pid
 	for sid in slot_nodes.keys():
-		(slot_nodes[sid] as Button).text = "" if placed.has(sid) else "·"
+		(slot_nodes[sid] as Button).text = "" if placed.has(sid) else "-"
 	var mark := int(st.get("mark", -1))
 	for i in mark_nodes.size():
-		mark_nodes[i].text = "▲" if i == mark else ""
+		mark_nodes[i].text = "X" if i == mark else ""
 	# Doorway preview.
 	var view := String(st.get("view", ""))
 	var solved := bool(st.get("solved", false))

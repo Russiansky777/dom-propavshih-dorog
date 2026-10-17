@@ -8,56 +8,25 @@
     "horizon": 580
   },
   "spawns": {
-    "default": [
-      960,
-      920
-    ],
-    "from_Z1": [
-      190,
-      900
-    ],
-    "from_H1": [
-      700,
-      720
-    ],
-    "from_H3": [
-      1300,
-      720
-    ],
-    "from_M1": [
-      1730,
-      900
-    ],
-    "from_Z3": [
-      1500,
-      1000
-    ],
-    "from_R1": [
-      420,
-      1000
-    ]
+    "default": [960, 920],
+    "from_Z1": [190, 900],
+    "from_H1": [700, 720],
+    "from_H3": [1300, 720],
+    "from_M1": [1730, 900],
+    "from_Z3": [1500, 1000],
+    "from_R1": [420, 1000]
   },
   "props": [
     {
       "id": "house",
       "label": "@Z2.house.label",
-      "rect": [
-        520,
-        180,
-        420,
-        400
-      ],
+      "rect": [520, 180, 420, 400],
       "color": "#7a5a3c"
     },
     {
       "id": "mill_far",
       "label": "@Z2.mill_far.label",
-      "rect": [
-        1560,
-        260,
-        160,
-        220
-      ],
+      "rect": [1560, 260, 160, 220],
       "color": "#55606a"
     }
   ],
@@ -66,16 +35,8 @@
       "id": "landmarks",
       "kind": "object",
       "label": "@Z2.landmarks.label",
-      "rect": [
-        960,
-        300,
-        220,
-        120
-      ],
-      "stand": [
-        1070,
-        700
-      ],
+      "rect": [960, 300, 220, 120],
+      "stand": [1070, 700],
       "color": "#9aa8b4",
       "look": "@Z2.landmarks.look"
     }

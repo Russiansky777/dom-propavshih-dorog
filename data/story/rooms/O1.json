@@ -8,29 +8,15 @@
     "horizon": 640
   },
   "spawns": {
-    "default": [
-      960,
-      920
-    ],
-    "from_H3": [
-      150,
-      730
-    ],
-    "from_O2": [
-      1730,
-      900
-    ]
+    "default": [960, 920],
+    "from_H3": [150, 730],
+    "from_O2": [1730, 900]
   },
   "props": [
     {
       "id": "desks_front",
       "label": "@O1.desks_front.label",
-      "rect": [
-        600,
-        860,
-        720,
-        120
-      ],
+      "rect": [600, 860, 720, 120],
       "color": "#4a5666",
       "occluder": true
     }
@@ -40,39 +26,25 @@
       "id": "board",
       "kind": "object",
       "label": "@O1.board.label",
-      "rect": [
-        780,
-        220,
-        520,
-        260
-      ],
-      "stand": [
-        1040,
-        710
-      ],
+      "rect": [780, 220, 520, 260],
+      "stand": [1040, 710],
       "color": "#2e3e3a",
       "states": [
         {
-          "if": [
-            "wrote_on_board"
-          ],
+          "if": ["wrote_on_board"],
           "label": "@O1.board.label_written",
           "color": "#3a4e48"
         }
       ],
       "use": {
-        "sets": [
-          "o1_seen_board_task"
-        ],
+        "sets": ["o1_seen_board_task"],
         "text": "@O1.board.use",
         "once_flag": "o1_seen_board_task",
         "scene": "M06"
       },
       "item_use": {
         "chalk": {
-          "sets": [
-            "wrote_on_board"
-          ],
+          "sets": ["wrote_on_board"],
           "text": "@O1.board.chalk",
           "scene": "M08",
           "once_flag": "wrote_on_board"
@@ -84,21 +56,11 @@
       "id": "sack",
       "kind": "object",
       "label": "@O1.sack.label",
-      "rect": [
-        300,
-        500,
-        160,
-        140
-      ],
-      "stand": [
-        380,
-        710
-      ],
+      "rect": [300, 500, 160, 140],
+      "stand": [380, 710],
       "color": "#8a7a5a",
       "use": {
-        "sets": [
-          "o1_seen_sack"
-        ],
+        "sets": ["o1_seen_sack"],
         "text": "@O1.sack.use",
         "once_flag": "o1_seen_sack",
         "scene": "M06"
@@ -109,21 +71,11 @@
       "id": "notebooks",
       "kind": "object",
       "label": "@O1.notebooks.label",
-      "rect": [
-        1420,
-        520,
-        180,
-        110
-      ],
-      "stand": [
-        1510,
-        710
-      ],
+      "rect": [1420, 520, 180, 110],
+      "stand": [1510, 710],
       "color": "#c8c0a8",
       "use": {
-        "sets": [
-          "o1_seen_notebooks"
-        ],
+        "sets": ["o1_seen_notebooks"],
         "text": "@O1.notebooks.use",
         "once_flag": "o1_seen_notebooks",
         "scene": "M06"
@@ -134,30 +86,17 @@
       "id": "teacher_drawer",
       "kind": "object",
       "label": "@O1.teacher_drawer.label",
-      "rect": [
-        480,
-        540,
-        240,
-        100
-      ],
-      "stand": [
-        600,
-        710
-      ],
+      "rect": [480, 540, 240, 100],
+      "stand": [600, 710],
       "color": "#5a4a3a",
       "states": [
         {
-          "if": [
-            "has_invoice_chalk"
-          ],
+          "if": ["has_invoice_chalk"],
           "label": "@O1.teacher_drawer.label_open"
         }
       ],
       "use": {
-        "gives": [
-          "invoice_chalk",
-          "photo_school_pier"
-        ],
+        "gives": ["invoice_chalk", "photo_school_pier"],
         "text": "@O1.teacher_drawer.use",
         "once_flag": "has_invoice_chalk",
         "scene": "M07"
@@ -168,24 +107,12 @@
       "id": "chalk",
       "kind": "pickup",
       "label": "@O1.chalk.label",
-      "rect": [
-        740,
-        560,
-        60,
-        40
-      ],
-      "stand": [
-        770,
-        710
-      ],
+      "rect": [740, 560, 60, 40],
+      "stand": [770, 710],
       "color": "#f0f0e8",
-      "hidden_if": [
-        "has_chalk"
-      ],
+      "hidden_if": ["has_chalk"],
       "use": {
-        "gives": [
-          "chalk"
-        ],
+        "gives": ["chalk"],
         "text": "@O1.chalk.use",
         "scene": "M08"
       },
@@ -195,25 +122,13 @@
       "id": "bird_drawing",
       "kind": "object",
       "label": "@O1.bird_drawing.label",
-      "rect": [
-        1640,
-        300,
-        140,
-        110
-      ],
-      "stand": [
-        1700,
-        710
-      ],
+      "rect": [1640, 300, 140, 110],
+      "stand": [1700, 710],
       "color": "#e0d8c0",
-      "visible_if": [
-        "seen_class_traces"
-      ],
+      "visible_if": ["seen_class_traces"],
       "states": [
         {
-          "if": [
-            "v03_marked"
-          ],
+          "if": ["v03_marked"],
           "label": "@O1.bird_drawing.label_marked"
         }
       ],
@@ -258,40 +173,28 @@
       "complete_when": [
         {
           "any_n": 2,
-          "flags": [
-            "o1_seen_sack",
-            "o1_seen_notebooks",
-            "o1_seen_board_task"
-          ]
+          "flags": ["o1_seen_sack", "o1_seen_notebooks", "o1_seen_board_task"]
         }
       ]
     },
     "M07": {
       "complete_when": [
         {
-          "all": [
-            "has_invoice_chalk"
-          ]
+          "all": ["has_invoice_chalk"]
         }
       ]
     },
     "M08": {
       "complete_when": [
         {
-          "all": [
-            "observed_path_loop",
-            "wrote_on_board"
-          ]
+          "all": ["observed_path_loop", "wrote_on_board"]
         }
       ]
     },
     "V03": {
       "complete_when": [
         {
-          "any": [
-            "v03_marked",
-            "v03_left"
-          ]
+          "any": ["v03_marked", "v03_left"]
         }
       ],
       "complete_text": "@O1.v03.done"
