@@ -223,6 +223,10 @@ func _test_select() -> void:
 	_check(cur.visible and cur.item_id == "mitten" and cur.icon != null, "cursor carries the mitten icon")
 	_check(cur.size.x < s.size.x, "cursor icon is smaller than the pocket")
 	_check(sounds == ["select"], "sound select (%s)" % str(sounds))
+	# Item 3 of the task: the sound agent's SfxDirector listens to this signal (sfx_bag_leather).
+	var sx: Node = root.get_node_or_null("SfxDirector")
+	if sx != null:
+		_check(ui.is_connected("bag_sound_requested", Callable(sx, "play_bag")), "bag_sound_requested → SfxDirector.play_bag")
 	await _click(c)
 	_check(sr.selected_item == "", "second click puts it back (%s)" % sr.selected_item)
 	_check(not s.selected, "pocket no longer glows")
