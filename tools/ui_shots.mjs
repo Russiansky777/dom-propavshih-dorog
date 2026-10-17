@@ -5,7 +5,11 @@
 //
 //   tools/export_web.sh && node tools/ui_shots.mjs        (UI_SHOTS_PORT, default 8774)
 //
-// Frames: Docs/evidence/M1/ui_*.png; console log: build/shots/ui/console.log. Click targets come from
+// Frames (Docs/evidence/M1/ui_*.png): 01 top bar + empty bag, 02 dialogue box and fonts, 03 items flying
+// into the bag (slow motion), 04 bag with icons, 05 tooltip, 06 item in hand (icon at the pointer),
+// 07 journal, 08 menu, 09–11 the same at 1280×720, 12 the plan riding in from the wall, 13 the plan
+// open («Вы здесь», paler unvisited places, no Olkhovka), 14 journal with «План».
+// Console log: build/shots/ui/console.log. Click targets come from
 // window.probeState (main.gd / game_ui.gd probe_positions) — no hard-coded pixels except the empty
 // scene points used to move the pointer. Exit code 0 only when every step reached its state.
 
