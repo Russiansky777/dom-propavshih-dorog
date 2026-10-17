@@ -4,7 +4,7 @@
 // the report, and a check that every lighting shader compiles in WebGL2 (console has no shader error).
 //
 //   tools/export_web.sh && node tools/light_fps.mjs
-//   LIGHT_WEB_DIR=<dir with index.html> LIGHT_PORT=8772 LIGHT_SECONDS=5 node tools/light_fps.mjs
+//   LIGHT_WEB_DIR=<dir with index.html> LIGHT_PORT=8772 LIGHT_SECONDS=4 LIGHT_REPEATS=3 node tools/light_fps.mjs
 //
 // Opens index.html?lightprobe in headless Chromium (software WebGL2 via SwiftShader — far slower than
 // any real GPU, so the ON/OFF ratio matters more than the absolute fps), drives the hooks of
@@ -25,7 +25,8 @@ const WEB_DIR = path.resolve(process.env.LIGHT_WEB_DIR || path.join(ROOT, "build
 const OUT_DIR = path.join(ROOT, "build", "shots", "light");
 const REPORT = path.join(ROOT, "build", "reports", "light_fps.json");
 const PORT = Number(process.env.LIGHT_PORT || 8772);
-const SECONDS = Number(process.env.LIGHT_SECONDS || 5);
+const SECONDS = Number(process.env.LIGHT_SECONDS || 4);
+const REPEATS = Number(process.env.LIGHT_REPEATS || 3);
 
 const CASES = [
   { name: "H1_dark_fire", room: "H1", flags: "stove_lit", x: 1000, y: 800 },
@@ -117,24 +118,33 @@ async function main() {
   };
 
   const report = { web_dir: path.relative(ROOT, WEB_DIR), renderer: "headless Chromium, ANGLE SwiftShader (software WebGL2)", seconds: SECONDS, cases: {} };
+  // The machine may be shared (other builds, other browsers): ON and OFF are interleaved REPEATS
+  // times and the medians compared, so a load spike hits both sides.
+  const median = (a) => { const b = [...a].sort((x, y) => x - y); return b[Math.floor(b.length / 2)]; };
   for (const c of CASES) {
     await page.evaluate(() => window.lightEnable(true));
     let s = await go(c);
     if (s.room !== c.room) { errors.push(`${c.name}: did not load (state.room=${s.room})`); line(`FAIL ${c.name}: not loaded`); continue; }
     await sleep(1500);
-    const on = await fps(SECONDS);
-    const son = await state();
-    line(`${c.name}: lighting on ${on.toFixed(1)} fps (Godot ${son.fps})`);
-    await page.screenshot({ path: path.join(OUT_DIR, `${c.name}.png`), timeout: 180000 });
-    await page.evaluate(() => window.lightEnable(false));
-    await sleep(1200);
-    const off = await fps(SECONDS);
-    line(`${c.name}: lighting off ${off.toFixed(1)} fps`);
-    await page.screenshot({ path: path.join(OUT_DIR, `${c.name}_off.png`), timeout: 180000 });
+    const ons = [], offs = [];
+    let son = {};
+    for (let r = 0; r < REPEATS; r++) {
+      await page.evaluate(() => window.lightEnable(true));
+      await sleep(900);
+      ons.push(await fps(SECONDS));
+      son = await state();
+      if (r === 0) await page.screenshot({ path: path.join(OUT_DIR, `${c.name}.png`), timeout: 180000 });
+      await page.evaluate(() => window.lightEnable(false));
+      await sleep(900);
+      offs.push(await fps(SECONDS));
+      if (r === 0) await page.screenshot({ path: path.join(OUT_DIR, `${c.name}_off.png`), timeout: 180000 });
+    }
     await page.evaluate(() => window.lightEnable(true));
-    report.cases[c.name] = { fps_on: +on.toFixed(1), fps_off: +off.toFixed(1), cost_pct: +(100 * (1 - on / off)).toFixed(1),
-      godot_fps_on: son.fps, sources: son.sources ? Object.keys(son.sources).length : 0, shadows: son.shadows, tone: son.player && son.player.tone };
-    line(`${c.name}: lighting on ${on.toFixed(1)} fps, off ${off.toFixed(1)} fps (cost ${report.cases[c.name].cost_pct} %) — ${report.cases[c.name].sources} sources, ${son.shadows} shadows, Agata tone ${JSON.stringify(son.player && son.player.tone)}`);
+    const on = median(ons), off = median(offs);
+    report.cases[c.name] = { fps_on: +on.toFixed(2), fps_off: +off.toFixed(2), cost_pct: +(100 * (1 - on / off)).toFixed(1),
+      runs_on: ons.map((v) => +v.toFixed(2)), runs_off: offs.map((v) => +v.toFixed(2)),
+      sources: son.sources ? Object.keys(son.sources).length : 0, shadows: son.shadows, tone: son.player && son.player.tone };
+    line(`${c.name}: lighting on ${on.toFixed(2)} fps, off ${off.toFixed(2)} fps (median of ${REPEATS}; cost ${report.cases[c.name].cost_pct} %; runs on ${ons.map((v) => v.toFixed(2))} / off ${offs.map((v) => v.toFixed(2))}) — ${report.cases[c.name].sources} sources, ${son.shadows} shadows, Agata tone ${JSON.stringify(son.player && son.player.tone)}`);
     if (!son.sources || Object.keys(son.sources).length === 0) errors.push(`${c.name}: no lighting sources reported`);
   }
   // A walk past the fire: the cast shadow follows Agata; fps while walking.

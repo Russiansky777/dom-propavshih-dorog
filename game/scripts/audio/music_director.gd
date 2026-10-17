@@ -21,7 +21,10 @@ extends Node
 ## Web: the browser keeps the AudioContext suspended until the first user gesture; Godot resumes it
 ## from that input event, and the first theme starts only then (fade-in from silence).
 ## Playback type is STREAM everywhere: the web default «Sample» would decode a whole 2–3 minute
-## track to PCM (~60 MB, seconds of main-thread work) the first time each theme plays.
+## track to PCM (~60 MB, seconds of main-thread work) the first time each theme plays. The single-
+## threaded web build mixes stream playback on the main thread, so project.godot raises
+## audio/driver/output_latency.web to 500 ms (a ≈0.7 s ring buffer): a room build or a slow frame
+## shorter than that does not interrupt the music; fades are heard up to that much later.
 
 signal theme_changed(theme: String)
 signal music_volume_changed(volume: float)
@@ -76,6 +79,7 @@ var music_volume: float = DEFAULT_VOLUME
 var settings_path: String = DEFAULT_SETTINGS_PATH
 var duck_db_now: float = 0.0
 var loop_passes: int = 0
+var settings_saves: int = 0
 
 var _decks: Array[Deck] = []
 var _active: Deck = null
@@ -506,7 +510,9 @@ func save_settings() -> bool:
 		cf.load(settings_path)  # keep other settings
 	cf.set_value("audio", "music_volume", music_volume)
 	var err := cf.save(settings_path)
-	if err != OK:
+	if err == OK:
+		settings_saves += 1
+	else:
 		push_error("MusicDirector: cannot save %s (%s)" % [settings_path, error_string(err)])
 	return err == OK
 
@@ -534,7 +540,7 @@ func state() -> Dictionary:
 	return {"unlocked": unlocked, "target": target_theme, "room_theme": room_theme, "events": evs,
 		"active": _active.theme if _active != null else "", "active_deck": active_deck_index(),
 		"duck_db": duck_db_now, "dialogue": dialogue_active(), "loop_passes": loop_passes,
-		"music_volume": music_volume, "bus_volume_db": AudioServer.get_bus_volume_db(idx) if idx >= 0 else 0.0,
+		"music_volume": music_volume, "settings_saves": settings_saves, "bus_volume_db": AudioServer.get_bus_volume_db(idx) if idx >= 0 else 0.0,
 		"bus_mute": AudioServer.is_bus_mute(idx) if idx >= 0 else false,
 		"decks": [deck_state(0), deck_state(1)], "output_latency": AudioServer.get_output_latency(),
 		"errors": config_errors}

@@ -24,6 +24,10 @@ RoomManager="*res://scripts/core/room_manager.gd"
 StoryRunner="*res://scripts/core/story_runner.gd"
 MusicDirector="*res://scripts/audio/music_director.gd"
 
+[audio]
+
+driver/output_latency.web=500
+
 [display]
 
 window/size/viewport_width=1920
