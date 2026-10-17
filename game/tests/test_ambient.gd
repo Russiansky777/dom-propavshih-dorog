@@ -135,6 +135,10 @@ func _spawn_main() -> void:
 
 
 func _cleanup() -> void:
+	var ov = load("res://scripts/ambient/perf_overlay.gd").instance()
+	if ov != null:
+		ov.get_parent().remove_child(ov)
+		ov.free()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
 		main_node.free()
