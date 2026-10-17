@@ -4,6 +4,7 @@
 # Contact sheets/previews (_*.png) are skipped. The import is lossy WebP q0.9 (a painted plan, shown
 # at most ~1760 px wide): ≈10× smaller in the web build than lossless, no visible difference.
 #   tools/sync_map.sh
+# Labels, dots and «Вы здесь» are not in the picture: data/story/map_zarechye.json + zarechye_map.gd.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC="$ROOT/assets/incoming/map"
