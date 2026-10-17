@@ -10,7 +10,7 @@ sync_music: 6 theme file(s), 0 copied → game/assets/music
 sync_voice: 19 line file(s), 0 copied → game/assets/voice
 [music] OK: 6 тем, 21 комнат, 6 событий, 0 ошибок
 [sfx] OK: 7 звуков, 17 дверей, 0 ошибок
-[voice] validate_voice.py: OK (0 ошибок, 0 предупреждений; самопроверка 5/5)
+[voice] validate_voice.py: OK (0 ошибок, 0 предупреждений; самопроверка 7/7)
 [godot] import: /home/claude/tools-cache/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/claude/dom-propavshih-dorog/game --import
 [godot] tests: /home/claude/tools-cache/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/claude/dom-propavshih-dorog/game -s res://tests/run_tests.gd
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
@@ -23,20 +23,20 @@ WARNING: GameState: no save in slot 'missing_slot_xyz'
          [2] _test (res://tests/run_tests.gd:79)
          [3] _run (res://tests/run_tests.gd:45)
 PASS  GameState save → modify → load restores flags/inventory/room  (0 ms)
-PASS  RoomManager.change_room loads RoomOffice and places player at spawn  (1507 ms)
-PASS  RoomManager autosaves to slot after room change  (8 ms)
-PASS  Room.apply_flags toggles door state nodes on office_latch_open  (6 ms)
-        nav map ready after 2 physics frames (iteration 5)
-PASS  NavigationServer2D returns a path inside RoomHouse.Walkable  (35 ms)
-PASS  Room.pick finds hotspot/exit under a point  (53 ms)
-PASS  Mirror shows RoomOfficeView through a ViewportTexture with Echo looping  (269 ms)
-PASS  Player walks to the exit and RoomManager switches rooms  (1214 ms)
-PASS  Save/load round-trip survives room change and restores player position  (14 ms)
+PASS  RoomManager.change_room loads RoomOffice and places player at spawn  (1166 ms)
+PASS  RoomManager autosaves to slot after room change  (9 ms)
+PASS  Room.apply_flags toggles door state nodes on office_latch_open  (5 ms)
+        nav map ready after 4 physics frames (iteration 5)
+PASS  NavigationServer2D returns a path inside RoomHouse.Walkable  (78 ms)
+PASS  Room.pick finds hotspot/exit under a point  (35 ms)
+PASS  Mirror shows RoomOfficeView through a ViewportTexture with Echo looping  (281 ms)
+PASS  Player walks to the exit and RoomManager switches rooms  (1245 ms)
+PASS  Save/load round-trip survives room change and restores player position  (23 ms)
 PASS  InputMap: F5 → quick_save, F9 → quick_load  (0 ms)
-PASS  StoryData loads every JSON and every room builds without errors  (859 ms)
-PASS  Negative: exit H3→O1 is closed before M05 and open after  (1904 ms)
-PASS  Bot walkthrough M01→M08 via StoryRunner/Room API with mid-way save/load  (15479 ms)
-PASS  H1: Agata sprite from sheets (288x384, 8 walk + 8 idle), directions, table occluder z-sort  (4511 ms)
+PASS  StoryData loads every JSON and every room builds without errors  (885 ms)
+PASS  Negative: exit H3→O1 is closed before M05 and open after  (1893 ms)
+PASS  Bot walkthrough M01→M08 via StoryRunner/Room API with mid-way save/load  (14557 ms)
+PASS  H1: Agata sprite from sheets (288x384, 8 walk + 8 idle), directions, table occluder z-sort  (2624 ms)
     cycle 277.1 px (scale 1) = 1.1518 m; fps 11.67 (= 12 × 1.12 m/s / cycle); start frame 7
     row 0: Σ 67.0 px (expected 67.0 = cycle × 0.242) speed at scale 1: 65.2 px/s; strides [6.27, 6.05, 5.62, 4.54, 6.3, 6.14, 6.04, 2.94, 5.71, 4.58, 6.3, 6.55]
     row 1: Σ 201.6 px (expected 201.6 = cycle × 0.728) speed at scale 1: 196.0 px/s; strides [18.84, 18.2, 16.9, 13.67, 18.94, 18.47, 18.15, 8.84, 17.17, 13.78, 18.95, 19.7]
@@ -46,18 +46,18 @@ PASS  H1: Agata sprite from sheets (288x384, 8 walk + 8 idle), directions, table
     row 5: Σ 201.6 px (expected 201.6 = cycle × 0.728) speed at scale 1: 196.0 px/s; strides [18.84, 18.2, 16.9, 13.67, 18.94, 18.47, 18.15, 8.84, 17.17, 13.78, 18.95, 19.7]
     row 6: Σ 277.1 px (expected 277.1 = cycle × 1.000) speed at scale 1: 269.5 px/s; strides [25.9, 25.01, 23.23, 18.79, 26.04, 25.39, 24.95, 12.15, 23.6, 18.94, 26.04, 27.09]
     row 7: Σ 201.6 px (expected 201.6 = cycle × 0.728) speed at scale 1: 196.0 px/s; strides [18.84, 18.2, 16.9, 13.67, 18.94, 18.47, 18.15, 8.84, 17.17, 13.78, 18.95, 19.7]
-    walk left (row 6): 19 frame changes, fps 11.80 (formula 11.67), drawn still within a frame: max 0.00 px; advance per change [22.5, 43.6, 35.0, 48.1, 50.1, 47.9, 46.2, 42.9, 34.7, 48.1, 46.9, 46.1, 22.5, 43.6, 35.0, 48.1, 50.1, 47.9, 46.2]; max |advance − table×scale| 0.00 px; max lag behind logical 127.3 px; resyncs 1
+    walk left (row 6): 19 frame changes, fps 11.59 (formula 11.67), drawn still within a frame: max 0.00 px; advance per change [22.5, 43.6, 35.0, 48.1, 50.1, 47.9, 46.2, 42.9, 34.7, 48.1, 46.9, 46.1, 22.5, 43.6, 35.0, 48.1, 50.1, 47.9, 46.2]; max |advance − table×scale| 0.00 px; max lag behind logical 127.8 px; resyncs 1
     left: stopped at (823.0, 990.0) (target (820.0, 990.0))
-    walk up (row 4): 12 frame changes, fps 11.54 (formula 11.67), drawn still within a frame: max 0.00 px; advance per change [12.0, 22.9, 17.9, 24.0, 24.4, 22.8, 21.5, 19.5, 15.4, 20.8, 19.8, 19.0]; max |advance − table×scale| 0.00 px; max lag behind logical 37.5 px; resyncs 1
-    up: stopped at (1650.0, 746.0) (target (1650.0, 740.0))
-    floor_foreshortening 0.55 (H1): vertical/side speed by formula 0.550 / 0.550, measured on the walks 0.563; row factors [2.273, 1.109, 1.0, 1.109, 2.273, 1.109, 1.0, 1.109]
-PASS  Stride: fps from speed, stride = sheet stride, foot lock holds the drawn figure between frames  (3420 ms)
+    walk up (row 4): 12 frame changes, fps 11.64 (formula 11.67), drawn still within a frame: max 0.00 px; advance per change [12.0, 22.9, 17.9, 24.0, 24.4, 22.8, 21.5, 19.5, 15.4, 20.8, 19.8, 19.0]; max |advance − table×scale| 0.00 px; max lag behind logical 37.3 px; resyncs 1
+    up: stopped at (1650.0, 745.0) (target (1650.0, 740.0))
+    floor_foreshortening 0.55 (H1): vertical/side speed by formula 0.550 / 0.550, measured on the walks 0.569; row factors [2.273, 1.109, 1.0, 1.109, 2.273, 1.109, 1.0, 1.109]
+PASS  Stride: fps from speed, stride = sheet stride, foot lock holds the drawn figure between frames  (3321 ms)
     M01 lines → Tamara's animation: ["agata→idle_0", "tamara→talk_0", "agata→idle_0"]
-PASS  NPC actors: Tamara/Pelageya from sheets on their hotspots, depth scale, y-sort, talk during their lines  (1056 ms)
-PASS  Shadows: soft ellipse under the feet of Agata and NPCs, behind the figure, scaled by depth  (1883 ms)
-    trial 0: waited 0 physics frames for the path, walked 48 frames, ended at (1260.0, 712.0)
-    trial 1: waited 47 physics frames for the path, walked 93 frames, ended at (1259.659, 711.9415)
-PASS  No straight-line walking: a click right after entering Z1 waits for the nav map and goes round the counter  (3840 ms)
+PASS  NPC actors: Tamara/Pelageya from sheets on their hotspots, depth scale, y-sort, talk during their lines  (902 ms)
+PASS  Shadows: soft ellipse under the feet of Agata and NPCs, behind the figure, scaled by depth  (1661 ms)
+    trial 0: waited 0 physics frames for the path, walked 48 frames, ended at (1254.432, 711.036)
+    trial 1: waited 47 physics frames for the path, walked 93 frames, ended at (1259.615, 711.934)
+PASS  No straight-line walking: a click right after entering Z1 waits for the nav map and goes round the counter  (3631 ms)
     agata/idle (pingpong_eased, 9 frames played): worst seam/median 0.00 (row -1)
     agata/walk (loop, 12 frames played): worst seam/median 1.20 (row 4)
     pelageya/idle (pingpong_eased, 9 frames played): worst seam/median 0.00 (row -1)
@@ -65,21 +65,21 @@ PASS  No straight-line walking: a click right after entering Z1 waits for the na
     tamara/idle (pingpong_eased, 9 frames played): worst seam/median 0.00 (row -1)
     tamara/talk (pingpong_eased, 23 frames played): worst seam/median 0.00 (row -1)
     self-check: agata/idle played as a loop would jump 4.20 × the median step (must be caught)
-PASS  Loop seams: every repeating animation of every actor sheet returns to its first frame smoothly  (3896 ms)
-    idle→walk fade: alpha 1.00 at start, gone after 131 ms (crossfade_s 0.12)
-PASS  Cross-fade: switching idle↔walk (Agata) and idle↔talk (Tamara) dissolves the old pose in ≈0.12 s  (2609 ms)
+PASS  Loop seams: every repeating animation of every actor sheet returns to its first frame smoothly  (4242 ms)
+    idle→walk fade: alpha 1.00 at start, gone after 137 ms (crossfade_s 0.12)
+PASS  Cross-fade: switching idle↔walk (Agata) and idle↔talk (Tamara) dissolves the old pose in ≈0.12 s  (2537 ms)
     action_anim in rooms: { "open": 4, "pick": 3, "reach": 10 }; key frames { "open": 7, "open_b": 7, "pick": 9, "reach": 7 }
     shutter: open action, flag set at sheet frame 7 (key frame 7), fires 1, flag_changed 1
-PASS  Actions: hotspot action_anim plays once, the effect lands on the key frame exactly once; save mid-action is safe  (6778 ms)
+PASS  Actions: hotspot action_anim plays once, the effect lands on the key frame exactly once; save mid-action is safe  (6791 ms)
     agata/idle: 8 rows, worst middle→extreme asymmetry 0.0 %, worst extreme-hold difference 0.0 %; row 0: ["1:0.50", "2:0.27", "3:0.27", "4:0.27", "5:1.00", "4:0.27", "3:0.27", "2:0.27", "1:0.50"]
     pelageya/idle: 8 rows, worst middle→extreme asymmetry 0.0 %, worst extreme-hold difference 0.0 %; row 0: ["1:0.50", "2:0.27", "3:0.27", "4:0.27", "5:1.00", "4:0.27", "3:0.27", "2:0.27", "1:0.50"]
     pelageya/talk: 8 rows, worst middle→extreme asymmetry 0.0 %, worst extreme-hold difference 0.0 %; row 0: ["0:0.33", "1:0.17", "2:0.10", "3:0.13", "4:0.13", "5:0.13", "6:0.13", "7:0.13", "8:0.13", "9:0.10", "10:0.17", "11:0.67", "10:0.17", "9:0.10", "8:0.13", "7:0.13", "6:0.13", "5:0.13", "4:0.13", "3:0.13", "2:0.10", "1:0.17", "0:0.33"]
     tamara/idle: 8 rows, worst middle→extreme asymmetry 0.0 %, worst extreme-hold difference 0.0 %; row 0: ["1:0.50", "2:0.27", "3:0.27", "4:0.27", "5:1.00", "4:0.27", "3:0.27", "2:0.27", "1:0.50"]
     tamara/talk: 8 rows, worst middle→extreme asymmetry 0.0 %, worst extreme-hold difference 0.0 %; row 0: ["0:0.33", "1:0.17", "2:0.10", "3:0.13", "4:0.13", "5:0.13", "6:0.13", "7:0.13", "8:0.13", "9:0.10", "10:0.17", "11:0.67", "10:0.17", "9:0.10", "8:0.13", "7:0.13", "6:0.13", "5:0.13", "4:0.13", "3:0.13", "2:0.10", "1:0.17", "0:0.33"]
-PASS  Idle sway: even back-and-forth — equal time to both extreme poses (±5 %), equal holds, easing to rest at both ends  (525 ms)
+PASS  Idle sway: even back-and-forth — equal time to both extreme poses (±5 %), equal holds, easing to rest at both ends  (498 ms)
     tikhon: 869 vertices, 1450 triangles; height 130 px = 0.28 × Agata at depth y 742; feet (356.0, 578.0)
     accents seen: [&"ear_twitch_r"]
-PASS  Tikhon: bone-rigged puppet by the stove after M03 — breathing/tail loop without a seam, ear/head accents, head lift on his lines, scared tail, hotspot still clickable  (4669 ms)
+PASS  Tikhon: bone-rigged puppet by the stove after M03 — breathing/tail loop without a seam, ear/head accents, head lift on his lines, scared tail, hotspot still clickable  (4670 ms)
 
 ==== 23 tests, 23 passed, 0 failed ====
 WARNING: 12 ObjectDB instances were leaked at exit (run with `--verbose` for details).
@@ -90,28 +90,28 @@ ERROR: 6 resources still in use at exit (run with --verbose for details).
 [godot] geometry: /home/claude/tools-cache/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/claude/dom-propavshih-dorog/game -s res://tests/test_room_geometry.gd
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-PASS  geometry Z1  (118 ms)
-PASS  geometry Z4  (101 ms)
-PASS  geometry Z2  (102 ms)
-PASS  geometry Z3  (101 ms)
-PASS  geometry R1  (129 ms)
-PASS  geometry H1  (132 ms)
-PASS  geometry H2  (83 ms)
-PASS  geometry H3  (89 ms)
-PASS  geometry H4  (77 ms)
-PASS  geometry O1  (103 ms)
-PASS  geometry O2  (103 ms)
+PASS  geometry Z1  (80 ms)
+PASS  geometry Z4  (103 ms)
+PASS  geometry Z2  (100 ms)
+PASS  geometry Z3  (102 ms)
+PASS  geometry R1  (113 ms)
+PASS  geometry H1  (151 ms)
+PASS  geometry H2  (80 ms)
+PASS  geometry H3  (87 ms)
+PASS  geometry H4  (85 ms)
+PASS  geometry O1  (97 ms)
+PASS  geometry O2  (98 ms)
 
 ==== geometry: 11 rooms, 11 passed, 0 failed ====
 [godot] geometry exit code: 0
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-PASS  Lights data builds in every room; the H1 particle fire is replaced; no click targets  (933 ms)
+PASS  Lights data builds in every room; the H1 particle fire is replaced; no click targets  (877 ms)
 PASS  H1 shutters: dark while closed, ≈0.8 s fade to daylight + beam, loaded save shows the final state  (1249 ms)
-PASS  H1 stove: fire, flickering light and shadows only with stove_lit  (1282 ms)
-PASS  Actor light shadow: same frame as the sprite, behind it, away from the source, by distance  (1956 ms)
-PASS  Actor light shadow: removed from Agata on room change; NPCs get theirs  (454 ms)
-PASS  Actor tone: Agata darkened like the floor in the dark H1, warmer by the fire, no jumps  (2649 ms)
+PASS  H1 stove: fire, flickering light and shadows only with stove_lit  (1283 ms)
+PASS  Actor light shadow: same frame as the sprite, behind it, away from the source, by distance  (1939 ms)
+PASS  Actor light shadow: removed from Agata on room change; NPCs get theirs  (496 ms)
+PASS  Actor tone: Agata darkened like the floor in the dark H1, warmer by the fire, no jumps  (2551 ms)
 
 ==== lighting: 6 tests, 6 passed, 0 failed ====
 WARNING: 16 ObjectDB instances were leaked at exit (run with `--verbose` for details).
@@ -120,49 +120,52 @@ ERROR: 8 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:822)
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-    H1 (interior): ambient build 0 ms; { "room": "H1", "rain": false, "sway": 4, "water": 0, "puddles": 0, "dust": 1, "dust_particles": 26, "visible": true, "quality": "high", "rain_layers": 0, "rain_particles": 0 }
+    H1 (interior): ambient build 1 ms; { "room": "H1", "rain": false, "sway": 4, "water": 0, "puddles": 0, "dust": 1, "dust_particles": 26, "visible": true, "quality": "high", "rain_layers": 0, "rain_particles": 0 }
     H2 (interior): ambient build 0 ms; { "room": "H2", "rain": false, "sway": 3, "water": 0, "puddles": 0, "dust": 1, "dust_particles": 20, "visible": true, "quality": "high", "rain_layers": 0, "rain_particles": 0 }
     O1 (interior): ambient build 0 ms; { "room": "O1", "rain": false, "sway": 8, "water": 0, "puddles": 0, "dust": 1, "dust_particles": 24, "visible": true, "quality": "high", "rain_layers": 0, "rain_particles": 0 }
     O2 (exterior): ambient build 3 ms; { "room": "O2", "rain": false, "sway": 1, "water": 0, "puddles": 0, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 0, "rain_particles": 0 }
-    R1 (exterior): ambient build 38 ms; { "room": "R1", "rain": true, "sway": 4, "water": 2, "puddles": 7, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 3, "rain_particles": 1560, "steps": 0, "splashes": 0, "prints_made": 0, "prints": 0, "contact_frames": [], "bound": false }
-    Z2 (exterior): ambient build 56 ms; { "room": "Z2", "rain": true, "sway": 10, "water": 1, "puddles": 5, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 3, "rain_particles": 1560, "steps": 0, "splashes": 0, "prints_made": 0, "prints": 0, "contact_frames": [], "bound": false }
-    Z3 (exterior): ambient build 26 ms; { "room": "Z3", "rain": true, "sway": 4, "water": 2, "puddles": 0, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 3, "rain_particles": 1560, "steps": 0, "splashes": 0, "prints_made": 0, "prints": 0, "contact_frames": [], "bound": false }
-    Z4 (exterior): ambient build 15 ms; { "room": "Z4", "rain": true, "sway": 2, "water": 0, "puddles": 4, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 3, "rain_particles": 1560, "steps": 0, "splashes": 0, "prints_made": 0, "prints": 0, "contact_frames": [], "bound": false }
-FAIL  Ambient: every room with data builds its regions; interiors without rain/water/mud; Z4 by one entry  (1913 ms)
-        - Z4 file should be one entry {id, preset}, has keys ["id", "preset", "sway_regions", "puddles", "mud"]
-PASS  Ambient: nothing takes input; a hotspot under the rain is still clicked  (3494 ms)
-PASS  Ambient: draw order — rain over all, regions on the picture, prints on the floor  (1984 ms)
-PASS  Ambient: shader parameters come from the data  (260 ms)
+    R1 (exterior): ambient build 29 ms; { "room": "R1", "rain": true, "sway": 4, "water": 2, "puddles": 7, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 3, "rain_particles": 1560, "steps": 0, "splashes": 0, "prints_made": 0, "prints": 0, "contact_frames": [], "bound": false }
+    Z2 (exterior): ambient build 32 ms; { "room": "Z2", "rain": true, "sway": 10, "water": 1, "puddles": 5, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 3, "rain_particles": 1560, "steps": 0, "splashes": 0, "prints_made": 0, "prints": 0, "contact_frames": [], "bound": false }
+    Z3 (exterior): ambient build 17 ms; { "room": "Z3", "rain": true, "sway": 4, "water": 2, "puddles": 0, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 3, "rain_particles": 1560, "steps": 0, "splashes": 0, "prints_made": 0, "prints": 0, "contact_frames": [], "bound": false }
+    Z4 (exterior): ambient build 11 ms; { "room": "Z4", "rain": true, "sway": 2, "water": 0, "puddles": 4, "dust": 0, "dust_particles": 0, "visible": true, "quality": "high", "rain_layers": 3, "rain_particles": 1560, "steps": 0, "splashes": 0, "prints_made": 0, "prints": 0, "contact_frames": [], "bound": false }
+PASS  Ambient: every room with data builds its regions; interiors without rain/water/mud; Z4 weather from preset street  (1021 ms)
+PASS  Ambient: nothing takes input; a hotspot under the rain is still clicked  (2331 ms)
+PASS  Ambient: draw order — rain over all, regions on the picture, prints on the floor  (500 ms)
+PASS  Ambient: shader parameters come from the data  (108 ms)
     measured contacts: row 2 [4, 10], row 6 [4, 10]; data [4.0, 10.0]
-PASS  Ambient: contact frames and planted-foot offsets = fresh measurement of the walk sheet  (1028 ms)
+PASS  Ambient: contact frames and planted-foot offsets = fresh measurement of the walk sheet  (361 ms)
     puddle walk: 5 steps, 3 splashes, 2 prints
     mud walk: 3 prints (total 5), splashes +0
-PASS  Ambient: Agata in Z2 — splash in puddles, prints in mud, only on contact frames, sized by depth  (5613 ms)
+PASS  Ambient: Agata in Z2 — splash in puddles, prints in mud, only on contact frames, sized by depth  (5509 ms)
 PASS  Ambient: prints capped and fading in print_fade_s; a splash lives 0.3–0.5 s  (595 ms)
-PASS  Ambient: H1 panes and dust only with the shutters open  (208 ms)
-PASS  Ambient: quality low — half the rain layers and particles, no grass waves; high restores  (246 ms)
-    FPS 138 (мин. за 5 с: 8)   кадр 7.1 мс (худший 120.5)
-    логика 3.2 мс   физика 61.6 мс   отрисовка: 0 вызовов, 0 объектов
+PASS  Ambient: H1 panes and dust only with the shutters open  (84 ms)
+PASS  Ambient: quality low — half the rain layers and particles, no grass waves; high restores  (189 ms)
+    FPS 131 (мин. за 5 с: 7)   кадр 7.1 мс (худший 127.3)
+    логика 343.9 мс   физика 34.2 мс   отрисовка: 0 вызовов, 0 объектов
     Живой мир Z2: качество Высокое
     дождь: 3 сл., 1560 капель   ветер: 10 обл.   вода: 1   лужи: 5   пыль: 0
     шаги: 0   брызги: 0   следы: 0 (сейчас 0)
     F3 — скрыть   F4 — качество Высокое/Низкое   F2 — живой мир вкл/выкл
-PASS  Ambient: F3 overlay — hidden, shows FPS/ms and the room's effects, F4 quality, no mouse capture  (241 ms)
-PASS  Ambient: no sway region hidden under an occluder layer (wasted pixels)  (984 ms)
+PASS  Ambient: F3 overlay — hidden, shows FPS/ms and the room's effects, F4 quality, no mouse capture  (205 ms)
+PASS  Ambient: no sway region hidden under an occluder layer (wasted pixels)  (616 ms)
 
-==== ambient: 11 tests, 10 passed, 1 failed ====
+==== ambient: 11 tests, 11 passed, 0 failed ====
+WARNING: 8 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 4 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
 audio driver: Dummy, mix 44100 Hz
-PASS  music.json loads; every in_scope room → its theme; every location has one; streams loop=false  (3606 ms)
-PASS  H1 → H2 (same theme): same deck, no restart, position keeps growing  (3544 ms)
-PASS  H3 → O1: equal-power crossfade home → school over crossfade_s, home paused after  (3219 ms)
-PASS  Seamless loop: loop_crossfade_s before the end the track restarts on the other deck and crosses  (8966 ms)
-PASS  Dialogue ducking: scene lines −duck_dialogue_db over ≈0.4 s, narration not ducked  (1910 ms)
-PASS  Scene event M10 → mirror over home (ducked), scene end → home resumes on its deck  (9543 ms)
-PASS  Finale M33/M34: not ducked, holds past scene end, fades at the end, room theme returns  (8811 ms)
-PASS  Music volume: setting → Music bus, user:// settings (not the save slot), menu slider, 0 % mutes  (3756 ms)
-PASS  Web gating: nothing starts before the first user input; the first click starts the theme  (629 ms)
+PASS  music.json loads; every in_scope room → its theme; every location has one; streams loop=false  (1254 ms)
+PASS  H1 → H2 (same theme): same deck, no restart, position keeps growing  (3349 ms)
+PASS  H3 → O1: equal-power crossfade home → school over crossfade_s, home paused after  (3094 ms)
+PASS  Seamless loop: loop_crossfade_s before the end the track restarts on the other deck and crosses  (8658 ms)
+PASS  Dialogue ducking: scene lines −duck_dialogue_db over ≈0.4 s, narration not ducked  (1853 ms)
+PASS  Scene event M10 → mirror over home (ducked), scene end → home resumes on its deck  (9553 ms)
+PASS  Finale M33/M34: not ducked, holds past scene end, fades at the end, room theme returns  (8620 ms)
+PASS  Music volume: setting → Music bus, user:// settings (not the save slot), menu slider, 0 % mutes  (3615 ms)
+PASS  Web gating: nothing starts before the first user input; the first click starts the theme  (528 ms)
 
 ==== music: 9 tests, 9 passed, 0 failed ====
 WARNING: 12 ObjectDB instances were leaked at exit (run with `--verbose` for details).
@@ -171,23 +174,23 @@ ERROR: 6 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:822)
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-PASS  sfx.json loads; every sound file loads; loops loop, one-shots do not; SFX and SFX_Inside buses  (7 ms)
+PASS  sfx.json loads; every sound file loads; loops loop, one-shots do not; SFX and SFX_Inside buses  (4 ms)
     H1 walk: 4 steps
     Z2 walk: 5 steps (AmbientFootfall 5)
-PASS  Steps: on the walk sheet's foot-plant frames only, by room surface (H1 wood, Z2 gravel = AmbientFootfall steps)  (5386 ms)
-PASS  Doors: one sound per door transition, none for a street, a load or a new game; plays on through the change  (1764 ms)
-PASS  Stove fire: only in H1 with stove_lit, fades in, louder near the stove, stops when out or away  (5554 ms)
-PASS  Rain: outside on SFX, inside (house) quieter on the low-passed SFX_Inside, none in the school  (3030 ms)
-PASS  Bag: game_ui bag_sound_requested(receive/select/deselect) → bag sounds  (0 ms)
-PASS  Sound volume: setting → SFX bus, user:// settings next to the music volume, menu slider  (821 ms)
+PASS  Steps: on the walk sheet's foot-plant frames only, by room surface (H1 wood, Z2 gravel = AmbientFootfall steps)  (5379 ms)
+PASS  Doors: one sound per door transition, none for a street, a load or a new game; plays on through the change  (1723 ms)
+PASS  Stove fire: only in H1 with stove_lit, fades in, louder near the stove, stops when out or away  (5404 ms)
+PASS  Rain: outside on SFX, inside (house) quieter on the low-passed SFX_Inside, none in the school  (2823 ms)
+PASS  Bag: game_ui bag_sound_requested(receive/select/deselect) → bag sounds  (1 ms)
+PASS  Sound volume: setting → SFX bus, user:// settings next to the music volume, menu slider  (827 ms)
 
 ==== sfx: 7 tests, 7 passed, 0 failed ====
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
 audio driver: Dummy, mix 44100 Hz; manifest lines: 19
-PASS  voice.json + manifest: Voice bus, every recorded line loads and matches its scene line (sha1)  (17 ms)
-PASS  A line with a file plays on the Voice bus (beat line_id); music ducked while it sounds  (1346 ms)
-PASS  Click «дальше» cuts the voice and starts the next one; scene end, new game and load stop it  (1850 ms)
+PASS  voice.json + manifest: Voice bus, every recorded line loads and matches its scene line (sha1)  (11 ms)
+PASS  A line with a file plays on the Voice bus (beat line_id); music ducked while it sounds  (1264 ms)
+PASS  Click «дальше» cuts the voice and starts the next one; scene end, new game and load stop it  (1461 ms)
 WARNING: VoiceDirector: M01_0 is recorded for another text (text_changed) — subtitles only
      at: push_warning (core/variant/variant_utility.cpp:1033)
      GDScript backtrace (most recent call first):
@@ -199,29 +202,29 @@ WARNING: VoiceDirector: M01_0 is recorded for another text (text_changed) — su
          [5] _test_cut (res://tests/test_voice.gd:273)
          [6] _finish_dialogue (res://tests/test_voice.gd:126)
          [7] _frames (res://tests/test_voice.gd:109)
-PASS  No file / another text: subtitles only, no voice, no errors  (452 ms)
-PASS  Voice volume: setting → Voice bus, user:// settings (not the save slot), menu slider «Голос», 0 % mutes  (2068 ms)
-        Tikhon (pan -0.149): L -19.3 dB, R -24.6 dB, L−R 5.3 dB (expected 5.3), 24576 frames
+PASS  No file / another text: subtitles only, no voice, no errors  (252 ms)
+PASS  Voice volume: setting → Voice bus, user:// settings (not the save slot), menu slider «Голос», 0 % mutes  (1220 ms)
+        Tikhon (pan -0.149): L -26.8 dB, R -32.1 dB, L−R 5.3 dB (expected 5.3), 28672 frames
         Agata (plain): L -21.4 dB, R -21.4 dB
-PASS  Tikhon speaks from his hotspot in H1 (panned left, left channel louder); Agata not panned  (1346 ms)
-PASS  Web gating: a line before the first click waits, starts on the unlock  (372 ms)
+PASS  Tikhon speaks from his hotspot in H1 (panned left, left channel louder); Agata not panned  (1187 ms)
+PASS  Web gating: a line before the first click waits, starts on the unlock  (376 ms)
 
 ==== voice: 7 tests, 7 passed, 0 failed ====
-WARNING: 14 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
    at: cleanup (core/object/object.cpp:2536)
-ERROR: 7 resources still in use at exit (run with --verbose for details).
+ERROR: 11 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:822)
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-PASS  Bag: 8 pockets in the top bar, above every room's floor; an empty bag says so  (26 ms)
+PASS  Bag: 8 pockets in the top bar, above every room's floor; an empty bag says so  (28 ms)
 PASS  Icons by name: every E0–E1 item has res://assets/icons/<id>.png; no icon → patch, no error  (41 ms)
 PASS  Hover a pocket: items.json name + short line from data, tooltip under the bar  (55 ms)
 PASS  Real click: in hand (pocket glows, cursor carries the icon); again / right click: back; sounds  (97 ms)
-PASS  Received item flies into its pocket; one 'receive' per batch; load never replays it  (1900 ms)
-PASS  More items than pockets: pages, ‹ ›, wheel; a received item turns the bag to its page  (925 ms)
-PASS  probe_positions().inventory: centres of visible pockets inside the bar  (27 ms)
-PASS  Dialogue box: 60 % wide, centred, as tall as its text, at the bottom; characters stay visible  (98 ms)
-PASS  Theme: Old Standard TT (bar, buttons, headings) + PT Serif (dialogue, journal, tooltips), Cyrillic, sizes  (26 ms)
+PASS  Received item flies into its pocket; one 'receive' per batch; load never replays it  (1750 ms)
+PASS  More items than pockets: pages, ‹ ›, wheel; a received item turns the bag to its page  (931 ms)
+PASS  probe_positions().inventory: centres of visible pockets inside the bar  (28 ms)
+PASS  Dialogue box: 60 % wide, centred, as tall as its text, at the bottom; characters stay visible  (96 ms)
+PASS  Theme: Old Standard TT (bar, buttons, headings) + PT Serif (dialogue, journal, tooltips), Cyrillic, sizes  (27 ms)
 
 ==== ui bag: 9 tests, 9 passed, 0 failed ====
 WARNING: 10 ObjectDB instances were leaked at exit (run with `--verbose` for details).
@@ -230,10 +233,14 @@ ERROR: 5 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:822)
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-PASS  Plan data: places → real locations, points on the picture, texts; Z1.plan opens it  (0 ms)
-PASS  Click the plan in Z1: rides in from the wall, no look text, flag set; click closes back to the wall  (3243 ms)
-PASS  «Вы здесь» = current room; unvisited paler; Olkhovka hidden until visited; visited_<room> on entry  (3864 ms)
-PASS  Journal «План» only after the plan was seen; opens from the journal, Esc returns to it; load closes  (3587 ms)
+PASS  Plan data: places → real locations, points on the picture, texts; Z1.plan opens it  (1 ms)
+PASS  Click the plan in Z1: rides in from the wall, no look text, flag set; click closes back to the wall  (3148 ms)
+PASS  «Вы здесь» = current room; unvisited paler; Olkhovka hidden until visited; visited_<room> on entry  (3387 ms)
+PASS  Journal «План» only after the plan was seen; opens from the journal, Esc returns to it; load closes  (3505 ms)
 
 ==== ui map: 4 tests, 4 passed, 0 failed ====
-[tests] overall exit code: 1
+WARNING: 12 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 6 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+[tests] overall exit code: 0

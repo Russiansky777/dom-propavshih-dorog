@@ -39,3 +39,9 @@
 ## 2026-10-17 (ночь) — пакет ChatGPT по брифу v3
 - ChatGPT imagegen по `Docs/BRIEF_CHATGPT_v3.md` (коммит f3bc29d) и эталонам `assets/reference/`. Файлы в `assets/incoming/`: Z4 (фон, забор, слои качания), мельница M1 (фон, колесо отдельно, мешки), M2 (фон и полный фон без зеркала), M3 (фон, край стола), M4 (фон, рычаг в двух положениях), Тихон (собранный, голова, хвост — запасной вариант брифа). Размеры, хеши, ограничения и промпты — `assets/incoming/_meta_v3/`.
 - Тексты: `ru_bag.json` (8 описаний предметов + 2 подписи), `ru_E0_E1.json` (7 строк переулка) — правки ChatGPT, `draft` сняты.
+
+## 2026-10-17/18 — озвучка реплик E0–E1 (ElevenLabs Text to Speech)
+- Источник: ElevenLabs API `POST /v1/text-to-speech/{voice_id}`, модель `eleven_v4`, `output_format=mp3_44100_128`, `language_code=ru`, seed от id реплики; голоса из раздела My Voices Директора (Voice Design, category `generated`): Agata `ReYqW64ePwZHQReEArbt`, TAMARA-1 `GqJPI8zhNM5CF7q8EJ6l`, PELAGEYA `mIbPOSXtLeiaroofXc7O`, CAT-2 `RRgQuGjVvCeyNderlonu` (`pipeline/voice/voices.json`, `pipeline/voice/cast.json`). Запуск — GitHub Actions `pipeline-voice`, прогоны 39072575687 (19 реплик, 274 кредита) и 39074220670 (14 реплик с тегами подачи, 280 кредитов); request-id каждой реплики — в `assets/voice/ru/manifest.json` → `api`.
+- Текст — обязательные реплики сцен M01–M08 и Q04 (`data/story/scenes/E0.json`, `E1.json`, `quests.json`), теги подачи — поля `tags`/`voice_text` по `Docs/VOICE_DIRECTION.md`. Ответы API как есть — `assets/voice/ru/src/*.mp3`; в игру идут обработанные OGG (срез тишины, −17 LUFS, ограничитель −2 dBFS) — `game/assets/voice/ru/` через `tools/sync_voice.sh`.
+- Права: коммерческое использование — по условиям плана Директора на момент генерации (план Creator, 17.10); сверить перед релизом.
+
