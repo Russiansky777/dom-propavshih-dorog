@@ -1,18 +1,191 @@
-run 39077632329 2026-10-17T23:05:39Z requests: pipeline/requests/voice_list.json 
+run 39078036562 2026-10-17T23:11:50Z requests: pipeline/requests/voice_e0e1_narration.json 
 ключ: есть, длина 51, формат sk_…: да
 план: creator (active), израсходовано 13722 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_list.json
-ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 13722 из 124889 символов
-ключ принят API (GET /v2/voices → 200)
-голосов: 28, из них моих (My Voices): 7 → pipeline/voice/voices.json
-  [мой] 'Agata'                          ReYqW64ePwZHQReEArbt  generated  создан: 2026-10-17T20:38:17+00:00 (по порядку 2)  {"language": "ru"}
-  [мой] 'CAT'                            WVYD8dGGwhoMGyKwgFd7  generated  создан: 2026-10-17T21:09:40+00:00 (по порядку 5)  {"language": "ru"}
-  [мой] 'CAT-2'                          RRgQuGjVvCeyNderlonu  generated  создан: 2026-10-17T21:17:11+00:00 (по порядку 6)  {"language": "ru"}
-  [мой] 'PELAGEYA'                       mIbPOSXtLeiaroofXc7O  generated  создан: 2026-10-17T20:52:59+00:00 (по порядку 4)  {"language": "ru"}
-  [мой] 'TAMARA-1'                       GqJPI8zhNM5CF7q8EJ6l  generated  создан: 2026-10-17T20:47:58+00:00 (по порядку 3)  {"language": "ru"}
-  [мой] 'ZAKADR'                         kPaCtwsoLpkcqnqv9PyA  generated  создан: 2026-10-17T22:56:31+00:00 (по порядку 7)  {"language": "ru"}
-  [мой] 'Агата'                          B7zh39YGejeLEJzmFkHR  generated  создан: 2026-10-17T12:18:38+00:00 (по порядку 1)  {"language": "ru"}
-validate_voice: манифесты: ru 19 (19 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 4; реплик с тегами: 14
-[voice] validate_voice.py: OK (0 ошибок, 0 предупреждений, strict; самопроверка 7/7)
+=== pipeline/requests/voice_e0e1_narration.json
+  закадровые фразы без ссылок в данных игры — пропущены: O2.mitten.look, O2.mitten.use, R1.boat.look
+  задание: Директор, 2026-10-18 — закадровый голос ZAKADR для осмотров и описаний предметов E0–E1 (≈90 строк, ≈5 000 символов) (потолок 100 файлов, 6000 символов)
+[e0e1_narration] реплик в сценах запроса: 90; файлов с вариантами голосов: 90; к синтезу: 90 (5372 символов); переобработка: 0
+  Z1.tamara.after narrator  ru           ZAKADR     eleven_v4    «Ключ у тебя, записи — в доме, — говорит Тамара. — А я тут, на почте».
+  Z1.drawings.use narrator  ru           ZAKADR     eleven_v4    На тётином рисунке камень скрыт водой, на свежем наброске Тамары уже виден его край. Между двумя листами — год.
+  Z1.drawings.look narrator  ru           ZAKADR     eleven_v4    Тётин старый лист, рядом — свежий набросок Тамары.
+  Z1.letters.look narrator  ru           ZAKADR     eleven_v4    [softly] У каждого дома своя пачка писем. За тётиной уже год никто не приходит.
+  Z1.plan.look narrator  ru           ZAKADR     eleven_v4    Почта, тётин дом, спуск к воде, мельница. У берегового поворота — карандашная пометка.
+  Z1.exit_Z4.closed narrator  ru           ZAKADR     eleven_v4    Я ещё не поговорила с Тамарой. Ключ у неё.
+  Z2.landmarks.look narrator  ru           ZAKADR     eleven_v4    Тётин дом, крыша мельницы, спуск к воде. Почта осталась за спиной.
+  Z2.exit_H1.closed narrator  ru           ZAKADR     eleven_v4    Заперто. Тамара должна была сберечь ключ.
+  Z2.exit_M1.closed narrator  ru           ZAKADR     eleven_v4    Без ключа я и в тётин дом не попаду. Сначала к Тамаре.
+  Z2.exit_Z3.closed narrator  ru           ZAKADR     eleven_v4    Тамара ждёт меня на почте. Не стану уходить, не поговорив с ней.
+  Z2.exit_R1.closed narrator  ru           ZAKADR     eleven_v4    Сначала узнаю, что у Тамары. На причал ещё успею.
+  Z4.exit_H3.closed narrator  ru           ZAKADR     eleven_v4    Дверь галереи заперта изнутри. Через дом к ней тоже есть проход.
+  Z4.post_sign.look narrator  ru           ZAKADR     eleven_v4    «Почта». На старой доске не раз подновляли буквы.
+  Z4.lantern.look narrator  ru           ZAKADR     eleven_v4    Морось осела на стекле мелкими каплями.
+  Z3.old_pier_base.look narrator  ru           ZAKADR     eleven_v4    Тот самый камень с наброска Тамары: вода отступила, и он показался. Ближе не подойти — берег размыло.
+  Z3.plate.look narrator  ru           ZAKADR     eleven_v4    Буквы на металлической пластине забиты илом. Голыми руками их не расчистить.
+  R1.pelageya.after narrator  ru           ZAKADR     eleven_v4    «Журналы были у управляющего мельницей», — повторяет Пелагея, глядя на тот берег.
+  R1.rope.use narrator  ru           ZAKADR     eleven_v4    Канат уходит на тот берег, ближний стопор держит крепко. Другого конца отсюда не разглядеть.
+  R1.rope.look narrator  ru           ZAKADR     eleven_v4    Тугой канат переправы зажат в стопоре.
+  R1.lantern.use narrator  ru           ZAKADR     eleven_v4    Фонарь сидит в своём гнезде: стекло чистое, фитиль сухой. За ним приглядывают.
+  R1.lantern.look narrator  ru           ZAKADR     eleven_v4    Этим фонарём подают знак на тот берег.
+  R1.instruction.use narrator  ru           ZAKADR     eleven_v4    На дощечке — сигналы фонарём и ответ с другого берега. Но Пелагее нужна запись настоящего рейса: одна инструкция дороги не вернёт.
+  R1.instruction.look narrator  ru           ZAKADR     eleven_v4    Дощечка с порядком сигналов переправы.
+  R1.exit_Z2.closed narrator  ru           ZAKADR     eleven_v4    Тамара всё ещё ждёт меня на почте.
+  R1.exit_R2.closed narrator  ru           ZAKADR     eleven_v4    Пелагея не берётся везти, пока не найдётся запись настоящего рейса. Нынешняя переправа возвращает к этому же причалу.
+  H1.stove.use narrator  ru           ZAKADR     eleven_v4    Дрова были сложены рядом, сухие. В печи они занялись сразу.
+  H1.stove.look narrator  ru           ZAKADR     eleven_v4    Печь с лежанкой. Здесь место Тихона.
+  H1.shutter.use narrator  ru           ZAKADR     eleven_v4    Ставня подалась, в комнате посветлело.
+  H1.shutter.look narrator  ru           ZAKADR     eleven_v4    Тяжёлая деревянная ставня у окна.
+  H1.scarf.use narrator  ru           ZAKADR     eleven_v4    На крючке у двери платок обсохнет. Лежанка останется сухой.
+  H1.scarf.look narrator  ru           ZAKADR     eleven_v4    Платок промок насквозь. А лежанка под ним сухая.
+  H1.tikhon.look narrator  ru           ZAKADR     eleven_v4    Тихон дежурит у печи. Вид у него такой, будто печь в этом нуждается.
+  H1.photo.prompt narrator  ru           ZAKADR     eleven_v4    Где будет стоять фотография?
+  H1.photo.look narrator  ru           ZAKADR     eleven_v4    [softly] Наш семейный снимок в рамке.
+  H1.cups.prompt narrator  ru           ZAKADR     eleven_v4    Какая чашка будет моей?
+  H1.cups.look narrator  ru           ZAKADR     eleven_v4    Синяя и белая. Обе вымыты и ждут на полке.
+  H1.v01.done narrator  ru           ZAKADR     eleven_v4    Тихон оглядывает своё место: «Не занято. Перестановка допускается».
+  H1.shelf.prompt narrator  ru           ZAKADR     eleven_v4    Для этой полки есть крепления у печи и у стола. Где устроится Тихон?
+  H1.shelf.look narrator  ru           ZAKADR     eleven_v4    Снятая полка прислонена к стене. Для неё оставлены крепления в двух местах.
+  H1.shelf.look_done narrator  ru           ZAKADR     eleven_v4    Полка закреплена, подстилка на месте. Тихон осмотрел — принял.
+  H2.bench.use narrator  ru           ZAKADR     eleven_v4    У рисунка школьной двери: «Сохранить родные части; совместить отметки порога». Ниже тётя сильнее нажала на карандаш: «Некоторые вещи помнят место, которому служили».
+  H2.bench.look narrator  ru           ZAKADR     eleven_v4    Инструменты разложены по местам, тетрадь с записями лежит на верстаке.
+  H2.hinges_box.use narrator  ru           ZAKADR     eleven_v4    Тётиной рукой: «Школьная дверь. Петли» — внутри две штуки.
+  H2.hinges_box.look narrator  ru           ZAKADR     eleven_v4    На коробке тётиным почерком выведено: «Петли».
+  H2.bell.use narrator  ru           ZAKADR     eleven_v4    Колокол с мельницы, без языка; рядом подписанная коробка. Оставлю его на подвесе — место уже приготовлено.
+  H2.bell.look narrator  ru           ZAKADR     eleven_v4    Колокол на подвесе, к нему привязан ярлык.
+  H2.stand_zm.look narrator  ru           ZAKADR     eleven_v4    На пустой стойке — «ЗМ». Зеркала нет.
+  H2.clapper_box.look narrator  ru           ZAKADR     eleven_v4    На коробке у колокола написано: «Язык колокола».
+  H3.school_door.use narrator  ru           ZAKADR     eleven_v4    Петли и зарубка на брусе совпадают со снимком — дверь из нашей школы. На бирке: «Передача на ремонт до паводка».
+  H3.school_door.look narrator  ru           ZAKADR     eleven_v4    Дверь прислонена к раме. Места под родные петли пусты.
+  H3.puzzle.need narrator  ru           ZAKADR     eleven_v4    Нужны родные петли и рисунок посадки из мастерской. Без них дверь как следует не поставить.
+  H3.puzzle.intro narrator  ru           ZAKADR     eleven_v4    Две родные петли должны встать по рисунку, зарубка порога — совпасть с отметкой. Тогда можно закрыть дверь.
+  H3.puzzle.error narrator  ru           ZAKADR     eleven_v4    За дверью всё та же стена галереи. Видно, петли или порог ещё не на своём месте.
+  H3.puzzle.success narrator  ru           ZAKADR     eleven_v4    Петли легли в гнёзда, зарубки сошлись. За дверью — класс, а за его окнами зима.
+  H3.mirror_home.use narrator  ru           ZAKADR     eleven_v4    На старом снимке зеркало висит здесь же. В нём — я и галерея за спиной.
+  H3.mirror_home.look narrator  ru           ZAKADR     eleven_v4    Домашнее зеркало в раме, с пометкой «ЗГ».
+  H3.photo_school.look narrator  ru           ZAKADR     eleven_v4    Школа, крыльцо, дверь. Петли и зарубку на брусе ещё можно разглядеть.
+  H3.exit_O1.closed narrator  ru           ZAKADR     eleven_v4    Полотно стоит рядом. В пустой раме ещё нет прохода.
+  H3.exit_R4.closed narrator  ru           ZAKADR     eleven_v4    Ещё одна подготовленная рама, пока без двери.
+  H4.window.look narrator  ru           ZAKADR     eleven_v4    Отсюда Заречье как на ладони: крыши, почта, поворот реки.
+  H4.chest.look narrator  ru           ZAKADR     eleven_v4    Праздничная скатерть аккуратно сложена поверх пустых коробок. Бумаг здесь нет.
+  H4.v02.done narrator  ru           ZAKADR     eleven_v4    [softly] Под крышей светло. Знакомые вещи всё ещё на своих местах.
+  O1.board.use narrator  ru           ZAKADR     eleven_v4    Задачу довели до ответа. Почерк я не узнаю.
+  O1.board.chalk narrator  ru           ZAKADR     eleven_v4    [softly] В углу доски теперь мой след: «Я была здесь. Агата».
+  O1.board.look narrator  ru           ZAKADR     eleven_v4    Доска в меловых разводах.
+  O1.sack.use narrator  ru           ZAKADR     eleven_v4    Латка поверх латки. Старую ткань берегли, пока было к чему пришить новую.
+  O1.sack.look narrator  ru           ZAKADR     eleven_v4    У стены мешок, весь в заплатах.
+  O1.notebooks.use narrator  ru           ZAKADR     eleven_v4    Исписано до последнего листа, и почерки разные. Эти тетради не просто лежали здесь.
+  O1.notebooks.look narrator  ru           ZAKADR     eleven_v4    На подоконнике сложены исписанные тетради.
+  O1.teacher_drawer.use narrator  ru           ZAKADR     eleven_v4    В ящике со школьной печатью — накладная на мел, рядом фотография пристани. На накладной дата и номер рейса: четырнадцатый.
+  O1.teacher_drawer.look narrator  ru           ZAKADR     eleven_v4    На ящике учительского стола школьная печать.
+  O1.chalk.use narrator  ru           ZAKADR     eleven_v4    Мел со стола оставляет на пальцах белый след.
+  O1.chalk.look narrator  ru           ZAKADR     eleven_v4    На учительском столе лежит мел.
+  O1.bird_drawing.prompt narrator  ru           ZAKADR     eleven_v4    Шапку этой птице нарисовала я. А сапоги ей кто-то добавил после.
+  O1.bird_drawing.look narrator  ru           ZAKADR     eleven_v4    На полях учебной картинки — птица в шапке и сапогах.
+  O1.v03.done narrator  ru           ZAKADR     eleven_v4    Пусть сапоги останутся. Жаль, тот, кто их дорисовал, не подписался.
+  O1.exit_H3.closed narrator  ru           ZAKADR     eleven_v4    Дверь пока не держится в раме.
+  O2.tree.look narrator  ru           ZAKADR     eleven_v4    [softly] Помню это дерево ниже. Теперь ветки поднялись над крыльцом.
+  O2.porch_step.mitten narrator  ru           ZAKADR     eleven_v4    Оставлю свою варежку на ступени. По ней узнаю, сюда ли вернулась.
+  O2.porch_step.look narrator  ru           ZAKADR     eleven_v4    На ступени утоптанный снег.
+  O2.window_other.look narrator  ru           ZAKADR     eleven_v4    Окно другое, а школа та же. Дорожка вывела меня сюда.
+  O2.exit_O4.loop narrator  ru           ZAKADR     eleven_v4    За калиткой дорожка свернула — и вот я у другого окна той же школы.
+  item.key_house narrator  ru           ZAKADR     eleven_v4    Тамара сберегла его для меня.
+  item.letter_tamara narrator  ru           ZAKADR     eleven_v4    [softly] С этого письма началась моя дорога сюда.
+  item.pocket_watch narrator  ru           ZAKADR     eleven_v4    Знакомое тиканье, куда бы я ни шла.
+  item.mitten narrator  ru           ZAKADR     eleven_v4    Своя, шерстяная — ни с чем не спутаю.
+  item.door_hinges narrator  ru           ZAKADR     eleven_v4    Тётя сложила их отдельно и подписала коробку.
+  item.invoice_chalk narrator  ru           ZAKADR     eleven_v4    Дата, номер рейса — всё записано.
+  item.photo_school_pier narrator  ru           ZAKADR     eleven_v4    Сваи у воды и дерево на берегу.
+  item.chalk narrator  ru           ZAKADR     eleven_v4    Пальцы уже белые.
+  Z1.tamara.after    синтез: 5.87 с, -17.0 LUFS, TP -3.9 dB (усиление -1.6 dB)
+  Z1.drawings.use    синтез: 9.19 с, -17.0 LUFS, TP -4.8 dB (усиление -2.3 dB)
+  Z1.drawings.look   синтез: 4.28 с, -17.0 LUFS, TP -4.2 dB (усиление -2.2 dB)
+  Z1.letters.look    синтез: 5.25 с, -17.1 LUFS, TP -2.4 dB (усиление +3.7 dB)
+  Z1.plan.look       синтез: 7.45 с, -17.0 LUFS, TP -5.2 dB (усиление -2.5 dB)
+  Z1.exit_Z4.closed  синтез: 3.17 с, -17.0 LUFS, TP -7.0 dB (усиление -3.5 dB)
+  Z2.landmarks.look  синтез: 5.96 с, -17.0 LUFS, TP -4.4 dB (усиление -1.4 dB)
+  Z2.exit_H1.closed  синтез: 3.39 с, -17.0 LUFS, TP -6.3 dB (усиление -3.4 dB)
+  Z2.exit_M1.closed  синтез: 4.21 с, -17.1 LUFS, TP -6.5 dB (усиление -3.8 dB)
+  Z2.exit_Z3.closed  синтез: 4.68 с, -17.0 LUFS, TP -5.6 dB (усиление -2.3 dB)
+  Z2.exit_R1.closed  синтез: 3.89 с, -17.0 LUFS, TP -6.8 dB (усиление -3.5 dB)
+  Z4.exit_H3.closed  синтез: 4.84 с, -17.0 LUFS, TP -6.2 dB (усиление -3.9 dB)
+  Z4.post_sign.look  синтез: 4.14 с, -17.0 LUFS, TP -4.7 dB (усиление -2.7 dB)
+  Z4.lantern.look    синтез: 3.20 с, -17.1 LUFS, TP -4.3 dB (усиление -2.7 dB)
+  Z3.old_pier_base.look синтез: 8.37 с, -17.0 LUFS, TP -5.2 dB (усиление -2.6 dB)
+  Z3.plate.look      синтез: 5.54 с, -16.9 LUFS, TP -5.2 dB (усиление -3.1 dB)
+  R1.pelageya.after  синтез: 5.75 с, -17.0 LUFS, TP -6.0 dB (усиление -3.2 dB)
+  R1.rope.use        синтез: 6.61 с, -17.0 LUFS, TP -4.8 dB (усиление -2.8 dB)
+  R1.rope.look       синтез: 3.07 с, -17.0 LUFS, TP -6.2 dB (усиление -3.5 dB)
+  R1.lantern.use     синтез: 6.75 с, -17.0 LUFS, TP -4.2 dB (усиление -1.2 dB)
+  R1.lantern.look    синтез: 2.96 с, -17.0 LUFS, TP -6.8 dB (усиление -4.1 dB)
+  R1.instruction.use синтез: 9.97 с, -17.0 LUFS, TP -5.4 dB (усиление -3.3 dB)
+  R1.instruction.look синтез: 2.85 с, -17.1 LUFS, TP -5.9 dB (усиление -3.0 dB)
+  R1.exit_Z2.closed  синтез: 2.54 с, -17.1 LUFS, TP -5.9 dB (усиление -3.1 dB)
+  R1.exit_R2.closed  синтез: 8.00 с, -17.0 LUFS, TP -6.8 dB (усиление -4.1 dB)
+  H1.stove.use       синтез: 4.76 с, -17.2 LUFS, TP -6.4 dB (усиление -3.4 dB)
+  H1.stove.look      синтез: 3.30 с, -17.1 LUFS, TP -4.6 dB (усиление -2.4 dB)
+  H1.shutter.use     синтез: 3.24 с, -17.0 LUFS, TP -5.5 dB (усиление -1.8 dB)
+  H1.shutter.look    синтез: 2.72 с, -17.1 LUFS, TP -6.7 dB (усиление -4.0 dB)
+  H1.scarf.use       синтез: 4.68 с, -17.1 LUFS, TP -5.4 dB (усиление -2.5 dB)
+  H1.scarf.look      синтез: 4.25 с, -17.1 LUFS, TP -4.3 dB (усиление -0.7 dB)
+  H1.tikhon.look     синтез: 5.32 с, -17.0 LUFS, TP -4.7 dB (усиление -2.4 dB)
+  H1.photo.prompt    синтез: 2.00 с, -17.0 LUFS, TP -5.5 dB (усиление -2.5 dB)
+  H1.photo.look      синтез: 1.97 с, -17.1 LUFS, TP -3.5 dB (усиление +3.0 dB)
+  H1.cups.prompt     синтез: 1.87 с, -17.0 LUFS, TP -4.3 dB (усиление -2.5 dB)
+  H1.cups.look       синтез: 4.05 с, -17.0 LUFS, TP -5.8 dB (усиление -3.5 dB)
+  H1.v01.done        синтез: 5.35 с, -17.0 LUFS, TP -5.3 dB (усиление -2.8 dB)
+  H1.shelf.prompt    синтез: 5.46 с, -17.1 LUFS, TP -5.4 dB (усиление -2.4 dB)
+  H1.shelf.look      синтез: 5.58 с, -17.1 LUFS, TP -5.6 dB (усиление -3.1 dB)
+  H1.shelf.look_done синтез: 5.34 с, -17.1 LUFS, TP -4.1 dB (усиление -2.0 dB)
+  H2.bench.use       синтез: 13.73 с, -17.0 LUFS, TP -4.3 dB (усиление -2.5 dB)
+  H2.bench.look      синтез: 4.91 с, -17.1 LUFS, TP -5.7 dB (усиление -3.5 dB)
+  H2.hinges_box.use  синтез: 5.06 с, -16.9 LUFS, TP -4.6 dB (усиление -2.6 dB)
+  H2.hinges_box.look синтез: 3.64 с, -17.0 LUFS, TP -6.1 dB (усиление -3.0 dB)
+  H2.bell.use        синтез: 8.21 с, -17.0 LUFS, TP -5.0 dB (усиление -2.5 dB)
+  H2.bell.look       синтез: 3.39 с, -17.0 LUFS, TP -5.6 dB (усиление -3.7 dB)
+  H2.stand_zm.look   синтез: 3.97 с, -17.1 LUFS, TP -4.7 dB (усиление -2.6 dB)
+  H2.clapper_box.look синтез: 4.08 с, -17.1 LUFS, TP -5.5 dB (усиление -2.4 dB)
+  H3.school_door.use синтез: 8.82 с, -17.0 LUFS, TP -4.6 dB (усиление -2.7 dB)
+  H3.school_door.look синтез: 4.34 с, -17.0 LUFS, TP -5.3 dB (усиление -2.9 dB)
+  H3.puzzle.need     синтез: 6.43 с, -17.0 LUFS, TP -5.7 dB (усиление -3.0 dB)
+  H3.puzzle.intro    синтез: 7.89 с, -17.0 LUFS, TP -5.1 dB (усиление -3.3 dB)
+  H3.puzzle.error    синтез: 6.62 с, -17.0 LUFS, TP -4.7 dB (усиление -2.2 dB)
+  H3.puzzle.success  синтез: 7.21 с, -16.9 LUFS, TP -3.4 dB (усиление -1.5 dB)
+  H3.mirror_home.use синтез: 6.18 с, -17.0 LUFS, TP -4.2 dB (усиление -2.2 dB)
+  H3.mirror_home.look синтез: 3.60 с, -17.0 LUFS, TP -5.8 dB (усиление -3.0 dB)
+  H3.photo_school.look синтез: 5.85 с, -17.0 LUFS, TP -5.6 dB (усиление -2.3 dB)
+  H3.exit_O1.closed  синтез: 4.10 с, -17.0 LUFS, TP -4.9 dB (усиление -2.7 dB)
+  H3.exit_R4.closed  синтез: 3.47 с, -17.0 LUFS, TP -5.9 dB (усиление -2.9 dB)
+  H4.window.look     синтез: 5.12 с, -17.0 LUFS, TP -5.3 dB (усиление -3.3 dB)
+  H4.chest.look      синтез: 5.75 с, -17.1 LUFS, TP -4.8 dB (усиление -2.1 dB)
+  H4.v02.done        синтез: 4.40 с, -17.1 LUFS, TP -4.3 dB (усиление +3.2 dB)
+  O1.board.use       синтез: 3.76 с, -16.9 LUFS, TP -4.6 dB (усиление -2.7 dB)
+  O1.board.chalk     синтез: 4.42 с, -17.0 LUFS, TP -2.7 dB (усиление +5.9 dB)
+  O1.board.look      синтез: 2.08 с, -17.0 LUFS, TP -6.7 dB (усиление -4.1 dB)
+  O1.sack.use        синтез: 5.84 с, -17.0 LUFS, TP -3.8 dB (усиление -2.6 dB)
+  O1.sack.look       синтез: 2.93 с, -17.0 LUFS, TP -6.6 dB (усиление -1.9 dB)
+  O1.notebooks.use   синтез: 6.86 с, -17.0 LUFS, TP -4.5 dB (усиление -1.7 dB)
+  O1.notebooks.look  синтез: 3.11 с, -17.0 LUFS, TP -4.8 dB (усиление -3.9 dB)
+  O1.teacher_drawer.use синтез: 9.62 с, -16.9 LUFS, TP -5.2 dB (усиление -3.2 dB)
+  O1.teacher_drawer.look синтез: 3.28 с, -17.0 LUFS, TP -4.7 dB (усиление -3.4 dB)
+  O1.chalk.use       синтез: 3.56 с, -17.0 LUFS, TP -5.4 dB (усиление -2.8 dB)
+  O1.chalk.look      синтез: 2.50 с, -17.0 LUFS, TP -5.6 dB (усиление -3.9 dB)
+  O1.bird_drawing.prompt синтез: 5.34 с, -17.0 LUFS, TP -4.9 dB (усиление -2.6 dB)
+  O1.bird_drawing.look синтез: 4.22 с, -17.3 LUFS, TP -5.2 dB (усиление -2.4 dB)
+  O1.v03.done        синтез: 5.38 с, -17.1 LUFS, TP -4.4 dB (усиление -1.6 dB)
+  O1.exit_H3.closed  синтез: 2.08 с, -17.0 LUFS, TP -5.9 dB (усиление -4.6 dB)
+  O2.tree.look       синтез: 4.45 с, -17.1 LUFS, TP -2.2 dB (усиление +1.4 dB)
+  O2.porch_step.mitten синтез: 4.60 с, -16.8 LUFS, TP -6.0 dB (усиление -2.5 dB)
+  O2.porch_step.look синтез: 2.36 с, -17.0 LUFS, TP -5.6 dB (усиление -2.3 dB)
+  O2.window_other.look синтез: 4.71 с, -17.0 LUFS, TP -5.6 dB (усиление -2.4 dB)
+  O2.exit_O4.loop    синтез: 5.08 с, -17.0 LUFS, TP -6.4 dB (усиление -3.2 dB)
+  item.key_house     синтез: 2.08 с, -17.0 LUFS, TP -5.7 dB (усиление -3.7 dB)
+  item.letter_tamara синтез: 2.95 с, -17.2 LUFS, TP -4.5 dB (усиление +4.4 dB)
+  item.pocket_watch  синтез: 3.00 с, -17.0 LUFS, TP -4.6 dB (усиление -1.4 dB)
+  item.mitten        синтез: 3.57 с, -17.1 LUFS, TP -4.6 dB (усиление -2.4 dB)
+  item.door_hinges   синтез: 3.52 с, -17.0 LUFS, TP -5.9 dB (усиление -3.6 dB)
+  item.invoice_chalk синтез: 3.04 с, -17.1 LUFS, TP -4.4 dB (усиление -2.7 dB)
+  item.photo_school_pier синтез: 2.88 с, -17.0 LUFS, TP -6.6 dB (усиление -3.5 dB)
+  item.chalk         синтез: 1.52 с, -17.0 LUFS, TP -8.0 dB (усиление -3.6 dB)
+[e0e1_narration] синтезировано 90, переобработано 0, ошибок 0; символов текста 5372; списано кредитов (character-cost): 2362, изменение счётчика подписки: 2355
+validate_voice: манифесты: ru 109 (109 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 5; реплик с тегами: 14; закадровых фраз по правилам voice.json: 93 (с тегами 6), заказаны тексты: ru_E0_E1, ru_bag
+[voice] validate_voice.py: OK (0 ошибок, 0 предупреждений, strict; самопроверка 12/12)
