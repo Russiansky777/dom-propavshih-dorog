@@ -1,0 +1,50 @@
+{
+  "key_house": {
+    "task": "01a14b7e-f53c-7402-adda-e5b3f6cdf51e",
+    "prompt": "An old hand-forged iron house key with a simple round ring bow and a long shaft, slightly rusty, a short faded red cord tied to the ring. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "letter_tamara": {
+    "task": "01a14b7e-f5f1-77b7-bb16-f4ca085ff058",
+    "prompt": "A folded handwritten paper letter tucked into a plain worn paper envelope, a small postage stamp in the corner, illegible faded ink handwriting marks. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "pocket_watch": {
+    "task": "01a14b7e-f68f-70f4-89e2-0cd5c9ec1ed8",
+    "prompt": "A worn brass pocket watch with its hinged lid open, white enamel dial with simple hour marks and two black hands, a short brass chain. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "mitten": {
+    "task": "01a14b7e-f719-706e-82d1-42d1d14f4d66",
+    "prompt": "A single hand-knitted wool mitten, dark brown with a cream band pattern at the cuff, soft and slightly worn. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "door_hinges": {
+    "task": "01a14b7e-f79e-7322-a7a9-fd5a2a6c8795",
+    "prompt": "Two old forged iron strap door hinges with a few square nails, lying crossed, dark metal with worn edges. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "invoice_chalk": {
+    "task": "01a14b7e-f83c-70d6-bb70-60ab4671ac5d",
+    "prompt": "A small crumpled paper shipping invoice slip with a faded violet ink round stamp and illegible handwritten lines. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "photo_school_pier": {
+    "task": "01a14b7e-f8c5-71f3-8b7c-e055b0f41b19",
+    "prompt": "An old sepia photograph print with a white deckled border showing a small wooden river pier with posts, one corner slightly curled. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "chalk": {
+    "task": "01a14b7e-f950-71e6-8538-6bcd8b7e1c2f",
+    "prompt": "A short stick of white school chalk with a little chalk dust around it. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  }
+}
