@@ -41,7 +41,7 @@ static func attach(actor_sprite: AnimatedSprite2D, src: LightSource, c: float) -
 	sh.show_behind_parent = true
 	sh.centered = false
 	sh.offset = actor_sprite.offset
-	sh.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	sh.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	sh.process_priority = 20  # after the player's foot lock (priority 10)
 	var mat := ShaderMaterial.new()
 	mat.shader = SHADER
