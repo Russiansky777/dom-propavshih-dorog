@@ -1,0 +1,8 @@
+{
+  "mode": "generate",
+  "set": "e0e1_probe",
+  "probe": true,
+  "_comment": "Проба голосов E0–E1 (не массовая запись: text_freeze=false). Обязательные реплики M01–M08 и Q04.",
+  "scenes": ["M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "Q04"],
+  "redo": []
+}

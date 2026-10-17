@@ -15,42 +15,50 @@
     "_note": "Одинаково для всех персонажей: −17 LUFS как слышит игрок (моно на оба канала), музыка −24…−25 LUFS и под репликой ещё −5 dB."
   },
   "defaults": {
-    "voice_settings": {"stability": 0.5, "similarity_boost": 0.75},
+    "voice_settings": {
+      "stability": 0.5,
+      "similarity_boost": 0.75
+    },
     "_note": "У eleven_v4 только Stability и Similarity (Style и Speed не поддерживаются — не отправляем). Значения документации по умолчанию: 0.5 / 0.75. Stability ниже — выразительнее и разнообразнее, выше — ровнее; Similarity выше — ближе к голосу ценой части естественности."
   },
   "cast": {
     "agata": {
       "voice_name": "Agata",
       "voice_id": "ReYqW64ePwZHQReEArbt",
-      "voice_settings": {"stability": 0.55, "similarity_boost": 0.75},
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
       "_settings_reason": "«негромкий, собранный, без мелодрамы» — чуть ровнее значения по умолчанию.",
-      "choice": "Два голоса с именем Агаты: «Agata» (ReYqW64ePwZHQReEArbt, создан 17.10 20:38 UTC, описание «Агата молодая девушка») и «Агата» (B7zh39YGejeLEJzmFkHR, создан 17.10 12:18 UTC, «голос девушки как из сказки, светлый, лёгкий, звонкий»). Основной — «Agata»: он новее (правило координатора: брать более новый), создан в той же вечерней сессии кастинга, что TAMARA-1 / PELAGEYA / CAT / CAT-2, и с тем же латинским именованием; «сказочный звонкий» тон «Агаты» дальше от заметки кастинга. Не утверждено Директором: реплики Агаты озвучены обоими голосами, в игре переключение клавишей V или F6 (Docs/ACCEPTANCE_M1.md) — решение по итогам прослушивания.",
-      "alternates": {
-        "cyr": {
-          "voice_name": "Агата",
-          "voice_id": "B7zh39YGejeLEJzmFkHR",
-          "_note": "Вариант для сравнения на слух: assets/voice/ru_alt/agata_cyr/ (те же реплики, те же настройки)."
-        }
-      }
+      "choice": "Решение Директора 17.10, 23:45: голос «Agata» (латиницей, ReYqW64ePwZHQReEArbt, создан 17.10 20:38 UTC, описание «Агата молодая девушка»). Второй голос с тем же именем — «Агата» (B7zh39YGejeLEJzmFkHR, создан 17.10 12:18 UTC, «сказочный, светлый, звонкий») — не используется, вариант для сравнения не генерируется."
     },
     "tamara": {
       "voice_name": "TAMARA-1",
       "voice_id": "GqJPI8zhNM5CF7q8EJ6l",
-      "voice_settings": {"stability": 0.45, "similarity_boost": 0.75},
+      "voice_settings": {
+        "stability": 0.45,
+        "similarity_boost": 0.75
+      },
       "_settings_reason": "«тёплая, разговорчивая» — чуть свободнее подача.",
       "choice": "Единственный голос с именем Тамары в My Voices."
     },
     "pelageya": {
       "voice_name": "PELAGEYA",
       "voice_id": "mIbPOSXtLeiaroofXc7O",
-      "voice_settings": {"stability": 0.5, "similarity_boost": 0.75},
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
       "_settings_reason": "«резковатая, практичная» — значения по умолчанию; низкий плотный тембр задан самим голосом.",
       "choice": "Единственный голос с именем Пелагеи в My Voices (описание: низкий женский, близкий к контральто)."
     },
     "tikhon": {
       "voice_name": "CAT-2",
       "voice_id": "RRgQuGjVvCeyNderlonu",
-      "voice_settings": {"stability": 0.6, "similarity_boost": 0.8},
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
       "_settings_reason": "«серьёзный маленький чиновник, не мультяшка» — ровнее (меньше мультяшных скачков), similarity выше, чтобы держать необычный тембр.",
       "choice": "Указание Директора: голос «CAT2», не первый кошачий. В аккаунте «CAT» (WVYD8dGGwhoMGyKwgFd7) и «CAT-2» (RRgQuGjVvCeyNderlonu, в описании стоит «CAT2») — взят CAT-2."
     }
