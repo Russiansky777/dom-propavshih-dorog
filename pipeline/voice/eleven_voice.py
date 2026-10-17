@@ -43,8 +43,7 @@ CAST_PATH = VOICE_DIR / "cast.json"
 VOICES_PATH = VOICE_DIR / "voices.json"
 STATE_DIR = VOICE_DIR / "state"
 OUT_DIR = ROOT / "assets" / "voice" / "ru"
-SRC_DIR = OUT_DIR / "src"
-MANIFEST_PATH = OUT_DIR / "manifest.json"
+ALT_ROOT = ROOT / "assets" / "voice" / "ru_alt"   # альтернативные голоса персонажа: ru_alt/<персонаж>_<вариант>/
 SCENES_DIR = ROOT / "data" / "story" / "scenes"
 QUESTS_PATH = ROOT / "data" / "story" / "quests.json"
 META_PATH = ROOT / "data" / "story" / "meta.json"
@@ -319,14 +318,35 @@ def process(src: Path, dst: Path, lc: dict) -> dict:
 
 # --- generate ----------------------------------------------------------------------------------------
 
-def cast_for(cast: dict, speaker: str) -> dict:
+def cast_for(cast: dict, speaker: str, alt: dict | None = None) -> dict:
+    """Голос персонажа: основной (cast.<id>) или альтернативный (cast.<id>.alternates.<вариант>) поверх основного."""
     c = cast.get("cast", {}).get(speaker)
     if not c or not c.get("voice_id"):
         raise VoiceError(f"персонаж {speaker!r} без голоса в cast.json")
     settings = dict(cast.get("defaults", {}).get("voice_settings", {}))
     settings.update(c.get("voice_settings", {}))
-    return {"voice_id": c["voice_id"], "voice_name": c.get("voice_name", ""),
+    spec = {"voice_id": c["voice_id"], "voice_name": c.get("voice_name", ""),
             "model_id": c.get("model_id", cast.get("model_id", "eleven_v4")), "voice_settings": settings}
+    if alt:
+        if not alt.get("voice_id"):
+            raise VoiceError(f"персонаж {speaker!r}: альтернативный голос без voice_id")
+        spec.update({"voice_id": alt["voice_id"], "voice_name": alt.get("voice_name", ""),
+                     "model_id": alt.get("model_id", spec["model_id"])})
+        spec["voice_settings"] = dict(settings, **alt.get("voice_settings", {}))
+    return spec
+
+
+def voice_sets(cast: dict) -> list[dict]:
+    """Основной набор assets/voice/ru (все персонажи) + по набору на каждый альтернативный голос персонажа:
+    assets/voice/ru_alt/<персонаж>_<вариант>/ (только его реплики) — чтобы Директор сравнил голоса на слух."""
+    sets = [{"variant": "", "dir": OUT_DIR, "speaker": None, "alt": None}]
+    for sp, c in sorted(cast.get("cast", {}).items()):
+        for alt_id, alt in sorted((c.get("alternates") or {}).items()):
+            if alt_id.startswith("_"):
+                continue
+            v = f"{sp}_{alt_id}"
+            sets.append({"variant": v, "dir": ALT_ROOT / v, "speaker": sp, "alt": alt})
+    return sets
 
 
 def synth(text: str, spec: dict, cast: dict, seed: int) -> tuple[bytes, dict]:
@@ -360,8 +380,8 @@ def same_spec(entry: dict, sha: str, spec: dict) -> bool:
             and entry.get("model_id") == spec["model_id"] and entry.get("voice_settings") == spec["voice_settings"])
 
 
-def load_manifest() -> dict:
-    m = read_json(MANIFEST_PATH, None) or {}
+def load_manifest(d: Path) -> dict:
+    m = read_json(d / "manifest.json", None) or {}
     m.setdefault("lines", {})
     return m
 
@@ -394,106 +414,121 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
     if cast is None:
         raise VoiceError(f"нет {CAST_PATH.relative_to(ROOT)} — сначала режим list и сопоставление голосов")
     lc = cast.get("loudness", {})
+    target = float(lc.get("target_lufs", -17.0))
     lines = story_lines()
     scenes = [str(s) for s in req.get("scenes", [])]
     scope = {lid: ln for lid, ln in lines.items() if ln["scene"] in scenes}
     unknown = [s for s in scenes if not any(ln["scene"] == s for ln in lines.values())]
     if unknown:
         raise VoiceError(f"в сценах нет реплик для: {', '.join(unknown)}")
-    meta = read_json(META_PATH, {})
-    if not meta.get("text_freeze", False):
-        if not req.get("probe"):
-            raise VoiceError("text_freeze=false: массовая запись запрещена (решение Директора); пробный запрос — \"probe\": true")
-        if len(scope) > PROBE_MAX_LINES:
-            raise VoiceError(f"проба больше {PROBE_MAX_LINES} реплик ({len(scope)}) до text_freeze — сократить запрос")
-    specs: dict[str, dict] = {}
-    missing = []
-    for ln in scope.values():
-        if ln["speaker"] not in specs:
-            try:
-                specs[ln["speaker"]] = cast_for(cast, ln["speaker"])
-            except VoiceError as e:
-                missing.append(str(e))
-    if missing:
-        raise VoiceError("; ".join(sorted(set(missing))))
     limit = int(cast.get("max_chars", 5000))
     too_long = [lid for lid, ln in scope.items() if len(ln["text"]) > limit]
     if too_long:
         raise VoiceError(f"реплики длиннее {limit} символов: {too_long}")
 
-    manifest = load_manifest()
-    for note in mark_stale(manifest, lines):
-        log(f"  манифест: {note}")
-    redo = set(str(x) for x in req.get("redo", []))
-    todo, reprocess = [], []
-    for lid, ln in scope.items():
-        spec = specs[ln["speaker"]]
-        e = manifest["lines"].get(lid)
-        sha = text_sha1(ln["text"])
-        fresh = e is not None and same_spec(e, sha, spec) and (OUT_DIR / e.get("file", "")).is_file() and "stale" not in e
-        if lid in redo or not fresh:
-            if e is not None and same_spec(e, sha, spec) and (OUT_DIR / e.get("source", "-")).is_file() and lid not in redo:
-                reprocess.append(lid)       # ответ API уже есть — только обработать заново
-            else:
-                todo.append(lid)
-        elif req.get("reprocess") or e.get("loudness_target_lufs") != float(lc.get("target_lufs", -17.0)):
-            reprocess.append(lid)
-    chars = sum(len(scope[lid]["text"]) for lid in todo)
-    log(f"[{set_name}] реплик в запросе: {len(scope)}; к синтезу: {len(todo)} ({chars} символов); переобработка: {len(reprocess)}")
-    for lid in todo:
-        ln = scope[lid]
-        log(f"  {lid:7} {ln['speaker']:9} {specs[ln['speaker']]['model_id']:14} {ln['text']}")
+    # План по наборам: (набор, id) → что делать.
+    plan: list[dict] = []
+    missing: list[str] = []
+    sets = voice_sets(cast)
+    for vs in sets:
+        manifest = load_manifest(vs["dir"])
+        for note in mark_stale(manifest, lines):
+            log(f"  манифест {vs['variant'] or 'ru'}: {note}")
+        vs["manifest"] = manifest
+        redo = set(str(x) for x in req.get("redo", []))
+        for lid, ln in scope.items():
+            if vs["speaker"] is not None and ln["speaker"] != vs["speaker"]:
+                continue
+            try:
+                spec = cast_for(cast, ln["speaker"], vs["alt"])
+            except VoiceError as e:
+                missing.append(str(e))
+                continue
+            e = manifest["lines"].get(lid)
+            sha = text_sha1(ln["text"])
+            fresh = e is not None and same_spec(e, sha, spec) and (vs["dir"] / e.get("file", "-")).is_file() and "stale" not in e
+            action = ""
+            if lid in redo or not fresh:
+                has_src = e is not None and same_spec(e, sha, spec) and (vs["dir"] / e.get("source", "-")).is_file()
+                action = "process" if has_src and lid not in redo else "synth"   # ответ API уже есть — только обработать
+            elif req.get("reprocess") or e.get("loudness_target_lufs") != target:
+                action = "process"
+            if action:
+                plan.append({"set": vs, "id": lid, "line": ln, "spec": spec, "action": action})
+    if missing:
+        raise VoiceError("; ".join(sorted(set(missing))))
+    total_lines = sum(1 for vs in sets for ln in scope.values() if vs["speaker"] in (None, ln["speaker"]))
+    meta = read_json(META_PATH, {})
+    if not meta.get("text_freeze", False):
+        if not req.get("probe"):
+            raise VoiceError("text_freeze=false: массовая запись запрещена (решение Директора); пробный запрос — \"probe\": true")
+        if total_lines > PROBE_MAX_LINES:
+            raise VoiceError(f"проба больше {PROBE_MAX_LINES} файлов ({total_lines}) до text_freeze — сократить запрос")
+    synth_items = [it for it in plan if it["action"] == "synth"]
+    chars = sum(len(it["line"]["text"]) for it in synth_items)
+    log(f"[{set_name}] реплик в сценах запроса: {len(scope)}; файлов с вариантами голосов: {total_lines}; "
+        f"к синтезу: {len(synth_items)} ({chars} символов); переобработка: {len(plan) - len(synth_items)}")
+    for it in synth_items:
+        log(f"  {it['id']:7} {it['line']['speaker']:9} {(it['set']['variant'] or 'ru'):12} {it['spec']['voice_name']:10} "
+            f"{it['spec']['model_id']:12} {it['line']['text']}")
     if dry_run:
         return 0
     if not shutil.which("ffmpeg"):
         raise VoiceError("нет ffmpeg")
 
-    sub_before = subscription() if todo else None
+    sub_before = subscription() if synth_items else None
     done, failed = [], []
-    for lid in todo + reprocess:
-        ln = scope[lid]
-        spec = specs[ln["speaker"]]
+    stop = False
+    for it in plan:
+        if stop:
+            break
+        vs, lid, ln, spec = it["set"], it["id"], it["line"], it["spec"]
         sha = text_sha1(ln["text"])
-        src = SRC_DIR / f"{lid}.mp3"
-        dst = OUT_DIR / f"{lid}.ogg"
+        src = vs["dir"] / "src" / f"{lid}.mp3"
+        dst = vs["dir"] / f"{lid}.ogg"
+        tag = f"{lid}{'@' + vs['variant'] if vs['variant'] else ''}"
         try:
             info = {}
-            if lid in todo:
+            if it["action"] == "synth":
                 seed = int(hashlib.sha1(f"{lid}|{ln['text']}".encode("utf-8")).hexdigest()[:8], 16)
                 audio, info = synth(ln["text"], spec, cast, seed)
                 src.parent.mkdir(parents=True, exist_ok=True)
                 src.write_bytes(audio)
             meas = process(src, dst, lc)
         except VoiceError as e:
-            failed.append(f"{lid}: {e}")
-            log(f"  ОШИБКА {lid}: {e}")
-            if "401" in str(e) or "quota" in str(e).lower():
-                break             # ключ/баланс — дальше не пытаться
+            failed.append(f"{tag}: {e}")
+            log(f"  ОШИБКА {tag}: {e}")
+            stop = "401" in str(e) or "quota" in str(e).lower()   # ключ/баланс — дальше не пытаться
             continue
+        manifest = vs["manifest"]
         prev = manifest["lines"].get(lid, {})
+        fresh_audio = it["action"] == "synth"
         entry = {"scene": ln["scene"], "index": ln["index"], "speaker": ln["speaker"], "text": ln["text"], "text_sha1": sha,
                  "voice_id": spec["voice_id"], "voice_name": spec["voice_name"], "model_id": spec["model_id"],
                  "voice_settings": spec["voice_settings"], "file": dst.name, "source": f"src/{src.name}",
-                 "characters": len(ln["text"]), "loudness_target_lufs": float(lc.get("target_lufs", -17.0)), **meas,
-                 "generated_at": prev.get("generated_at") if lid not in todo else now_iso(),
-                 "run": prev.get("run") if lid not in todo else os.environ.get("GITHUB_RUN_ID", "local")}
+                 "characters": len(ln["text"]), "loudness_target_lufs": target, **meas,
+                 "generated_at": now_iso() if fresh_audio else prev.get("generated_at"),
+                 "run": os.environ.get("GITHUB_RUN_ID", "local") if fresh_audio else prev.get("run")}
         if "context" in ln:
             entry["context_not_voiced"] = ln["context"]
-        if lid in todo:
+        if fresh_audio:
             entry["api"] = info
         elif prev.get("api"):
             entry["api"] = prev["api"]
         manifest["lines"][lid] = entry
-        done.append(lid)
-        write_json(MANIFEST_PATH, _manifest_doc(manifest, cast))
-        log(f"  {lid:7} {'синтез' if lid in todo else 'обработка'}: {meas['duration_s']:.2f} с, {meas['lufs']} LUFS, "
+        done.append(it)
+        write_json(vs["dir"] / "manifest.json", _manifest_doc(manifest, cast, vs))
+        log(f"  {tag:18} {'синтез' if fresh_audio else 'обработка'}: {meas['duration_s']:.2f} с, {meas['lufs']} LUFS, "
             f"TP {meas['true_peak_db']} dB (усиление {meas['gain_db']:+.1f} dB)")
-    write_json(MANIFEST_PATH, _manifest_doc(manifest, cast))
-    sub_after = subscription() if todo else None
-    synthesized = [lid for lid in done if lid in todo]
-    run = {"run": os.environ.get("GITHUB_RUN_ID", "local"), "at": now_iso(), "request": str(req_path.relative_to(ROOT)) if req_path.is_absolute() else str(req_path),
-           "synthesized": synthesized, "reprocessed": [lid for lid in done if lid not in todo],
-           "characters_text": sum(len(scope[lid]["text"]) for lid in synthesized), "failed": failed,
+    for vs in sets:   # манифесты всех наборов (в т.ч. только с новыми метками stale)
+        if vs["manifest"]["lines"]:
+            write_json(vs["dir"] / "manifest.json", _manifest_doc(vs["manifest"], cast, vs))
+    sub_after = subscription() if synth_items else None
+    synthesized = [f"{it['id']}{'@' + it['set']['variant'] if it['set']['variant'] else ''}" for it in done if it["action"] == "synth"]
+    run = {"run": os.environ.get("GITHUB_RUN_ID", "local"), "at": now_iso(), "request": str(req_path),
+           "synthesized": synthesized,
+           "reprocessed": [f"{it['id']}{'@' + it['set']['variant'] if it['set']['variant'] else ''}" for it in done if it["action"] != "synth"],
+           "characters_text": sum(len(it["line"]["text"]) for it in done if it["action"] == "synth"), "failed": failed,
            "subscription_before": sub_before, "subscription_after": sub_after}
     if sub_before and sub_after and sub_before.get("character_count") is not None and sub_after.get("character_count") is not None:
         run["credits_spent"] = int(sub_after["character_count"]) - int(sub_before["character_count"])
@@ -506,15 +541,19 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
     return 1 if failed else 0
 
 
-def _manifest_doc(manifest: dict, cast: dict) -> dict:
+def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:
     lc = cast.get("loudness", {})
     lines = dict(sorted(manifest["lines"].items(), key=lambda kv: (kv[1].get("scene", ""), int(kv[1].get("index", 0)))))
-    return {"_comment": "Озвученные реплики: id = <scene>_<index> (index — позиция в mandatory_lines/lines). Пишет "
-                        "pipeline/voice/eleven_voice.py; игра читает копию (tools/sync_voice.sh) и играет файл, только если sha1 "
-                        "текста совпадает с текущей репликой. stale — реплики больше нет или текст изменён.",
-            "language": "ru", "format": "ogg_vorbis_mono_44100", "loudness_target_lufs": float(lc.get("target_lufs", -17.0)),
-            "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)", "updated_at": now_iso(),
-            "lines": lines}
+    doc = {"_comment": "Озвученные реплики: id = <scene>_<index> (index — позиция в mandatory_lines/lines). Пишет "
+                       "pipeline/voice/eleven_voice.py; игра читает копию (tools/sync_voice.sh) и играет файл, только если sha1 "
+                       "текста совпадает с текущей репликой. stale — реплики больше нет или текст изменён.",
+           "language": "ru", "variant": vs["variant"], "speaker_only": vs["speaker"],
+           "format": "ogg_vorbis_mono_44100", "loudness_target_lufs": float(lc.get("target_lufs", -17.0)),
+           "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)", "updated_at": now_iso(),
+           "lines": lines}
+    if not vs["variant"]:
+        doc.pop("speaker_only")
+    return doc
 
 
 def main() -> int:
