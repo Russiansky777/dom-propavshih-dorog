@@ -820,10 +820,12 @@ func _test_h1_real() -> void:
 	# Speed in px/s follows the depth scale (constant metres per second).
 	player.call("enter_room", room, Vector2(1200, 700))
 	var v_far: float = player.call("current_speed_px")
+	var fps_far: float = player.call("current_walk_fps")
 	player.call("enter_room", room, Vector2(1200, 1070))
 	var v_near: float = player.call("current_speed_px")
+	var fps_near: float = player.call("current_walk_fps")
 	_check(is_equal_approx(v_near / v_far, 2.0 / 1.3), "speed should scale with depth (near/far = 2.0/1.3), got %.3f" % (v_near / v_far))
-	_check(absf(player.call("current_walk_fps") - fps1) < 0.1, "walk fps must stay constant across depth, got %.2f vs %.2f" % [player.call("current_walk_fps"), fps1])
+	_check(absf(fps_near - fps_far) < 0.05 and fps_near >= 8.0 and fps_near <= 14.0, "walk fps must stay constant across depth and within 8–14, got far %.2f / near %.2f" % [fps_far, fps_near])
 	# Walking plays the walk animation through speed_scale (no manual frames) and sets the direction row.
 	player.speed_factor = 1.0
 	player.call("enter_room", room, Vector2(1400, 900))

@@ -231,14 +231,35 @@ for rid, room in rooms.items():
             check_res_path(f"{ctx}.props.{p.get('id')}.image", p["image"])
         if p.get("occluder") and "z" in p and not (0 <= int(p["z"]) <= 4096):
             err(f"{ctx}.props.{p.get('id')}: z вне 0..4096")
+    for l in room.get("layers", []):
+        lctx = f"{ctx}.layers.{l.get('id', '?')}"
+        if "image" not in l:
+            err(f"{lctx}: нет image")
+        else:
+            check_res_path(lctx + ".image", l["image"])
+        check_flags(lctx + ".if", l.get("if"))
+        check_flags(lctx + ".unless", l.get("unless"))
+        if l.get("occluder") and "z" not in l:
+            warn(f"{lctx}: окклюдер без явного z (будет 1080)")
+    for e in room.get("effects", []):
+        ectx = f"{ctx}.effects.{e.get('id', e.get('type', '?'))}"
+        if e.get("type") not in ("fire", "snow"):
+            err(f"{ectx}: неизвестный тип эффекта {e.get('type')}")
+        check_flags(ectx + ".if", e.get("if"))
+        check_flags(ectx + ".unless", e.get("unless"))
+    holes = room.get("walkable_holes", [])
 
+    holes = room.get("walkable_holes", [])
     # спавны
     spawns = room.get("spawns", {})
     if "default" not in spawns:
         err(f"{ctx}: нет спавна default")
+    def walkable_point(pt) -> bool:
+        return point_in_poly(pt, poly) and not any(point_in_poly(pt, h) for h in holes)
+
     for sid, pos in spawns.items():
-        if not point_in_poly(pos, poly):
-            err(f"{ctx}: спавн {sid} {pos} вне полигона")
+        if not walkable_point(pos):
+            err(f"{ctx}: спавн {sid} {pos} вне полигона (или в вырезе)")
 
     # 2. выходы против рёбер
     exits = room.get("exits", [])
@@ -256,8 +277,8 @@ for rid, room in rooms.items():
         rect, stand = exit_geometry(room, ex)
         if rect is None:
             err(f"{ctx}: выход в {to} без side/rect")
-        elif not point_in_poly(stand, poly):
-            err(f"{ctx}: stand выхода в {to} {stand} вне полигона")
+        elif not walkable_point(stand):
+            err(f"{ctx}: stand выхода в {to} {stand} вне полигона (или в вырезе)")
         if to in rooms:
             sp = ex.get("spawn", "default")
             if sp not in rooms[to].get("spawns", {}):
@@ -299,8 +320,10 @@ for rid, room in rooms.items():
         ids.add(hid)
         if "rect" not in h or "stand" not in h:
             err(f"{hctx}: нет rect/stand")
-        elif not point_in_poly(h["stand"], poly):
-            err(f"{hctx}: stand {h['stand']} вне полигона")
+        elif not walkable_point(h["stand"]):
+            err(f"{hctx}: stand {h['stand']} вне полигона (или в вырезе)")
+        if "image" in h:
+            check_res_path(hctx + ".image", h["image"])
         check_flags(hctx + ".visible_if", h.get("visible_if"))
         check_flags(hctx + ".hidden_if", h.get("hidden_if"))
         for st in h.get("states", []):

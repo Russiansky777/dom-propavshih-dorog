@@ -32,6 +32,8 @@ static func build(room_id: String) -> Room:
 	_build_background(room, room_id, bg, horizon)
 	_build_walkable(room, spec, kind, idx)
 	_build_props(room, spec)
+	_build_layers(room, spec)
+	_build_effects(room, spec)
 	_build_spawns(room, spec)
 	_build_hotspots(room, room_id, spec)
 	_build_exits(room, room_id, spec, idx, horizon)
@@ -112,6 +114,12 @@ static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dic
 	for i in pts.size():
 		verts.append(Vector2(float(pts[i][0]), float(pts[i][1])))
 	poly.add_outline(verts)
+	# Optional holes (furniture the player walks around): nested outlines are subtracted when baking.
+	for hole in spec.get("walkable_holes", []):
+		var hv := PackedVector2Array()
+		for p in hole:
+			hv.append(Vector2(float(p[0]), float(p[1])))
+		poly.add_outline(hv)
 	poly.agent_radius = 0.0
 	# Bake synchronously: the outline may be concave (e.g. H1 floor around the armchair) and the
 	# navigation server needs convex polygons.
@@ -169,6 +177,54 @@ static func _build_props(room: Room, spec: Dictionary) -> void:
 			props.add_child(node)
 
 
+## `layers[]`: full-canvas PNGs (art is 1672x941, mapped to 1920x1080, then `offset`/`scale`).
+## `occluder` + `z` → drawn in Occluders with that z (y-sort line); otherwise z 0 under the player.
+## `if`/`unless` make it a state layer (StateLayer refreshes on flag changes).
+static func _build_layers(room: Room, spec: Dictionary) -> void:
+	var occluders := room.get_node_or_null("Occluders")
+	var container := Node2D.new()
+	container.name = "Layers"
+	room.add_child(container)
+	for l in spec.get("layers", []):
+		var image := String(l.get("image", ""))
+		if image == "" or not ResourceLoader.exists(image):
+			push_warning("RoomBuilder: layer image missing: " + image)
+			continue
+		var node := StateLayer.new()
+		node.name = String(l.get("id", image.get_file().get_basename()))
+		var spr := Sprite2D.new()
+		spr.name = "Image"
+		spr.texture = load(image)
+		spr.centered = false
+		var ts: Vector2 = spr.texture.get_size()
+		var sc := float(l.get("scale", 1.0))
+		if ts.x > 0 and ts.y > 0:
+			spr.scale = Vector2(1920.0 / ts.x * sc, 1080.0 / ts.y * sc)
+		var off: Array = l.get("offset", [0, 0])
+		spr.position = Vector2(float(off[0]), float(off[1]))
+		node.add_child(spr)
+		if bool(l.get("occluder", false)) and occluders != null:
+			node.z_index = clampi(int(l.get("z", 1080)), 0, 4096)
+			occluders.add_child(node)
+		else:
+			node.z_index = clampi(int(l.get("z", 0)), -10, 4096)
+			container.add_child(node)
+		node.setup(l)
+
+
+## `effects[]`: programmatic effects (fire in the stove, snow in the yard), flag-conditional.
+static func _build_effects(room: Room, spec: Dictionary) -> void:
+	var container := Node2D.new()
+	container.name = "Effects"
+	room.add_child(container)
+	for e in spec.get("effects", []):
+		var node := RoomEffect.new()
+		node.name = String(e.get("id", e.get("type", "effect")))
+		node.z_index = clampi(int(e.get("z", 1)), -10, 4096)
+		container.add_child(node)
+		node.setup(e)
+
+
 static func _build_spawns(room: Room, spec: Dictionary) -> void:
 	var spawns := Node2D.new()
 	spawns.name = "Spawns"
@@ -205,6 +261,19 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 		fill.polygon = _rect_polygon(w, hgt)
 		visual.add_child(fill)
 		var kind := String(h.get("kind", "object"))
+		# Static sprite for a real-art hotspot (e.g. an NPC front view): fitted to the rect height,
+		# feet at the rect bottom; placeholder fill/labels stay hidden (draw:false).
+		var image := String(h.get("image", ""))
+		if image != "" and ResourceLoader.exists(image):
+			var spr := Sprite2D.new()
+			spr.name = "Image"
+			spr.texture = load(image)
+			spr.centered = false
+			var ts: Vector2 = spr.texture.get_size()
+			var sc := hgt / maxf(ts.y, 1.0)
+			spr.scale = Vector2(sc, sc)
+			spr.position = Vector2(-ts.x * sc / 2, -hgt / 2)
+			hs.add_child(spr)
 		if kind == "npc":
 			var head := Polygon2D.new()
 			head.name = "Head"
