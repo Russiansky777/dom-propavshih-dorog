@@ -3,11 +3,12 @@ extends Node2D
 ## «Живой мир» — what Agata's planted foot does to the ground in a street room.
 ##
 ## The moment a foot is planted is taken from the walk sheet, not invented: data/story/ambient/
-## _index.json `footfall.<actor>.contact_frames` (heel strike = the frame where the leading foot is
-## farthest forward in the bottom band of the profile rows, the method of tools/measure_stride.py;
+## _index.json `footfall.<actor>.contact_frames` (the frame after the leading foot's farthest swing,
+## where it starts sliding back with the ground — the new support foot of tools/measure_stride.py;
 ## tests/test_ambient.gd re-measures it from the sheet). On each change of the sheet frame to a
 ## contact frame while walking, the planted foot is at the drawn feet (foot lock: player.drawn_position)
-## plus `foot_ahead_px` × depth scale along the travel x (the leading foot at heel strike):
+## plus `planted_foot_px[row][contact]` × depth scale (that foot's centre and sole line in the frame
+## of the current direction row, measured from the sheet too):
 ##   in a `puddles` polygon → a splash: a few drops fly out and fall (0.3–0.5 s, foot y + 1) and a
 ##                            ring spreads on the water (floor, z −8);
 ##   in a `mud` polygon     → a boot print (darker than the ground, z −8) that fades in 20–30 s;
@@ -22,7 +23,7 @@ var active: bool = true
 var puddles: Array[PackedVector2Array] = []
 var mud: Array[PackedVector2Array] = []
 var contact_frames: Array[int] = []
-var foot_ahead_px: float = 0.0
+var planted_foot_px: Array = []      # [row][contact] → [dx, dy] frame px at scale 1
 var prints: AmbientPrints = null
 
 var steps: int = 0
@@ -90,7 +91,7 @@ func _bind() -> void:
 	contact_frames.clear()
 	for f in ff.get("contact_frames", []):
 		contact_frames.append(int(f))
-	foot_ahead_px = float(ff.get("foot_ahead_px", 0.0))
+	planted_foot_px = ff.get("planted_foot_px", [])
 	_walk_action = String(sheet.get("walk_action")) if sheet.get("walk_action") != null else "walk"
 	_player = p
 	_sprite = spr
@@ -139,14 +140,18 @@ func _on_frame_changed() -> void:
 	var k := contact_frames.find(f)
 	if k < 0:
 		return
-	foot_down(foot_position(), k, f)
+	foot_down(foot_position(k), k, f)
 
 
-## Where the planted foot is: drawn feet + the leading foot's lead at heel strike along the travel x.
-func foot_position() -> Vector2:
+## Where the planted foot is: drawn feet + the measured offset of that foot in the current row.
+func foot_position(k: int) -> Vector2:
 	var base: Vector2 = _player.call("drawn_position") if _player.has_method("drawn_position") else _player.global_position
 	var s := absf(_player.scale.y)
-	return base + Vector2(_dir.x * foot_ahead_px * s, 0.0)
+	var row := int(_player.get("direction")) if _player.get("direction") != null else 0
+	if row >= 0 and row < planted_foot_px.size() and k < planted_foot_px[row].size():
+		var o: Array = planted_foot_px[row][k]
+		return base + Vector2(float(o[0]), float(o[1])) * s
+	return base
 
 
 func surface_at(pos: Vector2) -> String:

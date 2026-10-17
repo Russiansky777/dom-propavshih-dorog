@@ -16,6 +16,7 @@ echo "[data] validate_story.py" | tee -a "$BUILD_DIR/logs/tests.log"
 python3 -I "$ROOT/tools/validate_story.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 echo "[data] validate_rooms.py" | tee -a "$BUILD_DIR/logs/tests.log"
 python3 -I "$ROOT/tools/validate_rooms.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+python3 -I "$ROOT/tools/validate_lights.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет комнат: data/story/lights
 
 "$ROOT/tools/sync_story_data.sh" | tee -a "$BUILD_DIR/logs/tests.log"
 godot_import
@@ -36,5 +37,6 @@ geo_code=${PIPESTATUS[0]}
 set -e
 [[ "$geo_code" -ne 0 ]] && code=1
 echo "[godot] geometry exit code: $geo_code"
+"$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_lighting.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет, огонь, тени актёров
 echo "[tests] overall exit code: $code"
 exit "$code"

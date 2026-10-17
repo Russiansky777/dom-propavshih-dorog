@@ -47,7 +47,7 @@ func start() -> void:
 			var v := Vector2(cos(ang), sin(ang)) * hv + forward * hv * 0.35
 			# Time aloft fits the splash life: vz = g·T/2 with T within the life.
 			var t_air := rng.randf_range(life * 0.55, life * 0.95)
-			_drops.append({"v": v, "vz": G * t_air / 2.0, "r": rng.randf_range(0.005, 0.011), "t_end": t_air})
+			_drops.append({"v": v, "vz": G * t_air / 2.0, "r": rng.randf_range(float(sp.get("drop_min_m", 0.003)), float(sp.get("drop_max_m", 0.007))), "t_end": t_air})
 	queue_redraw()
 
 

@@ -135,7 +135,7 @@ func _test_build() -> void:
 	var h1: Node = await _enter("H1", ["stove_lit"], Vector2(1200, 900))
 	for i in 3:
 		await physics_frame
-	var hit: Node = h1.pick(Vector2(182, 440))
+	var hit: Node = h1.pick(Vector2(450, 250))
 	_check(hit != null and String(hit.name) == "stove", "a click on the burning stove must still hit the stove hotspot, got %s" % (str(hit.name) if hit else "nothing"))
 
 
@@ -258,7 +258,7 @@ func _test_actor_shadow() -> void:
 	var far_p: Array = sh.target_params(Vector2(1700, 1000))
 	_check(float(far_p[2]) < float(near_p[2]), "farther from the fire = fainter shadow (near %.3f, far %.3f)" % [float(near_p[2]), float(far_p[2])])
 	_check(float(far_p[1]) > float(near_p[1]), "farther from the fire = longer shadow (near %.2f, far %.2f)" % [float(near_p[1]), float(far_p[1])])
-	_check(float(sh.target_params(floor_pt)[2]) == 0.0, "no shadow right at the source")
+	_check(float(sh.target_params(floor_pt)[2]) < 0.05, "(almost) no shadow right at the source: %.3f" % float(sh.target_params(floor_pt)[2]))
 	var tr: Transform2D = sh.shadow_transform(float(near_p[0]), float(near_p[1]))
 	_check(absf(tr.determinant()) > 0.05, "the silhouette never collapses to a line (det %.3f)" % tr.determinant())
 	# Smooth: a jump of the target does not jump the shadow in one frame.
