@@ -192,8 +192,9 @@ func _complete_scene(scene_id: String) -> void:
 	for it in sc.get("consumes", []):
 		GameState.remove_item(String(it))
 	GameState.set_flag("done_" + scene_id, true)
-	if String(sc.get("type", "")) == "main" and sc.has("result"):
-		GameState.set_goal(String(sc["result"]), scene_id)
+	# Цель журнала для игрока — поле goal (без кодов комнат/эпизодов); result — заметка сценария, запасной вариант.
+	if String(sc.get("type", "")) == "main" and (sc.has("goal") or sc.has("result")):
+		GameState.set_goal(String(sc.get("goal", sc.get("result", ""))), scene_id)
 	var room_spec: Dictionary = StoryData.room(current_room_id()).get("scenes", {}).get(scene_id, {})
 	if room_spec.has("complete_text"):
 		_beats.push_front({"type": "narration", "text": StoryData.text(String(room_spec["complete_text"]))})

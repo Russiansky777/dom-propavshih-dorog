@@ -118,6 +118,21 @@ for fl, srcs in granted_flags.items():
         if not any(fl in [o.get("sets") for ch in by_id[sid].get("choices", []) for o in ch["options"]] for sid in srcs):
             warn(f"флаг {fl} выдаётся ({', '.join(srcs)}), но не описан в flags.json")
 
+# ---------- 1б. цели журнала для игрока (goal) без служебных кодов ----------
+# Игра показывает goal (или result, если goal нет). Коды комнат/эпизодов/сцен игроку не показываем
+# (решение 17.10: «Цели журнала и любой текст для игрока не содержат кодов»). Для сыгранных эпизодов goal обязателен.
+import re as _re
+_code = _re.compile(r"\b(" + "|".join(sorted(loc_ids, key=len, reverse=True)) + r"|E[0-7]|[MVQ]\d\d|ЗМ|ЗГ|ЗП)\b")
+_played = {"M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08"}
+for s in scenes:
+    if s.get("type") != "main":
+        continue
+    g = s.get("goal")
+    if g is not None and _code.search(g):
+        err(f"{s['id']}: цель журнала (goal) содержит служебный код «{_code.search(g).group(0)}»")
+    if g is None and s["id"] in _played:
+        err(f"{s['id']}: у сыгранной сцены нет goal — игроку покажется заметка сценария (result)")
+
 # ---------- 2. единственный источник предметов ----------
 item_sources: dict[str, list[str]] = {}
 for s in scenes:

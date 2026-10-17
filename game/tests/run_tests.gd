@@ -600,7 +600,7 @@ func _test_walkthrough() -> void:
 	_check(seen.size() == 3, "M01 should play 3 lines, got %s" % str(seen))
 	_check(gs.has_flag("done_M01") and gs.has_flag("met_tamara") and gs.has_flag("knows_pier_trace"), "M01 flags missing")
 	_check(gs.has_item("key_house") and gs.has_item("letter_tamara") and gs.has_item("pocket_watch"), "M01 items missing: %s" % str(gs.inventory))
-	_check(gs.journal_goal == sd.scene("M01")["result"], "journal goal should be M01 result")
+	_check(gs.journal_goal == sd.scene("M01").get("goal", sd.scene("M01")["result"]), "journal goal should be M01 goal (player text, not the scenario note)")
 	_check(gs.has_save(TEST_AUTOSAVE_SLOT), "autosave after the scene beat")
 
 	# --- Z4 (lane by the post office: side porch of the house) → Z2, closed exits ---
