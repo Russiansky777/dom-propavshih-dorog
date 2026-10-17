@@ -14,8 +14,9 @@ extends Node
 ##     StoryRunner.scene_started and releases it on scene_completed (`until: "scene_end"`, the default
 ##     for looping themes) or when the track has played out (`until: "track_end"`, the default for
 ##     non-looping ones); then the room theme returns. The newest active event wins;
-##   - dialogue ducking: while a scene line or option is on screen every theme except `duck_except`
-##     is lowered by `duck_dialogue_db`, eased over DUCK_FADE_S;
+##   - dialogue ducking: while a scene line or option is on screen, or the narrator's voice-over sounds
+##     (VoiceDirector.voice_over_active), every theme except `duck_except` is lowered by
+##     `duck_dialogue_db`, eased over DUCK_FADE_S;
 ##   - music volume (menu slider 0–100 %) is a setting in user://settings.cfg [audio] music_volume —
 ##     not part of a save slot — applied to the Music bus.
 ## Web: the browser keeps the AudioContext suspended until the first user gesture; Godot resumes it
@@ -470,8 +471,12 @@ func deck_volume_db(d: Deck) -> float:
 	return maxf(db, SILENCE_DB)
 
 
-## A scene line or option on screen (examine/narration texts outside scenes do not duck).
+## A scene line or option on screen, or a voice-over sounding (VoiceDirector: an examine / close-up
+## message / bag item read by the narrator). A silent examine text outside scenes does not duck.
 func dialogue_active() -> bool:
+	var vd := get_node_or_null("/root/VoiceDirector")
+	if vd != null and bool(vd.call("voice_over_active")):
+		return true
 	var b: Dictionary = StoryRunner.current_beat
 	if b.is_empty():
 		return false

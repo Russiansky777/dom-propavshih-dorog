@@ -27,7 +27,7 @@ var current_beat: Dictionary = {}
 var active_scene: String = ""
 var puzzle_open: bool = false
 var puzzle_hotspot: Node2D = null
-var puzzle: Dictionary = {}   # {spec, placed:{slot->piece}, mark:int, errors:int, solved:bool, message, hint}
+var puzzle: Dictionary = {}   # {spec, placed:{slot->piece}, mark:int, errors:int, solved:bool, message, message_key, message_serial, hint}
 
 var _beats: Array[Dictionary] = []
 var _check_queued: bool = false
@@ -104,8 +104,27 @@ func conditions_met(conds: Variant) -> bool:
 
 # --- Beats (dialogue / narration / options) ---------------------------------
 
-func narrate(text: String) -> void:
-	_push({"type": "narration", "text": text})
+## A narration beat (examine / action / closed exit text). `text_key` — the data/story/text key it came
+## from (without "@"), so VoiceDirector can play the voice-over recorded for that key; "" for plain text.
+func narrate(text: String, text_key: String = "") -> void:
+	_push(_narration_beat(text, text_key))
+
+
+## Narrates "@section.key" (resolved through StoryData.text, the key kept for the voice-over) or plain text.
+func narrate_key(key_or_text: String) -> void:
+	narrate(StoryData.text(key_or_text), text_key_of(key_or_text))
+
+
+## "@H1.stove.look" -> "H1.stove.look"; plain text (no "@") -> "".
+static func text_key_of(key_or_text: String) -> String:
+	return key_or_text.substr(1) if key_or_text.begins_with("@") else ""
+
+
+func _narration_beat(text: String, text_key: String = "") -> Dictionary:
+	var b := {"type": "narration", "text": text}
+	if text_key != "":
+		b["text_key"] = text_key
+	return b
 
 
 func _push(beat: Dictionary) -> void:
@@ -200,7 +219,8 @@ func _complete_scene(scene_id: String) -> void:
 		GameState.set_goal(String(sc.get("goal", sc.get("result", ""))), scene_id)
 	var room_spec: Dictionary = StoryData.room(current_room_id()).get("scenes", {}).get(scene_id, {})
 	if room_spec.has("complete_text"):
-		_beats.push_front({"type": "narration", "text": StoryData.text(String(room_spec["complete_text"]))})
+		var ck := String(room_spec["complete_text"])
+		_beats.push_front(_narration_beat(StoryData.text(ck), text_key_of(ck)))
 	if active_scene == scene_id:
 		active_scene = ""
 	scene_completed.emit(scene_id)
@@ -344,7 +364,7 @@ func interact(h: StoryHotspot) -> void:
 	if is_busy():
 		return
 	var d := h.data
-	var look := StoryData.text(String(d.get("look", "@ui.nothing_here")))
+	var look := String(d.get("look", "@ui.nothing_here"))
 
 	if selected_item != "":
 		var item := selected_item
@@ -353,7 +373,7 @@ func interact(h: StoryHotspot) -> void:
 		if iu.has(item):
 			_run_action(h, iu[item], item)
 		else:
-			narrate(StoryData.text("@ui.item_no_effect"))
+			narrate_key("@ui.item_no_effect")
 		return
 
 	if d.has("panel"):
@@ -371,10 +391,10 @@ func interact(h: StoryHotspot) -> void:
 				start_scene(scn)
 				return
 			if not is_done(scn) and t.has("before_text"):
-				narrate(StoryData.text(String(t["before_text"])))
+				narrate_key(String(t["before_text"]))
 				return
 		if t.has("after_text"):
-			narrate(StoryData.text(String(t["after_text"])))
+			narrate_key(String(t["after_text"]))
 			return
 
 	if d.has("puzzle"):
@@ -384,7 +404,7 @@ func interact(h: StoryHotspot) -> void:
 			open_puzzle(h)
 			return
 		if _use_state(d) != "ready":
-			narrate(StoryData.text(String(pz.get("fail_text", d.get("look", "@ui.nothing_here")))))
+			narrate_key(String(pz.get("fail_text", d.get("look", "@ui.nothing_here"))))
 			return
 
 	if d.has("choice"):
@@ -399,7 +419,7 @@ func interact(h: StoryHotspot) -> void:
 				_offer_choice(h, ch)
 				return
 		elif ch.has("fail_text"):
-			narrate(StoryData.text(String(ch["fail_text"])))
+			narrate_key(String(ch["fail_text"]))
 			return
 
 	match _use_state(d):
@@ -408,16 +428,17 @@ func interact(h: StoryHotspot) -> void:
 			return
 		"locked":
 			if d["use"].has("fail_text"):
-				narrate(StoryData.text(String(d["use"]["fail_text"])))
+				narrate_key(String(d["use"]["fail_text"]))
 				return
-	narrate(look)
+	narrate_key(look)
 
 
 func _offer_choice(h: StoryHotspot, ch: Dictionary) -> void:
 	var opts: Array = []
 	for o in ch.get("options", []):
 		opts.append({"id": String(o["id"]), "label": StoryData.text(String(o.get("label", o["id"]))), "sets": String(o.get("sets", ""))})
-	_push({"type": "options", "prompt": StoryData.text(String(ch.get("prompt", ""))), "options": opts,
+	var pk := String(ch.get("prompt", ""))
+	_push({"type": "options", "prompt": StoryData.text(pk), "prompt_key": text_key_of(pk), "options": opts,
 		"callback": _apply_choice.bind(h, ch)})
 
 
@@ -436,7 +457,8 @@ func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary) -> void:
 	if chosen.has("sets"):
 		GameState.set_flag(String(chosen["sets"]), true)
 	if chosen.has("text"):
-		_beats.push_front({"type": "narration", "text": StoryData.text(String(chosen["text"]))})
+		var tk := String(chosen["text"])
+		_beats.push_front(_narration_beat(StoryData.text(tk), text_key_of(tk)))
 
 
 func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
@@ -444,14 +466,14 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 		if h.data.has("puzzle") and requires_met(h.data["puzzle"].get("requires", {})):
 			open_puzzle(h)
 		else:
-			narrate(StoryData.text(String(h.data.get("puzzle", {}).get("fail_text", "@ui.item_no_effect"))))
+			narrate_key(String(h.data.get("puzzle", {}).get("fail_text", "@ui.item_no_effect")))
 		return
 	if not requires_met(act.get("requires", {})):
-		narrate(StoryData.text(String(act.get("fail_text", h.data.get("look", "@ui.nothing_here")))))
+		narrate_key(String(act.get("fail_text", h.data.get("look", "@ui.nothing_here"))))
 		return
 	var once := String(act.get("once_flag", ""))
 	if once != "" and GameState.has_flag(once):
-		narrate(StoryData.text(String(act.get("text_done", h.data.get("look", "@ui.nothing_here")))))
+		narrate_key(String(act.get("text_done", h.data.get("look", "@ui.nothing_here"))))
 		return
 	for f in act.get("sets", []):
 		GameState.set_flag(String(f), true)
@@ -460,7 +482,7 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 	if item_id != "" and bool(act.get("consumes", false)):
 		GameState.remove_item(item_id)
 	if act.has("text"):
-		narrate(StoryData.text(String(act["text"])))
+		narrate_key(String(act["text"]))
 
 
 # --- Exits -------------------------------------------------------------------
@@ -473,10 +495,10 @@ func use_exit(e: StoryExit) -> void:
 		if String(oc.get("type", "")) == "loop":
 			_run_loop(e, oc)
 			return
-		narrate(StoryData.text(String(e.data.get("closed_text", "@ui.closed_generic"))))
+		narrate_key(String(e.data.get("closed_text", "@ui.closed_generic")))
 		return
 	if not e.target_exists():
-		narrate(StoryData.text(String(e.data.get("unbuilt_text", "@ui.not_built"))))
+		narrate_key(String(e.data.get("unbuilt_text", "@ui.not_built")))
 		return
 	RoomManager.call_deferred("change_room", e.target_room, e.target_spawn)
 
@@ -496,7 +518,7 @@ func _run_loop(e: StoryExit, oc: Dictionary) -> void:
 		GameState.set_flag(String(f), true)
 	_loop_running = false
 	var text_key := String(e.data.get("closed_text", "@ui.closed_generic"))
-	narrate(StoryData.text(text_key))
+	narrate_key(text_key)
 
 
 # --- Puzzle (match_marks) -----------------------------------------------------
@@ -506,10 +528,19 @@ func open_puzzle(h: StoryHotspot) -> void:
 	puzzle_hotspot = h
 	puzzle = {"spec": spec, "placed": {}, "mark": -1, "solved": false,
 		"errors": GameState.get_counter("puzzle_errors." + String(spec.get("id", "puzzle"))),
-		"message": StoryData.text(String(spec.get("intro", ""))), "hint": "", "view": ""}
+		"message": "", "message_key": "", "message_serial": 0, "hint": "", "view": ""}
+	_set_puzzle_message(String(spec.get("intro", "")))
 	puzzle_open = true
 	puzzle_opened.emit()
 	puzzle_state_changed.emit()
+
+
+## The close-up's message (intro / error / success): text, its data key (VoiceDirector plays the voice-over)
+## and a serial that grows with every new message — the same error twice is two messages.
+func _set_puzzle_message(key_or_text: String) -> void:
+	puzzle["message"] = StoryData.text(key_or_text)
+	puzzle["message_key"] = text_key_of(key_or_text)
+	puzzle["message_serial"] = int(puzzle.get("message_serial", 0)) + 1
 
 
 func puzzle_place(piece_id: String, slot_id: String) -> void:
@@ -561,7 +592,7 @@ func puzzle_check() -> bool:
 	var pid := String(spec.get("id", "puzzle"))
 	if puzzle_is_correct():
 		puzzle["solved"] = true
-		puzzle["message"] = StoryData.text(String(spec.get("success_text", "")))
+		_set_puzzle_message(String(spec.get("success_text", "")))
 		puzzle["view"] = String(spec.get("success", {}).get("view", ""))
 		puzzle_state_changed.emit()
 		var scn := String(spec.get("success", {}).get("scene", ""))
@@ -570,7 +601,7 @@ func puzzle_check() -> bool:
 		return true
 	var errors := GameState.inc_counter("puzzle_errors." + pid)
 	puzzle["errors"] = errors
-	puzzle["message"] = StoryData.text(String(spec.get("error_text", "")))
+	_set_puzzle_message(String(spec.get("error_text", "")))
 	puzzle["view"] = "wall"
 	if errors >= int(spec.get("error_hint_after", 2)):
 		var scn := String(spec.get("success", {}).get("scene", ""))

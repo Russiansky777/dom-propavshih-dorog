@@ -13,6 +13,16 @@ extends SceneTree
 ##   - Tikhon (voice.json pan) speaks from his hotspot in H1: panned to the left, left channel louder;
 ##     Agata in the same room is not panned;
 ##   - web gating: a line shown before the first click waits and starts on the unlock.
+## Voice-over (the Director's task of 18.10, voice «ZAKADR», voice.json → narration):
+##   - every narration entry of the manifest is a data/story/text key the rules voice, with that text (sha1);
+##   - an examine with a file sounds in the narrator's voice on the Voice bus and ducks the music; the menu
+##     slider «Голос» (the Voice bus) covers it; the click «дальше» cuts it, the next look plays its own;
+##   - labels, interface texts, options, puzzle captions, plain text never sound — even with a stream;
+##     the question of a choice (prompt) is voiced, its options are not;
+##   - the close-up: intro / error / success are voiced once per message, a piece moved does not restart
+##     it; the scene line that starts on success waits until the close-up closes, then plays;
+##   - bag: the item's line after the pointer rests ≈0.6 s on its pocket (not before), leaving fades it out,
+##     the same item at most once per 30 s, receiving a batch of items voices nothing.
 ## Exit code 0 only when every check passed.
 
 const TEST_SETTINGS := "user://test_voice_settings.cfg"
@@ -78,6 +88,11 @@ func _run() -> void:
 	await _test("Voice volume: setting → Voice bus, user:// settings (not the save slot), menu slider «Голос», 0 % mutes", _test_volume)
 	await _test("Tikhon speaks from his hotspot in H1 (panned left, left channel louder); Agata not panned", _test_pan)
 	await _test("Web gating: a line before the first click waits, starts on the unlock", _test_gating)
+	await _test("Voice-over: an examine with a file sounds in the narrator's voice (Voice bus, slider «Голос»), ducks the music", _test_narration_plays)
+	await _test("Voice-over: the click «дальше» cuts it, the next look plays its own; a choice's question is voiced", _test_narration_cut)
+	await _test("Voice-over: labels, interface, options, puzzle captions and plain text never sound (even with a stream)", _test_narration_skips)
+	await _test("Voice-over in the close-up: intro / error / success once each; the success scene line waits for the close", _test_narration_puzzle)
+	await _test("Bag: the item's line after a ≈0.6 s rest on its pocket, fades out on leaving, once per 30 s, not on receiving", _test_item_hover)
 	vd.stop("test end")
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -188,9 +203,22 @@ func _test_manifest() -> void:
 		"both voice players on the Voice bus")
 	if vd.manifest.is_empty():
 		print("        (note: no recordings in game/assets/voice/ru — every line is subtitles only)")
+	var narrated := 0
 	for lid in vd.manifest.keys():
 		var e: Dictionary = vd.manifest[lid]
 		if e.has("stale"):
+			continue
+		if String(e.get("kind", "")) == "narration":
+			narrated += 1
+			var key := String(lid)
+			_check(sd.texts.has(key), "%s: no such key in data/story/text" % key)
+			_check(vd.is_narration_key(key), "%s: the voice.json rules do not voice this key" % key)
+			_check(String(e.get("speaker", "")) == vd.narr_speaker, "%s: speaker %s, expected %s" % [key, e.get("speaker"), vd.narr_speaker])
+			var t: String = sd.text("@" + key)
+			_check(vd.line_status(key, t) == "ok", "%s: status %s" % [key, vd.line_status(key, t)])
+			var ns: AudioStream = vd.stream_for(key, t)
+			_check(ns != null and ns.get_length() > 0.2, "%s: stream %s does not load or is too short" % [key, vd.file_path(key)])
+			_check(vd.file_path(key).begins_with(vd.voice_dir + "/narrator/"), "%s: file outside narrator/: %s" % [key, vd.file_path(key)])
 			continue
 		var ln := _line(String(lid))
 		_check(not ln.is_empty(), "%s: no such scene line" % lid)
@@ -202,6 +230,8 @@ func _test_manifest() -> void:
 		_check(s != null and s.get_length() > 0.2, "%s: stream %s does not load or is too short" % [lid, vd.file_path(String(lid))])
 		if s != null and "loop" in s:
 			_check(not bool(s.get("loop")), "%s: stream must not loop" % lid)
+	print("        voice-over entries: %d (narrator %s)" % [narrated, vd.narr_speaker])
+	_check(not vd.narr_skip_sections.is_empty() and not vd.narr_skip_fields.is_empty(), "voice.json narration: the not-voiced categories are listed")
 
 
 func _test_plays() -> void:
@@ -437,3 +467,274 @@ func _test_gating() -> void:
 	await _finish_dialogue()
 	for lid in ["M01_0", "M01_1", "M01_2", "M03_0", "M03_1"]:
 		vd.set_test_stream(lid, null)
+
+
+# --- Voice-over -------------------------------------------------------------------------------
+
+func _hotspot(id: String) -> Node:
+	for h in rm.current_room.get_hotspots():
+		if h.hotspot_id == id:
+			return h
+	return null
+
+
+## The recording for a voice-over key, or the test tone (the director is tested, not the file).
+func _ensure_key(key: String) -> bool:
+	if vd.line_status(key, sd.text("@" + key)) == "ok":
+		return true
+	print("        (note: %s has no recording here — test tone)" % key)
+	vd.set_test_stream(key, _tone())
+	return false
+
+
+func _starts_since(n0: int, kind: String = "") -> Array:
+	var out: Array = []
+	for i in range(n0, vd.events.size()):
+		var ev: Dictionary = vd.events[i]
+		if String(ev.get("kind", "")) == "start" and (kind == "" or String(ev.get("voice", "")) == kind):
+			out.append(ev)
+	return out
+
+
+func _test_narration_plays() -> void:
+	gs.reset()
+	await _enter("Z1")
+	_ensure_key("Z1.letters.look")
+	var h := _hotspot("letters")
+	_check(h != null, "Z1 has the letters hotspot")
+	if h == null:
+		return
+	sr.interact(h)
+	await _frames(2)
+	_check(String(sr.current_beat.get("type", "")) == "narration" and String(sr.current_beat.get("text_key", "")) == "Z1.letters.look",
+		"the look is a narration beat with its key: %s" % [sr.current_beat])
+	_check(vd.is_playing() and vd.current_line == "Z1.letters.look" and vd.current_kind == "narration" and vd.current_speaker == vd.narr_speaker,
+		"the narrator reads Z1.letters.look: %s" % [vd.state()])
+	_check(String(_voice_player().bus) == "Voice", "the voice-over is on the Voice bus (slider «Голос»)")
+	await _wait(0.6)
+	_check(md.dialogue_active() and absf(md.duck_db_now - md.duck_dialogue_db) < 0.05,
+		"music ducked under the voice-over: %.2f dB (expected %.1f)" % [md.duck_db_now, md.duck_dialogue_db])
+	# Slider «Голос»: the same bus — 0 % mutes the narrator as well.
+	var bus: int = AudioServer.get_bus_index("Voice")
+	vd.set_voice_volume(0.0, false)
+	_check(AudioServer.is_bus_mute(bus) and vd.is_playing(), "«Голос» 0 %: the bus carrying the narrator is muted")
+	vd.set_voice_volume(1.0, false)
+	_check(not AudioServer.is_bus_mute(bus), "«Голос» back to 100 %")
+	await _finish_dialogue()
+	_check(not vd.is_playing(), "after the click the narrator is silent")
+	await _wait(0.6)
+	_check(not md.dialogue_active() and absf(md.duck_db_now) < 0.05, "music back after the voice-over (%.2f dB)" % md.duck_db_now)
+
+
+func _test_narration_cut() -> void:
+	gs.reset()
+	await _enter("Z1")
+	_ensure_key("Z1.drawings.use")
+	_ensure_key("Z1.letters.look")
+	sr.interact(_hotspot("drawings"))   # the action (compare the drawings): Z1.drawings.use
+	await _frames(2)
+	_check(vd.current_line == "Z1.drawings.use" and vd.is_playing(), "Z1.drawings.use plays: %s" % [vd.state()])
+	await _wait(0.4)
+	sr.advance()   # the click «дальше»
+	await _frames(1)
+	var ev := _last_event("stop")
+	_check(String(ev.get("line", "")) == "Z1.drawings.use" and String(ev.get("reason", "")) == "advance", "the click cuts the narrator: %s" % [ev])
+	_check(not vd.is_playing(), "nothing sounds after the click")
+	# The next look plays its own line from the start.
+	sr.interact(_hotspot("letters"))
+	await _frames(2)
+	_check(vd.current_line == "Z1.letters.look" and vd.is_playing() and float(vd.state()["position"]) < 0.5,
+		"the next look plays its own line: %s" % [vd.state()])
+	await _finish_dialogue()
+	# A choice: its question is voiced, the options are buttons (never voiced).
+	gs.reset()
+	await _enter("H1")
+	_ensure_key("H1.cups.prompt")
+	var n0: int = vd.events.size()
+	sr.interact(_hotspot("cups"))
+	await _frames(2)
+	_check(String(sr.current_beat.get("type", "")) == "options" and String(sr.current_beat.get("prompt_key", "")) == "H1.cups.prompt",
+		"the cups offer a choice with its prompt key: %s" % [sr.current_beat.get("prompt_key", "")])
+	_check(vd.current_line == "H1.cups.prompt" and vd.current_kind == "narration", "the question of the choice is voiced: %s" % [vd.state()])
+	for ev2 in _starts_since(n0):
+		_check(String(ev2.get("line", "")).find(".opt_") < 0, "an option label must never sound: %s" % [ev2])
+	var opts: Array = sr.current_options()
+	sr.choose(String(opts[0]["id"]))
+	await _frames(2)
+	_check(not vd.is_playing() or vd.current_line != "H1.cups.prompt", "choosing cuts the question")
+	await _finish_dialogue()
+	vd.set_test_stream("H1.cups.prompt", null)
+	vd.set_test_stream("Z1.drawings.use", null)
+	vd.set_test_stream("Z1.letters.look", null)
+
+
+func _test_narration_skips() -> void:
+	gs.reset()
+	await _enter("Z1")
+	for key in ["Z1.letters.label", "Z1.exit_Z4.label", "H1.stove.label_lit", "H1.photo.opt_table", "H3.puzzle.slot_top",
+			"H3.puzzle.marks", "H3.puzzle.drawing", "H3.puzzle.title", "H3.puzzle.hinge", "H3.puzzle.check",
+			"ui.nothing_here", "ui.item_no_effect", "ui.closed_generic", "ui.not_built", "ui.hint_generic_1", "ui.got_item",
+			"ui.bag_take", "map.here", "Z3.exit_M1.closed"]:
+		_check(not vd.is_narration_key(key), "%s must not be voiced" % key)
+		_check(not vd.manifest.has(key), "%s must not be recorded" % key)
+	for key in ["Z1.letters.look", "H1.stove.use", "Z1.exit_Z4.closed", "H1.v01.done", "H3.puzzle.intro", "H3.puzzle.error",
+			"H3.puzzle.success", "H3.puzzle.need", "O2.exit_O4.loop", "O1.board.chalk", "O2.porch_step.mitten", "H1.shelf.look_done",
+			"H1.cups.prompt", "item.key_house"]:
+		_check(vd.is_narration_key(key), "%s must be voiced" % key)
+	# Even with a stream, an interface / label narration stays subtitles only.
+	for key in ["ui.nothing_here", "Z1.letters.label"]:
+		vd.set_test_stream(key, _tone())
+		sr.narrate(sd.text("@" + key), key)
+		await _frames(2)
+		_check(not vd.is_playing(), "%s on screen: no voice (%s)" % [key, vd.state()])
+		var ev := _last_event("subtitles_only")
+		_check(String(ev.get("line", "")) == key and String(ev.get("reason", "")) == "not_voiced", "%s logged as not voiced: %s" % [key, ev])
+		await _finish_dialogue()
+		vd.set_test_stream(key, null)
+	# A click on a hotspot without a look of its own falls back to ui.nothing_here — silent.
+	sr.narrate_key("@ui.item_no_effect")
+	await _frames(2)
+	_check(not vd.is_playing(), "ui.item_no_effect: no voice")
+	await _finish_dialogue()
+	# Plain text (no key) never sounds.
+	sr.narrate("Проверка: простой текст без ключа.")
+	await _frames(2)
+	_check(not vd.is_playing(), "plain narration: no voice")
+	await _finish_dialogue()
+	# Hovering a hotspot shows its label: no beat, no voice.
+	var n0: int = vd.events.size()
+	var ui: Node = main_node.get_node("GameUi")
+	ui.call("_set_hover", _hotspot("letters"))
+	await _frames(3)
+	_check(_starts_since(n0).is_empty(), "a hotspot label on hover never sounds")
+	ui.call("_set_hover", null)
+
+
+func _test_narration_puzzle() -> void:
+	gs.reset()
+	await _enter("H3")
+	gs.set_flag("done_M04")
+	gs.add_item("door_hinges")
+	await _frames(2)
+	for k in ["H3.puzzle.intro", "H3.puzzle.error", "H3.puzzle.success"]:
+		_ensure_key(k)
+	_ensure_voice("M05_0")
+	var h := _hotspot("school_door")
+	_check(h != null, "H3 has the school door")
+	if h == null:
+		return
+	sr.open_puzzle(h)
+	await _frames(2)
+	_check(vd.current_line == "H3.puzzle.intro" and vd.current_kind == "puzzle" and vd.is_playing(), "the close-up's intro is voiced: %s" % [vd.state()])
+	var plays0: int = vd.plays
+	sr.puzzle_place("hinge_1", "top")
+	await _frames(2)
+	_check(vd.plays == plays0 and vd.current_line == "H3.puzzle.intro", "moving a piece does not restart the intro")
+	sr.puzzle_place("hinge_2", "middle")
+	sr.puzzle_set_mark(0)
+	_check(not sr.puzzle_check(), "wrong placement fails")
+	await _frames(2)
+	_check(vd.current_line == "H3.puzzle.error" and vd.is_playing(), "the error message is voiced (cuts the intro): %s" % [vd.state()])
+	_check(not sr.puzzle_check(), "second wrong attempt")
+	await _frames(2)
+	_check(vd.plays == plays0 + 2 and vd.current_line == "H3.puzzle.error", "the second error is a new message: voiced again (plays %d)" % (vd.plays - plays0))
+	sr.puzzle_place("hinge_2", "bottom")
+	sr.puzzle_set_mark(2)
+	_check(sr.puzzle_check(), "correct placement succeeds")
+	await _frames(2)
+	_check(vd.current_line == "H3.puzzle.success" and vd.is_playing(), "the success message is voiced: %s" % [vd.state()])
+	_check(String(sr.current_beat.get("line_id", "")) == "M05_0", "M05 starts at once (its line under the close-up)")
+	_check(String(vd.state()["after_puzzle"]) == "M05_0", "M05_0 waits for the close-up to close: %s" % [vd.state()])
+	await _wait(2.6)
+	if vd.is_speaking_kind("puzzle"):
+		_check(sr.puzzle_open, "the close-up stays while the success voice-over sounds (auto-close waits)")
+	sr.close_puzzle()
+	await _frames(2)
+	_check(vd.current_line == "M05_0" and vd.current_kind == "line" and vd.is_playing(), "after the close M05_0 plays: %s" % [vd.state()])
+	var ev := _last_event("stop")
+	_check(String(ev.get("line", "")) != "H3.puzzle.success" or String(ev.get("reason", "")) in ["puzzle_closed", "finished"],
+		"the success voice ended by the close or by itself: %s" % [ev])
+	await _finish_dialogue()
+	for k in ["H3.puzzle.intro", "H3.puzzle.error", "H3.puzzle.success", "M05_0"]:
+		vd.set_test_stream(k, null)
+
+
+func _move_mouse(at: Vector2) -> void:
+	var move := InputEventMouseMotion.new()
+	move.position = at
+	move.global_position = at
+	root.push_input(move, true)
+	await _frames(3)
+
+
+func _test_item_hover() -> void:
+	gs.reset()
+	await _enter("Z1")
+	var ui: Node = main_node.get_node("GameUi")
+	var bag = ui.get("bag")
+	for id in ["key_house", "letter_tamara"]:
+		gs.add_item(id)
+		_ensure_key("item." + id)
+	bag.cancel_flights()
+	bag.refresh()
+	await _frames(2)
+	var away := Vector2(960, 600)
+	await _move_mouse(away)
+	var s: Control = bag.slot_of("letter_tamara")
+	_check(s != null, "letter_tamara has a pocket")
+	if s == null:
+		return
+	var at := s.get_global_rect().get_center()
+	await _move_mouse(at)
+	_check(bag.tooltip.visible and bag.hover_item() == "letter_tamara", "pointer on the pocket: tooltip open")
+	await _wait(0.3)
+	_check(not vd.is_playing(), "not before the dwell (0.3 s of %.1f)" % vd.item_dwell_s)
+	await _wait(vd.item_dwell_s - 0.3 + 0.25)
+	_check(vd.is_playing() and vd.current_line == "item.letter_tamara" and vd.current_kind == "item" and vd.current_speaker == vd.narr_speaker,
+		"after the dwell the narrator reads the item's line: %s" % [vd.state()])
+	_check(String(_voice_player().bus) == "Voice", "item line on the Voice bus")
+	await _wait(0.4)
+	_check(vd.is_playing(), "still speaking while the pointer rests")
+	await _move_mouse(away)
+	_check(vd.is_fading() or not vd.is_playing(), "leaving the pocket fades it out: %s" % [vd.state()])
+	await _wait(vd.item_fade_s + 0.2)
+	_check(not vd.is_playing(), "faded out and stopped")
+	var ev := _last_event("stop")
+	_check(String(ev.get("line", "")) == "item.letter_tamara" and String(ev.get("reason", "")) == "hover_end", "stopped by leaving: %s" % [ev])
+	# Again within 30 s: tooltip yes, voice no.
+	await _move_mouse(at)
+	await _wait(vd.item_dwell_s + 0.3)
+	_check(bag.tooltip.visible and not vd.is_playing(), "the same item again within %.0f s: no voice" % vd.item_repeat_s)
+	var skip := _last_event("item_skip")
+	_check(String(skip.get("line", "")) == "item.letter_tamara" and String(skip.get("reason", "")) == "cooldown", "logged as cooldown: %s" % [skip])
+	# Another item is not held back by the first one's cooldown.
+	await _move_mouse(away)
+	var s2: Control = bag.slot_of("key_house")
+	await _move_mouse(s2.get_global_rect().get_center())
+	await _wait(vd.item_dwell_s + 0.25)
+	_check(vd.current_line == "item.key_house" and vd.is_playing(), "another item speaks: %s" % [vd.state()])
+	await _move_mouse(away)
+	await _wait(vd.item_fade_s + 0.2)
+	# 30 s later the first item speaks again.
+	vd.item_last_ms["letter_tamara"] = int(vd.item_last_ms["letter_tamara"]) - int(vd.item_repeat_s * 1000.0) - 1000
+	await _move_mouse(at)
+	await _wait(vd.item_dwell_s + 0.25)
+	_check(vd.current_line == "item.letter_tamara" and vd.is_playing(), "after %.0f s the item speaks again: %s" % [vd.item_repeat_s, vd.state()])
+	await _move_mouse(away)
+	await _wait(vd.item_fade_s + 0.2)
+	# Receiving a batch with the pointer resting on the bag: icons fly into the pockets, nothing is voiced.
+	vd.item_last_ms.clear()
+	var empty_slot: Control = bag.slots[3]
+	await _move_mouse(empty_slot.get_global_rect().get_center())
+	var n0: int = vd.events.size()
+	for id in ["pocket_watch", "mitten", "door_hinges", "chalk"]:
+		_ensure_key("item." + id)
+		sr.grant_item(id)
+	await _wait(2.0)
+	_check(_starts_since(n0, "item").is_empty(), "receiving 4 items voices none of them: %s" % [_starts_since(n0, "item")])
+	_check(not vd.is_playing(), "nothing speaks after the batch")
+	await _move_mouse(away)
+	# While a look is on screen the bag pocket is under the modal: no item voice either.
+	for id in ["key_house", "letter_tamara", "pocket_watch", "mitten", "door_hinges", "chalk"]:
+		vd.set_test_stream("item." + id, null)
+

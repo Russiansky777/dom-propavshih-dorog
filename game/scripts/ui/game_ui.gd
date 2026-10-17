@@ -11,6 +11,11 @@ extends CanvasLayer
 ## Bag sounds for the sound agent: "receive" (an item flew into the bag), "select" (taken in hand),
 ## "deselect" (put back). The UI only asks; whoever owns sfx_bag_leather plays it.
 signal bag_sound_requested(kind: String)
+## The pointer came onto / left a bag pocket with an item (InventoryBag.pocket_hover_changed). VoiceDirector
+## plays the item's voice-over line after a dwell (data/story/voice.json → narration.item_hover) and asks
+## item_hover_still() before it starts.
+signal item_hover_started(item_id: String)
+signal item_hover_ended(item_id: String)
 
 const QUICK_SLOT: String = "quick"
 const HINT_SECONDS: float = 7.0
@@ -135,6 +140,7 @@ func _build() -> void:
 	bag = InventoryBag.new()
 	bag.tooltip_top = TOP_H
 	bag.sound_requested.connect(func(kind): bag_sound_requested.emit(kind))
+	bag.pocket_hover_changed.connect(_on_pocket_hover_changed)
 	bag_center.add_child(bag)
 	journal_button = _button(StoryData.text("@ui.button_journal"), 140, &"BarButton")
 	journal_button.name = "JournalButton"
@@ -450,6 +456,19 @@ func _on_item_received(item_id: String) -> void:
 		from = at + Vector2(0, -190.0 * absf(p.scale.y))
 	from = Vector2(clampf(from.x, 120, 1800), clampf(from.y, TOP_H + 120, 960))
 	bag.fly_in(item_id, from)
+
+
+func _on_pocket_hover_changed(old_item: String, new_item: String) -> void:
+	if old_item != "":
+		item_hover_ended.emit(old_item)
+	if new_item != "":
+		item_hover_started.emit(new_item)
+
+
+## VoiceDirector asks at the end of the dwell: the tooltip still shows `item_id`, nothing modal is open,
+## no icon is flying in.
+func item_hover_still(item_id: String) -> bool:
+	return bag.tooltip_shows(item_id) and not modal.visible and not map_view.visible
 
 
 ## Same as clicking the item's pocket (tests, probe): take it in hand / put it back.

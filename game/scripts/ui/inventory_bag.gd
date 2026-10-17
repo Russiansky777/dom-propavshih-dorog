@@ -12,8 +12,12 @@ extends PanelContainer
 ##  - a received item flies into its pocket (StoryRunner.item_received; never on load);
 ##  - more items than pockets: ‹ › arrows (and the mouse wheel over the strip) page through.
 ## Sounds are requested, not played: `sound_requested(kind)` — "receive" | "select" | "deselect".
+## The item under the pointer is announced, not voiced: `pocket_hover_changed(old, new)` when the pointer
+## comes onto a pocket with an item (new = its id) or leaves it / the item under it changes (new = "" —
+## arriving items never count as the player resting on a pocket). GameUi relays it to VoiceDirector.
 
 signal sound_requested(kind: String)
+signal pocket_hover_changed(old_item: String, new_item: String)
 
 const SLOTS: int = 8
 const SLOT_SIZE := Vector2(64, 64)
@@ -46,6 +50,7 @@ var tooltip_top: float = 86.0
 
 var _row: HBoxContainer
 var _hover: BagSlot = null
+var _hover_item: String = ""       # the item whose pocket the pointer came onto (pocket_hover_changed)
 var _arriving: Dictionary = {}     # item_id -> flying BagSlot
 var _batch: int = 0
 var _batch_reset_queued: bool = false
@@ -240,6 +245,8 @@ func refresh() -> void:
 		prev_button.disabled = page == 0
 		next_button.disabled = page >= pages() - 1
 	empty_label.visible = inv.is_empty()
+	if _hover_item != "" and (_hover == null or _hover.item_id != _hover_item):
+		_set_hover_item("")   # the item under the pointer changed (arrival, page flip): not a new rest
 	if _hover != null and _hover.item_id == "":
 		_on_slot_unhover(_hover)
 	elif _hover != null:
@@ -286,12 +293,34 @@ func _on_slot_hover(s: BagSlot) -> void:
 	_hover = s
 	if s.item_id != "":
 		_show_tooltip(s)
+	_set_hover_item(s.item_id)
 
 
 func _on_slot_unhover(s: BagSlot) -> void:
 	if _hover == s:
 		_hover = null
 	tooltip.visible = false
+	if _hover == null:
+		_set_hover_item("")
+
+
+func _set_hover_item(item_id: String) -> void:
+	if item_id == _hover_item:
+		return
+	var old := _hover_item
+	_hover_item = item_id
+	pocket_hover_changed.emit(old, item_id)
+
+
+## The item the pointer rests on ("" — none).
+func hover_item() -> String:
+	return _hover_item
+
+
+## The tooltip is open for `item_id` under the pointer and no icon is flying in.
+func tooltip_shows(item_id: String) -> bool:
+	return item_id != "" and _hover_item == item_id and _hover != null and _hover.item_id == item_id \
+		and tooltip.visible and not is_animating()
 
 
 func _show_tooltip(s: BagSlot) -> void:

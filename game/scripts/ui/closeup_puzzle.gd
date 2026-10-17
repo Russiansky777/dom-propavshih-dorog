@@ -11,6 +11,7 @@ const BEAM_RECT := Rect2(560, 880, 520, 40)
 const DRAWING_RECT := Rect2(1400, 200, 440, 300)
 const TRAY_RECT := Rect2(1400, 540, 440, 120)
 const SUCCESS_CLOSE_SECONDS: float = 2.2
+const MAX_VOICE_WAIT_S: float = 15.0   # the success voice-over holds the close-up at most this long
 
 var root: Control
 var title_label: Label
@@ -213,6 +214,14 @@ func _render() -> void:
 
 func _auto_close() -> void:
 	await get_tree().create_timer(SUCCESS_CLOSE_SECONDS).timeout
+	# The success message's voice-over (VoiceDirector, kind "puzzle") is heard to its end before the
+	# close-up goes; «Закрыть» closes it at once (and cuts the voice).
+	var vd := get_node_or_null("/root/VoiceDirector")
+	var waited := 0.0
+	while vd != null and bool(vd.call("is_speaking_kind", "puzzle")) and waited < MAX_VOICE_WAIT_S \
+			and StoryRunner.puzzle_open:
+		await get_tree().create_timer(0.1).timeout
+		waited += 0.1
 	if StoryRunner.puzzle_open and bool(StoryRunner.puzzle.get("solved", false)):
 		StoryRunner.close_puzzle()
 
