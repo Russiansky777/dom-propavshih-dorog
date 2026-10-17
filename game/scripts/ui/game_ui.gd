@@ -1,15 +1,29 @@
 extends CanvasLayer
-## Mouse-only game UI: top bar (room name, inventory, Journal / Hint / Menu), dialogue box with
+## Mouse-only game UI: top bar (room name, the bag, Journal / Hint / Menu), dialogue box with
 ## options, examine/narration text, journal panel, save-slot menu, hint line, fade overlay.
 ## It renders StoryRunner/GameState state and never decides story logic itself.
+##
+## The bag (InventoryBag) lives in the top bar, not at the bottom: in every room the walkable floor
+## is the lower 40–55 % of the frame (Agata at the front edge is 1.6× larger, her feet reach
+## y≈1000), the dialogue box and the hint line are there too; the top 80 px are ceiling/sky with no
+## hotspot centres, and the bar already reserves them.
+
+## Bag sounds for the sound agent: "receive" (an item flew into the bag), "select" (taken in hand),
+## "deselect" (put back). The UI only asks; whoever owns sfx_bag_leather plays it.
+signal bag_sound_requested(kind: String)
 
 const QUICK_SLOT: String = "quick"
 const HINT_SECONDS: float = 7.0
 const TOP_H: float = 80.0
+const CURSOR_ITEM_SIZE: float = 52.0
+const CURSOR_ITEM_OFFSET := Vector2(12, 16)   # below-right of the pointer tip
 
 var top_bar: PanelContainer
 var room_label: Label
-var inventory_box: HBoxContainer
+var room_code_label: Label
+var bag: InventoryBag
+var fx_layer: Control           # flying icons (above panels, under the fade)
+var cursor_item: BagSlot        # the held item's small icon that follows the pointer
 var journal_button: Button
 var hint_button: Button
 var menu_button: Button
@@ -27,7 +41,6 @@ var menu_panel: PanelContainer
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
 var fade: ColorRect
 var hover_label: Label
-var inventory_buttons: Dictionary = {}  # item -> Button
 var music_slider: HSlider               # menu: music volume 0–100 % (MusicDirector, user://settings.cfg)
 var music_value_label: Label
 var _hover_node: Node = null
@@ -40,11 +53,12 @@ func _ready() -> void:
 	_build()
 	StoryRunner.beat_changed.connect(_render_dialogue)
 	StoryRunner.item_selection_changed.connect(func(_i): _render_inventory())
+	StoryRunner.item_received.connect(_on_item_received)
 	StoryRunner.loop_transition.connect(_on_loop_transition)
 	StoryRunner.hint_revealed.connect(func(tier, text): GameState.show_hint(StoryData.text("@ui.hint_title", {"tier": tier}) + ": " + text))
 	GameState.inventory_changed.connect(_render_inventory)
-	GameState.state_reset.connect(_render_inventory)
-	GameState.state_loaded.connect(func(_s): _render_inventory())
+	GameState.state_reset.connect(func(): bag.cancel_flights())
+	GameState.state_loaded.connect(func(_s): bag.cancel_flights())
 	GameState.hint_shown.connect(show_hint)
 	RoomManager.room_changed.connect(_on_room_changed)
 	_render_inventory()
@@ -85,17 +99,36 @@ func _build() -> void:
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 16)
 	top_bar.add_child(h)
+	var title := HBoxContainer.new()
+	title.name = "Title"
+	title.add_theme_constant_override("separation", 12)
+	title.custom_minimum_size = Vector2(440, 0)
+	h.add_child(title)
 	room_label = Label.new()
 	room_label.name = "RoomLabel"
+	room_label.theme_type_variation = &"RoomTitle"
 	room_label.add_theme_font_size_override("font_size", 24)
-	room_label.custom_minimum_size = Vector2(420, 0)
 	room_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	h.add_child(room_label)
-	inventory_box = HBoxContainer.new()
-	inventory_box.name = "Inventory"
-	inventory_box.add_theme_constant_override("separation", 8)
-	inventory_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	h.add_child(inventory_box)
+	room_label.clip_text = true
+	room_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	room_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_child(room_label)
+	# Location code (H1, Z2 …): small and muted — players read the name, testers quote the code.
+	room_code_label = Label.new()
+	room_code_label.name = "RoomCode"
+	room_code_label.theme_type_variation = &"RoomCode"
+	room_code_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	room_code_label.modulate = Color(1, 1, 1, 0.55)
+	title.add_child(room_code_label)
+	var bag_center := CenterContainer.new()
+	bag_center.name = "BagCenter"
+	bag_center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bag_center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	h.add_child(bag_center)
+	bag = InventoryBag.new()
+	bag.tooltip_top = TOP_H
+	bag.sound_requested.connect(func(kind): bag_sound_requested.emit(kind))
+	bag_center.add_child(bag)
 	journal_button = _button(StoryData.text("@ui.button_journal"), 140)
 	journal_button.name = "JournalButton"
 	journal_button.pressed.connect(toggle_journal)
@@ -298,6 +331,15 @@ func _build() -> void:
 	hover_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(hover_label)
 
+	# Flying icons ("item flies into the bag"): above the panels, under the fade.
+	fx_layer = Control.new()
+	fx_layer.name = "Fx"
+	fx_layer.position = Vector2.ZERO
+	fx_layer.size = Vector2(1920, 1080)
+	fx_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(fx_layer)
+	bag.fx_parent = fx_layer
+
 	# Fade overlay
 	fade = ColorRect.new()
 	fade.name = "Fade"
@@ -307,47 +349,58 @@ func _build() -> void:
 	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(fade)
 
+	# The held item rides with the pointer (a small icon below-right of the tip; the arrow stays).
+	cursor_item = BagSlot.new()
+	cursor_item.name = "CursorItem"
+	cursor_item.loose = true
+	cursor_item.top_level = true
+	cursor_item.size = Vector2(CURSOR_ITEM_SIZE, CURSOR_ITEM_SIZE)
+	cursor_item.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cursor_item.visible = false
+	add_child(cursor_item)
+
 
 # --- Rendering -------------------------------------------------------------------
 
 func _on_room_changed(room_id: String) -> void:
 	var name := StoryData.location_name(room_id)
-	room_label.text = "%s — %s" % [room_id, name] if name != room_id else room_id
+	room_label.text = name
+	room_code_label.text = room_id if name != room_id else ""
 
 
 func _render_inventory() -> void:
-	for c in inventory_box.get_children():
-		c.queue_free()
-	inventory_buttons.clear()
-	if GameState.inventory.is_empty():
-		var l := Label.new()
-		l.text = StoryData.text("@ui.inventory_empty")
-		l.modulate = Color(1, 1, 1, 0.5)
-		l.add_theme_font_size_override("font_size", 20)
-		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		inventory_box.add_child(l)
+	bag.refresh()
+	_update_cursor_item()
+
+
+## A granted item flies into its pocket from above Agata (or the screen centre without a player).
+func _on_item_received(item_id: String) -> void:
+	var from := Vector2(960, 540)
+	var p: Node2D = RoomManager.player
+	if p != null and is_instance_valid(p) and p.is_inside_tree():
+		var at: Vector2 = p.get_global_transform_with_canvas().origin
+		from = at + Vector2(0, -190.0 * absf(p.scale.y))
+	from = Vector2(clampf(from.x, 120, 1800), clampf(from.y, TOP_H + 120, 960))
+	bag.fly_in(item_id, from)
+
+
+## Same as clicking the item's pocket (tests, probe): take it in hand / put it back.
+func click_inventory_item(item_id: String) -> String:
+	return bag.click_item(item_id)
+
+
+func _update_cursor_item() -> void:
+	var id := StoryRunner.selected_item
+	if id == "" or not GameState.has_item(id):
+		cursor_item.visible = false
+		cursor_item.item_id = ""
 		return
-	for item_id in GameState.inventory:
-		var b := Button.new()
-		b.name = "Item_" + item_id
-		b.custom_minimum_size = Vector2(64, 56)
-		b.text = _abbrev(StoryData.item_name(item_id))
-		b.tooltip_text = StoryData.item_name(item_id)
-		b.add_theme_font_size_override("font_size", 20)
-		b.toggle_mode = true
-		b.button_pressed = StoryRunner.selected_item == item_id
-		b.pressed.connect(func(): StoryRunner.select_item(item_id))
-		inventory_box.add_child(b)
-		inventory_buttons[item_id] = b
-
-
-func _abbrev(name: String) -> String:
-	var parts := name.split(" ", false)
-	var out := ""
-	for p in parts:
-		if p.length() > 0 and out.length() < 3:
-			out += p.substr(0, 1).to_upper()
-	return out if out != "" else name.substr(0, 2)
+	if cursor_item.item_id != id:
+		cursor_item.item_id = id
+		cursor_item.item_name = StoryData.item_name(id)
+		cursor_item.icon = InventoryBag.icon_for(id)
+	cursor_item.position = get_viewport().get_mouse_position() + CURSOR_ITEM_OFFSET
+	cursor_item.visible = true
 
 
 func _render_dialogue() -> void:
@@ -471,7 +524,19 @@ func _on_new_game() -> void:
 	RoomManager.new_game.call_deferred()
 
 
+func _input(event: InputEvent) -> void:
+	# The held item's icon follows the pointer without waiting for _process.
+	if event is InputEventMouseMotion and cursor_item.visible:
+		cursor_item.position = get_viewport().get_mouse_position() + CURSOR_ITEM_OFFSET
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	# Right click anywhere on the scene puts the held item back into the bag.
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT \
+			and StoryRunner.selected_item != "":
+		bag.put_back()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("quick_save"):
 		if not StoryRunner.is_busy():
 			_on_save_slot(QUICK_SLOT)
@@ -485,6 +550,12 @@ func _unhandled_input(event: InputEvent) -> void:
 # --- Hover ------------------------------------------------------------------------
 
 func _process(_delta: float) -> void:
+	if StoryRunner.selected_item != "":
+		_update_cursor_item()
+		if modal.visible:
+			cursor_item.visible = false
+	elif cursor_item.visible:
+		cursor_item.visible = false
 	var room := RoomManager.current_room
 	if room == null or not is_instance_valid(room) or StoryRunner.is_busy() or modal.visible:
 		_set_hover(null)
@@ -547,8 +618,12 @@ func probe_positions() -> Dictionary:
 		out["buttons"]["CloseMenu"] = _center(menu_panel.find_child("CloseMenu", true, false))
 		var mr := music_slider.get_global_rect()
 		out["music_slider"] = {"x": mr.position.x, "y": mr.position.y, "w": mr.size.x, "h": mr.size.y, "value": music_slider.value}
-	for item_id in inventory_buttons.keys():
-		out["inventory"][item_id] = _center(inventory_buttons[item_id])
+	# inventory: item -> centre of its pocket (only items on the bag's current page are clickable).
+	var bp: Dictionary = bag.probe()
+	for item_id in bp["items"].keys():
+		out["inventory"][item_id] = {"x": bp["items"][item_id]["x"], "y": bp["items"][item_id]["y"]}
+	out["bag"] = bp
+	out["cursor_item"] = cursor_item.item_id if cursor_item.visible else ""
 	if dialogue.visible:
 		out["dialogue_click"] = {"x": 960, "y": 780}
 		for c in options_box.get_children():
