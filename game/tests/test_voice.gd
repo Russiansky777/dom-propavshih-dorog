@@ -22,7 +22,10 @@ extends SceneTree
 ##   - the close-up: intro / error / success are voiced once per message, a piece moved does not restart
 ##     it; the scene line that starts on success waits until the close-up closes, then plays;
 ##   - bag: the item's line after the pointer rests ≈0.6 s on its pocket (not before), leaving fades it out,
-##     the same item at most once per 30 s, receiving a batch of items voices nothing.
+##     the same item at most once per 30 s, receiving a batch of items voices nothing;
+##   - Agata's first-person thoughts (voice.json → narration.by_speaker.agata, acceptance item 75): read in
+##     Agata's voice (id agata:<key>), never by the narrator — without her file only subtitles; the narrator's
+##     recording stays a spare: taking the key out of the list brings it back.
 ## Exit code 0 only when every check passed.
 
 const TEST_SETTINGS := "user://test_voice_settings.cfg"
@@ -93,6 +96,7 @@ func _run() -> void:
 	await _test("Voice-over: labels, interface, options, puzzle captions and plain text never sound (even with a stream)", _test_narration_skips)
 	await _test("Voice-over in the close-up: intro / error / success once each; the success scene line waits for the close", _test_narration_puzzle)
 	await _test("Bag: the item's line after a ≈0.6 s rest on its pocket, fades out on leaving, once per 30 s, not on receiving", _test_item_hover)
+	await _test("Agata's thoughts: her voice (agata:<key>), never the narrator; no file — subtitles; the narrator's spare returns by data", _test_thoughts)
 	vd.stop("test end")
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -210,15 +214,18 @@ func _test_manifest() -> void:
 			continue
 		if String(e.get("kind", "")) == "narration":
 			narrated += 1
-			var key := String(lid)
+			var id := String(lid)
+			var key := String(e.get("key", id))
+			var want_sp: String = id.get_slice(":", 0) if id.contains(":") else vd.narr_speaker
 			_check(sd.texts.has(key), "%s: no such key in data/story/text" % key)
 			_check(vd.is_narration_key(key), "%s: the voice.json rules do not voice this key" % key)
-			_check(String(e.get("speaker", "")) == vd.narr_speaker, "%s: speaker %s, expected %s" % [key, e.get("speaker"), vd.narr_speaker])
+			_check(String(e.get("speaker", "")) == want_sp, "%s: speaker %s, expected %s" % [id, e.get("speaker"), want_sp])
 			var t: String = sd.text("@" + key)
-			_check(vd.line_status(key, t) == "ok", "%s: status %s" % [key, vd.line_status(key, t)])
-			var ns: AudioStream = vd.stream_for(key, t)
-			_check(ns != null and ns.get_length() > 0.2, "%s: stream %s does not load or is too short" % [key, vd.file_path(key)])
-			_check(vd.file_path(key).begins_with(vd.voice_dir + "/narrator/"), "%s: file outside narrator/: %s" % [key, vd.file_path(key)])
+			_check(vd.line_status(id, t) == "ok", "%s: status %s" % [id, vd.line_status(id, t)])
+			var ns: AudioStream = vd.stream_for(id, t)
+			_check(ns != null and ns.get_length() > 0.2, "%s: stream %s does not load or is too short" % [id, vd.file_path(id)])
+			var sub := String(vd.narr_subdirs.get(want_sp, "?"))
+			_check(vd.file_path(id) == "%s/%s/%s.ogg" % [vd.voice_dir, sub, key], "%s: file %s, expected %s/%s.ogg" % [id, vd.file_path(id), sub, key])
 			continue
 		var ln := _line(String(lid))
 		_check(not ln.is_empty(), "%s: no such scene line" % lid)
@@ -478,13 +485,23 @@ func _hotspot(id: String) -> Node:
 	return null
 
 
-## The recording for a voice-over key, or the test tone (the director is tested, not the file).
+## The manifest id the game plays for a voice-over key: the key (narrator) or "<speaker>:<key>".
+func _vid(key: String) -> String:
+	return String(vd.narration_voice(key)["id"])
+
+
+## The recording for a voice-over key (under the voice the data gives it), or the test tone.
 func _ensure_key(key: String) -> bool:
-	if vd.line_status(key, sd.text("@" + key)) == "ok":
+	var id := _vid(key)
+	if vd.line_status(id, sd.text("@" + key)) == "ok":
 		return true
-	print("        (note: %s has no recording here — test tone)" % key)
-	vd.set_test_stream(key, _tone())
+	print("        (note: %s has no recording here — test tone)" % id)
+	vd.set_test_stream(id, _tone())
 	return false
+
+
+func _drop_key(key: String) -> void:
+	vd.set_test_stream(_vid(key), null)
 
 
 func _starts_since(n0: int, kind: String = "") -> Array:
@@ -555,17 +572,17 @@ func _test_narration_cut() -> void:
 	await _frames(2)
 	_check(String(sr.current_beat.get("type", "")) == "options" and String(sr.current_beat.get("prompt_key", "")) == "H1.cups.prompt",
 		"the cups offer a choice with its prompt key: %s" % [sr.current_beat.get("prompt_key", "")])
-	_check(vd.current_line == "H1.cups.prompt" and vd.current_kind == "narration", "the question of the choice is voiced: %s" % [vd.state()])
+	_check(vd.current_line == _vid("H1.cups.prompt") and vd.current_kind == "narration" and vd.current_speaker == "agata",
+		"the question of the choice («…будет моей?») is voiced by Agata: %s" % [vd.state()])
 	for ev2 in _starts_since(n0):
 		_check(String(ev2.get("line", "")).find(".opt_") < 0, "an option label must never sound: %s" % [ev2])
 	var opts: Array = sr.current_options()
 	sr.choose(String(opts[0]["id"]))
 	await _frames(2)
-	_check(not vd.is_playing() or vd.current_line != "H1.cups.prompt", "choosing cuts the question")
+	_check(not vd.is_playing() or vd.current_line != _vid("H1.cups.prompt"), "choosing cuts the question")
 	await _finish_dialogue()
-	vd.set_test_stream("H1.cups.prompt", null)
-	vd.set_test_stream("Z1.drawings.use", null)
-	vd.set_test_stream("Z1.letters.look", null)
+	for k in ["H1.cups.prompt", "Z1.drawings.use", "Z1.letters.look"]:
+		_drop_key(k)
 
 
 func _test_narration_skips() -> void:
@@ -655,8 +672,9 @@ func _test_narration_puzzle() -> void:
 	_check(String(ev.get("line", "")) != "H3.puzzle.success" or String(ev.get("reason", "")) in ["puzzle_closed", "finished"],
 		"the success voice ended by the close or by itself: %s" % [ev])
 	await _finish_dialogue()
-	for k in ["H3.puzzle.intro", "H3.puzzle.error", "H3.puzzle.success", "M05_0"]:
-		vd.set_test_stream(k, null)
+	for k in ["H3.puzzle.intro", "H3.puzzle.error", "H3.puzzle.success"]:
+		_drop_key(k)
+	vd.set_test_stream("M05_0", null)
 
 
 func _move_mouse(at: Vector2) -> void:
@@ -690,8 +708,9 @@ func _test_item_hover() -> void:
 	await _wait(0.3)
 	_check(not vd.is_playing(), "not before the dwell (0.3 s of %.1f)" % vd.item_dwell_s)
 	await _wait(vd.item_dwell_s - 0.3 + 0.25)
-	_check(vd.is_playing() and vd.current_line == "item.letter_tamara" and vd.current_kind == "item" and vd.current_speaker == vd.narr_speaker,
-		"after the dwell the narrator reads the item's line: %s" % [vd.state()])
+	_check(vd.is_playing() and vd.current_line == _vid("item.letter_tamara") and vd.current_kind == "item"
+		and vd.current_speaker == String(vd.narration_voice("item.letter_tamara")["speaker"]),
+		"after the dwell the item's line plays in its voice (%s): %s" % [vd.narration_voice("item.letter_tamara")["speaker"], vd.state()])
 	_check(String(_voice_player().bus) == "Voice", "item line on the Voice bus")
 	await _wait(0.4)
 	_check(vd.is_playing(), "still speaking while the pointer rests")
@@ -700,26 +719,26 @@ func _test_item_hover() -> void:
 	await _wait(vd.item_fade_s + 0.2)
 	_check(not vd.is_playing(), "faded out and stopped")
 	var ev := _last_event("stop")
-	_check(String(ev.get("line", "")) == "item.letter_tamara" and String(ev.get("reason", "")) == "hover_end", "stopped by leaving: %s" % [ev])
+	_check(String(ev.get("line", "")) == _vid("item.letter_tamara") and String(ev.get("reason", "")) == "hover_end", "stopped by leaving: %s" % [ev])
 	# Again within 30 s: tooltip yes, voice no.
 	await _move_mouse(at)
 	await _wait(vd.item_dwell_s + 0.3)
 	_check(bag.tooltip.visible and not vd.is_playing(), "the same item again within %.0f s: no voice" % vd.item_repeat_s)
 	var skip := _last_event("item_skip")
-	_check(String(skip.get("line", "")) == "item.letter_tamara" and String(skip.get("reason", "")) == "cooldown", "logged as cooldown: %s" % [skip])
+	_check(String(skip.get("line", "")) == _vid("item.letter_tamara") and String(skip.get("reason", "")) == "cooldown", "logged as cooldown: %s" % [skip])
 	# Another item is not held back by the first one's cooldown.
 	await _move_mouse(away)
 	var s2: Control = bag.slot_of("key_house")
 	await _move_mouse(s2.get_global_rect().get_center())
 	await _wait(vd.item_dwell_s + 0.25)
-	_check(vd.current_line == "item.key_house" and vd.is_playing(), "another item speaks: %s" % [vd.state()])
+	_check(vd.current_line == _vid("item.key_house") and vd.is_playing(), "another item speaks: %s" % [vd.state()])
 	await _move_mouse(away)
 	await _wait(vd.item_fade_s + 0.2)
 	# 30 s later the first item speaks again.
 	vd.item_last_ms["letter_tamara"] = int(vd.item_last_ms["letter_tamara"]) - int(vd.item_repeat_s * 1000.0) - 1000
 	await _move_mouse(at)
 	await _wait(vd.item_dwell_s + 0.25)
-	_check(vd.current_line == "item.letter_tamara" and vd.is_playing(), "after %.0f s the item speaks again: %s" % [vd.item_repeat_s, vd.state()])
+	_check(vd.current_line == _vid("item.letter_tamara") and vd.is_playing(), "after %.0f s the item speaks again: %s" % [vd.item_repeat_s, vd.state()])
 	await _move_mouse(away)
 	await _wait(vd.item_fade_s + 0.2)
 	# Receiving a batch with the pointer resting on the bag: icons fly into the pockets, nothing is voiced.
@@ -736,5 +755,62 @@ func _test_item_hover() -> void:
 	await _move_mouse(away)
 	# While a look is on screen the bag pocket is under the modal: no item voice either.
 	for id in ["key_house", "letter_tamara", "pocket_watch", "mitten", "door_hinges", "chalk"]:
-		vd.set_test_stream("item." + id, null)
+		_drop_key("item." + id)
+
+
+func _test_thoughts() -> void:
+	# Every key the data gives Agata is hers, and none of them falls back to the narrator.
+	var owned: Array = vd.narr_owner.keys()
+	_check(owned.size() >= 20, "voice.json gives Agata her first-person thoughts (%d keys)" % owned.size())
+	for k in ["Z1.exit_Z4.closed", "O1.bird_drawing.prompt", "H1.cups.prompt", "item.key_house", "O2.tree.look", "H1.photo.look"]:
+		_check(String(vd.narr_owner.get(k, "")) == "agata" and _vid(k) == "agata:" + k, "%s is Agata's thought (id %s)" % [k, _vid(k)])
+	for k in ["Z1.letters.look", "Z1.tamara.after", "H3.puzzle.success", "item.door_hinges"]:
+		_check(_vid(k) == k, "%s stays with the narrator" % k)
+	# A closed exit before Tamara: «Я ещё не поговорила с Тамарой» — Agata's voice, not the baritone.
+	gs.reset()
+	await _enter("Z1")
+	_ensure_key("Z1.exit_Z4.closed")
+	var ex: Node = null
+	for e in rm.current_room.get_exits():
+		if String(e.data.get("closed_text", "")) == "@Z1.exit_Z4.closed":
+			ex = e
+	_check(ex != null and not ex.is_open(), "Z1 has the closed street exit")
+	if ex != null:
+		sr.use_exit(ex)
+		await _frames(2)
+		_check(String(sr.current_beat.get("text_key", "")) == "Z1.exit_Z4.closed", "the closed exit narrates its key")
+		_check(vd.is_playing() and vd.current_line == "agata:Z1.exit_Z4.closed" and vd.current_speaker == "agata"
+			and vd.current_mode == "plain" and vd.current_kind == "narration", "Agata reads her thought: %s" % [vd.state()])
+		_check(md.dialogue_active(), "the music ducks under her thought as under the narrator")
+		await _finish_dialogue()
+	# The narrator's recording of the same key is still a valid spare in the manifest …
+	var text: String = sd.text("@Z1.exit_Z4.closed")
+	if vd.manifest.has("Z1.exit_Z4.closed"):
+		_check(vd.line_status("Z1.exit_Z4.closed", text) == "ok", "the narrator's spare recording stays valid")
+	# … and taking the key out of Agata's list (a data change) brings it back.
+	_ensure_voice_key_narrator("Z1.exit_Z4.closed")
+	vd.narr_owner.erase("Z1.exit_Z4.closed")
+	sr.narrate_key("@Z1.exit_Z4.closed")
+	await _frames(2)
+	_check(vd.current_line == "Z1.exit_Z4.closed" and vd.current_speaker == vd.narr_speaker, "without the assignment the narrator reads it: %s" % [vd.state()])
+	await _finish_dialogue()
+	vd.reload_config()
+	_check(_vid("Z1.exit_Z4.closed") == "agata:Z1.exit_Z4.closed", "reloaded data: Agata's again")
+	# No file of Agata's (H1.photo.look is held back): subtitles only, the narrator's «Наш…» never plays.
+	var n0: int = vd.events.size()
+	sr.narrate_key("@H1.photo.look")
+	await _frames(2)
+	_check(not vd.is_playing(), "H1.photo.look without Agata's file: no voice (%s)" % [vd.state()])
+	var ev := _last_event("subtitles_only")
+	_check(String(ev.get("line", "")) == "agata:H1.photo.look", "logged under Agata's id: %s" % [ev])
+	_check(_starts_since(n0).is_empty(), "no fallback to the narrator")
+	await _finish_dialogue()
+	_drop_key("Z1.exit_Z4.closed")
+	vd.set_test_stream("Z1.exit_Z4.closed", null)
+
+
+## The narrator's own recording of `key` (or a tone under the narrator's id) — for the switch-back check.
+func _ensure_voice_key_narrator(key: String) -> void:
+	if vd.line_status(key, sd.text("@" + key)) != "ok":
+		vd.set_test_stream(key, _tone())
 

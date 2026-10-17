@@ -161,23 +161,44 @@ def referenced_keys() -> set[str]:
     return refs
 
 
+def narration_by_speaker(cfg: dict) -> dict[str, dict]:
+    """voice.json → narration.by_speaker: персонаж → {subdir, keys, tags, hold} (мысли Агаты от первого лица)."""
+    return {str(sp): v for sp, v in (cfg.get("by_speaker") or {}).items() if not str(sp).startswith("_") and isinstance(v, dict)}
+
+
 def narration_lines() -> dict[str, dict]:
-    """Закадровые фразы: ключ → {kind: narration, key, speaker, text, source (имя файла текста), used[, tags]}."""
+    """Закадровые фразы: id → {kind: narration, key, speaker, text, source (имя файла текста), used, assigned,
+    subdir[, tags, profile, hold]}. Закадровая запись (id = ключ) есть у каждого озвучиваемого ключа — для ключей,
+    назначенных персонажу (by_speaker), она запасная (assigned = false); запись персонажа — id <персонаж>:<ключ>."""
     cfg = narration_cfg()
     speaker = str(cfg.get("speaker", "narrator"))
     refs = referenced_keys() if cfg else set()
+    by_sp = narration_by_speaker(cfg)
+    owner = {str(k): sp for sp, v in by_sp.items() for k in v.get("keys", [])}
     out: dict[str, dict] = {}
     for f in sorted(TEXT_DIR.glob("*.json")):
         for k, v in (read_json(f, {}) or {}).get("texts", {}).items():
-            if not narration_key_ok(str(k), cfg):
+            k = str(k)
+            if not narration_key_ok(k, cfg):
                 continue
-            e = {"kind": "narration", "key": str(k), "scene": "", "index": 0, "speaker": speaker,
-                 "text": str(v.get("text", "")), "source": f.stem, "used": str(k) in refs}
+            e = {"kind": "narration", "key": k, "scene": "", "index": 0, "speaker": speaker,
+                 "text": str(v.get("text", "")), "source": f.stem, "used": k in refs, "assigned": k not in owner,
+                 "subdir": str(cfg.get("subdir", "narrator"))}
             if v.get("tags"):
                 e["tags"] = [str(t) for t in v["tags"]]
             if v.get("voice_text"):
                 e["voice_text"] = str(v["voice_text"])
-            out[str(k)] = e
+            out[k] = e
+            if k in owner:
+                sp = owner[k]
+                bs = by_sp[sp]
+                pe = {"kind": "narration", "key": k, "scene": "", "index": 0, "speaker": sp, "text": e["text"],
+                      "source": f.stem, "used": e["used"], "assigned": True, "subdir": str(bs.get("subdir", sp)),
+                      "profile": "inner", "hold": k in [str(x) for x in bs.get("hold", [])]}
+                tags = (bs.get("tags") or {}).get(k)
+                if tags:
+                    pe["tags"] = [str(t) for t in tags]
+                out[f"{sp}:{k}"] = pe
     return out
 
 
@@ -189,9 +210,10 @@ def all_lines() -> dict[str, dict]:
 
 
 def file_rel(ln: dict, lid: str, ext: str) -> str:
-    """Путь файла относительно набора: <id>.<ext> для реплик, <subdir>/<ключ>.<ext> для закадровых фраз."""
+    """Путь файла относительно набора: <id>.<ext> для реплик, <subdir>/<ключ>.<ext> для закадровых фраз
+    (narrator/… — закадровый голос, agata_thoughts/… — мысли Агаты)."""
     if ln.get("kind") == "narration":
-        return f"{narration_cfg().get('subdir', 'narrator')}/{lid}.{ext}"
+        return f"{ln.get('subdir') or narration_cfg().get('subdir', 'narrator')}/{ln.get('key', lid)}.{ext}"
     return f"{lid}.{ext}"
 
 
@@ -419,13 +441,16 @@ def process(src: Path, dst: Path, lc: dict) -> dict:
 
 # --- generate ----------------------------------------------------------------------------------------
 
-def cast_for(cast: dict, speaker: str, alt: dict | None = None) -> dict:
-    """Голос персонажа: основной (cast.<id>) или альтернативный (cast.<id>.alternates.<вариант>) поверх основного."""
+def cast_for(cast: dict, speaker: str, alt: dict | None = None, profile: str = "") -> dict:
+    """Голос персонажа: основной (cast.<id>) или альтернативный (cast.<id>.alternates.<вариант>) поверх основного;
+    profile "inner" — подача мыслей (cast.<id>.inner_voice.voice_settings поверх настроек реплик)."""
     c = cast.get("cast", {}).get(speaker)
     if not c or not c.get("voice_id"):
         raise VoiceError(f"персонаж {speaker!r} без голоса в cast.json")
     settings = dict(cast.get("defaults", {}).get("voice_settings", {}))
     settings.update(c.get("voice_settings", {}))
+    if profile:
+        settings.update((c.get(f"{profile}_voice") or {}).get("voice_settings", {}))
     spec = {"voice_id": c["voice_id"], "voice_name": c.get("voice_name", ""),
             "model_id": c.get("model_id", cast.get("model_id", "eleven_v4")), "voice_settings": settings}
     if alt:
@@ -494,13 +519,16 @@ def mark_stale(manifest: dict, lines: dict[str, dict]) -> list[str]:
     """Помечает записи, которых нет в сценах или чей текст изменился; снимает метку с совпавших."""
     changed = []
     for lid, e in manifest["lines"].items():
-        cur = lines.get(lid)
+        narr = e.get("kind") == "narration"
+        # Закадровая фраза устаревает только с текстом ключа: запись персонажа для ключа, который снова
+        # отдан закадровому голосу (и наоборот), остаётся запасной — переключение = правка voice.json.
+        cur = lines.get(lid) or (lines.get(str(e.get("key", ""))) if narr else None)
         reason = ""
         if cur is None:
-            reason = "нет в текстах" if e.get("kind") == "narration" else "нет в сценах"
+            reason = "нет в текстах" if narr else "нет в сценах"
         elif text_sha1(cur["text"]) != e.get("text_sha1"):
             reason = "текст изменён"
-        elif cur["speaker"] != e.get("speaker"):
+        elif not narr and cur["speaker"] != e.get("speaker"):
             reason = "другой персонаж"
         if reason and e.get("stale") != reason:
             e["stale"] = reason
@@ -533,15 +561,21 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         if missing_texts:
             raise VoiceError(f"нет файлов текста data/story/text/: {', '.join(missing_texts)}")
         only = {str(k) for k in nreq.get("keys", [])}
+        speakers_only = {str(x) for x in nreq.get("speakers", [])}
+        # Только назначенный голос ключа (закадровый или персонаж из by_speaker); запасные записи не трогаем.
         narr = {lid: ln for lid, ln in lines.items() if ln.get("kind") == "narration" and ln["source"] in texts
-                and (not only or lid in only)}
-        bad_only = sorted(only - set(narr))
+                and ln.get("assigned", True) and (not speakers_only or ln["speaker"] in speakers_only)
+                and (not only or lid in only or ln["key"] in only)}
+        bad_only = sorted(k for k in only if not any(lid == k or ln["key"] == k for lid, ln in narr.items()))
         if bad_only:
-            raise VoiceError(f"narration.keys не озвучиваются по правилам voice.json или нет в текстах: {bad_only}")
+            raise VoiceError(f"narration.keys не озвучиваются по правилам voice.json, не назначены этим голосам или нет в текстах: {bad_only}")
         unused = sorted(lid for lid, ln in narr.items() if not ln["used"])
         if unused:
             log(f"  закадровые фразы без ссылок в данных игры — пропущены: {', '.join(unused)}")
-        scope.update({lid: ln for lid, ln in narr.items() if ln["used"]})
+        held = sorted(lid for lid, ln in narr.items() if ln.get("hold"))
+        if held:
+            log(f"  отложены (voice.json → by_speaker.<персонаж>.hold): {', '.join(held)}")
+        scope.update({lid: ln for lid, ln in narr.items() if ln["used"] and not ln.get("hold")})
     limit = int(cast.get("max_chars", 5000))
     too_long = [lid for lid, ln in scope.items() if len(ln["text"]) > limit]
     if too_long:
@@ -561,7 +595,7 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             if vs["speaker"] is not None and ln["speaker"] != vs["speaker"]:
                 continue
             try:
-                spec = cast_for(cast, ln["speaker"], vs["alt"])
+                spec = cast_for(cast, ln["speaker"], vs["alt"], str(ln.get("profile", "")))
             except VoiceError as e:
                 missing.append(str(e))
                 continue
@@ -637,8 +671,10 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         manifest = vs["manifest"]
         prev = manifest["lines"].get(lid, {})
         fresh_audio = it["action"] == "synth"
-        where = ({"kind": "narration", "key": lid, "source_text": ln["source"]} if ln.get("kind") == "narration"
+        where = ({"kind": "narration", "key": ln["key"], "source_text": ln["source"]} if ln.get("kind") == "narration"
                  else {"scene": ln["scene"], "index": ln["index"]})
+        if ln.get("profile"):
+            where["profile"] = ln["profile"]
         entry = {**where, "speaker": ln["speaker"], "text": ln["text"], "text_sha1": sha,
                  "voice_id": spec["voice_id"], "voice_name": spec["voice_name"], "model_id": spec["model_id"],
                  "voice_settings": spec["voice_settings"], "file": file_rel(ln, lid, "ogg"),
@@ -700,7 +736,8 @@ def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:
     lines = dict(sorted(manifest["lines"].items(), key=lambda kv: (kv[1].get("kind") == "narration", kv[1].get("scene", ""),
                                                                   int(kv[1].get("index", 0)), kv[0])))
     doc = {"_comment": "Озвученные реплики: id = <scene>_<index> (index — позиция в mandatory_lines/lines); закадровые фразы "
-                       "(kind narration, голос narrator): id = ключ текста data/story/text, файл narrator/<ключ>.ogg. Пишет "
+                       "(kind narration, голос narrator): id = ключ текста data/story/text, файл narrator/<ключ>.ogg; мысли "
+                       "персонажа (data/story/voice.json → narration.by_speaker): id <персонаж>:<ключ>, файл <subdir>/<ключ>.ogg. Пишет "
                        "pipeline/voice/eleven_voice.py; игра читает копию (tools/sync_voice.sh) и играет файл, только если sha1 "
                        "текста совпадает с текущей репликой. stale — реплики больше нет или текст изменён.",
            "language": "ru", "variant": vs["variant"], "speaker_only": vs["speaker"],

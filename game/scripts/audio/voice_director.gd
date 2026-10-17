@@ -26,6 +26,10 @@ extends Node
 ##     even with a file. The click «дальше» / the next look cuts it; it ducks the music while it sounds;
 ##     a scene line that appears while the close-up is open waits until the close-up closes (its subtitle
 ##     is under the close-up; the close-up's own message speaks meanwhile);
+##   - thoughts (voice.json → narration.by_speaker): a key a character owns — Agata's first-person
+##     thoughts — is read by that character, manifest id `<speaker>:<key>` (`agata:Z1.exit_Z4.closed`), never
+##     by the narrator: without the character's file the text stays subtitles only. The narrator's recording
+##     of such a key stays in the manifest as a spare; taking the key out of `keys` brings it back;
 ##   - bag: the pointer resting on a pocket `item_hover.dwell_s` (tooltip open, nothing else on screen or
 ##     speaking, no icons flying in) plays `item.<id>`; leaving the pocket fades it out over `fade_out_s`;
 ##     the same item sounds at most once per `repeat_after_s`. Receiving items never plays them.
@@ -60,6 +64,8 @@ var narr_speaker: String = "narrator"
 var narr_skip_sections: Array = []
 var narr_skip_fields: Array = []
 var narr_skip_keys: Array = []
+var narr_owner: Dictionary = {}       # text key -> the character who reads it (narration.by_speaker)
+var narr_subdirs: Dictionary = {}     # speaker -> folder of their voice-over files (narrator/, agata_thoughts/)
 var item_dwell_s: float = 0.6
 var item_repeat_s: float = 30.0
 var item_fade_s: float = 0.3
@@ -174,6 +180,15 @@ func reload_config() -> void:
 	narr_skip_sections = n.get("skip_sections", [])
 	narr_skip_fields = n.get("skip_fields", [])
 	narr_skip_keys = n.get("skip_keys", [])
+	narr_owner = {}
+	narr_subdirs = {narr_speaker: String(n.get("subdir", "narrator"))}
+	var bs: Dictionary = n.get("by_speaker", {})
+	for sp in bs.keys():
+		if String(sp).begins_with("_") or not (bs[sp] is Dictionary):
+			continue
+		narr_subdirs[String(sp)] = String(bs[sp].get("subdir", sp))
+		for k in bs[sp].get("keys", []):
+			narr_owner[String(k)] = String(sp)
 	var ih: Dictionary = n.get("item_hover", {})
 	item_dwell_s = float(ih.get("dwell_s", 0.6))
 	item_repeat_s = float(ih.get("repeat_after_s", 30.0))
@@ -232,6 +247,13 @@ func is_narration_key(key: String) -> bool:
 	return true
 
 
+## Who reads the voice-over of `key` and under which manifest id: the narrator (id = key) or the character
+## the key is given to in voice.json → narration.by_speaker (id = "<speaker>:<key>").
+func narration_voice(key: String) -> Dictionary:
+	var sp := String(narr_owner.get(key, narr_speaker))
+	return {"id": key if sp == narr_speaker else "%s:%s" % [sp, key], "speaker": sp, "key": key}
+
+
 func file_path(line_id: String) -> String:
 	var e: Dictionary = manifest.get(line_id, {})
 	return "%s/%s" % [voice_dir, String(e.get("file", line_id + ".ogg"))]
@@ -261,11 +283,18 @@ func beat_voice(b: Dictionary) -> Dictionary:
 				return {"id": String(b["line_id"]), "speaker": String(b.get("speaker", "")), "text": String(b.get("text", "")), "kind": "line"}
 		"narration":
 			if String(b.get("text_key", "")) != "":
-				return {"id": String(b["text_key"]), "speaker": narr_speaker, "text": String(b.get("text", "")), "kind": "narration"}
+				return _narration_item(String(b["text_key"]), String(b.get("text", "")), "narration")
 		"options":
 			if String(b.get("prompt_key", "")) != "":
-				return {"id": String(b["prompt_key"]), "speaker": narr_speaker, "text": String(b.get("prompt", "")), "kind": "narration"}
+				return _narration_item(String(b["prompt_key"]), String(b.get("prompt", "")), "narration")
 	return {}
+
+
+func _narration_item(key: String, text: String, kind: String) -> Dictionary:
+	var v := narration_voice(key)
+	v["text"] = text
+	v["kind"] = kind
+	return v
 
 
 func _on_beat_changed() -> void:
@@ -292,7 +321,7 @@ func _on_beat_changed() -> void:
 
 func _play_voice(v: Dictionary) -> String:
 	var kind := String(v.get("kind", "line"))
-	if kind != "line" and not is_narration_key(String(v["id"])):
+	if kind != "line" and not is_narration_key(String(v.get("key", v["id"]))):
 		_event({"kind": "subtitles_only", "line": String(v["id"]), "speaker": String(v["speaker"]), "reason": "not_voiced"})
 		return "not_voiced"
 	return play_line(String(v["id"]), String(v["speaker"]), String(v["text"]), kind)
@@ -440,7 +469,7 @@ func _on_puzzle_state() -> void:
 	var key := String(pz.get("message_key", ""))
 	if key == "":
 		return
-	_play_voice({"id": key, "speaker": narr_speaker, "text": String(pz.get("message", "")), "kind": "puzzle"})
+	_play_voice(_narration_item(key, String(pz.get("message", "")), "puzzle"))
 
 
 func _on_puzzle_closed() -> void:
@@ -491,7 +520,7 @@ func on_item_hover_ended(item_id: String) -> void:
 	if _hover_item == item_id:
 		_hover_item = ""
 		_hover_source = null
-	if is_speaking_kind("item") and current_line == "item." + item_id and not is_fading():
+	if is_speaking_kind("item") and current_line == String(narration_voice("item." + item_id)["id"]) and not is_fading():
 		fade_out(item_fade_s, "hover_end")
 
 
@@ -499,6 +528,7 @@ func on_item_hover_ended(item_id: String) -> void:
 ## same item spoke less than item_repeat_s ago. Returns what happened (tests, the web probe).
 func _try_item_voice(item_id: String) -> String:
 	var key := "item." + item_id
+	var nv := narration_voice(key)
 	var why := ""
 	if not StoryRunner.current_beat.is_empty() or StoryRunner.puzzle_open:
 		why = "busy"
@@ -510,9 +540,9 @@ func _try_item_voice(item_id: String) -> String:
 	elif item_last_ms.has(item_id) and Time.get_ticks_msec() - int(item_last_ms[item_id]) < int(item_repeat_s * 1000.0):
 		why = "cooldown"
 	if why != "":
-		_event({"kind": "item_skip", "line": key, "reason": why})
+		_event({"kind": "item_skip", "line": String(nv["id"]), "reason": why})
 		return why
-	var r := _play_voice({"id": key, "speaker": narr_speaker, "text": StoryData.text("@" + key), "kind": "item"})
+	var r := _play_voice(_narration_item(key, StoryData.text("@" + key), "item"))
 	if r == "playing":
 		item_last_ms[item_id] = Time.get_ticks_msec()
 	return r
