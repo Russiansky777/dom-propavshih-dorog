@@ -254,22 +254,28 @@ async function main() {
       const ref = await state();
       await pause(false);
       if (ref.room !== "H1") failures.push(`stride: expected H1 for the reference frame, got ${ref.room}`);
+      // Four straight walks, one per cardinal row, captured ~33 ms of game time apart (timeScale 0.25):
+      // every sheet-frame change falls between two captures, several captures fall inside each frame.
       // Floor points clear of exits (H2: x ≥ 1790; H3/H4: y ≥ 1000) and hotspots.
+      const STRIDE_MAX = Number(process.env.STRIDE_MAX || 140);
       await click("floor start right", { x: 1700, y: 985 });
       await waitWalk("start right");
       await sleep(300);
-      await capture("left", { x: 880, y: 985 });
+      await capture("left", { x: 880, y: 985 }, STRIDE_MAX, 0.25);     // row 6
       await sleep(300);
-      await capture("right", { x: 1700, y: 985 });
+      await capture("right", { x: 1700, y: 985 }, STRIDE_MAX, 0.25);   // row 2
       await sleep(300);
-      // Dense series (~33 ms of game time apart): several captures fall inside one sheet frame and
-      // must be pixel-identical around the figure (the drawn figure only moves when the frame changes).
-      await capture("hold", { x: 1250, y: 985 }, 36, 0.25);
+      await click("floor start bottom", { x: 1650, y: 990 });
+      await waitWalk("start bottom");
+      await sleep(300);
+      await capture("up", { x: 1650, y: 760 }, STRIDE_MAX, 0.25);      // row 4
+      await sleep(300);
+      await capture("down", { x: 1650, y: 990 }, STRIDE_MAX, 0.25);    // row 0
       const fin = await state();
       if (fin.room !== "H1") failures.push(`stride series must stay in H1, ended in ${fin.room}`);
       const first = series.find((x) => x.actor && x.actor.stride_px);
       fs.writeFileSync(path.join(STRIDE_DIR, "series.json"), JSON.stringify({
-        room: "H1", interval_ms: 100, ref: { player: ref.player, actor: ref.actor },
+        room: "H1", interval_game_ms: 33, ref: { player: ref.player, actor: ref.actor },
         stride_px: first ? first.actor.stride_px : null, samples: series,
       }, null, 2));
       logLine(`stride series: ${series.length} frames in ${path.relative(ROOT, STRIDE_DIR)}`);
