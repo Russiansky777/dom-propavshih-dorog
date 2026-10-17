@@ -59,9 +59,11 @@ def main() -> int:
     ap.add_argument("--front-yaw", type=float, default=0.0, help="поправка, если анфас не на d=0")
     ap.add_argument("--samples", type=int, default=24)
     ap.add_argument("--margin", type=float, default=1.12)
+    ap.add_argument("--clips", nargs="*", default=[], help="точное имя клипа на действие: open_b=open_door_1 (из pipeline/3d/state/<name>.json); без него — подбор по подстроке")
     ap.add_argument("--window", nargs="*", default=[], help="доля клипа на действие: idle=0:0.35 — кадры берутся только из этого отрезка (для клипов с лишним движением), в манифест пишется playback=pingpong")
     args = ap.parse_args()
     windows: dict[str, tuple[float, float]] = {}
+    clip_keys: dict[str, str] = dict(c.split("=", 1) for c in args.clips)
     for w in args.window:
         k, v = w.split("=", 1); a, b = v.split(":"); windows[k] = (float(a), float(b))
 
@@ -153,7 +155,15 @@ def main() -> int:
 
     wanted_order = list(frames_by_action.keys())
     for idx, (action_name, nframes) in enumerate(frames_by_action.items()):
-        act = next((a for a in actions if action_name.lower() in a.name.lower()), None)
+        act = None
+        if action_name in clip_keys:
+            key = clip_keys[action_name]
+            # точное имя (Blender может добавить суффикс .001 при повторном импорте)
+            act = next((a for a in actions if a.name == key or a.name.split(".")[0] == key), None)
+            if act is None:
+                print(f"нет клипа «{key}» для «{action_name}»; в файле: {[a.name for a in actions]}", file=sys.stderr); continue
+        if act is None:
+            act = next((a for a in actions if action_name.lower() in a.name.lower()), None)
         if act is None and len(actions) == 1:
             act = actions[0]
         if act is None and len(actions) == len(wanted_order):
