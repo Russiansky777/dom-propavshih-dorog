@@ -1,24 +1,131 @@
 {
   "id": "Z2",
-  "background": {"kind": "exterior", "wall": "#8fa0b0", "floor": "#6e6a58", "accent": "#5e5a48", "horizon": 580},
-  "spawns": {"default": [960, 920], "from_Z1": [190, 900], "from_H1": [700, 720], "from_H3": [1300, 720], "from_M1": [1730, 900], "from_Z3": [1500, 1000], "from_R1": [420, 1000]},
+  "background": {
+    "kind": "exterior",
+    "wall": "#8fa0b0",
+    "floor": "#6e6a58",
+    "accent": "#5e5a48",
+    "horizon": 580
+  },
+  "spawns": {
+    "default": [
+      960,
+      920
+    ],
+    "from_Z1": [
+      190,
+      900
+    ],
+    "from_H1": [
+      700,
+      720
+    ],
+    "from_H3": [
+      1300,
+      720
+    ],
+    "from_M1": [
+      1730,
+      900
+    ],
+    "from_Z3": [
+      1500,
+      1000
+    ],
+    "from_R1": [
+      420,
+      1000
+    ]
+  },
   "props": [
-    {"id": "house", "label": "@Z2.house.label", "rect": [520, 180, 420, 400], "color": "#7a5a3c"},
-    {"id": "mill_far", "label": "@Z2.mill_far.label", "rect": [1560, 260, 160, 220], "color": "#55606a"}
+    {
+      "id": "house",
+      "label": "@Z2.house.label",
+      "rect": [
+        520,
+        180,
+        420,
+        400
+      ],
+      "color": "#7a5a3c"
+    },
+    {
+      "id": "mill_far",
+      "label": "@Z2.mill_far.label",
+      "rect": [
+        1560,
+        260,
+        160,
+        220
+      ],
+      "color": "#55606a"
+    }
   ],
   "hotspots": [
     {
-      "id": "landmarks", "kind": "object", "label": "@Z2.landmarks.label", "rect": [1040, 300, 220, 120], "stand": [1150, 700], "color": "#9aa8b4",
+      "id": "landmarks",
+      "kind": "object",
+      "label": "@Z2.landmarks.label",
+      "rect": [
+        960,
+        300,
+        220,
+        120
+      ],
+      "stand": [
+        1070,
+        700
+      ],
+      "color": "#9aa8b4",
       "look": "@Z2.landmarks.look"
     }
   ],
   "exits": [
-    {"to": "Z1", "label": "@Z2.exit_Z1.label", "side": "left", "spawn": "from_Z2"},
-    {"to": "H1", "label": "@Z2.exit_H1.label", "side": "back", "x": 700, "spawn": "from_Z2", "closed_text": "@Z2.exit_H1.closed"},
-    {"to": "H3", "label": "@Z2.exit_H3.label", "side": "back", "x": 1300, "spawn": "from_Z2", "closed_text": "@Z2.exit_H3.closed"},
-    {"to": "M1", "label": "@Z2.exit_M1.label", "side": "right", "spawn": "from_Z2", "closed_text": "@Z2.exit_M1.closed"},
-    {"to": "Z3", "label": "@Z2.exit_Z3.label", "side": "bottom", "x": 1500, "spawn": "from_Z2", "closed_text": "@Z2.exit_Z3.closed"},
-    {"to": "R1", "label": "@Z2.exit_R1.label", "side": "bottom", "x": 420, "spawn": "from_Z2", "closed_text": "@Z2.exit_R1.closed"}
+    {
+      "to": "Z1",
+      "label": "@Z2.exit_Z1.label",
+      "side": "left",
+      "spawn": "from_Z2"
+    },
+    {
+      "to": "H1",
+      "label": "@Z2.exit_H1.label",
+      "side": "back",
+      "x": 700,
+      "spawn": "from_Z2",
+      "closed_text": "@Z2.exit_H1.closed"
+    },
+    {
+      "to": "H3",
+      "label": "@Z2.exit_H3.label",
+      "side": "back",
+      "x": 1300,
+      "spawn": "from_Z2",
+      "closed_text": "@Z2.exit_H3.closed"
+    },
+    {
+      "to": "M1",
+      "label": "@Z2.exit_M1.label",
+      "side": "right",
+      "spawn": "from_Z2",
+      "closed_text": "@Z2.exit_M1.closed"
+    },
+    {
+      "to": "Z3",
+      "label": "@Z2.exit_Z3.label",
+      "side": "bottom",
+      "x": 1500,
+      "spawn": "from_Z2",
+      "closed_text": "@Z2.exit_Z3.closed"
+    },
+    {
+      "to": "R1",
+      "label": "@Z2.exit_R1.label",
+      "side": "bottom",
+      "x": 420,
+      "spawn": "from_Z2",
+      "closed_text": "@Z2.exit_R1.closed"
+    }
   ],
   "scenes": {},
   "flags": {}

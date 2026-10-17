@@ -486,9 +486,11 @@ func _test_story_data() -> void:
 	_check(sd.scenes.has("M01") and sd.scenes.has("M08") and sd.scenes.has("Q04"), "scenes M01/M08/Q04 missing")
 	_check(sd.start_location == "Z1", "start location should be Z1, got %s" % sd.start_location)
 	_check(not sd.text("@ui.not_built").begins_with("["), "ui texts not resolved")
-	# Build every in-scope room standalone and verify structure.
+	# Build every in-scope room standalone and verify structure. (Loaded at runtime: a -s script
+	# must not name classes whose scripts depend on autoloads, see the note at the top.)
+	var builder = load("res://scripts/rooms/room_builder.gd")
 	for rid in sd.rooms_index.get("in_scope", []):
-		var room = RoomBuilder.build(rid)
+		var room = builder.build(rid)
 		_check(room != null, "RoomBuilder.build(%s) returned null" % rid)
 		if room == null:
 			continue
@@ -601,10 +603,8 @@ func _test_walkthrough() -> void:
 	await bot.finish()
 	_check(gs.has_flag("stove_lit") and gs.has_flag("h1_shutter_open"), "M03 steps 1-2")
 	await bot.use("scarf")
-	await bot.finish()
-	await process_frame
+	seen = await bot.finish()  # the scarf narration, then M03 (deferred trigger) in the same run
 	_check(gs.has_flag("started_M03"), "M03 should start after the third step")
-	seen = await bot.finish()
 	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon") and gs.has_flag("house_open"), "M03 flags missing: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("options:")), "M03 context line should be offered as an option: %s" % str(seen))
 	var tikhon = bot.hotspot("tikhon")

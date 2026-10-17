@@ -258,6 +258,18 @@ for rid, room in rooms.items():
         if to not in seen_targets:
             err(f"{ctx}: переход {rid}–{to} из locations.json не имеет выхода в комнате")
 
+    # хотспот под выходом недостижим кликом, если его pick_priority не выше приоритета выхода (1)
+    def _overlap(a, b) -> bool:
+        return a[0] < b[0] + b[2] and b[0] < a[0] + a[2] and a[1] < b[1] + b[3] and b[1] < a[1] + a[3]
+
+    for h in room.get("hotspots", []):
+        if "rect" not in h:
+            continue
+        for ex in exits:
+            rect, _stand = exit_geometry(room, ex)
+            if rect and _overlap(h["rect"], rect) and int(h.get("pick_priority", 0)) <= int(ex.get("pick_priority", 1)):
+                err(f"{ctx}.{h.get('id')}: прямоугольник перекрывается выходом в {ex.get('to')} — клик уйдёт выходу (поднимите pick_priority или раздвиньте)")
+
     # 3. хотспоты
     ids = set()
     for h in room.get("hotspots", []):

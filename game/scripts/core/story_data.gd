@@ -201,6 +201,16 @@ func scenes_in(room_id: String) -> Array[String]:
 	return out
 
 
+## Rooms that declare how `scene_id` is triggered (trigger or complete_when). A scene declared
+## anywhere never auto-starts on entry elsewhere.
+func scene_trigger_rooms(scene_id: String) -> Array[String]:
+	var out: Array[String] = []
+	for rid in rooms.keys():
+		if rooms[rid].get("scenes", {}).has(scene_id):
+			out.append(String(rid))
+	return out
+
+
 func item(item_id: String) -> Dictionary:
 	return items.get(item_id, {})
 

@@ -249,6 +249,8 @@ func check_room_triggers() -> void:
 		if not can_start(id):
 			continue
 		var sspec: Dictionary = spec.get("scenes", {}).get(id, {})
+		if sspec.is_empty() and not StoryData.scene_trigger_rooms(id).is_empty():
+			continue  # declared in another of its rooms: never auto here
 		var trig := String(sspec.get("trigger", ""))
 		if trig.begins_with("talk:") or trig.begins_with("puzzle:"):
 			continue
