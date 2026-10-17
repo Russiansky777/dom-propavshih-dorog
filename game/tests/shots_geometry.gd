@@ -101,13 +101,11 @@ func _run() -> void:
 		_overlay.caption = "%s: клик в «%s» %s → Агата остановилась в %s (от точки %d px)" % [
 			rid, String(s0[2]) if s0.size() > 2 else "препятствие", str(target.round()), str(stop.round()), int(stop.distance_to(target))]
 		room.add_child(_overlay)
-		# The cursor never moves in this run: park it in a corner so no hover caption (left over from
-		# the previous room) covers the frame.
-		var mm := InputEventMouseMotion.new()
-		mm.position = Vector2(4, 1076)
-		mm.global_position = mm.position
-		Input.parse_input_event(mm)
-		await process_frame
+		# The cursor never moves in this run and the hover caption of a hotspot freed with the previous
+		# room stays on screen (game_ui._set_hover: a freed _hover_node compares equal to null) — hide it.
+		var hover: Node = main_node.find_child("Hover", true, false)
+		if hover is CanvasItem:
+			(hover as CanvasItem).visible = false
 		await process_frame
 		await RenderingServer.frame_post_draw
 		var img := root.get_viewport().get_texture().get_image()
