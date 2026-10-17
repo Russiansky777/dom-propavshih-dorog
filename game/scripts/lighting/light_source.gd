@@ -332,8 +332,9 @@ func actor_tint() -> Color:
 	return Color(lerpf(1.0, float(t[0]), p), lerpf(1.0, float(t[1]), p), lerpf(1.0, float(t[2]), p), 1.0)
 
 
-## Actor tone, additive part: `actor_warm` {color: [r, g, b], near_px, far_px} — the warm cast of a
-## fire / lamp on a figure, full at near_px, gone at far_px (floor distance as for the shadows),
+## Actor tone, additive part: `actor_warm` {color: [r, g, b], near_px, far_px, floor?} — the warm
+## cast of a fire / lamp on a figure (a slightly negative red = a cool cast by a window), full at
+## near_px, gone at far_px (floor distance from `floor`, else from the shadow floor point),
 ## × presence × flicker × current energy / base energy.
 func actor_warm(feet: Vector2, c: float) -> Color:
 	var w = data.get("actor_warm")
@@ -341,6 +342,9 @@ func actor_warm(feet: Vector2, c: float) -> Color:
 		return Color(0, 0, 0, 0)
 	var col := _color(w.get("color", [0.3, 0.15, 0.0]), Color(0.3, 0.15, 0.0))
 	var d := floor_distance(feet, c)
+	if w.has("floor"):  # its own floor point (a source without a cast shadow: the window patch)
+		var v := feet - _vec(w["floor"], Vector2.ZERO)
+		d = Vector2(v.x, v.y / maxf(c, 0.05)).length()
 	var k := 1.0 - smoothstep(float(w.get("near_px", 150.0)), float(w.get("far_px", 900.0)), d)
 	var base := float(data.get("energy", 1.0))
 	k *= presence() * flicker_factor() * (energy / base if base > 0.0 else 1.0)

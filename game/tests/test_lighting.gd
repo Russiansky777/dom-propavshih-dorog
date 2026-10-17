@@ -66,7 +66,7 @@ func _run() -> void:
 	await _test("H1 stove: fire, flickering light and shadows only with stove_lit", _test_stove)
 	await _test("Actor light shadow: same frame as the sprite, behind it, away from the source, by distance", _test_actor_shadow)
 	await _test("Actor light shadow: removed from Agata on room change; NPCs get theirs", _test_shadow_lifecycle)
-	await _test("Actor tone: Agata darkened like the floor in the dark H1, warmer by the fire, no jumps", _test_actor_tone)
+	await _test("Actor tone: Agata darkened like the floor in the dark H1, warmer by the fire, never bleached or greyed, Tikhon alike", _test_actor_tone)
 	gs.reset()
 	gs.delete_save("test_lighting")
 	if main_node != null and is_instance_valid(main_node):
@@ -341,3 +341,37 @@ func _test_actor_tone() -> void:
 	var far: Color = rl.actor_tone_at(Vector2(1700, 950), 500.0)
 	_check((near.r - near.b) > (far.r - far.b) + 0.1, "by the fire Agata is warmer (R−B %.2f) than across the room (%.2f)" % [near.r - near.b, far.r - far.b])
 	_check(_lum(near) > _lum(far), "by the fire Agata is brighter than across the dark room")
+	# Coordinator 18.10: «Агата выбелена, серо-голубая» — the room's tone must not bleach or grey
+	# the figures: never a cold cast beyond actor_max_cool, never brighter than actor_max_gain,
+	# in every state of H1 and anywhere on its floor (the rendered check — coat saturation ≥ 80 % of
+	# neutral light, brightness ±15 % of the floor — is tools/measure_tone.py on Xvfb frames).
+	for flags in [[], ["stove_lit"], ["h1_shutter_open"], ["stove_lit", "h1_shutter_open"]]:
+		room = await _enter("H1", flags, Vector2(1200, 900))
+		rl = _lighting(room)
+		var cap: float = float(rl.data.get("actor_max_gain", 1.05))
+		var cool: float = float(rl.data.get("actor_max_cool", 0.04))
+		var worst := ""
+		for x in range(100, 1900, 200):
+			for y in [720, 800, 900, 1040]:
+				var t: Color = rl.actor_tone_at(Vector2(x, y), 500.0)
+				if t.g > t.r * (1.0 + cool) + 0.0001 or t.b > t.r * (1.0 + cool) + 0.0001:
+					worst = "cold tone %s at %s" % [str(t), str(Vector2(x, y))]
+				if _lum(t) > cap + 0.0001:
+					worst = "tone %s brighter than %.2f at %s" % [str(t), cap, str(Vector2(x, y))]
+		_check(worst == "", "H1 %s: %s" % [str(flags), worst])
+	# Daylight H1: warm (red over blue) — the brown coat stays brown.
+	var day_t: Color = rl.actor_tone_at(Vector2(1100, 860), 500.0)
+	_check(day_t.r > day_t.b + 0.1, "daylight H1 tone is warm (r %.2f, b %.2f)" % [day_t.r, day_t.b])
+	# The puppet (Tikhon) follows the same tone (PuppetActor reads actor_tone_at).
+	room = await _enter("H1", ["started_M03", "stove_lit", "h1_shutter_open"], Vector2(1200, 900))
+	rl = _lighting(room)
+	await _wait_light(rl, 0.8)
+	var puppet: Node = null
+	for c in room.get_children():
+		if c.get_class() != "" and c.get_script() != null and String(c.get_script().resource_path).ends_with("puppet_actor.gd"):
+			puppet = c
+	if puppet != null and puppet.get("poly") != null:
+		var want: Color = rl.actor_tone_at(puppet.global_position, float(puppet.call("figure_height_px")))
+		var got: Color = puppet.get("poly").self_modulate
+		_check(absf(got.r - want.r) < 0.03 and absf(got.g - want.g) < 0.03 and absf(got.b - want.b) < 0.03, "Tikhon is toned like Agata (%s vs %s)" % [str(got), str(want)])
+		_check(got.g <= got.r * 1.05 and got.b <= got.r * 1.05, "Tikhon: no cold cast (%s)" % str(got))

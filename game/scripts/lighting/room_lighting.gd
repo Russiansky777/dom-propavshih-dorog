@@ -278,7 +278,13 @@ func scan_actors() -> void:
 
 
 ## Tone of a figure with feet at `feet` and figure height `fig_h` (screen px):
-## (1 + Σ light_on_actor) × room actor_tint × Π source actor_tint + Σ actor_warm, never negative.
+## (1 + Σ light_on_actor) × room actor_tint × Π source actor_tint + Σ actor_warm, then two guards
+## (coordinator 18.10: «тон комнаты не обесцвечивает актёров» — Agata's brown coat stays brown):
+##   - no cold cast stronger than `actor_max_cool` (data, default 0.04): green and blue may exceed
+##     red by at most that fraction — a bluish multiply is what greys a brown figure;
+##   - brightness (Rec.709 luminance of the tone) capped at `actor_max_gain` (default 1.05), the hue
+##     kept: a fire or a sunny floor tints the figure, it does not bleach it.
+## Multiplying keeps the figure's own saturation (each channel scaled), the guards keep the shift light.
 func actor_tone_at(feet: Vector2, fig_h: float = 500.0) -> Color:
 	var chest := feet  # point lights read at the feet too: the figure gets what the floor by her gets
 	var lit := Color(1, 1, 1, 1)
@@ -293,7 +299,20 @@ func actor_tone_at(feet: Vector2, fig_h: float = 500.0) -> Color:
 		var t := s.actor_tint()
 		m = Color(m.r * t.r, m.g * t.g, m.b * t.b, 1.0)
 		add += s.actor_warm(feet, foreshortening)
-	return Color(maxf(lit.r * m.r + add.r, 0.0), maxf(lit.g * m.g + add.g, 0.0), maxf(lit.b * m.b + add.b, 0.0), 1.0)
+	var r := maxf(lit.r * m.r + add.r, 0.0)
+	var g := maxf(lit.g * m.g + add.g, 0.0)
+	var b := maxf(lit.b * m.b + add.b, 0.0)
+	var cool := float(data.get("actor_max_cool", 0.04))
+	g = minf(g, r * (1.0 + cool))
+	b = minf(b, r * (1.0 + cool))
+	var lum := r * 0.2126 + g * 0.7152 + b * 0.0722
+	var cap := float(data.get("actor_max_gain", 1.05))
+	if lum > cap:
+		var k := cap / lum
+		r *= k
+		g *= k
+		b *= k
+	return Color(r, g, b, 1.0)
 
 
 ## Eases every actor's sprite towards its tone (first sight: at once, no fade from white).

@@ -14,8 +14,8 @@
   6. цвета: "#rrggbb" или [r, g, b(, a)] в 0..1; fade_s в 0..5; flicker.amount в 0..1;
   7. params у fire/glow — существующие uniform шейдера (game/shaders/fire_stove|light_glow.gdshader);
      у shaft — streak_amount 0..1;
-  8. тон актёров: actor_tint (у комнаты и у источников) — [r, g, b] в 0..1.5; actor_warm — {color,
-     near_px < far_px}.
+  8. тон актёров: actor_tint (у комнаты и у источников) — [r, g, b] в 0..1.5; actor_warm — {color
+     [r, g, b] в −0.3..1, near_px < far_px, floor?}; actor_max_gain 0.5..2, actor_max_cool 0..0.5.
 Код 0 — ошибок нет. Запуск: python3 tools/validate_lights.py [--quiet]
 """
 from __future__ import annotations
@@ -163,9 +163,16 @@ def main() -> int:
                 if not isinstance(aw, dict) or "color" not in aw:
                     err(f"{key_ctx}: actor_warm — объект {{color, near_px, far_px}}")
                 else:
-                    check_color(key_ctx + ".actor_warm.color", aw["color"])
+                    wc = aw["color"]
+                    if not (isinstance(wc, list) and len(wc) == 3 and all(is_num(v) and -0.3 <= v <= 1.0 for v in wc)):
+                        err(f"{key_ctx}: actor_warm.color — [r, g, b] в −0.3..1 (отрицательное — холоднее)")
+                    if "floor" in aw:
+                        check_point(key_ctx + ".actor_warm.floor", aw["floor"])
                     if not (aw.get("near_px", 150) < aw.get("far_px", 900)):
                         err(f"{key_ctx}: actor_warm near_px < far_px")
+        for k, lo, hi in (("actor_max_gain", 0.5, 2.0), ("actor_max_cool", 0.0, 0.5)):
+            if k in data and not (is_num(data[k]) and lo <= data[k] <= hi):
+                err(f"{ctx0}: {k} вне {lo}..{hi}")
         fs = data.get("floor_foreshortening", 0.42)
         if not (is_num(fs) and 0.1 <= fs <= 1.0):
             err(f"{ctx0}: floor_foreshortening {fs!r} вне 0.1..1")

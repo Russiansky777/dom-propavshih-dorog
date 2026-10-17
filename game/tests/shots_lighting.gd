@@ -32,6 +32,8 @@ const SCENARIOS := {
 	"H1_tone_day_stove": {"room": "H1", "flags": ["stove_lit", "h1_shutter_open", "started_M03"], "pos": [640, 740], "pair": true},
 	"H1_tone_day_mid": {"room": "H1", "flags": ["stove_lit", "h1_shutter_open"], "pos": [1100, 860], "pair": true},
 	"H1_tone_day_window": {"room": "H1", "flags": ["h1_shutter_open"], "pos": [1450, 880], "pair": true},
+	"O1_tone": {"room": "O1", "flags": [], "pos": [600, 800], "pair": true},
+	"Z1_tone": {"room": "Z1", "flags": [], "pos": [560, 860], "pair": true},
 	"H2_tone": {"room": "H2", "flags": [], "pos": [520, 880], "pair": true},
 	"H2_door": {"room": "H2", "flags": [], "pos": [520, 880]},
 	"H2_shadow_walk": {"room": "H2", "flags": [], "pos": [300, 820], "walk_to": [800, 1000], "frames": 14, "dt": 0.18, "time_scale": 0.35},
