@@ -14,14 +14,21 @@
   5. data/story/voice.json: известные персонажи в pan, panning_strength ∈ [0, 3], volume_db ∈ [−20, 12];
   6. теги подачи у реплик (tags, voice_text): тег из pipeline/voice/tags.json; voice_text без тегов = text (слова
      сценария не меняются); теги voice_text = tags; запись манифеста с другим voice_sha1 (теги изменены) — ждёт
-     перегенерации (ошибка с --strict).
+     перегенерации (ошибка с --strict);
+  7. закадровый голос (data/story/voice.json → narration): список не озвучиваемых категорий есть (skip_sections /
+     skip_fields / skip_keys), параметры наведения на сумку в пределах; каждая запись kind=narration — ключ, который
+     есть в data/story/text/*.json и озвучивается по этим правилам (не подпись, не интерфейс), sha1 её текста совпадает
+     с текстом ключа (иначе stale), голос narrator, файл <subdir>/<ключ>.ogg.
 Самопроверка (каждый запуск): испорченные копии — реплика, которой нет; изменённый текст без stale; персонаж без
-голоса; тихая реплика; тег не из списка; voice_text с чужими словами — должны дать ошибку.
+голоса; тихая реплика; тег не из списка; voice_text с чужими словами; закадровая запись подписи (label) или интерфейса
+(ui.*); закадровая запись с чужим текстом; закадровый файл не в своей папке; нет списка не озвучиваемых категорий —
+должны дать ошибку.
 Код 0 — ошибок нет. Запуск: python3 tools/validate_voice.py [--quiet] [--strict] [--source-only — без проверки копии игры]
 """
 from __future__ import annotations
 
 import copy
+import fnmatch
 import hashlib
 import json
 import re
@@ -37,7 +44,9 @@ VOICES = ROOT / "pipeline" / "voice" / "voices.json"
 TAGS = ROOT / "pipeline" / "voice" / "tags.json"
 TAG_RE = re.compile(r"\[([^\[\]]+)\]")
 REQUESTS = ROOT / "pipeline" / "requests"
+TEXT_DIR = STORY / "text"
 LUFS_TOL = 1.5
+NARRATION_REQUIRED = ("speaker", "subdir", "skip_sections", "skip_fields")
 
 
 def load(path: Path, default=None):
@@ -61,6 +70,44 @@ def story_lines() -> dict[str, dict]:
     for q in load(STORY / "quests.json")["quests"]:
         for i, ln in enumerate(q.get("mandatory_lines", q.get("lines", []))):
             out[f"{q['id']}_{i}"] = _line(q["id"], ln)
+    return out
+
+
+def narration_cfg(voice_cfg: dict | None) -> dict:
+    return ((voice_cfg or {}).get("narration") or {}) if isinstance(voice_cfg, dict) else {}
+
+
+def narration_key_ok(key: str, cfg: dict) -> bool:
+    """Как pipeline/voice/eleven_voice.py и voice_director.gd: ключ озвучивается закадровым голосом."""
+    parts = key.split(".")
+    if len(parts) < 2 or not cfg:
+        return False
+    if parts[0] in cfg.get("skip_sections", []) or key in cfg.get("skip_keys", []):
+        return False
+    return not any(fnmatch.fnmatchcase(parts[-1], str(p)) for p in cfg.get("skip_fields", []))
+
+
+def all_texts() -> dict[str, tuple[str, dict]]:
+    """Ключ → (имя файла текста, запись) по всем data/story/text/*.json."""
+    out: dict[str, tuple[str, dict]] = {}
+    for f in sorted(TEXT_DIR.glob("*.json")):
+        for k, v in (load(f, {}) or {}).get("texts", {}).items():
+            out[str(k)] = (f.stem, v)
+    return out
+
+
+def narration_lines(cfg: dict, texts: dict | None = None) -> dict[str, dict]:
+    """Закадровые фразы: ключ → {kind, speaker, text, source[, tags, voice_text]} — все ключи, озвучиваемые по правилам."""
+    out: dict[str, dict] = {}
+    for k, (src, v) in (texts if texts is not None else all_texts()).items():
+        if not narration_key_ok(k, cfg):
+            continue
+        e = {"kind": "narration", "scene": "", "speaker": str(cfg.get("speaker", "narrator")), "text": str(v.get("text", "")),
+             "source": src}
+        for f in ("tags", "voice_text"):
+            if f in v:
+                e[f] = v[f]
+        out[k] = e
     return out
 
 
@@ -115,6 +162,48 @@ def requested_scenes() -> set[str]:
     return out
 
 
+def requested_narration() -> set[str]:
+    """Файлы текста, закадровые фразы которых заказаны (narration.texts в запросах mode=generate)."""
+    out: set[str] = set()
+    for f in sorted(REQUESTS.glob("voice_*.json")):
+        r = load(f, {})
+        if str(r.get("mode", "generate")) == "generate":
+            out |= {str(t) for t in (r.get("narration") or {}).get("texts", [])}
+    return out
+
+
+def check_narration_cfg(voice_cfg: dict | None, texts: dict) -> list[str]:
+    """Раздел narration в data/story/voice.json: список не озвучиваемых категорий и параметры наведения на сумку."""
+    errors: list[str] = []
+    cfg = narration_cfg(voice_cfg)
+    if not cfg:
+        return ["data/story/voice.json: нет раздела narration (закадровый голос и список не озвучиваемых категорий)"]
+    for k in NARRATION_REQUIRED:
+        if k not in cfg:
+            errors.append(f"voice.json narration: нет поля {k}")
+    for k in ("skip_sections", "skip_fields", "skip_keys"):
+        if k in cfg and (not isinstance(cfg[k], list) or not all(isinstance(x, str) and x for x in cfg[k])):
+            errors.append(f"voice.json narration.{k}: массив непустых строк")
+    for must in ("ui",):
+        if must not in cfg.get("skip_sections", []):
+            errors.append(f"voice.json narration.skip_sections: нет «{must}» — служебный интерфейс озвучивался бы")
+    for must in ("label", "label_*", "opt_*"):
+        if must not in cfg.get("skip_fields", []):
+            errors.append(f"voice.json narration.skip_fields: нет «{must}» — подписи/варианты озвучивались бы")
+    sub = str(cfg.get("subdir", ""))
+    if not sub or "/" in sub or "\\" in sub or sub.startswith("."):
+        errors.append(f"voice.json narration.subdir «{sub}»: одно имя папки")
+    for k in cfg.get("skip_keys", []) if isinstance(cfg.get("skip_keys", []), list) else []:
+        if k not in texts:
+            errors.append(f"voice.json narration.skip_keys: ключа {k} нет в data/story/text")
+    ih = cfg.get("item_hover", {})
+    for k, lo, hi in (("dwell_s", 0.2, 3.0), ("repeat_after_s", 0.0, 600.0), ("fade_out_s", 0.0, 2.0)):
+        v = ih.get(k) if isinstance(ih, dict) else None
+        if not isinstance(v, (int, float)) or not lo <= float(v) <= hi:
+            errors.append(f"voice.json narration.item_hover.{k} = {v} вне [{lo}, {hi}]")
+    return errors
+
+
 def manifests_on_disk() -> dict[str, dict]:
     """rel → манифест: "ru" (основной набор) и "ru_alt/<персонаж>_<вариант>" (альтернативные голоса)."""
     out: dict[str, dict] = {}
@@ -136,12 +225,18 @@ def expected_voice(cast_map: dict, rel: str, speaker: str) -> str:
 
 
 def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: dict | None, voice_cfg: dict | None,
-          scenes: set[str], strict: bool, files: bool = True, game_copy: bool = True) -> tuple[list[str], list[str]]:
+          scenes: set[str], strict: bool, files: bool = True, game_copy: bool = True,
+          narr_texts: set[str] | None = None) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warns: list[str] = []
-    chars = {c["id"] for c in load(STORY / "characters.json")["characters"]}
+    ncfg = narration_cfg(voice_cfg)
+    narrator = str(ncfg.get("speaker", "narrator"))
+    # Роль закадрового голоса — не персонаж characters.json (задаётся voice.json → narration.speaker).
+    chars = {c["id"] for c in load(STORY / "characters.json")["characters"]} | ({narrator} if ncfg else set())
     # 1. cast
-    speakers = {ln["speaker"] for ln in lines.values() if ln["scene"] in scenes}
+    speakers = {ln["speaker"] for ln in lines.values() if ln.get("kind") != "narration" and ln["scene"] in scenes}
+    if narr_texts and any(ln.get("kind") == "narration" and ln.get("source") in narr_texts for ln in lines.values()):
+        speakers.add(narrator)
     for m in manifests.values():
         speakers |= {str(e.get("speaker", "")) for e in m.get("lines", {}).values() if "stale" not in e}
     for s in sorted(s for s in scenes if not any(ln["scene"] == s for ln in lines.values())):
@@ -176,9 +271,13 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
         for lid, e in sorted(manifest.get("lines", {}).items()):
             tag = lid if rel == "ru" else f"{lid}@{rel.split('/', 1)[1]}"
             cur = lines.get(lid)
+            narr = e.get("kind") == "narration"
             reason = ""
             if cur is None:
-                reason = "реплики нет в сценах"
+                reason = ("фразы нет в data/story/text или ключ не озвучивается (voice.json → narration)" if narr
+                          else "реплики нет в сценах")
+            elif narr != (cur.get("kind") == "narration"):
+                reason = "запись реплики под ключом закадровой фразы (или наоборот)"
             elif sha1(cur["text"]) != e.get("text_sha1"):
                 reason = "текст изменён (sha1 не совпадает)"
             elif cur["speaker"] != e.get("speaker"):
@@ -195,6 +294,12 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 (errors if strict else warns).append(f"{tag}: теги подачи изменены — ждёт перегенерации (pipeline-voice); пока звучит прежний дубль")
             if e.get("text") != cur["text"]:
                 errors.append(f"{tag}: text записи ≠ text реплики при равном sha1")
+            if narr:
+                want_file = f"{ncfg.get('subdir', 'narrator')}/{lid}.ogg"
+                if str(e.get("file", "")) != want_file:
+                    errors.append(f"{tag}: файл закадровой фразы {e.get('file')} — ожидается {want_file}")
+                if str(e.get("key", lid)) != lid:
+                    errors.append(f"{tag}: key {e.get('key')} ≠ id записи")
             if only and e.get("speaker") != only:
                 errors.append(f"{tag}: в наборе только для {only}, а реплика {e.get('speaker')}")
             want = expected_voice(cast_map, rel, cur["speaker"])
@@ -216,7 +321,7 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 continue
             if not game_copy:
                 continue
-            g = game_dir / f.name
+            g = game_dir / str(e.get("file", ""))
             if not g.is_file() or g.read_bytes() != f.read_bytes():
                 errors.append(f"{tag}: копия игры {g.relative_to(ROOT)} отсутствует или отличается — tools/sync_voice.sh")
             else:
@@ -256,9 +361,12 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
     return errors, warns
 
 
+SELFTEST_CASES = 12
+
+
 def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
     """Каждая порча должна дать ошибку (strict). Возвращает непойманные."""
-    first = next(iter(sorted(lines)), None)
+    first = next(iter(sorted(lid for lid, ln in lines.items() if ln.get("kind") != "narration")), None)
     if first is None:
         return []
     ln = lines[first]
@@ -301,6 +409,42 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
         missed.append("тег не из списка")
     if not check_tags(bad_words, allowed | {"curious"}):
         missed.append("voice_text меняет слова")
+    # закадровый голос: запись подписи / интерфейса, чужой текст, файл не в своей папке, нет списка категорий
+    ncfg = narration_cfg(voice_cfg)
+    narrator = str(ncfg.get("speaker", "narrator"))
+    sub = str(ncfg.get("subdir", "narrator"))
+    texts = all_texts()
+    nkey = next(iter(sorted(k for k, ln in lines.items() if ln.get("kind") == "narration")), None)
+    label_key = next(iter(sorted(k for k in texts if k.split(".")[-1] == "label")), None)
+    ui_key = next(iter(sorted(k for k in texts if k.startswith("ui."))), None)
+    ncast = copy.deepcopy(test_cast)
+    ncast["cast"][narrator] = {"voice_id": "v_test"}
+
+    def narr_entry(key: str, text: str) -> dict:
+        return {"kind": "narration", "key": key, "speaker": narrator, "text": text, "text_sha1": sha1(text),
+                "voice_sha1": sha1(text), "voice_id": "v_test", "file": f"{sub}/{key}.ogg", "duration_s": 1.0,
+                "lufs": -17.0, "true_peak_db": -3.0}
+
+    ncases = []
+    if label_key:
+        ncases.append(("закадровая запись подписи (label)", label_key, narr_entry(label_key, str(texts[label_key][1].get("text", "")))))
+    if ui_key:
+        ncases.append(("закадровая запись интерфейса (ui.*)", ui_key, narr_entry(ui_key, str(texts[ui_key][1].get("text", "")))))
+    if nkey:
+        nl = lines[nkey]
+        ncases.append(("закадровая запись с чужим текстом", nkey, dict(narr_entry(nkey, nl["text"]), text_sha1=sha1(nl["text"] + " иначе"))))
+        ncases.append(("закадровый файл не в своей папке", nkey, dict(narr_entry(nkey, nl["text"]), file=f"{nkey}.ogg",
+                                                                      voice_sha1=sha1(api_text(nl)))))
+    else:
+        missed.append("нет ни одной закадровой фразы для самопроверки")
+    for name, key, entry in ncases:
+        m = copy.deepcopy(base)
+        m["lines"][key] = entry
+        errs, _ = check(lines, {"ru": m}, ncast, None, voice_cfg, scenes, strict=True, files=False)
+        if not [x for x in errs if x.startswith(key)]:
+            missed.append(name)
+    if not check_narration_cfg({k: v for k, v in (voice_cfg or {}).items() if k != "narration"}, texts):
+        missed.append("нет списка не озвучиваемых категорий")
     # контроль: неиспорченная запись ошибок не даёт (иначе самопроверка ловила бы что угодно)
     m = copy.deepcopy(base)
     m["lines"][first] = dict(good)
@@ -314,18 +458,28 @@ def main() -> int:
     quiet = "--quiet" in sys.argv
     strict = "--strict" in sys.argv
     source_only = "--source-only" in sys.argv   # workflow озвучки: копии игры там нет (её делает tools/sync_voice.sh)
+    voice_cfg = load(STORY / "voice.json")
+    texts = all_texts()
     lines = story_lines()
+    lines.update(narration_lines(narration_cfg(voice_cfg), texts))
     manifests = manifests_on_disk()
     cast = load(CAST)
     voices = load(VOICES)
-    voice_cfg = load(STORY / "voice.json")
     scenes = requested_scenes()
-    errors, warns = check(lines, manifests, cast, voices, voice_cfg, scenes, strict, game_copy=not source_only)
+    narr_texts = requested_narration()
+    errors, warns = check(lines, manifests, cast, voices, voice_cfg, scenes, strict, game_copy=not source_only,
+                          narr_texts=narr_texts)
+    errors += check_narration_cfg(voice_cfg, texts)
+    for t in sorted(narr_texts):
+        if t not in {src for src, _ in texts.values()}:
+            errors.append(f"запрос озвучки: narration.texts — нет data/story/text/{t}.json")
     tags_doc = load(TAGS)
     if tags_doc is None:
         errors.append("нет pipeline/voice/tags.json — список разрешённых тегов")
     errors += check_tags(lines, set(tags_doc.get("tags", {}).keys()) if tags_doc else None)
-    tagged = sum(1 for ln in lines.values() if ln.get("tags") or ln.get("voice_text"))
+    tagged = sum(1 for ln in lines.values() if ln.get("kind") != "narration" and (ln.get("tags") or ln.get("voice_text")))
+    n_tagged = sum(1 for ln in lines.values() if ln.get("kind") == "narration" and (ln.get("tags") or ln.get("voice_text")))
+    n_total = sum(1 for ln in lines.values() if ln.get("kind") == "narration")
     missed = selftest(lines, cast, voice_cfg, scenes)
     for m in missed:
         errors.append(f"самопроверка: порча «{m}» не поймана")
@@ -337,9 +491,11 @@ def main() -> int:
                      for rel, m in sorted(manifests.items())) or "нет"
     if not quiet or errors:
         print(f"validate_voice: манифесты: {sets}; сцены к озвучке: {', '.join(sorted(scenes)) or '—'}; "
-              f"персонажей в cast.json: {len((cast or {}).get('cast', {}))}; реплик с тегами: {tagged}")
+              f"персонажей в cast.json: {len((cast or {}).get('cast', {}))}; реплик с тегами: {tagged}; "
+              f"закадровых фраз по правилам voice.json: {n_total} (с тегами {n_tagged}), заказаны тексты: "
+              f"{', '.join(sorted(narr_texts)) or '—'}")
     print(f"[voice] validate_voice.py: {'OK' if not errors else 'FAIL'} ({len(errors)} ошибок, {len(warns)} предупреждений"
-          f"{', strict' if strict else ''}; самопроверка {7 - len(missed)}/7)")
+          f"{', strict' if strict else ''}; самопроверка {SELFTEST_CASES - len(missed)}/{SELFTEST_CASES})")
     return 1 if errors else 0
 
 

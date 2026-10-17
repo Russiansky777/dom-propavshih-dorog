@@ -4,6 +4,8 @@
 # so the game only reads its own copy (Claude Code never edits assets/ by hand; pipeline/voice writes it).
 # Import: OGG Vorbis with loop=false. A missing .import file is written from a template (Godot fills
 # uid/path on import); an existing one is forced to loop=false. Copies no longer in assets/ are removed.
+# Subfolders are copied too (narrator/<key>.ogg — the voice-over lines, data/story/voice.json → narration);
+# src/ (API answers) never reaches the game.
 #   tools/sync_voice.sh
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -12,6 +14,7 @@ DST_ROOT="$ROOT/game/assets/voice"
 total=0
 changed=0
 for src in "$SRC_ROOT"/*/; do
+  src="${src%/}"
   [[ -f "$src/manifest.json" ]] || continue
   lang="$(basename "$src")"
   dst="$DST_ROOT/$lang"
@@ -20,10 +23,10 @@ for src in "$SRC_ROOT"/*/; do
     cp "$src/manifest.json" "$dst/manifest.json"
     echo "  voice/$lang/manifest.json updated"
   fi
-  for f in "$src"/*.ogg; do
-    [[ -f "$f" ]] || continue
-    name="$(basename "$f")"
+  while IFS= read -r -d '' f; do
+    name="${f#"$src"/}"
     total=$((total + 1))
+    mkdir -p "$(dirname "$dst/$name")"
     if ! cmp -s "$f" "$dst/$name"; then
       cp "$f" "$dst/$name"
       changed=$((changed + 1))
@@ -48,14 +51,13 @@ IMP
       sed -i 's/^loop=.*/loop=false/' "$imp"
       grep -qx 'loop=false' "$imp" || printf '\n[params]\n\nloop=false\n' >> "$imp"
     fi
-  done
-  for f in "$dst"/*.ogg; do
-    [[ -f "$f" ]] || continue
-    name="$(basename "$f")"
+  done < <(find "$src" -path "$src/src" -prune -o -type f -name '*.ogg' -print0 | sort -z)
+  while IFS= read -r -d '' f; do
+    name="${f#"$dst"/}"
     if [[ ! -f "$src/$name" ]]; then
       rm -f "$f" "$f.import"
       echo "  voice/$lang/$name removed (not in assets/voice/$lang)"
     fi
-  done
+  done < <(find "$dst" -type f -name '*.ogg' -print0)
 done
 echo "sync_voice: $total line file(s), $changed copied → game/assets/voice"

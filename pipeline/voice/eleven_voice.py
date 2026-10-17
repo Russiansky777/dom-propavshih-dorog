@@ -10,18 +10,23 @@
 Режимы:
   check                       ключ доходит? (печатается только наличие/длина/формат, не ключ) + баланс
   list                        голоса аккаунта → pipeline/voice/voices.json
-  generate --request <файл>   реплики сцен из запроса → assets/voice/ru/<scene>_<index>.ogg + manifest.json
+  generate --request <файл>   реплики сцен из запроса → assets/voice/ru/<scene>_<index>.ogg + manifest.json;
+                              закадровые фразы ("narration": {"texts": [...]}) → assets/voice/ru/narrator/<ключ>.ogg
            [--dry-run]        только список реплик и число символов, без запросов к API
   run --request <файл>        режим берётся из поля "mode" запроса (так запускает workflow)
 
 Идентификатор реплики: <scene>_<index>, index — позиция в mandatory_lines сцены (для заданий — lines), как её
 показывает StoryRunner (beat.line_id). Контекстная реплика (поле context — вариант вопроса) озвучивает только text.
+Закадровая фраза (голос narrator): id — ключ текста data/story/text/*.json (H1.stove.look, item.key_house); какие ключи
+озвучиваются — правила data/story/voice.json → narration (их же применяют игра и tools/validate_voice.py); ключи, на
+которые не ссылаются данные игры, пропускаются (кредиты не тратятся на текст, который никогда не покажется).
 Повторный запуск тратит кредиты только на новые/изменённые реплики: sha1 текста, голос, модель и настройки
 сравниваются с манифестом; ответ API хранится в src/<id>.mp3, поэтому переобработка громкости бесплатна.
 """
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import hashlib
 import json
 import os
@@ -47,8 +52,13 @@ ALT_ROOT = ROOT / "assets" / "voice" / "ru_alt"   # альтернативные
 SCENES_DIR = ROOT / "data" / "story" / "scenes"
 QUESTS_PATH = ROOT / "data" / "story" / "quests.json"
 META_PATH = ROOT / "data" / "story" / "meta.json"
+STORY_DIR = ROOT / "data" / "story"
+TEXT_DIR = STORY_DIR / "text"
+ITEMS_PATH = STORY_DIR / "items.json"
+VOICE_CFG_PATH = STORY_DIR / "voice.json"
 
 PROBE_MAX_LINES = 40          # пока text_freeze=false — только проба (решение Директора 17.10)
+ORDER_KEYS = ("by", "date", "what", "max_lines", "max_chars")   # явное задание Директора на объём сверх пробы
 RETRY_STATUSES = (429, 500, 502, 503, 504)
 OPTIONAL_BODY_KEYS = ("language_code", "seed")
 TIMEOUT_S = 120
@@ -106,6 +116,83 @@ def story_lines() -> dict[str, dict]:
     for q in read_json(QUESTS_PATH, {}).get("quests", []):
         add(str(q["id"]), q.get("mandatory_lines", q.get("lines", [])))
     return out
+
+
+# --- Закадровые фразы (narration) --------------------------------------------------------------
+
+def narration_cfg() -> dict:
+    return (read_json(VOICE_CFG_PATH, {}) or {}).get("narration", {}) or {}
+
+
+def narration_key_ok(key: str, cfg: dict) -> bool:
+    """Ключ текста озвучивается закадровым голосом: не служебная секция, не подпись/вариант/деталь загадки
+    (data/story/voice.json → narration.skip_sections / skip_fields / skip_keys; то же правило — voice_director.gd)."""
+    parts = key.split(".")
+    if len(parts) < 2 or not cfg:
+        return False
+    if parts[0] in cfg.get("skip_sections", []) or key in cfg.get("skip_keys", []):
+        return False
+    return not any(fnmatch.fnmatchcase(parts[-1], str(p)) for p in cfg.get("skip_fields", []))
+
+
+def referenced_keys() -> set[str]:
+    """Ключи @…, на которые ссылаются данные игры (комнаты, сцены, задания, предметы, план), + item.<id> каждого
+    предмета сумки (InventoryBag берёт строку item.<id> по id предмета)."""
+    refs: set[str] = set()
+
+    def walk(o) -> None:
+        if isinstance(o, dict):
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+        elif isinstance(o, str) and o.startswith("@"):
+            refs.add(o[1:])
+
+    for f in sorted(STORY_DIR.rglob("*.json")):
+        if TEXT_DIR in f.parents:
+            continue
+        walk(read_json(f, {}))
+    items = (read_json(ITEMS_PATH, {}) or {}).get("items", [])
+    for it in (items if isinstance(items, list) else [dict(v, id=k) for k, v in items.items()]):
+        if it.get("inventory"):
+            refs.add(f"item.{it['id']}")
+    return refs
+
+
+def narration_lines() -> dict[str, dict]:
+    """Закадровые фразы: ключ → {kind: narration, key, speaker, text, source (имя файла текста), used[, tags]}."""
+    cfg = narration_cfg()
+    speaker = str(cfg.get("speaker", "narrator"))
+    refs = referenced_keys() if cfg else set()
+    out: dict[str, dict] = {}
+    for f in sorted(TEXT_DIR.glob("*.json")):
+        for k, v in (read_json(f, {}) or {}).get("texts", {}).items():
+            if not narration_key_ok(str(k), cfg):
+                continue
+            e = {"kind": "narration", "key": str(k), "scene": "", "index": 0, "speaker": speaker,
+                 "text": str(v.get("text", "")), "source": f.stem, "used": str(k) in refs}
+            if v.get("tags"):
+                e["tags"] = [str(t) for t in v["tags"]]
+            if v.get("voice_text"):
+                e["voice_text"] = str(v["voice_text"])
+            out[str(k)] = e
+    return out
+
+
+def all_lines() -> dict[str, dict]:
+    """Реплики сцен (<scene>_<index>) и закадровые фразы (ключ текста) — всё, что может звучать в игре."""
+    out = story_lines()
+    out.update(narration_lines())
+    return out
+
+
+def file_rel(ln: dict, lid: str, ext: str) -> str:
+    """Путь файла относительно набора: <id>.<ext> для реплик, <subdir>/<ключ>.<ext> для закадровых фраз."""
+    if ln.get("kind") == "narration":
+        return f"{narration_cfg().get('subdir', 'narrator')}/{lid}.{ext}"
+    return f"{lid}.{ext}"
 
 
 TAG_IN_TEXT = re.compile(r"\[[^\[\]]+\]")
@@ -410,7 +497,7 @@ def mark_stale(manifest: dict, lines: dict[str, dict]) -> list[str]:
         cur = lines.get(lid)
         reason = ""
         if cur is None:
-            reason = "нет в сценах"
+            reason = "нет в текстах" if e.get("kind") == "narration" else "нет в сценах"
         elif text_sha1(cur["text"]) != e.get("text_sha1"):
             reason = "текст изменён"
         elif cur["speaker"] != e.get("speaker"):
@@ -432,12 +519,29 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         raise VoiceError(f"нет {CAST_PATH.relative_to(ROOT)} — сначала режим list и сопоставление голосов")
     lc = cast.get("loudness", {})
     target = float(lc.get("target_lufs", -17.0))
-    lines = story_lines()
+    lines = all_lines()
     scenes = [str(s) for s in req.get("scenes", [])]
-    scope = {lid: ln for lid, ln in lines.items() if ln["scene"] in scenes}
+    scope = {lid: ln for lid, ln in lines.items() if ln.get("kind") != "narration" and ln["scene"] in scenes}
     unknown = [s for s in scenes if not any(ln["scene"] == s for ln in lines.values())]
     if unknown:
         raise VoiceError(f"в сценах нет реплик для: {', '.join(unknown)}")
+    # Закадровые фразы: "narration": {"texts": ["ru_E0_E1", "ru_bag"], "keys": [...] (необязательно — только эти)}
+    nreq = req.get("narration") or {}
+    if nreq:
+        texts = [str(t) for t in nreq.get("texts", [])]
+        missing_texts = [t for t in texts if not (TEXT_DIR / f"{t}.json").is_file()]
+        if missing_texts:
+            raise VoiceError(f"нет файлов текста data/story/text/: {', '.join(missing_texts)}")
+        only = {str(k) for k in nreq.get("keys", [])}
+        narr = {lid: ln for lid, ln in lines.items() if ln.get("kind") == "narration" and ln["source"] in texts
+                and (not only or lid in only)}
+        bad_only = sorted(only - set(narr))
+        if bad_only:
+            raise VoiceError(f"narration.keys не озвучиваются по правилам voice.json или нет в текстах: {bad_only}")
+        unused = sorted(lid for lid, ln in narr.items() if not ln["used"])
+        if unused:
+            log(f"  закадровые фразы без ссылок в данных игры — пропущены: {', '.join(unused)}")
+        scope.update({lid: ln for lid, ln in narr.items() if ln["used"]})
     limit = int(cast.get("max_chars", 5000))
     too_long = [lid for lid, ln in scope.items() if len(ln["text"]) > limit]
     if too_long:
@@ -464,7 +568,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             e = manifest["lines"].get(lid)
             sha = text_sha1(ln["text"])
             vsha = text_sha1(api_text(ln))
-            fresh = e is not None and same_spec(e, sha, vsha, spec) and (vs["dir"] / e.get("file", "-")).is_file() and "stale" not in e
+            fresh = (e is not None and same_spec(e, sha, vsha, spec) and e.get("file") == file_rel(ln, lid, "ogg")
+                     and (vs["dir"] / e.get("file", "-")).is_file() and "stale" not in e)
             action = ""
             if lid in redo or not fresh:
                 has_src = e is not None and same_spec(e, sha, vsha, spec) and (vs["dir"] / e.get("source", "-")).is_file()
@@ -476,14 +581,25 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
     if missing:
         raise VoiceError("; ".join(sorted(set(missing))))
     total_lines = sum(1 for vs in sets for ln in scope.values() if vs["speaker"] in (None, ln["speaker"]))
+    synth_items = [it for it in plan if it["action"] == "synth"]
+    chars = sum(len(api_text(it["line"])) for it in synth_items)
     meta = read_json(META_PATH, {})
     if not meta.get("text_freeze", False):
         if not req.get("probe"):
             raise VoiceError("text_freeze=false: массовая запись запрещена (решение Директора); пробный запрос — \"probe\": true")
-        if total_lines > PROBE_MAX_LINES:
-            raise VoiceError(f"проба больше {PROBE_MAX_LINES} файлов ({total_lines}) до text_freeze — сократить запрос")
-    synth_items = [it for it in plan if it["action"] == "synth"]
-    chars = sum(len(api_text(it["line"])) for it in synth_items)
+        # Больше пробы — только по явному заданию Директора с потолком строк и символов (поле order, Docs/DECISIONS.md).
+        order = req.get("order") or {}
+        limit_lines = PROBE_MAX_LINES
+        if order:
+            missing_keys = [k for k in ORDER_KEYS if not order.get(k)]
+            if missing_keys:
+                raise VoiceError(f"order: нет полей {', '.join(missing_keys)} (кто, когда, что, потолок строк и символов)")
+            limit_lines = int(order["max_lines"])
+            if chars > int(order["max_chars"]):
+                raise VoiceError(f"к синтезу {chars} символов > потолка задания {order['max_chars']} — не запускаю")
+            log(f"  задание: {order['by']}, {order['date']} — {order['what']} (потолок {limit_lines} файлов, {order['max_chars']} символов)")
+        if total_lines > limit_lines:
+            raise VoiceError(f"проба больше {limit_lines} файлов ({total_lines}) до text_freeze — сократить запрос")
     log(f"[{set_name}] реплик в сценах запроса: {len(scope)}; файлов с вариантами голосов: {total_lines}; "
         f"к синтезу: {len(synth_items)} ({chars} символов); переобработка: {len(plan) - len(synth_items)}")
     for it in synth_items:
@@ -502,8 +618,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             break
         vs, lid, ln, spec = it["set"], it["id"], it["line"], it["spec"]
         sha = text_sha1(ln["text"])
-        src = vs["dir"] / "src" / f"{lid}.mp3"
-        dst = vs["dir"] / f"{lid}.ogg"
+        src = vs["dir"] / "src" / file_rel(ln, lid, "mp3")
+        dst = vs["dir"] / file_rel(ln, lid, "ogg")
         tag = f"{lid}{'@' + vs['variant'] if vs['variant'] else ''}"
         try:
             info = {}
@@ -521,9 +637,12 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         manifest = vs["manifest"]
         prev = manifest["lines"].get(lid, {})
         fresh_audio = it["action"] == "synth"
-        entry = {"scene": ln["scene"], "index": ln["index"], "speaker": ln["speaker"], "text": ln["text"], "text_sha1": sha,
+        where = ({"kind": "narration", "key": lid, "source_text": ln["source"]} if ln.get("kind") == "narration"
+                 else {"scene": ln["scene"], "index": ln["index"]})
+        entry = {**where, "speaker": ln["speaker"], "text": ln["text"], "text_sha1": sha,
                  "voice_id": spec["voice_id"], "voice_name": spec["voice_name"], "model_id": spec["model_id"],
-                 "voice_settings": spec["voice_settings"], "file": dst.name, "source": f"src/{src.name}",
+                 "voice_settings": spec["voice_settings"], "file": file_rel(ln, lid, "ogg"),
+                 "source": "src/" + file_rel(ln, lid, "mp3"),
                  "voice_text": api_text(ln), "voice_sha1": text_sha1(api_text(ln)), "tags": ln.get("tags", []),
                  "characters": len(api_text(ln)), "loudness_target_lufs": target, **meas,
                  "generated_at": now_iso() if fresh_audio else prev.get("generated_at"),
@@ -578,8 +697,10 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
 
 def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:
     lc = cast.get("loudness", {})
-    lines = dict(sorted(manifest["lines"].items(), key=lambda kv: (kv[1].get("scene", ""), int(kv[1].get("index", 0)))))
-    doc = {"_comment": "Озвученные реплики: id = <scene>_<index> (index — позиция в mandatory_lines/lines). Пишет "
+    lines = dict(sorted(manifest["lines"].items(), key=lambda kv: (kv[1].get("kind") == "narration", kv[1].get("scene", ""),
+                                                                  int(kv[1].get("index", 0)), kv[0])))
+    doc = {"_comment": "Озвученные реплики: id = <scene>_<index> (index — позиция в mandatory_lines/lines); закадровые фразы "
+                       "(kind narration, голос narrator): id = ключ текста data/story/text, файл narrator/<ключ>.ogg. Пишет "
                        "pipeline/voice/eleven_voice.py; игра читает копию (tools/sync_voice.sh) и играет файл, только если sha1 "
                        "текста совпадает с текущей репликой. stale — реплики больше нет или текст изменён.",
            "language": "ru", "variant": vs["variant"], "speaker_only": vs["speaker"],
