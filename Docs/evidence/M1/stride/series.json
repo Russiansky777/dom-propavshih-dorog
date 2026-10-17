@@ -1,0 +1,1290 @@
+{
+  "room": "H1",
+  "interval_ms": 100,
+  "ref": {
+    "player": {
+      "walking": false,
+      "x": 1264.12866210938,
+      "y": 725.605163574219
+    },
+    "actor": {
+      "anim": "idle_2",
+      "direction": 2,
+      "drawn_x": 1264.12866210938,
+      "drawn_y": 725.605163574219,
+      "fps": 10.3384615384615,
+      "frame": 0,
+      "paused": true,
+      "playing": true,
+      "progress": 0.202573329210281,
+      "scale": 1.34844219684601,
+      "speed_px": 363.36968672903,
+      "speed_scale": 1,
+      "stride_px": 35.1473655318258,
+      "walk_time": 0.883333333333334
+    }
+  },
+  "stride_px": 45.7416761489142,
+  "samples": [
+    {
+      "label": "left",
+      "index": 0,
+      "file": "left_00.png",
+      "ticks": 36656,
+      "physics_frames": 1087,
+      "player": {
+        "walking": true,
+        "x": 1555.41845703125,
+        "y": 940.445556640625
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1572.53430175781,
+        "drawn_y": 939.316467285156,
+        "fps": 10.3384615384615,
+        "frame": 1,
+        "paused": true,
+        "playing": true,
+        "progress": 0.378461539745331,
+        "scale": 1.75489699840546,
+        "speed_px": 472.898559570312,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 45.7416761489142,
+        "walk_time": 0.133333333333333
+      }
+    },
+    {
+      "label": "left",
+      "index": 1,
+      "file": "left_01.png",
+      "ticks": 40473,
+      "physics_frames": 1175,
+      "player": {
+        "walking": true,
+        "x": 1492.37878417969,
+        "y": 944.60400390625
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1526.68725585938,
+        "drawn_y": 942.3408203125,
+        "fps": 10.3384615384615,
+        "frame": 2,
+        "paused": true,
+        "playing": true,
+        "progress": 0.72416740655899,
+        "scale": 1.76276433467865,
+        "speed_px": 475.018599660773,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 45.9467395505212,
+        "walk_time": 0.266666666666667
+      }
+    },
+    {
+      "label": "left",
+      "index": 2,
+      "file": "left_02.png",
+      "ticks": 44137,
+      "physics_frames": 1271,
+      "player": {
+        "walking": true,
+        "x": 1429.05651855469,
+        "y": 948.781066894531
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1434.58203125,
+        "drawn_y": 948.416625976562,
+        "fps": 10.3384615384615,
+        "frame": 4,
+        "paused": true,
+        "playing": true,
+        "progress": 0.0216788034886122,
+        "scale": 1.77066683769226,
+        "speed_px": 477.148116262336,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 46.1527195789461,
+        "walk_time": 0.4
+      }
+    },
+    {
+      "label": "left",
+      "index": 3,
+      "file": "left_03.png",
+      "ticks": 47770,
+      "physics_frames": 1367,
+      "player": {
+        "walking": true,
+        "x": 1365.45043945312,
+        "y": 952.976867675781
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1388.32299804688,
+        "drawn_y": 951.468139648438,
+        "fps": 10.3384615384615,
+        "frame": 5,
+        "paused": true,
+        "playing": true,
+        "progress": 0.447473287582397,
+        "scale": 1.77860486507416,
+        "speed_px": 479.287205746299,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 46.3596255558176,
+        "walk_time": 0.533333333333333
+      }
+    },
+    {
+      "label": "left",
+      "index": 4,
+      "file": "left_04.png",
+      "ticks": 51389,
+      "physics_frames": 1463,
+      "player": {
+        "walking": true,
+        "x": 1301.55908203125,
+        "y": 957.191467285156
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1341.85656738281,
+        "drawn_y": 954.533325195312,
+        "fps": 10.3384615384615,
+        "frame": 6,
+        "paused": true,
+        "playing": true,
+        "progress": 0.808204352855682,
+        "scale": 1.78657841682434,
+        "speed_px": 481.435868112664,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 46.5674574811357,
+        "walk_time": 0.666666666666667
+      }
+    },
+    {
+      "label": "left",
+      "index": 5,
+      "file": "left_05.png",
+      "ticks": 54825,
+      "physics_frames": 1559,
+      "player": {
+        "walking": true,
+        "x": 1237.38122558594,
+        "y": 961.424987792969
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1248.50695800781,
+        "drawn_y": 960.691162109375,
+        "fps": 10.3384615384615,
+        "frame": 8,
+        "paused": true,
+        "playing": true,
+        "progress": 0.138798832893372,
+        "scale": 1.79458785057068,
+        "speed_px": 483.59419973273,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 46.776224676529,
+        "walk_time": 0.800000000000001
+      }
+    },
+    {
+      "label": "left",
+      "index": 6,
+      "file": "left_06.png",
+      "ticks": 57963,
+      "physics_frames": 1647,
+      "player": {
+        "walking": true,
+        "x": 1172.91577148438,
+        "y": 965.677490234375
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1201.62292480469,
+        "drawn_y": 963.783874511719,
+        "fps": 10.3384615384615,
+        "frame": 9,
+        "paused": true,
+        "playing": true,
+        "progress": 0.517260372638702,
+        "scale": 1.80263304710388,
+        "speed_px": 485.76216848273,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 46.9859240347879,
+        "walk_time": 0.933333333333335
+      }
+    },
+    {
+      "label": "left",
+      "index": 7,
+      "file": "left_07.png",
+      "ticks": 61372,
+      "physics_frames": 1735,
+      "player": {
+        "walking": true,
+        "x": 1108.16137695312,
+        "y": 969.949035644531
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1154.52868652344,
+        "drawn_y": 966.890502929688,
+        "fps": 10.3384615384615,
+        "frame": 10,
+        "paused": true,
+        "playing": true,
+        "progress": 0.901011765003204,
+        "scale": 1.81071436405182,
+        "speed_px": 487.939870733964,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.1965648775411,
+        "walk_time": 1.06666666666667
+      }
+    },
+    {
+      "label": "left",
+      "index": 8,
+      "file": "left_08.png",
+      "ticks": 64834,
+      "physics_frames": 1825,
+      "player": {
+        "walking": true,
+        "x": 1043.11657714844,
+        "y": 974.239807128906
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1059.91809082031,
+        "drawn_y": 973.131591796875,
+        "fps": 10.3384615384615,
+        "frame": 0,
+        "paused": true,
+        "playing": true,
+        "progress": 0.306473940610886,
+        "scale": 1.81883203983307,
+        "speed_px": 490.127370733964,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.4081534192078,
+        "walk_time": 1.2
+      }
+    },
+    {
+      "label": "left",
+      "index": 9,
+      "file": "left_09.png",
+      "ticks": 68307,
+      "physics_frames": 1909,
+      "player": {
+        "walking": true,
+        "x": 977.780151367188,
+        "y": 978.549682617188
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1012.40069580078,
+        "drawn_y": 976.26611328125,
+        "fps": 10.3384615384615,
+        "frame": 1,
+        "paused": true,
+        "playing": true,
+        "progress": 0.684935510158539,
+        "scale": 1.82698583602905,
+        "speed_px": 492.324604235197,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.6206834453688,
+        "walk_time": 1.33333333333333
+      }
+    },
+    {
+      "label": "left",
+      "index": 10,
+      "file": "left_10.png",
+      "ticks": 72056,
+      "physics_frames": 2005,
+      "player": {
+        "walking": true,
+        "x": 912.15087890625,
+        "y": 982.879028320312
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 916.939819335938,
+        "drawn_y": 982.563354492188,
+        "fps": 10.3384615384615,
+        "frame": 3,
+        "paused": true,
+        "playing": true,
+        "progress": 0.0932062938809395,
+        "scale": 1.8351765871048,
+        "speed_px": 494.53179610403,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.834176706491,
+        "walk_time": 1.46666666666667
+      }
+    },
+    {
+      "label": "left",
+      "index": 11,
+      "file": "left_11.png",
+      "ticks": 75303,
+      "physics_frames": 2093,
+      "player": {
+        "walking": false,
+        "x": 916.939819335938,
+        "y": 982.563354492188
+      },
+      "actor": {
+        "anim": "idle_6",
+        "direction": 6,
+        "drawn_x": 916.939819335938,
+        "drawn_y": 982.563354492188,
+        "fps": 10.3384615384615,
+        "frame": 0,
+        "paused": true,
+        "playing": true,
+        "progress": 0.980413317680359,
+        "scale": 1.83457934856415,
+        "speed_px": 494.370856034128,
+        "speed_scale": 1,
+        "stride_px": 47.8186095866344,
+        "walk_time": 1.55
+      }
+    },
+    {
+      "label": "right",
+      "index": 0,
+      "file": "right_00.png",
+      "ticks": 79873,
+      "physics_frames": 2215,
+      "player": {
+        "walking": true,
+        "x": 982.861755371094,
+        "y": 982.768432617188
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 964.768310546875,
+        "drawn_y": 982.712158203125,
+        "fps": 10.3384615384615,
+        "frame": 1,
+        "paused": true,
+        "playing": true,
+        "progress": 0.414697855710983,
+        "scale": 1.83496725559235,
+        "speed_px": 494.475386770148,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.8287204465173,
+        "walk_time": 0.133333333333333
+      }
+    },
+    {
+      "label": "right",
+      "index": 1,
+      "file": "right_01.png",
+      "ticks": 83846,
+      "physics_frames": 2303,
+      "player": {
+        "walking": true,
+        "x": 1048.79772949219,
+        "y": 982.973510742188
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1012.60693359375,
+        "drawn_y": 982.861022949219,
+        "fps": 10.3384615384615,
+        "frame": 2,
+        "paused": true,
+        "playing": true,
+        "progress": 0.793159425258636,
+        "scale": 1.83535528182983,
+        "speed_px": 494.579949629934,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.8388344136097,
+        "walk_time": 0.266666666666667
+      }
+    },
+    {
+      "label": "right",
+      "index": 2,
+      "file": "right_02.png",
+      "ticks": 87491,
+      "physics_frames": 2399,
+      "player": {
+        "walking": true,
+        "x": 1114.74743652344,
+        "y": 983.178588867188
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1108.30444335938,
+        "drawn_y": 983.158874511719,
+        "fps": 10.3384615384615,
+        "frame": 4,
+        "paused": true,
+        "playing": true,
+        "progress": 0.171620979905128,
+        "scale": 1.83574330806732,
+        "speed_px": 494.68451248972,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.8489483807021,
+        "walk_time": 0.4
+      }
+    },
+    {
+      "label": "right",
+      "index": 3,
+      "file": "right_03.png",
+      "ticks": 91053,
+      "physics_frames": 2495,
+      "player": {
+        "walking": true,
+        "x": 1180.71118164062,
+        "y": 983.3837890625
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1156.16333007812,
+        "drawn_y": 983.307861328125,
+        "fps": 10.3384615384615,
+        "frame": 5,
+        "paused": true,
+        "playing": true,
+        "progress": 0.512812376022339,
+        "scale": 1.8361314535141,
+        "speed_px": 494.789107473273,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.8590654550041,
+        "walk_time": 0.533333333333333
+      }
+    },
+    {
+      "label": "right",
+      "index": 4,
+      "file": "right_04.png",
+      "ticks": 94879,
+      "physics_frames": 2583,
+      "player": {
+        "walking": true,
+        "x": 1246.68884277344,
+        "y": 983.58935546875
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1204.03234863281,
+        "drawn_y": 983.456848144531,
+        "fps": 10.3384615384615,
+        "frame": 6,
+        "paused": true,
+        "playing": true,
+        "progress": 0.89127391576767,
+        "scale": 1.8365204334259,
+        "speed_px": 494.893927323191,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.8692042797729,
+        "walk_time": 0.666666666666667
+      }
+    },
+    {
+      "label": "right",
+      "index": 5,
+      "file": "right_05.png",
+      "ticks": 98780,
+      "physics_frames": 2679,
+      "player": {
+        "walking": true,
+        "x": 1312.68054199219,
+        "y": 983.794921875
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1299.79064941406,
+        "drawn_y": 983.754821777344,
+        "fps": 10.3384615384615,
+        "frame": 8,
+        "paused": true,
+        "playing": true,
+        "progress": 0.298045635223389,
+        "scale": 1.83690929412842,
+        "speed_px": 494.998715049342,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.8793399973322,
+        "walk_time": 0.800000000000001
+      }
+    },
+    {
+      "label": "right",
+      "index": 6,
+      "file": "right_06.png",
+      "ticks": 102545,
+      "physics_frames": 2775,
+      "player": {
+        "walking": true,
+        "x": 1378.68603515625,
+        "y": 984.00048828125
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1347.67993164062,
+        "drawn_y": 983.90380859375,
+        "fps": 10.3384615384615,
+        "frame": 9,
+        "paused": true,
+        "playing": true,
+        "progress": 0.745843827724457,
+        "scale": 1.83729827404022,
+        "speed_px": 495.10353489926,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.889478822101,
+        "walk_time": 0.933333333333335
+      }
+    },
+    {
+      "label": "right",
+      "index": 7,
+      "file": "right_07.png",
+      "ticks": 106173,
+      "physics_frames": 2871,
+      "player": {
+        "walking": true,
+        "x": 1444.70568847656,
+        "y": 984.2060546875
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1443.47875976562,
+        "drawn_y": 984.201782226562,
+        "fps": 10.3384615384615,
+        "frame": 11,
+        "paused": true,
+        "playing": true,
+        "progress": 0.115621075034142,
+        "scale": 1.83768713474274,
+        "speed_px": 495.208322625411,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.8996145396603,
+        "walk_time": 1.06666666666667
+      }
+    },
+    {
+      "label": "right",
+      "index": 8,
+      "file": "right_08.png",
+      "ticks": 109534,
+      "physics_frames": 2953,
+      "player": {
+        "walking": true,
+        "x": 1510.7392578125,
+        "y": 984.411560058594
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1491.38830566406,
+        "drawn_y": 984.350769042969,
+        "fps": 10.3384615384615,
+        "frame": 0,
+        "paused": true,
+        "playing": true,
+        "progress": 0.347776174545288,
+        "scale": 1.83807587623596,
+        "speed_px": 495.313078227796,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.90974715001,
+        "walk_time": 1.2
+      }
+    },
+    {
+      "label": "right",
+      "index": 9,
+      "file": "right_09.png",
+      "ticks": 113406,
+      "physics_frames": 3043,
+      "player": {
+        "walking": true,
+        "x": 1576.78674316406,
+        "y": 984.617004394531
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1539.30798339844,
+        "drawn_y": 984.499755859375,
+        "fps": 10.3384615384615,
+        "frame": 1,
+        "paused": true,
+        "playing": true,
+        "progress": 0.614840805530548,
+        "scale": 1.83846461772919,
+        "speed_px": 495.417833830181,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9198797603598,
+        "walk_time": 1.33333333333333
+      }
+    },
+    {
+      "label": "right",
+      "index": 10,
+      "file": "right_10.png",
+      "ticks": 117188,
+      "physics_frames": 3139,
+      "player": {
+        "walking": true,
+        "x": 1642.84826660156,
+        "y": 984.822387695312
+      },
+      "actor": {
+        "anim": "walk_2",
+        "direction": 2,
+        "drawn_x": 1635.16760253906,
+        "drawn_y": 984.797729492188,
+        "fps": 10.3384615384615,
+        "frame": 3,
+        "paused": true,
+        "playing": true,
+        "progress": 0.0108432807028294,
+        "scale": 1.83885312080383,
+        "speed_px": 495.522525185033,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9300061562904,
+        "walk_time": 1.46666666666667
+      }
+    },
+    {
+      "label": "right",
+      "index": 11,
+      "file": "right_11.png",
+      "ticks": 120861,
+      "physics_frames": 3243,
+      "player": {
+        "walking": false,
+        "x": 1635.16760253906,
+        "y": 984.797729492188
+      },
+      "actor": {
+        "anim": "idle_2",
+        "direction": 2,
+        "drawn_x": 1635.16760253906,
+        "drawn_y": 984.797729492188,
+        "fps": 10.3384615384615,
+        "frame": 0,
+        "paused": true,
+        "playing": true,
+        "progress": 0.0790266692638397,
+        "scale": 1.83880650997162,
+        "speed_px": 495.509964792352,
+        "speed_scale": 1,
+        "stride_px": 47.9287912373555,
+        "walk_time": 1.6
+      }
+    },
+    {
+      "label": "hold",
+      "index": 0,
+      "file": "hold_00.png",
+      "ticks": 125374,
+      "physics_frames": 3371,
+      "player": {
+        "walking": true,
+        "x": 1569.09851074219,
+        "y": 984.832397460938
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1587.23706054688,
+        "drawn_y": 984.822875976562,
+        "fps": 10.3384615384615,
+        "frame": 1,
+        "paused": true,
+        "playing": true,
+        "progress": 0.378944009542465,
+        "scale": 1.83887207508087,
+        "speed_px": 495.527632863898,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9305002026092,
+        "walk_time": 0.133333333333333
+      }
+    },
+    {
+      "label": "hold",
+      "index": 1,
+      "file": "hold_01.png",
+      "ticks": 129163,
+      "physics_frames": 3453,
+      "player": {
+        "walking": true,
+        "x": 1552.58093261719,
+        "y": 984.841186523438
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1587.23706054688,
+        "drawn_y": 984.822875976562,
+        "fps": 10.3384615384615,
+        "frame": 1,
+        "paused": true,
+        "playing": true,
+        "progress": 0.740225851535797,
+        "scale": 1.83888876438141,
+        "speed_px": 495.532130191201,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9309352119465,
+        "walk_time": 0.166666666666667
+      }
+    },
+    {
+      "label": "hold",
+      "index": 2,
+      "file": "hold_02.png",
+      "ticks": 132683,
+      "physics_frames": 3535,
+      "player": {
+        "walking": true,
+        "x": 1536.06335449219,
+        "y": 984.849975585938
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1539.3056640625,
+        "drawn_y": 984.848022460938,
+        "fps": 10.3384615384615,
+        "frame": 2,
+        "paused": true,
+        "playing": true,
+        "progress": 0.0998535454273224,
+        "scale": 1.83890533447266,
+        "speed_px": 495.536595394737,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9313671140742,
+        "walk_time": 0.2
+      }
+    },
+    {
+      "label": "hold",
+      "index": 3,
+      "file": "hold_03.png",
+      "ticks": 136432,
+      "physics_frames": 3624,
+      "player": {
+        "walking": true,
+        "x": 1519.54577636719,
+        "y": 984.858764648438
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1539.3056640625,
+        "drawn_y": 984.848022460938,
+        "fps": 10.3384615384615,
+        "frame": 2,
+        "paused": true,
+        "playing": true,
+        "progress": 0.406957536935806,
+        "scale": 1.83892202377319,
+        "speed_px": 495.541092722039,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9318021234116,
+        "walk_time": 0.233333333333334
+      }
+    },
+    {
+      "label": "hold",
+      "index": 4,
+      "file": "hold_04.png",
+      "ticks": 139767,
+      "physics_frames": 3706,
+      "player": {
+        "walking": true,
+        "x": 1503.02746582031,
+        "y": 984.867553710938
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1539.3056640625,
+        "drawn_y": 984.848022460938,
+        "fps": 10.3384615384615,
+        "frame": 2,
+        "paused": true,
+        "playing": true,
+        "progress": 0.751572906970978,
+        "scale": 1.83893859386444,
+        "speed_px": 495.545557925576,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9322340255393,
+        "walk_time": 0.266666666666667
+      }
+    },
+    {
+      "label": "hold",
+      "index": 5,
+      "file": "hold_05.png",
+      "ticks": 143642,
+      "physics_frames": 3802,
+      "player": {
+        "walking": true,
+        "x": 1486.50891113281,
+        "y": 984.876342773438
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1491.373046875,
+        "drawn_y": 984.873107910156,
+        "fps": 10.3384615384615,
+        "frame": 3,
+        "paused": true,
+        "playing": true,
+        "progress": 0.0912559852004051,
+        "scale": 1.83895528316498,
+        "speed_px": 495.550055252878,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9326690348766,
+        "walk_time": 0.3
+      }
+    },
+    {
+      "label": "hold",
+      "index": 6,
+      "file": "hold_06.png",
+      "ticks": 147792,
+      "physics_frames": 3898,
+      "player": {
+        "walking": true,
+        "x": 1469.99035644531,
+        "y": 984.885131835938
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1491.373046875,
+        "drawn_y": 984.873107910156,
+        "fps": 10.3384615384615,
+        "frame": 3,
+        "paused": true,
+        "playing": true,
+        "progress": 0.435871362686157,
+        "scale": 1.83897185325623,
+        "speed_px": 495.554520456415,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9331009370044,
+        "walk_time": 0.333333333333333
+      }
+    },
+    {
+      "label": "hold",
+      "index": 7,
+      "file": "hold_07.png",
+      "ticks": 151671,
+      "physics_frames": 3994,
+      "player": {
+        "walking": true,
+        "x": 1453.47180175781,
+        "y": 984.893920898438
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1491.373046875,
+        "drawn_y": 984.873107910156,
+        "fps": 10.3384615384615,
+        "frame": 3,
+        "paused": true,
+        "playing": true,
+        "progress": 0.780486762523651,
+        "scale": 1.83898854255676,
+        "speed_px": 495.559017783717,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9335359463417,
+        "walk_time": 0.366666666666667
+      }
+    },
+    {
+      "label": "hold",
+      "index": 8,
+      "file": "hold_08.png",
+      "ticks": 155620,
+      "physics_frames": 4090,
+      "player": {
+        "walking": true,
+        "x": 1436.95324707031,
+        "y": 984.902709960938
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1443.43908691406,
+        "drawn_y": 984.898071289062,
+        "fps": 10.3384615384615,
+        "frame": 4,
+        "paused": true,
+        "playing": true,
+        "progress": 0.138964310288429,
+        "scale": 1.83900511264801,
+        "speed_px": 495.563482987253,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9339678484694,
+        "walk_time": 0.4
+      }
+    },
+    {
+      "label": "hold",
+      "index": 9,
+      "file": "hold_09.png",
+      "ticks": 159629,
+      "physics_frames": 4170,
+      "player": {
+        "walking": true,
+        "x": 1420.43469238281,
+        "y": 984.911499023438
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1443.43908691406,
+        "drawn_y": 984.898071289062,
+        "fps": 10.3384615384615,
+        "frame": 4,
+        "paused": true,
+        "playing": true,
+        "progress": 0.45194399356842,
+        "scale": 1.83902180194855,
+        "speed_px": 495.567980314556,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9344028578068,
+        "walk_time": 0.433333333333333
+      }
+    },
+    {
+      "label": "hold",
+      "index": 10,
+      "file": "hold_10.png",
+      "ticks": 164093,
+      "physics_frames": 4259,
+      "player": {
+        "walking": true,
+        "x": 1403.916015625,
+        "y": 984.920288085938
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1443.43908691406,
+        "drawn_y": 984.898071289062,
+        "fps": 10.3384615384615,
+        "frame": 4,
+        "paused": true,
+        "playing": true,
+        "progress": 0.796559393405914,
+        "scale": 1.83903837203979,
+        "speed_px": 495.572445518092,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9348347599345,
+        "walk_time": 0.466666666666666
+      }
+    },
+    {
+      "label": "hold",
+      "index": 11,
+      "file": "hold_11.png",
+      "ticks": 167483,
+      "physics_frames": 4347,
+      "player": {
+        "walking": true,
+        "x": 1387.396484375,
+        "y": 984.928955078125
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1395.50378417969,
+        "drawn_y": 984.9228515625,
+        "fps": 10.3384615384615,
+        "frame": 5,
+        "paused": true,
+        "playing": true,
+        "progress": 0.145551398396492,
+        "scale": 1.83905482292175,
+        "speed_px": 495.576878597862,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9352635548527,
+        "walk_time": 0.499999999999999
+      }
+    },
+    {
+      "label": "hold",
+      "index": 12,
+      "file": "hold_12.png",
+      "ticks": 171466,
+      "physics_frames": 4443,
+      "player": {
+        "walking": true,
+        "x": 1370.876953125,
+        "y": 984.9375
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1395.50378417969,
+        "drawn_y": 984.9228515625,
+        "fps": 10.3384615384615,
+        "frame": 5,
+        "paused": true,
+        "playing": true,
+        "progress": 0.494095414876938,
+        "scale": 1.83907091617584,
+        "speed_px": 495.581215306332,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9356830281423,
+        "walk_time": 0.533333333333333
+      }
+    },
+    {
+      "label": "hold",
+      "index": 13,
+      "file": "hold_13.png",
+      "ticks": 175321,
+      "physics_frames": 4532,
+      "player": {
+        "walking": true,
+        "x": 1354.357421875,
+        "y": 984.946044921875
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1395.50378417969,
+        "drawn_y": 984.9228515625,
+        "fps": 10.3384615384615,
+        "frame": 5,
+        "paused": true,
+        "playing": true,
+        "progress": 0.816655397415161,
+        "scale": 1.83908712863922,
+        "speed_px": 495.585584138569,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9361056086414,
+        "walk_time": 0.566666666666666
+      }
+    },
+    {
+      "label": "hold",
+      "index": 14,
+      "file": "hold_14.png",
+      "ticks": 179045,
+      "physics_frames": 4612,
+      "player": {
+        "walking": true,
+        "x": 1337.837890625,
+        "y": 984.95458984375
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1347.56726074219,
+        "drawn_y": 984.947631835938,
+        "fps": 10.3384615384615,
+        "frame": 6,
+        "paused": true,
+        "playing": true,
+        "progress": 0.176007404923439,
+        "scale": 1.83910322189331,
+        "speed_px": 495.58992084704,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9365250819309,
+        "walk_time": 0.599999999999999
+      }
+    },
+    {
+      "label": "hold",
+      "index": 15,
+      "file": "hold_15.png",
+      "ticks": 182625,
+      "physics_frames": 4708,
+      "player": {
+        "walking": true,
+        "x": 1321.318359375,
+        "y": 984.963134765625
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1347.56726074219,
+        "drawn_y": 984.947631835938,
+        "fps": 10.3384615384615,
+        "frame": 6,
+        "paused": true,
+        "playing": true,
+        "progress": 0.537056624889374,
+        "scale": 1.83911943435669,
+        "speed_px": 495.594289679276,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.93694766243,
+        "walk_time": 0.633333333333332
+      }
+    },
+    {
+      "label": "hold",
+      "index": 16,
+      "file": "hold_16.png",
+      "ticks": 186361,
+      "physics_frames": 4804,
+      "player": {
+        "walking": true,
+        "x": 1304.798828125,
+        "y": 984.9716796875
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1347.56726074219,
+        "drawn_y": 984.947631835938,
+        "fps": 10.3384615384615,
+        "frame": 6,
+        "paused": true,
+        "playing": true,
+        "progress": 0.881430804729462,
+        "scale": 1.83913564682007,
+        "speed_px": 495.598658511513,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9373702429291,
+        "walk_time": 0.666666666666666
+      }
+    },
+    {
+      "label": "hold",
+      "index": 17,
+      "file": "hold_17.png",
+      "ticks": 190329,
+      "physics_frames": 4900,
+      "player": {
+        "walking": true,
+        "x": 1288.27880859375,
+        "y": 984.980224609375
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1299.62951660156,
+        "drawn_y": 984.972412109375,
+        "fps": 10.3384615384615,
+        "frame": 7,
+        "paused": true,
+        "playing": true,
+        "progress": 0.212485581636429,
+        "scale": 1.83915174007416,
+        "speed_px": 495.602995219984,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9377897162186,
+        "walk_time": 0.699999999999999
+      }
+    },
+    {
+      "label": "hold",
+      "index": 18,
+      "file": "hold_18.png",
+      "ticks": 194151,
+      "physics_frames": 4988,
+      "player": {
+        "walking": true,
+        "x": 1271.75830078125,
+        "y": 984.98876953125
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1299.62951660156,
+        "drawn_y": 984.972412109375,
+        "fps": 10.3384615384615,
+        "frame": 7,
+        "paused": true,
+        "playing": true,
+        "progress": 0.547727406024933,
+        "scale": 1.83916795253754,
+        "speed_px": 495.60736405222,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9382122967177,
+        "walk_time": 0.733333333333332
+      }
+    },
+    {
+      "label": "hold",
+      "index": 19,
+      "file": "hold_19.png",
+      "ticks": 197468,
+      "physics_frames": 5076,
+      "player": {
+        "walking": true,
+        "x": 1255.23779296875,
+        "y": 984.997314453125
+      },
+      "actor": {
+        "anim": "walk_6",
+        "direction": 6,
+        "drawn_x": 1299.62951660156,
+        "drawn_y": 984.972412109375,
+        "fps": 10.3384615384615,
+        "frame": 7,
+        "paused": true,
+        "playing": true,
+        "progress": 0.892342805862427,
+        "scale": 1.83918416500092,
+        "speed_px": 495.611732884457,
+        "speed_scale": 0.861538469791412,
+        "stride_px": 47.9386348772168,
+        "walk_time": 0.766666666666665
+      }
+    },
+    {
+      "label": "hold",
+      "index": 20,
+      "file": "hold_20.png",
+      "ticks": 201300,
+      "physics_frames": 5180,
+      "player": {
+        "walking": false,
+        "x": 1299.62951660156,
+        "y": 984.972412109375
+      },
+      "actor": {
+        "anim": "idle_6",
+        "direction": 6,
+        "drawn_x": 1299.62951660156,
+        "drawn_y": 984.972412109375,
+        "fps": 10.3384615384615,
+        "frame": 0,
+        "paused": true,
+        "playing": true,
+        "progress": 0.274639993906021,
+        "scale": 1.83913695812225,
+        "speed_px": 495.599011872944,
+        "speed_scale": 1,
+        "stride_px": 47.9374044222342,
+        "walk_time": 0.770833333333332
+      }
+    }
+  ]
+}

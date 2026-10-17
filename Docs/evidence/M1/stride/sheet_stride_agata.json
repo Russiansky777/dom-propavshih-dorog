@@ -1,0 +1,102 @@
+{
+  "actor": "agata",
+  "sheet": "assets/characters/agata/walk.png",
+  "frame": [
+    288,
+    384
+  ],
+  "frames": 12,
+  "character_height_m": 1.596,
+  "px_per_m_at_scale_1": 240.6,
+  "stride_px_per_frame_median": 26.0,
+  "cycle_px": 312.0,
+  "cycle_m_measured": 1.297,
+  "cycle_m_in_data": 1.3,
+  "rows": [
+    {
+      "row": 2,
+      "sign": 1,
+      "stride_per_frame": [
+        26,
+        25,
+        23,
+        14,
+        27,
+        26,
+        26,
+        -28,
+        -4,
+        19,
+        26,
+        28
+      ],
+      "median": 25.5,
+      "defect_frames": [
+        3,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "row": 6,
+      "sign": -1,
+      "stride_per_frame": [
+        15,
+        27,
+        -6,
+        19,
+        27,
+        25,
+        24,
+        12,
+        19,
+        5,
+        26,
+        27
+      ],
+      "median": 21.5,
+      "defect_frames": [
+        0,
+        2,
+        7,
+        9
+      ]
+    }
+  ],
+  "defect_frames": [
+    {
+      "row": 2,
+      "frame": 3
+    },
+    {
+      "row": 2,
+      "frame": 7
+    },
+    {
+      "row": 2,
+      "frame": 8
+    },
+    {
+      "row": 2,
+      "frame": 9
+    },
+    {
+      "row": 6,
+      "frame": 0
+    },
+    {
+      "row": 6,
+      "frame": 2
+    },
+    {
+      "row": 6,
+      "frame": 7
+    },
+    {
+      "row": 6,
+      "frame": 9
+    }
+  ],
+  "tolerance_px": 6.0
+}

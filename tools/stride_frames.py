@@ -8,8 +8,8 @@ planted (support) foot; its screen x is tracked from frame to frame. While the s
 planted its x must not move: that is the «ступня едет» check. Output:
 
   <dir>/stride_report.json / stride_report.txt  — per-frame numbers (sheet frame, drawn x, foot x, drift)
-  <dir>/stride_<label>.gif                       — the series on a fixed floor window, 10 fps
-  <dir>/stride_strip.png                         — contact sheet: tiles with the planted foot marked
+  <dir>/stride_<label>.gif                       — the series on a fixed floor window (half size)
+  <dir>/stride_strip.jpg                         — contact sheet: tiles with the planted foot marked
                                                    (red = this frame, yellow = previous frame)
 
     python3 tools/stride_frames.py build/shots/m1/stride [--max-drift 6]
@@ -154,8 +154,9 @@ def main():
                             if sx0 < 0 or sy0 < 0 or sx0 + tmpl.shape[1] > band_cur.shape[1] or sy0 + tmpl.shape[0] > band_cur.shape[0]:
                                 continue
                             score = int((tmpl & band_cur[sy0:sy0 + tmpl.shape[0], sx0:sx0 + tmpl.shape[1]]).sum())
-                            if best is None or score > best[1]:
-                                best = (ddx, score)
+                            # Ties (a band wider than the template) resolve to the smallest shift.
+                            if best is None or score > best[1] or (score == best[1] and abs(ddx) + abs(ddy) < abs(best[0]) + abs(best[2])):
+                                best = (ddx, score, ddy)
                     if best is not None and area > 0 and best[1] / area >= 0.55:
                         entry["drift"] = best[0]
                         entry["match"] = round(best[1] / area, 2)
@@ -230,7 +231,8 @@ def main():
             frames_gif.append(tile)
             strip_tiles.append(tile.resize((tile.width // 2, tile.height // 2)))
         if frames_gif and lab != "hold":
-            frames_gif[0].save(os.path.join(d, f"stride_{lab}.gif"), save_all=True, append_images=frames_gif[1:], duration=100, loop=0)
+            small = [t.resize((t.width // 2, t.height // 2)) for t in frames_gif]
+            small[0].save(os.path.join(d, f"stride_{lab}.gif"), save_all=True, append_images=small[1:], duration=130, loop=0)
     if strip_tiles:
         cols = 4
         tw = max(t.width for t in strip_tiles)
@@ -239,7 +241,7 @@ def main():
         sheet = Image.new("RGB", (cols * tw, rows * th), (30, 30, 30))
         for i, t in enumerate(strip_tiles):
             sheet.paste(t, ((i % cols) * tw, (i // cols) * th))
-        sheet.save(os.path.join(d, "stride_strip.png"))
+        sheet.save(os.path.join(d, "stride_strip.jpg"), quality=85)
     sys.exit(1 if engine_violations or (args.strict and violations) else 0)
 
 

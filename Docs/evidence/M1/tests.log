@@ -10,23 +10,33 @@ WARNING: GameState: no save in slot 'missing_slot_xyz'
      at: push_warning (core/variant/variant_utility.cpp:1033)
      GDScript backtrace (most recent call first):
          [0] load (res://scripts/core/game_state.gd:177)
-         [1] _test_save_load (res://tests/run_tests.gd:141)
-         [2] _test (res://tests/run_tests.gd:61)
+         [1] _test_save_load (res://tests/run_tests.gd:142)
+         [2] _test (res://tests/run_tests.gd:62)
          [3] _run (res://tests/run_tests.gd:36)
-PASS  GameState save → modify → load restores flags/inventory/room  (1 ms)
-PASS  RoomManager.change_room loads RoomOffice and places player at spawn  (407 ms)
-PASS  RoomManager autosaves to slot after room change  (8 ms)
-PASS  Room.apply_flags toggles door state nodes on office_latch_open  (5 ms)
-        nav map ready after 1 physics frames (iteration 2)
-PASS  NavigationServer2D returns a path inside RoomHouse.Walkable  (16 ms)
-PASS  Room.pick finds hotspot/exit under a point  (34 ms)
-PASS  Mirror shows RoomOfficeView through a ViewportTexture with Echo looping  (311 ms)
-PASS  Player walks to the exit and RoomManager switches rooms  (1200 ms)
-PASS  Save/load round-trip survives room change and restores player position  (17 ms)
+PASS  GameState save → modify → load restores flags/inventory/room  (0 ms)
+PASS  RoomManager.change_room loads RoomOffice and places player at spawn  (336 ms)
+PASS  RoomManager autosaves to slot after room change  (7 ms)
+PASS  Room.apply_flags toggles door state nodes on office_latch_open  (3 ms)
+        nav map ready after 5 physics frames (iteration 3)
+PASS  NavigationServer2D returns a path inside RoomHouse.Walkable  (73 ms)
+PASS  Room.pick finds hotspot/exit under a point  (35 ms)
+PASS  Mirror shows RoomOfficeView through a ViewportTexture with Echo looping  (304 ms)
+PASS  Player walks to the exit and RoomManager switches rooms  (1240 ms)
+PASS  Save/load round-trip survives room change and restores player position  (12 ms)
 PASS  InputMap: F5 → quick_save, F9 → quick_load  (0 ms)
-PASS  StoryData loads every JSON and every room builds without errors  (621 ms)
-PASS  Negative: exit H3→O1 is closed before M05 and open after  (633 ms)
-PASS  Bot walkthrough M01→M08 via StoryRunner/Room API with mid-way save/load  (6939 ms)
-PASS  H1: Agata sprite from sheets (288x384, 8 walk + 8 idle), directions, table occluder z-sort  (1774 ms)
+PASS  StoryData loads every JSON and every room builds without errors  (608 ms)
+PASS  Negative: exit H3→O1 is closed before M05 and open after  (600 ms)
+PASS  Bot walkthrough M01→M08 via StoryRunner/Room API with mid-way save/load  (6986 ms)
+PASS  H1: Agata sprite from sheets (288x384, 8 walk + 8 idle), directions, table occluder z-sort  (1673 ms)
+    sheet: 12 frames, px/m at scale 1 = 240.6, cycle_meters 1.300, measured stride 26.0 px/frame → cycle 1.297 m
+    scale   px/m    v px/s   fps    px/frame = v/fps   stride×scale
+    1.00    240.6    269.5   10.34    26.07             26.07
+    1.30    312.8    350.3   10.34    33.88             33.88
+    1.65    397.0    444.6   10.34    43.01             43.01
+    2.00    481.2    538.9   10.34    52.13             52.13
+    walk left at y=990: scale 1.85, v 498.2 px/s (measured 494.8), fps 10.34 (measured 10.29 from 14 frame changes), speed_scale 0.862
+    drawn figure: moves 0.00 px max while a frame is shown; per frame change -48.2..-48.2 px (mean -48.2; sheet stride × scale = 48.2)
+    advance per frame change (px): [-48.2, -48.2, -48.2, -48.2, -48.2, -48.2, -48.2, -48.2, -48.2, -48.2, -48.2, -48.2, -48.2, -48.2]; re-synced onto the logical position (engine lag): 0
+PASS  Stride: fps from speed, stride = sheet stride, foot lock holds the drawn figure between frames  (1446 ms)
 
-==== 14 tests, 14 passed, 0 failed ====
+==== 15 tests, 15 passed, 0 failed ====
