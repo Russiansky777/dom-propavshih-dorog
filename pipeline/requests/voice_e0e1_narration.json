@@ -1,0 +1,19 @@
+{
+  "mode": "generate",
+  "set": "e0e1_narration",
+  "probe": true,
+  "_comment": "Закадровый голос E0–E1 (голос ZAKADR, cast.json → narrator): осмотры, действия, реакции закрытых выходов, вопросы выбора, сообщения крупного плана (data/story/text/ru_E0_E1.json) и строки предметов сумки (ru_bag.json). Какие ключи — правила data/story/voice.json → narration; ключи без ссылок в данных игры пропускаются. Файлы — assets/voice/ru/narrator/<ключ>.ogg.",
+  "scenes": [],
+  "narration": {
+    "texts": ["ru_E0_E1", "ru_bag"]
+  },
+  "order": {
+    "by": "Директор",
+    "date": "2026-10-18",
+    "what": "закадровый голос ZAKADR для осмотров и описаний предметов E0–E1 (≈90 строк, ≈5 000 символов)",
+    "max_lines": 100,
+    "max_chars": 6000
+  },
+  "redo": [],
+  "note": "2026-10-18: первая запись закадрового голоса E0–E1"
+}
