@@ -2,6 +2,13 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
+uid="uid://eq87romtgiub"
+path="res://.godot/imported/M06_0.ogg-f18caffbbac02996899a6688ad38df7b.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/voice/ru/M06_0.ogg"
+dest_files=["res://.godot/imported/M06_0.ogg-f18caffbbac02996899a6688ad38df7b.oggvorbisstr"]
 
 [params]
 

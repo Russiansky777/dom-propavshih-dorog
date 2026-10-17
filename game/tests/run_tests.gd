@@ -66,6 +66,7 @@ func _run() -> void:
 	await _test("Cross-fade: switching idle↔walk (Agata) and idle↔talk (Tamara) dissolves the old pose in ≈0.12 s", _test_crossfade)
 	await _test("Actions: hotspot action_anim plays once, the effect lands on the key frame exactly once; save mid-action is safe", _test_actions)
 	await _test("Idle sway: even back-and-forth — equal time to both extreme poses (±5 %), equal holds, easing to rest at both ends", _test_idle_sway)
+	await _test("Tikhon: bone-rigged puppet by the stove after M03 — breathing/tail loop without a seam, ear/head accents, head lift on his lines, scared tail, hotspot still clickable", _test_tikhon)
 	_cleanup_m1()
 	_finish()
 
@@ -1605,3 +1606,105 @@ func _check_eased(sheet, id: String, action: String) -> int:
 func _is_puppet(id: String) -> bool:
 	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 	return typeof(spec) == TYPE_DICTIONARY and String(spec.get("type", "")) == "puppet"
+
+
+## Tikhon (Director: «где питомец, только имя на печи»): a Polygon2D+Skeleton2D puppet from one picture.
+func _test_tikhon() -> void:
+	gs.reset()
+	await _spawn_main()
+	rm.autosave_enabled = false
+	sr = root.get_node("StoryRunner")
+	rm.change_room("H1", "default")
+	await physics_frame
+	await physics_frame
+	var room: Node = rm.current_room
+	var pups: Array = load("res://scripts/actors/puppet_actor.gd").all_in(room)
+	_check(pups.size() == 1 and pups[0].actor_id == "tikhon", "H1 should hold Tikhon's puppet, got %d" % pups.size())
+	if pups.is_empty():
+		_cleanup_m1()
+		return
+	var t: Node2D = pups[0]
+	var hs: Node2D = room.get_node("Hotspots/tikhon")
+	# Appears with his hotspot: not before M03.
+	_check(not t.visible and not hs.visible, "Tikhon is hidden before M03")
+	gs.set_flag("started_M03", true)
+	await process_frame
+	_check(t.visible and hs.visible, "Tikhon appears with his hotspot once M03 has started")
+	# Rig: mesh over the picture, skinned to the bones, every vertex fully weighted.
+	var poly: Polygon2D = t.poly
+	_check(poly.polygon.size() > 150 and poly.polygons.size() > 200, "mesh too coarse: %d vertices, %d triangles" % [poly.polygon.size(), poly.polygons.size()])
+	_check(poly.get_bone_count() == 8, "8 bones skinned (body, head, 2 ears, 4 tail links), got %d" % poly.get_bone_count())
+	var worst := 0.0
+	for i in poly.polygon.size():
+		var sum := 0.0
+		for b in poly.get_bone_count():
+			sum += poly.get_bone_weights(b)[i]
+		worst = maxf(worst, absf(sum - 1.0))
+	_check(worst < 0.001, "every vertex must be fully weighted (worst sum error %.4f)" % worst)
+	# Size: ≈ 0.28 of Agata's height at the same depth.
+	var agata_h: float = 337.0 * room.depth_scale(t.depth_y)
+	var ratio: float = t.figure_height_px() / agata_h
+	print("    tikhon: %d vertices, %d triangles; height %.0f px = %.2f × Agata at depth y %.0f; feet %s" % [poly.polygon.size(), poly.polygons.size(), t.figure_height_px(), ratio, t.depth_y, str(t.global_position)])
+	_check(absf(ratio - 0.28) < 0.02, "Tikhon ≈ 0.28 of Agata's height, got %.2f" % ratio)
+	# Breathing + tail: one seamless loop (first and last key equal on every track), body scale ±2 %.
+	var idle: Animation = t.life.get_animation("idle")
+	_check(t.life.is_playing() and t.life.current_animation == "idle" and idle.loop_mode == Animation.LOOP_LINEAR, "the idle loop plays")
+	var max_body := 1.0
+	for tr in idle.get_track_count():
+		var first = idle.track_get_key_value(tr, 0)
+		var last = idle.track_get_key_value(tr, idle.track_get_key_count(tr) - 1)
+		var seam: float = (first - last).length() if first is Vector2 else absf(float(first) - float(last))
+		_check(seam < 0.0005, "idle track %s must end where it starts (seam %.5f)" % [str(idle.track_get_path(tr)), seam])
+		if str(idle.track_get_path(tr)).ends_with(":scale"):
+			for k in idle.track_get_key_count(tr):
+				max_body = maxf(max_body, (idle.track_get_key_value(tr, k) as Vector2).y)
+	_check(absf(max_body - 1.02) < 0.002, "breathing: body scale up to +2 %%, got %.3f" % max_body)
+	# The mesh really moves with the bones: a tail vertex moves when the tail bone turns.
+	var bone_t4: Bone2D = t.bones["tail4"]
+	var before := bone_t4.global_position
+	t.life.seek(1.2, true)
+	await process_frame
+	var after := bone_t4.global_position
+	t.life.seek(0.0, true)
+	_check(before.distance_to(after) > 0.5, "the tail tip must sway with the idle loop")
+	# Accents: an ear twitch / head tilt comes within the configured interval and ends on the rest pose.
+	var head_rest: float = t.bones["head"].rest.get_rotation()
+	var seen := {}
+	var n := 0
+	while seen.size() < 1 and n < 1600:
+		await process_frame
+		n += 1
+		if t.accent.is_playing():
+			seen[t.accent.current_animation] = true
+	_check(not seen.is_empty(), "an ear twitch or head tilt must come within 12 s")
+	print("    accents seen: %s" % str(seen.keys()))
+	while t.accent.is_playing():
+		await process_frame
+	_check(absf(t.bones["head"].rotation - head_rest) < 0.001 and absf(t.bones["ear_l"].rotation - t.bones["ear_l"].rest.get_rotation()) < 0.001, "accents end on the rest pose")
+	# His own line lifts the head; the next speaker's line lowers it again.
+	var b_dict := {"type": "line", "speaker": "tikhon", "text": "test"}
+	sr.current_beat = b_dict
+	sr.beat_changed.emit()
+	_check(t.talking and t.accent.current_animation == "talk_lift", "on his line Tikhon lifts his head")
+	sr.current_beat = {"type": "line", "speaker": "agata", "text": "test"}
+	sr.beat_changed.emit()
+	_check(not t.talking, "on Agata's line he lowers it again")
+	sr.current_beat = {}
+	sr.beat_changed.emit()
+	while t.accent.is_playing():
+		await process_frame
+	t.play_scared()
+	while t.accent.is_playing():
+		await process_frame
+	_check((t.bones["tail2"].scale as Vector2).y > 1.3, "scared: the tail fluffs up")
+	t.calm()
+	while t.accent.is_playing():
+		await process_frame
+	_check(absf((t.bones["tail2"].scale as Vector2).y - 1.0) < 0.01, "calm: the tail settles")
+	# The hotspot stays clickable (the figure draws no input; the hotspot keeps its rect).
+	var rs: Vector2 = (hs.get_node("Shape") as CollisionShape2D).shape.size
+	await physics_frame
+	var picked = room.pick(hs.global_position)
+	_check(picked == hs, "the tikhon hotspot must still be picked at its centre, got %s" % str(picked))
+	gs.reset()
+	_cleanup_m1()
