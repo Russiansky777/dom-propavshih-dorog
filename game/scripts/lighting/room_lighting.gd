@@ -158,7 +158,7 @@ func _group_flicker(spec) -> LightFlicker:
 
 func _ready() -> void:
 	if receive_material != null and light_map != null:
-		receive_material.set_shader_parameter("light_map", light_map.get_texture())
+		receive_material.set_shader_parameter("room_light_tex", light_map.get_texture())
 	process_priority = 20  # after the player's foot lock (10): shadows read this frame's position
 	GameState.flag_changed.connect(_on_flag_changed)
 	GameState.state_reset.connect(_on_state_snap)

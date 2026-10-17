@@ -6,7 +6,7 @@ shader_type canvas_item;
 // (points / ADD masks), all ×0.5 so a light up to 2× fits in 8 bits. Two samples per pixel — the
 // whole lighting of a room costs about one extra texture read on the art.
 
-uniform sampler2D light_map : filter_linear, repeat_disable;
+uniform sampler2D room_light_tex : filter_linear, repeat_disable;
 uniform vec2 canvas_size = vec2(1920.0, 1080.0);
 
 varying vec2 lm_uv;
@@ -17,6 +17,6 @@ void vertex() {
 
 void fragment() {
 	vec4 c = texture(TEXTURE, UV) * COLOR;
-	vec3 l = texture(light_map, clamp(lm_uv, vec2(0.0), vec2(1.0))).rgb * 2.0;
+	vec3 l = texture(room_light_tex, clamp(lm_uv, vec2(0.0), vec2(1.0))).rgb * 2.0;
 	COLOR = vec4(c.rgb * l, c.a);
 }
