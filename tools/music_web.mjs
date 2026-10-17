@@ -144,6 +144,17 @@ const INIT_SCRIPT = () => {
     }
     return origConnect.call(this, dest, ...rest);
   };
+  window.__idbKeys = () => new Promise((res) => {
+    const rq = indexedDB.open("/userfs");
+    rq.onerror = () => res([]);
+    rq.onsuccess = () => {
+      try {
+        const k = rq.result.transaction("FILE_DATA", "readonly").objectStore("FILE_DATA").getAllKeys();
+        k.onsuccess = () => { res(k.result.map(String)); rq.result.close(); };
+        k.onerror = () => res([]);
+      } catch (_) { res([]); }
+    };
+  });
   window.__longTasks = [];
   try {
     new PerformanceObserver((list) => {
@@ -207,7 +218,10 @@ async function main() {
     pg.on("pageerror", (e) => { logLine(`pageerror: ${e.message}`); errors.push(`pageerror: ${e.message}`); });
     pg.on("requestfailed", (r) => {
       logLine(`requestfailed: ${r.url()} ${r.failure()?.errorText}`);
-      if (!(leaving && /ERR_ABORTED/.test(r.failure()?.errorText || ""))) errors.push(`requestfailed ${r.url()}`);
+      // Godot's loader aborts its own streaming request for index.pck/index.wasm on every load
+      // (seen without any music code too); a closing page aborts whatever is in flight.
+      const aborted = /ERR_ABORTED/.test(r.failure()?.errorText || "");
+      if (!(aborted && (leaving || /index\.(pck|wasm)$/.test(r.url())))) errors.push(`requestfailed ${r.url()}`);
     });
   };
   let page = await context.newPage();
@@ -370,7 +384,9 @@ async function main() {
     // Settings are written 0.5 s after the last change; Godot syncs user:// to IndexedDB on the
     // next frames.
     await waitFor("settings saved", music, (x) => x.settings_saves >= 1, 10000);
-    await sleep(4000);
+    const keys = await waitFor("settings.cfg in IndexedDB", () => page.evaluate(() => (window.__idbKeys ? window.__idbKeys() : [])),
+      (k) => Array.isArray(k) && k.some((x) => x.endsWith("/settings.cfg")), 30000);
+    check(Array.isArray(keys) && keys.some((x) => x.endsWith("/settings.cfg")), "settings.cfg reaches IndexedDB (/userfs)");
     leaving = true;
     await page.close();
     page = await context.newPage();

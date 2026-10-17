@@ -39,9 +39,6 @@ const DUCK_FADE_S: float = 0.4
 const SILENCE_DB: float = -80.0
 const SAVE_DELAY_S: float = 0.5
 const WEB_STATE_INTERVAL_S: float = 0.25
-## Web: the write's own IndexedDB sync does not carry it (measured 17.10: settings.cfg reached
-## IndexedDB only with the next file write), so a sync is forced a moment after the save.
-const WEB_FS_SYNC_DELAY_S: float = 0.3
 const UNTIL_VALUES: Array[String] = ["scene_end", "track_end"]
 
 
@@ -83,7 +80,6 @@ var settings_path: String = DEFAULT_SETTINGS_PATH
 var duck_db_now: float = 0.0
 var loop_passes: int = 0
 var settings_saves: int = 0
-var _web_sync_t: float = -1.0
 
 var _decks: Array[Deck] = []
 var _active: Deck = null
@@ -413,10 +409,6 @@ func _process(delta: float) -> void:
 		_update_fade(d, delta)
 	_update_loop()
 	_apply_volumes()
-	if _web_sync_t >= 0.0:
-		_web_sync_t -= delta
-		if _web_sync_t < 0.0:
-			JavaScriptBridge.force_fs_sync()
 	if OS.has_feature("web"):
 		_web_state_t -= delta
 		if _web_state_t <= 0.0:
@@ -520,8 +512,6 @@ func save_settings() -> bool:
 	var err := cf.save(settings_path)
 	if err == OK:
 		settings_saves += 1
-		if OS.has_feature("web"):
-			_web_sync_t = WEB_FS_SYNC_DELAY_S
 	else:
 		push_error("MusicDirector: cannot save %s (%s)" % [settings_path, error_string(err)])
 	return err == OK
