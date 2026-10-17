@@ -6,8 +6,13 @@ extends SceneTree
 ## Note: a `-s` script is compiled before autoload singletons are registered, so it
 ## reaches them through the tree (`root.get_node("GameState")`), never by bare identifier.
 
-const TEST_SLOT: String = "test_slot"
-const TEST_AUTOSAVE_SLOT: String = "test_auto"
+## Save slots of this test run. They live in the shared user://saves of the machine, and several
+## test runs may go at once (agents, CI, a person) — so every name carries the process id: one run
+## deleting or rewriting its slots can never pull a save from under another (the bot walkthrough's
+## «load mid-way save» failed exactly that way when two runs overlapped).
+var TEST_SLOT: String = "test_slot"
+var TEST_AUTOSAVE_SLOT: String = "test_auto"
+var MID_SLOT: String = "test_mid"
 
 var gs: Node
 var rm: Node
@@ -19,6 +24,10 @@ var _current_checks: Array = []  # failures of the running test
 
 
 func _initialize() -> void:
+	var sfx := "_%d" % OS.get_process_id()
+	TEST_SLOT += sfx
+	TEST_AUTOSAVE_SLOT += sfx
+	MID_SLOT += sfx
 	gs = root.get_node_or_null("GameState")
 	rm = root.get_node_or_null("RoomManager")
 	_run()
@@ -361,7 +370,6 @@ func _test_input_map() -> void:
 # M1 — data-driven rooms, StoryRunner, bot walkthrough
 # =============================================================================
 
-const MID_SLOT: String = "test_mid"
 
 var sd: Node
 var sr: Node
