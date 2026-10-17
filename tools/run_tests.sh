@@ -20,6 +20,8 @@ python3 -I "$ROOT/tools/validate_ambient.py" --quiet 2>&1 | tee -a "$BUILD_DIR/l
 python3 -I "$ROOT/tools/validate_lights.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет комнат: data/story/lights
 
 "$ROOT/tools/sync_story_data.sh" | tee -a "$BUILD_DIR/logs/tests.log"
+"$ROOT/tools/sync_music.sh" | tee -a "$BUILD_DIR/logs/tests.log"  # музыка: assets/music → game/assets/music (импорт loop=false)
+python3 -I "$ROOT/tools/validate_music.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # музыка: data/story/music.json
 godot_import
 
 echo "[godot] tests: $GODOT --headless --path $GAME_DIR -s res://tests/run_tests.gd"
@@ -40,5 +42,6 @@ set -e
 echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_lighting.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет, огонь, тени актёров
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ambient.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # живой мир: дождь, ветер, вода, следы
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_music.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # музыка: темы комнат, кроссфейд, цикл, события, приглушение, громкость
 echo "[tests] overall exit code: $code"
 exit "$code"

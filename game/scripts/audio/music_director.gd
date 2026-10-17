@@ -536,7 +536,8 @@ func state() -> Dictionary:
 		"duck_db": duck_db_now, "dialogue": dialogue_active(), "loop_passes": loop_passes,
 		"music_volume": music_volume, "bus_volume_db": AudioServer.get_bus_volume_db(idx) if idx >= 0 else 0.0,
 		"bus_mute": AudioServer.is_bus_mute(idx) if idx >= 0 else false,
-		"decks": [deck_state(0), deck_state(1)], "errors": config_errors}
+		"decks": [deck_state(0), deck_state(1)], "output_latency": AudioServer.get_output_latency(),
+		"errors": config_errors}
 
 
 func _publish_web_state() -> void:
