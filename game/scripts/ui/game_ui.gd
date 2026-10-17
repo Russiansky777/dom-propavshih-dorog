@@ -114,8 +114,7 @@ func _build() -> void:
 	room_label.theme_type_variation = &"RoomTitle"
 	room_label.add_theme_font_size_override("font_size", 24)
 	room_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	room_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title.add_child(room_label)
+	title.add_child(room_label)   # longest name (Кабинет управляющего) fits the 440 px title box
 	# Location code (H1, Z2 …): small and muted — players read the name, testers quote the code.
 	room_code_label = Label.new()
 	room_code_label.name = "RoomCode"

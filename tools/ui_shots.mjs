@@ -145,19 +145,18 @@ async function main() {
       await waitFor("M01 dialogue", (t) => t.beat && t.beat.type === "line", 8000);
       await sleep(300);
       await shot("02_dialogue_fonts");
-      // Click through the scene; the last click ends it and the items are granted.
+      // Slow motion (time_scale 0.2) for the rest of M01: the items are granted on the last click and
+      // their flight (≈1.2 s of game time) is caught mid-air instead of after landing.
+      await page.evaluate(() => window.probePause(false, 0.2));
       for (let i = 0; i < 40; i++) {
         const s = await state();
-        if (!beatKey(s)) break;
+        if (!beatKey(s) || (s.ui.bag && s.ui.bag.animating)) break;
         await click("M01 continue", s.ui.dialogue_click || { x: 960, y: 780 });
-        await waitFor("M01 next", (t) => beatKey(t) !== beatKey(s), 6000);
-        const t = await state();
-        if (t.ui && t.ui.bag && t.ui.bag.animating) break;
+        await waitFor("M01 next", (t) => beatKey(t) !== beatKey(s) || (t.ui.bag && t.ui.bag.animating), 8000);
       }
       await waitFor("icons flying", (t) => t.ui && t.ui.bag && t.ui.bag.animating, 8000);
-      // Freeze the tree mid-flight (window.probePause) so the frame shows icons in the air.
-      await page.evaluate(() => window.probePause(true, 0.25));
-      for (let i = 0; i < 3; i++) { await page.evaluate(() => window.probePause(false, 0.25)); await sleep(90); await page.evaluate(() => window.probePause(true, 0.25)); }
+      await sleep(1800);   // ≈0.36 s of game time: icons lifted and on their way
+      await page.evaluate(() => window.probePause(true, 0.2));
       await shot("03_items_fly_in");
       await page.evaluate(() => window.probePause(false, 1));
       await finishDialogue("M01 rest");
