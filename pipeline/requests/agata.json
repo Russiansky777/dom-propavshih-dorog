@@ -4,22 +4,36 @@
   "height_m": 1.65,
   "actions": [
     "idle",
-    "walk"
+    "walk",
+    "open",
+    "open_b",
+    "pick",
+    "reach"
   ],
   "frames": {
     "idle": 8,
-    "walk": 12
+    "walk": 12,
+    "open": 16,
+    "open_b": 16,
+    "pick": 20,
+    "reach": 16
   },
   "ai_model": "latest",
   "pose_mode": "a-pose",
   "texture_resolution": "2k",
   "elev": 14,
   "front_yaw": 0,
-  "redo_stages": [],
-  "rev": 9,
+  "redo_stages": [
+    "anim"
+  ],
+  "rev": 10,
   "action_ids": {
     "idle": 0,
-    "walk": 1
+    "walk": 1,
+    "open": 285,
+    "open_b": 286,
+    "pick": 281,
+    "reach": 278
   },
   "clip_window": {
     "idle": [
@@ -27,5 +41,5 @@
       0.2
     ]
   },
-  "_note": "rev 9 (24 кадра ходьбы) отклонён замером measure_stride: макс. рывок опорной ноги 35 px против 27.5 px у 12 кадров — дефект в самом клипе, частота не помогает. Лист rev 8 восстановлен revert'ом."
+  "_note": "rev 10: действия для анимаций взаимодействия (Директор 17.10: «как Агата открывает ставни»): open/open_b = Open Door / Open Door 1 (кандидаты, выбор по превью), pick = Female Bend Over Pick Up Inspect, reach = Female Stand Pick Fruit Basket. 6 действий × 3 = 18 кредитов"
 }
