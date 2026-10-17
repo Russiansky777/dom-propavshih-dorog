@@ -291,16 +291,17 @@ func _physics_process(delta: float) -> void:
 	if nav_agent.is_navigation_finished():
 		_arrive()
 		return
+	if nav_agent.get_current_navigation_path().is_empty():
+		# Map not synced yet, or it changed under our feet (the agent re-queries each physics
+		# frame): stand and wait for a real path. Never walk straight.
+		_path_ready = false
+		_path_wait_frames += 1
+		if _path_wait_frames >= PATH_GIVE_UP_FRAMES:
+			push_warning("Player: no navigation path to %s after %d frames; staying put" % [str(_target), _path_wait_frames])
+			_cancel_walk()
+		return
+	_path_ready = true
 	var next: Vector2 = nav_agent.get_next_path_position()
-	if not _path_ready:
-		if nav_agent.get_current_navigation_path().is_empty():
-			# Map not synced yet (the agent re-queries each physics frame): stand and wait.
-			_path_wait_frames += 1
-			if _path_wait_frames >= PATH_GIVE_UP_FRAMES:
-				push_warning("Player: no navigation path to %s after %d frames; staying put" % [str(_target), _path_wait_frames])
-				_cancel_walk()
-			return
-		_path_ready = true
 	var to_next := next - global_position
 	var dist := to_next.length()
 	var step := minf(current_speed_px() * delta, dist)

@@ -1113,6 +1113,8 @@ func _test_no_straight_line() -> void:
 		var hold_frames := 45 if trial == 1 else 0
 		if hold_frames > 0:
 			region.enabled = false
+			await physics_frame  # the map syncs without the floor before the click
+			await physics_frame
 		player.call("click_at", target)
 		# A straight line from the spawn to the target crosses the counter: make sure that is what we test.
 		var crosses := false
@@ -1123,6 +1125,7 @@ func _test_no_straight_line() -> void:
 					crosses = true
 		_check(crosses, "test setup: the straight line spawn→target must cross the counter cut-out")
 		var waited := 0
+		var ever_had_path := false
 		var moved_before_path := false
 		var inside := []
 		var frames := 0
@@ -1135,7 +1138,9 @@ func _test_no_straight_line() -> void:
 				_check(player.call("is_walking") and not player.call("has_path") and player.global_position.distance_to(start) < 0.5,
 					"with the floor region disabled for %d frames Agata must still be waiting in place (walking=%s path=%s moved=%.1f)" % [hold_frames, str(player.call("is_walking")), str(player.call("has_path")), player.global_position.distance_to(start)])
 				region.enabled = true
-			if not player.call("has_path"):
+			if player.call("has_path"):
+				ever_had_path = true
+			elif not ever_had_path:
 				waited += 1
 				if player.global_position.distance_to(start) > 0.5:
 					moved_before_path = true
