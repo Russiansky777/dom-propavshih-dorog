@@ -786,15 +786,18 @@ func _test_h1_real() -> void:
 	_check(walk_n == 8 and idle_n == 8, "expected 8 walk + 8 idle animations, got %d/%d (%s)" % [walk_n, idle_n, str(names)])
 	var tex := spr.sprite_frames.get_frame_texture("walk_0", 0)
 	_check(tex != null and tex.get_size() == Vector2(288, 384), "frame size should be 288x384, got %s" % str(tex.get_size() if tex else null))
-	_check(spr.sprite_frames.get_frame_count("walk_0") == 12 and spr.sprite_frames.get_frame_count("idle_0") == 8, "walk 12 / idle 8 frames")
+	_check(spr.sprite_frames.get_frame_count("walk_0") == 12, "walk animations should have 12 frames")
+	_check(spr.sprite_frames.get_frame_count("idle_0") == 1, "idle is a static frame until the turn clip is replaced (idle_static_frame)")
 	_check(spr.offset.is_equal_approx(Vector2(-144.0, -0.9464285714285714 * 384.0)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
 	_check(not player.get_node("Body").visible, "placeholder body hidden when the sheet is used")
-	# Direction mapping (data/actors/agata.json): screen left → row 2, up → 4, right → 6, down → 0.
-	_check(player.call("direction_index", Vector2(-1, 0)) == 2, "left should map to row 2")
+	# Direction mapping (data/actors/agata.json; verified against the sheet by eye):
+	# rows run counter-clockwise on screen: 0=S 1=SE 2=E 3=NE 4=N 5=NW 6=W 7=SW.
+	_check(player.call("direction_index", Vector2(-1, 0)) == 6, "left should map to row 6 (profile facing left)")
 	_check(player.call("direction_index", Vector2(0, -1)) == 4, "up (back) should map to row 4")
-	_check(player.call("direction_index", Vector2(1, 0)) == 6, "right should map to row 6")
+	_check(player.call("direction_index", Vector2(1, 0)) == 2, "right should map to row 2 (profile facing right)")
 	_check(player.call("direction_index", Vector2(0, 1)) == 0, "down (front) should map to row 0")
-	_check(player.call("direction_index", Vector2(-1, -1)) == 3, "up-left should map to row 3")
+	_check(player.call("direction_index", Vector2(-1, -1)) == 5, "up-left should map to row 5")
+	_check(player.call("direction_index", Vector2(1, 1)) == 1, "down-right should map to row 1")
 	# Real H1: background image, occluder with explicit z, player scale from room depth.
 	rm.change_room("H1", "default")
 	await physics_frame
@@ -821,7 +824,7 @@ func _test_h1_real() -> void:
 		frames += 1
 		if frames > 5:
 			seen_frames[spr.frame] = true
-	_check(player.direction == 2 and spr.animation.begins_with("idle_2"), "after walking left: row 2 and idle_2, got dir %d anim %s" % [player.direction, spr.animation])
+	_check(player.direction == 6 and spr.animation.begins_with("idle_6"), "after walking left: row 6 and idle_6, got dir %d anim %s" % [player.direction, spr.animation])
 	_check(seen_frames.size() >= 6, "walk frames should advance with distance, saw %d distinct" % seen_frames.size())
 	gs.reset()
 	_cleanup_m1()

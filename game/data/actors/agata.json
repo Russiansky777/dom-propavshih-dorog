@@ -1,11 +1,17 @@
 {
-  "_comment": "Актёр Агата: листы из assets/characters/agata (копия в game/assets). Строки листа = направления, столбцы = кадры (проверено по PNG: walk 3456x3072 = 12 кадров x 288, 8 направлений x 384). Маппинг направлений — единственное место: экранный угол движения (atan2(dy, dx), y вниз, градусы) → индекс строки. zero_screen_angle_deg=90 — строка 0 смотрит на зрителя (вниз по экрану); шаг 45° по часовой на экране: 0=S(анфас) 1=SW 2=W 3=NW 4=N(спина) 5=NE 6=E 7=SE.",
+  "_comment": "Актёр Агата: листы из assets/characters/agata (копия в game/assets). Строки листа = направления, столбцы = кадры (проверено по PNG: walk 3456x3072 = 12 кадров x 288, 8 направлений x 384). Маппинг направлений — единственное место: экранный угол движения (atan2(dy, dx), y вниз, градусы) → индекс строки. Проверено глазами по кадрам листа и скриншотам в игре: строки идут ПРОТИВ часовой на экране: 0=S(анфас) 1=SE 2=E(профиль вправо) 3=NE 4=N(спина) 5=NW 6=W(профиль влево) 7=SW. Поэтому clockwise_on_screen=false: индекс = round((90° − угол)/45°) mod 8.",
   "id": "agata",
   "sheet_dir": "res://assets/characters/agata",
   "sprites": "sprites.json",
-  "direction_map": {"zero_screen_angle_deg": 90, "step_deg": 45, "clockwise_on_screen": true},
+  "direction_map": {
+    "zero_screen_angle_deg": 90,
+    "step_deg": 45,
+    "clockwise_on_screen": false
+  },
   "figure_height_px": 337,
   "walk_px_per_frame": 12,
   "idle_action": "idle",
-  "walk_action": "walk"
+  "walk_action": "walk",
+  "idle_static_frame": 0,
+  "_idle_note": "Текущий лист idle.png — клип Idle_Turn_Left (поворот, не стойка): кадр 0 смотрит по направлению строки, кадр 7 уже повёрнут на ~90°. Пока idle не переделан (rev 4), используется один статичный кадр idle_static_frame; когда придёт настоящий idle — убрать поле."
 }

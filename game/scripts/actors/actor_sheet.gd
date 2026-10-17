@@ -14,6 +14,7 @@ var figure_height_px: float = 337.0
 var walk_px_per_frame: float = 12.0
 var idle_action: String = "idle"
 var walk_action: String = "walk"
+var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null
 var load_error: String = ""
@@ -43,6 +44,7 @@ static func load_actor(actor_id: String) -> ActorSheet:
 	a.walk_px_per_frame = float(spec.get("walk_px_per_frame", a.walk_px_per_frame))
 	a.idle_action = String(spec.get("idle_action", "idle"))
 	a.walk_action = String(spec.get("walk_action", "walk"))
+	a.idle_static_frame = int(spec.get("idle_static_frame", -1))
 	var sprites = _read_json(a.sheet_dir + "/" + String(spec.get("sprites", "sprites.json")))
 	if typeof(sprites) != TYPE_DICTIONARY:
 		a.load_error = "missing sprites.json in " + a.sheet_dir
@@ -69,12 +71,15 @@ func _build_frames() -> void:
 		var tex: Texture2D = load(path)
 		var n := int(act.get("frames", 1))
 		var fps := float(act.get("fps", 8))
+		var frame_ids := range(n)
+		if String(action) == idle_action and idle_static_frame >= 0 and idle_static_frame < n:
+			frame_ids = [idle_static_frame]
 		for d in directions:
 			var anim := "%s_%d" % [action, d]
 			frames.add_animation(anim)
 			frames.set_animation_speed(anim, fps)
 			frames.set_animation_loop(anim, true)
-			for i in n:
+			for i in frame_ids:
 				var at := AtlasTexture.new()
 				at.atlas = tex
 				at.region = Rect2(i * frame_w, d * frame_h, frame_w, frame_h)
