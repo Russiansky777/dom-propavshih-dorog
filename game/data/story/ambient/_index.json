@@ -47,8 +47,9 @@
       "speed_min_mps": 0.3,
       "speed_max_mps": 0.9,
       "ring_m": 0.24,
-      "drop_color": "#c9c3b8a8",
-      "ring_color": "#dfe4ec70"
+      "drop_color": "#ddd8cec0",
+      "ring_color": "#e4e8f080",
+      "dark_color": "#3a2c1e66"
     }
   },
   "presets": {

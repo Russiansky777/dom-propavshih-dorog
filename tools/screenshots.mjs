@@ -231,15 +231,17 @@ async function main() {
       const series = [];
       // After a pause the next game frame runs the clamped maximum of 8 physics ticks (133 ms of
       // game time); timeScale < 1 shortens that (0.25 → ~33 ms between captures).
-      const capture = async (label, target, maxFrames = 60, timeScale = 1) => {
+      // `clip` limits the screenshot to the band the walk happens in (PNG encoding of a full software-
+      // rendered frame is the slow part); the analysis pastes it back at its offset on a grey canvas.
+      const capture = async (label, target, maxFrames = 60, timeScale = 1, clip = null) => {
         await click(`stride ${label}`, target);
         await sleep(60);
         for (let i = 0; i < maxFrames; i++) {
           await pause(true, timeScale);
           const s = await state();
-          const file = path.join(STRIDE_DIR, `${label}_${String(i).padStart(2, "0")}.png`);
-          await page.screenshot({ path: file });
-          series.push({ label, index: i, file: path.basename(file), ticks: s.ticks, physics_frames: s.physics_frames, player: s.player, actor: s.actor });
+          const file = path.join(STRIDE_DIR, `${label}_${String(i).padStart(3, "0")}.png`);
+          await page.screenshot(clip ? { path: file, clip } : { path: file });
+          series.push({ label, index: i, file: path.basename(file), clip, ticks: s.ticks, physics_frames: s.physics_frames, player: s.player, actor: s.actor });
           const walking = s.player.walking;
           await pause(false, timeScale);
           if (!walking) break;
@@ -275,16 +277,18 @@ async function main() {
       await click("floor start right", { x: 1700, y: 985 });
       await waitWalk("start right");
       await sleep(300);
-      await capture("left", { x: 880, y: 985 }, STRIDE_MAX, 0.25);     // row 6
+      const H_BAND = { x: 0, y: 640, width: 1920, height: 440 };      // feet and skirt along y ≈ 985
+      const V_BAND = { x: 1400, y: 420, width: 500, height: 660 };    // feet column at x ≈ 1650
+      await capture("left", { x: 880, y: 985 }, STRIDE_MAX, 0.25, H_BAND);     // row 6
       await sleep(300);
-      await capture("right", { x: 1700, y: 985 }, STRIDE_MAX, 0.25);   // row 2
+      await capture("right", { x: 1700, y: 985 }, STRIDE_MAX, 0.25, H_BAND);   // row 2
       await sleep(300);
       await click("floor start bottom", { x: 1650, y: 990 });
       await waitWalk("start bottom");
       await sleep(300);
-      await capture("up", { x: 1650, y: 760 }, STRIDE_MAX, 0.25);      // row 4
+      await capture("up", { x: 1650, y: 760 }, STRIDE_MAX, 0.25, V_BAND);      // row 4
       await sleep(300);
-      await capture("down", { x: 1650, y: 990 }, STRIDE_MAX, 0.25);    // row 0
+      await capture("down", { x: 1650, y: 990 }, STRIDE_MAX, 0.25, V_BAND);    // row 0
       await page.evaluate(() => { if (window.probeIsolate) window.probeIsolate(false); });
       const fin = await state();
       if (fin.room !== "H1") failures.push(`stride series must stay in H1, ended in ${fin.room}`);

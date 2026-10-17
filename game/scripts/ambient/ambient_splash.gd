@@ -24,6 +24,7 @@ var _ppm: float = 200.0
 var _sq: float = 0.3
 var _color := Color(0.82, 0.8, 0.76, 0.85)
 var _ring_color := Color(0.88, 0.9, 0.94, 0.5)
+var _dark_color := Color(0.25, 0.18, 0.12, 0.45)
 var _ring_m: float = 0.24
 
 
@@ -38,6 +39,7 @@ func start() -> void:
 	life = rng.randf_range(lmin, lmax)
 	_color = Color.html(String(sp.get("drop_color", "#d2ccc2d8")))
 	_ring_color = Color.html(String(sp.get("ring_color", "#e2e6ee80")))
+	_dark_color = Color.html(String(sp.get("dark_color", "#40302073")))
 	_ring_m = float(sp.get("ring_m", 0.24))
 	if part == DROPS:
 		var n := rng.randi_range(int(sp.get("drops_min", 6)), int(sp.get("drops_max", 10)))
@@ -66,35 +68,41 @@ func _to_screen(g: Vector2, h: float) -> Vector2:
 
 func _draw() -> void:
 	if part == DROPS:
+		var fade := 1.0 - smoothstep(0.6, 1.0, age / life)
 		for d in _drops:
-			var t: float = minf(age, d["t_end"])
-			if age > d["t_end"] + 0.06:
+			if age > float(d["t_end"]) + 0.04:
 				continue
+			var t: float = minf(age, d["t_end"])
 			var v: Vector2 = d["v"]
 			var vz: float = d["vz"]
 			var h := maxf(vz * t - 0.5 * G * t * t, 0.0)
 			var p := _to_screen(v * t, h)
-			var t0 := maxf(t - 0.025, 0.0)
+			var t0 := maxf(t - 0.035, 0.0)
 			var h0 := maxf(vz * t0 - 0.5 * G * t0 * t0, 0.0)
 			var p0 := _to_screen(v * t0, h0)
-			var w := maxf(float(d["r"]) * 2.0 * _ppm, 1.0)
-			var c := _color
-			c.a *= 1.0 - smoothstep(0.6, 1.0, age / life)
+			var w := maxf(float(d["r"]) * 2.0 * _ppm, 1.6)
+			# Two tones: a dark rim reads on the bright sky in a puddle, a light core on dark mud.
+			var dark := Color(_dark_color, _dark_color.a * fade)
+			var light := Color(_color, _color.a * fade)
 			if p.distance_to(p0) > 0.5:
-				draw_line(p0, p, c, w, true)
+				draw_line(p0, p, dark, w + 1.2, true)
+				draw_line(p0, p, light, w, true)
 			else:
-				draw_circle(p, w * 0.5, c, true, -1.0, true)
+				draw_circle(p, (w + 1.2) * 0.5, dark, true, -1.0, true)
+				draw_circle(p, w * 0.5, light, true, -1.0, true)
 	else:
-		# Two rings (outer, then a smaller one 0.12 s later), ease-out spread, fading.
+		# Two rings (outer, then a smaller one 0.12 s later), ease-out spread, fading; each a dark
+		# trough outside and a light crest inside, like the drop rings of the water shader.
 		for ring in [[1.0, 0.0], [0.6, 0.12]]:
 			var kk := clampf((age - float(ring[1])) / life, 0.0, 1.0)
 			if kk <= 0.0:
 				continue
 			var ee := 1.0 - (1.0 - kk) * (1.0 - kk)
 			var r := _ring_m * float(ring[0]) * ee * _ppm
-			var c := _ring_color
-			c.a *= (1.0 - kk) * (1.0 - kk * 0.3)
-			_ellipse(r, r * _sq, c, maxf(1.2, 0.006 * _ppm))
+			var fade := (1.0 - kk) * (1.0 - kk * 0.3)
+			var lw := maxf(1.2, 0.006 * _ppm)
+			_ellipse(r + lw, (r + lw) * _sq, Color(_dark_color, _dark_color.a * fade * 0.8), lw)
+			_ellipse(r, r * _sq, Color(_ring_color, _ring_color.a * fade), lw)
 
 
 func _ellipse(rx: float, ry: float, c: Color, w: float) -> void:

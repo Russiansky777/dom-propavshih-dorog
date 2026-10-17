@@ -158,7 +158,16 @@ def main():
 
     def load(s):
         if s["file"] not in imgs:
-            imgs[s["file"]] = Image.open(os.path.join(d, s["file"])).convert("RGB")
+            im = Image.open(os.path.join(d, s["file"])).convert("RGB")
+            clip = s.get("clip")
+            if clip:  # band screenshot: paste back at its screen offset on a canvas of the band colour
+                corner = im.getpixel((2, 2))
+                full = Image.new("RGB", (1920, 1080), corner)
+                full.paste(im, (int(clip["x"]), int(clip["y"])))
+                im = full
+            imgs[s["file"]] = im
+            while len(imgs) > 6:  # small cache: the series is read pair by pair
+                imgs.pop(next(iter(imgs)))
         return imgs[s["file"]]
 
     transitions = []
