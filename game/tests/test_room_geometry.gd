@@ -11,7 +11,10 @@ extends SceneTree
 ##     default spawn (one connected floor, no islands);
 ##   - no path to them cuts through an obstacle or leaves the floor outline;
 ##   - `nearest_checks`: map_get_closest_point(from) lands in the expected rect
-##     (R1: a click in the water brings Agata to the shore or onto the pier deck, never into the water).
+##     (R1: a click in the water brings Agata to the shore or onto the pier deck, never into the water);
+##   - scale (Director: «стул слишком большой, сцена приближена»): the background fits 1920x1080 whole
+##     with one uniform scale 1920/width (± 0.001), and every layer/state node is drawn with that same
+##     scale — times its data `scale` only when the data gives a `scale_reason`.
 ## Exit code 0 only when every check passed.
 ##
 ## Note: a `-s` script is compiled before autoloads exist: they are reached through the tree and the
@@ -103,6 +106,7 @@ func _test_room(rid: String) -> void:
 	if room == null:
 		return
 	root.add_child(room)
+	_check_scales(room, spec)
 	var region: NavigationRegion2D = room.get_walkable()
 	var map := NavigationServer2D.map_create()
 	NavigationServer2D.map_set_active(map, true)
