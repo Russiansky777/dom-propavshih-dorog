@@ -1,0 +1,13 @@
+{
+  "_comment": "Шаблон перезаписи после правки текста (pipeline/voice/README.md → «Текст изменился»). Скопировать в pipeline/requests/voice_rerecord.json, поставить дату в note (любая правка файла запускает workflow) и запушить ОТДЕЛЬНЫМ коммитом без [skip ci]. Синтезируется только то, у чего текст или теги изменились после записи (sha1), каждым назначенным голосом: реплики сцен, закадровые фразы, мысли Агаты; запасные записи не трогаются. Список того, что уйдёт в работу, печатает python3 tools/validate_voice.py («к перезаписи …») и python3 pipeline/voice/eleven_voice.py generate --request pipeline/requests/voice_rerecord.json --dry-run. Больше 40 файлов до text_freeze — добавить order (by, date, what, max_lines, max_chars).",
+  "mode": "generate",
+  "set": "rerecord",
+  "probe": true,
+  "only_changed": true,
+  "scenes": ["M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "Q04"],
+  "narration": {
+    "texts": ["ru_E0_E1", "ru_bag"]
+  },
+  "redo": [],
+  "note": "ГГГГ-ММ-ДД: перезапись после правки текста"
+}

@@ -23,6 +23,12 @@
 голоса; тихая реплика; тег не из списка; voice_text с чужими словами; закадровая запись подписи (label) или интерфейса
 (ui.*); закадровая запись с чужим текстом; закадровый файл не в своей папке; нет списка не озвучиваемых категорий —
 должны дать ошибку.
+Устаревшая запись (ключ/реплика есть, текст изменён после записи; или ключ удалён) — ПРЕДУПРЕЖДЕНИЕ со списком на
+перезапись, код 0: игра такую запись не играет (сверяет sha1), правка текста не роняет main; перезапись — одним
+запросом (pipeline/voice/README.md → «Текст изменился»). С --strict (workflow озвучки, после пометки stale) неотмеченная
+устаревшая запись — ошибка. Ошибка всегда (код 1): запись для ключа, который не озвучивается (подпись, интерфейс,
+вариант…), чужая папка или чужой голос у закадровой записи, первое лицо у закадрового голоса, файл OGG без записи
+манифеста, тихая/обрезанная запись.
 Код 0 — ошибок нет. Запуск: python3 tools/validate_voice.py [--quiet] [--strict] [--source-only — без проверки копии игры]
 """
 from __future__ import annotations
@@ -340,6 +346,10 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 errors.append(f"cast.json {sp}.alternates.{alt_id}: voice_id {alt['voice_id']} нет в voices.json")
     # 2–4. manifests
     default_target = float((cast or {}).get("loudness", {}).get("target_lufs", -17.0))
+    text_keys = set(all_texts())
+    rerecord: list[str] = []      # устарели: текст изменён после записи — игра молчит, ждут перезаписи
+    orphaned: list[str] = []      # ключа/реплики больше нет — запись не звучит, убрать или вернуть ключ
+    spares: list[str] = []        # запасные записи (ключ сейчас читает другой голос) с устаревшим текстом
     for rel, manifest in sorted(manifests.items()):
         target = float(manifest.get("loudness_target_lufs", default_target))
         only = manifest.get("speaker_only")
@@ -352,15 +362,27 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
             # Запасная запись (ключ отдан другому голосу или возвращён закадровому) сверяется только с текстом ключа.
             cur = own or (lines.get(str(e.get("key", ""))) if narr else None)
             reason = ""
+            ekey = str(e.get("key", lid))
+            if cur is None and narr and ekey in text_keys:
+                # ключ есть, но по правилам его не озвучивают (подпись, интерфейс, вариант, skip_keys) — не устаревание
+                errors.append(f"{tag}: ключ {ekey} не озвучивается по правилам data/story/voice.json → narration "
+                              f"(подпись/интерфейс/вариант) — такой записи быть не должно")
+                continue
             if cur is None:
-                reason = ("фразы нет в data/story/text или ключ не озвучивается (voice.json → narration)" if narr
-                          else "реплики нет в сценах")
+                reason = "ключа больше нет в data/story/text" if narr else "реплики нет в сценах"
+                orphaned.append(tag)
             elif narr != (cur.get("kind") == "narration"):
-                reason = "запись реплики под ключом закадровой фразы (или наоборот)"
+                errors.append(f"{tag}: запись реплики под ключом закадровой фразы (или наоборот)")
+                continue
             elif sha1(cur["text"]) != e.get("text_sha1"):
-                reason = "текст изменён (sha1 не совпадает)"
+                reason = "текст изменён после записи (sha1 не совпадает) — игра молчит"
+                if narr and (own is None or not own.get("assigned", True)):
+                    spares.append(tag)      # запасная запись другого голоса: перезаписывается, только если ключ вернут ему
+                else:
+                    rerecord.append(tag)
             elif not narr and cur["speaker"] != e.get("speaker"):
                 reason = f"персонаж сменился ({e.get('speaker')} → {cur['speaker']})"
+                rerecord.append(tag)
             if reason:
                 if "stale" in e:
                     warns.append(f"{tag}: устарела ({e['stale']}) — игра покажет только субтитры")
@@ -415,10 +437,25 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 imp = g.with_name(g.name + ".import")
                 if not imp.is_file() or "loop=false" not in imp.read_text(encoding="utf-8"):
                     errors.append(f"{tag}: у копии нет .import с loop=false")
+        if files and src_dir.is_dir():
+            known = {str(e.get("file", "")) for e in manifest.get("lines", {}).values()}
+            for f in sorted(src_dir.rglob("*.ogg")):
+                rel_f = f.relative_to(src_dir).as_posix()
+                if rel_f.startswith("src/"):
+                    continue
+                if rel_f not in known:
+                    errors.append(f"{rel}/{rel_f}: файл без записи в манифесте (не соответствует ни одному ключу/реплике)")
         if files and game_copy:
             gm = game_dir / "manifest.json"
             if not gm.is_file() or gm.read_bytes() != (src_dir / "manifest.json").read_bytes():
                 errors.append(f"{gm.relative_to(ROOT)} отсутствует или отличается — tools/sync_voice.sh")
+    if rerecord:
+        warns.append(f"к перезаписи {len(rerecord)} (текст изменён после записи, игра их не играет): {', '.join(rerecord)} — "
+                     f"один запрос: pipeline/voice/README.md → «Текст изменился»")
+    if spares:
+        warns.append(f"запасные записи с устаревшим текстом {len(spares)} (ключ сейчас читает другой голос; не перезаписываются): {', '.join(spares)}")
+    if orphaned:
+        warns.append(f"записи без ключа/реплики {len(orphaned)} (не звучат; после перезаписи помечаются stale): {', '.join(orphaned)}")
     # 5. data/story/voice.json
     if voice_cfg is not None:
         for sp, p in voice_cfg.get("pan", {}).items():
@@ -448,7 +485,7 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
     return errors, warns
 
 
-SELFTEST_CASES = 15
+SELFTEST_CASES = 17
 
 
 def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
@@ -538,6 +575,20 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
         errs, _ = check(lines, {"ru": m}, ncast, None, voice_cfg, scenes, strict=True, files=False)
         if not [x for x in errs if x.startswith(key)]:
             missed.append(name)
+    # без --strict (tools/run_tests.sh): правка текста — предупреждение, не ошибка; подпись — ошибка и здесь
+    if nkey:
+        nl = lines[nkey]
+        m = copy.deepcopy(base)
+        m["lines"][nkey] = dict(narr_entry(nkey, nl["text"]), text_sha1=sha1(nl["text"] + " старый"), voice_sha1=sha1(api_text(nl)))
+        errs, ws = check(lines, {"ru": m}, ncast, None, voice_cfg, scenes, strict=False, files=False)
+        if [x for x in errs if x.startswith(nkey)] or not [w for w in ws if "к перезаписи" in w and nkey in w]:
+            missed.append("правка текста роняет проверку или не попадает в список на перезапись")
+    if label_key:
+        m = copy.deepcopy(base)
+        m["lines"][label_key] = narr_entry(label_key, str(texts[label_key][1].get("text", "")))
+        errs, _ = check(lines, {"ru": m}, ncast, None, voice_cfg, scenes, strict=False, files=False)
+        if not [x for x in errs if x.startswith(label_key)]:
+            missed.append("закадровая запись подписи без --strict")
     if not check_narration_cfg({k: v for k, v in (voice_cfg or {}).items() if k != "narration"}, texts):
         missed.append("нет списка не озвучиваемых категорий")
     # первое лицо у закадрового голоса — ошибка; та же фраза в кавычках (цитата героя) — нет

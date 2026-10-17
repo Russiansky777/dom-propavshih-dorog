@@ -13,6 +13,8 @@
   generate --request <файл>   реплики сцен из запроса → assets/voice/ru/<scene>_<index>.ogg + manifest.json;
                               закадровые фразы ("narration": {"texts": [...]}) → assets/voice/ru/narrator/<ключ>.ogg
            [--dry-run]        только список реплик и число символов, без запросов к API
+  запрос с "only_changed": true  перезапись после правки текста: всё, что изменилось (sha1), одним запросом —
+                              pipeline/voice/rerecord_template.json, pipeline/voice/README.md → «Текст изменился»
   run --request <файл>        режим берётся из поля "mode" запроса (так запускает workflow)
 
 Идентификатор реплики: <scene>_<index>, index — позиция в mandatory_lines сцены (для заданий — lines), как её
@@ -615,6 +617,10 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
     if missing:
         raise VoiceError("; ".join(sorted(set(missing))))
     total_lines = sum(1 for vs in sets for ln in scope.values() if vs["speaker"] in (None, ln["speaker"]))
+    if req.get("only_changed"):
+        # Перезапись после правки текста: в счёт пробы идут только новые/изменённые (остальные свежие и не трогаются).
+        total_lines = len(plan)
+        log(f"  only_changed: к работе {len(plan)} из {sum(1 for _ in scope)} реплик/фраз запроса")
     synth_items = [it for it in plan if it["action"] == "synth"]
     chars = sum(len(api_text(it["line"])) for it in synth_items)
     meta = read_json(META_PATH, {})

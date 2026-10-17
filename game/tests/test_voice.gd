@@ -208,6 +208,7 @@ func _test_manifest() -> void:
 	if vd.manifest.is_empty():
 		print("        (note: no recordings in game/assets/voice/ru — every line is subtitles only)")
 	var narrated := 0
+	var outdated: Array[String] = []   # text changed after the recording: the game is silent, the pipeline re-records
 	for lid in vd.manifest.keys():
 		var e: Dictionary = vd.manifest[lid]
 		if e.has("stale"):
@@ -221,10 +222,14 @@ func _test_manifest() -> void:
 			_check(vd.is_narration_key(key), "%s: the voice.json rules do not voice this key" % key)
 			_check(String(e.get("speaker", "")) == want_sp, "%s: speaker %s, expected %s" % [id, e.get("speaker"), want_sp])
 			var t: String = sd.text("@" + key)
+			var sub := String(vd.narr_subdirs.get(want_sp, "?"))
+			if sd.texts.has(key) and vd.line_status(id, t) == "text_changed":
+				outdated.append(id)   # a text edit must not fail the build — only keep the game silent
+				_check(vd.stream_for(id, t) == null and ResourceLoader.exists(vd.file_path(id)), "%s: outdated → no stream (silent), file kept" % id)
+				continue
 			_check(vd.line_status(id, t) == "ok", "%s: status %s" % [id, vd.line_status(id, t)])
 			var ns: AudioStream = vd.stream_for(id, t)
 			_check(ns != null and ns.get_length() > 0.2, "%s: stream %s does not load or is too short" % [id, vd.file_path(id)])
-			var sub := String(vd.narr_subdirs.get(want_sp, "?"))
 			_check(vd.file_path(id) == "%s/%s/%s.ogg" % [vd.voice_dir, sub, key], "%s: file %s, expected %s/%s.ogg" % [id, vd.file_path(id), sub, key])
 			continue
 		var ln := _line(String(lid))
@@ -232,12 +237,19 @@ func _test_manifest() -> void:
 		if ln.is_empty():
 			continue
 		_check(String(ln.get("speaker", "")) == String(e.get("speaker", "")), "%s: speaker %s vs manifest %s" % [lid, ln.get("speaker"), e.get("speaker")])
+		if vd.line_status(String(lid), String(ln["text"])) == "text_changed":
+			outdated.append(String(lid))
+			_check(vd.stream_for(String(lid), String(ln["text"])) == null, "%s: outdated → silent" % lid)
+			continue
 		_check(vd.line_status(String(lid), String(ln["text"])) == "ok", "%s: status %s" % [lid, vd.line_status(String(lid), String(ln["text"]))])
 		var s: AudioStream = vd.stream_for(String(lid), String(ln["text"]))
 		_check(s != null and s.get_length() > 0.2, "%s: stream %s does not load or is too short" % [lid, vd.file_path(String(lid))])
 		if s != null and "loop" in s:
 			_check(not bool(s.get("loop")), "%s: stream must not loop" % lid)
 	print("        voice-over entries: %d (narrator %s)" % [narrated, vd.narr_speaker])
+	if not outdated.is_empty():
+		print("        WARNING: %d recording(s) outdated (text changed after recording; the game is silent, re-record — pipeline/voice/README.md): %s"
+			% [outdated.size(), ", ".join(outdated)])
 	_check(not vd.narr_skip_sections.is_empty() and not vd.narr_skip_fields.is_empty(), "voice.json narration: the not-voiced categories are listed")
 
 
@@ -321,6 +333,32 @@ func _test_subtitles_only() -> void:
 		var ln := _line(lid)
 		r = vd.play_line(lid, String(ln.get("speaker", "")), String(ln.get("text", "")) + " (изменено)")
 		_check(r == "text_changed" and not vd.is_playing(), "changed text: %s" % r)
+	# A voice-over recorded for an older text: silent as well (narrator and Agata's thoughts alike).
+	for nid in vd.manifest.keys():
+		var ne: Dictionary = vd.manifest[nid]
+		if String(ne.get("kind", "")) != "narration" or ne.has("stale"):
+			continue
+		var nkey := String(ne.get("key", nid))
+		var nr: String = vd.play_line(String(nid), String(ne.get("speaker", "")), sd.text("@" + nkey) + " (изменено)", "narration")
+		_check(nr == "text_changed" and not vd.is_playing(), "%s with another text: %s, playing %s" % [nid, nr, vd.is_playing()])
+		if String(nid).contains(":"):
+			break   # one of the character's thoughts is enough (the loop meets narrator ids first)
+	# Through the runner: a look whose text was edited after the recording — the subtitle, no voice.
+	gs.reset()
+	await _enter("Z1")
+	var lk := "Z1.letters.look"
+	if vd.manifest.has(lk):
+		var orig: Dictionary = sd.texts[lk].duplicate(true)
+		sd.texts[lk]["text"] = String(orig["text"]) + " Правка текста."
+		vd.set_test_stream(lk, null)
+		sr.narrate_key("@" + lk)
+		await _frames(2)
+		_check(String(sr.current_beat.get("text", "")).ends_with("Правка текста.") and not vd.is_playing(),
+			"an edited look shows the new subtitle and stays silent: %s" % [vd.state()])
+		var tev := _last_event("subtitles_only")
+		_check(String(tev.get("line", "")) == lk and String(tev.get("reason", "")) == "text_changed", "logged as text_changed: %s" % [tev])
+		await _finish_dialogue()
+		sd.texts[lk] = orig
 	# Through the runner: M01 with the manifest entry of M01_2 removed → M01_2 is subtitles only.
 	gs.reset()
 	await _enter("Z1")
@@ -786,7 +824,10 @@ func _test_thoughts() -> void:
 	# The narrator's recording of the same key is still a valid spare in the manifest …
 	var text: String = sd.text("@Z1.exit_Z4.closed")
 	if vd.manifest.has("Z1.exit_Z4.closed"):
-		_check(vd.line_status("Z1.exit_Z4.closed", text) == "ok", "the narrator's spare recording stays valid")
+		var spare: String = vd.line_status("Z1.exit_Z4.closed", text)
+		_check(spare == "ok" or spare == "text_changed", "the narrator's spare recording stays in the manifest (%s)" % spare)
+		if spare == "text_changed":
+			print("        (note: the narrator's spare of Z1.exit_Z4.closed is outdated — text edited)")
 	# … and taking the key out of Agata's list (a data change) brings it back.
 	_ensure_voice_key_narrator("Z1.exit_Z4.closed")
 	vd.narr_owner.erase("Z1.exit_Z4.closed")
