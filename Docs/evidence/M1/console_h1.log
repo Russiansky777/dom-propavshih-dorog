@@ -1,0 +1,35 @@
+[2026-10-17T14:48:50.747Z] chromium: /opt/pw-browsers/chromium-1194/chrome-linux/chrome; gl mode: angle
+[2026-10-17T14:48:51.069Z] open http://127.0.0.1:8765/index.html
+[2026-10-17T14:48:51.927Z] requestfailed: http://127.0.0.1:8765/index.wasm net::ERR_ABORTED
+[2026-10-17T14:48:52.057Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-17T14:48:52.411Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-17T14:48:52.823Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-17T14:48:54.190Z] probeReady after 2600 ms; room=Z1
+[2026-10-17T14:48:55.566Z] click hotspot tamara at (1135, 510)
+[2026-10-17T14:49:00.584Z] click hotspot tamara: continue at (960, 780)
+[2026-10-17T14:49:01.436Z] click hotspot tamara: continue at (960, 780)
+[2026-10-17T14:49:01.997Z] click hotspot tamara: continue at (960, 780)
+[2026-10-17T14:49:02.025Z] console.warning: WebGL: INVALID_OPERATION: bindBuffer: element array buffers can not be bound to a different target
+[2026-10-17T14:49:02.026Z] console.warning: WebGL: INVALID_OPERATION: bufferSubData: no buffer
+[2026-10-17T14:49:03.946Z] click exit → Z2 at (1855, 820)
+[2026-10-17T14:49:10.411Z] click exit → H1 at (700, 400)
+[2026-10-17T14:49:17.121Z] click floor right at (1700, 760)
+[2026-10-17T14:49:20.677Z] screenshot build/shots/m1/H1_real_walk_right.png
+[2026-10-17T14:49:21.105Z] click floor down at (1700, 990)
+[2026-10-17T14:49:24.211Z] screenshot build/shots/m1/H1_real_walk_down.png
+[2026-10-17T14:49:27.248Z] screenshot build/shots/m1/H1_real_idle_a.png
+[2026-10-17T14:49:31.004Z] screenshot build/shots/m1/H1_real_idle_b.png
+[2026-10-17T14:49:31.219Z] click floor left at (1000, 990)
+[2026-10-17T14:49:34.666Z] screenshot build/shots/m1/H1_real_walk_left.png
+[2026-10-17T14:49:35.107Z] click floor under window at (1650, 990)
+[2026-10-17T14:49:38.094Z] click hotspot shutter (walks straight up) at (1650, 320)
+[2026-10-17T14:49:40.865Z] screenshot build/shots/m1/H1_real_walk_up.png
+[2026-10-17T14:49:43.832Z] screenshot build/shots/m1/H1_real_back_at_shutter.png
+[2026-10-17T14:49:44.052Z] click shutter: continue at (960, 780)
+[2026-10-17T14:49:45.972Z] click floor behind table at (900, 790)
+[2026-10-17T14:49:52.712Z] screenshot build/shots/m1/H1_real_behind_table.png
+[2026-10-17T14:49:52.937Z] click hotspot stove at (295, 265)
+[2026-10-17T14:49:57.617Z] screenshot build/shots/m1/H1_real_at_stove.png
+[2026-10-17T14:49:57.838Z] click stove: continue at (960, 780)
+[2026-10-17T14:49:59.571Z] click floor in front of table at (880, 985)
+[2026-10-17T14:50:04.628Z] screenshot build/shots/m1/H1_real_front_of_table.png

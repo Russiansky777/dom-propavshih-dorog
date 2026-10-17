@@ -9,9 +9,15 @@ var frame_h: int = 384
 var pivot: Vector2 = Vector2(0.5, 0.946)
 var directions: int = 8
 var actions: Dictionary = {}       # action -> {sheet, frames, fps}
-var direction_map: Dictionary = {"zero_screen_angle_deg": 90.0, "step_deg": 45.0, "clockwise_on_screen": true}
+## Direction mapping (data): `direction_zero` = where row 0 faces on screen ("down" = towards the
+## viewer), `direction_order` = how rows go on screen ("ccw" or "cw").
+var direction_zero: String = "down"
+var direction_order: String = "ccw"
 var figure_height_px: float = 337.0
-var walk_px_per_frame: float = 12.0
+var character_height_m: float = 1.657
+var speed_mps: float = 1.12          # walking speed in model metres per second
+var cycle_meters: float = 1.3        # ground covered by one full walk cycle (two steps)
+var direction_threshold_px: float = 0.5
 var idle_action: String = "idle"
 var walk_action: String = "walk"
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
@@ -39,9 +45,13 @@ static func load_actor(actor_id: String) -> ActorSheet:
 		a.load_error = "missing data/actors/%s.json" % actor_id
 		return a
 	a.sheet_dir = String(spec.get("sheet_dir", "res://assets/characters/" + actor_id))
-	a.direction_map = spec.get("direction_map", a.direction_map)
+	a.direction_zero = String(spec.get("direction_zero", "down"))
+	a.direction_order = String(spec.get("direction_order", "ccw"))
 	a.figure_height_px = float(spec.get("figure_height_px", a.figure_height_px))
-	a.walk_px_per_frame = float(spec.get("walk_px_per_frame", a.walk_px_per_frame))
+	var walk: Dictionary = spec.get("walk", {})
+	a.speed_mps = float(walk.get("speed_mps", a.speed_mps))
+	a.cycle_meters = float(walk.get("cycle_meters", a.cycle_meters))
+	a.direction_threshold_px = float(walk.get("direction_threshold_px", a.direction_threshold_px))
 	a.idle_action = String(spec.get("idle_action", "idle"))
 	a.walk_action = String(spec.get("walk_action", "walk"))
 	a.idle_static_frame = int(spec.get("idle_static_frame", -1))
@@ -54,6 +64,7 @@ static func load_actor(actor_id: String) -> ActorSheet:
 	var p: Dictionary = sprites.get("pivot", {})
 	a.pivot = Vector2(float(p.get("x", 0.5)), float(p.get("y", 0.946)))
 	a.directions = int(sprites.get("directions", 8))
+	a.character_height_m = float(sprites.get("character_height_m", a.character_height_m))
 	a.actions = sprites.get("actions", {})
 	a._build_frames()
 	return a
@@ -95,15 +106,33 @@ func sprite_offset() -> Vector2:
 	return Vector2(-pivot.x * frame_w, -pivot.y * frame_h)
 
 
-## Screen motion vector (y down) → direction row index. The only place the mapping lives.
+## Screen motion vector (y down) → direction row index. Evaluates the data mapping:
+## a = atan2(vy, vx) in degrees; row = round((zero − a) / step) mod rows for "ccw", (a − zero) for "cw".
 func direction_index(motion: Vector2) -> int:
 	if motion.length_squared() < 0.000001:
 		return 0
 	var deg := rad_to_deg(atan2(motion.y, motion.x))
-	var zero := float(direction_map.get("zero_screen_angle_deg", 90.0))
-	var step := float(direction_map.get("step_deg", 45.0))
-	var rel := (deg - zero) if bool(direction_map.get("clockwise_on_screen", true)) else (zero - deg)
+	var zero: float = float({"down": 90.0, "right": 0.0, "up": -90.0, "left": 180.0}.get(direction_zero, 90.0))
+	var step: float = 360.0 / float(directions)
+	var rel: float = (zero - deg) if direction_order == "ccw" else (deg - zero)
 	return wrapi(int(round(rel / step)), 0, directions)
+
+
+## Pixels per model metre at a given node scale (frame height spans the model's height).
+func px_per_meter(scale: float) -> float:
+	return float(frame_h) * scale / maxf(character_height_m, 0.01)
+
+
+## Walking speed in screen px/s at a given depth scale (constant in metres per second).
+func walk_speed_px(scale: float) -> float:
+	return speed_mps * px_per_meter(scale)
+
+
+## Frame rate of the walk cycle for a given screen speed and scale:
+## fps = frames × speed_px / (cycle_meters × px_per_m).
+func walk_fps(speed_px: float, scale: float) -> float:
+	var n := int(actions.get(walk_action, {}).get("frames", 12))
+	return float(n) * speed_px / maxf(cycle_meters * px_per_meter(scale), 0.001)
 
 
 func anim_name(action: String, dir: int) -> String:

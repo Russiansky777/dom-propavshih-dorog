@@ -199,23 +199,39 @@ async function main() {
     await sleep(1200);
 
     if (MODE === "h1") {
-      // Real Agata in the real H1: reach H1 (M01 → Z2 → H1), then frames for the direction/occlusion check.
+      // Real Agata in the real H1: reach H1 (M01 → Z2 → H1), then direction / tempo / occlusion frames.
+      for (const f of fs.readdirSync(SHOTS_DIR)) if (f.startsWith("H1_real_")) fs.rmSync(path.join(SHOTS_DIR, f), { force: true });
       await useHotspot("tamara");
       await waitFor("M01 done", (s) => s.flags.done_M01);
       if (!(await goExit("Z2"))) failures.push("Z1→Z2 failed");
       if (!(await goExit("H1"))) failures.push("Z2→H1 failed");
       await sleep(600);
-      await shot("H1_real_arrival");
-      // Walk towards the viewer: mid-walk frame, then idle facing front.
-      await click("floor front", { x: 1420, y: 960 });
-      await sleep(900);
-      await shot("H1_real_walking");
-      await waitWalk("floor front");
-      await sleep(400);
-      await shot("H1_real_front");
-      // Shutter: walks up-right, ends with her back to the viewer, facing the window.
+      const walkShot = async (label, target, waitMs) => {
+        await click(`floor ${label}`, target);
+        await sleep(waitMs);
+        const s = await state();
+        if (!s.player.walking) failures.push(`${label}: expected to be mid-walk at ${waitMs} ms`);
+        await shot(`H1_real_walk_${label}`);
+        await waitWalk(label);
+      };
+      // Right (profile facing right), then down (towards the viewer), then two idle frames 1.2 s apart.
+      await walkShot("right", { x: 1700, y: 760 }, 900);
+      await walkShot("down", { x: 1700, y: 990 }, 330);
+      await sleep(300);
+      await shot("H1_real_idle_a");
+      const idleA = await state();
+      await sleep(1200);
+      await shot("H1_real_idle_b");
+      const idleB = await state();
+      if (idleA.player.x !== idleB.player.x || idleA.player.walking) failures.push("idle: player moved or kept walking");
+      // Left (profile facing left) along the near edge, then right again to line up under the window, then up (back).
+      await walkShot("left", { x: 1000, y: 990 }, 800);
+      await click("floor under window", { x: 1650, y: 990 });
+      await waitWalk("under window");
       let s1 = await state();
-      await click("hotspot shutter", s1.hotspots.shutter);
+      await click("hotspot shutter (walks straight up)", s1.hotspots.shutter);
+      await sleep(330);
+      await shot("H1_real_walk_up");
       await waitWalk("shutter");
       await sleep(300);
       await shot("H1_real_back_at_shutter");

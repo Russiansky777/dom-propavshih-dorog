@@ -11,7 +11,11 @@ signal walk_started(target: Vector2)
 signal arrived(position: Vector2)
 signal interaction_performed(node: Node2D)
 
+## Walking speed in px/s at scale 1 for the placeholder body. With an actor sheet the speed comes
+## from the sheet data (metres per second × px per metre at the current depth scale).
 @export var walk_speed: float = 260.0
+## Multiplier applied to the sheet-derived speed (tests use it to hurry).
+@export var speed_factor: float = 1.0
 ## Distance (in body units, i.e. divided by the current scale) per step frame (placeholder body).
 @export var step_length: float = 36.0
 @export var bob_height: float = 5.0
@@ -87,19 +91,39 @@ func face_towards(target: Vector2) -> void:
 func _play_idle() -> void:
 	if sprite == null:
 		return
+	sprite.speed_scale = 1.0
 	sprite.play(sheet.anim_name(sheet.idle_action, direction))
 
 
-func _update_walk_frame() -> void:
+## Effective speed in px/s at the current depth (farther = slower on screen, nearer = faster).
+func current_speed_px() -> float:
+	var s := absf(scale.y)
+	if sheet != null:
+		return sheet.walk_speed_px(s) * speed_factor
+	return walk_speed * s * speed_factor
+
+
+## Walk-cycle frame rate for the current speed and scale (data: cycle length in metres).
+func current_walk_fps() -> float:
+	if sheet == null:
+		return 0.0
+	return sheet.walk_fps(current_speed_px(), absf(scale.y))
+
+
+## Plays the walk animation through speed_scale so feet match the ground covered; frames are never set by hand.
+func _update_walk_anim() -> void:
 	if sprite == null:
 		return
 	var anim := sheet.anim_name(sheet.walk_action, direction)
-	if sprite.animation != anim:
-		sprite.animation = anim
-	sprite.stop()
-	var n := sprite.sprite_frames.get_frame_count(anim)
-	if n > 0:
-		sprite.frame = int(floor(_distance_walked / sheet.walk_px_per_frame)) % n
+	var base_fps := sprite.sprite_frames.get_animation_speed(anim)
+	var fps := current_walk_fps()
+	sprite.speed_scale = fps / base_fps if base_fps > 0.0 else 1.0
+	if sprite.animation != anim or not sprite.is_playing():
+		var frame := sprite.frame
+		var progress := sprite.frame_progress
+		sprite.play(anim)
+		if sprite.sprite_frames.get_frame_count(anim) > frame:
+			sprite.set_frame_and_progress(frame, progress)  # keep the stride phase across direction changes
 
 
 # --- Input -----------------------------------------------------------------
@@ -192,16 +216,17 @@ func _physics_process(delta: float) -> void:
 				_path_ready = true
 	var to_next := next - global_position
 	var dist := to_next.length()
-	var step := minf(walk_speed * delta, dist)
+	var step := minf(current_speed_px() * delta, dist)
 	if dist > 0.001:
 		var motion := to_next / dist * step
 		global_position += motion
 		_advance_steps(step)
 		if absf(motion.x) > 0.01:
 			facing = 1 if motion.x > 0.0 else -1
-		if sheet != null and motion.length_squared() > 0.0001:
+		# Direction changes only above a threshold so tiny path corrections never twitch the sprite.
+		if sheet != null and step > sheet.direction_threshold_px:
 			direction = sheet.direction_index(motion)
-		_update_walk_frame()
+		_update_walk_anim()
 	if _path_fallback and global_position.distance_to(_target) <= 2.0:
 		_arrive()
 		return

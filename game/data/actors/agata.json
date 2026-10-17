@@ -1,17 +1,19 @@
 {
-  "_comment": "Актёр Агата: листы из assets/characters/agata (копия в game/assets). Строки листа = направления, столбцы = кадры (проверено по PNG: walk 3456x3072 = 12 кадров x 288, 8 направлений x 384). Маппинг направлений — единственное место: экранный угол движения (atan2(dy, dx), y вниз, градусы) → индекс строки. Проверено глазами по кадрам листа и скриншотам в игре: строки идут ПРОТИВ часовой на экране: 0=S(анфас) 1=SE 2=E(профиль вправо) 3=NE 4=N(спина) 5=NW 6=W(профиль влево) 7=SW. Поэтому clockwise_on_screen=false: индекс = round((90° − угол)/45°) mod 8.",
+  "_comment": "Актёр Агата: листы из assets/characters/agata (копия в game/assets). Строки листа = направления, столбцы = кадры (проверено по PNG: walk 3456x3072 = 12 кадров x 288, 8 направлений x 384). Маппинг направлений — ЕДИНСТВЕННОЕ место: direction_zero = куда смотрит строка 0 на экране (down = к зрителю), direction_order = порядок строк на экране (ccw = против часовой): 0=S(анфас) 1=SE 2=E(профиль вправо) 3=NE 4=N(спина) 5=NW 6=W(профиль влево) 7=SW. Формула: a = atan2(vy, vx) в градусах (y вниз, вправо 0°, вниз 90°); row = round((90 − a)/45) mod 8. Проверка: вниз→0, вправо→2, вверх→4, влево→6.",
   "id": "agata",
   "sheet_dir": "res://assets/characters/agata",
   "sprites": "sprites.json",
-  "direction_map": {
-    "zero_screen_angle_deg": 90,
-    "step_deg": 45,
-    "clockwise_on_screen": false
-  },
   "figure_height_px": 337,
-  "walk_px_per_frame": 12,
   "idle_action": "idle",
   "walk_action": "walk",
   "idle_static_frame": 0,
-  "_idle_note": "Текущий лист idle.png — клип Idle_Turn_Left (поворот, не стойка): кадр 0 смотрит по направлению строки, кадр 7 уже повёрнут на ~90°. Пока idle не переделан (rev 4), используется один статичный кадр idle_static_frame; когда придёт настоящий idle — убрать поле."
+  "_idle_note": "Текущий лист idle.png — клип Idle_Turn_Left (поворот, не стойка): кадр 0 смотрит по направлению строки, кадр 7 уже повёрнут на ~90°. Пока idle не переделан (rev 4), используется один статичный кадр idle_static_frame; когда придёт настоящий idle — убрать поле.",
+  "direction_zero": "down",
+  "direction_order": "ccw",
+  "walk": {
+    "_comment": "Темп шага от реальной скорости: цикл walk (12 кадров) = два шага = cycle_meters пути. px/м = frame_h × scale / character_height_m (рост модели 1.657 м). Скорость в px/с = speed_mps × px/м — масштабируется глубиной комнаты. fps = frames × speed_px / (cycle_meters × px_per_m) = frames × speed_mps / cycle_meters ≈ 10.4 — постоянный, пересчитывается каждый кадр и подаётся через speed_scale.",
+    "speed_mps": 1.12,
+    "cycle_meters": 1.3,
+    "direction_threshold_px": 0.5
+  }
 }

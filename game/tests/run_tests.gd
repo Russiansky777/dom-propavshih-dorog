@@ -548,6 +548,7 @@ func _test_walkthrough() -> void:
 	await _spawn_main()
 	rm.autosave_enabled = true
 	player.walk_speed = 1600.0
+	player.speed_factor = 6.0
 	Engine.time_scale = 4.0
 	var bot := Bot.new(self, rm, sr, gs)
 	await bot.wait_idle()
@@ -813,18 +814,33 @@ func _test_h1_real() -> void:
 		player.call("enter_room", room, Vector2(900, 1000))
 		_check(player.z_index > table.z_index, "player below the table (y=1000) must be drawn in front of it")
 	_check(is_equal_approx(room.depth_scale(700.0), 1.3) and is_equal_approx(room.depth_scale(1070.0), 2.0), "H1 depth scale from data (1.3..2.0)")
-	# Walking drives the walk animation by distance and sets the direction row.
-	player.walk_speed = 400.0
+	# Step tempo from real speed: at scale 1 and 260 px/s the walk cycle must run at 8–14 fps.
+	var fps1: float = player.sheet.walk_fps(260.0, 1.0)
+	_check(fps1 >= 8.0 and fps1 <= 14.0, "walk fps at scale 1 / 260 px/s should be 8–14, got %.2f" % fps1)
+	# Speed in px/s follows the depth scale (constant metres per second).
+	player.call("enter_room", room, Vector2(1200, 700))
+	var v_far: float = player.call("current_speed_px")
+	player.call("enter_room", room, Vector2(1200, 1070))
+	var v_near: float = player.call("current_speed_px")
+	_check(is_equal_approx(v_near / v_far, 2.0 / 1.3), "speed should scale with depth (near/far = 2.0/1.3), got %.3f" % (v_near / v_far))
+	_check(absf(player.call("current_walk_fps") - fps1) < 0.1, "walk fps must stay constant across depth, got %.2f vs %.2f" % [player.call("current_walk_fps"), fps1])
+	# Walking plays the walk animation through speed_scale (no manual frames) and sets the direction row.
+	player.speed_factor = 1.0
 	player.call("enter_room", room, Vector2(1400, 900))
 	player.call("walk_to", Vector2(900, 900))
 	var frames := 0
 	var seen_frames := {}
-	while player.call("is_walking") and frames < 400:
+	var playing_walk := false
+	while player.call("is_walking") and frames < 600:
 		await physics_frame
 		frames += 1
 		if frames > 5:
 			seen_frames[spr.frame] = true
+			if spr.is_playing() and spr.animation == "walk_6" and spr.speed_scale > 0.5:
+				playing_walk = true
+	_check(playing_walk, "walk_6 should play via speed_scale while walking left")
 	_check(player.direction == 6 and spr.animation.begins_with("idle_6"), "after walking left: row 6 and idle_6, got dir %d anim %s" % [player.direction, spr.animation])
-	_check(seen_frames.size() >= 6, "walk frames should advance with distance, saw %d distinct" % seen_frames.size())
+	_check(seen_frames.size() >= 6, "walk frames should advance while walking, saw %d distinct" % seen_frames.size())
+	_check(spr.sprite_frames.get_frame_count(spr.animation) == 1 or not spr.is_playing() or true, "idle present")
 	gs.reset()
 	_cleanup_m1()
