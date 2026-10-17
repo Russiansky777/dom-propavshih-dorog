@@ -1,0 +1,51 @@
+{
+  "set": "e0e1_thoughts",
+  "runs": [
+    {
+      "run": "39080103639",
+      "at": "2026-10-17T23:44:33+00:00",
+      "request": "pipeline/requests/voice_e0e1_thoughts.json",
+      "synthesized": [
+        "agata:Z1.exit_Z4.closed",
+        "agata:Z2.exit_M1.closed",
+        "agata:Z2.exit_Z3.closed",
+        "agata:Z2.exit_R1.closed",
+        "agata:R1.exit_Z2.closed",
+        "agata:H1.cups.prompt",
+        "agata:H2.bell.use",
+        "agata:H3.school_door.use",
+        "agata:H3.mirror_home.use",
+        "agata:O1.board.use",
+        "agata:O1.board.chalk",
+        "agata:O1.bird_drawing.prompt",
+        "agata:O2.tree.look",
+        "agata:O2.porch_step.mitten",
+        "agata:O2.window_other.look",
+        "agata:O2.exit_O4.loop",
+        "agata:item.key_house",
+        "agata:item.letter_tamara",
+        "agata:item.pocket_watch",
+        "agata:item.mitten"
+      ],
+      "reprocessed": [],
+      "characters_text": 1153,
+      "failed": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16084,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16248,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 507,
+      "subscription_delta": 164
+    }
+  ]
+}
