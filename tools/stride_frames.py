@@ -116,7 +116,7 @@ def match_2d(img_a, img_b, mask, origin, sx, sy):
     return X0 + xx - (ox + x0), Y0 + yy - (oy + y0), float(np.sqrt(res[j])), edge
 
 
-def feet_of(img, ref, actor):
+def feet_of(img, ref, actor, vertical=False):
     sc = float(actor["scale"])
     dx, dy = float(actor["drawn_x"]), float(actor["drawn_y"])
     half = int(140 * sc)
@@ -130,7 +130,20 @@ def feet_of(img, ref, actor):
     band = np.zeros_like(sil)
     band[max(0, bottom - band_h + 1):bottom + 1] = sil[max(0, bottom - band_h + 1):bottom + 1]
     feet = []
-    for m in split_feet(band, int(40 * sc * sc)):
+    masks = split_feet(band, int(40 * sc * sc))
+    if vertical:
+        # Front/back views: the boots overlap; split the band at the figure's axis (left/right boot).
+        axis = int(dx) - box[0]
+        masks = []
+        for side in (0, 1):
+            m = band.copy()
+            if side == 0:
+                m[:, axis:] = False
+            else:
+                m[:, :axis] = False
+            if m.sum() >= int(25 * sc * sc):
+                masks.append(m)
+    for m in masks:
         ys, xs = np.where(m)
         feet.append({"mask": m, "x0": int(xs.min()), "x1": int(xs.max()), "y1": int(ys.max()), "cx": float(xs.mean())})
     return box, bottom, feet
@@ -202,14 +215,15 @@ def main():
                 continue
             u = mv / np.linalg.norm(mv)
             sc = float(a["actor"]["scale"])
-            box, bottom, feet = feet_of(ia, ref, a["actor"])
+            vertical = abs(u[1]) > 0.8
+            box, bottom, feet = feet_of(ia, ref, a["actor"], vertical)
             if bottom is None or not feet:
                 continue
             cands = []
             for ft in feet:
-                if ft["y1"] < bottom - 5 * sc:
-                    continue  # lifted foot
-                r = match_2d(ia, ib, ft["mask"], (box[0], box[1]), int(45 * sc), int(14 * sc))
+                if ft["y1"] < bottom - (12 if vertical else 5) * sc:
+                    continue  # lifted foot (front/back views: the far boot sits higher on screen)
+                r = match_2d(ia, ib, ft["mask"], (box[0], box[1]), int(45 * sc), int(30 * sc))
                 if r is None:
                     continue
                 ddx, ddy, rms, edge = r

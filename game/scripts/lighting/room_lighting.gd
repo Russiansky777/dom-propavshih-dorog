@@ -218,11 +218,14 @@ func scan_actors() -> void:
 
 
 ## Tone of a figure with feet at `feet` and figure height `fig_h` (screen px):
-## (1 + Σ light_on_actor) × Π actor_tint + Σ actor_warm, never negative (alpha 1).
+## (1 + Σ light_on_actor) × room actor_tint × Π source actor_tint + Σ actor_warm, never negative.
 func actor_tone_at(feet: Vector2, fig_h: float = 500.0) -> Color:
 	var chest := feet  # point lights read at the feet too: the figure gets what the floor by her gets
 	var lit := Color(1, 1, 1, 1)
 	var m := Color.WHITE
+	var rt = data.get("actor_tint")  # room grade: figures take the room's colour (warm workshop)
+	if rt is Array and rt.size() >= 3:
+		m = Color(float(rt[0]), float(rt[1]), float(rt[2]), 1.0)
 	var add := Color(0, 0, 0, 0)
 	for s in sources:
 		var l := s.light_on_actor(feet, chest)

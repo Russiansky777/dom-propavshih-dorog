@@ -13,7 +13,9 @@
   5. casts_actor_shadow → shadow.floor [x, y] в кадре, alpha/alpha_far в 0..1, near_px < far_px;
   6. цвета: "#rrggbb" или [r, g, b(, a)] в 0..1; fade_s в 0..5; flicker.amount в 0..1;
   7. params у fire/glow — существующие uniform шейдера (game/shaders/fire_stove|light_glow.gdshader);
-     у shaft — streak_amount 0..1.
+     у shaft — streak_amount 0..1;
+  8. тон актёров: actor_tint (у комнаты и у источников) — [r, g, b] в 0..1.5; actor_warm — {color,
+     near_px < far_px}.
 Код 0 — ошибок нет. Запуск: python3 tools/validate_lights.py [--quiet]
 """
 from __future__ import annotations
@@ -152,6 +154,18 @@ def main() -> int:
         for eid in data.get("suppress_effects", []):
             if eid not in effect_ids:
                 err(f"{ctx0}: suppress_effects {eid!r} — в rooms/{rid}.json нет такого effects[].id")
+        for key_ctx, holder in [(ctx0, data)] + [(f"{ctx0}:{s.get('id', '?')}", s) for s in data.get("sources", []) if isinstance(s, dict)]:
+            at = holder.get("actor_tint")
+            if at is not None and not (isinstance(at, list) and len(at) == 3 and all(is_num(v) and 0.0 <= v <= 1.5 for v in at)):
+                err(f"{key_ctx}: actor_tint — [r, g, b] в 0..1.5")
+            aw = holder.get("actor_warm")
+            if aw is not None:
+                if not isinstance(aw, dict) or "color" not in aw:
+                    err(f"{key_ctx}: actor_warm — объект {{color, near_px, far_px}}")
+                else:
+                    check_color(key_ctx + ".actor_warm.color", aw["color"])
+                    if not (aw.get("near_px", 150) < aw.get("far_px", 900)):
+                        err(f"{key_ctx}: actor_warm near_px < far_px")
         fs = data.get("floor_foreshortening", 0.42)
         if not (is_num(fs) and 0.1 <= fs <= 1.0):
             err(f"{ctx0}: floor_foreshortening {fs!r} вне 0.1..1")
