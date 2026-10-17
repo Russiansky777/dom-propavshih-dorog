@@ -161,6 +161,27 @@ def room_background(room: dict, locations: dict) -> None:
         d.line([(cx + i * 24, horizon), (cx + i * 70, h)], fill=_shade(floor, 0.85), width=1)
     for y in range(horizon, h, 18):
         d.line([(0, y), (w, y)], fill=_shade(floor, 0.85), width=1)
+    # Layout of a room whose art is still being drawn (`placeholder` in rooms/<LOC>.json, 1920x1080
+    # coordinates): polygons / ellipses with a caption, so the stand-in already shows where the porch,
+    # the doors and the way out are (Z4: house porch left, post office door right, street at the back).
+    for sh in room.get("placeholder", []):
+        col = _hex(sh.get("color", "#888888"))
+        if "poly" in sh:
+            pts = [(x / 2, y / 2) for x, y in sh["poly"]]
+            d.polygon(pts, fill=col, outline=_shade(col, 0.6))
+            cx2 = sum(p[0] for p in pts) / len(pts)
+            cy2 = sum(p[1] for p in pts) / len(pts)
+        elif "ellipse" in sh:
+            ex, ey, ew, eh = (v / 2 for v in sh["ellipse"])
+            d.ellipse([ex, ey, ex + ew, ey + eh], fill=col, outline=_shade(col, 0.8))
+            cx2, cy2 = ex + ew / 2, ey + eh / 2
+        else:
+            continue
+        if sh.get("label"):
+            f = _font(16)
+            tw = d.textlength(sh["label"], font=f)
+            d.text((cx2 - tw / 2, cy2 - 9), sh["label"], fill=(255, 255, 255), font=f,
+                   stroke_width=2, stroke_fill=(30, 30, 30))
     rid = room["id"]
     name = locations.get(rid, rid)
     d.text((24, 16), rid, fill=_shade(wall, 1.6), font=_font(56))
@@ -185,8 +206,9 @@ def rooms() -> None:
             continue
         with open(os.path.join(ROOMS_DIR, name), encoding="utf-8") as f:
             room = _json.load(f)
-        if "image" in room.get("background", {}):
-            print(f"skip {room['id']}: real background {room['background']['image']}")
+        image = room.get("background", {}).get("image", "")
+        if image and not image.startswith("res://assets/placeholders/"):
+            print(f"skip {room['id']}: real background {image}")
             continue
         room_background(room, locs)
 

@@ -591,13 +591,14 @@ func _test_walkthrough() -> void:
 	_check(gs.journal_goal == sd.scene("M01")["result"], "journal goal should be M01 result")
 	_check(gs.has_save(TEST_AUTOSAVE_SLOT), "autosave after the scene beat")
 
-	# --- Z2 and closed exits ---
-	_check(await bot.go("Z2"), "exit Z1→Z2 should open after M01 (room=%s)" % bot.room_id())
+	# --- Z4 (lane by the post office: side porch of the house) → Z2, closed exits ---
+	_check(await bot.go("Z4"), "exit Z1→Z4 should open after M01 (room=%s)" % bot.room_id())
 	var h3exit = bot.exit_to("H3")
-	_check(h3exit != null and not h3exit.is_open(), "Z2→H3 must be closed before house_open")
-	_check(not (await bot.go("H3")), "Z2→H3 must not transition while closed")
+	_check(h3exit != null and not h3exit.is_open(), "Z4→H3 (side porch) must be closed before house_open")
+	_check(not (await bot.go("H3")), "Z4→H3 must not transition while closed")
 	await bot.finish()
-	_check(bot.room_id() == "Z2", "still in Z2 after the closed exit")
+	_check(bot.room_id() == "Z4", "still in Z4 after the closed exit")
+	_check(await bot.go("Z2"), "Z4→Z2 (lane → street)")
 	var m1exit = bot.exit_to("M1")
 	_check(m1exit != null and m1exit.is_open() and not m1exit.target_exists(), "Z2→M1 is open but unbuilt in M1")
 	_check(not (await bot.go("M1")), "unbuilt exit must not transition")

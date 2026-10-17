@@ -12,7 +12,7 @@
     {"id": "frame_empty", "image": "res://assets/rooms/H3/state_frame_empty.png", "offset": [161, 82], "scale": 0.77, "scale_reason": "кадр состояния нарисован крупнее фона (рама почти на весь кадр); 0.77 и offset вписывают раму в нишу фона — подгонка по косякам ниши", "unless": ["door_school_installed"]},
     {"id": "door_installed", "image": "res://assets/rooms/H3/state_door_installed.png", "offset": [161, 82], "scale": 0.77, "scale_reason": "кадр состояния нарисован крупнее фона (рама почти на весь кадр); 0.77 и offset вписывают раму в нишу фона — подгонка по косякам ниши", "if": ["door_school_installed"]}
   ],
-  "spawns": {"default": [960, 920], "from_H1": [1730, 900], "from_Z2": [700, 1000], "from_O1": [770, 810], "from_R4": [1470, 800]},
+  "spawns": {"default": [960, 920], "from_H1": [1730, 900], "from_Z4": [700, 1000], "from_O1": [770, 810], "from_R4": [1470, 800]},
   "props": [],
   "hotspots": [
     {
@@ -68,7 +68,7 @@
   ],
   "exits": [
     {"to": "H1", "label": "@H3.exit_H1.label", "rect": [1800, 560, 120, 520], "stand": [1810, 900], "spawn": "from_H3", "draw": false},
-    {"to": "Z2", "label": "@H3.exit_Z2.label", "side": "bottom", "x": 700, "spawn": "from_H3", "draw": false},
+    {"to": "Z4", "label": "@H3.exit_Z4.label", "side": "bottom", "x": 700, "spawn": "from_H3", "draw": false, "_note": "боковое крыльцо галереи выходит в переулок у почты Z4"},
     {"to": "O1", "label": "@H3.exit_O1.label", "rect": [610, 140, 330, 580], "stand": [770, 790], "spawn": "from_H3", "closed_text": "@H3.exit_O1.closed", "draw": false,
       "states": [{"if": ["door_school_installed"], "label": "@H3.exit_O1.label_open"}]},
     {"to": "R4", "label": "@H3.exit_R4.label", "rect": [1300, 160, 340, 560], "stand": [1470, 790], "spawn": "from_H3", "closed_text": "@H3.exit_R4.closed", "draw": false}

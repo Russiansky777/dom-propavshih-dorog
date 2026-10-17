@@ -162,11 +162,11 @@
       "text": "Почта, тётин дом, спуск к воде, мельница. У берегового поворота — карандашная пометка.",
       "draft": false
     },
-    "Z1.exit_Z2.label": {
+    "Z1.exit_Z4.label": {
       "text": "На улицу",
       "draft": false
     },
-    "Z1.exit_Z2.closed": {
+    "Z1.exit_Z4.closed": {
       "text": "Я ещё не поговорила с Тамарой. Ключ у неё.",
       "draft": false
     },
@@ -186,9 +186,9 @@
       "text": "Тётин дом, крыша мельницы, спуск к воде. Почта осталась за спиной.",
       "draft": false
     },
-    "Z2.exit_Z1.label": {
-      "text": "На почту",
-      "draft": false
+    "Z2.exit_Z4.label": {
+      "text": "В переулок к почте",
+      "draft": true
     },
     "Z2.exit_H1.label": {
       "text": "На крыльцо дома",
@@ -196,14 +196,6 @@
     },
     "Z2.exit_H1.closed": {
       "text": "Заперто. Тамара должна была сберечь ключ.",
-      "draft": false
-    },
-    "Z2.exit_H3.label": {
-      "text": "Боковое крыльцо",
-      "draft": false
-    },
-    "Z2.exit_H3.closed": {
-      "text": "Дверь галереи заперта изнутри. Через дом к ней тоже есть проход.",
       "draft": false
     },
     "Z2.exit_M1.label": {
@@ -229,6 +221,38 @@
     "Z2.exit_R1.closed": {
       "text": "Сначала узнаю, что у Тамары. На причал ещё успею.",
       "draft": false
+    },
+    "Z4.exit_Z1.label": {
+      "text": "На почту",
+      "draft": true
+    },
+    "Z4.exit_Z2.label": {
+      "text": "На улицу",
+      "draft": true
+    },
+    "Z4.exit_H3.label": {
+      "text": "Боковое крыльцо",
+      "draft": false
+    },
+    "Z4.exit_H3.closed": {
+      "text": "Дверь галереи заперта изнутри. Через дом к ней тоже есть проход.",
+      "draft": false
+    },
+    "Z4.post_sign.label": {
+      "text": "Вывеска почты",
+      "draft": true
+    },
+    "Z4.post_sign.look": {
+      "text": "«Почта». Буквы на доске подновляли не раз.",
+      "draft": true
+    },
+    "Z4.lantern.label": {
+      "text": "Фонарь над дверью",
+      "draft": true
+    },
+    "Z4.lantern.look": {
+      "text": "Фонарь над дверью почты. Стекло мокрое.",
+      "draft": true
     },
     "Z3.water.label": {
       "text": "Река",
@@ -654,7 +678,7 @@
       "text": "В жилую комнату",
       "draft": false
     },
-    "H3.exit_Z2.label": {
+    "H3.exit_Z4.label": {
       "text": "На боковое крыльцо",
       "draft": false
     },

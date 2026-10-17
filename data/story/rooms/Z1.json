@@ -12,7 +12,7 @@
   "layers": [
     {"id": "counter", "image": "res://assets/rooms/Z1/fg_counter.png", "occluder": true, "scale": 0.7, "scale_reason": "слой нарисован огромным столом посреди почты (Директор): при масштабе фона стойка 1180 px шириной от окна до двери. При 0.7 — стойка ≈ 3 м в глубине комнаты, Тамара за ней по пояс-бёдра", "offset": [337, 193], "z": 885, "_z_note": "передние ножки стойки на полу при y≈885; задняя кромка основания y≈737"}
   ],
-  "spawns": {"default": [250, 900], "from_Z2": [1700, 780]},
+  "spawns": {"default": [250, 900], "from_Z4": [1700, 780]},
   "props": [],
   "hotspots": [
     {
@@ -34,7 +34,7 @@
     }
   ],
   "exits": [
-    {"to": "Z2", "label": "@Z1.exit_Z2.label", "rect": [1580, 150, 240, 560], "stand": [1700, 760], "spawn": "from_Z1", "closed_text": "@Z1.exit_Z2.closed", "draw": false}
+    {"to": "Z4", "label": "@Z1.exit_Z4.label", "rect": [1580, 150, 240, 560], "stand": [1700, 760], "spawn": "from_Z1", "closed_text": "@Z1.exit_Z4.closed", "draw": false, "_note": "дверь почты выходит в переулок Z4 (не прямо на улицу Z2)"}
   ],
   "scenes": {
     "M01": {"trigger": "talk:tamara"}
