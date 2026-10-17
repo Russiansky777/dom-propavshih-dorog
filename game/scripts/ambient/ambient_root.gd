@@ -2,12 +2,17 @@ class_name AmbientRoot
 extends Node2D
 ## The ambient layer of one room («Живой мир»), built by AmbientBuilder from the merged spec
 ## (preset + data/story/ambient/<LOC>.json). Children:
-##   Rain       Polygon2D over the frame, ambient_rain.gdshader                     (z 4096)
-##   Sway/<id>  Polygon2D per `sway_regions` entry, ambient_sway.gdshader              (z −9)
 ##   Water/<id> Polygon2D per `water` / `puddles` entry, ambient_water.gdshader        (z −9)
+##   Sway/<id>  Polygon2D per `sway_regions` entry, ambient_sway.gdshader              (z −9, drawn
+##              after the water: a bush on the shore sways over the water behind it)
 ##   Dust/<id>  CPUParticles2D per `dust` entry                                        (z per entry)
+##   Rain       Polygon2D over the frame, ambient_rain.gdshader                     (z 4096)
 ##   Footfall   splashes in puddles, prints in mud when Agata's foot is planted        (see its doc)
-## No node here takes input. Interiors have only sway (trees behind the windows) and dust.
+## A region redraws the background picture; with `source: "layer:<id>"` it redraws that room layer
+## instead (R1/Z3: the water at the shore is a separate layer over the background) and is drawn
+## just above it. Entries with `if` / `unless` flags show only while the flags hold (H1: dust in
+## the window beam only with the shutters open). No node here takes input. Interiors have only
+## sway (trees behind the windows) and dust.
 
 const SWAY_SHADER: Shader = preload("res://shaders/ambient_sway.gdshader")
 const WATER_SHADER: Shader = preload("res://shaders/ambient_water.gdshader")
@@ -36,14 +41,6 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 	ground = AmbientGround.for_room(room)
 	_find_background()
 	var wind: Dictionary = spec.get("wind", {})
-	var sway_box := _group("Sway")
-	var i := 0
-	for r in spec.get("sway_regions", []):
-		var n := _make_sway(r, wind, i)
-		if n != null:
-			sway_box.add_child(n)
-			sway.append(n)
-		i += 1
 	var water_box := _group("Water")
 	var rain_amount := _rain_intensity()
 	for w in spec.get("water", []):
@@ -51,17 +48,29 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 		if n != null:
 			water_box.add_child(n)
 			water.append(n)
+			_conditional(n, w)
 	for w in spec.get("puddles", []):
 		var n := _make_water(w, spec.get("puddle_style", {}), rain_amount, 1)
 		if n != null:
 			water_box.add_child(n)
 			water.append(n)
+			_conditional(n, w)
+	var sway_box := _group("Sway")
+	var i := 0
+	for r in spec.get("sway_regions", []):
+		var n := _make_sway(r, wind, i)
+		if n != null:
+			sway_box.add_child(n)
+			sway.append(n)
+			_conditional(n, r)
+		i += 1
 	var dust_box := _group("Dust")
 	for d in spec.get("dust", []):
 		var n := _make_dust(d)
 		if n != null:
 			dust_box.add_child(n)
 			dust.append(n)
+			_conditional(n, d)
 	if spec.has("rain"):
 		rain = _make_rain(spec["rain"], wind)
 		add_child(rain)
@@ -70,6 +79,79 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 		footfall.name = "Footfall"
 		add_child(footfall)
 		footfall.setup(self)
+	if not _cond.is_empty():
+		var gs := _game_state()
+		if gs != null:
+			gs.flag_changed.connect(_on_flag_changed)
+			gs.state_reset.connect(_refresh_conditions)
+		_refresh_conditions()
+
+
+# --- Flag conditions (if / unless on an entry) ------------------------------------------------
+
+var _cond: Array = []   # [node, if[], unless[]]
+var _active: bool = true
+
+
+func _conditional(n: Node, entry: Dictionary) -> void:
+	if entry.has("if") or entry.has("unless"):
+		_cond.append([n, entry.get("if", []), entry.get("unless", [])])
+
+
+func _game_state() -> Node:
+	return get_node_or_null("/root/GameState") if is_inside_tree() else (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
+
+
+func _on_flag_changed(_f: String, _v: bool) -> void:
+	_refresh_conditions()
+
+
+func _refresh_conditions() -> void:
+	var gs := _game_state()
+	for c in _cond:
+		var on := true
+		for f in c[1]:
+			if gs == null or not gs.call("has_flag", String(f)):
+				on = false
+		for f in c[2]:
+			if gs != null and gs.call("has_flag", String(f)):
+				on = false
+		var node: CanvasItem = c[0]
+		node.visible = on
+		if node is CPUParticles2D:
+			(node as CPUParticles2D).emitting = on and _active
+
+
+func _exit_tree() -> void:
+	var gs := _game_state()
+	if gs != null:
+		if gs.flag_changed.is_connected(_on_flag_changed):
+			gs.flag_changed.disconnect(_on_flag_changed)
+		if gs.state_reset.is_connected(_refresh_conditions):
+			gs.state_reset.disconnect(_refresh_conditions)
+
+
+## The picture a region redraws: the background, or a room layer (`source: "layer:<id>"`).
+## Returns {tex, origin, size, alpha, z} (empty when missing).
+func _source(entry: Dictionary) -> Dictionary:
+	var src := String(entry.get("source", "background"))
+	if src.begins_with("layer:"):
+		var id := src.substr(6)
+		var node: Node2D = null
+		for box in ["Layers", "Occluders"]:
+			var n := room.get_node_or_null("%s/%s" % [box, id]) as Node2D
+			if n != null:
+				node = n
+				break
+		var spr := node.get_node_or_null("Image") as Sprite2D if node != null else null
+		if spr == null or spr.texture == null:
+			push_warning("Ambient %s: source layer '%s' not found" % [room_id, id])
+			return {}
+		return {"tex": spr.texture, "origin": node.position + spr.position, "size": spr.texture.get_size() * spr.scale,
+			"alpha": true, "z": node.z_index + 1}
+	if _bg_tex == null:
+		return {}
+	return {"tex": _bg_tex, "origin": _bg_origin, "size": _bg_size, "alpha": false, "z": AmbientBuilder.Z_GROUND}
 
 
 func _group(n: String) -> Node2D:
@@ -115,10 +197,14 @@ static func _phase(entry: Dictionary, i: int) -> float:
 
 
 func _make_sway(r: Dictionary, wind: Dictionary, i: int) -> Polygon2D:
-	var src_tex := _bg_tex
-	var src_origin := _bg_origin
-	var src_size := _bg_size
-	var alpha := false
+	var src := _source(r)
+	if src.is_empty() and not r.has("layer"):
+		return null
+	var src_tex: Texture2D = src.get("tex")
+	var src_origin: Vector2 = src.get("origin", Vector2.ZERO)
+	var src_size: Vector2 = src.get("size", Vector2.ONE)
+	var alpha: bool = src.get("alpha", false)
+	var z_default: int = src.get("z", AmbientBuilder.Z_GROUND)
 	var pts := AmbientData.shape_of(r)
 	if r.has("layer"):
 		# A separate picture of only the swaying thing (transparent elsewhere), drawn like a room
@@ -135,6 +221,7 @@ func _make_sway(r: Dictionary, wind: Dictionary, i: int) -> Polygon2D:
 		src_origin = Vector2(float(off[0]), float(off[1]))
 		src_size = src_tex.get_size() * sc
 		alpha = true
+		z_default = AmbientBuilder.Z_GROUND
 		if pts.is_empty():
 			pts = AmbientData.rect_poly([src_origin.x, src_origin.y, src_size.x, src_size.y])
 	if src_tex == null or pts.size() < 3 or pts.size() > MAX_POLY:
@@ -145,7 +232,7 @@ func _make_sway(r: Dictionary, wind: Dictionary, i: int) -> Polygon2D:
 	var n := Polygon2D.new()
 	n.name = String(r.get("id", "sway_%d" % i))
 	n.polygon = pts
-	n.z_index = clampi(int(r.get("z", AmbientBuilder.Z_GROUND)), -10, 4096)
+	n.z_index = clampi(int(r.get("z", z_default)), -10, 4096)
 	var m := ShaderMaterial.new()
 	m.shader = SWAY_SHADER
 	m.set_shader_parameter("src_tex", src_tex)
@@ -159,8 +246,19 @@ func _make_sway(r: Dictionary, wind: Dictionary, i: int) -> Polygon2D:
 		m.set_shader_parameter("clip_rect", Vector4(box.position.x + 1.0, box.position.y + 1.0, box.size.x - 2.0, box.size.y - 2.0))
 	var kind := String(r.get("kind", "tree"))
 	m.set_shader_parameter("kind", 1 if kind == "grass" else 0)
-	m.set_shader_parameter("anchor_y", float(r.get("anchor_y", box.end.y)))
-	m.set_shader_parameter("top_y", float(r.get("top_y", box.position.y)))
+	if r.has("anchor_line"):
+		# Slanted root line [[x0, y0], [x1, y1]] (a shore, a verge); full sway `reach_px` above it.
+		var al: Array = r["anchor_line"]
+		var a0 := Vector2(float(al[0][0]), float(al[0][1]))
+		var a1 := Vector2(float(al[1][0]), float(al[1][1]))
+		var slope := (a1.y - a0.y) / (a1.x - a0.x) if absf(a1.x - a0.x) > 0.5 else 0.0
+		m.set_shader_parameter("anchor_y", a0.y)
+		m.set_shader_parameter("top_y", a0.y - float(r.get("reach_px", 80.0)))
+		m.set_shader_parameter("anchor_slope", slope)
+		m.set_shader_parameter("anchor_x0", a0.x)
+	else:
+		m.set_shader_parameter("anchor_y", float(r.get("anchor_y", box.end.y)))
+		m.set_shader_parameter("top_y", float(r.get("top_y", box.position.y)))
 	var strength := float(wind.get("strength", 1.0))
 	m.set_shader_parameter("amp_px", float(r.get("amp_px", 3.0)) * strength)
 	m.set_shader_parameter("freq_hz", float(r.get("freq_hz", 0.35)))
@@ -177,9 +275,10 @@ func _make_sway(r: Dictionary, wind: Dictionary, i: int) -> Polygon2D:
 
 ## mode 0 = river/lake, 1 = puddle. `style` = water_style / puddle_style of the preset/room.
 func _make_water(w: Dictionary, style: Dictionary, rain_amount: float, mode: int) -> Polygon2D:
-	if _bg_tex == null:
-		return null
 	var e := AmbientData.merge(style, w)
+	var src := _source(e)
+	if src.is_empty():
+		return null
 	var pts := AmbientData.shape_of(e)
 	if pts.size() < 3 or pts.size() > MAX_POLY:
 		push_warning("Ambient %s: water %s needs 3..%d points" % [room_id, e.get("id", "?"), MAX_POLY])
@@ -188,12 +287,13 @@ func _make_water(w: Dictionary, style: Dictionary, rain_amount: float, mode: int
 	var n := Polygon2D.new()
 	n.name = String(e.get("id", "water"))
 	n.polygon = pts
-	n.z_index = clampi(int(e.get("z", AmbientBuilder.Z_GROUND)), -10, 4096)
+	n.z_index = clampi(int(e.get("z", src["z"])), -10, 4096)
 	var m := ShaderMaterial.new()
 	m.shader = WATER_SHADER
-	m.set_shader_parameter("src_tex", _bg_tex)
-	m.set_shader_parameter("src_origin", _bg_origin)
-	m.set_shader_parameter("src_size", _bg_size)
+	m.set_shader_parameter("src_tex", src["tex"])
+	m.set_shader_parameter("src_origin", src["origin"])
+	m.set_shader_parameter("src_size", src["size"])
+	m.set_shader_parameter("src_alpha", src["alpha"])
 	m.set_shader_parameter("poly", _padded(pts))
 	m.set_shader_parameter("poly_n", pts.size())
 	m.set_shader_parameter("mode", mode)
@@ -317,11 +417,13 @@ static func _dot_texture() -> Texture2D:
 
 ## On/off without rebuilding (FPS comparison through the web probe).
 func set_active(on: bool) -> void:
+	_active = on
 	visible = on
 	for d in dust:
 		d.emitting = on
 	if footfall != null:
 		footfall.active = on
+	_refresh_conditions()
 
 
 ## Counts for tests and the web probe.

@@ -12,6 +12,7 @@ render_mode blend_mix;
 uniform sampler2D src_tex : filter_linear, repeat_disable;
 uniform vec2 src_origin = vec2(0.0);
 uniform vec2 src_size = vec2(1920.0, 1080.0);
+uniform bool src_alpha = false;             // the source is a room layer (water cut-out), keep its alpha
 uniform vec2 poly[32];
 uniform int poly_n = 0;
 uniform float feather_px = 16.0;
@@ -101,6 +102,9 @@ void fragment() {
 	d += rr.yz * rr.x * 1.2 * edge;                     // a ring bends the reflection across it
 	vec4 base = amb_src(p);
 	vec4 moved = amb_src(p - d);
+	if (src_alpha && moved.a < 0.5) {
+		moved = base;                                   // never pull the transparent outside in
+	}
 	float prot = smoothstep(protect_sat, protect_sat + 0.12, max(amb_sat(base.rgb), amb_sat(moved.rgb)));
 	vec3 col = mix(moved.rgb, base.rgb, prot);
 	float still = (1.0 - prot) * edge;
@@ -111,5 +115,5 @@ void fragment() {
 		col += gl * glint * still * vec3(0.92, 0.95, 1.0) * (0.35 + 0.65 * dot(base.rgb, vec3(0.33)));
 	}
 	col += vec3(0.95, 0.97, 1.0) * (rr.x * 0.17 * still);
-	COLOR = vec4(col * COLOR.rgb, COLOR.a);
+	COLOR = vec4(col * COLOR.rgb, src_alpha ? base.a * COLOR.a : COLOR.a);
 }

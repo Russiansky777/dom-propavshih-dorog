@@ -61,6 +61,7 @@ func setup(p_root: AmbientRoot) -> void:
 	prints.fade_s = clampf(float(cfg.get("print_fade_s", 25.0)), 1.0, 120.0)
 	prints.color = Color.html(String(cfg.get("print_color", "#1e140c")))
 	prints.alpha = float(cfg.get("print_alpha", 0.34))
+	prints.sheen = Color.html(String(cfg.get("print_sheen", "#c6ccd873")))
 	add_child(prints)
 	_rng.seed = hash(root.room_id)
 
@@ -140,7 +141,7 @@ func _on_frame_changed() -> void:
 	var k := contact_frames.find(f)
 	if k < 0:
 		return
-	foot_down(foot_position(k), k, f)
+	foot_down(foot_position(k), k, f, _player.global_position.y)
 
 
 ## Where the planted foot is: drawn feet + the measured offset of that foot in the current row.
@@ -164,12 +165,14 @@ func surface_at(pos: Vector2) -> String:
 	return ""
 
 
-## A foot is planted at `pos` (k = which of the two contacts: alternates left/right).
-func foot_down(pos: Vector2, k: int = 0, frame: int = -1) -> String:
+## A foot is planted at `pos` (k = which of the two contacts: alternates left/right). `feet_y` is the
+## y the actor is sorted by (its logical feet line; the sole in the sheet sits a little above it):
+## the drops sort just in front of the actor whose foot threw them.
+func foot_down(pos: Vector2, k: int = 0, frame: int = -1, feet_y: float = NAN) -> String:
 	steps += 1
 	var surf := surface_at(pos)
 	if surf == "puddle":
-		_splash(pos)
+		_splash(pos, pos.y if is_nan(feet_y) else maxf(feet_y, pos.y))
 		splashes += 1
 	elif surf == "mud":
 		prints.add(pos, ground.floor_dir(_dir, pos.y), 1.0 if k % 2 == 0 else -1.0)
@@ -180,11 +183,11 @@ func foot_down(pos: Vector2, k: int = 0, frame: int = -1) -> String:
 	return surf
 
 
-func _splash(pos: Vector2) -> void:
+func _splash(pos: Vector2, feet_y: float) -> void:
 	var drops := AmbientSplash.new()
 	drops.name = "SplashDrops"
 	drops.part = AmbientSplash.DROPS
-	drops.z_index = clampi(int(pos.y) + 1, -4096, 4096)
+	drops.z_index = clampi(int(feet_y) + 1, -4096, 4096)
 	var ring := AmbientSplash.new()
 	ring.name = "SplashRing"
 	ring.part = AmbientSplash.RING

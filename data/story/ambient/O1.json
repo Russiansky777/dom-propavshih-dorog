@@ -1,0 +1,18 @@
+{
+  "id": "O1",
+  "preset": "interior",
+  "_art": "Зимний класс (O1_bg.png): слева два окна в перспективе, за ними заснеженные берёзы и дом. Стёкла — по четыре на окно (прямоугольники внутри рам, нижние левого окна — до букета). Пыль — в свете из окон, наискось к полу.",
+  "sway_regions": [
+    {"id": "left_pane_1", "kind": "tree", "rect": [0, 20, 48, 128], "clip": true, "feather_px": 3, "anchor_y": 520, "top_y": 0, "amp_px": 2.4, "freq_hz": 0.3},
+    {"id": "left_pane_2", "kind": "tree", "rect": [60, 40, 62, 128], "clip": true, "feather_px": 3, "anchor_y": 520, "top_y": 0, "amp_px": 2.4, "freq_hz": 0.3, "phase": 0.1},
+    {"id": "left_pane_3", "kind": "tree", "rect": [0, 170, 48, 318], "clip": true, "feather_px": 3, "anchor_y": 520, "top_y": 0, "amp_px": 2.4, "freq_hz": 0.3, "phase": 0.05},
+    {"id": "left_pane_4", "kind": "tree", "rect": [60, 186, 62, 165], "clip": true, "feather_px": 3, "anchor_y": 520, "top_y": 0, "amp_px": 2.4, "freq_hz": 0.3, "phase": 0.13},
+    {"id": "right_pane_1", "kind": "tree", "rect": [242, 120, 18, 103], "clip": true, "feather_px": 2, "anchor_y": 520, "top_y": 0, "amp_px": 2.0, "freq_hz": 0.3, "phase": 0.5},
+    {"id": "right_pane_2", "kind": "tree", "rect": [272, 131, 34, 100], "clip": true, "feather_px": 2, "anchor_y": 520, "top_y": 0, "amp_px": 2.0, "freq_hz": 0.3, "phase": 0.55},
+    {"id": "right_pane_3", "kind": "tree", "rect": [242, 236, 18, 235], "clip": true, "feather_px": 2, "anchor_y": 520, "top_y": 0, "amp_px": 2.0, "freq_hz": 0.3, "phase": 0.52},
+    {"id": "right_pane_4", "kind": "tree", "rect": [272, 245, 34, 228], "clip": true, "feather_px": 2, "anchor_y": 520, "top_y": 0, "amp_px": 2.0, "freq_hz": 0.3, "phase": 0.58}
+  ],
+  "dust": [
+    {"id": "window_light_dust", "polygon": [[30, 60], [320, 130], [320, 470], [720, 820], [420, 900], [60, 520]], "amount": 24, "size_px": 6.5, "alpha": 0.5, "color": "#eef2ff", "speed_px_s": 5, "lifetime_s": 10, "z": 2}
+  ]
+}

@@ -17,6 +17,7 @@ var max_prints: int = 24
 var fade_s: float = 25.0
 var color := Color(0.12, 0.08, 0.05)
 var alpha: float = 0.34
+var sheen := Color(0.78, 0.8, 0.86, 0.45)   # sky reflected in the water inside the print (a × sheen.a)
 
 var _prints: Array[Dictionary] = []   # {pos, fwd (floor unit), side, age}
 var _redraw_acc: float = 0.0
@@ -75,16 +76,26 @@ func _draw() -> void:
 		var c := Color(color, a)
 		for shape in [SOLE, HEEL]:
 			var pts := PackedVector2Array()
+			var inner := PackedVector2Array()
+			var mid := Vector2.ZERO
 			for uv in shape:
-				var g: Vector2 = fwd * float(uv[0]) + lat * float(uv[1])
+				mid += Vector2(float(uv[0]), float(uv[1])) / float(shape.size())
+			for uv in shape:
+				var u := Vector2(float(uv[0]), float(uv[1]))
+				var g: Vector2 = fwd * u.x + lat * u.y
 				pts.append(centre + _to_screen(g, k, sq))
+				# Water held in the pressed mud: a smaller glossy patch towards the far side.
+				var ui := mid + (u - mid) * 0.6
+				var gi: Vector2 = fwd * ui.x + lat * ui.y
+				inner.append(centre + _to_screen(gi, k, sq) + Vector2(0, -0.01 * k * sq))
 			draw_colored_polygon(pts, c)
-			# Mud pushed up at the far rim: a faint light edge one pixel above.
+			draw_colored_polygon(inner, Color(sheen, a * sheen.a))
+			# Mud pushed up round the print: a faint light rim one pixel below its near edge.
 			var rim := pts.duplicate()
 			rim.append(pts[0])
 			for i in rim.size():
-				rim[i] = rim[i] + Vector2(0, -1)
-			draw_polyline(rim, Color(1.0, 0.93, 0.82, a * 0.25), 1.0, true)
+				rim[i] = rim[i] + Vector2(0, 1)
+			draw_polyline(rim, Color(1.0, 0.93, 0.82, a * 0.22), 1.0, true)
 
 
 static func _to_screen(g: Vector2, k: float, sq: float) -> Vector2:

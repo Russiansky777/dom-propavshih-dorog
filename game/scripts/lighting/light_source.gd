@@ -39,6 +39,9 @@ var sprite: Sprite2D = null
 var _mat: ShaderMaterial = null
 var _base_pos: Vector2 = Vector2.ZERO
 var _alpha: float = 1.0
+var _mask: Dictionary = {}      # LightMask.build result of a mask (sampled for actor tones)
+var _radius: float = 0.0
+var _falloff: float = 1.6
 
 
 func setup(spec: Dictionary, group_flicker: LightFlicker) -> void:
@@ -110,7 +113,9 @@ func _build_point() -> void:
 	var p := PointLight2D.new()
 	_setup_light(p)
 	var radius := float(data.get("radius", 400.0))
-	p.texture = LightMask.radial(256, float(data.get("falloff", 1.6)))
+	_radius = radius
+	_falloff = float(data.get("falloff", 1.6))
+	p.texture = LightMask.radial(256, _falloff)
 	p.texture_scale = radius * 2.0 / 256.0
 	_base_pos = _vec(data.get("pos", [960, 540]), Vector2(960, 540))
 	p.position = _base_pos
@@ -122,6 +127,7 @@ func _build_mask() -> void:
 	var p := PointLight2D.new()
 	_setup_light(p)
 	var m := LightMask.build(data.get("polygons", []), float(data.get("feather", 40.0)), data.get("gradient", {}))
+	_mask = m
 	var r: Rect2 = m["rect"]
 	p.texture = m["texture"]
 	p.texture_scale = float(m["texel"])
@@ -255,6 +261,59 @@ func shadow_floor() -> Vector2:
 	var p := _vec(shadow.get("floor", data.get("pos", [960, 700])), Vector2(960, 700))
 	p.x += float(shadow.get("sway_px", 0.0)) * flicker_value
 	return p
+
+
+## What this light does to a figure (signed, per channel; SUB is negative), the same quantity
+## Light2D adds to a lit surface ÷ its albedo: colour × current energy × coverage. Masks (floor
+## patches) are read under the feet, point lights at the chest (`chest`), the ambient everywhere.
+## Actors are toned by the sum of this over the room's sources instead of being lit per pixel —
+## per pixel their upper body would take the light of the wall behind them.
+func light_on_actor(feet: Vector2, chest: Vector2) -> Color:
+	if light == null or not light.enabled:
+		return Color(0, 0, 0, 0)
+	var k := 0.0
+	if light is DirectionalLight2D:
+		k = 1.0
+	elif not _mask.is_empty():
+		k = LightMask.sample(_mask, feet)
+	elif light is PointLight2D and _radius > 0.0:
+		var sc: Vector2 = light.scale
+		var local := (chest - light.position) / Vector2(maxf(absf(sc.x), 0.001), maxf(absf(sc.y), 0.001))
+		var t := local.length() / _radius
+		k = 0.0 if t >= 1.0 else pow(1.0 - t, _falloff) * (1.0 - t * t * 0.15)
+	var e := light.energy * k * (-1.0 if light.blend_mode == Light2D.BLEND_MODE_SUB else 1.0)
+	return Color(light.color.r * e, light.color.g * e, light.color.b * e, 0.0)
+
+
+## Floor distance (floor units: screen y ÷ foreshortening `c`) from the source's floor point.
+func floor_distance(feet: Vector2, c: float) -> float:
+	var v := feet - shadow_floor()
+	return Vector2(v.x, v.y / maxf(c, 0.05)).length()
+
+
+## Actor tone, multiplicative part: `actor_tint` [r, g, b] at full presence (a dark room darkens
+## and tones the figures like the floor around them — their art is lighter than the room's).
+func actor_tint() -> Color:
+	var t = data.get("actor_tint")
+	if not (t is Array) or t.size() < 3:
+		return Color.WHITE
+	var p := presence()
+	return Color(lerpf(1.0, float(t[0]), p), lerpf(1.0, float(t[1]), p), lerpf(1.0, float(t[2]), p), 1.0)
+
+
+## Actor tone, additive part: `actor_warm` {color: [r, g, b], near_px, far_px} — the warm cast of a
+## fire / lamp on a figure, full at near_px, gone at far_px (floor distance as for the shadows),
+## × presence × flicker × current energy / base energy.
+func actor_warm(feet: Vector2, c: float) -> Color:
+	var w = data.get("actor_warm")
+	if not (w is Dictionary):
+		return Color(0, 0, 0, 0)
+	var col := _color(w.get("color", [0.3, 0.15, 0.0]), Color(0.3, 0.15, 0.0))
+	var d := floor_distance(feet, c)
+	var k := 1.0 - smoothstep(float(w.get("near_px", 150.0)), float(w.get("far_px", 900.0)), d)
+	var base := float(data.get("energy", 1.0))
+	k *= presence() * flicker_factor() * (energy / base if base > 0.0 else 1.0)
+	return Color(col.r * k, col.g * k, col.b * k, 0.0)
 
 
 func _apply() -> void:

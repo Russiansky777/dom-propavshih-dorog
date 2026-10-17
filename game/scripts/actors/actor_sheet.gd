@@ -21,6 +21,13 @@ var direction_threshold_px: float = 0.5
 ## Foot lock: the drawn figure advances only when the walk frame changes (by exactly one stride),
 ## so the planted foot never drifts while a frame is shown. The logical position still moves smoothly.
 var foot_lock: bool = true
+## Root motion by the stance foot (data walk.stride_table, written by tools/measure_stride.py):
+## stride_rows[row][k] = sheet px (scale 1) the planted foot slides back between frames k and k+1.
+## Empty → constant stride cycle_px / frames for every row (old behaviour).
+var stride_rows: Array = []
+var stride_row_cycle: PackedFloat32Array = PackedFloat32Array()
+var stride_start_frame: int = 0
+var stride_sheet_md5: String = ""
 var idle_action: String = "idle"
 var walk_action: String = "walk"
 var talk_action: String = "talk"
@@ -70,6 +77,16 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 	a.cycle_meters = float(walk.get("cycle_meters", a.cycle_meters))
 	a.direction_threshold_px = float(walk.get("direction_threshold_px", a.direction_threshold_px))
 	a.foot_lock = bool(walk.get("foot_lock", a.foot_lock))
+	var st: Dictionary = walk.get("stride_table", {})
+	if not st.is_empty():
+		a.stride_rows = st.get("rows", [])
+		for r in a.stride_rows:
+			var sum := 0.0
+			for v in r:
+				sum += float(v)
+			a.stride_row_cycle.append(sum)
+		a.stride_start_frame = int(st.get("start_frame", 0))
+		a.stride_sheet_md5 = String(st.get("sheet_md5", ""))
 	a.idle_action = String(spec.get("idle_action", "idle"))
 	a.walk_action = String(spec.get("walk_action", "walk"))
 	a.talk_action = String(spec.get("talk_action", "talk"))
@@ -176,6 +193,35 @@ func walk_fps(speed_px: float, scale: float) -> float:
 
 func walk_frames() -> int:
 	return int(actions.get(walk_action, {}).get("frames", 12))
+
+
+func has_stride_table() -> bool:
+	return stride_rows.size() == directions and stride_rows[0].size() == walk_frames()
+
+
+## Ground the drawn figure covers between walk frames k and k+1 of a row (sheet px, scale 1).
+func stride_at(row: int, k: int) -> float:
+	if has_stride_table():
+		return float(stride_rows[wrapi(row, 0, directions)][wrapi(k, 0, walk_frames())])
+	return stride_px_unit()
+
+
+## One walk cycle of a row on screen (sheet px, scale 1).
+func row_cycle_px(row: int) -> float:
+	if has_stride_table():
+		return stride_row_cycle[wrapi(row, 0, directions)]
+	return cycle_meters * px_per_meter(1.0)
+
+
+## Walk-cycle frame rate (constant): frames × speed_mps / cycle_meters.
+func walk_fps_const() -> float:
+	return float(walk_frames()) * speed_mps / maxf(cycle_meters, 0.001)
+
+
+## Logical walking speed in px/s for a direction row at a depth scale: the row's cycle per period, so
+## the drawn figure (which advances by the row's table) and the logical position stay together.
+func walk_speed_row_px(row: int, scale: float) -> float:
+	return row_cycle_px(row) * scale * walk_fps_const() / float(walk_frames())
 
 
 ## Ground covered by one walk frame, in sheet pixels (node scale 1): cycle_px / frames.

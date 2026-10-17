@@ -19,7 +19,7 @@ import { chromium } from "playwright";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const WEB_DIR = path.join(ROOT, "build", "web");
+const WEB_DIR = process.env.SHOTS_WEB_DIR ? path.resolve(ROOT, process.env.SHOTS_WEB_DIR) : path.join(ROOT, "build", "web");
 const SHOTS_DIR = path.join(ROOT, "build", "shots", "m1");
 const PORT = Number(process.env.SHOTS_PORT || 8765);
 const GL_MODE = process.env.SHOTS_GL || "angle";
@@ -261,12 +261,15 @@ async function main() {
       if (ref.room !== "H1") failures.push(`stride: expected H1 for the reference frame, got ${ref.room}`);
       const STRIDE_MAX = Number(process.env.STRIDE_MAX || 140);
       const STRIDE_MAX_ROOM = 70;
-      // In-room series for the eye (GIF only): left along the near edge, room visible.
-      await click("floor start right", { x: 1700, y: 985 });
-      await waitWalk("start right");
-      await sleep(300);
-      await capture("room_left", { x: 880, y: 985 }, STRIDE_MAX_ROOM, 0.5);
-      await sleep(300);
+      // In-room series for the eye (GIF only, optional — full software-rendered frames are slow):
+      // STRIDE_ROOM=1 adds a left walk with the room visible.
+      if (process.env.STRIDE_ROOM === "1") {
+        await click("floor start right", { x: 1700, y: 985 });
+        await waitWalk("start right");
+        await sleep(300);
+        await capture("room_left", { x: 880, y: 985 }, STRIDE_MAX_ROOM, 0.5, { x: 600, y: 300, width: 1320, height: 780 });
+        await sleep(300);
+      }
       // Measurement view: room hidden, flat grey screen — every non-grey pixel is the figure, so the
       // feet are found exactly (the boots are nearly floor-coloured and partly transparent in-room).
       await page.evaluate(() => { if (window.probeIsolate) window.probeIsolate(true); });

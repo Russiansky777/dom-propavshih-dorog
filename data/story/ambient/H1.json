@@ -1,0 +1,14 @@
+{
+  "id": "H1",
+  "preset": "interior",
+  "_art": "Жилая комната (H1_bg.png): за окном справа (1530–1740 × 195–485) берёзы и рыжая листва. Стёкла — четыре прямоугольника рамы; нижнее левое закрыто букетом, поэтому берётся только его верх, нижнее правое — без вещей на подоконнике. clip — смещение не берёт пиксели рамы. Пока ставни закрыты (нет h1_shutter_open) окно закрыто слоем shutter_closed — стёкла и пыль не рисуются. Пыль — в луче window_beam агента света (data/story/lights/H1.json), над ним (z 4).",
+  "sway_regions": [
+    {"id": "pane_top_left", "kind": "tree", "rect": [1532, 200, 89, 81], "clip": true, "feather_px": 2, "anchor_y": 560, "top_y": 190, "amp_px": 2.6, "freq_hz": 0.34, "if": ["h1_shutter_open"]},
+    {"id": "pane_top_right", "kind": "tree", "rect": [1645, 196, 95, 85], "clip": true, "feather_px": 2, "anchor_y": 560, "top_y": 190, "amp_px": 2.6, "freq_hz": 0.34, "phase": 0.12, "if": ["h1_shutter_open"]},
+    {"id": "pane_bottom_left", "kind": "tree", "rect": [1532, 295, 89, 58], "clip": true, "feather_px": 2, "anchor_y": 560, "top_y": 190, "amp_px": 2.6, "freq_hz": 0.34, "phase": 0.04, "if": ["h1_shutter_open"]},
+    {"id": "pane_bottom_right", "kind": "tree", "rect": [1645, 292, 95, 150], "clip": true, "feather_px": 2, "anchor_y": 560, "top_y": 190, "amp_px": 2.6, "freq_hz": 0.34, "phase": 0.16, "if": ["h1_shutter_open"]}
+  ],
+  "dust": [
+    {"id": "window_beam_dust", "polygon": [[1530, 300], [1750, 300], [1740, 520], [1450, 900], [1250, 900], [1520, 520]], "amount": 26, "size_px": 7, "alpha": 0.6, "color": "#fff0d6", "speed_px_s": 6, "lifetime_s": 10, "z": 4, "if": ["h1_shutter_open"]}
+  ]
+}

@@ -23,6 +23,10 @@ const SCENARIOS := {
 	"H1_shadow_walk": {"room": "H1", "flags": ["stove_lit"], "pos": [520, 860], "walk_to": [1300, 900], "frames": 16, "dt": 0.18, "time_scale": 0.35},
 	"H1_at_stove": {"room": "H1", "flags": ["stove_lit"], "pos": [640, 830]},
 	"H1_mid_stove": {"room": "H1", "flags": ["stove_lit"], "pos": [1000, 800]},
+	"H1_tone_dark": {"room": "H1", "flags": [], "pos": [1250, 900], "pair": true},
+	"H1_tone_dark_stove": {"room": "H1", "flags": ["stove_lit"], "pos": [640, 800], "pair": true},
+	"H1_tone_dark_mid": {"room": "H1", "flags": ["stove_lit"], "pos": [1100, 860], "pair": true},
+	"H1_tone_open": {"room": "H1", "flags": ["h1_shutter_open"], "pos": [1250, 900], "pair": true},
 	"H2_door": {"room": "H2", "flags": [], "pos": [520, 880]},
 	"H2_shadow_walk": {"room": "H2", "flags": [], "pos": [300, 820], "walk_to": [800, 1000], "frames": 14, "dt": 0.18, "time_scale": 0.35},
 	"H2_flicker": {"room": "H2", "flags": [], "pos": [600, 950], "frames": 16, "dt": 0.1, "crop": [0, 80, 700, 900]},
@@ -105,6 +109,16 @@ func _scenario(sname: String, sc: Dictionary, gs, rm) -> int:
 		var path := _out_dir.path_join(("%s_%02d.png" % [sname, k]) if frames > 1 else ("%s.png" % sname))
 		img.save_png(path)
 		made += 1
+		if sc.get("pair", false):
+			# The same instant without Agata: tools/measure_tone.py compares her with the floor by her.
+			_player.visible = false
+			await process_frame
+			await RenderingServer.frame_post_draw
+			var bg := root.get_viewport().get_texture().get_image()
+			if bg.get_width() != 1920:
+				bg.resize(1920, 1080, Image.INTERPOLATE_LANCZOS)
+			bg.save_png(path.get_basename() + "_bg.png")
+			_player.visible = true
 	Engine.time_scale = 1.0
 	print("lighting shots %s: %d frame(s) → %s" % [sname, made, _out_dir])
 	return made

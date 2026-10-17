@@ -11,6 +11,12 @@ extends Node2D
 ##   - attaches an ActorLightShadow to every actor sprite (the player when this room is the current
 ##     one, NpcActor children of the room) for every source with `casts_actor_shadow`; the ones on
 ##     the player are removed when the room leaves the tree (the player outlives rooms);
+##   - tones the actors' sprites instead of lighting them per pixel (unshaded material + self_modulate;
+##     children such as the shadows are untouched): the light the room's sources give at the
+##     figure (ambient, the masks under the feet, the point lights at the chest — the same field the
+##     floor gets) × the `actor_tint` of present sources (the art of the figures is lighter than the
+##     rooms: the dark H1 brings Agata to the floor's brightness) + `actor_warm` of near fires/lamps
+##     by floor distance — eased, no jumps; the player gets its own lighting back when the room leaves;
 ##   - `suppress_effects`: ids of rooms/<LOC>.json `effects[]` this lighting replaces (the old
 ##     particle "fire" of the H1 stove) — removed at build time, the room data stays untouched.
 ## Nothing here takes input: lights, quads and shadows are not in the physics picking.
@@ -25,7 +31,10 @@ var sources: Array[LightSource] = []
 var groups: Dictionary = {}          # group id -> LightFlicker
 var shadows: Dictionary = {}         # "<actor instance id>:<source id>" -> ActorLightShadow
 var extra_actors: Array[Node] = []   # tests: actors tracked besides the player / NpcActors
+var tones: Dictionary = {}          # actor instance id -> current tone (Color)
+static var _unshaded: CanvasItemMaterial = null
 var time_s: float = 0.0
+const TONE_RATE := 8.0
 var _rescan_t: float = 0.0
 
 
@@ -87,6 +96,9 @@ func _group_flicker(spec) -> LightFlicker:
 
 
 func _ready() -> void:
+	if _unshaded == null:
+		_unshaded = CanvasItemMaterial.new()
+		_unshaded.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	process_priority = 20  # after the player's foot lock (10): shadows read this frame's position
 	GameState.flag_changed.connect(_on_flag_changed)
 	GameState.state_reset.connect(_on_state_snap)
@@ -104,6 +116,15 @@ func _exit_tree() -> void:
 		GameState.state_loaded.disconnect(_on_state_loaded)
 	if RoomManager.room_changed.is_connected(_on_room_changed):
 		RoomManager.room_changed.disconnect(_on_room_changed)
+	# The player outlives the room: back to its own colours (the next room tones it again).
+	var pl: Node2D = RoomManager.player
+	if pl != null and is_instance_valid(pl):
+		var spr = pl.get("sprite")
+		if spr is CanvasItem and tones.has(pl.get_instance_id()):
+			spr.self_modulate = Color.WHITE
+			if spr.material == _unshaded:
+				spr.material = null
+	tones.clear()
 	# Shadows on actors that outlive the room (the player) go now, not at the end of the frame.
 	for key in shadows.keys():
 		var sh = shadows[key]
@@ -137,6 +158,7 @@ func _process(delta: float) -> void:
 	time_s += delta
 	for s in sources:
 		s.step(delta, time_s)
+	_update_tones(delta)
 	_rescan_t += delta
 	if _rescan_t >= RESCAN_S:
 		_rescan_t = 0.0
@@ -192,6 +214,43 @@ func scan_actors() -> void:
 			if shadows.has(key) and is_instance_valid(shadows[key]):
 				continue
 			shadows[key] = ActorLightShadow.attach(spr, s, foreshortening)
+
+
+## Tone of a figure with feet at `feet` and figure height `fig_h` (screen px):
+## (1 + Σ light_on_actor) × Π actor_tint + Σ actor_warm, never negative (alpha 1).
+func actor_tone_at(feet: Vector2, fig_h: float = 500.0) -> Color:
+	var chest := feet  # point lights read at the feet too: the figure gets what the floor by her gets
+	var lit := Color(1, 1, 1, 1)
+	var m := Color.WHITE
+	var add := Color(0, 0, 0, 0)
+	for s in sources:
+		var l := s.light_on_actor(feet, chest)
+		lit = Color(lit.r + l.r, lit.g + l.g, lit.b + l.b, 1.0)
+		var t := s.actor_tint()
+		m = Color(m.r * t.r, m.g * t.g, m.b * t.b, 1.0)
+		add += s.actor_warm(feet, foreshortening)
+	return Color(maxf(lit.r * m.r + add.r, 0.0), maxf(lit.g * m.g + add.g, 0.0), maxf(lit.b * m.b + add.b, 0.0), 1.0)
+
+
+## Eases every actor's sprite towards its tone (first sight: at once, no fade from white).
+func _update_tones(delta: float) -> void:
+	if sources.is_empty():
+		return
+	var w := 1.0 - exp(-delta * TONE_RATE)
+	for a in actors():
+		var spr = a.get("sprite")
+		if not (spr is AnimatedSprite2D) or not is_instance_valid(spr):
+			continue
+		# Toned as a whole (below), not lit per pixel by the room's Light2D. (light_mask 0 is not
+		# enough: the DirectionalLight2D of the darkness ignores it — measured under GL Compatibility.)
+		if spr.material == null:
+			spr.material = _unshaded
+		var fig_h: float = -spr.offset.y * absf(spr.get_global_transform().get_scale().y)
+		var target := actor_tone_at(spr.global_position, fig_h)
+		var key: int = a.get_instance_id()
+		var cur: Color = tones[key].lerp(target, w) if tones.has(key) else target
+		tones[key] = cur
+		spr.self_modulate = cur
 
 
 ## Cast shadows currently attached to `actor` (tests).

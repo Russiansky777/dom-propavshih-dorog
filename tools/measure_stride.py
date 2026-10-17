@@ -166,6 +166,14 @@ def cyclic_fill(vals):
     return v, filled
 
 
+def compact_json(obj):
+    """indent=2, but arrays of numbers stay on one line (the table is 8 × 12 numbers)."""
+    import re
+    text = json.dumps(obj, ensure_ascii=False, indent=2)
+    return re.sub(r"\[\s*(-?[0-9.eE+-]+(?:,\s*-?[0-9.eE+-]+)*)\s*\]",
+                  lambda m: "[" + ", ".join(x.strip() for x in m.group(1).split(",")) + "]", text)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--actor", default="agata")
@@ -282,8 +290,7 @@ def main():
         walk["camera_elev_deg"] = elev
         walk["stride_table"] = table
         with open(data_path, "w", encoding="utf-8") as f:
-            json.dump(actor, f, ensure_ascii=False, indent=2)
-            f.write("\n")
+            f.write(compact_json(actor) + "\n")
         print(f"written: {os.path.relpath(data_path, ROOT)} (walk.stride_table, cycle_meters {walk['cycle_meters']})")
     sys.exit(code)
 

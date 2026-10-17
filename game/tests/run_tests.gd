@@ -895,92 +895,89 @@ func _test_stride() -> void:
 		return
 	var sheet = player.sheet
 	var spec: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/agata.json"))
-	var sheet_stride: float = float(spec.get("walk", {}).get("sheet_stride_px_per_frame", 0.0))
+	var st: Dictionary = spec.get("walk", {}).get("stride_table", {})
 	var frames_n: int = sheet.walk_frames()
 	var ppm1: float = sheet.px_per_meter(1.0)
-	print("    sheet: %d frames, px/m at scale 1 = %.1f, cycle_meters %.3f, measured stride %.1f px/frame → cycle %.3f m" % [
-		frames_n, ppm1, sheet.cycle_meters, sheet_stride, sheet_stride * frames_n / ppm1])
-	_check(sheet_stride > 0.0 and absf(sheet_stride * frames_n / ppm1 - sheet.cycle_meters) / sheet.cycle_meters < 0.05,
-		"cycle_meters (%.3f) must match the measured sheet stride (%.1f px × %d / %.1f = %.3f m)" % [sheet.cycle_meters, sheet_stride, frames_n, ppm1, sheet_stride * frames_n / ppm1])
-	_check(absf(sheet.stride_px_unit() - sheet_stride) < 1.0, "stride_px_unit %.2f should equal the sheet stride %.1f" % [sheet.stride_px_unit(), sheet_stride])
+	var cycle_px: float = sheet.cycle_meters * ppm1
+	# 1. The table belongs to this sheet (re-measure after any walk.png change: tools/measure_stride.py --write).
+	_check(sheet.has_stride_table(), "walk.stride_table (8 rows × 12 frames) missing from data/actors/agata.json")
+	var md5 := FileAccess.get_md5("res://" + String(st.get("sheet", "")))
+	_check(md5 != "" and md5 == String(st.get("sheet_md5", "")), "stride_table was measured on another walk.png (md5 %s vs %s): run tools/measure_stride.py --write" % [md5, String(st.get("sheet_md5", ""))])
+	# 2. Sums: profile rows = cycle_meters × px/m (±2 %); other rows = cycle × projection of the render camera.
+	var elev: float = deg_to_rad(float(st.get("camera_elev_deg", 14.0)))
+	print("    cycle %.1f px (scale 1) = %.4f m; fps %.2f (= %d × %.2f m/s / cycle); start frame %d" % [cycle_px, sheet.cycle_meters, sheet.walk_fps_const(), frames_n, sheet.speed_mps, sheet.stride_start_frame])
+	for r in 8:
+		var sum := 0.0
+		for k in frames_n:
+			sum += sheet.stride_at(r, k)
+		var phi := deg_to_rad(90.0 - 45.0 * r)
+		var proj := Vector2(cos(phi), sin(phi) * sin(elev)).length()
+		print("    row %d: Σ %.1f px (expected %.1f = cycle × %.3f) speed at scale 1: %.1f px/s; strides %s" % [r, sum, cycle_px * proj, proj, sheet.walk_speed_row_px(r, 1.0), str(sheet.stride_rows[r])])
+		_check(absf(sum - cycle_px * proj) <= 0.02 * cycle_px * proj, "row %d: table sum %.1f must equal the cycle %.1f ±2 %%" % [r, sum, cycle_px * proj])
+		for k in frames_n:
+			_check(sheet.stride_at(r, k) > 0.0, "row %d frame %d: stride must be positive" % [r, k])
+	_check(absf(sheet.walk_speed_row_px(2, 1.0) - sheet.speed_mps * ppm1) < 0.5, "profile speed = speed_mps × px/m")
 	rm.change_room("H1", "default")
 	await physics_frame
 	await physics_frame
 	var room: Node = rm.current_room
-	print("    scale   px/m    v px/s   fps    px/frame = v/fps   stride×scale")
-	for s in [1.0, 1.3, 1.65, 2.0]:
-		var v: float = sheet.walk_speed_px(s)
-		var fps: float = sheet.walk_fps(v, s)
-		var per_frame: float = v / fps
-		print("    %.2f   %6.1f   %6.1f   %5.2f   %6.2f            %6.2f" % [s, sheet.px_per_meter(s), v, fps, per_frame, sheet.stride_px_unit() * s])
-		_check(absf(per_frame - sheet.stride_px_unit() * s) < 0.01, "at scale %.2f the figure must cover one sheet stride per frame (%.2f vs %.2f)" % [s, per_frame, sheet.stride_px_unit() * s])
-		_check(absf(fps - frames_n * sheet.speed_mps / sheet.cycle_meters) < 0.01, "fps must be frames × speed_mps / cycle_meters at every depth")
-	# Walk left along the near edge (constant depth): sample every render frame.
 	player.speed_factor = 1.0
-	player.call("enter_room", room, Vector2(1500, 990))
-	var s0: float = room.depth_scale(990.0)
-	var stride_screen: float = sheet.stride_px_unit() * s0
-	player.call("walk_to", Vector2(820, 990))
-	var samples: Array = []   # [frame, drawn_x, logical_x, speed_scale, ticks]
-	var n := 0
-	while player.call("is_walking") and n < 2000:
-		await process_frame
-		n += 1
-		if n < 3:
-			continue
-		if not String(spr.animation).begins_with("walk_"):
-			continue
-		samples.append([spr.frame, player.call("drawn_position").x, player.global_position.x, spr.speed_scale, Time.get_ticks_usec()])
-	_check(samples.size() > 40, "too few samples (%d)" % samples.size())
-	var within_max := 0.0
-	var jumps: Array = []
-	var clamped := 0   # frame changes where the drawn figure caught up with the logical one (engine lag)
-	var fps_meas := 0.0
-	var changes := 0
-	var first_change_t := -1
-	var last_change_t := -1
-	for i in range(1, samples.size()):
-		var a: Array = samples[i - 1]
-		var b: Array = samples[i]
-		if a[0] == b[0]:
-			within_max = maxf(within_max, absf(b[1] - a[1]))
-		else:
-			var j: float = b[1] - a[1]
-			if absf(-j - stride_screen) > 0.5 and absf(b[1] - b[2]) <= 2.0 * sheet.walk_speed_px(s0) / 60.0 + 0.5:
-				clamped += 1  # anchor re-synced onto the logical position (≤ 2 physics ticks ago): never drawn ahead of it
-			else:
-				jumps.append(j)
+	# 3. Walk left (row 6) along the near edge, then up (row 4): sample every render frame.
+	var runs := [["left", Vector2(1650, 990), Vector2(820, 990), 6], ["up", Vector2(1650, 990), Vector2(1650, 740), 4]]
+	for run in runs:
+		player.call("enter_room", room, run[1])
+		await physics_frame
+		var resyncs0: int = player.lock_resyncs
+		player.call("walk_to", run[2])
+		var samples: Array = []   # [frame, drawn, logical, scale, ticks, lag, row]
+		var n := 0
+		while player.call("is_walking") and n < 3000:
+			await process_frame
+			n += 1
+			if not String(spr.animation).begins_with("walk_"):
+				continue
+			samples.append([spr.frame, player.call("drawn_position"), player.global_position, absf(player.scale.y), Time.get_ticks_usec(), player.call("lock_lag_px"), player.direction])
+		var within_max := 0.0
+		var max_err := 0.0
+		var max_lag := 0.0
+		var ahead := false
+		var changes := 0
+		var t0 := -1
+		var t1 := -1
+		var adv := []
+		for i in range(1, samples.size()):
+			var a: Array = samples[i - 1]
+			var b: Array = samples[i]
+			max_lag = maxf(max_lag, b[5])
+			if b[5] < -0.05:
+				ahead = true
+			if a[0] == b[0]:
+				within_max = maxf(within_max, (b[1] as Vector2).distance_to(a[1]))
+				continue
 			changes += 1
-			if first_change_t < 0:
-				first_change_t = b[4]
-			last_change_t = b[4]
-	if changes > 1:
-		fps_meas = float(changes - 1) / (float(last_change_t - first_change_t) / 1e6)
-	var jump_min: float = jumps[0] if jumps.size() > 0 else 0.0
-	var jump_max: float = jump_min
-	var jump_sum := 0.0
-	for j in jumps:
-		jump_min = minf(jump_min, j)
-		jump_max = maxf(jump_max, j)
-		jump_sum += j
-	var lag_t: float = float(samples[-1][4] - samples[0][4]) / 1e6
-	var v_meas: float = (samples[0][2] - samples[-1][2]) / maxf(lag_t, 0.001)
-	print("    walk left at y=990: scale %.2f, v %.1f px/s (measured %.1f), fps %.2f (measured %.2f from %d frame changes), speed_scale %.3f" % [
-		s0, sheet.walk_speed_px(s0), v_meas, sheet.walk_fps(sheet.walk_speed_px(s0), s0), fps_meas, changes, samples[5][3]])
-	print("    drawn figure: moves %.2f px max while a frame is shown; per frame change %.1f..%.1f px (mean %.1f; sheet stride × scale = %.1f)" % [
-		within_max, jump_min, jump_max, jump_sum / maxf(jumps.size(), 1), stride_screen])
-	_check(within_max < 0.01, "drawn figure must not move while a walk frame is shown (foot lock), moved %.2f px" % within_max)
-	_check(changes >= 8, "expected at least 8 frame changes, got %d" % changes)
-	_check(absf(jump_sum / maxf(jumps.size(), 1) + stride_screen) < 0.15 * stride_screen, "mean advance per frame change %.1f should be one stride %.1f" % [-jump_sum / maxf(jumps.size(), 1), stride_screen])
-	for j in jumps:
-		_check(absf(-j - stride_screen) < 0.5, "every frame change must advance the figure forward by exactly one stride (%.1f), got %.1f" % [stride_screen, -j])
-	_check(absf(samples[5][3] - sheet.walk_fps(sheet.walk_speed_px(s0), s0) / 12.0) < 0.01, "speed_scale must equal fps / sheet fps (12)")
-	_check(absf(fps_meas - sheet.walk_fps(sheet.walk_speed_px(s0), s0)) < 1.5, "measured frame rate %.2f should match the formula %.2f" % [fps_meas, sheet.walk_fps(sheet.walk_speed_px(s0), s0)])
-	# After arrival the figure stands exactly where it was drawn (no hop) and the offset is gone.
-	print("    advance per frame change (px): %s; re-synced onto the logical position (engine lag): %d" % [str(jumps.map(func(j): return snappedf(j, 0.1))), clamped])
-	_check(clamped <= 3, "too many frame changes clamped to the logical position (%d): physics could not keep up" % clamped)
-	_check(spr.position == Vector2.ZERO, "sprite offset must be zero once standing")
-	_check(absf(player.global_position.x - 820.0) < stride_screen + 12.0, "stops within one stride of the target (820), at x=%.1f" % player.global_position.x)
+			if t0 < 0:
+				t0 = b[4]
+			t1 = b[4]
+			if wrapi(b[0] - a[0], 0, frames_n) != 1 or a[6] != run[3]:
+				continue
+			var expect: float = sheet.stride_at(run[3], a[0]) * a[3]
+			var got: float = (b[1] as Vector2).distance_to(a[1])
+			adv.append(snappedf(got, 0.1))
+			max_err = maxf(max_err, absf(got - expect))
+		var fps_meas := float(changes - 1) / (float(t1 - t0) / 1e6) if changes > 1 else 0.0
+		print("    walk %s (row %d): %d frame changes, fps %.2f (formula %.2f), drawn still within a frame: max %.2f px; advance per change %s; max |advance − table×scale| %.2f px; max lag behind logical %.1f px; resyncs %d" % [
+			run[0], run[3], changes, fps_meas, sheet.walk_fps_const(), within_max, str(adv), max_err, max_lag, player.lock_resyncs - resyncs0])
+		_check(changes >= 8, "%s: expected at least 8 frame changes, got %d" % [run[0], changes])
+		_check(within_max < 0.01, "%s: drawn figure must not move while a frame is shown, moved %.2f px" % [run[0], within_max])
+		_check(max_err < 0.6, "%s: every frame change must advance the drawn figure by table[row][frame] × scale (max error %.2f px)" % [run[0], max_err])
+		_check(not ahead, "%s: the drawn figure must never be ahead of the logical position" % run[0])
+		_check(max_lag <= sheet.row_cycle_px(run[3]) * 2.1, "%s: lag behind the logical position must stay under one cycle (%.1f px)" % [run[0], max_lag])
+		_check(player.lock_resyncs - resyncs0 <= 1, "%s: drawn figure clamped/re-synced %d times" % [run[0], player.lock_resyncs - resyncs0])
+		_check(absf(spr.speed_scale - 1.0) < 0.001 or not spr.animation.begins_with("walk_"), "after arrival the idle plays at speed 1")
+		_check(spr.position == Vector2.ZERO and spr.scale == Vector2.ONE, "%s: sprite offset/scale must be reset once standing" % run[0])
+		print("    %s: stopped at %s (target %s)" % [run[0], str(player.global_position.round()), str(run[2])])
+		var tol: float = player.nav_agent.target_desired_distance + 1.0  # the navigation agent's own arrival tolerance
+		_check(player.global_position.distance_to(run[2]) < tol, "%s: the drawn figure finishes its steps and stops on the target (±%.0f px), at %s" % [run[0], tol, str(player.global_position)])
 	gs.reset()
 	_cleanup_m1()
 

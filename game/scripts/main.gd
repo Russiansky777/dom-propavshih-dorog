@@ -156,6 +156,7 @@ func _actor_state() -> Dictionary:
 		"drawn_x": drawn.x, "drawn_y": drawn.y, "scale": player.scale.y,
 		"stride_px": player.stride_px(), "speed_px": player.current_speed_px(), "fps": player.current_walk_fps(),
 		"direction": player.direction, "paused": get_tree().paused, "walk_time": player.walk_time,
+		"lag": player.lock_lag_px(), "resyncs": player.lock_resyncs, "sprite_scale": spr.scale.x,
 		"shadow": _shadow_state(spr),
 	}
 

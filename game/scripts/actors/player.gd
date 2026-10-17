@@ -6,12 +6,16 @@ extends Node2D
 ## 8 directions × N frames); the placeholder polygon `Body` is the fallback when no sheet loads.
 ## Scale and z_index come from the room's depth parameters (z_index = int(y) for y-sort).
 ##
-## Sliding feet: the walk cycle is drawn in place, the planted foot slides back by one stride
-## (cycle_px / frames) between two sheet frames. The logical position moves smoothly at
-## speed_mps × px_per_m, the frame rate is derived from that speed (fps = frames × v / cycle_px,
-## applied through AnimatedSprite2D.speed_scale) — and with `walk.foot_lock` the DRAWN figure is
-## held back by `frame_progress × stride` so it advances only when the frame changes, by exactly one
-## stride: the planted foot stays on the same floor pixel for the whole frame.
+## Feet on the floor (root motion by the stance foot): the walk clip is drawn in place, and between
+## sheet frames k and k+1 the planted foot slides back by stride_table[row][k] (measured per row and
+## frame by tools/measure_stride.py; unequal — the clip is not uniform). The LOGICAL position moves
+## smoothly along the navigation path at the row's mean speed (row cycle per period; the frame rate is
+## constant, frames × speed_mps / cycle_meters, applied through AnimatedSprite2D.speed_scale) and is
+## recorded as a trail. The DRAWN figure stands still while a frame is shown and, at each frame
+## change, advances along that trail by exactly stride_table[row][k] × scale — so the planted foot
+## stays on the same floor pixels. The drawn figure is never ahead of the logical one (walks start on
+## the table's start_frame), so it never leaves the path walked; the lag is under one cycle and is
+## absorbed when she stops (the logical position takes the drawn one).
 
 signal walk_started(target: Vector2)
 signal arrived(position: Vector2)
@@ -42,10 +46,18 @@ var direction: int = 0          # sheet row of the current facing (0 = towards t
 var _walking: bool = false
 var _target: Vector2 = Vector2.ZERO
 var _pending: Node2D = null
-var _motion_dir: Vector2 = Vector2.ZERO   # unit direction of the last physics step
-var _lock_anchor: Vector2 = Vector2.ZERO  # where the figure is drawn while the current walk frame is shown
 var _lock_active: bool = false
 var _lock_hold: bool = false    # true while an animation switch replays the same frame
+var _drawn_pos: Vector2 = Vector2.ZERO          # where the figure is drawn while the current frame is shown
+var _trail: PackedVector2Array = PackedVector2Array()   # logical positions of this walk
+var _trail_d: PackedFloat32Array = PackedFloat32Array() # arclength at each trail point
+var _trail_i: int = 0
+var _dist_logical: float = 0.0
+var _dist_drawn: float = 0.0
+var _last_walk_frame: int = -1
+var lock_resyncs: int = 0       # times the drawn figure had to be clamped/re-synced (diagnostics)
+var _frame_pending: bool = false  # a frame change seen this frame; settled after the logical step
+var _settling: bool = false       # logical position arrived; the drawn figure is finishing its steps
 var walk_time: float = 0.0      # game seconds spent in the current walk (probe/measurements)
 var _distance_walked: float = 0.0
 var _step_phase: int = 0
@@ -68,59 +80,124 @@ func _ready() -> void:
 	_update_depth()
 
 
-func _process(_delta: float) -> void:
+## Walking runs in _process, on the same delta as the sprite's frame clock: the logical position and
+## the walk cycle can never drift apart, even when physics ticks are capped under load.
+func _process(delta: float) -> void:
+	if _walking:
+		_walk_step(delta)
+	if _frame_pending:
+		_finish_frame_change()
 	_update_foot_lock()
 
 
-## Foot lock: the figure is drawn at `_lock_anchor` (the logical position at the last walk-frame
-## change) for as long as the frame is shown; `_on_frame_changed` moves the anchor forward.
-## Visually the figure advances in strides exactly when the sheet frame changes.
+## The drawn figure stands at `_drawn_pos` while a frame is shown: offset from the logical position,
+## and scaled for its own depth (so nothing about it changes until the next frame).
 func _update_foot_lock() -> void:
 	if sprite == null:
 		return
 	if _lock_active and _walking and sprite.animation.begins_with(sheet.walk_action):
 		var s := maxf(absf(scale.y), 0.001)
-		sprite.position = (_lock_anchor - global_position) / s
+		var s_drawn := room.depth_scale(_drawn_pos.y) if room != null else s
+		sprite.position = (_drawn_pos - global_position) / s
+		sprite.scale = Vector2.ONE * (s_drawn / s)
 	else:
 		sprite.position = Vector2.ZERO
+		sprite.scale = Vector2.ONE
 
 
-## A walk frame changed: the drawn figure advances by exactly one stride along the motion.
-## (The logical position advances in whole physics ticks, so re-anchoring on it would jitter the
-## stride by up to one tick; the anchor only re-syncs when it drifts beyond a stride.)
+## A walk frame changed (k → k+1): the drawn figure advances along the trail by the stance foot's
+## slide for this row and frame × scale. Never ahead of the logical position; lag under one cycle.
 func _on_frame_changed() -> void:
-	if _lock_hold:
+	if _lock_hold or not _lock_active or not _walking or sheet == null:
 		return
-	if _walking and sheet != null and sheet.foot_lock and sprite.animation.begins_with(sheet.walk_action):
-		var stride := stride_px()
-		if not _lock_active or _motion_dir == Vector2.ZERO:
-			_lock_anchor = global_position
-		else:
-			_lock_anchor += _motion_dir * stride
-			var lag := global_position - _lock_anchor
-			if lag.length() > 1.5 * stride or lag.dot(_motion_dir) < -0.5 * stride:
-				_lock_anchor = global_position  # timing hiccup: re-sync instead of running away
-		_lock_active = true
+	if not sprite.animation.begins_with(sheet.walk_action):
+		return
+	var f := sprite.frame
+	if _last_walk_frame < 0:
+		_last_walk_frame = f
+		return
+	var n := wrapi(f - _last_walk_frame, 0, sheet.walk_frames())
+	var s := absf(scale.y)
+	for i in n:
+		_dist_drawn += sheet.stride_at(direction, _last_walk_frame + i) * s
+	_last_walk_frame = f
+	# The sprite ticks before our _process: settle once the logical position has made this frame's
+	# step; meanwhile listeners (footfall) already get the new position, as far as the trail goes.
+	_drawn_pos = _trail_point(minf(_dist_drawn, _dist_logical))
+	_frame_pending = true
+
+
+func _finish_frame_change() -> void:
+	_frame_pending = false
+	var s := absf(scale.y)
+	if _dist_drawn > _dist_logical + 0.5:
+		_dist_drawn = _dist_logical  # would run ahead of the path walked: hold at the logical position
+		if not _settling:
+			lock_resyncs += 1  # (while settling, the last step simply ends on the target)
+	elif _dist_logical - _dist_drawn > sheet.row_cycle_px(direction) * s:
+		_dist_drawn = _dist_logical  # more than a cycle behind (timing hiccup): catch up
+		lock_resyncs += 1
+	_drawn_pos = _trail_point(_dist_drawn)
+
+
+## Point of this walk's trail at arclength `d` (the drawn figure only moves forward).
+func _trail_point(d: float) -> Vector2:
+	if _trail.is_empty():
+		return global_position
+	while _trail_i < _trail.size() - 1 and _trail_d[_trail_i + 1] < d:
+		_trail_i += 1
+	if _trail_i >= _trail.size() - 1:
+		return _trail[_trail.size() - 1]
+	var d0: float = _trail_d[_trail_i]
+	var d1: float = _trail_d[_trail_i + 1]
+	var t := 0.0 if d1 - d0 < 0.0001 else clampf((d - d0) / (d1 - d0), 0.0, 1.0)
+	return _trail[_trail_i].lerp(_trail[_trail_i + 1], t)
+
+
+func _trail_add(p: Vector2, moved: float) -> void:
+	_dist_logical += moved
+	_trail.append(p)
+	_trail_d.append(_dist_logical)
+	if _trail_i > 600:  # drop the part the drawn figure has passed
+		_trail = _trail.slice(_trail_i)
+		_trail_d = _trail_d.slice(_trail_i)
+		_trail_i = 0
 
 
 func _lock_start() -> void:
-	if sheet != null and sheet.foot_lock:
-		_lock_anchor = global_position
-		_lock_active = true
+	_lock_active = sheet != null and sheet.foot_lock
+	_frame_pending = false
+	_settling = false
+	_drawn_pos = global_position
+	_trail = PackedVector2Array([global_position])
+	_trail_d = PackedFloat32Array([0.0])
+	_trail_i = 0
+	_dist_logical = 0.0
+	_dist_drawn = 0.0
+	# Re-targeted mid-walk: keep counting from the frame on screen; from idle the walk anim starts
+	# on the table's start frame (_update_walk_anim).
+	_last_walk_frame = sprite.frame if sprite != null and sprite.animation.begins_with(sheet.walk_action) else -1
 
 
-## Screen position of the drawn figure's feet (logical position plus the foot-lock offset).
+## Screen position of the drawn figure's feet.
 func drawn_position() -> Vector2:
 	if sprite == null:
 		return global_position
 	if _lock_active and _walking:
-		return _lock_anchor
+		return _drawn_pos
 	return global_position + sprite.position * scale
 
 
-## Stride of one walk frame in screen px at the current depth.
+## Mean ground per walk frame for the current row, in screen px at the current depth.
 func stride_px() -> float:
-	return sheet.stride_px_unit() * absf(scale.y) if sheet != null else 0.0
+	if sheet == null:
+		return 0.0
+	return sheet.row_cycle_px(direction) / float(sheet.walk_frames()) * absf(scale.y)
+
+
+## Diagnostics for the probe: how far the drawn figure is behind the logical one along the path.
+func lock_lag_px() -> float:
+	return _dist_logical - _dist_drawn if _lock_active and _walking else 0.0
 
 
 func _setup_sprite() -> void:
@@ -168,19 +245,20 @@ func _play_idle() -> void:
 	sprite.play(sheet.anim_name(sheet.idle_action, direction))
 
 
-## Effective speed in px/s at the current depth (farther = slower on screen, nearer = faster).
+## Effective speed in px/s at the current depth and direction row (farther = slower on screen;
+## towards/away from the viewer slower than across — the row's cycle on screen, see ActorSheet).
 func current_speed_px() -> float:
 	var s := absf(scale.y)
 	if sheet != null:
-		return sheet.walk_speed_px(s) * speed_factor
+		return sheet.walk_speed_row_px(direction, s) * speed_factor
 	return walk_speed * s * speed_factor
 
 
-## Walk-cycle frame rate for the current speed and scale (data: cycle length in metres).
+## Walk-cycle frame rate: constant (frames × speed_mps / cycle_meters), × speed_factor.
 func current_walk_fps() -> float:
 	if sheet == null:
 		return 0.0
-	return sheet.walk_fps(current_speed_px(), absf(scale.y))
+	return sheet.walk_fps_const() * speed_factor
 
 
 ## Plays the walk animation through speed_scale so feet match the ground covered; frames are never set by hand.
@@ -199,7 +277,12 @@ func _update_walk_anim() -> void:
 		sprite.play(anim)
 		if was_walk and sprite.sprite_frames.get_frame_count(anim) > frame:
 			sprite.set_frame_and_progress(frame, progress)  # keep the stride phase across direction changes
+		elif not was_walk and sheet.has_stride_table():
+			# From standing: start on the table's start frame, so the drawn figure never gets ahead.
+			sprite.set_frame_and_progress(sheet.stride_start_frame, 0.0)
 		_lock_hold = false
+		if not was_walk:
+			_last_walk_frame = sprite.frame
 
 
 # --- Input -----------------------------------------------------------------
@@ -256,12 +339,13 @@ func _start_walk(target: Vector2) -> void:
 
 
 ## Moves the logical position onto the drawn one (no visible hop when a walk ends or changes).
+## The drawn position lies on the trail already walked, so it is on the floor.
 func _adopt_drawn_position() -> void:
 	if sprite != null and _lock_active:
-		global_position = _lock_anchor
+		global_position = _drawn_pos
 		sprite.position = Vector2.ZERO
+		sprite.scale = Vector2.ONE
 	_lock_active = false
-	_motion_dir = Vector2.ZERO
 
 
 ## True once the navigation path for the current walk has been received.
@@ -274,21 +358,24 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 	room = new_room
 	_walking = false
 	_pending = null
-	_motion_dir = Vector2.ZERO
 	_lock_active = false
 	if sprite != null:
 		sprite.position = Vector2.ZERO
+		sprite.scale = Vector2.ONE
 	global_position = pos
 	_set_step_phase(0)
 	_play_idle()
 	_update_depth()
 
 
-func _physics_process(delta: float) -> void:
-	if not _walking:
-		return
+func _walk_step(delta: float) -> void:
 	walk_time += delta
 	if nav_agent.is_navigation_finished():
+		# The logical position is at the target; the drawn figure finishes its steps (feet still
+		# locked) before she stops — she arrives where she was sent, not a stride short.
+		if _lock_active and _dist_logical - _dist_drawn > 0.5 and sprite.animation.begins_with(sheet.walk_action):
+			_settling = true
+			return
 		_arrive()
 		return
 	if nav_agent.get_current_navigation_path().is_empty():
@@ -304,6 +391,10 @@ func _physics_process(delta: float) -> void:
 	var next: Vector2 = nav_agent.get_next_path_position()
 	var to_next := next - global_position
 	var dist := to_next.length()
+	# Direction first (the speed depends on the row); only above a threshold, so tiny path
+	# corrections never twitch the sprite.
+	if sheet != null and dist > maxf(sheet.direction_threshold_px, 1.0):
+		direction = sheet.direction_index(to_next)
 	var step := minf(current_speed_px() * delta, dist)
 	if dist > 0.001:
 		var motion := to_next / dist * step
@@ -311,10 +402,8 @@ func _physics_process(delta: float) -> void:
 		_advance_steps(step)
 		if absf(motion.x) > 0.01:
 			facing = 1 if motion.x > 0.0 else -1
-		# Direction changes only above a threshold so tiny path corrections never twitch the sprite.
-		if sheet != null and step > sheet.direction_threshold_px:
-			direction = sheet.direction_index(motion)
-			_motion_dir = motion / step
+		if _lock_active:
+			_trail_add(global_position, step)
 		_update_walk_anim()
 	_update_depth()
 
@@ -322,6 +411,7 @@ func _physics_process(delta: float) -> void:
 ## Stops without reaching the target: no interaction is triggered.
 func _cancel_walk() -> void:
 	_walking = false
+	_settling = false
 	_pending = null
 	_adopt_drawn_position()
 	_set_step_phase(0)
@@ -332,6 +422,7 @@ func _cancel_walk() -> void:
 
 func _arrive() -> void:
 	_walking = false
+	_settling = false
 	_adopt_drawn_position()
 	_set_step_phase(0)
 	_update_depth()

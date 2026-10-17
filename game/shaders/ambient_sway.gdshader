@@ -21,6 +21,8 @@ uniform vec4 clip_rect = vec4(-100000.0, -100000.0, 200000.0, 200000.0);
 uniform int kind = 0;
 uniform float anchor_y = 1080.0;
 uniform float top_y = 0.0;
+uniform float anchor_slope = 0.0;   // a slanted root line (a shore, a verge): y shifts by slope·(x − anchor_x0)
+uniform float anchor_x0 = 0.0;
 uniform float amp_px = 4.0;
 uniform float freq_hz = 0.4;
 uniform float phase = 0.0;
@@ -57,7 +59,8 @@ void fragment() {
 		d.x = amp_px * wind * wave * (0.4 + 0.9 * n) * wind_dir;
 		d.y = amp_px * 0.15 * (n - 0.5);
 	} else {
-		float w = clamp((anchor_y - p.y) / max(anchor_y - top_y, 1.0), 0.0, 1.0);
+		float shift = anchor_slope * (p.x - anchor_x0);
+		float w = clamp((anchor_y + shift - p.y) / max(anchor_y - top_y, 1.0), 0.0, 1.0);
 		w = w * sqrt(w);  // a trunk bends more and more towards the crown
 		float s = sin(6.2831853 * (freq_hz * t + phase)) * 0.7
 			+ sin(6.2831853 * (freq_hz * 2.13 * t + phase * 1.7)) * 0.3;
@@ -66,7 +69,11 @@ void fragment() {
 		d += fl * (amp_px * flutter * w * wind * 2.0);
 	}
 	d *= edge;
-	vec2 sp = clamp(p - d, clip_rect.xy, clip_rect.xy + clip_rect.zw);
+	// Window panes: the moved sample never comes from the frame round the glass (but a pixel on the
+	// glass edge itself is never pulled inwards either).
+	vec2 lo = clip_rect.xy;
+	vec2 hi = clip_rect.xy + clip_rect.zw;
+	vec2 sp = clamp(p - d, min(p, lo), max(p, hi));
 	vec4 c = amb_src(sp);
 	if (keep_below_sat > 0.0) {
 		vec4 b = amb_src(p);

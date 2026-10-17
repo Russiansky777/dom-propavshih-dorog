@@ -76,10 +76,36 @@ static func build(polys: Array, feather: float, gradient: Dictionary = {}) -> Di
 				var p: Vector2 = bounds.position + (Vector2(x, y) + Vector2(0.5, 0.5)) * texel
 				var k := clampf((p - g_from).dot(g_axis) / g_len2, 0.0, 1.0)
 				v *= lerpf(af, at, smoothstep(0.0, 1.0, k))
-			img.set_pixel(x, y, Color(1, 1, 1, clampf(v, 0.0, 1.0)))
-	var out := {"texture": ImageTexture.create_from_image(img), "rect": bounds, "texel": texel}
+			v = clampf(v, 0.0, 1.0)
+			a[y * w + x] = v
+			img.set_pixel(x, y, Color(1, 1, 1, v))
+	var out := {"texture": ImageTexture.create_from_image(img), "rect": bounds, "texel": texel, "alpha": a, "w": w, "h": h}
 	_cache[key] = out
 	return out
+
+
+## Coverage of a built mask at screen point `p` (bilinear between texel centres, 0 outside) — what
+## the GPU shows there; actors are toned by the mask value under their feet.
+static func sample(m: Dictionary, p: Vector2) -> float:
+	var r: Rect2 = m["rect"]
+	var texel: float = m["texel"]
+	var w: int = m["w"]
+	var h: int = m["h"]
+	var a: PackedFloat32Array = m["alpha"]
+	var q := (p - r.position) / texel - Vector2(0.5, 0.5)
+	var x0 := int(floor(q.x))
+	var y0 := int(floor(q.y))
+	var fx := q.x - x0
+	var fy := q.y - y0
+	var acc := 0.0
+	for j in 2:
+		for i in 2:
+			var x := x0 + i
+			var y := y0 + j
+			if x < 0 or y < 0 or x >= w or y >= h:
+				continue
+			acc += a[y * w + x] * (fx if i == 1 else 1.0 - fx) * (fy if j == 1 else 1.0 - fy)
+	return acc
 
 
 ## One separable box blur of radius 1 (edges clamp).
