@@ -8,8 +8,8 @@ extends CanvasLayer
 const DOOR_RECT := Rect2(320, 200, 720, 660)
 const FRAME_RECT := Rect2(1070, 180, 110, 700)
 const BEAM_RECT := Rect2(560, 880, 520, 40)
-const DRAWING_RECT := Rect2(1300, 200, 500, 300)
-const TRAY_RECT := Rect2(1300, 540, 500, 120)
+const DRAWING_RECT := Rect2(1400, 200, 440, 300)
+const TRAY_RECT := Rect2(1400, 540, 440, 120)
 const SUCCESS_CLOSE_SECONDS: float = 2.2
 
 var root: Control
@@ -96,7 +96,7 @@ func _build() -> void:
 	root.size = Vector2(1920, 1080)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(root)
-	root.add_child(_rect(Color(0.05, 0.05, 0.06, 0.96), Rect2(0, 0, 1920, 1080)))
+	root.add_child(_rect(Color(0.05, 0.05, 0.06, 1.0), Rect2(0, 0, 1920, 1080)))
 	title_label = _label(StoryData.text(String(spec.get("title", ""))), Rect2(320, 110, 1480, 60), 34, false)
 	title_label.name = "Title"
 	root.add_child(title_label)
@@ -129,7 +129,8 @@ func _build() -> void:
 	door_leaf = _rect(Color(0.48, 0.34, 0.20), DOOR_RECT)
 	door_leaf.name = "DoorLeaf"
 	root.add_child(door_leaf)
-	root.add_child(_label(StoryData.text("@H3.school_door.label"), Rect2(DOOR_RECT.position + Vector2(0, DOOR_RECT.size.y / 2 - 20), Vector2(DOOR_RECT.size.x, 40)), 24))
+	var leaf_label := _label(StoryData.text("@H3.school_door.label"), Rect2(Vector2(0, DOOR_RECT.size.y / 2 - 20), Vector2(DOOR_RECT.size.x, 40)), 24)
+	door_leaf.add_child(leaf_label)
 
 	# Frame bar with sockets.
 	root.add_child(_rect(Color(0.30, 0.22, 0.14), FRAME_RECT))
@@ -141,7 +142,7 @@ func _build() -> void:
 		b.pressed.connect(_on_slot_pressed.bind(String(s["id"])))
 		root.add_child(b)
 		slot_nodes[String(s["id"])] = b
-		root.add_child(_label(StoryData.text(String(s.get("label", ""))), Rect2(float(pos[0]) + 60, float(pos[1]) - 14, 180, 30), 18, false))
+		root.add_child(_label(StoryData.text(String(s.get("label", ""))), Rect2(float(pos[0]) + 56, float(pos[1]) - 12, 200, 30), 16, false))
 
 	# Threshold beam with notch positions.
 	root.add_child(_rect(Color(0.42, 0.30, 0.18), BEAM_RECT))
@@ -187,18 +188,18 @@ func _build() -> void:
 		piece_nodes[pid] = b
 
 	# Message, hint, buttons.
-	message_label = _label("", Rect2(1300, 690, 500, 150), 22, false)
+	message_label = _label("", Rect2(1400, 690, 440, 150), 22, false)
 	message_label.name = "Message"
 	root.add_child(message_label)
-	hint_label = _label("", Rect2(1300, 850, 500, 70), 20, false)
+	hint_label = _label("", Rect2(1400, 850, 440, 70), 20, false)
 	hint_label.name = "Hint"
 	hint_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.55))
 	root.add_child(hint_label)
-	check_button = _square_button(StoryData.text(String(spec.get("check_label", "@ui.close"))), Vector2(1420, 970), Vector2(240, 56))
+	check_button = _square_button(StoryData.text(String(spec.get("check_label", "@ui.close"))), Vector2(1520, 970), Vector2(240, 56))
 	check_button.name = "Check"
 	check_button.pressed.connect(_on_check)
 	root.add_child(check_button)
-	close_button = _square_button(StoryData.text(String(spec.get("close_label", "@ui.close"))), Vector2(1700, 970), Vector2(180, 56))
+	close_button = _square_button(StoryData.text(String(spec.get("close_label", "@ui.close"))), Vector2(1760, 970), Vector2(160, 56))
 	close_button.name = "Close"
 	close_button.pressed.connect(func(): StoryRunner.close_puzzle())
 	root.add_child(close_button)

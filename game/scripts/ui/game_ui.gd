@@ -37,7 +37,7 @@ func _ready() -> void:
 	StoryRunner.beat_changed.connect(_render_dialogue)
 	StoryRunner.item_selection_changed.connect(func(_i): _render_inventory())
 	StoryRunner.loop_transition.connect(_on_loop_transition)
-	StoryRunner.hint_revealed.connect(func(tier, text): show_hint(StoryData.text("@ui.hint_title", {"tier": tier}) + ": " + text))
+	StoryRunner.hint_revealed.connect(func(tier, text): GameState.show_hint(StoryData.text("@ui.hint_title", {"tier": tier}) + ": " + text))
 	GameState.inventory_changed.connect(_render_inventory)
 	GameState.state_reset.connect(_render_inventory)
 	GameState.state_loaded.connect(func(_s): _render_inventory())

@@ -31,10 +31,16 @@ class MeshyError(RuntimeError):
 
 
 def _key() -> str:
-    k = os.environ.get("MESHY_API_KEY", "").strip()
-    if not k:
+    """Ключ из окружения. Если в секрет вставили всю команду установки MCP, вытаскиваем из неё msy_… ."""
+    import re
+    raw = os.environ.get("MESHY_API_KEY", "").strip()
+    if not raw:
         raise MeshyError("MESHY_API_KEY не задан в окружении")
-    return k
+    m = re.search(r"msy_[A-Za-z0-9]+", raw)
+    if m and m.group(0) != raw:
+        print("MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ", flush=True)
+        return m.group(0)
+    return raw
 
 
 def _request(method: str, path: str, body: dict | None = None, timeout: int = 120) -> dict:
