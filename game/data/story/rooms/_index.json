@@ -37,7 +37,8 @@
     "item_use": "{<item_id>: {sets, gives, consumes, text, scene}}",
     "talk": "{scene, before_text, after_text}",
     "choice": "{prompt, options:[{id, label, sets}], scene, done_flag}",
-    "puzzle": "см. H3.school_door"
+    "puzzle": "см. H3.school_door",
+    "panel": "{id, sets:[флаги]} — открыть панель интерфейса вместо осмотра (map_zarechye — план Заречья, data/story/map_zarechye.json); предмет в руке — как обычно «не поможет»"
   },
   "interaction_order": "выбран предмет → item_use; иначе talk → puzzle → choice → use (если requires выполнены и once_flag не стоит) → look",
   "sides": {

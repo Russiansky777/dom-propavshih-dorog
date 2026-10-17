@@ -1,0 +1,17 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+
+[deps]
+
+source_file="res://assets/ui/map/zarechye_plan.png"
+
+[params]
+
+compress/mode=1
+compress/lossy_quality=0.9
+mipmaps/generate=true
+mipmaps/limit=-1
+process/fix_alpha_border=true
+detect_3d/compress_to=1

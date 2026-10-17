@@ -17,6 +17,8 @@ signal puzzle_state_changed()
 signal loop_transition(spec: Dictionary)
 signal hint_revealed(tier: int, text: String)
 signal item_received(item_id: String)
+## A hotspot with `panel: {id, sets}` (rooms data) asks the UI to open a panel (e.g. the Zarechye plan).
+signal panel_requested(panel_id: String, source: Node)
 
 const LOOP_FADE_SECONDS: float = 0.35
 
@@ -212,8 +214,11 @@ func grant_item(item_id: String) -> void:
 
 
 ## Called by RoomManager after the player is placed in a room.
-func on_room_entered(_room_id: String) -> void:
+func on_room_entered(room_id: String) -> void:
 	select_item("")
+	# Places the player has been to (the plan shows unvisited ones paler, hides some until a visit).
+	if room_id != "" and not GameState.has_flag("visited_" + room_id):
+		GameState.set_flag("visited_" + room_id, true)
 	check_room_triggers()
 
 
@@ -291,7 +296,7 @@ func _use_state(d: Dictionary) -> String:
 
 
 ## What a click on `h` would do right now, without doing it (mirrors interact()):
-## "item_use" | "item_none" | "talk" | "talk_text" | "puzzle" | "choice" | "use" | "text" | "busy".
+## "item_use" | "item_none" | "panel" | "talk" | "talk_text" | "puzzle" | "choice" | "use" | "text" | "busy".
 ## The player plays a hotspot's action animation (data action_anim) only for "use", "item_use" and
 ## "choice" — the interactions that change something; a look or a repeated click just shows text.
 func planned_interaction(h: StoryHotspot) -> String:
@@ -300,6 +305,8 @@ func planned_interaction(h: StoryHotspot) -> String:
 	var d := h.data
 	if selected_item != "":
 		return "item_use" if d.get("item_use", {}).has(selected_item) else "item_none"
+	if d.has("panel"):
+		return "panel"
 	if d.has("talk"):
 		var t: Dictionary = d["talk"]
 		var scn := String(t.get("scene", ""))
@@ -343,6 +350,13 @@ func interact(h: StoryHotspot) -> void:
 			_run_action(h, iu[item], item)
 		else:
 			narrate(StoryData.text("@ui.item_no_effect"))
+		return
+
+	if d.has("panel"):
+		var pn: Dictionary = d["panel"]
+		for f in pn.get("sets", []):
+			GameState.set_flag(String(f), true)
+		panel_requested.emit(String(pn.get("id", "")), h)
 		return
 
 	if d.has("talk"):

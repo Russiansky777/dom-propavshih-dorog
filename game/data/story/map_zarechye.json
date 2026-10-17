@@ -1,0 +1,18 @@
+{
+  "_comment": "План Заречья крупно (game/scripts/ui/zarechye_map.gd). Открывается хотспотом с полем panel.id = map_zarechye (Z1.plan) и из журнала (кнопка «План»), когда стоит journal_flag. Точки — в пикселях картинки image (image_size), подпись ставится по align: above | below | left | right | center. Название — из locations.json (первая локация locs), либо label (@ключ) для мест из нескольких комнат. Посещено — есть флаг visited_<комната> хотя бы для одной из locs (ставит StoryRunner при входе); непосещённые — бледнее; hidden_until_visited — не показывается до визита. «Вы здесь» — место, в locs которого текущая комната.",
+  "id": "map_zarechye",
+  "image": "res://assets/ui/map/zarechye_plan.png",
+  "image_size": [1376, 768],
+  "journal_flag": "seen_plan_zarechye",
+  "caption": "@Z1.plan.look",
+  "places": [
+    {"id": "post", "locs": ["Z1"], "point": [774, 500], "align": "right"},
+    {"id": "lane", "locs": ["Z4"], "point": [735, 528], "align": "below"},
+    {"id": "house", "locs": ["H1", "H2", "H3", "H4"], "label": "@map.house", "point": [600, 440], "align": "above"},
+    {"id": "street", "locs": ["Z2"], "point": [390, 546], "align": "center"},
+    {"id": "shore", "locs": ["Z3"], "point": [925, 462], "align": "above"},
+    {"id": "pier", "locs": ["R1"], "point": [1088, 604], "align": "below"},
+    {"id": "mill", "locs": ["M1", "M2", "M3", "M4"], "label": "@map.mill", "point": [245, 168], "align": "above"},
+    {"id": "olkhovka", "locs": ["O1", "O2", "O3", "O4"], "label": "@map.olkhovka", "point": [745, 150], "align": "above", "hidden_until_visited": true}
+  ]
+}
