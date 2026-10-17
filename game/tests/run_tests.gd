@@ -809,6 +809,16 @@ func _test_h1_real() -> void:
 	_check(tex != null and tex.get_size() == Vector2(288, 384), "frame size should be 288x384, got %s" % str(tex.get_size() if tex else null))
 	_check(spr.sprite_frames.get_frame_count("walk_0") == 12, "walk animations should have 12 frames")
 	_check(spr.sprite_frames.get_frame_count("idle_0") == 1, "idle is a static frame until the turn clip is replaced (idle_static_frame)")
+	# Pingpong playback (sprites.json rev 7: idle plays 0..7 then 6..1); the window field is ignored.
+	var seq: Array = player.sheet.frame_sequence(8, "pingpong")
+	_check(seq == [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1], "pingpong sequence for 8 frames, got %s" % str(seq))
+	_check(player.sheet.frame_sequence(12, "loop") == range(12), "loop sequence is 0..n-1")
+	var pp = load("res://scripts/actors/actor_sheet.gd").load_actor("agata", {"idle_static_frame": -1})
+	_check(pp.is_loaded() and pp.frames.get_frame_count("idle_3") == 14, "without the static frame the idle animation has 14 pingpong frames, got %d" % (pp.frames.get_frame_count("idle_3") if pp.is_loaded() else -1))
+	if pp.is_loaded():
+		var r8: Rect2 = (pp.frames.get_frame_texture("idle_3", 8) as AtlasTexture).region
+		var r13: Rect2 = (pp.frames.get_frame_texture("idle_3", 13) as AtlasTexture).region
+		_check(r8.position == Vector2(6 * 288, 3 * 384) and r13.position == Vector2(1 * 288, 3 * 384), "pingpong frames 8 and 13 must be sheet columns 6 and 1 of row 3, got %s / %s" % [str(r8.position), str(r13.position)])
 	_check(spr.offset.is_equal_approx(Vector2(-144.0, -0.9464285714285714 * 384.0)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
 	_check(not player.get_node("Body").visible, "placeholder body hidden when the sheet is used")
 	# Direction mapping (data/actors/agata.json; verified against the sheet by eye):
@@ -920,6 +930,7 @@ func _test_stride() -> void:
 	_check(samples.size() > 40, "too few samples (%d)" % samples.size())
 	var within_max := 0.0
 	var jumps: Array = []
+	var clamped := 0   # frame changes where the drawn figure caught up with the logical one (engine lag)
 	var fps_meas := 0.0
 	var changes := 0
 	var first_change_t := -1
@@ -930,7 +941,11 @@ func _test_stride() -> void:
 		if a[0] == b[0]:
 			within_max = maxf(within_max, absf(b[1] - a[1]))
 		else:
-			jumps.append(b[1] - a[1])
+			var j: float = b[1] - a[1]
+			if absf(-j - stride_screen) > 0.5 and absf(b[1] - b[2]) <= 2.0 * sheet.walk_speed_px(s0) / 60.0 + 0.5:
+				clamped += 1  # anchor re-synced onto the logical position (≤ 2 physics ticks ago): never drawn ahead of it
+			else:
+				jumps.append(j)
 			changes += 1
 			if first_change_t < 0:
 				first_change_t = b[4]
@@ -958,7 +973,8 @@ func _test_stride() -> void:
 	_check(absf(samples[5][3] - sheet.walk_fps(sheet.walk_speed_px(s0), s0) / 12.0) < 0.01, "speed_scale must equal fps / sheet fps (12)")
 	_check(absf(fps_meas - sheet.walk_fps(sheet.walk_speed_px(s0), s0)) < 1.5, "measured frame rate %.2f should match the formula %.2f" % [fps_meas, sheet.walk_fps(sheet.walk_speed_px(s0), s0)])
 	# After arrival the figure stands exactly where it was drawn (no hop) and the offset is gone.
-	print("    advance per frame change (px): %s" % str(jumps.map(func(j): return snappedf(j, 0.1))))
+	print("    advance per frame change (px): %s; re-synced onto the logical position (engine lag): %d" % [str(jumps.map(func(j): return snappedf(j, 0.1))), clamped])
+	_check(clamped <= 3, "too many frame changes clamped to the logical position (%d): physics could not keep up" % clamped)
 	_check(spr.position == Vector2.ZERO, "sprite offset must be zero once standing")
 	_check(absf(player.global_position.x - 820.0) < stride_screen + 12.0, "stops within one stride of the target (820), at x=%.1f" % player.global_position.x)
 	gs.reset()

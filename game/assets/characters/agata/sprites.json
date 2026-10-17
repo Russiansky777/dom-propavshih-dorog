@@ -14,7 +14,12 @@
       "sheet": "idle.png",
       "frames": 8,
       "fps": 8,
-      "clip": "Idle"
+      "clip": "Idle",
+      "window": [
+        0.0,
+        0.35
+      ],
+      "playback": "pingpong"
     },
     "walk": {
       "sheet": "walk.png",

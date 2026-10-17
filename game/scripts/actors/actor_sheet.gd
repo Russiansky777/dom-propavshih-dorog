@@ -40,13 +40,16 @@ static func _read_json(path: String) -> Variant:
 	return parsed
 
 
-static func load_actor(actor_id: String) -> ActorSheet:
+## `overrides` replaces top-level keys of data/actors/<id>.json (tests: e.g. {"idle_static_frame": -1}).
+static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorSheet:
 	var a := ActorSheet.new()
 	a.id = actor_id
 	var spec = _read_json("res://data/actors/%s.json" % actor_id)
 	if typeof(spec) != TYPE_DICTIONARY:
 		a.load_error = "missing data/actors/%s.json" % actor_id
 		return a
+	for k in overrides.keys():
+		spec[k] = overrides[k]
 	a.sheet_dir = String(spec.get("sheet_dir", "res://assets/characters/" + actor_id))
 	a.direction_zero = String(spec.get("direction_zero", "down"))
 	a.direction_order = String(spec.get("direction_order", "ccw"))
@@ -86,7 +89,7 @@ func _build_frames() -> void:
 		var tex: Texture2D = load(path)
 		var n := int(act.get("frames", 1))
 		var fps := float(act.get("fps", 8))
-		var frame_ids := range(n)
+		var frame_ids: Array = frame_sequence(n, String(act.get("playback", "loop")))
 		if String(action) == idle_action and idle_static_frame >= 0 and idle_static_frame < n:
 			frame_ids = [idle_static_frame]
 		for d in directions:
@@ -99,6 +102,17 @@ func _build_frames() -> void:
 				at.atlas = tex
 				at.region = Rect2(i * frame_w, d * frame_h, frame_w, frame_h)
 				frames.add_frame(anim, at)
+
+
+## Sheet columns played per cycle. "loop": 0..n-1. "pingpong": 0..n-1 then n-2..1 (the clip is
+## rendered as a window of the Meshy action, so playing it back and forth hides the cut; the
+## `window` field of sprites.json is render metadata and is ignored here).
+static func frame_sequence(n: int, playback: String) -> Array:
+	var seq: Array = range(n)
+	if playback == "pingpong" and n > 2:
+		for i in range(n - 2, 0, -1):
+			seq.append(i)
+	return seq
 
 
 func is_loaded() -> bool:

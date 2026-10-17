@@ -7,7 +7,7 @@
   "idle_action": "idle",
   "walk_action": "walk",
   "idle_static_frame": 0,
-  "_idle_note": "Лист idle.png rev 6 (клип Meshy «Idle», id 0) тоже поворачивает фигуру: в строке 0 кадры 4–6 показывают спину. Поэтому idle остаётся одним статичным кадром (idle_static_frame = 0, во всех строках кадр 0 смотрит по направлению строки). Когда появится клип без поворота — убрать поле, в тесте ожидать 8 кадров.",
+  "_idle_note": "Лист idle.png rev 7 (окно 0–35 % клипа «Idle», playback pingpong) всё ещё поворачивает фигуру в кадрах 5–7. Поэтому idle остаётся одним статичным кадром (idle_static_frame = 0). Когда придёт rev 8 (окно 0–20 %) — убрать поле; ActorSheet уже играет pingpong (0..7, 6..1 = 14 кадров), в тесте ожидать 14 кадров.",
   "direction_zero": "down",
   "direction_order": "ccw",
   "walk": {

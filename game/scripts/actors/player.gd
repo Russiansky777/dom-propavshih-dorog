@@ -189,11 +189,12 @@ func _update_walk_anim() -> void:
 	var fps := current_walk_fps()
 	sprite.speed_scale = fps / base_fps if base_fps > 0.0 else 1.0
 	if sprite.animation != anim or not sprite.is_playing():
+		var was_walk := String(sprite.animation).begins_with(sheet.walk_action)
 		var frame := sprite.frame
 		var progress := sprite.frame_progress
 		_lock_hold = true  # switching rows is not a stride: keep the drawn figure where it is
 		sprite.play(anim)
-		if sprite.sprite_frames.get_frame_count(anim) > frame:
+		if was_walk and sprite.sprite_frames.get_frame_count(anim) > frame:
 			sprite.set_frame_and_progress(frame, progress)  # keep the stride phase across direction changes
 		_lock_hold = false
 

@@ -232,6 +232,7 @@
       "stand": [600, 735],
       "color": "#7a5a3a",
       "draw": false,
+      "pick_priority": 1,
       "states": [
         {
           "if": ["q04_corner_stove"],
@@ -273,6 +274,7 @@
       "stand": [600, 735],
       "color": "#7a5a3a",
       "draw": false,
+      "pick_priority": 1,
       "visible_if": ["done_Q04"],
       "states": [
         {

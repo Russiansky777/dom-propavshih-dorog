@@ -310,6 +310,20 @@ for rid, room in rooms.items():
             if rect and _overlap(h["rect"], rect) and int(h.get("pick_priority", 0)) <= int(ex.get("pick_priority", 1)):
                 err(f"{ctx}.{h.get('id')}: прямоугольник перекрывается выходом в {ex.get('to')} — клик уйдёт выходу (поднимите pick_priority или раздвиньте)")
 
+    # два видимых одновременно хотспота с равным pick_priority не должны перекрываться: Room.pick берёт
+    # первый ответ физики, порядок случайный (дефект: shelf под stove в H1 — бот попадал в печь)
+    def _exclusive(a, b) -> bool:
+        # взаимоисключающие по флагам: один виден при флаге, другой скрыт при том же флаге
+        av, ah = set(a.get("visible_if", [])), set(a.get("hidden_if", []))
+        bv, bh = set(b.get("visible_if", [])), set(b.get("hidden_if", []))
+        return bool(av & bh) or bool(bv & ah)
+
+    hs = [h for h in room.get("hotspots", []) if "rect" in h]
+    for i, a in enumerate(hs):
+        for b in hs[i + 1:]:
+            if _overlap(a["rect"], b["rect"]) and int(a.get("pick_priority", 0)) == int(b.get("pick_priority", 0)) and not _exclusive(a, b):
+                err(f"{ctx}: хотспоты {a.get('id')} и {b.get('id')} перекрываются с равным pick_priority — клик непредсказуем (поднимите приоритет меньшему или раздвиньте)")
+
     # 3. хотспоты
     ids = set()
     for h in room.get("hotspots", []):
