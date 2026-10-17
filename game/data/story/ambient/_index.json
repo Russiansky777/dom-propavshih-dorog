@@ -49,9 +49,9 @@
         "gust_slant_deg": 4,
         "color": "#d8dfe8",
         "layers": [
-          {"len_px": 9, "width_px": 0.9, "speed_px_s": 520, "alpha": 0.16, "cell_px": 9, "gap_px": 60, "density": 0.55},
-          {"len_px": 18, "width_px": 1.1, "speed_px_s": 820, "alpha": 0.22, "cell_px": 17, "gap_px": 110, "density": 0.5},
-          {"len_px": 34, "width_px": 1.5, "speed_px_s": 1250, "alpha": 0.26, "cell_px": 37, "gap_px": 200, "density": 0.45}
+          {"len_px": 9, "width_px": 0.9, "speed_px_s": 520, "alpha": 0.2, "cell_px": 9, "gap_px": 60, "density": 0.55},
+          {"len_px": 18, "width_px": 1.1, "speed_px_s": 820, "alpha": 0.27, "cell_px": 17, "gap_px": 110, "density": 0.5},
+          {"len_px": 34, "width_px": 1.5, "speed_px_s": 1250, "alpha": 0.32, "cell_px": 37, "gap_px": 200, "density": 0.45}
         ]
       },
       "wind": {"dir": 1, "strength": 1.0, "gust_rate": 0.11, "gust_depth": 0.65},

@@ -64,7 +64,11 @@ func _run(plan: Array) -> void:
 			var path := _out.path_join("%s_%02d.png" % [String(shot["name"]), k])
 			img.save_png(path)
 			var amb = builder.of(rm.current_room)
-			print("ambient frame %s: %s" % [path, str(amb.stats()) if amb != null else "no ambient"])
+			var last := ""
+			if amb != null and amb.footfall != null and not amb.footfall.events.is_empty():
+				var e: Dictionary = amb.footfall.events[-1]
+				last = " last step: frame %d at %s on '%s' scale %.2f" % [e["frame"], str(e["pos"].round()), e["surface"], e["scale"]]
+			print("ambient frame %s: %s%s" % [path, str(amb.stats()) if amb != null else "no ambient", last])
 			if k < n - 1:
 				if shot.has("step_frames"):
 					# With --fixed-fps F every rendered frame is 1/F s of game and shader time.

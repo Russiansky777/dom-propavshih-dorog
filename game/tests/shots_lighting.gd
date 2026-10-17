@@ -16,19 +16,19 @@ const SCENARIOS := {
 	"H1_open_stove": {"room": "H1", "flags": ["stove_lit", "h1_shutter_open"], "pos": [760, 880]},
 	"H1_open_cold": {"room": "H1", "flags": ["h1_shutter_open"], "pos": [1250, 860]},
 	# Shutters open at t = 0: frames every 0.1 s show the 0.8 s fade.
-	"H1_shutter_fade": {"room": "H1", "flags": ["stove_lit"], "pos": [1450, 880], "set_after": ["h1_shutter_open"], "frames": 12, "dt": 0.1},
+	"H1_shutter_fade": {"room": "H1", "flags": ["stove_lit"], "pos": [1450, 880], "set_after": ["h1_shutter_open"], "frames": 12, "dt": 0.1, "time_scale": 0.25},
 	# The fire itself: crop around the stove mouth, 24 frames at 1/12 s.
-	"H1_fire": {"room": "H1", "flags": ["stove_lit"], "pos": [900, 1000], "frames": 24, "dt": 0.0833, "crop": [40, 300, 300, 260]},
+	"H1_fire": {"room": "H1", "flags": ["stove_lit"], "pos": [900, 1000], "frames": 24, "dt": 0.0833, "time_scale": 0.35, "crop": [40, 300, 300, 260]},
 	# Agata walking past the stove: her cast shadow from the fire.
-	"H1_shadow_walk": {"room": "H1", "flags": ["stove_lit"], "pos": [520, 860], "walk_to": [1300, 900], "frames": 16, "dt": 0.18},
+	"H1_shadow_walk": {"room": "H1", "flags": ["stove_lit"], "pos": [520, 860], "walk_to": [1300, 900], "frames": 16, "dt": 0.18, "time_scale": 0.35},
 	"H1_at_stove": {"room": "H1", "flags": ["stove_lit"], "pos": [640, 830]},
 	"H1_mid_stove": {"room": "H1", "flags": ["stove_lit"], "pos": [1000, 800]},
 	"H2_door": {"room": "H2", "flags": [], "pos": [520, 880]},
-	"H2_shadow_walk": {"room": "H2", "flags": [], "pos": [300, 820], "walk_to": [800, 1000], "frames": 14, "dt": 0.18},
+	"H2_shadow_walk": {"room": "H2", "flags": [], "pos": [300, 820], "walk_to": [800, 1000], "frames": 14, "dt": 0.18, "time_scale": 0.35},
 	"H2_flicker": {"room": "H2", "flags": [], "pos": [600, 950], "frames": 16, "dt": 0.1, "crop": [0, 80, 700, 900]},
 	"Z1_lamp": {"room": "Z1", "flags": [], "pos": [560, 860]},
 	"Z1_lamp_series": {"room": "Z1", "flags": [], "pos": [560, 860], "frames": 16, "dt": 0.1, "crop": [150, 350, 300, 260]},
-	"Z1_shadow_walk": {"room": "Z1", "flags": [], "pos": [300, 900], "walk_to": [1500, 950], "frames": 16, "dt": 0.2},
+	"Z1_shadow_walk": {"room": "Z1", "flags": [], "pos": [300, 900], "walk_to": [1500, 950], "frames": 16, "dt": 0.2, "time_scale": 0.35},
 }
 
 
@@ -76,6 +76,9 @@ func _scenario(sname: String, sc: Dictionary, gs, rm) -> int:
 	var hover: Node = _main.find_child("Hover", true, false)
 	if hover is CanvasItem:
 		(hover as CanvasItem).visible = false
+	# Slow game time for series: under llvmpipe one 1920x1080 frame takes ~0.1 s of wall time.
+	var ts := float(sc.get("time_scale", 1.0))
+	Engine.time_scale = ts
 	for f in sc.get("set_after", []):
 		gs.set_flag(String(f), true)
 	if sc.has("walk_to"):
@@ -87,7 +90,7 @@ func _scenario(sname: String, sc: Dictionary, gs, rm) -> int:
 	for k in frames:
 		if k > 0:
 			var t0 := Time.get_ticks_usec()
-			while (Time.get_ticks_usec() - t0) < int(dt * 1000000.0):
+			while (Time.get_ticks_usec() - t0) < int(dt / ts * 1000000.0):
 				await process_frame
 		var hv: Node = _main.find_child("Hover", true, false)
 		if hv is CanvasItem:
@@ -102,5 +105,6 @@ func _scenario(sname: String, sc: Dictionary, gs, rm) -> int:
 		var path := _out_dir.path_join(("%s_%02d.png" % [sname, k]) if frames > 1 else ("%s.png" % sname))
 		img.save_png(path)
 		made += 1
+	Engine.time_scale = 1.0
 	print("lighting shots %s: %d frame(s) → %s" % [sname, made, _out_dir])
 	return made
