@@ -153,8 +153,9 @@
       "id": "tikhon",
       "kind": "npc",
       "label": "@char.tikhon",
-      "rect": [480, 400, 70, 80],
-      "stand": [560, 810],
+      "rect": [322, 446, 134, 134],
+      "stand": [520, 800],
+      "_stand_note": "Тихон-кукла сидит на ступени печи (ноги 356,578; game/data/actors/tikhon.json place.H1), rect — по его фигуре с хвостом. Стоянка справа и ниже, у лавки: Агата повёрнута к нему (строка 5, вполоборота со спины) и не заслоняет его (проверка validate_rooms.py п. 9)",
       "color": "#9a7a5a",
       "visible_if": ["started_M03"],
       "look": "@H1.tikhon.look"

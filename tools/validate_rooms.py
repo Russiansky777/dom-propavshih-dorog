@@ -332,6 +332,9 @@ for rid, room in rooms.items():
         if place:
             fx, fy = place["feet"]
             floor_y = place.get("depth_y", fy)
+            if not (r[0] <= fx <= r[0] + r[2] and r[1] <= fy <= r[1] + r[3] + 8):
+                err(f"{ctx}.{h.get('id')}: rect {r} не на фигуре куклы — её ноги {place['feet']} "
+                    f"(game/data/actors/{h.get('id')}.json place.{rid}) вне прямоугольника клика")
             n_h = float(actor.get("height_rel_agata", 1.0)) * fig * depth_scale(floor_y)
             n_hw = n_h / 2
         else:
