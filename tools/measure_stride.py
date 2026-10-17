@@ -126,7 +126,7 @@ def row_geometry(r, directions, elev_deg):
     return p / n, n
 
 
-def measure_row(img, r, frames, fw, fh, axis, max_rms=120.0):
+def measure_row(img, r, frames, fw, fh, axis, max_rms=200.0):
     """Per transition: stance-foot backward slide along the row's axis (sheet px), or None."""
     out = []
     for k in range(frames):
@@ -138,7 +138,7 @@ def measure_row(img, r, frames, fw, fh, axis, max_rms=120.0):
             if ft["y1"] < b0 - 5:
                 continue
             dx, dy, rms, edge = track(f0, ft, f1)
-            if edge or rms > max_rms or ft["y1"] + dy < b1 - 5.5:
+            if edge or rms > max_rms or ft["y1"] + dy < b1 - 12:  # toe-off may lift the heel; a swing foot rises more
                 continue
             back = -(dx * axis[0] + dy * axis[1])
             cands.append({"back": back, "dx": dx, "dy": dy, "rms": rms})
