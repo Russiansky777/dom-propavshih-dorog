@@ -11,9 +11,12 @@
   "direction_zero": "down",
   "direction_order": "ccw",
   "walk": {
-    "_comment": "Темп шага от реальной скорости: цикл walk (12 кадров) = два шага = cycle_meters пути. px/м = frame_h × scale / character_height_m (рост модели 1.657 м). Скорость в px/с = speed_mps × px/м — масштабируется глубиной комнаты. fps = frames × speed_px / (cycle_meters × px_per_m) = frames × speed_mps / cycle_meters ≈ 10.4 — постоянный, пересчитывается каждый кадр и подаётся через speed_scale.",
+    "_comment": "Темп шага от реальной скорости: цикл walk (12 кадров) = два шага = cycle_meters пути. px/м = frame_h × scale / character_height_m (рост модели из sprites.json, 1.596 м → 240.6 px/м при scale 1). Скорость в px/с = speed_mps × px/м — масштабируется глубиной комнаты. fps = frames × speed_px / (cycle_meters × px_per_m) = frames × speed_mps / cycle_meters ≈ 10.3 — постоянный, пересчитывается каждый кадр и подаётся через speed_scale.",
+    "_stride_note": "cycle_meters измерен по листу: tools/measure_stride.py — опорная ступня уезжает назад на 26 px за кадр (медиана по строкам E/W), 12 × 26 = 312 px = 1.297 м. Это и есть шаг фигуры за кадр: при foot_lock нарисованная фигура сдвигается только при смене кадра ровно на stride × scale, а между сменами стоит на месте (логическая позиция едет плавно). Без foot_lock ступня опорной ноги ехала бы вперёд на ~26 × scale px за время показа кадра.",
     "speed_mps": 1.12,
     "cycle_meters": 1.3,
+    "sheet_stride_px_per_frame": 26.0,
+    "foot_lock": true,
     "direction_threshold_px": 0.5
   }
 }

@@ -23,7 +23,8 @@ const WEB_DIR = path.join(ROOT, "build", "web");
 const SHOTS_DIR = path.join(ROOT, "build", "shots", "m1");
 const PORT = Number(process.env.SHOTS_PORT || 8765);
 const GL_MODE = process.env.SHOTS_GL || "angle";
-const MODE = process.env.SHOTS_MODE || "full";   // "full" = M01→M08 walkthrough, "h1" = real-art H1 frames
+const MODE = process.env.SHOTS_MODE || "full";   // "full" = M01→M08 walkthrough, "h1" = real-art H1 frames, "stride" = 100 ms frame series
+const STRIDE_DIR = path.join(SHOTS_DIR, "stride");
 const STEP_TIMEOUT_MS = 40000;
 
 const MIME = {
@@ -100,7 +101,7 @@ async function main() {
   let shotIndex = 0;
   const shot = async (name) => {
     shotIndex += 1;
-    const file = path.join(SHOTS_DIR, MODE === "h1" ? `${name}.png` : `${String(shotIndex).padStart(2, "0")}_${name}.png`);
+    const file = path.join(SHOTS_DIR, MODE !== "full" ? `${name}.png` : `${String(shotIndex).padStart(2, "0")}_${name}.png`);
     await page.screenshot({ path: file });
     shots.push(file);
     logLine(`screenshot ${path.relative(ROOT, file)}`);
@@ -210,6 +211,63 @@ async function main() {
       .catch((e) => failures.push(`probeReady not set within 90 s: ${e.message}`));
     logLine(`probeReady after ${Date.now() - t0} ms; room=${(await state())?.room}`);
     await sleep(1200);
+
+    if (MODE === "stride") {
+      // Defect «ходьба скользит»: a stroboscopic series. Every 100 ms of game time the tree is paused
+      // (window.probePause), the sprite state is read and a screenshot taken, so each frame and its
+      // numbers (drawn position, sheet frame, speed_scale) describe the same instant. Analysed by
+      // tools/stride_frames.py: the planted foot must stay on the same floor pixels between frames.
+      fs.rmSync(STRIDE_DIR, { recursive: true, force: true });
+      fs.mkdirSync(STRIDE_DIR, { recursive: true });
+      await useHotspot("tamara");
+      await waitFor("M01 done", (s) => s.flags.done_M01);
+      if (!(await goExit("Z2"))) failures.push("Z1→Z2 failed");
+      if (!(await goExit("H1"))) failures.push("Z2→H1 failed");
+      await sleep(600);
+      const pause = (p) => page.evaluate((v) => { window.probePause(v); }, p);
+      const series = [];
+      const capture = async (label, target, maxFrames = 60) => {
+        await click(`stride ${label}`, target);
+        await sleep(60);
+        for (let i = 0; i < maxFrames; i++) {
+          await pause(true);
+          const s = await state();
+          const file = path.join(STRIDE_DIR, `${label}_${String(i).padStart(2, "0")}.png`);
+          await page.screenshot({ path: file });
+          series.push({ label, index: i, file: path.basename(file), ticks: s.ticks, player: s.player, actor: s.actor });
+          const walking = s.player.walking;
+          await pause(false);
+          if (!walking) break;
+          await sleep(100);
+        }
+        await waitWalk(label);
+      };
+      // Reference frame (floor without the figure near the front edge): Agata at the far strip.
+      await click("floor far strip", { x: 1300, y: 720 });
+      await waitWalk("far strip");
+      await sleep(300);
+      await pause(true);
+      await page.screenshot({ path: path.join(STRIDE_DIR, "ref.png") });
+      const ref = await state();
+      await pause(false);
+      // Floor points clear of exits (H2: x ≥ 1790; H3/H4: y ≥ 1000) and hotspots.
+      await click("floor start right", { x: 1700, y: 985 });
+      await waitWalk("start right");
+      await sleep(300);
+      await capture("left", { x: 880, y: 985 });
+      await sleep(300);
+      await capture("right", { x: 1700, y: 985 });
+      const fin = await state();
+      if (fin.room !== "H1") failures.push(`stride series must stay in H1, ended in ${fin.room}`);
+      const first = series.find((x) => x.actor && x.actor.stride_px);
+      fs.writeFileSync(path.join(STRIDE_DIR, "series.json"), JSON.stringify({
+        room: "H1", interval_ms: 100, ref: { player: ref.player, actor: ref.actor },
+        stride_px: first ? first.actor.stride_px : null, samples: series,
+      }, null, 2));
+      logLine(`stride series: ${series.length} frames in ${path.relative(ROOT, STRIDE_DIR)}`);
+      if (series.length < 12) failures.push(`stride series too short (${series.length})`);
+      throw { h1done: true };
+    }
 
     if (MODE === "h1") {
       // Real Agata in the real H1: reach H1 (M01 → Z2 → H1), then direction / tempo / occlusion frames.
@@ -442,7 +500,7 @@ async function main() {
       try { await shot("error"); } catch (_) {}
     }
   } finally {
-    fs.writeFileSync(path.join(SHOTS_DIR, MODE === "h1" ? "console_h1.log" : "console.log"), consoleLog.join("\n") + "\n");
+    fs.writeFileSync(path.join(SHOTS_DIR, MODE === "full" ? "console.log" : `console_${MODE}.log`), consoleLog.join("\n") + "\n");
     await browser.close();
     server.close();
   }

@@ -18,6 +18,9 @@ var character_height_m: float = 1.657
 var speed_mps: float = 1.12          # walking speed in model metres per second
 var cycle_meters: float = 1.3        # ground covered by one full walk cycle (two steps)
 var direction_threshold_px: float = 0.5
+## Foot lock: the drawn figure advances only when the walk frame changes (by exactly one stride),
+## so the planted foot never drifts while a frame is shown. The logical position still moves smoothly.
+var foot_lock: bool = true
 var idle_action: String = "idle"
 var walk_action: String = "walk"
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
@@ -52,6 +55,7 @@ static func load_actor(actor_id: String) -> ActorSheet:
 	a.speed_mps = float(walk.get("speed_mps", a.speed_mps))
 	a.cycle_meters = float(walk.get("cycle_meters", a.cycle_meters))
 	a.direction_threshold_px = float(walk.get("direction_threshold_px", a.direction_threshold_px))
+	a.foot_lock = bool(walk.get("foot_lock", a.foot_lock))
 	a.idle_action = String(spec.get("idle_action", "idle"))
 	a.walk_action = String(spec.get("walk_action", "walk"))
 	a.idle_static_frame = int(spec.get("idle_static_frame", -1))
@@ -131,8 +135,20 @@ func walk_speed_px(scale: float) -> float:
 ## Frame rate of the walk cycle for a given screen speed and scale:
 ## fps = frames × speed_px / (cycle_meters × px_per_m).
 func walk_fps(speed_px: float, scale: float) -> float:
-	var n := int(actions.get(walk_action, {}).get("frames", 12))
+	var n := walk_frames()
 	return float(n) * speed_px / maxf(cycle_meters * px_per_meter(scale), 0.001)
+
+
+func walk_frames() -> int:
+	return int(actions.get(walk_action, {}).get("frames", 12))
+
+
+## Ground covered by one walk frame, in sheet pixels (node scale 1): cycle_px / frames.
+## This is the distance the planted foot slides back between two consecutive sheet frames
+## (measured on the sheet by tools/measure_stride.py), so the figure may advance by exactly
+## this much per frame without the foot drifting.
+func stride_px_unit() -> float:
+	return cycle_meters * px_per_meter(1.0) / float(maxi(walk_frames(), 1))
 
 
 func anim_name(action: String, dir: int) -> String:

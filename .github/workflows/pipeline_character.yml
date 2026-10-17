@@ -10,12 +10,17 @@ on:
   workflow_dispatch:
     inputs:
       request:
-        description: "путь к файлу запроса, напр. pipeline/requests/agata.json"
+        description: "пути к файлам запросов через пробел, напр. pipeline/requests/agata.json"
         required: true
         default: "pipeline/requests/agata.json"
+      from_run:
+        description: "id прошлого прогона: взять его GLB и перерендерить без Meshy (0 кредитов)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: pipeline-character
@@ -28,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -54,7 +59,26 @@ jobs:
           fi
           echo "requests: $(cat $GITHUB_OUTPUT)"
 
+      - name: GLB из прошлого прогона (без Meshy)
+        if: github.event.inputs.from_run != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: glb-${{ github.event.inputs.from_run }}
+          path: _prev
+          run-id: ${{ github.event.inputs.from_run }}
+          github-token: ${{ github.token }}
+
+      - name: Разложить GLB прошлого прогона
+        if: github.event.inputs.from_run != ''
+        run: |
+          set -e
+          mkdir -p pipeline/3d/out
+          if [ -d _prev/out ]; then cp -r _prev/out/. pipeline/3d/out/; [ -d _prev/state ] && cp -r _prev/state/. pipeline/3d/state/ || true
+          else cp -r _prev/. pipeline/3d/out/; fi
+          find pipeline/3d/out -name '*.glb' | sed 's/^/  /'
+
       - name: Meshy — модель, риг, анимации
+        if: github.event.inputs.from_run == ''
         env:
           MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
         run: |
@@ -75,7 +99,7 @@ jobs:
             win=$(python -c "import json,sys;r=json.load(open(sys.argv[1]));print(' '.join(f'{k}={v[0]}:{v[1]}' for k,v in r.get('clip_window',{}).items()))" "$f")
             python pipeline/render/render_sprites.py --glb "pipeline/3d/out/$name/animations.glb" --name "$name" \
               --out "assets/characters/$name" --directions 8 --frames $args --size 384 --samples 24 --elev "$elev" --front-yaw "$yaw" ${win:+--window $win}
-            cp "pipeline/3d/out/$name/meshy_manifest.json" "assets/characters/$name/"
+            cp "pipeline/3d/out/$name/meshy_manifest.json" "assets/characters/$name/" 2>/dev/null || true
             cp "pipeline/3d/out/$name/views/"*.png "assets/characters/$name/" 2>/dev/null || true
           done
 
@@ -83,7 +107,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: glb-${{ github.run_id }}
-          path: pipeline/3d/out/**/*.glb
+          path: |
+            pipeline/3d/out/**/*.glb
+            pipeline/3d/out/**/meshy_manifest.json
+            pipeline/3d/state/*.json
           retention-days: 90
 
       - name: Коммит результатов
@@ -91,11 +118,26 @@ jobs:
           git config user.name "pipeline-bot"
           git config user.email "pipeline-bot@users.noreply.github.com"
           git add assets/characters pipeline/3d/state
-          git diff --cached --quiet && echo "нечего коммитить" && exit 0
-          git commit -m "pipeline: спрайты персонажа из Meshy (run ${{ github.run_id }}) [skip ci]"
+          if git diff --cached --quiet; then echo "нечего коммитить"; exit 0; fi
+          git commit -q -m "pipeline: спрайты персонажа из Meshy (run ${{ github.run_id }}) [skip ci]"
+          git status --short | head -20
           # main мог уйти вперёд за время прогона — подтянуть и пушить с повторами
-          for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push && exit 0
-            sleep 10
+          for i in 1 2 3 4 5 6; do
+            git fetch -q origin main
+            if git rebase --autostash origin/main; then
+              if git push origin HEAD:main; then echo "запушено с попытки $i"; exit 0; fi
+            else
+              echo "rebase не прошёл:"; git status; git rebase --abort || true
+            fi
+            sleep 15
           done
+          echo "::error::не удалось запушить результаты — перезапуск: workflow_dispatch с from_run=${{ github.run_id }}"
           exit 1
+
+      - name: Спрайты как артефакт, если коммит не прошёл
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sprites-${{ github.run_id }}
+          path: assets/characters/**
+          retention-days: 30

@@ -9,6 +9,7 @@ extends Node
 
 var _last_hint: String = ""
 var _probe_dirty: bool = false
+var _js_pause_cb: JavaScriptObject = null
 
 
 func _ready() -> void:
@@ -31,6 +32,11 @@ func _ready() -> void:
 	RoomManager.new_game()
 	_publish_probe_state()
 	if OS.has_feature("web"):
+		# window.probePause(true/false): freezes the tree so a screenshot and the published state
+		# describe the same instant (used by tools/screenshots.mjs for the stride frame series).
+		_js_pause_cb = JavaScriptBridge.create_callback(_on_probe_pause)
+		var win: JavaScriptObject = JavaScriptBridge.get_interface("window")
+		win.probePause = _js_pause_cb
 		JavaScriptBridge.eval("window.probeReady = true;", true)
 		# UI-only changes (journal/menu toggles, layout settling) have no signal: refresh periodically.
 		var t := Timer.new()
@@ -38,6 +44,12 @@ func _ready() -> void:
 		t.autostart = true
 		t.timeout.connect(_publish_probe_state)
 		add_child(t)
+
+
+func _on_probe_pause(args: Array) -> void:
+	var paused: bool = bool(args[0]) if args.size() > 0 else false
+	get_tree().paused = paused
+	_publish_probe_state()
 
 
 func _on_hint_shown(text: String) -> void:
@@ -85,6 +97,7 @@ func _publish_probe_state() -> void:
 		"selected_item": StoryRunner.selected_item,
 		"goal": StoryRunner.journal_goal(),
 		"player": {"x": player.global_position.x, "y": player.global_position.y, "walking": player.is_walking()},
+		"actor": _actor_state(),
 		"busy": StoryRunner.is_busy(),
 		"beat": StoryRunner.current_beat.duplicate() if not StoryRunner.current_beat.is_empty() else {},
 		"last_hint": _last_hint,
@@ -93,10 +106,26 @@ func _publish_probe_state() -> void:
 		"ui": game_ui.call("probe_positions") if game_ui.has_method("probe_positions") else {},
 		"puzzle": closeup.call("probe_positions") if closeup.has_method("probe_positions") else {},
 		"ticks": Time.get_ticks_msec(),
+		"physics_frames": Engine.get_physics_frames(),
 	}
 	if state["beat"].has("callback"):
 		state["beat"].erase("callback")
 	JavaScriptBridge.eval("window.probeState = %s;" % JSON.stringify(state), true)
+
+
+## Sprite state for the stride measurement: what frame is drawn where, through which speed_scale.
+func _actor_state() -> Dictionary:
+	var spr: AnimatedSprite2D = player.get_node_or_null("Sprite")
+	if spr == null:
+		return {}
+	var drawn: Vector2 = player.drawn_position()
+	return {
+		"anim": String(spr.animation), "frame": spr.frame, "progress": spr.frame_progress,
+		"speed_scale": spr.speed_scale, "playing": spr.is_playing(),
+		"drawn_x": drawn.x, "drawn_y": drawn.y, "scale": player.scale.y,
+		"stride_px": player.stride_px(), "speed_px": player.current_speed_px(), "fps": player.current_walk_fps(),
+		"direction": player.direction, "paused": get_tree().paused,
+	}
 
 
 func _hotspot_rect(area: Area2D) -> Rect2:
