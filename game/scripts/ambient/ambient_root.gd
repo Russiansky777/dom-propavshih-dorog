@@ -181,11 +181,76 @@ func has_picture() -> bool:
 	return _bg_tex != null
 
 
-static func _padded(pts: PackedVector2Array) -> PackedVector2Array:
-	var out := pts.duplicate()
-	while out.size() < MAX_POLY:
-		out.append(Vector2.ZERO)
-	return out
+## Feather of a region edge for the shaders (ambient_common.gdshaderinc amb_edge): a `rect` entry →
+## analytic (mode 1); an outline → a small distance texture over its bounding box (mode 2): cells of
+## ≈ feather/4 px, scanline fill, two-pass chamfer distance to the nearest outside cell, / feather,
+## clamped to 1 — made once per room build (≤ 12k cells), then one texture fetch per pixel.
+static func set_edge(m: ShaderMaterial, entry: Dictionary, pts: PackedVector2Array, feather: float) -> void:
+	m.set_shader_parameter("feather_px", feather)
+	if feather <= 0.5:
+		m.set_shader_parameter("edge_mode", 0)
+		return
+	if entry.has("rect") and not entry.has("polygon"):
+		var r: Array = entry["rect"]
+		m.set_shader_parameter("edge_mode", 1)
+		m.set_shader_parameter("edge_rect", Vector4(float(r[0]), float(r[1]), float(r[2]), float(r[3])))
+		return
+	var fm := feather_mask(pts, feather)
+	m.set_shader_parameter("edge_mode", 2)
+	m.set_shader_parameter("edge_tex", fm["tex"])
+	var rr: Rect2 = fm["rect"]
+	m.set_shader_parameter("edge_rect", Vector4(rr.position.x, rr.position.y, rr.size.x, rr.size.y))
+
+
+static func feather_mask(pts: PackedVector2Array, feather: float) -> Dictionary:
+	var box := AmbientData.bbox(pts)
+	var cell := clampf(feather / 4.0, 1.0, 16.0)
+	while (box.size.x / cell + 2.0) * (box.size.y / cell + 2.0) > 12000.0:
+		cell *= 1.25
+	var w := int(ceil(box.size.x / cell)) + 2
+	var h := int(ceil(box.size.y / cell)) + 2
+	var origin := box.position - Vector2(cell, cell)
+	var big := 1.0e6
+	var d := PackedFloat32Array()
+	d.resize(w * h)
+	d.fill(0.0)
+	# Scanline fill at cell centres: inside → "far", outside stays 0.
+	var n := pts.size()
+	for j in h:
+		var y := origin.y + (float(j) + 0.5) * cell
+		var xs: Array[float] = []
+		for i in n:
+			var a := pts[i]
+			var b := pts[(i + 1) % n]
+			if (a.y > y) != (b.y > y):
+				xs.append(a.x + (y - a.y) * (b.x - a.x) / (b.y - a.y))
+		xs.sort()
+		var k := 0
+		while k + 1 < xs.size():
+			var i0 := maxi(int(ceil((xs[k] - origin.x) / cell - 0.5)), 0)
+			var i1 := mini(int(floor((xs[k + 1] - origin.x) / cell - 0.5)), w - 1)
+			for i in range(i0, i1 + 1):
+				d[j * w + i] = big
+			k += 2
+	# Chamfer distance (in cells) to the nearest outside cell: forward then backward pass.
+	var dg := 1.4142
+	for j in range(1, h - 1):
+		for i in range(1, w - 1):
+			var idx := j * w + i
+			if d[idx] > 0.0:
+				d[idx] = minf(d[idx], minf(minf(d[idx - 1] + 1.0, d[idx - w] + 1.0), minf(d[idx - w - 1] + dg, d[idx - w + 1] + dg)))
+	for j in range(h - 2, 0, -1):
+		for i in range(w - 2, 0, -1):
+			var idx := j * w + i
+			if d[idx] > 0.0:
+				d[idx] = minf(d[idx], minf(minf(d[idx + 1] + 1.0, d[idx + w] + 1.0), minf(d[idx + w + 1] + dg, d[idx + w - 1] + dg)))
+	var bytes := PackedByteArray()
+	bytes.resize(w * h)
+	for idx in w * h:
+		# Distance of the cell centre to the outline ≈ (chamfer − 0.5) cells.
+		bytes[idx] = int(clampf((d[idx] - 0.5) * cell / feather, 0.0, 1.0) * 255.0)
+	var img := Image.create_from_data(w, h, false, Image.FORMAT_L8, bytes)
+	return {"tex": ImageTexture.create_from_image(img), "rect": Rect2(origin, Vector2(w, h) * cell), "cell": cell}
 
 
 ## Stable 0..1 phase per region: from the data, else from the id (neighbours differ).
@@ -239,9 +304,7 @@ func _make_sway(r: Dictionary, wind: Dictionary, i: int) -> Polygon2D:
 	m.set_shader_parameter("src_origin", src_origin)
 	m.set_shader_parameter("src_size", src_size)
 	m.set_shader_parameter("src_alpha", alpha)
-	m.set_shader_parameter("poly", _padded(pts))
-	m.set_shader_parameter("poly_n", pts.size())
-	m.set_shader_parameter("feather_px", float(r.get("feather_px", 0.0 if alpha else 24.0)))
+	set_edge(m, r, pts, float(r.get("feather_px", 0.0 if alpha else 24.0)))
 	if bool(r.get("clip", false)):
 		m.set_shader_parameter("clip_rect", Vector4(box.position.x + 1.0, box.position.y + 1.0, box.size.x - 2.0, box.size.y - 2.0))
 	var kind := String(r.get("kind", "tree"))
@@ -294,10 +357,8 @@ func _make_water(w: Dictionary, style: Dictionary, rain_amount: float, mode: int
 	m.set_shader_parameter("src_origin", src["origin"])
 	m.set_shader_parameter("src_size", src["size"])
 	m.set_shader_parameter("src_alpha", src["alpha"])
-	m.set_shader_parameter("poly", _padded(pts))
-	m.set_shader_parameter("poly_n", pts.size())
+	set_edge(m, e, pts, float(e.get("feather_px", 16.0 if mode == 0 else 6.0)))
 	m.set_shader_parameter("mode", mode)
-	m.set_shader_parameter("feather_px", float(e.get("feather_px", 16.0 if mode == 0 else 6.0)))
 	var fl: Array = e.get("flow", [-12.0, 0.0] if mode == 0 else [0.0, 0.0])
 	m.set_shader_parameter("flow", Vector2(float(fl[0]), float(fl[1])))
 	var rp: Array = e.get("ripple_px", [0.5, 2.0] if mode == 0 else [0.5, 0.8])

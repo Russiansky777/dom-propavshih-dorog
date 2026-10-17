@@ -14,8 +14,9 @@ uniform sampler2D src_tex : filter_linear, repeat_disable;
 uniform vec2 src_origin = vec2(0.0);
 uniform vec2 src_size = vec2(1920.0, 1080.0);
 uniform bool src_alpha = false;
-uniform vec2 poly[32];
-uniform int poly_n = 0;
+uniform int edge_mode = 0;
+uniform vec4 edge_rect = vec4(0.0, 0.0, 1.0, 1.0);
+uniform sampler2D edge_tex : filter_linear, repeat_disable;
 uniform float feather_px = 24.0;
 uniform vec4 clip_rect = vec4(-100000.0, -100000.0, 200000.0, 200000.0);
 uniform int kind = 0;
@@ -47,7 +48,7 @@ void vertex() {
 void fragment() {
 	vec2 p = room_pos;
 	float t = TIME;
-	float edge = feather_px > 0.0 ? smoothstep(0.0, feather_px, amb_edge_dist(p)) : 1.0;
+	float edge = amb_edge(p);
 	// Gusts: slow smooth noise, its own phase per region (neighbours never move in step).
 	float g = amb_noise1(t * gust_rate + phase * 17.0);
 	float wind = mix(1.0 - gust_depth, 1.0, g);

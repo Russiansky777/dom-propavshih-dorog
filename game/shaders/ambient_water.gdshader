@@ -13,8 +13,9 @@ uniform sampler2D src_tex : filter_linear, repeat_disable;
 uniform vec2 src_origin = vec2(0.0);
 uniform vec2 src_size = vec2(1920.0, 1080.0);
 uniform bool src_alpha = false;             // the source is a room layer (water cut-out), keep its alpha
-uniform vec2 poly[32];
-uniform int poly_n = 0;
+uniform int edge_mode = 0;
+uniform vec4 edge_rect = vec4(0.0, 0.0, 1.0, 1.0);
+uniform sampler2D edge_tex : filter_linear, repeat_disable;
 uniform float feather_px = 16.0;
 uniform int mode = 0;
 uniform vec2 flow = vec2(-12.0, 0.0);       // px/s of the ripple pattern at depth scale 1
@@ -79,7 +80,7 @@ vec3 drop_rings(vec2 p, float t) {
 void fragment() {
 	vec2 p = room_pos;
 	float t = TIME;
-	float edge = smoothstep(0.0, feather_px, amb_edge_dist(p));
+	float edge = amb_edge(p);
 	for (int i = 0; i < 4; i++) {
 		if (i >= exclude_n) {
 			break;

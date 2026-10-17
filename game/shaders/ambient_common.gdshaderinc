@@ -1,8 +1,9 @@
 // «Живой мир» — shared helpers of the ambient shaders (ambient_sway / ambient_water).
 // A region shader (#define AMB_REGION before the #include) declares first:
-//   uniform vec2 poly[32]; uniform int poly_n;   — the region outline in room px (feathered edge)
 //   uniform sampler2D src_tex; uniform vec2 src_origin; uniform vec2 src_size;
 //                                                — the picture under the region and where it is drawn
+//   uniform int edge_mode; uniform vec4 edge_rect; uniform sampler2D edge_tex; uniform float feather_px;
+//                                                — the feathered edge (see amb_edge)
 // Hashes without sin() (stable in WebGL2 at large coordinates).
 
 float amb_hash11(float p) {
@@ -39,21 +40,20 @@ float amb_noise2(vec2 p) {
 }
 
 #ifdef AMB_REGION
-// Distance from p to the outline poly[0..poly_n) (the fill is the polygon itself, so inside only).
-float amb_edge_dist(vec2 p) {
-	float d = 1.0e6;
-	for (int i = 0; i < 32; i++) {
-		if (i >= poly_n) {
-			break;
-		}
-		vec2 a = poly[i];
-		vec2 b = poly[(i + 1 == poly_n) ? 0 : i + 1];
-		vec2 pa = p - a;
-		vec2 ba = b - a;
-		float h = clamp(dot(pa, ba) / max(dot(ba, ba), 0.0001), 0.0, 1.0);
-		d = min(d, length(pa - ba * h));
+// 0 at the region outline → 1 deeper than feather_px inside, so the redrawn picture joins the still
+// one without a seam. edge_mode 0: none (1 everywhere); 1: a rectangle edge_rect (x, y, w, h),
+// analytic; 2: an outline of any shape — a small distance texture edge_tex over edge_rect, made once
+// when the room is built (AmbientRoot.feather_mask: chamfer distance / feather), one fetch per pixel.
+float amb_edge(vec2 p) {
+	if (edge_mode == 1) {
+		vec2 d = min(p - edge_rect.xy, edge_rect.xy + edge_rect.zw - p);
+		return smoothstep(0.0, max(feather_px, 0.001), min(d.x, d.y));
 	}
-	return d;
+	if (edge_mode == 2) {
+		float m = texture(edge_tex, (p - edge_rect.xy) / edge_rect.zw).r;
+		return smoothstep(0.0, 1.0, m);
+	}
+	return 1.0;
 }
 
 vec4 amb_src(vec2 room_p) {

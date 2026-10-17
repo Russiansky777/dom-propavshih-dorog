@@ -148,7 +148,18 @@ func _test_build() -> void:
 			print("    %s: ambient data waits for rooms/%s.json (not built yet)" % [rid, rid])
 			continue
 		var spec: Dictionary = AmbData.room(rid)
+		var t0 := Time.get_ticks_usec()
 		var room := _build(rid)
+		var amb_ms := 0.0
+		if room != null and Builder.of(room) != null:
+			# Ambient share of the build: rebuild the layer alone (masks, materials, emitters).
+			var t1 := Time.get_ticks_usec()
+			var again = Builder.build(room, rid)
+			amb_ms = (Time.get_ticks_usec() - t1) / 1000.0
+			if again != null:
+				room.remove_child(again)
+				again.free()
+		_check(amb_ms < 250.0, "%s: building the ambient layer took %.0f ms (budget 250 ms headless)" % [rid, amb_ms])
 		_check(room != null, "%s: room did not build" % rid)
 		if room == null:
 			continue
@@ -171,7 +182,7 @@ func _test_build() -> void:
 		if kind == "interior":
 			_check(not st["rain"] and st["water"] == 0 and st["puddles"] == 0 and amb.footfall == null,
 				"%s: interior must have no rain, water, puddles or footfall (%s)" % [rid, str(st)])
-		print("    %s (%s): %s" % [rid, kind, str(st)])
+		print("    %s (%s): ambient build %.0f ms; %s" % [rid, kind, amb_ms, str(st)])
 		_free(room)
 	# Rooms without a file get nothing.
 	for rid in sd.rooms_index.get("in_scope", []):
@@ -276,7 +287,11 @@ func _test_params() -> void:
 		_check(is_equal_approx(float(sm.get_shader_parameter("amp_px")), float(r.get("amp_px", 3.0)) * strength), "%s amp_px" % r["id"])
 		if r.has("anchor_y"):
 			_check(is_equal_approx(float(sm.get_shader_parameter("anchor_y")), float(r["anchor_y"])), "%s anchor_y" % r["id"])
-		_check(int(sm.get_shader_parameter("poly_n")) == _poly(r).size(), "%s outline points" % r["id"])
+		var em := int(sm.get_shader_parameter("edge_mode"))
+		if r.has("polygon"):
+			_check(em == 2 and sm.get_shader_parameter("edge_tex") != null, "%s: polygon edge must be a feather mask (mode %d)" % [r["id"], em])
+		elif r.has("rect"):
+			_check(em == 1, "%s: rect edge must be analytic (mode %d)" % [r["id"], em])
 	# Neighbouring regions sway out of step (different phase).
 	var phases := {}
 	for r in spec["sway_regions"]:
@@ -284,6 +299,20 @@ func _test_params() -> void:
 		if n != null:
 			phases[float(n.material.get_shader_parameter("phase"))] = true
 	_check(phases.size() == spec["sway_regions"].size(), "every sway region needs its own phase, got %d distinct of %d" % [phases.size(), spec["sway_regions"].size()])
+	# Feather mask: 0 on and outside the outline, 1 deeper than feather_px inside.
+	var Root = load("res://scripts/ambient/ambient_root.gd")
+	var birches: Dictionary = spec["sway_regions"].filter(func(r): return r["id"] == "birches_right")[0]
+	var pts := _poly(birches)
+	var fm: Dictionary = Root.feather_mask(pts, float(birches["feather_px"]))
+	var img: Image = fm["tex"].get_image()
+	var rect: Rect2 = fm["rect"]
+	var cell: float = fm["cell"]
+	var at := func(q: Vector2) -> float:
+		var c := ((q - rect.position) / cell).floor()
+		return img.get_pixel(clampi(int(c.x), 0, img.get_width() - 1), clampi(int(c.y), 0, img.get_height() - 1)).r
+	_check(at.call(rect.position + Vector2(1, 1)) == 0.0, "mask must be 0 outside the outline")
+	_check(at.call(Vector2(1330, 250)) > 0.99, "mask must be 1 deep inside birches_right (%.2f)" % at.call(Vector2(1330, 250)))
+	_check(at.call(Vector2(1460, 200)) < 0.6, "mask must fade near the outline (%.2f at 1460,200)" % at.call(Vector2(1460, 200)))
 	for w in spec["puddles"]:
 		var n: Node = amb.get_node_or_null("Water/" + String(w["id"]))
 		var rings := float(n.material.get_shader_parameter("rain"))

@@ -24,9 +24,13 @@ uniform vec3 cells2 = vec3(37.0, 200.0, 0.45);
 #include "res://shaders/ambient_common.gdshaderinc"
 
 varying vec2 room_pos;
+varying float slant_now;
 
 void vertex() {
 	room_pos = VERTEX;
+	// The gust lean is the same for the whole frame: once per vertex, not per pixel.
+	float g = amb_noise1(TIME * gust_rate + 3.0);
+	slant_now = slant + gust_slant * (g - 0.5) * 2.0;
 }
 
 float streaks(vec2 p, float sl, vec4 L, vec3 C, float seed, float t) {
@@ -36,26 +40,30 @@ float streaks(vec2 p, float sl, vec4 L, vec3 C, float seed, float t) {
 	float col = floor(x / C.x);
 	float y = p.y - t * L.z + amb_hash11(col * 1.37 + seed) * cell_h * 7.0;
 	float row = floor(y / cell_h);
+	float fy = y - row * cell_h;
+	float v = fy / L.x;
+	if (v < 0.0 || v > 1.0) {
+		return 0.0;  // in the gap under the streak: most pixels stop here
+	}
 	vec2 id = vec2(col, row) + seed;
 	if (amb_hash12(id) > C.z * intensity) {
 		return 0.0;
 	}
 	float fx = x - col * C.x;
-	float fy = y - row * cell_h;
 	float x0 = (0.2 + 0.6 * amb_hash12(id + 3.7)) * C.x;
 	// Width across the streak (the shear widens horizontal distances by 1/cos).
 	float dx = abs(fx - x0) * inversesqrt(1.0 + sl * sl);
-	float a = 1.0 - smoothstep(L.y * 0.5, L.y * 0.5 + 0.8, dx);
-	float v = fy / L.x;
-	a *= step(0.0, v) * step(v, 1.0) * (0.25 + 0.75 * v);  // head brighter than the tail
+	if (dx > L.y * 0.5 + 0.8) {
+		return 0.0;
+	}
+	float a = (1.0 - smoothstep(L.y * 0.5, L.y * 0.5 + 0.8, dx)) * (0.25 + 0.75 * v);  // head brighter than the tail
 	return a * L.w * (0.6 + 0.4 * amb_hash12(id + 9.1));
 }
 
 void fragment() {
 	vec2 p = room_pos;
 	float t = TIME;
-	float g = amb_noise1(t * gust_rate + 3.0);
-	float sl = slant + gust_slant * (g - 0.5) * 2.0;
+	float sl = slant_now;
 	float a = streaks(p, sl * 0.8, layer0, cells0, 11.0, t);
 	a = max(a, streaks(p, sl * 0.9, layer1, cells1, 23.0, t));
 	a = max(a, streaks(p, sl, layer2, cells2, 37.0, t));
