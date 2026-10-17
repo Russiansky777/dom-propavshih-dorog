@@ -1,34 +1,83 @@
 {
   "id": "Z1",
-  "background": {"kind": "interior", "wall": "#7a6a52", "floor": "#8a7250", "accent": "#b89c6a", "horizon": 640},
-  "spawns": {"default": [520, 900], "from_Z2": [1730, 900]},
+  "background": {
+    "kind": "interior",
+    "wall": "#7a6a52",
+    "floor": "#8a7250",
+    "accent": "#b89c6a",
+    "horizon": 640
+  },
+  "spawns": {
+    "default": [520, 900],
+    "from_Z2": [1730, 900]
+  },
   "props": [
-    {"id": "counter", "label": "@Z1.counter.label", "rect": [560, 560, 700, 120], "color": "#5c4630"}
+    {
+      "id": "counter",
+      "label": "@Z1.counter.label",
+      "rect": [560, 560, 700, 120],
+      "color": "#5c4630"
+    }
   ],
   "hotspots": [
     {
-      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [1080, 380, 110, 260], "stand": [1130, 760], "color": "#c47a5a",
-      "talk": {"scene": "M01", "after_text": "@Z1.tamara.after"}
+      "id": "tamara",
+      "kind": "npc",
+      "label": "@char.tamara",
+      "rect": [1080, 380, 110, 260],
+      "stand": [1130, 760],
+      "color": "#c47a5a",
+      "talk": {
+        "scene": "M01",
+        "after_text": "@Z1.tamara.after"
+      }
     },
     {
-      "id": "drawings", "kind": "object", "label": "@Z1.drawings.label", "rect": [640, 470, 220, 90], "stand": [750, 740], "color": "#e8dcc0",
-      "use": {"sets": ["z1_compared_drawings"], "text": "@Z1.drawings.use", "once_flag": "z1_compared_drawings"},
+      "id": "drawings",
+      "kind": "object",
+      "label": "@Z1.drawings.label",
+      "rect": [640, 470, 220, 90],
+      "stand": [750, 740],
+      "color": "#e8dcc0",
+      "use": {
+        "sets": ["z1_compared_drawings"],
+        "text": "@Z1.drawings.use",
+        "once_flag": "z1_compared_drawings"
+      },
       "look": "@Z1.drawings.look"
     },
     {
-      "id": "letters", "kind": "object", "label": "@Z1.letters.label", "rect": [300, 300, 180, 160], "stand": [390, 720], "color": "#d9cfae",
+      "id": "letters",
+      "kind": "object",
+      "label": "@Z1.letters.label",
+      "rect": [300, 300, 180, 160],
+      "stand": [390, 720],
+      "color": "#d9cfae",
       "look": "@Z1.letters.look"
     },
     {
-      "id": "plan", "kind": "object", "label": "@Z1.plan.label", "rect": [1400, 240, 300, 220], "stand": [1550, 720], "color": "#cfc3a0",
+      "id": "plan",
+      "kind": "object",
+      "label": "@Z1.plan.label",
+      "rect": [1400, 240, 300, 220],
+      "stand": [1550, 720],
+      "color": "#cfc3a0",
       "look": "@Z1.plan.look"
     }
   ],
   "exits": [
-    {"to": "Z2", "label": "@Z1.exit_Z2.label", "side": "right", "spawn": "from_Z1", "closed_text": "@Z1.exit_Z2.closed"}
+    {
+      "to": "Z2",
+      "label": "@Z1.exit_Z2.label",
+      "side": "right",
+      "spawn": "from_Z1",
+      "closed_text": "@Z1.exit_Z2.closed"
+    }
   ],
   "scenes": {
-    "M01": {"trigger": "talk:tamara"}
+    "M01": {
+      "trigger": "talk:tamara"
+    }
   },
   "flags": {
     "z1_compared_drawings": "Рисунок Евдокии сравнён с наброском Тамары"

@@ -285,7 +285,9 @@ func _on_check() -> void:
 
 
 func probe_positions() -> Dictionary:
-	var out := {"open": visible and root != null, "pieces": {}, "slots": {}, "marks": [], "check": {}, "close": {}}
+	var out := {"open": visible and root != null, "pieces": {}, "slots": {}, "marks": [], "check": {}, "close": {},
+		"solved": bool(StoryRunner.puzzle.get("solved", false)), "view": String(StoryRunner.puzzle.get("view", "")),
+		"errors": int(StoryRunner.puzzle.get("errors", 0)), "hint": String(StoryRunner.puzzle.get("hint", ""))}
 	if root == null or not visible:
 		return out
 	for pid in piece_nodes.keys():

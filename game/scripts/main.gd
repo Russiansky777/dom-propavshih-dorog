@@ -32,6 +32,12 @@ func _ready() -> void:
 	_publish_probe_state()
 	if OS.has_feature("web"):
 		JavaScriptBridge.eval("window.probeReady = true;", true)
+		# UI-only changes (journal/menu toggles, layout settling) have no signal: refresh periodically.
+		var t := Timer.new()
+		t.wait_time = 0.4
+		t.autostart = true
+		t.timeout.connect(_publish_probe_state)
+		add_child(t)
 
 
 func _on_hint_shown(text: String) -> void:
@@ -43,8 +49,14 @@ func _mark_probe(_a = null) -> void:
 	if not OS.has_feature("web") or _probe_dirty:
 		return
 	_probe_dirty = true
-	# Publish next frame so UI layouts (option buttons, inventory) have their final positions.
-	_publish_probe_state.call_deferred()
+	_publish_after_layout()
+
+
+## Containers lay out their children one frame later; wait two frames before reading positions.
+func _publish_after_layout() -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_publish_probe_state()
 
 
 ## `window.probeState`: game state plus click targets (world coords == canvas coords at 1920x1080).

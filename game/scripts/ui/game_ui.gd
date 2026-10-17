@@ -442,9 +442,10 @@ func _on_loop_transition(_spec: Dictionary) -> void:
 	fade.mouse_filter = Control.MOUSE_FILTER_STOP
 	var tw := create_tween()
 	tw.tween_property(fade, "color:a", 1.0, StoryRunner.LOOP_FADE_SECONDS)
+	# The teleport happens at LOOP_FADE_SECONDS; from here on clicks go to the dialogue underneath.
+	tw.tween_callback(func(): fade.mouse_filter = Control.MOUSE_FILTER_IGNORE)
 	tw.tween_interval(0.15)
 	tw.tween_property(fade, "color:a", 0.0, StoryRunner.LOOP_FADE_SECONDS)
-	tw.tween_callback(func(): fade.mouse_filter = Control.MOUSE_FILTER_IGNORE)
 
 
 # --- Probe support (positions for automated clicks) ----------------------------

@@ -8,26 +8,11 @@
     "horizon": 640
   },
   "spawns": {
-    "default": [
-      960,
-      920
-    ],
-    "from_H1": [
-      1730,
-      900
-    ],
-    "from_Z2": [
-      700,
-      1000
-    ],
-    "from_O1": [
-      960,
-      730
-    ],
-    "from_R4": [
-      1500,
-      730
-    ]
+    "default": [960, 920],
+    "from_H1": [1730, 900],
+    "from_Z2": [700, 1000],
+    "from_O1": [960, 730],
+    "from_R4": [1500, 730]
   },
   "props": [],
   "hotspots": [
@@ -35,33 +20,19 @@
       "id": "school_door",
       "kind": "object",
       "label": "@H3.school_door.label",
-      "rect": [
-        740,
-        200,
-        440,
-        440
-      ],
-      "stand": [
-        960,
-        720
-      ],
+      "rect": [740, 200, 440, 440],
+      "stand": [960, 720],
       "color": "#7a5a3a",
       "pick_priority": 2,
-      "hidden_if": [
-        "door_school_installed"
-      ],
+      "hidden_if": ["door_school_installed"],
       "states": [
         {
-          "if": [
-            "seen_school_door"
-          ],
+          "if": ["seen_school_door"],
           "label": "@H3.school_door.label_seen"
         }
       ],
       "use": {
-        "sets": [
-          "seen_school_door"
-        ],
+        "sets": ["seen_school_door"],
         "text": "@H3.school_door.use",
         "once_flag": "seen_school_door",
         "scene": "M04"
@@ -76,12 +47,8 @@
         "type": "match_marks",
         "title": "@H3.puzzle.title",
         "requires": {
-          "flags": [
-            "done_M04"
-          ],
-          "items": [
-            "door_hinges"
-          ]
+          "flags": ["done_M04"],
+          "items": ["door_hinges"]
         },
         "fail_text": "@H3.puzzle.need",
         "intro": "@H3.puzzle.intro",
@@ -89,28 +56,19 @@
           {
             "id": "top",
             "label": "@H3.puzzle.slot_top",
-            "pos": [
-              1120,
-              300
-            ],
+            "pos": [1120, 300],
             "correct": true
           },
           {
             "id": "middle",
             "label": "@H3.puzzle.slot_middle",
-            "pos": [
-              1120,
-              520
-            ],
+            "pos": [1120, 520],
             "correct": false
           },
           {
             "id": "bottom",
             "label": "@H3.puzzle.slot_bottom",
-            "pos": [
-              1120,
-              740
-            ],
+            "pos": [1120, 740],
             "correct": true
           }
         ],
@@ -126,24 +84,7 @@
         ],
         "marks": {
           "label": "@H3.puzzle.marks",
-          "positions": [
-            [
-              620,
-              900
-            ],
-            [
-              740,
-              900
-            ],
-            [
-              860,
-              900
-            ],
-            [
-              980,
-              900
-            ]
-          ],
+          "positions": [[620, 900], [740, 900], [860, 900], [980, 900]],
           "correct": 2,
           "drawing_label": "@H3.puzzle.drawing"
         },
@@ -163,21 +104,11 @@
       "id": "mirror_home",
       "kind": "object",
       "label": "@H3.mirror_home.label",
-      "rect": [
-        300,
-        240,
-        300,
-        220
-      ],
-      "stand": [
-        450,
-        720
-      ],
+      "rect": [300, 240, 300, 220],
+      "stand": [450, 720],
       "color": "#9fb4c8",
       "use": {
-        "sets": [
-          "seen_mirror_home"
-        ],
+        "sets": ["seen_mirror_home"],
         "text": "@H3.mirror_home.use",
         "once_flag": "seen_mirror_home",
         "scene": "M04"
@@ -188,16 +119,8 @@
       "id": "photo_school",
       "kind": "object",
       "label": "@H3.photo_school.label",
-      "rect": [
-        1260,
-        300,
-        120,
-        90
-      ],
-      "stand": [
-        1320,
-        720
-      ],
+      "rect": [1260, 300, 120, 90],
+      "stand": [1320, 720],
       "color": "#e8e0c8",
       "look": "@H3.photo_school.look"
     }
@@ -219,23 +142,13 @@
     {
       "to": "O1",
       "label": "@H3.exit_O1.label",
-      "rect": [
-        760,
-        200,
-        400,
-        440
-      ],
-      "stand": [
-        960,
-        720
-      ],
+      "rect": [760, 200, 400, 440],
+      "stand": [960, 720],
       "spawn": "from_H3",
       "closed_text": "@H3.exit_O1.closed",
       "states": [
         {
-          "if": [
-            "door_school_installed"
-          ],
+          "if": ["door_school_installed"],
           "label": "@H3.exit_O1.label_open",
           "color": "#8fb0d0"
         }
@@ -244,16 +157,8 @@
     {
       "to": "R4",
       "label": "@H3.exit_R4.label",
-      "rect": [
-        1420,
-        200,
-        360,
-        440
-      ],
-      "stand": [
-        1600,
-        720
-      ],
+      "rect": [1420, 200, 360, 440],
+      "stand": [1600, 720],
       "spawn": "from_H3",
       "closed_text": "@H3.exit_R4.closed"
     }
@@ -265,11 +170,7 @@
     "M04": {
       "complete_when": [
         {
-          "all": [
-            "seen_school_door",
-            "seen_workshop",
-            "has_door_hinges"
-          ]
+          "all": ["seen_school_door", "seen_workshop", "has_door_hinges"]
         }
       ]
     }

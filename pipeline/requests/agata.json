@@ -1,0 +1,13 @@
+{
+  "character": "agata",
+  "sheet": "assets/reference/agata_sheet.png",
+  "height_m": 1.65,
+  "actions": ["idle", "walk"],
+  "frames": {"idle": 8, "walk": 12},
+  "ai_model": "latest",
+  "pose_mode": "a-pose",
+  "texture_resolution": "2k",
+  "elev": 14,
+  "front_yaw": 0,
+  "rev": 1
+}

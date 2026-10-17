@@ -8,25 +8,14 @@
     "horizon": 640
   },
   "spawns": {
-    "default": [
-      960,
-      920
-    ],
-    "from_H1": [
-      190,
-      900
-    ]
+    "default": [960, 920],
+    "from_H1": [190, 900]
   },
   "props": [
     {
       "id": "bench_front",
       "label": "@H2.bench_front.label",
-      "rect": [
-        1100,
-        840,
-        520,
-        140
-      ],
+      "rect": [1100, 840, 520, 140],
       "color": "#4a3a28",
       "occluder": true
     }
@@ -36,22 +25,11 @@
       "id": "bench",
       "kind": "object",
       "label": "@H2.bench.label",
-      "rect": [
-        300,
-        420,
-        520,
-        220
-      ],
-      "stand": [
-        560,
-        710
-      ],
+      "rect": [300, 420, 520, 220],
+      "stand": [560, 710],
       "color": "#6a5438",
       "use": {
-        "sets": [
-          "seen_workshop",
-          "knows_rule_things_remember"
-        ],
+        "sets": ["seen_workshop", "knows_rule_things_remember"],
         "text": "@H2.bench.use",
         "once_flag": "seen_workshop",
         "scene": "M04"
@@ -62,24 +40,12 @@
       "id": "hinges_box",
       "kind": "pickup",
       "label": "@H2.hinges_box.label",
-      "rect": [
-        880,
-        540,
-        150,
-        90
-      ],
-      "stand": [
-        955,
-        710
-      ],
+      "rect": [880, 540, 150, 90],
+      "stand": [955, 710],
       "color": "#c9a86a",
-      "hidden_if": [
-        "has_door_hinges"
-      ],
+      "hidden_if": ["has_door_hinges"],
       "use": {
-        "gives": [
-          "door_hinges"
-        ],
+        "gives": ["door_hinges"],
         "text": "@H2.hinges_box.use",
         "scene": "M04"
       },
@@ -89,21 +55,11 @@
       "id": "bell",
       "kind": "object",
       "label": "@H2.bell.label",
-      "rect": [
-        1340,
-        240,
-        200,
-        300
-      ],
-      "stand": [
-        1440,
-        710
-      ],
+      "rect": [1340, 240, 200, 300],
+      "stand": [1440, 710],
       "color": "#b8a040",
       "use": {
-        "sets": [
-          "seen_bell"
-        ],
+        "sets": ["seen_bell"],
         "text": "@H2.bell.use",
         "once_flag": "seen_bell",
         "scene": "M04"
@@ -114,16 +70,8 @@
       "id": "stand_zm",
       "kind": "object",
       "label": "@H2.stand_zm.label",
-      "rect": [
-        1120,
-        260,
-        160,
-        380
-      ],
-      "stand": [
-        1200,
-        710
-      ],
+      "rect": [1120, 260, 160, 380],
+      "stand": [1200, 710],
       "color": "#7a7a70",
       "look": "@H2.stand_zm.look"
     },
@@ -131,16 +79,8 @@
       "id": "clapper_box",
       "kind": "object",
       "label": "@H2.clapper_box.label",
-      "rect": [
-        1580,
-        540,
-        150,
-        90
-      ],
-      "stand": [
-        1655,
-        710
-      ],
+      "rect": [1580, 540, 150, 90],
+      "stand": [1655, 710],
       "color": "#8a7a5a",
       "look": "@H2.clapper_box.look"
     }
@@ -157,11 +97,7 @@
     "M04": {
       "complete_when": [
         {
-          "all": [
-            "seen_school_door",
-            "seen_workshop",
-            "has_door_hinges"
-          ]
+          "all": ["seen_school_door", "seen_workshop", "has_door_hinges"]
         }
       ]
     }

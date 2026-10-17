@@ -2,235 +2,885 @@
   "_comment": "Черновые тексты осмотров, подписей и реакций для E0–E1 (M1). Ключи @секция.ключ используются в data/story/rooms/*.json. Все записи draft: true — заменяет владелец текста (ChatGPT с Директором). Обязательные реплики сцен берутся из scenes/*.json и здесь не дублируются. Новых сюжетных фактов нет: только то, что уже есть в сценах, locations.json, items.json и каноне.",
   "lang": "ru",
   "texts": {
-    "ui.not_built": {"text": "Эта дорога — в следующем эпизоде. (Техническая заглушка.)", "draft": true},
-    "ui.closed_generic": {"text": "Сейчас туда не пройти.", "draft": true},
-    "ui.item_no_effect": {"text": "Здесь это не пригодится.", "draft": true},
-    "ui.nothing_here": {"text": "Ничего особенного.", "draft": true},
-    "ui.got_item": {"text": "Взято: {item}", "draft": true},
-    "ui.item_selected": {"text": "Выбрано: {item}. Нажмите на то, к чему применить; повторный клик по предмету — отменить.", "draft": true},
-    "ui.hint_generic_1": {"text": "Осмотрите всё, что подписано в комнате: подсказки — в вещах.", "draft": true},
-    "ui.hint_generic_2": {"text": "Загляните в журнал: там текущая цель и что уже известно.", "draft": true},
-    "ui.hint_generic_3": {"text": "Проверьте выходы из комнаты — закрытый выход скажет, чего не хватает.", "draft": true},
-    "ui.hint_title": {"text": "Подсказка {tier} из 3", "draft": true},
-    "ui.journal_title": {"text": "Журнал", "draft": true},
-    "ui.journal_goal": {"text": "Сейчас", "draft": true},
-    "ui.journal_facts": {"text": "Известно", "draft": true},
-    "ui.journal_empty": {"text": "Пока ничего не записано.", "draft": true},
-    "ui.goal_start": {"text": "Забрать у Тамары на почте ключ от дома Евдокии.", "draft": true},
-    "ui.button_journal": {"text": "Журнал", "draft": true},
-    "ui.button_hint": {"text": "Подсказка", "draft": true},
-    "ui.button_menu": {"text": "Меню", "draft": true},
-    "ui.menu_title": {"text": "Сохранения", "draft": true},
-    "ui.slot": {"text": "Слот {n}", "draft": true},
-    "ui.slot_empty": {"text": "пусто", "draft": true},
-    "ui.save": {"text": "Сохранить", "draft": true},
-    "ui.load": {"text": "Загрузить", "draft": true},
-    "ui.new_game": {"text": "Новая игра", "draft": true},
-    "ui.close": {"text": "Закрыть", "draft": true},
-    "ui.saved": {"text": "Сохранено: {slot}", "draft": true},
-    "ui.loaded": {"text": "Загружено: {slot}", "draft": true},
-    "ui.no_save": {"text": "В этом слоте пусто.", "draft": true},
-    "ui.continue": {"text": "▸ дальше", "draft": true},
-    "ui.inventory_empty": {"text": "Сумка пуста", "draft": true},
-    "ui.busy": {"text": "Сначала закончите разговор.", "draft": true},
-
-    "Z1.counter.label": {"text": "Стойка почты", "draft": true},
-    "Z1.tamara.after": {"text": "Тамара кивает на дверь: ключ у вас, записи Евдокии — в доме. Она будет здесь, если понадобится.", "draft": true},
-    "Z1.drawings.label": {"text": "Два рисунка", "draft": true},
-    "Z1.drawings.use": {"text": "Рисунок Евдокии и набросок Тамары. На старом листе опора скрыта водой, на новом виден её край. Один и тот же камень, разный год.", "draft": true},
-    "Z1.drawings.look": {"text": "Старый лист Евдокии и свежий набросок Тамары лежат рядом.", "draft": true},
-    "Z1.letters.label": {"text": "Корреспонденция", "draft": true},
-    "Z1.letters.look": {"text": "Письма рассортированы по домам. Пачка для дома Евдокии не убывала год.", "draft": true},
-    "Z1.plan.label": {"text": "План Заречья", "draft": true},
-    "Z1.plan.look": {"text": "План Заречья на стене: почта, дом, спуск к воде, мельница. Карандашная пометка у берегового поворота.", "draft": true},
-    "Z1.exit_Z2.label": {"text": "Дверь на улицу", "draft": true},
-    "Z1.exit_Z2.closed": {"text": "Сначала поговорить с Тамарой — ключ у неё.", "draft": true},
-
-    "Z2.house.label": {"text": "Дом Евдокии", "draft": true},
-    "Z2.mill_far.label": {"text": "Мельница вдали", "draft": true},
-    "Z2.landmarks.label": {"text": "Ориентиры", "draft": true},
-    "Z2.landmarks.look": {"text": "Отсюда видно всё знакомое: дом, крышу мельницы, почту за спиной и спуск к воде.", "draft": true},
-    "Z2.exit_Z1.label": {"text": "Почта", "draft": true},
-    "Z2.exit_H1.label": {"text": "Крыльцо дома", "draft": true},
-    "Z2.exit_H1.closed": {"text": "Дверь заперта. Ключ должен быть у Тамары.", "draft": true},
-    "Z2.exit_H3.label": {"text": "Боковое крыльцо", "draft": true},
-    "Z2.exit_H3.closed": {"text": "Боковое крыльцо галереи закрыто изнутри. Сначала — через дом.", "draft": true},
-    "Z2.exit_M1.label": {"text": "Улица к мельнице", "draft": true},
-    "Z2.exit_M1.closed": {"text": "К мельнице — позже. Сначала ключ.", "draft": true},
-    "Z2.exit_Z3.label": {"text": "Береговая дорожка", "draft": true},
-    "Z2.exit_Z3.closed": {"text": "На берег — после разговора с Тамарой.", "draft": true},
-    "Z2.exit_R1.label": {"text": "Спуск к воде", "draft": true},
-    "Z2.exit_R1.closed": {"text": "К причалу — после разговора с Тамарой.", "draft": true},
-
-    "Z3.water.label": {"text": "Река", "draft": true},
-    "Z3.old_pier_base.label": {"text": "Старая опора", "draft": true},
-    "Z3.old_pier_base.look": {"text": "Вода отступила и открыла старую опору. Тот самый камень с рисунка Тамары. Подойти к основанию пока не выйдет — берег размыт.", "draft": true},
-    "Z3.plate.label": {"text": "Пластина на опоре", "draft": true},
-    "Z3.plate.look": {"text": "На опоре — металлическая пластина. Надпись забита илом; без инструмента не прочесть.", "draft": true},
-    "Z3.exit_Z2.label": {"text": "На улицу", "draft": true},
-    "Z3.exit_R1.label": {"text": "К причалу", "draft": true},
-    "Z3.exit_M1.label": {"text": "Дорожка к мельнице", "draft": true},
-    "Z3.exit_M1.closed": {"text": "Дорожка к мельнице — в следующем эпизоде.", "draft": true},
-
-    "R1.water.label": {"text": "Река", "draft": true},
-    "R1.pier.label": {"text": "Ближний причал", "draft": true},
-    "R1.pelageya.after": {"text": "Пелагея смотрит на другой берег: «Журналы у управляющего. Больше мне сказать нечего».", "draft": true},
-    "R1.boat.label": {"text": "Лодка", "draft": true},
-    "R1.boat.look": {"text": "Лодка Пелагеи на канате. Ходит к своему причалу и обратно — так она сама сказала.", "draft": true},
-    "R1.rope.label": {"text": "Канат и стопор", "draft": true},
-    "R1.rope.use": {"text": "Канат натянут через реку, ближний стопор держит. Что на том конце — отсюда не видно.", "draft": true},
-    "R1.rope.look": {"text": "Канат переправы, ближний стопор.", "draft": true},
-    "R1.lantern.label": {"text": "Сигнальный фонарь", "draft": true},
-    "R1.lantern.use": {"text": "Сигнальный фонарь в гнезде у причала. Стекло чистое, фитиль сухой — им пользуются.", "draft": true},
-    "R1.lantern.look": {"text": "Фонарь для сигналов на другой берег.", "draft": true},
-    "R1.instruction.label": {"text": "Инструкция сигналов", "draft": true},
-    "R1.instruction.use": {"text": "Инструкция переправы: порядок сигналов фонарём и ответ с дальнего берега. Без настоящего рейса в журнале это только порядок, не дорога.", "draft": true},
-    "R1.instruction.look": {"text": "Табличка с порядком сигналов переправы.", "draft": true},
-    "R1.exit_Z3.label": {"text": "Береговая дорожка", "draft": true},
-    "R1.exit_Z2.label": {"text": "Подъём на улицу", "draft": true},
-    "R1.exit_Z2.closed": {"text": "Подъём на улицу — после разговора с Тамарой.", "draft": true},
-    "R1.exit_R2.label": {"text": "Лодка (переправа)", "draft": true},
-    "R1.exit_R2.closed": {"text": "Переправа не проверена. Пелагея не повезёт, пока не найден настоящий рейс.", "draft": true},
-
-    "H1.table.label": {"text": "Стол", "draft": true},
-    "H1.stove.label": {"text": "Печь", "draft": true},
-    "H1.stove.label_lit": {"text": "Печь (топится)", "draft": true},
-    "H1.stove.use": {"text": "Дрова приготовлены заранее — осталось положить и поджечь. Печь берёт огонь сразу.", "draft": true},
-    "H1.stove.look": {"text": "Печь. Рядом — лежанка и место, где обычно спит Тихон.", "draft": true},
-    "H1.shutter.label": {"text": "Ставня", "draft": true},
-    "H1.shutter.label_open": {"text": "Ставня (открыта)", "draft": true},
-    "H1.shutter.use": {"text": "Ставня поддаётся. В комнату входит дневной свет.", "draft": true},
-    "H1.shutter.look": {"text": "Ставня закрыта. В комнате полутьма.", "draft": true},
-    "H1.scarf.label": {"text": "Мокрая дорожная вещь", "draft": true},
-    "H1.scarf.use": {"text": "Мокрую дорожную вещь с лежанки — на крючок у двери. На сухое мокрое не кладут.", "draft": true},
-    "H1.scarf.look": {"text": "Чья-то мокрая дорожная вещь брошена на сухую лежанку.", "draft": true},
-    "H1.tikhon.look": {"text": "Тихон. Сидит у печи и смотрит на огонь.", "draft": true},
-    "H1.photo.label": {"text": "Семейная фотография", "draft": true},
-    "H1.photo.label_table": {"text": "Фотография (на столе)", "draft": true},
-    "H1.photo.label_shelf": {"text": "Фотография (на полке)", "draft": true},
-    "H1.photo.prompt": {"text": "Куда поставить фотографию?", "draft": true},
-    "H1.photo.opt_table": {"text": "На стол", "draft": true},
-    "H1.photo.opt_shelf": {"text": "На полку", "draft": true},
-    "H1.photo.look": {"text": "Семейная фотография в рамке.", "draft": true},
-    "H1.cups.label": {"text": "Две чашки", "draft": true},
-    "H1.cups.label_blue": {"text": "Чашки (взята синяя)", "draft": true},
-    "H1.cups.label_white": {"text": "Чашки (взята белая)", "draft": true},
-    "H1.cups.prompt": {"text": "Какую чашку взять себе?", "draft": true},
-    "H1.cups.opt_blue": {"text": "Синюю", "draft": true},
-    "H1.cups.opt_white": {"text": "Белую", "draft": true},
-    "H1.cups.look": {"text": "Две чашки на полке. Обе чистые.", "draft": true},
-    "H1.v01.done": {"text": "Тихон проверяет: его место не занято. Можно переставить и потом.", "draft": true},
-    "H1.shelf.label": {"text": "Снятая полка", "draft": true},
-    "H1.shelf.label_done": {"text": "Полка", "draft": true},
-    "H1.shelf.label_stove": {"text": "Полка (угол у печи)", "draft": true},
-    "H1.shelf.label_table": {"text": "Полка (у стола)", "draft": true},
-    "H1.shelf.prompt": {"text": "Два крепления. Куда закрепить полку для Тихона?", "draft": true},
-    "H1.shelf.opt_a": {"text": "В угол у печи", "draft": true},
-    "H1.shelf.opt_b": {"text": "У стола", "draft": true},
-    "H1.shelf.look": {"text": "Снятая полка стоит у стены. На стене — два крепления под неё.", "draft": true},
-    "H1.shelf.look_done": {"text": "Полка закреплена, подстилка переставлена. Тихон доволен.", "draft": true},
-    "H1.exit_Z2.label": {"text": "Крыльцо", "draft": true},
-    "H1.exit_H2.label": {"text": "Мастерская", "draft": true},
-    "H1.exit_H3.label": {"text": "Галерея", "draft": true},
-    "H1.exit_H4.label": {"text": "Лестница на чердак", "draft": true},
-
-    "H2.bench_front.label": {"text": "Верстак", "draft": true},
-    "H2.bench.label": {"text": "Верстак и записи", "draft": true},
-    "H2.bench.use": {"text": "Записи Евдокии о школьной двери: рисунок посадки. «Сохранить родные части. Совместить отметки порога». Ниже, другим нажимом: «Некоторые вещи помнят место, которому служили».", "draft": true},
-    "H2.bench.look": {"text": "Верстак, инструменты по местам, записи в тетради.", "draft": true},
-    "H2.hinges_box.label": {"text": "Подписанная коробка", "draft": true},
-    "H2.hinges_box.use": {"text": "Коробка подписана рукой Евдокии: «Школьная дверь. Петли». Внутри — две петли.", "draft": true},
-    "H2.hinges_box.look": {"text": "Небольшая коробка с подписью.", "draft": true},
-    "H2.bell.label": {"text": "Колокол", "draft": true},
-    "H2.bell.use": {"text": "Мельничный колокол с ярлыком. Языка нет; рядом подписанная коробка. Остаётся здесь — ему здесь работать.", "draft": true},
-    "H2.bell.look": {"text": "Колокол на подвесе, с ярлыком.", "draft": true},
-    "H2.stand_zm.label": {"text": "Стойка ЗМ", "draft": true},
-    "H2.stand_zm.look": {"text": "Пустая стойка с пометкой «ЗМ». Под зеркало, которого здесь нет.", "draft": true},
-    "H2.clapper_box.label": {"text": "Коробка у колокола", "draft": true},
-    "H2.clapper_box.look": {"text": "Коробка рядом с колоколом, подписана. Сейчас не до неё.", "draft": true},
-    "H2.exit_H1.label": {"text": "В комнату", "draft": true},
-
-    "H3.school_door.label": {"text": "Школьная дверь у рамы", "draft": true},
-    "H3.school_door.label_seen": {"text": "Школьная дверь (опознана)", "draft": true},
-    "H3.school_door.use": {"text": "Дверь прислонена к подготовленной раме. На фотографии — та же: совпадают петли и зарубка на брусе. Бирка: «Передача на ремонт до паводка».", "draft": true},
-    "H3.school_door.look": {"text": "Школьная дверь ждёт родных петель и своей рамы.", "draft": true},
-    "H3.puzzle.title": {"text": "Дверь в подготовленной раме", "draft": true},
-    "H3.puzzle.need": {"text": "Чтобы ставить дверь, нужны родные петли из мастерской и рисунок посадки.", "draft": true},
-    "H3.puzzle.intro": {"text": "Поставьте две родные петли в гнёзда и совместите зарубку порога с рисунком. Затем закройте дверь.", "draft": true},
-    "H3.puzzle.slot_top": {"text": "Верхнее гнездо", "draft": true},
-    "H3.puzzle.slot_middle": {"text": "Среднее гнездо", "draft": true},
-    "H3.puzzle.slot_bottom": {"text": "Нижнее гнездо", "draft": true},
-    "H3.puzzle.hinge": {"text": "Петля", "draft": true},
-    "H3.puzzle.marks": {"text": "Зарубка порога", "draft": true},
-    "H3.puzzle.drawing": {"text": "Рисунок посадки", "draft": true},
-    "H3.puzzle.check": {"text": "Закрыть дверь", "draft": true},
-    "H3.puzzle.error": {"text": "Дверь закрывается — и открывается на домашнюю стену. Ничего не сломалось. Что-то стоит не на своём месте.", "draft": true},
-    "H3.puzzle.success": {"text": "Петли сели, зарубка совпала с рисунком. Дверь открывается — за ней зимний класс.", "draft": true},
-    "H3.mirror_home.label": {"text": "Домашнее зеркало ЗГ", "draft": true},
-    "H3.mirror_home.use": {"text": "Домашнее зеркало на своём месте. На снимке оно висит там же. Отражает Агату и галерею — ничего больше.", "draft": true},
-    "H3.mirror_home.look": {"text": "Зеркало в раме, с пометкой «ЗГ».", "draft": true},
-    "H3.photo_school.label": {"text": "Фотография школы", "draft": true},
-    "H3.photo_school.look": {"text": "Школа, дверь, крыльцо. Снимок для сравнения.", "draft": true},
-    "H3.exit_H1.label": {"text": "В комнату", "draft": true},
-    "H3.exit_Z2.label": {"text": "Боковое крыльцо", "draft": true},
-    "H3.exit_O1.label": {"text": "Подготовленная рама", "draft": true},
-    "H3.exit_O1.label_open": {"text": "Школьная дверь → зимний класс", "draft": true},
-    "H3.exit_O1.closed": {"text": "Рама пуста. Сначала поставить дверь.", "draft": true},
-    "H3.exit_R4.label": {"text": "Вторая рама", "draft": true},
-    "H3.exit_R4.closed": {"text": "Вторая подготовленная рама. Пока пустая.", "draft": true},
-
-    "H4.boxes.label": {"text": "Коробки", "draft": true},
-    "H4.window.label": {"text": "Слуховое окно", "draft": true},
-    "H4.window.look": {"text": "Слуховое окно. Заречье с высоты: крыши, почта, вода у поворота.", "draft": true},
-    "H4.chest.label": {"text": "Сундук", "draft": true},
-    "H4.chest.look": {"text": "Праздничная скатерть, сложенная ровно. Под ней — пустые коробки. Документов нет.", "draft": true},
-    "H4.exit_H1.label": {"text": "Вниз", "draft": true},
-    "H4.v02.done": {"text": "Свет под крышей. Ничего обязательного — только знакомые вещи на своих местах.", "draft": true},
-
-    "O1.desks_front.label": {"text": "Парты", "draft": true},
-    "O1.board.label": {"text": "Доска", "draft": true},
-    "O1.board.label_written": {"text": "Доска: «Я была здесь. Агата»", "draft": true},
-    "O1.board.use": {"text": "На доске — задача, решённая до конца. Почерк незнакомый.", "draft": true},
-    "O1.board.chalk": {"text": "Мелом, в углу доски: «Я была здесь. Агата».", "draft": true},
-    "O1.board.look": {"text": "Школьная доска.", "draft": true},
-    "O1.sack.label": {"text": "Мешок", "draft": true},
-    "O1.sack.use": {"text": "Залатанный мешок. Латка поверх латки — чинили не раз.", "draft": true},
-    "O1.sack.look": {"text": "Мешок у стены.", "draft": true},
-    "O1.notebooks.label": {"text": "Стопка тетрадей", "draft": true},
-    "O1.notebooks.use": {"text": "Стопка тетрадей, исписанных до последней страницы. Много рук, много лет.", "draft": true},
-    "O1.notebooks.look": {"text": "Тетради на подоконнике.", "draft": true},
-    "O1.teacher_drawer.label": {"text": "Учительский ящик", "draft": true},
-    "O1.teacher_drawer.label_open": {"text": "Учительский ящик (пуст)", "draft": true},
-    "O1.teacher_drawer.use": {"text": "Ящик со школьной печатью. Внутри — накладная на мел: рейс 14, дата. И фотография пристани.", "draft": true},
-    "O1.teacher_drawer.look": {"text": "Ящик учительского стола со школьной печатью.", "draft": true},
-    "O1.chalk.label": {"text": "Мел", "draft": true},
-    "O1.chalk.use": {"text": "Кусок мела с учительского стола.", "draft": true},
-    "O1.chalk.look": {"text": "Мел.", "draft": true},
-    "O1.bird_drawing.label": {"text": "Картинка с птицей", "draft": true},
-    "O1.bird_drawing.label_marked": {"text": "Картинка с птицей (с пометкой)", "draft": true},
-    "O1.bird_drawing.prompt": {"text": "Кто-то дорисовал птице сапоги. Шапку когда-то пририсовала я сама.", "draft": true},
-    "O1.bird_drawing.opt_mark": {"text": "Оставить пометку на полях", "draft": true},
-    "O1.bird_drawing.opt_leave": {"text": "Не трогать", "draft": true},
-    "O1.bird_drawing.look": {"text": "Учебная картинка с птицей на полях страницы.", "draft": true},
-    "O1.v03.done": {"text": "Чужое исправление остаётся на странице. Кто рисовал — не написано.", "draft": true},
-    "O1.exit_H3.label": {"text": "Обратная дверь → галерея", "draft": true},
-    "O1.exit_H3.closed": {"text": "Дверь не держится в раме.", "draft": true},
-    "O1.exit_O2.label": {"text": "Дверь на крыльцо", "draft": true},
-
-    "O2.school_wall.label": {"text": "Школа", "draft": true},
-    "O2.tree.label": {"text": "Дерево", "draft": true},
-    "O2.tree.look": {"text": "Дерево у крыльца. Выше, чем я помню.", "draft": true},
-    "O2.porch_step.label": {"text": "Ступень крыльца", "draft": true},
-    "O2.porch_step.label_mitten": {"text": "Ступень (варежка на месте)", "draft": true},
-    "O2.porch_step.mitten": {"text": "Варежка — у ступени. Если дорожка возвращает, она будет лежать здесь же.", "draft": true},
-    "O2.porch_step.look": {"text": "Ступень крыльца, снег утоптан.", "draft": true},
-    "O2.mitten.label": {"text": "Варежка", "draft": true},
-    "O2.mitten.use": {"text": "Детская варежка на перилах. Сухая. Подойдёт как метка.", "draft": true},
-    "O2.mitten.look": {"text": "Варежка на перилах крыльца.", "draft": true},
-    "O2.window_other.label": {"text": "Другое окно", "draft": true},
-    "O2.window_other.look": {"text": "Другое окно той же школы. Дорожка привела сюда.", "draft": true},
-    "O2.exit_O1.label": {"text": "В класс", "draft": true},
-    "O2.exit_O4.label": {"text": "Калитка", "draft": true},
-    "O2.exit_O4.loop": {"text": "Дорожка от калитки делает петлю — и выводит к другому окну той же школы.", "draft": true}
+    "ui.not_built": {
+      "text": "Эта дорога — в следующем эпизоде. (Техническая заглушка.)",
+      "draft": true
+    },
+    "ui.closed_generic": {
+      "text": "Сейчас туда не пройти.",
+      "draft": true
+    },
+    "ui.item_no_effect": {
+      "text": "Здесь это не пригодится.",
+      "draft": true
+    },
+    "ui.nothing_here": {
+      "text": "Ничего особенного.",
+      "draft": true
+    },
+    "ui.got_item": {
+      "text": "Взято: {item}",
+      "draft": true
+    },
+    "ui.item_selected": {
+      "text": "Выбрано: {item}. Нажмите на то, к чему применить; повторный клик по предмету — отменить.",
+      "draft": true
+    },
+    "ui.hint_generic_1": {
+      "text": "Осмотрите всё, что подписано в комнате: подсказки — в вещах.",
+      "draft": true
+    },
+    "ui.hint_generic_2": {
+      "text": "Загляните в журнал: там текущая цель и что уже известно.",
+      "draft": true
+    },
+    "ui.hint_generic_3": {
+      "text": "Проверьте выходы из комнаты — закрытый выход скажет, чего не хватает.",
+      "draft": true
+    },
+    "ui.hint_title": {
+      "text": "Подсказка {tier} из 3",
+      "draft": true
+    },
+    "ui.journal_title": {
+      "text": "Журнал",
+      "draft": true
+    },
+    "ui.journal_goal": {
+      "text": "Сейчас",
+      "draft": true
+    },
+    "ui.journal_facts": {
+      "text": "Известно",
+      "draft": true
+    },
+    "ui.journal_empty": {
+      "text": "Пока ничего не записано.",
+      "draft": true
+    },
+    "ui.goal_start": {
+      "text": "Забрать у Тамары на почте ключ от дома Евдокии.",
+      "draft": true
+    },
+    "ui.button_journal": {
+      "text": "Журнал",
+      "draft": true
+    },
+    "ui.button_hint": {
+      "text": "Подсказка",
+      "draft": true
+    },
+    "ui.button_menu": {
+      "text": "Меню",
+      "draft": true
+    },
+    "ui.menu_title": {
+      "text": "Сохранения",
+      "draft": true
+    },
+    "ui.slot": {
+      "text": "Слот {n}",
+      "draft": true
+    },
+    "ui.slot_empty": {
+      "text": "пусто",
+      "draft": true
+    },
+    "ui.save": {
+      "text": "Сохранить",
+      "draft": true
+    },
+    "ui.load": {
+      "text": "Загрузить",
+      "draft": true
+    },
+    "ui.new_game": {
+      "text": "Новая игра",
+      "draft": true
+    },
+    "ui.close": {
+      "text": "Закрыть",
+      "draft": true
+    },
+    "ui.saved": {
+      "text": "Сохранено: {slot}",
+      "draft": true
+    },
+    "ui.loaded": {
+      "text": "Загружено: {slot}",
+      "draft": true
+    },
+    "ui.no_save": {
+      "text": "В этом слоте пусто.",
+      "draft": true
+    },
+    "ui.continue": {
+      "text": "— дальше —",
+      "draft": true
+    },
+    "ui.inventory_empty": {
+      "text": "Сумка пуста",
+      "draft": true
+    },
+    "ui.busy": {
+      "text": "Сначала закончите разговор.",
+      "draft": true
+    },
+    "Z1.counter.label": {
+      "text": "Стойка почты",
+      "draft": true
+    },
+    "Z1.tamara.after": {
+      "text": "Тамара кивает на дверь: ключ у вас, записи Евдокии — в доме. Она будет здесь, если понадобится.",
+      "draft": true
+    },
+    "Z1.drawings.label": {
+      "text": "Два рисунка",
+      "draft": true
+    },
+    "Z1.drawings.use": {
+      "text": "Рисунок Евдокии и набросок Тамары. На старом листе опора скрыта водой, на новом виден её край. Один и тот же камень, разный год.",
+      "draft": true
+    },
+    "Z1.drawings.look": {
+      "text": "Старый лист Евдокии и свежий набросок Тамары лежат рядом.",
+      "draft": true
+    },
+    "Z1.letters.label": {
+      "text": "Корреспонденция",
+      "draft": true
+    },
+    "Z1.letters.look": {
+      "text": "Письма рассортированы по домам. Пачка для дома Евдокии не убывала год.",
+      "draft": true
+    },
+    "Z1.plan.label": {
+      "text": "План Заречья",
+      "draft": true
+    },
+    "Z1.plan.look": {
+      "text": "План Заречья на стене: почта, дом, спуск к воде, мельница. Карандашная пометка у берегового поворота.",
+      "draft": true
+    },
+    "Z1.exit_Z2.label": {
+      "text": "Дверь на улицу",
+      "draft": true
+    },
+    "Z1.exit_Z2.closed": {
+      "text": "Сначала поговорить с Тамарой — ключ у неё.",
+      "draft": true
+    },
+    "Z2.house.label": {
+      "text": "Дом Евдокии",
+      "draft": true
+    },
+    "Z2.mill_far.label": {
+      "text": "Мельница вдали",
+      "draft": true
+    },
+    "Z2.landmarks.label": {
+      "text": "Ориентиры",
+      "draft": true
+    },
+    "Z2.landmarks.look": {
+      "text": "Отсюда видно всё знакомое: дом, крышу мельницы, почту за спиной и спуск к воде.",
+      "draft": true
+    },
+    "Z2.exit_Z1.label": {
+      "text": "Почта",
+      "draft": true
+    },
+    "Z2.exit_H1.label": {
+      "text": "Крыльцо дома",
+      "draft": true
+    },
+    "Z2.exit_H1.closed": {
+      "text": "Дверь заперта. Ключ должен быть у Тамары.",
+      "draft": true
+    },
+    "Z2.exit_H3.label": {
+      "text": "Боковое крыльцо",
+      "draft": true
+    },
+    "Z2.exit_H3.closed": {
+      "text": "Боковое крыльцо галереи закрыто изнутри. Сначала — через дом.",
+      "draft": true
+    },
+    "Z2.exit_M1.label": {
+      "text": "Улица к мельнице",
+      "draft": true
+    },
+    "Z2.exit_M1.closed": {
+      "text": "К мельнице — позже. Сначала ключ.",
+      "draft": true
+    },
+    "Z2.exit_Z3.label": {
+      "text": "Береговая дорожка",
+      "draft": true
+    },
+    "Z2.exit_Z3.closed": {
+      "text": "На берег — после разговора с Тамарой.",
+      "draft": true
+    },
+    "Z2.exit_R1.label": {
+      "text": "Спуск к воде",
+      "draft": true
+    },
+    "Z2.exit_R1.closed": {
+      "text": "К причалу — после разговора с Тамарой.",
+      "draft": true
+    },
+    "Z3.water.label": {
+      "text": "Река",
+      "draft": true
+    },
+    "Z3.old_pier_base.label": {
+      "text": "Старая опора",
+      "draft": true
+    },
+    "Z3.old_pier_base.look": {
+      "text": "Вода отступила и открыла старую опору. Тот самый камень с рисунка Тамары. Подойти к основанию пока не выйдет — берег размыт.",
+      "draft": true
+    },
+    "Z3.plate.label": {
+      "text": "Пластина на опоре",
+      "draft": true
+    },
+    "Z3.plate.look": {
+      "text": "На опоре — металлическая пластина. Надпись забита илом; без инструмента не прочесть.",
+      "draft": true
+    },
+    "Z3.exit_Z2.label": {
+      "text": "На улицу",
+      "draft": true
+    },
+    "Z3.exit_R1.label": {
+      "text": "К причалу",
+      "draft": true
+    },
+    "Z3.exit_M1.label": {
+      "text": "Дорожка к мельнице",
+      "draft": true
+    },
+    "Z3.exit_M1.closed": {
+      "text": "Дорожка к мельнице — в следующем эпизоде.",
+      "draft": true
+    },
+    "R1.water.label": {
+      "text": "Река",
+      "draft": true
+    },
+    "R1.pier.label": {
+      "text": "Ближний причал",
+      "draft": true
+    },
+    "R1.pelageya.after": {
+      "text": "Пелагея смотрит на другой берег: «Журналы у управляющего. Больше мне сказать нечего».",
+      "draft": true
+    },
+    "R1.boat.label": {
+      "text": "Лодка",
+      "draft": true
+    },
+    "R1.boat.look": {
+      "text": "Лодка Пелагеи на канате. Ходит к своему причалу и обратно — так она сама сказала.",
+      "draft": true
+    },
+    "R1.rope.label": {
+      "text": "Канат и стопор",
+      "draft": true
+    },
+    "R1.rope.use": {
+      "text": "Канат натянут через реку, ближний стопор держит. Что на том конце — отсюда не видно.",
+      "draft": true
+    },
+    "R1.rope.look": {
+      "text": "Канат переправы, ближний стопор.",
+      "draft": true
+    },
+    "R1.lantern.label": {
+      "text": "Сигнальный фонарь",
+      "draft": true
+    },
+    "R1.lantern.use": {
+      "text": "Сигнальный фонарь в гнезде у причала. Стекло чистое, фитиль сухой — им пользуются.",
+      "draft": true
+    },
+    "R1.lantern.look": {
+      "text": "Фонарь для сигналов на другой берег.",
+      "draft": true
+    },
+    "R1.instruction.label": {
+      "text": "Инструкция сигналов",
+      "draft": true
+    },
+    "R1.instruction.use": {
+      "text": "Инструкция переправы: порядок сигналов фонарём и ответ с дальнего берега. Без настоящего рейса в журнале это только порядок, не дорога.",
+      "draft": true
+    },
+    "R1.instruction.look": {
+      "text": "Табличка с порядком сигналов переправы.",
+      "draft": true
+    },
+    "R1.exit_Z3.label": {
+      "text": "Береговая дорожка",
+      "draft": true
+    },
+    "R1.exit_Z2.label": {
+      "text": "Подъём на улицу",
+      "draft": true
+    },
+    "R1.exit_Z2.closed": {
+      "text": "Подъём на улицу — после разговора с Тамарой.",
+      "draft": true
+    },
+    "R1.exit_R2.label": {
+      "text": "Лодка (переправа)",
+      "draft": true
+    },
+    "R1.exit_R2.closed": {
+      "text": "Переправа не проверена. Пелагея не повезёт, пока не найден настоящий рейс.",
+      "draft": true
+    },
+    "H1.table.label": {
+      "text": "Стол",
+      "draft": true
+    },
+    "H1.stove.label": {
+      "text": "Печь",
+      "draft": true
+    },
+    "H1.stove.label_lit": {
+      "text": "Печь (топится)",
+      "draft": true
+    },
+    "H1.stove.use": {
+      "text": "Дрова приготовлены заранее — осталось положить и поджечь. Печь берёт огонь сразу.",
+      "draft": true
+    },
+    "H1.stove.look": {
+      "text": "Печь. Рядом — лежанка и место, где обычно спит Тихон.",
+      "draft": true
+    },
+    "H1.shutter.label": {
+      "text": "Ставня",
+      "draft": true
+    },
+    "H1.shutter.label_open": {
+      "text": "Ставня (открыта)",
+      "draft": true
+    },
+    "H1.shutter.use": {
+      "text": "Ставня поддаётся. В комнату входит дневной свет.",
+      "draft": true
+    },
+    "H1.shutter.look": {
+      "text": "Ставня закрыта. В комнате полутьма.",
+      "draft": true
+    },
+    "H1.scarf.label": {
+      "text": "Мокрая дорожная вещь",
+      "draft": true
+    },
+    "H1.scarf.use": {
+      "text": "Мокрую дорожную вещь с лежанки — на крючок у двери. На сухое мокрое не кладут.",
+      "draft": true
+    },
+    "H1.scarf.look": {
+      "text": "Чья-то мокрая дорожная вещь брошена на сухую лежанку.",
+      "draft": true
+    },
+    "H1.tikhon.look": {
+      "text": "Тихон. Сидит у печи и смотрит на огонь.",
+      "draft": true
+    },
+    "H1.photo.label": {
+      "text": "Семейная фотография",
+      "draft": true
+    },
+    "H1.photo.label_table": {
+      "text": "Фотография (на столе)",
+      "draft": true
+    },
+    "H1.photo.label_shelf": {
+      "text": "Фотография (на полке)",
+      "draft": true
+    },
+    "H1.photo.prompt": {
+      "text": "Куда поставить фотографию?",
+      "draft": true
+    },
+    "H1.photo.opt_table": {
+      "text": "На стол",
+      "draft": true
+    },
+    "H1.photo.opt_shelf": {
+      "text": "На полку",
+      "draft": true
+    },
+    "H1.photo.look": {
+      "text": "Семейная фотография в рамке.",
+      "draft": true
+    },
+    "H1.cups.label": {
+      "text": "Две чашки",
+      "draft": true
+    },
+    "H1.cups.label_blue": {
+      "text": "Чашки (взята синяя)",
+      "draft": true
+    },
+    "H1.cups.label_white": {
+      "text": "Чашки (взята белая)",
+      "draft": true
+    },
+    "H1.cups.prompt": {
+      "text": "Какую чашку взять себе?",
+      "draft": true
+    },
+    "H1.cups.opt_blue": {
+      "text": "Синюю",
+      "draft": true
+    },
+    "H1.cups.opt_white": {
+      "text": "Белую",
+      "draft": true
+    },
+    "H1.cups.look": {
+      "text": "Две чашки на полке. Обе чистые.",
+      "draft": true
+    },
+    "H1.v01.done": {
+      "text": "Тихон проверяет: его место не занято. Можно переставить и потом.",
+      "draft": true
+    },
+    "H1.shelf.label": {
+      "text": "Снятая полка",
+      "draft": true
+    },
+    "H1.shelf.label_done": {
+      "text": "Полка",
+      "draft": true
+    },
+    "H1.shelf.label_stove": {
+      "text": "Полка (угол у печи)",
+      "draft": true
+    },
+    "H1.shelf.label_table": {
+      "text": "Полка (у стола)",
+      "draft": true
+    },
+    "H1.shelf.prompt": {
+      "text": "Два крепления. Куда закрепить полку для Тихона?",
+      "draft": true
+    },
+    "H1.shelf.opt_a": {
+      "text": "В угол у печи",
+      "draft": true
+    },
+    "H1.shelf.opt_b": {
+      "text": "У стола",
+      "draft": true
+    },
+    "H1.shelf.look": {
+      "text": "Снятая полка стоит у стены. На стене — два крепления под неё.",
+      "draft": true
+    },
+    "H1.shelf.look_done": {
+      "text": "Полка закреплена, подстилка переставлена. Тихон доволен.",
+      "draft": true
+    },
+    "H1.exit_Z2.label": {
+      "text": "Крыльцо",
+      "draft": true
+    },
+    "H1.exit_H2.label": {
+      "text": "Мастерская",
+      "draft": true
+    },
+    "H1.exit_H3.label": {
+      "text": "Галерея",
+      "draft": true
+    },
+    "H1.exit_H4.label": {
+      "text": "Лестница на чердак",
+      "draft": true
+    },
+    "H2.bench_front.label": {
+      "text": "Верстак",
+      "draft": true
+    },
+    "H2.bench.label": {
+      "text": "Верстак и записи",
+      "draft": true
+    },
+    "H2.bench.use": {
+      "text": "Записи Евдокии о школьной двери: рисунок посадки. «Сохранить родные части. Совместить отметки порога». Ниже, другим нажимом: «Некоторые вещи помнят место, которому служили».",
+      "draft": true
+    },
+    "H2.bench.look": {
+      "text": "Верстак, инструменты по местам, записи в тетради.",
+      "draft": true
+    },
+    "H2.hinges_box.label": {
+      "text": "Подписанная коробка",
+      "draft": true
+    },
+    "H2.hinges_box.use": {
+      "text": "Коробка подписана рукой Евдокии: «Школьная дверь. Петли». Внутри — две петли.",
+      "draft": true
+    },
+    "H2.hinges_box.look": {
+      "text": "Небольшая коробка с подписью.",
+      "draft": true
+    },
+    "H2.bell.label": {
+      "text": "Колокол",
+      "draft": true
+    },
+    "H2.bell.use": {
+      "text": "Мельничный колокол с ярлыком. Языка нет; рядом подписанная коробка. Остаётся здесь — ему здесь работать.",
+      "draft": true
+    },
+    "H2.bell.look": {
+      "text": "Колокол на подвесе, с ярлыком.",
+      "draft": true
+    },
+    "H2.stand_zm.label": {
+      "text": "Стойка ЗМ",
+      "draft": true
+    },
+    "H2.stand_zm.look": {
+      "text": "Пустая стойка с пометкой «ЗМ». Под зеркало, которого здесь нет.",
+      "draft": true
+    },
+    "H2.clapper_box.label": {
+      "text": "Коробка у колокола",
+      "draft": true
+    },
+    "H2.clapper_box.look": {
+      "text": "Коробка рядом с колоколом, подписана. Сейчас не до неё.",
+      "draft": true
+    },
+    "H2.exit_H1.label": {
+      "text": "В комнату",
+      "draft": true
+    },
+    "H3.school_door.label": {
+      "text": "Школьная дверь у рамы",
+      "draft": true
+    },
+    "H3.school_door.label_seen": {
+      "text": "Школьная дверь (опознана)",
+      "draft": true
+    },
+    "H3.school_door.use": {
+      "text": "Дверь прислонена к подготовленной раме. На фотографии — та же: совпадают петли и зарубка на брусе. Бирка: «Передача на ремонт до паводка».",
+      "draft": true
+    },
+    "H3.school_door.look": {
+      "text": "Школьная дверь ждёт родных петель и своей рамы.",
+      "draft": true
+    },
+    "H3.puzzle.title": {
+      "text": "Дверь в подготовленной раме",
+      "draft": true
+    },
+    "H3.puzzle.need": {
+      "text": "Чтобы ставить дверь, нужны родные петли из мастерской и рисунок посадки.",
+      "draft": true
+    },
+    "H3.puzzle.intro": {
+      "text": "Поставьте две родные петли в гнёзда и совместите зарубку порога с рисунком. Затем закройте дверь.",
+      "draft": true
+    },
+    "H3.puzzle.slot_top": {
+      "text": "Верхнее гнездо",
+      "draft": true
+    },
+    "H3.puzzle.slot_middle": {
+      "text": "Среднее гнездо",
+      "draft": true
+    },
+    "H3.puzzle.slot_bottom": {
+      "text": "Нижнее гнездо",
+      "draft": true
+    },
+    "H3.puzzle.hinge": {
+      "text": "Петля",
+      "draft": true
+    },
+    "H3.puzzle.marks": {
+      "text": "Зарубка порога",
+      "draft": true
+    },
+    "H3.puzzle.drawing": {
+      "text": "Рисунок посадки",
+      "draft": true
+    },
+    "H3.puzzle.check": {
+      "text": "Закрыть дверь",
+      "draft": true
+    },
+    "H3.puzzle.error": {
+      "text": "Дверь закрывается — и открывается на домашнюю стену. Ничего не сломалось. Что-то стоит не на своём месте.",
+      "draft": true
+    },
+    "H3.puzzle.success": {
+      "text": "Петли сели, зарубка совпала с рисунком. Дверь открывается — за ней зимний класс.",
+      "draft": true
+    },
+    "H3.mirror_home.label": {
+      "text": "Домашнее зеркало ЗГ",
+      "draft": true
+    },
+    "H3.mirror_home.use": {
+      "text": "Домашнее зеркало на своём месте. На снимке оно висит там же. Отражает Агату и галерею — ничего больше.",
+      "draft": true
+    },
+    "H3.mirror_home.look": {
+      "text": "Зеркало в раме, с пометкой «ЗГ».",
+      "draft": true
+    },
+    "H3.photo_school.label": {
+      "text": "Фотография школы",
+      "draft": true
+    },
+    "H3.photo_school.look": {
+      "text": "Школа, дверь, крыльцо. Снимок для сравнения.",
+      "draft": true
+    },
+    "H3.exit_H1.label": {
+      "text": "В комнату",
+      "draft": true
+    },
+    "H3.exit_Z2.label": {
+      "text": "Боковое крыльцо",
+      "draft": true
+    },
+    "H3.exit_O1.label": {
+      "text": "Подготовленная рама",
+      "draft": true
+    },
+    "H3.exit_O1.label_open": {
+      "text": "Школьная дверь → зимний класс",
+      "draft": true
+    },
+    "H3.exit_O1.closed": {
+      "text": "Рама пуста. Сначала поставить дверь.",
+      "draft": true
+    },
+    "H3.exit_R4.label": {
+      "text": "Вторая рама",
+      "draft": true
+    },
+    "H3.exit_R4.closed": {
+      "text": "Вторая подготовленная рама. Пока пустая.",
+      "draft": true
+    },
+    "H4.boxes.label": {
+      "text": "Коробки",
+      "draft": true
+    },
+    "H4.window.label": {
+      "text": "Слуховое окно",
+      "draft": true
+    },
+    "H4.window.look": {
+      "text": "Слуховое окно. Заречье с высоты: крыши, почта, вода у поворота.",
+      "draft": true
+    },
+    "H4.chest.label": {
+      "text": "Сундук",
+      "draft": true
+    },
+    "H4.chest.look": {
+      "text": "Праздничная скатерть, сложенная ровно. Под ней — пустые коробки. Документов нет.",
+      "draft": true
+    },
+    "H4.exit_H1.label": {
+      "text": "Вниз",
+      "draft": true
+    },
+    "H4.v02.done": {
+      "text": "Свет под крышей. Ничего обязательного — только знакомые вещи на своих местах.",
+      "draft": true
+    },
+    "O1.desks_front.label": {
+      "text": "Парты",
+      "draft": true
+    },
+    "O1.board.label": {
+      "text": "Доска",
+      "draft": true
+    },
+    "O1.board.label_written": {
+      "text": "Доска: «Я была здесь. Агата»",
+      "draft": true
+    },
+    "O1.board.use": {
+      "text": "На доске — задача, решённая до конца. Почерк незнакомый.",
+      "draft": true
+    },
+    "O1.board.chalk": {
+      "text": "Мелом, в углу доски: «Я была здесь. Агата».",
+      "draft": true
+    },
+    "O1.board.look": {
+      "text": "Школьная доска.",
+      "draft": true
+    },
+    "O1.sack.label": {
+      "text": "Мешок",
+      "draft": true
+    },
+    "O1.sack.use": {
+      "text": "Залатанный мешок. Латка поверх латки — чинили не раз.",
+      "draft": true
+    },
+    "O1.sack.look": {
+      "text": "Мешок у стены.",
+      "draft": true
+    },
+    "O1.notebooks.label": {
+      "text": "Стопка тетрадей",
+      "draft": true
+    },
+    "O1.notebooks.use": {
+      "text": "Стопка тетрадей, исписанных до последней страницы. Много рук, много лет.",
+      "draft": true
+    },
+    "O1.notebooks.look": {
+      "text": "Тетради на подоконнике.",
+      "draft": true
+    },
+    "O1.teacher_drawer.label": {
+      "text": "Учительский ящик",
+      "draft": true
+    },
+    "O1.teacher_drawer.label_open": {
+      "text": "Учительский ящик (пуст)",
+      "draft": true
+    },
+    "O1.teacher_drawer.use": {
+      "text": "Ящик со школьной печатью. Внутри — накладная на мел: рейс 14, дата. И фотография пристани.",
+      "draft": true
+    },
+    "O1.teacher_drawer.look": {
+      "text": "Ящик учительского стола со школьной печатью.",
+      "draft": true
+    },
+    "O1.chalk.label": {
+      "text": "Мел",
+      "draft": true
+    },
+    "O1.chalk.use": {
+      "text": "Кусок мела с учительского стола.",
+      "draft": true
+    },
+    "O1.chalk.look": {
+      "text": "Мел.",
+      "draft": true
+    },
+    "O1.bird_drawing.label": {
+      "text": "Картинка с птицей",
+      "draft": true
+    },
+    "O1.bird_drawing.label_marked": {
+      "text": "Картинка с птицей (с пометкой)",
+      "draft": true
+    },
+    "O1.bird_drawing.prompt": {
+      "text": "Кто-то дорисовал птице сапоги. Шапку когда-то пририсовала я сама.",
+      "draft": true
+    },
+    "O1.bird_drawing.opt_mark": {
+      "text": "Оставить пометку на полях",
+      "draft": true
+    },
+    "O1.bird_drawing.opt_leave": {
+      "text": "Не трогать",
+      "draft": true
+    },
+    "O1.bird_drawing.look": {
+      "text": "Учебная картинка с птицей на полях страницы.",
+      "draft": true
+    },
+    "O1.v03.done": {
+      "text": "Чужое исправление остаётся на странице. Кто рисовал — не написано.",
+      "draft": true
+    },
+    "O1.exit_H3.label": {
+      "text": "Обратная дверь → галерея",
+      "draft": true
+    },
+    "O1.exit_H3.closed": {
+      "text": "Дверь не держится в раме.",
+      "draft": true
+    },
+    "O1.exit_O2.label": {
+      "text": "Дверь на крыльцо",
+      "draft": true
+    },
+    "O2.school_wall.label": {
+      "text": "Школа",
+      "draft": true
+    },
+    "O2.tree.label": {
+      "text": "Дерево",
+      "draft": true
+    },
+    "O2.tree.look": {
+      "text": "Дерево у крыльца. Выше, чем я помню.",
+      "draft": true
+    },
+    "O2.porch_step.label": {
+      "text": "Ступень крыльца",
+      "draft": true
+    },
+    "O2.porch_step.label_mitten": {
+      "text": "Ступень (варежка на месте)",
+      "draft": true
+    },
+    "O2.porch_step.mitten": {
+      "text": "Варежка — у ступени. Если дорожка возвращает, она будет лежать здесь же.",
+      "draft": true
+    },
+    "O2.porch_step.look": {
+      "text": "Ступень крыльца, снег утоптан.",
+      "draft": true
+    },
+    "O2.mitten.label": {
+      "text": "Варежка",
+      "draft": true
+    },
+    "O2.mitten.use": {
+      "text": "Детская варежка на перилах. Сухая. Подойдёт как метка.",
+      "draft": true
+    },
+    "O2.mitten.look": {
+      "text": "Варежка на перилах крыльца.",
+      "draft": true
+    },
+    "O2.window_other.label": {
+      "text": "Другое окно",
+      "draft": true
+    },
+    "O2.window_other.look": {
+      "text": "Другое окно той же школы. Дорожка привела сюда.",
+      "draft": true
+    },
+    "O2.exit_O1.label": {
+      "text": "В класс",
+      "draft": true
+    },
+    "O2.exit_O4.label": {
+      "text": "Калитка",
+      "draft": true
+    },
+    "O2.exit_O4.loop": {
+      "text": "Дорожка от калитки делает петлю — и выводит к другому окну той же школы.",
+      "draft": true
+    }
   }
 }

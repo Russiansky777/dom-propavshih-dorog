@@ -1,19 +1,165 @@
 {
   "_comment": "Персонажи и канонические возрасты. voice — заметки для кастинга озвучки (ElevenLabs или аналог), заполняются после прослушивания.",
   "characters": [
-    {"id": "agata", "name": "Агата", "age": 25, "age_at_cut": 24, "role": "Героиня; снаружи; ищет мать и брата", "name_style": "old", "voice": {"direction": "Негромкая, собранная, тёплая; без мелодрамы; устаёт к E4", "cast": null}},
-    {"id": "nina", "name": "Нина", "age": 67, "age_at_cut": 47, "role": "Мать; учительница; общая комната O3", "name_style": "common", "voice": {"direction": "Спокойная, учительская точность; двадцать лет усталости без жалобы", "cast": null}},
-    {"id": "ilya", "name": "Илья", "age": 32, "age_at_cut": 12, "role": "Брат; крыльцо и сад на O4; отец Ульяны", "name_style": "common", "voice": {"direction": "Мягкий, деловитый; привычка зажимать карандаш за ухом слышна в паузах", "cast": null}},
-    {"id": "ulyana", "name": "Ульяна", "age": 8, "age_at_cut": null, "role": "Дочь Ильи; родилась внутри", "name_style": "old", "voice": {"direction": "Детский голос — отдельно проверить правила сервиса; честный, не сюсюкающий", "cast": null}},
-    {"id": "ilya_wife", "name": null, "age": null, "role": "Жена Ильи; фоновая жительница; имя не закреплено (не «Дарья»)", "name_style": null, "voice": {"direction": "Несколько реплик", "cast": null}},
-    {"id": "mitya", "name": "Митя", "age": 37, "age_at_cut": 17, "role": "Мастер переправы; дальняя пристань R3", "name_style": "common", "voice": {"direction": "Низкий, немногословный; при матери — чуть мальчишеский", "cast": null}},
-    {"id": "pelageya", "name": "Пелагея", "age": 40, "age_at_cut": 39, "role": "Лодочница; ближний причал R1; мать Мити", "name_style": "old", "voice": {"direction": "Резковатая, практичная; ломается только в M18", "cast": null}},
-    {"id": "pavel", "name": "Павел", "age": 48, "age_at_cut": 47, "role": "Мельница M1; снял знак ради насоса", "name_style": "common", "voice": {"direction": "Ровный, виноватый без оправданий", "cast": null}},
-    {"id": "tamara", "name": "Тамара", "age": 53, "age_at_cut": 52, "role": "Почта Z1; хранит ключ и письма", "name_style": "common", "voice": {"direction": "Тёплая, разговорчивая, следит за всеми", "cast": null}},
-    {"id": "evdokia", "name": "Евдокия", "age": null, "age_at_cut": 54, "died_at": 72, "role": "Тётя; умерла внутри за два местных года до событий; присутствует записями", "name_style": "old", "voice": {"direction": "Только если будут читаться записи; скорее без голоса", "cast": null}},
-    {"id": "aksinya", "name": "Аксинья", "age": 44, "role": "Жилая улица; письмо брату (Q01)", "name_style": "old", "voice": {"direction": "Сдержанная", "cast": null}},
-    {"id": "savely", "name": "Савелий", "age": 60, "role": "Общая комната и мастерское место; саженец (Q10); обычай закрытия дорог (предложение 4.1)", "name_style": "old", "voice": {"direction": "Медленный, с улыбкой", "cast": null}},
-    {"id": "tikhon", "name": "Тихон", "age": null, "role": "Печной зверёк-смотритель; дом", "name_style": "common", "voice": {"direction": "Главный риск кастинга: серьёзный маленький чиновник, не мультяшка; страх выдаёт только хвост, не голос", "cast": null}}
+    {
+      "id": "agata",
+      "name": "Агата",
+      "age": 18,
+      "age_at_cut": 17,
+      "role": "Героиня; снаружи; ищет мать и брата. При разрыве жила вне Ольховки (учёба в уездном городе — предложение, уточнить)",
+      "name_style": "old",
+      "voice": {
+        "direction": "Молодой голос 18 лет, негромкий, собранный, без мелодрамы; взрослеет к E4",
+        "cast": null
+      }
+    },
+    {
+      "id": "nina",
+      "name": "Нина",
+      "age": 67,
+      "age_at_cut": 47,
+      "role": "Мать; учительница; общая комната O3",
+      "name_style": "common",
+      "voice": {
+        "direction": "Спокойная, учительская точность; двадцать лет усталости без жалобы",
+        "cast": null
+      }
+    },
+    {
+      "id": "ilya",
+      "name": "Илья",
+      "age": 32,
+      "age_at_cut": 12,
+      "role": "Брат; крыльцо и сад на O4; отец Ульяны",
+      "name_style": "common",
+      "voice": {
+        "direction": "Мягкий, деловитый; привычка зажимать карандаш за ухом слышна в паузах",
+        "cast": null
+      }
+    },
+    {
+      "id": "ulyana",
+      "name": "Ульяна",
+      "age": 8,
+      "age_at_cut": null,
+      "role": "Дочь Ильи; родилась внутри",
+      "name_style": "old",
+      "voice": {
+        "direction": "Детский голос — отдельно проверить правила сервиса; честный, не сюсюкающий",
+        "cast": null
+      }
+    },
+    {
+      "id": "ilya_wife",
+      "name": null,
+      "age": null,
+      "role": "Жена Ильи; фоновая жительница; имя не закреплено (не «Дарья»)",
+      "name_style": null,
+      "voice": {
+        "direction": "Несколько реплик",
+        "cast": null
+      }
+    },
+    {
+      "id": "mitya",
+      "name": "Митя",
+      "age": 37,
+      "age_at_cut": 17,
+      "role": "Мастер переправы; дальняя пристань R3",
+      "name_style": "common",
+      "voice": {
+        "direction": "Низкий, немногословный; при матери — чуть мальчишеский",
+        "cast": null
+      }
+    },
+    {
+      "id": "pelageya",
+      "name": "Пелагея",
+      "age": 40,
+      "age_at_cut": 39,
+      "role": "Лодочница; ближний причал R1; мать Мити",
+      "name_style": "old",
+      "voice": {
+        "direction": "Резковатая, практичная; ломается только в M18",
+        "cast": null
+      }
+    },
+    {
+      "id": "pavel",
+      "name": "Павел",
+      "age": 48,
+      "age_at_cut": 47,
+      "role": "Мельница M1; снял знак ради насоса",
+      "name_style": "common",
+      "voice": {
+        "direction": "Ровный, виноватый без оправданий",
+        "cast": null
+      }
+    },
+    {
+      "id": "tamara",
+      "name": "Тамара",
+      "age": 53,
+      "age_at_cut": 52,
+      "role": "Почта Z1; хранит ключ и письма",
+      "name_style": "common",
+      "voice": {
+        "direction": "Тёплая, разговорчивая, следит за всеми",
+        "cast": null
+      }
+    },
+    {
+      "id": "evdokia",
+      "name": "Евдокия",
+      "age": null,
+      "age_at_cut": 54,
+      "died_at": 72,
+      "role": "Тётя; умерла внутри за два местных года до событий; присутствует записями",
+      "name_style": "old",
+      "voice": {
+        "direction": "Только если будут читаться записи; скорее без голоса",
+        "cast": null
+      }
+    },
+    {
+      "id": "aksinya",
+      "name": "Аксинья",
+      "age": 44,
+      "role": "Жилая улица; письмо брату (Q01)",
+      "name_style": "old",
+      "voice": {
+        "direction": "Сдержанная",
+        "cast": null
+      }
+    },
+    {
+      "id": "savely",
+      "name": "Савелий",
+      "age": 60,
+      "role": "Общая комната и мастерское место; саженец (Q10); обычай закрытия дорог (предложение 4.1)",
+      "name_style": "old",
+      "voice": {
+        "direction": "Медленный, с улыбкой",
+        "cast": null
+      }
+    },
+    {
+      "id": "tikhon",
+      "name": "Тихон",
+      "age": null,
+      "role": "Печной зверёк-смотритель; дом",
+      "name_style": "common",
+      "voice": {
+        "direction": "Главный риск кастинга: серьёзный маленький чиновник, не мультяшка; страх выдаёт только хвост, не голос",
+        "cast": null
+      }
+    }
   ],
-  "residents_inside": {"alive": 22, "original": 18, "original_alive": 15, "born_inside": 7, "died": 3}
+  "residents_inside": {
+    "alive": 22,
+    "original": 18,
+    "original_alive": 15,
+    "born_inside": 7,
+    "died": 3
+  }
 }
