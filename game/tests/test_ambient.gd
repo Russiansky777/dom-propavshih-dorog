@@ -202,12 +202,19 @@ func _test_build() -> void:
 			if room != null:
 				_check(Builder.of(room) == null, "%s: has no ambient file but got an Ambient node" % rid)
 				_free(room)
-	# A new street = one entry (preset street): Z4.
+	# A new street takes its weather from the preset (Z4): rain and wind come from `preset: street`, the
+	# file adds only what is painted in this room (sway layers, puddles, mud — real background 18.10).
 	var z4: Dictionary = AmbData.room("Z4")
 	_check(z4.has("rain") and z4.has("wind"), "Z4 {id, preset: street} must give rain and wind from the preset")
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(AMB_DIR + "/Z4.json"))
-	var keys := raw.keys().filter(func(k): return not String(k).begins_with("_"))
-	_check(keys.size() <= 2, "Z4 file should be one entry {id, preset}, has keys %s" % str(keys))
+	_check(String(raw.get("preset", "")) == "street" and not raw.has("rain") and not raw.has("wind"),
+		"Z4 file must take rain and wind from preset street, not repeat them (keys %s)" % str(raw.keys()))
+	var z4room := _build("Z4")
+	if z4room != null:
+		var amb: Node = Builder.of(z4room)
+		_check(amb != null and amb.find_child("branches", true, false) != null and amb.find_child("tall_grass", true, false) != null,
+			"Z4: sway layers branches/tall_grass (sway_tree/sway_grass pictures) must be built")
+		_free(z4room)
 
 
 # --- 2. Input ---------------------------------------------------------------------------------------
