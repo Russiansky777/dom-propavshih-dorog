@@ -1,0 +1,49 @@
+{
+  "set": "e0e1_probe",
+  "runs": [
+    {
+      "run": "39072575687",
+      "at": "2026-10-17T21:51:09+00:00",
+      "request": "pipeline/requests/voice_e0e1.json",
+      "synthesized": [
+        "M01_0",
+        "M01_1",
+        "M01_2",
+        "M02_0",
+        "M02_1",
+        "M02_2",
+        "M03_0",
+        "M03_1",
+        "M03_2",
+        "M03_3",
+        "M04_0",
+        "M05_0",
+        "M06_0",
+        "M07_0",
+        "M08_0",
+        "Q04_0",
+        "Q04_1",
+        "Q04_2",
+        "Q04_3"
+      ],
+      "reprocessed": [],
+      "characters_text": 617,
+      "failed": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 12118,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 12118,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 0
+    }
+  ]
+}
