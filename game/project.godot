@@ -23,6 +23,7 @@ StoryData="*res://scripts/core/story_data.gd"
 RoomManager="*res://scripts/core/room_manager.gd"
 StoryRunner="*res://scripts/core/story_runner.gd"
 MusicDirector="*res://scripts/audio/music_director.gd"
+SfxDirector="*res://scripts/audio/sfx_director.gd"
 
 [audio]
 

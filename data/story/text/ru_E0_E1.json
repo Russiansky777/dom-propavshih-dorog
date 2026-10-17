@@ -102,6 +102,10 @@
       "text": "Музыка",
       "draft": false
     },
+    "ui.sfx_volume": {
+      "text": "Звуки",
+      "draft": false
+    },
     "ui.close": {
       "text": "Закрыть",
       "draft": false

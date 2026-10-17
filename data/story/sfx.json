@@ -1,0 +1,67 @@
+{
+  "_comment": "Звуки (ElevenLabs, таблица Директора 17.10): SfxDirector (game/scripts/audio/sfx_director.gd), шина SFX (ползунок «Звуки» в меню). Файлы — res://assets/sfx/<file> (tools/prepare_sfx.sh из assets/sfx_src; измерения громкости — game/assets/sfx/levels.json). volume_db — поправка к файлу; соотношение с музыкой проверяет tools/validate_sfx.py: шаги не громче музыки, двери чуть громче (до +6 dB), дождь снаружи ≈ −28 LUFS. Проверка данных — tools/validate_sfx.py, поведение — game/tests/test_sfx.gd.",
+  "sounds": {
+    "door_passage": {"files": ["sfx_door_passage.wav"], "volume_db": -6.0, "_note": "открыть и закрыть дверь — по умолчанию для выходов-дверей"},
+    "door_heavy": {"files": ["sfx_door_variant_01.wav"], "volume_db": -2.0, "_note": "variant_01 «opening old door»: тяжёлая старая дверь"},
+    "door_light": {"files": ["sfx_door_variant_02.wav"], "volume_db": -6.0, "_note": "variant_02 «subtle realistic wooden door»: лёгкая деревянная"},
+    "steps_gravel": {"files": ["sfx_steps_gravel_01.wav", "sfx_steps_gravel_02.wav", "sfx_steps_gravel_03.wav", "sfx_steps_gravel_04.wav", "sfx_steps_gravel_05.wav", "sfx_steps_gravel_06.wav", "sfx_steps_gravel_07.wav", "sfx_steps_gravel_08.wav"], "volume_db": -4.0, "pitch_jitter": 0.06, "volume_jitter_db": 1.5},
+    "steps_soft": {"files": ["sfx_steps_soft_01.wav", "sfx_steps_soft_02.wav", "sfx_steps_soft_03.wav", "sfx_steps_soft_04.wav", "sfx_steps_soft_05.wav", "sfx_steps_soft_06.wav", "sfx_steps_soft_07.wav"], "volume_db": -6.0, "pitch_jitter": 0.05, "volume_jitter_db": 1.5},
+    "bag_receive": {"files": ["sfx_bag_leather.wav"], "volume_db": -6.0},
+    "bag_handle": {"files": ["sfx_bag_leather_short_01.wav", "sfx_bag_leather_short_02.wav", "sfx_bag_leather_short_03.wav"], "volume_db": -5.0, "pitch_jitter": 0.04, "volume_jitter_db": 1.0}
+  },
+  "steps": {
+    "_comment": "Шаг — на кадре постановки ноги из листа ходьбы (data/story/ambient/_index.json footfall.<актёр>.contact_frames, та же точка ступни, что у брызг и следов AmbientFootfall). Покрытие — по комнате (rooms), внутри комнаты — по многоугольникам areas (первый, в который попала ступня).",
+    "surfaces": {"gravel": "steps_gravel", "wood": "steps_soft"},
+    "default_surface": "gravel",
+    "rooms": {
+      "Z1": "wood", "Z2": "gravel", "Z3": "gravel", "Z4": "gravel",
+      "H1": "wood", "H2": "wood", "H3": "wood", "H4": "wood",
+      "R1": "gravel", "R2": "gravel", "R3": "wood", "R4": "wood",
+      "M1": "gravel", "M2": "wood", "M3": "wood", "M4": "gravel",
+      "O1": "wood", "O2": "gravel", "O3": "wood", "O4": "gravel", "S1": "gravel"
+    },
+    "areas": {
+      "R1": [{"surface": "wood", "poly": [[940, 600], [1405, 600], [1405, 745], [1060, 700], [940, 690]], "_note": "настил причала (walk_samples R1: «настил причала», «край настила», «корень причала»)"}]
+    }
+  },
+  "doors": {
+    "_comment": "Выход-дверь «ОТКУДА>КУДА» → звук: один раз на переход, при появлении новой комнаты; звучит целиком через смену комнаты (плеер не принадлежит комнате). Загрузка сохранения и новая игра дверей не открывают. Выходы без записи — улица, без двери.",
+    "Z1>Z4": "door_passage", "Z4>Z1": "door_passage",
+    "Z2>H1": "door_heavy", "H1>Z2": "door_heavy",
+    "Z4>H3": "door_heavy", "H3>Z4": "door_heavy",
+    "H1>H2": "door_light", "H2>H1": "door_light",
+    "H1>H3": "door_light", "H3>H1": "door_light",
+    "H1>H4": "door_light", "H4>H1": "door_light",
+    "H3>O1": "door_passage", "O1>H3": "door_passage",
+    "O1>O2": "door_passage", "O2>O1": "door_passage",
+    "H3>R4": "door_passage"
+  },
+  "bag": {
+    "_comment": "Сигнал game_ui.gd bag_sound_requested(kind): receive — предмет влетел в сумку, select — взят в руку, deselect — убран.",
+    "receive": "bag_receive", "select": "bag_handle", "deselect": "bag_handle"
+  },
+  "loops": {
+    "stove_fire": {
+      "file": "amb_stove_fire.ogg",
+      "room": "H1",
+      "if": ["stove_lit"],
+      "pos": [182, 445],
+      "volume_db": 0.0,
+      "near_px": 250,
+      "far_px": 1500,
+      "far_db": -12.0,
+      "fade_s": 1.2,
+      "_note": "огонь в печи H1 (позиция — устье печи, источник stove_mouth в data/story/lights/H1.json); только при stove_lit; громче, когда Агата ближе (near_px → 0 dB, far_px → far_db), панорама — от Агаты. Исходник «AMBRoom — a quiet old library»: под гулом комнаты (86 % энергии ниже 200 Гц, срезан) — случайные широкополосные щелчки ≈7,7/с по 9 мс — тихий треск огня"
+    },
+    "rain": {
+      "file": "amb_rain.ogg",
+      "outside": ["Z2", "Z3", "Z4", "R1"],
+      "inside": ["Z1", "H1", "H2", "H3", "H4"],
+      "outside_db": 0.0,
+      "inside_db": -9.0,
+      "inside_lowpass_hz": 900,
+      "fade_s": 1.0,
+      "_note": "outside — комнаты с моросью (data/story/ambient, пресет street); inside — дом и почта в дождливом Заречье: тише и через фильтр нижних частот (шина SFX_Inside); школа (O1, O2 — зима) и прочие — без дождя"
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "_comment": "Измерения tools/prepare_sfx.py (ffmpeg ebur128): peak_db, lufs_i, lufs_m_max (громчайшее окно 400 мс), duration_s. Короткие файлы измерены с 0,5 с тишины по краям.",
+  "sfx_door_passage.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -18.7,
+    "lufs_m_max": -14.4,
+    "duration_s": 3.65
+  },
+  "sfx_door_variant_01.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -24.8,
+    "lufs_m_max": -19.3,
+    "duration_s": 3.895
+  },
+  "sfx_door_variant_02.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -20.0,
+    "lufs_m_max": -16.4,
+    "duration_s": 1.56
+  },
+  "sfx_steps_gravel_01.wav": {
+    "peak_db": -1.2,
+    "lufs_i": -25.7,
+    "lufs_m_max": -24.7,
+    "duration_s": 0.225
+  },
+  "sfx_steps_gravel_02.wav": {
+    "peak_db": -1.1,
+    "lufs_i": -26.5,
+    "lufs_m_max": -24.8,
+    "duration_s": 0.48
+  },
+  "sfx_steps_gravel_03.wav": {
+    "peak_db": -2.1,
+    "lufs_i": -26.5,
+    "lufs_m_max": -24.7,
+    "duration_s": 0.55
+  },
+  "sfx_steps_gravel_04.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -26.6,
+    "lufs_m_max": -24.9,
+    "duration_s": 0.595
+  },
+  "sfx_steps_gravel_05.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -25.8,
+    "lufs_m_max": -24.8,
+    "duration_s": 0.46
+  },
+  "sfx_steps_gravel_06.wav": {
+    "peak_db": -1.8,
+    "lufs_i": -26.5,
+    "lufs_m_max": -24.8,
+    "duration_s": 0.585
+  },
+  "sfx_steps_gravel_07.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -28.6,
+    "lufs_m_max": -27.6,
+    "duration_s": 0.515
+  },
+  "sfx_steps_gravel_08.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -27.8,
+    "lufs_m_max": -25.4,
+    "duration_s": 0.59
+  },
+  "sfx_steps_soft_01.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -25.3,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.2
+  },
+  "sfx_steps_soft_02.wav": {
+    "peak_db": -2.5,
+    "lufs_i": -25.3,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.215
+  },
+  "sfx_steps_soft_03.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -28.1,
+    "lufs_m_max": -28.1,
+    "duration_s": 0.36
+  },
+  "sfx_steps_soft_04.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -25.3,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.33
+  },
+  "sfx_steps_soft_05.wav": {
+    "peak_db": -2.6,
+    "lufs_i": -25.4,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.3
+  },
+  "sfx_steps_soft_06.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -26.1,
+    "lufs_m_max": -26.0,
+    "duration_s": 0.36
+  },
+  "sfx_steps_soft_07.wav": {
+    "peak_db": -5.3,
+    "lufs_i": -27.0,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.485
+  },
+  "sfx_bag_leather.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -25.1,
+    "lufs_m_max": -21.6,
+    "duration_s": 3.08
+  },
+  "sfx_bag_leather_short_01.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -24.7,
+    "lufs_m_max": -22.3,
+    "duration_s": 0.34
+  },
+  "sfx_bag_leather_short_02.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -21.6,
+    "lufs_m_max": -21.6,
+    "duration_s": 0.215
+  },
+  "sfx_bag_leather_short_03.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -23.7,
+    "lufs_m_max": -23.7,
+    "duration_s": 0.17
+  },
+  "amb_rain.ogg": {
+    "peak_db": -2.0,
+    "lufs_i": -28.5,
+    "lufs_m_max": -25.9,
+    "duration_s": 28.0
+  },
+  "amb_stove_fire.ogg": {
+    "peak_db": -1.2,
+    "lufs_i": -32.6,
+    "lufs_m_max": -25.4,
+    "duration_s": 18.5
+  }
+}

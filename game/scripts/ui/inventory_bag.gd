@@ -72,6 +72,7 @@ func _init() -> void:
 	_row.name = "Pockets"
 	_row.add_theme_constant_override("separation", SLOT_GAP)
 	_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	_row.mouse_filter = Control.MOUSE_FILTER_PASS   # the wheel over a pocket reaches the strip
 	add_child(_row)
 	prev_button = _arrow("‹", "BagPrev", -1)
 	_row.add_child(prev_button)
@@ -80,6 +81,7 @@ func _init() -> void:
 		s.name = "Slot%d" % i
 		s.index = i
 		s.custom_minimum_size = SLOT_SIZE
+		s.mouse_filter = Control.MOUSE_FILTER_PASS   # clicks are accepted by the pocket, the wheel goes on
 		s.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		s.clicked.connect(_on_slot_clicked)
 		s.mouse_entered.connect(_on_slot_hover.bind(s))
@@ -100,6 +102,19 @@ func _init() -> void:
 	tooltip = PanelContainer.new()
 	tooltip.name = "BagTooltip"
 	tooltip.theme_type_variation = &"BagTooltipPanel"
+	var tip := StyleBoxFlat.new()   # the bag draws itself: the tooltip keeps its look with any theme
+	tip.bg_color = Color(0.11, 0.08, 0.058, 0.97)
+	tip.border_color = Color(0.68, 0.55, 0.35, 0.78)
+	tip.set_border_width_all(2)
+	tip.set_corner_radius_all(8)
+	tip.shadow_color = Color(0, 0, 0, 0.45)
+	tip.shadow_size = 8
+	tip.shadow_offset = Vector2(0, 4)
+	tip.content_margin_left = 16
+	tip.content_margin_right = 16
+	tip.content_margin_top = 10
+	tip.content_margin_bottom = 12
+	tooltip.add_theme_stylebox_override("panel", tip)
 	tooltip.top_level = true
 	tooltip.visible = false
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE

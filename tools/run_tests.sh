@@ -43,5 +43,6 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_lighting.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет, огонь, тени актёров
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ambient.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # живой мир: дождь, ветер, вода, следы
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_music.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # музыка: темы комнат, кроссфейд, цикл, события, приглушение, громкость
+"$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ui_bag.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # сумка: кармашки, иконки, наведение, выбор, «влёт», листание
 echo "[tests] overall exit code: $code"
 exit "$code"
