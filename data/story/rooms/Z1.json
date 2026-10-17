@@ -1,34 +1,34 @@
 {
   "id": "Z1",
-  "_art": "Фон assets/incoming/Z1_bg.png (1672x941 → 1920x1080), передний план Z1_fg_counter.png — стойка почты (окклюдер, ножки на полу y≈1000). Координаты в 1920x1080. Хотспоты и выходы не рисуются, подпись — при наведении.",
+  "_art": "Фон assets/incoming/Z1_bg.png (1672x941 → 1920x1080), передний план Z1_fg_counter.png — стойка почты (окклюдер). Слой нарисован огромным столом посреди почты; уменьшен до 0.7 и поставлен в глубину комнаты перед стеной: Тамара за стойкой, рисунки на стойке, Агата обходит стойку с обоих торцов и проходит за ней (полоса пола у стены). Координаты в 1920x1080. Хотспоты и выходы не рисуются, подпись — при наведении.",
   "background": {"kind": "interior", "image": "res://assets/rooms/Z1/bg.png", "wall": "#7a6a52", "floor": "#8a7250", "accent": "#b89c6a", "horizon": 660},
   "walkable": [[20, 1070], [20, 752], [440, 680], [1010, 682], [1530, 690], [1880, 694], [1900, 700], [1910, 1070]],
-  "walkable_holes": [[[405, 772], [1518, 772], [1522, 1002], [400, 1002]]],
-  "no_walk_samples": [[960, 880, "стойка"], [460, 960, "стойка, левый край"], [1470, 800, "стойка, правый край"], [700, 620, "сундук у стены"], [1690, 560, "дверь"]],
-  "walk_samples": [[250, 900], [1700, 780], [960, 1040], [740, 725], [1600, 1000], [300, 760]],
+  "walkable_holes": [[[677, 727], [1335, 727], [1400, 895], [621, 895]], [[1035, 684], [1105, 684], [1105, 728], [1035, 728]]],
+  "no_walk_samples": [[1000, 820, "стойка"], [700, 870, "стойка, левый край"], [1350, 800, "стойка, правый край"], [1070, 706, "Тамара за стойкой"], [700, 620, "сундук у стены"], [1690, 560, "дверь"]],
+  "walk_samples": [[250, 900], [1700, 780], [960, 950, "перед стойкой"], [740, 712, "за стойкой слева"], [1260, 712, "за стойкой справа"], [520, 820, "у левого торца"], [1500, 820, "у правого торца"], [1000, 1040]],
   "depth": {"top_y": 660, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 1.7},
   "_depth_note": "дверь на улицу ≈ 560 px ≈ 2 м у дальней стены → рост Агаты ≈ 1.2×337 ≈ 400 px; у ближнего края 1.7",
   "layers": [
-    {"id": "counter", "image": "res://assets/rooms/Z1/fg_counter.png", "occluder": true, "z": 1000}
+    {"id": "counter", "image": "res://assets/rooms/Z1/fg_counter.png", "occluder": true, "scale": 0.7, "scale_reason": "слой нарисован огромным столом посреди почты (Директор): при масштабе фона стойка 1180 px шириной от окна до двери. При 0.7 — стойка ≈ 3 м в глубине комнаты, Тамара за ней по пояс-бёдра", "offset": [337, 193], "z": 885, "_z_note": "передние ножки стойки на полу при y≈885; задняя кромка основания y≈737"}
   ],
   "spawns": {"default": [250, 900], "from_Z2": [1700, 780]},
   "props": [],
   "hotspots": [
     {
-      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [980, 250, 180, 450], "stand": [1100, 1040], "color": "#c47a5a", "draw": false, "pick_priority": 2, "image": "res://assets/characters/tamara/front.png",
+      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [980, 250, 180, 450], "stand": [1080, 940], "color": "#c47a5a", "draw": false, "pick_priority": 2, "image": "res://assets/characters/tamara/front.png",
       "talk": {"scene": "M01", "after_text": "@Z1.tamara.after"}
     },
     {
-      "id": "drawings", "kind": "object", "label": "@Z1.drawings.label", "rect": [500, 540, 920, 200], "stand": [960, 1040], "color": "#e8dcc0", "draw": false,
+      "id": "drawings", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 576, 638, 132], "stand": [940, 945], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
       "use": {"sets": ["z1_compared_drawings"], "text": "@Z1.drawings.use", "once_flag": "z1_compared_drawings"},
       "look": "@Z1.drawings.look"
     },
     {
-      "id": "letters", "kind": "object", "label": "@Z1.letters.label", "rect": [500, 160, 480, 300], "stand": [740, 725], "color": "#d9cfae", "draw": false,
+      "id": "letters", "kind": "object", "label": "@Z1.letters.label", "rect": [500, 160, 480, 300], "stand": [740, 712], "color": "#d9cfae", "draw": false,
       "look": "@Z1.letters.look"
     },
     {
-      "id": "plan", "kind": "object", "label": "@Z1.plan.label", "rect": [1070, 160, 380, 360], "stand": [1260, 725], "color": "#cfc3a0", "draw": false,
+      "id": "plan", "kind": "object", "label": "@Z1.plan.label", "rect": [1070, 160, 380, 360], "stand": [1260, 712], "color": "#cfc3a0", "draw": false,
       "look": "@Z1.plan.look"
     }
   ],
