@@ -1,0 +1,20 @@
+{
+  "mode": "generate",
+  "set": "e0e1_thoughts",
+  "probe": true,
+  "_comment": "Мысли Агаты от первого лица в E0–E1 голосом Агаты («Agata», подача inner_voice — тише и ближе, без шёпота; теги — data/story/voice.json → narration.by_speaker.agata.tags). Какие ключи — narration.by_speaker.agata.keys (решение координатора 18.10 по п. 75: баритон ZAKADR не может сказать «нарисовала я»); записи ZAKADR этих ключей остаются запасными. H1.photo.look отложен (hold): игроку не показывается. Файлы — assets/voice/ru/agata_thoughts/<ключ>.ogg, id agata:<ключ>.",
+  "scenes": [],
+  "narration": {
+    "texts": ["ru_E0_E1", "ru_bag"],
+    "speakers": ["agata"]
+  },
+  "order": {
+    "by": "Координатор по решению п. 75 приёмки (задание Директора 18.10 на закадровый голос E0–E1)",
+    "date": "2026-10-18",
+    "what": "мысли Агаты от первого лица голосом Агаты вместо ZAKADR (20 фраз E0–E1)",
+    "max_lines": 25,
+    "max_chars": 1300
+  },
+  "redo": [],
+  "note": "2026-10-18: первая запись мыслей Агаты голосом Агаты"
+}
