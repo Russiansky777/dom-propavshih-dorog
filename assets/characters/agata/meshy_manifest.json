@@ -5,13 +5,13 @@
   "tasks": {
     "model_task": "01a14a18-5ec2-7642-aecf-cb0e6568a34b",
     "rig_task": "01a14a1a-e01c-748e-a49c-0e41c145d7fc",
-    "anim_task": "01a14a1c-f152-72cd-aa09-fd67c311dfcb"
+    "anim_task": "01a14a26-4d8e-7256-8a2f-ee46bba2eeb3"
   },
   "actions": {
     "idle": {
-      "action_id": 568,
-      "name": "Swim Idle",
-      "key": "Swim_Idle"
+      "action_id": 576,
+      "name": "Idle Turn Left",
+      "key": "Idle_Turn_Left"
     },
     "walk": {
       "action_id": 1,
