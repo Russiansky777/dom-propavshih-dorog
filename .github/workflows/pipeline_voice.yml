@@ -73,7 +73,9 @@ jobs:
 
       - name: Проверка манифеста
         if: always() && steps.req.outputs.files != ''
-        run: python tools/validate_voice.py --strict 2>&1 | tee -a pipeline/voice/state/last_run.log
+        run: |
+          set -o pipefail
+          python tools/validate_voice.py --strict 2>&1 | tee -a pipeline/voice/state/last_run.log
 
       - name: Коммит результатов
         if: always() && steps.req.outputs.files != ''
@@ -81,7 +83,7 @@ jobs:
           git config user.name "pipeline-bot"
           git config user.email "pipeline-bot@users.noreply.github.com"
           # git add с несуществующим путём не добавляет ничего — добавляем только то, что есть
-          for p in assets/voice pipeline/voice; do [ -e "$p" ] && git add "$p"; done
+          for p in assets/voice pipeline/voice; do if [ -e "$p" ]; then git add "$p"; fi; done
           if git diff --cached --quiet; then echo "нечего коммитить"; exit 0; fi
           git commit -q -m "pipeline: озвучка ElevenLabs (run ${{ github.run_id }}) [skip ci]"
           for i in 1 2 3 4 5 6; do
