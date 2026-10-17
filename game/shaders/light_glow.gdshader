@@ -17,6 +17,7 @@ uniform float halo_power = 2.2;
 uniform vec2 glass_size = vec2(0.25, 0.3);
 uniform vec2 glass_center = vec2(0.5, 0.5);
 uniform float glass = 0.55;
+uniform float glass_box = 0.0;   // 1 = a soft rectangle (a window pane), 0 = an ellipse (lamp glass)
 uniform float flame = 0.0;
 uniform vec2 flame_size = vec2(0.035, 0.11);
 uniform vec2 flame_base = vec2(0.5, 0.58);
@@ -29,7 +30,8 @@ void fragment() {
 	float h = pow(max(0.0, 1.0 - r), halo_power) * halo;
 
 	vec2 g = c / max(glass_size * 0.5, vec2(0.001));
-	float gl = (1.0 - smoothstep(0.55, 1.0, length(g))) * glass;
+	float gd = mix(length(g), max(abs(g.x), abs(g.y)), glass_box);
+	float gl = (1.0 - smoothstep(0.55, 1.0, gd)) * glass;
 
 	float fl = 0.0;
 	if (flame > 0.0) {

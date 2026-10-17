@@ -26,7 +26,7 @@ MusicDirector="*res://scripts/audio/music_director.gd"
 
 [audio]
 
-driver/output_latency.web=500
+driver/output_latency.web=750
 
 [display]
 

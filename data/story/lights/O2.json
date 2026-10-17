@@ -1,0 +1,28 @@
+{
+  "_comment": "Школьный двор O2 зимой: окно школы (слой стены fg_wall, рамы ≈ x 92..250, y 215..505) тепло светится изнутри сквозь изморозь — мягкий прямоугольный свет стекла и слабый ореол (glow), едва заметное дыхание; отсвет на стене под подоконником (mask). Без флагов.",
+  "room": "O2",
+  "floor_foreshortening": 0.35,
+  "sources": [
+    {
+      "id": "school_window",
+      "type": "glow",
+      "_note": "Тёплое окно в снегу: квадрат стекла, слабый ореол.",
+      "rect": [55, 165, 240, 390],
+      "z": 3,
+      "params": {"glass_center": [0.5, 0.5], "glass_size": [0.68, 0.76], "glass_box": 1.0, "glass": 0.2, "halo": 0.16, "halo_aspect": 1.6, "halo_power": 1.8, "flame": 0.0, "color": "#ffc07a", "seed": 4.1},
+      "flicker": {"group": "school", "amount": 0.06, "speed": 0.5},
+      "fade_s": 0.0
+    },
+    {
+      "id": "sill_spill",
+      "type": "mask",
+      "_note": "Отсвет окна на брёвнах под подоконником.",
+      "polygons": [[[70, 520], [275, 520], [290, 600], [60, 600]]],
+      "feather": 50,
+      "color": "#ffbf80",
+      "energy": 0.1,
+      "flicker": {"group": "school", "amount": 0.06, "speed": 0.5},
+      "fade_s": 0.0
+    }
+  ]
+}

@@ -23,8 +23,8 @@ extends Node
 ## Playback type is STREAM everywhere: the web default «Sample» would decode a whole 2–3 minute
 ## track to PCM (~60 MB, seconds of main-thread work) the first time each theme plays. The single-
 ## threaded web build mixes stream playback on the main thread, so project.godot raises
-## audio/driver/output_latency.web to 500 ms (a ≈0.7 s ring buffer): a room build or a slow frame
-## shorter than that does not interrupt the music; fades are heard up to that much later.
+## audio/driver/output_latency.web to 750 ms (a 32768-frame ring buffer, ≈0.7 s): a room build or a
+## slow frame shorter than that does not interrupt the music; fades are heard up to that much later.
 
 signal theme_changed(theme: String)
 signal music_volume_changed(volume: float)
