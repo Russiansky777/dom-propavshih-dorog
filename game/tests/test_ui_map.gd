@@ -231,7 +231,12 @@ func _test_here_and_visits() -> void:
 	var marks: Control = mp.get("marks")
 	var mill_l: Control = marks.find_child("Label_mill", false, false)
 	var post_l: Control = marks.find_child("Label_post", false, false)
-	_check(mill_l != null and mill_l.modulate.a < 0.7, "unvisited place paler")
+	_check(mill_l != null and mill_l.theme_type_variation == &"MapLabelFaint", "unvisited place paler")
+	var street_l: Control = marks.find_child("Label_street", false, false)
+	if mill_l != null and street_l != null:
+		var faint: Color = mill_l.get_theme_color("font_color")
+		var ink: Color = (marks.find_child("Label_lane", false, false) as Control).get_theme_color("font_color") if gs.has_flag("visited_Z4") else Color(0.20, 0.12, 0.06)
+		_check(faint.get_luminance() > ink.get_luminance() + 0.1, "faint ink lighter than visited ink")
 	_check(post_l != null and post_l.modulate.a > 0.95 and post_l.theme_type_variation == &"MapLabelHere", "current place highlighted")
 	_check(marks.find_child("Here", false, false) != null, "«Вы здесь» label")
 	_check(marks.find_child("Label_olkhovka", false, false) == null, "no Olkhovka label node")

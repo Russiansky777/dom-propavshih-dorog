@@ -127,7 +127,7 @@ func _on_frame_changed() -> void:
 	var n := wrapi(f - _last_walk_frame, 0, sheet.walk_frames())
 	var s := absf(scale.y)
 	for i in n:
-		_dist_drawn += sheet.stride_at(direction, _last_walk_frame + i) * s
+		_dist_drawn += sheet.stride_at(direction, _last_walk_frame + i) * s * floor_factor()
 	_last_walk_frame = f
 	# The sprite ticks before our _process: settle once the logical position has made this frame's
 	# step; meanwhile listeners (footfall) already get the new position, as far as the trail goes.
@@ -142,7 +142,7 @@ func _finish_frame_change() -> void:
 		_dist_drawn = _dist_logical  # would run ahead of the path walked: hold at the logical position
 		if not _settling:
 			lock_resyncs += 1  # (while settling, the last step simply ends on the target)
-	elif _dist_logical - _dist_drawn > sheet.row_cycle_px(direction) * s:
+	elif _dist_logical - _dist_drawn > sheet.row_cycle_px(direction) * s * floor_factor():
 		_dist_drawn = _dist_logical  # more than a cycle behind (timing hiccup): catch up
 		lock_resyncs += 1
 	_drawn_pos = _trail_point(_dist_drawn)
@@ -200,7 +200,19 @@ func drawn_position() -> Vector2:
 func stride_px() -> float:
 	if sheet == null:
 		return 0.0
-	return sheet.row_cycle_px(direction) / float(sheet.walk_frames()) * absf(scale.y)
+	return sheet.row_cycle_px(direction) / float(sheet.walk_frames()) * absf(scale.y) * floor_factor()
+
+
+## The room's floor foreshortening (rooms data `floor_foreshortening`, default 0.55).
+func floor_foreshortening() -> float:
+	if room != null and room.room_id != "" and StoryData.rooms.has(room.room_id):
+		return float(StoryData.rooms[room.room_id].get("floor_foreshortening", ActorSheet.FLOOR_FORESHORTENING_DEFAULT))
+	return ActorSheet.FLOOR_FORESHORTENING_DEFAULT
+
+
+## Scale of the current row's steps and speed for the room's perspective (1 for profile rows).
+func floor_factor() -> float:
+	return sheet.row_floor_factor(direction, floor_foreshortening()) if sheet != null else 1.0
 
 
 ## Diagnostics for the probe: how far the drawn figure is behind the logical one along the path.
@@ -270,7 +282,7 @@ func _cut_fade() -> void:
 func current_speed_px() -> float:
 	var s := absf(scale.y)
 	if sheet != null:
-		return sheet.walk_speed_row_px(direction, s) * speed_factor
+		return sheet.walk_speed_row_px(direction, s) * floor_factor() * speed_factor
 	return walk_speed * s * speed_factor
 
 

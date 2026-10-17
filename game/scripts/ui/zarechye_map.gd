@@ -174,14 +174,13 @@ func _build_marks() -> void:
 		var l := Label.new()
 		l.name = "Label_" + id
 		l.text = entry["text"]
-		l.theme_type_variation = &"MapLabelHere" if id == here_place else &"MapLabel"
+		l.theme_type_variation = &"MapLabelHere" if id == here_place else (&"MapLabel" if visited else &"MapLabelFaint")
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		marks.add_child(l)
 		l.reset_size()
 		l.position = _aligned(at, l.get_combined_minimum_size(), String(p.get("align", "above")), 14.0)
 		if not visited:
-			l.modulate = Color(1, 1, 1, 0.5)
-			dot.modulate = Color(1, 1, 1, 0.55)
+			dot.modulate = Color(1, 1, 1, 0.55)   # the label is paler by its own style (still readable)
 		entry["label"] = l
 		entry["dot"] = dot
 		if id == here_place:

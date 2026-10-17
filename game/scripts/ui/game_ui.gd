@@ -649,6 +649,7 @@ func _unhandled_input(event: InputEvent) -> void:
 # --- Hover ------------------------------------------------------------------------
 
 func _process(_delta: float) -> void:
+	hint_line.visible = not map_view.visible
 	if StoryRunner.selected_item != "":
 		_update_cursor_item()
 		if modal.visible or map_view.visible:

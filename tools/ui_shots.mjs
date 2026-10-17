@@ -173,7 +173,7 @@ async function main() {
 
       // --- M01: Tamara gives the key, the letter, the watch and the mitten → they fly into the bag ---
       await useHotspot("tamara");
-      await waitFor("M01 dialogue", (t) => t.beat && t.beat.type === "line", 8000);
+      await waitFor("M01 dialogue", (t) => t.beat && t.beat.type === "line", 25000);
       await sleep(300);
       await shot("02_dialogue_fonts");
       // Slow motion (time_scale 0.2) for the rest of M01: the items are granted on the last click and

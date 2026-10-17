@@ -938,6 +938,7 @@ func _test_stride() -> void:
 	player.speed_factor = 1.0
 	# 3. Walk left (row 6) along the near edge, then up (row 4): sample every render frame.
 	var runs := [["left", Vector2(1650, 990), Vector2(820, 990), 6], ["up", Vector2(1650, 990), Vector2(1650, 740), 4]]
+	var speeds := {}
 	for run in runs:
 		player.call("enter_room", room, run[1])
 		await physics_frame
@@ -974,7 +975,7 @@ func _test_stride() -> void:
 			t1 = b[4]
 			if wrapi(b[0] - a[0], 0, frames_n) != 1 or a[6] != run[3]:
 				continue
-			var expect: float = sheet.stride_at(run[3], a[0]) * a[3]
+			var expect: float = sheet.stride_at(run[3], a[0]) * a[3] * sheet.row_floor_factor(run[3], player.call("floor_foreshortening"))
 			var got: float = (b[1] as Vector2).distance_to(a[1])
 			adv.append(snappedf(got, 0.1))
 			max_err = maxf(max_err, absf(got - expect))
@@ -982,6 +983,14 @@ func _test_stride() -> void:
 		print("    walk %s (row %d): %d frame changes, fps %.2f (formula %.2f), drawn still within a frame: max %.2f px; advance per change %s; max |advance − table×scale| %.2f px; max lag behind logical %.1f px; resyncs %d" % [
 			run[0], run[3], changes, fps_meas, sheet.walk_fps_const(), within_max, str(adv), max_err, max_lag, player.lock_resyncs - resyncs0])
 		_check(changes >= 8, "%s: expected at least 8 frame changes, got %d" % [run[0], changes])
+		# Measured logical speed per unit of depth scale (px/s ÷ scale), for the vertical/side ratio.
+		var dist_px := 0.0
+		var scale_sum := 0.0
+		for i in range(1, samples.size()):
+			dist_px += (samples[i][2] as Vector2).distance_to(samples[i - 1][2])
+			scale_sum += float(samples[i][3])
+		var secs := float(samples[-1][4] - samples[0][4]) / 1e6
+		speeds[run[0]] = dist_px / maxf(secs, 0.001) / maxf(scale_sum / maxf(samples.size() - 1, 1), 0.001)
 		_check(within_max < 0.01, "%s: drawn figure must not move while a frame is shown, moved %.2f px" % [run[0], within_max])
 		_check(max_err < 0.6, "%s: every frame change must advance the drawn figure by table[row][frame] × scale (max error %.2f px)" % [run[0], max_err])
 		_check(not ahead, "%s: the drawn figure must never be ahead of the logical position" % run[0])
@@ -992,6 +1001,18 @@ func _test_stride() -> void:
 		print("    %s: stopped at %s (target %s)" % [run[0], str(player.global_position.round()), str(run[2])])
 		var tol: float = player.nav_agent.target_desired_distance + 1.0  # the navigation agent's own arrival tolerance
 		_check(player.global_position.distance_to(run[2]) < tol, "%s: the drawn figure finishes its steps and stops on the target (±%.0f px), at %s" % [run[0], tol, str(player.global_position)])
+	# Room perspective: vertical screen speed = side speed × floor_foreshortening (±5 %), by the
+	# formula for every depth row and as measured on the two walks; profile rows stay exact (factor 1).
+	var k: float = player.call("floor_foreshortening")
+	var v_side: float = sheet.walk_speed_row_px(2, 1.0) * sheet.row_floor_factor(2, k)
+	var v_down: float = sheet.walk_speed_row_px(0, 1.0) * sheet.row_floor_factor(0, k)
+	var v_up: float = sheet.walk_speed_row_px(4, 1.0) * sheet.row_floor_factor(4, k)
+	var measured: float = float(speeds.get("up", 0.0)) / maxf(float(speeds.get("left", 1.0)), 0.001)
+	print("    floor_foreshortening %.2f (H1): vertical/side speed by formula %.3f / %.3f, measured on the walks %.3f; row factors %s" % [
+		k, v_down / v_side, v_up / v_side, measured, str(range(8).map(func(r): return snappedf(sheet.row_floor_factor(r, k), 0.001)))])
+	_check(absf(v_down / v_side - k) <= 0.05 * k and absf(v_up / v_side - k) <= 0.05 * k, "vertical/side speed must equal floor_foreshortening %.2f ±5 %%, got %.3f / %.3f" % [k, v_down / v_side, v_up / v_side])
+	_check(absf(measured - k) <= 0.05 * k, "measured vertical/side speed %.3f must equal floor_foreshortening %.2f ±5 %%" % [measured, k])
+	_check(is_equal_approx(sheet.row_floor_factor(2, k), 1.0) and is_equal_approx(sheet.row_floor_factor(6, k), 1.0), "profile rows keep the measured root motion (factor 1)")
 	gs.reset()
 	_cleanup_m1()
 

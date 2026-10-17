@@ -27,6 +27,10 @@ var foot_lock: bool = true
 var stride_rows: Array = []
 var stride_row_cycle: PackedFloat32Array = PackedFloat32Array()
 var stride_start_frame: int = 0
+var stride_elev_deg: float = 14.0   # render camera elevation the table's rows are projected with
+## Default foreshortening of a room's floor (screen depth per screen width) when the room data has
+## no `floor_foreshortening`.
+const FLOOR_FORESHORTENING_DEFAULT: float = 0.55
 var stride_sheet_md5: String = ""
 var idle_action: String = "idle"
 var walk_action: String = "walk"
@@ -98,6 +102,7 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 				sum += float(v)
 			a.stride_row_cycle.append(sum)
 		a.stride_start_frame = int(st.get("start_frame", 0))
+		a.stride_elev_deg = float(st.get("camera_elev_deg", 14.0))
 		a.stride_sheet_md5 = String(st.get("sheet_md5", ""))
 	a.idle_action = String(spec.get("idle_action", "idle"))
 	a.walk_action = String(spec.get("walk_action", "walk"))
@@ -360,6 +365,18 @@ func row_cycle_px(row: int) -> float:
 	if has_stride_table():
 		return stride_row_cycle[wrapi(row, 0, directions)]
 	return cycle_meters * px_per_meter(1.0)
+
+
+## Room perspective for the walk: the sheet's rows are a 14° render, so a step towards/away from the
+## viewer is only 0.24 of a side step on screen; on our backgrounds the floor is foreshortened far less
+## (`floor_foreshortening`, ≈ 0.55). Rows with a depth component get their table and speed scaled by
+## |(cos φ, sin φ·k)| / |(cos φ, sin φ·sin elev)| — vertical screen speed = side speed × k. Profile
+## rows (φ = 0°, 180°) keep the measured root motion exactly (factor 1).
+func row_floor_factor(row: int, k: float) -> float:
+	var phi := deg_to_rad(90.0 - 360.0 / float(directions) * row)
+	var sheet_proj := Vector2(cos(phi), sin(phi) * sin(deg_to_rad(stride_elev_deg))).length()
+	var room_proj := Vector2(cos(phi), sin(phi) * k).length()
+	return room_proj / maxf(sheet_proj, 0.0001)
 
 
 ## Walk-cycle frame rate (constant): frames × speed_mps / cycle_meters.

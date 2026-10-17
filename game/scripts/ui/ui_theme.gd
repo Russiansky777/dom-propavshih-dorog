@@ -138,10 +138,12 @@ static func _build() -> Theme:
 	# Plan of Zarechye: dark ink names on small paper plates; the current place in red ochre.
 	_label_variation(t, &"MapLabel", "head_bold", 26, Color(0.20, 0.12, 0.06))
 	_label_variation(t, &"MapLabelHere", "head_bold", 28, Color(0.50, 0.11, 0.06))
+	_label_variation(t, &"MapLabelFaint", "head_bold", 25, Color(0.42, 0.34, 0.25))   # not visited yet
 	_label_variation(t, &"MapHereLabel", "body_italic", 22, Color(1.0, 0.95, 0.88))
 	_label_variation(t, &"MapHint", "body_italic", 21, Color(0.96, 0.92, 0.84), 6)
 	for v in [[&"MapLabel", Color(0.96, 0.91, 0.80, 0.90), Color(0.40, 0.27, 0.15, 0.85), 1],
 			[&"MapLabelHere", Color(0.99, 0.94, 0.84, 0.95), Color(0.62, 0.15, 0.08, 1.0), 2],
+			[&"MapLabelFaint", Color(0.93, 0.89, 0.80, 0.80), Color(0.55, 0.45, 0.33, 0.45), 1],
 			[&"MapHereLabel", Color(0.62, 0.15, 0.08, 0.92), Color(0.35, 0.08, 0.04, 1.0), 1]]:
 		var plate := StyleBoxFlat.new()
 		plate.bg_color = v[1]
