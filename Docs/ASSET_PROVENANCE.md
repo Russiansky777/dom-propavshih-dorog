@@ -19,3 +19,8 @@
 - Права: коммерческое использование треков Suno зависит от плана подписки на момент генерации (по словам ChatGPT в логе — WAV доступен на Pro/Premier). Перед релизом сверить условия Suno для плана Директора.
 - Порядок тем — по времени создания (Директор: «первый — дом, последний — последняя нота»): 01 Дом, 02 Деревня и дорога (Quiet Northern Roads), 03 Река и мельница (The Gusli Circle), 04 Школьный класс (Frost in the Schoolroom), 05 Зеркало (перегенерация), 06 Финал «Последняя нота».
 - Обработка: `pipeline/audio/prepare_music.sh` — линейная нормализация к −18 LUFS (было −15,2…−16,3), true peak −1,5 dBTP, OGG Vorbis q5; итог `assets/music/*.ogg`, 16,5 МБ на шесть треков.
+
+## 2026-10-17 — звуки (ElevenLabs Sound Effects)
+- Источник: ElevenLabs (генерация Директором), WAV 48 кГц стерео; имена по таблице Директора 17.10 22:09. Исходные имена файлов: `FOLYMisc-door_open_and_close` → `sfx_door_passage.wav`; `FEETHmn-foot_steps_on_gravel` → `sfx_steps_gravel.wav`; `FEETHmn-Soft_isolated_foots…` → `sfx_steps_soft.wav`; `A_worn_soft_leather…` → `sfx_bag_leather.wav`; `AMBRoom-A_quiet_old_library…` → `amb_stove_fire.wav` (по таблице — единственный кандидат на «огонь в печи»; судя по имени это тон тихой комнаты — проверить на слух); `RAINWatr-Gentle_relaxing_rai…` → `amb_rain.wav`; `OBJHsehld-opening_old_door` → `sfx_door_variant_01.wav`; `DOORWood-A_subtle_realistic_w…` → `sfx_door_variant_02.wav`.
+- Оригиналы в `assets/sfx_src/` (≈20 МБ); в игру идут обработанные версии (нарезка шагов, выравнивание громкости, OGG для петель).
+- Права: коммерческое использование звуков ElevenLabs — по условиям плана Директора на момент генерации; сверить перед релизом.
