@@ -124,11 +124,13 @@ async function main() {
     await sleep(1500);
     const on = await fps(SECONDS);
     const son = await state();
-    await page.screenshot({ path: path.join(OUT_DIR, `${c.name}.png`) });
+    line(`${c.name}: lighting on ${on.toFixed(1)} fps (Godot ${son.fps})`);
+    await page.screenshot({ path: path.join(OUT_DIR, `${c.name}.png`), timeout: 180000 });
     await page.evaluate(() => window.lightEnable(false));
     await sleep(1200);
     const off = await fps(SECONDS);
-    await page.screenshot({ path: path.join(OUT_DIR, `${c.name}_off.png`) });
+    line(`${c.name}: lighting off ${off.toFixed(1)} fps`);
+    await page.screenshot({ path: path.join(OUT_DIR, `${c.name}_off.png`), timeout: 180000 });
     await page.evaluate(() => window.lightEnable(true));
     report.cases[c.name] = { fps_on: +on.toFixed(1), fps_off: +off.toFixed(1), cost_pct: +(100 * (1 - on / off)).toFixed(1),
       godot_fps_on: son.fps, sources: son.sources ? Object.keys(son.sources).length : 0, shadows: son.shadows, tone: son.player && son.player.tone };
@@ -141,7 +143,7 @@ async function main() {
   await sleep(1200);
   await page.evaluate(() => window.lightWalk(1500, 900));
   const walk_fps = await fps(Math.min(SECONDS, 4));
-  await page.screenshot({ path: path.join(OUT_DIR, "H1_walk_fire.png") });
+  await page.screenshot({ path: path.join(OUT_DIR, "H1_walk_fire.png"), timeout: 180000 });
   const sw = await state();
   report.h1_walk = { fps: +walk_fps.toFixed(1), player: sw.player, shadows: sw.shadows };
   line(`H1 walk past the fire: ${walk_fps.toFixed(1)} fps, shadows ${sw.shadows}, player ${JSON.stringify(sw.player)}`);
