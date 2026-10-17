@@ -43,9 +43,11 @@ func _run() -> void:
 				frames += 1
 		for i in 150:
 			await process_frame
-		var hover: Node = main_node.find_child("Hover", true, false)
-		if hover is CanvasItem:
-			(hover as CanvasItem).visible = false
+		# The X cursor sits mid-screen (over the far exit in Z4): move it to a bare corner so no hover
+		# caption is in the frame.
+		root.warp_mouse(Vector2(4, 1076))
+		for i in 6:
+			await process_frame
 		await RenderingServer.frame_post_draw
 		var img := root.get_viewport().get_texture().get_image()
 		if img.get_width() != 1920:

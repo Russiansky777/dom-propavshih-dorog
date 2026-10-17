@@ -317,6 +317,59 @@ async function main() {
       throw { h1done: true };
     }
 
+    if (MODE === "tikhon") {
+      // Tikhon (bone puppet): reach H1, do the three M03 steps, catch him lifting his head on his line,
+      // then a 6-second idle series (crops around him) for a GIF: breathing, tail wave, ear/head accents.
+      const TDIR = path.join(SHOTS_DIR, "tikhon");
+      fs.rmSync(TDIR, { recursive: true, force: true });
+      fs.mkdirSync(TDIR, { recursive: true });
+      await useHotspot("tamara");
+      await waitFor("M01 done", (s) => s.flags.done_M01);
+      if (!(await goExit("Z4"))) failures.push("Z1→Z4 failed");
+      if (!(await goExit("Z2"))) failures.push("Z4→Z2 failed");
+      if (!(await goExit("H1"))) failures.push("Z2→H1 failed");
+      await sleep(600);
+      await shot("tikhon_before_M03");
+      await useHotspot("shutter");
+      await useHotspot("stove");
+      {
+        const s = await state();
+        await click("hotspot scarf", s.hotspots.scarf);
+        await waitWalk("scarf");
+        // Through the dialogue; stop on Tikhon's first line and photograph him (head lifted).
+        let caught = false;
+        for (let i = 0; i < 40; i++) {
+          const t = await state();
+          if (t.beat && t.beat.type === "line" && t.beat.speaker === "tikhon" && !caught) {
+            await sleep(700);
+            await shot("tikhon_talks");
+            caught = true;
+          }
+          if (t.beat && t.beat.type === "options") {
+            await click("option", Object.values(t.ui.options)[0]);
+          } else if (t.beat && t.beat.type) {
+            await click("continue", t.ui.dialogue_click || { x: 960, y: 780 });
+          } else if (t.flags.done_M03) {
+            break;
+          }
+          await sleep(500);
+        }
+        if (!caught) failures.push("no Tikhon line caught in M03");
+      }
+      await waitFor("M03 done", (s) => s.flags.done_M03, 30000);
+      await click("floor step back", { x: 1200, y: 960 });
+      await waitWalk("step back");
+      await sleep(800);
+      await shot("tikhon_idle");
+      const crop = { x: 240, y: 400, width: 300, height: 220 };
+      for (let i = 0; i < 48; i++) {
+        await page.screenshot({ path: path.join(TDIR, `idle_${String(i).padStart(2, "0")}.png`), clip: crop });
+        await sleep(110);
+      }
+      logLine(`tikhon series: 48 crops in ${path.relative(ROOT, TDIR)}`);
+      throw { h1done: true };
+    }
+
     if (MODE === "h1") {
       // Real Agata in the real H1: reach H1 (M01 → Z2 → H1), then direction / tempo / occlusion frames.
       for (const f of fs.readdirSync(SHOTS_DIR)) if (f.startsWith("H1_real_")) fs.rmSync(path.join(SHOTS_DIR, f), { force: true });
