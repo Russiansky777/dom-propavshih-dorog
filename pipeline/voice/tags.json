@@ -1,0 +1,32 @@
+{
+  "_comment": "Разрешённые аудиотеги подачи ElevenLabs для полей tags / voice_text реплик (data/story/scenes/*.json, quests.json). Тег — инструкция модели в квадратных скобках перед словами, подачу которых он меняет; в субтитры не попадает. Проверяет tools/validate_voice.py. Новый тег — добавить сюда с источником.",
+  "models": {
+    "supported": ["eleven_v4", "eleven_v3"],
+    "source": "https://elevenlabs.io/docs/help-center/product/core-capabilities/text-to-speech/how-do-audio-tags-work-with-eleven-v3-and-v4 — «The same tags work with both models», рекомендована v4; https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices#prompting-eleven-v4 — «Eleven v4 follows audio tags more reliably than earlier models». Для eleven_multilingual_v2 и Flash теги не описаны.",
+    "caveat": "Описательные теги — кандидаты для прослушивания: «tag-following is not perfect yet» (страница Eleven v4); проверять, что указание исполнено, а не прочитано вслух."
+  },
+  "sources": {
+    "director_ui": "Список из редактора ElevenLabs у Директора, 17.10 (Emotion / Vocalizations / Delivery / Character) и теги из его примера.",
+    "voice_direction": "Docs/VOICE_DIRECTION.md (заметка ChatGPT, принята 17.10) и data/story/characters.json → voice.tags_suggested.",
+    "elevenlabs_docs": "https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices#prompting-eleven-v4 (разделы Voice-related, Enhancing input, Multi-speaker dialogue), сверено 17.10."
+  },
+  "tags": {
+    "weak": "director_ui", "angry": "director_ui", "bored": "director_ui", "menacing": "director_ui",
+    "playful": "director_ui", "tired": "director_ui", "excited": "director_ui",
+    "clears throat": "director_ui", "coughing": "director_ui", "chuckling": "director_ui", "sighing": "director_ui",
+    "sniffling": "director_ui", "yawning": "director_ui", "laughing": "director_ui", "sharp exhale": "director_ui",
+    "scoffing": "director_ui", "humming": "director_ui", "panting": "director_ui", "gasping": "director_ui",
+    "whispering": "director_ui", "singing": "director_ui", "slowly": "director_ui", "softly": "director_ui",
+    "pause": "director_ui", "voice breaking": "director_ui",
+    "sleepy drowsy voice": "director_ui", "witch voice": "director_ui", "drunken voice": "director_ui",
+    "sleepy": "director_ui", "curious": "director_ui",
+    "hesitant": "voice_direction", "warmly": "voice_direction", "animated": "voice_direction",
+    "surprised": "voice_direction", "concerned": "voice_direction", "exhales": "voice_direction",
+    "firm": "voice_direction", "reassuring": "voice_direction", "quietly": "voice_direction",
+    "sighs": "voice_direction", "grumbling": "voice_direction", "sarcastic": "voice_direction",
+    "laughs": "elevenlabs_docs", "whispers": "elevenlabs_docs", "crying": "elevenlabs_docs",
+    "mischievously": "elevenlabs_docs", "thoughtful": "elevenlabs_docs", "annoyed": "elevenlabs_docs",
+    "sad": "elevenlabs_docs", "short pause": "elevenlabs_docs", "long pause": "elevenlabs_docs",
+    "inhales deeply": "elevenlabs_docs", "exhales sharply": "elevenlabs_docs", "muttering": "elevenlabs_docs"
+  }
+}

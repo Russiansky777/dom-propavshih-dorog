@@ -1,0 +1,28 @@
+[2026-10-17T22:04:49.021Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-17T22:04:49.488Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-17T22:04:49.925Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-17T22:04:55.495Z] OK   web build carries the voice manifest — 19 lines, errors []
+[2026-10-17T22:04:55.646Z] click ui MenuButton at (1846, 40)
+[2026-10-17T22:04:56.557Z] click music slider at 0 % at (665, 612)
+[2026-10-17T22:04:56.570Z] click sound slider at 0 % at (665, 664)
+[2026-10-17T22:04:57.741Z] OK   music and sounds at 0 % for a clean voice measurement — music 0.00, sounds 0.00
+[2026-10-17T22:04:57.741Z] OK   menu shows «Голос» at 100 % — {"h":40,"value":100,"w":649,"x":664,"y":696}
+[2026-10-17T22:04:57.741Z] click CloseMenu at (844, 769)
+[2026-10-17T22:04:59.531Z] OK   before the dialogue the output is silent — -200.0 dBFS, 2 tap(s)
+[2026-10-17T22:04:59.727Z] click hotspot tamara at (1070, 475)
+[2026-10-17T22:05:05.917Z] OK   M01_0: Agata's voice plays with her line — {"line":"M01_0","speaker":"agata","mode":"plain"}
+[2026-10-17T22:05:06.633Z] OK   Agata's voice leaves the page — -16.5 dBFS
+[2026-10-17T22:05:06.888Z] click continue → M01_1 at (960, 1006)
+[2026-10-17T22:05:07.344Z] OK   M01_1: Tamara's voice plays — {"line":"M01_1","speaker":"tamara","length":6.11986398696899}
+[2026-10-17T22:05:09.173Z] OK   Tamara's voice leaves the page (output RMS) — -12.2 dBFS
+[2026-10-17T22:05:09.419Z] OK   music stays ducked while she speaks — duck -5.00 dB
+[2026-10-17T22:05:11.972Z] click continue mid-line → M01_2 at (960, 982)
+[2026-10-17T22:05:12.416Z] OK   the click cuts Tamara mid-line — at 2.92 of 6.12 s; [{"kind":"stop","line":"M01_1","ms":23207,"reason":"advance","speaker":"tamara"}]
+[2026-10-17T22:05:12.418Z] OK   M01_2 (Agata) starts at once — {"line":"M01_2","speaker":"agata"}
+[2026-10-17T22:05:12.781Z] click continue → end of M01 at (960, 1006)
+[2026-10-17T22:05:13.676Z] OK   after the scene no voice plays — {"line":"","plays":3}
+[2026-10-17T22:05:16.872Z] OK   the output falls silent again — -200.0 dBFS
+[2026-10-17T22:05:18.510Z] click ui MenuButton at (1846, 40)
+[2026-10-17T22:05:19.195Z] click voice slider at 50 % at (989, 716)
+[2026-10-17T22:05:19.675Z] OK   «Голос» at 50 % → Voice bus ≈ −12 dB — volume 0.50, bus -12.04 dB
+[2026-10-17T22:05:19.675Z] OK   console: 0 errors / page errors

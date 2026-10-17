@@ -94,6 +94,10 @@ def story_lines() -> dict[str, dict]:
             e = {"scene": scene_id, "index": i, "speaker": str(ln.get("speaker", "")), "text": str(ln.get("text", ""))}
             if ln.get("context"):
                 e["context"] = str(ln["context"])
+            if ln.get("tags"):
+                e["tags"] = [str(t) for t in ln["tags"]]
+            if ln.get("voice_text"):
+                e["voice_text"] = str(ln["voice_text"])
             out[lid] = e
 
     for f in sorted(SCENES_DIR.glob("E*.json")):
@@ -102,6 +106,13 @@ def story_lines() -> dict[str, dict]:
     for q in read_json(QUESTS_PATH, {}).get("quests", []):
         add(str(q["id"]), q.get("mandatory_lines", q.get("lines", [])))
     return out
+
+
+def api_text(ln: dict) -> str:
+    """Текст запроса к API: voice_text (теги внутри фразы) или теги перед текстом; субтитры — text без тегов."""
+    if ln.get("voice_text"):
+        return str(ln["voice_text"])
+    return "".join(f"[{t}] " for t in ln.get("tags", [])) + str(ln["text"])
 
 
 # --- Ключ и HTTP ---------------------------------------------------------------------------------
@@ -375,8 +386,11 @@ def synth(text: str, spec: dict, cast: dict, seed: int) -> tuple[bytes, dict]:
     return payload, info
 
 
-def same_spec(entry: dict, sha: str, spec: dict) -> bool:
-    return (entry.get("text_sha1") == sha and entry.get("voice_id") == spec["voice_id"]
+def same_spec(entry: dict, sha: str, vsha: str, spec: dict) -> bool:
+    """sha — текста субтитров (по нему игра решает, играть ли файл), vsha — текста запроса с тегами
+    (смена тегов → перегенерация только этой реплики); у записей до тегов voice_sha1 = text_sha1."""
+    return (entry.get("text_sha1") == sha and entry.get("voice_sha1", entry.get("text_sha1")) == vsha
+            and entry.get("voice_id") == spec["voice_id"]
             and entry.get("model_id") == spec["model_id"] and entry.get("voice_settings") == spec["voice_settings"])
 
 
@@ -446,10 +460,11 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                 continue
             e = manifest["lines"].get(lid)
             sha = text_sha1(ln["text"])
-            fresh = e is not None and same_spec(e, sha, spec) and (vs["dir"] / e.get("file", "-")).is_file() and "stale" not in e
+            vsha = text_sha1(api_text(ln))
+            fresh = e is not None and same_spec(e, sha, vsha, spec) and (vs["dir"] / e.get("file", "-")).is_file() and "stale" not in e
             action = ""
             if lid in redo or not fresh:
-                has_src = e is not None and same_spec(e, sha, spec) and (vs["dir"] / e.get("source", "-")).is_file()
+                has_src = e is not None and same_spec(e, sha, vsha, spec) and (vs["dir"] / e.get("source", "-")).is_file()
                 action = "process" if has_src and lid not in redo else "synth"   # ответ API уже есть — только обработать
             elif req.get("reprocess") or e.get("loudness_target_lufs") != target:
                 action = "process"
@@ -465,12 +480,12 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         if total_lines > PROBE_MAX_LINES:
             raise VoiceError(f"проба больше {PROBE_MAX_LINES} файлов ({total_lines}) до text_freeze — сократить запрос")
     synth_items = [it for it in plan if it["action"] == "synth"]
-    chars = sum(len(it["line"]["text"]) for it in synth_items)
+    chars = sum(len(api_text(it["line"])) for it in synth_items)
     log(f"[{set_name}] реплик в сценах запроса: {len(scope)}; файлов с вариантами голосов: {total_lines}; "
         f"к синтезу: {len(synth_items)} ({chars} символов); переобработка: {len(plan) - len(synth_items)}")
     for it in synth_items:
         log(f"  {it['id']:7} {it['line']['speaker']:9} {(it['set']['variant'] or 'ru'):12} {it['spec']['voice_name']:10} "
-            f"{it['spec']['model_id']:12} {it['line']['text']}")
+            f"{it['spec']['model_id']:12} {api_text(it['line'])}")
     if dry_run:
         return 0
     if not shutil.which("ffmpeg"):
@@ -491,7 +506,7 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             info = {}
             if it["action"] == "synth":
                 seed = int(hashlib.sha1(f"{lid}|{ln['text']}".encode("utf-8")).hexdigest()[:8], 16)
-                audio, info = synth(ln["text"], spec, cast, seed)
+                audio, info = synth(api_text(ln), spec, cast, seed)
                 src.parent.mkdir(parents=True, exist_ok=True)
                 src.write_bytes(audio)
             meas = process(src, dst, lc)
@@ -506,7 +521,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         entry = {"scene": ln["scene"], "index": ln["index"], "speaker": ln["speaker"], "text": ln["text"], "text_sha1": sha,
                  "voice_id": spec["voice_id"], "voice_name": spec["voice_name"], "model_id": spec["model_id"],
                  "voice_settings": spec["voice_settings"], "file": dst.name, "source": f"src/{src.name}",
-                 "characters": len(ln["text"]), "loudness_target_lufs": target, **meas,
+                 "voice_text": api_text(ln), "voice_sha1": text_sha1(api_text(ln)), "tags": ln.get("tags", []),
+                 "characters": len(api_text(ln)), "loudness_target_lufs": target, **meas,
                  "generated_at": now_iso() if fresh_audio else prev.get("generated_at"),
                  "run": os.environ.get("GITHUB_RUN_ID", "local") if fresh_audio else prev.get("run")}
         if "context" in ln:
@@ -528,7 +544,7 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
     run = {"run": os.environ.get("GITHUB_RUN_ID", "local"), "at": now_iso(), "request": str(req_path),
            "synthesized": synthesized,
            "reprocessed": [f"{it['id']}{'@' + it['set']['variant'] if it['set']['variant'] else ''}" for it in done if it["action"] != "synth"],
-           "characters_text": sum(len(it["line"]["text"]) for it in done if it["action"] == "synth"), "failed": failed,
+           "characters_text": sum(len(api_text(it["line"])) for it in done if it["action"] == "synth"), "failed": failed,
            "subscription_before": sub_before, "subscription_after": sub_after}
     # Списание по ответам API (заголовок character-cost); счётчик подписки обновляется с задержкой.
     costs = [str(it["set"]["manifest"]["lines"].get(it["id"], {}).get("api", {}).get("character_cost", "")) for it in done if it["action"] == "synth"]

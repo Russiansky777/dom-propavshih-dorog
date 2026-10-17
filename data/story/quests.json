@@ -212,11 +212,14 @@
         },
         {
           "speaker": "agata",
-          "text": "Какие?"
+          "text": "Какие?",
+          "tags": ["curious"]
         },
         {
           "speaker": "tikhon",
-          "text": "Когда я не сплю. Иногда."
+          "text": "Когда я не сплю. Иногда.",
+          "tags": ["sleepy", "sarcastic"],
+          "voice_text": "[sleepy] Когда я не сплю. [sarcastic] Иногда."
         }
       ]
     },

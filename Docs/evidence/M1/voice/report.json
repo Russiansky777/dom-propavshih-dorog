@@ -1,0 +1,200 @@
+{
+  "url": "http://127.0.0.1:8775/index.html",
+  "steps": {
+    "silence_before": {
+      "rms_db": -200,
+      "taps": 2
+    },
+    "tamara": {
+      "voice": {
+        "bus_mute": false,
+        "bus_volume_db": 0,
+        "errors": [],
+        "events": [
+          {
+            "kind": "start",
+            "line": "M01_0",
+            "mode": "plain",
+            "ms": 16733,
+            "pan": 0,
+            "speaker": "agata"
+          },
+          {
+            "kind": "stop",
+            "line": "M01_0",
+            "ms": 18143,
+            "reason": "advance",
+            "speaker": "agata"
+          },
+          {
+            "kind": "start",
+            "line": "M01_1",
+            "mode": "plain",
+            "ms": 18204,
+            "pan": 0,
+            "speaker": "tamara"
+          }
+        ],
+        "length": 6.11986398696899,
+        "line": "M01_1",
+        "manifest_lines": 19,
+        "mode": "plain",
+        "pan": 0,
+        "pending": "",
+        "playing": true,
+        "plays": 2,
+        "position": 0,
+        "settings_saves": 0,
+        "speaker": "tamara",
+        "voice_volume": 1
+      },
+      "rms": {
+        "rms_db": -12.24193875696696,
+        "taps": 2
+      }
+    },
+    "final_voice": {
+      "bus_mute": false,
+      "bus_volume_db": -12.0411996841431,
+      "errors": [],
+      "events": [
+        {
+          "kind": "start",
+          "line": "M01_0",
+          "mode": "plain",
+          "ms": 16733,
+          "pan": 0,
+          "speaker": "agata"
+        },
+        {
+          "kind": "stop",
+          "line": "M01_0",
+          "ms": 18143,
+          "reason": "advance",
+          "speaker": "agata"
+        },
+        {
+          "kind": "start",
+          "line": "M01_1",
+          "mode": "plain",
+          "ms": 18204,
+          "pan": 0,
+          "speaker": "tamara"
+        },
+        {
+          "kind": "stop",
+          "line": "M01_1",
+          "ms": 23207,
+          "reason": "advance",
+          "speaker": "tamara"
+        },
+        {
+          "kind": "start",
+          "line": "M01_2",
+          "mode": "plain",
+          "ms": 23245,
+          "pan": 0,
+          "speaker": "agata"
+        },
+        {
+          "kind": "stop",
+          "line": "M01_2",
+          "ms": 23998,
+          "reason": "advance",
+          "speaker": "agata"
+        }
+      ],
+      "length": 0,
+      "line": "",
+      "manifest_lines": 19,
+      "mode": "",
+      "pan": 0,
+      "pending": "",
+      "playing": false,
+      "plays": 3,
+      "position": 0,
+      "settings_saves": 0,
+      "speaker": "",
+      "voice_volume": 0.5
+    }
+  },
+  "checks": [
+    {
+      "ok": true,
+      "label": "web build carries the voice manifest",
+      "detail": "19 lines, errors []"
+    },
+    {
+      "ok": true,
+      "label": "music and sounds at 0 % for a clean voice measurement",
+      "detail": "music 0.00, sounds 0.00"
+    },
+    {
+      "ok": true,
+      "label": "menu shows «Голос» at 100 %",
+      "detail": "{\"h\":40,\"value\":100,\"w\":649,\"x\":664,\"y\":696}"
+    },
+    {
+      "ok": true,
+      "label": "before the dialogue the output is silent",
+      "detail": "-200.0 dBFS, 2 tap(s)"
+    },
+    {
+      "ok": true,
+      "label": "M01_0: Agata's voice plays with her line",
+      "detail": "{\"line\":\"M01_0\",\"speaker\":\"agata\",\"mode\":\"plain\"}"
+    },
+    {
+      "ok": true,
+      "label": "Agata's voice leaves the page",
+      "detail": "-16.5 dBFS"
+    },
+    {
+      "ok": true,
+      "label": "M01_1: Tamara's voice plays",
+      "detail": "{\"line\":\"M01_1\",\"speaker\":\"tamara\",\"length\":6.11986398696899}"
+    },
+    {
+      "ok": true,
+      "label": "Tamara's voice leaves the page (output RMS)",
+      "detail": "-12.2 dBFS"
+    },
+    {
+      "ok": true,
+      "label": "music stays ducked while she speaks",
+      "detail": "duck -5.00 dB"
+    },
+    {
+      "ok": true,
+      "label": "the click cuts Tamara mid-line",
+      "detail": "at 2.92 of 6.12 s; [{\"kind\":\"stop\",\"line\":\"M01_1\",\"ms\":23207,\"reason\":\"advance\",\"speaker\":\"tamara\"}]"
+    },
+    {
+      "ok": true,
+      "label": "M01_2 (Agata) starts at once",
+      "detail": "{\"line\":\"M01_2\",\"speaker\":\"agata\"}"
+    },
+    {
+      "ok": true,
+      "label": "after the scene no voice plays",
+      "detail": "{\"line\":\"\",\"plays\":3}"
+    },
+    {
+      "ok": true,
+      "label": "the output falls silent again",
+      "detail": "-200.0 dBFS"
+    },
+    {
+      "ok": true,
+      "label": "«Голос» at 50 % → Voice bus ≈ −12 dB",
+      "detail": "volume 0.50, bus -12.04 dB"
+    },
+    {
+      "ok": true,
+      "label": "console: 0 errors / page errors",
+      "detail": ""
+    }
+  ],
+  "console_errors": [],
+  "failures": []
+}
