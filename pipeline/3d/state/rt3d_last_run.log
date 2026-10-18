@@ -1,0 +1,86 @@
+основа: /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/out/agata/animations.glb → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/assets/characters/agata/rt3d/agata.glb (39483056 байт)
+  в артефакте: anim_walk_basic.glb 46989092 байт
+  в артефакте: animations.glb 39483056 байт
+  в артефакте: model.glb 29322844 байт
+  в артефакте: rigged.glb 47009380 байт
+превью не получены:
+Traceback (most recent call last):
+  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/rt3d_job.py", line 164, in main
+    do_previews([int(x) for x in req["previews"]], ROOT / "Docs" / "evidence" / "M1" / "agata_v2" / "catalog", ROOT / "pipeline" / "3d" / "catalog" / "meshy_animations.json")
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/rt3d_job.py", line 84, in do_previews
+    slim = [{k: it.get(k) for k in ("id", "key", "name", "category", "subCategory", "rigType", "previewUrl", "isFree")} for it in items]
+                ^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+11:04:07 | INFO: Data are loaded, start creating Blender stuff
+11:04:07 | INFO: Blender create Mesh node char1
+11:04:11 | INFO: glTF import finished in 3.97s
+/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/inspect_glb.py:117: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  if mat.use_nodes and mat.node_tree:
+  agata.glb: Female_Bend_Over_Pick_Up_Inspect 3.83 с, hips Δ [0.004, -0.003, 0.008], yaw {'start': -0.3, 'end': -29.8, 'min': -31.2, 'max': -0.3}
+  agata.glb: Female_Stand_Pick_Fruit_Basket 6.17 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': 2.0, 'end': 2.0, 'min': -3.4, 'max': 24.0}
+  agata.glb: Idle 4.00 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -44.0, 'end': -44.0, 'min': -82.6, 'max': 11.1}
+  agata.glb: open_door 5.20 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -7.3, 'end': -7.3, 'min': -9.3, 'max': 18.2}
+  agata.glb: open_door_1 5.20 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -7.3, 'end': -7.3, 'min': -9.3, 'max': 18.2}
+  agata.glb: Walking_Woman 0.97 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': 9.5, 'end': 9.5, 'min': -5.4, 'max': 9.5}
+00:14.536  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:15.015  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:15.482  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:15.943  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:16.414  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:16.894  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:17.381  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:17.867  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+  полоса: Docs/evidence/M1/agata_v2/clips/agata/Female_Bend_Over_Pick_Up_Inspect.jpg
+00:18.347  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:18.818  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:19.299  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:19.773  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:20.250  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:20.723  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:21.202  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:21.678  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+  полоса: Docs/evidence/M1/agata_v2/clips/agata/Female_Stand_Pick_Fruit_Basket.jpg
+00:22.167  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:22.651  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:23.129  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:23.614  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:24.084  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:24.565  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:25.045  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:25.525  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+  полоса: Docs/evidence/M1/agata_v2/clips/agata/Idle.jpg
+00:26.014  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:26.485  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:26.950  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:27.416  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:27.881  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:28.359  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:28.834  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:29.334  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+  полоса: Docs/evidence/M1/agata_v2/clips/agata/open_door.jpg
+00:29.814  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:30.284  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:30.750  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:31.220  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:31.690  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:32.155  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:32.627  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:33.104  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+  полоса: Docs/evidence/M1/agata_v2/clips/agata/open_door_1.jpg
+00:33.579  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:34.059  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:34.544  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:35.016  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:35.488  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:35.957  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:36.428  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+00:36.894  render           | Saved: 'Docs/evidence/M1/agata_v2/clips/agata/_tmp.png'
+  полоса: Docs/evidence/M1/agata_v2/clips/agata/Walking_Woman.jpg
+отчёт: pipeline/3d/state/agata_glb_report.json
+total 38568
+drwxr-xr-x 2 runner runner     4096 Oct 18 11:04 .
+drwxr-xr-x 3 runner runner     4096 Oct 18 11:04 ..
+-rw-r--r-- 1 runner runner 39483056 Oct 18 11:04 agata.glb
+run 39121671389 · success
