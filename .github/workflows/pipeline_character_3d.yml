@@ -89,14 +89,27 @@ jobs:
           mkdir -p pipeline/3d/state
           python pipeline/3d/rt3d_job.py --request "${{ steps.req.outputs.file }}" 2>&1 | tee pipeline/3d/state/rt3d_last_run.log
 
+      - name: GLB для игры — сетка до бюджета веба, все клипы в одном файле, проверка костей
+        if: steps.req.outputs.file != ''
+        run: |
+          set -o pipefail
+          n="${{ steps.req.outputs.name }}"
+          f="${{ steps.req.outputs.file }}"
+          tris=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('tris',50000))" "$f")
+          drop=$(python -c "import json,sys;print(' '.join(json.load(open(sys.argv[1])).get('drop_clips',[])))" "$f")
+          extras=$(ls assets/characters/$n/rt3d/${n}_extra_r*.glb 2>/dev/null | tr '\n' ' ')
+          python pipeline/3d/build_rt3d_glb.py --base assets/characters/$n/rt3d/$n.glb ${extras:+--extra $extras} \
+            --tris "$tris" ${drop:+--drop $drop} --out assets/characters/$n/rt3d/${n}_rt.glb \
+            --check-out pipeline/3d/state/${n}_rt_check.json 2>&1 | grep -v "render  *| Saved" | tee -a pipeline/3d/state/rt3d_last_run.log
+
       - name: Отчёт по GLB (скелет, клипы, траектории; полосы кадров)
         if: steps.req.outputs.file != ''
         run: |
           set -o pipefail
           n="${{ steps.req.outputs.name }}"
-          glbs=$(ls assets/characters/$n/rt3d/*.glb)
+          glbs=assets/characters/$n/rt3d/${n}_rt.glb
           python pipeline/3d/inspect_glb.py --glb $glbs --out "pipeline/3d/state/${n}_glb_report.json" \
-            ${{ steps.req.outputs.strips != '' && '--strips Docs/evidence/M1/agata_v2/clips' || '' }} 2>&1 | tee -a pipeline/3d/state/rt3d_last_run.log
+            ${{ steps.req.outputs.strips != '' && '--strips Docs/evidence/M1/agata_v2/clips' || '' }} 2>&1 | grep -v "| Saved:" | tee -a pipeline/3d/state/rt3d_last_run.log
           ls -la assets/characters/$n/rt3d | tee -a pipeline/3d/state/rt3d_last_run.log
 
       - name: Сохранить новые GLB как артефакт
@@ -105,6 +118,7 @@ jobs:
         with:
           name: glb-rt3d-${{ github.run_id }}
           path: assets/characters/${{ steps.req.outputs.name }}/rt3d/*.glb
+          if-no-files-found: warn
           retention-days: 90
 
       - name: Коммит результатов (и журнала — даже при ошибке)

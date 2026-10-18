@@ -43,9 +43,29 @@ def fetch(url: str, timeout: int = 120) -> bytes:
         return r.read()
 
 
+def _find_items(node) -> list[dict]:
+    """Список действий в ответе каталога: первый список словарей с полями id и name (обёртка ответа
+    менялась: список, {result: ...}, {data: {list: ...}} и т. п.)."""
+    if isinstance(node, list):
+        if node and all(isinstance(x, dict) for x in node) and any("name" in x for x in node):
+            return node
+        for x in node:
+            got = _find_items(x)
+            if got:
+                return got
+    elif isinstance(node, dict):
+        for v in node.values():
+            got = _find_items(v)
+            if got:
+                return got
+    return []
+
+
 def catalog() -> list[dict]:
     raw = json.loads(fetch(CATALOG_URL).decode("utf-8"))
-    items = raw if isinstance(raw, list) else raw.get("result", raw.get("data", raw.get("items", [])))
+    items = _find_items(raw)
+    if not items:
+        raise RuntimeError("каталог: не нашёл список действий; ключи ответа: " + (", ".join(raw.keys()) if isinstance(raw, dict) else type(raw).__name__))
     return items
 
 
