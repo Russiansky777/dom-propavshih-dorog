@@ -63,6 +63,7 @@ func _run() -> void:
 	await _test("Cups (V01): both on the window sill; the chosen one on the side table above it, the other stays; switching swaps; reaction; a load keeps it", _test_cups)
 	await _test("Chalk: on a pupil's desk (visible, above the desks, on the desk), hotspot on it; the teacher's desk has no chalk and no hotspot; taken → gone; board → out of the bag, M08 does not give it back", _test_chalk)
 	await _test("V03: «Оставить свою пометку» → pencil mark on the bird picture; «Оставить как есть» → no mark, the reaction plays", _test_bird_mark)
+	await _test("Voice: the new and changed item lines have recordings the game plays (first person — Agata, the rest — ZAKADR)", _test_voice)
 	gs.reset()
 	gs.delete_save(SLOT)
 	if main_node != null and is_instance_valid(main_node):
@@ -370,3 +371,22 @@ func _test_bird_mark() -> void:
 	key = await _choose(h, "leave")
 	_check(gs.has_flag("v03_left") and not _visible(room, "bird_mark"), "«как есть» → no mark")
 	_check(key == "O1.v03.done", "«как есть» → the reaction plays (%s)" % key)
+
+
+## Recorded in one request (pipeline/voice, run 39124518023): the door, the reactions, the photo by the sketch,
+## the chalk on the desk, the cups on the sill. Each must resolve to a file whose text matches (sha1).
+func _test_voice() -> void:
+	var vd: Node = root.get_node_or_null("VoiceDirector")
+	_check(vd != null, "VoiceDirector autoload")
+	if vd == null:
+		return
+	var want := {
+		"Z2.exit_H1.closed": "agata", "Z2.exit_H1.unlock": "narrator", "Z1.drawings.photo": "narrator",
+		"H1.photo.react_table": "agata", "H1.photo.react_shelf": "agata", "H1.cups.react_blue": "agata",
+		"H1.cups.react_white": "agata", "H1.cups.look": "narrator", "O1.chalk.use": "narrator", "O1.chalk.look": "narrator",
+	}
+	for key in want.keys():
+		var v: Dictionary = vd.narration_voice(key)
+		_check(String(v.get("speaker", "")) == String(want[key]), "%s is read by %s (got %s)" % [key, want[key], v.get("speaker")])
+		var status: String = vd.line_status(String(v["id"]), sd.text("@" + key))
+		_check(status == "ok", "%s: recording %s — %s" % [key, v["id"], status])
