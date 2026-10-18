@@ -1,49 +1,11 @@
 нет /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/out/agata/animations.glb (артефакт не разложен?) — основа не обновлена
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-баланс до: {'balance': 1099, 'monthly_credits': 599, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-создана задача анимаций 01a14eb6-57f2-7346-8510-91d5d683879b: {'idle_3': 243, 'idle_4': 244, 'idle_7': 247, 'idle_9': 249, 'idle_12': 252, 'idle_6': 246, 'breathe_look_short': 338, 'breathe_look_long': 336, 'walk_casual': 30, 'talk_right_hand': 314}
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 1
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 38
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 59
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 66
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 73
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 82
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 84
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 87
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 90
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 92
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 95
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a14eb6-57f2-7346-8510-91d5d683879b: SUCCEEDED 100
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-новые клипы: /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/assets/characters/agata/rt3d/agata_extra_r4.glb (40026576 байт), кредитов 30; баланс после: {'balance': 1069, 'monthly_credits': 569, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
-11:15:42 | INFO: Data are loaded, start creating Blender stuff
-11:15:42 | INFO: Blender create Mesh node char1
-11:15:46 | INFO: glTF import finished in 3.72s
-11:16:05 | INFO: Data are loaded, start creating Blender stuff
-11:16:05 | INFO: Blender create Mesh node char1
-11:16:08 | INFO: glTF import finished in 3.81s
+набор действий уже получен задачей 01a14eb6-57f2-7346-8510-91d5d683879b → agata_extra_r4.glb; 0 кредитов
+11:19:28 | INFO: Data are loaded, start creating Blender stuff
+11:19:28 | INFO: Blender create Mesh node char1
+11:19:31 | INFO: glTF import finished in 3.18s
+11:19:49 | INFO: Data are loaded, start creating Blender stuff
+11:19:49 | INFO: Blender create Mesh node char1
+11:19:53 | INFO: glTF import finished in 3.16s
 перенесён клип Casual_Walk из agata_extra_r4.glb
 перенесён клип Idle_12 из agata_extra_r4.glb
 перенесён клип Idle_3 из agata_extra_r4.glb
@@ -56,16 +18,57 @@ MESHY_API_KEY: в значении есть лишнее, использую н�
 перенесён клип Talk_with_Right_Hand_Open из agata_extra_r4.glb
 ERROR Draco is not available because library could not be found at /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/bpy/lib/libbf_intern_draco_bridge.so
 ERROR MeshOptimizer is not available because library could not be found at /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/bpy/lib/libbf_intern_meshopt_bridge.so
-11:16:34 | INFO: Starting glTF 2.0 export
-11:16:34 | INFO: Extracting primitive: char1
-11:16:35 | INFO: Primitives created: 1
-11:16:35 | WARNING: There are more than 4 joint vertex influences.The 4 with highest weight will be used (and normalized).
-11:16:46 | INFO: Finished glTF 2.0 export in 11.55654001235962 s
+11:20:22 | INFO: Starting glTF 2.0 export
+11:20:22 | INFO: Extracting primitive: char1
+11:20:22 | INFO: Primitives created: 1
+11:20:22 | WARNING: There are more than 4 joint vertex influences.The 4 with highest weight will be used (and normalized).
+11:20:34 | INFO: Finished glTF 2.0 export in 12.104148387908936 s
 
-экспорт: assets/characters/agata/rt3d/agata_rt.glb 6926096 байт
-11:16:46 | INFO: Data are loaded, start creating Blender stuff
-11:16:46 | INFO: Blender create Mesh node char1
-11:16:47 | INFO: glTF import finished in 0.56s
-{"triangles": 59999, "clips": 15, "missing": ["Casual_Walk.001", "Idle_12.001", "Idle_3.001", "Idle_4.001", "Idle_6.001", "Idle_7.001", "Idle_9.001", "Long_Breathe_and_Look_Around.001", "Short_Breathe_and_Look_Around.001", "Talk_with_Right_Hand_Open.001"], "max_dev_m": 0.02673}
-ПРОВЕРКА НЕ ПРОШЛА: пропали ['Casual_Walk.001', 'Idle_12.001', 'Idle_3.001', 'Idle_4.001', 'Idle_6.001', 'Idle_7.001', 'Idle_9.001', 'Long_Breathe_and_Look_Around.001', 'Short_Breathe_and_Look_Around.001', 'Talk_with_Right_Hand_Open.001'], расхождение 0.0267 м
-run 39122238107 · failure
+экспорт: assets/characters/agata/rt3d/agata_rt.glb 7114832 байт
+11:20:34 | INFO: Data are loaded, start creating Blender stuff
+11:20:34 | INFO: Blender create Mesh node char1
+11:20:34 | INFO: glTF import finished in 0.52s
+{"triangles": 59999, "clips": 15, "missing": [], "max_dev_m": 2e-05}
+11:20:35 | INFO: Data are loaded, start creating Blender stuff
+11:20:35 | INFO: Blender create Mesh node char1
+11:20:36 | INFO: glTF import finished in 0.53s
+/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/inspect_glb.py:119: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  if mat.use_nodes and mat.node_tree:
+  agata_rt.glb: Casual_Walk 4.13 с, hips Δ [0.003, 0.002, 0.011], yaw {'start': -0.4, 'end': -0.3, 'min': -6.7, 'max': 1.3}
+  agata_rt.glb: Female_Bend_Over_Pick_Up_Inspect 3.83 с, hips Δ [0.004, -0.003, 0.008], yaw {'start': -0.3, 'end': -29.8, 'min': -31.2, 'max': -0.3}
+  agata_rt.glb: Female_Stand_Pick_Fruit_Basket 6.17 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': 2.0, 'end': 2.0, 'min': -3.4, 'max': 24.0}
+  agata_rt.glb: Idle 4.00 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -44.0, 'end': -44.0, 'min': -82.6, 'max': 11.1}
+  agata_rt.glb: Idle_12 6.00 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -5.3, 'end': -5.3, 'min': -6.3, 'max': -5.1}
+  agata_rt.glb: Idle_3 9.97 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -0.9, 'end': -0.9, 'min': -5.0, 'max': 5.1}
+  agata_rt.glb: Idle_4 13.97 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': 0.6, 'end': 0.6, 'min': -4.1, 'max': 7.5}
+  agata_rt.glb: Idle_6 7.37 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': 11.0, 'end': 11.0, 'min': 8.3, 'max': 11.3}
+  agata_rt.glb: Idle_7 8.73 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -6.7, 'end': -6.7, 'min': -9.4, 'max': -6.6}
+  agata_rt.glb: Idle_9 1.97 с, hips Δ [0.001, 0.0, 0.0], yaw {'start': 4.0, 'end': 3.9, 'min': 2.6, 'max': 5.7}
+  agata_rt.glb: Long_Breathe_and_Look_Around 11.27 с, hips Δ [0.0, -0.0, 0.0], yaw {'start': -12.8, 'end': -12.8, 'min': -22.2, 'max': 4.0}
+  agata_rt.glb: open_door 5.20 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -7.3, 'end': -7.3, 'min': -9.3, 'max': 18.2}
+  agata_rt.glb: Short_Breathe_and_Look_Around 7.83 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': -12.8, 'end': -12.8, 'min': -16.1, 'max': -9.3}
+  agata_rt.glb: Talk_with_Right_Hand_Open 3.73 с, hips Δ [-0.0, 0.0, 0.0], yaw {'start': -16.9, 'end': -16.8, 'min': -24.6, 'max': -16.4}
+  agata_rt.glb: Walking_Woman 0.97 с, hips Δ [0.0, 0.0, 0.0], yaw {'start': 9.5, 'end': 9.5, 'min': -5.4, 'max': 9.5}
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Casual_Walk.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Female_Bend_Over_Pick_Up_Inspect.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Female_Stand_Pick_Fruit_Basket.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Idle.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Idle_12.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Idle_3.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Idle_4.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Idle_6.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Idle_7.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Idle_9.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Long_Breathe_and_Look_Around.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/open_door.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Short_Breathe_and_Look_Around.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Talk_with_Right_Hand_Open.jpg
+  полоса: Docs/evidence/M1/agata_v2/clips/agata_rt/Walking_Woman.jpg
+отчёт: pipeline/3d/state/agata_glb_report.json
+total 84612
+drwxr-xr-x 2 runner runner     4096 Oct 18 11:19 .
+drwxr-xr-x 3 runner runner     4096 Oct 18 11:19 ..
+-rw-r--r-- 1 runner runner 39483056 Oct 18 11:19 agata.glb
+-rw-r--r-- 1 runner runner 40026576 Oct 18 11:19 agata_extra_r4.glb
+-rw-r--r-- 1 runner runner  7114832 Oct 18 11:20 agata_rt.glb
+run 39122726643 · success

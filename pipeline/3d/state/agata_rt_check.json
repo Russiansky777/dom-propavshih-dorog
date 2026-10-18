@@ -14,87 +14,116 @@
  },
  "clips": {
   "Casual_Walk": {
-   "error": "нет в исходнике"
-  },
-  "Female_Bend_Over_Pick_Up_Inspect": {
-   "frames": [
-    0.0,
-    92.0
-   ],
-   "max_dev_m": 0.00081
-  },
-  "Female_Stand_Pick_Fruit_Basket": {
-   "frames": [
-    0.0,
-    148.0
-   ],
-   "max_dev_m": 0.00166
-  },
-  "Idle": {
-   "frames": [
-    0.0,
-    96.0
-   ],
-   "max_dev_m": 1e-05
-  },
-  "Idle_12": {
-   "error": "нет в исходнике"
-  },
-  "Idle_3": {
-   "error": "нет в исходнике"
-  },
-  "Idle_4": {
-   "error": "нет в исходнике"
-  },
-  "Idle_6": {
-   "error": "нет в исходнике"
-  },
-  "Idle_7": {
-   "error": "нет в исходнике"
-  },
-  "Idle_9": {
-   "error": "нет в исходнике"
-  },
-  "Long_Breathe_and_Look_Around": {
-   "error": "нет в исходнике"
-  },
-  "open_door": {
    "frames": [
     0.0,
     124.0
    ],
-   "max_dev_m": 0.01963
+   "max_dev_m": 1e-05
+  },
+  "Female_Bend_Over_Pick_Up_Inspect": {
+   "frames": [
+    0.0,
+    115.0
+   ],
+   "max_dev_m": 2e-05
+  },
+  "Female_Stand_Pick_Fruit_Basket": {
+   "frames": [
+    0.0,
+    185.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle": {
+   "frames": [
+    0.0,
+    120.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle_12": {
+   "frames": [
+    0.0,
+    180.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle_3": {
+   "frames": [
+    0.0,
+    299.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle_4": {
+   "frames": [
+    0.0,
+    419.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle_6": {
+   "frames": [
+    0.0,
+    221.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle_7": {
+   "frames": [
+    0.0,
+    262.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle_9": {
+   "frames": [
+    0.0,
+    59.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Long_Breathe_and_Look_Around": {
+   "frames": [
+    0.0,
+    338.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "open_door": {
+   "frames": [
+    0.0,
+    156.0
+   ],
+   "max_dev_m": 1e-05
   },
   "Short_Breathe_and_Look_Around": {
-   "error": "нет в исходнике"
+   "frames": [
+    0.0,
+    235.0
+   ],
+   "max_dev_m": 1e-05
   },
   "Talk_with_Right_Hand_Open": {
-   "error": "нет в исходнике"
+   "frames": [
+    0.0,
+    112.0
+   ],
+   "max_dev_m": 1e-05
   },
   "Walking_Woman": {
    "frames": [
     0.0,
-    23.0
+    29.0
    ],
-   "max_dev_m": 0.02673
+   "max_dev_m": 1e-05
   }
  },
- "out_bytes": 6926096,
+ "out_bytes": 7114832,
  "result": {
   "triangles": 59999,
   "clips": 15,
-  "missing": [
-   "Casual_Walk.001",
-   "Idle_12.001",
-   "Idle_3.001",
-   "Idle_4.001",
-   "Idle_6.001",
-   "Idle_7.001",
-   "Idle_9.001",
-   "Long_Breathe_and_Look_Around.001",
-   "Short_Breathe_and_Look_Around.001",
-   "Talk_with_Right_Hand_Open.001"
-  ],
-  "max_dev_m": 0.02673
+  "missing": [],
+  "max_dev_m": 2e-05
  }
 }
