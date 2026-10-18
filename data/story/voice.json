@@ -44,6 +44,7 @@
         "subdir": "agata_thoughts",
         "keys": [
           "Z1.exit_Z4.closed",
+          "Z2.exit_H1.closed",
           "Z2.exit_M1.closed",
           "Z2.exit_Z3.closed",
           "Z2.exit_R1.closed",

@@ -83,6 +83,8 @@
       "item_use": {
         "mitten": {
           "sets": ["mitten_placed"],
+          "consumes": true,
+          "_consumes_note": "варежка остаётся у ступени (слой mitten), из сумки уходит — сценарий M08 «вещь остаётся там, где положена»",
           "text": "@O2.porch_step.mitten",
           "scene": "M08",
           "once_flag": "mitten_placed"

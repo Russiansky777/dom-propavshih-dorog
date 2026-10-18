@@ -32,6 +32,7 @@ func _run() -> void:
 		gs.set_flag("done_M01", true)
 		gs.set_flag("done_M02", true)
 		gs.add_item("key_house")
+		gs.set_flag("house_unlocked", true)
 		if p.size() > 1 and p[1] != "":
 			for f in p[1].split(","):
 				gs.set_flag(f, true)

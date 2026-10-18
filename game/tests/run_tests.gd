@@ -634,7 +634,25 @@ func _test_walkthrough() -> void:
 
 	# --- M03 in H1 ---
 	_check(await bot.go("Z2"), "R1→Z2")
-	_check(await bot.go("H1"), "Z2→H1 with key_house")
+	# Director 18.10: the house door stays locked until the key is applied (bag → door); the key stays in
+	# the lock (leaves the bag), the door is open from then on — after a load too.
+	var h1exit = bot.exit_to("H1")
+	_check(h1exit != null and not h1exit.is_open(), "Z2→H1 is locked before the key is applied")
+	_check(not (await bot.go("H1")), "Z2→H1 must not open without the key applied")
+	_check(String(sr.current_beat.get("text_key", "")) == "Z2.exit_H1.closed", "the locked door names the key in the bag: %s" % str(sr.current_beat))
+	await bot.finish()
+	_check(gs.has_item("key_house") and not gs.has_flag("house_unlocked"), "the key stays in the bag after the locked attempt")
+	sr.select_item("key_house")
+	_check(not (await bot.go("H1")), "the unlock text plays before Agata goes in")
+	_check(String(sr.current_beat.get("text_key", "")) == "Z2.exit_H1.unlock", "key on the door → unlock text: %s" % str(sr.current_beat))
+	_check(not gs.has_item("key_house") and gs.has_flag("house_unlocked") and gs.has_flag("has_key_house"), "key used: out of the bag, door unlocked, never given again")
+	await bot.finish()
+	var fr_in := 0
+	while bot.room_id() != "H1" and fr_in < 120:
+		await process_frame
+		fr_in += 1
+	await bot.wait_idle()
+	_check(bot.room_id() == "H1", "after the unlock text Agata walks in (room=%s)" % bot.room_id())
 	_check(not gs.has_flag("started_M03"), "M03 must not start before the three steps")
 	await bot.use("shutter")
 	await bot.finish()
@@ -727,6 +745,7 @@ func _test_walkthrough() -> void:
 	await process_frame
 	_check(bot.room_id() == "H3", "load restores the room (H3), got %s" % bot.room_id())
 	_check(not gs.has_flag("door_school_installed") and gs.has_item("door_hinges"), "load restores pre-M05 state")
+	_check(gs.has_flag("house_unlocked") and not gs.has_item("key_house"), "after a load the house stays unlocked and the key used")
 	_check(gs.has_flag("done_M04") and sr.current_beat.is_empty(), "M04 must not replay after load")
 	await bot.use_item("door_hinges", "school_door")
 	_check(sr.puzzle_open, "puzzle reopens after load")
@@ -770,7 +789,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_item("mitten"), "mitten is in the bag since M01")
 	await bot.use_item("mitten", "porch_step")
 	await bot.finish()
-	_check(gs.has_flag("mitten_placed"), "mitten placed")
+	_check(gs.has_flag("mitten_placed") and not gs.has_item("mitten"), "mitten left on the step: out of the bag")
 	var gate = bot.exit_to("O4")
 	_check(gate != null and not gate.is_open(), "O2→O4 closed (school_path_open)")
 	var before_loop: Vector2 = player.global_position
@@ -791,14 +810,15 @@ func _test_walkthrough() -> void:
 	await process_frame
 	seen = await bot.finish()
 	_check(gs.has_flag("wrote_on_board") and gs.has_flag("done_M08"), "M08 completes after the loop + board; seen=%s" % str(seen))
-	_check(gs.has_item("chalk"), "chalk is not consumed")
+	_check(not gs.has_item("chalk") and gs.has_flag("has_chalk"), "chalk stays at the board after writing (out of the bag, not given again)")
 
 	# --- home through the school door ---
 	_check(await bot.go("H3"), "O1→H3 back through the door")
 	_check(gs.has_flag("door_school_installed") and gs.has_flag("wrote_on_board") and gs.has_flag("knows_trip_14"), "final flags")
-	for it in ["key_house", "letter_tamara", "pocket_watch", "invoice_chalk", "photo_school_pier", "chalk", "mitten"]:
+	for it in ["letter_tamara", "pocket_watch", "invoice_chalk", "photo_school_pier"]:
 		_check(gs.has_item(it), "inventory should hold %s" % it)
-	_check(not gs.has_item("door_hinges"), "door_hinges must stay consumed")
+	for it in ["door_hinges", "key_house", "chalk", "mitten"]:
+		_check(not gs.has_item(it), "%s was applied and must stay out of the bag" % it)
 	for sid in ["M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "V01", "V02", "V03", "Q04"]:
 		_check(gs.has_flag("done_" + sid), "scene %s not done" % sid)
 	_check(bot.log.is_empty(), "bot log: %s" % str(bot.log))

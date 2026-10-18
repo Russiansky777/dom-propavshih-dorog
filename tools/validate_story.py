@@ -100,6 +100,25 @@ for s in scenes:
 for it in item_by_id:
     granted_flags.setdefault("has_" + it, [])
 
+# Флаги, которые ставит сам игрок предметом на выходе комнаты (rooms/<LOC>.json → exits[].item_use: ключ на
+# дверь дома, решение Директора 18.10), — не выдача сцены. Симуляция применяет такое действие, как только
+# предмет есть (has_<item>), условия requires выполнены и комната достижима.
+room_unlocks: list[dict] = []
+for rf in sorted((STORY / "rooms").glob("*.json")):
+    if rf.name.startswith("_"):
+        continue
+    room_doc = json.loads(rf.read_text(encoding="utf-8"))
+    for ex in room_doc.get("exits", []):
+        for it, act in (ex.get("item_use") or {}).items():
+            if it not in item_by_id:
+                err(f"{room_doc['id']}: выход в {ex.get('to')} принимает неизвестный предмет {it}")
+                continue
+            ul = {"loc": room_doc["id"], "item": it, "sets": list(act.get("sets", [])),
+                  "req": list(act.get("requires", {}).get("flags", []))}
+            room_unlocks.append(ul)
+            for fl in ul["sets"]:
+                granted_flags.setdefault(fl, []).append(f"{ul['loc']}:{it}")
+
 for s in scenes:
     for fl in s["requires"].get("flags", []):
         if fl not in granted_flags:
@@ -193,8 +212,18 @@ cur_loc = locations_doc["start"]
 crossings_by_episode: Counter = Counter()
 walk_log: list[str] = []
 progress = True
+applied_unlocks: set[int] = set()
+unlock_log: list[str] = []
 while progress:
     progress = False
+    for ui, ul in enumerate(room_unlocks):
+        if ui in applied_unlocks or ("has_" + ul["item"]) not in flags or not set(ul["req"]) <= flags:
+            continue
+        if shortest(cur_loc, ul["loc"], flags) is None:
+            continue
+        flags |= set(ul["sets"])
+        applied_unlocks.add(ui)
+        unlock_log.append(f"{ul['loc']}: {ul['item']} → {', '.join(ul['sets'])} (перед {len(order) + 1}-й основной сценой)")
     for s in sorted(mains, key=lambda x: (x["episode"], x["id"])):
         if s["id"] in done:
             continue
@@ -309,6 +338,10 @@ lines.append(f"| Всего | {total_cross} |\n")
 if walk_log:
     lines.append("Где именно:\n")
     lines += [f"- {w}" for w in walk_log]
+    lines.append("")
+if unlock_log:
+    lines.append("## Действия предметом в комнатах (не сцены)\n")
+    lines += [f"- {u}" for u in unlock_log]
     lines.append("")
 lines.append("## Глаголы загадок (основные сцены)\n")
 lines.append("| Глагол | Сцен |\n| --- | --- |")

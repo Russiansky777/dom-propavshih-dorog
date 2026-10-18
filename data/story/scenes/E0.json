@@ -113,10 +113,10 @@
         "H1"
       ],
       "requires": {
-        "flags": [],
-        "items": [
-          "key_house"
-        ]
+        "flags": [
+          "house_unlocked"
+        ],
+        "items": []
       },
       "grants": {
         "flags": [

@@ -21,7 +21,9 @@
   ],
   "exits": [
     {"to": "Z4", "label": "@Z2.exit_Z4.label", "cue": "left", "rect": [0, 600, 115, 480], "stand": [160, 820], "spawn": "from_Z2", "draw": false, "_note": "за углом почты — переулок Z4: вход в почту и боковое крыльцо дома"},
-    {"to": "H1", "label": "@Z2.exit_H1.label", "cue": "door", "rect": [890, 330, 230, 290], "stand": [1000, 650], "spawn": "from_Z2", "closed_text": "@Z2.exit_H1.closed", "draw": false},
+    {"to": "H1", "label": "@Z2.exit_H1.label", "cue": "door", "rect": [890, 330, 230, 290], "stand": [1000, 650], "spawn": "from_Z2", "closed_text": "@Z2.exit_H1.closed", "draw": false,
+     "item_use": {"key_house": {"sets": ["house_unlocked"], "consumes": true, "once_flag": "house_unlocked", "text": "@Z2.exit_H1.unlock", "enter": true}},
+     "_key_note": "Директор 18.10: дверь дома открывается только ключом — в первый раз заперто (closed_text: ключ в сумке), ключ из сумки на дверь → house_unlocked (ребро Z2–H1 в locations.json), ключ остаётся в замке (уходит из сумки), Агата входит; дальше дверь открыта всегда, и после загрузки"},
     {"to": "M1", "label": "@Z2.exit_M1.label", "cue": "right", "rect": [1800, 760, 120, 320], "stand": [1810, 900], "spawn": "from_Z2", "closed_text": "@Z2.exit_M1.closed", "draw": false},
     {"to": "Z3", "label": "@Z2.exit_Z3.label", "cue": "up", "rect": [1300, 560, 230, 90], "stand": [1380, 700], "spawn": "from_Z2", "closed_text": "@Z2.exit_Z3.closed", "draw": false},
     {"to": "R1", "label": "@Z2.exit_R1.label", "cue": "right", "rect": [1540, 640, 250, 110], "stand": [1600, 780], "spawn": "from_Z2", "closed_text": "@Z2.exit_R1.closed", "draw": false}

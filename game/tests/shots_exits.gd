@@ -58,6 +58,7 @@ func _run() -> void:
 	for rid in rooms:
 		gs.set_flag("done_M01", true)
 		gs.set_flag("has_key_house", true)
+		gs.set_flag("house_unlocked", true)   # the front door is open once the key was applied (18.10)
 		sr.call("_on_state_reset")
 		rm.change_room(String(rid), "default")
 		for i in 10:

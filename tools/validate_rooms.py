@@ -37,6 +37,9 @@
      дверь по умолчанию (прямоугольник внутри кадра), — предупреждение «пометьте cue явно».
      Те же правила — ExitCue.classify (game/scripts/rooms/exit_cue.gd), проверка узлов —
      game/tests/test_exit_cues.gd.
+ 10. предметы (Директор 18.10: «зачем нам брать предметы, которые нельзя применить»): consumed: true ⇔ где-то
+     расходуется; инвентарный предмет E0–E1 применяется в комнатах вехи или объявляет later_use (сцены по
+     сценарию) / no_use_reason (спорное, предупреждение); предмет на выходе (exits[].item_use) открывает этот выход.
 
 Код 0 — ошибок нет. Запуск: python3 tools/validate_rooms.py [--quiet]
 """
@@ -656,6 +659,20 @@ for rid, room in rooms.items():
             err(f"{ctx}: выход в {to} — комната в in_scope без файла")
         else:
             stubs.append(f"{rid}→{to}")
+        # предмет на выходе (ключ на дверь дома, Директор 18.10): применение должно открывать именно этот выход
+        for it, act in (ex.get("item_use") or {}).items():
+            ictx = f"{ctx}: выход в {to}.item_use[{it}]"
+            check_items(ictx, [it])
+            check_flags(ictx + ".sets", act.get("sets"))
+            if act.get("once_flag"):
+                check_flags(ictx + ".once_flag", [act["once_flag"]])
+            if act.get("consumes") and it in items and not items[it].get("consumed"):
+                err(f"{ictx}: расходует предмет, а в items.json consumed: false")
+            need = set(edges[rid].get(to, []))
+            if not need:
+                err(f"{ictx}: выход открыт и без предмета — применение ничего не меняет")
+            elif not need <= set(act.get("sets", [])):
+                err(f"{ictx}: sets {act.get('sets')} не открывают выход (ребро требует {sorted(need)})")
         oc = ex.get("on_closed")
         if oc:
             check_flags(f"{ctx}.exit[{to}].on_closed", oc.get("sets"))
@@ -760,6 +777,10 @@ for rid, room in rooms.items():
             check_flags(actx + ".sets", act.get("sets"))
             check_items(actx + ".gives", act.get("gives"))
             check_items(actx + ".consumes", act.get("consumes") if isinstance(act.get("consumes"), list) else None)
+            if act.get("consumes") is True:
+                it_used = actx.rsplit("[", 1)[-1].rstrip("]") if "item_use[" in actx else ""
+                if it_used in items and not items[it_used].get("consumed"):
+                    err(f"{actx}: расходует предмет {it_used}, а в items.json consumed: false")
             if act.get("once_flag"):
                 check_flags(actx + ".once_flag", [act["once_flag"]])
             if scene_id:
@@ -856,6 +877,61 @@ for s in scope_scenes:
         warn(f"сцена {s['id']} не упомянута ни в одной комнате — запустится при входе в {s['locations']}, как только выполнены requires")
     else:
         notes.append(f"{s['id']}: {', '.join(ways)}")
+
+# 10. предметы (Директор 18.10: «зачем нам брать предметы, которые нельзя применить»; аудит —
+# Docs/ITEMS_AUDIT.md). consumed: true ⇔ предмет где-то расходуется (сцена consumes, item_use consumes у
+# хотспота или выхода). Инвентарный предмет, который игрок получает в E0–E1, применяется в комнатах вехи
+# (item_use хотспота или выхода, требование загадки) или объявляет later_use — сцены, где он нужен по
+# сценарию (вне вехи), или no_use_reason — спорный случай, решение за Директором (предупреждение).
+consumers: dict[str, list[str]] = {}
+for sc in scenes.values():
+    for it in sc.get("consumes", []) or []:
+        consumers.setdefault(it, []).append(sc["id"])
+appliers: dict[str, list[str]] = {}
+for rid, room in rooms.items():
+    for h in room.get("hotspots", []):
+        for it, act in (h.get("item_use") or {}).items():
+            if rid in in_scope:
+                appliers.setdefault(it, []).append(f"{rid}.{h.get('id')}")
+            if act.get("consumes") is True:
+                consumers.setdefault(it, []).append(f"{rid}.{h.get('id')}")
+        for it in h.get("puzzle", {}).get("requires", {}).get("items", []):
+            if rid in in_scope:
+                appliers.setdefault(it, []).append(f"{rid}.{h.get('id')} (загадка)")
+    for ex in room.get("exits", []):
+        for it, act in (ex.get("item_use") or {}).items():
+            if rid in in_scope:
+                appliers.setdefault(it, []).append(f"{rid}→{ex.get('to')}")
+            if act.get("consumes") is True:
+                consumers.setdefault(it, []).append(f"{rid}→{ex.get('to')}")
+for it, meta in items.items():
+    if meta.get("consumed") and it not in consumers:
+        err(f"items.json: {it} consumed: true, но его нигде не расходуют (сцена consumes / item_use consumes)")
+    if not meta.get("consumed") and it in consumers:
+        err(f"items.json: {it} consumed: false, а его расходуют: {consumers[it]}")
+scope_ids = {s["id"] for s in scope_scenes}
+got_in_scope = set()
+for s in scope_scenes:
+    got_in_scope |= set(s.get("grants", {}).get("items", []))
+for it in sorted(got_in_scope):
+    meta = items.get(it, {})
+    if not meta.get("inventory"):
+        continue
+    later = meta.get("later_use", [])
+    for sid in later:
+        if sid not in scenes:
+            err(f"items.json: {it}.later_use — неизвестная сцена {sid}")
+        elif sid in scope_ids:
+            err(f"items.json: {it}.later_use {sid} — сцена этой вехи: применение должно быть в комнате (item_use)")
+    if it in appliers:
+        notes.append(f"предмет {it}: применяется в {', '.join(appliers[it])}" + (f"; дальше — {', '.join(later)}" if later else ""))
+    elif later:
+        notes.append(f"предмет {it}: в E0–E1 не применяется, по сценарию — {', '.join(later)}")
+    elif meta.get("no_use_reason"):
+        warn(f"предмет {it}: применения нет — {meta['no_use_reason']}")
+    else:
+        err(f"предмет {it} попадает в сумку в E0–E1, но нигде не применяется и не объявляет later_use / no_use_reason "
+            f"(«не берём то, что нельзя применить», Docs/ITEMS_AUDIT.md)")
 
 quiet = "--quiet" in sys.argv
 if stubs and not quiet:

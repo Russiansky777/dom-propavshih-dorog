@@ -25,6 +25,7 @@
     {
       "id": "drawings", "action_anim": "reach", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 576, 638, 132], "stand": [840, 940], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
       "use": {"sets": ["z1_compared_drawings"], "text": "@Z1.drawings.use", "once_flag": "z1_compared_drawings"},
+      "item_use": {"photo_school_pier": {"sets": ["z1_compared_photo"], "text": "@Z1.drawings.photo", "_note": "сценарий M07: «сравнивает фотографию с рисунком Тамары: сваи и пластина узнаваемы, но одного рисунка недостаточно» — снимок не расходуется (дальше M15)"}},
       "look": "@Z1.drawings.look"
     },
     {
@@ -45,6 +46,7 @@
   },
   "flags": {
     "z1_compared_drawings": "Рисунок Евдокии сравнён с наброском Тамары",
-    "seen_plan_zarechye": "План Заречья рассмотрен вблизи; дальше его можно открыть из журнала"
+    "seen_plan_zarechye": "План Заречья рассмотрен вблизи; дальше его можно открыть из журнала",
+    "z1_compared_photo": "Снимок школьной пристани сверён с наброском Тамары"
   }
 }

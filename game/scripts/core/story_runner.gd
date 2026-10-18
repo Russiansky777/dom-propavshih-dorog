@@ -246,6 +246,11 @@ func _complete_scene(scene_id: String) -> void:
 
 
 func grant_item(item_id: String) -> void:
+	# An item is given once: has_<item> marks it as given and stays after the item is used up, so a scene's
+	# grants never put a spent item back (M08 grants the chalk its desk already gave — after the board the
+	# chalk stays there, not in the bag).
+	if GameState.has_flag("has_" + item_id):
+		return
 	var added := false
 	if StoryData.item_is_inventory(item_id):
 		added = GameState.add_item(item_id)
@@ -531,6 +536,17 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 func use_exit(e: StoryExit) -> void:
 	if is_busy():
 		return
+	# An item in hand on an exit that takes one (data `item_use` of the exit — the house key on the locked
+	# front door, Director 18.10): the same rule as on a hotspot. Other exits ignore the held item.
+	if selected_item != "" and e.data.has("item_use"):
+		var item := selected_item
+		select_item("")
+		var iu: Dictionary = e.data.get("item_use", {})
+		if iu.has(item):
+			_run_exit_item(e, iu[item], item)
+		else:
+			narrate_key("@ui.item_no_effect")
+		return
 	if not e.is_open():
 		var oc: Dictionary = e.data.get("on_closed", {})
 		if String(oc.get("type", "")) == "loop":
@@ -542,6 +558,30 @@ func use_exit(e: StoryExit) -> void:
 		narrate_key(String(e.data.get("unbuilt_text", "@ui.not_built")))
 		return
 	RoomManager.call_deferred("change_room", e.target_room, e.target_spawn)
+
+
+## Exit `item_use` {sets, consumes, text, once_flag, enter}: the flags open the exit (its edge in
+## locations.json requires them), a consumed item leaves the bag for good (the flag has_<item> stays, so it
+## is never given again), `enter` walks through once the text is read. All of it is saved state: after a
+## load the door stays open and the key stays used.
+func _run_exit_item(e: StoryExit, act: Dictionary, item_id: String) -> void:
+	var once := String(act.get("once_flag", ""))
+	if once != "" and GameState.has_flag(once):
+		narrate_key(String(act.get("text_done", "@ui.item_no_effect")))
+		return
+	for f in act.get("sets", []):
+		GameState.set_flag(String(f), true)
+	if bool(act.get("consumes", false)):
+		GameState.remove_item(item_id)
+	if act.has("text"):
+		narrate_key(String(act["text"]))
+	if bool(act.get("enter", false)) and e.is_open() and e.target_exists():
+		_push({"type": "call", "fn": _enter_room.bind(e.target_room, e.target_spawn)})
+	RoomManager.autosave()
+
+
+func _enter_room(room_id: String, spawn_id: String) -> void:
+	RoomManager.call_deferred("change_room", room_id, spawn_id)
 
 
 ## Closed exit that loops back (O2 gate): fade, place the player at `spawn`, set flags, react.

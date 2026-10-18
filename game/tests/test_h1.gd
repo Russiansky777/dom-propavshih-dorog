@@ -103,6 +103,7 @@ func _enter(flags: Array, items: Array = ["key_house"], pos: Vector2 = Vector2(1
 	gs.reset()
 	gs.set_flag("done_M01", true)
 	gs.set_flag("done_M02", true)
+	gs.set_flag("house_unlocked", true)   # the house is entered only after the key is applied (18.10)
 	for it in items:
 		gs.add_item(String(it))
 	for f in flags:

@@ -19,7 +19,7 @@
       "id": "board", "action_anim": "reach", "kind": "object", "label": "@O1.board.label", "rect": [860, 170, 480, 310], "stand": [1100, 740], "color": "#2e3e3a", "draw": false,
       "states": [{"if": ["wrote_on_board"], "label": "@O1.board.label_written"}],
       "use": {"sets": ["o1_seen_board_task"], "text": "@O1.board.use", "once_flag": "o1_seen_board_task", "scene": "M06"},
-      "item_use": {"chalk": {"sets": ["wrote_on_board"], "text": "@O1.board.chalk", "scene": "M08", "once_flag": "wrote_on_board"}},
+      "item_use": {"chalk": {"sets": ["wrote_on_board"], "consumes": true, "text": "@O1.board.chalk", "scene": "M08", "once_flag": "wrote_on_board", "_consumes_note": "мел после надписи остаётся у доски (на полочке мелки уже нарисованы) — из сумки уходит"}},
       "look": "@O1.board.look"
     },
     {
