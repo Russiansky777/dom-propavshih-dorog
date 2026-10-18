@@ -1,0 +1,115 @@
+{
+  "url": "http://127.0.0.1:8786/index.html",
+  "steps": {
+    "cursor_idle": "auto"
+  },
+  "checks": [
+    {
+      "ok": true,
+      "label": "start in Z1, exit hints published",
+      "detail": "room Z1"
+    },
+    {
+      "ok": true,
+      "label": "Z1: the post-office door is drawn in the art — no mark",
+      "detail": "{\"dir\":\"door\",\"source\":\"cue\"}"
+    },
+    {
+      "ok": true,
+      "label": "Z1: doorway cursor on the door (CSS image)",
+      "detail": "kind door, css url(\"blob:http://127.0.0.1:8786/32cdbbbe-7403-494f-9557-33ab…"
+    },
+    {
+      "ok": true,
+      "label": "Z1: caption «На улицу»",
+      "detail": "На улицу"
+    },
+    {
+      "ok": true,
+      "label": "Space: every visible hotspot and exit named",
+      "detail": "5 shown; missing []"
+    },
+    {
+      "ok": true,
+      "label": "the reveal ends after ≈1.5 s",
+      "detail": "{\"reveal\":false}"
+    },
+    {
+      "ok": true,
+      "label": "through the post-office door to the lane Z4",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "Z4: a visible down mark at the bottom edge for the street",
+      "detail": "{\"alpha\":0.74,\"dir\":\"down\",\"hot\":false,\"source\":\"cue\",\"x\":840,\"y\":1036}"
+    },
+    {
+      "ok": true,
+      "label": "Z4: pointer on the mark — lit, down-arrow cursor (another image than the door)",
+      "detail": "hot true, kind down, css url(\"blob:http://127.0.0.1:8786/e2e9addc-e3b1-4a27…"
+    },
+    {
+      "ok": true,
+      "label": "Z4: caption «На улицу»",
+      "detail": "На улицу"
+    },
+    {
+      "ok": true,
+      "label": "click on the mark → the street Z2",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "Z2: marks left (lane) and right (mill)",
+      "detail": "{\"Z4\":{\"alpha\":0.74,\"dir\":\"left\",\"hot\":false,\"source\":\"cue\",\"x\":44,\"y\":840},\"M1\":{\"alpha\":0.5,\"dir\":\"right\",\"hot\":false,\"source\":\"cue\",\"x\":1876,\"y\":920}}"
+    },
+    {
+      "ok": true,
+      "label": "the porch door → H1",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "H1: the gallery exit has a mark or is a drawn door",
+      "detail": "{\"alpha\":0.74,\"dir\":\"down\",\"hot\":false,\"source\":\"side\",\"x\":1100,\"y\":1036}"
+    },
+    {
+      "ok": true,
+      "label": "H1: exit cursor on the gallery exit",
+      "detail": "kind down (down), css url(\"blob:http://127.0.0.1:8786/e2e9addc-e3b1-4a27…"
+    },
+    {
+      "ok": true,
+      "label": "H1: caption «В галерею»",
+      "detail": "В галерею"
+    },
+    {
+      "ok": true,
+      "label": "click → the gallery H3",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "H3: exit cursor on the living-room exit",
+      "detail": "kind right (right)"
+    },
+    {
+      "ok": true,
+      "label": "on the floor: the ordinary pointer",
+      "detail": "kind '', css default"
+    },
+    {
+      "ok": true,
+      "label": "click → back to H1",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "console: 0 errors / page errors",
+      "detail": ""
+    }
+  ],
+  "console_errors": [],
+  "failures": []
+}
