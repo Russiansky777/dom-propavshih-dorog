@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-17T23:44:31+00:00",
+  "updated_at": "2026-10-18T00:12:45+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -5418,6 +5418,136 @@
         "sent": {
           "language_code": "ru",
           "seed": 614131351
+        }
+      }
+    },
+    "pelageya:R1.pelageya.after": {
+      "kind": "narration",
+      "key": "R1.pelageya.after",
+      "source_text": "ru_E0_E1",
+      "as_line": true,
+      "speaker": "pelageya",
+      "text": "Журналы были у управляющего мельницей.",
+      "text_sha1": "ee29c62e83898096f5249fda1a57037f3e0dc80b",
+      "voice_id": "mIbPOSXtLeiaroofXc7O",
+      "voice_name": "PELAGEYA",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/R1.pelageya.after.ogg",
+      "source": "src/character_lines/R1.pelageya.after.mp3",
+      "voice_text": "[quietly] Журналы были у управляющего мельницей.",
+      "voice_sha1": "8ac3fccf9d58cf613a956d7c6264fbb100384af6",
+      "tags": [
+        "quietly"
+      ],
+      "characters": 48,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.892,
+      "lufs": -17.2,
+      "true_peak_db": -5.0,
+      "gain_db": 4.9,
+      "source_lufs": -21.9,
+      "source_true_peak_db": -9.9,
+      "generated_at": "2026-10-18T00:12:43+00:00",
+      "run": "39081873449",
+      "api": {
+        "request_id": "kgiYhySOlymZFCLmDlgZ",
+        "history_item_id": "RzqmycDtv2IeOM6vHdAo",
+        "character_cost": "21",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1040832363
+        }
+      }
+    },
+    "tamara:Z1.tamara.after": {
+      "kind": "narration",
+      "key": "Z1.tamara.after",
+      "source_text": "ru_E0_E1",
+      "as_line": true,
+      "speaker": "tamara",
+      "text": "Ключ у тебя, записи — в доме. А я тут, на почте.",
+      "text_sha1": "4277812666a19017de35950c42167553c43e9a4d",
+      "voice_id": "GqJPI8zhNM5CF7q8EJ6l",
+      "voice_name": "TAMARA-1",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.45,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/Z1.tamara.after.ogg",
+      "source": "src/character_lines/Z1.tamara.after.mp3",
+      "voice_text": "[warmly] Ключ у тебя, записи — в доме. А я тут, на почте.",
+      "voice_sha1": "d95809a74bc9604735a9b2833e79df725609dc21",
+      "tags": [
+        "warmly"
+      ],
+      "characters": 57,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.695,
+      "lufs": -17.0,
+      "true_peak_db": -3.7,
+      "gain_db": -1.4,
+      "source_lufs": -15.6,
+      "source_true_peak_db": -2.1,
+      "generated_at": "2026-10-18T00:12:42+00:00",
+      "run": "39081873449",
+      "api": {
+        "request_id": "kwMQ4oRE2AIEEQQjdcVB",
+        "history_item_id": "hkX6fdpnrEPfk8R4c2p2",
+        "character_cost": "25",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 642561300
+        }
+      }
+    },
+    "tikhon:H1.v01.done": {
+      "kind": "narration",
+      "key": "H1.v01.done",
+      "source_text": "ru_E0_E1",
+      "as_line": true,
+      "speaker": "tikhon",
+      "text": "Не занято. Перестановка допускается.",
+      "text_sha1": "e45c478f382ac7729186c6c6449163b7d94ca99f",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "character_lines/H1.v01.done.ogg",
+      "source": "src/character_lines/H1.v01.done.mp3",
+      "voice_text": "Не занято. Перестановка допускается.",
+      "voice_sha1": "e45c478f382ac7729186c6c6449163b7d94ca99f",
+      "tags": [],
+      "characters": 36,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.168,
+      "lufs": -17.0,
+      "true_peak_db": -3.6,
+      "gain_db": -0.5,
+      "source_lufs": -16.5,
+      "source_true_peak_db": -2.9,
+      "generated_at": "2026-10-18T00:12:45+00:00",
+      "run": "39081873449",
+      "api": {
+        "request_id": "kQ9LwuaQpQ7fjAMK5AHs",
+        "history_item_id": "Kurdk3HQDWL4XpBkCnPw",
+        "character_cost": "16",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2509842534
         }
       }
     }

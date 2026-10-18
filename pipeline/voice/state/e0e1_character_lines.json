@@ -1,0 +1,34 @@
+{
+  "set": "e0e1_character_lines",
+  "runs": [
+    {
+      "run": "39081873449",
+      "at": "2026-10-18T00:12:46+00:00",
+      "request": "pipeline/requests/voice_e0e1_character_lines.json",
+      "synthesized": [
+        "tamara:Z1.tamara.after",
+        "pelageya:R1.pelageya.after",
+        "tikhon:H1.v01.done"
+      ],
+      "reprocessed": [],
+      "characters_text": 141,
+      "failed": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16591,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16591,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 62,
+      "subscription_delta": 0
+    }
+  ]
+}

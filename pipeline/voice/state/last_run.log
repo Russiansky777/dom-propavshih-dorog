@@ -1,52 +1,16 @@
-run 39080103639 2026-10-17T23:43:59Z requests: pipeline/requests/voice_e0e1_thoughts.json 
+run 39081873449 2026-10-18T00:12:37Z requests: pipeline/requests/voice_e0e1_character_lines.json 
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 16084 из 124889 символов
+план: creator (active), израсходовано 16591 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_e0e1_thoughts.json
-  закадровые фразы без ссылок в данных игры — пропущены: agata:O2.mitten.look, agata:O2.mitten.use
-  отложены (voice.json → by_speaker.<персонаж>.hold): agata:H1.photo.look
-  задание: Координатор по решению п. 75 приёмки (задание Директора 18.10 на закадровый голос E0–E1), 2026-10-18 — мысли Агаты от первого лица голосом Агаты вместо ZAKADR (20 фраз E0–E1) (потолок 25 файлов, 1300 символов)
-[e0e1_thoughts] реплик в сценах запроса: 20; файлов с вариантами голосов: 20; к синтезу: 20 (1153 символов); переобработка: 0
-  agata:Z1.exit_Z4.closed agata     ru           Agata      eleven_v4    Я ещё не поговорила с Тамарой. Ключ у неё.
-  agata:Z2.exit_M1.closed agata     ru           Agata      eleven_v4    Без ключа я и в тётин дом не попаду. Сначала к Тамаре.
-  agata:Z2.exit_Z3.closed agata     ru           Agata      eleven_v4    Тамара ждёт меня на почте. Не стану уходить, не поговорив с ней.
-  agata:Z2.exit_R1.closed agata     ru           Agata      eleven_v4    Сначала узнаю, что у Тамары. На причал ещё успею.
-  agata:R1.exit_Z2.closed agata     ru           Agata      eleven_v4    Тамара всё ещё ждёт меня на почте.
-  agata:H1.cups.prompt agata     ru           Agata      eleven_v4    Какая чашка будет моей?
-  agata:H2.bell.use agata     ru           Agata      eleven_v4    Колокол с мельницы, без языка; рядом подписанная коробка. Оставлю его на подвесе — место уже приготовлено.
-  agata:H3.school_door.use agata     ru           Agata      eleven_v4    Петли и зарубка на брусе совпадают со снимком — дверь из нашей школы. На бирке: «Передача на ремонт до паводка».
-  agata:H3.mirror_home.use agata     ru           Agata      eleven_v4    [softly] На старом снимке зеркало висит здесь же. В нём — я и галерея за спиной.
-  agata:O1.board.use agata     ru           Agata      eleven_v4    Задачу довели до ответа. Почерк я не узнаю.
-  agata:O1.board.chalk agata     ru           Agata      eleven_v4    [softly] В углу доски теперь мой след: «Я была здесь. Агата».
-  agata:O1.bird_drawing.prompt agata     ru           Agata      eleven_v4    [softly] Шапку этой птице нарисовала я. А сапоги ей кто-то добавил после.
-  agata:O2.tree.look agata     ru           Agata      eleven_v4    [softly] Помню это дерево ниже. Теперь ветки поднялись над крыльцом.
-  agata:O2.porch_step.mitten agata     ru           Agata      eleven_v4    Оставлю свою варежку на ступени. По ней узнаю, сюда ли вернулась.
-  agata:O2.window_other.look agata     ru           Agata      eleven_v4    Окно другое, а школа та же. Дорожка вывела меня сюда.
-  agata:O2.exit_O4.loop agata     ru           Agata      eleven_v4    За калиткой дорожка свернула — и вот я у другого окна той же школы.
-  agata:item.key_house agata     ru           Agata      eleven_v4    Тамара сберегла его для меня.
-  agata:item.letter_tamara agata     ru           Agata      eleven_v4    [softly] С этого письма началась моя дорога сюда.
-  agata:item.pocket_watch agata     ru           Agata      eleven_v4    [softly] Знакомое тиканье, куда бы я ни шла.
-  agata:item.mitten agata     ru           Agata      eleven_v4    Своя, шерстяная — ни с чем не спутаю.
-  agata:Z1.exit_Z4.closed синтез: 3.04 с, -17.1 LUFS, TP -5.7 dB (усиление -0.6 dB)
-  agata:Z2.exit_M1.closed синтез: 3.83 с, -17.0 LUFS, TP -4.2 dB (усиление -0.3 dB)
-  agata:Z2.exit_Z3.closed синтез: 4.22 с, -16.9 LUFS, TP -3.9 dB (усиление +1.0 dB)
-  agata:Z2.exit_R1.closed синтез: 3.71 с, -17.0 LUFS, TP -4.5 dB (усиление -0.8 dB)
-  agata:R1.exit_Z2.closed синтез: 2.27 с, -17.0 LUFS, TP -5.7 dB (усиление +0.3 dB)
-  agata:H1.cups.prompt синтез: 1.66 с, -17.0 LUFS, TP -4.1 dB (усиление -0.8 dB)
-  agata:H2.bell.use  синтез: 7.86 с, -16.9 LUFS, TP -4.2 dB (усиление -0.5 dB)
-  agata:H3.school_door.use синтез: 8.28 с, -17.0 LUFS, TP -4.8 dB (усиление +0.5 dB)
-  agata:H3.mirror_home.use синтез: 5.64 с, -17.1 LUFS, TP -3.4 dB (усиление +6.0 dB)
-  agata:O1.board.use синтез: 3.65 с, -17.0 LUFS, TP -2.1 dB (усиление +1.3 dB)
-  agata:O1.board.chalk синтез: 4.29 с, -17.0 LUFS, TP -2.0 dB (усиление +9.7 dB)
-  agata:O1.bird_drawing.prompt синтез: 5.28 с, -17.1 LUFS, TP -2.3 dB (усиление +6.3 dB)
-  agata:O2.tree.look синтез: 4.41 с, -16.9 LUFS, TP -3.0 dB (усиление +3.4 dB)
-  agata:O2.porch_step.mitten синтез: 4.55 с, -17.0 LUFS, TP -3.1 dB (усиление -2.1 dB)
-  agata:O2.window_other.look синтез: 4.49 с, -16.9 LUFS, TP -3.7 dB (усиление -0.1 dB)
-  agata:O2.exit_O4.loop синтез: 4.86 с, -17.0 LUFS, TP -4.0 dB (усиление -1.4 dB)
-  agata:item.key_house синтез: 1.83 с, -17.0 LUFS, TP -4.8 dB (усиление +0.8 dB)
-  agata:item.letter_tamara синтез: 2.96 с, -17.1 LUFS, TP -5.0 dB (усиление +7.5 dB)
-  agata:item.pocket_watch синтез: 3.01 с, -17.7 LUFS, TP -1.8 dB (усиление +11.3 dB)
-  agata:item.mitten  синтез: 3.46 с, -17.0 LUFS, TP -2.7 dB (усиление +0.8 dB)
-[e0e1_thoughts] синтезировано 20, переобработано 0, ошибок 0; символов текста 1153; списано кредитов (character-cost): 507, изменение счётчика подписки: 164
-validate_voice: манифесты: ru 129 (129 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 5; реплик с тегами: 14; закадровых фраз по правилам voice.json: 116 (с тегами 12), заказаны тексты: ru_E0_E1, ru_bag
-[voice] validate_voice.py: OK (0 ошибок, 0 предупреждений, strict; самопроверка 15/15)
+=== pipeline/requests/voice_e0e1_character_lines.json
+  задание: Директор (замечание 18.10, 01:52, передано координатором), 2026-10-18 — повторные реплики Тамары и Пелагеи и реплика Тихона в H1 — голосами персонажей вместо ZAKADR (3 фразы) (потолок 5 файлов, 250 символов)
+[e0e1_character_lines] реплик в сценах запроса: 3; файлов с вариантами голосов: 3; к синтезу: 3 (141 символов); переобработка: 0
+  tamara:Z1.tamara.after tamara    ru           TAMARA-1   eleven_v4    [warmly] Ключ у тебя, записи — в доме. А я тут, на почте.
+  pelageya:R1.pelageya.after pelageya  ru           PELAGEYA   eleven_v4    [quietly] Журналы были у управляющего мельницей.
+  tikhon:H1.v01.done tikhon    ru           CAT-2      eleven_v4    Не занято. Перестановка допускается.
+  tamara:Z1.tamara.after синтез: 4.70 с, -17.0 LUFS, TP -3.7 dB (усиление -1.4 dB)
+  pelageya:R1.pelageya.after синтез: 2.89 с, -17.2 LUFS, TP -5.0 dB (усиление +4.9 dB)
+  tikhon:H1.v01.done синтез: 3.17 с, -17.0 LUFS, TP -3.6 dB (усиление -0.5 dB)
+[e0e1_character_lines] синтезировано 3, переобработано 0, ошибок 0; символов текста 141; списано кредитов (character-cost): 62, изменение счётчика подписки: 0
+validate_voice: манифесты: ru 132 (132 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 5; реплик с тегами: 14; закадровых фраз по правилам voice.json: 119 (с тегами 14), заказаны тексты: ru_E0_E1, ru_bag
+[voice] validate_voice.py: OK (0 ошибок, 0 предупреждений, strict; самопроверка 21/21)
