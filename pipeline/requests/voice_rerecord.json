@@ -1,0 +1,25 @@
+{
+  "mode": "generate",
+  "set": "rerecord",
+  "probe": true,
+  "only_changed": true,
+  "scenes": [
+    "M01",
+    "M02",
+    "M03",
+    "M04",
+    "M05",
+    "M06",
+    "M07",
+    "M08",
+    "Q04"
+  ],
+  "narration": {
+    "texts": [
+      "ru_E0_E1",
+      "ru_bag"
+    ]
+  },
+  "redo": [],
+  "note": "2026-10-18: перезапись после правки H1.stove.look (гнёзда под полку)"
+}
