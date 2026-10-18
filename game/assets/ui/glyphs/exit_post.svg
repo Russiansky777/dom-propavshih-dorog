@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
   <!-- Почта: конверт с клапаном и сургучной печатью. Рисунок: Claude Code для «Дома пропавших дорог», 18.10.2026 -->
   <g fill="none" stroke="#140b06" stroke-opacity="0.88" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3.8 8.0 H24.2 V21.6 H3.8 Z" stroke-width="4.65"/>
-    <path d="M3.8 8.0 L14 15.6 L24.2 8.0" stroke-width="4.65"/>
-    <path d="M3.9 21.4 L10.6 15.4 M24.1 21.4 L17.4 15.4" stroke-width="4.00"/>
+    <path d="M3.8 8.0 H24.2 V21.6 H3.8 Z" stroke-width="4.85"/>
+    <path d="M3.8 8.0 L14 15.6 L24.2 8.0" stroke-width="4.85"/>
+    <path d="M3.9 21.4 L10.6 15.4 M24.1 21.4 L17.4 15.4" stroke-width="4.10"/>
     <path d="M14 15.6 m-2.5 0 a2.5 2.5 0 1 0 5.0 0 a2.5 2.5 0 1 0 -5.0 0 Z" fill="#140b06" stroke-width="3.10"/>
   </g>
   <g fill="none" stroke="#f3e5c4" stroke-linecap="round" stroke-linejoin="round">
     <path d="M14 15.6 m-2.5 0 a2.5 2.5 0 1 0 5.0 0 a2.5 2.5 0 1 0 -5.0 0 Z" fill="#f3e5c4" stroke-width="0.6"/>
-    <path d="M3.8 8.0 H24.2 V21.6 H3.8 Z" stroke-width="1.55"/>
-    <path d="M3.8 8.0 L14 15.6 L24.2 8.0" stroke-width="1.55"/>
-    <path d="M3.9 21.4 L10.6 15.4 M24.1 21.4 L17.4 15.4" stroke-width="0.9" stroke-opacity="0.9"/>
+    <path d="M3.8 8.0 H24.2 V21.6 H3.8 Z" stroke-width="1.75"/>
+    <path d="M3.8 8.0 L14 15.6 L24.2 8.0" stroke-width="1.75"/>
+    <path d="M3.9 21.4 L10.6 15.4 M24.1 21.4 L17.4 15.4" stroke-width="1.0" stroke-opacity="0.9"/>
   </g>
 </svg>

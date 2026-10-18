@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
   <!-- Лестница на чердак: приставная лестница к краю лаза. Рисунок: Claude Code для «Дома пропавших дорог», 18.10.2026 -->
   <g fill="none" stroke="#140b06" stroke-opacity="0.88" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M6.4 25.4 L14.6 3.6" stroke-width="4.65"/>
-    <path d="M13.2 25.4 L21.4 3.6" stroke-width="4.65"/>
-    <path d="M15.8 3.8 H25.0" stroke-width="4.65"/>
-    <path d="M8.4 21.6 H14.8 M9.9 17.6 H16.3 M11.4 13.6 H17.8 M12.9 9.6 H19.3 M14.3 5.8 H20.5" stroke-width="4.00"/>
-    <path d="M17.0 1.9 H25.0" stroke-width="4.00"/>
+    <path d="M6.4 25.4 L14.6 3.6" stroke-width="4.85"/>
+    <path d="M13.2 25.4 L21.4 3.6" stroke-width="4.85"/>
+    <path d="M15.8 3.8 H25.0" stroke-width="4.85"/>
+    <path d="M8.4 21.6 H14.8 M9.9 17.6 H16.3 M11.4 13.6 H17.8 M12.9 9.6 H19.3 M14.3 5.8 H20.5" stroke-width="4.10"/>
+    <path d="M17.0 1.9 H25.0" stroke-width="4.10"/>
   </g>
   <g fill="none" stroke="#f3e5c4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M6.4 25.4 L14.6 3.6" stroke-width="1.55"/>
-    <path d="M13.2 25.4 L21.4 3.6" stroke-width="1.55"/>
-    <path d="M15.8 3.8 H25.0" stroke-width="1.55"/>
-    <path d="M8.4 21.6 H14.8 M9.9 17.6 H16.3 M11.4 13.6 H17.8 M12.9 9.6 H19.3 M14.3 5.8 H20.5" stroke-width="0.9" stroke-opacity="0.9"/>
-    <path d="M17.0 1.9 H25.0" stroke-width="0.9" stroke-opacity="0.9"/>
+    <path d="M6.4 25.4 L14.6 3.6" stroke-width="1.75"/>
+    <path d="M13.2 25.4 L21.4 3.6" stroke-width="1.75"/>
+    <path d="M15.8 3.8 H25.0" stroke-width="1.75"/>
+    <path d="M8.4 21.6 H14.8 M9.9 17.6 H16.3 M11.4 13.6 H17.8 M12.9 9.6 H19.3 M14.3 5.8 H20.5" stroke-width="1.0" stroke-opacity="0.9"/>
+    <path d="M17.0 1.9 H25.0" stroke-width="1.0" stroke-opacity="0.9"/>
   </g>
 </svg>
