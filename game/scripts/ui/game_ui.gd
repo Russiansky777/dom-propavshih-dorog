@@ -923,6 +923,9 @@ func _set_exit_hover(node: Node) -> void:
 
 ## UiCursors kind for what is under the pointer (null — nothing).
 func cursor_kind_for(node: Node) -> String:
+	if node != null and node is StoryExit:
+		# An exit that takes an item (exits[].item_use — the house key at the door): «перст с искрой».
+		return "use" if StoryRunner.selected_item != "" and (node as StoryExit).data.has("item_use") else "arrow"
 	if node == null or not (node is StoryHotspot):
 		return "arrow"
 	if StoryRunner.selected_item != "":

@@ -305,6 +305,24 @@ func _test_hotspot_cursors() -> void:
 	await _move_mouse(Vector2(1000, 760))
 	if rm.current_room.pick(Vector2(1000, 760)) == null:
 		_check(String(ui.get("_cursor_kind")) == "arrow", "empty floor: the arrow (got %s)" % ui.get("_cursor_kind"))
+	# An exit that takes an item (Z2 → H1: the house key at the door) — «перст с искрой» with the key in hand.
+	await _enter("Z2")
+	var door: Node2D = null
+	for e in rm.current_room.get_exits():
+		if String(e.get("target_room")) == "H1":
+			door = e
+	if door != null and (door.get("data") as Dictionary).has("item_use"):
+		gs.add_item("key_house")
+		sr.select_item("key_house")
+		var at := _pick_point(door)
+		await _move_mouse(at)
+		await _frames(2)
+		_check(String(ui.get("_cursor_kind")) == "use", "key in hand over the house door: «перст с искрой» (got %s)" % ui.get("_cursor_kind"))
+		sr.select_item("")
+		await _frames(2)
+		await _move_mouse(at + Vector2(1, 0))
+		await _frames(2)
+		_check(String(ui.get("_cursor_kind")) == "arrow", "empty hand over the door: the arrow (got %s)" % ui.get("_cursor_kind"))
 	gs.reset()
 	await _frames(2)
 
