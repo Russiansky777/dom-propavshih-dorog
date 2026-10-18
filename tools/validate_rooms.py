@@ -19,6 +19,8 @@
      вырезе) и walk_samples (≥ 3 точки свободного пола — на полу и не в вырезе); nearest_checks
      ({from, in:[x,y,w,h]}) — from вне пола. Те же точки проверяет навигацией Godot
      game/tests/test_room_geometry.gd;
+     6б. clearance (Z1, Директор 18.10 «Агата чуть да проходит сквозь углы стола»): пол у предмета не ближе
+     полуширины Агаты × масштаб глубины к краям его проекции на пол (тело шире ног);
   7. масштаб (Директор: «стул слишком большой, сцена приближена»): фон вписан в 1920x1080 целиком —
      масштаб 1920/ширина ± 0.001, по высоте без обрезки и полос (± 2 px); каждый слой и состояние
      рисуются тем же масштабом (RoomBuilder: art_scale × scale) — scale ≠ 1 только с scale_reason.
@@ -588,6 +590,41 @@ for rid, room in rooms.items():
         elif not any(walkable_point([x, y]) for x in range(int(box[0]), int(box[0] + box[2]) + 1, 5)
                      for y in range(int(box[1]), int(box[1] + box[3]) + 1, 5)):
             err(f"{ctx}: nearest_checks.in {box} не содержит пола")
+
+    # 6б. зазор у мебели (Директор 18.10: «Агата чуть да проходит сквозь углы стола» в Z1): вырез — место ног,
+    # а тело шире ног. clearance [{left/right — два края проекции предмета на пол (прямые), y [от, до],
+    # half_width_px}]: каждая точка пола с y в диапазоне стоит левее левого края или правее правого
+    # не меньше чем на half_width_px × масштаб глубины (сетка 4 px; то же на навигации Godot —
+    # game/tests/test_room_geometry.gd).
+    kind6 = room.get("background", {}).get("kind", "interior")
+    dep6 = room.get("depth", index["defaults"].get("depth_exterior" if kind6 == "exterior" else "depth", {}))
+
+    def scale6(y: float) -> float:
+        span = dep6["bottom_y"] - dep6["top_y"]
+        t = 1.0 if span == 0 else min(1.0, max(0.0, (y - dep6["top_y"]) / span))
+        return dep6["scale_top"] + (dep6["scale_bottom"] - dep6["scale_top"]) * t
+
+    def line_x(seg, y: float) -> float:
+        (x1, y1), (x2, y2) = seg
+        return x1 if y1 == y2 else x1 + (x2 - x1) * (y - y1) / (y2 - y1)
+
+    for ci, cl in enumerate(room.get("clearance", [])):
+        cctx = f"{ctx}.clearance[{ci}] ({cl.get('what', '?')})"
+        if not all(k in cl for k in ("left", "right", "y", "half_width_px")):
+            err(f"{cctx}: нужны left, right, y, half_width_px")
+            continue
+        y0, y1 = cl["y"]
+        hw = float(cl["half_width_px"])
+        bad = []
+        for yy in range(int(y0) + 2, int(y1) - 1, 4):  # 2 px внутрь: точки НА границе выреза — пол
+            sx = hw * scale6(yy)
+            xl, xr = line_x(cl["left"], yy) - sx, line_x(cl["right"], yy) + sx
+            for xx in range(int(xl) + 3, int(xr) - 1, 4):
+                if walkable_point([xx, yy]):
+                    bad.append((xx, yy))
+        if bad:
+            err(f"{cctx}: {len(bad)} точек пола ближе полуширины Агаты к краю — например {bad[0]}, {bad[-1]} "
+                f"(тело Агаты войдёт в предмет; раздвиньте walkable_holes)")
 
     for sid, pos in spawns.items():
         if not walkable_point(pos):

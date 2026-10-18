@@ -12,6 +12,8 @@ extends SceneTree
 ##   - no path to them cuts through an obstacle or leaves the floor outline;
 ##   - `nearest_checks`: map_get_closest_point(from) lands in the expected rect
 ##     (R1: a click in the water brings Agata to the shore or onto the pier deck, never into the water);
+##   - `clearance` (Z1 counter): no baked floor point closer to the object's floor projection than
+##     Agata's half width × depth scale (the feet are outside, the body must be too);
 ##   - scale (Director: «стул слишком большой, сцена приближена»): the background fits 1920x1080 whole
 ##     with one uniform scale 1920/width (± 0.001), and every layer/state node is drawn with that same
 ##     scale — times its data `scale` only when the data gives a `scale_reason`.
@@ -83,6 +85,15 @@ static func _edge_dist(p: Vector2, poly: PackedVector2Array) -> float:
 		var c := Geometry2D.get_closest_point_to_segment(p, poly[i], poly[(i + 1) % poly.size()])
 		best = minf(best, p.distance_to(c))
 	return best
+
+
+## x of the straight line through two points [[x, y], [x, y]] at height `y` (data `clearance` edges).
+static func _line_x(seg: Array, y: float) -> float:
+	var a := _pt(seg[0])
+	var b := _pt(seg[1])
+	if is_equal_approx(a.y, b.y):
+		return a.x
+	return a.x + (b.x - a.x) * (y - a.y) / (b.y - a.y)
 
 
 ## True when `p` is inside `poly` deeper than DEEP_PX (points on the border do not count).
@@ -178,6 +189,31 @@ func _test_room(rid: String) -> void:
 		var rect := Rect2(float(box[0]), float(box[1]), float(box[2]), float(box[3]))
 		var closest := NavigationServer2D.map_get_closest_point(map, frm)
 		_check(rect.grow(0.5).has_point(closest), "closest floor point to %s is %s, expected inside %s (%s)" % [str(frm), str(closest.round()), str(rect), String(nc.get("_note", ""))])
+
+	# Body clearance at furniture (data `clearance`; Director 18.10: «Агата чуть да проходит сквозь углы
+	# стола» in Z1): the feet may not stand closer to the object's floor projection than Agata's half width
+	# × depth scale — checked on the BAKED mesh, every 4 px of the y range.
+	for cl in spec.get("clearance", []):
+		var y0 := float(cl["y"][0])
+		var y1 := float(cl["y"][1])
+		var hw := float(cl["half_width_px"])
+		var bad := 0
+		var first := Vector2.ZERO
+		var y := y0 + 2.0   # 2 px inside the range and the edges: points ON the hole border are floor
+		while y <= y1 - 2.0:
+			var sx: float = hw * float(room.depth_scale(y))
+			var xl := _line_x(cl["left"], y) - sx
+			var xr := _line_x(cl["right"], y) + sx
+			var x := xl + 2.0
+			while x <= xr - 2.0:
+				var q := Vector2(x, y)
+				if NavigationServer2D.map_get_closest_point(map, q).distance_to(q) < 0.5:
+					if bad == 0:
+						first = q
+					bad += 1
+				x += 4.0
+			y += 4.0
+		_check(bad == 0, "clearance «%s»: %d floor points closer than half_width_px × depth scale to the object (first %s) — her body enters it" % [String(cl.get("what", "?")), bad, str(first.round())])
 
 	root.remove_child(room)
 	room.free()
