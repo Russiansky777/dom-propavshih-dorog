@@ -97,6 +97,8 @@ def main() -> int:
         bpy.ops.wm.read_factory_settings(use_empty=True)
         for o in list(bpy.context.scene.objects):
             bpy.data.objects.remove(o, do_unlink=True)
+        bpy.context.scene.render.fps = 30  # клипы Meshy — 30 кадров/с (целые кадры, без растяжения)
+        bpy.context.scene.render.fps_base = 1.0
         bpy.ops.import_scene.gltf(filepath=str(glb.resolve()), disable_bone_shape=True)
         objs = [o for o in bpy.context.scene.objects if not any(c.name == "glTF_not_exported" for c in o.users_collection)]
         arm = next((o for o in objs if o.type == "ARMATURE"), None)

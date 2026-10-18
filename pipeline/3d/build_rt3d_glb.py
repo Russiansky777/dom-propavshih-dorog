@@ -29,10 +29,15 @@ import bpy
 KEY = ["Hips", "Spine02", "Head", "LeftHand", "RightHand", "LeftFoot", "RightFoot", "LeftToeBase", "RightToeBase"]
 
 
+FPS = 30  # клипы Meshy — 30 кадров/с: при 24 импорт растягивал их в дробные кадры, экспорт обрезал хвост
+
+
 def clean() -> None:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     for o in list(bpy.context.scene.objects):
         bpy.data.objects.remove(o, do_unlink=True)
+    bpy.context.scene.render.fps = FPS
+    bpy.context.scene.render.fps_base = 1.0
 
 
 def import_glb(path: Path) -> tuple:
@@ -100,7 +105,7 @@ def transfer(src_arm, src_act, dst_arm, name: str):
     f0, f1 = (int(math.floor(src_act.frame_range[0])), int(math.ceil(src_act.frame_range[1])))
     if dst_arm.animation_data is None:
         dst_arm.animation_data_create()
-    new = bpy.data.actions.new(name)
+    new = bpy.data.actions.new("__rt_" + name)  # временное имя: исходный клип с тем же именем ещё жив
     dst_arm.animation_data.action = new
     for pb in dst_arm.pose.bones:
         pb.rotation_mode = "QUATERNION"
@@ -162,19 +167,25 @@ def main() -> int:
             print(f"перенесён клип {nm} из {Path(ex).name}", flush=True)
         for o in [earm] + emeshes:
             bpy.data.objects.remove(o, do_unlink=True)
+    def bare(a) -> str:
+        return a.name.removeprefix("__rt_").split(".")[0]
     for a in list(keep):
-        if a.name.split(".")[0] in args.drop:
+        if bare(a) in args.drop:
             keep.remove(a)
-            reference.pop(a.name.split(".")[0], None)
-    for a in keep:
-        base = a.name.split(".")[0]
-        a.name = rename.get(base, base)
-        if a.name != base:
-            reference[a.name] = reference.pop(base)
-    # всё лишнее (дубли действий от второго импорта) — вон, чтобы экспорт не захватил чужие клипы
+            reference.pop(bare(a), None)
+    # всё лишнее (клипы второго импорта, дубли) — вон ДО переименования, иначе Blender допишет «.001»
     for a in list(bpy.data.actions):
         if a not in keep:
             bpy.data.actions.remove(a)
+    for a in keep:
+        base = bare(a)
+        a.name = rename.get(base, base)
+        if a.name != base:
+            reference[a.name] = reference.pop(base)
+    names = [a.name for a in keep]
+    if len(set(names)) != len(names) or any("." in n for n in names):
+        print(f"ИМЕНА КЛИПОВ НЕ ЧИСТЫЕ: {names}", flush=True)
+        return 4
     push_all_to_nla(arm, keep)
 
     out = Path(args.out)

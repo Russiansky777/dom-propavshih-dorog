@@ -136,8 +136,14 @@ def do_new_actions(name: str, req: dict, out_dir: Path) -> None:
     base = json.loads((STATE / f"{name}.json").read_text(encoding="utf-8"))
     cost = 3 * len(acts)
     cap = int(req.get("max_credits", 0))
-    tag = str(req.get("rev", 1))
     tasks = st.setdefault("tasks", {})
+    # одна задача на один набор действий: повтор запроса (новый rev) с тем же набором ничего не тратит
+    ids = sorted(int(v) for v in acts.values())
+    tag = next((k for k, t in tasks.items() if sorted(int(v) for v in t.get("actions", {}).values()) == ids), str(req.get("rev", 1)))
+    dest_existing = out_dir / f"{name}_extra_r{tag}.glb"
+    if tag in tasks and dest_existing.exists():
+        log(f"набор действий уже получен задачей {tasks[tag]['task']} → {dest_existing.name}; 0 кредитов")
+        return
     if tag not in tasks:
         if cost > cap:
             raise SystemExit(f"новые действия стоят {cost} кредитов > max_credits {cap} — задача не создана")
