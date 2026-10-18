@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-18T01:35:56+00:00",
+  "updated_at": "2026-10-18T11:46:23+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -872,8 +872,8 @@
       "key": "H1.cups.look",
       "source_text": "ru_E0_E1",
       "speaker": "narrator",
-      "text": "Синяя и белая. Обе вымыты и ждут на полке.",
-      "text_sha1": "6ede9e3de71f351dc88330a6cb4049f5ae47e838",
+      "text": "Синяя и белая. Обе вымыты и ждут на подоконнике.",
+      "text_sha1": "43e50d5033d52079cebe20a52334628f85c9eb8d",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
@@ -883,28 +883,28 @@
       },
       "file": "narrator/H1.cups.look.ogg",
       "source": "src/narrator/H1.cups.look.mp3",
-      "voice_text": "Синяя и белая. Обе вымыты и ждут на полке.",
-      "voice_sha1": "6ede9e3de71f351dc88330a6cb4049f5ae47e838",
+      "voice_text": "Синяя и белая. Обе вымыты и ждут на подоконнике.",
+      "voice_sha1": "43e50d5033d52079cebe20a52334628f85c9eb8d",
       "tags": [],
-      "characters": 42,
+      "characters": 48,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.05,
+      "duration_s": 4.48,
       "lufs": -17.0,
-      "true_peak_db": -5.8,
-      "gain_db": -3.5,
-      "source_lufs": -13.5,
-      "source_true_peak_db": -2.3,
-      "generated_at": "2026-10-17T23:12:50+00:00",
-      "run": "39078036562",
+      "true_peak_db": -5.6,
+      "gain_db": -3.2,
+      "source_lufs": -13.8,
+      "source_true_peak_db": -2.4,
+      "generated_at": "2026-10-18T11:46:21+00:00",
+      "run": "39124518023",
       "api": {
-        "request_id": "SskHazXXN8TOYzAnnc6W",
-        "history_item_id": "c0uCMqKAnEiXul1a9y9O",
-        "character_cost": "18",
+        "request_id": "r5Z4KpjA1kFxGBiMxYpO",
+        "history_item_id": "4ykh71ttXAO6SsTr5JA2",
+        "character_cost": "21",
         "dropped_params": [],
         "output_format": "mp3_44100_128",
         "sent": {
           "language_code": "ru",
-          "seed": 1874047132
+          "seed": 3965583906
         }
       }
     },
@@ -2600,8 +2600,8 @@
       "key": "O1.chalk.look",
       "source_text": "ru_E0_E1",
       "speaker": "narrator",
-      "text": "На учительском столе лежит мел.",
-      "text_sha1": "8b714a751214e42cd47bbd87a93c6fb60ae1e74a",
+      "text": "На парте лежит кусочек мела.",
+      "text_sha1": "be3184f3be2e371683059f08d0140be73303f957",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
@@ -2611,28 +2611,28 @@
       },
       "file": "narrator/O1.chalk.look.ogg",
       "source": "src/narrator/O1.chalk.look.mp3",
-      "voice_text": "На учительском столе лежит мел.",
-      "voice_sha1": "8b714a751214e42cd47bbd87a93c6fb60ae1e74a",
+      "voice_text": "На парте лежит кусочек мела.",
+      "voice_sha1": "be3184f3be2e371683059f08d0140be73303f957",
       "tags": [],
-      "characters": 31,
+      "characters": 28,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.499,
-      "lufs": -17.0,
-      "true_peak_db": -5.6,
-      "gain_db": -3.9,
-      "source_lufs": -13.1,
-      "source_true_peak_db": -1.6,
-      "generated_at": "2026-10-17T23:13:53+00:00",
-      "run": "39078036562",
+      "duration_s": 2.238,
+      "lufs": -17.1,
+      "true_peak_db": -5.8,
+      "gain_db": -3.2,
+      "source_lufs": -13.8,
+      "source_true_peak_db": -2.6,
+      "generated_at": "2026-10-18T11:46:23+00:00",
+      "run": "39124518023",
       "api": {
-        "request_id": "5YJg9gOwmyyDnDYQQYHA",
-        "history_item_id": "jGJ4em3WP53PTejvrEx2",
-        "character_cost": "14",
+        "request_id": "BfRhDlN3DCREHpSWeEaI",
+        "history_item_id": "z3ycSWhabf6OUJWM3EVP",
+        "character_cost": "12",
         "dropped_params": [],
         "output_format": "mp3_44100_128",
         "sent": {
           "language_code": "ru",
-          "seed": 923437485
+          "seed": 1763013372
         }
       }
     },
@@ -2641,8 +2641,8 @@
       "key": "O1.chalk.use",
       "source_text": "ru_E0_E1",
       "speaker": "narrator",
-      "text": "Мел со стола оставляет на пальцах белый след.",
-      "text_sha1": "8c84d68534722764692e50f1be222900f724b505",
+      "text": "Мел с парты оставляет на пальцах белый след.",
+      "text_sha1": "0468453b7b911d948531a016b41b735c81e265b2",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
@@ -2652,28 +2652,28 @@
       },
       "file": "narrator/O1.chalk.use.ogg",
       "source": "src/narrator/O1.chalk.use.mp3",
-      "voice_text": "Мел со стола оставляет на пальцах белый след.",
-      "voice_sha1": "8c84d68534722764692e50f1be222900f724b505",
+      "voice_text": "Мел с парты оставляет на пальцах белый след.",
+      "voice_sha1": "0468453b7b911d948531a016b41b735c81e265b2",
       "tags": [],
-      "characters": 45,
+      "characters": 44,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.557,
+      "duration_s": 3.528,
       "lufs": -17.0,
-      "true_peak_db": -5.4,
-      "gain_db": -2.8,
-      "source_lufs": -14.2,
-      "source_true_peak_db": -2.4,
-      "generated_at": "2026-10-17T23:13:52+00:00",
-      "run": "39078036562",
+      "true_peak_db": -4.9,
+      "gain_db": -2.4,
+      "source_lufs": -14.6,
+      "source_true_peak_db": -2.5,
+      "generated_at": "2026-10-18T11:46:22+00:00",
+      "run": "39124518023",
       "api": {
-        "request_id": "VThsndieDbETvXWYKAj3",
-        "history_item_id": "WN8f5EvEWYDUcSINnGsh",
-        "character_cost": "20",
+        "request_id": "4AK6LIdw6fDZJcQxpQQ6",
+        "history_item_id": "niOi2Ef5al7mA6Ssw295",
+        "character_cost": "19",
         "dropped_params": [],
         "output_format": "mp3_44100_128",
         "sent": {
           "language_code": "ru",
-          "seed": 99896498
+          "seed": 1741843990
         }
       }
     },
@@ -3622,6 +3622,47 @@
         }
       }
     },
+    "Z1.drawings.photo": {
+      "kind": "narration",
+      "key": "Z1.drawings.photo",
+      "source_text": "ru_E0_E1",
+      "speaker": "narrator",
+      "text": "Сваи и пластина со снимка узнаются и на наброске Тамары. Но одной картинки мало, чтобы понять, где шёл рейс.",
+      "text_sha1": "b527bb591a89ae20053e4b2bd576b402a7526980",
+      "voice_id": "kPaCtwsoLpkcqnqv9PyA",
+      "voice_name": "ZAKADR",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.65,
+        "similarity_boost": 0.75
+      },
+      "file": "narrator/Z1.drawings.photo.ogg",
+      "source": "src/narrator/Z1.drawings.photo.mp3",
+      "voice_text": "Сваи и пластина со снимка узнаются и на наброске Тамары. Но одной картинки мало, чтобы понять, где шёл рейс.",
+      "voice_sha1": "b527bb591a89ae20053e4b2bd576b402a7526980",
+      "tags": [],
+      "characters": 108,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 8.359,
+      "lufs": -17.1,
+      "true_peak_db": -5.5,
+      "gain_db": -2.9,
+      "source_lufs": -14.1,
+      "source_true_peak_db": -2.4,
+      "generated_at": "2026-10-18T11:46:11+00:00",
+      "run": "39124518023",
+      "api": {
+        "request_id": "GnI2t8lykXAg5qMISPuN",
+        "history_item_id": "eQWjO3BV4yRcP0ighbrN",
+        "character_cost": "48",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2477406369
+        }
+      }
+    },
     "Z1.drawings.use": {
       "kind": "narration",
       "key": "Z1.drawings.use",
@@ -3867,6 +3908,48 @@
         "sent": {
           "language_code": "ru",
           "seed": 2067168987
+        }
+      },
+      "stale": "текст изменён"
+    },
+    "Z2.exit_H1.unlock": {
+      "kind": "narration",
+      "key": "Z2.exit_H1.unlock",
+      "source_text": "ru_E0_E1",
+      "speaker": "narrator",
+      "text": "Замок поддался не сразу. Ключ останется в двери — дом снова открыт.",
+      "text_sha1": "de28f6af501c7060e3316feebb9b9f6cb6b9fecc",
+      "voice_id": "kPaCtwsoLpkcqnqv9PyA",
+      "voice_name": "ZAKADR",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.65,
+        "similarity_boost": 0.75
+      },
+      "file": "narrator/Z2.exit_H1.unlock.ogg",
+      "source": "src/narrator/Z2.exit_H1.unlock.mp3",
+      "voice_text": "Замок поддался не сразу. Ключ останется в двери — дом снова открыт.",
+      "voice_sha1": "de28f6af501c7060e3316feebb9b9f6cb6b9fecc",
+      "tags": [],
+      "characters": 67,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 5.507,
+      "lufs": -17.1,
+      "true_peak_db": -5.4,
+      "gain_db": -3.3,
+      "source_lufs": -13.7,
+      "source_true_peak_db": -2.4,
+      "generated_at": "2026-10-18T11:46:14+00:00",
+      "run": "39124518023",
+      "api": {
+        "request_id": "GubHr2hVnbOuvUMxhifG",
+        "history_item_id": "dTFw1WJUCmnHMiR1Kltr",
+        "character_cost": "29",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2316613965
         }
       }
     },
@@ -4278,6 +4361,174 @@
         "sent": {
           "language_code": "ru",
           "seed": 3834693506
+        }
+      }
+    },
+    "agata:H1.cups.react_blue": {
+      "kind": "narration",
+      "key": "H1.cups.react_blue",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Синяя — моя. Пусть ждёт на столике у кресла.",
+      "text_sha1": "956cf4f57c672895cf70c732d572358f963361b4",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/H1.cups.react_blue.ogg",
+      "source": "src/agata_thoughts/H1.cups.react_blue.mp3",
+      "voice_text": "Синяя — моя. Пусть ждёт на столике у кресла.",
+      "voice_sha1": "956cf4f57c672895cf70c732d572358f963361b4",
+      "tags": [],
+      "characters": 44,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.537,
+      "lufs": -17.0,
+      "true_peak_db": -5.6,
+      "gain_db": -0.1,
+      "source_lufs": -16.9,
+      "source_true_peak_db": -5.4,
+      "generated_at": "2026-10-18T11:46:18+00:00",
+      "run": "39124518023",
+      "api": {
+        "request_id": "FXNMWMYi5PvlgF9msizC",
+        "history_item_id": "2BJ7gOJeMv6ndd5LYCLD",
+        "character_cost": "19",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1990741057
+        }
+      }
+    },
+    "agata:H1.cups.react_white": {
+      "kind": "narration",
+      "key": "H1.cups.react_white",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Белая — моя. Пусть ждёт на столике у кресла.",
+      "text_sha1": "c3e8e6f813a6d984920a946141002d8e4207d2ce",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/H1.cups.react_white.ogg",
+      "source": "src/agata_thoughts/H1.cups.react_white.mp3",
+      "voice_text": "Белая — моя. Пусть ждёт на столике у кресла.",
+      "voice_sha1": "c3e8e6f813a6d984920a946141002d8e4207d2ce",
+      "tags": [],
+      "characters": 44,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.52,
+      "lufs": -17.1,
+      "true_peak_db": -3.8,
+      "gain_db": 1.0,
+      "source_lufs": -18.0,
+      "source_true_peak_db": -4.9,
+      "generated_at": "2026-10-18T11:46:19+00:00",
+      "run": "39124518023",
+      "api": {
+        "request_id": "nfpZniU4iR7fwq67mZOs",
+        "history_item_id": "3VpHS2wmfvt2X5jtljRC",
+        "character_cost": "19",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2388952997
+        }
+      }
+    },
+    "agata:H1.photo.react_shelf": {
+      "kind": "narration",
+      "key": "H1.photo.react_shelf",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Пусть стоит на полке — оттуда видна вся комната.",
+      "text_sha1": "a837182fe46e530d6098ed394cff2d050bdaad51",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/H1.photo.react_shelf.ogg",
+      "source": "src/agata_thoughts/H1.photo.react_shelf.mp3",
+      "voice_text": "Пусть стоит на полке — оттуда видна вся комната.",
+      "voice_sha1": "a837182fe46e530d6098ed394cff2d050bdaad51",
+      "tags": [],
+      "characters": 48,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.347,
+      "lufs": -16.9,
+      "true_peak_db": -1.9,
+      "gain_db": 0.7,
+      "source_lufs": -17.7,
+      "source_true_peak_db": -2.8,
+      "generated_at": "2026-10-18T11:46:16+00:00",
+      "run": "39124518023",
+      "api": {
+        "request_id": "UojE9gytdABsSPZE6n61",
+        "history_item_id": "2bKCS2P6SMVgTzktD8AW",
+        "character_cost": "21",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1478559301
+        }
+      }
+    },
+    "agata:H1.photo.react_table": {
+      "kind": "narration",
+      "key": "H1.photo.react_table",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Пусть стоит у кресла — так все наши рядом.",
+      "text_sha1": "a181fccf287709f44746709113a4084589100b84",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/H1.photo.react_table.ogg",
+      "source": "src/agata_thoughts/H1.photo.react_table.mp3",
+      "voice_text": "Пусть стоит у кресла — так все наши рядом.",
+      "voice_sha1": "a181fccf287709f44746709113a4084589100b84",
+      "tags": [],
+      "characters": 42,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.923,
+      "lufs": -17.0,
+      "true_peak_db": -2.4,
+      "gain_db": 1.2,
+      "source_lufs": -18.2,
+      "source_true_peak_db": -3.6,
+      "generated_at": "2026-10-18T11:46:15+00:00",
+      "run": "39124518023",
+      "api": {
+        "request_id": "a0ZZae36j3hiDu0f3REU",
+        "history_item_id": "QYypCzou9apfcGPBldR8",
+        "character_cost": "18",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 4072160679
         }
       }
     },
@@ -4790,6 +5041,48 @@
         "sent": {
           "language_code": "ru",
           "seed": 3759759741
+        }
+      }
+    },
+    "agata:Z2.exit_H1.closed": {
+      "kind": "narration",
+      "key": "Z2.exit_H1.closed",
+      "source_text": "ru_E0_E1",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Заперто. Ключ от тётиного дома — у меня в сумке.",
+      "text_sha1": "813f4006d9ac88caaa733be361935580cc5f9d0c",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/Z2.exit_H1.closed.ogg",
+      "source": "src/agata_thoughts/Z2.exit_H1.closed.mp3",
+      "voice_text": "Заперто. Ключ от тётиного дома — у меня в сумке.",
+      "voice_sha1": "813f4006d9ac88caaa733be361935580cc5f9d0c",
+      "tags": [],
+      "characters": 48,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.89,
+      "lufs": -17.0,
+      "true_peak_db": -5.7,
+      "gain_db": 0.3,
+      "source_lufs": -17.3,
+      "source_true_peak_db": -5.9,
+      "generated_at": "2026-10-18T11:46:12+00:00",
+      "run": "39124518023",
+      "api": {
+        "request_id": "lcIJOmBqvZ8kKEIzMdBV",
+        "history_item_id": "P4wjLAbUfIvGF9KC4FPp",
+        "character_cost": "21",
+        "dropped_params": [],
+        "output_format": "mp3_44100_128",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3018572584
         }
       }
     },
