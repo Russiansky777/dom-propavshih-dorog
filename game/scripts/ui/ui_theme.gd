@@ -131,6 +131,13 @@ static func _build() -> Theme:
 	_label_variation(t, &"MutedLabel", "body_italic", 22, MUTED)
 	_label_variation(t, &"HoverLabel", "body_bold", 27, CREAM, 8)
 	_label_variation(t, &"HintLabel", "body_italic", 28, CREAM, 8)
+	# Hint panel (button «Подсказка», Director 18.10: «шрифт типсов увеличить»): the hint reads from a
+	# metre off a laptop — 38 px at 1920×1080, 25 px at 1280×720 (dialogue is 31); tier title in the
+	# heading face; the Space tip under it.
+	_label_variation(t, &"HintTitle", "head_bold", 30, GOLD)
+	_label_variation(t, &"HintText", "body", 38, CREAM)
+	_label_variation(t, &"HintTip", "body_italic", 28, Color(0.86, 0.80, 0.69))
+	t.set_constant(&"line_spacing", &"HintText", 2)
 	_label_variation(t, &"BagEmptyLabel", "body_italic", 22, MUTED)
 	_label_variation(t, &"BagTooltipTitle", "head_bold", 28, GOLD)
 	_label_variation(t, &"BagTooltipText", "body", 23, CREAM)
@@ -183,6 +190,10 @@ static func _build() -> Theme:
 	var dlg := panel_style(Color(0.09, 0.066, 0.048, 0.80), BORDER, 28.0, 12.0)
 	dlg.content_margin_bottom = 14
 	t.set_stylebox(&"panel", &"DialoguePanel", dlg)
+	t.set_type_variation(&"HintPanel", &"PanelContainer")
+	var hint_p := panel_style(Color(0.10, 0.074, 0.054, 0.93), BORDER, 32.0, 16.0)
+	hint_p.content_margin_bottom = 18
+	t.set_stylebox(&"panel", &"HintPanel", hint_p)
 	t.set_type_variation(&"TopBarPanel", &"PanelContainer")
 	var bar := StyleBoxFlat.new()
 	bar.bg_color = BAR_BG

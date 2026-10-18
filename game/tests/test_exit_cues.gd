@@ -7,12 +7,13 @@ extends SceneTree
 ##      touches; the mark lies in the exit rect and a click there picks that exit; it stays in the
 ##      frame under the top bar, does not cover another mark or a hotspot's centre;
 ##   2. ExitCue.classify — the derivation rules on synthetic rects (edge, two edges, side, explicit);
-##   3. hover: the pointer on an exit → its mark is hot, the exit cursor of its direction (doorway for a
-##      drawn door), the caption; on an object → the ordinary pointer; off → back to normal;
+##   3. hover: the pointer on an exit → its mark is hot, the caption with the destination icon, the
+##      cursor stays the ordinary pointer (the big exit arrows are gone, Director 18.10); on an object →
+##      «перст» (look); off → back to normal;
 ##   4. the reveal key (Space): every active hotspot and every exit of the room for 1.5 s, the exit
 ##      marks light up; nothing during a dialogue; the menu names the key;
-##   5. exit cursor images (SVG): 48×48, the arrow points the way of its name; marks fade out under a
-##      dialogue and come back after it.
+##   5. marks fade out under a dialogue and come back after it.
+## Cursor drawings, every exit's icon and its layout, the hint panel, the Z4 sign: tests/test_ui_cursors.gd.
 ## Exit code 0 only when every check passed.
 
 const TOP_H := 80.0
@@ -62,9 +63,9 @@ func _run() -> void:
 	ui = main_node.get_node("GameUi")
 	await _test("Every exit of every room: a mark or drawn in the art; direction = frame edge; mark in the exit rect, clickable, in the frame, not under the bar", _test_rooms)
 	await _test("ExitCue.classify: edge, two edges, side, explicit cue, inner rect = door", _test_classify)
-	await _test("Hover: exit → mark hot + exit cursor + caption; drawn door → doorway cursor; object → ordinary pointer", _test_hover)
+	await _test("Hover: exit → mark hot + caption + icon, ordinary pointer (no exit arrow cursor); drawn door → the same; object → «перст»", _test_hover)
 	await _test("Space: every active hotspot and exit for 1.5 s, marks light up; nothing during a dialogue; menu names the key", _test_reveal)
-	await _test("Exit cursor images point their way; marks fade out under a dialogue and return", _test_cursors_and_fade)
+	await _test("Marks fade out under a dialogue and return", _test_cursors_and_fade)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -257,22 +258,21 @@ func _test_hover() -> void:
 	await _move_mouse(street.cue.global_position)
 	await _frames(4)
 	_check(street.cue.is_hot(), "pointer on the mark: the mark is hot")
-	_check(String(ui.get("_exit_cursor")) == "down", "exit cursor: down (got '%s')" % ui.get("_exit_cursor"))
-	# Headless has no OS cursor (the shape itself is read back from the page CSS in tools/exits_web.mjs);
-	# here: each kind has its own spare shape, none is the ordinary arrow.
-	var shapes := {}
-	for k in ["up", "down", "left", "right", "door"]:
-		shapes[ExitCursors.shape(k)] = k
-	_check(shapes.size() == 5 and not shapes.has(Input.CURSOR_ARROW) and ExitCursors.shape("") == Input.CURSOR_ARROW, "five distinct exit cursor shapes, the ordinary arrow elsewhere: %s" % str(shapes))
+	# Director 18.10: the big exit arrow cursor is gone — over an exit the ordinary «стрела-указка».
+	_check(String(ui.get("_cursor_kind")) == "arrow", "exit: ordinary pointer, no exit arrow (got '%s')" % ui.get("_cursor_kind"))
+	_check(int(ui.get("cursor_shape")) == Input.CURSOR_ARROW, "exit: cursor shape is the arrow (%d)" % int(ui.get("cursor_shape")))
 	var hover: Label = ui.get("hover_label")
 	_check(hover.visible and hover.text == sd.text("@Z4.exit_Z2.label"), "caption «%s» (got «%s»)" % [sd.text("@Z4.exit_Z2.label"), hover.text])
-	# A drawn door: no mark, the doorway cursor and the caption.
+	var icon: TextureRect = ui.get("hover_icon")
+	_check(icon.visible and icon.texture != null, "exit caption carries the destination icon")
+	# A drawn door: no mark, the ordinary pointer, the caption and the icon.
 	var post = _exit_to("Z1")
 	_check(post != null and post.cue_dir == "door" and post.cue == null, "Z4: the post-office door is drawn — no mark")
 	if post != null:
 		await _move_mouse(_exit_rect(post).get_center())
 		await _frames(3)
-		_check(String(ui.get("_exit_cursor")) == "door", "drawn door: doorway cursor (got '%s')" % ui.get("_exit_cursor"))
+		_check(String(ui.get("_cursor_kind")) == "arrow", "drawn door: ordinary pointer (got '%s')" % ui.get("_cursor_kind"))
+		_check(icon.visible, "drawn door: the destination icon")
 		_check(hover.visible and hover.text == sd.text("@Z4.exit_Z1.label"), "drawn door caption «%s»" % hover.text)
 		_check(not street.cue.is_hot(), "the street mark is no longer hot")
 	# An object: the ordinary pointer.
@@ -286,12 +286,13 @@ func _test_hover() -> void:
 		await _move_mouse(c)
 		await _frames(3)
 		if rm.current_room.pick(c) == obj:
-			_check(String(ui.get("_exit_cursor")) == "", "object «%s»: the ordinary pointer (got '%s')" % [obj.hotspot_id, ui.get("_exit_cursor")])
+			_check(String(ui.get("_cursor_kind")) == "look", "object «%s»: «перст» (got '%s')" % [obj.hotspot_id, ui.get("_cursor_kind")])
+			_check(not icon.visible, "object «%s»: no destination icon" % obj.hotspot_id)
 	# Empty floor: back to normal.
 	await _move_mouse(Vector2(1000, 700))
 	await _frames(3)
 	if rm.current_room.pick(Vector2(1000, 700)) == null:
-		_check(String(ui.get("_exit_cursor")) == "" and not street.cue.is_hot(), "off the exit: ordinary pointer, mark idle")
+		_check(String(ui.get("_cursor_kind")) == "arrow" and not street.cue.is_hot() and not icon.visible, "off the exit: ordinary pointer, mark idle, no icon")
 	# The gallery from the living room (H1): whatever the H1 data says, the player sees how to get there.
 	await _enter("H1")
 	var gal = _exit_to("H3")
@@ -301,7 +302,7 @@ func _test_hover() -> void:
 		var at: Vector2 = gal.cue.global_position if gal.cue != null else _exit_rect(gal).get_center()
 		await _move_mouse(at)
 		await _frames(3)
-		_check(String(ui.get("_exit_cursor")) == gal.cue_dir, "H1→H3: exit cursor %s (got '%s')" % [gal.cue_dir, ui.get("_exit_cursor")])
+		_check(String(ui.get("_cursor_kind")) == "arrow", "H1→H3: ordinary pointer (got '%s')" % ui.get("_cursor_kind"))
 		_check(hover.visible and hover.text == gal.label_text(), "H1→H3: caption «%s»" % hover.text)
 	await _move_mouse(Vector2(4, 1076))
 
@@ -372,19 +373,6 @@ func _alpha_at(img: Image, x: int, y: int) -> float:
 
 
 func _test_cursors_and_fade() -> void:
-	for kind in ["up", "down", "left", "right", "door"]:
-		var img: Image = ExitCursors.image(kind)
-		_check(img != null and img.get_width() == 48 and img.get_height() == 48, "cursor %s: 48×48 image" % kind)
-	# The arrow's wide head is on the side it points to: sample just past the head base.
-	var probes := {"up": Vector2i(10, 20), "down": Vector2i(10, 28), "left": Vector2i(20, 10), "right": Vector2i(28, 10)}
-	for kind in probes.keys():
-		var img: Image = ExitCursors.image(kind)
-		if img == null:
-			continue
-		var p: Vector2i = probes[kind]
-		_check(_alpha_at(img, p.x, p.y) > 0.5, "cursor %s: head on its side (alpha %.2f at %s)" % [kind, _alpha_at(img, p.x, p.y), str(p)])
-		var o := {"up": Vector2i(10, 28), "down": Vector2i(10, 20), "left": Vector2i(28, 10), "right": Vector2i(20, 10)}[kind] as Vector2i
-		_check(_alpha_at(img, o.x, o.y) < 0.2, "cursor %s: tail side is the narrow shaft (alpha %.2f at %s)" % [kind, _alpha_at(img, o.x, o.y), str(o)])
 	var tex := ExitCue.textures()
 	_check(tex.has("mark") and (tex["mark"] as Texture2D).get_width() == int(ExitCue.MARK_CANVAS), "mark texture rasterised")
 	# Fade: marks visible in a room, gone under a dialogue, back after it.

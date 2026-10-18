@@ -107,9 +107,20 @@ func set_hot(on: bool) -> void:
 		cue.hot = on
 
 
-## Exit cursor kind: the mark's direction, or "door" for an exit drawn in the art.
+## How the exit is shown: the mark's direction, or "door" for an exit drawn in the art. (The cursor
+## over an exit is the ordinary pointer since 18.10 — the big exit arrows are gone; GameUi.)
 func cursor_kind() -> String:
 	return cue_dir
+
+
+## Icon of the destination drawn left of the caption while hovering (Director 18.10: «значок …
+## мельницы либо дороги … когда наводишь и название появляется»): the exit's own `icon`, else
+## rooms/_index.json → exit_cue.icons[target room]; "" when neither names one (UiGlyphs exit_<name>.svg).
+func icon_name() -> String:
+	if data.has("icon"):
+		return String(data["icon"])
+	var cue_rules: Dictionary = StoryData.rooms_index.get("exit_cue", {})
+	return String(cue_rules.get("icons", {}).get(target_room, ""))
 
 
 func trigger() -> void:

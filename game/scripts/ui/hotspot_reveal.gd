@@ -2,7 +2,7 @@ class_name HotspotReveal
 extends Control
 ## The reveal key (Space, input action `reveal_hotspots`): for DURATION seconds every active hotspot
 ## and every exit of the room is shown — a soft ring with its name for objects, a warm ring with the
-## place's name for exits; exit marks (ExitCue) light up too. Drawn by GameUi under its bars and
+## place's name and its destination icon (UiGlyphs, as on hover) for exits; exit marks (ExitCue) light up too. Drawn by GameUi under its bars and
 ## panels; click-through. Pressing again restarts the time; a dialogue, a panel or a room change ends
 ## it at once.
 
@@ -14,6 +14,8 @@ const FONT_SIZE := 25
 const OUTLINE := 7
 const TOP_LIMIT := 86.0          # under the top bar (GameUi.TOP_H 80)
 const PAD := 6.0
+const ICON := 26.0               # exit destination icon left of its name (as on hover, GameUi)
+const ICON_GAP := 5.0
 
 var targets: Array = []          # [{kind, id, label, at: Vector2, dir, label_rect: Rect2}]
 var _left: float = 0.0
@@ -22,6 +24,7 @@ var _cues: Array = []            # ExitCue lit while revealing
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	position = Vector2.ZERO
 	size = Vector2(1920, 1080)
 	visible = false
@@ -83,6 +86,11 @@ func _layout_labels() -> void:
 	for t in targets:
 		var text := String(t.get("label", ""))
 		var sz := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE) + Vector2(OUTLINE * 2, 4)
+		var tex: Texture2D = UiGlyphs.exit_icon(String(t.get("icon", ""))) if String(t.get("kind", "")) == "exit" else null
+		t["icon_tex"] = tex
+		if tex != null:
+			sz.x += ICON + ICON_GAP
+			sz.y = maxf(sz.y, ICON)
 		var at: Vector2 = t["at"]
 		var gap := RING_R + 10.0
 		var below := Rect2(at + Vector2(-sz.x * 0.5, gap), sz)
@@ -154,6 +162,12 @@ func _draw() -> void:
 			draw_circle(at, 4.0, Color(ring.r, ring.g, ring.b, 0.95 * a))
 		var r: Rect2 = t.get("label_rect", Rect2(at, Vector2.ZERO))
 		var base := Vector2(r.position.x + OUTLINE, r.position.y + font.get_ascent(FONT_SIZE) + 2.0)
+		var tex: Texture2D = t.get("icon_tex", null)
+		if tex != null:
+			var ir := Rect2(r.position.x, r.position.y + (r.size.y - ICON) * 0.5, ICON, ICON)
+			draw_texture_rect(tex, ir, false, Color(1, 1, 1, a))
+			base.x += ICON + ICON_GAP
+			base.y = r.position.y + (r.size.y - font.get_height(FONT_SIZE)) * 0.5 + font.get_ascent(FONT_SIZE)
 		var text := String(t.get("label", ""))
 		draw_string_outline(font, base, text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, OUTLINE, Color(UiTheme.OUTLINE, 0.92 * a))
 		var tc := UiTheme.GOLD_BRIGHT if exit else UiTheme.CREAM

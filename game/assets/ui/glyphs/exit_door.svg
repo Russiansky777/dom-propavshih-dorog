@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <!-- Дверь: доски, кованые петли-стрелы, кольцо; наличник с треугольным навершием. Рисунок: Claude Code для «Дома пропавших дорог», 18.10.2026 -->
+  <g fill="none" stroke="#140b06" stroke-opacity="0.88" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8.2 24.4 V5.6 H19.8 V24.4" stroke-width="4.65"/>
+    <path d="M5.6 24.6 V3.6 H22.4 V24.6" stroke-width="4.65"/>
+    <path d="M4.6 3.6 L14 0.9 L23.4 3.6" stroke-width="4.65"/>
+    <path d="M12.1 5.8 V24.2 M16.0 5.8 V24.2" stroke-width="4.00"/>
+    <path d="M8.4 9.0 H14.6 L15.8 8.0 M8.4 20.8 H14.6 L15.8 19.8" stroke-width="4.00"/>
+    <path d="M17.3 14.6 m-1.25 0 a1.25 1.25 0 1 0 2.5 0 a1.25 1.25 0 1 0 -2.5 0 Z" fill="#140b06" stroke-width="3.10"/>
+  </g>
+  <g fill="none" stroke="#f3e5c4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.3 14.6 m-1.25 0 a1.25 1.25 0 1 0 2.5 0 a1.25 1.25 0 1 0 -2.5 0 Z" fill="#f3e5c4" stroke-width="0.6"/>
+    <path d="M8.2 24.4 V5.6 H19.8 V24.4" stroke-width="1.55"/>
+    <path d="M5.6 24.6 V3.6 H22.4 V24.6" stroke-width="1.55"/>
+    <path d="M4.6 3.6 L14 0.9 L23.4 3.6" stroke-width="1.55"/>
+    <path d="M12.1 5.8 V24.2 M16.0 5.8 V24.2" stroke-width="0.9" stroke-opacity="0.9"/>
+    <path d="M8.4 9.0 H14.6 L15.8 8.0 M8.4 20.8 H14.6 L15.8 19.8" stroke-width="0.9" stroke-opacity="0.9"/>
+  </g>
+</svg>

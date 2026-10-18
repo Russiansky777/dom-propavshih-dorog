@@ -37,6 +37,11 @@
      дверь по умолчанию (прямоугольник внутри кадра), — предупреждение «пометьте cue явно».
      Те же правила — ExitCue.classify (game/scripts/rooms/exit_cue.gd), проверка узлов —
      game/tests/test_exit_cues.gd.
+     Значок места назначения (Директор 18.10: «значок … мельницы либо дороги … когда наводишь и название
+     появляется»): у каждого выхода есть значок — поле icon выхода или таблица _index.json →
+     exit_cue.icons по комнате назначения, — и его рисунок game/assets/ui/glyphs/exit_<имя>.svg существует
+     (импорт «keep»: .svg.import с importer="keep", иначе игра не прочитает SVG в сборке).
+     Курсор над выходом — обычный (большие стрелки-курсоры убраны 18.10): game/tests/test_ui_cursors.gd.
  10. предметы (Директор 18.10: «зачем нам брать предметы, которые нельзя применить»): consumed: true ⇔ где-то
      расходуется; инвентарный предмет E0–E1 применяется в комнатах вехи или объявляет later_use (сцены по
      сценарию) / no_use_reason (спорное, предупреждение); предмет на выходе (exits[].item_use) открывает этот выход.
@@ -227,6 +232,22 @@ def exit_geometry(room: dict, ex: dict):
 
 
 CUE_KINDS = ("door", "left", "right", "down", "up")
+GLYPHS = ROOT / "game" / "assets" / "ui" / "glyphs"
+EXIT_ICONS = (index.get("exit_cue") or {}).get("icons", {})
+
+
+def exit_icon_problem(ex: dict) -> str:
+    """'' если у выхода есть значок с рисунком; иначе — что не так."""
+    name = ex.get("icon") or EXIT_ICONS.get(ex.get("to", ""), "")
+    if not name:
+        return f"нет значка места назначения (поле icon или _index.json → exit_cue.icons[\"{ex.get('to')}\"])"
+    svg = GLYPHS / f"exit_{name}.svg"
+    if not svg.is_file():
+        return f"значок «{name}»: нет рисунка {svg.relative_to(ROOT)}"
+    imp = GLYPHS / f"exit_{name}.svg.import"
+    if not imp.is_file() or 'importer="keep"' not in imp.read_text(encoding="utf-8"):
+        return f"значок «{name}»: {imp.relative_to(ROOT)} должен быть importer=\"keep\" (игра читает SVG сама)"
+    return ""
 CUE_EDGE_TOL = 8.0          # ExitCue.EDGE_TOL
 CUE_EDGE_INSET = 44.0       # ExitCue.EDGE_INSET
 CUE_SIDE_MARGIN = 96.0      # ExitCue.SIDE_MARGIN
@@ -696,6 +717,9 @@ for rid, room in rooms.items():
             err(f"{ctx}: выход в {to}: cue '{cue}' — допустимо {', '.join(CUE_KINDS)}")
             continue
         d, at, src, edg = exit_cue(ex, rect)
+        icon_problem = exit_icon_problem(ex)
+        if icon_problem:
+            err(f"{ctx}: выход в {to}: {icon_problem}")
         if src == "default":
             warn(f"{ctx}: выход в {to} внутри кадра без cue — считается нарисованной дверью; пометьте \"cue\": \"door\" (или направление, если это дорожка вглубь)")
         if d == "door":

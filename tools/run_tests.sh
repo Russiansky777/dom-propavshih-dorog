@@ -52,6 +52,7 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ui_bag.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # сумка: кармашки, иконки, наведение, выбор, «влёт», листание
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ui_map.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # план Заречья: наезд, «Вы здесь», посещённые, журнал
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_h1.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # H1: клик по печи, Тихон в кресле с начала → на полке, гнёзда полки, M03 один раз
-"$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_exit_cues.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # подсказки выходов: метки у края кадра, курсор выхода, Пробел — все хотспоты
+"$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_exit_cues.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # подсказки выходов: метки у края кадра, обычный курсор над выходом, Пробел — все хотспоты
+"$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ui_cursors.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # интерфейс 18.10: старорусские курсоры, значок места у подписи выхода, крупная «Подсказка» с советом про Пробел, вывеска «ПОЧТА» в Z4
 echo "[tests] overall exit code: $code"
 exit "$code"

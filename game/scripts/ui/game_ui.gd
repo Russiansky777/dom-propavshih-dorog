@@ -27,6 +27,16 @@ const DIALOGUE_W: float = 1152.0
 const DIALOGUE_BOTTOM: float = 1062.0
 const HINT_Y: float = 996.0
 const CURSOR_ITEM_OFFSET := Vector2(12, 16)   # below-right of the pointer tip
+## Exit caption: the destination icon (UiGlyphs exit_<name>.svg) left of the place name, same height
+## as the caption's letters with their outline (Director 18.10).
+const HOVER_ICON := 28.0
+const HOVER_ICON_GAP := 6.0
+## Hint panel (button «Подсказка»): large text that reads from a metre off a laptop (Director 18.10:
+## «шрифт типсов увеличить»), the Space tip under it; under the top bar, next to the button.
+const HINT_PANEL_W := 1240.0
+const HINT_PANEL_Y := 96.0
+const HINT_PANEL_SECONDS := 14.0
+const HINT_TEXT_MIN_PX := 36   # the hint text at 1920×1080 (×2/3 at 1280×720 → 24 px) — tests
 
 var top_bar: PanelContainer
 var room_label: Label
@@ -60,8 +70,17 @@ var sfx_value_label: Label
 var voice_slider: HSlider               # menu: voice volume 0–100 % (VoiceDirector, user://settings.cfg)
 var voice_value_label: Label
 var reveal: HotspotReveal               # Space: every hotspot and exit of the room for 1.5 s (exit_hints)
-var _exit_cursor: String = ""           # exit cursor kind on now ("" — the ordinary pointer)
+var hover_icon: TextureRect             # destination icon left of an exit caption
+var hint_panel: PanelContainer          # «Подсказка»: tier title, large text, the Space tip
+var hint_title: Label
+var hint_text: Label
+var hint_tip: Label
+var _cursor_kind: String = "arrow"      # UiCursors kind on now (arrow / look / talk / use)
+var cursor_shape: int = Input.CURSOR_ARROW   # the shape set for it (headless has no OS cursor to read back)
 var _hover_node: Node = null
+var _hover_icon_name: String = ""
+var _hint_panel_line: String = ""       # what the panel shows, as one line (GameState.show_hint → probes)
+var _hint_panel_serial: int = 0
 
 var _hint_serial: int = 0
 
@@ -78,7 +97,7 @@ func _ready() -> void:
 	StoryRunner.item_selection_changed.connect(func(_i): _render_inventory())
 	StoryRunner.item_received.connect(_on_item_received)
 	StoryRunner.loop_transition.connect(_on_loop_transition)
-	StoryRunner.hint_revealed.connect(func(tier, text): GameState.show_hint(StoryData.text("@ui.hint_title", {"tier": tier}) + ": " + text))
+	StoryRunner.hint_revealed.connect(_on_hint_revealed)
 	GameState.inventory_changed.connect(_render_inventory)
 	GameState.state_reset.connect(func(): bag.cancel_flights())
 	GameState.state_loaded.connect(func(_s): bag.cancel_flights())
@@ -111,7 +130,7 @@ func _build() -> void:
 	reveal = HotspotReveal.new()
 	reveal.name = "Reveal"
 	add_child(reveal)
-	ExitCursors.install()
+	UiCursors.install()
 
 	# Top bar
 	top_bar = PanelContainer.new()
@@ -412,6 +431,46 @@ func _build() -> void:
 	hover_label.theme_type_variation = &"HoverLabel"
 	hover_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(hover_label)
+	hover_icon = TextureRect.new()
+	hover_icon.name = "HoverIcon"
+	hover_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	hover_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	hover_icon.size = Vector2(HOVER_ICON, HOVER_ICON)
+	hover_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	hover_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hover_icon.visible = false
+	add_child(hover_icon)
+
+	# Hint panel (button «Подсказка»): click-through, under the top bar; any click in the game, a
+	# dialogue / panel / the plan, or HINT_PANEL_SECONDS put it away.
+	hint_panel = PanelContainer.new()
+	hint_panel.name = "HintPanel"
+	hint_panel.theme_type_variation = &"HintPanel"
+	hint_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hint_panel.visible = false
+	add_child(hint_panel)
+	var hv := VBoxContainer.new()
+	hv.add_theme_constant_override("separation", 6)
+	hv.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hint_panel.add_child(hv)
+	hint_title = Label.new()
+	hint_title.name = "HintTitle"
+	hint_title.theme_type_variation = &"HintTitle"
+	hint_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hv.add_child(hint_title)
+	hint_text = Label.new()
+	hint_text.name = "HintText"
+	hint_text.theme_type_variation = &"HintText"
+	hint_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint_text.custom_minimum_size = Vector2(HINT_PANEL_W - 64.0, 0)
+	hint_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hv.add_child(hint_text)
+	hint_tip = Label.new()
+	hint_tip.name = "HintTip"
+	hint_tip.theme_type_variation = &"HintTip"
+	hint_tip.text = StoryData.text("@ui.hint_space_tip")
+	hint_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hv.add_child(hint_tip)
 
 	# The Zarechye plan: above the panels, catches every click while open.
 	map_view = ZarechyeMap.new()
@@ -560,6 +619,8 @@ func _on_modal_input(event: InputEvent) -> void:
 
 
 func show_hint(text: String) -> void:
+	if hint_panel.visible and text == _hint_panel_line:
+		return   # the hint tier is already on the panel (the line only feeds probes: main.gd last_hint)
 	_hint_serial += 1
 	var serial := _hint_serial
 	hint_line.text = text
@@ -572,6 +633,46 @@ func _on_hint_pressed() -> void:
 	if StoryRunner.is_busy():
 		return
 	StoryRunner.next_hint()
+
+
+## A hint tier (StoryRunner.next_hint): the panel with «Подсказка N из 3», the hint in large letters and
+## the Space tip (Director 18.10: «доп. подсказать, что пробел показывает все места и действия»).
+func _on_hint_revealed(tier: int, text: String) -> void:
+	show_hint_panel(StoryData.text("@ui.hint_title", {"tier": tier}), text)
+	GameState.show_hint(_hint_panel_line)
+
+
+func show_hint_panel(title: String, text: String) -> void:
+	hint_title.text = title
+	hint_text.text = text
+	hint_tip.text = StoryData.text("@ui.hint_space_tip")
+	_hint_panel_line = title + ": " + text
+	hint_panel.visible = true
+	_fit_hint_panel()
+	_hint_panel_serial += 1
+	var serial := _hint_panel_serial
+	await get_tree().create_timer(HINT_PANEL_SECONDS).timeout
+	if serial == _hint_panel_serial and is_instance_valid(hint_panel):
+		hide_hint_panel()
+
+
+func hide_hint_panel() -> void:
+	if hint_panel.visible:
+		hint_panel.visible = false
+		_hint_panel_serial += 1
+
+
+## As tall as its text, HINT_PANEL_W wide (narrower for a short hint), centred under the top bar.
+func _fit_hint_panel() -> void:
+	var font := hint_text.get_theme_font("font")
+	var fs := hint_text.get_theme_font_size("font_size")
+	var one_line := font.get_string_size(hint_text.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var tip_w := hint_tip.get_theme_font("font").get_string_size(hint_tip.text, HORIZONTAL_ALIGNMENT_LEFT, -1, hint_tip.get_theme_font_size("font_size")).x
+	var inner := clampf(maxf(one_line, tip_w) + 4.0, 560.0, HINT_PANEL_W - 64.0)
+	hint_text.custom_minimum_size = Vector2(inner, 0)
+	hint_panel.size = Vector2.ZERO
+	hint_panel.reset_size()
+	hint_panel.position = Vector2(roundf((1920.0 - hint_panel.size.x) / 2.0), HINT_PANEL_Y)
 
 
 # --- The Zarechye plan ---------------------------------------------------------------
@@ -697,6 +798,9 @@ func _input(event: InputEvent) -> void:
 	# The held item's icon follows the pointer without waiting for _process.
 	if event is InputEventMouseMotion and cursor_item.visible:
 		cursor_item.position = get_viewport().get_mouse_position() + CURSOR_ITEM_OFFSET
+	# Any click puts the hint panel away (the click itself goes on; «Подсказка» again shows the next tier).
+	if event is InputEventMouseButton and event.pressed and hint_panel.visible:
+		hide_hint_panel()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -735,6 +839,8 @@ func _process(_delta: float) -> void:
 	ExitCue.suppressed = blocked   # exit marks fade out under a dialogue / panel / the plan
 	if blocked and reveal.active():
 		reveal.cancel()
+	if blocked and hint_panel.visible:
+		hide_hint_panel()
 	if room == null or not is_instance_valid(room) or blocked:
 		_set_hover(null)
 		return
@@ -745,8 +851,19 @@ func _process(_delta: float) -> void:
 	var node = room.pick(mouse)
 	_set_hover(node)
 	if node != null:
-		var screen := get_viewport().get_mouse_position()
-		hover_label.position = Vector2(clampf(screen.x + 18, 0, 1920 - hover_label.size.x - 8), clampf(screen.y - 34, TOP_H, 1040))
+		_place_hover(get_viewport().get_mouse_position())
+
+
+## Caption above-right of the pointer tip (clear of the cursor drawing), the exit icon left of it; the
+## pair stays in the frame and under the top bar.
+func _place_hover(screen: Vector2) -> void:
+	var icon_w := HOVER_ICON + HOVER_ICON_GAP if hover_icon.visible else 0.0
+	var w := icon_w + hover_label.size.x
+	var x := clampf(screen.x + 18.0, 8.0, 1920.0 - w - 8.0)
+	var y := clampf(screen.y - 34.0, TOP_H, 1040.0)
+	hover_label.position = Vector2(x + icon_w, y)
+	if hover_icon.visible:
+		hover_icon.position = Vector2(x, roundf(y + (hover_label.size.y - HOVER_ICON) * 0.5))
 
 
 func _set_hover(node: Node) -> void:
@@ -756,41 +873,72 @@ func _set_hover(node: Node) -> void:
 	if not is_instance_valid(_hover_node):
 		_hover_node = null
 		if node == null:
-			hover_label.visible = false
+			_show_hover("", "")
 			return
 	if node == _hover_node and (node == null or hover_label.visible):
 		return
 	_hover_node = node
 	if node == null or not node.has_method("label_text"):
-		hover_label.visible = false
+		_show_hover("", "")
 		return
-	hover_label.text = node.call("label_text")
+	_show_hover(String(node.call("label_text")), String(node.call("icon_name")) if node.has_method("icon_name") else "")
+
+
+## The caption (and an exit's destination icon) on / off; both appear and go out together.
+func _show_hover(text: String, icon: String) -> void:
+	if text == "":
+		hover_label.visible = false
+		hover_icon.visible = false
+		return
+	hover_label.text = text
+	hover_label.reset_size()
 	hover_label.visible = true
+	if icon != _hover_icon_name or hover_icon.texture == null:
+		_hover_icon_name = icon
+		hover_icon.texture = UiGlyphs.exit_icon(icon)
+	hover_icon.size = Vector2(HOVER_ICON, HOVER_ICON)
+	hover_icon.visible = hover_icon.texture != null
 
 
-# --- Exit hints: marks, exit cursor, reveal key (Director 18.10) ------------------------
+# --- Cursors, exit hints, reveal key (Director 18.10) -----------------------------------
 
 var _hot_exit: Node = null
 
 
-## The pointer on an exit: its mark (ExitCue) brightens and the cursor becomes the exit arrow (or the
-## doorway for an exit drawn in the art); anywhere else — the ordinary pointer.
+## The pointer on an exit: its mark (ExitCue) brightens, the caption and the destination icon show; the
+## cursor stays the ordinary «стрела-указка» (the big exit arrows are gone, Director 18.10). On a
+## hotspot: «перст» (look / take), arrow with a banderole for a character, «перст с искрой» with an item
+## from the bag in hand.
 func _set_exit_hover(node: Node) -> void:
-	var ex: Node = node if node != null and is_instance_valid(node) and node.has_method("cursor_kind") else null
+	var valid := node != null and is_instance_valid(node)
+	var ex: Node = node if valid and node.has_method("cursor_kind") else null
 	if ex != _hot_exit:
 		if _hot_exit != null and is_instance_valid(_hot_exit):
 			_hot_exit.call("set_hot", false)
 		_hot_exit = ex
 		if ex != null:
 			ex.call("set_hot", true)
-	_set_exit_cursor(String(ex.call("cursor_kind")) if ex != null else "")
+	_set_cursor(cursor_kind_for(node if valid else null))
 
 
-func _set_exit_cursor(kind: String) -> void:
-	if kind == _exit_cursor:
+## UiCursors kind for what is under the pointer (null — nothing).
+func cursor_kind_for(node: Node) -> String:
+	if node == null or not (node is StoryHotspot):
+		return "arrow"
+	if StoryRunner.selected_item != "":
+		return "use"
+	var h := node as StoryHotspot
+	if h.kind() == "npc" or h.data.has("talk"):
+		return "talk"
+	return "look"
+
+
+func _set_cursor(kind: String) -> void:
+	if kind == _cursor_kind:
 		return
-	_exit_cursor = kind
-	Input.set_default_cursor_shape(ExitCursors.shape(kind))
+	_cursor_kind = kind
+	cursor_shape = UiCursors.shape(kind)
+	Input.set_default_cursor_shape(cursor_shape)
 
 
 ## Space: every active hotspot and every exit of the room for HotspotReveal.DURATION seconds.
@@ -822,7 +970,7 @@ func reveal_targets() -> Array:
 		if e is StoryExit:
 			var se := e as StoryExit
 			var at: Vector2 = se.cue.global_position if se.cue != null else se.global_position
-			out.append({"kind": "exit", "id": se.target_room, "label": se.label_text(), "at": at, "dir": se.cue_dir})
+			out.append({"kind": "exit", "id": se.target_room, "label": se.label_text(), "at": at, "dir": se.cue_dir, "icon": se.icon_name()})
 	return out
 
 
@@ -835,7 +983,7 @@ func exit_hints_probe() -> Dictionary:
 		for e in room.get_exits():
 			if e is StoryExit:
 				var se := e as StoryExit
-				var d := {"dir": se.cue_dir, "source": se.cue_source}
+				var d := {"dir": se.cue_dir, "source": se.cue_source, "icon": se.icon_name()}
 				if se.cue != null:
 					d["x"] = se.cue.global_position.x
 					d["y"] = se.cue.global_position.y
@@ -846,8 +994,24 @@ func exit_hints_probe() -> Dictionary:
 	if reveal.active():
 		for t in reveal.targets:
 			shown.append("%s:%s" % [t["kind"], t["id"]])
-	return {"cues": cues, "cursor": _exit_cursor, "cursor_shape": int(Input.get_current_cursor_shape()),
-		"hover": hover_label.text if hover_label.visible else "", "reveal": reveal.active(), "revealed": shown}
+	var hr := hover_label.get_global_rect()
+	var ir := hover_icon.get_global_rect()
+	return {"cues": cues, "cursor": _cursor_kind, "cursor_shape": cursor_shape,
+		"hover": hover_label.text if hover_label.visible else "", "reveal": reveal.active(), "revealed": shown,
+		"hover_icon": _hover_icon_name if hover_icon.visible else "",
+		"hover_rect": [hr.position.x, hr.position.y, hr.size.x, hr.size.y] if hover_label.visible else [],
+		"icon_rect": [ir.position.x, ir.position.y, ir.size.x, ir.size.y] if hover_icon.visible else [],
+		"hint_panel": hint_panel_probe()}
+
+
+## Probe: the hint panel (shown, texts, font sizes, rect).
+func hint_panel_probe() -> Dictionary:
+	if not hint_panel.visible:
+		return {"visible": false}
+	var r := hint_panel.get_global_rect()
+	return {"visible": true, "title": hint_title.text, "text": hint_text.text, "tip": hint_tip.text,
+		"text_px": hint_text.get_theme_font_size("font_size"), "tip_px": hint_tip.get_theme_font_size("font_size"),
+		"rect": [r.position.x, r.position.y, r.size.x, r.size.y]}
 
 
 # --- Fade (loop transition) -----------------------------------------------------

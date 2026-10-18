@@ -89,7 +89,7 @@ func _run() -> void:
 			root.warp_mouse(at)
 			await _wait_s(0.6)
 			await _save(base + "_hover.png")
-			print("hover %s→%s: cursor %s, caption «%s»" % [rid, target.target_room, ui.get("_exit_cursor"), ui.get("hover_label").text])
+			print("hover %s→%s: cursor %s, caption «%s»" % [rid, target.target_room, ui.get("_cursor_kind"), ui.get("hover_label").text])
 		root.warp_mouse(park)
 		await _wait_s(0.4)
 		ui.call("reveal_hotspots")

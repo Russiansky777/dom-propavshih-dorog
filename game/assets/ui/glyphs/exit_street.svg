@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <!-- Улица: фонарь на столбе с кронштейном. Рисунок: Claude Code для «Дома пропавших дорог», 18.10.2026 -->
+  <g fill="none" stroke="#140b06" stroke-opacity="0.88" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.2 25.0 V4.6" stroke-width="4.65"/>
+    <path d="M9.2 6.4 H18.4" stroke-width="4.65"/>
+    <path d="M9.2 11.0 L13.4 6.4" stroke-width="4.65"/>
+    <path d="M15.6 9.6 H21.2 L20.4 16.2 H16.4 Z" stroke-width="4.65"/>
+    <path d="M6.2 25.2 H12.2" stroke-width="4.65"/>
+    <path d="M18.4 6.4 V7.0" stroke-width="4.00"/>
+    <path d="M7.6 4.6 H10.8" stroke-width="4.00"/>
+    <path d="M15.0 9.6 L18.4 7.0 L21.8 9.6 Z" fill="#140b06" stroke-width="3.10"/>
+    <path d="M17.2 11.0 H19.6 L19.3 14.8 H17.5 Z" fill="#140b06" stroke-width="3.10"/>
+  </g>
+  <g fill="none" stroke="#f3e5c4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15.0 9.6 L18.4 7.0 L21.8 9.6 Z" fill="#f3e5c4" stroke-width="0.6"/>
+    <path d="M17.2 11.0 H19.6 L19.3 14.8 H17.5 Z" fill="#f3e5c4" stroke-width="0.6"/>
+    <path d="M9.2 25.0 V4.6" stroke-width="1.55"/>
+    <path d="M9.2 6.4 H18.4" stroke-width="1.55"/>
+    <path d="M9.2 11.0 L13.4 6.4" stroke-width="1.55"/>
+    <path d="M15.6 9.6 H21.2 L20.4 16.2 H16.4 Z" stroke-width="1.55"/>
+    <path d="M6.2 25.2 H12.2" stroke-width="1.55"/>
+    <path d="M18.4 6.4 V7.0" stroke-width="0.9" stroke-opacity="0.9"/>
+    <path d="M7.6 4.6 H10.8" stroke-width="0.9" stroke-opacity="0.9"/>
+  </g>
+</svg>
