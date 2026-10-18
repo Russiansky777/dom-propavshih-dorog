@@ -1,0 +1,100 @@
+{
+ "base": "assets/characters/agata/rt3d/agata.glb",
+ "extra": [
+  "assets/characters/agata/rt3d/agata_extra_r4.glb"
+ ],
+ "tris_target": 60000,
+ "decimate": {
+  "char1": {
+   "before": 907284,
+   "after": 59999,
+   "ratio": 0.06613,
+   "vertices": 52550
+  }
+ },
+ "clips": {
+  "Casual_Walk": {
+   "error": "нет в исходнике"
+  },
+  "Female_Bend_Over_Pick_Up_Inspect": {
+   "frames": [
+    0.0,
+    92.0
+   ],
+   "max_dev_m": 0.00081
+  },
+  "Female_Stand_Pick_Fruit_Basket": {
+   "frames": [
+    0.0,
+    148.0
+   ],
+   "max_dev_m": 0.00166
+  },
+  "Idle": {
+   "frames": [
+    0.0,
+    96.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle_12": {
+   "error": "нет в исходнике"
+  },
+  "Idle_3": {
+   "error": "нет в исходнике"
+  },
+  "Idle_4": {
+   "error": "нет в исходнике"
+  },
+  "Idle_6": {
+   "error": "нет в исходнике"
+  },
+  "Idle_7": {
+   "error": "нет в исходнике"
+  },
+  "Idle_9": {
+   "error": "нет в исходнике"
+  },
+  "Long_Breathe_and_Look_Around": {
+   "error": "нет в исходнике"
+  },
+  "open_door": {
+   "frames": [
+    0.0,
+    124.0
+   ],
+   "max_dev_m": 0.01963
+  },
+  "Short_Breathe_and_Look_Around": {
+   "error": "нет в исходнике"
+  },
+  "Talk_with_Right_Hand_Open": {
+   "error": "нет в исходнике"
+  },
+  "Walking_Woman": {
+   "frames": [
+    0.0,
+    23.0
+   ],
+   "max_dev_m": 0.02673
+  }
+ },
+ "out_bytes": 6926096,
+ "result": {
+  "triangles": 59999,
+  "clips": 15,
+  "missing": [
+   "Casual_Walk.001",
+   "Idle_12.001",
+   "Idle_3.001",
+   "Idle_4.001",
+   "Idle_6.001",
+   "Idle_7.001",
+   "Idle_9.001",
+   "Long_Breathe_and_Look_Around.001",
+   "Short_Breathe_and_Look_Around.001",
+   "Talk_with_Right_Hand_Open.001"
+  ],
+  "max_dev_m": 0.02673
+ }
+}

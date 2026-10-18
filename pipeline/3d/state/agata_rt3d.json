@@ -1,0 +1,22 @@
+{
+  "tasks": {
+    "4": {
+      "task": "01a14eb6-57f2-7346-8510-91d5d683879b",
+      "actions": {
+        "idle_3": 243,
+        "idle_4": 244,
+        "idle_7": 247,
+        "idle_9": 249,
+        "idle_12": 252,
+        "idle_6": 246,
+        "breathe_look_short": 338,
+        "breathe_look_long": 336,
+        "walk_casual": 30,
+        "talk_right_hand": 314
+      },
+      "rig_task": "01a14a1a-e01c-748e-a49c-0e41c145d7fc",
+      "credits": 30,
+      "expires_at": 1792581331528
+    }
+  }
+}

@@ -1,40 +1,71 @@
 нет /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/out/agata/animations.glb (артефакт не разложен?) — основа не обновлена
-каталог: 680 действий → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/catalog/meshy_animations.json
-  0 Idle: {'frames': 121, 'duration_s': 4.03, 'motion_mean': 0.0132, 'motion_max': 0.0345, 'centroid_x_range': 0.031, 'name': 'Idle', 'key': 'Idle', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  11 Idle 1: {'frames': 71, 'duration_s': 2.36, 'motion_mean': 0.0006, 'motion_max': 0.0013, 'centroid_x_range': 0.079, 'name': 'Idle 1', 'key': 'Idle_02', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  12 Idle 2: {'frames': 161, 'duration_s': 5.36, 'motion_mean': 0.0138, 'motion_max': 0.0327, 'centroid_x_range': 0.068, 'name': 'Idle 2', 'key': 'Idle_03', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  243 Idle 3: {'frames': 241, 'duration_s': 9.64, 'motion_mean': 0.0064, 'motion_max': 0.0178, 'centroid_x_range': 0.023, 'name': 'Idle 3', 'key': 'Idle_3', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  244 Idle 4: {'frames': 337, 'duration_s': 13.48, 'motion_mean': 0.0067, 'motion_max': 0.0243, 'centroid_x_range': 0.038, 'name': 'Idle 4', 'key': 'Idle_4', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  245 Idle 5: {'frames': 46, 'duration_s': 1.84, 'motion_mean': 0.0088, 'motion_max': 0.0157, 'centroid_x_range': 0.02, 'name': 'Idle 5', 'key': 'Idle_5', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  246 Idle 6: {'frames': 179, 'duration_s': 7.16, 'motion_mean': 0.003, 'motion_max': 0.0061, 'centroid_x_range': 0.083, 'name': 'Idle 6', 'key': 'Idle_6', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  247 Idle 7: {'frames': 212, 'duration_s': 8.48, 'motion_mean': 0.0014, 'motion_max': 0.0051, 'centroid_x_range': 0.056, 'name': 'Idle 7', 'key': 'Idle_7', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  248 Idle 8: {'frames': 193, 'duration_s': 7.72, 'motion_mean': 0.0049, 'motion_max': 0.0198, 'centroid_x_range': 0.094, 'name': 'Idle 8', 'key': 'Idle_8', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  249 Idle 9: {'frames': 49, 'duration_s': 1.96, 'motion_mean': 0.0155, 'motion_max': 0.0253, 'centroid_x_range': 0.026, 'name': 'Idle 9', 'key': 'Idle_9', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  250 Idle 10: {'frames': 89, 'duration_s': 3.56, 'motion_mean': 0.0246, 'motion_max': 0.0457, 'centroid_x_range': 0.048, 'name': 'Idle 10', 'key': 'Idle_10', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  251 Idle 11: {'frames': 47, 'duration_s': 1.88, 'motion_mean': 0.0033, 'motion_max': 0.0063, 'centroid_x_range': 0.078, 'name': 'Idle 11', 'key': 'Idle_11', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  252 Idle 12: {'frames': 145, 'duration_s': 5.8, 'motion_mean': 0.0007, 'motion_max': 0.0022, 'centroid_x_range': 0.052, 'name': 'Idle 12', 'key': 'Idle_12', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  253 Idle 13: {'frames': 275, 'duration_s': 11.0, 'motion_mean': 0.0148, 'motion_max': 0.0252, 'centroid_x_range': 0.049, 'name': 'Idle 13', 'key': 'Idle_13', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  254 Idle 14: {'frames': 181, 'duration_s': 7.24, 'motion_mean': 0.0276, 'motion_max': 0.0799, 'centroid_x_range': 0.058, 'name': 'Idle 14', 'key': 'Idle_14', 'category': 'DailyActions', 'subCategory': 'Idle'}
-  333 Look Around Dumbfounded: {'frames': 154, 'duration_s': 6.16, 'motion_mean': 0.0213, 'motion_max': 0.0576, 'centroid_x_range': 0.038, 'name': 'Look Around Dumbfounded', 'key': 'Look_Around_Dumbfounded', 'category': 'DailyActions', 'subCategory': 'LookingAround'}
-  336 Long Breathe and Look Around: {'frames': 272, 'duration_s': 10.88, 'motion_mean': 0.0108, 'motion_max': 0.0338, 'centroid_x_range': 0.049, 'name': 'Long Breathe and Look Around', 'key': 'Long_Breathe_and_Look_Around', 'category': 'DailyActions', 'subCategory': 'LookingAround'}
-  338 Short Breathe and Look Around: {'frames': 190, 'duration_s': 7.6, 'motion_mean': 0.0048, 'motion_max': 0.0128, 'centroid_x_range': 0.042, 'name': 'Short Breathe and Look Around', 'key': 'Short_Breathe_and_Look_Around', 'category': 'DailyActions', 'subCategory': 'LookingAround'}
-  1 Walking Woman: {'frames': 30, 'duration_s': 1.0, 'motion_mean': 0.022, 'motion_max': 0.0306, 'centroid_x_range': 0.02, 'name': 'Walking Woman', 'key': 'Walking_Woman', 'category': 'WalkAndRun', 'subCategory': 'Walking'}
-  30 Casual Walk: {'frames': 127, 'duration_s': 4.23, 'motion_mean': 0.0165, 'motion_max': 0.0234, 'centroid_x_range': 0.021, 'name': 'Casual Walk', 'key': 'Casual_Walk', 'category': 'WalkAndRun', 'subCategory': 'Walking'}
-  43 Handbag Walk: {'frames': 112, 'duration_s': 3.73, 'motion_mean': 0.0131, 'motion_max': 0.0194, 'centroid_x_range': 0.022, 'name': 'Handbag Walk', 'key': 'Handbag_Walk', 'category': 'BodyMovements', 'subCategory': 'Acting'}
-  106 Hot walk: {'frames': 174, 'duration_s': 5.8, 'motion_mean': 0.0139, 'motion_max': 0.0196, 'centroid_x_range': 0.041, 'name': 'Hot walk', 'key': 'Confident_Walk', 'category': 'WalkAndRun', 'subCategory': 'Walking'}
-  115 Quick Walk: {'frames': 91, 'duration_s': 3.03, 'motion_mean': 0.0209, 'motion_max': 0.0303, 'centroid_x_range': 0.014, 'name': 'Quick Walk', 'key': 'Quick_Walk', 'category': 'WalkAndRun', 'subCategory': 'Walking'}
-  121 Thoughtful Walk: {'frames': 143, 'duration_s': 4.76, 'motion_mean': 0.0139, 'motion_max': 0.0184, 'centroid_x_range': 0.028, 'name': 'Thoughtful Walk', 'key': 'Thoughtful_Walk', 'category': 'WalkAndRun', 'subCategory': 'Walking'}
-  341 Walk Slowly and Look Around: {'frames': 573, 'duration_s': 22.92, 'motion_mean': 0.022, 'motion_max': 0.0507, 'centroid_x_range': 0.07, 'name': 'Walk Slowly and Look Around', 'key': 'Walk_Slowly_and_Look_Around', 'category': 'DailyActions', 'subCategory': 'LookingAround'}
-  47 Listening Gesture: {'frames': 281, 'duration_s': 9.36, 'motion_mean': 0.0107, 'motion_max': 0.0277, 'centroid_x_range': 0.045, 'name': 'Listening Gesture', 'key': 'Listening_Gesture', 'category': 'DailyActions', 'subCategory': 'Interacting'}
-  56 Stand and Chat: {'frames': 156, 'duration_s': 5.2, 'motion_mean': 0.0123, 'motion_max': 0.0381, 'centroid_x_range': 0.074, 'name': 'Stand and Chat', 'key': 'Stand_and_Chat', 'category': 'DailyActions', 'subCategory': 'Interacting'}
-  313 Talk with Hands Open: {'frames': 97, 'duration_s': 3.88, 'motion_mean': 0.0183, 'motion_max': 0.0449, 'centroid_x_range': 0.035, 'name': 'Talk with Hands Open', 'key': 'Talk_with_Hands_Open', 'category': 'DailyActions', 'subCategory': 'Interacting'}
-  314 Talk with Right Hand Open: {'frames': 92, 'duration_s': 3.68, 'motion_mean': 0.0104, 'motion_max': 0.0222, 'centroid_x_range': 0.041, 'name': 'Talk with Right Hand Open', 'key': 'Talk_with_Right_Hand_Open', 'category': 'DailyActions', 'subCategory': 'Interacting'}
-  274 Female Crouch Pick Up Place Side: {'frames': 231, 'duration_s': 9.24, 'motion_mean': 0.0109, 'motion_max': 0.0318, 'centroid_x_range': 0.046, 'name': 'Female Crouch Pick Up Place Side', 'key': 'Female_Crouch_Pick_Up_Place_Side', 'category': 'DailyActions', 'subCategory': 'PickingUpItem'}
-  278 Female Stand Pick Fruit Basket: {'frames': 150, 'duration_s': 6.0, 'motion_mean': 0.0171, 'motion_max': 0.0338, 'centroid_x_range': 0.071, 'name': 'Female Stand Pick Fruit Basket', 'key': 'Female_Stand_Pick_Fruit_Basket', 'category': 'DailyActions', 'subCategory': 'PickingUpItem'}
-  281 Female Bend Over Pick Up Inspect: {'frames': 93, 'duration_s': 3.72, 'motion_mean': 0.0332, 'motion_max': 0.061, 'centroid_x_range': 0.05, 'name': 'Female Bend Over Pick Up Inspect', 'key': 'Female_Bend_Over_Pick_Up_Inspect', 'category': 'DailyActions', 'subCategory': 'PickingUpItem'}
-  284 Collect Object: {'frames': 145, 'duration_s': 5.8, 'motion_mean': 0.0212, 'motion_max': 0.0569, 'centroid_x_range': 0.039, 'name': 'Collect Object', 'key': 'Collect_Object', 'category': 'DailyActions', 'subCategory': 'PickingUpItem'}
-  285 Open Door: {'frames': 115, 'duration_s': 5.79, 'motion_mean': 0.0076, 'motion_max': 0.0186, 'centroid_x_range': 0.047, 'name': 'Open Door', 'key': 'open_door', 'category': 'DailyActions', 'subCategory': 'Interacting'}
-  287 Open Door 2: {'frames': 233, 'duration_s': 9.32, 'motion_mean': 0.0297, 'motion_max': 0.0613, 'centroid_x_range': 0.16, 'name': 'Open Door 2', 'key': 'open_door_2', 'category': 'DailyActions', 'subCategory': 'Interacting'}
-  288 Open Door 3: {'frames': 261, 'duration_s': 10.44, 'motion_mean': 0.0261, 'motion_max': 0.0654, 'centroid_x_range': 0.085, 'name': 'Open Door 3', 'key': 'open_door_3', 'category': 'DailyActions', 'subCategory': 'Interacting'}
-  289 Open Door 4: {'frames': 196, 'duration_s': 7.84, 'motion_mean': 0.049, 'motion_max': 0.0866, 'centroid_x_range': 0.131, 'name': 'Open Door 4', 'key': 'open_door_4', 'category': 'DailyActions', 'subCategory': 'Interacting'}
-run 39122011575 · failure
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+баланс до: {'balance': 1099, 'monthly_credits': 599, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+создана задача анимаций 01a14eb6-57f2-7346-8510-91d5d683879b: {'idle_3': 243, 'idle_4': 244, 'idle_7': 247, 'idle_9': 249, 'idle_12': 252, 'idle_6': 246, 'breathe_look_short': 338, 'breathe_look_long': 336, 'walk_casual': 30, 'talk_right_hand': 314}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 38
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 59
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 66
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 73
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 82
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 84
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 87
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 92
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: IN_PROGRESS 95
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a14eb6-57f2-7346-8510-91d5d683879b: SUCCEEDED 100
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+новые клипы: /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/assets/characters/agata/rt3d/agata_extra_r4.glb (40026576 байт), кредитов 30; баланс после: {'balance': 1069, 'monthly_credits': 569, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
+11:15:42 | INFO: Data are loaded, start creating Blender stuff
+11:15:42 | INFO: Blender create Mesh node char1
+11:15:46 | INFO: glTF import finished in 3.72s
+11:16:05 | INFO: Data are loaded, start creating Blender stuff
+11:16:05 | INFO: Blender create Mesh node char1
+11:16:08 | INFO: glTF import finished in 3.81s
+перенесён клип Casual_Walk из agata_extra_r4.glb
+перенесён клип Idle_12 из agata_extra_r4.glb
+перенесён клип Idle_3 из agata_extra_r4.glb
+перенесён клип Idle_4 из agata_extra_r4.glb
+перенесён клип Idle_6 из agata_extra_r4.glb
+перенесён клип Idle_7 из agata_extra_r4.glb
+перенесён клип Idle_9 из agata_extra_r4.glb
+перенесён клип Long_Breathe_and_Look_Around из agata_extra_r4.glb
+перенесён клип Short_Breathe_and_Look_Around из agata_extra_r4.glb
+перенесён клип Talk_with_Right_Hand_Open из agata_extra_r4.glb
+ERROR Draco is not available because library could not be found at /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/bpy/lib/libbf_intern_draco_bridge.so
+ERROR MeshOptimizer is not available because library could not be found at /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/bpy/lib/libbf_intern_meshopt_bridge.so
+11:16:34 | INFO: Starting glTF 2.0 export
+11:16:34 | INFO: Extracting primitive: char1
+11:16:35 | INFO: Primitives created: 1
+11:16:35 | WARNING: There are more than 4 joint vertex influences.The 4 with highest weight will be used (and normalized).
+11:16:46 | INFO: Finished glTF 2.0 export in 11.55654001235962 s
+
+экспорт: assets/characters/agata/rt3d/agata_rt.glb 6926096 байт
+11:16:46 | INFO: Data are loaded, start creating Blender stuff
+11:16:46 | INFO: Blender create Mesh node char1
+11:16:47 | INFO: glTF import finished in 0.56s
+{"triangles": 59999, "clips": 15, "missing": ["Casual_Walk.001", "Idle_12.001", "Idle_3.001", "Idle_4.001", "Idle_6.001", "Idle_7.001", "Idle_9.001", "Long_Breathe_and_Look_Around.001", "Short_Breathe_and_Look_Around.001", "Talk_with_Right_Hand_Open.001"], "max_dev_m": 0.02673}
+ПРОВЕРКА НЕ ПРОШЛА: пропали ['Casual_Walk.001', 'Idle_12.001', 'Idle_3.001', 'Idle_4.001', 'Idle_6.001', 'Idle_7.001', 'Idle_9.001', 'Long_Breathe_and_Look_Around.001', 'Short_Breathe_and_Look_Around.001', 'Talk_with_Right_Hand_Open.001'], расхождение 0.0267 м
+run 39122238107 · failure
