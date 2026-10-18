@@ -1,0 +1,32 @@
+{
+  "set": "rerecord",
+  "runs": [
+    {
+      "run": "39086183310",
+      "at": "2026-10-18T01:22:13+00:00",
+      "request": "pipeline/requests/voice_rerecord.json",
+      "synthesized": [
+        "H1.stove.look"
+      ],
+      "reprocessed": [],
+      "characters_text": 114,
+      "failed": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16653,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16653,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 50,
+      "subscription_delta": 0
+    }
+  ]
+}

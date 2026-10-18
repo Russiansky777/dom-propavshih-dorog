@@ -1,16 +1,15 @@
-run 39081873449 2026-10-18T00:12:37Z requests: pipeline/requests/voice_e0e1_character_lines.json 
+run 39086183310 2026-10-18T01:22:06Z requests: pipeline/requests/voice_rerecord.json 
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 16591 из 124889 символов
+план: creator (active), израсходовано 16653 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_e0e1_character_lines.json
-  задание: Директор (замечание 18.10, 01:52, передано координатором), 2026-10-18 — повторные реплики Тамары и Пелагеи и реплика Тихона в H1 — голосами персонажей вместо ZAKADR (3 фразы) (потолок 5 файлов, 250 символов)
-[e0e1_character_lines] реплик в сценах запроса: 3; файлов с вариантами голосов: 3; к синтезу: 3 (141 символов); переобработка: 0
-  tamara:Z1.tamara.after tamara    ru           TAMARA-1   eleven_v4    [warmly] Ключ у тебя, записи — в доме. А я тут, на почте.
-  pelageya:R1.pelageya.after pelageya  ru           PELAGEYA   eleven_v4    [quietly] Журналы были у управляющего мельницей.
-  tikhon:H1.v01.done tikhon    ru           CAT-2      eleven_v4    Не занято. Перестановка допускается.
-  tamara:Z1.tamara.after синтез: 4.70 с, -17.0 LUFS, TP -3.7 dB (усиление -1.4 dB)
-  pelageya:R1.pelageya.after синтез: 2.89 с, -17.2 LUFS, TP -5.0 dB (усиление +4.9 dB)
-  tikhon:H1.v01.done синтез: 3.17 с, -17.0 LUFS, TP -3.6 dB (усиление -0.5 dB)
-[e0e1_character_lines] синтезировано 3, переобработано 0, ошибок 0; символов текста 141; списано кредитов (character-cost): 62, изменение счётчика подписки: 0
+=== pipeline/requests/voice_rerecord.json
+  закадровые фразы без ссылок в данных игры — пропущены: R1.boat.look, agata:O2.mitten.look, agata:O2.mitten.use
+  отложены (voice.json → by_speaker.<персонаж>.hold): agata:H1.photo.look
+  манифест ru: H1.stove.look: текст изменён
+  only_changed: к работе 1 из 108 реплик/фраз запроса
+[rerecord] реплик в сценах запроса: 108; файлов с вариантами голосов: 1; к синтезу: 1 (114 символов); переобработка: 0
+  H1.stove.look narrator  ru           ZAKADR     eleven_v4    Печь с лежанкой. Здесь место Тихона. Сбоку в побелке — старые гнёзда от креплений: место помнит, что здесь висело.
+  H1.stove.look      синтез: 9.37 с, -16.9 LUFS, TP -4.5 dB (усиление -1.9 dB)
+[rerecord] синтезировано 1, переобработано 0, ошибок 0; символов текста 114; списано кредитов (character-cost): 50, изменение счётчика подписки: 0
 validate_voice: манифесты: ru 132 (132 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 5; реплик с тегами: 14; закадровых фраз по правилам voice.json: 119 (с тегами 14), заказаны тексты: ru_E0_E1, ru_bag
 [voice] validate_voice.py: OK (0 ошибок, 0 предупреждений, strict; самопроверка 21/21)
