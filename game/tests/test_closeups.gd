@@ -305,6 +305,8 @@ func _test_door_mouse() -> void:
 	_check(p["placed"] == {"top": "hinge_1", "middle": "hinge_2", "bottom": "hinge_3"}, "three hinges in three sockets: %s" % [p["placed"]])
 	await _wait(0.1)
 	_check((cp.get("tray_node") as Panel).modulate.a < 0.5, "an empty tray dims instead of standing as an empty box")
+	var places := (cp.get("tray_node") as Panel).find_children("Place_*", "Panel", false, false)
+	_check(places.size() == 3 and places.all(func(n): return (n as Control).visible), "the empty tray keeps three pale outlines of the hinges' places (%d)" % places.size())
 	# A click on a placed hinge takes it back to the tray; drag it back.
 	await _click(_v(p["pieces"]["hinge_2"]))
 	await _wait(0.35)

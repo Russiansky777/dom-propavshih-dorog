@@ -343,6 +343,34 @@ func _build() -> void:
 	var hinge_tex: Texture2D = load(hinge_path) if hinge_path != "" and ResourceLoader.exists(hinge_path) else null
 	var hsc := float(hinge_spec.get("scale", 0.22))
 	var bb: Array = hinge_spec.get("bbox", [991, 282, 369, 537])  # 1920-space bbox of the drawn hinge
+	# A pale place for every hinge inside the tray (children of the tray: they dim with it): when all
+	# hinges are in the frame the tray shows three faint outlines — «they were here», not an empty box.
+	for pc in spec.get("pieces", []):
+		var ppid := String(pc["id"])
+		var hs := Vector2(float(bb[2]) * hsc, float(bb[3]) * hsc) + Vector2(12, 12)
+		var place := Panel.new()
+		place.name = "Place_" + ppid
+		place.size = hs
+		place.position = _tray_center(ppid) - tray_rect.position - hs / 2
+		place.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var psb := StyleBoxFlat.new()
+		psb.bg_color = Color(0, 0, 0, 0.28)
+		psb.border_color = Color(0.55, 0.42, 0.25, 0.45)
+		psb.set_border_width_all(1)
+		psb.set_corner_radius_all(6)
+		place.add_theme_stylebox_override("panel", psb)
+		if hinge_tex != null:
+			var ghost := TextureRect.new()
+			ghost.name = "Outline"
+			ghost.texture = hinge_tex
+			ghost.stretch_mode = TextureRect.STRETCH_SCALE
+			ghost.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			ghost.size = Vector2(1920.0 * hsc, 1080.0 * hsc)
+			ghost.position = Vector2(-float(bb[0]) * hsc + 6, -float(bb[1]) * hsc + 6)
+			ghost.modulate = Color(0.94, 0.89, 0.79, 0.16)
+			ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			place.add_child(ghost)
+		tray_node.add_child(place)
 	for pc in spec.get("pieces", []):
 		var pid := String(pc["id"])
 		var b := Control.new()
