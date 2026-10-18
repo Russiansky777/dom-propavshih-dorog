@@ -23,12 +23,6 @@
     "model": "nano-banana-2",
     "credits": 6
   },
-  "door_hinges": {
-    "task": "01a14b7e-f79e-7322-a7a9-fd5a2a6c8795",
-    "prompt": "Two old forged iron strap door hinges with a few square nails, lying crossed, dark metal with worn edges. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
-    "model": "nano-banana-2",
-    "credits": 6
-  },
   "invoice_chalk": {
     "task": "01a14b7e-f83c-70d6-bb70-60ab4671ac5d",
     "prompt": "A small crumpled paper shipping invoice slip with a faded violet ink round stamp and illegible handwritten lines. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
@@ -44,6 +38,12 @@
   "chalk": {
     "task": "01a14b7e-f950-71e6-8538-6bcd8b7e1c2f",
     "prompt": "A short stick of white school chalk with a little chalk dust around it. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "door_hinges": {
+    "task": "01a14ca7-5d48-74e9-9423-43197d8fb4dd",
+    "prompt": "A set of three old forged iron butt hinges for a school door, each made of two rectangular leaves joined by a central round pin, four screw holes per leaf, dark worn metal with rubbed bronze edges, the three hinges fanned out slightly overlapping. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
     "model": "nano-banana-2",
     "credits": 6
   }
