@@ -8,7 +8,7 @@ extends Node2D
 ## or the plan the marks fade out (GameUi sets ExitCue.suppressed).
 ##
 ## Exits through a door/opening drawn in the art get no mark (cue "door"): hovering one shows its
-## caption and the exit cursor (GameUi, ExitCursors).
+## caption with the destination icon (GameUi); the cursor stays the ordinary one (UiCursors, 18.10).
 ##
 ## Data — data/story/rooms/<LOC>.json → exits[]:
 ##   "cue": "door" | "left" | "right" | "down" | "up"   — explicit (wins);

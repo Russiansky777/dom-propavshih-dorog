@@ -6,17 +6,18 @@
 //                                      EXITS_WEB_DIR — another build folder)
 //
 // Reads window.probeState.ui.exit_hints (GameUi.exit_hints_probe: marks, cursor kind, caption, reveal)
-// and the canvas CSS cursor Godot sets from the exit cursor images (ExitCursors). Steps:
-//   1. Z1 (post office): the pointer on the drawn door → doorway cursor (CSS url), caption «На улицу», no mark;
+// and the canvas CSS cursor Godot sets from the cursor images (UiCursors; since 18.10 the cursor over an exit is
+// the ordinary old-Russian arrow — the big exit arrows are gone, tools/ui_web.mjs checks the rest). Steps:
+//   1. Z1 (post office): the pointer on the drawn door → the ordinary arrow (CSS url), caption «На улицу», no mark;
 //   2. Space → every visible hotspot and exit named; gone after ≈1.5 s;
 //   3. talk to Tamara (M01), out through the door to the lane Z4;
-//   4. Z4: a down mark at the bottom edge, visible; pointer on it → mark lit, down-arrow cursor (another
-//      CSS image than the door), caption «На улицу»; click on the mark → the street Z2;
+//   4. Z4: a down mark at the bottom edge, visible; pointer on it → mark lit, the same ordinary arrow,
+//      caption «На улицу»; click on the mark → the street Z2;
 //   5. Z2: marks left (lane) and right (mill); the porch door → H1;
 //   6. H1: the gallery exit (mark or drawn door, as the H1 data has it) — pointer → its cursor and
 //      «В галерею»; click → H3;
 //   7. H3: the living-room exit — pointer → its cursor; click → H1;
-//   8. pointer on the floor → ordinary pointer (CSS without url); 0 console errors.
+//   8. pointer on the floor → the same ordinary arrow; 0 console errors.
 // Output: build/shots/exits/{report.json, console.log, *.png}. Exit code 0 only when every check passed.
 
 import http from "node:http";
@@ -181,10 +182,10 @@ async function main() {
     // 1. Drawn door in Z1.
     let h = s.ui.exit_hints;
     check(h.cues.Z4 && h.cues.Z4.dir === "door" && h.cues.Z4.x === undefined, "Z1: the post-office door is drawn in the art — no mark", JSON.stringify(h.cues.Z4));
-    await hover("Z1 door → Z4", s.exits.Z4, "door");
+    await hover("Z1 door → Z4", s.exits.Z4, "arrow");
     h = await hints();
     let css = await cssCursor();
-    check(h.cursor === "door" && /url\(/.test(css), "Z1: doorway cursor on the door (CSS image)", `kind ${h.cursor}, css ${css.slice(0, 60)}…`);
+    check(h.cursor === "arrow" && /url\(/.test(css), "Z1: the ordinary old-Russian arrow on the door (CSS image, no exit cursor)", `kind ${h.cursor}, css ${css.slice(0, 60)}…`);
     check(h.hover === "На улицу", "Z1: caption «На улицу»", h.hover);
     const cssDoor = css;
     await page.screenshot({ path: path.join(OUT_DIR, "web_Z1_door_hover.png") });
@@ -221,10 +222,10 @@ async function main() {
     await page.mouse.move(960, 400);
     await sleep(300);
     await page.screenshot({ path: path.join(OUT_DIR, "web_Z4_marks.png") });
-    await hover("Z4 street mark", { x: m.x, y: m.y }, "down");
+    await hover("Z4 street mark", { x: m.x, y: m.y }, "arrow");
     h = await hints();
     css = await cssCursor();
-    check(h.cues.Z2.hot && h.cursor === "down" && /url\(/.test(css) && css !== cssDoor, "Z4: pointer on the mark — lit, down-arrow cursor (another image than the door)",
+    check(h.cues.Z2.hot && h.cursor === "arrow" && css === cssDoor, "Z4: pointer on the mark — lit, the same ordinary arrow (no exit-arrow cursor)",
       `hot ${h.cues.Z2.hot}, kind ${h.cursor}, css ${css.slice(0, 50)}…`);
     check(h.hover === "На улицу", "Z4: caption «На улицу»", h.hover);
     await page.screenshot({ path: path.join(OUT_DIR, "web_Z4_street_hover.png") });
@@ -243,10 +244,10 @@ async function main() {
     const g = h.cues.H3 || {};
     check(g.dir && (g.dir === "door" || (g.alpha > 0.4 && typeof g.x === "number")), "H1: the gallery exit has a mark or is a drawn door", JSON.stringify(g));
     const gpt = typeof g.x === "number" ? { x: g.x, y: g.y } : s.exits.H3;
-    await hover("H1 gallery exit", gpt, g.dir);
+    await hover("H1 gallery exit", gpt, "arrow");
     h = await hints();
     css = await cssCursor();
-    check(h.cursor === g.dir && /url\(/.test(css), "H1: exit cursor on the gallery exit", `kind ${h.cursor} (${g.dir}), css ${css.slice(0, 50)}…`);
+    check(h.cursor === "arrow" && css === cssDoor, "H1: the ordinary arrow on the gallery exit", `kind ${h.cursor} (${g.dir}), css ${css.slice(0, 50)}…`);
     check(h.hover === "В галерею", "H1: caption «В галерею»", h.hover);
     await page.screenshot({ path: path.join(OUT_DIR, "web_H1_gallery_hover.png") });
     check(await goRoom("H1 → H3", gpt, "H3"), "click → the gallery H3");
@@ -256,17 +257,17 @@ async function main() {
     h = s.ui.exit_hints;
     const b = h.cues.H1 || {};
     const bpt = typeof b.x === "number" ? { x: b.x, y: b.y } : s.exits.H1;
-    await hover("H3 living-room exit", bpt, b.dir || "");
+    await hover("H3 living-room exit", bpt, "arrow");
     h = await hints();
     css = await cssCursor();
-    check(h.cursor === b.dir && /url\(/.test(css), "H3: exit cursor on the living-room exit", `kind ${h.cursor} (${b.dir})`);
+    check(h.cursor === "arrow" && css === cssDoor, "H3: the ordinary arrow on the living-room exit", `kind ${h.cursor} (${b.dir})`);
     await page.screenshot({ path: path.join(OUT_DIR, "web_H3_back_hover.png") });
 
     // 8. Floor → ordinary pointer.
-    await hover("H3 floor", { x: 960, y: 880 }, "");
+    await hover("H3 floor", { x: 960, y: 880 }, "arrow");
     h = await hints();
     css = await cssCursor();
-    check(h.cursor === "" && !/url\(/.test(css), "on the floor: the ordinary pointer", `kind '${h.cursor}', css ${css}`);
+    check(h.cursor === "arrow" && css === cssDoor, "on the floor: the same old-Russian arrow", `kind '${h.cursor}', css ${css.slice(0, 50)}`);
     check(await goRoom("H3 → H1", bpt, "H1"), "click → back to H1");
   } catch (e) {
     failures.push(`exception: ${e && e.stack ? e.stack : e}`);
