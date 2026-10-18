@@ -1,0 +1,128 @@
+name: pipeline-character-3d
+
+# Агата в реальном 3D (агент персонажа, 18.10): GLB со скелетом и клипами — в репозиторий, без новой модели.
+# Запуск: положить/изменить pipeline/requests/rt3d_<имя>.json и запушить (из сессии workflow_dispatch недоступен).
+#   from_run    — прогон pipeline-character, чей артефакт glb-<id> берём (0 кредитов)
+#   previews    — превью-GIF каталога Meshy → полосы кадров (публичный каталог, 0 кредитов)
+#   new_actions — новые клипы на существующий риг (3 кредита за действие, потолок max_credits)
+# Журнал прогона бот коммитит в pipeline/3d/state/rt3d_last_run.log (логи Actions из сессии не читаются).
+
+on:
+  push:
+    paths:
+      - "pipeline/requests/rt3d_*.json"
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "путь к запросу, напр. pipeline/requests/rt3d_agata.json"
+        required: true
+        default: "pipeline/requests/rt3d_agata.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: pipeline-character
+  cancel-in-progress: false
+
+jobs:
+  rt3d:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+
+      - name: Определить запрос
+        id: req
+        run: |
+          if [ -n "${{ github.event.inputs.request }}" ]; then
+            f="${{ github.event.inputs.request }}"
+          else
+            f=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'pipeline/requests/rt3d_*.json' | head -1 || true)
+          fi
+          echo "file=$f" >> "$GITHUB_OUTPUT"
+          if [ -n "$f" ]; then
+            echo "name=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")" >> "$GITHUB_OUTPUT"
+            echo "from_run=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('from_run',''))" "$f")" >> "$GITHUB_OUTPUT"
+            echo "strips=$(python -c "import json,sys;print('1' if json.load(open(sys.argv[1])).get('strips') else '')" "$f")" >> "$GITHUB_OUTPUT"
+          fi
+          cat "$GITHUB_OUTPUT"
+
+      - name: GLB из прогона pipeline-character
+        if: steps.req.outputs.file != '' && steps.req.outputs.from_run != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: glb-${{ steps.req.outputs.from_run }}
+          path: _prev
+          run-id: ${{ steps.req.outputs.from_run }}
+          github-token: ${{ github.token }}
+
+      - name: Разложить GLB
+        if: steps.req.outputs.file != '' && steps.req.outputs.from_run != ''
+        run: |
+          set -e
+          mkdir -p pipeline/3d/out
+          if [ -d _prev/out ]; then cp -r _prev/out/. pipeline/3d/out/; else cp -r _prev/. pipeline/3d/out/; fi
+          find pipeline/3d/out -name '*.glb' -printf '  %p %s\n'
+
+      - name: Зависимости (bpy = Blender как модуль)
+        if: steps.req.outputs.file != ''
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r pipeline/requirements.txt
+
+      - name: Превью каталога и новые клипы Meshy
+        if: steps.req.outputs.file != ''
+        env:
+          MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
+        run: |
+          set -o pipefail
+          mkdir -p pipeline/3d/state
+          python pipeline/3d/rt3d_job.py --request "${{ steps.req.outputs.file }}" 2>&1 | tee pipeline/3d/state/rt3d_last_run.log
+
+      - name: Отчёт по GLB (скелет, клипы, траектории; полосы кадров)
+        if: steps.req.outputs.file != ''
+        run: |
+          set -o pipefail
+          n="${{ steps.req.outputs.name }}"
+          glbs=$(ls assets/characters/$n/rt3d/*.glb)
+          python pipeline/3d/inspect_glb.py --glb $glbs --out "pipeline/3d/state/${n}_glb_report.json" \
+            ${{ steps.req.outputs.strips != '' && '--strips Docs/evidence/M1/agata_v2/clips' || '' }} 2>&1 | tee -a pipeline/3d/state/rt3d_last_run.log
+          ls -la assets/characters/$n/rt3d | tee -a pipeline/3d/state/rt3d_last_run.log
+
+      - name: Сохранить новые GLB как артефакт
+        if: steps.req.outputs.file != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: glb-rt3d-${{ github.run_id }}
+          path: assets/characters/${{ steps.req.outputs.name }}/rt3d/*.glb
+          retention-days: 90
+
+      - name: Коммит результатов (и журнала — даже при ошибке)
+        if: always() && steps.req.outputs.file != ''
+        run: |
+          git config user.name "pipeline-bot"
+          git config user.email "pipeline-bot@users.noreply.github.com"
+          echo "run ${{ github.run_id }} · ${{ job.status }}" >> pipeline/3d/state/rt3d_last_run.log
+          git add -A assets/characters/${{ steps.req.outputs.name }}/rt3d pipeline/3d/state pipeline/3d/catalog Docs/evidence/M1/agata_v2 2>/dev/null || true
+          if git diff --cached --quiet; then echo "нечего коммитить"; exit 0; fi
+          git commit -q -m "pipeline: Агата 3D — GLB, каталог, отчёт (run ${{ github.run_id }}) [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git fetch -q origin main
+            if git rebase --autostash origin/main; then
+              if git push origin HEAD:main; then echo "запушено с попытки $i"; exit 0; fi
+            else
+              git rebase --abort || true
+            fi
+            sleep 15
+          done
+          exit 1
