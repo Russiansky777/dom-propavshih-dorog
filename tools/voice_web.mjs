@@ -15,6 +15,8 @@
 //   3. «дальше» → M01_1 (Tamara): her voice plays, output RMS well above silence;
 //   4. «дальше» mid-line → M01_1 is cut (event stop/advance), M01_2 plays;
 //   5. after the scene no voice plays and the output falls silent again;
+//   5c. Tamara clicked again after M01: her own line (name «Тамара», «Ключ у тебя, записи — в доме…»,
+//       tamara:Z1.tamara.after in her voice), not the narrator; «дальше» cuts it;
 //   5a. voice-over (ZAKADR): click the letters (Z1) → the narrator reads Z1.letters.look (kind narration),
 //       the signal leaves the page, the music is ducked; «дальше» cuts it;
 //   5b. bag: the pointer rests on the letter's pocket — no voice at 0.3 s, the letter's line by ≈1 s (Agata's
@@ -258,6 +260,23 @@ async function main() {
     await sleep(500);
     const quiet1 = await rms(600);
     check(quiet1.rms_db < -60, "the output falls silent again", `${quiet1.rms_db.toFixed(1)} dBFS`);
+
+    // 5c. Tamara again: her words are her line, in her voice.
+    s = await state();
+    await click("hotspot tamara (again)", s.hotspots.tamara);
+    v = await waitFor("Tamara's line: tamara:Z1.tamara.after", voice, (x) => x.line === "tamara:Z1.tamara.after" && x.playing, 30000);
+    s = await state();
+    check(v.line === "tamara:Z1.tamara.after" && v.playing && v.speaker === "tamara" && v.kind === "line",
+      "Tamara talked to again: her own voice, not the narrator", JSON.stringify({ line: v.line, speaker: v.speaker, kind: v.kind, length: v.length }));
+    check(s.beat && s.beat.type === "line" && s.beat.speaker_name === "Тамара" && !/говорит/.test(s.beat.text || ""),
+      "shown as her line: name «Тамара», direct speech without the author's remark", JSON.stringify({ type: s.beat?.type, name: s.beat?.speaker_name, text: s.beat?.text }));
+    const tl = await rms(700);
+    report.steps.tamara_again = { voice: v, rms: tl };
+    check(tl.rms_db > -40, "her line leaves the page", `${tl.rms_db.toFixed(1)} dBFS`);
+    await click("continue → cut Tamara's line", s.ui.dialogue_click);
+    v = await waitFor("Tamara's line cut", voice, (x) => !x.playing, 4000);
+    check(!v.playing, "«дальше» cuts her line", JSON.stringify((v.events || []).filter((e) => e.kind === "stop").slice(-1)));
+    await sleep(400);
 
     // 5a. Voice-over: the letters on the post office wall.
     s = await state();
