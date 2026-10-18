@@ -27,6 +27,34 @@
       },
       "credits_spent": 50,
       "subscription_delta": 0
+    },
+    {
+      "run": "39087029600",
+      "at": "2026-10-18T01:35:57+00:00",
+      "request": "pipeline/requests/voice_rerecord.json",
+      "synthesized": [
+        "H2.hinges_box.use",
+        "H3.puzzle.intro"
+      ],
+      "reprocessed": [],
+      "characters_text": 165,
+      "failed": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16703,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16703,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 73,
+      "subscription_delta": 0
     }
   ]
 }
