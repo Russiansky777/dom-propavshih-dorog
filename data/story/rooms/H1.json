@@ -88,6 +88,52 @@
       "image": "res://assets/rooms/H1/state_shelf_table.png",
       "if": ["q04_shelf_table"],
       "_note": "Полка B «у стола» (координатор 18.10: рисунок ChatGPT висел на челе печи над дверцей — по сценарию Q04 хвост не у горячей дверцы). Перенесена на заднюю стену слева от двери на крыльцо, под угловые полки, над кадкой — в кадре прямо над столиком; масштаб по глубине стены, мягкая тень — tools/make_h1_layers.py из assets/incoming/H1_state_shelf_table.png"
+    },
+    {
+      "id": "photo_ledge",
+      "image": "res://assets/rooms/H1/state_photo_ledge.png",
+      "unless": ["v01_photo_table", "v01_photo_shelf"],
+      "_note": "V01, Директор 18.10: «где будет стоять фотография — никакой выбор ничего не меняет». Семейная фотография в рамке до выбора — на уступе печи у стены, рядом с латунной фигуркой; выбор переносит её на столик или на угловую полку, с уступа она уходит (слой, не часть фона — без «дырки»). Рамка и сепия — tools/make_items_layers.py. Прежний хотспот «фотографии» лежал на иконе у вешалки (это икона, не снимок) — она остаётся убранством"
+    },
+    {
+      "id": "photo_shelf",
+      "image": "res://assets/rooms/H1/state_photo_shelf.png",
+      "if": ["v01_photo_shelf"],
+      "_note": "«На полке»: средняя полка угловой полки с кувшинами, перед шкатулкой"
+    },
+    {
+      "id": "photo_table",
+      "image": "res://assets/rooms/H1/state_photo_table.png",
+      "if": ["v01_photo_table"],
+      "occluder": true,
+      "z": 940,
+      "_z_note": "«На столе»: стоит на столике за книгой — под слоем столика (950: книга закрывает низ рамки), над Агатой, когда она за столиком"
+    },
+    {
+      "id": "cup_sill_blue",
+      "image": "res://assets/rooms/H1/state_cup_sill_blue.png",
+      "unless": ["v01_cup_blue"],
+      "_note": "V01: две чашки (синяя и белая) ждут на подоконнике между кувшином и книгами; выбранная уходит на столик. Чашки — кружка со столика в другой глазури, tools/make_items_layers.py"
+    },
+    {
+      "id": "cup_sill_white",
+      "image": "res://assets/rooms/H1/state_cup_sill_white.png",
+      "unless": ["v01_cup_white"]
+    },
+    {
+      "id": "cup_table_blue",
+      "image": "res://assets/rooms/H1/state_cup_table_blue.png",
+      "if": ["v01_cup_blue"],
+      "occluder": true,
+      "z": 955,
+      "_z_note": "выбранная чашка на правом конце столика — поверх столика (950), под Тихоном в кресле (960)"
+    },
+    {
+      "id": "cup_table_white",
+      "image": "res://assets/rooms/H1/state_cup_table_white.png",
+      "if": ["v01_cup_white"],
+      "occluder": true,
+      "z": 955
     }
   ],
   "effects": [
@@ -192,21 +238,27 @@
       "look": "@H1.tikhon.look"
     },
     {
-      "id": "photo",
+      "id": "photo", "action_anim": "reach",
       "kind": "object",
       "label": "@H1.photo.label",
-      "rect": [1230, 150, 80, 90],
-      "stand": [1270, 740],
+      "rect": [686, 462, 36, 42],
+      "stand": [700, 800],
+      "pick_priority": 2,
+      "_rect_note": "18.10: фотография — своя вещь (слои photo_ledge / photo_table / photo_shelf), хотспот идёт за ней по выбору (states rect/stand). Было [1230,150,80,90] — икона над вешалкой",
       "color": "#e8e0c8",
       "draw": false,
       "states": [
         {
           "if": ["v01_photo_table"],
-          "label": "@H1.photo.label_table"
+          "label": "@H1.photo.label_table",
+          "rect": [647, 676, 58, 66],
+          "stand": [690, 840]
         },
         {
           "if": ["v01_photo_shelf"],
-          "label": "@H1.photo.label_shelf"
+          "label": "@H1.photo.label_shelf",
+          "rect": [680, 296, 26, 30],
+          "stand": [700, 790]
         }
       ],
       "choice": {
@@ -217,12 +269,14 @@
           {
             "id": "table",
             "label": "@H1.photo.opt_table",
-            "sets": "v01_photo_table"
+            "sets": "v01_photo_table",
+            "text": "@H1.photo.react_table"
           },
           {
             "id": "shelf",
             "label": "@H1.photo.opt_shelf",
-            "sets": "v01_photo_shelf"
+            "sets": "v01_photo_shelf",
+            "text": "@H1.photo.react_shelf"
           }
         ]
       },
@@ -232,20 +286,26 @@
       "id": "cups", "action_anim": "reach",
       "kind": "object",
       "label": "@H1.cups.label",
-      "rect": [660, 290, 140, 90],
-      "stand": [740, 800],
+      "rect": [1580, 478, 74, 38],
+      "stand": [1615, 740],
+      "pick_priority": 2,
+      "_rect_note": "18.10: две чашки на подоконнике (слои cup_sill_*; было [660,290,140,90] — угловая полка, где чашек не нарисовано); после выбора хотспот — на выбранной чашке на столике. Приоритет 2: поверх ставни",
       "color": "#d8d0c0",
       "draw": false,
       "states": [
         {
           "if": ["v01_cup_blue"],
           "label": "@H1.cups.label_blue",
-          "color": "#7090c0"
+          "color": "#7090c0",
+          "rect": [800, 733, 56, 40],
+          "stand": [800, 840]
         },
         {
           "if": ["v01_cup_white"],
           "label": "@H1.cups.label_white",
-          "color": "#f0ece0"
+          "color": "#f0ece0",
+          "rect": [800, 733, 56, 40],
+          "stand": [800, 840]
         }
       ],
       "choice": {
@@ -256,12 +316,14 @@
           {
             "id": "blue",
             "label": "@H1.cups.opt_blue",
-            "sets": "v01_cup_blue"
+            "sets": "v01_cup_blue",
+            "text": "@H1.cups.react_blue"
           },
           {
             "id": "white",
             "label": "@H1.cups.opt_white",
-            "sets": "v01_cup_white"
+            "sets": "v01_cup_white",
+            "text": "@H1.cups.react_white"
           }
         ]
       },
