@@ -66,7 +66,7 @@ func _run() -> void:
 	await _test("Cross-fade: switching idle↔walk (Agata) and idle↔talk (Tamara) dissolves the old pose in ≈0.12 s", _test_crossfade)
 	await _test("Actions: hotspot action_anim plays once, the effect lands on the key frame exactly once; save mid-action is safe", _test_actions)
 	await _test("Idle sway: even back-and-forth — equal time to both extreme poses (±5 %), equal holds, easing to rest at both ends", _test_idle_sway)
-	await _test("Tikhon: bone-rigged puppet by the stove after M03 — breathing/tail loop without a seam, ear/head accents, head lift on his lines, scared tail, hotspot still clickable", _test_tikhon)
+	await _test("Tikhon: bone-rigged puppet in H1 from the start — breathing/tail loop without a seam, ear/head accents, head lift on his lines, scared tail, hotspot still clickable", _test_tikhon)
 	_cleanup_m1()
 	_finish()
 
@@ -1625,11 +1625,9 @@ func _test_tikhon() -> void:
 		return
 	var t: Node2D = pups[0]
 	var hs: Node2D = room.get_node("Hotspots/tikhon")
-	# Appears with his hotspot: not before M03.
-	_check(not t.visible and not hs.visible, "Tikhon is hidden before M03")
-	gs.set_flag("started_M03", true)
-	await process_frame
-	_check(t.visible and hs.visible, "Tikhon appears with his hotspot once M03 has started")
+	# In the room from the first entry, before M03 (Director 18.10: «изначально в комнате, а не появляться»;
+	# where he sits — tests/test_h1.gd).
+	_check(t.visible and hs.visible and not gs.has_flag("started_M03"), "Tikhon is in H1 with his hotspot before M03")
 	# Rig: mesh over the picture, skinned to the bones, every vertex fully weighted.
 	var poly: Polygon2D = t.poly
 	_check(poly.polygon.size() > 150 and poly.polygons.size() > 200, "mesh too coarse: %d vertices, %d triangles" % [poly.polygon.size(), poly.polygons.size()])
@@ -1641,11 +1639,11 @@ func _test_tikhon() -> void:
 			sum += poly.get_bone_weights(b)[i]
 		worst = maxf(worst, absf(sum - 1.0))
 	_check(worst < 0.001, "every vertex must be fully weighted (worst sum error %.4f)" % worst)
-	# Size: ≈ 0.28 of Agata's height at the same depth.
+	# Size: ≈ 0.33 of Agata's height at the same depth (Director 18.10: «быть побольше немного»; was 0.28).
 	var agata_h: float = 337.0 * room.depth_scale(t.depth_y)
 	var ratio: float = t.figure_height_px() / agata_h
 	print("    tikhon: %d vertices, %d triangles; height %.0f px = %.2f × Agata at depth y %.0f; feet %s" % [poly.polygon.size(), poly.polygons.size(), t.figure_height_px(), ratio, t.depth_y, str(t.global_position)])
-	_check(absf(ratio - 0.28) < 0.02, "Tikhon ≈ 0.28 of Agata's height, got %.2f" % ratio)
+	_check(absf(ratio - 0.33) < 0.02, "Tikhon ≈ 0.33 of Agata's height, got %.2f" % ratio)
 	# Breathing + tail: one seamless loop (first and last key equal on every track), body scale ±2 %.
 	var idle: Animation = t.life.get_animation("idle")
 	_check(t.life.is_playing() and t.life.current_animation == "idle" and idle.loop_mode == Animation.LOOP_LINEAR, "the idle loop plays")

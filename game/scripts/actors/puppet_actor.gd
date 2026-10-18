@@ -9,9 +9,12 @@ extends Node2D
 ## and fluffed) for future scenes.
 ##
 ## Attached by NpcActor.attach_all for an `npc` hotspot whose actor data has "type": "puppet". It
-## mirrors the hotspot's visibility (Tikhon: after M03) and leaves clicks to the hotspot. Placement:
-## data `place.<room>` (feet + floor depth), else the hotspot's bottom centre. The room's light tones it
-## like the sheet actors (RoomLighting.actor_tone_at, eased); a small soft contact shadow sits under it.
+## mirrors the hotspot's visibility and leaves clicks to the hotspot. Placement: data `place.<room>` —
+## one {feet, depth_y} or a list of them with `if`/`unless` flags, the first that holds wins (Tikhon in H1:
+## in the armchair until Q04, then on the shelf he chose); `z` — draw order when it is not the floor depth
+## (sitting on furniture), `mirror` — faces the other way. No match → the hotspot's bottom centre. Flags
+## and a moved hotspot (StoryHotspot.geometry_changed) re-place it. The room's light tones it like the
+## sheet actors (RoomLighting.actor_tone_at, eased); a small soft contact shadow sits under it.
 
 const TONE_RATE := 6.0
 
@@ -28,6 +31,7 @@ var talking: bool = false
 var scared: bool = false
 var tex_scale: float = 1.0          # texture px per source px
 var depth_y: float = 0.0
+var place_index: int = -2          # which place entry is in use (-1: the hotspot's bottom centre)
 var _rng := RandomNumberGenerator.new()
 var _next_accent: float = 0.0
 var _tone: Color = Color.WHITE
@@ -75,6 +79,10 @@ func setup(id: String, h: Node2D, room: Node, the_player: Node2D) -> bool:
 		img.visible = false
 	visible = h.visible
 	h.visibility_changed.connect(func(): visible = hotspot.visible)
+	if h.has_signal("geometry_changed"):
+		h.geometry_changed.connect(_replace)
+	GameState.flag_changed.connect(_on_flag_changed)
+	GameState.state_reset.connect(_replace)
 	StoryRunner.beat_changed.connect(_on_beat_changed)
 	_rng.seed = hash(id)
 	_next_accent = _rng.randf_range(2.0, 5.0)
@@ -85,6 +93,10 @@ func setup(id: String, h: Node2D, room: Node, the_player: Node2D) -> bool:
 func _exit_tree() -> void:
 	if StoryRunner.beat_changed.is_connected(_on_beat_changed):
 		StoryRunner.beat_changed.disconnect(_on_beat_changed)
+	if GameState.flag_changed.is_connected(_on_flag_changed):
+		GameState.flag_changed.disconnect(_on_flag_changed)
+	if GameState.state_reset.is_connected(_replace):
+		GameState.state_reset.disconnect(_replace)
 
 
 # --- Rig ---------------------------------------------------------------------
@@ -208,9 +220,33 @@ func _skin(verts: PackedVector2Array) -> void:
 		poly.add_bone(skeleton.get_path_to(bones[name]), weights[name])
 
 
+## The place entry for this room that holds now: `place.<room>` is one entry or a list; in a list the
+## first entry whose `if` flags are all set and `unless` flags all clear wins. Returns [index, entry]
+## (index -1 and {} when nothing fits).
+func current_place(rid: String) -> Array:
+	var pl = spec.get("place", {}).get(rid, {})
+	if pl is Dictionary:
+		return [0, pl] if not (pl as Dictionary).is_empty() else [-1, {}]
+	if pl is Array:
+		for i in (pl as Array).size():
+			var e: Dictionary = pl[i]
+			var ok := true
+			for f in e.get("if", []):
+				if not GameState.has_flag(String(f)):
+					ok = false
+			for f in e.get("unless", []):
+				if GameState.has_flag(String(f)):
+					ok = false
+			if ok:
+				return [i, e]
+	return [-1, {}]
+
+
 func _place(room: Node, h: Node2D) -> void:
 	var rid := String(room.get("room_id")) if room != null else ""
-	var pl: Dictionary = spec.get("place", {}).get(rid, {})
+	var cur := current_place(rid)
+	place_index = int(cur[0])
+	var pl: Dictionary = cur[1]
 	var feet: Vector2
 	if pl.has("feet"):
 		feet = _v(pl["feet"])
@@ -231,8 +267,24 @@ func _place(room: Node, h: Node2D) -> void:
 	var fig_src := float(spec.get("feet_px", [0, 0])[1]) - float(spec.get("figure_top_px", 0))
 	var target_h := float(spec.get("height_rel_agata", 0.28)) * agata_h * depth
 	var s := target_h / maxf(fig_src * tex_scale, 1.0)
-	scale = Vector2(s, s)
-	z_index = clampi(int(depth_y), -4096, 4096)
+	scale = Vector2(-s if bool(pl.get("mirror", false)) else s, s)
+	z_index = clampi(int(pl.get("z", depth_y)), -4096, 4096)
+
+
+func _on_flag_changed(_flag: String, _value: bool) -> void:
+	_replace()
+
+
+## Flags changed or the hotspot moved: go to the place entry that holds now (no-op if it is the same).
+func _replace() -> void:
+	if hotspot == null or not is_instance_valid(hotspot) or _room == null or not is_instance_valid(_room):
+		return
+	var rid := String(_room.get("room_id"))
+	var idx := int(current_place(rid)[0])
+	if idx == place_index and idx >= 0:
+		return
+	_place(_room, hotspot)
+	_tone_set = false
 
 
 ## Screen height of the figure (feet to ear tips), px.

@@ -1,0 +1,63 @@
+[2026-10-18T00:49:38.971Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-18T00:49:39.306Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-18T00:49:39.697Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-18T00:49:44.627Z] click hotspot tamara at (1070, 475)
+[2026-10-18T00:49:54.977Z] click hotspot tamara: continue at (960, 1006)
+[2026-10-18T00:49:56.141Z] click hotspot tamara: continue at (960, 982)
+[2026-10-18T00:49:57.554Z] click hotspot tamara: continue at (960, 1006)
+[2026-10-18T00:50:00.157Z] click exit → Z4 at (1700, 430)
+[2026-10-18T00:50:06.059Z] OK   Z1 → Z4
+[2026-10-18T00:50:07.332Z] click exit → Z2 at (840, 1038)
+[2026-10-18T00:50:21.945Z] OK   Z4 → Z2
+[2026-10-18T00:50:22.336Z] click exit → H1 at (1005, 475)
+[2026-10-18T00:50:45.332Z] OK   Z2 → H1
+[2026-10-18T00:50:47.662Z] OK   Tikhon is in H1 before M03 (hotspot visible: {"label":"Тихон","visible":true,"x":470,"y":790})
+[2026-10-18T00:50:47.662Z] OK   his hotspot is on the armchair (470, 790)
+[2026-10-18T00:50:47.662Z] OK   the sockets on the stove side are a hotspot from the start ({"label":"Крепления для полки","visible":true,"x":487.5,"y":526})
+[2026-10-18T00:50:54.908Z] screenshot Docs/evidence/M1/H1_v2_01_start.png
+[2026-10-18T00:51:08.449Z] screenshot Docs/evidence/M1/H1_v2_02_hover_stove.png
+[2026-10-18T00:51:08.449Z] click oven door at (220, 490)
+[2026-10-18T00:51:27.077Z] OK   a click on the oven door used the stove (stove_lit)
+[2026-10-18T00:51:27.077Z] OK   Agata stands in front of the oven door (215, 795)
+[2026-10-18T00:51:34.123Z] screenshot Docs/evidence/M1/H1_v2_03_stove_click.png
+[2026-10-18T00:51:35.794Z] click stove text: continue at (960, 1024)
+[2026-10-18T00:51:47.056Z] click hotspot shutter at (1650, 320)
+[2026-10-18T00:52:18.417Z] click hotspot shutter: continue at (960, 1024)
+[2026-10-18T00:52:25.071Z] click hotspot scarf at (580, 600)
+[2026-10-18T00:52:47.692Z] click M03: continue at (960, 1024)
+[2026-10-18T00:52:50.309Z] click M03: continue at (960, 1006)
+[2026-10-18T00:52:53.816Z] click M03: continue at (960, 1006)
+[2026-10-18T00:53:05.385Z] screenshot Docs/evidence/M1/H1_v2_04_m03_tikhon_in_armchair.png
+[2026-10-18T00:53:05.386Z] click M03: continue at (960, 1006)
+[2026-10-18T00:53:08.091Z] click M03: option ask at (960, 1022)
+[2026-10-18T00:53:09.885Z] click M03: continue at (960, 1006)
+[2026-10-18T00:53:16.315Z] OK   Tikhon's line «Печь тоже здесь.» shown (frame 04)
+[2026-10-18T00:53:16.315Z] OK   «Ты здесь один?» in M03
+[2026-10-18T00:53:16.315Z] OK   after M03 Tikhon is still in the armchair
+[2026-10-18T00:53:16.320Z] OK   the sockets hotspot is there after M03
+[2026-10-18T00:53:25.050Z] screenshot Docs/evidence/M1/H1_v2_05_hover_sockets.png
+[2026-10-18T00:53:25.599Z] click hotspot shelf at (488, 526)
+[2026-10-18T00:53:40.359Z] click hotspot shelf: option A at (960, 963)
+[2026-10-18T00:53:43.715Z] click hotspot shelf: continue at (960, 1006)
+[2026-10-18T00:53:45.377Z] click hotspot shelf: continue at (960, 1006)
+[2026-10-18T00:53:47.053Z] click hotspot shelf: continue at (960, 1006)
+[2026-10-18T00:53:48.689Z] click hotspot shelf: continue at (960, 1006)
+[2026-10-18T00:53:54.701Z] OK   Q04 lines played: 5
+[2026-10-18T00:53:54.702Z] OK   after Q04 A his hotspot moved onto the shelf (527, 428)
+[2026-10-18T00:53:54.702Z] click floor (step back) at (1150, 900)
+[2026-10-18T00:54:10.122Z] screenshot Docs/evidence/M1/H1_v2_06_shelf_a_tikhon.png
+[2026-10-18T00:54:10.122Z] click oven door again at (220, 490)
+[2026-10-18T00:54:25.048Z] console.error: WARNING: VoiceDirector: H1.stove.look is recorded for another text (text_changed) — subtitles only
+[2026-10-18T00:54:25.052Z] console.error:    at: push_warning (core/variant/variant_utility.cpp:1033)
+[2026-10-18T00:54:28.514Z] OK   the stove look mentions the sockets: «Печь с лежанкой. Здесь место Тихона. Сбоку в побелке — старые гнёзда от креплений: место помнит, что здесь висело.»
+[2026-10-18T00:54:29.003Z] click stove look: continue at (960, 1000)
+[2026-10-18T00:54:34.203Z] OK   attic exit up under the ceiling by the stove (715, 142)
+[2026-10-18T00:54:34.204Z] OK   gallery exit at the bottom edge (1100, 1040)
+[2026-10-18T00:54:49.091Z] screenshot Docs/evidence/M1/H1_v2_08_hover_attic.png
+[2026-10-18T00:54:50.752Z] click exit → H4 at (715, 142)
+[2026-10-18T00:55:01.988Z] OK   the «up» mark → attic H4
+[2026-10-18T00:55:02.845Z] click H4 entry (V02): continue at (960, 1024)
+[2026-10-18T00:55:05.251Z] click exit → H1 at (700, 1040)
+[2026-10-18T00:55:11.247Z] OK   attic → back down to H1
+[2026-10-18T00:55:11.846Z] OK   back from the attic Agata is in the stove corner (700, 800)
+[2026-10-18T00:55:11.846Z] OK   console errors: 0 (Godot warnings, not errors: WARNING: VoiceDirector: H1.stove.look is recorded for another text (text_changed) — subtitles only)

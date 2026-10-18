@@ -147,7 +147,7 @@ func _test_build() -> void:
 	var h1: Node = await _enter("H1", ["stove_lit"], Vector2(1200, 900))
 	for i in 3:
 		await physics_frame
-	var hit: Node = h1.pick(Vector2(450, 250))
+	var hit: Node = h1.pick(Vector2(190, 450))   # the burning oven mouth (the stove rect is the body, not the pots — 18.10)
 	_check(hit != null and String(hit.name) == "stove", "a click on the burning stove must still hit the stove hotspot, got %s" % (str(hit.name) if hit else "nothing"))
 
 

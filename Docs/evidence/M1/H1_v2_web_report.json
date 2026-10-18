@@ -1,0 +1,89 @@
+{
+ "checks": [
+  {
+   "ok": true,
+   "msg": "Z1 → Z4"
+  },
+  {
+   "ok": true,
+   "msg": "Z4 → Z2"
+  },
+  {
+   "ok": true,
+   "msg": "Z2 → H1"
+  },
+  {
+   "ok": true,
+   "msg": "Tikhon is in H1 before M03 (hotspot visible: {\"label\":\"Тихон\",\"visible\":true,\"x\":470,\"y\":790})"
+  },
+  {
+   "ok": true,
+   "msg": "his hotspot is on the armchair (470, 790)"
+  },
+  {
+   "ok": true,
+   "msg": "the sockets on the stove side are a hotspot from the start ({\"label\":\"Крепления для полки\",\"visible\":true,\"x\":487.5,\"y\":526})"
+  },
+  {
+   "ok": true,
+   "msg": "a click on the oven door used the stove (stove_lit)"
+  },
+  {
+   "ok": true,
+   "msg": "Agata stands in front of the oven door (215, 795)"
+  },
+  {
+   "ok": true,
+   "msg": "Tikhon's line «Печь тоже здесь.» shown (frame 04)"
+  },
+  {
+   "ok": true,
+   "msg": "«Ты здесь один?» in M03"
+  },
+  {
+   "ok": true,
+   "msg": "after M03 Tikhon is still in the armchair"
+  },
+  {
+   "ok": true,
+   "msg": "the sockets hotspot is there after M03"
+  },
+  {
+   "ok": true,
+   "msg": "Q04 lines played: 5"
+  },
+  {
+   "ok": true,
+   "msg": "after Q04 A his hotspot moved onto the shelf (527, 428)"
+  },
+  {
+   "ok": true,
+   "msg": "the stove look mentions the sockets: «Печь с лежанкой. Здесь место Тихона. Сбоку в побелке — старые гнёзда от креплений: место помнит, что здесь висело.»"
+  },
+  {
+   "ok": true,
+   "msg": "attic exit up under the ceiling by the stove (715, 142)"
+  },
+  {
+   "ok": true,
+   "msg": "gallery exit at the bottom edge (1100, 1040)"
+  },
+  {
+   "ok": true,
+   "msg": "the «up» mark → attic H4"
+  },
+  {
+   "ok": true,
+   "msg": "attic → back down to H1"
+  },
+  {
+   "ok": true,
+   "msg": "back from the attic Agata is in the stove corner (700, 800)"
+  },
+  {
+   "ok": true,
+   "msg": "console errors: 0 (Godot warnings, not errors: WARNING: VoiceDirector: H1.stove.look is recorded for another text (text_changed) — subtitles only)"
+  }
+ ],
+ "failures": []
+}

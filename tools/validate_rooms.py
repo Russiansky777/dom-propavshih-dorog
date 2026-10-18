@@ -11,7 +11,8 @@
      gives — только предметы, чей source_scene совпадает со сценой шага и чья сцена идёт в этой комнате;
      sets со сценой — только флаги из grants сцены или локальные флаги комнаты;
   4. все текстовые ключи @… есть в data/story/text/*.json (кроме @char.<id> из characters.json);
-  5. геометрия: полигон ≥ 3 точек; точки stand хотспотов/выходов и спавны лежат внутри полигона;
+  5. геометрия: полигон ≥ 3 точек; точки stand хотспотов/выходов и спавны лежат внутри полигона
+     (и stand из states хотспота: состояние может переставить хотспот — rect/stand, H1: Тихон и полка);
      вырезы (walkable_holes) лежат в кадре и пересекают пол;
   6. геометрия по картинке (дефект «Агата проходит сквозь стойку/стол/воду»): у каждой комнаты
      in_scope есть no_walk_samples (≥ 2 точки заведомо внутри препятствий/воды — вне пола или в
@@ -385,17 +386,27 @@ for rid, room in rooms.items():
         t = 1.0 if span == 0 else min(1.0, max(0.0, (y - dep9["top_y"]) / span))
         return dep9["scale_top"] + (dep9["scale_bottom"] - dep9["scale_top"]) * t
 
-    for h in room.get("hotspots", []):
-        if h.get("kind") != "npc" or "rect" not in h or "stand" not in h or not aref9.get("figure_half_width_px"):
-            continue
-        r = h["rect"]
-        sx, sy = h["stand"]
-        hw, fig = aref9["figure_half_width_px"], aref9["figure_px"]
-        actor_path = GAME_DIR / "data" / "actors" / f"{h.get('id')}.json"
-        actor = load(actor_path) if actor_path.exists() else None
-        if actor is None and "image" not in h:
-            continue  # фигуры нет — закрывать нечего
-        place = (actor or {}).get("place", {}).get(rid) if (actor or {}).get("type") == "puppet" else None
+    def npc_variants(h: dict, actor: dict | None):
+        """(rect, stand, place) для каждого места NPC: кукла с place.<LOC>-списком (флаги if/unless, H1 Тихон:
+        кресло → полка A / полка B) берёт rect/stand из states хотспота с теми же if-флагами (без if — базовые)."""
+        pl = (actor or {}).get("place", {}).get(rid) if (actor or {}).get("type") == "puppet" else None
+        if not isinstance(pl, list):
+            return [(h["rect"], h["stand"], pl)]
+        out = []
+        for e in pl:
+            fl = sorted(e.get("if", []))
+            st = next((s for s in h.get("states", []) if sorted(s.get("if", [])) == fl), None) if fl else None
+            if fl and st is None:
+                err(f"{ctx}.{h.get('id')}: место куклы с if {fl} (game/data/actors/{h.get('id')}.json place.{rid}) — "
+                    f"нет состояния хотспота с теми же флагами (rect/stand)")
+                continue
+            check_flags(f"{ctx}.{h.get('id')}.place.if", e.get("if"))
+            check_flags(f"{ctx}.{h.get('id')}.place.unless", e.get("unless"))
+            out.append(((st or {}).get("rect", h["rect"]), (st or {}).get("stand", h["stand"]), e))
+        return out
+
+    def check_npc_stand(h, actor, r, stand9, place, hw, fig) -> None:
+        sx, sy = stand9
         if place:
             fx, fy = place["feet"]
             floor_y = place.get("depth_y", fy)
@@ -416,8 +427,18 @@ for rid, room in rooms.items():
         oy = min(sy, fy) - max(sy - a_h, fy - n_h)
         covered = max(0.0, ox) / (2 * n_hw) * max(0.0, oy) / n_h if n_hw > 0 and n_h > 0 else 0.0
         if sy > floor_y and covered > aref9.get("npc_overlap_max", 0.25):
-            err(f"{ctx}.{h.get('id')}: стоянка {h['stand']} прямо перед NPC (ноги {fx:.0f},{fy:.0f}) — Агата закроет "
+            err(f"{ctx}.{h.get('id')}: стоянка {list(stand9)} прямо перед NPC (ноги {fx:.0f},{fy:.0f}) — Агата закроет "
                 f"собой {covered:.0%} фигуры; поставьте стоянку сбоку (видны обе)")
+
+    for h in room.get("hotspots", []):
+        if h.get("kind") != "npc" or "rect" not in h or "stand" not in h or not aref9.get("figure_half_width_px"):
+            continue
+        actor_path = GAME_DIR / "data" / "actors" / f"{h.get('id')}.json"
+        actor = load(actor_path) if actor_path.exists() else None
+        if actor is None and "image" not in h:
+            continue  # фигуры нет — закрывать нечего
+        for r, stand9, place in npc_variants(h, actor):
+            check_npc_stand(h, actor, r, stand9, place, aref9["figure_half_width_px"], aref9["figure_px"])
 
     # 8. рост Агаты против ориентиров
     aref = index.get("agata_ref", {})
@@ -574,12 +595,16 @@ for rid, room in rooms.items():
     def _overlap(a, b) -> bool:
         return a[0] < b[0] + b[2] and b[0] < a[0] + a[2] and a[1] < b[1] + b[3] and b[1] < a[1] + a[3]
 
+    def hs_rects(h: dict) -> list:
+        """Базовый прямоугольник хотспота и прямоугольники его состояний (states[].rect)."""
+        return [h["rect"]] + [s["rect"] for s in h.get("states", []) if "rect" in s]
+
     for h in room.get("hotspots", []):
         if "rect" not in h:
             continue
         for ex in exits:
             rect, _stand = exit_geometry(room, ex)
-            if rect and _overlap(h["rect"], rect) and int(h.get("pick_priority", 0)) <= int(ex.get("pick_priority", 1)):
+            if rect and any(_overlap(hr, rect) for hr in hs_rects(h)) and int(h.get("pick_priority", 0)) <= int(ex.get("pick_priority", 1)):
                 err(f"{ctx}.{h.get('id')}: прямоугольник перекрывается выходом в {ex.get('to')} — клик уйдёт выходу (поднимите pick_priority или раздвиньте)")
 
     # два видимых одновременно хотспота с равным pick_priority не должны перекрываться: Room.pick берёт
@@ -593,7 +618,7 @@ for rid, room in rooms.items():
     hs = [h for h in room.get("hotspots", []) if "rect" in h]
     for i, a in enumerate(hs):
         for b in hs[i + 1:]:
-            if _overlap(a["rect"], b["rect"]) and int(a.get("pick_priority", 0)) == int(b.get("pick_priority", 0)) and not _exclusive(a, b):
+            if any(_overlap(ra, rb) for ra in hs_rects(a) for rb in hs_rects(b)) and int(a.get("pick_priority", 0)) == int(b.get("pick_priority", 0)) and not _exclusive(a, b):
                 err(f"{ctx}: хотспоты {a.get('id')} и {b.get('id')} перекрываются с равным pick_priority — клик непредсказуем (поднимите приоритет меньшему или раздвиньте)")
 
     # 3. хотспоты
@@ -614,6 +639,10 @@ for rid, room in rooms.items():
         check_flags(hctx + ".hidden_if", h.get("hidden_if"))
         for st in h.get("states", []):
             check_flags(hctx + ".states", st.get("if"))
+            if "stand" in st and not walkable_point(st["stand"]):
+                err(f"{hctx}.states{st.get('if')}: stand {st['stand']} вне полигона (или в вырезе)")
+            if "rect" in st and (len(st["rect"]) != 4 or st["rect"][2] <= 0 or st["rect"][3] <= 0):
+                err(f"{hctx}.states{st.get('if')}: rect {st['rect']} — нужно [x, y, w, h] с w, h > 0")
 
         def check_action(actx: str, act: dict, scene_id: str | None) -> None:
             req = act.get("requires", {})
