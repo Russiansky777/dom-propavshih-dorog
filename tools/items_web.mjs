@@ -2,7 +2,8 @@
 // Items and choices after the Director's notes of 18.10 in the WEB build with REAL mouse input
 // (window.probeState; agent «предметы и выборы»):
 //
-//   tools/export_web.sh && node tools/items_web.mjs     (ITEMS_WEB_DIR — another build dir; ITEMS_PORT, default 8779)
+//   tools/export_web.sh && node tools/items_web.mjs     (ITEMS_WEB_DIR — another build dir; ITEMS_PORT, default 8779;
+//                                                        ITEMS_PART=2 — only frames 07–10, state of 06 set by the probe hooks)
 //
 // From a new game: Tamara (M01) → lane Z4 → street Z2, then with the frames Docs/evidence/M1/items_web_*.png:
 //   01 door locked  — a click on the porch door: «Заперто. Ключ … у меня в сумке», still on the street;
@@ -34,6 +35,8 @@ const WEB_DIR = process.env.ITEMS_WEB_DIR ? path.resolve(ROOT, process.env.ITEMS
 const OUT_DIR = process.env.ITEMS_OUT_DIR ? path.resolve(process.env.ITEMS_OUT_DIR) : path.join(ROOT, "Docs", "evidence", "M1");
 const LOG_DIR = process.env.ITEMS_LOG_DIR ? path.resolve(process.env.ITEMS_LOG_DIR) : path.join(ROOT, "build", "shots", "items");
 const PORT = Number(process.env.ITEMS_PORT || 8779);
+// ITEMS_PART=2 — start after frame 06 (state set by hooks): on a loaded 2-core machine the full run takes > 50 min.
+const PART = process.env.ITEMS_PART || "all";
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -194,9 +197,11 @@ async function main() {
     await page.waitForSelector("#canvas", { timeout: 30000 });
     await page.waitForFunction(() => window.probeReady === true, null, { timeout: 120000 });
     await sleep(1500);
+    let s;
+    if (PART !== "2") {
     // M01 → street.
     await useHotspot("tamara");
-    let s = await waitFor("M01 done", (t) => t.flags.done_M01);
+    s = await waitFor("M01 done", (t) => t.flags.done_M01);
     check(s.inventory.includes("key_house"), "Tamara gave the key");
     check(await goExit("Z4"), "Z1 → Z4");
     check(await goExit("Z2"), "Z4 → Z2");
@@ -267,6 +272,20 @@ async function main() {
     await page.mouse.move(1500, 1040);
     await sleep(800);
     await shot("06_photo_table_cup_blue");
+    } else {
+      // Part 2 (ITEMS_PART=2): the state after frame 06 set by the ambientprobe hooks — the door unlocked by the
+      // key, M01–M03 done, the photo on the side table, the blue cup — then the same real clicks as in a full run.
+      for (const f of ["done_M01", "met_tamara", "knows_pier_trace", "has_key_house", "has_letter_tamara", "has_pocket_watch",
+        "has_mitten", "done_M02", "house_unlocked", "done_M03", "started_M03", "met_tikhon", "house_open", "stove_lit",
+        "h1_shutter_open", "h1_scarf_removed", "v01_photo_table", "v01_cup_blue", "done_V01"]) {
+        await page.evaluate((fl) => window.ambientFlag(fl, true), f);
+      }
+      await page.evaluate(() => window.ambientGoto("H1", "default"));
+      s = await waitFor("in H1 (part 2)", (t) => t.room === "H1", 120000);
+      await sleep(1500);
+      s = await state();
+      check(near(s.hotspots.photo, 647, 676, 705, 742) && near(s.hotspots.cups, 800, 733, 856, 773), "part 2: photo and blue cup on the side table");
+    }
     // 07: photo → shelf, cups → white.
     await useHotspot("photo", ["shelf"]);
     await useHotspot("cups", ["white"]);

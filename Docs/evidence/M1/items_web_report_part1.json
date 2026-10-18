@@ -1,0 +1,75 @@
+{
+ "checks": [
+  {
+   "ok": true,
+   "msg": "Tamara gave the key"
+  },
+  {
+   "ok": true,
+   "msg": "Z1 → Z4"
+  },
+  {
+   "ok": true,
+   "msg": "Z4 → Z2"
+  },
+  {
+   "ok": true,
+   "msg": "the porch door is locked before the key is applied"
+  },
+  {
+   "ok": true,
+   "msg": "locked: «Заперто. Ключ от тётиного дома — у меня в сумке.», still on the street"
+  },
+  {
+   "ok": true,
+   "msg": "a click on the key's pocket takes it in hand"
+  },
+  {
+   "ok": true,
+   "msg": "unlock: «Замок поддался не сразу. Ключ останется в двери — дом снова открыт.»"
+  },
+  {
+   "ok": true,
+   "msg": "the key left the bag (letter_tamara,pocket_watch,mitten), house_unlocked"
+  },
+  {
+   "ok": true,
+   "msg": "after the text Agata walks into the house"
+  },
+  {
+   "ok": true,
+   "msg": "04: the photo on the stove ledge ({\"label\":\"Семейная фотография\",\"visible\":true,\"x\":704,\"y\":483})"
+  },
+  {
+   "ok": true,
+   "msg": "04: the cups on the window sill ({\"label\":\"Две чашки\",\"visible\":true,\"x\":1617,\"y\":497})"
+  },
+  {
+   "ok": true,
+   "msg": "«На столе» → Agata's reaction «Пусть стоит у кресла — так все наши рядом.»"
+  },
+  {
+   "ok": true,
+   "msg": "the photo hotspot moved onto the side table ({\"label\":\"Семейная фотография на столе\",\"visible\":true,\"x\":676,\"y\":709})"
+  },
+  {
+   "ok": true,
+   "msg": "the blue cup on the side table ({\"label\":\"Чашки: выбрана синяя\",\"visible\":true,\"x\":828,\"y\":753})"
+  },
+  {
+   "ok": true,
+   "msg": "V01: Tikhon checks his place after both choices"
+  },
+  {
+   "ok": false,
+   "msg": "exception: page.evaluate: Target page, context or browser has been closed\n    at state (/tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/items_wt/tools/items_web.mjs:101:28)\n    at waitIdle (/tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/items_wt/tools/items_web.mjs:124:26)\n    at useHotspot (/tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/items_wt/tools/items_web.mjs:162:11)\n    at async main (/tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/items_wt/tools/items_web.mjs:272:5)"
+  },
+  {
+   "ok": true,
+   "msg": "console errors: 0 (Godot warnings, not errors: none)"
+  }
+ ],
+ "failures": [
+  "exception: page.evaluate: Target page, context or browser has been closed\n    at state (/tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/items_wt/tools/items_web.mjs:101:28)\n    at waitIdle (/tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/items_wt/tools/items_web.mjs:124:26)\n    at useHotspot (/tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/items_wt/tools/items_web.mjs:162:11)\n    at async main (/tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/items_wt/tools/items_web.mjs:272:5)"
+ ]
+}
