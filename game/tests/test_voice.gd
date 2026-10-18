@@ -25,7 +25,10 @@ extends SceneTree
 ##     the same item at most once per 30 s, receiving a batch of items voices nothing;
 ##   - Agata's first-person thoughts (voice.json → narration.by_speaker.agata, acceptance item 75): read in
 ##     Agata's voice (id agata:<key>), never by the narrator — without her file only subtitles; the narrator's
-##     recording stays a spare: taking the key out of the list brings it back.
+##     recording stays a spare: taking the key out of the list brings it back;
+##   - a character's words next to Agata (text entry `line` — Tamara and Pelageya when talked to again, Tikhon
+##     after V01; the Director's note of 18.10, 01:52): a line beat with the speaker's name and the direct
+##     speech, in that character's voice (id <speaker>:<key>, Tikhon panned from his hotspot), never the narrator.
 ## Exit code 0 only when every check passed.
 
 const TEST_SETTINGS := "user://test_voice_settings.cfg"
@@ -97,6 +100,7 @@ func _run() -> void:
 	await _test("Voice-over in the close-up: intro / error / success once each; the success scene line waits for the close", _test_narration_puzzle)
 	await _test("Bag: the item's line after a ≈0.6 s rest on its pocket, fades out on leaving, once per 30 s, not on receiving", _test_item_hover)
 	await _test("Agata's thoughts: her voice (agata:<key>), never the narrator; no file — subtitles; the narrator's spare returns by data", _test_thoughts)
+	await _test("A character's words next to Agata: his/her line (name, direct speech, own voice), not the narrator — Tamara, Pelageya, Tikhon", _test_character_lines)
 	vd.stop("test end")
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -802,7 +806,7 @@ func _test_thoughts() -> void:
 	_check(owned.size() >= 20, "voice.json gives Agata her first-person thoughts (%d keys)" % owned.size())
 	for k in ["Z1.exit_Z4.closed", "O1.bird_drawing.prompt", "H1.cups.prompt", "item.key_house", "O2.tree.look", "H1.photo.look"]:
 		_check(String(vd.narr_owner.get(k, "")) == "agata" and _vid(k) == "agata:" + k, "%s is Agata's thought (id %s)" % [k, _vid(k)])
-	for k in ["Z1.letters.look", "Z1.tamara.after", "H3.puzzle.success", "item.door_hinges"]:
+	for k in ["Z1.letters.look", "H3.puzzle.success", "item.door_hinges"]:
 		_check(_vid(k) == k, "%s stays with the narrator" % k)
 	# A closed exit before Tamara: «Я ещё не поговорила с Тамарой» — Agata's voice, not the baritone.
 	gs.reset()
@@ -854,4 +858,84 @@ func _test_thoughts() -> void:
 func _ensure_voice_key_narrator(key: String) -> void:
 	if vd.line_status(key, sd.text("@" + key)) != "ok":
 		vd.set_test_stream(key, _tone())
+
+
+## The character line `<speaker>:<key>` with its recording, or a test tone.
+func _ensure_text_line(key: String) -> String:
+	var ln: Dictionary = sd.text_line("@" + key)
+	var id := "%s:%s" % [String(ln.get("speaker", "")), key]
+	if vd.line_status(id, String(ln.get("text", ""))) != "ok":
+		print("        (note: %s has no recording here — test tone)" % id)
+		vd.set_test_stream(id, _tone())
+	return id
+
+
+func _check_line_beat(key: String, speaker: String, panned: bool) -> void:
+	var ln: Dictionary = sd.text_line("@" + key)
+	var b: Dictionary = sr.current_beat
+	_check(String(b.get("type", "")) == "line" and String(b.get("speaker", "")) == speaker
+		and String(b.get("speaker_name", "")) == sd.character_name(speaker) and String(b.get("text", "")) == String(ln.get("text", "")),
+		"%s is %s's line with the name and the direct speech: %s" % [key, speaker, b])
+	_check(String(b.get("text", "")).find("—") < 0 or String(b.get("text", "")).find("говорит") < 0, "%s: no author's remark in the line" % key)
+	var ui: Node = main_node.get_node("GameUi")
+	var lbl: Label = ui.get("speaker_label")
+	_check(lbl.visible and lbl.text == sd.character_name(speaker), "the dialogue box shows the speaker «%s» (%s)" % [lbl.text, lbl.visible])
+	_check(vd.is_playing() and vd.current_line == "%s:%s" % [speaker, key] and vd.current_speaker == speaker and vd.current_kind == "line",
+		"%s speaks it in her/his own voice: %s" % [speaker, vd.state()])
+	_check((vd.current_mode == "panned") == panned, "%s: mode %s (panned expected %s)" % [key, vd.current_mode, panned])
+
+
+func _test_character_lines() -> void:
+	var keys := ["Z1.tamara.after", "R1.pelageya.after", "H1.v01.done"]
+	for k in keys:
+		_check(not sd.text_line("@" + k).is_empty(), "%s carries a character line in data" % k)
+	# Tamara, talked to again after M01.
+	gs.reset()
+	await _enter("Z1")
+	gs.set_flag("done_M01")
+	await _frames(2)
+	var tid := _ensure_text_line("Z1.tamara.after")
+	var n0: int = vd.events.size()
+	sr.interact(_hotspot("tamara"))
+	await _frames(2)
+	_check_line_beat("Z1.tamara.after", "tamara", false)
+	for ev in _starts_since(n0):
+		_check(String(ev.get("speaker", "")) != vd.narr_speaker, "the narrator never reads Tamara's words: %s" % [ev])
+	_check(md.dialogue_active(), "music ducked under her line")
+	sr.advance()
+	await _frames(1)
+	_check(not vd.is_playing(), "the click cuts her line")
+	await _finish_dialogue()
+	vd.set_test_stream(tid, null)
+	# Pelageya on the pier after M02.
+	gs.reset()
+	await _enter("R1")
+	gs.set_flag("done_M01")
+	gs.set_flag("done_M02")
+	await _frames(2)
+	var pid := _ensure_text_line("R1.pelageya.after")
+	sr.interact(_hotspot("pelageya"))
+	await _frames(2)
+	_check_line_beat("R1.pelageya.after", "pelageya", false)
+	await _finish_dialogue()
+	vd.set_test_stream(pid, null)
+	# Tikhon when the cups and the photo are placed (V01 completes): his voice from the stove side.
+	gs.reset()
+	await _enter("H1")
+	gs.set_flag("started_M03")
+	gs.set_flag("met_tikhon")
+	await _frames(2)
+	var kid := _ensure_text_line("H1.v01.done")
+	gs.set_flag("v01_cup_blue")
+	gs.set_flag("v01_photo_table")
+	await _frames(4)
+	_check(gs.has_flag("done_V01"), "V01 completes")
+	_check_line_beat("H1.v01.done", "tikhon", true)
+	await _finish_dialogue()
+	vd.set_test_stream(kid, null)
+	# The narrator's recordings of the old texts stay in the manifest as spares.
+	for k in keys:
+		if vd.manifest.has(k):
+			var st: String = vd.line_status(k, sd.text("@" + k))
+			_check(st == "ok" or st == "text_changed", "%s: the narrator's spare is kept (%s)" % [k, st])
 

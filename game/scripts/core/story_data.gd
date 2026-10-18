@@ -247,6 +247,19 @@ func text(key_or_text: String, params: Dictionary = {}) -> String:
 	return out
 
 
+## The character line a text entry carries (field `line` {speaker, text[, tags]}): the words of a character
+## next to Agata, shown and voiced as their line instead of `text` (data/story/voice.json → character_lines).
+## {} when the entry has none (or for plain text).
+func text_line(key_or_text: String) -> Dictionary:
+	if not key_or_text.begins_with("@"):
+		return {}
+	var entry: Dictionary = texts.get(key_or_text.substr(1), {})
+	var ln = entry.get("line", null)
+	if ln is Dictionary and String(ln.get("speaker", "")) != "" and String(ln.get("text", "")) != "":
+		return ln
+	return {}
+
+
 func text_is_draft(key_or_text: String) -> bool:
 	if not key_or_text.begins_with("@"):
 		return false

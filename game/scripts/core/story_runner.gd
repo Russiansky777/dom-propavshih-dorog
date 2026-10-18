@@ -111,8 +111,20 @@ func narrate(text: String, text_key: String = "") -> void:
 
 
 ## Narrates "@section.key" (resolved through StoryData.text, the key kept for the voice-over) or plain text.
+## A key whose entry carries `line` {speaker, text} is the words of a character next to Agata: it plays as
+## that character's line (name shown, their voice — line_id "<speaker>:<key>"), not as narration.
 func narrate_key(key_or_text: String) -> void:
-	narrate(StoryData.text(key_or_text), text_key_of(key_or_text))
+	_push(_text_beat(key_or_text))
+
+
+func _text_beat(key_or_text: String) -> Dictionary:
+	var ln := StoryData.text_line(key_or_text)
+	if not ln.is_empty():
+		var sp := String(ln["speaker"])
+		var key := text_key_of(key_or_text)
+		return {"type": "line", "line_id": "%s:%s" % [sp, key], "speaker": sp,
+			"speaker_name": StoryData.character_name(sp), "text": String(ln["text"]), "text_key": key}
+	return _narration_beat(StoryData.text(key_or_text), text_key_of(key_or_text))
 
 
 ## "@H1.stove.look" -> "H1.stove.look"; plain text (no "@") -> "".
@@ -219,8 +231,7 @@ func _complete_scene(scene_id: String) -> void:
 		GameState.set_goal(String(sc.get("goal", sc.get("result", ""))), scene_id)
 	var room_spec: Dictionary = StoryData.room(current_room_id()).get("scenes", {}).get(scene_id, {})
 	if room_spec.has("complete_text"):
-		var ck := String(room_spec["complete_text"])
-		_beats.push_front(_narration_beat(StoryData.text(ck), text_key_of(ck)))
+		_beats.push_front(_text_beat(String(room_spec["complete_text"])))
 	if active_scene == scene_id:
 		active_scene = ""
 	scene_completed.emit(scene_id)
@@ -457,8 +468,7 @@ func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary) -> void:
 	if chosen.has("sets"):
 		GameState.set_flag(String(chosen["sets"]), true)
 	if chosen.has("text"):
-		var tk := String(chosen["text"])
-		_beats.push_front(_narration_beat(StoryData.text(tk), text_key_of(tk)))
+		_beats.push_front(_text_beat(String(chosen["text"])))
 
 
 func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:

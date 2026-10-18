@@ -183,14 +183,25 @@ def narration_lines() -> dict[str, dict]:
             k = str(k)
             if not narration_key_ok(k, cfg):
                 continue
+            ln_spec = v.get("line") if isinstance(v.get("line"), dict) else None
             e = {"kind": "narration", "key": k, "scene": "", "index": 0, "speaker": speaker,
-                 "text": str(v.get("text", "")), "source": f.stem, "used": k in refs, "assigned": k not in owner,
-                 "subdir": str(cfg.get("subdir", "narrator"))}
+                 "text": str(v.get("text", "")), "source": f.stem, "used": k in refs,
+                 "assigned": k not in owner and ln_spec is None, "subdir": str(cfg.get("subdir", "narrator"))}
             if v.get("tags"):
                 e["tags"] = [str(t) for t in v["tags"]]
             if v.get("voice_text"):
                 e["voice_text"] = str(v["voice_text"])
             out[k] = e
+            if ln_spec is not None and ln_spec.get("speaker") and ln_spec.get("text"):
+                # Реплика персонажа рядом с Агатой (поле line): его голос, настройки его реплик, текст прямой речи.
+                sp = str(ln_spec["speaker"])
+                ce = {"kind": "narration", "key": k, "scene": "", "index": 0, "speaker": sp, "text": str(ln_spec["text"]),
+                      "source": f.stem, "used": e["used"], "assigned": True, "as_line": True,
+                      "subdir": str((cfg.get("character_lines") or {}).get("subdir", "character_lines"))}
+                if ln_spec.get("tags"):
+                    ce["tags"] = [str(t) for t in ln_spec["tags"]]
+                out[f"{sp}:{k}"] = ce
+                continue
             if k in owner:
                 sp = owner[k]
                 bs = by_sp[sp]
@@ -681,6 +692,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                  else {"scene": ln["scene"], "index": ln["index"]})
         if ln.get("profile"):
             where["profile"] = ln["profile"]
+        if ln.get("as_line"):
+            where["as_line"] = True
         entry = {**where, "speaker": ln["speaker"], "text": ln["text"], "text_sha1": sha,
                  "voice_id": spec["voice_id"], "voice_name": spec["voice_name"], "model_id": spec["model_id"],
                  "voice_settings": spec["voice_settings"], "file": file_rel(ln, lid, "ogg"),

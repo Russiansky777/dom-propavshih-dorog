@@ -122,12 +122,22 @@ def narration_lines(cfg: dict, texts: dict | None = None) -> dict[str, dict]:
     for k, (src, v) in (texts if texts is not None else all_texts()).items():
         if not narration_key_ok(k, cfg):
             continue
+        ln_spec = v.get("line") if isinstance(v.get("line"), dict) else None
         e = {"kind": "narration", "key": k, "scene": "", "speaker": str(cfg.get("speaker", "narrator")),
-             "text": str(v.get("text", "")), "source": src, "assigned": k not in owner, "subdir": str(cfg.get("subdir", "narrator"))}
+             "text": str(v.get("text", "")), "source": src, "assigned": k not in owner and ln_spec is None,
+             "subdir": str(cfg.get("subdir", "narrator"))}
         for f in ("tags", "voice_text"):
             if f in v:
                 e[f] = v[f]
         out[k] = e
+        if ln_spec is not None and ln_spec.get("speaker") and ln_spec.get("text"):
+            sp = str(ln_spec["speaker"])
+            ce = {"kind": "narration", "key": k, "scene": "", "speaker": sp, "text": str(ln_spec["text"]), "source": src,
+                  "assigned": True, "as_line": True, "subdir": str((cfg.get("character_lines") or {}).get("subdir", "character_lines"))}
+            if "tags" in ln_spec:
+                ce["tags"] = ln_spec["tags"]
+            out[f"{sp}:{k}"] = ce
+            continue
         if k in owner:
             sp = owner[k]
             pe = {"kind": "narration", "key": k, "scene": "", "speaker": sp, "text": e["text"], "source": src,
@@ -148,6 +158,48 @@ def first_person_hits(text: str, fp: dict) -> list[str]:
     words = [w.lower() for w in re.findall(r"[\w-]+", bare)]
     vocab = {str(x).lower() for x in fp.get("pronouns", [])} | {str(x).lower() for x in fp.get("forms", [])}
     return [w for w in words if w in vocab]
+
+
+def character_names() -> dict[str, str]:
+    """Имя персонажа (characters.json name, именительный падеж) → id."""
+    return {str(c["name"]): str(c["id"]) for c in load(STORY / "characters.json")["characters"] if c.get("name")}
+
+
+def speech_hits(key: str, text: str, cs: dict, names: dict[str, str]) -> list[str]:
+    """Признаки слов персонажа: ключ повторного разговора (talk_fields) или цитата «…» с атрибуцией —
+    глагол речи рядом с именем персонажа, или «Имя …: «…»». Надписи («Почта», тётины заметки) не речь."""
+    hits = []
+    if key.split(".")[-1] in [str(x) for x in cs.get("talk_fields", [])]:
+        hits.append(f"ключ повторного разговора .{key.split('.')[-1]}")
+    if not re.search(r"«|„", text):
+        return hits
+    words = {w.lower() for w in re.findall(r"[\w-]+", text)}
+    who = [n for n in names if re.search(rf"(?<![\w-]){re.escape(n)}(?![\w-])", text)]
+    verbs = [str(v) for v in cs.get("verbs", []) if str(v).lower() in words]
+    if who and verbs:
+        hits.append(f"цитата с атрибуцией ({', '.join(who)} — {', '.join(verbs)})")
+    for n in names:
+        if re.search(rf"(?<![\w-]){re.escape(n)}(?![\w-])[^.«»]*:\s*[«„]", text):
+            hits.append(f"«{n} …: «…»»")
+    return hits
+
+
+def check_character_speech(lines: dict, cfg: dict, names: dict[str, str] | None = None) -> list[str]:
+    """Решение Директора 18.10, 01:52: слова персонажа рядом с Агатой говорит он сам, не закадровый голос."""
+    cs = cfg.get("character_speech") or {}
+    if not cs.get("verbs"):
+        return ["voice.json narration.character_speech.verbs: нет списка — проверка слов персонажей не работает"]
+    names = names if names is not None else character_names()
+    narrator = str(cfg.get("speaker", "narrator"))
+    errors = []
+    for lid, ln in sorted(lines.items()):
+        if ln.get("kind") != "narration" or ln.get("speaker") != narrator or not ln.get("assigned", True):
+            continue
+        hits = speech_hits(str(ln.get("key", lid)), str(ln["text"]), cs, names)
+        if hits:
+            errors.append(f"{lid}: закадровому голосу назначены слова персонажа ({'; '.join(hits)}) — поле line "
+                          f"{{speaker, text}} у записи текста (реплика персонажа его голосом): «{ln['text']}»")
+    return errors
 
 
 def check_first_person(lines: dict, cfg: dict) -> list[str]:
@@ -266,6 +318,22 @@ def check_narration_cfg(voice_cfg: dict | None, texts: dict) -> list[str]:
                 errors.append(f"voice.json narration.by_speaker.{sp}.hold: {k} не в keys")
         if sp == narrator:
             errors.append("voice.json narration.by_speaker: закадровый голос не назначается сам себе")
+    csub = str((cfg.get("character_lines") or {}).get("subdir", ""))
+    if not csub or "/" in csub or csub in {str(cfg.get("subdir", ""))} | {str(v.get("subdir", "")) for v in by_speaker(cfg).values()}:
+        errors.append(f"voice.json narration.character_lines.subdir «{csub}»: своя папка, одно имя")
+    for k, (_src, v) in texts.items():
+        if "line" not in v:
+            continue
+        ls = v["line"]
+        if not isinstance(ls, dict) or not ls.get("speaker") or not str(ls.get("text", "")).strip():
+            errors.append(f"{k}: line — {{speaker, text}} с непустым текстом")
+            continue
+        if str(ls["speaker"]) not in chars or str(ls["speaker"]) == narrator:
+            errors.append(f"{k}: line.speaker {ls['speaker']} — не персонаж characters.json")
+        if k in seen:
+            errors.append(f"{k}: и реплика персонажа (line), и мысль {seen[k]} (by_speaker) — что-то одно")
+        if not narration_key_ok(k, cfg):
+            errors.append(f"{k}: line у ключа, который не озвучивается (подпись/интерфейс)")
     for must in ("ui",):
         if must not in cfg.get("skip_sections", []):
             errors.append(f"voice.json narration.skip_sections: нет «{must}» — служебный интерфейс озвучивался бы")
@@ -401,7 +469,14 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 want_sp = sp_id if rest else narrator
                 want_key = rest if rest else lid
                 bsc = by_speaker(ncfg)
-                want_sub = str(bsc.get(want_sp, {}).get("subdir", want_sp)) if rest else str(ncfg.get("subdir", "narrator"))
+                if not rest:
+                    want_sub = str(ncfg.get("subdir", "narrator"))
+                elif own is not None and own.get("subdir"):
+                    want_sub = str(own["subdir"])
+                elif want_sp in bsc:
+                    want_sub = str(bsc[want_sp].get("subdir", want_sp))
+                else:
+                    want_sub = str((ncfg.get("character_lines") or {}).get("subdir", "character_lines"))
                 if key != want_key:
                     errors.append(f"{tag}: key {key} ≠ id записи")
                 if str(e.get("speaker", "")) != want_sp:
@@ -485,7 +560,7 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
     return errors, warns
 
 
-SELFTEST_CASES = 17
+SELFTEST_CASES = 21
 
 
 def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
@@ -600,6 +675,19 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
         fp_lines[nkey]["text"] = "«Я ещё вернусь сюда», — говорит Тамара."
         if [x for x in check_first_person(fp_lines, ncfg) if x.startswith(nkey)]:
             missed.append("цитата героя в кавычках принята за первое лицо")
+        # слова персонажа у закадрового голоса — ошибка (цитата с атрибуцией; «Имя: «…»»); надпись в кавычках — нет
+        if not [x for x in check_character_speech(fp_lines, ncfg) if x.startswith(nkey)]:
+            missed.append("цитата с атрибуцией у закадрового голоса")
+        fp_lines[nkey]["text"] = "Тихон оглядывает полку: «Годится»."
+        if not [x for x in check_character_speech(fp_lines, ncfg) if x.startswith(nkey)]:
+            missed.append("«Имя …: «…»» у закадрового голоса")
+        fp_lines[nkey]["text"] = "«Почта». На старой доске не раз подновляли буквы."
+        if [x for x in check_character_speech(fp_lines, ncfg) if x.startswith(nkey)]:
+            missed.append("надпись в кавычках принята за слова персонажа")
+        talk = copy.deepcopy(lines)
+        talk["Z9.npc.after"] = dict(lines[nkey], key="Z9.npc.after", text="Она кивает и молчит.")
+        if not [x for x in check_character_speech(talk, ncfg) if x.startswith("Z9.npc.after")]:
+            missed.append("ключ повторного разговора у закадрового голоса")
     # контроль: неиспорченная запись ошибок не даёт (иначе самопроверка ловила бы что угодно)
     m = copy.deepcopy(base)
     m["lines"][first] = dict(good)
@@ -626,6 +714,7 @@ def main() -> int:
                           narr_texts=narr_texts)
     errors += check_narration_cfg(voice_cfg, texts)
     errors += check_first_person(lines, narration_cfg(voice_cfg))
+    errors += check_character_speech(lines, narration_cfg(voice_cfg))
     for t in sorted(narr_texts):
         if t not in {src for src, _ in texts.values()}:
             errors.append(f"запрос озвучки: narration.texts — нет data/story/text/{t}.json")
