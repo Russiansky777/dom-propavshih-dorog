@@ -24,9 +24,9 @@
     }
   ],
   "exits": [
-    {"to": "Z2", "label": "@Z3.exit_Z2.label", "rect": [380, 560, 320, 90], "stand": [560, 660], "spawn": "from_Z3", "draw": false},
-    {"to": "R1", "label": "@Z3.exit_R1.label", "rect": [900, 1000, 500, 80], "stand": [1100, 1030], "spawn": "from_Z3", "draw": false},
-    {"to": "M1", "label": "@Z3.exit_M1.label", "rect": [600, 960, 220, 120], "stand": [720, 1030], "spawn": "from_Z3", "closed_text": "@Z3.exit_M1.closed", "draw": false}
+    {"to": "Z2", "label": "@Z3.exit_Z2.label", "cue": "up", "rect": [380, 560, 320, 90], "stand": [560, 660], "spawn": "from_Z3", "draw": false},
+    {"to": "R1", "label": "@Z3.exit_R1.label", "cue": "down", "rect": [900, 1000, 500, 80], "stand": [1100, 1030], "spawn": "from_Z3", "draw": false},
+    {"to": "M1", "label": "@Z3.exit_M1.label", "cue": "down", "rect": [600, 960, 220, 120], "stand": [720, 1030], "spawn": "from_Z3", "closed_text": "@Z3.exit_M1.closed", "draw": false}
   ],
   "scenes": {},
   "flags": {}

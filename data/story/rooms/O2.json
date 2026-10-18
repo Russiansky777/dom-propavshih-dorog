@@ -107,6 +107,7 @@
     {
       "to": "O1",
       "label": "@O2.exit_O1.label",
+      "cue": "door",
       "spawn": "from_O2",
       "draw": false,
       "rect": [430, 230, 220, 350],
@@ -115,6 +116,7 @@
     {
       "to": "O4",
       "label": "@O2.exit_O4.label",
+      "cue": "door",
       "spawn": "from_O2",
       "closed_text": "@O2.exit_O4.loop",
       "on_closed": {

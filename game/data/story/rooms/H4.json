@@ -24,7 +24,7 @@
     }
   ],
   "exits": [
-    {"to": "H1", "label": "@H4.exit_H1.label", "rect": [500, 1000, 400, 80], "stand": [700, 1030], "spawn": "from_H4", "draw": false}
+    {"to": "H1", "label": "@H4.exit_H1.label", "cue": "down", "rect": [500, 1000, 400, 80], "stand": [700, 1030], "spawn": "from_H4", "draw": false}
   ],
   "scenes": {
     "V02": {"trigger": "enter", "complete_text": "@H4.v02.done"}

@@ -57,8 +57,8 @@
     }
   ],
   "exits": [
-    {"to": "H3", "label": "@O1.exit_H3.label", "rect": [380, 90, 130, 610], "stand": [490, 745], "spawn": "from_O1", "closed_text": "@O1.exit_H3.closed", "draw": false},
-    {"to": "O2", "label": "@O1.exit_O2.label", "rect": [1790, 90, 130, 610], "stand": [1790, 740], "spawn": "from_O1", "draw": false}
+    {"to": "H3", "label": "@O1.exit_H3.label", "cue": "door", "rect": [380, 90, 130, 610], "stand": [490, 745], "spawn": "from_O1", "closed_text": "@O1.exit_H3.closed", "draw": false},
+    {"to": "O2", "label": "@O1.exit_O2.label", "cue": "door", "rect": [1790, 90, 130, 610], "stand": [1790, 740], "spawn": "from_O1", "draw": false}
   ],
   "scenes": {
     "M06": {"complete_when": [{"any_n": 2, "flags": ["o1_seen_sack", "o1_seen_notebooks", "o1_seen_board_task"]}]},

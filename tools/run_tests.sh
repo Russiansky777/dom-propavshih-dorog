@@ -50,5 +50,6 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_voice.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # голос: реплика с файлом звучит, клик обрывает, без файла — субтитры, громкость, Тихон с панорамой
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ui_bag.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # сумка: кармашки, иконки, наведение, выбор, «влёт», листание
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ui_map.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # план Заречья: наезд, «Вы здесь», посещённые, журнал
+"$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_exit_cues.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # подсказки выходов: метки у края кадра, курсор выхода, Пробел — все хотспоты
 echo "[tests] overall exit code: $code"
 exit "$code"

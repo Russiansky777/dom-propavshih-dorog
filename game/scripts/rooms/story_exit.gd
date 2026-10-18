@@ -9,6 +9,11 @@ var requires_flags: Array = []
 var fill: Polygon2D = null
 var caption: Label = null
 var base_color: Color = Color(1, 1, 1, 0.25)
+## How the player sees this exit (ExitCue.classify): "door" — drawn in the art, no mark; else the
+## direction of its mark (left/right/down/up). `cue` is the mark node (null for a door).
+var cue_dir: String = "door"
+var cue_source: String = ""
+var cue: ExitCue = null
 
 
 func setup(p_room_id: String, p_data: Dictionary, p_requires: Array) -> void:
@@ -94,6 +99,17 @@ func refresh() -> void:
 		var m := Color(1, 1, 1, 1.0 if is_open() else 0.6)
 		if caption.modulate != m:
 			caption.modulate = m
+
+
+## Pointer on / off this exit (GameUi hover): its mark brightens.
+func set_hot(on: bool) -> void:
+	if cue != null and is_instance_valid(cue):
+		cue.hot = on
+
+
+## Exit cursor kind: the mark's direction, or "door" for an exit drawn in the art.
+func cursor_kind() -> String:
+	return cue_dir
 
 
 func trigger() -> void:

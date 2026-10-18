@@ -40,7 +40,7 @@
     }
   ],
   "exits": [
-    {"to": "H1", "label": "@H2.exit_H1.label", "rect": [60, 90, 180, 650], "stand": [260, 820], "spawn": "from_H2", "draw": false}
+    {"to": "H1", "label": "@H2.exit_H1.label", "cue": "door", "rect": [60, 90, 180, 650], "stand": [260, 820], "spawn": "from_H2", "draw": false}
   ],
   "scenes": {
     "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges"]}]}

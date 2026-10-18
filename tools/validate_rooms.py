@@ -26,6 +26,14 @@
      height_refs комнаты рост Агаты agata_ref.figure_px × scale(y) отличается от
      agata_ref.height_m × px / m не больше чем на agata_ref.tolerance; scale(y) — прямая глубины
      (Room.depth_scale без зажима: ориентиры у стены стоят дальше кромки пола). Таблица — без --quiet.
+  9. подсказки выходов (Директор 18.10: «проход в галерею не интуитивен, что нужно нажать вниз»):
+     у каждого выхода есть либо метка-шеврон (cue: left/right/down/up или вывод из side / края кадра),
+     либо пометка «нарисован в арте» (cue: door). Направление метки у прямоугольника, касающегося края
+     кадра, совпадает с этим краем; метка лежит внутри прямоугольника выхода (клик по ней — выход),
+     не заходит под верхнюю панель и не сливается с соседней меткой. Выход без cue, выведенный как
+     дверь по умолчанию (прямоугольник внутри кадра), — предупреждение «пометьте cue явно».
+     Те же правила — ExitCue.classify (game/scripts/rooms/exit_cue.gd), проверка узлов —
+     game/tests/test_exit_cues.gd.
 
 Код 0 — ошибок нет. Запуск: python3 tools/validate_rooms.py [--quiet]
 """
@@ -210,6 +218,65 @@ def exit_geometry(room: dict, ex: dict):
         s = sides["bottom"]
         return [x - s["half_w"], s["top"], 2 * s["half_w"], s["h"]], [x, s["stand_y"]]
     return None, None
+
+
+CUE_KINDS = ("door", "left", "right", "down", "up")
+CUE_EDGE_TOL = 8.0          # ExitCue.EDGE_TOL
+CUE_EDGE_INSET = 44.0       # ExitCue.EDGE_INSET
+CUE_SIDE_MARGIN = 96.0      # ExitCue.SIDE_MARGIN
+CUE_TOP_SAFE = 150.0        # ExitCue.TOP_SAFE
+CUE_BOTTOM_SAFE = 1010.0    # ExitCue.BOTTOM_SAFE
+CUE_HALF_ALONG = 36.0       # полуразмер метки вдоль направления (два шеврона, тень, наклон в подсветке)
+CUE_HALF_ACROSS = 44.0      # поперёк направления (ширина шеврона ×1,18 в подсветке, тень)
+TOP_BAR = 80.0              # GameUi.TOP_H
+
+
+def cue_edges(rect) -> list[str]:
+    x, y, w, h = rect
+    out = []
+    if x <= CUE_EDGE_TOL:
+        out.append("left")
+    if x + w >= 1920 - CUE_EDGE_TOL:
+        out.append("right")
+    if y + h >= 1080 - CUE_EDGE_TOL:
+        out.append("down")
+    return out
+
+
+def exit_cue(ex: dict, rect):
+    """Повторяет ExitCue.classify: (dir, at, source, edges)."""
+    edges_ = cue_edges(rect)
+    cue = ex.get("cue")
+    if cue:
+        d, src = cue, "cue"
+    else:
+        d = {"left": "left", "right": "right", "bottom": "down", "back": "door"}.get(ex.get("side", ""), "")
+        src = "side" if d else ""
+        if not d:
+            if edges_:
+                src = "edge"
+                if len(edges_) == 1:
+                    d = edges_[0]
+                elif "down" in edges_:
+                    side_edge = "left" if "left" in edges_ else "right"
+                    d = side_edge if rect[3] >= rect[2] else "down"
+                else:
+                    d = edges_[0]
+            else:
+                d, src = "door", "default"
+    cx, cy = rect[0] + rect[2] / 2, rect[1] + rect[3] / 2
+    if "cue_at" in ex:
+        at = (float(ex["cue_at"][0]), float(ex["cue_at"][1]))
+    elif d in edges_:
+        if d == "down":
+            at = (min(max(cx, CUE_SIDE_MARGIN), 1920 - CUE_SIDE_MARGIN), 1080 - CUE_EDGE_INSET)
+        elif d == "left":
+            at = (CUE_EDGE_INSET, min(max(cy, CUE_TOP_SAFE), CUE_BOTTOM_SAFE))
+        else:
+            at = (1920 - CUE_EDGE_INSET, min(max(cy, CUE_TOP_SAFE), CUE_BOTTOM_SAFE))
+    else:
+        at = (cx, cy)
+    return d, at, src, edges_
 
 
 def walkable_of(room: dict):
@@ -469,6 +536,39 @@ for rid, room in rooms.items():
     for to in edges[rid]:
         if to not in seen_targets:
             err(f"{ctx}: переход {rid}–{to} из locations.json не имеет выхода в комнате")
+
+    # 9. подсказки выходов: метка или «нарисован в арте»; направление = край; метка кликабельна
+    marks = []
+    for ex in exits:
+        to = ex.get("to")
+        rect, _stand = exit_geometry(room, ex)
+        if rect is None:
+            continue
+        cue = ex.get("cue")
+        if cue is not None and cue not in CUE_KINDS:
+            err(f"{ctx}: выход в {to}: cue '{cue}' — допустимо {', '.join(CUE_KINDS)}")
+            continue
+        d, at, src, edg = exit_cue(ex, rect)
+        if src == "default":
+            warn(f"{ctx}: выход в {to} внутри кадра без cue — считается нарисованной дверью; пометьте \"cue\": \"door\" (или направление, если это дорожка вглубь)")
+        if d == "door":
+            continue
+        if edg and d not in edg and d != "up":
+            err(f"{ctx}: выход в {to}: метка «{d}», а прямоугольник {rect} касается края {'/'.join(edg)} — направление метки должно совпадать с краем")
+        if edg and d == "up":
+            err(f"{ctx}: выход в {to}: метка «up» (вглубь) у прямоугольника на краю кадра {'/'.join(edg)}")
+        x, y, w, h = rect
+        hx, hy = (CUE_HALF_ACROSS, CUE_HALF_ALONG) if d in ("down", "up") else (CUE_HALF_ALONG, CUE_HALF_ACROSS)
+        box = (at[0] - hx, at[1] - hy, at[0] + hx, at[1] + hy)
+        if not (x <= at[0] <= x + w and y <= at[1] <= y + h):
+            err(f"{ctx}: выход в {to}: метка {at} вне прямоугольника выхода {rect} — клик по метке не попадёт в выход")
+        if box[1] < TOP_BAR + 6 or box[0] < 0 or box[2] > 1920 or box[3] > 1080:
+            err(f"{ctx}: выход в {to}: метка {at} заходит под верхнюю панель или за кадр")
+        for (oto, obox) in marks:
+            if box[0] < obox[2] and obox[0] < box[2] and box[1] < obox[3] and obox[1] < box[3]:
+                err(f"{ctx}: метки выходов в {oto} и {to} налезают друг на друга")
+        marks.append((to, box))
+        notes.append(f"{rid}→{to}: метка {d} ({src}) в ({at[0]:.0f}, {at[1]:.0f})")
 
     # хотспот под выходом недостижим кликом, если его pick_priority не выше приоритета выхода (1)
     def _overlap(a, b) -> bool:

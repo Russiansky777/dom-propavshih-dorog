@@ -35,7 +35,7 @@
     }
   ],
   "exits": [
-    {"to": "Z4", "label": "@Z1.exit_Z4.label", "rect": [1580, 150, 240, 560], "stand": [1700, 760], "spawn": "from_Z1", "closed_text": "@Z1.exit_Z4.closed", "draw": false, "_note": "дверь почты выходит в переулок Z4 (не прямо на улицу Z2)"}
+    {"to": "Z4", "label": "@Z1.exit_Z4.label", "cue": "door", "rect": [1580, 150, 240, 560], "stand": [1700, 760], "spawn": "from_Z1", "closed_text": "@Z1.exit_Z4.closed", "draw": false, "_note": "дверь почты выходит в переулок Z4 (не прямо на улицу Z2)"}
   ],
   "scenes": {
     "M01": {"trigger": "talk:tamara"}

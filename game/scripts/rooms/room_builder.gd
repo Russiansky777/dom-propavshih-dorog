@@ -350,6 +350,8 @@ static func exit_geometry(spec: Dictionary, ex: Dictionary, idx: Dictionary, hor
 	return {"rect": Rect2(1790, 560, 130, 520), "stand": Vector2(1810, 900)}
 
 
+## Exits: an Area2D per `exits[]` entry (requires from locations.json edges), its StandPoint, a
+## placeholder Visual (draw:true rooms only) and — unless it is drawn in the art — an ExitCue mark.
 static func _build_exits(room: Room, room_id: String, spec: Dictionary, idx: Dictionary, horizon: float) -> void:
 	var container := Node2D.new()
 	container.name = "Exits"
@@ -412,5 +414,19 @@ static func _build_exits(room: Room, room_id: String, spec: Dictionary, idx: Dic
 		node.add_child(stand)
 		node.fill = fill
 		node.caption = caption
+		# How the player finds it (Director 18.10): an exit drawn in the art (door, opening, gate) needs
+		# only its caption and the exit cursor; an exit off the frame edge or along a path into the
+		# depth gets a visible mark (ExitCue) — direction from `cue`, `side` or the edge the rect touches.
+		var cue_info := ExitCue.classify(ex, rect)
+		node.cue_dir = String(cue_info["dir"])
+		node.cue_source = String(cue_info["source"])
+		if node.cue_dir != "door":
+			var cue := ExitCue.new()
+			cue.name = "Cue"
+			cue.direction = node.cue_dir
+			cue.exit_node = node
+			cue.position = Vector2(cue_info["at"]) - node.position
+			node.add_child(cue)
+			node.cue = cue
 		container.add_child(node)
 		node.setup(room_id, ex, requires)

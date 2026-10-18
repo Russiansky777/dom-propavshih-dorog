@@ -266,6 +266,7 @@
     {
       "to": "Z1",
       "label": "@Z4.exit_Z1.label",
+      "cue": "door",
       "rect": [
         250,
         310,
@@ -283,6 +284,7 @@
     {
       "to": "Z2",
       "label": "@Z4.exit_Z2.label",
+      "cue": "down",
       "rect": [
         420,
         995,
@@ -300,6 +302,7 @@
     {
       "to": "H3",
       "label": "@Z4.exit_H3.label",
+      "cue": "door",
       "rect": [
         1360,
         290,

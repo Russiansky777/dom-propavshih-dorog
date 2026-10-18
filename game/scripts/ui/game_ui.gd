@@ -59,6 +59,8 @@ var sfx_slider: HSlider                 # menu: sound effects volume 0–100 % (
 var sfx_value_label: Label
 var voice_slider: HSlider               # menu: voice volume 0–100 % (VoiceDirector, user://settings.cfg)
 var voice_value_label: Label
+var reveal: HotspotReveal               # Space: every hotspot and exit of the room for 1.5 s (exit_hints)
+var _exit_cursor: String = ""           # exit cursor kind on now ("" — the ordinary pointer)
 var _hover_node: Node = null
 
 var _hint_serial: int = 0
@@ -105,6 +107,12 @@ func _button(text: String, min_w: float = 0.0, variation: StringName = &"") -> B
 
 
 func _build() -> void:
+	# Reveal overlay (Space): first child — drawn under the bar, the dialogue and the panels.
+	reveal = HotspotReveal.new()
+	reveal.name = "Reveal"
+	add_child(reveal)
+	ExitCursors.install()
+
 	# Top bar
 	top_bar = PanelContainer.new()
 	top_bar.name = "TopBar"
@@ -378,6 +386,13 @@ func _build() -> void:
 	voice_value_label.theme_type_variation = &"SmallLabel"
 	voice_value_label.text = "%d %%" % int(voice_slider.value)
 	voice_row.add_child(voice_value_label)
+	# Controls line: the reveal key (exit_hints, Director 18.10).
+	var keys_l := Label.new()
+	keys_l.name = "KeysHint"
+	keys_l.text = StoryData.text("@ui.controls_reveal")
+	keys_l.theme_type_variation = &"MutedLabel"
+	keys_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	mv.add_child(keys_l)
 	var bottom := HBoxContainer.new()
 	bottom.add_theme_constant_override("separation", 12)
 	mv.add_child(bottom)
@@ -435,6 +450,7 @@ func _build() -> void:
 # --- Rendering -------------------------------------------------------------------
 
 func _on_room_changed(room_id: String) -> void:
+	reveal.cancel()
 	var name := StoryData.location_name(room_id)
 	room_label.text = name
 	# Служебный код комнаты игроку не показываем (решение 17.10: в тексте для игрока нет кодов);
@@ -690,6 +706,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		bag.put_back()
 		get_viewport().set_input_as_handled()
 		return
+	if event.is_action_pressed("reveal_hotspots", false):
+		reveal_hotspots()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("quick_save"):
 		if not StoryRunner.is_busy():
 			_on_save_slot(QUICK_SLOT)
@@ -711,7 +731,11 @@ func _process(_delta: float) -> void:
 	elif cursor_item.visible:
 		cursor_item.visible = false
 	var room := RoomManager.current_room
-	if room == null or not is_instance_valid(room) or StoryRunner.is_busy() or modal.visible or map_view.visible:
+	var blocked := StoryRunner.is_busy() or modal.visible or map_view.visible
+	ExitCue.suppressed = blocked   # exit marks fade out under a dialogue / panel / the plan
+	if blocked and reveal.active():
+		reveal.cancel()
+	if room == null or not is_instance_valid(room) or blocked:
 		_set_hover(null)
 		return
 	var mouse := room.get_global_mouse_position()
@@ -726,6 +750,7 @@ func _process(_delta: float) -> void:
 
 
 func _set_hover(node: Node) -> void:
+	_set_exit_hover(node)
 	# A hotspot from the previous room is freed on room change; a freed instance compares equal
 	# to null, so without this reset the old label would stay on screen.
 	if not is_instance_valid(_hover_node):
@@ -741,6 +766,88 @@ func _set_hover(node: Node) -> void:
 		return
 	hover_label.text = node.call("label_text")
 	hover_label.visible = true
+
+
+# --- Exit hints: marks, exit cursor, reveal key (Director 18.10) ------------------------
+
+var _hot_exit: Node = null
+
+
+## The pointer on an exit: its mark (ExitCue) brightens and the cursor becomes the exit arrow (or the
+## doorway for an exit drawn in the art); anywhere else — the ordinary pointer.
+func _set_exit_hover(node: Node) -> void:
+	var ex: Node = node if node != null and is_instance_valid(node) and node.has_method("cursor_kind") else null
+	if ex != _hot_exit:
+		if _hot_exit != null and is_instance_valid(_hot_exit):
+			_hot_exit.call("set_hot", false)
+		_hot_exit = ex
+		if ex != null:
+			ex.call("set_hot", true)
+	_set_exit_cursor(String(ex.call("cursor_kind")) if ex != null else "")
+
+
+func _set_exit_cursor(kind: String) -> void:
+	if kind == _exit_cursor:
+		return
+	_exit_cursor = kind
+	Input.set_default_cursor_shape(ExitCursors.shape(kind))
+
+
+## Space: every active hotspot and every exit of the room for HotspotReveal.DURATION seconds.
+## Returns false when nothing can be shown (dialogue, panel, plan, no room).
+func reveal_hotspots() -> bool:
+	var room := RoomManager.current_room
+	if room == null or not is_instance_valid(room) or StoryRunner.is_busy() or modal.visible or map_view.visible:
+		return false
+	var cues: Array = []
+	for e in room.get_exits():
+		if e is StoryExit and (e as StoryExit).cue != null:
+			cues.append((e as StoryExit).cue)
+	reveal.show_targets(reveal_targets(), cues)
+	return true
+
+
+## What the reveal shows: [{kind: "hotspot"|"exit", id, label, at: Vector2, dir}] — active hotspots at
+## the centre of their (current) rect, exits at their mark (or the centre of the drawn door).
+func reveal_targets() -> Array:
+	var out: Array = []
+	var room := RoomManager.current_room
+	if room == null or not is_instance_valid(room):
+		return out
+	for h in room.get_hotspots():
+		if h is StoryHotspot and (h as StoryHotspot).is_active():
+			# The node sits at the centre of its rect (a state may move it — StoryHotspot._apply_geometry).
+			out.append({"kind": "hotspot", "id": (h as StoryHotspot).hotspot_id, "label": (h as StoryHotspot).label_text(), "at": h.global_position, "dir": ""})
+	for e in room.get_exits():
+		if e is StoryExit:
+			var se := e as StoryExit
+			var at: Vector2 = se.cue.global_position if se.cue != null else se.global_position
+			out.append({"kind": "exit", "id": se.target_room, "label": se.label_text(), "at": at, "dir": se.cue_dir})
+	return out
+
+
+## Probe: exit marks of the current room (target → {dir, x, y, alpha, hot, source}), the cursor kind,
+## the reveal state.
+func exit_hints_probe() -> Dictionary:
+	var cues := {}
+	var room := RoomManager.current_room
+	if room != null and is_instance_valid(room):
+		for e in room.get_exits():
+			if e is StoryExit:
+				var se := e as StoryExit
+				var d := {"dir": se.cue_dir, "source": se.cue_source}
+				if se.cue != null:
+					d["x"] = se.cue.global_position.x
+					d["y"] = se.cue.global_position.y
+					d["alpha"] = se.cue.current_alpha()
+					d["hot"] = se.cue.is_hot()
+				cues[se.target_room] = d
+	var shown: Array = []
+	if reveal.active():
+		for t in reveal.targets:
+			shown.append("%s:%s" % [t["kind"], t["id"]])
+	return {"cues": cues, "cursor": _exit_cursor, "cursor_shape": int(Input.get_current_cursor_shape()),
+		"hover": hover_label.text if hover_label.visible else "", "reveal": reveal.active(), "revealed": shown}
 
 
 # --- Fade (loop transition) -----------------------------------------------------
@@ -785,6 +892,7 @@ func probe_positions() -> Dictionary:
 		out["inventory"][item_id] = {"x": bp["items"][item_id]["x"], "y": bp["items"][item_id]["y"]}
 	out["bag"] = bp
 	out["cursor_item"] = cursor_item.item_id if cursor_item.visible else ""
+	out["exit_hints"] = exit_hints_probe()
 	if dialogue.visible:
 		out["dialogue_click"] = _center(dialogue)
 		for c in options_box.get_children():
