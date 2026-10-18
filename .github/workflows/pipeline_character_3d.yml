@@ -113,7 +113,10 @@ jobs:
           git config user.name "pipeline-bot"
           git config user.email "pipeline-bot@users.noreply.github.com"
           echo "run ${{ github.run_id }} · ${{ job.status }}" >> pipeline/3d/state/rt3d_last_run.log
-          git add -A assets/characters/${{ steps.req.outputs.name }}/rt3d pipeline/3d/state pipeline/3d/catalog Docs/evidence/M1/agata_v2 2>/dev/null || true
+          for p in assets/characters/${{ steps.req.outputs.name }}/rt3d pipeline/3d/state pipeline/3d/catalog Docs/evidence/M1/agata_v2; do
+            [ -e "$p" ] && git add -A "$p"
+          done
+          git status --short | head -40
           if git diff --cached --quiet; then echo "нечего коммитить"; exit 0; fi
           git commit -q -m "pipeline: Агата 3D — GLB, каталог, отчёт (run ${{ github.run_id }}) [skip ci]"
           for i in 1 2 3 4 5 6; do

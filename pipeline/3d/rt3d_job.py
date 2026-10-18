@@ -160,7 +160,11 @@ def main() -> int:
     for f in sorted((OUT / name).glob("*.glb")) if (OUT / name).exists() else []:
         log(f"  в артефакте: {f.name} {f.stat().st_size} байт")
     if req.get("previews"):
-        do_previews([int(x) for x in req["previews"]], ROOT / "Docs" / "evidence" / "M1" / "agata_v2" / "catalog", ROOT / "pipeline" / "3d" / "catalog" / "meshy_animations.json")
+        try:
+            do_previews([int(x) for x in req["previews"]], ROOT / "Docs" / "evidence" / "M1" / "agata_v2" / "catalog", ROOT / "pipeline" / "3d" / "catalog" / "meshy_animations.json")
+        except Exception:  # превью не должны ронять прогон: GLB и отчёт важнее
+            import traceback
+            log("превью не получены:\n" + traceback.format_exc())
     do_new_actions(name, req, out_dir)
     return 0
 
