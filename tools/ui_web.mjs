@@ -33,6 +33,7 @@ const ROOT = path.resolve(__dirname, "..");
 const WEB_DIR = process.env.UI_WEB_DIR ? path.resolve(ROOT, process.env.UI_WEB_DIR) : path.join(ROOT, "build", "web");
 const OUT_DIR = process.env.UI_WEB_OUT ? path.resolve(ROOT, process.env.UI_WEB_OUT) : path.join(ROOT, "build", "shots", "ui");
 const PORT = Number(process.env.UI_WEB_PORT || 8777);
+const ONLY = process.env.UI_WEB_ONLY || "";   // "space": stop after the reveal frame (quick re-shoot)
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript",
@@ -266,10 +267,15 @@ async function main() {
     await sleep(400);
     await page.keyboard.press("Space");
     await sleep(450);
+    // The reveal lasts 1.5 s of game time — freeze the tree for the frame (software GL frames are slow).
+    await page.evaluate(() => window.probePause && window.probePause(true));
+    await sleep(300);
     h = await hints();
     check(h.reveal, "Space: reveal on", JSON.stringify(h.revealed));
     await shot("ui_web_Z1_space");
+    await page.evaluate(() => window.probePause && window.probePause(false));
     await sleep(1600);
+    if (ONLY === "space") { await page.close(); throw new Error("__only_space__"); }
 
     // 5. The hint panel.
     s = await state();
@@ -348,8 +354,12 @@ async function main() {
     report.steps.hint_1280 = hp;
     await small.close();
   } catch (e) {
+    if (String(e && e.message) === "__only_space__") {
+      logLine("UI_WEB_ONLY=space: stopped after the reveal frame");
+    } else {
     failures.push(`exception: ${e && e.stack ? e.stack : e}`);
     logLine(`exception: ${e && e.stack ? e.stack : e}`);
+    }
   }
 
   check(errors.length === 0, "console: 0 errors / page errors", errors.slice(0, 5).join(" | "));

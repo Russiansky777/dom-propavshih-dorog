@@ -1,0 +1,148 @@
+{
+  "steps": {
+    "css_arrow": "url(\"blob:http://127.0.0.1:8777/4408904d-7641-41f9-8c7e-d4a151eb6100\") 2 2, defa",
+    "hint_1920": {
+      "rect": [
+        340,
+        96,
+        1240,
+        220
+      ],
+      "text": "У вещей здесь есть что рассказать. Осмотрите предметы, чьи названия появляются при наведении.",
+      "text_px": 38,
+      "tip": "Пробел — показать все места и действия",
+      "tip_px": 28,
+      "title": "Подсказка 1 из 3",
+      "visible": true
+    },
+    "hint_1280": {
+      "rect": [
+        340,
+        96,
+        1240,
+        220
+      ],
+      "text": "У вещей здесь есть что рассказать. Осмотрите предметы, чьи названия появляются при наведении.",
+      "text_px": 38,
+      "tip": "Пробел — показать все места и действия",
+      "tip_px": 28,
+      "title": "Подсказка 1 из 3",
+      "visible": true
+    }
+  },
+  "url": "http://127.0.0.1:8777/index.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "start in Z1, probe published",
+      "detail": "room Z1"
+    },
+    {
+      "ok": true,
+      "label": "pointer on an empty spot",
+      "detail": "{\"cursor\":\"arrow\",\"hover\":\"\"}"
+    },
+    {
+      "ok": true,
+      "label": "the ordinary pointer is the old-Russian arrow image (32×32, ink + cream)",
+      "detail": "{\"w\":32,\"h\":32,\"ink\":108,\"cream\":54,\"hx\":2,\"hy\":2,\"src\":\"blob:http://127.0.0.1:8777/4408904d-7641-41f9-8c7e-d4a151eb6100\"}"
+    },
+    {
+      "ok": true,
+      "label": "its hot spot is at the tip",
+      "detail": "2, 2"
+    },
+    {
+      "ok": true,
+      "label": "Tamara: arrow with a banderole (another image)",
+      "detail": "kind talk"
+    },
+    {
+      "ok": true,
+      "label": "letters: «перст» (another image)",
+      "detail": "kind look"
+    },
+    {
+      "ok": true,
+      "label": "exit: the ordinary arrow — no exit-arrow cursor",
+      "detail": "kind arrow, same css true"
+    },
+    {
+      "ok": true,
+      "label": "exit: caption «На улицу» with the icon «street»",
+      "detail": "На улицу / street"
+    },
+    {
+      "ok": true,
+      "label": "icon left of the caption, both in the frame",
+      "detail": "{\"icon\":[1718,401,28,28],\"caption\":[1752,396,123,37]}"
+    },
+    {
+      "ok": true,
+      "label": "Space: reveal on",
+      "detail": "[\"hotspot:tamara\",\"hotspot:drawings\",\"hotspot:letters\",\"hotspot:plan\",\"exit:Z4\"]"
+    },
+    {
+      "ok": true,
+      "label": "hint text large (≥ 36 px of the 1920 canvas)",
+      "detail": "38 px"
+    },
+    {
+      "ok": true,
+      "label": "the Space tip in the hint window",
+      "detail": "Пробел — показать все места и действия"
+    },
+    {
+      "ok": true,
+      "label": "hint panel in the frame under the bar",
+      "detail": "[340,96,1240,220]"
+    },
+    {
+      "ok": true,
+      "label": "a click puts the hint away",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "M01 with Tamara done",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "through the post-office door to the lane Z4",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "Z4 street mark: the ordinary arrow",
+      "detail": "kind arrow"
+    },
+    {
+      "ok": true,
+      "label": "Z4: mark lit, caption with its icon, in the frame",
+      "detail": "{\"icon\":[858,1007,28,28],\"caption\":[892,1002,123,37]}"
+    },
+    {
+      "ok": true,
+      "label": "Z4 side porch: icon «door», ordinary arrow",
+      "detail": "Боковое крыльцо / door"
+    },
+    {
+      "ok": true,
+      "label": "1280×720: hint text ≥ 24 screen px",
+      "detail": "25.3 px"
+    },
+    {
+      "ok": true,
+      "label": "1280×720: hint panel in the frame",
+      "detail": "[340,96,1240,220]"
+    },
+    {
+      "ok": true,
+      "label": "console: 0 errors / page errors",
+      "detail": ""
+    }
+  ],
+  "console_errors": [],
+  "failures": []
+}

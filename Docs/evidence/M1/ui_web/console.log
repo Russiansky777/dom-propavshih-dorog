@@ -1,0 +1,40 @@
+[2026-10-18T12:12:18.665Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-18T12:12:19.924Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-18T12:12:21.413Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-18T12:12:39.417Z] OK   start in Z1, probe published — room Z1
+[2026-10-18T12:12:39.418Z] hover Z1 empty spot at (960, 900)
+[2026-10-18T12:12:58.480Z] OK   pointer on an empty spot — {"cursor":"arrow","hover":""}
+[2026-10-18T12:13:08.347Z] OK   the ordinary pointer is the old-Russian arrow image (32×32, ink + cream) — {"w":32,"h":32,"ink":108,"cream":54,"hx":2,"hy":2,"src":"blob:http://127.0.0.1:8777/4408904d-7641-41f9-8c7e-d4a151eb6100"}
+[2026-10-18T12:13:08.347Z] OK   its hot spot is at the tip — 2, 2
+[2026-10-18T12:13:08.347Z] hover Tamara at (1070, 475)
+[2026-10-18T12:13:27.303Z] OK   Tamara: arrow with a banderole (another image) — kind talk
+[2026-10-18T12:13:47.261Z] hover letters at (740, 310)
+[2026-10-18T12:14:01.360Z] OK   letters: «перст» (another image) — kind look
+[2026-10-18T12:14:16.659Z] hover Z1 door → Z4 at (1700, 430)
+[2026-10-18T12:14:35.492Z] OK   exit: the ordinary arrow — no exit-arrow cursor — kind arrow, same css true
+[2026-10-18T12:14:35.492Z] OK   exit: caption «На улицу» with the icon «street» — На улицу / street
+[2026-10-18T12:14:35.492Z] OK   icon left of the caption, both in the frame — {"icon":[1718,401,28,28],"caption":[1752,396,123,37]}
+[2026-10-18T12:15:10.649Z] OK   Space: reveal on — ["hotspot:tamara","hotspot:drawings","hotspot:letters","hotspot:plan","exit:Z4"]
+[2026-10-18T12:15:51.031Z] click Подсказка at (1688, 40)
+[2026-10-18T12:16:03.981Z] OK   hint text large (≥ 36 px of the 1920 canvas) — 38 px
+[2026-10-18T12:16:03.981Z] OK   the Space tip in the hint window — Пробел — показать все места и действия
+[2026-10-18T12:16:03.981Z] OK   hint panel in the frame under the bar — [340,96,1240,220]
+[2026-10-18T12:17:03.263Z] OK   a click puts the hint away
+[2026-10-18T12:17:27.323Z] click hotspot tamara at (1070, 475)
+[2026-10-18T12:18:34.374Z] click M01: continue at (960, 1006)
+[2026-10-18T12:18:45.079Z] click M01: continue at (960, 982)
+[2026-10-18T12:18:56.050Z] click M01: continue at (960, 1006)
+[2026-10-18T12:19:18.557Z] OK   M01 with Tamara done
+[2026-10-18T12:19:22.113Z] click Z1 door → Z4 at (1700, 430)
+[2026-10-18T12:20:50.603Z] OK   through the post-office door to the lane Z4
+[2026-10-18T12:23:40.868Z] hover Z4 street mark at (840, 1036)
+[2026-10-18T12:24:35.169Z] OK   Z4 street mark: the ordinary arrow — kind arrow
+[2026-10-18T12:24:35.169Z] OK   Z4: mark lit, caption with its icon, in the frame — {"icon":[858,1007,28,28],"caption":[892,1002,123,37]}
+[2026-10-18T12:25:50.957Z] hover Z4 side porch → H3 at (1490, 495)
+[2026-10-18T12:26:11.434Z] OK   Z4 side porch: icon «door», ordinary arrow — Боковое крыльцо / door
+[2026-10-18T12:26:55.827Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-18T12:26:56.206Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-18T12:26:56.636Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-18T12:27:07.072Z] OK   1280×720: hint text ≥ 24 screen px — 25.3 px
+[2026-10-18T12:27:07.072Z] OK   1280×720: hint panel in the frame — [340,96,1240,220]
+[2026-10-18T12:27:16.071Z] OK   console: 0 errors / page errors
