@@ -447,6 +447,10 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 		sprite.position = Vector2.ZERO
 		sprite.scale = Vector2.ONE
 	global_position = pos
+	if view3d != null:
+		if view3d.follows_room():
+			view3d.set_elevation(rad_to_deg(asin(clampf(floor_foreshortening(), 0.1, 0.95))))
+		view3d.set_floor_k(floor_foreshortening())
 	walk_w = 0.0
 	_turn_step_w = 0.0
 	_rm_feet = []
@@ -705,6 +709,9 @@ func set_render_mode(mode: String) -> bool:
 				view3d.queue_free()
 				view3d = null
 				return false
+			if view3d.follows_room():
+				view3d.set_elevation(rad_to_deg(asin(clampf(floor_foreshortening(), 0.1, 0.95))))
+			view3d.set_floor_k(floor_foreshortening())
 			body3d = Sprite2D.new()
 			body3d.name = "Body3D"
 			body3d.centered = false

@@ -189,6 +189,8 @@ func _walk_and_measure(room: String, a: Vector2, b: Vector2) -> Dictionary:
 	var worst_lat := 0.0
 	var yaw_change := 0.0
 	var stance_yaw := 0.0
+	var stance_scr := Vector2.ZERO
+	var worst_scr := 0.0
 	var stances := 0
 	var t := 0.0
 	var speeds: Array = []
@@ -209,9 +211,12 @@ func _walk_and_measure(room: String, a: Vector2, b: Vector2) -> Dictionary:
 		var side := 0 if minf(f[0].y, f[1].y) <= minf(f[2].y, f[3].y) else 1
 		var foot: Vector3 = Basis(Vector3.UP, player.yaw3d) * f[side * 2]
 		var world := Vector3(floor_pos.x + foot.x, foot.y, floor_pos.y + foot.z)
+		# as drawn: the planted foot's screen position (player on screen + camera projection of the foot)
+		var scr: Vector2 = player.global_position + v.screen_of(Vector3(foot.x, 0.0, foot.z)) * s  # its floor contact point
 		if side != stance_side:
 			stance_side = side
 			stance_start = world
+			stance_scr = scr
 			stance_yaw = player.yaw3d
 			stances += 1
 		else:
@@ -221,8 +226,9 @@ func _walk_and_measure(room: String, a: Vector2, b: Vector2) -> Dictionary:
 			worst_fwd = maxf(worst_fwd, absf(dv.dot(fwd)))
 			worst_lat = maxf(worst_lat, absf(dv.cross(fwd)))
 			yaw_change = maxf(yaw_change, absf(angle_difference(stance_yaw, player.yaw3d)))
+			worst_scr = maxf(worst_scr, scr.distance_to(stance_scr) / maxf(s, 0.01))
 		speeds.append(d.length() / maxf(player.get_process_delta_time(), 0.0001) / ppm_s)
-	return {"worst_m": worst, "fwd_m": worst_fwd, "lat_m": worst_lat, "yaw_deg": rad_to_deg(yaw_change), "stances": stances, "arrived": player.global_position.distance_to(b) < 12.0, "frames": guard}
+	return {"worst_m": worst, "scr_px": worst_scr, "elev": v.elev_deg, "stretch": v.depth_stretch(), "k": k, "fwd_m": worst_fwd, "lat_m": worst_lat, "yaw_deg": rad_to_deg(yaw_change), "stances": stances, "arrived": player.global_position.distance_to(b) < 12.0, "frames": guard}
 
 
 func _test_feet_planted() -> void:
@@ -231,7 +237,10 @@ func _test_feet_planted() -> void:
 		["diagonal", "Z2", Vector2(600, 720), Vector2(1300, 1020)]]
 	for leg in legs:
 		var r: Dictionary = await _walk_and_measure(leg[1], leg[2], leg[3])
-		print("        feet %s: stance drift max %.1f mm (along %.1f, across %.1f; body turned up to %.1f° in a stance) over %d stances, %d frames" % [leg[0], r["worst_m"] * 1000.0, r["fwd_m"] * 1000.0, r["lat_m"] * 1000.0, r["yaw_deg"], r["stances"], r["frames"]])
+		print("        feet %s: stance drift max %.1f mm on the floor (along %.1f, across %.1f; body turned up to %.1f° in a stance), as drawn %.1f px (scale 1; camera %.1f°, depth ×%.2f, floor k %.2f) over %d stances, %d frames" % [leg[0], r["worst_m"] * 1000.0, r["fwd_m"] * 1000.0, r["lat_m"] * 1000.0, r["yaw_deg"], r["scr_px"], r["elev"], r["stretch"], r["k"], r["stances"], r["frames"]])
+		if absf(sin(deg_to_rad(float(r["elev"]))) * float(r["stretch"]) - float(r["k"])) < 0.02:
+			# camera at the room's own elevation: the drawn foot must stay put on screen too
+			_check(float(r["scr_px"]) <= 3.0, "%s: drawn planted foot moved %.1f px on screen (≤ 3 px at scale 1)" % [leg[0], r["scr_px"]])
 		_check(r["stances"] >= 2, "%s: only %d stances measured" % [leg[0], r["stances"]])
 		_check(r["worst_m"] <= 0.010, "%s: stance foot slid %.1f mm (≤ 10 mm)" % [leg[0], r["worst_m"] * 1000.0])
 		_check(r["arrived"], "%s: did not arrive" % leg[0])

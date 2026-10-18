@@ -25,6 +25,8 @@ var ok: bool = false
 var load_error: String = ""
 
 var turn: Node3D = null          # yaw pivot; feet at the origin
+var oblique: Node3D = null       # depth stretch of the floor (oblique projection), parent of `turn`
+var floor_k: float = 0.0         # room floor foreshortening used by the oblique stretch (0 = off)
 var model: Node3D = null
 var skeleton: Skeleton3D = null
 var anim: AnimationPlayer = null
@@ -73,15 +75,17 @@ func setup(actor_spec: Dictionary) -> bool:
 	own_world_3d = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	msaa_3d = [Viewport.MSAA_DISABLED, Viewport.MSAA_2X, Viewport.MSAA_4X, Viewport.MSAA_8X][clampi(int(log(maxf(float(spec.get("msaa", 4)), 1.0)) / log(2.0)), 0, 3)]
-	elev_deg = float(spec.get("camera_elev_deg", 14.0))
+	# a number, or "room": the room's floor foreshortening k = sin(elevation) (set_elevation per room) —
+	# then a step towards the viewer moves the drawn foot exactly as much as the floor under it
+	var ev = spec.get("camera_elev_deg", 14.0)
+	elev_deg = 14.0 if typeof(ev) == TYPE_STRING else float(ev)
 	var fr: Array = spec.get("frame_px", [320, 420])
 	frame_px = Vector2(float(fr[0]), float(fr[1]))
 	var pv: Array = spec.get("pivot", [0.5, 0.94])
 	pivot = Vector2(float(pv[0]), float(pv[1]))
 	# Same height on screen as the sprite figure: the sheets are a 14° ortho render at
 	# frame_h / (height × margin) px per metre; a standing figure projects to height × cos(elev).
-	var base_ppm := float(spec.get("sheet_ppm", 214.8))
-	ppm = base_ppm * cos(deg_to_rad(14.0)) / cos(deg_to_rad(elev_deg))
+	ppm = _ppm_for(elev_deg)
 	var path := String(spec.get("scene", ""))
 	if path == "" or not ResourceLoader.exists(path):
 		load_error = "no 3D model " + path
@@ -90,9 +94,15 @@ func setup(actor_spec: Dictionary) -> bool:
 	if not (packed is PackedScene):
 		load_error = "not a scene: " + path
 		return false
+	# Oblique floor (data `oblique_floor`): the world's depth axis is stretched by k / sin(elevation), so a
+	# step towards the viewer moves the drawn foot as much as the room's floor (k) while heights keep the
+	# 14° look (face, proportions). Applied above the yaw pivot: the figure turns inside it.
+	oblique = Node3D.new()
+	oblique.name = "Oblique"
+	add_child(oblique)
 	turn = Node3D.new()
 	turn.name = "Turn"
-	add_child(turn)
+	oblique.add_child(turn)
 	model = (packed as PackedScene).instantiate()
 	turn.add_child(model)
 	skeleton = _find(model, "Skeleton3D") as Skeleton3D
@@ -230,6 +240,28 @@ func _build_tree() -> void:
 	tree.active = true
 
 
+## Same height on screen as the sprite figure at any elevation: the sheets are a 14° ortho render at
+## frame_h / (height × margin) px per metre; a standing figure projects to height × cos(elevation).
+func _ppm_for(deg: float) -> float:
+	return float(spec.get("sheet_ppm", 214.8)) * cos(deg_to_rad(14.0)) / cos(deg_to_rad(deg))
+
+
+## True when the data asks for the room's own elevation (camera_elev_deg "room").
+func follows_room() -> bool:
+	return typeof(spec.get("camera_elev_deg", 14.0)) == TYPE_STRING
+
+
+## New camera elevation (degrees): scale and camera placement follow.
+func set_elevation(deg: float) -> void:
+	deg = clampf(deg, 5.0, 60.0)
+	if is_equal_approx(deg, elev_deg) and camera != null:
+		return
+	elev_deg = deg
+	ppm = _ppm_for(deg)
+	if camera != null:
+		_place_camera()
+
+
 ## Orthographic camera at the elevation, looking at the figure so that the feet (origin) land on the
 ## pivot pixel of the frame.
 func _build_camera() -> void:
@@ -237,18 +269,22 @@ func _build_camera() -> void:
 	camera.name = "Camera"
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.keep_aspect = Camera3D.KEEP_HEIGHT
-	camera.size = frame_px.y / ppm
 	camera.near = 0.05
 	camera.far = 50.0
+	add_child(camera)
+	camera.current = true
+	_place_camera()
+	set_render_scale(1.0)
+
+
+func _place_camera() -> void:
+	camera.size = frame_px.y / ppm
 	var e := deg_to_rad(elev_deg)
 	var up := Vector3(0, cos(e), -sin(e))
 	var back := Vector3(0, sin(e), cos(e))
 	var target := up * ((pivot.y - 0.5) * camera.size)
 	target.x = -(pivot.x - 0.5) * frame_px.x / ppm
 	camera.transform = Transform3D(Basis.looking_at(-back, up), target + back * 10.0)
-	add_child(camera)
-	camera.current = true
-	set_render_scale(1.0)
 
 
 ## Texture px per sheet px: the frame is rendered at about the size it takes on screen.
@@ -519,6 +555,27 @@ func bone_model(bone_name: String) -> Vector3:
 	if b < 0:
 		return Vector3.ZERO
 	return _skel_to_turn() * skeleton.get_bone_global_pose(b).origin
+
+
+## Screen offset (sheet px at node scale 1) of a point given in the floor frame (x right, y up, z towards
+## the viewer) as drawn by this camera.
+func screen_of(p_floor: Vector3) -> Vector2:
+	var e := deg_to_rad(elev_deg)
+	return Vector2(p_floor.x, -p_floor.y * cos(e) + p_floor.z * sin(e) * depth_stretch()) * ppm
+
+
+## World depth (z) stretch of the oblique floor: k / sin(elevation), 1 when off.
+func depth_stretch() -> float:
+	if floor_k <= 0.0:
+		return 1.0
+	return floor_k / maxf(sin(deg_to_rad(elev_deg)), 0.01)
+
+
+## Room floor foreshortening for the oblique projection (data rt3d.oblique_floor true).
+func set_floor_k(k: float) -> void:
+	floor_k = k if bool(spec.get("oblique_floor", false)) else 0.0
+	if oblique != null:
+		oblique.transform = Transform3D(Basis.from_scale(Vector3(1.0, 1.0, depth_stretch())), Vector3.ZERO)
 
 
 ## Same, rotated by the current yaw (floor frame: x right, z towards the viewer).
