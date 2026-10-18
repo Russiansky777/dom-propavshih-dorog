@@ -35,5 +35,15 @@ for id in "${ids[@]}"; do
       echo "  $id/$name updated"
     fi
   done
+  # Real 3D (Agata, actor data render "3d"): only the game GLB (<id>_rt.glb: decimated mesh, all clips);
+  # the Meshy originals (<id>.glb, <id>_extra_r*.glb, ~40 MB each) stay in assets/ as sources.
+  if [[ -f "$SRC/$id/rt3d/${id}_rt.glb" ]]; then
+    mkdir -p "$DST/$id/rt3d"
+    if ! cmp -s "$SRC/$id/rt3d/${id}_rt.glb" "$DST/$id/rt3d/${id}_rt.glb"; then
+      cp "$SRC/$id/rt3d/${id}_rt.glb" "$DST/$id/rt3d/${id}_rt.glb"
+      changed=$((changed + 1))
+      echo "  $id/rt3d/${id}_rt.glb updated"
+    fi
+  fi
   echo "sync_characters: $id — $changed file(s) copied"
 done

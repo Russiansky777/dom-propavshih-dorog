@@ -3,6 +3,8 @@
   "id": "agata",
   "sheet_dir": "res://assets/characters/agata",
   "sprites": "sprites.json",
+  "render": "sprites",
+  "_render_note": "Режим отрисовки Агаты: \"sprites\" — листы (8 направлений, как было); \"3d\" — та же модель Meshy живьём (game/scripts/actors/actor_3d.gd): любой угол поворота, плавные переходы стоять↔идти↔действие, idle из вариантов с наплывом, ходьба по измеренному root motion опорной ступни, разрешение по размеру на экране. Переключение для сравнения — F8, в вебе ?agata=3d|sprites, в командной строке -- --agata=3d. Остальное (тень, свет, тон, окклюзия, шаги, ключевые кадры действий) — общее.",
   "figure_height_px": 337,
   "idle_action": "idle",
   "walk_action": "walk",
@@ -115,5 +117,125 @@
         }
       ]
     }
+  },
+  "rt3d": {
+    "_comment": "Агата в реальном 3D. Модель — assets/characters/agata/rt3d/agata_rt.glb (pipeline/3d/build_rt3d_glb.py: та же сетка Meshy, упрощённая 907 тыс. → 60 тыс. треугольников, текстура и скелет те же; клипы rev 10 + 10 клипов задачи 01a14eb6 на том же риге). Копия в игру — tools/sync_characters.sh.",
+    "scene": "res://assets/characters/agata/rt3d/agata_rt.glb",
+    "camera_elev_deg": 14.0,
+    "_camera_note": "Угол ортокамеры над горизонтом. 14° — как у листов (облик тот же); рост на экране сохраняется при любом угле (масштаб × cos14/cos угла).",
+    "frame_px": [
+      320,
+      420
+    ],
+    "pivot": [
+      0.5,
+      0.94
+    ],
+    "sheet_ppm": 214.8,
+    "msaa": 4,
+    "max_render_scale": 3.0,
+    "premultiplied": true,
+    "clips": {
+      "walk": "Walking_Woman",
+      "idle": "Idle_4",
+      "open": "open_door",
+      "pick": "Female_Bend_Over_Pick_Up_Inspect",
+      "reach": "Female_Stand_Pick_Fruit_Basket",
+      "talk": "Talk_with_Right_Hand_Open"
+    },
+    "idle": {
+      "_comment": "Спокойные женские idle (превью каталога Meshy: Docs/evidence/M1/agata_v2/catalog/). Два слота: за crossfade_s до конца клипа следующий вариант наплывает — шва цикла не видно, повторов подряд нет.",
+      "crossfade_s": 1.0,
+      "pool": [
+        {
+          "clip": "Idle_4",
+          "weight": 3
+        },
+        {
+          "clip": "Idle_3",
+          "weight": 2
+        },
+        {
+          "clip": "Idle_9",
+          "weight": 1
+        }
+      ],
+      "_pool_note": "Только клипы с близкой стойкой (после выравнивания по середине стоп расхождение ≤ ~5 см): Idle_4, Idle_3, Idle_9. Idle_7, Idle_12, Short/Long_Breathe_and_Look_Around стоят шире или с выставленной ногой — наплыв на них скользит стопами (замер tests/test_agata_3d.gd); для них нужен переход шагом (IK стоп)."
+    },
+    "walk": {
+      "playback_rate": 1.0,
+      "accel_s": 0.35,
+      "decel_s": 0.3,
+      "stop_m": 0.45,
+      "_comment": "Скорость — из самого клипа: шаг цикла (root motion опорной ступни) × темп; playback_rate 1 = темп клипа Walking_Woman."
+    },
+    "turn": {
+      "ease_per_s": 9.0,
+      "max_deg_s": 360.0,
+      "step_above_deg": 50.0,
+      "step_weight": 0.3,
+      "_comment": "Поворот к цели — экспоненциальное приближение с потолком скорости; стоя на месте большой поворот — с переступанием (вес ходьбы step_weight без перемещения)."
+    },
+    "action": {
+      "fade_in_s": 0.2,
+      "fade_out_s": 0.35
+    },
+    "actions": {
+      "_comment": "Длительность одноразовых действий (с): по умолчанию как у листа (кадры/fps), ключевой кадр — та же доля клипа.",
+      "open": {
+        "duration_s": 2.2
+      },
+      "pick": {
+        "duration_s": 2.4
+      },
+      "reach": {
+        "duration_s": 2.4
+      }
+    },
+    "life": {
+      "breath_deg": 0.8,
+      "breath_period_s": 4.2,
+      "head_drift_deg": 1.6,
+      "glance_deg": 8.0,
+      "glance_every_s": [
+        7,
+        13
+      ],
+      "glance_hold_s": [
+        1.2,
+        2.4
+      ],
+      "glance_move_s": 0.7,
+      "seed": 7
+    },
+    "light": {
+      "_comment": "Свет рендера листов (pipeline/render/render_sprites.py): солнца Key 4.5 / Fill 2.0 / Rim 2.5 (÷π), фон мира 0.6/0.6/0.65; направления — к свету, оси Godot.",
+      "key_dir": [
+        -0.47,
+        0.574,
+        0.671
+      ],
+      "fill_dir": [
+        0.604,
+        0.342,
+        -0.72
+      ],
+      "rim_dir": [
+        0.296,
+        -0.5,
+        0.814
+      ],
+      "key_e": 1.432,
+      "fill_e": 0.637,
+      "rim_e": 0.796,
+      "ambient": [
+        0.6,
+        0.6,
+        0.65
+      ],
+      "wrap": 0.0,
+      "gain": 1.0
+    },
+    "center_feet": true
   }
 }

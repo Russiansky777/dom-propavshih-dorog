@@ -72,6 +72,29 @@ var _step_phase: int = 0
 var _path_ready: bool = false
 var _path_wait_frames: int = 0   # physics frames spent waiting for the navigation map / a path
 
+# --- Real 3D mode (actor data `render: "3d"`, block `rt3d`; F8 / ?agata=3d|sprites switch) ---------
+## "sprites" (sheets, 8 directions) or "3d" (the same model live: any angle, blended clips).
+var render_mode: String = "sprites"
+## Forced mode for the whole run (tests, URL ?agata=…, command line --agata=…); "" = actor data.
+static var forced_render: String = ""
+var view3d: Actor3D = null
+var body3d: Sprite2D = null
+var _spec: Dictionary = {}
+var _rt: Dictionary = {}          # spec.rt3d
+var _hide_mat: ShaderMaterial = null
+var yaw3d: float = 0.0            # body yaw (radians; 0 = towards the viewer, +90° = screen right)
+var yaw3d_target: float = 0.0
+var walk_w: float = 0.0           # idle(0) ↔ walk(1) blend
+var walk_phase: float = 0.0       # walk cycle phase, unwrapped (whole cycles count up)
+var _turn_step_w: float = 0.0     # stepping while turning on the spot
+var _act_t: float = 0.0
+var _act_w: float = 0.0
+var _act_len: float = 1.0
+var _act_speed: float = 1.0
+var _act_fading: String = ""      # an action that ended: its last pose fades out
+var _facade_row: int = -1
+var _facade_anim: String = ""
+
 ## Agata never walks without a navigation path (a straight line would cross furniture and water).
 ## A freshly added region is queryable only after the map's second sync (~5 physics frames): the
 ## agent re-queries every frame on its own and she simply stands until the path exists. Only a map
@@ -84,6 +107,7 @@ func _ready() -> void:
 	# foot-lock offset reads the frame progress of the same render frame.
 	process_priority = 10
 	_setup_sprite()
+	_register_agata_probe()
 	_set_step_phase(0)
 	_update_depth()
 
@@ -91,6 +115,9 @@ func _ready() -> void:
 ## Walking runs in _process, on the same delta as the sprite's frame clock: the logical position and
 ## the walk cycle can never drift apart, even when physics ticks are capped under load.
 func _process(delta: float) -> void:
+	if is_3d():
+		_process_3d(delta)
+		return
 	if _walking:
 		_walk_step(delta)
 	if _frame_pending:
@@ -173,7 +200,7 @@ func _trail_add(p: Vector2, moved: float) -> void:
 
 
 func _lock_start() -> void:
-	_lock_active = sheet != null and sheet.foot_lock
+	_lock_active = sheet != null and sheet.foot_lock and not is_3d()
 	_frame_pending = false
 	_settling = false
 	_drawn_pos = global_position
@@ -241,6 +268,14 @@ func _setup_sprite() -> void:
 	if sheet.shadow_alpha > 0.0:
 		sprite.add_child(ActorShadow.make(sheet))  # child of the sprite: follows the foot-lock offset
 	body.visible = false
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % actor_id))
+	_spec = spec if spec is Dictionary else {}
+	_rt = _spec.get("rt3d", {})
+	var want := forced_render if forced_render != "" else _render_from_env()
+	if want == "":
+		want = String(_spec.get("render", "sprites"))
+	if want == "3d":
+		set_render_mode("3d")
 	_play_idle()
 
 
@@ -256,6 +291,10 @@ func direction_index(motion: Vector2) -> int:
 func face_towards(target: Vector2) -> void:
 	var v := target - global_position
 	if sheet != null and v.length_squared() > 1.0:
+		if is_3d():
+			yaw3d_target = _yaw_for_screen(v)
+			_play_idle()
+			return
 		direction = sheet.direction_index(v)
 		_play_idle()
 
@@ -264,10 +303,11 @@ func _play_idle() -> void:
 	if sprite == null:
 		return
 	var anim := sheet.anim_name(sheet.idle_action, direction)
-	if sprite.animation != anim:
+	if sprite.animation != anim and not is_3d():
 		ActorCrossfade.begin(sprite, sheet.crossfade_s)
 	sprite.speed_scale = 1.0
 	sprite.play(anim)
+	_facade_anim = anim
 
 
 ## Drops a running cross-fade (room change: the old pose must not linger in the new room).
@@ -281,6 +321,8 @@ func _cut_fade() -> void:
 ## towards/away from the viewer slower than across — the row's cycle on screen, see ActorSheet).
 func current_speed_px() -> float:
 	var s := absf(scale.y)
+	if is_3d():
+		return walk_speed_mps_3d() * view3d.ppm * s * _floor_proj(yaw3d) * speed_factor
 	if sheet != null:
 		return sheet.walk_speed_row_px(direction, s) * floor_factor() * speed_factor
 	return walk_speed * s * speed_factor
@@ -290,6 +332,8 @@ func current_speed_px() -> float:
 func current_walk_fps() -> float:
 	if sheet == null:
 		return 0.0
+	if is_3d():  # cycles per second of the live clip × the sheet's frames (same clip): comparable numbers
+		return float(sheet.walk_frames()) * walk_rate_3d() / maxf(view3d.walk_len, 0.01) * speed_factor
 	return sheet.walk_fps_const() * speed_factor
 
 
@@ -322,6 +366,11 @@ func _update_walk_anim() -> void:
 # --- Input -----------------------------------------------------------------
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_F8 or event.physical_keycode == KEY_F8):
+		# Comparison switch (Director): sprites ↔ live 3D, same place, same state.
+		set_render_mode("sprites" if is_3d() else "3d")
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		click_at(get_global_mouse_position())
 		get_viewport().set_input_as_handled()
@@ -398,6 +447,11 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 		sprite.position = Vector2.ZERO
 		sprite.scale = Vector2.ONE
 	global_position = pos
+	walk_w = 0.0
+	_turn_step_w = 0.0
+	_rm_feet = []
+	_rm_side = -1
+	yaw3d_target = yaw3d
 	_set_step_phase(0)
 	_play_idle()
 	_cut_fade()
@@ -468,7 +522,10 @@ func _arrive() -> void:
 	if act != "":
 		var v := node.global_position - global_position
 		if v.length_squared() > 1.0:
-			direction = sheet.direction_index(v)
+			if is_3d():
+				yaw3d_target = _yaw_for_screen(v)
+			else:
+				direction = sheet.direction_index(v)
 	elif node != null and is_instance_valid(node):
 		face_towards(node.global_position)
 	else:
@@ -501,6 +558,10 @@ func _start_action(act: String, node: Node2D) -> void:
 	_action = act
 	_action_node = node
 	_action_fired = false
+	if is_3d():
+		_start_action_3d(act, node)
+		action_started.emit(act, node)
+		return
 	var anim := sheet.anim_name(act, direction)
 	if sprite.animation != anim:
 		ActorCrossfade.begin(sprite, sheet.crossfade_s)
@@ -538,6 +599,8 @@ func _on_animation_finished() -> void:
 	if not _acting:
 		return
 	_fire_action()
+	if is_3d():
+		_act_fading = _action  # the last pose of the clip fades into the idle
 	var act := _action
 	var node := _action_node
 	_acting = false
@@ -553,6 +616,8 @@ func _cancel_action() -> void:
 	_action = ""
 	_action_node = null
 	_action_fired = false
+	_act_fading = ""
+	_act_w = 0.0
 
 
 # --- Step animation (distance driven) -------------------------------------
@@ -585,3 +650,401 @@ func _update_depth() -> void:
 	# Sheets carry every direction, so no mirroring; the placeholder body flips on `facing`.
 	scale = Vector2(s, s) if sprite != null else Vector2(s * facing, s)
 	z_index = clampi(int(global_position.y), -4096, 4096)
+	if is_3d():
+		_update_view3d_scale()
+
+
+# --- Real 3D mode -------------------------------------------------------------------------------
+# The same model the sheets were rendered from, live (Actor3D). Everything around the figure stays
+# 2D and unchanged: the "Sprite" node is kept as a facade with the sheet frames (drawn invisible) —
+# it carries the contact ellipse and cast light shadows, the room tone, the mirror's frames, and its
+# frame number follows the live clip phase, so footsteps, prints and the key frame of an action fire
+# at the same moments of the same clips. The live picture is the Body3D child of the facade.
+
+const HIDE_SHADER_CODE := "shader_type canvas_item;\nvoid fragment() { COLOR = vec4(0.0); }\n"
+
+
+func is_3d() -> bool:
+	return render_mode == "3d" and view3d != null and view3d.ok
+
+
+## Mode requested outside the data: command line `--agata=3d|sprites` (after `--`), URL `?agata=…`.
+static func _render_from_env() -> String:
+	for a in OS.get_cmdline_user_args():
+		if String(a).begins_with("--agata="):
+			return String(a).get_slice("=", 1)
+	if OS.has_feature("web"):
+		var q = JavaScriptBridge.eval("(new URLSearchParams(window.location.search)).get('agata') || ''", true)
+		if q != null and String(q) in ["3d", "sprites"]:
+			return String(q)
+	return ""
+
+
+func _rtf(section: String, key: String, def: float) -> float:
+	var d: Dictionary = _rt.get(section, {}) if section != "" else _rt
+	return float(d.get(key, def))
+
+
+## Switches the figure between the sheets and the live model, in place (a walk or an action in
+## progress is stopped without its effect). Returns false when the 3D model cannot be loaded.
+func set_render_mode(mode: String) -> bool:
+	if sprite == null or sheet == null:
+		return false
+	if mode == render_mode and (mode != "3d" or is_3d()):
+		return true
+	if _walking:
+		_cancel_walk()
+	if _acting:
+		_cancel_action()
+	if mode == "3d":
+		if view3d == null:
+			view3d = Actor3D.new()
+			add_child(view3d)
+			if not view3d.setup(_spec):
+				push_warning("Player: 3D model not loaded (%s); staying on sprites" % view3d.load_error)
+				view3d.queue_free()
+				view3d = null
+				return false
+			body3d = Sprite2D.new()
+			body3d.name = "Body3D"
+			body3d.centered = false
+			body3d.texture = view3d.get_texture()
+			body3d.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			if bool(_rt.get("premultiplied", true)):
+				var cm := CanvasItemMaterial.new()
+				cm.blend_mode = CanvasItemMaterial.BLEND_MODE_PREMULT_ALPHA
+				body3d.material = cm
+			sprite.add_child(body3d)
+		view3d.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		body3d.visible = true
+		if _hide_mat == null:
+			var sh := Shader.new()
+			sh.code = HIDE_SHADER_CODE
+			_hide_mat = ShaderMaterial.new()
+			_hide_mat.shader = sh
+		sprite.material = _hide_mat
+		render_mode = "3d"
+		yaw3d = _yaw_for_row(direction)
+		yaw3d_target = yaw3d
+		walk_w = 0.0
+		_turn_step_w = 0.0
+		_act_w = 0.0
+		_act_fading = ""
+		var fade := get_node_or_null("Crossfade") as CanvasItem
+		if fade != null:
+			fade.visible = false
+		_update_depth()
+		_process_3d(0.0)
+	else:
+		render_mode = "sprites"
+		if view3d != null:
+			view3d.render_target_update_mode = SubViewport.UPDATE_DISABLED
+		if body3d != null:
+			body3d.visible = false
+		sprite.material = null
+		sprite.position = Vector2.ZERO
+		sprite.scale = Vector2.ONE
+		_play_idle()
+	return true
+
+
+## Floor heading (yaw) of a screen vector: the room's floor is foreshortened by k vertically.
+func _yaw_for_screen(v: Vector2) -> float:
+	return atan2(v.x, v.y / maxf(floor_foreshortening(), 0.05))
+
+
+## Screen direction of a body yaw (y down; length = how much a floor metre shrinks that way).
+func _screen_of_yaw(y: float) -> Vector2:
+	return Vector2(sin(y), cos(y) * floor_foreshortening())
+
+
+func _floor_proj(y: float) -> float:
+	return _screen_of_yaw(y).length()
+
+
+func _yaw_for_row(row: int) -> float:
+	if sheet == null:
+		return 0.0
+	var a := deg_to_rad(90.0 - 360.0 / float(sheet.directions) * float(row))
+	if sheet.direction_order == "cw":
+		a = deg_to_rad(90.0 + 360.0 / float(sheet.directions) * float(row))
+	return _yaw_for_screen(Vector2(cos(a), sin(a)))
+
+
+## Playback rate of the walk clip (data rt3d.walk.playback_rate; 1 = the clip's own cadence).
+func walk_rate_3d() -> float:
+	return _rtf("walk", "playback_rate", 1.0)
+
+
+## Walking speed in floor metres per second (clip stride × cadence × rate).
+func walk_speed_mps_3d() -> float:
+	return view3d.walk_speed_mps * walk_rate_3d() if view3d != null else 0.0
+
+
+func _process_3d(delta: float) -> void:
+	if _walking:
+		_walk_step_3d(delta)
+	else:
+		walk_w = move_toward(walk_w, 0.0, delta / maxf(_rtf("walk", "decel_s", 0.3), 0.01))
+	_turn_3d(delta)
+	var act_name := ""
+	if _acting:
+		_act_t = minf(_act_t + delta * _act_speed, _act_len)
+		_act_w = move_toward(_act_w, 1.0, delta / maxf(_rtf("action", "fade_in_s", 0.2), 0.01))
+		act_name = _action
+	elif _act_fading != "":
+		_act_w = move_toward(_act_w, 0.0, delta / maxf(_rtf("action", "fade_out_s", 0.35), 0.01))
+		act_name = _act_fading
+		if _act_w <= 0.0:
+			_act_fading = ""
+	view3d.set_yaw(yaw3d)
+	var blend := maxf(walk_w, _turn_step_w)
+	var probe: Array = []
+	if root_motion_3d and _walking and _rm_side >= 0:
+		# new phase, last frame's weights: only the walk itself moves the planted foot
+		probe = view3d.feet_with(fposmod(walk_phase, 1.0), _rm_blend, _act_w, act_name, _act_t)
+	view3d.pose(delta, fposmod(walk_phase, 1.0), blend, _act_w, act_name, _act_t)
+	_root_motion_3d(probe, blend)
+	_sync_facade_3d()
+	_sync_body3d()
+	if _acting and _act_t >= _act_len - 0.0001:
+		_on_animation_finished()
+
+
+## Body yaw eases towards its target (exponential approach, capped turn rate): any angle, no step.
+## Standing, a big turn is taken with small steps (a little of the walk on the spot).
+func _turn_3d(delta: float) -> void:
+	var diff := angle_difference(yaw3d, yaw3d_target)
+	var cap := deg_to_rad(_rtf("turn", "max_deg_s", 400.0 if _walking else 300.0)) * delta * maxf(speed_factor, 1.0)
+	var step := clampf(diff * (1.0 - exp(-_rtf("turn", "ease_per_s", 9.0) * delta * maxf(speed_factor, 1.0))), -cap, cap)
+	yaw3d = wrapf(yaw3d + step, -PI, PI)
+	var stepping := not _acting and walk_w < 0.3 and absf(diff) > deg_to_rad(_rtf("turn", "step_above_deg", 50.0))
+	var sw := _rtf("turn", "step_weight", 0.3) if stepping else 0.0
+	_turn_step_w = move_toward(_turn_step_w, sw, delta / 0.2)
+	if _turn_step_w > 0.001 and walk_w <= 0.001 and view3d != null:
+		walk_phase += delta * walk_rate_3d() / maxf(view3d.walk_len, 0.01)
+
+
+## Root motion from the posed skeleton: the foot that was planted last frame (the lower one) must not
+## move on the floor — the figure moves by exactly its displacement, R(yaw_old)·foot_old − R(yaw)·foot,
+## forward and sideways, so turning happens on the planted foot as people do. Only while walking, and
+## × walk weight / blended weight (stepping on the spot while turning moves nothing). Kept on the floor:
+## a position off the navigation mesh is pulled back to its closest point.
+var _rm_feet: Array = []
+var _rm_side: int = -1
+var _rm_yaw: float = 0.0
+var _rm_blend: float = 0.0
+var rm_last_px: Vector2 = Vector2.ZERO   # this frame's root motion on screen (tests, probe)
+## Off only in the foot test's self-check: the figure then slides along the path at constant speed.
+var root_motion_3d: bool = true
+
+
+func _root_motion_3d(probe: Array, blend: float) -> void:
+	rm_last_px = Vector2.ZERO
+	if not probe.is_empty() and not _rm_feet.is_empty() and _rm_blend > 0.001 and walk_w > 0.001:
+		var f_old: Vector3 = _rm_feet[_rm_side * 2]
+		var f_new: Vector3 = probe[_rm_side * 2]
+		var r_old := Basis(Vector3.UP, _rm_yaw)
+		# walking part: the planted foot slid back in the body frame; turning part: the body turned about
+		# the planted foot. Turning on a foot is what walking people do; starting from a stand (low weight)
+		# she turns about her centre instead — no lurch sideways while she is still almost standing.
+		var walk_part: Vector3 = r_old * (f_old - f_new) * clampf(walk_w / maxf(_rm_blend, 0.001), 0.0, 1.0)
+		var turn_part: Vector3 = (r_old * f_new - Basis(Vector3.UP, yaw3d) * f_new) * clampf(walk_w, 0.0, 1.0)
+		var d := Vector2(walk_part.x + turn_part.x, walk_part.z + turn_part.z)
+		var ppm_s := view3d.ppm * absf(scale.y)
+		var mv := Vector2(d.x * ppm_s, d.y * ppm_s * floor_foreshortening())
+		var remaining := global_position.distance_to(_target) if nav_agent.is_navigation_finished() else _remaining_px()
+		if mv.length() > remaining and remaining < 12.0:
+			mv = mv.normalized() * remaining  # never past the end of the walk
+		var np := global_position + mv
+		var nm := nav_agent.get_navigation_map()
+		if nm.is_valid() and NavigationServer2D.map_get_iteration_id(nm) > 0:
+			var cp := NavigationServer2D.map_get_closest_point(nm, np)
+			if cp.distance_to(np) > 0.5:
+				np = cp
+		rm_last_px = np - global_position
+		global_position = np
+		_advance_steps(rm_last_px.length())
+		if absf(rm_last_px.x) > 0.01:
+			facing = 1 if rm_last_px.x > 0.0 else -1
+		_update_depth()
+	_rm_feet = view3d.feet_model()
+	# planted foot: the lower one while mostly walking (exact); in a light blend with the idle the lower
+	# foot can be the swinging one — then the one the walk clip has planted at this phase
+	if blend >= 0.5:
+		_rm_side = 0 if minf(_rm_feet[0].y, _rm_feet[1].y) <= minf(_rm_feet[2].y, _rm_feet[3].y) else 1
+	else:
+		_rm_side = view3d.stance_at(walk_phase)
+	_rm_yaw = yaw3d
+	_rm_blend = blend
+
+
+func _walk_step_3d(delta: float) -> void:
+	walk_time += delta
+	if nav_agent.is_navigation_finished():
+		_arrive()  # within the agent's tolerance (target_desired_distance), like the sheets
+		return
+	if nav_agent.get_current_navigation_path().is_empty():
+		_path_ready = false
+		_path_wait_frames += 1
+		if _path_wait_frames >= PATH_GIVE_UP_FRAMES:
+			push_warning("Player: no navigation path to %s after %d frames; staying put" % [str(_target), _path_wait_frames])
+			_cancel_walk()
+		return
+	_path_ready = true
+	var next: Vector2 = nav_agent.get_next_path_position()
+	var to_next := next - global_position
+	_move_3d(to_next, to_next.length(), _remaining_px(), delta)
+
+
+## Length of the rest of the navigation path from the current position (screen px).
+func _remaining_px() -> float:
+	var path := nav_agent.get_current_navigation_path()
+	var i := nav_agent.get_current_navigation_path_index()
+	var total := 0.0
+	var prev := global_position
+	for j in range(clampi(i, 0, path.size()), path.size()):
+		total += prev.distance_to(path[j])
+		prev = path[j]
+	return total
+
+
+## One frame of walking: heading → yaw target; locomotion weight up to 1, eased down over the last
+## `stop_m`; the walk phase advances with the clip's cadence; the figure moves by exactly the ground
+## the stance foot slid back over that phase (root motion), × the weight, projected on the room floor.
+func _move_3d(dir: Vector2, seg_len: float, remaining: float, delta: float) -> void:
+	if dir.length_squared() < 1e-6:
+		return
+	var s := absf(scale.y)
+	var yaw_dir := _yaw_for_screen(dir)
+	if global_position.distance_to(_target) > 24.0 or walk_time < 0.2:
+		yaw3d_target = yaw_dir  # the last few px: keep the heading (the direction to a point that close jitters)
+	var px_per_m := view3d.ppm * s * _floor_proj(yaw_dir)
+	var stop_px := _rtf("walk", "stop_m", 0.45) * px_per_m
+	var goal := 1.0 if remaining > stop_px else sqrt(clampf(remaining / maxf(stop_px, 0.001), 0.0, 1.0))
+	var off := absf(angle_difference(yaw3d, yaw3d_target))
+	# facing away from the path: turn first (on the spot, with small steps), then walk off
+	if remaining > stop_px:
+		goal *= clampf((cos(off) - 0.2) / 0.6, 0.0, 1.0)
+	if goal > walk_w:
+		walk_w = minf(walk_w + delta * maxf(speed_factor, 1.0) / maxf(_rtf("walk", "accel_s", 0.35), 0.01), goal)
+	else:
+		walk_w = maxf(walk_w - delta * maxf(speed_factor, 1.0) / maxf(_rtf("walk", "decel_s", 0.3), 0.01), goal)
+	if walk_w > 0.001:
+		walk_phase += delta * speed_factor * walk_rate_3d() * (0.55 + 0.45 * walk_w) / maxf(view3d.walk_len, 0.01)
+	# the figure itself moves by root motion after the pose (_root_motion_3d)
+	if not root_motion_3d:
+		# self-check of the foot test only: constant speed along the path, feet free to skate
+		var step := minf(walk_speed_mps_3d() * walk_w * px_per_m * delta * speed_factor, seg_len)
+		global_position += dir.normalized() * step
+		_update_depth()
+
+
+func _start_action_3d(act: String, _node: Node2D) -> void:
+	_act_fading = ""
+	_act_t = 0.0
+	_act_len = maxf(view3d.action_length(act), 0.05)
+	var a: Dictionary = sheet.actions.get(act, {})
+	var sheet_s := float(a.get("frames", 16)) / maxf(float(a.get("fps", 12)), 1.0)
+	var cfg: Dictionary = _rt.get("actions", {}).get(act, {})
+	_act_speed = _act_len / maxf(float(cfg.get("duration_s", sheet_s)), 0.1)
+	_act_w = minf(_act_w, 1.0)
+
+
+## The facade (sheet sprite, drawn invisible) shows the row nearest to the yaw and the frame of the
+## same clip phase: frame_changed fires where the sheet version fires (footsteps, prints, key frames).
+func _sync_facade_3d() -> void:
+	var row := sheet.direction_index(_screen_of_yaw(yaw3d))
+	direction = row
+	var anim := ""
+	var frame := -1
+	if _acting:
+		anim = sheet.anim_name(_action, row)
+		if sprite.sprite_frames.has_animation(anim):
+			var n := sprite.sprite_frames.get_frame_count(anim)
+			frame = clampi(int(_act_t / _act_len * float(n)), 0, n - 1)
+	elif _walking and walk_w > 0.02:
+		anim = sheet.anim_name(sheet.walk_action, row)
+		var nw := sheet.walk_frames()
+		frame = int(fposmod(walk_phase, 1.0) * float(nw)) % nw
+	else:
+		anim = sheet.anim_name(sheet.idle_action, row)
+	if not sprite.sprite_frames.has_animation(anim):
+		return
+	_facade_anim = anim
+	if frame < 0:
+		if sprite.animation != anim or not sprite.is_playing():
+			sprite.speed_scale = 1.0
+			sprite.play(anim)
+		return
+	if sprite.animation != anim:
+		# a new row or clip is not a step: switch silently, then let the frame change speak
+		var prev := sprite.frame
+		_lock_hold = true
+		sprite.set_block_signals(true)
+		sprite.play(anim)
+		sprite.pause()
+		sprite.set_frame_and_progress(clampi(prev, 0, sprite.sprite_frames.get_frame_count(anim) - 1), 0.0)
+		sprite.set_block_signals(false)
+		_lock_hold = false
+	if sprite.is_playing():
+		sprite.pause()
+	if sprite.frame != frame:
+		sprite.frame = frame
+
+
+func _sync_body3d() -> void:
+	if body3d == null:
+		return
+	body3d.self_modulate = sprite.self_modulate  # the room tone (RoomLighting tones the facade)
+	body3d.visibility_layer = visibility_layer
+
+
+## The live frame is rendered at about its on-screen size (depth scale × window stretch).
+func _update_view3d_scale() -> void:
+	if view3d == null or body3d == null:
+		return
+	var s := absf(scale.y)
+	var win := 1.0
+	if is_inside_tree():
+		win = maxf(get_viewport().get_final_transform().get_scale().y, 0.25)
+	view3d.set_render_scale(s * win * _rtf("", "supersample", 1.0))
+	body3d.offset = view3d.sprite_offset()
+	body3d.scale = Vector2.ONE / view3d.render_scale
+
+
+# --- Web measurement hooks (only with ?agataprobe in the URL; tools/agata_fps.mjs) ----------------
+#   agataMode("3d"|"sprites") — switch in place;  agataState — JSON every 0.25 s: mode, fps, yaw, walk
+#   weight, render scale and size of the live frame, position, walking.
+var _probe_cbs: Array = []
+
+
+func _register_agata_probe() -> void:
+	if not OS.has_feature("web"):
+		return
+	var search = JavaScriptBridge.eval("window.location.search", true)
+	if search == null or String(search).find("agataprobe") < 0:
+		return
+	var win: JavaScriptObject = JavaScriptBridge.get_interface("window")
+	var cb := JavaScriptBridge.create_callback(func(args: Array) -> void:
+		set_render_mode(String(args[0]) if args.size() > 0 else "3d"))
+	_probe_cbs = [cb]
+	win.agataMode = cb
+	var timer := Timer.new()
+	timer.wait_time = 0.25
+	timer.autostart = true
+	timer.process_mode = Node.PROCESS_MODE_ALWAYS
+	timer.timeout.connect(_publish_agata_probe)
+	add_child(timer)
+	JavaScriptBridge.eval("window.agataProbeReady = true;", true)
+
+
+func _publish_agata_probe() -> void:
+	var st := {"mode": render_mode, "is3d": is_3d(), "fps": Engine.get_frames_per_second(),
+		"x": global_position.x, "y": global_position.y, "walking": _walking, "acting": _acting,
+		"yaw": rad_to_deg(yaw3d), "w": walk_w, "scale": absf(scale.y)}
+	if view3d != null:
+		st["render_scale"] = view3d.render_scale
+		st["size"] = [view3d.size.x, view3d.size.y]
+		st["idle"] = view3d.current_idle()
+	JavaScriptBridge.eval("window.agataState = %s;" % JSON.stringify(st), true)
