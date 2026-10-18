@@ -260,6 +260,16 @@ func _test_door_mouse() -> void:
 	_check(p["pieces"].size() == 3, "three hinges in the tray, got %s" % [p["pieces"].keys()])
 	_check(p["leaf"], "the leaf stands in the opening")
 	_check(int(p["mark"]) == -1, "no notch under the door's mark at the start (beam shifted)")
+	# The hinge tray is a framed, captioned pocket (not a bare grey box — Director 18.10).
+	var tray: Panel = cp.get("tray_node")
+	_check(tray != null and tray.get_theme_stylebox("panel") is StyleBoxFlat, "the tray is a framed panel")
+	var cap_text: String = sd.text("@H3.puzzle.label_tray")
+	var cap_found := false
+	for n in cp.find_children("*", "Label", true, false):
+		if (n as Label).text == cap_text and (n as Label).visible:
+			cap_found = true
+	_check(cap_text != "" and cap_found, "the tray has its caption «%s»" % cap_text)
+	_check(tray != null and tray.modulate.a > 0.9, "a full tray is shown at full strength")
 	# Cursor tells what can be done.
 	await _move(_v(p["pieces"]["hinge_1"]))
 	_check(int(_probe()["cursor"]) == Control.CURSOR_DRAG, "over a hinge: open hand (drag) cursor, got %d" % int(_probe()["cursor"]))
@@ -293,6 +303,8 @@ func _test_door_mouse() -> void:
 	await _wait(0.2)
 	p = _probe()
 	_check(p["placed"] == {"top": "hinge_1", "middle": "hinge_2", "bottom": "hinge_3"}, "three hinges in three sockets: %s" % [p["placed"]])
+	await _wait(0.1)
+	_check((cp.get("tray_node") as Panel).modulate.a < 0.5, "an empty tray dims instead of standing as an empty box")
 	# A click on a placed hinge takes it back to the tray; drag it back.
 	await _click(_v(p["pieces"]["hinge_2"]))
 	await _wait(0.35)

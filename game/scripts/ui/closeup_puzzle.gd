@@ -35,6 +35,7 @@ var check_button: Button
 var close_button: Button
 var beam_node: Control           # beam image + notch markers; moves by `_beam_shown_dx`
 var handle_glow: Panel
+var tray_node: Panel              # hinge tray: framed, captioned, dims when empty (Director 18.10: looked like a placeholder)
 var handle_label: Label
 var guide_line: ColorRect        # door mark ↔ aligned notch
 var piece_nodes: Dictionary = {}   # piece id -> Control (hinge picture)
@@ -322,9 +323,21 @@ func _build() -> void:
 		root.add_child(drawing)
 	var cap_rect := _r(art.get("drawing_caption", null), Rect2(1400, 456, 345, 30))
 	root.add_child(_label(StoryData.text(String(marks.get("drawing_label", ""))), cap_rect, 18))
-	var tray := _rect(Color(0.15, 0.14, 0.12, 0.8), tray_rect)
-	tray.name = "Tray"
-	root.add_child(tray)
+	tray_node = Panel.new()
+	tray_node.name = "Tray"
+	tray_node.position = tray_rect.position
+	tray_node.size = tray_rect.size
+	tray_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tsb := StyleBoxFlat.new()
+	tsb.bg_color = Color(0.12, 0.10, 0.08, 0.85)
+	tsb.border_color = Color(0.55, 0.42, 0.25, 0.9)
+	tsb.set_border_width_all(2)
+	tsb.set_corner_radius_all(8)
+	tray_node.add_theme_stylebox_override("panel", tsb)
+	root.add_child(tray_node)
+	var tray_cap := String(marks.get("tray_label", ""))
+	if tray_cap != "":
+		root.add_child(_label(StoryData.text(tray_cap), Rect2(tray_rect.position + Vector2(0, tray_rect.size.y + 4), Vector2(tray_rect.size.x, 26)), 18))
 	var hinge_spec: Dictionary = art.get("hinge", {})
 	var hinge_path := String(hinge_spec.get("image", ""))
 	var hinge_tex: Texture2D = load(hinge_path) if hinge_path != "" and ResourceLoader.exists(hinge_path) else null
@@ -554,6 +567,8 @@ func _update_glows() -> void:
 		if StoryRunner.puzzle_piece_slot(pid) == "":
 			in_tray += 1
 	var pulse := 0.18 + 0.14 * (0.5 + 0.5 * sin(_pulse_t * 3.0))
+	if tray_node != null:
+		tray_node.modulate = Color(1, 1, 1, 1.0 if (in_tray > 0 or holding) else 0.35)
 	for sid in slot_glows.keys():
 		var g: Panel = slot_glows[sid]
 		var free: bool = not placed.has(sid) or String(placed[sid]) == held
