@@ -1028,8 +1028,20 @@ func _register_agata_probe() -> void:
 	var win: JavaScriptObject = JavaScriptBridge.get_interface("window")
 	var cb := JavaScriptBridge.create_callback(func(args: Array) -> void:
 		set_render_mode(String(args[0]) if args.size() > 0 else "3d"))
-	_probe_cbs = [cb]
+	# agataTune("msaa", 0|2|4) / agataTune("supersample", 0.5..2): cost of the live frame's options
+	var tune := JavaScriptBridge.create_callback(func(args: Array) -> void:
+		if args.size() < 2:
+			return
+		var key := String(args[0])
+		var val := float(args[1])
+		if key == "supersample":
+			_rt["supersample"] = val
+			_update_depth()
+		elif key == "msaa" and view3d != null:
+			view3d.msaa_3d = Viewport.MSAA_DISABLED if val < 2.0 else (Viewport.MSAA_2X if val < 4.0 else Viewport.MSAA_4X))
+	_probe_cbs = [cb, tune]
 	win.agataMode = cb
+	win.agataTune = tune
 	var timer := Timer.new()
 	timer.wait_time = 0.25
 	timer.autostart = true
@@ -1044,6 +1056,7 @@ func _publish_agata_probe() -> void:
 		"x": global_position.x, "y": global_position.y, "walking": _walking, "acting": _acting,
 		"yaw": rad_to_deg(yaw3d), "w": walk_w, "scale": absf(scale.y)}
 	if view3d != null:
+		st["msaa"] = int(view3d.msaa_3d)
 		st["render_scale"] = view3d.render_scale
 		st["size"] = [view3d.size.x, view3d.size.y]
 		st["idle"] = view3d.current_idle()

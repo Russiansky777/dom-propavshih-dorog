@@ -1,0 +1,195 @@
+{
+  "web_dir": "../../../tmp/claude-0/-home-claude/7278ba96-293b-533c-8b27-258ab2726771/scratchpad/agata_web",
+  "renderer": "headless Chromium, ANGLE SwiftShader (software WebGL2), 1280x720",
+  "seconds": 4,
+  "repeats": 3,
+  "variants": [
+    "sprites",
+    "3d",
+    "3d_msaa0",
+    "3d_ss05"
+  ],
+  "cases": {
+    "Z2_stand": {
+      "sprites": {
+        "fps": 1.69,
+        "ms_median": 600,
+        "ms_p95": 833.3,
+        "runs_fps": [
+          1.48,
+          1.69,
+          1.91
+        ]
+      },
+      "3d": {
+        "fps": 0.84,
+        "ms_median": 1299.9,
+        "ms_p95": 1366.6,
+        "runs_fps": [
+          0.81,
+          0.89,
+          0.84
+        ],
+        "fps_ratio_to_sprites": 0.497
+      },
+      "3d_msaa0": {
+        "fps": 1.39,
+        "ms_median": 716.6,
+        "ms_p95": 816.6,
+        "runs_fps": [
+          1.24,
+          1.39,
+          1.47
+        ],
+        "fps_ratio_to_sprites": 0.822
+      },
+      "3d_ss05": {
+        "fps": 0.82,
+        "ms_median": 1299.9,
+        "ms_p95": 1499.9,
+        "runs_fps": [
+          0.82,
+          0.75,
+          0.99
+        ],
+        "fps_ratio_to_sprites": 0.485
+      }
+    },
+    "Z2_walk": {
+      "sprites": {
+        "fps": 1.84,
+        "ms_median": 583.3,
+        "ms_p95": 666.6,
+        "runs_fps": [
+          1.84,
+          1.67,
+          1.86
+        ]
+      },
+      "3d": {
+        "fps": 0.81,
+        "ms_median": 1316.6,
+        "ms_p95": 1399.9,
+        "runs_fps": [
+          0.81,
+          0.72,
+          0.85
+        ],
+        "fps_ratio_to_sprites": 0.44
+      },
+      "3d_msaa0": {
+        "fps": 1.39,
+        "ms_median": 700,
+        "ms_p95": 866.6,
+        "runs_fps": [
+          1.51,
+          1.29,
+          1.39
+        ],
+        "fps_ratio_to_sprites": 0.755
+      },
+      "3d_ss05": {
+        "fps": 0.83,
+        "ms_median": 1216.6,
+        "ms_p95": 1449.9,
+        "runs_fps": [
+          0.83,
+          0.72,
+          0.99
+        ],
+        "fps_ratio_to_sprites": 0.451
+      }
+    },
+    "H1_stand": {
+      "sprites": {
+        "fps": 1.12,
+        "ms_median": 866.6,
+        "ms_p95": 1000,
+        "runs_fps": [
+          1.08,
+          1.17,
+          1.12
+        ]
+      },
+      "3d": {
+        "fps": 0.51,
+        "ms_median": 2049.9,
+        "ms_p95": 2149.9,
+        "runs_fps": [
+          0.51,
+          0.57,
+          0.44
+        ],
+        "fps_ratio_to_sprites": 0.455
+      },
+      "3d_msaa0": {
+        "fps": 0.61,
+        "ms_median": 1666.6,
+        "ms_p95": 1866.6,
+        "runs_fps": [
+          0.61,
+          0.79,
+          0.59
+        ],
+        "fps_ratio_to_sprites": 0.545
+      },
+      "3d_ss05": {
+        "fps": 0.58,
+        "ms_median": 1666.6,
+        "ms_p95": 2116.6,
+        "runs_fps": [
+          0.61,
+          0.58,
+          0.57
+        ],
+        "fps_ratio_to_sprites": 0.518
+      }
+    },
+    "H1_walk": {
+      "sprites": {
+        "fps": 1.16,
+        "ms_median": 800,
+        "ms_p95": 1016.6,
+        "runs_fps": [
+          1.16,
+          0.9,
+          2.04
+        ]
+      },
+      "3d": {
+        "fps": 0.57,
+        "ms_median": 1799.9,
+        "ms_p95": 1833.3,
+        "runs_fps": [
+          0.53,
+          0.57,
+          0.88
+        ],
+        "fps_ratio_to_sprites": 0.491
+      },
+      "3d_msaa0": {
+        "fps": 0.85,
+        "ms_median": 1233.3,
+        "ms_p95": 1299.9,
+        "runs_fps": [
+          0.85,
+          0.81,
+          1.19
+        ],
+        "fps_ratio_to_sprites": 0.733
+      },
+      "3d_ss05": {
+        "fps": 0.66,
+        "ms_median": 1433.3,
+        "ms_p95": 1733.3,
+        "runs_fps": [
+          0.66,
+          0.64,
+          1.04
+        ],
+        "fps_ratio_to_sprites": 0.569
+      }
+    }
+  },
+  "errors": []
+}

@@ -27,6 +27,9 @@ const PORT = Number(process.env.AGATA_PORT || 8781);
 const SECONDS = Number(process.env.AGATA_SECONDS || 4);
 const REPEATS = Number(process.env.AGATA_REPEATS || 3);
 const ROOMS = (process.env.AGATA_ROOMS || "H1,Z2").split(",");
+// Variants: sprites | 3d | 3d_msaa0 | 3d_ss05 (3D, MSAA off / half-resolution frame)
+const VARIANTS = (process.env.AGATA_VARIANTS || "sprites,3d").split(",");
+const [VW, VH] = (process.env.AGATA_VIEWPORT || "1920x1080").split("x").map(Number);
 const PLACES = { H1: { flags: "done_M01,done_M02,house_unlocked,done_M03,met_tikhon", stand: [1200, 1000], walk: [[700, 900], [1500, 950]] },
   Z2: { flags: "done_M01,done_M02", stand: [960, 900], walk: [[500, 900], [1450, 900]] } };
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -70,7 +73,7 @@ async function main() {
   const server = await serve(WEB_DIR);
   const browser = await chromium.launch({ headless: true, executablePath: findChromium(),
     args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--no-sandbox", "--disable-dev-shm-usage"] });
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: VW, height: VH }, deviceScaleFactor: 1 });
   page.on("console", (m) => { const t = m.text(); line(`console.${m.type()}: ${t}`);
     if (/SHADER ERROR|shader compilation failed|SCRIPT ERROR|Failed to compile|not loaded/i.test(t)) errors.push(t); });
   page.on("pageerror", (e) => { line(`pageerror: ${e.message}`); errors.push(e.message); });
@@ -89,32 +92,40 @@ async function main() {
       resolve({ fps: (ts.length - 1) / ((ts[ts.length - 1] - ts[0]) / 1000), ms_median: d[Math.floor(d.length / 2)], ms_p95: d[Math.floor(d.length * 0.95)] }); } };
     requestAnimationFrame(tick);
   }), sec);
-  const report = { web_dir: path.relative(ROOT, WEB_DIR) || WEB_DIR, renderer: "headless Chromium, ANGLE SwiftShader (software WebGL2), 1920x1080", seconds: SECONDS, repeats: REPEATS, cases: {} };
+  const report = { web_dir: path.relative(ROOT, WEB_DIR) || WEB_DIR, renderer: `headless Chromium, ANGLE SwiftShader (software WebGL2), ${VW}x${VH}`, seconds: SECONDS, repeats: REPEATS, variants: VARIANTS, cases: {} };
   for (const room of ROOMS) {
     const P = PLACES[room];
     for (const kind of ["stand", "walk"]) {
-      const runs = { sprites: [], "3d": [] };
+      const runs = Object.fromEntries(VARIANTS.map((v) => [v, []]));
       for (let r = 0; r < REPEATS; r++) {
-        for (const mode of ["sprites", "3d"]) {
+        for (const variant of VARIANTS) {
+          const mode = variant.startsWith("3d") ? "3d" : "sprites";
           const at = kind === "stand" ? P.stand : P.walk[0];
           await page.evaluate((a) => window.lightGoto(a.room, a.flags, a.x, a.y), { room, flags: P.flags, x: at[0], y: at[1] });
           await sleep(1200);
           await page.evaluate((m) => window.agataMode(m), mode);
+          if (mode === "3d") {
+            await page.evaluate((v) => { window.agataTune("msaa", v.includes("msaa0") ? 0 : 4); window.agataTune("supersample", v.includes("ss05") ? 0.5 : 1); }, variant);
+          }
           await sleep(1200);
           if (kind === "walk") await page.evaluate((b) => window.lightWalk(b[0], b[1]), P.walk[1]);
           await sleep(300);
           const m = await measure(SECONDS);
           const st = await state();
-          runs[mode].push({ ...m, state: st });
-          if (r === 0) await page.screenshot({ path: path.join(OUT_DIR, `${room}_${kind}_${mode}.png`), timeout: 180000 });
-          line(`${room} ${kind} ${mode}: ${m.fps.toFixed(2)} fps, frame ${m.ms_median.toFixed(1)} ms (p95 ${m.ms_p95.toFixed(1)}) — mode ${st.mode}${st.is3d ? ` 3d frame ${st.size} @${st.render_scale}` : ""}, walking ${st.walking}`);
+          runs[variant].push({ ...m, state: st });
+          if (r === 0) await page.screenshot({ path: path.join(OUT_DIR, `${room}_${kind}_${variant}.png`), timeout: 180000 });
+          line(`${room} ${kind} ${variant}: ${m.fps.toFixed(2)} fps, frame ${m.ms_median.toFixed(1)} ms (p95 ${m.ms_p95.toFixed(1)}) — mode ${st.mode}${st.is3d ? ` 3d frame ${st.size} @${st.render_scale} msaa ${st.msaa}` : ""}, walking ${st.walking}`);
           if (mode === "3d" && !st.is3d) errors.push(`${room} ${kind}: 3D mode did not start`);
         }
       }
       const agg = (a) => ({ fps: +median(a.map((x) => x.fps)).toFixed(2), ms_median: +median(a.map((x) => x.ms_median)).toFixed(1), ms_p95: +median(a.map((x) => x.ms_p95)).toFixed(1), runs_fps: a.map((x) => +x.fps.toFixed(2)) });
-      const s = agg(runs.sprites), d = agg(runs["3d"]);
-      report.cases[`${room}_${kind}`] = { sprites: s, "3d": d, fps_ratio_3d_to_sprites: +(d.fps / s.fps).toFixed(3) };
-      line(`== ${room} ${kind}: sprites ${s.fps} fps / ${s.ms_median} ms, 3D ${d.fps} fps / ${d.ms_median} ms (ratio ${(d.fps / s.fps).toFixed(3)})`);
+      const out = {};
+      for (const v of VARIANTS) out[v] = agg(runs[v]);
+      const s = out.sprites || out[VARIANTS[0]];
+      for (const v of VARIANTS) if (v !== "sprites" && out.sprites) out[v].fps_ratio_to_sprites = +(out[v].fps / out.sprites.fps).toFixed(3);
+      report.cases[`${room}_${kind}`] = out;
+      const d = out["3d"] || out[VARIANTS[VARIANTS.length - 1]];
+      line(`== ${room} ${kind}: ` + VARIANTS.map((v) => `${v} ${out[v].fps} fps / ${out[v].ms_median} ms`).join(", "));
     }
   }
   report.errors = errors;
