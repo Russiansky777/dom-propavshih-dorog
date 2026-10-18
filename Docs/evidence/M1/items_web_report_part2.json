@@ -1,0 +1,57 @@
+{
+ "checks": [
+  {
+   "ok": true,
+   "msg": "part 2: photo and blue cup on the side table"
+  },
+  {
+   "ok": true,
+   "msg": "the photo on the corner shelf ({\"label\":\"Семейная фотография на полке\",\"visible\":true,\"x\":693,\"y\":311})"
+  },
+  {
+   "ok": true,
+   "msg": "white cup chosen, blue back"
+  },
+  {
+   "ok": true,
+   "msg": "after F5/F9: photo on the shelf, white cup, door unlocked, no key"
+  },
+  {
+   "ok": true,
+   "msg": "H1 → Z2"
+  },
+  {
+   "ok": true,
+   "msg": "the porch door stays open"
+  },
+  {
+   "ok": true,
+   "msg": "Z2 → H1 without the key"
+  },
+  {
+   "ok": true,
+   "msg": "08: the chalk hotspot on the pupil's desk ({\"label\":\"Кусочек мела\",\"visible\":true,\"x\":613,\"y\":783})"
+  },
+  {
+   "ok": true,
+   "msg": "the chalk taken from the desk"
+  },
+  {
+   "ok": true,
+   "msg": "chalk in hand"
+  },
+  {
+   "ok": true,
+   "msg": "written; the chalk stays at the board, not in the bag ()"
+  },
+  {
+   "ok": true,
+   "msg": "V03 mark chosen"
+  },
+  {
+   "ok": true,
+   "msg": "console errors: 0 (Godot warnings, not errors: none)"
+  }
+ ],
+ "failures": []
+}
