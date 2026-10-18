@@ -55,6 +55,42 @@
       },
       "credits_spent": 73,
       "subscription_delta": 0
+    },
+    {
+      "run": "39124518023",
+      "at": "2026-10-18T11:46:24+00:00",
+      "request": "pipeline/requests/voice_rerecord.json",
+      "synthesized": [
+        "Z1.drawings.photo",
+        "agata:Z2.exit_H1.closed",
+        "Z2.exit_H1.unlock",
+        "agata:H1.photo.react_table",
+        "agata:H1.photo.react_shelf",
+        "agata:H1.cups.react_blue",
+        "agata:H1.cups.react_white",
+        "H1.cups.look",
+        "O1.chalk.use",
+        "O1.chalk.look"
+      ],
+      "reprocessed": [],
+      "characters_text": 521,
+      "failed": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16776,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 16892,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 227,
+      "subscription_delta": 116
     }
   ]
 }

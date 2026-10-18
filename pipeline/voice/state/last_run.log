@@ -1,18 +1,38 @@
-run 39087029600 2026-10-18T01:35:49Z requests: pipeline/requests/voice_rerecord.json 
+run 39124518023 2026-10-18T11:46:05Z requests: pipeline/requests/voice_rerecord.json 
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 16703 из 124889 символов
+план: creator (active), израсходовано 16776 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
 === pipeline/requests/voice_rerecord.json
   закадровые фразы без ссылок в данных игры — пропущены: R1.boat.look, agata:O2.mitten.look, agata:O2.mitten.use
   отложены (voice.json → by_speaker.<персонаж>.hold): agata:H1.photo.look
-  манифест ru: H2.hinges_box.use: текст изменён
-  манифест ru: H3.puzzle.intro: текст изменён
-  only_changed: к работе 2 из 108 реплик/фраз запроса
-[rerecord] реплик в сценах запроса: 108; файлов с вариантами голосов: 2; к синтезу: 2 (165 символов); переобработка: 0
-  H2.hinges_box.use narrator  ru           ZAKADR     eleven_v4    Тётиной рукой: «Школьная дверь. Петли» — внутри три штуки.
-  H3.puzzle.intro narrator  ru           ZAKADR     eleven_v4    Три родные петли должны встать по рисунку, зарубка порога — совпасть с отметкой. Тогда можно закрыть дверь.
-  H2.hinges_box.use  синтез: 5.10 с, -17.0 LUFS, TP -5.2 dB (усиление -2.7 dB)
-  H3.puzzle.intro    синтез: 7.99 с, -17.0 LUFS, TP -4.9 dB (усиление -2.7 dB)
-[rerecord] синтезировано 2, переобработано 0, ошибок 0; символов текста 165; списано кредитов (character-cost): 73, изменение счётчика подписки: 0
-validate_voice: манифесты: ru 132 (132 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 5; реплик с тегами: 14; закадровых фраз по правилам voice.json: 119 (с тегами 14), заказаны тексты: ru_E0_E1, ru_bag
-[voice] validate_voice.py: OK (0 ошибок, 0 предупреждений, strict; самопроверка 21/21)
+  манифест ru: H1.cups.look: текст изменён
+  манифест ru: O1.chalk.look: текст изменён
+  манифест ru: O1.chalk.use: текст изменён
+  манифест ru: Z2.exit_H1.closed: текст изменён
+  only_changed: к работе 10 из 114 реплик/фраз запроса
+[rerecord] реплик в сценах запроса: 114; файлов с вариантами голосов: 10; к синтезу: 10 (521 символов); переобработка: 0
+  Z1.drawings.photo narrator  ru           ZAKADR     eleven_v4    Сваи и пластина со снимка узнаются и на наброске Тамары. Но одной картинки мало, чтобы понять, где шёл рейс.
+  agata:Z2.exit_H1.closed agata     ru           Agata      eleven_v4    Заперто. Ключ от тётиного дома — у меня в сумке.
+  Z2.exit_H1.unlock narrator  ru           ZAKADR     eleven_v4    Замок поддался не сразу. Ключ останется в двери — дом снова открыт.
+  agata:H1.photo.react_table agata     ru           Agata      eleven_v4    Пусть стоит у кресла — так все наши рядом.
+  agata:H1.photo.react_shelf agata     ru           Agata      eleven_v4    Пусть стоит на полке — оттуда видна вся комната.
+  agata:H1.cups.react_blue agata     ru           Agata      eleven_v4    Синяя — моя. Пусть ждёт на столике у кресла.
+  agata:H1.cups.react_white agata     ru           Agata      eleven_v4    Белая — моя. Пусть ждёт на столике у кресла.
+  H1.cups.look narrator  ru           ZAKADR     eleven_v4    Синяя и белая. Обе вымыты и ждут на подоконнике.
+  O1.chalk.use narrator  ru           ZAKADR     eleven_v4    Мел с парты оставляет на пальцах белый след.
+  O1.chalk.look narrator  ru           ZAKADR     eleven_v4    На парте лежит кусочек мела.
+  Z1.drawings.photo  синтез: 8.36 с, -17.1 LUFS, TP -5.5 dB (усиление -2.9 dB)
+  agata:Z2.exit_H1.closed синтез: 3.89 с, -17.0 LUFS, TP -5.7 dB (усиление +0.3 dB)
+  Z2.exit_H1.unlock  синтез: 5.51 с, -17.1 LUFS, TP -5.4 dB (усиление -3.3 dB)
+  agata:H1.photo.react_table синтез: 2.92 с, -17.0 LUFS, TP -2.4 dB (усиление +1.2 dB)
+  agata:H1.photo.react_shelf синтез: 3.35 с, -16.9 LUFS, TP -1.9 dB (усиление +0.7 dB)
+  agata:H1.cups.react_blue синтез: 3.54 с, -17.0 LUFS, TP -5.6 dB (усиление -0.1 dB)
+  agata:H1.cups.react_white синтез: 3.52 с, -17.1 LUFS, TP -3.8 dB (усиление +1.0 dB)
+  H1.cups.look       синтез: 4.48 с, -17.0 LUFS, TP -5.6 dB (усиление -3.2 dB)
+  O1.chalk.use       синтез: 3.53 с, -17.0 LUFS, TP -4.9 dB (усиление -2.4 dB)
+  O1.chalk.look      синтез: 2.24 с, -17.1 LUFS, TP -5.8 dB (усиление -3.2 dB)
+[rerecord] синтезировано 10, переобработано 0, ошибок 0; символов текста 521; списано кредитов (character-cost): 227, изменение счётчика подписки: 116
+  предупреждение: Z2.exit_H1.closed: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: запасные записи с устаревшим текстом 1 (ключ сейчас читает другой голос; не перезаписываются): Z2.exit_H1.closed
+validate_voice: манифесты: ru 139 (138 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 5; реплик с тегами: 14; закадровых фраз по правилам voice.json: 130 (с тегами 14), заказаны тексты: ru_E0_E1, ru_bag
+[voice] validate_voice.py: OK (0 ошибок, 2 предупреждений, strict; самопроверка 21/21)
