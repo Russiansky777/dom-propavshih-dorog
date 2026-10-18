@@ -47,6 +47,7 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ambient.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # живой мир: дождь, ветер, вода, следы
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_music.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # музыка: темы комнат, кроссфейд, цикл, события, приглушение, громкость
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_sfx.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # звуки: шаги на кадрах постановки ноги, двери, огонь, дождь, сумка, громкость
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_closeups.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # крупные планы H3 только мышью: дверь (три петли перетаскиванием, брус, ручка), сохранение посреди загадки, зеркало с отражением и снимком
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_voice.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # голос: реплика с файлом звучит, клик обрывает, без файла — субтитры, громкость, Тихон с панорамой
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ui_bag.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # сумка: кармашки, иконки, наведение, выбор, «влёт», листание
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ui_map.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # план Заречья: наезд, «Вы здесь», посещённые, журнал

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/actors/Player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://scripts/ui/game_ui.gd" id="3_ui"]
 [ext_resource type="Script" path="res://scripts/ui/closeup_puzzle.gd" id="4_closeup"]
+[ext_resource type="Script" path="res://scripts/ui/closeup_view.gd" id="5_view"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -18,3 +19,7 @@ script = ExtResource("3_ui")
 
 [node name="Closeup" type="CanvasLayer" parent="."]
 script = ExtResource("4_closeup")
+
+[node name="CloseupView" type="CanvasLayer" parent="."]
+layer = 4
+script = ExtResource("5_view")

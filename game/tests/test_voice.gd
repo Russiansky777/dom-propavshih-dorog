@@ -698,6 +698,7 @@ func _test_narration_puzzle() -> void:
 	await _frames(2)
 	_check(vd.plays == plays0 + 2 and vd.current_line == "H3.puzzle.error", "the second error is a new message: voiced again (plays %d)" % (vd.plays - plays0))
 	sr.puzzle_place("hinge_2", "bottom")
+	sr.puzzle_place("hinge_3", "middle")   # three hinges (Director 18.10)
 	sr.puzzle_set_mark(2)
 	_check(sr.puzzle_check(), "correct placement succeeds")
 	await _frames(2)

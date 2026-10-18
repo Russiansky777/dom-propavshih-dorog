@@ -19,6 +19,10 @@ signal hint_revealed(tier: int, text: String)
 signal item_received(item_id: String)
 ## A hotspot with `panel: {id, sets}` (rooms data) asks the UI to open a panel (e.g. the Zarechye plan).
 signal panel_requested(panel_id: String, source: Node)
+## A hotspot with `view: {...}` (rooms data, e.g. the H3 mirror) shows a look-only close-up while its
+## usual use/look text plays over it (CloseupView); the close-up holds the input until it is closed.
+signal view_opened(spec: Dictionary)
+signal view_closed()
 
 const LOOP_FADE_SECONDS: float = 0.35
 
@@ -28,6 +32,8 @@ var active_scene: String = ""
 var puzzle_open: bool = false
 var puzzle_hotspot: Node2D = null
 var puzzle: Dictionary = {}   # {spec, placed:{slot->piece}, mark:int, errors:int, solved:bool, message, message_key, message_serial, hint}
+var view_open: bool = false
+var view: Dictionary = {}     # the open look-only close-up: the hotspot's `view` spec + "hotspot" id
 
 var _beats: Array[Dictionary] = []
 var _check_queued: bool = false
@@ -37,12 +43,13 @@ var _loop_running: bool = false
 func _ready() -> void:
 	GameState.flag_changed.connect(_on_flag_changed)
 	GameState.state_reset.connect(_on_state_reset)
+	GameState.state_loaded.connect(_on_state_loaded)
 
 
 # --- State queries ----------------------------------------------------------
 
 func is_busy() -> bool:
-	return not current_beat.is_empty() or puzzle_open or _loop_running
+	return not current_beat.is_empty() or puzzle_open or view_open or _loop_running
 
 
 func current_room_id() -> String:
@@ -266,9 +273,29 @@ func _on_state_reset() -> void:
 	current_beat = {}
 	active_scene = ""
 	selected_item = ""
+	var had_puzzle := puzzle_open
+	var had_view := view_open
 	puzzle_open = false
 	puzzle = {}
+	view_open = false
+	view = {}
+	if had_puzzle:
+		puzzle_closed.emit()
+	if had_view:
+		view_closed.emit()
 	beat_changed.emit()
+
+
+## A loaded save rebuilds the room: a close-up left open would act on the previous room. Its progress
+## (hinges in sockets, the threshold) is not part of a save — the required item stays in the bag
+## until the scene that consumes it completes, so nothing is lost or given twice.
+func _on_state_loaded(_slot: String) -> void:
+	close_view()
+	if puzzle_open:
+		puzzle_open = false
+		puzzle_hotspot = null
+		puzzle = {}
+		puzzle_closed.emit()
 
 
 func _queue_check() -> void:
@@ -433,6 +460,10 @@ func interact(h: StoryHotspot) -> void:
 			narrate_key(String(ch["fail_text"]))
 			return
 
+	# Look-only close-up (data `view`): opens first, the use/look text below plays over it.
+	if d.has("view"):
+		open_view(d["view"], h.hotspot_id)
+
 	match _use_state(d):
 		"ready":
 			_run_action(h, d["use"], "")
@@ -557,19 +588,29 @@ func puzzle_place(piece_id: String, slot_id: String) -> void:
 	if not puzzle_open or bool(puzzle.get("solved", false)):
 		return
 	var placed: Dictionary = puzzle["placed"]
+	if slot_id != "" and placed.has(slot_id) and placed[slot_id] != piece_id:
+		return  # a socket holds one hinge: an occupied one is not a target
 	for s in placed.keys():
 		if placed[s] == piece_id:
 			placed.erase(s)
 			break
 	if slot_id != "":
 		placed[slot_id] = piece_id
-	puzzle_state_changed.emit()
+	_puzzle_touched()
 
 
+## Which threshold notch sits under the door's mark: index into marks.positions, -1 = none aligned.
 func puzzle_set_mark(index: int) -> void:
 	if not puzzle_open or bool(puzzle.get("solved", false)):
 		return
 	puzzle["mark"] = index
+	_puzzle_touched()
+
+
+## Any change after a failed «close the door»: the leaf is back in the opening, worked on again.
+func _puzzle_touched() -> void:
+	if String(puzzle.get("view", "")) == "wall":
+		puzzle["view"] = ""
 	puzzle_state_changed.emit()
 
 
@@ -630,6 +671,23 @@ func close_puzzle() -> void:
 	puzzle_closed.emit()
 	if current_beat.is_empty():
 		_next()
+
+
+# --- Look-only close-up (hotspot `view`, e.g. the H3 mirror) -------------------
+
+func open_view(spec: Dictionary, hotspot_id: String = "") -> void:
+	view = spec.duplicate()
+	view["hotspot"] = hotspot_id
+	view_open = true
+	view_opened.emit(view)
+
+
+func close_view() -> void:
+	if not view_open:
+		return
+	view_open = false
+	view = {}
+	view_closed.emit()
 
 
 # --- Hints and journal --------------------------------------------------------

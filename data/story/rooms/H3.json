@@ -28,25 +28,33 @@
         "fail_text": "@H3.puzzle.need",
         "intro": "@H3.puzzle.intro",
         "art": {
-          "_note": "Слои крупного плана из assets/incoming/M05_*.png (1672x941 → 1920x1080, затем offset/scale). Гнёзда — на правой стойке рамы, зарубки — на брусе; верная зарубка — третья (индекс 2).",
+          "_note": "Слои крупного плана из assets/incoming/M05_*.png (1672x941 → 1920x1080, затем offset/scale). Гнёзда — на правой стойке рамы (три выемки рисунка рамы, замерены по пикселям: центры y 162/455/712 листа → 186/438/659 экрана), зарубки — на брусе (x 538/739/936/1139 листа → 469/642/812/987), метка двери — V-вырез низа полотна (x 896, y 892 листа → 777, 817). Верная зарубка — третья (индекс 2, V-образная), как на рисунке Евдокии.",
           "frame": {"image": "res://assets/puzzle/M05/frame.png", "offset": [5, 46], "scale": 0.75},
           "door_leaf": {"image": "res://assets/puzzle/M05/door_leaf.png", "offset": [5, 46], "scale": 0.75},
-          "beam": {"image": "res://assets/puzzle/M05/beam.png", "offset": [5, 177], "scale": 0.75},
+          "beam": {"image": "res://assets/puzzle/M05/beam.png", "offset": [5, 177], "scale": 0.75, "hit": [341, 834, 767, 106]},
           "drawing": {"image": "res://assets/puzzle/M05/drawing.png", "offset": [1353, 31], "scale": 0.42},
-          "hinge": {"image": "res://assets/puzzle/M05/hinge.png", "scale": 0.22},
+          "drawing_caption": [1400, 456, 345, 30],
+          "hinge": {"image": "res://assets/puzzle/M05/hinge.png", "scale": 0.22, "bbox": [991, 282, 369, 537], "size": [100, 130]},
           "opening": [560, 81, 325, 736],
-          "tray": [1400, 500, 440, 150]
+          "tray": [1400, 500, 440, 150],
+          "handle": [572, 398, 84, 80],
+          "_handle_note": "ручка полотна (розетка и рычаг, лист x 668–745, y 415–495): клик закрывает дверь — та же проверка, что кнопка «Закрыть дверь»"
         },
+        "drag": {"snap_px": 60, "click_px": 6, "return_s": 0.25, "_note": "петля защёлкивается, если её центр отпущен ближе snap_px к центру свободного гнезда; иначе возвращается в лоток за return_s. Нажатие без движения (< click_px): петля из лотка «в руку» до следующего клика, поставленная — обратно в лоток"},
         "slots": [
-          {"id": "top", "label": "@H3.puzzle.slot_top", "pos": [916, 196], "correct": true},
-          {"id": "middle", "label": "@H3.puzzle.slot_middle", "pos": [916, 406], "correct": false},
-          {"id": "bottom", "label": "@H3.puzzle.slot_bottom", "pos": [916, 616], "correct": true}
+          {"id": "top", "label": "@H3.puzzle.slot_top", "pos": [918, 186], "correct": true},
+          {"id": "middle", "label": "@H3.puzzle.slot_middle", "pos": [918, 438], "correct": true},
+          {"id": "bottom", "label": "@H3.puzzle.slot_bottom", "pos": [918, 659], "correct": true}
         ],
         "pieces": [
           {"id": "hinge_1", "label": "@H3.puzzle.hinge"},
-          {"id": "hinge_2", "label": "@H3.puzzle.hinge"}
+          {"id": "hinge_2", "label": "@H3.puzzle.hinge"},
+          {"id": "hinge_3", "label": "@H3.puzzle.hinge"}
         ],
-        "marks": {"label": "@H3.puzzle.marks", "positions": [[516, 900], [666, 900], [819, 900], [969, 900]], "correct": 2, "drawing_label": "@H3.puzzle.drawing"},
+        "_pieces_note": "три петли, как на рисунке рамы, полотна и рисунке Евдокии (замечание Директора 18.10); в сумке это один предмет door_hinges — набор (items.json set_count)",
+        "marks": {"label": "@H3.puzzle.marks", "positions": [[469, 842], [642, 842], [812, 842], [987, 842]], "anchor": [777, 817], "correct": 2, "start_shift": 220, "shift_range": [-240, 338], "snap_px": 40, "drawing_label": "@H3.puzzle.drawing",
+          "_note": "positions — зарубки бруса при сдвиге 0; брус двигается мышью по горизонтали (перетаскивание или клик по зарубке), зарубка под меткой двери anchor (ближе snap_px) — выбранная (mark); start_shift — начальный сдвиг, при котором ни одна зарубка не стоит под меткой"},
+        "sounds": {"take": "bag_handle", "snap": "steps_soft", "return": "bag_handle", "beam": "steps_soft", "close_error": "door_light", "close_success": "door_passage", "_note": "существующие звуки sfx.json (без новых генераций): взять петлю, защёлкнуть, вернуть в лоток, брус встал на зарубку, дверь закрыта неверно / верно"},
         "check_label": "@H3.puzzle.check",
         "close_label": "@ui.close",
         "error_text": "@H3.puzzle.error",
@@ -58,8 +66,19 @@
     },
     {
       "id": "mirror_home", "kind": "object", "label": "@H3.mirror_home.label", "rect": [70, 90, 160, 500], "stand": [300, 800], "color": "#9fb4c8", "draw": false,
-      "use": {"sets": ["seen_mirror_home"], "text": "@H3.mirror_home.use", "once_flag": "seen_mirror_home", "scene": "M04"},
-      "look": "@H3.mirror_home.look"
+      "use": {"sets": ["seen_mirror_home", "h3_mirror_looked"], "text": "@H3.mirror_home.use", "once_flag": "h3_mirror_looked", "scene": "M04",
+        "_once_note": "свой флаг первого осмотра: seen_mirror_home выдаёт и сцена M04 (осмотр двери), и тогда текст про старый снимок не показывался никогда — а крупный план показывает именно снимок и отражение"},
+      "look": "@H3.mirror_home.look",
+      "view": {
+        "id": "mirror_home", "type": "mirror", "title": "@H3.mirror_home.label", "close_label": "@ui.close",
+        "_note": "Крупный план по клику (замечание Директора 18.10: «показать то, что описывается»): зеркало ЗГ анфас, вырезанное из фона H3 (стекло-трапеция фона → прямоугольник гомографией, рама и стена — тем же отображением), в стекле живое отражение: галерея за спиной Агаты (SubViewport на мир игры, только комната) и сама Агата лицом к стеклу (её кадры, текущий кадр дыхания и тон света), отражённое слева направо, темнее и холоднее, с волной старого стекла. Зеркало на своём месте — обычное отражение. Рядом — старый снимок: та же стена того же фона в сепии, зеркало на том же месте; ничего не дорисовано. Текст use/look звучит поверх (окно реплики над крупным планом).",
+        "frame": {"image": "res://assets/rooms/H3/bg.png", "glass_quad": [[95, 137.5], [177.5, 167.5], [176, 455], [95, 458.5]], "glass": [300, 714], "margin": [120, 210, 120, 150], "rect": [470, 108, 0, 840],
+          "_note": "glass_quad — углы стекла на фоне (пиксели листа 1672x941: левый верх, правый верх, правый низ, левый низ); glass — стекло анфас (пропорция ≈0.42), margin — рама и стена вокруг (лево, верх, право, низ), rect — где на экране (x, y, ширина 0 = по пропорции, высота)"},
+        "reflection": {"gallery": {"center_x": 776, "top": 60, "height": 1020}, "agata": {"row": 0, "height": 0.92, "feet": 1.22, "x": 0.5}, "tint": "#aebfd6", "tint_amount": 0.55, "dim": 0.8, "haze": 0.16, "waviness": 0.006, "resolution": 1.0,
+          "_note": "gallery — участок комнаты за спиной (координаты комнаты 1920x1080: центр по x, верх, высота; ширина — по пропорции стекла): ниша школьной двери в её текущем состоянии; agata.row 0 — лист «к зрителю» (лицом к стеклу), height — рост в долях высоты стекла, feet — где ступни (ниже края — видна по колени)"},
+        "photo": {"image": "res://assets/rooms/H3/bg.png", "region": [0, 20, 500, 590], "rect": [1130, 200, 440, 0], "angle_deg": -3.0, "border": 18, "label": "@H3.mirror_home.label_photo",
+          "_note": "старый снимок — область фона H3 с той же стеной и зеркалом (пиксели листа), тон сепии шейдером"}
+      }
     },
     {
       "id": "photo_school", "kind": "object", "label": "@H3.photo_school.label", "rect": [1060, 250, 150, 150], "stand": [1130, 790], "color": "#e8e0c8", "draw": false,
@@ -77,5 +96,7 @@
     "M05": {"trigger": "puzzle:school_door"},
     "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges"]}]}
   },
-  "flags": {}
+  "flags": {
+    "h3_mirror_looked": "Агата посмотрела в домашнее зеркало (первый осмотр: старый снимок и отражение)"
+  }
 }

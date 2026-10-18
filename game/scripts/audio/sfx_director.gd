@@ -59,6 +59,7 @@ var _step_players: Array[AudioStreamPlayer] = []
 var _step_i: int = 0
 var _door_player: AudioStreamPlayer
 var _bag_player: AudioStreamPlayer
+var _closeup_player: AudioStreamPlayer
 var _fire: AudioStreamPlayer2D
 var _fire_gain: float = 0.0          # fade envelope 0..1
 var _rain: AudioStreamPlayer
@@ -86,6 +87,7 @@ func _ready() -> void:
 		_step_players.append(_one_shot_player("Step%d" % i))
 	_door_player = _one_shot_player("Door")
 	_bag_player = _one_shot_player("Bag")
+	_closeup_player = _one_shot_player("Closeup")
 	_listener = AudioListener2D.new()
 	_listener.name = "Listener"
 	add_child(_listener)
@@ -244,6 +246,15 @@ func play_bag(kind: String) -> String:
 		push_warning("SfxDirector: no bag sound for kind '%s' (sfx.json bag)" % kind)
 		return ""
 	return _play(_bag_player, sid, "bag", {"bag_kind": kind})
+
+
+## A sound of sfx.json `sounds` by id for a close-up action (rooms data puzzle `sounds`: hinge taken,
+## seated, returned; threshold moved; door closed). Unknown id: a warning, no sound.
+func play_sound(sound_id: String, kind: String = "closeup") -> String:
+	if not sounds.has(sound_id):
+		push_warning("SfxDirector: no sound '%s' (sfx.json sounds)" % sound_id)
+		return ""
+	return _play(_closeup_player, sound_id, kind)
 
 
 func _on_node_added(n: Node) -> void:

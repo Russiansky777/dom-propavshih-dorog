@@ -711,7 +711,9 @@ func _test_walkthrough() -> void:
 		_check(sr.puzzle["hint"] == sd.scene("M05")["hints"][0], "hint after the second error = M05 hints[0], got '%s'" % sr.puzzle["hint"])
 		sr.puzzle_place("hinge_2", "bottom")
 		sr.puzzle_set_mark(2)
-		_check(sr.puzzle_check(), "correct placement must succeed")
+		_check(not sr.puzzle_check(), "two hinges are not enough: the door has three")
+		sr.puzzle_place("hinge_3", "middle")
+		_check(sr.puzzle_check(), "correct placement (three hinges, V notch) must succeed")
 		_check(sr.puzzle["solved"] and sr.puzzle["view"] == "winter", "success shows the winter view")
 		sr.close_puzzle()
 	seen = await bot.finish()
@@ -731,6 +733,7 @@ func _test_walkthrough() -> void:
 	if sr.puzzle_open:
 		sr.puzzle_place("hinge_1", "top")
 		sr.puzzle_place("hinge_2", "bottom")
+		sr.puzzle_place("hinge_3", "middle")
 		sr.puzzle_set_mark(2)
 		_check(sr.puzzle_check(), "puzzle solvable after load")
 		sr.close_puzzle()

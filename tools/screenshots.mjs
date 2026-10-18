@@ -23,7 +23,7 @@ const WEB_DIR = process.env.SHOTS_WEB_DIR ? path.resolve(ROOT, process.env.SHOTS
 const SHOTS_DIR = path.join(ROOT, "build", "shots", "m1");
 const PORT = Number(process.env.SHOTS_PORT || 8765);
 const GL_MODE = process.env.SHOTS_GL || "angle";
-const MODE = process.env.SHOTS_MODE || "full";   // "full" = M01→M08 walkthrough, "h1" = real-art H1 frames, "stride" = 100 ms frame series
+const MODE = process.env.SHOTS_MODE || "full";   // "full" = M01→M08 walkthrough, "h1" = real-art H1 frames, "stride" = 100 ms frame series, "h3" = up to M05: mirror + door close-ups by mouse → Docs/evidence/M1/H3_v2_*.png
 const STRIDE_DIR = path.join(SHOTS_DIR, "stride");
 const STEP_TIMEOUT_MS = 40000;
 
@@ -102,6 +102,16 @@ async function main() {
   const shot = async (name) => {
     shotIndex += 1;
     const file = path.join(SHOTS_DIR, MODE !== "full" ? `${name}.png` : `${String(shotIndex).padStart(2, "0")}_${name}.png`);
+    await page.screenshot({ path: file });
+    shots.push(file);
+    logLine(`screenshot ${path.relative(ROOT, file)}`);
+  };
+  // H3 evidence frames (MODE=h3): Docs/evidence/M1/<name>.png; in the full run — ordinary shots.
+  const EVIDENCE_DIR = path.join(ROOT, "Docs", "evidence", "M1");
+  const evidenceShot = async (name) => {
+    if (MODE !== "h3") return shot(name);
+    fs.mkdirSync(EVIDENCE_DIR, { recursive: true });
+    const file = path.join(EVIDENCE_DIR, `${name}.png`);
     await page.screenshot({ path: file });
     shots.push(file);
     logLine(`screenshot ${path.relative(ROOT, file)}`);
@@ -522,45 +532,101 @@ async function main() {
     await shot("H3_gallery");
     await useHotspot("school_door");
     await waitFor("M04 done", (s) => s.flags.done_M04);
-    await useHotspot("mirror_home");
+    // Mirror ЗГ (Director 18.10: «показать то, что описывается»): the click opens the close-up — the
+    // mirror face-on with a live reflection (Agata, the gallery behind her) and the old photo; the text
+    // plays over it; a click closes it.
+    {
+      const s = await state();
+      await click("hotspot mirror_home", s.hotspots.mirror_home);
+      await waitWalk("mirror_home");
+      await waitFor("mirror close-up open", (t) => t.view && t.view.open && t.view.type === "mirror", 15000);
+      await sleep(900);
+      await evidenceShot("H3_v2_mirror_text");
+      await finishDialogue("mirror_home");
+      await sleep(500);
+      await evidenceShot("H3_v2_mirror");
+      const v = (await state()).view;
+      if (!v.reflection || !v.reflection.shares_world || v.reflection.agata !== "idle_0") failures.push(`mirror reflection: ${JSON.stringify(v.reflection)}`);
+      await click("mirror close-up: click to close", v.blank);
+      await waitFor("mirror close-up closed", (t) => !(t.view && t.view.open) && !t.busy, 6000);
+    }
     await useItemOn("door_hinges", "school_door");
     await waitFor("puzzle open", (s) => s.puzzle && s.puzzle.open);
-    await sleep(500);
+    await sleep(600);
     await shot("puzzle_closeup");
+    await evidenceShot("H3_v2_door_before");
     {
-      let p = (await state()).puzzle;
-      // Wrong attempt: top + middle sockets, first notch.
-      await click("piece hinge_1", p.pieces.hinge_1); await sleep(200);
-      await click("slot top", p.slots.top); await sleep(300);
-      p = (await state()).puzzle;
-      await click("piece hinge_2", p.pieces.hinge_2); await sleep(200);
-      await click("slot middle", p.slots.middle); await sleep(300);
-      await click("mark 0", p.marks[0]); await sleep(200);
-      await click("check (wrong)", p.check);
-      await waitFor("wall shown after the first error", (s) => s.puzzle.view === "wall" && s.puzzle.errors === 1, 8000);
-      await sleep(300);
+      // Everything with REAL mouse drags (Director 18.10): hinges from the tray into the frame's
+      // sockets, the threshold slid under the door's mark, the door closed by its handle.
+      const P = async () => (await state()).puzzle;
+      const drag = async (label, from, to, opts = {}) => {
+        const steps = opts.steps || 14;
+        logLine(`drag ${label} (${Math.round(from.x)}, ${Math.round(from.y)}) → (${Math.round(to.x)}, ${Math.round(to.y)})`);
+        await page.mouse.move(from.x, from.y);
+        await sleep(60);
+        await page.mouse.down();
+        for (let k = 1; k <= steps; k++) {
+          await page.mouse.move(from.x + (to.x - from.x) * k / steps, from.y + (to.y - from.y) * k / steps);
+          await sleep(20);
+        }
+        if (opts.beforeUp) await opts.beforeUp();
+        await page.mouse.up();
+        await sleep(450);
+      };
+      const near = (a, b, d = 3) => a && b && Math.hypot(a.x - b.x, a.y - b.y) <= d;
+      let p = await P();
+      if (Object.keys(p.pieces || {}).length !== 3) failures.push(`three hinges in the tray expected, got ${JSON.stringify(Object.keys(p.pieces || {}))}`);
+      // A miss: dropped away from the sockets → back to the tray.
+      await drag("hinge_1 → nowhere (miss)", p.pieces.hinge_1, { x: 720, y: 300 });
+      await waitFor("missed hinge back in the tray", (t) => t.puzzle && Object.keys(t.puzzle.placed).length === 0 && near(t.puzzle.pieces.hinge_1, t.puzzle.tray.hinge_1), 5000);
+      p = await P();
+      await drag("hinge_1 → top", p.pieces.hinge_1, { x: p.slots.top.x + 16, y: p.slots.top.y + 12 });
+      await waitFor("hinge_1 in the top socket", (t) => t.puzzle.placed.top === "hinge_1", 5000);
+      p = await P();
+      await drag("hinge_2 → bottom", p.pieces.hinge_2, { x: p.slots.bottom.x - 12, y: p.slots.bottom.y + 18 });
+      await waitFor("hinge_2 in the bottom socket", (t) => t.puzzle.placed.bottom === "hinge_2", 5000);
+      // Threshold: drag the beam so the V notch comes under the door's mark (snaps within 40 px).
+      p = await P();
+      await drag("beam: V notch under the door's mark", p.beam, { x: p.beam.x + (p.anchor.x - p.marks[2].x) + 14, y: p.beam.y }, { steps: 10 });
+      await waitFor("V notch aligned", (t) => t.puzzle.mark === 2, 5000);
+      // Two hinges only: the door does not hold (three are needed).
+      p = await P();
+      await click("door handle (two hinges)", p.handle);
+      await waitFor("wall after the first error", (s) => s.puzzle.view === "wall" && s.puzzle.errors === 1, 8000);
+      await sleep(250);
+      await evidenceShot("H3_v2_door_wrong_wall");
       await shot("puzzle_wrong_wall");
-      await click("check (wrong again)", p.check);
+      await sleep(1700);
+      // Third hinge: photographed mid-drag (the target socket glows).
+      p = await P();
+      await drag("hinge_3 → middle", p.pieces.hinge_3, { x: p.slots.middle.x + 14, y: p.slots.middle.y - 10 }, {
+        beforeUp: async () => { await sleep(150); await evidenceShot("H3_v2_door_dragging"); } });
+      await waitFor("hinge_3 in the middle socket", (t) => t.puzzle.placed.middle === "hinge_3", 5000);
+      // A wrong (straight) notch: no.
+      p = await P();
+      await drag("beam: straight notch 1 under the mark", p.beam, { x: p.beam.x + (p.anchor.x - p.marks[1].x) - 10, y: p.beam.y }, { steps: 10 });
+      await waitFor("notch 1 under the mark", (t) => t.puzzle.mark === 1, 5000);
+      p = await P();
+      await click("door handle (wrong notch)", p.handle);
       await waitFor("hint after the second error", (s) => s.puzzle.errors === 2 && s.puzzle.hint, 8000);
-      // Fix: move hinge_2 to the bottom socket, notch 2.
-      p = (await state()).puzzle;
-      await click("slot middle (return piece)", p.slots.middle);
-      const mid = p.slots.middle;
-      // The probe republishes after layout; wait until hinge_2 is back in the tray, not on the slot.
-      await waitFor("hinge_2 back in the tray", (t) => t.puzzle && t.puzzle.pieces.hinge_2 &&
-        Math.hypot(t.puzzle.pieces.hinge_2.x - mid.x, t.puzzle.pieces.hinge_2.y - mid.y) > 40, 5000);
-      p = (await state()).puzzle;
-      await click("piece hinge_2", p.pieces.hinge_2); await sleep(200);
-      await click("slot bottom", p.slots.bottom); await sleep(300);
-      await click("mark 2", p.marks[2]); await sleep(200);
-      await click("check (correct)", p.check);
-      await waitFor("puzzle solved (winter view)", (s) => s.puzzle.solved && s.puzzle.view === "winter", 8000);
+      await sleep(1800);
+      // A click on the V notch brings it under the mark; the handle closes the door.
+      p = await P();
+      await click("V notch (click)", p.marks[2]);
+      await waitFor("V notch aligned by click", (t) => t.puzzle.mark === 2, 5000);
       await sleep(400);
+      await evidenceShot("H3_v2_door_ready");
+      p = await P();
+      await click("door handle (correct)", p.handle);
+      await waitFor("puzzle solved (winter view)", (s) => s.puzzle.solved && s.puzzle.view === "winter", 8000);
+      await sleep(500);
+      await evidenceShot("H3_v2_door_after");
       await shot("puzzle_solved_winter");
-      await waitFor("puzzle closed", (s) => !(s.puzzle && s.puzzle.open), 15000);
+      await waitFor("puzzle closed", (s) => !(s.puzzle && s.puzzle.open), 20000);
       await finishDialogue("M05");
     }
     await waitFor("M05 done", (s) => s.flags.done_M05 && !s.inventory.includes("door_hinges"));
+    if (MODE === "h3") throw { h1done: true };
 
     // --- O1 (M06, M07, V03) ---
     if (!(await goExit("O1"))) failures.push("H3→O1 failed");

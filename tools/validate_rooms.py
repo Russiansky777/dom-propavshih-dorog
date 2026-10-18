@@ -280,6 +280,78 @@ def exit_cue(ex: dict, rect):
     return d, at, src, edges_
 
 
+SFX_SOUNDS = set(load(STORY / "sfx.json").get("sounds", {}).keys()) if (STORY / "sfx.json").exists() else set()
+
+
+def check_match_marks_mouse(ctx: str, pz: dict) -> None:
+    """Крупный план match_marks мышью (closeup_puzzle.gd, Директор 18.10): гнёзда — разные точки дальше
+    двух радиусов защёлкивания друг от друга (иначе петля «прилипает» не туда); число деталей = набор
+    предмета (items.json set_count); у бруса есть метка двери anchor, при start_shift ни одна зарубка не
+    стоит под ней, а верную можно подвести в пределах shift_range; звуки — из sfx.json."""
+    snap = float(pz.get("drag", {}).get("snap_px", 60))
+    slots = pz.get("slots", [])
+    for i, a in enumerate(slots):
+        for b in slots[i + 1:]:
+            d = ((a["pos"][0] - b["pos"][0]) ** 2 + (a["pos"][1] - b["pos"][1]) ** 2) ** 0.5
+            if d <= 2 * snap:
+                err(f"{ctx}: гнёзда {a['id']} и {b['id']} ближе 2×snap_px ({d:.0f} ≤ {2 * snap:.0f})")
+    for it in pz.get("requires", {}).get("items", []):
+        n = items.get(it, {}).get("set_count")
+        if n is not None and n != len(pz.get("pieces", [])):
+            err(f"{ctx}: деталей {len(pz.get('pieces', []))}, а в наборе {it} (items.json set_count) — {n}")
+    mk = pz.get("marks", {})
+    pos = mk.get("positions", [])
+    if "anchor" in mk and pos:
+        ax = mk["anchor"][0]
+        msnap = float(mk.get("snap_px", 40))
+        start = float(mk.get("start_shift", 0))
+        lo, hi = mk.get("shift_range", [-1e9, 1e9])
+        for i, p in enumerate(pos):
+            if abs(p[0] + start - ax) <= msnap:
+                err(f"{ctx}.marks: при start_shift {start:.0f} зарубка {i} уже под меткой двери — загадка решена до начала")
+        need = ax - pos[mk.get("correct", 0)][0]
+        if not (lo <= need <= hi):
+            err(f"{ctx}.marks: верную зарубку не подвести под метку: нужен сдвиг {need:.0f}, shift_range {lo}..{hi}")
+    for k, sid in (pz.get("sounds") or {}).items():
+        if not k.startswith("_") and SFX_SOUNDS and sid not in SFX_SOUNDS:
+            err(f"{ctx}.sounds.{k}: звука {sid} нет в sfx.json (новых звуков не заводим)")
+
+
+def check_view(ctx: str, v: dict) -> None:
+    """Крупный план «посмотреть» (closeup_view.gd): зеркало — 4 угла стекла внутри картинки фона, стекло
+    и поля положительные; снимок — область внутри картинки; тексты есть."""
+    for key in ("title", "close_label"):
+        if key in v:
+            check_text(f"{ctx}.{key}", v[key])
+    if v.get("type") == "mirror":
+        fr = v.get("frame", {})
+        check_res_path(ctx + ".frame.image", fr.get("image", ""))
+        size = png_size(fr.get("image", ""))
+        quad = fr.get("glass_quad", [])
+        if len(quad) != 4:
+            err(f"{ctx}.frame.glass_quad: нужно 4 угла стекла")
+        elif size:
+            for p in quad:
+                if not (0 <= p[0] <= size[0] and 0 <= p[1] <= size[1]):
+                    err(f"{ctx}.frame.glass_quad: угол {p} вне картинки {size}")
+        if any(x <= 0 for x in fr.get("glass", [0, 0])):
+            err(f"{ctx}.frame.glass: размеры стекла должны быть > 0")
+        ag = v.get("reflection", {}).get("agata", {})
+        if not (0 <= int(ag.get("row", 0)) < 8):
+            err(f"{ctx}.reflection.agata.row: строка листа 0..7")
+    if "photo" in v:
+        ph = v["photo"]
+        check_res_path(ctx + ".photo.image", ph.get("image", ""))
+        size = png_size(ph.get("image", ""))
+        r = ph.get("region", [])
+        if len(r) != 4 or r[2] <= 0 or r[3] <= 0:
+            err(f"{ctx}.photo.region: нужно [x, y, w, h]")
+        elif size and (r[0] < 0 or r[1] < 0 or r[0] + r[2] > size[0] or r[1] + r[3] > size[1]):
+            err(f"{ctx}.photo.region {r} вне картинки {size}")
+        if "label" in ph:
+            check_text(ctx + ".photo.label", ph["label"])
+
+
 def walkable_of(room: dict):
     if "walkable" in room:
         return room["walkable"]
@@ -709,6 +781,9 @@ for rid, room in rooms.items():
                 mk = pz.get("marks", {})
                 if not (0 <= mk.get("correct", -1) < len(mk.get("positions", []))):
                     err(f"{hctx}.puzzle: marks.correct вне диапазона")
+                check_match_marks_mouse(hctx + ".puzzle", pz)
+        if "view" in h:
+            check_view(hctx + ".view", h["view"])
 
     # сцены комнаты
     for sid, spec in room.get("scenes", {}).items():
