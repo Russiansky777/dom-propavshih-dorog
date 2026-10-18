@@ -12,10 +12,12 @@ extends SceneTree
 ##     armrest; a click on his body picks him; M03 still starts with the third step (scarf), plays his
 ##     lines once, does not repeat after loading, grants nothing twice, and he stays in the armchair;
 ##   - «полка … широкой частью прилегать к печи»: after Q04 A he sits on the shelf on the stove side face
-##     (layer on the face, not a bench in the room), after Q04 B on the shelf over the oven door with the
-##     tail away from the hot door; the hotspot follows him (states rect/stand); a loaded save puts him back;
-##   - «дырки для полки должны быть изначально»: the sockets layer is visible until the shelf is on the
-##     stove and hidden after; the stove look text mentions them;
+##     (layer on the face, not a bench in the room); after Q04 B (coordinator 18.10: the ChatGPT B shelf
+##     hung over the hot oven door) on the shelf on the wall left of the porch door above the side table —
+##     off the stove and the oven door, the tail away from the stove; the hotspot follows him (states
+##     rect/stand); a loaded save puts him back;
+##   - «дырки для полки должны быть изначально»: the sockets layers (stove side, wall by the table) are
+##     visible until their shelf is installed and hidden after; the stove look text mentions them;
 ##   - «быть побольше»: ≈ 0.33 of Agata's height at his floor depth;
 ##   - exits: the only door drawn in H1 leads to the porch (Z2, cue door); the gallery has no door in the
 ##     art — mark «down» at the bottom edge (behind the viewer); the attic — mark «up» under the ceiling in
@@ -73,7 +75,7 @@ func _run() -> void:
 	await _test("Tikhon is in H1 from the start: in the armchair (on the cushion, above the chair, under the near armrest), ≈0.33 of Agata, clickable", _test_tikhon_start)
 	await _test("M03 from the armchair: starts with the third step as before, his lines once, nothing twice, not again after loading", _test_m03_once)
 	await _test("Q04 A: shelf on the stove side face, sockets hidden, Tikhon on the shelf (hotspot follows), loaded save keeps him there", _test_q04_a)
-	await _test("Q04 B: Tikhon on the shelf over the oven door, tail away from the hot door; the side-face sockets stay", _test_q04_b)
+	await _test("Q04 B: the shelf on the wall by the table (off the stove and the oven door), Tikhon on it, tail away from the stove; sockets", _test_q04_b)
 	await _test("Exits: the drawn door → porch (cue door), gallery behind the viewer (mark down), attic up under the ceiling by the stove; a click on the attic mark goes up to H4", _test_exits)
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -270,7 +272,8 @@ func _test_tikhon_start() -> void:
 	_check(room.pick(body) == hs, "a click on his body %s picks Tikhon" % str(body.round()))
 	_check(_rect_of(hs).has_point(t.global_position + Vector2(0, -2)), "his hotspot rect %s is on the figure (feet %s)" % [str(_rect_of(hs)), str(t.global_position)])
 	# Sockets visible, no shelf yet.
-	_check(_layer_visible(room, "holes_stove") and not _layer_visible(room, "shelf_stove") and not _layer_visible(room, "shelf_table"), "sockets on the stove, no shelf before Q04")
+	_check(_layer_visible(room, "holes_stove") and _layer_visible(room, "holes_table") and not _layer_visible(room, "shelf_stove") and not _layer_visible(room, "shelf_table"),
+		"sockets in both places (stove side, wall by the table), no shelf before Q04")
 
 
 func _test_m03_once() -> void:
@@ -361,16 +364,34 @@ func _test_q04_b() -> void:
 	var room: Node = await _enter(["done_M03", "started_M03", "met_tikhon", "house_open", "stove_lit", "h1_shutter_open", "h1_scarf_removed", "q04_shelf_table", "done_Q04"])
 	var t := _puppet(room)
 	var e := _place_entry(["q04_shelf_table"])
-	_check(t != null and t.global_position.is_equal_approx(Vector2(e["feet"][0], e["feet"][1])), "Q04 B: Tikhon on the shelf over the oven door %s" % str(e.get("feet")))
-	_check(_layer_visible(room, "shelf_table") and _layer_visible(room, "holes_stove"), "B: its shelf is shown, the side-face sockets stay (the other mount)")
-	# Tail away from the hot door (scenario Q04): drawn facing left, the tail goes right → not mirrored,
-	# and his feet are right of the door's middle.
-	_check(t.scale.x > 0.0, "B: not mirrored — the tail goes right, away from the oven door")
-	_check(t.global_position.x > 250.0, "B: he sits right of the door middle (x %.0f)" % t.global_position.x)
+	_check(t != null and t.global_position.is_equal_approx(Vector2(e["feet"][0], e["feet"][1])), "Q04 B: Tikhon on the shelf by the table %s" % str(e.get("feet")))
+	_check(_layer_visible(room, "shelf_table") and not _layer_visible(room, "holes_table") and _layer_visible(room, "holes_stove"),
+		"B: its shelf is shown over its own sockets; the stove-side sockets stay (the other mount)")
+	# Defect «полка B над горячей дверцей» (scenario Q04: the tail must not be near the hot door): the B
+	# shelf is on the wall by the table — its layer does not touch the stove (click rect) nor the oven door.
+	var lay: Sprite2D = room.get_node("Layers/shelf_table/Image")
+	var img: Image = lay.texture.get_image()
+	if img.is_compressed():
+		img.decompress()
+	var used: Rect2i = img.get_used_rect()
+	var box := Rect2(lay.global_position + Vector2(used.position) * lay.scale, Vector2(used.size) * lay.scale)
+	var stove_r := _rect_of(_hotspot(room, "stove"))
+	var oven_door := Rect2(130, 400, 185, 180)
+	_check(not box.intersects(stove_r) and not box.intersects(oven_door), "the B shelf %s is off the stove %s and the oven door" % [str(box), str(stove_r)])
+	_check(box.position.x > 600.0 and box.end.x < 860.0 and box.end.y < 540.0, "the B shelf is on the wall left of the porch door, above the side table (box %s)" % str(box))
+	# He sits on it: feet on the plank (opaque right under them), not hanging; the tail goes right — away
+	# from the stove (drawn facing left, not mirrored), his body clear of the stove rect.
+	_check(box.has_point(t.global_position), "his feet %s are on the B shelf (box %s)" % [str(t.global_position), str(box)])
+	var q: Vector2 = (t.global_position + Vector2(0, 4) - lay.global_position) / lay.scale
+	_check(img.get_pixelv(Vector2i(q)).a > 0.5, "the B shelf is opaque right under his feet (does not hang in the air)")
+	_check(t.scale.x > 0.0 and t.global_position.x - t.figure_height_px() * 0.4 > stove_r.end.x, "B: tail to the right, away from the stove; he is clear of it (x %.0f)" % t.global_position.x)
 	await physics_frame
 	var hs := _hotspot(room, "tikhon")
 	var body: Vector2 = t.global_position + Vector2(0, -t.figure_height_px() * 0.45)
 	_check(room.pick(body) == hs, "B: a click on his body picks Tikhon")
+	var done := _hotspot(room, "shelf_done")
+	_check(done != null and room.pick(Vector2(t.global_position.x - 30, t.global_position.y + 18)) == done, "B: a click on the shelf under him picks the installed shelf")
+	print("        shelf B: feet %s, height %.0f px, layer %s" % [str(t.global_position), t.figure_height_px(), str(box)])
 
 
 func _test_exits() -> void:

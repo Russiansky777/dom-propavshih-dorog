@@ -8,9 +8,13 @@
       длинная задняя кромка — вдоль грани, ближний к зрителю конец больше дальнего. Плюс мягкая тень на
       побелке, кочерги у угла печи остаются перед полкой (вырез по тёмному железу фона).
   state_holes_stove.png — гнёзда креплений на боковой грани там, где встанет полка A (видны, пока её нет),
-      и едва заметный след снятых опор (побелку обновляли вокруг них: «вещи помнят место»). Под полку B
-      (чело печи над дверцей) гнёзд нет: при stove_lit тот участок перерисовывает слой открытой дверцы
-      state_stove_open (другой масштаб, створка слева) — гнёзда то пропадали бы, то легли бы на створку;
+      и едва заметный след снятых опор (побелку обновляли вокруг них: «вещи помнят место»);
+  state_shelf_table.png — полка B «у стола» (Q04 B). Рисунок ChatGPT assets/incoming/H1_state_shelf_table.png
+      висел на челе печи над дверцей, а по сценарию Q04 хвост Тихона не должен быть у горячей дверцы
+      (координатор 18.10). Полка перенесена на заднюю стену слева от двери на крыльцо — под угловые полки с
+      кувшинами, над кадкой, в кадре прямо над столиком; стена фронтальна, поэтому преобразование —
+      масштаб по глубине стены (210,6 px/м у пола y 590) и мягкая тень влево-вниз (свет из окна справа);
+  state_holes_table.png — два гнезда и след опор под полку B на той же стене (видны, пока её нет);
   fg_chair_arm.png      — ближний подлокотник кресла (вырез из fg_table_chair.png, тот же холст): рисуется
       над Тихоном, когда он сидит в кресле (порядок: кресло z 950 < Тихон < подлокотник).
 
@@ -38,6 +42,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "game" / "assets" / "rooms" / "H1"
 SRC_SHELF = ROOT / "assets" / "incoming" / "H1_state_shelf_stove.png"
+SRC_SHELF_B = ROOT / "assets" / "incoming" / "H1_state_shelf_table.png"
 BG = ROOT / "game" / "assets" / "rooms" / "H1" / "bg.png"
 CHAIR = ROOT / "game" / "assets" / "rooms" / "H1" / "fg_table_chair.png"
 
@@ -61,6 +66,21 @@ SRC_TOP, SRC_BOT = -80.0, 140.0   # поля исходного четырёху
 
 # Гнёзда A: на стене под кронштейнами, (глубина d, высота h) в метрах.
 HOLES_A = [(0.27, 0.70), (0.27, 0.63), (0.88, 0.70)]
+# Полка B «у стола» (координатор 18.10: по сценарию Q04 хвост не у горячей дверцы, а рисунок ChatGPT висел над
+# ней на челе печи): задняя стена слева от двери на крыльцо, под угловыми полками с кувшинами, над кадкой —
+# в кадре прямо над столиком. Стена фронтальна (параллельна кадру): перспектива сводится к масштабу по
+# глубине стены — пол у стены y 590 (низ двери), 210,6 px фона/м (камера 1,04 м). Свободный участок
+# побелки x 637–716 (левее — лежанка, правее — косяк двери), низ кронштейнов выше кадки (y 460).
+BACK_FLOOR_Y = 590.0
+PX_M_BACK = (BACK_FLOOR_Y - 371.0) / CAM_H
+B_X0, B_X1 = 637.0, 716.0           # концы доски, px фона
+B_TOP_H = 0.75                      # верх доски над полом, м
+# Исходный рисунок B: доска x 47–333, верхняя кромка y 294 (холст 1672x941, по альфе).
+SRC_B_A = (47.0, 294.0)
+SRC_B_B = (333.0, 294.0)
+SRC_B_TOP, SRC_B_BOT = -40.0, 100.0
+# Гнёзда B — на полосах кронштейнов у стены (x по прямой кромке кронштейна), чуть ниже доски.
+HOLES_B = [(644.0, 444.0), (703.0, 444.0)]
 # Кочерги у угла печи (железо темнее LUM_IRON) — перед полкой.
 POKER_BOX = (325, 400, 385, 520)
 LUM_IRON = 72
@@ -201,6 +221,52 @@ def build_holes_a() -> Image.Image:
     return img
 
 
+def back_y(h: float) -> float:
+    """y на задней стене (фронтальной) для высоты h м над полом."""
+    return 371.0 + (CAM_H - h) * PX_M_BACK
+
+
+def shelf_b_transform():
+    import cv2
+    s_len = SRC_B_B[0] - SRC_B_A[0]
+    k = (B_X1 - B_X0) / s_len                       # px фона на px рисунка
+    s = np.float32([[SRC_B_A[0], SRC_B_A[1] + SRC_B_TOP], [SRC_B_B[0], SRC_B_B[1] + SRC_B_TOP],
+                    [SRC_B_B[0], SRC_B_B[1] + SRC_B_BOT], [SRC_B_A[0], SRC_B_A[1] + SRC_B_BOT]])
+    y0 = back_y(B_TOP_H)
+    t = np.float32([[B_X0, y0 + SRC_B_TOP * k], [B_X1, y0 + SRC_B_TOP * k],
+                    [B_X1, y0 + SRC_B_BOT * k], [B_X0, y0 + SRC_B_BOT * k]])
+    return cv2.getPerspectiveTransform(s, t), k
+
+
+def build_shelf_b() -> Image.Image:
+    src = np.array(Image.open(SRC_SHELF_B).convert("RGBA"))
+    src[src[..., 3] < 24] = 0
+    m, _ = shelf_b_transform()
+    shelf = Image.fromarray(warp_rgba(src, m), "RGBA")
+    alpha = shelf.getchannel("A")
+    # Тень на стене: свет из окна справа скользит по задней стене — тень влево и вниз, мягкая.
+    sh_a = ImageChops.offset(alpha, -3, 4).filter(ImageFilter.GaussianBlur(3.5)).point(lambda v: int(v * 0.45))
+    shadow = Image.merge("RGBA", (*Image.new("RGB", (W, H), (40, 28, 18)).split(), sh_a))
+    out = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    out.alpha_composite(shadow)
+    out.alpha_composite(shelf)
+    return out
+
+
+def build_holes_b() -> Image.Image:
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    k = (B_X1 - B_X0) / (SRC_B_B[0] - SRC_B_A[0])
+    y_plank = back_y(B_TOP_H) + 20.0 * k
+    y_low = back_y(B_TOP_H) + 92.0 * k
+    for x, _y in HOLES_B:
+        ghost(img, [(x - 4, y_plank), (x + 4, y_plank), (x + 4, y_low), (x - 4, y_low)], 0.8)
+    ghost(img, [(B_X0 + 2, back_y(B_TOP_H) - 1), (B_X1 - 2, back_y(B_TOP_H) - 1), (B_X1 - 2, back_y(B_TOP_H) + 3), (B_X0 + 2, back_y(B_TOP_H) + 3)], 0.6)
+    r = 0.02 * PX_M_BACK
+    for i, (x, y) in enumerate(HOLES_B):
+        socket(img, x, y, r * 0.9, r, 0.6, 51 + i)
+    return img
+
+
 def build_chair_arm() -> Image.Image:
     ch = Image.open(CHAIR).convert("RGBA")
     mask = Image.new("L", ch.size, 0)
@@ -214,6 +280,8 @@ def outputs() -> dict[str, Image.Image]:
     return {
         "state_shelf_stove.png": build_shelf(),
         "state_holes_stove.png": build_holes_a(),
+        "state_shelf_table.png": build_shelf_b(),
+        "state_holes_table.png": build_holes_b(),
         "fg_chair_arm.png": build_chair_arm(),
     }
 
@@ -227,6 +295,10 @@ def geometry() -> dict:
         "shelf_a_top_mid_front": screen(wall_xy((d0 + d1) / 2, SHELF_TOP_H, 0.12)),
         "shelf_a_floor_mid": screen(wall_xy((d0 + d1) / 2, 0.0, 0.12)),
         "holes_a": [screen(wall_xy(d, h)) for d, h in HOLES_A],
+        "shelf_b_top_left": screen((B_X0, back_y(B_TOP_H))),
+        "shelf_b_top_right": screen((B_X1, back_y(B_TOP_H))),
+        "shelf_b_floor_y": round(BACK_FLOOR_Y * ART, 1),
+        "holes_b": [screen(p) for p in HOLES_B],
     }
 
 
