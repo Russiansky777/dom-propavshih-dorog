@@ -97,7 +97,7 @@ jobs:
           f="${{ steps.req.outputs.file }}"
           tris=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('tris',50000))" "$f")
           drop=$(python -c "import json,sys;print(' '.join(json.load(open(sys.argv[1])).get('drop_clips',[])))" "$f")
-          extras=$(ls assets/characters/$n/rt3d/${n}_extra_r*.glb 2>/dev/null | tr '\n' ' ')
+          extras=$(ls assets/characters/$n/rt3d/${n}_extra_r*.glb 2>/dev/null | tr '\n' ' ' || true)
           python pipeline/3d/build_rt3d_glb.py --base assets/characters/$n/rt3d/$n.glb ${extras:+--extra $extras} \
             --tris "$tris" ${drop:+--drop $drop} --out assets/characters/$n/rt3d/${n}_rt.glb \
             --check-out pipeline/3d/state/${n}_rt_check.json 2>&1 | grep -v "render  *| Saved" | tee -a pipeline/3d/state/rt3d_last_run.log
