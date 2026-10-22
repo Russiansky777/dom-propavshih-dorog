@@ -2,40 +2,17 @@
 	zero length node found: Spine1
 	zero length node found: LeftHand
 	zero length node found: RightHand
-0.0160
-	importing to blender...Done in 0.1485
+0.0167
+	importing to blender...Done in 0.1540
 [cmu_113_25_walk] источник cmu:Sequence-113-128/113/Data/113_25.zip!113_25.bvh: кадры сцены 4.0–345.5 (5.69 с), костей 31
   калибровка головы: {'yaw_deg': 53.6, 'roll_deg': 16.6, 'after_yaw_deg': -0.2, 'after_roll_deg': -5.8}
-  семейство cmu, поворот к −Y 0.0°, масштаб 0.0507, путь таза 3.40 м, на месте: False
+  семейство cmu, поворот к −Y 0.0°, масштаб 0.0507, путь таза 3.40 м (итог 3.36 м), на месте: False
   петля: {'a': 84, 'b': 161, 'cycles': 1, 'cost': 68.51, 'straight': True, 'heading_change_deg': 3.5, 'hips_yaw_change_deg': 6.5, 'path_dev_m': 0.019, 't0_s': np.float64(1.45), 'src_frame0': 88.0, 'src_frame1': 165.0, 'period_s': np.float64(1.2833), 'frames_out': 31, 'time_scale': np.float64(1.0065)}
 {"frames": 31, "speed_mps": 0.906, "feet_raw": {"L": {"slide_mm_max": 30.7, "slide_mm_median": 30.7, "contacts": 1, "toe_out_deg": -15.3}, "R": {"slide_mm_max": 17.8, "slide_mm_median": 17.8, "contacts": 1, "toe_out_deg": -11.3}}, "feet": {"L": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 2, "toe_out_deg": -15.3}, "R": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 1, "toe_out_deg": -11.5}}, "feet_extra": {"L": {"sole_min_mm": -0.0, "toe_out_max_deg": 12.5, "toe_out_min_deg": -90.2}, "R": {"sole_min_mm": -0.0, "toe_out_max_deg": 19.9, "toe_out_min_deg": -56.7}}, "hips_yaw_range_deg": 10.0, "hip_drop_max_m": 0.0194}
 /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:86: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
   mat.use_nodes = True
 /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:115: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
   world.use_nodes = True
-Traceback (most recent call last):
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 298, in <module>
-    sys.exit(main())
-             ~~~~^^
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 269, in main
-    ok = encode(work, mp4, dur, args.max_bytes)
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 287, in encode
-    subprocess.run(base + ["-pass", "1", "-passlogfile", log, "-an", "-f", "mp4", "/dev/null"], check=True)
-    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 555, in run
-    with Popen(*popenargs, **kwargs) as process:
-         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1040, in __init__
-    self._execute_child(args, executable, preexec_fn, close_fds,
-    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                        pass_fds, cwd, env,
-                        ^^^^^^^^^^^^^^^^^^^
-    ...<5 lines>...
-                        gid, gids, uid, umask,
-                        ^^^^^^^^^^^^^^^^^^^^^^
-                        start_new_session, process_group)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1992, in _execute_child
-    raise child_exception_type(errno_num, err_msg, err_filename)
-FileNotFoundError: [Errno 2] No such file or directory: 'ffmpeg'
+x264 1652 кбит/с → 1306389 байт
+{"id": "cmu_113_25_walk", "mp4": "cmu_113_25_walk.mp4", "bytes": 1306389, "duration_s": 6.458, "frames": 155, "loop_frames": 31, "loops": 5, "size_ok": true}
 кадров отрендерено: 155

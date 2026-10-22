@@ -1,37 +1,14 @@
-	parsing bvh '/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/_src/100style/100STYLE/Depressed/Depressed_FW.bvh'...0.1957
-	importing to blender...Done in 1.2574
+	parsing bvh '/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/_src/100style/100STYLE/Depressed/Depressed_FW.bvh'...0.2878
+	importing to blender...Done in 2.1425
 [s100_depressed_fw] источник 100style:100STYLE/Depressed/Depressed_FW.bvh: кадры сцены 410.0–9154.0 (145.73 с), костей 23
   калибровка головы: {'yaw_deg': 5.3, 'roll_deg': 15.5, 'after_yaw_deg': 1.1, 'after_roll_deg': 2.5}
-  семейство 100style, поворот к −Y 0.0°, масштаб 0.0082, путь таза 72.85 м, на месте: False
+  семейство 100style, поворот к −Y 0.0°, масштаб 0.0082, путь таза 72.85 м (итог 0.93 м), на месте: False
   петля: {'a': 5944, 'b': 6030, 'cycles': 1, 'cost': 40.34, 'straight': True, 'heading_change_deg': 0.9, 'hips_yaw_change_deg': 7.1, 'path_dev_m': 0.03, 't0_s': np.float64(99.067), 'src_frame0': 6354.0, 'src_frame1': 6440.0, 'period_s': np.float64(1.4333), 'frames_out': 34, 'time_scale': np.float64(0.9884)}
 {"frames": 34, "speed_mps": 0.627, "feet_raw": {"L": {"slide_mm_max": 7.8, "slide_mm_median": 7.8, "contacts": 1, "toe_out_deg": 1.0}, "R": {"slide_mm_max": 14.0, "slide_mm_median": 14.0, "contacts": 1, "toe_out_deg": 22.3}}, "feet": {"L": {"slide_mm_max": 0.5, "slide_mm_median": 0.5, "contacts": 1, "toe_out_deg": 2.0}, "R": {"slide_mm_max": 2.4, "slide_mm_median": 1.2, "contacts": 2, "toe_out_deg": 21.1}}, "feet_extra": {"L": {"sole_min_mm": -0.0, "toe_out_max_deg": 21.1, "toe_out_min_deg": -10.0}, "R": {"sole_min_mm": -0.0, "toe_out_max_deg": 39.1, "toe_out_min_deg": 21.1}}, "hips_yaw_range_deg": 10.7, "hip_drop_max_m": 0.0087}
 /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:86: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
   mat.use_nodes = True
 /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:115: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
   world.use_nodes = True
-Traceback (most recent call last):
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 298, in <module>
-    sys.exit(main())
-             ~~~~^^
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 269, in main
-    ok = encode(work, mp4, dur, args.max_bytes)
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 287, in encode
-    subprocess.run(base + ["-pass", "1", "-passlogfile", log, "-an", "-f", "mp4", "/dev/null"], check=True)
-    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 555, in run
-    with Popen(*popenargs, **kwargs) as process:
-         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1040, in __init__
-    self._execute_child(args, executable, preexec_fn, close_fds,
-    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                        pass_fds, cwd, env,
-                        ^^^^^^^^^^^^^^^^^^^
-    ...<5 lines>...
-                        gid, gids, uid, umask,
-                        ^^^^^^^^^^^^^^^^^^^^^^
-                        start_new_session, process_group)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1992, in _execute_child
-    raise child_exception_type(errno_num, err_msg, err_filename)
-FileNotFoundError: [Errno 2] No such file or directory: 'ffmpeg'
+x264 1506 кбит/с → 1306892 байт
+{"id": "s100_depressed_fw", "mp4": "s100_depressed_fw.mp4", "bytes": 1306892, "duration_s": 7.083, "frames": 170, "loop_frames": 34, "loops": 5, "size_ok": true}
 кадров отрендерено: 170

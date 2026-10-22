@@ -1,34 +1,11 @@
 [m2m_idle_subtle] источник m2m:static/animations/human-addon-animations.glb: кадры сцены 2.5–155.0 (2.54 с), костей 66
-  семейство m2m, поворот к −Y 0.0°, масштаб 0.8496, путь таза 0.00 м, на месте: False
+  семейство m2m, поворот к −Y 0.0°, масштаб 0.8496, путь таза 0.00 м (итог 0.00 м), на месте: False
   петля: {'a': 0, 'b': 152, 'whole': True, 'cost': 0.07, 't0_s': np.float64(0.0), 'src_frame0': 2.5, 'src_frame1': 154.5, 'period_s': np.float64(2.5333), 'frames_out': 61, 'time_scale': np.float64(1.0033)}
 {"frames": 61, "speed_mps": 0.0, "feet_raw": {"L": {"slide_mm_max": 0.1, "slide_mm_median": 0.1, "contacts": 1, "toe_out_deg": 25.0}, "R": {"slide_mm_max": 1.0, "slide_mm_median": 1.0, "contacts": 1, "toe_out_deg": 19.6}}, "feet": {"L": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 1, "toe_out_deg": 25.0}, "R": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 1, "toe_out_deg": 19.6}}, "feet_extra": {"L": {"sole_min_mm": -0.0}, "R": {"sole_min_mm": -0.0}}, "hips_yaw_range_deg": 0.0, "hip_drop_max_m": 0.0}
 /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:86: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
   mat.use_nodes = True
 /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:115: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
   world.use_nodes = True
-Traceback (most recent call last):
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 298, in <module>
-    sys.exit(main())
-             ~~~~^^
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 269, in main
-    ok = encode(work, mp4, dur, args.max_bytes)
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 287, in encode
-    subprocess.run(base + ["-pass", "1", "-passlogfile", log, "-an", "-f", "mp4", "/dev/null"], check=True)
-    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 555, in run
-    with Popen(*popenargs, **kwargs) as process:
-         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1040, in __init__
-    self._execute_child(args, executable, preexec_fn, close_fds,
-    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                        pass_fds, cwd, env,
-                        ^^^^^^^^^^^^^^^^^^^
-    ...<5 lines>...
-                        gid, gids, uid, umask,
-                        ^^^^^^^^^^^^^^^^^^^^^^
-                        start_new_session, process_group)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1992, in _execute_child
-    raise child_exception_type(errno_num, err_msg, err_filename)
-FileNotFoundError: [Errno 2] No such file or directory: 'ffmpeg'
+x264 1399 кбит/с → 1294372 байт
+{"id": "m2m_idle_subtle", "mp4": "m2m_idle_subtle.mp4", "bytes": 1294372, "duration_s": 7.625, "frames": 183, "loop_frames": 61, "loops": 3, "size_ok": true}
 кадров отрендерено: 183

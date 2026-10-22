@@ -1,11 +1,11 @@
 [m2m_walk_female] источник m2m:static/animations/human-addon-animations.glb: кадры сцены 2.5–82.5 (1.33 с), костей 66
-  семейство m2m, поворот к −Y 0.0°, масштаб 0.8496, путь таза 0.21 м, на месте: False
-Traceback (most recent call last):
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/retarget_clip.py", line 387, in <module>
-    sys.exit(main())
-             ~~~~^^
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/retarget_clip.py", line 266, in main
-    loop = find_walk_loop(sk, R, root_P, fg, FPS_AN, spec.get("cycles", 2))
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/retarget_clip.py", line 143, in find_walk_loop
-    raise RuntimeError("не найден прямой участок ходьбы с двумя ударами пятки")
-RuntimeError: не найден прямой участок ходьбы с двумя ударами пятки
+  семейство m2m, поворот к −Y 0.0°, масштаб 0.8496, путь таза 0.21 м (итог 0.00 м), на месте: True
+  петля: {'a': 0, 'b': 80, 'cycles': 1, 'whole': True, 'cost': 16.08, 't0_s': np.float64(0.0), 'src_frame0': 2.5, 'src_frame1': 82.5, 'period_s': np.float64(1.3333), 'frames_out': 32, 'time_scale': np.float64(1.0)}
+{"frames": 32, "speed_mps": 0.527, "feet_raw": {"L": {"slide_mm_max": 164.5, "slide_mm_median": 164.5, "contacts": 1, "toe_out_deg": -1.8}, "R": {"slide_mm_max": 172.7, "slide_mm_median": 172.7, "contacts": 1, "toe_out_deg": 0.8}}, "feet": {"L": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 2, "toe_out_deg": -1.7}, "R": {"slide_mm_max": 0.4, "slide_mm_median": 0.4, "contacts": 1, "toe_out_deg": 0.7}}, "feet_extra": {"L": {"sole_min_mm": -0.0, "toe_out_max_deg": -1.3, "toe_out_min_deg": -2.1}, "R": {"sole_min_mm": -0.0, "toe_out_max_deg": 2.2, "toe_out_min_deg": 0.7}}, "hips_yaw_range_deg": 30.8, "hip_drop_max_m": 0.0261}
+/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:86: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  mat.use_nodes = True
+/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:115: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  world.use_nodes = True
+x264 1600 кбит/с → 1307901 байт
+{"id": "m2m_walk_female", "mp4": "m2m_walk_female.mp4", "bytes": 1307901, "duration_s": 6.667, "frames": 160, "loop_frames": 32, "loops": 5, "size_ok": true}
+кадров отрендерено: 160

@@ -1,34 +1,11 @@
 [base_idle] источник Idle_4: кадры сцены 0.0–838.0 (13.97 с), костей 24
-  семейство meshy, поворот к −Y -0.0°, масштаб 1.0000, путь таза 0.39 м, на месте: False
+  семейство meshy, поворот к −Y -0.0°, масштаб 1.0000, путь таза 0.39 м (итог 0.00 м), на месте: False
   петля: {'a': 90, 'b': 540, 'whole': False, 'cost': 17.06, 'pose_mismatch_deg': 15.1, 'root_drift_m': 0.005, 'feet_shift_m': 0.003, 'hips_yaw_range_deg': 10.8, 'max_foot_travel_m': 0.012, 't0_s': np.float64(1.5), 'src_frame0': 90.0, 'src_frame1': 540.0, 'period_s': np.float64(7.5), 'frames_out': 180, 'time_scale': np.float64(1.0)}
 {"frames": 180, "speed_mps": 0.0, "feet_raw": {"L": {"slide_mm_max": 11.3, "slide_mm_median": 11.3, "contacts": 1, "toe_out_deg": 18.9}, "R": {"slide_mm_max": 10.7, "slide_mm_median": 10.7, "contacts": 1, "toe_out_deg": 32.5}}, "feet": {"L": {"slide_mm_max": 11.3, "slide_mm_median": 11.3, "contacts": 1, "toe_out_deg": 18.9}, "R": {"slide_mm_max": 10.7, "slide_mm_median": 10.7, "contacts": 1, "toe_out_deg": 32.5}}, "feet_extra": {"L": {"sole_min_mm": -66.8}, "R": {"sole_min_mm": -57.0}}, "hips_yaw_range_deg": 7.8, "hip_drop_max_m": 0.0}
 /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:86: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
   mat.use_nodes = True
 /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:115: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
   world.use_nodes = True
-Traceback (most recent call last):
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 298, in <module>
-    sys.exit(main())
-             ~~~~^^
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 269, in main
-    ok = encode(work, mp4, dur, args.max_bytes)
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 287, in encode
-    subprocess.run(base + ["-pass", "1", "-passlogfile", log, "-an", "-f", "mp4", "/dev/null"], check=True)
-    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 555, in run
-    with Popen(*popenargs, **kwargs) as process:
-         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1040, in __init__
-    self._execute_child(args, executable, preexec_fn, close_fds,
-    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                        pass_fds, cwd, env,
-                        ^^^^^^^^^^^^^^^^^^^
-    ...<5 lines>...
-                        gid, gids, uid, umask,
-                        ^^^^^^^^^^^^^^^^^^^^^^
-                        start_new_session, process_group)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1992, in _execute_child
-    raise child_exception_type(errno_num, err_msg, err_filename)
-FileNotFoundError: [Errno 2] No such file or directory: 'ffmpeg'
+x264 1422 кбит/с → 1286878 байт
+{"id": "base_idle", "mp4": "base_idle.mp4", "bytes": 1286878, "duration_s": 7.5, "frames": 180, "loop_frames": 180, "loops": 1, "size_ok": true}
 кадров отрендерено: 180
