@@ -1,5 +1,7 @@
 {
-  "_comment": "Задание для workflow motion-previews (ветка motion-previews): ретаргет и рендер кандидатов из clips.json. only — список id, если нужно перерендерить часть (пусто — все).",
-  "mode": "render",
-  "only": []
+ "_comment": "Задание для workflow motion-previews (ветка motion-previews): ретаргет и рендер кандидатов из clips.json. only — список id, если нужно перерендерить часть (пусто — все).",
+ "mode": "render",
+ "only": [
+  "s100_depressed_id"
+ ]
 }
