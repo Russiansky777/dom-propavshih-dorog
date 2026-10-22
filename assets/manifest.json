@@ -573,7 +573,7 @@
     },
     {
       "id": "O1_board_variants",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "block": "1 (день первый, 22.10)",
       "spec": "Два слоя к O1_bg.png (1672×940), той же рукой и мелом, что O1_state_board_written.png («Я была здесь. Агата»), на том же месте доски: «Мама, я иду» и «Илюша, я нашла твой рисунок» (в две строки)",
@@ -582,11 +582,15 @@
         "incoming/O1_state_board_ilya.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "data/story/rooms/O1.json → layers board_mama / board_ilya (по флагам board_mama / board_ilya — выбор надписи M08); до готовности — текст шрифтом игры на доске (текстовые слои)"
+      "use": "data/story/rooms/O1.json → layers board_mama / board_ilya (по флагам board_mama / board_ilya — выбор надписи M08); до готовности — текст шрифтом игры на доске (текстовые слои)",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "ChatGPT (image_gen), партия 7; assets/incoming/_meta_p7/README_RU.txt (наложения на основу — _meta_p7/*_over_base.jpg)"
+      }
     },
     {
       "id": "Z3_shore_stone_day1",
-      "status": "requested",
+      "status": "delivered",
       "kind": "background_fix",
       "block": "1 (день первый, 22.10); можно вместе с партией 3",
       "spec": "Z3_bg.png: на береговом камне справа нарисована железная плита с заклёпками над водой. По финальному сценарию в день первый плита опоры моста под водой (видна только верхушка опоры), над водой она появляется во второй день (Z3_state_water_low, партия 3). Нужен камень без плиты (мох, мокрый камень) — слой поверх фона в координатах 1672×941",
@@ -594,7 +598,11 @@
         "incoming/Z3_state_stone_no_plate.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "data/story/rooms/Z3.json → хотспот plate (сейчас «Табличка на береговом камне»: «Плита с Дуниного листа не здесь — она на опоре, под водой»)"
+      "use": "data/story/rooms/Z3.json → хотспот plate (сейчас «Табличка на береговом камне»: «Плита с Дуниного листа не здесь — она на опоре, под водой»)",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "ChatGPT (image_gen), партия 7; assets/incoming/_meta_p7/README_RU.txt (наложения на основу — _meta_p7/*_over_base.jpg)"
+      }
     },
     {
       "id": "pavel_sheet",

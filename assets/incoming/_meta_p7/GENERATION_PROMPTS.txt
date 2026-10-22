@@ -1,0 +1,25 @@
+Built-in image generation. Final assets exported as registered RGBA layers.
+
+=== O1_mama_raw.png ===
+References: O1_written_composite.png, O1_state_board_written.png
+Use case: text-localization / background-extraction. Create ONE registered TRANSPARENT PNG layer, exact canvas1672x940. The two input images show the reference handwriting on the school blackboard and its transparent source. Replace the old words with ONLY this exact Russian message: «Мама, я иду». Output the NEW WHITE CHALK LETTERS ONLY on true transparent background, no board/room/rectangle or old writing. Match the same young woman's careful slightly irregular unconnected/semi-connected handwritten script, gentle right slant, thin softly grainy chalk strokes, same off-white and same cap-height about50px, lowercase heightabout30px. Place it as ONE LINE in the SAME blackboard area at approx x805..1138,y260..320; center aboutx967. Exact spelling: М-а-м-а comma, space я space и-д-у. No period at end, no quotation marks, no signature, no second line, no decorations. Preserve fullcanvas empty margins; do not zoom or center the text in the canvas. Transparency in every gap between chalk strokes. Need same handwriting feel as reference, not calligraphic typeface or bold print.
+
+=== O1_ilya_raw.png ===
+References: O1_written_composite.png, O1_state_board_written.png
+Use case: text-localization / background-extraction. Create ONE registered TRANSPARENT PNG layer, exact canvas1672x940. The two reference images show Agata's school-blackboard handwriting, composed and transparent. Output ONLY NEW WHITE CHALK LETTERS on true transparent background, no board, room, rectangle or old words. Exact Russian message on TWO LINES: first line «Илюша,»; second line «я нашла твой рисунок». No quotation marks, no period, no signature. Check each word: И-л-ю-ш-а comma / я н-а-ш-л-а т-в-о-й р-и-с-у-н-о-к. The short first line centered aboutx968,baseliney310; second line centeredaboutx968,baseliney365, stays inside x765..1155. Match same young woman's careful slightly irregular semi-connected handwriting, gentle right slant, thin grainy off-white chalk, capitalheight50px and lowercaseheight30px like reference. Use naturally compact letterspacing for long secondline so it fits available390px without reducing lowercase height. No fancy calligraphy or thick font. Whole canvas1672x940 with transparent margins, writing only around x765..1155,y258..375, don't recenter in canvas. Real alpha transparency between strokes.
+
+=== stone_clean_crop.png ===
+References: stone_reference_crop.png, Z3_bg.png
+Use case: precise-object-edit. Edit FIRST reference close-up image, output EXACT1020x840, same camera/crop/scale. Second image is the full scene only for context. REMOVE the complete rusty rectangular iron plaque from the foreground right-bank STONE: remove plate face, raised frame, all four rivets and shadows cast by metal. In that exact quadrilateral reconstruct a continuous natural dark damp grey stone surface with subtle irregular cracks and scattered olive-green moss matching adjacent original stone, same painterly material, same overcast autumn light. It must look like this same old solid stone NEVER had a plaque; no rectangular indentation, mounting holes, readable marks or border. Preserve the original outer stone silhouette, stone side face, water, grasses, original moss at foot and all scenery outside plaque area precisely unchanged. No new rock, different pedestal, new perspective, bright patch, snow, iron, letters or invented symbols. Output full edited close-up crop, no transparency requested in this intermediate; final transparent patch is cropped mechanically.
+
+=== O1_ilya_lowercase_raw.png ===
+References: O1_ilya_raw.png
+Correct ONE letter only in this transparent Russian chalk writing. Second line currently begins with CAPITAL «Я». Change that first character to LOWERCASE «я», same small x-height as the following letters «нашла». Exact final lines must read:
+Илюша,
+я нашла твой рисунок
+No quotes or added period. Keep every other letter, comma, line break, chalk texture, stroke thinness, off-white color, spacing and transparent background unchanged. Keep letters in their existing positions. No board or rectangle. Preserve canvas and alpha; output full1672x940. First letter of SECOND LINE must be unmistakably small lowercase handwritten «я», same height as «н» in «нашла», NOT the tall uppercase reference «Я». Exact spelling and lowercase are essential.
+
+TECHNICAL EXPORT
+Mama: crop510x120+735+240, resize340x80, place798,248 on1672x940.
+Ilya: corrected lowercase version; line1 crop300x96+730+250, resize204x65, place865,251; line2 crop650x102+575+346, resize390x61, place773,324 on1672x940.
+Stone: generated crop resized340x280, placed1190,460; alpha confined to polygon1311,529 1455,541 1410,660 1277,638 with1.2px feather, on1672x941.

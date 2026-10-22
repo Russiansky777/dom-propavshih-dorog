@@ -1,0 +1,79 @@
+{
+  "project": "Дом пропавших дорог",
+  "party": 7,
+  "asset_count": 3,
+  "assets": [
+    {
+      "file": "O1_state_board_mama.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "origin_xy": [
+        0,
+        0
+      ],
+      "base": "O1_bg.png",
+      "base_sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51",
+      "sha256": "ac04065d98dd11d2c02076050bddcf60a3e3541e52c1ddc13c83dfef0bbd6b4e",
+      "size_bytes": 33454,
+      "nonzero_alpha_bbox": [
+        801,
+        254,
+        1129,
+        325
+      ],
+      "transparent_pixels": 1562934,
+      "changed_pixels_outside_alpha": 0,
+      "text": "Мама, я иду",
+      "blend": "Normal / source-over, opacity 100%, straight alpha"
+    },
+    {
+      "file": "O1_state_board_ilya.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "origin_xy": [
+        0,
+        0
+      ],
+      "base": "O1_bg.png",
+      "base_sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51",
+      "sha256": "e13e547b35c195adbbad66086311d6132e5dc9eb1e8629de4cd8e0e2b876ad55",
+      "size_bytes": 52850,
+      "nonzero_alpha_bbox": [
+        776,
+        257,
+        1161,
+        380
+      ],
+      "transparent_pixels": 1554672,
+      "changed_pixels_outside_alpha": 0,
+      "text": "Илюша,\nя нашла твой рисунок",
+      "blend": "Normal / source-over, opacity 100%, straight alpha"
+    },
+    {
+      "file": "Z3_state_stone_no_plate.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "origin_xy": [
+        0,
+        0
+      ],
+      "base": "Z3_bg.png",
+      "base_sha256": "3e9183ec922a82947c8c15445ba037d8ff4f6141b0f32a0097c071e47c6e035c",
+      "sha256": "438d1a9d3a7429b0d60ee1ca06dd86d22bcc27846abd0d4cea39be887efa49ea",
+      "size_bytes": 232946,
+      "nonzero_alpha_bbox": [
+        1275,
+        526,
+        1458,
+        664
+      ],
+      "transparent_pixels": 1555165,
+      "changed_pixels_outside_alpha": 0,
+      "text": null,
+      "blend": "Normal / source-over, opacity 100%, straight alpha"
+    }
+  ]
+}
