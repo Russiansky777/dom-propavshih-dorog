@@ -3,7 +3,7 @@ name: ai-playtest
 # ИИ-плейтестер: Claude играет в веб-сборку (сайт GitHub Pages) настоящими щелчками — скриншот → модель
 # выбирает действие → клик → снова скриншот. Режимы: acceptance (пункты Docs/ACCEPTANCE_*.md) и fresh (новичок).
 # Запуск: изменить или добавить pipeline/requests/playtest_<имя>.json и запушить (или вручную — workflow_dispatch).
-# Поля запроса: mode, items, context_items, max_usd, max_steps, url, note — подробно в tools/ai_playtest/playtest.mjs.
+# Формат запроса — Docs/playtest/README.md (mode acceptance | fresh | gate, doc, items, max_steps, max_usd, note).
 # Ключ — секрет CLAUDE_API (только в env). Лог публичный: в него не печатаются ни ключ, ни ответы модели.
 # Результат коммитится с [skip ci] в Docs/playtest/<дата>_<режим>_r<номер запуска>/: report.md, кадры, usage.json, log.json.
 
@@ -87,7 +87,7 @@ jobs:
         if: steps.req.outputs.files != ''
         env:
           ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
-          # ключ не привязан к рабочему пространству — ID (wrkspc_…), если задан; иначе скрипт выбирает сам
+          # ключ не привязан к рабочему пространству: ID (секрет) уходит заголовком anthropic-workspace-id, только если задан
           ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
           REQ_FILES: ${{ steps.req.outputs.files }}
         run: |
@@ -111,9 +111,14 @@ jobs:
           }
           status=0
           for f in $REQ_FILES; do
-            echo "=== $f"
-            rm -f build/ai_playtest/*/summary.txt
-            node tools/ai_playtest/playtest.mjs --request "$f" || status=1
-            commit_results || status=1
+            mode=$(node -e 'try{console.log(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).mode||"fresh")}catch(e){console.log("fresh")}' "$f")
+            # gate = приёмка, затем свежий взгляд (два прогона, два отчёта)
+            if [ "$mode" = "gate" ]; then modes="acceptance fresh"; else modes="$mode"; fi
+            for m in $modes; do
+              echo "=== $f ($m)"
+              rm -f build/ai_playtest/*/summary.txt
+              node tools/ai_playtest/playtest.mjs --request "$f" --mode "$m" || status=1
+              commit_results || status=1
+            done
           done
           exit $status

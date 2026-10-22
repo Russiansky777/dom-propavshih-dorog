@@ -8,7 +8,8 @@
 //
 // Request JSON: mode ("acceptance" | "fresh"), items ("140-154" or [140, …]; acceptance), context_items
 // (rows given as reference only), doc (Docs/ACCEPTANCE_*.md; default: the doc that has the first item),
-// max_usd (default 3), max_steps (default 150), max_minutes (default 80), url (default the published site),
+// max_usd (a stop against a looping run, default and ceiling 10), max_steps (default 300 acceptance / 150 fresh),
+// max_minutes, url (default the published site), mode "gate" = acceptance then fresh (fresh_max_steps, fresh_note),
 // note, model (steps, default claude-haiku-5-5), model_stuck (one step when stuck, default
 // claude-sonnet-5-5, "" = off), report_model (default claude-sonnet-5-5), image_width (default 1280),
 // max_frames (frames kept in the report, default 24), auto_dialogue (default true).
@@ -32,13 +33,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
-import { callClaude, Budget, ApiError, priceKnown, estimateCost, workspace } from "./claude.mjs";
+import { callClaude, Budget, ApiError, priceKnown, estimateCost } from "./claude.mjs";
 import { parseItems, loadChecklist, checklistText, actTool, systemPrompt, stepText, reportSystem } from "./prompts.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..", "..");
 const SITE = "https://russiansky777.github.io/dom-propavshih-dorog/";
-const HARD_MAX_USD = Number(process.env.AI_PLAYTEST_HARD_MAX_USD || 10);   // no request may spend more per run
+const HARD_MAX_USD = Number(process.env.AI_PLAYTEST_HARD_MAX_USD || 10);   // per-run stop against a looping run (not a budget)
 const HARD_MAX_STEPS = 400;
 const FRAME_W = 1920, FRAME_H = 1080;
 
@@ -114,18 +115,20 @@ async function main() {
   const A = args();
   const reqPath = A.request ? path.resolve(ROOT, A.request) : null;
   const req = reqPath ? JSON.parse(fs.readFileSync(reqPath, "utf8")) : {};
-  const mode = req.mode === "acceptance" ? "acceptance" : "fresh";
+  // "gate" = acceptance then fresh: the workflow runs this script twice with --mode.
+  const mode = (A.mode || req.mode) === "acceptance" || (!A.mode && req.mode === "gate") ? "acceptance" : "fresh";
   const dry = !!A.dry;
   const cfg = {
     mode,
     request: reqPath ? path.relative(ROOT, reqPath) : "",
     items: parseItems(req.items),
     contextItems: parseItems(req.context_items),
-    maxUsd: clampNum(req.max_usd, 0.05, HARD_MAX_USD, 3),
-    maxSteps: Math.round(clampNum(req.max_steps, 1, HARD_MAX_STEPS, 150)),
-    maxMinutes: clampNum(req.max_minutes, 5, 110, 80),
+    // max_usd is a safety stop against a looping run, not a budget (Director 22.10): default and ceiling $10.
+    maxUsd: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_usd ?? req.max_usd : req.max_usd, 0.05, HARD_MAX_USD, HARD_MAX_USD),
+    maxSteps: Math.round(clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_steps ?? 150 : req.max_steps, 1, HARD_MAX_STEPS, mode === "acceptance" ? 300 : 150)),
+    maxMinutes: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_minutes ?? 90 : req.max_minutes, 5, 150, mode === "acceptance" ? 120 : 90),
     url: A.url || req.url || SITE,
-    note: String(req.note || ""),
+    note: String((mode === "fresh" && req.mode === "gate" ? req.fresh_note : req.note) || ""),
     model: req.model || "claude-haiku-5-5",
     modelStuck: req.model_stuck === undefined ? "claude-sonnet-5-5" : String(req.model_stuck || ""),
     reportModel: req.report_model || "claude-sonnet-5-5",
@@ -148,7 +151,7 @@ async function main() {
   const apiKey = process.env.ANTHROPIC_API_KEY || "";
   const budget = new Budget(cfg.maxUsd);
   const run = {
-    cfg: { ...cfg }, version: "", started: new Date().toISOString(), stop: "", steps: [], transcript: [], notes: [],
+    cfg: { ...cfg, actions_run: process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_RUN_NUMBER} (id ${process.env.GITHUB_RUN_ID})` : "" }, version: "", started: new Date().toISOString(), stop: "", steps: [], transcript: [], notes: [],
     verdicts: {}, verdictHistory: [], rooms: [], flagsOrder: [], consoleErrors: [], frames: [], harness: [],
   };
 
@@ -234,6 +237,14 @@ async function main() {
   };
 
   const toFrame = (x, y) => ({ x: Math.min(FRAME_W - 1, Math.max(0, x / scale)), y: Math.min(FRAME_H - 1, Math.max(0, y / scale)) });
+  // A point outside the frame the model saw (it answered in 1920×1080 window pixels): take it as window pixels.
+  const toFrameChecked = (x, y, step) => {
+    if (scale < 1 && (x >= cfg.W || y >= cfg.H) && x < FRAME_W && y < FRAME_H) {
+      run.harness.push(`step ${step}: point (${Math.round(x)},${Math.round(y)}) outside the ${cfg.W}×${cfg.H} frame — taken as window pixels`);
+      return { x, y };
+    }
+    return toFrame(x, y);
+  };
   const mouseTo = async (p, steps = 6) => { await page.mouse.move(p.x, p.y, { steps }); pointer = p; };
 
   // Lines and narration in a row: read verbatim, frame each, real click on the text box. Options stop here.
@@ -306,25 +317,35 @@ async function main() {
     if (after.view && after.view.open && !(before && before.view && before.view.open)) events.push("Открылся крупный план (просмотр).");
   };
 
-  // Model "brain" for --dry-run: scripted actions from the probe (harness test without the API).
-  let dryScript = null;
+  // Model "brain" for --dry-run: a scripted path resolved against the probe (harness test without the API):
+  // looks, a conversation, hover on the bag, the journal, exits, the key on the door, the H1 trio with its option.
+  const dryPlan = [
+    { move: "tamara" }, { key: "Space" }, { hot: "letters" }, { hot: "tamara" }, { pocketMove: "key_house" },
+    { button: "JournalButton" }, { button: "CloseJournal" }, { zoom: true }, { exit: "Z4" }, { exit: "Z2" },
+    { pocket: "key_house" }, { exit: "H1" }, { exit: "H1" }, { hot: "shutter" }, { hot: "stove" }, { hot: "scarf" },
+    { option: true }, { wait: 2 }, { done: true },
+  ];
   const dryAct = async (s) => {
-    if (!dryScript) {
-      dryScript = [
-        (t) => ({ action: "move", ...(t.hotspots.tamara || { x: 900, y: 500 }) }),
-        () => ({ action: "key", key: "Space" }),
-        (t) => ({ action: "click", ...(t.hotspots.letters || { x: 900, y: 600 }) }),
-        (t) => ({ action: "click", ...(t.hotspots.tamara || { x: 900, y: 500 }) }),
-        () => ({ action: "zoom", region: [0, 0, 640 / scale, 120 / scale].map((v) => v * scale) }),
-        (t) => ({ action: "click", ...(t.exits.Z4 || { x: 100, y: 600 }) }),
-        () => ({ action: "wait", seconds: 2 }),
-        () => ({ action: "done" }),
-      ];
+    s = s || {};
+    const img = (p) => ({ x: p.x * scale, y: p.y * scale });
+    let a = null;
+    while (!a && dryPlan.length) {
+      const it = dryPlan.shift();
+      const H = s.hotspots || {}, E = s.exits || {}, U = s.ui || {};
+      if (it.move && H[it.move]) a = { action: "move", ...img(H[it.move]) };
+      else if (it.key) a = { action: "key", key: it.key };
+      else if (it.hot && H[it.hot] && H[it.hot].visible) a = { action: "click", ...img(H[it.hot]) };
+      else if (it.pocketMove && U.inventory && U.inventory[it.pocketMove]) a = { action: "move", ...img(U.inventory[it.pocketMove]) };
+      else if (it.pocket && U.inventory && U.inventory[it.pocket]) a = { action: "click", ...img(U.inventory[it.pocket]) };
+      else if (it.button && U.buttons && U.buttons[it.button]) a = { action: "click", ...img(U.buttons[it.button]) };
+      else if (it.exit && E[it.exit]) a = { action: "click", ...img(E[it.exit]) };
+      else if (it.option && U.options && Object.keys(U.options).length) a = { action: "click", ...img(Object.values(U.options)[0]) };
+      else if (it.zoom) a = { action: "zoom", region: [420 * scale * 1.5, 0, 860 * scale * 1.5, 50 * scale * 1.5] };
+      else if (it.wait) a = { action: "wait", seconds: it.wait };
+      else if (it.done) a = { action: "done" };
     }
-    const f = dryScript.shift() || (() => ({ action: "done" }));
-    const a = f(s || { hotspots: {}, exits: {} });
-    if (a.x !== undefined && a.action !== "zoom") { a.x *= scale; a.y *= scale; }
-    return { input: { observe: "dry", thought: "dry", ...a, memory: "", notes: [], verdicts: [] },
+    a = a || { action: "done" };
+    return { input: { observe: "dry", thought: `dry ${a.action}`, ...a, memory: "", notes: [], verdicts: [] },
       usage: { input_tokens: 3000, output_tokens: 150 } };
   };
 
@@ -462,7 +483,12 @@ async function main() {
         }
       } catch (e) {
         if (e instanceof ApiError) {
-          run.stop = `API: ${e.status === 401 ? "ключ не принят (401)" : e.type === "workspace" ? e.message.replace(/^HTTP \d+ workspace: /, "") : `ошибка ${e.status} ${e.type}`}`;
+          run.stop = `API: ${e.status === 401 ? "ключ не принят (401)"
+            : e.type === "workspace" ? e.message.replace(/^HTTP \d+ workspace: /, "")
+            : e.status === 404 && /workspace/i.test(e.message) ? "рабочее пространство не найдено или у владельца ключа нет к нему доступа (проверьте CLAUDE_WORKSPACE)"
+            : /anthropic-workspace-id header must be a valid/i.test(e.message) ? "CLAUDE_WORKSPACE — не ID пространства (нужен вида wrkspc_…)"
+            : /credit|billing|balance/i.test(e.message) ? "на счёте API нет средств"
+            : `ошибка ${e.status} ${e.type}`}`;
           run.harness.push(`step ${step}: ${short(e.message, 200)}`);
           break;
         }
@@ -508,7 +534,7 @@ async function main() {
       if (["click", "right_click", "double_click", "move", "drag"].includes(act) && !hasXY) {
         events.push(`Действие ${act} не выполнено: нет координат x, y.`);
       } else if (act === "click" || act === "right_click" || act === "double_click") {
-        const p = toFrame(x, y);
+        const p = toFrameChecked(x, y, step);
         await mouseTo(p, 5);
         await sleep(120);
         if (act === "double_click") await page.mouse.dblclick(p.x, p.y);
@@ -518,14 +544,14 @@ async function main() {
         if (lastClick && Math.hypot(lastClick.x - p.x, lastClick.y - p.y) < 20) sameClick += 1; else sameClick = 0;
         lastClick = p;
       } else if (act === "move") {
-        const p = toFrame(x, y);
+        const p = toFrameChecked(x, y, step);
         await mouseTo({ x: p.x - 25, y: p.y - 8 }, 2);
         await mouseTo(p, 5);
         await freshState(700);
         desc = `навела курсор (${Math.round(x)},${Math.round(y)})`;
         stepRec.at = { x: Math.round(p.x), y: Math.round(p.y) };
       } else if (act === "drag") {
-        const p = toFrame(x, y), q = toFrame(Number(input.x2), Number(input.y2));
+        const p = toFrameChecked(x, y, step), q = toFrameChecked(Number(input.x2), Number(input.y2), step);
         if (!Number.isFinite(q.x) || !Number.isFinite(q.y)) events.push("drag не выполнен: нет x2, y2.");
         else {
           await mouseTo(p, 4);
@@ -724,10 +750,10 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
   L.push(`# ${title} — ${run.started.slice(0, 10)}`);
   L.push("");
   L.push(`- Сборка: \`${run.version || "?"}\` — ${run.cfg.url}`);
-  L.push(`- Запрос: \`${cfg.request || "—"}\`${cfg.note ? ` — ${cfg.note}` : ""}`);
+  L.push(`- Запрос: \`${cfg.request || "—"}\`${cfg.note ? ` — ${cfg.note}` : ""}${run.cfg.actions_run ? `; запуск Actions ${run.cfg.actions_run}` : ""}`);
   L.push(`- Модели: шаги — \`${cfg.model}\`${cfg.modelStuck ? `, когда застряла — \`${cfg.modelStuck}\`` : ""}; отчёт — \`${cfg.reportModel}\`. Кадр модели ${cfg.W}×${cfg.H} JPEG (окно игры 1920×1080).`);
   L.push(`- Шагов: ${run.steps.length} из ${cfg.maxSteps}; время ${minutes} мин. Остановка: ${run.stop}`);
-  L.push(`- Стоимость: **$${budget.spent.toFixed(3)}** из $${cfg.maxUsd} (по usage ответов API; подробно — usage.json)${workspace.name ? `; рабочее пространство API «${workspace.name}»` : ""}`);
+  L.push(`- Стоимость прогона: **$${budget.spent.toFixed(3)}** (по usage ответов API, подробно — usage.json; предохранитель от зацикливания — $${cfg.maxUsd})`);
   L.push(`- Где оказалась по факту: ${run.rooms.join(" → ") || "—"}${run.end ? `; конец — ${run.end.room}` : ""}`);
   if (run.consoleErrors.length) L.push(`- Ошибки консоли браузера: ${run.consoleErrors.length} (log.json)`);
   L.push("");

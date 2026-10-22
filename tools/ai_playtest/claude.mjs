@@ -34,7 +34,7 @@ async function discoverWorkspace(apiKey, log) {
     if (!res.ok) {
       let m = "";
       try { const j = await res.json(); m = String((j && j.error && j.error.message) || "").slice(0, 300); } catch (_) {}
-      workspace.error = `список пространств: HTTP ${res.status} ${m}`;
+      workspace.error = redact(`список пространств: HTTP ${res.status} ${m}`);
       log(`api: workspaces list HTTP ${res.status}`);
       return false;
     }
@@ -44,8 +44,8 @@ async function discoverWorkspace(apiKey, log) {
     if (!pick) { workspace.error = "список пространств пуст"; return false; }
     workspace.id = pick.id;
     workspace.name = pick.name || "";
-    workspace.source = `выбрано из ${ws.length}: ${ws.map((w) => w.name).join(", ").slice(0, 200)}`;
-    log(`api: workspace «${workspace.name}» chosen of ${ws.length}`);
+    workspace.source = `выбрано из ${ws.length} по списку`;
+    log(`api: workspace chosen of ${ws.length}`);
     return true;
   } catch (e) {
     workspace.error = `список пространств: ${String((e && e.message) || e).slice(0, 120)}`;
@@ -75,8 +75,11 @@ export function estimateCost(model, { textChars = 0, images = [], maxOut = 600 }
   return (tokens * r.in + maxOut * r.out) / 1e6;
 }
 
+// IDs and keys never reach the logs or the committed report.
+export const redact = (t) => String(t || "").replace(/wrkspc_[A-Za-z0-9]+/g, "wrkspc_…").replace(/sk-ant-[A-Za-z0-9_-]+/g, "sk-ant-…");
+
 export class ApiError extends Error {
-  constructor(status, type, message) { super(`HTTP ${status} ${type}: ${message}`); this.status = status; this.type = type; }
+  constructor(status, type, message) { super(redact(`HTTP ${status} ${type}: ${message}`)); this.status = status; this.type = type; }
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -162,7 +165,7 @@ export class Budget {
     const r = (x) => Number(x.toFixed(6));
     const byModel = {};
     for (const [k, v] of Object.entries(this.byModel)) byModel[k] = { ...v, usd: r(v.usd) };
-    return { max_usd: this.maxUsd, spent_usd: r(this.spent), by_model: byModel, workspace: { name: workspace.name, source: workspace.source, error: workspace.error },
+    return { max_usd: this.maxUsd, spent_usd: r(this.spent), by_model: byModel, workspace: { source: workspace.source, error: workspace.error },
       prices_per_mtok: PRICES, prices_source: PRICES_SOURCE, calls: this.calls };
   }
 }
