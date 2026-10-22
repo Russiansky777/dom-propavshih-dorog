@@ -1,0 +1,33 @@
+{
+  "character": "ilya_wife",
+  "sheet": "assets/incoming/cast_v3/ilya_wife_sheet.png",
+  "height_m": 1.63,
+  "actions": [
+    "idle",
+    "talk"
+  ],
+  "action_ids": {
+    "idle": 0,
+    "talk": 47
+  },
+  "frames": {
+    "idle": 8,
+    "talk": 12
+  },
+  "ai_model": "latest",
+  "pose_mode": "a-pose",
+  "texture_resolution": "4k",
+  "geometry_resolution": "2k",
+  "enable_pbr": true,
+  "render_samples": 48,
+  "elev": 14,
+  "front_yaw": 0,
+  "rev": 1,
+  "clip_window": {
+    "idle": [
+      0.0,
+      0.2
+    ]
+  },
+  "_note": "22.10: лист Meshy text-to-image (cast_v3), утверждён Директором; повышенная детальность (геометрия 2k, текстуры 4k, PBR, 48 сэмплов), при отказе — повтор без неё. Пакетом со всеми персонажами — «сделать наперёд один раз» (Директор 22.10)"
+}
