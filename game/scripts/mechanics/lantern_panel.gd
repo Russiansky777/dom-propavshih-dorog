@@ -4,74 +4,50 @@ extends MechanicPanel
 ## snow shows through (it is winter there already) — event "answered" (`far_lights_answered`,
 ## `road_held_both_ends`: the road is held from both ends, time is common). Any other count — Pelageya
 ## says how it is done, the count starts again, no penalty.
-## Stand-in art until «R1_lantern_closed/open, R1_far_dark/snow/lights» (BRIEF_CHATGPT_v4 §C6): crops of the
-## delivered R1 painting (the lantern; the far bank), darkness, snow and lights drawn by the engine.
+## Art (партия 3): closeup_lantern_closed / closeup_lantern_open — two full-screen states of the one signal
+## lantern on the wet jetty, the far bank dark behind it; a flash shows the open state for a moment. The
+## answer from the far bank — three lights and the snow coming through — is drawn by the engine over the
+## painting's far bank (soft glows); in the room R1 the delivered layers R1_far_lights / R1_far_snow show it.
+## Coordinates: `lantern_box`, `far_lights`, `far_snow` in canvas px (1672×941, shown full screen).
 
-var shutter: ColorRect = null
-var lamp_glow: Sprite2D = null
+var shutter: TextureRect = null      # the closed state; hidden while the shutter is open
+var lit: TextureRect = null          # the open state (flame in the glass)
 var lantern_hit: Control = null
-var far: Control = null
-var far_dark: ColorRect = null
-var far_snow: ColorRect = null
-var far_lights: Array[Sprite2D] = []
+var far_snow: Node2D = null
+var far_lights: Array[Node2D] = []
 var flashes: int = 0
 var answered_sent: bool = false
 var sequence: Array[int] = []    # counts that were judged (tests)
 var _open_t: float = -1.0
 var _last_flash_t: float = -100.0
 var _answer_t: float = -1.0
-var _glass: Rect2 = Rect2()
 
 
 func build() -> void:
-	var ln: Dictionary = spec.get("lantern", {})
-	var lpos := v2(ln.get("pos", [260, 200]))
-	var lk := float(ln.get("scale", 4.5))
-	var lreg: Array = ln.get("region", [286, 95, 98, 158])
-	crop(String(ln.get("image", "")), lreg, lpos, lk).name = "Lantern"
-	var g: Array = ln.get("glass", [404, 438, 156, 333])
-	_glass = Rect2(float(g[0]), float(g[1]), float(g[2]), float(g[3]))
-	lamp_glow = PlaceholderArt.glow(_glass.get_center(), _glass.size.y * 0.9, Color(1.0, 0.75, 0.35, 0.85))
-	lamp_glow.name = "Flame"
-	add_child(lamp_glow)
-	shutter = ColorRect.new()
+	var art: Dictionary = spec.get("art", {})
+	var full := [0, 0, 1672, 941]
+	var k := 1920.0 / 1672.0
+	lit = crop(String(art.get("open", "")), full, Vector2.ZERO, k)
+	lit.name = "LanternOpen"
+	shutter = crop(String(art.get("closed", "")), full, Vector2.ZERO, k)
 	shutter.name = "Shutter"
-	shutter.color = Color(0.13, 0.11, 0.1)
-	shutter.position = _glass.position
-	shutter.size = _glass.size
-	shutter.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(shutter)
-	lantern_hit = hit_area(Rect2(lpos, Vector2(float(lreg[2]), float(lreg[3])) * lk), _on_lantern_input, "LanternHit")
-	# The far bank (the delivered R1 painting), dark for a year.
-	var fb: Dictionary = spec.get("far", {})
-	var fpos := v2(fb.get("pos", [860, 300]))
-	var fk := float(fb.get("scale", 1.1))
-	var freg: Array = fb.get("region", [783, 243, 871, 148])
-	far = Control.new()
-	far.name = "FarBank"
-	far.position = fpos
-	far.size = Vector2(float(freg[2]), float(freg[3])) * fk
-	far.clip_contents = true
-	far.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(far)
-	crop(String(fb.get("image", "")), freg, Vector2.ZERO, fk, far)
-	far_dark = ColorRect.new()
-	far_dark.color = Color(0.04, 0.05, 0.08, 0.82)
-	far_dark.size = far.size
-	far_dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	far.add_child(far_dark)
-	far_snow = ColorRect.new()
-	far_snow.color = Color(0.92, 0.94, 1.0, 0.0)
-	far_snow.size = far.size
-	far_snow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	far.add_child(far_snow)
-	for p in fb.get("lights", [[260, 70], [420, 60], [600, 78]]):
-		var gl := PlaceholderArt.glow(v2(p), 34, Color(1.0, 0.8, 0.4, 0.95))
+	far_snow = Node2D.new()
+	far_snow.name = "FarSnow"
+	far_snow.modulate.a = 0.0
+	add_child(far_snow)
+	for sh in spec.get("far_snow", [[1320, 330, 420, 34], [180, 330, 260, 30]]):
+		far_snow.add_child(PlaceholderArt.shape_node({"type": "glow", "center": [float(sh[0]) * k, float(sh[1]) * k],
+			"r": float(sh[2]) * k, "ry": float(sh[3]) * k, "color": "#dfe6f2c0"}))
+	for q in spec.get("far_lights", [[1090, 338], [1290, 326], [1480, 342]]):
+		var gl := PlaceholderArt.glow(v2(q) * k, 30.0, Color(1.0, 0.8, 0.42, 0.95))
 		gl.visible = false
-		far.add_child(gl)
+		add_child(gl)
 		far_lights.append(gl)
-	label(text("label_far"), fpos + Vector2(0, far.size.y + 10), far.size.x)
-	label(text("label_count"), v2(spec.get("hint_pos", [860, 640])), 900)
+	var lb: Array = spec.get("lantern_box", [560, 60, 420, 820])
+	lantern_hit = hit_area(Rect2(Vector2(float(lb[0]), float(lb[1])) * k, Vector2(float(lb[2]), float(lb[3])) * k), _on_lantern_input, "LanternHit")
+	var fp := v2(spec.get("far_label_pos", [1250, 300]))
+	label(text("label_far"), fp, 420)
+	label(text("label_count"), v2(spec.get("hint_pos", [1180, 860])), 640)
 	if flag("far_lights_answered"):
 		answered_sent = true
 		_show_answer(1.0)
@@ -121,8 +97,7 @@ func tick(_delta: float) -> void:
 func _show_answer(k: float) -> void:
 	for i in far_lights.size():
 		far_lights[i].visible = k >= 0.25 + 0.2 * i
-	far_dark.color.a = lerpf(0.82, 0.25, k)
-	far_snow.color.a = lerpf(0.0, 0.35, k)
+	far_snow.modulate.a = lerpf(0.0, 0.55, k)
 
 
 func probe() -> Dictionary:

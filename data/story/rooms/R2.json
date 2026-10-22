@@ -1,49 +1,34 @@
 {
   "id": "R2",
-  "_art": "Арта нет (заказан: BRIEF_CHATGPT_v4 §C7 — R2_bg.png + R2_fg_*.png: вид из лодки, туман, канат уходит в туман, кольцо скользит). До готовности — заглушка движка: сумеречная вода, полосы тумана, канат с кольцом, лодка; по доскам — редкий снег. Код комнаты игроку не показывается.",
-  "background": {
-    "kind": "exterior", "horizon": 520,
-    "placeholder": {
-      "shapes": [
-        {"type": "gradient", "rect": [0, 0, 1920, 560], "top": "#161b26", "bottom": "#454c5a"},
-        {"type": "gradient", "rect": [0, 500, 1920, 580], "top": "#3a424e", "bottom": "#161a20"},
-        {"type": "poly", "points": [[0, 470], [600, 440], [1300, 455], [1920, 430], [1920, 540], [1200, 560], [500, 545], [0, 560]], "color": "#c8ccd426"},
-        {"type": "poly", "points": [[0, 610], [800, 585], [1920, 620], [1920, 680], [900, 660], [0, 690]], "color": "#d0d4da1c"},
-        {"type": "line", "points": [[0, 860], [520, 720], [1150, 560], [1920, 380]], "width": 10, "color": "#6b5638"},
-        {"type": "circle", "center": [700, 676], "r": 20, "color": "#2b2723"},
-        {"type": "poly", "points": [[380, 880], [1560, 880], [1470, 1080], [470, 1080]], "color": "#4a3220"},
-        {"type": "poly", "points": [[450, 900], [1490, 900], [1420, 1065], [530, 1065]], "color": "#6b4a2e"},
-        {"type": "line", "points": [[520, 985], [1440, 985]], "width": 14, "color": "#563a22"},
-        {"type": "line", "points": [[380, 880], [1560, 880]], "width": 8, "color": "#35251a"},
-        {"type": "poly", "points": [[1150, 330], [1920, 250], [1920, 460], [1200, 470]], "color": "#d6dae01e"}
-      ]
-    }
-  },
-  "walkable": [[560, 915], [1380, 915], [1360, 1050], [580, 1050]],
-  "no_walk_samples": [[300, 700, "вода"], [1700, 800, "вода"]],
-  "walk_samples": [[960, 980], [700, 1000], [1250, 960]],
-  "depth": {"top_y": 900, "bottom_y": 1070, "scale_top": 1.15, "scale_bottom": 1.45},
-  "_depth_note": "Заглушка: в лодке Агата близко к зрителю (≈ 400–500 px). Ориентиров роста нет, пока нет арта.",
-  "layers": [],
-  "effects": [
-    {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 70, "z": 4000}
+  "_art": "Партия 3 (ChatGPT 22.10, assets/incoming/_meta_p3/README_RU.txt): R2_bg.png — вид из лодки Пелагеи с кормы: туман, натянутый канат моста уходит к тому берегу, вдоль него снег на берегах; R2_fg_rope.png — канат с кольцом-направляющей на правом борту (кольцо скользит по канату, узла нет), поверх всего. Кадр — глазами Агаты: её фигуры в комнате нет (player_hidden), Пелагея гребёт за спиной (её слышно, в кадре её нет).",
+  "art_source": {"files": {"bg.png": "assets/incoming/R2_bg.png", "fg_rope.png": "assets/incoming/R2_fg_rope.png"}, "canvas": [1672, 941], "alpha_min": 0,
+    "_note": "Копии — tools/import_room_art.py R2; слой в координатах фона, (0,0) 1:1"},
+  "background": {"kind": "exterior", "image": "res://assets/rooms/R2/bg.png", "wall": "#3c4458", "floor": "#4a3a2a", "accent": "#7a6040", "horizon": 220},
+  "player_hidden": true,
+  "_player_note": "Вид из лодки (первое лицо): Агата не рисуется. Пол — дно лодки у банки, туда невидимая Агата «подходит» к выходам; ходьбы по кадру нет.",
+  "walkable": [[860, 960], [1060, 960], [1060, 1050], [860, 1050]],
+  "no_walk_samples": [[300, 700, "вода слева"], [1600, 560, "вода справа"], [960, 300, "туман над рекой"]],
+  "walk_samples": [[960, 1000], [880, 980], [1040, 1030]],
+  "depth": {"top_y": 960, "bottom_y": 1050, "scale_top": 1.0, "scale_bottom": 1.0},
+  "_depth_note": "Агаты в кадре нет (player_hidden) — масштаб не виден; ориентиров роста не нужно.",
+  "layers": [
+    {"id": "fg_rope", "image": "res://assets/rooms/R2/fg_rope.png", "occluder": true, "z": 1080, "_note": "канат и кольцо на правом борту — передний план"}
   ],
-  "spawns": {"default": [960, 980], "from_R1": [700, 1000], "from_R3": [1300, 980]},
+  "effects": [
+    {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 45, "z": 4000, "_note": "редкий снег: ближе к тому берегу уже зима (M18p: «На мокрых досках появляется снег»)"}
+  ],
+  "spawns": {"default": [960, 1000], "from_R1": [960, 1000], "from_R3": [960, 1000]},
   "props": [],
   "hotspots": [
     {
-      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [1170, 540, 150, 390], "stand": [1000, 960], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/pelageya/front.png",
-      "talk": {"after_text": "@R2.pelageya.after"}
-    },
-    {
-      "id": "rope", "kind": "object", "label": "@R2.rope.label", "rect": [560, 600, 360, 150], "stand": [760, 960], "draw": false,
+      "id": "rope", "kind": "object", "label": "@R2.rope.label", "rect": [1250, 640, 230, 220], "stand": [960, 1000], "draw": false,
+      "_rect_note": "кольцо на канате у правого борта (слой fg_rope: кольцо ≈ экран 1305–1400 × 705–815)",
       "look": "@R2.rope.look"
     }
   ],
   "exits": [
-    {"to": "R1", "label": "@R2.exit_R1.label", "cue": "left", "rect": [0, 640, 120, 440], "stand": [600, 1000], "spawn": "from_R2", "draw": false},
-    {"to": "R3", "label": "@R2.exit_R3.label", "cue": "right", "rect": [1800, 300, 120, 600], "stand": [1360, 960], "spawn": "from_R2", "draw": false}
+    {"to": "R1", "label": "@R2.exit_R1.label", "cue": "left", "rect": [0, 860, 240, 220], "stand": [900, 1000], "spawn": "from_R2", "draw": false},
+    {"to": "R3", "label": "@R2.exit_R3.label", "cue": "up", "rect": [800, 300, 340, 170], "stand": [1000, 980], "spawn": "from_R2", "draw": false, "_note": "вперёд по канату, в туман — к дальней опоре"}
   ],
   "scenes": {
     "M18p": {"trigger": "enter"}

@@ -139,6 +139,18 @@ for it_id, it_meta in item_by_id.items():
     src = it_meta.get("source_hotspot")
     if not src:
         continue
+    # source_hotspot_also: тот же предмет на другом месте той же комнаты (скоба H2 на табурете, пока на её месте
+    # стоит зеркало конторы, блок 2) — хотспот существует и выдаёт этот предмет, once_flag тот же (has_<id>).
+    for also in it_meta.get("source_hotspot_also", []) or []:
+        arid, _, ahid = str(also).partition(".")
+        arf = STORY / "rooms" / f"{arid}.json"
+        ahs = None
+        if arf.exists():
+            ahs = next((h for h in json.loads(arf.read_text(encoding="utf-8")).get("hotspots", []) if h.get("id") == ahid), None)
+        if arid != str(src).partition(".")[0] or ahs is None:
+            err(f"предмет {it_id}: source_hotspot_also {also} — нет такого хотспота в комнате {str(src).partition('.')[0]}")
+        elif it_id not in ((ahs.get("use") or {}).get("gives") or []) or (ahs.get("use") or {}).get("once_flag") != "has_" + it_id:
+            err(f"предмет {it_id}: source_hotspot_also {also} — должен выдавать его с once_flag has_{it_id}")
     rid_, _, hid_ = str(src).partition(".")
     rf_ = STORY / "rooms" / f"{rid_}.json"
     if not rf_.exists():

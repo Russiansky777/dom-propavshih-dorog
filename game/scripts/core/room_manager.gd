@@ -99,6 +99,9 @@ func change_room(room_id: String, spawn_id: String, override_pos: Vector2 = Vect
 		player.call("enter_room", current_room, pos)
 	else:
 		player.global_position = pos
+	# A room seen through Agata's eyes (R2, the crossing from the boat: rooms/<id>.json "player_hidden")
+	# has no figure of her; every other room shows her again.
+	player.visible = not (StoryData.has_room(room_id) and bool(StoryData.room(room_id).get("player_hidden", false)))
 
 	GameState.current_room = room_id
 	GameState.player_pos = pos

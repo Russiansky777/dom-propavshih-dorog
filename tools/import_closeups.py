@@ -7,6 +7,12 @@ closeup_plan — 1672×941, лист на столе. В игре они пок�
 свободной зоны листа). Копия уменьшается до ширины, в которой её рисует крупный план (WIDTH ниже, ×1,2 на чёткость),
 пропорции и кадр не меняются — координаты зоны текста плана (text_rect) остаются в пикселях исходника 1672×941.
 Импорт Godot — с потерями (compress/mode=1 в .import): это иллюстрации, а не пиксельная графика.
+
+Партия 3 (день второй, 22.10, assets/incoming/_meta_p3/README_RU.txt): крупные планы механик дня второго —
+контора в зеркале (M3_view_*), горница Нины с ходиками (O3_*), плита (closeup_plate*), фонарь (closeup_lantern_*),
+фото в сенях (closeup_office_photo). Все на одном холсте 1672×941, слои ставятся в (0, 0) — поэтому без
+уменьшения (оси стрелок, контур стекла, кольцо плиты — в пикселях холста, data/story/rooms/*.json → mechanic),
+прозрачность слоёв сохраняется.
 assets/ не трогаем (зона Codex), пишем только копию игры.
 
 Запуск: python3 tools/import_closeups.py           — записать копии
@@ -21,6 +27,11 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "assets" / "incoming"
 DST = ROOT / "game" / "assets" / "closeups"
 WIDTH = {"closeup_bridge_photo": 840, "closeup_ilya_drawing": 840, "closeup_plan": 1440}
+DAY2 = ["M3_view_bg", "M3_view_light", "M3_view_hook", "M3_view_bar_down",
+        "O3_bg", "O3_clock_face", "O3_clock_pendulum", "O3_clock_hand_min", "O3_clock_hand_hour", "O3_candle_flame",
+        "closeup_plate", "closeup_plate_skoba", "closeup_plate_rope",
+        "closeup_lantern_closed", "closeup_lantern_open", "closeup_office_photo"]
+WIDTH.update({n: 1672 for n in DAY2})
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:
@@ -34,7 +45,8 @@ def main() -> int:
     DST.mkdir(parents=True, exist_ok=True)
     bad = 0
     for name in WIDTH:
-        im = Image.open(SRC / f"{name}.png").convert("RGB")
+        im = Image.open(SRC / f"{name}.png")
+        im = im.convert("RGBA" if im.mode in ("RGBA", "LA") else "RGB")
         size = target_size(im.width, im.height, name)
         out = DST / f"{name}.png"
         if check:

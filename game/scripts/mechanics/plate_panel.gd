@@ -4,15 +4,18 @@ extends MechanicPanel
 ## (`skoba_on_plate`), is driven in with three blows of the mouse — event "braced". When Pelageya has
 ## brought the rope (`rope_brought`), its free end is dragged to the ring and tied the way she shows:
 ## three places in turn; a wrong place — she shows again from the start, no penalty — event "tied".
-## Stand-in art until «Z3_plate_bg / _skoba / _rope» (BRIEF_CHATGPT_v4 §C5): a crop of the delivered Z3
-## painting round the pier stone, with the plate, letters, ring and crack drawn by the engine; the brace —
-## its icon (assets/icons/skoba_plate).
+## Art (партия 3): closeup_plate (the plate on the wet pier stone) and two layers on its canvas at (0, 0) —
+## the brace across the crack and the rope tied on the ring. The brace layer sinks into place with the
+## blows; the rope being dragged is a line drawn by the engine until it is tied (then the rope layer).
+## Coordinates: `ring`, `ring_r`, `skoba_box` in canvas px (1672×941, shown full screen); `rope_free`,
+## `rope_from`, `knot` (offsets from the ring) in screen px.
 
-var plate_rect: Rect2 = Rect2()
-var ring_c: Vector2 = Vector2.ZERO
-var ring_r: float = 40.0
+var k: float = 1.0                  # canvas → screen
+var ring_c: Vector2 = Vector2.ZERO  # screen
+var ring_r: float = 40.0            # screen
 var skoba: TextureRect = null
 var skoba_hit: Control = null
+var rope_art: TextureRect = null
 var blows: int = 0
 var rope: Line2D = null
 var rope_end: Vector2 = Vector2.ZERO
@@ -22,90 +25,41 @@ var knot_step: int = 0
 var knot_marks: Array[Control] = []
 var knot_errors: int = 0
 var _dragging: bool = false
+var _skoba_box: Rect2 = Rect2()
 
 
 func build() -> void:
-	var bgs: Dictionary = spec.get("stone", {})
-	crop(String(bgs.get("image", "")), bgs.get("region", [1262, 505, 236, 200]), v2(bgs.get("pos", [300, 170])), float(bgs.get("scale", 3.6))).name = "Stone"
-	var dusk := ColorRect.new()
-	dusk.name = "Dusk"
-	dusk.color = Color(0.25, 0.28, 0.42, 0.45)
-	dusk.position = v2(bgs.get("pos", [300, 170]))
-	var reg: Array = bgs.get("region", [1262, 505, 236, 200])
-	dusk.size = Vector2(float(reg[2]), float(reg[3])) * float(bgs.get("scale", 3.6))
-	dusk.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(dusk)
-	var pr: Array = spec.get("plate", [430, 260, 600, 470])
-	plate_rect = Rect2(float(pr[0]), float(pr[1]), float(pr[2]), float(pr[3]))
-	var plate := Polygon2D.new()
-	plate.name = "Plate"
-	plate.color = Color(0.36, 0.34, 0.33)
-	plate.polygon = PackedVector2Array([plate_rect.position, plate_rect.position + Vector2(plate_rect.size.x, 0), plate_rect.end, plate_rect.position + Vector2(0, plate_rect.size.y)])
-	add_child(plate)
-	for c in [plate_rect.position + Vector2(24, 24), plate_rect.position + Vector2(plate_rect.size.x - 24, 24),
-			plate_rect.end - Vector2(24, 24), plate_rect.position + Vector2(24, plate_rect.size.y - 24)]:
-		var rivet := Polygon2D.new()
-		rivet.color = Color(0.22, 0.2, 0.19)
-		rivet.polygon = PlaceholderArt.circle_points(c, 9)
-		add_child(rivet)
-	var word := Label.new()
-	word.name = "Letters"
-	word.text = text("label_letters")
-	word.position = plate_rect.position + Vector2(40, plate_rect.size.y * 0.58)
-	word.size = Vector2(plate_rect.size.x - 80, 90)
-	word.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	word.add_theme_font_override("font", UiTheme.font("head_bold"))
-	word.add_theme_font_size_override("font_size", 64)
-	word.add_theme_color_override("font_color", Color(0.24, 0.22, 0.21))
-	word.add_theme_color_override("font_outline_color", Color(0.5, 0.48, 0.45))
-	word.add_theme_constant_override("outline_size", 2)
-	word.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(word)
-	var crack := Line2D.new()
-	crack.name = "Crack"
-	crack.points = PlaceholderArt._points(spec.get("crack", [[600, 262], [640, 330], [615, 390], [668, 470], [650, 540]]))
-	crack.width = 6
-	crack.default_color = Color(0.08, 0.07, 0.07)
-	add_child(crack)
-	ring_c = v2(spec.get("ring", [930, 340]))
-	ring_r = float(spec.get("ring_r", 42))
-	var ring := Line2D.new()
-	ring.name = "Ring"
-	ring.points = PlaceholderArt.circle_points(ring_c, ring_r)
-	ring.closed = true
-	ring.width = 12
-	ring.default_color = Color(0.2, 0.18, 0.17)
-	add_child(ring)
-	# The brace.
-	var sk: Dictionary = spec.get("skoba", {})
-	skoba = TextureRect.new()
+	var art: Dictionary = spec.get("art", {})
+	var full := [0, 0, 1672, 941]
+	k = 1920.0 / 1672.0
+	crop(String(art.get("bg", "")), full, Vector2.ZERO, k).name = "Plate"
+	ring_c = v2(spec.get("ring", [555, 505])) * k
+	ring_r = float(spec.get("ring_r", 150)) * k
+	var sb: Array = spec.get("skoba_box", [890, 482, 300, 84])
+	_skoba_box = Rect2(Vector2(float(sb[0]), float(sb[1])) * k, Vector2(float(sb[2]), float(sb[3])) * k)
+	# The brace (its layer on the whole canvas; it sinks into place with the blows).
+	skoba = crop(String(art.get("skoba", "")), full, Vector2.ZERO, k)
 	skoba.name = "Skoba"
-	if ResourceLoader.exists(String(sk.get("icon", ""))):
-		skoba.texture = load(String(sk["icon"]))
-	skoba.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	skoba.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	skoba.size = Vector2(float(sk.get("size", 230)), float(sk.get("size", 230)))
-	skoba.pivot_offset = skoba.size * 0.5
-	skoba.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(skoba)
-	skoba_hit = hit_area(Rect2(v2(sk.get("at", [640, 400])) - skoba.size * 0.5, skoba.size), _on_skoba_input, "SkobaHit")
-	# The rope and the knot.
+	skoba_hit = hit_area(_skoba_box.grow(30), _on_skoba_input, "SkobaHit")
+	# The rope tied on the ring (layer) and the rope being brought (line).
+	rope_art = crop(String(art.get("rope", "")), full, Vector2.ZERO, k)
+	rope_art.name = "RopeTied"
 	rope = Line2D.new()
 	rope.name = "Rope"
-	rope.width = 16
-	rope.default_color = Color(0.55, 0.43, 0.27)
+	rope.width = 34
+	rope.default_color = Color(0.62, 0.5, 0.32)
 	rope.joint_mode = Line2D.LINE_JOINT_ROUND
 	rope.end_cap_mode = Line2D.LINE_CAP_ROUND
 	add_child(rope)
-	rope_end = v2(spec.get("rope_free", [1250, 760]))
-	rope_hit = hit_area(Rect2(rope_end - Vector2(50, 50), Vector2(100, 100)), _on_rope_input, "RopeEnd")
-	var marks: Array = spec.get("knot", [[-60, 10], [0, -70], [60, 20]])
+	rope_end = v2(spec.get("rope_free", [330, 960]))
+	rope_hit = hit_area(Rect2(rope_end - Vector2(60, 60), Vector2(120, 120)), _on_rope_input, "RopeEnd")
+	var marks: Array = spec.get("knot", [[-150, 60], [0, -175], [150, 60]])
 	for i in marks.size():
-		var m := hit_area(Rect2(ring_c + v2(marks[i]) - Vector2(30, 30), Vector2(60, 60)), _on_knot_input.bind(i), "Knot%d" % i)
+		var m := hit_area(Rect2(ring_c + v2(marks[i]) - Vector2(34, 34), Vector2(68, 68)), _on_knot_input.bind(i), "Knot%d" % i)
 		var dot := Polygon2D.new()
 		dot.name = "Dot"
 		dot.color = Color(1.0, 0.85, 0.45, 0.85)
-		dot.polygon = PlaceholderArt.circle_points(Vector2(30, 30), 13)
+		dot.polygon = PlaceholderArt.circle_points(Vector2(34, 34), 15)
 		m.add_child(dot)
 		knot_marks.append(m)
 	label(text("label_hint"), v2(spec.get("hint_pos", [1100, 900])), 760)
@@ -123,21 +77,19 @@ func braced() -> bool:
 
 
 func _refresh() -> void:
-	var sk: Dictionary = spec.get("skoba", {})
-	var at := v2(sk.get("at", [640, 400]))
 	var placed := flag("skoba_on_plate") or braced()
 	skoba.visible = placed
 	var sink := 1.0 if braced() else float(blows) / 3.0
-	skoba.position = at - skoba.size * 0.5 + Vector2(0, -36.0 * (1.0 - sink))
-	skoba.rotation_degrees = float(sk.get("angle", 62)) - 6.0 * (1.0 - sink)
+	skoba.position = Vector2(0, -34.0 * (1.0 - sink))
 	skoba_hit.visible = placed and not braced()
 	var rope_here := flag("rope_brought")
-	rope.visible = rope_here
 	var tied := flag("rope_on_ring")
-	if rope_here:
-		var start := v2(spec.get("rope_from", [1700, 1000]))
-		var end := ring_c + Vector2(0, ring_r) if (rope_on_ring or tied) else rope_end
-		rope.points = PackedVector2Array([start, start.lerp(end, 0.5) + Vector2(0, 40), end])
+	rope_art.visible = tied
+	rope.visible = rope_here and not tied
+	if rope.visible:
+		var start := v2(spec.get("rope_from", [-40, 1100]))
+		var end := ring_c + Vector2(-ring_r * 0.2, ring_r * 0.95) if rope_on_ring else rope_end
+		rope.points = PackedVector2Array([start, start.lerp(end, 0.5) + Vector2(0, 50), end])
 	rope_hit.visible = rope_here and not rope_on_ring and not tied
 	for i in knot_marks.size():
 		var m := knot_marks[i]
@@ -173,7 +125,7 @@ func _on_rope_input(ev: InputEvent) -> void:
 				knot_step = 0
 				say("rope_at_ring")
 			else:
-				rope_end = v2(spec.get("rope_free", [1250, 760]))
+				rope_end = v2(spec.get("rope_free", [330, 960]))
 			_place_rope_hit()
 			_refresh()
 	elif ev is InputEventMouseMotion and _dragging:
@@ -184,7 +136,7 @@ func _on_rope_input(ev: InputEvent) -> void:
 
 func _place_rope_hit() -> void:
 	if not rope_on_ring:
-		rope_hit.position = rope_end - Vector2(50, 50)
+		rope_hit.position = rope_end - Vector2(60, 60)
 
 
 func _on_knot_input(ev: InputEvent, i: int) -> void:
@@ -210,4 +162,4 @@ func probe() -> Dictionary:
 		marks.append(center_of(m))
 	return {"blows": blows, "braced": braced(), "skoba": center_of(skoba_hit), "skoba_visible": skoba.visible,
 		"rope_end": center_of(rope_hit), "ring": {"x": ring_c.x, "y": ring_c.y}, "rope_on_ring": rope_on_ring,
-		"knot_step": knot_step, "knot_errors": knot_errors, "knot": marks}
+		"knot_step": knot_step, "knot_errors": knot_errors, "knot": marks, "rope_tied_visible": rope_art.visible}

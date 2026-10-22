@@ -661,10 +661,16 @@ func _test_walkthrough() -> void:
 	await _finish()
 	_check(await _go("H2"), "H1→H2")
 	# The brace: Dunya's bench, once the school plan is known (block 1: hotspot brace) — taken now if not on day one.
+	_check(rm.current_room.get_node_or_null("Layers/office_mirror") != null and rm.current_room.get_node("Layers/office_mirror").visible,
+		"the office mirror stays in Dunya's stand on the bench (batch 3 layer)")
 	if not gs.has_flag("has_brace_plate"):
-		await _use("brace")
+		# Batch 3: the office mirror's stand stands where the brace lay — the brace lies on the stool, still takeable.
+		_check(not _hotspot("brace").visible and _hotspot("brace_stool").visible and rm.current_room.get_node("Layers/skoba_stool").visible
+			and not rm.current_room.get_node("Layers/skoba").visible, "the brace (with the plate drawing) on the stool while the mirror stands on its place")
+		await _use("brace_stool")
 		await _finish()
-	_check(gs.has_item("brace_plate"), "the brace is in the bag before the turn")
+		_check(not _hotspot("brace_stool").visible and not rm.current_room.get_node("Layers/skoba_stool").visible, "taken from the stool — gone from it")
+	_check(gs.inventory.count("brace_plate") == 1, "the brace is in the bag before the turn, once")
 	await _use_item("clamp", "bundle_nina")
 	await _frames(2)
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "fast_mirror" and not gs.has_item("clamp"), "the clamp on the frame opens mother's mirror")
@@ -685,6 +691,7 @@ func _test_walkthrough() -> void:
 	_check(await _go("Z2"), "H1→Z2")
 	_check(await _go("Z3"), "Z2→Z3")
 	_check(_hotspot("pier_plate") != null and _hotspot("pier_plate").visible and not _hotspot("old_pier_base").visible, "the plate of the pier above the water")
+	_check(rm.current_room.get_node("Layers/water_low").visible and not _hotspot("plate").visible, "batch 3: the water let down at dusk (layer); the shore sign has no label in the evening")
 	_check(_hotspot("pelageya") != null and _hotspot("pelageya").visible, "Pelageya at the turn with the boat")
 	await _use_item("brace_plate", "pier_plate")
 	await _frames(2)
@@ -731,7 +738,9 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("far_lights_answered") and gs.has_flag("road_held_both_ends") and gs.has_flag("done_M16"), "three flashes → three lights → M16: %s" % str(seen))
 	sr.close_mechanic()
 	await _frames(2)
-	_check(rm.current_room.get_node_or_null("Effects/far_lights").visible, "the three lights on the far bank in the room")
+	var lay: Node = rm.current_room.get_node("Layers")
+	_check(lay.get_node("far_lights").visible and lay.get_node("far_snow").visible and not lay.get_node("far_dark").visible and lay.get_node("dusk").visible,
+		"batch 3 layers: dusk, the far bank under snow (not dark), the three lights")
 	# Ribbon (once).
 	await _use("pelageya")
 	seen = await _finish()
@@ -754,8 +763,10 @@ func _test_walkthrough() -> void:
 	_check(await _go("R2"), "R1→R2 (along the rope)")
 	seen = await _finish()
 	_check(gs.has_flag("done_M18p"), "the crossing: %s" % str(seen))
+	_check(not rm.player.visible, "R2 is seen from the boat: no figure of Agata (player_hidden)")
 	_check(await _go("R3"), "R2→R3")
 	seen = await _finish()
+	_check(rm.player.visible, "at the far pier Agata is in the frame again")
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
 	_check(not (await _go("O4")), "the path to the street is the end of the block")

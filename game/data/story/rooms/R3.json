@@ -1,71 +1,52 @@
 {
   "id": "R3",
-  "_art": "Арта нет (заказан: BRIEF_CHATGPT_v4 §C8 — R3_bg.png + R3_fg_*.png: каменная опора в снегу, стопор в старом кольце, сарайчик-мастерская переправы, тропа вверх к улице, фонарь на столбике). До готовности — заглушка движка: ночь, снег, опора с кольцом и стопором, канат, сарайчик, фонарь. Митя — плоская фигура из листа Meshy (assets/incoming/cast_v3/mitya_v1.png → tools/import_npc_front.py) с фонарём-светом. Код комнаты игроку не показывается.",
-  "background": {
-    "kind": "exterior", "horizon": 600,
-    "placeholder": {
-      "shapes": [
-        {"type": "gradient", "rect": [0, 0, 1920, 620], "top": "#0d111a", "bottom": "#2a3040"},
-        {"type": "poly", "points": [[0, 530], [400, 480], [900, 510], [1400, 460], [1920, 505], [1920, 640], [0, 640]], "color": "#8c93a2"},
-        {"type": "gradient", "rect": [0, 600, 1920, 480], "top": "#aeb6c4", "bottom": "#dfe4ec"},
-        {"type": "poly", "points": [[1040, 600], [1130, 600], [1380, 1080], [1120, 1080]], "color": "#98a0ae"},
-        {"type": "poly", "points": [[0, 640], [540, 650], [640, 1080], [0, 1080]], "color": "#1c2330"},
-        {"type": "poly", "points": [[0, 640], [540, 650], [552, 690], [0, 682]], "color": "#c4cbd6"},
-        {"type": "poly", "points": [[370, 400], [650, 400], [672, 840], [350, 840]], "color": "#62656b"},
-        {"type": "line", "points": [[360, 520], [660, 520]], "width": 4, "color": "#4a4c52"},
-        {"type": "line", "points": [[355, 640], [665, 640]], "width": 4, "color": "#4a4c52"},
-        {"type": "line", "points": [[352, 760], [668, 760]], "width": 4, "color": "#4a4c52"},
-        {"type": "poly", "points": [[360, 392], [662, 392], [650, 424], [372, 424]], "color": "#eef1f5"},
-        {"type": "line", "points": [[0, 760], [300, 650], [600, 520]], "width": 10, "color": "#6b5638"},
-        {"type": "line", "points": [[600, 520], [730, 600]], "width": 10, "color": "#6b5638"},
-        {"type": "line", "points": [[580, 500], [620, 500], [622, 540], [578, 540], [580, 500]], "width": 7, "color": "#24211e"},
-        {"type": "poly", "points": [[704, 560], [742, 560], [748, 830], [698, 830]], "color": "#3a2e22"},
-        {"type": "poly", "points": [[1450, 430], [1800, 430], [1800, 712], [1450, 712]], "color": "#3b2d22"},
-        {"type": "poly", "points": [[1420, 440], [1625, 335], [1830, 440]], "color": "#e6e9ee"},
-        {"type": "poly", "points": [[1580, 560], [1650, 560], [1650, 712], [1580, 712]], "color": "#21180f"},
-        {"type": "line", "points": [[1210, 400], [1210, 690]], "width": 10, "color": "#3a2e22"},
-        {"type": "glow", "center": [1210, 392], "r": 90, "color": "#ffc46acc"},
-        {"type": "circle", "center": [1210, 392], "r": 12, "color": "#ffe2a0"}
-      ]
-    }
-  },
-  "walkable": [[700, 640], [1450, 712], [1820, 722], [1915, 760], [1915, 1070], [640, 1070], [600, 860], [680, 840]],
-  "no_walk_samples": [[300, 900, "вода у опоры"], [500, 600, "опора"]],
-  "walk_samples": [[1100, 900], [800, 1000], [1600, 900], [760, 760]],
-  "depth": {"top_y": 640, "bottom_y": 1070, "scale_top": 0.8, "scale_bottom": 1.5},
-  "_depth_note": "Заглушка: ориентиров роста нет, пока нет арта (сарайчик ≈ 2,5 м по замыслу).",
-  "layers": [],
-  "effects": [
-    {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 160, "z": 4000},
-    {"id": "night", "type": "tint", "color": "#a4abc8", "blend": "mul", "z": 4090},
-    {"id": "mitya_lantern", "type": "shapes", "z": 4095, "shapes": [{"type": "glow", "center": [912, 600], "r": 70, "color": "#ffc46acc"}, {"type": "poly", "points": [[902, 588], [922, 588], [922, 616], [902, 616]], "color": "#ffe2a0"}], "_note": "фонарь в руке у Мити — до его листа с фонарём"}
+  "_art": "Партия 3 (ChatGPT 22.10, assets/incoming/_meta_p3/README_RU.txt): R3_bg.png — дальняя опора в снегу вечером: каменная стенка причала, тропа вверх к улице Ольховки, сарайчик переправы, мостки справа, фонарь на столбике; R3_fg_pier.png — передняя каменная стенка (верхний край ≈ y 590–690 экрана, перекрывает ноги у края); R3_fg_rope_stop.png — канат моста и деревянный стопор у старого кольца (передний план). Митя — плоская фигура из листа Meshy (assets/incoming/cast_v3/mitya_v1.png → tools/import_npc_front.py) в тоне вечера (image_tint), свет его фонаря — эффект mitya_lantern.",
+  "art_source": {"files": {"bg.png": "assets/incoming/R3_bg.png", "fg_pier.png": "assets/incoming/R3_fg_pier.png", "fg_rope_stop.png": "assets/incoming/R3_fg_rope_stop.png"}, "canvas": [1672, 941], "alpha_min": 0,
+    "_note": "Копии — tools/import_room_art.py R3; слои в координатах фона, (0,0) 1:1"},
+  "background": {"kind": "exterior", "image": "res://assets/rooms/R3/bg.png", "wall": "#4a5470", "floor": "#c8ccd8", "accent": "#7a6040", "horizon": 430},
+  "walkable": [[232, 680], [232, 640], [420, 610], [600, 585], [680, 520], [700, 432], [790, 422], [880, 520], [1000, 540], [1090, 552], [1200, 578], [1268, 600], [1190, 628], [1000, 652], [800, 672], [600, 684], [400, 686]],
+  "no_walk_samples": [[1500, 800, "вода"], [700, 880, "стенка опоры"], [300, 420, "склон с камнями"], [1150, 420, "сарайчик"], [1700, 560, "река за мостками"]],
+  "walk_samples": [[700, 650], [1000, 610], [745, 470], [400, 670], [1180, 600]],
+  "nearest_checks": [{"from": [700, 880], "in": [560, 640, 300, 60], "_note": "стенка опоры → верх опоры"}],
+  "depth": {"top_y": 430, "bottom_y": 690, "scale_top": 0.125, "scale_bottom": 0.775},
+  "_depth_note": "Рост Агаты = 345 px × scale (rooms/_index.json agata_ref). Дверь сарайчика (порог y 500, верх y 380, ≈ 1,95 м) — 0,3 × 345 ≈ 104 px при ожидаемых 102; у края опоры (y ≈ 680) ≈ 265 px: камни стенки ≈ 100 px.",
+  "height_refs": [{"what": "дверь сарайчика (порог y 500, верх y 380)", "y": 500, "px": 120, "m": 1.95}],
+  "layers": [
+    {"id": "fg_pier", "image": "res://assets/rooms/R3/fg_pier.png", "occluder": true, "z": 1080, "_note": "передняя стенка опоры: у края верхней площадки перекрывает ноги"},
+    {"id": "fg_rope_stop", "image": "res://assets/rooms/R3/fg_rope_stop.png", "occluder": true, "z": 1080, "_note": "канат моста и стопор в старом кольце — передний план"}
   ],
-  "spawns": {"default": [1100, 900], "from_R2": [760, 960], "from_O4": [1150, 720]},
+  "effects": [
+    {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 110, "z": 4000},
+    {"id": "mitya_lantern", "type": "shapes", "z": 4095, "shapes": [{"type": "glow", "center": [579, 571], "r": 60, "color": "#ffc46ab0"}, {"type": "glow", "center": [579, 571], "r": 15, "color": "#ffe8b0f0"}], "_note": "фонарь в руке у Мити (у правой руки фигуры) — до его 3D-фигуры с фонарём"}
+  ],
+  "spawns": {"default": [800, 640], "from_R2": [1180, 610], "from_O4": [745, 450], "from_R4": [1130, 575]},
   "props": [],
   "hotspots": [
     {
-      "id": "mitya", "kind": "npc", "label": "@char.mitya", "rect": [760, 387, 140, 373], "stand": [990, 900], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/mitya/front.png",
+      "id": "mitya", "kind": "npc", "label": "@char.mitya", "rect": [440, 416, 160, 250], "stand": [760, 660], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/mitya/front.png", "image_tint": "#b4b8cc",
+      "_rect_note": "Митя на верху опоры у стопора: ноги y 666 (масштаб 0,72 → рост Агаты 249 px; Митя ≈ 1,8 м — 250 px, Пелагея рядом ≈ 230 px)",
       "talk": {"after_text": "@R3.mitya.after"}
     },
     {
-      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [1270, 447, 140, 333], "stand": [1150, 900], "draw": false, "pick_priority": 2,
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [890, 425, 90, 240], "stand": [1000, 640], "draw": false, "pick_priority": 2,
       "image": "res://assets/characters/pelageya/front.png",
       "talk": {"after_text": "@R3.pelageya.after"}
     },
     {
-      "id": "stopor", "kind": "object", "label": "@R3.stopor.label", "rect": [560, 480, 200, 360], "stand": [760, 880], "draw": false,
+      "id": "stopor", "kind": "object", "label": "@R3.stopor.label", "rect": [330, 730, 260, 260], "stand": [480, 680], "draw": false,
+      "_rect_note": "старое кольцо в стенке и деревянный стопор с канатом (слой fg_rope_stop)",
       "look": "@R3.stopor.look"
     },
     {
-      "id": "lamp_post", "kind": "object", "label": "@R3.lamp_post.label", "rect": [1175, 330, 70, 220], "stand": [1240, 760], "draw": false,
+      "id": "lamp_post", "kind": "object", "label": "@R3.lamp_post.label", "rect": [445, 90, 115, 310], "stand": [600, 590], "draw": false,
       "look": "@R3.lamp_post.look"
     }
   ],
   "exits": [
-    {"to": "R2", "label": "@R3.exit_R2.label", "cue": "left", "rect": [0, 840, 140, 240], "stand": [690, 1000], "spawn": "from_R3", "draw": false},
-    {"to": "O4", "label": "@R3.exit_O4.label", "cue": "up", "rect": [1020, 560, 200, 120], "stand": [1120, 720], "spawn": "from_R3", "unbuilt_text": "@ui.day2_end", "draw": false},
-    {"to": "R4", "label": "@R3.exit_R4.label", "cue": "door", "rect": [1570, 550, 90, 160], "stand": [1610, 760], "spawn": "from_R3", "unbuilt_text": "@R3.exit_R4.unbuilt", "draw": false}
+    {"to": "R2", "label": "@R3.exit_R2.label", "cue": "right", "rect": [1300, 500, 240, 130], "stand": [1240, 600], "spawn": "from_R3", "draw": false, "_note": "мостки — к лодке"},
+    {"to": "O4", "label": "@R3.exit_O4.label", "cue": "up", "rect": [670, 380, 160, 80], "stand": [745, 440], "spawn": "from_R3", "unbuilt_text": "@ui.day2_end", "draw": false},
+    {"to": "R4", "label": "@R3.exit_R4.label", "cue": "door", "rect": [1085, 375, 100, 130], "stand": [1130, 575], "spawn": "from_R3", "unbuilt_text": "@R3.exit_R4.unbuilt", "draw": false}
   ],
   "scenes": {
     "M18": {"trigger": "enter"}

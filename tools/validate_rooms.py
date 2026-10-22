@@ -438,14 +438,31 @@ def check_mechanic(ctx: str, m: dict, room: dict) -> None:
     def images(o, path):
         if isinstance(o, dict):
             for k, v in o.items():
-                if k in ("image", "icon", "watch_icon") and isinstance(v, str):
+                if (k in ("image", "icon", "watch_icon") or (isinstance(v, str) and v.startswith("res://"))) and isinstance(v, str):
                     check_res_path(f"{path}.{k}", v)
                 else:
                     images(v, f"{path}.{k}")
         elif isinstance(o, list):
             for i, v in enumerate(o):
-                images(v, f"{path}[{i}]")
+                if isinstance(v, str) and v.startswith("res://"):
+                    check_res_path(f"{path}[{i}]", v)
+                else:
+                    images(v, f"{path}[{i}]")
     images(m, ctx)
+    # Арт партии 3 (22.10) вместо заглушек движка: у каждого крупного плана — свои картинки (их пути проверены выше).
+    need = {"office_mirror": [("frame", "images"), ("office", "art", "bg"), ("office", "art", "light"), ("office", "art", "hook"), ("office", "art", "bar")],
+            "fast_mirror": [("room_art", k) for k in ("bg", "clock_face", "pendulum", "hand_min", "hand_hour", "flame")],
+            "plate": [("art", "bg"), ("art", "skoba"), ("art", "rope")],
+            "lantern": [("art", "closed"), ("art", "open")],
+            "photo": [("photo", "image")]}
+    for keys in need.get(m.get("type"), []):
+        o = m
+        for kk in keys:
+            o = o.get(kk) if isinstance(o, dict) else None
+        if not o:
+            err(f"{ctx}.{'.'.join(keys)}: нет картинки крупного плана (арт партии 3 вместо заглушки движка)")
+    if m.get("type") == "office_mirror" and len(m.get("frame", {}).get("glass_polygon", [])) != 4:
+        err(f"{ctx}.frame.glass_polygon: контур стекла — 4 точки холста (glass_polygon_px поставки)")
     if m.get("type") == "fast_mirror":
         if float(m.get("ratio", 20)) != 20.0:
             err(f"{ctx}.ratio: время внутри идёт ровно в 20 раз быстрее (канон, SCENARIO_FINAL §4.3) — {m.get('ratio')}")
@@ -961,7 +978,7 @@ for rid, room in rooms.items():
             else:
                 for it in act.get("gives", []) or []:
                     src_hs = f"{rid}.{h.get('id')}"
-                    if it in items and items[it].get("source_hotspot") == src_hs:
+                    if it in items and src_hs in [items[it].get("source_hotspot")] + list(items[it].get("source_hotspot_also", []) or []):
                         # предмет берут хотспотом без сцены (скоба в H2 — после плана из школы): только с requires
                         if not items[it].get("inventory", False):
                             err(f"{actx}: предмет {it} не инвентарный, его нельзя взять хотспотом")

@@ -84,22 +84,36 @@ jobs:
         with:
           path: build/web
 
+      # The site (deploy below) must not wait on the exe: a failed release upload (22.10: twice in a row, step
+      # «Publish Windows exe», tests and exports green) left the site unpublished. The step stays visible — its
+      # failure is an annotation with the command and its output (readable through the checks API without the
+      # job log), and the job still succeeds so GitHub Pages gets the new build.
       - name: Publish Windows exe to rolling release «latest»
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          step() {
+            local out
+            if ! out=$("$@" 2>&1); then
+              echo "::error title=Publish exe failed::$1 $2 $3 → $(printf '%s' "$out" | tr '\r\n' '  ' | cut -c1-900)"
+              exit 1
+            fi
+            printf '%s\n' "$out"
+          }
           notes="Текущая сборка main @ ${GITHUB_SHA::7} ($(date -u +%Y-%m-%d\ %H:%M) UTC). Не подписана: SmartScreen → «Подробнее» → «Выполнить в любом случае». Веб-версия: https://russiansky777.github.io/dom-propavshih-dorog/"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -f latest "$GITHUB_SHA"
-          git push -f origin refs/tags/latest
+          step git tag -f latest "$GITHUB_SHA"
+          step git push -f origin refs/tags/latest
           if gh release view latest >/dev/null 2>&1; then
-            gh release edit latest --title "Текущая сборка (main)" --notes "$notes" --target "$GITHUB_SHA"
+            step gh release edit latest --title "Текущая сборка (main)" --notes "$notes" --target "$GITHUB_SHA"
           else
-            gh release create latest --title "Текущая сборка (main)" --notes "$notes" --target "$GITHUB_SHA"
+            step gh release create latest --title "Текущая сборка (main)" --notes "$notes" --target "$GITHUB_SHA"
           fi
-          gh release upload latest build/windows/DomPropavshihDorog.exe --clobber
+          ls -la build/windows/
+          step gh release upload latest build/windows/DomPropavshihDorog.exe --clobber
 
   deploy:
     needs: build

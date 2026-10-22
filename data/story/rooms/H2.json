@@ -1,7 +1,7 @@
 {
   "id": "H2",
   "_art": "Фон H2_bg.png (мастерская): дверь в H1 слева (тёплый свет), верстак и рисунок двери на стене, коробки «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» на полке, пустая стойка ЗМ, колокол у окна. Свёрток «Нина. Горница» (и развёрнутое зеркало) и скоба с рисунком плиты — слои партии 2 (22.10) на левом верстаке. Слой H2_fg_bench_front.png — верстак на переднем плане (окклюдер z=1080). Надписи коробок нарисованы (v1).",
-  "art_source": {"files": {"state_bundle.png": "assets/incoming/H2_state_bundle.png", "state_nina_mirror.png": "assets/incoming/H2_state_nina_mirror.png", "state_skoba.png": "assets/incoming/H2_state_skoba.png"}, "canvas": [1672, 941], "alpha_min": 9,
+  "art_source": {"files": {"state_bundle.png": "assets/incoming/H2_state_bundle.png", "state_nina_mirror.png": "assets/incoming/H2_state_nina_mirror.png", "state_skoba.png": "assets/incoming/H2_state_skoba.png", "state_office_mirror.png": "assets/incoming/H2_state_office_mirror.png"}, "canvas": [1672, 941], "alpha_min": 9,
     "_note": "Партия 2 брифа v4 (ChatGPT 22.10, assets/incoming/_meta_p2/README_RU.txt): полные прозрачные холсты в координатах H2_bg, наложение с (0,0) 1:1. Копии — tools/import_room_art.py H2 (только эти три файла; фон и верстак не трогаются)"},
   "background": {"kind": "interior", "image": "res://assets/rooms/H2/bg.png", "wall": "#5e5040", "floor": "#7a6648", "accent": "#a08a5a", "horizon": 700},
   "walkable": [[60, 780], [240, 750], [365, 750], [380, 706], [880, 702], [1140, 695], [1145, 690], [1400, 690], [1405, 682], [1505, 680], [1505, 693], [1400, 704], [1300, 712], [1200, 720], [1100, 728], [1000, 735], [905, 745], [900, 1070], [60, 1070]],
@@ -13,7 +13,9 @@
   "layers": [
     {"id": "bundle", "image": "res://assets/rooms/H2/state_bundle.png", "unless": ["h2_bundle_unwrapped"], "_note": "свёрток «Нина. Горница» в ткани на левом верстаке (бирка без текста); развёрнутый — слой nina_mirror (взаимоисключающие)"},
     {"id": "nina_mirror", "image": "res://assets/rooms/H2/state_nina_mirror.png", "if": ["h2_bundle_unwrapped"], "_note": "развёрнутое мамино зеркало на ткани, рама разошлась, стекло мутное серебро — после «развернуть»"},
-    {"id": "skoba", "image": "res://assets/rooms/H2/state_skoba.png", "unless": ["has_brace_plate"], "_note": "кованая скоба и маленький рисунок треснувшей плиты с кольцом на левом верстаке; пропадает, когда Агата берёт скобу (рисунок плиты в том же слое — художник: «на фоне однозначного рисунка плиты не было»)"},
+    {"id": "skoba", "image": "res://assets/rooms/H2/state_skoba.png", "unless": ["has_brace_plate", "office_mirror_mounted"], "_note": "кованая скоба и маленький рисунок треснувшей плиты на левом верстаке (партия 2); пропадает, когда Агата берёт скобу. Пока на её месте стоит зеркало конторы в стойке (партия 3), скоба с рисунком лежит на табурете — слой skoba_stool"},
+    {"id": "skoba_stool", "image": "res://assets/rooms/H2/state_skoba.png", "offset": [15, 76], "if": ["office_mirror_mounted"], "unless": ["has_brace_plate"], "_note": "та же скоба с рисунком, сдвинутая на табурет у верстака (верх табурета ≈ y 478–495 холста): стойка с зеркалом конторы стоит на её месте (координатор 22.10: «скрывай предметы партии 2 на том же месте»), а скобу ещё можно взять — блок 1 разрешает не брать её в первый день"},
+    {"id": "office_mirror", "image": "res://assets/rooms/H2/state_office_mirror.png", "if": ["office_mirror_mounted"], "_note": "партия 3: зеркало конторы зажато в тётиной стойке на левом верстаке (стойка вделана в верстак — SCENARIO_FINAL M09); холст H2_bg, (0,0) 1:1; стекло пустое — вид конторы показывает крупный план"},
     {"id": "bench_front", "image": "res://assets/rooms/H2/fg_bench_front.png", "occluder": true, "z": 1080}
   ],
   "spawns": {"default": [500, 900], "from_H1": [280, 820]},
@@ -39,18 +41,18 @@
       "mechanic": {"same_as": "stand_zm"}
     },
     {
-      "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [1120, 110, 270, 560], "stand": [1250, 705], "color": "#7a7a70", "draw": false,
+      "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [470, 184, 185, 220], "stand": [600, 790], "_rect_note": "партия 3: стойка «ЗМ» с зеркалом конторы нарисована на левом верстаке (холст 401–614 × 160–430 → экран 460–705 × 184–494); прямоугольник — над свёртком и скобой (у них приоритет 1). Высокая резная рама в середине мастерской — без подписи", "color": "#7a7a70", "draw": false,
       "look": "@H2.stand_zm.look",
       "item_use": {"mirror_mill": {"sets": ["office_mirror_mounted"], "consumes": true, "text": "@H2d.stand_zm.mount", "scene": "M10", "open_mechanic": true}},
       "mechanic": {
         "type": "office_mirror",
         "requires": {"flags": ["office_mirror_mounted"]},
         "title": "@H2d.office_mirror.title",
-        "frame": {"image": "res://assets/rooms/H2/bg.png", "region": [960, 92, 262, 512], "pos": [420, 130], "scale": 1.758, "glass": [513, 308, 297, 582]},
-        "wedges": [[492, 905], [830, 905]],
-        "office": {"image": "res://assets/rooms/M3/bg.png", "region": [419, 52, 284, 557], "gap": {"x": 236, "top": 62, "bottom": 550}, "bar": {"at": 0.5, "x0": 132, "x1": 246}, "shelf": [[0, 520], [60, 582], [240, 330], [202, 300]], "weights": [[32, 566, 14], [86, 574, 11]]},
+        "frame": {"images": ["res://assets/rooms/H2/bg.png", "res://assets/rooms/H2/state_office_mirror.png"], "region": [395, 150, 240, 300], "pos": [330, 150], "scale": 2.7, "glass_polygon": [[454, 187], [560, 180], [565, 361], [460, 373]], "_note": "мастерская и слой «зеркало конторы в стойке» одним кадром; glass_polygon — контур стекла в пикселях холста (assets/incoming/_meta_p3/assets_manifest.json → glass_polygon_px)"},
+        "wedges": [[425, 838], [856, 811]],
+        "office": {"art": {"bg": "res://assets/closeups/M3_view_bg.png", "light": "res://assets/closeups/M3_view_light.png", "hook": "res://assets/closeups/M3_view_hook.png", "bar": "res://assets/closeups/M3_view_bar_down.png", "region": [520, 80, 380, 660], "gap": [95, 705], "bar_y": 346, "lift_px": 46, "_note": "партия 3, «Контора — вид на дверь»: фон → свет → крюк → засов, слои в (0,0); засов поднят — тот же слой на 46 px выше, крюк вместе с ним; region — часть холста в стекле (портрет под контур стекла)"}},
         "bell": {"image": "res://assets/rooms/H2/bg.png", "region": [1376, 252, 192, 236], "pos": [1150, 250], "scale": 1.7, "signal": {"long_s": 0.6, "gap_s": 0.55}},
-        "hook": {"bar": 0.5, "tolerance": 0.06, "speed": 0.1, "return_speed": 0.6},
+        "hook": {"bar": 0.41, "tolerance": 0.06, "speed": 0.1, "return_speed": 0.6, "_bar_note": "засов на рисунке — y 346 холста в щели 95…705: (346 − 95) / 610 ≈ 0.41"},
         "schedule_pos": [1120, 690],
         "status_pos": [1120, 870],
         "clamped_flag": "office_mirror_clamped",
@@ -72,15 +74,16 @@
         "ratio": 20,
         "common_time_flag": "road_held_both_ends",
         "start_minutes": 1120,
-        "glass": [430, 170, 760, 640],
-        "room": {"window": [70, 90], "icon": [640, 60], "table": [240, 440], "candle": [300, 440], "small_mirror": [520, 406], "clock": [430, 150], "clock_r": 50},
-        "clamp_at": [1236, 470],
-        "watch": [1480, 560, 300],
+        "glass": [150, 160, 1130, 747],
+        "room_art": {"bg": "res://assets/closeups/O3_bg.png", "clock_face": "res://assets/closeups/O3_clock_face.png", "pendulum": "res://assets/closeups/O3_clock_pendulum.png", "hand_min": "res://assets/closeups/O3_clock_hand_min.png", "hand_hour": "res://assets/closeups/O3_clock_hand_hour.png", "flame": "res://assets/closeups/O3_candle_flame.png", "region": [230, 40, 1060, 700], "hands_axis": [942, 201], "pendulum_axis": [942, 259], "wick": [445, 425], "_note": "партия 3, «Горница Нины»: фон → циферблат → маятник → минутная → часовая стрелка, пламя свечи; всё на холсте 1672×941 в (0,0); стрелки нарисованы на 12; region — часть горницы в стекле (стол со свечой и зеркальцем, ходики, окно)"},
+        "clamp_at": [1330, 500],
+        "watch": [1580, 560, 280],
         "watch_icon": "res://assets/icons/pocket_watch.png",
         "candle_burn_minutes": 120,
         "min_watch_s": 15,
         "compared_flag": "nina_time_compared",
-        "poses": [{"id": "write", "minutes": 14, "at": [330, 470], "height": 330, "sitting": true}, {"id": "cup", "minutes": 4, "at": [420, 610], "height": 330, "hold": "cup"}, {"id": "window", "minutes": 8, "at": [150, 610], "height": 330}, {"id": "walk", "minutes": 3, "at": [560, 620], "height": 340}, {"id": "small_mirror", "minutes": 12, "at": [520, 600], "height": 330, "hold": "mirror"}, {"id": "write_again", "minutes": 19, "at": [330, 470], "height": 330, "sitting": true}],
+        "poses": [{"id": "write", "minutes": 14, "at": [480, 560], "height": 330, "sitting": true}, {"id": "cup", "minutes": 4, "at": [660, 600], "height": 300, "hold": "cup"}, {"id": "window", "minutes": 8, "at": [1240, 640], "height": 300}, {"id": "walk", "minutes": 3, "at": [960, 700], "height": 330}, {"id": "small_mirror", "minutes": 12, "at": [300, 590], "height": 300, "hold": "mirror"}, {"id": "write_again", "minutes": 19, "at": [480, 560], "height": 330, "sitting": true}],
+        "_poses_note": "позы Нины — в пикселях холста горницы (ноги, рост); силуэт движка до 3D-Нины (assets/characters/nina, конвейер pipeline-character)",
         "texts": {"knock_first": "@H2d.nina_mirror.knock_first", "watch_wait": "@H2d.nina_mirror.watch_wait", "watch_again": "@H2d.nina_mirror.watch_again", "label_watch": "@H2d.nina_mirror.label_watch"},
         "events": {"compared": {"sets": ["nina_time_compared"]}}
       }
@@ -88,7 +91,14 @@
     {
       "id": "brace", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [562, 410, 132, 80], "stand": [640, 790], "color": "#7a6a5a", "draw": false, "pick_priority": 1,
       "_art_note": "Скоба для плиты (Docs/SCENARIO_FINAL.md, M04 и раздел 9): кованая скоба у рисунка треснувшей плиты на левом верстаке — слой skoba (партия 2, непрозрачное — экран 551–687 × 419–485). Взять — только после плана из школы (requires knows_crossing_plan), до того — осмотр и мысль Агаты.",
-      "hidden_if": ["has_brace_plate"],
+      "hidden_if": ["has_brace_plate", "office_mirror_mounted"],
+      "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
+      "look": "@H2.brace.look"
+    },
+    {
+      "id": "brace_stool", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [566, 492, 140, 72], "stand": [640, 800], "color": "#7a6a5a", "draw": false, "pick_priority": 1,
+      "_art_note": "Та же скоба, пока на её месте стоит зеркало конторы в стойке (слой skoba_stool — скоба с рисунком на табурете). Те же условия и выдача: обязательный предмет не теряется и не выдаётся дважды (флаг has_brace_plate).",
+      "visible_if": ["office_mirror_mounted"], "hidden_if": ["has_brace_plate"],
       "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
       "look": "@H2.brace.look"
     },
@@ -110,7 +120,6 @@
     "M15a": {"complete_when": [{"all": ["nina_time_compared"]}]}
   },
   "effects": [
-    {"id": "office_glass", "type": "shapes", "z": 1, "if": ["office_mirror_mounted"], "shapes": [{"type": "poly", "points": [[1166, 226], [1354, 226], [1354, 598], [1166, 598]], "color": "#59606acc"}, {"type": "poly", "points": [[1176, 236], [1250, 236], [1190, 420], [1176, 420]], "color": "#c8d0da30"}], "_note": "стекло зеркала конторы в тётиной стойке — до слоя «Зеркало конторы на стойке» (BRIEF_CHATGPT_v4 §C3)"},
     {"id": "dusk", "type": "tint", "color": "#a8a0b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки дня второго (после мамина зеркала, M15а) — до слоёв вечера (BRIEF_CHATGPT_v4 §C)"}
   ],
   "flags": {

@@ -3,133 +3,77 @@ extends Node2D
 ## The mill office as the office mirror shows it — now (canon: «Зеркало показывает нынешний вид со своего
 ## прежнего места»). Lives inside a SubViewport of OfficeMirrorPanel and is redrawn every frame, so what
 ## happens at the mill (Pavel's lantern at the gap, his hook, the bar) is in the glass the same frame it
-## happens. Stand-in art until the ordered «контора изнутри, вид на дверь» (BRIEF_CHATGPT_v4 §C1):
-## a crop of the delivered office painting (M3) round its door, with the fallen shelf, the bar in its
-## brackets, the gap, the light and the hook drawn by the engine. Coordinates — the viewport's pixels
-## (data: mechanic.office).
+## happens.
+## Art: «Контора — вид на дверь» (партия 3): M3_view_bg (the door, three hinges, the empty bar brackets, the
+## fallen shelf), and layers on the same 1672×941 canvas, placed at (0, 0): the lantern light in the gap,
+## the hook (drawn at the lowered bar), the bar in its brackets. Order: bg → light → hook → bar. The bar
+## lifted is the same layer 46 px higher (bar_up_translation_px of the delivery), the hook goes up with it.
+## Data (mechanic.office.art): images, `region` [x, y, w, h] — the part of the canvas the glass shows,
+## `gap` [top, bottom] — the gap's span in canvas px, `bar_y` — the bar's centre, `lift_px`.
 
 var spec: Dictionary = {}
 var light_on: bool = false
 var hook_visible: bool = false
 var hook_frac: float = 0.0       # 0 top of the gap … 1 bottom
+var hook_bar: float = 0.5        # where the hook meets the bar (HookPuzzle.bar)
 var bar_lift: float = 0.0        # 0 in the brackets … 1 out (lifted by the hook)
 var door_given: bool = false     # the door has moved a little (bar out)
-var shelf_down: bool = true      # the shelf still lies on the door
+var shelf_down: bool = true      # the shelf still lies on the door (the delivered view has it down)
 
-var _bg: Sprite2D
-var _shelf: Node2D
-var _bar: Node2D
-var _light: Node2D
-var _hook: Line2D
-var _gap_dark: Polygon2D
+var _art: Node2D
+var _light: Sprite2D
+var _hook: Sprite2D
+var _bar: Sprite2D
+var _gap: Vector2 = Vector2(95, 705)
+var _lift_px: float = 46.0
 
 
 func setup(p_spec: Dictionary) -> void:
 	spec = p_spec
 	var size := MechanicPanel.v2(spec.get("size", [297, 582]))
-	var reg: Array = spec.get("region", [419, 52, 284, 557])
-	_bg = Sprite2D.new()
-	_bg.name = "Office"
-	_bg.centered = false
-	var img := String(spec.get("image", ""))
-	if ResourceLoader.exists(img):
-		var at := AtlasTexture.new()
-		at.atlas = load(img)
-		at.region = Rect2(float(reg[0]), float(reg[1]), float(reg[2]), float(reg[3]))
-		_bg.texture = at
-		_bg.scale = Vector2(size.x / float(reg[2]), size.y / float(reg[3]))
-	_bg.modulate = Color(0.78, 0.76, 0.74)   # the office is dim: a year with the shutters shut
-	add_child(_bg)
-	var gap: Dictionary = spec.get("gap", {})
-	var gx := float(gap.get("x", 244))
-	var top := float(gap.get("top", 62))
-	var bottom := float(gap.get("bottom", 550))
-	_gap_dark = Polygon2D.new()
-	_gap_dark.name = "Gap"
-	_gap_dark.color = Color(0.03, 0.025, 0.02, 0.95)
-	add_child(_gap_dark)
-	_light = Node2D.new()
-	_light.name = "Light"
-	var strip := Polygon2D.new()
-	strip.name = "Strip"
-	strip.color = Color(1.0, 0.86, 0.52, 0.95)
-	strip.polygon = PackedVector2Array([Vector2(gx - 2.5, top + 6), Vector2(gx + 2.5, top + 6), Vector2(gx + 2.5, bottom - 6), Vector2(gx - 2.5, bottom - 6)])
-	_light.add_child(strip)
-	var steps := 6
-	for i in steps:
-		var y := lerpf(top + 30, bottom - 30, float(i) / float(steps - 1))
-		var g := PlaceholderArt.glow(Vector2(gx, y), 38.0, Color(1.0, 0.72, 0.35, 0.55))
-		_light.add_child(g)
-	add_child(_light)
-	_shelf = Node2D.new()
-	_shelf.name = "Shelf"
-	var board := Polygon2D.new()
-	board.color = Color(0.20, 0.14, 0.09)
-	board.polygon = PlaceholderArt._points(spec.get("shelf", [[0, 520], [60, 576], [236, 332], [198, 300]]))
-	_shelf.add_child(board)
-	var edge := Line2D.new()
-	edge.points = board.polygon
-	edge.closed = true
-	edge.width = 2.0
-	edge.default_color = Color(0.42, 0.31, 0.2)
-	_shelf.add_child(edge)
-	for w in spec.get("weights", []):
-		var c := Polygon2D.new()
-		c.color = Color(0.12, 0.12, 0.13)
-		c.polygon = PlaceholderArt.circle_points(Vector2(float(w[0]), float(w[1])), float(w[2]))
-		_shelf.add_child(c)
-	add_child(_shelf)
-	_bar = Node2D.new()
-	_bar.name = "Bar"
-	var b: Dictionary = spec.get("bar", {})
-	var by := bar_y()
-	var x0 := float(b.get("x0", 136))
-	var x1 := float(b.get("x1", 252))
-	var rod := Polygon2D.new()
-	rod.name = "Rod"
-	rod.color = Color(0.16, 0.16, 0.17)
-	rod.polygon = PackedVector2Array([Vector2(x0, by - 5), Vector2(x1, by - 5), Vector2(x1, by + 5), Vector2(x0, by + 5)])
-	_bar.add_child(rod)
-	add_child(_bar)
-	for bx in [x1 - 12.0, x0 + 14.0]:
-		var br := Polygon2D.new()
-		br.name = "Bracket"
-		br.color = Color(0.1, 0.1, 0.1)
-		br.polygon = PackedVector2Array([Vector2(bx - 6, by - 11), Vector2(bx + 6, by - 11), Vector2(bx + 6, by + 11), Vector2(bx - 6, by + 11)])
-		add_child(br)
-	_hook = Line2D.new()
-	_hook.name = "Hook"
-	_hook.width = 3.0
-	_hook.default_color = Color(0.32, 0.31, 0.3)
-	_hook.joint_mode = Line2D.LINE_JOINT_ROUND
-	add_child(_hook)
+	var art: Dictionary = spec.get("art", {})
+	var reg: Array = art.get("region", [520, 80, 380, 660])
+	var g: Array = art.get("gap", [95, 705])
+	_gap = Vector2(float(g[0]), float(g[1]))
+	_lift_px = float(art.get("lift_px", 46.0))
+	_art = Node2D.new()
+	_art.name = "Art"
+	var k := Vector2(size.x / float(reg[2]), size.y / float(reg[3]))
+	_art.scale = k
+	_art.position = -Vector2(float(reg[0]), float(reg[1])) * k
+	add_child(_art)
+	_layer("Office", String(art.get("bg", "")))
+	_light = _layer("Light", String(art.get("light", "")))
+	_hook = _layer("Hook", String(art.get("hook", "")))
+	_bar = _layer("Bar", String(art.get("bar", "")))
 	refresh()
 
 
+func _layer(node_name: String, image: String) -> Sprite2D:
+	var s := Sprite2D.new()
+	s.name = node_name
+	s.centered = false
+	if image != "" and ResourceLoader.exists(image):
+		s.texture = load(image)
+	_art.add_child(s)
+	return s
+
+
+## The bar's centre line in canvas px (lifted with `bar_lift`).
 func bar_y() -> float:
-	var gap: Dictionary = spec.get("gap", {})
-	var top := float(gap.get("top", 62))
-	var bottom := float(gap.get("bottom", 550))
-	return lerpf(top, bottom, float(spec.get("bar", {}).get("at", 0.5)))
+	return float(spec.get("art", {}).get("bar_y", 346.0)) - _lift_px * bar_lift
 
 
+## Where the hook is along the gap, canvas px (the hook layer is drawn at the bar: offset 0 there).
 func hook_y() -> float:
-	var gap: Dictionary = spec.get("gap", {})
-	return lerpf(float(gap.get("top", 62)), float(gap.get("bottom", 550)), hook_frac)
+	return lerpf(_gap.x, _gap.y, hook_frac)
 
 
 func refresh() -> void:
-	var gap: Dictionary = spec.get("gap", {})
-	var gx := float(gap.get("x", 244))
-	var top := float(gap.get("top", 62))
-	var bottom := float(gap.get("bottom", 550))
-	var w := 7.0 if door_given else 2.5
-	_gap_dark.polygon = PackedVector2Array([Vector2(gx - w, top), Vector2(gx + w, top), Vector2(gx + w, bottom), Vector2(gx - w, bottom)])
+	if _light == null:
+		return
 	_light.visible = light_on
-	_shelf.visible = shelf_down
-	_bar.position = Vector2(0, -26.0 * bar_lift)
-	_bar.rotation_degrees = -4.0 * bar_lift
+	_bar.position = Vector2(0, -_lift_px * bar_lift)
 	_hook.visible = hook_visible
-	if hook_visible:
-		var hy := hook_y() - 26.0 * bar_lift
-		_hook.points = PackedVector2Array([Vector2(gx + 1, top - 4), Vector2(gx, hy), Vector2(gx - 10, hy + 7), Vector2(gx - 15, hy - 1)])
+	var at_bar := lerpf(_gap.x, _gap.y, hook_bar)
+	_hook.position = Vector2(0, hook_y() - at_bar - _lift_px * bar_lift)

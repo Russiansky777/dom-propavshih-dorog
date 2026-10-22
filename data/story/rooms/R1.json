@@ -1,6 +1,8 @@
 {
   "id": "R1",
   "_art": "Фон R1_bg.png (ближний причал): фонарь на столбе и дощечка сигналов слева, дорога на улицу вверх-влево, причал и канат моста через реку справа (на стопоре Пелагеи), лодка. Слои: R1_fg_pier_edge.png (кромка причала, окклюдер z=740), R1_fg_water.png (вода у берега, z=1080). Пелагея — фронтальный кадр листа, стоит на берегу у причала.",
+  "art_source": {"files": {"dusk.png": "assets/incoming/R1_dusk.png", "far_dark.png": "assets/incoming/R1_far_dark.png", "far_snow.png": "assets/incoming/R1_far_snow.png", "far_lights.png": "assets/incoming/R1_far_lights.png"}, "canvas": [1672, 941], "alpha_min": 0,
+    "_note": "Партия 3 (ChatGPT 22.10): R1_bg → R1_dusk (полный слой сумерек, Normal 100 %, частичная прозрачность рассчитана под основу — не чистить) → R1_far_dark ИЛИ R1_far_snow → R1_far_lights (ровно три огня). Копии — tools/import_room_art.py R1"},
   "background": {"kind": "exterior", "image": "res://assets/rooms/R1/bg.png", "wall": "#7f94a6", "floor": "#6a6456", "accent": "#4a6676", "horizon": 650},
   "walkable": [[70, 420], [190, 420], [215, 520], [245, 630], [268, 662], [420, 670], [880, 668], [888, 655], [965, 632], [1060, 607], [1400, 607], [1400, 742], [1460, 750], [1520, 763], [1620, 796], [1720, 822], [1820, 852], [1915, 878], [1915, 1070], [20, 1070], [20, 640], [40, 520]],
   "no_walk_samples": [[1250, 530, "вода за причалом"], [1150, 560, "вода у настила"], [700, 600, "вода у берега"], [1750, 760, "вода у лодки"], [1720, 640, "лодка"], [1470, 660, "сваи причала"], [300, 560, "столб фонаря"]],
@@ -11,7 +13,11 @@
   "height_refs": [{"what": "столб фонаря (земля y 640, верх y 75)", "y": 640, "px": 565, "m": 3.2}],
   "layers": [
     {"id": "pier_edge", "image": "res://assets/rooms/R1/fg_pier_edge.png", "z": 0, "_note": "настил причала — пол (по нему ходят), под Агатой; окклюдер z=740 прятал её ноги в доски"},
-    {"id": "water", "image": "res://assets/rooms/R1/fg_water.png", "z": 0, "_note": "вода у лодки — плоская, под Агатой"}
+    {"id": "water", "image": "res://assets/rooms/R1/fg_water.png", "z": 0, "_note": "вода у лодки — плоская, под Агатой"},
+    {"id": "dusk", "image": "res://assets/rooms/R1/dusk.png", "z": 0, "if": ["evening_dusk"], "_note": "партия 3: сумерки, фонарь на столбе горит — поверх фона и слоёв настила/воды (иначе они остались бы дневными), под Агатой"},
+    {"id": "far_dark", "image": "res://assets/rooms/R1/far_dark.png", "z": 0, "if": ["evening_dusk"], "unless": ["far_lights_answered"], "_note": "тот берег — тёмный силуэт, ни огонька (год без ответа)"},
+    {"id": "far_snow", "image": "res://assets/rooms/R1/far_snow.png", "z": 0, "if": ["far_lights_answered"], "_note": "ответили — на том берегу проступает снег (там уже зима); вместо far_dark"},
+    {"id": "far_lights", "image": "res://assets/rooms/R1/far_lights.png", "z": 0, "if": ["far_lights_answered"], "_note": "три огня с того берега — первые за год"}
   ],
   "spawns": {"default": [900, 900], "from_Z3": [190, 900], "from_Z2": [200, 600], "from_R2": [1650, 840]},
   "props": [],
@@ -35,13 +41,17 @@
         "type": "lantern",
         "requires": {"flags": ["rope_on_ring"]},
         "title": "@R1d.lantern.title",
-        "lantern": {"image": "res://assets/rooms/R1/bg.png", "region": [286, 95, 98, 158], "pos": [240, 190], "scale": 4.5, "glass": [384, 428, 156, 333]},
-        "far": {"image": "res://assets/rooms/R1/bg.png", "region": [783, 243, 871, 148], "pos": [860, 300], "scale": 1.1, "lights": [[330, 80], [500, 64], [690, 86]]},
+        "art": {"closed": "res://assets/closeups/closeup_lantern_closed.png", "open": "res://assets/closeups/closeup_lantern_open.png", "_note": "партия 3: два полноэкранных состояния одного фонаря — заслонка закрыта / открыта (вспышка), переключаются целиком"},
+        "lantern_box": [560, 60, 420, 820],
+        "far_lights": [[1100, 345], [1300, 335], [1500, 350]],
+        "far_snow": [[1330, 335, 380, 28], [400, 330, 170, 22]],
+        "_coords_note": "lantern_box, far_lights, far_snow (центр x, y, радиусы rx, ry) — в пикселях холста крупного плана 1672×941; ответ того берега в крупном плане — мягкие огни и снег движка поверх тёмного берега картины, в комнате — слои R1_far_lights / R1_far_snow",
+        "far_label_pos": [1250, 250],
         "count": 3,
         "open_s": 0.45,
         "pause_s": 1.3,
         "answer_s": 2.4,
-        "hint_pos": [860, 640],
+        "hint_pos": [1180, 860],
         "texts": {"label_far": "@R1d.lantern.label_far", "label_count": "@R1d.lantern.label_count", "count_wrong": "@R1d.lantern.count_wrong"},
         "events": {"answered": {"sets": ["three_lights_sent", "far_lights_answered", "road_held_both_ends"]}}
       }
@@ -63,11 +73,7 @@
     "M17": {"trigger": "talk:pelageya"}
   },
   "effects": [
-    {"id": "far_dark", "type": "shapes", "z": -5, "if": ["evening_dusk"], "unless": ["far_lights_answered"], "shapes": [{"type": "glow", "center": [760, 368], "r": 520, "ry": 80, "blend": "mix", "color": "#121826b0"}, {"type": "glow", "center": [1220, 368], "r": 520, "ry": 80, "blend": "mix", "color": "#121826b0"}, {"type": "glow", "center": [1680, 368], "r": 520, "ry": 80, "blend": "mix", "color": "#121826b0"}], "_note": "тот берег вечером — тёмный силуэт, ни огонька (мягкая тень до слоя R1_far_dark)"},
-    {"id": "far_snow", "type": "shapes", "z": -5, "if": ["far_lights_answered"], "shapes": [{"type": "glow", "center": [760, 372], "r": 520, "ry": 70, "color": "#a8aebd70"}, {"type": "glow", "center": [1220, 372], "r": 520, "ry": 70, "color": "#a8aebd70"}, {"type": "glow", "center": [1680, 372], "r": 520, "ry": 70, "color": "#a8aebd70"}], "_note": "на том берегу проступает снег (мягкая белизна до слоя R1_far_snow)"},
-    {"id": "far_snowfall", "type": "snow", "rect": [500, 280, 1420, 150], "amount": 70, "z": -4, "if": ["far_lights_answered"]},
-    {"id": "far_lights", "type": "shapes", "z": 4095, "if": ["far_lights_answered"], "shapes": [{"type": "glow", "center": [1240, 372], "r": 34, "color": "#ffcf7ae6"}, {"type": "glow", "center": [1352, 356], "r": 34, "color": "#ffcf7ae6"}, {"type": "glow", "center": [1462, 378], "r": 34, "color": "#ffcf7ae6"}], "_note": "три огня на том берегу (до слоя R1_far_lights)"},
-    {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки дня второго (после мамина зеркала, M15а) — до слоёв вечера (BRIEF_CHATGPT_v4 §C)"}
+    {"id": "far_snowfall", "type": "snow", "rect": [480, 250, 1440, 200], "amount": 70, "z": 1, "if": ["far_lights_answered"], "_note": "снег идёт над тем берегом — поверх слоёв (z 0), под Агатой"}
   ],
   "flags": {
     "r1_seen_rope": "Осмотрен канат и ближний стопор на причале",

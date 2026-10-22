@@ -1,6 +1,8 @@
 {
   "id": "Z3",
   "_art": "Фон Z3_bg.png (береговой поворот), слой Z3_fg_water.png — вода у ближнего берега (окклюдер, поверх ног у кромки). По финальному сценарию (22.10): камни в воде — опоры моста (old_pier_base, «Опора моста»: верхушка над водой, плита с кольцом ниже, под водой); камень с табличкой на берегу — не плита опоры (plate: табличка, буквы забиты илом). Плиту крупно и над водой — арт блока 2 (M15).",
+  "art_source": {"files": {"state_water_low.png": "assets/incoming/Z3_state_water_low.png"}, "canvas": [1672, 941], "alpha_min": 0,
+    "_note": "Партия 3 (ChatGPT 22.10, assets/incoming/_meta_p3/README_RU.txt): спущенная вода в сумерках — полный слой поверх Z3_bg, Normal 100 %, частичная прозрачность рассчитана под основу (alpha_min 0: не чистить). Копия — tools/import_room_art.py Z3"},
   "background": {"kind": "exterior", "image": "res://assets/rooms/Z3/bg.png", "wall": "#8a9aa8", "floor": "#6a7a6a", "accent": "#4e6a7a", "horizon": 620},
   "walkable": [[420, 598], [620, 588], [900, 640], [1150, 706], [1400, 795], [1475, 832], [1395, 875], [1345, 908], [1385, 955], [1425, 1005], [1445, 1070], [690, 1070], [665, 1000], [560, 945], [485, 905], [475, 850], [488, 705], [425, 640]],
   "no_walk_samples": [[1600, 950, "вода у ближнего берега"], [1460, 940, "кромка воды"], [1000, 520, "река"], [1300, 560, "опора в воде"], [1580, 700, "плита"], [380, 760, "валуны"], [470, 1040, "бревно"]],
@@ -9,7 +11,8 @@
   "nearest_checks": [{"from": [1600, 950], "in": [1340, 820, 140, 220], "_note": "вода у ближнего берега → кромка берега"}, {"from": [1000, 520], "in": [700, 580, 500, 140], "_note": "река → тропа у воды"}],
   "depth": {"top_y": 610, "bottom_y": 1070, "scale_top": 0.6, "scale_bottom": 1.4},
   "layers": [
-    {"id": "water", "image": "res://assets/rooms/Z3/fg_water.png", "z": 0, "_note": "вода — плоская, под Агатой (не окклюдер): по воде Агата не ходит, а на берегу вода не должна рисоваться поверх её ног"}
+    {"id": "water", "image": "res://assets/rooms/Z3/fg_water.png", "z": 0, "_note": "вода — плоская, под Агатой (не окклюдер): по воде Агата не ходит, а на берегу вода не должна рисоваться поверх её ног"},
+    {"id": "water_low", "image": "res://assets/rooms/Z3/state_water_low.png", "z": 0, "if": ["evening_dusk"], "_note": "партия 3: вода спущена, мокрые камни, сумерки всей сцены — поверх фона и воды, под Агатой; вечером (после мамина зеркала, M15а): пока вода сходит, у поворота ещё день"}
   ],
   "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [1050, 1000], "from_M1": [720, 1000]},
   "props": [],
@@ -18,30 +21,30 @@
       "id": "old_pier_base", "kind": "object", "label": "@Z3.old_pier_base.label", "rect": [1160, 510, 320, 100], "stand": [1120, 730], "color": "#6f6a5a", "draw": false,
       "item_use": {"photo_bridge": {"text": "@Z3.old_pier_base.photo", "_note": "снимок старого моста (M07): канат сидел на плите этой опоры; не расходуется"}},
       "look": "@Z3.old_pier_base.look",
-      "hidden_if": ["pond_lowered"]
+      "hidden_if": ["evening_dusk"]
     },
     {
-      "id": "plate", "kind": "object", "label": "@Z3.plate.label", "rect": [1480, 600, 200, 190], "stand": [1370, 850], "color": "#8a8a7a", "draw": false,
+      "id": "plate", "kind": "object", "label": "@Z3.plate.label", "rect": [1480, 600, 200, 190], "stand": [1370, 850], "color": "#8a8a7a", "draw": false, "hidden_if": ["evening_dusk"],
+      "_evening_note": "вечером слой партии 3 рисует на этом камне кольцо и трещину (художник принял его за ближнюю опору) — табличку прячем, плита — pier_plate на опоре в воде (решение блока 1); вопрос координатору — в отчёте блока 2",
       "look": "@Z3.plate.look"
     },
     {
-      "id": "pier_plate", "kind": "object", "label": "@Z3d.plate_dry.label", "rect": [1160, 500, 320, 120], "stand": [1120, 730], "draw": false, "visible_if": ["pond_lowered"],
+      "id": "pier_plate", "kind": "object", "label": "@Z3d.plate_dry.label", "rect": [1160, 500, 320, 120], "stand": [1120, 730], "draw": false, "visible_if": ["evening_dusk"],
       "item_use": {"brace_plate": {"sets": ["skoba_on_plate"], "consumes": true, "text": "@Z3d.plate_dry.skoba", "scene": "M15s", "open_mechanic": true}},
       "use": {"requires": {"items": ["brace_plate"]}, "text": "@Z3d.plate_dry.use_skoba", "fail_text": "@Z3d.plate_dry.no_skoba"},
       "mechanic": {
         "type": "plate",
         "requires": {"flags": ["skoba_on_plate"]},
         "title": "@Z3d.plate.title",
-        "stone": {"image": "res://assets/rooms/Z3/bg.png", "region": [1000, 400, 310, 170], "pos": [300, 170], "scale": 3.4},
-        "plate": [470, 300, 600, 420],
-        "crack": [[650, 302], [690, 380], [662, 450], [720, 530], [698, 600], [730, 718]],
-        "ring": [990, 380],
-        "ring_r": 42,
-        "skoba": {"icon": "res://assets/icons/skoba_plate.png", "at": [690, 500], "size": 240, "angle": 62},
-        "rope_free": [1250, 760],
-        "rope_from": [1700, 1000],
-        "knot": [[-62, 12], [0, -72], [62, 20]],
-        "hint_pos": [1100, 880],
+        "art": {"bg": "res://assets/closeups/closeup_plate.png", "skoba": "res://assets/closeups/closeup_plate_skoba.png", "rope": "res://assets/closeups/closeup_plate_rope.png", "_note": "партия 3: плита крупно (литые буквы «Ольховка», кольцо, трещина) и слои скобы и каната на кольце, (0,0) на холсте 1672×941, на весь экран"},
+        "ring": [550, 490],
+        "ring_r": 155,
+        "skoba_box": [890, 482, 300, 84],
+        "_coords_note": "ring, ring_r, skoba_box — в пикселях холста крупного плана (кольцо ≈ 400–710 × 360–650; скоба — alpha_bbox слоя); rope_free, rope_from, knot — экран",
+        "rope_free": [330, 960],
+        "rope_from": [-40, 1100],
+        "knot": [[-170, 70], [0, -190], [170, 70]],
+        "hint_pos": [1150, 900],
         "texts": {"label_letters": "@Z3d.plate.label_letters", "label_hint": "@Z3d.plate.label_hint", "rope_at_ring": "@Z3d.plate.rope_at_ring", "knot_wrong": "@Z3d.plate.knot_wrong"},
         "events": {"braced": {"sets": ["plate_braced"]}, "tied": {"sets": ["rope_on_ring"]}}
       },
@@ -62,9 +65,6 @@
     "M15s": {"complete_when": [{"all": ["plate_braced"]}]},
     "M15": {"complete_when": [{"all": ["rope_on_ring"]}]}
   },
-  "effects": [
-    {"id": "water_low", "type": "shapes", "z": -5, "if": ["pond_lowered"], "shapes": [{"type": "poly", "points": [[1170, 572], [1232, 572], [1236, 612], [1168, 612]], "color": "#5d5a50"}, {"type": "poly", "points": [[1252, 582], [1322, 582], [1324, 618], [1250, 618]], "color": "#5d5a50"}, {"type": "poly", "points": [[1376, 588], [1474, 588], [1476, 626], [1374, 626]], "color": "#5d5a50"}, {"type": "poly", "points": [[1262, 560], [1312, 560], [1312, 584], [1262, 584]], "color": "#3e3d3c"}, {"type": "line", "points": [[1298, 566], [1302, 570], [1306, 566]], "width": 2, "color": "#2a2a2a"}], "_note": "вода спущена: у опоры видны мокрые камни и плита (тёмный прямоугольник) — до слоя Z3_state_water_low (BRIEF_CHATGPT_v4 §C5)"},
-    {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки дня второго (после мамина зеркала, M15а) — до слоёв вечера (BRIEF_CHATGPT_v4 §C)"}
-  ],
+  "effects": [],
   "flags": {}
 }

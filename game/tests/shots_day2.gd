@@ -14,7 +14,7 @@ var player: Node2D
 var mv: Node
 var out_dir := ""
 
-const SHOTS := ["M1", "M2", "M3", "M4", "R2", "R3", "Z3_evening", "R1_answered", "office_mirror", "office_hook", "sluice", "fast_mirror", "plate", "plate_rope", "lantern", "photo"]
+const SHOTS := ["M1", "M2", "M3", "M4", "R2", "R3", "Z3_evening", "R1_dusk", "R1_answered", "H2_mirror", "office_mirror", "office_hook", "sluice", "fast_mirror", "plate", "plate_rope", "plate_tied", "lantern", "photo"]
 
 
 func _initialize() -> void:
@@ -122,6 +122,17 @@ func _shot(name: String) -> void:
 		"Z3_evening":
 			await _day(7)
 			await _room("Z3", Vector2(1000, 860))
+		"R1_dusk":
+			await _day(8)
+			await _room("R1", Vector2(900, 900))
+		"H2_mirror":
+			await _day(3)
+			gs.set_flag("has_brace_plate", false)
+			await _room("H2", Vector2(820, 880))
+		"plate_tied":
+			await _day(8)
+			await _room("Z3")
+			await _open("pier_plate")
 		"R1_answered":
 			await _day(9)
 			await _room("R1", Vector2(900, 900))

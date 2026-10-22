@@ -41,7 +41,7 @@
       "mechanic": {
         "type": "photo",
         "title": "@M2.photo.title",
-        "photo": {"image": "res://assets/rooms/M3/bg.png", "region": [380, 40, 1250, 680], "pos": [380, 180], "scale": 0.92, "angle_deg": -2.0, "mirror": [300, 60, 110, 180], "_mirror_note": "рамка зеркала нарисована движком на стене конторы (на рисунке конторы зеркала нет) — до крупного плана «Фото в сенях»"},
+        "photo": {"image": "res://assets/closeups/closeup_office_photo.png", "region": [0, 0, 1672, 941], "pos": [274, 130], "scale": 0.82, "angle_deg": -1.5, "paper": false, "sepia": false, "_note": "партия 3: старая фотография конторы — зеркало на стене напротив двери; своя сепия и потёртый край"},
         "texts": {"label_caption": "@M2.photo.label_caption"},
         "events": {"seen": {"sets": ["seen_office_photo"], "text": "@M2.photo.use"}}
       },

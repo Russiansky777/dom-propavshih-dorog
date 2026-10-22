@@ -8,11 +8,16 @@ extends MechanicPanel
 ##   3. The hook (HookPuzzle): the bell's presses become the mill signals (BellSignal): one — go on, two —
 ##      stop, long — lift. Wrong — the hook slips and comes back to the top, no penalty. Event "unbolted".
 ## The bell is pressed with the mouse: a click is a strike, a press held ~0.6 s is the long ring.
+## Art (партия 3): the frame is Dunya's workshop painting with the layer «зеркало конторы в стойке»
+## (H2_state_office_mirror) over it, cropped round the mirror; the glass is the delivered contour
+## (glass_polygon_px) — a quad textured with the office view; OfficeView draws «Контора — вид на дверь».
 
 var office: OfficeView = null
 var office_vp: SubViewport = null
-var glass: TextureRect = null
+var glass: Control = null          # the click area over the glass (bounding box of its contour)
+var glass_poly: Polygon2D = null   # the office now, mapped onto the glass contour
 var glass_rect: Rect2 = Rect2()
+var glass_points: PackedVector2Array = PackedVector2Array()
 var bell: TextureRect = null
 var bell_hit: Control = null
 var wedges: Array[Control] = []
@@ -29,11 +34,24 @@ var _status: String = ""
 
 func build() -> void:
 	var fr: Dictionary = spec.get("frame", {})
-	var gl: Array = fr.get("glass", [513, 308, 297, 582])
-	glass_rect = Rect2(float(gl[0]), float(gl[1]), float(gl[2]), float(gl[3]))
-	# The frame and the stand: Dunya's workshop painting round the empty stand; the glass covers its opening.
-	var frame_tr := crop(String(fr.get("image", "")), fr.get("region", [960, 92, 262, 512]), v2(fr.get("pos", [420, 130])), float(fr.get("scale", 1.758)))
-	frame_tr.name = "Frame"
+	var reg: Array = fr.get("region", [370, 140, 280, 320])
+	var fpos := v2(fr.get("pos", [300, 110]))
+	var fk := float(fr.get("scale", 2.8))
+	# The frame and the stand: the workshop painting and the layer with the mirror in Dunya's stand, one crop.
+	var images: Array = fr.get("images", [fr.get("image", "")])
+	for i in images.size():
+		crop(String(images[i]), reg, fpos, fk).name = "Frame" if i == 0 else "Frame%d" % i
+	# The glass: its contour on the canvas → the screen.
+	var pts := PackedVector2Array()
+	for q in fr.get("glass_polygon", [[454, 187], [560, 180], [565, 361], [460, 373]]):
+		pts.append(fpos + (v2(q) - Vector2(float(reg[0]), float(reg[1]))) * fk)
+	glass_points = pts
+	var lo := pts[0]
+	var hi := pts[0]
+	for q in pts:
+		lo = Vector2(minf(lo.x, q.x), minf(lo.y, q.y))
+		hi = Vector2(maxf(hi.x, q.x), maxf(hi.y, q.y))
+	glass_rect = Rect2(lo, hi - lo)
 	# The office now, behind the glass.
 	office_vp = SubViewport.new()
 	office_vp.name = "OfficeNow"
@@ -47,22 +65,22 @@ func build() -> void:
 	var os: Dictionary = spec.get("office", {}).duplicate()
 	os["size"] = [glass_rect.size.x, glass_rect.size.y]
 	office.setup(os)
+	office.hook_bar = float(spec.get("hook", {}).get("bar", 0.5))
 	office_vp.add_child(office)
-	glass = TextureRect.new()
-	glass.name = "Glass"
-	glass.texture = office_vp.get_texture()
-	glass.position = glass_rect.position
-	glass.size = glass_rect.size
-	glass.mouse_filter = Control.MOUSE_FILTER_STOP
-	glass.gui_input.connect(_on_glass_input)
-	add_child(glass)
-	var sheen := ColorRect.new()
+	glass_poly = Polygon2D.new()
+	glass_poly.name = "GlassView"
+	glass_poly.texture = office_vp.get_texture()
+	glass_poly.polygon = pts
+	# The view's corners on the contour's corners (top-left, top-right, bottom-right, bottom-left).
+	var vs := Vector2(office_vp.size)
+	glass_poly.uv = PackedVector2Array([Vector2.ZERO, Vector2(vs.x, 0), vs, Vector2(0, vs.y)])
+	add_child(glass_poly)
+	var sheen := Polygon2D.new()
 	sheen.name = "Sheen"
 	sheen.color = Color(0.85, 0.9, 1.0, 0.07)
-	sheen.position = glass_rect.position
-	sheen.size = glass_rect.size
-	sheen.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sheen.polygon = pts
 	add_child(sheen)
+	glass = hit_area(glass_rect, _on_glass_input, "Glass")
 	# Wedges at the foot of the frame.
 	var wp: Array = spec.get("wedges", [[492, 900], [830, 900]])
 	for i in wp.size():
@@ -213,12 +231,12 @@ func tick(delta: float) -> void:
 	if _bell_swing > 0.0:
 		_bell_swing = maxf(_bell_swing - delta * 1.6, 0.0)
 		bell.rotation_degrees = sin(clock * 14.0) * 6.0 * _bell_swing
-	if not clamped() and glass != null:
-		glass.modulate = Color(1, 1, 1, 0.22)
-		glass.position = glass_rect.position + Vector2(sin(clock * 9.0) * 3.0, cos(clock * 7.0) * 2.0)
-	elif glass != null and glass.modulate.a < 1.0:
-		glass.modulate = Color(1, 1, 1, 1)
-		glass.position = glass_rect.position
+	if not clamped() and glass_poly != null:
+		glass_poly.modulate = Color(1, 1, 1, 0.22)
+		glass_poly.position = Vector2(sin(clock * 9.0) * 3.0, cos(clock * 7.0) * 2.0)
+	elif glass_poly != null and glass_poly.modulate.a < 1.0:
+		glass_poly.modulate = Color(1, 1, 1, 1)
+		glass_poly.position = Vector2.ZERO
 
 
 func _on_hook_event(name: String) -> void:

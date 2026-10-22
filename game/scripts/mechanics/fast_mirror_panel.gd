@@ -2,22 +2,25 @@ extends MechanicPanel
 ## M15а, mother's mirror (H2): the frame drawn together by the clamp, the glass clears onto Nina's room in
 ## Olkhovka — now, and twenty times faster (FastClock; ratio 1 once `road_held_both_ends`). Agata's pocket
 ## watch beside it counts her seconds; the wall clock's minute hand goes round in three of her minutes,
-## the candle burns down, Nina changes pose every few seconds (5–6 poses), no sound. A click on the glass
+## the candle flickers, Nina changes pose every few seconds (5–6 poses), no sound. A click on the glass
 ## knocks — Nina does not turn. A click on the pocket watch compares the clocks (after `min_watch_s`):
 ## event "compared".
-## Stand-in art until «Горница Нины, O3» comes (BRIEF_CHATGPT_v4 §C4): a dark room drawn by the engine —
-## window with snow, icon corner, table, candle, the wall clock, the little mirror, Nina as a grey-haired
-## silhouette. Positions — data (mechanic.room, mechanic.poses).
+## Art: «Горница Нины» (партия 3): O3_bg and, on the same 1672×941 canvas at (0, 0), the clock face, the
+## pendulum (axis 942, 259), the minute and hour hands drawn pointing at 12 (common axis 942, 201) and the
+## candle flame (wick ≈ 445, 425). The glass shows `room_art.region` of the canvas. The hands turn by
+## Nina's time, the pendulum beats twenty times too fast (a blur), the flame flickers. Nina has no art yet
+## (her 3D figure is being made, assets/characters/nina): a grey-haired silhouette drawn by the engine in
+## canvas px, poses in data (mechanic.poses: at = feet, height).
 
 var fclock: FastClock = null
 var room: Control = null
 var room_rect: Rect2 = Rect2()
 var nina: Node2D = null
-var hand_min: Line2D = null
-var hand_hour: Line2D = null
-var pendulum: Polygon2D = null
-var candle: Polygon2D = null
-var flame: Node2D = null
+var art: Node2D = null
+var hand_min: Node2D = null       # pivot node at the hands' axis; the sprite under it is drawn at 12
+var hand_hour: Node2D = null
+var pendulum: Node2D = null       # pivot node at the pendulum's axis
+var flame: Node2D = null          # pivot node at the wick
 var watch: Control = null
 var watch_sec: Line2D = null
 var watch_min: Line2D = null
@@ -25,10 +28,6 @@ var pose_id: String = ""
 var poses_seen: Array[String] = []
 var knocks: int = 0
 var compared_sent: bool = false
-var _clock_c: Vector2 = Vector2.ZERO
-var _clock_r: float = 46.0
-var _candle_base: Vector2 = Vector2.ZERO
-var _candle_h: float = 90.0
 var _watch_c: Vector2 = Vector2.ZERO
 
 
@@ -70,96 +69,48 @@ func build() -> void:
 	_build_watch()
 
 
-func _p(key: String, dflt: Array) -> Vector2:
-	return v2(spec.get("room", {}).get(key, dflt))
-
-
+## The room as the glass shows it: the canvas region `room_art.region` scaled into the glass.
 func _build_room() -> void:
-	var w := room_rect.size.x
-	var h := room_rect.size.y
-	var art := Node2D.new()
+	var ra: Dictionary = spec.get("room_art", {})
+	var reg: Array = ra.get("region", [230, 40, 1060, 700])
+	var k := room_rect.size.x / float(reg[2])
+	art = Node2D.new()
 	art.name = "Art"
+	art.scale = Vector2(k, k)
+	art.position = -Vector2(float(reg[0]), float(reg[1])) * k
 	room.add_child(art)
-	var bg := PlaceholderArt.shape_node({"type": "gradient", "rect": [0, 0, w, h], "top": "#2a2018", "bottom": "#140f0b"})
-	art.add_child(bg)
-	var floor_p := Polygon2D.new()
-	floor_p.color = Color(0.17, 0.12, 0.08)
-	floor_p.polygon = PackedVector2Array([Vector2(0, h * 0.72), Vector2(w, h * 0.72), Vector2(w, h), Vector2(0, h)])
-	art.add_child(floor_p)
-	# Window with snow.
-	var wn := _p("window", [80, 90])
-	var win := Polygon2D.new()
-	win.color = Color(0.70, 0.74, 0.80)
-	win.polygon = PackedVector2Array([wn, wn + Vector2(150, 0), wn + Vector2(150, 190), wn + Vector2(0, 190)])
-	art.add_child(win)
-	for seg in [[Vector2(75, 0), Vector2(75, 190)], [Vector2(0, 95), Vector2(150, 95)]]:
-		var l := Line2D.new()
-		l.points = PackedVector2Array([wn + seg[0], wn + seg[1]])
-		l.width = 6
-		l.default_color = Color(0.3, 0.2, 0.12)
-		art.add_child(l)
-	var sill := Polygon2D.new()
-	sill.color = Color(0.95, 0.96, 0.98)
-	sill.polygon = PackedVector2Array([wn + Vector2(0, 150), wn + Vector2(150, 140), wn + Vector2(150, 190), wn + Vector2(0, 190)])
-	art.add_child(sill)
-	# Icon corner with a lamp.
-	var ic := _p("icon", [w - 120, 60])
-	var icon := Polygon2D.new()
-	icon.color = Color(0.45, 0.32, 0.12)
-	icon.polygon = PackedVector2Array([ic, ic + Vector2(70, 0), ic + Vector2(70, 90), ic + Vector2(0, 90)])
-	art.add_child(icon)
-	art.add_child(PlaceholderArt.glow(ic + Vector2(35, 110), 26, Color(1.0, 0.5, 0.2, 0.7)))
-	# Table, cup, the little mirror.
-	var tb := _p("table", [250, 440])
-	var table := Polygon2D.new()
-	table.color = Color(0.36, 0.24, 0.13)
-	table.polygon = PackedVector2Array([tb, tb + Vector2(330, 0), tb + Vector2(310, 30), tb + Vector2(20, 30)])
-	art.add_child(table)
-	for leg in [Vector2(30, 30), Vector2(290, 30)]:
-		var lg := Polygon2D.new()
-		lg.color = Color(0.28, 0.18, 0.1)
-		lg.polygon = PackedVector2Array([tb + leg, tb + leg + Vector2(14, 0), tb + leg + Vector2(14, 120), tb + leg + Vector2(0, 120)])
-		art.add_child(lg)
-	var sm := _p("small_mirror", [520, 405])
-	var mir := Polygon2D.new()
-	mir.name = "SmallMirror"
-	mir.color = Color(0.62, 0.66, 0.7)
-	mir.polygon = PackedVector2Array([sm, sm + Vector2(26, 0), sm + Vector2(26, 34), sm + Vector2(0, 34)])
-	art.add_child(mir)
-	# Candle.
-	_candle_base = _p("candle", [300, 440])
-	candle = Polygon2D.new()
-	candle.name = "Candle"
-	candle.color = Color(0.93, 0.9, 0.8)
-	art.add_child(candle)
-	flame = PlaceholderArt.glow(_candle_base, 60, Color(1.0, 0.78, 0.4, 0.9))
-	art.add_child(flame)
-	# Wall clock (ходики): face, hands, pendulum — the hands are Nina's time.
-	_clock_c = _p("clock", [w * 0.55, 150])
-	_clock_r = float(spec.get("room", {}).get("clock_r", 48))
-	var face := Polygon2D.new()
-	face.color = Color(0.86, 0.82, 0.7)
-	face.polygon = PlaceholderArt.circle_points(_clock_c, _clock_r)
-	art.add_child(face)
-	for i in 12:
-		var a := TAU * float(i) / 12.0
-		var tick_l := Line2D.new()
-		tick_l.points = PackedVector2Array([_clock_c + Vector2(sin(a), -cos(a)) * (_clock_r - 8), _clock_c + Vector2(sin(a), -cos(a)) * (_clock_r - 2)])
-		tick_l.width = 3 if i % 3 == 0 else 1.5
-		tick_l.default_color = Color(0.15, 0.1, 0.05)
-		art.add_child(tick_l)
-	pendulum = Polygon2D.new()
-	pendulum.name = "Pendulum"
-	pendulum.color = Color(0.7, 0.55, 0.2, 0.35)   # a blur: at twenty times it swings faster than the eye
-	pendulum.polygon = PackedVector2Array([_clock_c + Vector2(0, _clock_r), _clock_c + Vector2(-24, _clock_r + 90), _clock_c + Vector2(24, _clock_r + 90)])
-	art.add_child(pendulum)
-	hand_hour = _hand(art, 5.0, Color(0.1, 0.07, 0.04))
-	hand_min = _hand(art, 3.0, Color(0.1, 0.07, 0.04))
-	# Nina.
+	_sprite(art, "Room", String(ra.get("bg", "")), Vector2.ZERO)
+	_sprite(art, "ClockFace", String(ra.get("clock_face", "")), Vector2.ZERO)
+	pendulum = _pivot("Pendulum", String(ra.get("pendulum", "")), v2(ra.get("pendulum_axis", [942, 259])))
+	hand_min = _pivot("HandMin", String(ra.get("hand_min", "")), v2(ra.get("hands_axis", [942, 201])))
+	hand_hour = _pivot("HandHour", String(ra.get("hand_hour", "")), v2(ra.get("hands_axis", [942, 201])))
+	flame = _pivot("Flame", String(ra.get("flame", "")), v2(ra.get("wick", [445, 425])))
+	# Nina (silhouette until her figure comes) — between the room and the glass tint.
 	nina = Node2D.new()
 	nina.name = "Nina"
 	art.add_child(nina)
 	_update_room()
+
+
+func _sprite(parent: Node, node_name: String, image: String, at: Vector2) -> Sprite2D:
+	var sp := Sprite2D.new()
+	sp.name = node_name
+	sp.centered = false
+	sp.position = at
+	if image != "" and ResourceLoader.exists(image):
+		sp.texture = load(image)
+	parent.add_child(sp)
+	return sp
+
+
+## A canvas-sized layer turning round `axis`: a node at the axis, the layer under it shifted back.
+func _pivot(node_name: String, image: String, axis: Vector2) -> Node2D:
+	var n := Node2D.new()
+	n.name = node_name
+	n.position = axis
+	art.add_child(n)
+	_sprite(n, "Image", image, -axis)
+	return n
 
 
 func _hand(parent: Node, width: float, col: Color) -> Line2D:
@@ -211,17 +162,15 @@ func _build_watch() -> void:
 
 func _update_room() -> void:
 	var ne := fclock.nina_elapsed_minutes()
-	hand_min.points = PackedVector2Array([_clock_c, _clock_c + _dir(fclock.minute_hand_deg()) * (_clock_r - 10)])
-	hand_hour.points = PackedVector2Array([_clock_c, _clock_c + _dir(fclock.hour_hand_deg()) * (_clock_r - 22)])
+	hand_min.rotation_degrees = fclock.minute_hand_deg()
+	hand_hour.rotation_degrees = fclock.hour_hand_deg()
 	# Pendulum: real ходики beat about once a second; at twenty times faster it is a blur.
-	var swing := sin(fclock.real_s * TAU * fclock.ratio * 0.5) * 18.0
-	pendulum.position = Vector2.ZERO
-	pendulum.skew = deg_to_rad(swing * 0.3)
-	pendulum.color.a = 0.35 if fclock.ratio > 2.0 else 0.85
-	var left := FastClock.candle_left(ne, float(spec.get("candle_burn_minutes", 120.0)), 0.2)
-	var ch := _candle_h * left
-	candle.polygon = PackedVector2Array([_candle_base + Vector2(-9, 0), _candle_base + Vector2(9, 0), _candle_base + Vector2(9, -ch), _candle_base + Vector2(-9, -ch)])
-	flame.position = _candle_base + Vector2(0, -ch - 12)
+	pendulum.rotation_degrees = sin(fclock.real_s * TAU * fclock.ratio * 0.5) * 7.0
+	pendulum.modulate.a = 0.55 if fclock.ratio > 2.0 else 1.0
+	# The flame flickers (no sound: the glass carries none).
+	var fl := 1.0 + 0.08 * sin(clock * 11.0) + 0.05 * sin(clock * 23.0)
+	flame.scale = Vector2(1.0, fl)
+	flame.modulate.a = 0.85 + 0.15 * sin(clock * 7.0)
 	var pose := FastClock.pose_at(spec.get("poses", []), ne)
 	var pid := String(pose.get("id", ""))
 	if pid != pose_id:
@@ -230,7 +179,7 @@ func _update_room() -> void:
 			poses_seen.append(pid)
 		_draw_nina(pose)
 	# Within a pose she moves twenty times too fast as well: a quick sway.
-	nina.position = Vector2(sin(fclock.real_s * 9.0) * 3.0, 0) if fclock.ratio > 2.0 else Vector2.ZERO
+	nina.position = Vector2(sin(fclock.real_s * 9.0) * 4.0, 0) if fclock.ratio > 2.0 else Vector2.ZERO
 
 
 func _dir(deg: float) -> Vector2:
@@ -256,7 +205,8 @@ func _draw_nina(pose: Dictionary) -> void:
 		var obj := Polygon2D.new()
 		obj.color = Color(0.85, 0.85, 0.8) if String(pose["hold"]) == "cup" else Color(0.62, 0.66, 0.7)
 		var hp := Vector2(at.x + w * 0.45, at.y - hgt * (0.5 if not sitting else 0.4))
-		obj.polygon = PackedVector2Array([hp, hp + Vector2(18, 0), hp + Vector2(18, 22), hp + Vector2(0, 22)])
+		var hs := hgt * 0.06
+		obj.polygon = PackedVector2Array([hp, hp + Vector2(hs, 0), hp + Vector2(hs, hs * 1.2), hp + Vector2(0, hs * 1.2)])
 		nina.add_child(obj)
 
 

@@ -338,6 +338,10 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 			# Sorted by the feet (rect bottom) like the player and the occluders: Agata walking on the
 			# R1 pier behind Pelageya is drawn behind her, Tamara stays behind the Z1 counter.
 			spr.z_index = clampi(int(float(r[1]) + hgt), 0, 4096)
+			# A flat figure in a dusk / night painting takes the scene's tone (Mitya at the far pier): data
+			# `image_tint` "#rrggbb" (multiplied; no lighting file tones a hotspot picture).
+			if h.has("image_tint"):
+				spr.modulate = Color.html(String(h["image_tint"]))
 			hs.add_child(spr)
 		# No sheet yet (Pavel, Mitya — BRIEF_CHATGPT_v4 §A): a flat figure filling the rect, feet at its bottom,
 		# sorted by the feet like a sprite. Data: placeholder {kind: silhouette, color, cap, beard, lantern}.
