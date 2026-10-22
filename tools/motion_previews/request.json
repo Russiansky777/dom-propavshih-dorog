@@ -1,0 +1,5 @@
+{
+  "_comment": "Задание для workflow motion-previews (ветка motion-previews). mode: probe — скачать 100STYLE с Zenodo и официальные страницы CMU, закоммитить список файлов, CSV и пару BVH для отладки ретаргета; render — ретаргет и рендер всех кандидатов из clips.json.",
+  "mode": "probe",
+  "probe_styles": ["Neutral", "Depressed"]
+}
