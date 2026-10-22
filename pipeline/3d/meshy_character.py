@@ -142,6 +142,10 @@ def main() -> int:
             "auto_size": True,
             "origin_at": "bottom",
         }
+        # детальность (Директор 22.10: «поднять уровень» против Агаты и Тамары v2): необязательные поля запроса
+        for k in ("geometry_resolution", "enable_pbr", "should_remesh", "target_polycount"):
+            if k in req:
+                body[k] = req[k]
         st["model_task"] = mc.create("/multi-image-to-3d", body)
         save_state(name, st)
         log(f"[{name}] создана задача модели {st['model_task']}")
