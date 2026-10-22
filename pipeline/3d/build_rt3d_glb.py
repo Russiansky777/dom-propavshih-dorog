@@ -136,6 +136,32 @@ def push_all_to_nla(arm, acts) -> None:
     ad.action = None
 
 
+def web_materials(meshes, max_tex: int, matte: bool) -> dict:
+    """Текстуры не больше max_tex px (4K Meshy v3 → 2K: веб); matte — ткань матовая, как в листах
+    (render_sprites: metallic 0, roughness ≥ 0.8): карта metallic/roughness отвязывается и не экспортируется."""
+    rep = {"scaled": [], "matte": []}
+    mats = {m for o in meshes for m in o.data.materials if m is not None and m.use_nodes}
+    for m in mats:
+        nt = m.node_tree
+        if matte:
+            for n in [x for x in nt.nodes if x.type == "BSDF_PRINCIPLED"]:
+                for key, val in (("Metallic", 0.0), ("Roughness", 0.85)):
+                    sock = n.inputs.get(key)
+                    if sock is None:
+                        continue
+                    for l in list(sock.links):
+                        nt.links.remove(l)
+                    sock.default_value = val
+                rep["matte"].append(m.name)
+        for n in nt.nodes:
+            if n.type == "TEX_IMAGE" and n.image is not None and max(n.image.size) > max_tex:
+                w, h = n.image.size
+                k = max_tex / max(w, h)
+                n.image.scale(max(1, int(w * k)), max(1, int(h * k)))
+                rep["scaled"].append([n.image.name, [w, h], list(n.image.size)])
+    return rep
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", required=True)
@@ -145,6 +171,8 @@ def main() -> int:
     ap.add_argument("--check-out", required=True)
     ap.add_argument("--rename", nargs="*", default=[], help="старое=новое имя клипа")
     ap.add_argument("--drop", nargs="*", default=[], help="клипы, которые не нужны игре (дубли)")
+    ap.add_argument("--max-tex", type=int, default=0, help="текстуры не больше N px (0 — как есть)")
+    ap.add_argument("--matte", action="store_true", help="металличность 0, шероховатость 0.85 (как в листах)")
     args = ap.parse_args()
     rename = dict(x.split("=", 1) for x in args.rename)
 
@@ -154,6 +182,8 @@ def main() -> int:
     reference = {a.name.split(".")[0]: sample(arm, a) for a in acts}
     for m in meshes:
         report["decimate"][m.name] = decimate(m, args.tris)
+    if args.max_tex or args.matte:
+        report["materials"] = web_materials(meshes, args.max_tex or 1 << 30, args.matte)
     keep = list(acts)
     for ex in args.extra:
         earm, emeshes, eacts = import_glb(Path(ex))

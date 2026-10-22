@@ -62,6 +62,23 @@ jobs:
           python -m pip install -r pipeline/requirements.txt
           python -c "import bpy; print('bpy', bpy.app.version_string)"
 
+      - name: GLB прошлых прогонов по запросам (поле from_run — без Meshy, 0 кредитов)
+        if: steps.req.outputs.files != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          for f in ${{ steps.req.outputs.files }}; do
+            name=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
+            fr=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('from_run',''))" "$f")
+            [ -n "$fr" ] || continue
+            [ -d "_prev/$fr" ] || gh run download "$fr" -n "glb-$fr" -D "_prev/$fr" -R "${{ github.repository }}"
+            src=$(find "_prev/$fr" -type d -path "*/out/$name" | head -1)
+            [ -n "$src" ] || { echo "::error::в артефакте glb-$fr нет out/$name"; exit 1; }
+            mkdir -p "pipeline/3d/out/$name"; cp -r "$src"/. "pipeline/3d/out/$name/"
+            echo "$name: GLB из прогона $fr"; ls -la "pipeline/3d/out/$name"
+          done
+
       - name: GLB из прошлого прогона (без Meshy)
         if: steps.req.outputs.files != '' && github.event.inputs.from_run != ''
         uses: actions/download-artifact@v4
@@ -91,12 +108,28 @@ jobs:
           for f in ${{ steps.req.outputs.files }}; do
             echo "=== $f"
             n=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
+            fr=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('from_run',''))" "$f")
+            if [ -n "$fr" ]; then echo "$n: from_run $fr — Meshy не вызывается"; continue; fi
             set -o pipefail
             if ! python pipeline/3d/meshy_character.py --request "$f" 2>&1 | tee "pipeline/3d/state/${n}_last_run.log"; then
               echo "::error::$n — ошибка Meshy, журнал pipeline/3d/state/${n}_last_run.log"; fail=1
             fi
           done
           exit $fail
+
+      - name: Перенос клипов на риг персонажа (retarget_clips.py, 0 кредитов)
+        if: steps.req.outputs.files != ''
+        run: |
+          # по умолчанию стойка — спокойная Idle_4 (библиотека pipeline/3d/motions), реплика начинается и кончается в ней;
+          # "retarget" в запросе — свои роли, false — выключить
+          set -e
+          for f in ${{ steps.req.outputs.files }}; do
+            name=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
+            glb="pipeline/3d/out/$name/animations.glb"
+            [ -f "$glb" ] || continue
+            python pipeline/3d/retarget_clips.py --glb "$glb" --request "$f" --out "$glb" \
+              --clips-out "pipeline/3d/out/$name/clips.txt" --report "pipeline/3d/state/${name}_retarget.json"
+          done
 
       - name: Рендер спрайтов (Blender/Cycles CPU)
         if: steps.req.outputs.files != ''
@@ -108,6 +141,7 @@ jobs:
             elev=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('elev',14))" "$f")
             yaw=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('front_yaw',0))" "$f")
             clips=$(python -c "import json,sys,os;n=json.load(open(sys.argv[1]))['character'];p=f'pipeline/3d/state/{n}.json';st=json.load(open(p)) if os.path.exists(p) else {};print(' '.join(f'{k}={v[\"key\"]}' for k,v in st.get('actions',{}).items() if v.get('key')))" "$f")
+            clips="$clips $(cat "pipeline/3d/out/$name/clips.txt" 2>/dev/null || true)"
             rsize=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('render_size',384))" "$f")
             rsamp=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('render_samples',24))" "$f")
             win=$(python -c "import json,sys;r=json.load(open(sys.argv[1]));print(' '.join(f'{k}={v[0]}:{v[1]}' for k,v in r.get('clip_window',{}).items()))" "$f")
@@ -118,6 +152,23 @@ jobs:
               ${ff:+--feet-fix $ff --feet-report "pipeline/3d/state/${name}_feet_fix.json"}
             cp "pipeline/3d/out/$name/meshy_manifest.json" "assets/characters/$name/" 2>/dev/null || true
             cp "pipeline/3d/out/$name/views/"*.png "assets/characters/$name/" 2>/dev/null || true
+          done
+
+      - name: GLB для игры в 3D (поле rt3d в запросе)
+        if: steps.req.outputs.files != ''
+        run: |
+          set -e
+          for f in ${{ steps.req.outputs.files }}; do
+            name=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
+            out=$(python -c "import json,sys;r=json.load(open(sys.argv[1])).get('rt3d') or {};print(r.get('out',''))" "$f")
+            [ -n "$out" ] || continue
+            tris=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['rt3d'].get('tris',60000))" "$f")
+            # стопы у всех клипов ходьбы и стойки, потом упрощение сетки, текстуры 2K, матовая ткань
+            python pipeline/3d/feet_fix.py --glb "pipeline/3d/out/$name/animations.glb" --auto \
+              --out-glb "pipeline/3d/out/$name/rt3d_src.glb" --report "pipeline/3d/state/${name}_rt3d_feet.json"
+            python pipeline/3d/build_rt3d_glb.py --base "pipeline/3d/out/$name/rt3d_src.glb" --tris "$tris" --max-tex 2048 --matte \
+              --out "$out" --check-out "pipeline/3d/state/${name}_rt_check.json"
+            rm -f "pipeline/3d/out/$name/rt3d_src.glb"
           done
 
       - name: Сохранить GLB как артефакт запуска
@@ -141,7 +192,8 @@ jobs:
             name=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
             glb="pipeline/3d/out/$name/animations.glb"
             [ -f "$glb" ] || { echo "нет $glb — проверка стоп пропущена"; continue; }
-            python pipeline/3d/check_feet.py --glb "$glb" --request "$f" --out "pipeline/3d/state/${name}_feet.json" || bad="$bad $name"
+            cl=$(cat "pipeline/3d/out/$name/clips.txt" 2>/dev/null || true)
+            python pipeline/3d/check_feet.py --glb "$glb" --request "$f" --out "pipeline/3d/state/${name}_feet.json" ${cl:+--clips $cl} || bad="$bad $name"
           done
           if [ -n "$bad" ]; then echo "::error::стопы: порог превышен у:$bad (pipeline/3d/state/<name>_feet.json)"; echo "bad=$bad" >> "$GITHUB_OUTPUT"; fi
 

@@ -224,10 +224,25 @@ def contacts(rig, R, P, kind="walk"):
         near = z < np.percentile(z, 5) + PARAMS["contact_h"]
         if kind == "walk":
             fwd_ok = vel[s] < 0.004  # не летит вперёд быстрее ~0,1 м/с
-            out[s] = near & fwd_ok & (z <= low[o] + 0.004)
+            out[s] = _drop_short(near & fwd_ok & (z <= low[o] + 0.004), 3)
         else:
             out[s] = near
     return out, low
+
+
+def _drop_short(c, n_min):
+    """Касания короче n_min кадров — не опора (стопа на миг ниже другой при отрыве; Агата v3, 23.10: кадр 7 правой
+    ноги — «опора» с пяткой на 4,8 см). Касание, переходящее через край массива, считается целиком."""
+    c = c.copy()
+    iv = intervals(c)
+    n = len(c)
+    for k, (a, b) in enumerate(iv):
+        ln = b - a
+        if len(iv) > 1 and ((k == 0 and a == 0 and iv[-1][1] == n) or (k == len(iv) - 1 and b == n and iv[0][0] == 0)):
+            ln = (iv[0][1] - iv[0][0]) + (iv[-1][1] - iv[-1][0])
+        if ln < n_min:
+            c[a:b] = False
+    return c
 
 
 def intervals(c):
@@ -879,7 +894,8 @@ def find_action(acts, key):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--glb", required=True)
-    ap.add_argument("--clips", nargs="+", required=True, help="роль=клип[@a:b], напр. walk=Walking_Woman idle=Idle@0:0.2")
+    ap.add_argument("--clips", nargs="*", default=[], help="роль=клип[@a:b], напр. walk=Walking_Woman idle=Idle@0:0.2")
+    ap.add_argument("--auto", action="store_true", help="все клипы, чьё имя — ходьба или стойка (GLB для игры в 3D)")
     ap.add_argument("--out-glb", default="")
     ap.add_argument("--report", default="")
     ap.add_argument("--fps", type=float, default=30.0)
@@ -898,7 +914,10 @@ def main() -> int:
     acts = [a for a in bpy.data.actions if a not in acts0]
     rig = rig_from_blender(arm, meshes)
     reports = []
-    for spec in args.clips:
+    specs = list(args.clips)
+    if args.auto:
+        specs += [f"{a.name}={a.name}" for a in acts if kind_of(a.name) and not any(x.split("=", 1)[1].split("@")[0] == a.name for x in specs)]
+    for spec in specs:
         role, key = spec.split("=", 1)
         win = None
         if "@" in key:

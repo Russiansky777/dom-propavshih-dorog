@@ -47,6 +47,64 @@ def scene_bounds(objs):
     return mins, maxs
 
 
+METAL_WORDS = ("metal", "iron", "steel", "brass", "bronze", "gold", "silver", "chrome", "buckle", "blade", "knife")
+
+
+def matte_materials(objs, rough_min: float = 0.8) -> list:
+    """Ткань и кожа — матовые (22.10: Павел блестел, как лакированная кожа, — PBR Meshy enable_pbr): metallic 0,
+    roughness не меньше rough_min. Материалы, по имени явно металлические, не трогаются."""
+    done = []
+    mats = {m for o in objs if o.type == "MESH" for m in o.data.materials if m is not None and m.use_nodes}
+    for m in mats:
+        # только по имени материала: имя карты PBR Meshy само содержит «metallic» (texture_0_metallic_roughness)
+        if any(w in m.name.lower() for w in METAL_WORDS):
+            continue
+        nt = m.node_tree
+        for n in [x for x in nt.nodes if x.type == "BSDF_PRINCIPLED"]:
+            met, rough = n.inputs.get("Metallic"), n.inputs.get("Roughness")
+            if met is not None:
+                for l in list(met.links):
+                    nt.links.remove(l)
+                met.default_value = 0.0
+            if rough is not None:
+                if rough.is_linked:
+                    src = rough.links[0].from_socket
+                    mx = nt.nodes.new("ShaderNodeMath"); mx.operation = "MAXIMUM"
+                    mx.inputs[1].default_value = rough_min
+                    nt.links.new(src, mx.inputs[0]); nt.links.new(mx.outputs[0], rough)
+                else:
+                    rough.default_value = max(rough.default_value, rough_min)
+            done.append(m.name)
+    return done
+
+
+def screen_extent(meshes, frames_by_act, set_frame, yaws_deg, elev_deg, look_z):
+    """Наибольшие |x| и y (вверх) фигуры на экране по всем кадрам листов и направлениям (метры кадра)."""
+    import numpy as np  # noqa: PLC0415
+    e = math.radians(elev_deg)
+    th = np.radians(np.asarray(yaws_deg, float))
+    c, s_ = np.cos(th), np.sin(th)
+    hx, top = 0.0, -1e9
+    for act, fr in frames_by_act:
+        for f in fr:
+            set_frame(act, f)
+            dg = bpy.context.evaluated_depsgraph_get()
+            for o in meshes:
+                ev = o.evaluated_get(dg)
+                me = ev.to_mesh()
+                co = np.empty(len(me.vertices) * 3)
+                me.vertices.foreach_get("co", co)
+                mw = np.array(ev.matrix_world)
+                V = co.reshape(-1, 3) @ mw[:3, :3].T + mw[:3, 3]
+                ev.to_mesh_clear()
+                xs = V[:, 0:1] * c - V[:, 1:2] * s_          # (n, dirs)
+                ys = V[:, 0:1] * s_ + V[:, 1:2] * c
+                yscr = ys * math.sin(e) + (V[:, 2:3] - look_z) * math.cos(e)
+                hx = max(hx, float(np.abs(xs).max()))
+                top = max(top, float(yscr.max()))
+    return hx, top
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--glb", required=True)
@@ -63,6 +121,8 @@ def main() -> int:
     ap.add_argument("--window", nargs="*", default=[], help="доля клипа на действие: idle=0:0.35 — кадры берутся только из этого отрезка (для клипов с лишним движением), в манифест пишется playback=pingpong")
     ap.add_argument("--feet-fix", nargs="*", default=[], help="действия, у которых перед рендером править стопы (pipeline/3d/feet_fix.py): walk idle")
     ap.add_argument("--feet-report", default="", help="куда записать замеры стоп до/после исправления (JSON)")
+    ap.add_argument("--no-matte", action="store_true", help="не делать ткань матовой (по умолчанию metallic 0, roughness ≥ 0.8)")
+    ap.add_argument("--no-fit", action="store_true", help="не расширять кадр под движение (по умолчанию кадр шире, если фигура выходит за край)")
     args = ap.parse_args()
     windows: dict[str, tuple[float, float]] = {}
     clip_keys: dict[str, str] = dict(c.split("=", 1) for c in args.clips)
@@ -142,6 +202,22 @@ def main() -> int:
         feet_fix.assign(arm, orig_act)
         bpy.context.scene.frame_set(0)
 
+    # статичная поза для кадрирования — первое действие (стойка) в начале своего окна
+    first = next(iter(frames_by_action), None)
+    if arm is not None and first is not None:
+        a0 = pick_action(first, 0)
+        if a0 is not None:
+            if arm.animation_data is None:
+                arm.animation_data_create()
+            arm.animation_data.action = a0
+            g0, g1 = a0.frame_range
+            if first in windows:
+                g0 = g0 + (g1 - g0) * windows[first][0]
+            bpy.context.scene.frame_set(int(round(g0)))
+    matte = [] if args.no_matte else matte_materials(meshes)
+    if matte:
+        print(f"  матовые материалы (metallic 0, roughness ≥ 0.8): {matte}", flush=True)
+
     # корень для вращения: всё, что без родителя
     roots = [o for o in objs if o.parent is None]
     pivot = bpy.data.objects.new("SpritePivot", None)
@@ -198,11 +274,51 @@ def main() -> int:
     # ortho_scale в Blender относится к большей стороне кадра; кадр вертикальный → это высота
     cam_data.ortho_scale = height * args.margin
 
+    def act_frames(action_name, idx, nframes):
+        act = pick_action(action_name, idx)
+        if act is None:
+            return None, []
+        f0, f1 = act.frame_range
+        if action_name in windows:
+            wa, wb = windows[action_name]
+            f0, f1 = f0 + (f1 - f0) * wa, f0 + (f1 - f0) * wb
+        return act, [int(round(f0 + (f1 - f0) * i / nframes)) for i in range(nframes)]
+
+    fit = {}
+    if not args.no_fit and arm is not None:
+        # кадр шире, если фигура в каком-то кадре выходит за боковой край (наклон «поднять» — голова, коса, рука):
+        # высота кадра, опорная точка и масштаб (px на метр) — прежние
+        def set_frame(act, f):
+            arm.animation_data.action = act
+            scene.frame_set(f)
+        todo = []
+        for idx, (an, nf) in enumerate(frames_by_action.items()):
+            act, fr = act_frames(an, idx, nf)
+            if act is not None:
+                todo.append((act, fr))
+        yaws = [args.front_yaw + d * 360.0 / args.directions for d in range(args.directions)]
+        hx, top = screen_extent(meshes, todo, set_frame, yaws, args.elev, height / 2)
+        m_per_px = extent / scene.render.resolution_y
+        need = int(math.ceil(2 * hx * 1.03 / m_per_px / 16.0) * 16)
+        fit = {"half_width_m": round(hx, 3), "top_m": round(top, 3), "frame_top_m": round(extent / 2, 3)}
+        if need > scene.render.resolution_x:
+            print(f"  кадр шире: {scene.render.resolution_x} → {need} px (фигура до {hx:.2f} м от оси)", flush=True)
+            scene.render.resolution_x = need
+            cam_data.ortho_scale = extent * max(need, scene.render.resolution_y) / scene.render.resolution_y
+        if top > extent / 2:
+            print(f"  ВНИМАНИЕ: верх фигуры {top:.2f} м выше кадра {extent / 2:.2f} м — обрежется", file=sys.stderr, flush=True)
+        fit["frame_w"] = scene.render.resolution_x
+        arm.animation_data.action = todo[0][0] if todo else arm.animation_data.action
+
     print("клипы в файле:", [a.name for a in actions])
     manifest = {"name": args.name, "frame_w": scene.render.resolution_x, "frame_h": scene.render.resolution_y,
                 "pivot": {"x": 0.5, "y": 1.0 - (1 - 1 / args.margin) / 2}, "directions": args.directions,
                 "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
                 "character_height_m": round(height, 3), "actions": {}}
+    if fit:
+        manifest["fit"] = fit
+    if matte:
+        manifest["matte_materials"] = True
 
     wanted_order = list(frames_by_action.keys())
     for idx, (action_name, nframes) in enumerate(frames_by_action.items()):
