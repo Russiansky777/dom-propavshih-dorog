@@ -117,11 +117,11 @@ async function main() {
   const req = reqPath ? JSON.parse(fs.readFileSync(reqPath, "utf8")) : {};
   // "gate" = acceptance then fresh: the workflow runs this script twice with --mode.
   const mode = (A.mode || req.mode) === "acceptance" || (!A.mode && req.mode === "gate") ? "acceptance" : "fresh";
-  const dry = !!A.dry;
+  const dry = !!A.dry || req.dry_run === true;   // dry_run: scripted actions, no API (harness test in CI)
   const cfg = {
     mode,
     request: reqPath ? path.relative(ROOT, reqPath) : "",
-    items: parseItems(req.items),
+    items: parseItems(A.items || req.items),   // --items: the changed rows of a hand-off (ai_playtest.yml)
     contextItems: parseItems(req.context_items),
     // max_usd is a safety stop against a looping run, not a budget (Director 22.10): default and ceiling $10.
     maxUsd: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_usd ?? req.max_usd : req.max_usd, 0.05, HARD_MAX_USD, HARD_MAX_USD),
@@ -139,7 +139,12 @@ async function main() {
     autoDialogue: req.auto_dialogue !== false,
     // Start point (a block in the middle of the game): {room, spawn, flags[], items[]} via the ?ambientprobe hooks.
     start: (mode === "fresh" && req.mode === "gate" ? req.fresh_start : req.start) || null,
+    // Start from a real save (a checkpoint exported by an earlier run, e.g. «День второй»): {file, slot, load}.
+    startSave: (mode === "fresh" && req.mode === "gate" ? req.fresh_start_save ?? req.start_save : req.start_save) || null,
   };
+  // skip_items: rows of the doc this gate cannot reach from its start (e.g. day-one rows in a day-two doc).
+  const skip = parseItems(req.skip_items);
+  if (skip.length) cfg.items = cfg.items.filter((n) => !skip.includes(n));
   cfg.H = Math.round(cfg.W * FRAME_H / FRAME_W);
   const scale = cfg.W / FRAME_W;
   const runTag = process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local");
@@ -201,6 +206,52 @@ async function main() {
     const r = await cdp.send("Page.captureScreenshot", { format: "jpeg", quality, clip: { ...clip, scale: sc } });
     return Buffer.from(r.data, "base64");
   };
+  // Godot web keeps user:// in IndexedDB (Emscripten IDBFS: database "/userfs", store FILE_DATA, key = path).
+  const idbSaves = () => page.evaluate(async () => {
+    const out = [];
+    const names = indexedDB.databases ? (await indexedDB.databases()).map((d) => d.name) : ["/userfs"];
+    for (const name of names) {
+      const db = await new Promise((res) => { const r = indexedDB.open(name); r.onsuccess = () => res(r.result); r.onerror = () => res(null); });
+      if (!db || ![...db.objectStoreNames].includes("FILE_DATA")) { if (db) db.close(); continue; }
+      const tx = db.transaction("FILE_DATA", "readonly");
+      const st = tx.objectStore("FILE_DATA");
+      const keys = await new Promise((res) => { const r = st.getAllKeys(); r.onsuccess = () => res(r.result); });
+      for (const k of keys) {
+        if (!/\/saves\/[^/]+\.json$/.test(String(k))) continue;
+        const v = await new Promise((res) => { const r = st.get(k); r.onsuccess = () => res(r.result); });
+        if (v && v.contents) out.push({ db: name, key: String(k), text: new TextDecoder().decode(v.contents) });
+      }
+      db.close();
+    }
+    return out;
+  });
+  // user:// of the web build = /userfs/godot/app_userdata/<config/name> (seen in the exported keys, 23.10).
+  const userDir = () => {
+    try {
+      const pg = fs.readFileSync(path.join(ROOT, "game", "project.godot"), "utf8");
+      const custom = /config\/use_custom_user_dir\s*=\s*true/.test(pg) && /config\/custom_user_dir_name\s*=\s*"([^"]+)"/.exec(pg);
+      if (custom) return `/userfs/godot/${custom[1]}`;
+      const m = /config\/name\s*=\s*"([^"]+)"/.exec(pg);
+      return `/userfs/godot/app_userdata/${m ? m[1] : "Dom propavshih dorog"}`;
+    } catch (_) { return "/userfs/godot/app_userdata/Dom propavshih dorog"; }
+  };
+  const idbPutSave = (slot, text) => page.evaluate(async ([slot, text, dir]) => {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open("/userfs", 21);
+      r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains("FILE_DATA")) d.createObjectStore("FILE_DATA").createIndex("timestamp", "timestamp", { unique: false }); };
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    });
+    const tx = db.transaction("FILE_DATA", "readwrite");
+    const st = tx.objectStore("FILE_DATA");
+    const now = new Date();
+    const parts = `${dir}/saves`.split("/").filter(Boolean);
+    for (let i = 2; i <= parts.length; i++) st.put({ timestamp: now, mode: 16877 }, "/" + parts.slice(0, i).join("/"));
+    st.put({ timestamp: now, mode: 33206, contents: new TextEncoder().encode(text) }, `${dir}/saves/${slot}.json`);
+    await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = () => rej(tx.error); });
+    db.close();
+    return `${dir}/saves/${slot}.json`;
+  }, [slot, text, userDir()]);
+
   const frame = async (step, kind, label = "") => {
     frameNo += 1;
     const id = `f${String(frameNo).padStart(4, "0")}`;
@@ -382,7 +433,8 @@ async function main() {
   run.reportReserve = Number(reportReserve.toFixed(4));
   let events = [], extra = [];
   const sys = run.stop ? "" : systemPrompt(mode, { W: cfg.W, H: cfg.H, checklist: checklist ? checklistText(checklist) : "", note: cfg.note,
-    start: cfg.start ? String(cfg.start.label || "предыдущая часть игры уже пройдена, о ней ты знаешь только то, что увидишь") : "" });
+    start: cfg.start ? String(cfg.start.label || "предыдущая часть игры уже пройдена, о ней ты знаешь только то, что увидишь")
+      : cfg.startSave ? `загружено сохранение${saveTitle(cfg.startSave) ? ` «${saveTitle(cfg.startSave)}»` : ""} — всё, что было до него, уже пройдено (о прошлом ты знаешь только то, что увидишь в игре и журнале)` : "" });
   const tool = actTool(mode, cfg.W, cfg.H);
   const pendingItems = () => (checklist ? checklist.rows.map((r) => r.num).filter((n) => !run.verdicts[n]) : []);
   const trackProgress = (s, step) => {
@@ -412,6 +464,18 @@ async function main() {
         const vr = await page.request.get(new URL("version.txt", url.endsWith("/") || url.endsWith(".html") ? url : url + "/").toString(), { timeout: 30000 });
         if (vr.ok()) run.version = (await vr.text()).trim().slice(0, 80);
       } catch (_) { /* no version.txt locally */ }
+      if (cfg.startSave) {
+        // Same origin first (IndexedDB is per origin), the save in place, then the game reads it at start-up.
+        try {
+          const sf = path.resolve(ROOT, String(cfg.startSave.file || cfg.startSave));
+          const text = fs.readFileSync(sf, "utf8");
+          const slot = String(cfg.startSave.slot || path.basename(sf, ".json"));
+          await page.goto(new URL("version.txt", url.endsWith("/") || url.endsWith(".html") ? url : url + "/").toString(), { waitUntil: "load", timeout: 60000 }).catch(() => {});
+          await idbPutSave(slot, text);
+          run.startSave = { file: path.relative(ROOT, sf), slot, title: (JSON.parse(text).title || "") };
+          log(`save ${run.startSave.file} → slot ${slot}`);
+        } catch (e) { run.harness.push(`start_save failed: ${short(e && e.message, 160)}`); }
+      }
       log(`open ${run.cfg.url} (build ${run.version || "?"})${cfg.start ? ` from ${cfg.start.room || "?"}` : ""}`);
       await page.goto(cfg.start ? url + (url.includes("?") ? "&" : "?") + "ambientprobe" : url, { waitUntil: "load", timeout: 180000 });
       try {
@@ -438,6 +502,22 @@ async function main() {
           await sleep(1500);
           run.startNote = `старт с ${cfg.start.room || "?"}: флагов ${(cfg.start.flags || []).length}, предметов ${(cfg.start.items || []).length}`;
         } catch (e) { run.harness.push(`start point failed: ${short(e && e.message, 160)}`); }
+      }
+      if (run.startSave && cfg.startSave.load !== false) {
+        // Like a player: «Меню» → the slot's «Загрузить» (real clicks on the probe's button centres).
+        try {
+          let s0 = await state();
+          const mb = s0 && s0.ui && s0.ui.buttons && s0.ui.buttons.MenuButton;
+          if (mb) { await page.mouse.click(mb.x, mb.y); await sleep(900); }
+          s0 = await state();
+          const lb = s0 && s0.ui && s0.ui.buttons && s0.ui.buttons[`Load${run.startSave.slot}`];
+          if (!lb) throw new Error(`no Load${run.startSave.slot} in the menu (${Object.keys((s0 && s0.ui && s0.ui.buttons) || {}).join(",")})`);
+          await page.mouse.click(lb.x, lb.y);
+          await sleep(2500);
+          const s1 = await state();
+          if (s1 && s1.ui && s1.ui.menu_open && s1.ui.buttons.CloseMenu) { await page.mouse.click(s1.ui.buttons.CloseMenu.x, s1.ui.buttons.CloseMenu.y); await sleep(600); }
+          run.startNote = `загружено сохранение «${run.startSave.title || run.startSave.slot}» (${run.startSave.file}) через «Меню → Загрузить»; комната ${(await state() || {}).room || "?"}`;
+        } catch (e) { run.harness.push(`start_save load: ${short(e && e.message, 200)}`); }
       }
       lastState = await state();
       trackProgress(lastState, 0);
@@ -696,6 +776,28 @@ async function main() {
   let lastFrame = null;
   try { if (page && cdp) lastFrame = await frame(run.steps.length + 1, "final", "последний кадр"); } catch (_) {}
   const endState = page ? await state() : null;
+  // Saves of this run (checkpoints like «День второй») — a later gate can start from them (start_save).
+  try {
+    if (page) {
+      const saves = await idbSaves();
+      if (saves.length) {
+        fs.mkdirSync(path.join(outDir, "saves"), { recursive: true });
+        run.saves = [];
+        for (const sv of saves.slice(0, 8)) {
+          const slot = path.basename(sv.key, ".json");
+          fs.writeFileSync(path.join(outDir, "saves", `${slot}.json`), sv.text);
+          let title = ""; try { title = JSON.parse(sv.text).title || ""; } catch (_) {}
+          run.saves.push({ slot, title, key: sv.key });
+          // A checkpoint the game wrote itself («День второй», day3 …) replaces the shared start save of later gates.
+          if (title && /^day\d+$/.test(slot) && !dry && !(run.startSave && run.startSave.slot === slot)) {
+            fs.mkdirSync(path.join(ROOT, "Docs", "playtest", "saves"), { recursive: true });
+            fs.writeFileSync(path.join(ROOT, "Docs", "playtest", "saves", `${slot}.json`), sv.text);
+            run.harness.push(`checkpoint ${slot} «${title}» → Docs/playtest/saves/${slot}.json (start of later gates)`);
+          }
+        }
+      }
+    }
+  } catch (e) { run.harness.push(`saves export: ${short(e && e.message, 160)}`); }
   run.end = endState ? { room: endState.room, inventory: endState.inventory, goal: endState.goal, flags: truthyFlags(endState).length } : null;
   run.endFlags = endState ? truthyFlags(endState) : [];
   run.blocked = blockedScenes(run.endFlags, run.rooms);
@@ -753,7 +855,7 @@ async function main() {
   fs.writeFileSync(path.join(outDir, "report.md"), md);
   fs.writeFileSync(path.join(outDir, "usage.json"), JSON.stringify({ ...budget.toJSON(), report_reserve_usd: run.reportReserve, stop: run.stop }, null, 1));
   fs.writeFileSync(path.join(outDir, "log.json"), JSON.stringify({
-    cfg: run.cfg, version: run.version, started: run.started, stop: run.stop, probe: run.probe, end: run.end,
+    cfg: run.cfg, version: run.version, started: run.started, stop: run.stop, probe: run.probe, end: run.end, start_save: run.startSave, saves: run.saves,
     rooms: run.rooms, flags_order: run.flagsOrder, blocked_scenes: run.blocked, harness: run.harness, console_errors: run.consoleErrors, console_warnings: run.consoleWarnings,
     checklist: run.checklist, verdict_history: run.verdictHistory, notes: run.notes, frames: run.frames,
     steps: run.steps, transcript: run.transcript,
@@ -809,6 +911,10 @@ function blockedScenes(flags, rooms) {
   return out.slice(0, 25);
 }
 
+function saveTitle(ss) {
+  try { return JSON.parse(fs.readFileSync(path.resolve(ROOT, String(ss.file || ss)), "utf8")).title || ""; } catch (_) { return ""; }
+}
+
 function buildReportInput(run, cfg, checklist) {
   const L = [];
   L.push(`РЕЖИМ: ${cfg.mode === "acceptance" ? "приёмка по чеклисту" : "свежий взгляд новичка"}. Сборка: ${run.version || "?"} (${run.cfg.url}).`);
@@ -852,7 +958,8 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
   L.push(`- Сборка: \`${run.version || "?"}\` — ${run.cfg.url}`);
   L.push(`- Запрос: \`${cfg.request || "—"}\`${cfg.note ? ` — ${cfg.note}` : ""}${run.cfg.actions_run ? `; запуск Actions ${run.cfg.actions_run}` : ""}`);
   L.push(`- Модели: шаги — \`${cfg.model}\`${cfg.modelStuck ? `, когда застряла — \`${cfg.modelStuck}\`` : ""}; отчёт — \`${cfg.reportModel}\`. Кадр модели ${cfg.W}×${cfg.H} JPEG (окно игры 1920×1080).`);
-  if (run.startNote) L.push(`- Начало: ${run.startNote} (хуки ?ambientprobe)`);
+  if (run.startNote) L.push(`- Начало: ${run.startNote}${cfg.start ? " (хуки ?ambientprobe)" : ""}`);
+  if (run.saves && run.saves.length) L.push(`- Сохранения прогона (для start_save следующих ворот): ${run.saves.map((sv) => `saves/${sv.slot}.json${sv.title ? ` «${sv.title}»` : ""}`).join(", ")}`);
   L.push(`- Шагов: ${run.steps.length} из ${cfg.maxSteps}; время ${minutes} мин. Остановка: ${run.stop}`);
   L.push(`- Стоимость прогона: **$${budget.spent.toFixed(3)}** (по usage ответов API, подробно — usage.json; предохранитель от зацикливания — $${cfg.maxUsd})`);
   L.push(`- Где оказалась по факту: ${run.rooms.join(" → ") || "—"}${run.end ? `; конец — ${run.end.room}` : ""}`);

@@ -1,0 +1,12 @@
+{
+  "mode": "gate",
+  "doc": "Docs/ACCEPTANCE_M3.md",
+  "items": "1-40",
+  "max_steps": 300,
+  "fresh_max_steps": 150,
+  "start_save": { "file": "Docs/playtest/saves/day3.json", "slot": "day3" },
+  "fresh_start_save": { "file": "Docs/playtest/saves/day3.json", "slot": "day3" },
+  "note": "Блоки 3–5. Программа загрузила сохранение «День третий» (если его ещё нет — начни с того, что открыто, и отметь это).",
+  "fresh_note": "",
+  "run": 1
+}

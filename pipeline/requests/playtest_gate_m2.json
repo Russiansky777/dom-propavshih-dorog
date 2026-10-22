@@ -1,0 +1,13 @@
+{
+  "mode": "gate",
+  "doc": "Docs/ACCEPTANCE_M2.md",
+  "items": "1-20",
+  "skip_items": [21, 22],
+  "max_steps": 300,
+  "fresh_max_steps": 150,
+  "start_save": { "file": "Docs/playtest/saves/day2.json", "slot": "day2" },
+  "fresh_start_save": { "file": "Docs/playtest/saves/day2.json", "slot": "day2" },
+  "note": "День второй. Программа уже загрузила сохранение «День второй» через «Меню → Загрузить» — день первый пройден, начинать с утра у печи.",
+  "fresh_note": "",
+  "run": 1
+}

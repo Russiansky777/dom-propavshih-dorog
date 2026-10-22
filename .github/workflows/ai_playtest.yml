@@ -12,6 +12,8 @@ on:
     branches: [main]
     paths:
       - "pipeline/requests/playtest_*.json"
+      # передача блока: изменились пункты чеклиста, для которого есть pipeline/requests/playtest_gate_<веха>.json
+      - "Docs/ACCEPTANCE_*.md"
   workflow_dispatch:
     inputs:
       request:
@@ -55,42 +57,67 @@ jobs:
               files=$(git diff --name-only --diff-filter=AM "$before" ${{ github.sha }} -- 'pipeline/requests/playtest_*.json' | tr '\n' ' ' || true)
             fi
           fi
+          # Ворота по передаче блока: изменённые и новые пункты Docs/ACCEPTANCE_<M>.md (критичные первыми),
+          # конфиг — pipeline/requests/playtest_gate_<m>.json (mode gate, fresh_start, заметки).
+          gates=""
+          before="${{ github.event.before }}"
+          if [ -z "$REQ_INPUT" ] && [ -n "$before" ] && git cat-file -e "$before^{commit}" 2>/dev/null; then
+            for d in $(git diff --name-only --diff-filter=AM "$before" ${{ github.sha }} -- 'Docs/ACCEPTANCE_*.md'); do
+              m=$(basename "$d" .md | sed 's/^ACCEPTANCE_//' | tr 'A-Z' 'a-z')
+              cfg="pipeline/requests/playtest_gate_$m.json"
+              [ -f "$cfg" ] || { echo "$d: нет $cfg — ворота не настроены"; continue; }
+              case " $files " in *" $cfg "*) continue;; esac
+              items=$(node tools/ai_playtest/changed_items.mjs "$d" "$before")
+              [ -n "$items" ] || { echo "$d: пункты таблиц не менялись — ворота не нужны"; continue; }
+              gates="$gates $cfg|$items"
+            done
+          fi
           echo "files=$files" >> "$GITHUB_OUTPUT"
-          echo "requests: $files"
+          echo "gates=$gates" >> "$GITHUB_OUTPUT"
+          echo "requests: $files; gates: $gates"
 
       - uses: actions/setup-node@v4
-        if: steps.req.outputs.files != ''
+        if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: tools/package-lock.json
 
       - name: Playwright + Chromium
-        if: steps.req.outputs.files != ''
+        if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''
         working-directory: tools
         run: |
           npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
 
       - name: Дождаться публикации сайта (если сборка ещё идёт)
-        if: steps.req.outputs.files != ''
+        if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          for i in $(seq 1 50); do
+          sleep 20   # сборка того же пуша могла ещё не встать в очередь
+          for i in $(seq 1 60); do
             st=$(gh run list --workflow build_and_publish.yml --branch main --limit 1 --json status -q '.[0].status' 2>/dev/null || echo completed)
             if [ "$st" = "completed" ] || [ -z "$st" ]; then echo "сайт: последняя сборка завершена"; break; fi
             echo "сборка сайта ещё идёт ($st), жду 30 с"
             sleep 30
           done
+          # CDN Pages: дождаться, пока version.txt отдаёт последнюю успешную сборку (до 10 мин)
+          sha=$(gh run list --workflow build_and_publish.yml --branch main --status success --limit 1 --json headSha -q '.[0].headSha' 2>/dev/null || true)
+          for i in $(seq 1 30); do
+            v=$(curl -fsS "https://russiansky777.github.io/dom-propavshih-dorog/version.txt?t=$(date +%s)" || true)
+            case "$v" in "${sha:0:7}"*) echo "сайт отдаёт $v"; break;; esac
+            echo "сайт отдаёт: $v, ждём ${sha:0:7}"; sleep 20
+          done
 
       - name: Плейтест
-        if: steps.req.outputs.files != ''
+        if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''
         env:
           ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
           # ключ не привязан к рабочему пространству: ID (секрет) уходит заголовком anthropic-workspace-id, только если задан
           ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
           REQ_FILES: ${{ steps.req.outputs.files }}
+          GATES: ${{ steps.req.outputs.gates }}
         run: |
           git config user.name "playtest-bot"
           git config user.email "playtest-bot@users.noreply.github.com"
@@ -119,6 +146,17 @@ jobs:
               echo "=== $f ($m)"
               rm -f build/ai_playtest/*/summary.txt
               node tools/ai_playtest/playtest.mjs --request "$f" --mode "$m" || status=1
+              commit_results || status=1
+            done
+          done
+          # ворота по передаче блока: приёмка изменённых пунктов, затем свежий взгляд с точки старта блока
+          for g in $GATES; do
+            cfg="${g%%|*}"; items="${g#*|}"
+            for m in acceptance fresh; do
+              echo "=== ворота $cfg ($m${items:+, пункты $items})"
+              rm -f build/ai_playtest/*/summary.txt
+              if [ "$m" = "acceptance" ]; then node tools/ai_playtest/playtest.mjs --request "$cfg" --mode acceptance --items "$items" || status=1
+              else node tools/ai_playtest/playtest.mjs --request "$cfg" --mode fresh || status=1; fi
               commit_results || status=1
             done
           done
