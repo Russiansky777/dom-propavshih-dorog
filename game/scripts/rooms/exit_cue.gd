@@ -12,7 +12,12 @@ extends Node2D
 ##
 ## Data — data/story/rooms/<LOC>.json → exits[]:
 ##   "cue": "door" | "left" | "right" | "down" | "up"   — explicit (wins);
-##   "cue_at": [x, y]                                     — optional mark position (screen px).
+##   "cue_at": [x, y]                                     — optional mark position (screen px);
+##   "cue_deg": a                                         — optional screen angle the chevron points
+##       to (0 right, 90 down, 180 left, −90 up; −45 north-east): a path that leaves at a slant
+##       (Director 23.10, F20: «спуск к причалу … направить на северо-восток»). `cue` still decides the
+##       kind (door / edge) and placement; tools/validate_rooms.py checks that the angle is within 90°
+##       of `cue` and follows the path (from the arrival spawn to the mark).
 ## Without `cue`: `side` left/right/bottom → left/right/down ("back" → door); else a rect touching a
 ## frame edge → that edge (two edges: the one the rect runs along — tall → side, wide → bottom); else
 ## "door" (an inner rect is a drawn door/opening; tools/validate_rooms.py warns to make it explicit).
@@ -43,6 +48,8 @@ static var suppressed: bool = false
 static var _tex: Dictionary = {}
 
 var direction: String = "down"
+## Screen angle (degrees) of the chevron when the exit sets `cue_deg`; NAN — from `direction`.
+var angle_deg: float = NAN
 var hot: bool = false          # pointer on the exit (GameUi)
 var revealed: bool = false     # reveal key (GameUi → HotspotReveal)
 var exit_node: Node = null     # StoryExit, for is_open()
@@ -119,6 +126,25 @@ static func edge_point(dir: String, rect: Rect2) -> Vector2:
 	return c
 
 
+## Screen angle (degrees, 0 right, 90 down) of a direction.
+static func dir_angle(dir: String) -> float:
+	match dir:
+		"left":
+			return 180.0
+		"right":
+			return 0.0
+		"up":
+			return -90.0
+	return 90.0
+
+
+## The angle the mark of this exit points to: `cue_deg` when set, else its direction's.
+static func mark_angle(ex: Dictionary, dir: String) -> float:
+	if ex.has("cue_deg"):
+		return float(ex["cue_deg"])
+	return dir_angle(dir)
+
+
 ## Unit vector of a direction (screen: +y is down).
 static func dir_vector(dir: String) -> Vector2:
 	match dir:
@@ -139,9 +165,18 @@ func covered_rect() -> Rect2:
 	var half := Vector2(W * 0.5 + halo, D * 0.5 + GAP * 0.5 + halo) * s
 	if direction == "left" or direction == "right":
 		half = Vector2(half.y, half.x)
+	if not is_nan(angle_deg):
+		var m := maxf(half.x, half.y)
+		half = Vector2(m, m)   # a slanted mark: the bounding square of either orientation
 	var r := Rect2(global_position - half, half * 2.0)
-	r = r.merge(Rect2(r.position + dir_vector(direction) * 6.0, r.size))   # leaning forward
+	r = r.merge(Rect2(r.position + _lean_vector() * 6.0, r.size))   # leaning forward
 	return r.merge(Rect2(r.position + Vector2(0, 2.5), r.size))           # shadow offset
+
+
+func _lean_vector() -> Vector2:
+	if not is_nan(angle_deg):
+		return Vector2.from_angle(deg_to_rad(angle_deg))
+	return dir_vector(direction)
 
 
 func current_alpha() -> float:
@@ -180,13 +215,16 @@ func _draw() -> void:
 	var s := lerpf(1.0, 1.18, _hot_k)
 	var col := COLOR_IDLE.lerp(COLOR_HOT, _hot_k)
 	var rot := 0.0
-	match direction:
-		"up":
-			rot = PI
-		"left":
-			rot = PI * 0.5
-		"right":
-			rot = -PI * 0.5
+	if not is_nan(angle_deg):
+		rot = deg_to_rad(angle_deg - 90.0)   # the texture points down (90°)
+	else:
+		match direction:
+			"up":
+				rot = PI
+			"left":
+				rot = PI * 0.5
+			"right":
+				rot = -PI * 0.5
 	var tex := textures()
 	var off := Vector2(0, lean).rotated(rot)
 	var half: Vector2 = (tex["mark"] as Texture2D).get_size() * 0.5

@@ -491,6 +491,8 @@ static func _build_exits(room: Room, room_id: String, spec: Dictionary, idx: Dic
 			var cue := ExitCue.new()
 			cue.name = "Cue"
 			cue.direction = node.cue_dir
+			if ex.has("cue_deg"):
+				cue.angle_deg = float(ex["cue_deg"])   # a path leaving at a slant (F20)
 			cue.exit_node = node
 			cue.position = Vector2(cue_info["at"]) - node.position
 			node.add_child(cue)

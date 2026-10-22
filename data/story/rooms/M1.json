@@ -21,7 +21,7 @@
   "effects": [
     {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки после мамина зеркала — до слоя вечера (BRIEF_CHATGPT_v4 §C)"}
   ],
-  "spawns": {"default": [900, 800], "from_Z2": [140, 545], "from_Z3": [860, 990], "from_M2": [700, 640], "from_M4": [1780, 960]},
+  "spawns": {"default": [900, 800], "from_Z2": [140, 545], "from_M2": [700, 640], "from_M4": [1780, 960]},
   "props": [],
   "hotspots": [
     {
@@ -46,7 +46,6 @@
   ],
   "exits": [
     {"to": "Z2", "label": "@M1.exit_Z2.label", "cue": "left", "rect": [0, 380, 110, 300], "stand": [80, 540], "spawn": "from_M1", "draw": false},
-    {"to": "Z3", "label": "@M1.exit_Z3.label", "cue": "down", "rect": [620, 1000, 520, 80], "stand": [860, 1030], "spawn": "from_M1", "draw": false},
     {"to": "M2", "label": "@M1.exit_M2.label", "cue": "door", "rect": [612, 315, 140, 250], "stand": [690, 615], "spawn": "from_M1", "draw": false},
     {"to": "M4", "label": "@M1.exit_M4.label", "cue": "right", "rect": [1800, 860, 120, 220], "stand": [1840, 960], "spawn": "from_M1", "draw": false}
   ],

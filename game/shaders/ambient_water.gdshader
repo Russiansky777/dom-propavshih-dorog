@@ -26,6 +26,8 @@ uniform float rain = 0.0;                   // 0..1, drop rings
 uniform float ring_cell_m = 0.45;
 uniform float ring_m = 0.07;
 uniform float ring_period = 1.1;
+uniform float ring_gain = 1.0;              // contrast of a ring (brightening and bend of the reflection)
+uniform float ring_w_px = 1.4;              // crest width, screen px
 uniform float protect_sat = 0.32;
 uniform vec4 depth = vec4(640.0, 1070.0, 0.6, 1.1);       // top_y, bottom_y, scale_top, scale_bottom
 uniform vec4 ground = vec4(300.0, 2059.0, 208.0, 0.0);    // horizon_y, focal_px, px_per_m
@@ -68,7 +70,7 @@ vec3 drop_rings(vec2 p, float t) {
 	float r = (0.15 + 0.85 * sqrt(ph)) * ring_m;         // fast at first, then slowing down
 	vec2 dv = f - c;
 	float d = length(dv);
-	float w = 1.4 / ppm;                                 // ~1.4 px in metres
+	float w = ring_w_px / ppm;                           // crest width in metres
 	float sd = (r - d) / w;
 	float prof = sd * exp(-sd * sd * 0.5) * 1.2;
 	float vis = smoothstep(0.8, 2.5, ring_m * ppm);      // sub-pixel rings far away fade out
@@ -100,7 +102,7 @@ void fragment() {
 	float n2 = amb_noise2(q * 1.7 + vec2(3.1, 7.7) - fl * 0.6 * t);
 	vec2 d = vec2((n1 - 0.5) * 0.6, (n2 - 0.5) * 2.0) * amp * edge;
 	vec3 rr = rain > 0.0 ? drop_rings(p, t) : vec3(0.0);
-	d += rr.yz * rr.x * 1.2 * edge;                     // a ring bends the reflection across it
+	d += rr.yz * rr.x * 1.2 * ring_gain * edge;         // a ring bends the reflection across it
 	vec4 base = amb_src(p);
 	vec4 moved = amb_src(p - d);
 	if (src_alpha && moved.a < 0.5) {
@@ -115,6 +117,6 @@ void fragment() {
 		gl = smoothstep(0.78, 0.97, gl);
 		col += gl * glint * still * vec3(0.92, 0.95, 1.0) * (0.35 + 0.65 * dot(base.rgb, vec3(0.33)));
 	}
-	col += vec3(0.95, 0.97, 1.0) * (rr.x * 0.17 * still);
+	col += vec3(0.95, 0.97, 1.0) * (rr.x * 0.17 * ring_gain * still);
 	COLOR = vec4(col * COLOR.rgb, src_alpha ? base.a * COLOR.a : COLOR.a);
 }

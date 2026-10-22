@@ -66,6 +66,7 @@ func _run() -> void:
 	await _test("Hover: exit → mark hot + caption + icon, ordinary pointer (no exit arrow cursor); drawn door → the same; object → «перст»", _test_hover)
 	await _test("Space: every active hotspot and exit for 1.5 s, marks light up; nothing during a dialogue; menu names the key", _test_reveal)
 	await _test("Marks fade out under a dialogue and return", _test_cursors_and_fade)
+	await _test("F20 (Director 23.10): no «к повороту» at the mill; «спуск к причалу» higher and north-east; «в переулок к почте» mid-road", _test_f20)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -199,8 +200,14 @@ func _test_rooms() -> void:
 			var cov := cue.covered_rect()
 			_check(cov.position.y >= TOP_H + 4.0, "%s: mark %s stays under the top bar / bag" % [tag, str(cov)])
 			_check(cov.position.x >= -2.0 and cov.end.x <= 1922.0 and cov.end.y <= 1082.0, "%s: mark %s inside the frame" % [tag, str(cov)])
-			# At the frame edge for an edge exit: within 60 px of that edge.
-			match cue.direction:
+			# A slanted mark (F20: «спуск к причалу» на северо-восток) carries the data angle.
+			if se.data.has("cue_deg"):
+				_check(is_equal_approx(cue.angle_deg, float(se.data["cue_deg"])), "%s: mark angle %s = cue_deg %s" % [tag, str(cue.angle_deg), str(se.data["cue_deg"])])
+			else:
+				_check(is_nan(cue.angle_deg), "%s: no cue_deg — the mark points along its direction" % tag)
+			# At the frame edge for an edge exit: within 60 px of that edge — unless the data places it
+			# (cue_at: F20 «в переулок к почте — на середину дороги и чуть правее»).
+			match "" if se.data.has("cue_at") else cue.direction:
 				"down":
 					if "down" in edges:
 						_check(at.y >= 1080.0 - 60.0, "%s: mark at the bottom edge (y %.0f)" % [tag, at.y])
@@ -395,3 +402,34 @@ func _test_cursors_and_fade() -> void:
 	sr.call("_on_state_reset")
 	await _wait_s(0.8)
 	_check(cue.current_alpha() > 0.3, "mark back after the dialogue (alpha %.2f)" % cue.current_alpha())
+
+
+# --- F20 ----------------------------------------------------------------------------------
+
+## Director 23.10: «от мельницы стрелка „к повороту“ — убрать, только путает»; «„спуск к причалу“ у дома
+## чуть поднять и направить на северо-восток»; «„в переулок к почте“ — поднять на середину дороги и чуть
+## правее». The mill ↔ turn path is gone both ways (the turn is reached from the street or the pier).
+func _test_f20() -> void:
+	gs.set_flag("done_M01", true)
+	await _enter("M1")
+	_check(_exit_to("Z3") == null, "M1: no exit to the turn (Z3)")
+	await _enter("Z3")
+	_check(_exit_to("M1") == null, "Z3: no exit to the mill (M1)")
+	_check(_exit_to("Z2") != null and _exit_to("R1") != null, "Z3: the street and the pier still lead here")
+	await _enter("Z2")
+	var pier = _exit_to("R1")
+	_check(pier != null and pier.cue != null, "Z2: «спуск к причалу» has a mark")
+	if pier != null and pier.cue != null:
+		var a: float = pier.cue.angle_deg
+		_check(not is_nan(a) and a <= -20.0 and a >= -70.0, "Z2: the pier mark points north-east (angle %s)" % str(a))
+		_check(pier.cue.global_position.y < 695.0 - 15.0, "Z2: the pier mark is raised (y %.0f < 680)" % pier.cue.global_position.y)
+		var room = rm.current_room
+		_check(room.pick(pier.cue.global_position) == pier, "Z2: a click on the slanted mark is the exit")
+	var lane = _exit_to("Z4")
+	_check(lane != null and lane.cue != null, "Z2: «в переулок к почте» has a mark")
+	if lane != null and lane.cue != null:
+		var p: Vector2 = lane.cue.global_position
+		_check(p.y >= 640.0 and p.y <= 760.0, "Z2: the lane mark is on the road (y %.0f, road 640–760)" % p.y)
+		_check(p.x > 100.0, "Z2: the lane mark is right of the post corner (x %.0f)" % p.x)
+		_check(lane.cue.direction == "left", "Z2: the lane mark still points left")
+	gs.reset()

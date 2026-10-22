@@ -17,7 +17,11 @@ Checks:
   - `if` / `unless` flags are known somewhere in data/story (flags.json or a room's sets/flags);
   - shader overdraw per room (regions + full-screen rain) ≤ 3 frames;
   - footfall per actor: contact frames inside the sheet, planted_foot_px 8 rows × contacts × [dx, dy],
-    the sheet file exists (its contents are re-measured by game/tests/test_ambient.gd).
+    the sheet file exists (its contents are re-measured by game/tests/test_ambient.gd);
+  - rain rings in puddles (Director 23.10, F21: «капли дождя в лужах усилить немного»): for every preset
+    with rain and a puddle_style, rings per square metre per second (intensity × rings / cell² / period)
+    ≥ PUDDLE_RINGS_MIN and ring_gain ≥ PUDDLE_GAIN_MIN — the old 5.5 rings/m²·s at gain 1 read as «dead»;
+    and not above PUDDLE_RINGS_MAX (the same shader per pixel; more rings = busier, not dearer — a taste cap).
 """
 from __future__ import annotations
 
@@ -326,6 +330,30 @@ def check_index(idx: dict) -> None:
         err(f"_index.footfall_defaults.print_fade_s {fade} outside 20..30 s (brief)")
 
 
+PUDDLE_RINGS_MIN = 10.0     # rings / m² / s (F21; before: 0.55 × 0.9 / 0.3² / 1.0 = 5.5)
+PUDDLE_RINGS_MAX = 30.0
+PUDDLE_GAIN_MIN = 1.5
+
+
+def check_puddle_rings(idx: dict) -> None:
+    for name, pr in (idx.get("presets") or {}).items():
+        ps, rain = pr.get("puddle_style"), pr.get("rain")
+        if not isinstance(ps, dict) or not isinstance(rain, dict):
+            continue
+        cell = float(ps.get("ring_cell_m", 0.45))
+        per = float(ps.get("ring_period_s", 1.1))
+        if cell <= 0 or per <= 0:
+            err(f"_index.presets.{name}.puddle_style: ring_cell_m / ring_period_s must be > 0")
+            continue
+        rate = min(float(rain.get("intensity", 0.5)) * float(ps.get("rings", 1.0)), 1.0) / (cell * cell) / per
+        if not PUDDLE_RINGS_MIN <= rate <= PUDDLE_RINGS_MAX:
+            err(f"_index.presets.{name}.puddle_style: {rate:.1f} rain rings per m²·s, want {PUDDLE_RINGS_MIN:g}..{PUDDLE_RINGS_MAX:g} (F21)")
+        if float(ps.get("ring_gain", 1.0)) < PUDDLE_GAIN_MIN:
+            err(f"_index.presets.{name}.puddle_style: ring_gain {ps.get('ring_gain', 1.0)} < {PUDDLE_GAIN_MIN:g} — rings too faint (F21)")
+        if not 0.8 <= float(ps.get("ring_w_px", 1.4)) <= 3.0:
+            err(f"_index.presets.{name}.puddle_style: ring_w_px outside 0.8..3 px")
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
     idx_path = AMB / "_index.json"
@@ -334,6 +362,7 @@ def main() -> int:
         return 1
     idx = json.loads(idx_path.read_text(encoding="utf-8"))
     check_index(idx)
+    check_puddle_rings(idx)
     flags = known_flags()
     files = sorted(p for p in AMB.glob("*.json") if not p.name.startswith("_"))
     for p in files:

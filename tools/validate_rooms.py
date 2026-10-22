@@ -42,6 +42,14 @@
      exit_cue.icons по комнате назначения, — и его рисунок game/assets/ui/glyphs/exit_<имя>.svg существует
      (импорт «keep»: .svg.import с importer="keep", иначе игра не прочитает SVG в сборке).
      Курсор над выходом — обычный (большие стрелки-курсоры убраны 18.10): game/tests/test_ui_cursors.gd.
+     9б. метка стоит на дороге и смотрит вдоль неё (Директор 23.10, F20: «стрелка „к повороту“ только путает»,
+     «спуск к причалу … направить на северо-восток», «в переулок … на середину дороги»): cue_deg (наклон
+     метки, градусы экрана: 0 вправо, 90 вниз, −90 вверх) — число в пределах 90° от cue; у выхода, в который
+     входят с пола (прямоугольник пересекает пол), метка лежит на полу (или ближе CUE_FLOOR_TOL к нему) и
+     точка позади неё (CUE_STEP вдоль метки назад) — тоже, т. е. к метке подходят по полу; метка внутри кадра
+     (дорожка вглубь) или с cue_deg смотрит туда же, куда идёт путь от точки прихода (спавн from_<куда>,
+     иначе stand) к метке, — не дальше CUE_PATH_DEG. Выход вне пола (люк на чердак, лодка, канат в туман) —
+     только направление. Самопроверка: прежняя стрелка Z2 «Спуск к причалу» (вправо) не проходит.
  10. предметы (Директор 18.10: «зачем нам брать предметы, которые нельзя применить»): consumed: true ⇔ где-то
      расходуется; инвентарный предмет E0–E1 применяется в комнатах вехи или объявляет later_use (сцены по
      сценарию) / no_use_reason (спорное, предупреждение); предмет на выходе (exits[].item_use) открывает этот выход.
@@ -286,6 +294,11 @@ CUE_BOTTOM_SAFE = 1010.0    # ExitCue.BOTTOM_SAFE
 CUE_HALF_ALONG = 36.0       # полуразмер метки вдоль направления (два шеврона, тень, наклон в подсветке)
 CUE_HALF_ACROSS = 44.0      # поперёк направления (ширина шеврона ×1,18 в подсветке, тень)
 TOP_BAR = 80.0              # GameUi.TOP_H
+CUE_FLOOR_TOL = 60.0        # 9б: метка (и точка позади неё) не дальше этого от пола
+CUE_STEP = 80.0             # 9б: шаг вдоль метки назад — «подходят по полу»
+CUE_PATH_DEG = 50.0         # 9б: метка вглубь/наклонная смотрит вдоль пути от точки прихода не хуже этого
+CUE_PATH_MIN_PX = 100.0     # 9б: ближе — точка прихода у самой метки, направление пути не определено
+CUE_ANGLES = {"left": 180.0, "right": 0.0, "up": -90.0, "down": 90.0}
 
 
 def cue_edges(rect) -> list[str]:
@@ -334,6 +347,80 @@ def exit_cue(ex: dict, rect):
     else:
         at = (cx, cy)
     return d, at, src, edges_
+
+
+def _seg_dist(p, a, b) -> float:
+    ax, ay = a
+    bx, by = b
+    dx, dy = bx - ax, by - ay
+    t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - ay) * dy) / max(dx * dx + dy * dy, 1e-9)))
+    return ((p[0] - ax - t * dx) ** 2 + (p[1] - ay - t * dy) ** 2) ** 0.5
+
+
+def floor_dist(pt, poly) -> float:
+    """0 на полу, иначе расстояние до кромки полигона."""
+    if point_in_poly(pt, poly):
+        return 0.0
+    return min(_seg_dist(pt, poly[i], poly[(i + 1) % len(poly)]) for i in range(len(poly)))
+
+
+def rects_overlap_poly(rect, poly) -> bool:
+    x, y, w, h = rect
+    corners = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+    if any(point_in_poly(c, poly) for c in corners):
+        return True
+    return any(x <= p[0] <= x + w and y <= p[1] <= y + h for p in poly)
+
+
+def cue_path_problems(room: dict, ex: dict, rect, d: str, at, edges_) -> list[str]:
+    """9б: метка на дороге и вдоль пути. Пустой список — всё в порядке."""
+    import math
+    out: list[str] = []
+    base = CUE_ANGLES.get(d)
+    if base is None:
+        return out
+    ang = base
+    if "cue_deg" in ex:
+        if not isinstance(ex["cue_deg"], (int, float)):
+            return [f"cue_deg {ex['cue_deg']!r} — число (градусы экрана)"]
+        ang = float(ex["cue_deg"])
+        if abs((ang - base + 180.0) % 360.0 - 180.0) > 90.0:
+            out.append(f"cue_deg {ang:g} дальше 90° от cue «{d}» — поменяйте cue")
+    v = (math.cos(math.radians(ang)), math.sin(math.radians(ang)))
+    poly = walkable_of(room)
+    if rects_overlap_poly(rect, poly):
+        dm = floor_dist(at, poly)
+        if dm > CUE_FLOOR_TOL:
+            out.append(f"метка ({at[0]:.0f}, {at[1]:.0f}) не на дороге: до пола {dm:.0f} px")
+        behind = (at[0] - v[0] * CUE_STEP, at[1] - v[1] * CUE_STEP)
+        db = floor_dist(behind, poly)
+        if db > CUE_FLOOR_TOL:
+            out.append(f"к метке не подойти по полу: позади неё ({behind[0]:.0f}, {behind[1]:.0f}) до пола {db:.0f} px — метка смотрит не туда")
+    inner = not (d in edges_ and "cue_deg" not in ex)
+    if inner:
+        arr = (room.get("spawns", {}).get(f"from_{ex.get('to')}") or ex.get("stand"))
+        if arr:
+            vx, vy = at[0] - arr[0], at[1] - arr[1]
+            if (vx * vx + vy * vy) ** 0.5 >= CUE_PATH_MIN_PX:
+                pa = math.degrees(math.atan2(vy, vx))
+                diff = abs((ang - pa + 180.0) % 360.0 - 180.0)
+                if diff > CUE_PATH_DEG:
+                    out.append(f"метка смотрит на {ang:g}°, а путь от точки прихода {list(arr)} к ней идёт на {pa:.0f}° (расхождение {diff:.0f}° > {CUE_PATH_DEG:g}°)")
+    return out
+
+
+def _cue_selfcheck() -> None:
+    """Прежняя метка Z2 «Спуск к причалу» — вправо из середины прямоугольника — должна не пройти (F20)."""
+    room = {"walkable": [[118, 625], [880, 612], [1110, 612], [1240, 622], [1500, 642], [1700, 662], [1915, 738], [1915, 1070], [140, 1070], [140, 800], [118, 790]],
+            "spawns": {"from_R1": [1600, 800]}}
+    ex = {"to": "R1", "cue": "right", "rect": [1540, 640, 250, 110], "stand": [1600, 780]}
+    d, at, _src, edg = exit_cue(ex, ex["rect"])
+    if not cue_path_problems(room, ex, ex["rect"], d, at, edg):
+        err("validate_rooms 9б: самопроверка не сработала — прежняя стрелка Z2 «Спуск к причалу» (вправо) прошла бы")
+    ex_ok = dict(ex, cue_at=[1690, 668], cue_deg=-40)
+    d, at, _src, edg = exit_cue(ex_ok, ex_ok["rect"])
+    if cue_path_problems(room, ex_ok, ex_ok["rect"], d, at, edg):
+        err("validate_rooms 9б: самопроверка — исправленная стрелка Z2 «Спуск к причалу» (северо-восток) не прошла")
 
 
 SFX_SOUNDS = set(load(STORY / "sfx.json").get("sounds", {}).keys()) if (STORY / "sfx.json").exists() else set()
@@ -939,7 +1026,9 @@ for rid, room in rooms.items():
             if box[0] < obox[2] and obox[0] < box[2] and box[1] < obox[3] and obox[1] < box[3]:
                 err(f"{ctx}: метки выходов в {oto} и {to} налезают друг на друга")
         marks.append((to, box))
-        notes.append(f"{rid}→{to}: метка {d} ({src}) в ({at[0]:.0f}, {at[1]:.0f})")
+        for prob in cue_path_problems(room, ex, rect, d, at, edg):
+            err(f"{ctx}: выход в {to}: {prob}")
+        notes.append(f"{rid}→{to}: метка {d}{' ' + str(ex['cue_deg']) + '°' if 'cue_deg' in ex else ''} ({src}) в ({at[0]:.0f}, {at[1]:.0f})")
 
     # хотспот под выходом недостижим кликом, если его pick_priority не выше приоритета выхода (1)
     def _overlap(a, b) -> bool:
@@ -1404,6 +1493,8 @@ for rid, room in sorted(rooms.items()):
     for fl in sorted(_used):
         if not _AUTO_FLAG.match(fl) and fl not in _set_anywhere:
             err(f"{rid}: условие по флагу {fl} — его никто не ставит (ни сцена, ни задание, ни хотспот, ни вход в комнату)")
+
+_cue_selfcheck()
 
 quiet = "--quiet" in sys.argv
 if stubs and not quiet:

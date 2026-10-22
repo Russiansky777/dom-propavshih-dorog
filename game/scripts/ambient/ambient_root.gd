@@ -376,6 +376,8 @@ func _make_water(w: Dictionary, style: Dictionary, rain_amount: float, mode: int
 	m.set_shader_parameter("ring_cell_m", float(e.get("ring_cell_m", 0.45)))
 	m.set_shader_parameter("ring_m", float(e.get("ring_m", 0.07)))
 	m.set_shader_parameter("ring_period", float(e.get("ring_period_s", 1.1)))
+	m.set_shader_parameter("ring_gain", float(e.get("ring_gain", 1.0)))
+	m.set_shader_parameter("ring_w_px", float(e.get("ring_w_px", 1.4)))
 	m.set_shader_parameter("protect_sat", float(e.get("protect_sat", 0.32 if mode == 0 else 1.5)))
 	m.set_shader_parameter("depth", ground.depth_uniform())
 	m.set_shader_parameter("ground", ground.ground_uniform())

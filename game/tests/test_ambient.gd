@@ -346,6 +346,11 @@ func _test_params() -> void:
 		var rings := float(n.material.get_shader_parameter("rain"))
 		var expected := float(rain["intensity"]) * float(spec.get("puddle_style", {}).get("rings", 1.0))
 		_check(absf(rings - expected) < 0.001, "puddle %s drop rings %.3f, expected intensity × rings %.3f" % [w["id"], rings, expected])
+		# F21 (Director 23.10: «капли дождя в лужах усилить немного»): contrast and crest width from the data.
+		var ps: Dictionary = spec.get("puddle_style", {})
+		_check(is_equal_approx(float(n.material.get_shader_parameter("ring_gain")), float(ps.get("ring_gain", 1.0))), "puddle %s ring_gain from data" % w["id"])
+		_check(is_equal_approx(float(n.material.get_shader_parameter("ring_w_px")), float(ps.get("ring_w_px", 1.4))), "puddle %s ring_w_px from data" % w["id"])
+		_check(float(n.material.get_shader_parameter("ring_gain")) >= 1.5, "puddle %s: rings stronger than before F21 (gain %.2f)" % [w["id"], float(n.material.get_shader_parameter("ring_gain"))])
 	_free(room)
 	# A separate picture of what sways (a layer from ChatGPT) instead of an outline: drawn from that
 	# picture with its alpha, over its own rect, anchored like a tree.
