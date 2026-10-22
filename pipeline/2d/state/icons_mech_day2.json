@@ -1,0 +1,14 @@
+{
+  "mirror_mill": {
+    "task": "01a165c8-db47-7077-a469-3c2e7e26fb5f",
+    "prompt": "A small rectangular wall mirror in an old carved dark wooden frame, the frame corners slightly loose and parted, clear old glass with a faint reflection, a hanging string. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "bell_clapper": {
+    "task": "01a165c8-dc2a-76bd-bef0-bb4d60dd13c6",
+    "prompt": "A heavy hand-forged iron bell clapper: a thick rod with a pear-shaped ball at the lower end and an iron loop at the top, dark worn iron. Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  }
+}
