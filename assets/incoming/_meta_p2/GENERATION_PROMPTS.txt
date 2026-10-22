@@ -1,0 +1,117 @@
+Создано встроенным инструментом image_gen. Это журнал генерации и исправлений; итоговые файлы перечислены в README_RU.txt. Финальные размеры и координаты прозрачных слоёв выставлены техническим экспортом ImageMagick.
+
+
+PROMPT 1: closeup_bridge_photo.png
+Transparent: false
+References: Z3_bg.png, H2_bg.png
+
+Create one production game asset, closeup_bridge_photo.png, for the Russian North point-and-click game "Дом пропавших дорог", circa 1900–1920. Requested canvas EXACTLY 1672 pixels wide by 941 pixels high, landscape. No collage, no labels, no watermark.
+Reference image 1 (Z3) establishes the actual pond, low forested far bank, birches and aged stone pier materials. Reference image 2 (H2) establishes the game's softly painted, textured, warm natural material rendering. They are references, not images to reproduce.
+Subject: a single OLD FADED SEPIA PHOTOGRAPH mounted in a plain aged cream PAPER frame, lying nearly face-on, filling most of the canvas. Only a narrow subdued brown support surface visible around it. A historical snapshot of the wooden PEDESTRIAN BRIDGE BEFORE the flood, wooden deck spans supported by substantial fieldstone piers across this pond. Clear readable visual clue in the near foreground: an iron rectangular plate bolted to the nearest stone support, a large FORGED IRON RING on the plate, a thick natural-fiber ROPE HANDRAIL tied firmly to that ring, continuing along the bridge on wooden posts. The ring and attachment must be unmistakable and large enough to inspect. A modest wooden rowboat rests at the near shore. Bridge continuous and structurally plausible, leading toward the far bank. Quiet empty scene, no people, no writing, no modern materials, no metal suspension bridge.
+The artifact looks like a period silver photograph with mild silver fading, fine surface scratches and worn paper corners, subtly integrated into the painterly game art, not an ornate frame and not a heavily damaged illegible photograph. Keep perspective and rope connection coherent. Maintain wide composition and render as a single finished close-up asset.
+
+----------------------------------------
+
+PROMPT 2: closeup_ilya_drawing.png
+Transparent: false
+References: closeup_bridge_photo.png, H2_bg.png
+
+Create one game close-up asset closeup_ilya_drawing.png. EXACT output dimensions 1672 × 941 pixels, landscape.
+Reference image 1 is the bridge photograph: preserve the simple idea of this wooden bridge over a pond, with thick stone piers, a rope railing, and a little boat. Reference image 2 is the workshop: match the tactile softly painted paper/wood/material style and warm restrained lighting. Do not reproduce either reference.
+Subject: a single old notebook leaf, landscape orientation, filling almost the whole image on a narrow edge of dark warm wood. On it is an earnest GRAPHITE PENCIL DRAWING MADE BY A TEN-YEAR-OLD BOY around 1900–1920 in northern Russia. Childlike uneven strokes, hesitant perspective, clumsy but recognisable stone bridge supports, wooden deck, wavy pond, a boat by the bridge. Essential detail: the BOAT HAS A SMALL VERTICAL CHIMNEY with several hand-drawn curls of smoke coming out. The pipe belongs to the boat, not a house or the bridge. This is a child's imagined steam boat. Include a simply scribbled thick rope rail as part of bridge.
+The drawing should look made by a child, NOT a competent architectural sketch, not an adult illustrator imitating a polished children's book. Uneven proportions, a few corrections, visible pencil pressure. Only graphite, aged off-white notebook paper with very faint ruled lines, mildly creased and worn edges. No people, no written words, no letters, no numbers, no captions, no UI, no watermark, no pencils placed on top. View nearly perpendicular so the whole paper and its drawing are readily inspectable. Soft painterly integration with the existing game assets, believable pencil and paper texture.
+
+----------------------------------------
+
+PROMPT 3: closeup_ilya_drawing.png / simplify_child_drawing
+Transparent: false
+References: exec-378186d3-5893-4a64-a0cf-59d45dc79e4f.png
+
+Edit this game asset. Keep its exact canvas 1672×941, the aged ruled notebook paper, paper edges, warm wood surround and lighting UNCHANGED. Replace ONLY the graphite drawing on the paper.
+The existing drawing is much too skilled and is unacceptable as a child's drawing. The new drawing must visibly be the unschooled, naive drawing of a ten-year-old boy: SIMPLE FLAT SIDE VIEW, wobbly contour lines, inconsistent scale, very little shading, loose unfilled paper. A long wooden bridge represented by TWO roughly horizontal lines with little planks, resting on THREE or FOUR crude chunky stone pillars. Along it a few crooked upright posts and a drooping rope line. Under and beside it a comically simple boat shape, a little square cabin and one tall straight CHIMNEY, with three big curly spirals of SMOKE coming out. The chimney is clearly mounted on the boat. Three or four wavy pencil lines represent water; two crude tree silhouettes and a simple round sun optional. Use a few messy erasures and a second attempted line.
+CRITICAL: Remove sophisticated perspective, detailed scenery, birch bark studies, realistic water reflections, fine texture drawing, hatching and landscape illustration. This should have the direct unpolished simplicity of an actual child's school notebook sketch, taking only a few minutes to draw. Keep large areas of notebook paper visibly empty. No text or labels. This is ONE close-up asset, no panels.
+
+----------------------------------------
+
+PROMPT 4: closeup_plan.png
+Transparent: false
+References: H2_bg.png, closeup_bridge_photo.png
+
+Create one finished game close-up asset closeup_plan.png. Exact landscape canvas 1672 × 941 pixels.
+Reference 1 is the workshop and gives the warm, softly painterly material texture and aged wood. Reference 2 is an old bridge photograph and gives the pond, stone piers, iron attachment rings and rope. References are stylistic and subject guides only.
+A single aged yellowish sheet of paper, almost face-on, occupying about 90% of the canvas with a narrow dark wooden margin. This is a practical plan repeatedly amended over many years by different hands: a rough overhead outline of a pond and its two shores, a line of rectangular stone supports, and one unmistakable continuous rope line connecting a circled ring on the near shore support to another circled ring at the far shore support. A few arrows indicate the connection. Small handwritten-looking engineering detail sketches of the iron ring and plate, and some abandoned alternative route lines crossed out. Vary the drawing materials: faded brown ink underneath, darker black-brown corrections, a few muted blue ink amendments. Handmade, imperfect, practical, not a modern architectural blueprint.
+IMPORTANT LAYOUT: ALL drawings, arrows and cross-outs confined to the UPPER 55% of the paper. Leave the LOWER 40% of the paper completely empty and evenly lit for the game to overlay SIX OR SEVEN LINES OF READABLE TEXT later. No drawings or shadows across this blank writing area. No readable words, no letters, no numbers, no pseudo-text, no labels anywhere. Natural folds and modest yellowing, no excessive stains in blank area. Match the quiet tactile painterly world of the references. No hands, characters, extra stationery, UI or watermark.
+
+----------------------------------------
+
+PROMPT 5: H2_state_bundle.png
+Transparent: true
+References: H2_bg.png
+
+Create a PRECISE ADDITIVE TRANSPARENT GAME OVERLAY named H2_state_bundle.png for the attached H2 workshop background. Output EXACTLY 1672×941 pixels, identical canvas and camera coordinates to reference. Actual PNG alpha transparency.
+The reference is the fixed background underneath the overlay; DO NOT redraw or include any part of the room, bench, tools, wall, floor, or background. Preserve all empty canvas as fully transparent. This is NOT an isolated centered inventory icon, NOT a cropped object, NOT a full new scene.
+Render only a small rectangular household mirror wrapped completely in a softly worn oatmeal linen cloth, tied with thin natural twine. A small plain cream paper tag with NO WRITING hangs from the twine. Modest creases, warm painterly realism exactly matching reference textures and illumination. Hidden mirror not visible, package flat and unobtrusive, not a sack.
+CRITICAL SPATIAL PLACEMENT ON THE LEFT WORKBENCH:
+On this 1672×941 canvas, all object pixels must be within approximately x=330..485, y=352..430. The parcel is about 145 pixels wide and 65 pixels high. Bottom contact footprint lies along the existing workbench surface near (405,421). Horizontal folded parcel, width runs left-to-right, slight perspective matches the tabletop, with its far edge slightly higher. Warm amber light from upper left, a faint soft contact shadow only immediately under it. No object or extra pixels anywhere else on the canvas. No opaque background, no checkerboard drawn into image, no text, no hands, no icons, no frames. Retain the full canvas and exact object position.
+
+----------------------------------------
+
+PROMPT 6: H2_state_bundle.png / scale_and_registration
+Transparent: true
+References: exec-5495a451-26a3-4c21-aab7-8be70a34f1e0.png, H2_bg.png
+
+Precise correction of the transparent overlay in image 1. Image 2 is the fixed workshop background used only to check registration.
+KEEP FULL CANVAS EXACTLY 1672 × 941 and true transparent alpha. Change ONLY the parcel's size and position; preserve its linen cloth, twine and blank tag design.
+The current parcel occupies roughly x=345..665 and y=375..500. It is too large and hangs in front of the workbench. SHRINK IT TO ONE HALF of its present width and height, and place it with a tight visible bounding box approximately x=330..490 and y=355..419. Its bottom contact must be at y=419, its center x=410. It should rest ON TOP of the LEFT WORKBENCH, directly in front of the hanging chisels, not on the stool and not floating before the table. A compact wrapped hand-mirror, not a large bed pillow.
+All pixels outside x=320..500, y=345..430 must be fully transparent. Remove any stray almost-transparent noise outside this area. Render no room pixels, no new background, no checkerboard. Soft warm light and tiny contact shadow attached directly to the package base. No captions or registration markings. This output is ONLY the corrected full-canvas transparent overlay.
+
+----------------------------------------
+
+PROMPT 7: H2_state_bundle.png / placement_reference_only
+Transparent: false
+References: H2_bg.png, exec-007c9ed0-5ba2-442c-843e-5f19d511deac.png
+
+Edit IMAGE 1, the original workshop. Preserve every part of this background exactly: same canvas 1672×941, same composition, room, surfaces, tools, three-hinge door diagram, shadows, colours, and camera. Add only ONE small wrapped parcel resting physically ON THE TOP SURFACE OF THE LEFT WORKBENCH underneath the hanging chisels and just to the right of the hand plane. It is a compact flat household mirror wrapped in oatmeal linen, tied with twine with one blank paper tag, like image 2.
+The parcel MUST rest on the bench tabletop itself, not in front of the bench, not on the stool, not on the front vise, not on the floor. Keep it small relative to the bench and allow the front wooden edge of the bench to remain visible BELOW the parcel. The parcel should occupy only a modest part of the open working surface, roughly the width of the nearby small wooden tool box. Warm amber light from left, soft matching contact shadow. Match painterly game style, not product-photo lighting. No other changes. Output this one composited workshop view so its physical placement can be checked.
+
+----------------------------------------
+
+PROMPT 8: H2_state_bundle.png / extract_placed_object
+Transparent: true
+References: exec-7a0c91b3-2f0c-45a6-bf90-558f4919b0e8.png
+
+Background-extraction edit. Keep the exact input canvas 1672 × 941 pixels. Isolate ONLY the small linen-wrapped parcel with its twine and blank tag lying on the LEFT WORKBENCH. Retain its existing pixels, small scale, lighting, shape and exact position in this image, approximately x=334..424 and y=396..433. Keep its tiny contact shadow immediately at its base.
+REMOVE THE ENTIRE REST OF THE IMAGE to real transparent alpha: room, bench, wood, tools, drawings, floor, door, shelves, bell, and mirror frame. Outside this small parcel everything must be fully transparent. Do NOT move, enlarge, recenter, restyle or redraw the parcel. Do NOT crop the canvas to the object. Do NOT include any brown rectangular patch of the tabletop. The final image must be an almost entirely transparent 1672×941 canvas with this one SMALL parcel still at its original left-of-center tabletop coordinates. No checkerboard pixels, no text.
+
+----------------------------------------
+
+PROMPT 9: H2_state_nina_mirror.png / placement_reference
+Transparent: false
+References: exec-7a0c91b3-2f0c-45a6-bf90-558f4919b0e8.png
+
+Edit the attached workshop scene, keeping exact canvas 1672×941 and preserving the existing room, tools, lighting and camera. Change ONLY the SMALL CLOTH PARCEL on the LEFT WORKBENCH beneath the chisels. Unwrap it to reveal Nina's modest household mirror.
+The mirror occupies the SAME location on top of the workbench. A small old rectangular dark-wood mirror frame, resting almost flat on the unwrapped oatmeal linen cloth, its reflective face angled toward the viewer following the tabletop perspective. The wood frame has clearly loosened at ONE upper corner: a small visible joint gap with one side shifted a little. The glass itself is intact, quiet cloudy SILVER-GRAY with no person and no readable scene. This is the unrepaired state, so no clamp and no added fixing. Same practical small object scale as the parcel, about the width of the nearby small wooden tool box; don't turn it into the large empty floor-standing frame already in the room.
+Keep the parcel's contact point on the tabletop. No bag, no duplicate mirror, no new text. Warm light from left, naturally painted in the exact material style of this room. All other pixels and objects remain visually unchanged. Output the full workshop view for placement verification.
+
+----------------------------------------
+
+PROMPT 10: H2_state_nina_mirror.png / extract_placed_object
+Transparent: true
+References: exec-957ded05-9223-4fdb-9b7b-aff0869a8edd.png
+
+Extract a transparent game overlay from the attached workshop image. Exact full canvas 1672×941 pixels.
+Keep ONLY the little household mirror lying on its unfolded oatmeal cloth ON THE LEFT WORKBENCH, at its current scale, viewpoint and original screen position. It is approximately x=320..435, y=389..434. Preserve the little wooden frame and make the separated joint at the upper-right corner visibly a narrow gap, with the side rail slightly displaced. Glass must remain intact cloudy silver-gray. Keep the cloth and tiny immediate contact shadow.
+Every other part of the image must be transparent: remove the workbench, tools, all furniture, walls, floor and the LARGE EMPTY FLOOR-STANDING FRAME. Keep only the SMALL mirror and cloth. Do not crop, do not zoom, do not center or relocate the mirror. It remains a small item around one quarter of the canvas width from the left and just above the middle height, to overlay the unchanged original background.
+No opaque tabletop patch or fringe, no room pixels, no drawn checkerboard, no people, no text. Genuine PNG alpha transparency. Output one full-canvas additive layer.
+
+----------------------------------------
+
+PROMPT 11: H2_state_skoba.png
+Transparent: true
+References: H2_bg.png, closeup_plan.png
+
+Create one transparent game OVERLAY, H2_state_skoba.png, full canvas exactly 1672×941 pixels. The first reference is the workshop background; the second is a hand-drawn plan showing the iron plate and ring. The room itself must NOT be included in the result. Output genuine alpha transparency.
+Subject: one small heavy hand-forged dark iron repair CRAMP / СКОБА, a simple flat squared U shape with a straight bridge and two short bent gripping ends, old iron with hammer marks and restrained warm edge highlights. It is lying flat on the workshop bench in the same tabletop perspective as reference 1. Beside and slightly behind it lies a small unlabelled cream scrap of paper bearing a VERY SIMPLE brown-ink drawing of the rectangular iron plate, central ring and a crack across the plate. The paper only clarifies that this is the plate-repair bracket. No writing, letters or numbers.
+Position these two small connected objects on the RIGHT END OF THE LEFT WORKBENCH, to the right of the mirror/parcel working area, under the existing wall sketches. Approximate full-canvas area x=500..610, y=370..425. Actual object group is small, not a closeup, not a centered inventory icon. Bracket in foreground, paper behind, all supported on the worktop. Preserve a little transparent contact shadow underneath.
+Same soft painterly materials, amber left light and muted iron colours as the reference. Everything outside this small group is transparent. No tools, no table patch, no frame, no hand, no figure, no background, no visible checkerboard. Full 1672×941 canvas, not a crop.
+
