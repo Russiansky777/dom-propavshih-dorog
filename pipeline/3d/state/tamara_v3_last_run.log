@@ -1,0 +1,93 @@
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[tamara_v3] баланс: {'balance': 543, 'monthly_credits': 43, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
+[tamara_v3] ракурсов на листе: 3 → ['view_0.png', 'view_1.png', 'view_2.png']
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[tamara_v3] создана задача модели 01a16569-c973-7249-9c79-89adb8b1474b c {'ai_model': 'latest', 'pose_mode': 'a-pose', 'should_texture': True, 'texture_resolution': '4k', 'target_formats': ['glb'], 'auto_size': True, 'origin_at': 'bottom', 'geometry_resolution': '2k', 'enable_pbr': True}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16569-c973-7249-9c79-89adb8b1474b: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16569-c973-7249-9c79-89adb8b1474b: IN_PROGRESS 11
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16569-c973-7249-9c79-89adb8b1474b: IN_PROGRESS 41
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16569-c973-7249-9c79-89adb8b1474b: IN_PROGRESS 58
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16569-c973-7249-9c79-89adb8b1474b: IN_PROGRESS 80
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16569-c973-7249-9c79-89adb8b1474b: IN_PROGRESS 99
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16569-c973-7249-9c79-89adb8b1474b: SUCCEEDED 100
+[tamara_v3] model.glb скачан, кредитов: 35
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[tamara_v3] создана задача Remesh 01a1656c-2921-77eb-b42b-e21cafb3f11f
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a1656c-2921-77eb-b42b-e21cafb3f11f: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a1656c-2921-77eb-b42b-e21cafb3f11f: IN_PROGRESS 24
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a1656c-2921-77eb-b42b-e21cafb3f11f: IN_PROGRESS 46
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a1656c-2921-77eb-b42b-e21cafb3f11f: IN_PROGRESS 64
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a1656c-2921-77eb-b42b-e21cafb3f11f: IN_PROGRESS 82
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a1656c-2921-77eb-b42b-e21cafb3f11f: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a1656c-2921-77eb-b42b-e21cafb3f11f: SUCCEEDED 100
+[tamara_v3] Remesh готов, кредитов: 5
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[tamara_v3] создана задача рига 01a1656f-4c56-7411-81d0-b9f6be831660
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1656f-4c56-7411-81d0-b9f6be831660: IN_PROGRESS 0
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1656f-4c56-7411-81d0-b9f6be831660: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1656f-4c56-7411-81d0-b9f6be831660: IN_PROGRESS 57
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1656f-4c56-7411-81d0-b9f6be831660: IN_PROGRESS 84
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1656f-4c56-7411-81d0-b9f6be831660: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1656f-4c56-7411-81d0-b9f6be831660: SUCCEEDED 100
+[tamara_v3] rigged.glb скачан
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[tamara_v3] создана задача анимаций 01a16570-8ae1-727a-8ffe-c6647c6179dd: {'idle': {'action_id': 0, 'name': 'Idle', 'key': 'Idle'}, 'talk': {'action_id': 47, 'name': 'Listening Gesture', 'key': 'Listening_Gesture'}}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16570-8ae1-727a-8ffe-c6647c6179dd: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16570-8ae1-727a-8ffe-c6647c6179dd: IN_PROGRESS 81
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16570-8ae1-727a-8ffe-c6647c6179dd: IN_PROGRESS 84
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16570-8ae1-727a-8ffe-c6647c6179dd: SUCCEEDED 100
+[tamara_v3] готово: /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/out/tamara_v3
