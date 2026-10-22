@@ -1,0 +1,329 @@
+{
+  "project": "Дом пропавших дорог",
+  "parties": [
+    4,
+    5,
+    6
+  ],
+  "canvas": [
+    1672,
+    941
+  ],
+  "asset_count": 22,
+  "epilogue_characters_included": false,
+  "assets": [
+    {
+      "file": "Partiya_4/O4_bg.png",
+      "description_ru": "Зимняя улица Ольховки: школа, путь к реке, крыльцо Ильи и проход к Нине.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 3499353,
+      "sha256": "6f9388475ca2499c41a73b0587a98602d9eeb4b98580e91c4713c04b69424761",
+      "selected_generation": "O4_bg.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_4/O4_night.png",
+      "description_ru": "Вечернее состояние улицы со светящимися окнами.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "size_bytes": 3913224,
+      "sha256": "5c0462c89168ec36e252a189a8f1e92834609d990cffc292fbb4e5a1e2fa4f8c",
+      "selected_generation": "O4_night_full.png",
+      "kind": "registered_rgba_layer",
+      "origin_xy": [
+        0,
+        0
+      ],
+      "blend": "Normal / source-over",
+      "opacity": 1.0,
+      "alpha_mode": "straight",
+      "base_file": "O4_bg.png",
+      "base_sha256": "6f9388475ca2499c41a73b0587a98602d9eeb4b98580e91c4713c04b69424761",
+      "nonzero_alpha_bbox": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "transparent_pixels": 18,
+      "partial_alpha_pixels": 1557368,
+      "usage": "Alternative complete scene state over exact base; do not stack with other state layers."
+    },
+    {
+      "file": "Partiya_4/closeup_notebook_rule.png",
+      "description_ru": "Тетрадь Евдокии: место для текста правила.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2613966,
+      "sha256": "cf815e52d2a90f736b11226c469b1a19594eb74718185faf289d03e5f3402b05",
+      "selected_generation": "closeup_notebook_rule.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_4/closeup_notebook_paths.png",
+      "description_ru": "Тетрадь: список пропавших троп и набросок карты.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2729043,
+      "sha256": "6a2ed4366cfe49bf7836d9ebfd0111a5e442838392f4706aa0e2b192b0506699",
+      "selected_generation": "closeup_notebook_paths.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_4/closeup_notebook_stopper.png",
+      "description_ru": "Тетрадь: кольцо, верёвка и поперечный стопор.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2776559,
+      "sha256": "d6e99a769bb47c0e2e56194410eaaaf9aa915f97743bf4f4f7533086d8a92475",
+      "selected_generation": "closeup_notebook_stopper.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_4/closeup_notebook_bridge.png",
+      "description_ru": "Тетрадь: схема поднятого настила и прежний уровень пунктиром.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2632801,
+      "sha256": "abb4c64674a658e8be1c5663f72ad65d38f705691ccc74e0e200b8fb99afdb55",
+      "selected_generation": "closeup_notebook_bridge.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_4/closeup_nina_letters.png",
+      "description_ru": "Письма разных лет, перевязанные бечёвкой.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2524690,
+      "sha256": "3e60d47304547ca4c00f23d38179e2c2ca349bd0792c5a200c54d530c63bcef8",
+      "selected_generation": "closeup_nina_letters.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_4/closeup_height_notches.png",
+      "description_ru": "Зарубки роста на дверном косяке.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2008654,
+      "sha256": "7bd7d79bbf1cbadcc9127f6af7bcd89e14ad50d985a7139dcfd0af9281936c65",
+      "selected_generation": "closeup_height_notches.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_5/Z3_state_beam.png",
+      "description_ru": "Первый прогон, ручной ворот и запас брёвен.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "size_bytes": 5201212,
+      "sha256": "d5a17aa50f2a75783c18f7b469f5f7ba5a29ccacafe38a0e4e49707ab7ad5756",
+      "selected_generation": "Z3_beam_aligned_full.png",
+      "kind": "registered_rgba_layer",
+      "origin_xy": [
+        0,
+        0
+      ],
+      "blend": "Normal / source-over",
+      "opacity": 1.0,
+      "alpha_mode": "straight",
+      "base_file": "Z3_bg.png",
+      "base_sha256": "3e9183ec922a82947c8c15445ba037d8ff4f6141b0f32a0097c071e47c6e035c",
+      "nonzero_alpha_bbox": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "transparent_pixels": 1877,
+      "partial_alpha_pixels": 1558838,
+      "usage": "Alternative complete scene state over exact base; do not stack with other state layers."
+    },
+    {
+      "file": "Partiya_5/Z3_state_bridge.png",
+      "description_ru": "Готовый поднятый мост зимой.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "size_bytes": 4816218,
+      "sha256": "657a025c1b32d4258fcb0f3a768fb3abac7e2a7916eda7d157cd3584d006512d",
+      "selected_generation": "Z3_bridge_full.png",
+      "kind": "registered_rgba_layer",
+      "origin_xy": [
+        0,
+        0
+      ],
+      "blend": "Normal / source-over",
+      "opacity": 1.0,
+      "alpha_mode": "straight",
+      "base_file": "Z3_bg.png",
+      "base_sha256": "3e9183ec922a82947c8c15445ba037d8ff4f6141b0f32a0097c071e47c6e035c",
+      "nonzero_alpha_bbox": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "transparent_pixels": 345,
+      "partial_alpha_pixels": 1566376,
+      "usage": "Alternative complete scene state over exact base; do not stack with other state layers."
+    },
+    {
+      "file": "Partiya_5/closeup_beam_end.png",
+      "description_ru": "Торец бревна с местом для надписи.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2788991,
+      "sha256": "7207c14237c65866f2676eed662ec16e628ccb69fbd24d15743259f2cf5315c4",
+      "selected_generation": "closeup_beam_end.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_5/ep_tamara_bridge.png",
+      "description_ru": "Фон эпилога: новый мост; Тамару с сумкой добавить отдельно.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 3270676,
+      "sha256": "d448b84010474ccc7e4703c77180a3f5d1aca99e261e6ba7598ffd32cf423685",
+      "selected_generation": "ep_tamara_bridge.png",
+      "kind": "epilogue_environment_plate"
+    },
+    {
+      "file": "Partiya_5/ep_boat.png",
+      "description_ru": "Фон эпилога: смоление лодки; Пелагею и Митю добавить отдельно.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 3158786,
+      "sha256": "46dc0a3bcb7c79e0b7c957341d8de2eaa220bd7f5e2d4f1344555dad00dba4ee",
+      "selected_generation": "ep_boat.png",
+      "kind": "epilogue_environment_plate"
+    },
+    {
+      "file": "Partiya_5/ep_pavel.png",
+      "description_ru": "Фон эпилога: работающая мельница и полный пруд; Павла добавить отдельно.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 3278510,
+      "sha256": "e5a79c6ecad0d921463dd8b7b4cf3899d66770bf4968ec8fc83bca11de78b229",
+      "selected_generation": "ep_pavel.png",
+      "kind": "epilogue_environment_plate"
+    },
+    {
+      "file": "Partiya_5/ep_dinner.png",
+      "description_ru": "Фон эпилога: вечерний ужин; семью и Тихона добавить отдельно.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2442498,
+      "sha256": "54d7b592222fcd716b058302f72ae0901f297fc9fd5f3f59e9ac91737ff65321",
+      "selected_generation": "ep_dinner.png",
+      "kind": "epilogue_environment_plate"
+    },
+    {
+      "file": "Partiya_5/ep_lesson.png",
+      "description_ru": "Фон эпилога: утренний класс; Нину, детей и Агату добавить отдельно.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2392617,
+      "sha256": "479d440c88baea91bd5592ba15643a5291a384f58a9263e031980e6b49ce88f9",
+      "selected_generation": "ep_lesson.png",
+      "kind": "epilogue_environment_plate"
+    },
+    {
+      "file": "Partiya_6/closeup_mitya_board.png",
+      "description_ru": "Ровно двадцать зарубок: два ряда по десять.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2609394,
+      "sha256": "7da4f1ac7ef3da6d85882d247f4a8e7b5166f49f4354d63cad80bdf5088e6df1",
+      "selected_generation": "mitya_board_20_final.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_6/S1_bg.png",
+      "description_ru": "Заросшая, но жилая нижняя улица Ольховки.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 3341763,
+      "sha256": "a69ee542e771f3d66f62ab04c2424d83bfe2fa205e841d9f412363b2dd4d0667",
+      "selected_generation": "S1_bg.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_6/closeup_street_sign.png",
+      "description_ru": "Читаемая вывеска «Ольховая улица».",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 3024791,
+      "sha256": "52c69d5deb93edab368ba6d36fa4f9240bef8b8629bd76c0d5a32068e72df01b",
+      "selected_generation": "closeup_street_sign.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_6/closeup_envelope.png",
+      "description_ru": "Старый конверт; точный адрес накладывает игра.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2425088,
+      "sha256": "6ec3f67614c3d8d103359257e84ff9c21066f3a148bffe1997c4fc29266c1962",
+      "selected_generation": "closeup_envelope.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_6/closeup_sleeve.png",
+      "description_ru": "Разошедшийся шов рукава старого пальто.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "size_bytes": 2584988,
+      "sha256": "596a3652b0e7894504076c4dfe6289c238e83578cef6f9a812f9f20587667c46",
+      "selected_generation": "closeup_sleeve.png",
+      "kind": "opaque_background_or_closeup"
+    },
+    {
+      "file": "Partiya_6/H1_state_tea.png",
+      "description_ru": "Стол к чаю с самоваром и мебелью, прозрачный предметный слой.",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "size_bytes": 654991,
+      "sha256": "21fd014498d7316d4d8d50ba3bb54fee4187526c8a637a4104dbade063731278",
+      "selected_generation": "H1_tea_alpha_raw.png",
+      "kind": "registered_rgba_layer",
+      "origin_xy": [
+        0,
+        0
+      ],
+      "blend": "Normal / source-over",
+      "opacity": 1.0,
+      "alpha_mode": "straight",
+      "base_file": "H1_bg.png",
+      "base_sha256": "71f61f5b0e50cea1bc960d5b485c9adaa4e0fdb08605e11bf83783f92f6f3f3d",
+      "nonzero_alpha_bbox": [
+        685,
+        385,
+        1645,
+        941
+      ],
+      "transparent_pixels": 1265472,
+      "partial_alpha_pixels": 165303
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "png_count": 22,
+  "all_png_crc_valid": true,
+  "all_png_full_decode_passed": true,
+  "all_dimensions": [
+    1672,
+    941
+  ],
+  "rgba_layer_count": 4,
+  "mitya_board_visually_counted": 20,
+  "state_alpha_validation": [
+    {
+      "file": "Partiya_4/O4_night.png",
+      "base": "parties456_generated/Partiya_4/O4_bg.png",
+      "target": "O4_night_full.png",
+      "max_reconstruction_error_8bit": 0,
+      "transparent_pixels": 18,
+      "partial_alpha_pixels": 1557368
+    },
+    {
+      "file": "Partiya_5/Z3_state_beam.png",
+      "base": "parties456_source/5_most_epilog/Z3_bg.png",
+      "target": "Z3_beam_aligned_full.png",
+      "max_reconstruction_error_8bit": 0,
+      "transparent_pixels": 1877,
+      "partial_alpha_pixels": 1558838
+    },
+    {
+      "file": "Partiya_5/Z3_state_bridge.png",
+      "base": "parties456_source/5_most_epilog/Z3_bg.png",
+      "target": "Z3_bridge_full.png",
+      "max_reconstruction_error_8bit": 0,
+      "transparent_pixels": 345,
+      "partial_alpha_pixels": 1566376
+    }
+  ],
+  "preview_composites_visually_reviewed": 4,
+  "engine_import_tested": false
+}

@@ -1,0 +1,117 @@
+GENERATION PROMPTS — SELECTED OUTPUTS
+References are the supplied project images or earlier generated frames.
+Technical export: 3 complete scene states converted to registered RGBA; tea furniture extracted and registered to H1.
+
+=== Partiya_4/O4_bg.png ===
+Selected generation: O4_bg.png
+References: Z2_bg.png, O1_bg.png, O3_bg.png
+New finished game background for «Дом пропавших дорог», EXACT1672×941 landscape. Russian North village circa1900–1920, match attached softlypainted wood/plaster environment style, NOT photoreal or 3D. WINTER DAY street of Olkhovka. Eye-level wide establishingview: several modest lived-in loghouses with carvedwindow surrounds, Ilya's porch prominent onrightmidground, small snowcovered fencedgarden and lean-tooutbuildings besideit. Clear trampled path across foreground dividing into THREE visiblydifferent routes: uphill left toward the small wooden school with broad windows, downhill center toward river glimpsed beyondhouses, and rightlane besidegarden toward Nina's house. Composition readable for point-and-click navigation, keep walkable lowerthird open. Barebirches, roofs with snow, cold soft daylight and restrained warmwood, peaceful village after twentywinters. No people, no animals, no arrows, no signs/text, no vehicles, no modernobjects. Camera horizon~45%height. A new scene consistentwith references, not a copy of the aunt's exacthouse.
+
+=== Partiya_4/O4_night.png ===
+Selected generation: O4_night_full.png
+References: O4_bg.png
+Edit ONLY the timeof day of this exact1672×941 winter villagebackground. Preserve everyhouse, porch, path, fence, tree and snowdrift in EXACTpositions, samecamera. Now bluewinter EVENING: softdarkblue skyandshadows, warm amberglowingwindows in inhabitedhouses andschool, verysubtle warmspills onto snowbeneathwindows. Keep all THREE navigationpaths readable andsamewidth. No new lamps, people, animals orobjects, no starsorhuge moon. No change toarchitecture orscale. Fullscene for later registered lightingoverlay.
+
+=== Partiya_4/closeup_notebook_rule.png ===
+Selected generation: closeup_notebook_rule.png
+References: O3_bg.png
+Painterly game closeup EXACT1672×941, samewarmtactile historicalRussian style asreference. An OLD CLOTHBOUND NOTEBOOK of Evdokia lies OPEN almost straight overhead on Nina's pinewritingtable, coverworn darkolivebrown, cream-yellow agedpaper with faint ruledlines, stitchedcentralgutter. Notebook fillscentral85%canvas, bothpages entireandveryreadable. This is PAGE OF THE RULE: reserve most of RIGHT PAGE clean unprintedpaper for game's overlaid text; on LEFT page only faint largelyillegible oldbrown cursive lines concentratedupperhalf and a tiny simple inkdivider, no legiblewords and no inventedrule or date. Gentlewear atcorners, subtleinkblotnearoutermargin, warmleftcandlelight and coolrightwindowlight. Quietpersonalarchive, not magicalglowingbook. No hands, no people, no seals/symbols, no decorativeborders, no modernpen. A slimoldpencil can lie justoutsidebook. Keeppaperareas mostlylight anduncluttered for futuretext.
+
+=== Partiya_4/closeup_notebook_paths.png ===
+Selected generation: closeup_notebook_paths.png
+References: closeup_notebook_rule.png, O4_bg.png
+Edit the NOTEBOOK CONTENT ONLY in reference1, canvas1672×941. Preserve sameoldnotebook, paper, binding, tabletop, camera andlight. This spread records vanished villagepaths. LEFT PAGE: simple list of sixshort mostlyillegible fadedbrown cursivelines with plain bulletmarks; leave lowerhalflargelyblank for gameoverlaidtext. RIGHT PAGE: modest oldhanddrawn ink sketch of a small riversidevillage: a few recognizable loghouse rectangles, one schoolrectangle, gardenfences, windingriver alongbottom and three footpaths from centralfork, inspiredby villageinreference2. Show some pathsections as fadedbroken ink strokes to suggestmissingroutes. Smallpersonalnotebooksketch, not a detailed survey or printed map. No readablelabels, inventednames, numbers or compasslabels. Broadblankmargin arounddrawing. No magicalsymbols, no moderncartography, no hands.
+
+=== Partiya_4/closeup_notebook_stopper.png ===
+Selected generation: closeup_notebook_stopper.png
+References: closeup_notebook_rule.png, R3_rope_stop_full.png
+Edit NOTEBOOK PAGE CONTENT ONLY in reference1, exact1672×941 andsamebinding/table/light. On RIGHT PAGE draw a clear SIMPLE HAND-INKED explanatorysketch of the woodenTOGGLE STOPPER securing ferryrope to an OLD IRON RING in stonepier, matching reference2. Two small side-by-side sketches: left shows ropebight passedthrough ironring and shortwoodpeg aligned to pass through bight; rightshows samepeg turned CROSSWISE and catching against outside ofironring, ropepulledtaut. Use only two understatedinkmotionarrows. Ring, ropebight andcrosswisepeg individuallyreadable, oldcraftnotebookdrawing, no dimensions or labels. LEFTPAGE retains fewunreadable fadedcursivelinesupperhalf and blanklowerhalf forgametext. No generatedreadableinstructions, dates,numbers, magicalsymbols orpeople. Entire drawingmust stay onpaper.
+
+=== Partiya_4/closeup_notebook_bridge.png ===
+Selected generation: closeup_notebook_bridge.png
+References: closeup_notebook_rule.png, Z3_bridge_full.png
+Editonly NOTEBOOK CONTENT in reference1, exact1672×941, keepnotebook/paper/table/light identical. On RIGHTPAGE draw a simplefadedbrown hand-inked carpenter's SIDE ELEVATION of the finishedruralbridge fromreference2: severalexistinglowstonepiers, NEW timbercapframes with diagonalbraces above them, continuouswoodendeck andsimplehandrails. Crucial clue: show OLD LOW DECK HEIGHT as a lightdashedhorizontal line nearpier tops; the solid NEW DECK clearlyhigher aboveit, withtwo smallupwardarrowsshowingraising. Waterlineunderneath. Believableoldnotebooksketch, not a polishedmodernblueprint, NO numericdimensions orreadablelabels. LEFTPAGE onlyfaint illegiblecursiveupperquarter, mostblankpaperavailablefor game'stext. All drawinginsidepage, no people, symbols or inventedstorytext.
+
+=== Partiya_4/closeup_nina_letters.png ===
+Selected generation: closeup_nina_letters.png
+References: O3_bg.png
+Finished narrative game closeup EXACT1672×941, texturedsoftlypainted RussianNorth1900 style like reference. On Nina's warmworn writingtable lies ONE substantial stack of old folded LETTERS AND ENVELOPES tiedcrosswise with plainhemp twine in a simpleknot. Twentywintersof waiting shown through varyingpaperaging: creamrecentenvelopes mixedwith deepyellow olderpapers, softenedcorners, occasionalwornfold, caredfor not trash. About20visible thinlayers but not a countingpuzzle. Topold envelopeblank except veryfaint illegible cursiveaddresses; no names, no inventeddates, no legibletext, no modernbarcodes/stamps. Simple knot centered, slight threequarter overheadangle, stacklarge andclear aroundcenter. Softwarmcandlelight fromleft, coolsnowywindowfill fromright; mutedbackgroundwood only. No hands, people or otherfocusobjects. Tenderrestrained mood.
+
+=== Partiya_4/closeup_height_notches.png ===
+Selected generation: closeup_height_notches.png
+References: O3_bg.png
+Finished narrativegame closeup EXACT1672×941. Inside the SAME wooden winterroom style asreference: a wellworn vertical pine DOOR JAMB prominentcenter-left, seen nearlyface-on with soft roomblur atedges. It bears a visible series of CHILDHOOD HEIGHT MARKS climbing upward alongoneedge: smallhorizontal knife nicks and fadedpencil strokes at differentheights, some overlapped olderones; informal familyrecord overmanyyears, not metricruler. Mostmarks clusteredmidjamb with naturalincreasinggaps. Leave smallblankareas nexttomarks for gametext; no readable numbers,names or dates, no printedmeasurementticks. Intimatewarmochrewood, subduedcoolwinterlight fromwindowinbackground, wornhandpolish onwood. No child, no person, no silhouette, no fullbodycutouts, no UI. Croppedarchitecturaldetail, not a freestandingplank.
+
+=== Partiya_5/Z3_state_beam.png ===
+Selected generation: Z3_beam_aligned_full.png
+References: Z3_beam_full.png, Z3_bridge_full.png
+Correct constructiongeometry ONLY in reference1, canvas1672×941, sameautumnsceneandalllandmarks. Reference2 shows where FINISHED BRIDGE WILL BE, so firstgirder must follow its nearspan. REMOVE the existing misplaced beam that rises rightward fromwinch nearx960. Instead place ONE stoutlogdiagonally from nearRIGHT bank BESIDE the plaque (shoreend around1540,665) back-left to the closestexistingstonepier around1240,490. Its axis now slopes DOWN TO RIGHT, matchingnearspanofreference2. Showlogresting onfirmshorecribatnearend andonstonepieratfarend; no completewalkway/rails. Movehandwinch onto drynearshorearound(1260,735), with visiblehemp rope connectedto girder'snearend. KEEP sparelogstackleftofworkarea andsameplaque visible. Nothingelse changes: no snow,noshiftedshoreline,nopeople. Fullscene.
+
+=== Partiya_5/Z3_state_bridge.png ===
+Selected generation: Z3_bridge_full.png
+References: Z3_bg.png, R3_bg.png
+Edit exact reference1 pondscene into completed NEW WOODEN BRIDGE in WINTER, EXACT1672×941. Preserve camera, leftbirches, path, nearoldstoneplaque and farshore geography. Build a believable modest rural timberfootbridge on the line of existing oldstonepiers: from nearRIGHT shoreline besideplaque around(1460,690), diagonally back-left overwater across piers near(1230,490),(1125,455), continuingto farbankaround(930,340). The walkway must visibly CONNECT bothbanks, not stopmidwater. New sturdytimber capframes/shorttrestles raise the deck ABOVE the oldpier tops and former lowspans; visibleopenwater clearance below. Simplecontinuouswoodenhandrails bothsides, broad enough foroneperson towalk, practicaloldruralcarpentry notmodernhighway. Nearentryshortcomfortable rampjoins path. Winter snow onbanks, bridgehandrails, oldstumps, roofs/trees; centerwalkwaytrodden clear. Coldsoftdaylight, warmwood, samepaintedtextures. Keep originalstoneplaque visiblebesideentry. Nopeople, animals, scaffolding, vehicles orwriting. Fullfinishedscene for registeredstate layer.
+
+=== Partiya_5/closeup_beam_end.png ===
+Selected generation: closeup_beam_end.png
+References: Z3_bridge_full.png
+Newgame closeup EXACT1672×941, samepainterlyhandcraftedRussian1900 style asbridge reference. Closeview of the END of a stoutpinebridgegirder: largecleanfresh-cut endgrain atcenter-left, annualrings andsubtlewoodchecks, a shortlength ofbeamrecedingright, oldironstrapfastening nearfarend ifneeded. Winterbridgecontext softlyblurred behind, smallrimofsnowalongtopbark. IMPORTANT leave broadcentral endgrain area UNCARVED andclean forgame tooverlay a commemorativeinscription. No letters, symbols, date, axe/chisel, hands orpeople. Makeflatwoodsurface legiblewithlightmidtone, focusonringsandfreshwood, not anextremedarkcloseup. Entirecutfacevisible.
+
+=== Partiya_5/ep_tamara_bridge.png ===
+Selected generation: ep_tamara_bridge.png
+References: Z3_bridge_full.png
+Create a new finished epilogue BACKGROUND PLATE, EXACT1672×941, same painterly northern Russian village circa1900 as reference. Three weeks later, winter daylight. A closer viewpoint approaching and looking ALONG the finished raised wooden bridge in reference, with the same stout pine decking, simple timber handrails, old stone piers and timber diagonal braces underneath. Bridge visibly continuous across river to opposite inhabited village bank. Near bridge entrance in foreground on right, walkway recedes toward center-left village, not a floating broken span. Leave broad clear walking space on near deck for Tamara to be added later. Snow on rails and edge of deck, a lightly trodden snow-free walking strip, soft pale sun on weathered wood, calm reunited-world mood. No people, animals, footprints shaped like bodies, silhouettes, text or modern objects. Important: this is the environment only, human artwork added separately.
+
+=== Partiya_5/ep_boat.png ===
+Selected generation: ep_boat.png
+References: R1_bg.png, R3_bg.png
+Epilogue BACKGROUND PLATE withoutcharacters, EXACT1672×941, samepainterlyRussianNorth1900 ferrysetting asreferences. Threeweeks laterwinterday. The familiar modestwoodenrowboat fromreference1 is hauledonto snowyshore byferryshed, inverted onlowwoodentreastles for re-tarring. Broadweatheredplankhull visible with somefreshdarktarpatches alongseams, smallironpot oftar, two roughbrushes andrags onlowworkstool. Leave clearstandingworkingpositions on BOTH sidesofboat forPelageya andMitya tobeaddedlater. Backgroundstillpond, stonepierandquiet village, wintercloudlight withgentlewarmtouch. Compositionfinishedandcalm, practicalrepair ratherthan wreck. NO people, hands, silhouettes oranimals. No modernboatparts, no paintcanswithlogos, no readabletext. Boatroughlycenter, entirehullvisible, enoughforegroundspace.
+
+=== Partiya_5/ep_pavel.png ===
+Selected generation: ep_pavel.png
+References: M4_bg.png
+Epilogue BACKGROUND PLATE, EXACT1672×941, nocharacters. RussianNorthcirca1900 painterlystyle matchingreference. Threeweeks later WINTER, millpond is FULL atnormalworkingwaterlevel and mill RUNNING. Show the samewoodensluicegate, crankanddeck beside millbuilding, with slightlywidercamera so partof the turningwaterwheel and flowthroughmillrace are visibleleft. Snowonrails, roofsandbanks, liquidmovingwaterunderworkingwheel, gentlewatersplash notflood. Add a tallold wooden WATER-LEVEL STAFF fixedverticallybesidegatewater atmiddle-right, simpledarkgraduations NO legiblenumbers. Leave clear standingplace onplatformnexttostaff forPavel tobeaddedlater. Mechanicaltimbergears, wroughtiron, samewarmagedwood. Calm productivewinterday, softdaylight, normalpondnotdrained, no modernmotor. NO people, hands, animals, silhouettes, writing orUI.
+
+=== Partiya_5/ep_dinner.png ===
+Selected generation: ep_dinner.png
+References: H1_bg.png
+Epilogue BACKGROUND PLATE without characters, EXACT1672×941, samepainted RussianNorth1900 room asreference. Threeweeks later,winter EVENING, warm candleandsamovarlight, darkbluewinterviewthroughsamewindow. Preserverecognisable layout: largewhiteRussianstove LEFT, gallerydoor CENTERback, window RIGHT. Add a modest sturdywoodendiningtable in lower-middle/right area, set for FOUR people withsimpleceramic bowls, wooden spoons, darkbread, potatoes andcommonservingdish, warmbrasssamovarandone candle. Four emptychairs/benchplaces clearlyusable for later Nina,Ilya,wife,Agata. Keep unobstructed walkinglane from center gallerydoor towardtable forlaterUlyana entering. Leave clear restingplace on stoveledge forlaterTikhon. NO humans, animals, silhouettes,hands or faces anywhere: characterart willbe compositedseparately. Cozy reunitedfamily mood conveyed bylight andtable, not genericlavishfeast. Keep modestperiodobjects, no text, no modernlighting.
+
+=== Partiya_5/ep_lesson.png ===
+Selected generation: ep_lesson.png
+References: O1_bg.png
+Epilogue BACKGROUND PLATE withoutcharacters, EXACT1672×941. Same historicalRussian schoolroom asreference, threeweeks laterwinter MORNING. Preserve centraldarkgreenblackboard, leftwindowswithsnow, teacherdeskleft, birdwallchart right andwoodpaneling. Add three orderlyrows of modesttwo-seat wooden pupilDESKS andbenchseats in foreground/midground, correctlyscaledperspective with centeraisle. Onsome desks simpleexercisebooksandslates, no readabletext. Leave teacherstandingzone nexttoblackboard free forlaterNina. Nearestbackrow desk atlowerright leaves a usableplace forlaterAgata. Warmearlywintersunfromleftwindows, cared-forbusyclassroom atmosphere evenwhileempty. NO teacher, pupils, people, animals, hands or silhouettes; allcharactersaddedseparately. Keepcamera roughlyeyelevel lookingtowardboard, not overhead. Canvasonepixel tallerthanreferenceisintentionalnewepilogueshot.
+
+=== Partiya_6/closeup_mitya_board.png ===
+Selected generation: mitya_board_20_final.png
+References: closeup_mitya_board.png
+Veryprecise correction to supplied1672×941 image. It has ELEVEN verticalnotches in eachrow, but must have TEN perrow. REMOVE ONLY the RIGHTMOST verticalgroove from EACH of two rows, at about(x1430,y365) and(x1430,y567), restoringcontinuousnaturalwoodgrain inthose two smallareas. Do NOT move or change anyof the remainingTEN grooves ineachrow. Preserve allwoodedges, cord, grain, lighting,camera,perspective,canvas. Result EXACT20cuts:10top+10bottom. No addedmarks or text. Onlyremove the twospecifiedrightmostcuts.
+Final inspected result: ten cuts in each of two rows; rejected 22-cut draft is not included.
+
+=== Partiya_6/S1_bg.png ===
+Selected generation: S1_bg.png
+References: O4_bg.png, R1_bg.png
+Newfinished point-and-click background EXACT1672×941, RussianNorth village circa1900–1920, samepainterlymaterials asreferences. LOWER STREET OF OLKHOVKA, forgotten fortwentyyears andnowreturned. Winterday, lowerlane near river. Oldloghouses with carvedweatheredwindowframes, smallporches andfences partlyentangled with longuntended shrubs andsaplings under snow. The street is OVERGROWN BUT INHABITED: soundroofs, stackedfirewood, faintchimneysmoke, recentlycleared footprints-path, warmindicationof lifeinside, no ruins orapocalypse. Windingwalkable lane runsfromforeground tocenterback, onehouseprominentleft, oldwooden streetnameboard attachedfrontleftfence but its surface BLANK for separatecloseup. Riverglimpsedrightbeyond lowfence. Quietrediscovery, mutedwinterblue andwarmagedpine. No people, animals, ghostsilhouettes, text or modernitems. No magicalglow. Differentcomposition fromupperstreet O4.
+
+=== Partiya_6/closeup_street_sign.png ===
+Selected generation: closeup_street_sign.png
+References: S1_bg.png
+New game closeup EXACT1672×941, same northern Russian winter painted style as reference. Close-up of the old horizontal wooden STREET NAME BOARD fixed on the front-left fence in reference. Broad weathered dark pine board, worn rough edges and two rusty fasteners, light snow lying on its top edge; soft blurred village lane and bare winter shrubs behind. On board show exactly this clearly readable hand-painted Cyrillic inscription in simple aged off-white letters: «Ольховая улица». Write words Ольховая улица only, without guillemets or any other text. One line, natural traditional painted lettering, enough contrast, no spelling changes. Board centered, entire board visible, occupies majority of width and middle of frame. No people, hands or modern fixtures.
+
+=== Partiya_6/closeup_envelope.png ===
+Selected generation: closeup_envelope.png
+References: closeup_envelope.png
+Precise edit of envelope only. Keep exact1672×941 canvas and same envelope outline, position, scale, old yellowed paper texture, tabletop, background and warm light. Show the ADDRESS FRONT FACE of this envelope: REMOVE the triangular rear flap and all diagonal flap seam lines from the visible face, replacing them with continuous flat old fibrous paper. Keep central light paper area largely blank for canonical address to be overlaid in game, very faint illegible cursive only near upper-left and bottom-right. No readable invented address, names or dates. This must be front of an old addressed envelope, not reverse flap side. No additional objects or hands.
+
+=== Partiya_6/closeup_sleeve.png ===
+Selected generation: closeup_sleeve.png
+References: H1_bg.png
+New narrative game CLOSEUP EXACT1672×941 in same hand-painted historical northern Russian domestic style as reference. A worn dark charcoal-brown heavy wool coat laid folded on a wooden table, with ONE sleeve prominently stretched diagonally across center. Clear OPEN SPLIT SEAM along the upper sleeve near elbow, separated seam edges expose a narrow dull linen inner lining and several frayed loose sewing threads. This is a repairable clothing seam, not a torn human limb. Modest coarse period fabric, natural folds, warm light from house window, soft background. No person, hand, arm inside sleeve, blood, needle, scissors or modern zipper. All attention on the opened seam; coat cuff visible near right edge. Entire relevant sleeve and damage clearly visible. No text.
+
+=== Partiya_6/H1_state_tea.png ===
+Selected generation: H1_tea_alpha_raw.png
+References: H1_tea_full.png
+Extract ONLY the complete tea-table furniture group from this exact image onto TRUE TRANSPARENT RGBA background. Keep full canvas EXACT1672×941 and preserve the EXACT original pixel position and size of every retained object: brass samovar at x1250,y470, table approx x820..1470 y540..765, front bench x685..1450 y710..940, right chair x1390..1645 y485..885, rear chair x965..1060 y475..718, teacups teapot bread jam and runner. Remove all stove, room walls, door, windows, floor and old wall benches. Transparent holes between chair legs, between bench legs, under table and around all objects. Keep a subtle translucent contact shadow beneath the new furniture but no wooden floor texture. Do not redraw, resize, recenter, rotate or relight objects. Do not add new objects. This is a registered foreground prop layer for compositing back over same room at(0,0); preserve all original coordinates. Everything outside new tea-table group is fully transparent, NOT black or white.
+Underlying full-scene generation:
+Precise scene edit to FIRST reference, exact1672×941. KEEP first image camera, original stove, central gallery door, window, bench, all room architecture and original daylight exactly unchanged. Add only a modest wooden TEA TABLE in the open lower-right foreground, style and location inspired by second reference but smaller and daylight. Table object entirely inside canvas approx x720..1530,y465..910; table top at y600..730, legs below. On table: one modest brass samovar near rear-right, three simple teacups with saucers, small teapot, bread and little jam dish on narrow linen runner. One empty chair right and small low bench front optional. Keep door at center background unobstructed and leave walking path on left. No dinner potatoes/big meal, no candle or changed room illumination. This full edited scene will be used to extract a separate transparent tea-table prop layer aligned to first background, so add objects only, do not alter background/crop/perspective. No humans, hands, animals or silhouettes.
+Technical registration: crop 1140x708+508+233; resize 960x556; place at 685,385 on transparent 1672x941 canvas.
