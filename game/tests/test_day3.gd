@@ -405,6 +405,7 @@ func _test_walkthrough() -> void:
 		g += 1
 	_check(gs.has_flag("done_M20") and gs.has_flag("met_ilya") and gs.has_flag("morning_day3"), "M20: Ilya, Ulyana, the wife; morning: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("ilya:Ты не выросла")), "Ilya: «Ты не выросла»")
+	_check(gs.has_flag("wife_came"), "the wife came with the lamp: her figure is shown by wife_came (set in M20 before her line)")
 	_check(gs.has_save("test3_day3"), "checkpoint «День третий» written")
 	_check(not _hotspot("ilya").visible and rm.current_room.get_node("Effects/night") != null and not rm.current_room.get_node("Effects/night").visible, "morning: the night tone is off, Ilya has gone home")
 	_check(rm.save_game(SLOT), "save in the morning of day three")

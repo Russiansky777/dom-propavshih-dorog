@@ -35,6 +35,9 @@ const WEB_DIR = process.env.OLKH_WEB_DIR ? path.resolve(ROOT, process.env.OLKH_W
 const OUT_DIR = path.join(ROOT, "Docs", "evidence", "M3");
 const LOG_DIR = path.join(ROOT, "build", "shots", "olkhovka");
 const PORT = Number(process.env.OLKH_PORT || 8779);
+// The windlass moves in game time; swiftshader on a small machine runs the page at ~1–2 fps (physics capped at 8
+// steps a frame), so the log takes up to a minute of real time to come down — wait for states that long.
+const SLOW = Number(process.env.OLKH_SLOW_MS || 240000);
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -102,7 +105,8 @@ async function main() {
   };
   const shot = async (name) => {
     const file = path.join(OUT_DIR, `${name}.png`);
-    await page.screenshot({ path: file });
+    // swiftshader on a small machine: a 1920x1080 WebGL frame can take long while the game runs — wait for it.
+    await page.screenshot({ path: file, timeout: 180000 });
     logLine(`screenshot ${path.relative(ROOT, file)}`);
   };
   const click = async (label, pt) => {
@@ -197,14 +201,18 @@ async function main() {
     await sleep(1500);
   };
 
+  let s = null;
+  let lines = [];
+  const RUNS = (process.env.OLKH_RUNS || "A,B,C").split(",");   // OLKH_RUNS=B,C — only those parts
   try {
     // ---- A: Olkhovka at night, mother's room, the morning of day three.
+    if (RUNS.includes("A")) {
     await open("olkhovka");
-    let s = await state();
+    s = await state();
     check(s.room === "R3" && s.flags.done_M18 && !s.flags.started_M19, `start point olkhovka: far pier after M18 (${s.room})`);
     check(await goExit("O4"), "R3 → O4 «Тропа к улице»");
     let caughtO4 = false;
-    let lines = await playThrough("M19", { done: (t) => t.flags.done_M19 && t.room === "O3" && !t.busy, onBeat: async (b) => {
+    lines = await playThrough("M19", { done: (t) => t.flags.done_M19 && t.room === "O3" && !t.busy, onBeat: async (b) => {
       if (!caughtO4 && b.room === "O4" && (b.beat.text || "").includes("Илья! Сестра")) { await sleep(600); await shot("A1_O4_night_mitya"); caughtO4 = true; }
     } });
     check(caughtO4, "O4 at night: Mitya knocks «Илья! Сестра твоя…» (frame A1)");
@@ -229,8 +237,10 @@ async function main() {
     lines = await useHotspot("nina");
     s = await state();
     check(s.flags.done_M21 && lines.some((l) => l.includes("семьдесят два")), "a click on Nina → M21 (Dunya died at 72)");
+    }
 
     // ---- B: the first span — windlass with real clicks on the three plaques.
+    if (RUNS.includes("B")) {
     await open("span");
     s = await waitFor("M25 starts by itself at the turn", (t) => t.room === "Z3" && t.flags.started_M25, 60000);
     let caughtSpan = false;
@@ -243,21 +253,21 @@ async function main() {
     check(s.mechanic.type === "windlass" && P.state === "wait" && P.plaque_lower && P.plaque_stop && P.plaque_raise, `the windlass close-up with three plaques (${JSON.stringify(P)})`);
     await shot("B2_windlass_wait");
     await click("plaque «Пускай»", P.plaque_lower);
-    s = await waitFor("lowered past the ring → bumped", (t) => t.mechanic.panel && t.mechanic.panel.state === "bumped", 30000);
+    s = await waitFor("lowered past the ring → bumped", (t) => t.mechanic.panel && t.mechanic.panel.state === "bumped", SLOW);
     await sleep(500);
     await shot("B3_windlass_bumped");
     check(!s.flags.span_first_laid, "bumped: nothing laid, no penalty");
     await click("plaque «Пускай» (while bumped)", P.plaque_lower);
-    await sleep(900);
+    await sleep(5000);
     s = await state();
     check(s.mechanic.panel.state === "bumped", `«Пускай» while against the stone does nothing (${s.mechanic.panel.state})`);
     await click("plaque «Подымай»", P.plaque_raise);
-    s = await waitFor("hauled back up", (t) => t.mechanic.panel && t.mechanic.panel.state === "wait", 30000);
+    s = await waitFor("hauled back up", (t) => t.mechanic.panel && t.mechanic.panel.state === "wait", SLOW);
     await click("plaque «Пускай»", P.plaque_lower);
     const rest = s.mechanic.panel.rest, tol = s.mechanic.panel.tolerance;
-    s = await waitFor("near the ring", (t) => t.mechanic.panel && t.mechanic.panel.pos >= rest - tol * 0.5, 30000);
+    s = await waitFor("near the ring", (t) => t.mechanic.panel && t.mechanic.panel.pos >= rest - tol * 0.5, SLOW);
     await click("plaque «Стой» at the ring", P.plaque_stop);
-    s = await waitFor("the log settles on the ring", (t) => (t.mechanic.panel && t.mechanic.panel.state === "solved") || t.flags.span_first_laid, 20000);
+    s = await waitFor("the log settles on the ring", (t) => (t.mechanic.panel && t.mechanic.panel.state === "solved") || t.flags.span_first_laid, SLOW);
     await sleep(400);
     await shot("B4_windlass_laid");
     let caughtDone = false;
@@ -268,8 +278,10 @@ async function main() {
     check(s.flags.span_first_laid && s.flags.done_M25, "M25 done: the first log laid");
     check(s.flags.beam_roads, "the inscription «Ольховка — Заречье» chosen by a click");
     check(caughtDone, "the frame with the log on the pier (F_span_done)");
+    }
 
     // ---- C: the epilogue to the last frame, then «Начать заново».
+    if (RUNS.includes("C")) {
     await open("epilogue");
     const framesSeen = [];
     let last = "";
@@ -290,6 +302,7 @@ async function main() {
     await click("«Начать заново»", s.frame.new_game);
     s = await waitFor("a new game at the post office", (t) => t.room === "Z1" && !(t.frame && t.frame.open) && !t.flags.done_M26, 30000);
     check(s.room === "Z1", "«Начать заново» → Z1, the frame closed");
+    }
   } catch (e) {
     check(false, `exception: ${e && e.stack ? e.stack : e}`);
   } finally {

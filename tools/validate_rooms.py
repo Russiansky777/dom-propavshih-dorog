@@ -56,6 +56,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -104,6 +105,19 @@ for q in quests:
     q["grants"] = {"flags": list(q["grants"].get("flags", [])) + [o["sets"] for o in q["choice"]["options"]],
                    "items": list(q["grants"].get("items", []))}
     scenes[q["id"]] = q
+
+
+
+def story_flags_of(scene_id: str) -> list[str]:
+    """Флаги, которые ставит сцена: её grants, sets её постановок, выборы её реплик."""
+    sc = scenes.get(scene_id, {})
+    out = list(sc.get("grants", {}).get("flags", []))
+    for st in sc.get("stage", []) or []:
+        out += list(st.get("sets", []))
+    for ln in sc.get("mandatory_lines", []):
+        out += [o["sets"] for o in ln.get("options", []) if "sets" in o]
+    return out
+
 
 loc_ids = {l["id"] for l in locations["locations"]}
 edges: dict[str, dict[str, list[str]]] = {l: {} for l in loc_ids}
@@ -647,6 +661,60 @@ for rid, room in rooms.items():
             continue  # фигуры нет — закрывать нечего
         for r, stand9, place in npc_variants(h, actor):
             check_npc_stand(h, actor, r, stand9, place, aref9["figure_half_width_px"], aref9["figure_px"])
+
+    # 9b. Стоянки предметов и точки входа не ставят Агату в фигуру NPC (дефект O3 23.10: у ходиков и стола Агата
+    # стояла внутри Нины — две фигуры одна в другой). Кто ближе к зрителю, закрывает того, кто дальше; если закрыто
+    # больше npc_overlap_max его рамки — ошибка. Предмет и NPC, которые не видны вместе (visible_if одного ∩ hidden_if
+    # другого), не сравниваются; куклы (place.<LOC>) — своей проверкой выше.
+    if aref9.get("figure_half_width_px"):
+        hw0, fig0 = aref9["figure_half_width_px"], aref9["figure_px"]
+        npcs9b = []
+        for h in room.get("hotspots", []):
+            if h.get("kind") != "npc" or "rect" not in h:
+                continue
+            actor_path = GAME_DIR / "data" / "actors" / f"{h.get('id')}.json"
+            actor = load(actor_path) if actor_path.exists() else None
+            if (actor is None and "image" not in h) or (actor or {}).get("type") == "puppet":
+                continue
+            if h.get("scene_only"):
+                # Виден только внутри сцены без управления (O3: Илья, Ульяна, жена Ильи — M20): Агата не ходит к
+                # стоянкам, пока он виден. Флаги его видимости — из этой сцены.
+                sc_only = str(h["scene_only"])
+                if not set(h.get("visible_if", [])) <= {f"started_{sc_only}"} | set(story_flags_of(sc_only)):
+                    err(f"{ctx}.{h.get('id')}: scene_only {sc_only}, но visible_if {h.get('visible_if')} не из этой сцены")
+                continue
+            r = h["rect"]
+            factor = float((actor or {}).get("npc", {}).get("scale_factor", 1.0))
+            npcs9b.append((h, r[0] + r[2] / 2, r[1] + r[3], factor))
+
+        def apart(a: dict, b: dict) -> bool:
+            return bool(set(a.get("visible_if", [])) & set(b.get("hidden_if", []))) or \
+                bool(set(b.get("visible_if", [])) & set(a.get("hidden_if", [])))
+
+        places9b = [(f"hotspots.{h.get('id')}.stand", h, h["stand"]) for h in room.get("hotspots", [])
+                    if h.get("kind") != "npc" and "stand" in h]
+        # spawns.default — запасная точка (входы и постановки называют свою), её не сравниваем.
+        places9b += [(f"spawns.{sid}", {}, pos) for sid, pos in room.get("spawns", {}).items() if sid != "default"]
+        # Комнаты-исключения (_index.json agata_ref.npc_overlap_warn_rooms: стоянки правит владелец комнаты) —
+        # предупреждение вместо ошибки, пока их не поправят.
+        report9b = warn if rid in aref9.get("npc_overlap_warn_rooms", []) else err
+        for where, src, (sx, sy) in places9b:
+            a_s = depth_scale(sy)
+            a_hw, a_h = hw0 * a_s, fig0 * a_s
+            for nh, fx, fy, factor in npcs9b:
+                if apart(src, nh):
+                    continue
+                n_s = depth_scale(fy) * factor
+                n_hw, n_h = hw0 * n_s, fig0 * n_s
+                ox = min(sx + a_hw, fx + n_hw) - max(sx - a_hw, fx - n_hw)
+                oy = min(sy, fy) - max(sy - a_h, fy - n_h)
+                if ox <= 0 or oy <= 0:
+                    continue
+                behind_hw, behind_h, who = (n_hw, n_h, f"NPC {nh.get('id')}") if sy > fy else (a_hw, a_h, "Агату")
+                covered = ox / (2 * behind_hw) * oy / behind_h
+                if covered > aref9.get("npc_overlap_max", 0.25):
+                    report9b(f"{ctx}.{where} {[sx, sy]}: Агата и NPC {nh.get('id')} (ноги {fx:.0f},{fy:.0f}) — одна фигура в другой: "
+                        f"закрыто {covered:.0%} фигуры ({who}); сдвиньте стоянку или NPC")
 
     # 8. рост Агаты против ориентиров
     aref = index.get("agata_ref", {})
@@ -1293,6 +1361,49 @@ for rid, room in sorted(rooms.items()):
             sc_id = str(act.get("scene", ""))
             if sc_id and it in (scenes.get(sc_id, {}).get("grants", {}).get("items", []) or []):
                 err(f"{rid}.{h.get('id', h.get('to'))}.item_use.{it}: предмет тратится в сцене {sc_id}, а её grants.items его выдают — после завершения он вернулся бы в сумку")
+
+# Флаг, от которого зависит видимость в комнате (visible_if / hidden_if / if / unless / if_any), кто-то должен ставить:
+# сцена (grants, sets постановки, выбор реплики), задание, хотспот (sets, once_flag, выбор), вход в комнату. Флаг,
+# только объявленный в комнате, — мёртвое условие (дефект 23.10: жена Ильи в O3 по wife_came, а его никто не ставил).
+_AUTO_FLAG = re.compile(r"^(done_|started_|has_|visited_|seen_room_)")
+_set_anywhere: set[str] = set()
+
+
+def _collect_sets(o) -> None:
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if k in ("sets", "flags") and isinstance(v, (list, str)):
+                _set_anywhere.update([v] if isinstance(v, str) else [x for x in v if isinstance(x, str)])
+            elif k == "once_flag" and isinstance(v, str):
+                _set_anywhere.add(v)
+            _collect_sets(v)
+    elif isinstance(o, list):
+        for x in o:
+            _collect_sets(x)
+
+
+_collect_sets(list(scenes.values()))
+_collect_sets(list(rooms.values()))
+_collect_sets(load(STORY / "start_points.json") if (STORY / "start_points.json").exists() else {})
+
+
+def _used_conditions(o, out: set) -> None:
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if k in ("visible_if", "hidden_if", "if", "unless", "if_any") and isinstance(v, list):
+                out.update(x for x in v if isinstance(x, str))
+            _used_conditions(v, out)
+    elif isinstance(o, list):
+        for x in o:
+            _used_conditions(x, out)
+
+
+for rid, room in sorted(rooms.items()):
+    _used: set[str] = set()
+    _used_conditions(room.get("hotspots", []) + room.get("exits", []) + room.get("layers", []) + room.get("effects", []), _used)
+    for fl in sorted(_used):
+        if not _AUTO_FLAG.match(fl) and fl not in _set_anywhere:
+            err(f"{rid}: условие по флагу {fl} — его никто не ставит (ни сцена, ни задание, ни хотспот, ни вход в комнату)")
 
 quiet = "--quiet" in sys.argv
 if stubs and not quiet:

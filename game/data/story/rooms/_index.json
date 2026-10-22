@@ -8,7 +8,7 @@
     "height_m": 1.657,
     "tolerance": 0.12,
     "figure_half_width_px": 74,
-    "npc_overlap_max": 0.25,
+    "npc_overlap_max": 0.25, "npc_overlap_warn_rooms": ["M2", "M3", "R3", "Z3"], "_npc_overlap_warn_note": "Проверка 9b (validate_rooms.py, 23.10): стоянка предмета или точка входа ставит Агату в фигуру NPC. В этих комнатах блока 2 (Павел — M2/M3, Митя — R3, Пелагея — Z3) пока предупреждение: стоянки поправит владелец комнаты, затем убрать комнату из списка.",
     "_npc_comment": "figure_half_width_px — половина ширины фигуры при scale 1 (idle анфас: x 70–217 в кадре 288). Проверка validate_rooms.py п. 9: стоянка у NPC не закрывает его собой больше чем на npc_overlap_max ширины (дефект кадра ui_10)."
   },
   "defaults": {

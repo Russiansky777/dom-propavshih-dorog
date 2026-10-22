@@ -18,49 +18,49 @@
   "effects": [
     {"id": "night", "type": "tint", "rect": [0, 0, 1920, 1080], "color": "#5a5f80", "blend": "mul", "z": 3000, "unless": ["morning_day3"], "_note": "Вечер и ночь в горнице: картина дневная — тон движка поверх всего, кроме свечи (свет z 3001)."}
   ],
-  "spawns": {"default": [1400, 900], "from_O4": [1450, 960]},
+  "spawns": {"default": [1700, 960], "from_O4": [1650, 1000]},
   "props": [],
   "hotspots": [
     {
-      "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1090, 175, 160, 630], "stand": [1480, 900], "draw": false, "pick_priority": 2,
+      "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1250, 160, 160, 630], "stand": [1620, 880], "draw": false, "pick_priority": 2,
       "hidden_if": ["done_M21b"],
-      "_rect_note": "Нина у ходиков, ноги y 805 (масштаб 1,88 → Агата 648 px; Нина 1,62 м ≈ 634)",
+      "_rect_note": "Нина между ходиками и окном, ноги (1330, 790) (масштаб 1,86 → Агата 641 px; Нина 1,62 м ≈ 627); стоянки у стола и часов — слева от неё (validate_rooms 9b: фигуры не друг в друге)",
       "talk": {"scenes": ["M21"], "before_text": "@O3.nina.before", "after_text": "@O3.nina.after"},
       "item_use": {"school_ribbon": {"text": "@O3.nina.ribbon", "sets": ["ribbon_braided"], "once_flag": "ribbon_braided", "text_done": "@O3.nina.ribbon_again"}}
     },
     {
-      "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1500, 110, 190, 720], "stand": [1350, 1000], "draw": false, "pick_priority": 2,
+      "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1510, 110, 180, 720], "stand": [1880, 960], "scene_only": "M20", "draw": false, "pick_priority": 2,
       "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
-      "_rect_note": "Илья у окна, ноги y 830 (масштаб 1,93 → Агата 666 px; Илья 1,80 м ≈ 723)",
+      "_rect_note": "Илья у окна, ноги (1600, 830) (масштаб 1,93 → Агата 666 px; Илья 1,82 м ≈ 731); виден только в сцене M20 (ночь), утром ушёл",
       "talk": {"after_text": "@O3.ilya.after"},
       "item_use": {"drawing_ilya": {"text": "@O3.ilya.boat_drawing", "once_flag": "ilya_saw_drawing", "sets": ["ilya_saw_drawing"]}}
     },
     {
-      "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [1700, 380, 125, 480], "stand": [1500, 1000], "draw": false, "pick_priority": 3,
+      "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [1730, 400, 120, 480], "stand": [1560, 1000], "scene_only": "M20", "draw": false, "pick_priority": 3,
       "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
-      "_rect_note": "Ульяна у лавки, ноги y 860 (масштаб 1,99 → Агата 687 px; Ульяна 1,25 м ≈ 518 — чуть меньше: ребёнок у стены)",
+      "_rect_note": "Ульяна у лавки под окном, ноги (1790, 880) (масштаб 2,03 → Ульяна 1,27 м ≈ 538 px); впереди отца — ребёнок в семейной группе",
       "talk": {"after_text": "@O3.ulyana.after"}
     },
     {
-      "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "rect": [1295, 160, 160, 615], "stand": [1065, 1000], "draw": false, "pick_priority": 3,
+      "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "rect": [1380, 160, 140, 615], "stand": [1700, 1000], "scene_only": "M20", "draw": false, "pick_priority": 3,
       "visible_if": ["wife_came"], "hidden_if": ["morning_day3"],
-      "_rect_note": "Жена Ильи с лампой у двери в сени, ноги y 775 (масштаб 1,81; 1,65 м ≈ 620 px)",
+      "_rect_note": "Жена Ильи с лампой позади, между Ниной и Ильёй (голова видна между ними), ноги (1450, 775) (масштаб 1,81; 1,63 м ≈ 616 px); приходит по ходу M20 (wife_came)",
       "talk": {"after_text": "@O3.ilya_wife.after"}
     },
     {
-      "id": "clock", "kind": "object", "label": "@O3.clock.label", "rect": [1010, 120, 150, 320], "stand": [1150, 800], "draw": false, "pick_priority": 3,
+      "id": "clock", "kind": "object", "label": "@O3.clock.label", "rect": [1010, 120, 150, 320], "stand": [1090, 840], "draw": false, "pick_priority": 3,
       "use": {"requires": {"items": ["pocket_watch"], "flags": ["done_M19"]}, "sets": ["o3_clock_compared"], "text": "@O3.clock.watch", "once_flag": "o3_clock_compared"},
       "item_use": {"pocket_watch": {"requires": {"flags": ["done_M19"]}, "sets": ["o3_clock_compared"], "text": "@O3.clock.watch", "once_flag": "o3_clock_compared", "text_done": "@O3.clock.look_common"}},
       "states": [{"if": ["o3_clock_compared"], "label": "@O3.clock.label_common"}],
       "look": "@O3.clock.look"
     },
     {
-      "id": "dunya_mirror", "kind": "object", "label": "@O3.dunya_mirror.label", "rect": [338, 455, 110, 150], "stand": [1080, 800], "draw": false,
+      "id": "dunya_mirror", "kind": "object", "label": "@O3.dunya_mirror.label", "rect": [338, 455, 110, 150], "stand": [1075, 840], "draw": false,
       "look": "@O3.dunya_mirror.look",
       "states": [{"if": ["knows_nina_saw_agata"], "label": "@O3.dunya_mirror.label_known"}]
     },
     {
-      "id": "notebooks", "kind": "object", "action_anim": "reach", "label": "@O3.notebooks.label", "rect": [540, 570, 160, 55], "stand": [1080, 820], "draw": false, "pick_priority": 2,
+      "id": "notebooks", "kind": "object", "action_anim": "reach", "label": "@O3.notebooks.label", "rect": [540, 570, 160, 55], "stand": [1070, 860], "draw": false, "pick_priority": 2,
       "use": {"requires": {"flags": ["done_M21"]}, "sets": ["o3_read_notebooks"], "text": "@O3.notebooks.use", "once_flag": "o3_read_notebooks", "text_done": "@O3.notebooks.again"},
       "look": "@O3.notebooks.look",
       "view": {
@@ -75,7 +75,7 @@
       }
     },
     {
-      "id": "village_list", "kind": "object", "action_anim": "reach", "label": "@O3.village_list.label", "rect": [240, 600, 160, 50], "stand": [1080, 840], "draw": false, "pick_priority": 2,
+      "id": "village_list", "kind": "object", "action_anim": "reach", "label": "@O3.village_list.label", "rect": [240, 600, 160, 50], "stand": [1065, 880], "draw": false, "pick_priority": 2,
       "use": {"requires": {"flags": ["done_M21"]}, "sets": ["o3_read_village_list"], "text": "@O3.village_list.use", "once_flag": "o3_read_village_list", "text_done": "@O3.village_list.again"},
       "look": "@O3.village_list.look",
       "view": {
@@ -84,7 +84,7 @@
       }
     },
     {
-      "id": "nina_letters", "kind": "object", "action_anim": "reach", "label": "@O3.nina_letters.label", "rect": [700, 455, 230, 60], "stand": [1080, 790], "draw": false,
+      "id": "nina_letters", "kind": "object", "action_anim": "reach", "label": "@O3.nina_letters.label", "rect": [700, 455, 230, 60], "stand": [1080, 830], "draw": false,
       "visible_if": ["done_M21"],
       "_note": "блок 5 (SCENARIO_FINAL §9, «Письма Нины»): двадцать неотправленных писем — по одному каждую зиму; последнее — в вечер, когда Нина увидела Агату в зеркальце. Крупный план — связка (closeup_nina_letters) и письма страницами; тексты — черновик смысла для владельца текста.",
       "use": {"sets": ["nina_letters_read"], "text": "@O3.nina_letters.use", "once_flag": "nina_letters_read", "text_done": "@O3.nina_letters.again"},
@@ -100,7 +100,7 @@
       }
     },
     {
-      "id": "notches", "kind": "object", "label": "@O3.notches.label", "rect": [1200, 60, 60, 620], "stand": [1240, 790], "draw": false,
+      "id": "notches", "kind": "object", "label": "@O3.notches.label", "rect": [1200, 60, 60, 620], "stand": [1110, 870], "draw": false,
       "visible_if": ["started_M20"],
       "look": "@O3.notches.look",
       "view": {
@@ -109,7 +109,7 @@
       }
     },
     {
-      "id": "window", "kind": "object", "label": "@O3.window.label", "rect": [1380, 160, 260, 340], "stand": [1500, 800], "draw": false,
+      "id": "window", "kind": "object", "label": "@O3.window.label", "rect": [1380, 160, 260, 340], "stand": [1700, 880], "draw": false,
       "look": "@O3.window.look",
       "states": [{"if": ["morning_day3"], "label": "@O3.window.label"}]
     },
@@ -131,7 +131,6 @@
     "o3_clock_compared": "Ходики Нины идут вровень с карманными часами Агаты",
     "o3_read_notebooks": "Прочитаны тетради Евдокии: тропы, правило, стопор, мост",
     "o3_read_village_list": "Прочитан список деревни: 22 живых, трое умерли",
-    "ilya_saw_drawing": "Илья узнал свой детский рисунок моста",
-    "wife_came": "Жена Ильи пришла с лампой"
+    "ilya_saw_drawing": "Илья узнал свой детский рисунок моста"
   }
 }

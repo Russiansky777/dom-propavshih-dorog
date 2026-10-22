@@ -180,6 +180,7 @@
           "met_ulyana",
           "met_ilya_wife",
           "night_olkhovka",
+          "wife_came",
           "morning_day3"
         ],
         "items": []
@@ -197,6 +198,22 @@
             }
           ],
           "_note": "Хлопает дверь — Илья и Ульяна в горнице (их фигуры видны по флагу started_M20)."
+        },
+        {
+          "at": 7,
+          "fade_out_s": 0.2,
+          "hold_s": 0.2,
+          "fade_in_s": 0.3,
+          "sounds": [
+            {
+              "id": "door_heavy",
+              "at_s": 0.1
+            }
+          ],
+          "sets": [
+            "wife_came"
+          ],
+          "_note": "«Позже приходит жена Ильи с лампой» — её фигура появляется (O3 ilya_wife visible_if wife_came)."
         },
         {
           "at": "end",
