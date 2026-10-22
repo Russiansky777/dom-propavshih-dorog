@@ -349,13 +349,12 @@ def main() -> int:
         heel, ball, tip, axis = mlib.sole_points(sk, Rm, Pm_fk, fg, s)
         low = np.minimum(np.minimum(heel[:, 2], ball[:, 2]), tip[:, 2])
         heights[s] = {"sole_min_mm": round(float(low.min()) * 1000, 1)}
-        # наибольший разворот ботинка за петлю (включая перенос ноги)
+        # наибольший разворот ботинка за петлю (включая перенос ноги) — на кадрах, где ось подошвы наклонена меньше
+        # 30° (у круто опущенного носка рыскание проекции на пол не видно камерой и шумит)
         if td is not None:
-            yaw = np.degrees(mlib.yaw_of_dir(axis) - math.atan2(td[0], -td[1]))
-            yaw = (yaw + 180) % 360 - 180
-            yaw = yaw if s == "L" else -yaw
-            heights[s]["toe_out_max_deg"] = round(float(yaw.max()), 1)
-            heights[s]["toe_out_min_deg"] = round(float(yaw.min()), 1)
+            yaw, ok = mlib.toe_yaw_flat(axis, td, s)
+            heights[s]["toe_out_max_deg"] = round(float(yaw[ok].max()), 1) if ok.any() else None
+            heights[s]["toe_out_min_deg"] = round(float(yaw[ok].min()), 1) if ok.any() else None
     speed = float(np.linalg.norm(disp[:2])) / (N / FPS_OUT) if spec["type"] == "walk" else 0.0
     res = {
         "id": spec["id"], "family": fam, "scale": round(scale, 4), "source_yaw_deg": round(yaw0, 1),

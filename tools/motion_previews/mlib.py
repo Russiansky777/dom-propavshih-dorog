@@ -781,3 +781,12 @@ def head_offset(sk, R):
     f = Gm @ FWD
     u = Gm @ UP
     return math.degrees(math.atan2(f[0], -f[1])), math.degrees(math.atan2(u[0], u[2]))
+
+
+def toe_yaw_flat(axis, travel_dir, side, max_pitch_deg=30.0):
+    """Разворот ботинка к ходу по кадрам (+ наружу) и маска кадров, где ось подошвы наклонена меньше max_pitch_deg."""
+    yaw = np.degrees(yaw_of_dir(axis) - math.atan2(travel_dir[0], -travel_dir[1]))
+    yaw = (yaw + 180) % 360 - 180
+    yaw = yaw if side == "L" else -yaw
+    pitch = np.degrees(np.arcsin(np.clip(axis[:, 2], -1, 1)))
+    return yaw, np.abs(pitch) < max_pitch_deg
