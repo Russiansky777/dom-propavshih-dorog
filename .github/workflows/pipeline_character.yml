@@ -209,7 +209,8 @@ jobs:
           # main мог уйти вперёд за время прогона — подтянуть и пушить с повторами
           for i in 1 2 3 4 5 6; do
             git fetch -q origin main
-            if git rebase --autostash origin/main; then
+            # конфликт по тем же листам (два прогона одного персонажа подряд) — побеждает этот, более новый прогон
+            if git rebase -X theirs --autostash origin/main; then
               if git push origin HEAD:main; then echo "запушено с попытки $i"; exit 0; fi
             else
               echo "rebase не прошёл:"; git status; git rebase --abort || true

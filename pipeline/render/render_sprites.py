@@ -184,7 +184,8 @@ def main() -> int:
                 if action_name not in args.feet_fix:
                     continue
                 act = pick_action(action_name, idx)
-                kind = feet_fix.kind_of(action_name) or (feet_fix.kind_of(act.name) if act else None)
+                # явно названное действие без «walk/idle» в имени (open, pick…) правится как стойка: стопы стоят
+                kind = feet_fix.kind_of(action_name) or (feet_fix.kind_of(act.name) if act else None) or "idle"
                 if act is None or kind is None:
                     continue
                 rep = feet_fix.fix_action(arm, rig, act, kind, window=windows.get(action_name))

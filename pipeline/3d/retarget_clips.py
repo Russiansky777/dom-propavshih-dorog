@@ -178,6 +178,16 @@ def _fill(fc, frames, vals):
     fc.update()
 
 
+def pose_at(arm, rig: ff.Rig, act, frame):
+    """Поза клипа в кадре: кватернионы matrix_basis всех костей и location таза (как в to_basis)."""
+    bpy = ff._bpy()
+    ff.assign(arm, act)
+    fi = math.floor(frame)
+    bpy.context.scene.frame_set(int(fi), subframe=float(frame - fi))
+    Q = np.array([list(arm.pose.bones[n].rotation_quaternion) for n in rig.names])
+    return Q, np.array(arm.pose.bones[rig.names[0]].location)
+
+
 def slerp(q0, q1, w):
     d = float(q0 @ q1)
     if d < 0:
@@ -274,6 +284,8 @@ def main() -> int:
         return made[clip]
 
     roles = spec["roles"]
+    from check_feet import roles_to_fix  # noqa: PLC0415
+    fix_roles = set(roles_to_fix(req))
     out_clips = {}
     # сначала роли без склейки (стойка — опора для остальных)
     order = sorted(roles, key=lambda r: 1 if roles[r].get("blend_from") or roles[r].get("legs_from") else 0)
@@ -304,12 +316,19 @@ def main() -> int:
         new_name = f"{src_name}_{role}" if (ref or c.get("own")) else src_name
         act = write_action(arm, tgt, new_name, fr, Q, loc)
         out_clips[role] = act.name
+        # стопы — здесь же (а не только перед рендером): склейка реплики и действий берёт позу уже исправленной
+        # стойки, иначе при смене стойка → реплика ботинки поворачивались бы наружу
+        fixed = None
+        if role in fix_roles:
+            kind = ff.kind_of(role) or ff.kind_of(act.name) or "idle"
+            fixed = ff.fix_action(arm, tgt, act, kind, window=windows.get(role))
         # поза начала окна роли — опора склейки
         w0 = windows.get(role, (0.0, 1.0))[0]
         i0 = int(round(w0 * (len(fr) - 1)))
-        pose_of[role] = (Q[i0].copy(), loc[i0].copy())
+        pose_of[role] = pose_at(arm, tgt, act, float(fr[i0])) if fixed else (Q[i0].copy(), loc[i0].copy())
         rep["roles"][role] = {"clip": act.name, "from": "own" if c.get("own") else spec["library"], "frames": len(fr),
-                              "floor_shift_m": round(-fl, 4), "blend_from": ref, "legs_from": c.get("legs_from")}
+                              "floor_shift_m": round(-fl, 4), "blend_from": ref, "legs_from": c.get("legs_from"),
+                              "feet": {k: fixed[k] for k in ("after", "fail")} if fixed else None}
         print(f"retarget {name}/{role}: {src_name} → {act.name} ({len(fr)} кадров, пол {fl * 100:+.1f} см → 0)", flush=True)
     for clip in spec.get("extra_clips", []):
         if any(v == clip for v in out_clips.values()):

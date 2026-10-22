@@ -78,7 +78,7 @@ def main() -> int:
         if act is None:
             out["roles"][role] = {"error": "клип не найден"}
             continue
-        kind = feet_fix.kind_of(role) or feet_fix.kind_of(act.name)
+        kind = feet_fix.kind_of(role) or feet_fix.kind_of(act.name) or ("idle" if role in fix else None)
         win = windows.get(role)
         if role in fix and kind:
             rep = feet_fix.fix_action(arm, rig, act, kind, window=win)
