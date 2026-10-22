@@ -1,6 +1,6 @@
 {
- "run": "39828022702",
- "commit": "7fa007a775821c462b6d2d3caca8998fb0cdbcc8",
+ "run": "39846882063",
+ "commit": "f3f7e2dd0503fe3f0534732cd9ad4edfc0509589",
  "fps": 24,
  "size": "1280x720",
  "camera_elev_deg": 14,
@@ -19,7 +19,7 @@
  "metrics": {
   "slide_mm": "проскальзывание опорной стопы: наибольший уход по полу самой низкой точки подошвы (пятка/подушечка/носок) от места, где она стала опорной, за одно касание; мм; до и после чистки",
   "toe_out_deg": "разворот ботинка (ось подошвы по сетке модели) к направлению хода на кадрах, где стопа стоит плоско; + наружу; для idle — к взгляду таза",
-  "swing_toe_out_max_deg": "наибольший разворот ботинка наружу за петлю, включая перенос ноги, на кадрах, где ось подошвы наклонена меньше 30° (круто опущенный носок камера видит вертикальным); без этого фильтра — toe_out_max_deg_all_frames",
+  "swing_toe_out_max_deg": "наибольший разворот наружу за петлю, включая перенос ноги",
   "stance_on_screen_deg_14": "как этот угол выглядит на экране при ходьбе к зрителю под камерой 14° (глубина сжата ×0,24)"
  },
  "cleanup": "масштаб по длине ног; высота таза — подошва на полу; пальцы сапога жёсткие; поворот опорной стопы на полу зафиксирован; самая низкая точка подошвы держится на месте (IK бедро–колено–лодыжка); таз опускается, где нога не дотягивается. Базовая линия Meshy — без чистки, как в игре.",
@@ -1646,14 +1646,91 @@
    "license": "CC BY 4.0 — атрибуция «100STYLE Dataset — Ian Mason»",
    "library_url": "https://zenodo.org/records/8127870",
    "why": "Усталое стояние, голова опущена.",
-   "status": "нет результата",
+   "status": "ok",
    "source_url": "https://zenodo.org/records/8127870 (100STYLE.zip → 100STYLE/Depressed/Depressed_ID.bvh)",
    "source_file": "100STYLE/Depressed/Depressed_ID.bvh",
    "frame_cut": [
     928,
     1749
-   ]
+   ],
+   "loop": {
+    "a": 360,
+    "b": 795,
+    "whole": false,
+    "cost": 7.97,
+    "pose_mismatch_deg": 5.4,
+    "root_drift_m": 0.007,
+    "feet_shift_m": 0.004,
+    "hips_yaw_range_deg": 2.0,
+    "max_foot_travel_m": 0.004,
+    "t0_s": 6.0,
+    "src_frame0": 1288.0,
+    "src_frame1": 1723.0,
+    "period_s": 7.25,
+    "frames_out": 174,
+    "time_scale": 1.0
+   },
+   "loop_frames": 174,
+   "speed_mps": 0.0,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 2.0,
+   "hip_drop_max_m": 0.008,
+   "ground_offset_m": -0.1259,
+   "scale": 0.0082,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 2.4,
+     "slide_mm_median": 2.4,
+     "contacts": 1,
+     "toe_out_deg": -4.2
+    },
+    "R": {
+     "slide_mm_max": 2.1,
+     "slide_mm_median": 2.1,
+     "contacts": 1,
+     "toe_out_deg": 4.7
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": -3.7
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 4.5
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0
+    },
+    "R": {
+     "sole_min_mm": -0.0
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_vs_hips_deg": {
+     "L": -3.7,
+     "R": 4.5
+    }
+   },
+   "slide_mm_max": 0.0,
+   "slide_mm_max_before_cleanup": 2.4,
+   "mp4": "previews/100style/s100_depressed_id.mp4",
+   "duration_s": 7.25,
+   "bytes": 1297328,
+   "loops_in_video": 1,
+   "size_ok": true,
+   "retargeted": "retargeted/s100_depressed_id.npz"
   }
- ],
- "review": "Ролики просмотрены агентом 22.10 (кадры середины, стопы, юбка): заметки — review_notes. Общее для всех: юбка привязана к костям ног (без симуляции ткани), поэтому на широком шаге и при высоком махе голени тянется за ногой."
+ ]
 }
