@@ -468,7 +468,7 @@
     },
     {
       "id": "O1_closeup_bridge_photo",
-      "status": "requested",
+      "status": "delivered",
       "kind": "closeup",
       "block": "1 (день первый, 22.10)",
       "spec": "Крупный план: старая выцветшая фотография в бумажной рамке — деревянные пролёты на каменных опорах через пруд; канат-поручень крепится к железной плите с кольцом на ближней опоре; у берега лодка Пелагеи (Docs/SCENARIO_FINAL.md, M07). 1672×941 или сам снимок на прозрачном",
@@ -477,11 +477,15 @@
       ],
       "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 1",
       "owner": "ChatGPT + Директор",
-      "use": "data/story/rooms/O1.json → teacher_drawer.view.pictures[0]; до готовности — рисунок иконки bridge_photo крупно (game/assets/closeups/bridge_photo.png, tools/make_closeup_stubs.py)"
+      "use": "data/story/rooms/O1.json → teacher_drawer.view.pictures[0]; копия игры game/assets/closeups/closeup_bridge_photo.png (840 px, tools/import_closeups.py)",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "ChatGPT (image_gen), партия 2 брифа v4, коммит 7b3c710; assets/incoming/_meta_p2/README_RU.txt"
+      }
     },
     {
       "id": "O1_closeup_ilya_drawing",
-      "status": "requested",
+      "status": "delivered",
       "kind": "closeup",
       "block": "1 (день первый, 22.10)",
       "spec": "Крупный план: детский рисунок карандашом на тетрадном листе (мальчик лет десяти) — мост и лодка, у лодки труба с дымом («Илюша так лодки рисовал — с дымом»)",
@@ -490,11 +494,15 @@
       ],
       "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 2",
       "owner": "ChatGPT + Директор",
-      "use": "data/story/rooms/O1.json → teacher_drawer.view.pictures[1]; до готовности — рисунок иконки ilya_drawing крупно (game/assets/closeups/ilya_drawing.png)"
+      "use": "data/story/rooms/O1.json → teacher_drawer.view.pictures[1]; копия игры game/assets/closeups/closeup_ilya_drawing.png (840 px)",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "ChatGPT (image_gen), партия 2 брифа v4, коммит 7b3c710; assets/incoming/_meta_p2/README_RU.txt"
+      }
     },
     {
       "id": "O1_closeup_plan",
-      "status": "requested",
+      "status": "delivered",
       "kind": "closeup",
       "block": "1 (день первый, 22.10)",
       "spec": "Крупный план: пожелтевший лист плана переправы, правленный много раз разными чернилами — схема пруда с опорами, линия каната от кольца к кольцу, стрелки, зачёркивания; место под 6–7 строк текста пустое (текст «Тому, кто придёт через эту дверь…» накладывает игра, M07 дословно)",
@@ -503,11 +511,15 @@
       ],
       "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 3",
       "owner": "ChatGPT + Директор",
-      "use": "data/story/rooms/O1.json → teacher_drawer.view.papers[0] (подложка листа; текст — ключ O1.teacher_drawer.paper_plan); до готовности — лист цветом и текстом шрифтом игры"
+      "use": "data/story/rooms/O1.json → teacher_drawer.view.papers[0]: лист — картинка, текст игры (O1.teacher_drawer.paper_plan, M07 дословно) в свободной зоне text_rect [150, 625, 1360, 245]; копия game/assets/closeups/closeup_plan.png (1440 px)",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "ChatGPT (image_gen), партия 2 брифа v4, коммит 7b3c710; assets/incoming/_meta_p2/README_RU.txt"
+      }
     },
     {
       "id": "H2_bundle_nina",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "block": "1 (день первый, 22.10)",
       "spec": "Слои к H2_bg.png (1672×941, в координатах фона): свёрток «Нина. Горница» — мамино зеркало в тряпице на левом краю большого верстака переднего плана, бирка без текста; второе состояние — развёрнутое зеркало в разошедшейся раме на том же месте (мутное стекло)",
@@ -517,11 +529,15 @@
       ],
       "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 4",
       "owner": "ChatGPT + Директор",
-      "use": "data/story/rooms/H2.json → хотспот bundle_nina (rect 930,655,230,95 экрана 1920×1080; второй слой — по флагу h2_bundle_unwrapped); до готовности — хотспот без рисунка"
+      "use": "data/story/rooms/H2.json → слои bundle / nina_mirror (по флагу h2_bundle_unwrapped), хотспот bundle_nina на левом верстаке; копии game/assets/rooms/H2/state_bundle.png, state_nina_mirror.png (tools/import_room_art.py H2)",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "ChatGPT (image_gen), партия 2 брифа v4, коммит 7b3c710; assets/incoming/_meta_p2/README_RU.txt"
+      }
     },
     {
       "id": "H2_brace_plate",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "block": "1 (день первый, 22.10)",
       "spec": "Слой к H2_bg.png (1672×941): кованая железная скоба под трещину плиты у рисунка плиты моста (заказ управы, листок рядом); исчезает, когда Агата её берёт",
@@ -530,7 +546,11 @@
       ],
       "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 4",
       "owner": "ChatGPT + Директор",
-      "use": "data/story/rooms/H2.json → хотспот brace и слой skoba_stub (unless has_brace_plate); до готовности — иконка skoba_plate ≈60 px на заднем верстаке левее коробки «Петли»"
+      "use": "data/story/rooms/H2.json → слой skoba (unless has_brace_plate; рисунок плиты — в том же слое), хотспот brace на левом верстаке; копия game/assets/rooms/H2/state_skoba.png",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "ChatGPT (image_gen), партия 2 брифа v4, коммит 7b3c710; assets/incoming/_meta_p2/README_RU.txt"
+      }
     },
     {
       "id": "icons_day1_block1",

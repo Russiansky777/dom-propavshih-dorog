@@ -930,9 +930,18 @@ for rid, room in rooms.items():
                 if len(pi_.get("rect", [])) != 4 or pi_["rect"][2] <= 0:
                     err(f"{hctx}.view.pictures[{i_}]: rect [x, y, w, h(0 — по пропорции)]")
             for i_, pa_ in enumerate(h["view"].get("papers", []) or []):
-                r_ = pa_.get("rect", [])
+                r_ = list(pa_.get("rect", []))
+                if "image" in pa_:
+                    check_res_path(f"{hctx}.view.papers[{i_}].image", pa_["image"])
+                    size_ = png_size(pa_["image"])
+                    if len(r_) == 4 and r_[3] <= 0 and size_:
+                        r_[3] = r_[2] * size_[1] / size_[0]
+                    src_ = pa_.get("image_size") or size_
+                    tr_ = pa_.get("text_rect")
+                    if src_ and tr_ and (len(tr_) != 4 or tr_[0] < 0 or tr_[1] < 0 or tr_[0] + tr_[2] > src_[0] or tr_[1] + tr_[3] > src_[1]):
+                        err(f"{hctx}.view.papers[{i_}].text_rect {tr_} вне листа {src_}")
                 if len(r_) != 4 or r_[2] <= 0 or r_[3] <= 0:
-                    err(f"{hctx}.view.papers[{i_}]: rect [x, y, w, h]")
+                    err(f"{hctx}.view.papers[{i_}]: rect [x, y, w, h] (h 0 — только у листа-картинки)")
                 elif r_[0] < 0 or r_[1] < 80 or r_[0] + r_[2] > 1920 or r_[1] + r_[3] > 1080:
                     err(f"{hctx}.view.papers[{i_}]: лист {r_} вне кадра или под верхней панелью")
 

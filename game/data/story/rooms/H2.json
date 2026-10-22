@@ -1,6 +1,8 @@
 {
   "id": "H2",
-  "_art": "Фон H2_bg.png (мастерская): дверь в H1 слева (тёплый свет), верстак и рисунок двери на стене, коробки «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» на полке, пустая стойка ЗМ, колокол у окна. Свёрток «Нина. Горница» и скоба для плиты (22.10) — пока без рисунка, заявки в assets/manifest.json. Слой H2_fg_bench_front.png — верстак на переднем плане (окклюдер z=1080). Надписи коробок нарисованы (v1).",
+  "_art": "Фон H2_bg.png (мастерская): дверь в H1 слева (тёплый свет), верстак и рисунок двери на стене, коробки «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» на полке, пустая стойка ЗМ, колокол у окна. Свёрток «Нина. Горница» (и развёрнутое зеркало) и скоба с рисунком плиты — слои партии 2 (22.10) на левом верстаке. Слой H2_fg_bench_front.png — верстак на переднем плане (окклюдер z=1080). Надписи коробок нарисованы (v1).",
+  "art_source": {"files": {"state_bundle.png": "assets/incoming/H2_state_bundle.png", "state_nina_mirror.png": "assets/incoming/H2_state_nina_mirror.png", "state_skoba.png": "assets/incoming/H2_state_skoba.png"}, "canvas": [1672, 941], "alpha_min": 9,
+    "_note": "Партия 2 брифа v4 (ChatGPT 22.10, assets/incoming/_meta_p2/README_RU.txt): полные прозрачные холсты в координатах H2_bg, наложение с (0,0) 1:1. Копии — tools/import_room_art.py H2 (только эти три файла; фон и верстак не трогаются)"},
   "background": {"kind": "interior", "image": "res://assets/rooms/H2/bg.png", "wall": "#5e5040", "floor": "#7a6648", "accent": "#a08a5a", "horizon": 700},
   "walkable": [[60, 780], [240, 750], [365, 750], [380, 706], [880, 702], [1140, 695], [1145, 690], [1400, 690], [1405, 682], [1505, 680], [1505, 693], [1400, 704], [1300, 712], [1200, 720], [1100, 728], [1000, 735], [905, 745], [900, 1070], [60, 1070]],
   "no_walk_samples": [[1200, 900, "верстак"], [1600, 800, "верстак"], [960, 780, "торец верстака"], [300, 650, "доска у стены"], [520, 650, "верстак у стены"], [1650, 640, "колокол"]],
@@ -9,8 +11,9 @@
   "_depth_note": "Рост Агаты = 345 px × scale (фигура в кадре 384 px, модель 1.657 м) — см. rooms/_index.json agata_ref; ориентиры height_refs проверяет tools/validate_rooms.py (±12 %). у верстака 1.35 → 466 px при 448; у двери 1.43 → 494 при 539 (−8 %)",
   "height_refs": [{"what": "верстак у стены (столешница y 470, ножки y 700)", "y": 700, "px": 230, "m": 0.85}, {"what": "дверь в избу (проём слева)", "y": 740, "px": 650, "m": 2.0}],
   "layers": [
-    {"id": "skoba_stub", "image": "res://assets/closeups/skoba_plate.png", "offset": [738, 437], "scale": 0.0813, "unless": ["has_brace_plate"],
-      "scale_reason": "временный рисунок скобы — иконка предмета (assets/icons/skoba_plate.png, 1024 px → tools/make_closeup_stubs.py), уменьшенная до ≈60 px на заднем верстаке левее коробки «Петли»; заменит слой H2_state_skoba.png (Docs/BRIEF_CHATGPT_v4.md, партия 2)"},
+    {"id": "bundle", "image": "res://assets/rooms/H2/state_bundle.png", "unless": ["h2_bundle_unwrapped"], "_note": "свёрток «Нина. Горница» в ткани на левом верстаке (бирка без текста); развёрнутый — слой nina_mirror (взаимоисключающие)"},
+    {"id": "nina_mirror", "image": "res://assets/rooms/H2/state_nina_mirror.png", "if": ["h2_bundle_unwrapped"], "_note": "развёрнутое мамино зеркало на ткани, рама разошлась, стекло мутное серебро — после «развернуть»"},
+    {"id": "skoba", "image": "res://assets/rooms/H2/state_skoba.png", "unless": ["has_brace_plate"], "_note": "кованая скоба и маленький рисунок треснувшей плиты с кольцом на левом верстаке; пропадает, когда Агата берёт скобу (рисунок плиты в том же слое — художник: «на фоне однозначного рисунка плиты не было»)"},
     {"id": "bench_front", "image": "res://assets/rooms/H2/fg_bench_front.png", "occluder": true, "z": 1080}
   ],
   "spawns": {"default": [500, 900], "from_H1": [280, 820]},
@@ -38,15 +41,15 @@
       "look": "@H2.stand_zm.look"
     },
     {
-      "id": "bundle_nina", "action_anim": "reach", "kind": "object", "label": "@H2.bundle_nina.label", "rect": [930, 655, 230, 95], "stand": [880, 760], "color": "#a89a80", "draw": false,
+      "id": "bundle_nina", "action_anim": "reach", "kind": "object", "label": "@H2.bundle_nina.label", "rect": [366, 404, 196, 96], "stand": [470, 790], "color": "#a89a80", "draw": false,
       "pick_priority": 1,
-      "_art_note": "Свёрток «Нина. Горница» (Docs/SCENARIO_FINAL.md, M04): мамино зеркало в тряпке на левом краю большого верстака. Рисунка ещё нет — заявка assets/manifest.json → H2_bundle_nina; до готовности хотспот на пустом краю верстака (видно по наведению и Пробелу). В сумку не берётся (items.json bundle_nina inventory false, выдаёт M04); струбцина — день второй.",
+      "_art_note": "Свёрток «Нина. Горница» (Docs/SCENARIO_FINAL.md, M04): мамино зеркало в тряпке на левом верстаке — слои bundle / nina_mirror (партия 2, непрозрачное — экран 374–533 × 413–494). В сумку не берётся (items.json bundle_nina inventory false, выдаёт M04); струбцина — день второй. Приоритет 1: над верстаком «Записи на верстаке» не лежит, но рядом.",
       "use": {"sets": ["h2_bundle_unwrapped"], "text": "@H2.bundle_nina.use", "once_flag": "h2_bundle_unwrapped", "text_done": "@H2.bundle_nina.done"},
       "look": "@H2.bundle_nina.look"
     },
     {
-      "id": "brace", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [724, 427, 90, 76], "stand": [760, 765], "color": "#7a6a5a", "draw": false, "pick_priority": 1,
-      "_art_note": "Скоба для плиты (Docs/SCENARIO_FINAL.md, M04 и раздел 9): у рисунка плиты, рядом заказ управы. Рисунка скобы и плиты на стене ещё нет — заявка assets/manifest.json → H2_brace_plate; до готовности на заднем верстаке левее коробки «Петли» лежит временный рисунок — иконка скобы (слой skoba_stub). Взять — только после плана из школы (requires knows_crossing_plan), до того — осмотр и мысль Агаты.",
+      "id": "brace", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [562, 410, 132, 80], "stand": [640, 790], "color": "#7a6a5a", "draw": false, "pick_priority": 1,
+      "_art_note": "Скоба для плиты (Docs/SCENARIO_FINAL.md, M04 и раздел 9): кованая скоба у рисунка треснувшей плиты на левом верстаке — слой skoba (партия 2, непрозрачное — экран 551–687 × 419–485). Взять — только после плана из школы (requires knows_crossing_plan), до того — осмотр и мысль Агаты.",
       "hidden_if": ["has_brace_plate"],
       "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
       "look": "@H2.brace.look"

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ocskxl8y1wn1"
-path="res://.godot/imported/skoba_plate.png-def2eed2b623918c4ef822791f4b382e.ctex"
+uid="uid://d3u2kl0hxftae"
+path="res://.godot/imported/state_skoba.png-97875363ca0be604e10b3fbf1ad35892.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/closeups/skoba_plate.png"
-dest_files=["res://.godot/imported/skoba_plate.png-def2eed2b623918c4ef822791f4b382e.ctex"]
+source_file="res://assets/rooms/H2/state_skoba.png"
+dest_files=["res://.godot/imported/state_skoba.png-97875363ca0be604e10b3fbf1ad35892.ctex"]
 
 [params]
 

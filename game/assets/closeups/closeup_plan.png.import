@@ -2,22 +2,22 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://n5uoeu0wl3br"
-path="res://.godot/imported/bridge_photo.png-c80a2ea2c7ed18ea9b053896201c6efc.ctex"
+uid="uid://chrp35mijprbk"
+path="res://.godot/imported/closeup_plan.png-e419e26c14ef7f8732d1400b9fdf5e1c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/closeups/bridge_photo.png"
-dest_files=["res://.godot/imported/bridge_photo.png-c80a2ea2c7ed18ea9b053896201c6efc.ctex"]
+source_file="res://assets/closeups/closeup_plan.png"
+dest_files=["res://.godot/imported/closeup_plan.png-e419e26c14ef7f8732d1400b9fdf5e1c.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.82
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

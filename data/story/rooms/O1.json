@@ -54,14 +54,14 @@
       "use": {"gives": ["photo_bridge", "drawing_ilya", "plan_crossing"], "text": "@O1.teacher_drawer.use", "once_flag": "has_plan_crossing", "scene": "M07"},
       "look": "@O1.teacher_drawer.look",
       "view": {
-        "id": "teacher_drawer", "type": "papers", "title": "@O1.teacher_drawer.label", "close_label": "@ui.close", "unless": ["has_plan_crossing"],
-        "_note": "Крупный план ящика (M07) — открывается вместе с выдачей трёх вещей, текст ящика и сцена M07 идут поверх. Временные рисунки до арта (Docs/BRIEF_CHATGPT_v4.md, партия 2; assets/manifest.json → O1_closeup_bridge_photo / O1_closeup_ilya_drawing / O1_closeup_plan): снимок и детский рисунок — рисунки иконок тех же вещей крупно (tools/make_closeup_stubs.py), план — лист с текстом шрифтом игры (текстовый крупный план; в настоящем closeup_plan.png место под текст оставлено пустым — игра наложит тот же текст). После того как вещи взяты, ящик пуст — крупный план не открывается (unless).",
+        "id": "teacher_drawer", "type": "papers", "close_label": "@ui.close", "unless": ["has_plan_crossing"],
+        "_note": "Крупный план ящика (M07) — открывается вместе с выдачей трёх вещей, текст ящика и сцена M07 идут поверх. Арт партии 2 (ChatGPT 22.10, 1672×941 — лист на столе; копии tools/import_closeups.py): снимок старого моста и детский рисунок Ильи слева, план справа крупно — текст игры (M07 дословно) в свободной нижней зоне листа (text_rect в пикселях исходника: x 150, y 625, 1360×245, README партии 2). После того как вещи взяты, ящик пуст — крупный план не открывается (unless).",
         "pictures": [
-          {"image": "res://assets/closeups/bridge_photo.png", "rect": [50, 150, 560, 0], "angle_deg": -4.0, "label": "@O1.teacher_drawer.label_photo"},
-          {"image": "res://assets/closeups/ilya_drawing.png", "rect": [640, 200, 470, 0], "angle_deg": 3.0, "label": "@O1.teacher_drawer.title_drawing"}
+          {"image": "res://assets/closeups/closeup_bridge_photo.png", "rect": [24, 100, 650, 0], "angle_deg": -2.0},
+          {"image": "res://assets/closeups/closeup_ilya_drawing.png", "rect": [44, 470, 610, 0], "angle_deg": 2.0}
         ],
         "papers": [
-          {"title": "@O1.teacher_drawer.title_plan", "text": "@O1.teacher_drawer.paper_plan", "rect": [1150, 120, 700, 700], "angle_deg": -1.2, "font_size": 27, "paper": "#e3d6b4", "ink": "#2e2a24", "edge": "#b89a62"}
+          {"image": "res://assets/closeups/closeup_plan.png", "image_size": [1672, 941], "text_rect": [150, 625, 1360, 245], "text": "@O1.teacher_drawer.paper_plan", "rect": [690, 96, 1210, 0], "angle_deg": -0.8, "font_size": 23, "ink": "#2a2117"}
         ]
       }
     },

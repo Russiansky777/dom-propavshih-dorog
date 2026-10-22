@@ -2,22 +2,22 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://buqxhvbkfbg4f"
-path="res://.godot/imported/ilya_drawing.png-18b90cb58d82ccd149c8fd6e3ac688a8.ctex"
+uid="uid://c1gbum1r2w3ms"
+path="res://.godot/imported/closeup_ilya_drawing.png-348f92a41e9115daddae07c0c03bf539.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/closeups/ilya_drawing.png"
-dest_files=["res://.godot/imported/ilya_drawing.png-18b90cb58d82ccd149c8fd6e3ac688a8.ctex"]
+source_file="res://assets/closeups/closeup_ilya_drawing.png"
+dest_files=["res://.godot/imported/closeup_ilya_drawing.png-348f92a41e9115daddae07c0c03bf539.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.82
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

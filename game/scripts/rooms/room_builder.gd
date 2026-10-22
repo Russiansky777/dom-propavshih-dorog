@@ -240,6 +240,7 @@ static func _build_text_layer(container: Node2D, l: Dictionary) -> void:
 	var r: Array = l.get("rect", [0, 0, 400, 100])
 	var lbl := Label.new()
 	lbl.name = "Text"
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # before text and size (an unwrapped Label keeps its text width)
 	lbl.text = StoryData.text(String(l.get("text", "")))
 	lbl.position = Vector2(float(r[0]), float(r[1]))
 	lbl.size = Vector2(float(r[2]), float(r[3]))
@@ -247,7 +248,6 @@ static func _build_text_layer(container: Node2D, l: Dictionary) -> void:
 	lbl.rotation = deg_to_rad(float(l.get("angle_deg", 0.0)))
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var role := String(l.get("font", "body_italic"))
 	if role == "italic":
 		role = "body_italic"

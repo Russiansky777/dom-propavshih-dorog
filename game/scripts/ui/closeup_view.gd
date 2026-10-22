@@ -391,12 +391,25 @@ func _build_picture(p: Dictionary) -> void:
 
 ## A sheet of paper: `rect` [x, y, w, h], `angle_deg`, `paper` / `ink` / `edge` colours, `title` and `text`
 ## (keys of data/story/text), `font_size` of the text (the game's italic, as if written by hand).
+## With `image` (a drawn sheet — the plan of the crossing, art batch 2) the picture is the sheet (h 0 — by its
+## aspect) and the text goes into its free field `text_rect` [x, y, w, h], given in the pixels of the original
+## picture `image_size` (the copy in the game may be smaller).
 func _build_paper(p: Dictionary) -> void:
 	var r: Array = p.get("rect", [700, 200, 500, 500])
+	var tex: Texture2D = null
+	if p.has("image"):
+		if not ResourceLoader.exists(String(p["image"])):
+			push_warning("CloseupView: paper image missing: %s" % p["image"])
+			return
+		tex = load(String(p["image"]))
+	var w := float(r[2])
+	var h := float(r[3])
+	if h <= 0.0 and tex != null:
+		h = w * tex.get_height() / maxf(tex.get_width(), 1.0)
 	var sheet := Control.new()
 	sheet.name = "Paper%d" % sheets.size()
 	sheet.position = Vector2(float(r[0]), float(r[1]))
-	sheet.size = Vector2(float(r[2]), float(r[3]))
+	sheet.size = Vector2(w, h)
 	sheet.pivot_offset = sheet.size / 2.0
 	sheet.rotation = deg_to_rad(float(p.get("angle_deg", 0.0)))
 	sheet.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -407,6 +420,34 @@ func _build_paper(p: Dictionary) -> void:
 	shadow.size = sheet.size
 	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sheet.add_child(shadow)
+	if tex != null:
+		var pic := TextureRect.new()
+		pic.name = "Sheet"
+		pic.texture = tex
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_SCALE
+		pic.size = sheet.size
+		pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sheet.add_child(pic)
+		var src: Array = p.get("image_size", [tex.get_width(), tex.get_height()])
+		var k := w / maxf(float(src[0]), 1.0)
+		var tr: Array = p.get("text_rect", [0, 0, src[0], src[1]])
+		var body_i := Label.new()
+		body_i.name = "Text"
+		# wrap before text and size: a Label without wrapping is as wide as its text and keeps that width
+		body_i.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		body_i.text = StoryData.text(String(p.get("text", "")))
+		body_i.position = Vector2(float(tr[0]), float(tr[1])) * k
+		body_i.size = Vector2(float(tr[2]), float(tr[3])) * k
+		body_i.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		body_i.add_theme_font_override("font", UiTheme.font("body_italic"))
+		body_i.add_theme_font_size_override("font_size", int(p.get("font_size", 24)))
+		body_i.add_theme_color_override("font_color", Color.html(String(p.get("ink", "#2e2a24"))))
+		body_i.add_theme_constant_override("line_spacing", 0)
+		body_i.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sheet.add_child(body_i)
+		sheets.append(sheet)
+		return
 	if p.has("edge"):
 		var edge := ColorRect.new()
 		edge.color = Color.html(String(p["edge"]))
@@ -437,10 +478,10 @@ func _build_paper(p: Dictionary) -> void:
 		y += 44.0
 	var body := Label.new()
 	body.name = "Text"
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.text = StoryData.text(String(p.get("text", "")))
 	body.position = Vector2(pad, y)
 	body.size = Vector2(sheet.size.x - pad * 2.0, sheet.size.y - y - pad * 0.6)
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.add_theme_font_override("font", UiTheme.font("body_italic"))
 	body.add_theme_font_size_override("font_size", int(p.get("font_size", 28)))
 	body.add_theme_color_override("font_color", ink)
