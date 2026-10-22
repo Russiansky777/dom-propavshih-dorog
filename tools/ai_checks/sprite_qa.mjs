@@ -15,7 +15,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { ROOT, OUT_DIR, args, log, git, reportPath, ask, toolInput, cell, runLine, Budget } from "./common.mjs";
+import { ROOT, OUT_DIR, args, log, git, reportPath, askTool, cell, runLine, Budget } from "./common.mjs";
 
 const CHARS = path.join(ROOT, "assets", "characters");
 const STATE = path.join(OUT_DIR, "sprite_qa_state.json");
@@ -112,8 +112,7 @@ async function main() {
     for (const it of items) { content.push({ type: "text", text: `Лист ${stem(it.file)}: ${it.caption}` }); content.push(img(it.file)); }
     content.push({ type: "text", text: `Персонаж: ${name}${c.name ? ` — ${c.name}${c.age ? `, ${c.age} лет` : ""}; ${String(c.role || "").slice(0, 300)}` : ""}. Рост модели ${meta.character_height_m || "?"} м, кадр ${meta.frame_w}×${meta.frame_h}. Действия: ${Object.entries(meta.actions || {}).map(([k, v]) => `${k} (${v.frames} кадров, ${v.fps} к/с, клип ${v.clip || "?"})`).join("; ")}.\nОсмотри листы и ответь вызовом report (character = «${name}»).` });
     try {
-      const resp = await ask(budget, `sprite:${name}`, { model, max_tokens: 12000, system: SYSTEM, tools: [tool], tool_choice: { type: "tool", name: "report" }, messages: [{ role: "user", content }] });
-      const r = toolInput(resp, "report");
+      const r = await askTool(budget, `sprite:${name}`, { model, max_tokens: 16000, system: SYSTEM, tools: [tool], output_config: { effort: "medium" }, messages: [{ role: "user", content }] }, "report");
       if (r) {
         summaries.push({ name, text: r.summary || "" });
         for (const f of r.findings || []) findings.push({ ...f, character: name });
@@ -133,9 +132,8 @@ async function main() {
       return `- ${n}: ${c.name || "?"}${c.age ? `, ${c.age} лет` : ""}, рост модели ${meta.character_height_m} м; ${String(c.role || "").slice(0, 120)}`;
     });
     try {
-      const resp = await ask(budget, "sprite:lineup", { model, max_tokens: 8000, system: SYSTEM, tools: [tool], tool_choice: { type: "tool", name: "report" },
-        messages: [{ role: "user", content: [{ type: "text", text: `Лист lineup: ${lu.caption}` }, img(lu.file), { type: "text", text: `Персонажи:\n${rows.join("\n")}\nОцени только масштаб и пропорции относительно друг друга и возраста (area = «масштаб», image = «lineup»): кто слишком высок или низок для своего возраста и роли, у кого голова или руки непропорциональны, у кого фигура в линейке выглядит иначе, чем другие (поза, наклон, «парит» над полом). Версии одного персонажа (tamara и tamara_v3) сравни между собой.` }] }] });
-      const r = toolInput(resp, "report");
+      const r = await askTool(budget, "sprite:lineup", { model, max_tokens: 12000, system: SYSTEM, tools: [tool], output_config: { effort: "medium" },
+        messages: [{ role: "user", content: [{ type: "text", text: `Лист lineup: ${lu.caption}` }, img(lu.file), { type: "text", text: `Персонажи:\n${rows.join("\n")}\nОцени только масштаб и пропорции относительно друг друга и возраста (area = «масштаб», image = «lineup»): кто слишком высок или низок для своего возраста и роли, у кого голова или руки непропорциональны, у кого фигура в линейке выглядит иначе, чем другие (поза, наклон, «парит» над полом). Версии одного персонажа (tamara и tamara_v3) сравни между собой.` }] }] }, "report");
       if (r) { lineupSummary = r.summary || ""; for (const f of r.findings || []) findings.push({ ...f, image: "lineup", area: f.area || "масштаб" }); }
     } catch (e) { errors.push(`lineup: ${String(e.message || e).slice(0, 200)}`); }
   }

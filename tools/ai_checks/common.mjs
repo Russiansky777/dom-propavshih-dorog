@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { callClaude, Budget, ApiError, redact } from "../ai_playtest/claude.mjs";
+import { callClaude, callTool, Budget, ApiError, redact } from "../ai_playtest/claude.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(__dirname, "..", "..");
@@ -93,6 +93,24 @@ export async function ask(budget, tag, body) {
     const resp = await callClaude(apiKey, body, { log });
     budget.add(body.model, resp.usage, tag);
     return resp;
+  } catch (e) {
+    if (e instanceof ApiError) throw new Error(redact(`API: ${e.message}`));
+    throw e;
+  }
+}
+
+/** A call that must answer with the tool `name` (forced where the model allows, else auto; one retry). */
+export async function askTool(budget, tag, body, name) {
+  const apiKey = process.env.ANTHROPIC_API_KEY || "";
+  if (!apiKey) throw new Error("нет ключа API (секрет CLAUDE_API → ANTHROPIC_API_KEY)");
+  try {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const { resp, input } = await callTool(apiKey, body, name, { log });
+      budget.add(body.model, resp.usage, attempt ? `${tag}-retry` : tag);
+      if (input) return input;
+      log(`${tag}: no ${name} call (stop_reason ${resp.stop_reason}), retry`);
+    }
+    return null;
   } catch (e) {
     if (e instanceof ApiError) throw new Error(redact(`API: ${e.message}`));
     throw e;

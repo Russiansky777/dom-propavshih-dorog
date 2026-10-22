@@ -13,7 +13,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { ROOT, args, log, validBase, readAt, listAt, canonText, readDoc, reportPath, ask, toolInput, cell, runLine, Budget } from "./common.mjs";
+import { ROOT, args, log, validBase, readAt, listAt, canonText, readDoc, reportPath, askTool, cell, runLine, Budget } from "./common.mjs";
 
 
 /** Every player-visible Russian string of data/story at a ref ("" = working tree): [{id, who, text}]. */
@@ -123,17 +123,9 @@ ${readDoc("Docs/SCENARIO_FINAL.md", 120000)}`;
 
   let input = null, err = "";
   try {
-    const body = { model, max_tokens: 32000, system, tools: [tool], tool_choice: { type: "auto" }, thinking: { type: "adaptive" }, output_config: { effort: "high" },
-      messages: [{ role: "user", content: user + "\n\nОтветь вызовом инструмента report." }] };
-    let resp;
-    try { resp = await ask(budget, "lint", body); }
-    catch (e) { if (/HTTP 400/.test(String(e.message))) { const { thinking, output_config, ...b } = body; resp = await ask(budget, "lint", { ...b, tool_choice: { type: "tool", name: "report" } }); } else throw e; }
-    input = toolInput(resp, "report");
-    if (!input) {
-      const { thinking, output_config, ...b } = body;
-      resp = await ask(budget, "lint-forced", { ...b, tool_choice: { type: "tool", name: "report" } });
-      input = toolInput(resp, "report");
-    }
+    input = await askTool(budget, "lint", { model, max_tokens: 32000, system, tools: [tool], thinking: { type: "adaptive" }, output_config: { effort: "high" },
+      messages: [{ role: "user", content: user + "\n\nОтветь вызовом инструмента report." }] }, "report");
+    if (!input) err = "модель не вернула отчёт инструментом";
   } catch (e) { err = String(e.message || e); }
 
   const known = new Set(now.map((e) => e.id));

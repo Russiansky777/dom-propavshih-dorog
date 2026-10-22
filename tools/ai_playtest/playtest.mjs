@@ -33,7 +33,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
-import { callClaude, Budget, ApiError, priceKnown, estimateCost } from "./claude.mjs";
+import { callClaude, callTool, Budget, ApiError, priceKnown, estimateCost } from "./claude.mjs";
 import { parseItems, loadChecklist, checklistText, actTool, systemPrompt, stepText, reportSystem } from "./prompts.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -129,8 +129,10 @@ async function main() {
     maxMinutes: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_minutes ?? 90 : req.max_minutes, 5, 150, mode === "acceptance" ? 120 : 90),
     url: A.url || req.url || SITE,
     note: String((mode === "fresh" && req.mode === "gate" ? req.fresh_note : req.note) || ""),
-    model: req.model || "claude-haiku-5-5",
-    modelStuck: req.model_stuck === undefined ? "claude-sonnet-5-5" : String(req.model_stuck || ""),
+    // Steps: claude-sonnet-5-5 by default — claude-haiku-5-5 lost track of a finished conversation within 9 steps
+    // (acceptance r4, 22.10); the credits are not a constraint (Director 22.10). A stuck step goes one model up.
+    model: req.model || "claude-sonnet-5-5",
+    modelStuck: req.model_stuck !== undefined ? String(req.model_stuck || "") : ((req.model || "claude-sonnet-5-5") === "claude-haiku-5-5" ? "claude-sonnet-5-5" : "claude-opus-5-5"),
     reportModel: req.report_model || "claude-sonnet-5-5",
     W: Math.round(clampNum(req.image_width, 640, 1920, 1280)),
     maxFrames: Math.round(clampNum(req.max_frames, 4, 40, 24)),
@@ -279,7 +281,8 @@ async function main() {
         if (!s) return;
       }
       const b = s.beat || {};
-      if (!b.type || b.type === "options") return;
+      if (!b.type) { if (n) events.push(`Текст закончился: показано реплик и текстов — ${n}, окно текста закрыто. Можно действовать дальше.`); return; }
+      if (b.type === "options") return;
       if (!cfg.autoDialogue) return;
       const f = await frame(step, "line", short(b.text, 60));
       const who = b.type === "line" ? (b.speaker_name || b.speaker || "?") : "Текст";
@@ -471,8 +474,9 @@ async function main() {
         ? "Шаги или бюджет почти кончились: дай вердикты по всему, что успела увидеть."
         : "Шаги или бюджет почти кончились: запиши главные впечатления в notes.");
 
+      const recent = run.transcript.filter((t) => t.step < step).slice(-14).map((t) => `#${t.step} ${t.who}: «${short(t.text, 220)}»`);
       const text = stepText({ step, maxSteps: cfg.maxSteps, spent: budget.spent, maxUsd: cfg.maxUsd, memory,
-        verdicts: Object.values(run.verdicts), pending: pendingItems(), history: history.slice(-10), events, warnings, imageLabels: labels });
+        verdicts: Object.values(run.verdicts), pending: pendingItems(), history: history.slice(-12), recent, events, warnings, imageLabels: labels });
       const content = [];
       for (const f of extra.slice(-3)) {
         content.push({ type: "text", text: `${f.id}${f.kind === "staging" ? " (затемнение)" : " (реплика)"}:` });
@@ -492,17 +496,22 @@ async function main() {
         let resp;
         if (dry) resp = await dryAct(lastState);
         else {
-          resp = await callClaude(apiKey, { model, max_tokens: 1500, system: sys, tools: [tool], tool_choice: { type: "tool", name: "act" },
-            messages: [{ role: "user", content }] }, { log });
+          // The system prompt and the tool are the same every step: cached (tools → system prefix).
+          const r = await callTool(apiKey, { model, max_tokens: 6000, system: [{ type: "text", text: sys, cache_control: { type: "ephemeral" } }],
+            tools: [tool], output_config: { effort: "low" }, messages: [{ role: "user", content }] }, "act", { log });
+          resp = r.resp;
+          resp.input = r.input;
         }
         usd = budget.add(dry ? cfg.model : model, resp.usage, `step${step}`);
-        if (dry) input = resp.input;
-        else {
-          if (resp.stop_reason === "refusal") { refusals += 1; run.harness.push(`step ${step}: refusal`); }
-          const tu = (resp.content || []).find((c) => c.type === "tool_use" && c.name === "act");
-          input = tu ? tu.input : null;
-        }
+        input = resp.input;
+        if (!dry && resp.stop_reason === "refusal") { refusals += 1; run.harness.push(`step ${step}: refusal`); }
       } catch (e) {
+        if (e instanceof ApiError && e.status === 400 && model !== cfg.model && !/workspace|credit|billing|balance/i.test(e.message)) {
+          // The stronger model of a stuck step refused the request: no more escalation, the run goes on.
+          run.harness.push(`step ${step}: ${model} — ${short(e.message, 200)}; escalation off`);
+          cfg.modelStuck = "";
+          continue;
+        }
         if (e instanceof ApiError) {
           run.stop = `API: ${e.status === 401 ? "ключ не принят (401)"
             : e.type === "workspace" ? e.message.replace(/^HTTP \d+ workspace: /, "")
@@ -650,7 +659,10 @@ async function main() {
       stepRec.room_after = after && after.room;
       stepRec.events = events.map((e) => short(e, 400));
       run.steps.push(stepRec);
-      history.push(`#${step} ${desc}${input.thought ? ` — «${short(input.thought, 110)}»` : ""} → ${events.length ? short(events.filter((e) => !/^Видимых/.test(e)).slice(0, 3).join(" | ") || "без изменений", 260) : "без изменений"}`);
+      const lines = run.transcript.filter((t) => t.step === step);
+      const other = events.filter((e) => !/^Видимых/.test(e) && !/» \[f\d+\]$/.test(e) && !/^Текст закончился/.test(e));
+      const said = lines.length ? `реплик ${lines.length}: «${short(lines[0].text, 70)}»${lines.length > 1 ? ` … «${short(lines[lines.length - 1].text, 70)}»` : ""}; ` : "";
+      history.push(`#${step} ${desc}${input.thought ? ` — «${short(input.thought, 110)}»` : ""} → ${said}${short(other.slice(0, 3).join(" | "), 200) || (said ? "" : "без изменений")}`);
       log(`step ${String(step).padStart(3)}/${cfg.maxSteps} [${(before && before.room) || "?"}→${(after && after.room) || "?"}] ${act}${stepRec.at ? ` (${stepRec.at.x},${stepRec.at.y})` : ""}${model !== cfg.model ? ` model=${model}` : ""} +$${usd.toFixed(4)} = $${budget.spent.toFixed(4)}`);
       if (noProgress >= (mode === "acceptance" ? 40 : 45)) { run.stop = `застряла: ${noProgress} шагов без продвижения`; break; }
     }

@@ -135,6 +135,30 @@ export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, t
   throw lastErr || new ApiError(0, "unknown", "no response");
 }
 
+// Models that reject a forced tool_choice ({type: "tool"} / "any"): 400 «not supported for this model» (seen
+// 22.10 on claude-sonnet-5-5 and claude-opus-5-5). They get {type: "auto"} and the prompt asks for the tool.
+const NO_FORCED = new Set(["claude-sonnet-5-5", "claude-opus-5-5", "claude-fable-5-1"]);
+
+/**
+ * One call that should answer with the tool `toolName`: forced where the model allows it, else auto (learned on
+ * the first 400 too). Returns {resp, input} — input of the tool_use block, or null when the model answered
+ * without it (the caller decides whether to retry).
+ */
+export async function callTool(apiKey, body, toolName, opts = {}) {
+  const forced = !NO_FORCED.has(body.model);
+  let b = { ...body, tool_choice: forced ? { type: "tool", name: toolName } : { type: "auto" } };
+  let resp;
+  try { resp = await callClaude(apiKey, b, opts); }
+  catch (e) {
+    if (!(e instanceof ApiError && e.status === 400 && /tool_choice/.test(e.message) && forced)) throw e;
+    NO_FORCED.add(body.model);
+    b = { ...body, tool_choice: { type: "auto" } };
+    resp = await callClaude(apiKey, b, opts);
+  }
+  const tu = (resp.content || []).find((c) => c.type === "tool_use" && c.name === toolName);
+  return { resp, input: tu ? tu.input : null };
+}
+
 /** Spending of one run: every call with its usage, totals per model, the stop check. */
 export class Budget {
   constructor(maxUsd) {
