@@ -1,0 +1,928 @@
+{
+ "max_usd": 10,
+ "spent_usd": 0.115021,
+ "by_model": {
+  "claude-haiku-5-5": {
+   "calls": 95,
+   "input_tokens": 470604,
+   "output_tokens": 29070,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "usd": 0.061595
+  },
+  "claude-sonnet-5-5": {
+   "calls": 1,
+   "input_tokens": 16648,
+   "output_tokens": 2013,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "usd": 0.053426
+  }
+ },
+ "workspace": {
+  "source": "secret",
+  "error": ""
+ },
+ "prices_per_mtok": {
+  "claude-haiku-5-5": {
+   "in": 0.1,
+   "cw": 0.125,
+   "cr": 0.01,
+   "out": 0.5,
+   "long": {
+    "over": 100000,
+    "in": 0.5,
+    "cw": 0.625,
+    "cr": 0.05,
+    "out": 2.5
+   }
+  },
+  "claude-sonnet-5-5": {
+   "in": 2,
+   "cw": 2.5,
+   "cr": 0.1,
+   "out": 10
+  },
+  "claude-opus-5-5": {
+   "in": 4,
+   "cw": 5,
+   "cr": 0.2,
+   "out": 20
+  },
+  "claude-haiku-4-5": {
+   "in": 1,
+   "cw": 1.25,
+   "cr": 0.1,
+   "out": 5
+  }
+ },
+ "prices_source": "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22)",
+ "calls": [
+  {
+   "tag": "step1",
+   "model": "claude-haiku-5-5",
+   "in": 3697,
+   "out": 274,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000507
+  },
+  {
+   "tag": "step2",
+   "model": "claude-haiku-5-5",
+   "in": 5230,
+   "out": 334,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00069
+  },
+  {
+   "tag": "step3",
+   "model": "claude-haiku-5-5",
+   "in": 5366,
+   "out": 347,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00071
+  },
+  {
+   "tag": "step4",
+   "model": "claude-haiku-5-5",
+   "in": 5483,
+   "out": 309,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000703
+  },
+  {
+   "tag": "step5",
+   "model": "claude-haiku-5-5",
+   "in": 7267,
+   "out": 331,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000892
+  },
+  {
+   "tag": "step6",
+   "model": "claude-haiku-5-5",
+   "in": 4442,
+   "out": 337,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000613
+  },
+  {
+   "tag": "step7",
+   "model": "claude-haiku-5-5",
+   "in": 4539,
+   "out": 201,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000554
+  },
+  {
+   "tag": "step8",
+   "model": "claude-haiku-5-5",
+   "in": 4616,
+   "out": 376,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00065
+  },
+  {
+   "tag": "step9",
+   "model": "claude-haiku-5-5",
+   "in": 6016,
+   "out": 241,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000722
+  },
+  {
+   "tag": "step10",
+   "model": "claude-haiku-5-5",
+   "in": 6142,
+   "out": 412,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00082
+  },
+  {
+   "tag": "step11",
+   "model": "claude-haiku-5-5",
+   "in": 4961,
+   "out": 366,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000679
+  },
+  {
+   "tag": "step12",
+   "model": "claude-haiku-5-5",
+   "in": 4876,
+   "out": 367,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000671
+  },
+  {
+   "tag": "step13",
+   "model": "claude-haiku-5-5",
+   "in": 6153,
+   "out": 338,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000784
+  },
+  {
+   "tag": "step14",
+   "model": "claude-haiku-5-5",
+   "in": 4798,
+   "out": 187,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000573
+  },
+  {
+   "tag": "step15",
+   "model": "claude-haiku-5-5",
+   "in": 4689,
+   "out": 202,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00057
+  },
+  {
+   "tag": "step16",
+   "model": "claude-haiku-5-5",
+   "in": 4662,
+   "out": 396,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000664
+  },
+  {
+   "tag": "step17",
+   "model": "claude-haiku-5-5",
+   "in": 5200,
+   "out": 341,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000691
+  },
+  {
+   "tag": "step18",
+   "model": "claude-haiku-5-5",
+   "in": 4652,
+   "out": 350,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00064
+  },
+  {
+   "tag": "step19",
+   "model": "claude-haiku-5-5",
+   "in": 4622,
+   "out": 216,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00057
+  },
+  {
+   "tag": "step20",
+   "model": "claude-haiku-5-5",
+   "in": 4575,
+   "out": 360,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000638
+  },
+  {
+   "tag": "step21",
+   "model": "claude-haiku-5-5",
+   "in": 5888,
+   "out": 363,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00077
+  },
+  {
+   "tag": "step22",
+   "model": "claude-haiku-5-5",
+   "in": 4640,
+   "out": 367,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000647
+  },
+  {
+   "tag": "step23",
+   "model": "claude-haiku-5-5",
+   "in": 4558,
+   "out": 364,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000638
+  },
+  {
+   "tag": "step24",
+   "model": "claude-haiku-5-5",
+   "in": 4582,
+   "out": 357,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000637
+  },
+  {
+   "tag": "step25",
+   "model": "claude-haiku-5-5",
+   "in": 4626,
+   "out": 199,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000562
+  },
+  {
+   "tag": "step26",
+   "model": "claude-haiku-5-5",
+   "in": 4586,
+   "out": 357,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000637
+  },
+  {
+   "tag": "step27",
+   "model": "claude-haiku-5-5",
+   "in": 4590,
+   "out": 312,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000615
+  },
+  {
+   "tag": "step28",
+   "model": "claude-haiku-5-5",
+   "in": 4560,
+   "out": 350,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000631
+  },
+  {
+   "tag": "step29",
+   "model": "claude-haiku-5-5",
+   "in": 4581,
+   "out": 354,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000635
+  },
+  {
+   "tag": "step30",
+   "model": "claude-haiku-5-5",
+   "in": 4605,
+   "out": 198,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000559
+  },
+  {
+   "tag": "step31",
+   "model": "claude-haiku-5-5",
+   "in": 4514,
+   "out": 183,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000543
+  },
+  {
+   "tag": "step32",
+   "model": "claude-haiku-5-5",
+   "in": 4477,
+   "out": 325,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00061
+  },
+  {
+   "tag": "step33",
+   "model": "claude-haiku-5-5",
+   "in": 4461,
+   "out": 302,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000597
+  },
+  {
+   "tag": "step34",
+   "model": "claude-haiku-5-5",
+   "in": 5762,
+   "out": 349,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000751
+  },
+  {
+   "tag": "step35",
+   "model": "claude-haiku-5-5",
+   "in": 4531,
+   "out": 207,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000557
+  },
+  {
+   "tag": "step36",
+   "model": "claude-haiku-5-5",
+   "in": 4527,
+   "out": 217,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000561
+  },
+  {
+   "tag": "step37",
+   "model": "claude-haiku-5-5",
+   "in": 4582,
+   "out": 207,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000562
+  },
+  {
+   "tag": "step38",
+   "model": "claude-haiku-5-5",
+   "in": 4545,
+   "out": 176,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000543
+  },
+  {
+   "tag": "step39",
+   "model": "claude-haiku-5-5",
+   "in": 5850,
+   "out": 316,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000743
+  },
+  {
+   "tag": "step40",
+   "model": "claude-haiku-5-5",
+   "in": 4538,
+   "out": 296,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000602
+  },
+  {
+   "tag": "step41",
+   "model": "claude-haiku-5-5",
+   "in": 4529,
+   "out": 193,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000549
+  },
+  {
+   "tag": "step42",
+   "model": "claude-haiku-5-5",
+   "in": 4534,
+   "out": 195,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000551
+  },
+  {
+   "tag": "step43",
+   "model": "claude-haiku-5-5",
+   "in": 4546,
+   "out": 201,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000555
+  },
+  {
+   "tag": "step44",
+   "model": "claude-haiku-5-5",
+   "in": 5838,
+   "out": 369,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000768
+  },
+  {
+   "tag": "step45",
+   "model": "claude-haiku-5-5",
+   "in": 4575,
+   "out": 170,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000543
+  },
+  {
+   "tag": "step46",
+   "model": "claude-haiku-5-5",
+   "in": 4590,
+   "out": 361,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000639
+  },
+  {
+   "tag": "step47",
+   "model": "claude-haiku-5-5",
+   "in": 4583,
+   "out": 383,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00065
+  },
+  {
+   "tag": "step48",
+   "model": "claude-haiku-5-5",
+   "in": 5886,
+   "out": 359,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000768
+  },
+  {
+   "tag": "step49",
+   "model": "claude-haiku-5-5",
+   "in": 4553,
+   "out": 192,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000551
+  },
+  {
+   "tag": "step50",
+   "model": "claude-haiku-5-5",
+   "in": 4553,
+   "out": 320,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000615
+  },
+  {
+   "tag": "step51",
+   "model": "claude-haiku-5-5",
+   "in": 4554,
+   "out": 312,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000611
+  },
+  {
+   "tag": "step52",
+   "model": "claude-haiku-5-5",
+   "in": 4573,
+   "out": 189,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000552
+  },
+  {
+   "tag": "step53",
+   "model": "claude-haiku-5-5",
+   "in": 4617,
+   "out": 297,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00061
+  },
+  {
+   "tag": "step54",
+   "model": "claude-haiku-5-5",
+   "in": 4523,
+   "out": 393,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000649
+  },
+  {
+   "tag": "step55",
+   "model": "claude-haiku-5-5",
+   "in": 4544,
+   "out": 438,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000673
+  },
+  {
+   "tag": "step56",
+   "model": "claude-haiku-5-5",
+   "in": 4618,
+   "out": 395,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000659
+  },
+  {
+   "tag": "step57",
+   "model": "claude-haiku-5-5",
+   "in": 4583,
+   "out": 191,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000554
+  },
+  {
+   "tag": "step58",
+   "model": "claude-haiku-5-5",
+   "in": 4581,
+   "out": 204,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00056
+  },
+  {
+   "tag": "step59",
+   "model": "claude-haiku-5-5",
+   "in": 4588,
+   "out": 339,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000628
+  },
+  {
+   "tag": "step60",
+   "model": "claude-haiku-5-5",
+   "in": 4566,
+   "out": 346,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00063
+  },
+  {
+   "tag": "step61",
+   "model": "claude-haiku-5-5",
+   "in": 4544,
+   "out": 359,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000634
+  },
+  {
+   "tag": "step62",
+   "model": "claude-haiku-5-5",
+   "in": 5889,
+   "out": 362,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00077
+  },
+  {
+   "tag": "step63",
+   "model": "claude-haiku-5-5",
+   "in": 4619,
+   "out": 320,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000622
+  },
+  {
+   "tag": "step64",
+   "model": "claude-haiku-5-5",
+   "in": 4592,
+   "out": 204,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000561
+  },
+  {
+   "tag": "step65",
+   "model": "claude-haiku-5-5",
+   "in": 4613,
+   "out": 332,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000627
+  },
+  {
+   "tag": "step66",
+   "model": "claude-haiku-5-5",
+   "in": 5916,
+   "out": 360,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000772
+  },
+  {
+   "tag": "step67",
+   "model": "claude-haiku-5-5",
+   "in": 4685,
+   "out": 382,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00066
+  },
+  {
+   "tag": "step68",
+   "model": "claude-haiku-5-5",
+   "in": 6008,
+   "out": 411,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000806
+  },
+  {
+   "tag": "step69",
+   "model": "claude-haiku-5-5",
+   "in": 4899,
+   "out": 296,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000638
+  },
+  {
+   "tag": "step70",
+   "model": "claude-haiku-5-5",
+   "in": 6123,
+   "out": 205,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000715
+  },
+  {
+   "tag": "step71",
+   "model": "claude-haiku-5-5",
+   "in": 4821,
+   "out": 302,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000633
+  },
+  {
+   "tag": "step72",
+   "model": "claude-haiku-5-5",
+   "in": 4766,
+   "out": 385,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000669
+  },
+  {
+   "tag": "step73",
+   "model": "claude-haiku-5-5",
+   "in": 4803,
+   "out": 345,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000653
+  },
+  {
+   "tag": "step74",
+   "model": "claude-haiku-5-5",
+   "in": 7504,
+   "out": 386,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000943
+  },
+  {
+   "tag": "step75",
+   "model": "claude-haiku-5-5",
+   "in": 4928,
+   "out": 216,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000601
+  },
+  {
+   "tag": "step76",
+   "model": "claude-haiku-5-5",
+   "in": 6192,
+   "out": 185,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000712
+  },
+  {
+   "tag": "step77",
+   "model": "claude-haiku-5-5",
+   "in": 4924,
+   "out": 330,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000657
+  },
+  {
+   "tag": "step78",
+   "model": "claude-haiku-5-5",
+   "in": 4849,
+   "out": 327,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000648
+  },
+  {
+   "tag": "step79",
+   "model": "claude-haiku-5-5",
+   "in": 6147,
+   "out": 355,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000792
+  },
+  {
+   "tag": "step80",
+   "model": "claude-haiku-5-5",
+   "in": 4793,
+   "out": 326,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000642
+  },
+  {
+   "tag": "step81",
+   "model": "claude-haiku-5-5",
+   "in": 4769,
+   "out": 356,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000655
+  },
+  {
+   "tag": "step82",
+   "model": "claude-haiku-5-5",
+   "in": 6143,
+   "out": 345,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000787
+  },
+  {
+   "tag": "step83",
+   "model": "claude-haiku-5-5",
+   "in": 4817,
+   "out": 367,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000665
+  },
+  {
+   "tag": "step84",
+   "model": "claude-haiku-5-5",
+   "in": 4718,
+   "out": 369,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000656
+  },
+  {
+   "tag": "step85",
+   "model": "claude-haiku-5-5",
+   "in": 4693,
+   "out": 384,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000661
+  },
+  {
+   "tag": "step86",
+   "model": "claude-haiku-5-5",
+   "in": 4705,
+   "out": 348,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000644
+  },
+  {
+   "tag": "step87",
+   "model": "claude-haiku-5-5",
+   "in": 4653,
+   "out": 182,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000556
+  },
+  {
+   "tag": "step88",
+   "model": "claude-haiku-5-5",
+   "in": 4624,
+   "out": 196,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00056
+  },
+  {
+   "tag": "step89",
+   "model": "claude-haiku-5-5",
+   "in": 4546,
+   "out": 193,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000551
+  },
+  {
+   "tag": "step90",
+   "model": "claude-haiku-5-5",
+   "in": 4564,
+   "out": 375,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000644
+  },
+  {
+   "tag": "step91",
+   "model": "claude-haiku-5-5",
+   "in": 5906,
+   "out": 463,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000822
+  },
+  {
+   "tag": "step92",
+   "model": "claude-haiku-5-5",
+   "in": 5942,
+   "out": 382,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000785
+  },
+  {
+   "tag": "step93",
+   "model": "claude-haiku-5-5",
+   "in": 4655,
+   "out": 172,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000552
+  },
+  {
+   "tag": "step94",
+   "model": "claude-haiku-5-5",
+   "in": 4643,
+   "out": 224,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000576
+  },
+  {
+   "tag": "step95",
+   "model": "claude-haiku-5-5",
+   "in": 4688,
+   "out": 395,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000666
+  },
+  {
+   "tag": "report",
+   "model": "claude-sonnet-5-5",
+   "in": 16648,
+   "out": 2013,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.053426
+  }
+ ],
+ "report_reserve_usd": 0.2434,
+ "stop": "API: ошибка 400 invalid_request_error"
+}
