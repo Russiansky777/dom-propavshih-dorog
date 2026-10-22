@@ -697,6 +697,8 @@ async function main() {
   try { if (page && cdp) lastFrame = await frame(run.steps.length + 1, "final", "последний кадр"); } catch (_) {}
   const endState = page ? await state() : null;
   run.end = endState ? { room: endState.room, inventory: endState.inventory, goal: endState.goal, flags: truthyFlags(endState).length } : null;
+  run.endFlags = endState ? truthyFlags(endState) : [];
+  run.blocked = blockedScenes(run.endFlags, run.rooms);
   if (mode === "acceptance") {
     for (const r of checklist ? checklist.rows : []) {
       if (!run.verdicts[r.num]) run.verdicts[r.num] = { item: r.num, status: "не дошёл", seen: `вердикта нет: прогон остановлен (${run.stop})`, frames: [], step: null, auto: true };
@@ -752,7 +754,7 @@ async function main() {
   fs.writeFileSync(path.join(outDir, "usage.json"), JSON.stringify({ ...budget.toJSON(), report_reserve_usd: run.reportReserve, stop: run.stop }, null, 1));
   fs.writeFileSync(path.join(outDir, "log.json"), JSON.stringify({
     cfg: run.cfg, version: run.version, started: run.started, stop: run.stop, probe: run.probe, end: run.end,
-    rooms: run.rooms, flags_order: run.flagsOrder, harness: run.harness, console_errors: run.consoleErrors, console_warnings: run.consoleWarnings,
+    rooms: run.rooms, flags_order: run.flagsOrder, blocked_scenes: run.blocked, harness: run.harness, console_errors: run.consoleErrors, console_warnings: run.consoleWarnings,
     checklist: run.checklist, verdict_history: run.verdictHistory, notes: run.notes, frames: run.frames,
     steps: run.steps, transcript: run.transcript,
   }, null, 1));
@@ -765,6 +767,46 @@ async function main() {
     : { шагов: run.steps.length };
   fs.writeFileSync(path.join(workDir, "summary.txt"), `${path.basename(outDir)}: ${Object.entries(sum).map(([k, v]) => `${k} ${v}`).join(", ")}; $${budget.spent.toFixed(2)}`);
   process.exit(0);
+}
+
+/**
+ * Diagnostics for the report: main scenes of the rooms the run visited that did not complete, with the
+ * flags their `requires` still miss and the scene that grants each (data/story/scenes of this checkout).
+ * Tells «the game is broken» from «a step was skipped» (acceptance r6: the night did not start because M06
+ * — two of three class traces — was never done, so M07 and M08 waited).
+ */
+function blockedScenes(flags, rooms) {
+  const have = new Set(flags);
+  const scenes = [];
+  try {
+    const dir = path.join(ROOT, "data", "story", "scenes");
+    for (const f of fs.readdirSync(dir).sort()) {
+      if (!f.endsWith(".json")) continue;
+      const d = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
+      const ep = Number(d.episode ?? (/E(\d+)/.exec(f) || [])[1] ?? 0);
+      for (const sc of d.scenes || []) scenes.push({ ...sc, _ep: ep });
+    }
+  } catch (_) { return []; }
+  // Only the episodes the run reached: up to the last episode with a completed scene.
+  const maxEp = Math.max(0, ...scenes.filter((sc) => have.has(`done_${sc.id}`)).map((sc) => sc._ep));
+  const grantedBy = {};
+  for (const sc of scenes) for (const fl of (sc.grants && sc.grants.flags) || []) (grantedBy[fl] ||= []).push(sc);
+  const visited = new Set(rooms);
+  const out = [];
+  for (const sc of scenes) {
+    if (have.has(`done_${sc.id}`) || sc.type !== "main" || sc._ep > maxEp) continue;
+    const req = (sc.requires && sc.requires.flags) || [];
+    const touched = (sc.locations || []).some((r) => visited.has(r)) || req.some((r) => have.has(r));
+    if (!touched) continue;
+    const missing = req.filter((r) => !have.has(r));
+    const partly = req.length && missing.length < req.length;
+    if (!missing.length && !(sc.locations || []).some((r) => visited.has(r))) continue;
+    if (missing.length && !partly && !(sc.locations || []).some((r) => visited.has(r))) continue;
+    out.push(`${sc.id} «${sc.title || ""}» (${(sc.locations || []).join(", ")}): ${missing.length
+      ? `не хватает ${missing.map((m) => `${m}${grantedBy[m] ? ` ← ${grantedBy[m].map((g) => `${g.id} «${g.title || ""}»`).join(" / ")}` : ""}`).join("; ")}`
+      : "условия выполнены, но сцена не завершена (её действие не сделано)"}`);
+  }
+  return out.slice(0, 25);
 }
 
 function buildReportInput(run, cfg, checklist) {
@@ -790,6 +832,10 @@ function buildReportInput(run, cfg, checklist) {
   L.push(`Комнаты по порядку: ${run.rooms.join(" → ") || "—"}`);
   L.push(`Флаги сюжета по порядку появления: ${run.flagsOrder.map((f) => `${f.flag}@${f.step}`).join(", ") || "—"}`);
   if (run.end) L.push(`Конец: комната ${run.end.room}, сумка [${(run.end.inventory || []).join(", ")}], цель журнала: «${short(run.end.goal, 200)}»`);
+  if (run.blocked && run.blocked.length) {
+    L.push("Незавершённые сцены посещённых мест и чего им не хватает (по данным data/story; «A ← B» — флаг A даёт сцена B). Используй, чтобы отличить дефект игры от пропущенного игроком шага:");
+    for (const b of run.blocked) L.push(`- ${b}`);
+  }
   if (run.harness.length) L.push(`Технические события плейтеста: ${run.harness.map((h) => short(h, 200)).join(" | ")}`);
   if (run.consoleErrors.length) L.push(`Ошибки консоли браузера: ${run.consoleErrors.slice(0, 8).join(" | ")}`);
   if (run.consoleWarnings.length) L.push(`Предупреждения игры (Godot WARNING, не ошибки): ${[...new Set(run.consoleWarnings)].slice(0, 12).join(" | ")}`);
