@@ -1,0 +1,34 @@
+[base_walk] источник Walking_Woman: кадры сцены 0.0–58.0 (0.97 с), костей 24
+  семейство meshy, поворот к −Y -0.0°, масштаб 1.0000, путь таза 0.12 м, на месте: True
+  петля: {'a': 0, 'b': 58, 'cycles': 1, 'whole': True, 'cost': 0.02, 't0_s': np.float64(0.0), 'src_frame0': 0.0, 'src_frame1': 58.0, 'period_s': np.float64(0.9667), 'frames_out': 23, 'time_scale': np.float64(0.9914)}
+{"frames": 23, "speed_mps": 1.126, "feet_raw": {"L": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 1, "toe_out_deg": 17.2}, "R": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 2, "toe_out_deg": 15.2}}, "feet": {"L": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 1, "toe_out_deg": 17.2}, "R": {"slide_mm_max": 0.0, "slide_mm_median": 0.0, "contacts": 2, "toe_out_deg": 15.2}}, "feet_extra": {"L": {"sole_min_mm": 6.4, "toe_out_max_deg": 45.6, "toe_out_min_deg": 14.7}, "R": {"sole_min_mm": 13.5, "toe_out_max_deg": 38.4, "toe_out_min_deg": 14.4}}, "hips_yaw_range_deg": 14.7, "hip_drop_max_m": 0.0}
+/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:86: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  mat.use_nodes = True
+/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py:115: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  world.use_nodes = True
+Traceback (most recent call last):
+  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 298, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 269, in main
+    ok = encode(work, mp4, dur, args.max_bytes)
+  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/render_preview.py", line 287, in encode
+    subprocess.run(base + ["-pass", "1", "-passlogfile", log, "-an", "-f", "mp4", "/dev/null"], check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1040, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/subprocess.py", line 1992, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'ffmpeg'
+кадров отрендерено: 161

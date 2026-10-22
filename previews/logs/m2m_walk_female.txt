@@ -1,0 +1,11 @@
+[m2m_walk_female] источник m2m:static/animations/human-addon-animations.glb: кадры сцены 2.5–82.5 (1.33 с), костей 66
+  семейство m2m, поворот к −Y 0.0°, масштаб 0.8496, путь таза 0.21 м, на месте: False
+Traceback (most recent call last):
+  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/retarget_clip.py", line 387, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/retarget_clip.py", line 266, in main
+    loop = find_walk_loop(sk, R, root_P, fg, FPS_AN, spec.get("cycles", 2))
+  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/motion_previews/retarget_clip.py", line 143, in find_walk_loop
+    raise RuntimeError("не найден прямой участок ходьбы с двумя ударами пятки")
+RuntimeError: не найден прямой участок ходьбы с двумя ударами пятки

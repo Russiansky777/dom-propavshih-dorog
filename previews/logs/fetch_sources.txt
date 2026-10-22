@@ -1,0 +1,13 @@
+  https://raw.githubusercontent.com/Mesh2Motion/mesh2motion-app/653a9698f5f315523072f1c3ff3496100401317b/static/animations/human-addon-animations.glb → _src/m2m/static/animations/human-addon-animations.glb (5292804 байт)
+  https://raw.githubusercontent.com/Mesh2Motion/mesh2motion-app/653a9698f5f315523072f1c3ff3496100401317b/static/animations/human-base-animations.glb → _src/m2m/static/animations/human-base-animations.glb (5656648 байт)
+  https://raw.githubusercontent.com/Shriinivas/cmubvh/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-113-128/113/Data/113_25.zip → _src/cmu/Sequence-113-128/113/Data/113_25.zip (185388 байт)
+  https://raw.githubusercontent.com/Shriinivas/cmubvh/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-113-128/113/Data/113_10.zip → _src/cmu/Sequence-113-128/113/Data/113_10.zip (365555 байт)
+  https://raw.githubusercontent.com/Shriinivas/cmubvh/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-141-144/144/Data/144_33.zip → _src/cmu/Sequence-141-144/144/Data/144_33.zip (1331816 байт)
+  https://raw.githubusercontent.com/Shriinivas/cmubvh/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-113-128/113/Data/113_21.zip → _src/cmu/Sequence-113-128/113/Data/113_21.zip (358898 байт)
+  https://raw.githubusercontent.com/Shriinivas/cmubvh/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-076-080/77/Data/77_02.zip → _src/cmu/Sequence-076-080/77/Data/77_02.zip (244196 байт)
+  https://zenodo.org/records/8127870/files/100STYLE.zip?download=1 → _src/_100STYLE.zip (1468515354 байт) md5 OK
+  100STYLE: 100STYLE/Neutral/Neutral_FW.bvh (5504825 байт)
+  100STYLE: 100STYLE/Depressed/Depressed_FW.bvh (6781802 байт)
+  100STYLE: 100STYLE/Proud/Proud_FW.bvh (4608339 байт)
+  100STYLE: 100STYLE/Neutral/Neutral_ID.bvh (1465227 байт)
+  100STYLE: 100STYLE/Depressed/Depressed_ID.bvh (1625730 байт)

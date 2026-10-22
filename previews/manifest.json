@@ -1,0 +1,1532 @@
+{
+ "run": "39823973100",
+ "commit": "d376bcb891ec55a8fcd0070ae00a6de44e25c5cc",
+ "fps": 24,
+ "size": "1280x720",
+ "camera_elev_deg": 14,
+ "views": {
+  "walk": [
+   "к зрителю (вниз по экрану)",
+   "профиль (вправо)",
+   "по диагонали"
+  ],
+  "idle": [
+   "3/4 спереди",
+   "профиль"
+  ]
+ },
+ "floor": "шкала: линии 10 см, толще 50 см, ещё толще 1 м",
+ "metrics": {
+  "slide_mm": "проскальзывание опорной стопы: наибольший уход по полу самой низкой точки подошвы (пятка/подушечка/носок) от места, где она стала опорной, за одно касание; мм; до и после чистки",
+  "toe_out_deg": "разворот ботинка (ось подошвы по сетке модели) к направлению хода на кадрах, где стопа стоит плоско; + наружу; для idle — к взгляду таза",
+  "swing_toe_out_max_deg": "наибольший разворот наружу за петлю, включая перенос ноги",
+  "stance_on_screen_deg_14": "как этот угол выглядит на экране при ходьбе к зрителю под камерой 14° (глубина сжата ×0,24)"
+ },
+ "cleanup": "масштаб по длине ног; высота таза — подошва на полу; пальцы сапога жёсткие; поворот опорной стопы на полу зафиксирован; самая низкая точка подошвы держится на месте (IK бедро–колено–лодыжка); таз опускается, где нога не дотягивается. Базовая линия Meshy — без чистки, как в игре.",
+ "retargeted_format": "npz: names (кости Агаты, agata_rt.glb), parents, basis_quat (кадры×кости×4, wxyz — matrix_basis Blender относительно покоя), root_P (кадры×3, мировая позиция головы кости Hips, м, Z вверх, ход к −Y), disp (смещение таза за петлю, м), fps 24, contacts_L/R (опорная стопа на кадре). Петля бесшовная: кадр k-й петли = кадр j + k·disp.",
+ "items": [
+  {
+   "id": "base_walk",
+   "library": "Meshy (сейчас в игре)",
+   "type": "walk",
+   "clip": "Walking_Woman",
+   "license": "модель и клипы Meshy этого проекта",
+   "library_url": "assets/characters/agata/rt3d/agata_rt.glb",
+   "why": "Нынешняя ходьба Агаты (листы и 3D): база для сравнения; без чистки — как в игре (root motion по опорной стопе).",
+   "status": "нет результата",
+   "source_url": "assets/characters/agata/rt3d/agata_rt.glb (клип Walking_Woman)",
+   "loop": {
+    "a": 0,
+    "b": 58,
+    "cycles": 1,
+    "whole": true,
+    "cost": 0.02,
+    "t0_s": 0.0,
+    "src_frame0": 0.0,
+    "src_frame1": 58.0,
+    "period_s": 0.9667,
+    "frames_out": 23,
+    "time_scale": 0.9914
+   },
+   "loop_frames": 23,
+   "speed_mps": 1.126,
+   "cleanup": false,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 14.7,
+   "hip_drop_max_m": 0.0,
+   "ground_offset_m": 0.0071,
+   "scale": 1.0,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 17.2
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 2,
+     "toe_out_deg": 15.2
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 17.2
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 2,
+     "toe_out_deg": 15.2
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": 6.4,
+     "toe_out_max_deg": 45.6,
+     "toe_out_min_deg": 14.7
+    },
+    "R": {
+     "sole_min_mm": 13.5,
+     "toe_out_max_deg": 38.4,
+     "toe_out_min_deg": 14.4
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": 17.2,
+     "R": 15.2
+    },
+    "stance_on_screen_deg_14": {
+     "L": 52.0,
+     "R": 48.3
+    },
+    "swing_toe_out_max_deg": {
+     "L": 45.6,
+     "R": 38.4
+    },
+    "has_turned_foot": true,
+    "note": "носок наружу в опоре > 12°; в переносе ноги носок уходит наружу > 25°"
+   },
+   "slide_mm_max": 0.0,
+   "slide_mm_max_before_cleanup": 0.0,
+   "retargeted": "retargeted/base_walk.npz"
+  },
+  {
+   "id": "base_idle",
+   "library": "Meshy (сейчас в игре)",
+   "type": "idle",
+   "clip": "Idle_4",
+   "license": "модель и клипы Meshy этого проекта",
+   "library_url": "assets/characters/agata/rt3d/agata_rt.glb",
+   "why": "Основной idle 3D-режима (вес 3 из 6 в пуле Idle_4/Idle_3/Idle_9).",
+   "status": "нет результата",
+   "source_url": "assets/characters/agata/rt3d/agata_rt.glb (клип Idle_4)",
+   "loop": {
+    "a": 90,
+    "b": 540,
+    "whole": false,
+    "cost": 17.06,
+    "pose_mismatch_deg": 15.1,
+    "root_drift_m": 0.005,
+    "feet_shift_m": 0.003,
+    "hips_yaw_range_deg": 10.8,
+    "max_foot_travel_m": 0.012,
+    "t0_s": 1.5,
+    "src_frame0": 90.0,
+    "src_frame1": 540.0,
+    "period_s": 7.5,
+    "frames_out": 180,
+    "time_scale": 1.0
+   },
+   "loop_frames": 180,
+   "speed_mps": 0.0,
+   "cleanup": false,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 7.8,
+   "hip_drop_max_m": 0.0,
+   "ground_offset_m": -0.0661,
+   "scale": 1.0,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 11.3,
+     "slide_mm_median": 11.3,
+     "contacts": 1,
+     "toe_out_deg": 18.9
+    },
+    "R": {
+     "slide_mm_max": 10.7,
+     "slide_mm_median": 10.7,
+     "contacts": 1,
+     "toe_out_deg": 32.5
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 11.3,
+     "slide_mm_median": 11.3,
+     "contacts": 1,
+     "toe_out_deg": 18.9
+    },
+    "R": {
+     "slide_mm_max": 10.7,
+     "slide_mm_median": 10.7,
+     "contacts": 1,
+     "toe_out_deg": 32.5
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -66.8
+    },
+    "R": {
+     "sole_min_mm": -57.0
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_vs_hips_deg": {
+     "L": 18.9,
+     "R": 32.5
+    }
+   },
+   "slide_mm_max": 11.3,
+   "slide_mm_max_before_cleanup": 11.3,
+   "retargeted": "retargeted/base_idle.npz"
+  },
+  {
+   "id": "m2m_walk_female",
+   "library": "Mesh2Motion",
+   "type": "walk",
+   "clip": "Walk_Female",
+   "license": "CC0 1.0 (анимации и риги Mesh2Motion/Quaternius; код — MIT)",
+   "library_url": "https://github.com/Mesh2Motion/mesh2motion-app",
+   "why": "Женская ходьба набора (Quaternius): спокойный темп, руки близко к телу.",
+   "status": "нет результата",
+   "source_url": "https://github.com/Mesh2Motion/mesh2motion-app/blob/653a9698f5f315523072f1c3ff3496100401317b/static/animations/human-addon-animations.glb",
+   "source_file": "static/animations/human-addon-animations.glb"
+  },
+  {
+   "id": "m2m_walk",
+   "library": "Mesh2Motion",
+   "type": "walk",
+   "clip": "Walk",
+   "license": "CC0 1.0 (анимации и риги Mesh2Motion/Quaternius; код — MIT)",
+   "library_url": "https://github.com/Mesh2Motion/mesh2motion-app",
+   "why": "Базовая нейтральная ходьба набора.",
+   "status": "нет результата",
+   "source_url": "https://github.com/Mesh2Motion/mesh2motion-app/blob/653a9698f5f315523072f1c3ff3496100401317b/static/animations/human-base-animations.glb",
+   "source_file": "static/animations/human-base-animations.glb",
+   "loop": {
+    "a": 0,
+    "b": 100,
+    "cycles": 1,
+    "whole": true,
+    "cost": 0.02,
+    "t0_s": 0.0,
+    "src_frame0": 0.0,
+    "src_frame1": 100.0,
+    "period_s": 1.6667,
+    "frames_out": 40,
+    "time_scale": 1.0
+   },
+   "loop_frames": 40,
+   "speed_mps": 0.419,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 2.8,
+   "hip_drop_max_m": 0.0263,
+   "ground_offset_m": -0.158,
+   "scale": 0.8599,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 0.1
+    },
+    "R": {
+     "slide_mm_max": null,
+     "slide_mm_median": null,
+     "contacts": 0,
+     "toe_out_deg": -0.1
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.1,
+     "slide_mm_median": 0.1,
+     "contacts": 1,
+     "toe_out_deg": 0.1
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": -0.0
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 0.4,
+     "toe_out_min_deg": -0.5
+    },
+    "R": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 0.0,
+     "toe_out_min_deg": -0.7
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": 0.1,
+     "R": -0.0
+    },
+    "stance_on_screen_deg_14": {
+     "L": 0.4,
+     "R": -0.0
+    },
+    "swing_toe_out_max_deg": {
+     "L": 0.4,
+     "R": 0.0
+    },
+    "has_turned_foot": false,
+    "note": "нет: в опоре |носок| ≤ 12°, в переносе ≤ 25° наружу"
+   },
+   "slide_mm_max": 0.1,
+   "slide_mm_max_before_cleanup": 0.0,
+   "retargeted": "retargeted/m2m_walk.npz"
+  },
+  {
+   "id": "m2m_walk_formal",
+   "library": "Mesh2Motion",
+   "type": "walk",
+   "clip": "Walk_Formal",
+   "license": "CC0 1.0 (анимации и риги Mesh2Motion/Quaternius; код — MIT)",
+   "library_url": "https://github.com/Mesh2Motion/mesh2motion-app",
+   "why": "Сдержанная ходьба с прямой спиной — «собранная».",
+   "status": "нет результата",
+   "source_url": "https://github.com/Mesh2Motion/mesh2motion-app/blob/653a9698f5f315523072f1c3ff3496100401317b/static/animations/human-base-animations.glb",
+   "source_file": "static/animations/human-base-animations.glb",
+   "loop": {
+    "a": 0,
+    "b": 100,
+    "cycles": 1,
+    "whole": true,
+    "cost": 0.02,
+    "t0_s": 0.0,
+    "src_frame0": 0.0,
+    "src_frame1": 100.0,
+    "period_s": 1.6667,
+    "frames_out": 40,
+    "time_scale": 1.0
+   },
+   "loop_frames": 40,
+   "speed_mps": 0.427,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 2.8,
+   "hip_drop_max_m": 0.0267,
+   "ground_offset_m": -0.1576,
+   "scale": 0.8599,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 0.0
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 0.1
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.1,
+     "slide_mm_median": 0.1,
+     "contacts": 1,
+     "toe_out_deg": -0.0
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": -0.0
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 0.3,
+     "toe_out_min_deg": -0.6
+    },
+    "R": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 0.1,
+     "toe_out_min_deg": -0.6
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": -0.0,
+     "R": -0.0
+    },
+    "stance_on_screen_deg_14": {
+     "L": -0.0,
+     "R": -0.0
+    },
+    "swing_toe_out_max_deg": {
+     "L": 0.3,
+     "R": 0.1
+    },
+    "has_turned_foot": false,
+    "note": "нет: в опоре |носок| ≤ 12°, в переносе ≤ 25° наружу"
+   },
+   "slide_mm_max": 0.1,
+   "slide_mm_max_before_cleanup": 0.0,
+   "retargeted": "retargeted/m2m_walk_formal.npz"
+  },
+  {
+   "id": "m2m_idle_subtle",
+   "library": "Mesh2Motion",
+   "type": "idle",
+   "clip": "Idle_Subtle",
+   "license": "CC0 1.0 (анимации и риги Mesh2Motion/Quaternius; код — MIT)",
+   "library_url": "https://github.com/Mesh2Motion/mesh2motion-app",
+   "why": "Тихий idle: дыхание и лёгкий перенос веса.",
+   "status": "нет результата",
+   "source_url": "https://github.com/Mesh2Motion/mesh2motion-app/blob/653a9698f5f315523072f1c3ff3496100401317b/static/animations/human-addon-animations.glb",
+   "source_file": "static/animations/human-addon-animations.glb",
+   "loop": {
+    "a": 0,
+    "b": 152,
+    "whole": true,
+    "cost": 0.07,
+    "t0_s": 0.0,
+    "src_frame0": 2.5,
+    "src_frame1": 154.5,
+    "period_s": 2.5333,
+    "frames_out": 61,
+    "time_scale": 1.0033
+   },
+   "loop_frames": 61,
+   "speed_mps": 0.0,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 0.0,
+   "hip_drop_max_m": 0.0,
+   "ground_offset_m": -0.1546,
+   "scale": 0.8496,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 0.1,
+     "slide_mm_median": 0.1,
+     "contacts": 1,
+     "toe_out_deg": 25.0
+    },
+    "R": {
+     "slide_mm_max": 1.0,
+     "slide_mm_median": 1.0,
+     "contacts": 1,
+     "toe_out_deg": 19.6
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 25.0
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 19.6
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0
+    },
+    "R": {
+     "sole_min_mm": -0.0
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_vs_hips_deg": {
+     "L": 25.0,
+     "R": 19.6
+    }
+   },
+   "slide_mm_max": 0.0,
+   "slide_mm_max_before_cleanup": 1.0,
+   "retargeted": "retargeted/m2m_idle_subtle.npz"
+  },
+  {
+   "id": "m2m_idle_a",
+   "library": "Mesh2Motion",
+   "type": "idle",
+   "clip": "Idle_A",
+   "license": "CC0 1.0 (анимации и риги Mesh2Motion/Quaternius; код — MIT)",
+   "library_url": "https://github.com/Mesh2Motion/mesh2motion-app",
+   "why": "Основной idle набора.",
+   "status": "нет результата",
+   "source_url": "https://github.com/Mesh2Motion/mesh2motion-app/blob/653a9698f5f315523072f1c3ff3496100401317b/static/animations/human-base-animations.glb",
+   "source_file": "static/animations/human-base-animations.glb",
+   "loop": {
+    "a": 0,
+    "b": 187,
+    "whole": true,
+    "cost": 0.19,
+    "t0_s": 0.0,
+    "src_frame0": 0.0,
+    "src_frame1": 187.0,
+    "period_s": 3.1167,
+    "frames_out": 75,
+    "time_scale": 1.0027
+   },
+   "loop_frames": 75,
+   "speed_mps": 0.0,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 0.0,
+   "hip_drop_max_m": 0.0,
+   "ground_offset_m": -0.1481,
+   "scale": 0.8599,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 1.8,
+     "slide_mm_median": 1.8,
+     "contacts": 1,
+     "toe_out_deg": 7.7
+    },
+    "R": {
+     "slide_mm_max": 4.4,
+     "slide_mm_median": 4.4,
+     "contacts": 1,
+     "toe_out_deg": 30.4
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 7.7
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 30.3
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0
+    },
+    "R": {
+     "sole_min_mm": -0.0
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_vs_hips_deg": {
+     "L": 7.7,
+     "R": 30.3
+    }
+   },
+   "slide_mm_max": 0.0,
+   "slide_mm_max_before_cleanup": 4.4,
+   "retargeted": "retargeted/m2m_idle_a.npz"
+  },
+  {
+   "id": "cmu_113_25_walk",
+   "library": "CMU Motion Capture Database",
+   "type": "walk",
+   "clip": "113_25 «Walk»",
+   "license": "mocap.cs.cmu.edu (NSF EIA-0196217): «free for all uses», можно в продаваемых продуктах; нельзя перепродавать сами данные",
+   "library_url": "http://mocap.cs.cmu.edu/",
+   "why": "Обычная ходьба женщины (официальное описание субъекта — Post pregnant woman).",
+   "status": "нет результата",
+   "source_url": "https://github.com/Shriinivas/cmubvh/blob/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-113-128/113/Data/113_25.zip",
+   "official_page": "http://mocap.cs.cmu.edu/search.php?subjectnumber=113",
+   "source_file": "Sequence-113-128/113/Data/113_25.zip!113_25.bvh",
+   "loop": {
+    "a": 84,
+    "b": 161,
+    "cycles": 1,
+    "cost": 68.51,
+    "straight": true,
+    "heading_change_deg": 3.5,
+    "hips_yaw_change_deg": 6.5,
+    "path_dev_m": 0.019,
+    "t0_s": 1.45,
+    "src_frame0": 88.0,
+    "src_frame1": 165.0,
+    "period_s": 1.2833,
+    "frames_out": 31,
+    "time_scale": 1.0065
+   },
+   "loop_frames": 31,
+   "speed_mps": 0.906,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 53.6,
+    "roll_deg": 16.6,
+    "after_yaw_deg": -0.2,
+    "after_roll_deg": -5.8
+   },
+   "hips_yaw_range_deg": 10.0,
+   "hip_drop_max_m": 0.0194,
+   "ground_offset_m": -0.0886,
+   "scale": 0.0507,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 30.7,
+     "slide_mm_median": 30.7,
+     "contacts": 1,
+     "toe_out_deg": -15.3
+    },
+    "R": {
+     "slide_mm_max": 17.8,
+     "slide_mm_median": 17.8,
+     "contacts": 1,
+     "toe_out_deg": -11.3
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 2,
+     "toe_out_deg": -15.3
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": -11.5
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 12.5,
+     "toe_out_min_deg": -90.2
+    },
+    "R": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 19.9,
+     "toe_out_min_deg": -56.7
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": -15.3,
+     "R": -11.5
+    },
+    "stance_on_screen_deg_14": {
+     "L": -48.5,
+     "R": -40.1
+    },
+    "swing_toe_out_max_deg": {
+     "L": 12.5,
+     "R": 19.9
+    },
+    "has_turned_foot": true,
+    "note": "носок внутрь в опоре > 12°"
+   },
+   "slide_mm_max": 0.0,
+   "slide_mm_max_before_cleanup": 30.7,
+   "retargeted": "retargeted/cmu_113_25_walk.npz"
+  },
+  {
+   "id": "cmu_113_10_mope",
+   "library": "CMU Motion Capture Database",
+   "type": "walk",
+   "clip": "113_10 «Walk, mope around»",
+   "license": "mocap.cs.cmu.edu (NSF EIA-0196217): «free for all uses», можно в продаваемых продуктах; нельзя перепродавать сами данные",
+   "library_url": "http://mocap.cs.cmu.edu/",
+   "why": "Та же женщина, ходьба «уныло, без цели» — ближе всего к усталости.",
+   "status": "нет результата",
+   "source_url": "https://github.com/Shriinivas/cmubvh/blob/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-113-128/113/Data/113_10.zip",
+   "official_page": "http://mocap.cs.cmu.edu/search.php?subjectnumber=113",
+   "source_file": "Sequence-113-128/113/Data/113_10.zip!113_10.bvh",
+   "loop": {
+    "a": 64,
+    "b": 159,
+    "cycles": 1,
+    "cost": 74.95,
+    "straight": true,
+    "heading_change_deg": 0.9,
+    "hips_yaw_change_deg": 5.4,
+    "path_dev_m": 0.014,
+    "t0_s": 1.117,
+    "src_frame0": 68.0,
+    "src_frame1": 163.0,
+    "period_s": 1.5833,
+    "frames_out": 38,
+    "time_scale": 1.0
+   },
+   "loop_frames": 38,
+   "speed_mps": 0.638,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 51.3,
+    "roll_deg": 16.5,
+    "after_yaw_deg": -0.2,
+    "after_roll_deg": -6.3
+   },
+   "hips_yaw_range_deg": 19.6,
+   "hip_drop_max_m": 0.0014,
+   "ground_offset_m": -0.082,
+   "scale": 0.0507,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 31.4,
+     "slide_mm_median": 31.4,
+     "contacts": 1,
+     "toe_out_deg": -8.6
+    },
+    "R": {
+     "slide_mm_max": 17.8,
+     "slide_mm_median": 17.8,
+     "contacts": 1,
+     "toe_out_deg": -6.7
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 3.1,
+     "slide_mm_median": 3.1,
+     "contacts": 1,
+     "toe_out_deg": -12.3
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 2,
+     "toe_out_deg": -10.1
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 15.9,
+     "toe_out_min_deg": -41.0
+    },
+    "R": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 11.0,
+     "toe_out_min_deg": -41.7
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": -12.3,
+     "R": -10.1
+    },
+    "stance_on_screen_deg_14": {
+     "L": -42.0,
+     "R": -36.4
+    },
+    "swing_toe_out_max_deg": {
+     "L": 15.9,
+     "R": 11.0
+    },
+    "has_turned_foot": true,
+    "note": "носок внутрь в опоре > 12°"
+   },
+   "slide_mm_max": 3.1,
+   "slide_mm_max_before_cleanup": 31.4,
+   "retargeted": "retargeted/cmu_113_10_mope.npz"
+  },
+  {
+   "id": "cmu_144_33_walk",
+   "library": "CMU Motion Capture Database",
+   "type": "walk",
+   "clip": "144_33 «Walking»",
+   "license": "mocap.cs.cmu.edu (NSF EIA-0196217): «free for all uses», можно в продаваемых продуктах; нельзя перепродавать сами данные",
+   "library_url": "http://mocap.cs.cmu.edu/",
+   "why": "Другая женщина (Subject #144), обычная ходьба — для сравнения манеры.",
+   "status": "нет результата",
+   "source_url": "https://github.com/Shriinivas/cmubvh/blob/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-141-144/144/Data/144_33.zip",
+   "official_page": "http://mocap.cs.cmu.edu/search.php?subjectnumber=144",
+   "source_file": "Sequence-141-144/144/Data/144_33.zip!144_33.bvh",
+   "loop": {
+    "a": 1575,
+    "b": 1650,
+    "cycles": 1,
+    "cost": 74.14,
+    "straight": false,
+    "heading_change_deg": 8.1,
+    "hips_yaw_change_deg": 3.6,
+    "path_dev_m": 0.062,
+    "t0_s": 26.3,
+    "src_frame0": 1579.0,
+    "src_frame1": 1654.0,
+    "period_s": 1.25,
+    "frames_out": 30,
+    "time_scale": 1.0
+   },
+   "loop_frames": 30,
+   "speed_mps": 0.833,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": -13.1,
+    "roll_deg": -1.2,
+    "after_yaw_deg": -1.1,
+    "after_roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 15.1,
+   "hip_drop_max_m": 0.0266,
+   "ground_offset_m": -0.073,
+   "scale": 0.054,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 11.3,
+     "slide_mm_median": 6.0,
+     "contacts": 2,
+     "toe_out_deg": 9.8
+    },
+    "R": {
+     "slide_mm_max": null,
+     "slide_mm_median": null,
+     "contacts": 0,
+     "toe_out_deg": 19.6
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 12.7
+    },
+    "R": {
+     "slide_mm_max": 0.9,
+     "slide_mm_median": 0.4,
+     "contacts": 2,
+     "toe_out_deg": 17.7
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 34.5,
+     "toe_out_min_deg": 6.4
+    },
+    "R": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 49.0,
+     "toe_out_min_deg": 17.7
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": 12.7,
+     "R": 17.7
+    },
+    "stance_on_screen_deg_14": {
+     "L": 43.0,
+     "R": 52.8
+    },
+    "swing_toe_out_max_deg": {
+     "L": 34.5,
+     "R": 49.0
+    },
+    "has_turned_foot": true,
+    "note": "носок наружу в опоре > 12°; в переносе ноги носок уходит наружу > 25°"
+   },
+   "slide_mm_max": 0.9,
+   "slide_mm_max_before_cleanup": 11.3,
+   "retargeted": "retargeted/cmu_144_33_walk.npz"
+  },
+  {
+   "id": "cmu_113_21_idle",
+   "library": "CMU Motion Capture Database",
+   "type": "idle",
+   "clip": "113_21 «Standing Still»",
+   "license": "mocap.cs.cmu.edu (NSF EIA-0196217): «free for all uses», можно в продаваемых продуктах; нельзя перепродавать сами данные",
+   "library_url": "http://mocap.cs.cmu.edu/",
+   "why": "Женщина стоит спокойно — живая мелкая моторика без постановки.",
+   "status": "нет результата",
+   "source_url": "https://github.com/Shriinivas/cmubvh/blob/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-113-128/113/Data/113_21.zip",
+   "official_page": "http://mocap.cs.cmu.edu/search.php?subjectnumber=113",
+   "source_file": "Sequence-113-128/113/Data/113_21.zip!113_21.bvh",
+   "loop": {
+    "a": 15,
+    "b": 420,
+    "whole": false,
+    "cost": 34.08,
+    "pose_mismatch_deg": 28.5,
+    "root_drift_m": 0.017,
+    "feet_shift_m": 0.007,
+    "hips_yaw_range_deg": 10.6,
+    "max_foot_travel_m": 0.025,
+    "t0_s": 0.3,
+    "src_frame0": 19.0,
+    "src_frame1": 424.0,
+    "period_s": 6.75,
+    "frames_out": 162,
+    "time_scale": 1.0
+   },
+   "loop_frames": 162,
+   "speed_mps": 0.0,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 52.2,
+    "roll_deg": 21.9,
+    "after_yaw_deg": -2.3,
+    "after_roll_deg": -8.5
+   },
+   "hips_yaw_range_deg": 10.8,
+   "hip_drop_max_m": 0.0288,
+   "ground_offset_m": -0.1039,
+   "scale": 0.0507,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 11.4,
+     "slide_mm_median": 9.4,
+     "contacts": 4,
+     "toe_out_deg": 3.6
+    },
+    "R": {
+     "slide_mm_max": 7.8,
+     "slide_mm_median": 4.1,
+     "contacts": 2,
+     "toe_out_deg": -1.3
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 3.1,
+     "slide_mm_median": 3.1,
+     "contacts": 1,
+     "toe_out_deg": 4.1
+    },
+    "R": {
+     "slide_mm_max": 2.2,
+     "slide_mm_median": 2.2,
+     "contacts": 1,
+     "toe_out_deg": -0.6
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0
+    },
+    "R": {
+     "sole_min_mm": -0.0
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_vs_hips_deg": {
+     "L": 4.1,
+     "R": -0.6
+    }
+   },
+   "slide_mm_max": 3.1,
+   "slide_mm_max_before_cleanup": 11.4,
+   "retargeted": "retargeted/cmu_113_21_idle.npz"
+  },
+  {
+   "id": "cmu_77_02_idle",
+   "library": "CMU Motion Capture Database",
+   "type": "idle",
+   "clip": "77_02 «standing»",
+   "license": "mocap.cs.cmu.edu (NSF EIA-0196217): «free for all uses», можно в продаваемых продуктах; нельзя перепродавать сами данные",
+   "library_url": "http://mocap.cs.cmu.edu/",
+   "why": "Спокойное стояние (Subject #77, «Careful actions»; пол в описании не указан). Женские idle базы: 113_21 — взят; 111_28 «Standing still» (Pregnant woman) отклонён — откинутый назад корпус; 40_10 «wait for bus» отклонён — топчется и разворачивается.",
+   "status": "нет результата",
+   "source_url": "https://github.com/Shriinivas/cmubvh/blob/3bc9c75c481ac6e622f3c378369b293d8de9be45/Sequence-076-080/77/Data/77_02.zip",
+   "official_page": "http://mocap.cs.cmu.edu/search.php?subjectnumber=77",
+   "source_file": "Sequence-076-080/77/Data/77_02.zip!77_02.bvh",
+   "loop": {
+    "a": 30,
+    "b": 450,
+    "whole": false,
+    "cost": 28.31,
+    "pose_mismatch_deg": 20.6,
+    "root_drift_m": 0.023,
+    "feet_shift_m": 0.011,
+    "hips_yaw_range_deg": 18.0,
+    "max_foot_travel_m": 0.018,
+    "t0_s": 0.55,
+    "src_frame0": 34.0,
+    "src_frame1": 454.0,
+    "period_s": 7.0,
+    "frames_out": 168,
+    "time_scale": 1.0
+   },
+   "loop_frames": 168,
+   "speed_mps": 0.0,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 18.0,
+   "hip_drop_max_m": 0.0214,
+   "ground_offset_m": -0.0572,
+   "scale": 0.0513,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": null,
+     "slide_mm_median": null,
+     "contacts": 0,
+     "toe_out_deg": 22.1
+    },
+    "R": {
+     "slide_mm_max": 14.9,
+     "slide_mm_median": 5.2,
+     "contacts": 5,
+     "toe_out_deg": 28.2
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 2.4,
+     "slide_mm_median": 2.4,
+     "contacts": 1,
+     "toe_out_deg": 21.8
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 28.2
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0
+    },
+    "R": {
+     "sole_min_mm": -0.0
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_vs_hips_deg": {
+     "L": 21.8,
+     "R": 28.2
+    }
+   },
+   "slide_mm_max": 2.4,
+   "slide_mm_max_before_cleanup": 14.9,
+   "retargeted": "retargeted/cmu_77_02_idle.npz"
+  },
+  {
+   "id": "s100_neutral_fw",
+   "library": "100STYLE",
+   "type": "walk",
+   "clip": "Neutral_FW",
+   "license": "CC BY 4.0 — атрибуция «100STYLE Dataset — Ian Mason»",
+   "library_url": "https://zenodo.org/records/8127870",
+   "why": "Нейтральная ходьба вперёд.",
+   "status": "нет результата",
+   "source_url": "https://zenodo.org/records/8127870 (100STYLE.zip → 100STYLE/Neutral/Neutral_FW.bvh)",
+   "source_file": "100STYLE/Neutral/Neutral_FW.bvh",
+   "frame_cut": [
+    327,
+    7445
+   ],
+   "loop": {
+    "a": 1501,
+    "b": 1578,
+    "cycles": 1,
+    "cost": 64.84,
+    "straight": true,
+    "heading_change_deg": 4.4,
+    "hips_yaw_change_deg": 7.3,
+    "path_dev_m": 0.026,
+    "t0_s": 25.017,
+    "src_frame0": 1828.0,
+    "src_frame1": 1905.0,
+    "period_s": 1.2833,
+    "frames_out": 31,
+    "time_scale": 1.0065
+   },
+   "loop_frames": 31,
+   "speed_mps": 0.658,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 4.7,
+   "hip_drop_max_m": 0.0181,
+   "ground_offset_m": -0.1333,
+   "scale": 0.0082,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 5.2,
+     "slide_mm_median": 5.2,
+     "contacts": 1,
+     "toe_out_deg": -7.4
+    },
+    "R": {
+     "slide_mm_max": 48.3,
+     "slide_mm_median": 48.3,
+     "contacts": 1,
+     "toe_out_deg": 10.3
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 4.0,
+     "slide_mm_median": 4.0,
+     "contacts": 1,
+     "toe_out_deg": -1.2
+    },
+    "R": {
+     "slide_mm_max": 5.0,
+     "slide_mm_median": 2.5,
+     "contacts": 2,
+     "toe_out_deg": 5.1
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 1.1,
+     "toe_out_min_deg": -17.6
+    },
+    "R": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 28.3,
+     "toe_out_min_deg": 5.1
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": -1.2,
+     "R": 5.1
+    },
+    "stance_on_screen_deg_14": {
+     "L": -4.9,
+     "R": 20.2
+    },
+    "swing_toe_out_max_deg": {
+     "L": 1.1,
+     "R": 28.3
+    },
+    "has_turned_foot": true,
+    "note": "в переносе ноги носок уходит наружу > 25°"
+   },
+   "slide_mm_max": 5.0,
+   "slide_mm_max_before_cleanup": 48.3,
+   "retargeted": "retargeted/s100_neutral_fw.npz"
+  },
+  {
+   "id": "s100_depressed_fw",
+   "library": "100STYLE",
+   "type": "walk",
+   "clip": "Depressed_FW",
+   "license": "CC BY 4.0 — атрибуция «100STYLE Dataset — Ian Mason»",
+   "library_url": "https://zenodo.org/records/8127870",
+   "why": "Усталость/подавленность: голова опущена (стиля Tired в наборе нет).",
+   "status": "нет результата",
+   "source_url": "https://zenodo.org/records/8127870 (100STYLE.zip → 100STYLE/Depressed/Depressed_FW.bvh)",
+   "source_file": "100STYLE/Depressed/Depressed_FW.bvh",
+   "frame_cut": [
+    410,
+    9154
+   ],
+   "loop": {
+    "a": 5944,
+    "b": 6030,
+    "cycles": 1,
+    "cost": 40.34,
+    "straight": true,
+    "heading_change_deg": 0.9,
+    "hips_yaw_change_deg": 7.1,
+    "path_dev_m": 0.03,
+    "t0_s": 99.067,
+    "src_frame0": 6354.0,
+    "src_frame1": 6440.0,
+    "period_s": 1.4333,
+    "frames_out": 34,
+    "time_scale": 0.9884
+   },
+   "loop_frames": 34,
+   "speed_mps": 0.627,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 5.3,
+    "roll_deg": 15.5,
+    "after_yaw_deg": 1.1,
+    "after_roll_deg": 2.5
+   },
+   "hips_yaw_range_deg": 10.7,
+   "hip_drop_max_m": 0.0087,
+   "ground_offset_m": -0.1236,
+   "scale": 0.0082,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 7.8,
+     "slide_mm_median": 7.8,
+     "contacts": 1,
+     "toe_out_deg": 1.0
+    },
+    "R": {
+     "slide_mm_max": 14.0,
+     "slide_mm_median": 14.0,
+     "contacts": 1,
+     "toe_out_deg": 22.3
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.5,
+     "slide_mm_median": 0.5,
+     "contacts": 1,
+     "toe_out_deg": 2.0
+    },
+    "R": {
+     "slide_mm_max": 2.4,
+     "slide_mm_median": 1.2,
+     "contacts": 2,
+     "toe_out_deg": 21.1
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 21.1,
+     "toe_out_min_deg": -10.0
+    },
+    "R": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 39.1,
+     "toe_out_min_deg": 21.1
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": 2.0,
+     "R": 21.1
+    },
+    "stance_on_screen_deg_14": {
+     "L": 8.2,
+     "R": 57.9
+    },
+    "swing_toe_out_max_deg": {
+     "L": 21.1,
+     "R": 39.1
+    },
+    "has_turned_foot": true,
+    "note": "носок наружу в опоре > 12°; в переносе ноги носок уходит наружу > 25°"
+   },
+   "slide_mm_max": 2.4,
+   "slide_mm_max_before_cleanup": 14.0,
+   "retargeted": "retargeted/s100_depressed_fw.npz"
+  },
+  {
+   "id": "s100_proud_fw",
+   "library": "100STYLE",
+   "type": "walk",
+   "clip": "Proud_FW",
+   "license": "CC BY 4.0 — атрибуция «100STYLE Dataset — Ian Mason»",
+   "library_url": "https://zenodo.org/records/8127870",
+   "why": "«Собранная»: прямая спина, сдержанный мах рук. Followed («оглядывается иногда») не взят: его черта — редкие оглядки, в короткую петлю она не помещается (повторялась бы каждые 1,3 с); InTheDark — руки вытянуты вперёд.",
+   "status": "нет результата",
+   "source_url": "https://zenodo.org/records/8127870 (100STYLE.zip → 100STYLE/Proud/Proud_FW.bvh)",
+   "source_file": "100STYLE/Proud/Proud_FW.bvh",
+   "frame_cut": [
+    497,
+    6181
+   ],
+   "loop": {
+    "a": 4789,
+    "b": 4940,
+    "cycles": 2,
+    "cost": 58.87,
+    "straight": true,
+    "heading_change_deg": 0.0,
+    "hips_yaw_change_deg": 5.4,
+    "path_dev_m": 0.031,
+    "t0_s": 79.817,
+    "src_frame0": 5286.0,
+    "src_frame1": 5437.0,
+    "period_s": 2.5167,
+    "frames_out": 60,
+    "time_scale": 0.9934
+   },
+   "loop_frames": 60,
+   "speed_mps": 0.864,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 13.9,
+   "hip_drop_max_m": 0.0333,
+   "ground_offset_m": -0.1468,
+   "scale": 0.0082,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": null,
+     "slide_mm_median": null,
+     "contacts": 0,
+     "toe_out_deg": 2.9
+    },
+    "R": {
+     "slide_mm_max": 8.1,
+     "slide_mm_median": 8.1,
+     "contacts": 1,
+     "toe_out_deg": -7.9
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 3.1,
+     "slide_mm_median": 1.9,
+     "contacts": 2,
+     "toe_out_deg": 2.3
+    },
+    "R": {
+     "slide_mm_max": 3.7,
+     "slide_mm_median": 1.8,
+     "contacts": 2,
+     "toe_out_deg": -5.2
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 54.6,
+     "toe_out_min_deg": 2.3
+    },
+    "R": {
+     "sole_min_mm": -0.0,
+     "toe_out_max_deg": 6.9,
+     "toe_out_min_deg": -45.8
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_deg": {
+     "L": 2.3,
+     "R": -5.2
+    },
+    "stance_on_screen_deg_14": {
+     "L": 9.4,
+     "R": -20.6
+    },
+    "swing_toe_out_max_deg": {
+     "L": 54.6,
+     "R": 6.9
+    },
+    "has_turned_foot": true,
+    "note": "в переносе ноги носок уходит наружу > 25°"
+   },
+   "slide_mm_max": 3.7,
+   "slide_mm_max_before_cleanup": 8.1,
+   "retargeted": "retargeted/s100_proud_fw.npz"
+  },
+  {
+   "id": "s100_neutral_id",
+   "library": "100STYLE",
+   "type": "idle",
+   "clip": "Neutral_ID",
+   "license": "CC BY 4.0 — атрибуция «100STYLE Dataset — Ian Mason»",
+   "library_url": "https://zenodo.org/records/8127870",
+   "why": "Нейтральное стояние.",
+   "status": "нет результата",
+   "source_url": "https://zenodo.org/records/8127870 (100STYLE.zip → 100STYLE/Neutral/Neutral_ID.bvh)",
+   "source_file": "100STYLE/Neutral/Neutral_ID.bvh",
+   "frame_cut": [
+    655,
+    1555
+   ],
+   "loop": {
+    "a": 105,
+    "b": 465,
+    "whole": false,
+    "cost": 3.58,
+    "pose_mismatch_deg": 2.5,
+    "root_drift_m": 0.003,
+    "feet_shift_m": 0.001,
+    "hips_yaw_range_deg": 0.9,
+    "max_foot_travel_m": 0.001,
+    "t0_s": 1.75,
+    "src_frame0": 760.0,
+    "src_frame1": 1120.0,
+    "period_s": 6.0,
+    "frames_out": 144,
+    "time_scale": 1.0
+   },
+   "loop_frames": 144,
+   "speed_mps": 0.0,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 0.8,
+   "hip_drop_max_m": 0.0069,
+   "ground_offset_m": -0.1252,
+   "scale": 0.0082,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 0.8,
+     "slide_mm_median": 0.8,
+     "contacts": 1,
+     "toe_out_deg": 2.8
+    },
+    "R": {
+     "slide_mm_max": 0.8,
+     "slide_mm_median": 0.8,
+     "contacts": 1,
+     "toe_out_deg": 10.2
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 2.8
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 10.2
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0
+    },
+    "R": {
+     "sole_min_mm": -0.0
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_vs_hips_deg": {
+     "L": 2.8,
+     "R": 10.2
+    }
+   },
+   "slide_mm_max": 0.0,
+   "slide_mm_max_before_cleanup": 0.8,
+   "retargeted": "retargeted/s100_neutral_id.npz"
+  },
+  {
+   "id": "s100_depressed_id",
+   "library": "100STYLE",
+   "type": "idle",
+   "clip": "Depressed_ID",
+   "license": "CC BY 4.0 — атрибуция «100STYLE Dataset — Ian Mason»",
+   "library_url": "https://zenodo.org/records/8127870",
+   "why": "Усталое стояние, голова опущена.",
+   "status": "нет результата",
+   "source_url": "https://zenodo.org/records/8127870 (100STYLE.zip → 100STYLE/Depressed/Depressed_ID.bvh)",
+   "source_file": "100STYLE/Depressed/Depressed_ID.bvh",
+   "frame_cut": [
+    928,
+    1749
+   ],
+   "loop": {
+    "a": 360,
+    "b": 795,
+    "whole": false,
+    "cost": 7.97,
+    "pose_mismatch_deg": 5.4,
+    "root_drift_m": 0.007,
+    "feet_shift_m": 0.004,
+    "hips_yaw_range_deg": 2.0,
+    "max_foot_travel_m": 0.004,
+    "t0_s": 6.0,
+    "src_frame0": 1288.0,
+    "src_frame1": 1723.0,
+    "period_s": 7.25,
+    "frames_out": 174,
+    "time_scale": 1.0
+   },
+   "loop_frames": 174,
+   "speed_mps": 0.0,
+   "cleanup": true,
+   "head_fix": {
+    "yaw_deg": 0.0,
+    "roll_deg": 0.0
+   },
+   "hips_yaw_range_deg": 2.0,
+   "hip_drop_max_m": 0.008,
+   "ground_offset_m": -0.1259,
+   "scale": 0.0082,
+   "feet_before_cleanup": {
+    "L": {
+     "slide_mm_max": 2.4,
+     "slide_mm_median": 2.4,
+     "contacts": 1,
+     "toe_out_deg": -4.2
+    },
+    "R": {
+     "slide_mm_max": 2.1,
+     "slide_mm_median": 2.1,
+     "contacts": 1,
+     "toe_out_deg": 4.7
+    }
+   },
+   "feet": {
+    "L": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": -3.7
+    },
+    "R": {
+     "slide_mm_max": 0.0,
+     "slide_mm_median": 0.0,
+     "contacts": 1,
+     "toe_out_deg": 4.5
+    }
+   },
+   "feet_extra": {
+    "L": {
+     "sole_min_mm": -0.0
+    },
+    "R": {
+     "sole_min_mm": -0.0
+    }
+   },
+   "foot_turn_check": {
+    "stance_toe_out_vs_hips_deg": {
+     "L": -3.7,
+     "R": 4.5
+    }
+   },
+   "slide_mm_max": 0.0,
+   "slide_mm_max_before_cleanup": 2.4,
+   "retargeted": "retargeted/s100_depressed_id.npz"
+  }
+ ]
+}
