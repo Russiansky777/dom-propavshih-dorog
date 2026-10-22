@@ -1208,6 +1208,71 @@ for it in sorted(got_in_scope):
         err(f"предмет {it} попадает в сумку в E0–E1, но нигде не применяется и не объявляет later_use / no_use_reason "
             f"(«не берём то, что нельзя применить», Docs/ITEMS_AUDIT.md)")
 
+# ---------- блок 2 (22.10, Директор 23:53 «как поставить зеркало на стойку тети?»): куда идёт предмет ----------
+# Предмет из сумки, который двигает сюжет (его item_use у хотспота или выхода комнаты вехи ведёт к сцене, открывает
+# выход или ставит флаг, нужный сцене), на чужой цели отвечает не общим «Здесь это не пригодится», а подсказкой
+# items.json wrong_target {text, rooms?} — и в комнате своей цели тоже. Для предметов дня второго цель журнала
+# сцены, которая выдаёт предмет, называет комнату цели (слово названия места из locations.json).
+_needed_flags: set[str] = set()
+for _sc in scenes.values():
+    _needed_flags |= set(_sc.get("requires", {}).get("flags", []))
+_loc_names = {l["id"]: l.get("name", "") for l in locations.get("locations", [])}
+
+
+def _progress_use(act: dict, is_exit: bool) -> bool:
+    return is_exit or bool(act.get("scene")) or bool(set(act.get("sets", []) or []) & _needed_flags) or bool(act.get("open_mechanic"))
+
+
+_targets: dict[str, set] = {}
+_use_scenes: dict[str, set] = {}   # item -> scenes its use starts (their requires — the step before)
+for rid in in_scope:
+    room = rooms.get(rid, {})
+    for h in room.get("hotspots", []):
+        for it, act in (h.get("item_use") or {}).items():
+            if isinstance(act, dict) and _progress_use(act, False) and items.get(it, {}).get("inventory"):
+                _targets.setdefault(it, set()).add(rid)
+                if act.get("scene"):
+                    _use_scenes.setdefault(it, set()).add(str(act["scene"]))
+    for ex in room.get("exits", []):
+        for it, act in (ex.get("item_use") or {}).items():
+            if isinstance(act, dict) and items.get(it, {}).get("inventory"):
+                _targets.setdefault(it, set()).add(rid)
+_day2 = {s_["id"] for f_ in ("E2.json", "E3.json") for s_ in load(STORY / "scenes" / f_)["scenes"]}
+for it, trooms in sorted(_targets.items()):
+    wt = items[it].get("wrong_target") or {}
+    if not wt.get("text") or wt.get("text") == "@ui.item_no_effect":
+        err(f"items.json: {it} двигает сюжет ({', '.join(sorted(trooms))}), но на чужой цели отвечает общим отказом — нужен wrong_target.text: куда этот предмет")
+        continue
+    check_text(f"items.json: {it}.wrong_target.text", wt["text"])
+    wr = wt.get("rooms")
+    if wr and not trooms <= set(wr):
+        err(f"items.json: {it}.wrong_target.rooms {wr} не покрывает комнату цели {sorted(trooms - set(wr))}")
+    # Цель журнала на шаге, когда предмет пора применить: сцена-источник или сцена перед той, что запускает применение.
+    cands = [str(items[it].get("source_scene", ""))]
+    for us in _use_scenes.get(it, set()):
+        cands += [f[len("done_"):] for f in scenes.get(us, {}).get("requires", {}).get("flags", []) if f.startswith("done_")]
+    cands = [c for c in cands if c in scenes]
+    if not cands or not (set(cands) & _day2):
+        continue   # предметы дня первого: цели журнала блока 1 приняты Директором как есть
+    goals = " ".join(str(scenes[c].get("goal", "")) for c in cands).lower()
+    for rid in trooms:
+        words = [w.lower().strip("«»,.") for w in _loc_names.get(rid, "").split()]
+        stems = [w[:-2] if len(w) > 5 else w for w in words if len(w) >= 4]
+        if stems and not any(st in goals for st in stems):
+            err(f"{'/'.join(cands)}: цель журнала не называет место, где применить {it} ({rid} «{_loc_names.get(rid, '')}»)")
+
+# Предмет, который тратится внутри сцены (item_use … consumes, scene S), не входит в grants.items той же сцены:
+# сцена завершается после траты, и её выдача вернула бы потраченное (язык колокола в M11 — ИИ-разбор логики 22.10, п. 7).
+# Так же — предмет, который берут хотспотом (items.json source_hotspot), сцена не выдаёт вовсе (validate_story).
+for rid, room in sorted(rooms.items()):
+    for h in room.get("hotspots", []) + room.get("exits", []):
+        for it, act in (h.get("item_use") or {}).items():
+            if not isinstance(act, dict) or not act.get("consumes"):
+                continue
+            sc_id = str(act.get("scene", ""))
+            if sc_id and it in (scenes.get(sc_id, {}).get("grants", {}).get("items", []) or []):
+                err(f"{rid}.{h.get('id', h.get('to'))}.item_use.{it}: предмет тратится в сцене {sc_id}, а её grants.items его выдают — после завершения он вернулся бы в сумку")
+
 quiet = "--quiet" in sys.argv
 if stubs and not quiet:
     notes.append("выходы-заглушки (вне in_scope): " + ", ".join(stubs))

@@ -496,8 +496,9 @@ func on_room_entered(room_id: String) -> void:
 	check_room_triggers()
 
 
-## Rooms data `on_enter` [{text, once_flag, if?}]: a line on the first entry (O1: «Там зима. А у нас ещё
-## октябрь»). The flag is part of the save, so a load never repeats it.
+## Rooms data `on_enter` [{text, once_flag, if?, unless?}]: a line on the first entry (O1: «Там зима. А у нас ещё
+## октябрь»; H2 with the office mirror in the bag: where the stand is). The flag is part of the save, so a load
+## never repeats it.
 func _run_on_enter(room_id: String) -> void:
 	for oe in StoryData.room(room_id).get("on_enter", []):
 		var once := String(oe.get("once_flag", ""))
@@ -505,9 +506,22 @@ func _run_on_enter(room_id: String) -> void:
 			continue
 		if not requires_met({"flags": oe.get("if", [])}):
 			continue
+		if (oe.get("unless", []) as Array).any(func(f): return GameState.has_flag(String(f))):
+			continue
 		if once != "":
 			GameState.set_flag(once, true)
 		narrate_key(String(oe.get("text", "")))
+
+
+## What Agata says when an item is used on the wrong thing: items.json `wrong_target` {text, rooms?} — where the
+## item goes (Director 23:53: «как поставить зеркало на стойку тети?»); the generic refusal only for items
+## without it or outside its `rooms`. tools/validate_rooms.py requires it for every item that moves the story.
+func item_refusal(item_id: String) -> String:
+	var wt: Dictionary = StoryData.item(item_id).get("wrong_target", {})
+	var rooms: Array = wt.get("rooms", [])
+	if wt.has("text") and (rooms.is_empty() or rooms.has(current_room_id())):
+		return String(wt["text"])
+	return "@ui.item_no_effect"
 
 
 func _on_flag_changed(_flag: String, _value: bool) -> void:
@@ -693,7 +707,7 @@ func interact(h: StoryHotspot) -> void:
 		if iu.has(item):
 			_run_action(h, iu[item], item)
 		else:
-			narrate_key("@ui.item_no_effect")
+			narrate_key(item_refusal(item))
 		return
 
 	if d.has("panel"):
@@ -900,7 +914,7 @@ func use_exit(e: StoryExit) -> void:
 		if iu.has(item):
 			_run_exit_item(e, iu[item], item)
 		else:
-			narrate_key("@ui.item_no_effect")
+			narrate_key(item_refusal(item))
 		return
 	if not e.is_open():
 		var oc: Dictionary = e.data.get("on_closed", {})

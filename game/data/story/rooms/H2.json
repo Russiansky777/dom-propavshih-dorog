@@ -18,6 +18,7 @@
     {"id": "office_mirror", "image": "res://assets/rooms/H2/state_office_mirror.png", "if": ["office_mirror_mounted"], "_note": "партия 3: зеркало конторы зажато в тётиной стойке на левом верстаке (стойка вделана в верстак — SCENARIO_FINAL M09); холст H2_bg, (0,0) 1:1; стекло пустое — вид конторы показывает крупный план"},
     {"id": "bench_front", "image": "res://assets/rooms/H2/fg_bench_front.png", "occluder": true, "z": 1080}
   ],
+  "on_enter": [{"text": "@H2d.stand_zm.enter", "once_flag": "h2_saw_stand_zm", "if": ["done_M09b"], "unless": ["office_mirror_mounted"], "_note": "с зеркалом конторы в сумке — один раз мысль Агаты, где стойка (Директор 23:53)"}],
   "spawns": {"default": [500, 900], "from_H1": [280, 820]},
   "props": [],
   "hotspots": [
@@ -41,7 +42,7 @@
       "mechanic": {"same_as": "stand_zm"}
     },
     {
-      "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [470, 184, 185, 220], "stand": [600, 790], "_rect_note": "партия 3: стойка «ЗМ» с зеркалом конторы нарисована на левом верстаке (холст 401–614 × 160–430 → экран 460–705 × 184–494); прямоугольник — над свёртком и скобой (у них приоритет 1). Высокая резная рама в середине мастерской — без подписи", "color": "#7a7a70", "draw": false,
+      "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [460, 184, 245, 310], "stand": [600, 790], "pick_priority": 1, "_rect_note": "партия 3: стойка «ЗМ» с зеркалом конторы нарисована на левом верстаке (холст 401–614 × 160–430 → экран 460–705 × 184–494) — прямоугольник на весь рисунок стойки (Директор 23:53 не нашёл, куда ставить); свёрток и скоба лежат на нём — у них приоритет 2. Высокая резная рама в середине — отдельный хотспот tall_frame с подсказкой на левый верстак", "color": "#7a7a70", "draw": false,
       "look": "@H2.stand_zm.look",
       "item_use": {"mirror_mill": {"sets": ["office_mirror_mounted"], "consumes": true, "text": "@H2d.stand_zm.mount", "scene": "M10", "open_mechanic": true}},
       "mechanic": {
@@ -61,8 +62,8 @@
       }
     },
     {
-      "id": "bundle_nina", "action_anim": "reach", "kind": "object", "label": "@H2.bundle_nina.label", "rect": [366, 404, 196, 96], "stand": [470, 790], "color": "#a89a80", "draw": false,
-      "pick_priority": 1,
+      "id": "bundle_nina", "action_anim": "reach", "kind": "object", "label": "@H2.bundle_nina.label", "rect": [366, 404, 196, 96], "stand": [470, 790], "pick_priority": 2, "color": "#a89a80", "draw": false,
+      "pick_priority": 2,
       "_art_note": "Свёрток «Нина. Горница» (Docs/SCENARIO_FINAL.md, M04): мамино зеркало в тряпке на левом верстаке — слои bundle / nina_mirror (партия 2, непрозрачное — экран 374–533 × 413–494). В сумку не берётся (items.json bundle_nina inventory false, выдаёт M04); струбцина — день второй. Приоритет 1: над верстаком «Записи на верстаке» не лежит, но рядом.",
       "use": {"sets": ["h2_bundle_unwrapped"], "text": "@H2.bundle_nina.use", "once_flag": "h2_bundle_unwrapped", "text_done": "@H2.bundle_nina.done"},
       "look": "@H2.bundle_nina.look",
@@ -89,24 +90,30 @@
       }
     },
     {
-      "id": "brace", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [562, 410, 132, 80], "stand": [640, 790], "color": "#7a6a5a", "draw": false, "pick_priority": 1,
+      "id": "brace", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [562, 410, 132, 80], "stand": [640, 790], "color": "#7a6a5a", "draw": false, "pick_priority": 2,
       "_art_note": "Скоба для плиты (Docs/SCENARIO_FINAL.md, M04 и раздел 9): кованая скоба у рисунка треснувшей плиты на левом верстаке — слой skoba (партия 2, непрозрачное — экран 551–687 × 419–485). Взять — только после плана из школы (requires knows_crossing_plan), до того — осмотр и мысль Агаты.",
       "hidden_if": ["has_brace_plate", "office_mirror_mounted"],
       "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
       "look": "@H2.brace.look"
     },
     {
-      "id": "brace_stool", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [566, 492, 140, 72], "stand": [640, 800], "color": "#7a6a5a", "draw": false, "pick_priority": 1,
+      "id": "brace_stool", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [566, 492, 140, 72], "stand": [640, 800], "color": "#7a6a5a", "draw": false, "pick_priority": 2,
       "_art_note": "Та же скоба, пока на её месте стоит зеркало конторы в стойке (слой skoba_stool — скоба с рисунком на табурете). Те же условия и выдача: обязательный предмет не теряется и не выдаётся дважды (флаг has_brace_plate).",
       "visible_if": ["office_mirror_mounted"], "hidden_if": ["has_brace_plate"],
       "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
       "look": "@H2.brace.look"
     },
     {
+      "id": "tall_frame", "kind": "object", "label": "@H2d.tall_frame.label", "rect": [1120, 170, 270, 500], "stand": [1250, 705], "draw": false,
+      "_note": "высокая резная рама в середине мастерской (арт партии 1): игрок естественно пробует её как стойку — подсказка на левый верстак (координатор 22.10, Директор 23:53)",
+      "look": "@H2d.tall_frame.look",
+      "item_use": {"mirror_mill": {"text": "@H2d.tall_frame.look"}}
+    },
+    {
       "id": "clapper_box", "kind": "object", "label": "@H2.clapper_box.label", "rect": [945, 430, 160, 80], "stand": [980, 715], "color": "#8a7a5a", "draw": false,
       "look": "@H2.clapper_box.look",
       "hidden_if": ["has_bell_clapper"],
-      "use": {"requires": {"flags": ["done_M10"]}, "gives": ["bell_clapper"], "text": "@H2d.clapper_box.use", "scene": "M11", "fail_text": "@H2.clapper_box.look"}
+      "use": {"requires": {"flags": ["done_M10"]}, "gives": ["bell_clapper"], "once_flag": "has_bell_clapper", "text": "@H2d.clapper_box.use", "fail_text": "@H2.clapper_box.look"}
     }
   ],
   "exits": [
@@ -123,6 +130,7 @@
     {"id": "dusk", "type": "tint", "color": "#a8a0b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки дня второго (после мамина зеркала, M15а) — до слоёв вечера (BRIEF_CHATGPT_v4 §C)"}
   ],
   "flags": {
+    "h2_saw_stand_zm": "С зеркалом конторы в сумке Агата увидела, где тётина стойка «ЗМ»",
     "h2_bundle_unwrapped": "Свёрток «Нина. Горница» развёрнут: мамино зеркало, рама расходится в руках"
   }
 }

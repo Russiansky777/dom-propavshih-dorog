@@ -222,6 +222,19 @@ func _use(id: String) -> bool:
 	return true
 
 
+## Every visible hotspot of the room is picked at the centre of its own rect: a bigger rect with a higher
+## pick_priority over it would steal the click (the stand «ЗМ» enlarged over Nina's bundle, 22.10).
+func _check_picks(where: String) -> void:
+	await physics_frame
+	await physics_frame
+	for h in rm.current_room.get_hotspots():
+		if not h.visible or not h.has_method("is_active") or not h.call("is_active"):
+			continue
+		var got = rm.current_room.pick(h.global_position)
+		var got_id := String(got.get("hotspot_id")) if got != null and got.get("hotspot_id") != null else str(got)
+		_check(got == h, "%s: a click at the centre of %s picks %s" % [where, String(h.get("hotspot_id")), got_id])
+
+
 func _use_item(item: String, id: String) -> bool:
 	sr.select_item(item)
 	if sr.selected_item != item:
@@ -559,7 +572,27 @@ func _test_walkthrough() -> void:
 	_check(await _go("Z2"), "M1→Z2")
 	_check(await _go("H1"), "Z2→H1")
 	await _finish()
+	_check(sr.journal_goal().contains("мастерская"), "the goal names the room of the stand: %s" % sr.journal_goal())
+	# The mirror tried on a wrong place in the house says where the stand is (Director 23:53).
+	_check(sr.item_refusal("mirror_mill") == "@item.mirror_mill.wrong", "in H1 the office mirror points to the stand «ЗМ»")
 	_check(await _go("H2"), "H1→H2")
+	seen = await _finish()
+	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("на левом верстак")),
+			"entering the workshop with the office mirror: Agata names the stand on the left bench: %s" % str(seen))
+	await _check_picks("H2 with the office mirror")
+	await _use_item("mirror_mill", "tall_frame")
+	seen = await _finish()
+	_check(gs.has_item("mirror_mill") and seen.any(func(t): return t.contains("Не та рама")),
+			"the tall carved frame points to the left bench: %s" % str(seen))
+	await _use_item("mirror_mill", "clapper_box")
+	seen = await _finish()
+	_check(gs.has_item("mirror_mill") and seen.any(func(t): return t.contains("нужна тётина стойка")),
+			"the office mirror on another thing in the workshop says where the stand is: %s" % str(seen))
+	_check(await _go("H1"), "H2→H1 (the stand thought is said once)")
+	await _finish()
+	_check(await _go("H2"), "H1→H2 again")
+	seen = await _finish()
+	_check(not seen.any(func(t): return t.contains("на левом верстак")), "the stand thought is not repeated: %s" % str(seen))
 	await _use_item("mirror_mill", "stand_zm")
 	await _frames(2)
 	_check(not gs.has_item("mirror_mill") and gs.has_flag("office_mirror_mounted"), "the mirror goes onto the stand (out of the bag)")

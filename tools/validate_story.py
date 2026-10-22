@@ -192,7 +192,8 @@ for fl, srcs in granted_flags.items():
 # Игра показывает goal (или result, если goal нет). Коды комнат/эпизодов/сцен игроку не показываем
 # (решение 17.10: «Цели журнала и любой текст для игрока не содержат кодов»). Для сыгранных эпизодов goal обязателен.
 import re as _re
-_code = _re.compile(r"\b(" + "|".join(sorted(loc_ids, key=len, reverse=True)) + r"|E[0-7]|[MVQ]\d\d|ЗМ|ЗГ|ЗП)\b")
+# «ЗМ» в кавычках-ёлочках — надпись на тётиной стойке, которую видит игрок (Директор 23:53: цель называет место), а не код.
+_code = _re.compile(r"(?<!«)\b(" + "|".join(sorted(loc_ids, key=len, reverse=True)) + r"|E[0-7]|[MVQ]\d\d|ЗМ|ЗГ|ЗП)\b(?!»)")
 _played = {"M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "N01"}
 for s in scenes:
     if s.get("type") != "main":

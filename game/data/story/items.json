@@ -3,6 +3,7 @@
   "items": [
     {
       "id": "key_house",
+      "wrong_target": {"text": "@item.key_house.wrong"},
       "name": "Ключ от дома Евдокии",
       "inventory": true,
       "source_location": "Z1",
@@ -32,6 +33,7 @@
     },
     {
       "id": "door_hinges",
+      "wrong_target": {"text": "@item.door_hinges.wrong"},
       "name": "Родные петли школьной двери",
       "inventory": true,
       "source_location": "H2",
@@ -84,6 +86,7 @@
     },
     {
       "id": "brace_plate",
+      "wrong_target": {"text": "@item.brace_plate.wrong"},
       "name": "Скоба для плиты",
       "icon": "skoba_plate",
       "inventory": true,
@@ -99,6 +102,7 @@
     },
     {
       "id": "chalk",
+      "wrong_target": {"text": "@item.chalk.wrong"},
       "name": "Мел",
       "inventory": true,
       "source_location": "O1",
@@ -109,6 +113,7 @@
     },
     {
       "id": "mitten",
+      "wrong_target": {"text": "@item.mitten.wrong"},
       "name": "Варежка",
       "inventory": true,
       "source_location": "Z1",
@@ -120,6 +125,7 @@
     },
     {
       "id": "mirror_mill",
+      "wrong_target": {"text": "@item.mirror_mill.wrong", "rooms": ["H1", "H2", "H3"]},
       "name": "Зеркало конторы",
       "inventory": true,
       "source_location": "M1",
@@ -139,10 +145,12 @@
     },
     {
       "id": "bell_clapper",
+      "wrong_target": {"text": "@item.bell_clapper.wrong"},
       "name": "Язык колокола",
       "inventory": true,
       "source_location": "H2",
-      "source_scene": "M11",
+      "source_hotspot": "H2.clapper_box",
+      "_source_note": "Берётся из коробки (после M10); сцена M11 его не выдаёт — язык тратится на колоколе до её конца (ИИ-разбор логики 22.10, п. 7).",
       "use": "Коробка «Язык колокола» на полке мастерской; вешается на колокол (M11)",
       "consumed": true
     },
@@ -158,6 +166,7 @@
     },
     {
       "id": "key_sluice",
+      "wrong_target": {"text": "@item.key_sluice.wrong"},
       "name": "Ключ от затвора",
       "inventory": true,
       "source_location": "M3",
@@ -167,6 +176,7 @@
     },
     {
       "id": "clamp",
+      "wrong_target": {"text": "@item.clamp.wrong"},
       "name": "Струбцина",
       "inventory": true,
       "source_location": "M3",
