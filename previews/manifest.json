@@ -1730,7 +1730,8 @@
    "bytes": 1297328,
    "loops_in_video": 1,
    "size_ok": true,
-   "retargeted": "retargeted/s100_depressed_id.npz"
+   "retargeted": "retargeted/s100_depressed_id.npz",
+   "review_notes": "Голова свешена почти на грудь, лица не видно — для Агаты, скорее всего, слишком сильно. Стоит неподвижно, стопы прямо (−4° / +5°)."
   }
  ]
 }
