@@ -1,0 +1,93 @@
+{
+ "name": "ilya_wife",
+ "clips": [
+  {
+   "kind": "idle",
+   "frames": 84,
+   "cyclic": false,
+   "body_yaw_deg": 4.5,
+   "floor_m": 0.0048,
+   "legs": {
+    "L": {
+     "stance_toe_out_before_deg": 3.0,
+     "hip_rotation_deg": 0.0,
+     "ankle_twist_max_deg": 0.0
+    },
+    "R": {
+     "stance_toe_out_before_deg": 3.0,
+     "hip_rotation_deg": 0.0,
+     "ankle_twist_max_deg": 0.0
+    }
+   },
+   "hip_drop_max_m": 0.0,
+   "clip": "Idle_4",
+   "window": [
+    0.0,
+    0.2
+   ],
+   "before": {
+    "L": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 3.0,
+     "sole_lift_mid_stance_max_m": 0.0296,
+     "slide_max_mm": 0.0,
+     "contact_frames": 84,
+     "floor_m": 0.0048,
+     "body_yaw_deg": 4.5
+    },
+    "R": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 3.0,
+     "sole_lift_mid_stance_max_m": 0.0585,
+     "slide_max_mm": 0.0,
+     "contact_frames": 84,
+     "floor_m": 0.0048,
+     "body_yaw_deg": 4.5
+    }
+   },
+   "after": {
+    "L": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 3.0,
+     "sole_lift_mid_stance_max_m": 0.0296,
+     "slide_max_mm": 0.0,
+     "contact_frames": 84,
+     "floor_m": 0.0068,
+     "body_yaw_deg": 4.5
+    },
+    "R": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 3.0,
+     "sole_lift_mid_stance_max_m": 0.0569,
+     "slide_max_mm": 0.0,
+     "contact_frames": 84,
+     "floor_m": 0.0068,
+     "body_yaw_deg": 4.5
+    }
+   },
+   "upper_body_max_rot_diff_deg": 0.0,
+   "fail": [],
+   "role": "idle"
+  }
+ ]
+}

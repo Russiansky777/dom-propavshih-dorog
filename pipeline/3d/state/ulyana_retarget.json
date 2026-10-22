@@ -1,0 +1,57 @@
+{
+ "name": "ulyana",
+ "library": "pipeline/3d/motions/agata_rev10_clips.glb",
+ "roles": {
+  "idle": {
+   "clip": "Idle_4",
+   "from": "pipeline/3d/motions/agata_rev10_clips.glb",
+   "frames": 420,
+   "floor_shift_m": 0.0618,
+   "blend_from": null,
+   "legs_from": null,
+   "feet": {
+    "after": {
+     "L": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 0.0,
+      "toe_abs_max_deg": 3.0,
+      "sole_lift_mid_stance_max_m": 0.0689,
+      "slide_max_mm": 0.0,
+      "contact_frames": 84,
+      "floor_m": 0.0022,
+      "body_yaw_deg": 2.2
+     },
+     "R": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 0.0,
+      "toe_abs_max_deg": 3.0,
+      "sole_lift_mid_stance_max_m": 0.0648,
+      "slide_max_mm": 0.0,
+      "contact_frames": 84,
+      "floor_m": 0.0022,
+      "body_yaw_deg": 2.2
+     }
+    },
+    "fail": []
+   }
+  },
+  "talk": {
+   "clip": "Listening_Gesture_talk",
+   "from": "own",
+   "frames": 281,
+   "floor_shift_m": 0.0627,
+   "blend_from": "idle",
+   "legs_from": "idle",
+   "feet": null
+  }
+ },
+ "extra": []
+}
