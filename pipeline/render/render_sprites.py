@@ -79,13 +79,17 @@ def matte_materials(objs, rough_min: float = 0.8) -> list:
 
 
 def screen_extent(meshes, frames_by_act, set_frame, yaws_deg, elev_deg, look_z):
-    """Наибольшие |x| и y (вверх) фигуры на экране по всем кадрам листов и направлениям (метры кадра)."""
+    """Наибольшие |x| и y (вверх) фигуры на экране по всем кадрам листов и направлениям (метры кадра) и пол
+    каждого клипа: средняя из нижней четверти самых низких точек сетки по кадрам (в каждом кадре на полу стоит
+    стопа; у клипов Meshy пол на разной высоте — Idle_4 на 5 см ниже ходьбы)."""
     import numpy as np  # noqa: PLC0415
     e = math.radians(elev_deg)
     th = np.radians(np.asarray(yaws_deg, float))
     c, s_ = np.cos(th), np.sin(th)
     hx, top = 0.0, -1e9
+    floors = []
     for act, fr in frames_by_act:
+        lows = []
         for f in fr:
             set_frame(act, f)
             dg = bpy.context.evaluated_depsgraph_get()
@@ -102,7 +106,10 @@ def screen_extent(meshes, frames_by_act, set_frame, yaws_deg, elev_deg, look_z):
                 yscr = ys * math.sin(e) + (V[:, 2:3] - look_z) * math.cos(e)
                 hx = max(hx, float(np.abs(xs).max()))
                 top = max(top, float(yscr.max()))
-    return hx, top
+                lows.append(float(V[:, 2].min()))
+        lows = sorted(lows)
+        floors.append(float(np.mean(lows[:max(1, len(lows) // 4)])) if lows else 0.0)
+    return hx, top, floors
 
 
 def main() -> int:
@@ -123,8 +130,12 @@ def main() -> int:
     ap.add_argument("--feet-report", default="", help="куда записать замеры стоп до/после исправления (JSON)")
     ap.add_argument("--no-matte", action="store_true", help="не делать ткань матовой (по умолчанию metallic 0, roughness ≥ 0.8)")
     ap.add_argument("--no-fit", action="store_true", help="не расширять кадр под движение (по умолчанию кадр шире, если фигура выходит за край)")
+    ap.add_argument("--no-floor", action="store_true", help="не ставить клипы на один пол (по умолчанию пол каждого клипа = пол стойки)")
+    ap.add_argument("--fps", nargs="*", default=[], help="темп листа в sprites.json: walk=24 talk=24 (по умолчанию 24 у всех, F16 23.10)")
+    ap.add_argument("--clip-fps", type=float, default=30.0, help="частота ключей клипа (Meshy — 30)")
     args = ap.parse_args()
     windows: dict[str, tuple[float, float]] = {}
+    fps_of = {k: float(v) for k, v in (x.split("=", 1) for x in args.fps)}
     clip_keys: dict[str, str] = dict(c.split("=", 1) for c in args.clips)
     for w in args.window:
         k, v = w.split("=", 1); a, b = v.split(":"); windows[k] = (float(a), float(b))
@@ -283,26 +294,37 @@ def main() -> int:
         if action_name in windows:
             wa, wb = windows[action_name]
             f0, f1 = f0 + (f1 - f0) * wa, f0 + (f1 - f0) * wb
-        return act, [int(round(f0 + (f1 - f0) * i / nframes)) for i in range(nframes)]
+        # дробные кадры (subframe): 24 кадра на 30-кадровый цикл ложатся ровно, без шагов 1-2-1
+        return act, [f0 + (f1 - f0) * i / nframes for i in range(nframes)]
+
+    def frame_at(f):
+        fi = math.floor(f)
+        scene.frame_set(int(fi), subframe=float(f - fi))
 
     fit = {}
-    if not args.no_fit and arm is not None:
+    floor_shift = {}
+    if not (args.no_fit and args.no_floor) and arm is not None:
         # кадр шире, если фигура в каком-то кадре выходит за боковой край (наклон «поднять» — голова, коса, рука):
         # высота кадра, опорная точка и масштаб (px на метр) — прежние
         def set_frame(act, f):
             arm.animation_data.action = act
-            scene.frame_set(f)
-        todo = []
+            frame_at(f)
+        todo, names = [], []
         for idx, (an, nf) in enumerate(frames_by_action.items()):
             act, fr = act_frames(an, idx, nf)
             if act is not None:
                 todo.append((act, fr))
+                names.append(an)
         yaws = [args.front_yaw + d * 360.0 / args.directions for d in range(args.directions)]
-        hx, top = screen_extent(meshes, todo, set_frame, yaws, args.elev, height / 2)
+        hx, top, floors = screen_extent(meshes, todo, set_frame, yaws, args.elev, height / 2)
+        if not args.no_floor and floors:
+            # все клипы — на пол стойки (первое действие): при смене стоит ↔ идёт фигура не прыгает по высоте
+            floor_shift = {an: floors[0] - fl for an, fl in zip(names, floors)}
+            print("  пол клипов → пол стойки (см): " + ", ".join(f"{an} {v * 100:+.1f}" for an, v in floor_shift.items()), flush=True)
         m_per_px = extent / scene.render.resolution_y
         need = int(math.ceil(2 * hx * 1.03 / m_per_px / 16.0) * 16)
         fit = {"half_width_m": round(hx, 3), "top_m": round(top, 3), "frame_top_m": round(extent / 2, 3)}
-        if need > scene.render.resolution_x:
+        if not args.no_fit and need > scene.render.resolution_x:
             print(f"  кадр шире: {scene.render.resolution_x} → {need} px (фигура до {hx:.2f} м от оси)", flush=True)
             scene.render.resolution_x = need
             cam_data.ortho_scale = extent * max(need, scene.render.resolution_y) / scene.render.resolution_y
@@ -338,10 +360,13 @@ def main() -> int:
         strip = None
         from PIL import Image  # локальный импорт: Pillow не нужен Blender'у
         sheet = Image.new("RGBA", (scene.render.resolution_x * nframes, scene.render.resolution_y * args.directions), (0, 0, 0, 0))
+        dz = floor_shift.get(action_name, 0.0)
+        for r in roots:
+            r.location.z += dz
         for d in range(args.directions):
             pivot.rotation_euler = (0, 0, math.radians(args.front_yaw + d * 360.0 / args.directions))
             for i in range(nframes):
-                scene.frame_set(int(round(f0 + (f1 - f0) * i / nframes)))
+                frame_at(f0 + (f1 - f0) * i / nframes)
                 tmp = out / f"_tmp_{action_name}_{d}_{i}.png"
                 scene.render.filepath = str(tmp)
                 bpy.ops.render.render(write_still=True)
@@ -349,9 +374,15 @@ def main() -> int:
                 sheet.paste(im, (i * scene.render.resolution_x, d * scene.render.resolution_y))
                 tmp.unlink()
             print(f"  {action_name}: направление {d+1}/{args.directions} готово", flush=True)
+        for r in roots:
+            r.location.z -= dz
         path = out / f"{action_name}.png"
         sheet.save(path)
-        manifest["actions"][action_name] = {"sheet": path.name, "frames": nframes, "fps": 12 if action_name == "walk" else 8, "clip": act.name}
+        clip_s = (f1 - f0) / args.clip_fps
+        manifest["actions"][action_name] = {"sheet": path.name, "frames": nframes, "fps": fps_of.get(action_name, 24.0), "clip": act.name,
+                                            "clip_seconds": round(clip_s, 4), "natural_fps": round(nframes / max(clip_s, 1e-6), 2)}
+        if abs(dz) > 1e-5:
+            manifest["actions"][action_name]["floor_shift_m"] = round(dz, 4)
         if action_name in windows:
             manifest["actions"][action_name]["window"] = list(windows[action_name])
             manifest["actions"][action_name]["playback"] = "pingpong"

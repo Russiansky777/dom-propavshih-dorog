@@ -145,11 +145,12 @@ jobs:
             rsize=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('render_size',384))" "$f")
             rsamp=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('render_samples',24))" "$f")
             win=$(python -c "import json,sys;r=json.load(open(sys.argv[1]));print(' '.join(f'{k}={v[0]}:{v[1]}' for k,v in r.get('clip_window',{}).items()))" "$f")
+            fps=$(python -c "import json,sys;r=json.load(open(sys.argv[1]));print(' '.join(f'{k}={v}' for k,v in r.get('fps',{}).items()))" "$f")
             # стопы (pipeline/3d/feet_fix.py): у ходьбы и стойки — по умолчанию у всех; "feet_fix": false в запросе — выключить
             ff=$(python pipeline/3d/check_feet.py --glb "pipeline/3d/out/$name/animations.glb" --request "$f" --print-roles)
             python pipeline/render/render_sprites.py --glb "pipeline/3d/out/$name/animations.glb" --name "$name" \
               --out "assets/characters/$name" --directions 8 --frames $args --size "$rsize" --samples "$rsamp" --elev "$elev" --front-yaw "$yaw" ${clips:+--clips $clips} ${win:+--window $win} \
-              ${ff:+--feet-fix $ff --feet-report "pipeline/3d/state/${name}_feet_fix.json"}
+              ${ff:+--feet-fix $ff --feet-report "pipeline/3d/state/${name}_feet_fix.json"} ${fps:+--fps $fps}
             cp "pipeline/3d/out/$name/meshy_manifest.json" "assets/characters/$name/" 2>/dev/null || true
             cp "pipeline/3d/out/$name/views/"*.png "assets/characters/$name/" 2>/dev/null || true
           done
@@ -182,7 +183,7 @@ jobs:
             pipeline/3d/state/*.json
           retention-days: 90
 
-      - name: Стопы — автопроверка (разворот носка, подошва в опоре, проскальзывание)
+      - name: Стопы и лист — автопроверка (носок, подошва, скольжение, поза стойки, кадры и темп ходьбы)
         id: feet
         if: steps.req.outputs.files != ''
         run: |
@@ -194,6 +195,8 @@ jobs:
             [ -f "$glb" ] || { echo "нет $glb — проверка стоп пропущена"; continue; }
             cl=$(cat "pipeline/3d/out/$name/clips.txt" 2>/dev/null || true)
             python pipeline/3d/check_feet.py --glb "$glb" --request "$f" --out "pipeline/3d/state/${name}_feet.json" ${cl:+--clips $cl} || bad="$bad $name"
+            # лист: ходьба ≥ 20 кадров на цикл, темп листа = темп клипа (F16)
+            [ -f "assets/characters/$name/sprites.json" ] && { python pipeline/render/check_sprites.py --sprites "assets/characters/$name/sprites.json" --request "$f" || bad="$bad $name(лист)"; }
           done
           if [ -n "$bad" ]; then echo "::error::стопы: порог превышен у:$bad (pipeline/3d/state/<name>_feet.json)"; echo "bad=$bad" >> "$GITHUB_OUTPUT"; fi
 
