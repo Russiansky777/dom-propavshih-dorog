@@ -152,7 +152,7 @@ async function main() {
   const budget = new Budget(cfg.maxUsd);
   const run = {
     cfg: { ...cfg, actions_run: process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_RUN_NUMBER} (id ${process.env.GITHUB_RUN_ID})` : "" }, version: "", started: new Date().toISOString(), stop: "", steps: [], transcript: [], notes: [],
-    verdicts: {}, verdictHistory: [], rooms: [], flagsOrder: [], consoleErrors: [], frames: [], harness: [],
+    verdicts: {}, verdictHistory: [], rooms: [], flagsOrder: [], consoleErrors: [], consoleWarnings: [], frames: [], harness: [],
   };
 
   // Early refusals (written as a report, so the Director sees why nothing ran).
@@ -245,7 +245,23 @@ async function main() {
     }
     return toFrame(x, y);
   };
-  const mouseTo = async (p, steps = 6) => { await page.mouse.move(p.x, p.y, { steps }); pointer = p; };
+  // A headless screenshot has no mouse pointer: a red ring marks it on every frame (pointer-events: none).
+  const showPointer = async (p) => {
+    try {
+      await page.evaluate(([x, y]) => {
+        let el = document.getElementById("__ai_ptr");
+        if (!el) {
+          el = document.createElement("div");
+          el.id = "__ai_ptr";
+          el.style.cssText = "position:fixed;width:22px;height:22px;margin:-11px 0 0 -11px;border:3px solid #ff2020;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.85);pointer-events:none;z-index:2147483647";
+          document.body.appendChild(el);
+        }
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+      }, [p.x, p.y]);
+    } catch (_) { /* page busy */ }
+  };
+  const mouseTo = async (p, steps = 6) => { await page.mouse.move(p.x, p.y, { steps }); pointer = p; await showPointer(p); };
 
   // Lines and narration in a row: read verbatim, frame each, real click on the text box. Options stop here.
   const runDialogue = async (step, events, extra) => {
@@ -378,7 +394,12 @@ async function main() {
       const context = await browser.newContext({ viewport: { width: FRAME_W, height: FRAME_H }, deviceScaleFactor: 1 });
       page = await context.newPage();
       page.setDefaultTimeout(180000);
-      page.on("console", (m) => { if (m.type() === "error" && run.consoleErrors.length < 30) run.consoleErrors.push(short(m.text(), 300)); });
+      page.on("console", (m) => {
+        if (m.type() !== "error") return;
+        const t = m.text();
+        if (/^WARNING: /.test(t) || /^at: push_warning/.test(t)) { if (!/^at: /.test(t) && run.consoleWarnings.length < 40) run.consoleWarnings.push(short(t, 300)); }
+        else if (run.consoleErrors.length < 30) run.consoleErrors.push(short(t, 300));
+      });
       page.on("pageerror", (e) => { if (run.consoleErrors.length < 30) run.consoleErrors.push(`pageerror: ${short(e.message, 300)}`); });
       cdp = await context.newCDPSession(page);
       try {
@@ -559,6 +580,7 @@ async function main() {
           await sleep(150);
           await page.mouse.move(q.x, q.y, { steps: 16 });
           pointer = q;
+          await showPointer(q);
           await sleep(150);
           await page.mouse.up();
           desc = `перетащила (${Math.round(x)},${Math.round(y)}) → (${Math.round(input.x2)},${Math.round(input.y2)})`;
@@ -605,7 +627,7 @@ async function main() {
             const t = await state();
             if (run.transcript.length === n0 && !(t && t.beat && (t.beat.type === "line" || t.beat.type === "narration"))) break;
           }
-          if (["click", "right_click", "double_click"].includes(act) && pointer) await page.mouse.move(pointer.x, pointer.y, { steps: 2 });
+          if (pointer) { await page.mouse.move(pointer.x, pointer.y, { steps: 2 }); await showPointer(pointer); }
           await freshState(700);   // the caption under the pointer reaches the probe on its 0.4 s refresh
           after = await state();
         }
@@ -699,7 +721,7 @@ async function main() {
   fs.writeFileSync(path.join(outDir, "usage.json"), JSON.stringify({ ...budget.toJSON(), report_reserve_usd: run.reportReserve, stop: run.stop }, null, 1));
   fs.writeFileSync(path.join(outDir, "log.json"), JSON.stringify({
     cfg: run.cfg, version: run.version, started: run.started, stop: run.stop, probe: run.probe, end: run.end,
-    rooms: run.rooms, flags_order: run.flagsOrder, harness: run.harness, console_errors: run.consoleErrors,
+    rooms: run.rooms, flags_order: run.flagsOrder, harness: run.harness, console_errors: run.consoleErrors, console_warnings: run.consoleWarnings,
     checklist: run.checklist, verdict_history: run.verdictHistory, notes: run.notes, frames: run.frames,
     steps: run.steps, transcript: run.transcript,
   }, null, 1));
@@ -739,6 +761,7 @@ function buildReportInput(run, cfg, checklist) {
   if (run.end) L.push(`Конец: комната ${run.end.room}, сумка [${(run.end.inventory || []).join(", ")}], цель журнала: «${short(run.end.goal, 200)}»`);
   if (run.harness.length) L.push(`Технические события плейтеста: ${run.harness.map((h) => short(h, 200)).join(" | ")}`);
   if (run.consoleErrors.length) L.push(`Ошибки консоли браузера: ${run.consoleErrors.slice(0, 8).join(" | ")}`);
+  if (run.consoleWarnings.length) L.push(`Предупреждения игры (Godot WARNING, не ошибки): ${[...new Set(run.consoleWarnings)].slice(0, 12).join(" | ")}`);
   L.push(`\nДОСТУПНЫЕ КАДРЫ (лежат рядом с отчётом): ${run.frames.map((f) => `${f.id} (шаг ${f.step}, ${f.kind}${f.label ? ": " + short(f.label, 40) : ""})`).join("; ") || "нет"}`);
   return L.join("\n");
 }
@@ -756,6 +779,7 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
   L.push(`- Стоимость прогона: **$${budget.spent.toFixed(3)}** (по usage ответов API, подробно — usage.json; предохранитель от зацикливания — $${cfg.maxUsd})`);
   L.push(`- Где оказалась по факту: ${run.rooms.join(" → ") || "—"}${run.end ? `; конец — ${run.end.room}` : ""}`);
   if (run.consoleErrors.length) L.push(`- Ошибки консоли браузера: ${run.consoleErrors.length} (log.json)`);
+  if (run.consoleWarnings.length) L.push(`- Предупреждения игры (Godot WARNING): ${run.consoleWarnings.length} (log.json)`);
   L.push("");
   if (body) L.push(body);
   else L.push("_Итоговый отчёт сильной модели не составлен (нет бюджета, ключа или ответа) — ниже сырые данные прогона._");
