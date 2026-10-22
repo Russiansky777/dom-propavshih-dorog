@@ -178,7 +178,8 @@ func _case_calib(mode: String) -> void:
 	var img: Image = player.view3d.get_texture().get_image()
 	img.save_png(out_dir.path_join("calib_3d_raw.png"))
 	var sheet_img: Image = load("res://assets/characters/agata/idle.png").get_image()
-	sheet_img.get_region(Rect2i(0, 0, 288, 384)).save_png(out_dir.path_join("calib_sheet_row0.png"))
+	var fw: int = int(player.sheet.frame_w) if player.sheet != null else 288
+	sheet_img.get_region(Rect2i(0, 0, fw, 384)).save_png(out_dir.path_join("calib_sheet_row0.png"))
 	print("calib saved; render_scale ", player.view3d.render_scale, " size ", player.view3d.size)
 	for probe in [["flat05", "debug_flat", 0.5], ["albedo", "debug_albedo", true]]:
 		player.view3d.material.set_shader_parameter(probe[1], probe[2])

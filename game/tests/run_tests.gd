@@ -57,7 +57,7 @@ func _run() -> void:
 	await _test("StoryData loads every JSON and every room builds without errors", _test_story_data)
 	await _test("Negative: exit H3→O1 is closed before M05 and open after", _test_exit_gate)
 	await _test("Bot walkthrough M01→M08 via StoryRunner/Room API with mid-way save/load", _test_walkthrough)
-	await _test("H1: Agata sprite from sheets (288x384, 8 walk + 8 idle), directions, table occluder z-sort", _test_h1_real)
+	await _test("H1: Agata sprite from sheets (frame from sprites.json, height 384, 8 walk + 8 idle), directions, table occluder z-sort", _test_h1_real)
 	await _test("Stride: fps from speed, stride = sheet stride, foot lock holds the drawn figure between frames", _test_stride)
 	await _test("NPC actors: Tamara/Pelageya from sheets on their hotspots, depth scale, y-sort, talk during their lines", _test_npc_actors)
 	await _test("Shadows: soft ellipse under the feet of Agata and NPCs, behind the figure, scaled by depth", _test_shadows)
@@ -936,7 +936,10 @@ func _test_h1_real() -> void:
 			idle_n += 1
 	_check(walk_n == 8 and idle_n == 8, "expected 8 walk + 8 idle animations, got %d/%d (%s)" % [walk_n, idle_n, str(names)])
 	var tex := spr.sprite_frames.get_frame_texture("walk_0", 0)
-	_check(tex != null and tex.get_size() == Vector2(288, 384), "frame size should be 288x384, got %s" % str(tex.get_size() if tex else null))
+	# Frame width comes from sprites.json (v3: 384 — the pick bend fits; was 288); height and pivot stay.
+	var fw: int = player.sheet.frame_w
+	_check(fw >= 288 and player.sheet.frame_h == 384, "frame %dx%d: width ≥ 288 from sprites.json, height 384" % [fw, player.sheet.frame_h])
+	_check(tex != null and tex.get_size() == Vector2(fw, 384), "frame size should be %dx384, got %s" % [fw, str(tex.get_size() if tex else null)])
 	_check(spr.sprite_frames.get_frame_count("walk_0") == 12, "walk animations should have 12 frames")
 	# Idle rev 8: eased back-and-forth over the evenly-moving frames (data idle_motion, test «Idle sway»).
 	var tl: Array = player.sheet.eased_timeline("idle", 3)
@@ -946,12 +949,12 @@ func _test_h1_real() -> void:
 	_check(player.sheet.frame_sequence(12, "loop") == range(12), "loop sequence is 0..n-1")
 	for i in tl.size():
 		var reg: Rect2 = (spr.sprite_frames.get_frame_texture("idle_3", i) as AtlasTexture).region
-		_check(reg.position == Vector2(int(tl[i][0]) * 288, 3 * 384), "idle_3 frame %d must be sheet column %d of row 3, got %s" % [i, int(tl[i][0]), str(reg.position)])
+		_check(reg.position == Vector2(int(tl[i][0]) * fw, 3 * 384), "idle_3 frame %d must be sheet column %d of row 3, got %s" % [i, int(tl[i][0]), str(reg.position)])
 		_check(is_equal_approx(spr.sprite_frames.get_frame_duration("idle_3", i), float(tl[i][2])), "idle_3 frame %d holds %d timeline steps" % [i, int(tl[i][2])])
 	_check(is_equal_approx(spr.sprite_frames.get_animation_speed("idle_0"), 30.0), "eased idle runs on a 30 steps/s timeline")
 	var st = load("res://scripts/actors/actor_sheet.gd").load_actor("agata", {"idle_static_frame": 0})
 	_check(st.is_loaded() and st.frames.get_frame_count("idle_0") == 1, "idle_static_frame still pins the idle to one frame when set")
-	_check(spr.offset.is_equal_approx(Vector2(-144.0, -0.9464285714285714 * 384.0)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
+	_check(spr.offset.is_equal_approx(Vector2(-0.5 * fw, -0.9464285714285714 * 384.0)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
 	_check(not player.get_node("Body").visible, "placeholder body hidden when the sheet is used")
 	# Direction mapping (data/actors/agata.json; verified against the sheet by eye):
 	# rows run counter-clockwise on screen: 0=S 1=SE 2=E 3=NE 4=N 5=NW 6=W 7=SW.
