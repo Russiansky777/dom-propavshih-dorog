@@ -1,168 +1,184 @@
 name: ai-playtest
 
 # ИИ-плейтестер: Claude играет в веб-сборку (сайт GitHub Pages) настоящими щелчками — скриншот → модель
-# выбирает действие → клик → снова скриншот. Режимы: acceptance (пункты Docs/ACCEPTANCE_*.md) и fresh (новичок).
-# Запуск: изменить или добавить pipeline/requests/playtest_<имя>.json и запушить (или вручную — workflow_dispatch).
-# Формат запроса — Docs/playtest/README.md (mode acceptance | fresh | gate, doc, items, max_steps, max_usd, note).
-# Ключ — секрет CLAUDE_API (только в env). Лог публичный: в него не печатаются ни ключ, ни ответы модели.
-# Результат коммитится с [skip ci] в Docs/playtest/<дата>_<режим>_r<номер запуска>/: report.md, кадры, usage.json, log.json.
+# выбирает действие → клик → снова скриншот. Режимы: acceptance (пункты Docs/ACCEPTANCE_*.md), fresh (новичок),
+# gate (приёмка, затем свежий взгляд). Формат запроса — Docs/playtest/README.md.
+#
+# Запуск:
+# 1) вручную — изменить или добавить pipeline/requests/playtest_<имя>.json и запушить (или workflow_dispatch);
+# 2) ворота по передаче блока — САМИ, после каждой успешной сборки и публикации сайта (build-and-publish):
+#    для каждого конфига pipeline/requests/playtest_gate_<m>.json берутся строки таблиц его Docs/ACCEPTANCE_<M>.md
+#    в ОПУБЛИКОВАННОМ коммите и сравниваются с тем, что проверяли прошлые ворота (Docs/playtest/gates_state/).
+#    Новые и изменённые пункты (критичные первыми) → приёмка, затем свежий взгляд; правка чеклиста, ещё не
+#    попавшая на сайт, в опубликованном коммите отсутствует — ворота дождутся следующей успешной публикации.
+#
+# Ключ — секрет CLAUDE_API, рабочее пространство — CLAUDE_WORKSPACE (только в env). Лог публичный: в него не
+# печатаются ни ключ, ни ID, ни ответы модели. Результат коммитится с [skip ci] в Docs/playtest/<дата>_<режим>_r<запуск>/.
 
 on:
   push:
     branches: [main]
     paths:
       - "pipeline/requests/playtest_*.json"
-      # передача блока: изменились пункты чеклиста, для которого есть pipeline/requests/playtest_gate_<веха>.json
-      - "Docs/ACCEPTANCE_*.md"
+  workflow_run:
+    workflows: ["build-and-publish"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       request:
-        description: "путь к запросу, напр. pipeline/requests/playtest_day1_acceptance.json"
+        description: "путь к запросу, напр. pipeline/requests/playtest_gate_m2.json"
         required: true
-        default: "pipeline/requests/playtest_day1_acceptance.json"
+        default: "pipeline/requests/playtest_gate_m2.json"
 
 permissions:
   contents: write
   actions: read
 
 concurrency:
-  # свой прогон на каждый пуш: приёмка и свежий взгляд идут параллельно (коммит результатов — с rebase и повторами)
-  group: ai-playtest-${{ github.sha }}
+  # ворота по публикациям — по очереди (следующие читают обновлённое состояние); ручные запросы — параллельно
+  group: ${{ github.event_name == 'workflow_run' && 'ai-playtest-gates' || format('ai-playtest-{0}', github.sha) }}
   cancel-in-progress: false
 
 jobs:
-  playtest:
+  plan:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.req.outputs.files }}
+      gates: ${{ steps.req.outputs.gates }}
+      sha: ${{ steps.req.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+      - name: Что запускать
+        id: req
+        env:
+          REQ_INPUT: ${{ github.event.inputs.request }}
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          sha=$(git rev-parse HEAD)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          files=""; gates="[]"
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            case "$REQ_INPUT" in pipeline/requests/playtest_*.json) files="$REQ_INPUT" ;; *) echo "запрос должен быть pipeline/requests/playtest_*.json"; exit 1 ;; esac
+          elif [ "$EVENT" = "push" ]; then
+            if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+              files=$(git diff-tree --no-commit-id --name-only --diff-filter=AM -r "$sha" -- 'pipeline/requests/playtest_*.json' | tr '\n' ' ')
+            else
+              files=$(git diff --name-only --diff-filter=AM "$BEFORE" "$sha" -- 'pipeline/requests/playtest_*.json' | tr '\n' ' ' || true)
+            fi
+          else
+            # опубликованный коммит: чеклисты — из него, состояние прошлых ворот — с main (его пишут сами ворота)
+            git fetch -q origin main
+            rm -rf /tmp/gs && mkdir -p /tmp/gs
+            for f in $(git ls-tree --name-only origin/main Docs/playtest/gates_state/ 2>/dev/null); do git show "origin/main:$f" > "/tmp/gs/$(basename "$f")"; done
+            list=""
+            for cfg in pipeline/requests/playtest_gate_*.json; do
+              [ -f "$cfg" ] || continue
+              doc=$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).doc||"")' "$cfg")
+              [ -f "$doc" ] || { echo "$cfg: $doc ещё нет в опубликованной сборке"; continue; }
+              items=$(node tools/ai_playtest/changed_items.mjs "$doc" --state /tmp/gs)
+              [ -n "$items" ] || { echo "$doc: новых и изменённых пунктов нет"; continue; }
+              echo "$doc: ворота по пунктам $items"
+              list="$list{\"cfg\":\"$cfg\",\"doc\":\"$doc\",\"items\":\"$items\"},"
+            done
+            [ -n "$list" ] && gates="[${list%,}]"
+          fi
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+          echo "gates=$gates" >> "$GITHUB_OUTPUT"
+          echo "запросы: ${files:-—}; ворота: $gates"
+
+  requests:
+    needs: plan
+    if: needs.plan.outputs.files != ''
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Определить запросы
-        id: req
-        env:
-          REQ_INPUT: ${{ github.event.inputs.request }}
-        run: |
-          if [ -n "$REQ_INPUT" ]; then
-            case "$REQ_INPUT" in
-              pipeline/requests/playtest_*.json) files="$REQ_INPUT" ;;
-              *) echo "запрос должен быть pipeline/requests/playtest_*.json"; exit 1 ;;
-            esac
-          else
-            before="${{ github.event.before }}"
-            if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
-              files=$(git diff-tree --no-commit-id --name-only --diff-filter=AM -r ${{ github.sha }} -- 'pipeline/requests/playtest_*.json' | tr '\n' ' ')
-            else
-              files=$(git diff --name-only --diff-filter=AM "$before" ${{ github.sha }} -- 'pipeline/requests/playtest_*.json' | tr '\n' ' ' || true)
-            fi
-          fi
-          # Ворота по передаче блока: изменённые и новые пункты Docs/ACCEPTANCE_<M>.md (критичные первыми),
-          # конфиг — pipeline/requests/playtest_gate_<m>.json (mode gate, fresh_start, заметки).
-          gates=""
-          before="${{ github.event.before }}"
-          if [ -z "$REQ_INPUT" ] && [ -n "$before" ] && git cat-file -e "$before^{commit}" 2>/dev/null; then
-            for d in $(git diff --name-only --diff-filter=AM "$before" ${{ github.sha }} -- 'Docs/ACCEPTANCE_*.md'); do
-              m=$(basename "$d" .md | sed 's/^ACCEPTANCE_//' | tr 'A-Z' 'a-z')
-              cfg="pipeline/requests/playtest_gate_$m.json"
-              [ -f "$cfg" ] || { echo "$d: нет $cfg — ворота не настроены"; continue; }
-              case " $files " in *" $cfg "*) continue;; esac
-              items=$(node tools/ai_playtest/changed_items.mjs "$d" "$before")
-              [ -n "$items" ] || { echo "$d: пункты таблиц не менялись — ворота не нужны"; continue; }
-              gates="$gates $cfg|$items"
-            done
-          fi
-          echo "files=$files" >> "$GITHUB_OUTPUT"
-          echo "gates=$gates" >> "$GITHUB_OUTPUT"
-          echo "requests: $files; gates: $gates"
-
       - uses: actions/setup-node@v4
-        if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: tools/package-lock.json
-
       - name: Playwright + Chromium
-        if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''
         working-directory: tools
         run: |
           npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
-
-      - name: Дождаться публикации сайта (если сборка ещё идёт)
-        if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''
+      - name: Дождаться публикации сайта
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          sleep 20   # сборка того же пуша могла ещё не встать в очередь
-          for i in $(seq 1 60); do
-            st=$(gh run list --workflow build_and_publish.yml --branch main --limit 1 --json status -q '.[0].status' 2>/dev/null || echo completed)
-            if [ "$st" = "completed" ] || [ -z "$st" ]; then echo "сайт: последняя сборка завершена"; break; fi
-            echo "сборка сайта ещё идёт ($st), жду 30 с"
-            sleep 30
-          done
-          # CDN Pages: дождаться, пока version.txt отдаёт последнюю успешную сборку (до 10 мин)
-          sha=$(gh run list --workflow build_and_publish.yml --branch main --status success --limit 1 --json headSha -q '.[0].headSha' 2>/dev/null || true)
-          for i in $(seq 1 30); do
-            v=$(curl -fsS "https://russiansky777.github.io/dom-propavshih-dorog/version.txt?t=$(date +%s)" || true)
-            case "$v" in "${sha:0:7}"*) echo "сайт отдаёт $v"; break;; esac
-            echo "сайт отдаёт: $v, ждём ${sha:0:7}"; sleep 20
-          done
-          # Отчёт должен знать, проверяется ли сборка этого пуша или более старая (сборка упала / не запускалась).
-          last=$(gh run list --workflow build_and_publish.yml --branch main --limit 1 --json headSha,conclusion -q '.[0].headSha[0:7]+" "+.[0].conclusion' 2>/dev/null || true)
-          case "$v" in "${GITHUB_SHA:0:7}"*) ;; *)
-            echo "SITE_NOTE=сайт отдаёт сборку ${v%% *}; пуш, запустивший проверку, — ${GITHUB_SHA:0:7}; последняя сборка сайта: ${last:-?}" >> "$GITHUB_ENV" ;;
-          esac
-
+        run: tools/ai_playtest/wait_site.sh ""
       - name: Плейтест
-        if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''
         env:
           ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
-          # ключ не привязан к рабочему пространству: ID (секрет) уходит заголовком anthropic-workspace-id, только если задан
           ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
-          REQ_FILES: ${{ steps.req.outputs.files }}
-          GATES: ${{ steps.req.outputs.gates }}
+          REQ_FILES: ${{ needs.plan.outputs.files }}
         run: |
-          git config user.name "playtest-bot"
-          git config user.email "playtest-bot@users.noreply.github.com"
-          commit_results() {
-            git add Docs/playtest
-            if git diff --cached --quiet; then echo "нечего коммитить"; return 0; fi
-            summary=$(cat build/ai_playtest/*/summary.txt 2>/dev/null | tail -n 1 | tr '\n' ' ')
-            git commit -q -m "ИИ-плейтест: ${summary:-результаты} (run ${{ github.run_number }}) [skip ci]"
-            for i in 1 2 3 4 5 6; do
-              git fetch -q origin main
-              if git rebase --autostash origin/main; then
-                if git push origin HEAD:main; then echo "запушено с попытки $i"; return 0; fi
-              else
-                git rebase --abort || true
-              fi
-              sleep 15
-            done
-            return 1
-          }
           status=0
           for f in $REQ_FILES; do
             mode=$(node -e 'try{console.log(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).mode||"fresh")}catch(e){console.log("fresh")}' "$f")
-            # gate = приёмка, затем свежий взгляд (два прогона, два отчёта)
             if [ "$mode" = "gate" ]; then modes="acceptance fresh"; else modes="$mode"; fi
             for m in $modes; do
               echo "=== $f ($m)"
               rm -f build/ai_playtest/*/summary.txt
               node tools/ai_playtest/playtest.mjs --request "$f" --mode "$m" || status=1
-              commit_results || status=1
+              tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
             done
           done
-          # ворота по передаче блока: приёмка изменённых пунктов, затем свежий взгляд с точки старта блока
-          for g in $GATES; do
-            cfg="${g%%|*}"; items="${g#*|}"
-            for m in acceptance fresh; do
-              echo "=== ворота $cfg ($m${items:+, пункты $items})"
-              rm -f build/ai_playtest/*/summary.txt
-              if [ "$m" = "acceptance" ]; then node tools/ai_playtest/playtest.mjs --request "$cfg" --mode acceptance --items "$items" || status=1
-              else node tools/ai_playtest/playtest.mjs --request "$cfg" --mode fresh || status=1; fi
-              commit_results || status=1
-            done
-          done
+          exit $status
+
+  gates:
+    needs: plan
+    if: needs.plan.outputs.gates != '' && needs.plan.outputs.gates != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        gate: ${{ fromJSON(needs.plan.outputs.gates) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.plan.outputs.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+      - name: Playwright + Chromium
+        working-directory: tools
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Дождаться, пока сайт отдаёт опубликованный коммит
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/ai_playtest/wait_site.sh "${{ needs.plan.outputs.sha }}"
+      - name: Ворота
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
+          CFG: ${{ matrix.gate.cfg }}
+          DOC: ${{ matrix.gate.doc }}
+          ITEMS: ${{ matrix.gate.items }}
+          SHA: ${{ needs.plan.outputs.sha }}
+        run: |
+          status=0
+          echo "=== ворота $CFG: $DOC, пункты $ITEMS, сборка ${SHA:0:7}"
+          rm -f build/ai_playtest/*/summary.txt
+          node tools/ai_playtest/playtest.mjs --request "$CFG" --mode acceptance --items "$ITEMS" || status=1
+          tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
+          rm -f build/ai_playtest/*/summary.txt
+          node tools/ai_playtest/playtest.mjs --request "$CFG" --mode fresh || status=1
+          # эти строки чеклиста проверены воротами на этой сборке
+          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA"
+          tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
           exit $status
