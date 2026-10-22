@@ -1,0 +1,45 @@
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[agata_v3] баланс: {'balance': 867, 'monthly_credits': 367, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
+[agata_v3] ракурсов на листе: 3 → ['view_0.png', 'view_1.png', 'view_2.png']
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[agata_v3] создана задача модели 01a16531-629c-7204-bd8e-cd7f2b0d208e c {'ai_model': 'latest', 'pose_mode': 'a-pose', 'should_texture': True, 'texture_resolution': '4k', 'target_formats': ['glb'], 'auto_size': True, 'origin_at': 'bottom', 'geometry_resolution': '2k', 'enable_pbr': True}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 20
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 35
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 45
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 58
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 67
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 80
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 99
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: SUCCEEDED 100
+[agata_v3] model.glb скачан, кредитов: 35
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[agata_v3] риг по input_task_id отклонён (POST /rigging → HTTP 400: {"message":"The input model has 871,110 faces which exceeds the 320,000 face limit for rigging. Please use the Remesh API (POST /openapi/v1/remesh) with a target_polycount of 300000 or less before rigging."}); пробую model_url
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[agata_v3] создана задача рига 01a16534-8a16-7384-8f03-c701365ebe96
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16534-8a16-7384-8f03-c701365ebe96: IN_PROGRESS 0
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16534-8a16-7384-8f03-c701365ebe96: FAILED 26
+MESHY ERROR: задача 01a16534-8a16-7384-8f03-c701365ebe96 завершилась FAILED: {'type': 'invalid_input', 'code': 'invalid_input', 'message': 'This model could not be rigged. Please check that the mesh is a single, well-formed humanoid character.', 'doc_url': 'https://docs.meshy.ai/en/api/errors#invalid-input'}
