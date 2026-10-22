@@ -1,0 +1,33 @@
+{
+  "character": "ilya",
+  "sheet": "assets/incoming/cast_v3/ilya_sheet.png",
+  "height_m": 1.82,
+  "tasks": {
+    "model_task": "01a1653e-0483-7251-a2e6-8a457cad4ae7",
+    "rig_task": "01a16564-288e-72c7-b041-c318474396e7",
+    "anim_task": "01a16565-837d-741a-bf6f-79f62f74a57f"
+  },
+  "actions": {
+    "idle": {
+      "action_id": 0,
+      "name": "Idle",
+      "key": "Idle"
+    },
+    "talk": {
+      "action_id": 47,
+      "name": "Listening Gesture",
+      "key": "Listening_Gesture"
+    }
+  },
+  "credits": {
+    "model_credits": 35,
+    "rig_credits": 5,
+    "anim_credits": 6
+  },
+  "files": {
+    "model": "model.glb",
+    "rigged": "rigged.glb",
+    "animations": "animations.glb"
+  },
+  "note": "animations.glb содержит по одному клипу на action в порядке actions; клипы называть по ключам Meshy"
+}

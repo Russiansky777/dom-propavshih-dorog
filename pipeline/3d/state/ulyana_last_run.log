@@ -1,52 +1,74 @@
+[ulyana] стадия rig и последующие будут выполнены заново
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[ulyana] баланс: {'balance': 622, 'monthly_credits': 122, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
+[ulyana] баланс: {'balance': 427, 'monthly_credits': 0, 'permanent_credits': 427, 'monthly_resets_at': 1794445230000}
 [ulyana] ракурсов на листе: 3 → ['view_0.png', 'view_1.png', 'view_2.png']
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[ulyana] создана задача модели 01a1654d-16bf-73c5-85db-d535c47a021c c {'ai_model': 'latest', 'pose_mode': 'a-pose', 'should_texture': True, 'texture_resolution': '4k', 'target_formats': ['glb'], 'auto_size': True, 'origin_at': 'bottom', 'geometry_resolution': '2k', 'enable_pbr': True}
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: IN_PROGRESS 1
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: IN_PROGRESS 17
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: IN_PROGRESS 32
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: IN_PROGRESS 53
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: IN_PROGRESS 58
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: IN_PROGRESS 67
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: IN_PROGRESS 80
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: IN_PROGRESS 99
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
   multi-image-to-3d 01a1654d-16bf-73c5-85db-d535c47a021c: SUCCEEDED 100
 [ulyana] model.glb скачан, кредитов: 35
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[ulyana] риг по input_task_id отклонён (POST /rigging → HTTP 400: {"message":"The input model has 502,860 faces which exceeds the 320,000 face limit for rigging. Please use the Remesh API (POST /openapi/v1/remesh) with a target_polycount of 300000 or less before rigging."}); пробую model_url
+[ulyana] создана задача Remesh 01a16577-a3c7-741b-9662-e50e6a35b8d3
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[ulyana] создана задача рига 01a16551-58b6-71d7-b07f-45550b90048e
+  remesh 01a16577-a3c7-741b-9662-e50e6a35b8d3: IN_PROGRESS 0
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  rigging 01a16551-58b6-71d7-b07f-45550b90048e: IN_PROGRESS 0
+  remesh 01a16577-a3c7-741b-9662-e50e6a35b8d3: IN_PROGRESS 24
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  rigging 01a16551-58b6-71d7-b07f-45550b90048e: FAILED 15
-MESHY ERROR: задача 01a16551-58b6-71d7-b07f-45550b90048e завершилась FAILED: {'type': 'invalid_input', 'code': 'invalid_input', 'message': 'This model could not be rigged. Please check that the mesh is a single, well-formed humanoid character.', 'doc_url': 'https://docs.meshy.ai/en/api/errors#invalid-input'}
+  remesh 01a16577-a3c7-741b-9662-e50e6a35b8d3: IN_PROGRESS 42
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a16577-a3c7-741b-9662-e50e6a35b8d3: IN_PROGRESS 60
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a16577-a3c7-741b-9662-e50e6a35b8d3: IN_PROGRESS 79
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a16577-a3c7-741b-9662-e50e6a35b8d3: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a16577-a3c7-741b-9662-e50e6a35b8d3: SUCCEEDED 100
+[ulyana] Remesh готов, кредитов: 5
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[ulyana] создана задача рига 01a1657a-ba00-73f2-8601-15dfc77a848f
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1657a-ba00-73f2-8601-15dfc77a848f: IN_PROGRESS 0
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1657a-ba00-73f2-8601-15dfc77a848f: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1657a-ba00-73f2-8601-15dfc77a848f: IN_PROGRESS 57
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1657a-ba00-73f2-8601-15dfc77a848f: IN_PROGRESS 84
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1657a-ba00-73f2-8601-15dfc77a848f: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1657a-ba00-73f2-8601-15dfc77a848f: IN_PROGRESS 95
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a1657a-ba00-73f2-8601-15dfc77a848f: SUCCEEDED 100
+[ulyana] rigged.glb скачан
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[ulyana] создана задача анимаций 01a1657c-1051-7524-8fba-9fe2057b316e: {'idle': {'action_id': 0, 'name': 'Idle', 'key': 'Idle'}, 'talk': {'action_id': 47, 'name': 'Listening Gesture', 'key': 'Listening_Gesture'}}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1657c-1051-7524-8fba-9fe2057b316e: IN_PROGRESS 0
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1657c-1051-7524-8fba-9fe2057b316e: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1657c-1051-7524-8fba-9fe2057b316e: IN_PROGRESS 81
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1657c-1051-7524-8fba-9fe2057b316e: IN_PROGRESS 83
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1657c-1051-7524-8fba-9fe2057b316e: SUCCEEDED 100
+[ulyana] готово: /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/out/ulyana
