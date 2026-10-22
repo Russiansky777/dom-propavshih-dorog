@@ -1,7 +1,7 @@
 {
   "id": "H2",
-  "_art": "Фон H2_bg.png (мастерская): дверь в H1 слева (тёплый свет), верстак и рисунок двери на стене, коробки «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» на полке, пустая стойка ЗМ, колокол у окна. Свёрток «Нина. Горница» (и развёрнутое зеркало) и скоба с рисунком плиты — слои партии 2 (22.10) на левом верстаке. Слой H2_fg_bench_front.png — верстак на переднем плане (окклюдер z=1080). Надписи коробок нарисованы (v1).",
-  "art_source": {"files": {"state_bundle.png": "assets/incoming/H2_state_bundle.png", "state_nina_mirror.png": "assets/incoming/H2_state_nina_mirror.png", "state_skoba.png": "assets/incoming/H2_state_skoba.png", "state_office_mirror.png": "assets/incoming/H2_state_office_mirror.png"}, "canvas": [1672, 941], "alpha_min": 9,
+  "_art": "Фон H2_bg.png (мастерская): дверь в H1 слева (тёплый свет), верстак и рисунок двери на стене, коробки «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» на полке, высокая резная рама на ножках посреди мастерской — тётина стойка «ЗМ» (Директор 23.10), колокол у окна. Свёрток «Нина. Горница» (и развёрнутое зеркало) и скоба с рисунком плиты — слои партии 2 (22.10) на левом верстаке. Слой H2_fg_bench_front.png — верстак на переднем плане (окклюдер z=1080). Надписи коробок нарисованы (v1).",
+  "art_source": {"files": {"state_bundle.png": "assets/incoming/H2_state_bundle.png", "state_nina_mirror.png": "assets/incoming/H2_state_nina_mirror.png", "state_skoba.png": "assets/incoming/H2_state_skoba.png"}, "canvas": [1672, 941], "alpha_min": 9, "_glass_note": "state_frame_glass.png (стекло зеркала конторы в раме «ЗМ») не импортируется — его строит tools/make_h2_frame_glass.py из фона",
     "_note": "Партия 2 брифа v4 (ChatGPT 22.10, assets/incoming/_meta_p2/README_RU.txt): полные прозрачные холсты в координатах H2_bg, наложение с (0,0) 1:1. Копии — tools/import_room_art.py H2 (только эти три файла; фон и верстак не трогаются)"},
   "background": {"kind": "interior", "image": "res://assets/rooms/H2/bg.png", "wall": "#5e5040", "floor": "#7a6648", "accent": "#a08a5a", "horizon": 700},
   "walkable": [[60, 780], [240, 750], [365, 750], [380, 706], [880, 702], [1140, 695], [1145, 690], [1400, 690], [1405, 682], [1505, 680], [1505, 693], [1400, 704], [1300, 712], [1200, 720], [1100, 728], [1000, 735], [905, 745], [900, 1070], [60, 1070]],
@@ -13,17 +13,17 @@
   "layers": [
     {"id": "bundle", "image": "res://assets/rooms/H2/state_bundle.png", "unless": ["h2_bundle_unwrapped"], "_note": "свёрток «Нина. Горница» в ткани на левом верстаке (бирка без текста); развёрнутый — слой nina_mirror (взаимоисключающие)"},
     {"id": "nina_mirror", "image": "res://assets/rooms/H2/state_nina_mirror.png", "if": ["h2_bundle_unwrapped"], "_note": "развёрнутое мамино зеркало на ткани, рама разошлась, стекло мутное серебро — после «развернуть»"},
-    {"id": "skoba", "image": "res://assets/rooms/H2/state_skoba.png", "unless": ["has_brace_plate", "office_mirror_mounted"], "_note": "кованая скоба и маленький рисунок треснувшей плиты на левом верстаке (партия 2); пропадает, когда Агата берёт скобу. Пока на её месте стоит зеркало конторы в стойке (партия 3), скоба с рисунком лежит на табурете — слой skoba_stool"},
-    {"id": "skoba_stool", "image": "res://assets/rooms/H2/state_skoba.png", "offset": [15, 76], "if": ["office_mirror_mounted"], "unless": ["has_brace_plate"], "_note": "та же скоба с рисунком, сдвинутая на табурет у верстака (верх табурета ≈ y 478–495 холста): стойка с зеркалом конторы стоит на её месте (координатор 22.10: «скрывай предметы партии 2 на том же месте»), а скобу ещё можно взять — блок 1 разрешает не брать её в первый день"},
-    {"id": "office_mirror", "image": "res://assets/rooms/H2/state_office_mirror.png", "if": ["office_mirror_mounted"], "_note": "партия 3: зеркало конторы зажато в тётиной стойке на левом верстаке (стойка вделана в верстак — SCENARIO_FINAL M09); холст H2_bg, (0,0) 1:1; стекло пустое — вид конторы показывает крупный план"},
+    {"id": "skoba", "image": "res://assets/rooms/H2/state_skoba.png", "unless": ["has_brace_plate"], "_note": "кованая скоба и маленький рисунок треснувшей плиты на левом верстаке (партия 2); пропадает, когда Агата берёт скобу"},
+    {"id": "office_mirror", "image": "res://assets/rooms/H2/state_frame_glass.png", "if": ["office_mirror_mounted"], "_note": "Директор 23.10 00:03: тётина стойка «ЗМ» — высокая резная рама посреди мастерской (рисунок фона); после установки в её проёме стекло зеркала конторы — слой из фона (tools/make_h2_frame_glass.py: проём замерен по пикселям, серебро в тёплом свете, мягкий вертикальный блик). Вид конторы — в крупном плане. Слой партии 3 (зеркало на поворотной стойке на левом верстаке) снят"},
     {"id": "bench_front", "image": "res://assets/rooms/H2/fg_bench_front.png", "occluder": true, "z": 1080}
   ],
-  "on_enter": [{"text": "@H2d.stand_zm.enter", "once_flag": "h2_saw_stand_zm", "if": ["done_M09b"], "unless": ["office_mirror_mounted"], "_note": "с зеркалом конторы в сумке — один раз мысль Агаты, где стойка (Директор 23:53)"}],
+  "on_enter": [{"text": "@H2d.stand_zm.enter", "once_flag": "h2_saw_stand_zm", "if": ["done_M09b"], "unless": ["office_mirror_mounted"], "_note": "с зеркалом конторы в сумке — один раз мысль Агаты, где стойка: высокая резная рама посреди мастерской (Директор 23:53, 23.10 00:03)"}],
   "spawns": {"default": [500, 900], "from_H1": [280, 820]},
   "props": [],
   "hotspots": [
     {
-      "id": "bench", "kind": "object", "label": "@H2.bench.label", "rect": [660, 160, 280, 240], "stand": [800, 760], "color": "#6a5438", "draw": false,
+      "id": "bench", "kind": "object", "label": "@H2.bench.label", "rect": [668, 165, 260, 232], "stand": [800, 760], "color": "#6a5438", "draw": false,
+      "_rect_note": "F3 (Директор 23.10 00:19 «надо найти записи тёти… не могу найти»): тётины чертежи на стене над ящиками «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» — чертёж школьной двери и два листа с петлями (холст 584–805 × 147–342 → экран 671–924 × 169–393); тетради на верстаке не нарисовано — ярлык и тексты про листы на стене",
       "use": {"sets": ["seen_workshop"], "text": "@H2.bench.use", "once_flag": "seen_workshop", "scene": "M04"},
       "look": "@H2.bench.look"
     },
@@ -38,19 +38,21 @@
       "use": {"sets": ["seen_bell", "knows_rule_things_remember"], "text": ["@H2.bell.use", "@H2.bell.thought"], "once_flag": "seen_bell", "scene": "M04",
         "_text_note": "ярлык колокола (закадровый голос), затем мысль Агаты её голосом — причина вешать школьную дверь (Docs/SCENARIO_FINAL.md, M04); text — список ключей, читаются по очереди"},
       "look": "@H2.bell.look",
-      "item_use": {"bell_clapper": {"sets": ["bell_clapper_hung"], "consumes": true, "text": "@H2d.bell.hang", "scene": "M11"}},
+      "item_use": {"bell_clapper": {"sets": ["bell_clapper_hung"], "consumes": true, "text": "@H2d.bell.hang"}},
+      "use_when": [{"if": ["bell_clapper_hung"], "unless": ["office_mirror_mounted"], "text": "@H2d.bell.ring_far", "synth_sound": "bell",
+        "_note": "язык повешен до зеркала конторы (Директор 23.10): колокол звенит, отзывается далеко на мельнице — ничего не ломается; с зеркалом на стойке колокол открывает крупный план"}],
       "mechanic": {"same_as": "stand_zm"}
     },
     {
-      "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [460, 184, 245, 310], "stand": [600, 790], "pick_priority": 1, "_rect_note": "партия 3: стойка «ЗМ» с зеркалом конторы нарисована на левом верстаке (холст 401–614 × 160–430 → экран 460–705 × 184–494) — прямоугольник на весь рисунок стойки (Директор 23:53 не нашёл, куда ставить); свёрток и скоба лежат на нём — у них приоритет 2. Высокая резная рама в середине — отдельный хотспот tall_frame с подсказкой на левый верстак", "color": "#7a7a70", "draw": false,
+      "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [1105, 135, 290, 545], "stand": [1250, 705], "_rect_note": "Директор 23.10 00:03 («рама новая почти нереальна к нахождению, нужно поменять её с основной рамой»): тётина стойка «ЗМ» — высокая резная рама на ножках посреди мастерской (фон: холст 965–1210 × 120–590 → экран 1108–1390 × 138–677), тяжёлая, к полу прибита; проём 1016–1168 × 197–518 холста", "color": "#7a7a70", "draw": false,
       "look": "@H2.stand_zm.look",
       "item_use": {"mirror_mill": {"sets": ["office_mirror_mounted"], "consumes": true, "text": "@H2d.stand_zm.mount", "scene": "M10", "open_mechanic": true}},
       "mechanic": {
         "type": "office_mirror",
         "requires": {"flags": ["office_mirror_mounted"]},
         "title": "@H2d.office_mirror.title",
-        "frame": {"images": ["res://assets/rooms/H2/bg.png", "res://assets/rooms/H2/state_office_mirror.png"], "region": [395, 150, 240, 300], "pos": [330, 150], "scale": 2.7, "glass_polygon": [[454, 187], [560, 180], [565, 361], [460, 373]], "_note": "мастерская и слой «зеркало конторы в стойке» одним кадром; glass_polygon — контур стекла в пикселях холста (assets/incoming/_meta_p3/assets_manifest.json → glass_polygon_px)"},
-        "wedges": [[425, 838], [856, 811]],
+        "frame": {"images": ["res://assets/rooms/H2/bg.png", "res://assets/rooms/H2/state_frame_glass.png"], "region": [950, 118, 280, 478], "pos": [380, 150], "scale": 1.75, "glass_polygon": [[1016, 199], [1168, 197], [1168, 518], [1016, 518]], "_note": "мастерская и слой стекла в раме «ЗМ» одним кадром (рама целиком: резной верх, ножки); glass_polygon — проём рамы в пикселях холста (tools/make_h2_frame_glass.py PROJ)"},
+        "wedges": [[506, 836], [751, 836]], "_wedges_note": "у нижних углов проёма, между стеклом и рамой: экран = pos + (холст − region) × scale для (1022, 510) и (1162, 510)",
         "office": {"art": {"bg": "res://assets/closeups/M3_view_bg.png", "light": "res://assets/closeups/M3_view_light.png", "hook": "res://assets/closeups/M3_view_hook.png", "bar": "res://assets/closeups/M3_view_bar_down.png", "region": [520, 80, 380, 660], "gap": [95, 705], "bar_y": 346, "lift_px": 46, "_note": "партия 3, «Контора — вид на дверь»: фон → свет → крюк → засов, слои в (0,0); засов поднят — тот же слой на 46 px выше, крюк вместе с ним; region — часть холста в стекле (портрет под контур стекла)"}},
         "bell": {"image": "res://assets/rooms/H2/bg.png", "region": [1376, 252, 192, 236], "pos": [1150, 250], "scale": 1.7, "signal": {"long_s": 0.6, "gap_s": 0.55}},
         "hook": {"bar": 0.41, "tolerance": 0.06, "speed": 0.1, "return_speed": 0.6, "_bar_note": "засов на рисунке — y 346 холста в щели 95…705: (346 − 95) / 610 ≈ 0.41"},
@@ -62,7 +64,7 @@
       }
     },
     {
-      "id": "bundle_nina", "action_anim": "reach", "kind": "object", "label": "@H2.bundle_nina.label", "rect": [366, 404, 196, 96], "stand": [470, 790], "pick_priority": 2, "color": "#a89a80", "draw": false,
+      "id": "bundle_nina", "action_anim": "reach", "kind": "object", "label": "@H2.bundle_nina.label", "rect": [366, 404, 196, 96], "stand": [470, 790], "color": "#a89a80", "draw": false,
       "pick_priority": 2,
       "_art_note": "Свёрток «Нина. Горница» (Docs/SCENARIO_FINAL.md, M04): мамино зеркало в тряпке на левом верстаке — слои bundle / nina_mirror (партия 2, непрозрачное — экран 374–533 × 413–494). В сумку не берётся (items.json bundle_nina inventory false, выдаёт M04); струбцина — день второй. Приоритет 1: над верстаком «Записи на верстаке» не лежит, но рядом.",
       "use": {"sets": ["h2_bundle_unwrapped"], "text": "@H2.bundle_nina.use", "once_flag": "h2_bundle_unwrapped", "text_done": "@H2.bundle_nina.done"},
@@ -92,28 +94,16 @@
     {
       "id": "brace", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [562, 410, 132, 80], "stand": [640, 790], "color": "#7a6a5a", "draw": false, "pick_priority": 2,
       "_art_note": "Скоба для плиты (Docs/SCENARIO_FINAL.md, M04 и раздел 9): кованая скоба у рисунка треснувшей плиты на левом верстаке — слой skoba (партия 2, непрозрачное — экран 551–687 × 419–485). Взять — только после плана из школы (requires knows_crossing_plan), до того — осмотр и мысль Агаты.",
-      "hidden_if": ["has_brace_plate", "office_mirror_mounted"],
+      "hidden_if": ["has_brace_plate"],
       "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
       "look": "@H2.brace.look"
-    },
-    {
-      "id": "brace_stool", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [566, 492, 140, 72], "stand": [640, 800], "color": "#7a6a5a", "draw": false, "pick_priority": 2,
-      "_art_note": "Та же скоба, пока на её месте стоит зеркало конторы в стойке (слой skoba_stool — скоба с рисунком на табурете). Те же условия и выдача: обязательный предмет не теряется и не выдаётся дважды (флаг has_brace_plate).",
-      "visible_if": ["office_mirror_mounted"], "hidden_if": ["has_brace_plate"],
-      "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
-      "look": "@H2.brace.look"
-    },
-    {
-      "id": "tall_frame", "kind": "object", "label": "@H2d.tall_frame.label", "rect": [1120, 170, 270, 500], "stand": [1250, 705], "draw": false,
-      "_note": "высокая резная рама в середине мастерской (арт партии 1): игрок естественно пробует её как стойку — подсказка на левый верстак (координатор 22.10, Директор 23:53)",
-      "look": "@H2d.tall_frame.look",
-      "item_use": {"mirror_mill": {"text": "@H2d.tall_frame.look"}}
     },
     {
       "id": "clapper_box", "kind": "object", "label": "@H2.clapper_box.label", "rect": [945, 430, 160, 80], "stand": [980, 715], "color": "#8a7a5a", "draw": false,
       "look": "@H2.clapper_box.look",
       "hidden_if": ["has_bell_clapper"],
-      "use": {"requires": {"flags": ["done_M10"]}, "gives": ["bell_clapper"], "once_flag": "has_bell_clapper", "text": "@H2d.clapper_box.use", "fail_text": "@H2.clapper_box.look"}
+      "use": {"gives": ["bell_clapper"], "once_flag": "has_bell_clapper", "text": "@H2d.clapper_box.use"},
+      "_use_note": "Директор 23.10 00:03: «язык по логике должно быть возможно взять и до подбития клиньев» — коробка отдаёт его когда угодно, хоть в день первый"
     }
   ],
   "exits": [

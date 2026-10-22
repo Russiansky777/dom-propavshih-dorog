@@ -714,6 +714,7 @@
       "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 3",
       "owner": "ChatGPT + Директор",
       "use": "rooms/H2.json → эффект office_glass (сейчас серебристый многоугольник движка) и рамка крупного плана stand_zm.mechanic.frame",
+      "superseded": "Директор 23.10 00:03: тётина стойка «ЗМ» — высокая резная рама посреди мастерской (рисунок H2_bg). Слой больше не используется (убран из game/assets); стекло в раме — слой движка game/assets/rooms/H2/state_frame_glass.png (tools/make_h2_frame_glass.py). Рисованный слой стекла закажем, только если Директор сочтёт этот плоским.",
       "delivered": {
         "date": "2026-10-22",
         "by": "ChatGPT imagegen, партия 3 брифа v4 (коммит 1440621)",

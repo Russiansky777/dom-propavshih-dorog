@@ -113,6 +113,7 @@ func _ready() -> void:
 	load_settings()
 	RoomManager.room_changed.connect(_on_room_changed)
 	StoryRunner.stage_sound_requested.connect(func(sid: String): play_sound(sid, "stage"))
+	StoryRunner.synth_sound_requested.connect(play_synth)
 	GameState.state_reset.connect(func(): _suppress_door = true)
 	GameState.state_loaded.connect(func(_s): _suppress_door = true)
 	get_tree().node_added.connect(_on_node_added)
@@ -256,6 +257,15 @@ func play_sound(sound_id: String, kind: String = "closeup") -> String:
 		push_warning("SfxDirector: no sound '%s' (sfx.json sounds)" % sound_id)
 		return ""
 	return _play(_closeup_player, sound_id, kind)
+
+
+## A sound the engine makes (SynthSfx, the same as the close-ups: the mill bell rung in the room) on the
+## close-up player, SFX bus.
+func play_synth(sound_name: String) -> void:
+	var synth = load("res://scripts/mechanics/synth_sfx.gd")
+	_closeup_player.stream = synth.stream(sound_name)
+	_closeup_player.play()
+	sound_played.emit("synth", sound_name, "")
 
 
 ## The next room change opens no door (a scene staging moves Agata in the dark: the night by the stove).

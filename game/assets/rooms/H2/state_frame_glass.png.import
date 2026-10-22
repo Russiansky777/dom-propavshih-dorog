@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://diuegc60ql4su"
-path="res://.godot/imported/state_office_mirror.png-3a622e669f91b455ceb835c1c93222d1.ctex"
+uid="uid://c1jqt6e4a0kyt"
+path="res://.godot/imported/state_frame_glass.png-4ff8e532f0291224fb6790de5e0de5c2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H2/state_office_mirror.png"
-dest_files=["res://.godot/imported/state_office_mirror.png-3a622e669f91b455ceb835c1c93222d1.ctex"]
+source_file="res://assets/rooms/H2/state_frame_glass.png"
+dest_files=["res://.godot/imported/state_frame_glass.png-4ff8e532f0291224fb6790de5e0de5c2.ctex"]
 
 [params]
 

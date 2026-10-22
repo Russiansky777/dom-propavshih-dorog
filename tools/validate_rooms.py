@@ -1006,7 +1006,8 @@ for rid, room in rooms.items():
                         # предмет берут хотспотом без сцены (скоба в H2 — после плана из школы): только с requires
                         if not items[it].get("inventory", False):
                             err(f"{actx}: предмет {it} не инвентарный, его нельзя взять хотспотом")
-                        if not (act.get("requires") or {}).get("flags") and not (act.get("requires") or {}).get("items"):
+                        # take_any_time: предмет нарочно берут когда угодно (язык колокола из коробки, Директор 23.10)
+                        if not items[it].get("take_any_time") and not (act.get("requires") or {}).get("flags") and not (act.get("requires") or {}).get("items"):
                             warn(f"{actx}: {it} берётся без условий — тогда его выдаёт сцена (source_scene), а не хотспот")
                         if act.get("once_flag") != "has_" + it:
                             err(f"{actx}: взять {it} — once_flag должен быть has_{it} (второй раз не выдаётся)")
@@ -1015,6 +1016,15 @@ for rid, room in rooms.items():
 
         if "use" in h:
             check_action(hctx + ".use", h["use"], h["use"].get("scene"))
+        # use_when: действие по состоянию, когда use уже не готов (колокол с языком до зеркала конторы, 23.10);
+        # synth_sound — звук движка (game/scripts/mechanics/synth_sfx.gd).
+        for _i, _uw in enumerate(h.get("use_when", []) or []):
+            if not isinstance(_uw, dict) or not (_uw.get("if") or _uw.get("unless")):
+                err(f"{hctx}.use_when[{_i}]: нужен if или unless (иначе он всегда перекрывает осмотр)")
+                continue
+            check_action(f"{hctx}.use_when[{_i}]", _uw, _uw.get("scene"))
+            if _uw.get("synth_sound") and _uw["synth_sound"] not in ("bell", "bell_long", "knock", "hammer", "shutter"):
+                err(f"{hctx}.use_when[{_i}]: synth_sound «{_uw['synth_sound']}» — такого звука нет в SynthSfx")
         for it, act in (h.get("item_use") or {}).items():
             check_items(hctx + ".item_use", [it])
             check_action(f"{hctx}.item_use[{it}]", act, act.get("scene"))

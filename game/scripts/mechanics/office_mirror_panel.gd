@@ -8,9 +8,10 @@ extends MechanicPanel
 ##   3. The hook (HookPuzzle): the bell's presses become the mill signals (BellSignal): one — go on, two —
 ##      stop, long — lift. Wrong — the hook slips and comes back to the top, no penalty. Event "unbolted".
 ## The bell is pressed with the mouse: a click is a strike, a press held ~0.6 s is the long ring.
-## Art (партия 3): the frame is Dunya's workshop painting with the layer «зеркало конторы в стойке»
-## (H2_state_office_mirror) over it, cropped round the mirror; the glass is the delivered contour
-## (glass_polygon_px) — a quad textured with the office view; OfficeView draws «Контора — вид на дверь».
+## Art: the stand «ЗМ» is the tall carved frame in the middle of Dunya's workshop (Director 23.10); the close-up
+## is the workshop painting with the glass layer in the frame's opening (tools/make_h2_frame_glass.py) over it,
+## cropped round the frame; glass_polygon is the opening — a quad textured with the office view; OfficeView
+## draws «Контора — вид на дверь» (партия 3).
 
 var office: OfficeView = null
 var office_vp: SubViewport = null

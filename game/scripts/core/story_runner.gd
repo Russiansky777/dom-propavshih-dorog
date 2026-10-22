@@ -28,6 +28,8 @@ signal view_closed()
 signal stage_fade(alpha: float, seconds: float)
 ## A sound of sfx.json `sounds` for a staging (SfxDirector plays it).
 signal stage_sound_requested(sound_id: String)
+## A sound made by the engine (SynthSfx: the mill bell rung in the room before the office mirror is up).
+signal synth_sound_requested(sound_name: String)
 ## A scene's `checkpoint` save was written (slot, title) — «День второй» after the night by the stove.
 signal checkpoint_saved(slot: String, title: String)
 ## A hotspot with `mechanic: {type, requires, events, ...}` (rooms data) opens an interactive close-up
@@ -691,7 +693,26 @@ func planned_interaction(h: StoryHotspot) -> String:
 				return "choice"
 		elif ch.has("fail_text"):
 			return "text"
+	if _use_state(d) != "ready" and not _use_when(d).is_empty():
+		return "use"
 	return "use" if _use_state(d) == "ready" else "text"
+
+
+## A hotspot's use by state once its `use` is not ready (data `use_when`: [{if, unless, …action}] — the first
+## entry whose `if` flags all hold and no `unless` flag holds runs as an action): the mill bell with its
+## clapper hung rings far away at the mill before the office mirror is on the stand (Director 23.10). {} when none.
+func _use_when(d: Dictionary) -> Dictionary:
+	for e in d.get("use_when", []):
+		var ok := true
+		for f in e.get("if", []):
+			if not GameState.has_flag(String(f)):
+				ok = false
+		for f in e.get("unless", []):
+			if GameState.has_flag(String(f)):
+				ok = false
+		if ok:
+			return e
+	return {}
 
 
 func interact(h: StoryHotspot) -> void:
@@ -773,6 +794,11 @@ func interact(h: StoryHotspot) -> void:
 	if d.has("view") and view_allowed(d["view"]):
 		open_view(d["view"], h.hotspot_id)
 
+	if _use_state(d) != "ready":
+		var uw := _use_when(d)
+		if not uw.is_empty():
+			_run_action(h, uw, "")
+			return
 	match _use_state(d):
 		"ready":
 			_run_action(h, d["use"], "")
@@ -885,6 +911,8 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 			item_received.emit(rid)
 	if item_id != "" and bool(act.get("consumes", false)):
 		GameState.remove_item(item_id)
+	if act.has("synth_sound"):
+		synth_sound_requested.emit(String(act["synth_sound"]))
 	if act.has("text"):
 		# one key or a list of keys read in turn (H2 bell: the tag, then Agata's thought)
 		var t = act["text"]

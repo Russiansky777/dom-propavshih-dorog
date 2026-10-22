@@ -76,6 +76,7 @@ func _run() -> void:
 	await _test("Data: day-two rooms, scenes, texts — no echo chain left, goals without codes", _test_data)
 	await _test("Whereabouts: on day one Pavel sends Agata home till morning; in the evening Pelageya waits at the turn, not at the pier", _test_whereabouts)
 	await _test("The brace: taken on day one or day two, never twice; forgotten — at the plate Agata remembers it and goes back", _test_brace_paths)
+	await _test("The clapper any time: taken and hung on day one, the bell rings far away; M11 needs no box, nothing given twice", _test_clapper_early)
 	await _test("Whole day two by script: morning → mill → mirror and bell → office → sluice → mother's mirror → plate → three lights → ribbon → R3", _test_walkthrough)
 	await _test("Office mirror by mouse: wedges, the light in the same frame as the strike, the hook by bell signals", _test_office_mirror_mouse)
 	await _test("Sluice by mouse: a drag past two notches opens one; the next is refused until the water settles", _test_sluice_mouse)
@@ -432,6 +433,19 @@ func _test_data() -> void:
 		if String(h.get("mechanic", {}).get("type", "")) == "fast_mirror":
 			ratio = float(h["mechanic"].get("ratio", 0))
 	_check(ratio == 20.0, "mother's mirror ratio is 20 in data (%s)" % ratio)
+	# F3 (Director 23.10 00:19, «не могу найти записи тёти»): the notes are what is painted — the drawings on the
+	# wall over the boxes; the label says so, the rect covers the drawings (screen 671–924 × 169–393), the goal
+	# before the workshop names the place.
+	var notes := {}
+	for h in sd.room("H2").get("hotspots", []):
+		if String(h.get("id", "")) == "bench":
+			notes = h
+	var r: Array = notes.get("rect", [0, 0, 0, 0])
+	var nr := Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
+	_check(sd.text(String(notes.get("label", ""))).contains("чертеж") and not sd.text(String(notes.get("label", ""))).contains("верстак"),
+			"the notes' label names the drawings, not a bench: %s" % sd.text(String(notes.get("label", ""))))
+	_check(nr.has_point(Vector2(700, 200)) and nr.has_point(Vector2(900, 380)) and nr.size.y < 260.0, "the notes' rect covers the drawings over the boxes: %s" % str(r))
+	_check(String(sd.scene("M03").get("goal", "")).contains("над ящиками"), "the goal before the workshop names where the notes are")
 	_reached_end = true
 
 
@@ -515,6 +529,67 @@ func _test_brace_paths() -> void:
 	_reached_end = true
 
 
+## The clapper any time (Director 23.10 00:03): taken from its box and hung on day one, the bell rings far away
+## at the mill and nothing breaks; a save/load keeps it hung; on day two M11 needs no box — the mirror clamped,
+## one strike, the lantern. The clapper is given once, never comes back to the bag, never gets lost.
+func _test_clapper_early() -> void:
+	await _day_one_done(false)
+	var rung: Array[String] = []
+	var on_synth := func(n: String): rung.append(n)
+	sr.synth_sound_requested.connect(on_synth)
+	rm.change_room("H2", "default")
+	await _frames(3)
+	await _finish()
+	_check(_hotspot("clapper_box") != null and _hotspot("clapper_box").visible, "day one: the clapper box on the shelf")
+	await _use("clapper_box")
+	await _finish()
+	_check(gs.inventory.count("bell_clapper") == 1 and gs.has_flag("has_bell_clapper"), "day one: the clapper from its box, no condition (%s)" % str(gs.inventory))
+	_check(not _hotspot("clapper_box").visible, "the box gives it once")
+	await _use_item("bell_clapper", "bell")
+	await _finish()
+	_check(gs.has_flag("bell_clapper_hung") and not gs.has_item("bell_clapper"), "day one: the clapper hung on the bell")
+	await _use("bell")
+	var b: Dictionary = sr.current_beat
+	_check(String(b.get("text_key", "")) == "H2d.bell.ring_far" and not sr.mechanic_open,
+			"the bell rung before the office mirror: «where far away, at the mill», no close-up (%s)" % str(b))
+	await _finish()
+	_check(rung.has("bell"), "the bell sounds (engine sound): %s" % str(rung))
+	_check(rm.save_game(MID_SLOT), "save on day one with the clapper hung")
+	gs.reset()
+	await _frames(2)
+	_check(rm.load_game(MID_SLOT), "load it")
+	await _frames(3)
+	await _finish()
+	_check(gs.has_flag("bell_clapper_hung") and not gs.has_item("bell_clapper") and not _hotspot("clapper_box").visible,
+			"after the load: hung, not in the bag, the box empty")
+	# Day two up to Pavel's mirror (M09b) — the clapper is not in the way of anything.
+	for f in sd.scene("M09").get("requires", {}).get("flags", []):
+		gs.set_flag(String(f), true)
+	for id in ["N01", "M09", "M09s", "M09b"]:
+		gs.set_flag("done_" + id, true)
+	gs.set_flag("has_mirror_mill", true)
+	gs.add_item("mirror_mill")
+	await _frames(2)
+	await _use_item("mirror_mill", "stand_zm")
+	await _wait_mechanic("office_mirror")
+	await _finish()
+	for w in _panel().get("wedges", []):
+		await _click(_v(w))
+	await _frames(2)
+	await _finish()
+	_check(gs.has_flag("done_M10"), "the wedges clamp the frame → M10")
+	await _click(_v(_panel().get("bell", {})))
+	await _frames(2)
+	await _finish()
+	_check(gs.has_flag("lantern_check_seen") and gs.has_flag("done_M11"), "one strike with the clapper hung since day one → the lantern, M11")
+	_check(gs.inventory.count("bell_clapper") == 0 and not _hotspot("clapper_box").visible, "M11 gives no clapper back (%s)" % str(gs.inventory))
+	sr.close_mechanic()
+	await _frames(2)
+	sr.synth_sound_requested.disconnect(on_synth)
+	gs.delete_save(MID_SLOT)
+	_reached_end = true
+
+
 # --- Walkthrough -------------------------------------------------------------------------
 
 func _test_walkthrough() -> void:
@@ -572,19 +647,18 @@ func _test_walkthrough() -> void:
 	_check(await _go("Z2"), "M1→Z2")
 	_check(await _go("H1"), "Z2→H1")
 	await _finish()
-	_check(sr.journal_goal().contains("мастерская"), "the goal names the room of the stand: %s" % sr.journal_goal())
+	_check(sr.journal_goal().contains("мастерской"), "the goal names the room of the stand: %s" % sr.journal_goal())
 	# The mirror tried on a wrong place in the house says where the stand is (Director 23:53).
 	_check(sr.item_refusal("mirror_mill") == "@item.mirror_mill.wrong", "in H1 the office mirror points to the stand «ЗМ»")
 	_check(await _go("H2"), "H1→H2")
 	seen = await _finish()
-	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("на левом верстак")),
-			"entering the workshop with the office mirror: Agata names the stand on the left bench: %s" % str(seen))
+	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("высокая резная")),
+			"entering the workshop with the office mirror: Agata names the stand — the tall carved frame: %s" % str(seen))
 	await _check_picks("H2 with the office mirror")
-	await _use_item("mirror_mill", "tall_frame")
-	seen = await _finish()
-	_check(gs.has_item("mirror_mill") and seen.any(func(t): return t.contains("Не та рама")),
-			"the tall carved frame points to the left bench: %s" % str(seen))
-	await _use_item("mirror_mill", "clapper_box")
+	var sz := _hotspot("stand_zm")
+	_check(sz != null and sz.global_position.distance_to(Vector2(1250, 407)) < 30.0,
+			"the stand «ЗМ» is the tall carved frame in the middle of the workshop (Director 23.10)")
+	await _use_item("mirror_mill", "bench")
 	seen = await _finish()
 	_check(gs.has_item("mirror_mill") and seen.any(func(t): return t.contains("нужна тётина стойка")),
 			"the office mirror on another thing in the workshop says where the stand is: %s" % str(seen))
@@ -592,7 +666,7 @@ func _test_walkthrough() -> void:
 	await _finish()
 	_check(await _go("H2"), "H1→H2 again")
 	seen = await _finish()
-	_check(not seen.any(func(t): return t.contains("на левом верстак")), "the stand thought is not repeated: %s" % str(seen))
+	_check(not seen.any(func(t): return t.contains("высокая резная")), "the stand thought is not repeated: %s" % str(seen))
 	await _use_item("mirror_mill", "stand_zm")
 	await _frames(2)
 	_check(not gs.has_item("mirror_mill") and gs.has_flag("office_mirror_mounted"), "the mirror goes onto the stand (out of the bag)")
@@ -698,14 +772,13 @@ func _test_walkthrough() -> void:
 	_check(await _go("H2"), "H1→H2")
 	# The brace: Dunya's bench, once the school plan is known (block 1: hotspot brace) — taken now if not on day one.
 	_check(rm.current_room.get_node_or_null("Layers/office_mirror") != null and rm.current_room.get_node("Layers/office_mirror").visible,
-		"the office mirror stays in Dunya's stand on the bench (batch 3 layer)")
+		"the office mirror's glass stays in the tall carved frame «ЗМ» (Director 23.10)")
 	if not gs.has_flag("has_brace_plate"):
-		# Batch 3: the office mirror's stand stands where the brace lay — the brace lies on the stool, still takeable.
-		_check(not _hotspot("brace").visible and _hotspot("brace_stool").visible and rm.current_room.get_node("Layers/skoba_stool").visible
-			and not rm.current_room.get_node("Layers/skoba").visible, "the brace (with the plate drawing) on the stool while the mirror stands on its place")
-		await _use("brace_stool")
+		# The brace stays on the left bench (the stand «ЗМ» is the tall frame in the middle now, 23.10).
+		_check(_hotspot("brace").visible and rm.current_room.get_node("Layers/skoba").visible, "the brace (with the plate drawing) on the bench")
+		await _use("brace")
 		await _finish()
-		_check(not _hotspot("brace_stool").visible and not rm.current_room.get_node("Layers/skoba_stool").visible, "taken from the stool — gone from it")
+		_check(not _hotspot("brace").visible and not rm.current_room.get_node("Layers/skoba").visible, "taken from the bench — gone from it")
 	_check(gs.inventory.count("brace_plate") == 1, "the brace is in the bag before the turn, once")
 	await _use_item("clamp", "bundle_nina")
 	await _frames(2)
