@@ -61,6 +61,8 @@ def main() -> int:
     ap.add_argument("--margin", type=float, default=1.12)
     ap.add_argument("--clips", nargs="*", default=[], help="точное имя клипа на действие: open_b=open_door_1 (из pipeline/3d/state/<name>.json); без него — подбор по подстроке")
     ap.add_argument("--window", nargs="*", default=[], help="доля клипа на действие: idle=0:0.35 — кадры берутся только из этого отрезка (для клипов с лишним движением), в манифест пишется playback=pingpong")
+    ap.add_argument("--feet-fix", nargs="*", default=[], help="действия, у которых перед рендером править стопы (pipeline/3d/feet_fix.py): walk idle")
+    ap.add_argument("--feet-report", default="", help="куда записать замеры стоп до/после исправления (JSON)")
     args = ap.parse_args()
     windows: dict[str, tuple[float, float]] = {}
     clip_keys: dict[str, str] = dict(c.split("=", 1) for c in args.clips)
@@ -89,6 +91,56 @@ def main() -> int:
     meshes = [o for o in objs if o.type == "MESH"]
     if not meshes:
         print("в GLB нет мешей", file=sys.stderr); return 2
+
+    actions = list(bpy.data.actions)
+
+    def pick_action(action_name, idx):
+        act = None
+        if action_name in clip_keys:
+            key = clip_keys[action_name]
+            # точное имя (Blender может добавить суффикс .001 при повторном импорте)
+            act = next((a for a in actions if a.name == key or a.name.split(".")[0] == key), None)
+            if act is None:
+                print(f"нет клипа «{key}» для «{action_name}»; в файле: {[a.name for a in actions]}", file=sys.stderr)
+                return None
+        if act is None:
+            act = next((a for a in actions if action_name.lower() in a.name.lower()), None)
+        if act is None and len(actions) == 1:
+            act = actions[0]
+        if act is None and len(actions) == len(frames_by_action):
+            act = actions[idx]  # клипы Meshy идут в порядке action_ids = порядке --frames
+        return act
+
+    # стопы: разворот ботинок и «носок вверх» у ходьбы и стойки — до рендера, в самих ключах клипа
+    if args.feet_fix and arm is not None:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "3d"))
+        import feet_fix  # noqa: PLC0415
+        reps = []
+        ad0 = arm.animation_data
+        orig_act = ad0.action if ad0 else None  # кадрирование ниже — по позе этого клипа, как без исправления
+        try:
+            rig = feet_fix.rig_from_blender(arm, meshes)
+            for idx, action_name in enumerate(frames_by_action):
+                if action_name not in args.feet_fix:
+                    continue
+                act = pick_action(action_name, idx)
+                kind = feet_fix.kind_of(action_name) or (feet_fix.kind_of(act.name) if act else None)
+                if act is None or kind is None:
+                    continue
+                rep = feet_fix.fix_action(arm, rig, act, kind, window=windows.get(action_name))
+                rep["role"] = action_name
+                reps.append(rep)
+                print(f"  стопы {action_name} ({act.name}): " + json.dumps(
+                    {"до": {k: (v["stance_toe_out_deg"], v["toe_abs_max_deg"], v["slide_max_mm"]) for k, v in rep["before"].items()},
+                     "после": {k: (v["stance_toe_out_deg"], v["toe_abs_max_deg"], v["slide_max_mm"]) for k, v in rep["after"].items()},
+                     "не прошло": rep["fail"]}, ensure_ascii=False), flush=True)
+        except Exception as e:  # шаг не должен ронять рендер; проверка (check_feet.py) покажет, что стопы не исправлены
+            print(f"  стопы: исправление не выполнено: {e!r}", file=sys.stderr, flush=True)
+        if args.feet_report:
+            Path(args.feet_report).parent.mkdir(parents=True, exist_ok=True)
+            Path(args.feet_report).write_text(json.dumps({"name": args.name, "clips": reps}, ensure_ascii=False, indent=1), encoding="utf-8")
+        feet_fix.assign(arm, orig_act)
+        bpy.context.scene.frame_set(0)
 
     # корень для вращения: всё, что без родителя
     roots = [o for o in objs if o.parent is None]
@@ -146,7 +198,6 @@ def main() -> int:
     # ortho_scale в Blender относится к большей стороне кадра; кадр вертикальный → это высота
     cam_data.ortho_scale = height * args.margin
 
-    actions = list(bpy.data.actions)
     print("клипы в файле:", [a.name for a in actions])
     manifest = {"name": args.name, "frame_w": scene.render.resolution_x, "frame_h": scene.render.resolution_y,
                 "pivot": {"x": 0.5, "y": 1.0 - (1 - 1 / args.margin) / 2}, "directions": args.directions,
@@ -155,19 +206,7 @@ def main() -> int:
 
     wanted_order = list(frames_by_action.keys())
     for idx, (action_name, nframes) in enumerate(frames_by_action.items()):
-        act = None
-        if action_name in clip_keys:
-            key = clip_keys[action_name]
-            # точное имя (Blender может добавить суффикс .001 при повторном импорте)
-            act = next((a for a in actions if a.name == key or a.name.split(".")[0] == key), None)
-            if act is None:
-                print(f"нет клипа «{key}» для «{action_name}»; в файле: {[a.name for a in actions]}", file=sys.stderr); continue
-        if act is None:
-            act = next((a for a in actions if action_name.lower() in a.name.lower()), None)
-        if act is None and len(actions) == 1:
-            act = actions[0]
-        if act is None and len(actions) == len(wanted_order):
-            act = actions[idx]  # клипы Meshy идут в порядке action_ids = порядке --frames
+        act = pick_action(action_name, idx)
         if act is None:
             print(f"нет клипа для «{action_name}» — пропускаю", file=sys.stderr); continue
         if arm is not None:

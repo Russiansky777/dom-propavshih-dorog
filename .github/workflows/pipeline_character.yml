@@ -111,8 +111,11 @@ jobs:
             rsize=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('render_size',384))" "$f")
             rsamp=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('render_samples',24))" "$f")
             win=$(python -c "import json,sys;r=json.load(open(sys.argv[1]));print(' '.join(f'{k}={v[0]}:{v[1]}' for k,v in r.get('clip_window',{}).items()))" "$f")
+            # стопы (pipeline/3d/feet_fix.py): у ходьбы и стойки — по умолчанию у всех; "feet_fix": false в запросе — выключить
+            ff=$(python pipeline/3d/check_feet.py --glb "pipeline/3d/out/$name/animations.glb" --request "$f" --print-roles)
             python pipeline/render/render_sprites.py --glb "pipeline/3d/out/$name/animations.glb" --name "$name" \
-              --out "assets/characters/$name" --directions 8 --frames $args --size "$rsize" --samples "$rsamp" --elev "$elev" --front-yaw "$yaw" ${clips:+--clips $clips} ${win:+--window $win}
+              --out "assets/characters/$name" --directions 8 --frames $args --size "$rsize" --samples "$rsamp" --elev "$elev" --front-yaw "$yaw" ${clips:+--clips $clips} ${win:+--window $win} \
+              ${ff:+--feet-fix $ff --feet-report "pipeline/3d/state/${name}_feet_fix.json"}
             cp "pipeline/3d/out/$name/meshy_manifest.json" "assets/characters/$name/" 2>/dev/null || true
             cp "pipeline/3d/out/$name/views/"*.png "assets/characters/$name/" 2>/dev/null || true
           done
@@ -127,6 +130,20 @@ jobs:
             pipeline/3d/out/**/meshy_manifest.json
             pipeline/3d/state/*.json
           retention-days: 90
+
+      - name: Стопы — автопроверка (разворот носка, подошва в опоре, проскальзывание)
+        id: feet
+        if: steps.req.outputs.files != ''
+        run: |
+          # числа — pipeline/3d/state/<name>_feet.json (коммитится шагом ниже); порог превышен — прогон красный
+          bad=""
+          for f in ${{ steps.req.outputs.files }}; do
+            name=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
+            glb="pipeline/3d/out/$name/animations.glb"
+            [ -f "$glb" ] || { echo "нет $glb — проверка стоп пропущена"; continue; }
+            python pipeline/3d/check_feet.py --glb "$glb" --request "$f" --out "pipeline/3d/state/${name}_feet.json" || bad="$bad $name"
+          done
+          if [ -n "$bad" ]; then echo "::error::стопы: порог превышен у:$bad (pipeline/3d/state/<name>_feet.json)"; echo "bad=$bad" >> "$GITHUB_OUTPUT"; fi
 
       - name: Коммит результатов
         if: always() && steps.req.outputs.files != ''
@@ -148,6 +165,12 @@ jobs:
             sleep 15
           done
           echo "::error::не удалось запушить результаты — перезапуск: workflow_dispatch с from_run=${{ github.run_id }}"
+          exit 1
+
+      - name: Стопы — итог
+        if: always() && steps.feet.outputs.bad != ''
+        run: |
+          echo "::error::стопы не прошли проверку:${{ steps.feet.outputs.bad }}"
           exit 1
 
       - name: Спрайты как артефакт, если коммит не прошёл
