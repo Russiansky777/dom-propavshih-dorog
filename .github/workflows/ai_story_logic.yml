@@ -1,0 +1,63 @@
+name: ai-story-logic
+
+# ИИ-разбор логики блока: когда Docs/ACCEPTANCE_<веха>.md появляется или меняется, модель читает блок (изменённые
+# разделы чеклиста или весь новый документ) и все данные сюжета (сцены, комнаты, предметы, флаги, квесты, тексты)
+# против Docs/SCENARIO_FINAL.md и канона: шаги, которые игроку не вывести; обязательные предметы, которые можно
+# пропустить, потерять или получить дважды; цель раньше объяснения; тупики; противоречия.
+# Вручную: Docs/ai_checks/requests/story_logic.json ("doc": путь к чеклисту — весь документ).
+# Отчёт: Docs/ai_checks/story_logic_<веха>_<дата>.md. Правок в game/ и data/ нет.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Docs/ACCEPTANCE_*.md"
+      - "Docs/ai_checks/requests/story_logic.json"
+  workflow_dispatch:
+    inputs:
+      doc:
+        description: "чеклист блока, напр. Docs/ACCEPTANCE_M2.md (весь документ)"
+        default: "Docs/ACCEPTANCE_M2.md"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-story-logic-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Разбор логики блока
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
+          BEFORE: ${{ github.event.before }}
+          DOC_INPUT: ${{ github.event.inputs.doc }}
+        run: |
+          if [ -n "$DOC_INPUT" ]; then
+            case "$DOC_INPUT" in Docs/ACCEPTANCE_*.md) node tools/ai_checks/story_logic.mjs --doc "$DOC_INPUT" ;; *) echo "нужен Docs/ACCEPTANCE_*.md"; exit 1 ;; esac
+            exit 0
+          fi
+          # ручной запрос из файла — весь указанный документ
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null && \
+             git diff --name-only "$BEFORE" HEAD -- Docs/ai_checks/requests/story_logic.json | grep -q .; then
+            doc=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("Docs/ai_checks/requests/story_logic.json","utf8")).doc||"")')
+            case "$doc" in Docs/ACCEPTANCE_*.md) node tools/ai_checks/story_logic.mjs --doc "$doc" ;; esac
+          fi
+          # изменённые чеклисты — только изменённые разделы
+          node tools/ai_checks/story_logic.mjs --changed --base "$BEFORE"
+      - name: Коммит отчёта
+        if: always()
+        run: |
+          [ -d Docs/ai_checks ] || exit 0
+          tools/ai_checks/commit.sh "ИИ-разбор логики: $(cat build/ai_checks/summary.txt 2>/dev/null || echo отчёт) (run ${{ github.run_number }})" Docs/ai_checks
