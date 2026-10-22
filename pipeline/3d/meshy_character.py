@@ -147,9 +147,22 @@ def main() -> int:
             if k in req:
                 body[k] = req[k]
         st["model_task"] = mc.create("/multi-image-to-3d", body)
+        st["model_body"] = {k: v for k, v in body.items() if k != "image_urls"}
         save_state(name, st)
-        log(f"[{name}] создана задача модели {st['model_task']}")
-    model = mc.wait("/multi-image-to-3d", st["model_task"], log=log)
+        log(f"[{name}] создана задача модели {st['model_task']} c {st['model_body']}")
+    try:
+        model = mc.wait("/multi-image-to-3d", st["model_task"], log=log)
+    except mc.MeshyError as e:
+        # повышенная детальность могла не пройти — один повтор без geometry_resolution/enable_pbr (текстуры 4k остаются)
+        if not any(k in st.get("model_body", {}) for k in ("geometry_resolution", "enable_pbr")):
+            raise
+        log(f"[{name}] модель с повышенной детальностью не удалась: {e}; повтор без geometry_resolution/enable_pbr")
+        body = {"image_urls": [mc.data_uri(v) for v in views], **{k: v for k, v in st["model_body"].items() if k not in ("geometry_resolution", "enable_pbr")}}
+        st["model_error"] = str(e)[:500]
+        st["model_task"] = mc.create("/multi-image-to-3d", body)
+        st["model_body"] = {k: v for k, v in body.items() if k != "image_urls"}
+        save_state(name, st)
+        model = mc.wait("/multi-image-to-3d", st["model_task"], log=log)
     glb_url = model["model_urls"]["glb"]
     mc.download(glb_url, out / "model.glb")
     st["model_credits"] = model.get("consumed_credits")

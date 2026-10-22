@@ -83,11 +83,18 @@ jobs:
         env:
           MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
         run: |
-          set -e
+          # журнал каждого персонажа коммитится даже при ошибке (логи Actions из сессии не читаются);
+          # ошибка одного персонажа не останавливает остальных, но шаг в конце падает
+          mkdir -p pipeline/3d/state; fail=0
           for f in ${{ steps.req.outputs.files }}; do
             echo "=== $f"
-            python pipeline/3d/meshy_character.py --request "$f"
+            n=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
+            set -o pipefail
+            if ! python pipeline/3d/meshy_character.py --request "$f" 2>&1 | tee "pipeline/3d/state/${n}_last_run.log"; then
+              echo "::error::$n — ошибка Meshy, журнал pipeline/3d/state/${n}_last_run.log"; fail=1
+            fi
           done
+          exit $fail
 
       - name: Рендер спрайтов (Blender/Cycles CPU)
         if: steps.req.outputs.files != ''
@@ -120,7 +127,7 @@ jobs:
           retention-days: 90
 
       - name: Коммит результатов
-        if: steps.req.outputs.files != ''
+        if: always() && steps.req.outputs.files != ''
         run: |
           git config user.name "pipeline-bot"
           git config user.email "pipeline-bot@users.noreply.github.com"
