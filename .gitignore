@@ -13,3 +13,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 *.import.tmp
+
+# Рабочие копии агентов (git worktree) — не в репозиторий
+.claude/
