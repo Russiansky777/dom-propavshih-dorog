@@ -1,0 +1,28 @@
+{
+  "character": "agata_v3",
+  "sheet": "assets/reference/agata_sheet.png",
+  "height_m": 1.65,
+  "tasks": {
+    "model_task": "01a16531-629c-7204-bd8e-cd7f2b0d208e",
+    "rig_task": "01a16564-178b-749b-b8e2-e737a90b813c",
+    "anim_task": "01a16565-9be5-70db-96f1-3b5b52cc5738"
+  },
+  "actions": {
+    "idle": {
+      "action_id": 0,
+      "name": "Idle",
+      "key": "Idle"
+    }
+  },
+  "credits": {
+    "model_credits": 35,
+    "rig_credits": 5,
+    "anim_credits": 3
+  },
+  "files": {
+    "model": "model.glb",
+    "rigged": "rigged.glb",
+    "animations": "animations.glb"
+  },
+  "note": "animations.glb содержит по одному клипу на action в порядке actions; клипы называть по ключам Meshy"
+}

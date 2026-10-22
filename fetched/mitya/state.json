@@ -1,0 +1,35 @@
+{
+  "model_task": "01a16535-1014-738d-a394-56ea2fbec62e",
+  "model_body": {
+    "ai_model": "latest",
+    "pose_mode": "a-pose",
+    "should_texture": true,
+    "texture_resolution": "4k",
+    "target_formats": [
+      "glb"
+    ],
+    "auto_size": true,
+    "origin_at": "bottom",
+    "geometry_resolution": "2k",
+    "enable_pbr": true
+  },
+  "model_credits": 35,
+  "remesh_task": "01a16566-1d3d-7723-9bfe-0461ee4cf68e",
+  "remesh_credits": 5,
+  "rig_task": "01a16569-b080-73fd-8883-c305362d3944",
+  "rig_credits": 5,
+  "actions": {
+    "idle": {
+      "action_id": 0,
+      "name": "Idle",
+      "key": "Idle"
+    },
+    "talk": {
+      "action_id": 47,
+      "name": "Listening Gesture",
+      "key": "Listening_Gesture"
+    }
+  },
+  "anim_task": "01a1656b-0c7b-714b-9ad2-5cc461daacc0",
+  "anim_credits": 6
+}

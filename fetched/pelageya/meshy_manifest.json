@@ -1,0 +1,33 @@
+{
+  "character": "pelageya",
+  "sheet": "assets/incoming/pelageya_sheet_v2.png",
+  "height_m": 1.55,
+  "tasks": {
+    "model_task": "01a14b87-250a-75e1-801c-9f53bbfdd5dc",
+    "rig_task": "01a14b89-a867-714b-a9b6-c9bd1b3c6895",
+    "anim_task": "01a14b8b-bafb-7791-8129-6b732b94721c"
+  },
+  "actions": {
+    "idle": {
+      "action_id": 0,
+      "name": "Idle",
+      "key": "Idle"
+    },
+    "talk": {
+      "action_id": 47,
+      "name": "Listening Gesture",
+      "key": "Listening_Gesture"
+    }
+  },
+  "credits": {
+    "model_credits": 30,
+    "rig_credits": 5,
+    "anim_credits": 6
+  },
+  "files": {
+    "model": "model.glb",
+    "rigged": "rigged.glb",
+    "animations": "animations.glb"
+  },
+  "note": "animations.glb содержит по одному клипу на action в порядке actions; клипы называть по ключам Meshy"
+}
