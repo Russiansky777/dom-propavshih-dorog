@@ -498,7 +498,7 @@ def check_view(ctx: str, v: dict) -> None:
 EFFECT_TYPES = ("fire", "snow", "tint", "shapes")
 BLENDS = ("mul", "add", "sub", "mix")
 SHAPE_TYPES = ("gradient", "poly", "line", "circle", "glow", "text")
-MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo", "windlass")
+MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo", "windlass", "latch", "crossing")
 
 
 def check_shapes(ctx: str, shapes) -> None:
@@ -562,6 +562,32 @@ def check_mechanic(ctx: str, m: dict, room: dict) -> None:
             o = o.get(kk) if isinstance(o, dict) else None
         if not o:
             err(f"{ctx}.{'.'.join(keys)}: нет картинки крупного плана (арт партии 3 вместо заглушки движка)")
+    # Mechanics of 23.10 (F6–F8, F12): the «точный удар» bar, the knot path, the latch, the crossing.
+    tm = m.get("timing")
+    if tm is not None:
+        if not 1 <= int(tm.get("hits", 1)) <= 5:
+            err(f"{ctx}.timing.hits: 1–5 попаданий подряд, есть {tm.get('hits')}")
+        if not 0.08 <= float(tm.get("green", 0.2)) <= 0.5:
+            err(f"{ctx}.timing.green: зелёная зона 0.08–0.5 полосы (честно и не даром), есть {tm.get('green')}")
+        check_text(f"{ctx}.timing.hint", tm.get("hint", ""))
+    if m.get("type") == "plate":
+        kp = m.get("knot_path", {})
+        if len(kp.get("strokes", [])) < 2 or any(len(st) < 2 for st in kp.get("strokes", [])):
+            err(f"{ctx}.knot_path.strokes: узел — 2–3 движения по ≥ 2 точки (F6)")
+        for i, lb in enumerate(kp.get("labels", [])):
+            check_text(f"{ctx}.knot_path.labels[{i}]", lb)
+        if "timing" not in m:
+            err(f"{ctx}.timing: скоба забивается «точным ударом» (F7)")
+    if m.get("type") == "latch":
+        for kk in ("closed", "open"):
+            if not m.get("art", {}).get(kk):
+                err(f"{ctx}.art.{kk}: нет картинки ставни")
+    if m.get("type") == "crossing":
+        for kk in ("bg", "rope", "arrival"):
+            if not m.get("art", {}).get(kk):
+                err(f"{ctx}.art.{kk}: нет картинки переправы")
+        if not 5 <= int(m.get("pulls", 10)) <= 20:
+            err(f"{ctx}.pulls: около 10 перехватов (F12), есть {m.get('pulls')}")
     if m.get("type") == "office_mirror" and len(m.get("frame", {}).get("glass_polygon", [])) != 4:
         err(f"{ctx}.frame.glass_polygon: контур стекла — 4 точки холста (glass_polygon_px поставки)")
     if m.get("type") == "fast_mirror":

@@ -90,6 +90,7 @@ func _run() -> void:
 	await _test("Bag: double click / magnifier opens it, single click still takes in hand; Esc; load closes it", _test_examine_bag)
 	await _test("Mother's mirror (F4): the clock beside the glass goes 20×, the watch from the bag, the realisation", _test_fast_mirror)
 	await _test("Examine inside a close-up: on top of it, Esc closes only the examine", _test_examine_over_mechanic)
+	await _test("The plate (F5–F7): the brace by «точный удар» — a miss makes it jump off and resets; the knot drawn along the path — slips back, no penalty; textured rope; save/load", _test_plate)
 	await _test("Living water (F14): every room that declares water builds it — ripple, trembling reflections, sparkles, flow lines from data", _test_water)
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -158,9 +159,17 @@ func _v(d) -> Vector2:
 	return Vector2(float(d.get("x", 0)), float(d.get("y", 0))) if d is Dictionary else Vector2.ZERO
 
 
+func _staging_done() -> void:
+	var g := 0
+	while sr.is_staging() and g < 2000:
+		await process_frame
+		g += 1
+
+
 func _finish() -> Array[String]:
 	var seen: Array[String] = []
 	var guard := 0
+	await _staging_done()
 	while not sr.current_beat.is_empty() and guard < 100:
 		guard += 1
 		var b: Dictionary = sr.current_beat
@@ -171,6 +180,7 @@ func _finish() -> Array[String]:
 			seen.append("%s:%s" % [String(b.get("speaker", b.get("type", ""))), String(b.get("text", ""))])
 			sr.advance()
 		await process_frame
+		await _staging_done()
 	await _frames(2)
 	return seen
 
@@ -622,4 +632,119 @@ func _test_water() -> void:
 				if float(w.get("streaks", 0.0)) > 0.0:
 					_check(is_equal_approx(float(mat.get_shader_parameter("streaks")), float(w["streaks"])), "%s/%s: flow lines from data" % [rid, id])
 	_check(rooms_with_water >= 6, "rooms with water in scope: %d (Z2, Z3, R1, R2, R3, M1, M4 …)" % rooms_with_water)
+	_reached_end = true
+
+
+# --- The plate: brace and knot (F5–F7) ----------------------------------------------------------------
+
+func _panel() -> Dictionary:
+	return mv.probe().get("panel", {})
+
+
+func _open_plate(flags: Array) -> void:
+	await _fresh([], ["house_unlocked", "evening_dusk", "done_M15a", "skoba_on_plate"] + flags)
+	rm.change_room("Z3", "default")
+	await _frames(4)
+	await _finish()
+	var h = rm.current_room.get_node_or_null("Hotspots/pier_plate")
+	sr.open_mechanic(sr.mechanic_spec(h), "pier_plate")
+	await _frames(3)
+
+
+## Waits until the bar's marker is near the middle of the green (want_green) or well in the red, then clicks `at`.
+func _strike_at(at: Vector2, want_green: bool) -> void:
+	await _move(at)
+	var g := 0
+	while g < 900:
+		var t: Dictionary = _panel().get("timing", {})
+		if t.is_empty():
+			break
+		var z: Array = t.get("zone", [0.4, 0.6])
+		var c := (float(z[0]) + float(z[1])) * 0.5
+		var d := absf(float(t.get("pos", 0.0)) - c)
+		var ok := (d < 0.03) if want_green else (d > 0.3)
+		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and ok:
+			break
+		await process_frame
+		g += 1
+	await _button(at, true)
+	await _button(at, false)
+
+
+func _drag_path(points: Array, release: bool = true) -> Vector2:
+	var start := _v(points[0])
+	await _move(start)
+	await _button(start, true)
+	var last := start
+	for j in range(1, points.size()):
+		var a := _v(points[j - 1])
+		var b := _v(points[j])
+		var steps := maxi(1, int(a.distance_to(b) / 20.0))
+		for k in steps:
+			last = a.lerp(b, float(k + 1) / steps)
+			await _move(last)
+	if release:
+		await _button(last, false)
+	return last
+
+
+func _test_plate() -> void:
+	Engine.time_scale = 1.0
+	await _open_plate([])
+	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "plate", "the plate close-up")
+	var p = mv.panel
+	var pr := _panel()
+	_check(not pr.get("timing", {}).is_empty() and int(pr["timing"].get("needed", 0)) == 3, "the «точный удар» bar under the plate: three in a row")
+	var sk := _v(pr.get("skoba", {}))
+	await _strike_at(sk, true)
+	await _strike_at(sk, true)
+	_check(int(_panel().get("blows", 0)) == 2 and not gs.has_flag("plate_braced"), "two hits: two blows, not yet braced")
+	await _strike_at(sk, false)
+	var seen := await _finish()
+	_check(int(_panel().get("blows", -1)) == 0 and int(_panel().get("jumps", 0)) == 1 and not gs.has_flag("plate_braced"), "a miss: the brace jumps off, the series starts again")
+	_check(seen.size() == 1 and seen[0].begins_with("agata:"), "Agata says so once (%s)" % str(seen))
+	_check(gs.has_flag("skoba_on_plate") and not gs.has_item("brace_plate"), "nothing lost: the brace is still on the plate")
+	for i in 3:
+		await _strike_at(sk, true)
+	seen = await _finish()
+	_check(gs.has_flag("plate_braced") and gs.has_flag("done_M15s"), "three in a row: braced, M15s (%s)" % str(seen))
+	await _frames(3)
+	pr = _panel()
+	_check(bool(pr.get("knot_stage", false)) and bool(pr.get("rope_textured", false)), "the rope comes: drawn with the rope's own texture (F5)")
+	_check(pr.get("timing", {}).is_empty(), "the bar is gone once braced")
+	# Save in the middle (braced, knot not tied) → load → the brace stays, the knot waits.
+	sr.close_mechanic()
+	await _frames(2)
+	_check(rm.save_game(SLOT) and rm.load_game(SLOT), "save/load between the brace and the knot")
+	await _frames(3)
+	_check(gs.has_flag("plate_braced") and not gs.has_flag("rope_on_ring") and not sr.can_start("M15s"), "after the load: braced, M15s does not replay")
+	var h = rm.current_room.get_node_or_null("Hotspots/pier_plate")
+	sr.open_mechanic(sr.mechanic_spec(h), "pier_plate")
+	await _frames(3)
+	p = mv.panel
+	pr = _panel()
+	_check(pr.get("timing", {}).is_empty() and bool(pr.get("knot_stage", false)), "reopened: no bar, the knot")
+	# The knot: let go in the middle of the first stroke — it slips back; finish the stroke and the second; off the path on the third.
+	var strokes: Array = pr.get("strokes", [])
+	await _drag_path(strokes[0].slice(0, 3))
+	seen = await _finish()
+	_check(int(_panel().get("slips", 0)) == 1 and int(_panel().get("stroke", -1)) == 0, "let go mid-stroke: slips back to its start (%s)" % str(seen))
+	var at := await _drag_path(strokes[0] + strokes[1].slice(1) , false)
+	_check(int(_panel().get("stroke", -1)) == 2, "two strokes drawn (stroke %d)" % int(_panel().get("stroke", -1)))
+	await _move(at + Vector2(0, -320))
+	await _button(at + Vector2(0, -320), false)
+	await _finish()
+	_check(int(_panel().get("stroke", -1)) == 2 and int(_panel().get("slips", 0)) == 2 and not gs.has_flag("rope_on_ring"), "off the path on the third: back to its start, the first two stay")
+	var s3: Array = [pr["strokes"][2][0]] + pr["strokes"][2].slice(1)
+	await _drag_path(s3)
+	await create_timer(1.0).timeout
+	seen = await _finish()
+	_check(gs.has_flag("rope_on_ring") and gs.has_flag("done_M15"), "the knot tied: rope on the ring, M15 (%s)" % str(seen))
+	_check(bool(_panel().get("rope_tied_visible", false)) if sr.mechanic_open else true, "the painted knot shown")
+	if sr.mechanic_open:
+		sr.close_mechanic()
+	await _frames(2)
+	_check(rm.save_game(SLOT) and rm.load_game(SLOT), "save/load after the knot")
+	await _frames(3)
+	_check(gs.has_flag("rope_on_ring") and not sr.can_start("M15"), "tied stays tied after a load")
 	_reached_end = true

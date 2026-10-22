@@ -193,6 +193,34 @@
         "text": "Ходики у мамы бегут. Сверить бы со своими часами."
       },
       "draft": true
+    },
+    "mech.plate.label_hint_brace": {
+      "text": "Скоба: три точных удара подряд — когда бегунок в зелёном.",
+      "draft": true
+    },
+    "mech.plate.label_hint_rope": {
+      "text": "Узел: взять конец каната мышью и вести по пунктиру — как показывает Пелагея.",
+      "draft": true
+    },
+    "mech.plate.brace_jumped": {
+      "text": "Соскочила. Ещё раз — три удара подряд, ровно.",
+      "line": {
+        "speaker": "agata",
+        "text": "Соскочила. Ещё раз — три удара подряд, ровно."
+      },
+      "draft": true
+    },
+    "mech.knot.under": {
+      "text": "Под кольцо — и вверх в него",
+      "draft": true
+    },
+    "mech.knot.around": {
+      "text": "Вокруг — через низ кольца",
+      "draft": true
+    },
+    "mech.knot.through": {
+      "text": "В петлю — и затянуть",
+      "draft": true
     }
   }
 }

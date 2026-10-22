@@ -14,7 +14,8 @@ var ui: Node
 var out_dir := ""
 
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
-	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3"]
+	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3",
+	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied"]
 
 
 func _initialize() -> void:
@@ -135,6 +136,28 @@ func _shot(name: String) -> void:
 			await _frames(30)
 			await _save(name + "_a")
 			await create_timer(0.7).timeout
+		"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied":
+			var fl := ["house_unlocked", "evening_dusk", "done_M15a", "skoba_on_plate"]
+			if name != "plate_brace":
+				fl += ["plate_braced", "rope_brought", "done_M15s"]
+			if name == "plate_tied":
+				fl += ["rope_on_ring"]
+			await _state(fl, [], "Z3")
+			var h = rm.current_room.get_node_or_null("Hotspots/pier_plate")
+			sr.open_mechanic(sr.mechanic_spec(h), "pier_plate")
+			await _frames(3)
+			var p = mv.panel
+			if name == "plate_brace":
+				p.blows = 1
+				p.timing.logic.hits = 1
+				p.timing.logic.phase = 0.21
+				p._refresh()
+			elif name.begins_with("plate_knot"):
+				var st := int(name.right(1))
+				p.knot.stroke = st
+				p.knot.progress = p.knot.lengths[st] * 0.55
+				p._refresh()
+			await _frames(6)
 		_:
 			push_warning("shots_mechanics: unknown shot %s" % name)
 			return

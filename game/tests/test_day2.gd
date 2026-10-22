@@ -938,20 +938,21 @@ func _test_walkthrough() -> void:
 	await _frames(2)
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "plate", "the brace on the crack opens the plate close-up")
 	await _finish()
-	for i in 3:
-		await _click(_v(_panel().get("skoba", {})))
+	# F7 (Director 23.10): three blows in a row on the «точный удар» bar.
+	await _strike_green(_v(_panel().get("skoba", {})), 3)
 	seen = await _finish()
 	_check(gs.has_flag("plate_braced") and gs.has_flag("done_M15s") and gs.has_flag("rope_brought"), "three blows → M15s, rope brought: %s" % str(seen))
 	await _frames(2)
-	await _drag(_v(_panel().get("rope_end", {})), _v(_panel().get("ring", {})))
+	# F6: the knot — the rope's end drawn along the path; first a slip off the path (no penalty).
+	var kp0 := _v(_panel().get("rope_end", {}))
+	await _move(kp0)
+	await _button(kp0, true)
+	await _move(kp0 + Vector2(300, -260))
+	await _button(kp0 + Vector2(300, -260), false)
 	await _finish()
-	_check(bool(_panel().get("rope_on_ring", false)), "the rope end at the ring")
-	var marks: Array = _panel().get("knot", [])
-	await _click(_v(marks[1]))
-	await _finish()
-	_check(int(_panel().get("knot_step", -1)) == 0 and int(_panel().get("knot_errors", 0)) == 1, "a wrong move — shown again, no penalty")
-	for m in marks:
-		await _click(_v(m))
+	_check(int(_panel().get("slips", 0)) == 1 and int(_panel().get("stroke", -1)) == 0 and not gs.has_flag("rope_on_ring"), "off the path — the end slips back, no penalty")
+	await _tie_knot()
+	await _frames(40)
 	seen = await _finish()
 	_check(gs.has_flag("rope_on_ring") and gs.has_flag("done_M15"), "the knot → M15: %s" % str(seen))
 	# Polish 22.10 (A1): the road comes back here, at the knot — held from both ends; the lights only answer later.
@@ -1044,6 +1045,47 @@ func _test_walkthrough() -> void:
 	_check(gs.inventory.count("school_ribbon") == 1, "ribbon still once")
 	_npc_goal_check = false
 	Engine.time_scale = 1.0
+
+
+## «Точный удар» (F7, F8): `n` strikes, each when the marker is near the middle of the green (time scale 1 for it).
+func _strike_green(at: Vector2, n: int) -> void:
+	var ts := Engine.time_scale
+	Engine.time_scale = 1.0
+	await _move(at)
+	for i in n:
+		var g := 0
+		while g < 900:
+			var t: Dictionary = _panel().get("timing", {})
+			if t.is_empty():
+				break
+			var z: Array = t.get("zone", [0.4, 0.6])
+			var c := (float(z[0]) + float(z[1])) * 0.5
+			if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and absf(float(t.get("pos", 0.0)) - c) < 0.03:
+				break
+			await process_frame
+			g += 1
+		await _button(at, true)
+		await _button(at, false)
+	Engine.time_scale = ts
+
+
+## «Протянуть узел» (F6): take the rope's end and draw it along every stroke of the knot.
+func _tie_knot() -> void:
+	var pr := _panel()
+	var strokes: Array = pr.get("strokes", [])
+	var start := _v(pr.get("rope_end", {}))
+	await _move(start)
+	await _button(start, true)
+	var last := start
+	for st in strokes:
+		for j in range(1, st.size()):
+			var a := _v(st[j - 1])
+			var b := _v(st[j])
+			var steps := maxi(1, int(a.distance_to(b) / 20.0))
+			for k in steps:
+				last = a.lerp(b, float(k + 1) / steps)
+				await _move(last)
+	await _button(last, false)
 
 
 ## Strikes on the bell with the mouse: `n` short clicks close together, then the pause that decides.
