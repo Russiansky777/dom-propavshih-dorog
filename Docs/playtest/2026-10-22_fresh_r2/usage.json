@@ -1,0 +1,47 @@
+{
+ "max_usd": 0.3,
+ "spent_usd": 0,
+ "by_model": {},
+ "workspace": {
+  "name": "",
+  "source": "",
+  "error": "список пространств: HTTP 403 Missing permissions. Please check with Anthropic support if you think this is in error."
+ },
+ "prices_per_mtok": {
+  "claude-haiku-5-5": {
+   "in": 0.1,
+   "cw": 0.125,
+   "cr": 0.01,
+   "out": 0.5,
+   "long": {
+    "over": 100000,
+    "in": 0.5,
+    "cw": 0.625,
+    "cr": 0.05,
+    "out": 2.5
+   }
+  },
+  "claude-sonnet-5-5": {
+   "in": 2,
+   "cw": 2.5,
+   "cr": 0.1,
+   "out": 10
+  },
+  "claude-opus-5-5": {
+   "in": 4,
+   "cw": 5,
+   "cr": 0.2,
+   "out": 20
+  },
+  "claude-haiku-4-5": {
+   "in": 1,
+   "cw": 1.25,
+   "cr": 0.1,
+   "out": 5
+  }
+ },
+ "prices_source": "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22)",
+ "calls": [],
+ "report_reserve_usd": 0.075,
+ "stop": "API: ключ не привязан к рабочему пространству, а список пространств: HTTP 403 Missing permissions. Please check with Anthropic support if you think this is in error.; нужен секрет CLAUDE_WORKSPACE (wrkspc_…)"
+}
