@@ -23,13 +23,15 @@ permissions:
   actions: read
 
 concurrency:
-  group: pipeline-character
+  # своя группа на каждый коммит: прогоны разных пушей идут параллельно (коммит результатов — с rebase и повторами);
+  # общая группа отменяла ожидающий прогон, когда любой пуш в pipeline/requests вставал в очередь (22.10: потерян прогон 39847958560)
+  group: pipeline-character-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
   character:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
         with:
