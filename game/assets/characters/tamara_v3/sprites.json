@@ -1,5 +1,5 @@
 {
-  "name": "tamara",
+  "name": "tamara_v3",
   "frame_w": 288,
   "frame_h": 384,
   "pivot": {
@@ -8,7 +8,7 @@
   },
   "directions": 8,
   "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.678,
+  "character_height_m": 1.663,
   "actions": {
     "idle": {
       "sheet": "idle.png",

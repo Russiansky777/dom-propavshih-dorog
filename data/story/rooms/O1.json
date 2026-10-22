@@ -79,14 +79,12 @@
     },
     {
       "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1365, 280, 130, 455], "stand": [1180, 765], "draw": false, "pick_priority": 3,
-      "image": "res://assets/characters/nina/front.png",
       "visible_if": ["done_M21b"], "hidden_if": ["done_M22"],
       "_rect_note": "блок 3 (M22): Нина у доски справа, ноги y 735 (масштаб 1,37 → Нина 1,62 м ≈ 460 px); уходит в дом сестры после M22",
       "talk": {"after_text": "@O1d.nina.after"}
     },
     {
       "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [650, 390, 100, 355], "stand": [905, 760], "draw": false, "pick_priority": 3,
-      "image": "res://assets/characters/ulyana/front.png",
       "visible_if": ["done_M21b"],
       "_rect_note": "блок 3: Ульяна у учительского стола, ноги y 745 (масштаб 1,38 → 1,25 м ≈ 360 px); с третьего дня учится здесь",
       "talk": {"after_text": "@O1d.ulyana.after"}

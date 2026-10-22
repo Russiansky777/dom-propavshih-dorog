@@ -59,5 +59,12 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_day2.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # день второй (блок 2): крюк без наказания, затвор не разом, свет в зеркале в кадр удара, мамино зеркало ровно 20:1, лента один раз, скоба один раз, сохранение посреди дня, весь день ботом от ночи у печи до дальней опоры
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_day3.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # блоки 3–5: Ольховка, горница Нины, свободный ход, ворот первого пролёта (сигналы, удар без наказания), эпилог кадрами и финальный кадр, точки старта, сохранение на каждой точке, следы выборов, дела жителей
 "$GODOT" --headless --audio-driver Dummy --fixed-fps 60 --path "$GAME_DIR" -s res://tests/test_agata_3d.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # Агата в 3D (render "3d"): любой угол поворота без скачков, стопа на полу ≤ 1 см, idle без рывков, старт/стоп, действия, отрисовка
+# CI: every failure becomes an annotation (title, test, its messages) — the checks API shows annotations without the
+# job log, whose download host agents cannot reach (22.10: two red runs with no way to read why).
+if [[ -n "${GITHUB_ACTIONS:-}" && "$code" -ne 0 ]]; then
+  { awk '/^FAIL /{if(m)print m; m=$0; next} m && /^ +- /{m=m"%0A"$0; next} {if(m){print m; m=""}} END{if(m)print m}' "$BUILD_DIR/logs/tests.log"
+    grep -E "^ERROR |^ERROR: [^0-9]|ОШИБКА|SCRIPT ERROR|Parse Error" "$BUILD_DIR/logs/tests.log" | grep -vE "resources still in use|ObjectDB"
+  } | head -10 | while IFS= read -r l; do echo "::error title=tests::${l}"; done || true
+fi
 echo "[tests] overall exit code: $code"
 exit "$code"

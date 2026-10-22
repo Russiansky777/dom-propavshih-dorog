@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qj1ohwphc6wj"
-path="res://.godot/imported/front.png-2fd6ec256fefbe505dde80b61f95d7cf.ctex"
+uid="uid://ddqnpnaawmeq2"
+path="res://.godot/imported/talk.png-0d723aabb7adc194d4af095bb7784798.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/ilya/front.png"
-dest_files=["res://.godot/imported/front.png-2fd6ec256fefbe505dde80b61f95d7cf.ctex"]
+source_file="res://assets/characters/tamara_v3/talk.png"
+dest_files=["res://.godot/imported/talk.png-0d723aabb7adc194d4af095bb7784798.ctex"]
 
 [params]
 

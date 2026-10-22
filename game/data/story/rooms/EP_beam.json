@@ -35,17 +35,17 @@
       1078
     ]
   ],
-  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
   "player_hidden": true,
   "layers": [
     {
       "id": "cut_dunya",
       "text": "@EP.beam.written_dunya",
       "rect": [
-        300,
-        230,
-        420,
-        160
+        520,
+        280,
+        520,
+        170
       ],
       "font": "italic",
       "font_size": 78,
@@ -61,10 +61,10 @@
       "id": "cut_roads",
       "text": "@EP.beam.written_roads",
       "rect": [
-        290,
-        200,
-        440,
-        240
+        490,
+        250,
+        580,
+        220
       ],
       "font": "italic",
       "font_size": 52,
@@ -80,10 +80,10 @@
       "id": "cut_date",
       "text": "@EP.beam.written_date",
       "rect": [
-        300,
-        230,
-        420,
-        160
+        520,
+        280,
+        520,
+        170
       ],
       "font": "italic",
       "font_size": 56,

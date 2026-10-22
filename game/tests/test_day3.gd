@@ -84,7 +84,7 @@ func _run() -> void:
 	await _test("Choices leave traces: board answers, Tikhon, epilogue lines and layers by flags", _test_traces)
 	await _test("Block 5: optional stories — once each, traces in the epilogue", _test_optional)
 	gs.reset()
-	for s in [AUTOSAVE, SLOT, "test3_day3", "test3_day4"]:
+	for s in [AUTOSAVE, SLOT, SLOT + "_d4", SLOT + "_end", "test3_day3", "test3_day4"]:
 		gs.delete_save(s)
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -446,6 +446,7 @@ func _test_walkthrough() -> void:
 	_check(rm.current_room.get_node("Layers/nina_answer_mama").visible and rm.current_room.get_node("Layers/nina_answer_date").visible and not rm.current_room.get_node("Layers/nina_answer_here").visible, "the answer and the common date on the board")
 	_check(rm.current_room.get_node("Layers/ulyana_bird_reply").visible, "Ulyana answered next to Agata's mark")
 	_check(not _hotspot("nina").visible, "mother has gone to her sister's house")
+	_check(gs.has_flag("boat_shuttle_open"), "F13: from the free day the boat goes both ways (boat_shuttle_open for the R3 ↔ R1 passage of block 2)")
 	# The free day: through the school door — Nina in her sister's house (frames), Tikhon.
 	frames_seen.clear()
 	_check(await _go("H3"), "O1→H3 through the school door")

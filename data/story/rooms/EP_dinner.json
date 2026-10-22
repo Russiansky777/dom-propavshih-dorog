@@ -35,7 +35,7 @@
       1078
     ]
   ],
-  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
   "player_hidden": true,
   "layers": [
     {
@@ -44,19 +44,20 @@
       "compose": {
         "char": "ulyana",
         "feet": [
-          596,
-          395
+          935,
+          562
         ],
-        "height": 215,
+        "height": 264,
         "dir": 0,
-        "action": "idle",
+        "action": "talk",
         "frame": 0,
         "tint": [
           0.95,
           0.85,
           0.75
         ],
-        "shadow": 0.25
+        "shadow": 0.25,
+        "cut_below": 518
       },
       "_note": "в двери из галереи — пришла из класса через школьную дверь"
     },
@@ -66,20 +67,19 @@
       "compose": {
         "char": "ilya",
         "feet": [
-          640,
-          560
+          565,
+          715
         ],
-        "height": 330,
+        "height": 420,
         "dir": 1,
-        "action": "idle",
+        "action": "talk",
         "frame": 0,
         "tint": [
           1.0,
           0.9,
           0.78
         ],
-        "shadow": 0.35,
-        "cut_below": 470
+        "shadow": 0.35
       }
     },
     {
@@ -88,20 +88,19 @@
       "compose": {
         "char": "nina",
         "feet": [
-          790,
-          545
+          730,
+          700
         ],
-        "height": 300,
-        "dir": 0,
-        "action": "idle",
+        "height": 371,
+        "dir": 1,
+        "action": "talk",
         "frame": 0,
         "tint": [
           1.0,
           0.9,
           0.78
         ],
-        "shadow": 0.35,
-        "cut_below": 468
+        "shadow": 0.35
       }
     },
     {
@@ -110,20 +109,19 @@
       "compose": {
         "char": "ilya_wife",
         "feet": [
-          915,
-          548
+          430,
+          735
         ],
-        "height": 300,
-        "dir": 7,
-        "action": "idle",
+        "height": 381,
+        "dir": 1,
+        "action": "talk",
         "frame": 0,
         "tint": [
           1.0,
           0.9,
           0.78
         ],
-        "shadow": 0.35,
-        "cut_below": 470
+        "shadow": 0.35
       }
     },
     {
@@ -160,10 +158,10 @@
           44
         ],
         "at": [
-          838,
-          400
+          818,
+          545
         ],
-        "width": 30
+        "width": 34
       },
       "if": [
         "v01_cup_blue"
@@ -182,10 +180,10 @@
           44
         ],
         "at": [
-          838,
-          400
+          818,
+          545
         ],
-        "width": 30
+        "width": 34
       },
       "if": [
         "v01_cup_white"

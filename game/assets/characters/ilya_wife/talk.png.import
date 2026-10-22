@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dkn4qoqmoa5i0"
-path="res://.godot/imported/talk.png-298385955f99968ca6ca52289ac063d7.ctex"
+uid="uid://usjth6a2ghwg"
+path="res://.godot/imported/talk.png-76b9f5b6af4554a20f14238a8937f075.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/tamara/talk.png"
-dest_files=["res://.godot/imported/talk.png-298385955f99968ca6ca52289ac063d7.ctex"]
+source_file="res://assets/characters/ilya_wife/talk.png"
+dest_files=["res://.godot/imported/talk.png-76b9f5b6af4554a20f14238a8937f075.ctex"]
 
 [params]
 

@@ -29,14 +29,6 @@ SOURCES = {
     "pavel": {"src": "assets/incoming/cast_v3/pavel_v2.png", "sole_y": 532, "strip_y": 519, "keep_x": [124, 252]},
     # Митя, лист mitya_v1 — вид спереди, без постамента.
     "mitya": {"src": "assets/incoming/cast_v3/mitya_v1.png", "sole_y": 573},
-    # Блок 3 (22.10): Ольховка — Нина 67, Илья 32, Ульяна 8, жена Ильи, управляющий; листы cast_v3 без постамента.
-    # Заглушки до листов 3D (assets/characters/<имя>/ — коммиты pipeline-bot); тогда фигура — NpcActor по
-    # game/data/actors/<имя>.json, эта картинка не показывается.
-    "nina": {"src": "assets/incoming/cast_v3/nina_v1.png", "sole_y": 571},
-    "ilya": {"src": "assets/incoming/cast_v3/ilya_v1.png", "sole_y": 579},
-    "ulyana": {"src": "assets/incoming/cast_v3/ulyana_v1.png", "sole_y": 560},
-    "ilya_wife": {"src": "assets/incoming/cast_v3/ilya_wife_v1.png", "sole_y": 550},
-    "manager": {"src": "assets/incoming/cast_v3/manager_v1.png", "sole_y": 604},
 }
 PAD = 4
 ALPHA_MIN = 128

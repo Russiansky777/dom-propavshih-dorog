@@ -227,7 +227,6 @@
     },
     {
       "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1290, 280, 125, 476], "stand": [1130, 800], "draw": false, "pick_priority": 3,
-      "image": "res://assets/characters/nina/front.png",
       "visible_if": ["done_M22"],
       "_rect_note": "блок 3 (M23c): Нина в доме сестры у двери в сени, ноги y 756 (масштаб 1,41 → Нина 1,62 м ≈ 476 px)",
       "talk": {"after_text": "@H1d.nina.after"}

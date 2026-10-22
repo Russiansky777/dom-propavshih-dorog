@@ -35,15 +35,15 @@
       1078
     ]
   ],
-  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
   "player_hidden": true,
   "layers": [
     {
       "id": "date",
       "text": "@EP.lesson.written_date",
       "rect": [
-        650,
-        150,
+        905,
+        200,
         330,
         90
       ],
@@ -60,12 +60,12 @@
       "compose": {
         "char": "nina",
         "feet": [
-          880,
-          400
+          1085,
+          598
         ],
-        "height": 270,
-        "dir": 1,
-        "action": "idle",
+        "height": 336,
+        "dir": 7,
+        "action": "talk",
         "frame": 0,
         "tint": [
           1.0,
@@ -81,20 +81,19 @@
       "compose": {
         "char": "ulyana",
         "feet": [
-          690,
-          560
+          860,
+          598
         ],
-        "height": 170,
+        "height": 263,
         "dir": 4,
-        "action": "idle",
+        "action": "talk",
         "frame": 0,
         "tint": [
           1.0,
           0.95,
           0.86
         ],
-        "shadow": 0.35,
-        "cut_below": 520
+        "shadow": 0.35
       }
     },
     {

@@ -23,7 +23,6 @@
   "hotspots": [
     {
       "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1090, 175, 160, 630], "stand": [1480, 900], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/nina/front.png",
       "hidden_if": ["done_M21b"],
       "_rect_note": "Нина у ходиков, ноги y 805 (масштаб 1,88 → Агата 648 px; Нина 1,62 м ≈ 634)",
       "talk": {"scenes": ["M21"], "before_text": "@O3.nina.before", "after_text": "@O3.nina.after"},
@@ -31,7 +30,6 @@
     },
     {
       "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1500, 110, 190, 720], "stand": [1350, 1000], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/ilya/front.png",
       "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
       "_rect_note": "Илья у окна, ноги y 830 (масштаб 1,93 → Агата 666 px; Илья 1,80 м ≈ 723)",
       "talk": {"after_text": "@O3.ilya.after"},
@@ -39,14 +37,12 @@
     },
     {
       "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [1700, 380, 125, 480], "stand": [1500, 1000], "draw": false, "pick_priority": 3,
-      "image": "res://assets/characters/ulyana/front.png",
       "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
       "_rect_note": "Ульяна у лавки, ноги y 860 (масштаб 1,99 → Агата 687 px; Ульяна 1,25 м ≈ 518 — чуть меньше: ребёнок у стены)",
       "talk": {"after_text": "@O3.ulyana.after"}
     },
     {
       "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "rect": [1295, 160, 160, 615], "stand": [1065, 1000], "draw": false, "pick_priority": 3,
-      "image": "res://assets/characters/ilya_wife/front.png",
       "visible_if": ["wife_came"], "hidden_if": ["morning_day3"],
       "_rect_note": "Жена Ильи с лампой у двери в сени, ноги y 775 (масштаб 1,81; 1,65 м ≈ 620 px)",
       "talk": {"after_text": "@O3.ilya_wife.after"}
