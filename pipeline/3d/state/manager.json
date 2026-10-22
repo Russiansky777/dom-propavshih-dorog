@@ -1,0 +1,18 @@
+{
+  "model_task": "01a16546-0112-746f-9378-d89a4f598b96",
+  "model_body": {
+    "ai_model": "latest",
+    "pose_mode": "a-pose",
+    "should_texture": true,
+    "texture_resolution": "4k",
+    "target_formats": [
+      "glb"
+    ],
+    "auto_size": true,
+    "origin_at": "bottom",
+    "geometry_resolution": "2k",
+    "enable_pbr": true
+  },
+  "model_credits": 35,
+  "rig_task": "01a16549-28ef-7789-aab5-7d5657aa3d31"
+}
