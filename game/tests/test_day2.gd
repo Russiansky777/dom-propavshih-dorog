@@ -527,6 +527,9 @@ func _test_walkthrough() -> void:
 	# To the mill: H1 → Z2 → M1.
 	_check(await _go("Z2"), "H1→Z2")
 	_check(await _go("M1"), "Z2→M1 (the mill yard is built)")
+	var pv: Node = rm.current_room.get_node_or_null("npc_pavel")
+	_check(pv != null and pv.get("sprite") != null and pv.get("sprite").sprite_frames != null,
+		"Pavel is a 3D figure (sheets from the pipeline), not the flat front")
 	await _use("pavel")
 	seen = await _finish()
 	_check(gs.has_flag("done_M09") and gs.has_flag("met_pavel"), "M09 with Pavel: %s" % str(seen))
@@ -772,6 +775,7 @@ func _test_walkthrough() -> void:
 	_check(await _go("R3"), "R2→R3")
 	seen = await _finish()
 	_check(rm.player.visible, "at the far pier Agata is in the frame again")
+	_check(rm.current_room.get_node_or_null("npc_mitya") != null, "Mitya is a 3D figure at the far pier")
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
 	_check(not (await _go("O4")), "the path to the street is the end of the block")

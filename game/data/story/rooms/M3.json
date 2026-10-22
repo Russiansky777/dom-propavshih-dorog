@@ -42,7 +42,6 @@
     },
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1180, 239, 150, 521], "stand": [1050, 820], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/pavel/front.png",
       "visible_if": ["office_shelf_lifted"], "hidden_if": ["done_M13"],
       "talk": {"after_text": "@M3.pavel.before"}
     }

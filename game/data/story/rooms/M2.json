@@ -49,7 +49,6 @@
     },
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [880, 252, 150, 448], "stand": [1150, 760], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/pavel/front.png",
       "visible_if": ["office_unbolted"], "hidden_if": ["office_shelf_lifted"],
       "talk": {"after_text": "@M2.pavel.after"}
     }

@@ -75,3 +75,6 @@
 
 ## 2026-10-22 — партия 7 (ChatGPT): надписи мелом O1, береговой камень без плиты Z3
 - ChatGPT imagegen, `assets/incoming/_meta_p7/` (README_RU.txt, MANIFEST.json, GENERATION_PROMPTS.txt), коммит 3c0f843. Копии — `tools/import_room_art.py O1` (O1_state_board_mama / _ilya, холст 1672×940 дополнен до 941 прозрачной строкой) и `tools/import_room_art.py Z3` (Z3_state_stone_no_plate). Слой камня вечером ложится и поверх слоя спущенной воды партии 3 с умножением в тон сумерек (#8c8a9c) — иначе вечерний слой снова рисовал бы на камне кольцо и трещину. Права — как у арта ChatGPT.
+
+## 2026-10-22 — Павел и Митя в 3D (конвейер pipeline-character, Meshy)
+- Листы idle/talk и sprites.json — `assets/characters/pavel`, `assets/characters/mitya` (коммит pipeline-bot 9ba63a4, run 39852112416; модели и журналы Meshy — `pipeline/3d/state/`). Копии в игре — `tools/sync_characters.sh pavel mitya`; ровное качание idle — `tools/measure_idle.py pavel mitya --write` → `game/data/actors/pavel.json`, `mitya.json`. Плоские фигуры из видов спереди (`game/assets/characters/pavel|mitya/front.png`) удалены: новое — сразу в игру (решение Директора 23:04). Права — по условиям плана Meshy Директора.

@@ -616,7 +616,7 @@
     },
     {
       "id": "pavel_sheet",
-      "status": "in_progress",
+      "status": "delivered",
       "kind": "character_sheet",
       "block": "2 (день второй, 22.10)",
       "subject": "Павел, 48, мельник",
@@ -626,11 +626,21 @@
       ],
       "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 1, п. 1",
       "owner": "Claude (Meshy, pipeline-character)",
-      "use": "До фигуры — плоская заглушка из вида спереди: tools/import_npc_front.py → game/assets/characters/pavel/front.png (хотспоты pavel в M1–M4, поле image). Лист переделывается без постамента (координатор 22.10)"
+      "use": "До фигуры — плоская заглушка из вида спереди: tools/import_npc_front.py → game/assets/characters/pavel/front.png (хотспоты pavel в M1–M4, поле image). Лист переделывается без постамента (координатор 22.10)",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "pipeline-character (Meshy), коммит 9ba63a4",
+        "note": "assets/characters/pavel: idle.png, talk.png, sprites.json"
+      },
+      "imported": {
+        "date": "2026-10-22",
+        "by": "Claude Code (блок 2)",
+        "into": "game/assets/characters/pavel (tools/sync_characters.sh), game/data/actors/pavel.json — NpcActor на хотспоте pavel; плоская заглушка front.png удалена"
+      }
     },
     {
       "id": "mitya_sheet",
-      "status": "in_progress",
+      "status": "delivered",
       "kind": "character_sheet",
       "block": "2 (день второй, 22.10)",
       "subject": "Митя, 37, сын Пелагеи",
@@ -640,7 +650,17 @@
       ],
       "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 1, п. 2",
       "owner": "Claude (Meshy, pipeline-character)",
-      "use": "До фигуры — плоская заглушка: game/assets/characters/mitya/front.png (хотспот mitya в R3) и свет фонаря — эффект mitya_lantern в rooms/R3.json"
+      "use": "До фигуры — плоская заглушка: game/assets/characters/mitya/front.png (хотспот mitya в R3) и свет фонаря — эффект mitya_lantern в rooms/R3.json",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "pipeline-character (Meshy), коммит 9ba63a4",
+        "note": "assets/characters/mitya: idle.png, talk.png, sprites.json"
+      },
+      "imported": {
+        "date": "2026-10-22",
+        "by": "Claude Code (блок 2)",
+        "into": "game/assets/characters/mitya (tools/sync_characters.sh), game/data/actors/mitya.json — NpcActor на хотспоте mitya; плоская заглушка front.png удалена"
+      }
     },
     {
       "id": "M3_view",

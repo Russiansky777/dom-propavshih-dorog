@@ -1,6 +1,6 @@
 {
   "id": "M1",
-  "_art": "Фон M1_bg.png (двор мельницы, ChatGPT v3): сруб, дверь в сени слева от середины, верстак у стены, пустая доска распорядка, ось колеса на правой стене, лоток с водой справа, тропа к улице слева вверху. Слои: M1_wheel.png — колесо (крутится кодом вокруг ступицы; стоит, пока пруд спущен), M1_fg_sacks.png — мешки в левом нижнем углу (окклюдер). Павел — плоская фигура из листа Meshy (assets/incoming/cast_v3/pavel_v2.png → tools/import_npc_front.py), пока нет 3D-фигуры. Импорт арта — tools/import_room_art.py M1 (art_source).",
+  "_art": "Фон M1_bg.png (двор мельницы, ChatGPT v3): сруб, дверь в сени слева от середины, верстак у стены, пустая доска распорядка, ось колеса на правой стене, лоток с водой справа, тропа к улице слева вверху. Слои: M1_wheel.png — колесо (крутится кодом вокруг ступицы; стоит, пока пруд спущен), M1_fg_sacks.png — мешки в левом нижнем углу (окклюдер). Павел — 3D-фигура Meshy (листы idle/talk, data/actors/pavel.json).png → tools/import_npc_front.py), пока нет 3D-фигуры. Импорт арта — tools/import_room_art.py M1 (art_source).",
   "art_source": {
     "files": {"bg.png": "assets/incoming/M1_bg.png", "wheel.png": "assets/incoming/M1_wheel.png", "fg_sacks.png": "assets/incoming/M1_fg_sacks.png"},
     "canvas": [1672, 941],
@@ -26,7 +26,6 @@
   "hotspots": [
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1070, 360, 120, 255], "stand": [960, 690], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/pavel/front.png",
       "hidden_if": ["office_unbolted"],
       "talk": {"scenes": ["M09", "M09b"], "before_text": {"M09": "@M1.pavel.day1", "M09b": "@M1.pavel.before_agree"}, "after_text": "@M1.pavel.after"}
     },

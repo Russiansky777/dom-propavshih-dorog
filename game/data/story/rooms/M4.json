@@ -1,6 +1,6 @@
 {
   "id": "M4",
-  "_art": "Фон M4_bg.png (затвор, ChatGPT v3): деревянный щит затвора с дугой делений и красной рабочей меткой, гнездо ворота, шестерня, настил, перила, сруб мельницы слева, вода в лотке. Рычаг M4_lever_up.png — отдельный слой, поворачивается кодом вокруг втулки (слой M4_lever_work не совпал с осью и не подключён, _meta_v3/M3_M4.md). Павел — плоская фигура из листа Meshy. Рейка уровня у затвора в арте нет — в крупном плане её рисует движок.",
+  "_art": "Фон M4_bg.png (затвор, ChatGPT v3): деревянный щит затвора с дугой делений и красной рабочей меткой, гнездо ворота, шестерня, настил, перила, сруб мельницы слева, вода в лотке. Рычаг M4_lever_up.png — отдельный слой, поворачивается кодом вокруг втулки (слой M4_lever_work не совпал с осью и не подключён, _meta_v3/M3_M4.md). Павел — 3D-фигура Meshy (листы idle/talk, data/actors/pavel.json). Рейка уровня у затвора в арте нет — в крупном плане её рисует движок.",
   "art_source": {
     "files": {"bg.png": "assets/incoming/M4_bg.png", "lever_up.png": "assets/incoming/M4_lever_up.png"},
     "canvas": [1672, 941],
@@ -46,15 +46,9 @@
     },
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1060, 406, 130, 354], "stand": [950, 800], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/pavel/front.png",
-      "visible_if": ["done_M13"], "hidden_if": ["sluice_opened"],
-      "talk": {"after_text": "@M4.pavel.before"}
-    },
-    {
-      "id": "pavel_rest", "kind": "npc", "label": "@char.pavel", "rect": [1060, 406, 130, 354], "stand": [950, 800], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/pavel/front.png",
-      "visible_if": ["sluice_opened"],
-      "talk": {"after_text": "@M4.pavel.after"}
+      "visible_if": ["done_M13"],
+      "talk": {"by_flags": [{"if": ["sluice_opened"], "text": "@M4.pavel.after"}], "after_text": "@M4.pavel.before"},
+      "_talk_note": "один хотспот — одна 3D-фигура (data/actors/pavel.json): до открытия затвора — «Ключ в ворот — и по зарубке», после — «К вечеру сойдёт. Ступай пока» (раньше — два хотспота pavel / pavel_rest с плоской картинкой)"
     },
     {
       "id": "water", "kind": "object", "label": "@M4.water.label", "rect": [80, 780, 440, 260], "stand": [850, 760], "draw": false,

@@ -1,6 +1,6 @@
 {
   "id": "R3",
-  "_art": "Партия 3 (ChatGPT 22.10, assets/incoming/_meta_p3/README_RU.txt): R3_bg.png — дальняя опора в снегу вечером: каменная стенка причала, тропа вверх к улице Ольховки, сарайчик переправы, мостки справа, фонарь на столбике; R3_fg_pier.png — передняя каменная стенка (верхний край ≈ y 590–690 экрана, перекрывает ноги у края); R3_fg_rope_stop.png — канат моста и деревянный стопор у старого кольца (передний план). Митя — плоская фигура из листа Meshy (assets/incoming/cast_v3/mitya_v1.png → tools/import_npc_front.py) в тоне вечера (image_tint), свет его фонаря — эффект mitya_lantern.",
+  "_art": "Партия 3 (ChatGPT 22.10, assets/incoming/_meta_p3/README_RU.txt): R3_bg.png — дальняя опора в снегу вечером: каменная стенка причала, тропа вверх к улице Ольховки, сарайчик переправы, мостки справа, фонарь на столбике; R3_fg_pier.png — передняя каменная стенка (верхний край ≈ y 590–690 экрана, перекрывает ноги у края); R3_fg_rope_stop.png — канат моста и деревянный стопор у старого кольца (передний план). Митя — 3D-фигура Meshy (листы idle/talk, data/actors/mitya.json; тон вечера — lights/R3.json actor_tint), свет его фонаря — glow mitya_lantern в lights/R3.json.",
   "art_source": {"files": {"bg.png": "assets/incoming/R3_bg.png", "fg_pier.png": "assets/incoming/R3_fg_pier.png", "fg_rope_stop.png": "assets/incoming/R3_fg_rope_stop.png"}, "canvas": [1672, 941], "alpha_min": 0,
     "_note": "Копии — tools/import_room_art.py R3; слои в координатах фона, (0,0) 1:1"},
   "background": {"kind": "exterior", "image": "res://assets/rooms/R3/bg.png", "wall": "#4a5470", "floor": "#c8ccd8", "accent": "#7a6040", "horizon": 430},
@@ -23,7 +23,6 @@
   "hotspots": [
     {
       "id": "mitya", "kind": "npc", "label": "@char.mitya", "rect": [440, 416, 160, 250], "stand": [760, 660], "draw": false, "pick_priority": 2,
-      "image": "res://assets/characters/mitya/front.png", "image_tint": "#b4b8cc",
       "_rect_note": "Митя на верху опоры у стопора: ноги y 666 (масштаб 0,72 → рост Агаты 249 px; Митя ≈ 1,8 м — 250 px, Пелагея рядом ≈ 230 px)",
       "talk": {"after_text": "@R3.mitya.after"}
     },
