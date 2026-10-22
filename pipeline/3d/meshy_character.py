@@ -169,10 +169,27 @@ def main() -> int:
     save_state(name, st)
     log(f"[{name}] model.glb скачан, кредитов: {st['model_credits']}")
 
+    # 2б. детальная модель (геометрия 2k) — сотни тысяч граней, а риг Meshy принимает не больше 320 000:
+    #      Remesh до remesh_polycount (по умолчанию 300 000), текстуры сохраняются; риг — по задаче Remesh
+    rig_input = st["model_task"]
+    if "geometry_resolution" in req or req.get("remesh_polycount"):
+        if "remesh_task" not in st:
+            st["remesh_task"] = mc.create("/remesh", {"input_task_id": st["model_task"],
+                                                      "target_polycount": int(req.get("remesh_polycount", 300000)),
+                                                      "topology": "triangle", "target_formats": ["glb"]})
+            save_state(name, st)
+            log(f"[{name}] создана задача Remesh {st['remesh_task']}")
+        rm = mc.wait("/remesh", st["remesh_task"], log=log)
+        mc.download(rm["model_urls"]["glb"], out / "model.glb")
+        st["remesh_credits"] = rm.get("consumed_credits")
+        save_state(name, st)
+        rig_input = st["remesh_task"]
+        log(f"[{name}] Remesh готов, кредитов: {st['remesh_credits']}")
+
     # 3. авториг (сначала по id задачи, при отказе — по data URI файла)
     if "rig_task" not in st:
         try:
-            st["rig_task"] = mc.create("/rigging", {"input_task_id": st["model_task"], "height_meters": req.get("height_m", 1.7)})
+            st["rig_task"] = mc.create("/rigging", {"input_task_id": rig_input, "height_meters": req.get("height_m", 1.7)})
         except mc.MeshyError as e:
             log(f"[{name}] риг по input_task_id отклонён ({e}); пробую model_url")
             glb = out / "model.glb"
