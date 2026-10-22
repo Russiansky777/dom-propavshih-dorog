@@ -59,16 +59,19 @@ def toe_verdict(rt: dict) -> dict:
     return out
 
 
-def thumbs(mp4: Path, dst: Path, fracs=(0.3, 0.6)) -> list[Path]:
+def ffmpeg_exe() -> str:
+    p = shutil.which("ffmpeg")
+    if p:
+        return p
+    import imageio_ffmpeg
+    return imageio_ffmpeg.get_ffmpeg_exe()
+
+
+def thumbs(mp4: Path, dst: Path, dur: float, fracs=(0.3, 0.6)) -> list[Path]:
     out = []
-    try:
-        dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(mp4)],
-                                   capture_output=True, text=True, check=True).stdout.strip())
-    except Exception:  # noqa: BLE001
-        return out
     for k, fr in enumerate(fracs):
         p = dst.with_name(f"{dst.stem}_{k}.jpg")
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{dur * fr:.3f}", "-i", str(mp4), "-frames:v", "1",
+        subprocess.run([ffmpeg_exe(), "-y", "-loglevel", "error", "-ss", f"{dur * fr:.3f}", "-i", str(mp4), "-frames:v", "1",
                         "-vf", "scale=640:360", str(p)], check=False)
         if p.exists():
             out.append(p)
@@ -90,6 +93,12 @@ def main() -> int:
     tmp = Path("_thumbs")
     tmp.mkdir(exist_ok=True)
     items, sheets = [], {}
+    old_items = {}
+    if (prev / "manifest.json").exists():
+        try:
+            old_items = {i["id"]: i for i in json.loads((prev / "manifest.json").read_text(encoding="utf-8"))["items"]}
+        except Exception:  # noqa: BLE001
+            old_items = {}
     for c in cfg["clips"]:
         cid, lib = c["id"], c["library"]
         rt_p = next(iter(src.rglob(f"{cid}.json")), None)
@@ -137,11 +146,17 @@ def main() -> int:
             shutil.copy(mp4, d / f"{cid}.mp4")
             entry.update({"mp4": f"previews/{LIB_DIR[lib]}/{cid}.mp4", "duration_s": rnd["duration_s"],
                           "bytes": rnd["bytes"], "loops_in_video": rnd["loops"], "size_ok": rnd["size_ok"]})
-            for t in thumbs(d / f"{cid}.mp4", tmp / f"{cid}.jpg"):
+            for t in thumbs(d / f"{cid}.mp4", tmp / f"{cid}.jpg", rnd["duration_s"]):
                 sheets.setdefault(LIB_DIR[lib], []).append(t)
         if npz:
             shutil.copy(npz, rtd / f"{cid}.npz")
             entry["retargeted"] = f"retargeted/{cid}.npz"
+        if entry["status"] != "ok" and old_items.get(cid, {}).get("status") == "ok":
+            entry = old_items[cid]  # этого клипа нет в прогоне (частичный перезапуск) — прежний результат остаётся
+            d = prev / LIB_DIR[lib]
+            if (d / f"{cid}.mp4").exists():
+                for t in thumbs(d / f"{cid}.mp4", tmp / f"{cid}.jpg", entry.get("duration_s", 6.0)):
+                    sheets.setdefault(LIB_DIR[lib], []).append(t)
         items.append(entry)
     fl = next(iter(src.rglob("fetch.log")), None)
     if fl:

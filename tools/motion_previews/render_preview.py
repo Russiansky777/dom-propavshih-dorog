@@ -184,7 +184,7 @@ def main() -> int:
     ap.add_argument("--duration", type=float, nargs=2, default=[6.0, 8.0])
     ap.add_argument("--max-bytes", type=int, default=1_450_000)
     args = ap.parse_args()
-    if not args.only_frames and not shutil.which("ffmpeg"):
+    if not args.only_frames and not ffmpeg_exe():
         print("нет ffmpeg — рендер не начинаю (кадры пропали бы без ролика)", flush=True)
         return 4
     cfg = json.load(open(args.clips, encoding="utf-8"))
@@ -278,12 +278,24 @@ def main() -> int:
     return 0 if ok else 3
 
 
+def ffmpeg_exe() -> str | None:
+    """ffmpeg из системы, иначе — статическая сборка из pip-пакета imageio-ffmpeg (с libx264; apt на раннере не нужен)."""
+    p = shutil.which("ffmpeg")
+    if p:
+        return p
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def encode(frames_dir: Path, mp4: Path, dur: float, max_bytes: int) -> bool:
     """Двухпроходный x264 под потолок размера; если всё же больше — понижаем битрейт."""
     rate = max_bytes * 8 / dur * 0.92
     for attempt in range(4):
         kb = int(rate / 1000)
-        base = ["ffmpeg", "-y", "-loglevel", "error", "-framerate", "24", "-i", str(frames_dir / "f%04d.png"),
+        base = [ffmpeg_exe(), "-y", "-loglevel", "error", "-framerate", "24", "-i", str(frames_dir / "f%04d.png"),
                 "-c:v", "libx264", "-preset", "slow", "-pix_fmt", "yuv420p", "-b:v", f"{kb}k",
                 "-maxrate", f"{int(kb * 1.3)}k", "-bufsize", f"{kb * 2}k", "-movflags", "+faststart"]
         log = str(frames_dir / "x264")

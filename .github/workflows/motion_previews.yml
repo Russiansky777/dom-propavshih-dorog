@@ -75,12 +75,13 @@ jobs:
           python-version: "3.13"
           cache: pip
           cache-dependency-path: tools/motion_previews/requirements.txt
-      - name: Зависимости (bpy = Blender как модуль; ffmpeg — на образе ubuntu-24.04 его может не быть)
+      - name: Зависимости (bpy = Blender как модуль; ffmpeg — из pip imageio-ffmpeg, apt не нужен)
+        timeout-minutes: 15
         run: |
-          python -m pip install -r tools/motion_previews/requirements.txt
-          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; fi
-          ffmpeg -hide_banner -version | head -1
-          ffmpeg -hide_banner -encoders 2>/dev/null | grep -q libx264 && echo "libx264: есть"
+          python -m pip install --timeout 60 --retries 5 -r tools/motion_previews/requirements.txt
+          FF=$(python -c "import shutil,imageio_ffmpeg;print(shutil.which('ffmpeg') or imageio_ffmpeg.get_ffmpeg_exe())")
+          "$FF" -hide_banner -version | head -1
+          "$FF" -hide_banner -encoders 2>/dev/null | grep -q libx264 && echo "libx264: есть"
       - uses: actions/download-artifact@v4
         with:
           name: sources
@@ -142,8 +143,7 @@ jobs:
           path: _pv
       - name: Манифест, ролики, листы кадров
         run: |
-          python3 -m pip install --quiet pillow
-          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; fi
+          python3 -m pip install --quiet --timeout 60 pillow imageio-ffmpeg
           python3 tools/motion_previews/collect.py --clips tools/motion_previews/clips.json --in _pv --run "${{ github.run_id }}" --sha "${{ github.sha }}"
           ls -la previews previews/* retargeted | head -80
       - name: Коммит в motion-previews
