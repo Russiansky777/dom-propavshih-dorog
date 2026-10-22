@@ -15,7 +15,7 @@ var out_dir := ""
 
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
 	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3",
-	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied"]
+	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "latch", "latch_up"]
 
 
 func _initialize() -> void:
@@ -158,6 +158,29 @@ func _shot(name: String) -> void:
 				p.knot.progress = p.knot.lengths[st] * 0.55
 				p._refresh()
 			await _frames(6)
+		"office_hook_sway":
+			await _state(["house_unlocked", "done_N01", "done_M09", "done_M09s", "done_M09b", "met_pavel", "office_mirror_mounted", "office_mirror_clamped",
+				"done_M10", "bell_clapper_hung", "has_bell_clapper", "lantern_check_seen", "done_M11"], [], "H2")
+			var h = rm.current_room.get_node_or_null("Hotspots/stand_zm")
+			sr.open_mechanic(sr.mechanic_spec(h), "stand_zm")
+			await _frames(3)
+			while not sr.current_beat.is_empty():
+				sr.advance()
+				await process_frame
+			var p = mv.panel
+			p.hook.apply("one")
+			for i in 90:
+				await process_frame
+		"latch", "latch_up":
+			await _state(["house_unlocked", "h1_shutter_latch"], [], "H1")
+			var h = rm.current_room.get_node_or_null("Hotspots/shutter")
+			sr.open_mechanic(sr.mechanic_spec(h), "shutter")
+			await _frames(3)
+			var p = mv.panel
+			p.timing.logic.phase = 0.39 if name == "latch_up" else 0.08
+			p.timing.hold = true
+			for i in 30:
+				await process_frame
 		_:
 			push_warning("shots_mechanics: unknown shot %s" % name)
 			return

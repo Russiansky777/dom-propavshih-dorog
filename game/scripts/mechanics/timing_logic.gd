@@ -45,7 +45,12 @@ func _init(cfg: Dictionary = {}) -> void:
 
 ## The marker, 0 (left end) … 1 (right end): an even triangle sweep.
 func pos() -> float:
-	var p := fmod(phase, 1.0)
+	return pos_at(phase)
+
+
+## Where the marker is at sweep phase `ph` (the hook: where it was when the «стой» ring began).
+static func pos_at(ph: float) -> float:
+	var p := fposmod(ph, 1.0)
 	return p * 2.0 if p < 0.5 else 2.0 - p * 2.0
 
 

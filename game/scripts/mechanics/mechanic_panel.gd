@@ -105,10 +105,12 @@ func crop(image: String, region: Array, pos: Vector2, scale_k: float, parent: Co
 
 func label(t: String, pos: Vector2, w: float, variation: StringName = &"CloseupLabel", parent: Control = null) -> Label:
 	var l := Label.new()
+	# wrap before text and size: a Label without wrapping is as wide as its text and keeps that width
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size = Vector2(w, 0)
 	l.text = t
 	l.position = pos
 	l.size = Vector2(w, 40)
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.theme_type_variation = variation
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	(parent if parent != null else self).add_child(l)

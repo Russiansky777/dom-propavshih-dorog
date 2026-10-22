@@ -355,7 +355,15 @@ func probe() -> Dictionary:
 			pts.append({"x": q.x, "y": q.y})
 		strokes.append(pts)
 	var e := knot.end_point()
-	return {"blows": blows, "braced": braced(), "skoba": center_of(skoba_hit), "skoba_visible": skoba.visible, "jumps": jumps,
+	var nxt: Array = []
+	for q in knot.guide_points():
+		nxt.append({"x": q.x, "y": q.y})
+	var kstate := "done" if (knot.done() or tied()) else ("grabbed" if knot.grabbed else ("slipping" if _slip_t >= 0.0 else "free"))
+	var sk := center_of(skoba_hit)
+	return {"knot_path": {"open": knot_stage(), "loops_done": knot.stroke, "loops_total": knot.strokes.size(), "state": kstate,
+			"end": {"x": e.x, "y": e.y}, "next": nxt, "strokes": strokes, "tolerance": knot.tolerance, "grab_r": knot.grab_r,
+			"how": "press on end, drag through next (then the following strokes) without releasing"},
+		"strike": sk, "blows": blows, "braced": braced(), "skoba": center_of(skoba_hit), "skoba_visible": skoba.visible, "jumps": jumps,
 		"timing": timing.probe() if timing.visible else {}, "ring": {"x": ring_c.x, "y": ring_c.y},
 		"rope_end": {"x": e.x, "y": e.y}, "knot_stage": knot_stage(), "stroke": knot.stroke, "strokes": strokes,
 		"slips": slips, "rope_on_ring": tied(), "rope_tied_visible": rope_art.visible,

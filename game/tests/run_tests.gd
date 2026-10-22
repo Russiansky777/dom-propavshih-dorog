@@ -23,6 +23,27 @@ var _results: Array = []      # [name: String, passed: bool, message: String]
 var _current_checks: Array = []  # failures of the running test
 
 
+## The H1 shutter's latch close-up (F8): strike when the marker is in the green; returns when the shutter is open.
+func _open_latch() -> void:
+	var mv = root.find_child("MechanicView", true, false)
+	var g := 0
+	while not gs.has_flag("h1_shutter_open") and g < 3000:
+		g += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		elif sr.mechanic_open and mv != null and mv.panel != null and mv.panel.get("timing") != null:
+			var tb = mv.panel.timing
+			if tb.logic != null and tb.logic.state == "run" and absf(tb.logic.pos() - tb.logic.center) < 0.04:
+				tb.strike()
+		await process_frame
+	var g2 := 0
+	while (sr.mechanic_open or not sr.current_beat.is_empty()) and g2 < 600:
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		g2 += 1
+		await process_frame
+
+
 func _initialize() -> void:
 	var sfx := "_%d" % OS.get_process_id()
 	TEST_SLOT += sfx
@@ -678,6 +699,8 @@ func _test_walkthrough() -> void:
 	_check(bot.room_id() == "H1", "after the unlock text Agata walks in (room=%s)" % bot.room_id())
 	_check(not gs.has_flag("started_M03"), "M03 must not start before the three steps")
 	await bot.use("shutter")
+	await bot.finish()
+	await _open_latch()   # F8: the tight latch — caught up in the green of «точный удар»
 	await bot.finish()
 	await bot.use("stove")
 	await bot.finish()
@@ -1549,7 +1572,9 @@ func _test_actions() -> void:
 	var spr: AnimatedSprite2D = player.get_node("Sprite")
 	var shutter: Node2D = room.get_node("Hotspots/shutter")
 	var flag_sets := [0]
-	var on_flag := func(f, v): if f == "h1_shutter_open" and v: flag_sets[0] += 1
+	# F8 (23.10): the action's effect is Agata taking hold of the tight latch (the close-up of «точный удар»
+	# opens on the key frame); the shutter itself opens in that close-up.
+	var on_flag := func(f, v): if f == "h1_shutter_latch" and v: flag_sets[0] += 1
 	gs.flag_changed.connect(on_flag)
 	player.speed_factor = 3.0
 	player.call("walk_to_and_interact", shutter)
@@ -1558,23 +1583,29 @@ func _test_actions() -> void:
 		await process_frame
 		n += 1
 	_check(player.call("is_acting") and String(spr.animation).begins_with("open_"), "arriving at the shutter must start the open action, got %s" % String(spr.animation))
-	_check(not gs.has_flag("h1_shutter_open"), "the shutter must not open before the key frame")
+	_check(not gs.has_flag("h1_shutter_latch"), "the shutter must not open before the key frame")
 	var kf: int = sheet.action_key_frame("open")
 	var seen_before_key := false
 	var fire_frame := -1
 	var fires0: int = player.action_fire_count
 	n = 0
 	while player.call("is_acting") and n < 2000:
-		if not gs.has_flag("h1_shutter_open") and spr.frame < kf:
+		if not gs.has_flag("h1_shutter_latch") and spr.frame < kf:
 			seen_before_key = true
-		if gs.has_flag("h1_shutter_open") and fire_frame < 0:
+		if gs.has_flag("h1_shutter_latch") and fire_frame < 0:
 			fire_frame = spr.frame
 		await process_frame
 		n += 1
 	print("    shutter: open action, flag set at sheet frame %d (key frame %d), fires %d, flag_changed %d" % [fire_frame, kf, player.action_fire_count - fires0, flag_sets[0]])
 	_check(seen_before_key and fire_frame >= kf and fire_frame <= kf + 1, "the effect must land on the key frame %d (got %d)" % [kf, fire_frame])
-	_check(gs.has_flag("h1_shutter_open") and flag_sets[0] == 1 and player.action_fire_count - fires0 == 1, "the shutter opens exactly once")
+	_check(gs.has_flag("h1_shutter_latch") and flag_sets[0] == 1 and player.action_fire_count - fires0 == 1, "the latch is taken exactly once")
 	_check(String(spr.animation).begins_with("idle_"), "after the action Agata idles, got %s" % String(spr.animation))
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	_check(sr.mechanic_open and String(sr.mechanic.get("type", "")) == "latch", "the latch close-up opens on the key frame")
+	await _open_latch()
+	_check(gs.has_flag("h1_shutter_open"), "the latch caught in the green opens the shutter")
 	while not sr.current_beat.is_empty():
 		sr.advance()
 		await process_frame

@@ -221,6 +221,46 @@
     "mech.knot.through": {
       "text": "В петлю — и затянуть",
       "draft": true
+    },
+    "mech.office_mirror.label_bell": {
+      "text": "Колокол: щелчок — удар («пускай»). Два щелчка подряд — «стой». Нажать и держать — долгий звон («подымай»).",
+      "draft": true
+    },
+    "mech.office_mirror.label_status_sway": {
+      "text": "Павел нащупывает засов: крюк ходит вверх-вниз. «Стой» — когда крюк в зелёном, у засова.",
+      "draft": true
+    },
+    "mech.office_mirror.label_status_stopped": {
+      "text": "Крюк под засовом. Теперь — долгий звон: «подымай».",
+      "draft": true
+    },
+    "mech.office_mirror.label_status_falling": {
+      "text": "Не у засова — крюк сорвался и падает.",
+      "draft": true
+    },
+    "mech.shutter.title": {
+      "text": "Ставня",
+      "draft": true
+    },
+    "mech.shutter.stuck": {
+      "text": "Разбухла от сырости. Щеколду надо поддеть, пока встанет как надо.",
+      "line": {
+        "speaker": "agata",
+        "text": "Разбухла от сырости. Щеколду надо поддеть, пока встанет как надо."
+      },
+      "draft": true
+    },
+    "mech.shutter.label_hint": {
+      "text": "Щеколда ходит вверх-вниз. Когда она поднята — бегунок в зелёном — щелчок по ставне или Пробел.",
+      "draft": true
+    },
+    "mech.shutter.dropped": {
+      "text": "Упала обратно в скобу. Ещё раз — повыше.",
+      "line": {
+        "speaker": "agata",
+        "text": "Упала обратно в скобу. Ещё раз — повыше."
+      },
+      "draft": true
     }
   }
 }

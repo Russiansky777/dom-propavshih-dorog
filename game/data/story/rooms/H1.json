@@ -200,11 +200,14 @@
         }
       ],
       "use": {
-        "sets": ["h1_shutter_open"],
-        "text": "@H1.shutter.use",
+        "sets": ["h1_shutter_latch"],
+        "text": "@mech.shutter.stuck",
         "once_flag": "h1_shutter_open",
-        "scene": "M03"
+        "open_mechanic": true,
+        "scene": "M03",
+        "_note": "первый клик — Агата тянется к ставне (действие open), щеколда тугая — крупный план «точного удара» (mechanic latch); ставня открыта только после него (флаг h1_shutter_open)"
       },
+      "mechanic": {"type": "latch", "requires": {"flags": ["h1_shutter_latch"]}, "unless": ["h1_shutter_open"], "title": "@mech.shutter.title", "art": {"closed": "res://assets/rooms/H1/state_shutter_closed.png", "open": "res://assets/rooms/H1/bg.png", "_note": "закрытые ставни — слой state_shutter_closed (холст 1672×941); за ними — окно на фоне комнаты: тот же кусок в пикселях фона (open_region) — слой лежит в комнате со сдвигом offset [220, 25] и масштабом 0.91"}, "region": [1240, 170, 280, 280], "open_region": [1320, 176, 255, 255], "gap_x": 1377, "bar": [1356, 329, 44, 12], "patch": [1356, 316, 44, 12], "pivot": [1359, 334], "max_deg": 70, "view": [540, 130, 820, 0], "timing_rect": [550, 968, 760, 48], "timing": {"hits": 1, "period_s": 2.2, "green": 0.22, "center": 0.78, "miss_s": 0.8, "hint": "@ui.timing_hint"}, "done_flag": "h1_shutter_open", "_note": "F8 (Директор 23.10: «остановиться нужно в нужной зоне, а иначе неудача и падала палочка»): щеколда ставни разбухла — её ведёт вверх-вниз; щелчок, когда поднята (зелёное) — выходит из скобы, ставни открываются; иначе падает обратно в скобу, ещё раз", "texts": {"label_hint": "@mech.shutter.label_hint", "dropped": "@mech.shutter.dropped"}, "events": {"opened": {"sets": ["h1_shutter_open"], "text": "@H1.shutter.use", "close": true}}},
       "look": "@H1.shutter.look"
     },
     {
@@ -525,7 +528,7 @@
     }
   },
   "flags": {
-    "h1_shutter_open": "Ставня в жилой комнате открыта",
+    "h1_shutter_open": "Ставня в жилой комнате открыта", "h1_shutter_latch": "Агата взялась за тугую щеколду ставни (крупный план «точного удара», F8)",
     "h1_scarf_removed": "Мокрая дорожная вещь убрана с лежанки",
     "v01_photo_table": "Семейная фотография поставлена на стол (V01)",
     "v01_photo_shelf": "Семейная фотография поставлена на полку (V01)",

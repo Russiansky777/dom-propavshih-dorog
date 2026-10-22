@@ -351,7 +351,8 @@ func _test_bell_logic() -> void:
 
 
 func _test_hook_logic() -> void:
-	var h := HookPuzzle.new({"bar": 0.5, "tolerance": 0.06, "speed": 0.1, "return_speed": 0.6})
+	# F8 (Director 23.10): after «пускай» the hook sways along the gap; «стой» must catch it at the bar.
+	var h := HookPuzzle.new({"bar": 0.5, "tolerance": 0.07, "speed": 0.35, "return_speed": 0.6, "sway": [0.2, 0.8], "timing": {"period_s": 2.0}})
 	var events: Array[String] = []
 	h.event.connect(func(n): events.append(n))
 	_check(h.state == "wait" and h.pos == 0.0, "the hook starts at the top, waiting")
@@ -359,33 +360,47 @@ func _test_hook_logic() -> void:
 	_check(h.state == "wait", "stop before go does nothing")
 	h.apply("one")
 	_check(h.state == "down", "one → down")
-	for i in 70:
-		h.step(0.1)
-	_check(h.pos > 0.56 and h.state == "down", "after 7 s it is past the bar (%.2f)" % h.pos)
-	h.apply("long")
-	_check(h.state == "lift_empty", "lift away from the bar → empty")
 	for i in 10:
 		h.step(0.1)
-	_check("slipped" in events and h.state == "slipping", "the empty hook slips off")
+	_check(h.state == "sway" and "swaying" in events, "it reaches where Pavel feels for the bar and sways (%s %.2f)" % [h.state, h.pos])
+	var p0 := h.pos
+	h.step(0.3)
+	_check(h.pos != p0 and h.pos >= 0.2 and h.pos <= 0.8, "the hook goes up and down within the sway (%.2f → %.2f)" % [p0, h.pos])
+	# Wrong: «стой» away from the bar — it slips off and falls; Pavel brings it back to the top.
+	var g := 0
+	while absf(h.pos - 0.5) < 0.2 and g < 200:
+		h.step(0.02)
+		g += 1
+	h.apply("two")
+	_check(h.state == "falling" and h.misses == 1 and "missed" in events, "stopped away from the bar → it falls (%s)" % h.state)
+	for i in 10:
+		h.step(0.1)
+	_check(h.pos > 0.0 and ("slipped" in events), "it slipped off, Pavel lifts it")
 	for i in 30:
 		h.step(0.1)
-	_check(h.state == "wait" and h.pos == 0.0 and "returned" in events, "Pavel brings it back to the top (%s %.2f)" % [h.state, h.pos])
-	_check(not h.solved(), "no bar out after a slip")
-	# Down to the bottom: slips too, back to the top — still no penalty.
+	_check(h.state == "wait" and h.pos == 0.0 and "returned" in events and not h.solved(), "back at the top, nothing lost (%s %.2f)" % [h.state, h.pos])
+	# «Подымай» before it is caught — empty: falls as well.
 	h.apply("one")
-	for i in 120:
+	for i in 10:
 		h.step(0.1)
-	_check(h.state == "wait" and h.pos == 0.0, "past the bottom of the gap: slips and comes back up")
-	# Now right: go, stop at the bar, lift.
-	h.apply("one")
-	while h.pos < 0.49:
-		h.step(0.05)
-	h.apply("two")
-	_check(h.state == "stopped" and h.at_bar(), "stopped at the bar (%.2f)" % h.pos)
-	h.step(1.0)
-	_check(h.state == "stopped", "a stopped hook stays")
 	h.apply("long")
-	_check(h.state == "lift_bar", "lift at the bar → takes the bar")
+	_check(h.state == "falling", "lifted before it is caught → falls")
+	for i in 40:
+		h.step(0.1)
+	_check(h.state == "wait", "and comes back to the top")
+	# Judged where it was when «стой» began (its first strike): a phase in the green counts even if it moved on.
+	h.apply("one")
+	for i in 10:
+		h.step(0.1)
+	var green_phase := 0.25    # the middle of the sweep = the bar
+	while absf(h.pos - 0.5) < 0.2:
+		h.step(0.02)
+	h.apply("two", green_phase)
+	_check(h.state == "stopped" and h.at_bar(), "«стой» begun at the bar catches it (%s %.2f)" % [h.state, h.pos])
+	h.step(1.0)
+	_check(h.state == "stopped", "a caught hook stays")
+	h.apply("long")
+	_check(h.state == "lift_bar", "«подымай» at the bar → takes the bar")
 	for i in 12:
 		h.step(0.1)
 	_check(h.solved() and "solved" in events, "the bar is out of the brackets")
@@ -819,14 +834,11 @@ func _test_walkthrough() -> void:
 	await _button(bell, false)
 	seen = await _finish()
 	_check(gs.has_flag("lantern_check_seen") and gs.has_flag("done_M11"), "one strike — the light — M11: %s" % str(seen))
-	# The hook: go, stop at the bar, lift.
+	# The hook: go, catch it at the bar while it sways (F8), lift.
 	await _ring(bell, 1)
+	await _ring_stop_at_bar(bell)
 	var guard := 0
-	while p.hook.pos < p.hook.bar - 0.02 and guard < 600:
-		await process_frame
-		guard += 1
-	await _ring(bell, 2)
-	_check(p.hook.state == "stopped" and p.hook.at_bar(), "stopped at the bar by two strikes (%s %.2f)" % [p.hook.state, p.hook.pos])
+	_check(p.hook.state == "stopped" and p.hook.at_bar(), "caught at the bar by two strikes (%s %.2f)" % [p.hook.state, p.hook.pos])
 	await _ring_long(bell)
 	guard = 0
 	while not gs.has_flag("office_unbolted") and guard < 600:
@@ -1110,6 +1122,33 @@ func _ring(at: Vector2, n: int) -> void:
 		await process_frame
 
 
+## F8: «стой» while the hook is at the bar — the first strike when the sway marker is near the middle of the green.
+func _ring_stop_at_bar(at: Vector2) -> void:
+	var p = mv.panel
+	var g := 0
+	while g < 1500:
+		var hk: Dictionary = p.probe().get("hook", {})
+		if String(hk.get("state", "")) == "sway":
+			var lg = p.hook.timing
+			if absf(lg.pos() - lg.center) < 0.04:
+				break
+		await process_frame
+		g += 1
+	await _ring(at, 2)
+
+
+## F8: «стой» while the hook is far from the bar.
+func _ring_stop_away(at: Vector2) -> void:
+	var p = mv.panel
+	var g := 0
+	while g < 1500:
+		if String(p.hook.state) == "sway" and absf(p.hook.timing.pos() - p.hook.timing.center) > 0.35:
+			break
+		await process_frame
+		g += 1
+	await _ring(at, 2)
+
+
 func _ring_long(at: Vector2) -> void:
 	var p = mv.panel
 	await _button(at, true)
@@ -1161,12 +1200,14 @@ func _test_office_mirror_mouse() -> void:
 	_check(p.office.light_on and gs.has_flag("lantern_check_seen"), "the light is on and the check is in the story state")
 	await _button(bell, false)
 	await _finish()
-	# The hook: wrong first (long ring away from the bar) — slips, back to the top, nothing lost.
+	# The hook: wrong first («стой» away from the bar) — it falls, back to the top, nothing lost.
 	var counters_before: Dictionary = gs.counters.duplicate()
 	await _ring(bell, 1)
-	_check(p.hook.state == "down", "one strike — the hook goes down (%s)" % p.hook.state)
-	await _ring_long(bell)
-	_check(p.hook.state in ["lift_empty", "slipping", "wait"], "long ring away from the bar — the hook comes up empty (%s)" % p.hook.state)
+	_check(p.hook.state in ["down", "sway"], "one strike — the hook goes down (%s)" % p.hook.state)
+	var hb: Dictionary = _panel().get("hook", {}).get("timing", {})
+	_check(not hb.is_empty() and float(hb.get("zone", [0, 0])[1]) > float(hb.get("zone", [0, 0])[0]), "the upright bar beside the glass shows the bolt zone")
+	await _ring_stop_away(bell)
+	_check(p.hook.state in ["falling", "slipping", "wait"] and p.hook.misses == 1, "«стой» away from the bar — the hook falls (%s)" % p.hook.state)
 	var guard := 0
 	while p.hook.state != "wait" and guard < 900:
 		await process_frame
@@ -1175,15 +1216,13 @@ func _test_office_mirror_mouse() -> void:
 			await _finish()
 	_check(p.hook.state == "wait" and p.hook.pos == 0.0, "back at the top after the slip")
 	_check(not gs.has_flag("office_unbolted") and gs.counters == counters_before, "no penalty: no flag lost, no counter grown")
-	_check(p.signals_seen.has("one") and p.signals_seen.has("long"), "signals from the mouse: %s" % str(p.signals_seen))
+	_check(p.signals_seen.has("one") and p.signals_seen.has("two"), "signals from the mouse: %s" % str(p.signals_seen))
+	var legend: Node = p.get_node_or_null("BellLegend")
+	_check(legend != null and String(legend.text).contains("держать") and String(legend.text).contains("Два"), "the bell legend on screen: one / two / hold for long (logic review M2, item 2)")
 	# Right.
 	await _ring(bell, 1)
-	guard = 0
-	while p.hook.pos < p.hook.bar - 0.02 and guard < 900:
-		await process_frame
-		guard += 1
-	await _ring(bell, 2)
-	_check(p.signals_seen.has("two") and p.hook.state == "stopped", "two strikes stop the hook (%s)" % p.hook.state)
+	await _ring_stop_at_bar(bell)
+	_check(p.signals_seen.has("two") and p.hook.state == "stopped", "two strikes at the bar catch the hook (%s)" % p.hook.state)
 	await _ring_long(bell)
 	guard = 0
 	while not gs.has_flag("office_unbolted") and guard < 900:

@@ -679,7 +679,7 @@ func planned_interaction(h: StoryHotspot) -> String:
 			return "talk"
 		if (scn != "" and not is_done(scn) and t.has("before_text")) or t.has("after_text") or t.has("by_flags"):
 			return "talk_text"
-	if d.has("mechanic") and requires_met(mechanic_spec(h).get("requires", {})):
+	if d.has("mechanic") and mechanic_available(mechanic_spec(h)):
 		return "mechanic"
 	if d.has("puzzle"):
 		var pz: Dictionary = d["puzzle"]
@@ -767,7 +767,7 @@ func interact(h: StoryHotspot) -> void:
 
 	if d.has("mechanic"):
 		var ms := mechanic_spec(h)
-		if requires_met(ms.get("requires", {})):
+		if mechanic_available(ms):
 			open_mechanic(ms, h.hotspot_id)
 			return
 
@@ -931,7 +931,7 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 	# The item put in place opens the close-up at once (the clamp on mother's mirror, the brace on the plate).
 	if bool(act.get("open_mechanic", false)) and h.data.has("mechanic"):
 		var ms := mechanic_spec(h)
-		if requires_met(ms.get("requires", {})):
+		if mechanic_available(ms):
 			open_mechanic(ms, h.hotspot_id)
 
 
@@ -1137,6 +1137,17 @@ func close_view() -> void:
 
 
 # --- Interactive close-ups (hotspot `mechanic`) --------------------------------
+
+## A close-up can be opened: its `requires` hold and none of its `unless` flags is set (the H1 shutter: no latch
+## close-up once the shutter is open — a click is then just a look).
+func mechanic_available(ms: Dictionary) -> bool:
+	if not requires_met(ms.get("requires", {})):
+		return false
+	for f in ms.get("unless", []):
+		if GameState.has_flag(String(f)):
+			return false
+	return true
+
 
 ## The hotspot's mechanic spec; `same_as` borrows another hotspot's of the same room (the H2 bell and the
 ## stand with the office mirror open one and the same close-up: the bell is rung while watching the glass).

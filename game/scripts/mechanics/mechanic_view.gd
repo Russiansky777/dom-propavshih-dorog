@@ -18,6 +18,8 @@ const PANELS := {
 	"lantern": preload("res://scripts/mechanics/lantern_panel.gd"),
 	"photo": preload("res://scripts/mechanics/photo_panel.gd"),
 	"windlass": preload("res://scripts/mechanics/windlass_panel.gd"),
+	"latch": preload("res://scripts/mechanics/latch_panel.gd"),
+	"crossing": preload("res://scripts/mechanics/crossing_panel.gd"),
 }
 
 var spec: Dictionary = {}
@@ -89,6 +91,8 @@ func _open(s: Dictionary) -> void:
 	close_button.focus_mode = Control.FOCUS_NONE
 	close_button.pressed.connect(func(): StoryRunner.close_mechanic())
 	root.add_child(close_button)
+	# `closable: false` — no «Закрыть», no Esc (the crossing: the boat is on the rope, the only way is across).
+	close_button.visible = bool(spec.get("closable", true))
 	visible = true
 	panel.opened()
 
@@ -127,7 +131,8 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and \
 			(event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE):
 		get_viewport().set_input_as_handled()
-		StoryRunner.close_mechanic()
+		if bool(spec.get("closable", true)):
+			StoryRunner.close_mechanic()
 
 
 ## Click targets and state for tests and the web probe (window.probeState.mechanic).

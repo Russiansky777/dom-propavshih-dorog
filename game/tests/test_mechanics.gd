@@ -91,6 +91,7 @@ func _run() -> void:
 	await _test("Mother's mirror (F4): the clock beside the glass goes 20×, the watch from the bag, the realisation", _test_fast_mirror)
 	await _test("Examine inside a close-up: on top of it, Esc closes only the examine", _test_examine_over_mechanic)
 	await _test("The plate (F5–F7): the brace by «точный удар» — a miss makes it jump off and resets; the knot drawn along the path — slips back, no penalty; textured rope; save/load", _test_plate)
+	await _test("The shutter (F8): the latch caught up in the green opens it; dropped — again, nothing lost; then only a look", _test_latch)
 	await _test("Living water (F14): every room that declares water builds it — ripple, trembling reflections, sparkles, flow lines from data", _test_water)
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -747,4 +748,51 @@ func _test_plate() -> void:
 	_check(rm.save_game(SLOT) and rm.load_game(SLOT), "save/load after the knot")
 	await _frames(3)
 	_check(gs.has_flag("rope_on_ring") and not sr.can_start("M15"), "tied stays tied after a load")
+	_reached_end = true
+
+
+# --- The H1 shutter latch (F8) ----------------------------------------------------------------------
+
+func _test_latch() -> void:
+	Engine.time_scale = 1.0
+	await _fresh([], ["house_unlocked"])
+	rm.change_room("H1", "default")
+	await _frames(4)
+	await _finish()
+	var h = rm.current_room.get_node_or_null("Hotspots/shutter")
+	_check(sr.planned_interaction(h) == "use", "the first click: Agata reaches for the shutter (the open action)")
+	player.call("walk_to_and_interact", h)
+	var g := 0
+	while not sr.mechanic_open and g < 2000:
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+		g += 1
+	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "latch" and gs.has_flag("h1_shutter_latch") and not gs.has_flag("h1_shutter_open"),
+		"the tight latch close-up; the shutter not open yet")
+	await _finish()
+	var pr := _panel()
+	var at := _v(pr.get("shutter", {}))
+	_check(not pr.get("timing", {}).is_empty() and int(pr["timing"].get("needed", 0)) == 1, "one catch on the «точный удар» bar")
+	await _strike_at(at, false)
+	var seen := await _finish()
+	_check(int(_panel().get("drops", 0)) == 1 and not gs.has_flag("h1_shutter_open"), "released low: the latch drops back, still closed")
+	_check(seen.size() == 1 and seen[0].begins_with("agata:"), "Agata says so once (%s)" % str(seen))
+	# Closed and opened again: a direct click opens the close-up (no second action, no penalty).
+	sr.close_mechanic()
+	await _frames(2)
+	_check(sr.planned_interaction(h) == "mechanic", "the next click opens the latch at once")
+	sr.open_mechanic(sr.mechanic_spec(h), "shutter")
+	await _frames(3)
+	at = _v(_panel().get("shutter", {}))
+	await _strike_at(at, true)
+	await create_timer(1.2).timeout
+	seen = await _finish()
+	_check(gs.has_flag("h1_shutter_open") and not sr.mechanic_open, "caught up in the green: the shutter opens, the close-up closes (%s)" % str(seen))
+	_check(seen.any(func(x): return x.contains("посветлело")), "«Ставня подалась, в комнате посветлело»")
+	_check(sr.planned_interaction(h) == "text", "the open shutter is only a look now")
+	_check(rm.save_game(SLOT) and rm.load_game(SLOT), "save/load")
+	await _frames(3)
+	h = rm.current_room.get_node_or_null("Hotspots/shutter")
+	_check(gs.has_flag("h1_shutter_open") and sr.planned_interaction(h) == "text" and not sr.mechanic_open, "after a load: open, nothing replays")
 	_reached_end = true

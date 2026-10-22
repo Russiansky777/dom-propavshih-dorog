@@ -6,8 +6,12 @@ extends MechanicPanel
 ##      the same frame as the strike (canon: the mirror shows now; test_day2 checks the frame numbers).
 ##      Event "lantern".
 ##   3. The hook (HookPuzzle): the bell's presses become the mill signals (BellSignal): one — go on, two —
-##      stop, long — lift. Wrong — the hook slips and comes back to the top, no penalty. Event "unbolted".
-## The bell is pressed with the mouse: a click is a strike, a press held ~0.6 s is the long ring.
+##      stop, long — lift. Director 23.10 (F8): after «пускай» Pavel feels for the bar — the hook sways up and
+##      down along the gap; «стой» must catch it in the bolt zone (a «Точный удар» sweep: the upright bar beside
+##      the glass shows the zone in green and the hook as its marker). Caught — «подымай» lifts the bar.
+##      Stopped elsewhere — the hook slips off and falls, Pavel brings it up again; no penalty. Event "unbolted".
+## The bell is pressed with the mouse: a click is a strike, two quick clicks — «стой», a press held ~0.6 s — the
+## long ring; the legend is on screen under the shift schedule (logic review M2, item 2).
 ## Art: the stand «ЗМ» is the tall carved frame in the middle of Dunya's workshop (Director 23.10); the close-up
 ## is the workshop painting with the glass layer in the frame's opening (tools/make_h2_frame_glass.py) over it,
 ## cropped round the frame; glass_polygon is the opening — a quad textured with the office view; OfficeView
@@ -29,6 +33,8 @@ var hook: HookPuzzle = null
 var strike_frame: int = -1      # process frame of the last strike (press on the bell)
 var light_frame: int = -1       # process frame the lantern light came on in the glass
 var signals_seen: Array[String] = []
+var hook_bar: TimingBar = null    # upright «точный удар» bar beside the glass: the bolt zone, the hook as marker
+var _press_phases: Array[float] = []   # the sway phase at the last bell presses («стой» is judged at its first)
 var _bell_swing: float = 0.0
 var _status: String = ""
 
@@ -114,10 +120,36 @@ func build() -> void:
 	cl.add_theme_font_size_override("font_size", 26)
 	cl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	card.add_child(cl)
-	status_label = label("", v2(spec.get("status_pos", [1120, 870])), 640)
+	var legend := label(text("label_bell"), v2(spec.get("legend_pos", [1120, 878])), float(spec.get("legend_w", 760)))
+	legend.name = "BellLegend"
+	status_label = label("", v2(spec.get("status_pos", [1120, 950])), float(spec.get("status_w", 540)))
 	hook = HookPuzzle.new(spec.get("hook", {}))
 	hook.event.connect(_on_hook_event)
+	_build_hook_bar()
 	_sync_from_flags()
+
+
+## The upright bar beside the glass, level with the gap: its green is the bolt zone, its marker the hook.
+func _build_hook_bar() -> void:
+	var oa: Dictionary = spec.get("office", {}).get("art", {})
+	var reg: Array = oa.get("region", [520, 80, 380, 660])
+	var gap: Array = oa.get("gap", [95, 705])
+	var g0 := float(gap[0]) + (float(gap[1]) - float(gap[0])) * hook.sway.x
+	var g1 := float(gap[0]) + (float(gap[1]) - float(gap[0])) * hook.sway.y
+	var y0 := glass_rect.position.y + (g0 - float(reg[1])) / float(reg[3]) * glass_rect.size.y
+	var y1 := glass_rect.position.y + (g1 - float(reg[1])) / float(reg[3]) * glass_rect.size.y
+	hook_bar = TimingBar.new()
+	hook_bar.name = "HookBar"
+	var bx := float(spec.get("hook_bar_x", glass_rect.end.x + 120.0))
+	hook_bar.position = Vector2(bx, y0 - 6.0)
+	hook_bar.size = Vector2(46, y1 - y0 + 12.0)
+	hook_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hook_bar.space_key = false
+	hook_bar.drive = false
+	add_child(hook_bar)
+	hook_bar.setup({"hint": ""}, true)
+	hook_bar.logic = hook.timing
+	hook_bar.logic.slow_k = TimingBar.SLOW_K if TimingBar.slow else 1.0
 
 
 func opened() -> void:
@@ -188,6 +220,9 @@ func bell_press() -> void:
 		say("bell_unclamped")
 		return
 	strike_frame = Engine.get_process_frames()
+	_press_phases.append(hook.timing.phase)
+	if _press_phases.size() > 2:
+		_press_phases.pop_front()
 	sound("bell")
 	_bell_swing = 1.0
 	if not flag("lantern_check_seen"):
@@ -217,7 +252,8 @@ func _handle_signals(sigs: Array[String]) -> void:
 		signals_seen.append(s)
 		if s == "long":
 			sound("bell_long")
-		hook.apply(s)
+		# «стой» is judged where the hook was when its first strike rang.
+		hook.apply(s, _press_phases[0] if s == "two" and _press_phases.size() == 2 else -1.0)
 	if not sigs.is_empty():
 		_set_status()
 
@@ -229,6 +265,9 @@ func tick(delta: float) -> void:
 		office.hook_frac = hook.pos
 		office.bar_lift = hook.lift_amount if hook.state == "lift_bar" else 0.0
 		office.refresh()
+	if hook_bar != null:
+		hook_bar.visible = hook_active() or (hook != null and hook.state in ["lift_bar", "solved"] and not flag("office_unbolted"))
+		hook_bar.modulate.a = 1.0 if hook.state in ["sway", "stopped", "lift_bar"] else 0.45
 	if _bell_swing > 0.0:
 		_bell_swing = maxf(_bell_swing - delta * 1.6, 0.0)
 		bell.rotation_degrees = sin(clock * 14.0) * 6.0 * _bell_swing
@@ -242,7 +281,8 @@ func tick(delta: float) -> void:
 
 func _on_hook_event(name: String) -> void:
 	match name:
-		"slipped":
+		"missed":
+			sound("clank")
 			say("hook_slipped")
 		"solved":
 			office.door_given = true
@@ -280,5 +320,13 @@ func probe() -> Dictionary:
 		ws.append(center_of(w))
 	out["wedges"] = ws
 	if hook != null:
-		out["hook"] = {"pos": hook.pos, "state": hook.state, "bar": hook.bar, "tolerance": hook.tolerance}
+		var bc := center_of(bell_hit)
+		# How to ring each signal (bots: tools/ai_playtest): «стой» is judged at its FIRST click.
+		out["signals_how"] = {"one": {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "click"},
+			"two": {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "double_click", "gap_ms": 150},
+			"long": {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "hold", "hold_ms": 800}}
+		out["strike"] = {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "double_click (= «стой»), when timing.in_green"}
+		out["hook"] = {"pos": hook.pos, "state": hook.state, "bar": hook.bar, "tolerance": hook.tolerance, "misses": hook.misses,
+			"sway": [hook.sway.x, hook.sway.y], "in_zone": hook.state == "sway" and hook.timing.in_green(hook.timing.pos()),
+			"timing": hook_bar.probe() if hook_bar != null else {}}
 	return out
