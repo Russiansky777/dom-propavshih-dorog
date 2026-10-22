@@ -1,0 +1,58 @@
+{
+ "name": "agata_v3",
+ "library": "pipeline/3d/motions/agata_rev10_clips.glb",
+ "roles": {
+  "idle": {
+   "clip": "Idle_4",
+   "from": "pipeline/3d/motions/agata_rev10_clips.glb",
+   "frames": 420,
+   "floor_shift_m": 0.0717,
+   "blend_from": null,
+   "legs_from": null
+  },
+  "walk": {
+   "clip": "Walking_Woman",
+   "from": "pipeline/3d/motions/agata_rev10_clips.glb",
+   "frames": 30,
+   "floor_shift_m": -0.0017,
+   "blend_from": null,
+   "legs_from": null
+  },
+  "open": {
+   "clip": "open_door_open",
+   "from": "pipeline/3d/motions/agata_rev10_clips.glb",
+   "frames": 157,
+   "floor_shift_m": 0.0709,
+   "blend_from": "idle",
+   "legs_from": null
+  },
+  "pick": {
+   "clip": "Female_Bend_Over_Pick_Up_Inspect_pick",
+   "from": "pipeline/3d/motions/agata_rev10_clips.glb",
+   "frames": 116,
+   "floor_shift_m": 0.0477,
+   "blend_from": "idle",
+   "legs_from": null
+  },
+  "reach": {
+   "clip": "Female_Stand_Pick_Fruit_Basket_reach",
+   "from": "pipeline/3d/motions/agata_rev10_clips.glb",
+   "frames": 186,
+   "floor_shift_m": 0.0693,
+   "blend_from": "idle",
+   "legs_from": null
+  }
+ },
+ "extra": [
+  "Idle",
+  "Idle_3",
+  "Idle_6",
+  "Idle_7",
+  "Idle_9",
+  "Idle_12",
+  "Short_Breathe_and_Look_Around",
+  "Long_Breathe_and_Look_Around",
+  "Casual_Walk",
+  "Talk_with_Right_Hand_Open"
+ ]
+}

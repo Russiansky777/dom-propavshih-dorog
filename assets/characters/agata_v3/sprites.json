@@ -1,6 +1,6 @@
 {
   "name": "agata_v3",
-  "frame_w": 288,
+  "frame_w": 384,
   "frame_h": 384,
   "pivot": {
     "x": 0.5,
@@ -8,6 +8,49 @@
   },
   "directions": 8,
   "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.589,
-  "actions": {}
+  "character_height_m": 1.656,
+  "actions": {
+    "idle": {
+      "sheet": "idle.png",
+      "frames": 8,
+      "fps": 8,
+      "clip": "Idle_4",
+      "window": [
+        0.0,
+        0.2
+      ],
+      "playback": "pingpong"
+    },
+    "walk": {
+      "sheet": "walk.png",
+      "frames": 12,
+      "fps": 12,
+      "clip": "Walking_Woman"
+    },
+    "open": {
+      "sheet": "open.png",
+      "frames": 16,
+      "fps": 8,
+      "clip": "open_door_open"
+    },
+    "pick": {
+      "sheet": "pick.png",
+      "frames": 20,
+      "fps": 8,
+      "clip": "Female_Bend_Over_Pick_Up_Inspect_pick"
+    },
+    "reach": {
+      "sheet": "reach.png",
+      "frames": 16,
+      "fps": 8,
+      "clip": "Female_Stand_Pick_Fruit_Basket_reach"
+    }
+  },
+  "fit": {
+    "half_width_m": 0.878,
+    "top_m": 0.839,
+    "frame_top_m": 0.927,
+    "frame_w": 384
+  },
+  "matte_materials": true
 }
