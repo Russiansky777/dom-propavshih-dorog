@@ -1,45 +1,74 @@
+[agata_v3] стадия rig и последующие будут выполнены заново
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v3] баланс: {'balance': 867, 'monthly_credits': 367, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
+[agata_v3] баланс: {'balance': 587, 'monthly_credits': 87, 'permanent_credits': 500, 'monthly_resets_at': 1794445230000}
 [agata_v3] ракурсов на листе: 3 → ['view_0.png', 'view_1.png', 'view_2.png']
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v3] создана задача модели 01a16531-629c-7204-bd8e-cd7f2b0d208e c {'ai_model': 'latest', 'pose_mode': 'a-pose', 'should_texture': True, 'texture_resolution': '4k', 'target_formats': ['glb'], 'auto_size': True, 'origin_at': 'bottom', 'geometry_resolution': '2k', 'enable_pbr': True}
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 1
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 20
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 35
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 45
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 58
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 67
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 80
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: IN_PROGRESS 99
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
   multi-image-to-3d 01a16531-629c-7204-bd8e-cd7f2b0d208e: SUCCEEDED 100
 [agata_v3] model.glb скачан, кредитов: 35
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v3] риг по input_task_id отклонён (POST /rigging → HTTP 400: {"message":"The input model has 871,110 faces which exceeds the 320,000 face limit for rigging. Please use the Remesh API (POST /openapi/v1/remesh) with a target_polycount of 300000 or less before rigging."}); пробую model_url
+[agata_v3] создана задача Remesh 01a16560-ac17-740d-b436-8fffe89aa85b
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v3] создана задача рига 01a16534-8a16-7384-8f03-c701365ebe96
+  remesh 01a16560-ac17-740d-b436-8fffe89aa85b: IN_PROGRESS 1
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  rigging 01a16534-8a16-7384-8f03-c701365ebe96: IN_PROGRESS 0
+  remesh 01a16560-ac17-740d-b436-8fffe89aa85b: IN_PROGRESS 24
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  rigging 01a16534-8a16-7384-8f03-c701365ebe96: FAILED 26
-MESHY ERROR: задача 01a16534-8a16-7384-8f03-c701365ebe96 завершилась FAILED: {'type': 'invalid_input', 'code': 'invalid_input', 'message': 'This model could not be rigged. Please check that the mesh is a single, well-formed humanoid character.', 'doc_url': 'https://docs.meshy.ai/en/api/errors#invalid-input'}
+  remesh 01a16560-ac17-740d-b436-8fffe89aa85b: IN_PROGRESS 42
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a16560-ac17-740d-b436-8fffe89aa85b: IN_PROGRESS 60
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a16560-ac17-740d-b436-8fffe89aa85b: IN_PROGRESS 79
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a16560-ac17-740d-b436-8fffe89aa85b: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a16560-ac17-740d-b436-8fffe89aa85b: SUCCEEDED 100
+[agata_v3] Remesh готов, кредитов: 5
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[agata_v3] создана задача рига 01a16564-178b-749b-b8e2-e737a90b813c
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16564-178b-749b-b8e2-e737a90b813c: IN_PROGRESS 0
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16564-178b-749b-b8e2-e737a90b813c: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16564-178b-749b-b8e2-e737a90b813c: IN_PROGRESS 57
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16564-178b-749b-b8e2-e737a90b813c: IN_PROGRESS 84
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16564-178b-749b-b8e2-e737a90b813c: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16564-178b-749b-b8e2-e737a90b813c: IN_PROGRESS 95
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16564-178b-749b-b8e2-e737a90b813c: SUCCEEDED 100
+[agata_v3] rigged.glb скачан
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[agata_v3] создана задача анимаций 01a16565-9be5-70db-96f1-3b5b52cc5738: {'idle': {'action_id': 0, 'name': 'Idle', 'key': 'Idle'}}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16565-9be5-70db-96f1-3b5b52cc5738: IN_PROGRESS 0
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16565-9be5-70db-96f1-3b5b52cc5738: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16565-9be5-70db-96f1-3b5b52cc5738: IN_PROGRESS 57
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16565-9be5-70db-96f1-3b5b52cc5738: SUCCEEDED 100
+[agata_v3] готово: /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/out/agata_v3

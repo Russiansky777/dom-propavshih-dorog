@@ -14,5 +14,22 @@
     "enable_pbr": true
   },
   "model_credits": 35,
-  "rig_task": "01a1653c-ce76-701d-af60-3fa73028d962"
+  "remesh_task": "01a1656b-daf0-7439-b371-bc00cd8fc409",
+  "remesh_credits": 5,
+  "rig_task": "01a1656f-4ac0-7724-9f6a-a2dff5a95652",
+  "rig_credits": 5,
+  "actions": {
+    "idle": {
+      "action_id": 0,
+      "name": "Idle",
+      "key": "Idle"
+    },
+    "talk": {
+      "action_id": 47,
+      "name": "Listening Gesture",
+      "key": "Listening_Gesture"
+    }
+  },
+  "anim_task": "01a16570-d29d-73be-908a-bd3e787f3f2a",
+  "anim_credits": 6
 }

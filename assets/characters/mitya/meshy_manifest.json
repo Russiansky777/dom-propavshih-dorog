@@ -1,0 +1,33 @@
+{
+  "character": "mitya",
+  "sheet": "assets/incoming/cast_v3/mitya_sheet.png",
+  "height_m": 1.8,
+  "tasks": {
+    "model_task": "01a16535-1014-738d-a394-56ea2fbec62e",
+    "rig_task": "01a16569-b080-73fd-8883-c305362d3944",
+    "anim_task": "01a1656b-0c7b-714b-9ad2-5cc461daacc0"
+  },
+  "actions": {
+    "idle": {
+      "action_id": 0,
+      "name": "Idle",
+      "key": "Idle"
+    },
+    "talk": {
+      "action_id": 47,
+      "name": "Listening Gesture",
+      "key": "Listening_Gesture"
+    }
+  },
+  "credits": {
+    "model_credits": 35,
+    "rig_credits": 5,
+    "anim_credits": 6
+  },
+  "files": {
+    "model": "model.glb",
+    "rigged": "rigged.glb",
+    "animations": "animations.glb"
+  },
+  "note": "animations.glb содержит по одному клипу на action в порядке actions; клипы называть по ключам Meshy"
+}
