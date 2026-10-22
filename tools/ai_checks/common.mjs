@@ -105,7 +105,8 @@ export async function askTool(budget, tag, body, name) {
   if (!apiKey) throw new Error("нет ключа API (секрет CLAUDE_API → ANTHROPIC_API_KEY)");
   try {
     for (let attempt = 0; attempt < 2; attempt++) {
-      const { resp, input } = await callTool(apiKey, body, name, { log });
+      // Long answers (Opus, high effort, up to 32k tokens) take minutes: 15 min per attempt, 3 attempts.
+      const { resp, input } = await callTool(apiKey, body, name, { log, timeoutMs: 900000, attempts: 3 });
       budget.add(body.model, resp.usage, attempt ? `${tag}-retry` : tag);
       if (input) return input;
       log(`${tag}: no ${name} call (stop_reason ${resp.stop_reason}), retry`);

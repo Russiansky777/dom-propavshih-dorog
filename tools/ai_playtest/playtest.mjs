@@ -855,8 +855,9 @@ async function main() {
       content.push({ type: "text", text: reportInput });
       const base = { model: cfg.reportModel, max_tokens: 16000, system: reportSystem(mode), messages: [{ role: "user", content }] };
       let resp;
-      try { resp = await callClaude(apiKey, { ...base, output_config: { effort: "medium" } }, { log }); }
-      catch (e) { if (e instanceof ApiError && e.status === 400) resp = await callClaude(apiKey, base, { log }); else throw e; }
+      const long = { log, timeoutMs: 600000, attempts: 3 };   // the report with thinking can take minutes
+      try { resp = await callClaude(apiKey, { ...base, output_config: { effort: "medium" } }, long); }
+      catch (e) { if (e instanceof ApiError && e.status === 400) resp = await callClaude(apiKey, base, long); else throw e; }
       budget.add(cfg.reportModel, resp.usage, "report");
       body = (resp.content || []).filter((c) => c.type === "text").map((c) => c.text).join("\n").trim();
       log(`report: ${cfg.reportModel} +$${budget.calls[budget.calls.length - 1].usd.toFixed(4)}`);
