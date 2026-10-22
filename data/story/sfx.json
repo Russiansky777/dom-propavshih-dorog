@@ -59,7 +59,7 @@
     },
     "rain": {
       "file": "amb_rain.ogg",
-      "outside": ["Z2", "Z3", "Z4", "R1"],
+      "outside": ["Z2", "Z3", "Z4", "R1", "M1", "M4"],
       "inside": ["Z1", "H1", "H2", "H3", "H4"],
       "outside_db": 0.0,
       "inside_db": -9.0,
