@@ -1,9 +1,10 @@
 name: motion-previews
 
-# Превью движений для выбора Директором (22.10): библиотеки Mesh2Motion / CMU / 100STYLE на модели Агаты.
-# Живёт только в ветке motion-previews; в main не вливается. Результаты бот коммитит в эту же ветку:
-#   previews/<библиотека>/<id>.mp4, previews/manifest.json, retargeted/<id>.npz, sources/… (probe).
-# Запуск: изменить tools/motion_previews/** и запушить в motion-previews.
+# Превью движений для выбора Директором (22.10): Mesh2Motion / CMU / 100STYLE на модели Агаты + базовая линия Meshy.
+# Живёт только в ветке motion-previews; в main не вливается. Один запуск = все ролики (matrix по клипу, параллельно).
+# Результаты бот коммитит в эту же ветку: previews/<библиотека>/<id>.mp4, previews/manifest.json,
+# previews/contact_*.jpg, previews/logs/, retargeted/<id>.npz.
+# Запуск: изменить tools/motion_previews/** (или этот файл) и запушить в motion-previews.
 
 on:
   push:
@@ -21,65 +22,133 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  probe:
+  sources:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      ids: ${{ steps.ids.outputs.ids }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/motion_previews
+          filter: blob:none
+      - name: Клипы
+        id: ids
+        run: |
+          python3 -c "import json;d=json.load(open('tools/motion_previews/clips.json'));r=json.load(open('tools/motion_previews/request.json'));ids=[c['id'] for c in d['clips'] if not r.get('only') or c['id'] in r['only']];print('ids='+json.dumps(ids))" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+      - name: Источники (Mesh2Motion — GitHub, CMU — зеркало BVH cgspeed на GitHub, 100STYLE — Zenodo)
+        run: |
+          set -euo pipefail
+          python3 tools/motion_previews/fetch_sources.py --clips tools/motion_previews/clips.json --out _src 2>&1 | tee fetch.log
+          find _src -type f -printf '%p %s\n'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sources
+          path: _src
+          retention-days: 3
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: log-sources
+          path: fetch.log
+          retention-days: 3
+
+  render:
+    needs: sources
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix:
+        id: ${{ fromJSON(needs.sources.outputs.ids) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/motion_previews
+            assets/characters/agata/rt3d
+            game/assets/fonts/pt_serif
+          filter: blob:none
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: tools/motion_previews/requirements.txt
+      - name: Зависимости (bpy = Blender как модуль)
+        run: python -m pip install -r tools/motion_previews/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: sources
+          path: _src
+      - name: Ретаргет, петля, чистка стоп, замеры
+        run: |
+          mkdir -p out/rt out/pv
+          set +e
+          python tools/motion_previews/retarget_clip.py --clip "${{ matrix.id }}" --clips tools/motion_previews/clips.json \
+            --target assets/characters/agata/rt3d/agata_rt.glb --src-root _src --out out/rt > _rt.log 2>&1
+          rc=$?
+          grep -v "^$\|INFO\|Saved:" _rt.log | tee "out/log_${{ matrix.id }}.txt"
+          exit $rc
+      - name: Рендер (Cycles CPU) и H.264
+        run: |
+          set +e
+          python tools/motion_previews/render_preview.py --clip "${{ matrix.id }}" --clips tools/motion_previews/clips.json \
+            --target assets/characters/agata/rt3d/agata_rt.glb --rt out/rt --out out/pv \
+            --font game/assets/fonts/pt_serif/PT_Serif-Web-Regular.ttf --font-bold game/assets/fonts/pt_serif/PT_Serif-Web-Bold.ttf > _rd.log 2>&1
+          rc=$?
+          grep -v "^$\|INFO\|Saved:\|Fra:\|render  *|\|^кадр [0-9]*/[0-9]*$" _rd.log | tail -60 | tee -a "out/log_${{ matrix.id }}.txt"
+          grep -c "^кадр" _rd.log | sed 's/^/кадров отрендерено: /' | tee -a "out/log_${{ matrix.id }}.txt"
+          ls -la out/pv
+          exit $rc
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pv-${{ matrix.id }}
+          path: |
+            out/rt/*.npz
+            out/rt/*.json
+            out/pv/*.mp4
+            out/pv/*.json
+            out/log_*.txt
+          retention-days: 7
+
+  collect:
+    needs: [sources, render]
+    if: always() && needs.sources.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
           ref: motion-previews
-          lfs: false
-      - name: Режим
-        id: mode
-        run: echo "mode=$(python3 -c "import json;print(json.load(open('tools/motion_previews/request.json'))['mode'])")" >> "$GITHUB_OUTPUT"
-      - name: 100STYLE (Zenodo) и страницы CMU
-        if: steps.mode.outputs.mode == 'probe'
+          sparse-checkout: |
+            tools/motion_previews
+            previews
+            retargeted
+          filter: blob:none
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pv-*
+          path: _pv
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: log-sources
+          path: _pv
+      - name: Манифест, ролики, листы кадров
         run: |
-          set -x
-          mkdir -p sources/100style sources/cmu _dl
-          curl -sSL --retry 3 "https://zenodo.org/api/records/8127870" -o sources/100style/zenodo_record.json || true
-          python3 - <<'PY'
-          import json
-          d = json.load(open("sources/100style/zenodo_record.json"))
-          print("license:", d.get("metadata", {}).get("license"))
-          for f in d.get("files", []):
-              print(f.get("key"), f.get("size"), f.get("checksum"), f.get("links", {}).get("self"))
-          PY
-          url=$(python3 -c "
-          import json
-          d=json.load(open('sources/100style/zenodo_record.json'))
-          fs=[f for f in d.get('files',[]) if f.get('key','').lower()=='100style.zip']
-          print(fs[0]['links']['self'] if fs else 'https://zenodo.org/records/8127870/files/100STYLE.zip?download=1')")
-          curl -sSL --retry 3 "$url" -o _dl/100STYLE.zip
-          ls -la _dl
-          unzip -l _dl/100STYLE.zip > sources/100style/zip_listing.txt
-          head -30 sources/100style/zip_listing.txt; tail -3 sources/100style/zip_listing.txt
-          mkdir -p _x
-          unzip -q -o _dl/100STYLE.zip '*.csv' '*.txt' '*.md' -d _x || true
-          for s in $(python3 -c "import json;print(' '.join(json.load(open('tools/motion_previews/request.json'))['probe_styles']))"); do
-            unzip -q -o _dl/100STYLE.zip "*/${s}_FW.bvh" "*/${s}_ID.bvh" "${s}_FW.bvh" "${s}_ID.bvh" -d _x || true
-          done
-          find _x -type f -printf '%p %s\n'
-          find _x -type f \( -name '*.csv' -o -name '*.txt' -o -name '*.md' \) -exec cp {} sources/100style/ \;
-          find _x -type f -name '*.bvh' -exec gzip -9 -k {} \; 
-          find _x -type f -name '*.bvh.gz' -exec cp {} sources/100style/ \;
-          # заголовок скелета одного BVH стиля для сверки имён костей
-          f=$(find _x -name '*.bvh' | head -1); [ -n "$f" ] && sed -n '1,/^MOTION/p' "$f" > sources/100style/skeleton_header.txt
-          for s in 113 144 111; do
-            curl -sSL --retry 2 "http://mocap.cs.cmu.edu/search.php?subjectnumber=$s" -o "sources/cmu/subject_$s.html" || true
-          done
-          curl -sSL --retry 2 "http://mocap.cs.cmu.edu/faqs.php" -o sources/cmu/faqs.html || true
-          curl -sSL --retry 2 "http://mocap.cs.cmu.edu/" -o sources/cmu/index.html || true
-          ls -la sources/100style sources/cmu
-      - name: Коммит
-        if: always() && steps.mode.outputs.mode == 'probe'
+          python3 -m pip install --quiet pillow
+          python3 tools/motion_previews/collect.py --clips tools/motion_previews/clips.json --in _pv --run "${{ github.run_id }}" --sha "${{ github.sha }}"
+          ls -la previews previews/* retargeted | head -80
+      - name: Коммит в motion-previews
         run: |
           git config user.name "pipeline-bot"
           git config user.email "pipeline-bot@users.noreply.github.com"
-          git add -A sources
-          git commit -q -m "motion-previews: probe 100STYLE/CMU (run ${{ github.run_id }}) [skip ci]" || { echo "нечего коммитить"; exit 0; }
+          git add -A previews retargeted
+          git commit -q -m "motion-previews: ролики, манифест, ретаргет (run ${{ github.run_id }}) [skip ci]" || { echo "нечего коммитить"; exit 0; }
           for i in 1 2 3 4 5; do
-            git fetch -q origin motion-previews && git rebase -q origin/motion-previews && git push -q origin HEAD:motion-previews && exit 0
+            git fetch -q origin motion-previews && git rebase -q origin/motion-previews && git push -q origin HEAD:motion-previews && { echo "запушено"; exit 0; }
             sleep 10
           done
           exit 1
