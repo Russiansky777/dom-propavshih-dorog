@@ -335,9 +335,9 @@ async function main() {
     await click("board with the chalk", s.hotspots.board);
     await waitIdle("board");
     await waitFor("board text", (t) => beatKey(t) !== "", 60000);
-    await finish("board");
+    await finish("board", ["here"]);  // since 22.10 the board asks what to write (three lines or none)
     s = await waitFor("M08 done", (t) => t.flags.done_M08, 20000);
-    check(s.flags.wrote_on_board && !s.inventory.includes("chalk"), `written; the chalk stays at the board, not in the bag (${s.inventory.join(",")})`);
+    check(s.flags.board_here && !s.inventory.includes("chalk"), `written; the chalk stays at the board, not in the bag (${s.inventory.join(",")})`);
     await sleep(600);
     await shot("09_board_written");
     // 10: the pencil mark.

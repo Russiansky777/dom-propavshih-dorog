@@ -112,6 +112,7 @@ func _ready() -> void:
 	add_child(_save_timer)
 	load_settings()
 	RoomManager.room_changed.connect(_on_room_changed)
+	StoryRunner.stage_sound_requested.connect(func(sid: String): play_sound(sid, "stage"))
 	GameState.state_reset.connect(func(): _suppress_door = true)
 	GameState.state_loaded.connect(func(_s): _suppress_door = true)
 	get_tree().node_added.connect(_on_node_added)
@@ -255,6 +256,11 @@ func play_sound(sound_id: String, kind: String = "closeup") -> String:
 		push_warning("SfxDirector: no sound '%s' (sfx.json sounds)" % sound_id)
 		return ""
 	return _play(_closeup_player, sound_id, kind)
+
+
+## The next room change opens no door (a scene staging moves Agata in the dark: the night by the stove).
+func suppress_next_door() -> void:
+	_suppress_door = true
 
 
 func _on_node_added(n: Node) -> void:

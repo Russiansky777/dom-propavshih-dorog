@@ -8,7 +8,12 @@
   4. достижимость локаций каждой сцены в момент её доступности (граф переходов с условиями);
   5. окна V/Q: доступны до точки невозврата, не требуются основным путём;
   6. тайны не раскрываются раньше своего эпизода (min_episode);
-  7. число переправ и повторение глаголов загадок (сигналы темпа, не ошибки).
+  7. число переправ и повторение глаголов загадок (сигналы темпа, не ошибки);
+  8. постановка сцен (stage: затемнение, перенос в комнату, звуки) и контрольные сохранения (checkpoint):
+     at — номер реплики или "end", комната — из locations сцены, звуки — из sfx.json, слот — не ручной.
+Предмет, который игрок берёт сам в комнате (items.json source_hotspot «<комната>.<хотспот>»: хотспот с use.gives и
+use.requires), — единственный источник вместо выдачи сцены; симуляция даёт его, как только requires выполнены и
+комната достижима (скоба для плиты в мастерской — после плана из школы, блок 1 22.10).
 
 Код возврата 0 — ошибок нет (предупреждения допустимы). Отчёт: Docs/STORY_REPORT.md.
 Запуск: python3 tools/validate_story.py [--quiet]
@@ -119,6 +124,33 @@ for rf in sorted((STORY / "rooms").glob("*.json")):
             for fl in ul["sets"]:
                 granted_flags.setdefault(fl, []).append(f"{ul['loc']}:{it}")
 
+# Предметы, которые игрок берёт сам хотспотом комнаты (items.json → source_hotspot «<комната>.<хотспот>»):
+# use.gives с use.requires. Не выдача сцены: симуляция даёт предмет, как только requires выполнены и комната
+# достижима; сцена такой предмет выдавать не должна (единственный источник).
+room_takes: list[dict] = []
+for it_id, it_meta in item_by_id.items():
+    src = it_meta.get("source_hotspot")
+    if not src:
+        continue
+    rid_, _, hid_ = str(src).partition(".")
+    rf_ = STORY / "rooms" / f"{rid_}.json"
+    if not rf_.exists():
+        err(f"предмет {it_id}: source_hotspot {src} — нет комнаты {rid_}")
+        continue
+    room_doc = json.loads(rf_.read_text(encoding="utf-8"))
+    hs_ = next((h for h in room_doc.get("hotspots", []) if h.get("id") == hid_), None)
+    if hs_ is None:
+        err(f"предмет {it_id}: source_hotspot {src} — нет хотспота {hid_} в {rid_}")
+        continue
+    use_ = hs_.get("use") or {}
+    if it_id not in (use_.get("gives") or []):
+        err(f"предмет {it_id}: хотспот {src} его не выдаёт (use.gives)")
+        continue
+    if it_meta.get("source_location") not in (None, rid_):
+        err(f"предмет {it_id}: source_location {it_meta.get('source_location')} ≠ комната хотспота {rid_}")
+    room_takes.append({"loc": rid_, "item": it_id, "req": list((use_.get("requires") or {}).get("flags", [])),
+                       "req_items": list((use_.get("requires") or {}).get("items", []))})
+
 for s in scenes:
     for fl in s["requires"].get("flags", []):
         if fl not in granted_flags:
@@ -142,7 +174,7 @@ for fl, srcs in granted_flags.items():
 # (решение 17.10: «Цели журнала и любой текст для игрока не содержат кодов»). Для сыгранных эпизодов goal обязателен.
 import re as _re
 _code = _re.compile(r"\b(" + "|".join(sorted(loc_ids, key=len, reverse=True)) + r"|E[0-7]|[MVQ]\d\d|ЗМ|ЗГ|ЗП)\b")
-_played = {"M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08"}
+_played = {"M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "N01"}
 for s in scenes:
     if s.get("type") != "main":
         continue
@@ -159,6 +191,10 @@ for s in scenes:
         item_sources.setdefault(it, []).append(s["id"])
 for it, meta_it in item_by_id.items():
     srcs = item_sources.get(it, [])
+    if meta_it.get("source_hotspot"):
+        if srcs:
+            err(f"предмет {it}: берётся хотспотом {meta_it['source_hotspot']}, а его ещё и выдаёт сцена {srcs} — два источника")
+        continue
     if len(srcs) == 0:
         err(f"предмет {it} не выдаётся ни в одной сцене")
     elif len(srcs) > 1:
@@ -224,6 +260,15 @@ while progress:
         flags |= set(ul["sets"])
         applied_unlocks.add(ui)
         unlock_log.append(f"{ul['loc']}: {ul['item']} → {', '.join(ul['sets'])} (перед {len(order) + 1}-й основной сценой)")
+    for ti, tk in enumerate(room_takes):
+        if ("take", ti) in applied_unlocks or not set(tk["req"]) <= flags \
+                or not all(("has_" + x) in flags for x in tk["req_items"]):
+            continue
+        if shortest(cur_loc, tk["loc"], flags) is None:
+            continue
+        flags.add("has_" + tk["item"])
+        applied_unlocks.add(("take", ti))
+        unlock_log.append(f"{tk['loc']}: взять {tk['item']} (перед {len(order) + 1}-й основной сценой)")
     for s in sorted(mains, key=lambda x: (x["episode"], x["id"])):
         if s["id"] in done:
             continue
@@ -297,6 +342,40 @@ for fl, spec in flags_doc["flags"].items():
                 if ep is not None and ep < spec["min_episode"]:
                     err(f"тайна {fl} раскрывается в {s['id']} (эпизод {ep}) раньше эпизода {spec['min_episode']}")
 
+# ---------- 8. постановка сцен и контрольные сохранения ----------
+_sfx_doc = load("sfx.json") if (STORY / "sfx.json").exists() else {}
+_sfx_ids = set((_sfx_doc.get("sounds") or {}).keys())
+for s in scenes:
+    lines_n = len(s.get("mandatory_lines", []))
+    for i, st in enumerate(s.get("stage", []) or []):
+        sctx = f"{s['id']}.stage[{i}]"
+        at = st.get("at")
+        if not (at == "end" or (isinstance(at, int) and 0 <= at < max(lines_n, 1))):
+            err(f"{sctx}: at {at!r} — номер реплики 0..{lines_n - 1} или \"end\"")
+        for k in ("fade_out_s", "hold_s", "fade_in_s"):
+            v = st.get(k, 0)
+            if not isinstance(v, (int, float)) or v < 0 or v > 10:
+                err(f"{sctx}: {k} {v!r} — секунды 0..10")
+        dim = st.get("dim", 0.0)
+        if not isinstance(dim, (int, float)) or not 0 <= dim < 1:
+            err(f"{sctx}: dim {dim!r} — 0 ≤ dim < 1 (полумрак поверх комнаты, реплики видны)")
+        if "room" in st:
+            if st["room"] not in s["locations"]:
+                err(f"{sctx}: комната {st['room']} не из locations сцены {s['locations']}")
+            room_f = STORY / "rooms" / f"{st['room']}.json"
+            spawns_ = json.loads(room_f.read_text(encoding="utf-8")).get("spawns", {}) if room_f.exists() else {}
+            if st.get("spawn", "default") not in spawns_:
+                err(f"{sctx}: в комнате {st['room']} нет спавна {st.get('spawn', 'default')}")
+        for snd in st.get("sounds", []) or []:
+            if _sfx_ids and snd.get("id") not in _sfx_ids:
+                err(f"{sctx}: звука {snd.get('id')} нет в sfx.json (новых звуков не заводим)")
+    cp = s.get("checkpoint")
+    if cp:
+        if not cp.get("slot") or cp["slot"] in ("auto", "quick", "1", "2", "3", "pre_finale"):
+            err(f"{s['id']}.checkpoint: слот {cp.get('slot')!r} — свой, не авто/быстрый/ручной")
+        if not str(cp.get("title", "")).startswith("@"):
+            err(f"{s['id']}.checkpoint: title — ключ текста @…")
+
 # ---------- 7. темп: переправы и глаголы ----------
 verbs = Counter(s["puzzle"]["verb"] for s in mains if "puzzle" in s)
 for v, n in verbs.items():
@@ -308,7 +387,7 @@ if total_cross >= 8:
 
 # ---------- счёт ----------
 counts = {"main": len(mains), "minor": len(minors), "quest": len(quests)}
-expected = {"main": 34, "minor": 12, "quest": 10}
+expected = {"main": 35, "minor": 12, "quest": 10}  # 35: + N01 «Ночь у печи» (блок 1, 22.10)
 for k, v in expected.items():
     if counts[k] != v:
         err(f"сцен типа {k}: {counts[k]}, ожидалось {v}")

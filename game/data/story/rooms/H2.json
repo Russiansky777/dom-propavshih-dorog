@@ -1,6 +1,6 @@
 {
   "id": "H2",
-  "_art": "Фон H2_bg.png (мастерская): дверь в H1 слева (тёплый свет), верстак и рисунок двери на стене, коробки «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» на полке, пустая стойка ЗМ, колокол у окна. Слой H2_fg_bench_front.png — верстак на переднем плане (окклюдер z=1080). Надписи коробок нарисованы (v1).",
+  "_art": "Фон H2_bg.png (мастерская): дверь в H1 слева (тёплый свет), верстак и рисунок двери на стене, коробки «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» на полке, пустая стойка ЗМ, колокол у окна. Свёрток «Нина. Горница» и скоба для плиты (22.10) — пока без рисунка, заявки в assets/manifest.json. Слой H2_fg_bench_front.png — верстак на переднем плане (окклюдер z=1080). Надписи коробок нарисованы (v1).",
   "background": {"kind": "interior", "image": "res://assets/rooms/H2/bg.png", "wall": "#5e5040", "floor": "#7a6648", "accent": "#a08a5a", "horizon": 700},
   "walkable": [[60, 780], [240, 750], [365, 750], [380, 706], [880, 702], [1140, 695], [1145, 690], [1400, 690], [1405, 682], [1505, 680], [1505, 693], [1400, 704], [1300, 712], [1200, 720], [1100, 728], [1000, 735], [905, 745], [900, 1070], [60, 1070]],
   "no_walk_samples": [[1200, 900, "верстак"], [1600, 800, "верстак"], [960, 780, "торец верстака"], [300, 650, "доска у стены"], [520, 650, "верстак у стены"], [1650, 640, "колокол"]],
@@ -9,6 +9,8 @@
   "_depth_note": "Рост Агаты = 345 px × scale (фигура в кадре 384 px, модель 1.657 м) — см. rooms/_index.json agata_ref; ориентиры height_refs проверяет tools/validate_rooms.py (±12 %). у верстака 1.35 → 466 px при 448; у двери 1.43 → 494 при 539 (−8 %)",
   "height_refs": [{"what": "верстак у стены (столешница y 470, ножки y 700)", "y": 700, "px": 230, "m": 0.85}, {"what": "дверь в избу (проём слева)", "y": 740, "px": 650, "m": 2.0}],
   "layers": [
+    {"id": "skoba_stub", "image": "res://assets/closeups/skoba_plate.png", "offset": [738, 437], "scale": 0.0813, "unless": ["has_brace_plate"],
+      "scale_reason": "временный рисунок скобы — иконка предмета (assets/icons/skoba_plate.png, 1024 px → tools/make_closeup_stubs.py), уменьшенная до ≈60 px на заднем верстаке левее коробки «Петли»; заменит слой H2_state_skoba.png (Docs/BRIEF_CHATGPT_v4.md, партия 2)"},
     {"id": "bench_front", "image": "res://assets/rooms/H2/fg_bench_front.png", "occluder": true, "z": 1080}
   ],
   "spawns": {"default": [500, 900], "from_H1": [280, 820]},
@@ -16,7 +18,7 @@
   "hotspots": [
     {
       "id": "bench", "kind": "object", "label": "@H2.bench.label", "rect": [660, 160, 280, 240], "stand": [800, 760], "color": "#6a5438", "draw": false,
-      "use": {"sets": ["seen_workshop", "knows_rule_things_remember"], "text": "@H2.bench.use", "once_flag": "seen_workshop", "scene": "M04"},
+      "use": {"sets": ["seen_workshop"], "text": "@H2.bench.use", "once_flag": "seen_workshop", "scene": "M04"},
       "look": "@H2.bench.look"
     },
     {
@@ -27,12 +29,27 @@
     },
     {
       "id": "bell", "action_anim": "reach", "kind": "object", "label": "@H2.bell.label", "rect": [1590, 300, 190, 260], "stand": [1450, 692], "color": "#b8a040", "draw": false,
-      "use": {"sets": ["seen_bell"], "text": "@H2.bell.use", "once_flag": "seen_bell", "scene": "M04"},
+      "use": {"sets": ["seen_bell", "knows_rule_things_remember"], "text": ["@H2.bell.use", "@H2.bell.thought"], "once_flag": "seen_bell", "scene": "M04",
+        "_text_note": "ярлык колокола (закадровый голос), затем мысль Агаты её голосом — причина вешать школьную дверь (Docs/SCENARIO_FINAL.md, M04); text — список ключей, читаются по очереди"},
       "look": "@H2.bell.look"
     },
     {
       "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [1120, 110, 270, 560], "stand": [1250, 705], "color": "#7a7a70", "draw": false,
       "look": "@H2.stand_zm.look"
+    },
+    {
+      "id": "bundle_nina", "action_anim": "reach", "kind": "object", "label": "@H2.bundle_nina.label", "rect": [930, 655, 230, 95], "stand": [880, 760], "color": "#a89a80", "draw": false,
+      "pick_priority": 1,
+      "_art_note": "Свёрток «Нина. Горница» (Docs/SCENARIO_FINAL.md, M04): мамино зеркало в тряпке на левом краю большого верстака. Рисунка ещё нет — заявка assets/manifest.json → H2_bundle_nina; до готовности хотспот на пустом краю верстака (видно по наведению и Пробелу). В сумку не берётся (items.json bundle_nina inventory false, выдаёт M04); струбцина — день второй.",
+      "use": {"sets": ["h2_bundle_unwrapped"], "text": "@H2.bundle_nina.use", "once_flag": "h2_bundle_unwrapped", "text_done": "@H2.bundle_nina.done"},
+      "look": "@H2.bundle_nina.look"
+    },
+    {
+      "id": "brace", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [724, 427, 90, 76], "stand": [760, 765], "color": "#7a6a5a", "draw": false, "pick_priority": 1,
+      "_art_note": "Скоба для плиты (Docs/SCENARIO_FINAL.md, M04 и раздел 9): у рисунка плиты, рядом заказ управы. Рисунка скобы и плиты на стене ещё нет — заявка assets/manifest.json → H2_brace_plate; до готовности на заднем верстаке левее коробки «Петли» лежит временный рисунок — иконка скобы (слой skoba_stub). Взять — только после плана из школы (requires knows_crossing_plan), до того — осмотр и мысль Агаты.",
+      "hidden_if": ["has_brace_plate"],
+      "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
+      "look": "@H2.brace.look"
     },
     {
       "id": "clapper_box", "kind": "object", "label": "@H2.clapper_box.label", "rect": [945, 430, 160, 80], "stand": [980, 715], "color": "#8a7a5a", "draw": false,
@@ -43,7 +60,9 @@
     {"to": "H1", "label": "@H2.exit_H1.label", "cue": "door", "rect": [60, 90, 180, 650], "stand": [260, 820], "spawn": "from_H2", "draw": false}
   ],
   "scenes": {
-    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges"]}]}
+    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges", "seen_bell"]}]}
   },
-  "flags": {}
+  "flags": {
+    "h2_bundle_unwrapped": "Свёрток «Нина. Горница» развёрнут: мамино зеркало, рама расходится в руках"
+  }
 }

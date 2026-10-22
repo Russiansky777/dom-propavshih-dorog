@@ -244,6 +244,10 @@ func _check_scales(room: Node, spec: Dictionary) -> void:
 		_check(node != null, "layer %s not built" % lid)
 		if node == null:
 			continue
+		if not l.has("image") and l.has("text"):
+			# stand-in text until the picture is drawn (O1 board lines, validate_rooms.py п. 11): no art scale to check
+			_check(node.get_node_or_null("Text") is Label, "text layer %s has its Label" % lid)
+			continue
 		var img: Sprite2D = node.get_node_or_null("Image")
 		if img == null:
 			_check(false, "layer %s has no Image" % lid)

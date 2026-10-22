@@ -200,6 +200,9 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 	container.name = "Layers"
 	room.add_child(container)
 	for l in spec.get("layers", []):
+		if not l.has("image") and l.has("text"):
+			_build_text_layer(container, l)
+			continue
 		var image := String(l.get("image", ""))
 		if image == "" or not ResourceLoader.exists(image):
 			push_warning("RoomBuilder: layer image missing: " + image)
@@ -225,6 +228,39 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 			node.z_index = clampi(int(l.get("z", 0)), -10, 4096)
 			container.add_child(node)
 		node.setup(l)
+
+
+## A stand-in layer until its picture is drawn (`text` instead of `image`, `_stub` says what it replaces —
+## O1: «Мама, я иду» in chalk on the board): the text in the game's font inside `rect`, `font`
+## (body_italic by default; "italic" = body_italic), `font_size`, `color` with `alpha`, tilted by `angle_deg`.
+## Same if / unless rules as an image layer.
+static func _build_text_layer(container: Node2D, l: Dictionary) -> void:
+	var node := StateLayer.new()
+	node.name = String(l.get("id", "text"))
+	var r: Array = l.get("rect", [0, 0, 400, 100])
+	var lbl := Label.new()
+	lbl.name = "Text"
+	lbl.text = StoryData.text(String(l.get("text", "")))
+	lbl.position = Vector2(float(r[0]), float(r[1]))
+	lbl.size = Vector2(float(r[2]), float(r[3]))
+	lbl.pivot_offset = lbl.size / 2.0
+	lbl.rotation = deg_to_rad(float(l.get("angle_deg", 0.0)))
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var role := String(l.get("font", "body_italic"))
+	if role == "italic":
+		role = "body_italic"
+	lbl.add_theme_font_override("font", UiTheme.font(role))
+	lbl.add_theme_font_size_override("font_size", int(l.get("font_size", 40)))
+	var c := Color.html(String(l.get("color", "#ecebe4")))
+	c.a = float(l.get("alpha", 0.75))
+	lbl.add_theme_color_override("font_color", c)
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	node.add_child(lbl)
+	node.z_index = clampi(int(l.get("z", 0)), -10, 4096)
+	container.add_child(node)
+	node.setup(l)
 
 
 ## `effects[]`: programmatic effects (fire in the stove, snow in the yard), flag-conditional.

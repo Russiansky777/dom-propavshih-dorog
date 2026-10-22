@@ -17,6 +17,11 @@ extends CanvasLayer
 ##     reflection (not a view of anywhere else);
 ##   - next to it the old photograph the text speaks of: the same wall of the same painting
 ##     (`photo.region`) in sepia (shaders/closeup_photo.gdshader) — nothing added to the picture.
+## type "papers" (O1 teacher's drawer, M07): what lies in the drawer, side by side — `pictures` (a thing's own
+##   picture: the photo print, the child's drawing), `photos` (each like `photo` below: a region of a painting in
+##   sepia with a caption) and `papers` (a sheet with a title and handwritten text in the game's italic: the plan
+##   «Тому, кто придёт через эту дверь…»). Until their own art is drawn these are the
+##   stand-ins (assets/manifest.json); the text of the scene plays over them as usual.
 ## Closes with a click once the text is over, with «Закрыть», or with Esc (the mouse alone is enough).
 
 const LAYER := 4
@@ -34,6 +39,7 @@ var gallery_vp: SubViewport = null
 var reflection_vp: SubViewport = null
 var agata: AnimatedSprite2D = null
 var photo: Control = null
+var sheets: Array[Control] = []  # every photo / paper of a "papers" close-up (probe, tests)
 var close_button: Button = null
 var glass_screen_rect: Rect2 = Rect2()
 var _player: Node2D = null
@@ -76,6 +82,7 @@ func _free_nodes() -> void:
 	mirror_rect = null
 	mirror_material = null
 	photo = null
+	sheets.clear()
 	close_button = null
 
 
@@ -106,6 +113,12 @@ func _build() -> void:
 		_build_mirror()
 	if spec.has("photo"):
 		_build_photo(spec["photo"])
+	for ph in spec.get("photos", []):
+		_build_photo(ph)
+	for pi in spec.get("pictures", []):
+		_build_picture(pi)
+	for pa in spec.get("papers", []):
+		_build_paper(pa)
 	close_button = Button.new()
 	close_button.name = "Close"
 	close_button.text = StoryData.text(String(spec.get("close_label", "@ui.close")))
@@ -328,6 +341,113 @@ func _build_photo(p: Dictionary) -> void:
 	cap.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0))
 	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	photo.add_child(cap)
+	sheets.append(photo)
+
+
+## A picture of a thing as it is (its own paper edges and transparency — a photo print, a child's drawing):
+## `image`, `rect` [x, y, w, h = 0 → by aspect], `angle_deg`, optional `label` under it; the shadow is the
+## picture's own silhouette.
+func _build_picture(p: Dictionary) -> void:
+	var image := String(p.get("image", ""))
+	if image == "" or not ResourceLoader.exists(image):
+		push_warning("CloseupView: picture missing: %s" % image)
+		return
+	var tex: Texture2D = load(image)
+	var r: Array = p.get("rect", [100, 150, 500, 0])
+	var w := float(r[2])
+	var h := float(r[3]) if float(r[3]) > 0.0 else w * tex.get_height() / maxf(tex.get_width(), 1.0)
+	var holder := Control.new()
+	holder.name = "Picture%d" % sheets.size()
+	holder.position = Vector2(float(r[0]), float(r[1]))
+	holder.size = Vector2(w, h + (40.0 if p.has("label") else 0.0))
+	holder.pivot_offset = Vector2(w, h) / 2.0
+	holder.rotation = deg_to_rad(float(p.get("angle_deg", 0.0)))
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(holder)
+	for i in 2:
+		var tr := TextureRect.new()
+		tr.name = "Shadow" if i == 0 else "Image"
+		tr.texture = tex
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_SCALE
+		tr.size = Vector2(w, h)
+		tr.position = Vector2(10, 12) if i == 0 else Vector2.ZERO
+		tr.modulate = Color(0, 0, 0, 0.45) if i == 0 else Color.WHITE
+		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		holder.add_child(tr)
+	if p.has("label"):
+		var cap := Label.new()
+		cap.name = "Text"
+		cap.text = StoryData.text(String(p["label"]))
+		cap.position = Vector2(0, h + 6.0)
+		cap.size = Vector2(w, 34)
+		cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cap.theme = UiTheme.get_theme()
+		cap.theme_type_variation = &"CloseupLabel"
+		cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		holder.add_child(cap)
+	sheets.append(holder)
+
+
+## A sheet of paper: `rect` [x, y, w, h], `angle_deg`, `paper` / `ink` / `edge` colours, `title` and `text`
+## (keys of data/story/text), `font_size` of the text (the game's italic, as if written by hand).
+func _build_paper(p: Dictionary) -> void:
+	var r: Array = p.get("rect", [700, 200, 500, 500])
+	var sheet := Control.new()
+	sheet.name = "Paper%d" % sheets.size()
+	sheet.position = Vector2(float(r[0]), float(r[1]))
+	sheet.size = Vector2(float(r[2]), float(r[3]))
+	sheet.pivot_offset = sheet.size / 2.0
+	sheet.rotation = deg_to_rad(float(p.get("angle_deg", 0.0)))
+	sheet.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(sheet)
+	var shadow := ColorRect.new()
+	shadow.color = Color(0, 0, 0, 0.45)
+	shadow.position = Vector2(10, 12)
+	shadow.size = sheet.size
+	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sheet.add_child(shadow)
+	if p.has("edge"):
+		var edge := ColorRect.new()
+		edge.color = Color.html(String(p["edge"]))
+		edge.position = Vector2(-3, -3)
+		edge.size = sheet.size + Vector2(6, 6)
+		edge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sheet.add_child(edge)
+	var paper := ColorRect.new()
+	paper.name = "Sheet"
+	paper.color = Color.html(String(p.get("paper", "#e3d6b4")))
+	paper.size = sheet.size
+	paper.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sheet.add_child(paper)
+	var ink := Color.html(String(p.get("ink", "#2e2a24")))
+	var pad := 26.0
+	var y := pad * 0.8
+	if String(p.get("title", "")) != "":
+		var title := Label.new()
+		title.name = "Title"
+		title.text = StoryData.text(String(p["title"]))
+		title.position = Vector2(pad, y)
+		title.size = Vector2(sheet.size.x - pad * 2.0, 34)
+		title.add_theme_font_override("font", UiTheme.font("head"))
+		title.add_theme_font_size_override("font_size", 24)
+		title.add_theme_color_override("font_color", Color(ink, 0.7))
+		title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sheet.add_child(title)
+		y += 44.0
+	var body := Label.new()
+	body.name = "Text"
+	body.text = StoryData.text(String(p.get("text", "")))
+	body.position = Vector2(pad, y)
+	body.size = Vector2(sheet.size.x - pad * 2.0, sheet.size.y - y - pad * 0.6)
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.add_theme_font_override("font", UiTheme.font("body_italic"))
+	body.add_theme_font_size_override("font_size", int(p.get("font_size", 28)))
+	body.add_theme_color_override("font_color", ink)
+	body.add_theme_constant_override("line_spacing", 2)
+	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sheet.add_child(body)
+	sheets.append(sheet)
 
 
 # --- Input ----------------------------------------------------------------------------------
@@ -363,6 +483,11 @@ func probe() -> Dictionary:
 		"w": glass_screen_rect.size.x, "h": glass_screen_rect.size.y}
 	if photo != null:
 		out["photo"] = _center(photo)
+	var sh: Array = []
+	for c in sheets:
+		var t: Label = c.get_node_or_null("Text") as Label
+		sh.append({"name": String(c.name), "center": _center(c), "text": t.text if t != null else ""})
+	out["sheets"] = sh
 	out["reflection"] = {"agata": String(agata.animation) if agata != null else "",
 		"agata_frame": agata.frame if agata != null else -1,
 		"shares_world": gallery_vp != null and gallery_vp.world_2d == get_viewport().world_2d}

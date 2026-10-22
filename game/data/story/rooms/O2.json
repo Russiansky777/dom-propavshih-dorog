@@ -36,7 +36,8 @@
     {
       "id": "mitten",
       "image": "res://assets/rooms/O2/state_mitten.png",
-      "if": ["mitten_placed"]
+      "if": ["mitten_placed"],
+      "unless": ["mitten_taken_back"]
     }
   ],
   "effects": [
@@ -75,6 +76,10 @@
       "color": "#8a8a80",
       "states": [
         {
+          "if": ["mitten_taken_back"],
+          "label": "@O2.porch_step.label"
+        },
+        {
           "if": ["mitten_placed"],
           "label": "@O2.porch_step.label_mitten",
           "color": "#b06060"
@@ -91,6 +96,22 @@
         }
       },
       "look": "@O2.porch_step.look",
+      "draw": false
+    },
+    {
+      "id": "mitten",
+      "action_anim": "pick",
+      "kind": "pickup",
+      "label": "@O2.mitten.label",
+      "rect": [585, 630, 165, 100],
+      "stand": [640, 800],
+      "color": "#b06060",
+      "pick_priority": 2,
+      "visible_if": ["mitten_placed"],
+      "hidden_if": ["mitten_taken_back"],
+      "_note": "Варежку на ступени можно поднять обратно (Docs/SCENARIO_FINAL.md, M08; раздел 9 «Варежка: оставить или забрать»): use.restores возвращает в сумку тот же предмет, один раз; прямоугольник — по слою mitten (непрозрачные пиксели 599–738 × 644–717)",
+      "use": {"restores": ["mitten"], "sets": ["mitten_taken_back"], "text": "@O2.mitten.take", "once_flag": "mitten_taken_back"},
+      "look": "@O2.mitten.look",
       "draw": false
     },
     {
@@ -137,12 +158,13 @@
     "M08": {
       "complete_when": [
         {
-          "all": ["observed_path_loop", "wrote_on_board"]
+          "all": ["observed_path_loop"]
         }
       ]
     }
   },
   "flags": {
-    "mitten_placed": "Варежка оставлена у ступени крыльца как метка"
+    "mitten_placed": "Варежка оставлена у ступени крыльца как метка",
+    "mitten_taken_back": "Варежку со ступени подняли обратно в сумку"
   }
 }

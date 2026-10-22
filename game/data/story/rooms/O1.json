@@ -1,6 +1,6 @@
 {
   "id": "O1",
-  "_art": "Фон O1_bg.png (зимний класс): доска, учительский стол с ящиком (мелки на нём убраны заплаткой; мел — на левой парте, слой chalk_desk), мешок у левой двери, тетради на лавке справа, картинка с птицей, две двери (левая — обратно в H3, правая — на крыльцо). Слой O1_fg_desks.png — парты на переднем плане (окклюдер z=1080, пол перед ними не проходим). Состояние O1_state_board_written.png — надпись мелом при wrote_on_board.",
+  "_art": "Фон O1_bg.png (зимний класс): доска, учительский стол с ящиком (мелки на нём убраны заплаткой; мел — на левой парте, слой chalk_desk), мешок у левой двери, тетради на лавке справа, картинка с птицей, две двери (левая — обратно в H3, правая — на крыльцо). Слой O1_fg_desks.png — парты на переднем плане (окклюдер z=1080, пол перед ними не проходим). Состояние O1_state_board_written.png — надпись мелом «Я была здесь. Агата» при board_here; две другие надписи — заглушки текстом (board_mama, board_ilya). Учительский ящик — фото моста, рисунок Ильи, план переправы (M07, 22.10).",
   "background": {"kind": "interior", "image": "res://assets/rooms/O1/bg.png", "wall": "#5a6c80", "floor": "#6f7d8c", "accent": "#8aa0b8", "horizon": 700},
   "walkable": [[20, 1070], [20, 812], [330, 730], [345, 738], [462, 738], [470, 700], [540, 700], [540, 752], [900, 752], [900, 700], [1495, 700], [1495, 742], [1745, 742], [1745, 700], [1830, 700], [1915, 765], [1915, 1070], [1825, 1070], [1825, 830], [345, 830], [345, 1070]],
   "no_walk_samples": [[700, 950, "парта"], [1400, 950, "парта"], [1050, 900, "проход между партами"], [700, 725, "учительский стол"], [1600, 715, "лавка с тетрадями"], [400, 705, "мешок"]],
@@ -9,20 +9,33 @@
   "_depth_note": "Рост Агаты = 345 px × scale (фигура в кадре 384 px, модель 1.657 м) — см. rooms/_index.json agata_ref; ориентиры height_refs проверяет tools/validate_rooms.py (±12 %). у двери 1.28 → 442 px при 424; у учительского стола 1.28 → 441 при 495 (−11 %). Парты у переднего края: ножки за кадром, длина парты 675 px при 2.0 → 1.6 м, высота ≥ 0.6 м — детские парты",
   "height_refs": [{"what": "дверь в галерею (полотно)", "y": 690, "px": 550, "m": 2.15}, {"what": "учительский стол (ножки y 688)", "y": 688, "px": 233, "m": 0.78}],
   "layers": [
-    {"id": "board_written", "image": "res://assets/rooms/O1/state_board_written.png", "if": ["wrote_on_board"]},
+    {"id": "board_written", "image": "res://assets/rooms/O1/state_board_written.png", "if": ["board_here"], "_note": "надпись «Я была здесь. Агата» — нарисована (ChatGPT v1)"},
+    {"id": "board_mama", "text": "@O1.board.written_mama", "rect": [890, 280, 470, 170], "font": "italic", "font_size": 50, "color": "#ecebe4", "alpha": 0.72, "angle_deg": -2.0, "if": ["board_mama"],
+      "_stub": "Заглушка до рисунка мелом (assets/manifest.json → O1_board_variants): текст шрифтом игры на месте нарисованной надписи. Место — по слою board_written (те же строки на доске)."},
+    {"id": "board_ilya", "text": "@O1.board.written_ilya", "rect": [860, 280, 530, 170], "font": "italic", "font_size": 46, "color": "#ecebe4", "alpha": 0.72, "angle_deg": -2.0, "if": ["board_ilya"],
+      "_stub": "Заглушка до рисунка мелом (assets/manifest.json → O1_board_variants)."},
     {"id": "teacher_chalk_patch", "image": "res://assets/rooms/O1/patch_teacher_chalk.png", "_note": "18.10: мелки, нарисованные на учительском столе фона, убраны заплаткой из окрестной текстуры (tools/make_items_layers.py, cv2.inpaint) — мел один, на парте"},
     {"id": "chalk_desk", "image": "res://assets/rooms/O1/state_chalk_desk.png", "unless": ["has_chalk"], "occluder": true, "z": 1081, "_note": "Директор 18.10: «мел … положить на ученический стол, чтобы было видно». Кусочек мела на левой парте переднего плана, с тенью, масштаб парты; поверх парт (1080), пока не взят"},
     {"id": "bird_mark", "image": "res://assets/rooms/O1/state_bird_mark.png", "if": ["v03_marked"], "_note": "V03 «Оставить свою пометку»: строчка карандашом на полях картинки рядом с птицей"},
     {"id": "desks", "image": "res://assets/rooms/O1/fg_desks.png", "occluder": true, "z": 1080}
   ],
   "spawns": {"default": [1000, 740], "from_H3": [450, 760], "from_O2": [1760, 740]},
+  "on_enter": [{"text": "@O1.enter.winter", "once_flag": "o1_saw_winter", "_note": "Первый вход в класс (Docs/SCENARIO_FINAL.md, M05–M06): за окном снег — «Там зима. А у нас ещё октябрь». Один раз (флаг в сохранении)"}],
   "props": [],
   "hotspots": [
     {
       "id": "board", "action_anim": "reach", "kind": "object", "label": "@O1.board.label", "rect": [860, 170, 480, 310], "stand": [1100, 740], "color": "#2e3e3a", "draw": false,
-      "states": [{"if": ["wrote_on_board"], "label": "@O1.board.label_written"}],
+      "states": [{"if": ["board_here"], "label": "@O1.board.label_here"}, {"if": ["board_mama"], "label": "@O1.board.label_mama"}, {"if": ["board_ilya"], "label": "@O1.board.label_ilya"}],
       "use": {"sets": ["o1_seen_board_task"], "text": "@O1.board.use", "once_flag": "o1_seen_board_task", "scene": "M06"},
-      "item_use": {"chalk": {"sets": ["wrote_on_board"], "consumes": true, "text": "@O1.board.chalk", "scene": "M08", "once_flag": "wrote_on_board", "_consumes_note": "мел после надписи остаётся у доски (на полочке мелки уже нарисованы) — из сумки уходит"}},
+      "item_use": {"chalk": {"choice": {
+        "prompt": "@O1.board.prompt",
+        "_note": "Надпись на доске (Docs/SCENARIO_FINAL.md, M08 и раздел 9): одна из трёх или ни одной — флаг на будущее (мать ответит в M22). Написанное расходует мел (остаётся у доски), «Не писать» оставляет его в сумке; «Илюша…» — только когда рисунок брата найден.",
+        "options": [
+          {"id": "here", "label": "@O1.board.opt_here", "sets": "board_here", "text": "@O1.board.chalk", "consumes_item": true},
+          {"id": "mama", "label": "@O1.board.opt_mama", "sets": "board_mama", "text": "@O1.board.chalk_mama", "consumes_item": true},
+          {"id": "ilya", "label": "@O1.board.opt_ilya", "sets": "board_ilya", "text": "@O1.board.chalk_ilya", "consumes_item": true, "requires": {"items": ["drawing_ilya"]}},
+          {"id": "none", "label": "@O1.board.opt_none", "sets": "o1_board_left_blank", "text": "@O1.board.chalk_none"}
+        ]}, "_consumes_note": "мел после надписи остаётся у доски (на полочке мелки уже нарисованы) — из сумки уходит"}},
       "look": "@O1.board.look"
     },
     {
@@ -37,9 +50,20 @@
     },
     {
       "id": "teacher_drawer", "action_anim": "open", "kind": "object", "label": "@O1.teacher_drawer.label", "rect": [560, 500, 310, 110], "stand": [720, 780], "color": "#5a4a3a", "draw": false,
-      "states": [{"if": ["has_invoice_chalk"], "label": "@O1.teacher_drawer.label_open"}],
-      "use": {"gives": ["invoice_chalk", "photo_school_pier"], "text": "@O1.teacher_drawer.use", "once_flag": "has_invoice_chalk", "scene": "M07"},
-      "look": "@O1.teacher_drawer.look"
+      "states": [{"if": ["has_plan_crossing"], "label": "@O1.teacher_drawer.label_open"}],
+      "use": {"gives": ["photo_bridge", "drawing_ilya", "plan_crossing"], "text": "@O1.teacher_drawer.use", "once_flag": "has_plan_crossing", "scene": "M07"},
+      "look": "@O1.teacher_drawer.look",
+      "view": {
+        "id": "teacher_drawer", "type": "papers", "title": "@O1.teacher_drawer.label", "close_label": "@ui.close", "unless": ["has_plan_crossing"],
+        "_note": "Крупный план ящика (M07) — открывается вместе с выдачей трёх вещей, текст ящика и сцена M07 идут поверх. Временные рисунки до арта (Docs/BRIEF_CHATGPT_v4.md, партия 2; assets/manifest.json → O1_closeup_bridge_photo / O1_closeup_ilya_drawing / O1_closeup_plan): снимок и детский рисунок — рисунки иконок тех же вещей крупно (tools/make_closeup_stubs.py), план — лист с текстом шрифтом игры (текстовый крупный план; в настоящем closeup_plan.png место под текст оставлено пустым — игра наложит тот же текст). После того как вещи взяты, ящик пуст — крупный план не открывается (unless).",
+        "pictures": [
+          {"image": "res://assets/closeups/bridge_photo.png", "rect": [50, 150, 560, 0], "angle_deg": -4.0, "label": "@O1.teacher_drawer.label_photo"},
+          {"image": "res://assets/closeups/ilya_drawing.png", "rect": [640, 200, 470, 0], "angle_deg": 3.0, "label": "@O1.teacher_drawer.title_drawing"}
+        ],
+        "papers": [
+          {"title": "@O1.teacher_drawer.title_plan", "text": "@O1.teacher_drawer.paper_plan", "rect": [1150, 120, 700, 700], "angle_deg": -1.2, "font_size": 27, "paper": "#e3d6b4", "ink": "#2e2a24", "edge": "#b89a62"}
+        ]
+      }
     },
     {
       "id": "chalk", "action_anim": "reach", "kind": "pickup", "label": "@O1.chalk.label", "rect": [584, 766, 58, 34], "stand": [612, 815], "color": "#f0f0e8", "draw": false,
@@ -66,14 +90,16 @@
   ],
   "scenes": {
     "M06": {"complete_when": [{"any_n": 2, "flags": ["o1_seen_sack", "o1_seen_notebooks", "o1_seen_board_task"]}]},
-    "M07": {"complete_when": [{"all": ["has_invoice_chalk"]}]},
-    "M08": {"complete_when": [{"all": ["observed_path_loop", "wrote_on_board"]}]},
+    "M07": {"complete_when": [{"all": ["has_plan_crossing"]}]},
+    "M08": {"complete_when": [{"all": ["observed_path_loop"]}]},
     "V03": {"complete_when": [{"any": ["v03_marked", "v03_left"]}], "complete_text": "@O1.v03.done"}
   },
   "flags": {
     "o1_seen_sack": "Замечен залатанный мешок в классе",
     "o1_seen_notebooks": "Замечена стопка тетрадей в классе",
     "o1_seen_board_task": "Прочитана задача на доске",
+    "o1_saw_winter": "Агата увидела зиму за окнами класса (первый вход)",
+    "o1_board_left_blank": "Агата решила пока ничего не писать на доске",
     "v03_marked": "На полях картинки с птицей оставлена пометка (V03)",
     "v03_left": "Картинка с птицей оставлена как есть (V03)"
   }

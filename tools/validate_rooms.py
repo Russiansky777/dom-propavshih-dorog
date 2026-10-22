@@ -45,6 +45,11 @@
  10. предметы (Директор 18.10: «зачем нам брать предметы, которые нельзя применить»): consumed: true ⇔ где-то
      расходуется; инвентарный предмет E0–E1 применяется в комнатах вехи или объявляет later_use (сцены по
      сценарию) / no_use_reason (спорное, предупреждение); предмет на выходе (exits[].item_use) открывает этот выход.
+ 11. блок 1 (22.10): слой-заглушка с текстом (layers[].text вместо image: rect, ключ текста); предмет, который берут
+     хотспотом без сцены, — только с items.json source_hotspot «<комната>.<хотспот>»; use.restores возвращает
+     ранее выданный и израсходованный предмет; выбор с предметом в руке (item_use.choice, варианты consumes_item /
+     requires); крупный план «бумаги» (view.pictures / view.photos / view.papers); текст при первом входе (on_enter: text, once_flag);
+     сцена N01 и ключ заголовка контрольного сохранения (scenes checkpoint.title).
 
 Код 0 — ошибок нет. Запуск: python3 tools/validate_rooms.py [--quiet]
 """
@@ -151,6 +156,8 @@ for rid in in_scope:
 # 1. локации сцен в объёме вехи
 scope_scenes = [s for s in scenes.values() if s["id"].startswith(("M0", "V0")) and int(s["id"][1:]) <= 8] + [scenes["Q04"]]
 scope_scenes = [s for s in scope_scenes if s["id"] in ("M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "V01", "V02", "V03", "Q04")]
+if "N01" in scenes:
+    scope_scenes.append(scenes["N01"])   # «Ночь у печи» — конец дня первого (блок 1, 22.10)
 for s in scope_scenes:
     for loc in s["locations"]:
         if loc not in rooms:
@@ -190,8 +197,12 @@ def walk_texts(ctx: str, obj) -> None:
         for k, v in obj.items():
             if k in ("label", "text", "look", "closed_text", "fail_text", "before_text", "after_text", "prompt",
                      "title", "intro", "check_label", "close_label", "error_text", "success_text", "complete_text",
-                     "drawing_label", "error_hint"):
-                check_text(f"{ctx}.{k}", v)
+                     "drawing_label", "error_hint", "text_done"):
+                if isinstance(v, list):   # use.text — несколько ключей по очереди (ярлык колокола, затем мысль Агаты)
+                    for i, vv in enumerate(v):
+                        check_text(f"{ctx}.{k}[{i}]", vv)
+                else:
+                    check_text(f"{ctx}.{k}", v)
             walk_texts(f"{ctx}.{k}", v)
     elif isinstance(obj, list):
         for i, v in enumerate(obj):
@@ -455,7 +466,16 @@ for rid, room in rooms.items():
             warn(f"{lctx}: scale_reason при scale 1 — лишнее поле")
         if sc <= 0:
             err(f"{lctx}: scale {sc} ≤ 0")
-        if "image" not in l:
+        if "image" not in l and "text" in l:
+            # заглушка до арта: надпись шрифтом игры (O1: мелом на доске «Мама, я иду» / «Илюша…», блок 1)
+            r_ = l.get("rect", [])
+            if len(r_) != 4 or r_[2] <= 0 or r_[3] <= 0:
+                err(f"{lctx}: текстовый слой без rect [x, y, w, h]")
+            if not str(l["text"]).startswith("@"):
+                err(f"{lctx}: текст слоя — ключ @… из data/story/text")
+            if not str(l.get("_stub", "")).strip():
+                warn(f"{lctx}: текстовый слой без _stub — укажите, какой рисунок он заменяет (заявка в assets/manifest.json)")
+        elif "image" not in l:
             err(f"{lctx}: нет image")
         else:
             check_res_path(lctx + ".image", l["image"])
@@ -800,6 +820,25 @@ for rid, room in rooms.items():
             check_items(actx + ".requires", req.get("items"))
             check_flags(actx + ".sets", act.get("sets"))
             check_items(actx + ".gives", act.get("gives"))
+            # restores: вернуть в сумку ранее выданный и оставленный предмет (варежка со ступени O2) — не новая выдача
+            for it in act.get("restores", []) or []:
+                check_items(actx + ".restores", [it])
+                if it in items and not items[it].get("consumed"):
+                    err(f"{actx}: restores {it} — предмет не расходуется (consumed: false), возвращать нечего")
+                if it in items and not items[it].get("inventory"):
+                    err(f"{actx}: restores {it} — не инвентарный предмет")
+            ch_ = act.get("choice")
+            if ch_:
+                check_flags(actx + ".choice.requires", ch_.get("requires", {}).get("flags"))
+                for o in ch_.get("options", []):
+                    if "sets" not in o or "id" not in o:
+                        err(f"{actx}.choice: вариант без id/sets")
+                    check_flags(f"{actx}.choice.{o.get('id')}.requires", o.get("requires", {}).get("flags"))
+                    check_items(f"{actx}.choice.{o.get('id')}.requires", o.get("requires", {}).get("items"))
+                    if o.get("consumes_item"):
+                        it_used = actx.rsplit("[", 1)[-1].rstrip("]") if "item_use[" in actx else ""
+                        if it_used in items and not items[it_used].get("consumed"):
+                            err(f"{actx}.choice.{o.get('id')}: расходует предмет {it_used}, а в items.json consumed: false")
             check_items(actx + ".consumes", act.get("consumes") if isinstance(act.get("consumes"), list) else None)
             if act.get("consumes") is True:
                 it_used = actx.rsplit("[", 1)[-1].rstrip("]") if "item_use[" in actx else ""
@@ -827,7 +866,17 @@ for rid, room in rooms.items():
                         err(f"{actx}: предмет {it} не инвентарный, его нельзя взять хотспотом")
             else:
                 for it in act.get("gives", []) or []:
-                    err(f"{actx}: выдача предмета {it} без указания сцены")
+                    src_hs = f"{rid}.{h.get('id')}"
+                    if it in items and items[it].get("source_hotspot") == src_hs:
+                        # предмет берут хотспотом без сцены (скоба в H2 — после плана из школы): только с requires
+                        if not items[it].get("inventory", False):
+                            err(f"{actx}: предмет {it} не инвентарный, его нельзя взять хотспотом")
+                        if not (act.get("requires") or {}).get("flags") and not (act.get("requires") or {}).get("items"):
+                            warn(f"{actx}: {it} берётся без условий — тогда его выдаёт сцена (source_scene), а не хотспот")
+                        if act.get("once_flag") != "has_" + it:
+                            err(f"{actx}: взять {it} — once_flag должен быть has_{it} (второй раз не выдаётся)")
+                    else:
+                        err(f"{actx}: выдача предмета {it} без указания сцены (или items.json source_hotspot \"{src_hs}\")")
 
         if "use" in h:
             check_action(hctx + ".use", h["use"], h["use"].get("scene"))
@@ -866,6 +915,34 @@ for rid, room in rooms.items():
                 check_match_marks_mouse(hctx + ".puzzle", pz)
         if "view" in h:
             check_view(hctx + ".view", h["view"])
+            check_flags(hctx + ".view.unless", h["view"].get("unless"))
+            check_flags(hctx + ".view.if", h["view"].get("if"))
+            for i_, ph_ in enumerate(h["view"].get("photos", []) or []):
+                check_res_path(f"{hctx}.view.photos[{i_}].image", ph_.get("image", ""))
+                size_ = png_size(ph_.get("image", ""))
+                r_ = ph_.get("region", [])
+                if len(r_) != 4 or r_[2] <= 0 or r_[3] <= 0:
+                    err(f"{hctx}.view.photos[{i_}].region: нужно [x, y, w, h]")
+                elif size_ and (r_[0] < 0 or r_[1] < 0 or r_[0] + r_[2] > size_[0] or r_[1] + r_[3] > size_[1]):
+                    err(f"{hctx}.view.photos[{i_}].region {r_} вне картинки {size_}")
+            for i_, pi_ in enumerate(h["view"].get("pictures", []) or []):
+                check_res_path(f"{hctx}.view.pictures[{i_}].image", pi_.get("image", ""))
+                if len(pi_.get("rect", [])) != 4 or pi_["rect"][2] <= 0:
+                    err(f"{hctx}.view.pictures[{i_}]: rect [x, y, w, h(0 — по пропорции)]")
+            for i_, pa_ in enumerate(h["view"].get("papers", []) or []):
+                r_ = pa_.get("rect", [])
+                if len(r_) != 4 or r_[2] <= 0 or r_[3] <= 0:
+                    err(f"{hctx}.view.papers[{i_}]: rect [x, y, w, h]")
+                elif r_[0] < 0 or r_[1] < 80 or r_[0] + r_[2] > 1920 or r_[1] + r_[3] > 1080:
+                    err(f"{hctx}.view.papers[{i_}]: лист {r_} вне кадра или под верхней панелью")
+
+    # текст при первом входе (on_enter): ключ текста и флаг «один раз» (иначе повторится после загрузки)
+    for i_, oe in enumerate(room.get("on_enter", []) or []):
+        if not oe.get("once_flag"):
+            err(f"{ctx}.on_enter[{i_}]: без once_flag — текст повторится при каждом входе и после загрузки")
+        else:
+            check_flags(f"{ctx}.on_enter[{i_}].once_flag", [oe["once_flag"]])
+        check_flags(f"{ctx}.on_enter[{i_}].if", oe.get("if"))
 
     # сцены комнаты
     for sid, spec in room.get("scenes", {}).items():
@@ -917,7 +994,7 @@ for rid, room in rooms.items():
         for it, act in (h.get("item_use") or {}).items():
             if rid in in_scope:
                 appliers.setdefault(it, []).append(f"{rid}.{h.get('id')}")
-            if act.get("consumes") is True:
+            if act.get("consumes") is True or any(o.get("consumes_item") for o in (act.get("choice") or {}).get("options", [])):
                 consumers.setdefault(it, []).append(f"{rid}.{h.get('id')}")
         for it in h.get("puzzle", {}).get("requires", {}).get("items", []):
             if rid in in_scope:
@@ -937,6 +1014,15 @@ scope_ids = {s["id"] for s in scope_scenes}
 got_in_scope = set()
 for s in scope_scenes:
     got_in_scope |= set(s.get("grants", {}).get("items", []))
+for it, meta in items.items():   # предметы, которые берут хотспотом комнаты вехи (source_hotspot)
+    if str(meta.get("source_hotspot", "")).partition(".")[0] in in_scope:
+        got_in_scope.add(it)
+
+# контрольные сохранения сцен (N01 → «День второй»): заголовок — ключ текста
+for sc in scenes.values():
+    cp = sc.get("checkpoint")
+    if cp:
+        check_text(f"сцена {sc['id']}.checkpoint.title", cp.get("title", ""))
 for it in sorted(got_in_scope):
     meta = items.get(it, {})
     if not meta.get("inventory"):

@@ -108,8 +108,8 @@ func reset() -> void:
 	state_reset.emit()
 
 
-func to_dict() -> Dictionary:
-	return {
+func to_dict(title: String = "") -> Dictionary:
+	var d := {
 		"version": SAVE_VERSION,
 		"saved_at": Time.get_datetime_string_from_system(true),
 		"flags": flags.duplicate(),
@@ -120,6 +120,10 @@ func to_dict() -> Dictionary:
 		"journal_goal_scene": journal_goal_scene,
 		"counters": counters.duplicate(),
 	}
+	# A named save (a scene's checkpoint, e.g. «День второй» after the night by the stove): the menu shows the title.
+	if title != "":
+		d["title"] = title
+	return d
 
 
 func from_dict(data: Dictionary) -> bool:
@@ -151,7 +155,7 @@ static func save_path(slot: String) -> String:
 	return "%s/%s.json" % [SAVE_DIR, slot]
 
 
-func save(slot: String) -> bool:
+func save(slot: String, title: String = "") -> bool:
 	var err := DirAccess.make_dir_recursive_absolute(SAVE_DIR)
 	if err != OK and err != ERR_ALREADY_EXISTS:
 		push_error("GameState: cannot create %s (%s)" % [SAVE_DIR, error_string(err)])
@@ -160,7 +164,7 @@ func save(slot: String) -> bool:
 	if f == null:
 		push_error("GameState: cannot open %s for writing (%s)" % [save_path(slot), error_string(FileAccess.get_open_error())])
 		return false
-	f.store_string(JSON.stringify(to_dict(), "\t"))
+	f.store_string(JSON.stringify(to_dict(title), "\t"))
 	f.close()
 	state_saved.emit(slot)
 	return true
@@ -208,7 +212,7 @@ func save_info(slot: String) -> Dictionary:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return {}
 	return {"saved_at": String(parsed.get("saved_at", "")), "room": String(parsed.get("current_room", "")),
-		"goal": String(parsed.get("journal_goal", ""))}
+		"goal": String(parsed.get("journal_goal", "")), "title": String(parsed.get("title", ""))}
 
 
 func delete_save(slot: String) -> void:

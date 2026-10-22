@@ -306,6 +306,7 @@ func _test_rain() -> void:
 	await _wait(0.2)
 	_check(rain.playing and rain.bus == &"SFX_Inside" and absf(rain.volume_db - float(spec["inside_db"])) < 0.2,
 		"H1: rain inside on SFX_Inside at %.1f dB (bus %s, %.1f dB)" % [float(spec["inside_db"]), rain.bus, rain.volume_db])
+	gs.set_flag("o1_saw_winter", true)   # no first-entry line (rooms/O1.json on_enter): the menu below must open
 	await _enter("O1")
 	await _wait(float(spec["fade_s"]) + 0.3)
 	_check(not rain.playing, "O1 (winter school): no rain")

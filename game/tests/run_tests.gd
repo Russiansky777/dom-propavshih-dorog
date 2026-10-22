@@ -410,7 +410,7 @@ class Bot:
 
 	func wait_idle() -> int:
 		var frames := 0
-		while (player.call("is_walking") or player.call("is_acting") or sr.get("_loop_running")) and frames < MAX_FRAMES:
+		while (player.call("is_walking") or player.call("is_acting") or sr.get("_loop_running") or sr.call("is_staging")) and frames < MAX_FRAMES:
 			await t.physics_frame
 			frames += 1
 		await t.process_frame
@@ -458,8 +458,17 @@ class Bot:
 	func finish(choices: Array = []) -> Array[String]:
 		var seen: Array[String] = []
 		var guard := 0
-		while not sr.current_beat.is_empty() and guard < 200:
+		var staged := false
+		while (not sr.current_beat.is_empty() or sr.call("is_staging")) and guard < 2000:
 			guard += 1
+			if sr.call("is_staging"):
+				# a scene staging (fade, room change, sounds): no beat on screen, the queue waits for it
+				if not staged:
+					seen.append("stage")
+					staged = true
+				await t.process_frame
+				continue
+			staged = false
 			var b: Dictionary = sr.current_beat
 			if b.get("type") == "options":
 				var opts: Array = b.get("options", [])
@@ -501,7 +510,7 @@ func _test_story_data() -> void:
 	sr = root.get_node("StoryRunner")
 	_check(sd.loaded, "StoryData.loaded is false: %s" % str(sd.load_errors))
 	_check(sd.rooms.size() >= 10, "expected ≥10 rooms, got %d" % sd.rooms.size())
-	_check(sd.scenes.has("M01") and sd.scenes.has("M08") and sd.scenes.has("Q04"), "scenes M01/M08/Q04 missing")
+	_check(sd.scenes.has("M01") and sd.scenes.has("M08") and sd.scenes.has("N01") and sd.scenes.has("Q04"), "scenes M01/M08/N01/Q04 missing")
 	_check(sd.start_location == "Z1", "start location should be Z1, got %s" % sd.start_location)
 	_check(not sd.text("@ui.not_built").begins_with("["), "ui texts not resolved")
 	# Every in-scope room has a real background file and every layer/state/hotspot/puzzle image exists.
@@ -510,6 +519,8 @@ func _test_story_data() -> void:
 		var bg_img := String(spec.get("background", {}).get("image", ""))
 		_check(bg_img != "" and ResourceLoader.exists(bg_img), "%s: background.image missing or not found (%s)" % [rid, bg_img])
 		for l in spec.get("layers", []):
+			if not l.has("image") and l.has("text"):
+				continue  # stand-in text layer until its picture is drawn (validate_rooms.py п. 11)
 			var img := String(l.get("image", ""))
 			_check(ResourceLoader.exists(img), "%s: layer %s image not found: %s" % [rid, String(l.get("id", "?")), img])
 		for h in spec.get("hotspots", []):
@@ -582,6 +593,7 @@ func _test_exit_gate() -> void:
 func _test_walkthrough() -> void:
 	gs.reset()
 	await _spawn_main()
+	rm.checkpoint_prefix = "test_%d_" % OS.get_process_id()
 	rm.autosave_enabled = true
 	player.walk_speed = 1600.0
 	player.speed_factor = 6.0
@@ -598,9 +610,13 @@ func _test_walkthrough() -> void:
 	await bot.use("tamara")
 	_check(gs.has_flag("started_M01"), "talking to Tamara should start M01")
 	seen = await bot.finish()
-	_check(seen.size() == 3, "M01 should play 3 lines, got %s" % str(seen))
-	_check(gs.has_flag("done_M01") and gs.has_flag("met_tamara") and gs.has_flag("knows_pier_trace"), "M01 flags missing")
-	_check(gs.has_item("key_house") and gs.has_item("letter_tamara") and gs.has_item("pocket_watch"), "M01 items missing: %s" % str(gs.inventory))
+	_check(seen.size() == sd.scene("M01")["mandatory_lines"].size() and seen.size() == 9, "M01 should play its 9 lines, got %s" % str(seen))
+	_check(gs.has_flag("done_M01") and gs.has_flag("met_tamara") and gs.has_flag("knows_pier_trace") and gs.has_flag("knows_letters_bag")
+		and gs.has_flag("knows_dunya_left") and gs.has_flag("knows_bridge_lost"), "M01 flags missing")
+	_check(gs.has_item("key_house") and gs.has_item("pocket_watch") and gs.has_item("mitten"), "M01 items missing: %s" % str(gs.inventory))
+	# Docs/SCENARIO_FINAL.md M01: Tamara's letter goes to the journal, not the bag.
+	_check(not gs.has_item("letter_tamara") and gs.has_flag("has_letter_tamara"), "the letter is in the journal, not in the bag: %s" % str(gs.inventory))
+	_check(sr.journal_facts().any(func(f): return String(f).contains("опора моста")), "journal knows what Tamara wrote: %s" % str(sr.journal_facts()))
 	_check(gs.journal_goal == sd.scene("M01").get("goal", sd.scene("M01")["result"]), "journal goal should be M01 goal (player text, not the scenario note)")
 	_check(gs.has_save(TEST_AUTOSAVE_SLOT), "autosave after the scene beat")
 
@@ -629,8 +645,12 @@ func _test_walkthrough() -> void:
 	_check(r2exit != null and not r2exit.is_open(), "R1→R2 closed (ferry_verified)")
 	await bot.use("pelageya")
 	seen = await bot.finish()
-	_check(gs.has_flag("done_M02") and gs.has_flag("met_pelageya") and gs.has_flag("knows_journal_target"), "M02 flags missing")
-	_check(seen.size() == 3, "M02 should play 3 lines, got %s" % str(seen))
+	_check(gs.has_flag("done_M02") and gs.has_flag("met_pelageya") and gs.has_flag("knows_no_road") and gs.has_flag("knows_rope_on_plate")
+		and gs.has_flag("knows_sluice_key"), "M02 flags missing")
+	# 10 lines and the shown attempt (a staging: fade, boat knocks its own pier) before Pelageya's «Берег вижу».
+	_check(seen.size() == 11 and seen[2] == "stage", "M02: 2 lines, the staging, 8 lines; got %s" % str(seen))
+	_check(not sr.is_staging() and sr.stage_dim == 0.0, "the staging is over, no dusk left")
+	_check(not r2exit.is_open(), "R1→R2 stays closed after M02 (без плиты лодку вернёт сюда же)")
 
 	# --- M03 in H1 ---
 	_check(await bot.go("Z2"), "R1→Z2")
@@ -662,10 +682,15 @@ func _test_walkthrough() -> void:
 	await bot.use("scarf")
 	seen = await bot.finish()  # the scarf narration, then M03 (deferred trigger) in the same run
 	_check(gs.has_flag("started_M03"), "M03 should start after the third step")
-	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon") and gs.has_flag("house_open"), "M03 flags missing: %s" % str(seen))
-	_check(seen.any(func(x): return x.begins_with("options:")), "M03 context line should be offered as an option: %s" % str(seen))
+	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon") and gs.has_flag("house_open") and gs.has_flag("knows_tikhon_waits"), "M03 flags missing: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Вечер долгий")), "M03: «Вечер долгий»: %s" % str(seen))
 	var tikhon = bot.hotspot("tikhon")
 	_check(tikhon != null and tikhon.visible, "Tikhon should be visible after M03")
+	# Home knowledge by questions (M03): the door from the school — «Нина просила», in his own voice.
+	await bot.use("tikhon")
+	_check(sr.current_beat.get("type", "") == "options" and sr.current_options().size() == 4, "Tikhon: four questions: %s" % str(sr.current_beat))
+	seen = await bot.finish(["door"])
+	_check(gs.has_flag("h1_asked_door") and seen.any(func(x): return x.begins_with("tikhon:") and x.contains("Нина просила")), "Tikhon answers about the door: %s" % str(seen))
 	_check(bot.hotspot("scarf") != null and not bot.hotspot("scarf").visible, "scarf hidden after removal")
 
 	# --- V01 (choices, exclusive) and Q04 ---
@@ -698,18 +723,27 @@ func _test_walkthrough() -> void:
 	await bot.use("hinges_box")
 	await bot.finish()
 	await bot.use("bell")
-	await bot.finish()
+	seen = await bot.finish()
 	_check(gs.has_item("door_hinges") and gs.has_flag("seen_workshop") and gs.has_flag("knows_rule_things_remember") and gs.has_flag("seen_bell"), "M04 workshop steps")
+	_check(seen.size() == 2 and seen[1].contains("Если колокол звенит"), "bell: the tag, then Agata's thought about the school door: %s" % str(seen))
 	_check(bot.hotspot("hinges_box") != null and not bot.hotspot("hinges_box").visible, "hinges box hidden after pickup")
+	# The brace before the plan: look only, not taken (Docs/SCENARIO_FINAL.md, section 9).
+	await bot.use("brace")
+	await bot.finish()
+	_check(not gs.has_item("brace_plate") and not gs.has_flag("has_brace_plate") and bot.hotspot("brace").visible, "the brace stays on the bench before the plan")
+	await bot.use("bundle_nina")
+	await bot.finish()
+	_check(gs.has_flag("h2_bundle_unwrapped") and not gs.has_item("bundle_nina"), "the bundle unwraps and never goes into the bag")
 	_check(not gs.has_flag("done_M04"), "M04 not complete before seeing the door")
 	_check(await bot.go("H1"), "H2→H1")
 	_check(await bot.go("H3"), "H1→H3")
 	await bot.use("school_door")
-	await bot.finish()
-	await process_frame
 	seen = await bot.finish()
+	await process_frame
+	seen += await bot.finish()
 	_check(gs.has_flag("done_M04") and gs.has_flag("seen_school_door") and gs.has_flag("seen_mirror_home"), "M04 should complete in H3 (grants include seen_mirror_home)")
-	_check(gs.has_flag("has_school_door") and gs.has_flag("has_bell"), "non-inventory items become has_ flags")
+	_check(gs.has_flag("has_school_door") and gs.has_flag("has_bell") and gs.has_flag("has_bundle_nina"), "non-inventory items become has_ flags")
+	_check(seen.any(func(x): return x.contains("Доделаю за неё")), "M04: «Доделаю за неё»: %s" % str(seen))
 	_check(not gs.has_item("school_door"), "non-inventory items never enter the inventory")
 	_check(rm.save_game(MID_SLOT), "mid-way save")
 
@@ -761,6 +795,8 @@ func _test_walkthrough() -> void:
 
 	# --- O1: M06, M07, V03, chalk ---
 	_check(await bot.go("O1"), "H3→O1 through the installed door")
+	seen = await bot.finish()
+	_check(gs.has_flag("o1_saw_winter") and seen.any(func(x): return x.contains("Там зима")), "first entry: «Там зима. А у нас ещё октябрь»: %s" % str(seen))
 	await bot.use("sack")
 	await bot.finish()
 	await bot.use("notebooks")
@@ -769,11 +805,19 @@ func _test_walkthrough() -> void:
 	seen = await bot.finish()
 	_check(gs.has_flag("done_M06") and gs.has_flag("seen_class_traces"), "M06 completes after 2 of 3 examines; seen=%s" % str(seen))
 	await bot.use("teacher_drawer")
-	await bot.finish()
-	await process_frame
+	_check(sr.view_open and String(sr.view.get("id", "")) == "teacher_drawer", "the drawer opens its close-up (photo, drawing, plan)")
 	seen = await bot.finish()
-	_check(gs.has_flag("done_M07") and gs.has_flag("knows_trip_14"), "M07; seen=%s" % str(seen))
-	_check(gs.has_item("invoice_chalk") and gs.has_item("photo_school_pier"), "M07 items")
+	await process_frame
+	seen += await bot.finish()
+	sr.close_view()
+	await process_frame
+	_check(gs.has_flag("done_M07") and gs.has_flag("knows_crossing_plan"), "M07; seen=%s" % str(seen))
+	_check(gs.has_item("photo_bridge") and gs.has_item("drawing_ilya") and gs.has_item("plan_crossing"), "M07 items: %s" % str(gs.inventory))
+	_check(seen.any(func(x): return x.contains("Тому, кто придёт через эту дверь")) and seen.any(func(x): return x.contains("Держим мы")), "M07: the plan is read, «Держим мы…»: %s" % str(seen))
+	var inv_before: int = gs.inventory.size()
+	await bot.use("teacher_drawer")
+	await bot.finish()
+	_check(not sr.view_open and gs.inventory.size() == inv_before, "the empty drawer gives nothing twice and opens no close-up")
 	await bot.use("chalk")
 	await bot.finish()
 	_check(gs.has_item("chalk"), "chalk picked up")
@@ -795,31 +839,71 @@ func _test_walkthrough() -> void:
 	var before_loop: Vector2 = player.global_position
 	_check(not (await bot.go("O4")), "gate must loop back, not transition")
 	await bot.wait_idle()
-	await bot.finish()
+	seen = await bot.finish()
+	await process_frame
+	seen += await bot.finish()
 	_check(gs.has_flag("observed_path_loop"), "loop sets observed_path_loop")
 	_check(bot.room_id() == "O2", "still in O2 after the loop")
 	var porch = rm.current_room.get_spawn("porch")
 	_check(porch != null and player.global_position.is_equal_approx(porch.global_position), "player teleported to the porch (was %s, now %s)" % [str(before_loop), str(player.global_position)])
 	_check(gs.has_flag("mitten_placed"), "the mitten stays in place after the loop")
-	_check(not gs.has_flag("done_M08"), "M08 waits for the board")
+	# The board is optional now (Docs/SCENARIO_FINAL.md M08): the loop alone completes M08.
+	_check(gs.has_flag("done_M08") and seen.any(func(x): return x.contains("До деревни — ещё нет")), "M08 completes after the loop: %s" % str(seen))
+	# The mitten can be picked up again — the same one, once.
+	await bot.use("mitten")
+	await bot.finish()
+	_check(gs.has_item("mitten") and gs.has_flag("mitten_taken_back") and not bot.hotspot("mitten").visible, "the mitten is back in the bag")
 
-	# --- back to O1: chalk on the board → M08 ---
+	# --- back to O1: chalk on the board, one of three lines (or none) ---
 	_check(await bot.go("O1"), "O2→O1")
 	await bot.use_item("chalk", "board")
-	await bot.finish()
-	await process_frame
-	seen = await bot.finish()
-	_check(gs.has_flag("wrote_on_board") and gs.has_flag("done_M08"), "M08 completes after the loop + board; seen=%s" % str(seen))
+	var opts: Array = sr.current_options()
+	_check(opts.size() == 4, "the board offers three lines and «не писать» (the drawing is found): %s" % str(opts))
+	seen = await bot.finish(["mama"])
+	_check(gs.has_flag("board_mama") and not gs.has_flag("board_here"), "«Мама, я иду» on the board; seen=%s" % str(seen))
 	_check(not gs.has_item("chalk") and gs.has_flag("has_chalk"), "chalk stays at the board after writing (out of the bag, not given again)")
+	var bm = rm.current_room.get_node_or_null("Layers/board_mama")
+	_check(bm != null and bm.visible, "the chalk line stand-in is on the board")
 
-	# --- home through the school door ---
-	_check(await bot.go("H3"), "O1→H3 back through the door")
-	_check(gs.has_flag("door_school_installed") and gs.has_flag("wrote_on_board") and gs.has_flag("knows_trip_14"), "final flags")
-	for it in ["letter_tamara", "pocket_watch", "invoice_chalk", "photo_school_pier"]:
+	# --- home through the school door → the night by the stove (N01), checkpoint «День второй» ---
+	await bot.go("H3")
+	_check(gs.has_flag("started_N01"), "back home through the school door → the night starts (room=%s)" % bot.room_id())
+	seen = await bot.finish()
+	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "N01 (night by the stove) done: %s" % str(seen))
+	# (the first staging may already be over inside bot.go — its wait_idle waits for stagings too)
+	var night_lines: Array = seen.filter(func(x): return x != "stage")
+	_check(night_lines.size() == 3 and night_lines[0].begins_with("agata:") and night_lines[2].begins_with("tikhon:") and seen.back() == "stage",
+		"N01: 2 lines of Agata, Tikhon's grumble, morning staging: %s" % str(seen))
+	_check(bot.room_id() == "H1", "the night moves Agata to the stove (H1), room=%s" % bot.room_id())
+	_check(sr.stage_dim == 0.0 and not sr.is_staging(), "morning: no dusk left")
+	var cp_slot: String = rm.checkpoint_prefix + "day2"
+	_check(gs.has_save(cp_slot) and String(gs.save_info(cp_slot).get("title", "")) == "День второй", "checkpoint «День второй» saved: %s" % str(gs.save_info(cp_slot)))
+	_check(gs.journal_goal == String(sd.scene("N01")["goal"]), "journal goal of day two: %s" % gs.journal_goal)
+	_check(await bot.go("H3"), "H1→H3 again")
+	await bot.finish()
+	_check(not sr.is_staging() and sr.current_beat.is_empty() and bot.room_id() == "H3", "the night never replays")
+	_check(rm.load_game(cp_slot), "load «День второй»")
+	await process_frame
+	await process_frame
+	_check(bot.room_id() == "H1" and not sr.is_staging() and sr.current_beat.is_empty() and gs.has_flag("done_N01"), "after loading «День второй»: morning in H1, nothing replays")
+
+	# --- day two morning: the brace can be taken now (the plan says where it is) ---
+	_check(await bot.go("H2"), "H1→H2")
+	await bot.use("brace")
+	await bot.finish()
+	_check(gs.has_item("brace_plate") and not bot.hotspot("brace").visible, "the brace is taken after the plan")
+	_check(rm.save_game(MID_SLOT), "save with the brace")
+	_check(rm.load_game(MID_SLOT), "load with the brace")
+	await process_frame
+	_check(gs.inventory.count("brace_plate") == 1 and not bot.hotspot("brace").visible, "after a load the brace is in the bag once, the bench empty")
+	gs.delete_save(cp_slot)
+
+	_check(gs.has_flag("door_school_installed") and gs.has_flag("board_mama") and gs.has_flag("knows_crossing_plan"), "final flags")
+	for it in ["pocket_watch", "photo_bridge", "drawing_ilya", "plan_crossing", "brace_plate", "mitten"]:
 		_check(gs.has_item(it), "inventory should hold %s" % it)
-	for it in ["door_hinges", "key_house", "chalk", "mitten"]:
-		_check(not gs.has_item(it), "%s was applied and must stay out of the bag" % it)
-	for sid in ["M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "V01", "V02", "V03", "Q04"]:
+	for it in ["door_hinges", "key_house", "chalk", "letter_tamara"]:
+		_check(not gs.has_item(it), "%s must stay out of the bag" % it)
+	for sid in ["M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "N01", "V01", "V02", "V03", "Q04"]:
 		_check(gs.has_flag("done_" + sid), "scene %s not done" % sid)
 	_check(bot.log.is_empty(), "bot log: %s" % str(bot.log))
 	Engine.time_scale = 1.0

@@ -60,6 +60,8 @@ var journal_facts_label: RichTextLabel
 var menu_panel: PanelContainer
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
 var fade: ColorRect
+var stage_overlay: ColorRect     # scene staging (StoryRunner.stage_fade): black between shots, dusk under lines
+var _stage_tween: Tween = null
 var hover_label: Label
 var map_view: ZarechyeMap       # the Zarechye plan up close (hotspot panel / journal «План»)
 var journal_plan_button: Button
@@ -97,6 +99,7 @@ func _ready() -> void:
 	StoryRunner.item_selection_changed.connect(func(_i): _render_inventory())
 	StoryRunner.item_received.connect(_on_item_received)
 	StoryRunner.loop_transition.connect(_on_loop_transition)
+	StoryRunner.stage_fade.connect(_on_stage_fade)
 	StoryRunner.hint_revealed.connect(_on_hint_revealed)
 	GameState.inventory_changed.connect(_render_inventory)
 	GameState.state_reset.connect(func(): bag.cancel_flights())
@@ -192,6 +195,16 @@ func _build() -> void:
 	hint_line.theme_type_variation = &"HintLabel"
 	hint_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(hint_line)
+
+	# Scene staging overlay: over the room, the top bar and the hint line, under the modal catcher and the dialogue box —
+	# the lines of a night scene read on top of the dusk (a click anywhere still advances them); black while a staging changes the shot. Holds clicks while staging.
+	stage_overlay = ColorRect.new()
+	stage_overlay.name = "StageOverlay"
+	stage_overlay.color = Color(0.02, 0.02, 0.035, 0.0)
+	stage_overlay.position = Vector2.ZERO
+	stage_overlay.size = Vector2(1920, 1080)
+	stage_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(stage_overlay)
 
 	# Modal catcher (dialogue / panels)
 	modal = Control.new()
@@ -332,6 +345,30 @@ func _build() -> void:
 		lb.pressed.connect(_on_load_slot.bind(slot))
 		row.add_child(lb)
 		slot_rows[slot] = {"info": info, "save": sb, "load": lb}
+	# Checkpoint saves of scenes (scenes data `checkpoint`: «День второй» after the night by the stove): a row
+	# with the title and «Загрузить» only, shown once the save exists.
+	for cp in StoryData.checkpoints():
+		var slot := String(cp["slot"])
+		var row := HBoxContainer.new()
+		row.name = "Checkpoint_" + slot
+		row.add_theme_constant_override("separation", 12)
+		mv.add_child(row)
+		var name_l := Label.new()
+		name_l.text = StoryData.text(String(cp.get("title", slot)))
+		name_l.custom_minimum_size = Vector2(120, 0)
+		name_l.theme_type_variation = &"SlotNameLabel"
+		row.add_child(name_l)
+		var info := Label.new()
+		info.custom_minimum_size = Vector2(400, 0)
+		info.theme_type_variation = &"SmallLabel"
+		info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(info)
+		var lb := _button(StoryData.text("@ui.load"), 150)
+		lb.name = "Load" + slot
+		lb.pressed.connect(_on_load_slot.bind(slot))
+		row.add_child(lb)
+		slot_rows[slot] = {"info": info, "save": null, "load": lb, "row": row, "checkpoint": true}
 	# Music volume: a setting (user://settings.cfg), not part of a save slot.
 	var music_row := HBoxContainer.new()
 	music_row.add_theme_constant_override("separation", 12)
@@ -766,9 +803,13 @@ func _refresh_slots() -> void:
 		else:
 			label.text = "%s · %s" % [String(info.get("room", "")), String(info.get("saved_at", "")).replace("T", " ")]
 		(slot_rows[slot]["load"] as Button).disabled = info.is_empty()
+		if slot_rows[slot].has("row"):
+			(slot_rows[slot]["row"] as Control).visible = not info.is_empty()
 
 
 func _on_save_slot(slot: String) -> void:
+	if slot_rows.has(slot) and bool(slot_rows[slot].get("checkpoint", false)):
+		return   # a checkpoint is written by its scene only
 	if RoomManager.save_game(slot):
 		GameState.show_hint(StoryData.text("@ui.saved", {"slot": slot}))
 	_refresh_slots()
@@ -828,6 +869,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(_delta: float) -> void:
 	hint_line.visible = not map_view.visible
+	# Clicks are held while a staging plays (black or fading); the dusk under the lines lets them through.
+	stage_overlay.mouse_filter = Control.MOUSE_FILTER_STOP if StoryRunner.is_staging() else Control.MOUSE_FILTER_IGNORE
 	if StoryRunner.selected_item != "":
 		_update_cursor_item()
 		if modal.visible or map_view.visible:
@@ -1015,6 +1058,23 @@ func hint_panel_probe() -> Dictionary:
 	return {"visible": true, "title": hint_title.text, "text": hint_text.text, "tip": hint_tip.text,
 		"text_px": hint_text.get_theme_font_size("font_size"), "tip_px": hint_tip.get_theme_font_size("font_size"),
 		"rect": [r.position.x, r.position.y, r.size.x, r.size.y]}
+
+
+# --- Staging overlay (StoryRunner.stage_fade) ------------------------------------
+
+func _on_stage_fade(alpha: float, seconds: float) -> void:
+	if _stage_tween != null and _stage_tween.is_valid():
+		_stage_tween.kill()
+	if seconds <= 0.0:
+		stage_overlay.color.a = alpha
+		return
+	_stage_tween = create_tween()
+	_stage_tween.tween_property(stage_overlay, "color:a", alpha, seconds)
+
+
+## Probe: the staging overlay level (0 clear … 1 black) and whether a staging is playing.
+func stage_probe() -> Dictionary:
+	return {"alpha": stage_overlay.color.a, "staging": StoryRunner.is_staging(), "dim": StoryRunner.stage_dim}
 
 
 # --- Fade (loop transition) -----------------------------------------------------

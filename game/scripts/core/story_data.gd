@@ -211,6 +211,16 @@ func scene_trigger_rooms(scene_id: String) -> Array[String]:
 	return out
 
 
+## Checkpoint saves of scenes in story order: [{scene, slot, title}] (scenes data `checkpoint`; N01 → «День второй»).
+func checkpoints() -> Array:
+	var out: Array = []
+	for id in scene_order:
+		var cp: Dictionary = scenes[id].get("checkpoint", {})
+		if not cp.is_empty() and String(cp.get("slot", "")) != "":
+			out.append({"scene": id, "slot": String(cp["slot"]), "title": String(cp.get("title", ""))})
+	return out
+
+
 func item(item_id: String) -> Dictionary:
 	return items.get(item_id, {})
 

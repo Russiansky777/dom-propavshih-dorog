@@ -465,6 +465,116 @@
         "by": "ChatGPT imagegen, пакет Brief_v3",
         "note": "см. assets/incoming/_meta_v3/START_HERE.md"
       }
+    },
+    {
+      "id": "O1_closeup_bridge_photo",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "1 (день первый, 22.10)",
+      "spec": "Крупный план: старая выцветшая фотография в бумажной рамке — деревянные пролёты на каменных опорах через пруд; канат-поручень крепится к железной плите с кольцом на ближней опоре; у берега лодка Пелагеи (Docs/SCENARIO_FINAL.md, M07). 1672×941 или сам снимок на прозрачном",
+      "files": [
+        "incoming/closeup_bridge_photo.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 1",
+      "owner": "ChatGPT + Директор",
+      "use": "data/story/rooms/O1.json → teacher_drawer.view.pictures[0]; до готовности — рисунок иконки bridge_photo крупно (game/assets/closeups/bridge_photo.png, tools/make_closeup_stubs.py)"
+    },
+    {
+      "id": "O1_closeup_ilya_drawing",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "1 (день первый, 22.10)",
+      "spec": "Крупный план: детский рисунок карандашом на тетрадном листе (мальчик лет десяти) — мост и лодка, у лодки труба с дымом («Илюша так лодки рисовал — с дымом»)",
+      "files": [
+        "incoming/closeup_ilya_drawing.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 2",
+      "owner": "ChatGPT + Директор",
+      "use": "data/story/rooms/O1.json → teacher_drawer.view.pictures[1]; до готовности — рисунок иконки ilya_drawing крупно (game/assets/closeups/ilya_drawing.png)"
+    },
+    {
+      "id": "O1_closeup_plan",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "1 (день первый, 22.10)",
+      "spec": "Крупный план: пожелтевший лист плана переправы, правленный много раз разными чернилами — схема пруда с опорами, линия каната от кольца к кольцу, стрелки, зачёркивания; место под 6–7 строк текста пустое (текст «Тому, кто придёт через эту дверь…» накладывает игра, M07 дословно)",
+      "files": [
+        "incoming/closeup_plan.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 3",
+      "owner": "ChatGPT + Директор",
+      "use": "data/story/rooms/O1.json → teacher_drawer.view.papers[0] (подложка листа; текст — ключ O1.teacher_drawer.paper_plan); до готовности — лист цветом и текстом шрифтом игры"
+    },
+    {
+      "id": "H2_bundle_nina",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "1 (день первый, 22.10)",
+      "spec": "Слои к H2_bg.png (1672×941, в координатах фона): свёрток «Нина. Горница» — мамино зеркало в тряпице на левом краю большого верстака переднего плана, бирка без текста; второе состояние — развёрнутое зеркало в разошедшейся раме на том же месте (мутное стекло)",
+      "files": [
+        "incoming/H2_state_bundle.png",
+        "incoming/H2_state_nina_mirror.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 4",
+      "owner": "ChatGPT + Директор",
+      "use": "data/story/rooms/H2.json → хотспот bundle_nina (rect 930,655,230,95 экрана 1920×1080; второй слой — по флагу h2_bundle_unwrapped); до готовности — хотспот без рисунка"
+    },
+    {
+      "id": "H2_brace_plate",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "1 (день первый, 22.10)",
+      "spec": "Слой к H2_bg.png (1672×941): кованая железная скоба под трещину плиты у рисунка плиты моста (заказ управы, листок рядом); исчезает, когда Агата её берёт",
+      "files": [
+        "incoming/H2_state_skoba.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 2, п. 4",
+      "owner": "ChatGPT + Директор",
+      "use": "data/story/rooms/H2.json → хотспот brace и слой skoba_stub (unless has_brace_plate); до готовности — иконка skoba_plate ≈60 px на заднем верстаке левее коробки «Петли»"
+    },
+    {
+      "id": "icons_day1_block1",
+      "status": "delivered",
+      "kind": "icons",
+      "block": "1 (день первый, 22.10)",
+      "spec": "Иконки сумки для новых предметов дня первого: фото старого моста, детский рисунок Ильи, план переправы, скоба для плиты",
+      "files": [
+        "icons/bridge_photo.png",
+        "icons/ilya_drawing.png",
+        "icons/crossing_plan.png",
+        "icons/skoba_plate.png"
+      ],
+      "owner": "Claude (Meshy text-to-image, конвейер pipeline/2d)",
+      "delivered": {
+        "date": "2026-10-22",
+        "by": "pipeline/2d Meshy, прогон 39831329225 (коммит 414ab26)"
+      },
+      "use": "data/story/items.json → icon (photo_bridge → bridge_photo, drawing_ilya → ilya_drawing, plan_crossing → crossing_plan, brace_plate → skoba_plate); копия игры — tools/sync_icons.sh"
+    },
+    {
+      "id": "O1_board_variants",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "1 (день первый, 22.10)",
+      "spec": "Два слоя к O1_bg.png (1672×940), той же рукой и мелом, что O1_state_board_written.png («Я была здесь. Агата»), на том же месте доски: «Мама, я иду» и «Илюша, я нашла твой рисунок» (в две строки)",
+      "files": [
+        "incoming/O1_state_board_mama.png",
+        "incoming/O1_state_board_ilya.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "data/story/rooms/O1.json → layers board_mama / board_ilya (по флагам board_mama / board_ilya — выбор надписи M08); до готовности — текст шрифтом игры на доске (текстовые слои)"
+    },
+    {
+      "id": "Z3_shore_stone_day1",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "1 (день первый, 22.10); можно вместе с партией 3",
+      "spec": "Z3_bg.png: на береговом камне справа нарисована железная плита с заклёпками над водой. По финальному сценарию в день первый плита опоры моста под водой (видна только верхушка опоры), над водой она появляется во второй день (Z3_state_water_low, партия 3). Нужен камень без плиты (мох, мокрый камень) — слой поверх фона в координатах 1672×941",
+      "files": [
+        "incoming/Z3_state_stone_no_plate.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "data/story/rooms/Z3.json → хотспот plate (сейчас «Табличка на береговом камне»: «Плита с Дуниного листа не здесь — она на опоре, под водой»)"
     }
   ]
 }

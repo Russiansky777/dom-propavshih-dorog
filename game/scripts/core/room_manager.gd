@@ -13,6 +13,9 @@ const SCENE_DIRS: Array[String] = ["res://scenes/rooms", "res://scenes/probe"]
 
 var autosave_slot: String = "auto"
 var autosave_enabled: bool = true
+## Prefix of scene checkpoint slots (scenes data `checkpoint.slot`, «day2»): tests set their own so a run never
+## overwrites the player's «День второй» in the shared user://saves.
+var checkpoint_prefix: String = ""
 
 var room_container: Node = null
 var player: Node2D = null
@@ -115,13 +118,13 @@ func autosave() -> bool:
 	return save_game(autosave_slot)
 
 
-## Saves the running game (player position is captured live).
-func save_game(slot: String) -> bool:
+## Saves the running game (player position is captured live). `title` names a checkpoint save in the menu.
+func save_game(slot: String, title: String = "") -> bool:
 	if player != null:
 		GameState.player_pos = player.global_position
 	if current_room != null:
 		GameState.current_room = current_room.room_id
-	return GameState.save(slot)
+	return GameState.save(slot, title)
 
 
 ## Loads a slot and rebuilds the scene from it. Returns false when the slot is missing.

@@ -105,7 +105,7 @@ func _run() -> void:
 	var base := ["done_M01", "met_tamara", "knows_pier_trace"]
 
 	# Z1: corners of the counter.
-	_state(base, ["key_house", "letter_tamara", "pocket_watch", "mitten"])
+	_state(base, ["key_house", "pocket_watch", "mitten"])
 	await _go("Z1", "default", Vector2(250, 900))
 	await _walk(Vector2(600, 880))      # click into the left front corner
 	_hover_off()
@@ -118,7 +118,7 @@ func _run() -> void:
 	await _shot("Z1_corner_right_front")
 
 	# Z2: locked door, then the key.
-	_state(base, ["key_house", "letter_tamara", "pocket_watch", "mitten"])
+	_state(base, ["key_house", "pocket_watch", "mitten"])
 	await _go("Z2", "default", Vector2(1000, 700))
 	var e: Node = rm.current_room.get_node("Exits/to_H1")
 	sr.use_exit(e)
@@ -137,7 +137,7 @@ func _run() -> void:
 	# H1: V01 before and after.
 	var h1 := base + ["done_M02", "house_unlocked", "done_M03", "started_M03", "met_tikhon", "house_open", "stove_lit",
 		"h1_shutter_open", "h1_scarf_removed"]
-	_state(h1, ["letter_tamara", "pocket_watch", "mitten"])
+	_state(h1, ["pocket_watch", "mitten"])
 	await _go("H1", "default", Vector2(1250, 960))
 	_hover_off()
 	await _shot("H1_before_choice")
@@ -157,7 +157,7 @@ func _run() -> void:
 
 	# O1: the chalk on the desk, the mark.
 	var o1 := h1 + ["done_M04", "seen_school_door", "done_M05", "door_school_installed", "done_M06", "seen_class_traces"]
-	_state(o1, ["letter_tamara", "pocket_watch", "invoice_chalk", "photo_school_pier"])
+	_state(o1, ["pocket_watch", "photo_bridge", "drawing_ilya", "plan_crossing"])
 	await _go("O1", "default", Vector2(1100, 790))
 	_hover_off()
 	await _shot("O1_chalk_on_desk")

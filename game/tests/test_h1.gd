@@ -277,6 +277,16 @@ func _test_tikhon_start() -> void:
 		"sockets in both places (stove side, wall by the table), no shelf before Q04")
 
 
+## Tikhon's M03 lines as the bot sees them (text cut like _finish does).
+func _m03_lines(speaker: String) -> Array:
+	var sd: Node = root.get_node("StoryData")
+	var out: Array = []
+	for l in sd.scene("M03")["mandatory_lines"]:
+		if String(l["speaker"]) == speaker:
+			out.append(String(l["text"]))
+	return out
+
+
 func _test_m03_once() -> void:
 	var room: Node = await _enter([])
 	var t := _puppet(room)
@@ -289,15 +299,18 @@ func _test_m03_once() -> void:
 	var seen := await _finish(["ask"])
 	var tikhon_lines := seen.filter(func(x): return String(x).begins_with("tikhon:"))
 	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon"), "M03 done after the scarf: %s" % str(seen))
-	_check(tikhon_lines.size() == 3, "Tikhon's three M03 lines play once: %s" % str(tikhon_lines))
+	var m03_tikhon: Array = _m03_lines("tikhon")
+	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 5, "Tikhon's five M03 lines (Docs/SCENARIO_FINAL.md M03) play once: %s" % str(tikhon_lines))
+	_check(seen.any(func(x): return String(x).contains("Вечер долгий")), "«Вечер долгий» in M03")
 	_check(seen.any(func(x): return String(x).contains("Ты здесь один?")) and seen.any(func(x): return String(x).contains("Печь тоже здесь.")), "«Ты здесь один?» / «Печь тоже здесь.» in M03")
 	_check(t != null and t.place_index == spec["place"]["H1"].size() - 1, "after M03 he is still in the armchair (place %d)" % (t.place_index if t else -9))
 	var inv_after: int = gs.inventory.size()
 	_check(inv_after == inv_before, "M03 grants no items (inventory %d → %d)" % [inv_before, inv_after])
-	# Clicking Tikhon now: his look line, not M03 again.
+	# Clicking Tikhon now: his questions (home knowledge, M03 «по вопросам»), not M03 again.
 	await _click(_hotspot(room, "tikhon").global_position)
-	var again := await _finish()
-	_check(not again.any(func(x): return String(x).begins_with("tikhon:")), "a click on Tikhon after M03 does not replay M03: %s" % str(again))
+	var again := await _finish(["door"])
+	_check(not again.any(func(x): return m03_tikhon.has(String(x).trim_prefix("tikhon:"))), "a click on Tikhon after M03 does not replay M03: %s" % str(again))
+	_check(again.has("options:door") and again.any(func(x): return String(x).contains("Нина просила")), "a click on Tikhon after M03 opens his questions: %s" % str(again))
 	# Save → new game → load: no scene replays, nothing doubles, he is in the armchair.
 	_check(rm.save_game(SLOT), "save in H1 after M03")
 	var inv: Array = gs.inventory.duplicate()

@@ -222,7 +222,11 @@ func _test_manifest() -> void:
 			var id := String(lid)
 			var key := String(e.get("key", id))
 			var want_sp: String = id.get_slice(":", 0) if id.contains(":") else vd.narr_speaker
-			_check(sd.texts.has(key), "%s: no such key in data/story/text" % key)
+			if not sd.texts.has(key):
+				# the key was removed from the texts (block 1, 22.10: item.invoice_chalk, item.photo_school_pier) — never
+				# shown, so never played; the pipeline marks it stale (validate_voice.py: a warning, not an error)
+				outdated.append(id)
+				continue
 			_check(vd.is_narration_key(key), "%s: the voice.json rules do not voice this key" % key)
 			_check(String(e.get("speaker", "")) == want_sp, "%s: speaker %s, expected %s" % [id, e.get("speaker"), want_sp])
 			var t: String = sd.text("@" + key)
@@ -240,11 +244,13 @@ func _test_manifest() -> void:
 		_check(not ln.is_empty(), "%s: no such scene line" % lid)
 		if ln.is_empty():
 			continue
-		_check(String(ln.get("speaker", "")) == String(e.get("speaker", "")), "%s: speaker %s vs manifest %s" % [lid, ln.get("speaker"), e.get("speaker")])
+		# A text edit (or lines re-ordered by it — the line id is <scene>_<index>) keeps the game silent on that
+		# line and must not fail the build; the speaker is checked for recordings that still match their text.
 		if vd.line_status(String(lid), String(ln["text"])) == "text_changed":
 			outdated.append(String(lid))
 			_check(vd.stream_for(String(lid), String(ln["text"])) == null, "%s: outdated → silent" % lid)
 			continue
+		_check(String(ln.get("speaker", "")) == String(e.get("speaker", "")), "%s: speaker %s vs manifest %s" % [lid, ln.get("speaker"), e.get("speaker")])
 		_check(vd.line_status(String(lid), String(ln["text"])) == "ok", "%s: status %s" % [lid, vd.line_status(String(lid), String(ln["text"]))])
 		var s: AudioStream = vd.stream_for(String(lid), String(ln["text"]))
 		_check(s != null and s.get_length() > 0.2, "%s: stream %s does not load or is too short" % [lid, vd.file_path(String(lid))])
@@ -265,14 +271,15 @@ func _test_plays() -> void:
 	_check(sr.start_scene("M01"), "M01 must start in Z1")
 	await _frames(2)
 	_check(String(sr.current_beat.get("line_id", "")) == "M01_0", "first beat line_id M01_0, got '%s'" % sr.current_beat.get("line_id", ""))
-	_check(vd.is_playing() and vd.current_line == "M01_0" and vd.current_mode == "plain", "M01_0 (Agata) must play: %s" % [vd.state()])
+	# M01 by the final scenario (22.10): Tamara recognises Agata first (M01_0), Agata answers (M01_1).
+	_check(vd.is_playing() and vd.current_line == "M01_0" and vd.current_mode == "plain" and vd.current_speaker == "tamara", "M01_0 (Tamara) must play: %s" % [vd.state()])
 	_check(String(_voice_player().bus) == "Voice", "voice on the Voice bus")
 	sr.advance()
 	await _frames(2)
-	_check(vd.is_playing() and vd.current_line == "M01_1" and vd.current_speaker == "tamara", "M01_1 (Tamara) must play: %s" % [vd.state()])
+	_check(vd.is_playing() and vd.current_line == "M01_1" and vd.current_speaker == "agata", "M01_1 (Agata) must play: %s" % [vd.state()])
 	await _wait(1.0)
 	var st: Dictionary = vd.state()
-	_check(st["playing"] and float(st["position"]) > 0.5, "after 1 s Tamara still speaks, position %.2f" % float(st["position"]))
+	_check(st["playing"] and float(st["position"]) > 0.5, "after 1 s Agata still speaks, position %.2f" % float(st["position"]))
 	_check(md.dialogue_active() and absf(md.duck_db_now - md.duck_dialogue_db) < 0.05,
 		"music ducked while the voice sounds: %.2f dB (expected %.1f)" % [md.duck_db_now, md.duck_dialogue_db])
 	await _finish_dialogue()
@@ -285,7 +292,7 @@ func _test_cut() -> void:
 		_ensure_voice(lid)
 	sr.start_scene("M01")
 	await _frames(2)
-	sr.advance()   # → M01_1 (Tamara, the long one)
+	sr.advance()   # → M01_1
 	await _frames(2)
 	await _wait(0.5)
 	_check(vd.current_line == "M01_1" and vd.is_playing(), "M01_1 playing before the click")
@@ -327,6 +334,10 @@ func _test_cut() -> void:
 
 
 func _test_subtitles_only() -> void:
+	# Test tones of the earlier tests (lines re-recorded after a text edit have none) must not answer for the
+	# recordings here: only the manifest decides below.
+	for lid in ["M01_0", "M01_1", "M01_2", "M03_0", "M03_1"]:
+		vd.set_test_stream(lid, null)
 	var errors_before: int = vd.config_errors.size()
 	# A line nobody recorded.
 	var r: String = vd.play_line("M99_0", "agata", "Такой реплики нет.")

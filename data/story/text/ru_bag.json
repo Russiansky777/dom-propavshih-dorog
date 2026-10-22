@@ -33,12 +33,23 @@
       "text": "Тётя сложила их отдельно и подписала коробку.",
       "draft": false
     },
-    "item.invoice_chalk": {
-      "text": "Дата, номер рейса — всё записано.",
+    "item.photo_bridge": {
+      "text": "Мост, каким он был: канат держится за плиту.",
       "draft": false
     },
-    "item.photo_school_pier": {
-      "text": "Сваи у воды и дерево на берегу.",
+    "item.drawing_ilya": {
+      "text": "Лодка с дымом — Илюшина рука.",
+      "draft": false,
+      "tags": [
+        "softly"
+      ]
+    },
+    "item.plan_crossing": {
+      "text": "Дальний конец держат они. Ближний — плита у поворота.",
+      "draft": false
+    },
+    "item.brace_plate": {
+      "text": "Тётина скоба под трещину плиты.",
       "draft": false
     },
     "item.chalk": {

@@ -14,7 +14,8 @@ extends SceneTree
 ##   - «мел … на ученический стол, чтобы было видно»: the chalk lies on a pupil's desk (on the desk's opaque
 ##     pixels, above the desks layer, ≥ 30 px long), the hotspot is on it and picks it; the old place on the
 ##     teacher's desk has no chalk (the drawn pieces are patched over) and no hotspot; taken → gone from the
-##     desk; written on the board → out of the bag, and M08 does not give it back.
+##     desk; written on the board → out of the bag, and M08 does not give it back (the board offers what to write
+##     since 22.10 — game/tests/test_day_one.gd covers the three lines and «не писать»).
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -197,7 +198,7 @@ func _choose(h: Node, option: String) -> String:
 # --- Tests -------------------------------------------------------------------------------
 
 func _test_key() -> void:
-	var room: Node = await _enter("Z2", ["done_M01", "met_tamara", "knows_pier_trace"], ["key_house", "letter_tamara", "pocket_watch"])
+	var room: Node = await _enter("Z2", ["done_M01", "met_tamara", "knows_pier_trace"], ["key_house", "pocket_watch"])
 	var e: Node = room.get_node_or_null("Exits/to_H1")
 	_check(e != null and not e.is_open(), "Z2→H1 locked before the key is applied")
 	if e == null:
@@ -208,12 +209,12 @@ func _test_key() -> void:
 	_check(sd.text("@Z2.exit_H1.closed").to_lower().find("ключ") >= 0, "the locked text speaks of the key")
 	await _drain()
 	_check(gs.current_room == "Z2" and gs.has_item("key_house"), "still on the street, the key still in the bag")
-	sr.select_item("letter_tamara")
+	sr.select_item("pocket_watch")
 	sr.use_exit(e)
 	await process_frame
-	_check(String(sr.current_beat.get("text_key", "")) == "ui.item_no_effect", "the letter does not open the door (%s)" % str(sr.current_beat))
+	_check(String(sr.current_beat.get("text_key", "")) == "ui.item_no_effect", "the watch does not open the door (%s)" % str(sr.current_beat))
 	await _drain()
-	_check(gs.has_item("letter_tamara") and not gs.has_flag("house_unlocked"), "nothing changed by the wrong item")
+	_check(gs.has_item("pocket_watch") and not gs.has_flag("house_unlocked"), "nothing changed by the wrong item")
 	sr.select_item("key_house")
 	sr.use_exit(e)
 	await process_frame
@@ -315,7 +316,7 @@ func _test_cups() -> void:
 
 func _o1_flags() -> Array:
 	return ["done_M01", "done_M02", "house_unlocked", "done_M03", "house_open", "done_M04", "done_M05",
-		"door_school_installed", "done_M06", "seen_class_traces"]
+		"door_school_installed", "done_M06", "seen_class_traces", "o1_saw_winter"]
 
 
 func _test_chalk() -> void:
@@ -343,17 +344,22 @@ func _test_chalk() -> void:
 	await _frames(2)
 	_check(gs.has_item("chalk"), "taken")
 	_check(not _visible(room, "chalk_desk") and not h.visible, "taken → gone from the desk")
+	gs.set_flag("done_M07", true)
 	gs.set_flag("observed_path_loop", true)
 	await _frames(2)
 	await _drain()
+	_check(gs.has_flag("done_M08"), "M08 done after the loop (the board is optional, Docs/SCENARIO_FINAL.md M08)")
+	_check(gs.has_item("chalk"), "M08's grant does not duplicate the chalk already taken")
 	sr.select_item("chalk")
 	sr.interact(_hotspot(room, "board"))
+	await process_frame
+	_check(not sr.current_options().is_empty(), "chalk on the board → what to write")
+	sr.choose("here")
 	await process_frame
 	await _drain()
 	await _frames(3)
 	await _drain()
-	_check(gs.has_flag("wrote_on_board"), "written on the board")
-	_check(gs.has_flag("done_M08"), "M08 done (loop + board)")
+	_check(gs.has_flag("board_here") and _visible(room, "board_written"), "written on the board: «Я была здесь. Агата» (the drawn chalk)")
 	_check(not gs.has_item("chalk"), "the chalk stays at the board — M08's grant does not put it back")
 
 
@@ -375,13 +381,15 @@ func _test_bird_mark() -> void:
 
 ## Recorded in one request (pipeline/voice, run 39124518023): the door, the reactions, the photo by the sketch,
 ## the chalk on the desk, the cups on the sill. Each must resolve to a file whose text matches (sha1).
+## (Z1.drawings.photo — the pier photo of 18.10 — is gone with the photo: block 1, 22.10, the bridge photo instead;
+## its new text waits for the Director's text pass before it is recorded.)
 func _test_voice() -> void:
 	var vd: Node = root.get_node_or_null("VoiceDirector")
 	_check(vd != null, "VoiceDirector autoload")
 	if vd == null:
 		return
 	var want := {
-		"Z2.exit_H1.closed": "agata", "Z2.exit_H1.unlock": "narrator", "Z1.drawings.photo": "narrator",
+		"Z2.exit_H1.closed": "agata", "Z2.exit_H1.unlock": "narrator",
 		"H1.photo.react_table": "agata", "H1.photo.react_shelf": "agata", "H1.cups.react_blue": "agata",
 		"H1.cups.react_white": "agata", "H1.cups.look": "narrator", "O1.chalk.use": "narrator", "O1.chalk.look": "narrator",
 	}

@@ -15,8 +15,11 @@ extends SceneTree
 ##     really loaded (not the engine fallback), have Cyrillic, and the dialogue reads at 1280×720.
 ## Exit code 0 only when every check passed.
 
-const E0E1_ITEMS := ["key_house", "letter_tamara", "pocket_watch", "mitten", "door_hinges",
-	"invoice_chalk", "photo_school_pier", "chalk"]
+## Inventory items of day one (Docs/SCENARIO_FINAL.md, 22.10): the letter of Tamara went to the journal; the chalk
+## invoice and the pier photo are replaced by the bridge photo, Ilya's drawing and the plan; the brace is new. Icons
+## by items.json `icon` (bridge_photo, ilya_drawing, crossing_plan, skoba_plate) or by id.
+const E0E1_ITEMS := ["key_house", "pocket_watch", "mitten", "door_hinges",
+	"photo_bridge", "drawing_ilya", "plan_crossing", "brace_plate", "chalk"]
 
 var _results: Array = []
 var _fails: Array[String] = []
@@ -159,23 +162,27 @@ func _test_layout() -> void:
 
 
 func _test_icons() -> void:
-	await _fresh(E0E1_ITEMS)
-	for id in E0E1_ITEMS:
-		_check(ResourceLoader.exists("res://assets/icons/%s.png" % id), "icon file for %s" % id)
-		var s: Control = bag.slot_of(id)
-		_check(s != null and s.icon != null, "pocket of %s shows its icon" % id)
-		if s != null and s.icon != null:
-			_check(s.icon.get_width() >= 128 and s.icon.get_width() <= 256, "%s icon scaled to slot size (%d px)" % [id, s.icon.get_width()])
+	# Day one has more items than pockets on one page (8): check them a page at a time.
+	for page in [E0E1_ITEMS.slice(0, 5), E0E1_ITEMS.slice(5)]:
+		await _fresh(page)
+		for id in page:
+			var icon_file := String(sd.items.get(id, {}).get("icon", id))
+			_check(ResourceLoader.exists("res://assets/icons/%s.png" % icon_file), "icon file for %s (%s.png)" % [id, icon_file])
+			var s: Control = bag.slot_of(id)
+			_check(s != null and s.icon != null, "pocket of %s shows its icon" % id)
+			if s != null and s.icon != null:
+				_check(s.icon.get_width() >= 128 and s.icon.get_width() <= 256, "%s icon scaled to slot size (%d px)" % [id, s.icon.get_width()])
 	# Every inventory item E0–E1 grants (scenes M01–M08) is in the list above.
 	for id in sd.items.keys():
 		var it: Dictionary = sd.items[id]
 		var sc := String(it.get("source_scene", ""))
-		if bool(it.get("inventory", false)) and sc >= "M01" and sc <= "M08":
+		var day_one_room := String(it.get("source_hotspot", "")).get_slice(".", 0) in ["H2", "O1", "Z1"]
+		if bool(it.get("inventory", false)) and ((sc >= "M01" and sc <= "M08") or day_one_room):
 			_check(E0E1_ITEMS.has(id), "E0–E1 item %s missing from the icon list" % id)
 	# An item without an icon (a later episode) → patch with a letter.
 	var no_icon := ""
 	for id in sd.items.keys():
-		if bool(sd.items[id].get("inventory", false)) and not ResourceLoader.exists("res://assets/icons/%s.png" % id):
+		if bool(sd.items[id].get("inventory", false)) and not ResourceLoader.exists("res://assets/icons/%s.png" % String(sd.items[id].get("icon", id))):
 			no_icon = id
 			break
 	if no_icon != "":
@@ -253,7 +260,7 @@ func _test_receive() -> void:
 	await _frames(3)
 	sr.call("_on_state_reset")
 	sounds.clear()
-	for id in ["key_house", "letter_tamara", "pocket_watch"]:
+	for id in ["key_house", "pocket_watch", "mitten"]:
 		sr.grant_item(id)
 	await _frames(1)
 	_check(bag.is_animating(), "icons are flying")
@@ -278,9 +285,9 @@ func _test_receive() -> void:
 	_check(rm.load_game(SLOT), "load")
 	await _frames(2)
 	_check(not bag.is_animating() and sounds.is_empty(), "loading never replays the arrival (%s)" % str(sounds))
-	_check(bag.slot_of("letter_tamara") != null and bag.slot_of("letter_tamara").icon != null, "loaded items in their pockets")
+	_check(bag.slot_of("pocket_watch") != null and bag.slot_of("pocket_watch").icon != null, "loaded items in their pockets")
 	# A flight cut by loading leaves no pocket waiting.
-	sr.grant_item("mitten")
+	sr.grant_item("chalk")
 	await _frames(1)
 	_check(rm.load_game(SLOT), "load mid-flight")
 	await _frames(2)

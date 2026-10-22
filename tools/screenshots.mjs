@@ -156,6 +156,9 @@ async function main() {
     for (let i = 0; i < 60 && idle < 6; i++) {
       const s = await state();
       const key = beatKey(s);
+      // a scene staging (fade between lines: the boat at R1, the night by the stove) — busy with no beat on screen
+      const staging = s.busy && !(s.view && s.view.open) && !(s.puzzle && s.puzzle.open) && !s.player?.walking;
+      if (!key && staging) { await sleep(200); continue; }
       if (!key) { idle += 1; await sleep(150); continue; }
       idle = 0;
       if (s.beat.type === "options") {
@@ -457,8 +460,11 @@ async function main() {
       {
         const s0 = await state();
         const key0 = beatKey(s0);
-        await click("M01: continue to Tamara's line", s0.ui.dialogue_click || { x: 960, y: 780 });
-        await waitFor("Tamara's line", (t) => beatKey(t) !== key0 && t.beat && t.beat.speaker === "tamara", 8000);
+        // since 22.10 Tamara speaks first («Агата? Ты же у меня домой письма отправляла») — no click needed then
+        if (!(s0.beat && s0.beat.speaker === "tamara")) {
+          await click("M01: continue to Tamara's line", s0.ui.dialogue_click || { x: 960, y: 780 });
+          await waitFor("Tamara's line", (t) => beatKey(t) !== key0 && t.beat && t.beat.speaker === "tamara", 8000);
+        }
         await sleep(500);
         const s1 = await state();
         const tam = s1.npcs && s1.npcs.tamara;
@@ -630,12 +636,21 @@ async function main() {
 
     // --- O1 (M06, M07, V03) ---
     if (!(await goExit("O1"))) failures.push("H3→O1 failed");
+    await finishDialogue("first entry: «Там зима. А у нас ещё октябрь»");
     await shot("O1_winter_class");
     await useHotspot("sack");
     await useHotspot("notebooks");
     await waitFor("M06 done", (s) => s.flags.done_M06);
-    await useHotspot("teacher_drawer");
-    await waitFor("M07 done", (s) => s.flags.done_M07 && s.flags.knows_trip_14);
+    await useHotspot("teacher_drawer");  // close-up of the drawer (photo, drawing, plan) under the M07 lines
+    await waitFor("M07 done", (s) => s.flags.done_M07 && s.flags.knows_crossing_plan);
+    {
+      const s = await state();
+      if (s.view && s.view.open) {
+        await shot("O1_drawer_closeup");
+        await click("close-up: Закрыть", s.view.close);
+        await waitFor("drawer close-up closed", (t) => !(t.view && t.view.open), 5000);
+      }
+    }
     await useHotspot("chalk");
     await useHotspot("bird_drawing", ["leave"]);
     await waitFor("V03 done", (s) => s.flags.done_V03);
@@ -650,20 +665,23 @@ async function main() {
       await waitWalk("gate");
       await waitFor("loop observed", (t) => t.flags.observed_path_loop && t.room === "O2", 15000);
       await sleep(900);  // fade-in completes
-      await finishDialogue("loop reaction");
+      await finishDialogue("loop reaction + M08");
     }
+    await waitFor("M08 done (the loop alone)", (s) => s.flags.done_M08, 15000);
     await sleep(500);
     await shot("O2_after_loop");
 
-    // --- O1: chalk on the board → M08 ---
+    // --- O1: chalk on the board — «Мама, я иду» (one of three, or none) ---
     if (!(await goExit("O1"))) failures.push("O2→O1 failed");
-    await useItemOn("chalk", "board");
-    await waitFor("M08 done", (s) => s.flags.wrote_on_board && s.flags.done_M08);
+    await useItemOn("chalk", "board", ["mama"]);
+    await waitFor("board: «Мама, я иду»", (s) => s.flags.board_mama && !s.inventory.includes("chalk"));
     await shot("O1_board_written");
 
-    // --- Home through the school door; journal, hint, menu ---
-    if (!(await goExit("H3"))) failures.push("O1→H3 failed");
-    await shot("H3_back_home");
+    // --- Home through the school door → the night by the stove (N01) → «День второй»; journal, hint, menu ---
+    await goExit("H3", false);
+    await finishDialogue("night by the stove");
+    await waitFor("N01 done (night by the stove)", (s) => s.flags.done_N01 && s.room === "H1" && !s.busy, 60000);
+    await shot("H1_morning_day2");
     await clickUi("JournalButton");
     await waitFor("journal open", (s) => s.ui.journal_open, 5000);
     await sleep(400);
@@ -684,10 +702,10 @@ async function main() {
 
     const fin = await state();
     logLine(`final: room=${fin.room} inventory=${JSON.stringify(fin.inventory)} flags=${Object.keys(fin.flags).filter((k) => fin.flags[k]).join(",")}`);
-    for (const f of ["door_school_installed", "wrote_on_board", "knows_trip_14", "done_M08"]) {
+    for (const f of ["door_school_installed", "board_mama", "knows_crossing_plan", "done_M08", "done_N01"]) {
       if (!fin.flags[f]) failures.push(`final flag ${f} missing`);
     }
-    if (fin.room !== "H3") failures.push(`final room ${fin.room} != H3`);
+    if (fin.room !== "H1") failures.push(`final room ${fin.room} != H1 (morning by the stove)`);
   } catch (e) {
     if (!(e && e.h1done)) {
       failures.push(`exception: ${e.stack || e.message}`);

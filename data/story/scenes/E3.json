@@ -7,7 +7,8 @@
     {
       "id": "M15", "type": "main", "title": "Настоящий адрес",
       "locations": ["Z3"],
-      "requires": {"flags": ["pier_base_reachable", "knows_trip_14"], "items": ["journal_manager", "photo_school_pier"]},
+      "requires": {"flags": ["pier_base_reachable", "knows_crossing_plan"], "items": ["journal_manager", "photo_bridge"]},
+      "_requires_note": "Блок 1 (22.10): накладная на мел и фото пристани убраны из учительского ящика (Docs/SCENARIO_FINAL.md, M07) — минимальная замена для проверок сюжета: knows_trip_14 → knows_crossing_plan (план из школы), photo_school_pier → photo_bridge. Сцену целиком перепишет блок 2 (M15 «Плита и канат»).",
       "grants": {"flags": ["done_M15", "pier_identified"], "items": ["pier_plate_imprint"]},
       "puzzle": {"verb": "match_marks", "solution": "Сравнить схему и фотографию, очистить пластину, отметить два крепления; надпись «Ольховка. Школьная пристань»", "error": "При выборе соседней опоры Агата указывает несовпадающее крепление"},
       "proposed_change": "3.10: выбирать опору по дате фото и отметкам уровня воды (глагол «прочитать место»), а не по совмещению меток.",

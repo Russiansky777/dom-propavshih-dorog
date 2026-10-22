@@ -182,13 +182,20 @@ func _ready() -> void:
 
 # --- Data --------------------------------------------------------------------------
 
+## The item's icon: res://assets/icons/<icon>.png, where <icon> is items.json `icon` (the pipeline's file name,
+## e.g. photo_bridge → bridge_photo) or the item id itself. No file → null (a patch with a letter).
 static func icon_for(item_id: String) -> Texture2D:
 	if _icon_cache.has(item_id):
 		return _icon_cache[item_id]
-	var path := ICON_DIR + item_id + ".png"
+	var path := ICON_DIR + icon_name(item_id) + ".png"
 	var tex: Texture2D = load(path) as Texture2D if ResourceLoader.exists(path) else null
 	_icon_cache[item_id] = tex
 	return tex
+
+
+static func icon_name(item_id: String) -> String:
+	var n := String(StoryData.item(item_id).get("icon", ""))
+	return n if n != "" else item_id
 
 
 static func item_hint(item_id: String) -> String:

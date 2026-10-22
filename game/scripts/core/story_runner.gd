@@ -23,6 +23,13 @@ signal panel_requested(panel_id: String, source: Node)
 ## usual use/look text plays over it (CloseupView); the close-up holds the input until it is closed.
 signal view_opened(spec: Dictionary)
 signal view_closed()
+## Scene staging (scenes data `stage`: a fade with sounds between lines — the boat shown at R1, the night by the
+## stove): the screen overlay goes to `alpha` (1 — black, `dim` — dusk under the lines, 0 — clear) in `seconds`.
+signal stage_fade(alpha: float, seconds: float)
+## A sound of sfx.json `sounds` for a staging (SfxDirector plays it).
+signal stage_sound_requested(sound_id: String)
+## A scene's `checkpoint` save was written (slot, title) — «День второй» after the night by the stove.
+signal checkpoint_saved(slot: String, title: String)
 
 const LOOP_FADE_SECONDS: float = 0.35
 
@@ -35,9 +42,13 @@ var puzzle: Dictionary = {}   # {spec, placed:{slot->piece}, mark:int, errors:in
 var view_open: bool = false
 var view: Dictionary = {}     # the open look-only close-up: the hotspot's `view` spec + "hotspot" id
 
+var stage_dim: float = 0.0   # the overlay level a staging left on screen (dusk at night), 0 — none
+
 var _beats: Array[Dictionary] = []
 var _check_queued: bool = false
 var _loop_running: bool = false
+var _stage_running: bool = false
+var _stage_serial: int = 0   # grows on reset/load: a staging in flight stops at its next await
 
 
 func _ready() -> void:
@@ -49,7 +60,12 @@ func _ready() -> void:
 # --- State queries ----------------------------------------------------------
 
 func is_busy() -> bool:
-	return not current_beat.is_empty() or puzzle_open or view_open or _loop_running
+	return not current_beat.is_empty() or puzzle_open or view_open or _loop_running or _stage_running
+
+
+## A scene staging (fade, room change, sounds) is playing — no beat on screen, input held.
+func is_staging() -> bool:
+	return _stage_running
 
 
 func current_room_id() -> String:
@@ -153,6 +169,8 @@ func _push(beat: Dictionary) -> void:
 
 
 func _next() -> void:
+	if _stage_running:
+		return  # the staging resumes the queue when it is over (a room change mid-staging must not skip lines)
 	while not _beats.is_empty():
 		var b: Dictionary = _beats.pop_front()
 		if b.get("type") == "call":
@@ -160,6 +178,11 @@ func _next() -> void:
 			var fn: Callable = b["fn"]
 			fn.call()
 			continue
+		if b.get("type") == "stage":
+			current_beat = {}
+			beat_changed.emit()
+			_run_stage(b.get("spec", {}))
+			return
 		current_beat = b
 		beat_changed.emit()
 		return
@@ -205,14 +228,21 @@ func start_scene(scene_id: String) -> bool:
 	scene_started.emit(scene_id)
 	var beats: Array[Dictionary] = []
 	var lines: Array = sc.get("mandatory_lines", [])
+	var stages: Array = sc.get("stage", [])
 	for i in lines.size():
 		var line: Dictionary = lines[i]
+		for st in stages:
+			if typeof(st.get("at")) != TYPE_STRING and int(st.get("at", -1)) == i:
+				beats.append({"type": "stage", "scene": scene_id, "spec": st})
 		if line.has("context"):
 			beats.append({"type": "options", "scene": scene_id, "prompt": "",
 				"options": [{"id": "ask", "label": String(line["context"])}], "callback": Callable()})
 		# line_id <scene>_<index>: the stable id of the recorded voice (VoiceDirector, assets/voice/ru).
 		beats.append({"type": "line", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "speaker": String(line.get("speaker", "")),
 			"speaker_name": StoryData.character_name(String(line.get("speaker", ""))), "text": String(line.get("text", ""))})
+	for st in stages:
+		if str(st.get("at", "")) == "end":
+			beats.append({"type": "stage", "scene": scene_id, "spec": st})
 	beats.append({"type": "call", "scene": scene_id, "fn": _complete_scene.bind(scene_id)})
 	if active_scene == "":
 		active_scene = scene_id
@@ -241,8 +271,69 @@ func _complete_scene(scene_id: String) -> void:
 		_beats.push_front(_text_beat(String(room_spec["complete_text"])))
 	if active_scene == scene_id:
 		active_scene = ""
+	if stage_dim > 0.0:   # a scene never leaves its dusk behind
+		stage_dim = 0.0
+		stage_fade.emit(0.0, 0.5)
 	scene_completed.emit(scene_id)
 	RoomManager.autosave()
+	# A scene's checkpoint (scenes data `checkpoint` {slot, title}): its own save slot with a title for the menu,
+	# written after the scene's flags — loading it never replays the scene (N01 → «День второй»).
+	var cp: Dictionary = sc.get("checkpoint", {})
+	if not cp.is_empty() and String(cp.get("slot", "")) != "":
+		var title := StoryData.text(String(cp.get("title", "")))
+		var slot: String = RoomManager.checkpoint_prefix + String(cp["slot"])
+		if RoomManager.save_game(slot, title):
+			GameState.show_hint(StoryData.text("@ui.saved", {"slot": title}))
+			checkpoint_saved.emit(slot, title)
+
+
+# --- Staging (scenes data `stage`) ---------------------------------------------
+
+## One staging: fade to black (`fade_out_s`), sounds at `at_s` from its start, an optional room change while
+## black (`room`, `spawn`; no autosave and no door sound in between — an interrupted scene restarts where it
+## began), `hold_s`, then back to `dim` (dusk under the next lines) in `fade_in_s`. The beat queue waits.
+func _run_stage(spec: Dictionary) -> void:
+	_stage_running = true
+	var serial := _stage_serial
+	var tree := get_tree()
+	var fade_out := float(spec.get("fade_out_s", 0.6))
+	stage_fade.emit(1.0, fade_out)
+	for snd in spec.get("sounds", []):
+		var sid := String(snd.get("id", ""))
+		var at := float(snd.get("at_s", 0.0))
+		tree.create_timer(at).timeout.connect(func():
+			if serial == _stage_serial:
+				stage_sound_requested.emit(sid))
+	await tree.create_timer(fade_out).timeout
+	if serial != _stage_serial:
+		return
+	if spec.has("room"):
+		var keep_autosave: bool = RoomManager.autosave_enabled
+		RoomManager.autosave_enabled = false
+		if SfxDirector.has_method("suppress_next_door"):
+			SfxDirector.suppress_next_door()
+		RoomManager.change_room(String(spec["room"]), String(spec.get("spawn", "default")))
+		RoomManager.autosave_enabled = keep_autosave
+	await tree.create_timer(float(spec.get("hold_s", 1.0))).timeout
+	if serial != _stage_serial:
+		return
+	stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
+	var fade_in := float(spec.get("fade_in_s", 0.6))
+	stage_fade.emit(stage_dim, fade_in)
+	await tree.create_timer(fade_in).timeout
+	if serial != _stage_serial:
+		return
+	_stage_running = false
+	_next()
+
+
+func _cancel_stage() -> void:
+	_stage_serial += 1
+	var had := _stage_running or stage_dim > 0.0
+	_stage_running = false
+	stage_dim = 0.0
+	if had:
+		stage_fade.emit(0.0, 0.0)
 
 
 func grant_item(item_id: String) -> void:
@@ -266,7 +357,22 @@ func on_room_entered(room_id: String) -> void:
 	# Places the player has been to (the plan shows unvisited ones paler, hides some until a visit).
 	if room_id != "" and not GameState.has_flag("visited_" + room_id):
 		GameState.set_flag("visited_" + room_id, true)
+	_run_on_enter(room_id)
 	check_room_triggers()
+
+
+## Rooms data `on_enter` [{text, once_flag, if?}]: a line on the first entry (O1: «Там зима. А у нас ещё
+## октябрь»). The flag is part of the save, so a load never repeats it.
+func _run_on_enter(room_id: String) -> void:
+	for oe in StoryData.room(room_id).get("on_enter", []):
+		var once := String(oe.get("once_flag", ""))
+		if once != "" and GameState.has_flag(once):
+			continue
+		if not requires_met({"flags": oe.get("if", [])}):
+			continue
+		if once != "":
+			GameState.set_flag(once, true)
+		narrate_key(String(oe.get("text", "")))
 
 
 func _on_flag_changed(_flag: String, _value: bool) -> void:
@@ -274,6 +380,7 @@ func _on_flag_changed(_flag: String, _value: bool) -> void:
 
 
 func _on_state_reset() -> void:
+	_cancel_stage()
 	_beats.clear()
 	current_beat = {}
 	active_scene = ""
@@ -295,6 +402,13 @@ func _on_state_reset() -> void:
 ## (hinges in sockets, the threshold) is not part of a save — the required item stays in the bag
 ## until the scene that consumes it completes, so nothing is lost or given twice.
 func _on_state_loaded(_slot: String) -> void:
+	# A staging in flight belongs to the state that was just replaced: stop it and drop its scene's beats.
+	if _stage_running or stage_dim > 0.0:
+		_cancel_stage()
+		_beats.clear()
+		current_beat = {}
+		active_scene = ""
+		beat_changed.emit()
 	close_view()
 	if puzzle_open:
 		puzzle_open = false
@@ -465,8 +579,9 @@ func interact(h: StoryHotspot) -> void:
 			narrate_key(String(ch["fail_text"]))
 			return
 
-	# Look-only close-up (data `view`): opens first, the use/look text below plays over it.
-	if d.has("view"):
+	# Look-only close-up (data `view`): opens first, the use/look text below plays over it. `if` / `unless`
+	# flags gate it (O1 drawer: only while the three things are still in it).
+	if d.has("view") and view_allowed(d["view"]):
 		open_view(d["view"], h.hotspot_id)
 
 	match _use_state(d):
@@ -477,25 +592,46 @@ func interact(h: StoryHotspot) -> void:
 			if d["use"].has("fail_text"):
 				narrate_key(String(d["use"]["fail_text"]))
 				return
+		"done":
+			if d["use"].has("text_done"):
+				narrate_key(String(d["use"]["text_done"]))
+				return
 	narrate_key(look)
 
 
-func _offer_choice(h: StoryHotspot, ch: Dictionary) -> void:
+func view_allowed(v: Dictionary) -> bool:
+	for f in v.get("if", []):
+		if not GameState.has_flag(String(f)):
+			return false
+	for f in v.get("unless", []):
+		if GameState.has_flag(String(f)):
+			return false
+	return true
+
+
+## Options whose `requires` do not hold are left out («Илюша, я нашла твой рисунок» before the drawing is
+## found). `item_id` — the item in hand that opened the choice (chalk on the board): an option with
+## `consumes_item` uses it up, the others leave it in the bag.
+func _offer_choice(h: StoryHotspot, ch: Dictionary, item_id: String = "") -> void:
 	var opts: Array = []
 	for o in ch.get("options", []):
+		if not requires_met(o.get("requires", {})):
+			continue
 		opts.append({"id": String(o["id"]), "label": StoryData.text(String(o.get("label", o["id"]))), "sets": String(o.get("sets", ""))})
 	var pk := String(ch.get("prompt", ""))
 	_push({"type": "options", "prompt": StoryData.text(pk), "prompt_key": text_key_of(pk), "options": opts,
-		"callback": _apply_choice.bind(h, ch)})
+		"callback": _apply_choice.bind(h, ch, item_id)})
 
 
-func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary) -> void:
+func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary, item_id: String = "") -> void:
 	var chosen: Dictionary = {}
 	for o in ch.get("options", []):
 		if String(o["id"]) == option_id:
 			chosen = o
 	if chosen.is_empty():
 		return
+	if item_id != "" and bool(chosen.get("consumes_item", false)):
+		GameState.remove_item(item_id)
 	if bool(ch.get("exclusive", false)):
 		for o in ch.get("options", []):
 			var f := String(o.get("sets", ""))
@@ -508,6 +644,14 @@ func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary) -> void:
 
 
 func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
+	# An item in hand that opens a choice (rooms data item_use.choice — chalk on the board: what to write).
+	if act.has("choice"):
+		var ch: Dictionary = act["choice"]
+		if requires_met(ch.get("requires", {})):
+			_offer_choice(h, ch, item_id)
+		else:
+			narrate_key(String(ch.get("fail_text", "@ui.item_no_effect")))
+		return
 	if bool(act.get("puzzle", false)):
 		if h.data.has("puzzle") and requires_met(h.data["puzzle"].get("requires", {})):
 			open_puzzle(h)
@@ -525,10 +669,22 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 		GameState.set_flag(String(f), true)
 	for it in act.get("gives", []):
 		grant_item(String(it))
+	# `restores`: an item given before and left somewhere comes back into the bag (the mitten from the school
+	# step) — the same item, not a second grant: only when it was given (has_<item>) and is not in the bag.
+	for it in act.get("restores", []):
+		var rid := String(it)
+		if GameState.has_flag("has_" + rid) and not GameState.has_item(rid) and GameState.add_item(rid):
+			item_received.emit(rid)
 	if item_id != "" and bool(act.get("consumes", false)):
 		GameState.remove_item(item_id)
 	if act.has("text"):
-		narrate_key(String(act["text"]))
+		# one key or a list of keys read in turn (H2 bell: the tag, then Agata's thought)
+		var t = act["text"]
+		if t is Array:
+			for k in t:
+				narrate_key(String(k))
+		else:
+			narrate_key(String(t))
 
 
 # --- Exits -------------------------------------------------------------------

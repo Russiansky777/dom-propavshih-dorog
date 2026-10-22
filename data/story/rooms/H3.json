@@ -94,7 +94,8 @@
   ],
   "scenes": {
     "M05": {"trigger": "puzzle:school_door"},
-    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges"]}]}
+    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges", "seen_bell"]}]},
+    "N01": {"trigger": "enter", "_note": "Ночь у печи (scenes/E1.json N01): после школы (M07 и M08) Агата возвращается в галерею — затемнение переносит её к печи в жилую комнату (stage.room H1), сохранение «День второй». Один раз: done_N01 в сохранении; комната меняется без автосохранения посреди сцены — прерванная ночь начнётся заново при входе в галерею"}
   },
   "flags": {
     "h3_mirror_looked": "Агата посмотрела в домашнее зеркало (первый осмотр: старый снимок и отражение)"
