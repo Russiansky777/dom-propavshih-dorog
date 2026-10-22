@@ -32,6 +32,15 @@ DAY2 = ["M3_view_bg", "M3_view_light", "M3_view_hook", "M3_view_bar_down",
         "closeup_plate", "closeup_plate_skoba", "closeup_plate_rope",
         "closeup_lantern_closed", "closeup_lantern_open", "closeup_office_photo"]
 WIDTH.update({n: 1672 for n in DAY2})
+# Блоки 3–5 (партии 4–6, 22.10, assets/incoming/_meta_p46/README_RU.txt): тетради Евдокии (текст игры — в чистой части
+# страницы: data/story/rooms/O3.json → notebooks.view.pages, координаты в пикселях исходника 1672×941), письма Нины,
+# зарубки роста, конверт с прежним адресом, рукав пальто, вывеска «Ольховая улица», дощечка Мити — крупные планы
+# хотспотов; кадр торца бревна — фон кадра эпилога EP_beam (data/story/rooms/EP_beam.json). Ширина 1440 —
+# крупный план рисуется не шире 1600 px экрана.
+BLOCK3 = ["closeup_notebook_rule", "closeup_notebook_paths", "closeup_notebook_stopper", "closeup_notebook_bridge",
+          "closeup_nina_letters", "closeup_height_notches", "closeup_envelope", "closeup_sleeve",
+          "closeup_street_sign", "closeup_mitya_board"]
+WIDTH.update({n: 1440 for n in BLOCK3})
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:

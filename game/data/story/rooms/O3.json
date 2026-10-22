@@ -1,0 +1,141 @@
+{
+  "id": "O3",
+  "_art": "Горница Нины (партия 3, ChatGPT 22.10, assets/incoming/_meta_p3): O3_bg.png — стол с дорожкой, свеча, чернильница, книга, Дунино зеркальце в деревянной рамке на столе, стул, кровать слева, шкаф, ходики на стене (оси стрелок 942,201, маятника 942,259 — холст 1672×941), окно в снегу, лавка под окном, икона. Слои ходиков и пламя свечи — те же файлы, что в мамином зеркале блока 2 (game/assets/closeups/O3_*, tools/import_closeups.py): одна копия на игру, комната ссылается на неё. Ночь — тон движка (effects tint) и свет свечи (lights/O3.json); утро третьего дня — картина как написана.",
+  "background": {"kind": "interior", "image": "res://assets/closeups/O3_bg.png", "wall": "#6a5040", "floor": "#5a3a24", "accent": "#8a6a4a", "horizon": 730},
+  "walkable": [[1050, 745], [1290, 742], [1300, 775], [1755, 780], [1790, 800], [1840, 868], [1915, 885], [1915, 1075], [1060, 1075], [1050, 1000]],
+  "no_walk_samples": [[600, 900, "стол"], [880, 900, "стул"], [1500, 700, "лавка под окном"], [150, 650, "кровать"], [1830, 700, "столик с кувшином"]],
+  "walk_samples": [[1400, 900], [1150, 800], [1700, 1000], [1880, 950], [1100, 1050]],
+  "depth": {"top_y": 745, "bottom_y": 1070, "scale_top": 1.75, "scale_bottom": 2.45},
+  "_depth_note": "Близкий кадр горницы: Агата крупная, как в классе O1. Лавка под окном (ножки y 770, сиденье ≈ 600 → 170 px на 0,45 м): Агата у лавки 1,80 → 621 px при ожидаемых 626. Стул у стола (ножки y 1060, спинка 550 → 510 px на ≈ 0,95 м): 2,43 → 839 px при 890 (−6 %).",
+  "height_refs": [{"what": "лавка под окном (ножки y 770, сиденье y 600)", "y": 770, "px": 170, "m": 0.45}, {"what": "стул у стола (ножки y 1060, верх спинки y 550)", "y": 1060, "px": 510, "m": 0.95}],
+  "layers": [
+    {"id": "clock_face", "image": "res://assets/closeups/O3_clock_face.png", "_note": "циферблат ходиков (партия 3)"},
+    {"id": "pendulum", "image": "res://assets/closeups/O3_clock_pendulum.png", "pivot": [942, 259], "swing": {"deg": 5.0, "period_s": 1.6}, "_note": "маятник качается — время идёт; после трёх огней ровно как у Агаты (общее время)"},
+    {"id": "hand_min", "image": "res://assets/closeups/O3_clock_hand_min.png", "pivot": [942, 201], "rotation_deg": 120.0, "spin": {"deg_per_s": 0.1}, "_note": "минутная стрелка: круг за час настоящего времени (0,1°/с) — вровень с карманными часами"},
+    {"id": "hand_hour", "image": "res://assets/closeups/O3_clock_hand_hour.png", "pivot": [942, 201], "rotation_deg": 250.0, "spin": {"deg_per_s": 0.008333}, "_note": "часовая стрелка: круг за 12 часов"},
+    {"id": "candle_flame", "image": "res://assets/closeups/O3_candle_flame.png", "unless": ["morning_day3"], "_note": "свеча горит вечером и ночью; мерцание — свет lights/O3.json"}
+  ],
+  "effects": [
+    {"id": "night", "type": "tint", "rect": [0, 0, 1920, 1080], "color": "#5a5f80", "blend": "mul", "z": 3000, "unless": ["morning_day3"], "_note": "Вечер и ночь в горнице: картина дневная — тон движка поверх всего, кроме свечи (свет z 3001)."}
+  ],
+  "spawns": {"default": [1400, 900], "from_O4": [1450, 960]},
+  "props": [],
+  "hotspots": [
+    {
+      "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1090, 175, 160, 630], "stand": [1480, 900], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/nina/front.png",
+      "hidden_if": ["done_M21b"],
+      "_rect_note": "Нина у ходиков, ноги y 805 (масштаб 1,88 → Агата 648 px; Нина 1,62 м ≈ 634)",
+      "talk": {"scenes": ["M21"], "before_text": "@O3.nina.before", "after_text": "@O3.nina.after"},
+      "item_use": {"school_ribbon": {"text": "@O3.nina.ribbon", "sets": ["ribbon_braided"], "once_flag": "ribbon_braided", "text_done": "@O3.nina.ribbon_again"}}
+    },
+    {
+      "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1500, 110, 190, 720], "stand": [1350, 1000], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/ilya/front.png",
+      "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
+      "_rect_note": "Илья у окна, ноги y 830 (масштаб 1,93 → Агата 666 px; Илья 1,80 м ≈ 723)",
+      "talk": {"after_text": "@O3.ilya.after"},
+      "item_use": {"drawing_ilya": {"text": "@O3.ilya.boat_drawing", "once_flag": "ilya_saw_drawing", "sets": ["ilya_saw_drawing"]}}
+    },
+    {
+      "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [1700, 380, 125, 480], "stand": [1500, 1000], "draw": false, "pick_priority": 3,
+      "image": "res://assets/characters/ulyana/front.png",
+      "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
+      "_rect_note": "Ульяна у лавки, ноги y 860 (масштаб 1,99 → Агата 687 px; Ульяна 1,25 м ≈ 518 — чуть меньше: ребёнок у стены)",
+      "talk": {"after_text": "@O3.ulyana.after"}
+    },
+    {
+      "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "rect": [1295, 160, 160, 615], "stand": [1065, 1000], "draw": false, "pick_priority": 3,
+      "image": "res://assets/characters/ilya_wife/front.png",
+      "visible_if": ["wife_came"], "hidden_if": ["morning_day3"],
+      "_rect_note": "Жена Ильи с лампой у двери в сени, ноги y 775 (масштаб 1,81; 1,65 м ≈ 620 px)",
+      "talk": {"after_text": "@O3.ilya_wife.after"}
+    },
+    {
+      "id": "clock", "kind": "object", "label": "@O3.clock.label", "rect": [1010, 120, 150, 320], "stand": [1150, 800], "draw": false, "pick_priority": 3,
+      "use": {"requires": {"items": ["pocket_watch"], "flags": ["done_M19"]}, "sets": ["o3_clock_compared"], "text": "@O3.clock.watch", "once_flag": "o3_clock_compared"},
+      "item_use": {"pocket_watch": {"requires": {"flags": ["done_M19"]}, "sets": ["o3_clock_compared"], "text": "@O3.clock.watch", "once_flag": "o3_clock_compared", "text_done": "@O3.clock.look_common"}},
+      "states": [{"if": ["o3_clock_compared"], "label": "@O3.clock.label_common"}],
+      "look": "@O3.clock.look"
+    },
+    {
+      "id": "dunya_mirror", "kind": "object", "label": "@O3.dunya_mirror.label", "rect": [338, 455, 110, 150], "stand": [1080, 800], "draw": false,
+      "look": "@O3.dunya_mirror.look",
+      "states": [{"if": ["knows_nina_saw_agata"], "label": "@O3.dunya_mirror.label_known"}]
+    },
+    {
+      "id": "notebooks", "kind": "object", "action_anim": "reach", "label": "@O3.notebooks.label", "rect": [540, 570, 160, 55], "stand": [1080, 820], "draw": false, "pick_priority": 2,
+      "use": {"requires": {"flags": ["done_M21"]}, "sets": ["o3_read_notebooks"], "text": "@O3.notebooks.use", "once_flag": "o3_read_notebooks", "text_done": "@O3.notebooks.again"},
+      "look": "@O3.notebooks.look",
+      "view": {
+        "id": "notebooks", "type": "papers", "title": "@O3.notebooks.title", "close_label": "@ui.close", "if": ["done_M21"],
+        "_note": "Тетради Евдокии (партия 4): четыре разворота, текст игры — в чистой части страницы (рукопись рисунка условная). Листаются «Назад»/«Дальше».",
+        "pages": [
+          {"title": "@O3.notebooks.title_paths", "papers": [{"image": "res://assets/closeups/closeup_notebook_paths.png", "image_size": [1672, 941], "text_rect": [300, 450, 470, 360], "text": "@O3.notebooks.paper_paths", "rect": [160, 150, 1600, 0], "font_size": 26, "ink": "#2f2418"}]},
+          {"title": "@O3.notebooks.title_rule", "papers": [{"image": "res://assets/closeups/closeup_notebook_rule.png", "image_size": [1672, 941], "text_rect": [905, 130, 540, 690], "text": "@O3.notebooks.paper_rule", "rect": [160, 150, 1600, 0], "font_size": 26, "ink": "#2f2418"}]},
+          {"title": "@O3.notebooks.title_stopper", "papers": [{"image": "res://assets/closeups/closeup_notebook_stopper.png", "image_size": [1672, 941], "text_rect": [300, 470, 470, 330], "text": "@O3.notebooks.paper_stopper", "rect": [160, 150, 1600, 0], "font_size": 26, "ink": "#2f2418"}]},
+          {"title": "@O3.notebooks.title_bridge", "papers": [{"image": "res://assets/closeups/closeup_notebook_bridge.png", "image_size": [1672, 941], "text_rect": [300, 450, 470, 380], "text": "@O3.notebooks.paper_bridge", "rect": [160, 150, 1600, 0], "font_size": 24, "ink": "#2f2418"}]}
+        ]
+      }
+    },
+    {
+      "id": "village_list", "kind": "object", "action_anim": "reach", "label": "@O3.village_list.label", "rect": [240, 600, 160, 50], "stand": [1080, 840], "draw": false, "pick_priority": 2,
+      "use": {"requires": {"flags": ["done_M21"]}, "sets": ["o3_read_village_list"], "text": "@O3.village_list.use", "once_flag": "o3_read_village_list", "text_done": "@O3.village_list.again"},
+      "look": "@O3.village_list.look",
+      "view": {
+        "id": "village_list", "type": "papers", "title": "@O3.village_list.title", "close_label": "@ui.close", "if": ["done_M21"],
+        "papers": [{"title": "@O3.village_list.title_paper", "text": "@O3.village_list.paper_list", "rect": [560, 130, 800, 820], "font_size": 27, "paper": "#e6dabb", "ink": "#2e2418", "edge": "#8a7350"}]
+      }
+    },
+    {
+      "id": "nina_letters", "kind": "object", "action_anim": "reach", "label": "@O3.nina_letters.label", "rect": [700, 455, 230, 60], "stand": [1080, 790], "draw": false,
+      "visible_if": ["done_M21"],
+      "_note": "блок 5 (SCENARIO_FINAL §9, «Письма Нины»): двадцать неотправленных писем — по одному каждую зиму; последнее — в вечер, когда Нина увидела Агату в зеркальце. Крупный план — связка (closeup_nina_letters) и письма страницами; тексты — черновик смысла для владельца текста.",
+      "use": {"sets": ["nina_letters_read"], "text": "@O3.nina_letters.use", "once_flag": "nina_letters_read", "text_done": "@O3.nina_letters.again"},
+      "look": "@O3.nina_letters.look",
+      "view": {
+        "id": "nina_letters", "type": "papers", "title": "@O3.nina_letters.title", "close_label": "@ui.close",
+        "pages": [
+          {"title": "@O3.nina_letters.title_bundle", "pictures": [{"image": "res://assets/closeups/closeup_nina_letters.png", "rect": [260, 130, 1400, 0], "angle_deg": 0.0}]},
+          {"title": "@O3.nina_letters.title_first", "papers": [{"text": "@O3.nina_letters.paper_first", "rect": [520, 130, 880, 800], "font_size": 28, "paper": "#e8dcc0", "ink": "#2e2418", "edge": "#8a7350"}]},
+          {"title": "@O3.nina_letters.title_tenth", "papers": [{"text": "@O3.nina_letters.paper_tenth", "rect": [520, 130, 880, 800], "font_size": 28, "paper": "#e3d6b4", "ink": "#2e2418", "edge": "#8a7350"}]},
+          {"title": "@O3.nina_letters.title_last", "papers": [{"text": "@O3.nina_letters.paper_last", "rect": [520, 130, 880, 800], "font_size": 28, "paper": "#eadfc6", "ink": "#2e2418", "edge": "#8a7350"}]}
+        ]
+      }
+    },
+    {
+      "id": "notches", "kind": "object", "label": "@O3.notches.label", "rect": [1200, 60, 60, 620], "stand": [1240, 790], "draw": false,
+      "visible_if": ["started_M20"],
+      "look": "@O3.notches.look",
+      "view": {
+        "id": "notches", "type": "papers", "title": "@O3.notches.title", "close_label": "@ui.close",
+        "pictures": [{"image": "res://assets/closeups/closeup_height_notches.png", "rect": [260, 120, 1400, 0], "angle_deg": 0.0}]
+      }
+    },
+    {
+      "id": "window", "kind": "object", "label": "@O3.window.label", "rect": [1380, 160, 260, 340], "stand": [1500, 800], "draw": false,
+      "look": "@O3.window.look",
+      "states": [{"if": ["morning_day3"], "label": "@O3.window.label"}]
+    },
+    {
+      "id": "icon", "kind": "object", "label": "@O3.icon.label", "rect": [1820, 90, 90, 200], "stand": [1850, 900], "draw": false,
+      "look": "@O3.icon.look"
+    }
+  ],
+  "exits": [
+    {"to": "O4", "label": "@O3.exit_O4.label", "side": "bottom", "x": 1500, "cue": "down", "spawn": "from_O3", "draw": false}
+  ],
+  "scenes": {
+    "M19c": {"complete_when": [{"all": ["o3_clock_compared"]}]},
+    "M20": {"trigger": "enter"},
+    "M21": {"trigger": "talk:nina"},
+    "M21b": {"complete_when": [{"all": ["o3_read_notebooks", "o3_read_village_list"]}]}
+  },
+  "flags": {
+    "o3_clock_compared": "Ходики Нины идут вровень с карманными часами Агаты",
+    "o3_read_notebooks": "Прочитаны тетради Евдокии: тропы, правило, стопор, мост",
+    "o3_read_village_list": "Прочитан список деревни: 22 живых, трое умерли",
+    "ilya_saw_drawing": "Илья узнал свой детский рисунок моста",
+    "wife_came": "Жена Ильи пришла с лампой"
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "id": "F_mirror_empty",
+  "frame": true,
+  "_art": "M23c: в стекле Нининого зеркала — её горница, пустая (тот же арт горницы партии 3, тон старого стекла движком).",
+  "background": {
+    "kind": "interior",
+    "image": "res://assets/closeups/O3_bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "clock_face",
+      "image": "res://assets/closeups/O3_clock_face.png"
+    },
+    {
+      "id": "pendulum",
+      "image": "res://assets/closeups/O3_clock_pendulum.png",
+      "pivot": [
+        942,
+        259
+      ],
+      "swing": {
+        "deg": 5.0,
+        "period_s": 1.6
+      }
+    },
+    {
+      "id": "hand_min",
+      "image": "res://assets/closeups/O3_clock_hand_min.png",
+      "pivot": [
+        942,
+        201
+      ],
+      "rotation_deg": 200.0,
+      "spin": {
+        "deg_per_s": 0.1
+      }
+    },
+    {
+      "id": "hand_hour",
+      "image": "res://assets/closeups/O3_clock_hand_hour.png",
+      "pivot": [
+        942,
+        201
+      ],
+      "rotation_deg": 320.0,
+      "spin": {
+        "deg_per_s": 0.008333
+      }
+    }
+  ],
+  "effects": [
+    {
+      "id": "glass",
+      "type": "tint",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "color": "#b9c2c8",
+      "blend": "mul",
+      "z": 3000,
+      "_note": "старое стекло: холоднее и темнее"
+    }
+  ],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

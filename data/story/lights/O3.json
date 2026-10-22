@@ -1,0 +1,64 @@
+{
+  "_comment": "Горница Нины вечером и ночью: свеча на столе мерцает (над тоном ночи — z 3001); фигуры в тёплом тоне свечи. Утром третьего дня — дневной свет картины.",
+  "room": "O3",
+  "floor_foreshortening": 0.35,
+  "sources": [
+    {
+      "id": "candle_tone",
+      "type": "ambient",
+      "_note": "вечер при свече: фигуры теплее и темнее",
+      "subtract": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "energy": 0.0,
+      "actor_tint": [
+        0.78,
+        0.68,
+        0.58
+      ],
+      "unless": [
+        "morning_day3"
+      ],
+      "fade_s": 0.0
+    },
+    {
+      "id": "candle",
+      "type": "glow",
+      "rect": [
+        455,
+        410,
+        115,
+        130
+      ],
+      "z": 3001,
+      "params": {
+        "glass_center": [
+          0.5,
+          0.5
+        ],
+        "glass_size": [
+          0.5,
+          0.6
+        ],
+        "glass": 0.2,
+        "halo": 0.7,
+        "halo_aspect": 1.2,
+        "halo_power": 2.0,
+        "flame": 0.0,
+        "color": "#ffc070",
+        "seed": 9.3
+      },
+      "flicker": {
+        "group": "candle",
+        "amount": 0.3,
+        "speed": 1.6
+      },
+      "fade_s": 0.0,
+      "unless": [
+        "morning_day3"
+      ]
+    }
+  ]
+}

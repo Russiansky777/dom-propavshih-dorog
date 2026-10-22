@@ -2,8 +2,20 @@
   "story_version": "v3-data-1",
   "source": "story_source/full_scenario_v3.md (17.10.2026)",
   "text_freeze": false,
-  "main_path_target_minutes": [45, 60],
-  "full_target_minutes": [65, 95],
-  "law_of_world": ["Вещи помнят место, которому служили", "Дорогу держат с двух концов (предложение 4.1, ожидает решения)"],
-  "pending_director_decisions": "См. поля proposed_change в сценах и Docs/DECISIONS.md"
+  "main_path_target_minutes": [
+    45,
+    60
+  ],
+  "full_target_minutes": [
+    65,
+    95
+  ],
+  "law_of_world": [
+    "Вещи помнят место, которому служили",
+    "Дорогу держат с двух концов (предложение 4.1, ожидает решения)"
+  ],
+  "pending_director_decisions": "См. поля proposed_change в сценах и Docs/DECISIONS.md",
+  "switches": {
+    "_comment": "Переключатели Директора: одно значение — один ответ. Реплики и кадры сцен ссылаются на них полем switch (\"имя\", \"имя=значение\", \"имя!=значение\"; StoryData.switch_on). 22.10 23:44 Директор решил последний кадр (урок → ужин, C18) и фразу о будущем Агаты (C20) — они вписаны в эпилог прямо, переключателей больше нет. Открытые решения — имена (characters.json → name) и место учёбы Агаты (characters.json → agata.study_place)."
+  }
 }

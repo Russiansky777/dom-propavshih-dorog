@@ -17,6 +17,7 @@ const PANELS := {
 	"plate": preload("res://scripts/mechanics/plate_panel.gd"),
 	"lantern": preload("res://scripts/mechanics/lantern_panel.gd"),
 	"photo": preload("res://scripts/mechanics/photo_panel.gd"),
+	"windlass": preload("res://scripts/mechanics/windlass_panel.gd"),
 }
 
 var spec: Dictionary = {}

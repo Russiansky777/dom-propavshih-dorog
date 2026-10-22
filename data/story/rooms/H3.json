@@ -89,8 +89,7 @@
     {"to": "H1", "label": "@H3.exit_H1.label", "rect": [1800, 560, 120, 520], "stand": [1810, 900], "spawn": "from_H3", "draw": false},
     {"to": "Z4", "label": "@H3.exit_Z4.label", "side": "bottom", "x": 700, "spawn": "from_H3", "draw": false, "_note": "боковое крыльцо галереи выходит в переулок у почты Z4"},
     {"to": "O1", "label": "@H3.exit_O1.label", "rect": [610, 140, 330, 580], "stand": [770, 790], "spawn": "from_H3", "closed_text": "@H3.exit_O1.closed", "draw": false,
-      "states": [{"if": ["door_school_installed"], "label": "@H3.exit_O1.label_open"}]},
-    {"to": "R4", "label": "@H3.exit_R4.label", "rect": [1300, 160, 340, 560], "stand": [1470, 790], "spawn": "from_H3", "closed_text": "@H3.exit_R4.closed", "draw": false}
+      "states": [{"if": ["door_school_installed"], "label": "@H3.exit_O1.label_open"}]}
   ],
   "scenes": {
     "M05": {"trigger": "puzzle:school_door"},

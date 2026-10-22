@@ -1,0 +1,132 @@
+{
+  "_comment": "Следы выборов на экране конца игры (FrameView: «Что осталось от твоих выборов»). Строка показывается, если все флаги if есть и (если указано) хотя бы один из any. Текст — ключ data/story/text (title_* — подписи, не озвучиваются). Блок 5, 22.10.",
+  "achievements": [
+    {
+      "id": "board",
+      "any": [
+        "board_here",
+        "board_mama",
+        "board_ilya"
+      ],
+      "if": [
+        "nina_answered_board"
+      ],
+      "title": "@ach.title_board"
+    },
+    {
+      "id": "mitten",
+      "if": [
+        "mitten_found_on_path"
+      ],
+      "title": "@ach.title_mitten"
+    },
+    {
+      "id": "bird",
+      "if": [
+        "v03_marked"
+      ],
+      "title": "@ach.title_bird"
+    },
+    {
+      "id": "promise",
+      "if": [
+        "pavel_answer_promise"
+      ],
+      "title": "@ach.title_promise"
+    },
+    {
+      "id": "family",
+      "if": [
+        "pavel_answer_family"
+      ],
+      "title": "@ach.title_family"
+    },
+    {
+      "id": "tikhon_nina",
+      "if": [
+        "tikhon_told_nina"
+      ],
+      "title": "@ach.title_tikhon_nina"
+    },
+    {
+      "id": "tikhon_agata",
+      "if": [
+        "tikhon_told_agata"
+      ],
+      "title": "@ach.title_tikhon_agata"
+    },
+    {
+      "id": "beam",
+      "any": [
+        "beam_dunya",
+        "beam_roads",
+        "beam_date"
+      ],
+      "title": "@ach.title_beam"
+    },
+    {
+      "id": "cup",
+      "any": [
+        "v01_cup_blue",
+        "v01_cup_white"
+      ],
+      "title": "@ach.title_cup"
+    },
+    {
+      "id": "ribbon",
+      "if": [
+        "ribbon_braided"
+      ],
+      "title": "@ach.title_ribbon"
+    },
+    {
+      "id": "letters",
+      "if": [
+        "nina_letters_read"
+      ],
+      "title": "@ach.title_letters"
+    },
+    {
+      "id": "q01",
+      "if": [
+        "done_Q01"
+      ],
+      "title": "@ach.title_q01"
+    },
+    {
+      "id": "q03",
+      "if": [
+        "done_Q03"
+      ],
+      "title": "@ach.title_q03"
+    },
+    {
+      "id": "q04",
+      "if": [
+        "done_Q04"
+      ],
+      "title": "@ach.title_q04"
+    },
+    {
+      "id": "q07",
+      "if": [
+        "done_Q07"
+      ],
+      "title": "@ach.title_q07"
+    },
+    {
+      "id": "q08",
+      "if": [
+        "done_Q08"
+      ],
+      "title": "@ach.title_q08"
+    },
+    {
+      "id": "q09",
+      "if": [
+        "done_Q09"
+      ],
+      "title": "@ach.title_q09"
+    }
+  ]
+}

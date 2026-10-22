@@ -1,0 +1,135 @@
+{
+  "id": "EP_lesson",
+  "frame": true,
+  "_art": "Последний кадр по переключателю final_frame (data/story/meta.json): утренний урок (ep_lesson, партия 5) — Нина у доски, Ульяна, Агата на задней парте. Дети с обоих берегов — нужны фигуры (заявка в отчёте).",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/ep_lesson.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "interior",
+    "image": "res://assets/rooms/EP_lesson/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "date",
+      "text": "@EP.lesson.written_date",
+      "rect": [
+        650,
+        150,
+        330,
+        90
+      ],
+      "font": "italic",
+      "font_size": 44,
+      "color": "#e9e6dc",
+      "alpha": 0.8,
+      "angle_deg": -1.5,
+      "_stub": "число мелом на доске — шрифт игры"
+    },
+    {
+      "id": "nina",
+      "image": "res://assets/rooms/EP_lesson/nina.png",
+      "compose": {
+        "char": "nina",
+        "feet": [
+          880,
+          400
+        ],
+        "height": 270,
+        "dir": 1,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.95,
+          0.86
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "ulyana",
+      "image": "res://assets/rooms/EP_lesson/ulyana.png",
+      "compose": {
+        "char": "ulyana",
+        "feet": [
+          690,
+          560
+        ],
+        "height": 170,
+        "dir": 4,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.95,
+          0.86
+        ],
+        "shadow": 0.35,
+        "cut_below": 520
+      }
+    },
+    {
+      "id": "agata",
+      "image": "res://assets/rooms/EP_lesson/agata.png",
+      "compose": {
+        "char": "agata",
+        "feet": [
+          300,
+          930
+        ],
+        "height": 480,
+        "dir": 4,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.95,
+          0.86
+        ],
+        "shadow": 0.35,
+        "cut_below": 900
+      }
+    }
+  ],
+  "effects": [],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

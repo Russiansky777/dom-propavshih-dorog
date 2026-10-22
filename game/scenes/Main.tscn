@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/ui/closeup_puzzle.gd" id="4_closeup"]
 [ext_resource type="Script" path="res://scripts/ui/closeup_view.gd" id="5_view"]
 [ext_resource type="Script" path="res://scripts/mechanics/mechanic_view.gd" id="6_mech"]
+[ext_resource type="Script" path="res://scripts/ui/frame_view.gd" id="7_frame"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -14,6 +15,10 @@ script = ExtResource("1_main")
 
 [node name="Player" parent="World" instance=ExtResource("2_player")]
 position = Vector2(960, 900)
+
+[node name="FrameView" type="CanvasLayer" parent="."]
+layer = 3
+script = ExtResource("7_frame")
 
 [node name="GameUi" type="CanvasLayer" parent="."]
 script = ExtResource("3_ui")

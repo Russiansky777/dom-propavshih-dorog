@@ -1,0 +1,136 @@
+{
+  "id": "EP_boat",
+  "frame": true,
+  "_art": "Эпилог: Пелагея и Митя смолят лодку на зиму (ep_boat, партия 5). Дощечка Мити на стене сарая — если Q07 «отдать Пелагее».",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/ep_boat.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/EP_boat/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "mitya_board",
+      "image": "res://assets/rooms/EP_boat/mitya_board.png",
+      "compose": {
+        "src": "assets/incoming/closeup_mitya_board.png",
+        "crop": [
+          300,
+          250,
+          1080,
+          420
+        ],
+        "at": [
+          95,
+          300
+        ],
+        "width": 120,
+        "tint": [
+          0.85,
+          0.85,
+          0.88
+        ]
+      },
+      "if": [
+        "q07_board_to_pelageya"
+      ],
+      "_note": "дощечка с двадцатью зарубками на стене сарая (Q07, вариант B)"
+    },
+    {
+      "id": "pelageya",
+      "image": "res://assets/rooms/EP_boat/pelageya.png",
+      "compose": {
+        "char": "pelageya",
+        "feet": [
+          880,
+          720
+        ],
+        "height": 245,
+        "dir": 6,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.97,
+          0.95,
+          0.95
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "mitya",
+      "image": "res://assets/rooms/EP_boat/mitya.png",
+      "compose": {
+        "char": "mitya",
+        "feet": [
+          1060,
+          750
+        ],
+        "height": 285,
+        "dir": 6,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.97,
+          0.95,
+          0.95
+        ],
+        "shadow": 0.35
+      }
+    }
+  ],
+  "effects": [
+    {
+      "id": "snow",
+      "type": "snow",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "amount": 70,
+      "z": 4000
+    }
+  ],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

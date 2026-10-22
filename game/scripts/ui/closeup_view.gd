@@ -40,6 +40,13 @@ var reflection_vp: SubViewport = null
 var agata: AnimatedSprite2D = null
 var photo: Control = null
 var sheets: Array[Control] = []  # every photo / paper of a "papers" close-up (probe, tests)
+## `pages` [{title?, pictures, photos, papers}]: a close-up of several spreads turned with «‹ Назад» / «Дальше ›»
+## (Evdokia's notebooks, Nina's letters — blocks 3 and 5); every page's sheets are built at once, one is shown.
+var pages: Array[Control] = []
+var page_index: int = 0
+var prev_button: Button = null
+var next_button: Button = null
+var _into: Control = null        # where the builders put sheets: the view itself or the page being built
 var close_button: Button = null
 var glass_screen_rect: Rect2 = Rect2()
 var _player: Node2D = null
@@ -83,6 +90,11 @@ func _free_nodes() -> void:
 	mirror_material = null
 	photo = null
 	sheets.clear()
+	pages.clear()
+	page_index = 0
+	prev_button = null
+	next_button = null
+	_into = null
 	close_button = null
 
 
@@ -109,16 +121,26 @@ func _build() -> void:
 	title_label.theme_type_variation = &"CloseupTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_label)
+	_into = root
 	if String(spec.get("type", "")) == "mirror":
 		_build_mirror()
-	if spec.has("photo"):
-		_build_photo(spec["photo"])
-	for ph in spec.get("photos", []):
-		_build_photo(ph)
-	for pi in spec.get("pictures", []):
-		_build_picture(pi)
-	for pa in spec.get("papers", []):
-		_build_paper(pa)
+	_build_sheets(spec)
+	for i in spec.get("pages", []).size():
+		var pg := Control.new()
+		pg.name = "Page%d" % i
+		pg.size = root.size
+		pg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(pg)
+		_into = pg
+		_build_sheets(spec["pages"][i])
+		var pt := String(spec["pages"][i].get("title", ""))
+		if pt != "":
+			pg.set_meta("title", StoryData.text(pt))
+		pages.append(pg)
+	_into = root
+	if not pages.is_empty():
+		_build_page_buttons(t)
+		_show_page(0)
 	close_button = Button.new()
 	close_button.name = "Close"
 	close_button.text = StoryData.text(String(spec.get("close_label", "@ui.close")))
@@ -128,6 +150,57 @@ func _build() -> void:
 	close_button.theme = t
 	close_button.pressed.connect(func(): StoryRunner.close_view())
 	root.add_child(close_button)
+
+
+func _build_sheets(sp: Dictionary) -> void:
+	if sp.has("photo"):
+		_build_photo(sp["photo"])
+	for ph in sp.get("photos", []):
+		_build_photo(ph)
+	for pi in sp.get("pictures", []):
+		_build_picture(pi)
+	for pa in sp.get("papers", []):
+		_build_paper(pa)
+
+
+func _build_page_buttons(t: Theme) -> void:
+	prev_button = Button.new()
+	prev_button.name = "Prev"
+	prev_button.text = StoryData.text("@ui.page_prev")
+	prev_button.size = Vector2(200, 56)
+	prev_button.position = Vector2(1240, 990)
+	prev_button.focus_mode = Control.FOCUS_NONE
+	prev_button.theme = t
+	prev_button.pressed.connect(func(): turn_page(-1))
+	root.add_child(prev_button)
+	next_button = Button.new()
+	next_button.name = "Next"
+	next_button.text = StoryData.text("@ui.page_next")
+	next_button.size = Vector2(200, 56)
+	next_button.position = Vector2(1460, 990)
+	next_button.focus_mode = Control.FOCUS_NONE
+	next_button.theme = t
+	next_button.pressed.connect(func(): turn_page(1))
+	root.add_child(next_button)
+
+
+## Turns to the next (+1) / previous (−1) page of a `pages` close-up; the page's title replaces the view's.
+func turn_page(step: int) -> void:
+	if pages.is_empty():
+		return
+	_show_page(clampi(page_index + step, 0, pages.size() - 1))
+
+
+func _show_page(i: int) -> void:
+	page_index = i
+	for k in pages.size():
+		pages[k].visible = k == i
+	if title_label != null:
+		title_label.text = String(pages[i].get_meta("title", StoryData.text(String(spec.get("title", "")))))
+	if prev_button != null:
+		prev_button.disabled = i == 0
+	if next_button != null:
+		next_button.disabled = i == pages.size() - 1
 
 
 # --- Mirror ---------------------------------------------------------------------------------
@@ -301,7 +374,7 @@ func _build_photo(p: Dictionary) -> void:
 	photo.pivot_offset = photo.size / 2.0
 	photo.rotation = deg_to_rad(float(p.get("angle_deg", -3.0)))
 	photo.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(photo)
+	_into.add_child(photo)
 	var shadow := ColorRect.new()
 	shadow.color = Color(0, 0, 0, 0.45)
 	shadow.position = Vector2(10, 12)
@@ -363,7 +436,7 @@ func _build_picture(p: Dictionary) -> void:
 	holder.pivot_offset = Vector2(w, h) / 2.0
 	holder.rotation = deg_to_rad(float(p.get("angle_deg", 0.0)))
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(holder)
+	_into.add_child(holder)
 	for i in 2:
 		var tr := TextureRect.new()
 		tr.name = "Shadow" if i == 0 else "Image"
@@ -413,7 +486,7 @@ func _build_paper(p: Dictionary) -> void:
 	sheet.pivot_offset = sheet.size / 2.0
 	sheet.rotation = deg_to_rad(float(p.get("angle_deg", 0.0)))
 	sheet.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(sheet)
+	_into.add_child(sheet)
 	var shadow := ColorRect.new()
 	shadow.color = Color(0, 0, 0, 0.45)
 	shadow.position = Vector2(10, 12)
@@ -529,6 +602,11 @@ func probe() -> Dictionary:
 		var t: Label = c.get_node_or_null("Text") as Label
 		sh.append({"name": String(c.name), "center": _center(c), "text": t.text if t != null else ""})
 	out["sheets"] = sh
+	out["pages"] = pages.size()
+	out["page"] = page_index
+	if next_button != null:
+		out["next"] = _center(next_button)
+		out["prev"] = _center(prev_button)
 	out["reflection"] = {"agata": String(agata.animation) if agata != null else "",
 		"agata_frame": agata.frame if agata != null else -1,
 		"shares_world": gallery_vp != null and gallery_vp.world_2d == get_viewport().world_2d}

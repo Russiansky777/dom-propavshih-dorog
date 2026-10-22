@@ -1,0 +1,108 @@
+{
+  "id": "F_span",
+  "frame": true,
+  "_art": "M25 до бревна: поворот с воротом и штабелем прогонов (партия 5: Z3_bg + Z3_state_beam без бревна — tools/make_span_layers.py) — Илья у ворота, Пелагея с дощечкой сигналов, Агата.",
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/F_span/beam_waiting.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "pelageya",
+      "image": "res://assets/rooms/F_span/pelageya.png",
+      "compose": {
+        "char": "pelageya",
+        "feet": [
+          820,
+          712
+        ],
+        "height": 180,
+        "dir": 1,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.93,
+          0.93,
+          0.95
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "agata",
+      "image": "res://assets/rooms/F_span/agata.png",
+      "compose": {
+        "char": "agata",
+        "feet": [
+          660,
+          760
+        ],
+        "height": 205,
+        "dir": 2,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.93,
+          0.93,
+          0.95
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "ilya",
+      "image": "res://assets/rooms/F_span/ilya.png",
+      "compose": {
+        "char": "ilya",
+        "feet": [
+          1010,
+          690
+        ],
+        "height": 200,
+        "dir": 1,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.93,
+          0.93,
+          0.95
+        ],
+        "shadow": 0.35
+      },
+      "_note": "у ворота — и в крупном плане ворота поверх бревна (E5.json M25 mechanics overlays)"
+    }
+  ],
+  "effects": [],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

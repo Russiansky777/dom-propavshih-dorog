@@ -1,0 +1,38 @@
+{
+  "id": "EP_dinner",
+  "preset": "interior",
+  "_art": "Ужин в доме тёти (ep_dinner): пар над самоваром; за окном ночь со снегом.",
+  "dust": [
+    {
+      "id": "samovar_steam",
+      "_note": "пар над самоваром",
+      "polygon": [
+        [
+          1300,
+          262
+        ],
+        [
+          1350,
+          262
+        ],
+        [
+          1356,
+          300
+        ],
+        [
+          1296,
+          300
+        ]
+      ],
+      "amount": 10,
+      "size_px": 26.0,
+      "alpha": 0.16,
+      "color": "#f4efe6",
+      "speed_px_s": 6,
+      "lifetime_s": 4,
+      "gravity": -7.0,
+      "drift_x": 0.2,
+      "z": 2
+    }
+  ]
+}

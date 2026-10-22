@@ -1,0 +1,98 @@
+{
+  "id": "O3",
+  "preset": "interior",
+  "_art": "Горница Нины (O3_bg): окно справа — четыре стекла, за ними берёзы в снегу; пыль в утреннем свете у окна (только днём). Маятник и стрелки ходиков — слои комнаты (rooms/O3.json: swing, spin).",
+  "sway_regions": [
+    {
+      "id": "pane_tl",
+      "kind": "tree",
+      "rect": [
+        1402,
+        200,
+        100,
+        120
+      ],
+      "clip": true,
+      "feather_px": 2,
+      "anchor_y": 560,
+      "top_y": 180,
+      "amp_px": 2.2,
+      "freq_hz": 0.3
+    },
+    {
+      "id": "pane_tr",
+      "kind": "tree",
+      "rect": [
+        1515,
+        200,
+        108,
+        120
+      ],
+      "clip": true,
+      "feather_px": 2,
+      "anchor_y": 560,
+      "top_y": 180,
+      "amp_px": 2.2,
+      "freq_hz": 0.3,
+      "phase": 0.15
+    },
+    {
+      "id": "pane_br",
+      "kind": "tree",
+      "rect": [
+        1515,
+        335,
+        108,
+        135
+      ],
+      "clip": true,
+      "feather_px": 2,
+      "anchor_y": 560,
+      "top_y": 180,
+      "amp_px": 2.2,
+      "freq_hz": 0.3,
+      "phase": 0.3
+    }
+  ],
+  "dust": [
+    {
+      "id": "window_light_dust",
+      "if": [
+        "morning_day3"
+      ],
+      "polygon": [
+        [
+          1390,
+          180
+        ],
+        [
+          1630,
+          180
+        ],
+        [
+          1640,
+          500
+        ],
+        [
+          1500,
+          760
+        ],
+        [
+          1300,
+          760
+        ],
+        [
+          1380,
+          500
+        ]
+      ],
+      "amount": 16,
+      "size_px": 7.0,
+      "alpha": 0.6,
+      "color": "#fff1d6",
+      "speed_px_s": 5,
+      "lifetime_s": 10,
+      "z": 2
+    }
+  ]
+}

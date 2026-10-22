@@ -1,0 +1,90 @@
+{
+  "id": "F_gallery_nina",
+  "frame": true,
+  "_art": "M23c: галерея (фон H3 и слой «дверь на родных петлях» блока 1) — Нина у школьной двери, Агата рядом.",
+  "background": {
+    "kind": "interior",
+    "image": "res://assets/rooms/H3/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "door_installed",
+      "image": "res://assets/rooms/H3/state_door_installed.png"
+    },
+    {
+      "id": "nina",
+      "image": "res://assets/rooms/F_gallery_nina/nina.png",
+      "compose": {
+        "char": "nina",
+        "feet": [
+          960,
+          830
+        ],
+        "height": 500,
+        "dir": 7,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.95,
+          0.88
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "agata",
+      "image": "res://assets/rooms/F_gallery_nina/agata.png",
+      "compose": {
+        "char": "agata",
+        "feet": [
+          1240,
+          880
+        ],
+        "height": 530,
+        "dir": 6,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.95,
+          0.88
+        ],
+        "shadow": 0.35
+      }
+    }
+  ],
+  "effects": [],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

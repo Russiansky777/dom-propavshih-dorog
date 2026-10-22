@@ -1,0 +1,122 @@
+{
+  "id": "F_span_done",
+  "frame": true,
+  "_art": "M25 после: первое бревно на кольце плиты (Z3_bg + Z3_state_beam партии 5) — Илья, Агата, Пелагея.",
+  "art_source": {
+    "files": {
+      "state_beam.png": "assets/incoming/Z3_state_beam.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/Z3/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "beam",
+      "image": "res://assets/rooms/F_span_done/state_beam.png",
+      "_note": "слой партии 5 — сцена с бревном на опоре"
+    },
+    {
+      "id": "pelageya",
+      "image": "res://assets/rooms/F_span_done/pelageya.png",
+      "compose": {
+        "char": "pelageya",
+        "feet": [
+          820,
+          712
+        ],
+        "height": 180,
+        "dir": 1,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.93,
+          0.93,
+          0.95
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "agata",
+      "image": "res://assets/rooms/F_span_done/agata.png",
+      "compose": {
+        "char": "agata",
+        "feet": [
+          1120,
+          640
+        ],
+        "height": 185,
+        "dir": 3,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.93,
+          0.93,
+          0.95
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "ilya",
+      "image": "res://assets/rooms/F_span_done/ilya.png",
+      "compose": {
+        "char": "ilya",
+        "feet": [
+          1010,
+          690
+        ],
+        "height": 200,
+        "dir": 1,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.93,
+          0.93,
+          0.95
+        ],
+        "shadow": 0.35
+      }
+    }
+  ],
+  "effects": [],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

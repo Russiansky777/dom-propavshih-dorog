@@ -397,7 +397,7 @@ def check_view(ctx: str, v: dict) -> None:
 EFFECT_TYPES = ("fire", "snow", "tint", "shapes")
 BLENDS = ("mul", "add", "sub", "mix")
 SHAPE_TYPES = ("gradient", "poly", "line", "circle", "glow", "text")
-MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo")
+MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo", "windlass")
 
 
 def check_shapes(ctx: str, shapes) -> None:
@@ -515,6 +515,15 @@ def check_res_path(ctx: str, res: str) -> None:
 
 for rid, room in rooms.items():
     ctx = rid
+    # 12. кадр (блоки 3–4, "frame": true): картина поверх мира для FrameView — не локация, без ходьбы, хотспотов и
+    # выходов; Агаты в кадре нет (player_hidden). Остальные проверки (фон, масштаб, слои, тексты) — как у комнат.
+    if room.get("frame"):
+        if rid in loc_ids or rid in in_scope:
+            err(f"{ctx}: кадр не может быть локацией или комнатой in_scope")
+        if room.get("hotspots") or room.get("exits"):
+            err(f"{ctx}: у кадра нет хотспотов и выходов")
+        if not room.get("player_hidden"):
+            err(f"{ctx}: кадр без player_hidden: true")
     poly = walkable_of(room)
     if len(poly) < 3:
         err(f"{ctx}: полигон Walkable короче 3 точек")
@@ -824,7 +833,7 @@ for rid, room in rooms.items():
                 err(f"{ctx}: on_closed выхода в {to} ссылается на спавн {oc['spawn']}")
             if oc.get("scene") and oc["scene"] not in scenes:
                 err(f"{ctx}: on_closed выхода в {to} ссылается на сцену {oc['scene']}")
-    for to in edges[rid]:
+    for to in edges.get(rid, {}):
         if to not in seen_targets:
             err(f"{ctx}: переход {rid}–{to} из locations.json не имеет выхода в комнате")
 
@@ -879,6 +888,21 @@ for rid, room in rooms.items():
             rect, _stand = exit_geometry(room, ex)
             if rect and any(_overlap(hr, rect) for hr in hs_rects(h)) and int(h.get("pick_priority", 0)) <= int(ex.get("pick_priority", 1)):
                 err(f"{ctx}.{h.get('id')}: прямоугольник перекрывается выходом в {ex.get('to')} — клик уйдёт выходу (поднимите pick_priority или раздвиньте)")
+
+    # и наоборот (дефект блока 3, 23.10: Тамара на улице O4 стояла на дороге к реке — клик по метке выхода «К реке»
+    # уходил ей, тест прохождения не мог уйти с улицы): точка метки выхода (или центр его прямоугольника) не лежит
+    # внутри хотспота NPC с приоритетом выше выхода — фигура заслонила бы выход от клика.
+    for ex in exits:
+        rect, _stand = exit_geometry(room, ex)
+        if not rect:
+            continue
+        at_ = (ex.get("cue_at") or [rect[0] + rect[2] / 2, rect[1] + rect[3] / 2])
+        for h in room.get("hotspots", []):
+            if h.get("kind") != "npc" or "rect" not in h:
+                continue
+            if int(h.get("pick_priority", 0)) > int(ex.get("pick_priority", 1)) and any(
+                    hr[0] <= at_[0] <= hr[0] + hr[2] and hr[1] <= at_[1] <= hr[1] + hr[3] for hr in hs_rects(h)):
+                err(f"{ctx}.{h.get('id')}: фигура стоит на выходе в {ex.get('to')} (точка {at_}) — клик по выходу уйдёт ей")
 
     # два видимых одновременно хотспота с равным pick_priority не должны перекрываться: Room.pick берёт
     # первый ответ физики, порядок случайный (дефект: shelf под stove в H1 — бот попадал в печь)

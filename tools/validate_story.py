@@ -362,6 +362,32 @@ for fl, spec in flags_doc["flags"].items():
                     err(f"тайна {fl} раскрывается в {s['id']} (эпизод {ep}) раньше эпизода {spec['min_episode']}")
 
 # ---------- 8. постановка сцен и контрольные сохранения ----------
+frame_rooms = set()
+for rf_ in sorted((STORY / "rooms").glob("*.json")):
+    if not rf_.name.startswith("_") and json.loads(rf_.read_text(encoding="utf-8")).get("frame"):
+        frame_rooms.add(rf_.stem)
+SCENE_MECHANICS = ("windlass",)
+_switches = meta.get("switches", {}) or {}
+_room_local_flags: set[str] = set()
+for rf_ in sorted((STORY / "rooms").glob("*.json")):
+    if not rf_.name.startswith("_"):
+        _room_local_flags |= set((json.loads(rf_.read_text(encoding="utf-8")).get("flags") or {}).keys())
+
+
+def check_conditions(ctx: str, o: dict) -> None:
+    """Условия реплики или постановки: флаги if / unless / if_any известны; switch — переключатель meta.json."""
+    for k in ("if", "unless", "if_any"):
+        for fl in o.get(k, []) or []:
+            if fl not in granted_flags and fl not in declared_flags and fl not in _room_local_flags \
+                    and not fl.startswith(("done_", "has_", "q0", "q1", "v0", "board_", "pavel_answer_", "tikhon_told_", "beam_")):
+                err(f"{ctx}: условие {k} — неизвестный флаг {fl}")
+    sw = o.get("switch")
+    if sw:
+        name = sw.replace("!=", "=").split("=", 1)[0]
+        if name not in _switches:
+            err(f"{ctx}: switch {sw!r} — нет переключателя {name} в meta.json → switches")
+
+
 _sfx_doc = load("sfx.json") if (STORY / "sfx.json").exists() else {}
 _sfx_ids = set((_sfx_doc.get("sounds") or {}).keys())
 for s in scenes:
@@ -388,6 +414,34 @@ for s in scenes:
         for snd in st.get("sounds", []) or []:
             if _sfx_ids and snd.get("id") not in _sfx_ids:
                 err(f"{sctx}: звука {snd.get('id')} нет в sfx.json (новых звуков не заводим)")
+        # блоки 3–4: кадр поверх мира (FrameView) — комната-картина с "frame": true; "" — убрать кадр
+        if "frame" in st and st["frame"] != "":
+            if st["frame"] not in frame_rooms:
+                err(f"{sctx}: кадр {st['frame']} — нет data/story/rooms/{st['frame']}.json с \"frame\": true")
+        for fl in st.get("sets", []) or []:
+            if fl not in granted_flags and fl not in declared_flags:
+                err(f"{sctx}: sets {fl} — флаг нигде не описан и не выдаётся")
+        check_conditions(sctx, st)
+    # условия реплик (if / unless / if_any / switch): флаги известны, переключатель есть в meta.json
+    for i, ln in enumerate(s.get("mandatory_lines", [])):
+        check_conditions(f"{s['id']}.mandatory_lines[{i}]", ln)
+    # крупный план посреди сцены (mechanics: окно ворота M25): номер реплики, флаг «сделано», тип
+    for i, mc in enumerate(s.get("mechanics", []) or []):
+        mctx = f"{s['id']}.mechanics[{i}]"
+        at = mc.get("at")
+        if not (isinstance(at, int) and 0 <= at < max(lines_n, 1)):
+            err(f"{mctx}: at {at!r} — номер реплики 0..{lines_n - 1}")
+        until = mc.get("until", "")
+        sets_ = [f for ev in (mc.get("spec", {}).get("events") or {}).values() for f in ev.get("sets", [])]
+        if not until or until not in sets_:
+            err(f"{mctx}: until {until!r} должен ставиться событием крупного плана (spec.events.*.sets)")
+        if mc.get("spec", {}).get("type") not in SCENE_MECHANICS:
+            err(f"{mctx}: тип {mc.get('spec', {}).get('type')!r} — есть {', '.join(SCENE_MECHANICS)}")
+    ef = s.get("end_frame")
+    if ef is not None:
+        for e_ in ([{"frame": ef}] if isinstance(ef, str) else ef):
+            if e_.get("frame") not in frame_rooms:
+                err(f"{s['id']}.end_frame: {e_.get('frame')} — не кадр (rooms/*.json с \"frame\": true)")
     cp = s.get("checkpoint")
     if cp:
         if not cp.get("slot") or cp["slot"] in ("auto", "quick", "1", "2", "3", "pre_finale"):
@@ -408,8 +462,9 @@ if total_cross >= 8:
 counts = {"main": len(mains), "minor": len(minors), "quest": len(quests)}
 # Число сцен по сценарию: 35 — день первый с «Ночью у печи» N01 (блок 1, 22.10); день 2 переписан по
 # Docs/SCENARIO_FINAL.md (блок 2: E2 — 9 основных, утро — в конце N01; E3 — 8; прежние V04, V05 сняты вместе с эхом и
-# наградой Павла) — 41/10/10. Переписка следующих блоков меняет числа здесь.
-expected = {"main": 41, "minor": 10, "quest": 10}
+# наградой Павла) — 41/10/10. Блоки 3–4 (22.10): E4 — 10 основных (M19–M23d), E5 — 3 (M24 — вечер третьего дня после
+# слияния совета с мельницей по D21, M25, M26); прежние E6/E7 и V06–V12 сняты вместе со старой цепью — 38/3/10.
+expected = {"main": 38, "minor": 3, "quest": 10}
 for k, v in expected.items():
     if counts[k] != v:
         err(f"сцен типа {k}: {counts[k]}, ожидалось {v}")

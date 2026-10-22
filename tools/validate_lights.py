@@ -147,9 +147,10 @@ def main() -> int:
         if not room_path.exists():
             err(f"{ctx0}: нет комнаты data/story/rooms/{rid}.json")
             continue
-        if rid not in in_scope:
-            err(f"{ctx0}: комната {rid} не в in_scope")
+        # кадр FrameView (блоки 3–4, rooms/<id>.json "frame": true — ужин эпилога со свечой) — не локация, но свет тот же
         room = load(room_path)
+        if rid not in in_scope and not room.get("frame"):
+            err(f"{ctx0}: комната {rid} не в in_scope")
         effect_ids = {e.get("id") for e in room.get("effects", [])}
         for eid in data.get("suppress_effects", []):
             if eid not in effect_ids:

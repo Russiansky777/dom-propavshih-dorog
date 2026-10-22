@@ -1,0 +1,128 @@
+{
+  "id": "F_mill_manager",
+  "frame": true,
+  "_art": "M23b (с D21 — совет вчетвером на мельнице): двор мельницы (фон M1 — тот же файл, что у комнаты M1) — Павел, вернувшийся старик-управляющий, Илья, Агата.",
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/M1/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "pavel",
+      "image": "res://assets/rooms/F_mill_manager/pavel.png",
+      "compose": {
+        "char": "pavel",
+        "feet": [
+          600,
+          575
+        ],
+        "height": 205,
+        "dir": 7,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.95,
+          0.93,
+          0.9
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "manager",
+      "image": "res://assets/rooms/F_mill_manager/manager.png",
+      "compose": {
+        "char": "manager",
+        "feet": [
+          790,
+          590
+        ],
+        "height": 195,
+        "dir": 1,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.95,
+          0.93,
+          0.9
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "ilya",
+      "image": "res://assets/rooms/F_mill_manager/ilya.png",
+      "compose": {
+        "char": "ilya",
+        "feet": [
+          975,
+          600
+        ],
+        "height": 215,
+        "dir": 1,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.95,
+          0.93,
+          0.9
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "agata",
+      "image": "res://assets/rooms/F_mill_manager/agata.png",
+      "compose": {
+        "char": "agata",
+        "feet": [
+          1130,
+          640
+        ],
+        "height": 210,
+        "dir": 6,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.95,
+          0.93,
+          0.9
+        ],
+        "shadow": 0.35
+      }
+    }
+  ],
+  "effects": [],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

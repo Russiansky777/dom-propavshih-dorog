@@ -1,0 +1,271 @@
+{
+  "id": "S1",
+  "_art": "Партия 6 (ChatGPT 22.10, assets/incoming/_meta_p46): S1_bg.png — нижняя улица Ольховки зимой: дом с крыльцом слева, на заборе слева деревянная вывеска (пустая на фоне; крупный план closeup_street_sign — «Ольховая улица»), тропа вглубь к реке, избы и река справа. Вернулась первой из пропавших троп вместе с общим временем (M21b); стояла пустой ещё до беды (A6). Копия — tools/import_room_art.py S1.",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/S1_bg.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/S1/bg.png",
+    "wall": "#a8b2c4",
+    "floor": "#e2e6ee",
+    "accent": "#7a5a3a",
+    "horizon": 420
+  },
+  "walkable": [
+    [
+      460,
+      1075
+    ],
+    [
+      560,
+      930
+    ],
+    [
+      640,
+      800
+    ],
+    [
+      690,
+      640
+    ],
+    [
+      700,
+      520
+    ],
+    [
+      730,
+      430
+    ],
+    [
+      790,
+      420
+    ],
+    [
+      830,
+      520
+    ],
+    [
+      880,
+      650
+    ],
+    [
+      1000,
+      800
+    ],
+    [
+      1200,
+      950
+    ],
+    [
+      1330,
+      1075
+    ]
+  ],
+  "no_walk_samples": [
+    [
+      200,
+      900,
+      "сугроб и забор слева"
+    ],
+    [
+      1700,
+      900,
+      "сугроб справа"
+    ],
+    [
+      300,
+      300,
+      "дом слева"
+    ]
+  ],
+  "walk_samples": [
+    [
+      900,
+      1000
+    ],
+    [
+      760,
+      560
+    ],
+    [
+      1000,
+      850
+    ],
+    [
+      650,
+      900
+    ]
+  ],
+  "depth": {
+    "top_y": 420,
+    "bottom_y": 1075,
+    "scale_top": 0.22,
+    "scale_bottom": 1.15
+  },
+  "_depth_note": "Тропа уходит вглубь к реке: у вывески (y ≈ 930) Агата ≈ 0,94 → 325 px — вывеска на заборе ≈ 0,4 м высотой (80 px) при заборе ≈ 1,2 м.",
+  "layers": [],
+  "effects": [
+    {
+      "id": "snow",
+      "type": "snow",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "amount": 80,
+      "z": 4000
+    }
+  ],
+  "spawns": {
+    "default": [
+      900,
+      950
+    ],
+    "from_O4": [
+      900,
+      1000
+    ]
+  },
+  "props": [],
+  "hotspots": [
+    {
+      "id": "street_sign",
+      "kind": "object",
+      "action_anim": "reach",
+      "label": "@S1.street_sign.label",
+      "rect": [
+        210,
+        622,
+        265,
+        100
+      ],
+      "stand": [
+        620,
+        950
+      ],
+      "draw": false,
+      "pick_priority": 2,
+      "_note": "блок 5, Q09: старая вывеска на заборе. Первый клик — крупный план (closeup_street_sign: «Ольховая улица»), потом выбор: оставить на месте или унести в класс; след — реплика за ужином.",
+      "use": {
+        "sets": [
+          "q09_seen_sign"
+        ],
+        "text": "@S1.street_sign.use",
+        "once_flag": "q09_seen_sign"
+      },
+      "view": {
+        "id": "street_sign",
+        "type": "papers",
+        "title": "@S1.street_sign.title",
+        "close_label": "@ui.close",
+        "unless": [
+          "q09_seen_sign"
+        ],
+        "pictures": [
+          {
+            "image": "res://assets/closeups/closeup_street_sign.png",
+            "rect": [
+              260,
+              130,
+              1400,
+              0
+            ],
+            "angle_deg": 0.0
+          }
+        ]
+      },
+      "choice": {
+        "prompt": "@S1.street_sign.prompt",
+        "requires": {
+          "flags": [
+            "q09_seen_sign"
+          ]
+        },
+        "once_any": true,
+        "options": [
+          {
+            "id": "A",
+            "label": "@S1.street_sign.opt_outside",
+            "sets": "q09_original_outside"
+          },
+          {
+            "id": "B",
+            "label": "@S1.street_sign.opt_class",
+            "sets": "q09_original_in_classroom"
+          }
+        ]
+      },
+      "look": "@S1.street_sign.look"
+    },
+    {
+      "id": "house",
+      "kind": "object",
+      "label": "@S1.house.label",
+      "rect": [
+        60,
+        60,
+        520,
+        430
+      ],
+      "stand": [
+        650,
+        880
+      ],
+      "draw": false,
+      "look": "@S1.house.look"
+    },
+    {
+      "id": "river",
+      "kind": "object",
+      "label": "@S1.river.label",
+      "rect": [
+        1200,
+        250,
+        720,
+        130
+      ],
+      "stand": [
+        820,
+        560
+      ],
+      "draw": false,
+      "look": "@S1.river.look"
+    }
+  ],
+  "exits": [
+    {
+      "to": "O4",
+      "label": "@S1.exit_O4.label",
+      "side": "bottom",
+      "x": 900,
+      "cue": "down",
+      "spawn": "from_S1",
+      "draw": false
+    }
+  ],
+  "scenes": {
+    "Q09": {
+      "complete_when": [
+        {
+          "any": [
+            "q09_original_outside",
+            "q09_original_in_classroom"
+          ]
+        }
+      ]
+    }
+  },
+  "flags": {
+    "q09_seen_sign": "На нижней улице — старая вывеска «Ольховая улица»"
+  }
+}

@@ -145,6 +145,71 @@ func load_game(slot: String) -> bool:
 	return ok
 
 
+## Start point (data/story/start_points.json; web `?start=<id>`, desktop `-- --start=<id>`): the state after the
+## story up to `done_through` — every main scene up to it (in story order) done with its grants and the flags its
+## room needed to complete (`complete_when`), the items it gave in the bag unless used up (items.json consumed),
+## plus the point's own `flags` (the player's choices, room states) — then `room`/`spawn`. For the Director to
+## check a later block without replaying the earlier ones; a normal new game never goes through here.
+func start_at(point_id: String) -> bool:
+	var p: Dictionary = StoryData.start_points.get(point_id, {})
+	if p.is_empty():
+		push_warning("RoomManager: no start point '%s'" % point_id)
+		return false
+	GameState.reset()
+	var upto := String(p.get("done_through", ""))
+	var last_goal := ""
+	var last_scene := ""
+	for id in StoryData.scene_order:
+		var sc: Dictionary = StoryData.scene(id)
+		if String(sc.get("type", "")) != "main":
+			continue
+		GameState.set_flag("started_" + id, true)
+		GameState.set_flag("done_" + id, true)
+		for f in sc.get("grants", {}).get("flags", []):
+			GameState.set_flag(String(f), true)
+		for it in sc.get("grants", {}).get("items", []):
+			var iid := String(it)
+			GameState.set_flag("has_" + iid, true)
+			var meta: Dictionary = StoryData.item(iid)
+			if bool(meta.get("inventory", false)) and not bool(meta.get("consumed", false)) and not GameState.has_item(iid):
+				GameState.add_item(iid)
+		for rid in StoryData.scene_trigger_rooms(id):
+			var cw = StoryData.room(rid).get("scenes", {}).get(id, {}).get("complete_when", [])
+			for c in (cw if cw is Array else [cw]):
+				for f in c.get("all", []):
+					GameState.set_flag(String(f), true)
+				if not c.get("any", []).is_empty():
+					GameState.set_flag(String(c["any"][0]), true)
+		if sc.has("goal"):
+			last_goal = String(sc["goal"])
+			last_scene = id
+		if id == upto:
+			break
+	# Optional scenes of the days before (V01–V03 of day one): done, so they do not play on arrival; first-entry
+	# texts of every room (on_enter once_flag) count as seen.
+	var upto_ep := int(StoryData.scene(upto).get("episode", 0))
+	for id in StoryData.scene_order:
+		var sc: Dictionary = StoryData.scene(id)
+		if String(sc.get("type", "")) == "minor" and int(sc.get("episode", 0)) <= upto_ep:
+			GameState.set_flag("done_" + id, true)
+	for rid in StoryData.rooms.keys():
+		for oe in StoryData.room(String(rid)).get("on_enter", []):
+			if String(oe.get("once_flag", "")) != "":
+				GameState.set_flag(String(oe["once_flag"]), true)
+	for f in p.get("flags", []):
+		GameState.set_flag(String(f), true)
+	for f in p.get("unset", []):
+		GameState.set_flag(String(f), false)
+	for it in p.get("remove_items", []):
+		GameState.remove_item(String(it))
+	for it in p.get("add_items", []):
+		if not GameState.has_item(String(it)):
+			GameState.add_item(String(it))
+	if last_goal != "":
+		GameState.set_goal(last_goal, last_scene)
+	return change_room(String(p.get("room", StoryData.start_location)), String(p.get("spawn", "default")))
+
+
 ## Clears story state and starts from `room_id`/`spawn_id` (defaults: locations.json `start`).
 func new_game(room_id: String = "", spawn_id: String = "default") -> bool:
 	GameState.reset()

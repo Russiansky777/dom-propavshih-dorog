@@ -8,6 +8,7 @@ extends Node
 @onready var closeup: CanvasLayer = $Closeup
 @onready var closeup_view: CanvasLayer = get_node_or_null("CloseupView")
 @onready var mechanic_view: CanvasLayer = get_node_or_null("MechanicView")
+@onready var frame_view: CanvasLayer = get_node_or_null("FrameView")
 
 var _last_hint: String = ""
 var _probe_dirty: bool = false
@@ -31,13 +32,18 @@ func _ready() -> void:
 	StoryRunner.view_closed.connect(_mark_probe)
 	StoryRunner.mechanic_opened.connect(_mark_probe)
 	StoryRunner.mechanic_closed.connect(_mark_probe)
+	StoryRunner.frame_changed.connect(func(_f, _h): _mark_probe())
 	StoryRunner.item_selection_changed.connect(func(_i): _mark_probe())
 	player.walk_started.connect(func(_t): _mark_probe())
 	player.arrived.connect(func(_p): _mark_probe())
 
 	if not StoryData.loaded:
 		push_error("Main: story data failed to load; see errors above")
-	RoomManager.new_game()
+	# A start point for checking a later block (data/story/start_points.json): web `?start=<id>`, desktop
+	# `-- --start=<id>`. Without one — a new game from the post office, as always.
+	var sp := _start_point_arg()
+	if sp == "" or not RoomManager.start_at(sp):
+		RoomManager.new_game()
 	_publish_probe_state()
 	if OS.has_feature("web"):
 		# window.probePause(true/false): freezes the tree so a screenshot and the published state
@@ -86,6 +92,16 @@ func _on_probe_pause(args: Array) -> void:
 			sh.visible = bool(args[2])
 	get_tree().paused = paused
 	_publish_probe_state()
+
+
+func _start_point_arg() -> String:
+	for a in OS.get_cmdline_user_args():
+		if String(a).begins_with("--start="):
+			return String(a).substr(8)
+	if OS.has_feature("web"):
+		var v = JavaScriptBridge.eval("(new URLSearchParams(window.location.search)).get('start') || ''", true)
+		return String(v) if v != null else ""
+	return ""
 
 
 func _on_hint_shown(text: String) -> void:
@@ -144,6 +160,7 @@ func _publish_probe_state() -> void:
 		"puzzle": closeup.call("probe_positions") if closeup.has_method("probe_positions") else {},
 		"view": closeup_view.call("probe") if closeup_view != null else {},
 		"mechanic": mechanic_view.call("probe") if mechanic_view != null else {},
+		"frame": frame_view.call("probe") if frame_view != null else {},
 		"ticks": Time.get_ticks_msec(),
 		"physics_frames": Engine.get_physics_frames(),
 	}

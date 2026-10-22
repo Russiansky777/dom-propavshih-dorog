@@ -1,0 +1,124 @@
+{
+  "id": "EP_beam",
+  "frame": true,
+  "_art": "Эпилог: торец первого прогона (closeup_beam_end, партия 6) с надписью, которую выбрала Агата в M25 (или чистый).",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/closeup_beam_end.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/EP_beam/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "cut_dunya",
+      "text": "@EP.beam.written_dunya",
+      "rect": [
+        300,
+        230,
+        420,
+        160
+      ],
+      "font": "italic",
+      "font_size": 78,
+      "color": "#3b2412",
+      "alpha": 0.86,
+      "angle_deg": -4.0,
+      "if": [
+        "beam_dunya"
+      ],
+      "_stub": "Надпись ножом на торце — текст игры шрифтом игры поверх чистого торца (партия 6: «надпись отсутствует намеренно, для последующего наложения»)"
+    },
+    {
+      "id": "cut_roads",
+      "text": "@EP.beam.written_roads",
+      "rect": [
+        290,
+        200,
+        440,
+        240
+      ],
+      "font": "italic",
+      "font_size": 52,
+      "color": "#3b2412",
+      "alpha": 0.86,
+      "angle_deg": -4.0,
+      "if": [
+        "beam_roads"
+      ],
+      "_stub": "Надпись ножом на торце — текст игры шрифтом игры поверх чистого торца (партия 6: «надпись отсутствует намеренно, для последующего наложения»)"
+    },
+    {
+      "id": "cut_date",
+      "text": "@EP.beam.written_date",
+      "rect": [
+        300,
+        230,
+        420,
+        160
+      ],
+      "font": "italic",
+      "font_size": 56,
+      "color": "#3b2412",
+      "alpha": 0.86,
+      "angle_deg": -4.0,
+      "if": [
+        "beam_date"
+      ],
+      "_stub": "Надпись ножом на торце — текст игры шрифтом игры поверх чистого торца (партия 6: «надпись отсутствует намеренно, для последующего наложения»)"
+    }
+  ],
+  "effects": [
+    {
+      "id": "snow",
+      "type": "snow",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "amount": 70,
+      "z": 4000
+    }
+  ],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

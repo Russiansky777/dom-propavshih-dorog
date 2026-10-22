@@ -1,0 +1,88 @@
+{
+  "id": "EP_tamara",
+  "frame": true,
+  "_art": "Эпилог: Тамара несёт почту по мосту (ep_tamara_bridge, партия 5 — окружение без персонажей).",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/ep_tamara_bridge.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/EP_tamara/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "tamara",
+      "image": "res://assets/rooms/EP_tamara/tamara.png",
+      "compose": {
+        "char": "tamara",
+        "feet": [
+          1490,
+          655
+        ],
+        "height": 300,
+        "dir": 3,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.98,
+          0.97
+        ],
+        "shadow": 0.35
+      }
+    }
+  ],
+  "effects": [
+    {
+      "id": "snow",
+      "type": "snow",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "amount": 70,
+      "z": 4000
+    }
+  ],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

@@ -152,9 +152,9 @@
       "inventory": true,
       "source_location": "M3",
       "source_scene": "M13",
-      "use": "Последняя запись управляющего; правило спуска пруда — по зарубке и ждать; рабочая отметка воды для помола",
+      "use": "Последняя запись управляющего: «Затвор на ночь закрыт. Ключ на гвозде. Ушёл домой»; правило спуска пруда — по зарубке и ждать; рабочая отметка воды для помола. Вернувшийся управляющий спрашивает про затвор (M23b)",
       "consumed": false,
-      "later_use": ["M24"]
+      "later_use": ["M23b"]
     },
     {
       "id": "key_sluice",
@@ -181,9 +181,9 @@
       "inventory": true,
       "source_location": "R1",
       "source_scene": "M17",
-      "use": "Пустая лодка вернулась с ней с того берега (M17): Нина вплетала её Агате в косу на праздники",
+      "use": "Пустая лодка вернулась с ней с того берега (M17): Нина вплетала её Агате в косу на праздники. В горнице можно отдать маме — она вплетёт её снова (необязательно); лента остаётся у Агаты",
       "consumed": false,
-      "later_use": ["M19"]
+      "later_use": ["M19c"]
     },
     {
       "id": "pocket_watch",
@@ -191,36 +191,9 @@
       "inventory": true,
       "source_location": "Z1",
       "source_scene": "M01",
-      "use": "Сравнение хода с местными часами в M19 и M22",
+      "use": "Карманные часы Агаты: по ним видно, что мамины ходики в зеркале бегут в 20 раз быстрее (M15а), а в горнице — идут вровень (M19)",
       "consumed": false,
-      "later_use": ["M19", "M22"]
-    },
-    {
-      "id": "key_gate",
-      "name": "Ключ хозяйственной калитки",
-      "inventory": true,
-      "source_location": "H3",
-      "source_scene": "M22",
-      "use": "Открывает обычный путь O3–S1",
-      "consumed": false
-    },
-    {
-      "id": "notebooks_evdokia",
-      "name": "Тетради Евдокии",
-      "inventory": true,
-      "source_location": "O3",
-      "source_scene": "M21",
-      "use": "Связывают действия Павла, отсечение и порядок восстановления",
-      "consumed": false
-    },
-    {
-      "id": "closing_sign",
-      "name": "Особый закрывающий знак",
-      "inventory": false,
-      "source_location": "S1",
-      "source_scene": "M23",
-      "use": "Найден под кожухом насоса; возвращается в исходное основание S1 в M25",
-      "consumed": false
+      "later_use": ["M19c"]
     },
     {
       "id": "mirror_home",
@@ -228,44 +201,7 @@
       "inventory": false,
       "source_location": "H3",
       "source_scene": "M04",
-      "use": "Перевозится со своей рамой в R4 (M27); после установки показывает H3",
-      "consumed": false
-    },
-    {
-      "id": "mirror_pier",
-      "name": "Пристанское зеркало ЗП",
-      "inventory": false,
-      "source_location": "R4",
-      "source_scene": "M22",
-      "use": "Перевозится со своей рамой в H3 (M27); после установки показывает R4",
-      "consumed": false,
-      "_legacy_note": "Прежняя M18 (R4 с зеркалом) снята финальным сценарием; выдача перенесена в старую M22, чтобы цепочка E4–E7 проходила validate_story.py до её переписки блоками 3–4."
-    },
-    {
-      "id": "pier_door_leaf",
-      "name": "Полотно пристанской двери",
-      "inventory": false,
-      "source_location": "R4",
-      "source_scene": "M29",
-      "use": "Перевозится в H3; коробка и порог остаются в R4",
-      "consumed": false
-    },
-    {
-      "id": "signal_cards",
-      "name": "Карточки с символами",
-      "inventory": true,
-      "source_location": "O3",
-      "source_scene": "M29",
-      "use": "Немая связь через зеркала: круг, черта, угол",
-      "consumed": false
-    },
-    {
-      "id": "resident_list",
-      "name": "Список жителей Нины",
-      "inventory": true,
-      "source_location": "O3",
-      "source_scene": "M20",
-      "use": "22 живых жителя; организация доступа в M32",
+      "use": "Домашнее зеркало на своём месте в галерее: показывает обычное отражение (вещь на родном месте служит своему месту)",
       "consumed": false
     }
   ]

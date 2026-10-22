@@ -1,0 +1,88 @@
+{
+  "id": "EP_pavel",
+  "frame": true,
+  "_art": "Эпилог: Павел у рейки уровня, мельница мелет (ep_pavel, партия 5).",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/ep_pavel.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/EP_pavel/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "pavel",
+      "image": "res://assets/rooms/EP_pavel/pavel.png",
+      "compose": {
+        "char": "pavel",
+        "feet": [
+          830,
+          690
+        ],
+        "height": 380,
+        "dir": 6,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.97,
+          0.96,
+          0.96
+        ],
+        "shadow": 0.35
+      }
+    }
+  ],
+  "effects": [
+    {
+      "id": "snow",
+      "type": "snow",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "amount": 70,
+      "z": 4000
+    }
+  ],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

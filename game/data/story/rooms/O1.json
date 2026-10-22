@@ -17,6 +17,11 @@
     {"id": "teacher_chalk_patch", "image": "res://assets/rooms/O1/patch_teacher_chalk.png", "_note": "18.10: мелки, нарисованные на учительском столе фона, убраны заплаткой из окрестной текстуры (tools/make_items_layers.py, cv2.inpaint) — мел один, на парте"},
     {"id": "chalk_desk", "image": "res://assets/rooms/O1/state_chalk_desk.png", "unless": ["has_chalk"], "occluder": true, "z": 1081, "_note": "Директор 18.10: «мел … положить на ученический стол, чтобы было видно». Кусочек мела на левой парте переднего плана, с тенью, масштаб парты; поверх парт (1080), пока не взят"},
     {"id": "bird_mark", "image": "res://assets/rooms/O1/state_bird_mark.png", "if": ["v03_marked"], "_note": "V03 «Оставить свою пометку»: строчка карандашом на полях картинки рядом с птицей"},
+    {"id": "nina_answer_here", "text": "@O1d.board.written_answer_here", "rect": [880, 432, 480, 50], "font": "italic", "font_size": 34, "color": "#ecebe4", "alpha": 0.72, "angle_deg": -1.5, "if": ["board_here", "nina_answered_board"], "_stub": "Ответ Нины мелом под надписью дочери (M22) — шрифт игры до рисунка мелом (заявка в отчёте блока 3)"},
+    {"id": "nina_answer_mama", "text": "@O1d.board.written_answer_mama", "rect": [930, 372, 380, 62], "font": "italic", "font_size": 46, "color": "#ecebe4", "alpha": 0.72, "angle_deg": -1.5, "if": ["board_mama", "nina_answered_board"], "_stub": "Ответ Нины «Дождалась» (M22)"},
+    {"id": "nina_answer_ilya", "text": "@O1d.board.written_answer_ilya", "rect": [870, 434, 490, 46], "font": "italic", "font_size": 28, "color": "#ecebe4", "alpha": 0.72, "angle_deg": -1.5, "if": ["board_ilya", "nina_answered_board"], "_stub": "Ответ Нины про лодки с дымом (M22)"},
+    {"id": "nina_answer_date", "text": "@O1d.board.written_answer_date", "rect": [1110, 186, 220, 52], "font": "italic", "font_size": 34, "color": "#ecebe4", "alpha": 0.72, "angle_deg": -1.0, "if": ["nina_answered_board"], "_stub": "Первое общее число в углу доски (M22, A3): Нина написала своё, потом Агатино под ним и стёрла верхнее — на доске остаётся Агатино"},
+    {"id": "ulyana_bird_reply", "text": "@O1d.bird.written_reply", "rect": [1560, 216, 150, 30], "font": "italic", "font_size": 17, "color": "#4b4a52", "alpha": 0.85, "angle_deg": -3.0, "if": ["v03_marked", "nina_answered_board"], "_stub": "Ответ Ульяны карандашом рядом с пометкой Агаты (M22)"},
     {"id": "desks", "image": "res://assets/rooms/O1/fg_desks.png", "occluder": true, "z": 1080}
   ],
   "spawns": {"default": [1000, 740], "from_H3": [450, 760], "from_O2": [1760, 740]},
@@ -73,6 +78,20 @@
       "look": "@O1.chalk.look"
     },
     {
+      "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1365, 280, 130, 455], "stand": [1180, 765], "draw": false, "pick_priority": 3,
+      "image": "res://assets/characters/nina/front.png",
+      "visible_if": ["done_M21b"], "hidden_if": ["done_M22"],
+      "_rect_note": "блок 3 (M22): Нина у доски справа, ноги y 735 (масштаб 1,37 → Нина 1,62 м ≈ 460 px); уходит в дом сестры после M22",
+      "talk": {"after_text": "@O1d.nina.after"}
+    },
+    {
+      "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [650, 390, 100, 355], "stand": [905, 760], "draw": false, "pick_priority": 3,
+      "image": "res://assets/characters/ulyana/front.png",
+      "visible_if": ["done_M21b"],
+      "_rect_note": "блок 3: Ульяна у учительского стола, ноги y 745 (масштаб 1,38 → 1,25 м ≈ 360 px); с третьего дня учится здесь",
+      "talk": {"after_text": "@O1d.ulyana.after"}
+    },
+    {
       "id": "bird_drawing", "kind": "object", "label": "@O1.bird_drawing.label", "rect": [1440, 150, 210, 300], "stand": [1540, 770], "color": "#e0d8c0", "draw": false,
       "visible_if": ["seen_class_traces"],
       "states": [{"if": ["v03_marked"], "label": "@O1.bird_drawing.label_marked"}],
@@ -92,7 +111,8 @@
     "M06": {"complete_when": [{"any_n": 2, "flags": ["o1_seen_sack", "o1_seen_notebooks", "o1_seen_board_task"]}]},
     "M07": {"complete_when": [{"all": ["has_plan_crossing"]}]},
     "M08": {"complete_when": [{"all": ["observed_path_loop"]}]},
-    "V03": {"complete_when": [{"any": ["v03_marked", "v03_left"]}], "complete_text": "@O1.v03.done"}
+    "V03": {"complete_when": [{"any": ["v03_marked", "v03_left"]}], "complete_text": "@O1.v03.done"},
+    "M22": {"trigger": "enter"}
   },
   "flags": {
     "o1_seen_sack": "Замечен залатанный мешок в классе",

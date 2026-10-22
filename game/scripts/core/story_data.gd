@@ -17,6 +17,11 @@ var scene_order: Array[String] = []     # ids in file order (episodes first, the
 var rooms: Dictionary = {}              # room id -> room dict
 var rooms_index: Dictionary = {}
 var texts: Dictionary = {}              # key -> {text, draft}
+## Director's switches (data/story/meta.json → switches: the last shot, a word about Agata's future …): one
+## value each, so an answer of the Director is a one-line change. Lines and stagings name them in `switch`.
+var switches: Dictionary = {}
+## Start points (data/story/start_points.json): a state to start from for checking a later part of the game.
+var start_points: Dictionary = {}
 var loaded: bool = false
 var load_errors: Array[String] = []
 
@@ -34,6 +39,7 @@ func reload() -> void:
 	_load_scenes()
 	_load_rooms()
 	_load_texts()
+	_load_meta()
 	loaded = load_errors.is_empty()
 	for e in load_errors:
 		push_error("StoryData: " + e)
@@ -157,6 +163,30 @@ func _load_rooms() -> void:
 		if doc == null:
 			continue
 		rooms[String(doc.get("id", name.get_basename()))] = doc
+
+
+func _load_meta() -> void:
+	var meta = _read_json(DATA_DIR + "/meta.json")
+	switches = meta.get("switches", {}) if meta is Dictionary else {}
+	start_points.clear()
+	if FileAccess.file_exists(DATA_DIR + "/start_points.json"):
+		var sp = _read_json(DATA_DIR + "/start_points.json")
+		if sp is Dictionary:
+			for p in sp.get("points", []):
+				start_points[String(p.get("id", ""))] = p
+
+
+## `switch` of a line or staging: "name" — the switch is true; "name=value" — it equals value.
+func switch_on(expr: String) -> bool:
+	var neg := expr.contains("!=")
+	var parts := expr.split("!=" if neg else "=", true, 1)
+	var v = switches.get(parts[0], null)
+	if v is Dictionary:
+		v = v.get("value", null)
+	if parts.size() == 2:
+		var eq: bool = v != null and str(v) == parts[1]
+		return not eq if neg else eq
+	return v != null and bool(v)
 
 
 func _load_texts() -> void:

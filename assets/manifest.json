@@ -843,6 +843,108 @@
       ],
       "owner": "Claude (Meshy text-to-image, конвейер pipeline/2d)",
       "use": "Сумка: предметы mirror_mill, bell_clapper (сейчас заплатка с буквой). Остальные иконки дня второго готовы: clamp, key_sluice, journal_manager, school_ribbon"
+    },
+    {
+      "id": "O1_nina_answers",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
+      "spec": "Четыре слоя к O1_bg.png (1672×940), мел, рука Нины — ровнее и мельче Агатиной, под надписью дочери: «И я. Все двадцать лет. Мама» (под «Я была здесь. Агата»), «Дождалась» (под «Мама, я иду»), «Он и сейчас рисует лодки с дымом. Мама» (под «Илюша, я нашла твой рисунок»), и в правом верхнем углу доски дата «25 октября» (поверх стёртого другого числа — лёгкий след мела)",
+      "files": [
+        "incoming/O1_state_answer_here.png",
+        "incoming/O1_state_answer_mama.png",
+        "incoming/O1_state_answer_ilya.png",
+        "incoming/O1_state_date.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "data/story/rooms/O1.json → layers nina_answer_* (M22); до готовности — текст шрифтом игры"
+    },
+    {
+      "id": "O1_bird_reply",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
+      "spec": "Слой к O1_bg.png: детская подпись карандашом «И я тут была. Уля» рядом с пометкой Агаты у картинки с птицей (место — слой O1_state_bird_mark)",
+      "files": [
+        "incoming/O1_state_bird_reply.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json → ulyana_bird_reply (M22, если в день первый была пометка)"
+    },
+    {
+      "id": "H1_nina_coat",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
+      "spec": "Слой к H1_bg.png (1672×941): тёмное женское пальто на свободном крючке вешалки у двери (крючки ≈ 1045–1165 × 215–260 холста), рукав чуть распорот по шву",
+      "files": [
+        "incoming/H1_state_nina_coat.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "H1.json → nina_coat (M23c «вешает пальто на пустой крючок», Q03)"
+    },
+    {
+      "id": "EP_lesson_children",
+      "status": "requested",
+      "kind": "scene_layer",
+      "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
+      "spec": "Слой к ep_lesson.png (1672×941): 6–8 детей 7–12 лет за партами спиной и вполоборота к зрителю, зимняя одежда разных деревень (зареченские — купленное, ольховские — перешитое), без лиц крупно; задняя левая парта свободна (за ней Агата)",
+      "files": [
+        "incoming/ep_lesson_children.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/EP_lesson.json — кадр утреннего урока эпилога (C18)"
+    },
+    {
+      "id": "EP_dinner_family_seated",
+      "status": "requested",
+      "kind": "scene_layer",
+      "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
+      "spec": "Слой к ep_dinner.png: Нина (67, седая, тёмное платье, серая шаль), Илья (32, борода, фартук снят), его жена (≈30, платок, зелёная кофта) сидят за столом; Ульяна (8) — в двери из галереи; персонажи — по листам cast_v3 (или сидячие позы 3D)",
+      "files": [
+        "incoming/ep_dinner_family.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/EP_dinner.json — последний кадр игры; сейчас стоящие фигуры-вклейки"
+    },
+    {
+      "id": "EP_beam_carvings",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
+      "spec": "Три слоя к closeup_beam_end.png: вырезанная ножом на торце надпись «Дуня»; «Ольховка — Заречье» (в две строки); «26 октября» — свежая резьба по годовым кольцам",
+      "files": [
+        "incoming/EP_beam_cut_dunya.png",
+        "incoming/EP_beam_cut_roads.png",
+        "incoming/EP_beam_cut_date.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/EP_beam.json — кадр эпилога; сейчас шрифт игры"
+    },
+    {
+      "id": "O3_night",
+      "status": "requested",
+      "kind": "scene_layer",
+      "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
+      "spec": "Слой ночи к O3_bg.png (как O4_night к O4_bg): за окном тёмная зимняя ночь, горница освещена свечой на столе и лампадкой",
+      "files": [
+        "incoming/O3_night.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/O3.json — вечер второго дня и ночь (M19–M20); сейчас тон движка"
+    },
+    {
+      "id": "S1_sign_moved",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
+      "spec": "Слой к S1_bg.png: на заборе слева пустое место от снятой вывески (светлый прямоугольник, гвозди); и слой к O1_bg.png: та же вывеска «Ольховая улица» на стене класса у доски",
+      "files": [
+        "incoming/S1_state_sign_removed.png",
+        "incoming/O1_state_sign.png"
+      ],
+      "owner": "ChatGPT + Директор",
+      "use": "Q09 вариант B (вывеска в классе)"
     }
   ]
 }

@@ -1,0 +1,91 @@
+{
+  "id": "O4",
+  "_art": "Партия 4 (ChatGPT 22.10, assets/incoming/_meta_p46/README_RU.txt): O4_bg.png — улица Ольховки зимой: справа большой дом с крыльцом (дом Нины), у правого края крайний дом (Ильи), слева на горке дом с лестницей — школа, тропа к ней вверх налево; дорога вглубь — к реке и дальней опоре; правая дорога — на нижнюю улицу. O4_night.png — слой ночи всей сцены (окна горят), поверх фона в (0,0), пока не наступило утро третьего дня (morning_day3). Копии — tools/import_room_art.py O4.",
+  "art_source": {"files": {"bg.png": "assets/incoming/O4_bg.png", "night.png": "assets/incoming/O4_night.png"}, "canvas": [1672, 941], "alpha_min": 0,
+    "_note": "слои в координатах фона, (0,0) 1:1"},
+  "background": {"kind": "exterior", "image": "res://assets/rooms/O4/bg.png", "wall": "#9aa6b8", "floor": "#dfe4ec", "accent": "#7a5a3a", "horizon": 560},
+  "walkable": [[20, 1070], [20, 800], [120, 700], [200, 600], [250, 470], [330, 460], [330, 560], [480, 640], [640, 640], [690, 590], [760, 585], [800, 640], [870, 712], [1300, 712], [1420, 645], [1520, 645], [1600, 615], [1760, 595], [1900, 600], [1900, 1070]],
+  "no_walk_samples": [[1100, 640, "забор у дома Нины"], [1470, 470, "крыльцо дома Нины"], [500, 300, "дом на горке — школа"], [950, 450, "дома у реки"], [1800, 450, "крайний дом — Ильи"]],
+  "walk_samples": [[960, 850], [725, 640], [300, 520], [1470, 660], [1830, 640], [400, 900]],
+  "depth": {"top_y": 560, "bottom_y": 1070, "scale_top": 0.35, "scale_bottom": 1.12},
+  "_depth_note": "Рост Агаты = 345 px × scale (rooms/_index.json agata_ref). Дверь большого дома (порог y 545, верх 405, ≈ 2,0 м): у порога 0,327 → 113 px при ожидаемых 116; у забора (y 690) 0,55 → 190 px при штакетнике ≈ 1,1 м — 125 px.",
+  "height_refs": [{"what": "дверь большого дома (порог y 545, верх y 405)", "y": 545, "px": 140, "m": 2.0}],
+  "layers": [
+    {"id": "night", "image": "res://assets/rooms/O4/night.png", "unless": ["morning_day3"], "_note": "Вечер второго дня и ночь: окна горят (партия 4). С утра третьего дня — день как на фоне."}
+  ],
+  "effects": [
+    {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 90, "z": 4000}
+  ],
+  "spawns": {"default": [960, 850], "from_R3": [725, 660], "from_O3": [1470, 670], "from_O2": [300, 540], "from_S1": [1800, 650]},
+  "props": [],
+  "hotspots": [
+    {
+      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [420, 610, 130, 250], "stand": [660, 880], "draw": false, "pick_priority": 2,
+      "visible_if": ["done_M22"],
+      "_rect_note": "Тамара с мешком на левой стороне улицы, не на дороге к реке: ноги y 860 (масштаб 0,80 → Агата 276 px; Тамара 1,74 м ≈ 290)",
+      "talk": {"scene": "M23a", "after_text": "@O4.tamara.after"}
+    },
+    {
+      "id": "mitya", "kind": "npc", "label": "@char.mitya", "rect": [1580, 610, 110, 210], "stand": [1440, 840], "draw": false, "pick_priority": 2,
+      "visible_if": ["done_M22"],
+      "_rect_note": "Митя у забора Ильи с дощечкой (Q07): ноги y 820 (масштаб 0,74 → 255 px; Митя ≈ 1,82 м — 280 px)",
+      "talk": {"after_text": "@O4.mitya.after"}
+    },
+    {
+      "id": "mitya_board", "kind": "object", "action_anim": "reach", "label": "@O4.mitya_board.label", "rect": [1650, 690, 70, 60], "stand": [1440, 840], "draw": false, "pick_priority": 3,
+      "visible_if": ["done_M22"], "hidden_if": ["done_Q07"],
+      "_note": "блок 5, Q07: дощечка Мити с двадцатью зарубками (одна зарубка — одна зима вечерних дежурств у фонаря дальней опоры). Первый клик — крупный план (closeup_mitya_board), потом выбор: оставить Мите или отдать Пелагее; след — кадр эпилога EP_boat.",
+      "use": {"sets": ["q07_seen_board"], "text": "@O4.mitya_board.use", "once_flag": "q07_seen_board"},
+      "view": {"id": "mitya_board", "type": "papers", "title": "@O4.mitya_board.title", "close_label": "@ui.close", "unless": ["q07_seen_board"],
+        "pictures": [{"image": "res://assets/closeups/closeup_mitya_board.png", "rect": [260, 130, 1400, 0], "angle_deg": 0.0}]},
+      "choice": {"prompt": "@O4.mitya_board.prompt", "requires": {"flags": ["q07_seen_board"]}, "once_any": true,
+        "options": [
+          {"id": "A", "label": "@O4.mitya_board.opt_keep", "sets": "q07_board_with_mitya"},
+          {"id": "B", "label": "@O4.mitya_board.opt_mother", "sets": "q07_board_to_pelageya"}
+        ]},
+      "look": "@O4.mitya_board.look"
+    },
+    {
+      "id": "letters_bag", "kind": "object", "action_anim": "pick", "label": "@O4.letters_bag.label", "rect": [555, 800, 80, 66], "stand": [700, 900], "draw": false, "pick_priority": 3,
+      "visible_if": ["done_M23a"], "hidden_if": ["done_Q01"],
+      "_note": "блок 5, Q01: в мешке Тамары — письмо Аксинье от брата по прежнему адресу (closeup_envelope + адрес текстом игры). Первый клик — конверт крупно, потом выбор, как Аксинье получать почту; след — реплика Тамары в эпилоге.",
+      "use": {"sets": ["q01_seen_envelope"], "text": "@O4.letters_bag.use", "once_flag": "q01_seen_envelope"},
+      "view": {"id": "envelope", "type": "papers", "title": "@O4.letters_bag.title", "close_label": "@ui.close", "unless": ["q01_seen_envelope"],
+        "papers": [{"image": "res://assets/closeups/closeup_envelope.png", "image_size": [1672, 941], "text_rect": [420, 380, 820, 260], "text": "@O4.letters_bag.paper_address", "rect": [210, 140, 1500, 0], "font_size": 34, "ink": "#2a2117"}]},
+      "choice": {"prompt": "@O4.letters_bag.prompt", "requires": {"flags": ["q01_seen_envelope"]}, "once_any": true,
+        "options": [
+          {"id": "A", "label": "@O4.letters_bag.opt_nina", "sets": "q01_mail_at_nina"},
+          {"id": "B", "label": "@O4.letters_bag.opt_gallery", "sets": "q01_mail_at_gallery"}
+        ]},
+      "look": "@O4.letters_bag.look"
+    },
+    {
+      "id": "nina_house", "kind": "object", "label": "@O4.nina_house.label", "rect": [1000, 180, 380, 330], "stand": [1180, 730], "draw": false,
+      "look": "@O4.nina_house.look"
+    },
+    {
+      "id": "ilya_house", "kind": "object", "label": "@O4.ilya_house.label", "rect": [1720, 300, 200, 230], "stand": [1760, 640], "draw": false,
+      "look": "@O4.ilya_house.look"
+    },
+    {
+      "id": "river", "kind": "object", "label": "@O4.river.label", "rect": [700, 380, 300, 100], "stand": [740, 650], "draw": false,
+      "look": "@O4.river.look"
+    }
+  ],
+  "exits": [
+    {"to": "R3", "label": "@O4.exit_R3.label", "cue": "up", "rect": [640, 520, 170, 80], "stand": [728, 625], "spawn": "from_O4", "draw": false},
+    {"to": "O3", "label": "@O4.exit_O3.label", "cue": "door", "rect": [1395, 385, 110, 165], "stand": [1470, 660], "spawn": "from_O4", "draw": false},
+    {"to": "O2", "label": "@O4.exit_O2.label", "cue": "up", "rect": [210, 380, 170, 85], "stand": [290, 495], "spawn": "from_O4", "closed_text": "@O4.exit_O2.closed", "draw": false},
+    {"to": "S1", "label": "@O4.exit_S1.label", "cue": "right", "rect": [1790, 540, 130, 110], "stand": [1840, 640], "spawn": "from_O4", "closed_text": "@O4.exit_S1.closed", "draw": false}
+  ],
+  "scenes": {
+    "M19": {"trigger": "enter"},
+    "M23a": {"trigger": "talk:tamara"},
+    "Q01": {"complete_when": [{"any": ["q01_mail_at_nina", "q01_mail_at_gallery"]}]},
+    "Q07": {"complete_when": [{"any": ["q07_board_with_mitya", "q07_board_to_pelageya"]}]}
+  },
+  "flags": {
+    "q07_seen_board": "Митина дощечка: двадцать зарубок — двадцать зим у фонаря",
+    "q01_seen_envelope": "В мешке Тамары — письмо Аксинье по прежнему адресу"
+  }
+}

@@ -778,8 +778,9 @@ func _test_walkthrough() -> void:
 	_check(rm.current_room.get_node_or_null("npc_mitya") != null, "Mitya is a 3D figure at the far pier")
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
-	_check(not (await _go("O4")), "the path to the street is the end of the block")
-	_check(String(sr.current_beat.get("text_key", "")) == "ui.day2_end", "technical reaction «дальше не собрано»: %s" % str(sr.current_beat))
+	# Block 3 (22.10): the path leads up to the street of Olkhovka — the meeting with mother (M19) starts there.
+	_check(await _go("O4"), "the path leads up to the street of Olkhovka")
+	_check(gs.has_flag("started_M19"), "the meeting with mother begins on the street (M19)")
 	await _finish()
 	_check(gs.inventory.count("school_ribbon") == 1, "ribbon still once")
 	Engine.time_scale = 1.0

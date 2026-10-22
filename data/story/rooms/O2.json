@@ -108,10 +108,18 @@
       "color": "#b06060",
       "pick_priority": 2,
       "visible_if": ["mitten_placed"],
-      "hidden_if": ["mitten_taken_back"],
+      "hidden_if": ["mitten_taken_back", "school_path_open"],
       "_note": "Варежку на ступени можно поднять обратно (Docs/SCENARIO_FINAL.md, M08; раздел 9 «Варежка: оставить или забрать»): use.restores возвращает в сумку тот же предмет, один раз; прямоугольник — по слою mitten (непрозрачные пиксели 599–738 × 644–717)",
       "use": {"restores": ["mitten"], "sets": ["mitten_taken_back"], "text": "@O2.mitten.take", "once_flag": "mitten_taken_back"},
       "look": "@O2.mitten.look",
+      "draw": false
+    },
+    {
+      "id": "mitten_path", "action_anim": "pick", "kind": "pickup", "label": "@O2d.mitten_path.label", "rect": [585, 630, 165, 100], "stand": [640, 800], "color": "#b06060", "pick_priority": 3,
+      "visible_if": ["mitten_placed", "school_path_open"], "hidden_if": ["mitten_taken_back"],
+      "_note": "Блок 3 (M22, SCENARIO_FINAL §8): варежка всё ещё у ступени, но теперь она лежит на дороге, которая ведёт домой, — Агата поднимает её молча. Тот же предмет (use.restores), один раз; прежний хотспот mitten с этого дня скрыт.",
+      "use": {"restores": ["mitten"], "sets": ["mitten_taken_back", "mitten_found_on_path"], "text": "@O2d.mitten_path.take", "once_flag": "mitten_taken_back"},
+      "look": "@O2d.mitten_path.look",
       "draw": false
     },
     {
@@ -165,6 +173,7 @@
   },
   "flags": {
     "mitten_placed": "Варежка оставлена у ступени крыльца как метка",
-    "mitten_taken_back": "Варежку со ступени подняли обратно в сумку"
+    "mitten_taken_back": "Варежку со ступени подняли обратно в сумку",
+    "mitten_found_on_path": "Варежка подобрана на школьной тропе, которая снова ведёт домой"
   }
 }

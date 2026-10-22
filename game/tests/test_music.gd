@@ -12,8 +12,8 @@ extends SceneTree
 ##     two cross; the outgoing deck stops at the end;
 ##   - scene event: M10 in H2 → «mirror» over «home» (ducked under its line), scene end → home resumes
 ##     on its own deck where it was paused (not restarted);
-##   - finale (loop: false, until track_end): M33 → finale not ducked, holds through the scene end and
-##     M34, fades over end_fade_s at the end, then the room theme returns;
+##   - finale (loop: false, until track_end): the epilogue M26 → finale not ducked, holds through all its shots and
+##     the scene end, fades over end_fade_s at the end, then the room theme returns;
 ##   - dialogue ducking: scene lines lower by duck_dialogue_db over ≈0.4 s (gradual), narration does not;
 ##   - music volume: slider/setting → Music bus, kept in user:// settings (not in a save slot),
 ##     survives loading a save; 0 % mutes;
@@ -79,7 +79,7 @@ func _run() -> void:
 	await _test("Seamless loop: loop_crossfade_s before the end the track restarts on the other deck and crosses", _test_loop)
 	await _test("Dialogue ducking: scene lines −duck_dialogue_db over ≈0.4 s, narration not ducked", _test_duck)
 	await _test("Scene event M10 → mirror over home (ducked), scene end → home resumes on its deck", _test_scene_event)
-	await _test("Finale M33/M34: not ducked, holds past scene end, fades at the end, room theme returns", _test_finale)
+	await _test("Finale M26 (epilogue): not ducked, holds through every shot and past scene end, fades at the end, room theme returns", _test_finale)
 	await _test("Music volume: setting → Music bus, user:// settings (not the save slot), menu slider, 0 % mutes", _test_volume)
 	await _test("Web gating: nothing starts before the first user input; the first click starts the theme", _test_gating)
 	gs.reset()
@@ -311,37 +311,48 @@ func _test_scene_event() -> void:
 
 func _test_finale() -> void:
 	gs.reset()
-	_check(await _enter("H3", "home"), "H3: home did not settle")
-	gs.set_flag("finale_confirmed")   # M32 done: M33 starts in H3 by data
+	_check(await _enter("Z3", "roads"), "Z3: roads did not settle")
+	# The epilogue M26 (block 4, data/story/scenes/E5.json) starts by itself at the turn once the first span is laid.
+	gs.set_flag("done_M25")
 	await _frames(3)
-	if sr.active_scene != "M33":
-		sr.start_scene("M33")
+	if sr.active_scene != "M26":
+		sr.start_scene("M26")
 		await _frames(2)
-	_check(sr.active_scene == "M33", "M33 must be running, active scene '%s'" % sr.active_scene)
-	_check(md.target_theme == "finale", "M33: target %s" % md.target_theme)
+	_check(sr.active_scene == "M26", "M26 must be running, active scene '%s'" % sr.active_scene)
+	_check(md.target_theme == "finale", "M26: target %s" % md.target_theme)
 	var f: int = md.active_deck_index()
 	var starts: int = int(_deck(f)["starts"])
 	await _wait(md.crossfade_s + 0.5)
-	_check(md.dialogue_active() and absf(md.duck_db_now - md.duck_dialogue_db) < 0.05, "M33 line is dialogue (duck envelope down)")
+	while sr.is_staging():
+		await process_frame
+	await _frames(2)
+	_check(md.dialogue_active(), "M26 line is dialogue")
 	_check(absf(float(_deck(f)["volume_db"]) - float(md.themes["finale"]["volume_db"])) < 0.1,
 		"finale is in duck_except: %.2f dB, expected %.1f" % [_deck(f)["volume_db"], md.themes["finale"]["volume_db"]])
-	await _finish_dialogue()   # M33 completes → first_common_day → M34 starts in H3 by data
+	# Through every shot of the epilogue (stagings with frames) to its end.
+	var guard := 0
+	while not gs.has_flag("done_M26") and guard < 3000:
+		guard += 1
+		if sr.is_staging() or sr.current_beat.is_empty():
+			await process_frame
+			continue
+		if String(sr.current_beat.get("type", "")) == "options":
+			sr.choose(String(sr.current_options()[0]["id"]))
+		else:
+			sr.advance()
+		await _frames(2)
 	await _frames(4)
-	_check(gs.has_flag("done_M33"), "M33 must complete")
-	_check(md.target_theme == "finale", "after M33 the finale holds (until track_end), target %s" % md.target_theme)
-	await _finish_dialogue()
-	await _frames(4)
-	_check(gs.has_flag("done_M34"), "M34 must complete")
+	_check(gs.has_flag("done_M26"), "M26 must complete")
 	_check(md.target_theme == "finale" and md.active_deck_index() == f and int(_deck(f)["starts"]) == starts,
-		"finale continues through M34 on the same deck without restart")
+		"finale holds through all epilogue shots on the same deck without restart")
 	var length := float(_deck(f)["length"])
 	(md.get_child(f) as AudioStreamPlayer).seek(length - md.end_fade_s - 1.0)
 	await _wait(1.6)
 	_check(float(_deck(f)["fade_to"]) == 0.0 and float(_deck(f)["gain"]) < 0.95, "finale fades over its last end_fade_s (gain %.2f)" % _deck(f)["gain"])
 	await _wait(md.end_fade_s + 0.5)
 	_check(not _deck(f)["playing"], "finale must have ended")
-	_check(md.active_events.is_empty() and md.target_theme == "home", "after the finale: events %s, target %s" % [md.state()["events"], md.target_theme])
-	_check(await _wait_settled("home", md.crossfade_s + 2.0), "after the finale the room theme (home) returns")
+	_check(md.active_events.is_empty() and md.target_theme == "roads", "after the finale: events %s, target %s" % [md.state()["events"], md.target_theme])
+	_check(await _wait_settled("roads", md.crossfade_s + 2.0), "after the finale the room theme (roads) returns")
 
 
 func _test_volume() -> void:

@@ -1,0 +1,822 @@
+{
+  "_comment": "Тексты блоков 3–5 (E4–E5: M19–M26, Docs/SCENARIO_FINAL.md §8–9; необязательные истории Q01, Q03, Q07, Q08, Q09, письма Нины): осмотры, подписи, тексты крупных планов (тетради, список деревни, письма), ворот первого пролёта, надписи кадров эпилога. Все draft: true — текст доводит владелец текста (ChatGPT с Директором); голоса не записаны (после текстового прохода). Поле line {speaker, text} — слова персонажа рядом с Агатой или мысль Агаты от первого лица: показывается репликой и звучит голосом персонажа; text — запасной закадровый вариант. Обязательные реплики сцен — в scenes/E4.json, E5.json и quests.json.",
+  "lang": "ru",
+  "texts": {
+    "ui.checkpoint_day3": {
+      "text": "День третий: Ольховка",
+      "draft": true
+    },
+    "ui.checkpoint_day4": {
+      "text": "День четвёртый: мост",
+      "draft": true
+    },
+    "ui.the_end": {
+      "text": "Конец",
+      "draft": true
+    },
+    "ui.traces_title": {
+      "text": "Что осталось от твоих выборов:",
+      "draft": true
+    },
+    "ui.new_game_again": {
+      "text": "Начать заново",
+      "draft": true
+    },
+    "ui.page_prev": {
+      "text": "‹ Назад",
+      "draft": true
+    },
+    "ui.page_next": {
+      "text": "Дальше ›",
+      "draft": true
+    },
+    "ui.block3_end": {
+      "text": "Дальше — совет и мост. Эта часть игры ещё собирается.",
+      "draft": true
+    },
+    "O4.tamara.after": {
+      "text": "Читаю дальше, читаю. Двадцать лет набралось — а мешок один.",
+      "draft": true,
+      "line": {
+        "speaker": "tamara",
+        "text": "Читаю дальше, читаю. Двадцать лет набралось — а мешок один."
+      }
+    },
+    "O4.mitya.after": {
+      "text": "Дежурить у опоры больше не надо. Хожу теперь просто так — по мосту бы.",
+      "draft": true,
+      "line": {
+        "speaker": "mitya",
+        "text": "Дежурить у опоры больше не надо. Хожу теперь просто так — по мосту бы."
+      }
+    },
+    "O4.nina_house.label": {
+      "text": "Дом мамы",
+      "draft": true
+    },
+    "O4.nina_house.look": {
+      "text": "Мамин дом. Крыльцо то же, только ступеньку перестелили.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Мамин дом. Крыльцо то же, только ступеньку перестелили."
+      }
+    },
+    "O4.ilya_house.label": {
+      "text": "Дом Ильи",
+      "draft": true
+    },
+    "O4.ilya_house.look": {
+      "text": "Крайний дом — Ильи. Митя стучал сюда в ставню.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Крайний дом — Ильи. Митя стучал сюда в ставню."
+      }
+    },
+    "O4.river.label": {
+      "text": "Река",
+      "draft": true
+    },
+    "O4.river.look": {
+      "text": "Внизу река и дальняя опора. Оттуда я пришла — за Митиным фонарём.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Внизу река и дальняя опора. Оттуда я пришла — за Митиным фонарём."
+      }
+    },
+    "O4.exit_R3.label": {
+      "text": "К реке, к дальней опоре",
+      "draft": true
+    },
+    "O4.exit_O3.label": {
+      "text": "В дом мамы",
+      "draft": true
+    },
+    "O4.exit_O2.label": {
+      "text": "К школе",
+      "draft": true
+    },
+    "O4.exit_O2.closed": {
+      "text": "Тропа к школе обрывается в сугробе — дальше ни следа.",
+      "draft": true
+    },
+    "O4.exit_S1.label": {
+      "text": "На нижнюю улицу",
+      "draft": true
+    },
+    "O4.exit_S1.closed": {
+      "text": "Дорога вправо уходит в снег и пропадает. Нижней улицы будто нет.",
+      "draft": true
+    },
+    "O3.nina.before": {
+      "text": "Сиди, грейся. Утром поговорим — по свету.",
+      "draft": true,
+      "line": {
+        "speaker": "nina",
+        "text": "Сиди, грейся. Утром поговорим — по свету."
+      }
+    },
+    "O3.nina.after": {
+      "text": "Тетради — на столе. Читай, не торопись.",
+      "draft": true,
+      "line": {
+        "speaker": "nina",
+        "text": "Тетради — на столе. Читай, не торопись."
+      }
+    },
+    "O3.ilya.after": {
+      "text": "Я завтра с утра в мастерскую. Приходи — покажу, где мы стопор ставили.",
+      "draft": true,
+      "line": {
+        "speaker": "ilya",
+        "text": "Я завтра с утра в мастерскую. Приходи — покажу, где мы стопор ставили."
+      }
+    },
+    "O3.ilya.boat_drawing": {
+      "text": "Лодка с дымом! Я и сейчас так рисую — Ульяна смеётся.",
+      "draft": true,
+      "line": {
+        "speaker": "ilya",
+        "text": "Лодка с дымом! Я и сейчас так рисую — Ульяна смеётся."
+      }
+    },
+    "O3.ulyana.after": {
+      "text": "А правда, что у вас там прошёл только год? А у меня — восемь!",
+      "draft": true,
+      "line": {
+        "speaker": "ulyana",
+        "text": "А правда, что у вас там прошёл только год? А у меня — восемь!"
+      }
+    },
+    "O3.ilya_wife.after": {
+      "text": "Сиди, сиди. Я лампу поставлю — и Ульяну уложу.",
+      "draft": true,
+      "line": {
+        "speaker": "ilya_wife",
+        "text": "Сиди, сиди. Я лампу поставлю — и Ульяну уложу."
+      }
+    },
+    "O3.clock.label": {
+      "text": "Ходики",
+      "draft": true
+    },
+    "O3.clock.label_common": {
+      "text": "Ходики: идут вровень",
+      "draft": true
+    },
+    "O3.clock.look": {
+      "text": "Мамины ходики. Маятник качается ровно, не спеша.",
+      "draft": true
+    },
+    "O3.clock.look_common": {
+      "text": "Минута в минуту с моими часами.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Минута в минуту с моими часами."
+      }
+    },
+    "O3.clock.watch": {
+      "text": "Достаю часы. Секундная стрелка — шаг в шаг с маятником. Минута в минуту.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Достаю часы. Секундная стрелка — шаг в шаг с маятником. Минута в минуту."
+      }
+    },
+    "O3.dunya_mirror.label": {
+      "text": "Зеркальце в рамке",
+      "draft": true
+    },
+    "O3.dunya_mirror.label_known": {
+      "text": "Дунино зеркальце",
+      "draft": true
+    },
+    "O3.dunya_mirror.look": {
+      "text": "Маленькое зеркальце в деревянной рамке. В стекле — не горница, а чья-то печь.",
+      "draft": true
+    },
+    "O3.notebooks.label": {
+      "text": "Тетради тёти",
+      "draft": true
+    },
+    "O3.notebooks.look": {
+      "text": "Стопка тетрадей тётиной рукой. Мама сказала — посмотрим утром.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Стопка тетрадей тётиной рукой. Мама сказала — посмотрим утром."
+      }
+    },
+    "O3.notebooks.use": {
+      "text": "Восемнадцать лет попыток. Тропы, правило, стопор, мост — всё её рукой.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Восемнадцать лет попыток. Тропы, правило, стопор, мост — всё её рукой."
+      }
+    },
+    "O3.notebooks.again": {
+      "text": "Тётины тетради. Можно перечитать.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Тётины тетради. Можно перечитать."
+      }
+    },
+    "O3.notebooks.title": {
+      "text": "Тетради Евдокии",
+      "draft": true
+    },
+    "O3.notebooks.title_paths": {
+      "text": "Пропавшие тропы",
+      "draft": true
+    },
+    "O3.notebooks.title_rule": {
+      "text": "Правило",
+      "draft": true
+    },
+    "O3.notebooks.title_stopper": {
+      "text": "Дальний стопор",
+      "draft": true
+    },
+    "O3.notebooks.title_bridge": {
+      "text": "Последняя тетрадь: мост",
+      "draft": true
+    },
+    "O3.notebooks.paper_paths": {
+      "text": "Пропали, по порядку: нижняя улица — к полугоду, Ольховая. Нижняя улица стояла пустой ещё до беды — потому первой и ушла. Потом дорожка к роднику; огороды за баней; последней — школьная тропа, по ней ходили каждый день.\nДольше держится то, по чему ходят.",
+      "draft": true
+    },
+    "O3.notebooks.paper_rule": {
+      "text": "Место, к которому дорога не ведёт, мир забывает: время там бежит, тропы пропадают. У Заречья другие дороги есть, у нас — нет.\nДорогу держат с двух концов.\nПочему — не знаю. Знаю, что держит.\n\nПо зеркальцу: у нас сутки — у них час с небольшим.",
+      "draft": true
+    },
+    "O3.notebooks.paper_stopper": {
+      "text": "Дальний конец каната — в старое кольцо дальней опоры, стопор клином, как на рисунке. Ставить вдвоём. Илья и Митя поставили — держит.\nБлижний конец — плита у поворота. До неё отсюда не дойти.",
+      "draft": true
+    },
+    "O3.notebooks.paper_bridge": {
+      "text": "Мост на старых опорах. Ставить, когда дорога вернётся: без неё до ближней опоры не дойти.\nПролёты выше прежних, чтобы паводок проходил под ними. Прогоны — на кольца плит: дорога помнит свои крепления, а не доски.",
+      "draft": true
+    },
+    "O3.village_list.label": {
+      "text": "Список деревни",
+      "draft": true
+    },
+    "O3.village_list.look": {
+      "text": "Лист с именами — маминой рукой. Утром.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Лист с именами — маминой рукой. Утром."
+      }
+    },
+    "O3.village_list.use": {
+      "text": "Двадцать два живых. Пятнадцать — из прежних восемнадцати, семеро родились здесь. Трое умерли — среди них тётя.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Двадцать два живых. Пятнадцать — из прежних восемнадцати, семеро родились здесь. Трое умерли — среди них тётя."
+      }
+    },
+    "O3.village_list.again": {
+      "text": "Список деревни. Двадцать два живых.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Список деревни. Двадцать два живых."
+      }
+    },
+    "O3.village_list.title": {
+      "text": "Список деревни",
+      "draft": true
+    },
+    "O3.village_list.title_paper": {
+      "text": "Ольховка. Кто есть",
+      "draft": true
+    },
+    "O3.village_list.paper_list": {
+      "text": "Живых — 22.\nИз прежних (было 18) — 15: Нина, Илья, Митя, управляющий, Савелий, Аксинья…\nРодились здесь — 7: Ульяна и ещё шестеро.\nУмерли — 3. Евдокия, 72 года.\n\nПереписано заново в эту зиму.",
+      "draft": true
+    },
+    "O3.notches.label": {
+      "text": "Зарубки на косяке",
+      "draft": true
+    },
+    "O3.notches.look": {
+      "text": "Годовые зарубки чужого роста. Ульяна — каждый год. Мои были здесь же, ниже.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Годовые зарубки чужого роста. Ульяна — каждый год. Мои были здесь же, ниже."
+      }
+    },
+    "O3.notches.title": {
+      "text": "Зарубки роста",
+      "draft": true
+    },
+    "O3.window.label": {
+      "text": "Окно",
+      "draft": true
+    },
+    "O3.window.look": {
+      "text": "За окном снег. Двадцатая зима у них — и первая общая.",
+      "draft": true
+    },
+    "O3.icon.label": {
+      "text": "Божница",
+      "draft": true
+    },
+    "O3.icon.look": {
+      "text": "Икона с вышитым рушником, лампадка горит.",
+      "draft": true
+    },
+    "O3.exit_O4.label": {
+      "text": "На улицу",
+      "draft": true
+    },
+    "E4.M23d.prompt": {
+      "text": "Кто скажет Тихону про тётю?",
+      "draft": true
+    },
+    "E4.M23d.opt_agata": {
+      "text": "Скажу сама",
+      "draft": true
+    },
+    "E4.M23d.opt_nina": {
+      "text": "Пусть скажет мама",
+      "draft": true
+    },
+    "E5.windlass.title": {
+      "text": "Первый прогон: сигналы Илье",
+      "draft": true
+    },
+    "E5.windlass.label_board": {
+      "text": "Дощечка Пелагеи",
+      "draft": true
+    },
+    "E5.windlass.label_hint": {
+      "text": "Илья на вороте. «Пускай» — опускает, «Стой» — держит, «Подымай» — тянет вверх. Бревно — на кольцо плиты.",
+      "draft": true
+    },
+    "E5.windlass.label_signal_lower": {
+      "text": "Пускай",
+      "draft": true
+    },
+    "E5.windlass.label_signal_stop": {
+      "text": "Стой",
+      "draft": true
+    },
+    "E5.windlass.label_signal_raise": {
+      "text": "Подымай",
+      "draft": true
+    },
+    "E5.windlass.label_call_lower": {
+      "text": "Агата: «Пускай!»",
+      "draft": true
+    },
+    "E5.windlass.label_call_stop": {
+      "text": "Агата: «Стой!»",
+      "draft": true
+    },
+    "E5.windlass.label_call_raise": {
+      "text": "Агата: «Подымай!»",
+      "draft": true
+    },
+    "E5.windlass.label_reply_lower": {
+      "text": "Илья: «Пускаю…»",
+      "draft": true
+    },
+    "E5.windlass.label_reply_stop": {
+      "text": "Илья: «Держу!»",
+      "draft": true
+    },
+    "E5.windlass.label_reply_raise": {
+      "text": "Илья: «Тяну!»",
+      "draft": true
+    },
+    "E5.windlass.label_reply_wait": {
+      "text": "Илья ждёт другого сигнала.",
+      "draft": true
+    },
+    "E5.windlass.bump": {
+      "text": "Стукнулось о камень! Не на кольце. Подымай — переложим.",
+      "draft": true,
+      "line": {
+        "speaker": "ilya",
+        "text": "Стукнулось о камень! Не на кольце. Подымай — переложим."
+      }
+    },
+    "E5.windlass.laid": {
+      "text": "Бревно садится на кольцо старой плиты — ровно, как прогон стоял до паводка.",
+      "draft": true
+    },
+    "E5.M25.prompt": {
+      "text": "Что вырезать на торце?",
+      "draft": true
+    },
+    "E5.M25.opt_dunya": {
+      "text": "«Дуня»",
+      "draft": true
+    },
+    "E5.M25.opt_roads": {
+      "text": "«Ольховка — Заречье»",
+      "draft": true
+    },
+    "E5.M25.opt_date": {
+      "text": "Дату",
+      "draft": true
+    },
+    "E5.M25.opt_blank": {
+      "text": "Ничего",
+      "draft": true
+    },
+    "EP.beam.written_dunya": {
+      "text": "Дуня",
+      "draft": true
+    },
+    "EP.beam.written_roads": {
+      "text": "Ольховка —\nЗаречье",
+      "draft": true
+    },
+    "EP.beam.written_date": {
+      "text": "26 октября",
+      "draft": true
+    },
+    "EP.lesson.written_date": {
+      "text": "19 ноября",
+      "draft": true
+    },
+    "O1d.board.written_answer_here": {
+      "text": "И я. Все двадцать лет. Мама",
+      "draft": true
+    },
+    "O1d.board.written_answer_mama": {
+      "text": "Дождалась",
+      "draft": true
+    },
+    "O1d.board.written_answer_ilya": {
+      "text": "Он и сейчас рисует лодки с дымом. Мама",
+      "draft": true
+    },
+    "O1d.board.written_answer_date": {
+      "text": "25 октября",
+      "draft": true
+    },
+    "O1d.bird.written_reply": {
+      "text": "И я тут была. Уля",
+      "draft": true
+    },
+    "O1d.nina.after": {
+      "text": "Сегодня уроков не будет — все на улице. Завтра начнём.",
+      "draft": true,
+      "line": {
+        "speaker": "nina",
+        "text": "Сегодня уроков не будет — все на улице. Завтра начнём."
+      }
+    },
+    "O1d.ulyana.after": {
+      "text": "Тётя Агата, а ты правда шапку птице нарисовала? Я думала — это всегда так было.",
+      "draft": true,
+      "line": {
+        "speaker": "ulyana",
+        "text": "Тётя Агата, а ты правда шапку птице нарисовала? Я думала — это всегда так было."
+      }
+    },
+    "O2d.mitten_path.label": {
+      "text": "Варежка на тропе",
+      "draft": true
+    },
+    "O2d.mitten_path.take": {
+      "text": "Агата молча поднимает варежку. Тропа за калиткой теперь ведёт домой.",
+      "draft": true
+    },
+    "O2d.mitten_path.look": {
+      "text": "Варежка лежит там, где Агата её оставила. Только дорога за калиткой теперь другая.",
+      "draft": true
+    },
+    "H1d.nina.after": {
+      "text": "Посижу тут. Дуня всегда ставила чайник к моему приходу.",
+      "draft": true,
+      "line": {
+        "speaker": "nina",
+        "text": "Посижу тут. Дуня всегда ставила чайник к моему приходу."
+      }
+    },
+    "O4.mitya_board.label": {
+      "text": "Дощечка Мити",
+      "draft": true
+    },
+    "O4.mitya_board.look": {
+      "text": "Митина дощечка с зарубками.",
+      "draft": true
+    },
+    "O4.mitya_board.title": {
+      "text": "Двадцать зарубок",
+      "draft": true
+    },
+    "O4.mitya_board.use": {
+      "text": "Двадцать зарубок. По одной за зиму, что я тут фонарь жёг. Теперь дежурить не надо.",
+      "draft": true,
+      "line": {
+        "speaker": "mitya",
+        "text": "Двадцать зарубок. По одной за зиму, что я тут фонарь жёг. Теперь дежурить не надо."
+      }
+    },
+    "O4.mitya_board.prompt": {
+      "text": "Куда дощечке?",
+      "draft": true
+    },
+    "O4.mitya_board.opt_keep": {
+      "text": "Оставь себе",
+      "draft": true
+    },
+    "O4.mitya_board.opt_mother": {
+      "text": "Отдай маме",
+      "draft": true
+    },
+    "O4.letters_bag.label": {
+      "text": "Мешок Тамары",
+      "draft": true
+    },
+    "O4.letters_bag.look": {
+      "text": "Мешок с годом писем. Почти пустой.",
+      "draft": true
+    },
+    "O4.letters_bag.title": {
+      "text": "Письмо по прежнему адресу",
+      "draft": true
+    },
+    "O4.letters_bag.use": {
+      "text": "Аксинье — от брата. А дома того нет, где он пишет. Двадцать лет как нет.",
+      "draft": true,
+      "line": {
+        "speaker": "tamara",
+        "text": "Аксинье — от брата. А дома того нет, где он пишет. Двадцать лет как нет."
+      }
+    },
+    "O4.letters_bag.paper_address": {
+      "text": "Ольховка, у мельничного моста,\nдом Прохоровых —\nАксинье Прохоровой\nот брата",
+      "draft": true
+    },
+    "O4.letters_bag.prompt": {
+      "text": "Как Аксинье получать письма?",
+      "draft": true
+    },
+    "O4.letters_bag.opt_nina": {
+      "text": "Через маму — она знает, где Аксинья теперь",
+      "draft": true
+    },
+    "O4.letters_bag.opt_gallery": {
+      "text": "В ящик в галерее — Тамара заберёт по средам",
+      "draft": true
+    },
+    "O3.nina.ribbon": {
+      "text": "Мамина лента. Нина молча вплетает её Агате в косу — как на праздники.",
+      "draft": true
+    },
+    "O3.nina.ribbon_again": {
+      "text": "Лента в косе. Как раньше.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Лента в косе. Как раньше."
+      }
+    },
+    "O3.nina_letters.label": {
+      "text": "Письма мамы",
+      "draft": true
+    },
+    "O3.nina_letters.look": {
+      "text": "Связка писем на комоде, перевязана бечёвкой. На каждом — моё имя.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Связка писем на комоде, перевязана бечёвкой. На каждом — моё имя."
+      }
+    },
+    "O3.nina_letters.use": {
+      "text": "Мама писала мне каждую зиму. Двадцать писем — и некуда было отправить.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Мама писала мне каждую зиму. Двадцать писем — и некуда было отправить."
+      }
+    },
+    "O3.nina_letters.again": {
+      "text": "Мамины письма. Двадцать зим.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Мамины письма. Двадцать зим."
+      }
+    },
+    "O3.nina_letters.title": {
+      "text": "Письма Нины",
+      "draft": true
+    },
+    "O3.nina_letters.title_bundle": {
+      "text": "Двадцать писем",
+      "draft": true
+    },
+    "O3.nina_letters.title_first": {
+      "text": "Первая зима",
+      "draft": true
+    },
+    "O3.nina_letters.title_tenth": {
+      "text": "Десятая зима",
+      "draft": true
+    },
+    "O3.nina_letters.title_last": {
+      "text": "Последнее — три недели назад",
+      "draft": true
+    },
+    "O3.nina_letters.paper_first": {
+      "text": "Агата, доченька.\nМоста нет. Лодки не доходят. Илюша каждый день бегает к опоре и смотрит на ваш берег — там темно.\nДуня здесь, у меня. Говорит, дверь из школы у неё в мастерской осталась. Если ты её найдёшь — приходи в класс. Я буду там каждое утро.\nМама",
+      "draft": true
+    },
+    "O3.nina_letters.paper_tenth": {
+      "text": "Агата.\nДесятая зима. Илье двадцать два, он строит Мите сарай у опоры. Нижней улицы больше нет — Дуня говорит, она и до беды стояла пустой.\nТебе по-вашему, наверное, и полгода не прошло. Я думаю об этом каждый день — и не могу сосчитать.\nМама",
+      "draft": true
+    },
+    "O3.nina_letters.paper_last": {
+      "text": "Агата!\nСегодня вечером в Дунином зеркальце — ты. Спишь у её печи, а Тихон на кресле. Ты совсем такая же.\nЛенту отдам Мите: будут огни — пусть пошлёт.\nЖду.\nМама",
+      "draft": true
+    },
+    "H1d.nina_coat.label": {
+      "text": "Мамино пальто",
+      "draft": true
+    },
+    "H1d.nina_coat.look": {
+      "text": "Мамино пальто на крючке у тёти.",
+      "draft": true
+    },
+    "H1d.nina_coat.title": {
+      "text": "Рукав",
+      "draft": true
+    },
+    "H1d.nina_coat.use": {
+      "text": "Рукав разошёлся по шву. Мама и не заметила — или заметила, да некогда было.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Рукав разошёлся по шву. Мама и не заметила — или заметила, да некогда было."
+      }
+    },
+    "H1d.nina_coat.prompt": {
+      "text": "Как зашить?",
+      "draft": true
+    },
+    "H1d.nina_coat.opt_seam": {
+      "text": "Потайным швом, чтобы не видно",
+      "draft": true
+    },
+    "H1d.nina_coat.opt_patch": {
+      "text": "Заплатку — пусть Ульяна нарисует на ней птицу",
+      "draft": true
+    },
+    "H1d.tea_corner.label": {
+      "text": "Чай",
+      "draft": true
+    },
+    "H1d.tea_corner.look": {
+      "text": "Тётин чайник на окне. Мама здесь — можно и чай.",
+      "draft": true
+    },
+    "H1d.tea_corner.prompt": {
+      "text": "Где пить первый общий чай?",
+      "draft": true
+    },
+    "H1d.tea_corner.opt_home": {
+      "text": "Здесь, у тётиной печи — для своих",
+      "draft": true
+    },
+    "H1d.tea_corner.opt_all": {
+      "text": "У мамы в горнице — для всех, кто вышел",
+      "draft": true
+    },
+    "S1.street_sign.label": {
+      "text": "Вывеска на заборе",
+      "draft": true
+    },
+    "S1.street_sign.look": {
+      "text": "Старая вывеска на заборе.",
+      "draft": true
+    },
+    "S1.street_sign.title": {
+      "text": "Ольховая улица",
+      "draft": true
+    },
+    "S1.street_sign.use": {
+      "text": "«Ольховая улица». Её первой не стало — пустая стояла. А вывеска держалась.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "«Ольховая улица». Её первой не стало — пустая стояла. А вывеска держалась."
+      }
+    },
+    "S1.street_sign.prompt": {
+      "text": "Что с вывеской?",
+      "draft": true
+    },
+    "S1.street_sign.opt_outside": {
+      "text": "Оставить на месте",
+      "draft": true
+    },
+    "S1.street_sign.opt_class": {
+      "text": "Унести маме в класс",
+      "draft": true
+    },
+    "S1.house.label": {
+      "text": "Пустой дом",
+      "draft": true
+    },
+    "S1.house.look": {
+      "text": "Дом с резными наличниками. Тихо, дым из трубы — кто-то уже затопил.",
+      "draft": true
+    },
+    "S1.river.label": {
+      "text": "Река",
+      "draft": true
+    },
+    "S1.river.look": {
+      "text": "Внизу река. Отсюда видно и Заречье.",
+      "draft": true
+    },
+    "S1.exit_O4.label": {
+      "text": "На улицу Ольховки",
+      "draft": true
+    },
+    "ach.title_board": {
+      "text": "Мама ответила на доске",
+      "draft": true
+    },
+    "ach.title_mitten": {
+      "text": "Варежка нашлась на дороге домой",
+      "draft": true
+    },
+    "ach.title_bird": {
+      "text": "Птица в учебнике: шапка, сапоги и две подписи",
+      "draft": true
+    },
+    "ach.title_promise": {
+      "text": "Слово Павлу сдержано",
+      "draft": true
+    },
+    "ach.title_family": {
+      "text": "«Там мама и брат» — Павел понял",
+      "draft": true
+    },
+    "ach.title_tikhon_nina": {
+      "text": "Тихон зовёт маму хозяйкой",
+      "draft": true
+    },
+    "ach.title_tikhon_agata": {
+      "text": "Тихон спит у Агатиной лежанки",
+      "draft": true
+    },
+    "ach.title_beam": {
+      "text": "Надпись на торце первого прогона",
+      "draft": true
+    },
+    "ach.title_cup": {
+      "text": "Мама узнала свою чашку",
+      "draft": true
+    },
+    "ach.title_ribbon": {
+      "text": "Мамина лента снова в косе",
+      "draft": true
+    },
+    "ach.title_letters": {
+      "text": "Двадцать маминых писем прочитаны",
+      "draft": true
+    },
+    "ach.title_q01": {
+      "text": "Аксинья получает письма брата",
+      "draft": true
+    },
+    "ach.title_q03": {
+      "text": "Рукав маминого пальто зашит",
+      "draft": true
+    },
+    "ach.title_q04": {
+      "text": "У Тихона своя полка",
+      "draft": true
+    },
+    "ach.title_q07": {
+      "text": "Двадцать зарубок Мити",
+      "draft": true
+    },
+    "ach.title_q08": {
+      "text": "Первый общий чай",
+      "draft": true
+    },
+    "ach.title_q09": {
+      "text": "Ольховая улица с вывеской",
+      "draft": true
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": "F_workshop_nina",
+  "frame": true,
+  "_art": "M23c: мастерская (фон H2 и слои блоков 1–2: зеркало конторы в стойке, Нинино зеркало развёрнуто на верстаке) — Нина у верстака.",
+  "background": {
+    "kind": "interior",
+    "image": "res://assets/rooms/H2/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "office_mirror",
+      "image": "res://assets/rooms/H2/state_office_mirror.png"
+    },
+    {
+      "id": "nina_mirror",
+      "image": "res://assets/rooms/H2/state_nina_mirror.png"
+    },
+    {
+      "id": "nina",
+      "image": "res://assets/rooms/F_workshop_nina/nina.png",
+      "compose": {
+        "char": "nina",
+        "feet": [
+          700,
+          720
+        ],
+        "height": 470,
+        "dir": 6,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.93,
+          0.84
+        ],
+        "shadow": 0.35
+      }
+    },
+    {
+      "id": "bench_front",
+      "image": "res://assets/rooms/H2/fg_bench_front.png",
+      "_note": "передний край верстака поверх Нины"
+    }
+  ],
+  "effects": [],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

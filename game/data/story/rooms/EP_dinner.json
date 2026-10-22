@@ -1,0 +1,232 @@
+{
+  "id": "EP_dinner",
+  "frame": true,
+  "_art": "Эпилог, ужин в доме тёти (ep_dinner, партия 5): Нина, Илья с женой, Агата у стола, Тихон на печи, Ульяна в двери из галереи; чашка, выбранная в день первый, — у Нины.",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/ep_dinner.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "interior",
+    "image": "res://assets/rooms/EP_dinner/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): пока нет листов 3D — плоские заглушки из cast_v3, с листами — кадр idle нужного направления.",
+  "player_hidden": true,
+  "layers": [
+    {
+      "id": "ulyana",
+      "image": "res://assets/rooms/EP_dinner/ulyana.png",
+      "compose": {
+        "char": "ulyana",
+        "feet": [
+          596,
+          395
+        ],
+        "height": 215,
+        "dir": 0,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          0.95,
+          0.85,
+          0.75
+        ],
+        "shadow": 0.25
+      },
+      "_note": "в двери из галереи — пришла из класса через школьную дверь"
+    },
+    {
+      "id": "ilya",
+      "image": "res://assets/rooms/EP_dinner/ilya.png",
+      "compose": {
+        "char": "ilya",
+        "feet": [
+          640,
+          560
+        ],
+        "height": 330,
+        "dir": 1,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.9,
+          0.78
+        ],
+        "shadow": 0.35,
+        "cut_below": 470
+      }
+    },
+    {
+      "id": "nina",
+      "image": "res://assets/rooms/EP_dinner/nina.png",
+      "compose": {
+        "char": "nina",
+        "feet": [
+          790,
+          545
+        ],
+        "height": 300,
+        "dir": 0,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.9,
+          0.78
+        ],
+        "shadow": 0.35,
+        "cut_below": 468
+      }
+    },
+    {
+      "id": "ilya_wife",
+      "image": "res://assets/rooms/EP_dinner/ilya_wife.png",
+      "compose": {
+        "char": "ilya_wife",
+        "feet": [
+          915,
+          548
+        ],
+        "height": 300,
+        "dir": 7,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.9,
+          0.78
+        ],
+        "shadow": 0.35,
+        "cut_below": 470
+      }
+    },
+    {
+      "id": "agata",
+      "image": "res://assets/rooms/EP_dinner/agata.png",
+      "compose": {
+        "char": "agata",
+        "feet": [
+          1215,
+          905
+        ],
+        "height": 430,
+        "dir": 5,
+        "action": "idle",
+        "frame": 0,
+        "tint": [
+          1.0,
+          0.9,
+          0.78
+        ],
+        "shadow": 0.35
+      },
+      "_note": "у торца стола справа, спиной к зрителю — к семье"
+    },
+    {
+      "id": "cup_blue",
+      "image": "res://assets/rooms/EP_dinner/cup_blue.png",
+      "compose": {
+        "src": "game/assets/rooms/H1/state_cup_table_blue.png",
+        "crop": [
+          690,
+          634,
+          58,
+          44
+        ],
+        "at": [
+          838,
+          400
+        ],
+        "width": 30
+      },
+      "if": [
+        "v01_cup_blue"
+      ],
+      "_note": "синяя чашка дня первого — у Нины"
+    },
+    {
+      "id": "cup_white",
+      "image": "res://assets/rooms/EP_dinner/cup_white.png",
+      "compose": {
+        "src": "game/assets/rooms/H1/state_cup_table_white.png",
+        "crop": [
+          690,
+          634,
+          58,
+          44
+        ],
+        "at": [
+          838,
+          400
+        ],
+        "width": 30
+      },
+      "if": [
+        "v01_cup_white"
+      ],
+      "_note": "белая чашка дня первого — у Нины"
+    },
+    {
+      "id": "tikhon",
+      "image": "res://assets/rooms/EP_dinner/tikhon.png",
+      "compose": {
+        "src": "game/assets/characters/tikhon/tikhon.png",
+        "crop": [
+          55,
+          23,
+          449,
+          469
+        ],
+        "at": [
+          300,
+          232
+        ],
+        "width": 95,
+        "tint": [
+          0.95,
+          0.85,
+          0.72
+        ]
+      },
+      "_note": "Тихон на печи (картинка куклы блока 1)"
+    }
+  ],
+  "effects": [],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

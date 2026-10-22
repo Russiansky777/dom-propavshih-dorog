@@ -36,6 +36,10 @@ signal checkpoint_saved(slot: String, title: String)
 ## (`events.<name>`: sets, text, close) and are applied here — the panels never decide story state.
 signal mechanic_opened(spec: Dictionary)
 signal mechanic_closed()
+## A scene staging shows a frame (scenes data `stage[].frame`: a room file of data/story/rooms drawn over the
+## world by FrameView — the council at the mill, the epilogue shots) or clears it ("" — back to the room).
+## Emitted while the screen is black. `hold` — the frame stays after the scene (the last shot of the game).
+signal frame_changed(frame_id: String, hold: bool)
 
 const LOOP_FADE_SECONDS: float = 0.35
 
@@ -51,8 +55,15 @@ var mechanic_open: bool = false
 var mechanic: Dictionary = {}  # the open interactive close-up: the hotspot's `mechanic` spec + "hotspot" id
 
 var stage_dim: float = 0.0   # the overlay level a staging left on screen (dusk at night), 0 — none
+var current_frame: String = ""   # the frame a staging put over the world (FrameView), "" — none
+var frame_hold: bool = false     # the frame stays after its scene (the end of the game)
 
 var _beats: Array[Dictionary] = []
+## A close-up opened by a scene (scenes data `mechanics` [{at, spec, until}] — the windlass of the first span):
+## the scene waits for it; closed with `until` set — the scene goes on, closed without — the scene stops (not
+## done) and does not start again by itself until the player enters a room again.
+var _mechanic_wait: Dictionary = {}
+var _held_back: Dictionary = {}   # scene id → true: stopped this room visit, no auto restart
 var _check_queued: bool = false
 var _loop_running: bool = false
 var _stage_running: bool = false
@@ -101,7 +112,10 @@ func is_done(scene_id: String) -> bool:
 
 func can_start(scene_id: String) -> bool:
 	var sc := StoryData.scene(scene_id)
-	if sc.is_empty() or is_done(scene_id) or active_scene == scene_id:
+	if sc.is_empty() or is_done(scene_id) or active_scene == scene_id or _held_back.has(scene_id):
+		return false
+	# A reserve story (quests.json `reserve`: kept for later, not in the build) never starts by itself.
+	if bool(sc.get("reserve", false)):
 		return false
 	if _beats.any(func(b): return b.get("scene", "") == scene_id):
 		return false
@@ -181,6 +195,22 @@ func _next() -> void:
 		return  # the staging resumes the queue when it is over (a room change mid-staging must not skip lines)
 	while not _beats.is_empty():
 		var b: Dictionary = _beats.pop_front()
+		# A line or staging shown only under some flags (scenes data `if` / `unless` / `switch` on a line or a
+		# stage — the answer on the board for what Agata wrote, Pavel's word in the epilogue): decided when its
+		# turn comes, so a choice made earlier in the same scene counts.
+		if not beat_allowed(b):
+			continue
+		if b.get("type") == "mechanic":
+			current_beat = {}
+			if GameState.has_flag(String(b.get("until", ""))):
+				continue   # already done (a load after it): the scene goes on
+			# The rest of the scene waits aside: texts the close-up asks for play in between, in their order.
+			_mechanic_wait = b.duplicate()
+			_mechanic_wait["rest"] = _beats.duplicate()
+			_beats.clear()
+			beat_changed.emit()
+			open_mechanic(b.get("spec", {}), "")
+			return
 		if b.get("type") == "call":
 			current_beat = {}
 			var fn: Callable = b["fn"]
@@ -197,6 +227,36 @@ func _next() -> void:
 	current_beat = {}
 	beat_changed.emit()
 	_queue_check()
+
+
+## A beat's own conditions (copied from its line / stage in data): every `if` flag set, no `unless` flag set,
+## at least one `if_any` flag set (the date on the board after any of Agata's inscriptions), and the Director's switch (`switch` "name" or "name=value", data/story/meta.json → switches) on.
+func beat_allowed(b: Dictionary) -> bool:
+	for f in b.get("if", []):
+		if not GameState.has_flag(String(f)):
+			return false
+	for f in b.get("unless", []):
+		if GameState.has_flag(String(f)):
+			return false
+	if b.has("if_any"):
+		var any_set := false
+		for f in b["if_any"]:
+			if GameState.has_flag(String(f)):
+				any_set = true
+		if not any_set:
+			return false
+	var sw := String(b.get("switch", ""))
+	if sw != "" and not StoryData.switch_on(sw):
+		return false
+	return true
+
+
+static func _conditions_of(src: Dictionary) -> Dictionary:
+	var out := {}
+	for k in ["if", "unless", "if_any", "switch"]:
+		if src.has(k):
+			out[k] = src[k]
+	return out
 
 
 ## Click to continue (lines and narration). Options need `choose()`.
@@ -237,11 +297,17 @@ func start_scene(scene_id: String) -> bool:
 	var beats: Array[Dictionary] = []
 	var lines: Array = sc.get("mandatory_lines", [])
 	var stages: Array = sc.get("stage", [])
+	var mechs: Array = sc.get("mechanics", [])
 	for i in lines.size():
 		var line: Dictionary = lines[i]
+		# A scene's close-up comes before the stagings at the same line (the windlass, then the shot of the laid log).
+		for mc in mechs:
+			if int(mc.get("at", -1)) == i:
+				beats.append({"type": "mechanic", "scene": scene_id, "spec": mc.get("spec", {}), "until": String(mc.get("until", ""))})
 		for st in stages:
 			if typeof(st.get("at")) != TYPE_STRING and int(st.get("at", -1)) == i:
-				beats.append({"type": "stage", "scene": scene_id, "spec": st})
+				beats.append(_stage_beat(scene_id, st))
+		var cond := _conditions_of(line)
 		if line.has("context"):
 			beats.append({"type": "options", "scene": scene_id, "prompt": "",
 				"options": [{"id": "ask", "label": String(line["context"])}], "callback": Callable()})
@@ -251,20 +317,25 @@ func start_scene(scene_id: String) -> bool:
 			var opts: Array = []
 			for o in line["options"]:
 				opts.append({"id": String(o["id"]), "label": StoryData.text(String(o.get("label", o.get("text", o["id"])))), "sets": String(o.get("sets", ""))})
-			beats.append({"type": "options", "scene": scene_id, "prompt": StoryData.text(String(line.get("prompt", ""))),
-				"options": opts, "callback": _apply_line_option.bind(scene_id, i, line)})
+			var ob := {"type": "options", "scene": scene_id, "prompt": StoryData.text(String(line.get("prompt", ""))),
+				"options": opts, "callback": _apply_line_option.bind(scene_id, i, line)}
+			ob.merge(cond)
+			beats.append(ob)
 			continue
 		var sp := String(line.get("speaker", ""))
 		# line_id <scene>_<index>: the stable id of the recorded voice (VoiceDirector, assets/voice/ru).
+		var lb: Dictionary
 		if sp == "narrator":
 			# What nobody says (the empty boat goes into the fog): a narration beat inside the scene.
-			beats.append({"type": "narration", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "text": String(line.get("text", ""))})
-			continue
-		beats.append({"type": "line", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "speaker": sp,
-			"speaker_name": StoryData.character_name(sp), "text": String(line.get("text", ""))})
+			lb = {"type": "narration", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "text": String(line.get("text", ""))}
+		else:
+			lb = {"type": "line", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "speaker": sp,
+				"speaker_name": StoryData.character_name(sp), "text": String(line.get("text", ""))}
+		lb.merge(cond)
+		beats.append(lb)
 	for st in stages:
 		if str(st.get("at", "")) == "end":
-			beats.append({"type": "stage", "scene": scene_id, "spec": st})
+			beats.append(_stage_beat(scene_id, st))
 	beats.append({"type": "call", "scene": scene_id, "fn": _complete_scene.bind(scene_id)})
 	if active_scene == "":
 		active_scene = scene_id
@@ -273,6 +344,12 @@ func start_scene(scene_id: String) -> bool:
 	if current_beat.is_empty():
 		_next()
 	return true
+
+
+func _stage_beat(scene_id: String, st: Dictionary) -> Dictionary:
+	var b := {"type": "stage", "scene": scene_id, "spec": st}
+	b.merge(_conditions_of(st))
+	return b
 
 
 func _apply_line_option(option_id: String, scene_id: String, index: int, line: Dictionary) -> void:
@@ -311,6 +388,9 @@ func _complete_scene(scene_id: String) -> void:
 	if stage_dim > 0.0:   # a scene never leaves its dusk behind
 		stage_dim = 0.0
 		stage_fade.emit(0.0, 0.5)
+	# … nor its frame, unless it is the last shot (scenes data `hold_frame`: the end of the game).
+	if current_frame != "" and not frame_hold:
+		set_frame("")
 	scene_completed.emit(scene_id)
 	RoomManager.autosave()
 	# A scene's checkpoint (scenes data `checkpoint` {slot, title}): its own save slot with a title for the menu,
@@ -351,6 +431,14 @@ func _run_stage(spec: Dictionary) -> void:
 			SfxDirector.suppress_next_door()
 		RoomManager.change_room(String(spec["room"]), String(spec.get("spawn", "default")))
 		RoomManager.autosave_enabled = keep_autosave
+	# A frame over the world while black (`frame` — a room file drawn by FrameView; "" — back to the room;
+	# `hold` — it stays after the scene: the last shot of the game).
+	if spec.has("frame"):
+		set_frame(String(spec["frame"]), bool(spec.get("hold", false)))
+	# Flags that change the room while black (`sets` — the night in Olkhovka turns to morning): saved state, so a load
+	# shows the same; the scene's own grants still come at its end.
+	for f in spec.get("sets", []):
+		GameState.set_flag(String(f), true)
 	await tree.create_timer(float(spec.get("hold_s", 1.0))).timeout
 	if serial != _stage_serial:
 		return
@@ -362,6 +450,15 @@ func _run_stage(spec: Dictionary) -> void:
 		return
 	_stage_running = false
 	_next()
+
+
+## Puts a frame over the world (FrameView builds it) or clears it ("").
+func set_frame(frame_id: String, hold: bool = false) -> void:
+	if frame_id == current_frame and hold == frame_hold:
+		return
+	current_frame = frame_id
+	frame_hold = hold and frame_id != ""
+	frame_changed.emit(current_frame, frame_hold)
 
 
 func _cancel_stage() -> void:
@@ -391,6 +488,7 @@ func grant_item(item_id: String) -> void:
 ## Called by RoomManager after the player is placed in a room.
 func on_room_entered(room_id: String) -> void:
 	select_item("")
+	_held_back.clear()   # a scene stopped by closing its close-up may start again in the next room visit
 	# Places the player has been to (the plan shows unvisited ones paler, hides some until a visit).
 	if room_id != "" and not GameState.has_flag("visited_" + room_id):
 		GameState.set_flag("visited_" + room_id, true)
@@ -418,6 +516,9 @@ func _on_flag_changed(_flag: String, _value: bool) -> void:
 
 func _on_state_reset() -> void:
 	_cancel_stage()
+	_mechanic_wait = {}
+	_held_back.clear()
+	set_frame("")
 	_beats.clear()
 	current_beat = {}
 	active_scene = ""
@@ -441,19 +542,40 @@ func _on_state_reset() -> void:
 ## until the scene that consumes it completes, so nothing is lost or given twice.
 func _on_state_loaded(_slot: String) -> void:
 	# A staging in flight belongs to the state that was just replaced: stop it and drop its scene's beats.
-	if _stage_running or stage_dim > 0.0:
+	if _stage_running or stage_dim > 0.0 or not _mechanic_wait.is_empty() or current_frame != "":
 		_cancel_stage()
 		_beats.clear()
 		current_beat = {}
 		active_scene = ""
 		beat_changed.emit()
+	_mechanic_wait = {}
+	_held_back.clear()
 	close_view()
 	close_mechanic()
+	# A frame belongs to the scene that showed it — except the last shot of a finished game (scenes data
+	# `end_frame`): loading the save made after the end shows it again instead of an empty room.
+	set_frame(end_frame_now(), true)
 	if puzzle_open:
 		puzzle_open = false
 		puzzle_hotspot = null
 		puzzle = {}
 		puzzle_closed.emit()
+
+
+## The last shot of a finished game: `end_frame` of a done scene (a frame id, or [{switch?, if?, frame}] — the
+## first allowed), "" while the game is not over.
+func end_frame_now() -> String:
+	for id in StoryData.scene_order:
+		var sc: Dictionary = StoryData.scene(id)
+		if not sc.has("end_frame") or not is_done(id):
+			continue
+		var ef = sc["end_frame"]
+		if ef is String:
+			return String(ef)
+		for e in ef:
+			if beat_allowed(e):
+				return String(e.get("frame", ""))
+	return ""
 
 
 func _queue_check() -> void:
@@ -996,6 +1118,27 @@ func close_mechanic() -> void:
 	mechanic_open = false
 	mechanic = {}
 	mechanic_closed.emit()
+	if not _mechanic_wait.is_empty():
+		# A scene's close-up (`mechanics`): done — the rest of the scene goes on; put away before — the scene
+		# stops here, stays not done and waits for the next room visit (no instant reopening).
+		var w := _mechanic_wait
+		_mechanic_wait = {}
+		var rest: Array = w.get("rest", [])
+		if GameState.has_flag(String(w.get("until", ""))):
+			for b in rest:
+				_beats.append(b)
+		else:
+			var sid := String(w.get("scene", ""))
+			_held_back[sid] = true
+			if active_scene == sid:
+				active_scene = ""
+			if stage_dim > 0.0 or current_frame != "":
+				stage_dim = 0.0
+				stage_fade.emit(0.0, 0.4)
+				set_frame("")
+		if current_beat.is_empty():
+			_next()
+		return
 	if current_beat.is_empty():
 		_queue_check()
 
