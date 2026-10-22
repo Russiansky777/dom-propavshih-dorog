@@ -42,6 +42,10 @@ signal mechanic_closed()
 ## world by FrameView — the council at the mill, the epilogue shots) or clears it ("" — back to the room).
 ## Emitted while the screen is black. `hold` — the frame stays after the scene (the last shot of the game).
 signal frame_changed(frame_id: String, hold: bool)
+## «Рассмотреть» (Director 23.10, F9): an item from the bag up close (ItemExamine) — items.json `examine`; Agata's
+## line about it plays in the dialogue box over the picture. UI only: nothing in the story state changes.
+signal examine_opened(item_id: String)
+signal examine_closed()
 
 const LOOP_FADE_SECONDS: float = 0.35
 
@@ -55,6 +59,7 @@ var view_open: bool = false
 var view: Dictionary = {}     # the open look-only close-up: the hotspot's `view` spec + "hotspot" id
 var mechanic_open: bool = false
 var mechanic: Dictionary = {}  # the open interactive close-up: the hotspot's `mechanic` spec + "hotspot" id
+var examined_item: String = ""   # the bag item looked at up close ("" — none)
 
 var stage_dim: float = 0.0   # the overlay level a staging left on screen (dusk at night), 0 — none
 var current_frame: String = ""   # the frame a staging put over the world (FrameView), "" — none
@@ -550,6 +555,7 @@ func _on_state_reset() -> void:
 	if had_view:
 		view_closed.emit()
 	close_mechanic()
+	close_examine()
 	beat_changed.emit()
 
 
@@ -568,6 +574,7 @@ func _on_state_loaded(_slot: String) -> void:
 	_held_back.clear()
 	close_view()
 	close_mechanic()
+	close_examine()
 	# A frame belongs to the scene that showed it — except the last shot of a finished game (scenes data
 	# `end_frame`): loading the save made after the end shows it again instead of an empty room.
 	set_frame(end_frame_now(), true)
@@ -1261,3 +1268,33 @@ func journal_facts() -> Array[String]:
 		if d != "":
 			out.append(d)
 	return out
+
+
+# --- «Рассмотреть»: an item from the bag up close -----------------------------------------------
+
+## items.json `examine` of the item ({} — none).
+func examine_spec(item_id: String) -> Dictionary:
+	var e = StoryData.item(item_id).get("examine", {})
+	return e if e is Dictionary else {}
+
+
+## Opens the close-up of a bag item and plays Agata's line about it. Not while a text is being read (the box
+## takes the clicks then) or a staging runs; the item stays where it is (in the bag — a held item is put back).
+func examine_item(item_id: String) -> bool:
+	if item_id == "" or not GameState.has_item(item_id) or not current_beat.is_empty() or _stage_running:
+		return false
+	if selected_item != "":
+		select_item("")
+	examined_item = item_id
+	examine_opened.emit(item_id)
+	var t := String(examine_spec(item_id).get("text", ""))
+	if t != "":
+		narrate_key(t)
+	return true
+
+
+func close_examine() -> void:
+	if examined_item == "":
+		return
+	examined_item = ""
+	examine_closed.emit()

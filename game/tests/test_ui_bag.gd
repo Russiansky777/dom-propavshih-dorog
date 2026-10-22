@@ -17,9 +17,10 @@ extends SceneTree
 
 ## Inventory items of day one (Docs/SCENARIO_FINAL.md, 22.10): the letter of Tamara went to the journal; the chalk
 ## invoice and the pier photo are replaced by the bridge photo, Ilya's drawing and the plan; the brace is new. Icons
-## by items.json `icon` (bridge_photo, ilya_drawing, crossing_plan, skoba_plate) or by id.
+## by items.json `icon` (bridge_photo, ilya_drawing, crossing_plan, skoba_plate) or by id. The bell's clapper can be
+## taken from its box on day one too (Director 23.10, F2) — its icon came with the F9 request (icons_mech_day2).
 const E0E1_ITEMS := ["key_house", "pocket_watch", "mitten", "door_hinges",
-	"photo_bridge", "drawing_ilya", "plan_crossing", "brace_plate", "chalk"]
+	"photo_bridge", "drawing_ilya", "plan_crossing", "brace_plate", "chalk", "bell_clapper"]
 
 var _results: Array = []
 var _fails: Array[String] = []

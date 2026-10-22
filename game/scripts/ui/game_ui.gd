@@ -71,6 +71,7 @@ var sfx_slider: HSlider                 # menu: sound effects volume 0–100 % (
 var sfx_value_label: Label
 var voice_slider: HSlider               # menu: voice volume 0–100 % (VoiceDirector, user://settings.cfg)
 var voice_value_label: Label
+var timing_slow_check: CheckButton      # menu: «Точный удар — медленнее» (TimingBar.slow, user://settings.cfg [access])
 var reveal: HotspotReveal               # Space: every hotspot and exit of the room for 1.5 s (exit_hints)
 var hover_icon: TextureRect             # destination icon left of an exit caption
 var hint_panel: PanelContainer          # «Подсказка»: tier title, large text, the Space tip
@@ -171,6 +172,7 @@ func _build() -> void:
 	bag.tooltip_top = TOP_H
 	bag.sound_requested.connect(func(kind): bag_sound_requested.emit(kind))
 	bag.pocket_hover_changed.connect(_on_pocket_hover_changed)
+	bag.examine_requested.connect(func(id): StoryRunner.examine_item(id))
 	bag_center.add_child(bag)
 	journal_button = _button(StoryData.text("@ui.button_journal"), 140, &"BarButton")
 	journal_button.name = "JournalButton"
@@ -442,6 +444,15 @@ func _build() -> void:
 	voice_value_label.theme_type_variation = &"SmallLabel"
 	voice_value_label.text = "%d %%" % int(voice_slider.value)
 	voice_row.add_child(voice_value_label)
+	# Accessibility: the timing bars («Точный удар» — the brace, the hook, the shutter latch) sweep slower.
+	TimingBar.load_settings()
+	timing_slow_check = CheckButton.new()
+	timing_slow_check.name = "TimingSlow"
+	timing_slow_check.text = StoryData.text("@ui.timing_slow")
+	timing_slow_check.focus_mode = Control.FOCUS_NONE
+	timing_slow_check.button_pressed = TimingBar.slow
+	timing_slow_check.toggled.connect(func(on): TimingBar.set_slow(on))
+	mv.add_child(timing_slow_check)
 	# Controls line: the reveal key (exit_hints, Director 18.10).
 	var keys_l := Label.new()
 	keys_l.name = "KeysHint"
@@ -769,6 +780,7 @@ func toggle_menu() -> void:
 		sfx_value_label.text = "%d %%" % int(sfx_slider.value)
 		voice_slider.set_value_no_signal(roundf(VoiceDirector.voice_volume * 100.0))
 		voice_value_label.text = "%d %%" % int(voice_slider.value)
+		timing_slow_check.set_pressed_no_signal(TimingBar.slow)
 	_update_modal()
 
 
@@ -1113,6 +1125,8 @@ func probe_positions() -> Dictionary:
 		out["sfx_slider"] = {"x": sr.position.x, "y": sr.position.y, "w": sr.size.x, "h": sr.size.y, "value": sfx_slider.value}
 		var vr := voice_slider.get_global_rect()
 		out["voice_slider"] = {"x": vr.position.x, "y": vr.position.y, "w": vr.size.x, "h": vr.size.y, "value": voice_slider.value}
+		out["buttons"]["TimingSlow"] = _center(timing_slow_check)
+		out["timing_slow"] = TimingBar.slow
 	# inventory: item -> centre of its pocket (only items on the bag's current page are clickable).
 	var bp: Dictionary = bag.probe()
 	for item_id in bp["items"].keys():

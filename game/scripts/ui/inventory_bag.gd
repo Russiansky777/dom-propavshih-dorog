@@ -9,6 +9,8 @@ extends PanelContainer
 ##    text) and what a click does;
 ##  - click: take the item in hand (StoryRunner.select_item) — the pocket glows, the cursor carries a
 ##    small icon (GameUi); click again or right-click: put it back;
+##  - double click, or the magnifier in the hovered pocket's corner: «Рассмотреть» — the item up close
+##    (`examine_requested` → StoryRunner.examine_item, ItemExamine; F9);
 ##  - a received item flies into its pocket (StoryRunner.item_received; never on load);
 ##  - more items than pockets: ‹ › arrows (and the mouse wheel over the strip) page through.
 ## Sounds are requested, not played: `sound_requested(kind)` — "receive" | "select" | "deselect".
@@ -18,6 +20,7 @@ extends PanelContainer
 
 signal sound_requested(kind: String)
 signal pocket_hover_changed(old_item: String, new_item: String)
+signal examine_requested(item_id: String)
 
 const SLOTS: int = 8
 const SLOT_SIZE := Vector2(64, 64)
@@ -43,6 +46,7 @@ var tooltip: PanelContainer
 var tip_name: Label
 var tip_desc: Label
 var tip_action: Label
+var tip_examine: Label
 ## Where flying icons are drawn (a full-screen Control above the rest of the UI); self if unset.
 var fx_parent: Control = null
 ## Bottom edge of the top bar: the tooltip opens under it, over the scene.
@@ -89,6 +93,7 @@ func _init() -> void:
 		s.mouse_filter = Control.MOUSE_FILTER_PASS   # clicks are accepted by the pocket, the wheel goes on
 		s.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		s.clicked.connect(_on_slot_clicked)
+		s.examine_requested.connect(_on_slot_examine)
 		s.mouse_entered.connect(_on_slot_hover.bind(s))
 		s.mouse_exited.connect(_on_slot_unhover.bind(s))
 		_row.add_child(s)
@@ -161,6 +166,12 @@ func _init() -> void:
 	tip_action.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	tip_action.custom_minimum_size = Vector2(TOOLTIP_W, 0)
 	tv.add_child(tip_action)
+	tip_examine = Label.new()
+	tip_examine.name = "Examine"
+	tip_examine.theme_type_variation = &"BagTooltipHint"
+	tip_examine.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tip_examine.custom_minimum_size = Vector2(TOOLTIP_W, 0)
+	tv.add_child(tip_examine)
 
 
 func _arrow(text: String, node_name: String, step: int) -> Button:
@@ -339,6 +350,8 @@ func _show_tooltip(s: BagSlot) -> void:
 	tip_desc.text = hint
 	tip_desc.visible = hint != ""
 	tip_action.text = StoryData.text("@ui.bag_put_back" if s.selected else "@ui.bag_take")
+	tip_examine.text = StoryData.text("@ui.bag_examine") if StoryData.texts.has("ui.bag_examine") else ""
+	tip_examine.visible = tip_examine.text != ""
 	tooltip.visible = true
 	tooltip.reset_size()
 	_place_tooltip.call_deferred(s)
@@ -376,6 +389,21 @@ func click_item(item_id: String) -> String:
 	StoryRunner.select_item(item_id)   # toggles: same item again → nothing selected
 	sound_requested.emit("select" if StoryRunner.selected_item == item_id else "deselect")
 	return StoryRunner.selected_item
+
+
+## «Рассмотреть»: a double click (its first click took the item in hand — that is undone) or the magnifier.
+func _on_slot_examine(s: BagSlot) -> void:
+	examine(s.item_id)
+
+
+## The same as a double click on the item's pocket (tests, probe).
+func examine(item_id: String) -> bool:
+	if item_id == "" or not GameState.has_item(item_id):
+		return false
+	if StoryRunner.selected_item == item_id:
+		StoryRunner.select_item("")
+	examine_requested.emit(item_id)
+	return StoryRunner.examined_item == item_id
 
 
 ## Put the held item back into the bag (right click, second click).
@@ -491,8 +519,10 @@ func probe() -> Dictionary:
 	for s in slots:
 		if s.item_id != "":
 			var r := s.get_global_rect()
+			var br := s.badge_rect()
 			out["items"][s.item_id] = {"x": r.get_center().x, "y": r.get_center().y, "icon": s.icon != null,
-				"selected": s.selected, "slot": s.index}
+				"selected": s.selected, "slot": s.index,
+				"badge": {"x": r.position.x + br.get_center().x, "y": r.position.y + br.get_center().y}}
 	if pages() > 1:
 		out["prev"] = _center(prev_button)
 		out["next"] = _center(next_button)

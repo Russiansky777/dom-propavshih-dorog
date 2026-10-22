@@ -8,6 +8,7 @@ extends Node
 @onready var closeup: CanvasLayer = $Closeup
 @onready var closeup_view: CanvasLayer = get_node_or_null("CloseupView")
 @onready var mechanic_view: CanvasLayer = get_node_or_null("MechanicView")
+@onready var item_examine: CanvasLayer = get_node_or_null("ItemExamine")
 @onready var frame_view: CanvasLayer = get_node_or_null("FrameView")
 
 var _last_hint: String = ""
@@ -32,6 +33,8 @@ func _ready() -> void:
 	StoryRunner.view_closed.connect(_mark_probe)
 	StoryRunner.mechanic_opened.connect(_mark_probe)
 	StoryRunner.mechanic_closed.connect(_mark_probe)
+	StoryRunner.examine_opened.connect(func(_i): _mark_probe())
+	StoryRunner.examine_closed.connect(_mark_probe)
 	StoryRunner.frame_changed.connect(func(_f, _h): _mark_probe())
 	StoryRunner.item_selection_changed.connect(func(_i): _mark_probe())
 	player.walk_started.connect(func(_t): _mark_probe())
@@ -160,6 +163,7 @@ func _publish_probe_state() -> void:
 		"puzzle": closeup.call("probe_positions") if closeup.has_method("probe_positions") else {},
 		"view": closeup_view.call("probe") if closeup_view != null else {},
 		"mechanic": mechanic_view.call("probe") if mechanic_view != null else {},
+		"examine": item_examine.call("probe") if item_examine != null else {},
 		"frame": frame_view.call("probe") if frame_view != null else {},
 		"ticks": Time.get_ticks_msec(),
 		"physics_frames": Engine.get_physics_frames(),

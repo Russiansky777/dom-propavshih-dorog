@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/ui/closeup_view.gd" id="5_view"]
 [ext_resource type="Script" path="res://scripts/mechanics/mechanic_view.gd" id="6_mech"]
 [ext_resource type="Script" path="res://scripts/ui/frame_view.gd" id="7_frame"]
+[ext_resource type="Script" path="res://scripts/ui/item_examine.gd" id="8_examine"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -33,3 +34,7 @@ script = ExtResource("5_view")
 [node name="MechanicView" type="CanvasLayer" parent="."]
 layer = 4
 script = ExtResource("6_mech")
+
+[node name="ItemExamine" type="CanvasLayer" parent="."]
+layer = 4
+script = ExtResource("8_examine")

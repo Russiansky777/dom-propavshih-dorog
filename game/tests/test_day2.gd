@@ -899,12 +899,18 @@ func _test_walkthrough() -> void:
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "fast_mirror" and not gs.has_item("clamp"), "the clamp on the frame opens mother's mirror")
 	await _finish()
 	p = mv.panel
+	# F4 (Director 23.10): the comparison is Agata's own act — her watch from the bag held to the glass.
 	await _click(_v(_panel().get("watch", {})))
 	await _finish()
-	_check(not gs.has_flag("nina_time_compared"), "too early to compare")
-	while p.fclock.real_s < 16.0:
+	_check(not gs.has_flag("nina_time_compared") and not bool(_panel().get("holding", true)), "an empty place: no comparison without the watch")
+	sr.select_item("pocket_watch")
+	await _click(_v(_panel().get("glass", {})))
+	await _finish()
+	_check(bool(_panel().get("holding", false)) and gs.has_item("pocket_watch") and not gs.has_flag("nina_time_compared"), "the watch held to the glass, still Agata's; not at once")
+	var g15 := 0
+	while not gs.has_flag("nina_time_compared") and g15 < 3000:
 		await process_frame
-	await _click(_v(_panel().get("watch", {})))
+		g15 += 1
 	seen = await _finish()
 	_check(gs.has_flag("nina_time_compared") and gs.has_flag("done_M15a") and gs.has_flag("evening_dusk"), "compare → M15а, dusk: %s" % str(seen))
 	sr.close_mechanic()
@@ -1241,6 +1247,7 @@ func _test_fast_mirror_panel() -> void:
 	_check(p.poses_seen.size() >= 2, "Nina changes pose (%s)" % str(p.poses_seen))
 	var poses: Array = p.spec.get("poses", [])
 	_check(poses.size() >= 5 and poses.size() <= 6, "5–6 poses in data (%d)" % poses.size())
+	await _finish()   # 20 s at the glass without the watch: Agata thinks of her own watch (F4) — read it first
 	await _click(_v(_panel().get("glass", {})))
 	var seen := await _finish()
 	_check(int(_panel().get("knocks", 0)) == 1 and seen.size() == 1, "a knock: Nina does not turn (%s)" % str(seen))

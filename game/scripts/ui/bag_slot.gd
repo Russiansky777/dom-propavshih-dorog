@@ -5,8 +5,13 @@ extends Control
 ## (res://assets/icons/<item_id>.png) sits in it with a soft drop shadow. Without an icon the item
 ## shows as a canvas patch with the first letter of its name, so a missing icon never breaks the bag.
 ## `loose = true` draws only the item (no pocket): the flying icon and the icon carried by the cursor.
+## «Рассмотреть» (F9): a double click on the pocket, or a click on the magnifier in its corner (shown while
+## the pointer is over a pocket with an item), asks for the item's close-up — `examine_requested`.
 
 signal clicked(slot: BagSlot, button_index: int)
+signal examine_requested(slot: BagSlot)
+
+const BADGE := 24.0   # the magnifier in the pocket's lower right corner
 
 const LEATHER_POCKET := Color(0.17, 0.105, 0.062)
 const LEATHER_EDGE := Color(0.075, 0.045, 0.028)
@@ -67,8 +72,17 @@ func _ready() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and \
 			(event.button_index == MOUSE_BUTTON_LEFT or event.button_index == MOUSE_BUTTON_RIGHT):
-		clicked.emit(self, event.button_index)
 		accept_event()
+		if event.button_index == MOUSE_BUTTON_LEFT and item_id != "" and not loose and \
+				(event.double_click or badge_rect().has_point(event.position)):
+			examine_requested.emit(self)
+			return
+		clicked.emit(self, event.button_index)
+
+
+## The magnifier's rect in the pocket (local px).
+func badge_rect() -> Rect2:
+	return Rect2(size - Vector2(BADGE + 1, BADGE + 1), Vector2(BADGE, BADGE))
 
 
 ## Short "landed" bounce with a warm flash (an item has just arrived in this pocket).
@@ -101,6 +115,8 @@ func _draw() -> void:
 		draw_texture_rect(icon, ir, false)
 	else:
 		_draw_patch(ir.grow(-4.0 if not loose else -6.0))
+	if hovered and not loose:
+		_draw_badge()
 
 
 func _draw_pocket(r: Rect2) -> void:
@@ -134,6 +150,18 @@ func _draw_pocket(r: Rect2) -> void:
 		hr.border_color = HOVER_RIM
 		hr.set_corner_radius_all(7)
 		draw_style_box(hr, r)
+
+
+## The magnifier («Рассмотреть»): a brass lens with a handle on a dark disc, over the icon's corner.
+func _draw_badge() -> void:
+	var b := badge_rect()
+	var c := b.get_center()
+	draw_circle(c, BADGE * 0.5, Color(0.08, 0.05, 0.03, 0.88))
+	draw_arc(c, BADGE * 0.5, 0.0, TAU, 24, Color(0.84, 0.70, 0.47, 0.8), 1.2, true)
+	var lc := c + Vector2(-2.5, -2.5)
+	draw_circle(lc, 5.6, Color(0.75, 0.85, 0.95, 0.25))
+	draw_arc(lc, 5.6, 0.0, TAU, 20, SELECT_RIM, 2.0, true)
+	draw_line(lc + Vector2(4.2, 4.2), lc + Vector2(9.0, 9.0), SELECT_RIM, 2.6, true)
 
 
 ## Placeholder for an item without an icon: a canvas patch with a seam and the name's first letter.
