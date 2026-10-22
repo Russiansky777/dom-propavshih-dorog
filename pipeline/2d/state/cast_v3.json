@@ -1,10 +1,4 @@
 {
-  "pavel": {
-    "task": "01a164d2-794c-7120-9720-216e1262c0d4",
-    "prompt": "Pavel, a 48-year-old village miller: broad-shouldered and strong, slightly stooped from carrying sacks; square weathered face, short beard going grey, tired kind eyes; flour dust on sleeves and trousers; a long coarse sackcloth apron over a faded blue-grey linen shirt with rolled sleeves, a dark wool waistcoat, a worn peaked cloth cap, dark trousers tucked into heavy leather boots; he has lived alone for a year and looks a little neglected; palette of flour-white, grey-blue and brown. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
-    "model": "nano-banana-2",
-    "credits": 6
-  },
   "mitya": {
     "task": "01a164d2-7c35-7159-81bc-df09296aedaf",
     "prompt": "Mitya, a 37-year-old river ferryman: tall, lean and sinewy; long weathered face with a full dark beard greying at the temples, deep-set calm eyes, rosy wind-burnt cheeks and the same round broad features as his mother, a sturdy village ferrywoman; a sheepskin coat (tulup) belted with a rope, a fur hat with ear flaps, thick wool mittens tucked into the belt, felt boots (valenki); winter palette of sheepskin cream, brown and charcoal. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
@@ -17,27 +11,33 @@
     "model": "nano-banana-2",
     "credits": 6
   },
-  "ilya": {
-    "task": "01a164d2-81a3-74c5-97d3-94f6dcc58455",
-    "prompt": "Ilya, a 32-year-old village carpenter: tall and broad, strong forearms; open friendly face with a short brown beard, dark brown eyes, a pencil tucked behind his right ear; wood shavings stuck to his clothes; a collarless homespun linen shirt (kosovorotka) with rolled sleeves, a leather work apron, dark wool trousers tucked into boots; palette of linen, leather brown and dark green. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
-    "model": "nano-banana-2",
-    "credits": 6
-  },
-  "ulyana": {
-    "task": "01a164d2-84bb-7173-a93a-63802f4e1f6c",
-    "prompt": "Ulyana, an 8-year-old village girl: small and lively, round face, dark brown eyes, two thin braids with ribbons; a too-big wool coat thrown over a long white nightshirt, felt boots; curious bright expression; child proportions; palette of rust-red coat, white and grey. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
-    "model": "nano-banana-2",
-    "credits": 6
-  },
   "ilya_wife": {
     "task": "01a164d2-87de-73e7-b5a1-f8dc6e96756e",
     "prompt": "The wife of a village carpenter, about 30 years old: calm and practical, average height; gentle round face, light brown hair under a patterned headscarf (platok); a long dark green skirt, a warm quilted jacket, a knitted shawl; holding a lit kerosene lamp in one hand; palette of dark green, ochre and cream. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
     "model": "nano-banana-2",
     "credits": 6
   },
+  "pavel": {
+    "task": "01a164dd-629f-71ab-9541-4ea2e4659ee3",
+    "prompt": "Pavel, a 48-year-old village miller: broad-shouldered and strong, slightly stooped from carrying sacks; square weathered face, short beard going grey, tired kind eyes; flour dust on sleeves and trousers; a long coarse sackcloth apron over a faded blue-grey linen shirt with rolled sleeves, a dark wool waistcoat, a worn peaked cloth cap, dark trousers tucked into heavy leather boots; he has lived alone for a year and looks a little neglected; palette of flour-white, grey-blue and brown; standing directly on the ground with no pedestal, no base, no platform, no stand. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "ilya": {
+    "task": "01a164dd-664c-76be-a439-d81435ea5dda",
+    "prompt": "Ilya, a 32-year-old village carpenter: tall and broad, strong forearms; open friendly face with a short brown beard, dark brown eyes, a pencil tucked behind his right ear; wood shavings stuck to his clothes; a collarless homespun linen shirt (kosovorotka) with rolled sleeves, a leather work apron, dark wool trousers tucked into boots; palette of linen, leather brown and dark green; a short wooden carpenter's pencil clearly visible tucked behind his right ear. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "ulyana": {
+    "task": "01a164dd-6946-714a-914a-6fb506524332",
+    "prompt": "Ulyana, an 8-year-old village girl drawn with realistic child proportions and a realistic painterly face (not cartoon, not stylized, not big-eyed): small and lively, round face, dark brown eyes, two thin braids with ribbons; a too-big rust-red wool coat thrown over a long white nightshirt, grey felt boots (valenki); curious bright expression; palette of rust red, white and grey. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
   "manager": {
-    "task": "01a164d2-8ba7-768a-b390-a4ebcbbc3345",
-    "prompt": "An old mill manager, about 70 years old: thin, slightly bent, walking with a cane; long face with grey side-whiskers and a moustache, sharp but tired eyes; a worn dark-blue formal frock coat with brass buttons, an old peaked uniform cap, dark trousers, polished but cracked boots; palette of faded navy, brass and grey. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
+    "task": "01a164dd-6cd5-7651-b2c6-ce3494c05e31",
+    "prompt": "An elderly retired mill manager, clearly about 70 years old: thin, bent with age, leaning on a wooden walking cane held in his right hand; deeply wrinkled long face, white hair, white side-whiskers and a white moustache, sharp but tired eyes; a worn faded dark-blue civilian frock coat with brass buttons (not a military uniform), an old peaked cap, dark trousers, cracked boots; palette of faded navy, brass and grey. Painterly realistic character concept for a 2D adventure game set in the Russian North around 1910, soft hand-painted digital painting, natural light, neutral standing A-pose with arms slightly away from the body, full figure visible from head to shoes, the same character from front, side and back, plain empty background, no text",
     "model": "nano-banana-2",
     "credits": 6
   }
