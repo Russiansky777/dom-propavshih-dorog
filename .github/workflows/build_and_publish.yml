@@ -20,8 +20,10 @@ permissions:
   id-token: write
 
 concurrency:
+  # не отменять идущую сборку: при пяти агентах пуши идут чаще, чем длится сборка, и с отменой сайт не обновлялся часами
+  # (23.10: 39870479567, 39870873490, 39871635423 отменены подряд). Идущая доигрывает, из ожидающих GitHub оставляет самую свежую.
   group: build-and-publish
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   GODOT_VERSION: 4.7.2
