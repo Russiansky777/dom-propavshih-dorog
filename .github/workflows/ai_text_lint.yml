@@ -1,0 +1,64 @@
+name: ai-text-lint
+
+# ИИ-проверка текста: всё, что игрок читает и слышит (data/story/text/ru_*.json, реплики/варианты/подсказки/цели
+# сцен, журнал, предметы, места) — против канона (CLAUDE.md, characters.json, SCENARIO_FINAL.md), опечатки,
+# грамматика, единообразие имён и терминов. Главное — поймать ошибки до записи голосов.
+# Запуск: пуш, меняющий эти файлы (проверяются только новые и изменённые строки; если видимый текст не менялся —
+# API не вызывается), или пуш Docs/ai_checks/requests/text_lint.json ("all": true — весь текст).
+# Отчёт: Docs/ai_checks/text_lint_<дата>.md (коммит с [skip ci]). Правок в game/ и data/ нет.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/story/text/ru_*.json"
+      - "data/story/scenes/*.json"
+      - "data/story/flags.json"
+      - "data/story/items.json"
+      - "data/story/quests.json"
+      - "data/story/locations.json"
+      - "Docs/ai_checks/requests/text_lint.json"
+  workflow_dispatch:
+    inputs:
+      all:
+        description: "весь текст (true) или только изменённое последним пушем (false)"
+        default: "true"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-text-lint-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Проверка текста
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
+          BEFORE: ${{ github.event.before }}
+          ALL_INPUT: ${{ github.event.inputs.all }}
+        run: |
+          all=""
+          if [ "$ALL_INPUT" = "true" ]; then all="--all"; fi
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null && \
+             git diff --name-only "$BEFORE" HEAD -- Docs/ai_checks/requests/text_lint.json | grep -q . && \
+             node -e 'process.exit(JSON.parse(require("fs").readFileSync("Docs/ai_checks/requests/text_lint.json","utf8")).all?0:1)'; then
+            all="--all"
+          fi
+          node tools/ai_checks/text_lint.mjs --base "$BEFORE" $all
+      - name: Коммит отчёта
+        if: always()
+        run: |
+          [ -d Docs/ai_checks ] || exit 0
+          tools/ai_checks/commit.sh "ИИ-проверка текста: $(cat build/ai_checks/summary.txt 2>/dev/null || echo отчёт) (run ${{ github.run_number }})" Docs/ai_checks

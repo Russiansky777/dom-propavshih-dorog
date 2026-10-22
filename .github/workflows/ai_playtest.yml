@@ -24,7 +24,8 @@ permissions:
   actions: read
 
 concurrency:
-  group: ai-playtest
+  # свой прогон на каждый пуш: приёмка и свежий взгляд идут параллельно (коммит результатов — с rebase и повторами)
+  group: ai-playtest-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
