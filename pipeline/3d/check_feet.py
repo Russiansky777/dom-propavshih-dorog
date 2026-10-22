@@ -35,6 +35,32 @@ def roles_to_fix(req: dict) -> list:
     return []
 
 
+ARMS_RAISED_DEG = 25.0  # рука плечо → кисть дальше от отвеса — не стойка (A-поза рига Meshy ≈ 31°, T-поза ≈ 90°; Idle_4 ≈ 14°)
+REST_POSE_DEG = 3.0     # все кости ближе к позе рига — клип не применился (лист в позе рига)
+
+
+def arms_pose(rig, R, P) -> dict:
+    """Стойка не в позе покоя (D2 22.10: Павел и Митя в игре стояли в позе рига с разведёнными руками): угол руки
+    (плечо → кисть) от отвеса вниз и высота кистей над тазом, по кадрам. Порок — обе руки подняты во всех кадрах."""
+    import numpy as np  # noqa: PLC0415
+    out = {}
+    raised = np.ones(len(R), bool)
+    for side in ("Left", "Right"):
+        a, h = rig.idx(side + "Arm"), rig.idx(side + "Hand")
+        v = P[:, h] - P[:, a]
+        ang = np.degrees(np.arccos(np.clip(-v[:, 2] / np.maximum(np.linalg.norm(v, axis=1), 1e-9), -1, 1)))
+        out[side] = {"arm_from_vertical_deg_median": round(float(np.median(ang)), 1),
+                     "wrist_above_hips_m_median": round(float(np.median(P[:, h, 2] - P[:, rig.idx("Hips"), 2])), 3)}
+        raised &= ang > ARMS_RAISED_DEG
+    out["all_frames_arms_raised"] = bool(raised.all())
+    # клип не применился: каждая кость в каждом кадре в пределах REST_POSE_DEG от позы рига
+    d = np.einsum("tbji,bjk->tbik", R, rig.rest_R)
+    ang = np.degrees(np.arccos(np.clip((np.trace(d, axis1=2, axis2=3) - 1) / 2, -1, 1)))
+    out["max_bone_from_rig_pose_deg"] = round(float(ang.max()), 1)
+    out["rig_pose"] = bool(ang.max() < REST_POSE_DEG)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--glb", required=True)
@@ -76,7 +102,10 @@ def main() -> int:
         if act is None and len(acts) == len(order):
             act = acts[i]
         if act is None:
-            out["roles"][role] = {"error": "клип не найден"}
+            # без клипа лист рисуется в позе рига — это порок, а не пропуск
+            out["roles"][role] = {"error": "клип не найден", "fail": ["клип не найден — лист в позе рига"]}
+            out["ok"] = False
+            print(f"{name}/{role}: клип не найден — НЕ ПРОШЛО", flush=True)
             continue
         kind = feet_fix.kind_of(role) or feet_fix.kind_of(act.name) or ("idle" if role in fix else None)
         win = windows.get(role)
@@ -97,6 +126,19 @@ def main() -> int:
             m = feet_fix.measure(rig, R, P, kind or "idle", in_place=(kind == "walk"))
             entry = {"clip": act.name, "kind": kind or "action", "window": win, "fixed": False, "after": m,
                      "fail": feet_fix.verdict(m, kind) if kind else [], "enforced": bool(kind)}
+        if role == "idle" or kind == "idle" and role.startswith("idle"):
+            # стойка не в позе рига (T/A-поза): руки не подняты во всех кадрах
+            bones = [n for s_ in ("L", "R") for n in (feet_fix.SIDES[s_] + "UpLeg", feet_fix.SIDES[s_] + "Leg", feet_fix.SIDES[s_] + "Foot")]
+            fr = feet_fix.key_times(act, bones)
+            if win:
+                g0, g1 = fr[0], fr[-1]
+                fr = fr[(fr >= g0 + (g1 - g0) * win[0] - 1e-6) & (fr <= g0 + (g1 - g0) * win[1] + 1e-6)]
+            Ra, Pa = feet_fix.sample(arm, act, rig, fr)
+            entry["arms"] = arms_pose(rig, Ra, Pa)
+            if entry["arms"]["all_frames_arms_raised"]:
+                entry["fail"] = list(entry["fail"]) + [f"стойка с разведёнными руками: обе руки дальше {ARMS_RAISED_DEG:.0f}° от отвеса во всех кадрах (T/A-поза)"]
+            if entry["arms"]["rig_pose"]:
+                entry["fail"] = list(entry["fail"]) + [f"стойка = поза рига: все кости ближе {REST_POSE_DEG:.0f}° к покою (клип не применился)"]
         if entry["fail"]:
             out["ok"] = False
         out["roles"][role] = entry
