@@ -122,13 +122,13 @@
   },
   "ulyana": {
    "voice_name": "ЛУНЯ",
-   "voice_id": "",
+   "voice_id": "rSfuQoQ3FY8SVKeraMAp",
    "voice_settings": {
     "stability": 0.5,
     "similarity_boost": 0.75
    },
    "_settings_reason": "детский голос — значения по умолчанию; проверить на слух.",
-   "choice": "Голос Директора «ЛУНЯ» (переименован из Lynya 22.10); voice_id подставится после списка голосов."
+   "choice": "Голос Директора «ЛУНЯ» (переименован из Lynya 22.10): в списке голосов — «Луня», rSfuQoQ3FY8SVKeraMAp (professional, ru, young female; run 39848405119)."
   }
  }
 }
