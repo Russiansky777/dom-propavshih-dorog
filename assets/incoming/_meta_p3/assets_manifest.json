@@ -1,0 +1,738 @@
+{
+  "project": "Дом пропавших дорог",
+  "party": 3,
+  "canvas_px": [
+    1672,
+    941
+  ],
+  "game_png_count": 28,
+  "coordinates": "top-left origin, X right, Y down; full canvas retained",
+  "alpha": "straight, 8-bit; Normal/Over",
+  "external_bases": [
+    "H2_bg.png",
+    "Z3_bg.png",
+    "R1_bg.png"
+  ],
+  "canonical_door_hinges": 3,
+  "excluded": [
+    "character poses",
+    "inventory icons"
+  ],
+  "glass_polygon_px": {
+    "H2_state_office_mirror.png": [
+      [
+        454,
+        187
+      ],
+      [
+        560,
+        180
+      ],
+      [
+        565,
+        361
+      ],
+      [
+        460,
+        373
+      ]
+    ]
+  },
+  "candle_wick_px": [
+    445,
+    425
+  ],
+  "bar_up_translation_px": [
+    0,
+    -46
+  ],
+  "far_signal_count": 3,
+  "far_signal_centers_px": [
+    [
+      919.4,
+      350.48
+    ],
+    [
+      1296.95,
+      351.94
+    ],
+    [
+      639.16,
+      355.46
+    ]
+  ],
+  "state_alpha_validation": [
+    {
+      "dst": "R1_dusk.png",
+      "max_reconstruction_error_8bit": 0,
+      "transparent_pixels": 129,
+      "partial_alpha_pixels": 1544594
+    },
+    {
+      "dst": "Z3_state_water_low.png",
+      "max_reconstruction_error_8bit": 0,
+      "transparent_pixels": 113,
+      "partial_alpha_pixels": 1530281
+    }
+  ],
+  "files": [
+    {
+      "file": "H2_state_office_mirror.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "e7ccdf48c17f4ee8cc8cb8858be967b283f4409eb80f72a9f3d3021bf2b837a2",
+      "base": "H2_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        401,
+        160,
+        614,
+        430
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "M3_view_bar_down.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "ead3dbafee7de3aa75306e79f0fc2add662b0af587ac1207b09ee4fed7c14d34",
+      "base": "M3_view_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        505,
+        337,
+        960,
+        355
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "M3_view_bar_up.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "5895db306faa4549f919008c48f0b5e56a1e0e97277e1cc658f83181c934ebbd",
+      "base": "M3_view_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        505,
+        291,
+        960,
+        309
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "M3_view_bg.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "f6c8b60bf650d19c35c54bb24ad8a661508f75b1bdf63b5ec303feb8d45b5ce2"
+    },
+    {
+      "file": "M3_view_hook.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "81e531b2305f2847202324e57660bad71c89e01b52df90aa7e59c1c41b32c65d",
+      "base": "M3_view_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        556,
+        334,
+        796,
+        392
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "M3_view_light.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "8ea3d0d910ba08a62b06f4796a58a817ee9ed30a1e1fc1dc3950804925f4722b",
+      "base": "M3_view_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        552,
+        95,
+        568,
+        705
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "O3_bg.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "4b46f5e8ed48053b5780582bc291f4d9f3274978cda44946359ad3b0cf957d46"
+    },
+    {
+      "file": "O3_candle_flame.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "b8e9e341f1db02b37d3cd9db5ab97e1cefd4a6ec330e3f8dec0bf1be36a7f567",
+      "base": "O3_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        434,
+        399,
+        456,
+        429
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "O3_clock_face.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "53622d4337bed8beb286ea271bb0be62e464b612d36db7bdd500d9fdb806744a",
+      "base": "O3_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        904,
+        163,
+        980,
+        239
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "O3_clock_hand_hour.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "f9c4d0cc58803570607c2279115bc2890bba7c9aa27589aa530325ea45cc6994",
+      "base": "O3_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        939,
+        179,
+        945,
+        207
+      ],
+      "blend": "normal_over",
+      "opacity": 1,
+      "pivot_px": [
+        942,
+        201
+      ],
+      "pivot_normalized_top_left": [
+        0.5633971291866029,
+        0.21360255047821466
+      ]
+    },
+    {
+      "file": "O3_clock_hand_min.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "9c7ab72643e4dd9af20f65932325018f1889200634c7d289041253256434460a",
+      "base": "O3_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        939,
+        171,
+        945,
+        205
+      ],
+      "blend": "normal_over",
+      "opacity": 1,
+      "pivot_px": [
+        942,
+        201
+      ],
+      "pivot_normalized_top_left": [
+        0.5633971291866029,
+        0.21360255047821466
+      ]
+    },
+    {
+      "file": "O3_clock_pendulum.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "5524e158213a386dfe9dcc14bb5ce64cb7f9a3f844973971a244d01f3e4db48b",
+      "base": "O3_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        932,
+        257,
+        952,
+        322
+      ],
+      "blend": "normal_over",
+      "opacity": 1,
+      "pivot_px": [
+        942,
+        259
+      ],
+      "pivot_normalized_top_left": [
+        0.5633971291866029,
+        0.27523910733262485
+      ]
+    },
+    {
+      "file": "R1_dusk.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "edcf78a19c8bc1bc6658b0736ddcbc65da254bf60b9f9840985e1b3fbc3ad409",
+      "base": "R1_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "R1_far_dark.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "27dfb881327c6ba22bf0d2caa8d2f5b57ed56665d84a9e3e3fd2c3e04e6db18f",
+      "base": "R1_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        419,
+        237,
+        1672,
+        391
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "R1_far_lights.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "64f735a6196a8b7e31e5ee5c9a413d69de0aadaa6f372d01496913069bdc3fec",
+      "base": "R1_bg.png",
+      "alpha_range": [
+        0,
+        250
+      ],
+      "alpha_bbox_px_exclusive": [
+        624,
+        328,
+        1316,
+        386
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "R1_far_snow.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "405825e453f5be6716006759342ebda719d8b9f2aaf6fbe590b33ac55ad18920",
+      "base": "R1_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        417,
+        218,
+        1672,
+        392
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "R2_bg.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "0da9ca770f7a890c05299058f94943921a030877f67c7cdd150dfb6157d98e08"
+    },
+    {
+      "file": "R2_fg_rope.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "fea5750f231a264346f5028fb1f3e298491f285a58ba16fbf0b56993420311e8",
+      "base": "R2_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        742,
+        357,
+        1672,
+        941
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "R3_bg.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "b3cc84f3b67c175d9ff4ac4bc0deb15b68e4514c2c501fb44728690c1e345513"
+    },
+    {
+      "file": "R3_fg_pier.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "c25c7d48815db2ef0221be4841e75d06101a93db66408d1ffc9742ed68633be0",
+      "base": "R3_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        0,
+        507,
+        1150,
+        941
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "R3_fg_rope_stop.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "fb290e8baef9899ea0a6ddcd979c60179fa0df0b5fd8b73d0886523605be22a9",
+      "base": "R3_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        343,
+        682,
+        1247,
+        941
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "Z3_state_water_low.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "de1ee08fe5d335ae2a458de413674bf7ab95fa7498b014c27fb4412c9d9e1cba",
+      "base": "Z3_bg.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "closeup_lantern_closed.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "aebaed508036e2cc2b17c34d90e1943510eef2399816481983787ea472d3608e"
+    },
+    {
+      "file": "closeup_lantern_open.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "39f443ccfacee34533b4466662c30b82ceb1761850a4123faa5451a75f3b0e6b"
+    },
+    {
+      "file": "closeup_office_photo.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "d8d6b05b75a3ea177a92c884c08ef236538abbd32fcce5710bcb851aa4c6a1d9"
+    },
+    {
+      "file": "closeup_plate.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "b5d5e6ababe438dc4e1c4d355220783ec6768cebd8f13ce80470d7b106e587f4"
+    },
+    {
+      "file": "closeup_plate_rope.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "a557fa225f5df4b310072f2c4839a862ead6a5991bdb2f8188c795e5601477e0",
+      "base": "closeup_plate.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        0,
+        518,
+        635,
+        941
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    },
+    {
+      "file": "closeup_plate_skoba.png",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "position_px": [
+        0,
+        0
+      ],
+      "sha256": "d4d0351aa6cb24fb198deb49ffa9706fcb80d073e0092fc1018b2595cac801c6",
+      "base": "closeup_plate.png",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox_px_exclusive": [
+        890,
+        482,
+        1190,
+        566
+      ],
+      "blend": "normal_over",
+      "opacity": 1
+    }
+  ],
+  "verified": [
+    "PNG CRC and complete decode",
+    "dimensions",
+    "overlay alpha and canvas registration",
+    "three signal light components",
+    "visual scene composites"
+  ],
+  "not_verified": [
+    "in-engine animation and rendering"
+  ]
+}

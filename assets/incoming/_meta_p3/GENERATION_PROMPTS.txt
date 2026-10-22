@@ -1,0 +1,182 @@
+Дом пропавших дорог — партия 3
+Встроенная генерация изображений; задания, извлечения и уточнения.
+Промежуточные имена относятся к рабочим этапам. Финальный состав — в assets_manifest.json.
+Масштабирование и совмещение выполнены при техническом экспорте на холст 1672×941.
+
+1. M3_view_bg.png
+Референсы: M3_bg.png, M2_bg.png
+Прозрачность: False
+Game background for "Дом пропавших дорог", northern Russia circa 1900–1920. Exact canvas 1672×941. The references define the existing mill office wood, plaster, age and painterly texture. Create the reverse view from the wall OPPOSITE THE DOOR, looking straight at the INSIDE of the CLOSED heavy plank office door. Eye-level camera, restrained warm brown palette, softly painted natural textures, muted daylight, no people.
+Composition: closed door prominent near center, entire door visible. At its LEFT edge a very narrow unlit vertical crack through which a long hook could be inserted; it must be a distinct dark slit. On the interior door/jamb are TWO EMPTY OPEN-TOP iron saddle brackets ready to hold a removable HORIZONTAL iron locking bar. IMPORTANT: NO LOCKING BAR on this base image, only its fixed empty seats.
+A heavy wooden shelving rack with iron scale weights has fallen diagonally from the RIGHT and leans against the LOWER right portion of the door. Fallen shelves and scattered weights explain the obstruction, but leave the upper half, bar seats and left slit fully visible and accessible. The rack's contact with door is clear and physically plausible, not a floating shelf.
+A narrow HIGH grated ventilation window to the RIGHT of the door admits faint overcast daylight; outside it the old water-level staff can be glimpsed. This window is small and impossible for a person to pass through. A side corner of the office desk and ledgers may appear at left edge to match reference. Maintain open usable floor and clear scene geometry.
+NO lantern light at the slit, NO movable bar, NO hook, NO mirror visible in this reverse view, no writing, no captions, no symbols, no modern objects. Fixed parts of the latch stay in the base. Single finished room background, not a collage.
+
+2. O3_bg.png
+Референсы: H1_bg.png, H2_bg.png
+Прозрачность: False
+Create ONE new background O3_bg.png for northern-Russian narrative point-and-click game "Дом пропавших дорог", circa 1900–1920, matching the softly painted warm wood/plaster material rendering of attached room references. Exact 1672×941 landscape, eye-level camera, horizon about 45% height. NO people.
+Nina's modest lived-in family room in winter. A wooden writing table in the middle-left foreground, clear usable writing surface with a plain notebook, inkpot, an UNLIT candle in a simple brass holder, and a small modest rectangular wooden-framed hand mirror standing on the table. Enough visible space and an empty wooden chair for a seated woman to be added later. The little mirror has calm silver-gray glass, no person. On right wall a window shows outdoor snow and cool winter daylight. In the traditional upper corner a small icon and simple cloth. Domestic, cared for, emotionally warm, not a rich mansion.
+IMPORTANT ANIMATION DESIGN: On the back wall left of the window hangs a clearly visible modest wooden pendulum wall-clock CASE with a round pale EMPTY blank dial recess (no numbers, no clock hands) and an empty dark pendulum opening below it (NO pendulum). Keep this clock large enough to animate its face, hands and pendulum as separate layers. The table candle is UNLIT: visible wick but absolutely no painted flame or glow. These moving elements will be supplied separately.
+Clear balanced readable composition, worn pine boards, muted cream and warm ochre, blue-gray snowy window light. No legible text on paper, no decorative writing, no UI, no film border, no modern items. A full finished background with all furniture fixed, leaving only animation components absent.
+
+3. M3_view_bg.png
+Референсы: exec-d8c248f5-e0b7-4180-8f8b-c3aa17d13dad.png
+Прозрачность: False
+Edit the attached image with ONE precise mechanical correction. Keep exact canvas 1672×941 and preserve the entire room, door, collapsed rack, weights, small barred window, desk, colours and composition.
+REMOVE the two empty iron bracket loops currently mounted one ABOVE the other on the LEFT door jamb (one high near y180 and one low near y525).
+REPLACE them with exactly TWO OPEN-TOP U-SHAPED SADDLE BRACKETS at the SAME horizontal height, one mounted on the LEFT door jamb and one at the RIGHT door edge, just above the middle wooden door brace. These are the two support seats for a removable horizontal iron bar that will cross the door. Open tops must allow the bar to be LIFTED UP OUT OF BOTH seats. Make this geometry clear and practical.
+The base image still has NO BAR in either bracket. No hook. Keep a narrow DARK unlit vertical gap at the left edge of the closed door. No strip of white or yellow lantern light in that gap. Any light is only ambient window daylight.
+Keep the fallen weight rack against the LOWER RIGHT of the door, not covering the new bracket seats. No other changes.
+
+4. R2_bg.png
+Референсы: R1_bg.png
+Прозрачность: False
+Create a new painterly game background R2_bg.png, exactly 1672×941. Same northern-Russian 1900–1920 world and textured softly painted style as reference. Nightfall ferry crossing on a still pond. Point of view from INSIDE a modest wooden rowboat: the inside of its pointed bow and worn gunwales occupy the lower quarter of the image, the rest is cold water disappearing into dense blue-gray fog, barely visible snow-dark far shore. Calm mysterious, not horror. A faint warm lantern illumination touches the boat's wood from behind camera. Clear unobstructed composition.
+IMPORTANT: This is the base below a separate rope-and-sliding-ring overlay. Do NOT paint any rope, metal guide ring, person, hands, oars or UI into the base. Leave space running from the boat's right-front gunwale toward the central distant fog for that overlay. Maintain believable boat scale and seated passenger perspective. No lettering, no modern machinery, no additional boats. Single finished empty crossing background.
+
+5. R3_bg.png
+Референсы: R1_bg.png, Z3_bg.png
+Прозрачность: False
+Create a new game background R3_bg.png, EXACT 1672×941, same softly painted northern-Russian wood/stone environment as attached references, circa 1900–1920. This is the FAR FERRY LANDING in winter at blue dusk, viewed from arrival at the water. Snow-covered old stone bridge pier/landing in the foreground left and center, dark still water at lower right, tiny wooden ferry shed in middle-right, clear trampled path leading UP from landing toward the village behind. A simple oil lantern on a wooden post beside the path gives restrained amber light. No people.
+CRITICAL INTERACTIVE ANCHOR: on the FRONT face of the foreground LEFT stone pier, show a solid old iron attachment ring fixed into a small weathered iron plate, facing camera clearly and low enough for a separate foreground rope-and-stopper layer. Leave this ring EMPTY in the base; no rope and no stopper yet. The foreground near edge of the landing should form a distinct snowy stone lip for later character occlusion. Keep path usable and easy to read, not blocked by a giant rock. Snow and old wood consistent with the school/family winter, light mist beyond, warm painterly materials, quiet arrival. No text, UI, modern objects or additional characters.
+
+6. closeup_plate.png
+Референсы: Z3_bg.png, closeup_bridge_photo.png
+Прозрачность: False
+Create a close-up game asset closeup_plate.png, EXACT 1672×941. Same textured painterly northern-Russian historical game style as the two references. Near-face-on view of a large old rectangular IRON PLATE bolted to a wet FIELDSTONE BRIDGE PIER just exposed by falling pond water. Plate fills the central two thirds, wet dark stone around it. The plate has a clearly readable cast Cyrillic place name on its TOP: «Ольховка» spelled exactly О-л-ь-х-о-в-к-а. One large forged attachment RING on its upper-middle LEFT area, riveted to the plate. A definite long jagged CRACK splits the plate vertically in the RIGHT HALF below the text, leaving enough room to fit a horizontal repair cramp across it. Keep lettering intact, readable and restrained, part of the old cast metal, not floating text. Weathered rust, wet highlights, cold dusk with very soft warm rim light. NO rope, NO repair bracket, NO clamp, no characters, no other text. This is the unrepaired base; separate later layers will bridge the crack and attach rope through the ring. Make plate plane, ring plane and attachment geometry clear for those overlays.
+
+7. Z3_water_low_full.png
+Референсы: Z3_bg.png, closeup_plate.png
+Прозрачность: False
+Edit reference 1 into the same exact shoreline scene at DUSK AFTER THE POND HAS BEEN DRAINED. Exact 1672×941. Preserve camera, birches, path, near stone pier and far shore geometry. The water level is substantially LOWER: show wet exposed fieldstone below the former waterline, dark muddy bank, several more exposed old bridge supports. Keep remaining water physically horizontal at the lower level. The near pier at the RIGHT foreground now clearly exposes its iron plate, which must have a small matching old iron ring and crack like reference 2; it is the same pier, not a new giant object. Twilight cool light, restrained warm low illumination, still autumn outside, no snow on near bank. No complete bridge, no rope repair, no installed clamp, no people. Output full scene for a later registered state overlay. Do not rearrange the foreground path or resize the pier.
+
+8. R1_dusk_full.png
+Референсы: R1_bg.png
+Прозрачность: False
+Change ONLY lighting and atmosphere of this exact existing pier scene to blue DUSK. Exact 1672×941; camera and every landmark must remain fixed. Preserve the left lantern post, signs, all near-bank trees, the jetty and its posts, the rope across the water, the boat and the far village silhouette in their exact positions and scale. Light the existing near lantern with a soft amber glow falling onto nearby wood and path. Cool blue-gray sky and water, subdued warm near-bank highlights. The FAR SHORE must be DARK: no lit windows, no signal lights, no snow revealed yet. Keep far-shore trees and buildings as dim but recognisable silhouettes. No people, no new lamps, no added foreground objects. This is the base dusk state for later far-shore reveal layers.
+
+9. closeup_office_photo.png
+Референсы: M2_bg.png, M3_bg.png
+Прозрачность: False
+Create old faded sepia photograph in a plain worn paper mount, a game closeup EXACTLY 1672×941. Same paper style as a circa-1900 rural family photo, softly painted tactile rendering matching game references. The photograph shows the INSIDE of the mill office BEFORE the flood, photographed from just INSIDE its doorway looking at the OPPOSITE wall. On that opposite wall hangs a tall rectangular MIRROR in a plain dark wooden frame, the same simple rectangular framed mirror that appears in reference 1 mill hallway. Mirror is the CLEAR CENTRAL SUBJECT and visually shows why it once belonged to this room. The opposite wall is visible between ordinary office shelves and a wooden desk with ledgers; through the mirror one can faintly recognise the door behind the photographer, but no person. No collapsed rack yet. Quiet believable old rural office, no modern decor. Photograph nearly face-on on a narrow edge of dark wood, filling most canvas. No written text, dates, captions or watermark. The wooden frame of the photographed mirror should have four plain straight sides, not ornamental furniture carving.
+
+10. M3_bg_three_hinges.png
+Референсы: M3_view_bg.png
+Прозрачность: False
+Precise edit of attached 1672×941 game background. Preserve EVERYTHING pixel-position consistent. The door must have THREE black strap hinges on its left edge. It currently has upper and lower ones only. ADD ONE third matching black iron strap hinge on the LEFT END of the MIDDLE horizontal wooden door brace at about y435, hinge pin near x605 and strap extending right to x690. Keep the upper and lower hinges. Keep two empty open-top latch saddles at y345 completely unchanged. Do NOT add locking bar. Do NOT alter door shape, rack, weights, window, gap, lighting or camera. Only this missing middle hinge is added.
+
+11. bar_sprite.png
+Референсы: M3_view_bg.png
+Прозрачность: True
+Single isolated horizontal removable forged IRON DOOR BAR, for the attached northern Russian painterly game. Genuine transparent background. Exactly1672×941 canvas. Paint ONLY one straight long slim rectangular iron bar with slightly rounded ends, dull dark iron and subtle warm top highlight, approximately 20:1 width to thickness. Its long axis is perfectly HORIZONTAL. No brackets, no wood, no door, no handle, no bent ends, no other object, no cast background shadow. Isolated large in center for clean sprite export. It will lie across the door's two empty open-top support seats. All external pixels transparent.
+
+12. hook_sprite.png
+Референсы: M3_view_bg.png
+Прозрачность: True
+One isolated old forged iron hook on a LONG THIN iron shaft, painterly northern Russian game sprite, true transparent background, canvas1672×941. Shaft almost horizontal, rising gently from left handle to right hooked tip; hooked tip bends UP like J to catch underside of a horizontal door bar. Slim sturdy dark iron with small warm worn highlights, left end simple straight grip no fat wooden handle. Long shaft about10times hook height. No door, hand, bar, brackets or other objects. One tool alone, fully inside canvas, centered large for export.
+
+13. office_mirror_sprite.png
+Референсы: H2_bg.png, closeup_office_photo.png
+Прозрачность: True
+One isolated painterly game object on actual transparent background1672×941. The tall plain rectangular dark wooden framed office MIRROR from photo reference2, held UPRIGHT between two modest sturdy woodworking clamp posts, in a compact WOODEN BENCH-MOUNTED STAND. Show short clamp screws and a small mortised foot/base that sits flush on a workbench (do NOT paint workbench). Slightly viewed from above same eye level as workshop reference1. Simple four straight frame sides, no ornate carving. Glass entirely blank even silver-gray, clear precise inner rectangular contour, NO reflected room, no person. Full mirror and stand visible, thin stem/base. Warm left light matching workshop. Center large for export. Nothing else: no workshop pixels, no floor, no text, no ground shadow beyond close contact around small base.
+
+14. clock_face_sprite.png
+Референсы: O3_bg.png
+Прозрачность: True
+Painterly historical game sprite matching attached room, true transparent background, canvas1672×941. One isolated object large and centered for subsequent precise downscale and registration. No room, no clock case, no other objects. Round aged ivory CLOCK DIAL, viewed perfectly front on, thin dark brown rim. Exactly twelve dark Arabic numerals 1 to12 in proper clockwise order, 12 at top,3 right,6 bottom,9 left. Fine modest minute ticks. Small dark spindle dot exactly at circle center. NO HANDS on this dial. Simple utilitarian Russian rural clock circa1900, slightly aged paper/enamel, no brand or extra lettering.
+
+15. clock_minute_sprite.png
+Референсы: O3_bg.png
+Прозрачность: True
+Painterly historical game sprite matching attached room, true transparent background, canvas1672×941. One isolated object large and centered for subsequent precise downscale and registration. No room, no clock case, no other objects. ONLY one slim black iron MINUTE HAND for wall clock, strictly vertical pointing UP at12. Long tapered stem, tiny simple spear tip at top, circular brass pivot hub at BOTTOM CENTER; very short tail below hub. Natural antiqueclock hardware, clear crisp silhouette, no ornate scrolls. The hub is the rotation axis. No dial, no second hand, no text. Hand's centerline perfectlyvertical.
+
+16. clock_hour_sprite.png
+Референсы: O3_bg.png
+Прозрачность: True
+Painterly historical game sprite matching attached room, true transparent background, canvas1672×941. One isolated object large and centered for subsequent precise downscale and registration. No room, no clock case, no other objects. ONLY one short broad black iron HOUR HAND for wall clock, strictly vertical pointing UP at12. Stout tapered stem, simple lance tip at top, circular brass pivot hub at BOTTOM CENTER; very short tail below hub. Natural antiqueclock hardware, clear crisp silhouette, no ornate scrolls. The hub is the rotation axis. No dial, no second hand, no text. Hand's centerline perfectlyvertical.
+
+17. pendulum_sprite.png
+Референсы: O3_bg.png
+Прозрачность: True
+Painterly historical game sprite matching attached room, true transparent background, canvas1672×941. One isolated object large and centered for subsequent precise downscale and registration. No room, no clock case, no other objects. ONLY ONE small brass clock PENDULUM: thin straight vertical rod, round flat warm aged-brass bob at lower end, tiny circular dark brass attachment eye exactly at TOP CENTER marking rotation axis. Rod strictly vertical in resting position. Subtle warm side highlights and softlypainted texture. Bob width about one third totalheight. No clockcase, dial, numbers, chains or shadow.
+
+18. flame_sprite.png
+Референсы: O3_bg.png
+Прозрачность: True
+Painterly historical game sprite matching attached room, true transparent background, canvas1672×941. One isolated object large and centered for subsequent precise downscale and registration. No room, no clock case, no other objects. ONLY ONE tiny steady candle FLAME for the unlit tablecandle in reference. Teardrop flame upright with warm amber outer edge and pale cream core, a little blue at BASE and fine black wick tip. Subtle very small soft amber halo with feathered realalpha, not a giant lensflare. No candle, holder, table or background. Flame tip thin, base slightlyrounded.
+
+19. R1_far_snow_raw.png
+Референсы: R1_dusk_full.png
+Прозрачность: True
+Create a precisely registered TRANSPARENT OVERLAY for attached pier scene, canvas1672×941 unchanged. ONLY the distant far-shore land, houses, church and trees appear in the output, in exactly their reference pixel positions (band roughly x450..1672,y225..390). Change this SAME far shore to WINTER: snow on banks and house roofs, frost trees, cold blue dusk. Keep identical village layout and tree silhouette; NO lights in windows. All sky, lake, near-bank trees and bushes, near lanternpost, jetty, boat and foreground must be fully TRANSPARENT. Do not paint the rope across water. Natural detailed silhouettes at top, subtle feather at waterline bottom. No rectangular opaque background, no snow on near shore, no characters.
+
+20. R1_far_dark_raw.png
+Референсы: R1_dusk_full.png
+Прозрачность: True
+BACKGROUND EXTRACTION. Exact1672×941 canvas. Extract ONLY the distant DARK FAR SHORE from attached image, preserving its exact silhouette and screen position, roughly x450..1672,y225..390. Dim dark blue distant village, church and trees, NO lights, NO snow. Rest of image transparent: no sky, lake, nearshore, lanternpost, boat, jetty, rope. No repositioning, no zoom, no new objects. This is a full-canvas overlay for the exact supplied background. Natural antialiased transparency on trees and soft shore edge.
+
+21. R1_lights_raw.png
+Референсы: R1_dusk_full.png
+Прозрачность: True
+Transparent full-canvas1672×941 game overlay. Paint exactly THREE tiny warm amber SIGNAL LIGHTS on far shore of attached scene, at approximately (735,356),(1035,351),(1370,355). Three separate dim pinpoint oil-lantern glows, soft small halo radius about8pixels, bright core about2pixels, seen across wide water at dusk. Space them apart along the farbank. Everything else completely transparent, no buildings/shore/sky/lake/rope/lantern bodies/foreground. No fourthglow, no reflections. These are distant signals, not three big fireballs. Preserve fullcanvas coordinate origin.
+
+22. closeup_lantern_closed.png
+Референсы: R1_dusk_full.png
+Прозрачность: False
+New closeup EXACT1672×941 for the same painterly RussianNorth1900 game. A sturdy antique hand-held SIGNAL OIL LANTERN rests on weathered wood of ferry pier, centeredlarge, slight front threequarter angle, entirelantern visible fromhandle tobase, blue dusk pond softlyblurred behind. Dark agediron and brass, utilitarian rectangularglass front, fitted with a simple SLIDING OPAQUE METAL SHUTTER in front rails. CLOSED STATE: shutter fully down covering frontlight opening, so front opaque darkmetal; faint warm light leaks only at sideedges. Show readable shutter tab and guide rails, old rivets, no electrical parts. Matching warm textured painterlystyle. No hands, no people, no text/UI, no duplicate lantern. Compose as closeup that will have EXACT samegeometry with shuttersopened in secondstate.
+
+23. door_light_sprite.png
+Референсы: M3_bg_three_hinges.png
+Прозрачность: True
+Single transparent game LIGHT EFFECT sprite matching doorreference. True transparent canvas1672×941. ONLY a very thin long VERTICAL strip of warm amber-white lantern light, a narrow bright center with faint feathered amberglow immediately either side. No door, no wood, no flame, no lantern. Length about600pixels and corewidth3pixels, centeredvertically. Slight irregular edges as light leakingthrough narrow olddoor slit. Small brighter wedge atbottom but no broad projectedbeam. All surroundingpixels transparent. This will be placed precisely along the leftdoorgap.
+
+24. R1_far_snow_registered.png
+Референсы: R1_far_dark_raw.png
+Прозрачность: True
+Edit THIS EXACT transparent far-shore cutout to winter snow. KEEP canvas1672×941 and ALL OBJECT POSITIONS AND SCALE EXACTLY. The church spire MUST stay at x1171,y249; leftedge land x424,y375, shorebottomy383. Add snow only to the existing bank, roofs and trees in this cutout. Do NOT shift/resize/recompose anything. Preserve samealpha silhouette and actualtransparent background. No extra shoreline, no lights, no sky or water. Cold blue dusklight, modest snowbrightness. Sameexistingvillage, simply covered in snow.
+
+25. closeup_lantern_open.png
+Референсы: closeup_lantern_closed.png
+Прозрачность: False
+Precise edit: SAME exact signal lantern, framing, canvas1672×941, camera, position, handle, brassbase, background andwoodplanks. Change ONLY frontmetalshutter to OPEN. SLIDE the existing opaque frontpanel UP in its vertical guide rails, raising it above the glass opening (panel visible above instead of disappearing). Reveal the rectangularglass front and bright amber oilflameinside, warmglow on nearby metalandwood. Keep knob andtab physical. No changes to lantern identity/size, no hands, people or text. This must be usable as matching secondstate of originalcloseup.
+
+26. plate_skoba_sprite.png
+Референсы: closeup_plate.png, H2_state_skoba.png
+Прозрачность: True
+Single isolated old forged iron REPAIR CRAMP on genuine transparent background1672×941, matching the small squared-U darkiron cramp in reference2 and metal style of plate reference1. View almost straightfront with slight topview. One stout horizontal rectangularbridge, both ends bend BACK into surface like staple, only short endfeet visible. It will be hammered into holes on either side of the verticalplate crack. Not a bolted modernbar: NO bolts, no rings, no plate, no paper. Subtle dark contactshadow directly underfeet. Large centeredfor export, widthabout5timesheight. Plain functional unpainted darkmetal with warmworn topedge.
+
+27. plate_rope_full.png
+Референсы: closeup_plate.png
+Прозрачность: False
+Precise edit of supplied1672×941 plate closeup. Preserve plate, exactwordОЛЬХОВКА, crack, ring, bolts and stones in identicalpositions. ADD a thick naturalhemp ferry ROPE tied firmly through the EXISTING ironring at (550,510). Rope enters visiblehole, passes around LOWER arc ofring in physicallycorrect over-underwrap, with simple tight secured knot immediately belowring, and tautmainline extending diagonally down-left out through bottomedge nearx100. Keep ring upperpart andhole recognisable. No addedring or modernhardware. No repaircramp yet. Wet coarsebrown fibres, same light andpainterlystyle. No change beyond addedrope and localcontactshadow. Output fullscene for registeredlayer export.
+
+28. R2_rope_full.png
+Референсы: R2_bg.png
+Прозрачность: False
+Edit attached1672×941 boatcrossing background, preservingexactboatandlandscape. ADD the ferryhaulrope: one tauthemp line runs from just offbottom-right foreground through a simple forgediron SLIDING GUIDE RING attached to RIGHT boatgunwale at approximately(1150,702), then recedes diagonally toward centralfog at(880,385), progressivelythinner andfadinginto fog. Mechanically clear: the ring is bolted toboat with shortflatironmount, rope passes THROUGH its aperture and can slide freely, no knot stopping it here. Browncoarse rope, darkiron aged, warmwoodlight. No hands/people. No additional ropes, no oars. All scenegeometry fixed. Fullscene output for separateoverlay export.
+
+29. R3_rope_stop_full.png
+Референсы: R3_bg.png
+Прозрачность: False
+Precise edit supplied1672×941 farstonepier background. Preserveexactstoneedge, oldironring at(340,743), snow, shed, path, lanternandvillage. ADD a thick hemp ferryrope with sturdy shortwooden TOGGLE STOPPER secured THROUGH the EXISTING ring. Rope comes from lower-right offcanvas to ring. Tightrope loop passes through ring's aperture; crosswise shortdarkwooden peg/toggle catches against ring so rope cannot pullback. Show believable physical attachment and rope tension, samepainterly light. NO secondring, no characters, no extraobjects. Keeporiginalring andplate geometry fixed, addonlyrope, smalltoggle, localcontactshadow. Fullscene output for registeredoverlay.
+
+30. plate_rope_alpha.png
+Референсы: plate_rope_full.png
+Прозрачность: True
+BACKGROUND EXTRACTION ONLY. Exact same canvas1672×941. Keep ONLY hemp rope and its knot from attached image, in EXACT pixel positions and scale. Remove ALL stone, plate, letters, sky, ironring to true transparency. Preserve rope fibres and natural edgealpha. Where rope passes behind ironring, leave those hiddenrope pixels transparent, do not paint continuousrope overthemetal. No repositioning orcentering, no zoom, no objectredesign. Rope runs from lower-leftcanvas edge toward knotat(485,660). Output fullregisteredtransparentlayer.
+
+31. R2_rope_alpha.png
+Референсы: R2_rope_full.png
+Прозрачность: True
+BACKGROUND EXTRACTION ONLY. Exact same canvas1672×941. Keep ONLY the tauthemp rope, its darkiron sliding guide ring and smallattached mountingplate, in EXACT screenpositions andscale as supplied. Remove entireboat, sky, water, village to true transparency. Ring staysnear(1180,660), mountnear(1160,700); rope from centralfog(~760,370) acrossring tobottom-rightedge. Preserve original perspective, finefiberedgealpha and fog fadeon distanttip. Do not center/reposition/resizeanything. No shadowpaint beyond local contactunder small mount. Fullregisteredtransparentoverlay.
+
+32. R3_rope_stop_alpha.png
+Референсы: R3_rope_stop_full.png
+Прозрачность: True
+BACKGROUND EXTRACTION ONLY,1672×941 exact. Keep ONLY hemp rope, knot and wooden toggle stopper from suppliedimage, at EXACT screenpositionsandscale. Remove stonepier, snow, water, buildings, lamp, sky and oldironring to true transparency. Ropeattachmentnear(425,750), ropeexitsbottomedge nearx1200. Preserve over-underocclusion: portionsofrope hiddenbehind the oldironring must be transparent. Finefiberedges preserved. Do not center/reposition/zoom/redesign anyobject. Fullregisteredtransparentlayer.
+
+33. R3_pier_alpha.png
+Референсы: R3_bg.png
+Прозрачность: True
+BACKGROUND EXTRACTION ONLY, fullcanvas1672×941 unchanged. Extract ONLY the FOREGROUND SNOWY STONE WALL and its immediate snowy cap from suppliedbackground, exactcoordinates: nearstoneface spans x180..1115, upperedge roughlyy570atleft slopingto510atright, bottomedge y850atleft slopingto620atright. Include its existing ironring onfrontface. Include the nearleft snowcovered mooringpost and nearleft snowbank if contiguous. Remove everythingBEHIND pier lip: pathabove, distantpost, shed, village, sky andallwater become transparent. Preserve exact jaggedstones andsnowedge. No enlargement,repositioning ornewtexture. This is an occlusionlayer to be drawn over characterfeet at the SAMEbackground coordinates. No rope orstopper.
