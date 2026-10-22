@@ -184,6 +184,9 @@ def main() -> int:
     ap.add_argument("--duration", type=float, nargs=2, default=[6.0, 8.0])
     ap.add_argument("--max-bytes", type=int, default=1_450_000)
     args = ap.parse_args()
+    if not args.only_frames and not shutil.which("ffmpeg"):
+        print("нет ffmpeg — рендер не начинаю (кадры пропали бы без ролика)", flush=True)
+        return 4
     cfg = json.load(open(args.clips, encoding="utf-8"))
     spec = next(c for c in cfg["clips"] if c["id"] == args.clip)
     lib = cfg["libraries"][spec["library"]]

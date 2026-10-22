@@ -251,10 +251,13 @@ def main() -> int:
     # клип «на месте» (таз не уходит вперёд: Meshy, Mesh2Motion) — средняя скорость таза по пути < 0,15 м/с
     step = max(1, int(FPS_AN / 10))
     travel = float(np.linalg.norm(np.diff(root_P[::step, :2], axis=0), axis=1).sum())
-    in_place = spec["type"] == "walk" and travel / max((len(frames) - 1) / FPS_AN, 1e-6) < 0.15
+    net = float(np.linalg.norm(root_P[-1, :2] - root_P[0, :2]))
+    # на месте: таз почти не уходит и по пути движется медленно (качание бёдер у клипа на месте даёт до ~0,3 м/с пути,
+    # у mocap-ходьбы ≥ 0,5 м/с, даже если человек вернулся к началу)
+    in_place = spec["type"] == "walk" and net < 0.3 and travel / max((len(frames) - 1) / FPS_AN, 1e-6) < 0.35
     if in_place:
         root_P, _ = mlib.stance_root_motion(sk, R, root_P, fg, FPS_AN)
-    print(f"  семейство {fam}, поворот к −Y {yaw0:.1f}°, масштаб {scale:.4f}, путь таза {travel:.2f} м, "
+    print(f"  семейство {fam}, поворот к −Y {yaw0:.1f}°, масштаб {scale:.4f}, путь таза {travel:.2f} м (итог {net:.2f} м), "
           f"на месте: {in_place}", flush=True)
 
     # --- выбор петли
