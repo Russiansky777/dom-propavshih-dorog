@@ -102,8 +102,8 @@ export function actTool(mode, W, H) {
     thought: { type: "string", description: "Коротко, вслух: что делаю и зачем (1–2 фразы)." },
     action: {
       type: "string",
-      enum: ["click", "right_click", "double_click", "move", "drag", "drag_path", "key", "wait", "zoom", "done"],
-      description: "click — левый щелчок в (x,y); right_click — правый; double_click — двойной (например, рассмотреть предмет в сумке); move — навести курсор (покажет подпись); drag — нажать в (x,y), тянуть до (x2,y2), отпустить; drag_path — нажать в первой точке path и вести мышь через все точки по порядку, отпустить в последней (протянуть по контуру); key — нажать клавишу key; wait — подождать seconds; zoom — следующий шаг покажет увеличенный фрагмент region; done — закончить прогон.",
+      enum: ["click", "right_click", "double_click", "move", "drag", "drag_path", "timing", "key", "wait", "zoom", "done"],
+      description: "click — левый щелчок в (x,y); right_click — правый; double_click — двойной (например, рассмотреть предмет в сумке); move — навести курсор (покажет подпись); drag — нажать в (x,y), тянуть до (x2,y2), отпустить; drag_path — нажать в первой точке path и вести мышь через все точки по порядку, отпустить в последней (протянуть по контуру); timing — «точный удар»: когда на экране полоса с бегунком (красный — зелёный — красный), программа сама бьёт по полосе, когда бегунок в зелёной зоне (как рефлекс игрока), до конца серии; key — нажать клавишу key; wait — подождать seconds; zoom — следующий шаг покажет увеличенный фрагмент region; done — закончить прогон.",
     },
     x: { type: "number", description: `X в пикселях этого кадра (0…${W - 1}).` },
     y: { type: "number", description: `Y в пикселях этого кадра (0…${H - 1}).` },

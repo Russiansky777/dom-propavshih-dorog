@@ -318,6 +318,44 @@ async function main() {
   };
   const mouseTo = async (p, steps = 6) => { await page.mouse.move(p.x, p.y, { steps }); pointer = p; await showPointer(p); };
 
+  // «Точный удар» (F7/F8): the bar's state anywhere in the probe — an object with to_green_s / in_green / zone.
+  const findBar = (o, depth = 0) => {
+    if (!o || typeof o !== "object" || depth > 6) return null;
+    if ("to_green_s" in o && "zone" in o && "period_s" in o) return o;
+    for (const v of Object.values(o)) { const r = findBar(v, depth + 1); if (r) return r; }
+    return null;
+  };
+  // The player's reflex: a strike (a click on the bar) in the middle of the green, from a fresh probe publish
+  // (ticks change ≈ now) and the bar's own to_green_s; the series goes on until it is done or 12 strikes.
+  const timingSeries = async (events) => {
+    let strikes = 0, last = null;
+    for (let guard = 0; guard < 400 && strikes < 12; guard++) {
+      const t0 = await state();
+      const b0 = t0 && findBar(t0);
+      if (!b0) { if (!strikes) events.push("Полосы «точного удара» на экране нет."); break; }
+      if (b0.state === "done" || (b0.needed && b0.hits >= b0.needed)) break;
+      // wait for the next publish: then the state is fresh (≤ one poll old)
+      let s1 = null;
+      const tw = Date.now();
+      while (Date.now() - tw < 1500) { const s = await state(); if (s && s.ticks !== t0.ticks) { s1 = s; break; } await sleep(15); }
+      const b = s1 && findBar(s1);
+      if (!b || b.state !== "run" || b.paused) { await sleep(120); continue; }
+      const w = Math.abs((b.zone && b.zone[1]) - (b.zone && b.zone[0])) || 0.2;
+      const cross = w * (b.period_s || 2) / 2;                     // seconds the marker spends in the green
+      let wait = (b.in_green ? 0 : Number(b.to_green_s) || 0) + cross / 2 - 0.035;   // aim at the middle, minus input lag
+      if (b.in_green) { await sleep(Math.max(0, (b.period_s || 2) * 0.5 * 1000 - 200)); continue; }   // mid-zone unknown: next pass
+      if (wait < 0) wait = 0;
+      await sleep(wait * 1000);
+      await page.mouse.click(b.x, b.y);
+      strikes += 1;
+      await sleep(350);
+      const after = findBar(await state());
+      last = after || last;
+    }
+    const b = last || findBar(await state());
+    events.push(`Точный удар (рефлекс программы): ударов ${strikes}${b ? `, попаданий подряд ${b.hits} из ${b.needed}, промахов всего ${b.misses}${b.state === "done" ? " — серия пройдена" : ""}` : ""}.`);
+  };
+
   // Lines and narration in a row: read verbatim, frame each, real click on the text box. Options stop here.
   const runDialogue = async (step, events, extra) => {
     let n = 0;
@@ -722,6 +760,9 @@ async function main() {
           desc = `клавиша ${k}`;
           stepRec.key = k;
         }
+      } else if (act === "timing") {
+        await timingSeries(events);
+        desc = "точный удар (серия)";
       } else if (act === "wait") {
         const sec = clampNum(input.seconds, 1, 20, 3);
         await sleep(sec * 1000);
