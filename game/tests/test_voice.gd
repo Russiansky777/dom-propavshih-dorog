@@ -644,7 +644,7 @@ func _test_narration_skips() -> void:
 	for key in ["Z1.letters.label", "Z1.exit_Z4.label", "H1.stove.label_lit", "H1.photo.opt_table", "H3.puzzle.slot_top",
 			"H3.puzzle.marks", "H3.puzzle.drawing", "H3.puzzle.title", "H3.puzzle.hinge", "H3.puzzle.check",
 			"ui.nothing_here", "ui.item_no_effect", "ui.closed_generic", "ui.not_built", "ui.hint_generic_1", "ui.got_item",
-			"ui.bag_take", "map.here", "Z3.exit_M1.closed"]:
+			"ui.bag_take", "map.here"]:
 		_check(not vd.is_narration_key(key), "%s must not be voiced" % key)
 		_check(not vd.manifest.has(key), "%s must not be recorded" % key)
 	for key in ["Z1.letters.look", "H1.stove.use", "Z1.exit_Z4.closed", "H1.v01.done", "H3.puzzle.intro", "H3.puzzle.error",
@@ -910,6 +910,10 @@ func _test_character_lines() -> void:
 	var n0: int = vd.events.size()
 	sr.interact(_hotspot("tamara"))
 	await _frames(2)
+	# Polish 22.10 (B11, B14, B16): after M01 Tamara answers questions; «Пойду» ends with her line.
+	if String(sr.current_beat.get("type", "")) == "options":
+		sr.choose("leave")
+		await _frames(2)
 	_check_line_beat("Z1.tamara.after", "tamara", false)
 	for ev in _starts_since(n0):
 		_check(String(ev.get("speaker", "")) != vd.narr_speaker, "the narrator never reads Tamara's words: %s" % [ev])
@@ -928,6 +932,10 @@ func _test_character_lines() -> void:
 	var pid := _ensure_text_line("R1.pelageya.after")
 	sr.interact(_hotspot("pelageya"))
 	await _frames(2)
+	# Polish 22.10 (D23): after M02 Pelageya answers questions; «Пока ничего» ends with her line.
+	if String(sr.current_beat.get("type", "")) == "options":
+		sr.choose("leave")
+		await _frames(2)
 	_check_line_beat("R1.pelageya.after", "pelageya", false)
 	await _finish_dialogue()
 	vd.set_test_stream(pid, null)

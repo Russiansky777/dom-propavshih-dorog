@@ -210,6 +210,8 @@ func _test_drawer() -> void:
 		if seen[i].contains("Держим мы»."):
 			held_at = i
 	_check(rope_at >= 0 and rope_at == held_at - 1, "Agata: the rope is what is left of the bridge — right before «Держим мы» (%d, %d)" % [rope_at, held_at])
+	# Polish 22.10 (B7): the key line — the door remembered its frame, the rope will remember the bridge — before the rope line.
+	_check(rope_at >= 1 and seen[rope_at - 1].contains("Канат на своём кольце вспомнит мост"), "B7: «Дверь на своих петлях вспомнила проём…» right before the rope line: %s" % str(seen))
 	_check(not gs.inventory.has("invoice_chalk") and not gs.inventory.has("photo_school_pier") and not sd.items.has("invoice_chalk"), "no chalk invoice, no pier photo any more")
 	# second click: empty drawer, no close-up, nothing given
 	seen = await _interact(h)
@@ -347,7 +349,20 @@ func _test_pier_attempt() -> void:
 	var ui := _ui()
 	var seen := await _interact(_hotspot("pelageya"))
 	_check(gs.has_flag("done_M02"), "M02 done")
-	_check(seen.size() == 11 and seen[2] == "stage", "two lines, the shown attempt, eight lines: %s" % str(seen))
+	# Polish 22.10 (D23, B9, B15): the boat shown, one line about the ice, the rope and its stopper, the plate, Mitya's post.
+	_check(seen.size() == 10 and seen[2] == "stage", "two lines, the shown attempt, seven lines: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("по льду ходили — к своему же берегу")) and seen.any(func(x): return x.contains("кол с замком — стопор"))
+			and seen.any(func(x): return x.contains("Фонарь на той опоре — его")), "ice, the stopper shown, Mitya's post: %s" % str(seen))
+	_check(not seen.any(func(x): return x.contains("Болотом") or x.contains("Воду держит мельничный затвор")), "the marsh and the sluice are questions now, not the talk: %s" % str(seen))
+	# The rest — by the player's questions (any order, as often as wanted); the sluice question tells about the key.
+	sr.interact(_hotspot("pelageya"))
+	await process_frame
+	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids == ["boats", "marsh", "sluice", "manager", "leave"], "Pelageya's questions: %s" % str(ids))
+	var ans := await _drain(["sluice"])
+	_check(gs.has_flag("knows_sluice_key") and ans.any(func(x): return x.contains("ключ в конторе")), "the sluice question: the key is in the office: %s" % str(ans))
+	ans = await _interact(_hotspot("pelageya"), ["leave"])
+	_check(not ans.any(func(x): return x.contains("Ступай") or x.contains("дом")), "leaving Pelageya sends Agata nowhere: %s" % str(ans))
 	_check(seen[3].contains("Берег вижу"), "after the attempt: «Берег вижу…» (%s)" % seen[3])
 	_check(sounds.has("steps_soft") and sounds.has("door_heavy"), "deck step and wooden knock played: %s" % str(sounds))
 	# Director 22.10: the rope is the last piece of the bridge — the road itself; its far end is still on the other bank.
@@ -363,6 +378,16 @@ func _test_pier_attempt() -> void:
 	for w in ["рейс", "пристан"]:
 		for k in ["R1.exit_R2.closed", "R1.instruction.use", "R1.pelageya.after", "Z3.old_pier_base.label", "Z1.drawings.use", "O1.teacher_drawer.use"]:
 			_check(not sd.text("@" + k).to_lower().contains(w), "«%s» is gone from %s" % [w, k])
+	# Polish 22.10 (B11, B14, B16): Tamara answers questions after M01 — the school for both banks, Dunya's sheet, «сразу ехать».
+	await _enter("Z1", ["done_M01", "met_tamara"])
+	sr.interact(_hotspot("tamara"))
+	await process_frame
+	ids = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids == ["school", "sheet", "late", "leave"], "Tamara's questions: %s" % str(ids))
+	ans = await _drain(["late"])
+	_check(ans.any(func(x): return x.contains("Я для того и писала")), "«Надо было сразу ехать» — «…Я для того и писала»: %s" % str(ans))
+	ans = await _interact(_hotspot("tamara"), ["school"])
+	_check(ans.any(func(x): return x.contains("на оба берега")), "the school was one for both banks: %s" % str(ans))
 
 
 func _test_board() -> void:

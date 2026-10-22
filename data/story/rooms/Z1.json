@@ -20,7 +20,15 @@
   "hotspots": [
     {
       "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [980, 250, 180, 450], "stand": [1495, 800], "_stand_note": "у правого торца стойки, сбоку от Тамары: при разговоре видны обе, Агата повёрнута к ней (стоянка прямо перед Тамарой закрывала её — кадр ui_10). 18.10: x 1440 → 1495 — вырез стойки раздвинут на полуширину Агаты (clearance), прежняя точка оказалась бы боком в столешнице", "color": "#c47a5a", "draw": false, "pick_priority": 2, "image": "res://assets/characters/tamara/front.png",
-      "talk": {"scene": "M01", "after_text": "@Z1.tamara.after"}
+      "talk": {"scene": "M01"},
+      "choice": {"prompt": "@Z1.tamara.prompt", "requires": {"flags": ["done_M01"]},
+        "_note": "Полировка 22.10 (B11, B14, B16): по вопросам игрока после разговора — школа на оба берега, Дунин лист на почте, «надо было сразу ехать». Спрашивать можно сколько угодно.",
+        "options": [
+          {"id": "school", "label": "@Z1.tamara.opt_school", "sets": "z1_asked_school", "text": "@Z1.tamara.school"},
+          {"id": "sheet", "label": "@Z1.tamara.opt_sheet", "sets": "z1_asked_sheet", "text": "@Z1.tamara.sheet"},
+          {"id": "late", "label": "@Z1.tamara.opt_late", "sets": "z1_asked_late", "text": "@Z1.tamara.late"},
+          {"id": "leave", "label": "@Z1.tamara.opt_leave", "sets": "z1_tamara_bye", "text": "@Z1.tamara.after"}
+        ]}
     },
     {
       "id": "drawings", "action_anim": "reach", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 576, 638, 132], "stand": [840, 940], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
@@ -45,6 +53,10 @@
     "M01": {"trigger": "talk:tamara"}
   },
   "flags": {
+    "z1_asked_school": "Тамара: школа одна была на оба берега, наших водили по мосту; год ребят никто не учит",
+    "z1_asked_sheet": "Тамара: Дунин лист — управе отослать, не успела",
+    "z1_asked_late": "Тамара: «И сидела бы год на берегу. Я для того и писала»",
+    "z1_tamara_bye": "Тамара: ключ у Агаты, записи — в доме",
     "z1_compared_drawings": "Рисунок Евдокии сравнён с наброском Тамары",
     "seen_plan_zarechye": "План Заречья рассмотрен вблизи; дальше его можно открыть из журнала",
     "z1_compared_photo": "Снимок старого моста сверён с Дуниным листом и наброском Тамары"

@@ -69,7 +69,8 @@
       "_art_note": "Свёрток «Нина. Горница» (Docs/SCENARIO_FINAL.md, M04): мамино зеркало в тряпке на левом верстаке — слои bundle / nina_mirror (партия 2, непрозрачное — экран 374–533 × 413–494). В сумку не берётся (items.json bundle_nina inventory false, выдаёт M04); струбцина — день второй. Приоритет 1: над верстаком «Записи на верстаке» не лежит, но рядом.",
       "use": {"sets": ["h2_bundle_unwrapped"], "text": "@H2.bundle_nina.use", "once_flag": "h2_bundle_unwrapped", "text_done": "@H2.bundle_nina.done"},
       "look": "@H2.bundle_nina.look",
-      "item_use": {"clamp": {"sets": ["h2_bundle_unwrapped", "nina_mirror_clamped"], "consumes": true, "text": "@H2d.nina_mirror.clamp", "scene": "M15a", "open_mechanic": true}},
+      "item_use": {"clamp": {"requires": {"flags": ["done_M14"]}, "fail_text": "@H2d.nina_mirror.clamp_early", "sets": ["h2_bundle_unwrapped", "nina_mirror_clamped"], "consumes": true, "text": "@H2d.nina_mirror.clamp", "scene": "M15a", "open_mechanic": true,
+        "_requires_note": "ИИ-разбор логики M2 п. 1: до затвора струбцина не тратится (иначе мамино зеркало раньше спуска воды, сумерки без M15а) — Агата говорит, что сначала затвор"}},
       "mechanic": {
         "type": "fast_mirror",
         "requires": {"flags": ["nina_mirror_clamped"]},

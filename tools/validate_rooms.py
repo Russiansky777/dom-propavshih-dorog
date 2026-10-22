@@ -1271,6 +1271,17 @@ for it, trooms in sorted(_targets.items()):
         if stems and not any(st in goals for st in stems):
             err(f"{'/'.join(cands)}: цель журнала не называет место, где применить {it} ({rid} «{_loc_names.get(rid, '')}»)")
 
+# Выход с собственным `requires` (одно направление ребра: лодка с дальней опоры обратно — F13, 23.10): флаги известны,
+# и у закрытого выхода есть closed_text — игрок слышит, почему нельзя.
+for rid, room in sorted(rooms.items()):
+    for ex in room.get("exits", []):
+        if ex.get("requires"):
+            for f in ex["requires"]:
+                if f not in known_flags:
+                    err(f"{rid}→{ex.get('to')}: requires {f} — нет в flags.json")
+            if not ex.get("closed_text"):
+                err(f"{rid}→{ex.get('to')}: выход с requires без closed_text")
+
 # Предмет, который тратится внутри сцены (item_use … consumes, scene S), не входит в grants.items той же сцены:
 # сцена завершается после траты, и её выдача вернула бы потраченное (язык колокола в M11 — ИИ-разбор логики 22.10, п. 7).
 # Так же — предмет, который берут хотспотом (items.json source_hotspot), сцена не выдаёт вовсе (validate_story).

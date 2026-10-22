@@ -949,7 +949,9 @@ func use_exit(e: StoryExit) -> void:
 		if String(oc.get("type", "")) == "loop":
 			_run_loop(e, oc)
 			return
-		narrate_key(String(e.data.get("closed_text", "@ui.closed_generic")))
+		# The closed text may follow the state (data exit `states` [{if, closed_text}]: «В лодку» after the knot —
+		# first the empty-boat check, no more «вернёт сюда же»; ИИ-разбор логики M2 п. 3).
+		narrate_key(String(e.current_state().get("closed_text", e.data.get("closed_text", "@ui.closed_generic"))))
 		return
 	if not e.target_exists():
 		narrate_key(String(e.data.get("unbuilt_text", "@ui.not_built")))

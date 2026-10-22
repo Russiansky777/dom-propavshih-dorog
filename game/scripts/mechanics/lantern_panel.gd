@@ -1,8 +1,8 @@
 extends MechanicPanel
 ## M16, three lights from the pier (R1): Pelageya's signal lantern; each click opens the shutter for a
-## moment — a flash. Three flashes and a pause: from the far bank, dark for a year, three lights answer and
-## snow shows through (it is winter there already) — event "answered" (`far_lights_answered`,
-## `road_held_both_ends`: the road is held from both ends, time is common). Any other count — Pelageya
+## moment — a flash. Three flashes and a pause: from the far bank, dark for a year, three lights answer —
+## event "answered" (`far_lights_answered`). The snow over there (it is winter there already) shows since the
+## knot (`road_held_both_ends`, polish 22.10 A1: the road comes back at the knot, the lights only answer). Any other count — Pelageya
 ## says how it is done, the count starts again, no penalty.
 ## Art (партия 3): closeup_lantern_closed / closeup_lantern_open — two full-screen states of the one signal
 ## lantern on the wet jetty, the far bank dark behind it; a flash shows the open state for a moment. The
@@ -48,6 +48,7 @@ func build() -> void:
 	var fp := v2(spec.get("far_label_pos", [1250, 300]))
 	label(text("label_far"), fp, 420)
 	label(text("label_count"), v2(spec.get("hint_pos", [1180, 860])), 640)
+	far_snow.modulate.a = 0.55 if flag("road_held_both_ends") else 0.0
 	if flag("far_lights_answered"):
 		answered_sent = true
 		_show_answer(1.0)
@@ -93,11 +94,10 @@ func tick(_delta: float) -> void:
 			event("answered")
 
 
-## The far bank answers: three lights one after another, the darkness lifts and the snow shows.
+## The far bank answers: three lights one after another (the snow is there since the knot).
 func _show_answer(k: float) -> void:
 	for i in far_lights.size():
 		far_lights[i].visible = k >= 0.25 + 0.2 * i
-	far_snow.modulate.a = lerpf(0.0, 0.55, k)
 
 
 func probe() -> Dictionary:

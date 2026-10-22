@@ -423,7 +423,12 @@ static func _build_exits(room: Room, room_id: String, spec: Dictionary, idx: Dic
 		var to := String(ex.get("to", ""))
 		var requires: Array = []
 		if edges.has(to):
-			requires = edges[to].get("requires", [])
+			requires = edges[to].get("requires", []).duplicate()
+			# One direction only (data exit `requires`, added to the edge's): back into the boat from the far pier
+			# only once the boat goes both ways (F13, Director 23.10: `boat_shuttle_open`, set by blocks 3–5).
+			for f in ex.get("requires", []):
+				if not requires.has(f):
+					requires.append(f)
 		else:
 			push_warning("RoomBuilder: exit %s→%s has no edge in locations.json" % [room_id, to])
 		var g := exit_geometry(spec, ex, idx, horizon)

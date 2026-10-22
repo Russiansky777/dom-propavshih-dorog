@@ -77,6 +77,7 @@ func _run() -> void:
 	await _test("Whereabouts: on day one Pavel sends Agata home till morning; in the evening Pelageya waits at the turn, not at the pier", _test_whereabouts)
 	await _test("The brace: taken on day one or day two, never twice; forgotten — at the plate Agata remembers it and goes back", _test_brace_paths)
 	await _test("The clapper any time: taken and hung on day one, the bell rings far away; M11 needs no box, nothing given twice", _test_clapper_early)
+	await _test("By state: the clamp waits for the sluice; Pelageya's lines at the pier follow the goal; the boat gone at dusk; «В лодку» after the knot; no Pelageya at the pier after the crossing", _test_states)
 	await _test("Whole day two by script: morning → mill → mirror and bell → office → sluice → mother's mirror → plate → three lights → ribbon → R3", _test_walkthrough)
 	await _test("Office mirror by mouse: wedges, the light in the same frame as the strike, the hook by bell signals", _test_office_mirror_mouse)
 	await _test("Sluice by mouse: a drag past two notches opens one; the next is refused until the water settles", _test_sluice_mouse)
@@ -257,7 +258,48 @@ func _go(target: String) -> bool:
 		await process_frame
 		frames += 1
 	await _frames(2)
+	if _npc_goal_check and _room() == target:
+		_check_npc_lines()
 	return _room() == target
+
+
+## F11 (Director 23.10: «фраза до лодки … отправляла к кому-то в дом, хотя по заданию нужно было плыть»): the line
+## a click on any NPC of the room would say now (not a scene start) never sends Agata («иди / ступай / сходи …»)
+## to a place the journal's goal does not name.
+var _npc_goal_check := false
+const GO_WORDS := ["иди", "ступай", "сходи", "беги", "возвращайся"]
+const PLACE_STEMS := ["дом", "изб", "мельниц", "контор", "затвор", "мастерск", "поворот", "причал", "лодк", "опор", "улиц", "почт", "школ"]
+
+
+func _npc_line_now(h: Node) -> String:
+	var t: Dictionary = h.data.get("talk", {})
+	var scn: String = sr.talk_scene(t)
+	if scn != "" and sr.can_start(scn):
+		return ""
+	if scn != "" and not sr.is_done(scn) and t.has("before_text"):
+		return sd.text(sr._talk_before_text(t, scn))
+	for e in t.get("by_flags", []):
+		if sr.requires_met({"flags": e.get("if", [])}):
+			return sd.text(String(e.get("text", "")))
+	return sd.text(String(t.get("after_text", ""))) if t.has("after_text") else ""
+
+
+func _check_npc_lines() -> void:
+	var goal: String = String(sr.journal_goal()).to_lower()
+	for h in rm.current_room.get_hotspots():
+		if not h.visible or not h.has_method("is_active") or not h.call("is_active") or String(h.data.get("kind", "")) != "npc":
+			continue
+		var line: String = _npc_line_now(h).to_lower()
+		for clause in line.split(".", false):
+			var go := false
+			for w in GO_WORDS:
+				if (" " + clause + " ").contains(" " + w + " ") or clause.strip_edges().begins_with(w):
+					go = true
+			if not go:
+				continue
+			for st in PLACE_STEMS:
+				if clause.contains(st) and not goal.contains(st):
+					_check(false, "%s in %s: «%s» sends Agata to «%s», the goal is «%s»" % [h.hotspot_id, _room(), clause.strip_edges(), st, goal])
 
 
 ## End of day one: every E0–E1 main scene done with its grants (what block 1 leaves: the night by the stove
@@ -590,9 +632,78 @@ func _test_clapper_early() -> void:
 	_reached_end = true
 
 
+## Things that depend on the state but are off the walkthrough's path (logic review M2 22.10, items 1 and 3;
+## F11, F13 — Director 23.10).
+func _test_states() -> void:
+	await _day_one_done()
+	for id in ["M09", "M09s", "M09b", "M10", "M11", "M12", "M13a", "M13"]:
+		for f in sd.scene(id).get("grants", {}).get("flags", []):
+			gs.set_flag(String(f), true)
+		gs.set_flag("done_" + id, true)
+	gs.set_flag("has_clamp", true)
+	gs.add_item("clamp")
+	# Item 1: the clamp before the sluice — Agata says the sluice comes first; nothing is spent.
+	rm.change_room("H2", "default")
+	await _frames(3)
+	await _finish()
+	await _use_item("clamp", "bundle_nina")
+	var b: Dictionary = sr.current_beat
+	_check(String(b.get("text_key", "")) == "H2d.nina_mirror.clamp_early" and gs.has_item("clamp") and not sr.mechanic_open,
+			"before the sluice the clamp waits: «Сначала затвор…» (%s)" % str(b))
+	await _finish()
+	# F11: Pelageya at the pier in the morning of day two — the water is at the mill (the goal), no «Дунин дом».
+	rm.change_room("R1", "default")
+	await _frames(3)
+	await _finish()
+	_check(_npc_line_now(_hotspot("pelageya")).contains("у Павла, на мельнице"), "day two morning: «Вода у Павла, на мельнице» (%s)" % _npc_line_now(_hotspot("pelageya")))
+	gs.set_flag("done_M14")
+	await _frames(2)
+	_check(_npc_line_now(_hotspot("pelageya")).contains("у поворота с лодкой"), "the water going down: she will wait at the turn with the boat (%s)" % _npc_line_now(_hotspot("pelageya")))
+	# At dusk before the knot: the boat is gone from the pier — Agata says where (once).
+	for f in ["done_M15a", "nina_time_compared", "evening_dusk"]:
+		gs.set_flag(f)
+	rm.change_room("Z3", "default")
+	await _frames(3)
+	await _finish()
+	rm.change_room("R1", "default")
+	await _frames(3)
+	var seen := await _finish()
+	_check(seen.any(func(x): return x.contains("Пелагея с ней")) and not _hotspot("pelageya").visible, "at dusk: «Лодки у причала нет. Пелагея с ней у поворота» (%s)" % str(seen))
+	rm.change_room("Z3", "default")
+	await _frames(3)
+	rm.change_room("R1", "default")
+	await _frames(3)
+	seen = await _finish()
+	_check(not seen.any(func(x): return x.contains("Пелагея с ней")), "said once: %s" % str(seen))
+	# Item 3: «В лодку» before the knot — «вернёт сюда же»; after the knot — first the empty-boat check.
+	var ex = rm.current_room.get_node("Exits/to_R2")
+	sr.use_exit(ex)
+	await process_frame
+	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed", "before the knot: «Без плиты лодку вернёт сюда же»")
+	await _finish()
+	for f in ["done_M15s", "done_M15", "rope_on_ring", "road_held_both_ends", "done_M16s", "far_snow_seen"]:
+		gs.set_flag(f)
+	await _frames(2)
+	sr.use_exit(ex)
+	await process_frame
+	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed_check", "after the knot: first the empty boat (%s)" % str(sr.current_beat))
+	await _finish()
+	_check(_npc_line_now(_hotspot("pelageya")).contains("Три огня"), "after the knot Pelageya points to the lantern")
+	# F13: after the crossing Pelageya is with Mitya at the far pier — not at this pier too.
+	for f in ["done_M16", "three_lights_sent", "far_lights_answered", "done_M17", "ferry_verified", "done_M18p"]:
+		gs.set_flag(f)
+	await _frames(2)
+	_check(not _hotspot("pelageya").visible, "after the crossing Pelageya is not at the near pier")
+	gs.set_flag("boat_shuttle_open")
+	await _frames(2)
+	_check(_hotspot("pelageya").visible, "once the boat goes both ways (blocks 3–5) she is at the pier again")
+	_reached_end = true
+
+
 # --- Walkthrough -------------------------------------------------------------------------
 
 func _test_walkthrough() -> void:
+	_npc_goal_check = true
 	rm.autosave_enabled = true
 	Engine.time_scale = 4.0
 	# Day one ends at the school; back through the school door into the gallery: the night by the stove
@@ -762,6 +873,9 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("sluice_opened") and gs.has_flag("pond_lowered") and gs.has_flag("done_M14"), "the sluice opened notch by notch → M14: %s" % str(seen))
 	_check(sr.journal_goal().contains("струбцин"), "goal: the clamp to mother's mirror")
+	# F10 (Director 23.10): why the water goes down — the plate comes out; the boat alone is turned back, the rope on the ring is not.
+	_check(sr.journal_goal().contains("плита на опоре выйдет") and seen.any(func(x): return x.contains("Лодкой туда не переплыть")),
+			"at the sluice: the plate comes out of the water; a boat is turned back, the rope on the ring is another matter: %s / %s" % [sr.journal_goal(), str(seen)])
 	# Mother's mirror.
 	_check(await _go("M1"), "M4→M1")
 	var wheel = rm.current_room.get_node_or_null("Layers/wheel")
@@ -797,6 +911,13 @@ func _test_walkthrough() -> void:
 	await _frames(2)
 	# The plate.
 	_check(await _go("H1"), "H2→H1")
+	# Polish 22.10 (C17): mother's small mirror shows Dunya's stove — Agata can stand at the stove and wave (block 3 reads it in M19).
+	_check(_hotspot("wave") != null and _hotspot("wave").visible, "after mother's mirror: «Встать у печи и помахать»")
+	await _use("wave")
+	seen = await _finish()
+	_check(gs.has_flag("waved_at_stove") and not _hotspot("wave").visible, "waved once: %s" % str(seen))
+	var h1fx = rm.current_room.get_node_or_null("Effects/dusk")
+	_check(h1fx != null and h1fx.visible, "dusk in the house after mother's mirror")
 	_check(await _go("Z2"), "H1→Z2")
 	_check(await _go("Z3"), "Z2→Z3")
 	_check(_hotspot("pier_plate") != null and _hotspot("pier_plate").visible and not _hotspot("old_pier_base").visible, "the plate of the pier above the water")
@@ -827,12 +948,22 @@ func _test_walkthrough() -> void:
 		await _click(_v(m))
 	seen = await _finish()
 	_check(gs.has_flag("rope_on_ring") and gs.has_flag("done_M15"), "the knot → M15: %s" % str(seen))
+	# Polish 22.10 (A1): the road comes back here, at the knot — held from both ends; the lights only answer later.
+	_check(gs.has_flag("road_held_both_ends") and not gs.has_flag("far_lights_answered"), "the knot holds the road from both ends (before the lights)")
+	_check(seen.any(func(x): return x.contains("С того конца держат")), "Agata at the knot: «…держат с двух концов»: %s" % str(seen))
 	if sr.mechanic_open:
 		sr.close_mechanic()
 		await _frames(2)
 	# Three lights.
 	_check(await _go("R1"), "Z3→R1")
-	_check(not gs.has_flag("started_M16") and sr.current_beat.is_empty(), "nothing starts by itself at the pier: the lights are the player's")
+	# A1: back at the pier the far bank is white for the first time — Pelageya sees it first (M16s), then the lantern.
+	seen = await _finish()
+	_check(gs.has_flag("done_M16s") and gs.has_flag("far_snow_seen") and not gs.has_flag("started_M16"), "M16s at the pier, the lights still the player's: %s" % str(seen))
+	_check(seen.size() >= 2 and seen[1].begins_with("pelageya:") and seen[1].contains("чернота была"), "Pelageya notices the snow first: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Один — пускай, два — стой")), "B10: three lights are «живые»: %s" % str(seen))
+	var lay0: Node = rm.current_room.get_node("Layers")
+	_check(lay0.get_node("far_snow").visible and not lay0.get_node("far_dark").visible and not lay0.get_node("far_lights").visible,
+			"before the lantern: the far bank white, no lights yet")
 	_check(_hotspot("pelageya").visible, "Pelageya back at the pier")
 	await _use("lantern")
 	await _wait_mechanic("lantern")
@@ -850,6 +981,7 @@ func _test_walkthrough() -> void:
 		guard += 1
 	seen = await _finish()
 	_check(gs.has_flag("far_lights_answered") and gs.has_flag("road_held_both_ends") and gs.has_flag("done_M16"), "three flashes → three lights → M16: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Год там ни одного огня не было")), "Pelageya at the answer: «Год там ни одного огня не было»: %s" % str(seen))
 	sr.close_mechanic()
 	await _frames(2)
 	var lay: Node = rm.current_room.get_node("Layers")
@@ -867,9 +999,12 @@ func _test_walkthrough() -> void:
 	_check(seen.any(func(x): return x.begins_with("narration:Кольцо скользит по канату")) and m17_text.contains("теперь не разворачивает"),
 		"the empty boat follows the ring along the rope, not back to the pier: %s" % str(seen))
 	_check(seen.any(func(x): return x == "agata:Не повернула. Идёт по канату."), "Agata: it did not turn back")
+	_check(seen.any(func(x): return x.contains("Не вернуло. Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
+	_check(sr.journal_goal().contains("по канату"), "goal: into the boat, along the rope: %s" % sr.journal_goal())
 	var n_before: int = gs.inventory.count("school_ribbon")
 	await _use("pelageya")
-	await _finish()
+	seen = await _finish()
+	_check(seen.any(func(x): return x.contains("идём по канат")) and not seen.any(func(x): return x.contains("дом")), "F11: after the empty boat Pelageya calls into the boat: %s" % str(seen))
 	sr.grant_item("school_ribbon")
 	_check(gs.inventory.count("school_ribbon") == 1 and n_before == 1, "the ribbon is given once (talk again, grant again)")
 	_check(not sr.can_start("M17"), "M17 never starts again")
@@ -877,6 +1012,8 @@ func _test_walkthrough() -> void:
 	_check(await _go("R2"), "R1→R2 (along the rope)")
 	seen = await _finish()
 	_check(gs.has_flag("done_M18p"), "the crossing: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Теперь не вернёт — идём по канату")) and seen.any(func(x): return x.contains("Не лодка нас везёт — канат")),
+			"F10/F15 at the crossing: «Теперь не вернёт…», «Не лодка нас везёт — канат…»: %s" % str(seen))
 	_check(not rm.player.visible, "R2 is seen from the boat: no figure of Agata (player_hidden)")
 	_check(await _go("R3"), "R2→R3")
 	seen = await _finish()
@@ -884,11 +1021,22 @@ func _test_walkthrough() -> void:
 	_check(rm.current_room.get_node_or_null("npc_mitya") != null, "Mitya is a 3D figure at the far pier")
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
+	_check(seen.any(func(x): return x.contains("Пелагея не отпускает Митин рукав")), "B13: Pelageya stays with Mitya at the lantern: %s" % str(seen))
+	# F13 (Director 23.10): back into the boat — not now; Pelageya: «Сейчас — к матери. Завтра покатаю».
+	var back = rm.current_room.get_node_or_null("Exits/to_R2")
+	_check(back != null and not back.is_open(), "the boat back is closed after the crossing")
+	sr.use_exit(back)
+	await process_frame
+	_check(String(sr.current_beat.get("text_key", "")) == "R3.exit_R2.closed" and String(sr.current_beat.get("speaker", "")) == "pelageya",
+			"Pelageya: «Сейчас — к матери. Завтра покатаю» (%s)" % str(sr.current_beat))
+	await _finish()
+	_check(_room() == "R3", "still at the far pier")
 	# Block 3 (22.10): the path leads up to the street of Olkhovka — the meeting with mother (M19) starts there.
 	_check(await _go("O4"), "the path leads up to the street of Olkhovka")
 	_check(gs.has_flag("started_M19"), "the meeting with mother begins on the street (M19)")
 	await _finish()
 	_check(gs.inventory.count("school_ribbon") == 1, "ribbon still once")
+	_npc_goal_check = false
 	Engine.time_scale = 1.0
 
 

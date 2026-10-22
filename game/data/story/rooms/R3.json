@@ -42,7 +42,9 @@
     }
   ],
   "exits": [
-    {"to": "R2", "label": "@R3.exit_R2.label", "cue": "right", "rect": [1300, 500, 240, 130], "stand": [1240, 600], "spawn": "from_R3", "draw": false, "_note": "мостки — к лодке"},
+    {"to": "R2", "label": "@R3.exit_R2.label", "cue": "right", "rect": [1300, 500, 240, 130], "stand": [1240, 600], "spawn": "from_R3", "draw": false, "_note": "мостки — к лодке",
+      "requires": ["boat_shuttle_open"], "closed_text": "@R3.exit_R2.closed",
+      "_requires_note": "F13 (Директор 23.10): после переправы лодка обратно закрыта — Пелагея: «Сейчас — к матери. Завтра покатаю». С третьего дня (M23) блоки 3–5 ставят boat_shuttle_open — лодка по канату ходит в обе стороны"},
     {"to": "O4", "label": "@R3.exit_O4.label", "cue": "up", "rect": [670, 380, 160, 80], "stand": [745, 440], "spawn": "from_R3", "unbuilt_text": "@ui.day2_end", "draw": false},
     {"to": "R4", "label": "@R3.exit_R4.label", "cue": "door", "rect": [1085, 375, 100, 130], "stand": [1130, 575], "spawn": "from_R3", "unbuilt_text": "@R3.exit_R4.unbuilt", "draw": false}
   ],

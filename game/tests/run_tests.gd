@@ -647,10 +647,11 @@ func _test_walkthrough() -> void:
 	_check(r2exit != null and not r2exit.is_open(), "R1→R2 closed (ferry_verified)")
 	await bot.use("pelageya")
 	seen = await bot.finish()
-	_check(gs.has_flag("done_M02") and gs.has_flag("met_pelageya") and gs.has_flag("knows_no_road") and gs.has_flag("knows_rope_on_plate")
-		and gs.has_flag("knows_sluice_key"), "M02 flags missing")
-	# 10 lines and the shown attempt (a staging: fade, boat knocks its own pier) before Pelageya's «Берег вижу».
-	_check(seen.size() == 11 and seen[2] == "stage", "M02: 2 lines, the staging, 8 lines; got %s" % str(seen))
+	_check(gs.has_flag("done_M02") and gs.has_flag("met_pelageya") and gs.has_flag("knows_no_road") and gs.has_flag("knows_rope_on_plate"),
+		"M02 flags missing")
+	# 9 lines and the shown attempt (a staging: fade, boat knocks its own pier) before Pelageya's «Берег вижу»;
+	# the sluice, the marsh, other boats and the manager are questions now (polish 22.10, D23).
+	_check(seen.size() == 10 and seen[2] == "stage", "M02: 2 lines, the staging, 7 lines; got %s" % str(seen))
 	_check(not sr.is_staging() and sr.stage_dim == 0.0, "the staging is over, no dusk left")
 	_check(not r2exit.is_open(), "R1→R2 stays closed after M02 (без плиты лодку вернёт сюда же)")
 

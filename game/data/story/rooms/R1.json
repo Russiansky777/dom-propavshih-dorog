@@ -15,17 +15,33 @@
     {"id": "pier_edge", "image": "res://assets/rooms/R1/fg_pier_edge.png", "z": 0, "_note": "настил причала — пол (по нему ходят), под Агатой; окклюдер z=740 прятал её ноги в доски"},
     {"id": "water", "image": "res://assets/rooms/R1/fg_water.png", "z": 0, "_note": "вода у лодки — плоская, под Агатой"},
     {"id": "dusk", "image": "res://assets/rooms/R1/dusk.png", "z": 0, "if": ["evening_dusk"], "_note": "партия 3: сумерки, фонарь на столбе горит — поверх фона и слоёв настила/воды (иначе они остались бы дневными), под Агатой"},
-    {"id": "far_dark", "image": "res://assets/rooms/R1/far_dark.png", "z": 0, "if": ["evening_dusk"], "unless": ["far_lights_answered"], "_note": "тот берег — тёмный силуэт, ни огонька (год без ответа)"},
-    {"id": "far_snow", "image": "res://assets/rooms/R1/far_snow.png", "z": 0, "if": ["far_lights_answered"], "_note": "ответили — на том берегу проступает снег (там уже зима); вместо far_dark"},
+    {"id": "far_dark", "image": "res://assets/rooms/R1/far_dark.png", "z": 0, "if": ["evening_dusk"], "unless": ["road_held_both_ends"], "_note": "тот берег — тёмный силуэт, ни огонька (год без ответа)"},
+    {"id": "far_snow", "image": "res://assets/rooms/R1/far_snow.png", "z": 0, "if": ["road_held_both_ends"], "_note": "канат на кольце (узел, M15) — на том берегу проступает снег (там уже зима); вместо far_dark. Полировка 22.10 (A1): снег — по узлу, огни — по фонарю"},
     {"id": "far_lights", "image": "res://assets/rooms/R1/far_lights.png", "z": 0, "if": ["far_lights_answered"], "_note": "три огня с того берега — первые за год"}
   ],
+  "on_enter": [{"text": "@R1d.pelageya.at_turn", "once_flag": "r1_saw_boat_gone", "if": ["evening_dusk"], "unless": ["done_M15"], "_note": "F11: вечером до узла Пелагеи с лодкой на причале нет — мысль Агаты, где она (цель — поворот)"}],
   "spawns": {"default": [900, 900], "from_Z3": [190, 900], "from_Z2": [200, 600], "from_R2": [1650, 840]},
   "props": [],
   "hotspots": [
     {
       "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [1140, 440, 130, 300], "stand": [950, 800], "_stand_note": "слева от Пелагеи у корня причала: в разговоре видны обе (стоянка прямо перед ней закрывала её)", "color": "#6a8aa0", "draw": false, "image": "res://assets/characters/pelageya/front.png", "pick_priority": 2,
-      "talk": {"scenes": ["M02", "M17"], "before_text": {"default": "@R1.pelageya.after"}, "after_text": "@R1.pelageya.after"},
-      "hidden_when": [{"all": ["evening_dusk"], "not": ["done_M15"]}]
+      "talk": {"scenes": ["M02", "M17"], "by_flags": [
+        {"if": ["ferry_verified"], "text": "@R1d.pelageya.to_boat"},
+        {"if": ["done_M15"], "text": "@R1d.pelageya.lantern"},
+        {"if": ["done_M14"], "text": "@R1d.pelageya.wait_water"},
+        {"if": ["done_N01"], "text": "@R1d.pelageya.day2"}],
+        "_by_flags_note": "F11 (Директор 23.10): реплика Пелагеи — по состоянию дня второго и не уводит от цели журнала (утро — вода у Павла; вода сходит — у поворота с лодкой; после узла — фонарь; после пустой лодки — в лодку). День первый — вопросы (choice)."},
+      "choice": {"prompt": "@R1.pelageya.prompt", "requires": {"flags": ["done_M02"]},
+        "_note": "Полировка 22.10 (D23): после показа лодки — по вопросам игрока: другие лодки, болото, затвор, управляющий. Спрашивать можно сколько угодно; день второй ведут реплики talk.by_flags.",
+        "options": [
+          {"id": "boats", "label": "@R1.pelageya.opt_boats", "sets": "r1_asked_boats", "text": "@R1.pelageya.boats"},
+          {"id": "marsh", "label": "@R1.pelageya.opt_marsh", "sets": "r1_asked_marsh", "text": "@R1.pelageya.marsh"},
+          {"id": "sluice", "label": "@R1.pelageya.opt_sluice", "sets": "knows_sluice_key", "text": "@R1.pelageya.sluice"},
+          {"id": "manager", "label": "@R1.pelageya.opt_manager", "sets": "r1_asked_manager", "text": "@R1.pelageya.manager"},
+          {"id": "leave", "label": "@R1.pelageya.opt_leave", "sets": "r1_pelageya_bye", "text": "@R1.pelageya.after"}
+        ]},
+      "hidden_when": [{"all": ["evening_dusk"], "not": ["done_M15"]}, {"all": ["done_M18p"], "not": ["boat_shuttle_open"]}],
+      "_hidden_note": "вечером до узла Пелагея с лодкой у поворота; после переправы — с Митей на дальней опоре, пока лодка не ходит в обе стороны (boat_shuttle_open — блоки 3–5, день третий)"
     },
     {
       "id": "rope", "action_anim": "reach", "kind": "object", "label": "@R1.rope.label", "rect": [1470, 420, 75, 280], "stand": [1580, 815], "color": "#b09a70", "draw": false,
@@ -53,7 +69,7 @@
         "answer_s": 2.4,
         "hint_pos": [1180, 860],
         "texts": {"label_far": "@R1d.lantern.label_far", "label_count": "@R1d.lantern.label_count", "count_wrong": "@R1d.lantern.count_wrong"},
-        "events": {"answered": {"sets": ["three_lights_sent", "far_lights_answered", "road_held_both_ends"]}}
+        "events": {"answered": {"sets": ["three_lights_sent", "far_lights_answered"]}}
       }
     },
     {
@@ -65,17 +81,24 @@
   "exits": [
     {"to": "Z3", "label": "@R1.exit_Z3.label", "cue": "left", "rect": [0, 660, 100, 420], "stand": [120, 900], "spawn": "from_R1", "draw": false},
     {"to": "Z2", "label": "@R1.exit_Z2.label", "cue": "up", "rect": [40, 380, 200, 240], "stand": [160, 560], "spawn": "from_R1", "closed_text": "@R1.exit_Z2.closed", "draw": false},
-    {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1550, 550, 370, 170], "stand": [1660, 840], "spawn": "from_R1", "closed_text": "@R1.exit_R2.closed", "draw": false}
+    {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1550, 550, 370, 170], "stand": [1660, 840], "spawn": "from_R1", "closed_text": "@R1.exit_R2.closed", "draw": false,
+      "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}], "_states_note": "ИИ-разбор логики п. 3: после узла «вернёт сюда же» уже неправда — сперва проверка пустой лодкой"}
   ],
   "scenes": {
     "M02": {"trigger": "talk:pelageya"},
+    "M16s": {"trigger": "enter"},
     "M16": {"complete_when": [{"all": ["far_lights_answered"]}]},
     "M17": {"trigger": "talk:pelageya"}
   },
   "effects": [
-    {"id": "far_snowfall", "type": "snow", "rect": [480, 250, 1440, 200], "amount": 70, "z": 1, "if": ["far_lights_answered"], "_note": "снег идёт над тем берегом — поверх слоёв (z 0), под Агатой"}
+    {"id": "far_snowfall", "type": "snow", "rect": [480, 250, 1440, 200], "amount": 70, "z": 1, "if": ["road_held_both_ends"], "_note": "снег идёт над тем берегом — поверх слоёв (z 0), под Агатой"}
   ],
   "flags": {
+    "r1_asked_boats": "Пелагея: другие лодки — так же, год там ни огня, ни человека",
+    "r1_asked_marsh": "Пелагея: болотом в обход — к своей же околице",
+    "r1_asked_manager": "Пелагея: управляющий с вечера запер затвор и ушёл домой, в Ольховку",
+    "r1_pelageya_bye": "Поговорили с Пелагеей у лодки",
+    "r1_saw_boat_gone": "Вечером лодки у причала нет: Пелагея с ней у поворота",
     "r1_seen_rope": "Осмотрен канат и ближний стопор на причале",
     "r1_seen_lantern": "Осмотрен сигнальный фонарь на причале",
     "seen_ferry_instruction": "Прочитана дощечка сигналов на причале (за год с того берега ни разу не ответили)"

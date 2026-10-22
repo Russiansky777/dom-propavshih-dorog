@@ -176,7 +176,9 @@ func _test_icons() -> void:
 	for id in sd.items.keys():
 		var it: Dictionary = sd.items[id]
 		var sc := String(it.get("source_scene", ""))
-		var day_one_room := String(it.get("source_hotspot", "")).get_slice(".", 0) in ["H2", "O1", "Z1"]
+		# The bell clapper (take_any_time, Director 23.10) can be taken on day one but serves day two: its icon comes
+		# with day two's (a patch with a letter until then), like the office mirror's.
+		var day_one_room := String(it.get("source_hotspot", "")).get_slice(".", 0) in ["H2", "O1", "Z1"] and not bool(it.get("take_any_time", false))
 		if bool(it.get("inventory", false)) and ((sc >= "M01" and sc <= "M08") or day_one_room):
 			_check(E0E1_ITEMS.has(id), "E0–E1 item %s missing from the icon list" % id)
 	# An item without an icon (a later episode) → patch with a letter.
