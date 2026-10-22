@@ -109,6 +109,11 @@ jobs:
             case "$v" in "${sha:0:7}"*) echo "сайт отдаёт $v"; break;; esac
             echo "сайт отдаёт: $v, ждём ${sha:0:7}"; sleep 20
           done
+          # Отчёт должен знать, проверяется ли сборка этого пуша или более старая (сборка упала / не запускалась).
+          last=$(gh run list --workflow build_and_publish.yml --branch main --limit 1 --json headSha,conclusion -q '.[0].headSha[0:7]+" "+.[0].conclusion' 2>/dev/null || true)
+          case "$v" in "${GITHUB_SHA:0:7}"*) ;; *)
+            echo "SITE_NOTE=сайт отдаёт сборку ${v%% *}; пуш, запустивший проверку, — ${GITHUB_SHA:0:7}; последняя сборка сайта: ${last:-?}" >> "$GITHUB_ENV" ;;
+          esac
 
       - name: Плейтест
         if: steps.req.outputs.files != '' || steps.req.outputs.gates != ''

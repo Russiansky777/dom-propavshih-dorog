@@ -936,6 +936,7 @@ function buildReportInput(run, cfg, checklist) {
   const L = [];
   L.push(`РЕЖИМ: ${cfg.mode === "acceptance" ? "приёмка по чеклисту" : "свежий взгляд новичка"}. Сборка: ${run.version || "?"} (${run.cfg.url}).`);
   L.push(`Остановка: ${run.stop}. Шагов: ${run.steps.length} из ${cfg.maxSteps}.`);
+  if (process.env.SITE_NOTE) L.push(`ВНИМАНИЕ: ${process.env.SITE_NOTE}. Если пункт описывает правку, которой в этой сборке ещё нет, — так и напиши («сборка старше правки»), не выдавай за дефект.`);
   if (cfg.note) L.push(`Замечание к прогону: ${cfg.note}`);
   if (checklist) L.push(`\nЧЕКЛИСТ:\n${checklistText(checklist)}`);
   if (cfg.mode === "acceptance") {
@@ -972,7 +973,7 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
   const link = (id) => (run.frames.some((f) => f.id === id) ? `[${id}](${id}.jpg)` : id);
   L.push(`# ${title} — ${run.started.slice(0, 10)}`);
   L.push("");
-  L.push(`- Сборка: \`${run.version || "?"}\` — ${run.cfg.url}`);
+  L.push(`- Сборка: \`${run.version || "?"}\` — ${run.cfg.url}${process.env.SITE_NOTE ? `. **Внимание:** ${process.env.SITE_NOTE} — правки этого пуша в проверке могут отсутствовать` : ""}`);
   L.push(`- Запрос: \`${cfg.request || "—"}\`${cfg.note ? ` — ${cfg.note}` : ""}${run.cfg.actions_run ? `; запуск Actions ${run.cfg.actions_run}` : ""}`);
   L.push(`- Модели: шаги — \`${cfg.model}\`${cfg.modelStuck ? `, когда застряла — \`${cfg.modelStuck}\`` : ""}; отчёт — \`${cfg.reportModel}\`. Кадр модели ${cfg.W}×${cfg.H} JPEG (окно игры 1920×1080).`);
   if (run.startNote) L.push(`- Начало: ${run.startNote}${cfg.start ? " (хуки ?ambientprobe)" : ""}`);
