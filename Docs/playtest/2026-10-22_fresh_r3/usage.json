@@ -1,0 +1,118 @@
+{
+ "max_usd": 0.3,
+ "spent_usd": 0.03679,
+ "by_model": {
+  "claude-haiku-5-5": {
+   "calls": 5,
+   "input_tokens": 24238,
+   "output_tokens": 2001,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "usd": 0.003424
+  },
+  "claude-sonnet-5-5": {
+   "calls": 1,
+   "input_tokens": 9843,
+   "output_tokens": 1368,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "usd": 0.033366
+  }
+ },
+ "workspace": {
+  "source": "secret",
+  "error": ""
+ },
+ "prices_per_mtok": {
+  "claude-haiku-5-5": {
+   "in": 0.1,
+   "cw": 0.125,
+   "cr": 0.01,
+   "out": 0.5,
+   "long": {
+    "over": 100000,
+    "in": 0.5,
+    "cw": 0.625,
+    "cr": 0.05,
+    "out": 2.5
+   }
+  },
+  "claude-sonnet-5-5": {
+   "in": 2,
+   "cw": 2.5,
+   "cr": 0.1,
+   "out": 10
+  },
+  "claude-opus-5-5": {
+   "in": 4,
+   "cw": 5,
+   "cr": 0.2,
+   "out": 20
+  },
+  "claude-haiku-4-5": {
+   "in": 1,
+   "cw": 1.25,
+   "cr": 0.1,
+   "out": 5
+  }
+ },
+ "prices_source": "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22)",
+ "calls": [
+  {
+   "tag": "step1",
+   "model": "claude-haiku-5-5",
+   "in": 3746,
+   "out": 338,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000544
+  },
+  {
+   "tag": "step2",
+   "model": "claude-haiku-5-5",
+   "in": 5261,
+   "out": 398,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000725
+  },
+  {
+   "tag": "step3",
+   "model": "claude-haiku-5-5",
+   "in": 5410,
+   "out": 422,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000752
+  },
+  {
+   "tag": "step4",
+   "model": "claude-haiku-5-5",
+   "in": 4227,
+   "out": 375,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.00061
+  },
+  {
+   "tag": "step5",
+   "model": "claude-haiku-5-5",
+   "in": 5594,
+   "out": 468,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.000793
+  },
+  {
+   "tag": "report",
+   "model": "claude-sonnet-5-5",
+   "in": 9843,
+   "out": 1368,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.033366
+  }
+ ],
+ "report_reserve_usd": 0.075,
+ "stop": "модель завершила прогон (done): Шагов мало. Сделаю заметки о впечатлениях и завершу прогон, так как проверка уже выполнена."
+}
