@@ -1,0 +1,36 @@
+name: glb-fetch
+# Рабочая ветка: скачать GLB из артефактов прошлых прогонов в git (сессия не читает артефакты Actions).
+on:
+  push:
+    branches: ['glb-fetch-*']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Скачать и разложить
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          mkdir -p fetched
+          while read -r run names; do
+            [ -z "$run" ] && continue
+            gh run download "$run" -n "glb-$run" -D "_dl/$run" -R "${{ github.repository }}" || { echo "нет артефакта $run" | tee -a fetched/errors.txt; continue; }
+            find "_dl/$run" -type f | sed 's/^/  /' | tee -a fetched/listing.txt
+            for n in $names; do
+              src=$(find "_dl/$run" -type d -path "*/out/$n" | head -1)
+              [ -n "$src" ] || { echo "нет out/$n в $run" | tee -a fetched/errors.txt; continue; }
+              mkdir -p "fetched/$n"; cp "$src"/*.glb "fetched/$n/" 2>/dev/null || true; cp "$src"/*.json "fetched/$n/" 2>/dev/null || true
+              st=$(find "_dl/$run" -path "*/state/$n.json" | head -1); [ -n "$st" ] && cp "$st" "fetched/$n/state.json" || true
+            done
+          done < fetch_runs.txt
+          # файлы больше 95 МБ — частями (лимит GitHub 100 МБ): cat f.part* > f
+          find fetched -type f -size +95M | while read -r f; do split -b 90m -d "$f" "$f.part"; rm "$f"; done
+          ls -laR fetched | tee fetched/sizes.txt
+          git config user.name pipeline-bot; git config user.email pipeline-bot@users.noreply.github.com
+          git add fetched; git commit -qm "GLB из артефактов [skip ci]"; git push -q origin HEAD
