@@ -1,4 +1,4 @@
-run 39835302618 2026-10-22T19:24:10Z requests: pipeline/requests/voice_list.json 
+run 39848405119 2026-10-22T20:24:02Z requests: pipeline/requests/voice_list.json 
 ключ: есть, длина 51, формат sk_…: да
 план: creator (active), израсходовано 21623 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
@@ -57,5 +57,5 @@ run 39835302618 2026-10-22T19:24:10Z requests: pipeline/requests/voice_list.json
   ОШИБКА: item.invoice_chalk: ключа больше нет в data/story/text, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: item.photo_school_pier: ключа больше нет в data/story/text, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: pelageya:R1.pelageya.after: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
-validate_voice: манифесты: ru 139 (138 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 5; реплик с тегами: 31; закадровых фраз по правилам voice.json: 158 (с тегами 22), заказаны тексты: ru_E0_E1, ru_bag
+validate_voice: манифесты: ru 139 (138 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 10; реплик с тегами: 33; закадровых фраз по правилам voice.json: 252 (с тегами 22), заказаны тексты: ru_E0_E1, ru_bag
 [voice] validate_voice.py: FAIL (35 ошибок, 4 предупреждений, strict; самопроверка 21/21)
