@@ -729,7 +729,11 @@ func _test_walkthrough() -> void:
 	seen = await bot.finish()
 	_check(gs.has_item("door_hinges") and gs.has_flag("seen_workshop") and gs.has_flag("knows_rule_things_remember") and gs.has_flag("seen_bell"), "M04 workshop steps")
 	_check(seen.size() == 2 and seen[1].contains("Если колокол звенит"), "bell: the tag, then Agata's thought about the school door: %s" % str(seen))
-	_check(bot.hotspot("hinges_box") != null and not bot.hotspot("hinges_box").visible, "hinges box hidden after pickup")
+	# N6 (playtest r7): the painted box stays — the hotspot too: empty now, the hinges go to the school door in the gallery.
+	_check(bot.hotspot("hinges_box") != null and bot.hotspot("hinges_box").visible, "the hinges' box stays clickable after pickup")
+	await bot.use("hinges_box")
+	var box_seen: Array = await bot.finish()
+	_check(gs.inventory.count("door_hinges") == 1 and box_seen.any(func(x): return String(x).contains("пуста")), "the empty box: «…пуста: петли у меня — к школьной двери в галерее» (%s)" % str(box_seen))
 	# The brace before the plan: look only, not taken (Docs/SCENARIO_FINAL.md, section 9).
 	await bot.use("brace")
 	await bot.finish()
@@ -1061,21 +1065,25 @@ func _test_stride() -> void:
 		await physics_frame
 		var resyncs0: int = player.lock_resyncs
 		player.call("walk_to", run[2])
-		var samples: Array = []   # [frame, drawn, logical, scale, ticks, lag, row]
+		var samples: Array = []   # [frame, drawn, logical, scale, game µs, lag, row]
 		var n := 0
+		# Game time, not wall time: the sum of the process deltas the player moved by (a loaded CI runner stretches
+		# the wall clock between frames and the measured speed drifted 5 % off — CI 23.10).
+		var game_us := 0.0
 		while player.call("is_walking") and n < 3000:
 			await process_frame
 			n += 1
+			game_us += root.get_process_delta_time() * 1e6
 			if not String(spr.animation).begins_with("walk_"):
 				continue
-			samples.append([spr.frame, player.call("drawn_position"), player.global_position, absf(player.scale.y), Time.get_ticks_usec(), player.call("lock_lag_px"), player.direction])
+			samples.append([spr.frame, player.call("drawn_position"), player.global_position, absf(player.scale.y), game_us, player.call("lock_lag_px"), player.direction])
 		var within_max := 0.0
 		var max_err := 0.0
 		var max_lag := 0.0
 		var ahead := false
 		var changes := 0
-		var t0 := -1
-		var t1 := -1
+		var t0 := -1.0
+		var t1 := -1.0
 		var adv := []
 		for i in range(1, samples.size()):
 			var a: Array = samples[i - 1]

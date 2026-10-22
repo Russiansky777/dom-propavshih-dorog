@@ -852,6 +852,13 @@ for rid, room in rooms.items():
             err(f"{hctx}: рост Агаты {agata:.0f} px (scale {s:.3f}) против ожидаемых {want:.0f} px "
                 f"({aref['height_m']} м при {hr['px']} px = {hr['m']} м) — ×{ratio:.2f}, допуск ±{aref['tolerance']:.0%}; "
                 f"нужный scale у y {hr['y']} ≈ {want / aref['figure_px']:.3f}")
+        # D3 (ИИ-плейтест 22.10, координатор 23.10): у порога двери Агата — 0,85–0,95 высоты двери на фоне (как в игре:
+        # масштаб зажат в [scale_top, scale_bottom]). Ориентиры с "door": true — комнаты, настроенные по двери.
+        if hr.get("door"):
+            tc = min(max((hr["y"] - dep["top_y"]) / span, 0.0), 1.0) if span else 1.0
+            ag_rt = aref["figure_px"] * (dep["scale_top"] + (dep["scale_bottom"] - dep["scale_top"]) * tc)
+            if not 0.85 <= ag_rt / hr["px"] <= 0.95:
+                err(f"{hctx}: у порога двери Агата {ag_rt:.0f} px — {ag_rt / hr['px']:.2f} высоты двери ({hr['px']} px), нужно 0,85–0,95")
 
     for e in room.get("effects", []):
         ectx = f"{ctx}.effects.{e.get('id', e.get('type', '?'))}"

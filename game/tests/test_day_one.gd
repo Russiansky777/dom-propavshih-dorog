@@ -69,6 +69,7 @@ func _run() -> void:
 	sr.stage_sound_requested.connect(func(sid: String): sounds.append(sid))
 	Engine.time_scale = 4.0
 	await _test("Drawer (M07): photo, drawing and plan once — close-up with them, then an empty drawer; a load never gives them again", _test_drawer)
+	await _test("Drawer before the traces (D1, playtest 22.10): refused with a line; the goal and the hints lead to the traces, then to the drawer; the night chain plays on", _test_drawer_order)
 	await _test("Brace (H2): only a look before the plan from the school; taken once after it; a load keeps it", _test_brace)
 	await _test("Night by the stove (N01): once after the school — dusk, lines, morning, «День второй»; never replays after re-entry or loads; a save from before plays it once; a load mid-night stops it", _test_night)
 	await _test("Pier (M02): the shown attempt — black, deck step, wooden knock — between Pelageya's lines", _test_pier_attempt)
@@ -170,6 +171,39 @@ func _o1_flags() -> Array:
 
 
 # --- Tests -------------------------------------------------------------------------------
+
+func _test_drawer_order() -> void:
+	# N5, N7 (playtest r7): the hints of the workshop step never name the school door before it is seen; the door's hints name the gallery.
+	for id in ["M01", "M02", "M03", "M04"]:
+		for h in sd.scene_hints(id):
+			_check(not String(h).to_lower().contains("школьн"), "%s hint names the school door before it is seen: %s" % [id, h])
+	for h in sd.scene_hints("M05"):
+		_check(String(h).contains("галере"), "M05 hint names the gallery: %s" % h)
+	var flags := _o1_flags().filter(func(f): return not ["done_M06", "seen_class_traces"].has(f))
+	await _enter("O1", flags)
+	_check(sr.hint_scene() == "M06", "the next step is the traces (M06), hint scene %s" % sr.hint_scene())
+	var hint: Dictionary = sr.next_hint()
+	_check(String(hint.get("text", "")).contains("учился"), "the first hint: someone learned here (%s)" % str(hint))
+	hint = sr.next_hint()
+	_check(String(hint.get("text", "")).contains("Мешок") and String(hint.get("text", "")).contains("тетради"), "the second hint names the traces (%s)" % str(hint))
+	var before: int = gs.inventory.size()
+	var seen := await _interact(_hotspot("teacher_drawer"))
+	_check(gs.inventory.size() == before and not gs.has_flag("has_plan_crossing") and not sr.view_open, "the drawer before the traces gives nothing, no close-up")
+	_check(seen.any(func(x): return x.contains("Сначала оглядеться")), "Agata: first look around (%s)" % str(seen))
+	for id in ["sack", "notebooks"]:
+		await _interact(_hotspot(id))
+	_check(gs.has_flag("seen_class_traces") and gs.has_flag("done_M06"), "two traces → M06")
+	_check(sr.hint_scene() == "M07" and sd.scene_hints("M07")[1].contains("Ящик"), "now the hints lead to the drawer (%s)" % sr.hint_scene())
+	sr.interact(_hotspot("teacher_drawer"))
+	await process_frame
+	_check(sr.view_open, "now the drawer opens with its close-up")
+	seen = await _drain()
+	await _frames(2)
+	seen += await _drain()
+	sr.close_view()
+	await _frames(2)
+	_check(gs.has_flag("done_M07") and gs.inventory.size() == before + 3, "M07: the plan read, three things once (%s)" % str(gs.inventory))
+
 
 func _test_drawer() -> void:
 	await _enter("O1", _o1_flags())

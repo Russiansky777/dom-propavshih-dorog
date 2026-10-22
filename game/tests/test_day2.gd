@@ -507,6 +507,14 @@ func _test_whereabouts() -> void:
 	_check(not gs.has_flag("started_M09"), "no day-two talk with Pavel before the morning")
 	_check(String(b.get("text_key", "")) == "M1.pavel.day1" and String(b.get("speaker", "")) == "pavel", "Pavel: come in the morning (%s)" % str(b))
 	await _finish()
+	# Playtest 22.10: on day one the passage and the sluice wait for the morning too — a line, not «ключ в конторе».
+	for to in ["M2", "M4"]:
+		var ex = rm.current_room.get_node_or_null("Exits/to_" + to)
+		_check(ex != null and not ex.is_open(), "day one: M1→%s closed until the morning" % to)
+		sr.use_exit(ex)
+		await process_frame
+		_check(String(sr.current_beat.get("text_key", "")) == "M1.exit_%s.closed" % to, "M1→%s: «Павел сказал — приходи утром…» (%s)" % [to, str(sr.current_beat)])
+		await _finish()
 	# Evening of day two: Pelageya at the turn with the boat until the rope is on the plate.
 	await _day_one_done()
 	for f in ["done_N01", "evening_dusk"]:

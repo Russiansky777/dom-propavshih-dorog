@@ -56,10 +56,11 @@
     {
       "id": "teacher_drawer", "action_anim": "open", "kind": "object", "label": "@O1.teacher_drawer.label", "rect": [560, 500, 310, 110], "stand": [720, 780], "color": "#5a4a3a", "draw": false,
       "states": [{"if": ["has_plan_crossing"], "label": "@O1.teacher_drawer.label_open"}],
-      "use": {"gives": ["photo_bridge", "drawing_ilya", "plan_crossing"], "text": "@O1.teacher_drawer.use", "once_flag": "has_plan_crossing", "scene": "M07"},
+      "use": {"requires": {"flags": ["seen_class_traces"]}, "fail_text": "@O1.teacher_drawer.before_traces", "gives": ["photo_bridge", "drawing_ilya", "plan_crossing"], "text": "@O1.teacher_drawer.use", "once_flag": "has_plan_crossing", "scene": "M07",
+        "_requires_note": "D1 (ИИ-плейтест 22.10): ящик выдавал три вещи до следов в классе (M06) — M07 ждёт seen_class_traces, ночь не наступала и ничего не объясняло. Теперь ящик — после двух следов; до того Агата говорит, что сначала оглядеться"},
       "look": "@O1.teacher_drawer.look",
       "view": {
-        "id": "teacher_drawer", "type": "papers", "close_label": "@ui.close", "unless": ["has_plan_crossing"],
+        "id": "teacher_drawer", "type": "papers", "close_label": "@ui.close", "if": ["seen_class_traces"], "unless": ["has_plan_crossing"],
         "_note": "Крупный план ящика (M07) — открывается вместе с выдачей трёх вещей, текст ящика и сцена M07 идут поверх. Арт партии 2 (ChatGPT 22.10, 1672×941 — лист на столе; копии tools/import_closeups.py): снимок старого моста и детский рисунок Ильи слева, план справа крупно — текст игры (M07 дословно) в свободной нижней зоне листа (text_rect в пикселях исходника: x 150, y 625, 1360×245, README партии 2). После того как вещи взяты, ящик пуст — крупный план не открывается (unless).",
         "pictures": [
           {"image": "res://assets/closeups/closeup_bridge_photo.png", "rect": [24, 100, 650, 0], "angle_deg": -2.0},

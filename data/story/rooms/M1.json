@@ -11,9 +11,9 @@
   "no_walk_samples": [[1600, 720, "вода в лотке"], [880, 540, "верстак у стены"], [1130, 560, "бочка"], [200, 960, "мешки"], [690, 450, "дверь в сени"]],
   "walk_samples": [[900, 800], [600, 700], [150, 540], [1500, 900], [700, 1000]],
   "nearest_checks": [{"from": [1600, 720], "in": [1450, 740, 300, 130], "_note": "вода в лотке → берег у воды"}],
-  "depth": {"top_y": 450, "bottom_y": 1070, "scale_top": 0.42, "scale_bottom": 1.5},
-  "_depth_note": "Рост Агаты = 345 px × scale (rooms/_index.json agata_ref). У двери в сени (порог y 560) scale 0.61 → 210 px при ожидаемых 199 (дверь 2,0 м = 240 px). Тропа к улице уходит вглубь до y 450 — там 0.42.",
-  "height_refs": [{"what": "дверь в сени (порог y 560, верх y 320)", "y": 560, "px": 240, "m": 2.0}],
+  "depth": {"top_y": 450, "bottom_y": 1070, "scale_top": 0.243, "scale_bottom": 2.4},
+  "_depth_note": "D3 (ИИ-плейтест 22.10, координатор 23.10): прямая глубины через ноль на горизонте y 380 (горизонт — дальний берег пруда ≈ y 380 (то же даёт камера 1,5 м над порогом)) и через рост Агаты у порога двери (y 560) = 0.9 высоты двери (240 px → 216 px, масштаб 0.626). Рост Агаты = 345 px × масштаб; у нижнего края 2.4 (было 1.5 — вблизи на треть мельче перспективы), в глубине 0.243. Проверка tools/validate_rooms.py: рост у двери 0,85–0,95 её высоты.",
+  "height_refs": [{"what": "дверь в сени (порог y 560, верх y 320)", "y": 560, "px": 240, "m": 2.0, "door": true}],
   "layers": [
     {"id": "wheel", "image": "res://assets/rooms/M1/wheel.png", "z": 0, "scale": 0.62, "scale_reason": "колесо нарисовано отдельно и крупнее (диаметр 488 px исходника при оси 390 px в задании); 0.62 — нижний край колеса уходит в лоток у стены (кадр day2_M1), а не встаёт на двор", "pivot": [1142.5, 478], "offset": [581.8, 162.7], "spin": {"deg_per_s": -14, "unless": ["pond_lowered"]}, "_note": "ось колеса (ступица в слое ≈ 1142.5, 478) ставится на втулку стены — исходник фона (1215, 438), экран (1395, 503): offset = экран − pivot × 1920/1672 × 0.8"},
     {"id": "sacks", "image": "res://assets/rooms/M1/fg_sacks.png", "occluder": true, "z": 1080, "scale": 0.6, "scale_reason": "мешки в слое получились крупнее задания (высота 525 px вместо ≈ 280); 0.6 — совет файла _meta_v3/M1.md", "offset": [0, 432.4], "_note": "левый нижний угол слоя (0, 941) — в угол кадра (0, 1080)"}
@@ -25,7 +25,7 @@
   "props": [],
   "hotspots": [
     {
-      "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1070, 360, 120, 255], "stand": [960, 690], "draw": false, "pick_priority": 2,
+      "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1060, 320, 139, 295], "stand": [960, 690], "draw": false, "pick_priority": 2,
       "hidden_if": ["office_unbolted"],
       "talk": {"scenes": ["M09", "M09b"], "before_text": {"M09": "@M1.pavel.day1", "M09b": "@M1.pavel.before_agree"}, "after_text": "@M1.pavel.after"}
     },
@@ -35,7 +35,7 @@
       "look": "@M1.schedule.look"
     },
     {
-      "id": "wheel", "kind": "object", "label": "@M1.wheel.label", "rect": [1235, 340, 320, 320], "stand": [1230, 700], "draw": false,
+      "id": "wheel", "kind": "object", "label": "@M1.wheel.label", "rect": [1235, 340, 320, 320], "stand": [1340, 740], "draw": false,
       "states": [{"if": ["pond_lowered"], "label": "@M1.wheel.label_still"}],
       "look": "@M1.wheel.look"
     },
@@ -46,8 +46,8 @@
   ],
   "exits": [
     {"to": "Z2", "label": "@M1.exit_Z2.label", "cue": "left", "rect": [0, 380, 110, 300], "stand": [80, 540], "spawn": "from_M1", "draw": false},
-    {"to": "M2", "label": "@M1.exit_M2.label", "cue": "door", "rect": [612, 315, 140, 250], "stand": [690, 615], "spawn": "from_M1", "draw": false},
-    {"to": "M4", "label": "@M1.exit_M4.label", "cue": "right", "rect": [1800, 860, 120, 220], "stand": [1840, 960], "spawn": "from_M1", "draw": false}
+    {"to": "M2", "label": "@M1.exit_M2.label", "cue": "door", "rect": [612, 315, 140, 250], "stand": [690, 615], "spawn": "from_M1", "closed_text": "@M1.exit_M2.closed", "draw": false},
+    {"to": "M4", "label": "@M1.exit_M4.label", "cue": "right", "rect": [1800, 860, 120, 220], "stand": [1840, 960], "spawn": "from_M1", "closed_text": "@M1.exit_M4.closed", "draw": false}
   ],
   "scenes": {
     "M09": {"trigger": "talk:pavel"},
