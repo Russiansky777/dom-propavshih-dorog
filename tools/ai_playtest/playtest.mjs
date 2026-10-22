@@ -137,6 +137,8 @@ async function main() {
     W: Math.round(clampNum(req.image_width, 640, 1920, 1280)),
     maxFrames: Math.round(clampNum(req.max_frames, 4, 40, 24)),
     autoDialogue: req.auto_dialogue !== false,
+    // Start point (a block in the middle of the game): {room, spawn, flags[], items[]} via the ?ambientprobe hooks.
+    start: (mode === "fresh" && req.mode === "gate" ? req.fresh_start : req.start) || null,
   };
   cfg.H = Math.round(cfg.W * FRAME_H / FRAME_W);
   const scale = cfg.W / FRAME_W;
@@ -379,7 +381,8 @@ async function main() {
   const reportReserve = Math.min(cfg.maxUsd * 0.25, estimateCost(cfg.reportModel, { textChars: 120000, images: Array(cfg.maxFrames).fill({ w: cfg.W, h: cfg.H }), maxOut: 9000 }));
   run.reportReserve = Number(reportReserve.toFixed(4));
   let events = [], extra = [];
-  const sys = run.stop ? "" : systemPrompt(mode, { W: cfg.W, H: cfg.H, checklist: checklist ? checklistText(checklist) : "", note: cfg.note });
+  const sys = run.stop ? "" : systemPrompt(mode, { W: cfg.W, H: cfg.H, checklist: checklist ? checklistText(checklist) : "", note: cfg.note,
+    start: cfg.start ? String(cfg.start.label || "предыдущая часть игры уже пройдена, о ней ты знаешь только то, что увидишь") : "" });
   const tool = actTool(mode, cfg.W, cfg.H);
   const pendingItems = () => (checklist ? checklist.rows.map((r) => r.num).filter((n) => !run.verdicts[n]) : []);
   const trackProgress = (s, step) => {
@@ -409,8 +412,8 @@ async function main() {
         const vr = await page.request.get(new URL("version.txt", url.endsWith("/") || url.endsWith(".html") ? url : url + "/").toString(), { timeout: 30000 });
         if (vr.ok()) run.version = (await vr.text()).trim().slice(0, 80);
       } catch (_) { /* no version.txt locally */ }
-      log(`open ${run.cfg.url} (build ${run.version || "?"})`);
-      await page.goto(url, { waitUntil: "load", timeout: 180000 });
+      log(`open ${run.cfg.url} (build ${run.version || "?"})${cfg.start ? ` from ${cfg.start.room || "?"}` : ""}`);
+      await page.goto(cfg.start ? url + (url.includes("?") ? "&" : "?") + "ambientprobe" : url, { waitUntil: "load", timeout: 180000 });
       try {
         await page.waitForFunction(() => window.probeReady === true, null, { timeout: 300000 });
         run.probe = true;
@@ -420,6 +423,22 @@ async function main() {
         await sleep(20000);
       }
       await sleep(2500);
+      if (cfg.start) {
+        // A block in the middle of the game: story flags, the bag (needs window.ambientItem), the room.
+        try {
+          await page.waitForFunction(() => window.ambientProbeReady === true, null, { timeout: 60000 });
+          for (const f of cfg.start.flags || []) await page.evaluate((x) => window.ambientFlag(x, true), String(f));
+          const items = cfg.start.items || [];
+          if (items.length) {
+            const can = await page.evaluate(() => typeof window.ambientItem === "function");
+            if (can) for (const it of items) await page.evaluate((x) => window.ambientItem(x), String(it));
+            else run.harness.push(`start: items ${items.join(", ")} not given — the build has no window.ambientItem hook`);
+          }
+          if (cfg.start.room) await page.evaluate(([r, sp]) => window.ambientGoto(r, sp), [String(cfg.start.room), String(cfg.start.spawn || "default")]);
+          await sleep(1500);
+          run.startNote = `старт с ${cfg.start.room || "?"}: флагов ${(cfg.start.flags || []).length}, предметов ${(cfg.start.items || []).length}`;
+        } catch (e) { run.harness.push(`start point failed: ${short(e && e.message, 160)}`); }
+      }
       lastState = await state();
       trackProgress(lastState, 0);
       await mouseTo(pointer, 1);
@@ -787,6 +806,7 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
   L.push(`- Сборка: \`${run.version || "?"}\` — ${run.cfg.url}`);
   L.push(`- Запрос: \`${cfg.request || "—"}\`${cfg.note ? ` — ${cfg.note}` : ""}${run.cfg.actions_run ? `; запуск Actions ${run.cfg.actions_run}` : ""}`);
   L.push(`- Модели: шаги — \`${cfg.model}\`${cfg.modelStuck ? `, когда застряла — \`${cfg.modelStuck}\`` : ""}; отчёт — \`${cfg.reportModel}\`. Кадр модели ${cfg.W}×${cfg.H} JPEG (окно игры 1920×1080).`);
+  if (run.startNote) L.push(`- Начало: ${run.startNote} (хуки ?ambientprobe)`);
   L.push(`- Шагов: ${run.steps.length} из ${cfg.maxSteps}; время ${minutes} мин. Остановка: ${run.stop}`);
   L.push(`- Стоимость прогона: **$${budget.spent.toFixed(3)}** (по usage ответов API, подробно — usage.json; предохранитель от зацикливания — $${cfg.maxUsd})`);
   L.push(`- Где оказалась по факту: ${run.rooms.join(" → ") || "—"}${run.end ? `; конец — ${run.end.room}` : ""}`);
