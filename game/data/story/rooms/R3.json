@@ -16,8 +16,7 @@
     {"id": "fg_rope_stop", "image": "res://assets/rooms/R3/fg_rope_stop.png", "occluder": true, "z": 1080, "_note": "канат моста и стопор в старом кольце — передний план"}
   ],
   "effects": [
-    {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 110, "z": 4000},
-    {"id": "mitya_lantern", "type": "shapes", "z": 4095, "shapes": [{"type": "glow", "center": [579, 571], "r": 60, "color": "#ffc46ab0"}, {"type": "glow", "center": [579, 571], "r": 15, "color": "#ffe8b0f0"}], "_note": "фонарь в руке у Мити (у правой руки фигуры) — до его 3D-фигуры с фонарём"}
+    {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 110, "z": 4000}
   ],
   "spawns": {"default": [800, 640], "from_R2": [1180, 610], "from_O4": [745, 450], "from_R4": [1130, 575]},
   "props": [],

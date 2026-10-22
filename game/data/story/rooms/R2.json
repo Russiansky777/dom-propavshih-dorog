@@ -12,7 +12,7 @@
   "depth": {"top_y": 960, "bottom_y": 1050, "scale_top": 1.0, "scale_bottom": 1.0},
   "_depth_note": "Агаты в кадре нет (player_hidden) — масштаб не виден; ориентиров роста не нужно.",
   "layers": [
-    {"id": "fg_rope", "image": "res://assets/rooms/R2/fg_rope.png", "occluder": true, "z": 1080, "_note": "канат и кольцо на правом борту — передний план"}
+    {"id": "fg_rope", "image": "res://assets/rooms/R2/fg_rope.png", "z": 0, "_note": "канат и кольцо на правом борту — передний план; обычный слой (не окклюдер): фигур в кадре нет (player_hidden), а покачивание каната (ambient R2 → sway rope) рисуется прямо над ним"}
   ],
   "effects": [
     {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 45, "z": 4000, "_note": "редкий снег: ближе к тому берегу уже зима (M18p: «На мокрых досках появляется снег»)"}
