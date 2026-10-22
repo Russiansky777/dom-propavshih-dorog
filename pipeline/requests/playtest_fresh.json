@@ -1,0 +1,8 @@
+{
+  "mode": "fresh",
+  "max_usd": 3,
+  "max_steps": 150,
+  "max_minutes": 90,
+  "note": "",
+  "run": 1
+}

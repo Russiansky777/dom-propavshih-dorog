@@ -1,0 +1,126 @@
+// Anthropic Messages API for the AI playtester: one call with retries, prices, the budget guard.
+//
+// Prices — USD per 1M tokens, from the official pricing page
+// https://platform.claude.com/docs/en/about-claude/pricing (read 2026-10-22). Models and IDs —
+// https://platform.claude.com/docs/en/models/overview. A model missing from this table is refused: the
+// budget is counted from the actual `usage` of every response, so an unknown price cannot be guarded.
+// Image tokens are ordinary input tokens (⌈w/28⌉·⌈h/28⌉ per image on Claude 4.7+; 1280×720 → 1196).
+
+export const PRICES = {
+  // Haiku 5.5 is priced by prompt length: a prompt over 100k input tokens (cache included) pays the long rates.
+  "claude-haiku-5-5": { in: 0.10, cw: 0.125, cr: 0.01, out: 0.50, long: { over: 100000, in: 0.50, cw: 0.625, cr: 0.05, out: 2.50 } },
+  "claude-sonnet-5-5": { in: 2, cw: 2.5, cr: 0.10, out: 10 },
+  "claude-opus-5-5": { in: 4, cw: 5, cr: 0.20, out: 20 },
+  "claude-haiku-4-5": { in: 1, cw: 1.25, cr: 0.10, out: 5 },
+};
+export const PRICES_SOURCE = "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22)";
+
+const API_URL = process.env.ANTHROPIC_BASE_URL ? `${process.env.ANTHROPIC_BASE_URL.replace(/\/$/, "")}/v1/messages` : "https://api.anthropic.com/v1/messages";
+const API_VERSION = process.env.ANTHROPIC_VERSION || "2023-06-01";
+
+export function priceKnown(model) { return Object.prototype.hasOwnProperty.call(PRICES, model); }
+
+/** USD of one response from its usage block (thinking tokens are inside output_tokens). */
+export function costOf(model, u) {
+  const p = PRICES[model];
+  if (!p || !u) return 0;
+  const inp = u.input_tokens || 0, cw = u.cache_creation_input_tokens || 0, cr = u.cache_read_input_tokens || 0, out = u.output_tokens || 0;
+  const r = p.long && inp + cw + cr > p.long.over ? { ...p, ...p.long } : p;
+  const cw1h = (u.cache_creation && u.cache_creation.ephemeral_1h_input_tokens) || 0;   // 1-hour cache writes: 2× base input
+  return (inp * r.in + (cw - cw1h) * r.cw + cw1h * r.in * 2 + cr * r.cr + out * r.out) / 1e6;
+}
+
+/** Rough USD of a request before sending it (chars/2.5 per token for Russian text after the 4.7+ tokenizer, images by patches). */
+export function estimateCost(model, { textChars = 0, images = [], maxOut = 600 }) {
+  const p = PRICES[model];
+  if (!p) return Infinity;
+  let tokens = Math.ceil(textChars / 2.5);
+  for (const im of images) tokens += Math.ceil(im.w / 28) * Math.ceil(im.h / 28);
+  const r = p.long && tokens > p.long.over ? { ...p, ...p.long } : p;
+  return (tokens * r.in + maxOut * r.out) / 1e6;
+}
+
+export class ApiError extends Error {
+  constructor(status, type, message) { super(`HTTP ${status} ${type}: ${message}`); this.status = status; this.type = type; }
+}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * POST /v1/messages with retries on overload / rate limits / network errors. Never logs the key or the body.
+ * Returns the parsed response. Throws ApiError on a permanent error (401, 400, …).
+ */
+export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, timeoutMs = 180000 } = {}) {
+  let lastErr = null;
+  for (let a = 0; a < attempts; a++) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    let res;
+    try {
+      res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "x-api-key": apiKey, "anthropic-version": API_VERSION, "content-type": "application/json" },
+        body: JSON.stringify(body),
+        signal: ctrl.signal,
+      });
+    } catch (e) {
+      clearTimeout(timer);
+      lastErr = new ApiError(0, "network", String(e && e.name === "AbortError" ? "timeout" : (e && e.message) || e).slice(0, 120));
+      log(`api: network error (${lastErr.message}), retry ${a + 1}`);
+      await sleep(Math.min(60000, 3000 * 2 ** a));
+      continue;
+    }
+    clearTimeout(timer);
+    if (res.ok) return res.json();
+    let type = "error", msg = "";
+    try {
+      const j = await res.json();
+      type = (j && j.error && j.error.type) || type;
+      msg = String((j && j.error && j.error.message) || "").slice(0, 200);
+    } catch (_) { /* not JSON */ }
+    lastErr = new ApiError(res.status, type, msg);
+    if ([408, 409, 429, 500, 502, 503, 504, 529].includes(res.status)) {
+      const ra = Number(res.headers.get("retry-after"));
+      const wait = Number.isFinite(ra) && ra > 0 ? Math.min(120, ra) * 1000 : Math.min(60000, 4000 * 2 ** a);
+      log(`api: HTTP ${res.status} ${type}, retry ${a + 1} in ${Math.round(wait / 1000)} s`);
+      await sleep(wait);
+      continue;
+    }
+    throw lastErr;
+  }
+  throw lastErr || new ApiError(0, "unknown", "no response");
+}
+
+/** Spending of one run: every call with its usage, totals per model, the stop check. */
+export class Budget {
+  constructor(maxUsd) {
+    this.maxUsd = maxUsd;
+    this.spent = 0;
+    this.calls = [];
+    this.byModel = {};
+  }
+  add(model, usage, tag) {
+    const usd = costOf(model, usage);
+    this.spent += usd;
+    const u = usage || {};
+    const m = (this.byModel[model] ||= { calls: 0, input_tokens: 0, output_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0, usd: 0 });
+    m.calls += 1;
+    for (const k of ["input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"]) m[k] += u[k] || 0;
+    m.usd += usd;
+    this.calls.push({ tag, model, in: u.input_tokens || 0, out: u.output_tokens || 0, cw: u.cache_creation_input_tokens || 0, cr: u.cache_read_input_tokens || 0, usd: Number(usd.toFixed(6)) });
+    return usd;
+  }
+  left() { return this.maxUsd - this.spent; }
+  /** True when `next` USD more (plus the reserve kept for the final report) still fits under the ceiling. */
+  fits(next, reserve = 0) { return this.spent + next + reserve <= this.maxUsd; }
+  recentStepCost(model, n = 5) {
+    const steps = this.calls.filter((c) => c.tag.startsWith("step") && c.model === model).slice(-n);
+    return steps.length ? Math.max(...steps.map((c) => c.usd)) : 0;
+  }
+  toJSON() {
+    const r = (x) => Number(x.toFixed(6));
+    const byModel = {};
+    for (const [k, v] of Object.entries(this.byModel)) byModel[k] = { ...v, usd: r(v.usd) };
+    return { max_usd: this.maxUsd, spent_usd: r(this.spent), by_model: byModel, prices_per_mtok: PRICES, prices_source: PRICES_SOURCE, calls: this.calls };
+  }
+}

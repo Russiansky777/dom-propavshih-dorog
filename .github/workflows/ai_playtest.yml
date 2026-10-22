@@ -1,0 +1,117 @@
+name: ai-playtest
+
+# ИИ-плейтестер: Claude играет в веб-сборку (сайт GitHub Pages) настоящими щелчками — скриншот → модель
+# выбирает действие → клик → снова скриншот. Режимы: acceptance (пункты Docs/ACCEPTANCE_*.md) и fresh (новичок).
+# Запуск: изменить или добавить pipeline/requests/playtest_<имя>.json и запушить (или вручную — workflow_dispatch).
+# Поля запроса: mode, items, context_items, max_usd, max_steps, url, note — подробно в tools/ai_playtest/playtest.mjs.
+# Ключ — секрет CLAUDE_API (только в env). Лог публичный: в него не печатаются ни ключ, ни ответы модели.
+# Результат коммитится с [skip ci] в Docs/playtest/<дата>_<режим>_r<номер запуска>/: report.md, кадры, usage.json, log.json.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/requests/playtest_*.json"
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "путь к запросу, напр. pipeline/requests/playtest_day1_acceptance.json"
+        required: true
+        default: "pipeline/requests/playtest_day1_acceptance.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: ai-playtest
+  cancel-in-progress: false
+
+jobs:
+  playtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Определить запросы
+        id: req
+        env:
+          REQ_INPUT: ${{ github.event.inputs.request }}
+        run: |
+          if [ -n "$REQ_INPUT" ]; then
+            case "$REQ_INPUT" in
+              pipeline/requests/playtest_*.json) files="$REQ_INPUT" ;;
+              *) echo "запрос должен быть pipeline/requests/playtest_*.json"; exit 1 ;;
+            esac
+          else
+            before="${{ github.event.before }}"
+            if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+              files=$(git diff-tree --no-commit-id --name-only --diff-filter=AM -r ${{ github.sha }} -- 'pipeline/requests/playtest_*.json' | tr '\n' ' ')
+            else
+              files=$(git diff --name-only --diff-filter=AM "$before" ${{ github.sha }} -- 'pipeline/requests/playtest_*.json' | tr '\n' ' ' || true)
+            fi
+          fi
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+          echo "requests: $files"
+
+      - uses: actions/setup-node@v4
+        if: steps.req.outputs.files != ''
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+
+      - name: Playwright + Chromium
+        if: steps.req.outputs.files != ''
+        working-directory: tools
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Дождаться публикации сайта (если сборка ещё идёт)
+        if: steps.req.outputs.files != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 50); do
+            st=$(gh run list --workflow build_and_publish.yml --branch main --limit 1 --json status -q '.[0].status' 2>/dev/null || echo completed)
+            if [ "$st" = "completed" ] || [ -z "$st" ]; then echo "сайт: последняя сборка завершена"; break; fi
+            echo "сборка сайта ещё идёт ($st), жду 30 с"
+            sleep 30
+          done
+
+      - name: Плейтест
+        if: steps.req.outputs.files != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          REQ_FILES: ${{ steps.req.outputs.files }}
+        run: |
+          git config user.name "playtest-bot"
+          git config user.email "playtest-bot@users.noreply.github.com"
+          commit_results() {
+            git add Docs/playtest
+            if git diff --cached --quiet; then echo "нечего коммитить"; return 0; fi
+            summary=$(cat build/ai_playtest/*/summary.txt 2>/dev/null | tail -n 1 | tr '\n' ' ')
+            git commit -q -m "ИИ-плейтест: ${summary:-результаты} (run ${{ github.run_number }}) [skip ci]"
+            for i in 1 2 3 4 5 6; do
+              git fetch -q origin main
+              if git rebase --autostash origin/main; then
+                if git push origin HEAD:main; then echo "запушено с попытки $i"; return 0; fi
+              else
+                git rebase --abort || true
+              fi
+              sleep 15
+            done
+            return 1
+          }
+          status=0
+          for f in $REQ_FILES; do
+            echo "=== $f"
+            rm -f build/ai_playtest/*/summary.txt
+            node tools/ai_playtest/playtest.mjs --request "$f" || status=1
+            commit_results || status=1
+          done
+          exit $status
