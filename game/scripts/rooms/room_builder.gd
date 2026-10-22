@@ -224,6 +224,10 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 		spr.scale = Vector2(art * sc, art * sc)
 		var off: Array = l.get("offset", [0, 0])
 		spr.position = Vector2(float(off[0]), float(off[1]))
+		# `modulate` "#rrggbb": a day patch laid over an evening state takes its tone (Z3: the shore stone
+		# without a plate over the batch-3 dusk layer).
+		if l.has("modulate"):
+			spr.modulate = Color.html(String(l["modulate"]))
 		# `pivot` [x, y] in the layer's own pixels: the sprite turns about it — static `rotation_deg` (the M4
 		# lever in a notch) or `spin` (the M1 wheel); the canvas origin still lands at `offset`.
 		if l.has("pivot"):

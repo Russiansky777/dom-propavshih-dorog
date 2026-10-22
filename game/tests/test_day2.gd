@@ -691,7 +691,12 @@ func _test_walkthrough() -> void:
 	_check(await _go("Z2"), "H1→Z2")
 	_check(await _go("Z3"), "Z2→Z3")
 	_check(_hotspot("pier_plate") != null and _hotspot("pier_plate").visible and not _hotspot("old_pier_base").visible, "the plate of the pier above the water")
-	_check(rm.current_room.get_node("Layers/water_low").visible and not _hotspot("plate").visible, "batch 3: the water let down at dusk (layer); the shore sign has no label in the evening")
+	_check(rm.current_room.get_node("Layers/water_low").visible and not _hotspot("plate").visible, "batch 3: the water let down at dusk (layer); the shore stone has no label in the evening")
+	# Batch 7: the shore stone never carries the plate (it is on the pier under water) — over the dusk layer too.
+	var lz: Node = rm.current_room.get_node("Layers")
+	_check(lz.get_node("stone_no_plate_dusk").visible and not lz.get_node("stone_no_plate").visible
+		and lz.get_node("stone_no_plate_dusk").get_index() > lz.get_node("water_low").get_index(),
+		"the stone without the plate is drawn over the evening water layer")
 	_check(_hotspot("pelageya") != null and _hotspot("pelageya").visible, "Pelageya at the turn with the boat")
 	await _use_item("brace_plate", "pier_plate")
 	await _frames(2)

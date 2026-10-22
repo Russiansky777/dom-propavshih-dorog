@@ -586,6 +586,11 @@
       "delivered": {
         "date": "2026-10-22",
         "by": "ChatGPT (image_gen), партия 7; assets/incoming/_meta_p7/README_RU.txt (наложения на основу — _meta_p7/*_over_base.jpg)"
+      },
+      "imported": {
+        "date": "2026-10-22",
+        "by": "Claude Code (блок 2)",
+        "into": "game/assets/rooms/O1/state_board_mama.png, state_board_ilya.png ← tools/import_room_art.py O1; rooms/O1.json → layers board_mama / board_ilya (картинки вместо текстовых заглушек; на доске всегда одна надпись)"
       }
     },
     {
@@ -602,6 +607,11 @@
       "delivered": {
         "date": "2026-10-22",
         "by": "ChatGPT (image_gen), партия 7; assets/incoming/_meta_p7/README_RU.txt (наложения на основу — _meta_p7/*_over_base.jpg)"
+      },
+      "imported": {
+        "date": "2026-10-22",
+        "by": "Claude Code (блок 2)",
+        "into": "game/assets/rooms/Z3/state_stone_no_plate.png ← tools/import_room_art.py Z3; rooms/Z3.json → layers stone_no_plate (днём) и stone_no_plate_dusk (вечером поверх слоя спущенной воды, в тоне сумерек); хотспот plate — «Камень на берегу»"
       }
     },
     {

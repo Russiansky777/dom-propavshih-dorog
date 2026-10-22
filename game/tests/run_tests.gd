@@ -865,7 +865,8 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("board_mama") and not gs.has_flag("board_here"), "«Мама, я иду» on the board; seen=%s" % str(seen))
 	_check(not gs.has_item("chalk") and gs.has_flag("has_chalk"), "chalk stays at the board after writing (out of the bag, not given again)")
 	var bm = rm.current_room.get_node_or_null("Layers/board_mama")
-	_check(bm != null and bm.visible, "the chalk line stand-in is on the board")
+	_check(bm != null and bm.visible and bm.get_node_or_null("Image") != null and not rm.current_room.get_node("Layers/board_written").visible
+		and not rm.current_room.get_node("Layers/board_ilya").visible, "«Мама, я иду» drawn in chalk (batch 7), the only line on the board")
 
 	# --- home through the school door → the night by the stove (N01), checkpoint «День второй» ---
 	await bot.go("H3")

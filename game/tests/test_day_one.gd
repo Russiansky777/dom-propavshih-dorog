@@ -385,8 +385,11 @@ func _test_board() -> void:
 	await _drain(["ilya"])
 	_check(gs.has_flag("board_ilya") and not gs.has_item("chalk") and gs.has_flag("has_chalk"), "written: flag kept, chalk used up (not given again)")
 	var layer: Node = rm.current_room.get_node_or_null("Layers/board_ilya")
-	_check(layer != null and layer.visible and String(layer.get_node("Text").text).contains("Илюша"), "the board shows «Илюша, я нашла твой рисунок» (stand-in text)")
-	_check(not rm.current_room.get_node("Layers/board_written").visible, "the other line is not drawn")
+	var spr: Sprite2D = layer.get_node_or_null("Image") if layer != null else null
+	_check(layer != null and layer.visible and spr != null and spr.texture != null and spr.texture.resource_path.ends_with("state_board_ilya.png"),
+		"the board shows «Илюша, я нашла твой рисунок» (chalk drawing, batch 7)")
+	_check(not rm.current_room.get_node("Layers/board_written").visible and not rm.current_room.get_node("Layers/board_mama").visible,
+		"exactly one line on the board: the others are not drawn")
 	_check(String(board.call("label_text")).contains("Илюша"), "the board's label names the line")
 	sr.select_item("chalk")
 	_check(sr.selected_item == "", "no chalk to write a second line")
