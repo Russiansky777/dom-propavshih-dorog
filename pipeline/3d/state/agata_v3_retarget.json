@@ -8,7 +8,40 @@
    "frames": 420,
    "floor_shift_m": 0.0717,
    "blend_from": null,
-   "legs_from": null
+   "legs_from": null,
+   "feet": {
+    "after": {
+     "L": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 0.0,
+      "toe_abs_max_deg": 3.0,
+      "sole_lift_mid_stance_max_m": 0.0769,
+      "slide_max_mm": 0.0,
+      "contact_frames": 84,
+      "floor_m": 0.003,
+      "body_yaw_deg": 2.2
+     },
+     "R": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 0.0,
+      "toe_abs_max_deg": 3.0,
+      "sole_lift_mid_stance_max_m": 0.0645,
+      "slide_max_mm": 0.0,
+      "contact_frames": 84,
+      "floor_m": 0.003,
+      "body_yaw_deg": 2.2
+     }
+    },
+    "fail": []
+   }
   },
   "walk": {
    "clip": "Walking_Woman",
@@ -16,7 +49,38 @@
    "frames": 30,
    "floor_shift_m": -0.0017,
    "blend_from": null,
-   "legs_from": null
+   "legs_from": null,
+   "feet": {
+    "after": {
+     "L": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 7.5,
+      "toe_abs_max_deg": 7.5,
+      "sole_lift_mid_stance_max_m": 0.0,
+      "slide_max_mm": 0.0,
+      "contact_frames": 14,
+      "floor_m": 0.002
+     },
+     "R": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 7.0,
+      "toe_abs_max_deg": 7.0,
+      "sole_lift_mid_stance_max_m": 0.0,
+      "slide_max_mm": 0.0,
+      "contact_frames": 14,
+      "floor_m": 0.002
+     }
+    },
+    "fail": []
+   }
   },
   "open": {
    "clip": "open_door_open",
@@ -24,7 +88,40 @@
    "frames": 157,
    "floor_shift_m": 0.0709,
    "blend_from": "idle",
-   "legs_from": null
+   "legs_from": null,
+   "feet": {
+    "after": {
+     "L": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 0.0,
+      "toe_abs_max_deg": 3.0,
+      "sole_lift_mid_stance_max_m": 0.0792,
+      "slide_max_mm": 0.0,
+      "contact_frames": 157,
+      "floor_m": 0.002,
+      "body_yaw_deg": 12.7
+     },
+     "R": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 0.0,
+      "toe_abs_max_deg": 3.0,
+      "sole_lift_mid_stance_max_m": 0.0627,
+      "slide_max_mm": 0.1,
+      "contact_frames": 157,
+      "floor_m": 0.002,
+      "body_yaw_deg": 12.7
+     }
+    },
+    "fail": []
+   }
   },
   "pick": {
    "clip": "Female_Bend_Over_Pick_Up_Inspect_pick",
@@ -32,7 +129,8 @@
    "frames": 116,
    "floor_shift_m": 0.0477,
    "blend_from": "idle",
-   "legs_from": null
+   "legs_from": null,
+   "feet": null
   },
   "reach": {
    "clip": "Female_Stand_Pick_Fruit_Basket_reach",
@@ -40,7 +138,40 @@
    "frames": 186,
    "floor_shift_m": 0.0693,
    "blend_from": "idle",
-   "legs_from": null
+   "legs_from": null,
+   "feet": {
+    "after": {
+     "L": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 0.0,
+      "toe_abs_max_deg": 3.0,
+      "sole_lift_mid_stance_max_m": 0.079,
+      "slide_max_mm": 0.0,
+      "contact_frames": 186,
+      "floor_m": 0.0018,
+      "body_yaw_deg": 3.1
+     },
+     "R": {
+      "stance_toe_out_deg": 3.0,
+      "stance_toe_out_range_deg": [
+       3.0,
+       3.0
+      ],
+      "swing_toe_abs_max_deg": 0.0,
+      "toe_abs_max_deg": 3.0,
+      "sole_lift_mid_stance_max_m": 0.0612,
+      "slide_max_mm": 0.0,
+      "contact_frames": 186,
+      "floor_m": 0.0018,
+      "body_yaw_deg": 3.1
+     }
+    },
+    "fail": []
+   }
   }
  },
  "extra": [
