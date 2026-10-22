@@ -1,0 +1,12 @@
+{
+ "set": "icons_mech_day2",
+ "ai_model": "nano-banana-2",
+ "style": "Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+ "out_dir": "assets/icons",
+ "_note": "Агент механик 23.10 (F9 «Рассмотреть»): у двух предметов дня второго нет иконки — в сумке и на крупном плане вместо них заплатка с буквой. Имена файлов = id предметов (items.json).",
+ "items": {
+  "mirror_mill": "A small rectangular wall mirror in an old carved dark wooden frame, the frame corners slightly loose and parted, clear old glass with a faint reflection, a hanging string",
+  "bell_clapper": "A heavy hand-forged iron bell clapper: a thick rod with a pear-shaped ball at the lower end and an iron loop at the top, dark worn iron"
+ },
+ "redo": []
+}
