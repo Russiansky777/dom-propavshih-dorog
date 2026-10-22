@@ -1,0 +1,33 @@
+{
+  "character": "tamara_v3",
+  "sheet": "assets/incoming/cast_v3/tamara_sheet.png",
+  "height_m": 1.74,
+  "actions": [
+    "idle",
+    "talk"
+  ],
+  "action_ids": {
+    "idle": 0,
+    "talk": 47
+  },
+  "frames": {
+    "idle": 8,
+    "talk": 12
+  },
+  "ai_model": "latest",
+  "pose_mode": "a-pose",
+  "texture_resolution": "4k",
+  "geometry_resolution": "2k",
+  "enable_pbr": true,
+  "render_samples": 48,
+  "elev": 14,
+  "front_yaw": 0,
+  "rev": 1,
+  "clip_window": {
+    "idle": [
+      0.0,
+      0.2
+    ]
+  },
+  "_note": "22.10, Директор: Тамару переделать, чтобы не путалась с Ниной; лист v3b (images_cast_v3b, Meshy nano-banana-2) принят «как есть». Тёмные волосы с проседью, без очков, тёмно-синий жакет, коричневая почтовая сумка. Отдельное имя tamara_v3 — нынешняя tamara в игре не трогается до сравнения. Детальность как у остальных (геометрия 2k → Remesh 300 тыс. перед ригом, текстуры 4k, PBR)."
+}
