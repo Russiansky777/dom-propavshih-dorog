@@ -85,10 +85,62 @@ export class ApiError extends Error {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /**
+ * Read a streamed Messages response (SSE) into the same shape as a plain one: {content, stop_reason, usage}.
+ * Long answers (Opus with deep thinking) do not survive minutes of silence on a plain request; with a stream the
+ * bytes keep flowing and `idleMs` limits silence, not the whole answer.
+ */
+async function readStream(res, idleMs) {
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  const msg = { content: [], stop_reason: null, usage: {} };
+  const partial = {};
+  const handle = (ev, data) => {
+    if (!data) return;
+    const d = JSON.parse(data);
+    switch (d.type) {
+      case "message_start": Object.assign(msg.usage, d.message.usage || {}); break;
+      case "content_block_start": msg.content[d.index] = { ...d.content_block }; if (d.content_block.type === "tool_use") partial[d.index] = ""; break;
+      case "content_block_delta": {
+        const b = msg.content[d.index] || (msg.content[d.index] = { type: "text", text: "" });
+        if (d.delta.type === "text_delta") b.text = (b.text || "") + d.delta.text;
+        else if (d.delta.type === "input_json_delta") partial[d.index] = (partial[d.index] || "") + d.delta.partial_json;
+        break;
+      }
+      case "content_block_stop": if (d.index in partial) { try { msg.content[d.index].input = JSON.parse(partial[d.index] || "{}"); } catch (_) { msg.content[d.index].input = null; } } break;
+      case "message_delta": if (d.delta && d.delta.stop_reason) msg.stop_reason = d.delta.stop_reason; Object.assign(msg.usage, d.usage || {}); break;
+      case "error": throw new ApiError(529, (d.error && d.error.type) || "stream_error", String((d.error && d.error.message) || "").slice(0, 300));
+      default: break;
+    }
+  };
+  for (;;) {
+    let timer;
+    const idle = new Promise((_, rej) => { timer = setTimeout(() => rej(new ApiError(0, "network", `stream idle ${Math.round(idleMs / 1000)} s`)), idleMs); });
+    let chunk;
+    try { chunk = await Promise.race([reader.read(), idle]); } finally { clearTimeout(timer); }
+    if (chunk.done) break;
+    buf += dec.decode(chunk.value, { stream: true });
+    let i;
+    while ((i = buf.indexOf("\n\n")) >= 0) {
+      const raw = buf.slice(0, i);
+      buf = buf.slice(i + 2);
+      let ev = "", data = "";
+      for (const line of raw.split("\n")) {
+        if (line.startsWith("event:")) ev = line.slice(6).trim();
+        else if (line.startsWith("data:")) data += line.slice(5).trim();
+      }
+      handle(ev, data);
+    }
+  }
+  msg.content = msg.content.filter(Boolean);
+  return msg;
+}
+
+/**
  * POST /v1/messages with retries on overload / rate limits / network errors. Never logs the key or the body.
  * Returns the parsed response. Throws ApiError on a permanent error (401, 400, …).
  */
-export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, timeoutMs = 180000 } = {}) {
+export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, timeoutMs = 180000, stream = false } = {}) {
   let lastErr = null;
   for (let a = 0; a < attempts; a++) {
     const ctrl = new AbortController();
@@ -100,9 +152,20 @@ export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, t
       res = await fetch(API_URL, {
         method: "POST",
         headers,
-        body: JSON.stringify(body),
-        signal: ctrl.signal,
+        body: JSON.stringify(stream ? { ...body, stream: true } : body),
+        signal: stream ? undefined : ctrl.signal,
       });
+      if (stream && res.ok) {
+        clearTimeout(timer);
+        try { return await readStream(res, timeoutMs); }
+        catch (e) {
+          if (e instanceof ApiError && e.status !== 0 && e.status !== 529) throw e;
+          lastErr = e instanceof ApiError ? e : new ApiError(0, "network", String((e && e.message) || e).slice(0, 120));
+          log(`api: stream broke (${lastErr.message}), retry ${a + 1}`);
+          await sleep(Math.min(60000, 5000 * 2 ** a));
+          continue;
+        }
+      }
     } catch (e) {
       clearTimeout(timer);
       lastErr = new ApiError(0, "network", String(e && e.name === "AbortError" ? "timeout" : (e && e.message) || e).slice(0, 120));

@@ -896,7 +896,7 @@ async function main() {
       content.push({ type: "text", text: reportInput });
       const base = { model: cfg.reportModel, max_tokens: 16000, system: reportSystem(mode), messages: [{ role: "user", content }] };
       let resp;
-      const long = { log, timeoutMs: 600000, attempts: 3 };   // the report with thinking can take minutes
+      const long = { log, timeoutMs: 300000, attempts: 3, stream: true };   // the report with thinking: streamed
       try { resp = await callClaude(apiKey, { ...base, output_config: { effort: "medium" } }, long); }
       catch (e) { if (e instanceof ApiError && e.status === 400) resp = await callClaude(apiKey, base, long); else throw e; }
       budget.add(cfg.reportModel, resp.usage, "report");
