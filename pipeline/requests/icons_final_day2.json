@@ -1,0 +1,19 @@
+{
+ "set": "icons_final_day2",
+ "ai_model": "nano-banana-2",
+ "style": "Single object inventory icon for a painterly 2D adventure game set in the Russian North around 1900-1920. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left, soft subtle shadow under the object, three-quarter view, centered, the object fills about 80 percent of the frame. No text, no letters, no numbers, no border, no frame, plain empty background",
+ "out_dir": "assets/icons",
+ "items": {
+  "bridge_photo": "An old faded sepia photograph in a worn paper mount showing a wooden footbridge on stone piers across a pond, slightly bent corners",
+  "ilya_drawing": "A child's pencil drawing on a lined school notebook page: a simple bridge and a little boat with a smoking chimney, torn edge",
+  "crossing_plan": "A yellowed folded paper sheet with a hand-drawn ink plan of a river crossing, many corrections in different inks, lines and arrows, no readable text",
+  "skoba_plate": "A heavy hand-forged iron cramp staple (a flat bar bent at both ends into points), dark blackened iron with hammer marks",
+  "clamp": "An old wooden-and-iron carpenter's screw clamp (C-clamp) with a worn wooden handle",
+  "key_sluice": "A large old iron key with a square socket end for turning a mill sluice winch, on an iron ring, slightly rusty",
+  "journal_manager": "A thick worn ledger book with a dark cloth cover and leather corners, a ribbon bookmark",
+  "school_ribbon": "A festive blue silk hair ribbon with a narrow embroidered border, loosely curled",
+  "dunya_mirror": "A small hand mirror in a simple carved wooden frame with a hanging loop, slightly worn",
+  "nina_letters": "A stack of old letters in envelopes of different yellow shades tied with a twine string"
+ },
+ "redo": []
+}
