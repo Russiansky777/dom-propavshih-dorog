@@ -1,0 +1,82 @@
+name: ai-room-qa
+
+# ИИ-осмотр комнат (зрение): каждая комната, чьи данные или арт изменились, снимается в веб-сборке сайта
+# (хуки ?ambientprobe) — начальное состояние с Агатой вдали и вблизи, состояние после сцен комнаты, подписи по
+# Пробелу — и смотрится моделью: слои и швы, порядок по глубине, Агата парит/тонет, масштаб против дверей и мебели,
+# текст поверх арта, заглушки. Запуск: после каждой успешной сборки и публикации сайта (build-and-publish), только
+# изменившиеся комнаты (Docs/ai_checks/room_qa_state.json); вручную — Docs/ai_checks/requests/room_qa.json
+# ("rooms": "all" или список). Отчёт: Docs/ai_checks/room_qa_<дата>.md + кадры с находками. Правок в game/ и data/ нет.
+
+on:
+  workflow_run:
+    workflows: ["build-and-publish"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - "Docs/ai_checks/requests/room_qa.json"
+  workflow_dispatch:
+    inputs:
+      rooms:
+        description: "комнаты через запятую, all — все, пусто — только изменившиеся"
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-room-qa
+  cancel-in-progress: false
+
+jobs:
+  qa:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+      - name: Playwright + Chromium
+        working-directory: tools
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Дождаться, пока сайт отдаёт эту сборку
+        if: github.event_name == 'workflow_run'
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          for i in $(seq 1 30); do
+            v=$(curl -fsS "https://russiansky777.github.io/dom-propavshih-dorog/version.txt?t=$(date +%s)" || true)
+            case "$v" in "${SHA:0:7}"*) echo "сайт: $v"; exit 0;; esac
+            echo "сайт ещё отдаёт: $v — жду 20 с"; sleep 20
+          done
+          echo "сайт не обновился за 10 мин — смотрим то, что есть"
+      - name: Осмотр комнат
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
+          ROOMS_INPUT: ${{ github.event.inputs.rooms }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          rooms="$ROOMS_INPUT"
+          if [ "$EVENT" = "push" ]; then
+            rooms=$(node -e 'const r=JSON.parse(require("fs").readFileSync("Docs/ai_checks/requests/room_qa.json","utf8"));const c=r.rooms;console.log(Array.isArray(c)?c.join(","):(c||""))')
+          fi
+          case "$rooms" in
+            all) node tools/ai_checks/room_qa.mjs --all ;;
+            "") node tools/ai_checks/room_qa.mjs ;;
+            *) node tools/ai_checks/room_qa.mjs --rooms "$rooms" ;;
+          esac
+      - name: Коммит отчёта
+        if: always()
+        run: |
+          [ -d Docs/ai_checks ] || exit 0
+          tools/ai_checks/commit.sh "ИИ-осмотр комнат: $(cat build/ai_checks/summary.txt 2>/dev/null || echo отчёт) (run ${{ github.run_number }})" Docs/ai_checks

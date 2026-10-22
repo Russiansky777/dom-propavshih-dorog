@@ -15,7 +15,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { ROOT, OUT_DIR, args, log, git, reportPath, askTool, cell, runLine, Budget } from "./common.mjs";
+import { ROOT, OUT_DIR, args, log, git, reportPath, askTool, cell, runLine, canonText, Budget } from "./common.mjs";
 
 const CHARS = path.join(ROOT, "assets", "characters");
 const STATE = path.join(OUT_DIR, "sprite_qa_state.json");
@@ -76,7 +76,10 @@ const SYSTEM = `Ты — технический художник 2D-игры «�
 - направление: в столбце dN фигура смотрит не туда, порядок направлений сбит, два соседних столбца одинаковые;
 - фигура обрезана краем кадра, резкий скачок позы или размера между кадрами;
 - лицо или одежда явно не соответствуют возрасту и роли персонажа.
-Не придирайся к стилю и не повторяй одну проблему на каждом кадре — укажи диапазон. Важность: «критично» — сразу бросается в глаза в игре; «важно» — заметно при внимательном взгляде; «мелочь» — видно только на листе. Если всё чисто — пустой список. Ответ — только вызовом инструмента report.`;
+Не придирайся к стилю и не повторяй одну проблему на каждом кадре — укажи диапазон. Важность: «критично» — сразу бросается в глаза в игре; «важно» — заметно при внимательном взгляде; «мелочь» — видно только на листе. Если всё чисто — пустой список. Ответ — только вызовом инструмента report.
+Возраст и родство сверяй с каноном ниже (снаружи прошёл год, внутри двадцать: кто жил внутри, постарел на двадцать лет — так Пелагее 40, а её сыну Мите 37; это не ошибка).
+
+${canonText()}`;
 
 async function main() {
   const A = args();
@@ -141,13 +144,13 @@ async function main() {
   // Report + the sheets cited by findings.
   const file = reportPath("sprite_qa");
   const shotsDir = file.replace(/\.md$/, "");
-  const cited = [...new Set(findings.map((f) => String(f.image || "").replace(/\.jpg$/, "")))].filter((s) => manifest.some((m) => stem(m.file) === s)).slice(0, 14);
+  const order = { "критично": 0, "важно": 1, "мелочь": 2 };
+  findings.sort((a, b) => (order[a.severity] ?? 3) - (order[b.severity] ?? 3) || String(a.character).localeCompare(String(b.character)));
+  const cited = [...new Set(findings.map((f) => String(f.image || "").replace(/\.jpg$/, "")))].filter((s) => manifest.some((m) => stem(m.file) === s)).slice(0, 18);
   if (cited.length) fs.mkdirSync(shotsDir, { recursive: true });
   for (const s of cited) fs.copyFileSync(path.join(WORK, `${s}.jpg`), path.join(shotsDir, `${s}.jpg`));
   const rel = path.basename(shotsDir);
   const link = (s) => (cited.includes(s) ? `[${s}](${rel}/${s}.jpg)` : s);
-  const order = { "критично": 0, "важно": 1, "мелочь": 2 };
-  findings.sort((a, b) => (order[a.severity] ?? 3) - (order[b.severity] ?? 3) || String(a.character).localeCompare(String(b.character)));
   const L = [];
   L.push(`# ИИ-проверка спрайтов — ${new Date().toISOString().slice(0, 10)}`);
   L.push("");
