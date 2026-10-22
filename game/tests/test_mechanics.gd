@@ -90,6 +90,7 @@ func _run() -> void:
 	await _test("Bag: double click / magnifier opens it, single click still takes in hand; Esc; load closes it", _test_examine_bag)
 	await _test("Mother's mirror (F4): the clock beside the glass goes 20×, the watch from the bag, the realisation", _test_fast_mirror)
 	await _test("Examine inside a close-up: on top of it, Esc closes only the examine", _test_examine_over_mechanic)
+	await _test("Living water (F14): every room that declares water builds it — ripple, trembling reflections, sparkles, flow lines from data", _test_water)
 	gs.reset()
 	gs.delete_save(SLOT)
 	if FileAccess.file_exists(SETTINGS):
@@ -557,4 +558,68 @@ func _test_fast_mirror() -> void:
 	_check(p.holding and p.compared_sent and seen.size() == 1, "again: the rule as a reminder, no second realisation (%s)" % str(seen))
 	sr.close_mechanic()
 	await _frames(2)
+	_reached_end = true
+
+
+# --- Living water (F14) ----------------------------------------------------------------------------
+
+func _read_json(path: String) -> Variant:
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return null
+	return JSON.parse_string(f.get_as_text())
+
+
+func _test_water() -> void:
+	var rooms_with_water := 0
+	var dir := DirAccess.open("res://data/story/ambient")
+	var files: Array[String] = []
+	for fn in dir.get_files():
+		if fn.ends_with(".json") and not fn.begins_with("_"):
+			files.append(fn)
+	files.sort()
+	for fn in files:
+		var rid := fn.get_basename()
+		if not sd.in_scope(rid):
+			continue
+		var spec = _read_json("res://data/story/ambient/" + fn)
+		var water: Array = spec.get("water", []) if spec is Dictionary else []
+		if water.is_empty():
+			continue
+		rooms_with_water += 1
+		for state in [[], ["evening_dusk"]]:
+			await _fresh([], ["house_unlocked"] + state)
+			rm.change_room(rid, "default")
+			await _frames(3)
+			await _finish()
+			var amb = rm.current_room.get_node_or_null("Ambient")
+			_check(amb != null, "%s: the ambient layer is built" % rid)
+			if amb == null:
+				continue
+			for w in water:
+				var id := String(w.get("id", ""))
+				var n: Node = null
+				for x in amb.water:
+					if String(x.name) == id:
+						n = x
+				_check(n != null, "%s: water %s is built" % [rid, id])
+				if n == null:
+					continue
+				var mat := n.material as ShaderMaterial
+				_check(mat != null and mat.shader.resource_path.ends_with("ambient_water.gdshader"), "%s/%s: the water shader" % [rid, id])
+				if mat == null:
+					continue
+				var want_vis := true
+				for f in w.get("if", []):
+					want_vis = want_vis and state.has(String(f))
+				for f in w.get("unless", []):
+					want_vis = want_vis and not state.has(String(f))
+				_check(n.visible == want_vis, "%s/%s: shown %s with flags %s (per-state variant)" % [rid, id, str(want_vis), str(state)])
+				_check(float(mat.get_shader_parameter("tremble_px")) > 0.0 and float(mat.get_shader_parameter("sparkle")) > 0.0,
+					"%s/%s: reflections tremble, sparkles on" % [rid, id])
+				var rp: Vector2 = mat.get_shader_parameter("ripple_px")
+				_check(rp.y >= 1.0, "%s/%s: a ripple you can see (near %.1f px)" % [rid, id, rp.y])
+				if float(w.get("streaks", 0.0)) > 0.0:
+					_check(is_equal_approx(float(mat.get_shader_parameter("streaks")), float(w["streaks"])), "%s/%s: flow lines from data" % [rid, id])
+	_check(rooms_with_water >= 6, "rooms with water in scope: %d (Z2, Z3, R1, R2, R3, M1, M4 …)" % rooms_with_water)
 	_reached_end = true

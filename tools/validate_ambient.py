@@ -271,6 +271,12 @@ def check_room(path: Path, idx: dict, flags: set[str]) -> None:
             rp = w.get("ripple_px")
             if rp is not None and not (isinstance(rp, list) and len(rp) == 2):
                 err(f"{where}: ripple_px must be [far, near]")
+            # F14 (Director 23.10, «вода мёртвая»): trembling reflections, sparkles, flow lines — cheap and bounded.
+            for fk, lo, hi in (("tremble_px", 0.0, 6.0), ("sparkle", 0.0, 1.0), ("streaks", 0.0, 1.0)):
+                if fk in w and not (isinstance(w[fk], (int, float)) and lo <= float(w[fk]) <= hi):
+                    err(f"{where}: {fk} {w[fk]} outside {lo}..{hi}")
+            if float(w.get("streaks", 0.0)) > 0.0 and not w.get("flow"):
+                err(f"{where}: streaks need a flow [x, y] (the direction the lines run)")
             if key == "puddles" and room is not None and room.get("walkable"):
                 floor = [(float(p[0]), float(p[1])) for p in room["walkable"]]
                 if not inside(centroid(pts), floor):

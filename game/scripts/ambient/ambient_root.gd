@@ -379,6 +379,13 @@ func _make_water(w: Dictionary, style: Dictionary, rain_amount: float, mode: int
 	m.set_shader_parameter("ring_gain", float(e.get("ring_gain", 1.0)))
 	m.set_shader_parameter("ring_w_px", float(e.get("ring_w_px", 1.4)))
 	m.set_shader_parameter("protect_sat", float(e.get("protect_sat", 0.32 if mode == 0 else 1.5)))
+	# F14 (Director 23.10, «вода мёртвая»): trembling reflections and sparkles on every river by default; flow
+	# lines where the data asks (the mill race, the flume at the sluice).
+	m.set_shader_parameter("tremble_px", float(e.get("tremble_px", 1.1 if mode == 0 else 0.0)))
+	m.set_shader_parameter("sparkle", float(e.get("sparkle", 0.45 if mode == 0 else 0.0)))
+	m.set_shader_parameter("streaks", float(e.get("streaks", 0.0)))
+	if e.has("streak_color"):
+		m.set_shader_parameter("streak_color", Color.html(String(e["streak_color"])))
 	m.set_shader_parameter("depth", ground.depth_uniform())
 	m.set_shader_parameter("ground", ground.ground_uniform())
 	var ex: Array = e.get("exclude", [])

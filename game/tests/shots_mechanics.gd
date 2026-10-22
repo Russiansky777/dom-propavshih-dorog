@@ -14,7 +14,7 @@ var ui: Node
 var out_dir := ""
 
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
-	"examine_bag_badge", "fast_mirror", "fast_mirror_watch"]
+	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3"]
 
 
 func _initialize() -> void:
@@ -126,6 +126,15 @@ func _shot(name: String) -> void:
 			await _mirror(0.0)
 		"fast_mirror_watch":
 			await _mirror(7.0)
+		"water_R2", "water_M4", "water_R1_dusk", "water_Z3":
+			var rid := name.get_slice("_", 1)
+			var fl := ["house_unlocked", "ferry_verified"]
+			if name.ends_with("dusk"):
+				fl.append("evening_dusk")
+			await _state(fl, [], rid)
+			await _frames(30)
+			await _save(name + "_a")
+			await create_timer(0.7).timeout
 		_:
 			push_warning("shots_mechanics: unknown shot %s" % name)
 			return
