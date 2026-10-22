@@ -1,0 +1,9 @@
+{
+  "mode": "fresh",
+  "dry_run": true,
+  "max_steps": 3,
+  "max_minutes": 15,
+  "start_save": { "file": "Docs/playtest/saves/day2.json", "slot": "day2" },
+  "note": "Самопроверка плейтестера без API: старт с сохранения «День второй» на сайте.",
+  "run": 1
+}
