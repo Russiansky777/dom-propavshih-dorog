@@ -418,7 +418,7 @@ async function main() {
     }
     a = a || { action: "done" };
     return { input: { observe: "dry", thought: `dry ${a.action}`, ...a, memory: "", notes: [], verdicts: [] },
-      usage: { input_tokens: 3000, output_tokens: 150 } };
+      usage: { input_tokens: 0, output_tokens: 0 } };   // dry run: nothing is billed
   };
 
   // --- The loop ---
@@ -472,6 +472,7 @@ async function main() {
           const slot = String(cfg.startSave.slot || path.basename(sf, ".json"));
           await page.goto(new URL("version.txt", url.endsWith("/") || url.endsWith(".html") ? url : url + "/").toString(), { waitUntil: "load", timeout: 60000 }).catch(() => {});
           await idbPutSave(slot, text);
+          run.consoleErrors.length = 0;   // the helper page's favicon 404 is not the game's
           run.startSave = { file: path.relative(ROOT, sf), slot, title: (JSON.parse(text).title || "") };
           log(`save ${run.startSave.file} → slot ${slot}`);
         } catch (e) { run.harness.push(`start_save failed: ${short(e && e.message, 160)}`); }
@@ -693,6 +694,22 @@ async function main() {
           await page.mouse.up();
           desc = `перетащила (${Math.round(x)},${Math.round(y)}) → (${Math.round(input.x2)},${Math.round(input.y2)})`;
           stepRec.at = { x: Math.round(p.x), y: Math.round(p.y), x2: Math.round(q.x), y2: Math.round(q.y) };
+        }
+      } else if (act === "drag_path") {
+        const pts = (Array.isArray(input.path) ? input.path : []).filter((q) => Array.isArray(q) && q.length >= 2 && q.every(Number.isFinite)).slice(0, 40)
+          .map((q) => toFrameChecked(Number(q[0]), Number(q[1]), step));
+        if (pts.length < 2) events.push("drag_path не выполнен: нужно хотя бы 2 точки path.");
+        else {
+          await mouseTo(pts[0], 4);
+          await page.mouse.down();
+          await sleep(120);
+          for (const q of pts.slice(1)) { await page.mouse.move(q.x, q.y, { steps: 8 }); await sleep(30); }
+          pointer = pts[pts.length - 1];
+          await showPointer(pointer);
+          await sleep(120);
+          await page.mouse.up();
+          desc = `протянула по ${pts.length} точкам`;
+          stepRec.path = pts.map((q) => [Math.round(q.x), Math.round(q.y)]);
         }
       } else if (act === "key") {
         let k = String(input.key || "").trim();

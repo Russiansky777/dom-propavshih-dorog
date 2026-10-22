@@ -102,8 +102,8 @@ export function actTool(mode, W, H) {
     thought: { type: "string", description: "Коротко, вслух: что делаю и зачем (1–2 фразы)." },
     action: {
       type: "string",
-      enum: ["click", "right_click", "double_click", "move", "drag", "key", "wait", "zoom", "done"],
-      description: "click — левый щелчок в (x,y); right_click — правый; move — навести курсор (покажет подпись); drag — нажать в (x,y), тянуть до (x2,y2), отпустить; key — нажать клавишу key; wait — подождать seconds; zoom — следующий шаг покажет увеличенный фрагмент region; done — закончить прогон.",
+      enum: ["click", "right_click", "double_click", "move", "drag", "drag_path", "key", "wait", "zoom", "done"],
+      description: "click — левый щелчок в (x,y); right_click — правый; double_click — двойной (например, рассмотреть предмет в сумке); move — навести курсор (покажет подпись); drag — нажать в (x,y), тянуть до (x2,y2), отпустить; drag_path — нажать в первой точке path и вести мышь через все точки по порядку, отпустить в последней (протянуть по контуру); key — нажать клавишу key; wait — подождать seconds; zoom — следующий шаг покажет увеличенный фрагмент region; done — закончить прогон.",
     },
     x: { type: "number", description: `X в пикселях этого кадра (0…${W - 1}).` },
     y: { type: "number", description: `Y в пикселях этого кадра (0…${H - 1}).` },
@@ -112,6 +112,7 @@ export function actTool(mode, W, H) {
     key: { type: "string", description: "Для key: Space, Enter, Escape, Tab, F5, F9, ArrowLeft, ArrowRight, цифра или буква." },
     seconds: { type: "number", description: "Для wait: 1–20 секунд." },
     region: { type: "array", items: { type: "number" }, description: "Для zoom: [x0, y0, x1, y1] в пикселях этого кадра." },
+    path: { type: "array", items: { type: "array", items: { type: "number" } }, description: "Для drag_path: точки [[x, y], …] в пикселях этого кадра, от 2 до 40." },
     memory: { type: "string", description: "Твоя память между шагами (старых кадров ты не видишь): где ты, что уже сделано, что дальше. До 800 символов. Пиши, когда что-то важное изменилось; пусто — оставить прежнюю." },
     notes: {
       type: "array",
