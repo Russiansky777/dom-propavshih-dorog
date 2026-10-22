@@ -15,8 +15,43 @@ export const PRICES = {
 };
 export const PRICES_SOURCE = "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22)";
 
-const API_URL = process.env.ANTHROPIC_BASE_URL ? `${process.env.ANTHROPIC_BASE_URL.replace(/\/$/, "")}/v1/messages` : "https://api.anthropic.com/v1/messages";
+const API_BASE = (process.env.ANTHROPIC_BASE_URL || "https://api.anthropic.com").replace(/\/$/, "");
+const API_URL = `${API_BASE}/v1/messages`;
 const API_VERSION = process.env.ANTHROPIC_VERSION || "2023-06-01";
+
+// A key that is not scoped to a workspace (personal / service account key) must name the workspace in the
+// `anthropic-workspace-id` header of every request (platform.claude.com/docs/manage-claude/workspaces).
+// The ID comes from ANTHROPIC_WORKSPACE_ID (secret CLAUDE_WORKSPACE); without it, on the first such 400 the
+// workspaces are listed once with the same key (GET /v1/organizations/workspaces — allowed for keys not
+// scoped to a workspace) and one is chosen: a name about this game / playtests, else «Default», else the first.
+export const workspace = { id: process.env.ANTHROPIC_WORKSPACE_ID || "", name: "", source: process.env.ANTHROPIC_WORKSPACE_ID ? "secret" : "", tried: false, error: "" };
+
+async function discoverWorkspace(apiKey, log) {
+  workspace.tried = true;
+  try {
+    const res = await fetch(`${API_BASE}/v1/organizations/workspaces?include_default=true&limit=100`,
+      { headers: { "x-api-key": apiKey, "anthropic-version": API_VERSION } });
+    if (!res.ok) {
+      let m = "";
+      try { const j = await res.json(); m = String((j && j.error && j.error.message) || "").slice(0, 300); } catch (_) {}
+      workspace.error = `список пространств: HTTP ${res.status} ${m}`;
+      log(`api: workspaces list HTTP ${res.status}`);
+      return false;
+    }
+    const j = await res.json();
+    const ws = (j.data || []).filter((w) => w && w.id && !w.archived_at);
+    const pick = ws.find((w) => /дом|dom|propav|игр|game|playtest|плейтест/i.test(w.name || "")) || ws.find((w) => /^default$/i.test(w.name || "")) || ws[0];
+    if (!pick) { workspace.error = "список пространств пуст"; return false; }
+    workspace.id = pick.id;
+    workspace.name = pick.name || "";
+    workspace.source = `выбрано из ${ws.length}: ${ws.map((w) => w.name).join(", ").slice(0, 200)}`;
+    log(`api: workspace «${workspace.name}» chosen of ${ws.length}`);
+    return true;
+  } catch (e) {
+    workspace.error = `список пространств: ${String((e && e.message) || e).slice(0, 120)}`;
+    return false;
+  }
+}
 
 export function priceKnown(model) { return Object.prototype.hasOwnProperty.call(PRICES, model); }
 
@@ -57,9 +92,11 @@ export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, t
     const timer = setTimeout(() => ctrl.abort(), timeoutMs);
     let res;
     try {
+      const headers = { "x-api-key": apiKey, "anthropic-version": API_VERSION, "content-type": "application/json" };
+      if (workspace.id) headers["anthropic-workspace-id"] = workspace.id;
       res = await fetch(API_URL, {
         method: "POST",
-        headers: { "x-api-key": apiKey, "anthropic-version": API_VERSION, "content-type": "application/json" },
+        headers,
         body: JSON.stringify(body),
         signal: ctrl.signal,
       });
@@ -76,9 +113,13 @@ export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, t
     try {
       const j = await res.json();
       type = (j && j.error && j.error.type) || type;
-      msg = String((j && j.error && j.error.message) || "").slice(0, 200);
+      msg = String((j && j.error && j.error.message) || "").slice(0, 500);
     } catch (_) { /* not JSON */ }
     lastErr = new ApiError(res.status, type, msg);
+    if (res.status === 400 && /anthropic-workspace-id/.test(msg) && !workspace.tried) {
+      if (await discoverWorkspace(apiKey, log)) { a -= 1; continue; }
+      throw new ApiError(400, "workspace", `ключ не привязан к рабочему пространству, а ${workspace.error || "выбрать его не удалось"}; нужен секрет CLAUDE_WORKSPACE (wrkspc_…)`);
+    }
     if ([408, 409, 429, 500, 502, 503, 504, 529].includes(res.status)) {
       const ra = Number(res.headers.get("retry-after"));
       const wait = Number.isFinite(ra) && ra > 0 ? Math.min(120, ra) * 1000 : Math.min(60000, 4000 * 2 ** a);
@@ -121,6 +162,7 @@ export class Budget {
     const r = (x) => Number(x.toFixed(6));
     const byModel = {};
     for (const [k, v] of Object.entries(this.byModel)) byModel[k] = { ...v, usd: r(v.usd) };
-    return { max_usd: this.maxUsd, spent_usd: r(this.spent), by_model: byModel, prices_per_mtok: PRICES, prices_source: PRICES_SOURCE, calls: this.calls };
+    return { max_usd: this.maxUsd, spent_usd: r(this.spent), by_model: byModel, workspace: { name: workspace.name, source: workspace.source, error: workspace.error },
+      prices_per_mtok: PRICES, prices_source: PRICES_SOURCE, calls: this.calls };
   }
 }

@@ -32,7 +32,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
-import { callClaude, Budget, ApiError, priceKnown, estimateCost } from "./claude.mjs";
+import { callClaude, Budget, ApiError, priceKnown, estimateCost, workspace } from "./claude.mjs";
 import { parseItems, loadChecklist, checklistText, actTool, systemPrompt, stepText, reportSystem } from "./prompts.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -462,7 +462,7 @@ async function main() {
         }
       } catch (e) {
         if (e instanceof ApiError) {
-          run.stop = `API: ${e.status === 401 ? "ключ не принят (401)" : `ошибка ${e.status} ${e.type}`}`;
+          run.stop = `API: ${e.status === 401 ? "ключ не принят (401)" : e.type === "workspace" ? e.message.replace(/^HTTP \d+ workspace: /, "") : `ошибка ${e.status} ${e.type}`}`;
           run.harness.push(`step ${step}: ${short(e.message, 200)}`);
           break;
         }
@@ -664,7 +664,7 @@ async function main() {
       run.harness.push(`report model: ${short(e && e.message, 200)}`);
       body = "";
     }
-  } else if (!dry && apiKey) {
+  } else if (!dry && apiKey && (run.steps.length || run.transcript.length)) {
     run.harness.push(`report model skipped: estimate $${estReport.toFixed(3)} does not fit (left $${budget.left().toFixed(3)})`);
   }
 
@@ -727,7 +727,7 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
   L.push(`- Запрос: \`${cfg.request || "—"}\`${cfg.note ? ` — ${cfg.note}` : ""}`);
   L.push(`- Модели: шаги — \`${cfg.model}\`${cfg.modelStuck ? `, когда застряла — \`${cfg.modelStuck}\`` : ""}; отчёт — \`${cfg.reportModel}\`. Кадр модели ${cfg.W}×${cfg.H} JPEG (окно игры 1920×1080).`);
   L.push(`- Шагов: ${run.steps.length} из ${cfg.maxSteps}; время ${minutes} мин. Остановка: ${run.stop}`);
-  L.push(`- Стоимость: **$${budget.spent.toFixed(3)}** из $${cfg.maxUsd} (по usage ответов API; подробно — usage.json)`);
+  L.push(`- Стоимость: **$${budget.spent.toFixed(3)}** из $${cfg.maxUsd} (по usage ответов API; подробно — usage.json)${workspace.name ? `; рабочее пространство API «${workspace.name}»` : ""}`);
   L.push(`- Где оказалась по факту: ${run.rooms.join(" → ") || "—"}${run.end ? `; конец — ${run.end.room}` : ""}`);
   if (run.consoleErrors.length) L.push(`- Ошибки консоли браузера: ${run.consoleErrors.length} (log.json)`);
   L.push("");

@@ -87,6 +87,8 @@ jobs:
         if: steps.req.outputs.files != ''
         env:
           ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          # ключ не привязан к рабочему пространству — ID (wrkspc_…), если задан; иначе скрипт выбирает сам
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
           REQ_FILES: ${{ steps.req.outputs.files }}
         run: |
           git config user.name "playtest-bot"
