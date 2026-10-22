@@ -1,8 +1,8 @@
 {
   "_comment": "Голоса аккаунта ElevenLabs (GET /v2/voices; personal — раздел My Voices, voice_type=personal). Пишет pipeline/voice/eleven_voice.py list; ключа здесь нет. Сопоставление с персонажами — cast.json.",
-  "fetched_at": "2026-10-17T23:05:43+00:00",
-  "count": 28,
-  "personal_count": 7,
+  "fetched_at": "2026-10-22T19:24:13+00:00",
+  "count": 34,
+  "personal_count": 11,
   "voices": [
     {
       "name": "Agata",
@@ -96,16 +96,68 @@
       "created_order": 1
     },
     {
+      "name": "ИЛЬЯ",
+      "voice_id": "YmNNmdPsbLNfVc6yh4G1",
+      "category": "generated",
+      "personal": true,
+      "labels": {
+        "language": "ru"
+      },
+      "description": "Русский язык, родное русское произношение. Мужской голос, около 32 лет. Чистая студийная запись.\nИЛЬЯ",
+      "created_at_unix": 1792694049,
+      "created_at": "2026-10-22T18:34:09+00:00",
+      "created_order": 10
+    },
+    {
+      "name": "МИТЯ",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "category": "generated",
+      "personal": true,
+      "labels": {
+        "language": "ru"
+      },
+      "description": "Русский язык, родное русское произношение. Мужской голос, около 37 лет. Чистая студийная запись.\nМИТЯ",
+      "created_at_unix": 1792694121,
+      "created_at": "2026-10-22T18:35:21+00:00",
+      "created_order": 11
+    },
+    {
+      "name": "НИНА",
+      "voice_id": "2LwZ4if25U4q3ufUlM8j",
+      "category": "generated",
+      "personal": true,
+      "labels": {
+        "language": "ru"
+      },
+      "description": "Русский язык, родное русское произношение. Женский голос, около 67 лет. Чистая студийная запись.\n\nНИНА",
+      "created_at_unix": 1792693924,
+      "created_at": "2026-10-22T18:32:04+00:00",
+      "created_order": 9
+    },
+    {
+      "name": "Павел",
+      "voice_id": "aJmnBSfbFkDdduNK3YJt",
+      "category": "generated",
+      "personal": true,
+      "labels": {
+        "language": "ru"
+      },
+      "description": "Мужской голос, 45–55 лет. Родной язык — русский, естественное произношение без выраженного регионального говора. Чистая запись студийного качества.ПАВЕЛ",
+      "created_at_unix": 1792693263,
+      "created_at": "2026-10-22T18:21:03+00:00",
+      "created_order": 8
+    },
+    {
       "name": "Adam - Dominant, Firm",
       "voice_id": "pNInz6obpgDQGcFmaJgB",
       "category": "premade",
       "personal": false,
       "labels": {
         "gender": "male",
-        "use_case": "social_media",
         "accent": "american",
+        "language": "en",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "social_media"
       },
       "description": "A bright tenor pitch that immediately cuts through. The delivery is brash and openly confident, speaking with unwavering certainty and a slightly aggressive self-assurance."
     },
@@ -115,12 +167,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "female",
-        "use_case": "informative_educational",
         "descriptive": "professional",
+        "language": "en",
+        "gender": "female",
         "accent": "british",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "informative_educational"
       },
       "description": "Clear and engaging, friendly woman with a British accent suitable for e-learning."
     },
@@ -130,12 +182,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "female",
-        "use_case": "informative_educational",
         "descriptive": "professional",
+        "language": "en",
+        "gender": "female",
         "accent": "american",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "informative_educational"
       },
       "description": "This voice is warm, bright, and professional, characterized by a Standard American accent and a polished, narrative quality. It features a medium-high pitch with crisp diction and a deliberate, rhythmic pace that makes it highly intelligibl",
       "created_at_unix": 1768922505,
@@ -148,11 +200,11 @@
       "personal": false,
       "labels": {
         "gender": "male",
-        "use_case": "advertisement",
-        "descriptive": "crisp",
         "accent": "american",
+        "descriptive": "crisp",
         "age": "old",
-        "language": "en"
+        "language": "en",
+        "use_case": "advertisement"
       },
       "description": "Friendly and comforting voice ready to narrate your stories."
     },
@@ -163,11 +215,11 @@
       "personal": false,
       "labels": {
         "gender": "male",
-        "use_case": "social_media",
-        "descriptive": "classy",
         "accent": "american",
+        "descriptive": "classy",
         "age": "middle_aged",
-        "language": "en"
+        "language": "en",
+        "use_case": "social_media"
       },
       "description": "Middle-aged man with a resonant and comforting tone. Great for narrations and advertisements."
     },
@@ -177,11 +229,11 @@
       "category": "premade",
       "personal": false,
       "labels": {
+        "language": "en",
         "gender": "male",
-        "use_case": "characters_animation",
         "accent": "american",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "characters_animation"
       },
       "description": "Deceptively gravelly, yet unsettling edge."
     },
@@ -191,12 +243,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "male",
-        "use_case": "conversational",
         "descriptive": "hyped",
+        "language": "en",
+        "gender": "male",
         "accent": "australian",
         "age": "young",
-        "language": "en"
+        "use_case": "conversational"
       },
       "description": "A young Australian male with a confident and energetic voice."
     },
@@ -206,12 +258,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "male",
-        "use_case": "conversational",
         "descriptive": "casual",
+        "language": "en",
+        "gender": "male",
         "accent": "american",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "conversational"
       },
       "description": "Natural and real, this down-to-earth voice is great across many use-cases."
     },
@@ -222,11 +274,11 @@
       "personal": false,
       "labels": {
         "gender": "male",
-        "use_case": "informative_educational",
-        "descriptive": "formal",
         "accent": "british",
+        "descriptive": "formal",
         "age": "middle_aged",
-        "language": "en"
+        "language": "en",
+        "use_case": "informative_educational"
       },
       "description": "A strong voice perfect for delivering a professional broadcast or news story."
     },
@@ -237,11 +289,11 @@
       "personal": false,
       "labels": {
         "gender": "male",
-        "use_case": "conversational",
-        "descriptive": "classy",
         "accent": "american",
+        "descriptive": "classy",
         "age": "middle_aged",
-        "language": "en"
+        "language": "en",
+        "use_case": "conversational"
       },
       "description": "A smooth tenor pitch from a man in his 40s - perfect for agentic use cases."
     },
@@ -251,12 +303,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "male",
-        "use_case": "narrative_story",
         "descriptive": "mature",
+        "language": "en",
+        "gender": "male",
         "accent": "british",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "narrative_story"
       },
       "description": "Warm resonance that instantly captivates listeners."
     },
@@ -267,11 +319,11 @@
       "personal": false,
       "labels": {
         "gender": "male",
+        "language": "en",
         "use_case": "characters_animation",
-        "descriptive": "rough",
         "accent": "american",
-        "age": "young",
-        "language": "en"
+        "descriptive": "rough",
+        "age": "young"
       },
       "description": "An animated warrior ready to charge forward."
     },
@@ -281,12 +333,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "female",
-        "use_case": "conversational",
         "descriptive": "cute",
+        "language": "en",
+        "gender": "female",
         "accent": "american",
         "age": "young",
-        "language": "en"
+        "use_case": "conversational"
       },
       "description": "Young and popular, this playful American female voice is perfect for trendy content."
     },
@@ -296,12 +348,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "female",
-        "use_case": "social_media",
         "descriptive": "sassy",
+        "language": "en",
+        "gender": "female",
         "accent": "american",
         "age": "young",
-        "language": "en"
+        "use_case": "social_media"
       },
       "description": "This young adult female voice delivers sunny enthusiasm with a quirky attitude."
     },
@@ -311,12 +363,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "male",
-        "use_case": "social_media",
         "descriptive": "confident",
+        "language": "en",
+        "gender": "male",
         "accent": "american",
         "age": "young",
-        "language": "en"
+        "use_case": "social_media"
       },
       "description": "A young adult with energy and warmth - suitable for reels and shorts."
     },
@@ -327,11 +379,11 @@
       "personal": false,
       "labels": {
         "gender": "female",
-        "use_case": "informative_educational",
-        "descriptive": "confident",
         "accent": "british",
+        "descriptive": "confident",
         "age": "middle_aged",
-        "language": "en"
+        "language": "en",
+        "use_case": "informative_educational"
       },
       "description": "Velvety British female voice delivers news and narrations with warmth and clarity."
     },
@@ -341,12 +393,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "female",
-        "use_case": "informative_educational",
         "descriptive": "upbeat",
+        "language": "en",
+        "gender": "female",
         "accent": "american",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "informative_educational"
       },
       "description": "A professional woman with a pleasing alto pitch. Suitable for many use cases."
     },
@@ -356,12 +408,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "neutral",
-        "use_case": "conversational",
         "descriptive": "calm",
+        "language": "en",
+        "gender": "neutral",
         "accent": "american",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "conversational"
       },
       "description": "A relaxed, neutral voice ready for narrations or conversational projects."
     },
@@ -371,12 +423,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "male",
-        "use_case": "conversational",
         "descriptive": "classy",
+        "language": "en",
+        "gender": "male",
         "accent": "american",
         "age": "middle_aged",
-        "language": "en"
+        "use_case": "conversational"
       },
       "description": "Easy going and perfect for casual conversations."
     },
@@ -386,12 +438,12 @@
       "category": "premade",
       "personal": false,
       "labels": {
-        "gender": "female",
-        "use_case": "entertainment_tv",
         "descriptive": "professional",
+        "language": "en",
+        "gender": "female",
         "accent": "american",
         "age": "young",
-        "language": "en"
+        "use_case": "entertainment_tv"
       },
       "description": "Young adult woman with a confident and warm, mature quality and a reassuring, professional tone."
     },
@@ -402,13 +454,47 @@
       "personal": false,
       "labels": {
         "gender": "male",
-        "use_case": "conversational",
-        "descriptive": "chill",
         "accent": "american",
+        "descriptive": "chill",
         "age": "young",
-        "language": "en"
+        "language": "en",
+        "use_case": "conversational"
       },
       "description": "Conversational and laid back."
+    },
+    {
+      "name": "Lunya - Little Fairy",
+      "voice_id": "rSfuQoQ3FY8SVKeraMAp",
+      "category": "professional",
+      "personal": false,
+      "labels": {
+        "gender": "female",
+        "accent": "standard",
+        "use_case": "entertainment_tv",
+        "descriptive": "excited",
+        "age": "young",
+        "language": "ru"
+      },
+      "description": "Gentle, magical, and full of wonder, Lunya’s soft Russian voice brings fairy tales to life with warmth and innocence. Delicate, soothing tone creates a safe and enchanting atmosphere, perfect for bedtime stories, children’s audiobooks, and ",
+      "created_at_unix": 1792694878,
+      "created_at": "2026-10-22T18:47:58+00:00"
+    },
+    {
+      "name": "Mithi - Moral Kids Stories Character",
+      "voice_id": "MIl0Flub6Sc9KSkX2A42",
+      "category": "professional",
+      "personal": false,
+      "labels": {
+        "accent": "standard",
+        "gender": "female",
+        "use_case": "characters_animation",
+        "descriptive": "modulated",
+        "age": "young",
+        "language": "hi"
+      },
+      "description": "Bright, sincere, and unmistakably childlike — Mithi sounds like an actual young girl figuring things out, not an adult performing innocence. Her curious, intelligent delivery makes right and wrong feel like something she discovered herself,",
+      "created_at_unix": 1792694405,
+      "created_at": "2026-10-22T18:40:05+00:00"
     }
   ]
 }
