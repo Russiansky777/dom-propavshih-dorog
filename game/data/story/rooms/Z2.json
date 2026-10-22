@@ -11,6 +11,9 @@
   "layers": [
     {"id": "house_corner", "image": "res://assets/rooms/Z2/fg_house_corner.png", "occluder": true, "z": 1080}
   ],
+  "effects": [
+    {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки дня второго (после мамина зеркала, M15а) — до слоёв вечера (BRIEF_CHATGPT_v4 §C)"}
+  ],
   "spawns": {"default": [960, 850], "from_Z4": [190, 820], "from_H1": [1000, 670], "from_M1": [1730, 900], "from_Z3": [1380, 720], "from_R1": [1600, 800]},
   "props": [],
   "hotspots": [

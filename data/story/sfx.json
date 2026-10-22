@@ -34,7 +34,11 @@
     "H1>H4": "door_light", "H4>H1": "door_light",
     "H3>O1": "door_passage", "O1>H3": "door_passage",
     "O1>O2": "door_passage", "O2>O1": "door_passage",
-    "H3>R4": "door_passage"
+    "H3>R4": "door_passage",
+    "M1>M2": "door_heavy",
+    "M2>M1": "door_heavy",
+    "M2>M3": "door_light",
+    "M3>M2": "door_light"
   },
   "bag": {
     "_comment": "Сигнал game_ui.gd bag_sound_requested(kind): receive — предмет влетел в сумку, select — взят в руку, deselect — убран.",

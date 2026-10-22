@@ -46,13 +46,26 @@ func label_text() -> String:
 	return StoryData.text(String(current_state().get("label", data.get("label", hotspot_id))))
 
 
-## Visible when every `visible_if` flag is set and no `hidden_if` flag is set.
+## Visible when every `visible_if` flag is set and no `hidden_if` flag is set, and no `hidden_when`
+## condition holds ({all: [flags], not: [flags]} — e.g. Pelageya is away from the pier in the evening until
+## the rope is on the plate: hidden when evening_dusk is set and done_M15 is not).
 func is_active() -> bool:
 	for f in data.get("visible_if", []):
 		if not GameState.has_flag(String(f)):
 			return false
 	for f in data.get("hidden_if", []):
 		if GameState.has_flag(String(f)):
+			return false
+	for c in data.get("hidden_when", []):
+		var all_set := true
+		for f in c.get("all", []):
+			if not GameState.has_flag(String(f)):
+				all_set = false
+		var none_set := true
+		for f in c.get("not", []):
+			if GameState.has_flag(String(f)):
+				none_set = false
+		if all_set and none_set:
 			return false
 	return true
 

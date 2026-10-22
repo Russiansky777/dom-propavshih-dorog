@@ -120,6 +120,11 @@ for sc in scenes.values():
     known_flags |= set(sc.get("grants", {}).get("flags", []))
     for it in sc.get("grants", {}).get("items", []):
         known_flags.add("has_" + it)
+    # выбор внутри разговора (M13: ответ Павлу) — mandatory_lines[].options[].sets
+    for ln in sc.get("mandatory_lines", []):
+        for o in ln.get("options", []):
+            if o.get("sets"):
+                known_flags.add(o["sets"])
 for e in locations["edges"]:
     known_flags |= set(e["requires"])
 
@@ -154,8 +159,8 @@ for rid in in_scope:
         err(f"комната {rid} не является локацией locations.json")
 
 # 1. локации сцен в объёме вехи
-scope_scenes = [s for s in scenes.values() if s["id"].startswith(("M0", "V0")) and int(s["id"][1:]) <= 8] + [scenes["Q04"]]
-scope_scenes = [s for s in scope_scenes if s["id"] in ("M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "V01", "V02", "V03", "Q04")]
+# id сцен не обязательно «буква + две цифры» (день 2: M09s, M13a, M15a, M18p) — список задан явно.
+scope_scenes = [s for s in scenes.values() if s["id"] in ("M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "V01", "V02", "V03", "Q04")]
 if "N01" in scenes:
     scope_scenes.append(scenes["N01"])   # «Ночь у печи» — конец дня первого (блок 1, 22.10)
 for s in scope_scenes:
@@ -389,6 +394,65 @@ def check_view(ctx: str, v: dict) -> None:
             check_text(ctx + ".photo.label", ph["label"])
 
 
+EFFECT_TYPES = ("fire", "snow", "tint", "shapes")
+BLENDS = ("mul", "add", "sub", "mix")
+SHAPE_TYPES = ("gradient", "poly", "line", "circle", "glow", "text")
+MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo")
+
+
+def check_shapes(ctx: str, shapes) -> None:
+    """Фигуры заглушек (PlaceholderArt): тип известен, у многоугольника ≥ 3 точек, тексты есть."""
+    for i, sh in enumerate(shapes or []):
+        t = sh.get("type")
+        if t not in SHAPE_TYPES:
+            err(f"{ctx}[{i}]: тип {t} — есть {', '.join(SHAPE_TYPES)}")
+        if t == "poly" and len(sh.get("points", [])) < 3:
+            err(f"{ctx}[{i}]: poly короче 3 точек")
+        if t == "line" and len(sh.get("points", [])) < 2:
+            err(f"{ctx}[{i}]: line короче 2 точек")
+        if t == "text":
+            check_text(f"{ctx}[{i}].text", sh.get("text", ""))
+
+
+def check_mechanic(ctx: str, m: dict, room: dict) -> None:
+    """Крупный план-механика дня 2 (game/scripts/mechanics/*): тип известен; флаги условий и событий известны;
+    тексты texts.* есть; картинки (любое поле image/icon) есть в game/; same_as ссылается на хотспот с механикой."""
+    if "same_as" in m:
+        other = next((h for h in room.get("hotspots", []) if h.get("id") == m["same_as"]), None)
+        if other is None or "mechanic" not in other:
+            err(f"{ctx}.same_as: нет хотспота {m['same_as']} с mechanic в {room.get('id')}")
+        return
+    if m.get("type") not in MECHANIC_TYPES:
+        err(f"{ctx}: тип {m.get('type')} — есть {', '.join(MECHANIC_TYPES)}")
+    check_flags(ctx + ".requires", m.get("requires", {}).get("flags"))
+    check_items(ctx + ".requires", m.get("requires", {}).get("items"))
+    for k, v in (m.get("texts") or {}).items():
+        check_text(f"{ctx}.texts.{k}", v)
+    for name, ev in (m.get("events") or {}).items():
+        check_flags(f"{ctx}.events.{name}.sets", ev.get("sets"))
+        check_text(f"{ctx}.events.{name}.text", ev.get("text", ""))
+    for key in ("clamped_flag", "done_flag", "compared_flag", "common_time_flag"):
+        if key in m:
+            check_flags(f"{ctx}.{key}", [m[key]])
+
+    def images(o, path):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k in ("image", "icon", "watch_icon") and isinstance(v, str):
+                    check_res_path(f"{path}.{k}", v)
+                else:
+                    images(v, f"{path}.{k}")
+        elif isinstance(o, list):
+            for i, v in enumerate(o):
+                images(v, f"{path}[{i}]")
+    images(m, ctx)
+    if m.get("type") == "fast_mirror":
+        if float(m.get("ratio", 20)) != 20.0:
+            err(f"{ctx}.ratio: время внутри идёт ровно в 20 раз быстрее (канон, SCENARIO_FINAL §4.3) — {m.get('ratio')}")
+        if len(m.get("poses", [])) < 5:
+            err(f"{ctx}.poses: нужно 5–6 поз Нины, есть {len(m.get('poses', []))}")
+
+
 def walkable_of(room: dict):
     if "walkable" in room:
         return room["walkable"]
@@ -584,10 +648,32 @@ for rid, room in rooms.items():
 
     for e in room.get("effects", []):
         ectx = f"{ctx}.effects.{e.get('id', e.get('type', '?'))}"
-        if e.get("type") not in ("fire", "snow"):
-            err(f"{ectx}: неизвестный тип эффекта {e.get('type')}")
+        if e.get("type") not in EFFECT_TYPES:
+            err(f"{ectx}: неизвестный тип эффекта {e.get('type')} (есть: {', '.join(EFFECT_TYPES)})")
+        if e.get("type") == "tint" and e.get("blend", "mul") not in BLENDS:
+            err(f"{ectx}: blend {e.get('blend')} — допустимо {', '.join(BLENDS)}")
+        if e.get("type") == "shapes":
+            check_shapes(ectx + ".shapes", e.get("shapes", []))
         check_flags(ectx + ".if", e.get("if"))
         check_flags(ectx + ".unless", e.get("unless"))
+    ph = room.get("background", {}).get("placeholder")
+    if ph is not None:
+        # Заглушка движка вместо заказанного арта (R2, R3): фигуры из данных, без кода комнаты на экране.
+        if "image" in room.get("background", {}):
+            err(f"{ctx}.background: и image, и placeholder — что-то одно")
+        if not ph.get("shapes"):
+            err(f"{ctx}.background.placeholder: нет shapes")
+        check_shapes(ctx + ".background.placeholder.shapes", ph.get("shapes", []))
+        if not str(room.get("_art", "")).strip():
+            err(f"{ctx}: заглушка фона без _art — какой арт заказан и где (BRIEF_CHATGPT_*.md)")
+    for l in room.get("layers", []):
+        if "pivot" in l and (not isinstance(l["pivot"], list) or len(l["pivot"]) != 2):
+            err(f"{ctx}.layers.{l.get('id', '?')}: pivot — [x, y] в пикселях слоя")
+        if "spin" in l:
+            if "pivot" not in l:
+                err(f"{ctx}.layers.{l.get('id', '?')}: spin без pivot (вокруг чего вращать)")
+            check_flags(f"{ctx}.layers.{l.get('id', '?')}.spin.if", l["spin"].get("if"))
+            check_flags(f"{ctx}.layers.{l.get('id', '?')}.spin.unless", l["spin"].get("unless"))
     holes = room.get("walkable_holes", [])
     for i, h in enumerate(holes):
         if len(h) < 3:
@@ -807,6 +893,14 @@ for rid, room in rooms.items():
             check_res_path(hctx + ".image", h["image"])
         check_flags(hctx + ".visible_if", h.get("visible_if"))
         check_flags(hctx + ".hidden_if", h.get("hidden_if"))
+        for c in h.get("hidden_when", []):
+            if not c.get("all"):
+                err(f"{hctx}.hidden_when: условие без all — скрыло бы хотспот всегда")
+            check_flags(hctx + ".hidden_when.all", c.get("all"))
+            check_flags(hctx + ".hidden_when.not", c.get("not"))
+        ph = h.get("placeholder")
+        if ph is not None and ph.get("kind") != "silhouette":
+            err(f"{hctx}.placeholder: kind {ph.get('kind')} — есть только silhouette")
         for st in h.get("states", []):
             check_flags(hctx + ".states", st.get("if"))
             if "stand" in st and not walkable_point(st["stand"]):
@@ -884,11 +978,26 @@ for rid, room in rooms.items():
             check_items(hctx + ".item_use", [it])
             check_action(f"{hctx}.item_use[{it}]", act, act.get("scene"))
         if "talk" in h:
-            scn = h["talk"].get("scene")
-            if scn and scn not in scenes:
-                err(f"{hctx}.talk: неизвестная сцена {scn}")
-            elif scn and rid not in scenes[scn]["locations"]:
-                err(f"{hctx}.talk: сцена {scn} не идёт в {rid}")
+            tk = h["talk"]
+            if not isinstance(tk.get("scenes", []), list) or not all(isinstance(x, str) for x in tk.get("scenes", [])):
+                err(f"{hctx}.talk.scenes: список id сцен по порядку разговора (дефект 22.10: сюда попал словарь scenes комнаты)")
+                tk = dict(tk, scenes=[])
+            for scn in ([tk["scene"]] if tk.get("scene") else []) + list(tk.get("scenes", [])):
+                if scn not in scenes:
+                    err(f"{hctx}.talk: неизвестная сцена {scn}")
+                elif rid not in scenes[scn]["locations"]:
+                    err(f"{hctx}.talk: сцена {scn} не идёт в {rid}")
+            if tk.get("scene") and tk.get("scenes"):
+                err(f"{hctx}.talk: и scene, и scenes — что-то одно")
+            bt = tk.get("before_text")
+            if isinstance(bt, dict):
+                for k, v in bt.items():
+                    if k != "default" and k not in tk.get("scenes", []):
+                        err(f"{hctx}.talk.before_text: {k} — не сцена из talk.scenes")
+                    check_text(f"{hctx}.talk.before_text.{k}", v)
+            for e in tk.get("by_flags", []):
+                check_flags(hctx + ".talk.by_flags.if", e.get("if"))
+                check_text(hctx + ".talk.by_flags.text", e.get("text", ""))
         if "choice" in h:
             ch = h["choice"]
             check_flags(hctx + ".choice.requires", ch.get("requires", {}).get("flags"))
@@ -944,6 +1053,12 @@ for rid, room in rooms.items():
                     err(f"{hctx}.view.papers[{i_}]: rect [x, y, w, h] (h 0 — только у листа-картинки)")
                 elif r_[0] < 0 or r_[1] < 80 or r_[0] + r_[2] > 1920 or r_[1] + r_[3] > 1080:
                     err(f"{hctx}.view.papers[{i_}]: лист {r_} вне кадра или под верхней панелью")
+
+        if "mechanic" in h:
+            check_mechanic(hctx + ".mechanic", h["mechanic"], room)
+        for it, act in (h.get("item_use") or {}).items():
+            if act.get("open_mechanic") and "mechanic" not in h:
+                err(f"{hctx}.item_use[{it}]: open_mechanic, а у хотспота нет mechanic")
 
     # текст при первом входе (on_enter): ключ текста и флаг «один раз» (иначе повторится после загрузки)
     for i_, oe in enumerate(room.get("on_enter", []) or []):

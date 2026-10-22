@@ -1,8 +1,13 @@
 class_name RoomEffect
 extends Node2D
-## Programmatic effects declared in rooms/<id>.json `effects[]`: {type: "fire"|"snow", rect, if, unless, z}.
-## Fire: upward orange particles + a flickering light patch inside `rect` (stove opening).
-## Snow: falling white particles over `rect` (the whole room by default).
+## Programmatic effects declared in rooms/<id>.json `effects[]`: {type, rect, if, unless, z}.
+## fire: upward orange particles + a flickering light patch inside `rect` (stove opening).
+## snow: falling white particles over `rect` (the whole room by default).
+## tint: the room under a colour (`color`, `blend` "mul" — dusk, darkness of the far shore; "add" — snow
+##   showing through, light) over `rect` or `points` — a stand-in until the dusk / far-shore layers come
+##   (BRIEF_CHATGPT_v4 §C6), drawn by the engine, not painted.
+## shapes: PlaceholderArt shapes (`shapes` [...], `blend` optional) — three far lights, a mirror glass on the
+##   stand, fog, the empty-boat haze.
 
 var data: Dictionary = {}
 var particles: CPUParticles2D = null
@@ -14,18 +19,60 @@ func setup(p_data: Dictionary) -> void:
 	data = p_data
 	var r: Array = data.get("rect", [0, 0, 1920, 1080])
 	var rect := Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
-	particles = CPUParticles2D.new()
-	particles.name = "Particles"
 	match String(data.get("type", "snow")):
+		"tint":
+			_setup_tint(rect)
+		"shapes":
+			var art := PlaceholderArt.build(data.get("shapes", []))
+			art.material = _blend_material(String(data.get("blend", "mix")))
+			art.use_parent_material = false
+			for c in art.get_children():
+				if c is CanvasItem and c.material == null:
+					(c as CanvasItem).use_parent_material = true
+			add_child(art)
 		"fire":
+			particles = CPUParticles2D.new()
+			particles.name = "Particles"
 			_setup_fire(rect)
+			add_child(particles)
 		_:
+			particles = CPUParticles2D.new()
+			particles.name = "Particles"
 			_setup_snow(rect)
-	add_child(particles)
+			add_child(particles)
 	if data.has("if") or data.has("unless"):
 		GameState.flag_changed.connect(_on_flag_changed)
 		GameState.state_reset.connect(refresh)
 	refresh()
+
+
+func _setup_tint(rect: Rect2) -> void:
+	var p := Polygon2D.new()
+	p.name = "Tint"
+	if data.has("points"):
+		var pts := PackedVector2Array()
+		for q in data["points"]:
+			pts.append(Vector2(float(q[0]), float(q[1])))
+		p.polygon = pts
+	else:
+		p.polygon = PackedVector2Array([rect.position, rect.position + Vector2(rect.size.x, 0), rect.end, rect.position + Vector2(0, rect.size.y)])
+	p.color = Color.html(String(data.get("color", "#8090b0")))
+	p.material = _blend_material(String(data.get("blend", "mul")))
+	add_child(p)
+
+
+static func _blend_material(blend: String) -> CanvasItemMaterial:
+	var m := CanvasItemMaterial.new()
+	match blend:
+		"mul":
+			m.blend_mode = CanvasItemMaterial.BLEND_MODE_MUL
+		"add":
+			m.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		"sub":
+			m.blend_mode = CanvasItemMaterial.BLEND_MODE_SUB
+		_:
+			m.blend_mode = CanvasItemMaterial.BLEND_MODE_MIX
+	return m
 
 
 func _setup_fire(rect: Rect2) -> void:

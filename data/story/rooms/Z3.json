@@ -17,11 +17,40 @@
     {
       "id": "old_pier_base", "kind": "object", "label": "@Z3.old_pier_base.label", "rect": [1160, 510, 320, 100], "stand": [1120, 730], "color": "#6f6a5a", "draw": false,
       "item_use": {"photo_bridge": {"text": "@Z3.old_pier_base.photo", "_note": "снимок старого моста (M07): канат сидел на плите этой опоры; не расходуется"}},
-      "look": "@Z3.old_pier_base.look"
+      "look": "@Z3.old_pier_base.look",
+      "hidden_if": ["pond_lowered"]
     },
     {
       "id": "plate", "kind": "object", "label": "@Z3.plate.label", "rect": [1480, 600, 200, 190], "stand": [1370, 850], "color": "#8a8a7a", "draw": false,
       "look": "@Z3.plate.look"
+    },
+    {
+      "id": "pier_plate", "kind": "object", "label": "@Z3d.plate_dry.label", "rect": [1160, 500, 320, 120], "stand": [1120, 730], "draw": false, "visible_if": ["pond_lowered"],
+      "item_use": {"brace_plate": {"sets": ["skoba_on_plate"], "consumes": true, "text": "@Z3d.plate_dry.skoba", "scene": "M15s", "open_mechanic": true}},
+      "use": {"requires": {"items": ["brace_plate"]}, "text": "@Z3d.plate_dry.use_skoba", "fail_text": "@Z3d.plate_dry.no_skoba"},
+      "mechanic": {
+        "type": "plate",
+        "requires": {"flags": ["skoba_on_plate"]},
+        "title": "@Z3d.plate.title",
+        "stone": {"image": "res://assets/rooms/Z3/bg.png", "region": [1000, 400, 310, 170], "pos": [300, 170], "scale": 3.4},
+        "plate": [470, 300, 600, 420],
+        "crack": [[650, 302], [690, 380], [662, 450], [720, 530], [698, 600], [730, 718]],
+        "ring": [990, 380],
+        "ring_r": 42,
+        "skoba": {"icon": "res://assets/icons/skoba_plate.png", "at": [690, 500], "size": 240, "angle": 62},
+        "rope_free": [1250, 760],
+        "rope_from": [1700, 1000],
+        "knot": [[-62, 12], [0, -72], [62, 20]],
+        "hint_pos": [1100, 880],
+        "texts": {"label_letters": "@Z3d.plate.label_letters", "label_hint": "@Z3d.plate.label_hint", "rope_at_ring": "@Z3d.plate.rope_at_ring", "knot_wrong": "@Z3d.plate.knot_wrong"},
+        "events": {"braced": {"sets": ["plate_braced"]}, "tied": {"sets": ["rope_on_ring"]}}
+      },
+      "look": "@Z3d.plate_dry.look"
+    },
+    {
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [1030, 520, 130, 280], "stand": [940, 840], "draw": false, "pick_priority": 2, "image": "res://assets/characters/pelageya/front.png", "visible_if": ["evening_dusk"], "hidden_if": ["done_M15"],
+      "talk": {"by_flags": [{"if": ["rope_brought"], "text": "@Z3d.pelageya.knot"}, {"if": ["evening_dusk"], "text": "@Z3d.pelageya.wait_skoba"}]},
+      "look": "@char.pelageya"
     }
   ],
   "exits": [
@@ -29,6 +58,13 @@
     {"to": "R1", "label": "@Z3.exit_R1.label", "cue": "down", "rect": [900, 1000, 500, 80], "stand": [1100, 1030], "spawn": "from_Z3", "draw": false},
     {"to": "M1", "label": "@Z3.exit_M1.label", "cue": "down", "rect": [600, 960, 220, 120], "stand": [720, 1030], "spawn": "from_Z3", "closed_text": "@Z3.exit_M1.closed", "draw": false}
   ],
-  "scenes": {},
+  "scenes": {
+    "M15s": {"complete_when": [{"all": ["plate_braced"]}]},
+    "M15": {"complete_when": [{"all": ["rope_on_ring"]}]}
+  },
+  "effects": [
+    {"id": "water_low", "type": "shapes", "z": -5, "if": ["pond_lowered"], "shapes": [{"type": "poly", "points": [[1170, 572], [1232, 572], [1236, 612], [1168, 612]], "color": "#5d5a50"}, {"type": "poly", "points": [[1252, 582], [1322, 582], [1324, 618], [1250, 618]], "color": "#5d5a50"}, {"type": "poly", "points": [[1376, 588], [1474, 588], [1476, 626], [1374, 626]], "color": "#5d5a50"}, {"type": "poly", "points": [[1262, 560], [1312, 560], [1312, 584], [1262, 584]], "color": "#3e3d3c"}, {"type": "line", "points": [[1298, 566], [1302, 570], [1306, 566]], "width": 2, "color": "#2a2a2a"}], "_note": "вода спущена: у опоры видны мокрые камни и плита (тёмный прямоугольник) — до слоя Z3_state_water_low (BRIEF_CHATGPT_v4 §C5)"},
+    {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки дня второго (после мамина зеркала, M15а) — до слоёв вечера (BRIEF_CHATGPT_v4 §C)"}
+  ],
   "flags": {}
 }

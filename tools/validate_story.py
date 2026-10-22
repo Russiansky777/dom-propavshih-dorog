@@ -86,6 +86,7 @@ quests = [s for s in scenes if s["type"] == "quest"]
 
 # ---------- 1. ссылочная целостность ----------
 granted_flags: dict[str, list[str]] = {}
+line_choice_flags: set[str] = set()
 for s in scenes:
     for loc in s["locations"]:
         if loc not in loc_ids:
@@ -102,6 +103,12 @@ for s in scenes:
         for opt in ch["options"]:
             if "sets" in opt:
                 granted_flags.setdefault(opt["sets"], []).append(s["id"])
+    # выбор внутри разговора (M13: ответ Павлу) — mandatory_lines[].options[].sets; это тоже флаги выбора
+    for ln in s.get("mandatory_lines", []):
+        for opt in ln.get("options", []):
+            if "sets" in opt:
+                granted_flags.setdefault(opt["sets"], []).append(s["id"])
+                line_choice_flags.add(opt["sets"])
 for it in item_by_id:
     granted_flags.setdefault("has_" + it, [])
 
@@ -164,7 +171,7 @@ for e in locations_doc["edges"]:
 
 auto_prefixes = ("done_", "has_", "q0", "q1")
 for fl, srcs in granted_flags.items():
-    if fl not in declared_flags and not fl.startswith(auto_prefixes):
+    if fl not in declared_flags and not fl.startswith(auto_prefixes) and fl not in line_choice_flags:
         # флаги выборов тоже допускаем без описания
         if not any(fl in [o.get("sets") for ch in by_id[sid].get("choices", []) for o in ch["options"]] for sid in srcs):
             warn(f"флаг {fl} выдаётся ({', '.join(srcs)}), но не описан в flags.json")
@@ -387,7 +394,10 @@ if total_cross >= 8:
 
 # ---------- счёт ----------
 counts = {"main": len(mains), "minor": len(minors), "quest": len(quests)}
-expected = {"main": 35, "minor": 12, "quest": 10}  # 35: + N01 «Ночь у печи» (блок 1, 22.10)
+# Число сцен по сценарию: 35 — день первый с «Ночью у печи» N01 (блок 1, 22.10); день 2 переписан по
+# Docs/SCENARIO_FINAL.md (блок 2: E2 — 9 основных, утро — в конце N01; E3 — 8; прежние V04, V05 сняты вместе с эхом и
+# наградой Павла) — 41/10/10. Переписка следующих блоков меняет числа здесь.
+expected = {"main": 41, "minor": 10, "quest": 10}
 for k, v in expected.items():
     if counts[k] != v:
         err(f"сцен типа {k}: {counts[k]}, ожидалось {v}")

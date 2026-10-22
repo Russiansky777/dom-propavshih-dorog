@@ -34,18 +34,56 @@
       "id": "bell", "action_anim": "reach", "kind": "object", "label": "@H2.bell.label", "rect": [1590, 300, 190, 260], "stand": [1450, 692], "color": "#b8a040", "draw": false,
       "use": {"sets": ["seen_bell", "knows_rule_things_remember"], "text": ["@H2.bell.use", "@H2.bell.thought"], "once_flag": "seen_bell", "scene": "M04",
         "_text_note": "ярлык колокола (закадровый голос), затем мысль Агаты её голосом — причина вешать школьную дверь (Docs/SCENARIO_FINAL.md, M04); text — список ключей, читаются по очереди"},
-      "look": "@H2.bell.look"
+      "look": "@H2.bell.look",
+      "item_use": {"bell_clapper": {"sets": ["bell_clapper_hung"], "consumes": true, "text": "@H2d.bell.hang", "scene": "M11"}},
+      "mechanic": {"same_as": "stand_zm"}
     },
     {
       "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [1120, 110, 270, 560], "stand": [1250, 705], "color": "#7a7a70", "draw": false,
-      "look": "@H2.stand_zm.look"
+      "look": "@H2.stand_zm.look",
+      "item_use": {"mirror_mill": {"sets": ["office_mirror_mounted"], "consumes": true, "text": "@H2d.stand_zm.mount", "scene": "M10", "open_mechanic": true}},
+      "mechanic": {
+        "type": "office_mirror",
+        "requires": {"flags": ["office_mirror_mounted"]},
+        "title": "@H2d.office_mirror.title",
+        "frame": {"image": "res://assets/rooms/H2/bg.png", "region": [960, 92, 262, 512], "pos": [420, 130], "scale": 1.758, "glass": [513, 308, 297, 582]},
+        "wedges": [[492, 905], [830, 905]],
+        "office": {"image": "res://assets/rooms/M3/bg.png", "region": [419, 52, 284, 557], "gap": {"x": 236, "top": 62, "bottom": 550}, "bar": {"at": 0.5, "x0": 132, "x1": 246}, "shelf": [[0, 520], [60, 582], [240, 330], [202, 300]], "weights": [[32, 566, 14], [86, 574, 11]]},
+        "bell": {"image": "res://assets/rooms/H2/bg.png", "region": [1376, 252, 192, 236], "pos": [1150, 250], "scale": 1.7, "signal": {"long_s": 0.6, "gap_s": 0.55}},
+        "hook": {"bar": 0.5, "tolerance": 0.06, "speed": 0.1, "return_speed": 0.6},
+        "schedule_pos": [1120, 690],
+        "status_pos": [1120, 870],
+        "clamped_flag": "office_mirror_clamped",
+        "texts": {"view_first": "@H2d.office_mirror.view_first", "view_again": "@H2d.office_mirror.view_again", "glass_touch": "@H2d.office_mirror.glass_touch", "glass_loose": "@H2d.office_mirror.glass_loose", "bell_mute": "@H2d.office_mirror.bell_mute", "bell_unclamped": "@H2d.office_mirror.bell_unclamped", "hook_slipped": "@H2d.office_mirror.hook_slipped", "label_schedule": "@H2d.office_mirror.label_schedule", "label_status_loose": "@H2d.office_mirror.label_status_loose", "label_status_ring_once": "@H2d.office_mirror.label_status_ring_once", "label_status_wait": "@H2d.office_mirror.label_status_wait", "label_status_down": "@H2d.office_mirror.label_status_down", "label_status_stopped": "@H2d.office_mirror.label_status_stopped", "label_status_lift_bar": "@H2d.office_mirror.label_status_lift_bar", "label_status_lift_empty": "@H2d.office_mirror.label_status_lift_empty", "label_status_slipping": "@H2d.office_mirror.label_status_slipping", "label_status_solved": "@H2d.office_mirror.label_status_solved", "label_status_open": "@H2d.office_mirror.label_status_open"},
+        "events": {"clamped": {"sets": ["office_mirror_clamped"], "text": "@H2d.office_mirror.clamped"}, "lantern": {"sets": ["lantern_check_seen"]}, "unbolted": {"sets": ["office_unbolted"]}}
+      }
     },
     {
       "id": "bundle_nina", "action_anim": "reach", "kind": "object", "label": "@H2.bundle_nina.label", "rect": [366, 404, 196, 96], "stand": [470, 790], "color": "#a89a80", "draw": false,
       "pick_priority": 1,
       "_art_note": "Свёрток «Нина. Горница» (Docs/SCENARIO_FINAL.md, M04): мамино зеркало в тряпке на левом верстаке — слои bundle / nina_mirror (партия 2, непрозрачное — экран 374–533 × 413–494). В сумку не берётся (items.json bundle_nina inventory false, выдаёт M04); струбцина — день второй. Приоритет 1: над верстаком «Записи на верстаке» не лежит, но рядом.",
       "use": {"sets": ["h2_bundle_unwrapped"], "text": "@H2.bundle_nina.use", "once_flag": "h2_bundle_unwrapped", "text_done": "@H2.bundle_nina.done"},
-      "look": "@H2.bundle_nina.look"
+      "look": "@H2.bundle_nina.look",
+      "item_use": {"clamp": {"sets": ["h2_bundle_unwrapped", "nina_mirror_clamped"], "consumes": true, "text": "@H2d.nina_mirror.clamp", "scene": "M15a", "open_mechanic": true}},
+      "mechanic": {
+        "type": "fast_mirror",
+        "requires": {"flags": ["nina_mirror_clamped"]},
+        "title": "@H2d.nina_mirror.title",
+        "ratio": 20,
+        "common_time_flag": "road_held_both_ends",
+        "start_minutes": 1120,
+        "glass": [430, 170, 760, 640],
+        "room": {"window": [70, 90], "icon": [640, 60], "table": [240, 440], "candle": [300, 440], "small_mirror": [520, 406], "clock": [430, 150], "clock_r": 50},
+        "clamp_at": [1236, 470],
+        "watch": [1480, 560, 300],
+        "watch_icon": "res://assets/icons/pocket_watch.png",
+        "candle_burn_minutes": 120,
+        "min_watch_s": 15,
+        "compared_flag": "nina_time_compared",
+        "poses": [{"id": "write", "minutes": 14, "at": [330, 470], "height": 330, "sitting": true}, {"id": "cup", "minutes": 4, "at": [420, 610], "height": 330, "hold": "cup"}, {"id": "window", "minutes": 8, "at": [150, 610], "height": 330}, {"id": "walk", "minutes": 3, "at": [560, 620], "height": 340}, {"id": "small_mirror", "minutes": 12, "at": [520, 600], "height": 330, "hold": "mirror"}, {"id": "write_again", "minutes": 19, "at": [330, 470], "height": 330, "sitting": true}],
+        "texts": {"knock_first": "@H2d.nina_mirror.knock_first", "watch_wait": "@H2d.nina_mirror.watch_wait", "watch_again": "@H2d.nina_mirror.watch_again", "label_watch": "@H2d.nina_mirror.label_watch"},
+        "events": {"compared": {"sets": ["nina_time_compared"]}}
+      }
     },
     {
       "id": "brace", "action_anim": "reach", "kind": "pickup", "label": "@H2.brace.label", "rect": [562, 410, 132, 80], "stand": [640, 790], "color": "#7a6a5a", "draw": false, "pick_priority": 1,
@@ -56,15 +94,25 @@
     },
     {
       "id": "clapper_box", "kind": "object", "label": "@H2.clapper_box.label", "rect": [945, 430, 160, 80], "stand": [980, 715], "color": "#8a7a5a", "draw": false,
-      "look": "@H2.clapper_box.look"
+      "look": "@H2.clapper_box.look",
+      "hidden_if": ["has_bell_clapper"],
+      "use": {"requires": {"flags": ["done_M10"]}, "gives": ["bell_clapper"], "text": "@H2d.clapper_box.use", "scene": "M11", "fail_text": "@H2.clapper_box.look"}
     }
   ],
   "exits": [
     {"to": "H1", "label": "@H2.exit_H1.label", "cue": "door", "rect": [60, 90, 180, 650], "stand": [260, 820], "spawn": "from_H2", "draw": false}
   ],
   "scenes": {
-    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges", "seen_bell"]}]}
+    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges", "seen_bell"]}]},
+    "M10": {"complete_when": [{"all": ["office_mirror_clamped"]}]},
+    "M11": {"complete_when": [{"all": ["lantern_check_seen"]}]},
+    "M12": {"complete_when": [{"all": ["office_unbolted"]}]},
+    "M15a": {"complete_when": [{"all": ["nina_time_compared"]}]}
   },
+  "effects": [
+    {"id": "office_glass", "type": "shapes", "z": 1, "if": ["office_mirror_mounted"], "shapes": [{"type": "poly", "points": [[1166, 226], [1354, 226], [1354, 598], [1166, 598]], "color": "#59606acc"}, {"type": "poly", "points": [[1176, 236], [1250, 236], [1190, 420], [1176, 420]], "color": "#c8d0da30"}], "_note": "стекло зеркала конторы в тётиной стойке — до слоя «Зеркало конторы на стойке» (BRIEF_CHATGPT_v4 §C3)"},
+    {"id": "dusk", "type": "tint", "color": "#a8a0b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки дня второго (после мамина зеркала, M15а) — до слоёв вечера (BRIEF_CHATGPT_v4 §C)"}
+  ],
   "flags": {
     "h2_bundle_unwrapped": "Свёрток «Нина. Горница» развёрнут: мамино зеркало, рама расходится в руках"
   }

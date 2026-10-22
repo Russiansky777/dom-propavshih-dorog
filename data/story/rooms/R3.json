@@ -1,0 +1,74 @@
+{
+  "id": "R3",
+  "_art": "Арта нет (заказан: BRIEF_CHATGPT_v4 §C8 — R3_bg.png + R3_fg_*.png: каменная опора в снегу, стопор в старом кольце, сарайчик-мастерская переправы, тропа вверх к улице, фонарь на столбике). До готовности — заглушка движка: ночь, снег, опора с кольцом и стопором, канат, сарайчик, фонарь. Митя — плоская фигура из листа Meshy (assets/incoming/cast_v3/mitya_v1.png → tools/import_npc_front.py) с фонарём-светом. Код комнаты игроку не показывается.",
+  "background": {
+    "kind": "exterior", "horizon": 600,
+    "placeholder": {
+      "shapes": [
+        {"type": "gradient", "rect": [0, 0, 1920, 620], "top": "#0d111a", "bottom": "#2a3040"},
+        {"type": "poly", "points": [[0, 530], [400, 480], [900, 510], [1400, 460], [1920, 505], [1920, 640], [0, 640]], "color": "#8c93a2"},
+        {"type": "gradient", "rect": [0, 600, 1920, 480], "top": "#aeb6c4", "bottom": "#dfe4ec"},
+        {"type": "poly", "points": [[1040, 600], [1130, 600], [1380, 1080], [1120, 1080]], "color": "#98a0ae"},
+        {"type": "poly", "points": [[0, 640], [540, 650], [640, 1080], [0, 1080]], "color": "#1c2330"},
+        {"type": "poly", "points": [[0, 640], [540, 650], [552, 690], [0, 682]], "color": "#c4cbd6"},
+        {"type": "poly", "points": [[370, 400], [650, 400], [672, 840], [350, 840]], "color": "#62656b"},
+        {"type": "line", "points": [[360, 520], [660, 520]], "width": 4, "color": "#4a4c52"},
+        {"type": "line", "points": [[355, 640], [665, 640]], "width": 4, "color": "#4a4c52"},
+        {"type": "line", "points": [[352, 760], [668, 760]], "width": 4, "color": "#4a4c52"},
+        {"type": "poly", "points": [[360, 392], [662, 392], [650, 424], [372, 424]], "color": "#eef1f5"},
+        {"type": "line", "points": [[0, 760], [300, 650], [600, 520]], "width": 10, "color": "#6b5638"},
+        {"type": "line", "points": [[600, 520], [730, 600]], "width": 10, "color": "#6b5638"},
+        {"type": "line", "points": [[580, 500], [620, 500], [622, 540], [578, 540], [580, 500]], "width": 7, "color": "#24211e"},
+        {"type": "poly", "points": [[704, 560], [742, 560], [748, 830], [698, 830]], "color": "#3a2e22"},
+        {"type": "poly", "points": [[1450, 430], [1800, 430], [1800, 712], [1450, 712]], "color": "#3b2d22"},
+        {"type": "poly", "points": [[1420, 440], [1625, 335], [1830, 440]], "color": "#e6e9ee"},
+        {"type": "poly", "points": [[1580, 560], [1650, 560], [1650, 712], [1580, 712]], "color": "#21180f"},
+        {"type": "line", "points": [[1210, 400], [1210, 690]], "width": 10, "color": "#3a2e22"},
+        {"type": "glow", "center": [1210, 392], "r": 90, "color": "#ffc46acc"},
+        {"type": "circle", "center": [1210, 392], "r": 12, "color": "#ffe2a0"}
+      ]
+    }
+  },
+  "walkable": [[700, 640], [1450, 712], [1820, 722], [1915, 760], [1915, 1070], [640, 1070], [600, 860], [680, 840]],
+  "no_walk_samples": [[300, 900, "вода у опоры"], [500, 600, "опора"]],
+  "walk_samples": [[1100, 900], [800, 1000], [1600, 900], [760, 760]],
+  "depth": {"top_y": 640, "bottom_y": 1070, "scale_top": 0.8, "scale_bottom": 1.5},
+  "_depth_note": "Заглушка: ориентиров роста нет, пока нет арта (сарайчик ≈ 2,5 м по замыслу).",
+  "layers": [],
+  "effects": [
+    {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 160, "z": 4000},
+    {"id": "night", "type": "tint", "color": "#a4abc8", "blend": "mul", "z": 4090},
+    {"id": "mitya_lantern", "type": "shapes", "z": 4095, "shapes": [{"type": "glow", "center": [912, 600], "r": 70, "color": "#ffc46acc"}, {"type": "poly", "points": [[902, 588], [922, 588], [922, 616], [902, 616]], "color": "#ffe2a0"}], "_note": "фонарь в руке у Мити — до его листа с фонарём"}
+  ],
+  "spawns": {"default": [1100, 900], "from_R2": [760, 960], "from_O4": [1150, 720]},
+  "props": [],
+  "hotspots": [
+    {
+      "id": "mitya", "kind": "npc", "label": "@char.mitya", "rect": [760, 387, 140, 373], "stand": [990, 900], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/mitya/front.png",
+      "talk": {"after_text": "@R3.mitya.after"}
+    },
+    {
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [1270, 447, 140, 333], "stand": [1150, 900], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/pelageya/front.png",
+      "talk": {"after_text": "@R3.pelageya.after"}
+    },
+    {
+      "id": "stopor", "kind": "object", "label": "@R3.stopor.label", "rect": [560, 480, 200, 360], "stand": [760, 880], "draw": false,
+      "look": "@R3.stopor.look"
+    },
+    {
+      "id": "lamp_post", "kind": "object", "label": "@R3.lamp_post.label", "rect": [1175, 330, 70, 220], "stand": [1240, 760], "draw": false,
+      "look": "@R3.lamp_post.look"
+    }
+  ],
+  "exits": [
+    {"to": "R2", "label": "@R3.exit_R2.label", "cue": "left", "rect": [0, 840, 140, 240], "stand": [690, 1000], "spawn": "from_R3", "draw": false},
+    {"to": "O4", "label": "@R3.exit_O4.label", "cue": "up", "rect": [1020, 560, 200, 120], "stand": [1120, 720], "spawn": "from_R3", "unbuilt_text": "@ui.day2_end", "draw": false},
+    {"to": "R4", "label": "@R3.exit_R4.label", "cue": "door", "rect": [1570, 550, 90, 160], "stand": [1610, 760], "spawn": "from_R3", "unbuilt_text": "@R3.exit_R4.unbuilt", "draw": false}
+  ],
+  "scenes": {
+    "M18": {"trigger": "enter"}
+  },
+  "flags": {}
+}

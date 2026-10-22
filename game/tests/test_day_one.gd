@@ -201,6 +201,15 @@ func _test_drawer() -> void:
 	_check(gs.inventory.size() == before + 3, "exactly three things given (%s)" % str(gs.inventory))
 	_check(gs.has_flag("done_M07") and gs.has_flag("knows_crossing_plan"), "M07 done, the plan is known")
 	_check(seen.any(func(x): return x.contains("с дымом")) and seen.any(func(x): return x.contains("Держим мы")), "M07 lines: Ilya's boats, «Держим мы»: %s" % str(seen))
+	# Director 22.10: after the plan Agata says what the rope is, before «Держим мы».
+	var rope_at := -1
+	var held_at := -1
+	for i in seen.size():
+		if seen[i].contains("Канат — это то, что осталось от моста") and seen[i].contains("с двух концов") and seen[i].contains("лодка по канату дойдёт"):
+			rope_at = i
+		if seen[i].contains("Держим мы»."):
+			held_at = i
+	_check(rope_at >= 0 and rope_at == held_at - 1, "Agata: the rope is what is left of the bridge — right before «Держим мы» (%d, %d)" % [rope_at, held_at])
 	_check(not gs.inventory.has("invoice_chalk") and not gs.inventory.has("photo_school_pier") and not sd.items.has("invoice_chalk"), "no chalk invoice, no pier photo any more")
 	# second click: empty drawer, no close-up, nothing given
 	seen = await _interact(h)
@@ -284,8 +293,10 @@ func _test_night() -> void:
 	await _frames(3)
 	_check(max_alpha > 0.97, "the staging goes black (max overlay %.2f)" % max_alpha)
 	_check(dusk_alpha > 0.4 and dusk_alpha < 0.7, "the lines read over dusk (overlay %.2f)" % dusk_alpha)
-	_check(lines.size() == 3 and lines[0].begins_with("agata:") and lines[1].begins_with("agata:") and lines[2].begins_with("tikhon:"),
-		"two lines of Agata (Ilya, the plan) and Tikhon's grumble: %s" % str(lines))
+	# Then the morning: Tikhon on the armchair (SCENARIO_FINAL §7 «Утро», block 2 22.10) before the checkpoint.
+	_check(lines.size() == 4 and lines[0].begins_with("agata:") and lines[1].begins_with("agata:") and lines[2].begins_with("tikhon:")
+		and lines[3].begins_with("tikhon:Колокол не трогай до обеда"),
+		"two lines of Agata (Ilya, the plan), Tikhon's grumble, Tikhon's morning line: %s" % str(lines))
 	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "N01 done")
 	_check(sr.stage_dim == 0.0 and (ui == null or float(ui.call("stage_probe")["alpha"]) < 0.02), "morning: the overlay is clear")
 	var info: Dictionary = gs.save_info(PREFIX + "day2")
@@ -339,7 +350,9 @@ func _test_pier_attempt() -> void:
 	_check(seen.size() == 11 and seen[2] == "stage", "two lines, the shown attempt, eight lines: %s" % str(seen))
 	_check(seen[3].contains("Берег вижу"), "after the attempt: «Берег вижу…» (%s)" % seen[3])
 	_check(sounds.has("steps_soft") and sounds.has("door_heavy"), "deck step and wooden knock played: %s" % str(sounds))
-	_check(seen.any(func(x): return x.contains("Раньше он сидел на плите опоры")), "the rope on the plate: %s" % str(seen))
+	# Director 22.10: the rope is the last piece of the bridge — the road itself; its far end is still on the other bank.
+	_check(seen.any(func(x): return x.contains("всё, что от него осталось") and x.contains("Тот конец до сих пор там") and x.contains("Пока этот сидел на плите опоры")), "the rope is what is left of the bridge: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Тянешь — как за корягу") and x.contains("Под водой её не тронешь")), "the plate under water, cracked: %s" % str(seen))
 	_check(sr.stage_dim == 0.0 and (ui == null or float(ui.call("stage_probe")["alpha"]) < 0.02), "no dusk left at the pier")
 	var r2: Node = rm.current_room.get_node_or_null("Exits/to_R2")
 	_check(r2 != null and not r2.is_open(), "the crossing stays closed")

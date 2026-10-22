@@ -595,6 +595,175 @@
       ],
       "owner": "ChatGPT + Директор",
       "use": "data/story/rooms/Z3.json → хотспот plate (сейчас «Табличка на береговом камне»: «Плита с Дуниного листа не здесь — она на опоре, под водой»)"
+    },
+    {
+      "id": "pavel_sheet",
+      "status": "in_progress",
+      "kind": "character_sheet",
+      "block": "2 (день второй, 22.10)",
+      "subject": "Павел, 48, мельник",
+      "spec": "Лист персонажа (спереди, сбоку, сзади) и 3D-фигура с листами idle/talk, как Тамара и Пелагея",
+      "files": [
+        "incoming/cast_v3/pavel_v2.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 1, п. 1",
+      "owner": "Claude (Meshy, pipeline-character)",
+      "use": "До фигуры — плоская заглушка из вида спереди: tools/import_npc_front.py → game/assets/characters/pavel/front.png (хотспоты pavel в M1–M4, поле image). Лист переделывается без постамента (координатор 22.10)"
+    },
+    {
+      "id": "mitya_sheet",
+      "status": "in_progress",
+      "kind": "character_sheet",
+      "block": "2 (день второй, 22.10)",
+      "subject": "Митя, 37, сын Пелагеи",
+      "spec": "Лист персонажа и 3D-фигура с листами idle/talk; фонарь в руке",
+      "files": [
+        "incoming/cast_v3/mitya_v1.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 1, п. 2",
+      "owner": "Claude (Meshy, pipeline-character)",
+      "use": "До фигуры — плоская заглушка: game/assets/characters/mitya/front.png (хотспот mitya в R3) и свет фонаря — эффект mitya_lantern в rooms/R3.json"
+    },
+    {
+      "id": "M3_view",
+      "status": "requested",
+      "kind": "closeup_layers",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Контора изнутри — вид на дверь, как её показывает зеркало (от стены напротив двери): дверь закрыта, стеллаж с гирями лёг на неё, у края двери узкая щель; продух с решёткой и рейка уровня. Слои: без засова и света; засов в скобах; засов приподнят; полоска света фонаря в щели; железный крюк на длинной ручке отдельно (его двигает код)",
+      "files": [
+        "incoming/M3_view_bg.png",
+        "incoming/M3_view_bar_down.png",
+        "incoming/M3_view_bar_up.png",
+        "incoming/M3_view_light.png",
+        "incoming/M3_view_hook.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 1",
+      "owner": "ChatGPT + Директор",
+      "use": "Заменит заглушку OfficeView (game/scripts/mechanics/office_view.gd: вырез фона M3 + стеллаж, засов, щель, свет, крюк кодом); данные — rooms/H2.json → stand_zm.mechanic.office"
+    },
+    {
+      "id": "M2_closeup_office_photo",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Старая фотография конторы изнутри: на стене напротив двери зеркало в деревянной раме",
+      "files": [
+        "incoming/closeup_office_photo.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 2",
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/M2.json → photo.mechanic.photo (сейчас фон M3 в сепии с рамкой зеркала, нарисованной движком)"
+    },
+    {
+      "id": "H2_office_mirror",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Слой к H2_bg.png (1672×941): зеркало конторы в деревянной раме зажато в тётиной стойке «ЗМ», стойка вделана в верстак; стекло пустое серебристое, контур точный (вид в нём подставит код)",
+      "files": [
+        "incoming/H2_state_office_mirror.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 3",
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/H2.json → эффект office_glass (сейчас серебристый многоугольник движка) и рамка крупного плана stand_zm.mechanic.frame"
+    },
+    {
+      "id": "O3_nina_room",
+      "status": "requested",
+      "kind": "background_layers",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Горница Нины: стол, икона в красном углу, окно со снегом, ходики на стене, свеча, маленькое зеркальце в деревянной рамке; ходики отдельными слоями (циферблат, минутная и часовая стрелки строго вертикально с отмеченной осью, маятник), пламя свечи; Нина 67 в пяти позах одного масштаба на прозрачном",
+      "files": [
+        "incoming/O3_bg.png",
+        "incoming/O3_clock_face.png",
+        "incoming/O3_clock_hand_min.png",
+        "incoming/O3_clock_hand_hour.png",
+        "incoming/O3_clock_pendulum.png",
+        "incoming/O3_candle_flame.png",
+        "incoming/nina_pose_write.png",
+        "incoming/nina_pose_cup.png",
+        "incoming/nina_pose_mirror.png",
+        "incoming/nina_pose_window.png",
+        "incoming/nina_pose_walk.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 4",
+      "owner": "ChatGPT + Директор",
+      "use": "Мамино зеркало (rooms/H2.json → bundle_nina.mechanic, game/scripts/mechanics/fast_mirror_panel.gd): сейчас тёмная горница, ходики, свеча и силуэт Нины нарисованы движком; позы — mechanic.poses"
+    },
+    {
+      "id": "Z3_water_low_plate",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Поворот в сумерках, вода спущена: слой к Z3_bg.png — вода ниже, мокрые камни, на опоре железная плита; крупный план плиты (литые буквы «Ольховка», кольцо, трещина) и слои к нему — скоба на трещине, канат на кольце",
+      "files": [
+        "incoming/Z3_state_water_low.png",
+        "incoming/closeup_plate.png",
+        "incoming/closeup_plate_skoba.png",
+        "incoming/closeup_plate_rope.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 5",
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/Z3.json → эффект water_low и pier_plate.mechanic (сейчас вырез камней Z3 + плита, буквы, кольцо, трещина движком, скоба — иконка skoba_plate)"
+    },
+    {
+      "id": "R1_evening",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Причал вечером, слои к R1_bg.png: сумерки с тёплым светом; тот берег тёмным силуэтом; тот же берег под снегом; три огня на том берегу; крупный план сигнального фонаря с закрытой и открытой заслонкой",
+      "files": [
+        "incoming/R1_dusk.png",
+        "incoming/R1_far_dark.png",
+        "incoming/R1_far_snow.png",
+        "incoming/R1_far_lights.png",
+        "incoming/closeup_lantern_closed.png",
+        "incoming/closeup_lantern_open.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 6",
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/R1.json → эффекты dusk, far_dark, far_snow, far_lights (сейчас затемнение и мягкие пятна движка) и lantern.mechanic (вырез фонаря R1 + заслонка движком)"
+    },
+    {
+      "id": "R2_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Переправа: вид из лодки, туман, натянутый канат уходит в туман, кольцо скользит по канату",
+      "files": [
+        "incoming/R2_bg.png",
+        "incoming/R2_fg_rope.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 7",
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/R2.json (сейчас background.placeholder — фигуры движка)"
+    },
+    {
+      "id": "R3_bg",
+      "status": "requested",
+      "kind": "background_layers",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Дальняя опора: каменная опора в снегу, стопор заведён в старое кольцо, сарайчик переправы, тропа вверх к улице, фонарь на столбике",
+      "files": [
+        "incoming/R3_bg.png",
+        "incoming/R3_fg_*.png"
+      ],
+      "brief": "Docs/BRIEF_CHATGPT_v4.md → Партия 3, п. 8",
+      "owner": "ChatGPT + Директор",
+      "use": "rooms/R3.json (сейчас background.placeholder — фигуры движка)"
+    },
+    {
+      "id": "icons_day2_block2",
+      "status": "requested",
+      "kind": "icons",
+      "block": "2 (день второй, 22.10)",
+      "spec": "Иконки сумки 512×512 на прозрачном: зеркало конторы в деревянной раме (стекло целое, углы расходятся); язык мельничного колокола (железный, с петлёй)",
+      "files": [
+        "icons/mirror_mill.png",
+        "icons/bell_clapper.png"
+      ],
+      "owner": "Claude (Meshy text-to-image, конвейер pipeline/2d)",
+      "use": "Сумка: предметы mirror_mill, bell_clapper (сейчас заплатка с буквой). Остальные иконки дня второго готовы: clamp, key_sluice, journal_manager, school_ribbon"
     }
   ]
 }

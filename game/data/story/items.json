@@ -89,10 +89,11 @@
       "inventory": true,
       "source_location": "H2",
       "source_hotspot": "H2.brace",
-      "use": "Выкована тётей под трещину плиты моста по заказу управы, так и не поставлена. Взять можно после плана из школы (до того — только осмотр); ставится на плиту в день второй (M15)",
-      "consumed": false,
-      "later_use": ["M15"],
-      "_source_note": "Источник — хотспот мастерской (rooms/H2.json → brace, use.requires knows_crossing_plan), а не выдача сцены: игрок берёт скобу сам, когда знает, зачем она (Docs/SCENARIO_FINAL.md, M04 и раздел 9). Проверки: tools/validate_story.py (единственный источник, симуляция), tools/validate_rooms.py (хотспот выдаёт ровно его)."
+      "use": "Выкована тётей под трещину плиты моста по заказу управы, так и не поставлена. Взять можно после плана из школы (до того — только осмотр); ставится на трещину плиты опоры у поворота в день второй (M15s) и остаётся там",
+      "consumed": true,
+      "later_use": ["M15s"],
+      "_source_note": "Источник — хотспот мастерской (rooms/H2.json → brace, use.requires knows_crossing_plan), а не выдача сцены: игрок берёт скобу сам, когда знает, зачем она (Docs/SCENARIO_FINAL.md, M04 и раздел 9). Проверки: tools/validate_story.py (единственный источник, симуляция), tools/validate_rooms.py (хотспот выдаёт ровно его).",
+      "_consumed_note": "Расходуется на плите опоры (rooms/Z3.json → pier_plate.item_use, сцена M15s): из сумки уходит, остаётся на трещине."
     },
     {
       "id": "chalk",
@@ -117,12 +118,13 @@
     },
     {
       "id": "mirror_mill",
-      "name": "Мельничное зеркало ЗМ",
-      "inventory": false,
-      "source_location": "M2",
-      "source_scene": "M09",
-      "use": "Целое стекло, разошедшаяся рама; устанавливается на стойку в H2 (M10), показывает M3",
-      "consumed": false
+      "name": "Зеркало конторы",
+      "inventory": true,
+      "source_location": "M1",
+      "source_scene": "M09b",
+      "use": "Ставится в тётину стойку «ЗМ» в мастерской (M10): рама держится, только пока зажата; показывает контору мельницы сейчас",
+      "consumed": true,
+      "_consumed_note": "Остаётся на стойке в мастерской (стойка вделана в верстак) — из сумки уходит, как ключ в замке."
     },
     {
       "id": "bell",
@@ -138,82 +140,48 @@
       "name": "Язык колокола",
       "inventory": true,
       "source_location": "H2",
-      "source_scene": "M12",
-      "use": "Подписанная коробка рядом с колоколом; ставится в M12",
+      "source_scene": "M11",
+      "use": "Коробка «Язык колокола» на полке мастерской; вешается на колокол (M11)",
       "consumed": true
     },
     {
       "id": "journal_manager",
-      "name": "Журнал управляющего",
+      "name": "Журнал конторы",
       "inventory": true,
       "source_location": "M3",
       "source_scene": "M13",
-      "use": "Старые маршруты и подписанный наряд; вместе с накладной определяет переправу",
-      "consumed": false
-    },
-    {
-      "id": "work_order_pavel",
-      "name": "Наряд Павла на перенос знака",
-      "inventory": true,
-      "source_location": "M3",
-      "source_scene": "M13",
-      "use": "Вложен в журнал; улика о снятом знаке",
-      "consumed": false
+      "use": "Последняя запись управляющего; правило спуска пруда — по зарубке и ждать; рабочая отметка воды для помола",
+      "consumed": false,
+      "later_use": ["M24"]
     },
     {
       "id": "key_sluice",
-      "name": "Ключ затвора",
+      "name": "Ключ от затвора",
       "inventory": true,
       "source_location": "M3",
       "source_scene": "M13",
-      "use": "Доступ к управлению затвором M4",
-      "consumed": false
-    },
-    {
-      "id": "scheme_sluice",
-      "name": "Схема затвора",
-      "inventory": true,
-      "source_location": "M3",
-      "source_scene": "M13",
-      "use": "Положение рычага и допустимый уровень",
-      "consumed": false
+      "use": "Висел на гвозде в конторе; вставляется в ворот затвора (M14) и остаётся в нём",
+      "consumed": true
     },
     {
       "id": "clamp",
-      "name": "Исправный зажим",
+      "name": "Струбцина",
       "inventory": true,
       "source_location": "M3",
       "source_scene": "M13",
-      "use": "Дополняет мастерскую; не обязателен для первого ремонта зеркала",
-      "consumed": false,
-      "optional": true
-    },
-    {
-      "id": "pier_plate_imprint",
-      "name": "Оттиск пластины школьной пристани",
-      "inventory": true,
-      "source_location": "Z3",
-      "source_scene": "M15",
-      "use": "Пластину унести нельзя; оттиск для сопоставления у Пелагеи",
-      "consumed": false
-    },
-    {
-      "id": "rope_lantern",
-      "name": "Канат и фонарь переправы",
-      "inventory": false,
-      "source_location": "R1",
-      "source_scene": "M16",
-      "use": "Принадлежность переправы: ближний стопор, сигнал, пустая лодка",
-      "consumed": false
+      "use": "Стягивает раму маминого зеркала (M15а): «нужна струбцина, моя сломана» — бирка Евдокии",
+      "consumed": true,
+      "_consumed_note": "Остаётся на раме маминого зеркала в мастерской."
     },
     {
       "id": "school_ribbon",
-      "name": "Школьная лента с дальнего берега",
+      "name": "Мамина лента",
       "inventory": true,
       "source_location": "R1",
       "source_scene": "M17",
-      "use": "Доказательство живого человека на том берегу",
-      "consumed": false
+      "use": "Пустая лодка вернулась с ней с того берега (M17): Нина вплетала её Агате в косу на праздники",
+      "consumed": false,
+      "later_use": ["M19"]
     },
     {
       "id": "pocket_watch",
@@ -266,9 +234,10 @@
       "name": "Пристанское зеркало ЗП",
       "inventory": false,
       "source_location": "R4",
-      "source_scene": "M18",
+      "source_scene": "M22",
       "use": "Перевозится со своей рамой в H3 (M27); после установки показывает R4",
-      "consumed": false
+      "consumed": false,
+      "_legacy_note": "Прежняя M18 (R4 с зеркалом) снята финальным сценарием; выдача перенесена в старую M22, чтобы цепочка E4–E7 проходила validate_story.py до её переписки блоками 3–4."
     },
     {
       "id": "pier_door_leaf",

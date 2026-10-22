@@ -1,0 +1,66 @@
+{
+  "id": "M2",
+  "_art": "Фон M2_bg.png (сени мельницы, ChatGPT v3): дверь конторы слева от середины (заперта изнутри), зеркало конторы у стены, фотография конторы рядом, открытая дверь кладовой справа, окно слева. M2_bg_mirror_removed.png — тот же вид без зеркала (полный фон, слой по флагу has_mirror_mill: Павел отдал зеркало). Крупный план фотографии — заглушка (BRIEF_CHATGPT_v4 §C2).",
+  "art_source": {
+    "files": {"bg.png": "assets/incoming/M2_bg.png", "bg_mirror_removed.png": "assets/incoming/M2_bg_mirror_removed.png"},
+    "canvas": [1672, 941]
+  },
+  "background": {"kind": "interior", "image": "res://assets/rooms/M2/bg.png", "wall": "#6a5440", "floor": "#5a4030", "accent": "#3a2a1a", "horizon": 700},
+  "walkable": [[40, 800], [250, 728], [470, 708], [1450, 702], [1740, 708], [1790, 790], [1915, 800], [1915, 1070], [20, 1070]],
+  "no_walk_samples": [[700, 500, "дверь конторы"], [380, 650, "ушат у стены"], [1100, 400, "зеркало"], [1850, 600, "дверь кладовой"]],
+  "walk_samples": [[960, 900], [400, 900], [1600, 950], [900, 760]],
+  "depth": {"top_y": 700, "bottom_y": 1070, "scale_top": 1.25, "scale_bottom": 1.95},
+  "_depth_note": "Рост Агаты = 345 px × scale. У двери конторы (порог y 690, дверь 530 px = 2,0 м) scale 1.23 → 425 px при ожидаемых 439.",
+  "height_refs": [{"what": "дверь конторы (порог y 690, верх y 160)", "y": 690, "px": 530, "m": 2.0}],
+  "layers": [
+    {"id": "mirror_removed", "image": "res://assets/rooms/M2/bg_mirror_removed.png", "z": -9, "if": ["has_mirror_mill"], "_note": "зеркало отдано Агате — сени без зеркала (полный фон без него, по совету _meta_v3/M2.md)"}
+  ],
+  "effects": [],
+  "spawns": {"default": [960, 880], "from_M1": [960, 960], "from_M3": [700, 780]},
+  "props": [],
+  "hotspots": [
+    {
+      "id": "office_door", "kind": "object", "label": "@M2.office_door.label", "rect": [622, 215, 156, 430], "stand": [700, 760], "draw": false, "pick_priority": 2,
+      "hidden_if": ["office_unbolted"],
+      "use": {"sets": ["seen_office_door"], "text": "@M2.office_door.use", "once_flag": "seen_office_door", "scene": "M09s"},
+      "look": "@M2.office_door.look"
+    },
+    {
+      "id": "office_door_open", "kind": "object", "label": "@M2.office_door_open.label", "rect": [622, 215, 156, 430], "stand": [700, 760], "draw": false, "pick_priority": 2,
+      "visible_if": ["office_unbolted"], "hidden_if": ["office_shelf_lifted"],
+      "use": {"sets": ["office_shelf_lifted"], "text": "@M2.office_door_open.use", "once_flag": "office_shelf_lifted", "scene": "M13a"},
+      "look": "@M2.office_door_open.look"
+    },
+    {
+      "id": "mirror", "kind": "object", "label": "@M2.mirror.label", "rect": [990, 130, 230, 415], "stand": [1100, 760], "draw": false,
+      "hidden_if": ["has_mirror_mill"],
+      "look": "@M2.mirror.look"
+    },
+    {
+      "id": "photo", "kind": "object", "label": "@M2.photo.label", "rect": [1255, 235, 150, 140], "stand": [1330, 760], "draw": false,
+      "mechanic": {
+        "type": "photo",
+        "title": "@M2.photo.title",
+        "photo": {"image": "res://assets/rooms/M3/bg.png", "region": [380, 40, 1250, 680], "pos": [380, 180], "scale": 0.92, "angle_deg": -2.0, "mirror": [300, 60, 110, 180], "_mirror_note": "рамка зеркала нарисована движком на стене конторы (на рисунке конторы зеркала нет) — до крупного плана «Фото в сенях»"},
+        "texts": {"label_caption": "@M2.photo.label_caption"},
+        "events": {"seen": {"sets": ["seen_office_photo"], "text": "@M2.photo.use"}}
+      },
+      "look": "@M2.photo.look"
+    },
+    {
+      "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [880, 252, 150, 448], "stand": [1150, 760], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/pavel/front.png",
+      "visible_if": ["office_unbolted"], "hidden_if": ["office_shelf_lifted"],
+      "talk": {"after_text": "@M2.pavel.after"}
+    }
+  ],
+  "exits": [
+    {"to": "M1", "label": "@M2.exit_M1.label", "cue": "down", "rect": [640, 1000, 640, 80], "stand": [960, 1035], "spawn": "from_M2", "draw": false},
+    {"to": "M3", "label": "@M2.exit_M3.label", "cue": "door", "rect": [560, 160, 280, 530], "stand": [700, 760], "spawn": "from_M2", "closed_text": "@M2.exit_M3.closed", "draw": false}
+  ],
+  "scenes": {
+    "M09s": {"complete_when": [{"all": ["seen_office_door", "seen_office_photo", "seen_shift_schedule"]}]},
+    "M13a": {"complete_when": [{"all": ["office_shelf_lifted"]}]}
+  },
+  "flags": {}
+}

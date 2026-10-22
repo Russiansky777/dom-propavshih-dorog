@@ -9,11 +9,17 @@ var data: Dictionary = {}
 
 func setup(p_data: Dictionary) -> void:
 	data = p_data
-	if data.has("if") or data.has("unless"):
+	if data.has("if") or data.has("unless") or data.has("spin"):
 		if not GameState.flag_changed.is_connected(_on_flag_changed):
 			GameState.flag_changed.connect(_on_flag_changed)
 		if not GameState.state_reset.is_connected(refresh):
 			GameState.state_reset.connect(refresh)
+	refresh()
+
+
+## A script with _process gets processing switched on when it enters the tree — the room is built before
+## it is added, so the spin state is set again here.
+func _ready() -> void:
 	refresh()
 
 
@@ -40,3 +46,29 @@ func is_active() -> bool:
 
 func refresh() -> void:
 	visible = is_active()
+	set_process(visible and _spin_on())
+
+
+## `spin` {deg_per_s, if, unless}: the layer turns about its `pivot` while the flags allow (the M1 water
+## wheel stops once the pond is let down — «Спустишь пруд — мельница встанет»).
+func _spin_on() -> bool:
+	var sp: Dictionary = data.get("spin", {})
+	if sp.is_empty():
+		return false
+	for f in sp.get("if", []):
+		if not GameState.has_flag(String(f)):
+			return false
+	for f in sp.get("unless", []):
+		if GameState.has_flag(String(f)):
+			return false
+	return true
+
+
+func is_spinning() -> bool:
+	return is_processing()
+
+
+func _process(delta: float) -> void:
+	var img := get_node_or_null("Image") as Node2D
+	if img != null:
+		img.rotation_degrees = fmod(img.rotation_degrees + float(data.get("spin", {}).get("deg_per_s", 0.0)) * delta, 360.0)

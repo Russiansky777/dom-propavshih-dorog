@@ -7,6 +7,7 @@ extends Node
 @onready var game_ui: CanvasLayer = $GameUi
 @onready var closeup: CanvasLayer = $Closeup
 @onready var closeup_view: CanvasLayer = get_node_or_null("CloseupView")
+@onready var mechanic_view: CanvasLayer = get_node_or_null("MechanicView")
 
 var _last_hint: String = ""
 var _probe_dirty: bool = false
@@ -28,6 +29,8 @@ func _ready() -> void:
 	StoryRunner.puzzle_closed.connect(_mark_probe)
 	StoryRunner.view_opened.connect(_mark_probe)
 	StoryRunner.view_closed.connect(_mark_probe)
+	StoryRunner.mechanic_opened.connect(_mark_probe)
+	StoryRunner.mechanic_closed.connect(_mark_probe)
 	StoryRunner.item_selection_changed.connect(func(_i): _mark_probe())
 	player.walk_started.connect(func(_t): _mark_probe())
 	player.arrived.connect(func(_p): _mark_probe())
@@ -140,6 +143,7 @@ func _publish_probe_state() -> void:
 		"ui": game_ui.call("probe_positions") if game_ui.has_method("probe_positions") else {},
 		"puzzle": closeup.call("probe_positions") if closeup.has_method("probe_positions") else {},
 		"view": closeup_view.call("probe") if closeup_view != null else {},
+		"mechanic": mechanic_view.call("probe") if mechanic_view != null else {},
 		"ticks": Time.get_ticks_msec(),
 		"physics_frames": Engine.get_physics_frames(),
 	}

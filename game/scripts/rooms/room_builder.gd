@@ -72,6 +72,10 @@ static func _build_background(room: Room, room_id: String, bg: Dictionary, horiz
 	container.name = "Background"
 	container.z_index = -10
 	room.add_child(container)
+	# Art ordered but not delivered (R2, R3 — Docs/BRIEF_CHATGPT_v4.md): flat shapes from data, never the room code.
+	if bg.has("placeholder"):
+		container.add_child(PlaceholderArt.build(bg["placeholder"].get("shapes", [])))
+		return
 	var png := String(bg.get("image", "%s/%s.png" % [BG_DIR, room_id]))
 	if ResourceLoader.exists(png):
 		var s := Sprite2D.new()
@@ -220,6 +224,13 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 		spr.scale = Vector2(art * sc, art * sc)
 		var off: Array = l.get("offset", [0, 0])
 		spr.position = Vector2(float(off[0]), float(off[1]))
+		# `pivot` [x, y] in the layer's own pixels: the sprite turns about it — static `rotation_deg` (the M4
+		# lever in a notch) or `spin` (the M1 wheel); the canvas origin still lands at `offset`.
+		if l.has("pivot"):
+			var pv := Vector2(float(l["pivot"][0]), float(l["pivot"][1]))
+			spr.offset = -pv
+			spr.position += pv * art * sc
+			spr.rotation_degrees = float(l.get("rotation_deg", 0.0))
 		node.add_child(spr)
 		if bool(l.get("occluder", false)) and occluders != null:
 			node.z_index = clampi(int(l.get("z", 1080)), 0, 4096)
@@ -328,6 +339,13 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 			# R1 pier behind Pelageya is drawn behind her, Tamara stays behind the Z1 counter.
 			spr.z_index = clampi(int(float(r[1]) + hgt), 0, 4096)
 			hs.add_child(spr)
+		# No sheet yet (Pavel, Mitya — BRIEF_CHATGPT_v4 §A): a flat figure filling the rect, feet at its bottom,
+		# sorted by the feet like a sprite. Data: placeholder {kind: silhouette, color, cap, beard, lantern}.
+		var ph: Dictionary = h.get("placeholder", {})
+		if String(ph.get("kind", "")) == "silhouette":
+			var fig := PlaceholderArt.silhouette(Rect2(-w / 2, -hgt / 2, w, hgt), Color.html(String(ph.get("color", "#2e2822"))), ph)
+			fig.z_index = clampi(int(float(r[1]) + hgt), 0, 4096)
+			hs.add_child(fig)
 		if kind == "npc":
 			var head := Polygon2D.new()
 			head.name = "Head"

@@ -517,7 +517,10 @@ func _test_story_data() -> void:
 	for rid in sd.rooms_index.get("in_scope", []):
 		var spec: Dictionary = sd.room(rid)
 		var bg_img := String(spec.get("background", {}).get("image", ""))
-		_check(bg_img != "" and ResourceLoader.exists(bg_img), "%s: background.image missing or not found (%s)" % [rid, bg_img])
+		# Art ordered but not delivered (R2, R3 — BRIEF_CHATGPT_v4): an engine-drawn stand-in from data,
+		# with the order named in `_art`; never a missing picture.
+		var placeholder: bool = spec.get("background", {}).has("placeholder") and String(spec.get("_art", "")) != ""
+		_check(placeholder or (bg_img != "" and ResourceLoader.exists(bg_img)), "%s: background.image missing or not found (%s)" % [rid, bg_img])
 		for l in spec.get("layers", []):
 			if not l.has("image") and l.has("text"):
 				continue  # stand-in text layer until its picture is drawn (validate_rooms.py п. 11)
@@ -629,9 +632,8 @@ func _test_walkthrough() -> void:
 	_check(bot.room_id() == "Z4", "still in Z4 after the closed exit")
 	_check(await bot.go("Z2"), "Z4→Z2 (lane → street)")
 	var m1exit = bot.exit_to("M1")
-	_check(m1exit != null and m1exit.is_open() and not m1exit.target_exists(), "Z2→M1 is open but unbuilt in M1")
-	_check(not (await bot.go("M1")), "unbuilt exit must not transition")
-	await bot.finish()
+	# Day two is built (block 2): the mill yard is a real room, the way there is open from the start.
+	_check(m1exit != null and m1exit.is_open() and m1exit.target_exists(), "Z2→M1 is open and the mill yard is built")
 
 	# --- M02 via Z3 → R1 ---
 	_check(await bot.go("Z3"), "Z2→Z3")
@@ -872,8 +874,10 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "N01 (night by the stove) done: %s" % str(seen))
 	# (the first staging may already be over inside bot.go — its wait_idle waits for stagings too)
 	var night_lines: Array = seen.filter(func(x): return x != "stage")
-	_check(night_lines.size() == 3 and night_lines[0].begins_with("agata:") and night_lines[2].begins_with("tikhon:") and seen.back() == "stage",
-		"N01: 2 lines of Agata, Tikhon's grumble, morning staging: %s" % str(seen))
+	# The morning staging, then Tikhon's morning line (SCENARIO_FINAL §7 «Утро», block 2 22.10) before the checkpoint.
+	_check(night_lines.size() == 4 and night_lines[0].begins_with("agata:") and night_lines[2].begins_with("tikhon:")
+		and seen.size() >= 2 and seen[seen.size() - 2] == "stage" and String(seen.back()).begins_with("tikhon:Колокол не трогай"),
+		"N01: 2 lines of Agata, Tikhon's grumble, morning staging, Tikhon's morning line: %s" % str(seen))
 	_check(bot.room_id() == "H1", "the night moves Agata to the stove (H1), room=%s" % bot.room_id())
 	_check(sr.stage_dim == 0.0 and not sr.is_staging(), "morning: no dusk left")
 	var cp_slot: String = rm.checkpoint_prefix + "day2"

@@ -1,0 +1,634 @@
+{
+  "_comment": "Тексты дня второго (E2–E3: M09–M18, Docs/SCENARIO_FINAL.md §7): осмотры, подписи, реакции, тексты крупных планов (механик) и строки предметов. Все draft: true — текст доводит владелец текста (ChatGPT с Директором); голоса для этих строк не записаны (генерация — после текстового прохода Директора). Поле line {speaker, text} — слова персонажа рядом с Агатой или мысль Агаты от первого лица: показывается репликой с именем и звучит голосом персонажа; text — запасной закадровый вариант. Ключи H2d./Z3d./R1d. — дополнения дня 2 в комнаты первого дня. Обязательные реплики сцен — в scenes/E2.json и E3.json.",
+  "lang": "ru",
+  "texts": {
+    "ui.day2_end": {
+      "text": "Дальше по тропе — улица Ольховки и встреча с мамой. Эта часть игры ещё собирается.",
+      "draft": true
+    },
+    "M1.pavel.day1": {
+      "text": "Вечер скоро. Приходи утром, по свету, — тогда и поговорим.",
+      "draft": true,
+      "line": {
+        "speaker": "pavel",
+        "text": "Вечер скоро. Приходи утром, по свету, — тогда и поговорим."
+      }
+    },
+    "M1.pavel.before_agree": {
+      "text": "Глянь сени: дверь конторы, фотографию на стене. И распорядок во дворе, на доске. Потом говори.",
+      "draft": true,
+      "line": {
+        "speaker": "pavel",
+        "text": "Глянь сени: дверь конторы, фотографию на стене. И распорядок во дворе, на доске. Потом говори."
+      }
+    },
+    "M1.pavel.after": {
+      "text": "Звони из мастерской. Я у двери конторы, с фонарём.",
+      "draft": true,
+      "line": {
+        "speaker": "pavel",
+        "text": "Звони из мастерской. Я у двери конторы, с фонарём."
+      }
+    },
+    "M1.schedule.label": {
+      "text": "Распорядок смен",
+      "draft": true
+    },
+    "M1.schedule.use": {
+      "text": "Выцветший распорядок смен со старыми сигналами колокола: «Один удар — пускай. Два — стой. Долгий — подымай».",
+      "draft": true
+    },
+    "M1.schedule.look": {
+      "text": "Распорядок смен: «Один удар — пускай. Два — стой. Долгий — подымай».",
+      "draft": true
+    },
+    "M1.wheel.label": {
+      "text": "Мельничное колесо",
+      "draft": true
+    },
+    "M1.wheel.label_still": {
+      "text": "Колесо стоит",
+      "draft": true
+    },
+    "M1.wheel.look": {
+      "text": "Колесо ходит от своего ставня: мельница мелет и при запертом затворе. Пока пруд полный.",
+      "draft": true
+    },
+    "M1.bench.label": {
+      "text": "Верстак",
+      "draft": true
+    },
+    "M1.bench.look": {
+      "text": "Инструмент Павла: молотки, долото, рубанок. Всё на месте, всё в муке.",
+      "draft": true
+    },
+    "M1.exit_Z2.label": {
+      "text": "На улицу",
+      "draft": true
+    },
+    "M1.exit_Z3.label": {
+      "text": "К повороту, береговой дорожкой",
+      "draft": true
+    },
+    "M1.exit_M2.label": {
+      "text": "В сени",
+      "draft": true
+    },
+    "M1.exit_M4.label": {
+      "text": "К затвору",
+      "draft": true
+    },
+    "M2.office_door.label": {
+      "text": "Дверь конторы",
+      "draft": true
+    },
+    "M2.office_door.use": {
+      "text": "Дверь конторы не подаётся. В щели у косяка — темнота: изнутри засов, к двери привалился стеллаж.",
+      "draft": true
+    },
+    "M2.office_door.look": {
+      "text": "Дверь конторы заперта изнутри. Тянуть нельзя: стеллаж за ней уйдёт следом.",
+      "draft": true
+    },
+    "M2.office_door_open.label": {
+      "text": "Дверь конторы",
+      "draft": true
+    },
+    "M2.office_door_open.use": {
+      "text": "Павел берётся с одного края, Агата — с другого. Стеллаж с гирями поднимается и встаёт к стене. Дверь открыта.",
+      "draft": true
+    },
+    "M2.office_door_open.look": {
+      "text": "Засов вышел из скоб, дверь чуть подалась. За ней — стеллаж.",
+      "draft": true
+    },
+    "M2.mirror.label": {
+      "text": "Зеркало конторы",
+      "draft": true
+    },
+    "M2.mirror.look": {
+      "text": "Зеркало конторы. Без спросу не возьму — это Павла.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Зеркало конторы. Без спросу не возьму — это Павла."
+      }
+    },
+    "M2.photo.label": {
+      "text": "Фотография конторы",
+      "draft": true
+    },
+    "M2.photo.title": {
+      "text": "Фотография в сенях",
+      "draft": true
+    },
+    "M2.photo.label_caption": {
+      "text": "Контора мельницы. Зеркало в старой раме — на своём месте.",
+      "draft": true
+    },
+    "M2.photo.use": {
+      "text": "Старая фотография конторы изнутри: зеркало в раме висит на своём месте, на стене.",
+      "draft": true
+    },
+    "M2.photo.look": {
+      "text": "Старая фотография конторы изнутри.",
+      "draft": true
+    },
+    "M2.pavel.after": {
+      "text": "Берись за стеллаж с того края двери. Поднимем.",
+      "draft": true,
+      "line": {
+        "speaker": "pavel",
+        "text": "Берись за стеллаж с того края двери. Поднимем."
+      }
+    },
+    "M2.exit_M1.label": {
+      "text": "Во двор",
+      "draft": true
+    },
+    "M2.exit_M3.label": {
+      "text": "В контору",
+      "draft": true
+    },
+    "M2.exit_M3.closed": {
+      "text": "Дверь конторы не открыть: изнутри её держат засов и стеллаж.",
+      "draft": true
+    },
+    "M3.key_nail.label": {
+      "text": "Ключ от затвора",
+      "draft": true
+    },
+    "M3.key_nail.use": {
+      "text": "Ключ от затвора висит на гвозде, где его оставил управляющий. Теперь он в сумке.",
+      "draft": true
+    },
+    "M3.key_nail.look": {
+      "text": "Большой кованый ключ на гвозде.",
+      "draft": true
+    },
+    "M3.journal.label": {
+      "text": "Журнал конторы",
+      "draft": true
+    },
+    "M3.journal.use": {
+      "text": "Последняя запись рукой управляющего: «Затвор на ночь закрыт. Ключ на гвозде. Ушёл домой». Число — год назад. Рядом правило: «Спускать пруд по зарубке и ждать, иначе берега поплывут». И рабочая отметка воды для помола.",
+      "draft": true
+    },
+    "M3.journal.look": {
+      "text": "Раскрытые журналы конторы.",
+      "draft": true
+    },
+    "M3.clamp.label": {
+      "text": "Струбцина",
+      "draft": true
+    },
+    "M3.clamp.use": {
+      "text": "Струбцина! «Нужна струбцина, моя сломана» — так на тётиной бирке. Возьму для маминого зеркала.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Струбцина! «Нужна струбцина, моя сломана» — так на тётиной бирке. Возьму для маминого зеркала."
+      }
+    },
+    "M3.clamp.look": {
+      "text": "Исправная струбцина на полке.",
+      "draft": true
+    },
+    "M3.gauge.label": {
+      "text": "Рейка уровня",
+      "draft": true
+    },
+    "M3.gauge.look": {
+      "text": "За окном в воде — рейка уровня. По ней видно, сколько воды держит затвор.",
+      "draft": true
+    },
+    "M3.pavel.before": {
+      "text": "Бери, что надо: ключ на гвозде, журнал на столе.",
+      "draft": true,
+      "line": {
+        "speaker": "pavel",
+        "text": "Бери, что надо: ключ на гвозде, журнал на столе."
+      }
+    },
+    "M3.exit_M2.label": {
+      "text": "В сени",
+      "draft": true
+    },
+    "M3.answer.prompt": {
+      "text": "Что ответить Павлу?",
+      "draft": true
+    },
+    "M3.answer.opt_family": {
+      "text": "Там мама и брат.",
+      "draft": true
+    },
+    "M3.answer.opt_promise": {
+      "text": "Поднимем к зиме. Слово даю.",
+      "draft": true
+    },
+    "M4.gate.label": {
+      "text": "Затвор",
+      "draft": true
+    },
+    "M4.gate.key": {
+      "text": "Ключ встаёт в ворот. Рычаг теперь ходит — по зарубке.",
+      "draft": true
+    },
+    "M4.gate.look": {
+      "text": "Затвор пруда: ворот, дуга с зарубками. По журналу — открывать по зарубке и ждать спада.",
+      "draft": true
+    },
+    "M4.gate.locked": {
+      "text": "Ворот заперт: ключ от затвора — в конторе.",
+      "draft": true
+    },
+    "M4.sluice.title": {
+      "text": "Затвор пруда",
+      "draft": true
+    },
+    "M4.sluice.label_gauge": {
+      "text": "Рейка уровня",
+      "draft": true
+    },
+    "M4.sluice.label_status_settled": {
+      "text": "Вода встала. Можно на следующую зарубку.",
+      "draft": true
+    },
+    "M4.sluice.label_status_falling": {
+      "text": "Вода сходит. Павел держит ворот.",
+      "draft": true
+    },
+    "M4.sluice.label_status_open": {
+      "text": "Затвор открыт. К вечеру вода сойдёт.",
+      "draft": true
+    },
+    "M4.sluice.wait": {
+      "text": "Погоди. Пусть сойдёт.",
+      "draft": true,
+      "line": {
+        "speaker": "pavel",
+        "text": "Погоди. Пусть сойдёт."
+      }
+    },
+    "M4.pavel.before": {
+      "text": "Ключ в ворот — и по зарубке. Как в журнале.",
+      "draft": true,
+      "line": {
+        "speaker": "pavel",
+        "text": "Ключ в ворот — и по зарубке. Как в журнале."
+      }
+    },
+    "M4.pavel.after": {
+      "text": "К вечеру сойдёт. Ступай пока.",
+      "draft": true,
+      "line": {
+        "speaker": "pavel",
+        "text": "К вечеру сойдёт. Ступай пока."
+      }
+    },
+    "M4.water.label": {
+      "text": "Лоток",
+      "draft": true
+    },
+    "M4.water.look": {
+      "text": "Вода в лотке у затвора. Её держит мельничный пруд.",
+      "draft": true
+    },
+    "M4.exit_M1.label": {
+      "text": "Во двор мельницы",
+      "draft": true
+    },
+    "R2.pelageya.after": {
+      "text": "Держись за кольцо.",
+      "draft": true,
+      "line": {
+        "speaker": "pelageya",
+        "text": "Держись за кольцо."
+      }
+    },
+    "R2.rope.label": {
+      "text": "Канат моста",
+      "draft": true
+    },
+    "R2.rope.look": {
+      "text": "Канат натянут ровно; кольцо скользит по нему в туман.",
+      "draft": true
+    },
+    "R2.exit_R1.label": {
+      "text": "Назад, к причалу",
+      "draft": true
+    },
+    "R2.exit_R3.label": {
+      "text": "К дальней опоре",
+      "draft": true
+    },
+    "R3.mitya.after": {
+      "text": "Пойдём. Нина ждёт.",
+      "draft": true,
+      "line": {
+        "speaker": "mitya",
+        "text": "Пойдём. Нина ждёт."
+      }
+    },
+    "R3.pelageya.after": {
+      "text": "Иди. Я с ним постою.",
+      "draft": true,
+      "line": {
+        "speaker": "pelageya",
+        "text": "Иди. Я с ним постою."
+      }
+    },
+    "R3.stopor.label": {
+      "text": "Дальний стопор",
+      "draft": true
+    },
+    "R3.stopor.look": {
+      "text": "Дальний стопор заведён в старое кольцо опоры. Канат держат отсюда.",
+      "draft": true
+    },
+    "R3.lamp_post.label": {
+      "text": "Фонарь на столбике",
+      "draft": true
+    },
+    "R3.lamp_post.look": {
+      "text": "Фонарь на столбике у тропы. Его зажигали здесь каждый вечер.",
+      "draft": true
+    },
+    "R3.exit_R2.label": {
+      "text": "К лодке",
+      "draft": true
+    },
+    "R3.exit_O4.label": {
+      "text": "Тропа к улице",
+      "draft": true
+    },
+    "R3.exit_R4.label": {
+      "text": "Мастерская переправы",
+      "draft": true
+    },
+    "R3.exit_R4.unbuilt": {
+      "text": "Мастерская потом. Сначала — к Нине.",
+      "draft": true,
+      "line": {
+        "speaker": "mitya",
+        "text": "Мастерская потом. Сначала — к Нине."
+      }
+    },
+    "H2d.stand_zm.mount": {
+      "text": "Зеркало конторы встаёт в тётину стойку. Рама держится, только пока зажата: остались клинья.",
+      "draft": true
+    },
+    "H2d.office_mirror.title": {
+      "text": "Зеркало конторы на стойке «ЗМ»",
+      "draft": true
+    },
+    "H2d.office_mirror.clamped": {
+      "text": "Клинья сели. Стекло темнеет и показывает комнату с фотографии: стол, опрокинутый стеллаж у двери, засов в скобах. Звука нет.",
+      "draft": true
+    },
+    "H2d.office_mirror.view_first": {
+      "text": "В стекле — контора мельницы. Звука нет.",
+      "draft": true
+    },
+    "H2d.office_mirror.view_again": {
+      "text": "В стекле — контора мельницы. Сейчас.",
+      "draft": true
+    },
+    "H2d.office_mirror.glass_touch": {
+      "text": "Рука упирается в стекло. Прохода нет.",
+      "draft": true
+    },
+    "H2d.office_mirror.glass_loose": {
+      "text": "Рама разошлась: стекло дрожит и мутнеет. Надо подбить клинья.",
+      "draft": true
+    },
+    "H2d.office_mirror.bell_mute": {
+      "text": "Колокол без языка молчит. Язык лежит в коробке на полке.",
+      "draft": true
+    },
+    "H2d.office_mirror.bell_unclamped": {
+      "text": "Сначала рама: пока клинья не подбиты, в стекле ничего не разобрать.",
+      "draft": true
+    },
+    "H2d.office_mirror.hook_slipped": {
+      "text": "Крюк сорвался. Павел возвращает его наверх и ведёт снова.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_schedule": {
+      "text": "Распорядок смен:\nОдин удар — пускай.\nДва — стой.\nДолгий — подымай.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_loose": {
+      "text": "Рама не зажата — подбить клинья.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_ring_once": {
+      "text": "Ударить один раз — Павел поднесёт фонарь к щели.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_wait": {
+      "text": "Крюк наверху. Павел ждёт сигнала.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_down": {
+      "text": "Крюк идёт вниз вдоль двери.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_stopped": {
+      "text": "Крюк стоит.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_lift_bar": {
+      "text": "Павел подымает крюк…",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_lift_empty": {
+      "text": "Павел подымает крюк…",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_slipping": {
+      "text": "Крюк сорвался — Павел ведёт его наверх.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_solved": {
+      "text": "Засов поднят.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_status_open": {
+      "text": "Засов поднят, дверь подалась.",
+      "draft": true
+    },
+    "H2d.office_mirror.label_bell": {
+      "text": "Колокол: щелчок — удар, долгое нажатие — долгий звон",
+      "draft": true
+    },
+    "H2d.clapper_box.use": {
+      "text": "В коробке — язык колокола. Теперь он в сумке.",
+      "draft": true
+    },
+    "H2d.bell.hang": {
+      "text": "Язык встаёт на своё место. Колокол снова целый.",
+      "draft": true
+    },
+    "H2d.bell.need_mirror": {
+      "text": "Звонить надо, глядя в зеркало конторы, — а его ещё нет на стойке.",
+      "draft": true
+    },
+    "H2d.nina_mirror.clamp": {
+      "text": "Струбцина стягивает раму. Мутное стекло светлеет.",
+      "draft": true
+    },
+    "H2d.nina_mirror.title": {
+      "text": "Мамино зеркало",
+      "draft": true
+    },
+    "H2d.nina_mirror.knock_first": {
+      "text": "Агата стучит в стекло. Нина не оборачивается.",
+      "draft": true
+    },
+    "H2d.nina_mirror.watch_wait": {
+      "text": "Стрелка ходиков ещё не прошла и деления. Посмотреть подольше.",
+      "draft": true
+    },
+    "H2d.nina_mirror.watch_again": {
+      "text": "Минута здесь — двадцать там.",
+      "draft": true
+    },
+    "H2d.nina_mirror.label_watch": {
+      "text": "Карманные часы Агаты",
+      "draft": true
+    },
+    "Z3d.plate_dry.label": {
+      "text": "Плита опоры",
+      "draft": true
+    },
+    "Z3d.plate_dry.look": {
+      "text": "Вода сошла. Над водой плита опоры: литые буквы «Ольховка», кольцо для каната и трещина через всю плиту.",
+      "draft": true
+    },
+    "Z3d.plate_dry.use_skoba": {
+      "text": "Скоба в сумке — её на трещину.",
+      "draft": true
+    },
+    "Z3d.plate_dry.no_skoba": {
+      "text": "Скоба осталась у тёти на верстаке. Придётся вернуться.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Скоба осталась у тёти на верстаке. Придётся вернуться."
+      }
+    },
+    "Z3d.plate_dry.skoba": {
+      "text": "Скоба ложится на трещину. Осталось забить.",
+      "draft": true
+    },
+    "Z3d.plate.title": {
+      "text": "Плита на опоре",
+      "draft": true
+    },
+    "Z3d.plate.label_letters": {
+      "text": "ОЛЬХОВКА",
+      "draft": true
+    },
+    "Z3d.plate.label_hint": {
+      "text": "Скоба — три удара. Канат — к кольцу, узел — как показывает Пелагея.",
+      "draft": true
+    },
+    "Z3d.plate.rope_at_ring": {
+      "text": "Конец каната у кольца. Пелагея показывает узел: под кольцо, вокруг, в петлю.",
+      "draft": true
+    },
+    "Z3d.plate.knot_wrong": {
+      "text": "Не так. Смотри ещё раз: под кольцо, вокруг, в петлю.",
+      "draft": true,
+      "line": {
+        "speaker": "pelageya",
+        "text": "Не так. Смотри ещё раз: под кольцо, вокруг, в петлю."
+      }
+    },
+    "Z3d.pelageya.wait_skoba": {
+      "text": "Сперва скобу на трещину — потом канат.",
+      "draft": true,
+      "line": {
+        "speaker": "pelageya",
+        "text": "Сперва скобу на трещину — потом канат."
+      }
+    },
+    "Z3d.pelageya.knot": {
+      "text": "Конец у плиты. Вяжи на кольцо — покажу как.",
+      "draft": true,
+      "line": {
+        "speaker": "pelageya",
+        "text": "Конец у плиты. Вяжи на кольцо — покажу как."
+      }
+    },
+    "Z3d.pelageya.done": {
+      "text": "Держит. Теперь на причал — фонарь.",
+      "draft": true,
+      "line": {
+        "speaker": "pelageya",
+        "text": "Держит. Теперь на причал — фонарь."
+      }
+    },
+    "Z3d.water_low.label": {
+      "text": "Мокрые камни",
+      "draft": true
+    },
+    "R1d.lantern.title": {
+      "text": "Сигнальный фонарь",
+      "draft": true
+    },
+    "R1d.lantern.label_far": {
+      "text": "Тот берег",
+      "draft": true
+    },
+    "R1d.lantern.label_count": {
+      "text": "Три огня: трижды открыть заслонку. Потом ждать ответа.",
+      "draft": true
+    },
+    "R1d.lantern.count_wrong": {
+      "text": "Три огня. Ровно три — и ждать.",
+      "draft": true,
+      "line": {
+        "speaker": "pelageya",
+        "text": "Три огня. Ровно три — и ждать."
+      }
+    },
+    "R1d.lantern.use_day": {
+      "text": "Сигнальный фонарь Пелагеи. Подавать огни пока некому: канат не на плите.",
+      "draft": true
+    },
+    "R1d.pelageya.at_turn": {
+      "text": "Я у поворота с лодкой. Иди туда.",
+      "draft": true,
+      "line": {
+        "speaker": "pelageya",
+        "text": "Я у поворота с лодкой. Иди туда."
+      }
+    },
+    "item.mirror_mill": {
+      "text": "Зеркало конторы: стекло целое, углы рамы расходятся.",
+      "draft": true
+    },
+    "item.bell_clapper": {
+      "text": "Язык мельничного колокола.",
+      "draft": true
+    },
+    "item.key_sluice": {
+      "text": "Ключ от затвора, с гвоздя в конторе.",
+      "draft": true
+    },
+    "item.journal_manager": {
+      "text": "Последняя запись управляющего и правило спуска пруда.",
+      "draft": true
+    },
+    "item.clamp": {
+      "text": "Стянет разошедшуюся раму.",
+      "draft": true
+    },
+    "item.school_ribbon": {
+      "text": "Мамина лента: её вплетали в косу на праздники.",
+      "draft": true
+    }
+  }
+}

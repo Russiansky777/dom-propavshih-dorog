@@ -30,6 +30,12 @@ signal stage_fade(alpha: float, seconds: float)
 signal stage_sound_requested(sound_id: String)
 ## A scene's `checkpoint` save was written (slot, title) — «День второй» after the night by the stove.
 signal checkpoint_saved(slot: String, title: String)
+## A hotspot with `mechanic: {type, requires, events, ...}` (rooms data) opens an interactive close-up
+## (MechanicView: the office mirror with the bell, the sluice, mother's mirror, the plate, the signal
+## lantern). The close-up reports what the player did as named events; their effects are data
+## (`events.<name>`: sets, text, close) and are applied here — the panels never decide story state.
+signal mechanic_opened(spec: Dictionary)
+signal mechanic_closed()
 
 const LOOP_FADE_SECONDS: float = 0.35
 
@@ -41,6 +47,8 @@ var puzzle_hotspot: Node2D = null
 var puzzle: Dictionary = {}   # {spec, placed:{slot->piece}, mark:int, errors:int, solved:bool, message, message_key, message_serial, hint}
 var view_open: bool = false
 var view: Dictionary = {}     # the open look-only close-up: the hotspot's `view` spec + "hotspot" id
+var mechanic_open: bool = false
+var mechanic: Dictionary = {}  # the open interactive close-up: the hotspot's `mechanic` spec + "hotspot" id
 
 var stage_dim: float = 0.0   # the overlay level a staging left on screen (dusk at night), 0 — none
 
@@ -60,7 +68,7 @@ func _ready() -> void:
 # --- State queries ----------------------------------------------------------
 
 func is_busy() -> bool:
-	return not current_beat.is_empty() or puzzle_open or view_open or _loop_running or _stage_running
+	return not current_beat.is_empty() or puzzle_open or view_open or mechanic_open or _loop_running or _stage_running
 
 
 ## A scene staging (fade, room change, sounds) is playing — no beat on screen, input held.
@@ -237,9 +245,23 @@ func start_scene(scene_id: String) -> bool:
 		if line.has("context"):
 			beats.append({"type": "options", "scene": scene_id, "prompt": "",
 				"options": [{"id": "ask", "label": String(line["context"])}], "callback": Callable()})
+		# A choice inside the conversation (M13: what Agata answers Pavel): `options` [{id, label, sets, text}] —
+		# the chosen flag is set and the speaker says the chosen words (line_id <scene>_<index>_<option>).
+		if line.has("options"):
+			var opts: Array = []
+			for o in line["options"]:
+				opts.append({"id": String(o["id"]), "label": StoryData.text(String(o.get("label", o.get("text", o["id"])))), "sets": String(o.get("sets", ""))})
+			beats.append({"type": "options", "scene": scene_id, "prompt": StoryData.text(String(line.get("prompt", ""))),
+				"options": opts, "callback": _apply_line_option.bind(scene_id, i, line)})
+			continue
+		var sp := String(line.get("speaker", ""))
 		# line_id <scene>_<index>: the stable id of the recorded voice (VoiceDirector, assets/voice/ru).
-		beats.append({"type": "line", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "speaker": String(line.get("speaker", "")),
-			"speaker_name": StoryData.character_name(String(line.get("speaker", ""))), "text": String(line.get("text", ""))})
+		if sp == "narrator":
+			# What nobody says (the empty boat goes into the fog): a narration beat inside the scene.
+			beats.append({"type": "narration", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "text": String(line.get("text", ""))})
+			continue
+		beats.append({"type": "line", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "speaker": sp,
+			"speaker_name": StoryData.character_name(sp), "text": String(line.get("text", ""))})
 	for st in stages:
 		if str(st.get("at", "")) == "end":
 			beats.append({"type": "stage", "scene": scene_id, "spec": st})
@@ -251,6 +273,21 @@ func start_scene(scene_id: String) -> bool:
 	if current_beat.is_empty():
 		_next()
 	return true
+
+
+func _apply_line_option(option_id: String, scene_id: String, index: int, line: Dictionary) -> void:
+	for o in line.get("options", []):
+		if String(o.get("id", "")) != option_id:
+			continue
+		var f := String(o.get("sets", ""))
+		if f != "":
+			GameState.set_flag(f, true)
+		var sp := String(line.get("speaker", "agata"))
+		var t := String(o.get("text", ""))
+		if t != "":
+			_beats.push_front({"type": "line", "scene": scene_id, "line_id": "%s_%d_%s" % [scene_id, index, option_id], "speaker": sp,
+				"speaker_name": StoryData.character_name(sp), "text": t})
+		return
 
 
 func _complete_scene(scene_id: String) -> void:
@@ -395,6 +432,7 @@ func _on_state_reset() -> void:
 		puzzle_closed.emit()
 	if had_view:
 		view_closed.emit()
+	close_mechanic()
 	beat_changed.emit()
 
 
@@ -410,6 +448,7 @@ func _on_state_loaded(_slot: String) -> void:
 		active_scene = ""
 		beat_changed.emit()
 	close_view()
+	close_mechanic()
 	if puzzle_open:
 		puzzle_open = false
 		puzzle_hotspot = null
@@ -490,11 +529,13 @@ func planned_interaction(h: StoryHotspot) -> String:
 		return "panel"
 	if d.has("talk"):
 		var t: Dictionary = d["talk"]
-		var scn := String(t.get("scene", ""))
+		var scn := talk_scene(t)
 		if scn != "" and can_start(scn):
 			return "talk"
-		if (scn != "" and not is_done(scn) and t.has("before_text")) or t.has("after_text"):
+		if (scn != "" and not is_done(scn) and t.has("before_text")) or t.has("after_text") or t.has("by_flags"):
 			return "talk_text"
+	if d.has("mechanic") and requires_met(mechanic_spec(h).get("requires", {})):
+		return "mechanic"
 	if d.has("puzzle"):
 		var pz: Dictionary = d["puzzle"]
 		var success_scene := String(pz.get("success", {}).get("scene", ""))
@@ -542,16 +583,28 @@ func interact(h: StoryHotspot) -> void:
 
 	if d.has("talk"):
 		var t: Dictionary = d["talk"]
-		var scn := String(t.get("scene", ""))
+		var scn := talk_scene(t)
 		if scn != "":
 			if can_start(scn):
 				start_scene(scn)
 				return
 			if not is_done(scn) and t.has("before_text"):
-				narrate_key(String(t["before_text"]))
+				narrate_key(_talk_before_text(t, scn))
+				return
+		# What the person says depends on how far things went (Pelageya at the turn: before the brace,
+		# with the rope): `by_flags` [{if: [flags], text}] — the first entry whose flags all hold.
+		for e in t.get("by_flags", []):
+			if requires_met({"flags": e.get("if", [])}):
+				narrate_key(String(e.get("text", "")))
 				return
 		if t.has("after_text"):
 			narrate_key(String(t["after_text"]))
+			return
+
+	if d.has("mechanic"):
+		var ms := mechanic_spec(h)
+		if requires_met(ms.get("requires", {})):
+			open_mechanic(ms, h.hotspot_id)
 			return
 
 	if d.has("puzzle"):
@@ -597,6 +650,25 @@ func interact(h: StoryHotspot) -> void:
 				narrate_key(String(d["use"]["text_done"]))
 				return
 	narrate_key(look)
+
+
+## The scene a conversation leads to: `talk.scene`, or the first of `talk.scenes` not done yet (Pavel: first
+## the story of the office, then the agreement once Agata has looked round the passage). "" when all done.
+func talk_scene(t: Dictionary) -> String:
+	if t.has("scenes"):
+		for sc in t["scenes"]:
+			if not is_done(String(sc)):
+				return String(sc)
+		return ""
+	return String(t.get("scene", ""))
+
+
+## `before_text` may be a map scene → text (what the person says while the next talk is not ready yet).
+func _talk_before_text(t: Dictionary, scn: String) -> String:
+	var bt = t.get("before_text", "")
+	if bt is Dictionary:
+		return String(bt.get(scn, bt.get("default", "@ui.nothing_here")))
+	return String(bt)
 
 
 func view_allowed(v: Dictionary) -> bool:
@@ -685,6 +757,11 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 				narrate_key(String(k))
 		else:
 			narrate_key(String(t))
+	# The item put in place opens the close-up at once (the clamp on mother's mirror, the brace on the plate).
+	if bool(act.get("open_mechanic", false)) and h.data.has("mechanic"):
+		var ms := mechanic_spec(h)
+		if requires_met(ms.get("requires", {})):
+			open_mechanic(ms, h.hotspot_id)
 
 
 # --- Exits -------------------------------------------------------------------
@@ -884,6 +961,71 @@ func close_view() -> void:
 	view_open = false
 	view = {}
 	view_closed.emit()
+
+
+# --- Interactive close-ups (hotspot `mechanic`) --------------------------------
+
+## The hotspot's mechanic spec; `same_as` borrows another hotspot's of the same room (the H2 bell and the
+## stand with the office mirror open one and the same close-up: the bell is rung while watching the glass).
+func mechanic_spec(h: Node) -> Dictionary:
+	if h == null:
+		return {}
+	var d: Dictionary = h.get("data")
+	var ms: Dictionary = d.get("mechanic", {})
+	if ms.has("same_as"):
+		for other in StoryData.room(String(h.get("room_id"))).get("hotspots", []):
+			if String(other.get("id", "")) == String(ms["same_as"]):
+				var base: Dictionary = other.get("mechanic", {}).duplicate(true)
+				base["opened_from"] = String(d.get("id", ""))
+				return base
+	return ms
+
+
+func open_mechanic(spec: Dictionary, hotspot_id: String = "") -> void:
+	if mechanic_open:
+		return
+	mechanic = spec.duplicate(true)
+	mechanic["hotspot"] = hotspot_id
+	mechanic_open = true
+	mechanic_opened.emit(mechanic)
+
+
+func close_mechanic() -> void:
+	if not mechanic_open:
+		return
+	mechanic_open = false
+	mechanic = {}
+	mechanic_closed.emit()
+	if current_beat.is_empty():
+		_queue_check()
+
+
+## What the player did in the close-up (`events.<name>` in data): flags set (story state, saved), a text
+## over the close-up, `close` puts the close-up away after the text. Returns false for an unknown event.
+func mechanic_event(event_name: String) -> bool:
+	if not mechanic_open:
+		return false
+	var ev: Dictionary = mechanic.get("events", {}).get(event_name, {})
+	if ev.is_empty():
+		return false
+	for f in ev.get("sets", []):
+		GameState.set_flag(String(f), true)
+	if ev.has("text"):
+		narrate_key(String(ev["text"]))
+	if bool(ev.get("close", false)):
+		if current_beat.is_empty():
+			close_mechanic()
+		else:
+			_beats.append({"type": "call", "fn": close_mechanic})
+	if not ev.get("sets", []).is_empty():
+		RoomManager.autosave()
+	return true
+
+
+## A text from the close-up (its data key or plain text) in the dialogue box above it.
+func mechanic_say(key_or_text: String) -> void:
+	if key_or_text != "":
+		narrate_key(key_or_text)
 
 
 # --- Hints and journal --------------------------------------------------------

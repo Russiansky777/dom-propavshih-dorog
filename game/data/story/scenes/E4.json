@@ -66,7 +66,8 @@
       "id": "M22", "type": "main", "title": "Первый свободный выход",
       "locations": ["O3", "O4", "R4", "R3", "R2", "R1", "Z2", "H1", "H3"],
       "requires": {"flags": ["goal_reframed"], "items": ["notebooks_evdokia"]},
-      "grants": {"flags": ["done_M22", "first_free_exit", "nina_visited_house", "archive_in_workshop"], "items": ["key_gate"]},
+      "grants": {"flags": ["done_M22", "first_free_exit", "nina_visited_house", "archive_in_workshop", "seen_mirror_pier"], "items": ["key_gate", "mirror_pier"]},
+      "_legacy_note": "seen_mirror_pier и mirror_pier перенесены сюда из прежней M18 (день второй переписан по Docs/SCENARIO_FINAL.md, R4 с зеркалом там нет), чтобы старая цепочка E4–E7 оставалась проходимой для validate_story.py до её переписки блоками 3–4.",
       "actions": ["Помочь разместить вещи жителей, желающих выйти; Пелагея обеспечивает поездку", "Нина впервые входит в дом сестры через обычное крыльцо и вешает пальто на пустой крючок", "По дороге показаны ЗП в R4 и ЗГ в H3 — их пока не снимают", "Нина передаёт ключ от хозяйственной калитки"],
       "proposed_change": "3.14: просить о выходе другого жителя по списку, Аксинью оставить целиком Q01.",
       "mandatory_lines": [

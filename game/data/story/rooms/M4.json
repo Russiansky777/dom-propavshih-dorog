@@ -1,0 +1,71 @@
+{
+  "id": "M4",
+  "_art": "Фон M4_bg.png (затвор, ChatGPT v3): деревянный щит затвора с дугой делений и красной рабочей меткой, гнездо ворота, шестерня, настил, перила, сруб мельницы слева, вода в лотке. Рычаг M4_lever_up.png — отдельный слой, поворачивается кодом вокруг втулки (слой M4_lever_work не совпал с осью и не подключён, _meta_v3/M3_M4.md). Павел — плоская фигура из листа Meshy. Рейка уровня у затвора в арте нет — в крупном плане её рисует движок.",
+  "art_source": {
+    "files": {"bg.png": "assets/incoming/M4_bg.png", "lever_up.png": "assets/incoming/M4_lever_up.png"},
+    "canvas": [1672, 941],
+    "alpha_min": 16
+  },
+  "background": {"kind": "exterior", "image": "res://assets/rooms/M4/bg.png", "wall": "#6a5a48", "floor": "#5a4632", "accent": "#3a2e22", "horizon": 700},
+  "walkable": [[738, 708], [1000, 702], [1450, 714], [1530, 740], [1780, 748], [1880, 762], [1915, 772], [1915, 1070], [1442, 1070], [1442, 945], [1265, 935], [1000, 865], [745, 798]],
+  "no_walk_samples": [[600, 900, "вода и сваи"], [1350, 1010, "столб на переднем плане"], [850, 600, "щит затвора"], [1300, 640, "перила"]],
+  "walk_samples": [[1100, 800], [1700, 900], [850, 740], [1600, 1040]],
+  "depth": {"top_y": 700, "bottom_y": 1070, "scale_top": 0.85, "scale_bottom": 1.6},
+  "_depth_note": "Рост Агаты = 345 px × scale. У перил (настил y 700, верхний брус y 500, перила 1,1 м) scale 0.85 → 293 px при ожидаемых 301.",
+  "height_refs": [{"what": "перила настила (верхний брус y 500, настил y 700)", "y": 700, "px": 200, "m": 1.1}],
+  "layers": [
+    {"id": "lever_closed", "image": "res://assets/rooms/M4/lever_up.png", "z": 0, "scale": 0.7, "scale_reason": "рычаг в слое длиннее дуги затвора (312 px исходника); 0.7 — по дуге делений", "pivot": [738.5, 610], "offset": [206.8, 110.3], "rotation_deg": -29, "if": ["sluice_key_inserted"], "unless": ["sluice_opened"], "_note": "втулка рычага (738.5, 610 в слое) — в гнездо ворота (исходник фона 697, 523 → экран 800, 601); закрыт — на первой зарубке слева"},
+    {"id": "lever_open", "image": "res://assets/rooms/M4/lever_up.png", "z": 0, "scale": 0.7, "scale_reason": "тот же рычаг, что lever_closed", "pivot": [738.5, 610], "offset": [206.8, 110.3], "rotation_deg": 57, "if": ["sluice_opened"]}
+  ],
+  "effects": [
+    {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"]}
+  ],
+  "spawns": {"default": [1300, 850], "from_M1": [1650, 950]},
+  "props": [],
+  "hotspots": [
+    {
+      "id": "gate", "action_anim": "reach", "kind": "object", "label": "@M4.gate.label", "rect": [690, 420, 330, 280], "stand": [880, 760], "draw": false,
+      "item_use": {"key_sluice": {"sets": ["sluice_key_inserted"], "consumes": true, "text": "@M4.gate.key", "scene": "M14", "open_mechanic": true}},
+      "use": {"requires": {"flags": ["sluice_key_inserted"]}, "text": "@M4.gate.look", "fail_text": "@M4.gate.locked"},
+      "mechanic": {
+        "type": "sluice",
+        "requires": {"flags": ["sluice_key_inserted"]},
+        "title": "@M4.sluice.title",
+        "gate": {"image": "res://assets/rooms/M4/bg.png", "region": [512, 234, 386, 394], "pos": [260, 130], "scale": 2.1, "socket": [697, 523]},
+        "lever": {"image": "res://assets/rooms/M4/lever_up.png", "pivot": [738.5, 610], "scale": 0.7},
+        "notch_angles": [-29, 0, 30, 57],
+        "water": {"levels": [1.0, 0.7, 0.42, 0.15], "fall_per_s": 0.07, "settle_tol": 0.015},
+        "work_mark": 0.9,
+        "gauge_rect": [1300, 170, 110, 760],
+        "status_pos": [260, 980],
+        "done_flag": "sluice_opened",
+        "texts": {"label_gauge": "@M4.sluice.label_gauge", "label_status_settled": "@M4.sluice.label_status_settled", "label_status_falling": "@M4.sluice.label_status_falling", "label_status_open": "@M4.sluice.label_status_open", "wait": "@M4.sluice.wait"},
+        "events": {"opened": {"sets": ["sluice_opened", "pond_lowered"], "close": true}}
+      },
+      "look": "@M4.gate.look"
+    },
+    {
+      "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1060, 406, 130, 354], "stand": [950, 800], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/pavel/front.png",
+      "visible_if": ["done_M13"], "hidden_if": ["sluice_opened"],
+      "talk": {"after_text": "@M4.pavel.before"}
+    },
+    {
+      "id": "pavel_rest", "kind": "npc", "label": "@char.pavel", "rect": [1060, 406, 130, 354], "stand": [950, 800], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/pavel/front.png",
+      "visible_if": ["sluice_opened"],
+      "talk": {"after_text": "@M4.pavel.after"}
+    },
+    {
+      "id": "water", "kind": "object", "label": "@M4.water.label", "rect": [80, 780, 440, 260], "stand": [850, 760], "draw": false,
+      "look": "@M4.water.look"
+    }
+  ],
+  "exits": [
+    {"to": "M1", "label": "@M4.exit_M1.label", "cue": "down", "rect": [1500, 1000, 420, 80], "stand": [1700, 1035], "spawn": "from_M4", "draw": false}
+  ],
+  "scenes": {
+    "M14": {"complete_when": [{"all": ["sluice_opened"]}]}
+  },
+  "flags": {}
+}

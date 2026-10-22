@@ -1,0 +1,57 @@
+{
+  "id": "M3",
+  "_art": "Фон M3_bg.png (контора, ChatGPT v3): дверь в сени слева у стены, ключ затвора на гвозде на левой стене, стол с журналами на переднем плане слева, полка с книгами, окно с рейкой уровня в воде, бочки и мешки справа. Струбцина — значок предмета на полке (assets/icons/clamp), пока её нет в арте. Слой M3_fg_desk_front не подключён: Агата за стол не заходит (пол справа от него).",
+  "art_source": {
+    "files": {"bg.png": "assets/incoming/M3_bg.png"},
+    "canvas": [1672, 941]
+  },
+  "background": {"kind": "interior", "image": "res://assets/rooms/M3/bg.png", "wall": "#5a4030", "floor": "#4a3020", "accent": "#2a1a10", "horizon": 670},
+  "walkable": [[960, 700], [1030, 690], [1700, 695], [1735, 768], [1800, 848], [1915, 862], [1915, 1070], [905, 1070], [905, 905], [945, 760]],
+  "no_walk_samples": [[400, 900, "стол"], [1350, 600, "лавка у окна"], [1880, 700, "бочка и мешки"], [700, 500, "дверь в сени"]],
+  "walk_samples": [[1300, 850], [1050, 750], [1700, 1000], [960, 1000]],
+  "depth": {"top_y": 690, "bottom_y": 1070, "scale_top": 1.3, "scale_bottom": 2.0},
+  "_depth_note": "Рост Агаты = 345 px × scale. У двери в сени (порог y 670, дверь 550 px = 2,0 м) scale 1.26 → 436 px при ожидаемых 456.",
+  "height_refs": [{"what": "дверь в сени (порог y 670, верх y 120)", "y": 670, "px": 550, "m": 2.0}],
+  "layers": [],
+  "effects": [],
+  "spawns": {"default": [1300, 900], "from_M2": [1000, 760]},
+  "props": [],
+  "hotspots": [
+    {
+      "id": "key_nail", "action_anim": "reach", "kind": "pickup", "label": "@M3.key_nail.label", "rect": [30, 40, 140, 470], "stand": [960, 740], "draw": false,
+      "hidden_if": ["has_key_sluice"],
+      "use": {"gives": ["key_sluice"], "text": "@M3.key_nail.use", "scene": "M13"},
+      "look": "@M3.key_nail.look"
+    },
+    {
+      "id": "journal", "action_anim": "pick", "kind": "pickup", "label": "@M3.journal.label", "rect": [210, 690, 580, 160], "stand": [960, 800], "draw": false,
+      "hidden_if": ["has_journal_manager"],
+      "use": {"gives": ["journal_manager"], "text": "@M3.journal.use", "scene": "M13"},
+      "look": "@M3.journal.look"
+    },
+    {
+      "id": "clamp", "action_anim": "reach", "kind": "pickup", "label": "@M3.clamp.label", "rect": [395, 280, 70, 62], "stand": [960, 720], "draw": false,
+      "image": "res://assets/icons/clamp.png",
+      "hidden_if": ["has_clamp"],
+      "use": {"gives": ["clamp"], "text": "@M3.clamp.use", "scene": "M13"},
+      "look": "@M3.clamp.look"
+    },
+    {
+      "id": "gauge", "kind": "object", "label": "@M3.gauge.label", "rect": [1515, 355, 70, 150], "stand": [1500, 720], "draw": false,
+      "look": "@M3.gauge.look"
+    },
+    {
+      "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1180, 239, 150, 521], "stand": [1050, 820], "draw": false, "pick_priority": 2,
+      "image": "res://assets/characters/pavel/front.png",
+      "visible_if": ["office_shelf_lifted"], "hidden_if": ["done_M13"],
+      "talk": {"after_text": "@M3.pavel.before"}
+    }
+  ],
+  "exits": [
+    {"to": "M2", "label": "@M3.exit_M2.label", "cue": "door", "rect": [540, 120, 210, 550], "stand": [975, 720], "spawn": "from_M3", "draw": false}
+  ],
+  "scenes": {
+    "M13": {"complete_when": [{"all": ["has_key_sluice", "has_journal_manager", "has_clamp"]}]}
+  },
+  "flags": {}
+}

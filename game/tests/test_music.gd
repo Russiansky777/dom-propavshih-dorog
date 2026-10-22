@@ -275,9 +275,11 @@ func _test_scene_event() -> void:
 	_check(await _enter("H2", "home"), "H2: home did not settle")
 	var h: int = md.active_deck_index()
 	var home_before := _deck(h)
-	# M10's requirements (E2): the workshop seen and the mill mirror brought; the scene starts by data.
+	# M10's requirements (E2, block 2): the agreement with Pavel; the scene starts by data (rooms/H2.json:
+	# complete_when office_mirror_clamped — the wedges of the office mirror on the stand «ЗМ»).
 	gs.set_flag("seen_workshop")
-	gs.set_flag("has_mirror_mill")
+	gs.set_flag("done_M09b")
+	gs.set_flag("office_mirror_clamped")
 	await _frames(3)
 	if sr.active_scene != "M10":
 		sr.start_scene("M10")
