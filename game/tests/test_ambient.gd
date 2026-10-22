@@ -351,6 +351,12 @@ func _test_params() -> void:
 		_check(is_equal_approx(float(n.material.get_shader_parameter("ring_gain")), float(ps.get("ring_gain", 1.0))), "puddle %s ring_gain from data" % w["id"])
 		_check(is_equal_approx(float(n.material.get_shader_parameter("ring_w_px")), float(ps.get("ring_w_px", 1.4))), "puddle %s ring_w_px from data" % w["id"])
 		_check(float(n.material.get_shader_parameter("ring_gain")) >= 1.5, "puddle %s: rings stronger than before F21 (gain %.2f)" % [w["id"], float(n.material.get_shader_parameter("ring_gain"))])
+		# The shader itself must read them (23.10: a merge of the water shader dropped the uniforms — the material
+		# kept the values, the picture did not change).
+		var unames: Array = []
+		for u in (n.material as ShaderMaterial).shader.get_shader_uniform_list():
+			unames.append(String(u.get("name", "")))
+		_check(unames.has("ring_gain") and unames.has("ring_w_px"), "the water shader declares ring_gain and ring_w_px (%s)" % [unames])
 	_free(room)
 	# A separate picture of what sways (a layer from ChatGPT) instead of an outline: drawn from that
 	# picture with its alpha, over its own rect, anchored like a tree.
