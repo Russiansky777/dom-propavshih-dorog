@@ -56,6 +56,7 @@ function serve(dir) {
     const file = path.join(dir, urlPath === "/" ? "index.html" : urlPath);
     if (!file.startsWith(dir)) { res.writeHead(403); return res.end(); }
     fs.stat(file, (err, st) => {
+      if ((err || !st.isFile()) && urlPath === "/version.txt") { res.writeHead(200); return res.end("local build"); }  // CI writes it
       if (err || !st.isFile()) { res.writeHead(404); return res.end("not found"); }
       res.writeHead(200, {
         "Content-Type": MIME[path.extname(file)] || "application/octet-stream", "Content-Length": st.size,
@@ -104,7 +105,14 @@ async function main() {
   });
   page.on("pageerror", (e) => { consoleErrors += 1; logLine(`pageerror: ${e.message}`); });
 
-  const state = () => page.evaluate(() => (window.probeState ? JSON.parse(JSON.stringify(window.probeState)) : null));
+  // probeState is republished every 0.4 s of the GAME's clock (≈ 2.7 s of the page's in software WebGL): every
+  // read asks for a fresh one — probePause(false) with no time scale publishes at once and changes nothing (the
+  // game is never paused here). A stale read missed lines that came up after a click and a marker that had moved.
+  const state = () => page.evaluate(() => {
+    if (window.probePause) window.probePause(false);
+    return window.probeState ? JSON.parse(JSON.stringify(window.probeState)) : null;
+  });
+  const stateNow = state;
   const waitFor = async (label, pred, timeout = 60000) => {
     const t0 = Date.now();
     while (Date.now() - t0 < timeout) {
@@ -113,7 +121,8 @@ async function main() {
       await sleep(150);
     }
     const s = await state();
-    check(false, `${label}: timeout ${timeout} ms (room=${s?.room} beat=${JSON.stringify(s?.beat)})`);
+    check(false, `${label}: timeout ${timeout} ms (room=${s?.room} beat=${JSON.stringify(s?.beat)} player=${JSON.stringify(s?.player)} ` +
+      `busy=${s?.busy} held=${s?.selected_item} hint=${JSON.stringify(s?.last_hint)} mechanic=${JSON.stringify(s?.mechanic)?.slice(0, 200)})`);
     return s;
   };
   const shot = async (name) => {
@@ -148,6 +157,19 @@ async function main() {
   const giveItems = async (items) => {
     for (const it of items) await page.evaluate((x) => window.ambientItem(x, true), it);
   };
+  // Each part starts from a clean story state (no flags or items left by the part before — e.g. the mirror part's
+  // office_unbolted would make the hook already solved) and with no mechanic open (closed by a real click).
+  const fresh = async (label) => {
+    let s = await state();
+    if (s && s.mechanic && s.mechanic.open && s.mechanic.close) {
+      await click(`${label}: close the previous mechanic`, s.mechanic.close);
+      await waitFor(`${label}: mechanic closed`, (t) => !(t.mechanic && t.mechanic.open), 60000);
+    }
+    s = await state();
+    const on = Object.keys(s.flags || {}).filter((f) => s.flags[f]);
+    await page.evaluate((fl) => fl.forEach((f) => window.ambientFlag(f, false)), on);
+    await page.evaluate((its) => its.forEach((it) => window.ambientItem(it, false)), (s.inventory || []).map(String));
+  };
   const goto = async (room) => {
     await page.evaluate((r) => window.ambientGoto(r, "default"), room);
     await waitFor(`room ${room}`, (s) => s.room === room, 60000);
@@ -165,7 +187,7 @@ async function main() {
     const version = await page.evaluate(async () => { try { return (await (await fetch("version.txt", { cache: "no-store" })).text()).trim(); } catch (_) { return ""; } });
     logLine(`build: ${version}`);
 
-    if (PARTS.includes("examine")) {
+    if (PARTS.includes("examine")) try {
       await setFlags(["done_M01", "met_tamara", "house_unlocked", "done_M03", "house_open"]);
       await giveItems(["pocket_watch", "photo_bridge", "plan_crossing", "journal_manager"]);
       await goto("H1");
@@ -216,9 +238,14 @@ async function main() {
       check(s.selected_item === "pocket_watch" && !(s.examine && s.examine.open), "a single click: in hand, no close-up");
       await page.mouse.click(s.ui.bag.items.pocket_watch.x, s.ui.bag.items.pocket_watch.y, { button: "right" });
       await waitFor("put back", (t) => t.selected_item === "", 10000);
+    } catch (e) {  // one broken part does not hide the others
+      check(false, `examine: exception ${e.message}`);
+      await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
     }
 
-    if (PARTS.includes("mirror")) {
+    if (PARTS.includes("mirror")) try {
+      await fresh("mirror");
       await setFlags(["done_M01", "met_tamara", "house_unlocked", "done_M03", "house_open", "done_N01", "done_M09", "done_M09s", "done_M09b",
         "done_M10", "done_M11", "done_M12", "done_M13a", "done_M13", "done_M14", "office_mirror_mounted", "office_mirror_clamped",
         "office_unbolted", "sluice_opened", "pond_lowered", "h2_bundle_unwrapped", "nina_mirror_clamped", "has_clamp"]);
@@ -232,9 +259,14 @@ async function main() {
       s = await state();
       const p0 = s.mechanic.panel;
       const t0 = Date.now();
-      await sleep(6000);
-      s = await state();
-      const p1 = s.mechanic.panel;
+      // At least 3 s of the GAME's clock (software WebGL here draws a few frames a second: the page waits longer).
+      let p1 = p0;
+      while (Date.now() - t0 < 90000) {
+        await sleep(2000);
+        s = await state();
+        p1 = s.mechanic.panel;
+        if (p1.real_s - p0.real_s >= 3.2) break;
+      }
       const dt = (p1.real_s - p0.real_s);
       const dm = ((p1.loupe_minute_deg - p0.loupe_minute_deg) % 360 + 360) % 360;
       check(dt > 3 && Math.abs(dm - dt * 2) < 0.6, `the wall clock up close turns 2°/s: ${dm.toFixed(2)}° in ${dt.toFixed(2)} s of the game (${((Date.now() - t0) / 1000).toFixed(1)} s on the page)`);
@@ -256,21 +288,32 @@ async function main() {
       check(lines.join(" ").includes("На моих три минуты") && lines.join(" ").includes("Пока я сплю"), `Agata's words: ${JSON.stringify(lines)}`);
       s = await state();
       check(s.flags.done_M15a, "M15а done");
+    } catch (e) {  // one broken part does not hide the others
+      check(false, `mirror: exception ${e.message}`);
+      await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
     }
     // --- timing helpers (the game clock slowed for the strike) ---
     const slow = async (k) => { await page.evaluate((x) => window.probePause(false, x), k); };
     const strikeTiming = async (label, getTiming, at, wantGreen = true, how = "click") => {
-      await slow(0.06);
+      // Software WebGL here runs the game clock at ~0.15 of the page's: the marker is watched at full speed and,
+      // once it is where the click is wanted, the clock is all but stopped (probePause) so the REAL click lands
+      // there — the check is that a click in the green counts (and one in the red does not), not human timing.
       const t0 = Date.now();
-      while (Date.now() - t0 < 120000) {
-        const s = await state();
-        const t = getTiming(s);
+      while (Date.now() - t0 < 180000) {
+        const s0 = await stateNow();
+        if (beatKey(s0)) { await finish(`${label}: line first`); continue; }   // a line on screen holds the bar
+        const t = getTiming(s0);
         if (t && t.zone && t.state === "run" && !t.paused) {
-          const c = (t.zone[0] + t.zone[1]) / 2;
-          const d = Math.abs(t.pos - c);
-          if (wantGreen ? d < 0.035 : d > 0.32) break;
+          const c = (t.zone[0] + t.zone[1]) / 2, half = (t.zone[1] - t.zone[0]) / 2;
+          if (wantGreen ? Math.abs(t.pos - c) < half * 0.5 : Math.abs(t.pos - c) > half + 0.15) {
+            await slow(0.05);   // the lowest time scale probePause allows (main.gd)
+            const t2 = getTiming(await stateNow());
+            if (t2 && (wantGreen ? Math.abs(t2.pos - c) < half * 0.9 : Math.abs(t2.pos - c) > half + 0.05)) break;
+            await slow(1.0);
+          }
         }
-        await sleep(120);
+        await sleep(100);
       }
       if (how === "double") {
         await page.mouse.move(at.x, at.y);
@@ -284,7 +327,8 @@ async function main() {
       await slow(1.0);
     };
 
-    if (PARTS.includes("plate")) {
+    if (PARTS.includes("plate")) try {
+      await fresh("plate");
       await setFlags(["done_M01", "house_unlocked", "done_M03", "done_N01", "done_M14", "done_M15a", "evening_dusk", "nina_time_compared", "skoba_on_plate", "has_brace_plate"]);
       await goto("Z3");
       let s = await state();
@@ -322,9 +366,14 @@ async function main() {
       await shot("09_plate_tied");
       s = await state();
       if (s.mechanic && s.mechanic.open) await click("close", s.mechanic.close);
+    } catch (e) {  // one broken part does not hide the others
+      check(false, `plate: exception ${e.message}`);
+      await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
     }
 
-    if (PARTS.includes("hook")) {
+    if (PARTS.includes("hook")) try {
+      await fresh("hook");
       await setFlags(["done_M01", "house_unlocked", "done_M03", "done_N01", "done_M09", "done_M09s", "done_M09b", "met_pavel", "office_mirror_mounted",
         "office_mirror_clamped", "done_M10", "bell_clapper_hung", "has_bell_clapper", "lantern_check_seen", "done_M11"]);
       await goto("H2");
@@ -343,16 +392,22 @@ async function main() {
       check(s.mechanic.panel.hook.state === "stopped", `«стой» in the green catches the hook (${s.mechanic.panel.hook.state})`);
       await page.mouse.move(bell.x, bell.y);
       await page.mouse.down();
-      await sleep(1600);
+      // Held until the long ring is heard (the bell counts the hold on the game's clock — slow here), ≤ 20 s.
+      await waitFor("long ring", (t) => ["lift_bar", "solved"].includes(t.mechanic.panel.hook.state) || t.flags.office_unbolted, 20000);
       await page.mouse.up();
       s = await waitFor("unbolted", (t) => t.flags.office_unbolted, 60000);
       check(s.flags.office_unbolted, "«подымай» — the bar is out");
       await finish("unbolted");
       s = await state();
       if (s.mechanic && s.mechanic.open) await click("close", s.mechanic.close);
+    } catch (e) {  // one broken part does not hide the others
+      check(false, `hook: exception ${e.message}`);
+      await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
     }
 
-    if (PARTS.includes("latch")) {
+    if (PARTS.includes("latch")) try {
+      await fresh("latch");
       await page.evaluate(() => window.ambientFlag("h1_shutter_open", false));
       await setFlags(["done_M01", "house_unlocked"]);
       await goto("H1");
@@ -366,9 +421,14 @@ async function main() {
       s = await waitFor("shutter open", (t) => t.flags.h1_shutter_open, 60000);
       check(s.flags.h1_shutter_open, "the latch caught up: the shutter opens");
       await finish("opened");
+    } catch (e) {  // one broken part does not hide the others
+      check(false, `latch: exception ${e.message}`);
+      await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
     }
 
-    if (PARTS.includes("crossing")) {
+    if (PARTS.includes("crossing")) try {
+      await fresh("crossing");
       await setFlags(["done_M01", "house_unlocked", "done_M15", "rope_on_ring", "road_held_both_ends", "done_M16", "three_lights_sent",
         "far_lights_answered", "done_M17", "ferry_verified", "evening_dusk"]);
       await page.evaluate(() => window.ambientFlag("crossing_hauled", false));
@@ -391,6 +451,10 @@ async function main() {
       s = await waitFor("far pier", (t) => t.room === "R3", 120000);
       check(s.room === "R3", "the far pier (R3)");
       await shot("14_crossing_far_pier");
+    } catch (e) {  // one broken part does not hide the others
+      check(false, `crossing: exception ${e.message}`);
+      await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
     }
   } catch (e) {
     check(false, `exception: ${e.message}`);
