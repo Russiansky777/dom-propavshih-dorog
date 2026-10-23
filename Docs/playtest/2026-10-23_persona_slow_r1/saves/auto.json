@@ -1,0 +1,36 @@
+{
+	"counters": {},
+	"current_room": "H1",
+	"flags": {
+		"done_M01": true,
+		"h1_shutter_latch": true,
+		"h1_shutter_open": true,
+		"has_key_house": true,
+		"has_letter_tamara": true,
+		"has_mitten": true,
+		"has_pocket_watch": true,
+		"house_unlocked": true,
+		"knows_bridge_lost": true,
+		"knows_dunya_left": true,
+		"knows_letters_bag": true,
+		"knows_pier_trace": true,
+		"met_tamara": true,
+		"started_M01": true,
+		"visited_H1": true,
+		"visited_Z1": true,
+		"visited_Z2": true,
+		"visited_Z4": true
+	},
+	"inventory": [
+		"pocket_watch",
+		"mitten"
+	],
+	"journal_goal": "Тамара отдала ключ от дома тёти Евдокии. Дойти до её дома и заглянуть к воде.",
+	"journal_goal_scene": "M01",
+	"player_pos": {
+		"x": 1650.0,
+		"y": 740.0
+	},
+	"saved_at": "2026-10-23T11:54:46",
+	"version": 2
+}

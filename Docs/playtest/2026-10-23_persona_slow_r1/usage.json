@@ -1,0 +1,215 @@
+{
+ "max_usd": 10,
+ "spent_usd": 0,
+ "by_model": {
+  "claude-sonnet-5-5": {
+   "calls": 17,
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "usd": 0
+  }
+ },
+ "workspace": {
+  "source": "secret",
+  "error": ""
+ },
+ "prices_per_mtok": {
+  "claude-haiku-5-5": {
+   "in": 0.1,
+   "cw": 0.125,
+   "cr": 0.01,
+   "out": 0.5,
+   "long": {
+    "over": 100000,
+    "in": 0.5,
+    "cw": 0.625,
+    "cr": 0.05,
+    "out": 2.5
+   }
+  },
+  "claude-sonnet-5-5": {
+   "in": 2,
+   "cw": 2.5,
+   "cr": 0.1,
+   "out": 10
+  },
+  "claude-opus-5-5": {
+   "in": 4,
+   "cw": 5,
+   "cr": 0.2,
+   "out": 20
+  },
+  "claude-fable-5-1": {
+   "in": 10,
+   "cw": 12.5,
+   "cr": 0.25,
+   "out": 50
+  },
+  "claude-haiku-4-5": {
+   "in": 1,
+   "cw": 1.25,
+   "cr": 0.1,
+   "out": 5
+  }
+ },
+ "prices_source": "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22; claude-fable-5-1 — 2026-10-23)",
+ "calls": [
+  {
+   "tag": "step1",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step2",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step3",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step4",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step5",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step6",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step7",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step8",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step9",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step10",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step11",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step12",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step13",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step14",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step15",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step16",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  },
+  {
+   "tag": "step17",
+   "model": "claude-sonnet-5-5",
+   "in": 0,
+   "out": 0,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0
+  }
+ ],
+ "report_reserve_usd": 0.2434,
+ "stop": "модель завершила прогон (done): dry done"
+}

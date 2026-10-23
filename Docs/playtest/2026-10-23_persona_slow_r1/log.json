@@ -1,0 +1,785 @@
+{
+ "cfg": {
+  "mode": "fresh",
+  "request": "Docs/playtest/requests/persona_selftest_slow.json",
+  "items": [],
+  "contextItems": [],
+  "maxUsd": 10,
+  "maxSteps": 20,
+  "maxMinutes": 30,
+  "url": "https://russiansky777.github.io/dom-propavshih-dorog/",
+  "note": "Самопроверка ролей без API ($0): ожидание в игровых секундах, задержка чтения реплик.",
+  "model": "claude-sonnet-5-5",
+  "modelStuck": "claude-opus-5-5",
+  "reportModel": "claude-sonnet-5-5",
+  "W": 1280,
+  "maxFrames": 24,
+  "autoDialogue": true,
+  "persona": "slow",
+  "start": null,
+  "startSave": null,
+  "H": 720,
+  "actions_run": "1 (id 39947277563)"
+ },
+ "version": "7fcbed9 2026-10-23T11:48Z",
+ "started": "2026-10-23T11:50:24.773Z",
+ "stop": "модель завершила прогон (done): dry done",
+ "probe": true,
+ "end": {
+  "room": "H1",
+  "inventory": [
+   "pocket_watch",
+   "mitten"
+  ],
+  "goal": "Тамара отдала ключ от дома тёти Евдокии. Дойти до её дома и заглянуть к воде.",
+  "flags": 18
+ },
+ "saves": [
+  {
+   "slot": "auto",
+   "title": "",
+   "key": "/userfs/godot/app_userdata/Dom propavshih dorog/saves/auto.json"
+  }
+ ],
+ "rooms": [
+  "Z1",
+  "Z4",
+  "Z2",
+  "H1"
+ ],
+ "flags_order": [
+  {
+   "flag": "visited_Z1",
+   "step": 0
+  },
+  {
+   "flag": "done_M01",
+   "step": 4
+  },
+  {
+   "flag": "has_key_house",
+   "step": 4
+  },
+  {
+   "flag": "has_letter_tamara",
+   "step": 4
+  },
+  {
+   "flag": "has_mitten",
+   "step": 4
+  },
+  {
+   "flag": "has_pocket_watch",
+   "step": 4
+  },
+  {
+   "flag": "knows_bridge_lost",
+   "step": 4
+  },
+  {
+   "flag": "knows_dunya_left",
+   "step": 4
+  },
+  {
+   "flag": "knows_letters_bag",
+   "step": 4
+  },
+  {
+   "flag": "knows_pier_trace",
+   "step": 4
+  },
+  {
+   "flag": "met_tamara",
+   "step": 4
+  },
+  {
+   "flag": "started_M01",
+   "step": 4
+  },
+  {
+   "flag": "visited_Z4",
+   "step": 9
+  },
+  {
+   "flag": "visited_Z2",
+   "step": 10
+  },
+  {
+   "flag": "house_unlocked",
+   "step": 12
+  },
+  {
+   "flag": "visited_H1",
+   "step": 12
+  },
+  {
+   "flag": "h1_shutter_latch",
+   "step": 13
+  },
+  {
+   "flag": "h1_shutter_open",
+   "step": 15
+  }
+ ],
+ "blocked_scenes": [
+  "M02 «Берег вижу» (Z2, R1): условия выполнены, но сцена не завершена (её действие не сделано)",
+  "M03 «Кто ждёт у печи» (H1): условия выполнены, но сцена не завершена (её действие не сделано)"
+ ],
+ "harness": [],
+ "console_errors": [
+  "at: push_warning (core/variant/variant_utility.cpp:1033)",
+  "at: push_warning (core/variant/variant_utility.cpp:1033)",
+  "at: push_warning (core/variant/variant_utility.cpp:1033)",
+  "at: push_warning (core/variant/variant_utility.cpp:1033)"
+ ],
+ "console_warnings": [
+  "WARNING: VoiceDirector: Z1.letters.look is recorded for another text (text_changed) — subtitles only",
+  "WARNING: VoiceDirector: M01_0 is recorded for another text (text_changed) — subtitles only",
+  "WARNING: VoiceDirector: M01_1 is recorded for another text (text_changed) — subtitles only",
+  "WARNING: VoiceDirector: M01_2 is recorded for another text (text_changed) — subtitles only"
+ ],
+ "persona": "slow",
+ "anomalies": [],
+ "inventory_log": [
+  {
+   "step": 4,
+   "room": "Z1",
+   "desc": "щелчок (713,303)",
+   "plus": [
+    "key_house",
+    "pocket_watch",
+    "mitten"
+   ],
+   "minus": []
+  },
+  {
+   "step": 12,
+   "room": "H1",
+   "desc": "щелчок (670,317)",
+   "plus": [],
+   "minus": [
+    "key_house"
+   ]
+  }
+ ],
+ "coverage": {
+  "quests": [
+   {
+    "id": "Q01",
+    "title": "Письмо с прежним адресом",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q02",
+    "title": "На карте вырос сад",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q03",
+    "title": "Незашитый рукав",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q04",
+    "title": "Угол для Тихона",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q05",
+    "title": "Чужая мера",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q06",
+    "title": "Второй верстак",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q07",
+    "title": "Двадцать зарубок",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q08",
+    "title": "Общий чай",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q09",
+    "title": "Ольховая улица",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q10",
+    "title": "Яблоня для следующей весны",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   }
+  ],
+  "choices": [],
+  "rooms": [
+   {
+    "room": "Z1",
+    "total": 3,
+    "seen": 1,
+    "unseen": [
+     "Два рисунка",
+     "План Заречья"
+    ]
+   },
+   {
+    "room": "Z4",
+    "total": 2,
+    "seen": 0,
+    "unseen": [
+     "Вывеска почты",
+     "Фонарь над дверью"
+    ]
+   },
+   {
+    "room": "Z2",
+    "total": 1,
+    "seen": 0,
+    "unseen": [
+     "Вид на Заречье"
+    ]
+   },
+   {
+    "room": "H1",
+    "total": 11,
+    "seen": 0,
+    "unseen": [
+     "Печь",
+     "Ставня",
+     "Мокрый платок",
+     "Мамино пальто",
+     "Чай",
+     "tikhon",
+     "Встать у печи и помахать",
+     "Семейная фотография",
+     "Две чашки",
+     "Крепления для полки",
+     "Полка Тихона"
+    ]
+   }
+  ]
+ },
+ "end_flags": [
+  "done_M01",
+  "h1_shutter_latch",
+  "h1_shutter_open",
+  "has_key_house",
+  "has_letter_tamara",
+  "has_mitten",
+  "has_pocket_watch",
+  "house_unlocked",
+  "knows_bridge_lost",
+  "knows_dunya_left",
+  "knows_letters_bag",
+  "knows_pier_trace",
+  "met_tamara",
+  "started_M01",
+  "visited_H1",
+  "visited_Z1",
+  "visited_Z2",
+  "visited_Z4"
+ ],
+ "verdict_history": [],
+ "notes": [],
+ "frames": [
+  {
+   "id": "f0031",
+   "step": 18,
+   "kind": "final",
+   "label": "последний кадр"
+  }
+ ],
+ "steps": [
+  {
+   "step": 1,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0001",
+   "action": "move",
+   "observe": "dry",
+   "thought": "dry move",
+   "usd": 0,
+   "at": {
+    "x": 1070,
+    "y": 455
+   },
+   "desc": "навела курсор (713,303)",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 1,
+   "events": [
+    "Подпись под курсором: «Тамара»"
+   ]
+  },
+  {
+   "step": 2,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0002",
+   "action": "key",
+   "observe": "dry",
+   "thought": "dry key",
+   "usd": 0,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 1,
+   "events": [
+    "Подпись под курсором: «Тамара»"
+   ]
+  },
+  {
+   "step": 3,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0003",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 740,
+    "y": 310
+   },
+   "desc": "щелчок (493,207)",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 1,
+   "events": [
+    "Текст: «Письма разложены по домам. Ольховские Тамара складывает отдельно — за год набрался целый мешок.» [f0004]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше.",
+    "Подпись под курсором: «Письма»"
+   ]
+  },
+  {
+   "step": 4,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0005",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 1070,
+    "y": 455
+   },
+   "desc": "щелчок (713,303)",
+   "room_after": "Z1",
+   "inv": "key_house,pocket_watch,mitten",
+   "flags": 12,
+   "events": [
+    "Тамара: «Агата? Ты же у меня домой письма отправляла.» [f0006]",
+    "Агата: «Отправляла. Мама с Ильёй в Ольховке, а я в городе, в гимназии. На учительницу учусь, как мама.» [f0007]",
+    "Тамара: «Год назад паводок снёс мост. С тех пор в Ольховку дороги нет.» [f0008]",
+    "Тамара: «А этой осенью вода упала, и у поворота показалась опора моста. Вот, набросала. Рядом — Дунин старый лист.» [f0009]",
+    "Тамара: «Я тебе тогда сразу написала — ехать не к чему, лодки возвращает. Обещала написать, если что переменится. Вот — переменилось.» [f0010]",
+    "Тамара: «Год писем в Ольховку. Нести некому. Твои маме тоже тут.» [f0011]",
+    "Агата: «От тёти ничего?» [f0012]",
+    "Тамара: «Дуня в тот день ушла к сестре — и не вернулась. Ключ от её дома у меня, по старому уговору. Тихона её весь год кормила. Держи.» [f0013]",
+    "Агата: «Начну с её записей.» [f0014]",
+    "Текст закончился: показано реплик и текстов — 9, окно текста закрыто. Можно действовать дальше.",
+    "В сумке стало предметов: 3 (было 0).",
+    "Подпись под курсором: «Тамара»",
+    "Строка подсказки внизу: «В сумке: Варежка»"
+   ]
+  },
+  {
+   "step": 5,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0015",
+   "action": "move",
+   "observe": "dry",
+   "thought": "dry move",
+   "usd": 0,
+   "at": {
+    "x": 703,
+    "y": 40
+   },
+   "desc": "навела курсор (469,27)",
+   "room_after": "Z1",
+   "inv": "key_house,pocket_watch,mitten",
+   "flags": 12,
+   "events": []
+  },
+  {
+   "step": 6,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0016",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 1519,
+    "y": 40
+   },
+   "desc": "щелчок (1013,27)",
+   "room_after": "Z1",
+   "inv": "key_house,pocket_watch,mitten",
+   "flags": 12,
+   "events": [
+    "Открыт журнал."
+   ]
+  },
+  {
+   "step": 7,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0017",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 960,
+    "y": 863
+   },
+   "desc": "щелчок (640,575)",
+   "room_after": "Z1",
+   "inv": "key_house,pocket_watch,mitten",
+   "flags": 12,
+   "events": []
+  },
+  {
+   "step": 8,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0018",
+   "action": "zoom",
+   "observe": "dry",
+   "thought": "dry zoom",
+   "usd": 0,
+   "desc": "увеличила (420,0,860,50)",
+   "room_after": "Z1",
+   "inv": "key_house,pocket_watch,mitten",
+   "flags": 12,
+   "events": []
+  },
+  {
+   "step": 9,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0019",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 1700,
+    "y": 430
+   },
+   "desc": "щелчок (1133,287)",
+   "room_after": "Z4",
+   "inv": "key_house,pocket_watch,mitten",
+   "flags": 13,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 10,
+   "model": "claude-sonnet-5-5",
+   "room": "Z4",
+   "frame": "f0020",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 840,
+    "y": 1038
+   },
+   "desc": "щелчок (560,692)",
+   "room_after": "Z2",
+   "inv": "key_house,pocket_watch,mitten",
+   "flags": 14,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 11,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0021",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 703,
+    "y": 40
+   },
+   "desc": "щелчок (469,27)",
+   "room_after": "Z2",
+   "inv": "key_house,pocket_watch,mitten",
+   "flags": 14,
+   "events": [
+    "Предмет взят в руку (иконка у курсора).",
+    "Строка подсказки внизу: «Выбрано: Ключ от дома Евдокии — нажмите на объект, чтобы применить. Повторный клик по предмету отменит выбор.»"
+   ]
+  },
+  {
+   "step": 12,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0022",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 1005,
+    "y": 475
+   },
+   "desc": "щелчок (670,317)",
+   "room_after": "H1",
+   "inv": "pocket_watch,mitten",
+   "flags": 16,
+   "events": [
+    "Текст: «Замок поддался не сразу. Ключ останется в двери — дом снова открыт.» [f0023]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше.",
+    "Место сменилось (другая комната / локация).",
+    "В сумке стало предметов: 2 (было 3).",
+    "Предмета в руке больше нет.",
+    "Подпись под курсором: «На крыльцо»"
+   ]
+  },
+  {
+   "step": 13,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0024",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 1650,
+    "y": 320
+   },
+   "desc": "щелчок (1100,213)",
+   "room_after": "H1",
+   "inv": "pocket_watch,mitten",
+   "flags": 17,
+   "events": [
+    "Агата: «Разбухла от сырости. Щеколду надо поддеть, пока встанет как надо.» [f0025]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше."
+   ]
+  },
+  {
+   "step": 14,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0026",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 315,
+    "y": 525
+   },
+   "desc": "щелчок (210,350)",
+   "room_after": "H1",
+   "inv": "pocket_watch,mitten",
+   "flags": 17,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 15,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0027",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 580,
+    "y": 600
+   },
+   "desc": "щелчок (387,400)",
+   "room_after": "H1",
+   "inv": "pocket_watch,mitten",
+   "flags": 18,
+   "events": [
+    "Текст: «Ставня подалась, в комнате посветлело.» [f0028]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше.",
+    "Подпись под курсором: «Мокрый платок»"
+   ]
+  },
+  {
+   "step": 16,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0029",
+   "action": "wait",
+   "observe": "dry",
+   "thought": "dry wait",
+   "usd": 0,
+   "wait": {
+    "game": 2,
+    "real": 5.374
+   },
+   "desc": "ждала 2.0 игровых с (5 с по часам)",
+   "room_after": "H1",
+   "inv": "pocket_watch,mitten",
+   "flags": 18,
+   "events": [
+    "Подпись под курсором: «Мокрый платок»",
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 17,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0030",
+   "action": "done",
+   "observe": "dry",
+   "thought": "dry done",
+   "usd": 0,
+   "desc": "done",
+   "room_after": "H1",
+   "inv": "pocket_watch,mitten",
+   "flags": 18,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  }
+ ],
+ "transcript": [
+  {
+   "step": 3,
+   "frame": "f0004",
+   "room": "Z1",
+   "who": "Текст",
+   "text": "Письма разложены по домам. Ольховские Тамара складывает отдельно — за год набрался целый мешок."
+  },
+  {
+   "step": 4,
+   "frame": "f0006",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "Агата? Ты же у меня домой письма отправляла."
+  },
+  {
+   "step": 4,
+   "frame": "f0007",
+   "room": "Z1",
+   "who": "Агата",
+   "text": "Отправляла. Мама с Ильёй в Ольховке, а я в городе, в гимназии. На учительницу учусь, как мама."
+  },
+  {
+   "step": 4,
+   "frame": "f0008",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "Год назад паводок снёс мост. С тех пор в Ольховку дороги нет."
+  },
+  {
+   "step": 4,
+   "frame": "f0009",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "А этой осенью вода упала, и у поворота показалась опора моста. Вот, набросала. Рядом — Дунин старый лист."
+  },
+  {
+   "step": 4,
+   "frame": "f0010",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "Я тебе тогда сразу написала — ехать не к чему, лодки возвращает. Обещала написать, если что переменится. Вот — переменилось."
+  },
+  {
+   "step": 4,
+   "frame": "f0011",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "Год писем в Ольховку. Нести некому. Твои маме тоже тут."
+  },
+  {
+   "step": 4,
+   "frame": "f0012",
+   "room": "Z1",
+   "who": "Агата",
+   "text": "От тёти ничего?"
+  },
+  {
+   "step": 4,
+   "frame": "f0013",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "Дуня в тот день ушла к сестре — и не вернулась. Ключ от её дома у меня, по старому уговору. Тихона её весь год кормила. Держи."
+  },
+  {
+   "step": 4,
+   "frame": "f0014",
+   "room": "Z1",
+   "who": "Агата",
+   "text": "Начну с её записей."
+  },
+  {
+   "step": 12,
+   "frame": "f0023",
+   "room": "Z2",
+   "who": "Текст",
+   "text": "Замок поддался не сразу. Ключ останется в двери — дом снова открыт."
+  },
+  {
+   "step": 13,
+   "frame": "f0025",
+   "room": "H1",
+   "who": "Агата",
+   "text": "Разбухла от сырости. Щеколду надо поддеть, пока встанет как надо."
+  },
+  {
+   "step": 15,
+   "frame": "f0028",
+   "room": "H1",
+   "who": "Текст",
+   "text": "Ставня подалась, в комнате посветлело."
+  }
+ ]
+}
