@@ -80,8 +80,11 @@ func signal_pressed(sig: String) -> void:
 func _on_logic_event(name: String) -> void:
 	match name:
 		"bumped":
+			# Ilya's «Стукнулось о камень!…» goes into the reply line, not a modal box: a modal box swallowed the next
+			# signals until it was clicked away (AI gate M3 item 15, 23.10) — the player saw buttons that did nothing.
 			sound("hammer")
-			say("bump")
+			reply_label.text = text("bump")
+			_call_t = clock + 1.5
 		"settling":
 			sound("knock")
 		"solved":
