@@ -118,6 +118,22 @@ func face_towards(target: Vector2) -> void:
 		direction = sheet.direction_index(v)
 
 
+## A villager walks off in a staging (scenes data stage[].npc_go — G18: Pavel «Иди за мной» to the passage door; G29:
+## Nina from her porch into the house): the villagers have idle and talk sheets only (no walk cycle), so the figure
+## turns to the door, eases there — growing or shrinking with the room depth — and fades out in the second half,
+## instead of vanishing in a cut. Returns its seconds (the staging waits for them before its fade).
+func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
+	face_towards(target)
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(self, "global_position", target, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	if room != null and room.has_method("depth_scale") and sheet != null:
+		var s: float = room.depth_scale(target.y) * sheet.scale_factor
+		tw.tween_property(self, "scale", Vector2(s, s), seconds)
+	if fade:
+		tw.tween_property(self, "modulate:a", 0.0, seconds * 0.55).set_delay(seconds * 0.45)
+	return seconds
+
+
 func _process(delta: float) -> void:
 	if sheet == null or sprite == null or shown_dir == direction:
 		_turn_t = 0.0

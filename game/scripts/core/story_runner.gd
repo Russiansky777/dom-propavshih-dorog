@@ -7,6 +7,8 @@ extends Node
 ## list, grants/consumes apply on completion, the journal goal is the scene's `result`.
 ## No `if scene_id == ...` lives here.
 
+## A villager walked off in a staging (stage[].npc_go) — tests and probes.
+signal npc_went(npc_id: String)
 signal beat_changed()
 signal scene_started(scene_id: String)
 signal scene_completed(scene_id: String)
@@ -130,9 +132,18 @@ func can_start(scene_id: String) -> bool:
 
 
 func conditions_met(conds: Variant) -> bool:
-	## `complete_when`: list of {all:[..]} / {any:[..]} / {any_n:n, flags:[..]}; a dict is one condition.
+	## `complete_when`: list of {all:[..]} / {any:[..]} / {any_n:n, flags:[..]} / {or:[cond, …]}; a dict is one condition.
+	## `or` holds when any of its conditions does (G15: two traces in the class — or the teacher's drawer).
 	var list: Array = conds if conds is Array else [conds]
 	for c in list:
+		if c.has("or"):
+			var any_ok := false
+			for sub in c["or"]:
+				if conditions_met([sub]):
+					any_ok = true
+					break
+			if not any_ok:
+				return false
 		if c.has("all"):
 			for f in c["all"]:
 				if not GameState.has_flag(String(f)):
@@ -444,6 +455,13 @@ func _complete_scene(scene_id: String) -> void:
 ## for a fade between the close-up and its frame).
 func _run_stage(spec: Dictionary) -> void:
 	_stage_running = true
+	# A villager walks off first (`npc_go`), then the fade (G18, G29: no more «does nothing, then a cut»).
+	var go_serial := _stage_serial
+	var go_s := _stage_npc_go(spec)
+	if go_s > 0.0:
+		await get_tree().create_timer(go_s).timeout
+		if go_serial != _stage_serial:
+			return
 	if bool(spec.get("cut", false)):
 		for snd in spec.get("sounds", []):
 			stage_sound_requested.emit(String(snd.get("id", "")))
@@ -478,6 +496,22 @@ func _run_stage(spec: Dictionary) -> void:
 		return
 	_stage_running = false
 	_next()
+
+
+## `npc_go` [{id, to: [x, y], s, fade}]: before the fade, villagers in the room walk off (NpcActor.go_off) — toward a
+## door, easing with the depth and fading out. Returns the longest of their seconds (0 — nobody to move).
+func _stage_npc_go(spec: Dictionary) -> float:
+	var longest := 0.0
+	var room := RoomManager.current_room
+	if room == null:
+		return 0.0
+	for g in spec.get("npc_go", []):
+		var npc := room.get_node_or_null("npc_" + String(g.get("id", "")))
+		if npc != null and npc.has_method("go_off") and (npc as CanvasItem).visible:
+			var to: Array = g.get("to", [0, 0])
+			npc_went.emit(String(g.get("id", "")))
+			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), float(g.get("s", 1.2)), bool(g.get("fade", true)), room)))
+	return longest
 
 
 ## What a staging changes while the screen is black (or at once, for a cut): the room, the frame, flags.
@@ -766,7 +800,11 @@ func interact(h: StoryHotspot) -> void:
 	if is_busy():
 		return
 	var d := h.data
-	var look := String(d.get("look", "@ui.nothing_here"))
+	# A state may say its own look (rooms data `states[].look` — G14: the stove after the shelf is hung no longer talks
+	# of the mount sockets; G9: the leaning shelf while the wet towel is on the bench) and its own refusal of a choice
+	# (`states[].fail_text`).
+	var hst := h.current_state()
+	var look := String(hst.get("look", d.get("look", "@ui.nothing_here")))
 
 	if selected_item != "":
 		var item := selected_item
@@ -832,8 +870,8 @@ func interact(h: StoryHotspot) -> void:
 			if not already:
 				_offer_choice(h, ch)
 				return
-		elif ch.has("fail_text"):
-			narrate_key(String(ch["fail_text"]))
+		elif ch.has("fail_text") or hst.has("fail_text"):
+			narrate_key(String(hst.get("fail_text", ch.get("fail_text", ""))))
 			return
 
 	# Look-only close-up (data `view`): opens first, the use/look text below plays over it. `if` / `unless`
@@ -924,6 +962,9 @@ func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary, item_id:
 				GameState.set_flag(f, false)
 	if chosen.has("sets"):
 		GameState.set_flag(String(chosen["sets"]), true)
+	# `also`: flags the option sets besides its own (G37: any drawing on the bird is also «Agata marked it», v03_marked).
+	for f in chosen.get("also", []):
+		GameState.set_flag(String(f), true)
 	if chosen.has("text"):
 		_beats.push_front(_text_beat(String(chosen["text"])))
 

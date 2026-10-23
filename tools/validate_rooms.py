@@ -152,6 +152,8 @@ for tf in sorted(TEXT.glob("*.json")):
 
 known_flags: set[str] = set(flags_doc.keys())
 known_flags |= tod_flags()   # время суток (F17): виртуальные флаги tod_*
+# visited_<комната> ставит сам движок при входе (StoryRunner.on_room_entered): «Агата уже была там» (C13, G21)
+known_flags |= {"visited_" + rf_.stem for rf_ in (STORY / "rooms").glob("*.json") if not rf_.stem.startswith("_")}
 for sc in scenes.values():
     known_flags |= set(sc.get("grants", {}).get("flags", []))
     for it in sc.get("grants", {}).get("items", []):
@@ -187,6 +189,8 @@ for rf in sorted(ROOMS.glob("*.json")):
             for o in ch.get("options", []):
                 if "sets" in o:
                     known_flags.add(o["sets"])
+                for fl in o.get("also", []) or []:
+                    known_flags.add(fl)
 
 for rid in in_scope:
     if rid not in rooms:
@@ -531,7 +535,7 @@ def check_view(ctx: str, v: dict) -> None:
             check_text(ctx + ".photo.label", ph["label"])
 
 
-EFFECT_TYPES = ("fire", "snow", "tint", "shapes")
+EFFECT_TYPES = ("fire", "snow", "tint", "shapes", "rope")
 BLENDS = ("mul", "add", "sub", "mix")
 SHAPE_TYPES = ("gradient", "poly", "line", "circle", "glow", "text", "rect", "dashes")
 MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo", "windlass", "latch", "crossing",
@@ -867,6 +871,40 @@ for rid, room in rooms.items():
                 f"({bg_scale:.4f}), отдельный масштаб только с объяснением")
         if "scale_reason" in l and abs(sc - 1.0) <= SCALE_TOL:
             warn(f"{lctx}: scale_reason при scale 1 — лишнее поле")
+        # 7в. Состояние, нарисованное другим кадром, совмещено с основой (G13, Директор 23.10: «топящаяся печь
+        # разорвана» — рама открытой дверцы стояла на 80 px выше закрытой дверцы фона и на четверть крупнее):
+        # `align` {layer_rect — деталь в пикселях слоя, base_rect — та же деталь в пикселях фона, tol_px, covers}.
+        # На экране низ, левый и правый край детали совпадают в пределах tol_px; covers — деталь слоя закрывает деталь
+        # фона целиком (иначе из-под неё торчит старое состояние). Пиксели сверяет game/tests/test_h1.gd.
+        al = l.get("align")
+        if al is not None and bg_scale:
+            try:
+                lr = [float(v) for v in al["layer_rect"]]
+                br = [float(v) for v in al["base_rect"]]
+                tol = float(al.get("tol_px", 12))
+                off = [float(v) for v in l.get("offset", [0, 0])]
+                k = bg_scale * sc
+                lx0, ly0 = off[0] + lr[0] * k, off[1] + lr[1] * k
+                lx1, ly1 = lx0 + lr[2] * k, ly0 + lr[3] * k
+                bx0, by0 = br[0] * bg_scale, br[1] * bg_scale
+                bx1, by1 = bx0 + br[2] * bg_scale, by0 + br[3] * bg_scale
+                if abs(ly1 - by1) > tol:
+                    err(f"{lctx}.align: низ детали слоя {ly1:.0f} ≠ низ на фоне {by1:.0f} (±{tol:.0f} px экрана)")
+                if abs((lx0 + lx1) / 2 - (bx0 + bx1) / 2) > tol:
+                    err(f"{lctx}.align: середина детали слоя x {(lx0 + lx1) / 2:.0f} ≠ на фоне {(bx0 + bx1) / 2:.0f} (±{tol:.0f})")
+                if abs((lx1 - lx0) - (bx1 - bx0)) > 2 * tol or abs((ly1 - ly0) - (by1 - by0)) > 2 * tol:
+                    err(f"{lctx}.align: размер детали слоя {lx1 - lx0:.0f}×{ly1 - ly0:.0f} ≠ на фоне {bx1 - bx0:.0f}×{by1 - by0:.0f}")
+                if al.get("covers"):
+                    # непрозрачная часть слоя вокруг детали (cover_rect, пиксели слоя; по умолчанию сама деталь) закрывает
+                    # деталь фона целиком (±4 px); что cover_rect на слое и правда непрозрачен — сверяет test_h1 по пикселям
+                    cr = [float(v) for v in al.get("cover_rect", al["layer_rect"])]
+                    cx0, cy0 = off[0] + cr[0] * k, off[1] + cr[1] * k
+                    cx1, cy1 = cx0 + cr[2] * k, cy0 + cr[3] * k
+                    if cx0 > bx0 + 4 or cx1 < bx1 - 4 or cy0 > by0 + 4 or cy1 < by1 - 4:
+                        err(f"{lctx}.align: слой [{cx0:.0f}..{cx1:.0f}]×[{cy0:.0f}..{cy1:.0f}] не закрывает деталь фона "
+                            f"[{bx0:.0f}..{bx1:.0f}]×[{by0:.0f}..{by1:.0f}] — из-под него видно прежнее состояние")
+            except (KeyError, TypeError, ValueError, IndexError):
+                err(f"{lctx}.align: нужны layer_rect и base_rect [x, y, w, h]")
         if sc <= 0:
             err(f"{lctx}: scale {sc} ≤ 0")
         if "image" not in l and "text" in l:
@@ -1087,6 +1125,15 @@ for rid, room in rooms.items():
             err(f"{ectx}: blend {e.get('blend')} — допустимо {', '.join(BLENDS)}")
         if e.get("type") == "shapes":
             check_shapes(ectx + ".shapes", e.get("shapes", []))
+        if e.get("type") == "rope":
+            # G28: канат движка — from / to на экране, ширина [у ближнего конца, у дальнего]
+            for k_ in ("from", "to"):
+                v_ = e.get(k_)
+                if not (isinstance(v_, list) and len(v_) == 2 and 0 <= v_[0] <= 1920 and 0 <= v_[1] <= 1080):
+                    err(f"{ectx}: {k_} — точка [x, y] в кадре 1920×1080")
+            w_ = e.get("width", [6, 3])
+            if not (isinstance(w_, list) and 1 <= len(w_) <= 2 and all(0 < float(x) <= 40 for x in w_)):
+                err(f"{ectx}: width [ближний, дальний] px, 0 < w ≤ 40")
         check_flags(ectx + ".if", e.get("if"))
         check_flags(ectx + ".unless", e.get("unless"))
     ph = room.get("background", {}).get("placeholder")
@@ -1499,9 +1546,35 @@ for rid, room in rooms.items():
                 check_res_path(f"{hctx}.view.pictures[{i_}].image", pi_.get("image", ""))
                 if len(pi_.get("rect", [])) != 4 or pi_["rect"][2] <= 0:
                     err(f"{hctx}.view.pictures[{i_}]: rect [x, y, w, h(0 — по пропорции)]")
+            # 13б. лист с заказанной картинкой (pending, партия 9 — чистые развороты тетрадей G33, пустой лист письма G31):
+            # пока файла нет, лист строится по stub (прежняя картинка с заплатками или лист движка — "image": null)
+            all_papers_ = list(enumerate(h["view"].get("papers", []) or []))
+            for pg_i, pg_ in enumerate(h["view"].get("pages", []) or []):
+                all_papers_ += [(f"pages[{pg_i}].{j_}", pp_) for j_, pp_ in enumerate(pg_.get("papers", []) or [])]
+            for i_, pa_ in all_papers_:
+                if pa_.get("font") not in (None, "hand", "body", "body_italic", "body_bold", "head", "head_bold"):
+                    err(f"{hctx}.view.papers[{i_}].font {pa_.get('font')} — нет такой роли (UiTheme.font)")
+                if not pa_.get("pending"):
+                    continue
+                res_ = str(pa_.get("image", ""))
+                st_ = pa_.get("stub")
+                if (GAME_DIR / res_[len("res://"):]).exists() if res_.startswith("res://") else False:
+                    warn(f"{hctx}.view.papers[{i_}]: {res_} уже в игре — pending/stub можно убрать")
+                    continue
+                req_ = MANIFEST_REQ.get(pa_["pending"])
+                if req_ is None:
+                    err(f"{hctx}.view.papers[{i_}]: pending {pa_['pending']} — нет такой заявки в assets/manifest.json")
+                elif req_.get("status") not in PENDING_OPEN:
+                    err(f"{hctx}.view.papers[{i_}]: файла {res_} нет, а заявка {pa_['pending']} — {req_.get('status')}: импортируйте арт")
+                elif "incoming/" + Path(res_).name not in req_.get("files", []):
+                    err(f"{hctx}.view.papers[{i_}]: incoming/{Path(res_).name} нет в заявке {pa_['pending']}")
+                if not isinstance(st_, dict) or "image" not in st_:
+                    err(f"{hctx}.view.papers[{i_}]: pending без stub.image (прежняя картинка или null — лист движка)")
+                elif st_["image"] is not None:
+                    check_res_path(f"{hctx}.view.papers[{i_}].stub.image", st_["image"])
             for i_, pa_ in enumerate(h["view"].get("papers", []) or []):
                 r_ = list(pa_.get("rect", []))
-                if "image" in pa_:
+                if "image" in pa_ and not (pa_.get("pending") and isinstance(pa_.get("stub"), dict)):
                     check_res_path(f"{hctx}.view.papers[{i_}].image", pa_["image"])
                     size_ = png_size(pa_["image"])
                     if len(r_) == 4 and r_[3] <= 0 and size_:
@@ -1541,7 +1614,11 @@ for rid, room in rooms.items():
         if cw is not None:
             if isinstance(cw, dict):
                 cw = [cw]
-            for cond in cw:
+            # `or` [cond, …] — любое из условий (G15: два следа в классе или учительский ящик)
+            stack = list(cw)
+            while stack:
+                cond = stack.pop()
+                stack.extend(cond.get("or", []) or [])
                 check_flags(sctx + ".complete_when", cond.get("all"))
                 check_flags(sctx + ".complete_when", cond.get("any"))
                 check_flags(sctx + ".complete_when", cond.get("flags"))
@@ -1729,7 +1806,7 @@ _set_anywhere: set[str] = set()
 def _collect_sets(o) -> None:
     if isinstance(o, dict):
         for k, v in o.items():
-            if k in ("sets", "flags") and isinstance(v, (list, str)):
+            if k in ("sets", "flags", "also") and isinstance(v, (list, str)):
                 _set_anywhere.update([v] if isinstance(v, str) else [x for x in v if isinstance(x, str)])
             elif k == "once_flag" and isinstance(v, str):
                 _set_anywhere.add(v)

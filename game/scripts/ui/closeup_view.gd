@@ -512,6 +512,18 @@ func _build_picture(p: Dictionary) -> void:
 ## aspect) and the text goes into its free field `text_rect` [x, y, w, h], given in the pixels of the original
 ## picture `image_size` (the copy in the game may be smaller).
 func _build_paper(p: Dictionary) -> void:
+	# A sheet whose picture is ordered and not delivered yet (`pending` — a request in assets/manifest.json, batch 9:
+	# clean notebook pages, Nina's blank letter): its `stub` keys replace the sheet's own until the file is imported
+	# (the old picture with paper patches over its pseudo-writing; `"image": null` — the engine's plain sheet).
+	if p.has("stub") and p.has("image") and not ResourceLoader.exists(String(p["image"])):
+		var st: Dictionary = p["stub"]
+		p = p.duplicate()
+		p.erase("stub")
+		for k in st.keys():
+			if st[k] == null:
+				p.erase(k)
+			elif not String(k).begins_with("_"):
+				p[k] = st[k]
 	var r: Array = p.get("rect", [700, 200, 500, 500])
 	var tex: Texture2D = null
 	if p.has("image"):
@@ -552,6 +564,17 @@ func _build_paper(p: Dictionary) -> void:
 		sheet.add_child(pic)
 		var src: Array = p.get("image_size", [tex.get_width(), tex.get_height()])
 		var k := w / maxf(float(src[0]), 1.0)
+		# `covers` [[x, y, w, h, "#paper"], …] in the picture's pixels: patches of clean paper over painted
+		# pseudo-writing («каша» on the aunt's notebook pages, G33) until the clean picture comes (batch 9).
+		for ci in p.get("covers", []).size():
+			var cv: Array = p["covers"][ci]
+			var patch := ColorRect.new()
+			patch.name = "Cover%d" % ci
+			patch.color = Color.html(String(cv[4]) if cv.size() > 4 else "#e6d8b8")
+			patch.position = Vector2(float(cv[0]), float(cv[1])) * k
+			patch.size = Vector2(float(cv[2]), float(cv[3])) * k
+			patch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			sheet.add_child(patch)
 		var tr: Array = p.get("text_rect", [0, 0, src[0], src[1]])
 		var body_i := Label.new()
 		body_i.name = "Text"
@@ -561,7 +584,8 @@ func _build_paper(p: Dictionary) -> void:
 		body_i.position = Vector2(float(tr[0]), float(tr[1])) * k
 		body_i.size = Vector2(float(tr[2]), float(tr[3])) * k
 		body_i.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		body_i.add_theme_font_override("font", UiTheme.font("body_italic"))
+		# `font`: "hand" — handwriting (G31/G33: Nina's letters, the aunt's notebooks); body_italic by default.
+		body_i.add_theme_font_override("font", UiTheme.font(String(p.get("font", "body_italic"))))
 		body_i.add_theme_font_size_override("font_size", int(p.get("font_size", 24)))
 		body_i.add_theme_color_override("font_color", Color.html(String(p.get("ink", "#2e2a24"))))
 		body_i.add_theme_constant_override("line_spacing", 0)
@@ -603,7 +627,7 @@ func _build_paper(p: Dictionary) -> void:
 	body.text = StoryData.text(String(p.get("text", "")))
 	body.position = Vector2(pad, y)
 	body.size = Vector2(sheet.size.x - pad * 2.0, sheet.size.y - y - pad * 0.6)
-	body.add_theme_font_override("font", UiTheme.font("body_italic"))
+	body.add_theme_font_override("font", UiTheme.font(String(p.get("font", "body_italic"))))
 	body.add_theme_font_size_override("font_size", int(p.get("font_size", 28)))
 	body.add_theme_color_override("font_color", ink)
 	body.add_theme_constant_override("line_spacing", 2)

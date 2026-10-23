@@ -8,6 +8,10 @@ extends Node2D
 ##   (BRIEF_CHATGPT_v4 §C6), drawn by the engine, not painted.
 ## shapes: PlaceholderArt shapes (`shapes` [...], `blend` optional) — three far lights, a mirror glass on the
 ##   stand, fog, the empty-boat haze.
+## rope: the bridge rope drawn like the painted one (RopeLine — the strip of the painted rope), from `from` to `to`
+##   (screen px) with `sag` px at the middle, `width` [near, far] px tapering with the distance, a soft `shadow` alpha
+##   under it on the water (0 — none), `tint` "#rrggbb" for the light of the scene (G28: where the rope is now —
+##   on the ring of the plate at the turn and over the water to the far shore, not on Pelageya's stopper).
 
 var data: Dictionary = {}
 var particles: CPUParticles2D = null
@@ -30,6 +34,8 @@ func setup(p_data: Dictionary) -> void:
 				if c is CanvasItem and c.material == null:
 					(c as CanvasItem).use_parent_material = true
 			add_child(art)
+		"rope":
+			_setup_rope()
 		"fire":
 			particles = CPUParticles2D.new()
 			particles.name = "Particles"
@@ -59,6 +65,34 @@ func _setup_tint(rect: Rect2) -> void:
 	p.color = Color.html(String(data.get("color", "#8090b0")))
 	p.material = _blend_material(String(data.get("blend", "mul")))
 	add_child(p)
+
+
+func _setup_rope() -> void:
+	var a := Vector2(float(data["from"][0]), float(data["from"][1]))
+	var b := Vector2(float(data["to"][0]), float(data["to"][1]))
+	var w: Array = data.get("width", [6, 3])
+	var near := float(w[0])
+	var far := float(w[1]) if w.size() > 1 else near
+	var pts := RopeLine.sag_points(a, b, float(data.get("sag", 10.0)), 24)
+	var curve := Curve.new()
+	curve.add_point(Vector2(0.0, 1.0))
+	curve.add_point(Vector2(1.0, far / maxf(near, 0.01)))
+	var sh_a := float(data.get("shadow", 0.0))
+	if sh_a > 0.0:
+		var sh := RopeLine.shadow(near, "RopeShadow")
+		sh.width_curve = curve
+		sh.default_color = Color(0, 0, 0, sh_a)
+		var off := PackedVector2Array()
+		for q in pts:
+			off.append(q + Vector2(0, near * 1.6))
+		sh.points = off
+		add_child(sh)
+	var rope := RopeLine.make(near, "Rope")
+	rope.width_curve = curve
+	rope.points = pts
+	if data.has("tint"):
+		rope.default_color = Color.html(String(data["tint"]))
+	add_child(rope)
 
 
 static func _blend_material(blend: String) -> CanvasItemMaterial:

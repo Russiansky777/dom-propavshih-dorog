@@ -37,10 +37,12 @@ static func get_theme() -> Theme:
 	return _theme
 
 
-## head / head_bold (Old Standard TT), body / body_italic / body_bold (PT Serif).
+## head / head_bold (Old Standard TT), body / body_italic / body_bold (PT Serif), hand (Bad Script — handwriting with
+## Cyrillic: Nina's letters, Evdokia's notebooks, Ulyana's pencil reply; G31/G33, SIL OFL 1.1, Docs/ASSET_PROVENANCE.md).
 static func font(role: String) -> Font:
 	if _fonts.is_empty():
 		var files := {
+			"hand": "bad_script/BadScript-Regular.ttf",
 			"head": "old_standard_tt/OldStandard-Regular.ttf",
 			"head_bold": "old_standard_tt/OldStandard-Bold.ttf",
 			"body": "pt_serif/PT_Serif-Web-Regular.ttf",

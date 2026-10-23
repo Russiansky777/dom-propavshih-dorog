@@ -133,6 +133,21 @@ for rf in sorted((STORY / "rooms").glob("*.json")):
             for fl in ul["sets"]:
                 granted_flags.setdefault(fl, []).append(f"{ul['loc']}:{it}")
 
+# Флаги первого входа в комнату (rooms/<LOC>.json → on_enter[].once_flag с условиями if): C12 (23.10) — боковую
+# дверь галереи Агата открывает изнутри при первом входе в галерею (house_open). Симуляция ставит флаг, как только
+# комната достижима и условия if выполнены (unless — не мешает: в симуляции флаги только прибавляются).
+for rf in sorted((STORY / "rooms").glob("*.json")):
+    if rf.name.startswith("_"):
+        continue
+    room_doc = json.loads(rf.read_text(encoding="utf-8"))
+    for oe in room_doc.get("on_enter", []) or []:
+        once = str(oe.get("once_flag", ""))
+        if not once or room_doc["id"] not in loc_ids:
+            continue
+        ul = {"loc": room_doc["id"], "item": "", "sets": [once], "req": list(oe.get("if", []) or [])}
+        room_unlocks.append(ul)
+        granted_flags.setdefault(once, []).append(f"{ul['loc']}:вход")
+
 # Предметы, которые игрок берёт сам хотспотом комнаты (items.json → source_hotspot «<комната>.<хотспот>»):
 # use.gives с use.requires. Не выдача сцены: симуляция даёт предмет, как только requires выполнены и комната
 # достижима; сцена такой предмет выдавать не должна (единственный источник).
@@ -187,7 +202,8 @@ auto_prefixes = ("done_", "has_", "q0", "q1")
 for fl, srcs in granted_flags.items():
     if fl not in declared_flags and not fl.startswith(auto_prefixes) and fl not in line_choice_flags:
         # флаги выборов тоже допускаем без описания
-        if not any(fl in [o.get("sets") for ch in by_id[sid].get("choices", []) for o in ch["options"]] for sid in srcs):
+        if not any(fl in [o.get("sets") for ch in by_id.get(sid, {}).get("choices", []) for o in ch["options"]] for sid in srcs) \
+                and not all(str(sid).endswith(":вход") for sid in srcs):   # флаг входа объявлен в своей комнате (rooms/*.json → flags)
             warn(f"флаг {fl} выдаётся ({', '.join(srcs)}), но не описан в flags.json")
 
 # ---------- 1б. цели журнала для игрока (goal) без служебных кодов ----------
@@ -353,13 +369,13 @@ unlock_log: list[str] = []
 while progress:
     progress = False
     for ui, ul in enumerate(room_unlocks):
-        if ui in applied_unlocks or ("has_" + ul["item"]) not in flags or not set(ul["req"]) <= flags:
+        if ui in applied_unlocks or (ul["item"] and ("has_" + ul["item"]) not in flags) or not set(ul["req"]) <= flags:
             continue
         if shortest(cur_loc, ul["loc"], flags) is None:
             continue
         flags |= set(ul["sets"])
         applied_unlocks.add(ui)
-        unlock_log.append(f"{ul['loc']}: {ul['item']} → {', '.join(ul['sets'])} (перед {len(order) + 1}-й основной сценой)")
+        unlock_log.append(f"{ul['loc']}: {ul['item'] or 'первый вход'} → {', '.join(ul['sets'])} (перед {len(order) + 1}-й основной сценой)")
     for ti, tk in enumerate(room_takes):
         if ("take", ti) in applied_unlocks or not set(tk["req"]) <= flags \
                 or not all(("has_" + x) in flags for x in tk["req_items"]):
