@@ -1,7 +1,11 @@
 extends MechanicPanel
 ## M10–M12, the workshop (H2): the office mirror clamped in Dunya's stand «ЗМ» and the mill bell beside it.
-##   1. Two wedges (clicks) clamp the frame — the glass clears and shows the office now (OfficeView in a
-##      SubViewport; UPDATE_ALWAYS, so a change at the mill is in the glass the same frame). Event "clamped".
+##   1. G19 (Director 23.10: «клинья максимально нереалистичные; подбить по 3 раза»): four painted wedges (art pack 9 —
+##      H2_state_wedges_loose / half / driven, each wedge cut out by its own box) are driven in on the shared «точный
+##      удар» bar, three hits each, one wedge after another (the one in work glows); a miss — that wedge jumps back
+##      out loose, the driven ones stay (GameState counter mech.wedges.driven: a reopened close-up or a load keeps
+##      them). All four in — the glass clears and shows the office now (OfficeView in a SubViewport; UPDATE_ALWAYS, so
+##      a change at the mill is in the glass the same frame). Event "clamped". «Облегчить мини-игры» applies.
 ##   2. With the clapper hung (`bell_clapper_hung`), one strike: Pavel's lantern lights the gap at once —
 ##      the same frame as the strike (canon: the mirror shows now; test_day2 checks the frame numbers).
 ##      Event "lantern".
@@ -25,8 +29,14 @@ var glass_rect: Rect2 = Rect2()
 var glass_points: PackedVector2Array = PackedVector2Array()
 var bell: TextureRect = null
 var bell_hit: Control = null
-var wedges: Array[Control] = []
-var wedge_in: Array[bool] = [false, false]
+const WEDGE_COUNTER := "mech.wedges.driven"
+var wedges: Array[Control] = []        # one holder per wedge (its three state crops + the glow) — probe/tests
+var wedge_hits: Array[int] = []        # hits so far on each wedge (3 — driven)
+var wedge_boxes: Array[Rect2] = []     # screen rects of the wedges' boxes
+var wedge_timing: TimingBar = null
+var wedge_slips: int = 0
+var _wedge_jump: float = -1.0          # the wedge in work jumping out after a miss (0..1)
+var _wedge_jump_i: int = -1
 var status_label: Label = null
 var signal_parser: BellSignal = null
 var hook: HookPuzzle = null
@@ -88,17 +98,7 @@ func build() -> void:
 	sheen.polygon = pts
 	add_child(sheen)
 	glass = hit_area(glass_rect, _on_glass_input, "Glass")
-	# Wedges at the foot of the frame.
-	var wp: Array = spec.get("wedges", [[492, 900], [830, 900]])
-	for i in wp.size():
-		var c := hit_area(Rect2(v2(wp[i]) - Vector2(30, 26), Vector2(60, 52)), _on_wedge_input.bind(i), "Wedge%d" % i)
-		var tri := Polygon2D.new()
-		tri.name = "Shape"
-		tri.color = Color(0.55, 0.38, 0.2)
-		var dir := 1.0 if i == 0 else -1.0
-		tri.polygon = PackedVector2Array([Vector2(30 - 26 * dir, 8), Vector2(30 + 26 * dir, 18), Vector2(30 - 26 * dir, 30)])
-		c.add_child(tri)
-		wedges.append(c)
+	_build_wedges(reg, fpos, fk)
 	# The bell.
 	var bs: Dictionary = spec.get("bell", {})
 	bell = crop(String(bs.get("image", "")), bs.get("region", [1376, 252, 192, 236]), v2(bs.get("pos", [1150, 250])), float(bs.get("scale", 1.7)))
@@ -152,6 +152,132 @@ func _build_hook_bar() -> void:
 	TimingBar.apply_ease(hook_bar.logic)   # «Облегчить мини-игры» (G3): slower sway, wider bolt zone
 
 
+## The four wedges of the frame (G19): each a holder at its box with the three painted states cut from their layers
+## (`wedges.art` {loose, half, driven}, `wedges.boxes` [[x, y, w, h], …] — canvas px) and a glow round the one in work;
+## the «точный удар» bar (`wedges.timing`, `wedges.timing_rect`) drives the one in work, three hits each.
+func _build_wedges(reg: Array, fpos: Vector2, fk: float) -> void:
+	var ws: Dictionary = spec.get("wedges", {})
+	if not (ws is Dictionary):
+		ws = {}
+	var art: Dictionary = ws.get("art", {})
+	var boxes: Array = ws.get("boxes", [])
+	var driven := GameState.get_counter(WEDGE_COUNTER) if not clamped() else boxes.size()
+	for i in boxes.size():
+		var b: Array = boxes[i]
+		var box := Rect2(float(b[0]), float(b[1]), float(b[2]), float(b[3]))
+		var scr := Rect2(fpos + (box.position - Vector2(float(reg[0]), float(reg[1]))) * fk, box.size * fk)
+		wedge_boxes.append(scr)
+		var holder := Control.new()
+		holder.name = "Wedge%d" % i
+		holder.position = scr.position
+		holder.size = scr.size
+		holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(holder)
+		var glow := Panel.new()
+		glow.name = "Glow"
+		glow.position = Vector2(-8, -8)
+		glow.size = scr.size + Vector2(16, 16)
+		glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var gs := StyleBoxFlat.new()
+		gs.bg_color = Color(1.0, 0.86, 0.5, 0.0)
+		gs.border_color = Color(1.0, 0.86, 0.5, 0.9)
+		gs.set_border_width_all(3)
+		gs.set_corner_radius_all(8)
+		gs.shadow_color = Color(1.0, 0.8, 0.4, 0.35)
+		gs.shadow_size = 10
+		glow.add_theme_stylebox_override("panel", gs)
+		holder.add_child(glow)
+		for st in ["loose", "half", "driven"]:
+			var img := String(art.get(st, ""))
+			var tr := crop(img, [box.position.x, box.position.y, box.size.x, box.size.y], Vector2.ZERO, fk, holder)
+			tr.name = st.capitalize()
+		wedges.append(holder)
+		wedge_hits.append(3 if i < driven else 0)
+	wedge_timing = TimingBar.new()
+	wedge_timing.name = "WedgeTiming"
+	var trr: Array = ws.get("timing_rect", [1120, 470, 520, 48])
+	wedge_timing.position = Vector2(float(trr[0]), float(trr[1]))
+	wedge_timing.size = Vector2(float(trr[2]), float(trr[3]))
+	add_child(wedge_timing)
+	wedge_timing.setup(ws.get("timing", {"hits": 3, "period_s": 1.9, "green": 0.2}))
+	wedge_timing.struck.connect(_on_wedge_struck)
+	strike_bar = wedge_timing   # G26: a click anywhere on the close-up strikes the wedge in work
+	_refresh_wedges()
+
+
+## The wedge in work: the first not driven (−1 — all in).
+func wedge_in_work() -> int:
+	for i in wedge_hits.size():
+		if wedge_hits[i] < 3:
+			return i
+	return -1
+
+
+func wedges_driven() -> int:
+	var n := 0
+	for h in wedge_hits:
+		if h >= 3:
+			n += 1
+	return n
+
+
+## Each wedge shows its state: 0 hits — loose; 1 — half; 2 — between half and driven; 3 — driven.
+func _refresh_wedges() -> void:
+	var work := wedge_in_work()
+	for i in wedges.size():
+		var h: int = wedge_hits[i]
+		var w: Control = wedges[i]
+		var loose: CanvasItem = w.get_node("Loose")
+		var half: CanvasItem = w.get_node("Half")
+		var drv: CanvasItem = w.get_node("Driven")
+		loose.visible = h == 0
+		half.visible = h == 1 or h == 2
+		drv.visible = h >= 2
+		half.modulate.a = 1.0 if h == 1 else 0.5
+		drv.modulate.a = 1.0 if h >= 3 else 0.5
+		var glow: Control = w.get_node("Glow")
+		glow.visible = i == work and not clamped()
+		var off := Vector2.ZERO
+		if i == _wedge_jump_i and _wedge_jump >= 0.0:
+			off = Vector2(0, -26.0 * sin(_wedge_jump * PI))
+		for n in [loose, half, drv]:
+			(n as Control).position = off
+	if wedge_timing != null:
+		wedge_timing.visible = work >= 0 and not clamped()
+	# While the wedges go in, their bar stands where the bell's schedule and legend are (those are for after).
+	for n in ["Schedule", "BellLegend"]:
+		var c := get_node_or_null(n) as CanvasItem
+		if c != null:
+			c.visible = wedge_timing == null or not wedge_timing.visible
+
+
+func _on_wedge_struck(r: String) -> void:
+	var i := wedge_in_work()
+	if i < 0:
+		return
+	match r:
+		"hit", "done":
+			wedge_hits[i] = 3 if r == "done" else wedge_timing.logic.hits
+			sound("hammer")
+			if r == "done":
+				GameState.set_counter(WEDGE_COUNTER, wedges_driven())
+				if wedge_in_work() < 0:
+					if not clamped():
+						event("clamped")
+						office.refresh()
+				else:
+					wedge_timing.restart()
+		"miss":
+			wedge_hits[i] = 0
+			wedge_slips += 1
+			_wedge_jump = 0.0
+			_wedge_jump_i = i
+			sound("clank")
+			if wedge_slips == 1:
+				say("wedge_slipped")
+	_refresh_wedges()
+
+
 func opened() -> void:
 	if clamped():
 		say("view_first" if not flag("lantern_check_seen") else "view_again")
@@ -162,9 +288,10 @@ func clamped() -> bool:
 
 
 func _sync_from_flags() -> void:
-	for i in wedges.size():
-		wedge_in[i] = clamped()
-		_place_wedge(i)
+	if clamped():
+		for i in wedge_hits.size():
+			wedge_hits[i] = 3
+	_refresh_wedges()
 	office.light_on = flag("lantern_check_seen") and not flag("office_unbolted")
 	office.hook_visible = flag("lantern_check_seen") and not flag("office_unbolted")
 	office.door_given = flag("office_unbolted")
@@ -174,25 +301,7 @@ func _sync_from_flags() -> void:
 	_set_status()
 
 
-func _place_wedge(i: int) -> void:
-	var tri: Polygon2D = wedges[i].get_node("Shape")
-	tri.position = Vector2((14.0 if i == 0 else -14.0) if wedge_in[i] else 0.0, 0)
-
-
 # --- Input ----------------------------------------------------------------------------------
-
-func _on_wedge_input(ev: InputEvent, i: int) -> void:
-	if not (ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT):
-		return
-	accept_event()
-	if wedge_in[i]:
-		return
-	wedge_in[i] = true
-	_place_wedge(i)
-	sound("hammer")
-	if wedge_in.all(func(x): return x) and not clamped():
-		event("clamped")
-		office.refresh()
 
 
 func _on_glass_input(ev: InputEvent) -> void:
@@ -259,6 +368,11 @@ func _handle_signals(sigs: Array[String]) -> void:
 
 
 func tick(delta: float) -> void:
+	if _wedge_jump >= 0.0:
+		_wedge_jump += delta / 0.5
+		if _wedge_jump >= 1.0:
+			_wedge_jump = -1.0
+		_refresh_wedges()
 	if hook_active():
 		_handle_signals(signal_parser.tick(clock))
 		hook.step(delta)
@@ -319,6 +433,15 @@ func probe() -> Dictionary:
 	for w in wedges:
 		ws.append(center_of(w))
 	out["wedges"] = ws
+	var work := wedge_in_work()
+	out["wedge_hits"] = wedge_hits.duplicate()
+	out["wedge_work"] = work
+	out["wedges_driven"] = wedges_driven()
+	out["wedge_slips"] = wedge_slips
+	out["wedge_strike"] = center_of(wedges[work]) if work >= 0 and work < wedges.size() else {}
+	out["wedge_timing"] = wedge_timing.probe() if wedge_timing != null and wedge_timing.visible else {}
+	out["free_click"] = {"x": 1500.0, "y": 180.0}
+	out["strikes_by_click"] = strikes_by_click
 	if hook != null:
 		var bc := center_of(bell_hit)
 		# How to ring each signal (bots: tools/ai_playtest): «стой» is judged at its FIRST click.

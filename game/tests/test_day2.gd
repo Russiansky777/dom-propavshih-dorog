@@ -79,7 +79,7 @@ func _run() -> void:
 	await _test("The clapper any time: taken and hung on day one, the bell rings far away; M11 needs no box, nothing given twice", _test_clapper_early)
 	await _test("By state: the clamp waits for the sluice; Pelageya's lines at the pier follow the goal; the boat gone at dusk; «В лодку» after the knot; no Pelageya at the pier after the crossing", _test_states)
 	await _test("Whole day two by script: morning → mill → mirror and bell → office → sluice → mother's mirror → plate → three lights → ribbon → R3", _test_walkthrough)
-	await _test("Office mirror by mouse: wedges, the light in the same frame as the strike, the hook by bell signals", _test_office_mirror_mouse)
+	await _test("Office mirror by mouse: four painted wedges, three «точный удар» hits each (G19), the light in the same frame as the strike, the hook by bell signals", _test_office_mirror_mouse)
 	await _test("Sluice by mouse (G23/G24): «точный удар» — a hit in the green a notch and a step down, a miss back to the first notch, early → «Погоди»; red mark on the last notch; four in a row open it", _test_sluice_mouse)
 	await _test("Mother's mirror on screen: 20:1 over real frames, poses change, knock, compare", _test_fast_mirror_panel)
 	await _test("Save in the middle of day two: load replays nothing, the sluice keeps its notches, the day goes on", _test_save_load)
@@ -642,8 +642,7 @@ func _test_clapper_early() -> void:
 	await _use_item("mirror_mill", "stand_zm")
 	await _wait_mechanic("office_mirror")
 	await _finish()
-	for w in _panel().get("wedges", []):
-		await _click(_v(w))
+	await _drive_wedges()
 	await _frames(2)
 	await _finish()
 	_check(gs.has_flag("done_M10"), "the wedges clamp the frame → M10")
@@ -815,11 +814,10 @@ func _test_walkthrough() -> void:
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "office_mirror", "the office mirror close-up opens")
 	await _finish()
 	var p = mv.panel
-	for w in _panel().get("wedges", []):
-		await _click(_v(w))
+	await _drive_wedges()
 	await _frames(2)
 	seen = await _finish()
-	_check(gs.has_flag("office_mirror_clamped") and gs.has_flag("done_M10"), "two wedges clamp the frame → M10: %s" % str(seen))
+	_check(gs.has_flag("office_mirror_clamped") and gs.has_flag("done_M10"), "four wedges, three hits each, clamp the frame → M10: %s" % str(seen))
 	await _click(_v(_panel().get("bell", {})))
 	await _finish()
 	_check(not gs.has_flag("lantern_check_seen"), "without the clapper the bell is mute")
@@ -1222,11 +1220,45 @@ func _test_office_mirror_mouse() -> void:
 	await _click(_v(pr.get("bell", {})))
 	await _finish()
 	_check(not gs.has_flag("lantern_check_seen"), "an unclamped frame shows nothing: the strike proves nothing yet")
-	await _click(_v(pr["wedges"][0]))
-	_check(not gs.has_flag("office_mirror_clamped"), "one wedge is not enough")
-	await _click(_v(pr["wedges"][1]))
+	# G19 (Director 23.10: wedges «максимально нереалистичные; подбить по 3 раза»): four painted wedges, three hits each.
+	_check((pr.get("wedges", []) as Array).size() == 4 and int(pr.get("wedge_work", -1)) == 0 and not pr.get("wedge_timing", {}).is_empty()
+		and int(pr["wedge_timing"].get("needed", 0)) == 3, "G19: four wedges, the first in work, three hits on the bar (%s)" % str(pr.get("wedge_hits")))
+	await _drive_wedges(Vector2.INF, 3)
+	pr = _panel()
+	_check(int(pr.get("wedges_driven", 0)) == 1 and int(pr.get("wedge_work", -1)) == 1 and not gs.has_flag("office_mirror_clamped"),
+		"three hits drive the first wedge; one is not enough (%s)" % str(pr.get("wedge_hits")))
+	await _drive_wedges(Vector2.INF, 1)
+	# A miss: the wedge in work jumps out, the driven one stays.
+	var g := 0
+	while g < 4000:
+		g += 1
+		var t: Dictionary = _panel().get("wedge_timing", {})
+		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and float(t.get("pos", 0.5)) < 0.08:
+			break
+		await process_frame
+	await _click(_v(_panel().get("wedge_strike", {})))
+	await _frames(2)
+	pr = _panel()
+	_check(int(pr.get("wedge_slips", 0)) == 1 and (pr.get("wedge_hits", []) as Array)[1] == 0 and int(pr.get("wedges_driven", 0)) == 1,
+		"a miss: the wedge in work jumps out, the driven one stays (%s)" % str(pr.get("wedge_hits")))
+	var wseen := await _finish()
+	_check(wseen.any(func(x): return x.begins_with("agata:")), "Agata says so once (%s)" % str(wseen))
+	# Closed and opened again: the driven wedge is still in (GameState counter).
+	sr.close_mechanic()
+	await _frames(2)
+	await _use("stand_zm")
+	await _frames(2)
 	await _finish()
-	_check(gs.has_flag("office_mirror_clamped"), "two wedges clamp")
+	p = mv.panel
+	pr = _panel()
+	_check(int(pr.get("wedges_driven", 0)) == 1 and int(pr.get("wedge_work", -1)) == 1, "reopened: the first wedge still driven (%s)" % str(pr.get("wedge_hits")))
+	# The rest — one hit by a click on a free spot of the close-up (G26: a click anywhere strikes).
+	await _drive_wedges(_v(pr.get("free_click", {})), 1)
+	_check(int(_panel().get("strikes_by_click", 0)) >= 1, "a click away from the wedges strikes the one in work")
+	await _drive_wedges()
+	await _finish()
+	_check(gs.has_flag("office_mirror_clamped"), "four wedges, three hits each — the frame is clamped")
+	_check(String(_panel().get("wedge_timing", {}).get("state", "gone")) == "gone" or _panel().get("wedge_timing", {}).is_empty(), "the wedges' bar is gone once clamped")
 	_check(p.office_vp.render_target_update_mode == SubViewport.UPDATE_ALWAYS, "the office view is redrawn every frame")
 	# The strike and the light: same process frame.
 	var bell := _v(_panel().get("bell", {}))
@@ -1277,6 +1309,30 @@ func _test_office_mirror_mouse() -> void:
 	await _frames(2)
 	Engine.time_scale = 1.0
 	_reached_end = true
+
+
+## G19: the four wedges of the stand «ЗМ», three hits each on the «точный удар» bar, by real clicks on the wedge in work
+## (or `at` — e.g. a free spot of the close-up) when the marker is in the middle of the green. Returns the clicks made.
+func _drive_wedges(at: Vector2 = Vector2.INF, max_hits: int = 12) -> int:
+	var made := 0
+	var guard := 0
+	while made < max_hits and not gs.has_flag("office_mirror_clamped") and guard < 20000 and sr.mechanic_open:
+		guard += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		var pr := _panel()
+		var t: Dictionary = pr.get("wedge_timing", {})
+		if t.is_empty():
+			await process_frame
+			continue
+		var z: Array = t.get("zone", [0.4, 0.6])
+		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and absf(float(t.get("pos", 0.0)) - (float(z[0]) + float(z[1])) * 0.5) < 0.03:
+			await _click(at if at != Vector2.INF else _v(pr.get("wedge_strike", {})))
+			made += 1
+			await _frames(2)
+		else:
+			await process_frame
+	return made
 
 
 # --- Sluice by mouse (G23: «точный удар») -------------------------------------------------------------
@@ -1342,7 +1398,8 @@ func _test_sluice_mouse() -> void:
 	_check(absf(float(pr.get("last_notch_deg", 0.0)) - tick_deg) < 3.0, "G24: the last notch %.0f° = the last painted tick %.0f°" % [float(pr.get("last_notch_deg", 0.0)), tick_deg])
 	var dial = rm.current_room.get_node_or_null("Layers")
 	_check(dial != null and (dial.find_child("dial_mark_last", true, false) != null or dial.find_child("StandIn", true, false) != null or rm.current_room.find_child("dial_mark_last", true, false) != null),
-		"G24: the ordered dial layer (pack 9) is wired: its stand-in until the art comes")
+		"G24: the dial layer (pack 9) is in the room")
+	_check((pr.get("overlays", []) as Array).has("dial_mark_last"), "G24: the dial with the red mark on the last tick laid over the gate in the close-up (%s)" % str(pr.get("overlays")))
 	# Two hits: two notches, the water two steps down.
 	await _sluice_strikes(p, 2)
 	pr = _panel()

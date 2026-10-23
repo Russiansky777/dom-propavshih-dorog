@@ -14,7 +14,7 @@ var player: Node2D
 var mv: Node
 var out_dir := ""
 
-const SHOTS := ["M1", "M2", "M3", "M4", "R2", "R3", "Z3_evening", "R1_dusk", "R1_answered", "H2_mirror", "office_mirror", "office_hook", "sluice", "fast_mirror", "plate", "plate_rope", "plate_tied", "lantern", "photo"]
+const SHOTS := ["M1", "M2", "M3", "M4", "R2", "R3", "Z3_evening", "R1_dusk", "R1_answered", "H2_mirror", "office_mirror", "office_wedges", "office_hook", "sluice", "fast_mirror", "plate", "plate_rope", "plate_tied", "lantern", "photo"]
 
 
 func _initialize() -> void:
@@ -145,6 +145,18 @@ func _shot(name: String) -> void:
 			p.office.light_on = true
 			p.office.hook_visible = false
 			p.office.refresh()
+		"office_wedges":
+			# G19: the four painted wedges, the first driven, the second once struck; the bar where the schedule is.
+			await _day(2)
+			_flags(["office_mirror_mounted"])
+			await _room("H2")
+			await _open("stand_zm")
+			var p = mv.panel
+			p.wedge_hits[0] = 3
+			p.wedge_hits[1] = 1
+			p._refresh_wedges()
+			for i in 20:
+				await process_frame
 		"office_hook":
 			await _day(3)
 			await _room("H2")

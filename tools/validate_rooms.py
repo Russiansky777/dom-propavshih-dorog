@@ -761,6 +761,21 @@ def check_mechanic(ctx: str, m: dict, room: dict) -> None:
             err(f"{ctx}.unless: собранный верстак крупным планом не открывается снова ({steps_[-1] if steps_ else '?'})")
     if m.get("type") == "office_mirror" and len(m.get("frame", {}).get("glass_polygon", [])) != 4:
         err(f"{ctx}.frame.glass_polygon: контур стекла — 4 точки холста (glass_polygon_px поставки)")
+    if m.get("type") == "office_mirror":
+        # G19: клинья — нарисованные (loose / half / driven), каждый по своей рамке внутри кадра рамы; три удара «точного удара».
+        ws = m.get("wedges", {})
+        reg = m.get("frame", {}).get("region", [0, 0, 0, 0])
+        if not isinstance(ws, dict) or not ws.get("boxes"):
+            err(f"{ctx}.wedges: клинья — {{art: {{loose, half, driven}}, boxes: [[x, y, w, h], …], timing}} (G19)")
+        else:
+            for k in ("loose", "half", "driven"):
+                if not ws.get("art", {}).get(k):
+                    err(f"{ctx}.wedges.art.{k}: нет слоя клиньев")
+            for i, b in enumerate(ws["boxes"]):
+                if len(b) != 4 or not (reg[0] <= b[0] and b[0] + b[2] <= reg[0] + reg[2] and reg[1] <= b[1] and b[1] + b[3] <= reg[1] + reg[3]):
+                    err(f"{ctx}.wedges.boxes[{i}]: рамка клина {b} вне кадра рамы {reg}")
+            if int(ws.get("timing", {}).get("hits", 0)) != 3:
+                err(f"{ctx}.wedges.timing.hits: каждый клин — три удара (G19)")
     if m.get("type") == "fast_mirror":
         if float(m.get("ratio", 20)) != 20.0:
             err(f"{ctx}.ratio: время внутри идёт ровно в 20 раз быстрее (канон, SCENARIO_FINAL §4.3) — {m.get('ratio')}")

@@ -42,6 +42,7 @@ var hold: bool = false          # the owner pauses the bar (e.g. the hook waits 
 var space_key: bool = true      # Space strikes (the owner may take the key for itself)
 var hint: Label = null
 var slow_check: CheckButton = null   # «Облегчить» right beside the bar (the same setting as in the menu)
+var _cfg: Dictionary = {}
 var _flash: float = 0.0
 var _flash_col: Color = GREEN
 var _shake: float = 0.0
@@ -56,6 +57,7 @@ func _init() -> void:
 ## cfg: the mechanic's `timing` block (TimingLogic fields) + `hint` (a text key or plain text shown by the bar).
 func setup(cfg: Dictionary, p_vertical: bool = false) -> void:
 	load_settings()
+	_cfg = cfg.duplicate()
 	logic = TimingLogic.new(cfg)
 	apply_ease(logic)
 	vertical = p_vertical
@@ -82,12 +84,22 @@ func setup(cfg: Dictionary, p_vertical: bool = false) -> void:
 	queue_redraw()
 
 
+## A new series on the same bar (the next wedge in the stand «ЗМ», G19): fresh logic from the same data, eased.
+func restart() -> void:
+	logic = TimingLogic.new(_cfg)
+	apply_ease(logic)
+	queue_redraw()
+
+
 func _layout_hint() -> void:
 	if hint != null:
 		hint.position = Vector2(0, size.y + 6)
 		hint.size = Vector2(size.x, 36)
 	if slow_check != null:
-		slow_check.position = Vector2(size.x + 24, (size.y - 44) * 0.5)
+		if String(_cfg.get("slow_at", "right")) == "below":   # no room to the right (the wedges' bar at the screen edge)
+			slow_check.position = Vector2(0, size.y + (48.0 if hint != null else 8.0))
+		else:
+			slow_check.position = Vector2(size.x + 24, (size.y - 44) * 0.5)
 		slow_check.size = Vector2(240, 44)
 
 

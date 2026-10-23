@@ -1157,7 +1157,8 @@
     },
     {
       "id": "H2_state_office_mirror_center_v2",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент механик)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1175,7 +1176,8 @@
     },
     {
       "id": "H2_state_wedges_loose",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент механик)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1193,7 +1195,8 @@
     },
     {
       "id": "H2_state_wedges_half",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент механик)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1211,7 +1214,8 @@
     },
     {
       "id": "H2_state_wedges_driven",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент механик)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1625,7 +1629,8 @@
     },
     {
       "id": "M4_state_dial_mark_last",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент механик)"},
       "kind": "background_fix",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
