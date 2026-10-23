@@ -210,6 +210,11 @@ func _test_rope_where() -> void:
 					if w is CanvasItem and (w as CanvasItem).is_visible_in_tree():
 						wz = maxi(wz, (w as CanvasItem).z_index)
 			_check(pz > wz, "%s: the empty-stopper patch (z %d) draws above the river ripple (z %d)" % [st[0], pz, wz])
+		# The whole painted rope goes — from the stopper to the far post, over the snowy far bank too (web check 23.10: a
+		# piece of it hung from the far post over the water at dusk).
+		if patches.size() == 1:
+			var used: Rect2i = _layer_image(r1, String(patches[0])).get_used_rect()
+			_check(used.position.x <= 690 and used.end.x >= 1280, "%s: the empty-stopper patch spans the rope from the far post to the stopper (x %d–%d of the 1672 canvas)" % [st[0], used.position.x, used.end.x])
 		# The patch is cut from the frame shown under it: on days 3–4 that is the batch 9 low-water day frame (G52), not
 		# the autumn background — just outside the rope (the soft edge of the patch) its pixels are the frame's own.
 		if patches.size() == 1 and _visible(r1, "Layers/water_low_day"):
