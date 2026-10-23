@@ -172,7 +172,18 @@ jobs:
           CFG: ${{ matrix.gate.cfg }}
           DOC: ${{ matrix.gate.doc }}
           SHA: ${{ needs.plan.outputs.sha }}
+          GH_TOKEN: ${{ github.token }}
         run: |
+          # пока задача ждала очереди, вышла (или собирается) более новая сборка main — её ворота проверят те же
+          # пункты на свежем содержимом; эта сборка устарела, прогон на ней только потратит разовые пункты (recheck)
+          for h in $(gh run list --workflow build_and_publish.yml --branch main -L 8 --json headSha,status,conclusion \
+                     --jq '.[] | select(.status != "completed" or .conclusion == "success") | .headSha' 2>/dev/null | sort -u); do
+            if [ "$h" != "$SHA" ] && git merge-base --is-ancestor "$SHA" "$h" 2>/dev/null; then
+              echo "items=" >> "$GITHUB_OUTPUT"
+              echo "есть более новая сборка ${h:0:7} (публикуется или опубликована) — ворота пойдут по ней"
+              exit 0
+            fi
+          done
           # пока задача ждала очереди, прошлые ворота того же чеклиста могли проверить те же строки
           items=$(node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --ref "$SHA" --config "$CFG")
           echo "items=$items" >> "$GITHUB_OUTPUT"
