@@ -126,6 +126,21 @@ func _publish_after_layout() -> void:
 	_publish_probe_state()
 
 
+## Room layers (state layers, occluders) by id → shown now: what the art shows in this state.
+func _layer_states(room: Node) -> Dictionary:
+	var out := {}
+	if room == null:
+		return out
+	for box in ["Layers", "Occluders"]:
+		var c := room.get_node_or_null(box)
+		if c == null:
+			continue
+		for l in c.get_children():
+			if l is CanvasItem:
+				out[String(l.name)] = (l as CanvasItem).is_visible_in_tree()
+	return out
+
+
 ## `window.probeState`: game state plus click targets (world coords == canvas coords at 1920x1080).
 func _publish_probe_state() -> void:
 	_probe_dirty = false
@@ -169,6 +184,7 @@ func _publish_probe_state() -> void:
 		"mechanic": mechanic_view.call("probe") if mechanic_view != null else {},
 		"examine": item_examine.call("probe") if item_examine != null else {},
 		"frame": frame_view.call("probe") if frame_view != null else {},
+		"layers": _layer_states(room),   # room art layers by id → shown (drawn states by flags, web checks)
 		"time": TimeOfDay.probe(GameState.current_room),   # time of day (F17): state, phase, day, journal line
 		"ticks": Time.get_ticks_msec(),
 		"physics_frames": Engine.get_physics_frames(),

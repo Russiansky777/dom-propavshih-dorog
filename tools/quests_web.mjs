@@ -11,6 +11,9 @@
 //   Q06  the street: «Мастерская Ильи» → Mitya / Ilya, the second bench close-up: the wedge (does not fit, comes back),
 //        the key, the stop block seated, the wooden screw by «точный удар» (one in the red, three in the green), the board →
 //        «Держит», the choice at once → A; the shed door on the street is open (frame).
+//   B8   batch 8 art (ChatGPT 23.10): the class board — mum's chalk answer, the date, Ulyana's reply (layers from the probe);
+//        a double click on an item in the bag — its drawn close-up; school door → gallery → home: M23c, mum's coat on the
+//        hook, a click on it — the sleeve close-up (Q03).
 // Software WebGL draws a few frames a second: for the timing bar the game clock is slowed with window.probePause(false, k)
 // once the marker is where the click is wanted — the click itself is real.
 // Frames: Docs/evidence/M3/quests_web_*.jpg. Exit code 0 only when every check passed and the console has no errors.
@@ -35,7 +38,7 @@ const WEB_DIR = process.env.QUESTS_WEB_DIR ? path.resolve(ROOT, process.env.QUES
 const OUT_DIR = path.join(ROOT, "Docs", "evidence", "M3");
 const LOG_DIR = path.join(ROOT, "build", "shots", "quests");
 const PORT = Number(process.env.QUESTS_PORT || 8781);
-const RUNS = (process.env.QUESTS_RUNS || "Q02,Q06").split(",");
+const RUNS = (process.env.QUESTS_RUNS || "Q02,Q06").split(",");   // B8 — after the batch-8 wiring is in the build
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -173,7 +176,7 @@ async function main() {
     if (!h || !h.visible) { check(false, `hotspot ${id} visible in ${s.room}`); return []; }
     await click(`hotspot ${id}`, h);
     await waitIdle(`hotspot ${id}`);
-    await waitFor(`hotspot ${id}: reaction`, (t) => beatKey(t) !== "" || (t.mechanic && t.mechanic.open), 30000);
+    await waitFor(`hotspot ${id}: reaction`, (t) => beatKey(t) !== "" || (t.mechanic && t.mechanic.open) || (t.view && t.view.open), 30000);
     return playThrough(`hotspot ${id}`, opts);
   };
   const goExit = async (target) => {
@@ -211,22 +214,25 @@ async function main() {
   };
   const slow = async (k) => { await page.evaluate((x) => window.probePause(false, x), k); };
   const strikeTiming = async (label, at, wantGreen) => {
+    // The probe here is read about once a second while the marker crosses the bar in 1.9 s: at full speed the read
+    // almost never lands in the middle of the green. So the game clock is slowed FIRST (0.05, the lowest probePause
+    // allows), the marker is watched crawling, and the REAL click goes in once it is where the click is wanted.
     const t0 = Date.now();
+    let slowed = false;
     while (Date.now() - t0 < 180000) {
       const s0 = await state();
-      if (beatKey(s0)) { await playThrough(`${label}: line first`, { quietMs: 800 }); continue; }
+      if (beatKey(s0)) {
+        if (slowed) { await slow(1.0); slowed = false; }
+        await playThrough(`${label}: line first`, { quietMs: 800 });
+        continue;
+      }
       const t = s0.mechanic && s0.mechanic.panel && s0.mechanic.panel.timing;
       if (t && t.zone && t.state === "run" && !t.paused) {
+        if (!slowed) { await slow(0.05); slowed = true; continue; }
         const c = (t.zone[0] + t.zone[1]) / 2, half = (t.zone[1] - t.zone[0]) / 2;
-        if (wantGreen ? Math.abs(t.pos - c) < half * 0.5 : Math.abs(t.pos - c) > half + 0.15) {
-          await slow(0.05);
-          const s2 = await state();
-          const t2 = s2.mechanic.panel.timing;
-          if (t2 && (wantGreen ? Math.abs(t2.pos - c) < half * 0.9 : Math.abs(t2.pos - c) > half + 0.05)) break;
-          await slow(1.0);
-        }
+        if (wantGreen ? Math.abs(t.pos - c) < half * 0.6 : Math.abs(t.pos - c) > half + 0.1) break;
       }
-      await sleep(100);
+      await sleep(60);
     }
     await click(label, at);
     await sleep(400);
@@ -247,8 +253,7 @@ async function main() {
     await open("freewalk");
     s = await state();
     check(s.room === "O1" && s.flags.done_M22, `?start=freewalk: the class after the lesson with mum (${s.room})`);
-    const version = await page.evaluate(async () => { try { return (await (await fetch("version.txt", { cache: "no-store" })).text()).trim(); } catch (_) { return ""; } });
-    logLine(`build: ${version}`);
+    logLine(`build: ${fs.statSync(path.join(WEB_DIR, "index.pck")).mtime.toISOString()} (index.pck)`);
 
     if (RUNS.includes("Q02")) {
       check(s.hotspots.village_map && s.hotspots.village_map.visible, "Q02: «Старая карта Ольховки» on the class wall");
@@ -354,6 +359,62 @@ async function main() {
       lines = await useHotspot("ilya_workshop");
       s = await state();
       check(!(s.mechanic && s.mechanic.open) && lines.some((l) => l.includes("троим")), `once: afterwards only a look (${JSON.stringify(lines)})`);
+    }
+    if (RUNS.includes("B8")) {
+      // Batch 8 art in the web build (ChatGPT 23.10): the drawn states by flags and the clicks on them.
+      await open("freewalk");
+      s = await state();
+      const L = s.layers || {};
+      const shown = Object.keys(L).filter((k) => L[k]);
+      check(s.flags.board_mama && L.nina_answer_mama && L.nina_answer_date && L.ulyana_bird_reply && !L.nina_answer_here && !L.nina_answer_ilya,
+        `batch 8, the class board: mum's chalk answer under «Мама, я иду», the date, Ulyana's reply by the bird (${JSON.stringify(shown)})`);
+      await page.mouse.move(400, 1000);
+      await sleep(600);
+      await shot("8_b8_class_board");
+      // «Рассмотреть»: a double click on an item in the bag → its drawn close-up.
+      const B8_ITEMS = ["key_house", "door_hinges", "brace_plate", "chalk", "mitten", "bell_clapper", "key_sluice", "clamp", "school_ribbon", "journal_manager", "pocket_watch"];
+      const inv = (s.ui && s.ui.inventory) || {};
+      const it = Object.keys(inv).find((k) => B8_ITEMS.includes(k));
+      if (!it) {
+        check(false, `an item with a drawn close-up in the bag (${JSON.stringify(Object.keys(inv))})`);
+      } else {
+        logLine(`double click ${it} in the bag at (${Math.round(inv[it].x)}, ${Math.round(inv[it].y)})`);
+        await page.mouse.move(inv[it].x, inv[it].y, { steps: 3 });
+        await sleep(120);
+        await page.mouse.dblclick(inv[it].x, inv[it].y);
+        s = await waitFor(`examine ${it}`, (t) => t.examine && t.examine.open, 30000);
+        check(s.examine && s.examine.item === it && s.examine.source === "art", `«Рассмотреть» ${it}: the drawn close-up (${JSON.stringify(s.examine).slice(0, 160)})`);
+        await sleep(800);
+        await shot(`9_b8_examine_${it}`);
+        await click("examine: «Закрыть»", s.examine.close);
+        await waitFor("examine put away", (t) => !(t.examine && t.examine.open), 30000);
+        await playThrough("after examine", { quietMs: 1200 });
+        s = await state();
+        if (s.ui && s.ui.cursor_item) { await page.keyboard.press("Escape"); await sleep(400); }
+      }
+      // Mum's coat on the hook in Dunya's house (M23c): through the school door, the gallery, home.
+      check(await goExit("H3"), "class → the gallery (school door)");
+      s = await state();
+      const gotoH1 = s.exits.H1;
+      if (gotoH1) {
+        await click("exit → H1", gotoH1);
+        await waitIdle("exit → H1");
+        await waitFor("room == H1", (t) => t.room === "H1", 60000);
+      }
+      await playThrough("M23c: mum in her sister's house", { done: (t) => t.flags.done_M23c && !beatKey(t) && t.room === "H1", timeout: 300000 });
+      s = await state();
+      check(s.room === "H1" && s.flags.done_M23c && s.layers && s.layers.nina_coat, `H1 after M23c: mum's coat drawn on the hook (${s.room}, coat ${s.layers && s.layers.nina_coat})`);
+      check(s.hotspots.nina_coat && s.hotspots.nina_coat.visible, "the coat is a hotspot (not hidden behind Nina)");
+      await page.mouse.move(400, 1000);
+      await sleep(600);
+      await shot("10_b8_H1_coat");
+      lines = await useHotspot("nina_coat", { done: (t) => t.view && t.view.open && !beatKey(t), timeout: 120000 });
+      s = await state();
+      check(s.view && s.view.open && s.view.id === "sleeve" && s.flags.q03_seen_sleeve, `a click on the coat: the sleeve close-up (Q03) (${JSON.stringify(s.view).slice(0, 120)})`);
+      if (s.view && s.view.open && s.view.close) {
+        await click("sleeve: «Закрыть»", s.view.close);
+        await waitFor("the sleeve put away", (t) => !(t.view && t.view.open), 30000);
+      }
     }
   } catch (e) {
     check(false, `exception: ${e.message}`);
