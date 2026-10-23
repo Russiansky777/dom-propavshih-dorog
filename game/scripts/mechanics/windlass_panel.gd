@@ -11,8 +11,9 @@ extends MechanicPanel
 ## board with the green band «у кольца» (the same colours as the «точный удар» bar) — exactly logic.rest ± tolerance;
 ## after a bump «Подымай» glows and Ilya's answer says it. The log swings `max_deg` (22°: a readable motion that keeps
 ## the far end in the frame).
-## Art: tools/make_span_layers.py — beam_waiting.png (the scene of batch 5 without the log) and beam.png (only the
-## log, in its own canvas place, so angle 0 is exactly the delivered picture). `overlays` — figures composited by
+## Art: tools/make_span_layers.py — beam_waiting.png (G47/G48: the turn of day four with the batch-9 site — the stack, the
+## windlass, the crib — without the log) and beam.png (only the log, Z3_state_span_beam_day4, in its own canvas place, so
+## angle 0 is exactly the delivered picture); `rope_from` — the drum, the rope to the log's far end is drawn here. `overlays` — figures composited by
 ## tools/make_frame_layers.py (Pelageya with her board, Agata, Ilya at the windlass — the same as the frame F_span
 ## under the close-up, G42: nobody vanishes when it opens) drawn over the log. Coordinates in canvas px (1672×941).
 
@@ -20,6 +21,7 @@ const GAUGE_RECT := Rect2(372, 652, 36, 248)
 
 var logic: WindlassLogic = null
 var beam: TextureRect = null
+var rope: Line2D = null
 var plaques: Dictionary = {}       # signal → Button
 var ring_mark: RingMark = null
 var gauge: HeightGauge = null
@@ -42,6 +44,10 @@ func build() -> void:
 	beam = crop(String(art.get("beam", "")), full, Vector2.ZERO, _k)
 	beam.name = "Beam"
 	beam.pivot_offset = v2(spec.get("pivot", [1240, 575])) * _k
+	# G47: the rope from the windlass drum to the far end of the log (not painted in the batch-9 site — the game draws it).
+	if spec.has("rope_from"):
+		rope = RopeLine.make(float(spec.get("rope_width", 6.0)), "WindlassRope")
+		add_child(rope)
 	# The chalk mark on the ring of the plate, over the log (a faint ring and a glow): the far end comes into it.
 	ring_mark = RingMark.new()
 	ring_mark.name = "RingMark"
@@ -164,6 +170,8 @@ func _redraw() -> void:
 		return
 	var a := logic.angle(float(spec.get("max_deg", 9.0)))
 	beam.rotation = deg_to_rad(a)
+	if rope != null:
+		rope.points = RopeLine.sag_points(v2(spec.get("rope_from", [990, 598])) * _k, far_end(), 5.0, 12)
 	for sig in plaques:
 		(plaques[sig] as Button).disabled = laid_sent
 	var in_zone := logic.at_ring() and logic.state != "bumped"
@@ -215,6 +223,9 @@ func probe() -> Dictionary:
 		var fe := far_end()
 		out["ring_mark"] = {"x": ring_mark.at.x, "y": ring_mark.at.y, "r": ring_mark.radius, "lit": ring_mark.lit}
 		out["far_end"] = {"x": fe.x, "y": fe.y}
+	if rope != null and rope.points.size() >= 2:
+		var r0 := rope.points[rope.points.size() - 1]
+		out["rope"] = {"from": {"x": rope.points[0].x, "y": rope.points[0].y}, "to": {"x": r0.x, "y": r0.y}}
 	var figs: Array[String] = []
 	for c in get_children():
 		if String(c.name).begins_with("Figure_") and (c as CanvasItem).visible:

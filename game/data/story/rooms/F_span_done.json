@@ -2,20 +2,10 @@
   "id": "F_span_done",
   "frame": true,
   "place": "Z3",
-  "_art": "M25 после: первое бревно на кольце плиты (Z3_bg + Z3_state_beam партии 5) — Илья, Агата, Пелагея.",
-  "art_source": {
-    "files": {
-      "state_beam.png": "assets/incoming/Z3_state_beam.png"
-    },
-    "canvas": [
-      1672,
-      941
-    ],
-    "alpha_min": 0
-  },
+  "_art": "M25 после: первый прогон на кольце — основа дня 4 со стройкой партии 9 (F_span/beam_waiting.png) и бревно Z3_state_span_beam_day4 (F_span/beam.png); на береговом камне плиты нет (G48). Илья, Агата, Пелагея.",
   "background": {
     "kind": "exterior",
-    "image": "res://assets/rooms/Z3/bg.png",
+    "image": "res://assets/rooms/F_span/beam_waiting.png",
     "horizon": 700
   },
   "walkable": [
@@ -41,8 +31,8 @@
   "layers": [
     {
       "id": "beam",
-      "image": "res://assets/rooms/F_span_done/state_beam.png",
-      "_note": "слой партии 5 — сцена с бревном на опоре"
+      "image": "res://assets/rooms/F_span/beam.png",
+      "_note": "G47: прогон дня 4 (партия 9) на кольце ближней опоры — тот же слой, что в крупном плане ворота при угле 0"
     },
     {
       "id": "pelageya",
@@ -50,10 +40,10 @@
       "compose": {
         "char": "pelageya",
         "feet": [
-          820,
-          712
+          768,
+          740
         ],
-        "height": 180,
+        "height": 178,
         "dir": 1,
         "action": "idle",
         "frame": 0,
@@ -63,7 +53,8 @@
           0.95
         ],
         "shadow": 0.35
-      }
+      },
+      "_g47_note": "G47/G48: фигуры переставлены под стройку партии 9"
     },
     {
       "id": "agata",
@@ -71,10 +62,10 @@
       "compose": {
         "char": "agata",
         "feet": [
-          1120,
-          640
+          1110,
+          800
         ],
-        "height": 185,
+        "height": 200,
         "dir": 3,
         "action": "idle",
         "frame": 0,
@@ -84,7 +75,8 @@
           0.95
         ],
         "shadow": 0.35
-      }
+      },
+      "_g47_note": "G47/G48: фигуры переставлены под стройку партии 9"
     },
     {
       "id": "ilya",
@@ -92,10 +84,10 @@
       "compose": {
         "char": "ilya",
         "feet": [
-          1010,
-          690
+          880,
+          708
         ],
-        "height": 200,
+        "height": 195,
         "dir": 1,
         "action": "talk",
         "frame": 0,
@@ -105,7 +97,8 @@
           0.95
         ],
         "shadow": 0.35
-      }
+      },
+      "_g47_note": "G47/G48: фигуры переставлены под стройку партии 9"
     }
   ],
   "effects": [],

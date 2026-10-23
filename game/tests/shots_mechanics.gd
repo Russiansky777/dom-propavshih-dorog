@@ -16,7 +16,7 @@ var out_dir := ""
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
 	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3",
 	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "crossing_0", "crossing_5", "crossing_9",
-	"windlass_wait", "windlass_zone", "windlass_bumped", "windlass_laid", "shuttle_back_5",
+	"windlass_wait", "windlass_zone", "windlass_bumped", "windlass_laid", "shuttle_back_5", "map_far_bank", "z3_day4_site",
 	"npc_M2_from_M1", "npc_M3_from_M2", "npc_M3_gauge", "npc_R3_stopor", "npc_R3_lamp_post", "npc_Z3_pier_plate", "npc_Z3_from_R1"]
 
 ## Agata at an item stand or an entry point next to an NPC (validate_rooms 9b): flags that show the NPC, then
@@ -116,6 +116,26 @@ func _mirror(hold_s: float) -> void:
 
 func _shot(name: String) -> void:
 	match name:
+		"map_far_bank":
+			# G2: the plan after the far bank — the batch-9 layer and the new plaques.
+			var vis := ["house_unlocked", "seen_plan_zarechye", "visited_Z1", "visited_Z4", "visited_Z2", "visited_H1", "visited_Z3", "visited_R1",
+				"visited_M1", "visited_R2", "visited_R3", "visited_O4", "visited_O3", "visited_O1"]
+			await _state(vis, [], "R3")
+			var mp = ui.get("map_view")
+			mp.call("open_from", Rect2())
+			for i in 90:
+				await process_frame
+		"z3_day4_site":
+			# G47: the turn on day four with the site (the windlass close-up put away).
+			rm.start_at("span")
+			for i in 10:
+				await process_frame
+			sr.call("_on_state_reset")
+			if sr.mechanic_open:
+				sr.close_mechanic()
+			sr.set_frame("")
+			for i in 30:
+				await process_frame
 		"examine_photo":
 			await _examine("photo_bridge", ["photo_bridge", "drawing_ilya", "plan_crossing"])
 		"examine_plan":

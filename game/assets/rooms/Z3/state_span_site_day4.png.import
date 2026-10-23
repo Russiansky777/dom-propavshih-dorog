@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ddn62ctxofvpd"
-path="res://.godot/imported/state_beam.png-dbbab58acd2f0fb14990117d4c04500b.ctex"
+uid="uid://do5fm42vnjygw"
+path="res://.godot/imported/state_span_site_day4.png-5bd3612d3bd9cec64abbf81c66ae4034.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/F_span_done/state_beam.png"
-dest_files=["res://.godot/imported/state_beam.png-dbbab58acd2f0fb14990117d4c04500b.ctex"]
+source_file="res://assets/rooms/Z3/state_span_site_day4.png"
+dest_files=["res://.godot/imported/state_span_site_day4.png-5bd3612d3bd9cec64abbf81c66ae4034.ctex"]
 
 [params]
 

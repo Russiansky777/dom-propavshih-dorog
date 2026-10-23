@@ -337,6 +337,46 @@ func _test_windlass_panel() -> void:
 	gs.reset()
 	Engine.time_scale = 4.0
 	var spec: Dictionary = sd.scene("M25").get("mechanics", [{}])[0].get("spec", {})
+	# G47/G48 (art pack 9): the turn of day four with the site — the stack, the windlass, the crib; the log on it only
+	# once laid; the close-up and both frames on the same day-four base (no plate on the shore stone).
+	_check(rm.start_at("span"), "start at the turn, day four")
+	await _frames(3)
+	var lay: Node = rm.current_room.get_node_or_null("Layers")
+	_check(lay != null and lay.get_node("span_site_day4").visible and not lay.get_node("span_beam_day4").visible,
+		"G47: Z3 on day four shows the site (stack, windlass, crib), no log on the pier yet — the turn is not empty under the close-up")
+	gs.set_flag("span_first_laid", true)
+	await _frames(2)
+	_check(lay.get_node("span_beam_day4").visible, "G47: once laid, the first log lies on the pier in the room too")
+	for fr in ["F_span", "F_span_done"]:
+		_check(String(sd.room(fr).get("background", {}).get("image", "")) == String(spec.get("art", {}).get("waiting", "")),
+			"G48: %s on the day-four base of the close-up (%s)" % [fr, sd.room(fr).get("background", {}).get("image", "")])
+	_check(Vector2(float(spec["pivot"][0]), float(spec["pivot"][1])) == Vector2(1218, 570) and Vector2(float(spec["ring"][0]), float(spec["ring"][1])) == Vector2(1112, 503),
+		"G47: pivot on the crib (1218, 570), the chalk mark at the log's far end on the ring (1112, 503)")
+	sr.call("_on_state_reset")
+	if sr.mechanic_open:
+		sr.close_mechanic()
+	sr.set_frame("")
+	# G52 (art pack 9): the near pier by day on days three and four — low water, first snow, the far bank in winter; the
+	# second day's snow and lights layers do not cover it.
+	_check(rm.start_at("freewalk"), "start: the free day")
+	await _frames(2)
+	sr.call("_on_state_reset")
+	rm.change_room("R1", "default")
+	await _frames(3)
+	var r1l: Node = rm.current_room.get_node_or_null("Layers")
+	_check(r1l != null and r1l.get_node("water_low_day").visible and not r1l.get_node("far_snow").visible and not r1l.get_node("far_lights").visible,
+		"G52: R1 on day three — the day picture of pack 9, not the evening layers of day two")
+	# G54: the date on the board of the lesson — Nina's chalk (pack 9), not the game's font.
+	var dl := {}
+	for l in sd.room("EP_lesson").get("layers", []):
+		if String(l.get("id", "")) == "date":
+			dl = l
+	_check(not dl.has("text") and String(dl.get("image", "")).ends_with("date.png") and ResourceLoader.exists(String(dl.get("image", ""))),
+		"G54: «16 ноября» is painted chalk on the lesson's board (%s)" % str(dl.get("image", dl.get("text", ""))))
+	sr.call("_on_state_reset")
+	sr.set_frame("")
+	gs.reset()
+	await _frames(2)
 	for run in ["up", "down"]:
 		gs.set_flag("span_first_laid", false)
 		sr.open_mechanic(spec, "")
@@ -357,6 +397,8 @@ func _test_windlass_panel() -> void:
 		var fe: Dictionary = pr.get("far_end", {})
 		var d0 := _v(rm_).distance_to(_v(fe))
 		_check(d0 > 80.0, "hoisted: the far end is well away from the mark on the ring (%d px)" % int(d0))
+		var rp: Dictionary = pr.get("rope", {})
+		_check(not rp.is_empty() and _v(rp.get("to", {})).distance_to(_v(fe)) < 1.0, "G47: the rope from the windlass drum goes to the log's far end")
 		var plz: Vector2 = _v(pr.get("plaque_lower", {}))
 		var pst: Vector2 = _v(pr.get("plaque_stop", {}))
 		var prs: Vector2 = _v(pr.get("plaque_raise", {}))

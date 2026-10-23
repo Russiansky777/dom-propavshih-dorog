@@ -1053,7 +1053,8 @@
     },
     {
       "id": "O3_table_no_mirror",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт и подключение (партия G, агент механик): Z3 — слои дня 4 и крупный план ворота (tools/make_span_layers.py), R1 — дневной кадр дней 3–4 (геометрия сверена), план — слой и таблички, эпилог — дата, горница — стол без зеркальца в позе small_mirror"},
       "kind": "scene_layer",
       "block": "M15а, мамино зеркало (23.10)",
       "spec": "Слой к O3_bg.png на том же холсте 1672×941 в (0, 0): та часть горницы, где на столе стоит маленькое зеркальце в деревянной рамке (≈ x 280–400, y 385–530), — без зеркальца: стена, край шкафа, покрывало кровати и столешница с дорожкой, как если бы зеркальца там не было. Прозрачный вне этого места. Низкий приоритет",
@@ -1341,7 +1342,8 @@
     },
     {
       "id": "Z3_state_span_site_day4",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт и подключение (партия G, агент механик): Z3 — слои дня 4 и крупный план ворота (tools/make_span_layers.py), R1 — дневной кадр дней 3–4 (геометрия сверена), план — слой и таблички, эпилог — дата, горница — стол без зеркальца в позе small_mirror"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1359,7 +1361,8 @@
     },
     {
       "id": "Z3_state_span_beam_day4",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт и подключение (партия G, агент механик): Z3 — слои дня 4 и крупный план ворота (tools/make_span_layers.py), R1 — дневной кадр дней 3–4 (геометрия сверена), план — слой и таблички, эпилог — дата, горница — стол без зеркальца в позе small_mirror"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1503,7 +1506,8 @@
     },
     {
       "id": "zarechye_plan_overlay",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт и подключение (партия G, агент механик): Z3 — слои дня 4 и крупный план ворота (tools/make_span_layers.py), R1 — дневной кадр дней 3–4 (геометрия сверена), план — слой и таблички, эпилог — дата, горница — стол без зеркальца в позе small_mirror"},
       "kind": "ui_layer",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1648,7 +1652,8 @@
     },
     {
       "id": "R1_state_water_low_day",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт и подключение (партия G, агент механик): Z3 — слои дня 4 и крупный план ворота (tools/make_span_layers.py), R1 — дневной кадр дней 3–4 (геометрия сверена), план — слой и таблички, эпилог — дата, горница — стол без зеркальца в позе small_mirror"},
       "kind": "scene_layer",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1666,7 +1671,8 @@
     },
     {
       "id": "EP_lesson_date",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт и подключение (партия G, агент механик): Z3 — слои дня 4 и крупный план ворота (tools/make_span_layers.py), R1 — дневной кадр дней 3–4 (геометрия сверена), план — слой и таблички, эпилог — дата, горница — стол без зеркальца в позе small_mirror"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
