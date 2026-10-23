@@ -28,9 +28,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
+      # Последний main, а не коммит запуска: прогоны идут друг за другом (concurrency), и следующий должен видеть
+      # то, что закоммитил предыдущий (манифест, last_run.log) — иначе его коммит не ложится поверх (run 39945918080:
+      # конфликт last_run.log, результаты пробы потеряны).
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -88,7 +92,8 @@ jobs:
           git commit -q -m "pipeline: озвучка ElevenLabs (run ${{ github.run_id }}) [skip ci]"
           for i in 1 2 3 4 5 6; do
             git fetch -q origin main
-            if git rebase --autostash origin/main; then
+            # журнал прогона — всегда наш (его пишет каждый прогон заново)
+            if git rebase --autostash -X theirs origin/main; then
               if git push origin HEAD:main; then echo "запушено с попытки $i"; exit 0; fi
             else
               git rebase --abort || true

@@ -644,14 +644,25 @@ def process(src: Path, dst: Path, lc: dict) -> dict:
         raise VoiceError(f"{src.name}: после среза тишины не осталось звука")
     gain = round(target - src_i, 2)
     lim = 10 ** (limit_db / 20.0)
-    chain = (f"{trim},volume={gain}dB,alimiter=limit={lim:.4f}:level=0:attack=5:release=60,"
-             f"afade=t=in:d=0.008,areverse,afade=t=in:d=0.03,areverse")
     dst.parent.mkdir(parents=True, exist_ok=True)
     vq = vorbis_quality(lc)
-    _ffmpeg(["-i", str(src), "-af", chain, "-ac", "1", "-ar", "44100", "-c:a", "libvorbis", "-q:a", str(vq), str(dst)])
-    out_i, out_tp = measure(dst)
+    # Ограничитель срезает пики и этим снижает громкость тихой «пиковой» реплики (M03_5 [quietly]: −18,6 LUFS при
+    # цели −17). Тогда ещё до двух проходов с добавкой разницы (не больше max_extra_gain_db сверху), иначе как есть —
+    # валидатор покажет выброс, его перезаписывают другим дублем ("reseed").
+    extra_max = float(lc.get("max_extra_gain_db", 3.0))
+    g, out_i, out_tp = gain, float("-inf"), float("-inf")
+    for _ in range(3):
+        chain = (f"{trim},volume={g}dB,alimiter=limit={lim:.4f}:level=0:attack=5:release=60,"
+                 f"afade=t=in:d=0.008,areverse,afade=t=in:d=0.03,areverse")
+        _ffmpeg(["-i", str(src), "-af", chain, "-ac", "1", "-ar", "44100", "-c:a", "libvorbis", "-q:a", str(vq), str(dst)])
+        out_i, out_tp = measure(dst)
+        short = target - out_i
+        if abs(short) <= 0.5 or short < 0 or g + short - gain > extra_max:
+            break
+        g = round(g + short, 2)
     return {"duration_s": duration_s(dst), "lufs": round(out_i, 2), "true_peak_db": round(out_tp, 2),
-            "gain_db": gain, "source_lufs": round(src_i, 2), "source_true_peak_db": round(src_tp, 2), "vorbis_q": vq}
+            "gain_db": g, "limiter_extra_db": round(g - gain, 2), "source_lufs": round(src_i, 2),
+            "source_true_peak_db": round(src_tp, 2), "vorbis_q": vq}
 
 
 # --- generate ----------------------------------------------------------------------------------------
@@ -820,7 +831,9 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         for note in mark_stale(manifest, lines):
             log(f"  манифест {vs['variant'] or 'ru'}: {note}")
         vs["manifest"] = manifest
-        redo = set(str(x) for x in req.get("redo", []))
+        reseed = {str(k): int(v) for k, v in (req.get("reseed") or {}).items()}   # выброс → новый дубль другим seed
+        redo = set(str(x) for x in req.get("redo", [])) | {k for k, n in reseed.items()
+                                                           if (manifest["lines"].get(k) or {}).get("seed_salt") != n}
         for lid, ln in scope.items():
             if vs["speaker"] is not None and ln["speaker"] != vs["speaker"]:
                 continue
@@ -915,7 +928,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         try:
             info = {}
             if it["action"] == "synth":
-                seed = int(hashlib.sha1(f"{lid}|{ln['text']}".encode("utf-8")).hexdigest()[:8], 16)
+                salt = int((req.get("reseed") or {}).get(lid, 0) or 0)
+                seed = int(hashlib.sha1((f"{lid}|{ln['text']}" + (f"|{salt}" if salt else "")).encode("utf-8")).hexdigest()[:8], 16)
                 audio, info = synth(api_text(ln), spec, cast, seed)
                 cc = str(info.get("character_cost", ""))
                 spent_now += int(cc) if cc.isdigit() else len(api_text(ln))
@@ -972,6 +986,10 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             entry["tag_check"] = prev["tag_check"]
         if fresh_audio:
             entry["api"] = info
+            if int((req.get("reseed") or {}).get(lid, 0) or 0):
+                entry["seed_salt"] = int(req["reseed"][lid])
+        elif prev.get("seed_salt"):
+            entry["seed_salt"] = prev["seed_salt"]
         elif prev.get("api"):
             entry["api"] = prev["api"]
         manifest["lines"][lid] = entry
