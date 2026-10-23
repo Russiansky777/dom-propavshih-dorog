@@ -11,6 +11,15 @@
       "_note": "Для проверки дня второго (и его озвучки) без прохождения первого: ?start=day2. Выборы дня первого — как у точки olkhovka."
     },
     {
+      "id": "office",
+      "title": "Партия G: контора — Павел внутри, рычаг затвора на крюке, струбцина на столе (G20/G21/G22)",
+      "done_through": "M13a",
+      "room": "M3",
+      "spawn": "from_M2",
+      "flags": ["board_mama", "v03_marked", "v03_add_boat", "mitten_placed", "v01_cup_blue", "v01_photo_table", "house_unlocked", "house_open", "h2_bundle_unwrapped", "office_mirror_mounted", "office_mirror_clamped", "bell_clapper_hung"],
+      "_note": "Приёмка G (Docs/ACCEPTANCE_G.md, раздел сюжета): стеллаж поднят, Агата входит в контору — ?start=office."
+    },
+    {
       "id": "sluice",
       "title": "Партия G: затвор на мельнице — вода «точным ударом» (G23/G24)",
       "done_through": "M13",
