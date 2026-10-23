@@ -20,6 +20,7 @@ scene:<id>; комната без темы; цикличная тема до tra
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -201,6 +202,23 @@ def selftest(data: dict) -> list[str]:
     return missed
 
 
+# G6 (Директор 23.10: «не прерывать музыку при смене локации»): однопоточная веб-сборка смешивает потоковую музыку в
+# главном потоке, и сборка новой комнаты (картинки, свет, фигуры) его останавливает; буфер вывода должен пережить
+# такую паузу. 750 мс не хватало — 1500 мс (кольцевой буфер ≈ 1,4–1,5 с). Ниже — ошибка.
+WEB_LATENCY_MIN_MS = 1500
+
+
+def check_web_latency() -> None:
+    proj = ROOT / "game" / "project.godot"
+    if not proj.exists():
+        return
+    m = re.search(r"^driver/output_latency\.web=(\d+)", proj.read_text(), re.M)
+    if not m:
+        err("game/project.godot: нет audio/driver/output_latency.web — веб-сборка с 50 мс рвёт музыку при каждой смене комнаты (G6)")
+    elif int(m.group(1)) < WEB_LATENCY_MIN_MS:
+        err(f"game/project.godot: output_latency.web {m.group(1)} мс < {WEB_LATENCY_MIN_MS} — музыка прерывается при смене комнаты (G6)")
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
     path = STORY / "music.json"
@@ -214,6 +232,7 @@ def main() -> int:
         return 1
     missed = selftest(data)
     check(data)
+    check_web_latency()
     for m in missed:
         err(f"самопроверка: испорченный вариант «{m}» не дал ошибки")
     themes: dict = data.get("themes", {})

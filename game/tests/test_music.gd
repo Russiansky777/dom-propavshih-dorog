@@ -76,6 +76,7 @@ func _run() -> void:
 	await _test("music.json loads; every in_scope room → its theme; every location has one; streams loop=false", _test_rooms)
 	await _test("H1 → H2 (same theme): same deck, no restart, position keeps growing", _test_same_theme)
 	await _test("H3 → O1: equal-power crossfade home → school over crossfade_s, home paused after", _test_crossfade)
+	await _test("G6: every passage of the map — the same theme never restarts or dips, another theme crossfades", _test_every_passage)
 	await _test("Seamless loop: loop_crossfade_s before the end the track restarts on the other deck and crosses", _test_loop)
 	await _test("Dialogue ducking: scene lines −duck_dialogue_db over ≈0.4 s, narration not ducked", _test_duck)
 	await _test("Scene event M10 → mirror over home (ducked), scene end → home resumes on its deck", _test_scene_event)
@@ -199,6 +200,53 @@ func _test_same_theme() -> void:
 		"H2: position must keep growing: %.2f → %.2f s" % [before["position"], after["position"]])
 	_check(float(after["gain"]) >= 0.999, "H2: home must stay at full gain, got %.3f" % after["gain"])
 	_check(int(_deck(1 - i)["starts"]) == other_starts and not _deck(1 - i)["playing"], "H2: the other deck must not start")
+
+
+## G6 (Director 23.10: «не прерывать музыку при смене локации»): every pair of rooms joined by a passage
+## (locations.json edges), walked as the player walks it: a room of the same theme keeps the deck, its play calls and
+## its full gain (no restart, no dip); a room of another theme starts it on the other deck and fades the old one.
+func _test_every_passage() -> void:
+	var pairs: Array = []
+	for a in sd.edges.keys():
+		for b in (sd.edges[a] as Dictionary).keys():
+			if md.theme_for_room(String(a)) != "" and md.theme_for_room(String(b)) != "":
+				pairs.append([String(a), String(b)])
+	_check(pairs.size() >= 20, "the map's passages (%d)" % pairs.size())
+	var same := 0
+	var cross := 0
+	var cf: float = md.crossfade_s
+	md.crossfade_s = 0.3   # the walk itself, not the length of the fades (checked by the test above)
+	for pr in pairs:
+		var a := String(pr[0])
+		var b := String(pr[1])
+		var ta: String = md.theme_for_room(a)
+		var tb: String = md.theme_for_room(b)
+		var here: bool = rm.current_room != null and String(rm.current_room.room_id) == a
+		var ok := false
+		if here:
+			ok = await _wait_settled(ta, 2.0)
+		else:
+			ok = await _enter(a, ta)
+		if not ok:
+			_check(false, "%s: %s did not settle" % [a, ta])
+			continue
+		var i: int = md.active_deck_index()
+		var before := _deck(i)
+		rm.change_room(b, "")
+		await _frames(3)
+		if ta == tb:
+			same += 1
+			var after := _deck(i)
+			_check(md.active_deck_index() == i and int(after["starts"]) == int(before["starts"]) and float(after["gain"]) >= 0.999
+				and float(after["position"]) >= float(before["position"]),
+				"%s → %s (%s): the same deck plays on, no restart, no dip (%s → %s)" % [a, b, ta, before, after])
+		else:
+			cross += 1
+			var j: int = md.active_deck_index()
+			_check(j >= 0 and j != i and String(_deck(j)["theme"]) == tb and float(_deck(i)["fade_to"]) == 0.0,
+				"%s → %s: %s crossfades to %s on the other deck" % [a, b, ta, tb])
+	md.crossfade_s = cf
+	print("    passages: %d same theme, %d crossfades" % [same, cross])
 
 
 func _test_crossfade() -> void:
