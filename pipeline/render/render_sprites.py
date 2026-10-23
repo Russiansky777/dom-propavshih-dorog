@@ -132,7 +132,6 @@ def main() -> int:
     ap.add_argument("--no-fit", action="store_true", help="не расширять кадр под движение (по умолчанию кадр шире, если фигура выходит за край)")
     ap.add_argument("--no-floor", action="store_true", help="не ставить клипы на один пол (по умолчанию пол каждого клипа = пол стойки)")
     ap.add_argument("--fps", nargs="*", default=[], help="темп листа в sprites.json: walk=24 talk=24 (по умолчанию 24 у всех, F16 23.10)")
-    ap.add_argument("--clip-fps", type=float, default=30.0, help="частота ключей клипа (Meshy — 30)")
     args = ap.parse_args()
     windows: dict[str, tuple[float, float]] = {}
     fps_of = {k: float(v) for k, v in (x.split("=", 1) for x in args.fps)}
@@ -294,8 +293,10 @@ def main() -> int:
         if action_name in windows:
             wa, wb = windows[action_name]
             f0, f1 = f0 + (f1 - f0) * wa, f0 + (f1 - f0) * wb
-        # дробные кадры (subframe): 24 кадра на 30-кадровый цикл ложатся ровно, без шагов 1-2-1
-        return act, [f0 + (f1 - f0) * i / nframes for i in range(nframes)]
+        # дробные кадры (subframe): 24 кадра на 30-кадровый цикл ложатся ровно, без шагов 1-2-1; у окна (туда-обратно)
+        # — оба края включительно: крайняя поза качания есть в листе
+        den = max(1, nframes - 1) if action_name in windows else nframes
+        return act, [f0 + (f1 - f0) * i / den for i in range(nframes)]
 
     def frame_at(f):
         fi = math.floor(f)
@@ -340,6 +341,7 @@ def main() -> int:
                 "character_height_m": round(height, 3), "actions": {}}
     if fit:
         manifest["fit"] = fit
+
     if matte:
         manifest["matte_materials"] = True
 
@@ -363,10 +365,11 @@ def main() -> int:
         dz = floor_shift.get(action_name, 0.0)
         for r in roots:
             r.location.z += dz
+        den = max(1, nframes - 1) if action_name in windows else nframes
         for d in range(args.directions):
             pivot.rotation_euler = (0, 0, math.radians(args.front_yaw + d * 360.0 / args.directions))
             for i in range(nframes):
-                frame_at(f0 + (f1 - f0) * i / nframes)
+                frame_at(f0 + (f1 - f0) * i / den)
                 tmp = out / f"_tmp_{action_name}_{d}_{i}.png"
                 scene.render.filepath = str(tmp)
                 bpy.ops.render.render(write_still=True)
@@ -378,9 +381,10 @@ def main() -> int:
             r.location.z -= dz
         path = out / f"{action_name}.png"
         sheet.save(path)
-        clip_s = (f1 - f0) / args.clip_fps
+        # кадры действия — в кадрах сцены: импортёр glTF переводит время клипа в кадры по fps сцены (24), не по 30
+        clip_s = (f1 - f0) * scene.render.fps_base / scene.render.fps
         manifest["actions"][action_name] = {"sheet": path.name, "frames": nframes, "fps": fps_of.get(action_name, 24.0), "clip": act.name,
-                                            "clip_seconds": round(clip_s, 4), "natural_fps": round(nframes / max(clip_s, 1e-6), 2)}
+                                            "clip_seconds": round(clip_s, 4), "natural_fps": round(den / max(clip_s, 1e-6), 2)}
         if abs(dz) > 1e-5:
             manifest["actions"][action_name]["floor_shift_m"] = round(dz, 4)
         if action_name in windows:
