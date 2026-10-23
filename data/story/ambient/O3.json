@@ -57,9 +57,6 @@
   "dust": [
     {
       "id": "window_light_dust",
-      "if": [
-        "morning_day3"
-      ],
       "polygon": [
         [
           1390,
@@ -92,7 +89,10 @@
       "color": "#fff1d6",
       "speed_px_s": 5,
       "lifetime_s": 10,
-      "z": 2
+      "z": 2,
+      "unless": [
+        "tod_dark"
+      ]
     }
   ]
 }

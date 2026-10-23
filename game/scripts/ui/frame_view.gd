@@ -61,8 +61,16 @@ func _on_frame_changed(id: String, hold: bool) -> void:
 
 ## The end panel comes once the last scene is over (its lines read), not when the last shot fades in.
 func _process(_delta: float) -> void:
-	if _hold and end_panel == null and room != null and StoryRunner.current_beat.is_empty() \
-			and not StoryRunner.is_staging() and StoryRunner.end_frame_now() == frame_id:
+	if not _hold or room == null or not StoryRunner.current_beat.is_empty() or StoryRunner.is_staging() \
+			or StoryRunner.active_scene != "":
+		return
+	if StoryRunner.end_frame_now() != frame_id:
+		# A held last shot belongs to the finished story: once the flags say otherwise (a state set without a load —
+		# the AI room check sets flags room by room, 23.10: the dinner and «Конец» stayed over every later room),
+		# the frame goes away.
+		StoryRunner.set_frame("", false)
+		return
+	if end_panel == null:
 		_build_end_panel()
 
 

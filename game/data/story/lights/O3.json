@@ -18,10 +18,10 @@
         0.68,
         0.58
       ],
-      "unless": [
-        "morning_day3"
-      ],
-      "fade_s": 0.0
+      "fade_s": 0.0,
+      "if": [
+        "tod_dark"
+      ]
     },
     {
       "id": "candle",
@@ -56,8 +56,8 @@
         "speed": 1.6
       },
       "fade_s": 0.0,
-      "unless": [
-        "morning_day3"
+      "if": [
+        "tod_dark"
       ]
     }
   ]

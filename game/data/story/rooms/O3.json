@@ -4,7 +4,7 @@
   "background": {"kind": "interior", "image": "res://assets/closeups/O3_bg.png", "wall": "#6a5040", "floor": "#5a3a24", "accent": "#8a6a4a", "horizon": 730},
   "walkable": [[1050, 745], [1290, 742], [1300, 775], [1755, 780], [1790, 800], [1840, 868], [1915, 885], [1915, 1075], [1060, 1075], [1050, 1000]],
   "no_walk_samples": [[600, 900, "стол"], [880, 900, "стул"], [1500, 700, "лавка под окном"], [150, 650, "кровать"], [1830, 700, "столик с кувшином"]],
-  "walk_samples": [[1400, 900], [1150, 800], [1700, 1000], [1880, 950], [1100, 1050]],
+  "walk_samples": [[1400, 900], [1150, 800], [1700, 1000], [1760, 960], [1100, 1050]],
   "door_ref": "none — горница, выход к зрителю, двери в кадре нет",
   "depth": {"top_y": 745, "bottom_y": 1070, "scale_top": 1.75, "scale_bottom": 2.45},
   "_depth_note": "Близкий кадр горницы: Агата крупная, как в классе O1. Лавка под окном (ножки y 770, сиденье ≈ 600 → 170 px на 0,45 м): Агата у лавки 1,80 → 621 px при ожидаемых 626. Стул у стола (ножки y 1060, спинка 550 → 510 px на ≈ 0,95 м): 2,43 → 839 px при 890 (−6 %).",
@@ -14,10 +14,10 @@
     {"id": "pendulum", "image": "res://assets/closeups/O3_clock_pendulum.png", "pivot": [942, 259], "swing": {"deg": 5.0, "period_s": 1.6}, "_note": "маятник качается — время идёт; после трёх огней ровно как у Агаты (общее время)"},
     {"id": "hand_min", "image": "res://assets/closeups/O3_clock_hand_min.png", "pivot": [942, 201], "rotation_deg": 120.0, "spin": {"deg_per_s": 0.1}, "_note": "минутная стрелка: круг за час настоящего времени (0,1°/с) — вровень с карманными часами"},
     {"id": "hand_hour", "image": "res://assets/closeups/O3_clock_hand_hour.png", "pivot": [942, 201], "rotation_deg": 250.0, "spin": {"deg_per_s": 0.008333}, "_note": "часовая стрелка: круг за 12 часов"},
-    {"id": "candle_flame", "image": "res://assets/closeups/O3_candle_flame.png", "unless": ["morning_day3"], "_note": "свеча горит вечером и ночью; мерцание — свет lights/O3.json"}
+    {"id": "candle_flame", "image": "res://assets/closeups/O3_candle_flame.png", "if": ["tod_dark"], "_note": "свеча горит вечером и ночью; мерцание — свет lights/O3.json"}
   ],
   "effects": [
-    {"id": "night", "type": "tint", "rect": [0, 0, 1920, 1080], "color": "#5a5f80", "blend": "mul", "z": 3000, "unless": ["morning_day3"], "_note": "Вечер и ночь в горнице: картина дневная — тон движка поверх всего, кроме свечи (свет z 3001)."}
+    {"id": "night", "type": "tint", "rect": [0, 0, 1920, 1080], "color": "#5a5f80", "blend": "mul", "z": 3000, "if": ["tod_night"], "_note": "Вечер и ночь в горнице: картина дневная — тон движка поверх всего, кроме свечи (свет z 3001)."}
   ],
   "spawns": {"default": [1700, 960], "from_O4": [1650, 1000]},
   "props": [],
@@ -30,7 +30,7 @@
       "item_use": {"school_ribbon": {"text": "@O3.nina.ribbon", "sets": ["ribbon_braided"], "once_flag": "ribbon_braided", "text_done": "@O3.nina.ribbon_again"}}
     },
     {
-      "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1510, 110, 180, 720], "stand": [1880, 960], "scene_only": "M20", "draw": false, "pick_priority": 2,
+      "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1510, 110, 180, 720], "stand": [1300, 1000], "scene_only": "M20", "draw": false, "pick_priority": 2,
       "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
       "_rect_note": "Илья у окна, ноги (1600, 830) (масштаб 1,93 → Агата 666 px; Илья 1,82 м ≈ 731); виден только в сцене M20 (ночь), утром ушёл",
       "talk": {"after_text": "@O3.ilya.after"},

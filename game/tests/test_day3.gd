@@ -605,6 +605,16 @@ func _test_save_load() -> void:
 	var fp: Dictionary = fv.probe()
 	_check(bool(fp.get("open", false)) and String(fp.get("frame", "")) == "EP_dinner", "after the end the last shot is shown again (%s)" % str(fp))
 	_check(sr.current_beat.is_empty(), "the epilogue does not replay")
+	# The held last shot belongs to the finished story: flags set without a load (the AI room check sets them room by
+	# room) that undo the end take the frame away (23.10: the dinner and «Конец» stayed over every later room).
+	# (In the class, where neither the span nor the epilogue can start again by itself.)
+	rm.change_room("O1", "from_O2")
+	await _frames(3)
+	_check(bool(fv.probe().get("open", false)), "the end frame stays over a room change while the story is at its end")
+	gs.set_flag("done_M26", false)
+	gs.set_flag("done_M25", false)
+	await _frames(3)
+	_check(not fv.probe().get("open", true) and sr.active_scene == "", "the end frame goes when the story is no longer at its end")
 	# A new game clears it.
 	rm.new_game()
 	await _frames(3)
