@@ -1,0 +1,14 @@
+{
+ "arm_run": 1,
+ "started_run": "7",
+ "sha": "f112301af7714d211bb928397234d1dfe47fec1a",
+ "started_at": "2026-10-23T20:30:41.891Z",
+ "requests": [
+  "Docs/playtest/requests/persona_newbie.json",
+  "Docs/playtest/requests/persona_completionist.json",
+  "Docs/playtest/requests/persona_completionist_day3.json",
+  "Docs/playtest/requests/persona_impatient.json",
+  "Docs/playtest/requests/persona_saveload.json",
+  "Docs/playtest/requests/persona_slow.json"
+ ]
+}
