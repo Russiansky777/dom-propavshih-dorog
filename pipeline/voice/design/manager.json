@@ -1,0 +1,55 @@
+{
+  "speaker": "manager",
+  "voice_name": "ФЁДОР ЛУКИЧ",
+  "request": {
+    "voice_description": "Native Russian. Male, around 70 years old. Studio quality, clean close-mic recording. The old manager of a village water mill in the Russian north. Dry, precise, a bit formal, kind underneath. Lower-pitched aged voice, slightly hoarse and grainy but steady, with clear diction; measured unhurried pace, short businesslike questions and small pauses; a hint of bewildered warmth. Never frail, never comic, never theatrical.",
+    "model_id": "eleven_ttv_v3",
+    "text": "Затвор цел? Ключ где? Год… А я двадцать лет собирался вернуться к утру. К зиме пруд набрать. Иначе Заречье без муки.",
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "seed": 23102026,
+    "output_format": "mp3_44100_192"
+  },
+  "dropped_params": [],
+  "designed_at": "2026-10-23T11:25:11+00:00",
+  "run": "39943689014",
+  "request_id": "",
+  "character_cost": "",
+  "preview_text": "Затвор цел? Ключ где? Год… А я двадцать лет собирался вернуться к утру. К зиме пруд набрать. Иначе Заречье без муки.",
+  "previews": [
+    {
+      "n": 1,
+      "generated_voice_id": "DRLsYXkeQsDJPqAVU6jt",
+      "file": "manager/preview_1.mp3",
+      "media_type": "audio/mpeg",
+      "duration_secs": 14.91775,
+      "language": "ru",
+      "lufs": -15.3,
+      "true_peak_db": -2.5,
+      "duration_s": 14.916
+    },
+    {
+      "n": 2,
+      "generated_voice_id": "DuZSKGQw0fsDbJcT83Uw",
+      "file": "manager/preview_2.mp3",
+      "media_type": "audio/mpeg",
+      "duration_secs": 13.010791666666666,
+      "language": "ru",
+      "lufs": -15.4,
+      "true_peak_db": -0.9,
+      "duration_s": 13.009
+    },
+    {
+      "n": 3,
+      "generated_voice_id": "NUaCYt9nonRqOdH6QgLM",
+      "file": "manager/preview_3.mp3",
+      "media_type": "audio/mpeg",
+      "duration_secs": 12.749583333333334,
+      "language": "ru",
+      "lufs": -16.2,
+      "true_peak_db": -1.0,
+      "duration_s": 12.748
+    }
+  ]
+}

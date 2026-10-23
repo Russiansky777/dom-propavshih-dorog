@@ -1,0 +1,45 @@
+{
+  "set": "full_quests",
+  "runs": [
+    {
+      "run": "39943689014",
+      "at": "2026-10-23T11:29:27+00:00",
+      "request": "pipeline/requests/voice_full_quests.json",
+      "synthesized": [
+        "Q01_0",
+        "Q01_1",
+        "Q01_2",
+        "Q03_0",
+        "Q03_1",
+        "Q03_2",
+        "Q07_0",
+        "Q07_1",
+        "Q07_2",
+        "Q08_0",
+        "Q08_1",
+        "Q09_0",
+        "Q09_1"
+      ],
+      "reprocessed": [],
+      "characters_text": 426,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 24519,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 25132,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 187,
+      "subscription_delta": 613
+    }
+  ]
+}

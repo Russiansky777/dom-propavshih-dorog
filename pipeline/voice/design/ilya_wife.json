@@ -1,0 +1,55 @@
+{
+  "speaker": "ilya_wife",
+  "voice_name": "ВАРВАРА",
+  "request": {
+    "voice_description": "Native Russian. Female, around 30 years old. Studio quality, clean close-mic recording. A young village mother from the Russian north, a carpenter's wife. Calm, warm, a little shy. Soft mid-pitched voice with a gentle homely warmth and a faint smile; unhurried even pace, speaks quietly and simply in short phrases, slightly hesitant at the start of a sentence, never theatrical, never breathy.",
+    "model_id": "eleven_ttv_v3",
+    "text": "Ульяна, спать. Тётя никуда не денется — теперь уже никуда. Сиди, сиди. Я лампу поставлю — и Ульяну уложу. Ульяна, гляди — твоя заплатка на бабушкином рукаве.",
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "seed": 23102026,
+    "output_format": "mp3_44100_192"
+  },
+  "dropped_params": [],
+  "designed_at": "2026-10-23T11:25:02+00:00",
+  "run": "39943689014",
+  "request_id": "",
+  "character_cost": "",
+  "preview_text": "Ульяна, спать. Тётя никуда не денется — теперь уже никуда. Сиди, сиди. Я лампу поставлю — и Ульяну уложу. Ульяна, гляди — твоя заплатка на бабушкином рукаве.",
+  "previews": [
+    {
+      "n": 1,
+      "generated_voice_id": "rfeIEKYjOpWdFvzoGtOY",
+      "file": "ilya_wife/preview_1.mp3",
+      "media_type": "audio/mpeg",
+      "duration_secs": 14.447541666666666,
+      "language": "ru",
+      "lufs": -14.7,
+      "true_peak_db": -1.7,
+      "duration_s": 14.446
+    },
+    {
+      "n": 2,
+      "generated_voice_id": "ZwtmeKSn0ifDdx8k1gDB",
+      "file": "ilya_wife/preview_2.mp3",
+      "media_type": "audio/mpeg",
+      "duration_secs": 13.010791666666666,
+      "language": "ru",
+      "lufs": -14.2,
+      "true_peak_db": -0.7,
+      "duration_s": 13.009
+    },
+    {
+      "n": 3,
+      "generated_voice_id": "KMUNPTg1m9wZTOvSTzLs",
+      "file": "ilya_wife/preview_3.mp3",
+      "media_type": "audio/mpeg",
+      "duration_secs": 12.04425,
+      "language": "ru",
+      "lufs": -14.4,
+      "true_peak_db": -1.4,
+      "duration_s": 12.042
+    }
+  ]
+}
