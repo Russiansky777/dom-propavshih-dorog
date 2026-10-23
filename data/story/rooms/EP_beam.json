@@ -5,7 +5,10 @@
   "_art": "Эпилог: торец первого прогона (closeup_beam_end, партия 6) с надписью, которую выбрала Агата в M25 (или чистый).",
   "art_source": {
     "files": {
-      "bg.png": "assets/incoming/closeup_beam_end.png"
+      "bg.png": "assets/incoming/closeup_beam_end.png",
+      "cut_dunya.png": "assets/incoming/EP_beam_cut_dunya.png",
+      "cut_roads.png": "assets/incoming/EP_beam_cut_roads.png",
+      "cut_date.png": "assets/incoming/EP_beam_cut_date.png"
     },
     "canvas": [
       1672,
@@ -41,60 +44,27 @@
   "layers": [
     {
       "id": "cut_dunya",
-      "text": "@EP.beam.written_dunya",
-      "rect": [
-        520,
-        280,
-        520,
-        170
-      ],
-      "font": "italic",
-      "font_size": 78,
-      "color": "#3b2412",
-      "alpha": 0.86,
-      "angle_deg": -4.0,
+      "image": "res://assets/rooms/EP_beam/cut_dunya.png",
       "if": [
         "beam_dunya"
       ],
-      "_stub": "Надпись ножом на торце — текст игры шрифтом игры поверх чистого торца (партия 6: «надпись отсутствует намеренно, для последующего наложения»)"
+      "_note": "Надпись ножом на торце первого прогона по выбору M25 — варианты, никогда не вместе; партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к closeup_beam_end, (0,0)"
     },
     {
       "id": "cut_roads",
-      "text": "@EP.beam.written_roads",
-      "rect": [
-        490,
-        250,
-        580,
-        220
-      ],
-      "font": "italic",
-      "font_size": 52,
-      "color": "#3b2412",
-      "alpha": 0.86,
-      "angle_deg": -4.0,
+      "image": "res://assets/rooms/EP_beam/cut_roads.png",
       "if": [
         "beam_roads"
       ],
-      "_stub": "Надпись ножом на торце — текст игры шрифтом игры поверх чистого торца (партия 6: «надпись отсутствует намеренно, для последующего наложения»)"
+      "_note": "Надпись ножом на торце первого прогона по выбору M25 — варианты, никогда не вместе; партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к closeup_beam_end, (0,0)"
     },
     {
       "id": "cut_date",
-      "text": "@EP.beam.written_date",
-      "rect": [
-        520,
-        280,
-        520,
-        170
-      ],
-      "font": "italic",
-      "font_size": 56,
-      "color": "#3b2412",
-      "alpha": 0.86,
-      "angle_deg": -4.0,
+      "image": "res://assets/rooms/EP_beam/cut_date.png",
       "if": [
         "beam_date"
       ],
-      "_stub": "Надпись ножом на торце — текст игры шрифтом игры поверх чистого торца (партия 6: «надпись отсутствует намеренно, для последующего наложения»)"
+      "_note": "Надпись ножом на торце первого прогона по выбору M25 — варианты, никогда не вместе; партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к closeup_beam_end, (0,0)"
     }
   ],
   "effects": [

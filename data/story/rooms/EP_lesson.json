@@ -2,11 +2,12 @@
   "id": "EP_lesson",
   "frame": true,
   "place": "O1",
-  "_art": "Последний кадр по переключателю final_frame (data/story/meta.json): утренний урок (ep_lesson, партия 5) — Нина у доски, Ульяна, Агата на задней парте. Дети с обоих берегов — нужны фигуры (заявка в отчёте).",
+  "_art": "Последний кадр по переключателю final_frame (data/story/meta.json): утренний урок (ep_lesson, партия 5) — Нина у доски, Ульяна, Агата на задней парте. Дети с обоих берегов — слой children (партия 8).",
   "art_source": {
     "files": {
       "bg.png": "assets/incoming/ep_lesson.png",
-      "lesson_map.png": "assets/incoming/ep_lesson_map.png"
+      "lesson_map.png": "assets/incoming/ep_lesson_map.png",
+      "children.png": "assets/incoming/ep_lesson_children.png"
     },
     "canvas": [
       1672,
@@ -70,8 +71,8 @@
       "compose": {
         "char": "nina",
         "feet": [
-          950,
-          600
+          812,
+          598
         ],
         "height": 336,
         "dir": 0,
@@ -84,30 +85,12 @@
         ],
         "shadow": 0.35
       },
-      "_note": "у доски посередине прохода, лицом к классу («Начнём»), ноги на полу у стены с доской"
+      "_note": "у доски слева, лицом к классу («Начнём»): ноги у стены с доской, рядом с учительским столом — правее, под доской, висит карта (Q02, слой lesson_map), её Нина не заслоняет"
     },
     {
-      "id": "ulyana",
-      "image": "res://assets/rooms/EP_lesson/ulyana.png",
-      "compose": {
-        "char": "ulyana",
-        "feet": [
-          1300,
-          640
-        ],
-        "height": 276,
-        "dir": 4,
-        "action": "talk",
-        "frame": 0,
-        "tint": [
-          1.0,
-          0.95,
-          0.86
-        ],
-        "shadow": 0.35,
-        "cut_below": 578
-      },
-      "_note": "за партой второго ряда справа, спиной к зрителю (лицом к доске): ноги за партой третьего ряда — «за партами дети… среди них Ульяна»"
+      "id": "children",
+      "image": "res://assets/rooms/EP_lesson/children.png",
+      "_note": "Восемь детей с обоих берегов за партами, спиной к зрителю; ближняя левая парта свободна — за ней Агата (слой agata), ближняя правая тоже. Ульяна — одна из нарисованных девочек (прежняя вклейка Ульяны стоя между партами снята). партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к ep_lesson, (0,0)"
     },
     {
       "id": "agata",

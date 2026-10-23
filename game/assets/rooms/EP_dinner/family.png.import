@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kwly1yl714qt"
-path="res://.godot/imported/ilya.png-8b218be46558b5076be81eb2e21fe2d2.ctex"
+uid="uid://bbwvw5a0ugtyk"
+path="res://.godot/imported/family.png-bc17dcb574c64c10d089fc5e8093e50a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/EP_dinner/ilya.png"
-dest_files=["res://.godot/imported/ilya.png-8b218be46558b5076be81eb2e21fe2d2.ctex"]
+source_file="res://assets/rooms/EP_dinner/family.png"
+dest_files=["res://.godot/imported/family.png-bc17dcb574c64c10d089fc5e8093e50a.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brihk5voe0klv"
-path="res://.godot/imported/ulyana.png-a38c16f2cb5f245872c516d8935ef007.ctex"
+uid="uid://bhohrseco5cuq"
+path="res://.godot/imported/cut_dunya.png-800888e9b97a3ef3bf4d87b5afb3aa5e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/EP_dinner/ulyana.png"
-dest_files=["res://.godot/imported/ulyana.png-a38c16f2cb5f245872c516d8935ef007.ctex"]
+source_file="res://assets/rooms/EP_beam/cut_dunya.png"
+dest_files=["res://.godot/imported/cut_dunya.png-800888e9b97a3ef3bf4d87b5afb3aa5e.ctex"]
 
 [params]
 

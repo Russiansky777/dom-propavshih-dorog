@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dgua8mit8gyx"
-path="res://.godot/imported/ulyana.png-6553fc1bc5bc9a66421d4fc4f424082b.ctex"
+uid="uid://btn0g2o3s8qob"
+path="res://.godot/imported/cut_roads.png-2397cec45d55f040e357d4d107d04a1c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/EP_lesson/ulyana.png"
-dest_files=["res://.godot/imported/ulyana.png-6553fc1bc5bc9a66421d4fc4f424082b.ctex"]
+source_file="res://assets/rooms/EP_beam/cut_roads.png"
+dest_files=["res://.godot/imported/cut_roads.png-2397cec45d55f040e357d4d107d04a1c.ctex"]
 
 [params]
 

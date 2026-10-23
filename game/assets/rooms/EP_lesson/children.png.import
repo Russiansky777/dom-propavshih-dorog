@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgrqd8ipx7lw1"
-path="res://.godot/imported/nina.png-9489baa8b6029c009c55bb7bc43a9efe.ctex"
+uid="uid://clqms2lkh4hf0"
+path="res://.godot/imported/children.png-18818e872285424a676589addbd25d1e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/EP_dinner/nina.png"
-dest_files=["res://.godot/imported/nina.png-9489baa8b6029c009c55bb7bc43a9efe.ctex"]
+source_file="res://assets/rooms/EP_lesson/children.png"
+dest_files=["res://.godot/imported/children.png-18818e872285424a676589addbd25d1e.ctex"]
 
 [params]
 
