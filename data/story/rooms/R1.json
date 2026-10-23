@@ -1,7 +1,7 @@
 {
   "id": "R1",
   "_art": "Фон R1_bg.png (ближний причал): фонарь на столбе и дощечка сигналов слева, дорога на улицу вверх-влево, причал и канат моста через реку справа (на стопоре Пелагеи), лодка. Слои: R1_fg_pier_edge.png (кромка причала, окклюдер z=740), R1_fg_water.png (вода у берега, z=1080). Пелагея — фронтальный кадр листа, стоит на берегу у причала.",
-  "art_source": {"files": {"dusk.png": "assets/incoming/R1_dusk.png", "far_dark.png": "assets/incoming/R1_far_dark.png", "far_snow.png": "assets/incoming/R1_far_snow.png", "far_lights.png": "assets/incoming/R1_far_lights.png"}, "canvas": [1672, 941], "alpha_min": 0,
+  "art_source": {"files": {"dusk.png": "assets/incoming/R1_dusk.png", "far_dark.png": "assets/incoming/R1_far_dark.png", "far_snow.png": "assets/incoming/R1_far_snow.png", "far_lights.png": "assets/incoming/R1_far_lights.png", "state_water_low_day.png": "assets/incoming/R1_state_water_low_day.png"}, "canvas": [1672, 941], "alpha_min": 0,
     "_note": "Партия 3 (ChatGPT 22.10): R1_bg → R1_dusk (полный слой сумерек, Normal 100 %, частичная прозрачность рассчитана под основу — не чистить) → R1_far_dark ИЛИ R1_far_snow → R1_far_lights (ровно три огня). Копии — tools/import_room_art.py R1"},
   "background": {"kind": "exterior", "image": "res://assets/rooms/R1/bg.png", "wall": "#7f94a6", "floor": "#6a6456", "accent": "#4a6676", "horizon": 650},
   "walkable": [[70, 420], [190, 420], [215, 520], [245, 630], [268, 662], [420, 670], [880, 668], [888, 655], [965, 632], [1060, 607], [1400, 607], [1400, 742], [1460, 750], [1520, 763], [1620, 796], [1720, 822], [1820, 852], [1915, 878], [1915, 1070], [20, 1070], [20, 640], [40, 520]],
@@ -15,10 +15,11 @@
   "layers": [
     {"id": "pier_edge", "image": "res://assets/rooms/R1/fg_pier_edge.png", "z": 0, "_note": "настил причала — пол (по нему ходят), под Агатой; окклюдер z=740 прятал её ноги в доски"},
     {"id": "water", "image": "res://assets/rooms/R1/fg_water.png", "z": 0, "_note": "вода у лодки — плоская, под Агатой"},
+    {"id": "water_low_day", "image": "res://assets/rooms/R1/state_water_low_day.png", "z": 0, "if": ["done_M20"], "_note": "G52 (партия 9): днём третьего и четвёртого дня — низкая вода, мокрые сваи, первый снег, на том берегу зима; полный непрозрачный кадр поверх основы. Геометрия сверена (столб с фонарём, доска, настил, столб с канатом, лодка — на прежних местах; пол, хотспоты, выходы и точки подхода подходят без правок, кадр Docs/evidence/G). Под сумерками третьего дня — тот же слой сумерек поверх"},
     {"id": "dusk", "image": "res://assets/rooms/R1/dusk.png", "z": 0, "if": ["evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_unless_note": "днём третьего и четвёртого дня — дневной фон (сумерки только к вечеру: d3_evening — снова слой и оттенок времени)", "_note": "партия 3: сумерки, фонарь на столбе горит — поверх фона и слоёв настила/воды (иначе они остались бы дневными), под Агатой"},
     {"id": "far_dark", "image": "res://assets/rooms/R1/far_dark.png", "z": 0, "if": ["evening_dusk"], "unless": ["road_held_both_ends"], "_note": "тот берег — тёмный силуэт, ни огонька (год без ответа)"},
-    {"id": "far_snow", "image": "res://assets/rooms/R1/far_snow.png", "z": 0, "if": ["road_held_both_ends"], "_note": "канат на кольце (узел, M15) — на том берегу проступает снег (там уже зима); вместо far_dark. Полировка 22.10 (A1): снег — по узлу, огни — по фонарю"},
-    {"id": "far_lights", "image": "res://assets/rooms/R1/far_lights.png", "z": 0, "if": ["far_lights_answered"], "_note": "три огня с того берега — первые за год"}
+    {"id": "far_snow", "image": "res://assets/rooms/R1/far_snow.png", "z": 0, "if": ["road_held_both_ends"], "unless": ["done_M20"], "_note": "канат на кольце (узел, M15) — на том берегу проступает снег (там уже зима); вместо far_dark. Полировка 22.10 (A1): снег — по узлу, огни — по фонарю"},
+    {"id": "far_lights", "image": "res://assets/rooms/R1/far_lights.png", "z": 0, "if": ["far_lights_answered"], "unless": ["done_M20"], "_g52_note": "с третьего дня — дневной кадр water_low_day со своим зимним берегом: снег и огни второго дня его не перекрывают", "_note": "три огня с того берега — первые за год"}
   ],
   "on_enter": [{"text": "@R1d.pelageya.at_turn", "once_flag": "r1_saw_boat_gone", "if": ["evening_dusk"], "unless": ["done_M15"], "_note": "F11: вечером до узла Пелагеи с лодкой на причале нет — мысль Агаты, где она (цель — поворот)"}],
   "spawns": {"default": [900, 900], "from_Z3": [190, 900], "from_Z2": [200, 600], "from_R2": [1650, 840]},
