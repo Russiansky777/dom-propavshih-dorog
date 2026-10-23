@@ -57,7 +57,7 @@
       "_note": "блок 5, Q01: в мешке Тамары — письмо Аксинье от брата по прежнему адресу (closeup_envelope + адрес текстом игры). Первый клик — конверт крупно, потом выбор, как Аксинье получать почту; след — реплика Тамары в эпилоге.",
       "use": {"sets": ["q01_seen_envelope"], "text": "@O4.letters_bag.use", "once_flag": "q01_seen_envelope"},
       "view": {"id": "envelope", "type": "papers", "title": "@O4.letters_bag.title", "close_label": "@ui.close", "unless": ["q01_seen_envelope"],
-        "papers": [{"image": "res://assets/closeups/closeup_envelope.png", "image_size": [1672, 941], "text_rect": [420, 380, 820, 260], "text": "@O4.letters_bag.paper_address", "rect": [210, 140, 1500, 0], "font_size": 34, "ink": "#2a2117"}]},
+        "papers": [{"image": "res://assets/closeups/closeup_envelope.png", "image_size": [1672, 941], "text_rect": [420, 380, 820, 260], "text": "@O4.letters_bag.paper_address", "rect": [210, 140, 1500, 0], "font_size": 38, "ink": "#2a2117", "font": "hand", "hand_jitter": 1.3, "_font_note": "H45 (Директор 24.10): адрес на конверте из мешка Тамары — ручная неровная роспись, не шрифт"}]},
       "choice": {"prompt": "@O4.letters_bag.prompt", "requires": {"flags": ["q01_seen_envelope"]}, "once_any": true,
         "options": [
           {"id": "A", "label": "@O4.letters_bag.opt_nina", "sets": "q01_mail_at_nina"},

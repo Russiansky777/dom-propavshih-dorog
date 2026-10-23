@@ -166,7 +166,7 @@
     {
       "id": "journal_manager",
       "name": "Журнал конторы",
-      "examine": {"text": "@examine.journal_manager", "backdrop": "table", "art": "res://assets/closeups/closeup_journal_manager.png", "writing": {"text": "@examine.journal_manager.paper_page", "image_size": [1672, 941], "text_rect": [835, 420, 470, 280], "font_size": 21, "ink": "#2a2117", "angle_deg": 8.0, "_note": "партия 8: правая страница пустая — запись и правило пруда пишет игра в нижнюю половину страницы (страница наклонена ≈ 8°)"}},
+      "examine": {"text": "@examine.journal_manager", "backdrop": "table", "art": "res://assets/closeups/closeup_journal_manager.png", "writing": {"text": "@examine.journal_manager.paper_page", "image_size": [1672, 941], "text_rect": [835, 420, 470, 280], "font_size": 19, "ink": "#2a2117", "angle_deg": 7.0, "font": "hand", "line_pitch": 27.8, "first_baseline": 47, "_hand_note": "H31 (Директор 24.10): рукописно, по линовке правой страницы — линейки ≈ 27–29 px холста 1672×941 с наклоном ≈ 6° (замер по столбцам x 950/1100/1250); первая строка — на линейке y ≈ 469", "_note": "партия 8: правая страница пустая — запись и правило пруда пишет игра в нижнюю половину страницы (страница наклонена ≈ 8°)"}},
       "inventory": true,
       "source_location": "M3",
       "source_scene": "M13",

@@ -91,11 +91,14 @@
     {
       "id": "instruction", "kind": "object", "label": "@R1.instruction.label", "rect": [320, 350, 120, 180], "stand": [430, 700], "color": "#e0d8c0", "draw": false,
       "use": {"sets": ["seen_ferry_instruction"], "text": "@R1.instruction.use", "once_flag": "seen_ferry_instruction", "scene": "M02"},
+      "view": {"id": "signal_board", "type": "papers", "title": "@R1.instruction.label", "close_label": "@ui.close", "zoom_from": [320, 350, 120, 180],
+        "_note": "H6 (Директор 24.10: «порядок сигналов — просто доска без наполнения»): крупно — дощечка с порядком сигналов, слова рукой (HandWriting); живописный крупный план дощечки — при нужде в партии 10б",
+        "papers": [{"title": "@R1.instruction.paper_title", "text": "@R1.instruction.paper", "rect": [560, 150, 800, 760], "font": "hand", "font_size": 34, "paper": "#c9ad80", "ink": "#2a1c10", "edge": "#5b3b20"}]},
       "look": "@R1.instruction.look"
     }
   ],
   "exits": [
-    {"to": "Z3", "label": "@R1.exit_Z3.label", "cue": "left", "rect": [0, 660, 100, 420], "stand": [120, 900], "spawn": "from_R1", "draw": false},
+    {"to": "Z3", "label": "@R1.exit_Z3.label", "cue": "down", "cue_at": [255, 1010], "cue_deg": 45, "rect": [0, 860, 330, 220], "stand": [190, 930], "spawn": "from_R1", "draw": false, "_cue_note": "H7 (Директор 24.10): у причала снизу слева — метка на юго-восток к береговому повороту"},
     {"to": "Z2", "label": "@R1.exit_Z2.label", "cue": "up", "rect": [40, 380, 200, 240], "stand": [160, 560], "spawn": "from_R1", "closed_text": "@R1.exit_Z2.closed", "draw": false},
     {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1550, 550, 370, 170], "stand": [1660, 840], "spawn": "from_R1", "closed_text": "@R1.exit_R2.closed_first", "draw": false,
       "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}, {"if": ["done_M02"], "closed_text": "@R1.exit_R2.closed"}], "_states_note": "ИИ-разбор логики п. 3: после узла «вернёт сюда же» уже неправда — сперва проверка пустой лодкой. C27 (ИИ-чтение 23.10): до разговора с Пелагеей Агата ещё не знает, что лодку возвращает, — «сначала поговорю с лодочницей». G17: после него — почему: дороги нет, пока канат не на кольце плиты",

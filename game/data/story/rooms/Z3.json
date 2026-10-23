@@ -20,7 +20,7 @@
     {"id": "span_site_day4", "image": "res://assets/rooms/Z3/state_span_site_day4.png", "if": ["done_M24"], "_note": "G47 (Директор 23.10: «Закрыть» крупный план ворота → поворот пустой): с четвёртого дня у поворота стройка — штабель из шести прогонов, ворот Ильи, ряж (партия 9, поверх низкой воды днём); тот же рисунок — фон крупного плана ворота и кадров F_span (tools/make_span_layers.py)"},
     {"id": "span_beam_day4", "image": "res://assets/rooms/Z3/state_span_beam_day4.png", "if": ["span_first_laid"], "_note": "G47: первый прогон на опоре — после того, как бревно легло (span_first_laid); береговой конец (1218, 570) на ряже, дальний (1112, 503) на кольце"}
   ],
-  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [1250, 1010]},
+  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [600, 680]},
   "props": [],
   "hotspots": [
     {
@@ -67,8 +67,7 @@
     }
   ],
   "exits": [
-    {"to": "Z2", "label": "@Z3.exit_Z2.label", "cue": "up", "rect": [380, 560, 320, 90], "stand": [560, 660], "spawn": "from_Z3", "draw": false},
-    {"to": "R1", "label": "@Z3.exit_R1.label", "cue": "down", "rect": [900, 1000, 500, 80], "stand": [1100, 1030], "spawn": "from_Z3", "draw": false}
+    {"to": "R1", "label": "@Z3.exit_R1.label", "cue": "up", "cue_deg": -135, "rect": [380, 560, 320, 90], "stand": [560, 660], "spawn": "from_Z3", "draw": false, "_cue_note": "H7 (Директор 24.10): с поворота — только к причалу, метка прежнего выхода «на улицу», развёрнутая на северо-запад; выход на улицу снят (на улицу — через причал)"}
   ],
   "scenes": {
     "M15s": {"complete_when": [{"all": ["plate_braced"]}]},
