@@ -4,7 +4,8 @@
 ближнем причале R1 — слой-заплатка поверх кадра, без каната от стопора до середины реки (дальний конец у того
 берега остаётся: туда же приходит канат от плиты у поворота — его рисует игра, effects R1 rope_from_turn).
 
-  state_stopper_empty_day.png  — днём (фон R1 + настил + вода у берега), дни 3–4;
+  state_stopper_empty_day.png  — днём, дни 3–4: поверх дневного кадра низкой воды партии 9 (state_water_low_day, G52 —
+      с третьего дня он закрывает фон целиком, и канат на стопоре нарисован в нём заново);
   state_stopper_empty_dusk.png — в сумерках и вечером (то же + слой dusk), вечер дня второго и третьего.
 
 Канат на фоне находится по самой тёплой (R−B) точке у прямой от стопора (1295, 410) к дальнему столбу (665, 345) в
@@ -73,7 +74,7 @@ def patch(names: list[str], x0: int) -> Image.Image:
 def main() -> int:
     check = "--check" in sys.argv
     bad = 0
-    for name, layers, x0 in (("state_stopper_empty_day.png", ["fg_pier_edge", "fg_water"], 680),
+    for name, layers, x0 in (("state_stopper_empty_day.png", ["fg_pier_edge", "fg_water", "state_water_low_day"], 680),
                              ("state_stopper_empty_dusk.png", ["fg_pier_edge", "fg_water", "dusk"], 820)):
         im = patch(layers, x0)
         target = R1 / name

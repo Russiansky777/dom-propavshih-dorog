@@ -199,6 +199,21 @@ func _test_rope_where() -> void:
 				ropes.append(id)
 		_check(patches.size() == 1 and ropes.size() == 1, "%s: at the pier the stopper is empty (one patch: %s) and the rope comes from the turn (%s)" % [st[0], str(patches), str(ropes)])
 		_check(not _visible(r1, "Hotspots/rope") and _visible(r1, "Hotspots/stopper_empty"), "%s: the stopper hotspot is the empty stopper" % st[0])
+		# The patch is cut from the frame shown under it: on days 3–4 that is the batch 9 low-water day frame (G52), not
+		# the autumn background — just outside the rope (the soft edge of the patch) its pixels are the frame's own.
+		if patches.size() == 1 and _visible(r1, "Layers/water_low_day"):
+			var pi: Image = _layer_image(r1, String(patches[0]))
+			var fi: Image = _layer_image(r1, "water_low_day")
+			var diff := 0.0
+			var n := 0
+			for y in range(330, 440, 2):
+				for x in range(660, 1300, 3):
+					var c: Color = pi.get_pixel(x, y)
+					if c.a > 0.0 and c.a < 0.23:
+						var f: Color = fi.get_pixel(x, y)
+						diff += (absf(c.r - f.r) + absf(c.g - f.g) + absf(c.b - f.b)) / 3.0
+						n += 1
+			_check(n > 50 and diff / maxf(n, 1) < 0.03, "%s: the empty-stopper patch is cut from the low-water day frame under it (edge mismatch %.3f over %d px)" % [st[0], diff / maxf(n, 1), n])
 	# The empty stopper says where the rope is (by state); the closed boat says why (C27 / G17). A quiet moment: after M17.
 	_flags_before("M18p")
 	r1 = await _enter("R1")
@@ -208,6 +223,14 @@ func _test_rope_where() -> void:
 	_check(String(sr.current_beat.get("text_key", "")) == "R1.stopper.look_ring" and String(sr.current_beat.get("text", "")).contains("кольце плиты у поворота"), "the empty stopper: the rope is on the plate ring at the turn: %s" % str(sr.current_beat))
 	await _drain()
 	_check(sd.text("@R1.exit_R2.closed").contains("дороги нет") and sd.text("@R1.exit_R2.closed").contains("кольце плиты"), "G17: the closed boat — no road until the rope is on the plate ring")
+
+
+func _layer_image(room: Node, id: String) -> Image:
+	var spr: Sprite2D = room.get_node("Layers/" + id + "/Image")
+	var img: Image = spr.texture.get_image()
+	if img.is_compressed():
+		img.decompress()
+	return img
 
 
 func _rect_of(h: Node2D) -> Rect2:
