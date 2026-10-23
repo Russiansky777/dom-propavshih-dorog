@@ -75,7 +75,7 @@
           {"image": "res://assets/closeups/closeup_ilya_drawing.png", "rect": [44, 470, 610, 0], "angle_deg": 2.0}
         ],
         "papers": [
-          {"image": "res://assets/closeups/closeup_plan.png", "image_size": [1672, 941], "text_rect": [150, 625, 1360, 245], "text": "@O1.teacher_drawer.paper_plan", "rect": [690, 96, 1210, 0], "angle_deg": -0.8, "font_size": 23, "ink": "#2a2117"}
+          {"image": "res://assets/closeups/closeup_plan.png", "image_size": [1672, 941], "text_rect": [150, 625, 1360, 245], "text": "@O1.teacher_drawer.paper_plan", "rect": [690, 96, 1210, 0], "angle_deg": -0.8, "font_size": 25, "ink": "#2a2117", "font": "hand", "_font_note": "H8/H45: план «взрослой рукой» — рукописно (HandWriting)"}
         ]
       }
     },

@@ -576,7 +576,8 @@ func _build_paper(p: Dictionary) -> void:
 			patch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			sheet.add_child(patch)
 		var tr: Array = p.get("text_rect", [0, 0, src[0], src[1]])
-		var body_i := Label.new()
+		var hand_i := String(p.get("font", "")) == "hand"
+		var body_i: Label = HandWriting.new() if hand_i else Label.new()   # H45/H31: real handwriting, letter by letter
 		body_i.name = "Text"
 		# wrap before text and size: a Label without wrapping is as wide as its text and keeps that width
 		body_i.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -590,6 +591,8 @@ func _build_paper(p: Dictionary) -> void:
 		body_i.add_theme_color_override("font_color", Color.html(String(p.get("ink", "#2e2a24"))))
 		body_i.add_theme_constant_override("line_spacing", 0)
 		body_i.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if hand_i:
+			(body_i as HandWriting).setup(p, int(p.get("font_size", 24)), k)
 		sheet.add_child(body_i)
 		sheets.append(sheet)
 		return
@@ -615,13 +618,14 @@ func _build_paper(p: Dictionary) -> void:
 		title.text = StoryData.text(String(p["title"]))
 		title.position = Vector2(pad, y)
 		title.size = Vector2(sheet.size.x - pad * 2.0, 34)
-		title.add_theme_font_override("font", UiTheme.font("head"))
-		title.add_theme_font_size_override("font_size", 24)
+		var hand_t := String(p.get("font", "")) == "hand"   # H6: the whole board in one hand
+		title.add_theme_font_override("font", UiTheme.font("hand" if hand_t else "head"))
+		title.add_theme_font_size_override("font_size", 34 if hand_t else 24)
 		title.add_theme_color_override("font_color", Color(ink, 0.7))
 		title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		sheet.add_child(title)
-		y += 44.0
-	var body := Label.new()
+		y += 56.0 if String(p.get("font", "")) == "hand" else 44.0
+	var body: Label = HandWriting.new() if String(p.get("font", "")) == "hand" else Label.new()
 	body.name = "Text"
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.text = StoryData.text(String(p.get("text", "")))
@@ -632,6 +636,8 @@ func _build_paper(p: Dictionary) -> void:
 	body.add_theme_color_override("font_color", ink)
 	body.add_theme_constant_override("line_spacing", 2)
 	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if body is HandWriting:
+		(body as HandWriting).setup(p, int(p.get("font_size", 28)))
 	sheet.add_child(body)
 	sheets.append(sheet)
 
@@ -646,8 +652,9 @@ func _build_sheet_words(sheet: Control, p: Dictionary) -> void:
 		var box := Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
 		var y := box.position.y
 		var center := String(b.get("align", "")) == "center"
+		var hand := String(b.get("font", p.get("font", ""))) == "hand"   # H8: the board written by hand
 		if String(b.get("title", "")) != "":
-			var t := Label.new()
+			var t: Label = HandWriting.new() if hand else Label.new()
 			t.name = "Title%d" % i
 			t.text = StoryData.text(String(b["title"]))
 			t.position = Vector2(box.position.x, y)
@@ -658,10 +665,13 @@ func _build_sheet_words(sheet: Control, p: Dictionary) -> void:
 			t.add_theme_font_size_override("font_size", ts)
 			t.add_theme_color_override("font_color", Color(ink, 0.88))
 			t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			if hand:
+				(t as HandWriting).setup(b.merged({"ink": p.get("ink", "#2e2a24")}), ts)
+				(t as HandWriting).center_lines = center
 			sheet.add_child(t)
 			y += ts * 1.5
 		if String(b.get("text", "")) != "":
-			var body := Label.new()
+			var body: Label = HandWriting.new() if hand else Label.new()
 			body.name = "Text%d" % i
 			body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			body.text = StoryData.text(String(b["text"]))
@@ -673,6 +683,8 @@ func _build_sheet_words(sheet: Control, p: Dictionary) -> void:
 			body.add_theme_color_override("font_color", ink)
 			body.add_theme_constant_override("line_spacing", int(b.get("line_spacing", 0)))
 			body.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			if hand:
+				(body as HandWriting).setup(b.merged({"ink": p.get("ink", "#2e2a24")}), int(b.get("font_size", p.get("font_size", 26))))
 			sheet.add_child(body)
 		i += 1
 

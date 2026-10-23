@@ -192,7 +192,8 @@ func _build_picture(area: Rect2) -> void:
 		var isz: Array = wr.get("image_size", [src.x, src.y])
 		var k := w / maxf(float(isz[0]), 1.0)
 		var trc: Array = wr.get("text_rect", [0, 0, isz[0], isz[1]])
-		var l := Label.new()
+		var hand := String(wr.get("font", "")) == "hand"   # H31: the manager's journal written by hand on the ruling
+		var l: Label = HandWriting.new() if hand else Label.new()
 		l.name = "Writing"
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.text = StoryData.text(String(wr.get("text", "")))
@@ -206,6 +207,8 @@ func _build_picture(area: Rect2) -> void:
 		l.add_theme_color_override("font_color", Color.html(String(wr.get("ink", "#2a2117"))))
 		l.add_theme_constant_override("line_spacing", 0)
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if hand:
+			(l as HandWriting).setup(wr, int(wr.get("font_size", 24)), k)
 		holder.add_child(l)
 
 
