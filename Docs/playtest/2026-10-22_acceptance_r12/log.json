@@ -1,0 +1,915 @@
+{
+ "cfg": {
+  "mode": "acceptance",
+  "request": "pipeline/requests/playtest_gate_m2.json",
+  "items": [
+   12
+  ],
+  "contextItems": [],
+  "maxUsd": 10,
+  "maxSteps": 300,
+  "maxMinutes": 120,
+  "url": "https://russiansky777.github.io/dom-propavshih-dorog/",
+  "note": "День второй. Программа уже загрузила сохранение «День второй» через «Меню → Загрузить» — день первый пройден, начинать с утра у печи.",
+  "model": "claude-sonnet-5-5",
+  "modelStuck": "claude-opus-5-5",
+  "reportModel": "claude-sonnet-5-5",
+  "W": 1280,
+  "maxFrames": 24,
+  "autoDialogue": true,
+  "start": null,
+  "startSave": {
+   "file": "Docs/playtest/saves/day2.json",
+   "slot": "day2"
+  },
+  "H": 720,
+  "actions_run": "12 (id 39871793209)"
+ },
+ "version": "9ec919a 2026-10-22T23:56Z",
+ "started": "2026-10-22T23:58:17.993Z",
+ "stop": "модель завершила прогон (done): Закрою журнал; ходики, видимо, в мастерской или избе, но по журналу пункт недостижим. Завершаю.",
+ "probe": true,
+ "end": {
+  "room": "R1",
+  "inventory": [
+   "pocket_watch",
+   "photo_bridge",
+   "drawing_ilya",
+   "plan_crossing",
+   "mitten"
+  ],
+  "goal": "Утро. На мельницу: ключ от затвора — в конторе, её завалило. Павел знает больше.",
+  "flags": 85
+ },
+ "start_save": {
+  "file": "Docs/playtest/saves/day2.json",
+  "slot": "day2",
+  "title": "День второй"
+ },
+ "saves": [
+  {
+   "slot": "auto",
+   "title": "",
+   "key": "/userfs/godot/app_userdata/Dom propavshih dorog/saves/auto.json"
+  },
+  {
+   "slot": "day2",
+   "title": "День второй",
+   "key": "/userfs/godot/app_userdata/Dom propavshih dorog/saves/day2.json"
+  }
+ ],
+ "rooms": [
+  "H1",
+  "H2",
+  "H1",
+  "H2",
+  "H1",
+  "H2",
+  "H1",
+  "H4",
+  "H1",
+  "Z2",
+  "R1"
+ ],
+ "flags_order": [
+  {
+   "flag": "board_mama",
+   "step": 0
+  },
+  {
+   "flag": "done_M01",
+   "step": 0
+  },
+  {
+   "flag": "done_M02",
+   "step": 0
+  },
+  {
+   "flag": "done_M03",
+   "step": 0
+  },
+  {
+   "flag": "done_M04",
+   "step": 0
+  },
+  {
+   "flag": "done_M05",
+   "step": 0
+  },
+  {
+   "flag": "done_M06",
+   "step": 0
+  },
+  {
+   "flag": "done_M07",
+   "step": 0
+  },
+  {
+   "flag": "done_M08",
+   "step": 0
+  },
+  {
+   "flag": "done_N01",
+   "step": 0
+  },
+  {
+   "flag": "door_school_installed",
+   "step": 0
+  },
+  {
+   "flag": "h1_asked_bell",
+   "step": 0
+  },
+  {
+   "flag": "h1_asked_bundle",
+   "step": 0
+  },
+  {
+   "flag": "h1_asked_door",
+   "step": 0
+  },
+  {
+   "flag": "h1_scarf_removed",
+   "step": 0
+  },
+  {
+   "flag": "h1_shutter_open",
+   "step": 0
+  },
+  {
+   "flag": "h1_tikhon_left",
+   "step": 0
+  },
+  {
+   "flag": "h2_bundle_unwrapped",
+   "step": 0
+  },
+  {
+   "flag": "has_bell",
+   "step": 0
+  },
+  {
+   "flag": "has_bundle_nina",
+   "step": 0
+  },
+  {
+   "flag": "has_chalk",
+   "step": 0
+  },
+  {
+   "flag": "has_door_hinges",
+   "step": 0
+  },
+  {
+   "flag": "has_drawing_ilya",
+   "step": 0
+  },
+  {
+   "flag": "has_key_house",
+   "step": 0
+  },
+  {
+   "flag": "has_letter_tamara",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "has_mitten",
+   "step": 0
+  },
+  {
+   "flag": "has_photo_bridge",
+   "step": 0
+  },
+  {
+   "flag": "has_plan_crossing",
+   "step": 0
+  },
+  {
+   "flag": "has_pocket_watch",
+   "step": 0
+  },
+  {
+   "flag": "has_school_door",
+   "step": 0
+  },
+  {
+   "flag": "house_open",
+   "step": 0
+  },
+  {
+   "flag": "house_unlocked",
+   "step": 0
+  },
+  {
+   "flag": "knows_bridge_lost",
+   "step": 0
+  },
+  {
+   "flag": "knows_crossing_plan",
+   "step": 0
+  },
+  {
+   "flag": "knows_dunya_left",
+   "step": 0
+  },
+  {
+   "flag": "knows_letters_bag",
+   "step": 0
+  },
+  {
+   "flag": "knows_no_road",
+   "step": 0
+  },
+  {
+   "flag": "knows_pier_trace",
+   "step": 0
+  },
+  {
+   "flag": "knows_rope_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "knows_rule_things_remember",
+   "step": 0
+  },
+  {
+   "flag": "knows_sluice_key",
+   "step": 0
+  },
+  {
+   "flag": "knows_tikhon_waits",
+   "step": 0
+  },
+  {
+   "flag": "met_pelageya",
+   "step": 0
+  },
+  {
+   "flag": "met_tamara",
+   "step": 0
+  },
+  {
+   "flag": "met_tikhon",
+   "step": 0
+  },
+  {
+   "flag": "mitten_placed",
+   "step": 0
+  },
+  {
+   "flag": "mitten_taken_back",
+   "step": 0
+  },
+  {
+   "flag": "night_day1",
+   "step": 0
+  },
+  {
+   "flag": "o1_board_left_blank",
+   "step": 0
+  },
+  {
+   "flag": "o1_saw_winter",
+   "step": 0
+  },
+  {
+   "flag": "o1_seen_notebooks",
+   "step": 0
+  },
+  {
+   "flag": "o1_seen_sack",
+   "step": 0
+  },
+  {
+   "flag": "observed_path_loop",
+   "step": 0
+  },
+  {
+   "flag": "r1_seen_rope",
+   "step": 0
+  },
+  {
+   "flag": "seen_bell",
+   "step": 0
+  },
+  {
+   "flag": "seen_class_traces",
+   "step": 0
+  },
+  {
+   "flag": "seen_ferry_instruction",
+   "step": 0
+  },
+  {
+   "flag": "seen_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "seen_school_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_workshop",
+   "step": 0
+  },
+  {
+   "flag": "started_M01",
+   "step": 0
+  },
+  {
+   "flag": "started_M02",
+   "step": 0
+  },
+  {
+   "flag": "started_M03",
+   "step": 0
+  },
+  {
+   "flag": "started_M04",
+   "step": 0
+  },
+  {
+   "flag": "started_M05",
+   "step": 0
+  },
+  {
+   "flag": "started_M06",
+   "step": 0
+  },
+  {
+   "flag": "started_M07",
+   "step": 0
+  },
+  {
+   "flag": "started_M08",
+   "step": 0
+  },
+  {
+   "flag": "started_N01",
+   "step": 0
+  },
+  {
+   "flag": "stove_lit",
+   "step": 0
+  },
+  {
+   "flag": "visited_H1",
+   "step": 0
+  },
+  {
+   "flag": "visited_H2",
+   "step": 0
+  },
+  {
+   "flag": "visited_H3",
+   "step": 0
+  },
+  {
+   "flag": "visited_O1",
+   "step": 0
+  },
+  {
+   "flag": "visited_O2",
+   "step": 0
+  },
+  {
+   "flag": "visited_R1",
+   "step": 0
+  },
+  {
+   "flag": "visited_Z1",
+   "step": 0
+  },
+  {
+   "flag": "visited_Z2",
+   "step": 0
+  },
+  {
+   "flag": "visited_Z3",
+   "step": 0
+  },
+  {
+   "flag": "visited_Z4",
+   "step": 0
+  },
+  {
+   "flag": "z1_compared_drawings",
+   "step": 0
+  },
+  {
+   "flag": "done_V02",
+   "step": 14
+  },
+  {
+   "flag": "started_V02",
+   "step": 14
+  },
+  {
+   "flag": "visited_H4",
+   "step": 14
+  }
+ ],
+ "blocked_scenes": [],
+ "harness": [],
+ "console_errors": [
+  "Failed to load resource: the server responded with a status of 404 ()",
+  "at: push_warning (core/variant/variant_utility.cpp:1033)"
+ ],
+ "console_warnings": [
+  "WARNING: VoiceDirector: R1.exit_R2.closed is recorded for another text (text_changed) — subtitles only"
+ ],
+ "checklist": {
+  "doc": "Docs/ACCEPTANCE_M2.md",
+  "items": [
+   12
+  ],
+  "missing": [],
+  "context": []
+ },
+ "verdict_history": [
+  {
+   "item": 12,
+   "status": "не дошёл",
+   "seen": "Ходики не найдены ни в одной из посещённых локаций; по журналу цель — идти на мельницу за ключом, лодка без плиты не плывёт («Без плиты лодку вернёт сюда же»). До сцены с часами не добралась.",
+   "frames": [
+    "f0026"
+   ],
+   "step": 24
+  }
+ ],
+ "notes": [],
+ "frames": [
+  {
+   "id": "f0026",
+   "step": 24,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0027",
+   "step": 25,
+   "kind": "final",
+   "label": "последний кадр"
+  }
+ ],
+ "steps": [
+  {
+   "step": 1,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0001",
+   "action": "click",
+   "observe": "Жилая комната, день второй, в сумке 5 предметов.",
+   "thought": "Нужны ходики; нажму Подсказку.",
+   "usd": 0.01346,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "H1",
+   "events": [
+    "Открыта подсказка: «Подсказка 1 из 3» — «У вещей здесь есть что рассказать. Осмотрите предметы, чьи названия появляются при наведении.»",
+    "Строка подсказки внизу: «Подсказка 1 из 3: У вещей здесь есть что рассказать. Осмотрите предметы, чьи названия появляются при наведении.»"
+   ]
+  },
+  {
+   "step": 2,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0002",
+   "action": "key",
+   "observe": "Жилая комната, подсказка открыта.",
+   "thought": "Покажу все места пробелом.",
+   "usd": 0.00515,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "H1",
+   "events": [
+    "Открыта подсказка: «Подсказка 1 из 3» — «У вещей здесь есть что рассказать. Осмотрите предметы, чьи названия появляются при наведении.»"
+   ]
+  },
+  {
+   "step": 3,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0003",
+   "action": "click",
+   "observe": "Жилая комната, подсказка открыта, ходиков не видно.",
+   "thought": "Ходики, вероятно, в мастерской. Иду туда.",
+   "usd": 0.0056,
+   "at": {
+    "x": 1740,
+    "y": 821
+   },
+   "desc": "щелчок (1160,547)",
+   "room_after": "H1",
+   "events": []
+  },
+  {
+   "step": 4,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0004",
+   "action": "click",
+   "observe": "Жилая комната, справа стрелка перехода.",
+   "thought": "Иду вправо по стрелке.",
+   "usd": 0.00541,
+   "at": {
+    "x": 1875,
+    "y": 821
+   },
+   "desc": "щелчок (1250,547)",
+   "room_after": "H2",
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 5,
+   "model": "claude-sonnet-5-5",
+   "room": "H2",
+   "frame": "f0005",
+   "action": "key",
+   "observe": "Мастерская, ходиков не видно; на верстаке слева стекло в рамке.",
+   "thought": "Покажу подписи пробелом.",
+   "usd": 0.00543,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "H2",
+   "events": []
+  },
+  {
+   "step": 6,
+   "model": "claude-sonnet-5-5",
+   "room": "H2",
+   "frame": "f0006",
+   "action": "click",
+   "observe": "Мастерская, ходиков не видно; дверь в жилую комнату слева.",
+   "thought": "Ходики, вероятно, в избе (жилой комнате). Иду туда.",
+   "usd": 0.0058,
+   "at": {
+    "x": 149,
+    "y": 414
+   },
+   "desc": "щелчок (99,276)",
+   "room_after": "H1",
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «Топящаяся печь»"
+   ]
+  },
+  {
+   "step": 7,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0007",
+   "action": "key",
+   "observe": "Жилая комната, ходиков не видно.",
+   "thought": "Нажму пробел, чтобы увидеть подписи.",
+   "usd": 0.00563,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "H1",
+   "events": [
+    "Подпись под курсором: «Топящаяся печь»",
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 8,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0008",
+   "action": "click",
+   "observe": "Жилая комната, ходиков не видно; в сумке 5 предметов.",
+   "thought": "Пойду в мастерскую, там искать ходики.",
+   "usd": 0.00674,
+   "at": {
+    "x": 1875,
+    "y": 821
+   },
+   "desc": "щелчок (1250,547)",
+   "room_after": "H2",
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 9,
+   "model": "claude-sonnet-5-5",
+   "room": "H2",
+   "frame": "f0009",
+   "action": "key",
+   "observe": "Мастерская, ходиков не видно; на верстаке слева стеклянная рамка.",
+   "thought": "Нажму пробел, чтобы увидеть подписи.",
+   "usd": 0.00608,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "H2",
+   "events": []
+  },
+  {
+   "step": 10,
+   "model": "claude-sonnet-5-5",
+   "room": "H2",
+   "frame": "f0010",
+   "action": "click",
+   "observe": "Мастерская, ходиков не видно. Есть резная стойка для зеркала, колокол.",
+   "thought": "Ходики могут быть в избе; проверю избу, осмотрев стену. Сначала пойду в жилую комнату.",
+   "usd": 0.00657,
+   "at": {
+    "x": 149,
+    "y": 414
+   },
+   "desc": "щелчок (99,276)",
+   "room_after": "H1",
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «Топящаяся печь»"
+   ]
+  },
+  {
+   "step": 11,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0011",
+   "action": "click",
+   "observe": "Жилая комната, печь, кот в кресле. Ходиков не видно.",
+   "thought": "Перейду в мастерскую и осмотрю там внимательно.",
+   "usd": 0.00658,
+   "at": {
+    "x": 1875,
+    "y": 821
+   },
+   "desc": "щелчок (1250,547)",
+   "room_after": "H2",
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 12,
+   "model": "claude-sonnet-5-5",
+   "room": "H2",
+   "frame": "f0012",
+   "action": "key",
+   "observe": "Мастерская, на верстаке слева планшет/зеркальце, ходиков не видно.",
+   "thought": "Пробел покажет подписи.",
+   "usd": 0.00638,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "H2",
+   "events": []
+  },
+  {
+   "step": 13,
+   "model": "claude-sonnet-5-5",
+   "room": "H2",
+   "frame": "f0013",
+   "action": "click",
+   "observe": "Мастерская, ходиков не видно; подписи есть. Есть «Резная стойка для зеркала», Свёрток «Нина. Горница».",
+   "thought": "Вернусь в жилую комнату и осмотрю стены внимательно через пробел.",
+   "usd": 0.00699,
+   "at": {
+    "x": 149,
+    "y": 414
+   },
+   "desc": "щелчок (99,276)",
+   "room_after": "H1",
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «Топящаяся печь»"
+   ]
+  },
+  {
+   "step": 14,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0014",
+   "action": "click",
+   "observe": "Жилая комната, ходиков не видно. Хожу туда-сюда.",
+   "thought": "Попробую вниз/вверх стрелки — другие места.",
+   "usd": 0.00661,
+   "at": {
+    "x": 714,
+    "y": 140
+   },
+   "desc": "щелчок (476,93)",
+   "room_after": "H4",
+   "events": [
+    "Текст: «Под крышей светло. Знакомые вещи всё ещё на своих местах.» [f0015]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше.",
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 15,
+   "model": "claude-sonnet-5-5",
+   "room": "H4",
+   "frame": "f0016",
+   "action": "click",
+   "observe": "Я на чердаке, ходиков не видно. Внизу стрелка вниз.",
+   "thought": "Нажму Подсказку, как велено.",
+   "usd": 0.00932,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "H4",
+   "events": [
+    "Открыта подсказка: «Подсказка 2 из 3» — «В журнале записаны нынешняя цель и всё, что уже удалось узнать.»",
+    "Строка подсказки внизу: «Подсказка 2 из 3: В журнале записаны нынешняя цель и всё, что уже удалось узнать.»"
+   ]
+  },
+  {
+   "step": 16,
+   "model": "claude-sonnet-5-5",
+   "room": "H4",
+   "frame": "f0017",
+   "action": "click",
+   "observe": "Чердак, подсказка 2 из 3 про журнал.",
+   "thought": "Открою журнал, чтобы узнать цель.",
+   "usd": 0.00703,
+   "at": {
+    "x": 1517,
+    "y": 39
+   },
+   "desc": "щелчок (1011,26)",
+   "room_after": "H4",
+   "events": [
+    "Открыт журнал."
+   ]
+  },
+  {
+   "step": 17,
+   "model": "claude-sonnet-5-5",
+   "room": "H4",
+   "frame": "f0018",
+   "action": "click",
+   "observe": "Журнал открыт: цель — утро, на мельницу, ключ в конторе. Я на чердаке.",
+   "thought": "Закрою журнал и посмотрю, как идти на мельницу.",
+   "usd": 0.00789,
+   "at": {
+    "x": 959,
+    "y": 861
+   },
+   "desc": "щелчок (639,574)",
+   "room_after": "H4",
+   "events": []
+  },
+  {
+   "step": 18,
+   "model": "claude-sonnet-5-5",
+   "room": "H4",
+   "frame": "f0019",
+   "action": "click",
+   "observe": "Чердак, журнал закрыт.",
+   "thought": "Вернусь вниз через стрелку внизу.",
+   "usd": 0.0068,
+   "at": {
+    "x": 698,
+    "y": 1037
+   },
+   "desc": "щелчок (465,691)",
+   "room_after": "H1",
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 19,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0020",
+   "action": "click",
+   "observe": "Жилая комната, печь, кресло с зверьком.",
+   "thought": "Выйду через дверь, чтобы идти на мельницу.",
+   "usd": 0.00685,
+   "at": {
+    "x": 1005,
+    "y": 435
+   },
+   "desc": "щелчок (670,290)",
+   "room_after": "Z2",
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «На крыльцо дома»"
+   ]
+  },
+  {
+   "step": 20,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0021",
+   "action": "click",
+   "observe": "Улица Заречья, у дома. Стрелки вправо, вверх.",
+   "thought": "Иду к мельнице вправо.",
+   "usd": 0.00691,
+   "at": {
+    "x": 1688,
+    "y": 668
+   },
+   "desc": "щелчок (1125,445)",
+   "room_after": "R1",
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «В лодку»"
+   ]
+  },
+  {
+   "step": 21,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0022",
+   "action": "click",
+   "observe": "Ближний причал, лодка.",
+   "thought": "Сяду в лодку, плыть к мельнице.",
+   "usd": 0.00685,
+   "at": {
+    "x": 1770,
+    "y": 645
+   },
+   "desc": "щелчок (1180,430)",
+   "room_after": "R1",
+   "events": [
+    "Текст: «Без плиты лодку вернёт сюда же.» [f0023]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше.",
+    "Подпись под курсором: «В лодку»"
+   ]
+  },
+  {
+   "step": 22,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0024",
+   "action": "click",
+   "observe": "Ближний причал, лодка не едет без плиты.",
+   "thought": "Нужна «плита»; ходики ищу. Открою подсказку.",
+   "usd": 0.0103,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "R1",
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Попробуйте выйти из комнаты: у закрытого прохода появится пояснение, почему он недоступен.»",
+    "Строка подсказки внизу: «Подсказка 3 из 3: Попробуйте выйти из комнаты: у закрытого прохода появится пояснение, почему он недоступен.»"
+   ]
+  },
+  {
+   "step": 23,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0025",
+   "action": "click",
+   "observe": "Причал, подсказка 3 из 3 открыта. Ходики не найдены.",
+   "thought": "Открою журнал, чтобы понять цель.",
+   "usd": 0.00737,
+   "at": {
+    "x": 1496,
+    "y": 39
+   },
+   "desc": "щелчок (997,26)",
+   "room_after": "R1",
+   "events": [
+    "Открыт журнал."
+   ]
+  },
+  {
+   "step": 24,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0026",
+   "action": "done",
+   "observe": "Журнал открыт: цель — утро, на мельницу, ключ в конторе. Ходики не найдены.",
+   "thought": "Закрою журнал; ходики, видимо, в мастерской или избе, но по журналу пункт недостижим. Завершаю.",
+   "usd": 0.00835,
+   "desc": "done",
+   "room_after": "R1",
+   "events": []
+  }
+ ],
+ "transcript": [
+  {
+   "step": 14,
+   "frame": "f0015",
+   "room": "H4",
+   "who": "Текст",
+   "text": "Под крышей светло. Знакомые вещи всё ещё на своих местах."
+  },
+  {
+   "step": 21,
+   "frame": "f0023",
+   "room": "R1",
+   "who": "Текст",
+   "text": "Без плиты лодку вернёт сюда же."
+  }
+ ]
+}
