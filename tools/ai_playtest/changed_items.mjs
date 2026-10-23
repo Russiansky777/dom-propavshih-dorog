@@ -12,6 +12,10 @@
 //   node tools/ai_playtest/changed_items.mjs <doc> --state <dir> --record <sha> --ref <sha> [--verdicts a/log.json,b/log.json]
 //        remember the rows of the doc at <sha> as gated, with the gate's verdicts (log.json of each acceptance run)
 //
+// --config <playtest_gate_*.json>: its "recheck": {"items": "13-25", "run": 1, "why": "…"} — rows to check once
+// more at the next gate although the checklist did not change them (the coordinator asks after a fix in data:
+// M3 gate r29 never reached 13–25, D6 fixed in f9f57fe). One-shot: the state remembers the run it was done for.
+//
 // --ref reads the checklist at that commit (the deployed one), not from the working tree: a checklist change
 // that is not deployed yet is not seen, so the gate waits for the next successful deploy.
 
@@ -24,6 +28,9 @@ const a = process.argv.slice(2);
 const doc = a[0];
 const opt = (k) => { const i = a.indexOf(k); return i >= 0 ? a[i + 1] : undefined; };
 const statePath = opt("--state");
+const cfgPath = opt("--config");
+const gateCfg = (() => { try { return cfgPath ? JSON.parse(fs.readFileSync(cfgPath, "utf8")) : {}; } catch (_) { return {}; } })();
+const recheck = gateCfg.recheck && gateCfg.recheck.items ? { items: gateCfg.recheck.items, run: String(gateCfg.recheck.run ?? 1) } : null;
 const record = opt("--record");
 const base = !statePath ? a[1] : undefined;
 
@@ -75,8 +82,9 @@ if (statePath) {
       for (const n of ((log.checklist && log.checklist.items) || []).map(normId)) verdicts[n] = last[n] || "не дошёл";
     }
     fs.mkdirSync(statePath, { recursive: true });
+    const recheck_run = recheck ? recheck.run : state.recheck_run;
     fs.writeFileSync(file, JSON.stringify({ doc, sha: record, at: new Date().toISOString(),
-      rows: Object.fromEntries([...now.entries()].map(([n, r]) => [n, r.hash])), verdicts }, null, 1) + "\n");
+      rows: Object.fromEntries([...now.entries()].map(([n, r]) => [n, r.hash])), verdicts, ...(recheck_run ? { recheck_run } : {}) }, null, 1) + "\n");
     process.exit(0);
   }
   const seen = state.rows || {};
@@ -85,6 +93,9 @@ if (statePath) {
   const pick = new Map(changed);
   for (const [, r] of changed) {
     for (const [m, q] of now.entries()) if (q.section === r.section && q.order > r.order && verdicts[m] !== "прошёл") pick.set(m, q);
+  }
+  if (recheck && state.recheck_run !== recheck.run) {
+    for (const id of resolveItems(recheck.items, [...now.keys()])) if (now.has(id)) pick.set(id, now.get(id));
   }
   process.stdout.write(sortRows([...pick.entries()]).map(([n]) => n).join(","));
 } else {

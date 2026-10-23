@@ -79,7 +79,7 @@ jobs:
               [ -f "$cfg" ] || continue
               doc=$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).doc||"")' "$cfg")
               git cat-file -e "$sha:$doc" 2>/dev/null || { echo "$cfg: $doc ещё нет в опубликованной сборке"; continue; }
-              items=$(node tools/ai_playtest/changed_items.mjs "$doc" --state Docs/playtest/gates_state --ref "$sha")
+              items=$(node tools/ai_playtest/changed_items.mjs "$doc" --state Docs/playtest/gates_state --ref "$sha" --config "$cfg")
               [ -n "$items" ] || { echo "$doc: новых и изменённых пунктов нет"; continue; }
               echo "$doc: ворота по пунктам $items"
               list="$list{\"cfg\":\"$cfg\",\"doc\":\"$doc\",\"items\":\"$items\"},"
@@ -169,11 +169,12 @@ jobs:
       - name: Чеклист — как на сайте; пункты — по свежему состоянию
         id: items
         env:
+          CFG: ${{ matrix.gate.cfg }}
           DOC: ${{ matrix.gate.doc }}
           SHA: ${{ needs.plan.outputs.sha }}
         run: |
           # пока задача ждала очереди, прошлые ворота того же чеклиста могли проверить те же строки
-          items=$(node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --ref "$SHA")
+          items=$(node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --ref "$SHA" --config "$CFG")
           echo "items=$items" >> "$GITHUB_OUTPUT"
           echo "пункты к проверке: ${items:-нет — уже проверены}"
           git show "$SHA:$DOC" > "$DOC"   # плейтестер с main, пункты — из опубликованного коммита
@@ -202,7 +203,7 @@ jobs:
           # строки чеклиста этой сборки проверены воротами; вердикты — из отчётов всех частей
           outs=$(cat build/ai_playtest/acceptance_outs.txt 2>/dev/null || true)
           logs=$(echo "$outs" | tr ',' '\n' | sed '/^$/d; s|$|/log.json|' | paste -sd, -)
-          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA" ${logs:+--verdicts "$logs"} || status=1
+          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA" --config "$CFG" ${logs:+--verdicts "$logs"} || status=1
           git checkout -- "$DOC" 2>/dev/null || true
           tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
           git show "$SHA:$DOC" > "$DOC" || true
