@@ -1,6 +1,7 @@
 {
   "id": "EP_pavel",
   "frame": true,
+  "place": "M1",
   "_art": "Эпилог: Павел у рейки уровня, мельница мелет (ep_pavel, партия 5).",
   "art_source": {
     "files": {

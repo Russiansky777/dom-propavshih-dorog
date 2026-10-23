@@ -1,6 +1,7 @@
 {
   "id": "F_span_done",
   "frame": true,
+  "place": "Z3",
   "_art": "M25 после: первое бревно на кольце плиты (Z3_bg + Z3_state_beam партии 5) — Илья, Агата, Пелагея.",
   "art_source": {
     "files": {

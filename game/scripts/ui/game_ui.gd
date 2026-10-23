@@ -108,6 +108,7 @@ func _ready() -> void:
 	GameState.hint_shown.connect(show_hint)
 	StoryRunner.panel_requested.connect(_on_panel_requested)
 	RoomManager.room_changed.connect(_on_room_changed)
+	StoryRunner.frame_changed.connect(_on_frame_changed)
 	_render_inventory()
 	_render_dialogue()
 	if RoomManager.current_room != null:
@@ -563,6 +564,21 @@ func _on_room_changed(room_id: String) -> void:
 	# Служебный код комнаты игроку не показываем (решение 17.10: в тексте для игрока нет кодов);
 	# виден только при отладке (OS.is_debug_build — сборка из редактора) или если имени нет.
 	room_code_label.text = room_id if (name == room_id or OS.has_feature("editor")) else ""
+
+
+## A frame over the world (FrameView: the mill yard, the class three weeks later…) names its own place in the title
+## bar — data `place` (a location id) or `title` (a text key) of the frame room; without a frame the room's name again.
+func _on_frame_changed(frame_id: String, _hold: bool) -> void:
+	if frame_id == "":
+		if RoomManager.current_room != null:
+			_on_room_changed(RoomManager.current_room.room_id)
+		return
+	var spec: Dictionary = StoryData.room(frame_id)
+	if spec.has("place"):
+		room_label.text = StoryData.location_name(String(spec["place"]))
+	elif spec.has("title"):
+		room_label.text = StoryData.text(String(spec["title"]))
+	room_code_label.text = ""
 
 
 func _render_inventory() -> void:

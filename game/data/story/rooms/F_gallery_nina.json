@@ -1,6 +1,7 @@
 {
   "id": "F_gallery_nina",
   "frame": true,
+  "place": "H3",
   "_art": "M23c: галерея (фон H3 и слой «дверь на родных петлях» блока 1) — Нина у школьной двери, Агата рядом.",
   "background": {
     "kind": "interior",

@@ -434,6 +434,10 @@
       "text": "Ничего",
       "draft": true
     },
+    "EP.place_bridge": {
+      "text": "Мост",
+      "draft": true
+    },
     "EP.beam.written_dunya": {
       "text": "Дуня",
       "draft": true

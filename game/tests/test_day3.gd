@@ -15,14 +15,18 @@ extends SceneTree
 ##   - block 5: the optional stories (letter, sleeve, notches, tea, street sign, Nina's letters) once, with traces.
 ## Exit code 0 only when every check passed.
 
-const AUTOSAVE := "test_day3_auto"
+var AUTOSAVE := "test_day3_auto_%d" % OS.get_process_id()
 var SLOT := "test_day3_mid_%d" % OS.get_process_id()
+## Checkpoint slots of this run: per process — two suites on one machine (agents in parallel worktrees share
+## user://) must not delete each other's «День третий» (23.10: a parallel run's cleanup removed test3_day3).
+var CP := "test3_%d_" % OS.get_process_id()
 
 var gs: Node
 var rm: Node
 var sr: Node
 var sd: Node
 var main_node: Node = null
+var frame_titles := {}
 var mv: Node = null
 var fv: Node = null
 var cv: Node = null
@@ -68,7 +72,7 @@ func _run() -> void:
 	root.add_child(main_node)
 	await _frames(3)
 	rm.autosave_slot = AUTOSAVE
-	rm.checkpoint_prefix = "test3_"
+	rm.checkpoint_prefix = CP
 	mv = main_node.get_node("MechanicView")
 	fv = main_node.get_node("FrameView")
 	cv = main_node.get_node("CloseupView")
@@ -76,6 +80,9 @@ func _run() -> void:
 	player.walk_speed = 1600.0
 	player.speed_factor = 6.0
 	sr.frame_changed.connect(func(f, _h): if f != "": frames_seen.append(f))
+	# The title bar names the frame's place (game_ui connects first, so its label is already updated here).
+	var title_label: Label = main_node.get_node("GameUi").get("room_label")
+	sr.frame_changed.connect(func(f, _h): if f != "": frame_titles[f] = title_label.text)
 	await _test("Data: blocks 3–4 scenes, frames, texts — no old chain, goals without codes", _test_data)
 	await _test("Frames: every frame room builds over the world (layers by flags, no hotspots)", _test_frames_build)
 	await _test("Start points: the state up to their scene, the right room, items in the bag", _test_start_points)
@@ -84,7 +91,7 @@ func _run() -> void:
 	await _test("Choices leave traces: board answers, Tikhon, epilogue lines and layers by flags", _test_traces)
 	await _test("Block 5: optional stories — once each, traces in the epilogue", _test_optional)
 	gs.reset()
-	for s in [AUTOSAVE, SLOT, SLOT + "_d4", SLOT + "_end", "test3_day3", "test3_day4"]:
+	for s in [AUTOSAVE, SLOT, SLOT + "_d4", SLOT + "_end", CP + "day3", CP + "day4"]:
 		gs.delete_save(s)
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -406,7 +413,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M20") and gs.has_flag("met_ilya") and gs.has_flag("morning_day3"), "M20: Ilya, Ulyana, the wife; morning: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("ilya:Ты не выросла")), "Ilya: «Ты не выросла»")
 	_check(gs.has_flag("wife_came"), "the wife came with the lamp: her figure is shown by wife_came (set in M20 before her line)")
-	_check(gs.has_save("test3_day3"), "checkpoint «День третий» written")
+	_check(gs.has_save(CP + "day3"), "checkpoint «День третий» written")
 	_check(not _hotspot("ilya").visible and rm.current_room.get_node("Effects/night") != null and not rm.current_room.get_node("Effects/night").visible, "morning: the night tone is off, Ilya has gone home")
 	_check(rm.save_game(SLOT), "save in the morning of day three")
 	# M21: Nina about Dunya; notebooks, village list → M21b.
@@ -473,6 +480,7 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("done_M23b") and gs.has_flag("bridge_decided"), "M23b at the mill: %s" % str(seen))
 	_check(frames_seen.has("F_mill_manager"), "the mill frame with four people")
+	_check(String(frame_titles.get("F_mill_manager", "")) == sd.location_name("M1"), "the title bar names the mill yard over the mill frame, not the room under it (%s)" % str(frame_titles.get("F_mill_manager")))
 	_check(seen.any(func(x): return x.begins_with("pavel:Год ключ на гвозде висел")) and seen.any(func(x): return x.begins_with("ilya:Значит, мост. Пока лёд не встал")), "the manager, Pavel, Agata, Ilya decide the bridge")
 	_check(seen.any(func(x): return x.begins_with("pavel:Ты слово давала")), "Pavel remembers Agata's word (pavel_answer_promise)")
 	_check(not gs.has_flag("done_M24"), "the evening waits for Tamara's letters")
@@ -488,7 +496,7 @@ func _test_walkthrough() -> void:
 		await process_frame
 		g2 += 1
 	_check(gs.has_flag("done_M24") and gs.has_flag("morning_day4"), "M24: the evening of day three, then morning: %s" % str(seen))
-	_check(gs.has_save("test3_day4"), "checkpoint «День четвёртый» written")
+	_check(gs.has_save(CP + "day4"), "checkpoint «День четвёртый» written")
 	_check(rm.save_game(SLOT + "_d4"), "save on the morning of day four")
 	# The first span.
 	_check(await _route(["R3", "R2", "R1", "Z3"]), "to the turn")
@@ -518,9 +526,12 @@ func _test_walkthrough() -> void:
 		await process_frame
 		gb += 1
 	_check(p.logic.state == "wait", "«Подымай» — back at the top")
+	# The stop by real game time (×1): under load a frame at ×4 can carry the log past the whole ring window
+	# (23.10: a run beside a browser check missed the ring). Click as soon as the log enters the window.
+	Engine.time_scale = 1.0
 	await _click(_v(pr2.get("plaque_lower", {})))
 	gb = 0
-	while p.logic.pos < p.logic.rest - 0.02 and gb < 2000:
+	while p.logic.pos < p.logic.rest - p.logic.tolerance * 0.8 and gb < 4000:
 		await process_frame
 		gb += 1
 	await _click(_v(pr2.get("plaque_stop", {})))
@@ -528,6 +539,7 @@ func _test_walkthrough() -> void:
 	while not gs.has_flag("span_first_laid") and gb < 2000:
 		await process_frame
 		gb += 1
+	Engine.time_scale = 4.0
 	_check(gs.has_flag("span_first_laid"), "«Стой» at the ring — the log lies on the ring")
 	_check(p.signals_seen.has("lower") and p.signals_seen.has("stop") and p.signals_seen.has("raise"), "all three signals used: %s" % str(p.signals_seen))
 	frames_seen.clear()
@@ -541,6 +553,8 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M26") and gs.has_flag("game_finished"), "M26: the epilogue to the end: %s" % str(seen.slice(0, 8)))
 	for f in ["F_span_done", "EP_tamara", "EP_boat", "EP_pavel", "EP_beam", "EP_lesson", "EP_dinner"]:
 		_check(frames_seen.has(f), "epilogue shot %s (%s)" % [f, str(frames_seen)])
+	_check(String(frame_titles.get("EP_lesson", "")) == sd.location_name("O1") and String(frame_titles.get("EP_tamara", "")) == sd.text("@EP.place_bridge"),
+		"epilogue titles: the class, the bridge — not the turn under the frames (%s)" % str(frame_titles))
 	_check(seen.size() > 0 and seen[seen.size() - 1] == "ulyana:А завтра тоже можно прийти?", "the last line: Ulyana (%s)" % (seen[seen.size() - 1] if seen.size() > 0 else ""))
 	await _frames(4)
 	var fp: Dictionary = fv.probe()
@@ -556,7 +570,7 @@ func _test_walkthrough() -> void:
 
 func _test_save_load() -> void:
 	Engine.time_scale = 4.0
-	for slot in ["test3_day3", SLOT]:
+	for slot in [CP + "day3", SLOT]:
 		_check(rm.load_game(slot), "load %s" % slot)
 		await _frames(3)
 		_check(_room() == "O3", "%s: in mother's room (%s)" % [slot, _room()])
@@ -565,7 +579,7 @@ func _test_save_load() -> void:
 		await _use("nina")
 		var seen := await _finish()
 		_check(gs.has_flag("done_M21"), "%s: the day goes on after the load (M21): %s" % [slot, str(seen)])
-	_check(rm.load_game("test3_day4"), "load «День четвёртый»")
+	_check(rm.load_game(CP + "day4"), "load «День четвёртый»")
 	await _frames(3)
 	_check(sr.current_beat.is_empty() and not sr.is_staging() and not fv.probe().get("open", true), "day four: nothing replays, no frame left")
 	_check(gs.has_flag("done_M24") and not gs.has_flag("done_M25"), "day four: before the span")

@@ -1,6 +1,7 @@
 {
   "id": "F_span",
   "frame": true,
+  "place": "Z3",
   "_art": "M25 до бревна: поворот с воротом и штабелем прогонов (партия 5: Z3_bg + Z3_state_beam без бревна — tools/make_span_layers.py) — Илья у ворота, Пелагея с дощечкой сигналов, Агата.",
   "background": {
     "kind": "exterior",

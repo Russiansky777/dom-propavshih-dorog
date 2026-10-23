@@ -1,6 +1,7 @@
 {
   "id": "EP_beam",
   "frame": true,
+  "title": "@EP.place_bridge",
   "_art": "Эпилог: торец первого прогона (closeup_beam_end, партия 6) с надписью, которую выбрала Агата в M25 (или чистый).",
   "art_source": {
     "files": {

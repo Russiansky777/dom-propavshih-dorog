@@ -1484,6 +1484,21 @@ for rid, room in sorted(rooms.items()):
             if sc_id and it in (scenes.get(sc_id, {}).get("grants", {}).get("items", []) or []):
                 err(f"{rid}.{h.get('id', h.get('to'))}.item_use.{it}: предмет тратится в сцене {sc_id}, а её grants.items его выдают — после завершения он вернулся бы в сумку")
 
+# Кадр (frame: true) называет своё место в строке комнаты: place — id локации или title — ключ текста (23.10: над классом
+# и ужином эпилога стояло «Береговой поворот» — имя комнаты под кадром).
+for rid, room in sorted(rooms.items()):
+    if not room.get("frame"):
+        continue
+    if "place" in room:
+        if room["place"] not in loc_ids:
+            err(f"{rid}: place {room['place']} — нет такой локации")
+    elif "title" in room:
+        t = str(room["title"])
+        if not t.startswith("@") or t[1:] not in texts:
+            err(f"{rid}: title {t} — нет такого текста")
+    else:
+        err(f"{rid}: кадр без place / title — в строке комнаты останется имя комнаты под ним")
+
 # Флаг, от которого зависит видимость в комнате (visible_if / hidden_if / if / unless / if_any), кто-то должен ставить:
 # сцена (grants, sets постановки, выбор реплики), задание, хотспот (sets, once_flag, выбор), вход в комнату. Флаг,
 # только объявленный в комнате, — мёртвое условие (дефект 23.10: жена Ильи в O3 по wife_came, а его никто не ставил).

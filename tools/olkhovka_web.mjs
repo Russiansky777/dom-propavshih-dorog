@@ -36,8 +36,8 @@ const OUT_DIR = path.join(ROOT, "Docs", "evidence", "M3");
 const LOG_DIR = path.join(ROOT, "build", "shots", "olkhovka");
 const PORT = Number(process.env.OLKH_PORT || 8779);
 // The windlass moves in game time; swiftshader on a small machine runs the page at ~1–2 fps (physics capped at 8
-// steps a frame), so the log takes up to a minute of real time to come down — wait for states that long.
-const SLOW = Number(process.env.OLKH_SLOW_MS || 240000);
+// steps a frame), so the log can take minutes of real time to come down (measured 23.10: ~60× slower than game time) — wait for states that long.
+const SLOW = Number(process.env.OLKH_SLOW_MS || 600000);
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -271,7 +271,7 @@ async function main() {
     await sleep(400);
     await shot("B4_windlass_laid");
     let caughtDone = false;
-    lines = await playThrough("M25 (after the log)", { choices: ["roads"], done: (t) => t.flags.done_M25 && !t.busy, onBeat: async (b) => {
+    lines = await playThrough("M25 (after the log)", { choices: ["roads"], done: (t) => t.flags.done_M25, onBeat: async (b) => {
       if (!caughtDone && b.frame && b.frame.frame === "F_span_done") { await sleep(500); await shot("B5_F_span_done"); caughtDone = true; }
     } });
     s = await state();
@@ -285,7 +285,7 @@ async function main() {
     await open("epilogue");
     const framesSeen = [];
     let last = "";
-    lines = await playThrough("M26", { done: (t) => t.flags.done_M26 && t.frame && t.frame.hold && t.frame.new_game, timeout: 400000, onBeat: async (b) => {
+    lines = await playThrough("M26", { done: (t) => t.flags.done_M26 && t.frame && t.frame.hold && t.frame.new_game, timeout: 1500000, onBeat: async (b) => {
       const f = b.frame && b.frame.frame;
       if (f && !framesSeen.includes(f)) { framesSeen.push(f); await sleep(700); await shot(`C_${String(framesSeen.length).padStart(2, "0")}_${f}`); }
       if (b.beat.type === "line") last = `${b.beat.speaker}: ${b.beat.text}`;
