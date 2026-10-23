@@ -260,8 +260,13 @@ def make_prop(kind: str):
         face = mesh_object("mirror_face", box_bm(0.105, 0.002, 0.145, center=(0, -0.0085, 0)), glass)
         parts = [frame, face]
     elif kind == "pen":
-        ink = material("pen", (0.05, 0.04, 0.035), rough=0.4)
-        parts = [mesh_object("pen", cylinder_bm(0.0035, 0.0016, 0.15, segs=10), ink)]
+        # гусиное перо: светлый очин от кончика (−4 см) к опахалу — его видно над рукой, и по нему видно, что пишет
+        quill = material("quill", (0.86, 0.84, 0.78), rough=0.6)
+        tip = material("quill_tip", (0.12, 0.1, 0.08), rough=0.4)
+        shaft = mesh_object("pen", cylinder_bm(0.0012, 0.0028, 0.2, segs=8, center=(0, 0, 0.06)), quill)
+        nib = mesh_object("pen_tip", cylinder_bm(0.0003, 0.0013, 0.015, segs=8, center=(0, 0, -0.0475)), tip)
+        vane = mesh_object("pen_vane", box_bm(0.024, 0.0015, 0.13, center=(0.006, 0, 0.095)), quill)
+        parts = [shaft, nib, vane]
     elif kind == "paper":
         pap = material("paper", (0.86, 0.82, 0.7), rough=0.9)
         parts = [mesh_object("paper", box_bm(0.21, 0.28, 0.001), pap)]
@@ -736,18 +741,20 @@ def setup_pose(sc, room: Room, arm, meshes, root, pid: str, P: dict, baked: dict
                 qs = [(float(k), hand_target_rot(S, h["fingers"], h["palm"], FM).to_quaternion()) for k, h in hp]
                 dyn.append(lambda ph, e=hr, qs=qs: setattr(e, "rotation_quaternion", key_at(qs, ph, quat=True)) or setattr(e, "rotation_mode", "QUATERNION"))
                 hr.rotation_mode = "QUATERNION"
-        if path:
-            pts = [(float(k), place(v, spec.get("space"))) for k, v in path]
-            dyn.append(lambda ph, e=tgt, pts=pts: setattr(e, "location", key_at(pts, ph)))
-        if spec.get("stroke"):
-            st, base = spec["stroke"], Vector(tgt.location)
+        if path or spec.get("stroke"):
+            # путь кисти по ключам (строка письма, подъём кружки) и поверх — мелкий штрих пера
+            pts = [(float(k), place(v, spec.get("space"))) for k, v in path] if path else [(0.0, Vector(tgt.location))]
+            st = spec.get("stroke") or {}
 
-            def stroke(ph, e=tgt, st=st, base=base):
-                a, cy = st.get("amp_m", [0.02, 0.006, 0.004]), st.get("cycles", [2, 6, 6])
-                w = 2 * math.pi * ph
-                e.location = base + FM.to_3x3() @ Vector((a[0] * math.sin(cy[0] * w), a[1] * math.sin(cy[1] * w),
-                                                         max(0.0, a[2] * math.sin(cy[2] * w + 1.0))))
-            dyn.append(stroke)
+            def move(ph, e=tgt, pts=pts, st=st):
+                off = Vector((0.0, 0.0, 0.0))
+                if st:
+                    a, cy = st.get("amp_m", [0.02, 0.006, 0.004]), st.get("cycles", [2, 6, 6])
+                    w = 2 * math.pi * ph
+                    off = FM.to_3x3() @ Vector((a[0] * math.sin(cy[0] * w), a[1] * math.sin(cy[1] * w),
+                                                max(0.0, a[2] * math.sin(cy[2] * w + 1.0))))
+                e.location = key_at(pts, ph) + off
+            dyn.append(move)
     lk = P.get("look")
     if lk:
         t = empty(f"look_{pid}")
