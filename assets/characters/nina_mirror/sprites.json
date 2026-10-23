@@ -1,0 +1,184 @@
+{
+  "name": "nina_mirror",
+  "kind": "mirror_poses",
+  "directions": 1,
+  "direction_order": "строки — направления позы (у ходьбы: 0 — влево, 1 — вправо); вид — из зеркала горницы",
+  "character_height_m": 1.633,
+  "px_per_m": 300.0,
+  "room": {
+    "horizon_y": 330,
+    "camera_h_m": 1.35,
+    "focal_px": 1600,
+    "center_x": 836
+  },
+  "actions": {
+    "write": {
+      "sheet": "write.png",
+      "frames": 24,
+      "fps": 10.0,
+      "playback": "loop",
+      "clip": "Chair_Sit_Idle_F",
+      "loop_s": 2.4,
+      "at": [
+        600.0,
+        739.6
+      ],
+      "height": 495.3,
+      "view": {
+        "elev_deg": 6.42,
+        "yaw_deg": -8.39
+      },
+      "facing_deg": 0.0,
+      "rows": [
+        {
+          "facing_deg": 0.0
+        }
+      ]
+    },
+    "cup": {
+      "sheet": "cup.png",
+      "frames": 24,
+      "fps": 7.5,
+      "playback": "loop",
+      "clip": "Stand_and_Drink",
+      "loop_s": 3.2,
+      "at": [
+        680.0,
+        683.7
+      ],
+      "height": 427.7,
+      "view": {
+        "elev_deg": 4.66,
+        "yaw_deg": -5.57
+      },
+      "facing_deg": -20.0,
+      "rows": [
+        {
+          "facing_deg": -20.0
+        }
+      ]
+    },
+    "window": {
+      "sheet": "window.png",
+      "frames": 24,
+      "fps": 15.333,
+      "playback": "pingpong",
+      "clip": "Idle_4",
+      "loop_s": 1.5,
+      "at": [
+        1195,
+        690
+      ],
+      "height": 435.4,
+      "view": {
+        "elev_deg": 4.65,
+        "yaw_deg": 12.65
+      },
+      "facing_deg": 165.0,
+      "rows": [
+        {
+          "facing_deg": 165.0
+        }
+      ]
+    },
+    "walk": {
+      "sheet": "walk.png",
+      "frames": 24,
+      "fps": 24.828,
+      "playback": "loop",
+      "clip": "Walking_Woman",
+      "loop_s": 0.967,
+      "at": [
+        1065,
+        700
+      ],
+      "height": 447.4,
+      "view": {
+        "elev_deg": 4.85,
+        "yaw_deg": 8.15
+      },
+      "facing_deg": 0.0,
+      "rows": [
+        {
+          "facing_deg": -90.0,
+          "dir": [
+            -1,
+            0
+          ]
+        },
+        {
+          "facing_deg": 90.0,
+          "dir": [
+            1,
+            0
+          ]
+        }
+      ],
+      "ground_speed_mps": 1.3016,
+      "path_px": [
+        [
+          950,
+          700
+        ],
+        [
+          1180,
+          700
+        ]
+      ]
+    },
+    "small_mirror": {
+      "sheet": "small_mirror.png",
+      "frames": 24,
+      "fps": 8.0,
+      "playback": "loop",
+      "clip": "Idle_4",
+      "loop_s": 3.0,
+      "at": [
+        340.0,
+        692.5
+      ],
+      "height": 438.3,
+      "view": {
+        "elev_deg": 4.58,
+        "yaw_deg": -17.22
+      },
+      "facing_deg": 25.0,
+      "rows": [
+        {
+          "facing_deg": 25.0
+        }
+      ]
+    },
+    "write_again": {
+      "sheet": "write.png",
+      "frames": 24,
+      "fps": 10.0,
+      "playback": "loop",
+      "clip": "Chair_Sit_Idle_F",
+      "loop_s": 2.4,
+      "at": [
+        600.0,
+        739.6
+      ],
+      "height": 495.3,
+      "view": {
+        "elev_deg": 6.42,
+        "yaw_deg": -8.39
+      },
+      "facing_deg": 0.0,
+      "rows": [
+        {
+          "facing_deg": 0.0
+        }
+      ],
+      "same_as": "write"
+    }
+  },
+  "qa_note": "Нина (67) в мамином зеркале (M15а): горница O3 видна из зеркала — у каждой позы свой наклон и поворот камеры, тёплый свет свечи и окна, тёплый тон рисунка. Одна строка на позу (у ходьбы две: влево и вправо). Стоит или сидит за столом — всё ниже столешницы в листе прозрачно НАРОЧНО (стол на рисунке закрывает; это не обрезка кадра). Ноги и подол видны только у window и walk.",
+  "frame_w": 368,
+  "frame_h": 544,
+  "pivot": {
+    "x": 0.5,
+    "y": 0.92796
+  }
+}

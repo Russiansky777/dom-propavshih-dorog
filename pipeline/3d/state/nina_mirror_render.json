@@ -1,0 +1,68 @@
+{
+ "write": {
+  "at": [
+   600.0,
+   739.6
+  ],
+  "height": 495.3,
+  "view": {
+   "elev_deg": 6.42,
+   "yaw_deg": -8.39
+  }
+ },
+ "cup": {
+  "at": [
+   680.0,
+   683.7
+  ],
+  "height": 427.7,
+  "view": {
+   "elev_deg": 4.66,
+   "yaw_deg": -5.57
+  }
+ },
+ "window": {
+  "at": [
+   1195,
+   690
+  ],
+  "height": 435.4,
+  "view": {
+   "elev_deg": 4.65,
+   "yaw_deg": 12.65
+  }
+ },
+ "walk": {
+  "at": [
+   1065,
+   700
+  ],
+  "height": 447.4,
+  "view": {
+   "elev_deg": 4.85,
+   "yaw_deg": 8.15
+  }
+ },
+ "small_mirror": {
+  "at": [
+   340.0,
+   692.5
+  ],
+  "height": 438.3,
+  "view": {
+   "elev_deg": 4.58,
+   "yaw_deg": -17.22
+  }
+ },
+ "write_again": {
+  "at": [
+   600.0,
+   739.6
+  ],
+  "height": 495.3,
+  "view": {
+   "elev_deg": 6.42,
+   "yaw_deg": -8.39
+  }
+ }
+}
