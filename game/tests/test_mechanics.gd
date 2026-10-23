@@ -649,6 +649,8 @@ func _test_mirror_nina() -> void:
 		_check(at.distance_to(p.v2(act.get("at", [0, 0]))) < 1.5 and absf(float(pose.get("height", 0)) - float(act.get("height", 0))) < 1.5,
 			"%s: data at %s / height %s = the render's %s / %s" % [pid, str(pose.get("at")), str(pose.get("height")), str(act.get("at")), str(act.get("height"))])
 		p._draw_nina(pose)
+		# Art pack 9 (O3_table_no_mirror): while she holds the small mirror the table under it is without it.
+		_check(p.pose_layer.visible == (pid == "small_mirror"), "%s: the table without the small mirror — %s" % [pid, "shown" if p.pose_layer.visible else "hidden"])
 		var placed: Vector2 = p.nina_sprite.position if p.nina_sprite != null else Vector2(-1, -1)
 		await _frames(2)
 		var nb: Dictionary = p.nina_probe()

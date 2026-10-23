@@ -7,7 +7,8 @@
     "files": {
       "bg.png": "assets/incoming/ep_lesson.png",
       "lesson_map.png": "assets/incoming/ep_lesson_map.png",
-      "children.png": "assets/incoming/ep_lesson_children.png"
+      "children.png": "assets/incoming/ep_lesson_children.png",
+      "date.png": "assets/incoming/EP_lesson_date.png"
     },
     "canvas": [
       1672,
@@ -51,19 +52,8 @@
     },
     {
       "id": "date",
-      "text": "@EP.lesson.written_date",
-      "rect": [
-        905,
-        200,
-        330,
-        90
-      ],
-      "font": "italic",
-      "font_size": 44,
-      "color": "#e9e6dc",
-      "alpha": 0.8,
-      "angle_deg": -1.5,
-      "_stub": "число мелом на доске — шрифт игры"
+      "image": "res://assets/rooms/EP_lesson/date.png",
+      "_note": "G54 (партия 9): «16 ноября» мелом рукой Нины на доске, [795,195,1071,235) холста — вместо надписи шрифтом игры (текстовый слой @EP.lesson.written_date снят)"
     },
     {
       "id": "nina",

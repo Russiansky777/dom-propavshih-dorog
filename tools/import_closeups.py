@@ -29,7 +29,7 @@ SRC = ROOT / "assets" / "incoming"
 DST = ROOT / "game" / "assets" / "closeups"
 WIDTH = {"closeup_bridge_photo": 840, "closeup_ilya_drawing": 840, "closeup_plan": 1440}
 DAY2 = ["M3_view_bg", "M3_view_light", "M3_view_hook", "M3_view_bar_down",
-        "O3_bg", "O3_clock_face", "O3_clock_pendulum", "O3_clock_hand_min", "O3_clock_hand_hour", "O3_candle_flame",
+        "O3_bg", "O3_clock_face", "O3_clock_pendulum", "O3_clock_hand_min", "O3_clock_hand_hour", "O3_candle_flame", "O3_table_no_mirror",
         "closeup_plate", "closeup_plate_skoba", "closeup_plate_rope",
         "closeup_lantern_closed", "closeup_lantern_open", "closeup_office_photo"]
 WIDTH.update({n: 1672 for n in DAY2})
