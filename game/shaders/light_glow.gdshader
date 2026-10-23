@@ -30,8 +30,11 @@ void fragment() {
 	float h = pow(max(0.0, 1.0 - r), halo_power) * halo;
 
 	vec2 g = c / max(glass_size * 0.5, vec2(0.001));
-	float gd = mix(length(g), max(abs(g.x), abs(g.y)), glass_box);
-	float gl = (1.0 - smoothstep(0.55, 1.0, gd)) * glass;
+	// H19: a pane is a rounded soft box (superellipse), its light falling off from the middle — never a flat square.
+	vec2 ag = abs(g);
+	float sq = pow(pow(ag.x, 4.0) + pow(ag.y, 4.0), 0.25);
+	float gd = mix(length(g), sq, glass_box);
+	float gl = (1.0 - smoothstep(0.3, 1.05, gd)) * glass * mix(1.0, 0.75 + 0.25 * (1.0 - length(g) * 0.7), glass_box);
 
 	float fl = 0.0;
 	if (flame > 0.0) {

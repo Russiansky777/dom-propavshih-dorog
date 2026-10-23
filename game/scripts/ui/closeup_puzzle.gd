@@ -479,8 +479,22 @@ func _winter_front(wv: Dictionary, opening: Rect2) -> Node2D:
 	var hw := (x1 - x0) * 0.5 * spread
 	var spill := Polygon2D.new()
 	spill.name = "Light"
-	spill.polygon = PackedVector2Array([Vector2(x0, y0), Vector2(x1, y0), Vector2(cx + hw, y0 + depth), Vector2(cx - hw, y0 + depth)])
-	spill.vertex_colors = PackedColorArray([Color(lc, la), Color(lc, la), Color(lc, 0.0), Color(lc, 0.0)])
+	# H20 (Director 24.10: «свет из двери — резкие границы»): the spill is a soft mask of the trapezoid (LightMask —
+	# feathered sides, fading with depth), cut only at the threshold line itself, where the floor begins.
+	var trap := [[x0 + 6.0, y0 - 30.0], [x1 - 6.0, y0 - 30.0], [cx + hw, y0 + depth], [cx - hw, y0 + depth]]
+	var m := LightMask.build([trap], maxf(depth * 0.28, 24.0),
+		{"from": [cx, y0], "to": [cx, y0 + depth * 1.1], "alpha_from": 1.0, "alpha_to": 0.0})
+	var mr: Rect2 = m["rect"]
+	var mt: Texture2D = m["texture"]
+	var mts := Vector2(mt.get_width(), mt.get_height())
+	var quad := PackedVector2Array([Vector2(mr.position.x, y0), Vector2(mr.end.x, y0), mr.end, Vector2(mr.position.x, mr.end.y)])
+	var uvs := PackedVector2Array()
+	for q in quad:
+		uvs.append((q - mr.position) / mr.size * mts)
+	spill.polygon = quad
+	spill.uv = uvs
+	spill.texture = mt
+	spill.color = Color(lc, la)
 	spill.material = add
 	front.add_child(spill)
 	# A soft glow just inside the doorway (daylight of the classroom on the jambs).

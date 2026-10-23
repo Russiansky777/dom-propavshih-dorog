@@ -91,6 +91,11 @@ func build() -> void:
 	# The view's corners on the contour's corners (top-left, top-right, bottom-right, bottom-left).
 	var vs := Vector2(office_vp.size)
 	glass_poly.uv = PackedVector2Array([Vector2.ZERO, Vector2(vs.x, 0), vs, Vector2(0, vs.y)])
+	# H26: glass in a frame, not a cut-out rectangle — bevel, tarnished silver at the edges, a soft glare.
+	var gm := ShaderMaterial.new()
+	gm.shader = load("res://shaders/glass_bevel.gdshader")
+	gm.set_shader_parameter("aspect", Vector2(1.0, glass_rect.size.y / maxf(glass_rect.size.x, 1.0)))
+	glass_poly.material = gm
 	add_child(glass_poly)
 	var sheen := Polygon2D.new()
 	sheen.name = "Sheen"
@@ -191,6 +196,8 @@ func _build_wedges(reg: Array, fpos: Vector2, fk: float) -> void:
 			var img := String(art.get(st, ""))
 			var tr := crop(img, [box.position.x, box.position.y, box.size.x, box.size.y], Vector2.ZERO, fk, holder)
 			tr.name = st.capitalize()
+			# H26 (Director 24.10: «клинья инородные»): the pale wedges toned to the stand's wood (data `wedges.tint`).
+			tr.modulate = _wedge_tint(ws)
 		wedges.append(holder)
 		wedge_hits.append(3 if i < driven else 0)
 	wedge_timing = TimingBar.new()
@@ -453,3 +460,9 @@ func probe() -> Dictionary:
 			"sway": [hook.sway.x, hook.sway.y], "in_zone": hook.state == "sway" and hook.timing.in_green(hook.timing.pos()),
 			"timing": hook_bar.probe() if hook_bar != null else {}}
 	return out
+
+
+## The wedges' colour fit to the stand «ЗМ» (H26): a multiply tint from data, default the stand's warm brown.
+static func _wedge_tint(ws: Dictionary) -> Color:
+	var t = ws.get("tint", [0.72, 0.53, 0.36])
+	return Color(float(t[0]), float(t[1]), float(t[2]))

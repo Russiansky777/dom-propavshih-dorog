@@ -29,8 +29,7 @@
      "item_use": {"key_house": {"sets": ["house_unlocked"], "consumes": true, "once_flag": "house_unlocked", "text": "@Z2.exit_H1.unlock", "enter": true}},
      "_key_note": "Директор 18.10: дверь дома открывается только ключом — в первый раз заперто (closed_text: ключ в сумке), ключ из сумки на дверь → house_unlocked (ребро Z2–H1 в locations.json), ключ остаётся в замке (уходит из сумки), Агата входит; дальше дверь открыта всегда, и после загрузки"},
     {"to": "M1", "label": "@Z2.exit_M1.label", "cue": "right", "rect": [1800, 760, 120, 320], "stand": [1810, 900], "spawn": "from_Z2", "closed_text": "@Z2.exit_M1.closed", "draw": false},
-    {"to": "Z3", "label": "@Z2.exit_Z3.label", "cue": "up", "rect": [1300, 560, 230, 90], "stand": [1380, 700], "spawn": "from_Z2", "closed_text": "@Z2.exit_Z3.closed", "draw": false},
-    {"to": "R1", "label": "@Z2.exit_R1.label", "cue": "right", "cue_at": [1690, 668], "cue_deg": -40, "rect": [1540, 640, 250, 110], "stand": [1600, 780], "spawn": "from_Z2", "closed_text": "@Z2.exit_R1.closed", "draw": false, "_cue_note": "спуск уходит вправо вглубь, к реке: метка чуть выше и на северо-восток (Директор 23.10, F20)"}
+    {"to": "R1", "label": "@Z2.exit_R1.label", "cue": "up", "cue_at": [1575, 680], "cue_deg": -135, "rect": [1540, 640, 250, 110], "stand": [1600, 780], "spawn": "from_Z2", "closed_text": "@Z2.exit_R1.closed", "draw": false, "_cue_note": "H7 (Директор 24.10): с улицы к воде — только спуск к причалу, метка повёрнута на северо-запад; дорожка к береговому повороту — от причала (прежний выход Z2 → Z3 снят)"}
   ],
   "scenes": {},
   "flags": {}

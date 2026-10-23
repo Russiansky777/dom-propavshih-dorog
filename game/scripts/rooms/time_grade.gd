@@ -122,6 +122,27 @@ func _make_window(w: Dictionary, mat: CanvasItemMaterial) -> Node2D:
 	pane.polygon = pts
 	pane.color = col if dark else Color(col.r, col.g, col.b, float(w.get("alpha", 0.5)))
 	pane.material = mat
+	if not dark:
+		# H19 (Director 24.10: «свет в окнах — всё ещё жёлтый квадрат»): the pane is a soft glow in the window's shape —
+		# a feathered mask of the polygon (LightMask), brighter in the middle, no hard edge; `feather` px in data.
+		var box0 := Rect2(pts[0], Vector2.ZERO)
+		for p in pts:
+			box0 = box0.expand(p)
+		var feather := float(w.get("feather", clampf(minf(box0.size.x, box0.size.y) * 0.22, 6.0, 30.0)))
+		var shrunk := PackedVector2Array()
+		var c0 := box0.get_center()
+		for p in pts:
+			shrunk.append(c0 + (p - c0) * float(w.get("inset", 0.9)))
+		var poly_arr: Array = []
+		for p in shrunk:
+			poly_arr.append([p.x, p.y])
+		var m := LightMask.build([poly_arr], feather)
+		var r: Rect2 = m["rect"]
+		var tex: Texture2D = m["texture"]
+		pane.texture = tex
+		pane.polygon = PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
+		var ts := Vector2(tex.get_width(), tex.get_height())
+		pane.uv = PackedVector2Array([Vector2.ZERO, Vector2(ts.x, 0), ts, Vector2(0, ts.y)])
 	holder.add_child(pane)
 	var halo_k := 0.0 if dark else float(w.get("halo", 2.2))
 	if halo_k > 0.0:
