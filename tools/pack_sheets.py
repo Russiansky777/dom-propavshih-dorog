@@ -91,6 +91,8 @@ def main() -> int:
     seen, changed, kept = {}, 0, 0
     before = after = 0
     for action, act in list(meta.get("actions", {}).items()):
+        if act.get("same_as"):   # та же сетка под другим именем (поза зеркала write_again = write) — атлас общий, ниже
+            continue
         sheet = src / act.get("sheet", action + ".png")
         if not sheet.exists():
             continue
@@ -118,13 +120,19 @@ def main() -> int:
             after += out.stat().st_size
             continue
         n = int(act["frames"])
-        atlas, rects = pack(Image.open(sheet).convert("RGBA"), fw, fh, n, dirs)
+        # строки листа: направления персонажа или, у поз зеркала, свои строки действия (ходьба — влево и вправо)
+        rows = len(act["rows"]) if act.get("rows") else dirs
+        atlas, rects = pack(Image.open(sheet).convert("RGBA"), fw, fh, n, rows)
         atlas.save(out, optimize=True)
         act["atlas"] = {"rects": rects, "size": [atlas.width, atlas.height], "src_md5": h, "gap": GAP}
         changed += 1
         after += out.stat().st_size
-        print(f"  {dst.name}/{sheet.name}: сетка {n * fw}×{dirs * fh} → атлас {atlas.width}×{atlas.height} "
-              f"({atlas.width * atlas.height / (n * fw * dirs * fh) * 100:.0f} % пикселей), {sheet.stat().st_size // 1024} → {out.stat().st_size // 1024} КБ")
+        print(f"  {dst.name}/{sheet.name}: сетка {n * fw}×{rows * fh} → атлас {atlas.width}×{atlas.height} "
+              f"({atlas.width * atlas.height / (n * fw * rows * fh) * 100:.0f} % пикселей), {sheet.stat().st_size // 1024} → {out.stat().st_size // 1024} КБ")
+    for action, act in meta.get("actions", {}).items():
+        ref = meta["actions"].get(act.get("same_as", ""))
+        if ref is not None and "atlas" in ref:
+            act["atlas"] = ref["atlas"]
     meta["packed"] = not args.grid
     text = json.dumps(meta, ensure_ascii=False, indent=2) + "\n"
     if not (dst / "sprites.json").exists() or (dst / "sprites.json").read_text(encoding="utf-8") != text:

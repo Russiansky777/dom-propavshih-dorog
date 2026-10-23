@@ -15,8 +15,14 @@ extends MechanicPanel
 ##     у неё час. Минута здесь — двадцать там. Пока я сплю, у неё проходит неделя») — no automatic comparison.
 ## Art: «Горница Нины» (партия 3): O3_bg and, on the same 1672×941 canvas at (0, 0), the clock face, the
 ## pendulum (axis 942, 259), the minute and hour hands drawn pointing at 12 (common axis 942, 201) and the
-## candle flame (wick ≈ 445, 425). Nina has no art in the glass yet: a grey-haired silhouette drawn by the
-## engine in canvas px, poses in data (mechanic.poses: at = feet, height).
+## candle flame (wick ≈ 445, 425).
+## Nina (23.10): her 3D figure in six poses, rendered for this glass (pipeline/render/render_mirror.py → the sheets
+## `nina_sheets`, assets/characters/nina_mirror): the room rebuilt from the painting's perspective, each pose seen
+## from the mirror's place, the table in front of her already cut out of the sheet. Data (mechanic.poses): `sheet`
+## — which sheet, `at` — the floor under her (canvas px), `height` — her height there (canvas px), `path` — where
+## she paces (walk), `shadow_m` — a soft contact shadow. Inside a pose she moves `motion_speedup` times too fast
+## (the clips' natural tempo × that, capped where the eye still follows, like the pendulum); with common time — 1×.
+## No sheet → the old engine silhouette (fallback).
 
 const PENDULUM_MAX_HZ := 2.6     # the swing the eye still follows; at 20× the real beat would be ≈ 20 Hz
 const PENDULUM_DEG := 9.0
@@ -45,6 +51,13 @@ var holding: bool = false         # Agata holds her watch to the glass
 var hold_s: float = 0.0           # real seconds since she did
 var hold_start_nina: float = 0.0  # Nina's elapsed minutes when she did
 var pose_id: String = ""
+var pose_layer: Sprite2D = null
+var nina_meta: Dictionary = {}    # sprites.json of the mirror poses
+var nina_sheets: Dictionary = {}  # sheet id → {frames: SpriteFrames (rows "r0", "r1"), act}
+var nina_sprite: AnimatedSprite2D = null
+var nina_pose: Dictionary = {}
+var walk_pos: Vector2 = Vector2.ZERO
+var walk_dir: int = -1
 var poses_seen: Array[String] = []
 var knocks: int = 0
 var compared_sent: bool = false
@@ -106,11 +119,49 @@ func _build_room() -> void:
 	pendulum = _pivot(art, "Pendulum", String(ra.get("pendulum", "")), v2(ra.get("pendulum_axis", [942, 259])))
 	hand_min = _pivot(art, "HandMin", String(ra.get("hand_min", "")), v2(ra.get("hands_axis", [942, 201])))
 	hand_hour = _pivot(art, "HandHour", String(ra.get("hand_hour", "")), v2(ra.get("hands_axis", [942, 201])))
-	flame = _pivot(art, "Flame", String(ra.get("flame", "")), v2(ra.get("wick", [445, 425])))
-	# Nina (silhouette until her figure comes) — between the room and the glass tint.
+	# A layer of the room for one pose (`room_layer`: the table without the small mirror while she holds it) —
+	# over the painting, under Nina; hidden in the other poses or while the picture is not there.
+	pose_layer = _sprite(art, "PoseLayer", "", Vector2.ZERO)
+	pose_layer.visible = false
+	# Nina — in front of the wall and the clock, behind the candle flame on the table (and the glass tint).
 	nina = Node2D.new()
 	nina.name = "Nina"
 	art.add_child(nina)
+	_load_nina_sheets()
+	flame = _pivot(art, "Flame", String(ra.get("flame", "")), v2(ra.get("wick", [445, 425])))
+
+
+## The mirror poses' sheets (packed atlases, like the characters' sheets): one SpriteFrames per sheet, a row per
+## direction of the pose ("r0", "r1" — walking left and right).
+func _load_nina_sheets() -> void:
+	var dir := String(spec.get("nina_sheets", ""))
+	if dir == "" or not FileAccess.file_exists(dir + "/sprites.json"):
+		return
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(dir + "/sprites.json"))
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return
+	nina_meta = parsed
+	var sh := ActorSheet.new()
+	sh.frame_w = int(nina_meta.get("frame_w", 288))
+	sh.frame_h = int(nina_meta.get("frame_h", 384))
+	var acts: Dictionary = nina_meta.get("actions", {})
+	for id in acts.keys():
+		var act: Dictionary = acts[id]
+		var path := dir + "/" + String(act.get("sheet", String(id) + ".png"))
+		if not ResourceLoader.exists(path):
+			continue
+		var tex: Texture2D = load(path)
+		var sf := SpriteFrames.new()
+		sf.remove_animation("default")
+		var rows: int = maxi(1, (act.get("rows", []) as Array).size())
+		for r in rows:
+			var anim := "r%d" % r
+			sf.add_animation(anim)
+			sf.set_animation_loop(anim, true)
+			sf.set_animation_speed(anim, float(act.get("fps", 12.0)))
+			for i in ActorSheet.frame_sequence(int(act.get("frames", 1)), String(act.get("playback", "loop"))):
+				sf.add_frame(anim, sh.frame_texture(tex, act, r, int(i)))
+		nina_sheets[String(id)] = {"frames": sf, "act": act}
 
 
 func _sprite(parent: Node, node_name: String, image: String, at: Vector2) -> Sprite2D:
@@ -262,8 +313,11 @@ func _update_room() -> void:
 		if not poses_seen.has(pid):
 			poses_seen.append(pid)
 		_draw_nina(pose)
-	# Within a pose she moves twenty times too fast as well: a quick sway.
-	nina.position = Vector2(sin(fclock.real_s * 9.0) * 4.0, 0) if fclock.ratio > 2.0 else Vector2.ZERO
+	if nina_sprite != null:
+		nina_sprite.speed_scale = motion_speed()
+	else:
+		# The silhouette (no sheet): within a pose she moves twenty times too fast as well — a quick sway.
+		nina.position = Vector2(sin(fclock.real_s * 9.0) * 4.0, 0) if fclock.ratio > 2.0 else Vector2.ZERO
 	if holding:
 		elapsed_mine.text = text("label_elapsed").format({"t": _mmss(hold_s)})
 		elapsed_nina.text = text("label_elapsed").format({"t": _mmss((ne - hold_start_nina) * 60.0)})
@@ -276,10 +330,97 @@ static func _mmss(s: float) -> String:
 	return "%d:%02d" % [t / 60, t % 60]
 
 
+## How many times too fast she moves inside a pose: the 20:1 clock capped where the eye still follows a body
+## (data `motion_speedup`); once the road is held from both ends — her own tempo.
+func motion_speed() -> float:
+	return minf(fclock.ratio, float(spec.get("motion_speedup", 2.5))) if fclock.ratio > 1.0 else 1.0
+
+
+## The sheet a pose is drawn from: `sheet` (write_again → write) or the pose's own id.
+static func pose_sheet(pose: Dictionary) -> String:
+	return String(pose.get("sheet", pose.get("id", "")))
+
+
+## Scale of the sheet in the room's canvas: her height there (`height`, canvas px) over her height in the sheet.
+func sheet_scale(pose: Dictionary) -> float:
+	var sheet_h := float(nina_meta.get("character_height_m", 1.63)) * float(nina_meta.get("px_per_m", 300.0))
+	return float(pose.get("height", 300.0)) / maxf(1.0, sheet_h)
+
+
 func _draw_nina(pose: Dictionary) -> void:
 	for c in nina.get_children():
 		c.queue_free()
+	nina_sprite = null
+	nina_pose = pose
+	nina.position = Vector2.ZERO
+	var layer := String(pose.get("room_layer", ""))
+	pose_layer.visible = layer != "" and ResourceLoader.exists(layer)
+	if pose_layer.visible:
+		pose_layer.texture = load(layer)
 	var at := v2(pose.get("at", [300, 440]))
+	var sid := pose_sheet(pose)
+	if nina_sheets.has(sid):
+		var spr := AnimatedSprite2D.new()
+		spr.name = "Figure"
+		spr.sprite_frames = nina_sheets[sid]["frames"]
+		spr.centered = false
+		var piv: Dictionary = nina_meta.get("pivot", {})
+		spr.offset = -Vector2(float(piv.get("x", 0.5)) * float(nina_meta.get("frame_w", 288)), float(piv.get("y", 0.95)) * float(nina_meta.get("frame_h", 384)))
+		var k := sheet_scale(pose)
+		spr.scale = Vector2(k, k)
+		spr.position = at
+		spr.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		if pose.has("shadow_m"):
+			spr.add_child(ActorShadow.make_size(float(pose["shadow_m"]) * float(nina_meta.get("px_per_m", 300.0)), 0.3, 0.42))
+		walk_pos = at
+		walk_dir = -1
+		spr.animation = _row_anim(sid, walk_dir)
+		spr.speed_scale = motion_speed()
+		spr.play()
+		nina.add_child(spr)
+		nina_sprite = spr
+		return
+	_draw_silhouette(pose, at)
+
+
+## The row of a sheet facing the way she walks (rows[].dir: [-1, 0] — to the left, [1, 0] — to the right).
+func _row_anim(sid: String, dir_x: int) -> String:
+	var rows: Array = (nina_sheets[sid]["act"] as Dictionary).get("rows", [])
+	for r in rows.size():
+		var d = (rows[r] as Dictionary).get("dir", null)
+		if d is Array and signi(int(d[0])) == dir_x:
+			return "r%d" % r
+	return "r0"
+
+
+## Walking (`path`): along the path and back, at the pace her feet set (the sheet's ground speed — the planted
+## foot stays on the floor), turning at the ends.
+func _move_nina(delta: float) -> void:
+	if nina_sprite == null or not nina_pose.has("path"):
+		return
+	var path: Array = nina_pose["path"]
+	var a := v2(path[0])
+	var b := v2(path[path.size() - 1])
+	var act: Dictionary = nina_sheets[pose_sheet(nina_pose)]["act"]
+	var px_per_m := float(nina_pose.get("height", 300.0)) / float(nina_meta.get("character_height_m", 1.63))
+	var step := float(act.get("ground_speed_mps", 1.0)) * px_per_m * motion_speed() * delta
+	var lo := minf(a.x, b.x)
+	var hi := maxf(a.x, b.x)
+	walk_pos.x += step * walk_dir
+	if walk_pos.x <= lo or walk_pos.x >= hi:
+		walk_pos.x = clampf(walk_pos.x, lo, hi)
+		walk_dir = -walk_dir
+		var f := nina_sprite.frame
+		nina_sprite.animation = _row_anim(pose_sheet(nina_pose), walk_dir)
+		nina_sprite.play()
+		nina_sprite.frame = f
+	var t := 0.0 if is_equal_approx(hi, lo) else (walk_pos.x - a.x) / (b.x - a.x)
+	walk_pos.y = lerpf(a.y, b.y, clampf(t, 0.0, 1.0))
+	nina_sprite.position = walk_pos
+
+
+## No sheet for the pose: the engine's grey-haired silhouette (as before the figure came).
+func _draw_silhouette(pose: Dictionary, at: Vector2) -> void:
 	var hgt := float(pose.get("height", 300))
 	var sitting := bool(pose.get("sitting", false))
 	var w := hgt * 0.36
@@ -302,6 +443,7 @@ func _draw_nina(pose: Dictionary) -> void:
 
 func tick(delta: float) -> void:
 	fclock.advance(delta)
+	_move_nina(delta)
 	# A while at the glass without comparing: Agata thinks of her own watch (once per opening).
 	if not holding and not _hinted and fclock.real_s >= float(spec.get("watch_hint_s", 20.0)) and not dialogue_up() \
 			and not flag(String(spec.get("compared_flag", "nina_time_compared"))):
@@ -390,4 +532,16 @@ func probe() -> Dictionary:
 		"pendulum_deg": loupe_pend.rotation_degrees if loupe_pend != null else 0.0, "pose": pose_id,
 		"poses_seen": poses_seen.duplicate(), "knocks": knocks, "glass": center_of(room), "loupe": center_of(loupe),
 		"watch": center_of(slot), "holding": holding, "hold_s": hold_s, "compared": compared_sent,
-		"watch_minute_deg": watch.minute_deg() if watch != null else 0.0, "wrong_items": wrong_items}
+		"watch_minute_deg": watch.minute_deg() if watch != null else 0.0, "wrong_items": wrong_items,
+		"nina": nina_probe()}
+
+
+## Nina as drawn: from which sheet, where (canvas px of the room) and how tall; the visible part of the frame.
+func nina_probe() -> Dictionary:
+	if nina_sprite == null:
+		return {"sheet": "", "silhouette": nina.get_child_count() > 0}
+	return {"sheet": pose_sheet(nina_pose), "pose": pose_id, "at": [nina_sprite.position.x, nina_sprite.position.y],
+		"scale": nina_sprite.scale.x,
+		"height": sheet_scale(nina_pose) * float(nina_meta.get("character_height_m", 1.63)) * float(nina_meta.get("px_per_m", 300.0)),
+		"animation": String(nina_sprite.animation), "playing": nina_sprite.is_playing(), "speed_scale": nina_sprite.speed_scale,
+		"frames": nina_sprite.sprite_frames.get_frame_count(nina_sprite.animation)}

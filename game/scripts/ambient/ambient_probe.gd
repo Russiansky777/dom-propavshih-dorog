@@ -9,6 +9,8 @@ extends RefCounted
 ##   ambientItem(id, on)       — put an item into the bag (on = true, default) or take it out: a playtest
 ##                               starting in the middle of the game gets the items of that point
 ##   ambientParts(rain, sway, water) — show only some parts (cost of each part, FPS)
+##   ambientMirrorAdvance(s)   — the open mother's mirror: its clock runs s real seconds ahead at once (Nina's
+##                               next poses without waiting 3 minutes; tools/mech_web.mjs, part «nina»)
 ##   ambientState              — JSON-able stats, refreshed every 0.25 s: room, counts, fps
 
 static var _registered: bool = false
@@ -30,7 +32,9 @@ static func register() -> void:
 	var flag_cb := JavaScriptBridge.create_callback(_flag)
 	var parts_cb := JavaScriptBridge.create_callback(_parts)
 	var item_cb := JavaScriptBridge.create_callback(_item)
-	_cbs = [goto_cb, walk_cb, en_cb, flag_cb, parts_cb, item_cb]
+	var adv_cb := JavaScriptBridge.create_callback(_mirror_advance)
+	_cbs = [goto_cb, walk_cb, en_cb, flag_cb, parts_cb, item_cb, adv_cb]
+	win.ambientMirrorAdvance = adv_cb
 	win.ambientGoto = goto_cb
 	win.ambientWalk = walk_cb
 	win.ambientEnable = en_cb
@@ -50,6 +54,14 @@ static func register() -> void:
 static func _rm() -> Node:
 	var tree := Engine.get_main_loop() as SceneTree
 	return tree.root.get_node_or_null("RoomManager")
+
+
+static func _mirror_advance(args: Array) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var mv := tree.root.find_child("MechanicView", true, false)
+	var panel = mv.get("panel") if mv != null else null
+	if panel != null and is_instance_valid(panel) and panel.get("fclock") != null and args.size() > 0:
+		panel.fclock.advance(float(args[0]))
 
 
 static func _goto(args: Array) -> void:

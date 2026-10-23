@@ -17,7 +17,9 @@
 //   hook    — the office mirror: «пускай» (a click on the bell), «стой» (a double click) when the swaying hook is in
 //             the green, «подымай» (a held press) — the bar out;
 //   latch   — the H1 shutter: a click on the shutter when the latch is up (in the green);
-//   crossing— R2: ten clicks on the rope; the boat reaches the far pier (R3).
+//   crossing— R2: ten clicks on the rope; the boat reaches the far pier (R3);
+//   nina    — mother's mirror: Nina's six poses from her 3D sheets (the mirror's clock moved on with the probe hook
+//             ambientMirrorAdvance — the poses come every few minutes of hers); a frame of each pose.
 // Software WebGL here draws a few frames a second: for the timing bars the page's game clock is slowed with the
 // existing probe hook window.probePause(false, k) (the marker crawls; the clicks are still real), then restored.
 // Frames: Docs/evidence/M2/mech_web_*.png; log and report: build/shots/mech/.
@@ -43,7 +45,7 @@ const OUT_DIR = process.env.MECH_OUT_DIR ? path.resolve(process.env.MECH_OUT_DIR
 const LOG_DIR = path.join(ROOT, "build", "shots", "mech");
 const PORT = Number(process.env.MECH_PORT || 8781);
 const URL_BASE = process.env.MECH_URL || "";
-const PARTS = (process.env.MECH_PART || "examine,mirror,plate,hook,latch,crossing").split(",");
+const PARTS = (process.env.MECH_PART || "examine,mirror,nina,plate,hook,latch,crossing").split(",");
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -291,6 +293,36 @@ async function main() {
     } catch (e) {  // one broken part does not hide the others
       check(false, `mirror: exception ${e.message}`);
       await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
+    }
+    if (PARTS.includes("nina")) try {
+      await fresh("nina");
+      await setFlags(["done_M01", "met_tamara", "house_unlocked", "done_M03", "house_open", "done_N01", "done_M09", "done_M09s", "done_M09b",
+        "done_M10", "done_M11", "done_M12", "done_M13a", "done_M13", "done_M14", "office_mirror_mounted", "office_mirror_clamped",
+        "office_unbolted", "sluice_opened", "pond_lowered", "h2_bundle_unwrapped", "nina_mirror_clamped", "has_clamp", "nina_time_compared", "done_M15a"]);
+      await goto("H2");
+      let s = await state();
+      await click("mother's mirror", s.hotspots.bundle_nina);
+      s = await waitFor("fast mirror open", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "fast_mirror", 120000);
+      await finish("mirror open");
+      // One full round of poses: 60 of Nina's minutes = 180 real s at 20:1; each pose is reached by moving the clock on.
+      const order = [["write", 0], ["cup", 14], ["window", 18], ["walk", 26], ["small_mirror", 29], ["write_again", 41]];
+      let at = 0;
+      for (const [pose, start] of order) {
+        const nina0 = (await state()).mechanic.panel.nina_elapsed;
+        const want = start + 1.5;   // Nina's minutes since the glass opened: inside the pose
+        const adv = Math.max(0, (want - nina0) * 3.0);   // 20:1 — a minute of hers is 3 real seconds
+        if (adv > 0) await page.evaluate((x) => window.ambientMirrorAdvance(x), adv);
+        s = await waitFor(`pose ${pose}`, (t) => t.mechanic && t.mechanic.panel && t.mechanic.panel.pose === pose, 60000);
+        const nb = s.mechanic.panel.nina || {};
+        check(nb.sheet && !nb.silhouette && nb.playing && nb.frames >= 12,
+          `${pose}: drawn from the 3D sheet «${nb.sheet}» (${nb.frames} frames, ${nb.animation}, ×${(nb.speed_scale || 0).toFixed(1)})`);
+        await sleep(2500);
+        await shot(`07_nina_${++at}_${pose}`);
+      }
+      check(true, "Nina's poses: frames Docs/evidence/M2/mech_web_07_nina_*.png");
+    } catch (e) {
+      check(false, `nina: exception ${e.message}`);
       await page.keyboard.press("Escape").catch(() => {});
     }
     // --- timing helpers (the game clock slowed for the strike) ---

@@ -89,6 +89,7 @@ func _run() -> void:
 	await _test("Examine each item: full screen, its picture, Agata's line, closes by click", _test_examine_each)
 	await _test("Bag: double click / magnifier opens it, single click still takes in hand; Esc; load closes it", _test_examine_bag)
 	await _test("Mother's mirror (F4): the clock beside the glass goes 20×, the watch from the bag, the realisation", _test_fast_mirror)
+	await _test("Nina in the glass: every pose from her 3D sheet, at its place and height, moving too fast; common time — her own pace", _test_mirror_nina)
 	await _test("Examine inside a close-up: on top of it, Esc closes only the examine", _test_examine_over_mechanic)
 	await _test("The plate (F5–F7): the brace by «точный удар» — a miss makes it jump off and resets; the knot drawn along the path — slips back, no penalty; textured rope; save/load", _test_plate)
 	await _test("The shutter (F8): the latch caught up in the green opens it; dropped — again, nothing lost; then only a look", _test_latch)
@@ -568,6 +569,94 @@ func _test_fast_mirror() -> void:
 	await _click(_v(p.probe().get("glass", {})))
 	seen = await _finish()
 	_check(p.holding and p.compared_sent and seen.size() == 1, "again: the rule as a reminder, no second realisation (%s)" % str(seen))
+	sr.close_mechanic()
+	await _frames(2)
+	_reached_end = true
+
+
+# --- Nina in the glass (3D sheets) ------------------------------------------------------------------
+
+## The visible part of a frame (alpha > 0.1) in the frame's own px (the AtlasTexture margin restores the full frame).
+func _frame_bbox(tex: Texture2D) -> Rect2:
+	var img := tex.get_image()
+	if img == null or img.is_empty():
+		return Rect2()
+	img.decompress()
+	var r := img.get_used_rect()
+	if tex is AtlasTexture:
+		r.position += Vector2i((tex as AtlasTexture).margin.position)
+	return Rect2(r)
+
+
+func _test_mirror_nina() -> void:
+	Engine.time_scale = 1.0
+	await _open_mother_mirror()
+	var p = mv.panel
+	var poses: Array = p.spec.get("poses", [])
+	var meta: Dictionary = p.nina_meta
+	_check(not meta.is_empty() and float(meta.get("px_per_m", 0)) > 0.0, "the mirror poses' sprites.json is loaded (%s)" % String(p.spec.get("nina_sheets", "")))
+	var acts: Dictionary = meta.get("actions", {})
+	var reg: Array = p.spec.get("room_art", {}).get("region", [230, 40, 1060, 700])
+	var glass := Rect2(float(reg[0]), float(reg[1]), float(reg[2]), float(reg[3]))
+	for pose in poses:
+		var pid := String(pose.get("id", ""))
+		var sid: String = p.pose_sheet(pose)
+		_check(p.nina_sheets.has(sid), "%s: its sheet «%s» is loaded" % [pid, sid])
+		if not p.nina_sheets.has(sid):
+			continue
+		var act: Dictionary = acts.get(sid, {})
+		# The data and the render agree: the sheet was rendered for this place and this height.
+		var at: Vector2 = p.v2(pose.get("at", [0, 0]))
+		_check(at.distance_to(p.v2(act.get("at", [0, 0]))) < 1.5 and absf(float(pose.get("height", 0)) - float(act.get("height", 0))) < 1.5,
+			"%s: data at %s / height %s = the render's %s / %s" % [pid, str(pose.get("at")), str(pose.get("height")), str(act.get("at")), str(act.get("height"))])
+		p._draw_nina(pose)
+		var placed: Vector2 = p.nina_sprite.position if p.nina_sprite != null else Vector2(-1, -1)
+		await _frames(2)
+		var nb: Dictionary = p.nina_probe()
+		_check(String(nb.get("sheet", "")) == sid and not bool(nb.get("silhouette", false)), "%s: drawn from the sheet, not the silhouette" % pid)
+		_check(int(nb.get("frames", 0)) >= 12 and bool(nb.get("playing", false)), "%s: an animation of %d frames, playing" % [pid, int(nb.get("frames", 0))])
+		_check(placed.distance_to(at) < 0.5, "%s: the feet at %s (%s)" % [pid, str(at), str(placed)])
+		_check(absf(float(nb.get("height", 0)) - float(pose.get("height", 0))) < 0.5, "%s: %.1f px tall in the room (data %s)" % [pid, float(nb.get("height", 0)), str(pose.get("height"))])
+		# What is actually drawn: the figure's visible part in room px — above her feet, about her height, in the glass.
+		var spr: AnimatedSprite2D = p.nina_sprite
+		var bb := _frame_bbox(spr.sprite_frames.get_frame_texture(spr.animation, spr.frame))
+		var k: float = spr.scale.x
+		var off: Vector2 = spr.offset
+		var at_now: Vector2 = spr.position   # walking: she has moved along her path since
+		var fig := Rect2(at_now + (bb.position + off) * k, bb.size * k)
+		var hgt := float(pose.get("height", 0))
+		_check(bb.size.y > 10 and fig.end.y <= at.y + hgt * 0.02 and fig.position.y > at.y - hgt * 1.12 and fig.position.y < at.y - hgt * 0.6,
+			"%s: the figure stands on her place: top %.0f, bottom %.0f for feet %.0f, height %.0f" % [pid, fig.position.y, fig.end.y, at.y, hgt])
+		_check(absf(fig.get_center().x - at_now.x) < hgt * 0.3, "%s: centred over her feet (%.0f vs %.0f)" % [pid, fig.get_center().x, at_now.x])
+		var inside := fig.intersection(glass)
+		_check(inside.get_area() >= fig.get_area() * 0.9, "%s: inside the glass (%.0f %% of the figure)" % [pid, 100.0 * inside.get_area() / maxf(1.0, fig.get_area())])
+	# Too fast inside a pose; walking goes along its path and turns.
+	var walk: Dictionary = {}
+	for pose in poses:
+		if pose.has("path"):
+			walk = pose
+	_check(not walk.is_empty(), "a pose walks (path)")
+	if not walk.is_empty():
+		p._draw_nina(walk)
+		var x0: float = p.walk_pos.x
+		var anims := {}
+		var t0 := Time.get_ticks_msec()
+		while anims.size() < 2 and Time.get_ticks_msec() - t0 < 4000:
+			await process_frame
+			anims[String(p.nina_sprite.animation)] = true
+		var path: Array = walk["path"]
+		_check(absf(p.walk_pos.x - x0) > 1.0 and p.walk_pos.x >= minf(path[0][0], path[1][0]) - 0.5 and p.walk_pos.x <= maxf(path[0][0], path[1][0]) + 0.5,
+			"walking: she moves along the path (%.0f → %.0f)" % [x0, p.walk_pos.x])
+		_check(anims.size() == 2, "walking: both ways, turning at the ends (%s)" % str(anims.keys()))
+	_check(is_equal_approx(p.nina_sprite.speed_scale, minf(20.0, float(p.spec.get("motion_speedup", 2.5)))), "20:1 — she moves %.1f× too fast" % p.nina_sprite.speed_scale)
+	sr.close_mechanic()
+	await _frames(2)
+	gs.set_flag("road_held_both_ends", true)
+	var h = rm.current_room.get_node_or_null("Hotspots/bundle_nina")
+	sr.open_mechanic(sr.mechanic_spec(h), "bundle_nina")
+	await _frames(3)
+	p = mv.panel
+	_check(p.nina_sprite != null and is_equal_approx(p.nina_sprite.speed_scale, 1.0), "common time: her own pace (%s)" % str(p.nina_sprite.speed_scale if p.nina_sprite else -1))
 	sr.close_mechanic()
 	await _frames(2)
 	_reached_end = true

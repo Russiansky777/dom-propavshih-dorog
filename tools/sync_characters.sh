@@ -20,6 +20,33 @@ for id in "${ids[@]}"; do
   # A sheet byte-identical to another action's (a clip mix-up in the pipeline) is not copied. SYNC_GRID=1 — grids.
   if [[ -f "$SRC/$id/sprites.json" ]]; then
     python3 -I "$ROOT/tools/pack_sheets.py" --src "$SRC/$id" --dst "$DST/$id" ${SYNC_GRID:+--grid}
+    # a new sheet (a new character, Nina's mirror poses): import like the other sheets — lossy WebP 0.85, no mipmaps;
+    # Godot fills in the rest of the .import on the next import
+    for f in "$DST/$id"/*.png; do
+      [[ -f "$f" && ! -f "$f.import" ]] || continue
+      name="$(basename "$f")"
+      cat >"$f.import" <<EOF
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+
+[deps]
+
+source_file="res://assets/characters/$id/$name"
+
+[params]
+
+compress/mode=1
+compress/lossy_quality=0.85
+mipmaps/generate=false
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/size_limit=0
+detect_3d/compress_to=1
+EOF
+      echo "  $id/$name.import written"
+    done
   else
     # no sheet manifest (one-picture rig, Tikhon): pictures as they are
     for f in "$SRC/$id"/*.png; do
