@@ -47,6 +47,18 @@ detect_3d/compress_to=1
 EOF
       echo "  $id/$name.import written"
     done
+    # A k× sheet (sprites.json texture_scale, G56: Agata 2,25×): VRAM-compressed, high quality (BPTC/BC7, 1 byte per
+    # pixel on the GPU). Lossy WebP decodes to 4 bytes per pixel — Agata's sheets would take ≈ 1,7 GB of video memory
+    # with mipmaps (a browser tab loses its WebGL context); BC7 — ≈ 0,42 GB, the detail kept. Desktop and web alike.
+    if python3 -c "import json,sys;sys.exit(0 if float(json.load(open(sys.argv[1])).get('texture_scale',1))>1 else 1)" "$DST/$id/sprites.json"; then
+      for f in "$DST/$id"/*.png.import; do
+        [[ -f "$f" ]] || continue
+        sed -i 's/^compress\/mode=.*/compress\/mode=2/; s/^compress\/high_quality=.*/compress\/high_quality=true/; s/^mipmaps\/generate=.*/mipmaps\/generate=true/' "$f"
+        grep -q '^compress/high_quality=' "$f" || sed -i 's/^compress\/mode=2/compress\/mode=2\ncompress\/high_quality=true/' "$f"
+        grep -q '^mipmaps/generate=' "$f" || printf 'mipmaps/generate=true\n' >>"$f"
+      done
+      echo "  $id: texture_scale > 1 — sheets imported VRAM-compressed (BPTC)"
+    fi
   else
     # no sheet manifest (one-picture rig, Tikhon): pictures as they are
     for f in "$SRC/$id"/*.png; do

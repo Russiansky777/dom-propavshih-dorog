@@ -30,6 +30,7 @@ from pathlib import Path
 
 try:
     from PIL import Image, ImageChops
+    Image.MAX_IMAGE_PIXELS = None  # листы Агаты 2,25× (G56): сетка pick 34 560 × 6 912 px
 except ImportError:  # CI без Pillow: проверка листов — в локальном tools/run_tests.sh (Pillow есть у конвейера и агентов)
     Image = None
 

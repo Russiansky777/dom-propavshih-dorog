@@ -23,10 +23,18 @@ import sys
 from pathlib import Path
 
 from PIL import Image
+Image.MAX_IMAGE_PIXELS = None  # листы Агаты 2,25× (G56): сетка pick 34 560 × 6 912 px — свой файл, не «бомба»
 
 GAP = 8      # пустота между кусками (px): мипмап 2-го уровня не берёт соседа
 ALIGN = 4    # края кусков кратны 4
 MAX_SIDE = 8192
+# Лист сверх этого предела — только у листа k× (G56: Агата 864 px, pick ≈ 9300 px по стороне); 16384 — предел
+# текстуры Godot и WebGL2 на настольных видеокартах
+MAX_SIDE_HI = 16384
+# Единица игры — кадр высотой 384 px: под него подобраны масштабы глубины всех комнат. Лист, отрисованный
+# крупнее (render_size в запросе конвейера), получает в sprites.json игры texture_scale = frame_h / 384 —
+# ActorSheet рисует его в 1/k, рост на экране прежний, деталей в k раз больше (G56)
+UNIT_FRAME_H = 384
 
 
 def md5(p: Path) -> str:
@@ -37,7 +45,7 @@ def _up(v: int, a: int = ALIGN) -> int:
     return (v + a - 1) // a * a
 
 
-def pack(sheet: Image.Image, fw: int, fh: int, n: int, dirs: int):
+def pack(sheet: Image.Image, fw: int, fh: int, n: int, dirs: int, max_side: int = MAX_SIDE):
     """→ (атлас RGBA, rects [[x, y, w, h, ox, oy]] по k = d·n + i)."""
     pieces = []
     for d in range(dirs):
@@ -50,7 +58,7 @@ def pack(sheet: Image.Image, fw: int, fh: int, n: int, dirs: int):
             x1, y1 = min(fw, _up(bb[2])), min(fh, _up(bb[3]))
             pieces.append((d * n + i, fr.crop((x0, y0, x1, y1)), x0, y0))
     area = sum((p[1].width + GAP) * (p[1].height + GAP) for p in pieces)
-    width = min(MAX_SIDE, _up(int(math.sqrt(area * 1.12)), 64))
+    width = min(max_side, _up(int(math.sqrt(area * 1.12)), 64))
     order = sorted(pieces, key=lambda p: -p[1].height)
     while True:
         rects, x, y, shelf = {}, 0, 0, 0
@@ -62,9 +70,9 @@ def pack(sheet: Image.Image, fw: int, fh: int, n: int, dirs: int):
             x += _up(w + GAP)
             shelf = max(shelf, h)
         height = _up(y + shelf)
-        if height <= MAX_SIDE or width >= MAX_SIDE:
+        if height <= max_side or width >= max_side:
             break
-        width = min(MAX_SIDE, width + 512)
+        width = min(max_side, width + 512)
     atlas = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     for k, im, ox, oy in pieces:
         r = rects[k]
@@ -122,7 +130,8 @@ def main() -> int:
         n = int(act["frames"])
         # строки листа: направления персонажа или, у поз зеркала, свои строки действия (ходьба — влево и вправо)
         rows = len(act["rows"]) if act.get("rows") else dirs
-        atlas, rects = pack(Image.open(sheet).convert("RGBA"), fw, fh, n, rows)
+        atlas, rects = pack(Image.open(sheet).convert("RGBA"), fw, fh, n, rows,
+                            MAX_SIDE if fh <= UNIT_FRAME_H else MAX_SIDE_HI)
         atlas.save(out, optimize=True)
         act["atlas"] = {"rects": rects, "size": [atlas.width, atlas.height], "src_md5": h, "gap": GAP}
         changed += 1
@@ -134,6 +143,10 @@ def main() -> int:
         if ref is not None and "atlas" in ref:
             act["atlas"] = ref["atlas"]
     meta["packed"] = not args.grid
+    if fh != UNIT_FRAME_H:
+        meta["texture_scale"] = round(fh / UNIT_FRAME_H, 6)
+    else:
+        meta.pop("texture_scale", None)
     text = json.dumps(meta, ensure_ascii=False, indent=2) + "\n"
     if not (dst / "sprites.json").exists() or (dst / "sprites.json").read_text(encoding="utf-8") != text:
         (dst / "sprites.json").write_text(text, encoding="utf-8")

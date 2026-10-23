@@ -17,6 +17,7 @@ import tempfile
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
+Image.MAX_IMAGE_PIXELS = None  # листы Агаты 2,25× (G56): сетка pick 34 560 × 6 912 px — свой файл, не «бомба»
 
 STEP = {"walk": 2, "startstop": 2, "stove": 2, "idle": 3, "turn": 6}
 

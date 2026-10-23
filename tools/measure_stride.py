@@ -38,6 +38,7 @@ import sys
 
 import numpy as np
 from PIL import Image
+Image.MAX_IMAGE_PIXELS = None  # листы Агаты 2,25× (G56): сетка pick 34 560 × 6 912 px — свой файл, не «бомба»
 
 try:
     import cv2
@@ -190,6 +191,20 @@ def grid_image(path, act, fw, fh, dirs):
             g.paste(im.crop((x, y, x + w, y + h)), (i * fw + ox, d * fh + oy))
     return g
 
+
+def unit_grid(g, n, dirs, fw, fh, k):
+    """Лист k× (sprites.json игры: texture_scale, G56) → сетка в единицах игры (кадр fw/k × fh/k): пороги и
+    числа данных (шаг, стойка) подобраны на кадре 384 px и не зависят от разрешения рендера."""
+    if abs(k - 1.0) < 1e-6:
+        return g, fw, fh
+    uw, uh = round(fw / k), round(fh / k)
+    out = Image.new("RGBA", (n * uw, dirs * uh), (0, 0, 0, 0))
+    for d in range(dirs):
+        for i in range(n):
+            fr = g.crop((i * fw, d * fh, (i + 1) * fw, (d + 1) * fh)).resize((uw, uh), Image.LANCZOS)
+            out.paste(fr, (i * uw, d * uh))
+    return out, uw, uh
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--actor", default="agata")
@@ -215,7 +230,9 @@ def main():
     dirs = int(sprites.get("directions", 8))
     px_per_m = fh / float(sprites.get("character_height_m", 1.657))
     elev = float(walk.get("camera_elev_deg", 14.0))
-    img = np.array(grid_image(sheet_path, act, fw, fh, dirs)).astype(np.float32)
+    g, fw, fh = unit_grid(grid_image(sheet_path, act, fw, fh, dirs), N, dirs, fw, fh, float(sprites.get("texture_scale", 1.0)))
+    px_per_m = fh / float(sprites.get("character_height_m", 1.657))
+    img = np.array(g).astype(np.float32)
 
     geo = [row_geometry(r, dirs, elev) for r in range(dirs)]
     measured = [measure_row(img, r, N, fw, fh, geo[r][0]) for r in range(dirs)]

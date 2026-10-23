@@ -26,6 +26,7 @@ import sys
 
 import numpy as np
 from PIL import Image
+Image.MAX_IMAGE_PIXELS = None  # листы Агаты 2,25× (G56): сетка pick 34 560 × 6 912 px — свой файл, не «бомба»
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -80,6 +81,20 @@ def grid_image(path, act, fw, fh, dirs):
             g.paste(im.crop((x, y, x + w, y + h)), (i * fw + ox, d * fh + oy))
     return g
 
+
+def unit_grid(g, n, dirs, fw, fh, k):
+    """Лист k× (sprites.json игры: texture_scale, G56) → сетка в единицах игры (кадр fw/k × fh/k): пороги и
+    числа данных (шаг, стойка) подобраны на кадре 384 px и не зависят от разрешения рендера."""
+    if abs(k - 1.0) < 1e-6:
+        return g, fw, fh
+    uw, uh = round(fw / k), round(fh / k)
+    out = Image.new("RGBA", (n * uw, dirs * uh), (0, 0, 0, 0))
+    for d in range(dirs):
+        for i in range(n):
+            fr = g.crop((i * fw, d * fh, (i + 1) * fw, (d + 1) * fh)).resize((uw, uh), Image.LANCZOS)
+            out.paste(fr, (i * uw, d * uh))
+    return out, uw, uh
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("actors", nargs="*")
@@ -112,7 +127,9 @@ def main():
         with open(sheet, "rb") as f:
             md5 = hashlib.md5(f.read()).hexdigest()
         fw, fh, n = int(sprites["frame_w"]), int(sprites["frame_h"]), int(act["frames"])
-        img = np.asarray(grid_image(sheet, act, fw, fh, int(sprites.get("directions", 8))))
+        g, fw, fh = unit_grid(grid_image(sheet, act, fw, fh, int(sprites.get("directions", 8))), n,
+                              int(sprites.get("directions", 8)), fw, fh, float(sprites.get("texture_scale", 1.0)))
+        img = np.asarray(g)
         rows = []
         print(f"{actor}/{idle_name}: {os.path.relpath(sheet, ROOT)} ({n} frames, md5 {md5[:10]}…)")
         dirs = int(sprites.get("directions", 8))
