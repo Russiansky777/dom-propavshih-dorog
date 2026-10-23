@@ -1,4 +1,5 @@
 name: claude-task
+run-name: "claude-task · ${{ inputs.task }} · ${{ inputs.model }}"
 # Claude Code (без интерфейса, `claude -p`) на API Claude — задачи разработки вне подписки (решение Директора 23.10:
 # «доделывать и дальше делать на API, где рационально»). Ключ — секрет CLAUDE_API; в лог он не попадает.
 #
