@@ -16,6 +16,7 @@
   "height_refs": [{"what": "дверь в сени (порог y 560, верх y 320)", "y": 560, "px": 240, "m": 2.0, "door": true}],
   "layers": [
     {"id": "wheel", "image": "res://assets/rooms/M1/wheel.png", "z": 0, "scale": 0.62, "scale_reason": "колесо нарисовано отдельно и крупнее (диаметр 488 px исходника при оси 390 px в задании); 0.62 — нижний край колеса уходит в лоток у стены (кадр day2_M1), а не встаёт на двор", "pivot": [1142.5, 478], "offset": [581.8, 162.7], "spin": {"deg_per_s": -14, "unless": ["pond_lowered"]}, "_note": "ось колеса (ступица в слое ≈ 1142.5, 478) ставится на втулку стены — исходник фона (1215, 438), экран (1395, 503): offset = экран − pivot × 1920/1672 × 0.8"},
+    {"id": "schedule_sheet", "image": "res://assets/rooms/M1/state_schedule_sheet.png", "z": 0, "offset": [885.8, 316.1], "_note": "F19 (Директор 23.10: «на доске ничего не висит»): лист «Распорядок смен» на доске — tools/make_m1_schedule.py (лист из той же бумаги, что в крупном плане, в тон тени навеса; строки — штрихи, читается в крупном плане)"},
     {"id": "sacks", "image": "res://assets/rooms/M1/fg_sacks.png", "occluder": true, "z": 1080, "scale": 0.6, "scale_reason": "мешки в слое получились крупнее задания (высота 525 px вместо ≈ 280); 0.6 — совет файла _meta_v3/M1.md", "offset": [0, 432.4], "_note": "левый нижний угол слоя (0, 941) — в угол кадра (0, 1080)"}
   ],
   "effects": [
@@ -32,7 +33,16 @@
     {
       "id": "schedule", "kind": "object", "label": "@M1.schedule.label", "rect": [850, 300, 215, 140], "stand": [930, 650], "draw": false,
       "use": {"sets": ["seen_shift_schedule"], "text": "@M1.schedule.use", "once_flag": "seen_shift_schedule", "scene": "M09s"},
-      "look": "@M1.schedule.look"
+      "look": "@M1.schedule.look",
+      "view": {"id": "shift_board", "type": "papers", "zoom_from": [852, 292, 210, 148],
+        "_note": "F19 (Директор 23.10: «чтобы можно было приблизить, как карту на почте»): крупный план въезжает с доски; доска — вырезка из арта M1, лист — та же бумага, что в комнате (tools/make_m1_schedule.py), слова — игра (data/story/text/ru_world.json). Живописный крупный план — заявка партии 8 (assets/manifest.json → M1_schedule_closeup): придёт — заменить image и прямоугольник листа.",
+        "pictures": [{"image": "res://assets/closeups/closeup_shift_board.png", "rect": [240, 84, 1440, 0]}],
+        "papers": [{"sheet": "none", "rect": [573, 288, 708, 493], "angle_deg": -1.2, "ink": "#2b241c",
+          "blocks": [
+            {"rect": [40, 26, 628, 60], "title": "@M1.schedule.paper_title", "title_size": 40, "align": "center"},
+            {"rect": [38, 100, 312, 372], "text": "@M1.schedule.paper_shifts", "font_size": 22},
+            {"rect": [388, 100, 290, 372], "text": "@M1.schedule.paper_signals", "font_size": 27}
+          ]}]}
     },
     {
       "id": "wheel", "kind": "object", "label": "@M1.wheel.label", "rect": [1235, 340, 320, 320], "stand": [1340, 740], "draw": false,

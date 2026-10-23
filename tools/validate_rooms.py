@@ -90,6 +90,19 @@ def load(path: Path):
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
+def tod_flags() -> set[str]:
+    """Виртуальные флаги времени суток (F17, game/scripts/core/time_of_day.gd): tod_<состояние>, tod_<фаза>,
+    tod_day<N>, tod_dark — их отвечает GameState.has_flag, в сохранение они не пишутся."""
+    p = Path(__file__).resolve().parent.parent / "data" / "story" / "time" / "_index.json"
+    if not p.exists():
+        return set()
+    names = {"tod_dark"}
+    for s in json.loads(p.read_text(encoding="utf-8")).get("states", []):
+        for n in (s.get("id"), s.get("phase"), f"day{s.get('day', 0)}"):
+            if n:
+                names.add("tod_" + str(n))
+    return names
+
 
 # ---------- данные сценария ----------
 index = load(ROOMS / "_index.json")
@@ -138,6 +151,7 @@ for tf in sorted(TEXT.glob("*.json")):
     texts.update(load(tf)["texts"])
 
 known_flags: set[str] = set(flags_doc.keys())
+known_flags |= tod_flags()   # время суток (F17): виртуальные флаги tod_*
 for sc in scenes.values():
     known_flags |= set(sc.get("grants", {}).get("flags", []))
     for it in sc.get("grants", {}).get("items", []):
@@ -424,6 +438,28 @@ def _cue_selfcheck() -> None:
 
 
 SFX_SOUNDS = set(load(STORY / "sfx.json").get("sounds", {}).keys()) if (STORY / "sfx.json").exists() else set()
+
+
+def check_winter_view(ctx: str, art: dict) -> None:
+    """F18 (Директор 23.10: «в проёме просто синий прямоугольник со снегом»): вид в класс за открытой дверью —
+    вырезка арта (image есть, region внутри картинки) того же отношения сторон, что проём (±3 %: без искажения)."""
+    wv = art.get("winter_view")
+    if not wv:
+        return
+    img = str(wv.get("image", ""))
+    size = png_size(img) if img.startswith("res://") else None
+    if size is None:
+        err(f"{ctx}: нет картинки {img}")
+        return
+    r = wv.get("region") or []
+    if len(r) != 4 or r[2] <= 0 or r[3] <= 0 or r[0] < 0 or r[1] < 0 or r[0] + r[2] > size[0] or r[1] + r[3] > size[1]:
+        err(f"{ctx}: region {r} вне картинки {size[0]}×{size[1]}")
+        return
+    op = art.get("opening") or []
+    if len(op) == 4 and op[3] > 0:
+        a, b = r[2] / r[3], op[2] / op[3]
+        if abs(a / b - 1.0) > 0.03:
+            err(f"{ctx}: отношение сторон вырезки {a:.3f} ≠ проёма {b:.3f} — класс в проёме будет растянут")
 
 
 def check_match_marks_mouse(ctx: str, pz: dict) -> None:
@@ -1263,6 +1299,7 @@ for rid, room in rooms.items():
                 if not (0 <= mk.get("correct", -1) < len(mk.get("positions", []))):
                     err(f"{hctx}.puzzle: marks.correct вне диапазона")
                 check_match_marks_mouse(hctx + ".puzzle", pz)
+                check_winter_view(hctx + ".puzzle.art.winter_view", pz.get("art", {}))
         if "view" in h:
             check_view(hctx + ".view", h["view"])
             check_flags(hctx + ".view.unless", h["view"].get("unless"))
@@ -1502,7 +1539,7 @@ for rid, room in sorted(rooms.items()):
 # Флаг, от которого зависит видимость в комнате (visible_if / hidden_if / if / unless / if_any), кто-то должен ставить:
 # сцена (grants, sets постановки, выбор реплики), задание, хотспот (sets, once_flag, выбор), вход в комнату. Флаг,
 # только объявленный в комнате, — мёртвое условие (дефект 23.10: жена Ильи в O3 по wife_came, а его никто не ставил).
-_AUTO_FLAG = re.compile(r"^(done_|started_|has_|visited_|seen_room_)")
+_AUTO_FLAG = re.compile(r"^(done_|started_|has_|visited_|seen_room_|tod_)")   # tod_ — время суток, выводится из истории
 _set_anywhere: set[str] = set()
 
 

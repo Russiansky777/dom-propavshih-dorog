@@ -12,7 +12,12 @@ extends CanvasLayer
 ##     snaps under it and is the chosen one (StoryRunner.puzzle_set_mark), else none is;
 ##   - the door: a click on its handle closes it (the check; the «Закрыть дверь» button does the same).
 ##     Wrong — the leaf swings away and the gallery wall is behind it for a moment, then the leaf is back
-##     to work on; right — winter behind it;
+##     to work on; right — winter behind it: with `art.winter_view` (Director 23.10, F18: «там просто синий
+##     прямоугольник со снегом») the winter classroom itself — a crop of its painting (`image`, `region` in
+##     the picture's pixels, fitted to the opening; `modulate` — cold daylight), cold light spilling over the
+##     threshold (`light` {color, alpha, depth, spread}), snow drifting out through the doorway (`snow`
+##     {amount}) and a faint breath of cold at the threshold (`breath` {amount, alpha}); without it the old
+##     flat colour and caption;
 ##   - cursor: open hand over a hinge or the beam, closed hand while one is held / the beam is pulled,
 ##     pointing hand on the handle (not the ↔ shapes: ExitCursors draws the exit arrows on those); sounds of sfx.json by puzzle `sounds` (take / snap / return / beam / close_*).
 ## Rules stay in StoryRunner (puzzle_place / puzzle_set_mark / puzzle_check). Positions, snap distances
@@ -31,6 +36,8 @@ var door_view: ColorRect        # what is seen through the open door (wall / win
 var door_leaf: Control
 var snow: CPUParticles2D
 var winter_label: Label
+var winter_view: TextureRect = null   # the classroom through the open door (F18)
+var winter_front: Node2D = null       # cold light on the threshold, snow drifting out, breath of cold (F18)
 var check_button: Button
 var close_button: Button
 var beam_node: Control           # beam image + notch markers; moves by `_beam_shown_dx`
@@ -236,6 +243,11 @@ func _build() -> void:
 	winter_label = _label("", Rect2(opening.position + Vector2(10, 14), Vector2(opening.size.x - 20, 50)), 24)
 	winter_label.name = "WinterLabel"
 	root.add_child(winter_label)
+	var wv: Dictionary = art.get("winter_view", {})
+	if not wv.is_empty():
+		winter_view = _winter_picture(wv, opening)
+		if winter_view != null:
+			root.add_child(winter_view)
 	snow = CPUParticles2D.new()
 	snow.name = "Snow"
 	snow.emitting = false
@@ -419,6 +431,144 @@ func _build() -> void:
 		(l[0] as Label).remove_theme_font_size_override("font_size")
 	for b in [check_button, close_button]:
 		b.theme = t
+	if not wv.is_empty():
+		winter_front = _winter_front(wv, opening)
+		root.add_child(winter_front)
+
+
+## The winter classroom in the opening: a region of the classroom painting scaled into the doorway.
+func _winter_picture(wv: Dictionary, opening: Rect2) -> TextureRect:
+	var path := String(wv.get("image", ""))
+	if path == "" or not ResourceLoader.exists(path):
+		push_warning("CloseupPuzzle: winter view image missing: %s" % path)
+		return null
+	var at := AtlasTexture.new()
+	at.atlas = load(path)
+	var r: Array = wv.get("region", [0, 0, 400, 900])
+	at.region = Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
+	var tr := TextureRect.new()
+	tr.name = "WinterView"
+	tr.texture = at
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tr.stretch_mode = TextureRect.STRETCH_SCALE
+	tr.position = opening.position
+	tr.size = opening.size
+	tr.modulate = Color.html(String(wv.get("modulate", "#ffffff")))
+	tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tr.visible = false
+	return tr
+
+
+## Over the frame and the threshold: cold light spilling out of the doorway, flakes drifting out toward the
+## gallery (growing as they come closer, fading), a few slow puffs of cold air at the threshold. Additive.
+func _winter_front(wv: Dictionary, opening: Rect2) -> Node2D:
+	var front := Node2D.new()
+	front.name = "WinterFront"
+	front.visible = false
+	var add := CanvasItemMaterial.new()
+	add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	var lt: Dictionary = wv.get("light", {})
+	var lc := Color.html(String(lt.get("color", "#cfe0ff")))
+	var la := float(lt.get("alpha", 0.3))
+	var depth := float(lt.get("depth", 240.0))
+	var spread := float(lt.get("spread", 1.8))
+	var x0 := opening.position.x
+	var x1 := opening.end.x
+	var y0 := opening.end.y - 4.0
+	var cx := (x0 + x1) * 0.5
+	var hw := (x1 - x0) * 0.5 * spread
+	var spill := Polygon2D.new()
+	spill.name = "Light"
+	spill.polygon = PackedVector2Array([Vector2(x0, y0), Vector2(x1, y0), Vector2(cx + hw, y0 + depth), Vector2(cx - hw, y0 + depth)])
+	spill.vertex_colors = PackedColorArray([Color(lc, la), Color(lc, la), Color(lc, 0.0), Color(lc, 0.0)])
+	spill.material = add
+	front.add_child(spill)
+	# A soft glow just inside the doorway (daylight of the classroom on the jambs).
+	var g := Gradient.new()
+	g.set_color(0, Color(lc, la * 0.55))
+	g.set_color(1, Color(lc, 0.0))
+	var gt := GradientTexture2D.new()
+	gt.gradient = g
+	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.5)
+	gt.fill_to = Vector2(1.0, 0.5)
+	gt.width = 64
+	gt.height = 64
+	var glow := Sprite2D.new()
+	glow.name = "Glow"
+	glow.texture = gt
+	glow.position = opening.get_center()
+	glow.scale = Vector2(opening.size.x * 1.7, opening.size.y * 1.15) / 64.0
+	glow.material = add
+	front.add_child(glow)
+	var sn: Dictionary = wv.get("snow", {})
+	var flakes := CPUParticles2D.new()
+	flakes.name = "SnowOut"
+	flakes.amount = int(sn.get("amount", 60))
+	flakes.lifetime = 5.0
+	flakes.preprocess = 4.0
+	flakes.position = Vector2(cx, opening.position.y + opening.size.y * 0.25)
+	flakes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	flakes.emission_rect_extents = Vector2(opening.size.x * 0.42, opening.size.y * 0.25)
+	flakes.direction = Vector2(0.0, 1.0)
+	flakes.spread = 55.0
+	flakes.gravity = Vector2(0, 26)
+	flakes.initial_velocity_min = 18.0
+	flakes.initial_velocity_max = 55.0
+	flakes.scale_amount_min = 1.6
+	flakes.scale_amount_max = 3.6
+	var grow := Curve.new()
+	grow.add_point(Vector2(0.0, 0.6))
+	grow.add_point(Vector2(1.0, 1.6))
+	flakes.scale_amount_curve = grow
+	var fade := Gradient.new()
+	fade.set_color(0, Color(1, 1, 1, 0.0))
+	fade.add_point(0.15, Color(1, 1, 1, 0.9))
+	fade.add_point(0.75, Color(1, 1, 1, 0.75))
+	fade.set_color(fade.get_point_count() - 1, Color(1, 1, 1, 0.0))
+	flakes.color_ramp = fade
+	front.add_child(flakes)
+	var br: Dictionary = wv.get("breath", {})
+	if int(br.get("amount", 0)) > 0:
+		var bg := Gradient.new()
+		bg.set_color(0, Color(0.9, 0.95, 1.0, 1.0))
+		bg.set_color(1, Color(0.9, 0.95, 1.0, 0.0))
+		var bt := GradientTexture2D.new()
+		bt.gradient = bg
+		bt.fill = GradientTexture2D.FILL_RADIAL
+		bt.fill_from = Vector2(0.5, 0.5)
+		bt.fill_to = Vector2(1.0, 0.5)
+		bt.width = 64
+		bt.height = 64
+		var puff := CPUParticles2D.new()
+		puff.name = "Breath"
+		puff.texture = bt
+		puff.amount = int(br.get("amount", 6))
+		puff.lifetime = 5.0
+		puff.preprocess = 5.0
+		puff.position = Vector2(cx, y0 - 30.0)
+		puff.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		puff.emission_rect_extents = Vector2(opening.size.x * 0.4, 14)
+		puff.direction = Vector2(0, 1)
+		puff.spread = 80.0
+		puff.gravity = Vector2(0, -4)
+		puff.initial_velocity_min = 8.0
+		puff.initial_velocity_max = 22.0
+		puff.scale_amount_min = 2.4
+		puff.scale_amount_max = 4.2
+		var pg := Curve.new()
+		pg.add_point(Vector2(0.0, 0.5))
+		pg.add_point(Vector2(1.0, 1.4))
+		puff.scale_amount_curve = pg
+		var pr := Gradient.new()
+		var pa := float(br.get("alpha", 0.08))
+		pr.set_color(0, Color(1, 1, 1, 0.0))
+		pr.add_point(0.3, Color(1, 1, 1, pa))
+		pr.set_color(pr.get_point_count() - 1, Color(1, 1, 1, 0.0))
+		puff.color_ramp = pr
+		puff.material = add
+		front.add_child(puff)
+	return front
 
 
 # --- Geometry -------------------------------------------------------------------------------
@@ -547,12 +697,20 @@ func _render() -> void:
 	door_leaf.visible = leaf
 	if view == "winter":
 		door_view.color = Color(0.62, 0.72, 0.86)
-		winter_label.text = StoryData.location_name("O1")
+		# The classroom itself when the data gives its picture (F18); the old caption only on the flat colour.
+		winter_label.text = "" if winter_view != null else StoryData.location_name("O1")
 		snow.emitting = true
 	else:
 		door_view.color = Color(0.36, 0.30, 0.25)
 		winter_label.text = ""
 		snow.emitting = false
+	if winter_view != null:
+		winter_view.visible = view == "winter"
+	if winter_front != null:
+		winter_front.visible = view == "winter"
+		for c in winter_front.get_children():
+			if c is CPUParticles2D:
+				(c as CPUParticles2D).emitting = view == "winter"
 	var solved := _solved()
 	check_button.disabled = solved
 	_update_glows()

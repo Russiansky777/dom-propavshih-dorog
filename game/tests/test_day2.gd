@@ -760,6 +760,10 @@ func _test_walkthrough() -> void:
 	_check(not gs.has_flag("done_M09b"), "the agreement waits until Agata has looked round")
 	await _use("schedule")
 	await _finish()
+	# F19: the board opens its close-up (the sheet by the game) — a click after the text closes it, as a player does.
+	_check(sr.view_open, "the shift board opens its close-up (F19)")
+	sr.close_view()
+	await _frames(2)
 	_check(await _go("M2"), "M1→M2")
 	await _use("office_door")
 	await _finish()

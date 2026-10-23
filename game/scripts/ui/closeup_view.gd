@@ -22,6 +22,13 @@ extends CanvasLayer
 ##   sepia with a caption) and `papers` (a sheet with a title and handwritten text in the game's italic: the plan
 ##   «Тому, кто придёт через эту дверь…»). Until their own art is drawn these are the
 ##   stand-ins (assets/manifest.json); the text of the scene plays over them as usual.
+## `zoom_from` [x, y, w, h] (screen px — where the thing hangs in the room): the close-up rides in from there to
+##   the full view, like the Zarechye plan at the post office (Director 23.10, F19 «чтобы можно было приблизить,
+##   как карту на почте» — the shift board at the mill).
+## A paper with `"sheet": "none"` draws no sheet of its own — only its words, over a sheet painted in a picture
+##   (the board close-up: the paper is in the art, the text is the game's): `blocks` [{rect [x, y, w, h] in the
+##   paper's rect, title?, text?, font_size?, title_size?, align?: "center"}], the whole set turned by `angle_deg`
+##   with the paper.
 ## Closes with a click once the text is over, with «Закрыть», or with Esc (the mouse alone is enough).
 
 const LAYER := 4
@@ -64,11 +71,48 @@ func is_open() -> bool:
 	return visible and root != null
 
 
+const ZOOM_S := 0.55
+var _zoom_tween: Tween = null
+
+
 func _open(s: Dictionary) -> void:
 	_free_nodes()
 	spec = s
 	_build()
 	visible = true
+	if spec.has("zoom_from"):
+		_zoom_in(_rect_of(spec["zoom_from"]))
+
+
+func _rect_of(a) -> Rect2:
+	if a is Array and a.size() >= 4:
+		return Rect2(float(a[0]), float(a[1]), float(a[2]), float(a[3]))
+	return Rect2()
+
+
+## The view rides in from where the thing hangs (the whole 1920×1080 view scaled into `from` by width,
+## centred on it) to the full screen; it fades in while it starts.
+func _zoom_in(from: Rect2) -> void:
+	if root == null or from.size.x <= 4.0:
+		return
+	var k := from.size.x / 1920.0
+	var start_pos := from.get_center() - Vector2(1920.0, 1080.0) * k * 0.5
+	root.pivot_offset = Vector2.ZERO
+	root.scale = Vector2(k, k)
+	root.position = start_pos
+	root.modulate.a = 0.0
+	if _zoom_tween != null and _zoom_tween.is_valid():
+		_zoom_tween.kill()
+	_zoom_tween = create_tween()
+	_zoom_tween.set_parallel(true)
+	_zoom_tween.tween_property(root, "scale", Vector2.ONE, ZOOM_S).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	_zoom_tween.tween_property(root, "position", Vector2.ZERO, ZOOM_S).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	_zoom_tween.tween_property(root, "modulate:a", 1.0, ZOOM_S * 0.4)
+
+
+## True while the close-up is still riding in (tests, probes).
+func zooming() -> bool:
+	return _zoom_tween != null and _zoom_tween.is_valid() and _zoom_tween.is_running()
 
 
 func _close() -> void:
@@ -487,6 +531,10 @@ func _build_paper(p: Dictionary) -> void:
 	sheet.rotation = deg_to_rad(float(p.get("angle_deg", 0.0)))
 	sheet.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_into.add_child(sheet)
+	if String(p.get("sheet", "")) == "none":
+		_build_sheet_words(sheet, p)
+		sheets.append(sheet)
+		return
 	var shadow := ColorRect.new()
 	shadow.color = Color(0, 0, 0, 0.45)
 	shadow.position = Vector2(10, 12)
@@ -564,6 +612,47 @@ func _build_paper(p: Dictionary) -> void:
 	sheets.append(sheet)
 
 
+## Words only, over a sheet painted in a picture under it (`"sheet": "none"`): each block — a title in the
+## heading face and / or a text in the game's italic, as if written by hand, inside its rect of the sheet.
+func _build_sheet_words(sheet: Control, p: Dictionary) -> void:
+	var ink := Color.html(String(p.get("ink", "#2e2a24")))
+	var i := 0
+	for b in p.get("blocks", []):
+		var r: Array = b.get("rect", [0, 0, sheet.size.x, sheet.size.y])
+		var box := Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
+		var y := box.position.y
+		var center := String(b.get("align", "")) == "center"
+		if String(b.get("title", "")) != "":
+			var t := Label.new()
+			t.name = "Title%d" % i
+			t.text = StoryData.text(String(b["title"]))
+			t.position = Vector2(box.position.x, y)
+			var ts := int(b.get("title_size", 34))
+			t.size = Vector2(box.size.x, ts * 1.4)
+			t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if center else HORIZONTAL_ALIGNMENT_LEFT
+			t.add_theme_font_override("font", UiTheme.font("head_bold"))
+			t.add_theme_font_size_override("font_size", ts)
+			t.add_theme_color_override("font_color", Color(ink, 0.88))
+			t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			sheet.add_child(t)
+			y += ts * 1.5
+		if String(b.get("text", "")) != "":
+			var body := Label.new()
+			body.name = "Text%d" % i
+			body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			body.text = StoryData.text(String(b["text"]))
+			body.position = Vector2(box.position.x, y)
+			body.size = Vector2(box.size.x, maxf(box.end.y - y, 10.0))
+			body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if center else HORIZONTAL_ALIGNMENT_LEFT
+			body.add_theme_font_override("font", UiTheme.font("body_italic"))
+			body.add_theme_font_size_override("font_size", int(b.get("font_size", p.get("font_size", 26))))
+			body.add_theme_color_override("font_color", ink)
+			body.add_theme_constant_override("line_spacing", int(b.get("line_spacing", 0)))
+			body.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			sheet.add_child(body)
+		i += 1
+
+
 # --- Input ----------------------------------------------------------------------------------
 
 ## A click on the close-up once its text is over closes it (the dialogue box above takes the clicks
@@ -600,10 +689,15 @@ func probe() -> Dictionary:
 	var sh: Array = []
 	for c in sheets:
 		var t: Label = c.get_node_or_null("Text") as Label
-		sh.append({"name": String(c.name), "center": _center(c), "text": t.text if t != null else ""})
+		var words: Array = []
+		for ch in c.get_children():
+			if ch is Label and (String(ch.name).begins_with("Title") or String(ch.name).begins_with("Text")):
+				words.append((ch as Label).text)
+		sh.append({"name": String(c.name), "center": _center(c), "text": t.text if t != null else "\n".join(words)})
 	out["sheets"] = sh
 	out["pages"] = pages.size()
 	out["page"] = page_index
+	out["zooming"] = zooming()
 	if next_button != null:
 		out["next"] = _center(next_button)
 		out["prev"] = _center(prev_button)
