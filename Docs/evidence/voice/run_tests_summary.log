@@ -1,0 +1,25 @@
+[voice] validate_voice.py: OK (0 ошибок, 1 предупреждений; самопроверка 22/22)
+==== 24 tests, 24 passed, 0 failed ====
+[godot] tests exit code: 0
+==== geometry: 20 rooms, 20 passed, 0 failed ====
+[godot] geometry exit code: 0
+==== lighting: 6 tests, 6 passed, 0 failed ====
+==== ambient: 11 tests, 11 passed, 0 failed ====
+==== world: 2 tests, 2 passed, 0 failed ====
+==== time of day: 5 tests, 5 passed, 0 failed ====
+==== music: 9 tests, 9 passed, 0 failed ====
+==== sfx: 7 tests, 7 passed, 0 failed ====
+==== closeups: 6 tests, 6 passed, 0 failed ====
+==== voice: 15 tests, 15 passed, 0 failed ====
+==== ui bag: 9 tests, 9 passed, 0 failed ====
+==== ui map: 4 tests, 4 passed, 0 failed ====
+==== H1: 6 tests, 6 passed, 0 failed ====
+==== exit cues: 6 tests, 6 passed, 0 failed ====
+==== ui cursors / icons / hint / sign: 5 tests, 5 passed, 0 failed ====
+==== items: 6 tests, 6 passed, 0 failed ====
+==== day one: 9 tests, 9 passed, 0 failed ====
+==== day2: 14 tests, 14 passed, 0 failed ====
+==== mechanics: 14 tests, 14 passed, 0 failed ====
+==== day3: 8 tests, 8 passed, 0 failed ====
+==== Agata 3D: 7 tests, 7 passed, 0 failed ====
+[tests] overall exit code: 0

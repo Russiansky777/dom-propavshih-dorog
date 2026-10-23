@@ -480,7 +480,8 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 continue
             if "stale" in e:
                 errors.append(f"{tag}: помечена stale ({e['stale']}), но совпадает с текущей репликой")
-            if own is not None and e.get("voice_sha1", e.get("text_sha1")) != sha1(api_text(cur)):
+            # запасная запись другого голоса (ключ читает персонаж) не перезаписывается — её теги/произношение не сверяем
+            if own is not None and own.get("assigned", True) and e.get("voice_sha1", e.get("text_sha1")) != sha1(api_text(cur)):
                 (errors if strict else warns).append(f"{tag}: теги подачи изменены — ждёт перегенерации (pipeline-voice); пока звучит прежний дубль")
             if e.get("text") != cur["text"]:
                 errors.append(f"{tag}: text записи ≠ text реплики при равном sha1")

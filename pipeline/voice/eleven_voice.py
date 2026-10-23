@@ -826,6 +826,17 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         if held:
             log(f"  отложены (voice.json → by_speaker.<персонаж>.hold): {', '.join(held)}")
         scope.update({lid: ln for lid, ln in narr.items() if ln["used"] and not ln.get("hold")})
+    # "skip": [шаблоны fnmatch по id, ключу текста или сцене] — не записывать сейчас (сцены, которые партия правок
+    # перепишет: записать один раз после неё; решение Директора «экономить кредиты», 23.10). Изменённые записи этих строк
+    # помечаются stale (игра молчит — только субтитры), но не перезаписываются и не убираются.
+    skip_pats = [str(x) for x in req.get("skip", [])]
+    if skip_pats:
+        skipped = sorted(lid for lid, ln in scope.items()
+                         if any(fnmatch.fnmatchcase(lid, p) or fnmatch.fnmatchcase(str(ln.get("key", "")), p)
+                                or fnmatch.fnmatchcase(str(ln.get("scene", "")), p) for p in skip_pats))
+        for lid in skipped:
+            scope.pop(lid)
+        log(f"  skip (не записывать сейчас): {len(skipped)} строк запроса по шаблонам {skip_pats}")
     limit = int(cast.get("max_chars", 5000))
     too_long = [lid for lid, ln in scope.items() if len(ln["text"]) > limit]
     if too_long:
@@ -1016,6 +1027,9 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             for lid, e in sorted(vs["manifest"]["lines"].items()):
                 if "stale" not in e:
                     continue
+                if skip_pats and any(fnmatch.fnmatchcase(lid, p) or fnmatch.fnmatchcase(str(e.get("key", "")), p)
+                                     or fnmatch.fnmatchcase(str(e.get("scene", "")), p) for p in skip_pats):
+                    continue   # строка отложена ("skip") — её прежняя запись остаётся до перезаписи
                 for rel in (e.get("file"), e.get("source"), e.get("alignment")):
                     if rel and (vs["dir"] / rel).is_file():
                         (vs["dir"] / rel).unlink()
