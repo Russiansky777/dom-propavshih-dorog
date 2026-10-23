@@ -1,0 +1,424 @@
+{
+ "cfg": {
+  "mode": "fresh",
+  "request": "Docs/playtest/requests/persona_selftest_impatient.json",
+  "items": [],
+  "contextItems": [],
+  "maxUsd": 10,
+  "maxSteps": 14,
+  "maxMinutes": 25,
+  "url": "https://russiansky777.github.io/dom-propavshih-dorog/",
+  "note": "Самопроверка ролей без API ($0): rapid, реплики без автопролистывания, аномалии, покрытие.",
+  "model": "claude-sonnet-5-5",
+  "modelStuck": "claude-opus-5-5",
+  "reportModel": "claude-sonnet-5-5",
+  "W": 1280,
+  "maxFrames": 24,
+  "autoDialogue": false,
+  "persona": "impatient",
+  "start": null,
+  "startSave": null,
+  "H": 720,
+  "actions_run": "1 (id 39947277563)"
+ },
+ "version": "7fcbed9 2026-10-23T11:48Z",
+ "started": "2026-10-23T11:50:19.774Z",
+ "stop": "модель завершила прогон (done): dry done",
+ "probe": true,
+ "end": {
+  "room": "Z1",
+  "inventory": [],
+  "goal": "Ключ от дома тёти Евдокии хранится у Тамары на почте.",
+  "flags": 2
+ },
+ "saves": [
+  {
+   "slot": "auto",
+   "title": "",
+   "key": "/userfs/godot/app_userdata/Dom propavshih dorog/saves/auto.json"
+  }
+ ],
+ "rooms": [
+  "Z1"
+ ],
+ "flags_order": [
+  {
+   "flag": "visited_Z1",
+   "step": 0
+  },
+  {
+   "flag": "started_M01",
+   "step": 2
+  }
+ ],
+ "blocked_scenes": [
+  "M01 «Ключ, который берегли» (Z1): условия выполнены, но сцена не завершена (её действие не сделано)"
+ ],
+ "harness": [],
+ "console_errors": [
+  "at: push_warning (core/variant/variant_utility.cpp:1033)",
+  "at: push_warning (core/variant/variant_utility.cpp:1033)",
+  "at: push_warning (core/variant/variant_utility.cpp:1033)"
+ ],
+ "console_warnings": [
+  "WARNING: VoiceDirector: M01_0 is recorded for another text (text_changed) — subtitles only",
+  "WARNING: VoiceDirector: M01_1 is recorded for another text (text_changed) — subtitles only",
+  "WARNING: VoiceDirector: M01_2 is recorded for another text (text_changed) — subtitles only"
+ ],
+ "persona": "impatient",
+ "anomalies": [],
+ "inventory_log": [],
+ "coverage": {
+  "quests": [
+   {
+    "id": "Q01",
+    "title": "Письмо с прежним адресом",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q02",
+    "title": "На карте вырос сад",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q03",
+    "title": "Незашитый рукав",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q04",
+    "title": "Угол для Тихона",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q05",
+    "title": "Чужая мера",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q06",
+    "title": "Второй верстак",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q07",
+    "title": "Двадцать зарубок",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q08",
+    "title": "Общий чай",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q09",
+    "title": "Ольховая улица",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q10",
+    "title": "Яблоня для следующей весны",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   }
+  ],
+  "choices": [],
+  "rooms": [
+   {
+    "room": "Z1",
+    "total": 3,
+    "seen": 0,
+    "unseen": [
+     "Два рисунка",
+     "Письма",
+     "План Заречья"
+    ]
+   }
+  ]
+ },
+ "end_flags": [
+  "started_M01",
+  "visited_Z1"
+ ],
+ "verdict_history": [],
+ "notes": [],
+ "frames": [
+  {
+   "id": "f0016",
+   "step": 11,
+   "kind": "final",
+   "label": "последний кадр"
+  }
+ ],
+ "steps": [
+  {
+   "step": 1,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0001",
+   "action": "move",
+   "observe": "dry",
+   "thought": "dry move",
+   "usd": 0,
+   "at": {
+    "x": 1070,
+    "y": 455
+   },
+   "desc": "навела курсор (713,303)",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 1,
+   "events": [
+    "Подпись под курсором: «Тамара»"
+   ]
+  },
+  {
+   "step": 2,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0002",
+   "action": "rapid",
+   "observe": "dry",
+   "thought": "dry rapid",
+   "usd": 0,
+   "path": [
+    [
+     1070,
+     455
+    ],
+    [
+     960,
+     900
+    ],
+    [
+     1070,
+     455
+    ]
+   ],
+   "desc": "быстрая очередь 3 щелчков",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": [
+    "На экране реплика (сама не пролистывается): Тамара: «Агата? Ты же у меня домой письма отправляла.» [f0003]"
+   ]
+  },
+  {
+   "step": 3,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0004",
+   "action": "key",
+   "observe": "dry",
+   "thought": "dry key",
+   "usd": 0,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 4,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0005",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 740,
+    "y": 310
+   },
+   "desc": "щелчок (493,207)",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": [
+    "На экране реплика (сама не пролистывается): Агата: «Отправляла. Мама с Ильёй в Ольховке, а я в городе, в гимназии. На учительницу учусь, как мама.» [f0006]"
+   ]
+  },
+  {
+   "step": 5,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0007",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 1070,
+    "y": 455
+   },
+   "desc": "щелчок (713,303)",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": [
+    "На экране реплика (сама не пролистывается): Тамара: «Год назад паводок снёс мост. С тех пор в Ольховку дороги нет.» [f0008]"
+   ]
+  },
+  {
+   "step": 6,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0009",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 1519,
+    "y": 40
+   },
+   "desc": "щелчок (1013,27)",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": [
+    "На экране реплика (сама не пролистывается): Тамара: «А этой осенью вода упала, и у поворота показалась опора моста. Вот, набросала. Рядом — Дунин старый лист.» [f0010]"
+   ]
+  },
+  {
+   "step": 7,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0011",
+   "action": "zoom",
+   "observe": "dry",
+   "thought": "dry zoom",
+   "usd": 0,
+   "desc": "увеличила (420,0,860,50)",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": []
+  },
+  {
+   "step": 8,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0012",
+   "action": "click",
+   "observe": "dry",
+   "thought": "dry click",
+   "usd": 0,
+   "at": {
+    "x": 1700,
+    "y": 430
+   },
+   "desc": "щелчок (1133,287)",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": [
+    "На экране реплика (сама не пролистывается): Тамара: «Я тебе тогда сразу написала — ехать не к чему, лодки возвращает. Обещала написать, если что переменится. Вот — переменилось.» [f0013]"
+   ]
+  },
+  {
+   "step": 9,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0014",
+   "action": "wait",
+   "observe": "dry",
+   "thought": "dry wait",
+   "usd": 0,
+   "desc": "ждала 2 с",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 10,
+   "model": "claude-sonnet-5-5",
+   "room": "Z1",
+   "frame": "f0015",
+   "action": "done",
+   "observe": "dry",
+   "thought": "dry done",
+   "usd": 0,
+   "desc": "done",
+   "room_after": "Z1",
+   "inv": "",
+   "flags": 2,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  }
+ ],
+ "transcript": [
+  {
+   "step": 2,
+   "frame": "f0003",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "Агата? Ты же у меня домой письма отправляла."
+  },
+  {
+   "step": 4,
+   "frame": "f0006",
+   "room": "Z1",
+   "who": "Агата",
+   "text": "Отправляла. Мама с Ильёй в Ольховке, а я в городе, в гимназии. На учительницу учусь, как мама."
+  },
+  {
+   "step": 5,
+   "frame": "f0008",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "Год назад паводок снёс мост. С тех пор в Ольховку дороги нет."
+  },
+  {
+   "step": 6,
+   "frame": "f0010",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "А этой осенью вода упала, и у поворота показалась опора моста. Вот, набросала. Рядом — Дунин старый лист."
+  },
+  {
+   "step": 8,
+   "frame": "f0013",
+   "room": "Z1",
+   "who": "Тамара",
+   "text": "Я тебе тогда сразу написала — ехать не к чему, лодки возвращает. Обещала написать, если что переменится. Вот — переменилось."
+  }
+ ]
+}
