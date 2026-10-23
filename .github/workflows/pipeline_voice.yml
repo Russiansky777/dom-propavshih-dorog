@@ -97,13 +97,20 @@ jobs:
           set -o pipefail
           python tools/validate_voice.py --strict --source-only 2>&1 | tee -a pipeline/voice/state/last_run.log
 
+      - name: Копия в игру
+        if: always() && steps.req.outputs.files != ''
+        # assets/voice и game/assets/voice в одном коммите бота: прогон tools/run_tests.sh на любом коммите main не
+        # переписывает копию игры (23.10: между коммитом бота и синхронизацией вручную — 27…94 файла расходились);
+        # новый .import пишется целиком (uid, path) — импорт Godot его не меняет.
+        run: bash tools/sync_voice.sh
+
       - name: Коммит результатов
         if: always() && steps.req.outputs.files != ''
         run: |
           git config user.name "pipeline-bot"
           git config user.email "pipeline-bot@users.noreply.github.com"
           # git add с несуществующим путём не добавляет ничего — добавляем только то, что есть
-          for p in assets/voice pipeline/voice; do if [ -e "$p" ]; then git add "$p"; fi; done
+          for p in assets/voice game/assets/voice pipeline/voice; do if [ -e "$p" ]; then git add -A "$p"; fi; done
           if git diff --cached --quiet; then echo "нечего коммитить"; exit 0; fi
           git commit -q -m "pipeline: озвучка ElevenLabs (run ${{ github.run_id }}) [skip ci]"
           for i in 1 2 3 4 5 6; do
