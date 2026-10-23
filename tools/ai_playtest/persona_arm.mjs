@@ -8,7 +8,8 @@
 //   node tools/ai_playtest/persona_arm.mjs start --sha <sha> --run <workflow run number>   → state: started (no second start)
 //   node tools/ai_playtest/persona_arm.mjs merge --run <workflow run number> [--sha <sha>]  → Docs/playtest/defects_personas_<date>.md
 //
-// Arm: Docs/playtest/requests/personas_armed.json {requests: [...], when: {quests_live: ["Q02", "Q06"]}, deadline, run}.
+// Arm: Docs/playtest/requests/personas_armed.json {requests: [...], when: {quests_live: ["Q02", "Q06"]}, deadline, run, hold?}.
+// `hold` (a reason string) pauses the arm regardless of the deadline — remove it to let the next publish start the runs.
 // A quest is live at a commit when quests.json no longer marks it reserve, or a room of data/story/rooms mentions it
 // (its id or its q0N_ flags). State: Docs/playtest/personas_state.json {arm_run, started_run, sha, …} — one run per arm.
 
@@ -42,6 +43,7 @@ if (cmd === "check") {
   if (!arm || !Array.isArray(arm.requests) || !arm.requests.length) out([], "нет взведённых прогонов (personas_armed.json)");
   if (String(state.arm_run ?? "") === String(arm.run)) out([], `взвод run ${arm.run} уже запущен (${state.started_run ? `прогон Actions ${state.started_run}` : ""}, сборка ${String(state.sha || "").slice(0, 7)})`);
   if (!sha) out([], "нет успешной публикации");
+  if (arm.hold) out([], `взвод на паузе: ${arm.hold}`);
   const need = ((arm.when && arm.when.quests_live) || []);
   const missing = need.filter((q) => !questLive(q, sha));
   const late = arm.deadline && Date.now() > Date.parse(arm.deadline);
