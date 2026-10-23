@@ -7,7 +7,7 @@
       "id": "dusk_figures",
       "type": "ambient",
       "_note": "Сумерки на фигурах: темнее и прохладнее (защита от серого — actor_max_cool комнаты по умолчанию).",
-      "if": ["evening_dusk"],
+      "if": ["evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"],
       "subtract": [0.0, 0.0, 0.0],
       "energy": 0.0,
       "actor_tint": [0.62, 0.6, 0.64],

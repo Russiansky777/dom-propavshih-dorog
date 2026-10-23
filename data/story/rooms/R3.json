@@ -22,12 +22,12 @@
   "props": [],
   "hotspots": [
     {
-      "id": "mitya", "kind": "npc", "label": "@char.mitya", "rect": [440, 416, 160, 250], "stand": [760, 660], "draw": false, "pick_priority": 2,
+      "id": "mitya", "kind": "npc", "label": "@char.mitya", "rect": [440, 416, 160, 250], "stand": [760, 660], "draw": false, "pick_priority": 2, "hidden_if": ["done_M22"], "_hidden_note": "с первого свободного дня Митя на улице Ольховки (O4, дощечка Q07) — здесь его нет",
       "_rect_note": "Митя на верху опоры у стопора: ноги y 666 (масштаб 0,72 → рост Агаты 249 px; Митя ≈ 1,8 м — 250 px, Пелагея рядом ≈ 230 px)",
       "talk": {"after_text": "@R3.mitya.after"}
     },
     {
-      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [890, 425, 90, 240], "stand": [1000, 640], "draw": false, "pick_priority": 2,
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [890, 425, 90, 240], "stand": [1000, 640], "draw": false, "pick_priority": 2, "hidden_if": ["boat_shuttle_open"], "_hidden_note": "со свободного дня лодка ходит в обе стороны — Пелагея у своего причала (R1)",
       "image": "res://assets/characters/pelageya/front.png",
       "talk": {"after_text": "@R3.pelageya.after"}
     },

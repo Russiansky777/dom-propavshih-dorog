@@ -946,8 +946,12 @@ func _test_walkthrough() -> void:
 	await _use("wave")
 	seen = await _finish()
 	_check(gs.has_flag("waved_at_stove") and not _hotspot("wave").visible, "waved once: %s" % str(seen))
-	var h1fx = rm.current_room.get_node_or_null("Effects/dusk")
-	_check(h1fx != null and h1fx.visible, "dusk in the house after mother's mirror")
+	# Dusk in the house is the time of day now (time/H1.json replaces the old evening_dusk tint, which also stayed on
+	# days 3–4): the room is in a dusk state and its time-of-day light source for it is on.
+	var h1tg = rm.current_room.get_node_or_null("TimeOfDay")
+	var h1st := String(h1tg.call("probe").get("state", "")) if h1tg != null else ""
+	var h1src = rm.current_room.get_node_or_null("Lighting/tod_" + h1st)
+	_check(h1st in ["d2_dusk", "d2_evening"] and h1src != null and float(h1src.get("level")) > 0.5, "dusk in the house after mother's mirror (time of day %s)" % h1st)
 	_check(await _go("Z2"), "H1→Z2")
 	_check(await _go("Z3"), "Z2→Z3")
 	_check(_hotspot("pier_plate") != null and _hotspot("pier_plate").visible and not _hotspot("old_pier_base").visible, "the plate of the pier above the water")

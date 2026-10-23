@@ -10,6 +10,11 @@
       "if": [
         "evening_dusk"
       ],
+      "unless": [
+        "tod_d3_morning",
+        "tod_d3_day",
+        "tod_d4_day"
+      ],
       "subtract": [
         0.0,
         0.0,
@@ -28,6 +33,11 @@
       "type": "glow",
       "if": [
         "evening_dusk"
+      ],
+      "unless": [
+        "tod_d3_morning",
+        "tod_d3_day",
+        "tod_d4_day"
       ],
       "_note": "фонарь на столбе в сумерках (стекло ≈ 365–405 × 185–245 экрана): ореол и стекло мерцают; само пламя нарисовано",
       "rect": [

@@ -48,7 +48,7 @@
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1060, 406, 130, 354], "stand": [950, 800], "draw": false, "pick_priority": 2,
       "visible_if": ["done_M13"],
-      "talk": {"by_flags": [{"if": ["sluice_opened"], "text": "@M4.pavel.after"}], "after_text": "@M4.pavel.before"},
+      "talk": {"by_flags": [{"if": ["bridge_decided"], "text": "@M4d.pavel.after_bridge"}, {"if": ["sluice_opened"], "text": "@M4.pavel.after"}], "after_text": "@M4.pavel.before"},
       "_talk_note": "один хотспот — одна 3D-фигура (data/actors/pavel.json): до открытия затвора — «Ключ в ворот — и по зарубке», после — «К вечеру сойдёт. Ступай пока» (раньше — два хотспота pavel / pavel_rest с плоской картинкой)"
     },
     {

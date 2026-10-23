@@ -462,6 +462,7 @@ func _test_walkthrough() -> void:
 	_check(await _go("H1"), "H3→H1")
 	seen = await _finish()
 	_check(gs.has_flag("done_M23c") and gs.has_flag("nina_visited_house"), "M23c: Nina in her sister's house: %s" % str(seen))
+	_check(rm.current_room.get_node_or_null("Effects/dusk") == null, "H1 on day three: the old evening_dusk tint is replaced by the time of day")
 	_check(frames_seen.has("F_gallery_nina") and frames_seen.has("F_workshop_nina") and frames_seen.has("F_mirror_empty"), "frames: gallery, workshop, the empty room in the glass: %s" % str(frames_seen))
 	_check(not fv.probe().get("open", true), "the frames are cleared after the scene")
 	await _use("tikhon")
@@ -484,8 +485,23 @@ func _test_walkthrough() -> void:
 	_check(seen.any(func(x): return x.begins_with("pavel:Год ключ на гвозде висел")) and seen.any(func(x): return x.begins_with("ilya:Значит, мост. Пока лёд не встал")), "the manager, Pavel, Agata, Ilya decide the bridge")
 	_check(seen.any(func(x): return x.begins_with("pavel:Ты слово давала")), "Pavel remembers Agata's word (pavel_answer_promise)")
 	_check(not gs.has_flag("done_M24"), "the evening waits for Tamara's letters")
+	# Seams with block 2 on the free day (23.10): Pavel after the decision, Zarechye in daylight, the boat both ways.
+	_check(rm.current_room.get_node_or_null("Effects/dusk") == null, "M1 on day three: no evening_dusk tint")
+	_check(await _route(["M4"]), "the mill yard → the sluice (Pavel's place since M13)")
+	await _use("pavel")
+	seen = await _finish()
+	_check(seen.any(func(x): return x.begins_with("pavel:Пруд держу ниже рабочей")), "Pavel after the bridge decision: the pond stays low while the spans go up (%s)" % str(seen))
 	# Letters: back to Olkhovka by the rope, Tamara on the street.
-	_check(await _route(["Z2", "R1", "R2", "R3", "O4"]), "Zarechye → the pier → the crossing → Olkhovka")
+	_check(await _route(["M1", "Z2", "R1"]), "the mill → Zarechye → the pier")
+	_check(not rm.current_room.get_node("Layers/dusk").visible, "R1 on day three: daylight — the dusk layer of day two is off")
+	_check(_hotspot("pelageya") != null and _hotspot("pelageya").visible, "Pelageya at her pier with the boat")
+	await _use("pelageya")
+	seen = await _finish()
+	_check(seen.any(func(x): return x.begins_with("pelageya:Садись — канат довезёт")), "Pelageya: the boat goes both ways now (%s)" % str(seen))
+	_check(await _route(["R2", "R3"]), "the crossing → the far pier")
+	_check((_hotspot("mitya") == null or not _hotspot("mitya").visible) and (_hotspot("pelageya") == null or not _hotspot("pelageya").visible),
+		"the far pier on the free day: Mitya is on the street, Pelageya at her own pier — nobody here twice")
+	_check(await _route(["O4"]), "the far pier → Olkhovka")
 	await _use("tamara")
 	seen = await _finish()
 	_check(gs.has_flag("done_M23a") and gs.has_flag("dunya_letter_on_stove"), "M23a: a year of letters: %s" % str(seen))
@@ -500,6 +516,7 @@ func _test_walkthrough() -> void:
 	_check(rm.save_game(SLOT + "_d4"), "save on the morning of day four")
 	# The first span.
 	_check(await _route(["R3", "R2", "R1", "Z3"]), "to the turn")
+	_check(not rm.current_room.get_node("Layers/water_low").visible and rm.current_room.get_node("Layers/stone_no_plate").visible, "Z3 on day four: daylight, not the dusk of day two (as in the span frames)")
 	await _staging_done()
 	var gw := 0
 	while not sr.mechanic_open and gw < 300:
