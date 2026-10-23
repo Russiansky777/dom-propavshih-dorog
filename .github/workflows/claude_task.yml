@@ -1,0 +1,174 @@
+name: claude-task
+# Claude Code (без интерфейса, `claude -p`) на API Claude — задачи разработки вне подписки (решение Директора 23.10:
+# «доделывать и дальше делать на API, где рационально»). Ключ — секрет CLAUDE_API; в лог он не попадает.
+#
+# Запуск: Actions → claude-task → Run workflow:
+#   task       — текст задачи (по-русски, как агенту) ИЛИ путь к файлу Docs/tasks/*.md;
+#   model      — claude-opus-5-5 (сложный код) или claude-sonnet-5-5 (рутинное, вдвое дешевле);
+#   budget_usd — предел трат одного запуска (Claude Code останавливается на нём);
+#   publish    — после задачи запустить сборку сайта (build-and-publish).
+# Агент работает в чистом чекауте main: читает CLAUDE.md и Docs/CURRENT_STATE.md, правит, проверяет tools/run_tests.sh
+# (Godot 4.7.2 на раннере), коммитит с [skip ci] и пушит в main; отчёт — Docs/agent_reports/run_<id>.md.
+# Лог публичный: в нём только итог (стоимость, число ходов, код выхода) — не ответы модели.
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: "Задача (текст) или путь к файлу Docs/tasks/*.md"
+        required: true
+      model:
+        description: "Модель"
+        type: choice
+        default: claude-opus-5-5
+        options: [claude-opus-5-5, claude-sonnet-5-5]
+      budget_usd:
+        description: "Предел трат, $"
+        default: "15"
+      max_turns:
+        description: "Предел ходов"
+        default: "300"
+      publish:
+        description: "После задачи собрать сайт"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: claude-task-${{ github.run_id }}
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_ZIP_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+  GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+
+jobs:
+  task:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache Godot and export templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-web-windows-linux-v1
+
+      - name: Download Godot ${{ env.GODOT_VERSION }}
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          cd ~/godot
+          base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable"
+          curl -sSL --retry 3 -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          echo "${GODOT_ZIP_SHA256}  godot.zip" | sha256sum -c -
+          unzip -q -o godot.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          curl -sSL --retry 3 -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          mkdir -p tpz && unzip -q -o templates.tpz -d tpz
+          cp tpz/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          rm -rf godot.zip templates.tpz tpz
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python packages for tools/
+        run: python -m pip install -q pillow numpy scipy opencv-python-headless
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Playwright + Chromium (web checks with real clicks)
+        working-directory: tools
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Claude Code
+        run: npm install -g @anthropic-ai/claude-code@latest
+
+      - name: Task
+        id: run
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          TASK_INPUT: ${{ inputs.task }}
+          MODEL: ${{ inputs.model }}
+          BUDGET: ${{ inputs.budget_usd }}
+          TURNS: ${{ inputs.max_turns }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -uo pipefail
+          git config user.name "claude-task-bot"
+          git config user.email "claude-task-bot@users.noreply.github.com"
+          if [ -f "$TASK_INPUT" ]; then TASK="$(cat "$TASK_INPUT")"; else TASK="$TASK_INPUT"; fi
+          cat > /tmp/preamble.md <<EOF
+          Ты — агент разработки проекта «Дом пропавших дорог» (Godot 4.7.2, GDScript, контент — данные), запущенный
+          в GitHub Actions на API Claude (запуск ${RUN_ID}). Рядом нет человека: вопросов не задавай, решай по CLAUDE.md,
+          Docs/DECISIONS.md и Docs/CURRENT_STATE.md (прочитай их первыми); спорное — в отчёт, не в код.
+          Правила этого запуска:
+          - Работай в этом чекауте ветки main. Godot: \$GODOT (уже установлен). Проверки: python3 tools/validate_story.py,
+            tools/run_tests.sh (должен завершиться кодом 0). Данные: после правок data/story — bash tools/sync_story_data.sh.
+          - Коммиты маленькие, в сообщении в конце [skip ci]; перед каждым push: git pull --rebase origin main,
+            затем git push origin HEAD:main. Чужую работу не трогай, конфликт — объединяй, сохраняя обе стороны.
+          - Секреты не печатай и не записывай никуда. Лог этого запуска публичный.
+          - Сайт не публикуй сам (это решает запуск: publish).
+          - В конце: отчёт Docs/agent_reports/run_${RUN_ID}.md — что сделано, коммиты, чем проверено, что не сделано
+            и почему, что нужно решить Директору (коротко, по-русски); закоммить и запушь его.
+          EOF
+          set +e
+          claude -p "$(cat /tmp/preamble.md)
+
+          Задача:
+          ${TASK}" \
+            --model "$MODEL" \
+            --max-turns "$TURNS" \
+            --max-budget-usd "$BUDGET" \
+            --permission-mode acceptEdits \
+            --permission-prompts none \
+            --allowedTools "Bash,Read,Edit,Write,Glob,Grep" \
+            --output-format json > /tmp/claude_result.json 2> /tmp/claude_stderr.txt
+          code=$?
+          set -e
+          python3 - <<'PY'
+          import json
+          try:
+              d = json.load(open('/tmp/claude_result.json'))
+          except Exception as e:
+              print('result: no JSON (', e, ')'); raise SystemExit(0)
+          print('cost_usd:', round(float(d.get('total_cost_usd') or 0), 2),
+                '| turns:', d.get('num_turns'), '| is_error:', d.get('is_error'), '| subtype:', d.get('subtype'))
+          PY
+          echo "exit code: $code"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+
+      - name: Leftovers go to a branch, never to main
+        if: always()
+        run: |
+          set -uo pipefail
+          # The agent pushes its finished, tested commits to main itself. Anything uncommitted or unpushed here is
+          # unfinished work: it is kept on the branch claude-task/<run id> for a later run or a person to pick up.
+          git add -A
+          git commit -q -m "claude-task ${{ github.run_id }}: незавершённый остаток [skip ci]" || true
+          git fetch -q origin main
+          if [ -n "$(git log --oneline origin/main..HEAD)" ]; then
+            git push -q origin HEAD:refs/heads/claude-task/${{ github.run_id }} && echo "leftovers: branch claude-task/${{ github.run_id }}"
+          else
+            echo "leftovers: none"
+          fi
+
+      - name: Publish site
+        if: inputs.publish && steps.run.outputs.code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run build_and_publish.yml --ref main
