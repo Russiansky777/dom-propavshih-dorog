@@ -98,9 +98,9 @@ func _examine(item: String) -> void:
 func _shot(n: String) -> void:
 	match n:
 		"b8_O1_board":
-			await _state(["board_mama", "v03_marked", "nina_answered_board", "q09_original_in_classroom"], "O1", "from_O2")
+			await _state(["board_mama", "v03_marked", "nina_answered_board", "nina_wrote_date", "q09_original_in_classroom"], "O1", "from_O2")
 		"b8_O1_board_here":
-			await _state(["board_here", "nina_answered_board"], "O1", "from_O2")
+			await _state(["board_here", "nina_answered_board", "nina_wrote_date"], "O1", "from_O2")
 		"b8_S1_sign_removed":
 			await _state(["lower_street_returned", "q09_original_in_classroom"], "S1")
 		"b8_H1_coat":

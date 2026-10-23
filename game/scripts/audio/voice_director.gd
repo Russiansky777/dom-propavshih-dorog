@@ -33,6 +33,8 @@ extends Node
 ##   - bag: the pointer resting on a pocket `item_hover.dwell_s` (tooltip open, nothing else on screen or
 ##     speaking, no icons flying in) plays `item.<id>`; leaving the pocket fades it out over `fade_out_s`;
 ##     the same item sounds at most once per `repeat_after_s`. Receiving items never plays them.
+##   - «О чём спросить …» (voice.json → narration.ask_prompts, H4/H14): the question of a conversation with a character
+##     is voiced on its first showing, then at most once per `repeat_after_s` of play time; the subtitle always shows.
 ## Checks: tools/validate_voice.py, tests/test_voice.gd, tools/voice_web.mjs.
 
 signal voice_started(line_id: String, speaker: String)
@@ -69,6 +71,8 @@ var narr_subdirs: Dictionary = {}     # speaker -> folder of their voice-over fi
 var item_dwell_s: float = 0.6
 var item_repeat_s: float = 30.0
 var item_fade_s: float = 0.3
+var ask_keys: Array = []              # voice.json → narration.ask_prompts.keys: «О чём спросить …» (H4/H14)
+var ask_repeat_s: float = 300.0       # … voiced again at most once per this much play time
 
 # --- State ---
 var voice_volume: float = DEFAULT_VOLUME
@@ -79,6 +83,8 @@ var current_mode: String = ""         # "plain" | "panned"
 var current_kind: String = ""         # "line" | "narration" | "puzzle" | "item"
 var current_pan: float = 0.0          # the 2D panner's offset −0.5..0.5 (0 = centre) of the panned player
 var plays: int = 0
+var play_time_s: float = 0.0          # play time while the tree runs (pause and the title do not count)
+var ask_last_s: Dictionary = {}       # ask prompt key -> play_time_s when its voice last started
 var settings_saves: int = 0
 var events: Array[Dictionary] = []    # {kind, line, speaker, reason?, mode?, ms}
 
@@ -133,6 +139,7 @@ func _ready() -> void:
 
 func _on_state_reset() -> void:
 	_after_puzzle = ""
+	ask_last_s.clear()   # a new game: each «О чём спросить …» is voiced on its first showing again
 	stop("reset")
 
 
@@ -193,6 +200,9 @@ func reload_config() -> void:
 	item_dwell_s = float(ih.get("dwell_s", 0.6))
 	item_repeat_s = float(ih.get("repeat_after_s", 30.0))
 	item_fade_s = float(ih.get("fade_out_s", 0.3))
+	var ap: Dictionary = n.get("ask_prompts", {})
+	ask_keys = ap.get("keys", [])
+	ask_repeat_s = float(ap.get("repeat_after_s", 300.0))
 	if n.is_empty():
 		config_errors.append(CONFIG_PATH + ": no narration section (voice-over rules)")
 	manifest = {}
@@ -319,6 +329,16 @@ func _on_beat_changed() -> void:
 	if is_playing():
 		stop("advance")
 	if lid == "":
+		return
+	# «О чём спросить …» (H4/H14): the first time and then at most once per ask_repeat_s of play — clicking through
+	# the answers in one go hears the question once; its subtitle stays on screen every time.
+	var akey := String(v.get("key", ""))
+	if String(StoryRunner.current_beat.get("type", "")) == "options" and ask_keys.has(akey):
+		if ask_last_s.has(akey) and play_time_s - float(ask_last_s[akey]) < ask_repeat_s:
+			_event({"kind": "subtitles_only", "line": lid, "speaker": String(v.get("speaker", "")), "reason": "ask_repeat"})
+			return
+		if _play_voice(v) in ["playing", "waiting"]:
+			ask_last_s[akey] = play_time_s
 		return
 	_play_voice(v)
 
@@ -602,6 +622,8 @@ func _audio_ready() -> bool:
 
 
 func _process(delta: float) -> void:
+	if not get_tree().paused:
+		play_time_s += delta
 	if _pending != "" and _audio_ready():
 		var lid := _pending
 		_pending = ""

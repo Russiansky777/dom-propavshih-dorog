@@ -52,6 +52,8 @@ func _ready() -> void:
 		title.game_ui = game_ui
 		pause_menu.game_ui = game_ui
 		pause_menu.title = title
+		if frame_view != null:
+			frame_view.set("title", title)   # the credits after the last line end on the title screen (H56)
 		game_ui.pause_requested.connect(pause_menu.open)
 		title.visibility_changed.connect(_sync_pause)
 		pause_menu.visibility_changed.connect(_sync_pause)

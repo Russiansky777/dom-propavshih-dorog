@@ -102,6 +102,7 @@ func _run() -> void:
 	await _test("Agata's thoughts: her voice (agata:<key>), never the narrator; no file — subtitles; the narrator's spare returns by data", _test_thoughts)
 	await _test("A character's words next to Agata: his/her line (name, direct speech, own voice), not the narrator — Tamara, Pelageya, Tikhon", _test_character_lines)
 	await _test("Scene lines of the narrator (M15s_2) sound in the narrator's voice; a choice in a conversation (M13): question voiced, the chosen words play as <scene>_<index>_<option>", _test_scene_narrator_and_choice)
+	await _test("H4/H14: «О чём спросить …» is voiced on its first showing, then at most once per 5 min of play; the subtitle stays", _test_ask_prompt_once)
 	vd.stop("test end")
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -1089,3 +1090,54 @@ func _test_scene_narrator_and_choice() -> void:
 	_check(vd.is_playing() and vd.current_line == opt_lid and vd.current_speaker == "agata",
 		"%s plays in Agata's voice: %s" % [opt_lid, vd.state()])
 	await _finish_dialogue()
+
+
+## H4/H14 (Director 24.10: «О чём спросить Пелагею» sounded at every click through the answers): voice.json →
+## narration.ask_prompts — the question of a conversation is voiced the first time, then not again within
+## repeat_after_s (300 s) of play time; another character's question has its own clock; other choices are not limited.
+func _test_ask_prompt_once() -> void:
+	gs.reset()
+	await _enter("R1")
+	_check(vd.ask_keys.has("R1.pelageya.prompt") and vd.ask_keys.has("H1.tikhon.prompt") and absf(vd.ask_repeat_s - 300.0) < 0.01,
+		"voice.json ask_prompts: the NPC questions, 300 s: %s, %.0f" % [vd.ask_keys, vd.ask_repeat_s])
+	for k in ["R1.pelageya.prompt", "Z1.tamara.prompt", "H1.cups.prompt"]:
+		_ensure_key(k)
+	var ask := func(key: String) -> void:
+		sr.current_beat = {"type": "options", "prompt": sd.text("@" + key), "prompt_key": key, "options": [{"id": "x", "label": "x"}]}
+		vd._on_beat_changed()
+	var clear := func() -> void:
+		sr.current_beat = {}
+		vd._on_beat_changed()
+	ask.call("R1.pelageya.prompt")
+	_check(vd.is_playing() and vd.current_line == _vid("R1.pelageya.prompt"), "first showing: the question is voiced: %s" % [vd.state()])
+	clear.call()
+	vd.play_time_s += 30.0
+	ask.call("R1.pelageya.prompt")
+	_check(not vd.is_playing(), "shown again 30 s later: no voice: %s" % [vd.state()])
+	var ev := _last_event("subtitles_only")
+	_check(String(ev.get("reason", "")) == "ask_repeat", "the repeat is subtitles only (reason ask_repeat): %s" % [ev])
+	_check(String(sr.current_beat.get("prompt", "")) != "", "the subtitle (prompt text) is still on screen")
+	clear.call()
+	ask.call("Z1.tamara.prompt")
+	_check(vd.is_playing() and vd.current_line == _vid("Z1.tamara.prompt"), "another character's question has its own clock: %s" % [vd.state()])
+	clear.call()
+	for i in 2:
+		ask.call("H1.cups.prompt")
+		_check(vd.is_playing() and vd.current_line == _vid("H1.cups.prompt"), "a choice that is not a conversation question is voiced every time (%d)" % i)
+		clear.call()
+	paused = true
+	var t0: float = vd.play_time_s
+	await _frames(5)
+	_check(absf(vd.play_time_s - t0) < 0.001, "pause does not count as play time")
+	paused = false
+	vd.play_time_s += vd.ask_repeat_s
+	ask.call("R1.pelageya.prompt")
+	_check(vd.is_playing() and vd.current_line == _vid("R1.pelageya.prompt"), "after 5 minutes of play the question is voiced again: %s" % [vd.state()])
+	clear.call()
+	vd.play_time_s += 1.0
+	gs.reset()
+	ask.call("R1.pelageya.prompt")
+	_check(vd.is_playing(), "a new game: its first showing is voiced again")
+	clear.call()
+	for k in ["R1.pelageya.prompt", "Z1.tamara.prompt", "H1.cups.prompt"]:
+		_drop_key(k)

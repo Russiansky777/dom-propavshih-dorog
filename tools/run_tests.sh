@@ -27,6 +27,7 @@ python3 -I "$ROOT/tools/validate_actor_actions.py" --quiet 2>&1 | tee -a "$BUILD
 python3 -I "$ROOT/tools/validate_music.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # музыка: data/story/music.json
 python3 -I "$ROOT/tools/validate_sfx.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # звуки: data/story/sfx.json, громкость относительно музыки
 python3 -I "$ROOT/tools/validate_voice.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # голос: манифест ↔ сцены (sha1), cast.json, громкость, копия игры
+python3 -I "$ROOT/tools/voice_after_h59.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || echo "[voice] список перезаписи после H59 устарел — python3 tools/voice_after_h59.py (предупреждение)" | tee -a "$BUILD_DIR/logs/tests.log"  # H5/H44/G57: строки, ждущие финальной записи после H59
 godot_import
 
 echo "[godot] tests: $GODOT --headless --path $GAME_DIR -s res://tests/run_tests.gd"
@@ -66,6 +67,7 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_menus.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # главное меню и пауза (23.10): титул при запуске (тесты и ?start — без него), пункты, Esc — пауза над размытой игрой, порядок Esc (крупный план → панель → пауза), «В главное меню» → «Продолжить»
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_day3.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # блоки 3–5: Ольховка, горница Нины, свободный ход, ворот первого пролёта (сигналы, удар без наказания), эпилог кадрами и финальный кадр, точки старта, сохранение на каждой точке, следы выборов, дела жителей
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_batch_g.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # партия G (замечания Директора 23.10): где канат (G17/G28), лодка назад (G38), Нина уходит в дом (G29), горница (G30/G40), ворот без «Закрыть» (G47), рукописный шрифт и зарубки (G31–G33)
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_batch_h.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # партия H, T1 (замечания Директора 24.10): одно имя тёти (H1), тексты H3/H22/H23/H51, Тихон после зеркала (H33), доска вовремя (H42), Ульяна (H43), Дунино пальто (H49/H50), финал и титры (H55/H56)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_agata_scale_carry.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # G56: рост Агаты на экране в каждой комнате тот же при листе k× (texture_scale); G10: платок — к лежанке, pick, к вешалке, reach, крючок; клик посреди — тот же итог
 "$GODOT" --headless --audio-driver Dummy --fixed-fps 60 --path "$GAME_DIR" -s res://tests/test_agata_3d.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # Агата в 3D (render "3d"): любой угол поворота без скачков, стопа на полу ≤ 1 см, idle без рывков, старт/стоп, действия, отрисовка
 # CI: every failure becomes an annotation (title, test, its messages) — the checks API shows annotations without the

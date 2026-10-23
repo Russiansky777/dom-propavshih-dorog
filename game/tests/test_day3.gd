@@ -1143,7 +1143,7 @@ func _test_batch8() -> void:
 	Engine.time_scale = 1.0
 	# The class board: Nina's answers in chalk are pictures (not the game font), each under its question; the date; Ulyana's reply.
 	for q in ["here", "mama", "ilya"]:
-		await _enter_with(["done_M22", "board_" + q, "nina_answered_board", "v03_marked", "v03_add_bridge"], "O1", "from_O2")
+		await _enter_with(["done_M22", "board_" + q, "nina_answered_board", "nina_wrote_date", "v03_marked", "v03_add_bridge"], "O1", "from_O2")
 		var r: Node = rm.current_room
 		for o in ["here", "mama", "ilya"]:
 			_check(_layer_visible(r, "nina_answer_" + o) == (o == q), "O1 board «%s»: answer %s shown %s" % [q, o, str(o == q)])

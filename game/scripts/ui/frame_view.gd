@@ -11,8 +11,10 @@ extends CanvasLayer
 ## data/story/lights). Characters are composited layers (tools/make_frame_layers.py from the 3D sheets) — a frame
 ## has no hotspots, exits or walking. Nothing here decides story state.
 ##
-## `hold` — the last shot of the game: it stays after its scene, with «Конец», the traces of the player's choices
-## (data/story/achievements.json) and «Начать заново»; the menu (GameUi) stays reachable for loading a save.
+## `hold` — the last shot of the game: it stays after its scene. The first time the game ends there, the credits
+## play (EndCredits, H55/H56: thanks, the author, then the title screen); a save made after them shows the shot with
+## «Конец», the traces of the player's choices (data/story/achievements.json) and «Начать заново»; the menu (GameUi)
+## stays reachable for loading a save.
 
 const LAYER := 3
 
@@ -21,12 +23,18 @@ var room: Node2D = null
 var end_panel: Control = null
 var blocker: Control = null
 var _hold: bool = false
+var credits: EndCredits = null       # the credits after the last line (its own layer, a child of this node)
+var title: Node = null               # TitleScreen (Main): the credits end on it
 
 
 func _ready() -> void:
 	layer = LAYER
 	visible = false
 	StoryRunner.frame_changed.connect(_on_frame_changed)
+	# A sibling, not a child: this layer hides when the frame goes (the credits reset the game under them).
+	credits = EndCredits.new()
+	credits.name = "Credits"
+	get_parent().add_child.call_deferred(credits)
 
 
 func is_open() -> bool:
@@ -69,6 +77,11 @@ func _process(_delta: float) -> void:
 		# the AI room check sets flags room by room, 23.10: the dinner and «Конец» stayed over every later room),
 		# the frame goes away.
 		StoryRunner.set_frame("", false)
+		return
+	if credits != null and (credits.is_running() or not GameState.has_flag(EndCredits.FLAG)):
+		if not credits.is_running():
+			credits.title = title
+			credits.play()
 		return
 	if end_panel == null:
 		_build_end_panel()

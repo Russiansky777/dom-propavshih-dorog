@@ -578,7 +578,7 @@ func on_room_entered(room_id: String) -> void:
 	check_room_triggers()
 
 
-## Rooms data `on_enter` [{text, once_flag, if?, unless?}]: a line on the first entry (O1: «Там зима. А у нас ещё
+## Rooms data `on_enter` [{text, then?, once_flag, if?, unless?}]: a line on the first entry (O1: «Там зима. А у нас ещё
 ## октябрь»; H2 with the office mirror in the bag: where the stand is). The flag is part of the save, so a load
 ## never repeats it.
 func _run_on_enter(room_id: String) -> void:
@@ -593,6 +593,9 @@ func _run_on_enter(room_id: String) -> void:
 		if once != "":
 			GameState.set_flag(once, true)
 		narrate_key(String(oe.get("text", "")))
+		# `then`: more text keys right after it — a short exchange on entry (H33: Tikhon after the mother's mirror).
+		for k in oe.get("then", []):
+			narrate_key(String(k))
 
 
 ## What Agata says when an item is used on the wrong thing: items.json `wrong_target` {text, rooms?} — where the
@@ -966,8 +969,14 @@ func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary, item_id:
 	# `also`: flags the option sets besides its own (G37: any drawing on the bird is also «Agata marked it», v03_marked).
 	for f in chosen.get("also", []):
 		GameState.set_flag(String(f), true)
+	# The option's words (`text`), then `then` — more text keys in order (H43: Ulyana answers, Agata answers back).
+	var said: Array = []
 	if chosen.has("text"):
-		_beats.push_front(_text_beat(String(chosen["text"])))
+		said.append(String(chosen["text"]))
+	for k in chosen.get("then", []):
+		said.append(String(k))
+	for i in range(said.size() - 1, -1, -1):
+		_beats.push_front(_text_beat(String(said[i])))
 
 
 func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
