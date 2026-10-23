@@ -3,10 +3,10 @@
  "clips": [
   {
    "kind": "idle",
-   "frames": 84,
+   "frames": 45,
    "cyclic": false,
-   "body_yaw_deg": 4.5,
-   "floor_m": 0.0048,
+   "body_yaw_deg": 5.9,
+   "floor_m": 0.0051,
    "legs": {
     "L": {
      "stance_toe_out_before_deg": 3.0,
@@ -22,8 +22,8 @@
    "hip_drop_max_m": 0.0,
    "clip": "Idle_4",
    "window": [
-    0.0,
-    0.2
+    0.0788,
+    0.1862
    ],
    "before": {
     "L": {
@@ -34,11 +34,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0296,
+     "sole_lift_mid_stance_max_m": 0.0291,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
-     "floor_m": 0.0048,
-     "body_yaw_deg": 4.5
+     "contact_frames": 45,
+     "floor_m": 0.0051,
+     "body_yaw_deg": 5.9
     },
     "R": {
      "stance_toe_out_deg": 3.0,
@@ -48,11 +48,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0585,
+     "sole_lift_mid_stance_max_m": 0.0588,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
-     "floor_m": 0.0048,
-     "body_yaw_deg": 4.5
+     "contact_frames": 45,
+     "floor_m": 0.0051,
+     "body_yaw_deg": 5.9
     }
    },
    "after": {
@@ -64,11 +64,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0296,
+     "sole_lift_mid_stance_max_m": 0.0291,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
-     "floor_m": 0.0068,
-     "body_yaw_deg": 4.5
+     "contact_frames": 45,
+     "floor_m": 0.0071,
+     "body_yaw_deg": 5.9
     },
     "R": {
      "stance_toe_out_deg": 3.0,
@@ -78,11 +78,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0569,
+     "sole_lift_mid_stance_max_m": 0.0581,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
-     "floor_m": 0.0068,
-     "body_yaw_deg": 4.5
+     "contact_frames": 45,
+     "floor_m": 0.0071,
+     "body_yaw_deg": 5.9
     }
    },
    "upper_body_max_rot_diff_deg": 0.0,

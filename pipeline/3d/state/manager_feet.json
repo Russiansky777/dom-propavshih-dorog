@@ -36,8 +36,8 @@
    "clip": "Idle_4",
    "kind": "idle",
    "window": [
-    0.0,
-    0.2
+    0.0788,
+    0.1862
    ],
    "fixed": true,
    "before": {
@@ -49,11 +49,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0862,
+     "sole_lift_mid_stance_max_m": 0.0857,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
+     "contact_frames": 45,
      "floor_m": 0.0019,
-     "body_yaw_deg": 2.2
+     "body_yaw_deg": 3.2
     },
     "R": {
      "stance_toe_out_deg": 3.0,
@@ -63,11 +63,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0729,
+     "sole_lift_mid_stance_max_m": 0.0744,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
+     "contact_frames": 45,
      "floor_m": 0.0019,
-     "body_yaw_deg": 2.2
+     "body_yaw_deg": 3.2
     }
    },
    "after": {
@@ -79,11 +79,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0862,
+     "sole_lift_mid_stance_max_m": 0.0856,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
+     "contact_frames": 45,
      "floor_m": 0.0039,
-     "body_yaw_deg": 2.2
+     "body_yaw_deg": 3.2
     },
     "R": {
      "stance_toe_out_deg": 3.0,
@@ -93,11 +93,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0709,
+     "sole_lift_mid_stance_max_m": 0.0724,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
+     "contact_frames": 45,
      "floor_m": 0.0039,
-     "body_yaw_deg": 2.2
+     "body_yaw_deg": 3.2
     }
    },
    "hip_drop_max_m": 0.0,
@@ -117,15 +117,15 @@
    "fail": [],
    "arms": {
     "Left": {
-     "arm_from_vertical_deg_median": 9.3,
-     "wrist_above_hips_m_median": -0.003
+     "arm_from_vertical_deg_median": 10.3,
+     "wrist_above_hips_m_median": 0.004
     },
     "Right": {
-     "arm_from_vertical_deg_median": 12.1,
-     "wrist_above_hips_m_median": -0.012
+     "arm_from_vertical_deg_median": 11.1,
+     "wrist_above_hips_m_median": -0.019
     },
     "all_frames_arms_raised": false,
-    "max_bone_from_rig_pose_deg": 45.4,
+    "max_bone_from_rig_pose_deg": 45.3,
     "rig_pose": false
    }
   },
@@ -136,32 +136,32 @@
    "fixed": false,
    "after": {
     "L": {
-     "stance_toe_out_deg": 3.7,
+     "stance_toe_out_deg": 10.8,
      "stance_toe_out_range_deg": [
-      3.7,
-      3.7
+      10.8,
+      10.8
      ],
      "swing_toe_abs_max_deg": 0.0,
-     "toe_abs_max_deg": 3.7,
+     "toe_abs_max_deg": 10.8,
      "sole_lift_mid_stance_max_m": 0.0867,
      "slide_max_mm": 0.0,
      "contact_frames": 2,
-     "floor_m": 0.0026,
-     "body_yaw_deg": 1.6
+     "floor_m": 0.0002,
+     "body_yaw_deg": 2.2
     },
     "R": {
-     "stance_toe_out_deg": 2.3,
+     "stance_toe_out_deg": 25.8,
      "stance_toe_out_range_deg": [
-      2.3,
-      2.3
+      25.8,
+      25.8
      ],
      "swing_toe_abs_max_deg": 0.0,
-     "toe_abs_max_deg": 2.3,
-     "sole_lift_mid_stance_max_m": 0.0672,
+     "toe_abs_max_deg": 25.8,
+     "sole_lift_mid_stance_max_m": 0.074,
      "slide_max_mm": 0.0,
      "contact_frames": 2,
-     "floor_m": 0.0026,
-     "body_yaw_deg": 1.6
+     "floor_m": 0.0002,
+     "body_yaw_deg": 2.2
     }
    },
    "fail": [],
