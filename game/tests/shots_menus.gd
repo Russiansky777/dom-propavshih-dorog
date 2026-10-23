@@ -2,7 +2,8 @@ extends SceneTree
 ## Frames of the title screen and the pause menu from the real game (not a test; needs a display — Xvfb):
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" godot --path game --display-driver x11 --rendering-driver opengl3 \
 ##     --resolution 1920x1080 -s res://tests/shots_menus.gd -- <out_dir>
-## Writes menu_title.png, menu_title_hover.png, menu_pause.png, menu_pause_hover.png (1920×1080).
+## Writes menu_title.png, menu_title_hover.png, menu_pause.png, menu_pause_hover.png, menu_pause_save.png,
+## menu_pause_settings.png (1920×1080).
 
 
 func _initialize() -> void:
@@ -57,4 +58,11 @@ func _run() -> void:
 	(pause.get("buttons")["main_menu"] as Button).mouse_entered.emit()
 	await _wait(0.2)
 	await _shot(out_dir, "menu_pause_hover.png")
+	pause.call("activate", "save")
+	await _wait(0.4)
+	await _shot(out_dir, "menu_pause_save.png")
+	main_node.get_node("GameUi").call("close_menu_panel")
+	pause.call("activate", "settings")
+	await _wait(0.4)
+	await _shot(out_dir, "menu_pause_settings.png")
 	quit(0)

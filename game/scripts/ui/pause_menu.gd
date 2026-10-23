@@ -216,6 +216,12 @@ func handle_escape() -> bool:
 	return true
 
 
+## The save / load / settings panel opens over the blurred frame alone: the towel steps aside while it is up.
+func _process(_delta: float) -> void:
+	if visible and game_ui != null:
+		sheet.visible = not bool(game_ui.call("menu_panel_open"))
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and \
 			(event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE):
@@ -268,17 +274,18 @@ func _draw_decor() -> void:
 	var rows: Array = _lay.get("baselines", [633, 713, 793])
 	var cols: Array = _lay.get("col_x", [651, 1052])
 	var dy := float(_lay.get("divider_dy", 34))
-	# Dividers under every row of both columns: a thin red line, a rhomb in the middle, dots at the ends.
-	for c in cols.size():
-		for r in rows.size():
-			var y := (float(rows[r]) + dy + oy) * sy
-			var cx := float(cols[c]) * sx
-			var half := 168.0 * sx
-			decor.draw_line(Vector2(cx - half + 8, y), Vector2(cx - 12, y), Color(red, 0.85), 1.6, true)
-			decor.draw_line(Vector2(cx + 12, y), Vector2(cx + half - 8, y), Color(red, 0.85), 1.6, true)
-			_rhomb(Vector2(cx, y), 6.0, red)
-			_rhomb(Vector2(cx - half, y), 3.2, red)
-			_rhomb(Vector2(cx + half, y), 3.2, red)
+	# A divider under every item shown (a thin red line, a rhomb in the middle, dots at the ends); a cell left empty —
+	# «Выход из игры» on the web — has none.
+	for id in order:
+		var cell := _item(id)
+		var y := (float(rows[int(cell.get("row", 0))]) + dy + oy) * sy
+		var cx := float(cols[int(cell.get("col", 0))]) * sx
+		var half := 168.0 * sx
+		decor.draw_line(Vector2(cx - half + 8, y), Vector2(cx - 12, y), Color(red, 0.85), 1.6, true)
+		decor.draw_line(Vector2(cx + 12, y), Vector2(cx + half - 8, y), Color(red, 0.85), 1.6, true)
+		_rhomb(Vector2(cx, y), 6.0, red)
+		_rhomb(Vector2(cx - half, y), 3.2, red)
+		_rhomb(Vector2(cx + half, y), 3.2, red)
 	for id in order:
 		var it := _item(id)
 		var cc := _cell_centre_art(it)

@@ -917,10 +917,11 @@ func _slot_row_load_only(parent: Control, slot: String, title: String, row_name:
 	slot_rows[slot] = {"info": info, "save": null, "load": lb, "row": row, "checkpoint": true}
 
 
-## Panel as tall as its content, centred under the top bar.
+## Panel as tall as its content, centred under the top bar (and across: the save / settings modes are narrower).
 func _fit_panel(p: PanelContainer) -> void:
 	p.size = Vector2(p.size.x, 0)
 	p.reset_size()
+	p.position.x = roundf((1920.0 - p.size.x) / 2.0)
 	p.position.y = roundf(TOP_H + (1080.0 - TOP_H - p.size.y) / 2.0)
 
 
