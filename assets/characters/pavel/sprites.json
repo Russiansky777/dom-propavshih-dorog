@@ -12,9 +12,11 @@
   "actions": {
     "idle": {
       "sheet": "idle.png",
-      "frames": 8,
-      "fps": 8,
+      "frames": 24,
+      "fps": 24.0,
       "clip": "Idle_4",
+      "clip_seconds": 2.2347,
+      "natural_fps": 10.74,
       "window": [
         0.0,
         0.2
@@ -23,14 +25,17 @@
     },
     "talk": {
       "sheet": "talk.png",
-      "frames": 12,
-      "fps": 8,
-      "clip": "Listening_Gesture_talk"
+      "frames": 16,
+      "fps": 24.0,
+      "clip": "Listening_Gesture_talk",
+      "clip_seconds": 7.4667,
+      "natural_fps": 2.14,
+      "floor_shift_m": -0.0064
     }
   },
   "fit": {
-    "half_width_m": 0.475,
-    "top_m": 0.885,
+    "half_width_m": 0.589,
+    "top_m": 0.884,
     "frame_top_m": 0.974,
     "frame_w": 288
   },

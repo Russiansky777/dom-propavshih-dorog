@@ -114,7 +114,20 @@
      "ankle_twist_max_deg": 0.0
     }
    },
-   "fail": []
+   "fail": [],
+   "arms": {
+    "Left": {
+     "arm_from_vertical_deg_median": 9.3,
+     "wrist_above_hips_m_median": -0.06
+    },
+    "Right": {
+     "arm_from_vertical_deg_median": 12.1,
+     "wrist_above_hips_m_median": -0.073
+    },
+    "all_frames_arms_raised": false,
+    "max_bone_from_rig_pose_deg": 41.6,
+    "rig_pose": false
+   }
   },
   "talk": {
    "clip": "Listening_Gesture_talk",
