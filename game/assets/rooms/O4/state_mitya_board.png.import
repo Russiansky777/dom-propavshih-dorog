@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dgtdfy32wltks"
-path="res://.godot/imported/closeup_shift_board.png-29aa96e77db7a9536b15eaad8af01333.ctex"
+uid="uid://kitxdurndv6d"
+path="res://.godot/imported/state_mitya_board.png-197141a1f57a69d38b04e4d39fb1949e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/closeups/closeup_shift_board.png"
-dest_files=["res://.godot/imported/closeup_shift_board.png-29aa96e77db7a9536b15eaad8af01333.ctex"]
+source_file="res://assets/rooms/O4/state_mitya_board.png"
+dest_files=["res://.godot/imported/state_mitya_board.png-197141a1f57a69d38b04e4d39fb1949e.ctex"]
 
 [params]
 

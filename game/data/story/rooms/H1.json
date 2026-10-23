@@ -1,6 +1,7 @@
 {
   "id": "H1",
   "_art": "Настоящий фон assets/reference/H1_bg.png (1672x941 → 1920x1080) и передний план H1_fg_table_chair.png (кресло со столиком, окклюдер z=950; слой нарисован крупнее фона — уменьшен до 0.6 и поставлен перед печью, см. scale_reason). Состояния (слои из assets/incoming, совмещены вручную offset/scale): закрытые ставни пока h1_shutter_open=false (эталон уже с открытыми), открытая печная дверца и программный огонь при stove_lit, платок на крючках после h1_scarf_removed, полка у печи / у стола по выбору Q04. Хотспоты и выходы не рисуются, подпись — при наведении.",
+  "art_source": {"files": {"state_nina_coat.png": "assets/incoming/H1_state_nina_coat.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Партия 8: только пальто Нины — полный холст к H1_bg, (0,0) 1:1. Остальные слои H1 совмещены вручную (offset/scale, tools/make_h1_layers.py) и этим импортом не трогаются. Копия — tools/import_room_art.py H1"},
   "background": {
     "kind": "interior",
     "image": "res://assets/rooms/H1/bg.png",
@@ -65,6 +66,7 @@
       "if": ["stove_lit"]
     },
     {"id": "dunya_letter", "image": "res://assets/rooms/H1/state_dunya_letter.png", "if": ["dunya_letter_on_stove"], "compose": {"src": "assets/incoming/closeup_envelope.png", "crop": [230, 320, 1150, 440], "at": [552, 404], "width": 64, "rotate": -9, "tint": [0.92, 0.86, 0.78], "shadow": 0.25}, "_note": "блок 3 (M23a): письмо Тамары Дуне — невручённым на печи; вклейка из крупного плана конверта (tools/make_frame_layers.py)"},
+    {"id": "nina_coat", "image": "res://assets/rooms/H1/state_nina_coat.png", "if": ["done_M23c"], "_note": "M23c «Нина в доме сестры»: тёмное пальто с серой накидкой на крючке у двери (Q03 — рукав) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к H1_bg, (0,0); x1034–1179, y245–575. Под платком Агаты (hook_coat), если он висит."},
     {
       "id": "hook_coat",
       "image": "res://assets/rooms/H1/state_hook_coat.png",
@@ -230,15 +232,15 @@
       "look": "@H1.scarf.look"
     },
     {
-      "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1290, 280, 125, 476], "stand": [1130, 800], "draw": false, "pick_priority": 3,
+      "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1342, 280, 125, 476], "stand": [1130, 800], "draw": false, "pick_priority": 3,
       "visible_if": ["done_M22"],
-      "_rect_note": "блок 3 (M23c): Нина в доме сестры у двери в сени, ноги y 756 (масштаб 1,41 → Нина 1,62 м ≈ 476 px)",
+      "_rect_note": "блок 3 (M23c): Нина в доме сестры у двери в сени, ноги y 756 (масштаб 1,41 → Нина 1,62 м ≈ 476 px); 23.10: сдвинута вправо на 52 px — стояла перед своим пальто на крючке (слой nina_coat партии 8, x 1206–1339) и закрывала его",
       "talk": {"after_text": "@H1d.nina.after"}
     },
     {
-      "id": "nina_coat", "kind": "object", "action_anim": "reach", "label": "@H1d.nina_coat.label", "rect": [1245, 235, 115, 125], "stand": [1180, 740], "draw": false, "pick_priority": 4,
+      "id": "nina_coat", "kind": "object", "action_anim": "reach", "label": "@H1d.nina_coat.label", "rect": [1190, 282, 166, 260], "stand": [1180, 740], "draw": false, "pick_priority": 4,
       "visible_if": ["done_M23c"], "hidden_if": ["done_Q03"],
-      "_note": "блок 5, Q03: Нинино пальто на крючке у сестры — рукав разошёлся по шву (closeup_sleeve). Первый клик — рукав крупно, потом выбор: потайной шов или заплатка с Ульяниной птицей; след — реплика за ужином. Пальто на крючке в арте нет — заявка в отчёте.",
+      "_note": "блок 5, Q03: Нинино пальто на крючке у сестры — рукав разошёлся по шву (closeup_sleeve). Первый клик — рукав крупно, потом выбор: потайной шов или заплатка с Ульяниной птицей; след — реплика за ужином. Пальто на крючке — слой nina_coat (партия 8).",
       "use": {"sets": ["q03_seen_sleeve"], "text": "@H1d.nina_coat.use", "once_flag": "q03_seen_sleeve"},
       "view": {"id": "sleeve", "type": "papers", "title": "@H1d.nina_coat.title", "close_label": "@ui.close", "unless": ["q03_seen_sleeve"],
         "pictures": [{"image": "res://assets/closeups/closeup_sleeve.png", "rect": [260, 130, 1400, 0], "angle_deg": 0.0}]},
@@ -250,7 +252,7 @@
       "look": "@H1d.nina_coat.look"
     },
     {
-      "id": "tea_corner", "kind": "object", "action_anim": "reach", "label": "@H1d.tea_corner.label", "rect": [1450, 468, 110, 52], "stand": [1560, 740], "draw": false, "pick_priority": 3,
+      "id": "tea_corner", "kind": "object", "action_anim": "reach", "label": "@H1d.tea_corner.label", "rect": [1450, 468, 110, 52], "stand": [1560, 740], "draw": false, "pick_priority": 4,
       "visible_if": ["done_M23c"], "hidden_if": ["done_Q08"],
       "_note": "блок 5, Q08: общий чай — мама в доме сестры. Выбор: у тётиной печи для своих или в маминой горнице для всех; след — кадр ужина (реплика). Стол с самоваром (H1_state_tea) в комнату не ставится: он перегородил бы пол — в эпилоге он на кадре ужина.",
       "choice": {"prompt": "@H1d.tea_corner.prompt", "once_any": true,

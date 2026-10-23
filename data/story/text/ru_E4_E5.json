@@ -849,6 +849,22 @@
     "ach.title_q09": {
       "text": "Ольховая улица с вывеской",
       "draft": true
+    },
+    "S1.street_sign.label_moved": {
+      "text": "След от вывески",
+      "draft": true
+    },
+    "S1.street_sign.look_moved": {
+      "text": "Светлый след на заборе и гвозди. Вывеска «Ольховая улица» теперь висит в классе.",
+      "draft": true
+    },
+    "O1d.class_sign.label": {
+      "text": "Вывеска «Ольховая улица»",
+      "draft": true
+    },
+    "O1d.class_sign.look": {
+      "text": "Вывеска с нижней улицы — теперь в классе, слева от доски. По ней учатся читать.",
+      "draft": true
     }
   }
 }

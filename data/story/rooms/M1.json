@@ -2,7 +2,7 @@
   "id": "M1",
   "_art": "Фон M1_bg.png (двор мельницы, ChatGPT v3): сруб, дверь в сени слева от середины, верстак у стены, пустая доска распорядка, ось колеса на правой стене, лоток с водой справа, тропа к улице слева вверху. Слои: M1_wheel.png — колесо (крутится кодом вокруг ступицы; стоит, пока пруд спущен), M1_fg_sacks.png — мешки в левом нижнем углу (окклюдер). Павел — 3D-фигура Meshy (листы idle/talk, data/actors/pavel.json).png → tools/import_npc_front.py), пока нет 3D-фигуры. Импорт арта — tools/import_room_art.py M1 (art_source).",
   "art_source": {
-    "files": {"bg.png": "assets/incoming/M1_bg.png", "wheel.png": "assets/incoming/M1_wheel.png", "fg_sacks.png": "assets/incoming/M1_fg_sacks.png"},
+    "files": {"bg.png": "assets/incoming/M1_bg.png", "wheel.png": "assets/incoming/M1_wheel.png", "fg_sacks.png": "assets/incoming/M1_fg_sacks.png", "state_schedule_sheet.png": "assets/incoming/M1_state_schedule_sheet.png"},
     "canvas": [1672, 941],
     "alpha_min": 16
   },
@@ -16,7 +16,7 @@
   "height_refs": [{"what": "дверь в сени (порог y 560, верх y 320)", "y": 560, "px": 240, "m": 2.0, "door": true}],
   "layers": [
     {"id": "wheel", "image": "res://assets/rooms/M1/wheel.png", "z": 0, "scale": 0.62, "scale_reason": "колесо нарисовано отдельно и крупнее (диаметр 488 px исходника при оси 390 px в задании); 0.62 — нижний край колеса уходит в лоток у стены (кадр day2_M1), а не встаёт на двор", "pivot": [1142.5, 478], "offset": [581.8, 162.7], "spin": {"deg_per_s": -14, "unless": ["pond_lowered"]}, "_note": "ось колеса (ступица в слое ≈ 1142.5, 478) ставится на втулку стены — исходник фона (1215, 438), экран (1395, 503): offset = экран − pivot × 1920/1672 × 0.8"},
-    {"id": "schedule_sheet", "image": "res://assets/rooms/M1/state_schedule_sheet.png", "z": 0, "offset": [885.8, 316.1], "_note": "F19 (Директор 23.10: «на доске ничего не висит»): лист «Распорядок смен» на доске — tools/make_m1_schedule.py (лист из той же бумаги, что в крупном плане, в тон тени навеса; строки — штрихи, читается в крупном плане)"},
+    {"id": "schedule_sheet", "image": "res://assets/rooms/M1/state_schedule_sheet.png", "z": 0, "_note": "F19: лист «Распорядок смен» на доске двора (≈125×86 px, строки — штрихи; читается в крупном плане) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к M1_bg, (0,0); x780–905, y276–362. Заменил временный лист (прежний tools/make_m1_schedule.py)."},
     {"id": "sacks", "image": "res://assets/rooms/M1/fg_sacks.png", "occluder": true, "z": 1080, "scale": 0.6, "scale_reason": "мешки в слое получились крупнее задания (высота 525 px вместо ≈ 280); 0.6 — совет файла _meta_v3/M1.md", "offset": [0, 432.4], "_note": "левый нижний угол слоя (0, 941) — в угол кадра (0, 1080)"}
   ],
   "effects": [
@@ -35,13 +35,13 @@
       "use": {"sets": ["seen_shift_schedule"], "text": "@M1.schedule.use", "once_flag": "seen_shift_schedule", "scene": "M09s"},
       "look": "@M1.schedule.look",
       "view": {"id": "shift_board", "type": "papers", "zoom_from": [852, 292, 210, 148],
-        "_note": "F19 (Директор 23.10: «чтобы можно было приблизить, как карту на почте»): крупный план въезжает с доски; доска — вырезка из арта M1, лист — та же бумага, что в комнате (tools/make_m1_schedule.py), слова — игра (data/story/text/ru_world.json). Живописный крупный план — заявка партии 8 (assets/manifest.json → M1_schedule_closeup): придёт — заменить image и прямоугольник листа.",
-        "pictures": [{"image": "res://assets/closeups/closeup_shift_board.png", "rect": [240, 84, 1440, 0]}],
-        "papers": [{"sheet": "none", "rect": [573, 288, 708, 493], "angle_deg": -1.2, "ink": "#2b241c",
+        "_note": "F19 (Директор 23.10: «чтобы можно было приблизить, как карту на почте»): крупный план въезжает с доски; живописный крупный план — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md) (M1_schedule_closeup: доска, лист с гвоздями и сгибами, без надписей; лист x495–1295, y230–665 холста 1672×941, на экране [637, 314, 758, 412]), слова — игра (data/story/text/ru_world.json), колонки по сгибу листа.",
+        "pictures": [{"image": "res://assets/closeups/M1_schedule_closeup.png", "rect": [168, 96, 1584, 0]}],
+        "papers": [{"sheet": "none", "rect": [637, 314, 758, 412], "angle_deg": -0.6, "ink": "#2b241c",
           "blocks": [
-            {"rect": [40, 26, 628, 60], "title": "@M1.schedule.paper_title", "title_size": 40, "align": "center"},
-            {"rect": [38, 100, 312, 372], "text": "@M1.schedule.paper_shifts", "font_size": 22},
-            {"rect": [388, 100, 290, 372], "text": "@M1.schedule.paper_signals", "font_size": 27}
+            {"rect": [30, 16, 698, 56], "title": "@M1.schedule.paper_title", "title_size": 38, "align": "center"},
+            {"rect": [34, 84, 318, 312], "text": "@M1.schedule.paper_shifts", "font_size": 21},
+            {"rect": [398, 84, 330, 312], "text": "@M1.schedule.paper_signals", "font_size": 25}
           ]}]}
     },
     {

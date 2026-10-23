@@ -4,10 +4,13 @@
   "wind": {"dir": 1, "strength": 0.6, "gust_rate": 0.08, "gust_depth": 0.5},
   "water_style": {"flow": [10, 0], "ripple_px": [0.4, 1.4], "glint": 0.2, "rings": 0.0, "ring_m": 0.06, "ring_cell_m": 0.5, "ring_period_s": 1.2},
   "sway_regions": [
-    {"id": "birches_left", "kind": "tree", "polygon": [[0, 0], [430, 0], [440, 120], [380, 260], [250, 300], [100, 280], [0, 230]], "anchor_y": 420, "top_y": 0, "amp_px": 3.0, "freq_hz": 0.3, "feather_px": 18}
+    {"id": "birches_left", "kind": "tree", "polygon": [[0, 0], [430, 0], [440, 120], [380, 260], [250, 300], [100, 280], [0, 230]], "anchor_y": 420, "top_y": 0, "amp_px": 3.0, "freq_hz": 0.3, "feather_px": 18},
+    {"id": "birches_left_day", "kind": "tree", "polygon": [[0, 0], [430, 0], [440, 120], [380, 260], [250, 300], [100, 280], [0, 230]], "anchor_y": 420, "top_y": 0, "amp_px": 3.0, "freq_hz": 0.3, "feather_px": 18, "source": "layer:day", "unless": ["tod_day1", "tod_day2", "tod_d3_evening"]}
   ],
   "water": [
     {"id": "river", "polygon": [[1300, 700], [1540, 625], [1920, 610], [1920, 1078], [1400, 1078], [1130, 900], [1130, 820]], "ripple_px": [0.7, 2.3], "sparkle": 0.55},
-    {"id": "river_far", "polygon": [[1545, 490], [1920, 480], [1920, 605], [1545, 615]], "ripple_px": [0.5, 1.4]}
+    {"id": "river_day", "polygon": [[1300, 700], [1540, 625], [1920, 610], [1920, 1078], [1400, 1078], [1130, 900], [1130, 820]], "ripple_px": [0.7, 2.3], "sparkle": 0.55, "source": "layer:day", "unless": ["tod_day1", "tod_day2", "tod_d3_evening"]},
+    {"id": "river_far", "polygon": [[1545, 490], [1920, 480], [1920, 605], [1545, 615]], "ripple_px": [0.5, 1.4]},
+    {"id": "river_far_day", "polygon": [[1545, 490], [1920, 480], [1920, 605], [1545, 615]], "ripple_px": [0.5, 1.4], "source": "layer:day", "unless": ["tod_day1", "tod_day2", "tod_d3_evening"]}
   ]
 }

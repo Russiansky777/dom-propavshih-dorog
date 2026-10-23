@@ -5,11 +5,14 @@
   "water_style": {"flow": [0, 10], "ripple_px": [0.4, 1.4], "glint": 0.18, "rings": 0.0, "ring_m": 0.06, "ring_cell_m": 0.5, "ring_period_s": 1.2},
   "sway_regions": [
     {"id": "rope", "kind": "tree", "source": "layer:fg_rope", "polygon": [[860, 380], [1000, 420], [1300, 640], [1420, 720], [1340, 800], [1200, 700], [980, 520], [840, 420]], "anchor_y": 760, "top_y": 380, "amp_px": 2.5, "freq_hz": 0.35, "feather_px": 8},
-    {"id": "boat", "kind": "tree", "polygon": [[380, 1078], [900, 640], [1000, 610], [1100, 640], [1600, 1078]], "anchor_y": 1080, "top_y": 610, "amp_px": 1.8, "freq_hz": 0.22, "feather_px": 10}
+    {"id": "boat", "kind": "tree", "polygon": [[380, 1078], [900, 640], [1000, 610], [1100, 640], [1600, 1078]], "anchor_y": 1080, "top_y": 610, "amp_px": 1.8, "freq_hz": 0.22, "feather_px": 10},
+    {"id": "boat_day", "kind": "tree", "polygon": [[380, 1078], [900, 640], [1000, 610], [1100, 640], [1600, 1078]], "anchor_y": 1080, "top_y": 610, "amp_px": 1.8, "freq_hz": 0.22, "feather_px": 10, "source": "layer:day", "unless": ["tod_day1", "tod_day2", "tod_d3_evening"]}
   ],
   "water": [
     {"id": "water_left", "polygon": [[0, 455], [880, 455], [890, 600], [420, 760], [0, 900]], "ripple_px": [0.7, 2.4], "tremble_px": 1.6, "sparkle": 0.55},
-    {"id": "water_right", "polygon": [[1030, 455], [1920, 455], [1920, 900], [1560, 760], [1260, 690], [1030, 600]], "ripple_px": [0.7, 2.4], "tremble_px": 1.6, "sparkle": 0.55}
+    {"id": "water_left_day", "polygon": [[0, 455], [880, 455], [890, 600], [420, 760], [0, 900]], "ripple_px": [0.7, 2.4], "tremble_px": 1.6, "sparkle": 0.55, "source": "layer:day", "unless": ["tod_day1", "tod_day2", "tod_d3_evening"]},
+    {"id": "water_right", "polygon": [[1030, 455], [1920, 455], [1920, 900], [1560, 760], [1260, 690], [1030, 600]], "ripple_px": [0.7, 2.4], "tremble_px": 1.6, "sparkle": 0.55},
+    {"id": "water_right_day", "polygon": [[1030, 455], [1920, 455], [1920, 900], [1560, 760], [1260, 690], [1030, 600]], "ripple_px": [0.7, 2.4], "tremble_px": 1.6, "sparkle": 0.55, "source": "layer:day", "unless": ["tod_day1", "tod_day2", "tod_d3_evening"]}
   ],
   "dust": [
     {"id": "fog", "_note": "туман дрейфует над рекой: крупные бледные клочья у горизонта", "polygon": [[0, 360], [1920, 360], [1920, 480], [0, 480]], "amount": 16, "size_px": 90.0, "alpha": 0.07, "color": "#cfd4e0", "speed_px_s": 10, "lifetime_s": 16, "z": 2}

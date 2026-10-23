@@ -31,8 +31,8 @@
   "layers": [
     {
       "id": "office_mirror",
-      "image": "res://assets/rooms/H2/state_frame_glass.png",
-      "_note": "стекло зеркала конторы в тётиной стойке «ЗМ» — высокой резной раме посреди мастерской (Директор 23.10, F1)"
+      "image": "res://assets/rooms/H2/state_office_mirror_center.png",
+      "_note": "зеркало конторы в тётиной стойке «ЗМ» (Директор 23.10, F1) — тот же слой партии 8, что в мастерской H2"
     },
     {
       "id": "nina_mirror",

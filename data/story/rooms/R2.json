@@ -1,7 +1,7 @@
 {
   "id": "R2",
   "_art": "Партия 3 (ChatGPT 22.10, assets/incoming/_meta_p3/README_RU.txt): R2_bg.png — вид из лодки Пелагеи с кормы: туман, натянутый канат моста уходит к тому берегу, вдоль него снег на берегах; R2_fg_rope.png — канат с кольцом-направляющей на правом борту (кольцо скользит по канату, узла нет), поверх всего. Кадр — глазами Агаты: её фигуры в комнате нет (player_hidden), Пелагея гребёт за спиной (её слышно, в кадре её нет).",
-  "art_source": {"files": {"bg.png": "assets/incoming/R2_bg.png", "fg_rope.png": "assets/incoming/R2_fg_rope.png"}, "canvas": [1672, 941], "alpha_min": 0,
+  "art_source": {"files": {"bg.png": "assets/incoming/R2_bg.png", "day.png": "assets/incoming/R2_day.png", "fg_rope.png": "assets/incoming/R2_fg_rope.png"}, "canvas": [1672, 941], "alpha_min": 0,
     "_note": "Копии — tools/import_room_art.py R2; слой в координатах фона, (0,0) 1:1"},
   "background": {"kind": "exterior", "image": "res://assets/rooms/R2/bg.png", "wall": "#3c4458", "floor": "#4a3a2a", "accent": "#7a6040", "horizon": 220},
   "player_hidden": true,
@@ -13,6 +13,7 @@
   "depth": {"top_y": 960, "bottom_y": 1050, "scale_top": 1.0, "scale_bottom": 1.0},
   "_depth_note": "Агаты в кадре нет (player_hidden) — масштаб не виден; ориентиров роста не нужно.",
   "layers": [
+    {"id": "day", "image": "res://assets/rooms/R2/day.png", "unless": ["tod_day1", "tod_day2", "tod_d3_evening"], "_note": "Переправа днём (дни 3–4 до вечера третьего дня): ясный зимний день, нос лодки и дальний берег — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный кадр поверх R2_bg; канат не запечён — слой fg_rope поверх. Ночная переправа (M18) — прежний вечерний рисунок."},
     {"id": "fg_rope", "image": "res://assets/rooms/R2/fg_rope.png", "z": 0, "_note": "канат и кольцо на правом борту — передний план; обычный слой (не окклюдер): фигур в кадре нет (player_hidden), а покачивание каната (ambient R2 → sway rope) рисуется прямо над ним"}
   ],
   "effects": [

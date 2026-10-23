@@ -13,7 +13,7 @@ extends MechanicPanel
 ## The bell is pressed with the mouse: a click is a strike, two quick clicks — «стой», a press held ~0.6 s — the
 ## long ring; the legend is on screen under the shift schedule (logic review M2, item 2).
 ## Art: the stand «ЗМ» is the tall carved frame in the middle of Dunya's workshop (Director 23.10); the close-up
-## is the workshop painting with the glass layer in the frame's opening (tools/make_h2_frame_glass.py) over it,
+## is the workshop painting with the glass layer in the frame's opening (state_office_mirror_center.png, batch 8) over it,
 ## cropped round the frame; glass_polygon is the opening — a quad textured with the office view; OfficeView
 ## draws «Контора — вид на дверь» (партия 3).
 

@@ -3,7 +3,8 @@
   "_art": "Партия 6 (ChatGPT 22.10, assets/incoming/_meta_p46): S1_bg.png — нижняя улица Ольховки зимой: дом с крыльцом слева, на заборе слева деревянная вывеска (пустая на фоне; крупный план closeup_street_sign — «Ольховая улица»), тропа вглубь к реке, избы и река справа. Вернулась первой из пропавших троп вместе с общим временем (M21b); стояла пустой ещё до беды (A6). Копия — tools/import_room_art.py S1.",
   "art_source": {
     "files": {
-      "bg.png": "assets/incoming/S1_bg.png"
+      "bg.png": "assets/incoming/S1_bg.png",
+      "state_sign_removed.png": "assets/incoming/S1_state_sign_removed.png"
     },
     "canvas": [
       1672,
@@ -112,7 +113,16 @@
     "scale_bottom": 1.15
   },
   "_depth_note": "Тропа уходит вглубь к реке: у вывески (y ≈ 930) Агата ≈ 0,94 → 325 px — вывеска на заборе ≈ 0,4 м высотой (80 px) при заборе ≈ 1,2 м.",
-  "layers": [],
+  "layers": [
+    {
+      "id": "sign_removed",
+      "image": "res://assets/rooms/S1/state_sign_removed.png",
+      "if": [
+        "q09_original_in_classroom"
+      ],
+      "_note": "Q09, вариант B: вывеску унесли в класс — на заборе светлый след и гвозди (партия 8, полный холст к S1_bg, (0,0); заплатка x232–417, y546–642)"
+    }
+  ],
   "effects": [
     {
       "id": "snow",
@@ -206,7 +216,23 @@
           }
         ]
       },
-      "look": "@S1.street_sign.look"
+      "look": "@S1.street_sign.look",
+      "states": [
+        {
+          "if": [
+            "q09_original_in_classroom"
+          ],
+          "label": "@S1.street_sign.label_moved"
+        }
+      ],
+      "use_when": [
+        {
+          "if": [
+            "q09_original_in_classroom"
+          ],
+          "text": "@S1.street_sign.look_moved"
+        }
+      ]
     },
     {
       "id": "house",
