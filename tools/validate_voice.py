@@ -19,6 +19,11 @@
      skip_fields / skip_keys), параметры наведения на сумку в пределах; каждая запись kind=narration — ключ, который
      есть в data/story/text/*.json и озвучивается по этим правилам (не подпись, не интерфейс), sha1 её текста совпадает
      с текстом ключа (иначе stale), голос narrator, файл <subdir>/<ключ>.ogg.
+  8. подача по персонажу (H5, Директор 24.10): громкость исходника записи (source_lufs, до нормализации) не дальше
+     ± 4 LU от медианы своего персонажа — иначе ошибка; строка из pipeline/requests/voice_after_H59.json (ждёт
+     финальной перезаписи после H59, tools/voice_after_h59.py) — предупреждение;
+  9. вопрос-приглашение разговора (H4/H14): каждый choice.prompt хотспота kind=npc — в voice.json →
+     narration.ask_prompts.keys (игра озвучивает его один раз и не чаще раза в repeat_after_s).
 Самопроверка (каждый запуск): испорченные копии — реплика, которой нет; изменённый текст без stale; персонаж без
 голоса; тихая реплика; тег не из списка; voice_text с чужими словами; закадровая запись подписи (label) или интерфейса
 (ui.*); закадровая запись с чужим текстом; закадровый файл не в своей папке; нет списка не озвучиваемых категорий —
@@ -53,6 +58,8 @@ TAG_RE = re.compile(r"\[([^\[\]]+)\]")
 REQUESTS = ROOT / "pipeline" / "requests"
 TEXT_DIR = STORY / "text"
 LUFS_TOL = 1.5
+SPEAKER_LU_TOL = 4.0   # H5: подача реплики (громкость исходника до нормализации) не дальше 4 LU от медианы персонажа
+AFTER_H59 = REQUESTS / "voice_after_H59.json"   # строки, ждущие финальной перезаписи после старорусской правки (H59)
 
 _pspec = importlib.util.spec_from_file_location("pronounce", ROOT / "pipeline" / "voice" / "pronounce.py")
 pronounce = importlib.util.module_from_spec(_pspec)
@@ -594,7 +601,71 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
     return errors, warns
 
 
-SELFTEST_CASES = 22
+SELFTEST_CASES = 24
+
+
+def after_h59() -> dict[str, str]:
+    """pipeline/requests/voice_after_H59.json → {id записи: почему}: строки, которые перезаписываются одним финальным
+    прогоном после H59 (решение Директора 24.10: до H59 голос не записываем). Их отклонения — предупреждения."""
+    doc = load(AFTER_H59, {}) or {}
+    return {str(r["id"]): "; ".join(r.get("why", [])) if isinstance(r.get("why"), list) else str(r.get("why", ""))
+            for r in doc.get("lines", []) if isinstance(r, dict) and r.get("id")}
+
+
+def check_speaker_loudness(manifests: dict[str, dict], waiting: dict[str, str]) -> tuple[list[str], list[str]]:
+    """H5 (Директор 24.10: тихие реплики Пелагеи выбиваются): все записи нормализованы к одной цели LUFS, но шёпот
+    после нормализации звучит тише и глуше. Мерило подачи — громкость исходника (source_lufs, до нормализации):
+    дальше SPEAKER_LU_TOL от медианы своего персонажа (≥ 4 записи) — ошибка; строка из списка ожидания H59 —
+    предупреждение (перезапишется в финальном прогоне)."""
+    errors: list[str] = []
+    warns: list[str] = []
+    for rel, m in sorted(manifests.items()):
+        by: dict[str, list[tuple[float, str]]] = {}
+        for lid, e in m.get("lines", {}).items():
+            src = e.get("source_lufs")
+            if "stale" in e or not isinstance(src, (int, float)):
+                continue
+            by.setdefault(str(e.get("speaker", "")), []).append((float(src), lid))
+        for sp, rows in sorted(by.items()):
+            if len(rows) < 4:
+                continue
+            vals = sorted(v for v, _ in rows)
+            n = len(vals)
+            med = vals[n // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2
+            for v, lid in sorted(rows, key=lambda r: r[1]):
+                if abs(v - med) > SPEAKER_LU_TOL:
+                    msg = (f"{rel}/{lid}: подача {v:+.1f} LUFS до нормализации — {v - med:+.1f} LU от медианы {sp} "
+                           f"({med:.1f}); допустимо ± {SPEAKER_LU_TOL:g}")
+                    if lid in waiting:
+                        warns.append(msg + " — в списке перезаписи после H59")
+                    else:
+                        errors.append(msg + " — перезаписать голосом и громкостью персонажа (или внести в "
+                                      "pipeline/requests/voice_after_H59.json, если ждёт H59)")
+    return errors, warns
+
+
+def check_ask_prompts(voice_cfg: dict | None, texts: dict) -> list[str]:
+    """H4/H14: вопрос-приглашение разговора («О чём спросить …») — в voice.json → narration.ask_prompts.keys: игра
+    озвучивает его при первом показе и не чаще раза в repeat_after_s. Каждый choice.prompt хотспота kind=npc — в списке."""
+    errors: list[str] = []
+    ap = narration_cfg(voice_cfg).get("ask_prompts")
+    if not isinstance(ap, dict):
+        return ["voice.json narration.ask_prompts: нет раздела — «О чём спросить …» звучал бы при каждом показе (H4)"]
+    keys = ap.get("keys") or []
+    rs = ap.get("repeat_after_s")
+    if not isinstance(rs, (int, float)) or not 60 <= float(rs) <= 1800:
+        errors.append(f"voice.json narration.ask_prompts.repeat_after_s = {rs} вне [60, 1800]")
+    for k in keys:
+        if k not in texts:
+            errors.append(f"voice.json narration.ask_prompts: ключа {k} нет в data/story/text")
+    for f in sorted((STORY / "rooms").glob("*.json")):
+        room = load(f, {}) or {}
+        for h in room.get("hotspots", []):
+            pk = str((h.get("choice") or {}).get("prompt", ""))
+            if h.get("kind") == "npc" and pk.startswith("@") and pk[1:] not in keys:
+                errors.append(f"rooms/{f.name} {h.get('id')}: вопрос {pk} — не в voice.json narration.ask_prompts.keys "
+                              f"(звучал бы при каждом клике, H4)")
+    return errors
 
 
 def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
@@ -767,7 +838,23 @@ def main() -> int:
     tagged = sum(1 for ln in lines.values() if ln.get("kind") != "narration" and (ln.get("tags") or ln.get("voice_text")))
     n_tagged = sum(1 for ln in lines.values() if ln.get("kind") == "narration" and (ln.get("tags") or ln.get("voice_text")))
     n_total = sum(1 for ln in lines.values() if ln.get("kind") == "narration")
+    waiting = after_h59()
+    if not AFTER_H59.is_file():
+        errors.append(f"нет {AFTER_H59.relative_to(ROOT)} — список строк к перезаписи после H59")
+    l_err, l_warn = check_speaker_loudness(manifests, waiting)
+    errors += l_err
+    warns += l_warn
+    errors += check_ask_prompts(voice_cfg, texts)
     missed = selftest(lines, cast, voice_cfg, scenes)
+    # самопроверка H5/H4: шёпот вне списка ожидания и вопрос персонажа без ограничения повтора — ошибки
+    _sp = {"lines": {f"T_{i}": {"speaker": "tst", "source_lufs": -16.0} for i in range(5)}}
+    _sp["lines"]["T_q"] = {"speaker": "tst", "source_lufs": -24.0}
+    if not check_speaker_loudness({"ru": _sp}, {})[0] or check_speaker_loudness({"ru": _sp}, {"T_q": "H59"})[0]:
+        missed.append("тихая подача персонажа (H5) не поймана или список ожидания не понят")
+    _vc = copy.deepcopy(voice_cfg or {})
+    _vc.setdefault("narration", {}).setdefault("ask_prompts", {})["keys"] = []
+    if not any("ask_prompts.keys" in e for e in check_ask_prompts(_vc, texts)):
+        missed.append("вопрос персонажа без ограничения повтора (H4) не пойман")
     for m in missed:
         errors.append(f"самопроверка: порча «{m}» не поймана")
     for w in warns:
