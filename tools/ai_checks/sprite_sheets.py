@@ -15,6 +15,7 @@ import os
 import sys
 
 from PIL import Image, ImageDraw, ImageFont
+Image.MAX_IMAGE_PIXELS = None  # листы Агаты 2,25× (G56): сетка pick 34 560 × 6 912 px — свой файл, не «бомба»
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CHARS = os.path.join(ROOT, "assets", "characters")
