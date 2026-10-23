@@ -49,6 +49,13 @@ WIDTH.update({n: 1440 for n in BLOCK3})
 # недоставленный файл пропускается.
 BATCH8B = ["closeup_village_map_old", "closeup_village_map_tracing", "closeup_second_bench"]
 WIDTH.update({n: 1672 for n in BATCH8B})
+# Партия 8 (23.10): крупный план доски «Распорядок смен» (data/story/rooms/M1.json → schedule.view: картинка во весь кадр,
+# слова игры — поверх листа) и крупные планы 11 предметов для «Рассмотреть» (items.json → examine.art).
+BATCH8 = ["M1_schedule_closeup", "closeup_key_house", "closeup_door_hinges", "closeup_brace_plate", "closeup_chalk",
+          "closeup_mitten", "closeup_bell_clapper", "closeup_key_sluice", "closeup_clamp", "closeup_school_ribbon",
+          "closeup_journal_manager", "closeup_pocket_watch"]
+WIDTH.update({n: 1440 for n in BATCH8})   # предмет «Рассмотреть» рисуется не шире ≈ 1320 px экрана
+WIDTH["M1_schedule_closeup"] = 1672           # доска во весь кадр (1584 px экрана)
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:

@@ -11,11 +11,12 @@ extends CanvasLayer
 ##   width       display width of the picture (px at 1920×1080; height by aspect; default fits 1300×700)
 ##   angle_deg   the picture lies slightly askew
 ##   backdrop    what it lies on: "cloth" (linen, default), "table" (scrubbed wood), "paper"
-##   writing     {text, text_rect [x, y, w, h] in `image_size` px, font_size, ink} — written words over the art
-##               (the plan of the crossing: the text the game reads)
+##   writing     {text, text_rect [x, y, w, h] in `image_size` px, font_size, ink, angle_deg} — written words over the art
+##               (the plan of the crossing; the manager's journal — its empty right page, партия 8)
 ##   note        {title, text, font_size} — a sheet beside the thing with what is written in it (the manager's
 ##               journal: the last record and the rule of the pond)
-##   watch       {center, r} — the pocket watch goes (PocketWatchDial over the icon)
+##   watch       {center, r, face} — the pocket watch goes (PocketWatchDial over `art` or the icon; centre — fractions of
+##               the picture's width / height, r — of its height; face false — the art's dial has no hands to cover)
 ## Layer 4, the last child of Main: above MechanicView (an item can be looked at inside a close-up — the watch
 ## at mother's mirror) and under GameUi (5), so the bag stays usable and the line is read over the picture.
 ## Closes with a click once the line is read, «Закрыть», Esc; a load or a new game closes it.
@@ -159,6 +160,8 @@ func _build_picture(area: Rect2) -> void:
 	if spec.has("watch"):
 		dial = PocketWatchDial.new()
 		dial.name = "Watch"
+		if picture_source == "art":
+			dial.texture = tex     # the watch's own close-up (партия 8: dial without hands) instead of the bag icon
 		dial.configure(spec["watch"])
 		dial.size = holder.size
 		holder.add_child(dial)
@@ -195,6 +198,8 @@ func _build_picture(area: Rect2) -> void:
 		l.text = StoryData.text(String(wr.get("text", "")))
 		l.position = Vector2(float(trc[0]), float(trc[1])) * k
 		l.size = Vector2(float(trc[2]), float(trc[3])) * k
+		l.pivot_offset = l.size * 0.5
+		l.rotation = deg_to_rad(float(wr.get("angle_deg", 0.0)))   # the page lies askew (the manager's journal)
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		l.add_theme_font_override("font", UiTheme.font("body_italic"))
 		l.add_theme_font_size_override("font_size", int(wr.get("font_size", 24)))

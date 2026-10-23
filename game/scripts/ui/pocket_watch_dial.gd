@@ -4,8 +4,10 @@ extends Control
 ## with live hands drawn over its dial. The painted hands are covered by the dial's middle (the numerals at
 ## the rim stay painted); hour, minute and second hands are drawn from `seconds` (Agata's time). Used in the
 ## bag's close-up of the watch and next to mother's mirror when Agata holds it to the glass.
-## Geometry of the dial on the picture (fractions of the icon): `dial_center`, `dial_r` (measured on the icon,
-## data may override: items.json pocket_watch.examine.dial, the mirror's `watch_dial`).
+## Geometry of the dial on the picture: `dial_center` (fractions of the picture's width and height), `dial_r` (fraction of
+## its height) — measured on the icon; data may override (items.json pocket_watch.examine.watch, the mirror's
+## `watch_dial`). Another picture of the watch (`texture`, e.g. the close-up of партия 8 — a dial painted without
+## hands) is drawn in its own aspect; `face` false — no enamel disc over the middle (nothing painted to cover).
 
 const ICON := "res://assets/icons/pocket_watch.png"
 const FACE := Color(0.93, 0.89, 0.8)
@@ -18,6 +20,7 @@ var seconds: float = 0.0          # time on the watch, s since 00:00 (the owner 
 var run: bool = true              # advances `seconds` by real time
 var zoom: float = 1.0             # >1: the watch drawn larger with its dial in the middle (clip the parent)
 var texture: Texture2D = null
+var face: bool = true             # the enamel disc over the painted hands (the icon); false — the dial has none
 
 
 func _init() -> void:
@@ -38,6 +41,7 @@ func configure(cfg: Dictionary) -> void:
 		dial_center = Vector2(float(cfg["center"][0]), float(cfg["center"][1]))
 	if cfg.has("r"):
 		dial_r = float(cfg["r"])
+	face = bool(cfg.get("face", face))
 
 
 func _process(delta: float) -> void:
@@ -46,37 +50,44 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
+## The picture's size as drawn: fitted into the control in its own aspect (the square icon: min(size) — as before), × zoom.
+func picture_size() -> Vector2:
+	var ts := texture.get_size() if texture != null else Vector2.ONE
+	return ts * (minf(size.x / maxf(ts.x, 1.0), size.y / maxf(ts.y, 1.0)) * zoom)
+
+
 ## Top-left of the watch picture in this control (zoom > 1 — the dial in the middle).
 func _origin() -> Vector2:
-	var s := minf(size.x, size.y) * zoom
-	return Vector2.ZERO if zoom <= 1.0 else size * 0.5 - dial_center * s
+	var ps := picture_size()
+	return Vector2.ZERO if zoom <= 1.0 else size * 0.5 - dial_center * ps
 
 
 func center() -> Vector2:
-	return _origin() + dial_center * minf(size.x, size.y) * zoom
+	return _origin() + dial_center * picture_size()
 
 
 func radius() -> float:
-	return dial_r * minf(size.x, size.y) * zoom
+	return dial_r * picture_size().y
 
 
 func _draw() -> void:
-	var s := minf(size.x, size.y) * zoom
+	var ps := picture_size()
 	var o := _origin()
 	if texture != null:
-		draw_texture_rect(texture, Rect2(o + Vector2(3, 5), Vector2(s, s)), false, Color(0, 0, 0, 0.35))
-		draw_texture_rect(texture, Rect2(o, Vector2(s, s)), false)
+		draw_texture_rect(texture, Rect2(o + Vector2(3, 5), ps), false, Color(0, 0, 0, 0.35))
+		draw_texture_rect(texture, Rect2(o, ps), false)
 	var c := center()
 	var r := radius()
-	# The dial's middle (under the painted hands), a little darker towards the rim like old enamel.
-	draw_circle(c, r * 0.74, FACE.darkened(0.06))
-	draw_circle(c, r * 0.68, FACE)
-	for i in 60:
-		if i % 5 == 0:
-			continue
-		var a := TAU * i / 60.0
-		var d := Vector2(sin(a), -cos(a))
-		draw_line(c + d * r * 0.62, c + d * r * 0.67, Color(INK, 0.55), maxf(1.0, r * 0.012))
+	if face:
+		# The dial's middle (under the painted hands), a little darker towards the rim like old enamel.
+		draw_circle(c, r * 0.74, FACE.darkened(0.06))
+		draw_circle(c, r * 0.68, FACE)
+		for i in 60:
+			if i % 5 == 0:
+				continue
+			var a := TAU * i / 60.0
+			var d := Vector2(sin(a), -cos(a))
+			draw_line(c + d * r * 0.62, c + d * r * 0.67, Color(INK, 0.55), maxf(1.0, r * 0.012))
 	var h := fmod(seconds / 3600.0, 12.0)
 	var m := fmod(seconds / 60.0, 60.0)
 	var sec := fmod(seconds, 60.0)
