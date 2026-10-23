@@ -4,7 +4,7 @@
 Проверяет:
   1. sounds: у каждого звука есть files (≥ 1), все файлы есть в game/assets/sfx и измерены в
      levels.json (tools/prepare_sfx.sh); pitch_jitter ∈ [0, 0.2], volume_jitter_db ∈ [0, 6];
-  2. steps: surfaces → существующие звуки; у каждой локации из locations.json есть покрытие;
+  2. steps: surfaces → существующие звуки; у каждой локации из locations.json есть покрытие; снаружи со снегом — snow (G39);
      areas — известные комнаты, многоугольники ≥ 3 точек, известные покрытия;
   3. doors: ключ «ОТКУДА>КУДА» — известные локации; если у комнаты ОТКУДА есть data/story/rooms/<id>.json,
      в ней есть выход в КУДА; звук существует и это дверь (door_*);
@@ -104,6 +104,17 @@ def check(data: dict, ctx_files: bool = True) -> None:
             err(f"steps.rooms.{rid}: нет такой локации")
         if surf not in surfaces:
             err(f"steps.rooms.{rid}: неизвестное покрытие {surf!r}")
+    # G39 (Директор 23.10: на втором берегу шаги «по квартире», а не по снегу): комната снаружи со снегом (эффект
+    # type snow в rooms/<LOC>.json, background.kind exterior) — покрытие snow (кроме вида из лодки, player_hidden: там
+    # Агата не ходит).
+    for rid in locations:
+        rp = STORY / "rooms" / f"{rid}.json"
+        if not rp.is_file():
+            continue
+        room = load(rp)
+        snowy = any(e.get("type") == "snow" and not e.get("if") for e in room.get("effects", []))
+        if snowy and room.get("background", {}).get("kind") == "exterior" and not room.get("player_hidden") and rooms.get(rid) != "snow":
+            err(f"steps.rooms.{rid}: снаружи идёт снег — покрытие snow, а не {rooms.get(rid)!r} (G39)")
     for rid, areas in st.get("areas", {}).items():
         if rid not in locations:
             err(f"steps.areas.{rid}: нет такой локации")
@@ -216,8 +227,9 @@ def selftest(data: dict) -> list[str]:
     def rain_in_school(d): d["loops"]["rain"]["outside"].append("O1")
     def fire_wrong_flag(d): d["loops"]["stove_fire"]["if"] = ["h1_shutter_open"]
     def door_too_loud(d): d["sounds"]["door_passage"]["volume_db"] = 8.0
+    def snow_as_floor(d): d["steps"]["rooms"]["O4"] = "wood"
     missed: list[str] = []
-    for fn in (unknown_exit, steps_too_loud, room_without_surface, rain_in_school, fire_wrong_flag, door_too_loud):
+    for fn in (unknown_exit, steps_too_loud, room_without_surface, rain_in_school, fire_wrong_flag, door_too_loud, snow_as_floor):
         d = copy.deepcopy(data)
         fn(d)
         errors.clear()

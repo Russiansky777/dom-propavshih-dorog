@@ -71,7 +71,7 @@ func _run() -> void:
 	rm.autosave_enabled = false
 	player = main_node.get_node("World/Player")
 	await _test("sfx.json loads; every sound file loads; loops loop, one-shots do not; SFX and SFX_Inside buses", _test_data)
-	await _test("Steps: on the walk sheet's foot-plant frames only, by room surface (H1 wood, Z2 gravel = AmbientFootfall steps)", _test_steps)
+	await _test("Steps: on the walk sheet's foot-plant frames only, by room surface (H1 wood, Z2 gravel = AmbientFootfall steps; snow on the far bank — G39)", _test_steps)
 	await _test("Doors: one sound per door transition, none for a street, a load or a new game; plays on through the change", _test_doors)
 	await _test("Stove fire: only in H1 with stove_lit, fades in, louder near the stove, stops when out or away", _test_fire)
 	await _test("Rain: outside on SFX, inside (house) quieter on the low-passed SFX_Inside, none in the school", _test_rain)
@@ -223,6 +223,19 @@ func _test_steps() -> void:
 	# R1: the pier deck is wood, the bank gravel (areas).
 	_check(sx.surface_at("R1", Vector2(1200, 650)) == "wood" and sx.surface_at("R1", Vector2(900, 900)) == "gravel",
 		"R1: deck must be wood, bank gravel (%s / %s)" % [sx.surface_at("R1", Vector2(1200, 650)), sx.surface_at("R1", Vector2(900, 900))])
+	# G39 (Director 23.10: on the far bank the steps sounded «по квартире»): snow outside in the winter rooms, floor inside.
+	for rid in ["R3", "O2", "O4", "S1"]:
+		_check(sx.surface_at(rid, Vector2(960, 800)) == "snow", "G39: %s — snow underfoot (%s)" % [rid, sx.surface_at(rid, Vector2(960, 800))])
+	for rid in ["O1", "O3"]:
+		_check(sx.surface_at(rid, Vector2(960, 800)) == "wood", "G39: %s — a floor indoors (%s)" % [rid, sx.surface_at(rid, Vector2(960, 800))])
+	await _enter("O4")
+	var e3: int = sx.events.size()
+	await _walk(Vector2(960, 850), Vector2(1470, 660))
+	var o4 := _events("step", e3)
+	_check(o4.size() >= 2, "O4: Agata's steps sound (%d)" % o4.size())
+	for e in o4:
+		_check(e["surface"] == "snow" and e["sound"] == "steps_snow" and String(e["file"]).begins_with("sfx_steps_snow_"),
+			"G39: O4 step %s/%s/%s, expected snow" % [e["surface"], e["sound"], e["file"]])
 
 
 func _test_doors() -> void:

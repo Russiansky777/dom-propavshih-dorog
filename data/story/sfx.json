@@ -6,19 +6,21 @@
     "door_light": {"files": ["sfx_door_variant_02.wav"], "volume_db": -6.0, "_note": "variant_02 «subtle realistic wooden door»: лёгкая деревянная"},
     "steps_gravel": {"files": ["sfx_steps_gravel_01.wav", "sfx_steps_gravel_02.wav", "sfx_steps_gravel_03.wav", "sfx_steps_gravel_04.wav", "sfx_steps_gravel_05.wav", "sfx_steps_gravel_06.wav", "sfx_steps_gravel_07.wav", "sfx_steps_gravel_08.wav"], "volume_db": -4.0, "pitch_jitter": 0.06, "volume_jitter_db": 1.5},
     "steps_soft": {"files": ["sfx_steps_soft_01.wav", "sfx_steps_soft_02.wav", "sfx_steps_soft_03.wav", "sfx_steps_soft_04.wav", "sfx_steps_soft_05.wav", "sfx_steps_soft_06.wav", "sfx_steps_soft_07.wav"], "volume_db": -6.0, "pitch_jitter": 0.05, "volume_jitter_db": 1.5},
+    "steps_snow": {"files": ["sfx_steps_snow_01.wav", "sfx_steps_snow_02.wav", "sfx_steps_snow_03.wav", "sfx_steps_snow_04.wav", "sfx_steps_snow_05.wav", "sfx_steps_snow_06.wav"], "volume_db": -6.0, "pitch_jitter": 0.05, "volume_jitter_db": 1.5, "_note": "G39 (Директор 23.10: на втором берегу шаги «по квартире», а не по снегу): мягкий хруст снега — синтез tools/make_snow_steps.py (собственная работа, CC0; Docs/ASSET_PROVENANCE.md), громкость — по мягким шагам"},
     "bag_receive": {"files": ["sfx_bag_leather.wav"], "volume_db": -6.0},
     "bag_handle": {"files": ["sfx_bag_leather_short_01.wav", "sfx_bag_leather_short_02.wav", "sfx_bag_leather_short_03.wav"], "volume_db": -5.0, "pitch_jitter": 0.04, "volume_jitter_db": 1.0}
   },
   "steps": {
     "_comment": "Шаг — на кадре постановки ноги из листа ходьбы (data/story/ambient/_index.json footfall.<актёр>.contact_frames, та же точка ступни, что у брызг и следов AmbientFootfall). Покрытие — по комнате (rooms), внутри комнаты — по многоугольникам areas (первый, в который попала ступня).",
-    "surfaces": {"gravel": "steps_gravel", "wood": "steps_soft"},
+    "surfaces": {"gravel": "steps_gravel", "wood": "steps_soft", "snow": "steps_snow"},
+    "_snow_note": "G39: снег — улицы и опора на том берегу, где зима (комнаты с эффектом snow снаружи: R3, O2, O4, S1); в домах и классе там — пол (wood). tools/validate_sfx.py: у каждой комнаты со снегом снаружи покрытие snow",
     "default_surface": "gravel",
     "rooms": {
       "Z1": "wood", "Z2": "gravel", "Z3": "gravel", "Z4": "gravel",
       "H1": "wood", "H2": "wood", "H3": "wood", "H4": "wood",
-      "R1": "gravel", "R2": "gravel", "R3": "wood", "R4": "wood",
+      "R1": "gravel", "R2": "gravel", "R3": "snow", "R4": "wood",
       "M1": "gravel", "M2": "wood", "M3": "wood", "M4": "gravel",
-      "O1": "wood", "O2": "gravel", "O3": "wood", "O4": "gravel", "S1": "gravel"
+      "O1": "wood", "O2": "snow", "O3": "wood", "O4": "snow", "S1": "snow"
     },
     "areas": {
       "R1": [{"surface": "wood", "poly": [[940, 600], [1405, 600], [1405, 745], [1060, 700], [940, 690]], "_note": "настил причала (walk_samples R1: «настил причала», «край настила», «корень причала»)"}]

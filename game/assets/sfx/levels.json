@@ -143,5 +143,41 @@
     "lufs_i": -32.6,
     "lufs_m_max": -25.4,
     "duration_s": 18.5
+  },
+  "sfx_steps_snow_01.wav": {
+    "peak_db": -6.2,
+    "lufs_i": -26.3,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.418
+  },
+  "sfx_steps_snow_02.wav": {
+    "peak_db": -4.1,
+    "lufs_i": -26.3,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.365
+  },
+  "sfx_steps_snow_03.wav": {
+    "peak_db": -2.6,
+    "lufs_i": -27.0,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.396
+  },
+  "sfx_steps_snow_04.wav": {
+    "peak_db": -6.1,
+    "lufs_i": -26.3,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.381
+  },
+  "sfx_steps_snow_05.wav": {
+    "peak_db": -6.7,
+    "lufs_i": -26.3,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.391
+  },
+  "sfx_steps_snow_06.wav": {
+    "peak_db": -4.8,
+    "lufs_i": -26.4,
+    "lufs_m_max": -25.3,
+    "duration_s": 0.415
   }
 }
