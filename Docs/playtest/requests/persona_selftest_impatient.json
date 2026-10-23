@@ -1,0 +1,9 @@
+{
+  "mode": "fresh",
+  "persona": "impatient",
+  "dry_run": true,
+  "max_steps": 14,
+  "max_minutes": 25,
+  "note": "Самопроверка ролей без API ($0): rapid, реплики без автопролистывания, аномалии, покрытие.",
+  "run": 1
+}
