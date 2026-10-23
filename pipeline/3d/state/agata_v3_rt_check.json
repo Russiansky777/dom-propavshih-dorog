@@ -7,7 +7,7 @@
    "before": 309085,
    "after": 60000,
    "ratio": 0.19412,
-   "vertices": 84062
+   "vertices": 84064
   }
  },
  "clips": {
@@ -171,7 +171,7 @@
    "BakedMaterial"
   ]
  },
- "out_bytes": 6189372,
+ "out_bytes": 6166900,
  "result": {
   "triangles": 60000,
   "clips": 17,

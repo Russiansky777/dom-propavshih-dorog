@@ -1,7 +1,7 @@
 {
   "name": "agata_v3",
-  "frame_w": 384,
-  "frame_h": 384,
+  "frame_w": 848,
+  "frame_h": 864,
   "pivot": {
     "x": 0.5,
     "y": 0.9464285714285714
@@ -73,7 +73,7 @@
     "half_width_m": 0.874,
     "top_m": 0.844,
     "frame_top_m": 0.925,
-    "frame_w": 384
+    "frame_w": 848
   },
   "matte_materials": true
 }
