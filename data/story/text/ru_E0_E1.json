@@ -241,7 +241,7 @@
       "draft": false
     },
     "Z2.exit_Z3.label": {
-      "text": "Дорожка к берегу",
+      "text": "К повороту",
       "draft": false
     },
     "Z2.exit_Z3.closed": {
@@ -388,7 +388,7 @@
       "draft": false
     },
     "R1.exit_Z3.label": {
-      "text": "Вдоль берега",
+      "text": "Вдоль берега к повороту",
       "draft": false
     },
     "R1.exit_Z2.label": {
