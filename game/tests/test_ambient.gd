@@ -443,7 +443,8 @@ func _test_contacts() -> void:
 	var sprites: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(sheet_path.get_base_dir() + "/sprites.json"))
 	# the game copy of the sheet is a packed atlas (tools/pack_sheets.py): read it as the grid
 	var ag = load("res://scripts/actors/actor_sheet.gd").load_actor("agata")
-	var img: Image = ag.grid_image(ag.walk_action) if ag.sheet_dir + "/" + String(ag.actions[ag.walk_action].get("sheet", "walk.png")) == sheet_path else null
+	# in unit px (a k× sheet, G56: texture_scale) — the data's planted_foot_px are unit px at scale 1
+	var img: Image = ag.unit_grid_image(ag.walk_action) if ag.sheet_dir + "/" + String(ag.actions[ag.walk_action].get("sheet", "walk.png")) == sheet_path else null
 	_check(img != null and not img.is_empty(), "cannot read %s (as Agata's walk sheet)" % sheet_path)
 	if img == null or img.is_empty():
 		return
@@ -451,8 +452,9 @@ func _test_contacts() -> void:
 	var p := SheetProbe.new()
 	p.data = img.get_data()
 	p.w = img.get_width()
-	p.fw = int(sprites["frame_w"])
-	p.fh = int(sprites["frame_h"])
+	var ks := float(sprites.get("texture_scale", 1.0))
+	p.fw = int(round(int(sprites["frame_w"]) / ks))
+	p.fh = int(round(int(sprites["frame_h"]) / ks))
 	var n := int(sprites["actions"]["walk"]["frames"])
 	_check(n == int(ff["frames"]), "sheet has %d walk frames, data says %d" % [n, int(ff["frames"])])
 	var pvx := float(sprites["pivot"]["x"]) * p.fw

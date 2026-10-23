@@ -357,7 +357,7 @@ func _build_reflection(glass: Vector2, rf: Dictionary) -> void:
 		agata.animation = anim
 	var fig_h := float(sheet.figure_height_px) if float(sheet.figure_height_px) > 0.0 else 337.0
 	var sc := float(a.get("height", 0.92)) * float(size.y) / fig_h
-	agata.scale = Vector2(sc, sc)
+	agata.scale = sheet.sprite_scale() * sc  # sc: unit px → screen; the sheet's own px are 1/texture_scale of them
 	agata.position = Vector2(float(a.get("x", 0.5)) * size.x, float(a.get("feet", 1.22)) * size.y)
 	reflection_vp.add_child(agata)
 	_sync_agata()

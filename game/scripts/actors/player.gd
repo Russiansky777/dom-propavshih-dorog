@@ -72,6 +72,13 @@ var _action: String = ""
 var _action_node: Node2D = null
 var _action_fired: bool = false
 var action_fire_count: int = 0    # interactions fired by actions (tests: exactly once per action)
+## Carrying a thing to its place (hotspot data `carry`, G10: the wet kerchief from the bench to the hook):
+## "pick" — the hotspot's action; "walk" — on the way to carry.to; "place" — carry.action_anim there. The
+## interaction (flags, text, scene) fires once, when the thing is placed — or at once on a click that cuts
+## the carry short, so the result is the same either way.
+var _carry: Dictionary = {}
+var _carry_node: Node2D = null
+var _carry_stage: String = ""
 var _settling: bool = false       # logical position arrived; the drawn figure is finishing its steps
 var walk_time: float = 0.0      # game seconds spent in the current walk (probe/measurements)
 var _distance_walked: float = 0.0
@@ -182,10 +189,10 @@ func _update_foot_lock() -> void:
 		var s := maxf(absf(scale.y), 0.001)
 		var s_drawn := room.depth_scale(_drawn_pos.y) if room != null else s
 		sprite.position = (_drawn_pos - global_position) / s
-		sprite.scale = Vector2.ONE * (s_drawn / s)
+		sprite.scale = sheet.sprite_scale() * (s_drawn / s)
 	else:
 		sprite.position = Vector2.ZERO
-		sprite.scale = Vector2.ONE
+		sprite.scale = sheet.sprite_scale()
 
 
 ## A walk frame changed (k → k+1): the drawn figure advances along the trail by the stance foot's
@@ -308,6 +315,7 @@ func _setup_sprite() -> void:
 	sprite.centered = false
 	sprite.offset = sheet.sprite_offset()
 	sprite.sprite_frames = sheet.frames
+	sprite.scale = sheet.sprite_scale()  # a k× sheet is drawn at 1/k (G56)
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	sprite.frame_changed.connect(_on_frame_changed)
 	sprite.frame_changed.connect(_on_action_frame)
@@ -426,6 +434,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## One click on the room: hotspot/exit → walk to its stand point and interact; else walk there.
 func click_at(world_pos: Vector2) -> void:
+	if _carry_stage in ["walk", "place"] and not StoryRunner.is_busy():
+		_carry_finish_now()  # a click cuts the carry short: the thing is in its place, the click goes on
 	if StoryRunner.is_busy() or _acting:
 		return  # dialogue, puzzle, transition or an action in progress owns the input
 	var target_node: Node2D = null
@@ -476,7 +486,7 @@ func _adopt_drawn_position() -> void:
 	if sprite != null and _lock_active:
 		global_position = _drawn_pos
 		sprite.position = Vector2.ZERO
-		sprite.scale = Vector2.ONE
+		sprite.scale = sheet.sprite_scale()
 	_lock_active = false
 
 
@@ -494,7 +504,7 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 	_lock_active = false
 	if sprite != null:
 		sprite.position = Vector2.ZERO
-		sprite.scale = Vector2.ONE
+		sprite.scale = sheet.sprite_scale()
 	global_position = pos
 	if view3d != null:
 		if view3d.follows_room():
@@ -560,6 +570,8 @@ func _walk_step(delta: float) -> void:
 
 ## Stops without reaching the target: no interaction is triggered.
 func _cancel_walk() -> void:
+	if _carry_stage == "walk":
+		_carry_finish_now()
 	_walking = false
 	_settling = false
 	_pending = null
@@ -576,6 +588,9 @@ func _arrive() -> void:
 	_adopt_drawn_position()
 	_set_step_phase(0)
 	_update_depth()
+	if _carry_stage == "walk":
+		_carry_arrive()
+		return
 	var node := _pending
 	_pending = null
 	var act := _action_for(node)
@@ -623,6 +638,10 @@ func _start_action(act: String, node: Node2D) -> void:
 	_action = act
 	_action_node = node
 	_action_fired = false
+	if _carry_stage == "" and node is StoryHotspot and not ((node as StoryHotspot).data.get("carry", {}) as Dictionary).is_empty():
+		_carry = (node as StoryHotspot).data["carry"]
+		_carry_node = node
+		_carry_stage = "pick"
 	if is_3d():
 		_start_action_3d(act, node)
 		action_started.emit(act, node)
@@ -636,7 +655,8 @@ func _start_action(act: String, node: Node2D) -> void:
 
 
 func is_acting() -> bool:
-	return _acting or not _turn_hold.is_empty()  # an action waiting for the turn counts (F22)
+	# an action waiting for the turn counts (F22), and so does the whole carry (G10: pick → walk → place)
+	return _acting or not _turn_hold.is_empty() or _carry_stage != ""
 
 
 func current_action() -> String:
@@ -648,11 +668,16 @@ func _fire_action() -> void:
 	if _action_fired:
 		return
 	_action_fired = true
+	if _carry_stage == "pick":
+		_carry_set_layers(true)  # taken: gone from its old place, on its way
+		return
 	var node := _action_node
 	if node != null and is_instance_valid(node) and node.has_method("trigger"):
 		action_fire_count += 1
 		node.call("trigger")
 		interaction_performed.emit(node)
+	if _carry_stage == "place":
+		_carry_end()
 
 
 func _on_action_frame() -> void:
@@ -673,10 +698,81 @@ func _on_animation_finished() -> void:
 	_action_node = null
 	_play_idle()
 	action_finished.emit(act, node)
+	if _carry_stage == "pick":
+		_carry_stage = "walk"
+		var to: Array = _carry.get("to", [])
+		if to.size() >= 2:
+			_pending = null
+			_start_walk(Vector2(float(to[0]), float(to[1])))
+		else:
+			_carry_arrive()
+
+
+## The carry's walk ended at carry.to: face carry.face and place the thing (carry.action_anim).
+func _carry_arrive() -> void:
+	var fc: Array = _carry.get("face", [])
+	if fc.size() >= 2:
+		var v := Vector2(float(fc[0]), float(fc[1])) - global_position
+		if v.length_squared() > 1.0:
+			if is_3d():
+				yaw3d_target = _yaw_for_screen(v)
+			else:
+				direction = sheet.direction_index(v)
+	arrived.emit(global_position)
+	var act := String(_carry.get("action_anim", ""))
+	if _carry_node == null or not is_instance_valid(_carry_node) or act == "" or sheet == null or not sheet.has_action(act):
+		_carry_finish_now()
+		_play_idle()
+		return
+	_carry_stage = "place"
+	_start_action(act, _carry_node)
+
+
+## The carry ends now with its full result (a click cut it short, or the placing could not play).
+func _carry_finish_now() -> void:
+	if _carry_stage == "":
+		return
+	var node := _carry_node
+	var placing := _acting and _carry_stage == "place"
+	_carry_end()
+	_turn_hold = []  # a placing still waiting for the turn never starts
+	if placing:
+		_acting = false
+		_action = ""
+		_action_node = null
+		_play_idle()
+	if node != null and is_instance_valid(node) and node.has_method("trigger"):
+		action_fire_count += 1
+		node.call("trigger")
+		interaction_performed.emit(node)
+
+
+func _carry_end() -> void:
+	_carry_set_layers(false)
+	_carry = {}
+	_carry_node = null
+	_carry_stage = ""
+
+
+## Layers of carry.show_layers shown ahead of their flags while the thing is carried (the bare bench).
+func _carry_set_layers(on: bool) -> void:
+	if room == null or not is_instance_valid(room):
+		return
+	for id in _carry.get("show_layers", []):
+		var l := room.find_child(String(id), true, false) as StateLayer
+		if l != null:
+			l.set_forced(on)
+
+
+## Carry stage for tests and the web probe: "", "pick", "walk", "place".
+func carry_stage() -> String:
+	return _carry_stage
 
 
 ## Room change / load: the action is dropped without its effect (nothing half-applied).
 func _cancel_action() -> void:
+	if _carry_stage != "":
+		_carry_end()  # room change / load: dropped without its effect, like any action
 	_acting = false
 	_action = ""
 	_action_node = null
@@ -811,7 +907,7 @@ func set_render_mode(mode: String) -> bool:
 			body3d.visible = false
 		sprite.material = null
 		sprite.position = Vector2.ZERO
-		sprite.scale = Vector2.ONE
+		sprite.scale = sheet.sprite_scale()
 		_play_idle()
 	return true
 
@@ -1078,7 +1174,7 @@ func _update_view3d_scale() -> void:
 		win = maxf(get_viewport().get_final_transform().get_scale().y, 0.25)
 	view3d.set_render_scale(s * win * _rtf("", "supersample", 1.0))
 	body3d.offset = view3d.sprite_offset()
-	body3d.scale = Vector2.ONE / view3d.render_scale
+	body3d.scale = Vector2.ONE * sheet.texture_scale / view3d.render_scale  # under the facade sprite (1/k)
 
 
 # --- Web measurement hooks (only with ?agataprobe in the URL; tools/agata_fps.mjs) ----------------

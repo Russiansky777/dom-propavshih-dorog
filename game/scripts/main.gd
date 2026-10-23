@@ -281,8 +281,8 @@ func _actor_state() -> Dictionary:
 		"drawn_x": drawn.x, "drawn_y": drawn.y, "scale": player.scale.y,
 		"stride_px": player.stride_px(), "speed_px": player.current_speed_px(), "fps": player.current_walk_fps(),
 		"direction": player.direction, "paused": get_tree().paused, "walk_time": player.walk_time,
-		"lag": player.lock_lag_px(), "resyncs": player.lock_resyncs, "sprite_scale": spr.scale.x,
-		"action": player.current_action(), "action_fires": player.action_fire_count,
+		"lag": player.lock_lag_px(), "resyncs": player.lock_resyncs, "sprite_scale": spr.scale.x * float(player.sheet.texture_scale if player.sheet != null else 1.0),
+		"action": player.current_action(), "action_fires": player.action_fire_count, "carry": player.carry_stage(),
 		"shadow": _shadow_state(spr),
 	}
 

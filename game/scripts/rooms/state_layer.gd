@@ -5,6 +5,9 @@ extends Node2D
 ## the background), moved by `offset`; an extra `scale` only with `scale_reason` (RoomBuilder).
 
 var data: Dictionary = {}
+## Shown ahead of its flags (Player: hotspot data carry.show_layers — the bench is bare while the kerchief
+## is carried to the hook, before the interaction sets the flag).
+var forced: bool = false
 
 
 func setup(p_data: Dictionary) -> void:
@@ -34,7 +37,14 @@ func _on_flag_changed(_f: String, _v: bool) -> void:
 	refresh()
 
 
+func set_forced(on: bool) -> void:
+	forced = on
+	refresh()
+
+
 func is_active() -> bool:
+	if forced:
+		return true
 	for f in data.get("if", []):
 		if not GameState.has_flag(String(f)):
 			return false

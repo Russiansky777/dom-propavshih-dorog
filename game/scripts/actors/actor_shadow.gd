@@ -24,8 +24,8 @@ static func make(sheet: ActorSheet) -> ActorShadow:
 	tex.fill_to = Vector2(1.0, 0.5)
 	sh.texture = tex
 	sh.centered = true
-	# Ellipse in sheet pixels at node scale 1 (the parent actor applies the depth scale).
-	var w: float = sheet.shadow_width_m * sheet.px_per_meter(1.0)
+	# Ellipse in the sprite's own pixels (the parent actor applies the depth scale, the sprite 1/texture_scale).
+	var w: float = sheet.shadow_width_m * sheet.px_per_meter(1.0) * sheet.texture_scale
 	var h: float = w * sheet.shadow_height_ratio
 	sh.scale = Vector2(w / TEX_SIZE, h / TEX_SIZE)
 	sh.position = Vector2(0, -h * 0.08)  # a touch above the contact line so boots sit "in" it

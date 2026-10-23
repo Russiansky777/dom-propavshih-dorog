@@ -8,7 +8,12 @@
 //      forward at the waist, no swing) — and on the key frame the Q04 question opens; option A → the shelf by the stove.
 //   B  (G53) ?start=epilogue — M26 to the last frame: the dinner, Agata SEATED at the table between Ilya and Varvara
 //      (layer «agata» — the sit sheet, under the drawn family).
-// Frames: Docs/evidence/G/G1_take_shelf.jpg, G53_dinner_seated.jpg. Exit code 0 only when every step reached its
+//   C  (G10) ?start=house — the shutter, then a real click on the wet kerchief: pick at the bench → walk to the hanger
+//      (the bench bare, the kerchief in her hands) → reach at the left hook → the kerchief on the hook (flag once).
+//   D  (G56) ?start=wedges — H2, Agata walks to the front edge (depth scale ≈ 3): the frame and a 1:1 crop of her.
+//      G_RUNS=C,D for these two.
+// Frames: Docs/evidence/G/G1_take_shelf.jpg, G53_dinner_seated.jpg, G10_carry_walk.jpg, G10_carry_hook.jpg,
+// G56_H2_close.jpg, G56_H2_close_crop.png. Exit code 0 only when every step reached its
 // state and the console has no errors (Godot warnings are listed, not counted). Log: build/shots/g_agata/.
 
 import http from "node:http";
@@ -225,6 +230,65 @@ async function main() {
       check(s.frame && s.frame.frame === "EP_dinner", `the dinner frame is on (${s.frame && s.frame.frame})`);
       check(ly.agata === true && ly.family === true, `the dinner: Agata's layer and the drawn family shown (${JSON.stringify(ly)})`);
       check(shotDone, "the dinner frame captured");
+    }
+    // ---- C (G10): the kerchief carried to the hook.
+    if (RUNS.includes("C")) {
+      await open("house");
+      await playThrough("house opening", { quietMs: 3000, timeout: 120000 });
+      let s = await state();
+      check(s.room === "H1", `?start=house → H1 (${s.room})`);
+      await click("hotspot shutter", s.hotspots.shutter);
+      await waitFor("the shutter open", (t) => t.flags.h1_shutter_open && !t.player.acting && !t.player.walking, 180000);
+      await playThrough("after the shutter", { quietMs: 3000, timeout: 120000 });
+      s = await state();
+      const fires0 = s.actor.action_fires;
+      const fresh = () => page.evaluate(() => { if (window.probePause) window.probePause(false); return window.probeState ? JSON.parse(JSON.stringify(window.probeState)) : null; });
+      await click("hotspot scarf (the wet kerchief on the bench)", s.hotspots.scarf);
+      const stages = [];
+      let walkShot = false;
+      let hookShot = false;
+      const t0 = Date.now();
+      while (Date.now() - t0 < 600000) {
+        s = await fresh();
+        const st = String(s.actor.carry || "");
+        if (st && stages[stages.length - 1] !== st) { stages.push(st); logLine(`carry stage ${st}`); }
+        if (st === "walk" && !walkShot && Math.abs(s.player.x - 1215) < 260) {
+          await page.evaluate(() => window.probePause(true));
+          await shot("G10_carry_walk");
+          await page.evaluate(() => window.probePause(false));
+          walkShot = true;
+        }
+        if (s.flags.h1_scarf_removed && !hookShot) {
+          await page.evaluate(() => window.probePause(true));
+          await shot("G10_carry_hook");
+          logLine(`flag at ${s.actor.anim} frame ${s.actor.frame}, Agata at (${Math.round(s.player.x)}, ${Math.round(s.player.y)})`);
+          await page.evaluate(() => window.probePause(false));
+          hookShot = true;
+        }
+        if (hookShot && !st) break;
+        await sleep(40);
+      }
+      check(stages.join(",") === "pick,walk,place", `pick → walk → place (${stages.join(",")})`);
+      check(walkShot && hookShot, "the carry and the hook captured");
+      s = await state();
+      check(s.flags.h1_scarf_removed && s.actor.action_fires - fires0 === 1, `the kerchief on the hook, the effect once (${s.actor.action_fires - fires0})`);
+      await playThrough("after the kerchief", { quietMs: 3000, timeout: 300000 });
+    }
+
+    // ---- D (G56): Agata close in H2 (the largest depth scale).
+    if (RUNS.includes("D")) {
+      await open("wedges");
+      await playThrough("wedges opening", { quietMs: 3000, timeout: 120000 });
+      await click("floor at the front edge of H2", { x: 900, y: 1000 });
+      let s = await waitFor("walked to the front", (t) => !t.player.walking && !t.player.acting, 120000);
+      await sleep(1500);
+      await shot("G56_H2_close");
+      const x = Math.round(s.player.x), y = Math.round(s.player.y);
+      const h = Math.round(339 * (s.actor.scale || 3));
+      const clip = { x: Math.max(0, x - Math.round(h * 0.35)), y: Math.max(0, y - h - 20), width: Math.round(h * 0.7), height: Math.min(1080 - Math.max(0, y - h - 20), h + 40) };
+      await page.screenshot({ path: path.join(OUT_DIR, "G56_H2_close_crop.png"), clip, timeout: 180000 });
+      logLine(`Agata at (${x}, ${y}), depth scale ${s.actor.scale}, sprite scale (×k) ${s.actor.sprite_scale}; crop ${JSON.stringify(clip)}`);
+      check(s.room === "H2" && s.actor.scale > 2.0, `H2 close to the viewer (scale ${s.actor.scale})`);
     }
   } catch (e) {
     check(false, `exception: ${e && e.stack ? e.stack : e}`);

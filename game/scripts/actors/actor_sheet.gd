@@ -6,6 +6,12 @@ extends RefCounted
 var id: String = ""
 var frame_w: int = 288
 var frame_h: int = 384
+## Sheet resolution against the game's unit frame (G56): a sheet rendered k× larger (sprites.json
+## `texture_scale`, written by tools/pack_sheets.py: frame_h / 384) is drawn at 1/k — the figure keeps its
+## height on screen and gains k× the detail. frame_w/frame_h, sprite_offset() and atlas rects are texture
+## pixels (the sprite's own space); px_per_meter, stride tables, figure_height_px and every other "sheet px
+## at scale 1" figure are unit pixels (texture px / k), as before the re-render.
+var texture_scale: float = 1.0
 var pivot: Vector2 = Vector2(0.5, 0.946)
 var directions: int = 8
 var actions: Dictionary = {}       # action -> {sheet, frames, fps}
@@ -125,6 +131,7 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 		return a
 	a.frame_w = int(sprites.get("frame_w", 288))
 	a.frame_h = int(sprites.get("frame_h", 384))
+	a.texture_scale = maxf(float(sprites.get("texture_scale", 1.0)), 0.01)
 	var p: Dictionary = sprites.get("pivot", {})
 	a.pivot = Vector2(float(p.get("x", 0.5)), float(p.get("y", 0.946)))
 	a.directions = int(sprites.get("directions", 8))
@@ -356,6 +363,50 @@ func sprite_offset() -> Vector2:
 	return Vector2(-pivot.x * frame_w, -pivot.y * frame_h)
 
 
+## The sprite's own scale under the actor node (which carries the depth scale): 1/texture_scale.
+func sprite_scale() -> Vector2:
+	return Vector2.ONE / texture_scale
+
+
+## Frame height in unit pixels (the figure's frame on screen at node scale 1).
+func unit_frame_h() -> float:
+	return float(frame_h) / texture_scale
+
+
+## Frame size of unit_grid_image() cells.
+func unit_frame_size() -> Vector2i:
+	return Vector2i(int(round(frame_w / texture_scale)), int(round(frame_h / texture_scale)))
+
+
+## The action's sheet as a grid in unit pixels (frame_w/k × frame_h/k cells): measurements tuned on
+## 384-px frames (stride, feet, contacts) read the same numbers from a k× sheet.
+func unit_grid_image(action: String) -> Image:
+	if is_equal_approx(texture_scale, 1.0):
+		return grid_image(action)
+	var act: Dictionary = actions.get(action, {})
+	var path := sheet_dir + "/" + String(act.get("sheet", action + ".png"))
+	var img := Image.load_from_file(ProjectSettings.globalize_path(path))
+	if img == null or img.is_empty():
+		return img
+	img.convert(Image.FORMAT_RGBA8)
+	var n := int(act.get("frames", 1))
+	var uw := unit_frame_size().x
+	var uh := unit_frame_size().y
+	var grid := Image.create_empty(n * uw, directions * uh, false, Image.FORMAT_RGBA8)
+	var cell := Image.create_empty(frame_w, frame_h, false, Image.FORMAT_RGBA8)
+	for d in directions:
+		for i in n:
+			var fr := frame_rect(act, d, i)
+			var reg: Rect2 = fr[0]
+			var mar: Rect2 = fr[1]
+			cell.fill(Color(0, 0, 0, 0))
+			cell.blit_rect(img, Rect2i(reg), Vector2i(int(mar.position.x), int(mar.position.y)))
+			var small := cell.duplicate() as Image
+			small.resize(uw, uh, Image.INTERPOLATE_LANCZOS)
+			grid.blit_rect(small, Rect2i(0, 0, uw, uh), Vector2i(i * uw, d * uh))
+	return grid
+
+
 ## Screen motion vector (y down) → direction row index. Evaluates the data mapping:
 ## a = atan2(vy, vx) in degrees; row = round((zero − a) / step) mod rows for "ccw", (a − zero) for "cw".
 func direction_index(motion: Vector2) -> int:
@@ -370,7 +421,7 @@ func direction_index(motion: Vector2) -> int:
 
 ## Pixels per model metre at a given node scale (frame height spans the model's height).
 func px_per_meter(scale: float) -> float:
-	return float(frame_h) * scale / maxf(character_height_m, 0.01)
+	return unit_frame_h() * scale / maxf(character_height_m, 0.01)
 
 
 ## Walking speed in screen px/s at a given depth scale (constant in metres per second).

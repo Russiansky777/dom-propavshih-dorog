@@ -1089,9 +1089,12 @@ func _test_h1_real() -> void:
 	_check(walk_n == 8 and idle_n == 8, "expected 8 walk + 8 idle animations, got %d/%d (%s)" % [walk_n, idle_n, str(names)])
 	var tex := spr.sprite_frames.get_frame_texture("walk_0", 0)
 	# Frame width comes from sprites.json (v3: 384 — the pick bend fits; was 288); height and pivot stay.
+	# G56: a k× sheet (texture_scale) — the frame is 384 unit px high, frame_h texture px; the sprite draws it at 1/k.
 	var fw: int = player.sheet.frame_w
-	_check(fw >= 288 and player.sheet.frame_h == 384, "frame %dx%d: width ≥ 288 from sprites.json, height 384" % [fw, player.sheet.frame_h])
-	_check(tex != null and tex.get_size() == Vector2(fw, 384), "frame size should be %dx384, got %s" % [fw, str(tex.get_size() if tex else null)])
+	var uf: Vector2i = player.sheet.unit_frame_size()
+	_check(uf.x >= 288 and uf.y == 384, "frame %dx%d unit px (texture %dx%d, k %.3f): width ≥ 288, height 384" % [uf.x, uf.y, fw, player.sheet.frame_h, player.sheet.texture_scale])
+	_check(tex != null and tex.get_size() == Vector2(fw, player.sheet.frame_h), "frame size should be %dx%d, got %s" % [fw, player.sheet.frame_h, str(tex.get_size() if tex else null)])
+	_check(spr.scale.is_equal_approx(player.sheet.sprite_scale()), "sprite scale 1/k: %s" % str(spr.scale))
 	var wn := int(player.sheet.actions["walk"].get("frames", 0))
 	# F16 (23.10, «у Агаты будто бы мало fps»): ≥ 20 frames per walk cycle, all of them played
 	_check(spr.sprite_frames.get_frame_count("walk_0") == wn and wn >= 20, "walk: ≥ 20 frames per cycle, all played (sheet %d, played %d)" % [wn, spr.sprite_frames.get_frame_count("walk_0")])
@@ -1527,7 +1530,7 @@ func _test_loop_seams() -> void:
 			if seq.size() < 3:
 				continue
 			var path: String = sheet.sheet_dir + "/" + String(sheet.actions[action].get("sheet", action + ".png"))
-			var img: Image = sheet.grid_image(String(action))  # the game copy is a packed atlas: unpacked to the grid
+			var img: Image = sheet.unit_grid_image(String(action))  # the game copy is a packed atlas: unpacked to the grid (unit px)
 			if img == null or img.is_empty():
 				_check(false, "%s/%s: cannot read %s" % [id, action, path])
 				continue
@@ -1562,7 +1565,7 @@ func _test_loop_seams() -> void:
 	# The check itself must catch a real seam: Agata's idle played as a plain loop jumps 7 → 0.
 	var ag = load("res://scripts/actors/actor_sheet.gd").load_actor("agata")
 	var ipath: String = ag.sheet_dir + "/" + String(ag.actions[ag.idle_action].get("sheet", "idle.png"))
-	var iimg: Image = ag.grid_image(ag.idle_action)
+	var iimg: Image = ag.unit_grid_image(ag.idle_action)
 	_check(iimg != null and not iimg.is_empty(), "cannot read %s" % ipath)
 	var n_idle: int = int(ag.actions[ag.idle_action].get("frames", 8))
 	var c := {}
@@ -1580,8 +1583,8 @@ func _test_loop_seams() -> void:
 func _frame_diff(img: Image, sheet, row: int, a: int, b: int, cache: Dictionary, off: Vector2 = Vector2.ZERO) -> float:
 	var da: PackedByteArray = _small_frame(img, sheet, row, a, cache)
 	var db: PackedByteArray = _small_frame(img, sheet, row, b, cache)
-	var w: int = sheet.frame_w / 4
-	var h: int = sheet.frame_h / 4
+	var w: int = sheet.unit_frame_size().x / 4
+	var h: int = sheet.unit_frame_size().y / 4
 	var ox := int(round(off.x / 4.0))
 	var oy := int(round(off.y / 4.0))
 	var sum := 0.0
@@ -1616,8 +1619,9 @@ func _actor_walk_elev(id: String) -> float:
 func _small_frame(img: Image, sheet, row: int, col: int, cache: Dictionary) -> PackedByteArray:
 	if cache.has(col):
 		return cache[col]
-	var fr := img.get_region(Rect2i(col * sheet.frame_w, row * sheet.frame_h, sheet.frame_w, sheet.frame_h))
-	fr.resize(sheet.frame_w / 4, sheet.frame_h / 4, Image.INTERPOLATE_BILINEAR)
+	var u: Vector2i = sheet.unit_frame_size()  # img: unit_grid_image
+	var fr := img.get_region(Rect2i(col * u.x, row * u.y, u.x, u.y))
+	fr.resize(u.x / 4, u.y / 4, Image.INTERPOLATE_BILINEAR)
 	cache[col] = fr.get_data()
 	return cache[col]
 

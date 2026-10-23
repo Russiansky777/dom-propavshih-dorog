@@ -1,0 +1,128 @@
+{
+  "_comment": "G56: рост Агаты на экране до перерендера (листы 384 px, texture_scale 1.0): unit_height_px — от подошв до макушки в кадре стойки 0 (среднее по 8 строкам) при масштабе 1; высоты в комнатах — × scale_bottom / scale_top. Писать только со старых листов: godot -s res://tests/test_agata_scale_carry.gd -- --write-baseline",
+  "frame_h": 384,
+  "idle_md5": "e259b576490f6185b7a02658bd09dbdb",
+  "rooms": {
+    "H1": {
+      "height_bottom_px": 676.91,
+      "height_top_px": 439.99,
+      "scale_bottom": 2.0,
+      "scale_top": 1.3
+    },
+    "H2": {
+      "height_bottom_px": 1038.72,
+      "height_top_px": 481.96,
+      "scale_bottom": 3.069,
+      "scale_top": 1.424
+    },
+    "H3": {
+      "height_bottom_px": 900.97,
+      "height_top_px": 413.59,
+      "scale_bottom": 2.662,
+      "scale_top": 1.222
+    },
+    "H4": {
+      "height_bottom_px": 676.91,
+      "height_top_px": 406.15,
+      "scale_bottom": 2.0,
+      "scale_top": 1.2
+    },
+    "M1": {
+      "height_bottom_px": 812.29,
+      "height_top_px": 82.24,
+      "scale_bottom": 2.4,
+      "scale_top": 0.243
+    },
+    "M2": {
+      "height_bottom_px": 915.18,
+      "height_top_px": 479.59,
+      "scale_bottom": 2.704,
+      "scale_top": 1.417
+    },
+    "M3": {
+      "height_bottom_px": 956.47,
+      "height_top_px": 509.04,
+      "scale_bottom": 2.826,
+      "scale_top": 1.504
+    },
+    "M4": {
+      "height_bottom_px": 541.53,
+      "height_top_px": 287.69,
+      "scale_bottom": 1.6,
+      "scale_top": 0.85
+    },
+    "O1": {
+      "height_bottom_px": 703.99,
+      "height_top_px": 473.84,
+      "scale_bottom": 2.08,
+      "scale_top": 1.4
+    },
+    "O2": {
+      "height_bottom_px": 548.3,
+      "height_top_px": 209.84,
+      "scale_bottom": 1.62,
+      "scale_top": 0.62
+    },
+    "O3": {
+      "height_bottom_px": 829.21,
+      "height_top_px": 592.3,
+      "scale_bottom": 2.45,
+      "scale_top": 1.75
+    },
+    "O4": {
+      "height_bottom_px": 379.07,
+      "height_top_px": 125.23,
+      "scale_bottom": 1.12,
+      "scale_top": 0.37
+    },
+    "R1": {
+      "height_bottom_px": 541.53,
+      "height_top_px": 287.69,
+      "scale_bottom": 1.6,
+      "scale_top": 0.85
+    },
+    "R2": {
+      "height_bottom_px": 338.45,
+      "height_top_px": 338.45,
+      "scale_bottom": 1.0,
+      "scale_top": 1.0
+    },
+    "R3": {
+      "height_bottom_px": 262.3,
+      "height_top_px": 42.31,
+      "scale_bottom": 0.775,
+      "scale_top": 0.125
+    },
+    "S1": {
+      "height_bottom_px": 389.22,
+      "height_top_px": 74.46,
+      "scale_bottom": 1.15,
+      "scale_top": 0.22
+    },
+    "Z1": {
+      "height_bottom_px": 895.89,
+      "height_top_px": 413.25,
+      "scale_bottom": 2.647,
+      "scale_top": 1.221
+    },
+    "Z2": {
+      "height_bottom_px": 473.84,
+      "height_top_px": 169.23,
+      "scale_bottom": 1.4,
+      "scale_top": 0.5
+    },
+    "Z3": {
+      "height_bottom_px": 473.84,
+      "height_top_px": 203.07,
+      "scale_bottom": 1.4,
+      "scale_top": 0.6
+    },
+    "Z4": {
+      "height_bottom_px": 868.14,
+      "height_top_px": 183.78,
+      "scale_bottom": 2.565,
+      "scale_top": 0.543
+    }
+  },
+  "unit_height_px": 338.455
+}

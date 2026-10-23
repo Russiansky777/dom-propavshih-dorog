@@ -79,6 +79,7 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	sprite.centered = false
 	sprite.offset = sheet.sprite_offset()
 	sprite.sprite_frames = sheet.frames
+	sprite.scale = sheet.sprite_scale()
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	add_child(sprite)
 	if sheet.shadow_alpha > 0.0:
