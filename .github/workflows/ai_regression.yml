@@ -1,0 +1,120 @@
+name: ai-regression
+
+# Регрессия всей игры по изменениям: раз в сутки (и вручную) — ТОЛЬКО если на main есть успешная публикация сайта
+# (build-and-publish) новее той, что проверила прошлая регрессия, и между ними менялись game/ или data/; иначе
+# выходит, не вызывая API. Прогон — пять отрезков параллельно, каждый со своей точки старта (новая игра; сохранение
+# «День второй»; ?start=olkhovka / freewalk / span) по маршруту из data/story до флагов конца отрезка, роль
+# «регрессия» (tools/ai_playtest/prompts.mjs). Потолок — сумма max_usd отрезков в Docs/playtest/requests/regression.json
+# (≤ $8). Итог: Docs/playtest/regression_<дата>.md — вердикт одной строкой и подтверждённые дефекты; состояние —
+# Docs/playtest/regression_state.json. Коммиты с [skip ci].
+
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "запустить, даже если эта сборка уже проверена (true/false)"
+        default: "false"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: ai-regression
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.c.outputs.run }}
+      sha: ${{ steps.c.outputs.sha }}
+      segments: ${{ steps.c.outputs.segments }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Есть ли новая сборка
+        id: c
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE: ${{ github.event.inputs.force }}
+        run: |
+          sha=$(gh run list --workflow build_and_publish.yml --branch main --status success -L 1 --json headSha -q '.[0].headSha' 2>/dev/null || true)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          verdict=$(node tools/ai_playtest/regression_verdict.mjs --check --sha "$sha")
+          if [ "$FORCE" = "true" ] && [ -n "$sha" ]; then verdict="run"; fi
+          echo "проверка: $verdict (сборка ${sha:0:7})"
+          if [ "$verdict" = "run" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            segs=$(node -e 'const r=JSON.parse(require("fs").readFileSync("Docs/playtest/requests/regression.json","utf8"));console.log(JSON.stringify((r.segments||[]).map((_,i)=>i)))')
+            echo "segments=$segs" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "segments=[]" >> "$GITHUB_OUTPUT"
+          fi
+
+  segment:
+    needs: check
+    if: needs.check.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        seg: ${{ fromJSON(needs.check.outputs.segments) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+      - name: Playwright + Chromium
+        working-directory: tools
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Дождаться, пока сайт отдаёт проверяемую сборку
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/ai_playtest/wait_site.sh "${{ needs.check.outputs.sha }}"
+      - name: Отрезок
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
+        run: |
+          set +e
+          rm -f build/ai_playtest/*/summary.txt
+          tools/ai_playtest/run_logged.sh "regression_${{ matrix.seg }}" --request Docs/playtest/requests/regression.json --mode fresh --segment "${{ matrix.seg }}"
+          rc=$?
+          tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || rc=1
+          exit $rc
+
+  verdict:
+    needs: [check, segment]
+    if: always() && needs.check.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Вердикт
+        run: |
+          git pull -q origin main || true
+          node tools/ai_playtest/regression_verdict.mjs --run "${{ github.run_number }}" --sha "${{ needs.check.outputs.sha }}"
+          tools/ai_checks/commit.sh "ИИ-регрессия: $(cat build/ai_playtest/regression_summary.txt) (run ${{ github.run_number }})" Docs/playtest

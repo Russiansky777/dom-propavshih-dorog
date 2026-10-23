@@ -1,0 +1,106 @@
+name: ai-personas
+
+# ИИ-плейтест в ролях по всей игре: новичок без помощи, собиратель всего, нетерпеливый, сохраняет-загружает,
+# медленный игрок (роли — tools/ai_playtest/prompts.mjs → PERSONAS; формат запроса — Docs/playtest/README.md).
+# Каждый запрос — на своём раннере, параллельно; результат коммитится с [skip ci] в
+# Docs/playtest/<дата>_persona_<роль>_r<запуск>/ (report.md, кадры, log.json с объективными аномалиями и покрытием).
+#
+# Запуск: пуш, добавляющий или меняющий Docs/playtest/requests/persona_*.json (запускаются только изменённые;
+# повтор — поднять поле "run"), или вручную — список путей через пробел.
+# Сайт: прогон ждёт последнюю успешную сборку build-and-publish и пишет в отчёт её номер (version.txt).
+# Ключ — секрет CLAUDE_API, рабочее пространство — CLAUDE_WORKSPACE; лог публичный: в нём только шаги, действия,
+# комнаты и стоимость. Предохранитель каждого прогона — max_usd запроса (не больше $10).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Docs/playtest/requests/persona_*.json"
+  workflow_dispatch:
+    inputs:
+      requests:
+        description: "пути к запросам через пробел, напр. Docs/playtest/requests/persona_newbie.json"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: ai-personas-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.req.outputs.files }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Какие запросы
+        id: req
+        env:
+          REQ_INPUT: ${{ github.event.inputs.requests }}
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            list="$REQ_INPUT"
+          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            list=$(git diff-tree --no-commit-id --name-only --diff-filter=AM -r HEAD -- 'Docs/playtest/requests/persona_*.json' | tr '\n' ' ')
+          else
+            list=$(git diff --name-only --diff-filter=AM "$BEFORE" HEAD -- 'Docs/playtest/requests/persona_*.json' | tr '\n' ' ')
+          fi
+          json="["
+          for f in $list; do
+            case "$f" in Docs/playtest/requests/*.json) ;; *) echo "пропуск $f: не Docs/playtest/requests/*.json"; continue ;; esac
+            [ -f "$f" ] || { echo "нет файла $f"; continue; }
+            json="$json\"$f\","
+          done
+          json="${json%,}]"
+          echo "files=$json" >> "$GITHUB_OUTPUT"
+          echo "запросы: $json"
+
+  play:
+    needs: plan
+    if: needs.plan.outputs.files != '[]' && needs.plan.outputs.files != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        request: ${{ fromJSON(needs.plan.outputs.files) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+      - name: Playwright + Chromium
+        working-directory: tools
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Дождаться публикации сайта
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/ai_playtest/wait_site.sh ""
+      - name: Прогон в роли
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
+          REQ: ${{ matrix.request }}
+        run: |
+          set +e
+          rm -f build/ai_playtest/*/summary.txt
+          tools/ai_playtest/run_logged.sh "$(basename "$REQ" .json)" --request "$REQ" --mode fresh
+          rc=$?
+          tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || rc=1
+          exit $rc

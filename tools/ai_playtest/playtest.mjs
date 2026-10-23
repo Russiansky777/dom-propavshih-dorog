@@ -34,7 +34,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { callClaude, callTool, Budget, ApiError, priceKnown, estimateCost } from "./claude.mjs";
-import { parseItems, loadChecklist, checklistText, actTool, systemPrompt, stepText, reportSystem } from "./prompts.mjs";
+import { parseItems, loadChecklist, checklistText, actTool, systemPrompt, stepText, reportSystem, personaOf } from "./prompts.mjs";
 import { docRowIds, normId, byDocOrder } from "./rows.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -130,7 +130,8 @@ async function main() {
     // max_usd is a safety stop against a looping run, not a budget (Director 22.10): default and ceiling $10.
     maxUsd: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_usd ?? req.max_usd : req.max_usd, 0.05, HARD_MAX_USD, HARD_MAX_USD),
     maxSteps: Math.round(clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_steps ?? 150 : req.max_steps, 1, HARD_MAX_STEPS, mode === "acceptance" ? 300 : 150)),
-    maxMinutes: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_minutes ?? 90 : req.max_minutes, 5, 150, mode === "acceptance" ? 120 : 90),
+    // up to 330 min: a persona run over the whole game (the job's own limit is 360)
+    maxMinutes: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_minutes ?? 90 : req.max_minutes, 5, 330, mode === "acceptance" ? 120 : 90),
     url: A.url || req.url || SITE,
     note: String((mode === "fresh" && req.mode === "gate" ? req.fresh_note : req.note) || ""),
     // Steps: claude-sonnet-5-5 by default — claude-haiku-5-5 lost track of a finished conversation within 9 steps
@@ -141,6 +142,8 @@ async function main() {
     W: Math.round(clampNum(req.image_width, 640, 1920, 1280)),
     maxFrames: Math.round(clampNum(req.max_frames, 4, 40, 24)),
     autoDialogue: req.auto_dialogue !== false,
+    // Persona (fresh-mode variant, prompts.mjs PERSONAS): newbie / completionist / impatient / saveload / slow / regression.
+    persona: mode === "fresh" ? String(A.persona || req.persona || "") : "",
     // Start point (a block in the middle of the game): {room, spawn, flags[], items[]} via the ?ambientprobe hooks.
     start: (mode === "fresh" && req.mode === "gate" ? req.fresh_start : req.start) || null,
     // Start from a real save (a checkpoint exported by an earlier run, e.g. «День второй»): {file, slot, load}.
@@ -151,23 +154,38 @@ async function main() {
   if (skip.length) cfg.items = cfg.items.filter((n) => !skip.includes(n));
   // --segment N (run_acceptance.sh): the rows of segment N of the request, from that segment's own start point
   // (segments.mjs: url relative to the request's url, note, start_save / start).
-  const segIndex = mode === "acceptance" && A.segment !== undefined && A.segment !== true && Array.isArray(req.segments) ? Number(A.segment) : null;
+  const segIndex = (mode === "acceptance" || cfg.persona) && A.segment !== undefined && A.segment !== true && Array.isArray(req.segments) ? Number(A.segment) : null;
   const seg = segIndex !== null ? req.segments[segIndex] || null : null;
   if (seg) {
     if (seg.url && !A.url) cfg.url = new URL(String(seg.url), cfg.url).href;
     if (seg.note) cfg.note = [cfg.note, String(seg.note)].filter(Boolean).join(" ");
     if (seg.start_save !== undefined) cfg.startSave = seg.start_save || null;
     if (seg.start !== undefined) cfg.start = seg.start || null;
+    // persona segments (regression): own step / cost caps, a goal (flags that end the run as reached), a route
+    if (seg.max_steps !== undefined) cfg.maxSteps = Math.round(clampNum(seg.max_steps, 1, HARD_MAX_STEPS, cfg.maxSteps));
+    if (seg.max_usd !== undefined) cfg.maxUsd = clampNum(seg.max_usd, 0.05, HARD_MAX_USD, cfg.maxUsd);
+    if (seg.max_minutes !== undefined) cfg.maxMinutes = clampNum(seg.max_minutes, 5, 330, cfg.maxMinutes);
+    if (seg.goal_flags) cfg.goalFlags = [].concat(seg.goal_flags).map(String);
+    if (seg.goal) cfg.goal = String(seg.goal);
+    if (seg.route) cfg.route = [].concat(seg.route).map(String);
     cfg.segment = segIndex + 1;
+    cfg.segmentId = String(seg.id || segIndex + 1);
   }
+  if (!cfg.goalFlags && req.goal_flags) cfg.goalFlags = [].concat(req.goal_flags).map(String);
+  if (!cfg.goal && req.goal) cfg.goal = String(req.goal);
+  if (!cfg.route && req.route) cfg.route = [].concat(req.route).map(String);
+  const P = personaOf(cfg.persona);
+  if (cfg.persona && !P) cfg.personaError = `неизвестная роль «${cfg.persona}»`;
+  if (P && P.manualDialogue && req.auto_dialogue === undefined) cfg.autoDialogue = false;
   cfg.H = Math.round(cfg.W * FRAME_H / FRAME_W);
   const scale = cfg.W / FRAME_W;
   // Gates of one workflow run go on separate runners with the same run number: the gate's name goes into the
   // folder (…_acceptance_m3_r19), or parallel jobs would commit the same paths (M3 at f3b299c was lost so).
   const gateTag = reqPath && /^playtest_gate_/.test(path.basename(reqPath)) ? `${path.basename(reqPath, ".json").replace(/^playtest_gate_/, "")}_` : "";
-  const runTag = `${gateTag}${seg ? `s${segIndex + 1}_` : ""}${process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local")}`;
+  const runTag = `${gateTag}${P ? `${cfg.persona}_` : ""}${seg ? (P ? `${cfg.segmentId}_` : `s${segIndex + 1}_`) : ""}${process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local")}`;
   const date = new Date().toISOString().slice(0, 10);
-  let outDir = A.out ? path.resolve(ROOT, A.out) : path.join(ROOT, "Docs", "playtest", `${date}_${mode}_${runTag}`);
+  // persona runs: Docs/playtest/<date>_persona_<role>[_<segment>]_r<run> (regression: <date>_persona_regression_<segment>_r<run>)
+  let outDir = A.out ? path.resolve(ROOT, A.out) : path.join(ROOT, "Docs", "playtest", `${date}_${P ? "persona" : mode}_${runTag}`);
   if (!A.out) { let n = 2; const base = outDir; while (fs.existsSync(outDir)) outDir = `${base}_${n++}`; }
   const workDir = path.join(ROOT, "build", "ai_playtest", path.basename(outDir));
   fs.mkdirSync(path.join(workDir, "frames"), { recursive: true });
@@ -180,6 +198,7 @@ async function main() {
   const run = {
     cfg: { ...cfg, actions_run: process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_RUN_NUMBER} (id ${process.env.GITHUB_RUN_ID})` : "" }, version: "", started: new Date().toISOString(), stop: "", steps: [], transcript: [], notes: [],
     verdicts: {}, verdictHistory: [], rooms: [], flagsOrder: [], consoleErrors: [], consoleWarnings: [], frames: [], harness: [],
+    anomalies: [], invLog: [],
   };
 
   // Early refusals (written as a report, so the Director sees why nothing ran).
@@ -187,6 +206,7 @@ async function main() {
     if (!priceKnown(m)) run.stop = `модель ${m} не в таблице цен (claude.mjs) — бюджет нельзя посчитать`;
   }
   if (!dry && !apiKey) run.stop = "нет ключа API (секрет CLAUDE_API → ANTHROPIC_API_KEY)";
+  if (cfg.personaError) run.stop = cfg.personaError;
   let checklist = null;
   if (mode === "acceptance") {
     // context_all (default): every other row of the doc as reference — the route through the block to a row deep in it.
@@ -202,7 +222,7 @@ async function main() {
     if (!checklist.rows.length) run.stop = run.stop || `пункты ${cfg.items.join(", ")} не найдены в Docs/ACCEPTANCE_*.md`;
     run.checklist = { doc: checklist.doc, items: checklist.rows.map((r) => r.num), missing: checklist.missing, context: checklist.context.map((r) => r.num) };
   }
-  log(`mode=${mode} items=${cfg.items.join(",") || "-"} max_usd=${cfg.maxUsd} max_steps=${cfg.maxSteps} model=${cfg.model} report=${cfg.reportModel} image=${cfg.W}x${cfg.H}${dry ? " DRY-RUN" : ""}`);
+  log(`mode=${mode}${cfg.persona ? ` persona=${cfg.persona}${cfg.segment ? `/${cfg.segmentId}` : ""}` : ""} items=${cfg.items.join(",") || "-"} max_usd=${cfg.maxUsd} max_steps=${cfg.maxSteps} model=${cfg.model} report=${cfg.reportModel} image=${cfg.W}x${cfg.H}${dry ? " DRY-RUN" : ""}`);
 
   // --- Browser ---
   let server = null, browser = null, page = null, cdp = null;
@@ -355,6 +375,21 @@ async function main() {
   };
   const panelOf = (s) => (s && s.mechanic && s.mechanic.open && s.mechanic.panel) || null;
   const waitFor = async (pred, ms) => { const t = Date.now(); while (Date.now() - t < ms) { const s = await fresh(); if (s && pred(s)) return s; await sleep(60); } return null; };
+  // Wait `sec` GAME seconds (physics frames at 60/s; a GPU-less browser runs the game clock slower than the page clock),
+  // at most `capS` real seconds. Returns {game, real} seconds actually waited.
+  const waitGame = async (sec, capS) => {
+    const t = Date.now();
+    const s0 = await state();
+    const f0 = s0 && typeof s0.physics_frames === "number" ? s0.physics_frames : null;
+    if (f0 === null) { await sleep(Math.min(sec, capS) * 1000); return { game: null, real: (Date.now() - t) / 1000 }; }
+    let f = f0;
+    while ((f - f0) / 60 < sec && Date.now() - t < capS * 1000) {
+      await sleep(250);
+      const s1 = await state();
+      if (s1 && typeof s1.physics_frames === "number") f = s1.physics_frames;
+    }
+    return { game: (f - f0) / 60, real: (Date.now() - t) / 1000 };
+  };
 
   // «Точный удар» (F7 brace, H1 shutter latch): Space while timing.in_green and state run; until done / 12 strikes.
   const timingSeries = async (events) => {
@@ -480,7 +515,19 @@ async function main() {
       const b = s.beat || {};
       if (!b.type) { if (n) events.push(`Текст закончился: показано реплик и текстов — ${n}, окно текста закрыто. Можно действовать дальше.`); return; }
       if (b.type === "options") return;
-      if (!cfg.autoDialogue) return;
+      if (!cfg.autoDialogue) {
+        // Manual dialogue (impatient persona): the line stays on screen; record it once, the player decides.
+        const k = beatKey(s);
+        if (k && !manualSeen.has(k)) {
+          manualSeen.add(k);
+          const f = await frame(step, "line", short(b.text, 60));
+          const who = b.type === "line" ? (b.speaker_name || b.speaker || "?") : "Текст";
+          events.push(`На экране реплика (сама не пролистывается): ${who}: «${String(b.text || "")}» [${f.id}]`);
+          run.transcript.push({ step, frame: f.id, room: s.room, who, text: String(b.text || "") });
+          extra.push(f);
+        }
+        return;
+      }
       const f = await frame(step, "line", short(b.text, 60));
       const who = b.type === "line" ? (b.speaker_name || b.speaker || "?") : "Текст";
       const text = String(b.text || "");
@@ -489,6 +536,7 @@ async function main() {
       if (n === 0 || extra.filter((e) => e.kind === "line").length < 2) extra.push(f);
       else extra.splice(extra.findLastIndex((e) => e.kind === "line"), 1, f);   // keep the first and the latest line
       const key = beatKey(s);
+      if (P && P.lineDelay) await waitGame(P.lineDelay, 20);   // slow persona: reading time before the click
       const at = s.ui && s.ui.dialogue_click ? s.ui.dialogue_click : { x: 960, y: 900 };
       let advanced = false;
       for (let attempt = 0; attempt < 2 && !advanced; attempt++) {
@@ -550,7 +598,7 @@ async function main() {
   // Model "brain" for --dry-run: a scripted path resolved against the probe (harness test without the API):
   // looks, a conversation, hover on the bag, the journal, exits, the key on the door, the H1 trio with its option.
   const dryPlan = [
-    { move: "tamara" }, { key: "Space" }, { hot: "letters" }, { hot: "tamara" }, { pocketMove: "key_house" },
+    { move: "tamara" }, { rapid: "tamara" }, { key: "Space" }, { hot: "letters" }, { hot: "tamara" }, { pocketMove: "key_house" },
     { button: "JournalButton" }, { button: "CloseJournal" }, { zoom: true }, { exit: "Z4" }, { exit: "Z2" },
     { pocket: "key_house" }, { exit: "H1" }, { exit: "H1" }, { hot: "shutter" }, { hot: "stove" }, { hot: "scarf" },
     { option: true }, { wait: 2 }, { done: true },
@@ -562,7 +610,8 @@ async function main() {
     while (!a && dryPlan.length) {
       const it = dryPlan.shift();
       const H = s.hotspots || {}, E = s.exits || {}, U = s.ui || {};
-      if (it.move && H[it.move]) a = { action: "move", ...img(H[it.move]) };
+      if (it.rapid && P && P.rapid && H[it.rapid]) a = { action: "rapid", path: [[H[it.rapid].x * scale, H[it.rapid].y * scale], [960 * scale, 900 * scale], [H[it.rapid].x * scale, H[it.rapid].y * scale]] };
+      else if (it.move && H[it.move]) a = { action: "move", ...img(H[it.move]) };
       else if (it.key) a = { action: "key", key: it.key };
       else if (it.hot && H[it.hot] && H[it.hot].visible) a = { action: "click", ...img(H[it.hot]) };
       else if (it.pocketMove && U.inventory && U.inventory[it.pocketMove]) a = { action: "move", ...img(U.inventory[it.pocketMove]) };
@@ -586,20 +635,51 @@ async function main() {
   let noScreenChange = 0, noProgress = 0, invalidRow = 0, refusals = 0;
   let lastClick = null, sameClick = 0, rejectedDone = 0;
   const seenTexts = new Set();
+  const manualSeen = new Set();
   let pendingZoom = null;
   const reportReserve = Math.min(cfg.maxUsd * 0.25, estimateCost(cfg.reportModel, { textChars: 120000, images: Array(cfg.maxFrames).fill({ w: cfg.W, h: cfg.H }), maxOut: 9000 }));
   run.reportReserve = Number(reportReserve.toFixed(4));
   let events = [], extra = [];
+  const routeTxt = P && P.route ? routeText(cfg.route) : "";
   const sys = run.stop ? "" : systemPrompt(mode, { W: cfg.W, H: cfg.H, checklist: checklist ? checklistText(checklist) : "", note: cfg.note,
+    persona: cfg.persona, route: routeTxt, goal: cfg.goal || "",
     start: cfg.start ? String(cfg.start.label || "предыдущая часть игры уже пройдена, о ней ты знаешь только то, что увидишь")
       : cfg.startSave ? `загружено сохранение${saveTitle(cfg.startSave) ? ` «${saveTitle(cfg.startSave)}»` : ""} — всё, что было до него, уже пройдено (о прошлом ты знаешь только то, что увидишь в игре и журнале)` : "" });
-  const tool = actTool(mode, cfg.W, cfg.H);
+  const tool = actTool(mode, cfg.W, cfg.H, cfg.persona);
   const pendingItems = () => (checklist ? checklist.rows.map((r) => r.num).filter((n) => !run.verdicts[n]) : []);
   const trackProgress = (s, step) => {
     if (!s) return;
     if (run.rooms[run.rooms.length - 1] !== s.room) run.rooms.push(s.room);
     const seen = new Set(run.flagsOrder.map((f) => f.flag));
     for (const f of truthyFlags(s)) if (!seen.has(f)) run.flagsOrder.push({ flag: f, step });
+  };
+  // Objective anomalies from the game state (all persona runs): duplicated items, items / flags that disappear,
+  // a one-time scene line shown again, the game busy for long. The report model weighs them against the actions
+  // (a load of an older slot legitimately rolls the state back and replays scenes).
+  const onceLines = mandatoryLines();
+  const lineSeen = new Map();
+  const anomaly = (step, kind, text) => { if (run.anomalies.length < 200) run.anomalies.push({ step, kind, text: short(text, 300) }); };
+  const checkAnomalies = (before, after, step, desc) => {
+    if (!after) return;
+    const inv = after.inventory || [];
+    const dup = inv.filter((x, i) => inv.indexOf(x) !== i);
+    if (dup.length) anomaly(step, "дубль предмета", `в сумке дважды: ${[...new Set(dup)].join(", ")} (после «${desc}»)`);
+    if (before) {
+      const bi = before.inventory || [];
+      const gone = bi.filter((x) => !inv.includes(x)), came = inv.filter((x) => !bi.includes(x));
+      if (gone.length || came.length) run.invLog.push({ step, room: after.room, desc: short(desc, 80), plus: came, minus: gone });
+      const bf = truthyFlags(before), af = new Set(truthyFlags(after));
+      const lost = bf.filter((f) => !af.has(f));
+      if (lost.length) anomaly(step, "флаги сброшены", `${lost.length}: ${lost.slice(0, 12).join(", ")}${lost.length > 12 ? " …" : ""} (после «${desc}»; комната ${before.room}→${after.room})`);
+      if (before.goal && after.goal && before.goal !== after.goal && lost.length) anomaly(step, "цель журнала откатилась", `«${short(before.goal, 90)}» → «${short(after.goal, 90)}»`);
+    }
+    for (const t of run.transcript.filter((x) => x.step === step)) {
+      const id = onceLines.get(normText(t.text));
+      if (!id) continue;
+      const first = lineSeen.get(id);
+      if (first === undefined) lineSeen.set(id, step);
+      else if (first !== step) { anomaly(step, "разовая реплика повторилась", `${id} «${short(t.text, 80)}» — впервые на шаге ${first}, снова на шаге ${step} (после «${desc}»)`); lineSeen.set(id, step); }
+    }
   };
 
   try {
@@ -908,6 +988,23 @@ async function main() {
       } else if (act === "knot") {
         await knotTrace(events);
         desc = "узел по контуру";
+      } else if (act === "rapid" && P && P.rapid) {
+        // A burst without settling: the next click lands while Agata walks, a line types, an animation plays.
+        const pts = (Array.isArray(input.path) ? input.path : []).filter((q) => Array.isArray(q) && q.length >= 2 && q.every(Number.isFinite)).slice(0, 12)
+          .map((q) => toFrameChecked(Number(q[0]), Number(q[1]), step));
+        if (!pts.length) events.push("rapid не выполнен: нужна хотя бы 1 точка path.");
+        else {
+          for (const q of pts) { await page.mouse.move(q.x, q.y, { steps: 1 }); await page.mouse.click(q.x, q.y); await sleep(120); }
+          pointer = pts[pts.length - 1];
+          await showPointer(pointer);
+          desc = `быстрая очередь ${pts.length} щелчков`;
+          stepRec.path = pts.map((q) => [Math.round(q.x), Math.round(q.y)]);
+        }
+      } else if (act === "wait" && P && P.gameWait) {
+        const sec = clampNum(input.seconds, 1, 60, 5);
+        const w = await waitGame(sec, 300);
+        desc = w.game === null ? `ждала ${Math.round(w.real)} с` : `ждала ${w.game.toFixed(1)} игровых с (${Math.round(w.real)} с по часам)`;
+        stepRec.wait = w;
       } else if (act === "wait") {
         const sec = clampNum(input.seconds, 1, 20, 3);
         await sleep(sec * 1000);
@@ -936,6 +1033,7 @@ async function main() {
         else {
           const r = await settle(before, async () => { extra.push(await frame(step, "staging", "затемнение / постановка")); });
           if (r.stagingMs > 300) events.push(`Затемнение / постановка сцены ~${(r.stagingMs / 1000).toFixed(1)} с.`);
+          if (P && r.stagingMs > 85000) anomaly(step, "игра занята долго", `затемнение / постановка не кончилась за ${Math.round(r.stagingMs / 1000)} с (после «${desc}», комната ${(r.s && r.s.room) || "?"})`);
           for (let i = 0; i < 3; i++) {
             const n0 = run.transcript.length;
             await runDialogue(step, events, extra);
@@ -963,8 +1061,10 @@ async function main() {
       }
       if (noScreenChange && act !== "move") events.push("Видимых изменений нет.");
       trackProgress(after, step);
+      if (P) checkAnomalies(before, after, step, desc);
       lastState = after;
       stepRec.room_after = after && after.room;
+      if (after) { stepRec.inv = (after.inventory || []).join(","); stepRec.flags = truthyFlags(after).length; }
       stepRec.events = events.map((e) => short(e, 400));
       run.steps.push(stepRec);
       const lines = run.transcript.filter((t) => t.step === step);
@@ -972,6 +1072,11 @@ async function main() {
       const said = lines.length ? `реплик ${lines.length}: «${short(lines[0].text, 70)}»${lines.length > 1 ? ` … «${short(lines[lines.length - 1].text, 70)}»` : ""}; ` : "";
       history.push(`#${step} ${desc}${input.thought ? ` — «${short(input.thought, 110)}»` : ""} → ${said}${short(other.slice(0, 3).join(" | "), 200) || (said ? "" : "без изменений")}`);
       log(`step ${String(step).padStart(3)}/${cfg.maxSteps} [${(before && before.room) || "?"}→${(after && after.room) || "?"}] ${act}${stepRec.at ? ` (${stepRec.at.x},${stepRec.at.y})` : ""}${model !== cfg.model ? ` model=${model}` : ""} +$${usd.toFixed(4)} = $${budget.spent.toFixed(4)}`);
+      if (cfg.goalFlags && cfg.goalFlags.length && after && cfg.goalFlags.every((f) => after.flags && after.flags[f])) {
+        run.goalReached = step;
+        run.stop = `цель отрезка достигнута на шаге ${step} (${cfg.goalFlags.join(", ")})`;
+        break;
+      }
       if (noProgress >= (mode === "acceptance" ? 40 : 45)) { run.stop = `застряла: ${noProgress} шагов без продвижения`; break; }
     }
     if (!run.stop) run.stop = `потолок шагов: ${cfg.maxSteps}`;
@@ -998,7 +1103,7 @@ async function main() {
           let title = ""; try { title = JSON.parse(sv.text).title || ""; } catch (_) {}
           run.saves.push({ slot, title, key: sv.key });
           // A checkpoint the game wrote itself («День второй», day3 …) replaces the shared start save of later gates.
-          if (title && /^day\d+$/.test(slot) && !dry && !(run.startSave && run.startSave.slot === slot)) {
+          if (title && /^day\d+$/.test(slot) && !dry && !P && !(run.startSave && run.startSave.slot === slot)) {
             fs.mkdirSync(path.join(ROOT, "Docs", "playtest", "saves"), { recursive: true });
             fs.writeFileSync(path.join(ROOT, "Docs", "playtest", "saves", `${slot}.json`), sv.text);
             run.harness.push(`checkpoint ${slot} «${title}» → Docs/playtest/saves/${slot}.json (start of later gates)`);
@@ -1010,6 +1115,8 @@ async function main() {
   run.end = endState ? { room: endState.room, inventory: endState.inventory, goal: endState.goal, flags: truthyFlags(endState).length } : null;
   run.endFlags = endState ? truthyFlags(endState) : [];
   run.blocked = blockedScenes(run.endFlags, run.rooms);
+  if (P) run.coverage = coverage(run.endFlags, run.rooms, run.transcript);
+  if (cfg.goalFlags) run.goal = { flags: cfg.goalFlags, reached: cfg.goalFlags.every((f) => run.endFlags.includes(f)), step: run.goalReached || null };
   if (mode === "acceptance") {
     for (const r of checklist ? checklist.rows : []) {
       if (!run.verdicts[r.num]) run.verdicts[r.num] = { item: r.num, status: "не дошёл", seen: `вердикта нет: прогон остановлен (${run.stop})`, frames: [], step: null, auto: true };
@@ -1045,7 +1152,7 @@ async function main() {
         content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: fs.readFileSync(frames.get(id).file).toString("base64") } });
       }
       content.push({ type: "text", text: reportInput });
-      const base = { model: cfg.reportModel, max_tokens: 16000, system: reportSystem(mode), messages: [{ role: "user", content }] };
+      const base = { model: cfg.reportModel, max_tokens: 16000, system: reportSystem(mode, cfg.persona), messages: [{ role: "user", content }] };
       let resp;
       const long = { log, timeoutMs: 300000, attempts: 3, stream: true };   // the report with thinking: streamed
       try { resp = await callClaude(apiKey, { ...base, output_config: { effort: "medium" } }, long); }
@@ -1067,6 +1174,7 @@ async function main() {
   fs.writeFileSync(path.join(outDir, "log.json"), JSON.stringify({
     cfg: run.cfg, version: run.version, started: run.started, stop: run.stop, probe: run.probe, end: run.end, start_save: run.startSave, saves: run.saves,
     rooms: run.rooms, flags_order: run.flagsOrder, blocked_scenes: run.blocked, harness: run.harness, console_errors: run.consoleErrors, console_warnings: run.consoleWarnings,
+    persona: cfg.persona || undefined, segment: cfg.segmentId || undefined, goal: run.goal, anomalies: run.anomalies, inventory_log: run.invLog, coverage: run.coverage, end_flags: run.endFlags,
     checklist: run.checklist, verdict_history: run.verdictHistory, notes: run.notes, frames: run.frames,
     steps: run.steps, transcript: run.transcript,
   }, null, 1));
@@ -1076,7 +1184,8 @@ async function main() {
   // Summary line for the workflow's commit message.
   const sum = mode === "acceptance"
     ? Object.values(run.verdicts).reduce((a, v) => { a[v.status] = (a[v.status] || 0) + 1; return a; }, {})
-    : { шагов: run.steps.length };
+    : run.goal ? { [run.goal.reached ? "цель достигнута" : "цель НЕ достигнута"]: run.goal.flags.join("+"), шагов: run.steps.length }
+    : { шагов: run.steps.length, ...(P ? { аномалий: run.anomalies.length } : {}) };
   fs.writeFileSync(path.join(ROOT, "build", "ai_playtest", "last_out.txt"), path.relative(ROOT, outDir));
   fs.writeFileSync(path.join(workDir, "summary.txt"), `${path.basename(outDir)}: ${Object.entries(sum).map(([k, v]) => `${k} ${v}`).join(", ")}; $${budget.spent.toFixed(2)}`);
   process.exit(0);
@@ -1122,6 +1231,89 @@ function blockedScenes(flags, rooms) {
   return out.slice(0, 25);
 }
 
+
+// --- Persona helpers: the route of a segment, one-time lines, coverage ------------------------------------------------
+
+function storyScenes() {
+  const out = [];
+  try {
+    const dir = path.join(ROOT, "data", "story", "scenes");
+    const files = fs.readdirSync(dir).filter((f) => /^E\d+\.json$/.test(f)).sort((a, b) => Number(a.slice(1, -5)) - Number(b.slice(1, -5)));
+    for (const f of files) for (const sc of (JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")).scenes || [])) out.push(sc);
+  } catch (_) { /* no data */ }
+  return out;
+}
+let TEXTS = null;
+function texts() {
+  if (TEXTS) return TEXTS;
+  TEXTS = new Map();
+  try {
+    const dir = path.join(ROOT, "data", "story", "text");
+    for (const f of fs.readdirSync(dir).filter((x) => /^ru_.*\.json$/.test(x))) {
+      for (const [k, v] of Object.entries(JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")).texts || {})) {
+        TEXTS.set(k, typeof v === "string" ? v : (v && v.line && v.line.text) || (v && v.text) || "");
+      }
+    }
+  } catch (_) { /* no data */ }
+  return TEXTS;
+}
+const tx = (ref) => (typeof ref === "string" && ref.startsWith("@") ? texts().get(ref.slice(1)) || "" : String(ref || ""));
+const normText = (t) => String(t || "").replace(/[«»"„“”]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+
+/** The walkthrough of a segment: main scenes from route[0] to route[1] (inclusive) — where, what to do, the game's hints. */
+function routeText(route) {
+  if (!route || !route.length) return "";
+  const sc = storyScenes().filter((x) => x.type === "main");
+  const a = sc.findIndex((x) => x.id === route[0]);
+  const b = route[1] ? sc.findIndex((x) => x.id === route[1]) : a;
+  if (a < 0 || b < a) return "";
+  const loc = {};
+  try { for (const l of JSON.parse(fs.readFileSync(path.join(ROOT, "data", "story", "locations.json"), "utf8")).locations || []) loc[l.id] = l.name; } catch (_) {}
+  return sc.slice(a, b + 1).map((x, i) => `${i + 1}. «${x.title || x.id}» — где: ${(x.locations || []).map((r) => loc[r] || r).join(", ")}. ${(x.actions || []).join("; ")}${(x.hints || []).length ? ` Подсказки игры: ${x.hints.join(" / ")}.` : ""}`).join("\n");
+}
+
+/** Text of every mandatory scene line → its id (M03.4): they play once, a second showing is a replay. */
+function mandatoryLines() {
+  const m = new Map();
+  for (const sc of storyScenes()) (sc.mandatory_lines || []).forEach((ln, i) => {
+    if (ln.text && ln.text.length >= 12) m.set(normText(ln.text), `${sc.id}.${i}`);
+  });
+  return m;
+}
+
+/** Coverage for persona reports: side stories (data/story/quests.json), choice flags, examined places per visited room. */
+function coverage(endFlags, rooms, transcript) {
+  const have = new Set(endFlags);
+  const seenTxt = new Set(transcript.map((t) => normText(t.text)));
+  const out = { quests: [], choices: [], rooms: [] };
+  try {
+    const q = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "story", "quests.json"), "utf8"));
+    for (const x of q.quests || []) {
+      const opts = ((x.choice && x.choice.options) || []);
+      const ch = opts.find((o) => have.has(o.sets));
+      const started = [...have].some((f) => f.toLowerCase().startsWith(`${x.id.toLowerCase()}_`));
+      out.quests.push({ id: x.id, title: x.title || "", reserve: !!x.reserve, done: have.has(`done_${x.id}`), started: started || !!ch, choice: ch ? ch.id : "" });
+    }
+  } catch (_) {}
+  const choiceRe = /^(v0\d|q\d\d)_|_answer_|^board_|^mitten_/;
+  out.choices = [...have].filter((f) => choiceRe.test(f)).sort();
+  for (const r of [...new Set(rooms)]) {
+    try {
+      const d = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "story", "rooms", `${r}.json`), "utf8"));
+      let total = 0, seen = 0;
+      const unseen = [];
+      for (const h of d.hotspots || []) {
+        const look = tx(h.look);
+        if (!look) continue;
+        total += 1;
+        if (seenTxt.has(normText(look))) seen += 1; else unseen.push(tx(h.label) || h.id);
+      }
+      if (total) out.rooms.push({ room: r, total, seen, unseen });
+    } catch (_) {}
+  }
+  return out;
+}
+
 /** Verdicts in the checklist's order (row ids are strings: "6", "6а", "7"). */
 const vSort = (cl) => { const c = byDocOrder(cl ? cl.rows.map((r) => r.num) : []); return (a, b) => c(a.item, b.item); };
 
@@ -1141,7 +1333,10 @@ function saveTitle(ss) {
 
 function buildReportInput(run, cfg, checklist) {
   const L = [];
-  L.push(`РЕЖИМ: ${cfg.mode === "acceptance" ? "приёмка по чеклисту" : "свежий взгляд новичка"}. Сборка: ${run.version || "?"} (${run.cfg.url}).`);
+  const P = personaOf(cfg.persona);
+  L.push(`РЕЖИМ: ${cfg.mode === "acceptance" ? "приёмка по чеклисту" : P ? `роль «${P.title}» — ${P.goal}` : "свежий взгляд новичка"}${cfg.segmentId ? `, отрезок ${cfg.segmentId}` : ""}. Сборка: ${run.version || "?"} (${run.cfg.url}).`);
+  if (run.startNote) L.push(`Начало: ${run.startNote}`);
+  if (run.goal) L.push(`Цель отрезка: ${cfg.goal || run.goal.flags.join(", ")} — ${run.goal.reached ? `ДОСТИГНУТА${run.goal.step ? ` на шаге ${run.goal.step}` : ""}` : "НЕ достигнута"}.`);
   L.push(`Остановка: ${run.stop}. Шагов: ${run.steps.length} из ${cfg.maxSteps}.`);
   if (process.env.SITE_NOTE) L.push(`ВНИМАНИЕ: ${process.env.SITE_NOTE}. Если пункт описывает правку, которой в этой сборке ещё нет, — так и напиши («сборка старше правки»), не выдавай за дефект.`);
   if (cfg.note) L.push(`Замечание к прогону: ${cfg.note}`);
@@ -1167,6 +1362,18 @@ function buildReportInput(run, cfg, checklist) {
     L.push("Незавершённые сцены посещённых мест и чего им не хватает (по данным data/story; «A ← B» — флаг A даёт сцена B). Используй, чтобы отличить дефект игры от пропущенного игроком шага:");
     for (const b of run.blocked) L.push(`- ${b}`);
   }
+  if (P) {
+    L.push(`Объективные аномалии (посчитала программа по состоянию игры): ${run.anomalies.length ? "" : "нет"}`);
+    for (const a of run.anomalies.slice(0, 60)) L.push(`- шаг ${a.step} [${a.kind}] ${a.text}`);
+    if (run.invLog.length) L.push(`Сумка по шагам (+ получено, − ушло): ${run.invLog.slice(0, 80).map((x) => `#${x.step} [${x.room}] ${x.plus.map((i) => "+" + i).join(" ")}${x.minus.map((i) => " −" + i).join("")} («${x.desc}»)`).join("; ")}`);
+    if (run.coverage) {
+      const c = run.coverage;
+      L.push("ПОКРЫТИЕ (по данным игры и дословным текстам прогона):");
+      L.push(`- Необязательные истории: ${c.quests.map((q) => `${q.id} «${q.title}»${q.reserve ? " (резерв)" : ""}: ${q.done ? "закончена" : q.started ? "начата" : "нет"}${q.choice ? `, выбор ${q.choice}` : ""}`).join("; ")}`);
+      L.push(`- Выборы (флаги вариантов): ${c.choices.join(", ") || "—"}`);
+      for (const r of c.rooms) L.push(`- ${r.room}: осмотрено ${r.seen} из ${r.total}${r.unseen.length ? `; не осмотрено: ${r.unseen.slice(0, 14).join(", ")}${r.unseen.length > 14 ? " …" : ""}` : ""}`);
+    }
+  }
   if (run.harness.length) L.push(`Технические события плейтеста: ${run.harness.map((h) => short(h, 200)).join(" | ")}`);
   if (run.consoleErrors.length) L.push(`Ошибки консоли браузера: ${run.consoleErrors.slice(0, 8).join(" | ")}`);
   if (run.consoleWarnings.length) L.push(`Предупреждения игры (Godot WARNING, не ошибки): ${[...new Set(run.consoleWarnings)].slice(0, 12).join(" | ")}`);
@@ -1176,7 +1383,9 @@ function buildReportInput(run, cfg, checklist) {
 
 function renderReport(run, cfg, checklist, body, budget, minutes) {
   const L = [];
-  const title = cfg.mode === "acceptance" ? `ИИ-плейтест: приёмка, пункты ${checklist && checklist.rows.length ? `${checklist.rows[0].num}–${checklist.rows[checklist.rows.length - 1].num}` : cfg.items.join(", ")}` : "ИИ-плейтест: свежий взгляд новичка";
+  const P = personaOf(cfg.persona);
+  const title = cfg.mode === "acceptance" ? `ИИ-плейтест: приёмка, пункты ${checklist && checklist.rows.length ? `${checklist.rows[0].num}–${checklist.rows[checklist.rows.length - 1].num}` : cfg.items.join(", ")}`
+    : P ? `ИИ-плейтест в роли: ${P.title}${cfg.segmentId ? ` — отрезок ${cfg.segmentId}` : ""}` : "ИИ-плейтест: свежий взгляд новичка";
   const link = (id) => (run.frames.some((f) => f.id === id) ? `[${id}](${id}.jpg)` : id);
   L.push(`# ${title} — ${run.started.slice(0, 10)}`);
   L.push("");
@@ -1188,6 +1397,8 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
   L.push(`- Шагов: ${run.steps.length} из ${cfg.maxSteps}; время ${minutes} мин. Остановка: ${run.stop}`);
   L.push(`- Стоимость прогона: **$${budget.spent.toFixed(3)}** (по usage ответов API, подробно — usage.json; предохранитель от зацикливания — $${cfg.maxUsd})`);
   L.push(`- Где оказалась по факту: ${run.rooms.join(" → ") || "—"}${run.end ? `; конец — ${run.end.room}` : ""}`);
+  if (run.goal) L.push(`- Цель отрезка (${run.goal.flags.join(", ")}): **${run.goal.reached ? `достигнута${run.goal.step ? ` на шаге ${run.goal.step}` : ""}` : "не достигнута"}**`);
+  if (P) L.push(`- Объективные аномалии по состоянию игры: ${run.anomalies.length}${run.anomalies.length ? ` (${[...new Set(run.anomalies.map((a) => a.kind))].join(", ")}; log.json → anomalies)` : ""}`);
   if (run.consoleErrors.length) L.push(`- Ошибки консоли браузера: ${run.consoleErrors.length} (log.json)`);
   if (run.consoleWarnings.length) L.push(`- Предупреждения игры (Godot WARNING): ${run.consoleWarnings.length} (log.json)`);
   L.push("");
@@ -1204,6 +1415,12 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
     for (const v of Object.values(run.verdicts).sort(vSort(checklist))) {
       L.push(`| ${v.item} | ${v.status} | ${String(v.seen).replace(/\|/g, "/").replace(/\n/g, " ")} | ${v.frames.map(link).join(", ") || "—"} |`);
     }
+    L.push("");
+  }
+  if (run.anomalies && run.anomalies.length) {
+    L.push("## Приложение: объективные аномалии (по состоянию игры)");
+    L.push("");
+    for (const a of run.anomalies.slice(0, 60)) L.push(`- шаг ${a.step}, ${a.kind}: ${a.text}`);
     L.push("");
   }
   if (run.notes.length) {
