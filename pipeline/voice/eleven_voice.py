@@ -852,7 +852,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                 has_src = e is not None and same_spec(e, sha, vsha, spec) and (vs["dir"] / e.get("source", "-")).is_file()
                 action = "process" if has_src and lid not in redo else "synth"   # ответ API уже есть — только обработать
             elif (req.get("reprocess") or e.get("loudness_target_lufs") != target
-                  or int(e.get("vorbis_q", 5)) != vorbis_quality(lc)):
+                  or int(e.get("vorbis_q", 5)) != vorbis_quality(lc)
+                  or abs(float(e.get("lufs", target)) - target) > 1.0):   # выброс громкости — переобработать
                 action = "process"   # громкость или качество OGG сменились — из src/*.mp3, без кредитов
             if action:
                 plan.append({"set": vs, "id": lid, "line": ln, "spec": spec, "action": action})
