@@ -9,8 +9,9 @@ extends CanvasLayer
 ##
 ## While it is open the tree is paused (Main syncs it from `visibility_changed`): game time, walking, NPCs, lines,
 ## stagings and mini-games stand still; a voice line is held and resumes. This layer always runs.
-## Esc (handle_escape): a close-up or a mechanic closes itself first (their own _input); then the save / settings
-## panel, the journal or the plan; only with nothing open does Esc open the pause — and Esc again closes it.
+## Esc (handle_escape): a close-up or a mechanic closes itself first (their own _input; a mechanic that cannot be
+## left — the boat's crossing — keeps Esc, the «Меню» button above it still pauses); then the save / settings panel,
+## the journal or the plan; only with nothing open does Esc open the pause — and Esc again closes it.
 
 signal action_taken(id: String)
 

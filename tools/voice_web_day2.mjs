@@ -170,14 +170,21 @@ async function main() {
     check(s.room === "H1" && s.flags.done_N01 && !s.flags.done_M09, "?start=day2 — the house, day one done, day two not started",
       JSON.stringify({ room: s.room, done_N01: s.flags.done_N01 }));
 
-    // Menu: music and sounds at 0 % (clicks unlock the AudioContext), voice stays 100 %.
+    // «Меню» → the pause → «Настройки»: music and sounds at 0 % (clicks unlock the AudioContext), voice stays 100 %.
     await click("ui MenuButton", s.ui.buttons.MenuButton);
-    s = await waitFor("menu open", state, (t) => t.ui && t.ui.menu_open && t.ui.music_slider && t.ui.voice_slider, 8000);
+    s = await waitFor("pause open", state, (t) => t.pause && t.pause.open && t.pause.blur > 0.99 && t.pause.items.settings, 8000);
+    await click("pause «Настройки»", s.pause.items.settings);
+    s = await waitFor("settings open", state, (t) => t.ui && t.ui.menu_open && t.ui.music_slider && t.ui.voice_slider, 8000);
     await click("music slider at 0 %", { x: s.ui.music_slider.x + 1, y: s.ui.music_slider.y + s.ui.music_slider.h / 2 });
     await click("sound slider at 0 %", { x: s.ui.sfx_slider.x + 1, y: s.ui.sfx_slider.y + s.ui.sfx_slider.h / 2 });
     await waitFor("music muted", music, (x) => x.music_volume <= 0.02, 5000);
     check(s.ui.voice_slider.value === 100, "«Голос» at 100 %", JSON.stringify(s.ui.voice_slider));
-    // A real save of this morning into a menu slot; then «Новая игра» and «Загрузить» — day two starts from a save.
+    // A real save of this morning into a menu slot (pause «Сохранить»); then «В главное меню» → «Новая игра» and
+    // pause «Загрузить» — day two starts from a save.
+    await click("CloseMenu (back to the pause)", s.ui.buttons.CloseMenu);
+    s = await waitFor("back to the pause", state, (t) => t.ui && !t.ui.menu_open && t.pause && t.pause.open, 8000);
+    await click("pause «Сохранить»", s.pause.items.save);
+    s = await waitFor("save slots open", state, (t) => t.ui && t.ui.menu_open && t.ui.menu_mode === "save", 8000);
     const saveKey = Object.keys(s.ui.buttons).filter((k) => k.startsWith("Save") && !/auto/i.test(k)).sort()[0];
     check(!!saveKey, "the menu offers a save slot", Object.keys(s.ui.buttons).join(", "));
     const slot = saveKey ? saveKey.slice(4) : "";
@@ -186,13 +193,19 @@ async function main() {
     check(/Сохранено/.test(String(s.last_hint || "")), `saved into slot ${slot}`, String(s.last_hint || ""));
     // «Новая игра» wipes the state (the post office, day one), then «Загрузить» the slot: day two comes back from the save.
     // (Same page: across a page reload headless Chromium did not keep user:// — IndexedDB — in this harness.)
-    await click("NewGame", s.ui.buttons.NewGame);
+    await click("CloseMenu (back to the pause)", s.ui.buttons.CloseMenu);
+    s = await waitFor("back to the pause", state, (t) => t.ui && !t.ui.menu_open && t.pause && t.pause.open, 8000);
+    await click("pause «В главное меню»", s.pause.items.main_menu);
+    s = await waitFor("title open", state, (t) => t.title && t.title.open && t.title.items && t.title.items.new_game, 8000);
+    await click("title «Новая игра»", s.title.items.new_game);
     s = await waitFor("new game: post office", state, (t) => t.room === "Z1" && t.flags && !t.flags.done_N01, 20000);
     check(s.room === "Z1" && !s.flags.done_N01, "«Новая игра»: back at the post office, day one not done", JSON.stringify({ room: s.room }));
     await sleep(800);
     s = await state();
     await click("ui MenuButton", s.ui.buttons.MenuButton);
-    s = await waitFor("menu open", state, (t) => t.ui && t.ui.menu_open && t.ui.buttons["Load" + slot], 8000);
+    s = await waitFor("pause open", state, (t) => t.pause && t.pause.open && t.pause.blur > 0.99 && t.pause.items.load, 8000);
+    await click("pause «Загрузить»", s.pause.items.load);
+    s = await waitFor("load slots open", state, (t) => t.ui && t.ui.menu_open && t.ui.buttons["Load" + slot], 8000);
     await sleep(400);
     await click(`load slot ${slot}`, s.ui.buttons["Load" + slot]);
     s = await waitFor("loaded: morning of day two", state, (t) => t.room === "H1" && t.flags && t.flags.done_N01 && !t.flags.done_M09, 20000);

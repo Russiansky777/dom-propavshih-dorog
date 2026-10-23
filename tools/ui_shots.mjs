@@ -235,12 +235,18 @@ async function main() {
       await waitFor("journal closed", (t) => !t.ui.journal_open, 5000);
       await click("Hint", (await state()).ui.buttons.HintButton);
       await sleep(400);
-      await click("Menu", (await state()).ui.buttons.MenuButton);
-      await waitFor("menu open", (t) => t.ui.menu_open, 5000);
-      await sleep(400);
+      await click("Menu", (await state()).ui.buttons.MenuButton);   // «Меню» → the pause over the blurred frame
+      await waitFor("pause open", (t) => t.pause && t.pause.open && t.pause.blur > 0.99, 5000);
+      await sleep(200);
       await shot("08_menu");
+      await click("pause «Сохранить»", (await state()).pause.items.save);
+      await waitFor("save slots open", (t) => t.ui.menu_open, 5000);
+      await sleep(400);
+      await shot("08b_menu_slots");
       await click("Close menu", (await state()).ui.buttons.CloseMenu);
-      await waitFor("menu closed", (t) => !t.ui.menu_open, 5000);
+      await waitFor("menu closed", (t) => !t.ui.menu_open && t.pause.open, 5000);
+      await click("pause «Продолжить»", (await state()).pause.items.continue);
+      await waitFor("pause closed", (t) => !t.pause.open, 5000);
       await mapFrames();
       await page.close();
 

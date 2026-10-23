@@ -106,7 +106,7 @@ function screenSig(s) {
   if (!s) return "";
   const pz = s.puzzle || {}, ui = s.ui || {}, eh = ui.exit_hints || {};
   return JSON.stringify([progressSig(s), Math.round(((s.player && s.player.x) || 0) / 8), Math.round(((s.player && s.player.y) || 0) / 8),
-    s.selected_item, ui.journal_open, ui.menu_open, ui.map_open, eh.hint_panel && eh.hint_panel.visible, eh.hover, eh.reveal,
+    s.selected_item, ui.journal_open, ui.menu_open, ui.map_open, !!(s.pause && s.pause.open), !!(s.title && s.title.open), eh.hint_panel && eh.hint_panel.visible, eh.hover, eh.reveal,
     pz.carry, pz.dragging, pz.errors, pz.leaf, Math.round((pz.beam_dx || 0) / 6), s.last_hint]);
 }
 
@@ -594,6 +594,8 @@ async function main() {
     }
     if (after.ui && after.ui.journal_open) events.push("Открыт журнал.");
     if (after.ui && after.ui.menu_open) events.push("Открыто меню.");
+    if (after.pause && after.pause.open && !(before && before.pause && before.pause.open)) events.push("Открылось меню паузы (игра стоит; «Продолжить» или Escape — назад).");
+    if (after.title && after.title.open && !(before && before.title && before.title.open)) events.push("Открылось главное меню.");
     if (after.puzzle && after.puzzle.open && !(before && before.puzzle && before.puzzle.open)) events.push("Открылся крупный план.");
     if (after.view && after.view.open && !(before && before.view && before.view.open)) events.push("Открылся крупный план (просмотр).");
   };
@@ -747,11 +749,14 @@ async function main() {
         } catch (e) { run.harness.push(`start point failed: ${short(e && e.message, 160)}`); }
       }
       if (run.startSave && cfg.startSave.load !== false) {
-        // Like a player: «Меню» → the slot's «Загрузить» (real clicks on the probe's button centres).
+        // Like a player: «Меню» → the pause's «Загрузить» → the slot's «Загрузить» (real clicks on the probe's centres).
         try {
           let s0 = await state();
           const mb = s0 && s0.ui && s0.ui.buttons && s0.ui.buttons.MenuButton;
           if (mb) { await page.mouse.click(mb.x, mb.y); await sleep(900); }
+          s0 = await state();
+          const pl = s0 && s0.pause && s0.pause.open && s0.pause.items && s0.pause.items.load;
+          if (pl) { await page.mouse.click(pl.x, pl.y); await sleep(900); }
           s0 = await state();
           const lb = s0 && s0.ui && s0.ui.buttons && s0.ui.buttons[`Load${run.startSave.slot}`];
           if (!lb) throw new Error(`no Load${run.startSave.slot} in the menu (${Object.keys((s0 && s0.ui && s0.ui.buttons) || {}).join(",")})`);

@@ -133,9 +133,8 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey and event.pressed and not event.echo and \
 			(event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE):
-		# A mechanic that cannot be left lets Esc through to the pause menu (PauseMenu: it pauses over it).
+		get_viewport().set_input_as_handled()
 		if bool(spec.get("closable", true)):
-			get_viewport().set_input_as_handled()
 			StoryRunner.close_mechanic()
 
 

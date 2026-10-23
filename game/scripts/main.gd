@@ -160,8 +160,9 @@ func _title_wanted() -> bool:
 			var q = new URLSearchParams(window.location.search);
 			if (q.get('title') === '1') return 'show';
 			if (q.get('title') === '0') return 'skip';
-			var flags = ['start', 'agata', 'probe', 'test', 'notitle'];
+			var flags = ['start', 'agata', 'test', 'notitle'];
 			for (var i = 0; i < flags.length; i++) if (q.has(flags[i])) return 'skip';
+			for (const k of q.keys()) if (k.indexOf('probe') >= 0) return 'skip';   // ?probe, ?ambientprobe …
 			return navigator.webdriver ? 'skip' : 'show';
 		})()""", true)
 		return String(v) == "show"

@@ -183,8 +183,10 @@ async function main() {
 
     // 1. Music and sounds to 0 % (the menu clicks also unlock the AudioContext).
     let s = await state();
-    await click("ui MenuButton", s.ui.buttons.MenuButton);
-    s = await waitFor("menu open", state, (t) => t.ui && t.ui.menu_open && t.ui.music_slider && t.ui.voice_slider, 8000);
+    await click("ui MenuButton", s.ui.buttons.MenuButton);   // «Меню» → the pause → «Настройки»
+    s = await waitFor("pause open", state, (t) => t.pause && t.pause.open && t.pause.blur > 0.99 && t.pause.items.settings, 8000);
+    await click("pause «Настройки»", s.pause.items.settings);
+    s = await waitFor("settings open", state, (t) => t.ui && t.ui.menu_open && t.ui.music_slider && t.ui.voice_slider, 8000);
     const r0 = s.ui.music_slider;
     await click("music slider at 0 %", { x: r0.x + 1, y: r0.y + r0.h / 2 });
     const rs = s.ui.sfx_slider;
@@ -195,6 +197,9 @@ async function main() {
       `music ${m.music_volume?.toFixed(2)}, sounds ${fx.sfx_volume?.toFixed(2)}`);
     check(s.ui.voice_slider && s.ui.voice_slider.value === 100, "menu shows «Голос» at 100 %", JSON.stringify(s.ui.voice_slider));
     await click("CloseMenu", s.ui.buttons.CloseMenu);
+    s = await waitFor("back to the pause", state, (t) => t.ui && !t.ui.menu_open && t.pause && t.pause.open, 8000);
+    await click("pause «Продолжить»", s.pause.items.continue);
+    await waitFor("pause closed", state, (t) => t.pause && !t.pause.open, 8000);
     await sleep(800);
     const quiet0 = await rms(600);
     report.steps.silence_before = quiet0;
@@ -331,7 +336,9 @@ async function main() {
     // 6. «Голос» at 50 %.
     s = await state();
     await click("ui MenuButton", s.ui.buttons.MenuButton);
-    s = await waitFor("menu open", state, (t) => t.ui && t.ui.menu_open && t.ui.voice_slider, 8000);
+    s = await waitFor("pause open", state, (t) => t.pause && t.pause.open && t.pause.blur > 0.99 && t.pause.items.settings, 8000);
+    await click("pause «Настройки»", s.pause.items.settings);
+    s = await waitFor("settings open", state, (t) => t.ui && t.ui.menu_open && t.ui.voice_slider, 8000);
     const rv = s.ui.voice_slider;
     await click("voice slider at 50 %", { x: rv.x + rv.w * 0.5, y: rv.y + rv.h * 0.5 });
     v = await waitFor("voice volume ≈ 50 %", voice, (x) => Math.abs(x.voice_volume - 0.5) <= 0.03, 4000);

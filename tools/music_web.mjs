@@ -425,7 +425,9 @@ async function main() {
 
     // --- 5. Menu slider → bus, saved in user:// and back after a reload ----------------------
     let s = await state();
-    await click("ui MenuButton", s.ui.buttons.MenuButton);
+    await click("ui MenuButton", s.ui.buttons.MenuButton);   // «Меню» → the pause → «Настройки»
+    s = await waitFor("pause open", state, (t) => t.pause && t.pause.open && t.pause.blur > 0.99 && t.pause.items.settings, 5000);
+    await click("pause «Настройки»", s.pause.items.settings);
     s = await waitFor("menu open with the music slider", state, (t) => t.ui && t.ui.menu_open && t.ui.music_slider, 5000);
     const r = s.ui.music_slider;
     // Godot's HSlider maps the click across the whole control width (grabber margins aside).

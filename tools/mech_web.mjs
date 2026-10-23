@@ -166,6 +166,12 @@ async function main() {
   // office_unbolted would make the hook already solved) and with no mechanic open (closed by a real click).
   const fresh = async (label) => {
     let s = await state();
+    // An Escape in a part's clean-up with nothing open brings up the pause menu (Esc → pause): close it first.
+    if (s && s.pause && s.pause.open && s.pause.items && s.pause.items.continue) {
+      await click(`${label}: close the pause`, s.pause.items.continue);
+      await waitFor(`${label}: pause closed`, (t) => !(t.pause && t.pause.open), 20000);
+      s = await state();
+    }
     if (s && s.mechanic && s.mechanic.open && s.mechanic.close) {
       await click(`${label}: close the previous mechanic`, s.mechanic.close);
       await waitFor(`${label}: mechanic closed`, (t) => !(t.mechanic && t.mechanic.open), 60000);
@@ -542,11 +548,18 @@ async function main() {
       await goto("H2");   // a room change: the autosave (G5) — written once nothing is on screen
       await sleep(1500);
       let s = await state();
+      // «Меню» → the pause: «Загрузить» shows the autosave row, «Настройки» the easy mini-games switch.
       await click("menu", s.ui.buttons.MenuButton);
-      s = await waitFor("menu open", (t) => t.ui && t.ui.menu_open && t.ui.slots, 30000);
-      check(s.ui.timing_slow_label === "Облегчить мини-игры", `G3: the setting reads «${s.ui.timing_slow_label}»`);
+      s = await waitFor("pause open", (t) => t.pause && t.pause.open && t.pause.blur > 0.99 && t.pause.items.load, 30000);
+      await click("pause «Загрузить»", s.pause.items.load);
+      s = await waitFor("load slots open", (t) => t.ui && t.ui.menu_open && t.ui.slots, 30000);
       const auto = (s.ui.slots || {}).auto || {};
       check(auto.visible && auto.text === "День второй · Мастерская · вечер", `G4/G5: the autosave row «${auto.text}»`);
+      await click("back to the pause", s.ui.buttons.CloseMenu);
+      s = await waitFor("back to the pause", (t) => t.ui && !t.ui.menu_open && t.pause && t.pause.open, 20000);
+      await click("pause «Настройки»", s.pause.items.settings);
+      s = await waitFor("settings open", (t) => t.ui && t.ui.menu_open && t.ui.buttons.TimingSlow, 30000);
+      check(s.ui.timing_slow_label === "Облегчить мини-игры", `G3: the setting reads «${s.ui.timing_slow_label}»`);
       const was = !!s.ui.timing_slow;
       if (was) {   // left on by a part before (the setting is kept like in the game): off first
         await click("«Облегчить мини-игры» off", s.ui.buttons.TimingSlow);
@@ -562,7 +575,9 @@ async function main() {
       }
       s = await state();
       await click("close menu", s.ui.buttons.CloseMenu);
-      await waitFor("menu closed", (t) => t.ui && !t.ui.menu_open, 20000);
+      s = await waitFor("menu closed", (t) => t.ui && !t.ui.menu_open && t.pause && t.pause.open, 20000);
+      await click("pause «Продолжить»", s.pause.items.continue);
+      await waitFor("pause closed", (t) => t.pause && !t.pause.open, 20000);
     } catch (e) {
       check(false, `menu: exception ${e.message}`);
       await page.keyboard.press("Escape").catch(() => {});

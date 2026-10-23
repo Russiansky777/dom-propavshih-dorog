@@ -692,13 +692,18 @@ async function main() {
     await waitFor("hint shown", (s) => s.last_hint && s.last_hint.includes("1"), 5000);
     await sleep(300);
     await shot("hint_tier1");
-    await clickUi("MenuButton");
+    await clickUi("MenuButton");   // «Меню» → the pause → «Сохранить»
+    await waitFor("pause open", (s) => s.pause && s.pause.open && s.pause.blur > 0.99, 5000);
+    await click("pause «Сохранить»", (await state()).pause.items.save);
     await waitFor("menu open", (s) => s.ui.menu_open, 5000);
     await clickUi("Save1");
     await waitFor("saved slot 1", (s) => s.last_hint && s.last_hint.includes("1"), 5000);
     await sleep(300);
     await shot("menu_slots");
     await clickUi("CloseMenu");
+    await waitFor("back to the pause", (s) => !s.ui.menu_open && s.pause.open, 5000);
+    await click("pause «Продолжить»", (await state()).pause.items.continue);
+    await waitFor("pause closed", (s) => !s.pause.open, 5000);
 
     const fin = await state();
     logLine(`final: room=${fin.room} inventory=${JSON.stringify(fin.inventory)} flags=${Object.keys(fin.flags).filter((k) => fin.flags[k]).join(",")}`);
