@@ -92,6 +92,7 @@ func _run() -> void:
 	await _test("Examine inside a close-up: on top of it, Esc closes only the examine", _test_examine_over_mechanic)
 	await _test("The plate (F5–F7): the brace by «точный удар» — a miss makes it jump off and resets; the knot drawn along the path — slips back, no penalty; textured rope; save/load", _test_plate)
 	await _test("The shutter (F8): the latch caught up in the green opens it; dropped — again, nothing lost; then only a look", _test_latch)
+	await _test("The crossing (F12, F15): ~10 pulls by click or drag toward herself; the far bank grows, fog thins, snow; no failure, no way out but across; then the far pier", _test_crossing)
 	await _test("Living water (F14): every room that declares water builds it — ripple, trembling reflections, sparkles, flow lines from data", _test_water)
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -796,3 +797,101 @@ func _test_latch() -> void:
 	h = rm.current_room.get_node_or_null("Hotspots/shutter")
 	_check(gs.has_flag("h1_shutter_open") and sr.planned_interaction(h) == "text" and not sr.mechanic_open, "after a load: open, nothing replays")
 	_reached_end = true
+
+
+# --- The crossing (F12, F15) -------------------------------------------------------------------------
+
+func _test_crossing() -> void:
+	Engine.time_scale = 1.0
+	var flags := ["house_unlocked", "done_M15", "rope_on_ring", "road_held_both_ends", "done_M16", "three_lights_sent", "far_lights_answered",
+		"done_M17", "ferry_verified", "evening_dusk"]
+	await _fresh(["school_ribbon"], flags)
+	rm.change_room("R2", "default")
+	await _frames(4)
+	var seen := await _finish()
+	_check(seen.size() >= 4 and seen.any(func(x): return x.begins_with("pelageya:")), "Pelageya speaks first (%d lines)" % seen.size())
+	var g := 0
+	while not sr.mechanic_open and g < 300:
+		await process_frame
+		g += 1
+	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "crossing", "then the crossing close-up")
+	_check(not mv.close_button.visible, "no «Закрыть»: the only way is across")
+	await _key(KEY_ESCAPE)
+	_check(sr.mechanic_open, "Esc does not leave the boat")
+	var p = mv.panel
+	var pr := _panel()
+	_check(int(pr.get("pulls_total", 0)) >= 8 and int(pr.get("pulls_total", 0)) <= 12, "about ten pulls (%d)" % int(pr.get("pulls_total", 0)))
+	var b0 := float(pr.get("band_scale", 0))
+	var f0 := float(pr.get("fog", 0))
+	var s0 := float(pr.get("snow", 0))
+	var rp0 := float(pr.get("rope_phase", 0))
+	# A click — one pull, the boat moves on smoothly (progress grows over several frames).
+	var c := _v(pr.get("center", {}))
+	await _click(c)
+	var progs: Array[float] = []
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t0 < 1200:
+		await process_frame
+		progs.append(float(_panel().get("progress", 0)))
+	_check(int(_panel().get("pulls", 0)) == 1 or bool(_panel().get("pulling", false)), "a click pulls")
+	var smooth := true
+	for i in range(1, progs.size()):
+		if progs[i] < progs[i - 1] - 1e-6:
+			smooth = false
+	_check(smooth and progs[progs.size() - 1] > 0.07 and progs[2] < progs[progs.size() - 1] and progs.size() > 10, "the boat moves on smoothly (%.3f → %.3f over %d frames)" % [progs[0], progs[progs.size() - 1], progs.size()])
+	_check(float(_panel().get("rope_phase", 0)) > rp0, "the rope runs back through the ring")
+	_check(mv.sounds_played.has("ring_creak") and mv.sounds_played.has("water_slap"), "the ring creaks, water at the bow")
+	# A short drag toward herself — a pull too.
+	while bool(_panel().get("pulling", false)):
+		await process_frame
+	var n1 := int(_panel().get("pulls", 0))
+	await _move(c)
+	await _button(c, true)
+	for k in 6:
+		await _move(c + Vector2(4, 14 * (k + 1)))
+	await _button(c + Vector2(4, 84), false)
+	while bool(_panel().get("pulling", false)):
+		await process_frame
+	_check(int(_panel().get("pulls", 0)) == n1 + 1, "a drag toward herself pulls (%d → %d)" % [n1, int(_panel().get("pulls", 0))])
+	# The rest by clicks (and one Space).
+	g = 0
+	while int(_panel().get("pulls", 0)) < int(pr.get("pulls_total", 10)) and g < 40:
+		g += 1
+		if g == 3:
+			await _key(KEY_SPACE)
+		else:
+			await _click(c)
+		var w := 0
+		while bool(_panel().get("pulling", false)) and w < 200:
+			await process_frame
+			w += 1
+	pr = _panel()
+	_check(float(pr.get("band_scale", 0)) > b0 + 0.3 and float(pr.get("fog", 1)) < f0 - 0.4 and float(pr.get("snow", 0)) > s0 + 0.5,
+		"the far bank grew (%.2f→%.2f), fog thinned (%.2f→%.2f), snow (%.2f→%.2f)" % [b0, float(pr.get("band_scale", 0)), f0, float(pr.get("fog", 1)), s0, float(pr.get("snow", 0))])
+	_check(float(pr.get("arrival", 0)) > 0.9, "the far pier's own painting at the end")
+	g = 0
+	while not gs.has_flag("crossing_hauled") and g < 400:
+		await process_frame
+		g += 1
+	_check(gs.has_flag("crossing_hauled"), "across: crossing_hauled")
+	seen = await _finish()
+	g = 0
+	while _room() != "R3" and g < 600:
+		await process_frame
+		g += 1
+	seen += await _finish()
+	_check(_room() == "R3" and gs.has_flag("done_M18p"), "the boat at the far pier: R3, M18p done (room %s)" % _room())
+	_check(gs.has_flag("done_M18") or seen.any(func(x): return x.begins_with("mitya:")), "Mitya at the far pier (%s)" % str(seen).left(200))
+	# Save/load after: nothing replays; R2 again later — no hauling again.
+	_check(rm.save_game(SLOT) and rm.load_game(SLOT), "save/load at the far pier")
+	await _frames(3)
+	_check(gs.has_flag("crossing_hauled") and not sr.can_start("M18p") and not sr.mechanic_open, "crossed stays crossed")
+	rm.change_room("R2", "default")
+	await _frames(4)
+	await _finish()
+	_check(not sr.mechanic_open, "R2 again: no second hauling")
+	_reached_end = true
+
+
+func _room() -> String:
+	return rm.current_room.room_id if rm.current_room != null else ""

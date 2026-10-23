@@ -1046,12 +1046,37 @@ func _test_walkthrough() -> void:
 	# Crossing and the far pier.
 	_check(await _go("R2"), "R1→R2 (along the rope)")
 	seen = await _finish()
-	_check(gs.has_flag("done_M18p"), "the crossing: %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Теперь не вернёт — идём по канату")) and seen.any(func(x): return x.contains("Не лодка нас везёт — канат")),
 			"F10/F15 at the crossing: «Теперь не вернёт…», «Не лодка нас везёт — канат…»: %s" % str(seen))
 	_check(not rm.player.visible, "R2 is seen from the boat: no figure of Agata (player_hidden)")
-	_check(await _go("R3"), "R2→R3")
+	# F12 (Director 23.10): Agata hauls the boat along the rope — about ten pulls; then the far pier.
+	await _wait_mechanic("crossing")
+	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "crossing", "the crossing: haul the rope")
+	var ts12 := Engine.time_scale
+	Engine.time_scale = 1.0
+	var gp := 0
+	while sr.mechanic_open and not gs.has_flag("crossing_hauled") and gp < 60:
+		if int(_panel().get("pulls", 0)) >= int(_panel().get("pulls_total", 10)):
+			break   # across: the arrival plays, nothing more to haul
+		gp += 1
+		await _click(_v(_panel().get("center", {"x": 960, "y": 640})))
+		var wp := 0
+		while sr.mechanic_open and bool(_panel().get("pulling", false)) and wp < 300:
+			await process_frame
+			wp += 1
+	var gw := 0
+	while not gs.has_flag("crossing_hauled") and gw < 600:
+		await process_frame
+		gw += 1
+	Engine.time_scale = ts12
+	_check(gs.has_flag("crossing_hauled") and gp <= 14, "hauled across in %d pulls" % gp)
 	seen = await _finish()
+	var gr := 0
+	while _room() != "R3" and gr < 600:
+		await process_frame
+		gr += 1
+	seen += await _finish()
+	_check(gs.has_flag("done_M18p") and _room() == "R3", "the crossing done, the boat at the far pier (R3): %s" % _room())
 	_check(rm.player.visible, "at the far pier Agata is in the frame again")
 	_check(rm.current_room.get_node_or_null("npc_mitya") != null, "Mitya is a 3D figure at the far pier")
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))

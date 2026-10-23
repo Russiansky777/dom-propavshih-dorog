@@ -11,7 +11,10 @@ extends MechanicPanel
 ## Everything is data (the scene's `mechanics` spec): art, vanishing point, band, pier crop, ring, numbers.
 ## Coordinates: canvas px of the 1672×941 paintings (shown full screen ×1920/1672).
 
-const BAND_SHADER := "shader_type canvas_item;\nuniform float feather = 0.28;\nvoid fragment() {\n\tvec4 c = texture(TEXTURE, UV);\n\tfloat a = smoothstep(0.0, feather, UV.y) * smoothstep(0.0, feather, 1.0 - UV.y);\n\tCOLOR = vec4(c.rgb, c.a * a) * COLOR;\n}\n"
+## (uv_rect: the crop's place in the whole painting — an AtlasTexture's UV runs over the whole picture)
+const BAND_SHADER := "shader_type canvas_item;\nuniform float feather = 0.28;\nuniform vec4 uv_rect = vec4(0.0, 0.0, 1.0, 1.0);\nvoid fragment() {\n\tvec4 c = texture(TEXTURE, UV);\n\tvec2 q = (UV - uv_rect.xy) / uv_rect.zw;\n\tfloat a = smoothstep(0.0, feather, q.y) * smoothstep(0.0, feather, 1.0 - q.y);\n\tCOLOR = vec4(c.rgb, c.a * a) * COLOR;\n}\n"
+## The far pier cut from the arrival painting: soft all round (an ellipse), so it rises out of the fog, no edges.
+const FEATHER_SHADER := "shader_type canvas_item;\nuniform vec4 uv_rect = vec4(0.0, 0.0, 1.0, 1.0);\nvoid fragment() {\n\tvec4 c = texture(TEXTURE, UV);\n\tvec2 d = ((UV - uv_rect.xy) / uv_rect.zw - vec2(0.5, 0.55)) * vec2(2.0, 2.0);\n\tfloat a = smoothstep(1.0, 0.3, length(d));\n\tCOLOR = vec4(c.rgb, c.a * a) * COLOR;\n}\n"
 const FOG_SHADER := "shader_type canvas_item;\nuniform float density = 0.8;\nuniform float t = 0.0;\nuniform vec4 tint : source_color = vec4(0.62, 0.66, 0.74, 1.0);\nfloat h(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }\nfloat n(vec2 p) { vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h(i), h(i + vec2(1, 0)), f.x), mix(h(i + vec2(0, 1)), h(i + vec2(1, 1)), f.x), f.y); }\nvoid fragment() {\n\tvec2 p = UV * vec2(6.0, 2.0);\n\tfloat f = n(p + vec2(t * 0.05, 0.0)) * 0.6 + n(p * 2.3 - vec2(t * 0.08, 0.0)) * 0.4;\n\tfloat band = smoothstep(0.0, 0.35, UV.y) * smoothstep(1.0, 0.55, UV.y);\n\tCOLOR = vec4(tint.rgb, density * band * (0.55 + 0.45 * f));\n}\n"
 ## The painted rope runs back through the ring: pixels of the rope layer are sampled further along the rope's
 ## axis (towards the vanishing point) by `phase` — scaled by the distance from the vanishing point, so near strands
@@ -28,7 +31,7 @@ var rope: TextureRect = null
 var rope_mat: ShaderMaterial = null
 var ring: TextureRect = null
 var arrival: TextureRect = null
-var snow: CPUParticles2D = null
+var snow: SnowField = null
 var hint: Label = null
 var pulls_total: int = 10
 var pulls: int = 0               # finished pulls
@@ -68,6 +71,7 @@ func build() -> void:
 	band.pivot_offset = _vp - band.position
 	var bm := ShaderMaterial.new()
 	bm.shader = _shader(BAND_SHADER)
+	bm.set_shader_parameter("uv_rect", _uv_rect(b, Vector2(1672, 941)))
 	band.material = bm
 	# The far pier (the arrival painting) out of the fog at the vanishing point.
 	var pc: Dictionary = spec.get("pier", {})
@@ -76,6 +80,11 @@ func build() -> void:
 		pier = crop(String(pc.get("image", art.get("arrival", ""))), pr, Vector2.ZERO, 1.0, stage)
 		pier.name = "FarPier"
 		pier.modulate = Color(0.55, 0.6, 0.7, 0.0)
+		var fm := ShaderMaterial.new()
+		fm.shader = _shader(FEATHER_SHADER)
+		var ptex: Texture2D = (pier.texture as AtlasTexture).atlas if pier.texture is AtlasTexture else null
+		fm.set_shader_parameter("uv_rect", _uv_rect(pr, ptex.get_size() if ptex != null else Vector2(1672, 941)))
+		pier.material = fm
 	# Fog over the river between us and the far bank.
 	fog = ColorRect.new()
 	fog.name = "Fog"
@@ -87,24 +96,12 @@ func build() -> void:
 	fog_mat.shader = _shader(FOG_SHADER)
 	fog.material = fog_mat
 	stage.add_child(fog)
-	# Snow near the far pier (more as we come closer).
-	snow = CPUParticles2D.new()
+	# Snow near the far pier (more flakes as we come closer).
+	snow = SnowField.new()
 	snow.name = "Snow"
-	snow.amount = int(spec.get("snow_amount", 160))
-	snow.lifetime = 6.0
-	snow.preprocess = 4.0
-	snow.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	snow.emission_rect_extents = Vector2(1100, 10)
-	snow.position = Vector2(960, -20)
-	snow.direction = Vector2(0.15, 1)
-	snow.spread = 12.0
-	snow.gravity = Vector2(6, 38)
-	snow.initial_velocity_min = 30.0
-	snow.initial_velocity_max = 70.0
-	snow.scale_amount_min = 1.6
-	snow.scale_amount_max = 3.6
-	snow.color = Color(0.95, 0.96, 1.0, 0.85)
-	snow.amount_ratio = 0.0
+	snow.size = Vector2(1920, 1080)
+	snow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	snow.setup(int(spec.get("snow_amount", 160)))
 	stage.add_child(snow)
 	# The rope (the painted layer, its strands sliding back through the ring) and the ring over it.
 	rope = crop(String(art.get("rope", "")), full, Vector2.ZERO, k, stage)
@@ -131,6 +128,10 @@ func build() -> void:
 	hint = label(text("hint"), v2(spec.get("hint_pos", [560, 980])), 800, &"CloseupLabel")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_view()
+
+
+static func _uv_rect(r: Array, tex: Vector2) -> Vector4:
+	return Vector4(float(r[0]) / tex.x, float(r[1]) / tex.y, float(r[2]) / tex.x, float(r[3]) / tex.y)
 
 
 static var _shaders: Dictionary = {}
@@ -171,7 +172,7 @@ func _apply_view() -> void:
 	var fg: Array = spec.get("fog", [0.85, 0.15])
 	fog_mat.set_shader_parameter("density", lerpf(float(fg[0]), float(fg[1]), e))
 	var sn: Array = spec.get("snow", [0.04, 1.0])
-	snow.amount_ratio = lerpf(float(sn[0]), float(sn[1]), smoothstep(0.2, 1.0, p))
+	snow.ratio = lerpf(float(sn[0]), float(sn[1]), smoothstep(0.2, 1.0, p))
 	var af := float(spec.get("arrival_from", 0.8))
 	var ar := smoothstep(af, 1.0, p)
 	arrival.modulate.a = ar
@@ -259,6 +260,35 @@ func _input(ev: InputEvent) -> void:
 
 func probe() -> Dictionary:
 	return {"pulls": pulls, "pulls_total": pulls_total, "pulling": pulling, "progress": progress, "rope_phase": rope_phase,
-		"band_scale": band.scale.x, "fog": float(fog_mat.get_shader_parameter("density")), "snow": snow.amount_ratio,
+		"band_scale": band.scale.x, "fog": float(fog_mat.get_shader_parameter("density")), "snow": snow.ratio,
 		"pier_w": pier.size.x if pier != null else 0.0, "arrival": arrival.modulate.a, "crossed": crossed_sent,
 		"rope": {"x": _ring.x + 140.0, "y": _ring.y + 120.0}, "center": {"x": 960.0, "y": 640.0}}
+
+
+## Falling snow drawn by hand: `ratio` of the flakes are shown (CPUParticles2D cannot thin its flakes smoothly).
+class SnowField extends Control:
+	var flakes: Array = []    # [pos, speed, size, drift phase]
+	var ratio: float = 0.0
+	var _t: float = 0.0
+
+	func setup(n: int) -> void:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 41
+		for i in n:
+			flakes.append([Vector2(rng.randf() * 1920.0, rng.randf() * 1080.0), rng.randf_range(35.0, 95.0), rng.randf_range(1.3, 3.4), rng.randf() * TAU])
+
+	func _process(delta: float) -> void:
+		_t += delta
+		for f in flakes:
+			f[0] += Vector2(sin(_t * 0.8 + f[3]) * 10.0 + 6.0, f[1]) * delta
+			if f[0].y > 1090.0:
+				f[0] = Vector2(fposmod(f[0].x, 1920.0), -10.0)
+			if f[0].x > 1930.0:
+				f[0].x = -10.0
+		queue_redraw()
+
+	func _draw() -> void:
+		var n := int(round(ratio * flakes.size()))
+		for i in n:
+			var f: Array = flakes[i]
+			draw_circle(f[0], f[2], Color(0.95, 0.96, 1.0, 0.8))

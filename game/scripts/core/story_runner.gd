@@ -309,7 +309,7 @@ func start_scene(scene_id: String) -> bool:
 		var line: Dictionary = lines[i]
 		# A scene's close-up comes before the stagings at the same line (the windlass, then the shot of the laid log).
 		for mc in mechs:
-			if int(mc.get("at", -1)) == i:
+			if typeof(mc.get("at")) != TYPE_STRING and int(mc.get("at", -1)) == i:
 				beats.append({"type": "mechanic", "scene": scene_id, "spec": mc.get("spec", {}), "until": String(mc.get("until", ""))})
 		for st in stages:
 			if typeof(st.get("at")) != TYPE_STRING and int(st.get("at", -1)) == i:
@@ -340,6 +340,11 @@ func start_scene(scene_id: String) -> bool:
 				"speaker_name": StoryData.character_name(sp), "text": String(line.get("text", ""))}
 		lb.merge(cond)
 		beats.append(lb)
+	# A close-up after the last line (`at: "end"` — the crossing: Agata hauls the boat once Pelageya has spoken),
+	# before the closing stagings.
+	for mc in mechs:
+		if str(mc.get("at", "")) == "end":
+			beats.append({"type": "mechanic", "scene": scene_id, "spec": mc.get("spec", {}), "until": String(mc.get("until", ""))})
 	for st in stages:
 		if str(st.get("at", "")) == "end":
 			beats.append(_stage_beat(scene_id, st))

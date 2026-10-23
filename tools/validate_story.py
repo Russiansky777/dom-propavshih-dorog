@@ -376,7 +376,7 @@ frame_rooms = set()
 for rf_ in sorted((STORY / "rooms").glob("*.json")):
     if not rf_.name.startswith("_") and json.loads(rf_.read_text(encoding="utf-8")).get("frame"):
         frame_rooms.add(rf_.stem)
-SCENE_MECHANICS = ("windlass",)
+SCENE_MECHANICS = ("windlass", "crossing")
 _switches = meta.get("switches", {}) or {}
 _room_local_flags: set[str] = set()
 for rf_ in sorted((STORY / "rooms").glob("*.json")):
@@ -449,8 +449,8 @@ for s in scenes:
     for i, mc in enumerate(s.get("mechanics", []) or []):
         mctx = f"{s['id']}.mechanics[{i}]"
         at = mc.get("at")
-        if not (isinstance(at, int) and 0 <= at < max(lines_n, 1)):
-            err(f"{mctx}: at {at!r} — номер реплики 0..{lines_n - 1}")
+        if not (at == "end" or (isinstance(at, int) and 0 <= at < max(lines_n, 1))):
+            err(f"{mctx}: at {at!r} — номер реплики 0..{lines_n - 1} или \"end\" (после всех реплик)")
         until = mc.get("until", "")
         sets_ = [f for ev in (mc.get("spec", {}).get("events") or {}).values() for f in ev.get("sets", [])]
         if not until or until not in sets_:

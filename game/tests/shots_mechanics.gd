@@ -15,7 +15,7 @@ var out_dir := ""
 
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
 	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3",
-	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "latch", "latch_up"]
+	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "latch", "latch_up", "crossing_0", "crossing_5", "crossing_9"]
 
 
 func _initialize() -> void:
@@ -180,6 +180,21 @@ func _shot(name: String) -> void:
 			p.timing.logic.phase = 0.39 if name == "latch_up" else 0.08
 			p.timing.hold = true
 			for i in 30:
+				await process_frame
+		"crossing_0", "crossing_5", "crossing_9":
+			await _state(["house_unlocked", "ferry_verified", "done_M17"], [], "R2")
+			while not sr.current_beat.is_empty() or sr.is_staging():
+				if not sr.current_beat.is_empty():
+					sr.advance()
+				await process_frame
+			if not sr.mechanic_open:
+				sr.open_mechanic(sd.scene("M18p")["mechanics"][0]["spec"], "")
+			await _frames(3)
+			var p = mv.panel
+			p.pulls = int(name.right(1))
+			p.progress = float(p.pulls) / float(p.pulls_total)
+			p.rope_phase = 37.0
+			for i in 40:
 				await process_frame
 		_:
 			push_warning("shots_mechanics: unknown shot %s" % name)
