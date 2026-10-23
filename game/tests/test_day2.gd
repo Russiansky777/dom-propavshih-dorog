@@ -528,7 +528,7 @@ func _test_whereabouts() -> void:
 		_check(ex != null and not ex.is_open(), "day one: M1→%s closed until the morning" % to)
 		sr.use_exit(ex)
 		await process_frame
-		_check(String(sr.current_beat.get("text_key", "")) == "M1.exit_%s.closed" % to, "M1→%s: «Павел сказал — приходи утром…» (%s)" % [to, str(sr.current_beat)])
+		_check(String(sr.current_beat.get("text_key", "")) == "M1.exit_%s.closed" % to, "M1→%s: closed until the morning of day two (%s)" % [to, str(sr.current_beat)])
 		await _finish()
 	# Evening of day two: Pelageya at the turn with the boat until the rope is on the plate.
 	await _day_one_done()
@@ -681,7 +681,7 @@ func _test_states() -> void:
 	_check(_npc_line_now(_hotspot("pelageya")).contains("у Павла, на мельнице"), "day two morning: «Вода у Павла, на мельнице» (%s)" % _npc_line_now(_hotspot("pelageya")))
 	gs.set_flag("done_M14")
 	await _frames(2)
-	_check(_npc_line_now(_hotspot("pelageya")).contains("у поворота с лодкой"), "the water going down: she will wait at the turn with the boat (%s)" % _npc_line_now(_hotspot("pelageya")))
+	_check(_npc_line_now(_hotspot("pelageya")).contains("лодку к повороту"), "the water going down: she brings the boat to the turn — the rope goes to the pier by water (%s)" % _npc_line_now(_hotspot("pelageya")))
 	# At dusk before the knot: the boat is gone from the pier — Agata says where (once).
 	for f in ["done_M15a", "nina_time_compared", "evening_dusk"]:
 		gs.set_flag(f)
@@ -1021,7 +1021,7 @@ func _test_walkthrough() -> void:
 		guard += 1
 	seen = await _finish()
 	_check(gs.has_flag("far_lights_answered") and gs.has_flag("road_held_both_ends") and gs.has_flag("done_M16"), "three flashes → three lights → M16: %s" % str(seen))
-	_check(seen.any(func(x): return x.contains("Год там ни одного огня не было")), "Pelageya at the answer: «Год там ни одного огня не было»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Первые огни за год")), "Pelageya at the answer: «Отвечают. Первые огни за год» (V13: not one more «Год там…»): %s" % str(seen))
 	sr.close_mechanic()
 	await _frames(2)
 	var lay: Node = rm.current_room.get_node("Layers")
@@ -1044,7 +1044,7 @@ func _test_walkthrough() -> void:
 	var n_before: int = gs.inventory.count("school_ribbon")
 	await _use("pelageya")
 	seen = await _finish()
-	_check(seen.any(func(x): return x.contains("идём по канат")) and not seen.any(func(x): return x.contains("дом")), "F11: after the empty boat Pelageya calls into the boat: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("pelageya:Садись")) and not seen.any(func(x): return x.contains("дом")), "F11: after the empty boat Pelageya calls into the boat (V2: not the M18p.1 line again): %s" % str(seen))
 	sr.grant_item("school_ribbon")
 	_check(gs.inventory.count("school_ribbon") == 1 and n_before == 1, "the ribbon is given once (talk again, grant again)")
 	_check(not sr.can_start("M17"), "M17 never starts again")
@@ -1086,14 +1086,16 @@ func _test_walkthrough() -> void:
 	_check(rm.current_room.get_node_or_null("npc_mitya") != null, "Mitya is a 3D figure at the far pier")
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
-	_check(seen.any(func(x): return x.contains("Пелагея не отпускает Митин рукав")), "B13: Pelageya stays with Mitya at the lantern: %s" % str(seen))
-	# F13 (Director 23.10): back into the boat — not now; Pelageya: «Сейчас — к матери. Завтра покатаю».
+	var m18_end := String(sd.scene("M18").get("mandatory_lines", [])[-1].get("text", ""))
+	_check(seen.any(func(x): return x.begins_with("narration:Пелагея не сразу отпускает")) and m18_end.contains("Митя поднимает фонарь") and m18_end.contains("Пелагея остаётся у лодки"),
+		"B13/C3: Mitya leads Agata with the lantern, Pelageya stays at the boat: %s / %s" % [m18_end, str(seen)])
+	# F13 (Director 23.10): back into the boat — not now; Pelageya: «Сейчас — к матери. Назад повезу завтра».
 	var back = rm.current_room.get_node_or_null("Exits/to_R2")
 	_check(back != null and not back.is_open(), "the boat back is closed after the crossing")
 	sr.use_exit(back)
 	await process_frame
 	_check(String(sr.current_beat.get("text_key", "")) == "R3.exit_R2.closed" and String(sr.current_beat.get("speaker", "")) == "pelageya",
-			"Pelageya: «Сейчас — к матери. Завтра покатаю» (%s)" % str(sr.current_beat))
+			"Pelageya: «Сейчас — к матери. Назад повезу завтра» (%s)" % str(sr.current_beat))
 	await _finish()
 	_check(_room() == "R3", "still at the far pier")
 	# Block 3 (22.10): the path leads up to the street of Olkhovka — the meeting with mother (M19) starts there.
