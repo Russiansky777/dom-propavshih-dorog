@@ -1,0 +1,330 @@
+{
+  "mode": "built-in image_gen",
+  "notes": "Промпты выбранных генераций. После генерации выполнены обрезка, масштабирование, маскирование и сборка холстов. Промежуточные референсы в ZIP не включены.",
+  "prompts": [
+    {
+      "name": "closeup_notebook_paths_clean",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Edit ONLY the handwriting on this exact provided notebook image. Erase all cursive pseudo-writing, bullet dots belonging to written lines, and small ornamental divider flourish from the left page, restoring matching aged paper and faint ruling. Absolutely no letters anywhere. Keep the right-page illustration with every line and arrow completely identical. Preserve framing, notebook edges, candle, stains, tabletop, lighting and composition. Output same full-frame landscape 1672x941 pixels. Do not redraw or move anything except the ink being erased.",
+        "referenced_image_paths": [
+          "closeup_notebook_paths.jpg"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "closeup_notebook_rule_clean",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Edit ONLY the handwriting on this exact provided notebook image. Erase all cursive pseudo-writing, bullet dots belonging to written lines, and small ornamental divider flourish from the left page, restoring matching aged paper and faint ruling. Absolutely no letters anywhere. Keep the right-page illustration with every line and arrow completely identical. Preserve framing, notebook edges, candle, stains, tabletop, lighting and composition. Output same full-frame landscape 1672x941 pixels. Do not redraw or move anything except the ink being erased.",
+        "referenced_image_paths": [
+          "closeup_notebook_rule.jpg"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "closeup_notebook_stopper_clean",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Edit ONLY the handwriting on this exact provided notebook image. Erase all cursive pseudo-writing, bullet dots belonging to written lines, and small ornamental divider flourish from the left page, restoring matching aged paper and faint ruling. Absolutely no letters anywhere. Keep the right-page illustration with every line and arrow completely identical. Preserve framing, notebook edges, candle, stains, tabletop, lighting and composition. Output same full-frame landscape 1672x941 pixels. Do not redraw or move anything except the ink being erased.",
+        "referenced_image_paths": [
+          "closeup_notebook_stopper.jpg"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "closeup_notebook_bridge_clean",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Edit ONLY the handwriting on this exact provided notebook image. Erase all cursive pseudo-writing, bullet dots belonging to written lines, and small ornamental divider flourish from the left page, restoring matching aged paper and faint ruling. Absolutely no letters anywhere. Keep the right-page illustration with every line and arrow completely identical. Preserve framing, notebook edges, candle, stains, tabletop, lighting and composition. Output same full-frame landscape 1672x941 pixels. Do not redraw or move anything except the ink being erased.",
+        "referenced_image_paths": [
+          "closeup_notebook_bridge.jpg"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "icon_sluice_lever",
+      "args": {
+        "prompt": "Use case: stylized-concept. Create one inventory icon of the EXACT lever shown at left in the reference: a long forged flat iron stem, dark carved wooden grip at one end and round flange socket at the other. Replace the circular bolt in the flange with a deep clearly visible SQUARE socket opening, rotated toward viewer. The socket is essential. Show lever diagonally from lower left socket to upper right grip. Painterly realistic antique Russian hand tool, warm upper-left illumination, subtle wear. Fill about 80% of a 1024x1024 square canvas. Isolated RGBA transparent background. No scene, no text, no labels, no ring-key design. The reference screenshot is only for object design; do not include any of its background or yellow lettering.",
+        "referenced_image_paths": [
+          "1_ref_rychag_zatvora.jpg",
+          "icon_clamp.png",
+          "icon_bell_clapper.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "hook_clean",
+      "args": {
+        "prompt": "Use case: precise-object-edit. This is a crop of a game scene. Remove the large iron KEY completely, including its oval ring, shaft, teeth and shadow. Keep the small curled wall HOOK at the very top exactly unchanged and now empty. Reconstruct only the vertical wooden planks, grain, cracks, and shadows hidden by the key. Match every boundary pixel, perspective and illumination. Same tall composition, no change in framing or scale, no new objects. Opaque background.",
+        "referenced_image_paths": [
+          "hook.png"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "bench_clean",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Remove ONLY the striped fringed shawl from the wooden bench. Reveal the bench's bare dry rough wooden seat planks, side edge, legs, wooden floor and the part of the tub hidden behind its right end. Preserve the stove, poker and oven fork at left, all existing furniture and exact crop geometry. Seamless inpainting; no zoom or reframing. Return same composition without any cloth anywhere on the bench.",
+        "referenced_image_paths": [
+          "bench.png"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "mirror_clean",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Remove ONLY the small standing mirror and its entire wood frame and support legs from this scene crop. Continue the dark timber cupboard edge, room wall, bedspread at left, tabletop and pale table runner seamlessly behind it. Do NOT remove candle at right. Preserve every other object and exact framing, light and texture. No new object; output opaque.",
+        "referenced_image_paths": [
+          "mirror.png"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "frame_clean",
+      "args": {
+        "prompt": "Use case: precise-object-edit. This is a transparent cutout mirror. Erase the FOUR SMALL PALE WOOD BLOCKS attached to the inner frame edges (two at bottom corners and two at middle left and right) by continuing the adjacent dark brown inner frame wood. Keep glass silhouette and surface absolutely unchanged, and preserve exact shape, size, position, thin frame and transparency. Do not add wedges outside frame. This is a repair of four tiny areas only. Output transparent background, same crop geometry.",
+        "referenced_image_paths": [
+          "frame.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "closeup_sluice_lever",
+      "args": {
+        "prompt": "Use case: compositing. First reference is exact lever object; second is tabletop/light reference. Show the SAME antique iron lever with carved dark brown wood grip and round iron flange containing a very clear deep SQUARE socket at its opposite end. Lever lies diagonally centered on the old wooden table, from bottom-left flange to top-right wooden grip, under warm light as in second reference. Replace the clamp with lever; no clamp remains. Large object fills about 75% frame. Full scene 1672x941. Preserve lever identity, ratio and square socket, no writing or people.",
+        "referenced_image_paths": [
+          "exec-37c1c638-c6ce-4fa9-ab9c-8a14f32f0abd.png",
+          "closeup_clamp.jpg"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "lever_hanging",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Reorient the EXACT provided lever as a front-view hanging object, ROUND FLANGE AT TOP with square socket facing viewer, long iron stem downward and carved wooden grip at bottom. Straight near-vertical pose, very slight right tilt. Entire object visible, slender width-to-height about 1:6. Soft warm light from RIGHT, faint translucent shadow cast to left. No hook drawn: the scene's existing hook will show THROUGH its square socket, so the central square hole must be fully transparent, with a dark inner rim. Do not turn it into a key. Isolated on transparent background. Painterly Russian antique game prop.",
+        "referenced_image_paths": [
+          "exec-37c1c638-c6ce-4fa9-ab9c-8a14f32f0abd.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "clamp_flat",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Same clamp from reference, wood jaws, curved iron C-frame, screw with wooden handle. Lay it flat in a nearly horizontal side-on perspective, as seen on a table at shallow downward viewing angle. Overall silhouette about 3:1 width/height. Wooden screw handle points left and frame at right. Warm light from upper RIGHT. Only clamp and soft contact shadow, isolated transparent background. Preserve materials and design, no table or text.",
+        "referenced_image_paths": [
+          "icon_clamp.png",
+          "closeup_clamp.jpg"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "shelf_A_prop",
+      "args": {
+        "prompt": "Use case: stylized-concept. ONE small rustic wall shelf for the antique Russian room in reference. Front view with slight top surface visible, warm light from right. Single worn dark oak board width 92 units, thickness 12 units. Exactly TWO simple triangular wooden brackets extending 45 units below board, spaced 60 units apart. Folded plain grey wool felt cushion on top, NO stripes or embroidery. Entire object with discreet translucent wall shadow on transparent background, no stove, wall or environment. Shelf is handmade and painterly realistic, not cartoon. Use scene reference only for style and perspective.",
+        "referenced_image_paths": [
+          "H1_bg.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "towel_hanging",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Extract and re-drape the exact striped fringed shawl on bench in reference as a narrow folded hanging shawl. Same faded red, ochre/cream, dark grey stripe pattern and fringes, now darker wet fabric. Folded in half lengthwise over an invisible hook: narrow width-to-length 1:3.5; two cloth ends with fringes hang down, a couple of small water droplets below. Warm subdued indoor light from right. Whole fabric visible. Transparent background, NO bench, hook, wall or other objects.",
+        "referenced_image_paths": [
+          "bench.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "wedges_loose_props",
+      "args": {
+        "prompt": "Use case: stylized-concept. A transparent sprite sheet with FOUR separate small tapered birch wood wedges in a strict 2 by 2 grid, each fully separated with generous padding. All same pale unpainted timber with end-grain and subtle dents. Top-left and top-right: wedge tips pointing upward away from camera, thick rectangular butt facing camera at bottom; long visible side face, as inserted only one third into a gap under a mirror. Bottom-left: tip pointing right, butt on left, slightly diagonal; bottom-right mirrored tip pointing left, butt on right. Each wedge should be thin tapered prism, NOT a rectangular block, about length 40 to butt-width 18 units. Soft warm upper-left room light, realistic painted game art, translucent short shadows. No frames, no labels, no backing, no objects except these four wedges.",
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "dial_fixed",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Keep this exact antique gauge crop perfectly unchanged except TWO tick marks: erase RED paint on the current upper-middle tick (near x56,y44 in this crop) and make that same tick pale bare light metal like neighbors. Paint the LAST tick on the far lower-right end of the arc (near x126,y134 in this crop) red with exactly the former red color, no enlargement. All other arc marks, iron rivets, wood grain and framing unchanged. Opaque crop, same geometry.",
+        "referenced_image_paths": [
+          "dial.png"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "shelf_lean_prop",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Same exact small oak shelf as reference, same worn board and two triangular wooden brackets. Remove grey cushion entirely. Rotate whole shelf upright onto one short edge and tilt slightly back, so it can lean against side of a bench standing on floor. Entire board seen lengthwise vertically, two brackets remain attached and protrude to right at two heights. Board length unchanged, no other objects or environment. Warm room light from right. Transparent background.",
+        "referenced_image_paths": [
+          "exec-b4ec2093-da19-4f2b-a9ec-9f82bbc1320a.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "wedges_driven_props",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Same 4 birch wedges as reference, same 2x2 grid. Now show ONLY the flat butt ends of these wedges, since they have been driven fully into their gaps. No long tapered side protrudes; just shallow end-grain rectangular faces with softly crushed pale fibres and small hammer dents. Same width, colors, orientation and identity as reference butt ends, soft room light. Transparent background, no glow, no backing, no other objects.",
+        "referenced_image_paths": [
+          "exec-3234532b-1b72-4ad0-aa94-a66823353415.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "Z3_site",
+      "args": {
+        "prompt": "Use case: compositing. Create a TRANSPARENT registration overlay for the exact provided winter riverside scene, same 1672x941 canvas and coordinates. Draw ONLY 3 clusters: (1) stack of SIX hewn long wooden bridge beams on support timbers entirely within x320-800,y480-660; (2) wooden windlass frame with rope wound around cylindrical drum and TWO crank handles within x880-1100,y560-720; (3) small low square log crib foundation on wet rocks within x1160-1290,y545-645, upper bearing point near (1218,570), with two short parallel inclined wooden rollers pointing toward the small pier at (1112,503). Match scene perspective and cold cloudy light, first snow dusting on timbers, tiny wood chips and trampled snow around clusters. Do not draw a spanning beam or a cable from winch. Do not draw the base scene. Everything except these new objects and close contact shadows transparent. Preserve blank holes at plate x1098-1152 y478-522 and the big stone x1290-1482 y512-700. No people or lettering.",
+        "referenced_image_paths": [
+          "Z3_day4_base.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "R1_low",
+      "args": {
+        "prompt": "Use case: lighting-weather precise edit. Output exact 1672x941 scene from first reference. Same camera and positions of ALL landmarks: lantern post, signboard, path, pier planks and posts, rope stopper, cross-river rope and boat. Bright overcast daytime without fog. Pond lowered about half a metre: exposed wet dark bands and algae on dock piles, wet stones and mud along shoreline. Boat remains at same end of dock, slightly lower waterline shows more exposed pile length; do not shift boat sideways. First patchy snow on near muddy bank and grass; far bank fully snowy matching second reference. Preserve identifiable trees, buildings and shore outline. No new items or people. Full opaque scene.",
+        "referenced_image_paths": [
+          "R1_bg.png",
+          "13_ref_R1_tot_bereg_v_snegu.jpg"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "bird_doodles",
+      "args": {
+        "prompt": "Use case: compositing. This bird poster crop is ONLY a position reference. Create a transparent overlay same portrait ratio 180x240, showing ONLY TWO child-drawn additions: faded graphite small knitted pompom cap fitting bird's head around local x85-131,y35-64; two little fresh red colored-pencil boots covering bird's feet within local x71-113,y118-150. Simple imperfect childish pencil outline with sparse hatching. Do NOT draw bird, branch, paper or background. Do not place hat elsewhere or make a complete bird. Every other pixel transparent. These two additions must sit at the exact referenced positions.",
+        "referenced_image_paths": [
+          "bird.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "bird_scarf",
+      "args": {
+        "prompt": "Use case: illustration-story. One tiny playful pencil doodle of a striped scarf looped around a small bird's neck with two ends fluttering to the right. Draw ONLY scarf, no bird, body, paper or environment. Shape a thin curved collar at left with two narrow flowing tails to right. Entire design roughly 63 units wide by36 high, dark warm grey graphite on fully transparent background, fine hand-pencil strokes from an adult sketching for a child, no ink or chalk, no text.",
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "bird_boat",
+      "args": {
+        "prompt": "Use case: illustration-story. A simple playful childlike GRAPHITE PENCIL doodle: small old boat with a single smokestack and a curl of smoke, viewed from side, short wavy water lines below. Few expressive hand-drawn lines, warm dark graphite, no fill, no color. Wide composition 160 units wide by57 tall. Fully transparent background; no paper, no frame, no words, no person.",
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "bird_bridge",
+      "args": {
+        "prompt": "Use case: illustration-story. A simple playful GRAPHITE PENCIL doodle of a small pedestrian bridge on three stone piers above a wavy river line, side view. Adult hand playfully drawing for an eight-year-old. Few expressive thin warm dark graphite lines, simple stone marks, no fill or color. Wide composition 160 units wide by57 tall. Fully transparent background; no paper, no frame, no words, no person.",
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "bird_reply_scarf",
+      "args": {
+        "prompt": "Use case: text-localization. Draw ONLY the following exact Russian handwritten pencil note in three short lines: \"Теперь ей\\nтепло.\\nУля\". Letter-for-letter accurate Cyrillic, child's hand age eight, slightly uneven school cursive mixed with simple handwritten letters, like reference but make all letters distinct and readable. Dark warm grey graphite, matte thin but clear strokes. No underline, decorations or extra letters. Compact approximately square arrangement with each line separated. Transparent background, no paper, no scene. Reference is handwriting style only; do not reproduce its old words.",
+        "referenced_image_paths": [
+          "reply_style.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "bird_reply_boat",
+      "args": {
+        "prompt": "Use case: text-localization. Draw ONLY the following exact Russian handwritten pencil note in three short lines: \"Так папа\\nрисует!\\nУля\". Letter-for-letter accurate Cyrillic, child's hand age eight, slightly uneven school cursive mixed with simple handwritten letters, like reference but make all letters distinct and readable. Dark warm grey graphite, matte thin but clear strokes. No underline, decorations or extra letters. Compact approximately square arrangement with each line separated. Transparent background, no paper, no scene. Reference is handwriting style only; do not reproduce its old words.",
+        "referenced_image_paths": [
+          "reply_style.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "bird_reply_bridge",
+      "args": {
+        "prompt": "Use case: text-localization. Draw ONLY the following exact Russian handwritten pencil note in three short lines: \"А мост\\nправда\\nбудет? Уля\". Letter-for-letter accurate Cyrillic, child's hand age eight, slightly uneven school cursive mixed with simple handwritten letters, like reference but make all letters distinct and readable. Dark warm grey graphite, matte thin but clear strokes. No underline, decorations or extra letters. Compact approximately square arrangement with each line separated. Transparent background, no paper, no scene. Reference is handwriting style only; do not reproduce its old words.",
+        "referenced_image_paths": [
+          "reply_style.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "sign_letters",
+      "args": {
+        "prompt": "Use case: text-localization. Draw ONLY exact Cyrillic text «Ольховая улица» in ONE horizontal line. Cream off-white paint, thick slightly condensed hand-lettered old Russian sign, same letter style as reference wooden street sign. Uppercase О only, rest lowercase. Check every letter: О л ь х о в а я [space] у л и ц а. Slight chipped paint, clear thick stems for legibility at final 155x24 px. No extra text, no signboard, no wood, no snow. Fully transparent background, tight wide composition.",
+        "referenced_image_paths": [
+          "closeup_street_sign.jpg"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "ep_date",
+      "args": {
+        "prompt": "Use case: text-localization. Transparent lettering only: exact Russian chalk date «16 ноября» in ONE line, written by a caring older schoolteacher in slightly slanted clear joined handwriting matching the sample. White warm chalk with light grain, medium thick strokes. Large and legible. Exact text: digit 1, digit 6, space, н о я б р я. No dot after date, no underlines, no extra marks or blackboard. Transparent background.",
+        "referenced_image_paths": [
+          "date_style.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "notches",
+      "args": {
+        "prompt": "Use case: stylized-concept. Transparent overlay containing growth marks carved by knife into a dark wood post. EXACTLY EIGHT new short horizontal slits in a vertical column, evenly spaced, from top to bottom. Each has pale freshly exposed wood inner line with dark tiny edge, not white paint. New slits should span 18-22 units wide in a region 56 units wide and185 high; y positions 15,34,53,72,91,110,129,150. To LEFT of them add THREE older smaller darkened wood slits between heights. No letters or digits, no tree or wooden post drawn, no backdrop. Only incisions and tiny edge shadows on transparent background. Realistic painterly, room warm light.",
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "beam",
+      "args": {
+        "prompt": "Use case: stylized-concept. ONE isolated hewn old pine bridge beam for a winter Russian game scene, thin long timber in perspective. From upper-left far end to lower-right near end, diagonal slope down right about 33 degrees; visible length-to-thickness ratio about 8:1. Far end smaller, near end 1.7 times thicker. Rough square hewn section, visible grain and a little first snow on top. Cold overcast illumination. Only beam, no ground, NO cast shadows on other objects, no ropes or labels. Transparent background.",
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "stack_six",
+      "args": {
+        "prompt": "Use case: stylized-concept. Isolated stack of EXACTLY SIX long square-hewn pine beams for bridge construction on two short support timbers. Three long beams in bottom row, TWO long beams in middle row, ONE long beam at top, six visible square cut end faces total. Left ends nearest viewer, long lengths recede toward right-back. Thin snow dusting, grey cold winter cloudy light, rough old timber. Low wide silhouette about3:1. Sparse wood chips and tiny contact shadow beneath only; transparent background, no winch, no people, no text. Count six carefully.",
+        "transparent_background": true
+      }
+    },
+    {
+      "name": "letter_tall",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Keep this scene's candle, room and wooden table. Change only the blank sheet: it must be a TALL PORTRAIT sheet, not the current wide trapezoid. In a 1672x941 frame, sheet corners approximately (510,45),(1160,45),(1200,900),(470,900). Nearly overhead paper perspective with vertical and horizontal quarter-fold creases, empty slightly aged cream paper, no writing, a worn corner and edge speckles. Keep same warm candlelight. Page must reach nearly top and bottom of image with narrow margins, about730px wide and850px tall.",
+        "referenced_image_paths": [
+          "exec-8bfa0596-1357-44a5-9804-f3362a4616d4.png"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "name": "map_crop_fixed",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Edit target is attached 680x420 crop of a hand painted game map. Keep the exact camera, crop, paper colors and every existing building footprint and river pier position. INK AND LIGHT WATERCOLOR ONLY THESE EXISTING pencil structures, without moving or redesigning them: the fenced school upper left (x30-270,y32-177); Nina's house at x333-413,y101-183; Ilya's house at x510-575,y158-225 (the LOWEST RIGHTMOST house). Leave ALL other houses including center x433-493,y140-202 as faint pencil. Add a narrow lane from school gate through the gap between school and Nina, past Nina toward Ilya, then down to river shore. Add tiny blank wooden sign on the lower lane at x573,y245. Add small boat repair timber shed with lantern on post at x585-648,y265-320. Draw a single thin ink ferry rope with slight sag anchored to the EXISTING near bridge pier centered x378,y377, through the EXISTING long middle pier centered x517,y345, ending at the EXISTING little far pier centered x569,y338. Do not move, remove or replace any pier. A tiny boat suspended on water along rope between near and middle pier, center x455,y370. Trace middle and far piers in ink. Keep river shape and water color exactly. No people, no letters, no words, no digits, no labels. Preserve full rectangular crop, no zoom. This must register with original map at same pixels. Opaque edited crop; no frame added.",
+        "referenced_image_paths": [
+          "map_crop.png"
+        ],
+        "transparent_background": false
+      }
+    }
+  ]
+}

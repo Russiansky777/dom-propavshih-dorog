@@ -1,0 +1,649 @@
+{
+  "count": 35,
+  "checks": {
+    "notebook_paths_right_page_unchanged": true,
+    "notebook_rule_right_page_unchanged": true,
+    "notebook_stopper_right_page_unchanged": true,
+    "notebook_bridge_right_page_unchanged": true,
+    "M3_state_hook_empty.png_exact_opaque_rectangles": true,
+    "H1_state_bench_bare.png_exact_opaque_rectangles": true,
+    "O3_table_no_mirror.png_exact_opaque_rectangles": true,
+    "M4_state_dial_mark_last.png_exact_opaque_rectangles": true,
+    "H2_mirror_unchanged_outside_four_patches": true,
+    "wedges_loose_inside_game_rectangles": true,
+    "wedges_half_inside_game_rectangles": true,
+    "wedges_driven_inside_game_rectangles": true
+  },
+  "files": [
+    {
+      "file": "icon_sluice_lever.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        20,
+        28,
+        999,
+        1007
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 456536,
+      "sha256": "07f56acbccc3ef41a75a8cea45258d01c743546a8555a4f166e53fc807e7dc15"
+    },
+    {
+      "file": "closeup_sluice_lever.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha_bounds": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_range": [
+        255,
+        255
+      ],
+      "bytes": 2458127,
+      "sha256": "401c354319fc4f5cb054c507d42d3c0f639055d31ac38fd103aeb0b31e86d156"
+    },
+    {
+      "file": "M3_state_hook_empty.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        10,
+        25,
+        160,
+        455
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 143676,
+      "sha256": "e9ec0435d46461658b76b8939ace7a43f72dc1c42507c92d181182e05176bc9b"
+    },
+    {
+      "file": "M3_state_sluice_lever.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        53,
+        32,
+        125,
+        402
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 53155,
+      "sha256": "863e1155746d103e3665f08ce8f99a12c1e236648dbbfda027585932e9b34e81"
+    },
+    {
+      "file": "M3_state_clamp_table.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        485,
+        703,
+        680,
+        766
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 30232,
+      "sha256": "63b98e8b6102b9dbd1c27779b235c3e00a6b58cf5840a62c35b75fdd403dbf03"
+    },
+    {
+      "file": "H2_state_office_mirror_center_v2.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1015,
+        202,
+        1170,
+        519
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 74322,
+      "sha256": "c26dbdd691fb840cca2a5716efe8a4d601393653e076804117d8a00fa475ec2a"
+    },
+    {
+      "file": "H2_state_wedges_loose.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1010,
+        345,
+        1175,
+        530
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 13751,
+      "sha256": "472890e623f9b7febc4ee172631ee9cb4d2a19b1c676736a56b48e4e8812353c"
+    },
+    {
+      "file": "H2_state_wedges_half.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1020,
+        345,
+        1164,
+        519
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 12311,
+      "sha256": "f112175407bd59eca9db6123f149cd66ea10568d7f2f9259760fe0b2bd3b834c"
+    },
+    {
+      "file": "H2_state_wedges_driven.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1030,
+        345,
+        1152,
+        506
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 9329,
+      "sha256": "f27843f75ec9430a8b9f2633c40fe8129d9c38f7c96e65f88db15859a3732b0a"
+    },
+    {
+      "file": "H1_state_bench_bare.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        378,
+        480,
+        700,
+        640
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 109108,
+      "sha256": "35f4277c25686c02f1695f08b5d77d88303d7a92ab5f89e1b9e8f4fcbd032dcc"
+    },
+    {
+      "file": "H1_state_towel_hook.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1042,
+        215,
+        1086,
+        383
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 24161,
+      "sha256": "a155401bff572fd4a382836a2ab7bfd15d479726f0a2d2ec04fc5e9b6c0d9198"
+    },
+    {
+      "file": "H1_state_shelf_leaning.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        402,
+        556,
+        446,
+        656
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 14862,
+      "sha256": "05eee54ef2cf8b4ee1924babef77b5e942016a7be80f2cbdc97580bb9c41b591"
+    },
+    {
+      "file": "H1_state_shelf_A.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        379,
+        414,
+        471,
+        490
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 17563,
+      "sha256": "c74d4094a439a614fe7d2d06f48580620d5db9f9f0db8c0ff40cf57beeb54582"
+    },
+    {
+      "file": "H1_state_shelf_B.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        622,
+        412,
+        714,
+        472
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 15230,
+      "sha256": "2699ad2cb4f99d63f90e7f31cdfc9bc729389de391e042a7945013a62f81f79c"
+    },
+    {
+      "file": "S1_state_sign_text.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        240,
+        578,
+        395,
+        605
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 15495,
+      "sha256": "2c9ec9177efdec5af4787d507974543a0622824fdfed11595347ad4bd6285c70"
+    },
+    {
+      "file": "Z3_state_span_site_day4.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        325,
+        486,
+        1290,
+        720
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 232292,
+      "sha256": "44a44a36a75da96237e12dc228df777bcfafe95817d7e2461123c8a65652cb8c"
+    },
+    {
+      "file": "Z3_state_span_beam_day4.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1111,
+        498,
+        1225,
+        581
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 16104,
+      "sha256": "88102512e603a5a1815e5538116fb76b69ed4d36a066b5a1868b16e2e563b671"
+    },
+    {
+      "file": "O1_state_bird_doodles.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1336,
+        185,
+        1396,
+        300
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 12869,
+      "sha256": "3c9be456efcff92e6fc3e46576d5726c188c3ded276b0714ad5215aca1859d45"
+    },
+    {
+      "file": "O1_state_bird_add_scarf.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1345,
+        212,
+        1408,
+        248
+      ],
+      "alpha_range": [
+        0,
+        170
+      ],
+      "bytes": 11091,
+      "sha256": "d3c14415eb0698160758bb5ce8a5dcdfcf7e9aa22efa3c5be8eecc7bb448c5d0"
+    },
+    {
+      "file": "O1_state_bird_add_boat.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1272,
+        327,
+        1432,
+        380
+      ],
+      "alpha_range": [
+        0,
+        235
+      ],
+      "bytes": 13945,
+      "sha256": "de5a0c2f2d0b195cc660b7c55df8e54c8bf28c35e648f226d175277a23ccb44d"
+    },
+    {
+      "file": "O1_state_bird_add_bridge.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1272,
+        327,
+        1432,
+        380
+      ],
+      "alpha_range": [
+        0,
+        230
+      ],
+      "bytes": 22215,
+      "sha256": "ee1104d372f122b941bf561701e8b72185e143c7dea2d1beb450951c8f94e53a"
+    },
+    {
+      "file": "O1_state_bird_reply_scarf.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1272,
+        164,
+        1345,
+        236
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 13422,
+      "sha256": "7d5fa2426151ad14301276d0e95f93cc7c9480a06652a4c1e0cabc279891a59b"
+    },
+    {
+      "file": "O1_state_bird_reply_boat.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1272,
+        164,
+        1345,
+        236
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 14081,
+      "sha256": "abdcbce41b4963fb5895b5e910a829cf9012e15f9e6276fedf2494b2324a97d6"
+    },
+    {
+      "file": "O1_state_bird_reply_bridge.png",
+      "width": 1672,
+      "height": 940,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        1272,
+        164,
+        1345,
+        236
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 15065,
+      "sha256": "f3c0ad44ef0542fbfebd92a952da80b2502a8a181e109e887a2b02669907b508"
+    },
+    {
+      "file": "zarechye_plan_overlay.png",
+      "width": 1376,
+      "height": 768,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        607,
+        70,
+        1250,
+        457
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 260012,
+      "sha256": "5c37d85a963b9ac7dcec814d47b19e88aa8e2fad08a29ea292257d370b82d28a"
+    },
+    {
+      "file": "O3_state_notches_left.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        823,
+        305,
+        866,
+        444
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 10423,
+      "sha256": "44c39dcc343ddba95dff79a7906416d5fb04bd929daa08f5878400a82329dcce"
+    },
+    {
+      "file": "closeup_notebook_paths_clean.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha_bounds": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_range": [
+        255,
+        255
+      ],
+      "bytes": 2471604,
+      "sha256": "126c0b85e2845981f4e788edb3d1e235beb6eac8c9c97c332b9807b9d38d5c9b"
+    },
+    {
+      "file": "closeup_notebook_rule_clean.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha_bounds": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_range": [
+        255,
+        255
+      ],
+      "bytes": 2225235,
+      "sha256": "07622ef42d2f816dc5f609536eac3678aa4fdfb92d33b7eea056c61f6c72ab5b"
+    },
+    {
+      "file": "closeup_notebook_stopper_clean.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha_bounds": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_range": [
+        255,
+        255
+      ],
+      "bytes": 2524630,
+      "sha256": "17df7708e96fc36415433fe2855200faca359403685f2475aaecb587565488e1"
+    },
+    {
+      "file": "closeup_notebook_bridge_clean.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha_bounds": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_range": [
+        255,
+        255
+      ],
+      "bytes": 2328689,
+      "sha256": "5c7b6d94cd64f4fbbc06ce6abadc952cec098038e7eaf0d1307ae41ec924bd46"
+    },
+    {
+      "file": "closeup_letter_blank.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha_bounds": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_range": [
+        255,
+        255
+      ],
+      "bytes": 2504641,
+      "sha256": "e7cb5f3605f6b335e58f104c1986706bf33fca74ef9b4c300f246375f9213c4c"
+    },
+    {
+      "file": "O3_table_no_mirror.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        280,
+        385,
+        402,
+        532
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 43171,
+      "sha256": "95b923bd398c6519f52ed6ee987f228e1eb0bfef4772f3023a45aae84be4eeab"
+    },
+    {
+      "file": "M4_state_dial_mark_last.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        744,
+        408,
+        840,
+        524
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 10269,
+      "sha256": "4c196d5959166012433d149691c03f9b702d25e14c4d61c4fb352232e6727015"
+    },
+    {
+      "file": "R1_state_water_low_day.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_range": [
+        255,
+        255
+      ],
+      "bytes": 3195640,
+      "sha256": "ca82ccbbe574bb69ad5660151b8a7af8921a4bfb6e7fa4fd64f7c8ca68eddae0"
+    },
+    {
+      "file": "EP_lesson_date.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGBA",
+      "alpha_bounds": [
+        795,
+        195,
+        1071,
+        235
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "bytes": 19761,
+      "sha256": "c4cc4d6f7505d7995aad2106afb5c83f30a81f5e573f0cacbe820fdebc0d22a5"
+    }
+  ]
+}
