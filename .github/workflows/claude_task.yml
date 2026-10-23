@@ -102,6 +102,7 @@ jobs:
         id: run
         env:
           ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
           TASK_INPUT: ${{ inputs.task }}
           MODEL: ${{ inputs.model }}
           BUDGET: ${{ inputs.budget_usd }}
@@ -112,6 +113,8 @@ jobs:
           git config user.name "claude-task-bot"
           git config user.email "claude-task-bot@users.noreply.github.com"
           if [ -f "$TASK_INPUT" ]; then TASK="$(cat "$TASK_INPUT")"; else TASK="$TASK_INPUT"; fi
+          # The key is not scoped to a workspace: every request needs the anthropic-workspace-id header (as in the AI-check scripts).
+          export ANTHROPIC_CUSTOM_HEADERS="anthropic-workspace-id: ${WORKSPACE_ID}"
           cat > /tmp/preamble.md <<EOF
           Ты — агент разработки проекта «Дом пропавших дорог» (Godot 4.7.2, GDScript, контент — данные), запущенный
           в GitHub Actions на API Claude (запуск ${RUN_ID}). Рядом нет человека: вопросов не задавай, решай по CLAUDE.md,
