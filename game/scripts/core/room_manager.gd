@@ -4,7 +4,8 @@ extends Node
 ## `Main` registers the world container and the player with `setup()`. A room is built from
 ## data (`data/story/rooms/<id>.json` via RoomBuilder) when it exists there, otherwise loaded from
 ## `res://scenes/rooms/<id>.tscn` or the probe fixtures in `res://scenes/probe/`. After every room
-## change the state is autosaved to `autosave_slot` and flag-driven visuals are re-applied.
+## change the state is autosaved to `autosave_slot` and flag-driven visuals are re-applied; every
+## `autosave_interval_s` of play too (G5) — always between things, never inside a line, a staging or a close-up.
 
 signal room_changed(room_id: String)
 signal room_change_failed(room_id: String, reason: String)
@@ -13,6 +14,12 @@ const SCENE_DIRS: Array[String] = ["res://scenes/rooms", "res://scenes/probe"]
 
 var autosave_slot: String = "auto"
 var autosave_enabled: bool = true
+## G5 (Director 23.10: «автосохранение раз в 5 минут»): play time between timed autosaves (data/story/meta.json
+## autosave.interval_s, 300). Counted while a room is on screen and the tree is not paused.
+var autosave_interval_s: float = 300.0
+var play_since_autosave: float = 0.0
+var autosave_pending: bool = false     # an autosave asked for in the middle of a line / staging / close-up waits
+var autosaves_done: int = 0            # tests
 ## Prefix of scene checkpoint slots (scenes data `checkpoint.slot`, «day2»): tests set their own so a run never
 ## overwrites the player's «День второй» in the shared user://saves.
 var checkpoint_prefix: String = ""
@@ -25,6 +32,40 @@ var current_room: Room = null
 func setup(container: Node, the_player: Node2D) -> void:
 	room_container = container
 	player = the_player
+	if StoryData.autosave_cfg.has("interval_s"):
+		autosave_interval_s = maxf(float(StoryData.autosave_cfg["interval_s"]), 5.0)
+
+
+func _process(delta: float) -> void:
+	if current_room == null or not is_instance_valid(current_room) or not autosave_enabled:
+		return
+	play_since_autosave += delta
+	if play_since_autosave >= autosave_interval_s:
+		autosave_pending = true
+	if autosave_pending and can_autosave():
+		_write_autosave()
+
+
+## G5: an autosave is written only between things — never while a line or a choice is on screen, a staging or a
+## frame of a scene plays, a close-up (mechanic, puzzle, view, item) is open, or the boat loops; asked for then, it
+## waits for the first free moment. A load then never lands in the middle of a scene.
+func can_autosave() -> bool:
+	if current_room == null or not is_instance_valid(current_room):
+		return false
+	if StoryRunner.is_busy() or StoryRunner.examined_item != "" or StoryRunner.current_frame != "" or StoryRunner.stage_dim > 0.0:
+		return false
+	if player != null and player.has_method("is_acting") and bool(player.call("is_acting")):
+		return false
+	return true
+
+
+func _write_autosave() -> bool:
+	autosave_pending = false
+	play_since_autosave = 0.0
+	if not save_game(autosave_slot):
+		return false
+	autosaves_done += 1
+	return true
 
 
 func room_scene_path(room_id: String) -> String:
@@ -108,17 +149,22 @@ func change_room(room_id: String, spawn_id: String, override_pos: Vector2 = Vect
 	current_room.apply_flags()
 	room_changed.emit(room_id)
 
-	if autosave_enabled:
-		GameState.save(autosave_slot)
 	StoryRunner.on_room_entered(room_id)
+	if autosave_enabled:
+		autosave()   # after the room's first-entry lines are queued: a load never lands before them
 	return true
 
 
-## Autosave after a story beat (scene completion); no-op while autosave is disabled.
+## Autosave after a room change or a story beat (scene completion, a close-up's event): written now if nothing is
+## going on (can_autosave), else as soon as it is over (G5). No-op while autosave is disabled. Returns true when
+## written now.
 func autosave() -> bool:
 	if not autosave_enabled:
 		return false
-	return save_game(autosave_slot)
+	autosave_pending = true
+	if can_autosave():
+		return _write_autosave()
+	return false
 
 
 ## Saves the running game (player position is captured live). `title` names a checkpoint save in the menu.
@@ -142,6 +188,8 @@ func load_game(slot: String) -> bool:
 	autosave_enabled = false  # loading must not overwrite the autosave with itself
 	var ok := change_room(room_id, "", GameState.player_pos)
 	autosave_enabled = saved_autosave
+	autosave_pending = false
+	play_since_autosave = 0.0
 	return ok
 
 

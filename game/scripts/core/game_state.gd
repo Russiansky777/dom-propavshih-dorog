@@ -16,8 +16,9 @@ signal goal_changed(text: String)
 
 const SAVE_VERSION: int = 2
 const SAVE_DIR: String = "user://saves"
-## Slot kinds: "auto" (after room change / scene beat), "quick" (F5/F9), "1".."3" (menu),
-## "pre_finale" (reserved for the point of no return; unused in M1).
+## Slot kinds: "auto" (RoomManager: room change, scene beat, every 5 minutes of play — never in the middle of a
+## line, a staging or a close-up; its own row in the menu, G4/G5), "quick" (F5/F9), "1".."3" (menu), checkpoints
+## of scenes («day2»…), "pre_finale" (reserved for the point of no return; unused in M1).
 const MANUAL_SLOTS: Array[String] = ["1", "2", "3"]
 
 var flags: Dictionary = {}          # String -> bool
@@ -202,7 +203,8 @@ func load(slot: String) -> bool:
 	return true
 
 
-## Summary of a slot for menus: {} when empty.
+## Summary of a slot for menus: {} when empty. `label` — «День второй · Мастерская · вечер» (G4), `place_time` —
+## the same without the day (a checkpoint row already names its day).
 func save_info(slot: String) -> Dictionary:
 	if not has_save(slot):
 		return {}
@@ -213,8 +215,36 @@ func save_info(slot: String) -> Dictionary:
 	f.close()
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return {}
-	return {"saved_at": String(parsed.get("saved_at", "")), "room": String(parsed.get("current_room", "")),
-		"goal": String(parsed.get("journal_goal", "")), "title": String(parsed.get("title", ""))}
+	var room := String(parsed.get("current_room", ""))
+	var fl: Dictionary = parsed.get("flags", {}) if parsed.get("flags", {}) is Dictionary else {}
+	var parts := place_parts(room, fl)
+	return {"saved_at": String(parsed.get("saved_at", "")), "room": room,
+		"goal": String(parsed.get("journal_goal", "")), "title": String(parsed.get("title", "")),
+		"label": " · ".join(PackedStringArray([parts["day"], parts["place"], parts["time"]].filter(func(x): return x != ""))),
+		"place_time": " · ".join(PackedStringArray([parts["place"], parts["time"]].filter(func(x): return x != "")))}
+
+
+## Where and when a state is, in words (G4, Director 23.10: «автосохранение с местом и временем: "День второй,
+## мастерская, вечер"»): {day: «День второй», place: «Мастерская», time: «вечер»} — the day and the time of day
+## from the story state in `flags` (TimeOfDay: data/story/time, the journal's own line «День второй · вечер»), the
+## place from the room's name. Works for old saves too: everything comes from their flags and room.
+static func place_parts(room_id: String, flag_set: Dictionary) -> Dictionary:
+	var out := {"day": "", "place": StoryData.place_name(room_id) if room_id != "" else "", "time": ""}
+	var spec := TimeOfDay.state_spec(TimeOfDay.state_for(flag_set))
+	var line := StoryData.text(String(spec.get("label", ""))) if not spec.is_empty() else ""
+	var bits := line.split(" · ")
+	if bits.size() >= 2:
+		out["day"] = bits[0]
+		out["time"] = bits[bits.size() - 1]
+	elif line != "":
+		out["day"] = line
+	return out
+
+
+## «День второй · Мастерская · вечер» for the running game.
+func place_label() -> String:
+	var parts := place_parts(current_room, flags)
+	return " · ".join(PackedStringArray([parts["day"], parts["place"], parts["time"]].filter(func(x): return x != "")))
 
 
 func delete_save(slot: String) -> void:

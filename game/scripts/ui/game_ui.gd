@@ -72,7 +72,7 @@ var sfx_slider: HSlider                 # menu: sound effects volume 0–100 % (
 var sfx_value_label: Label
 var voice_slider: HSlider               # menu: voice volume 0–100 % (VoiceDirector, user://settings.cfg)
 var voice_value_label: Label
-var timing_slow_check: CheckButton      # menu: «Точный удар — медленнее» (TimingBar.slow, user://settings.cfg [access])
+var timing_slow_check: CheckButton      # menu: «Облегчить мини-игры» (G3; TimingBar.slow, user://settings.cfg [access] timing_slow)
 var reveal: HotspotReveal               # Space: every hotspot and exit of the room for 1.5 s (exit_hints)
 var hover_icon: TextureRect             # destination icon left of an exit caption
 var hint_panel: PanelContainer          # «Подсказка»: tier title, large text, the Space tip
@@ -329,6 +329,9 @@ func _build() -> void:
 	mt.text = StoryData.text("@ui.menu_title")
 	mt.theme_type_variation = &"HeaderLarge"
 	mv.add_child(mt)
+	# G4/G5: the autosave (room changes, scene beats, every 5 minutes of play) — its own row, «Загрузить» only; it never
+	# overwrites the player's slots. Shown once it exists.
+	_slot_row_load_only(mv, RoomManager.autosave_slot, StoryData.text("@ui.autosave"), "Autosave")
 	for slot in GameState.MANUAL_SLOTS:
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 12)
@@ -357,26 +360,8 @@ func _build() -> void:
 	# with the title and «Загрузить» only, shown once the save exists.
 	for cp in StoryData.checkpoints():
 		var slot := String(cp["slot"])
-		var row := HBoxContainer.new()
-		row.name = "Checkpoint_" + slot
-		row.add_theme_constant_override("separation", 12)
-		mv.add_child(row)
-		var name_l := Label.new()
-		name_l.text = StoryData.text(String(cp.get("title", slot)))
-		name_l.custom_minimum_size = Vector2(120, 0)
-		name_l.theme_type_variation = &"SlotNameLabel"
-		row.add_child(name_l)
-		var info := Label.new()
-		info.custom_minimum_size = Vector2(400, 0)
-		info.theme_type_variation = &"SmallLabel"
-		info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(info)
-		var lb := _button(StoryData.text("@ui.load"), 150)
-		lb.name = "Load" + slot
-		lb.pressed.connect(_on_load_slot.bind(slot))
-		row.add_child(lb)
-		slot_rows[slot] = {"info": info, "save": null, "load": lb, "row": row, "checkpoint": true}
+		_slot_row_load_only(mv, slot, StoryData.text(String(cp.get("title", slot))), "Checkpoint_" + slot)
+		slot_rows[slot]["day_named"] = true   # the row's name is its day: the info says place and time only
 	# Music volume: a setting (user://settings.cfg), not part of a save slot.
 	var music_row := HBoxContainer.new()
 	music_row.add_theme_constant_override("separation", 12)
@@ -450,7 +435,8 @@ func _build() -> void:
 	voice_value_label.theme_type_variation = &"SmallLabel"
 	voice_value_label.text = "%d %%" % int(voice_slider.value)
 	voice_row.add_child(voice_value_label)
-	# Accessibility: the timing bars («Точный удар» — the brace, the hook, the shutter latch) sweep slower.
+	# Accessibility (G3): «Облегчить мини-игры» — every timing mini-game (the brace, the hook, the sluice, the log, the
+	# workbench screw, any new one on TimingBar) sweeps slower and has a wider green zone.
 	TimingBar.load_settings()
 	timing_slow_check = CheckButton.new()
 	timing_slow_check.name = "TimingSlow"
@@ -807,6 +793,31 @@ func toggle_menu() -> void:
 	_update_modal()
 
 
+## A save row with a name, the place-and-time line and «Загрузить» only (scene checkpoints, the autosave): written by
+## the game, never by the player; shown once the save exists.
+func _slot_row_load_only(parent: Control, slot: String, title: String, row_name: String) -> void:
+	var row := HBoxContainer.new()
+	row.name = row_name
+	row.add_theme_constant_override("separation", 12)
+	parent.add_child(row)
+	var name_l := Label.new()
+	name_l.text = title
+	name_l.custom_minimum_size = Vector2(120, 0)
+	name_l.theme_type_variation = &"SlotNameLabel"
+	row.add_child(name_l)
+	var info := Label.new()
+	info.custom_minimum_size = Vector2(400, 0)
+	info.theme_type_variation = &"SmallLabel"
+	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(info)
+	var lb := _button(StoryData.text("@ui.load"), 150)
+	lb.name = "Load" + slot
+	lb.pressed.connect(_on_load_slot.bind(slot))
+	row.add_child(lb)
+	slot_rows[slot] = {"info": info, "save": null, "load": lb, "row": row, "checkpoint": true}
+
+
 ## Panel as tall as its content, centred under the top bar.
 func _fit_panel(p: PanelContainer) -> void:
 	p.size = Vector2(p.size.x, 0)
@@ -836,7 +847,9 @@ func _refresh_slots() -> void:
 		if info.is_empty():
 			label.text = StoryData.text("@ui.slot_empty")
 		else:
-			label.text = "%s · %s" % [String(info.get("room", "")), String(info.get("saved_at", "")).replace("T", " ")]
+			# G4 (Director 23.10: «"День второй H1…"» → «День второй, мастерская, вечер»): the day, the place and the time of
+			# day in words; a checkpoint row already names its day.
+			label.text = String(info.get("place_time" if bool(slot_rows[slot].get("day_named", false)) else "label", ""))
 		(slot_rows[slot]["load"] as Button).disabled = info.is_empty()
 		if slot_rows[slot].has("row"):
 			(slot_rows[slot]["row"] as Control).visible = not info.is_empty()
@@ -861,7 +874,8 @@ func _on_load_slot(slot: String) -> void:
 
 func _do_load(slot: String) -> void:
 	if RoomManager.load_game(slot):
-		GameState.show_hint(StoryData.text("@ui.loaded", {"slot": slot}))
+		var shown := StoryData.text("@ui.autosave") if slot == RoomManager.autosave_slot else slot
+		GameState.show_hint(StoryData.text("@ui.loaded", {"slot": shown}))
 
 
 func _on_new_game() -> void:
@@ -1137,9 +1151,12 @@ func probe_positions() -> Dictionary:
 		if journal_plan_button.visible:
 			out["buttons"]["JournalPlan"] = _center(journal_plan_button)
 	if menu_panel.visible:
+		out["slots"] = {}
 		for slot in slot_rows.keys():
 			out["buttons"]["Save" + slot] = _center(slot_rows[slot]["save"])
 			out["buttons"]["Load" + slot] = _center(slot_rows[slot]["load"])
+			var row = slot_rows[slot].get("row", null)
+			out["slots"][slot] = {"text": (slot_rows[slot]["info"] as Label).text, "visible": row == null or (row as Control).visible}
 		out["buttons"]["NewGame"] = _center(menu_panel.find_child("NewGame", true, false))
 		out["buttons"]["CloseMenu"] = _center(menu_panel.find_child("CloseMenu", true, false))
 		var mr := music_slider.get_global_rect()

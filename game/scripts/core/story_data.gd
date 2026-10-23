@@ -20,6 +20,7 @@ var texts: Dictionary = {}              # key -> {text, draft}
 ## Director's switches (data/story/meta.json → switches: the last shot, a word about Agata's future …): one
 ## value each, so an answer of the Director is a one-line change. Lines and stagings name them in `switch`.
 var switches: Dictionary = {}
+var autosave_cfg: Dictionary = {}       # meta.json `autosave` {interval_s} (G5)
 ## Start points (data/story/start_points.json): a state to start from for checking a later part of the game.
 var start_points: Dictionary = {}
 var loaded: bool = false
@@ -169,6 +170,7 @@ func _load_rooms() -> void:
 func _load_meta() -> void:
 	var meta = _read_json(DATA_DIR + "/meta.json")
 	switches = meta.get("switches", {}) if meta is Dictionary else {}
+	autosave_cfg = meta.get("autosave", {}) if meta is Dictionary and meta.get("autosave", {}) is Dictionary else {}
 	start_points.clear()
 	if FileAccess.file_exists(DATA_DIR + "/start_points.json"):
 		var sp = _read_json(DATA_DIR + "/start_points.json")
@@ -217,6 +219,17 @@ func in_scope(room_id: String) -> bool:
 func location_name(loc_id: String) -> String:
 	var l: Dictionary = locations.get(loc_id, {})
 	return String(l.get("name", loc_id))
+
+
+## The place a room stands for, in words: its location's name; a frame room (frame: true) — its `place` (a location
+## id) or `title` (a text key), as in the title bar. Save slots (G4) and the room line use it.
+func place_name(room_id: String) -> String:
+	var spec: Dictionary = room(room_id)
+	if spec.has("place"):
+		return location_name(String(spec["place"]))
+	if spec.has("title"):
+		return text(String(spec["title"]))
+	return location_name(room_id)
 
 
 func scene(scene_id: String) -> Dictionary:
