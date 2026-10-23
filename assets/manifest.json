@@ -1711,6 +1711,359 @@
       "owner": "ChatGPT + Директор",
       "use": "EP_lesson.json: заменить текстовый слой date (@EP.lesson.written_date, шрифт игры) картинкой",
       "pack": "Партия 9, п. 14"
+    },
+    {
+      "id": "M1_wheel_v2",
+      "status": "requested",
+      "kind": "layer_rotating",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H9",
+      "files": [
+        "incoming/M1_wheel_v2.png"
+      ],
+      "base": "—",
+      "size": "1024×1024, прозрачный фон",
+      "placement": "отдельный спрайт, центр ступицы (512, 512); в сцене ступица на торце оси M1_bg (1215, 435), диаметр ≈ 340 px",
+      "spec": "Колесо подливное анфас: двойной обод, 12 спиц, 12 лопастей шагом 30°, ровный свет без теней (крутит код)",
+      "owner": "ChatGPT + Директор",
+      "use": "M1.json → слой wheel: image, pivot (512, 512), scale ≈ 0,34 × (1920/1672 × 0,8), spin по часовой (deg_per_s > 0); сплющить по ракурсу стены",
+      "pack": "Партия 10б, п. 1",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "M1_state_wheel_pit",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H9",
+      "files": [
+        "incoming/M1_state_wheel_pit.png"
+      ],
+      "base": "M1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 1020–1450, y 240–670",
+      "spec": "Заплата: лоток с водой под колесом (вода из затвора справа уходит влево до x ≈ 1060, уровень y ≈ 570–580), ось на месте, без колеса",
+      "owner": "ChatGPT + Директор",
+      "use": "M1.json → слой под wheel (z ниже), постоянно",
+      "pack": "Партия 10б, п. 1",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "M1_wheel_water_front",
+      "status": "requested",
+      "kind": "anim_frames",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H9",
+      "files": [
+        "incoming/M1_wheel_water_front_1.png",
+        "incoming/M1_wheel_water_front_2.png",
+        "incoming/M1_wheel_water_front_3.png"
+      ],
+      "base": "M1_bg.png + M1_state_wheel_pit.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1030–1420, y 545–650",
+      "spec": "Вода лотка перед колесом (закрывает низ колеса), пена и всплески справа, рябь справа налево; 3 кадра цикла",
+      "owner": "ChatGPT + Директор",
+      "use": "M1.json → слой над wheel, кадры по кругу ≈ 6–8 к/с; unless pond_lowered",
+      "pack": "Партия 10б, п. 1",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "M1_wheel_water_still",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H9",
+      "files": [
+        "incoming/M1_wheel_water_still.png"
+      ],
+      "base": "M1_bg.png + M1_state_wheel_pit.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1030–1420, y 545–650",
+      "spec": "Та же вода перед колесом без пены — колесо стоит (пруд спущен)",
+      "owner": "ChatGPT + Директор",
+      "use": "M1.json → слой над wheel if pond_lowered",
+      "pack": "Партия 10б, п. 1",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "M1_wheel_drips",
+      "status": "requested",
+      "kind": "anim_frames",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H9",
+      "files": [
+        "incoming/M1_wheel_drips_1.png",
+        "incoming/M1_wheel_drips_2.png",
+        "incoming/M1_wheel_drips_3.png"
+      ],
+      "base": "M1_bg.png + M1_state_wheel_pit.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1030–1160, y 420–600",
+      "spec": "Струйки и капли с поднимающихся лопастей слева (вращение по часовой), 3 кадра",
+      "owner": "ChatGPT + Директор",
+      "use": "M1.json → слой над wheel, кадры по кругу; unless pond_lowered",
+      "pack": "Партия 10б, п. 1",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "closeup_bell_stand",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H26",
+      "files": [
+        "incoming/closeup_bell_stand.png"
+      ],
+      "base": "—",
+      "size": "1672×941, полный кадр",
+      "placement": "колокол с подвесом в зоне x 520–1150, y 40–900 (кадр можно обрезать до вертикального)",
+      "spec": "Мельничный колокол как на H2_bg на подвесе над козлами, ярлык пустой, языка нет, виден зев и петля, фон — угол мастерской",
+      "owner": "ChatGPT + Директор",
+      "use": "H2.json → stand_zm.mechanic.bell: image этот кадр вместо вырезки H2_bg (region), office_mirror_panel.gd",
+      "pack": "Партия 10б, п. 2",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "closeup_bell_clapper_hung",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H26",
+      "files": [
+        "incoming/closeup_bell_clapper_hung.png"
+      ],
+      "base": "closeup_bell_stand.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; язык в петле под куполом, шар чуть ниже края",
+      "spec": "Железный язык (как closeup_bell_clapper) висит внутри колокола",
+      "owner": "ChatGPT + Директор",
+      "use": "mechanic.bell: слой if bell_clapper_hung",
+      "pack": "Партия 10б, п. 2",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "closeup_bell_swing_layers",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H26",
+      "files": [
+        "incoming/closeup_bell_body.png",
+        "incoming/closeup_bell_stand_nobell.png"
+      ],
+      "base": "closeup_bell_stand.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1",
+      "spec": "Низкий приоритет: колокол отдельно (прозрачный) и кадр без колокола — для покачивания при ударе",
+      "owner": "ChatGPT + Директор",
+      "use": "mechanic.bell: покачивание тела колокола вокруг крюка; без них — качается весь кадр",
+      "pack": "Партия 10б, п. 2",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H2_state_wedges_v2",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H26",
+      "files": [
+        "incoming/H2_state_wedges_loose_v2.png",
+        "incoming/H2_state_wedges_half_v2.png",
+        "incoming/H2_state_wedges_driven_v2.png"
+      ],
+      "base": "H2_bg.png + H2_state_office_mirror_center_v2.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; клинья в рамках: 1 x 1036–1072 y 494–532; 2 x 1112–1148 y 494–532; 3 x 1008–1042 y 330–385; 4 x 1141–1177 y 330–385",
+      "spec": "Те же клинья партии 9 в цвет и свет рамы (тёмное старое дерево), светлый только свежий торец. Только если цветовой подгонки кодом не хватит — низкий приоритет",
+      "owner": "ChatGPT + Директор",
+      "use": "H2.json → stand_zm.mechanic.wedges.art и слои wedges_loose / wedges_driven — заменить файлы",
+      "pack": "Партия 10б, п. 3",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H4_state_bed",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H17",
+      "files": [
+        "incoming/H4_state_bed.png"
+      ],
+      "base": "H4_bg.png (+ H4_fg_boxes.png поверх)",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1190–1630, y 360–615 (у правой стены под скатом)",
+      "spec": "Кровать-топчан: тёсаная рама, соломенный тюфяк, лоскутное одеяло, подушка у правого конца; застелена",
+      "owner": "ChatGPT + Директор",
+      "use": "H4.json → слой bed (постоянно) + хотспот кровати «конец дня» (H17, T2)",
+      "pack": "Партия 10б, п. 4",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H4_state_chest_open",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H17",
+      "files": [
+        "incoming/H4_state_chest_open.png"
+      ],
+      "base": "H4_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 100–520, y 280–630",
+      "spec": "Тот же сундук открытым: крышка откинута к скату, внутри сено и мешковина, без предметов",
+      "owner": "ChatGPT + Директор",
+      "use": "H4.json → слой chest_open по флагу открытого сундука",
+      "pack": "Партия 10б, п. 4",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H4_state_chest_clapper",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H17",
+      "files": [
+        "incoming/H4_state_chest_clapper.png"
+      ],
+      "base": "H4_bg.png + H4_state_chest_open.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 150–480, y 380–500",
+      "spec": "Железный язык колокола (как closeup_bell_clapper) на мешковине в открытом сундуке",
+      "owner": "ChatGPT + Директор",
+      "use": "H4.json → слой над chest_open unless has_bell_clapper (язык — в сундук на чердаке, решение 24.10)",
+      "pack": "Партия 10б, п. 4",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H2_state_crate_blank",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H17",
+      "files": [
+        "incoming/H2_state_crate_blank.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 822–970, y 378–440",
+      "spec": "Ящик на верстаке мастерской без надписи «ЯЗЫК КОЛОКОЛА» (чистая доска, след соскоба)",
+      "owner": "ChatGPT + Директор",
+      "use": "H2.json → слой постоянно (язык теперь в сундуке на чердаке); хотспот clapper_box — перенести в H4 (T2)",
+      "pack": "Партия 10б, п. 4",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H1_state_scarf_over_shelf",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H12",
+      "files": [
+        "incoming/H1_state_scarf_over_shelf.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 378–700, y 480–640",
+      "spec": "Тот же мокрый полосатый платок на лавке, под ним доска полки: ступенька под тканью, правый конец доски с кронштейном торчит",
+      "owner": "ChatGPT + Директор",
+      "use": "H1.json → слой unless h1_scarf_removed (вместо платка фона); H12 — полка под платком (T2)",
+      "pack": "Партия 10б, п. 5",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H1_state_shelf_on_bench",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H12",
+      "files": [
+        "incoming/H1_state_shelf_on_bench.png"
+      ],
+      "base": "H1_bg.png + H1_state_bench_bare.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 400–680, y 470–560",
+      "spec": "Полка (как shelf_A / shelf_leaning) лежит плашмя на голой лавке, где был платок",
+      "owner": "ChatGPT + Директор",
+      "use": "H1.json → слой if h1_scarf_removed, пока полку не взяли/не повесили; заменяет shelf_leaning",
+      "pack": "Партия 10б, п. 5",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "O4_state_mitya_board_fence",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H46",
+      "files": [
+        "incoming/O4_state_mitya_board_fence.png"
+      ],
+      "base": "O4_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1030–1122, y 548–616 (у нижней жерди забора слева от столба калитки)",
+      "spec": "Дощечка Мити с зарубками прислонена к забору, мельче и тише прежней, в цвет жердей, снег на торце",
+      "owner": "ChatGPT + Директор",
+      "use": "O4.json → слой mitya_board вместо state_mitya_board.png; хотспот mitya_board — на новое место (T3)",
+      "pack": "Партия 10б, п. 6",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "closeup_second_bench_clean",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H48",
+      "files": [
+        "incoming/closeup_second_bench_clean.png"
+      ],
+      "base": "closeup_second_bench.png",
+      "size": "1672×941, полный кадр",
+      "placement": "тот же кадр; паз пустой, винта нет",
+      "spec": "Чистый кадр второго верстака: без ограничителя в пазу и без винта на столешнице",
+      "owner": "ChatGPT + Директор",
+      "use": "O4.json → ilya_workshop.mechanic.art.bg (workbench_panel.gd) — детали кладутся спрайтами",
+      "pack": "Партия 10б, п. 7",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "bench_parts",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10б (ChatGPT, правки H, 24.10)",
+      "batch": "10b",
+      "g": "H48",
+      "files": [
+        "incoming/bench_part_stop.png",
+        "incoming/bench_part_screw.png",
+        "incoming/bench_part_wedge.png",
+        "incoming/bench_part_key.png",
+        "incoming/bench_part_board.png"
+      ],
+      "base": "closeup_second_bench_clean.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; ограничитель x 752–976 y 346–476; винт x 924–1466 y 272–454; клин x 192–324 y 271–315; шпонка x 334–474 y 303–365; доска x 1544–1604 y 190–770",
+      "spec": "Подвижные детали верстака отдельными спрайтами на своих местах: ограничитель, винт, клин (не подходит), шпонка (подходит), доска",
+      "owner": "ChatGPT + Директор",
+      "use": "workbench_panel.gd: parts.* — спрайты вместо вырезок и многоугольников (H48, T2/T4)",
+      "pack": "Партия 10б, п. 7",
+      "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
     }
   ]
 }
