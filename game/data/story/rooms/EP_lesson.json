@@ -5,7 +5,8 @@
   "_art": "Последний кадр по переключателю final_frame (data/story/meta.json): утренний урок (ep_lesson, партия 5) — Нина у доски, Ульяна, Агата на задней парте. Дети с обоих берегов — нужны фигуры (заявка в отчёте).",
   "art_source": {
     "files": {
-      "bg.png": "assets/incoming/ep_lesson.png"
+      "bg.png": "assets/incoming/ep_lesson.png",
+      "lesson_map.png": "assets/incoming/ep_lesson_map.png"
     },
     "canvas": [
       1672,
@@ -39,6 +40,14 @@
   "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
   "player_hidden": true,
   "layers": [
+    {
+      "id": "lesson_map",
+      "image": "res://assets/rooms/EP_lesson/lesson_map.png",
+      "if": [
+        "q02_old_under_new"
+      ],
+      "_note": "Q02, вариант A: у доски — старая карта Ольховки с приколотой калькой («Нина показывает детям, как менялось место»). Партия 8б ep_lesson_map.png (полный холст к ep_lesson, (0,0); карта и калька вместе, x883–1063, y444–548)."
+    },
     {
       "id": "date",
       "text": "@EP.lesson.written_date",

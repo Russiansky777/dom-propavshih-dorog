@@ -5,7 +5,8 @@
   "_art": "Эпилог: Пелагея и Митя смолят лодку на зиму (ep_boat, партия 5). Дощечка Мити на стене сарая — если Q07 «отдать Пелагее».",
   "art_source": {
     "files": {
-      "bg.png": "assets/incoming/ep_boat.png"
+      "bg.png": "assets/incoming/ep_boat.png",
+      "bench.png": "assets/incoming/ep_boat_bench.png"
     },
     "canvas": [
       1672,
@@ -39,6 +40,14 @@
   "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
   "player_hidden": true,
   "layers": [
+    {
+      "id": "bench",
+      "image": "res://assets/rooms/EP_boat/bench.png",
+      "if": [
+        "q06_table_at_ilya"
+      ],
+      "_note": "Q06, вариант A: справа от лодки — верстак, уключина, новая полка («Митя чинит уключину; рядом сушится их полка»). Партия 8б ep_boat_bench.png (x1230–1650, y697–927)."
+    },
     {
       "id": "mitya_board",
       "image": "res://assets/rooms/EP_boat/mitya_board.png",

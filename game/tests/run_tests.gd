@@ -655,6 +655,15 @@ func _test_story_data() -> void:
 			if not l.has("image") and l.has("text"):
 				continue  # stand-in text layer until its picture is drawn (validate_rooms.py п. 11)
 			var img := String(l.get("image", ""))
+			# Art ordered and not delivered (`pending` — its request in assets/manifest.json, партия 8б): the engine's
+			# stand-in `stub` is built instead (validate_rooms.py п. 13 checks the request); never a missing picture.
+			if not ResourceLoader.exists(img) and String(l.get("pending", "")) != "" and l.has("stub"):
+				var room_node = load("res://scripts/rooms/room_builder.gd").build(rid)
+				var stub_node = room_node.get_node_or_null("Layers/" + String(l.get("id", ""))) if room_node != null else null
+				_check(stub_node != null and stub_node.has_meta("stub"), "%s: layer %s — the stand-in is built until the art comes" % [rid, String(l.get("id", "?"))])
+				if room_node != null:
+					room_node.free()
+				continue
 			_check(ResourceLoader.exists(img), "%s: layer %s image not found: %s" % [rid, String(l.get("id", "?")), img])
 		for h in spec.get("hotspots", []):
 			if h.has("image"):

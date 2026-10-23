@@ -94,6 +94,13 @@
       "title": "@ach.title_q01"
     },
     {
+      "id": "q02",
+      "if": [
+        "done_Q02"
+      ],
+      "title": "@ach.title_q02"
+    },
+    {
       "id": "q03",
       "if": [
         "done_Q03"
@@ -106,6 +113,13 @@
         "done_Q04"
       ],
       "title": "@ach.title_q04"
+    },
+    {
+      "id": "q06",
+      "if": [
+        "done_Q06"
+      ],
+      "title": "@ach.title_q06"
     },
     {
       "id": "q07",

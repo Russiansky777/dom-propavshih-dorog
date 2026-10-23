@@ -533,8 +533,54 @@ def check_view(ctx: str, v: dict) -> None:
 
 EFFECT_TYPES = ("fire", "snow", "tint", "shapes")
 BLENDS = ("mul", "add", "sub", "mix")
-SHAPE_TYPES = ("gradient", "poly", "line", "circle", "glow", "text")
-MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo", "windlass", "latch", "crossing")
+SHAPE_TYPES = ("gradient", "poly", "line", "circle", "glow", "text", "rect", "dashes")
+MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo", "windlass", "latch", "crossing",
+                  "tracing", "workbench")
+
+# 13. Арт заказан и ещё не доставлен (партия 8б, Q02/Q06, 23.10): слой или картинка крупного плана с `pending` — id
+# заявки assets/manifest.json. Пока заявка открыта (requested / in_progress), файла может не быть: вместо картинки
+# движок строит `stub` (PlaceholderArt.stand_in). Файл заявки должен быть в её files — тогда смена заглушки на арт —
+# один импорт (tools/import_room_art.py для слоёв комнат и кадров — по art_source.files; tools/import_closeups.py —
+# крупные планы game/assets/closeups/<имя>.png ← assets/incoming/<имя>.png).
+_MANIFEST_PATH = ROOT / "assets" / "manifest.json"
+MANIFEST_REQ = {r.get("id"): r for r in (load(_MANIFEST_PATH).get("requests", []) if _MANIFEST_PATH.exists() else [])}
+PENDING_OPEN = ("requested", "in_progress")
+
+
+def check_pending(ctx: str, pending_id, res: str, incoming: str | None, stub) -> bool:
+    """Картинка `res` заказана (`pending`). True — файла ещё нет и это законно (заглушка вместо него)."""
+    r = MANIFEST_REQ.get(pending_id)
+    if r is None:
+        err(f"{ctx}: pending {pending_id} — нет такой заявки в assets/manifest.json")
+        return False
+    if res.startswith("res://") and (GAME_DIR / res[len("res://"):]).exists():
+        if r.get("status") in PENDING_OPEN:
+            warn(f"{ctx}: {res} уже в игре, а заявка {pending_id} — {r.get('status')} (отметьте delivered; pending/stub можно убрать)")
+        return False
+    if r.get("status") not in PENDING_OPEN:
+        err(f"{ctx}: файла {res} нет, а заявка {pending_id} — {r.get('status')}: импортируйте арт")
+    if incoming is None:
+        err(f"{ctx}: заказанный файл {res} не связан с поставкой (art_source.files комнаты) — импорт его не положит")
+    elif incoming not in r.get("files", []):
+        err(f"{ctx}: {incoming} нет в заявке {pending_id} (assets/manifest.json → files)")
+    if not isinstance(stub, dict) or not (stub.get("shapes") or stub.get("crops") or stub.get("texts")):
+        err(f"{ctx}: нет stub — заглушки движка до арта (shapes / crops / texts)")
+    return True
+
+
+def check_stub(ctx: str, stub) -> None:
+    """Заглушка движка (PlaceholderArt.stand_in): фигуры известны, вырезки — из картинок игры, тексты — ключи."""
+    if not isinstance(stub, dict):
+        return
+    check_shapes(ctx + ".shapes", stub.get("shapes"))
+    for i, c in enumerate(stub.get("crops", []) or []):
+        check_res_path(f"{ctx}.crops[{i}].image", c.get("image", ""))
+        if len(c.get("region", [])) != 4:
+            err(f"{ctx}.crops[{i}].region: [x, y, w, h] в пикселях картинки")
+    for i, t in enumerate(stub.get("texts", []) or []):
+        check_text(f"{ctx}.texts[{i}].text", t.get("text", ""))
+        if len(t.get("rect", [])) != 4:
+            err(f"{ctx}.texts[{i}].rect: [x, y, w, h]")
 
 
 def check_shapes(ctx: str, shapes) -> None:
@@ -576,6 +622,10 @@ def check_mechanic(ctx: str, m: dict, room: dict) -> None:
         if isinstance(o, dict):
             for k, v in o.items():
                 if (k in ("image", "icon", "watch_icon") or (isinstance(v, str) and v.startswith("res://"))) and isinstance(v, str):
+                    # 13. заказанный крупный план (pending): game/assets/closeups/<имя>.png ← assets/incoming/<имя>.png
+                    if m.get("pending") and path.startswith(ctx + ".art") and v.startswith("res://assets/closeups/") \
+                            and check_pending(f"{path}.{k}", m["pending"], v, "incoming/" + Path(v).name, m.get("stub")):
+                        continue
                     check_res_path(f"{path}.{k}", v)
                 else:
                     images(v, f"{path}.{k}")
@@ -624,6 +674,48 @@ def check_mechanic(ctx: str, m: dict, room: dict) -> None:
                 err(f"{ctx}.art.{kk}: нет картинки переправы")
         if not 5 <= int(m.get("pulls", 10)) <= 20:
             err(f"{ctx}.pulls: около 10 перехватов (F12), есть {m.get('pulls')}")
+    if "stub" in m:
+        check_stub(ctx + ".stub", m["stub"])
+    if m.get("type") == "tracing":
+        # Q02: «протянуть по контуру» по кальке — линии в долях участка plot (0..1), подпись у каждой; фаза кальки по флагам.
+        lines = m.get("lines", {})
+        st_ = lines.get("strokes", [])
+        if len(st_) < 2 or any(len(x) < 2 for x in st_):
+            err(f"{ctx}.lines.strokes: 2–4 линии по ≥ 2 точки")
+        for i, x in enumerate(st_):
+            if any(not (0.0 <= float(q[0]) <= 1.0 and 0.0 <= float(q[1]) <= 1.0) for q in x):
+                err(f"{ctx}.lines.strokes[{i}]: точки — доли участка plot, 0..1")
+        if len(lines.get("labels", [])) != len(st_):
+            err(f"{ctx}.lines.labels: подпись у каждой линии ({len(st_)})")
+        for i, lb in enumerate(lines.get("labels", [])):
+            check_text(f"{ctx}.lines.labels[{i}]", lb)
+        if len(m.get("plot", [])) != 4:
+            err(f"{ctx}.plot: [x, y, w, h] — участок на холсте 1672×941")
+        check_flags(ctx + ".trace_when", m.get("trace_when"))
+        if not m.get("trace_when") or not m.get("done_flag"):
+            err(f"{ctx}: trace_when (когда калька) и done_flag (линии проведены)")
+        if m.get("done_flag") not in (m.get("events", {}).get("traced", {}).get("sets") or []):
+            err(f"{ctx}.events.traced: ставит done_flag {m.get('done_flag')}")
+        if m.get("done_flag") not in (m.get("unless") or []):
+            err(f"{ctx}.unless: после линий крупный план не открывается снова (done_flag)")
+    if m.get("type") == "workbench":
+        # Q06: четыре шага — флаги steps ставят события fitted / stopped / tightened / checked по порядку.
+        steps_ = m.get("steps", [])
+        if len(steps_) != 4:
+            err(f"{ctx}.steps: четыре флага шагов (паз, ограничитель, винт, доска)")
+        for name, fl in zip(("fitted", "stopped", "tightened", "checked"), steps_):
+            if fl not in (m.get("events", {}).get(name, {}).get("sets") or []):
+                err(f"{ctx}.events.{name}: ставит флаг шага {fl}")
+        fa = m.get("parts", {}).get("fastenings", [])
+        if len(fa) < 2 or sum(1 for f in fa if f.get("fits")) != 1:
+            err(f"{ctx}.parts.fastenings: два и больше креплений, в паз садится ровно одно (fits)")
+        for i, f in enumerate(fa):
+            check_text(f"{ctx}.parts.fastenings[{i}].label", f.get("label", ""))
+            check_text(f"{ctx}.parts.fastenings[{i}].text", f.get("text", ""))
+        if "timing" not in m:
+            err(f"{ctx}.timing: винт затягивается «точным ударом»")
+        if steps_ and steps_[-1] not in (m.get("unless") or []):
+            err(f"{ctx}.unless: собранный верстак крупным планом не открывается снова ({steps_[-1] if steps_ else '?'})")
     if m.get("type") == "office_mirror" and len(m.get("frame", {}).get("glass_polygon", [])) != 4:
         err(f"{ctx}.frame.glass_polygon: контур стекла — 4 точки холста (glass_polygon_px поставки)")
     if m.get("type") == "fast_mirror":
@@ -730,7 +822,16 @@ for rid, room in rooms.items():
                 warn(f"{lctx}: текстовый слой без _stub — укажите, какой рисунок он заменяет (заявка в assets/manifest.json)")
         elif "image" not in l:
             err(f"{lctx}: нет image")
+        elif l.get("pending") and check_pending(
+                lctx, l["pending"], l["image"],
+                (lambda src: src[len("assets/"):] if src and src.startswith("assets/") else src)(
+                    room.get("art_source", {}).get("files", {}).get(Path(l["image"]).name)
+                    if l["image"].startswith(f"res://assets/rooms/{rid}/") else None),
+                l.get("stub")):
+            check_stub(lctx + ".stub", l.get("stub"))
         else:
+            if "stub" in l:
+                check_stub(lctx + ".stub", l.get("stub"))
             check_res_path(lctx + ".image", l["image"])
             lsize = png_size(l["image"])
             if (lsize and bg_size and "offset" not in l

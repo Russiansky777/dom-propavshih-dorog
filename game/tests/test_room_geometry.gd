@@ -248,6 +248,11 @@ func _check_scales(room: Node, spec: Dictionary) -> void:
 			# stand-in text until the picture is drawn (O1 board lines, validate_rooms.py п. 11): no art scale to check
 			_check(node.get_node_or_null("Text") is Label, "text layer %s has its Label" % lid)
 			continue
+		if node.has_meta("stub"):
+			# art ordered, not delivered (`pending`, validate_rooms.py п. 13): the engine's stand-in in screen px — no art
+			# scale yet; once the picture is imported the layer is checked like any other
+			_check(l.has("pending") and l.has("stub") and node.get_node_or_null("StandIn") != null, "stand-in layer %s: pending + stub, built" % lid)
+			continue
 		var img: Sprite2D = node.get_node_or_null("Image")
 		if img == null:
 			_check(false, "layer %s has no Image" % lid)

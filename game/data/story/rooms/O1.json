@@ -1,7 +1,7 @@
 {
   "id": "O1",
   "_art": "Фон O1_bg.png (зимний класс): доска, учительский стол с ящиком (мелки на нём убраны заплаткой; мел — на левой парте, слой chalk_desk), мешок у левой двери, тетради на лавке справа, картинка с птицей, две двери (левая — обратно в H3, правая — на крыльцо). Слой O1_fg_desks.png — парты на переднем плане (окклюдер z=1080, пол перед ними не проходим). Состояние O1_state_board_written.png — надпись мелом «Я была здесь. Агата» при board_here; две другие надписи — заглушки текстом (board_mama, board_ilya). Учительский ящик — фото моста, рисунок Ильи, план переправы (M07, 22.10).",
-  "art_source": {"files": {"state_board_mama.png": "assets/incoming/O1_state_board_mama.png", "state_board_ilya.png": "assets/incoming/O1_state_board_ilya.png"}, "canvas": [1672, 941], "alpha_min": 0,
+  "art_source": {"files": {"state_board_mama.png": "assets/incoming/O1_state_board_mama.png", "state_board_ilya.png": "assets/incoming/O1_state_board_ilya.png", "state_village_map.png": "assets/incoming/O1_state_village_map.png"}, "canvas": [1672, 941], "alpha_min": 0,
     "_note": "Партия 7 (ChatGPT 22.10, assets/incoming/_meta_p7/README_RU.txt): две надписи мелом — полные холсты 1672×940 к O1_bg (дополняются до 941 прозрачной строкой снизу), (0,0) 1:1, мягкий мел — alpha_min 0. Копии — tools/import_room_art.py O1 (только эти два файла)"},
   "background": {"kind": "interior", "image": "res://assets/rooms/O1/bg.png", "wall": "#5a6c80", "floor": "#6f7d8c", "accent": "#8aa0b8", "horizon": 700},
   "walkable": [[20, 1070], [20, 812], [330, 730], [345, 738], [462, 738], [470, 700], [540, 700], [540, 752], [900, 752], [900, 700], [1495, 700], [1495, 742], [1745, 742], [1745, 700], [1830, 700], [1915, 765], [1915, 1070], [1825, 1070], [1825, 830], [345, 830], [345, 1070]],
@@ -22,6 +22,7 @@
     {"id": "nina_answer_ilya", "text": "@O1d.board.written_answer_ilya", "rect": [870, 434, 490, 46], "font": "italic", "font_size": 28, "color": "#ecebe4", "alpha": 0.72, "angle_deg": -1.5, "if": ["board_ilya", "nina_answered_board"], "_stub": "Ответ Нины про лодки с дымом (M22)"},
     {"id": "nina_answer_date", "text": "@O1d.board.written_answer_date", "rect": [1110, 186, 220, 52], "font": "italic", "font_size": 34, "color": "#ecebe4", "alpha": 0.72, "angle_deg": -1.0, "if": ["nina_answered_board"], "_stub": "Первое общее число в углу доски (M22, A3): Нина написала своё, потом Агатино под ним и стёрла верхнее — на доске остаётся Агатино"},
     {"id": "ulyana_bird_reply", "text": "@O1d.bird.written_reply", "rect": [1560, 216, 150, 30], "font": "italic", "font_size": 17, "color": "#4b4a52", "alpha": 0.85, "angle_deg": -3.0, "if": ["v03_marked", "nina_answered_board"], "_stub": "Ответ Ульяны карандашом рядом с пометкой Агаты (M22)"},
+    {"id": "village_map", "image": "res://assets/rooms/O1/state_village_map.png", "if": ["done_M21b"], "_note": "Q02 (Директор 23.10 11:51): старая школьная карта Ольховки под доской, между учительским столом и правым столиком (партия 8б, полный холст 1672×940 к O1_bg, (0,0); область x883–1063, y444–548 — README 8б). С утра третьего дня: Нина повесила её к уроку."},
     {"id": "desks", "image": "res://assets/rooms/O1/fg_desks.png", "occluder": true, "z": 1080}
   ],
   "spawns": {"default": [1000, 740], "from_H3": [450, 760], "from_O2": [1760, 740]},
@@ -87,9 +88,11 @@
     {
       "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [852, 339, 97, 376], "stand": [1130, 780], "draw": false, "pick_priority": 3,
       "visible_if": ["done_M21b"],
+      "hidden_when": [{"all": ["q02_seen_map"], "not": ["done_Q02"]}], "_hidden_note": "Q02: увидев карту, Ульяна убегает показывать сад (O4, хотспот ulyana); после задания — снова в классе",
       "_rect_note": "блок 3: Ульяна у правого края учительского стола, ноги (900, 715) (масштаб 1,33 → 1,27 м ≈ 352 px), не на стоянках ящика и мела; с третьего дня учится здесь",
       "talk": {"after_text": "@O1d.ulyana.after"}
     },
+    {"id": "village_map", "kind": "object", "action_anim": "reach", "label": "@O1q.village_map.label", "rect": [1010, 506, 214, 128], "stand": [1120, 770], "draw": false, "pick_priority": 2, "visible_if": ["done_M22"], "_note": "Q02 «На карте вырос сад» (Директор 23.10 11:51): первый клик — Агата узнаёт карту, у крайнего дома пустой участок; Ульяна убегает показать сад (O4); крупный план карты. После Ульяны — калька и три линии карандашом, «Там теперь смородина», сразу выбор: поверх старой карты или Ульяне. След — кадр эпилога (урок или ужин).", "use": {"sets": ["q02_seen_map"], "text": ["@O1q.village_map.use", "@O1q.village_map.ulyana_runs"], "once_flag": "q02_seen_map", "open_mechanic": true}, "mechanic": {"type": "tracing", "title": "@mech.village_map.title", "requires": {"flags": ["q02_seen_map"]}, "unless": ["q02_traced"], "trace_when": ["q02_asked_ulyana"], "done_flag": "q02_traced", "art": {"map": "res://assets/closeups/closeup_village_map_old.png", "tracing": "res://assets/closeups/closeup_village_map_tracing.png"}, "_note": "Q02: крупный план карты (tracing_panel.gd). Первый раз — осмотр: пустой огороженный участок у дома Ильи обведён; после Ульяны (q02_asked_ulyana) — калька поверх карты, вид наезжает на участок, три линии карандашом по пунктиру «протянуть по контуру» (KnotPath): ряды смородины, дорожка между рядами, сарай. Арт партии 8б: closeup_village_map_old.png (полный кадр) и closeup_village_map_tracing.png (лист кальки x100–1580, y45–885, ≈18 % непрозрачности; кусты двумя рядами, яблоня, дорожка, сарай, крестик) — калька проявляется, когда линии проведены. plot — рамка плотных линий кальки (альфа ≥ 60: x1257–1474, y481–668); линии lines.strokes — в долях plot, по рисунку кальки.", "plot": [1257, 481, 218, 188], "fit": false, "zoom_box": [330, 250, 1260, 640], "zoom_max": 2.6, "lines": {"strokes": [[[0.335, 0.407], [0.408, 0.806], [0.748, 0.886], [0.601, 0.327]], [[0.606, 0.952], [0.53, 0.64], [0.454, 0.34]], [[0.794, 0.16], [0.966, 0.194], [0.977, 0.473], [0.805, 0.447], [0.794, 0.17]]], "tolerance": 44, "grab_r": 72, "max_lead": 150, "labels": ["@mech.village_map.label_line_rows", "@mech.village_map.label_line_path", "@mech.village_map.label_line_shed"]}, "hint_pos": [1250, 96], "texts": {"label_hint_look": "@mech.village_map.label_hint_look", "label_hint_trace": "@mech.village_map.label_hint_trace", "slipped": "@mech.village_map.slipped"}, "events": {"traced": {"sets": ["q02_traced"], "text": "@O1q.village_map.traced", "close": true, "then_choice": true}}, "sheet": {"rect": [100, 45, 1480, 840], "color": "#ffffff2e", "pins": false, "_note": "лист кальки — тот же, что на арте (x100–1580, y45–885, ≈18 %); при последней линии на его место проявляется рисунок кальки"}}, "choice": {"prompt": "@O1q.village_map.prompt", "requires": {"flags": ["q02_traced"]}, "once_any": true, "options": [{"id": "A", "label": "@O1q.village_map.opt_old", "sets": "q02_old_under_new"}, {"id": "B", "label": "@O1q.village_map.opt_new", "sets": "q02_new_primary"}]}, "use_when": [{"if": ["q02_old_under_new"], "text": "@O1q.village_map.look_old"}, {"if": ["q02_new_primary"], "text": "@O1q.village_map.look_new"}], "look": "@O1q.village_map.look"},
     {
       "id": "bird_drawing", "kind": "object", "label": "@O1.bird_drawing.label", "rect": [1440, 150, 210, 300], "stand": [1540, 770], "color": "#e0d8c0", "draw": false,
       "visible_if": ["seen_class_traces"],
@@ -111,7 +114,8 @@
     "M07": {"complete_when": [{"all": ["has_plan_crossing"]}]},
     "M08": {"complete_when": [{"all": ["observed_path_loop"]}]},
     "V03": {"complete_when": [{"any": ["v03_marked", "v03_left"]}], "complete_text": "@O1.v03.done"},
-    "M22": {"trigger": "enter"}
+    "M22": {"trigger": "enter"},
+    "Q02": {"complete_when": [{"any": ["q02_old_under_new", "q02_new_primary"]}]}
   },
   "flags": {
     "o1_seen_sack": "Замечен залатанный мешок в классе",
@@ -120,6 +124,8 @@
     "o1_saw_winter": "Агата увидела зиму за окнами класса (первый вход)",
     "o1_board_left_blank": "Агата решила пока ничего не писать на доске",
     "v03_marked": "На полях картинки с птицей оставлена пометка (V03)",
-    "v03_left": "Картинка с птицей оставлена как есть (V03)"
+    "v03_left": "Картинка с птицей оставлена как есть (V03)",
+    "q02_seen_map": "Агата увидела на старой школьной карте пустой участок у дома Ильи (Q02)",
+    "q02_traced": "Новый сад Ильи проведён карандашом по кальке поверх старой карты (Q02)"
   }
 }

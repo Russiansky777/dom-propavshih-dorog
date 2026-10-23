@@ -5,7 +5,9 @@
   "_art": "Эпилог, ужин в доме тёти (ep_dinner, партия 5): Нина, Илья с женой, Агата у стола, Тихон на печи, Ульяна в двери из галереи; чашка, выбранная в день первый, — у Нины.",
   "art_source": {
     "files": {
-      "bg.png": "assets/incoming/ep_dinner.png"
+      "bg.png": "assets/incoming/ep_dinner.png",
+      "ulyana_map.png": "assets/incoming/ep_dinner_ulyana_map.png",
+      "photo_frame.png": "assets/incoming/ep_dinner_photo_frame.png"
     },
     "canvas": [
       1672,
@@ -39,6 +41,22 @@
   "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
   "player_hidden": true,
   "layers": [
+    {
+      "id": "ulyana_map",
+      "image": "res://assets/rooms/EP_dinner/ulyana_map.png",
+      "if": [
+        "q02_new_primary"
+      ],
+      "_note": "Q02, вариант B: справа от двери, слева от иконы приколот Ульянин рисунок сада на кальке («Ульяна объясняет гостю дорогу по своему рисунку»). Партия 8б ep_dinner_ulyana_map.png (x997–1082, y151–214)."
+    },
+    {
+      "id": "photo_frame",
+      "image": "res://assets/rooms/EP_dinner/photo_frame.png",
+      "if": [
+        "q06_table_at_agata"
+      ],
+      "_note": "Q06, вариант B: семейная фотография дня первого в новой резной рамке на полке слева от двери («Илья заканчивает в мастерской рамку для семейной фотографии»). Партия 8б ep_dinner_photo_frame.png (x626–685, y256–328). Место фото в доме (столик или полка, v01_photo_*) называет реплика M26."
+    },
     {
       "id": "ulyana",
       "image": "res://assets/rooms/EP_dinner/ulyana.png",

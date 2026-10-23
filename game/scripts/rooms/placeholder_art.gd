@@ -12,8 +12,74 @@ extends RefCounted
 ##   {"type": "circle", "center": [x,y], "r": 20, "color": "#..."}                      — filled disc
 ##   {"type": "glow", "center": [x,y], "r": 40, "ry": 20, "blend": "add|mix", "color": "#..."} — soft light / haze
 ##   {"type": "text", "at": [x,y], "text": "@key", "size": 32, "color": "#..."}        — a word painted on
+##   {"type": "rect", "rect": [x,y,w,h], "color": "#...", "angle_deg": 0}               — filled rectangle (turned)
+##   {"type": "dashes", "points": [[x,y]...], "dash": 10, "gap": 7, "width": 3, "color": "#..."} — dashed polyline
+##
+## A whole stand-in (`stand_in`, layers' and close-ups' `stub` — art ordered and not delivered yet, partия 8б):
+##   {"crops": [{"image": "res://…", "region": [x,y,w,h] in its pixels, "rect": [x,y,w,h], "modulate": "#…"}],
+##    "shapes": [...], "texts": [{"text": "@key", "rect": [x,y,w,h], "font_size", "color", "alpha", "angle_deg", "font"}]}
+## — a part of a delivered painting stretched to `rect`, the shapes above, then the words.
 
 const SEGMENTS := 28
+
+
+## The stand-in of an ordered picture (data `stub`, see above), in the coordinates of whoever draws it (a room
+## layer — screen px; a close-up — its canvas px, scaled by the panel).
+static func stand_in(stub: Dictionary) -> Node2D:
+	var root := Node2D.new()
+	root.name = "StandIn"
+	for i in stub.get("crops", []).size():
+		var c: Dictionary = stub["crops"][i]
+		var image := String(c.get("image", ""))
+		if image == "" or not ResourceLoader.exists(image):
+			continue
+		var reg: Array = c.get("region", [0, 0, 64, 64])
+		var at := AtlasTexture.new()
+		at.atlas = load(image)
+		at.region = Rect2(float(reg[0]), float(reg[1]), float(reg[2]), float(reg[3]))
+		var r: Array = c.get("rect", reg)
+		var spr := Sprite2D.new()
+		spr.name = "Crop%d" % i
+		spr.texture = at
+		spr.centered = false
+		spr.position = Vector2(float(r[0]), float(r[1]))
+		spr.scale = Vector2(float(r[2]) / maxf(float(reg[2]), 1.0), float(r[3]) / maxf(float(reg[3]), 1.0))
+		if c.has("modulate"):
+			spr.modulate = _col(c["modulate"])
+		root.add_child(spr)
+	if not stub.get("shapes", []).is_empty():
+		root.add_child(build(stub["shapes"]))
+	for i in stub.get("texts", []).size():
+		var lb := text_label(stub["texts"][i])
+		lb.name = "Text%d" % i
+		root.add_child(lb)
+	return root
+
+
+## Words in the game's font inside `rect` [x, y, w, h] (a chalk answer on the board, a caption on a stand-in):
+## `font` (body_italic by default; "italic" = body_italic), `font_size`, `color` with `alpha`, tilted by `angle_deg`.
+static func text_label(l: Dictionary) -> Label:
+	var r: Array = l.get("rect", [0, 0, 400, 100])
+	var lbl := Label.new()
+	lbl.name = "Text"
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # before text and size (an unwrapped Label keeps its text width)
+	lbl.text = StoryData.text(String(l.get("text", "")))
+	lbl.position = Vector2(float(r[0]), float(r[1]))
+	lbl.size = Vector2(float(r[2]), float(r[3]))
+	lbl.pivot_offset = lbl.size / 2.0
+	lbl.rotation = deg_to_rad(float(l.get("angle_deg", 0.0)))
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	var role := String(l.get("font", "body_italic"))
+	if role == "italic":
+		role = "body_italic"
+	lbl.add_theme_font_override("font", UiTheme.font(role))
+	lbl.add_theme_font_size_override("font_size", int(l.get("font_size", 40)))
+	var c := Color.html(String(l.get("color", "#ecebe4")))
+	c.a = float(l.get("alpha", 0.75))
+	lbl.add_theme_color_override("font_color", c)
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return lbl
 
 
 static func build(shapes: Array) -> Node2D:
@@ -46,6 +112,34 @@ static func shape_node(s: Dictionary) -> CanvasItem:
 			l.begin_cap_mode = Line2D.LINE_CAP_ROUND
 			l.end_cap_mode = Line2D.LINE_CAP_ROUND
 			return l
+		"rect":
+			var rr: Array = s.get("rect", [0, 0, 10, 10])
+			var p2 := Polygon2D.new()
+			var sz := Vector2(float(rr[2]), float(rr[3]))
+			p2.polygon = PackedVector2Array([Vector2.ZERO, Vector2(sz.x, 0), sz, Vector2(0, sz.y)])
+			p2.position = Vector2(float(rr[0]), float(rr[1])) + sz / 2.0
+			p2.offset = -sz / 2.0
+			p2.rotation = deg_to_rad(float(s.get("angle_deg", 0.0)))
+			p2.color = _col(s.get("color", "#808080"))
+			return p2
+		"dashes":
+			var root := Node2D.new()
+			var pts := _points(s.get("points", []))
+			var dash := float(s.get("dash", 10.0))
+			var gap := float(s.get("gap", 7.0))
+			for i in range(1, pts.size()):
+				var a := pts[i - 1]
+				var seg := a.distance_to(pts[i])
+				var d := (pts[i] - a) / maxf(seg, 0.001)
+				var t := 0.0
+				while t < seg:
+					var dl := Line2D.new()
+					dl.points = PackedVector2Array([a + d * t, a + d * minf(t + dash, seg)])
+					dl.width = float(s.get("width", 3.0))
+					dl.default_color = _col(s.get("color", "#404040"))
+					root.add_child(dl)
+					t += dash + gap
+			return root
 		"circle":
 			var c := Polygon2D.new()
 			c.polygon = circle_points(_v(s.get("center", [0, 0])), float(s.get("r", 10.0)))

@@ -8,6 +8,8 @@
    "alpha_min": 9,            — пиксели с alpha < alpha_min обнуляются (цветной мусор генератора)
    "mirror_x": true}          — отразить по горизонтали (решение Директора: Z4 зеркально, чтобы
                                  боковое крыльцо было справа — продолжение дома с улицы Z2)
+Файл, которого ещё нет в assets/incoming (арт заказан — слой с `pending`, партия 8б), пропускается: в игре до него
+заглушка движка (stub), после доставки тот же запуск кладёт картинку на место заглушки.
 Оригиналы в assets/incoming не меняются. Повторный импорт без mirror_x вернул бы неотражённую
 картинку при отражённых данных — поэтому отражение записано в данных, а не сделано руками.
 
@@ -65,6 +67,11 @@ def main() -> int:
     canvas = tuple(spec["canvas"]) if "canvas" in spec else None
     bad = 0
     for dst, src in spec["files"].items():
+        if not (ROOT / src).exists():
+            # Арт заказан и ещё не доставлен (слой с `pending`, заявка assets/manifest.json): в игре до него заглушка
+            # движка; как только файл ляжет в assets/incoming, этот же запуск положит его в игру.
+            print(f"wait {src} — ещё не доставлен (в игре заглушка движка)")
+            continue
         im = build(ROOT / src, canvas, int(spec.get("alpha_min", 0)), bool(spec.get("mirror_x", False)))
         target = out_dir / dst
         if check:

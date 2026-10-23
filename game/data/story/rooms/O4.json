@@ -1,7 +1,7 @@
 {
   "id": "O4",
   "_art": "Партия 4 (ChatGPT 22.10, assets/incoming/_meta_p46/README_RU.txt): O4_bg.png — улица Ольховки зимой: справа большой дом с крыльцом (дом Нины), у правого края крайний дом (Ильи), слева на горке дом с лестницей — школа, тропа к ней вверх налево; дорога вглубь — к реке и дальней опоре; правая дорога — на нижнюю улицу. O4_night.png — слой ночи всей сцены (окна горят), поверх фона в (0,0), пока не наступило утро третьего дня (morning_day3). Копии — tools/import_room_art.py O4.",
-  "art_source": {"files": {"bg.png": "assets/incoming/O4_bg.png", "night.png": "assets/incoming/O4_night.png"}, "canvas": [1672, 941], "alpha_min": 0,
+  "art_source": {"files": {"bg.png": "assets/incoming/O4_bg.png", "night.png": "assets/incoming/O4_night.png", "state_bench_shed.png": "assets/incoming/O4_state_bench_shed.png"}, "canvas": [1672, 941], "alpha_min": 0,
     "_note": "слои в координатах фона, (0,0) 1:1"},
   "background": {"kind": "exterior", "image": "res://assets/rooms/O4/bg.png", "wall": "#9aa6b8", "floor": "#dfe4ec", "accent": "#7a5a3a", "horizon": 560},
   "walkable": [[20, 1070], [20, 800], [120, 700], [200, 600], [250, 470], [330, 460], [330, 560], [480, 640], [640, 640], [690, 590], [760, 585], [800, 640], [870, 712], [1300, 712], [1420, 645], [1520, 645], [1600, 615], [1760, 595], [1900, 600], [1900, 1070]],
@@ -11,6 +11,7 @@
   "_depth_note": "Рост Агаты = 345 px × scale (rooms/_index.json agata_ref). Дверь большого дома (порог y 545, верх 405, ≈ 2,0 м): у порога 0,327 → 113 px при ожидаемых 116; у забора (y 690) 0,55 → 190 px при штакетнике ≈ 1,1 м — 125 px.",
   "height_refs": [{"what": "дверь большого дома (порог y 545, верх y 405)", "y": 545, "px": 140, "m": 2.0, "door": true}],
   "layers": [
+    {"id": "bench_shed", "image": "res://assets/rooms/O4/state_bench_shed.png", "if": ["q06_table_at_ilya"], "_note": "Q06, вариант A (второй верстак остался у Ильи): пристройка дома Ильи открыта — на месте дров дверь, верстак, стружка, тёплый свет (партия 8б, полный холст к O4_bg, (0,0); область x1402–1483, y419–526 — хотспот ilya_workshop)."},
     {"id": "night", "image": "res://assets/rooms/O4/night.png", "if": ["tod_night"], "_note": "Вечер второго дня и ночь: окна горят (партия 4). С утра третьего дня — день как на фоне."}
   ],
   "effects": [
@@ -59,12 +60,15 @@
         ]},
       "look": "@O4.letters_bag.look"
     },
+    {"id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [1694, 504, 52, 128], "stand": [1800, 655], "draw": false, "pick_priority": 3, "visible_if": ["q02_seen_map"], "hidden_if": ["done_Q02"], "_rect_note": "Q02: Ульяна у забора отцовского сада, по колено в снегу — правее Мити, у поворота на нижнюю улицу: ноги (1720, 632) (масштаб 0,48 × 0,77 → 127 px). Стоянка Агаты — справа от неё (слева стоит Митя — validate_rooms 9b).", "use": {"sets": ["q02_asked_ulyana"], "text": ["@O4q.ulyana.say_map", "@O4q.ulyana.say_help", "@O4q.ulyana.say_garden", "@O4q.ulyana.say_tracing"], "once_flag": "q02_asked_ulyana", "text_done": "@O4q.ulyana.again"}, "look": "@O4q.ulyana.look"},
+    {"id": "ilya_workshop", "kind": "object", "action_anim": "open", "label": "@O4q.workshop.label", "rect": [1606, 476, 100, 132], "stand": [1500, 690], "draw": false, "pick_priority": 2, "visible_if": ["done_M22", "met_ilya"], "_note": "Q06 «Второй верстак» (Директор 23.10 11:51): сарай-мастерская во дворе Ильи — пристройка дома Ильи с дровами (на арте 8б при варианте A — открытый проём с верстаком, x1402–1483, y419–526) (комнаты внутри нет — крупный план). Первый клик: Митя «Два человека здесь уже не помещаются», Илья «Тогда сделаем место третьему» — и крупный план верстака; после проверки доской сразу выбор: оставить у Ильи или в тётину мастерскую. След: A — открытая дверь с верстаком здесь (bench_shed) и кадр у лодки; B — верстак в H2 и рамка для фото за ужином.", "use": {"sets": ["q06_started"], "text": ["@O4q.workshop.mitya_cramped", "@O4q.workshop.ilya_third"], "once_flag": "q06_started", "open_mechanic": true}, "mechanic": {"type": "workbench", "title": "@mech.bench.title", "requires": {"flags": ["q06_started"]}, "unless": ["q06_bench_built"], "steps": ["q06_fastening_fit", "q06_stop_in", "q06_vise_tight", "q06_bench_built"], "art": {"bg": "res://assets/closeups/closeup_second_bench.png"}, "_note": "Q06: тесная мастерская Ильи крупным планом (workbench_panel.gd) — паз и два крепления, ограничитель, деревянный винт «точным ударом» (3 подряд), доска с Ильёй. Каждый шаг — флаг (steps): закрыла посередине — откроется на том же шаге. Арт партии 8б — closeup_second_bench.png (сосновая столешница на козлах с пазом, ограничитель в пазу, деревянный винт на столешнице): ограничитель и винт — вырезки самой картинки на своих местах (stop.region, screw.region); крепления и доска — дерево той же картинки (tex_center).", "parts": {"fastenings": [{"id": "wedge", "label": "@mech.bench.label_wedge", "shape": [[-66, -29], [66, 5], [66, 15], [-66, -1]], "at": [258, 300], "into": [568, 382], "fits": false, "text": "@mech.bench.wedge_loose", "tex_center": [300, 300], "tint": "#b07a48", "caption_at": [258, 330], "depth": 10}, {"id": "key", "label": "@mech.bench.label_key", "shape": [[-70, -31], [70, 5], [70, 31], [-70, -5]], "at": [404, 334], "into": [570, 391], "fits": true, "tex_center": [330, 300], "caption_at": [404, 372], "tint": "#d29a5c", "depth": 12}], "stop": {"region": [752, 346, 224, 130], "press": [-8, 5]}, "screw": {"region": [924, 272, 542, 182]}, "board": {"rest": [[1560, 190], [1604, 196], [1588, 770], [1544, 764]], "laid": [[300, 470], [300, 506], [1300, 764], [1300, 728]], "uv_quad": [[200, 300], [200, 325], [470, 395], [470, 370]], "tint": "#f0d6b4", "depth": 9}}, "timing": {"hits": 3, "period_s": 1.9, "green": 0.2, "miss_s": 0.9, "hint": "@ui.timing_hint"}, "timing_rect": [560, 965, 800, 56], "step_pos": [1180, 96], "hint_pos": [1180, 150], "texts": {"label_step1": "@mech.bench.label_step1", "label_step2": "@mech.bench.label_step2", "label_step3": "@mech.bench.label_step3", "label_step4": "@mech.bench.label_step4", "label_done": "@mech.bench.label_done", "label_hint1": "@mech.bench.label_hint1", "label_hint2": "@mech.bench.label_hint2", "label_hint3": "@mech.bench.label_hint3", "label_hint4": "@mech.bench.label_hint4", "screw_slipped": "@mech.bench.screw_slipped"}, "events": {"fitted": {"sets": ["q06_fastening_fit"], "text": "@mech.bench.fitted"}, "stopped": {"sets": ["q06_stop_in"], "text": "@mech.bench.stopped"}, "tightened": {"sets": ["q06_vise_tight"], "text": "@mech.bench.tightened"}, "checked": {"sets": ["q06_bench_built"], "text": "@mech.bench.checked", "close": true, "then_choice": true}}}, "choice": {"prompt": "@O4q.workshop.prompt", "requires": {"flags": ["q06_bench_built"]}, "once_any": true, "options": [{"id": "A", "label": "@O4q.workshop.opt_ilya", "sets": "q06_table_at_ilya"}, {"id": "B", "label": "@O4q.workshop.opt_agata", "sets": "q06_table_at_agata"}]}, "use_when": [{"if": ["q06_table_at_ilya"], "text": "@O4q.workshop.look_ilya"}, {"if": ["q06_table_at_agata"], "text": "@O4q.workshop.look_agata"}], "look": "@O4q.workshop.look"},
     {
       "id": "nina_house", "kind": "object", "label": "@O4.nina_house.label", "rect": [1000, 180, 380, 330], "stand": [1180, 730], "draw": false,
       "look": "@O4.nina_house.look"
     },
     {
-      "id": "ilya_house", "kind": "object", "label": "@O4.ilya_house.label", "rect": [1720, 300, 200, 230], "stand": [1760, 640], "draw": false,
+      "id": "ilya_house", "kind": "object", "label": "@O4.ilya_house.label", "rect": [1720, 300, 200, 230], "stand": [1850, 660], "draw": false,
+      "_stand_note": "Q02 (23.10): стоянка правее — у забора стоит Ульяна (ноги 1720, 632); было [1760, 640]",
       "look": "@O4.ilya_house.look"
     },
     {
@@ -82,10 +86,17 @@
     "M19": {"trigger": "enter"},
     "M23a": {"trigger": "talk:tamara"},
     "Q01": {"complete_when": [{"any": ["q01_mail_at_nina", "q01_mail_at_gallery"]}]},
-    "Q07": {"complete_when": [{"any": ["q07_board_with_mitya", "q07_board_to_pelageya"]}]}
+    "Q07": {"complete_when": [{"any": ["q07_board_with_mitya", "q07_board_to_pelageya"]}]},
+    "Q06": {"complete_when": [{"any": ["q06_table_at_ilya", "q06_table_at_agata"]}]}
   },
   "flags": {
     "q07_seen_board": "Митина дощечка: двадцать зарубок — двадцать зим у фонаря",
-    "q01_seen_envelope": "В мешке Тамары — письмо Аксинье по прежнему адресу"
+    "q01_seen_envelope": "В мешке Тамары — письмо Аксинье по прежнему адресу",
+    "q02_asked_ulyana": "Ульяна показала свой сад: смородина рядами, дорожка, сарай (Q02)",
+    "q06_started": "Мастерская Ильи: двоим тесно — Илья решил делать второй верстак (Q06)",
+    "q06_fastening_fit": "Второй верстак: в паз села шпонка «ласточкин хвост» (Q06)",
+    "q06_stop_in": "Второй верстак: ограничитель в гнезде (Q06)",
+    "q06_vise_tight": "Второй верстак: крепление затянуто (Q06)",
+    "q06_bench_built": "Второй верстак держит доску (Q06)"
   }
 }

@@ -210,6 +210,13 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 			continue
 		var image := String(l.get("image", ""))
 		if image == "" or not ResourceLoader.exists(image):
+			# Art ordered and not delivered yet (`pending` — its request in assets/manifest.json, партия 8б): the
+			# engine's stand-in `stub` takes its place (PlaceholderArt.stand_in, screen px) with the same if / unless.
+			# The import of the ordered file (tools/import_room_art.py) puts the picture at `image` — the stand-in is
+			# then never built, nothing in the data changes.
+			if l.has("stub"):
+				_build_stub_layer(container, occluders, l)
+				continue
 			push_warning("RoomBuilder: layer image missing: " + image)
 			continue
 		var node := StateLayer.new()
@@ -253,29 +260,25 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 static func _build_text_layer(container: Node2D, l: Dictionary) -> void:
 	var node := StateLayer.new()
 	node.name = String(l.get("id", "text"))
-	var r: Array = l.get("rect", [0, 0, 400, 100])
-	var lbl := Label.new()
-	lbl.name = "Text"
-	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # before text and size (an unwrapped Label keeps its text width)
-	lbl.text = StoryData.text(String(l.get("text", "")))
-	lbl.position = Vector2(float(r[0]), float(r[1]))
-	lbl.size = Vector2(float(r[2]), float(r[3]))
-	lbl.pivot_offset = lbl.size / 2.0
-	lbl.rotation = deg_to_rad(float(l.get("angle_deg", 0.0)))
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	var role := String(l.get("font", "body_italic"))
-	if role == "italic":
-		role = "body_italic"
-	lbl.add_theme_font_override("font", UiTheme.font(role))
-	lbl.add_theme_font_size_override("font_size", int(l.get("font_size", 40)))
-	var c := Color.html(String(l.get("color", "#ecebe4")))
-	c.a = float(l.get("alpha", 0.75))
-	lbl.add_theme_color_override("font_color", c)
-	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	node.add_child(lbl)
+	node.add_child(PlaceholderArt.text_label(l))
 	node.z_index = clampi(int(l.get("z", 0)), -10, 4096)
 	container.add_child(node)
+	node.setup(l)
+
+
+## The stand-in of a layer whose picture is ordered (`stub` — PlaceholderArt.stand_in, screen px), under the
+## layer's own id, if / unless, z and occluder rule; meta `stub` = true (probes: which pictures are still stand-ins).
+static func _build_stub_layer(container: Node2D, occluders: Node, l: Dictionary) -> void:
+	var node := StateLayer.new()
+	node.name = String(l.get("id", "stub"))
+	node.set_meta("stub", true)
+	node.add_child(PlaceholderArt.stand_in(l["stub"]))
+	if bool(l.get("occluder", false)) and occluders != null:
+		node.z_index = clampi(int(l.get("z", 1080)), 0, 4096)
+		occluders.add_child(node)
+	else:
+		node.z_index = clampi(int(l.get("z", 0)), -10, 4096)
+		container.add_child(node)
 	node.setup(l)
 
 

@@ -37,6 +37,10 @@ static func stream(sound_name: String) -> AudioStreamWAV:
 			pcm = _creak(0.8, 520.0, 37)
 		"water_slap":
 			pcm = _water_slap()
+		"pencil":
+			pcm = _scratch(0.32, 0.55, 41)
+		"paper":
+			pcm = _scratch(0.5, 0.25, 43)
 		_:
 			pcm = PackedFloat32Array([0.0])
 	var s := _to_wav(pcm)
@@ -136,6 +140,24 @@ static func _rope_slip() -> PackedFloat32Array:
 		lp = lp * 0.7 + rng.randf_range(-1.0, 1.0) * 0.3
 		var env := sin(clampf(t / 0.28, 0.0, 1.0) * PI)
 		out[i] = lp * env * (0.6 + 0.4 * sin(TAU * 38.0 * t)) * 0.5
+	return out
+
+
+## A pencil line on paper (`grain` high — the lead's scratch) / a sheet laid on paper (low — a soft rustle):
+## noise through a light low-pass, swelling and fading, with a faint rasp.
+static func _scratch(seconds: float, grain: float, rseed: int) -> PackedFloat32Array:
+	var n := int(seconds * RATE)
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = rseed
+	var lp := 0.0
+	for i in n:
+		var t := float(i) / RATE
+		var a := lerpf(0.12, 0.6, grain)
+		lp = lp * (1.0 - a) + rng.randf_range(-1.0, 1.0) * a
+		var env := sin(clampf(t / seconds, 0.0, 1.0) * PI)
+		out[i] = lp * env * (0.7 + 0.3 * sin(TAU * 61.0 * t)) * 0.35
 	return out
 
 

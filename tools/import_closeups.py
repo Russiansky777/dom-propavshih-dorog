@@ -17,6 +17,7 @@ assets/ не трогаем (зона Codex), пишем только копию
 
 Запуск: python3 tools/import_closeups.py           — записать копии
         python3 tools/import_closeups.py --check   — копии есть и совпадают по размеру с тем, что дал бы импорт
+        python3 tools/import_closeups.py <имя> …   — только эти (без .png), остальные копии не трогаются
 """
 from __future__ import annotations
 
@@ -41,6 +42,13 @@ BLOCK3 = ["closeup_notebook_rule", "closeup_notebook_paths", "closeup_notebook_s
           "closeup_nina_letters", "closeup_height_notches", "closeup_envelope", "closeup_sleeve",
           "closeup_street_sign", "closeup_mitya_board"]
 WIDTH.update({n: 1440 for n in BLOCK3})
+# Партия 8б (Q02 «На карте вырос сад», Q06 «Второй верстак», Директор 23.10 11:51): карта Ольховки и слой кальки на
+# одном холсте 1672×941 (data/story/rooms/O1.json → village_map.mechanic.art), второй верстак Ильи
+# (O4.json → ilya_workshop.mechanic.art) — без уменьшения: слои ставятся в (0, 0), линии кальки — по её прозрачности.
+# Пока файлов нет (заявки Q02_closeup_map, Q06_closeup_bench — requested), крупные планы рисует заглушка движка (stub);
+# недоставленный файл пропускается.
+BATCH8B = ["closeup_village_map_old", "closeup_village_map_tracing", "closeup_second_bench"]
+WIDTH.update({n: 1672 for n in BATCH8B})
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:
@@ -51,9 +59,15 @@ def target_size(w: int, h: int, name: str) -> tuple[int, int]:
 def main() -> int:
     from PIL import Image
     check = "--check" in sys.argv
+    only = [a for a in sys.argv[1:] if not a.startswith("--")]
     DST.mkdir(parents=True, exist_ok=True)
     bad = 0
     for name in WIDTH:
+        if only and name not in only:
+            continue
+        if not (SRC / f"{name}.png").exists() and name in BATCH8B:
+            print(f"wait assets/incoming/{name}.png — ещё не доставлен (в игре заглушка движка)")
+            continue
         im = Image.open(SRC / f"{name}.png")
         im = im.convert("RGBA" if im.mode in ("RGBA", "LA") else "RGB")
         size = target_size(im.width, im.height, name)

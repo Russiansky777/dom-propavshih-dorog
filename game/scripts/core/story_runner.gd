@@ -878,14 +878,18 @@ func view_allowed(v: Dictionary) -> bool:
 ## found). `item_id` — the item in hand that opened the choice (chalk on the board): an option with
 ## `consumes_item` uses it up, the others leave it in the bag.
 func _offer_choice(h: StoryHotspot, ch: Dictionary, item_id: String = "") -> void:
+	_push(_choice_beat(h, ch, item_id))
+
+
+func _choice_beat(h: StoryHotspot, ch: Dictionary, item_id: String = "") -> Dictionary:
 	var opts: Array = []
 	for o in ch.get("options", []):
 		if not requires_met(o.get("requires", {})):
 			continue
 		opts.append({"id": String(o["id"]), "label": StoryData.text(String(o.get("label", o["id"]))), "sets": String(o.get("sets", ""))})
 	var pk := String(ch.get("prompt", ""))
-	_push({"type": "options", "prompt": StoryData.text(pk), "prompt_key": text_key_of(pk), "options": opts,
-		"callback": _apply_choice.bind(h, ch, item_id)})
+	return {"type": "options", "prompt": StoryData.text(pk), "prompt_key": text_key_of(pk), "options": opts,
+		"callback": _apply_choice.bind(h, ch, item_id)}
 
 
 func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary, item_id: String = "") -> void:
@@ -1234,18 +1238,23 @@ func close_mechanic() -> void:
 		_queue_check()
 
 
-## What the player did in the close-up (`events.<name>` in data): flags set (story state, saved), a text
-## over the close-up, `close` puts the close-up away after the text. Returns false for an unknown event.
+## What the player did in the close-up (`events.<name>` in data): flags set (story state, saved), a text (or a
+## list of texts read in turn) over the close-up, `close` puts the close-up away after the text, `then_choice` —
+## then the choice of the hotspot that opened it comes at once (Q02/Q06: the second bench built — where it
+## stands), not on a second click. Returns false for an unknown event.
 func mechanic_event(event_name: String) -> bool:
 	if not mechanic_open:
 		return false
 	var ev: Dictionary = mechanic.get("events", {}).get(event_name, {})
 	if ev.is_empty():
 		return false
+	var hotspot_id := String(mechanic.get("hotspot", ""))
 	for f in ev.get("sets", []):
 		GameState.set_flag(String(f), true)
 	if ev.has("text"):
-		narrate_key(String(ev["text"]))
+		var t = ev["text"]
+		for k in (t if t is Array else [t]):
+			narrate_key(String(k))
 	if bool(ev.get("close", false)):
 		if current_beat.is_empty():
 			close_mechanic()
@@ -1258,9 +1267,34 @@ func mechanic_event(event_name: String) -> bool:
 			go.call()
 		else:
 			_beats.append({"type": "call", "fn": go})
+	if bool(ev.get("then_choice", false)):
+		var cb := _hotspot_choice_beat(hotspot_id)
+		if not cb.is_empty():
+			_beats.append(cb)
+			if current_beat.is_empty():
+				_next()
 	if not ev.get("sets", []).is_empty():
 		RoomManager.autosave()
 	return true
+
+
+## The choice of hotspot `hotspot_id` of the current room as a beat, if it can be made now (its requires hold and,
+## with `once_any`, nothing is chosen yet); {} otherwise.
+func _hotspot_choice_beat(hotspot_id: String) -> Dictionary:
+	var room := RoomManager.current_room
+	if room == null or hotspot_id == "":
+		return {}
+	var h := room.get_node_or_null("Hotspots/" + hotspot_id) as StoryHotspot
+	if h == null or not h.data.has("choice"):
+		return {}
+	var ch: Dictionary = h.data["choice"]
+	if not requires_met(ch.get("requires", {})):
+		return {}
+	if bool(ch.get("once_any", false)):
+		for o in ch.get("options", []):
+			if GameState.has_flag(String(o.get("sets", ""))):
+				return {}
+	return _choice_beat(h, ch)
 
 
 ## A text from the close-up (its data key or plain text) in the dialogue box above it.
