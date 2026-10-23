@@ -99,10 +99,14 @@ async function main() {
   page.setDefaultTimeout(180000);
   page.on("console", (m) => {
     const t = m.text();
-    if (m.type() === "error" && !/^WARNING: /.test(t) && !/at: push_warning/.test(t)) consoleErrors += 1;
+    // A missing file is counted by its response below (a local export has no version.txt — not an error of the game).
+    if (m.type() === "error" && !/^WARNING: /.test(t) && !/at: push_warning/.test(t) && !/^Failed to load resource/.test(t)) consoleErrors += 1;
     if (m.type() === "error" || m.type() === "warning") logLine(`console.${m.type()}: ${t}`);
   });
   page.on("pageerror", (e) => { consoleErrors += 1; logLine(`pageerror: ${e.message}`); });
+  page.on("response", (r) => {
+    if (r.status() >= 400 && !/version\.txt$/.test(r.url().split("?")[0])) { consoleErrors += 1; logLine(`http ${r.status()}: ${r.url()}`); }
+  });
 
   // A fresh probeState on every read (probePause(false) publishes at once and changes nothing).
   const state = () => page.evaluate(() => {
