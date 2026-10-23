@@ -1,0 +1,37 @@
+{
+  "tool": "image_gen built-in",
+  "generation_records": [
+    {
+      "id": "main_menu_v2",
+      "prompt": "Use case: lighting-weather, extremely restrained edit.\nEdit target: the attached already approved main-menu image for the Russian game «Дом пропавших дорог». Deliver the SAME single full-frame 1672x941 menu image, with ONLY a very slight increase in scene brightness. The user explicitly likes this exact composition and wants it almost unchanged.\nKeep the entire composition, crop, camera, architecture, river bend, sky, distant village, broken bridge piers, branches, path, fences, carved LEFT menu panel, title letterforms, text positions, and button layout as close to the source as possible. Do not redesign or embellish anything.\nBrightness change: subtly lift the dark midtones of house facade, foreground path, tree branches and wood, approximately the visual effect of +0.15 to +0.2 exposure stops. Preserve dark blacks and the blue dusk atmosphere. Preserve original sunset sky highlights and warm amber window light without blowing them out. The result should feel a little easier to see, NOT daytime, NOT washed out, NOT much brighter.\nPreserve exact Russian wording: title \"Дом пропавших дорог\"; rows \"Продолжить\", \"Новая игра\", \"Загрузить\", \"Настройки\", \"Титры\", \"Выход\". All text unchanged in wording and position.\nThis is a still art keyframe for future subtle animation only of river waves, house-window light, trees and branches. Do not add motion blur, new light sources, particles, characters, objects, labels or explanatory arrows. Menu text and carved frame are static. No other changes.",
+      "references": [
+        "01_main.png"
+      ]
+    },
+    {
+      "id": "main_menu_v2_final",
+      "prompt": "Use case: precise-object-edit. Edit the attached main menu with EXACTLY TWO localized UI changes, preserving all other artwork, its current slightly brighter lighting, composition, carved frame, title, house, water, trees, branches, texture, and camera.\n1. Remove the menu item \"Титры\" completely. There must now be EXACTLY FIVE menu items in order: \"Продолжить\", \"Новая игра\", \"Загрузить\", \"Настройки\", \"Выход\". Move \"Выход\" up to the former Титры row so spacing remains even. No vacant extra line or sixth button. Keep original type and selection style.\n2. In the lower part of the LEFT WOODEN MENU PANEL, beneath Выход and above the carved bottom border, add a small understated hand-SCRATCHED inscription directly into the dark timber. Exact single-line text, case and punctuation: \"made by Yahor Zavatski, 2026\". Preserve spelling carefully: Y-a-h-o-r, Z-a-v-a-t-s-k-i. The full name is Yahor Zavatski. The inscription must look lightly scratched with a knife into the wood, revealing muted pale natural wood fibers, with tiny irregular strokes; readable but discreet, approximately 14–17 px lettering at final scale. Not printed white, not glowing, not a separate plaque, not an additional menu item. Fit complete phrase on one line within the menu panel, roughly at y=790–810 on this 1672x941 canvas.\nDo not change the title \"Дом пропавших дорог\". Do not make the picture brighter again. Do not alter any other part of the frame. No new objects or characters. Same 1672x941 landscape output.",
+      "references": [
+        "main_menu_v2_preliminary.png"
+      ]
+    },
+    {
+      "id": "pause_rushnik_horizontal_v2",
+      "prompt": "Use case: compositing.\nAsset type: refined in-game pause menu concept for the Russian narrative game «Дом пропавших дорог».\nInput image 1 is the EDIT TARGET: preserve its exact 1672x941 wide composition, dim warm wooden Russian house interior, stove left, central door, window right, and the horizontal lower-half pause layout. Input image 2 is a MATERIAL/STYLE REFERENCE ONLY: borrow the flax linen rushnik, burgundy traditional geometric cross-stitch, warm dark typography and understated textile elegance, but NOT its tall vertical layout.\nPrimary request: replace the entire horizontal parchment/mapboard from image 1 with one beautiful WIDE HORIZONTAL LINEN RUSHNIK menu spanning the lower part of the screen, approximately x55..1615, y445..860. The upper half still clearly shows the same dim game room. Keep cloth approximately 3.7:1 horizontal, with warm ivory flax fabric, visible fine weave, tiny natural edge irregularities and very gentle folds away from the text. Red/burgundy geometric folk cross-stitch bands at the two short ends; thinner embroidered top/bottom borders; short fine linen fringe at the ends. No map illustrations, cartographic lines, parchment cracks, metal rivets or heavy wooden border. The central fabric must remain calm and uncluttered.\nHeading centered above the options: exact Russian \"Пауза\", in a graceful old Russian inspired readable display serif, dark burgundy, with two tiny embroidered diamond ornaments flanking it.\nExactly six choices laid out in TWO COLUMNS and THREE ROWS. Left column top to bottom: \"Продолжить\", \"Сохранить\", \"Загрузить\". Right column top to bottom: \"Настройки\", \"В главное меню\", \"Выход из игры\". Large warm charcoal serif letters, excellent legibility, generous even spacing. Selected Продолжить in burgundy inside a delicate embroidered rectangular outline with a tiny diamond; all other choices quieter dark ink. Keep the buttons clearly separated; do not overlap text with embroidery. No pill buttons, no glass, no modern flat app styling. \"Esc — вернуться\" very small and centered below the six choices, inside the bottom plain fabric band.\nNo credits option, no author signature here, no additional words. No people or new scene props. The old Russian wood-and-textile aesthetic should feel related to the main menu. This is a polished static game UI concept, not a photograph of a real printed towel. Keep all text exactly as specified. Landscape canvas 1672x941.",
+      "references": [
+        "menu_concepts/images/04_pause.png",
+        "menu_concepts/images/03_pause.png"
+      ]
+    }
+  ],
+  "selected_outputs": [
+    {
+      "id": "main_menu_v2_final",
+      "path": "/workspace/scratch/216787930017/generated_images/exec-3038ae2a-dbc0-48be-8a2e-0dd299fe5718.png"
+    },
+    {
+      "id": "pause_rushnik_horizontal_v2",
+      "path": "/workspace/scratch/216787930017/generated_images/exec-5d80dab2-0a51-4d41-9b24-66f28c4f37ae.png"
+    }
+  ]
+}
