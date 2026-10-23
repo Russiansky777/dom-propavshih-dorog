@@ -847,7 +847,7 @@
     },
     {
       "id": "O1_nina_answers",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
       "spec": "Четыре слоя к O1_bg.png (1672×940), мел, рука Нины — ровнее и мельче Агатиной, под надписью дочери: «И я. Все двадцать лет. Мама» (под «Я была здесь. Агата»), «Дождалась» (под «Мама, я иду»), «Он и сейчас рисует лодки с дымом. Мама» (под «Илюша, я нашла твой рисунок»), и в правом верхнем углу доски дата «25 октября» (поверх стёртого другого числа — лёгкий след мела)",
@@ -858,11 +858,15 @@
         "incoming/O1_state_date.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "data/story/rooms/O1.json → layers nina_answer_* (M22); до готовности — текст шрифтом игры"
+      "use": "data/story/rooms/O1.json → layers nina_answer_* (M22); до готовности — текст шрифтом игры",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
     },
     {
       "id": "O1_bird_reply",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
       "spec": "Слой к O1_bg.png: детская подпись карандашом «И я тут была. Уля» рядом с пометкой Агаты у картинки с птицей (место — слой O1_state_bird_mark)",
@@ -870,11 +874,15 @@
         "incoming/O1_state_bird_reply.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "O1.json → ulyana_bird_reply (M22, если в день первый была пометка)"
+      "use": "O1.json → ulyana_bird_reply (M22, если в день первый была пометка)",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
     },
     {
       "id": "H1_nina_coat",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
       "spec": "Слой к H1_bg.png (1672×941): тёмное женское пальто на свободном крючке вешалки у двери (крючки ≈ 1045–1165 × 215–260 холста), рукав чуть распорот по шву",
@@ -882,11 +890,15 @@
         "incoming/H1_state_nina_coat.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "H1.json → nina_coat (M23c «вешает пальто на пустой крючок», Q03)"
+      "use": "H1.json → nina_coat (M23c «вешает пальто на пустой крючок», Q03)",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
     },
     {
       "id": "EP_lesson_children",
-      "status": "requested",
+      "status": "delivered",
       "kind": "scene_layer",
       "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
       "spec": "Слой к ep_lesson.png (1672×941): 6–8 детей 7–12 лет за партами спиной и вполоборота к зрителю, зимняя одежда разных деревень (зареченские — купленное, ольховские — перешитое), без лиц крупно; задняя левая парта свободна (за ней Агата)",
@@ -894,11 +906,15 @@
         "incoming/ep_lesson_children.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "rooms/EP_lesson.json — кадр утреннего урока эпилога (C18)"
+      "use": "rooms/EP_lesson.json — кадр утреннего урока эпилога (C18)",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
     },
     {
       "id": "EP_dinner_family_seated",
-      "status": "requested",
+      "status": "delivered",
       "kind": "scene_layer",
       "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
       "spec": "Слой к ep_dinner.png: Нина (67, седая, тёмное платье, серая шаль), Илья (32, борода, фартук снят), его жена (≈30, платок, зелёная кофта) сидят за столом; Ульяна (8) — в двери из галереи; персонажи — по листам cast_v3 (или сидячие позы 3D)",
@@ -906,11 +922,15 @@
         "incoming/ep_dinner_family.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "rooms/EP_dinner.json — последний кадр игры; сейчас стоящие фигуры-вклейки"
+      "use": "rooms/EP_dinner.json — последний кадр игры; сейчас стоящие фигуры-вклейки",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
     },
     {
       "id": "EP_beam_carvings",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
       "spec": "Три слоя к closeup_beam_end.png: вырезанная ножом на торце надпись «Дуня»; «Ольховка — Заречье» (в две строки); «26 октября» — свежая резьба по годовым кольцам",
@@ -920,11 +940,15 @@
         "incoming/EP_beam_cut_date.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "rooms/EP_beam.json — кадр эпилога; сейчас шрифт игры"
+      "use": "rooms/EP_beam.json — кадр эпилога; сейчас шрифт игры",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
     },
     {
       "id": "O3_night",
-      "status": "requested",
+      "status": "delivered",
       "kind": "scene_layer",
       "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
       "spec": "Слой ночи к O3_bg.png (как O4_night к O4_bg): за окном тёмная зимняя ночь, горница освещена свечой на столе и лампадкой",
@@ -932,11 +956,15 @@
         "incoming/O3_night.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "rooms/O3.json — вечер второго дня и ночь (M19–M20); сейчас тон движка"
+      "use": "rooms/O3.json — вечер второго дня и ночь (M19–M20); сейчас тон движка",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
     },
     {
       "id": "S1_sign_moved",
-      "status": "requested",
+      "status": "delivered",
       "kind": "prop_states",
       "block": "3–5 (Ольховка, мост, эпилог; 22.10)",
       "spec": "Слой к S1_bg.png: на заборе слева пустое место от снятой вывески (светлый прямоугольник, гвозди); и слой к O1_bg.png: та же вывеска «Ольховая улица» на стене класса у доски",
@@ -945,11 +973,15 @@
         "incoming/O1_state_sign.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "Q09 вариант B (вывеска в классе)"
+      "use": "Q09 вариант B (вывеска в классе)",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
     },
     {
       "id": "M1_schedule_closeup",
-      "status": "requested",
+      "status": "delivered",
       "kind": "closeup",
       "block": "мир, партия 8 (F19, Директор 23.10)",
       "spec": "Крупный план доски «Распорядок смен» во дворе мельницы (та же доска, что на M1_bg.png над верстаком: рама из тёсаных брусков с гвоздями, доски поперёк, бревенчатая стена вокруг; тень навеса, пасмурный день). На доске четырьмя коваными гвоздями приколот пожелтевший альбомный лист, сложенный вчетверо (сгибы видны), с пятнами сырости по краю, БЕЗ ТЕКСТА — слова пишет игра: свободное поле по центру сверху под заголовок и две колонки под строки (сгиб посередине между ними). Лист ≈ 50 % ширины кадра, чуть косо (≈ −1°). 1672×941, полный кадр. Второй файл — тот же лист отдельным слоем с прозрачностью в масштабе M1_bg.png (≈ 125×86 px) со штрихами строк вместо букв, в тон тени.",
@@ -958,7 +990,66 @@
         "incoming/M1_state_schedule_sheet.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "rooms/M1.json → hotspots.schedule.view (pictures, papers.rect/blocks — прямоугольник листа по новому арту) и layers.schedule_sheet; сейчас — вырезка доски из M1_bg и лист tools/make_m1_schedule.py"
+      "use": "rooms/M1.json → hotspots.schedule.view (pictures, papers.rect/blocks — прямоугольник листа по новому арту) и layers.schedule_sheet; сейчас — вырезка доски из M1_bg и лист tools/make_m1_schedule.py",
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      }
+    },
+    {
+      "id": "batch8_extras",
+      "status": "delivered",
+      "kind": "mixed",
+      "owner": "ChatGPT + Директор",
+      "spec": "Партия 8, сверх прежних запросов: дневные виды дней 3–4 (Z3_state_water_low_day, R2_day, R3_day), улица Ольховки (O4_state_letters_bag, O4_state_mitya_board), стекло стойки «ЗМ» живописью (H2_state_office_mirror_center), крупные планы предметов для «Рассмотреть» (closeup_pocket_watch, closeup_journal_manager, closeup_key_house, closeup_door_hinges, closeup_brace_plate, closeup_chalk, closeup_mitten, closeup_bell_clapper, closeup_key_sluice, closeup_clamp, closeup_school_ribbon)",
+      "files": [
+        "incoming/Z3_state_water_low_day.png",
+        "incoming/R2_day.png",
+        "incoming/R3_day.png",
+        "incoming/O4_state_letters_bag.png",
+        "incoming/O4_state_mitya_board.png",
+        "incoming/H2_state_office_mirror_center.png",
+        "incoming/closeup_pocket_watch.png",
+        "incoming/closeup_journal_manager.png",
+        "incoming/closeup_key_house.png",
+        "incoming/closeup_door_hinges.png",
+        "incoming/closeup_brace_plate.png",
+        "incoming/closeup_chalk.png",
+        "incoming/closeup_mitten.png",
+        "incoming/closeup_bell_clapper.png",
+        "incoming/closeup_key_sluice.png",
+        "incoming/closeup_clamp.png",
+        "incoming/closeup_school_ribbon.png"
+      ],
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8; assets/incoming/_meta_p8/README_RU.md"
+      },
+      "use": "подключить данными: дневные слои — по tod_day3/tod_day4; H2 — заменить стекло движка; items.json → examine.art"
+    },
+    {
+      "id": "batch8b_Q02_Q06",
+      "status": "delivered",
+      "kind": "mixed",
+      "owner": "ChatGPT + Директор",
+      "spec": "Партия 8б для историй Q02 «На карте вырос сад» и Q06 «Второй верстак»",
+      "files": [
+        "incoming/O1_state_village_map.png",
+        "incoming/closeup_village_map_old.png",
+        "incoming/closeup_village_map_tracing.png",
+        "incoming/ep_lesson_map.png",
+        "incoming/ep_dinner_ulyana_map.png",
+        "incoming/closeup_second_bench.png",
+        "incoming/H2_state_second_bench.png",
+        "incoming/O4_state_bench_shed.png",
+        "incoming/ep_boat_bench.png",
+        "incoming/ep_dinner_photo_frame.png"
+      ],
+      "delivered": {
+        "date": "2026-10-23",
+        "by": "ChatGPT, партия 8б; assets/incoming/_meta_p8b/README_RU.md (координаты слоёв)"
+      },
+      "use": "агент Q02/Q06 подключает по этим путям"
     }
   ]
 }

@@ -1,0 +1,216 @@
+{
+  "mode": "built-in image_gen",
+  "production_brief_all_assets": "Тот же проект «Дом пропавших дорог», тот же стиль, что в партиях 2–7. Партия 8 — последняя по сюжету: дорисовки к уже готовым кадрам. Сюжет на одной странице — SCENARIO_A4.pdf.\n\nПравила те же: каждый прозрачный слой — ровно в размер своей основы и в её координатах (почти всё 1672×941; школа O1 — 1672×940), масштаб 1:1, всё вне нарисованного прозрачное. Надписи рисуй только там, где сказано, и проверяй орфографию по букве. Для каждого файла напиши размер и что не получилось точно; если слой плывёт относительно основы — скажи прямо.\n\n## 1. Школьная доска — ответы мамы (основа O1_bg.png, 1672×940)\nРука Нины: учительская, ровнее и мельче Агатиной, тот же мел. Пиши под надписью дочери — места надписей дочери видны на приложенных O1_state_board_written.png, O1_state_board_mama.png, O1_state_board_ilya.png.\n- O1_state_answer_here.png — «И я. Все двадцать лет. Мама» (под «Я была здесь. Агата»)\n- O1_state_answer_mama.png — «Дождалась» (под «Мама, я иду»)\n- O1_state_answer_ilya.png — «Он и сейчас рисует лодки с дымом. Мама» (в две строки, под «Илюша, я нашла твой рисунок»)\n- O1_state_date.png — в правом верхнем углу доски «25 октября», а над ним — едва видный след стёртого другого числа.\n\n## 2. Ответ Ульяны у птицы (основа O1_bg.png)\n- O1_state_bird_reply.png — детская подпись карандашом «И я тут была. Уля» рядом с пометкой Агаты (место пометки — приложенный O1_state_bird_mark.png). Почерк восьмилетней, крупный, неровный.\n\n## 3. Пальто Нины (основа H1_bg.png, 1672×941)\n- H1_state_nina_coat.png — тёмное женское пальто на свободном крючке вешалки у двери (крючки примерно x 1045–1165, y 215–260), рукав чуть распорот по шву.\n\n## 4. Эпилог — люди в кадрах (основы ep_lesson.png и ep_dinner.png)\n- ep_lesson_children.png — слой к ep_lesson.png: 6–8 детей 7–12 лет за партами, спиной и вполоборота к зрителю, зимняя одежда двух деревень (одни в купленном, другие в перешитом), лиц крупно не видно; задняя левая парта свободна.\n- ep_dinner_family.png — слой к ep_dinner.png: за столом сидят Нина (67, седая, тёмное платье, серая шаль), Илья (32, борода, рубаха) и его жена (около 30, платок, зелёная кофта); Ульяна (8) стоит в двери из галереи. Внешность — по приложенным листам sheet_nina, sheet_ilya, sheet_ilya_wife, sheet_ulyana. Агату не рисуй (её поставит игра).\n\n## 5. Надписи на торце бревна (основа closeup_beam_end.png)\nСвежая резьба ножом по годовым кольцам, светлая древесина в порезах. Три отдельных слоя:\n- EP_beam_cut_dunya.png — «Дуня»\n- EP_beam_cut_roads.png — «Ольховка — Заречье» (в две строки)\n- EP_beam_cut_date.png — «26 октября»\n\n## 6. Горница ночью (основа O3_bg.png)\n- O3_night.png — слой ночи, как приложенный O4_night.png к O4_bg.png: за окном тёмная зимняя ночь, горница освещена свечой на столе и лампадкой в красном углу.\n\n## 7. Вывеска «Ольховая улица»\n- S1_state_sign_removed.png — слой к S1_bg.png: на заборе слева пустое место от снятой вывески (светлый прямоугольник, гвозди).\n- O1_state_sign.png — слой к O1_bg.png: та же вывеска (как на closeup_street_sign.png) висит на стене класса у доски.\n\n## 8. Доска распорядка смен на мельнице (основа M1_bg.png)\n- M1_schedule_closeup.png — крупный план той же доски, что на M1_bg.png: рама из тёсаных брусков с гвоздями, доски поперёк, бревенчатая стена, тень навеса, пасмурный день. На доске четырьмя коваными гвоздями приколот пожелтевший альбомный лист, сложенный вчетверо (сгибы видны), пятна сырости по краю, БЕЗ ТЕКСТА — свободное поле сверху под заголовок и две колонки под строки. Лист около половины ширины кадра, чуть косо. 1672×941, полный кадр.\n- M1_state_schedule_sheet.png — тот же лист слоем к M1_bg.png в масштабе доски (около 125×86 px), вместо букв — штрихи.\n\n## 9. Дневные виды после встречи (дни 3–4: зима на обоих берегах, вода спущена)\n- Z3_state_water_low_day.png — слой к Z3_bg.png: то же, что приложенный Z3_state_water_low.png (вода ниже, мокрые камни, плита на опоре), но днём, а не в сумерках, и с первым снегом на берегу.\n- R2_day.png — тот же вид, что R2_bg.png (переправа из лодки по канату), но ясный зимний день, тумана почти нет, дальний берег в снегу виден чётко. Полный кадр 1672×941.\n- R3_day.png — тот же вид, что R3_bg.png (дальняя опора, сарайчик переправы, тропа вверх), но днём. Полный кадр 1672×941.\n\n## 10. Улица Ольховки (основа O4_bg.png)\n- O4_state_letters_bag.png — у крыльца Ильи на снегу почтовая сумка Тамары, туго набитая письмами, несколько конвертов выглядывают.\n- O4_state_mitya_board.png — у сарая прислонена дощечка с двадцатью зарубками (как на closeup_mitya_board.png), маленькая, в масштабе улицы.\n\n## 11. Стекло зеркала в тётиной стойке (основа H2_bg.png)\n- H2_state_office_mirror_center.png — в высокой резной раме посреди мастерской (проём примерно x 1003–1182, y 195–525) вставлено старое серебрёное зеркало конторы в собственной простой деревянной раме, зажатое клиньями снизу и с боков. Стекло пустое, серебристо-серое, с мягким вертикальным бликом, тёплый свет мастерской. Остальное прозрачно.\n\n## 12. Крупные планы двух предметов из сумки (полный кадр 1672×941, предмет на старом деревянном столе)\n- closeup_pocket_watch.png — карманные часы Агаты (как на приложенной icon_pocket_watch.png): крышка откинута, белый эмалевый циферблат с римскими цифрами крупно по центру кадра, БЕЗ СТРЕЛОК (стрелки рисует игра), цепочка свободно лежит на столе. Центр циферблата — примерно в середине кадра, циферблат занимает около трети высоты кадра.\n- closeup_journal_manager.png — раскрытый конторский журнал мельницы: две страницы в линейку, старые записи выцветшими чернилами вверху левой страницы неразборчиво, нижняя половина правой страницы СВОБОДНА (там игра напишет последнюю запись управляющего). Корешок кожаный, потёртый; рядом огрызок карандаша.\n\n## 13. Ещё девять крупных планов предметов (тот же старый деревянный стол, тот же свет, полный кадр 1672×941, предмет крупно по центру; образцы — приложенные icon_*.png)\n- closeup_key_house.png — большой кованый ключ от дома тёти на бечёвке.\n- closeup_door_hinges.png — три старые кованые петли школьной двери в коробке со стружкой.\n- closeup_brace_plate.png — кованая скоба под трещину плиты, рядом рисунок плиты на листке.\n- closeup_chalk.png — кусок школьного мела, крошки на столе.\n- closeup_mitten.png — вязаная шерстяная варежка с узором, немного влажная.\n- closeup_bell_clapper.png — железный язык колокола с петлёй.\n- closeup_key_sluice.png — ключ-рукоять мельничного затвора, тяжёлый, с квадратным гнездом.\n- closeup_clamp.png — столярная струбцина, деревянная с железным винтом.\n- closeup_school_ribbon.png — праздничная лента для косы, выцветшая, аккуратно свёрнутая.\n",
+  "saved_generation_calls_partial": [
+    {
+      "file": "O3_night_full.png",
+      "refs": [
+        "O3_bg.png"
+      ],
+      "prompt": "Lighting/weather edit ONLY to supplied scene. Exact1672x941, identical camera and geometry of every object. Convert Nina's room to winter NIGHT: outside same window dark blue winter night, no daylight. Warm light comes from existing candle on table at x450,y495 (add small real flame) and tiny oil icon lamp in red corner upper-right nearx1600,y180. Soft warm pools and believable shadows, enough visibility for point-and-click game, no new candles or furniture. Same emptyclockface and pendulumopening, sametable/mirror/chairs/wardrobe/textiles, no people or text. Preserve exact framing, geometry and coordinates."
+    },
+    {
+      "file": "Z3_low_day_full.png",
+      "refs": [
+        "Z3_low_reference.png",
+        "Z3_bg.png"
+      ],
+      "prompt": "Exact1672x941 registered scene edit. Make reference1 drained millpond DAYTIME, with first thin fresh snow on BOTH banks, same camera, birches/path and original ruined bridge stone piers. Preserve LOW WATER, wet exposed stones and mud around piers, channel still liquid; pale winter day not twilight. Important story correction: iron CRACKED PLATE WITH RING belongs ON THE NEAREST BRIDGE PIER emerging from water (around x1235,y490), NOT on the shore boulder. Place small old iron ring plate naturally on the near face of that exposed stone pier, appropriate perspective/scale, no lettering. The large shoreline stone at right(x1370,y600) must be plain damp stone with moss, NO iron plaque there. Keep rest of layout unchanged, no completed bridge, logs, people or boats. Soft natural cool daylight with muted warm aged vegetation, painterly style exactly as reference."
+    },
+    {
+      "file": "R2_day.png",
+      "final": true,
+      "refs": [
+        "R2_bg.png"
+      ],
+      "prompt": "Exact1672x941 lighting/weather edit of reference. SAME passenger viewpoint from the wooden ferry boat, identical bow position and scale in lowerframe, same shore geometry. Bright clear WINTER DAY after reunion, both banks in snow, almost no fog so far village and ferry landing seen distinctly. Calm liquid water, cool pale daylight with gentle sun, no sunset. Do not shift camera, boat shape, crop or horizon. No people, text, new houses or magic. Keep the empty boat asreference; game's separate foreground rope layer will be added later, do not invent extra ropes."
+    },
+    {
+      "file": "R3_day.png",
+      "final": true,
+      "refs": [
+        "R3_bg.png"
+      ],
+      "prompt": "Exact1672x941 lighting/weather edit only. SAME far ferry landing, stone pier with ring in foreground, ferry shed and uphill path and village; preserve exact geometry/coordinates/crop. Clear winter DAYLIGHT after reunion, soft pale sun, visible snow, low liquid water next to pier, no evening blue darkness or glowing sunset. No people, letters, extra ropes, new buildings or objects. Same painterly materials and composition."
+    },
+    {
+      "file": "M1_schedule_closeup.png",
+      "final": true,
+      "refs": [
+        "M1_bg.png"
+      ],
+      "prompt": "New close-up EXACT1672x941 matching supplied mill exterior painterly northernRussian1900 style. Close view of SAME rectangular NOTICEBOARD right of mill door: frame hewn rough wood crossbars with forged nails, horizontal wooden planks, log wall behind, overhang shade, overcast daylight. One YELLOWED LANDSCAPE PAPER SHEET pinned by EXACT FOUR forged nails at corners. Sheet slightly crooked, occupies about HALF FRAME WIDTH (~850px); folded into quarters so one vertical and onehorizontal crease visible, moisturestains atedges. Crucial sheet completely BLANK, no lettering or drawn rules: clear top title area and ample space for two future text columns. Center board and paper, whole frame visible, no people/hands or modernobjects."
+    },
+    {
+      "file": "closeup_key_house.png",
+      "final": true,
+      "refs": [
+        "icon_key_house.png",
+        "H1_bg.png"
+      ],
+      "prompt": "New object closeup EXACT1672x941. SAME large hand-forged antique house key as firstreference: rounded irregular bow, long darkironshaft, ornate stepped bit, worn oxidised surface, short faded reddish hemp tie threadedthroughbow. Lying diagonally on an OLD WARM BROWN WOODEN TABLE, softlypainted northernRussian1900 adventuregame style matchingsecondref. Warm gentle daylightfromupperleft, softlydarkened background, no visible room necessary, camera slightlyabove. Key centered and large, whole object visible with space allaround, tactile grain and iron. This tabletop/lightwillbe masterreference for other inventorycloseups. No people,hands, text, labels or extraobjects."
+    },
+    {
+      "file": "closeup_pocket_watch.png",
+      "final": true,
+      "refs": [
+        "icon_pocket_watch.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Full frame EXACT1672x941. Same OLD WOODEN TABLE, camera angle and warm upper-left daylight as reference2 (key tabletop); remove the key and replace with requested item ONLY. Same painterly Russian1900 game materials, object large centered, fully visible, no hands or people, no labels or readable text except specified watchnumerals. Antique brass POCKETWATCH matching reference1 with hinged lid open toleft and loose chain ontable. White enamel DIAL nearlyfrontfacing atapproxcenter(836,470), diameterabout315px (one third canvasheight). Black Roman hour numerals correctly ordered aroundrim XII,I,II,III,IV,V,VI,VII,VIII,IX,X,XI, small minute ticks. Absolutely NO HANDS, NO pointers or radial lines inside dial, center completely clear except tiny pivotdot optional. Open lid notcoverdial. Tarnished brass case, same engravedbowcrown. Enough plainwhiteinterior for gameanimatedhands."
+    },
+    {
+      "file": "closeup_journal_manager.png",
+      "final": true,
+      "refs": [
+        "icon_journal_manager.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Full frame EXACT1672x941. Same OLD WOODEN TABLE, camera angle and warm upper-left daylight as reference2 (key tabletop); remove the key and replace with requested item ONLY. Same painterly Russian1900 game materials, object large centered, fully visible, no hands or people, no labels or readable text except specified watchnumerals. OPEN oldmilloffice ledger matching firstref darkgreen leathercover/brasscorners, wornleatherspine. Two cream RULED PAGES, subtlebluegreyhorizontalruling. Old faded illegible brown ink records only upperhalfLEFTpage. LOWER HALF of RIGHTPAGE completely free ofwriting withlightclearpaper forgameoverlay. Rightupperhalfcanremainblanktoo. Stubbywoodpencilbesidebook. No legiblenames/dates/numbers, noinkpot needed. Booklarge centralopen, allpageedgesvisible."
+    },
+    {
+      "file": "closeup_door_hinges.png",
+      "final": true,
+      "refs": [
+        "icon_door_hinges.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Full frame EXACT1672x941. Same OLD WOODEN TABLE, camera angle and warm upper-left daylight as reference2 (key tabletop); remove the key and replace with requested item ONLY. Same painterly Russian1900 game materials, object large centered, fully visible, no hands or people, no labels or readable text except specified watchnumerals. EXACTLY THREE separate OLD FORGED IRON DOOR HINGES matching reference1, laid sideby side in shallowplainwoodenbox containingcurlingwoodshavings. Each completehinge consists of two flatleavesandonecentralpin, darkrustypatina, screw/nailholes. Exactly3hinges, all3fullyvisible andcountable; no fourth or looseextra metalpart. Boxcentered on same tabletop."
+    },
+    {
+      "file": "closeup_chalk.png",
+      "final": true,
+      "refs": [
+        "icon_chalk.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Full frame EXACT1672x941. Same OLD WOODEN TABLE, camera angle and warm upper-left daylight as reference2 (key tabletop); remove the key and replace with requested item ONLY. Same painterly Russian1900 game materials, object large centered, fully visible, no hands or people, no labels or readable text except specified watchnumerals. ONE shortunevenpieceof white school CHALK matchingreference1, with a few smallwhitecrumbs ontablecloseby. Chalklargecentraldiagonalshape, tactilepowderymatteedges, no chalkwritingor doodles, noadditionaltools. Modest objectphysicallyscaledbutclosecamera."
+    },
+    {
+      "file": "closeup_mitten.png",
+      "final": true,
+      "refs": [
+        "icon_mitten.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Full frame EXACT1672x941. Same OLD WOODEN TABLE, camera angle and warm upper-left daylight as reference2 (key tabletop); remove the key and replace with requested item ONLY. Same painterly Russian1900 game materials, object large centered, fully visible, no hands or people, no labels or readable text except specified watchnumerals. ONE rustbrown knitted WOOL MITTEN matchingreference1 exactly, creamgeometricbandnearwrist, braidedknittexture, thumbdistinctleftside. Slightlydamp darkerwool atfingertipandhem, smallsubtlemoisturemarkonwoodunderit, no puddle. Mittenlaidflatcenterclearentireoutline."
+    },
+    {
+      "file": "M1_schedule_closeup.png",
+      "final": true,
+      "refs": [
+        "M1_schedule_closeup.png"
+      ],
+      "prompt": "Precise correction only to paper in this1672x941 millnoticeboardcloseup. Currentpaper almostsquare andtoo narrow. Replacewith LANDSCAPE RECTANGLE YELLOWED PAPER about850px WIDE and440pxhigh, fromapprox x430 to1280,y230to670, slightlycrooked. Samefourforgedcornernails, quarterfoldcrosscreases, moisturestains. The boardandlogwallunchanged. SheetBLANK no text orlines, enoughspacefuturetitleandtwocolumns. Keep originalcamera,lighting,style,canvas andallwoodenframeedges."
+    },
+    {
+      "file": "closeup_bell_clapper.png",
+      "final": true,
+      "refs": [
+        "icon_bell_clapper.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Fullframe EXACT1672x941, objectcloseup on SAME oldwoodentable andwarm upper-leftdaylight asreference2 (housekey). Replacethekey withonlyrequestedobject, wholeobjectlargecentered andfullyvisible. SamepainterlyRussian1900 materials, nohands/people/textlabels. Heavy old IRON BELL CLAPPER matchingreference1, elongatednarrowhammeredshaft, roundbulbousstrikingend andloopatotherendwithlooseironring. Wornoxidiseddarkiron, laid diagonally, entireloopandballvisible."
+    },
+    {
+      "file": "closeup_key_sluice.png",
+      "final": true,
+      "refs": [
+        "icon_key_sluice.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Fullframe EXACT1672x941, objectcloseup on SAME oldwoodentable andwarm upper-leftdaylight asreference2 (housekey). Replacethekey withonlyrequestedobject, wholeobjectlargecentered andfullyvisible. SamepainterlyRussian1900 materials, nohands/people/textlabels. Heavy forged millsluice KEY-HANDLE matchingreference1: ironringhandle, straightthickshaft, cylindricalsockethead with clearlyvisible SQUARE HOLE. NOT ordinarydoor key. Threequarterview so squaresocketfrontvisible, mottleddarkironandbronzerustpatina, diagonalcomposition."
+    },
+    {
+      "file": "closeup_clamp.png",
+      "final": true,
+      "refs": [
+        "icon_clamp.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Fullframe EXACT1672x941, objectcloseup on SAME oldwoodentable andwarm upper-leftdaylight asreference2 (housekey). Replacethekey withonlyrequestedobject, wholeobjectlargecentered andfullyvisible. SamepainterlyRussian1900 materials, nohands/people/textlabels. Old carpenter's WOODEN CLAMP with IRON SCREW matchingreference1: thickagedwoodjaws, darkforgedC-shapedironframeandthreadedscrew withturnedwoodhandle, realisticusablemechanism. Lay diagonallyonwoodtable, entireclampvisible, no secondtool."
+    },
+    {
+      "file": "closeup_school_ribbon.png",
+      "final": true,
+      "refs": [
+        "icon_school_ribbon.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Fullframe EXACT1672x941, objectcloseup on SAME oldwoodentable andwarm upper-leftdaylight asreference2 (housekey). Replacethekey withonlyrequestedobject, wholeobjectlargecentered andfullyvisible. SamepainterlyRussian1900 materials, nohands/people/textlabels. Faded festive BRAID RIBBON matchingreference1, blue-grey woven fabricwithdelicategoldfloralpattern andcreamunderside. Neatlycoiledintolooseflatfoldedloops ontable, modestwornfrayedends, softwovenclothnotmetal. Wholecoilvisible, not tiedtohair, nootherobject."
+    },
+    {
+      "file": "closeup_brace_plate.png",
+      "final": true,
+      "refs": [
+        "plate_skoba_sprite.png",
+        "closeup_key_house.png"
+      ],
+      "prompt": "Fullframe EXACT1672x941, objectcloseup on SAME oldwoodentable andwarm upper-leftdaylight asreference2 (housekey). Replacethekey withonlyrequestedobject, wholeobjectlargecentered andfullyvisible. SamepainterlyRussian1900 materials, nohands/people/textlabels. Single heavy hand-forged IRON STAPLE/BRACE forbridgingcrack inoldironplate, matchreference1 lowwideinvertedU withtwoshortbentdownlegs, roughdarkrustymetal. Besideit a smalloldpaperwithsimplepencilsketch of RECTANGULAR CRACKED IRON PLATE androundanchor-ring, sketchedbracecrossingcrack. NO readabletext/numbers. Bracecenterdominant, sketchsmaller besideit. Exactreferencebrace, notdoorhingeorCclamp."
+    },
+    {
+      "file": "schedule_sheet_raw.png",
+      "alpha": true,
+      "refs": [
+        "M1_schedule_closeup.png"
+      ],
+      "prompt": "Extract ONLY the SAME landscape paper sheet andFOUR forgedcornernails fromreference onto TRUE TRANSPARENTbackground. Preserveagededges, crossfolds andmoisturestains, paperentirelyvisibleandnearhorizontal. Add a smallfaintunreadableheadingand TWO COLUMNS of shortillegiblegreyinkstrokes, representing millshiftroster; NO readablewords/numbers. No board/frame/wall or rectanglebeyondpaper. This isolatedpaperwillbe scaled125x86px andplacedonmillboard. Keepfourcornernailsexactly."
+    },
+    {
+      "file": "closeup_pocket_watch.png",
+      "final": true,
+      "refs": [
+        "closeup_pocket_watch.png"
+      ],
+      "prompt": "Precise camera-distance adjustment, exact1672x941. Pullbackso WATCH,openLID andCHAIN are about70% ofcurrentlinearSIZE on samewoodentable. Dial center staysatapprox(836,470), whiteenamelDIAL HEIGHT about310pixels, NOT440. Preserveopenlid,chainlayout, case style, samecorrectRomanhourmarkings andNO HANDS. Extendvisibleareaofsamewoodentablearound smallerobject, preservewarmupperleftlight/cameraangle. Dialflatwhiteinteriorclear forgamehands, noaddedobject. This is required because currentdialtoo large."
+    },
+    {
+      "file": "lesson_children_alpha_raw.png",
+      "alpha": true,
+      "refs": [
+        "lesson_children_full.png"
+      ],
+      "prompt": "Use case background-extraction. Extract ONLY VISIBLE PARTS of the EIGHT CHILDREN from the supplied classroom image on TRUE TRANSPARENT background. Exact1672x941 canvas. Keep EVERY CHILD pixelposition, scale, pose, face, hair and clothing IDENTICAL to original. Do not recenter group. Furniture occludes lowerbodies: wherever desk or bench currently hides a bodypart leave transparent there, do not invent missing bodies. Preserve original gaps between all8children. Remove ALL walls,floors,desks,chairs,books,stoves,objects; only visible people and their hair edges. Farleft foregrounddesk mustremainempty/transparent. This overlay must align perfectly when put overoriginalemptyclassroom at(0,0)."
+    },
+    {
+      "file": "dinner_family_alpha_raw.png",
+      "alpha": true,
+      "refs": [
+        "dinner_family_full.png"
+      ],
+      "prompt": "Use case background-extraction. Exact1672x941 canvas. Extract ONLY VISIBLE PARTS of FOUR PEOPLE from this image to TRUE TRANSPARENT background: Nina greyhair onleft, standing8yearUlyanaincenterdoor, beardedIlya center-right, wifeonright. Keep EXACTsamepositions,scales,poses,lighting,clothes,faces. DoNOTrecenter. Exclude ALL room/furniture/tableware/chairs/table/samovar/door. Wherever table,bench,chair orotherperson hides a bodypart leave transparency; DO NOT invent hiddenbodyparts. Keepvisiblehands restingontable, properoriginalocclusion. Outputpeopleonly, matchingoriginalcanvas(0,0)."
+    },
+    {
+      "file": "lesson_people_matte.png",
+      "refs": [
+        "lesson_children_full.png"
+      ],
+      "prompt": "Make a PIXEL-ALIGNED SEGMENTATION MASK of this exact image. Output exact1672x941, KEEP CANVAS/CAMERA/PIXELCOORDINATES. All visible portions of the8children solid WHITE, everythingelse solidBLACK. No grayscale picture, no redraw/repose/recenter/rescale. Blackfurniture mustremainblack evenwhenoverlappingbody. Whitehair/head/hands/coats/skirts/legs exactlywhereintheinput. Includeentirevisiblebodies, onlysilhouette, nofacefeatures. Maskmustoverlayoriginalperfectly."
+    },
+    {
+      "file": "dinner_people_matte.png",
+      "refs": [
+        "dinner_family_full.png"
+      ],
+      "prompt": "Make a PIXEL-ALIGNED SEGMENTATION MASK of this exact image. Output exact1672x941, KEEP CANVAS/CAMERA/PIXELCOORDINATES. All visibleportionsof4people solidWHITE: greyhairNinaleft, standinggirlcenterdoor, beardedman, wifeatright. Everythingelse solidBLACK. No redraw/repose/recenter/rescale. Blackfurnitureandtableware mustremainblack evenwhenoccludingbody. Whitehead/hair/hands/clothes/skirts/legs exactlywhereintheinput. Entirevisiblebodies, nointernalfacefeatures. Maskmustoverlayoriginalperfectly."
+    },
+    {
+      "file": "closeup_brace_plate.png",
+      "final": true,
+      "refs": [
+        "closeup_brace_plate.png"
+      ],
+      "prompt": "Precise edit only: zoom OUT about12% so ENTIREpaper withdrawing is fullyinsideframe withminimum50pixelmarginbelow andright. Keep exact1672x941 canvas, sameironstaple andpencildrawingofcrackedplate/ring, sameoldwoodtable andwarmupperleftlight. Wholebraceandwholepaper mustbevisible, doNOTcropbottompaperedge. Noaddedobjectortext. Extendexistingwoodtablearoundscene, donotchangearrangement."
+    },
+    {
+      "file": "closeup_journal_manager.png",
+      "final": true,
+      "refs": [
+        "closeup_journal_manager.png"
+      ],
+      "prompt": "Precise edit ONLY the pencil at right ofledger. Replacecurrentpencilwith a SHORT STUB of unpaintedwoodgraphitepencil, aboutHALFcurrentlength, sharpenedtip, bluntwornwoodend, NO metallicferrule andNOeraser. NorthernRussianoldvillage,oldpencilstub. Keep allbookpages, fadedrecordsleft, blankrightlowerhalf,ruling,tablegrain,light,camera andexact1672x941canvas unchanged. Nootherchanges."
+    }
+  ],
+  "export_recipe_js": "const fs=require('fs'),path=require('path'),{execFileSync}=require('child_process');\nconst R='/workspace/scratch/216787930017', S=path.join(R,'party8_source/8_finish'),W=path.join(R,'party8_work'),O=path.join(R,'party8_generated');\nconst records=[];\nfunction im(a,input){return execFileSync('/usr/bin/convert',a,{input,maxBuffer:100*1024*1024});}\nfunction save(p,b){const f=fs.openSync(p,'w');try{fs.writeFileSync(f,b);fs.fsyncSync(f);}finally{fs.closeSync(f);}}\nfunction sprite(raw,size,x,y,extra=[]){return ['(',path.join(W,raw),'-channel','A','-black-threshold','1%','+channel','-trim','+repage',...extra,'-resize',size,')','-geometry',`+${x}+${y}`,'-compose','Over','-composite'];}\nfunction layer(name,base,args){const h=base==='O1_bg.png'?940:941;save(path.join(O,name),im(['-size',`1672x${h}`,'xc:none',...args,'-depth','8','PNG32:-']));records.push({name,base,height:h,method:'registered_alpha_sprite'});}\nlayer('O1_state_answer_here.png','O1_bg.png',sprite('answer_here_raw.png','259x32!',835,377));\nlayer('O1_state_answer_mama.png','O1_bg.png',sprite('answer_mama_raw.png','123x33!',905,346));\nlayer('O1_state_answer_ilya.png','O1_bg.png',sprite('answer_ilya_raw.png','100x31!',912,377));\nlayer('O1_state_date.png','O1_bg.png',[\n '(',path.join(W,'date_raw.png'),'-crop','1600x390+300+300','+repage','-channel','A','-black-threshold','1%','+channel','-trim','+repage','-resize','112x25!',')','-geometry','+1034+185','-composite',\n '(',path.join(W,'date_raw.png'),'-crop','1600x190+300+100','+repage','-channel','A','-black-threshold','1%','-evaluate','multiply','0.35','+channel','-trim','+repage','-resize','23x10!',')','-geometry','+1070+170','-composite'\n]);\nlayer('O1_state_bird_reply.png','O1_bg.png',sprite('bird_reply_raw.png','86x34!',1287,174));\nlayer('H1_state_nina_coat.png','H1_bg.png',sprite('coat_raw.png','145x330!',1034,245));\nlayer('H2_state_office_mirror_center.png','H2_bg.png',sprite('office_mirror_raw.png','155x317!',1015,202));\nlayer('O4_state_letters_bag.png','O4_bg.png',sprite('letters_bag_raw.png','90x72!',1248,558));\nlayer('O4_state_mitya_board.png','O4_bg.png',sprite('mitya_board_raw.png','65x39!',1418,568,['-background','none','-rotate','-7']));\nlayer('M1_state_schedule_sheet.png','M1_bg.png',sprite('schedule_sheet_raw.png','125x86!',780,276));\nlayer('O1_state_sign.png','O1_bg.png',sprite('school_sign_raw.png','194x51!',501,329));\nlayer('EP_beam_cut_dunya.png','closeup_beam_end.png',sprite('beam_dunya_raw.png','310x142!',540,380));\nlayer('EP_beam_cut_roads.png','closeup_beam_end.png',sprite('beam_roads_raw.png','430x188!',485,342));\nlayer('EP_beam_cut_date.png','closeup_beam_end.png',sprite('beam_date_raw.png','410x108!',490,394));\nfunction stateLayer(name,base,target){\n const b=im([path.join(S,base),'-alpha','off','-depth','8','rgb:-']),t=im([path.join(W,target),'-resize','1672x941!','-alpha','off','-depth','8','rgb:-']);\n const a=Buffer.alloc(1672*941*4);let error=0;\n for(let i=0;i<1672*941;i++){let v=0;for(let c=0;c<3;c++){const B=b[3*i+c]/255,T=t[3*i+c]/255;v=Math.max(v,T>=B?(T-B)/Math.max(1-B,1e-8):(B-T)/Math.max(B,1e-8));}let av=Math.min(255,Math.ceil(v*255));v=av/255;a[4*i+3]=av;for(let c=0;c<3;c++){a[4*i+c]=v?Math.max(0,Math.min(255,Math.round((t[3*i+c]-(1-v)*b[3*i+c])/v))):0;error=Math.max(error,Math.abs(Math.round(a[4*i+c]*v+b[3*i+c]*(1-v))-t[3*i+c]));}}\n save(path.join(O,name),im(['-size','1672x941','-depth','8','rgba:-','PNG32:-'],a));records.push({name,base,height:941,method:'full_scene_state_straight_alpha',max_reconstruction_error_8bit:error});\n}\nstateLayer('O3_night.png','O3_bg.png','O3_night_full.png');\nstateLayer('Z3_state_water_low_day.png','Z3_bg.png','Z3_low_day_corrected_full.png');\nfunction matteOutput(name,base,target,maskargs){\n const m=path.join(W,name+'.matte.png');save(m,im([...maskargs,'-depth','8','png:-']));\n save(path.join(O,name),im([path.join(W,target),m,'-alpha','off','-compose','CopyOpacity','-composite','-depth','8','PNG32:-']));records.push({name,base,height:941,method:'registered_local_matte'});\n}\nmatteOutput('S1_state_sign_removed.png','S1_bg.png','S1_sign_removed_full.png',['-size','1672x941','xc:black','-fill','white','-draw','polygon 234,548 414,557 414,639 235,632','-blur','0x1','-black-threshold','1%']);\nmatteOutput('ep_lesson_children.png','ep_lesson.png','lesson_children_full.png',[path.join(W,'lesson_people_matte.png'),'-colorspace','Gray','-threshold','45%','-morphology','Close','Disk:3','-blur','0x0.6','-black-threshold','1%']);\n// The door must open behind Ulyana; retain a local door patch as part of this scene layer.\nmatteOutput('ep_dinner_family.png','ep_dinner.png','dinner_family_full.png',[path.join(W,'dinner_people_matte.png'),'-colorspace','Gray','-threshold','45%','-morphology','Close','Disk:2','-fill','white','-draw','polygon 742,180 956,178 956,511 803,550 741,484','-draw','polygon 609,478 665,478 697,809 615,810','-draw','polygon 797,474 861,479 916,558 915,702 796,700','-draw','polygon 735,545 810,530 920,535 920,640 797,652 735,588','-blur','0x0.8','-black-threshold','1%']);\nfor(const f of fs.readdirSync(O).filter(f=>f.endsWith('.png')&&!records.some(r=>r.name===f))){save(path.join(O,f),im([path.join(O,f),'-resize','1672x941!','-alpha','off','-depth','8','PNG24:-']));records.push({name:f,base:null,height:941,method:'full_frame'});}\nfs.mkdirSync(path.join(O,'PREVIEWS'),{recursive:true});\nfor(const r of records.filter(r=>r.base)){\n let extras=[];\n if(r.name==='O1_state_answer_here.png')extras=[path.join(S,'O1_state_board_written.png'),'-composite'];\n if(r.name==='O1_state_answer_mama.png')extras=[path.join(S,'O1_state_board_mama.png'),'-composite'];\n if(r.name==='O1_state_answer_ilya.png')extras=[path.join(S,'O1_state_board_ilya.png'),'-composite'];\n if(r.name==='O1_state_bird_reply.png')extras=[path.join(S,'O1_state_bird_mark.png'),'-composite'];\n save(path.join(O,'PREVIEWS',r.name.replace('.png','_over_base.jpg')),im([path.join(S,r.base),...extras,path.join(O,r.name),'-compose','Over','-composite','-quality','93','jpeg:-']));\n}\nsave(path.join(W,'export_records.json'),Buffer.from(JSON.stringify(records,null,2)));\nconsole.log(JSON.stringify({exports:records.length,rgba:records.filter(x=>x.base).length}));\n",
+  "watch_transform": "115% resize, crop 1672x941+133+62; pivot approximately (836,470)"
+}

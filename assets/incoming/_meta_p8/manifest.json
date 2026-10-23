@@ -1,0 +1,685 @@
+{
+  "project": "Дом пропавших дорог",
+  "batch": "8",
+  "assets": [
+    {
+      "name": "O1_state_answer_here.png",
+      "base": "O1_bg.png",
+      "height": 940,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "1c4423296deeb091f061accb8e140238549abdf6454ce238dabb0923075fc19c",
+      "size_bytes": 12702,
+      "notes_ru": "«И я. Все двадцать лет. Мама». Под Агатиной подписью. Мелкая строка высотой 32 px; при уменьшении кадра читать трудно.",
+      "alpha_bbox": [
+        835,
+        377,
+        1094,
+        409
+      ],
+      "alpha_extrema": [
+        0,
+        250
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51"
+    },
+    {
+      "name": "O1_state_answer_mama.png",
+      "base": "O1_bg.png",
+      "height": 940,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "9281836493474a93bd89e7514f257bed9d3e3b6f9f4b25a8267fff0d06091c80",
+      "size_bytes": 11892,
+      "notes_ru": "«Дождалась». Под «Мама, я иду». Рука ровнее и мельче Агатиной; стиль почерка интерпретирован по образцу.",
+      "alpha_bbox": [
+        905,
+        346,
+        1026,
+        377
+      ],
+      "alpha_extrema": [
+        0,
+        253
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51"
+    },
+    {
+      "name": "O1_state_answer_ilya.png",
+      "base": "O1_bg.png",
+      "height": 940,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "0287eaf2d73556fcd39c183e8e1aee00de101990f9c4a544b1d51b8321e4a1dc",
+      "size_bytes": 10579,
+      "notes_ru": "«Он и сейчас рисует» / «лодки с дымом. Мама». Две строки занимают около 100×31 px: под исходной надписью осталось лишь 33 px. Без увеличения ответ очень мелкий; более крупный потребует переместить или уменьшить Агатину надпись.",
+      "alpha_bbox": [
+        912,
+        377,
+        1012,
+        408
+      ],
+      "alpha_extrema": [
+        0,
+        210
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51"
+    },
+    {
+      "name": "O1_state_date.png",
+      "base": "O1_bg.png",
+      "height": 940,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "e0e18469ef9696504785422574d95cb04e861c4d75a60f24f9d8ce4921b40706",
+      "size_bytes": 10967,
+      "notes_ru": "«25 октября» вверху справа. След прежнего числа очень слабый и при уменьшении практически исчезает.",
+      "alpha_bbox": [
+        1034,
+        170,
+        1146,
+        210
+      ],
+      "alpha_extrema": [
+        0,
+        232
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51"
+    },
+    {
+      "name": "O1_state_bird_reply.png",
+      "base": "O1_bg.png",
+      "height": 940,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "44055368bbb1edbcbab25a98c6ae5b6baea16bedfcc0a9a191cccefddfde0590",
+      "size_bytes": 8919,
+      "notes_ru": "«И я тут была.» / «Уля». В верхнем поле плаката слева от пометки Агаты, чтобы не закрывать голову птицы. Карандаш малоконтрастный; нужен крупный план для уверенного чтения.",
+      "alpha_bbox": [
+        1288,
+        174,
+        1373,
+        208
+      ],
+      "alpha_extrema": [
+        0,
+        217
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51"
+    },
+    {
+      "name": "H1_state_nina_coat.png",
+      "base": "H1_bg.png",
+      "height": 941,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "407354f1d55575be6987c0af5be4082f72badc2312c636d4c15a5ce2e8628a49",
+      "size_bytes": 60179,
+      "notes_ru": "Тёмное пальто с серой накидкой, на крючке у двери. Распоротый шов на рукаве в этом масштабе различим слабо.",
+      "alpha_bbox": [
+        1034,
+        245,
+        1179,
+        575
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "71f61f5b0e50cea1bc960d5b485c9adaa4e0fdb08605e11bf83783f92f6f3f3d"
+    },
+    {
+      "name": "H2_state_office_mirror_center.png",
+      "base": "H2_bg.png",
+      "height": 941,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "e28e63a893fe6ae02288a628a9feb389276288dedd168947c7ee477e26b0a5e2",
+      "size_bytes": 74277,
+      "notes_ru": "Простая рама с клиньями внутри высокой резной стойки. Область вставки около x1015–1170, y202–519. Стекло без отражённого лица; внутренний размер подогнан механически.",
+      "alpha_bbox": [
+        1015,
+        202,
+        1170,
+        519
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "ff7b36b81203faa7f99a0e0ddb9e4e068e38709b132dd2dc6e0c14fe113ea653"
+    },
+    {
+      "name": "O4_state_letters_bag.png",
+      "base": "O4_bg.png",
+      "height": 941,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "c43cf7e2bd2ee1ef16bea2cb7169f5d39c5aa005f4b628501eeddd63fd47dba9",
+      "size_bytes": 21977,
+      "notes_ru": "Сумка на снегу справа у ступеней дома Ильи, около 90×72 px. Видны конверты; адресов и читаемого текста нет.",
+      "alpha_bbox": [
+        1248,
+        558,
+        1338,
+        630
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "6f9388475ca2499c41a73b0587a98602d9eeb4b98580e91c4713c04b69424761"
+    },
+    {
+      "name": "O4_state_mitya_board.png",
+      "base": "O4_bg.png",
+      "height": 941,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "9a7a1ed788083fd073f5b531d14c415086ed37192d5b56aed1399035476eb08a",
+      "size_bytes": 11890,
+      "notes_ru": "Дощечка у пристройки, около 65×39 px. На исходном рисунке 20 зарубок (10+10); в масштабе улицы пересчитывать их трудно. Наклон небольшой, перспектива упрощена.",
+      "alpha_bbox": [
+        1419,
+        568,
+        1483,
+        606
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "6f9388475ca2499c41a73b0587a98602d9eeb4b98580e91c4713c04b69424761"
+    },
+    {
+      "name": "M1_state_schedule_sheet.png",
+      "base": "M1_bg.png",
+      "height": 941,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "ab80b2109a74c744b92840a285e49ef8ed693eaeffb6a570bedbbebc50a4d438",
+      "size_bytes": 27239,
+      "notes_ru": "Лист около 125×86 px на доске мельницы; заголовок и две колонки представлены штрихами. Пропорции листа слегка поджаты под площадь доски.",
+      "alpha_bbox": [
+        780,
+        276,
+        905,
+        362
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "1ef6219ab8d434505aec13a878d9db5d51d887cb1b76dc82d318b62eb764489e"
+    },
+    {
+      "name": "O1_state_sign.png",
+      "base": "O1_bg.png",
+      "height": 940,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "2da19d6d406061f468f342b8356fb9552a4504ae77d9378549d3c02aebb3225d",
+      "size_bytes": 31132,
+      "notes_ru": "«Ольховая улица», слева от доски, под полкой. Вывеска перерисована по крупному плану, рисунок дерева не является пиксельной копией.",
+      "alpha_bbox": [
+        501,
+        329,
+        695,
+        380
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "5487628b955127ac213959117e8e9479747ca64ebe6d82852fdfbdfcb02d1f51"
+    },
+    {
+      "name": "EP_beam_cut_dunya.png",
+      "base": "closeup_beam_end.png",
+      "height": 941,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "344595c2ee538b57e9569957d9e6d7c167a2e5c48f2da6b145aa3250e76f0566",
+      "size_bytes": 51369,
+      "notes_ru": "«Дуня». Свежие светлые фаски и тёмные углубления; резьба несколько декоративнее бытовой ножевой.",
+      "alpha_bbox": [
+        540,
+        380,
+        850,
+        522
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "7207c14237c65866f2676eed662ec16e628ccb69fbd24d15743259f2cf5315c4"
+    },
+    {
+      "name": "EP_beam_cut_roads.png",
+      "base": "closeup_beam_end.png",
+      "height": 941,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "2487b34f13c25e60de8fe8d4c626e98c38fee89cdecaea832a45ebab98b5740e",
+      "size_bytes": 100833,
+      "notes_ru": "«Ольховка —» / «Заречье». Две строки. Свежие фаски; резьба несколько декоративнее бытовой ножевой.",
+      "alpha_bbox": [
+        485,
+        342,
+        915,
+        530
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "7207c14237c65866f2676eed662ec16e628ccb69fbd24d15743259f2cf5315c4"
+    },
+    {
+      "name": "EP_beam_cut_date.png",
+      "base": "closeup_beam_end.png",
+      "height": 941,
+      "method": "registered_alpha_sprite",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "fefd65f90204519afa5818168833e37b5792678a73ed4a7c45abcc0afe7b21a9",
+      "size_bytes": 56100,
+      "notes_ru": "«26 октября». Одна строка. Свежие фаски; резьба несколько декоративнее бытовой ножевой.",
+      "alpha_bbox": [
+        490,
+        394,
+        900,
+        502
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "7207c14237c65866f2676eed662ec16e628ccb69fbd24d15743259f2cf5315c4"
+    },
+    {
+      "name": "O3_night.png",
+      "base": "O3_bg.png",
+      "height": 941,
+      "method": "full_scene_state_straight_alpha",
+      "max_reconstruction_error_8bit": 0,
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "26c392161e1246af06b2632f6794002ab692c5963eb91e607b4d688a71aefc4e",
+      "size_bytes": 3507404,
+      "notes_ru": "Ночной переход всей сцены: свеча и лампадка, тёмное окно. Это рассчитанный цветовой RGBA-слой для указанной основы, а не универсальный чёрный фильтр. Мелкие фактуры и блики перерисованы.",
+      "alpha_bbox": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "4b46f5e8ed48053b5780582bc291f4d9f3274978cda44946359ad3b0cf957d46"
+    },
+    {
+      "name": "Z3_state_water_low_day.png",
+      "base": "Z3_bg.png",
+      "height": 941,
+      "method": "full_scene_state_straight_alpha",
+      "max_reconstruction_error_8bit": 0,
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "270853b812d44cfbd9c7e576063bdecc10a52ddfabef9b9df07740d135734f61",
+      "size_bytes": 4697203,
+      "notes_ru": "Низкая вода, дневной свет, снег на обоих берегах. Плита с кольцом на малой опоре в воде, не на правом береговом камне. Это состояние всей сцены; фактуры и мелкие контуры берегов/опор изменены при перерисовке.",
+      "alpha_bbox": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "3e9183ec922a82947c8c15445ba037d8ff4f6141b0f32a0097c071e47c6e035c"
+    },
+    {
+      "name": "S1_state_sign_removed.png",
+      "base": "S1_bg.png",
+      "height": 941,
+      "method": "registered_local_matte",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "77f4c97ae4195cdbe8e437dbd4c98b94e057f0abc0efb409ca5d3f4ed0e456f5",
+      "size_bytes": 3341189,
+      "notes_ru": "Локальная заплатка забора: светлый след и гвозди. По краю заплатки возможна разница фактуры древесины; остальной кадр прозрачен.",
+      "alpha_bbox": [
+        232,
+        546,
+        417,
+        642
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "a69ee542e771f3d66f62ab04c2424d83bfe2fa205e841d9f412363b2dd4d0667"
+    },
+    {
+      "name": "ep_lesson_children.png",
+      "base": "ep_lesson.png",
+      "height": 941,
+      "method": "registered_local_matte",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "5fe33df80720657a9a537a43347deae0fe9dd70676ca613aff69358f06ac00fb",
+      "size_bytes": 2696598,
+      "notes_ru": "Восемь детей. Ближайшая левая парта свободна; ближайшая правая тоже. Маска подогнана к фону. У нижних краёв одежды сохранены небольшие фрагменты скамеек для перекрытий; контуры не являются идеально ручной обтравкой.",
+      "alpha_bbox": [
+        188,
+        379,
+        1661,
+        862
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "479d440c88baea91bd5592ba15643a5291a384f58a9263e031980e6b49ce88f9"
+    },
+    {
+      "name": "ep_dinner_family.png",
+      "base": "ep_dinner.png",
+      "height": 941,
+      "method": "registered_local_matte",
+      "width": 1672,
+      "color_mode": "RGBA",
+      "sha256": "9ae8c1003a2f74739cefca7dca1313ebf4c4eb3952e9f5b4230f6f220fc65d41",
+      "size_bytes": 2566403,
+      "notes_ru": "Нина, Илья, жена и Ульяна; Агаты нет. Слой включает открытую дверь за Ульяной, сдвинутый влево стул Нины и локальный край стола. Здесь есть локальные расхождения с исходной мебелью: это НЕ слой исключительно из силуэтов людей. Проверяйте приложенное наложение перед импортом.",
+      "alpha_bbox": [
+        607,
+        176,
+        1628,
+        870
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "base_sha256": "54d7b592222fcd716b058302f72ae0901f297fc9fd5f3f59e9ac91737ff65321"
+    },
+    {
+      "name": "M1_schedule_closeup.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "6d857a93931d8829a7d0d0244310aa4eb2005a7cdc4dc6b656445679ac140697",
+      "size_bytes": 2412991,
+      "notes_ru": "Четыре гвоздя, сгибы, пятна; надписей нет. Лист занимает около половины ширины. Крупный план восстановлен по общей сцене, точное совпадение каждого бруска не гарантируется."
+    },
+    {
+      "name": "R2_day.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "880bbdb6cc06abd0874e82d808d44f024f88e597639db1cf57337d85f0939777",
+      "size_bytes": 2293861,
+      "notes_ru": "Ясный зимний день, нос лодки и дальний берег. Канат в этот фон не запечён: для переправы нужен существующий отдельный передний слой каната. Дальние деревья и дома перерисованы, точность старых масок надо сверить."
+    },
+    {
+      "name": "R3_day.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "658d085b8e58f2cbf0d1ebbfc533b8b90237b49b9f7bd15eb252ea5c42632711",
+      "size_bytes": 2892469,
+      "notes_ru": "Дневной вариант дальней пристани. Ракурс сохранён; фактуры камней и мелкие контуры снега перерисованы. Старые маски взаимодействия надо сверить."
+    },
+    {
+      "name": "closeup_bell_clapper.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "faccc59ee0e703ece8213e199e449fe82244b234251602f07210eb7840ec2f84",
+      "size_bytes": 2179062,
+      "notes_ru": "Железный язык с петлёй и свободным кольцом. Форма восстановлена по иконке."
+    },
+    {
+      "name": "closeup_brace_plate.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "fe3bf448eb894ab40651fd62fdc91fe41c460ba7c35a4bf189871d7170f763da",
+      "size_bytes": 2649707,
+      "notes_ru": "Кованая скоба и рисунок треснувшей плиты с кольцом; весь лист виден. Иконки скобы в исходном архиве не было: использован согласованный образец скобы из партии 3."
+    },
+    {
+      "name": "closeup_chalk.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "2143a2e5cbdbfe4b14ed2eaaabbc6902c96e2751b40714017bde9691c7976d49",
+      "size_bytes": 2239667,
+      "notes_ru": "Один кусок мела и крошки. Специальных отклонений от задания при просмотре не обнаружено."
+    },
+    {
+      "name": "closeup_clamp.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "3158ef7a36623ad4a23b97ec1215e503d63ee2b710a062a5f8162f1bd2b5bb81",
+      "size_bytes": 2260146,
+      "notes_ru": "Деревянные губки, железная рама и винт. Художественный предмет; точная инженерная конструкция не проверялась."
+    },
+    {
+      "name": "closeup_door_hinges.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "06b7da9c00cb5b1152672a331374a0cbba413f1d08acb6bd4c64828bb5f9301e",
+      "size_bytes": 2324495,
+      "notes_ru": "Ровно три полные петли в коробке со стружкой. Количество проверено визуально."
+    },
+    {
+      "name": "closeup_journal_manager.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "a62dec01702672fec80cc8f42f3508d7df4ea4f80887658dc36e0da8a2484d81",
+      "size_bytes": 2247818,
+      "notes_ru": "Записи вверху слева неразборчивы; правая страница свободна. Рядом короткий деревянный карандаш без ластика. Для текста игры нужна перспективная привязка к странице."
+    },
+    {
+      "name": "closeup_key_house.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "fd25298d45f110a91d8a5278207491d171d0519980f3048b6f032f5b25331e17",
+      "size_bytes": 2294220,
+      "notes_ru": "Кованый ключ с выцветшей красноватой бечёвкой. Материалы и форма восстановлены по иконке, не её точное увеличение."
+    },
+    {
+      "name": "closeup_key_sluice.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "9c041ab986b378f9f0b5ef1bee56580c9bc73db05e1453c1651e7c4a41988f04",
+      "size_bytes": 2301693,
+      "notes_ru": "Тяжёлая рукоять с видимым квадратным гнездом. Форма восстановлена по иконке."
+    },
+    {
+      "name": "closeup_mitten.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "9b873b78ef60ab0f14c843fad1d45d4f02769acdb6fc81da5117700cdd1f0b49",
+      "size_bytes": 2101068,
+      "notes_ru": "Шерстяная варежка с узором; влажность обозначена затемнением шерсти и лёгким следом на столе, эффект сдержанный."
+    },
+    {
+      "name": "closeup_pocket_watch.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "06d012403edbfd2d81c6f77635c19c4c3872a0c229966c392cd9724c9bc50e90",
+      "size_bytes": 2064939,
+      "notes_ru": "Стрелок нет. Центр оси примерно (836,470), белый циферблат около 300 px по высоте; он слегка эллиптический из-за перспективы. Игровые стрелки следует привязать к этой оси, а не к центру корпуса."
+    },
+    {
+      "name": "closeup_school_ribbon.png",
+      "base": null,
+      "height": 941,
+      "method": "full_frame",
+      "width": 1672,
+      "color_mode": "RGB",
+      "sha256": "4d9f7259da28f21ae0cffe907d4ad6c37b90bb0c941dfc93bd0c969f3736baa6",
+      "size_bytes": 2525527,
+      "notes_ru": "Выцветшая сине-серая лента с золотистым узором, сложена петлями. Орнамент перерисован по иконке."
+    }
+  ],
+  "engine_tested": false,
+  "checks": [
+    "33 required filenames",
+    "full decode",
+    "PNG chunk CRC",
+    "exact dimensions",
+    "RGB/RGBA",
+    "alpha bounds",
+    "visual composites"
+  ]
+}

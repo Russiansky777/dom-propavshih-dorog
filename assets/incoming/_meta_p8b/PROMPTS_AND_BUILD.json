@@ -1,0 +1,116 @@
+{
+  "mode": "built-in image_gen",
+  "production_brief": "Дополнение к партии 8 («Дом пропавших дорог», тот же стиль). Две необязательные истории третьего дня, которые Директор включил в игру. Правила те же: прозрачные слои — ровно в размер основы и в её координатах (почти всё 1672×941, школа O1 — 1672×940), масштаб 1:1, всё вне нарисованного прозрачное; надписи только где сказано. Для каждого файла — размер и что не получилось точно.\n\n## История «На карте вырос сад» (Q02)\nВ школе висит старая карта Ольховки, которую ученики Нины рисовали больше двадцати лет назад. За двадцать лет на месте пустого участка у дома Ильи вырос сад. Агата с Ульяной кладут на карту прозрачный лист и рисуют, как теперь.\n1. O1_state_village_map.png — слой к O1_bg.png: на свободной стене класса рядом с доской висит старая школьная карта деревни на бумаге, наклеенной на холст, с деревянной рейкой сверху; пожелтевшая, края обтрёпаны. Небольшая, в масштабе комнаты. Напиши, где она висит (координаты).\n2. closeup_village_map_old.png — крупный план этой карты, полный кадр 1672×941: детский аккуратный рисунок цветными карандашами и тушью — река и мельничный пруд, мост на опорах, школа, улица с избами, огороды; у одной избы (дом Ильи) рядом пустой участок, отмеченный только забором. Надписей нет (подписи даст игра). Карта прикреплена кнопками к столу.\n3. closeup_village_map_tracing.png — прозрачный слой к крупному плану: лист кальки поверх карты, детские линии простым карандашом: на пустом участке — ряды кустов смородины и яблонька, дорожка между ними, новый сарай, крестик «здесь мой дом» (без букв). Калька чуть сероватая, края видны.\n4. ep_lesson_map.png — слой к ep_lesson.png: рядом с доской приколоты та же старая карта и поверх неё калька с новыми линиями.\n5. ep_dinner_ulyana_map.png — слой к ep_dinner.png: детский рисунок на кальке приколот к стене у двери (небольшой).\n\n## История «Второй верстак» (Q06)\nВ тесной мастерской Ильи двоим не развернуться — Агата с братом собирают второй стол: паз, ограничитель, крепление.\n6. closeup_second_bench.png — крупный план, полный кадр 1672×941: столешница нового верстака из светлой свежей сосны на козлах, в ней выбран паз; рядом деревянный ограничитель (брусок) и деревянный винт тисков с рукоятью; стружка, рубанок, угольник. Тёплый свет мастерской.\n7. H2_state_second_bench.png — слой к H2_bg.png (тётина мастерская): у стены справа от высокой резной рамы, ближе к колоколу, стоит второй, поменьше, верстак из свежей светлой сосны. Не перекрывай раму и колокол. Напиши координаты.\n8. O4_state_bench_shed.png — слой к O4_bg.png (улица Ольховки): у пристройки во дворе Ильи открыта дверь, в проёме виден новый верстак со свежей стружкой; немного тёплого света изнутри.\n9. ep_boat_bench.png — слой к ep_boat.png: на берегу у лодки стоит этот верстак, на нём уключина, рядом сушится свежесколоченная полка.\n10. ep_dinner_photo_frame.png — слой к ep_dinner.png: семейная фотография (как на приложенном H1_state_photo_table.png) в новой резной деревянной рамке стоит на полке или на столе, на виду.\n",
+  "generation_calls": [
+    {
+      "file": "closeup_village_map_old.png",
+      "final": true,
+      "refs": [
+        "O4_bg.png",
+        "O1_bg.png"
+      ],
+      "prompt": "Use case historical-scene illustration. New FULLFRAME1672x941 closeup of OLD SCHOOL MAP OF OLKHOVKA village, drawn carefully by children twentyyearsago using COLORED PENCILS and fadedINK on yellowed frayedpaper mountedonlinen. Near-overhead camera, entire landscape paper visible approxx180..1490,y70..850, FOUR oldmetalpushpins pinpaperflat to warmoldwoodentable. Map showsblueRIVER and MILLPOND, simplebridgeonstonepiers, recognizablewoodensCHOOL, villagestreetwithloghouses andfencedvegetablegardens. Architecturalstyle fromrefs, childdrawn2Dmap notphotorealbuildings. CRUCIAL at LOWER RIGHT around x1070..1350,y510..745, besideone loghouse(Ilya's), a BIG EMPTY RECTANGULAR PLOT marked ONLY byfence: no bushes,trees,structuresor markswithin. This emptyplotwillbeupdatedbytransparenttracing later. Othergardenplotsmayhaveneatvegetablerows. Noletters, no captions,numbers, labels, compassletters oranyreadabletext. Softwarmclassroomlight, believableagedpaper, mutedblueochregreencolor, cleanconsistentvisualmapgeometry. Nopeople,hands ormodernobjects."
+    },
+    {
+      "file": "closeup_second_bench.png",
+      "final": true,
+      "refs": [
+        "H2_bg.png"
+      ],
+      "prompt": "Usecase historical-scene. FULLFRAME1672x941 closeup in supplied oldRussianvillagecarpenterworkshop, warmwindowlightfromleft. MainnewSECOND WORKBENCH: smallsturdy rectangular tabletopofLIGHTFRESH PINE restingonTWO SIMPLEWOODEN TRESTLES. Camera aboveoblique shows tabletoplargecentral plusupperlegs. FreshcleanWOODWORKING GROOVE cutintotabletop nearfrontedge, rectangularslot neatlychiseled. Besidegroove lieaSEPARATEwoodenSTOP BLOCK andSEPARATElargeWOODEN VISE SCREW WITH CROSSHANDLE (woodenthreads clearlyvisible). Few curls of freshpineshavings, oldwoodenhandplane andwood/ironsquare ontable. Allkeypartsfullyvisible andcountable. No metalmodernpowertools,people,hands,textlabelsor numbers. Newlightpinecontrasts agedwarmdarkworkshop. Thisbenchdesignwillbecopied toscenes later."
+    },
+    {
+      "file": "photo_frame_raw.png",
+      "alpha": true,
+      "refs": [
+        "photo_reference_zoom.png",
+        "ep_dinner.png"
+      ],
+      "prompt": "Usecaseprecise-object-edit. Reference1 is the SAME tiny fadedfamilyphotograph to preserve: two indistinctsepiastandingfigures, talladultleft andshorterchildright. Keep photoillustration EXACTLYasreference, doNOTinventclearfaces,newposes,newpeople. Replaceitsplainframewith a NEW hand-carvedWOODEN PHOTOFRAME, simpletasteful Russianfolkleafcuts, warmfreshwoodbrown. Frontfacing tabletopstandingportraitframe withsmallrearstand andverysoftcontactshadow, entireobjectisolatedonTRUE TRANSPARENTbackground. Warmcandlelightmatchingref2. Noletters,date,decorativewordsorotherobjects. Photographmustremainfadedandindistinctbecauseoriginaltiny, notsharpenedintonewidentities."
+    },
+    {
+      "file": "map_hanging_raw.png",
+      "alpha": true,
+      "refs": [
+        "closeup_village_map_old.png"
+      ],
+      "prompt": "Usecasebackground-extraction/compositing. Isolate the SAME OLD VILLAGE MAP fromreference ontoTRUE TRANSPARENTbackground. Preserveexactdrawnmaparrangement: bluepondleft, bridgeuppermiddle, schoolcenter, emptyfencedplotLOWERRIGHT. Sameyellowpaperfrayededgesonlinenbacking. Remove wooden tabletop and fourtablepushpins, ADD one simplethinweatheredwooden HANGING RAIL alongTOPedge, smallnailsatends. Entiremapandtoprailvisiblefrontfacing, noframearoundothersides,noletters,numbers,newmapdetails. Softclassroomdaylight. This willbe reducedtoabout180pxwideonwall."
+    },
+    {
+      "file": "tracing_paper_raw.png",
+      "alpha": true,
+      "refs": [
+        "closeup_village_map_old.png"
+      ],
+      "prompt": "GenerateONLY one large landscape sheetof thin old-style TRACING PAPER, isolatedonTRUE TRANSPARENTbackground, entire outlinevisible. No map,drawing,text,woodtable,toolsor pins. PapertranslucentneutralPALEGREY, almostclear, subtlyfibrous, slightlywavycorners, narrowedgesvisible, rectanglearoundratio1.75:1. Frontfacingnearoverheadmatchingreferencepaperperspective. PreserveactualSEMITRANSPARENCY insidepaper ifpossible: itwilloverlaymapandmapmustremainvisible. No opaquecreamparchment, noagedbrownspots, nofoldsobstructingview. Simplephysicalthinpaper."
+    },
+    {
+      "file": "garden_pencil_raw.png",
+      "alpha": true,
+      "refs": [
+        "closeup_village_map_old.png"
+      ],
+      "prompt": "Draw ONLY a small child's GRAPHITE PENCIL drawing for the emptygardenplot inreference, onTRUE TRANSPARENTbackground. Sameoblique-mapview fromabove asoldmap, but child8yearsimplerroughpencilstrokes. A compact rectangularGARDEN with TWO neatROWScurrantBUSHES (3busheseachrow), ONE smallAPPLETREE, narrowPATHbetweentherows, ONE smallnewwoodshed inonecorner, andoneclearlydrawnXcross markingmyhome. NOlettersorwords,numbers,existinghouse,fence,backgroundpaper,color,photorealplants. Allobjectsfullyvisible asonecoherentgardendrawing, darksoftgraphitestrokeswithtransparentinteriors soexistingmapshows through. ThisgardenwillbeplacedinsideemptyfencedplotLOWERRIGHT; doNOTredrawwholemap."
+    },
+    {
+      "file": "bench_workshop_raw.png",
+      "alpha": true,
+      "refs": [
+        "closeup_second_bench.png",
+        "H2_bg.png"
+      ],
+      "prompt": "Usecasecompositing. Same small NEW LIGHTPINE WORKBENCH asreference1, nowASSEMBLED, isolatedonTRUE TRANSPARENTbackground. Two sturdytrestles, freshlightpineplanktabletop, rectangulargroove andSTOP BLOCK fixedinplace, WOODENSCREW VISE installedatfrontedge. Removehandplane/square/looseparts, tinycurlsofshavingsonfloornearfeet. Threequarterview matchingworkshopref2 eyelevel, tablefrontforeshortened so benchcanfit aNARROWGAP totherightofornatemirrorframeandleftofbell. Entiretableandlegsvisible. Warmleftlight, softcontactshadow, nofloorrectangle,nopeople,text oradditionalfurniture. Compactbench, notagigantic diningtable."
+    },
+    {
+      "file": "annex_bench_crop_full.png",
+      "refs": [
+        "O4_annex_crop.png",
+        "closeup_second_bench.png"
+      ],
+      "prompt": "Precisely editreference1 crop ONLY in the smalllean-to annexOPENING rightofporch (currentlyfirewoodpile), keeping roof,snow,posts,porch,barrel,fence,cameraandALLsurroundingpixelgeometry. Removefirewoodpileinsideopening, show an OPEN WOODEN DOOR swunginwardagainstside and darktinyworkshopinside with warmdimlight. In doorwayvisible a SMALLNEWLIGHTPINEWORKBENCH sameasref2, wooden trestles andwoodenvisescrewassembled, freshshavingsunderit. Correcttinyscale, tablevisiblethroughopening, notoutsideacrosssnow. Keepallnewcontentinsideexistingannexopening, noaddedwindow/building. Outputsameaspectratio andframingasref1, nozoom orrecenter, nopeople/text."
+    },
+    {
+      "file": "boat_bench_raw.png",
+      "alpha": true,
+      "refs": [
+        "closeup_second_bench.png",
+        "ep_boat.png"
+      ],
+      "prompt": "Same small assembledNEWLIGHTPINEWORKBENCH fromref1 onshore inref2 mood, isolatedonTRUE TRANSPARENTbackground. Fullbench on two trestles, rectangularplanktop, woodenvisescrew installedfront, smallstopblock. OnbenchONE oldiron U-shaped ROWLOCK withshaft. NEXT TO benchonleft a freshlybuilt plainwooden WALLSHELF (shorttwo-tier shelf withsideboards), leaninganddrying, newpinesamewood. Sparsefreshshavingsatfeet, lightdustingofsnowbelowfeet, warmwinterlateafternoonleftlightmatchingref2, coolshadows, nohugefloorpatch. Wholegroupvisible, camerashowsfrontandrightside. ThisgroupwillbeplacedatlowerRIGHTofboat, groupapprox420x260pixels, mustnothaveboat,river,people,lettersorotherbackground."
+    },
+    {
+      "file": "garden_pencil_clean_raw.png",
+      "alpha": true,
+      "refs": [
+        "garden_pencil_raw.png"
+      ],
+      "prompt": "Precisecorrection: remove ONLY ALL FENCE strokes surroundinggarden. Preserve SAMEpositions,scale,canvas andallotherdrawing:1appletree,6currantbushesin2rows, path,1shed,1X. Allfencerails/posts gone, outsideandbetweenobjects TRUE TRANSPARENT. DoNOTrecenter/rescale/rearrange garden. Keepgraphitechilddrawnstyle. Theoldmapalreadyhasfence so thisoverlaymustnotduplicateit. Absolutely noothernewmarks/text."
+    },
+    {
+      "file": "bench_workshop_assembled_raw.png",
+      "alpha": true,
+      "refs": [
+        "bench_workshop_raw.png"
+      ],
+      "prompt": "Precisecorrectiononly: woodenvisescrew is currently LOOSEON TABLETOP. Removeitfromtabletop andINSTALL ASFUNCTIONING FRONT VISE: screwshaftgoes HORIZONTALLY throughWOODENFRONTJAWbelownear tableedge, handleoutside facingviewer atfront-right. Addsmallwoodenmovablejaw required; believableoldcarpentersvise. Keepstopblock andgroove, resttable/trestles/pine/color/position/scale/canvas identical. EntirebenchvisibleonTRUE TRANSPARENTbackground, allpartsattached,no loosegiant screwontop."
+    },
+    {
+      "file": "boat_bench_corrected_raw.png",
+      "alpha": true,
+      "refs": [
+        "boat_bench_raw.png"
+      ],
+      "prompt": "Threeprecisecorrections tothissamebench+shelf, TRUE TRANSPARENTbackground andsamecamera/wholegroup:1) IronU-shapedROWLOCK currentlygiant; reduceROWLOCKtoONEQUARTERcurrentlinearsize, itshouldbepalm-sized smallironfitting lyingontablebackcenter.2) Woodenvisescrewcurrentlyontop: installasworkingfrontvisebelowtableedgewithsmallwoodenjawandhandleoutside atfront-right.3) RemoveSNOWFROM TABLETOPANDSHELVES: newlybuiltwoodshelfisdrying, cleanfreshpinewithslightwarmfinish sheen, NOTsnow-covered. KeepthinpatchysnowONLYnearfeet onground, shavingsmoderate. Preservebench/shelfshape,wholeobjectpositions/perspective, nootherobject/text."
+    },
+    {
+      "file": "bench_endview_raw.png",
+      "alpha": true,
+      "refs": [
+        "bench_workshop_assembled_raw.png",
+        "H2_bg.png"
+      ],
+      "prompt": "Viewpointcorrection of SAME smallfreshpineworkbench fromref1: show it END-ON, lookingalongitsLONGAXIS, thelongtabletoprecedesAWAYfromviewer towardwall. NarrowfrontEND isclosesttoviewer, not broadside. Ref2 context narrowgap betweenornatemirrorleft andbellright. NormalADULTWORKINGHEIGHT, approx80cmhigh, tabletop120cmlongand45cmwide, twoA-trestles. Eyelevelperspectiveclosetoref2, lessoverhead: smallamounttopvisible, uprightlegsfulllength, allfeetvisible. Woodenvisefixed tooneedge, rectangularlonggrooveandstopstillthere. Wholeisolatedbench TRUE TRANSPARENTbackground, smallsoftcontactshadowsbelowfeet, nofloorrectangle. Mutedwarmworkshoplightfromleft, freshlightpinebutnotglowingyellow. Desiredsilhouette narrowandtall, approximatelywidth:height 1:1.2, mustfit140pxwideand165pxhighgap. Keeporiginalwoodworkdesign; doNOTminiaturizeintoastool."
+    }
+  ],
+  "export_recipe_js": "const fs=require('fs'),path=require('path'),{execFileSync}=require('child_process');\nconst R='/workspace/scratch/216787930017',S=path.join(R,'party8b_source/8b_q02_q06'),W=path.join(R,'party8b_work'),O=path.join(R,'party8b_generated');\nconst rec=[];\nfunction im(a,input){return execFileSync('/usr/bin/convert',a,{input,maxBuffer:80*1024*1024});}\nfunction save(p,b){const f=fs.openSync(p,'w');try{fs.writeFileSync(f,b);fs.fsyncSync(f);}finally{fs.closeSync(f);}}\nfunction sprite(f,size,x,y,extra=[]){return ['(',path.join(W,f),'-channel','A','-black-threshold','1%','+channel','-trim','+repage',...extra,'-resize',size,')','-geometry',`+${x}+${y}`,'-compose','Over','-composite'];}\nfunction layer(n,base,args){const h=base==='O1_bg.png'?940:941;save(path.join(O,n),im(['-size',`1672x${h}`,'xc:none',...args,'-depth','8','PNG32:-']));rec.push({name:n,base,width:1672,height:h,origin:[0,0],scale:1});}\nfor(const n of ['closeup_village_map_old.png','closeup_second_bench.png']){save(path.join(O,n),im([path.join(O,n),'-resize','1672x941!','-alpha','off','-depth','8','PNG24:-']));rec.push({name:n,base:null,width:1672,height:941});}\n// Keep the original drawing coordinates and map the formerly fenced plot's four corners to the empty plot.\nsave(path.join(W,'garden_registered.png'),im([path.join(W,'garden_pencil_clean_raw.png'),'-channel','A','-black-threshold','1%','-evaluate','multiply','0.70','+channel','-virtual-pixel','transparent','-define','distort:viewport=1672x941+0+0','-distort','Perspective','270,360 1247,519 1065,140 1454,495 1410,738 1503,668 558,940 1296,695','+repage','-depth','8','PNG32:-']));\n// Trim the generation's stray outer halo; retain the paper texture, then make the sheet translucent.\nsave(path.join(W,'tracing_paper_clean.png'),im([path.join(W,'tracing_paper_raw.png'),'-crop','1570x850+48+45','+repage','-alpha','set','-channel','A','-evaluate','set','18%','+channel','-depth','8','PNG32:-']));\nlayer('closeup_village_map_tracing.png','closeup_village_map_old.png',[\n '(',path.join(W,'tracing_paper_clean.png'),'-resize','1480x840!',')','-geometry','+100+45','-composite',\n path.join(W,'garden_registered.png'),'-geometry','+0+0','-composite'\n]);\n// Same hanging map for both school views. Only the tracing is added for the epilogue.\nlayer('O1_state_village_map.png','O1_bg.png',sprite('map_hanging_raw.png','180x104!',883,444));\nsave(path.join(W,'map_tracing_wall_raw.png'),im([path.join(W,'map_hanging_raw.png'),'(',path.join(O,'closeup_village_map_tracing.png'),'-resize','1640x890!',')','-geometry','+18+37','-composite','-depth','8','PNG32:-']));\nlayer('ep_lesson_map.png','ep_lesson.png',sprite('map_tracing_wall_raw.png','180x104!',883,444));\n// Small tracing drawing at dinner, with a pin mechanically cropped from the original map.\nsave(path.join(W,'map_pin.png'),im([path.join(O,'closeup_village_map_old.png'),'-crop','50x50+78+24','+repage','(','-size','50x50','xc:black','-fill','white','-draw','circle 25,25 46,25',')','-alpha','off','-compose','CopyOpacity','-composite','PNG32:-']));\nlayer('ep_dinner_ulyana_map.png','ep_dinner.png',[\n '(',path.join(W,'tracing_paper_clean.png'),'-channel','A','-evaluate','multiply','2.6','+channel','-resize','85x63!',')','-geometry','+997+151','-composite',\n ...sprite('garden_pencil_clean_raw.png','62x45!',1009,164),\n ...sprite('map_pin.png','6x6!',1035,151)\n]);\nlayer('ep_dinner_photo_frame.png','ep_dinner.png',sprite('photo_frame_raw.png','59x72!',626,256));\nlayer('H2_state_second_bench.png','H2_bg.png',sprite('bench_endview_raw.png','142x190!',1221,410,['-modulate','84,92,100']));\n// Existing bell stand is in front of the far bench. Do not let the new object cover its left edge.\nsave(path.join(W,'bell_occlusion_mask.png'),im(['-size','1672x941','xc:white','-fill','black','-draw','polygon 1345,463 1612,471 1644,641 1510,644 1500,515 1425,506 1365,610 1325,608','-depth','8','png:-']));\nsave(path.join(O,'H2_state_second_bench.png'),im([path.join(O,'H2_state_second_bench.png'),'(',path.join(O,'H2_state_second_bench.png'),'-alpha','extract',path.join(W,'bell_occlusion_mask.png'),'-compose','Multiply','-composite',')','-alpha','off','-compose','CopyOpacity','-composite','-depth','8','PNG32:-']));\nlayer('ep_boat_bench.png','ep_boat.png',sprite('boat_bench_corrected_raw.png','420x230!',1230,697));\n// Return the edited annex crop to exactly the crop's original coordinates, then retain only its opening.\nsave(path.join(W,'annex_registered.png'),im(['-size','1672x941','xc:none','(',path.join(W,'annex_bench_crop_full.png'),'-resize','500x282!',')','-geometry','+1120+330','-composite','PNG32:-']));\nsave(path.join(W,'annex_mask.png'),im(['-size','1672x941','xc:black','-fill','white','-draw','polygon 1404,421 1479,430 1480,516 1406,523','-blur','0x1','-black-threshold','1%','-depth','8','png:-']));\nsave(path.join(O,'O4_state_bench_shed.png'),im([path.join(W,'annex_registered.png'),path.join(W,'annex_mask.png'),'-alpha','off','-compose','CopyOpacity','-composite','-depth','8','PNG32:-']));\nrec.push({name:'O4_state_bench_shed.png',base:'O4_bg.png',width:1672,height:941,origin:[0,0],scale:1});\nfor(const r of rec.filter(x=>x.base)){\n const base=path.join(r.base.startsWith('closeup_')?O:S,r.base);\n save(path.join(O,'PREVIEWS',r.name.replace('.png','_over_base.jpg')),im([base,path.join(O,r.name),'-compose','Over','-composite','-quality','94','jpeg:-']));\n}\nsave(path.join(W,'export_records.json'),Buffer.from(JSON.stringify(rec,null,2)));\nconsole.log(JSON.stringify({files:rec.length,layers:rec.filter(r=>r.base).length}));\n"
+}
