@@ -1,0 +1,174 @@
+name: pipeline-mirror
+
+# Нина в мамином зеркале (M15а, H2): позы из 3D-модели Нины → листы assets/characters/nina_mirror/ (sprites.json).
+# Запуск: изменить pipeline/requests/mirror_*.json и запушить (из сессии workflow_dispatch недоступен).
+#   from_run    — прогон pipeline-character, чей артефакт glb-<id> даёт Нину (сетка, риг, Idle_4, реплика; 0 кредитов)
+#   new_actions — пресеты библиотеки Meshy на риг Нины (pipeline/3d/mirror_source.py, ≈3 кредита за действие)
+#   source_run  — прогон этого workflow, чей артефакт glb-mirror-<id> уже содержит эти клипы (Meshy не вызывается)
+#   work_glb    — облегчённый GLB со всеми клипами → ветка nina-mirror-src (для настройки поз в сессии; в main не идёт)
+#   render      — рендер поз (pipeline/render/render_mirror.py) → assets/characters/<out>/
+# Журнал бот коммитит в pipeline/3d/state/<character>_mirror_last_run.log (логи Actions из сессии не читаются).
+
+on:
+  push:
+    paths:
+      - "pipeline/requests/mirror_*.json"
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "путь к запросу, напр. pipeline/requests/mirror_nina.json"
+        required: true
+        default: "pipeline/requests/mirror_nina.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: pipeline-mirror-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+
+      - name: Определить запрос
+        id: req
+        run: |
+          if [ -n "${{ github.event.inputs.request }}" ]; then f="${{ github.event.inputs.request }}"
+          else f=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'pipeline/requests/mirror_*.json' | head -1 || true); fi
+          echo "file=$f" >> "$GITHUB_OUTPUT"
+          if [ -n "$f" ] && [ -f "$f" ]; then
+            python - "$f" >> "$GITHUB_OUTPUT" <<'EOF'
+          import json, sys
+          r = json.load(open(sys.argv[1]))
+          print(f"name={r['character']}")
+          print(f"from_run={r.get('from_run', '')}")
+          print(f"source_run={r.get('source_run', '')}")
+          print(f"render={'1' if r.get('render') else ''}")
+          w = r.get('work_glb') or {}
+          print(f"work={'1' if w and not r.get('render') else ''}")
+          print(f"work_tris={w.get('tris', 100000)}")
+          print(f"work_tex={w.get('max_tex', 2048)}")
+          print(f"work_branch={w.get('branch', 'nina-mirror-src')}")
+          print(f"out={r.get('out', 'assets/characters/' + r['character'] + '_mirror')}")
+          EOF
+          fi
+          cat "$GITHUB_OUTPUT"
+
+      - name: Зависимости (bpy = Blender как модуль)
+        if: steps.req.outputs.file != ''
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r pipeline/requirements.txt
+
+      - name: Нина из прогона pipeline-character (from_run, 0 кредитов)
+        if: steps.req.outputs.file != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          n="${{ steps.req.outputs.name }}"; fr="${{ steps.req.outputs.from_run }}"
+          gh run download "$fr" -n "glb-$fr" -D "_prev/$fr" -R "${{ github.repository }}"
+          src=$(find "_prev/$fr" -type d -path "*/out/$n" | head -1)
+          [ -n "$src" ] || { echo "::error::в артефакте glb-$fr нет out/$n"; exit 1; }
+          mkdir -p "pipeline/3d/out/$n"; cp -r "$src"/. "pipeline/3d/out/$n/"
+          rm -rf _prev
+          ls -la "pipeline/3d/out/$n"
+
+      - name: Клипы поз из прошлого прогона (source_run, 0 кредитов)
+        if: steps.req.outputs.file != '' && steps.req.outputs.source_run != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          n="${{ steps.req.outputs.name }}"; sr="${{ steps.req.outputs.source_run }}"
+          gh run download "$sr" -n "glb-mirror-$sr" -D "_src" -R "${{ github.repository }}"
+          f=$(find _src -name mirror_clips.glb | head -1)
+          [ -n "$f" ] || { echo "::error::в артефакте glb-mirror-$sr нет mirror_clips.glb"; exit 1; }
+          cp "$f" "pipeline/3d/out/$n/mirror_clips.glb"; rm -rf _src
+          ls -la "pipeline/3d/out/$n"
+
+      - name: Meshy — пресеты на риг персонажа, превью каталога
+        if: steps.req.outputs.file != '' && steps.req.outputs.source_run == ''
+        env:
+          MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
+        run: |
+          set -o pipefail
+          mkdir -p pipeline/3d/state
+          python pipeline/3d/mirror_source.py --request "${{ steps.req.outputs.file }}" 2>&1 | tee "pipeline/3d/state/${{ steps.req.outputs.name }}_mirror_last_run.log"
+
+      - name: Облегчённый GLB со всеми клипами (для настройки поз)
+        if: steps.req.outputs.file != '' && steps.req.outputs.work != ''
+        run: |
+          set -o pipefail
+          n="${{ steps.req.outputs.name }}"
+          python pipeline/3d/build_rt3d_glb.py --base "pipeline/3d/out/$n/animations.glb" --extra "pipeline/3d/out/$n/mirror_clips.glb" \
+            --tris "${{ steps.req.outputs.work_tris }}" --max-tex "${{ steps.req.outputs.work_tex }}" --matte \
+            --out "pipeline/3d/out/$n/${n}_mirror_work.glb" --check-out "pipeline/3d/state/${n}_mirror_work_check.json" 2>&1 \
+            | grep -v "| Saved" | tee -a "pipeline/3d/state/${n}_mirror_last_run.log"
+          ls -la "pipeline/3d/out/$n"
+
+      - name: Рендер поз (Blender/Cycles CPU)
+        if: steps.req.outputs.file != '' && steps.req.outputs.render != ''
+        run: |
+          set -o pipefail
+          n="${{ steps.req.outputs.name }}"
+          python pipeline/render/render_mirror.py --request "${{ steps.req.outputs.file }}" \
+            --glb "pipeline/3d/out/$n/animations.glb" --extra "pipeline/3d/out/$n/mirror_clips.glb" \
+            --out "${{ steps.req.outputs.out }}" --report "pipeline/3d/state/${n}_mirror_render.json" 2>&1 \
+            | grep -v "| Saved\|^Fra:" | tee -a "pipeline/3d/state/${n}_mirror_last_run.log"
+
+      - name: Сохранить клипы поз как артефакт
+        if: steps.req.outputs.file != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: glb-mirror-${{ github.run_id }}
+          path: pipeline/3d/out/${{ steps.req.outputs.name }}/mirror_clips.glb
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Коммит результатов (и журнала — даже при ошибке)
+        if: always() && steps.req.outputs.file != ''
+        run: |
+          git config user.name "pipeline-bot"
+          git config user.email "pipeline-bot@users.noreply.github.com"
+          n="${{ steps.req.outputs.name }}"
+          echo "run ${{ github.run_id }} · ${{ job.status }}" >> "pipeline/3d/state/${n}_mirror_last_run.log"
+          for p in "${{ steps.req.outputs.out }}" pipeline/3d/state Docs/evidence/M2/nina_mirror; do
+            [ -e "$p" ] && git add -A "$p"
+          done
+          git status --short | head -40
+          if ! git diff --cached --quiet; then
+            git commit -q -m "pipeline: Нина в мамином зеркале — позы (run ${{ github.run_id }}) [skip ci]"
+            ok=""
+            for i in 1 2 3 4 5 6; do
+              git fetch -q origin main
+              if git rebase -X theirs --autostash origin/main; then
+                if git push origin HEAD:main; then echo "запушено с попытки $i"; ok=1; break; fi
+              else
+                git rebase --abort || true
+              fi
+              sleep 15
+            done
+            [ -n "$ok" ] || { echo "::error::не удалось запушить результаты"; exit 1; }
+          fi
+          # облегчённый GLB — отдельной веткой из одного файла (main не растёт)
+          w="pipeline/3d/out/$n/${n}_mirror_work.glb"
+          if [ -n "${{ steps.req.outputs.work }}" ] && [ -f "$w" ]; then
+            blob=$(git hash-object -w "$w")
+            tree=$(printf "100644 blob %s\t%s\n" "$blob" "${n}_mirror_work.glb" | git mktree)
+            c=$(git commit-tree "$tree" -m "work GLB (run ${{ github.run_id }})")
+            git push -f origin "$c:refs/heads/${{ steps.req.outputs.work_branch }}" && echo "work GLB → ${{ steps.req.outputs.work_branch }}"
+          fi

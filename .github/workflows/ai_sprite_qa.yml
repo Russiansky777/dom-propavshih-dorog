@@ -9,7 +9,7 @@ name: ai-sprite-qa
 
 on:
   workflow_run:
-    workflows: ["pipeline-character"]
+    workflows: ["pipeline-character", "pipeline-mirror"]
     types: [completed]
   push:
     branches: [main]

@@ -1,0 +1,25 @@
+{
+  "character": "nina",
+  "out": "assets/characters/nina_mirror",
+  "from_run": "39879335278",
+  "new_actions": {
+    "chair_sit": 32,
+    "stand_drink": 342,
+    "mirror_viewing": 48
+  },
+  "expect_keys": {
+    "chair_sit": "Chair_Sit_Idle_F",
+    "stand_drink": "Stand_and_Drink",
+    "mirror_viewing": "Mirror_Viewing"
+  },
+  "max_credits": 9,
+  "previews": [32, 342, 48, 343],
+  "work_glb": {
+    "tris": 100000,
+    "max_tex": 2048,
+    "branch": "nina-mirror-src"
+  },
+  "render": false,
+  "rev": 1,
+  "_note": "M15а (H2, мамино зеркало): Нина 67 в горнице O3 — шесть поз (data/story/rooms/H2.json → bundle_nina.mechanic.poses). rev 1: исходники — пресеты Meshy на риг Нины (id по https://docs.meshy.ai/en/api/animation-library: 32 Chair_Sit_Idle_F — сидит за столом, 342 Stand_and_Drink — пьёт из чашки, 48 Mirror_Viewing — проверка для зеркальца), превью каталога, облегчённый GLB для настройки поз в сессии"
+}
