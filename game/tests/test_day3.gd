@@ -589,6 +589,22 @@ func _test_start_points() -> void:
 			sr.close_mechanic()
 			await _frames(2)
 		sr.set_frame("")
+	# Batch G acceptance points (Docs/ACCEPTANCE_G.md): the sluice with the lever in the bag, the plate with the brace,
+	# the pier with the rope on the ring — each before its own mini-game.
+	var g_points := {"sluice": ["M4", "key_sluice", "sluice_opened"], "plate": ["Z3", "brace_plate", "plate_braced"], "lights": ["R1", "", "far_lights_answered"]}
+	for pid in g_points.keys():
+		_check(rm.start_at(pid), "start point %s" % pid)
+		await _frames(3)
+		var w: Array = g_points[pid]
+		_check(_room() == String(w[0]), "%s: room %s (%s)" % [pid, w[0], _room()])
+		if String(w[1]) != "":
+			_check(gs.has_item(String(w[1])), "%s: %s in the bag" % [pid, w[1]])
+		_check(not gs.has_flag(String(w[2])), "%s: %s not done yet — the mini-game is ahead" % [pid, w[2]])
+		await _finish()
+		if sr.mechanic_open:
+			sr.close_mechanic()
+			await _frames(2)
+		sr.set_frame("")
 	# The epilogue start point: the epilogue plays by itself at the turn.
 	rm.start_at("epilogue")
 	await _frames(3)

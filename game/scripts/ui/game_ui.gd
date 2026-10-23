@@ -1167,6 +1167,7 @@ func probe_positions() -> Dictionary:
 		out["voice_slider"] = {"x": vr.position.x, "y": vr.position.y, "w": vr.size.x, "h": vr.size.y, "value": voice_slider.value}
 		out["buttons"]["TimingSlow"] = _center(timing_slow_check)
 		out["timing_slow"] = TimingBar.slow
+		out["timing_slow_label"] = timing_slow_check.text
 	# inventory: item -> centre of its pocket (only items on the bag's current page are clickable).
 	var bp: Dictionary = bag.probe()
 	for item_id in bp["items"].keys():

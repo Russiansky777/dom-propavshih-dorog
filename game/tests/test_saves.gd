@@ -20,9 +20,7 @@ var player: Node2D = null
 var SLOT := "test_saves_%d" % OS.get_process_id()
 var MANUAL := "test_saves_manual_%d" % OS.get_process_id()
 var CP := "test_saves_cp_%d_" % OS.get_process_id()
-var _auto_backup: String = ""
 var _reached_end: bool = false   # a test that stopped on a script error must not pass
-var _had_auto: bool = false
 
 
 func _initialize() -> void:
@@ -55,10 +53,9 @@ func _run() -> void:
 	sr = root.get_node("StoryRunner")
 	sd = root.get_node("StoryData")
 	gs.reset()
-	# The menu's autosave row is the real slot «auto»: a player's autosave on this machine is kept and put back.
-	_had_auto = gs.has_save("auto")
-	if _had_auto:
-		_auto_backup = FileAccess.get_file_as_string(gs.save_path("auto"))
+	# The test's own autosave slot, set before the menu is built (its «Автосохранение» row reads it): the shared
+	# user://saves/auto.json is written by other test runs on this machine at any moment.
+	rm.autosave_slot = SLOT
 	main_node = load("res://scenes/Main.tscn").instantiate()
 	root.add_child(main_node)
 	await _frames(3)
@@ -74,12 +71,6 @@ func _run() -> void:
 	gs.reset()
 	for s in [SLOT, MANUAL, CP + "day2", CP + "day3", CP + "day4"]:
 		gs.delete_save(s)
-	if _had_auto:
-		var f := FileAccess.open(gs.save_path("auto"), FileAccess.WRITE)
-		f.store_string(_auto_backup)
-		f.close()
-	else:
-		gs.delete_save("auto")
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
 		main_node.free()
@@ -266,16 +257,15 @@ func _test_load_no_repeat() -> void:
 	for f in ["house_unlocked", "door_school_installed"]:
 		gs.flags[f] = true
 	gs.flags.erase("o1_saw_winter")
-	rm.autosave_slot = "auto"
-	gs.delete_save("auto")
+	gs.delete_save(SLOT)
 	rm.autosave_enabled = true
 	rm.change_room("O1", "")
 	await _frames(3)
-	_check(not gs.has_save("auto") and not sr.current_beat.is_empty(), "entering: «Там зима» on screen, the autosave waits for it")
+	_check(not gs.has_save(SLOT) and not sr.current_beat.is_empty(), "entering: «Там зима» on screen, the autosave waits for it")
 	var seen := await _finish()
 	_check(seen.size() >= 1, "the first-entry line once (%s)" % str(seen))
 	await _frames(3)
-	_check(gs.has_save("auto") and gs.has_flag("o1_saw_winter"), "after the line: the autosave, the line marked as seen")
+	_check(gs.has_save(SLOT) and gs.has_flag("o1_saw_winter"), "after the line: the autosave, the line marked as seen")
 	var scene_flags := {}
 	for k in gs.flags.keys():
 		if String(k).begins_with("done_"):
@@ -289,9 +279,9 @@ func _test_load_no_repeat() -> void:
 	await _frames(3)
 	var pr: Dictionary = ui.call("probe_positions")
 	var slots: Dictionary = pr.get("slots", {})
-	_check(slots.has("auto") and bool(slots["auto"].get("visible", false)) and String(slots["auto"].get("text", "")).contains("Зимний класс"),
-		"the menu: «Автосохранение» row with its line (%s)" % str(slots.get("auto", {})))
-	var btn: Dictionary = pr.get("buttons", {}).get("Loadauto", {})
+	_check(slots.has(SLOT) and bool(slots[SLOT].get("visible", false)) and String(slots[SLOT].get("text", "")).contains("Зимний класс"),
+		"the menu: «Автосохранение» row with its line (%s)" % str(slots.get(SLOT, {})))
+	var btn: Dictionary = pr.get("buttons", {}).get("Load" + SLOT, {})
 	_check(not btn.is_empty(), "its «Загрузить» button")
 	if not btn.is_empty():
 		var at := Vector2(float(btn["x"]), float(btn["y"]))
@@ -312,5 +302,4 @@ func _test_load_no_repeat() -> void:
 			lost.append(k)
 	_check(lost.is_empty(), "every done scene stays done (%s)" % str(lost))
 	_check(not sr.is_busy(), "nothing blocks: the player can act")
-	rm.autosave_slot = SLOT
 	_reached_end = true

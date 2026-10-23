@@ -18,6 +18,9 @@
 //             the green, «подымай» (a held press) — the bar out;
 //   latch   — the H1 shutter (G8): one click opens it by the action itself, no close-up mini-game;
 //   crossing— R2: ten clicks on the rope; the boat reaches the far pier (R3);
+//   menu    — batch G: «Облегчить мини-игры» (G3) by a click, the autosave row «День второй · Мастерская · вечер» (G4/G5);
+//   sluice  — batch G (G23/G24): the water down by «точный удар» — hits step it down, a miss back to the first notch;
+//   lantern — batch G (G45): after the far lights answered a click on the lantern is only its line;
 //   nina    — mother's mirror: Nina's six poses from her 3D sheets (the mirror's clock moved on with the probe hook
 //             ambientMirrorAdvance — the poses come every few minutes of hers); a frame of each pose.
 // Software WebGL here draws a few frames a second: for the timing bars the page's game clock is slowed with the
@@ -45,7 +48,7 @@ const OUT_DIR = process.env.MECH_OUT_DIR ? path.resolve(process.env.MECH_OUT_DIR
 const LOG_DIR = path.join(ROOT, "build", "shots", "mech");
 const PORT = Number(process.env.MECH_PORT || 8781);
 const URL_BASE = process.env.MECH_URL || "";
-const PARTS = (process.env.MECH_PART || "examine,mirror,nina,plate,hook,latch,crossing").split(",");
+const PARTS = (process.env.MECH_PART || "examine,mirror,nina,plate,hook,menu,sluice,lantern,latch,crossing").split(",");
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -331,10 +334,13 @@ async function main() {
       // Software WebGL here runs the game clock at ~0.15 of the page's: the marker is watched at full speed and,
       // once it is where the click is wanted, the clock is all but stopped (probePause) so the REAL click lands
       // there — the check is that a click in the green counts (and one in the red does not), not human timing.
+      // The pointer is already over the target while the marker is watched: the click itself is only down/up (the
+      // brace's bar runs 30 % faster since G26 — a move and a pause before the click could carry it out of the green).
+      await page.mouse.move(at.x, at.y, { steps: 3 });
       const t0 = Date.now();
       while (Date.now() - t0 < 180000) {
         const s0 = await stateNow();
-        if (beatKey(s0)) { await finish(`${label}: line first`); continue; }   // a line on screen holds the bar
+        if (beatKey(s0)) { await finish(`${label}: line first`); await page.mouse.move(at.x, at.y, { steps: 3 }); continue; }   // a line on screen holds the bar
         const t = getTiming(s0);
         if (t && t.zone && t.state === "run" && !t.paused) {
           const c = (t.zone[0] + t.zone[1]) / 2, half = (t.zone[1] - t.zone[0]) / 2;
@@ -353,7 +359,8 @@ async function main() {
         await sleep(90);
         await page.mouse.down(); await page.mouse.up();
       } else {
-        await click(label, at);
+        logLine(`click ${label} at (${Math.round(at.x)}, ${Math.round(at.y)})`);
+        await page.mouse.down(); await page.mouse.up();
       }
       await sleep(400);
       await slow(1.0);
@@ -375,7 +382,12 @@ async function main() {
       s = await state();
       check(s.mechanic.panel.jumps === 1 && s.mechanic.panel.blows === 0, `a miss: the brace jumps off (${s.mechanic.panel.jumps})`);
       await shot("07_plate_bar");
-      for (let i = 0; i < 3; i++) await strikeTiming(`brace hit ${i + 1}`, (t) => t.mechanic.panel.timing, strikeAt, true);
+      // G26: «кликать и мышью» — the first hit by a click on the plate away from the brace and the bar.
+      const freeAt = s.mechanic.panel.free_click || strikeAt;
+      await strikeTiming("brace hit 1 (a click on the picture, G26)", (t) => t.mechanic.panel.timing, freeAt, true);
+      s = await state();
+      check(s.mechanic.panel.blows === 1 && s.mechanic.panel.strikes_by_click >= 1, `G26: a mouse click away from the brace strikes (blows ${s.mechanic.panel.blows})`);
+      for (let i = 1; i < 3; i++) await strikeTiming(`brace hit ${i + 1}`, (t) => t.mechanic.panel.timing, strikeAt, true);
       s = await waitFor("braced", (t) => t.flags.plate_braced, 30000);
       await finish("M15s");
       s = await waitFor("rope brought", (t) => t.flags.rope_brought && t.mechanic.open && t.mechanic.panel.knot_path.open, 120000);
@@ -384,11 +396,16 @@ async function main() {
       const kp = s.mechanic.panel.knot_path;
       await page.mouse.move(kp.end.x, kp.end.y);
       await page.mouse.down();
-      for (const st of kp.strokes) {
+      for (let si = 0; si < kp.strokes.length; si++) {
+        const st = kp.strokes[si];
         for (let j = 1; j < st.length; j++) {
           const a = st[j - 1], b = st[j];
           const n = Math.max(1, Math.round(Math.hypot(b.x - a.x, b.y - a.y) / 22));
           for (let k = 1; k <= n; k++) await page.mouse.move(a.x + (b.x - a.x) * k / n, a.y + (b.y - a.y) * k / n);
+        }
+        if (si === 1) {   // G27: two strokes drawn — the rope goes through the ring and round its body
+          await sleep(600);
+          await shot("08b_knot_round_ring");
         }
       }
       await page.mouse.up();
@@ -435,6 +452,99 @@ async function main() {
     } catch (e) {  // one broken part does not hide the others
       check(false, `hook: exception ${e.message}`);
       await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
+    }
+
+    // Batch G (Director 23.10): the menu (G3 «Облегчить мини-игры», G4/G5 the autosave row with day · place · time),
+    // the sluice water by «точный удар» (G23), the lantern after the answer (G45).
+    const mainScenesUpTo = (stop) => {   // done_ of every main scene before `stop` (story order, data/story/scenes)
+      const dir = path.join(ROOT, "data", "story", "scenes");
+      const out = [];
+      for (const f of fs.readdirSync(dir).filter((x) => /^E\d+\.json$/.test(x)).sort()) {
+        for (const sc of JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")).scenes || []) {
+          if (sc.type !== "main") continue;
+          if (sc.id === stop) return out;
+          out.push("started_" + sc.id, "done_" + sc.id, ...((sc.grants && sc.grants.flags) || []));
+        }
+      }
+      return out;
+    };
+
+    if (PARTS.includes("menu")) try {
+      await fresh("menu");
+      await setFlags(mainScenesUpTo("M16s").concat(["house_unlocked"]));
+      await goto("H2");   // a room change: the autosave (G5) — written once nothing is on screen
+      await sleep(1500);
+      let s = await state();
+      await click("menu", s.ui.buttons.MenuButton);
+      s = await waitFor("menu open", (t) => t.ui && t.ui.menu_open && t.ui.slots, 30000);
+      check(s.ui.timing_slow_label === "Облегчить мини-игры", `G3: the setting reads «${s.ui.timing_slow_label}»`);
+      const auto = (s.ui.slots || {}).auto || {};
+      check(auto.visible && auto.text === "День второй · Мастерская · вечер", `G4/G5: the autosave row «${auto.text}»`);
+      await click("«Облегчить мини-игры»", s.ui.buttons.TimingSlow);
+      s = await waitFor("easy on", (t) => t.ui && t.ui.timing_slow === true, 20000);
+      check(s.ui.timing_slow === true, "G3: «Облегчить мини-игры» turns on by a click");
+      await shot("01_menu_easy_autosave");
+      await click("«Облегчить мини-игры» off", s.ui.buttons.TimingSlow);
+      await waitFor("easy off", (t) => t.ui && t.ui.timing_slow === false, 20000);
+      s = await state();
+      await click("close menu", s.ui.buttons.CloseMenu);
+      await waitFor("menu closed", (t) => t.ui && !t.ui.menu_open, 20000);
+    } catch (e) {
+      check(false, `menu: exception ${e.message}`);
+      await page.keyboard.press("Escape").catch(() => {});
+    }
+
+    if (PARTS.includes("sluice")) try {
+      await fresh("sluice");
+      await setFlags(mainScenesUpTo("M14").concat(["house_unlocked", "office_unbolted", "office_shelf_lifted", "sluice_key_inserted"]));
+      await page.evaluate(() => { window.ambientFlag("sluice_opened", false); window.ambientFlag("pond_lowered", false); });
+      await goto("M4");
+      let s = await state();
+      await click("the gate", s.hotspots.gate);
+      s = await waitFor("sluice open", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "sluice", 120000);
+      await finish("sluice open");
+      s = await state();
+      check(s.mechanic.panel.timing && s.mechanic.panel.timing.needed === 4, `G23: «точный удар» under the gate, ${s.mechanic.panel.timing && s.mechanic.panel.timing.needed} steps`);
+      check(s.mechanic.panel.work_mark_at_last, "G24: the red mark on the gauge is on the last notch");
+      const gateAt = s.mechanic.panel.strike;
+      await strikeTiming("water step 1", (t) => t.mechanic.panel.timing, gateAt, true);
+      await strikeTiming("water step 2", (t) => t.mechanic.panel.timing, gateAt, true);
+      s = await state();
+      check(s.mechanic.panel.notch === 2, `two hits in the green: two notches down (${s.mechanic.panel.notch})`);
+      await strikeTiming("a miss (red)", (t) => t.mechanic.panel.timing, gateAt, false);
+      await finish("slipped");
+      s = await state();
+      check(s.mechanic.panel.notch === 0 && s.mechanic.panel.slips === 1, `a miss: back to the first notch (${s.mechanic.panel.notch})`);
+      await strikeTiming("water step 1 again (a click on the picture)", (t) => t.mechanic.panel.timing, s.mechanic.panel.free_click, true);
+      await strikeTiming("water step 2 again", (t) => t.mechanic.panel.timing, gateAt, true);
+      await sleep(1500);
+      await shot("02_sluice_water_steps");
+      await strikeTiming("water step 3", (t) => t.mechanic.panel.timing, gateAt, true);
+      await strikeTiming("water step 4", (t) => t.mechanic.panel.timing, gateAt, true);
+      s = await waitFor("sluice opened", (t) => t.flags.sluice_opened && t.flags.pond_lowered, 120000);
+      check(s.flags.sluice_opened && s.flags.pond_lowered, "G23: four in a row — the water is down (sluice_opened, pond_lowered)");
+      await finish("opened");
+    } catch (e) {
+      check(false, `sluice: exception ${e.message}`);
+      await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
+    }
+
+    if (PARTS.includes("lantern")) try {
+      await fresh("lantern");
+      await setFlags(mainScenesUpTo("M17").concat(["house_unlocked", "rope_on_ring", "road_held_both_ends", "three_lights_sent", "far_lights_answered", "r1_seen_lantern"]));
+      await goto("R1");
+      let s = await state();
+      await click("the lantern", s.hotspots.lantern);
+      let sawMech = false;
+      s = await waitFor("a line", (t) => { sawMech = sawMech || !!(t.mechanic && t.mechanic.open); return !!beatKey(t); }, 120000);
+      await shot("03_lantern_look_only");
+      const lines = await finish("lantern");
+      s = await state();
+      check(!sawMech && !(s.mechanic && s.mechanic.open) && lines.length === 1, `G45: after the answer the lantern is only a look: ${JSON.stringify(lines)}`);
+    } catch (e) {
+      check(false, `lantern: exception ${e.message}`);
       await page.keyboard.press("Escape").catch(() => {});
     }
 
