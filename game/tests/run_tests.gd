@@ -1326,8 +1326,10 @@ func _test_no_straight_line() -> void:
 				if player.global_position.distance_to(start) > 0.5:
 					moved_before_path = true
 			for h in holes:
-				# Paths hug the cut-out's edge; only points clearly inside count (> 3 px from every edge).
-				if Geometry2D.is_point_in_polygon(player.global_position, h) and _edge_distance(player.global_position, h) > 3.0:
+				# Paths hug the cut-out's edge; only points clearly inside count (> 8 px from every edge). The cut-out is
+				# the counter plus the body's clearance (≈ 100 px at this depth since D3, 23.10), so a few px of corner
+				# cutting at speed ×4 still keeps Agata far from the counter itself.
+				if Geometry2D.is_point_in_polygon(player.global_position, h) and _edge_distance(player.global_position, h) > 8.0:
 					inside.append(player.global_position)
 		player.speed_factor = speed_factor_old
 		print("    trial %d: waited %d physics frames for the path, walked %d frames, ended at %s" % [trial, waited, frames, str(player.global_position)])

@@ -7,6 +7,7 @@
   "walk_samples": [[800, 900], [700, 1000], [1020, 680], [560, 740], [1300, 680]],
   "_depth_note": "Рост Агаты = 345 px × scale (фигура в кадре 384 px, модель 1.657 м) — см. rooms/_index.json agata_ref; ориентиры height_refs проверяет tools/validate_rooms.py (±12 %). у сундука 1.35 → 466 px при 508 (−8 %); у ящиков 2.0 → 690 при 714",
   "height_refs": [{"what": "сундук", "y": 705, "px": 230, "m": 0.75}, {"what": "ящик на переднем плане", "y": 1070, "px": 280, "m": 0.65}],
+  "door_ref": "none — чердак, выход вниз по лестнице, двери в кадре нет",
   "depth": {"top_y": 620, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 2.0},
   "layers": [
     {"id": "boxes", "image": "res://assets/rooms/H4/fg_boxes.png", "occluder": true, "z": 1000}

@@ -10,7 +10,7 @@
   "nearest_checks": [{"from": [700, 880], "in": [560, 640, 300, 60], "_note": "стенка опоры → верх опоры"}],
   "depth": {"top_y": 430, "bottom_y": 690, "scale_top": 0.125, "scale_bottom": 0.775},
   "_depth_note": "Рост Агаты = 345 px × scale (rooms/_index.json agata_ref). Дверь сарайчика (порог y 500, верх y 380, ≈ 1,95 м) — 0,3 × 345 ≈ 104 px при ожидаемых 102; у края опоры (y ≈ 680) ≈ 265 px: камни стенки ≈ 100 px.",
-  "height_refs": [{"what": "дверь сарайчика (порог y 500, верх y 380)", "y": 500, "px": 120, "m": 1.95}],
+  "height_refs": [{"what": "дверь сарайчика (порог y 500, верх y 380)", "y": 500, "px": 120, "m": 1.95, "door": true}],
   "layers": [
     {"id": "fg_pier", "image": "res://assets/rooms/R3/fg_pier.png", "occluder": true, "z": 1080, "_note": "передняя стенка опоры: у края верхней площадки перекрывает ноги"},
     {"id": "fg_rope_stop", "image": "res://assets/rooms/R3/fg_rope_stop.png", "occluder": true, "z": 1080, "_note": "канат моста и стопор в старом кольце — передний план"}

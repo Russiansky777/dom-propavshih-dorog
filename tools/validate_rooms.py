@@ -866,6 +866,15 @@ for rid, room in rooms.items():
                         f"закрыто {covered:.0%} фигуры ({who}); сдвиньте стоянку или NPC")
 
     # 8. рост Агаты против ориентиров
+    # Каждая комната с Агатой в кадре сверяет её рост с дверью: ориентир с "door": true или явно "door_ref": "none — почему"
+    # (координатор 23.10: чтобы проверка не пропустила комнату молча).
+    if not room.get("frame") and not room.get("player_hidden") or rid == "R2":
+        n_door = sum(1 for hr in room.get("height_refs", []) if hr.get("door"))
+        dref = str(room.get("door_ref", ""))
+        if n_door == 0 and not dref.startswith("none"):
+            err(f"{ctx}: нет ориентира двери (height_refs … \"door\": true) и нет \"door_ref\": \"none — почему\"")
+        if n_door and dref:
+            err(f"{ctx}: и дверь-ориентир, и door_ref «{dref}» — оставьте одно")
     aref = index.get("agata_ref", {})
     kind = room.get("background", {}).get("kind", "interior")
     dep = room.get("depth", index["defaults"].get("depth_exterior" if kind == "exterior" else "depth", {}))
@@ -888,13 +897,11 @@ for rid, room in rooms.items():
             err(f"{hctx}: рост Агаты {agata:.0f} px (scale {s:.3f}) против ожидаемых {want:.0f} px "
                 f"({aref['height_m']} м при {hr['px']} px = {hr['m']} м) — ×{ratio:.2f}, допуск ±{aref['tolerance']:.0%}; "
                 f"нужный scale у y {hr['y']} ≈ {want / aref['figure_px']:.3f}")
-        # D3 (ИИ-плейтест 22.10, координатор 23.10): у порога двери Агата — 0,85–0,95 высоты двери на фоне (как в игре:
-        # масштаб зажат в [scale_top, scale_bottom]). Ориентиры с "door": true — комнаты, настроенные по двери.
+        # D3 (ИИ-плейтест 22.10, координатор 23.10): у порога двери Агата — 0,85–0,95 высоты двери на фоне, по прямой
+        # глубины (порог за краем пола — продолжение прямой, как у ориентиров выше). Ориентир с "door": true.
         if hr.get("door"):
-            tc = min(max((hr["y"] - dep["top_y"]) / span, 0.0), 1.0) if span else 1.0
-            ag_rt = aref["figure_px"] * (dep["scale_top"] + (dep["scale_bottom"] - dep["scale_top"]) * tc)
-            if not 0.85 <= ag_rt / hr["px"] <= 0.95:
-                err(f"{hctx}: у порога двери Агата {ag_rt:.0f} px — {ag_rt / hr['px']:.2f} высоты двери ({hr['px']} px), нужно 0,85–0,95")
+            if not 0.85 <= agata / hr["px"] <= 0.95:
+                err(f"{hctx}: у порога двери Агата {agata:.0f} px — {agata / hr['px']:.2f} высоты двери ({hr['px']} px), нужно 0,85–0,95")
 
     for e in room.get("effects", []):
         ectx = f"{ctx}.effects.{e.get('id', e.get('type', '?'))}"
