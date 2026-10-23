@@ -287,4 +287,5 @@ func probe() -> Dictionary:
 	return {"x": r.get_center().x, "y": r.get_center().y, "pos": logic.pos(), "hits": logic.hits, "needed": logic.hits_needed,
 		"misses": logic.misses, "state": logic.state, "in_green": logic.in_green(logic.pos()), "zone": [logic.zone().x, logic.zone().y],
 		"period_s": logic.period_s * logic.slow_k, "paused": paused(), "to_green_s": logic.seconds_to_green(),
-		"easy": slow, "green_w": logic.green_w()}
+		"easy": slow, "green_w": logic.green_w(),
+		"easy_toggle": {"x": slow_check.get_global_rect().get_center().x, "y": slow_check.get_global_rect().get_center().y} if slow_check != null and slow_check.is_visible_in_tree() else {}}

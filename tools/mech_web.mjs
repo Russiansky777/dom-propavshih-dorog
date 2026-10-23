@@ -344,10 +344,27 @@ async function main() {
         const t = getTiming(s0);
         if (t && t.zone && t.state === "run" && !t.paused) {
           const c = (t.zone[0] + t.zone[1]) / 2, half = (t.zone[1] - t.zone[0]) / 2;
-          if (wantGreen ? Math.abs(t.pos - c) < half * 0.5 : Math.abs(t.pos - c) > half + 0.15) {
+          if (wantGreen ? Math.abs(t.pos - c) < half * 1.6 : Math.abs(t.pos - c) > half + 0.15) {
             await slow(0.05);   // the lowest time scale probePause allows (main.gd)
-            const t2 = getTiming(await stateNow());
-            if (t2 && (wantGreen ? Math.abs(t2.pos - c) < half * 0.9 : Math.abs(t2.pos - c) > half + 0.05)) break;
+            if (!wantGreen) {
+              const t2 = getTiming(await stateNow());
+              if (t2 && Math.abs(t2.pos - c) > half + 0.05) break;
+              await slow(1.0);
+              continue;
+            }
+            // A software frame here is ~1 s of the page (≈0.05 s of the game at this scale): the click lands a frame
+            // later, so it is sent only while the marker is still before the centre and coming towards it.
+            let prev = getTiming(await stateNow());
+            let ok = false;
+            for (let k = 0; k < 40 && prev; k++) {
+              const cur = getTiming(await stateNow());
+              if (!cur || cur.state !== "run") break;
+              const toward = (c - cur.pos) * (cur.pos - prev.pos) > 0;
+              if (toward && Math.abs(cur.pos - c) < half * 0.7) { ok = true; break; }
+              if (cur.pos !== prev.pos) prev = cur;
+              await sleep(60);
+            }
+            if (ok) break;
             await slow(1.0);
           }
         }
@@ -359,12 +376,61 @@ async function main() {
         await sleep(90);
         await page.mouse.down(); await page.mouse.up();
       } else {
-        logLine(`click ${label} at (${Math.round(at.x)}, ${Math.round(at.y)})`);
+        const tc = getTiming(await stateNow());
+        const has = tc && tc.pos !== undefined && tc.zone;
+        logLine(`click ${label} at (${Math.round(at.x)}, ${Math.round(at.y)}) — marker ${has ? tc.pos.toFixed(3) : "?"} in ${has ? JSON.stringify(tc.zone.map((v) => +v.toFixed(3))) : "?"}`);
         await page.mouse.down(); await page.mouse.up();
       }
-      await sleep(400);
+      // The click is taken by the game's next frame (≈1 s of this page): the slow clock stays until it has been (the
+      // marker held after a hit, or a miss), else that frame would run at full speed and carry the marker away.
+      const tw = Date.now();
+      while (Date.now() - tw < 15000) {
+        const tt = getTiming(await stateNow());
+        if (!tt || tt.state !== "run" || beatKey(await stateNow())) break;
+        await sleep(150);
+      }
+      const tr = getTiming(await stateNow());
+      if (tr && tr.pos !== undefined) logLine(`  → ${tr.state}, hits ${tr.hits}, marker ${tr.pos.toFixed(3)}`);
+      else logLine("  → the bar is gone (the series is done)");
       await slow(1.0);
     };
+
+    if (PARTS.includes("brace")) try {
+      // Batch G (G26): only the brace — «точный удар» 30 % faster, a hit by a click on the plate away from the brace.
+      await fresh("brace");
+      await setFlags(["done_M01", "house_unlocked", "done_M03", "done_N01", "done_M14", "done_M15a", "evening_dusk", "nina_time_compared", "skoba_on_plate", "has_brace_plate"]);
+      await goto("Z3");
+      let s = await state();
+      await click("the plate", s.hotspots.pier_plate);
+      s = await waitFor("plate open", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "plate", 120000);
+      await finish("plate open");
+      s = await state();
+      check(Math.abs(s.mechanic.panel.timing.period_s - 1.9 / 1.3) < 0.02, `G26: the brace's sweep ${s.mechanic.panel.timing.period_s.toFixed(2)} s (1.9 s before, +30 %)`);
+      // G3: «Облегчить» right beside the bar — a real click: slower and a wider green (this software-WebGL page draws a
+      // frame a second; the check is that clicks strike, not a human's timing).
+      const g0 = s.mechanic.panel.timing.green_w;
+      await click("«Облегчить» beside the bar", s.mechanic.panel.timing.easy_toggle);
+      s = await waitFor("easy on", (t) => t.mechanic.panel.timing && t.mechanic.panel.timing.easy, 30000);
+      check(s.mechanic.panel.timing.easy && s.mechanic.panel.timing.green_w > g0 * 1.4 && s.mechanic.panel.timing.period_s > 1.46 * 1.7,
+        `G3: «Облегчить» beside the bar — green ${g0.toFixed(2)} → ${s.mechanic.panel.timing.green_w.toFixed(2)}, sweep ${s.mechanic.panel.timing.period_s.toFixed(2)} s`);
+      const freeAt = s.mechanic.panel.free_click;
+      const strikeAt = s.mechanic.panel.strike;
+      await strikeTiming("brace hit by a click on the picture (G26)", (t) => t.mechanic.panel.timing, freeAt, true);
+      s = await state();
+      check(s.mechanic.panel.blows === 1 && s.mechanic.panel.strikes_by_click >= 1, `G26: a mouse click away from the brace strikes (blows ${s.mechanic.panel.blows})`);
+      await shot("04_brace_click_anywhere");
+      for (let i = 0; i < 8 && !(await state()).flags.plate_braced; i++) {
+        await strikeTiming(`brace hit ${i + 2}`, (t) => t.mechanic.panel.timing, i % 2 ? freeAt : strikeAt, true);
+      }
+      s = await waitFor("braced", (t) => t.flags.plate_braced, 30000);
+      check(s.flags.plate_braced, "three in a row: the brace is in");
+      await finish("braced");
+      logLine("«Облегчить» stays on for the parts after (a setting, as in the game)");
+    } catch (e) {
+      check(false, `brace: exception ${e.message}`);
+      await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
+    }
 
     if (PARTS.includes("plate")) try {
       await fresh("plate");
@@ -481,12 +547,19 @@ async function main() {
       check(s.ui.timing_slow_label === "Облегчить мини-игры", `G3: the setting reads «${s.ui.timing_slow_label}»`);
       const auto = (s.ui.slots || {}).auto || {};
       check(auto.visible && auto.text === "День второй · Мастерская · вечер", `G4/G5: the autosave row «${auto.text}»`);
+      const was = !!s.ui.timing_slow;
+      if (was) {   // left on by a part before (the setting is kept like in the game): off first
+        await click("«Облегчить мини-игры» off", s.ui.buttons.TimingSlow);
+        s = await waitFor("easy off", (t) => t.ui && t.ui.timing_slow === false, 20000);
+      }
       await click("«Облегчить мини-игры»", s.ui.buttons.TimingSlow);
       s = await waitFor("easy on", (t) => t.ui && t.ui.timing_slow === true, 20000);
       check(s.ui.timing_slow === true, "G3: «Облегчить мини-игры» turns on by a click");
       await shot("01_menu_easy_autosave");
-      await click("«Облегчить мини-игры» off", s.ui.buttons.TimingSlow);
-      await waitFor("easy off", (t) => t.ui && t.ui.timing_slow === false, 20000);
+      if (!was) {
+        await click("«Облегчить мини-игры» off", s.ui.buttons.TimingSlow);
+        await waitFor("easy off", (t) => t.ui && t.ui.timing_slow === false, 20000);
+      }
       s = await state();
       await click("close menu", s.ui.buttons.CloseMenu);
       await waitFor("menu closed", (t) => t.ui && !t.ui.menu_open, 20000);

@@ -11,6 +11,16 @@
       "_note": "Для проверки дня второго (и его озвучки) без прохождения первого: ?start=day2. Выборы дня первого — как у точки olkhovka."
     },
     {
+      "id": "wedges",
+      "title": "Партия G: зеркало конторы на стойку «ЗМ» — четыре клина «точным ударом» (G19)",
+      "done_through": "M09b",
+      "room": "H2",
+      "spawn": "default",
+      "flags": ["board_mama", "v03_marked", "mitten_placed", "v01_cup_blue", "v01_photo_table", "house_unlocked", "house_open", "h2_bundle_unwrapped"],
+      "add_items": ["mirror_mill"],
+      "_note": "Приёмка G: зеркало конторы в сумке, мастерская — ?start=wedges; зеркало на стойку «ЗМ» — крупный план с клиньями."
+    },
+    {
       "id": "office",
       "title": "Партия G: контора — Павел внутри, рычаг затвора на крюке, струбцина на столе (G20/G21/G22)",
       "done_through": "M13a",
