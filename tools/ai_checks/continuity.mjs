@@ -320,6 +320,17 @@ ${readDoc("Docs/SCENARIO_FINAL.md", 200000)}`;
 
 const FALLBACK = "claude-opus-5-5";
 
+/** Pronunciation rules of the voice pipeline (pipeline/voice/pronunciation_ru.json): [{word, stress, lines}]. */
+function pronRules() {
+  const d = jf("pipeline/voice/pronunciation_ru.json");
+  return ((d && d.rules) || []).filter((r) => r && r.word).map((r) => ({ word: String(r.word), stress: r.stress, lines: r.lines || null }));
+}
+/** The rule words a TTS finding's quotes contain (already handled by the voice pipeline, or a rule to re-check). */
+function ruleWordsIn(f, rules) {
+  const q = (f.quotes || []).join(" ").toLowerCase();
+  return [...new Set(rules.filter((r) => new RegExp(`(^|[^а-яё])${r.word.toLowerCase()}([^а-яё]|$)`).test(q)).map((r) => r.word))];
+}
+
 async function main() {
   const A = args();
   const corpus = buildCorpus();
@@ -355,9 +366,11 @@ async function main() {
   const results = {};
   const errors = {};
   const content = [{ type: "text", text: `ВЕСЬ ТЕКСТ ИГРЫ В ПОРЯДКЕ СЮЖЕТА:\n\n${corpus.text}`, cache_control: { type: "ephemeral" } }];
+  const rules = pronRules();
+  const rulesTxt = rules.length ? `\n\nУЖЕ ЕСТЬ ПРАВИЛА ПРОИЗНОШЕНИЯ (pipeline/voice/pronunciation_ru.json — применяются к тексту запроса синтеза, экран не меняют): ${rules.map((r) => `${r.word} (ударная гласная №${r.stress}${r.lines ? `, только ${r.lines.join(", ")}` : ""})`).join("; ")}. Эти слова не отмечай, если правило верно; отметь, если правило неверно для какой-то строки или такого же слова в другой форме правила нет.` : "";
   const body = (m, p) => {
     const b = { model: m, max_tokens: maxTokens, system: [{ type: "text", text: system }], tools: [tool], output_config: { effort },
-      messages: [{ role: "user", content: [...content, { type: "text", text: `${PASSES[p].ask}\n\nКатегории этого прохода: ${PASSES[p].cats.join(", ")}.\nОтветь вызовом инструмента report.` }] }] };
+      messages: [{ role: "user", content: [...content, { type: "text", text: `${PASSES[p].ask}${p === "tts" ? rulesTxt : ""}\n\nКатегории этого прохода: ${PASSES[p].cats.join(", ")}.\nОтветь вызовом инструмента report.` }] }] };
     if (m !== "claude-fable-5-1") b.thinking = { type: "adaptive" };   // Fable 5.1: adaptive thinking is always on, no field
     return b;
   };
@@ -432,6 +445,8 @@ async function main() {
     L.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
     fs_.forEach((f, i) => {
       const ks = (f.keys || []).map((k) => `\`${cell(norm(k))}\`${known.has(norm(k)) ? "" : " (?)"}`).join(", ");
+      const rw = p === "tts" ? ruleWordsIn(f, rules) : [];
+      if (rw.length) f.problem = `[правило pronunciation_ru.json уже есть: ${rw.join(", ")} — сверить] ${f.problem}`;
       const qs = (f.quotes || []).map((q) => `«${cell(q)}»`).join(" / ");
       L.push(`| ${p[0].toUpperCase()}${i + 1} | ${cell(f.severity)} | ${cell(f.category)} | ${ks} | ${qs} | ${cell(f.character || "")} | ${cell(f.problem)} | ${cell(f.evidence)} | ${cell(f.fix)} |`);
       all.push({ id: `${p[0].toUpperCase()}${i + 1}`, pass: p, ...f, keys: (f.keys || []).map(norm), unknown_keys: (f.keys || []).map(norm).filter((k) => !known.has(k)) });

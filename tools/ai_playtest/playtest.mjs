@@ -644,7 +644,8 @@ async function main() {
   const sys = run.stop ? "" : systemPrompt(mode, { W: cfg.W, H: cfg.H, checklist: checklist ? checklistText(checklist) : "", note: cfg.note,
     persona: cfg.persona, route: routeTxt, goal: cfg.goal || "",
     start: cfg.start ? String(cfg.start.label || "предыдущая часть игры уже пройдена, о ней ты знаешь только то, что увидишь")
-      : cfg.startSave ? `загружено сохранение${saveTitle(cfg.startSave) ? ` «${saveTitle(cfg.startSave)}»` : ""} — всё, что было до него, уже пройдено (о прошлом ты знаешь только то, что увидишь в игре и журнале)` : "" });
+      : cfg.startSave ? `загружено сохранение${saveTitle(cfg.startSave) ? ` «${saveTitle(cfg.startSave)}»` : ""} — всё, что было до него, уже пройдено (о прошлом ты знаешь только то, что увидишь в игре и журнале)`
+      : startPointLabel(url) });
   const tool = actTool(mode, cfg.W, cfg.H, cfg.persona);
   const pendingItems = () => (checklist ? checklist.rows.map((r) => r.num).filter((n) => !run.verdicts[n]) : []);
   const trackProgress = (s, step) => {
@@ -1325,6 +1326,15 @@ function unpassedRows(docRel) {
     const all = docRowIds(txt);
     return all.filter((n) => (st.verdicts || {})[n] !== "прошёл");
   } catch (_) { return []; }
+}
+
+/** A built-in start point in the URL (?start=<id>, data/story/start_points.json) as a sentence for the prompt, or "". */
+function startPointLabel(u) {
+  const m = /[?&]start=([\w-]+)/.exec(String(u || ""));
+  if (!m) return "";
+  let title = "";
+  try { title = ((JSON.parse(fs.readFileSync(path.join(ROOT, "data", "story", "start_points.json"), "utf8")).points || []).find((p) => p.id === m[1]) || {}).title || ""; } catch (_) {}
+  return `встроенная точка старта ?start=${m[1]}${title ? ` («${title}»)` : ""} — всё, что было до неё, уже пройдено (о прошлом ты знаешь только то, что увидишь в игре и журнале)`;
 }
 
 function saveTitle(ss) {
