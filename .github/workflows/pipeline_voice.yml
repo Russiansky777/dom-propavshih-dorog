@@ -53,23 +53,29 @@ jobs:
 
       - name: ffmpeg
         if: steps.req.outputs.files != ''
-        # 23.10 apt шёл 18 и 45+ минут (runs 39943689014, 39947069779): ставим без рекомендованных пакетов, с
-        # тайм-аутом; не успели — второй заход через archive.ubuntu.com вместо зеркала раннера.
+        timeout-minutes: 6
+        # 23.10 apt на раннерах висел 18 и 45+ минут (runs 39943689014, 39947069779) — ffmpeg из pip: imageio-ffmpeg,
+        # статическая сборка (johnvansickle 7.0.2: libvorbis, libmp3lame, ebur128, alimiter, silenceremove); ffprobe в
+        # ней нет — длительность скрипт берёт у ffmpeg. apt — только запасной путь, с тайм-аутом.
         run: |
           if ! command -v ffmpeg >/dev/null; then
-            for mirror in "" "http://archive.ubuntu.com/ubuntu"; do
-              if [ -n "$mirror" ]; then
-                echo "apt: второй заход через $mirror"
-                sudo sed -i -E "s#https?://[a-z0-9.-]*\.ubuntu\.com/ubuntu/?#$mirror/#g" /etc/apt/sources.list /etc/apt/sources.list.d/*.sources /etc/apt/sources.list.d/*.list 2>/dev/null || true
-              fi
-              if timeout 480 bash -c 'sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update -q && sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y -q --no-install-recommends ffmpeg'; then break; fi
-            done
+            if timeout 180 python -m pip install -q imageio-ffmpeg; then
+              ff="$(python -c 'import imageio_ffmpeg as i; print(i.get_ffmpeg_exe())')"
+              mkdir -p "$HOME/.local/ffbin" && ln -sf "$ff" "$HOME/.local/ffbin/ffmpeg"
+              echo "$HOME/.local/ffbin" >> "$GITHUB_PATH"
+              export PATH="$HOME/.local/ffbin:$PATH"
+            fi
+          fi
+          if ! command -v ffmpeg >/dev/null; then
+            echo "pip не дал ffmpeg — запасной путь apt (4 мин)"
+            timeout 240 bash -c 'sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg' || true
           fi
           ffmpeg -hide_banner -version | head -1
           ffmpeg -hide_banner -encoders 2>/dev/null | grep -q libvorbis && echo "libvorbis: есть"
 
       - name: ElevenLabs
         if: steps.req.outputs.files != ''
+        timeout-minutes: 35
         env:
           ELEVEN_API: ${{ secrets.ELEVEN_API }}
         # Вывод (без ключа) копируется в pipeline/voice/state/last_run.log и коммитится: журналы Actions

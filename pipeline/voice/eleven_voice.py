@@ -621,12 +621,21 @@ def measure(path: Path, pre: str = "") -> tuple[float, float]:
 
 
 def duration_s(path: Path) -> float:
-    p = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", str(path)],
-                       capture_output=True, text=True)
-    try:
-        return round(float(p.stdout.strip()), 3)
-    except ValueError:
-        return 0.0
+    """Длительность файла: ffprobe, а без него (ffmpeg из imageio-ffmpeg — без ffprobe) — по декодированию ffmpeg."""
+    if shutil.which("ffprobe"):
+        p = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", str(path)],
+                           capture_output=True, text=True)
+        try:
+            return round(float(p.stdout.strip()), 3)
+        except ValueError:
+            pass
+    p = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(path), "-f", "null", "-"], capture_output=True, text=True)
+    t = re.findall(r"time=(\d+):(\d+):(\d+(?:\.\d+)?)", p.stderr)
+    if t:
+        h, m, sec = t[-1]
+        return round(int(h) * 3600 + int(m) * 60 + float(sec), 3)
+    d = re.search(r"Duration: (\d+):(\d+):(\d+(?:\.\d+)?)", p.stderr)
+    return round(int(d.group(1)) * 3600 + int(d.group(2)) * 60 + float(d.group(3)), 3) if d else 0.0
 
 
 def vorbis_quality(lc: dict) -> int:
