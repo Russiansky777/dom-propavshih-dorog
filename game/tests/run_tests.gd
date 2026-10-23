@@ -765,12 +765,15 @@ func _test_walkthrough() -> void:
 	# Day two is built (block 2): the mill yard is a real room, the way there is open from the start.
 	_check(m1exit != null and m1exit.is_open() and m1exit.target_exists(), "Z2→M1 is open and the mill yard is built")
 
-	# --- M02 via Z3 → R1 ---
-	_check(await bot.go("Z3"), "Z2→Z3")
-	await bot.use("old_pier_base")
-	await bot.finish()
-	_check(await bot.go("R1"), "Z3→R1")
+	# --- M02 via R1 → Z3 → R1 (H7, Director 24.10: from the street only the way down to the pier; the shore path
+	# to the turn starts at the pier) ---
+	_check(bot.exit_to("Z3") == null, "H7: no exit from the street straight to the turn")
+	_check(await bot.go("R1"), "Z2→R1")
 	await bot.use("instruction")
+	await bot.finish()
+	# H6: the signal board opens up close (a «papers» view) — the player closes it like any close-up.
+	_check(sr.view_open, "H6: the signal board opens up close")
+	sr.close_view()
 	await bot.finish()
 	_check(gs.has_flag("seen_ferry_instruction"), "instruction examine should set seen_ferry_instruction")
 	var r2exit = bot.exit_to("R2")
@@ -784,6 +787,11 @@ func _test_walkthrough() -> void:
 	_check(seen.size() == 9 and not seen.has("stage"), "M02: 9 lines, no staging (G16: no pointless fade); got %s" % str(seen))
 	_check(not sr.is_staging() and sr.stage_dim == 0.0, "the staging is over, no dusk left")
 	_check(not r2exit.is_open(), "R1→R2 stays closed after M02 (без плиты лодку вернёт сюда же)")
+	_check(await bot.go("Z3"), "R1→Z3")
+	_check(bot.exit_to("Z2") == null, "H7: from the turn only the way to the pier")
+	await bot.use("old_pier_base")
+	await bot.finish()
+	_check(await bot.go("R1"), "Z3→R1")
 
 	# --- M03 in H1 ---
 	_check(await bot.go("Z2"), "R1→Z2")

@@ -41,8 +41,8 @@
         "papers": [{"sheet": "none", "rect": [637, 314, 758, 412], "angle_deg": -0.6, "ink": "#2b241c", "font": "hand", "_font_note": "H8 (Директор 24.10): распорядок рукой, неровно — HandWriting (буквы с наклоном и сдвигом от строки)",
           "blocks": [
             {"rect": [30, 16, 698, 56], "title": "@M1.schedule.paper_title", "title_size": 40, "align": "center"},
-            {"rect": [34, 84, 318, 312], "text": "@M1.schedule.paper_shifts", "font_size": 21},
-            {"rect": [398, 84, 330, 312], "text": "@M1.schedule.paper_signals", "font_size": 25}
+            {"rect": [34, 84, 318, 312], "text": "@M1.schedule.paper_shifts", "font_size": 24},
+            {"rect": [398, 84, 330, 312], "text": "@M1.schedule.paper_signals", "font_size": 27}
           ]}]}
     },
     {

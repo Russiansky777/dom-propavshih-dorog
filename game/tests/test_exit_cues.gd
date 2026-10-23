@@ -415,13 +415,23 @@ func _test_f20() -> void:
 	_check(_exit_to("Z3") == null, "M1: no exit to the turn (Z3)")
 	await _enter("Z3")
 	_check(_exit_to("M1") == null, "Z3: no exit to the mill (M1)")
-	_check(_exit_to("Z2") != null and _exit_to("R1") != null, "Z3: the street and the pier still lead here")
+	# H7 (Director 24.10): from the turn only the way to the pier, its mark — the old «на улицу» one turned north-west.
+	_check(_exit_to("Z2") == null and _exit_to("R1") != null, "H7: Z3 leads only to the pier")
+	var to_pier = _exit_to("R1")
+	if to_pier != null and to_pier.cue != null:
+		var ap: float = to_pier.cue.angle_deg
+		_check(ap <= -110.0 and ap >= -160.0, "H7: Z3 → pier mark points north-west (angle %s)" % str(ap))
+	await _enter("R1")
+	var to_turn = _exit_to("Z3")
+	_check(to_turn != null and to_turn.cue != null and to_turn.cue.global_position.x < 400.0 and to_turn.cue.global_position.y > 900.0
+		and to_turn.cue.angle_deg >= 20.0 and to_turn.cue.angle_deg <= 70.0, "H7: at the pier, bottom left, a mark south-east to the turn")
 	await _enter("Z2")
 	var pier = _exit_to("R1")
 	_check(pier != null and pier.cue != null, "Z2: «спуск к причалу» has a mark")
 	if pier != null and pier.cue != null:
 		var a: float = pier.cue.angle_deg
-		_check(not is_nan(a) and a <= -20.0 and a >= -70.0, "Z2: the pier mark points north-east (angle %s)" % str(a))
+		_check(not is_nan(a) and a <= -110.0 and a >= -160.0, "H7: the pier mark points north-west (angle %s)" % str(a))
+		_check(_exit_to("Z3") == null, "H7: from the street only the way down to the pier")
 		_check(pier.cue.global_position.y < 695.0 - 15.0, "Z2: the pier mark is raised (y %.0f < 680)" % pier.cue.global_position.y)
 		var room = rm.current_room
 		_check(room.pick(pier.cue.global_position) == pier, "Z2: a click on the slanted mark is the exit")

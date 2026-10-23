@@ -986,7 +986,13 @@ func _test_walkthrough() -> void:
 	var h1src = rm.current_room.get_node_or_null("Lighting/tod_" + h1st)
 	_check(h1st in ["d2_dusk", "d2_evening"] and h1src != null and float(h1src.get("level")) > 0.5, "dusk in the house after mother's mirror (time of day %s)" % h1st)
 	_check(await _go("Z2"), "H1→Z2")
-	_check(await _go("Z3"), "Z2→Z3")
+	_check(await _go("R1"), "Z2→R1")   # H7: the turn is reached from the pier
+	await _finish()                     # a line on arriving at the pier at dusk, if any
+	var to_z3 := await _go("Z3")
+	if not to_z3:
+		await _finish()
+		to_z3 = await _go("Z3")
+	_check(to_z3, "R1→Z3 (in %s, beat %s)" % [_room(), str(sr.current_beat.get("text_key", ""))])
 	_check(_hotspot("pier_plate") != null and _hotspot("pier_plate").visible and not _hotspot("old_pier_base").visible, "the plate of the pier above the water")
 	_check(rm.current_room.get_node("Layers/water_low").visible and not _hotspot("plate").visible, "batch 3: the water let down at dusk (layer); the shore stone has no label in the evening")
 	# Batch 7: the shore stone never carries the plate (it is on the pier under water) — over the dusk layer too.
