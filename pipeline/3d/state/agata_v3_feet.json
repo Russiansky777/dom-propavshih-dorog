@@ -114,7 +114,20 @@
      "ankle_twist_max_deg": 0.0
     }
    },
-   "fail": []
+   "fail": [],
+   "arms": {
+    "Left": {
+     "arm_from_vertical_deg_median": 11.0,
+     "wrist_above_hips_m_median": -0.054
+    },
+    "Right": {
+     "arm_from_vertical_deg_median": 14.3,
+     "wrist_above_hips_m_median": -0.059
+    },
+    "all_frames_arms_raised": false,
+    "max_bone_from_rig_pose_deg": 33.8,
+    "rig_pose": false
+   }
   },
   "walk": {
    "clip": "Walking_Woman",
