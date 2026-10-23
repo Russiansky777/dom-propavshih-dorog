@@ -1335,6 +1335,14 @@ func _test_sluice_mouse() -> void:
 	_check(int(pr.get("notch", -1)) == 0 and not pr.get("timing", {}).is_empty(), "closed at the start; the «точный удар» bar under the gate")
 	_check(int(pr["timing"].get("needed", 0)) == 4 and int(pr.get("steps", 0)) == 4, "G23: four steps down = four hits in a row (%s)" % str(pr["timing"].get("needed")))
 	_check(bool(pr.get("work_mark_at_last", false)), "G24: the red mark on the gauge is on the last notch (level %.2f)" % float(pr.get("work_mark_level", -1)))
+	# G24: the last step lands on the dial's last painted tick — where art pack 9 puts the red mark (M4_state_dial_mark_last:
+	# x 811–840, y 503–524 of the canvas; the winch's socket 697, 523) — about 86° from upright.
+	var tick := Vector2((811.0 + 840.0) * 0.5, (503.0 + 524.0) * 0.5) - Vector2(697, 523)
+	var tick_deg := rad_to_deg(atan2(tick.x, -tick.y))
+	_check(absf(float(pr.get("last_notch_deg", 0.0)) - tick_deg) < 3.0, "G24: the last notch %.0f° = the last painted tick %.0f°" % [float(pr.get("last_notch_deg", 0.0)), tick_deg])
+	var dial = rm.current_room.get_node_or_null("Layers")
+	_check(dial != null and (dial.find_child("dial_mark_last", true, false) != null or dial.find_child("StandIn", true, false) != null or rm.current_room.find_child("dial_mark_last", true, false) != null),
+		"G24: the ordered dial layer (pack 9) is wired: its stand-in until the art comes")
 	# Two hits: two notches, the water two steps down.
 	await _sluice_strikes(p, 2)
 	pr = _panel()

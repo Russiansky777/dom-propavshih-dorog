@@ -42,7 +42,7 @@
           {"id": "manager", "label": "@R1.pelageya.opt_manager", "sets": "r1_asked_manager", "text": "@R1.pelageya.manager"},
           {"id": "leave", "label": "@R1.pelageya.opt_leave", "sets": "r1_pelageya_bye", "text": "@R1.pelageya.after"}
         ]},
-      "hidden_when": [{"all": ["evening_dusk"], "not": ["done_M15"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}],
+      "hidden_when": [{"all": ["evening_dusk"], "not": ["done_M15"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}, {"all": ["done_M18p"], "not": ["boat_shuttle_open"]}],
       "_hidden_note": "вечером до узла Пелагея с лодкой у поворота; после переправы — с Митей на дальней опоре, пока лодка не ходит в обе стороны (boat_shuttle_open — блоки 3–5, день третий)"
     },
     {

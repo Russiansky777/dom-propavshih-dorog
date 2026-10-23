@@ -32,6 +32,14 @@ var opened_sent: bool = false
 var _said_wait: bool = false
 var _slip_t: float = -1.0      # the status says «сорвался» for a moment after a miss
 var _gauge_rect: Rect2 = Rect2()
+var overlays: Array[String] = []   # room layers laid over the gate (their art delivered)
+
+
+static func _room_layer_image(room_id: String, layer_id: String) -> String:
+	for l in StoryData.room(room_id).get("layers", []):
+		if String(l.get("id", "")) == layer_id:
+			return String(l.get("image", ""))
+	return ""
 
 
 func build() -> void:
@@ -40,6 +48,13 @@ func build() -> void:
 	var pos := v2(g.get("pos", [230, 120]))
 	var reg: Array = g.get("region", [512, 234, 386, 394])
 	crop(String(g.get("image", "")), reg, pos, k).name = "Gate"
+	# Room layers on the same canvas laid over the crop by id (G24: the red mark on the LAST notch of the dial —
+	# art pack 9, M4_state_dial_mark_last); until the picture is there the painting stays as it is.
+	for lid in g.get("overlay_layers", []):
+		var img := _room_layer_image(String(g.get("layers_room", "M4")), String(lid))
+		if img != "" and ResourceLoader.exists(img):
+			crop(img, reg, pos, k).name = "Overlay_" + String(lid)
+			overlays.append(String(lid))
 	var sock := v2(g.get("socket", [697, 523]))
 	socket = pos + (sock - Vector2(float(reg[0]), float(reg[1]))) * k
 	angles = spec.get("notch_angles", angles)
@@ -211,4 +226,4 @@ func probe() -> Dictionary:
 		"strike": {"x": wr.get_center().x, "y": wr.get_center().y}, "free_click": {"x": 1700.0, "y": 600.0},
 		"strikes_by_click": strikes_by_click, "work_mark_level": work_level(),
 		"work_mark_at_last": is_equal_approx(work_level(), float(logic.levels[logic.last_notch()])),
-		"opened": opened_sent}
+		"opened": opened_sent, "overlays": overlays, "last_notch_deg": float(angles[angles.size() - 1])}

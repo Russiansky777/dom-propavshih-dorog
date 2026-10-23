@@ -2,7 +2,7 @@
   "id": "M4",
   "_art": "Фон M4_bg.png (затвор, ChatGPT v3): деревянный щит затвора с дугой делений и красной рабочей меткой, гнездо ворота, шестерня, настил, перила, сруб мельницы слева, вода в лотке. Рычаг M4_lever_up.png — отдельный слой, поворачивается кодом вокруг втулки (слой M4_lever_work не совпал с осью и не подключён, _meta_v3/M3_M4.md). Павел — 3D-фигура Meshy (листы idle/talk, data/actors/pavel.json). Рейка уровня у затвора в арте нет — в крупном плане её рисует движок.",
   "art_source": {
-    "files": {"bg.png": "assets/incoming/M4_bg.png", "lever_up.png": "assets/incoming/M4_lever_up.png"},
+    "files": {"bg.png": "assets/incoming/M4_bg.png", "lever_up.png": "assets/incoming/M4_lever_up.png", "state_dial_mark_last.png": "assets/incoming/M4_state_dial_mark_last.png"},
     "canvas": [1672, 941],
     "alpha_min": 16
   },
@@ -15,6 +15,7 @@
   "_depth_note": "Рост Агаты = 345 px × scale. У перил (настил y 700, верхний брус y 500, перила 1,1 м) scale 0.85 → 293 px при ожидаемых 301.",
   "height_refs": [{"what": "перила настила (верхний брус y 500, настил y 700)", "y": 700, "px": 200, "m": 1.1}],
   "layers": [
+    {"id": "dial_mark_last", "image": "res://assets/rooms/M4/state_dial_mark_last.png", "pending": "M4_state_dial_mark_last", "z": 0, "stub": {"crops": [{"image": "res://assets/rooms/M4/bg.png", "region": [744, 408, 24, 34], "rect": [854.4, 468.5, 27.6, 39.0]}]}, "_note": "G24 (Директор 23.10: красная метка на шкале затвора — на последней зарубке): заявка партии 9 — полный холст 1672×941 в (0, 0), прежняя метка (x 744–767, y 408–441) светлая, красная на последней зарубке (x 811–840, y 503–524, ≈ 86° — последняя ступень «точного удара» G23, lever_open). Пока арта нет — заглушка: тот же кусок фона (рисунок как есть). Тот же слой кладётся в крупный план затвора (mechanic.gate.overlay_layers)"},
     {"id": "lever_closed", "image": "res://assets/rooms/M4/lever_up.png", "z": 0, "scale": 0.7, "scale_reason": "рычаг в слое длиннее дуги затвора (312 px исходника); 0.7 — по дуге делений", "pivot": [738.5, 610], "offset": [206.8, 110.3], "rotation_deg": -29, "if": ["sluice_key_inserted"], "unless": ["sluice_opened"], "_note": "втулка рычага (738.5, 610 в слое) — в гнездо ворота (исходник фона 697, 523 → экран 800, 601); закрыт — на первой зарубке слева"},
     {"id": "lever_open", "image": "res://assets/rooms/M4/lever_up.png", "z": 0, "scale": 0.7, "scale_reason": "тот же рычаг, что lever_closed", "pivot": [738.5, 610], "offset": [206.8, 110.3], "rotation_deg": 86, "if": ["sluice_opened"], "_note": "G23: затвор открыт — рычаг на последней зарубке (86°), как в крупном плане"}
   ],
@@ -32,7 +33,7 @@
         "type": "sluice",
         "requires": {"flags": ["sluice_key_inserted"]},
         "title": "@M4.sluice.title",
-        "gate": {"image": "res://assets/rooms/M4/bg.png", "region": [512, 234, 386, 394], "pos": [230, 120], "scale": 2.0, "socket": [697, 523]},
+        "gate": {"image": "res://assets/rooms/M4/bg.png", "region": [512, 234, 386, 394], "pos": [230, 120], "scale": 2.0, "socket": [697, 523], "overlay_layers": ["dial_mark_last"], "_overlay_note": "слои комнаты M4 (по id) поверх вырезки фона, если их картинка уже есть — G24: метка на последней зарубке (партия 9)"},
         "lever": {"image": "res://assets/rooms/M4/lever_up.png", "pivot": [738.5, 610], "scale": 0.7},
         "notch_angles": [-29, 0, 30, 57, 86],
         "_notch_note": "G23: пять зарубок дуги — закрыт на −29°, четыре ступени до последней нарисованной зарубки 86° (по рисунку M4: зарубки на −52, −30, 0, 30, 57, 86°)",
