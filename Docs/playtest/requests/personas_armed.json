@@ -1,0 +1,15 @@
+{
+  "_comment": "Взвод прогонов в ролях (ai-personas.yml, tools/ai_playtest/persona_arm.mjs): стартуют сами один раз — на первой успешной публикации сайта, где в игре необязательные истории Q02 и Q06 (quests.json без reserve или упоминание в data/story/rooms), — или после крайнего срока на последней публикации. Новый взвод — поднять run.",
+  "requests": [
+    "Docs/playtest/requests/persona_newbie.json",
+    "Docs/playtest/requests/persona_completionist.json",
+    "Docs/playtest/requests/persona_completionist_day3.json",
+    "Docs/playtest/requests/persona_impatient.json",
+    "Docs/playtest/requests/persona_saveload.json",
+    "Docs/playtest/requests/persona_slow.json"
+  ],
+  "when": { "quests_live": ["Q02", "Q06"] },
+  "deadline": "2026-10-24T16:00:00Z",
+  "note": "Координатор 23.10: пять ролей по всей игре после партии правок с Q02/Q06 и артом партии 8.",
+  "run": 1
+}

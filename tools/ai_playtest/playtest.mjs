@@ -182,7 +182,10 @@ async function main() {
   // Gates of one workflow run go on separate runners with the same run number: the gate's name goes into the
   // folder (…_acceptance_m3_r19), or parallel jobs would commit the same paths (M3 at f3b299c was lost so).
   const gateTag = reqPath && /^playtest_gate_/.test(path.basename(reqPath)) ? `${path.basename(reqPath, ".json").replace(/^playtest_gate_/, "")}_` : "";
-  const runTag = `${gateTag}${P ? `${cfg.persona}_` : ""}${seg ? (P ? `${cfg.segmentId}_` : `s${segIndex + 1}_`) : ""}${process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local")}`;
+  // persona runs of one workflow run go on parallel runners: the request's name keeps their folders apart
+  // (persona_completionist.json and persona_completionist_day3.json → completionist_r5, completionist_day3_r5)
+  const personaTag = P ? (reqPath && /^persona_/.test(path.basename(reqPath)) ? path.basename(reqPath, ".json").replace(/^persona_/, "") : cfg.persona) : "";
+  const runTag = `${gateTag}${personaTag ? `${personaTag}_` : ""}${seg ? (P ? `${cfg.segmentId}_` : `s${segIndex + 1}_`) : ""}${process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local")}`;
   const date = new Date().toISOString().slice(0, 10);
   // persona runs: Docs/playtest/<date>_persona_<role>[_<segment>]_r<run> (regression: <date>_persona_regression_<segment>_r<run>)
   let outDir = A.out ? path.resolve(ROOT, A.out) : path.join(ROOT, "Docs", "playtest", `${date}_${P ? "persona" : mode}_${runTag}`);

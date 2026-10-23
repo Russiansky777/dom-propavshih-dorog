@@ -3,11 +3,16 @@ name: ai-personas
 # ИИ-плейтест в ролях по всей игре: новичок без помощи, собиратель всего, нетерпеливый, сохраняет-загружает,
 # медленный игрок (роли — tools/ai_playtest/prompts.mjs → PERSONAS; формат запроса — Docs/playtest/README.md).
 # Каждый запрос — на своём раннере, параллельно; результат коммитится с [skip ci] в
-# Docs/playtest/<дата>_persona_<роль>_r<запуск>/ (report.md, кадры, log.json с объективными аномалиями и покрытием).
+# Docs/playtest/<дата>_persona_<запрос>_r<запуск>/ (report.md, кадры, log.json с объективными аномалиями и покрытием),
+# сводка дефектов всех ролей прогона — Docs/playtest/defects_personas_<дата>.md.
 #
-# Запуск: пуш, добавляющий или меняющий Docs/playtest/requests/persona_*.json (запускаются только изменённые;
-# повтор — поднять поле "run"), или вручную — список путей через пробел.
-# Сайт: прогон ждёт последнюю успешную сборку build-and-publish и пишет в отчёт её номер (version.txt).
+# Запуск:
+# 1) взвод (сам, один раз): Docs/playtest/requests/personas_armed.json — список запросов и условие («в игре Q02 и Q06»).
+#    После каждой успешной публикации сайта (workflow_run) и раз в 3 часа (на случай крайнего срока) программа без API
+#    проверяет опубликованный коммит (tools/ai_playtest/persona_arm.mjs check); условие выполнено или срок прошёл —
+#    прогоны стартуют, состояние пишется в Docs/playtest/personas_state.json (второй раз тот же взвод не стартует;
+#    новый взвод — поднять "run" в personas_armed.json);
+# 2) вручную — пуш, меняющий Docs/playtest/requests/persona_*.json (запускаются изменённые), или Run workflow со списком.
 # Ключ — секрет CLAUDE_API, рабочее пространство — CLAUDE_WORKSPACE; лог публичный: в нём только шаги, действия,
 # комнаты и стоимость. Предохранитель каждого прогона — max_usd запроса (не больше $10).
 
@@ -16,6 +21,11 @@ on:
     branches: [main]
     paths:
       - "Docs/playtest/requests/persona_*.json"
+  workflow_run:
+    workflows: ["build-and-publish"]
+    types: [completed]
+  schedule:
+    - cron: "29 */3 * * *"
   workflow_dispatch:
     inputs:
       requests:
@@ -27,41 +37,66 @@ permissions:
   actions: read
 
 concurrency:
-  group: ai-personas-${{ github.sha }}
+  group: ${{ (github.event_name == 'workflow_run' || github.event_name == 'schedule') && 'ai-personas-armed' || format('ai-personas-{0}', github.sha) }}
   cancel-in-progress: false
 
 jobs:
   plan:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
       files: ${{ steps.req.outputs.files }}
+      merge: ${{ steps.req.outputs.merge }}
+      sha: ${{ steps.req.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - name: Какие запросы
         id: req
         env:
+          GH_TOKEN: ${{ github.token }}
           REQ_INPUT: ${{ github.event.inputs.requests }}
           EVENT: ${{ github.event_name }}
           BEFORE: ${{ github.event.before }}
+          PUSHED: ${{ github.sha }}
+          DEPLOYED: ${{ github.event.workflow_run.head_sha }}
         run: |
+          merge=false; sha=""
           if [ "$EVENT" = "workflow_dispatch" ]; then
             list="$REQ_INPUT"
-          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
-            list=$(git diff-tree --no-commit-id --name-only --diff-filter=AM -r HEAD -- 'Docs/playtest/requests/persona_*.json' | tr '\n' ' ')
+          elif [ "$EVENT" = "push" ]; then
+            if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+              list=$(git diff-tree --no-commit-id --name-only --diff-filter=AM -r "$PUSHED" -- 'Docs/playtest/requests/persona_*.json' | tr '\n' ' ')
+            else
+              list=$(git diff --name-only --diff-filter=AM "$BEFORE" "$PUSHED" -- 'Docs/playtest/requests/persona_*.json' | tr '\n' ' ')
+            fi
           else
-            list=$(git diff --name-only --diff-filter=AM "$BEFORE" HEAD -- 'Docs/playtest/requests/persona_*.json' | tr '\n' ' ')
+            # взвод: опубликованный коммит (workflow_run) или последняя успешная публикация (schedule)
+            sha=${DEPLOYED:-$(gh run list --workflow build_and_publish.yml --branch main --status success -L 1 --json headSha -q '.[0].headSha' 2>/dev/null || true)}
+            list=$(node tools/ai_playtest/persona_arm.mjs check --sha "$sha" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).join(" ")))')
+            if [ -n "$list" ]; then
+              node tools/ai_playtest/persona_arm.mjs start --sha "$sha" --run "${{ github.run_number }}"
+              tools/ai_checks/commit.sh "ИИ-плейтест в ролях: взвод запущен на сборке ${sha:0:7} (run ${{ github.run_number }})" Docs/playtest/personas_state.json
+              merge=true
+            fi
           fi
-          json="["
+          json="["; n=0
           for f in $list; do
             case "$f" in Docs/playtest/requests/*.json) ;; *) echo "пропуск $f: не Docs/playtest/requests/*.json"; continue ;; esac
             [ -f "$f" ] || { echo "нет файла $f"; continue; }
-            json="$json\"$f\","
+            json="$json\"$f\","; n=$((n+1))
           done
           json="${json%,}]"
+          [ "$n" -ge 3 ] && merge=true
           echo "files=$json" >> "$GITHUB_OUTPUT"
-          echo "запросы: $json"
+          echo "merge=$merge" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "запросы: $json; сводка дефектов: $merge"
 
   play:
     needs: plan
@@ -104,3 +139,21 @@ jobs:
           rc=$?
           tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || rc=1
           exit $rc
+
+  merge:
+    needs: [plan, play]
+    if: always() && needs.plan.outputs.merge == 'true' && needs.plan.outputs.files != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Сводка дефектов ролей
+        run: |
+          git pull -q origin main || true
+          node tools/ai_playtest/persona_arm.mjs merge --run "${{ github.run_number }}" --sha "${{ needs.plan.outputs.sha }}"
+          tools/ai_checks/commit.sh "ИИ-плейтест в ролях: $(cat build/ai_playtest/personas_summary.txt) (run ${{ github.run_number }})" Docs/playtest

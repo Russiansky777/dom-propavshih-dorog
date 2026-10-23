@@ -1,0 +1,11 @@
+{
+  "mode": "fresh",
+  "persona": "newbie",
+  "max_steps": 300,
+  "max_minutes": 320,
+  "max_usd": 10,
+  "report_model": "claude-opus-5-5",
+  "max_frames": 30,
+  "note": "Новая игра с самого начала. Подсказкой игры не пользоваться.",
+  "run": 1
+}
