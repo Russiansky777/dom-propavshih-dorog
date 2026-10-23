@@ -251,10 +251,24 @@ async function main() {
       await waitFor("M01 done", (s) => s.flags.done_M01, 60000);
       check(await goExit("Z4"), "Z1 → Z4");
       check(await goExit("Z2"), "Z4 → Z2");
-      check(await goExit("H1"), "Z2 → H1");
-      await sleep(1200);
+      // the key from the bag on the porch door → H1
+      let s = await state();
+      const kp = s.ui.inventory && s.ui.inventory.key_house;
+      check(!!kp, "the key is in the bag");
+      if (kp) {
+        await click("bag pocket key_house", kp);
+        await waitFor("key in hand", (t) => t.selected_item === "key_house", 10000);
+      }
+      s = await state();
+      await click("porch door with the key", s.exits.H1);
+      await waitIdle("door with key");
+      await waitFor("unlock text", (t) => beatKey(t) !== "", 60000);
+      await finish("unlock text");
+      s = await waitFor("in H1", (t) => t.room === "H1", 120000);
+      check(s.room === "H1", "Z2 → H1 with the key");
+      await sleep(1500);
       // G7: the workshop in the dark — Agata says why not, the room stays.
-      let s = await clickExit("H2");
+      s = await clickExit("H2");
       s = await waitFor("G7: a line instead of the dark workshop", (t) => beatKey(t) !== "", 20000);
       check(s.room === "H1" && (s.beat.text || "").includes("темно"), `G7: shutter closed → «${s.beat && s.beat.text}», still in ${s.room}`);
       await sleep(400);
@@ -265,10 +279,8 @@ async function main() {
       let lines = await useHotspot("shelf");
       check(lines.some((l) => l.includes("мокрый платок") && l.includes("ни лечь")), `G9: the shelf speaks of the wet towel: ${JSON.stringify(lines)}`);
       // stove → shutter → towel → M03 with Tikhon's request (G11).
-      await click("oven door", { x: 220, y: 490 });
-      await waitIdle("oven door");
+      await useHotspot("stove");
       await waitFor("stove lit", (t) => t.flags.stove_lit, 20000);
-      await finish("stove");
       await useHotspot("shutter");
       await waitFor("shutter open", (t) => t.flags.h1_shutter_open, 20000);
       lines = await useHotspot("scarf", ["ask"]);
@@ -298,8 +310,9 @@ async function main() {
       await page.mouse.move(1700, 1000);
       await sleep(500);
       await shot("03_h1_shelf_A_tikhon");
-      await click("oven door again", { x: 220, y: 490 });
-      await waitIdle("oven door again");
+      s = await state();
+      await click("the stove again", s.hotspots.stove);
+      await waitIdle("the stove again");
       s = await waitFor("stove look", (t) => beatKey(t) !== "", 20000);
       check((s.beat.text || "").includes("устроился") && !(s.beat.text || "").includes("гнёзд"), `G14: the stove after the shelf: «${s.beat.text}»`);
       await finish("stove look");
