@@ -1,173 +1,124 @@
-run 39956236211 2026-10-23T12:52:09Z requests: pipeline/requests/voice_rerecord.json 
+run 39961577802 2026-10-23T13:30:16Z requests: pipeline/requests/voice_textfix.json 
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 34655 из 124889 символов
+план: creator (active), израсходовано 37109 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_rerecord.json
+=== pipeline/requests/voice_textfix.json
   закадровые фразы без ссылок в данных игры — пропущены: H2d.bell.need_mirror, H2d.nina_mirror.watch_wait, H3.exit_R4.closed, R1.boat.look, R1d.lantern.use_day, Z3d.plate.rope_at_ring, agata:item.letter_tamara, pelageya:R2.pelageya.after, pelageya:Z3d.pelageya.done
   отложены (voice.json → by_speaker.<персонаж>.hold): agata:H1.photo.look
-  манифест ru: M07_1: текст изменён
-  манифест ru: M07_2: текст изменён
-  манифест ru: M07_3: текст изменён
-  манифест ru: M07_4: текст изменён
-  only_changed: к работе 75 из 549 реплик/фраз запроса
-  задание: Директор: «давай добавим полную озвучку тоже, чтобы была цельная игра» (23.10); координатор 23.10 — правки произношения и подачи по ИИ-чтению всей игры, 2026-10-23 — перезапись изменённого после записи: произношение, теги, разбивка M07_1, правки текста (потолок 120 файлов, 8000 символов)
-[rerecord] реплик в сценах запроса: 549; файлов с вариантами голосов: 75; к синтезу: 75 (5587 символов); переобработка: 0
-  M02_5   pelageya  ru           PELAGEYA   eleven_v4    Это поручень от моста — всё, что от него осталось. Тот конец до сих пор там, у них. Пока этот сидел на плите опоры — по нему и шла дорога. Я его к своему сто́пору привязала — держит, а дороги нет.
-  M02_6   pelageya  ru           PELAGEYA   eleven_v4    Вот этот кол с замко́м — сто́пор.
-  M07_1   agata     ru           Agata      eleven_v4    [slowly] «Тому, кто придёт через эту дверь. Дорогу держат с двух концов. Дальний держим мы. Ближний — плита на опоре у поворота, она под водой и с трещиной; скоба́ для неё у Дуни на верстаке.
-  M07_2   agata     ru           Agata      eleven_v4    Канат только на её кольцо — за камень опоры не держит, мы на своей стороне пробовали. Наш конец заведён в старое кольцо дальней опоры.
-  M07_3   agata     ru           Agata      eleven_v4    Воду держит мельничный затвор, ключ в конторе управляющего. Когда закрепишь — три огня с причала».
-  M07_4   agata     ru           Agata      eleven_v4    [thoughtful] Дверь на своих петлях вспомнила проём. Канат на своём кольце вспомнит мост.
-  M07_5   agata     ru           Agata      eleven_v4    [thoughtful] Канат — это то, что осталось от моста. Верну его ближний конец на плиту — дорогу снова будут держать с двух концов. И лодка по канату дойдёт.
-  M07_6   agata     ru           Agata      eleven_v4    [excited] «Держим мы». Значит, там кто-то есть — и они тоже ищут.
-  M09_3   pavel     ru           Павел      eleven_v4    От удара стеллаж с гирями рухнул на дверь и вогнал засов в ско́бы изнутри. Замо́к я сбил в первую неделю — дверь ни с места, а стеллаж за ней качнулся, чуть меня не придавил.
-  M09_7   pavel     ru           Павел      eleven_v4    Пелагея просила воду спустить — а ключ там. Затвор год закрыт: вода стои́т выше, чем при управляющем. Без ключа ломать не стану.
-  M09b_5  pavel     ru           Павел      eleven_v4    Летом сняли — Дуне в починку, — да так в сеня́х и простояло. Бери. Стекло целое, только углы расходятся.
-  M15a_3  tikhon    ru           CAT-2      eleven_v4    [quietly] Нина. [short pause] Совсем седая.
-  M15s_0  agata     ru           Agata      eleven_v4    Держит. Тётина скоба́ на своём месте.
-  M15s_1  pelageya  ru           PELAGEYA   eleven_v4    Скоба́ стои́т? Канат я со своего сто́пора сняла. Опора в воде — вброд не дойти, лодкой. Садись — заведём конец к опоре.
-  M15_0   narrator  ru           ZAKADR     eleven_v4    Канат натягивается иначе, чем год держал сто́пор: ровно, будто другой конец держит живой человек.
-  M17_0   pelageya  ru           PELAGEYA   eleven_v4    Проверю по-лодочному. Кольцо — на канат, пущу пустую, бечеву́ держу.
-  M17_1   narrator  ru           ZAKADR     eleven_v4    Кольцо скользит по канату, и пустая лодка идёт за ним в туман. Год её разворачивало к своему причалу — теперь не разворачивает. Бечева́ дёргается.
-  M17_4   narrator  ru           ZAKADR     eleven_v4    Пелагея выбирает бечеву́. Лодка возвращается. На банке лежит лента.
-  M18_0   narrator  ru           ZAKADR     eleven_v4    На дальней опоре у сто́пора стои́т бородатый мужчина с сединой и фонарём. У Пелагеи дрогнули руки.
-  M18_1   mitya     ru           МИТЯ       eleven_v4    [softly] Мама.
-  M19_2   narrator  ru           ZAKADR     eleven_v4    На крыльце соседнего дома стои́т седая женщина в платке. Она видела три огня из окна.
-  M19_3   agata     ru           Agata      eleven_v4    [softly] Мама.
-  M23a_0  narrator  ru           ZAKADR     eleven_v4    Тамара переправилась с мешком сама. Стои́т посреди улицы и читает адреса вслух.
-  M23b_5  manager   ru           ФЁДОР ЛУКИЧ eleven_v4    К зиме пруд набрать. Иначе Заречье без муки́.
-  M23b_9  ilya      ru           ИЛЬЯ       eleven_v4    Завтра с утра — первое бревно. Ты на сигналах, я на во́роте.
-  M23c_5  narrator  ru           ZAKADR     eleven_v4    В стекле — её горница. Пустая.
-  M23d_4  tikhon    ru           CAT-2      eleven_v4    [slowly] [quietly] Значит, вечер кончился.
-  M24_1   narrator  ru           ZAKADR     eleven_v4    Утро четвёртого дня. Илья с Пелагеей уже у поворота, у во́рота.
-  M25_0   narrator  ru           ZAKADR     eleven_v4    День четвёртый. У поворота — во́рот, брёвна-прогоны, Илья. Пелагея принесла свою дощечку сигналов.
-  M25_1   ilya      ru           ИЛЬЯ       eleven_v4    Я на во́роте. Ты — на сигналах. Пускай, стой, подымай — как на мельнице.
-  M25_4   narrator  ru           ZAKADR     eleven_v4    Бревно ложится на опору — на кольцо старой плиты́.
-  M26_4   tamara    ru           TAMARA-1   eleven_v4    Три недели ношу́ — а писем всё больше. Двадцать лет набралось.
-  M26_5   narrator  ru           ZAKADR     eleven_v4    Пелагея и Митя смоля́т лодку на зиму.
-  M26_14  narrator  ru           ZAKADR     eleven_v4    Утро. Класс, зима. Нина у доски́ пишет число — одно для обоих берегов. За партами — дети с обоих берегов, среди них Ульяна; Агата — на задней парте, где когда-то рисовала птице шапку.
-  M26_21  nina      ru           НИНА       eleven_v4    Белая, со щербинкой. Узнаю́.
-  Z2.exit_H1.unlock narrator  ru           ZAKADR     eleven_v4    Замо́к поддался не сразу. Ключ останется в двери — дом снова открыт.
-  agata:Z2.exit_R1.closed agata     ru           Agata      eleven_v4    Сначала узна́ю, что у Тамары. На причал ещё успею.
-  pelageya:R1.pelageya.after pelageya  ru           PELAGEYA   eleven_v4    [quietly] Без плиты́ лодку вернёт сюда же. Если что — я тут, у лодки.
-  R1.rope.photo narrator  ru           ZAKADR     eleven_v4    На снимке этот канат держится за плиту опоры, а не за сто́пор.
-  R1.exit_R2.closed narrator  ru           ZAKADR     eleven_v4    Без плиты́ лодку вернёт сюда же.
-  agata:H1.photo.react_table agata     ru           Agata      eleven_v4    Пусть стои́т у кресла — так все наши рядом.
-  agata:H1.photo.react_shelf agata     ru           Agata      eleven_v4    Пусть стои́т на полке — оттуда видна вся комната.
-  H2.stand_zm.look narrator  ru           ZAKADR     eleven_v4    Высокая резная рама на ножках, тяжёлая, к полу прибита. Пустая. На бирке — «Зэ-эм», рядом тётиной рукой: «Зеркало конторы — забрать у Павла».
-  H2.brace.look narrator  ru           ZAKADR     eleven_v4    Кованая скоба́. Под ней заказ управы: «Плита моста. Трещина — чинить» — тот же рисунок опоры, что у Тамары.
-  agata:H2.brace.before_plan agata     ru           Agata      eleven_v4    Скоба́ под трещину плиты́, так и не поставлена. Плита под водой — на что она мне сейчас?
-  agata:H2.brace.take agata     ru           Agata      eleven_v4    «Скоба́ для неё у Дуни на верстаке» — так в плане. Возьму её.
-  H3.mirror_home.look narrator  ru           ZAKADR     eleven_v4    Домашнее зеркало в раме, с пометкой «Зэ-гэ».
-  H3.exit_O1.closed narrator  ru           ZAKADR     eleven_v4    Полотно стои́т рядом. В пустой раме ещё нет прохода.
-  agata:O1.board.use agata     ru           Agata      eleven_v4    Задачу довели до ответа. Почерк я не узнаю́.
-  agata:O1.board.chalk agata     ru           Agata      eleven_v4    [softly] В углу доски́ теперь мой след: «Я была здесь. Агата».
-  O1.board.chalk_mama narrator  ru           ZAKADR     eleven_v4    В углу доски́ мелом: «Мама, я иду».
-  O1.board.chalk_ilya narrator  ru           ZAKADR     eleven_v4    В углу доски́ мелом: «Илюша, я нашла твой рисунок».
-  M3.journal.use narrator  ru           ZAKADR     eleven_v4    Последняя запись рукой управляющего: «Затвор на ночь закрыт. Ключ на гвозде. Ушёл домой». Число — год назад. Рядом правило: «Спускать пруд по зарубке и ждать, иначе берега́ поплывут». И рабочая отметка воды для помола.
-  M4.gate.key narrator  ru           ZAKADR     eleven_v4    Ключ встаёт в во́рот. Рычаг теперь ходит — по зарубке.
-  M4.gate.look narrator  ru           ZAKADR     eleven_v4    Затвор пруда: во́рот, дуга с зарубками. По журналу — открывать по зарубке и ждать спада.
-  M4.gate.locked narrator  ru           ZAKADR     eleven_v4    Во́рот заперт: ключ от затвора — в конторе.
-  pavel:M4.pavel.before pavel     ru           Павел      eleven_v4    Ключ в во́рот — и по зарубке. Как в журнале.
-  R3.stopor.look narrator  ru           ZAKADR     eleven_v4    Дальний сто́пор заведён в старое кольцо опоры. Канат держат отсюда.
-  agata:Z3d.plate_dry.use_skoba agata     ru           Agata      eleven_v4    Треснутая не держит. Сперва скоба́ — она в сумке.
-  agata:Z3d.plate_dry.no_skoba agata     ru           Agata      eleven_v4    Треснутая не держит. Сперва скоба́ — а она осталась у тёти на верстаке. Придётся вернуться.
-  Z3d.plate_dry.skoba narrator  ru           ZAKADR     eleven_v4    Скоба́ ложится на трещину. Осталось забить.
-  pelageya:Z3d.pelageya.wait_skoba pelageya  ru           PELAGEYA   eleven_v4    Сперва скобу́ на трещину — потом канат.
-  pelageya:Z3d.pelageya.knot pelageya  ru           PELAGEYA   eleven_v4    Конец у плиты́. Вяжи на кольцо — покажу как.
-  agata:H2d.stand_zm.enter agata     ru           Agata      eleven_v4    Стойка «Зэ-эм» — вот она: высокая резная рама посреди мастерской.
-  agata:item.mirror_mill.wrong agata     ru           Agata      eleven_v4    Зеркалу конторы нужна тётина стойка «Зэ-эм» — высокая резная рама посреди мастерской.
-  agata:item.brace_plate.wrong agata     ru           Agata      eleven_v4    Скоба́ — для треснувшей плиты́ на опоре у поворота.
-  agata:item.chalk.wrong agata     ru           Agata      eleven_v4    Мел — для доски́ в классе.
-  agata:H2d.nina_mirror.clamp_early agata     ru           Agata      eleven_v4    Сначала затвор — Павел ждёт у во́рота. Пока вода сходит, и займусь маминым зеркалом.
-  ilya:O3.ilya.after ilya      ru           ИЛЬЯ       eleven_v4    Я завтра с утра в мастерскую. Приходи — покажу, где мы сто́пор ставили.
-  agata:O3.notebooks.use agata     ru           Agata      eleven_v4    Восемнадцать лет попыток. Тропы, правило, сто́пор, мост — всё её рукой.
-  E5.windlass.laid narrator  ru           ZAKADR     eleven_v4    Бревно садится на кольцо старой плиты́ — ровно, как прогон стоял до паводка.
-  item.brace_plate narrator  ru           ZAKADR     eleven_v4    Тётина скоба́ под трещину плиты́.
-  agata:examine.brace_plate agata     ru           Agata      eleven_v4    Кованая, тяжёлая. Тётя выгнула её точно под трещину плиты́.
-  agata:examine.key_sluice agata     ru           Agata      eleven_v4    Квадратное гнездо — под во́рот затвора. Висел на гвозде, где его оставил управляющий.
-  agata:mech.shutter.dropped agata     ru           Agata      eleven_v4    Упала обратно в скобу́. Ещё раз — повыше.
-  квота: осталось 90234 из 124889, запас 12488, к синтезу ≤ 5587 кредитов (оценка сверху)
-  M02_5              синтез: 15.79 с, -16.9 LUFS, TP -4.8 dB (усиление -0.4 dB)
-  M02_6              синтез: 2.81 с, -16.9 LUFS, TP -5.0 dB (усиление -1.4 dB)
-  M07_1              синтез: 14.36 с, -16.9 LUFS, TP -2.3 dB (усиление -1.4 dB)
-  M07_2              синтез: 8.62 с, -16.9 LUFS, TP -4.6 dB (усиление -1.3 dB)
-  M07_3              синтез: 7.05 с, -16.9 LUFS, TP -3.5 dB (усиление -1.9 dB)
-  M07_4              синтез: 5.30 с, -17.0 LUFS, TP -1.9 dB (усиление +1.7 dB)
-  M07_5              синтез: 9.80 с, -16.9 LUFS, TP -3.7 dB (усиление -0.9 dB)
-  M07_6              синтез: 4.71 с, -17.0 LUFS, TP -5.7 dB (усиление -3.5 dB)
-  M09_3              синтез: 12.64 с, -16.9 LUFS, TP -6.5 dB (усиление -3.7 dB)
-  M09_7              синтез: 10.00 с, -17.0 LUFS, TP -6.4 dB (усиление -2.8 dB)
-  M09b_5             синтез: 8.54 с, -16.9 LUFS, TP -6.2 dB (усиление -2.1 dB)
-  M15a_3             синтез: 2.62 с, -17.1 LUFS, TP -5.0 dB (усиление +9.7 dB)
-  M15s_0             синтез: 3.30 с, -16.9 LUFS, TP -3.7 dB (усиление -2.2 dB)
-  M15s_1             синтез: 9.85 с, -16.9 LUFS, TP -4.4 dB (усиление -1.4 dB)
-  M15_0              синтез: 7.97 с, -17.0 LUFS, TP -5.2 dB (усиление -3.7 dB)
-  M17_0              синтез: 5.75 с, -17.0 LUFS, TP -3.7 dB (усиление -1.6 dB)
-  M17_1              синтез: 11.69 с, -17.0 LUFS, TP -4.2 dB (усиление -1.9 dB)
-  M17_4              синтез: 6.07 с, -17.0 LUFS, TP -5.9 dB (усиление -3.4 dB)
-  M18_0              синтез: 8.05 с, -16.9 LUFS, TP -4.0 dB (усиление -2.7 dB)
-  M18_1              синтез: 0.73 с, -16.9 LUFS, TP -3.6 dB (усиление +6.2 dB)
-  M19_2              синтез: 6.56 с, -17.0 LUFS, TP -4.7 dB (усиление -3.4 dB)
-  M19_3              синтез: 0.68 с, -16.9 LUFS, TP -6.6 dB (усиление +6.7 dB)
-  M23a_0             синтез: 6.05 с, -17.0 LUFS, TP -5.2 dB (усиление -2.5 dB)
-  M23b_5             синтез: 4.17 с, -16.9 LUFS, TP -5.4 dB (усиление -1.2 dB)
-  M23b_9             синтез: 4.57 с, -17.0 LUFS, TP -5.8 dB (усиление -3.8 dB)
-  M23c_5             синтез: 3.41 с, -17.0 LUFS, TP -4.5 dB (усиление -2.3 dB)
-  M23d_4             синтез: 2.74 с, -17.2 LUFS, TP -2.5 dB (усиление +6.1 dB)
-  M24_1              синтез: 5.36 с, -17.0 LUFS, TP -5.3 dB (усиление -3.8 dB)
-  M25_0              синтез: 9.25 с, -17.0 LUFS, TP -5.3 dB (усиление -3.5 dB)
-  M25_1              синтез: 6.01 с, -17.0 LUFS, TP -6.4 dB (усиление -4.5 dB)
-  M25_4              синтез: 4.02 с, -17.0 LUFS, TP -4.8 dB (усиление -2.9 dB)
-  M26_4              синтез: 5.46 с, -17.0 LUFS, TP -5.2 dB (усиление -2.1 dB)
-  M26_5              синтез: 3.17 с, -17.0 LUFS, TP -6.0 dB (усиление -4.5 dB)
-  M26_14             синтез: 16.17 с, -17.0 LUFS, TP -4.2 dB (усиление -2.1 dB)
-  M26_21             синтез: 3.16 с, -17.2 LUFS, TP -8.8 dB (усиление -1.6 dB)
-  Z2.exit_H1.unlock  синтез: 5.51 с, -17.0 LUFS, TP -6.1 dB (усиление -3.2 dB)
-  agata:Z2.exit_R1.closed синтез: 4.11 с, -16.9 LUFS, TP -4.1 dB (усиление -0.3 dB)
-  pelageya:R1.pelageya.after синтез: 4.84 с, -17.1 LUFS, TP -3.0 dB (усиление +7.5 dB)
-  R1.rope.photo      синтез: 4.81 с, -17.0 LUFS, TP -5.2 dB (усиление -2.7 dB)
-  R1.exit_R2.closed  синтез: 2.68 с, -17.0 LUFS, TP -5.6 dB (усиление -4.9 dB)
-  agata:H1.photo.react_table синтез: 3.04 с, -17.0 LUFS, TP -4.6 dB (усиление +0.4 dB)
-  agata:H1.photo.react_shelf синтез: 3.32 с, -17.0 LUFS, TP -3.4 dB (усиление -0.8 dB)
-  H2.stand_zm.look   синтез: 12.71 с, -16.9 LUFS, TP -4.4 dB (усиление -2.2 dB)
-  H2.brace.look      синтез: 8.90 с, -17.0 LUFS, TP -5.1 dB (усиление -3.0 dB)
-  agata:H2.brace.before_plan синтез: 6.40 с, -16.9 LUFS, TP -2.1 dB (усиление -0.6 dB)
-  agata:H2.brace.take синтез: 4.60 с, -17.0 LUFS, TP -3.7 dB (усиление -1.7 dB)
-  H3.mirror_home.look синтез: 3.62 с, -17.0 LUFS, TP -5.3 dB (усиление -3.3 dB)
-  H3.exit_O1.closed  синтез: 4.10 с, -17.0 LUFS, TP -5.8 dB (усиление -3.4 dB)
-  agata:O1.board.use синтез: 3.55 с, -16.9 LUFS, TP -2.8 dB (усиление +0.7 dB)
-  agata:O1.board.chalk синтез: 4.72 с, -17.1 LUFS, TP -1.9 dB (усиление +9.5 dB)
-  O1.board.chalk_mama синтез: 3.41 с, -17.0 LUFS, TP -6.2 dB (усиление -4.3 dB)
-  O1.board.chalk_ilya синтез: 4.34 с, -17.0 LUFS, TP -6.1 dB (усиление -3.8 dB)
-  M3.journal.use     синтез: 18.05 с, -17.0 LUFS, TP -5.1 dB (усиление -2.8 dB)
-  M4.gate.key        синтез: 4.76 с, -17.0 LUFS, TP -4.9 dB (усиление -3.1 dB)
-  M4.gate.look       синтез: 7.61 с, -16.9 LUFS, TP -5.1 dB (усиление -3.5 dB)
-  M4.gate.locked     синтез: 3.59 с, -16.8 LUFS, TP -5.2 dB (усиление -3.8 dB)
-  pavel:M4.pavel.before синтез: 3.64 с, -17.0 LUFS, TP -6.7 dB (усиление -3.4 dB)
-  R3.stopor.look     синтез: 5.03 с, -16.9 LUFS, TP -4.8 dB (усиление -3.7 dB)
-  agata:Z3d.plate_dry.use_skoba синтез: 4.06 с, -17.1 LUFS, TP -2.3 dB (усиление -1.0 dB)
-  agata:Z3d.plate_dry.no_skoba синтез: 6.79 с, -17.1 LUFS, TP -1.9 dB (усиление +0.6 dB)
-  Z3d.plate_dry.skoba синтез: 3.53 с, -17.0 LUFS, TP -4.8 dB (усиление -2.3 dB)
-  pelageya:Z3d.pelageya.wait_skoba синтез: 3.26 с, -17.0 LUFS, TP -4.8 dB (усиление -1.4 dB)
-  pelageya:Z3d.pelageya.knot синтез: 3.70 с, -17.0 LUFS, TP -4.3 dB (усиление -2.0 dB)
-  agata:H2d.stand_zm.enter синтез: 5.31 с, -16.9 LUFS, TP -3.5 dB (усиление -0.4 dB)
-  agata:item.mirror_mill.wrong синтез: 6.00 с, -17.0 LUFS, TP -3.0 dB (усиление -0.4 dB)
-  agata:item.brace_plate.wrong синтез: 3.70 с, -17.0 LUFS, TP -3.5 dB (усиление -0.1 dB)
-  agata:item.chalk.wrong синтез: 2.25 с, -17.0 LUFS, TP -3.8 dB (усиление +0.3 dB)
-  agata:H2d.nina_mirror.clamp_early синтез: 6.46 с, -17.0 LUFS, TP -3.0 dB (усиление -1.6 dB)
-  ilya:O3.ilya.after синтез: 4.75 с, -17.0 LUFS, TP -5.5 dB (усиление -2.9 dB)
-  agata:O3.notebooks.use синтез: 6.49 с, -16.9 LUFS, TP -5.0 dB (усиление -0.5 dB)
-  E5.windlass.laid   синтез: 5.87 с, -17.0 LUFS, TP -5.0 dB (усиление -2.6 dB)
-  item.brace_plate   синтез: 2.75 с, -17.0 LUFS, TP -5.2 dB (усиление -2.9 dB)
-  agata:examine.brace_plate синтез: 5.15 с, -16.8 LUFS, TP -2.8 dB (усиление -0.9 dB)
-  agata:examine.key_sluice синтез: 6.22 с, -16.8 LUFS, TP -3.5 dB (усиление -0.5 dB)
-  agata:mech.shutter.dropped синтез: 3.62 с, -17.0 LUFS, TP -4.6 dB (усиление -3.5 dB)
-  убраны устаревшие записи (8): H3.exit_R4.closed (текст изменён), H3.school_door.use (текст изменён), O2.porch_step.mitten (текст изменён), R1.pelageya.after (текст изменён), Z2.exit_H1.closed (текст изменён), agata:H2.bell.use (текст изменён), item.invoice_chalk (нет в текстах), item.photo_school_pier (нет в текстах)
-[rerecord] синтезировано 75, переобработано 0, ошибок 0; символов текста 5587; списано кредитов (character-cost): 2454, изменение счётчика подписки: 2127
+  skip (не записывать сейчас): 185 строк запроса по шаблонам ['*H1.shutter*', '*H1.shelf*', '*H1.scarf*', '*H1.towel*', '*H1.stove*', '*mech.shutter*', 'M09*', 'M10*', 'M11*', 'M12*', 'M13*', 'M14*', '*M1.*', '*M2.*', '*M3.*', '*M4.*', '*key_sluice*', '*clamp*', '*office_mirror*', '*stand_zm*', '*mirror_mill*', 'M15s', 'M15', 'M16s', 'M16', 'M17', 'M18p', 'M18', '*Z3d.*', '*Z3.plate*', '*Z3.old_pier*', '*R1d.*', '*R1.pelageya*', '*R1.rope*', '*R1.lantern*', '*R2.*', '*R3.*', '*mech.plate*', '*mech.knot*', '*mech.crossing*', '*brace*', '*skoba*', 'M07', '*O1.teacher_drawer*', '*O1.bird_drawing*', '*O1d.ulyana*', 'V03']
+  манифест ru: M09b_2: текст изменён
+  манифест ru: M15s_0: текст изменён
+  манифест ru: M15s_1: текст изменён
+  манифест ru: M16_0: текст изменён
+  манифест ru: M18_7: текст изменён
+  манифест ru: M18p_3: текст изменён
+  манифест ru: M19_4: текст изменён
+  манифест ru: M19_6: текст изменён
+  манифест ru: M19c_7: текст изменён
+  манифест ru: M19c_8: текст изменён
+  манифест ru: M20_9: текст изменён
+  манифест ru: M23a_3: текст изменён
+  манифест ru: M23b_9: текст изменён
+  манифест ru: M23c_3: текст изменён
+  манифест ru: M23d_5: текст изменён
+  манифест ru: M24_0: текст изменён
+  манифест ru: M25_4: текст изменён
+  манифест ru: M26_4: текст изменён
+  манифест ru: M26_16: текст изменён
+  манифест ru: M26_25: текст изменён
+  манифест ru: N01_2: текст изменён
+  манифест ru: H1.wave.look: текст изменён
+  манифест ru: O3.window.look: текст изменён
+  манифест ru: O4.exit_O2.closed: текст изменён
+  манифест ru: O4.exit_S1.closed: текст изменён
+  манифест ru: agata:H1.wave.use: текст изменён
+  манифест ru: agata:M1.exit_M2.closed: текст изменён
+  манифест ru: agata:M1.exit_M4.closed: текст изменён
+  манифест ru: agata:S1.street_sign.use: текст изменён
+  манифест ru: agata:examine.plan_crossing: текст изменён
+  манифест ru: agata:examine.school_ribbon: текст изменён
+  манифест ru: item.school_ribbon: текст изменён
+  манифест ru: mitya:O4.mitya.after: текст изменён
+  манифест ru: nina:O3.nina.before: текст изменён
+  манифест ru: pavel:M4.pavel.after: текст изменён
+  манифест ru: pavel:M4d.pavel.after_bridge: текст изменён
+  манифест ru: pelageya:R1d.pelageya.to_boat: текст изменён
+  манифест ru: pelageya:R1d.pelageya.wait_water: текст изменён
+  манифест ru: pelageya:R3.exit_R2.closed: текст изменён
+  манифест ru: pelageya:R3.pelageya.after: текст изменён
+  only_changed: к работе 27 из 364 реплик/фраз запроса
+  задание: Директор: полная озвучка (23.10); координатор — последняя партия: Q02/Q06 и правки текста, без сцен партии G, 2026-10-23 — строки, изменённые агентом текста (кроме сцен партии G) (потолок 80 файлов, 5000 символов)
+[textfix] реплик в сценах запроса: 364; файлов с вариантами голосов: 27; к синтезу: 27 (1642 символов); переобработка: 0
+  N01_2   tikhon    ru           CAT-2      eleven_v4    [grumbling] Спи уже. Печь — на мне.
+  M19_4   narrator  ru           ZAKADR     eleven_v4    Нина обнимает Агату — молча, долго, прямо на крыльце.
+  M19_6   agata     ru           Agata      eleven_v4    Ходики. Те самые.
+  M19c_7  nina      ru           НИНА       eleven_v4    У тебя, выходит, год прошёл. Всего год.
+  M19c_8  agata     ru           Agata      eleven_v4    Год. А у тебя — больше, чем мне лет.
+  M20_9   nina      ru           НИНА       eleven_v4    Ляжешь в своей комнате. Ульяна там ночует, когда у нас, — потеснитесь.
+  M23a_3  tamara    ru           TAMARA-1   eleven_v4    Савелию — от сестры… Аксинье — от брата… Матрёне Петровне… А такой у вас нет?
+  M23b_9  ilya      ru           ИЛЬЯ       eleven_v4    Завтра с утра — первое бревно. Приходи к повороту.
+  M23c_3  nina      ru           НИНА       eleven_v4    Двадцать лет с той стороны тут был пустой проём. А полотно всё это время стояло здесь — в двух шагах.
+  M23d_5  tikhon    ru           CAT-2      eleven_v4    Хозяйка. Кастрюля — в печи, ещё тёплая.
+  M24_0   narrator  ru           ZAKADR     eleven_v4    Вечер третьего дня. Письма нашли адресатов, Нина побывала в доме сестры, Тихон перебрался на печь. Завтра — первое бревно.
+  M25_4   narrator  ru           ZAKADR     eleven_v4    Илья стопорит во́рот и выпрямляется.
+  M26_4   tamara    ru           TAMARA-1   eleven_v4    Три недели ношу́ — а мешок не пустеет. Теперь в обе стороны пишут.
+  M26_16  narrator  ru           ZAKADR     eleven_v4    Вечером — ужин в доме тёти: Нина, Илья с женой, Агата. Тихон на печи. На столе — кастрюля от Тамары.
+  M26_25  ilya_wife ru           ВАРВАРА    eleven_v4    Агата, гляди — заплатка твоя держится. И Ульянина птица на ней как живая.
+  H1.wave.look narrator  ru           ZAKADR     eleven_v4    Место у Дуниной печи. Мама в стекле не видит и не слышит. А вдруг у неё есть вещь, которая помнит этот дом?
+  agata:H1.wave.use agata     ru           Agata      eleven_v4    Мама, это я. Если ты хоть как-то меня видишь — я тут, у Дуниной печи.
+  item.school_ribbon narrator  ru           ZAKADR     eleven_v4    Мамина лента — синяя, с узкой каймой.
+  mitya:O4.mitya.after mitya     ru           МИТЯ       eleven_v4    Хожу теперь просто так. По мосту бы.
+  O4.exit_O2.closed narrator  ru           ZAKADR     eleven_v4    Тропу к школе замело по колено. Одной туда не пробраться.
+  O4.exit_S1.closed narrator  ru           ZAKADR     eleven_v4    Дорога вправо тонет в снегу. Туда — потом.
+  nina:O3.nina.before nina      ru           НИНА       eleven_v4    Сиди, грейся. Наговоримся утром.
+  O3.window.look narrator  ru           ZAKADR     eleven_v4    За окном снег. Двадцать зим тут прошло врозь — и вот первая общая.
+  pavel:M4d.pavel.after_bridge pavel     ru           Павел      eleven_v4    Пруд держу ниже рабочей, пока ставите пролёты. Ляжет последний — наберу, до льда.
+  agata:S1.street_sign.use agata     ru           Agata      eleven_v4    «Ольховая улица». Её, говорят, первой не стало. А вывеска держалась.
+  agata:examine.plan_crossing agata     ru           Agata      eleven_v4    Правлен не раз, разными чернилами. Кто-то расписал всё по порядку — и ждал, что лист прочтут.
+  agata:examine.school_ribbon agata     ru           Agata      eleven_v4    Синяя, с узкой каймой. Мама её сберегла.
+  квота: осталось 87780 из 124889, запас 12488, к синтезу ≤ 1642 кредитов (оценка сверху)
+  N01_2              синтез: 3.06 с, -17.0 LUFS, TP -3.2 dB (усиление +0.4 dB)
+  M19_4              синтез: 5.28 с, -17.1 LUFS, TP -5.2 dB (усиление -2.1 dB)
+  M19_6              синтез: 1.92 с, -17.0 LUFS, TP -3.7 dB (усиление -0.4 dB)
+  M19c_7             синтез: 3.99 с, -16.9 LUFS, TP -7.6 dB (усиление -0.6 dB)
+  M19c_8             синтез: 3.24 с, -16.9 LUFS, TP -6.4 dB (усиление -1.1 dB)
+  M20_9              синтез: 5.91 с, -17.0 LUFS, TP -7.2 dB (усиление -1.9 dB)
+  M23a_3             синтез: 7.52 с, -17.0 LUFS, TP -3.8 dB (усиление -1.1 dB)
+  M23b_9             синтез: 3.64 с, -17.0 LUFS, TP -6.4 dB (усиление -4.2 dB)
+  M23c_3             синтез: 8.55 с, -17.0 LUFS, TP -7.4 dB (усиление -1.0 dB)
+  M23d_5             синтез: 4.20 с, -17.0 LUFS, TP -3.7 dB (усиление -1.0 dB)
+  M24_0              синтез: 10.05 с, -17.0 LUFS, TP -4.5 dB (усиление -3.3 dB)
+  M25_4              синтез: 2.94 с, -17.0 LUFS, TP -4.8 dB (усиление -2.9 dB)
+  M26_4              синтез: 5.60 с, -17.1 LUFS, TP -4.8 dB (усиление -2.2 dB)
+  M26_16             синтез: 9.29 с, -17.0 LUFS, TP -4.1 dB (усиление -2.6 dB)
+  M26_25             синтез: 6.05 с, -17.0 LUFS, TP -5.8 dB (усиление -2.6 dB)
+  H1.wave.look       синтез: 8.60 с, -17.0 LUFS, TP -3.1 dB (усиление -1.1 dB)
+  agata:H1.wave.use  синтез: 6.18 с, -17.0 LUFS, TP -3.9 dB (усиление -0.5 dB)
+  item.school_ribbon синтез: 3.37 с, -16.9 LUFS, TP -5.5 dB (усиление -2.3 dB)
+  mitya:O4.mitya.after синтез: 2.93 с, -17.0 LUFS, TP -4.0 dB (усиление -1.2 dB)
+  O4.exit_O2.closed  синтез: 4.11 с, -17.0 LUFS, TP -7.0 dB (усиление -4.5 dB)
+  O4.exit_S1.closed  синтез: 3.91 с, -16.8 LUFS, TP -4.2 dB (усиление -3.2 dB)
+  nina:O3.nina.before синтез: 3.19 с, -17.0 LUFS, TP -7.9 dB (усиление -1.5 dB)
+  O3.window.look     синтез: 6.38 с, -17.0 LUFS, TP -4.0 dB (усиление -1.1 dB)
+  pavel:M4d.pavel.after_bridge синтез: 6.15 с, -17.0 LUFS, TP -7.2 dB (усиление -3.1 dB)
+  agata:S1.street_sign.use синтез: 5.55 с, -17.0 LUFS, TP -3.9 dB (усиление +1.3 dB)
+  agata:examine.plan_crossing синтез: 6.76 с, -17.0 LUFS, TP -2.0 dB (усиление -0.2 dB)
+  agata:examine.school_ribbon синтез: 3.38 с, -16.9 LUFS, TP -5.0 dB (усиление -0.4 dB)
+[textfix] синтезировано 27, переобработано 0, ошибок 0; символов текста 1642; списано кредитов (character-cost): 721, изменение счётчика подписки: 226
+  предупреждение: M09b_2: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: M15s_0: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: M15s_1: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: M16_0: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: M18_7: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: M18p_3: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: agata:M1.exit_M2.closed: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: agata:M1.exit_M4.closed: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: agata:item.letter_tamara: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
-  ОШИБКА: O1.board.chalk: теги подачи изменены — ждёт перегенерации (pipeline-voice); пока звучит прежний дубль
-  ОШИБКА: O1.board.use: теги подачи изменены — ждёт перегенерации (pipeline-voice); пока звучит прежний дубль
-  ОШИБКА: Z2.exit_R1.closed: теги подачи изменены — ждёт перегенерации (pipeline-voice); пока звучит прежний дубль
-validate_voice: манифесты: ru 570 (570 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, Q01, Q03, Q04, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 38; закадровых фраз по правилам voice.json: 457 (с тегами 22), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_bag, ru_mechanics
-[voice] validate_voice.py: FAIL (3 ошибок, 1 предупреждений, strict; самопроверка 22/22)
+  предупреждение: pavel:M4.pavel.after: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: pelageya:R1d.pelageya.to_boat: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: pelageya:R1d.pelageya.wait_water: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: pelageya:R3.exit_R2.closed: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: pelageya:R3.pelageya.after: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: к перезаписи 13 (текст изменён после записи, игра их не играет): M09b_2, M15s_0, M15s_1, M16_0, M18_7, M18p_3, agata:M1.exit_M2.closed, agata:M1.exit_M4.closed, pavel:M4.pavel.after, pelageya:R1d.pelageya.to_boat, pelageya:R1d.pelageya.wait_water, pelageya:R3.exit_R2.closed, pelageya:R3.pelageya.after — один запрос: pipeline/voice/README.md → «Текст изменился»
+validate_voice: манифесты: ru 570 (557 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, Q01, Q03, Q04, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 38; закадровых фраз по правилам voice.json: 457 (с тегами 22), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_bag, ru_mechanics
+[voice] validate_voice.py: OK (0 ошибок, 15 предупреждений, strict; самопроверка 22/22)

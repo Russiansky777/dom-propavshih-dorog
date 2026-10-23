@@ -1,0 +1,59 @@
+{
+  "set": "textfix",
+  "runs": [
+    {
+      "run": "39961577802",
+      "at": "2026-10-23T13:31:12+00:00",
+      "request": "pipeline/requests/voice_textfix.json",
+      "synthesized": [
+        "N01_2",
+        "M19_4",
+        "M19_6",
+        "M19c_7",
+        "M19c_8",
+        "M20_9",
+        "M23a_3",
+        "M23b_9",
+        "M23c_3",
+        "M23d_5",
+        "M24_0",
+        "M25_4",
+        "M26_4",
+        "M26_16",
+        "M26_25",
+        "H1.wave.look",
+        "agata:H1.wave.use",
+        "item.school_ribbon",
+        "mitya:O4.mitya.after",
+        "O4.exit_O2.closed",
+        "O4.exit_S1.closed",
+        "nina:O3.nina.before",
+        "O3.window.look",
+        "pavel:M4d.pavel.after_bridge",
+        "agata:S1.street_sign.use",
+        "agata:examine.plan_crossing",
+        "agata:examine.school_ribbon"
+      ],
+      "reprocessed": [],
+      "characters_text": 1642,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 37109,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 37335,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 721,
+      "subscription_delta": 226
+    }
+  ]
+}
