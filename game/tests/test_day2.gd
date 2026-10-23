@@ -3,7 +3,7 @@ extends SceneTree
 ##   godot --headless --audio-driver Dummy --path game -s res://tests/test_day2.gd
 ## What the coordinator asked to prove (block 2 brief):
 ##   - the hook puzzle is solved and slips back to the top without any penalty;
-##   - the sluice does not open all at once (one notch at a time, wait for the gauge);
+##   - the sluice (G23): «точный удар» — a hit a notch and a step of water down, a miss back to the first notch;
 ##   - the office mirror shows Pavel's light in the same frame as the bell strike;
 ##   - time in mother's mirror is exactly 20:1 (1:1 once the road is held from both ends);
 ##   - the ribbon is given once (scene, save/load, talking again);
@@ -63,7 +63,7 @@ func _run() -> void:
 	gs.reset()
 	await _test("Logic: bell signals (one / two / long) from presses and pauses", _test_bell_logic)
 	await _test("Logic: hook — slips and comes back to the top without penalty, then lifts the bar", _test_hook_logic)
-	await _test("Logic: sluice — one notch at a time, the next only after the gauge settles", _test_sluice_logic)
+	await _test("Logic: sluice (G23) — the water follows the winch: a step down per notch, back up on a slip", _test_sluice_logic)
 	await _test("Logic: mother's mirror — Nina's clock runs exactly 20× Agata's watch; 1× once the road is held", _test_clock_logic)
 	main_node = load("res://scenes/Main.tscn").instantiate()
 	root.add_child(main_node)
@@ -80,7 +80,7 @@ func _run() -> void:
 	await _test("By state: the clamp waits for the sluice; Pelageya's lines at the pier follow the goal; the boat gone at dusk; «В лодку» after the knot; no Pelageya at the pier after the crossing", _test_states)
 	await _test("Whole day two by script: morning → mill → mirror and bell → office → sluice → mother's mirror → plate → three lights → ribbon → R3", _test_walkthrough)
 	await _test("Office mirror by mouse: wedges, the light in the same frame as the strike, the hook by bell signals", _test_office_mirror_mouse)
-	await _test("Sluice by mouse: a drag past two notches opens one; the next is refused until the water settles", _test_sluice_mouse)
+	await _test("Sluice by mouse (G23/G24): «точный удар» — a hit in the green a notch and a step down, a miss back to the first notch, early → «Погоди»; red mark on the last notch; four in a row open it", _test_sluice_mouse)
 	await _test("Mother's mirror on screen: 20:1 over real frames, poses change, knock, compare", _test_fast_mirror_panel)
 	await _test("Save in the middle of day two: load replays nothing, the sluice keeps its notches, the day goes on", _test_save_load)
 	gs.reset()
@@ -408,24 +408,28 @@ func _test_hook_logic() -> void:
 
 
 func _test_sluice_logic() -> void:
-	var s := SluiceLogic.new({"levels": [1.0, 0.7, 0.42, 0.15], "fall_per_s": 0.07})
-	_check(s.notch == 0 and s.settled(), "closed and settled at the start")
-	_check(s.open_next() == "ok" and s.notch == 1, "first notch opens")
-	_check(s.open_next() == "wait" and s.notch == 1, "the next notch at once is refused (Pavel holds the winch)")
-	for i in 20:
+	# G23: the water follows the winch's notch (TimingLogic counts the hits) — falls a step per notch, back up on a slip.
+	var s := SluiceLogic.new({"levels": [1.0, 0.8, 0.6, 0.38, 0.15], "fall_per_s": 0.25, "rise_per_s": 0.9})
+	_check(s.notch == 0 and s.settled() and s.steps() == 4, "closed and settled at the start; four steps down")
+	s.set_notch(1)
+	_check(not s.settled(), "one notch on: the water starts to fall")
+	for i in 10:
 		s.step(0.1)
-	_check(not s.settled() and s.open_next() == "wait", "2 s later the water is still falling — still refused")
-	for i in 30:
+	_check(s.settled() and is_equal_approx(s.level, 0.8), "a step down settles in under a second (%.3f)" % s.level)
+	s.set_notch(2)
+	s.step(0.3)
+	var mid := s.level
+	s.set_notch(0)   # the winch slipped: back to the first notch
+	for i in 15:
 		s.step(0.1)
-	_check(s.settled() and s.open_next() == "ok" and s.notch == 2, "once settled — the next notch")
-	for i in 60:
-		s.step(0.1)
-	s.open_next()
-	for i in 60:
-		s.step(0.1)
-	_check(s.finished() and s.open_next() == "done", "all notches open and settled")
-	var r := SluiceLogic.new({"levels": [1.0, 0.7, 0.42, 0.15]}, 2)
-	_check(r.notch == 2 and r.settled(), "reopened at a saved notch: water settled at that level")
+	_check(mid < 0.8 and s.settled() and is_equal_approx(s.level, 1.0), "a slip: the water rises back to the start")
+	for n in range(1, 5):
+		s.set_notch(n)
+		for i in 15:
+			s.step(0.1)
+	_check(s.finished() and is_equal_approx(s.level, 0.15), "four notches: the water down on the last level")
+	var r := SluiceLogic.new({"levels": [1.0, 0.8, 0.6, 0.38, 0.15]}, 4)
+	_check(r.notch == 4 and r.finished(), "an opened sluice reopened: the water down, settled")
 	_reached_end = true
 
 
@@ -883,19 +887,11 @@ func _test_walkthrough() -> void:
 	_check(sr.mechanic_open and not gs.has_item("key_sluice") and gs.has_flag("sluice_key_inserted"), "the key in the winch opens the sluice close-up")
 	await _finish()
 	p = mv.panel
-	guard = 0
-	while not gs.has_flag("sluice_opened") and guard < 30:
-		guard += 1
-		while is_instance_valid(p) and not p.logic.settled() and not gs.has_flag("sluice_opened"):
-			await process_frame
-		if gs.has_flag("sluice_opened") or not is_instance_valid(p):
-			break
-		p.try_open()
-		await _finish()
-		await _frames(2)
+	await _sluice_strikes(p, 4)
+	await _wait_sluice_open()
 	await _frames(2)
 	seen = await _finish()
-	_check(gs.has_flag("sluice_opened") and gs.has_flag("pond_lowered") and gs.has_flag("done_M14"), "the sluice opened notch by notch → M14: %s" % str(seen))
+	_check(gs.has_flag("sluice_opened") and gs.has_flag("pond_lowered") and gs.has_flag("done_M14"), "the sluice opened notch by notch («точный удар», G23) → M14: %s" % str(seen))
 	_check(sr.journal_goal().contains("струбцин"), "goal: the clamp to mother's mirror")
 	# F10 (Director 23.10): why the water goes down — the plate comes out; the boat alone is turned back, the rope on the ring is not.
 	_check(sr.journal_goal().contains("плита на опоре выйдет") and seen.any(func(x): return x.contains("Лодкой туда не переплыть")),
@@ -1027,6 +1023,13 @@ func _test_walkthrough() -> void:
 	var lay: Node = rm.current_room.get_node("Layers")
 	_check(lay.get_node("far_lights").visible and lay.get_node("far_snow").visible and not lay.get_node("far_dark").visible and lay.get_node("dusk").visible,
 		"batch 3 layers: dusk, the far bank under snow (not dark), the three lights")
+	# G45 (Director 23.10: «после использования ещё активен»): the lights have answered — the lantern is only a look now.
+	var lh = rm.current_room.get_node_or_null("Hotspots/lantern")
+	_check(lh != null and sr.planned_interaction(lh) in ["text", "use"], "G45: after the answer the lantern is only a look (%s)" % (sr.planned_interaction(lh) if lh else "?"))
+	await _use("lantern")
+	await _frames(3)
+	var lseen := await _finish()
+	_check(not sr.mechanic_open and lseen.size() == 1, "G45: a click on the lantern — one line, no signals again (%s)" % str(lseen))
 	# Ribbon (once).
 	await _use("pelageya")
 	seen = await _finish()
@@ -1276,10 +1279,43 @@ func _test_office_mirror_mouse() -> void:
 	_reached_end = true
 
 
-# --- Sluice by mouse --------------------------------------------------------------------------
+# --- Sluice by mouse (G23: «точный удар») -------------------------------------------------------------
+
+## Strikes the sluice's bar with real clicks on the gate when the marker is in the middle of the green, `n` times
+## (or until the sluice is open). Returns how many clicks were made.
+func _sluice_strikes(p, n: int) -> int:
+	var made := 0
+	var guard := 0
+	while made < n and not gs.has_flag("sluice_opened") and guard < 6000 and is_instance_valid(p) and sr.mechanic_open:
+		guard += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		var t: Dictionary = _panel().get("timing", {})
+		if t.is_empty():
+			await process_frame
+			continue
+		var z: Array = t.get("zone", [0.4, 0.6])
+		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and absf(float(t.get("pos", 0.0)) - (float(z[0]) + float(z[1])) * 0.5) < 0.03:
+			await _click(_v(_panel().get("strike", {})))
+			made += 1
+			await _frames(2)
+		else:
+			await process_frame
+	return made
+
+
+## After the last hit: the water settles on the last level, the event opens the sluice (≤ 900 frames).
+func _wait_sluice_open() -> void:
+	var g2 := 0
+	while not gs.has_flag("sluice_opened") and g2 < 900 and sr.mechanic_open:
+		g2 += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+
 
 func _test_sluice_mouse() -> void:
-	Engine.time_scale = 4.0
+	Engine.time_scale = 2.0
 	await _day_one_done()
 	for f in ["done_N01", "done_M09", "done_M09s", "done_M09b", "done_M10", "done_M11", "done_M12", "done_M13a", "done_M13", "office_unbolted", "office_shelf_lifted",
 			"has_key_sluice", "has_journal_manager", "has_clamp", "sluice_key_inserted"]:
@@ -1296,52 +1332,75 @@ func _test_sluice_mouse() -> void:
 	await _finish()
 	var p = mv.panel
 	var pr := _panel()
-	_check(int(pr.get("notch", -1)) == 0, "closed at the start")
-	# Drag the lever from the first notch past two notches at once.
-	await _drag(_v(pr.get("lever_tip", {})), _v(pr.get("last_notch_point", {})), 10)
+	_check(int(pr.get("notch", -1)) == 0 and not pr.get("timing", {}).is_empty(), "closed at the start; the «точный удар» bar under the gate")
+	_check(int(pr["timing"].get("needed", 0)) == 4 and int(pr.get("steps", 0)) == 4, "G23: four steps down = four hits in a row (%s)" % str(pr["timing"].get("needed")))
+	_check(bool(pr.get("work_mark_at_last", false)), "G24: the red mark on the gauge is on the last notch (level %.2f)" % float(pr.get("work_mark_level", -1)))
+	# Two hits: two notches, the water two steps down.
+	await _sluice_strikes(p, 2)
+	pr = _panel()
+	_check(int(pr.get("notch", -1)) == 2 and not gs.has_flag("sluice_opened"), "two hits in the green: two notches (%d), not open yet" % int(pr.get("notch", -1)))
+	# Right after a hit (the water still falling) a click is not a miss: Pavel says to wait.
+	await _sluice_strikes(p, 1)
+	await _click(_v(_panel().get("strike", {})))
 	await _frames(2)
 	pr = _panel()
-	_check(int(pr.get("notch", -1)) == 1, "a drag past two notches opens only one (notch %d)" % int(pr.get("notch", -1)))
-	await _finish()
-	# At once again: refused.
-	await _drag(_v(pr.get("lever_tip", {})), _v(pr.get("next_notch", {})), 6)
-	await _frames(2)
-	pr = _panel()
-	_check(int(pr.get("notch", -1)) == 1 and int(pr.get("refused", 0)) >= 1, "the next notch at once is refused (Pavel holds the winch)")
+	_check(int(pr.get("refused", 0)) >= 1 and int(pr.get("notch", -1)) == 3 and int(pr.get("slips", 0)) == 0, "a click while the water falls: «Погоди», nothing lost (%s)" % str(pr.get("refused")))
 	var seen := await _finish()
 	_check(seen.any(func(x): return x.begins_with("pavel:")), "Pavel says to wait: %s" % str(seen))
-	_check(not gs.has_flag("sluice_opened"), "not open all at once")
-	# Save with one notch open, load: the notch stays.
+	# A miss (in the red): the winch slips back to the first notch, the water rises.
+	var g := 0
+	while g < 3000:
+		g += 1
+		var t: Dictionary = _panel().get("timing", {})
+		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and float(t.get("pos", 0.5)) < 0.08:
+			break
+		await process_frame
+	await _click(_v(_panel().get("strike", {})))
+	await _frames(2)
+	pr = _panel()
+	_check(int(pr.get("notch", -1)) == 0 and int(pr.get("slips", 0)) == 1 and not gs.has_flag("sluice_opened"), "a miss: back to the first notch (%d), the series again" % int(pr.get("notch", -1)))
+	seen = await _finish()
+	_check(seen.any(func(x): return x.begins_with("pavel:")), "Pavel: «Сорвался…» (%s)" % str(seen))
+	await create_timer(1.0).timeout
+	_check(float(_panel().get("level", 0.0)) > 0.9, "the water back up (%.2f)" % float(_panel().get("level", 0.0)))
+	# A click on the picture away from the gate strikes too.
+	var made := 0
+	g = 0
+	while made < 1 and g < 6000:
+		g += 1
+		var t: Dictionary = _panel().get("timing", {})
+		var z: Array = t.get("zone", [0.4, 0.6])
+		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and absf(float(t.get("pos", 0.0)) - (float(z[0]) + float(z[1])) * 0.5) < 0.03:
+			await _click(_v(_panel().get("free_click", {})))
+			made += 1
+		await process_frame
+	_check(int(_panel().get("notch", -1)) == 1 and int(_panel().get("strikes_by_click", 0)) >= 1, "a click anywhere on the close-up strikes (notch %d)" % int(_panel().get("notch", -1)))
+	# Closed in the middle and reopened: the series starts again from the first notch; flags untouched.
 	sr.close_mechanic()
 	await _frames(2)
-	_check(rm.save_game(SLUICE_SLOT), "save with a notch open")
+	_check(rm.save_game(SLUICE_SLOT), "save with the close-up put away")
 	_check(rm.load_game(SLUICE_SLOT), "load it")
 	await _frames(3)
 	await _use("gate")
 	await _frames(2)
 	await _finish()
 	p = mv.panel
-	_check(p.logic.notch == 1 and p.logic.settled(), "after the load the first notch is still open, the water settled")
-	# Wait each time, then the next notch — by mouse.
-	var guard := 0
-	while not gs.has_flag("sluice_opened") and guard < 10:
-		guard += 1
-		while is_instance_valid(p) and not p.logic.settled() and not gs.has_flag("sluice_opened"):
-			await process_frame
-		if gs.has_flag("sluice_opened") or not is_instance_valid(p):
-			break
-		pr = _panel()
-		await _drag(_v(pr.get("lever_tip", {})), _v(pr.get("next_notch", {})), 6)
-		await _frames(2)
-		await _finish()
+	_check(p.logic.notch == 0 and p.logic.settled() and not gs.has_flag("sluice_opened"), "after the load: from the first notch, nothing opened")
+	await _sluice_strikes(p, 4)
+	await _wait_sluice_open()
 	await _frames(3)
 	await _finish()
-	_check(gs.has_flag("sluice_opened") and gs.has_flag("pond_lowered"), "the last notch settled → the sluice is open")
+	_check(gs.has_flag("sluice_opened") and gs.has_flag("pond_lowered"), "four in a row → the sluice is open (sluice_opened, pond_lowered)")
 	if sr.mechanic_open:
 		sr.close_mechanic()
 	await _frames(2)
 	var lo = rm.current_room.get_node_or_null("Layers/lever_open")
-	_check(lo != null and lo.visible, "the lever stands in the open notch in the room")
+	var rot := -1.0
+	if lo != null:
+		for c in [lo] + lo.get_children():
+			if c is Sprite2D:
+				rot = c.rotation_degrees
+	_check(lo != null and lo.visible and is_equal_approx(rot, 86.0), "the lever stands in the last notch in the room (%.0f°)" % rot)
 	Engine.time_scale = 1.0
 	_reached_end = true
 

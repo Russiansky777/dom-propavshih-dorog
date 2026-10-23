@@ -15,7 +15,7 @@ var out_dir := ""
 
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
 	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3",
-	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "latch", "latch_up", "crossing_0", "crossing_5", "crossing_9",
+	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "crossing_0", "crossing_5", "crossing_9",
 	"windlass_wait", "windlass_zone", "windlass_bumped", "windlass_laid", "shuttle_back_5",
 	"npc_M2_from_M1", "npc_M3_from_M2", "npc_M3_gauge", "npc_R3_stopor", "npc_R3_lamp_post", "npc_Z3_pier_plate", "npc_Z3_from_R1"]
 
@@ -184,16 +184,6 @@ func _shot(name: String) -> void:
 			var p = mv.panel
 			p.hook.apply("one")
 			for i in 90:
-				await process_frame
-		"latch", "latch_up":
-			await _state(["house_unlocked", "h1_shutter_latch"], [], "H1")
-			var h = rm.current_room.get_node_or_null("Hotspots/shutter")
-			sr.open_mechanic(sr.mechanic_spec(h), "shutter")
-			await _frames(3)
-			var p = mv.panel
-			p.timing.logic.phase = 0.39 if name == "latch_up" else 0.08
-			p.timing.hold = true
-			for i in 30:
 				await process_frame
 		"crossing_0", "crossing_5", "crossing_9":
 			await _state(["house_unlocked", "ferry_verified", "done_M17"], [], "R2")

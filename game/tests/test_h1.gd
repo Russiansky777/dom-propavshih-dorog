@@ -132,25 +132,15 @@ func _place_entry(flags_if: Array) -> Dictionary:
 
 
 ## Click like the player: walk to the hotspot under `pos`, interact, wait until idle.
-## The H1 shutter's latch close-up (F8): strike when the marker is in the middle of the green.
+## The H1 shutter (G8): opened by the action itself (no latch close-up since 23.10); read the line that follows.
 func _open_latch() -> void:
-	var mv = main_node.get_node_or_null("MechanicView") if main_node != null else null
 	var g := 0
-	while not gs.has_flag("h1_shutter_open") and g < 3000:
+	while (not gs.has_flag("h1_shutter_open") or not sr.current_beat.is_empty()) and g < 600:
 		g += 1
 		if not sr.current_beat.is_empty():
 			sr.advance()
-		elif sr.mechanic_open and mv != null and mv.panel != null and mv.panel.get("timing") != null:
-			var tb = mv.panel.timing
-			if tb.logic != null and tb.logic.state == "run" and absf(tb.logic.pos() - tb.logic.center) < 0.04:
-				tb.strike()
 		await process_frame
-	var g2 := 0
-	while (sr.mechanic_open or not sr.current_beat.is_empty()) and g2 < 600:
-		if not sr.current_beat.is_empty():
-			sr.advance()
-		g2 += 1
-		await process_frame
+	_check(not sr.mechanic_open, "G8: the shutter opens without a close-up mini-game")
 
 
 func _click(pos: Vector2) -> void:
@@ -316,7 +306,7 @@ func _test_m03_once() -> void:
 		await _click(_hotspot(room, id).global_position)
 		await _finish()
 		if id == "shutter":
-			await _open_latch()   # F8 (23.10): the tight latch — caught up in the green of «точный удар»
+			await _open_latch()   # G8 (23.10): a simple action again
 	_check(not gs.has_flag("started_M03"), "M03 has not started before the third step")
 	await _click(_hotspot(room, "scarf").global_position)
 	var seen := await _finish(["ask"])

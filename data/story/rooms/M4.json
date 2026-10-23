@@ -16,7 +16,7 @@
   "height_refs": [{"what": "перила настила (верхний брус y 500, настил y 700)", "y": 700, "px": 200, "m": 1.1}],
   "layers": [
     {"id": "lever_closed", "image": "res://assets/rooms/M4/lever_up.png", "z": 0, "scale": 0.7, "scale_reason": "рычаг в слое длиннее дуги затвора (312 px исходника); 0.7 — по дуге делений", "pivot": [738.5, 610], "offset": [206.8, 110.3], "rotation_deg": -29, "if": ["sluice_key_inserted"], "unless": ["sluice_opened"], "_note": "втулка рычага (738.5, 610 в слое) — в гнездо ворота (исходник фона 697, 523 → экран 800, 601); закрыт — на первой зарубке слева"},
-    {"id": "lever_open", "image": "res://assets/rooms/M4/lever_up.png", "z": 0, "scale": 0.7, "scale_reason": "тот же рычаг, что lever_closed", "pivot": [738.5, 610], "offset": [206.8, 110.3], "rotation_deg": 57, "if": ["sluice_opened"]}
+    {"id": "lever_open", "image": "res://assets/rooms/M4/lever_up.png", "z": 0, "scale": 0.7, "scale_reason": "тот же рычаг, что lever_closed", "pivot": [738.5, 610], "offset": [206.8, 110.3], "rotation_deg": 86, "if": ["sluice_opened"], "_note": "G23: затвор открыт — рычаг на последней зарубке (86°), как в крупном плане"}
   ],
   "effects": [
     {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"]}
@@ -32,15 +32,18 @@
         "type": "sluice",
         "requires": {"flags": ["sluice_key_inserted"]},
         "title": "@M4.sluice.title",
-        "gate": {"image": "res://assets/rooms/M4/bg.png", "region": [512, 234, 386, 394], "pos": [260, 130], "scale": 2.1, "socket": [697, 523]},
+        "gate": {"image": "res://assets/rooms/M4/bg.png", "region": [512, 234, 386, 394], "pos": [230, 120], "scale": 2.0, "socket": [697, 523]},
         "lever": {"image": "res://assets/rooms/M4/lever_up.png", "pivot": [738.5, 610], "scale": 0.7},
-        "notch_angles": [-29, 0, 30, 57],
-        "water": {"levels": [1.0, 0.7, 0.42, 0.15], "fall_per_s": 0.07, "settle_tol": 0.015},
-        "work_mark": 0.9,
+        "notch_angles": [-29, 0, 30, 57, 86],
+        "_notch_note": "G23: пять зарубок дуги — закрыт на −29°, четыре ступени до последней нарисованной зарубки 86° (по рисунку M4: зарубки на −52, −30, 0, 30, 57, 86°)",
+        "water": {"levels": [1.0, 0.8, 0.6, 0.38, 0.15], "fall_per_s": 0.25, "rise_per_s": 0.9, "settle_tol": 0.015},
+        "timing": {"period_s": 2.0, "green": 0.22, "hit_s": 0.9, "miss_s": 1.1, "hint": "@ui.timing_hint", "_note": "G23 (Директор 23.10): уровень воды — «точный удар»: попал в зелёное — ворот на зарубку дальше, вода сходит на ступень (пока сходит — hit_s, удар рано — «Погоди. Пусть сойдёт»); промах — ворот срывается на первую зарубку, вода поднимается; ступеней — levels − 1 (4) подряд. «Облегчить мини-игры» — медленнее и шире"},
+        "timing_rect": [250, 950, 730, 50],
         "gauge_rect": [1300, 170, 110, 760],
-        "status_pos": [260, 980],
+        "_gauge_note": "G24: на рейке — зарубка на каждой ступени и красная метка на ПОСЛЕДНЕЙ (work_mark по умолчанию — уровень последней зарубки); красная метка на дуге затвора нарисована в арте M4 на третьей зарубке — заявка в арт 9",
+        "status_pos": [1460, 230],
         "done_flag": "sluice_opened",
-        "texts": {"label_gauge": "@M4.sluice.label_gauge", "label_status_settled": "@M4.sluice.label_status_settled", "label_status_falling": "@M4.sluice.label_status_falling", "label_status_open": "@M4.sluice.label_status_open", "wait": "@M4.sluice.wait"},
+        "texts": {"label_hint": "@mech.sluice.label_hint", "slipped": "@mech.sluice.slipped", "label_status_slipped": "@mech.sluice.label_status_slipped", "label_gauge": "@M4.sluice.label_gauge", "label_status_settled": "@M4.sluice.label_status_settled", "label_status_falling": "@M4.sluice.label_status_falling", "label_status_open": "@M4.sluice.label_status_open", "wait": "@M4.sluice.wait"},
         "events": {"opened": {"sets": ["sluice_opened", "pond_lowered"], "close": true}}
       },
       "look": "@M4.gate.look"

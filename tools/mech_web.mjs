@@ -16,7 +16,7 @@
 //             the rope's end dragged along the dotted path (mouse down — moves — up);
 //   hook    — the office mirror: «пускай» (a click on the bell), «стой» (a double click) when the swaying hook is in
 //             the green, «подымай» (a held press) — the bar out;
-//   latch   — the H1 shutter: a click on the shutter when the latch is up (in the green);
+//   latch   — the H1 shutter (G8): one click opens it by the action itself, no close-up mini-game;
 //   crossing— R2: ten clicks on the rope; the boat reaches the far pier (R3);
 //   nina    — mother's mirror: Nina's six poses from her 3D sheets (the mirror's clock moved on with the probe hook
 //             ambientMirrorAdvance — the poses come every few minutes of hers); a frame of each pose.
@@ -439,19 +439,17 @@ async function main() {
     }
 
     if (PARTS.includes("latch")) try {
+      // G8 (Director 23.10): the shutter opens by a simple action again — no «точный удар» close-up (F8 removed).
       await fresh("latch");
       await page.evaluate(() => window.ambientFlag("h1_shutter_open", false));
       await setFlags(["done_M01", "house_unlocked"]);
       await goto("H1");
       let s = await state();
       await click("the shutter", s.hotspots.shutter);
-      s = await waitFor("latch", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "latch", 120000);
-      await finish("stuck");
-      s = await state();
-      await shot("11_latch");
-      await strikeTiming("latch up", (t) => t.mechanic.panel.timing, s.mechanic.panel.shutter, true);
-      s = await waitFor("shutter open", (t) => t.flags.h1_shutter_open, 60000);
-      check(s.flags.h1_shutter_open, "the latch caught up: the shutter opens");
+      let sawMech = false;
+      s = await waitFor("shutter open", (t) => { sawMech = sawMech || !!(t.mechanic && t.mechanic.open); return t.flags.h1_shutter_open; }, 120000);
+      check(s.flags.h1_shutter_open && !sawMech && !(s.mechanic && s.mechanic.open), "G8: one click — Agata opens the shutter, no mini-game");
+      await shot("11_shutter_open");
       await finish("opened");
     } catch (e) {  // one broken part does not hide the others
       check(false, `latch: exception ${e.message}`);
