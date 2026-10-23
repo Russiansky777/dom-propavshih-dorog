@@ -10,7 +10,9 @@
   6. тайны не раскрываются раньше своего эпизода (min_episode);
   7. число переправ и повторение глаголов загадок (сигналы темпа, не ошибки);
   8. постановка сцен (stage: затемнение, перенос в комнату, звуки) и контрольные сохранения (checkpoint):
-     at — номер реплики или "end", комната — из locations сцены, звуки — из sfx.json, слот — не ручной.
+     at — номер реплики или "end", комната — из locations сцены, звуки — из sfx.json, слот — не ручной;
+  1г–1е. текст: цели и подсказки не называют факт раньше его флага (KNOWLEDGE_GATES), закадровый голос сцен не
+     говорит «мама» вне кавычек, в JSON сюжета нет повторяющихся ключей (ИИ-чтение непрерывности 23.10).
 Предмет, который игрок берёт сам в комнате (items.json source_hotspot «<комната>.<хотспот>»: хотспот с use.gives и
 use.requires), — единственный источник вместо выдачи сцены; симуляция даёт его, как только requires выполнены и
 комната достижима (скоба для плиты в мастерской — после плана из школы, блок 1 22.10).
@@ -212,6 +214,75 @@ for sc_h in scenes:
     if sc_h.get("type") == "main" and str(ep_h) in ("0", "1", "2", "3"):
         if len(sc_h.get("hints") or []) < 2:
             err(f"{sc_h['id']}: у основной сцены дней 1–2 нет подсказок (hints, хотя бы две ступени)")
+
+# ---------- 1г. цели и подсказки не называют факт раньше, чем игрок его узнал (ИИ-чтение 23.10: C6, C7, C10) ----------
+# Цель журнала (goal) видна после своей сцены, подсказки (hints) — пока сцена ждёт. Факт из таблицы можно назвать, только
+# если его флаг к этому моменту гарантирован: выдан самой сценой (только для goal) или сценами, которых она требует
+# (done_<id> в requires, по цепочке). Сцены свободного порядка (M23a–M23d) друг другу ничего не гарантируют.
+# Таблица: шаблон (без учёта регистра) → флаги (хватит одного) → откуда игрок узнаёт факт.
+KNOWLEDGE_GATES = [
+    (r"перв\w*\s+бревн\w*", {"bridge_decided"}, "о мосте решают на мельнице (M23b)"),
+    (r"управляющ\w*\s+(?:\w+\s+)?вернул\w*|вернул\w*\s+(?:\w+\s+)?управляющ\w*", {"manager_returned"},
+     "управляющего Агата видит во дворе мельницы (M23b)"),
+    (r"завал\w*", {"knows_sluice_key", "met_pavel"}, "завал конторы — от Пелагеи (необязательный вопрос) или от Павла (M09)"),
+]
+_guar_cache: dict[str, set[str]] = {}
+
+
+def guaranteed_before(sid: str) -> set[str]:
+    """Флаги, которые точно стоят, когда сцена sid доступна: её requires и всё, что выдают требуемые сцены."""
+    if sid in _guar_cache:
+        return _guar_cache[sid]
+    out = set(by_id[sid]["requires"].get("flags", []))
+    for fl in list(out):
+        prev = fl[len("done_"):] if fl.startswith("done_") else ""
+        if prev in by_id:
+            out |= guaranteed_before(prev) | set(by_id[prev]["grants"].get("flags", []))
+    _guar_cache[sid] = out
+    return out
+
+
+for s in mains:
+    before = guaranteed_before(s["id"])
+    after = before | set(s["grants"].get("flags", []))
+    shown = [("цель журнала", s.get("goal") or "", after)]
+    shown += [(f"подсказка {i + 1}", h, before) for i, h in enumerate(s.get("hints") or [])]
+    for where, text, known in shown:
+        for pat, need, why in KNOWLEDGE_GATES:
+            m = _re.search(pat, text, _re.IGNORECASE)
+            if m and not (need & known):
+                err(f"{s['id']}: {where} называет «{m.group(0)}» раньше, чем игрок это узнал ({why}; "
+                    f"нужен один из флагов {', '.join(sorted(need))}): «{text}»")
+
+# ---------- 1д. закадровый голос сцен — в третьем лице: не «мама» вне кавычек (ИИ-чтение 23.10: V12) ----------
+# «Мама» — слово Агаты. Рассказчик сцен называет Нину по имени; цитата надписи или письма в «ёлочках» — можно.
+_quoted = _re.compile(r"«[^»]*»")
+for s in scenes:
+    lines_n = s.get("mandatory_lines") or s.get("lines") or []
+    for i, ln in enumerate(lines_n):
+        if ln.get("speaker") != "narrator":
+            continue
+        bare = _quoted.sub("", str(ln.get("text", "")))
+        m = _re.search(r"\bмам\w*", bare, _re.IGNORECASE)
+        if m:
+            err(f"{s['id']}.{i}: закадровый голос говорит «{m.group(0)}» — рассказчик называет Нину по имени: «{ln.get('text')}»")
+
+# ---------- 1е. повторяющиеся ключи в JSON сюжета (flags.json: waved_at_stove дважды, 23.10) ----------
+# Парсер молча берёт последнее значение — правка первого не видна в игре.
+def _dup_hook(pairs):
+    seen: set[str] = set()
+    for k, _v in pairs:
+        if k in seen:
+            _dups.append(k)
+        seen.add(k)
+    return dict(pairs)
+
+
+for _jf in sorted(STORY.rglob("*.json")):
+    _dups: list[str] = []
+    json.loads(_jf.read_text(encoding="utf-8"), object_pairs_hook=_dup_hook)
+    if _dups:
+        err(f"{_jf.relative_to(ROOT)}: ключ повторяется в одном объекте — {', '.join(sorted(set(_dups)))}")
 
 # ---------- 2. единственный источник предметов ----------
 item_sources: dict[str, list[str]] = {}
