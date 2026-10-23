@@ -1,8 +1,8 @@
 {
   "_comment": "Голоса аккаунта ElevenLabs (GET /v2/voices; personal — раздел My Voices, voice_type=personal). Пишет pipeline/voice/eleven_voice.py list; ключа здесь нет. Сопоставление с персонажами — cast.json.",
-  "fetched_at": "2026-10-22T20:24:06+00:00",
-  "count": 34,
-  "personal_count": 11,
+  "fetched_at": "2026-10-23T11:35:06+00:00",
+  "count": 36,
+  "personal_count": 13,
   "voices": [
     {
       "name": "Agata",
@@ -96,6 +96,19 @@
       "created_order": 1
     },
     {
+      "name": "ВАРВАРА",
+      "voice_id": "rfeIEKYjOpWdFvzoGtOY",
+      "category": "generated",
+      "personal": true,
+      "labels": {
+        "language": "ru"
+      },
+      "description": "Native Russian. Female, around 30 years old. Studio quality, clean close-mic recording. A young village mother from the Russian north, a carpenter's wife. Calm, warm, a little shy. Soft mid-pitched voice with a gentle homely warmth and a fa",
+      "created_at_unix": 1792755301,
+      "created_at": "2026-10-23T11:35:01+00:00",
+      "created_order": 12
+    },
+    {
       "name": "ИЛЬЯ",
       "voice_id": "YmNNmdPsbLNfVc6yh4G1",
       "category": "generated",
@@ -146,6 +159,19 @@
       "created_at_unix": 1792693263,
       "created_at": "2026-10-22T18:21:03+00:00",
       "created_order": 8
+    },
+    {
+      "name": "ФЁДОР ЛУКИЧ",
+      "voice_id": "NUaCYt9nonRqOdH6QgLM",
+      "category": "generated",
+      "personal": true,
+      "labels": {
+        "language": "ru"
+      },
+      "description": "Native Russian. Male, around 70 years old. Studio quality, clean close-mic recording. The old manager of a village water mill in the Russian north. Dry, precise, a bit formal, kind underneath. Lower-pitched aged voice, slightly hoarse and g",
+      "created_at_unix": 1792755303,
+      "created_at": "2026-10-23T11:35:03+00:00",
+      "created_order": 13
     },
     {
       "name": "Adam - Dominant, Firm",
@@ -468,12 +494,12 @@
       "category": "professional",
       "personal": false,
       "labels": {
-        "gender": "female",
-        "accent": "standard",
         "age": "young",
+        "gender": "female",
         "use_case": "characters_animation",
-        "language": "hi",
-        "descriptive": "modulated"
+        "accent": "standard",
+        "descriptive": "modulated",
+        "language": "hi"
       },
       "description": "Bright, sincere, and unmistakably childlike — Mithi sounds like an actual young girl figuring things out, not an adult performing innocence. Her curious, intelligent delivery makes right and wrong feel like something she discovered herself,",
       "created_at_unix": 1792694405,
@@ -485,12 +511,12 @@
       "category": "professional",
       "personal": false,
       "labels": {
-        "language": "ru",
-        "use_case": "entertainment_tv",
         "age": "young",
         "gender": "female",
+        "use_case": "entertainment_tv",
+        "accent": "standard",
         "descriptive": "excited",
-        "accent": "standard"
+        "language": "ru"
       },
       "description": "Gentle, magical, and full of wonder, Lunya’s soft Russian voice brings fairy tales to life with warmth and innocence. Delicate, soothing tone creates a safe and enchanting atmosphere, perfect for bedtime stories, children’s audiobooks, and ",
       "created_at_unix": 1792694878,

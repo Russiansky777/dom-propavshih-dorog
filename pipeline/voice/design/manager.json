@@ -51,5 +51,14 @@
       "true_peak_db": -1.0,
       "duration_s": 12.748
     }
-  ]
+  ],
+  "created": {
+    "voice_id": "NUaCYt9nonRqOdH6QgLM",
+    "name": "ФЁДОР ЛУКИЧ",
+    "generated_voice_id": "NUaCYt9nonRqOdH6QgLM",
+    "category": "generated",
+    "at": "2026-10-23T11:35:04+00:00",
+    "run": "39946786556",
+    "selection": "превью 3 из 3 по замерам (tools/voice_design_pick.py manager --f0 95 135 --cps 8 11): основной тон 114 Гц (цель 95–135: мужчина ≈70, «ниже»), темп 9,7 букв/с (цель 8–11: «размеренно»), шумовой пол −55 dB, клиппинга нет, язык ru; остальные: #2 — 141 Гц, шум −48 dB; #1 — 147 Гц, шумовой пол −40 dB (шумно, выше нужного)"
+  }
 }
