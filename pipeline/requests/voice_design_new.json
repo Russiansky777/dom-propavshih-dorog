@@ -1,0 +1,30 @@
+{
+  "mode": "design",
+  "set": "design_new",
+  "_comment": "Voice Design (ElevenLabs text-to-voice) для двух персонажей без голоса: Варвара — жена Ильи (ilya_wife, ≈30) и Фёдор Лукич — управляющий мельницей (manager, ≈70). Описание — по формату документации Voice Design («Native <Language>. <Gender>, <Age range>. <Quality level>.» + образ 2–5 слов, 2–3 эмоции, тембр и темп; https://elevenlabs.io/docs/eleven-creative/voices/voice-design.md); текст превью — их реплики из data/story (без новых слов). Модель eleven_ttv_v3 (новее и выразительнее eleven_multilingual_ttv_v2), quality 1.0 (выше — лучше звук, меньше разброс: указание Директора 23.10 12:49 «где выбор качества — лучшее»), формат mp3_44100_192 (лучший для Creator). Три превью на голос → pipeline/voice/design/<персонаж>/; выбор — следующим запросом create_voice (voice_create_new.json). Списание — только символы текста превью (≈265 на двоих).",
+  "model_id": "eleven_ttv_v3",
+  "output_format": "mp3_44100_192",
+  "voices": [
+    {
+      "speaker": "ilya_wife",
+      "voice_name": "ВАРВАРА",
+      "description": "Native Russian. Female, around 30 years old. Studio quality, clean close-mic recording. A young village mother from the Russian north, a carpenter's wife. Calm, warm, a little shy. Soft mid-pitched voice with a gentle homely warmth and a faint smile; unhurried even pace, speaks quietly and simply in short phrases, slightly hesitant at the start of a sentence, never theatrical, never breathy.",
+      "text": "Ульяна, спать. Тётя никуда не денется — теперь уже никуда. Сиди, сиди. Я лампу поставлю — и Ульяну уложу. Ульяна, гляди — твоя заплатка на бабушкином рукаве.",
+      "guidance_scale": 5,
+      "quality": 1.0,
+      "loudness": 0.5,
+      "seed": 23102026
+    },
+    {
+      "speaker": "manager",
+      "voice_name": "ФЁДОР ЛУКИЧ",
+      "description": "Native Russian. Male, around 70 years old. Studio quality, clean close-mic recording. The old manager of a village water mill in the Russian north. Dry, precise, a bit formal, kind underneath. Lower-pitched aged voice, slightly hoarse and grainy but steady, with clear diction; measured unhurried pace, short businesslike questions and small pauses; a hint of bewildered warmth. Never frail, never comic, never theatrical.",
+      "text": "Затвор цел? Ключ где? Год… А я двадцать лет собирался вернуться к утру. К зиме пруд набрать. Иначе Заречье без муки.",
+      "guidance_scale": 5,
+      "quality": 1.0,
+      "loudness": 0.5,
+      "seed": 23102026
+    }
+  ],
+  "note": "2026-10-23: новые голоса для полной озвучки (задание Директора, передано координатором)"
+}
