@@ -178,7 +178,7 @@
       "id": "key_sluice",
       "wrong_target": {"text": "@item.key_sluice.wrong"},
       "name": "Ключ от затвора",
-      "examine": {"text": "@examine.key_sluice", "backdrop": "table", "art": "res://assets/closeups/closeup_key_sluice.png"},
+      "examine": {"text": "@examine.key_sluice", "backdrop": "table"},
       "inventory": true,
       "source_location": "M3",
       "source_scene": "M13",

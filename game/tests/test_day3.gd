@@ -1150,8 +1150,9 @@ func _test_batch8() -> void:
 	_check(bool(ll.get("children", false)) and not ll.has("ulyana"), "EP_lesson: the drawn children, no 3D Ulyana over them (%s)" % str(ll.keys()))
 	sr.set_frame("")
 	await _frames(2)
-	# Examine: the 11 items of batch 8 have their own close-up pictures.
-	for id in ["key_house", "door_hinges", "brace_plate", "chalk", "mitten", "bell_clapper", "key_sluice", "clamp", "school_ribbon", "journal_manager", "pocket_watch"]:
+	# Examine: the 10 items of batch 8 have their own close-up pictures.
+	# (closeup_key_sluice is not wired: the sluice key becomes a lever with its own art in batch G — Director 23.10b)
+	for id in ["key_house", "door_hinges", "brace_plate", "chalk", "mitten", "bell_clapper", "clamp", "school_ribbon", "journal_manager", "pocket_watch"]:
 		var ex: Dictionary = (sd.items.get(id, {}) as Dictionary).get("examine", {})
 		var art := String(ex.get("art", ""))
 		_check(art.ends_with("closeup_%s.png" % id) and ResourceLoader.exists(art), "examine %s: the drawn close-up (%s)" % [id, art])

@@ -372,7 +372,7 @@ async function main() {
       await sleep(600);
       await shot("8_b8_class_board");
       // «Рассмотреть»: a double click on an item in the bag → its drawn close-up.
-      const B8_ITEMS = ["key_house", "door_hinges", "brace_plate", "chalk", "mitten", "bell_clapper", "key_sluice", "clamp", "school_ribbon", "journal_manager", "pocket_watch"];
+      const B8_ITEMS = ["key_house", "door_hinges", "brace_plate", "chalk", "mitten", "bell_clapper", "clamp", "school_ribbon", "journal_manager", "pocket_watch"];
       const inv = (s.ui && s.ui.inventory) || {};
       const it = Object.keys(inv).find((k) => B8_ITEMS.includes(k));
       if (!it) {
