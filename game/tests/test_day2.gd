@@ -1006,10 +1006,15 @@ func _test_walkthrough() -> void:
 	await _finish()
 	p = mv.panel
 	var lp := _v(_panel().get("lantern", {}))
+	# Director / AI gate 23.10 (M2 item 16): deliberate signals a second and a half apart must count as one series.
 	for i in 3:
 		await _click(lp)
 		while bool(_panel().get("shutter_open", false)):
 			await process_frame
+		if i < 2:
+			var t0: float = p.clock
+			while p.clock - t0 < 1.6:
+				await process_frame
 	guard = 0
 	while not gs.has_flag("far_lights_answered") and guard < 1200:
 		await process_frame

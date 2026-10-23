@@ -4,6 +4,10 @@ extends MechanicPanel
 ## event "answered" (`far_lights_answered`). The snow over there (it is winter there already) shows since the
 ## knot (`road_held_both_ends`, polish 22.10 A1: the road comes back at the knot, the lights only answer). Any other count — Pelageya
 ## says how it is done, the count starts again, no penalty.
+## Timing (Director playtest 23.10, AI gate M2 item 16): a player gives the three signals deliberately, a second or
+## two apart — so the series is judged only after `pause_s` (3 s) of quiet with fewer than three, right after the
+## third flash plus `confirm_s` (0.9 s, room for a fourth) when there are three, and at once on a fourth. A row of
+## marks under the hint shows the flashes given so far.
 ## Art (партия 3): closeup_lantern_closed / closeup_lantern_open — two full-screen states of the one signal
 ## lantern on the wet jetty, the far bank dark behind it; a flash shows the open state for a moment. The
 ## answer from the far bank — three lights and the snow coming through — is drawn by the engine over the
@@ -21,6 +25,7 @@ var sequence: Array[int] = []    # counts that were judged (tests)
 var _open_t: float = -1.0
 var _last_flash_t: float = -100.0
 var _answer_t: float = -1.0
+var marks: Label = null           # «● ○ ○» — the flashes given in this series
 
 
 func build() -> void:
@@ -47,11 +52,15 @@ func build() -> void:
 	lantern_hit = hit_area(Rect2(Vector2(float(lb[0]), float(lb[1])) * k, Vector2(float(lb[2]), float(lb[3])) * k), _on_lantern_input, "LanternHit")
 	var fp := v2(spec.get("far_label_pos", [1250, 300]))
 	label(text("label_far"), fp, 420)
-	label(text("label_count"), v2(spec.get("hint_pos", [1180, 860])), 640)
+	var hp := v2(spec.get("hint_pos", [1180, 860]))
+	label(text("label_count"), hp, 640)
+	marks = label("", hp + Vector2(0, 44), 640)
+	marks.name = "FlashMarks"
 	far_snow.modulate.a = 0.55 if flag("road_held_both_ends") else 0.0
 	if flag("far_lights_answered"):
 		answered_sent = true
 		_show_answer(1.0)
+	_update_marks()
 
 
 func _on_lantern_input(ev: InputEvent) -> void:
@@ -71,6 +80,9 @@ func flash() -> void:
 		return
 	flashes += 1
 	_last_flash_t = clock
+	_update_marks()
+	if flashes > int(spec.get("count", 3)):
+		_judge()
 
 
 func tick(_delta: float) -> void:
@@ -78,20 +90,42 @@ func tick(_delta: float) -> void:
 		_open_t = -1.0
 		shutter.visible = true
 		sound("shutter")
-	if not answered_sent and _answer_t < 0.0 and flashes > 0 and _open_t < 0.0 \
-			and clock - _last_flash_t >= float(spec.get("pause_s", 1.3)) and not dialogue_up():
-		sequence.append(flashes)
-		if flashes == int(spec.get("count", 3)):
-			_answer_t = clock
-		else:
-			say("count_wrong")
-		flashes = 0
+	if not answered_sent and _answer_t < 0.0 and flashes > 0 and _open_t < 0.0 and not dialogue_up():
+		var quiet := clock - _last_flash_t
+		var need := int(spec.get("count", 3))
+		if (flashes == need and quiet >= float(spec.get("confirm_s", 0.9))) \
+				or (flashes < need and quiet >= float(spec.get("pause_s", 3.0))):
+			_judge()
 	if _answer_t >= 0.0 and not answered_sent:
 		var k := clampf((clock - _answer_t) / float(spec.get("answer_s", 2.4)), 0.0, 1.0)
 		_show_answer(k)
 		if k >= 1.0:
 			answered_sent = true
 			event("answered")
+
+
+## The series is over: exactly three — the far bank answers; any other count — Pelageya says how, start again.
+func _judge() -> void:
+	sequence.append(flashes)
+	if flashes == int(spec.get("count", 3)):
+		_answer_t = clock
+	else:
+		say("count_wrong")
+	flashes = 0
+	_update_marks()
+
+
+func _update_marks() -> void:
+	if marks == null:
+		return
+	var need := int(spec.get("count", 3))
+	if answered_sent or _answer_t >= 0.0:
+		marks.text = "● ● ●"
+		return
+	var parts: Array[String] = []
+	for i in need:
+		parts.append("●" if i < flashes else "○")
+	marks.text = " ".join(parts)
 
 
 ## The far bank answers: three lights one after another (the snow is there since the knot).
