@@ -43,7 +43,8 @@ def main() -> int:
         d = load(f)
         rooms[f.stem] = d.get("title") or d.get("name") or f.stem
     day_of_text = {"ru_E0_E1": "День первый", "ru_bag": "Сумка (строки предметов)", "ru_E2_E3": "День второй",
-                   "ru_mechanics": "Крупные планы предметов и механик", "ru_E4_E5": "Дни третий–четвёртый, эпилог"}
+                   "ru_mechanics": "Крупные планы предметов и механик", "ru_E4_E5": "Дни третий–четвёртый, эпилог",
+                   "ru_Q02_Q06": "Необязательные истории Q02, Q06"}
 
     sys.path.insert(0, str(ROOT / "tools"))
     import voice_coverage as vc   # noqa: E402

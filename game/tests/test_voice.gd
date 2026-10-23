@@ -230,6 +230,14 @@ func _voice_player() -> Node:
 
 # --- Tests ---------------------------------------------------------------------------------
 
+## voice.json → narration.character_lines.subdir (folder of a character's words next to Agata).
+func _character_lines_subdir() -> String:
+	var vj = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/voice.json"))
+	if vj is Dictionary:
+		return String(vj.get("narration", {}).get("character_lines", {}).get("subdir", "character_lines"))
+	return "character_lines"
+
+
 func _test_manifest() -> void:
 	_check(vd.config_errors.is_empty(), "voice.json/manifest errors: %s" % [vd.config_errors])
 	_check(AudioServer.get_bus_index("Voice") >= 0, "bus Voice must exist")
@@ -257,6 +265,10 @@ func _test_manifest() -> void:
 			_check(String(e.get("speaker", "")) == want_sp, "%s: speaker %s, expected %s" % [id, e.get("speaker"), want_sp])
 			var t: String = sd.text("@" + key)
 			var sub := String(vd.narr_subdirs.get(want_sp, "?"))
+			if bool(e.get("as_line", false)):
+				# a character's words next to Agata (text entry `line`): the line's own text, folder character_lines
+				t = String(sd.text_line("@" + key).get("text", t))
+				sub = _character_lines_subdir()
 			if sd.texts.has(key) and vd.line_status(id, t) == "text_changed":
 				outdated.append(id)   # a text edit must not fail the build — only keep the game silent
 				_check(vd.stream_for(id, t) == null and ResourceLoader.exists(vd.file_path(id)), "%s: outdated → no stream (silent), file kept" % id)
@@ -330,7 +342,16 @@ func _test_cut() -> void:
 	var ev := _last_event("stop")
 	_check(String(ev.get("line", "")) == "M01_1" and String(ev.get("reason", "")) == "advance", "click must cut M01_1: %s" % [ev])
 	_check(vd.current_line == "M01_2" and vd.is_playing(), "the next line's voice starts: %s" % [vd.state()])
-	# The last click of the scene: the beat goes away, the voice with it.
+	# The last click of the scene: the beat goes away, the voice with it (M01 is 9 lines since 22.10 — click to the last).
+	var lines: Array = sd.scene("M01").get("mandatory_lines", [])
+	var last_id := "M01_%d" % (lines.size() - 1)
+	for i in 20:
+		if String(sr.current_beat.get("line_id", "")) == last_id or sr.current_beat.is_empty():
+			break
+		sr.advance()
+		await _frames(2)
+	_ensure_voice(last_id)
+	_check(String(sr.current_beat.get("line_id", "")) == last_id, "reached the last line %s" % last_id)
 	sr.advance()
 	await _frames(2)
 	_check(not vd.is_playing(), "after the last line no voice plays")
@@ -983,7 +1004,7 @@ func _test_character_lines() -> void:
 	for k in keys:
 		if vd.manifest.has(k):
 			var st: String = vd.line_status(k, sd.text("@" + k))
-			_check(st == "ok" or st == "text_changed", "%s: the narrator's spare is kept (%s)" % [k, st])
+			_check(st == "ok" or st == "text_changed" or st == "stale", "%s: the narrator's spare is kept (%s)" % [k, st])
 
 
 ## Defects of 23.10 (full voice-over): a narrator line inside a scene (mandatory_lines speaker "narrator") is a
