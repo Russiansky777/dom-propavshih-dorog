@@ -14,7 +14,7 @@
   "height_refs": [{"what": "дверь в сени (порог y 670, верх y 120)", "y": 670, "px": 550, "m": 2.0, "door": true}],
   "layers": [],
   "effects": [],
-  "spawns": {"default": [1300, 900], "from_M2": [1000, 760]},
+  "spawns": {"default": [1300, 900], "from_M2": [975, 720]},
   "props": [],
   "hotspots": [
     {
@@ -37,7 +37,7 @@
       "look": "@M3.clamp.look"
     },
     {
-      "id": "gauge", "kind": "object", "label": "@M3.gauge.label", "rect": [1515, 355, 70, 150], "stand": [1500, 720], "draw": false,
+      "id": "gauge", "kind": "object", "label": "@M3.gauge.label", "rect": [1515, 355, 70, 150], "stand": [1560, 722], "draw": false,
       "look": "@M3.gauge.look"
     },
     {

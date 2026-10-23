@@ -37,7 +37,7 @@
       "look": "@R3.stopor.look"
     },
     {
-      "id": "lamp_post", "kind": "object", "label": "@R3.lamp_post.label", "rect": [445, 90, 115, 310], "stand": [600, 590], "draw": false,
+      "id": "lamp_post", "kind": "object", "label": "@R3.lamp_post.label", "rect": [445, 90, 115, 310], "stand": [390, 628], "draw": false,
       "look": "@R3.lamp_post.look"
     }
   ],

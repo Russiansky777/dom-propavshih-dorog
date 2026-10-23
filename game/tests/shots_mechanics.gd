@@ -15,7 +15,20 @@ var out_dir := ""
 
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
 	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3",
-	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "latch", "latch_up", "crossing_0", "crossing_5", "crossing_9"]
+	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "latch", "latch_up", "crossing_0", "crossing_5", "crossing_9",
+	"npc_M2_from_M1", "npc_M3_from_M2", "npc_M3_gauge", "npc_R3_stopor", "npc_R3_lamp_post", "npc_Z3_pier_plate", "npc_Z3_from_R1"]
+
+## Agata at an item stand or an entry point next to an NPC (validate_rooms 9b): flags that show the NPC, then
+## "spawn:<id>" or "stand:<hotspot>"; she faces the NPC.
+const NPC_SHOTS := {
+	"npc_M2_from_M1": ["M2", "pavel", "spawn:from_M1", ["house_unlocked", "office_unbolted"]],
+	"npc_M3_from_M2": ["M3", "pavel", "spawn:from_M2", ["house_unlocked", "office_unbolted", "office_shelf_lifted"]],
+	"npc_M3_gauge": ["M3", "pavel", "stand:gauge", ["house_unlocked", "office_unbolted", "office_shelf_lifted"]],
+	"npc_R3_stopor": ["R3", "mitya", "stand:stopor", ["house_unlocked", "ferry_verified", "done_M18"]],
+	"npc_R3_lamp_post": ["R3", "mitya", "stand:lamp_post", ["house_unlocked", "ferry_verified", "done_M18"]],
+	"npc_Z3_pier_plate": ["Z3", "pelageya", "stand:pier_plate", ["house_unlocked", "evening_dusk", "done_M15a"]],
+	"npc_Z3_from_R1": ["Z3", "pelageya", "spawn:from_R1", ["house_unlocked", "evening_dusk", "done_M15a"]],
+}
 
 
 func _initialize() -> void:
@@ -194,6 +207,26 @@ func _shot(name: String) -> void:
 			p.pulls = int(name.right(1))
 			p.progress = float(p.pulls) / float(p.pulls_total)
 			p.rope_phase = 37.0
+			for i in 40:
+				await process_frame
+		_ when NPC_SHOTS.has(name):
+			var c: Array = NPC_SHOTS[name]
+			var where := String(c[2])
+			await _state(c[3], [], String(c[0]))
+			var pl = rm.player
+			var npc = rm.current_room.get_node_or_null("Hotspots/" + String(c[1]))
+			if where.begins_with("spawn:"):
+				rm.change_room(String(c[0]), where.get_slice(":", 1))
+				await _frames(4)
+				pl = rm.player
+			else:
+				var h = rm.current_room.get_node_or_null("Hotspots/" + where.get_slice(":", 1))
+				pl.call("enter_room", rm.current_room, h.call("get_stand_position"))
+			npc = rm.current_room.get_node_or_null("Hotspots/" + String(c[1]))
+			if npc != null:
+				pl.call("face_towards", npc.global_position)
+			print("mech npc: ", name, " agata ", pl.global_position, " npc ", npc.global_position if npc != null else Vector2.ZERO,
+				" npc visible ", npc != null and npc.visible)
 			for i in 40:
 				await process_frame
 		_:
