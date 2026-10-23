@@ -15,6 +15,8 @@
            [--dry-run]        только список реплик и число символов, без запросов к API
   запрос с "only_changed": true  перезапись после правки текста: всё, что изменилось (sha1), одним запросом —
                               pipeline/voice/rerecord_template.json, pipeline/voice/README.md → «Текст изменился»
+  design --request <файл>     Voice Design: превью новых голосов по описанию → pipeline/voice/design/<персонаж>/
+  create_voice --request <ф>  выбранное превью → голос в My Voices (voice_id в design/<персонаж>.json) + список голосов
   run --request <файл>        режим берётся из поля "mode" запроса (так запускает workflow)
 
 Идентификатор реплики: <scene>_<index>, index — позиция в mandatory_lines сцены (для заданий — lines), как её
@@ -28,6 +30,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import fnmatch
 import hashlib
 import json
@@ -103,6 +106,19 @@ def story_lines() -> dict[str, dict]:
     def add(scene_id: str, lines: list) -> None:
         for i, ln in enumerate(lines or []):
             lid = f"{scene_id}_{i}"
+            # Выбор внутри разговора (M13: что Агата отвечает Павлу): StoryRunner показывает не text строки, а слова
+            # выбранного варианта — line_id <scene>_<index>_<вариант>, говорящий — speaker строки (по умолчанию Агата).
+            for o in ln.get("options") or []:
+                if str(o.get("text", "")).strip():
+                    oe = {"scene": scene_id, "index": i, "option": str(o["id"]),
+                          "speaker": str(ln.get("speaker", "agata") or "agata"), "text": str(o["text"])}
+                    if o.get("tags"):
+                        oe["tags"] = [str(t) for t in o["tags"]]
+                    if o.get("voice_text"):
+                        oe["voice_text"] = str(o["voice_text"])
+                    out[f"{lid}_{o['id']}"] = oe
+            if ln.get("options") or not str(ln.get("text", "")).strip():
+                continue   # строка-выбор (вопрос — закадровая фраза prompt) или без текста: звучать нечему
             e = {"scene": scene_id, "index": i, "speaker": str(ln.get("speaker", "")), "text": str(ln.get("text", ""))}
             if ln.get("context"):
                 e["context"] = str(ln["context"])
@@ -387,6 +403,129 @@ def cmd_list() -> int:
     return 0
 
 
+# --- Voice Design: новый голос по описанию ------------------------------------------------------------
+# Документация (сверено 23.10.2026): https://elevenlabs.io/docs/api-reference/text-to-voice/design —
+#   POST /v1/text-to-voice/design?output_format=…  {voice_description 20–1000, model_id eleven_ttv_v3 |
+#   eleven_multilingual_ttv_v2, text 100–1000, guidance_scale 0–100, quality −1…1, loudness −1…1, seed, should_enhance}
+#   → previews[] {generated_voice_id, audio_base_64, media_type, duration_secs, language}, text;
+# https://elevenlabs.io/docs/api-reference/text-to-voice/create —
+#   POST /v1/text-to-voice {voice_name, voice_description, generated_voice_id, labels?, played_not_selected_voice_ids?}
+#   → voice_id (голос в My Voices). Списание — только символы текста превью, один раз за три варианта
+#   (https://elevenlabs.io/docs/eleven-creative/voices/voice-design.md).
+DESIGN_DIR = VOICE_DIR / "design"
+DESIGN_KEYS = ("guidance_scale", "quality", "loudness", "seed", "should_enhance")
+
+
+def cmd_design(req_path: Path) -> int:
+    """Режим design: превью голосов по описанию → pipeline/voice/design/<персонаж>/preview_<n>.mp3 и <персонаж>.json."""
+    req = read_json(req_path, {})
+    fmt = str(req.get("output_format", "mp3_44100_192"))
+    model = str(req.get("model_id", "eleven_ttv_v3"))
+    voices = [v for v in req.get("voices", []) if v.get("speaker")]
+    if not voices:
+        raise VoiceError("design: нет voices[]")
+    for v in voices:
+        d, t = str(v.get("description", "")), str(v.get("text", ""))
+        if not 20 <= len(d) <= 1000:
+            raise VoiceError(f"design {v['speaker']}: description {len(d)} символов, нужно 20–1000")
+        if not 100 <= len(t) <= 1000:
+            raise VoiceError(f"design {v['speaker']}: text {len(t)} символов, нужно 100–1000")
+    sub_before = subscription()
+    failed = []
+    for v in voices:
+        sp = str(v["speaker"])
+        body = {"voice_description": str(v["description"]), "model_id": str(v.get("model_id", model)), "text": str(v["text"]),
+                "auto_generate_text": False}
+        body.update({k: v[k] for k in DESIGN_KEYS if k in v})
+        log(f"  design {sp}: {body['model_id']}, {fmt}, текст {len(body['text'])} символов, "
+            + ", ".join(f"{k}={body[k]}" for k in DESIGN_KEYS if k in body))
+        st, hdr, payload = http("POST", "/v1/text-to-voice/design", {"output_format": fmt}, body, retry_on_disconnect=False)
+        rejected = [k for k in DESIGN_KEYS if k in body and st == 422 and k in error_text(st, payload)]
+        if rejected:
+            # отклонённый запрос кредитов не списывает; что убрано — в журнал и в design/<персонаж>.json
+            log(f"    {error_text(st, payload)} — повтор без {', '.join(rejected)}")
+            for k in rejected:
+                body.pop(k)
+            st, hdr, payload = http("POST", "/v1/text-to-voice/design", {"output_format": fmt}, body, retry_on_disconnect=False)
+        if st != 200:
+            failed.append(f"{sp}: {error_text(st, payload)}")
+            log(f"  ОШИБКА design {sp}: {error_text(st, payload)}")
+            continue
+        d = json.loads(payload.decode("utf-8"))
+        out_dir = DESIGN_DIR / sp
+        out_dir.mkdir(parents=True, exist_ok=True)
+        previews = []
+        for n, p in enumerate(d.get("previews", []), 1):
+            f = out_dir / f"preview_{n}.mp3"
+            f.write_bytes(base64.b64decode(p.get("audio_base_64", "")))
+            row = {"n": n, "generated_voice_id": p.get("generated_voice_id", ""), "file": f"{sp}/{f.name}",
+                   "media_type": p.get("media_type", ""), "duration_secs": p.get("duration_secs"), "language": p.get("language", "")}
+            try:
+                i_lufs, tp = measure(f)
+                row.update({"lufs": round(i_lufs, 2), "true_peak_db": round(tp, 2), "duration_s": duration_s(f)})
+            except VoiceError as e:
+                row["measure_error"] = str(e)[:200]
+            previews.append(row)
+            log(f"    вариант {n}: {row['generated_voice_id']}  {row.get('duration_s', '?')} с  язык {row['language']}  "
+                f"{row.get('lufs', '?')} LUFS  TP {row.get('true_peak_db', '?')}")
+        doc = read_json(DESIGN_DIR / f"{sp}.json", {}) or {}
+        doc.update({"speaker": sp, "voice_name": v.get("voice_name", ""), "request": dict(body, output_format=fmt),
+                    "dropped_params": rejected,
+                    "designed_at": now_iso(), "run": os.environ.get("GITHUB_RUN_ID", "local"),
+                    "request_id": hdr.get("request-id", ""), "character_cost": hdr.get("character-cost", ""),
+                    "preview_text": d.get("text", body["text"]), "previews": previews})
+        write_json(DESIGN_DIR / f"{sp}.json", doc)
+    sub_after = subscription()
+    if sub_before and sub_after and sub_before.get("character_count") is not None and sub_after.get("character_count") is not None:
+        log(f"  design: изменение счётчика подписки {int(sub_after['character_count']) - int(sub_before['character_count'])} "
+            f"(счётчик обновляется с задержкой)")
+    return 1 if failed else 0
+
+
+def cmd_create_voice(req_path: Path) -> int:
+    """Режим create_voice: выбранное превью → голос в My Voices (voice_id в pipeline/voice/design/<персонаж>.json),
+    затем список голосов (voices.json) — для cast.json и tools/validate_voice.py."""
+    req = read_json(req_path, {})
+    failed = []
+    for v in req.get("voices", []):
+        sp = str(v.get("speaker", ""))
+        doc = read_json(DESIGN_DIR / f"{sp}.json", {}) or {}
+        gid = str(v.get("generated_voice_id", ""))
+        known = {str(p.get("generated_voice_id")) for p in doc.get("previews", [])}
+        if not sp or not gid or gid not in known:
+            failed.append(f"{sp}: generated_voice_id {gid!r} не из превью design/{sp}.json")
+            log(f"  ОШИБКА create {sp}: generated_voice_id не из превью")
+            continue
+        if (doc.get("created") or {}).get("generated_voice_id") == gid and (doc.get("created") or {}).get("voice_id"):
+            log(f"  create {sp}: уже создан — {doc['created']['voice_id']}")
+            continue
+        body = {"voice_name": str(v.get("voice_name") or doc.get("voice_name") or sp),
+                "voice_description": str(v.get("description") or doc.get("request", {}).get("voice_description", ""))[:1000],
+                "generated_voice_id": gid}
+        if v.get("labels"):
+            body["labels"] = v["labels"]
+        others = [g for g in known if g != gid]
+        if others:
+            body["played_not_selected_voice_ids"] = others
+        st, _, payload = http("POST", "/v1/text-to-voice", None, body, retry_on_disconnect=False)
+        if st in (400, 422) and "labels" in body:
+            log(f"    {error_text(st, payload)} — повтор без labels")
+            body.pop("labels")
+            st, _, payload = http("POST", "/v1/text-to-voice", None, body, retry_on_disconnect=False)
+        if st != 200:
+            failed.append(f"{sp}: {error_text(st, payload)}")
+            log(f"  ОШИБКА create {sp}: {error_text(st, payload)}")
+            continue
+        d = json.loads(payload.decode("utf-8"))
+        doc["created"] = {"voice_id": d.get("voice_id", ""), "name": d.get("name", body["voice_name"]),
+                          "generated_voice_id": gid, "category": d.get("category", ""), "at": now_iso(),
+                          "run": os.environ.get("GITHUB_RUN_ID", "local"), "selection": v.get("selection", "")}
+        write_json(DESIGN_DIR / f"{sp}.json", doc)
+        log(f"  создан голос {sp}: {doc['created']['name']!r} → {doc['created']['voice_id']} ({doc['created']['category']})")
+    rc = cmd_list()
+    return 1 if failed or rc else 0
+
+
 # --- Обработка звука (ffmpeg) ---------------------------------------------------------------------
 
 def _ffmpeg(args: list[str]) -> str:
@@ -433,6 +572,11 @@ def duration_s(path: Path) -> float:
         return 0.0
 
 
+def vorbis_quality(lc: dict) -> int:
+    """Качество кодирования OGG Vorbis (cast.json → loudness.vorbis_quality; до 23.10 — 5)."""
+    return int(lc.get("vorbis_quality", 5))
+
+
 def process(src: Path, dst: Path, lc: dict) -> dict:
     """src (ответ API) → dst OGG: срез тишины, линейное усиление к target_lufs, ограничитель, фейды."""
     target = float(lc.get("target_lufs", -17.0))
@@ -446,10 +590,11 @@ def process(src: Path, dst: Path, lc: dict) -> dict:
     chain = (f"{trim},volume={gain}dB,alimiter=limit={lim:.4f}:level=0:attack=5:release=60,"
              f"afade=t=in:d=0.008,areverse,afade=t=in:d=0.03,areverse")
     dst.parent.mkdir(parents=True, exist_ok=True)
-    _ffmpeg(["-i", str(src), "-af", chain, "-ac", "1", "-ar", "44100", "-c:a", "libvorbis", "-q:a", "5", str(dst)])
+    vq = vorbis_quality(lc)
+    _ffmpeg(["-i", str(src), "-af", chain, "-ac", "1", "-ar", "44100", "-c:a", "libvorbis", "-q:a", str(vq), str(dst)])
     out_i, out_tp = measure(dst)
     return {"duration_s": duration_s(dst), "lufs": round(out_i, 2), "true_peak_db": round(out_tp, 2),
-            "gain_db": gain, "source_lufs": round(src_i, 2), "source_true_peak_db": round(src_tp, 2)}
+            "gain_db": gain, "source_lufs": round(src_i, 2), "source_true_peak_db": round(src_tp, 2), "vorbis_q": vq}
 
 
 # --- generate ----------------------------------------------------------------------------------------
@@ -621,8 +766,9 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             if lid in redo or not fresh:
                 has_src = e is not None and same_spec(e, sha, vsha, spec) and (vs["dir"] / e.get("source", "-")).is_file()
                 action = "process" if has_src and lid not in redo else "synth"   # ответ API уже есть — только обработать
-            elif req.get("reprocess") or e.get("loudness_target_lufs") != target:
-                action = "process"
+            elif (req.get("reprocess") or e.get("loudness_target_lufs") != target
+                  or int(e.get("vorbis_q", 5)) != vorbis_quality(lc)):
+                action = "process"   # громкость или качество OGG сменились — из src/*.mp3, без кредитов
             if action:
                 plan.append({"set": vs, "id": lid, "line": ln, "spec": spec, "action": action})
     if missing:
@@ -662,6 +808,23 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         raise VoiceError("нет ffmpeg")
 
     sub_before = subscription() if synth_items else None
+    # Квота (cast.json → quota): до синтеза — хватит ли остатка подписки на весь запрос с запасом margin_fraction
+    # от лимита (по числу символов × credits_per_char_assumed — с запасом: eleven_v4 списывает ≈0,44 кредита за символ);
+    # во время — по фактическому списанию (заголовок character-cost) не заходить в запас. Докупка — решение Директора.
+    qc = cast.get("quota", {}) or {}
+    reserve = None
+    spent_now = 0
+    if synth_items and sub_before and sub_before.get("character_limit") and sub_before.get("character_count") is not None:
+        limit_c, used_c = int(sub_before["character_limit"]), int(sub_before["character_count"])
+        reserve = float(qc.get("margin_fraction", 0.10)) * limit_c
+        need = chars * float(qc.get("credits_per_char_assumed", 1.0))
+        left = limit_c - used_c
+        log(f"  квота: осталось {left} из {limit_c}, запас {int(reserve)}, к синтезу ≤ {int(need)} кредитов (оценка сверху)")
+        if need > left - reserve:
+            raise VoiceError(f"квота: запросу нужно до {int(need)} кредитов, а до запаса {int(reserve)} осталось {int(left - reserve)} — "
+                             f"не запускаю (сократить запрос или решение Директора о докупке)")
+    elif synth_items:
+        log("  квота: баланс не прочитан — проверка остатка невозможна, синтез только в пределах order.max_chars")
     done, failed = [], []
     stop = False
     for it in plan:
@@ -672,11 +835,18 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         src = vs["dir"] / "src" / file_rel(ln, lid, "mp3")
         dst = vs["dir"] / file_rel(ln, lid, "ogg")
         tag = f"{lid}{'@' + vs['variant'] if vs['variant'] else ''}"
+        if it["action"] == "synth" and reserve is not None:
+            if int(sub_before["character_count"]) + spent_now + len(api_text(ln)) > int(sub_before["character_limit"]) - reserve:
+                failed.append(f"{tag}: квота — дальше запас {int(reserve)} кредитов, остановлено")
+                log(f"  СТОП {tag}: списано {spent_now}, следующая реплика зашла бы в запас квоты")
+                break
         try:
             info = {}
             if it["action"] == "synth":
                 seed = int(hashlib.sha1(f"{lid}|{ln['text']}".encode("utf-8")).hexdigest()[:8], 16)
                 audio, info = synth(api_text(ln), spec, cast, seed)
+                cc = str(info.get("character_cost", ""))
+                spent_now += int(cc) if cc.isdigit() else len(api_text(ln))
                 src.parent.mkdir(parents=True, exist_ok=True)
                 src.write_bytes(audio)
             meas = process(src, dst, lc)
@@ -690,6 +860,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         fresh_audio = it["action"] == "synth"
         where = ({"kind": "narration", "key": ln["key"], "source_text": ln["source"]} if ln.get("kind") == "narration"
                  else {"scene": ln["scene"], "index": ln["index"]})
+        if ln.get("option"):
+            where["option"] = ln["option"]
         if ln.get("profile"):
             where["profile"] = ln["profile"]
         if ln.get("as_line"):
@@ -700,6 +872,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                  "source": "src/" + file_rel(ln, lid, "mp3"),
                  "voice_text": api_text(ln), "voice_sha1": text_sha1(api_text(ln)), "tags": ln.get("tags", []),
                  "characters": len(api_text(ln)), "loudness_target_lufs": target, **meas,
+                 "output_format": (info.get("output_format") if fresh_audio
+                                   else prev.get("output_format") or (prev.get("api") or {}).get("output_format", "")),
                  "generated_at": now_iso() if fresh_audio else prev.get("generated_at"),
                  "run": os.environ.get("GITHUB_RUN_ID", "local") if fresh_audio else prev.get("run")}
         if "context" in ln:
@@ -724,8 +898,24 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         write_json(vs["dir"] / "manifest.json", _manifest_doc(manifest, cast, vs))
         log(f"  {tag:18} {'синтез' if fresh_audio else 'обработка'}: {meas['duration_s']:.2f} с, {meas['lufs']} LUFS, "
             f"TP {meas['true_peak_db']} dB (усиление {meas['gain_db']:+.1f} dB)")
+    pruned: list[str] = []
+    if req.get("prune_stale") and not stop:
+        # Уборка: запись, которая после этого запроса всё ещё stale (ключа/реплики нет; запасная запись другого голоса
+        # под старым текстом; ключ без ссылок в данных игры с изменённым текстом), не прозвучит никогда — убрать запись
+        # манифеста, OGG и src/*.mp3. Актуальные записи (в т.ч. запасные с совпадающим текстом) не трогаются.
+        for vs in sets:
+            for lid, e in sorted(vs["manifest"]["lines"].items()):
+                if "stale" not in e:
+                    continue
+                for rel in (e.get("file"), e.get("source")):
+                    if rel and (vs["dir"] / rel).is_file():
+                        (vs["dir"] / rel).unlink()
+                del vs["manifest"]["lines"][lid]
+                pruned.append(f"{lid}{'@' + vs['variant'] if vs['variant'] else ''} ({e['stale']})")
+        if pruned:
+            log(f"  убраны устаревшие записи ({len(pruned)}): {', '.join(pruned)}")
     for vs in sets:   # манифесты всех наборов (в т.ч. только с новыми метками stale)
-        if vs["manifest"]["lines"]:
+        if vs["manifest"]["lines"] or pruned:
             write_json(vs["dir"] / "manifest.json", _manifest_doc(vs["manifest"], cast, vs))
     sub_after = subscription() if synth_items else None
     synthesized = [f"{it['id']}{'@' + it['set']['variant'] if it['set']['variant'] else ''}" for it in done if it["action"] == "synth"]
@@ -733,6 +923,7 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
            "synthesized": synthesized,
            "reprocessed": [f"{it['id']}{'@' + it['set']['variant'] if it['set']['variant'] else ''}" for it in done if it["action"] != "synth"],
            "characters_text": sum(len(api_text(it["line"])) for it in done if it["action"] == "synth"), "failed": failed,
+           "pruned": pruned,
            "subscription_before": sub_before, "subscription_after": sub_after}
     # Списание по ответам API (заголовок character-cost); счётчик подписки обновляется с задержкой.
     costs = [str(it["set"]["manifest"]["lines"].get(it["id"], {}).get("api", {}).get("character_cost", "")) for it in done if it["action"] == "synth"]
@@ -770,7 +961,7 @@ def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["check", "list", "generate", "run"])
+    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "run"])
     ap.add_argument("--request")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
@@ -784,6 +975,10 @@ def main() -> int:
             return cmd_check()
         if mode == "list":
             return cmd_list()
+        if mode in ("design", "create_voice"):
+            if not a.request:
+                raise VoiceError(f"{mode}: нужен --request")
+            return cmd_design(Path(a.request)) if mode == "design" else cmd_create_voice(Path(a.request))
         if mode == "generate":
             if not a.request:
                 raise VoiceError("generate: нужен --request")

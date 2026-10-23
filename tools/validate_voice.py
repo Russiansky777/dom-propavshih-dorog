@@ -69,13 +69,22 @@ def sha1(t: str) -> str:
 def story_lines() -> dict[str, dict]:
     """id <scene>_<index> → {scene, speaker, text} — как StoryRunner (beat.line_id) и eleven_voice.py."""
     out: dict[str, dict] = {}
+
+    def add(scene_id: str, lines: list) -> None:
+        for i, ln in enumerate(lines or []):
+            # выбор внутри разговора (M13): звучат слова выбранного варианта, line_id <scene>_<index>_<вариант>
+            for o in ln.get("options") or []:
+                if str(o.get("text", "")).strip():
+                    out[f"{scene_id}_{i}_{o['id']}"] = _line(scene_id, dict(o, speaker=ln.get("speaker", "agata") or "agata"))
+            if ln.get("options") or not str(ln.get("text", "")).strip():
+                continue
+            out[f"{scene_id}_{i}"] = _line(scene_id, ln)
+
     for ep in sorted((STORY / "scenes").glob("E*.json")):
         for sc in load(ep)["scenes"]:
-            for i, ln in enumerate(sc.get("mandatory_lines", [])):
-                out[f"{sc['id']}_{i}"] = _line(sc["id"], ln)
+            add(sc["id"], sc.get("mandatory_lines", []))
     for q in load(STORY / "quests.json")["quests"]:
-        for i, ln in enumerate(q.get("mandatory_lines", q.get("lines", []))):
-            out[f"{q['id']}_{i}"] = _line(q["id"], ln)
+        add(q["id"], q.get("mandatory_lines", q.get("lines", [])))
     return out
 
 
@@ -217,6 +226,13 @@ def check_first_person(lines: dict, cfg: dict) -> list[str]:
             errors.append(f"{lid}: закадровый голос говорит от первого лица ({', '.join(sorted(set(hits)))}) — назначить "
                           f"персонажу (voice.json → narration.by_speaker.<персонаж>.keys) или переписать: «{ln['text']}»")
     return errors
+
+
+def check_empty(lines: dict) -> list[str]:
+    """Реплика/фраза к озвучке без текста — дефект 23.10 (M13_1, M23d_0, M25_6: строка-выбор, у которой звучат
+    слова варианта, ушла бы в синтез пустой строкой; её варианты — id <scene>_<index>_<вариант>)."""
+    return [f"{lid}: пустой текст в списке к озвучке (строка-выбор? варианты — <scene>_<index>_<вариант>)"
+            for lid, ln in sorted(lines.items()) if not str(ln.get("text", "")).strip()]
 
 
 def _line(scene: str, ln: dict) -> dict:
@@ -494,6 +510,9 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
             lufs = e.get("lufs")
             if not isinstance(lufs, (int, float)) or abs(float(lufs) - target) > LUFS_TOL:
                 errors.append(f"{tag}: громкость {lufs} LUFS вне {target} ± {LUFS_TOL}")
+            vq_want = int((cast or {}).get("loudness", {}).get("vorbis_quality", 5))
+            if int(e.get("vorbis_q", 5)) < vq_want and own is not None and own.get("assigned", True):   # запасные не трогаем
+                warns.append(f"{tag}: OGG Vorbis q{e.get('vorbis_q', 5)} < q{vq_want} из cast.json — переобработка из src без кредитов (\"reprocess\": true)")
             tp = e.get("true_peak_db")
             if isinstance(tp, (int, float)) and tp > -1.0:
                 errors.append(f"{tag}: true peak {tp} dBTP > −1")
@@ -560,7 +579,7 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
     return errors, warns
 
 
-SELFTEST_CASES = 21
+SELFTEST_CASES = 22
 
 
 def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
@@ -688,6 +707,11 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
         talk["Z9.npc.after"] = dict(lines[nkey], key="Z9.npc.after", text="Она кивает и молчит.")
         if not [x for x in check_character_speech(talk, ncfg) if x.startswith("Z9.npc.after")]:
             missed.append("ключ повторного разговора у закадрового голоса")
+    # строка без текста в списке к озвучке (строка-выбор M13_1) — ошибка; варианты выбора — свои id
+    empty = copy.deepcopy(lines)
+    empty[first] = dict(empty[first], text="")
+    if not check_empty(empty):
+        missed.append("реплика без текста в списке к озвучке")
     # контроль: неиспорченная запись ошибок не даёт (иначе самопроверка ловила бы что угодно)
     m = copy.deepcopy(base)
     m["lines"][first] = dict(good)
@@ -722,6 +746,7 @@ def main() -> int:
     if tags_doc is None:
         errors.append("нет pipeline/voice/tags.json — список разрешённых тегов")
     errors += check_tags(lines, set(tags_doc.get("tags", {}).keys()) if tags_doc else None)
+    errors += check_empty(lines)
     tagged = sum(1 for ln in lines.values() if ln.get("kind") != "narration" and (ln.get("tags") or ln.get("voice_text")))
     n_tagged = sum(1 for ln in lines.values() if ln.get("kind") == "narration" and (ln.get("tags") or ln.get("voice_text")))
     n_total = sum(1 for ln in lines.values() if ln.get("kind") == "narration")

@@ -11,7 +11,9 @@ pipeline/voice/eleven_voice.py        клиент ElevenLabs + обработк
 pipeline/voice/voices.json            голоса аккаунта (режим list): имя, voice_id, категория, метки — без ключа
 pipeline/voice/cast.json              персонаж → голос, модель, настройки голоса, громкость
 pipeline/voice/state/<набор>.json     журнал прогонов: сколько реплик и символов ушло, баланс до/после
-assets/voice/ru/<scene>_<index>.ogg   реплика для игры (OGG Vorbis, моно 44,1 кГц, −17 LUFS, тишина по краям срезана)
+assets/voice/ru/<scene>_<index>.ogg   реплика для игры (OGG Vorbis q7, моно 44,1 кГц, −17 LUFS, тишина по краям срезана);
+                                      слова варианта выбора в разговоре — <scene>_<index>_<вариант>.ogg (M13_1_family)
+pipeline/voice/design/<персонаж>/     превью Voice Design (режим design) и <персонаж>.json — параметры, замеры, выбор
 assets/voice/ru/narrator/<ключ>.ogg   закадровая фраза (голос narrator = «ZAKADR»): осмотр, действие, закрытый выход,
                                       вопрос выбора, сообщение крупного плана, строка предмета сумки; id — ключ текста
 assets/voice/ru/src/<id>.mp3          ответ API как есть — переобработка без новых кредитов
@@ -30,6 +32,9 @@ assets/voice/ru/manifest.json         id → персонаж, текст, sha1 
 | `{"mode": "generate", "set": "e0e1_narration", "probe": true, "narration": {"texts": ["ru_E0_E1", "ru_bag"]}, "order": {…}}` | закадровые фразы из файлов `data/story/text/<имя>.json` (какие ключи — правила `data/story/voice.json` → `narration`; ключи без ссылок в данных игры пропускаются); `"keys": [...]` — только эти | ≈ число символов текста |
 | `"redo": ["M01_1"]` | перегенерировать указанные реплики, даже если текст не менялся | за эти реплики |
 | `"reprocess": true` | заново обрезать/выровнять из `src/*.mp3` (поменяли громкость) | 0 |
+| `"prune_stale": true` | после запроса убрать записи, которые остались `stale` (ключа/реплики нет; запасная запись под старым текстом; ключ без ссылок) — запись манифеста, OGG и `src` | 0 |
+| `{"mode": "design", "voices": [{speaker, voice_name, description, text, …}]}` | Voice Design: три превью нового голоса → `pipeline/voice/design/<персонаж>/preview_<n>.mp3` и `design/<персонаж>.json` | символы текста превью, один раз |
+| `{"mode": "create_voice", "voices": [{speaker, generated_voice_id, voice_name, labels, selection}]}` | выбранное превью → голос в My Voices (`voice_id` в `design/<персонаж>.json`), затем список голосов (`voices.json`) | 0 |
 | `cast.<id>.alternates.<вариант>` в `cast.json` | те же реплики вторым голосом в `assets/voice/ru_alt/<id>_<вариант>/` (для сравнения на слух; сейчас не используется — Директор выбрал голоса) | за реплики персонажа |
 
 Повторный запуск генерирует только новые и изменённые реплики: сравниваются sha1 текста, голос, модель и настройки
@@ -138,6 +143,50 @@ good» как с прежними моделями — сравнивать на
 Скрипт снимает его до и после генерации; разница — фактически списанные кредиты (если ключу разрешено чтение
 пользователя; иначе в журнал идёт число символов текста).
 
+## Качество (указание Директора 23.10, 12:49 «где выбор качества — лучшее»; сверено с документацией 23.10.2026)
+- **Модель — `eleven_v4`**, без изменений: страница моделей называет её «Our most emotive, high quality speech synthesis
+  model», страница Eleven v4 — «our highest-quality model, ideal for … character voiceovers»; русский есть, аудиотеги
+  есть (те же, что v3) ([Models](https://elevenlabs.io/docs/overview/models),
+  [Eleven v4](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/eleven-v4),
+  [What is Eleven v4](https://elevenlabs.io/docs/help-center/product/core-capabilities/text-to-speech/what-is-eleven-v4)).
+  `eleven_v4_turbo`, `eleven_v3_conversational`, `eleven_flash_*` — варианты для реального времени, не берём.
+  Стоимость за символ документация не называет; фактически по заголовку `character-cost` наших прогонов eleven_v4
+  списывает ≈0,44 кредита за символ текста (2 362 кредита за 5 372 символа, `state/e0e1_narration.json`).
+  Оговорка документации: голоса Voice Design с v4 «may not be as performative or sound as good as with earlier models» —
+  на слух Директора v4 принят (кастинг 17.10, приёмка E0–E1), поэтому модель не меняем.
+- **Формат ответа — `mp3_44100_192`** (было `mp3_44100_128`): «MP3 at 192kbps requires the Creator tier or above»,
+  «PCM and WAV at 44.1kHz require the Pro tier or above» ([Create speech](https://elevenlabs.io/docs/api-reference/text-to-speech/convert));
+  у нас Creator — 192 кбит/с MP3 44,1 кГц — лучшее доступное. Формат каждой записи — поле `output_format` манифеста.
+- **Кодирование в игру — OGG Vorbis q7** (было q5; `cast.json → loudness.vorbis_quality`); смена качества сама
+  переобрабатывает записи из `src/*.mp3` без кредитов. Громкость — как была: −17 LUFS «как слышит игрок»,
+  ограничитель −2 dBFS.
+- Настройки голоса — по персонажу (`cast.json`), seed — по-прежнему из id и текста реплики.
+- Утверждённые на слух записи E0–E1, текст которых не менялся, ради формата не перезаписываются (новый дубль — другое
+  исполнение); перезаписать — перечислить в `"redo"`.
+
+## Квота
+`cast.json → quota`: перед синтезом скрипт читает подписку (`GET /v1/user/subscription`) и не запускает запрос, если
+символов × `credits_per_char_assumed` (1,0 — оценка сверху) больше остатка за вычетом `margin_fraction` (10 %) лимита;
+во время синтеза останавливается по фактическому списанию (`character-cost`), не заходя в запас. Лимит Creator —
+124 889 кредитов в месяц; докупка — решение Директора.
+
+## Voice Design — новый голос по описанию (сверено 23.10.2026)
+1. `POST /v1/text-to-voice/design?output_format=mp3_44100_192` — тело `{voice_description (20–1000), model_id
+   ("eleven_ttv_v3" | "eleven_multilingual_ttv_v2"), text (100–1000), guidance_scale (0–100, 5), quality (−1…1: выше —
+   лучше звук и меньше разброс), loudness (−1…1, 0,5), seed, should_enhance}` → `previews[]` {`generated_voice_id`,
+   `audio_base_64`, `media_type`, `duration_secs`, `language`}
+   ([Design a voice](https://elevenlabs.io/docs/api-reference/text-to-voice/design)).
+2. `POST /v1/text-to-voice` — `{voice_name, voice_description, generated_voice_id, labels?, played_not_selected_voice_ids?}`
+   → `voice_id`, голос появляется в My Voices ([Create a voice](https://elevenlabs.io/docs/api-reference/text-to-voice/create);
+   порядок шагов — [guide](https://elevenlabs.io/docs/eleven-api/guides/how-to/voices/voice-design.md)).
+3. Описание — по рекомендации [Voice Design](https://elevenlabs.io/docs/eleven-creative/voices/voice-design.md):
+   «Native <Language>. <Gender>, <Age range>. <Quality level>.», затем образ (2–5 слов), 2–3 эмоции, 1–2 фразы о тембре,
+   темпе и подаче; текст превью — под стать описанию, длиннее — стабильнее. Списание — только символы текста превью,
+   один раз за три варианта; сохранённый голос занимает один слот голосов аккаунта.
+У нас: запрос `pipeline/requests/voice_design_new.json` (режим `design`) → три превью в `design/<персонаж>/`; выбор —
+по замерам превью (высота голоса для возраста и пола, темп, чистота/шум, отсутствие клиппинга) — запрос
+`voice_create_new.json` (режим `create_voice`, поле `selection` — почему); `voice_id` → `cast.json`.
+
 ## Наш выбор (проба E0–E1)
 - Модель `eleven_v4` — документация называет её лучшей для выразительной речи персонажей; русский поддерживается.
   Если голоса Директора окажутся из Voice Design и v4 прозвучит хуже, в `cast.json` можно задать `model_id` персонажу
@@ -145,11 +194,12 @@ good» как с прежними моделями — сравнивать на
 - `voice_settings`: только `stability` и `similarity_boost` (другие поля v4 не поддерживает) — значения и причины
   в `cast.json`.
 - `output_format=mp3_44100_128` — доступен на любом плане и несёт полную полосу 44,1 кГц; WAV 44,1 кГц требует Pro.
+  С 23.10 — `mp3_44100_192` (раздел «Качество» выше).
 - `language_code=ru` — короткие реплики («Какие?») не уходят в чужой акцент; если модель не примет параметр,
   скрипт повторит запрос без него и запишет это в журнал (отклонённый запрос кредитов не списывает).
 - Обработка (ffmpeg): срез тишины по краям до 40 мс в начале и 120 мс в конце (порог −50 dBFS), выравнивание
   громкости линейным усилением к **−17 LUFS** «как слышит игрок» (моно на оба канала, EBU R128 по стерео-дублю),
-  ограничитель −2 dBFS на случай пиков, короткие фейды 8/30 мс от щелчков, OGG Vorbis q5 моно 44,1 кГц. Музыка в
+  ограничитель −2 dBFS на случай пиков, короткие фейды 8/30 мс от щелчков, OGG Vorbis моно 44,1 кГц (q5 до 23.10, с 23.10 — q7). Музыка в
   игре −24…−25 LUFS и под репликой приглушается ещё на 5 dB — голос стоит над ней на ≈12 LU.
 - Повторы: 429/5xx — с паузой до 4 раз (такие ответы кредитов не списывают); обрыв связи после отправки — один повтор
   (в журнале помечается как возможное двойное списание).

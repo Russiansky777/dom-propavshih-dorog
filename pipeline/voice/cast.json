@@ -3,7 +3,8 @@
  "language_code": "ru",
  "model_id": "eleven_v4",
  "_model_reason": "Документация ElevenLabs (17.10.2026): eleven_v4 — «our most emotive, high quality speech synthesis model», рекомендована для персонажей и эмоционального диалога, русский поддерживается. Оговорка документации: голоса Voice Design (у нас все шесть — category generated) с v4 «may not be as performative» — если на слух хуже, задать персонажу \"model_id\": \"eleven_v3\" (или eleven_multilingual_v2) и перезапустить.",
- "output_format": "mp3_44100_128",
+ "output_format": "mp3_44100_192",
+ "_output_format_reason": "Указание Директора 23.10 12:49 «где выбор качества — лучшее»: самый высокий формат, доступный плану Creator, — mp3_44100_192 (документация Create speech: «MP3 at 192kbps requires the Creator tier or above», «PCM and WAV at 44.1kHz require the Pro tier»; https://elevenlabs.io/docs/api-reference/text-to-speech/convert). До 23.10 — mp3_44100_128: записи E0–E1, утверждённые на слух, не перезаписываются ради формата (новый дубль — другое исполнение); формат каждой записи — поле output_format манифеста.",
  "use_seed": true,
  "max_chars": 5000,
  "loudness": {
@@ -12,7 +13,9 @@
   "trim_threshold_db": -50.0,
   "keep_head_s": 0.04,
   "keep_tail_s": 0.12,
-  "_note": "Одинаково для всех персонажей: −17 LUFS как слышит игрок (моно на оба канала), музыка −24…−25 LUFS и под репликой ещё −5 dB."
+  "_note": "Одинаково для всех персонажей: −17 LUFS как слышит игрок (моно на оба канала), музыка −24…−25 LUFS и под репликой ещё −5 dB.",
+  "vorbis_quality": 7,
+  "_vorbis_note": "OGG Vorbis q7 (до 23.10 — q5): указание Директора о лучшем качестве; переобработка прежних записей из src/*.mp3 — без кредитов."
  },
  "defaults": {
   "voice_settings": {
@@ -130,5 +133,10 @@
    "_settings_reason": "детский голос — значения по умолчанию; проверить на слух.",
    "choice": "Голос Директора «ЛУНЯ» (переименован из Lynya 22.10): в списке голосов — «Луня», rSfuQoQ3FY8SVKeraMAp (professional, ru, young female; run 39848405119)."
   }
+ },
+ "quota": {
+  "margin_fraction": 0.1,
+  "credits_per_char_assumed": 1.0,
+  "_note": "Перед синтезом скрипт читает подписку (GET /v1/user/subscription) и не запускает запрос, если число символов × credits_per_char_assumed не помещается в остаток за вычетом margin_fraction лимита; во время синтеза останавливается по фактическому списанию (заголовок character-cost), не заходя в запас. Фактически eleven_v4 списывает ≈0,44 кредита за символ (журналы pipeline/voice/state/*.json) — оценка сверху с запасом. Докупка — решение Директора."
  }
 }
