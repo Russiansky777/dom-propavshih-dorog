@@ -1,0 +1,2181 @@
+{
+ "cfg": {
+  "mode": "acceptance",
+  "request": "pipeline/requests/playtest_gate_m3.json",
+  "items": [
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "25"
+  ],
+  "contextItems": [],
+  "maxUsd": 10,
+  "maxSteps": 300,
+  "maxMinutes": 120,
+  "url": "https://russiansky777.github.io/dom-propavshih-dorog/?start=span",
+  "note": "Блоки 3–5. Выборы первых двух дней заданы заранее (см. «Где проверять» в чеклисте). Игра запущена со встроенной точки старта ?start=span (так велит п. 13): утро четвёртого дня у поворота — первое бревно начинается само; дальше эпилог и список выборов в конце (п. 25).",
+  "model": "claude-sonnet-5-5",
+  "modelStuck": "claude-opus-5-5",
+  "reportModel": "claude-sonnet-5-5",
+  "W": 1280,
+  "maxFrames": 24,
+  "autoDialogue": true,
+  "start": null,
+  "startSave": null,
+  "segment": 3,
+  "H": 720,
+  "actions_run": "34 (id 39897691991)"
+ },
+ "version": "0056ade 2026-10-23T03:55Z",
+ "started": "2026-10-23T04:35:59.146Z",
+ "stop": "модель завершила прогон (done): Закрываю и заканчиваю: дощечка не реагирует, дальше пройти нельзя.",
+ "probe": true,
+ "end": {
+  "room": "Z3",
+  "inventory": [
+   "pocket_watch",
+   "photo_bridge",
+   "drawing_ilya",
+   "plan_crossing",
+   "journal_manager",
+   "school_ribbon"
+  ],
+  "goal": "К повороту: первое бревно на ближнюю опору — Илья на вороте, сигналы с дощечки Пелагеи. Дальше — эпилог: незаконченное лучше доделать до этого.",
+  "flags": 194
+ },
+ "saves": [
+  {
+   "slot": "auto",
+   "title": "",
+   "key": "/userfs/godot/app_userdata/Dom propavshih dorog/saves/auto.json"
+  }
+ ],
+ "rooms": [
+  "Z3",
+  "Z2",
+  "M1",
+  "Z2",
+  "M1",
+  "Z2",
+  "Z3"
+ ],
+ "flags_order": [
+  {
+   "flag": "bell_clapper_hung",
+   "step": 0
+  },
+  {
+   "flag": "board_mama",
+   "step": 0
+  },
+  {
+   "flag": "boat_shuttle_open",
+   "step": 0
+  },
+  {
+   "flag": "bridge_decided",
+   "step": 0
+  },
+  {
+   "flag": "council_held",
+   "step": 0
+  },
+  {
+   "flag": "day3_done",
+   "step": 0
+  },
+  {
+   "flag": "done_M01",
+   "step": 0
+  },
+  {
+   "flag": "done_M02",
+   "step": 0
+  },
+  {
+   "flag": "done_M03",
+   "step": 0
+  },
+  {
+   "flag": "done_M04",
+   "step": 0
+  },
+  {
+   "flag": "done_M05",
+   "step": 0
+  },
+  {
+   "flag": "done_M06",
+   "step": 0
+  },
+  {
+   "flag": "done_M07",
+   "step": 0
+  },
+  {
+   "flag": "done_M08",
+   "step": 0
+  },
+  {
+   "flag": "done_M09",
+   "step": 0
+  },
+  {
+   "flag": "done_M09b",
+   "step": 0
+  },
+  {
+   "flag": "done_M09s",
+   "step": 0
+  },
+  {
+   "flag": "done_M10",
+   "step": 0
+  },
+  {
+   "flag": "done_M11",
+   "step": 0
+  },
+  {
+   "flag": "done_M12",
+   "step": 0
+  },
+  {
+   "flag": "done_M13",
+   "step": 0
+  },
+  {
+   "flag": "done_M13a",
+   "step": 0
+  },
+  {
+   "flag": "done_M14",
+   "step": 0
+  },
+  {
+   "flag": "done_M15",
+   "step": 0
+  },
+  {
+   "flag": "done_M15a",
+   "step": 0
+  },
+  {
+   "flag": "done_M15s",
+   "step": 0
+  },
+  {
+   "flag": "done_M16",
+   "step": 0
+  },
+  {
+   "flag": "done_M16s",
+   "step": 0
+  },
+  {
+   "flag": "done_M17",
+   "step": 0
+  },
+  {
+   "flag": "done_M18",
+   "step": 0
+  },
+  {
+   "flag": "done_M18p",
+   "step": 0
+  },
+  {
+   "flag": "done_M19",
+   "step": 0
+  },
+  {
+   "flag": "done_M19c",
+   "step": 0
+  },
+  {
+   "flag": "done_M20",
+   "step": 0
+  },
+  {
+   "flag": "done_M21",
+   "step": 0
+  },
+  {
+   "flag": "done_M21b",
+   "step": 0
+  },
+  {
+   "flag": "done_M22",
+   "step": 0
+  },
+  {
+   "flag": "done_M23a",
+   "step": 0
+  },
+  {
+   "flag": "done_M23b",
+   "step": 0
+  },
+  {
+   "flag": "done_M23c",
+   "step": 0
+  },
+  {
+   "flag": "done_M23d",
+   "step": 0
+  },
+  {
+   "flag": "done_M24",
+   "step": 0
+  },
+  {
+   "flag": "done_N01",
+   "step": 0
+  },
+  {
+   "flag": "done_V01",
+   "step": 0
+  },
+  {
+   "flag": "done_V02",
+   "step": 0
+  },
+  {
+   "flag": "done_V03",
+   "step": 0
+  },
+  {
+   "flag": "door_school_installed",
+   "step": 0
+  },
+  {
+   "flag": "dunya_letter_on_stove",
+   "step": 0
+  },
+  {
+   "flag": "evening_dusk",
+   "step": 0
+  },
+  {
+   "flag": "far_lights_answered",
+   "step": 0
+  },
+  {
+   "flag": "far_snow_seen",
+   "step": 0
+  },
+  {
+   "flag": "ferry_verified",
+   "step": 0
+  },
+  {
+   "flag": "free_walk_day3",
+   "step": 0
+  },
+  {
+   "flag": "h1_scarf_removed",
+   "step": 0
+  },
+  {
+   "flag": "h1_shutter_open",
+   "step": 0
+  },
+  {
+   "flag": "h2_bundle_unwrapped",
+   "step": 0
+  },
+  {
+   "flag": "h2_saw_stand_zm",
+   "step": 0
+  },
+  {
+   "flag": "has_bell",
+   "step": 0
+  },
+  {
+   "flag": "has_brace_plate",
+   "step": 0
+  },
+  {
+   "flag": "has_bundle_nina",
+   "step": 0
+  },
+  {
+   "flag": "has_chalk",
+   "step": 0
+  },
+  {
+   "flag": "has_clamp",
+   "step": 0
+  },
+  {
+   "flag": "has_door_hinges",
+   "step": 0
+  },
+  {
+   "flag": "has_drawing_ilya",
+   "step": 0
+  },
+  {
+   "flag": "has_journal_manager",
+   "step": 0
+  },
+  {
+   "flag": "has_key_house",
+   "step": 0
+  },
+  {
+   "flag": "has_key_sluice",
+   "step": 0
+  },
+  {
+   "flag": "has_letter_tamara",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_mill",
+   "step": 0
+  },
+  {
+   "flag": "has_mitten",
+   "step": 0
+  },
+  {
+   "flag": "has_photo_bridge",
+   "step": 0
+  },
+  {
+   "flag": "has_plan_crossing",
+   "step": 0
+  },
+  {
+   "flag": "has_pocket_watch",
+   "step": 0
+  },
+  {
+   "flag": "has_school_door",
+   "step": 0
+  },
+  {
+   "flag": "has_school_ribbon",
+   "step": 0
+  },
+  {
+   "flag": "house_open",
+   "step": 0
+  },
+  {
+   "flag": "house_unlocked",
+   "step": 0
+  },
+  {
+   "flag": "in_olkhovka",
+   "step": 0
+  },
+  {
+   "flag": "knows_bridge_lost",
+   "step": 0
+  },
+  {
+   "flag": "knows_crossing_plan",
+   "step": 0
+  },
+  {
+   "flag": "knows_dunya_left",
+   "step": 0
+  },
+  {
+   "flag": "knows_evdokia_death",
+   "step": 0
+  },
+  {
+   "flag": "knows_letters_bag",
+   "step": 0
+  },
+  {
+   "flag": "knows_nina_saw_agata",
+   "step": 0
+  },
+  {
+   "flag": "knows_no_road",
+   "step": 0
+  },
+  {
+   "flag": "knows_pier_trace",
+   "step": 0
+  },
+  {
+   "flag": "knows_rope_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "knows_rule_things_remember",
+   "step": 0
+  },
+  {
+   "flag": "knows_tikhon_waits",
+   "step": 0
+  },
+  {
+   "flag": "knows_twenty_years",
+   "step": 0
+  },
+  {
+   "flag": "lantern_check_seen",
+   "step": 0
+  },
+  {
+   "flag": "letters_delivered",
+   "step": 0
+  },
+  {
+   "flag": "lower_street_returned",
+   "step": 0
+  },
+  {
+   "flag": "manager_returned",
+   "step": 0
+  },
+  {
+   "flag": "met_ilya",
+   "step": 0
+  },
+  {
+   "flag": "met_ilya_wife",
+   "step": 0
+  },
+  {
+   "flag": "met_mitya",
+   "step": 0
+  },
+  {
+   "flag": "met_nina",
+   "step": 0
+  },
+  {
+   "flag": "met_pavel",
+   "step": 0
+  },
+  {
+   "flag": "met_pelageya",
+   "step": 0
+  },
+  {
+   "flag": "met_tamara",
+   "step": 0
+  },
+  {
+   "flag": "met_tikhon",
+   "step": 0
+  },
+  {
+   "flag": "met_ulyana",
+   "step": 0
+  },
+  {
+   "flag": "mitten_found_on_path",
+   "step": 0
+  },
+  {
+   "flag": "mitten_placed",
+   "step": 0
+  },
+  {
+   "flag": "mitten_taken_back",
+   "step": 0
+  },
+  {
+   "flag": "morning_day3",
+   "step": 0
+  },
+  {
+   "flag": "morning_day4",
+   "step": 0
+  },
+  {
+   "flag": "night_day1",
+   "step": 0
+  },
+  {
+   "flag": "night_olkhovka",
+   "step": 0
+  },
+  {
+   "flag": "nina_answered_board",
+   "step": 0
+  },
+  {
+   "flag": "nina_mirror_clamped",
+   "step": 0
+  },
+  {
+   "flag": "nina_time_compared",
+   "step": 0
+  },
+  {
+   "flag": "nina_visited_house",
+   "step": 0
+  },
+  {
+   "flag": "o1_saw_winter",
+   "step": 0
+  },
+  {
+   "flag": "o3_clock_compared",
+   "step": 0
+  },
+  {
+   "flag": "o3_read_notebooks",
+   "step": 0
+  },
+  {
+   "flag": "o3_read_village_list",
+   "step": 0
+  },
+  {
+   "flag": "observed_path_loop",
+   "step": 0
+  },
+  {
+   "flag": "office_mirror_clamped",
+   "step": 0
+  },
+  {
+   "flag": "office_mirror_mounted",
+   "step": 0
+  },
+  {
+   "flag": "office_shelf_lifted",
+   "step": 0
+  },
+  {
+   "flag": "office_unbolted",
+   "step": 0
+  },
+  {
+   "flag": "pavel_agreed_signals",
+   "step": 0
+  },
+  {
+   "flag": "pavel_answer_promise",
+   "step": 0
+  },
+  {
+   "flag": "plate_braced",
+   "step": 0
+  },
+  {
+   "flag": "pond_lowered",
+   "step": 0
+  },
+  {
+   "flag": "r1_saw_boat_gone",
+   "step": 0
+  },
+  {
+   "flag": "road_held_both_ends",
+   "step": 0
+  },
+  {
+   "flag": "rope_brought",
+   "step": 0
+  },
+  {
+   "flag": "rope_on_ring",
+   "step": 0
+  },
+  {
+   "flag": "school_path_open",
+   "step": 0
+  },
+  {
+   "flag": "seen_bell",
+   "step": 0
+  },
+  {
+   "flag": "seen_class_traces",
+   "step": 0
+  },
+  {
+   "flag": "seen_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "seen_office_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_office_photo",
+   "step": 0
+  },
+  {
+   "flag": "seen_school_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_shift_schedule",
+   "step": 0
+  },
+  {
+   "flag": "seen_workshop",
+   "step": 0
+  },
+  {
+   "flag": "skoba_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "sluice_key_inserted",
+   "step": 0
+  },
+  {
+   "flag": "sluice_opened",
+   "step": 0
+  },
+  {
+   "flag": "started_M01",
+   "step": 0
+  },
+  {
+   "flag": "started_M02",
+   "step": 0
+  },
+  {
+   "flag": "started_M03",
+   "step": 0
+  },
+  {
+   "flag": "started_M04",
+   "step": 0
+  },
+  {
+   "flag": "started_M05",
+   "step": 0
+  },
+  {
+   "flag": "started_M06",
+   "step": 0
+  },
+  {
+   "flag": "started_M07",
+   "step": 0
+  },
+  {
+   "flag": "started_M08",
+   "step": 0
+  },
+  {
+   "flag": "started_M09",
+   "step": 0
+  },
+  {
+   "flag": "started_M09b",
+   "step": 0
+  },
+  {
+   "flag": "started_M09s",
+   "step": 0
+  },
+  {
+   "flag": "started_M10",
+   "step": 0
+  },
+  {
+   "flag": "started_M11",
+   "step": 0
+  },
+  {
+   "flag": "started_M12",
+   "step": 0
+  },
+  {
+   "flag": "started_M13",
+   "step": 0
+  },
+  {
+   "flag": "started_M13a",
+   "step": 0
+  },
+  {
+   "flag": "started_M14",
+   "step": 0
+  },
+  {
+   "flag": "started_M15",
+   "step": 0
+  },
+  {
+   "flag": "started_M15a",
+   "step": 0
+  },
+  {
+   "flag": "started_M15s",
+   "step": 0
+  },
+  {
+   "flag": "started_M16",
+   "step": 0
+  },
+  {
+   "flag": "started_M16s",
+   "step": 0
+  },
+  {
+   "flag": "started_M17",
+   "step": 0
+  },
+  {
+   "flag": "started_M18",
+   "step": 0
+  },
+  {
+   "flag": "started_M18p",
+   "step": 0
+  },
+  {
+   "flag": "started_M19",
+   "step": 0
+  },
+  {
+   "flag": "started_M19c",
+   "step": 0
+  },
+  {
+   "flag": "started_M20",
+   "step": 0
+  },
+  {
+   "flag": "started_M21",
+   "step": 0
+  },
+  {
+   "flag": "started_M21b",
+   "step": 0
+  },
+  {
+   "flag": "started_M22",
+   "step": 0
+  },
+  {
+   "flag": "started_M23a",
+   "step": 0
+  },
+  {
+   "flag": "started_M23b",
+   "step": 0
+  },
+  {
+   "flag": "started_M23c",
+   "step": 0
+  },
+  {
+   "flag": "started_M23d",
+   "step": 0
+  },
+  {
+   "flag": "started_M24",
+   "step": 0
+  },
+  {
+   "flag": "started_M25",
+   "step": 0
+  },
+  {
+   "flag": "started_N01",
+   "step": 0
+  },
+  {
+   "flag": "stove_lit",
+   "step": 0
+  },
+  {
+   "flag": "three_lights_sent",
+   "step": 0
+  },
+  {
+   "flag": "tikhon_knows_dunya",
+   "step": 0
+  },
+  {
+   "flag": "tikhon_told_nina",
+   "step": 0
+  },
+  {
+   "flag": "time_common_seen",
+   "step": 0
+  },
+  {
+   "flag": "v01_cup_blue",
+   "step": 0
+  },
+  {
+   "flag": "v01_photo_table",
+   "step": 0
+  },
+  {
+   "flag": "v03_marked",
+   "step": 0
+  },
+  {
+   "flag": "visited_Z3",
+   "step": 0
+  },
+  {
+   "flag": "wife_came",
+   "step": 0
+  },
+  {
+   "flag": "visited_Z2",
+   "step": 37
+  },
+  {
+   "flag": "visited_M1",
+   "step": 38
+  }
+ ],
+ "blocked_scenes": [
+  "M25 «Первый пролёт» (Z3): условия выполнены, но сцена не завершена (её действие не сделано)",
+  "M26 «Три недели спустя» (Z3): не хватает done_M25 ← M25 «Первый пролёт»"
+ ],
+ "harness": [],
+ "console_errors": [],
+ "console_warnings": [],
+ "checklist": {
+  "doc": "Docs/ACCEPTANCE_M3.md",
+  "items": [
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "25"
+  ],
+  "missing": [],
+  "context": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10",
+   "11",
+   "11а",
+   "12",
+   "19",
+   "20",
+   "21",
+   "22",
+   "23",
+   "24",
+   "26",
+   "27",
+   "28",
+   "29"
+  ]
+ },
+ "verdict_history": [
+  {
+   "item": "13",
+   "status": "прошёл",
+   "seen": "Илья: «Только теперь я тебя слышу.» Открылась дощечка: Пускай/Стой/Подымай",
+   "frames": [
+    "f0005",
+    "f0006"
+   ],
+   "step": 1
+  },
+  {
+   "item": "14",
+   "status": "прошёл",
+   "seen": "Илья: «Стукнулось о камень! Не на кольце. Подымай — переложим.»",
+   "frames": [
+    "f0016"
+   ],
+   "step": 11
+  },
+  {
+   "item": "15",
+   "status": "не дошёл",
+   "seen": "После «Стукнулось о камень!» кнопки дощечки (Подымай/Пускай/Стой) не реагировали много шагов, бревно не села на кольцо, выбора надписи нет",
+   "frames": [
+    "f0041"
+   ],
+   "step": 35
+  },
+  {
+   "item": "16",
+   "status": "не дошёл",
+   "seen": "Эпилог не запустился",
+   "frames": [
+    "f0041"
+   ],
+   "step": 35
+  },
+  {
+   "item": "17",
+   "status": "не дошёл",
+   "seen": "Конца нет",
+   "frames": [
+    "f0041"
+   ],
+   "step": 35
+  },
+  {
+   "item": "18",
+   "status": "не дошёл",
+   "seen": "Не дошла до сохранений",
+   "frames": [
+    "f0041"
+   ],
+   "step": 35
+  },
+  {
+   "item": "25",
+   "status": "не дошёл",
+   "seen": "Списка выборов нет",
+   "frames": [
+    "f0041"
+   ],
+   "step": 35
+  }
+ ],
+ "notes": [
+  {
+   "step": 10,
+   "kind": "баг",
+   "text": "Кнопки дощечки «Пускай/Стой/Подымай» не дают видимой реакции: бревно не движется, реплик Ильи нет (много кликов).",
+   "frames": [
+    "f0015"
+   ]
+  },
+  {
+   "step": 48,
+   "kind": "застряла",
+   "text": "В крупном плане поворота кнопки «Пускай/Стой/Подымай» после первого опускания не давали видимой реакции; пп.15–18, 25 не пройдены.",
+   "frames": [
+    "f0059"
+   ]
+  },
+  {
+   "step": 61,
+   "kind": "застряла",
+   "text": "В крупном плане бревна кнопки дощечки («Пускай», «Стой», «Подымай») после первого стука о камень перестали реагировать; дальше п.15 недостижим.",
+   "frames": [
+    "f0072"
+   ]
+  }
+ ],
+ "frames": [
+  {
+   "id": "f0005",
+   "step": 0,
+   "kind": "line",
+   "label": "Только теперь я тебя слышу."
+  },
+  {
+   "id": "f0015",
+   "step": 10,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0016",
+   "step": 11,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0041",
+   "step": 35,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0059",
+   "step": 48,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0072",
+   "step": 61,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0073",
+   "step": 62,
+   "kind": "final",
+   "label": "последний кадр"
+  }
+ ],
+ "steps": [
+  {
+   "step": 1,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0006",
+   "action": "click",
+   "observe": "Открылся крупный план: бревно на канате, слева дощечка Пелагеи с тремя кнопками.",
+   "thought": "Нажимаю «Пускай» и не останавливаю.",
+   "usd": 0.03341,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 2,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0007",
+   "action": "wait",
+   "observe": "Крупный план, дощечка с тремя кнопками; после первого щелчка изменений нет.",
+   "thought": "Подожду, возможно бревно опускается.",
+   "usd": 0.00599,
+   "desc": "ждала 3 с",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 3,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0008",
+   "action": "click",
+   "observe": "Крупный план с дощечкой, после «Пускай» ничего не изменилось.",
+   "thought": "Попробую подвигать курсор и нажать «Пускай» ещё раз, с ожиданием.",
+   "usd": 0.00649,
+   "at": {
+    "x": 150,
+    "y": 702
+   },
+   "desc": "щелчок (100,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 4,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0009",
+   "action": "hold",
+   "observe": "Крупный план с дощечкой; щелчки по «Пускай» ничего не меняют.",
+   "thought": "Попробую держать кнопку «Пускай».",
+   "usd": 0.05022,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "hold": 4,
+   "desc": "держала кнопку 4 с в (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 5,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0010",
+   "action": "timing",
+   "observe": "Крупный план с дощечкой, кнопки не дают видимого эффекта.",
+   "thought": "Это похоже на «timing»-серию; игра объяснила сигналы. Попробую timing.",
+   "usd": 0.00625,
+   "desc": "точный удар (серия)",
+   "room_after": "Z3",
+   "events": [
+    "Полосы «точного удара» на экране нет.",
+    "Точный удар (рефлекс программы): ударов 0."
+   ]
+  },
+  {
+   "step": 6,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0011",
+   "action": "click",
+   "observe": "Дощечка с тремя кнопками, бревно на вороте; нажатия «Пускай» не меняли кадр.",
+   "thought": "Попробую нажать «Подымай» и посмотреть реакцию, затем Пускай.",
+   "usd": 0.00691,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 7,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0012",
+   "action": "hook",
+   "observe": "Крупный план с дощечкой, клики по кнопкам не меняют кадр.",
+   "thought": "Попробую hook — «крюк звоном» может быть механикой для этого плана.",
+   "usd": 0.00638,
+   "desc": "крюк звоном",
+   "room_after": "Z3",
+   "events": [
+    "Крюка на экране нет (крупный план зеркала конторы не открыт)."
+   ]
+  },
+  {
+   "step": 8,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0013",
+   "action": "click",
+   "observe": "Крупный план с дощечкой; клики не меняют кадр заметно, бревно над водой.",
+   "thought": "Нажму «Пускай» и сразу посмотрю, что изменится; возможно, анимация короткая.",
+   "usd": 0.00709,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 9,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0014",
+   "action": "key",
+   "observe": "Крупный план, кнопки не дают видимого эффекта.",
+   "thought": "Посмотрю подписи, возможно нужно другое.",
+   "usd": 0.00669,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 10,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0015",
+   "action": "click",
+   "observe": "Крупный план с дощечкой, кнопки не меняют кадр.",
+   "thought": "Наведу курсор на «Пускай», чтобы увидеть подпись, потом кликну по бревну/кнопке иначе.",
+   "usd": 0.00827,
+   "at": {
+    "x": 180,
+    "y": 690
+   },
+   "desc": "щелчок (120,460)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 11,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0016",
+   "action": "click",
+   "observe": "Илья: «Стукнулось о камень! Не на кольце. Подымай — переложим.» Дощечка с тремя кнопками.",
+   "thought": "Пускай уже сработал, стукнулось. Теперь Подымай.",
+   "usd": 0.00827,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 12,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0017",
+   "action": "click",
+   "observe": "Крупный план: бревно над водой у плиты, дощечка с тремя кнопками, подпись про сигналы.",
+   "thought": "Попробую «Пускай» ещё раз и посмотрю на результат.",
+   "usd": 0.00743,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 13,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0018",
+   "action": "click",
+   "observe": "Крупный план с дощечкой, кнопки не меняют кадр.",
+   "thought": "Возьму подсказку игры.",
+   "usd": 0.00725,
+   "at": {
+    "x": 1686,
+    "y": 38
+   },
+   "desc": "щелчок (1124,25)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 14,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0019",
+   "action": "move",
+   "observe": "Крупный план с дощечкой, экран не меняется после щелчков; подсказка не открылась.",
+   "thought": "Наведу курсор на кнопку Пускай, чтобы понять, реагирует ли она.",
+   "usd": 0.00762,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "навела курсор (136,468)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 15,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0020",
+   "action": "click",
+   "observe": "Дощечка с тремя кнопками, бревно над водой.",
+   "thought": "Нажму Подымай, затем смотреть.",
+   "usd": 0.00738,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 16,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0021",
+   "action": "click",
+   "observe": "Крупный план с дощечкой, бревно не двигается.",
+   "thought": "Попробую «Стой» — может, нужна последовательность.",
+   "usd": 0.05341,
+   "at": {
+    "x": 204,
+    "y": 785
+   },
+   "desc": "щелчок (136,523)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 17,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0022",
+   "action": "click",
+   "observe": "Крупный план, кнопки не меняют кадр.",
+   "thought": "Попробую щелчок по бревну.",
+   "usd": 0.00728,
+   "at": {
+    "x": 1305,
+    "y": 585
+   },
+   "desc": "щелчок (870,390)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 18,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0023",
+   "action": "hold",
+   "observe": "Крупный план с тремя кнопками, бревно поднято, кадр не меняется от щелчков.",
+   "thought": "Попробую удерживать «Пускай» — может, сигнал работает удержанием.",
+   "usd": 0.01636,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "hold": 2,
+   "desc": "держала кнопку 2 с в (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 19,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0024",
+   "action": "hook",
+   "observe": "Крупный план с дощечкой; кнопки не меняют кадр.",
+   "thought": "В этом плане управление, вероятно, через hook (звон): пускай, стой, подымай. Попробую.",
+   "usd": 0.00707,
+   "desc": "крюк звоном",
+   "room_after": "Z3",
+   "events": [
+    "Крюка на экране нет (крупный план зеркала конторы не открыт)."
+   ]
+  },
+  {
+   "step": 20,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0025",
+   "action": "timing",
+   "observe": "Крупный план с дощечкой, кнопки не меняют кадр.",
+   "thought": "Попробую timing — вдруг это серия с бегунком.",
+   "usd": 0.00686,
+   "desc": "точный удар (серия)",
+   "room_after": "Z3",
+   "events": [
+    "Полосы «точного удара» на экране нет.",
+    "Точный удар (рефлекс программы): ударов 0.",
+    "Илья: «Стукнулось о камень! Не на кольце. Подымай — переложим.» [f0026]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше."
+   ]
+  },
+  {
+   "step": 21,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0027",
+   "action": "click",
+   "observe": "Дощечка с тремя кнопками, Илья сказал «Подымай — переложим».",
+   "thought": "Нажму «Подымай», затем «Пускай», потом «Стой» у кольца.",
+   "usd": 0.01023,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 22,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0028",
+   "action": "click",
+   "observe": "Крупный план с дощечкой; кнопки не дают заметной реакции.",
+   "thought": "Попробую Пускай и сразу Стой по очереди с паузой.",
+   "usd": 0.0075,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 23,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0029",
+   "action": "click",
+   "observe": "Крупный план: дощечка с тремя кнопками, бревно на опоре, видимых изменений нет.",
+   "thought": "Попробую Подымай, подождать, потом Пускай, и Стой с паузами.",
+   "usd": 0.0085,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 24,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0030",
+   "action": "key",
+   "observe": "Крупный план, бревно поднято, кнопки без реакции.",
+   "thought": "Попробую клавишу 1 — возможно, клавиатурное управление.",
+   "usd": 0.01882,
+   "key": "1",
+   "desc": "клавиша 1",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 25,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0031",
+   "action": "click",
+   "observe": "Крупный план с дощечкой, бревно над водой, кнопки не меняют кадр.",
+   "thought": "Попробую Пускай, потом через паузу Стой — игра, возможно, работает по времени.",
+   "usd": 0.00774,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 26,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0032",
+   "action": "click",
+   "observe": "Крупный план, кнопки дощечки видимо не реагируют.",
+   "thought": "Беру подсказку.",
+   "usd": 0.01599,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 27,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0033",
+   "action": "click",
+   "observe": "Крупный план, подсказка внизу: Пускай опускает, Стой держит, Подымай тянет; бревно на кольцо плиты.",
+   "thought": "Возможно, нужно быстро: Пускай, и Стой почти сразу. Попробую Пускай, потом Стой быстро по двум действиям.",
+   "usd": 0.00809,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 28,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0034",
+   "action": "click",
+   "observe": "Крупный план с дощечкой; бревно не двигается от кнопок.",
+   "thought": "Закрою крупный план и открою заново — вдруг состояние сбросится.",
+   "usd": 0.02007,
+   "at": {
+    "x": 1779,
+    "y": 1017
+   },
+   "desc": "щелчок (1186,678)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 29,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0035",
+   "action": "key",
+   "observe": "Берег поворота, героиня стоит, крупного плана нет.",
+   "thought": "Смотрю подписи мест, чтобы снова открыть крупный план.",
+   "usd": 0.0074,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 30,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0036",
+   "action": "click",
+   "observe": "Берег поворота, подпись «Плита опоры» с кружком.",
+   "thought": "Открою крупный план щелчком по плите опоры.",
+   "usd": 0.00756,
+   "at": {
+    "x": 1320,
+    "y": 560
+   },
+   "desc": "щелчок (880,373)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 31,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0037",
+   "action": "click",
+   "observe": "Открыт крупный план плиты на опоре «Ольховка», кольцо с канатом, ручка-нож справа.",
+   "thought": "Это плита, не дощечка. Закрою и поищу дощечку через Пробел.",
+   "usd": 0.00781,
+   "at": {
+    "x": 1779,
+    "y": 1017
+   },
+   "desc": "щелчок (1186,678)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 32,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0038",
+   "action": "key",
+   "observe": "Поворот, крупного плана нет, подписи не видны.",
+   "thought": "Смотрю подписи мест.",
+   "usd": 0.00717,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 33,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0039",
+   "action": "click",
+   "observe": "Поворот, подпись «Плита опоры», дощечки нет в виде кнопки.",
+   "thought": "Пробую крупный план бревна: щелчок по воде у опоры.",
+   "usd": 0.00744,
+   "at": {
+    "x": 1200,
+    "y": 551
+   },
+   "desc": "щелчок (800,367)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 34,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0040",
+   "action": "click",
+   "observe": "Открыт крупный план плиты на опоре с надписью «Ольховка», кнопка Закрыть.",
+   "thought": "Закрою и попробую снова найти дощечку.",
+   "usd": 0.00743,
+   "at": {
+    "x": 1779,
+    "y": 1017
+   },
+   "desc": "щелчок (1186,678)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 35,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0041",
+   "action": "done",
+   "observe": "Берег поворота, крупного плана нет, Ильи и ворота не видно.",
+   "thought": "Крупный план не открывается; пункты 15–18, 25 не пройти. Заканчиваю.",
+   "usd": 0.00984,
+   "desc": "попытка завершить (отклонена)",
+   "room_after": "Z3",
+   "events": [
+    "Завершать рано: есть пункты без проверки или «не дошёл», а шаги ещё есть. Пройди сюжет до этих пунктов (смотри справку — порядок дня), бери игровую «Подсказку», если не ясно, куда идти."
+   ]
+  },
+  {
+   "step": 36,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0042",
+   "action": "click",
+   "observe": "Береговой поворот, крупного плана нет, Ильи на кадре не видно.",
+   "thought": "Беру подсказку.",
+   "usd": 0.00763,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "Z3",
+   "events": [
+    "Открыта подсказка: «Подсказка 1 из 3» — «Илья у ворота на повороте: с улицы Заречья — «К повороту», с причала — «Вдоль берега к повороту».»",
+    "Строка подсказки внизу: «Подсказка 1 из 3: Илья у ворота на повороте: с улицы Заречья — «К повороту», с причала — «Вдоль берега к повороту».»"
+   ]
+  },
+  {
+   "step": 37,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0043",
+   "action": "click",
+   "observe": "Берег у поворота, подсказка открыта: Илья у ворота, нужно дойти до поворота.",
+   "thought": "Попробую пройти по тропе вперёд к Илье (стрелка вверх слева).",
+   "usd": 0.00819,
+   "at": {
+    "x": 540,
+    "y": 600
+   },
+   "desc": "щелчок (360,400)",
+   "room_after": "Z2",
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 38,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0044",
+   "action": "click",
+   "observe": "Улица Заречья, я ушла с поворота.",
+   "thought": "Подсказка: к повороту — стрелка вправо.",
+   "usd": 0.00768,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 39,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0045",
+   "action": "click",
+   "observe": "Двор мельницы, я ушла с поворота. Нужно вернуться к повороту.",
+   "thought": "Стрелка слева ведёт назад, попробую вернуться.",
+   "usd": 0.00817,
+   "at": {
+    "x": 38,
+    "y": 533
+   },
+   "desc": "щелчок (25,355)",
+   "room_after": "Z2",
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 40,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0046",
+   "action": "click",
+   "observe": "Улица Заречья, подсказка говорит идти «К повороту».",
+   "thought": "Стрелка вправо внизу — к повороту?",
+   "usd": 0.00776,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 41,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0047",
+   "action": "click",
+   "observe": "Двор мельницы, я ушла от поворота.",
+   "thought": "Вернусь влево, к улице, и дальше к повороту.",
+   "usd": 0.00803,
+   "at": {
+    "x": 38,
+    "y": 533
+   },
+   "desc": "щелчок (25,355)",
+   "room_after": "Z2",
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 42,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0048",
+   "action": "move",
+   "observe": "Улица Заречья, стрелки: вверх по центру (940,400), влево, вправо.",
+   "thought": "Попробую стрелку вверх — возможно «К повороту».",
+   "usd": 0.00793,
+   "at": {
+    "x": 1413,
+    "y": 603
+   },
+   "desc": "навела курсор (942,402)",
+   "room_after": "Z2",
+   "events": [
+    "Подпись под курсором: «К повороту»"
+   ]
+  },
+  {
+   "step": 43,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0049",
+   "action": "click",
+   "observe": "Улица Заречья, подпись «К повороту» под курсором.",
+   "thought": "Иду к повороту.",
+   "usd": 0.00796,
+   "at": {
+    "x": 1413,
+    "y": 603
+   },
+   "desc": "щелчок (942,402)",
+   "room_after": "Z3",
+   "events": [
+    "Затемнение / постановка сцены ~14.5 с.",
+    "Текст: «День четвёртый. У поворота — ворот, брёвна-прогоны, Илья. Пелагея принесла свою дощечку сигналов.» [f0051]",
+    "Илья: «Я на вороте. Ты — на сигналах. Пускай, стой, подымай — как на мельнице.» [f0052]",
+    "Агата: «Те же три, что у крюка в конторе.» [f0053]",
+    "Илья: «Только теперь я тебя слышу.» [f0054]",
+    "Текст закончился: показано реплик и текстов — 4, окно текста закрыто. Можно действовать дальше.",
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 44,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0055",
+   "action": "click",
+   "observe": "Крупный план открыт, бревно над водой, кнопки Пускай/Стой/Подымай слева.",
+   "thought": "Нажимаю «Пускай».",
+   "usd": 0.01616,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 45,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0056",
+   "action": "click",
+   "observe": "Крупный план с дощечкой открыт, бревно над водой; кнопка «Пускай» нажата без видимых изменений.",
+   "thought": "Подожду, вдруг анимация идёт, потом нажму «Подымай».",
+   "usd": 0.00859,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 46,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0057",
+   "action": "click",
+   "observe": "Крупный план открыт, кнопки Пускай/Стой/Подымай не меняют кадр.",
+   "thought": "Попробую timing — вдруг нужен точный удар для остановки.",
+   "usd": 0.00856,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 47,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0058",
+   "action": "timing",
+   "observe": "Крупный план открыт, дощечка с тремя кнопками, бревно над водой на канате. Кнопки раньше не реагировали.",
+   "thought": "Попробую timing: игра объяснила про остановку у кольца.",
+   "usd": 0.00827,
+   "desc": "точный удар (серия)",
+   "room_after": "Z3",
+   "events": [
+    "Полосы «точного удара» на экране нет.",
+    "Точный удар (рефлекс программы): ударов 0."
+   ]
+  },
+  {
+   "step": 48,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0059",
+   "action": "done",
+   "observe": "Крупный план с дощечкой открыт, бревно над водой у кольца плиты; кнопки не меняют кадр.",
+   "thought": "Пробую «Стой» после застрявшего состояния, последний раз; иначе завершаю.",
+   "usd": 0.00911,
+   "desc": "попытка завершить (отклонена)",
+   "room_after": "Z3",
+   "events": [
+    "Завершать рано: есть пункты без проверки или «не дошёл», а шаги ещё есть. Пройди сюжет до этих пунктов (смотри справку — порядок дня), бери игровую «Подсказку», если не ясно, куда идти."
+   ]
+  },
+  {
+   "step": 49,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0060",
+   "action": "click",
+   "observe": "Крупный план с дощечкой, реплика Ильи «Стукнулось о камень… Подымай — переложим».",
+   "thought": "Жму «Подымай», как велит Илья.",
+   "usd": 0.00849,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 50,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0061",
+   "action": "done",
+   "observe": "Дощечка открыта, кнопки не реагируют, шаги исчерпывают смысл.",
+   "thought": "Завершаю: пункты 15–18, 25 недоступны из-за зависших кнопок.",
+   "usd": 0.00796,
+   "desc": "попытка завершить (отклонена)",
+   "room_after": "Z3",
+   "events": [
+    "Завершать рано: есть пункты без проверки или «не дошёл», а шаги ещё есть. Пройди сюжет до этих пунктов (смотри справку — порядок дня), бери игровую «Подсказку», если не ясно, куда идти."
+   ]
+  },
+  {
+   "step": 51,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0062",
+   "action": "click",
+   "observe": "Крупный план с дощечкой, бревно на опоре у кольца, Илья у ворота.",
+   "thought": "Беру игровую «Подсказку».",
+   "usd": 0.00849,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 52,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0063",
+   "action": "click",
+   "observe": "Крупный план открыт, кнопки дощечки есть, подсказка не показалась.",
+   "thought": "Попробую «Подымай» ещё раз, затем «Пускай» и «Стой» с паузами.",
+   "usd": 0.00848,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 53,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0064",
+   "action": "click",
+   "observe": "Крупный план дощечки, кнопки не реагируют, бревно над водой.",
+   "thought": "Пробую «Пускай» после паузы, затем «Стой».",
+   "usd": 0.00841,
+   "at": {
+    "x": 204,
+    "y": 786
+   },
+   "desc": "щелчок (136,524)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 54,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0065",
+   "action": "key",
+   "observe": "Крупный план с дощечкой, щелчки по кнопкам ничего не меняют.",
+   "thought": "Попробую клавишу 1 — вдруг кнопки дощечки работают с клавиатуры.",
+   "usd": 0.05414,
+   "key": "1",
+   "desc": "клавиша 1",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 55,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0066",
+   "action": "click",
+   "observe": "Крупный план дощечки открыт, кнопки без реакции.",
+   "thought": "Попробую hook — вдруг это механика крюка звоном; но не объяснено. Лучше щёлкнуть по бревну.",
+   "usd": 0.00856,
+   "at": {
+    "x": 1320,
+    "y": 570
+   },
+   "desc": "щелчок (880,380)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 56,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0067",
+   "action": "hold",
+   "observe": "Крупный план, бревно поднято, кнопки дощечки на щелчки не реагируют.",
+   "thought": "Попробую удерживать «Пускай» — может, нужно долгое нажатие.",
+   "usd": 0.01819,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "hold": 1.5,
+   "desc": "держала кнопку 1.5 с в (136,468)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 57,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0068",
+   "action": "click",
+   "observe": "Крупный план открыт, кнопки дощечки.",
+   "thought": "Жму «Подымай» после повторного открытия.",
+   "usd": 0.00818,
+   "at": {
+    "x": 204,
+    "y": 870
+   },
+   "desc": "щелчок (136,580)",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 58,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0069",
+   "action": "click",
+   "observe": "Крупный план с дощечкой, кнопки не реагируют.",
+   "thought": "Закрываю крупный план и смотрю подписи пробелом.",
+   "usd": 0.01772,
+   "at": {
+    "x": 1779,
+    "y": 1016
+   },
+   "desc": "щелчок (1186,677)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 59,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0070",
+   "action": "key",
+   "observe": "Поворот, крупный план закрыт, Ильи и ворота не видно.",
+   "thought": "Смотрю подписи мест.",
+   "usd": 0.00788,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "Z3",
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 60,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0071",
+   "action": "click",
+   "observe": "Поворот, подпись «Плита опоры».",
+   "thought": "Открываю крупный план плиты опоры заново.",
+   "usd": 0.00795,
+   "at": {
+    "x": 1320,
+    "y": 560
+   },
+   "desc": "щелчок (880,373)",
+   "room_after": "Z3",
+   "events": []
+  },
+  {
+   "step": 61,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0072",
+   "action": "done",
+   "observe": "Крупный план плиты опоры «Ольховка», кнопка «Закрыть» справа внизу.",
+   "thought": "Закрываю и заканчиваю: дощечка не реагирует, дальше пройти нельзя.",
+   "usd": 0.00868,
+   "desc": "done",
+   "room_after": "Z3",
+   "events": []
+  }
+ ],
+ "transcript": [
+  {
+   "step": 0,
+   "frame": "f0002",
+   "room": "Z3",
+   "who": "Текст",
+   "text": "День четвёртый. У поворота — ворот, брёвна-прогоны, Илья. Пелагея принесла свою дощечку сигналов."
+  },
+  {
+   "step": 0,
+   "frame": "f0003",
+   "room": "Z3",
+   "who": "Илья",
+   "text": "Я на вороте. Ты — на сигналах. Пускай, стой, подымай — как на мельнице."
+  },
+  {
+   "step": 0,
+   "frame": "f0004",
+   "room": "Z3",
+   "who": "Агата",
+   "text": "Те же три, что у крюка в конторе."
+  },
+  {
+   "step": 0,
+   "frame": "f0005",
+   "room": "Z3",
+   "who": "Илья",
+   "text": "Только теперь я тебя слышу."
+  },
+  {
+   "step": 20,
+   "frame": "f0026",
+   "room": "Z3",
+   "who": "Илья",
+   "text": "Стукнулось о камень! Не на кольце. Подымай — переложим."
+  },
+  {
+   "step": 43,
+   "frame": "f0051",
+   "room": "Z3",
+   "who": "Текст",
+   "text": "День четвёртый. У поворота — ворот, брёвна-прогоны, Илья. Пелагея принесла свою дощечку сигналов."
+  },
+  {
+   "step": 43,
+   "frame": "f0052",
+   "room": "Z3",
+   "who": "Илья",
+   "text": "Я на вороте. Ты — на сигналах. Пускай, стой, подымай — как на мельнице."
+  },
+  {
+   "step": 43,
+   "frame": "f0053",
+   "room": "Z3",
+   "who": "Агата",
+   "text": "Те же три, что у крюка в конторе."
+  },
+  {
+   "step": 43,
+   "frame": "f0054",
+   "room": "Z3",
+   "who": "Илья",
+   "text": "Только теперь я тебя слышу."
+  }
+ ]
+}
