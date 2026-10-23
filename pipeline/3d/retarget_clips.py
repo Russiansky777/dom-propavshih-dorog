@@ -25,6 +25,14 @@
               "reach": {"clip": "Female_Stand_Pick_Fruit_Basket", "blend_from": "idle", "blend_s": 0.6}},
     "extra_clips": ["Idle_3", "Idle_9"]                                # ещё клипы библиотеки (для GLB игры в 3D)
   }
+  Поля роли (кроме clip/own/blend_from/legs_from/blend_s):
+    "library": "pipeline/3d/motions/<другой>.glb" — клип из другой библиотеки (тот же скелет Meshy; G53: сидя —
+               Chair_Sit_Idle_F с рига Нины);
+    "segments": [[t0, t1], …] — секунды исходного клипа: только эти отрезки, подряд, стык — плавный наплыв
+               "join_s" (по умолчанию 0,1 с); затем склейка со стойкой (G1: «взять» — протянуть руку и вернуть
+               из open_door без долгой задержки у двери);
+    "name": "…" — имя клипа в GLB (по умолчанию <клип>_<роль>); имя без walk/idle — check_feet не судит клип
+               порогами стойки (сидя стопы стоят как у сидящей).
 
   python pipeline/3d/retarget_clips.py --glb pipeline/3d/out/<name>/animations.glb --request pipeline/requests/<name>.json \
       [--state pipeline/3d/state/<name>.json] --out pipeline/3d/out/<name>/animations.glb --clips-out pipeline/3d/out/<name>/clips.txt
@@ -221,6 +229,30 @@ def bookend(rig: ff.Rig, Q, loc, q_ref, loc_ref, blend_n, legs=False):
     return Q, loc
 
 
+def cut_segments(Q, loc, segs, join_n):
+    """Отрезки клипа (секунды → кадры FPS) подряд; на стыке join_n кадров конец прошлого отрезка плавно
+    переходит в начало следующего (отрезки перекрываются на join_n кадров)."""
+    T = len(Q)
+    outQ, outL = None, None
+    for a, b in segs:
+        i0 = max(0, min(T - 1, int(round(float(a) * FPS))))
+        i1 = max(i0, min(T - 1, int(round(float(b) * FPS))))
+        q, l = Q[i0:i1 + 1].copy(), loc[i0:i1 + 1].copy()
+        if outQ is None:
+            outQ, outL = q, l
+            continue
+        n = max(0, min(join_n, len(outQ) - 1, len(q) - 1))
+        for k in range(n):
+            w = 0.5 - 0.5 * math.cos(math.pi * (k + 1) / (n + 1))
+            t = len(outQ) - n + k
+            for bi in range(Q.shape[1]):
+                q[k, bi] = slerp(outQ[t, bi], q[k, bi], w)
+            l[k] = outL[t] + w * (l[k] - outL[t])
+        outQ = np.concatenate([outQ[:len(outQ) - n], q])
+        outL = np.concatenate([outL[:len(outL) - n], l])
+    return outQ, outL
+
+
 def floor_shift(arm, rig, R, P):
     """Сдвиг по Z, чтобы пол клипа (feet_fix.clip_floor) стал нулём модели."""
     fl = ff.clip_floor(rig, R, P)
@@ -257,31 +289,37 @@ def main() -> int:
     bpy.context.scene.render.fps = FPS
     arm, meshes, own_acts, _ = _import(args.glb)
     tgt = ff.rig_from_blender(arm, meshes)
-    lib_arm, lib_meshes, lib_acts, lib_objs = _import(spec["library"])
-    for a in lib_acts:  # имена клипов библиотеки освобождаются для перенесённых
-        a.name = "_lib_" + a.name.split(".")[0]
-    src = ff.rig_from_blender(lib_arm, lib_meshes)
+    libs = {}  # путь библиотеки → её арматура, клипы (с приставкой), объекты, скелет
+
+    def lib(path):
+        if path not in libs:
+            la, lm, lacts, lobjs = _import(path)
+            pre = f"_lib{len(libs)}_"
+            for a in lacts:  # имена клипов библиотеки освобождаются для перенесённых
+                a.name = pre + a.name.split(".")[0]
+            libs[path] = {"arm": la, "acts": lacts, "objs": lobjs, "rig": ff.rig_from_blender(la, lm), "pre": pre}
+        return libs[path]
+
+    lib(spec["library"])
     rep = {"name": name, "library": spec["library"], "roles": {}, "extra": []}
 
-    def lib_clip(clip):
-        a = ff.find_action(lib_acts, "_lib_" + clip)
+    made = {}  # (библиотека, клип) → (Q, loc, frames, пол)
+
+    def make(clip, path=None):
+        path = path or spec["library"]
+        if (path, clip) in made:
+            return made[(path, clip)]
+        L = lib(path)
+        a = ff.find_action(L["acts"], L["pre"] + clip)
         if a is None:
-            raise SystemExit(f"retarget: в библиотеке нет клипа {clip}; есть {[x.name for x in lib_acts]}")
-        return a
-
-    made = {}  # имя клипа → (Q, loc, frames, act)
-
-    def make(clip):
-        if clip in made:
-            return made[clip]
-        a = lib_clip(clip)
+            raise SystemExit(f"retarget: в библиотеке {path} нет клипа {clip}; есть {[x.name for x in L['acts']]}")
         fr = _frames(a)
-        R, P = ff.sample(lib_arm, a, src, fr)
-        Rt, Pt = retarget_world(src, tgt, R, P)
+        R, P = ff.sample(L["arm"], a, L["rig"], fr)
+        Rt, Pt = retarget_world(L["rig"], tgt, R, P)
         Pt, fl = floor_shift(arm, tgt, Rt, Pt)
         Q, loc = to_basis(arm, tgt, Rt, Pt)
-        made[clip] = (Q, loc, fr - fr[0], fl)
-        return made[clip]
+        made[(path, clip)] = (Q, loc, fr - fr[0], fl)
+        return made[(path, clip)]
 
     roles = spec["roles"]
     from check_feet import roles_to_fix  # noqa: PLC0415
@@ -304,8 +342,11 @@ def main() -> int:
             Q, loc = to_basis(arm, tgt, R, P)
             src_name, fr = a.name, fr - fr[0]
         else:
-            Q, loc, fr, fl = make(c["clip"])
+            Q, loc, fr, fl = make(c["clip"], c.get("library"))
             src_name = c["clip"]
+        if c.get("segments"):
+            Q, loc = cut_segments(Q, loc, c["segments"], int(round(float(c.get("join_s", 0.1)) * FPS)))
+            fr = np.arange(len(Q), dtype=float)
         ref = c.get("blend_from") or c.get("legs_from")
         if ref:
             if ref not in pose_of:
@@ -313,7 +354,7 @@ def main() -> int:
             qr, lr = pose_of[ref]
             n = int(round(float(c.get("blend_s", 0.5)) * FPS))
             Q, loc = bookend(tgt, Q, loc, qr, lr, n, legs=bool(c.get("legs_from")))
-        new_name = f"{src_name}_{role}" if (ref or c.get("own")) else src_name
+        new_name = c.get("name") or (f"{src_name}_{role}" if (ref or c.get("own")) else src_name)
         act = write_action(arm, tgt, new_name, fr, Q, loc)
         out_clips[role] = act.name
         # стопы — здесь же (а не только перед рендером): склейка реплики и действий берёт позу уже исправленной
@@ -326,7 +367,8 @@ def main() -> int:
         w0 = windows.get(role, (0.0, 1.0))[0]
         i0 = int(round(w0 * (len(fr) - 1)))
         pose_of[role] = pose_at(arm, tgt, act, float(fr[i0])) if fixed else (Q[i0].copy(), loc[i0].copy())
-        rep["roles"][role] = {"clip": act.name, "from": "own" if c.get("own") else spec["library"], "frames": len(fr),
+        rep["roles"][role] = {"clip": act.name, "from": "own" if c.get("own") else (c.get("library") or spec["library"]),
+                              "source_clip": src_name, "segments": c.get("segments"), "frames": len(fr),
                               "floor_shift_m": round(-fl, 4), "blend_from": ref, "legs_from": c.get("legs_from"),
                               "feet": {k: fixed[k] for k in ("after", "fail")} if fixed else None}
         print(f"retarget {name}/{role}: {src_name} → {act.name} ({len(fr)} кадров, пол {fl * 100:+.1f} см → 0)", flush=True)
@@ -337,10 +379,11 @@ def main() -> int:
         act = write_action(arm, tgt, clip, fr, Q, loc)
         rep["extra"].append(act.name)
     # библиотеку — из сцены и из данных (иначе её клипы уйдут в экспорт)
-    for o in lib_objs:
-        bpy.data.objects.remove(o, do_unlink=True)
-    for a in lib_acts:
-        bpy.data.actions.remove(a)
+    for L in libs.values():
+        for o in L["objs"]:
+            bpy.data.objects.remove(o, do_unlink=True)
+        for a in L["acts"]:
+            bpy.data.actions.remove(a)
     drop = set(spec.get("drop_own", []))
     for a in list(bpy.data.actions):
         if a.name.startswith("_old_") or a.name in drop or a.name.split(".")[0] in drop:
