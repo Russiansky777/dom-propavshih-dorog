@@ -1061,7 +1061,621 @@
         "incoming/O3_table_no_mirror.png"
       ],
       "owner": "ChatGPT + Директор",
-      "use": "мамино зеркало (H2 → bundle_nina.mechanic): когда слой придёт — import_closeups → res://assets/closeups/O3_table_no_mirror.png и в позу small_mirror поле \"room_layer\" с этим путём (движок уже умеет): пока Нина в стекле смотрит в Дунино зеркальце, на столе его нет. Сейчас её фигура закрывает зеркальце, внизу остаются ножки рамки"
+      "use": "мамино зеркало (H2 → bundle_nina.mechanic): когда слой придёт — import_closeups → res://assets/closeups/O3_table_no_mirror.png и в позу small_mirror поле \"room_layer\" с этим путём (движок уже умеет): пока Нина в стекле смотрит в Дунино зеркальце, на столе его нет. Сейчас её фигура закрывает зеркальце, внизу остаются ножки рамки",
+      "batch": "9",
+      "pack": "Партия 9, п. 11"
+    },
+    {
+      "id": "icon_sluice_lever",
+      "status": "requested",
+      "kind": "icon",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G20",
+      "files": [
+        "incoming/icon_sluice_lever.png"
+      ],
+      "base": "—",
+      "size": "1024×1024, прозрачный фон",
+      "placement": "по центру, как icon_clamp / icon_bell_clapper",
+      "spec": "Иконка сумки: рычаг затвора как на мельнице (образец — слой M4_lever_up: железный стержень, тёмная резная рукоять, круглая втулка) с квадратным гнездом во втулке, по диагонали",
+      "owner": "ChatGPT + Директор",
+      "use": "items.json key_sluice → иконка (сейчас assets/icons/key_sluice.png — ключ с кольцом); везде «рычаг затвора» (G20)",
+      "pack": "Партия 9, п. 1"
+    },
+    {
+      "id": "closeup_sluice_lever",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G20",
+      "files": [
+        "incoming/closeup_sluice_lever.png"
+      ],
+      "base": "—",
+      "size": "1672×941, полный кадр",
+      "placement": "рычаг крупно по центру, по диагонали",
+      "spec": "Крупный план «Рассмотреть»: тот же рычаг на старом деревянном столе, свет и стол как closeup_clamp (партия 8), квадратное гнездо видно, без надписей",
+      "owner": "ChatGPT + Директор",
+      "use": "items.json key_sluice → examine.art (import_closeups → game/assets/closeups/closeup_sluice_lever.png); заменяет неподключённый closeup_key_sluice партии 8",
+      "pack": "Партия 9, п. 1"
+    },
+    {
+      "id": "M3_state_hook_empty",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G20",
+      "files": [
+        "incoming/M3_state_hook_empty.png"
+      ],
+      "base": "M3_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 10–160, y 25–455",
+      "spec": "Стена конторы без нарисованного ключа: доски продолжены, кованый крюк (≈ x 75–100, y 35–75) пустой; от ключа не остаётся ни пикселя",
+      "owner": "ChatGPT + Директор",
+      "use": "M3.json layers: всегда (закрывает ключ фона); хотспот key_nail — по рычагу",
+      "pack": "Партия 9, п. 1"
+    },
+    {
+      "id": "M3_state_sluice_lever",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G20",
+      "files": [
+        "incoming/M3_state_sluice_lever.png"
+      ],
+      "base": "M3_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; рычаг в x 15–155, y 30–450, длина ≈ 330–380 px",
+      "spec": "Рычаг затвора висит на том же крюке (крюк в квадратном гнезде втулки), рукоять вниз; только рычаг и тень от окна справа; поверх M3_state_hook_empty",
+      "owner": "ChatGPT + Директор",
+      "use": "M3.json layers: unless has_key_sluice (предмет в сумке — слой уходит)",
+      "pack": "Партия 9, п. 1"
+    },
+    {
+      "id": "M3_state_clamp_table",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G22",
+      "files": [
+        "incoming/M3_state_clamp_table.png"
+      ],
+      "base": "M3_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; струбцина в x 450–710, y 700–770, длина ≈ 170–200 px",
+      "spec": "Струбцина (как icon_clamp) лежит плашмя на столе управляющего справа от нижнего журнала, у переднего края; тени от окна справа",
+      "owner": "ChatGPT + Директор",
+      "use": "M3.json: слой unless has_clamp; хотспот clamp переезжает с полки (сейчас картинка-иконка на полке [395,280,70,62]) на стол; реплика Павла о струбцине (G22)",
+      "pack": "Партия 9, п. 2"
+    },
+    {
+      "id": "H2_state_office_mirror_center_v2",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G19",
+      "files": [
+        "incoming/H2_state_office_mirror_center_v2.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; рама зеркала x 1034–1149, y 213–500, стекло x 1047–1134, y 228–483 — как в партии 8",
+      "spec": "Тот же слой, что H2_state_office_mirror_center (партия 8), без четырёх светлых брусков у стекла (≈ x 1044–1056 и 1126–1138, y 341–366 и 466–488)",
+      "owner": "ChatGPT + Директор",
+      "use": "H2.json layer office_mirror и mechanic.frame.images: заменить state_office_mirror_center.png; glass_polygon не меняется",
+      "pack": "Партия 9, п. 3"
+    },
+    {
+      "id": "H2_state_wedges_loose",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G19",
+      "files": [
+        "incoming/H2_state_wedges_loose.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; клинья в рамках: 1 x 1036–1072 y 494–532; 2 x 1112–1148 y 494–532; 3 x 1008–1042 y 330–385; 4 x 1141–1177 y 330–385",
+      "spec": "Четыре настоящих деревянных клина в щели между рамой зеркала и проёмом стойки, только начаты: обух торчит к зрителю на 2/3",
+      "owner": "ChatGPT + Директор",
+      "use": "office_mirror_panel: клин i — вырезка по своей рамке; 0 ударов — loose (замена треугольников движка); G19: каждый клин подбить 3 раза",
+      "pack": "Партия 9, п. 3"
+    },
+    {
+      "id": "H2_state_wedges_half",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G19",
+      "files": [
+        "incoming/H2_state_wedges_half.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "те же рамки, что у H2_state_wedges_loose",
+      "spec": "Те же четыре клина, вбиты наполовину",
+      "owner": "ChatGPT + Директор",
+      "use": "office_mirror_panel: промежуточное состояние клина между ударами",
+      "pack": "Партия 9, п. 3"
+    },
+    {
+      "id": "H2_state_wedges_driven",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G19",
+      "files": [
+        "incoming/H2_state_wedges_driven.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "те же рамки, что у H2_state_wedges_loose",
+      "spec": "Те же четыре клина вбиты заподлицо: виден только примятый молотком обух; рама зажата",
+      "owner": "ChatGPT + Директор",
+      "use": "office_mirror_panel: после 3 ударов; H2.json слой после office_mirror_clamped (в комнате)",
+      "pack": "Партия 9, п. 3"
+    },
+    {
+      "id": "H1_state_bench_bare",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G9/G10",
+      "files": [
+        "incoming/H1_state_bench_bare.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 378–700, y 480–640",
+      "spec": "Лежанка у печи без мокрого платка (нарисованного в фоне): голые доски, ножки, пол; кочерга и ухват (x 330–378) не тронуты",
+      "owner": "ChatGPT + Директор",
+      "use": "H1.json: слой if h1_scarf_removed (сейчас платок остаётся на лежанке и одновременно висит на крючке)",
+      "pack": "Партия 9, п. 4"
+    },
+    {
+      "id": "H1_state_towel_hook",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G10",
+      "files": [
+        "incoming/H1_state_towel_hook.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; левый крючок вешалки ≈ (1060, 215), платок ≤ 50 px шириной, до y ≈ 380",
+      "spec": "Тот же полосатый мокрый платок, что на лежанке, сложен вдвое и висит на левом крючке; средний крючок — пальто Нины",
+      "owner": "ChatGPT + Директор",
+      "use": "H1.json: заменить слой hook_coat (state_hook_coat.png — другой серый платок на холсте 1602×981 со сдвигом) этим, if h1_scarf_removed; анимация «взять → к вешалке → повесить» (G10)",
+      "pack": "Партия 9, п. 4"
+    },
+    {
+      "id": "H1_state_shelf_leaning",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G12",
+      "files": [
+        "incoming/H1_state_shelf_leaning.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; в x 380–460, y 470–660",
+      "spec": "Снятая полка (доска ≈ 92 px, кронштейны ≈ 45 px) стоит на ребре, прислонена к левому концу лежанки под местом A",
+      "owner": "ChatGPT + Директор",
+      "use": "H1.json: слой unless done_Q04 (до выбора места); текст H1.shelf.look согласовать с местом",
+      "pack": "Партия 9, п. 4"
+    },
+    {
+      "id": "H1_state_shelf_A",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G12",
+      "files": [
+        "incoming/H1_state_shelf_A.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; доска ≈ x 379–471, верх y ≈ 430, кронштейны до y ≈ 490",
+      "spec": "Та же полка на печи (место A), подстилка Тихона — серый войлок/овчина, не полосатая ткань",
+      "owner": "ChatGPT + Директор",
+      "use": "H1.json: заменить слой shelf_stove (сейчас доска ≈ 120 px с полосатым полотенцем); гнёзда holes_stove (tools/make_h1_layers.py) — под кронштейны; Тихон на полке — game/data/actors/tikhon.json",
+      "pack": "Партия 9, п. 4"
+    },
+    {
+      "id": "H1_state_shelf_B",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G12",
+      "files": [
+        "incoming/H1_state_shelf_B.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; доска ≈ x 622–714, верх y ≈ 428, кронштейны до y ≈ 470",
+      "spec": "Та же полка на стене слева от двери на крыльцо (место B), та же подстилка, косяк не перекрыт",
+      "owner": "ChatGPT + Директор",
+      "use": "H1.json: заменить слой shelf_table (сейчас ≈ 76 px); гнёзда holes_table — под кронштейны",
+      "pack": "Партия 9, п. 4"
+    },
+    {
+      "id": "S1_state_sign_text",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G35",
+      "files": [
+        "incoming/S1_state_sign_text.png"
+      ],
+      "base": "S1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; доска вывески x 228–407, y 552–627, поле надписи x 240–395, y 563–620",
+      "spec": "Надпись «Ольховая улица» на самой вывеске в кадре, как на closeup_street_sign; буквы ≥ 18 px",
+      "owner": "ChatGPT + Директор",
+      "use": "S1.json: слой unless q09_original_in_classroom (под sign_removed не показывать)",
+      "pack": "Партия 9, п. 5"
+    },
+    {
+      "id": "Z3_state_span_site_day4",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G47",
+      "files": [
+        "incoming/Z3_state_span_site_day4.png"
+      ],
+      "base": "Z3_bg.png + Z3_state_water_low_day.png (сведено: Z3_day4_base.png)",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; ворот x 880–1100 y 560–720, штабель x 320–800 y 480–660, ряж x 1160–1290 y 545–645",
+      "spec": "День четвёртый у поворота: ворот, штабель прогонов, ряж у кромки напротив малой опоры с плитой; без людей, без бревна на опоре, без каната от ворота",
+      "owner": "ChatGPT + Директор",
+      "use": "Z3.json: слой в день 4 до span_first_laid (закрыл крупный план ворота — у поворота стройка, а не пусто, G47); фон кадра F_span и крупного плана ворота (windlass art.waiting) — на этой основе вместо осенней партии 5",
+      "pack": "Партия 9, п. 6"
+    },
+    {
+      "id": "Z3_state_span_beam_day4",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G47/G48",
+      "files": [
+        "incoming/Z3_state_span_beam_day4.png"
+      ],
+      "base": "Z3_day4_base.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; береговой конец на ряже, дальний — на плите у кольца ≈ (1112, 503)",
+      "spec": "Первое бревно-прогон отдельно, без теней на другие предметы: игра поворачивает его вокруг берегового конца",
+      "owner": "ChatGPT + Директор",
+      "use": "windlass art.beam + pivot/ring по координатам из ответа ChatGPT; кадр F_span_done на основе дня 4",
+      "pack": "Партия 9, п. 6"
+    },
+    {
+      "id": "O1_state_bird_doodles",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G37",
+      "files": [
+        "incoming/O1_state_bird_doodles.png"
+      ],
+      "base": "O1_bg.png",
+      "size": "1672×940",
+      "placement": "полный холст в (0, 0), 1:1; шапка x 1350–1396 y 185–214, сапоги x 1336–1378 y 268–300",
+      "spec": "Старая шапка с помпоном (выцветший простой карандаш, детская рука Агаты) и красные сапожки (цветной карандаш, Ульяна) на учебной синице — по тексту они есть, на рисунке их нет",
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json: слой всегда (как O1.bird_drawing.look «птица в шапке и сапогах»); тот же холст ложится на ep_lesson (совпадает со сдвигом 0/−1 px)",
+      "pack": "Партия 9, п. 7"
+    },
+    {
+      "id": "O1_state_bird_add_scarf",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G37",
+      "files": [
+        "incoming/O1_state_bird_add_scarf.png"
+      ],
+      "base": "O1_bg.png",
+      "size": "1672×940",
+      "placement": "полный холст в (0, 0), 1:1; x 1345–1408, y 212–248",
+      "spec": "Вариант Агаты: полосатый шарф на шее птицы (карандаш, рука пометки «Агата»)",
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json: слой по выбору эпизода «дорисовать птице» (G37); вариант утверждает Директор",
+      "pack": "Партия 9, п. 7"
+    },
+    {
+      "id": "O1_state_bird_add_boat",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G37",
+      "files": [
+        "incoming/O1_state_bird_add_boat.png"
+      ],
+      "base": "O1_bg.png",
+      "size": "1672×940",
+      "placement": "полный холст в (0, 0), 1:1; нижнее поле листа x 1272–1432, y 325–382",
+      "spec": "Вариант Агаты: лодочка с трубой и дымом, как рисовал Илья",
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json: слой по выбору эпизода; вариант утверждает Директор",
+      "pack": "Партия 9, п. 7"
+    },
+    {
+      "id": "O1_state_bird_add_bridge",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G37",
+      "files": [
+        "incoming/O1_state_bird_add_bridge.png"
+      ],
+      "base": "O1_bg.png",
+      "size": "1672×940",
+      "placement": "полный холст в (0, 0), 1:1; нижнее поле листа x 1272–1432, y 325–382",
+      "spec": "Вариант Агаты: мостик на каменных опорах над волнистой рекой",
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json: слой по выбору эпизода; вариант утверждает Директор",
+      "pack": "Партия 9, п. 7"
+    },
+    {
+      "id": "O1_state_bird_reply_scarf",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G37",
+      "files": [
+        "incoming/O1_state_bird_reply_scarf.png"
+      ],
+      "base": "O1_bg.png",
+      "size": "1672×940",
+      "placement": "полный холст в (0, 0), 1:1; верхний левый угол листа x 1272–1346, y 163–240",
+      "spec": "Ответ Ульяны (рука 8 лет, карандаш): «Теперь ей тепло. Уля»",
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json: вместо ulyana_bird_reply при варианте «шарф»",
+      "pack": "Партия 9, п. 7"
+    },
+    {
+      "id": "O1_state_bird_reply_boat",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G37",
+      "files": [
+        "incoming/O1_state_bird_reply_boat.png"
+      ],
+      "base": "O1_bg.png",
+      "size": "1672×940",
+      "placement": "полный холст в (0, 0), 1:1; верхний левый угол листа x 1272–1346, y 163–240",
+      "spec": "Ответ Ульяны: «Так папа рисует! Уля»",
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json: при варианте «лодка с дымом»",
+      "pack": "Партия 9, п. 7"
+    },
+    {
+      "id": "O1_state_bird_reply_bridge",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G37",
+      "files": [
+        "incoming/O1_state_bird_reply_bridge.png"
+      ],
+      "base": "O1_bg.png",
+      "size": "1672×940",
+      "placement": "полный холст в (0, 0), 1:1; верхний левый угол листа x 1272–1346, y 163–240",
+      "spec": "Ответ Ульяны: «А мост правда будет? Уля»",
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json: при варианте «мостик»",
+      "pack": "Партия 9, п. 7"
+    },
+    {
+      "id": "zarechye_plan_overlay",
+      "status": "requested",
+      "kind": "ui_layer",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G2",
+      "files": [
+        "incoming/zarechye_plan_overlay.png"
+      ],
+      "base": "zarechye_plan.png (game/assets/ui/map)",
+      "size": "1376×768",
+      "placement": "полный холст в (0, 0), 1:1; канат от опоры у поворота (950–1050 × 405–478) к дальней (1155–1190 × 372–400), сарайчик 1185–1250 × 315–370, Ольховка 900–1260 × 60–300, школа 640–872 × 78–262",
+      "spec": "Дорисовка плана в его манере, без букв: канат переправы с лодкой, дальняя опора с мастерской переправы и фонарём, тропа вверх, Ольховка тушью (школа с двором, улица, дом Нины, крайний дом Ильи, нижняя улица)",
+      "owner": "ChatGPT + Директор",
+      "use": "map_zarechye.json: слой поверх image после общего времени (road_held_both_ends); новые места с табличками игры — «Переправа» (R2), «Дальняя опора» (R3), «Мастерская переправы» (R4), «Школа» (O1/O2), «Улица Ольховки» (O4), «Дом Нины» (O3), «Нижняя улица» (S1) — точки по координатам из ответа ChatGPT",
+      "pack": "Партия 9, п. 8"
+    },
+    {
+      "id": "O3_state_notches_left",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G32",
+      "files": [
+        "incoming/O3_state_notches_left.png"
+      ],
+      "base": "O3_bg.png (game/assets/closeups/O3_bg.png)",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; левая стойка x 818–874, зарубки в y 290–475",
+      "spec": "Годовые зарубки ножом на левой стойке у ходиков: 8 свежих (Ульяна) y ≈ 440→305 и несколько старых потемневших; правая стойка не трогается — на ней ничего не нарисовано",
+      "owner": "ChatGPT + Директор",
+      "use": "O3.json: слой (visible с started_M20, как хотспот); хотспот notches [1200,60,60,620] → на левую стойку (экран ≈ x 940–1004, y 333–545)",
+      "pack": "Партия 9, п. 9"
+    },
+    {
+      "id": "closeup_notebook_paths_clean",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G33",
+      "files": [
+        "incoming/closeup_notebook_paths_clean.png"
+      ],
+      "base": "closeup_notebook_paths.png",
+      "size": "1672×941, полный кадр",
+      "placement": "тот же кадр",
+      "spec": "Разворот тетради Евдокии без псевдорукописи («каши») на левой странице; рисунок троп справа остаётся",
+      "owner": "ChatGPT + Директор",
+      "use": "O3.json notebooks.pages[0] image → рукописный шрифт игры в text_rect",
+      "pack": "Партия 9, п. 10"
+    },
+    {
+      "id": "closeup_notebook_rule_clean",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G33",
+      "files": [
+        "incoming/closeup_notebook_rule_clean.png"
+      ],
+      "base": "closeup_notebook_rule.png",
+      "size": "1672×941, полный кадр",
+      "placement": "тот же кадр",
+      "spec": "Разворот без псевдорукописи: обе страницы чистые (линовка, пятна)",
+      "owner": "ChatGPT + Директор",
+      "use": "O3.json notebooks.pages[1]",
+      "pack": "Партия 9, п. 10"
+    },
+    {
+      "id": "closeup_notebook_stopper_clean",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G33",
+      "files": [
+        "incoming/closeup_notebook_stopper_clean.png"
+      ],
+      "base": "closeup_notebook_stopper.png",
+      "size": "1672×941, полный кадр",
+      "placement": "тот же кадр",
+      "spec": "Разворот без псевдорукописи; рисунки узлов на кольце справа остаются",
+      "owner": "ChatGPT + Директор",
+      "use": "O3.json notebooks.pages[2]",
+      "pack": "Партия 9, п. 10"
+    },
+    {
+      "id": "closeup_notebook_bridge_clean",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G33",
+      "files": [
+        "incoming/closeup_notebook_bridge_clean.png"
+      ],
+      "base": "closeup_notebook_bridge.png",
+      "size": "1672×941, полный кадр",
+      "placement": "тот же кадр",
+      "spec": "Разворот без псевдорукописи; рисунок моста справа остаётся",
+      "owner": "ChatGPT + Директор",
+      "use": "O3.json notebooks.pages[3]",
+      "pack": "Партия 9, п. 10"
+    },
+    {
+      "id": "closeup_letter_blank",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G31",
+      "files": [
+        "incoming/closeup_letter_blank.png"
+      ],
+      "base": "—",
+      "size": "1672×941, полный кадр",
+      "placement": "лист ≈ x 470–1200, y 40–900",
+      "spec": "Один пустой лист письма Нины: пожелтевшая бумага, сгибы вчетверо, пятна; стол и свет как closeup_nina_letters",
+      "owner": "ChatGPT + Директор",
+      "use": "O3.json nina_letters.pages[1..3]: papers.image вместо плоского прямоугольника движка, текст — рукописным шрифтом (G31)",
+      "pack": "Партия 9, п. 10"
+    },
+    {
+      "id": "M4_state_dial_mark_last",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G24",
+      "files": [
+        "incoming/M4_state_dial_mark_last.png"
+      ],
+      "base": "M4_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; старая метка x 744–767 y 408–441 → светлая зарубка; красная — на последнюю зарубку x 811–840 y 503–524",
+      "spec": "Красная рабочая метка на шкале затвора переезжает со средней зарубки на последнюю",
+      "owner": "ChatGPT + Директор",
+      "use": "M4.json: слой всегда + в кадр крупного плана затвора (mechanic.gate — вырезка фона): последняя зарубка ≈ 86° от вертикали — notch_angles/lever_open под неё (G23/G24)",
+      "pack": "Партия 9, п. 12"
+    },
+    {
+      "id": "R1_state_water_low_day",
+      "status": "requested",
+      "kind": "scene_layer",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G52",
+      "files": [
+        "incoming/R1_state_water_low_day.png"
+      ],
+      "base": "R1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1, где нужно — непрозрачный; геометрия причала, столба, доски, стопора, лодки — на месте",
+      "spec": "Ближний причал днём в дни 3–4: вода спущена (сваи обнажены, мокрые камни), первый снег на ближнем берегу, тот берег в снегу; по образцу Z3_state_water_low_day",
+      "owner": "ChatGPT + Директор",
+      "use": "R1.json: слой днём d3_morning/d3_day/d4_day после evening_dusk (как water_low_day в Z3)",
+      "pack": "Партия 9, п. 13"
+    },
+    {
+      "id": "EP_lesson_date",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 9 (ChatGPT, правки G, 23.10)",
+      "batch": "9",
+      "g": "G54",
+      "files": [
+        "incoming/EP_lesson_date.png"
+      ],
+      "base": "ep_lesson.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 790–1076, y 175–252",
+      "spec": "«16 ноября» рукой Нины мелом, как O1_state_date",
+      "owner": "ChatGPT + Директор",
+      "use": "EP_lesson.json: заменить текстовый слой date (@EP.lesson.written_date, шрифт игры) картинкой",
+      "pack": "Партия 9, п. 14"
     }
   ]
 }
