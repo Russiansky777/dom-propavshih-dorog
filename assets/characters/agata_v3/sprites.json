@@ -8,18 +8,18 @@
   },
   "directions": 8,
   "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.656,
+  "character_height_m": 1.653,
   "actions": {
     "idle": {
       "sheet": "idle.png",
       "frames": 24,
       "fps": 24.0,
       "clip": "Idle_4",
-      "clip_seconds": 2.2347,
-      "natural_fps": 10.74,
+      "clip_seconds": 1.5,
+      "natural_fps": 15.33,
       "window": [
-        0.0,
-        0.2
+        0.0788,
+        0.1862
       ],
       "playback": "pingpong"
     },
@@ -28,42 +28,42 @@
       "frames": 24,
       "fps": 24.0,
       "clip": "Walking_Woman",
-      "clip_seconds": 0.7733,
-      "natural_fps": 31.03,
-      "floor_shift_m": 0.0368
+      "clip_seconds": 0.9667,
+      "natural_fps": 24.83,
+      "floor_shift_m": 0.0366
     },
     "open": {
       "sheet": "open.png",
       "frames": 32,
       "fps": 24.0,
       "clip": "open_door_open",
-      "clip_seconds": 4.16,
-      "natural_fps": 7.69,
-      "floor_shift_m": 0.0077
+      "clip_seconds": 5.2,
+      "natural_fps": 6.15,
+      "floor_shift_m": 0.0073
     },
     "pick": {
       "sheet": "pick.png",
       "frames": 40,
       "fps": 24.0,
       "clip": "Female_Bend_Over_Pick_Up_Inspect_pick",
-      "clip_seconds": 3.0667,
-      "natural_fps": 13.04,
-      "floor_shift_m": -0.0036
+      "clip_seconds": 3.8333,
+      "natural_fps": 10.43,
+      "floor_shift_m": -0.0039
     },
     "reach": {
       "sheet": "reach.png",
       "frames": 32,
       "fps": 24.0,
       "clip": "Female_Stand_Pick_Fruit_Basket_reach",
-      "clip_seconds": 4.9333,
-      "natural_fps": 6.49,
-      "floor_shift_m": 0.0009
+      "clip_seconds": 6.1667,
+      "natural_fps": 5.19,
+      "floor_shift_m": 0.0004
     }
   },
   "fit": {
-    "half_width_m": 0.878,
-    "top_m": 0.841,
-    "frame_top_m": 0.927,
+    "half_width_m": 0.872,
+    "top_m": 0.844,
+    "frame_top_m": 0.926,
     "frame_w": 384
   },
   "matte_materials": true
