@@ -342,6 +342,22 @@ func start_scene(scene_id: String) -> bool:
 				"speaker_name": StoryData.character_name(sp), "text": String(line.get("text", ""))}
 		lb.merge(cond)
 		beats.append(lb)
+		# Follow-up lines (`then`: [{speaker, text, if/unless}]) — shown right after this one, each by its own
+		# conditions (an optional story's trace in the epilogue). They take no position in mandatory_lines, so adding
+		# one never shifts the recorded voices <scene>_<index> after it; line_id <scene>_<index>_then<k>.
+		var then_lines: Array = line.get("then", [])
+		for k in then_lines.size():
+			var sub: Dictionary = then_lines[k]
+			var ssp := String(sub.get("speaker", "narrator"))
+			var sid := "%s_%d_then%d" % [scene_id, i, k]
+			var sb: Dictionary
+			if ssp == "narrator":
+				sb = {"type": "narration", "scene": scene_id, "line_id": sid, "text": String(sub.get("text", ""))}
+			else:
+				sb = {"type": "line", "scene": scene_id, "line_id": sid, "speaker": ssp,
+					"speaker_name": StoryData.character_name(ssp), "text": String(sub.get("text", ""))}
+			sb.merge(_conditions_of(sub))
+			beats.append(sb)
 	# A close-up after the last line (`at: "end"` — the crossing: Agata hauls the boat once Pelageya has spoken),
 	# before the closing stagings.
 	for mc in mechs:

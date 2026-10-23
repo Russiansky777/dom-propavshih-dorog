@@ -81,6 +81,11 @@ def story_lines() -> dict[str, dict]:
             for o in ln.get("options") or []:
                 if str(o.get("text", "")).strip():
                     out[f"{scene_id}_{i}_{o['id']}"] = _line(scene_id, dict(o, speaker=ln.get("speaker", "agata") or "agata"))
+            # строки-продолжения (then: след необязательной истории в эпилоге) — line_id <scene>_<index>_then<k>,
+            # своей позиции в mandatory_lines не занимают: записанные голоса после них не сдвигаются
+            for k, t in enumerate(ln.get("then") or []):
+                if str(t.get("text", "")).strip():
+                    out[f"{scene_id}_{i}_then{k}"] = _line(scene_id, dict(t, speaker=t.get("speaker", "narrator") or "narrator"))
             if ln.get("options") or not str(ln.get("text", "")).strip():
                 continue
             out[f"{scene_id}_{i}"] = _line(scene_id, ln)

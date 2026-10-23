@@ -1281,6 +1281,7 @@ function mandatoryLines() {
   const m = new Map();
   for (const sc of storyScenes()) (sc.mandatory_lines || []).forEach((ln, i) => {
     if (ln.text && ln.text.length >= 12) m.set(normText(ln.text), `${sc.id}.${i}`);
+    for (const [k, t] of (ln.then || []).entries()) if (t.text && t.text.length >= 12) m.set(normText(t.text), `${sc.id}.${i}.then${k}`);
   });
   return m;
 }

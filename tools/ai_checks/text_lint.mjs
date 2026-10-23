@@ -39,6 +39,7 @@ function collect(ref) {
         if (ln.prompt) add(`${sc.id}.${i}.вопрос`, ln.prompt);
         for (const o of ln.options || []) { add(`${sc.id}.${i}.${o.id}.вариант`, o.label || ""); add(`${sc.id}.${i}.${o.id}`, o.text || "", ln.speaker || ""); }
         if (ln.text) add(`${sc.id}.${i}`, ln.text, ln.speaker || "");
+        (ln.then || []).forEach((t, k) => { if (t.text) add(`${sc.id}.${i}.then${k}`, t.text, t.speaker || "narrator"); });   // follow-up lines
       });
       (sc.hints || []).forEach((h, i) => add(`${sc.id}.подсказка${i + 1}`, h));
       if (sc.goal) add(`${sc.id}.цель_журнала`, sc.goal);

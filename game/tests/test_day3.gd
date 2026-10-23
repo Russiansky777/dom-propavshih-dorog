@@ -878,6 +878,10 @@ func _beats_of(scene_id: String, flags: Array) -> Array[String]:
 			continue
 		if sr.beat_allowed(ln):
 			out.append("%s:%s" % [String(ln.get("speaker", "")), String(ln.get("text", ""))])
+		# follow-up lines (`then`): right after it, each by its own conditions (StoryRunner.start_scene)
+		for t in ln.get("then", []):
+			if sr.beat_allowed(t):
+				out.append("%s:%s" % [String(t.get("speaker", "narrator")), String(t.get("text", ""))])
 	return out
 
 
@@ -1216,8 +1220,16 @@ func _test_q02_q06_traces() -> void:
 	var none := _beats_of("M26", [])
 	for t in ["как менялось место", "по своему рисунку", "уключину", "рамку для семейной"]:
 		_check(not none.any(func(x): return x.contains(t)), "skipped: no «%s»" % t)
-	# The stagings still come on their lines (the lines were inserted before them).
+	# The stagings still come on their lines.
 	var lines: Array = sd.scene("M26").get("mandatory_lines", [])
+	# Q02/Q06 traces are follow-ups (`then`) of the lines before them, not lines of their own: the epilogue was voiced
+	# before they came (M26_<index>), an inserted line would shift every recording after it (23.10, 40 lines).
+	var own := lines.filter(func(ln): return (ln.get("if", []) as Array).any(func(f): return String(f).begins_with("q02_") or String(f).begins_with("q06_")))
+	_check(own.is_empty() and lines.size() == 37, "Q02/Q06 epilogue lines are follow-ups — M26 keeps its 37 voiced positions (%d lines, %d own)" % [lines.size(), own.size()])
+	var flat: Array = []
+	for ln in lines:
+		flat.append(ln)
+		flat.append_array(ln.get("then", []))
 	var want := {"EP_boat": "Пелагея и Митя смолят", "EP_pavel": "Павел у рейки", "EP_lesson": "Утро. Класс", "EP_dinner": "Вечером — ужин"}
 	for st in sd.scene("M26").get("stage", []):
 		var f := String(st.get("frame", ""))
@@ -1229,7 +1241,7 @@ func _test_q02_q06_traces() -> void:
 			var fl := String(o.get("sets", ""))
 			var ep := String(o.get("epilogue", ""))
 			var found := false
-			for ln in lines:
+			for ln in flat:
 				if (ln.get("if", []) as Array).has(fl) and String(ln.get("text", "")).contains(ep):
 					found = true
 			_check(found, "%s %s: the epilogue says «%s»" % [qid, fl, ep])

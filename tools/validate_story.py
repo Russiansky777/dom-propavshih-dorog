@@ -516,6 +516,17 @@ for s in scenes:
     # условия реплик (if / unless / if_any / switch): флаги известны, переключатель есть в meta.json
     for i, ln in enumerate(s.get("mandatory_lines", [])):
         check_conditions(f"{s['id']}.mandatory_lines[{i}]", ln)
+        # строки-продолжения (then): показываются сразу после этой, каждая по своим условиям; не сдвигают нумерацию
+        # записанных голосов <scene>_<index> (StoryRunner, line_id <scene>_<index>_then<k>)
+        then_ = ln.get("then", [])
+        if not isinstance(then_, list):
+            err(f"{s['id']}.mandatory_lines[{i}].then — список строк")
+            then_ = []
+        for k, t in enumerate(then_):
+            tctx = f"{s['id']}.mandatory_lines[{i}].then[{k}]"
+            if not str(t.get("text", "")).strip() or "options" in t or "then" in t:
+                err(f"{tctx}: нужна строка text (без options и вложенных then)")
+            check_conditions(tctx, t)
     # крупный план посреди сцены (mechanics: окно ворота M25): номер реплики, флаг «сделано», тип
     for i, mc in enumerate(s.get("mechanics", []) or []):
         mctx = f"{s['id']}.mechanics[{i}]"

@@ -163,6 +163,10 @@ export function buildCorpus() {
           return;
         }
         L.push(`   [${id}] ${who(ln.speaker)}${tags(ln.tags)}: «${ln.text || ""}»${ln.voice_text ? ` [для озвучки: ${ln.voice_text}]` : ""}${cond(ln)}`);
+        (ln.then || []).forEach((t, k) => {   // follow-up lines right after this one (an optional story's trace)
+          keys.add(`${id}.then${k}`);
+          L.push(`   [${id}.then${k}] ${who(t.speaker || "narrator")}${tags(t.tags)}: «${t.text || ""}»${cond(t)}`);
+        });
       });
       if (sc.goal) { keys.add(`${sc.id}.цель_журнала`); L.push(`   [${sc.id}.цель_журнала] «${sc.goal}»`); }
       (sc.hints || []).forEach((h, i) => { keys.add(`${sc.id}.подсказка${i + 1}`); L.push(`   [${sc.id}.подсказка${i + 1}] «${h}»`); });
