@@ -121,7 +121,8 @@ async function main() {
   const cfg = {
     mode,
     request: reqPath ? path.relative(ROOT, reqPath) : "",
-    items: parseItems(A.items || req.items),   // --items: the changed rows of a hand-off (ai_playtest.yml)
+    // --items: the rows of a gate (ai_playtest.yml); "unpassed": rows of the doc not passed at the last gate
+    items: String(A.items || req.items || "").trim() === "unpassed" ? unpassedRows(req.doc) : parseItems(A.items || req.items),
     contextItems: parseItems(req.context_items),
     // max_usd is a safety stop against a looping run, not a budget (Director 22.10): default and ceiling $10.
     maxUsd: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_usd ?? req.max_usd : req.max_usd, 0.05, HARD_MAX_USD, HARD_MAX_USD),
@@ -708,18 +709,29 @@ async function main() {
       const stepRec = { step, model, room: before && before.room, frame: cur.id, action: act, observe: short(input.observe, 300), thought: short(input.thought, 300), usd: Number(usd.toFixed(5)) };
       events = [];
       extra = [];
-      if (["click", "right_click", "double_click", "move", "drag"].includes(act) && !hasXY) {
+      if (["click", "right_click", "double_click", "hold", "move", "drag"].includes(act) && !hasXY) {
         events.push(`Действие ${act} не выполнено: нет координат x, y.`);
       } else if (act === "click" || act === "right_click" || act === "double_click") {
         const p = toFrameChecked(x, y, step);
         await mouseTo(p, 5);
         await sleep(120);
-        if (act === "double_click") await page.mouse.dblclick(p.x, p.y);
+        if (act === "double_click") { await page.mouse.click(p.x, p.y); await sleep(140); await page.mouse.click(p.x, p.y); }
         else await page.mouse.click(p.x, p.y, { button: act === "right_click" ? "right" : "left" });
         desc = `${act === "click" ? "щелчок" : act === "right_click" ? "правый щелчок" : "двойной щелчок"} (${Math.round(x)},${Math.round(y)})`;
         stepRec.at = { x: Math.round(p.x), y: Math.round(p.y) };
         if (lastClick && Math.hypot(lastClick.x - p.x, lastClick.y - p.y) < 20) sameClick += 1; else sameClick = 0;
         lastClick = p;
+      } else if (act === "hold") {
+        const p = toFrameChecked(x, y, step);
+        const sec = clampNum(input.seconds, 0.3, 5, 1);
+        await mouseTo(p, 5);
+        await sleep(100);
+        await page.mouse.down();
+        await sleep(sec * 1000);
+        await page.mouse.up();
+        desc = `держала кнопку ${sec} с в (${Math.round(x)},${Math.round(y)})`;
+        stepRec.at = { x: Math.round(p.x), y: Math.round(p.y) };
+        stepRec.hold = sec;
       } else if (act === "move") {
         const p = toFrameChecked(x, y, step);
         await mouseTo({ x: p.x - 25, y: p.y - 8 }, 2);
@@ -984,6 +996,16 @@ function blockedScenes(flags, rooms) {
       : "условия выполнены, но сцена не завершена (её действие не сделано)"}`);
   }
   return out.slice(0, 25);
+}
+
+/** Rows of a checklist whose last gate verdict is not «прошёл» (Docs/playtest/gates_state/ACCEPTANCE_<M>.json). */
+function unpassedRows(docRel) {
+  try {
+    const st = JSON.parse(fs.readFileSync(path.join(ROOT, "Docs", "playtest", "gates_state", `${path.basename(String(docRel), ".md")}.json`), "utf8"));
+    const txt = fs.readFileSync(path.resolve(ROOT, String(docRel)), "utf8");
+    const all = [...txt.matchAll(/^\|\s*(\d+)\s*\|/gm)].map((m) => Number(m[1]));
+    return all.filter((n) => (st.verdicts || {})[n] !== "прошёл");
+  } catch (_) { return []; }
 }
 
 function saveTitle(ss) {
