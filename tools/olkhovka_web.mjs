@@ -13,7 +13,7 @@
 //   C  ?start=epilogue — M26 «через три недели, в среду»: every frame (EP_tamara … EP_dinner) in story order, the
 //      last line is Ulyana's «А завтра тоже можно прийти?», the dinner frame stays with «Конец», the traces and
 //      «Начать заново»; a click on it → a new game at the post office.
-// Frames: Docs/evidence/M3/*.png. Exit code 0 only when every step reached its state and the console has no
+// Frames: Docs/evidence/M3/*.jpg. Exit code 0 only when every step reached its state and the console has no
 // errors (Godot warnings are listed, not counted). Log: build/shots/olkhovka/console.log, report.json there.
 
 import http from "node:http";
@@ -104,9 +104,9 @@ async function main() {
     return s;
   };
   const shot = async (name) => {
-    const file = path.join(OUT_DIR, `${name}.png`);
+    const file = path.join(OUT_DIR, `${name}.jpg`);   // JPEG: evidence in the repo stays small
     // swiftshader on a small machine: a 1920x1080 WebGL frame can take long while the game runs — wait for it.
-    await page.screenshot({ path: file, timeout: 180000 });
+    await page.screenshot({ path: file, type: "jpeg", quality: 85, timeout: 180000 });
     logLine(`screenshot ${path.relative(ROOT, file)}`);
   };
   const click = async (label, pt) => {
