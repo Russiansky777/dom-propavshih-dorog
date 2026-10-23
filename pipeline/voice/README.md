@@ -35,6 +35,7 @@ assets/voice/ru/manifest.json         id → персонаж, текст, sha1 
 | `"prune_stale": true` | после запроса убрать записи, которые остались `stale` (ключа/реплики нет; запасная запись под старым текстом; ключ без ссылок) — запись манифеста, OGG и `src` | 0 |
 | `{"mode": "design", "voices": [{speaker, voice_name, description, text, …}]}` | Voice Design: три превью нового голоса → `pipeline/voice/design/<персонаж>/preview_<n>.mp3` и `design/<персонаж>.json` | символы текста превью, один раз |
 | `{"mode": "create_voice", "voices": [{speaker, generated_voice_id, voice_name, labels, selection}]}` | выбранное превью → голос в My Voices (`voice_id` в `design/<персонаж>.json`), затем список голосов (`voices.json`) | 0 |
+| `{"mode": "say", "set": "…", "max_chars": N, "items": [{id, speaker, text, variant, expect}]}` | пробные фразы (не реплики игры) с выравниванием → `pipeline/voice/probe/<набор>/` — проверка способов ударения | символы фраз |
 | `cast.<id>.alternates.<вариант>` в `cast.json` | те же реплики вторым голосом в `assets/voice/ru_alt/<id>_<вариант>/` (для сравнения на слух; сейчас не используется — Директор выбрал голоса) | за реплики персонажа |
 
 Повторный запуск генерирует только новые и изменённые реплики: сравниваются sha1 текста, голос, модель и настройки
@@ -163,6 +164,26 @@ good» как с прежними моделями — сравнивать на
 - Настройки голоса — по персонажу (`cast.json`), seed — по-прежнему из id и текста реплики.
 - Утверждённые на слух записи E0–E1, текст которых не менялся, ради формата не перезаписываются (новый дубль — другое
   исполнение); перезаписать — перечислить в `"redo"`.
+
+## Произношение (проход координатора 23.10)
+- Правила — `pipeline/voice/pronunciation_ru.json` (версия в git), применяет `pipeline/voice/pronounce.py` **только к
+  тексту запроса** (`eleven_voice.api_text`; `tools/validate_voice.py` считает sha1 запроса тем же модулем); субтитры
+  не меняются. Правило — словоформа целым словом: `stress` (номер ударной гласной), `ipa`, `fix`, `lines` (только эти
+  реплики — для омографов с разным смыслом: «узнаю»), `reason`. Смена правила перезаписывает только реплики с этим словом.
+- Способы и что о них говорит документация: IPA в `/…/` — «Eleven v4 understands IPA symbols when they are wrapped in
+  forward slashes», «results can still vary by voice and phrase»
+  ([best practices](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices)); словари
+  произношения — правила alias (замена написания) и phoneme (IPA/CMU; «only work with eleven_v4, eleven_flash_v2 and
+  eleven_v3», для не-английского — только eleven_v4) через `pronunciation_dictionary_locators`
+  ([pronunciation dictionaries](https://elevenlabs.io/docs/eleven-api/guides/how-to/text-to-speech/pronunciation-dictionaries.md));
+  поиск в словаре по точному слову без контекста — омографам («замок», «узнаю») нужен выбор по реплике, поэтому
+  правила у нас в тексте запроса, а не в словаре на сервере; респеллинг (заглавные, дефисы) — общий совет для моделей
+  без phoneme; знак ударения U+0301 документацией не описан. Какой способ eleven_v4 исполняет для русского — решает
+  проба (`pipeline/requests/voice_pron_probe.json`, режим `say`, разбор `tools/voice_stress_check.py --probe pron_probe`);
+  выбранный — `default_fix`.
+- Проверка ударения в записях: синтез через `/with-timestamps` (`cast.json → timestamps`), выравнивание по символам —
+  `src/<id>.align.json`; `tools/voice_stress_check.py` для каждого слова с правилом сравнивает ожидаемую ударную
+  гласную с самой долгой (по выравниванию) и с самой «весомой» (длительность × громкость по звуку).
 
 ## Квота
 `cast.json → quota`: перед синтезом скрипт читает подписку (`GET /v1/user/subscription`) и не запускает запрос, если
