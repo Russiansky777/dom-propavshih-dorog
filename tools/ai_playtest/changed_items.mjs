@@ -1,15 +1,19 @@
 #!/usr/bin/env node
-// Rows of an acceptance doc to check at a gate: new or changed table rows (rows of «Критично…» sections first).
+// Rows of an acceptance doc to check at a gate (Director 23.10: only what the published build changed —
+// no re-runs of passed items unless the build changed them):
+//   • rows whose text is new or changed since the last gate (Docs/playtest/gates_state/ACCEPTANCE_<M>.json);
+//   • plus the later rows of the same section that did NOT pass at the last gate — a checklist is a walk
+//     through the story, so a change early in it reaches the steps after it (the D1 fix changed row 149, the
+//     night by the stove is row 153);
+//   • rows of «Критично…» sections first, doc order inside.
 //
-//   node tools/ai_playtest/changed_items.mjs <doc> <base-sha>              rows changed since a commit
-//   node tools/ai_playtest/changed_items.mjs <doc> --state <dir>           rows changed since the last gate run
-//   node tools/ai_playtest/changed_items.mjs <doc> --state <dir> --record <sha> --ref <sha>   remember the rows
-//                                                                           of the doc at <sha> as gated
+//   node tools/ai_playtest/changed_items.mjs <doc> <base-sha>                           rows changed since a commit
+//   node tools/ai_playtest/changed_items.mjs <doc> --state <dir> [--ref <sha>]           rows to check at a gate
+//   node tools/ai_playtest/changed_items.mjs <doc> --state <dir> --record <sha> --ref <sha> [--verdicts log.json]
+//        remember the rows of the doc at <sha> as gated, with the gate's verdicts (log.json of the acceptance run)
 //
-// The state (Docs/playtest/gates_state/<ACCEPTANCE_M>.json) keeps a hash of every row the last gate saw and the
-// deployed commit it ran on. A gate runs on the commit that was just deployed (build-and-publish succeeded),
-// so a checklist change that is not deployed yet is simply not in the doc read here — the gate waits for the
-// next successful deploy.
+// --ref reads the checklist at that commit (the deployed one), not from the working tree: a checklist change
+// that is not deployed yet is not seen, so the gate waits for the next successful deploy.
 
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -29,33 +33,57 @@ const read = (ref) => {
 const h = (s) => createHash("sha1").update(s).digest("hex").slice(0, 12);
 function rows(text) {
   const out = new Map();
-  let section = "";
+  let section = "", order = 0;
   for (const line of text.split("\n")) {
     if (/^##\s/.test(line)) section = line.replace(/^##\s+/, "");
     const m = /^\|\s*(\d+)\s*\|/.exec(line);
-    if (m) out.set(Number(m[1]), { hash: h(line.trim()), critical: /критично/i.test(section) });
+    if (m) out.set(Number(m[1]), { hash: h(line.trim()), critical: /критично/i.test(section), section, order: order++ });
   }
   return out;
 }
+const sortRows = (list) => list.sort((x, y) => (y[1].critical - x[1].critical) || (x[1].order - y[1].order));
 
-// --ref <sha>: read the checklist at that commit (the deployed one), not from the working tree.
 const now = rows(read(opt("--ref") || ""));
 if (statePath) {
-  // --state <dir>: one file per checklist (<dir>/ACCEPTANCE_M2.json) — parallel gates never touch the same file.
+  // One file per checklist (<dir>/ACCEPTANCE_M2.json): parallel gates never touch the same file.
   const file = `${statePath.replace(/\/$/, "")}/${doc.split("/").pop().replace(/\.md$/, "")}.json`;
   const state = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
   if (record) {
+    const verdicts = { ...(state.verdicts || {}) };
+    const vf = opt("--verdicts");
+    if (vf && fs.existsSync(vf)) {
+      const log = JSON.parse(fs.readFileSync(vf, "utf8"));
+      const last = {};
+      for (const v of log.verdict_history || []) last[v.item] = v.status;
+      // The report's table (the stronger model re-checked the step model) wins over the raw verdicts.
+      const rep = vf.replace(/log\.json$/, "report.md");
+      if (fs.existsSync(rep)) {
+        const md = fs.readFileSync(rep, "utf8");
+        const sec = (/## Пункты\n([\s\S]*?)(\n## |$)/.exec(md) || [])[1] || "";
+        for (const line of sec.split("\n")) {
+          const m = /^\|\s*(\d+)\s*\|\s*([^|]+?)\s*\|/.exec(line);
+          if (!m) continue;
+          const st = ["не прошёл", "не дошёл", "не проверяемо", "частично", "прошёл"].find((x) => m[2].toLowerCase().startsWith(x));
+          if (st) last[Number(m[1])] = st;
+        }
+      }
+      for (const n of (log.checklist && log.checklist.items) || []) verdicts[n] = last[n] || "не дошёл";
+    }
     fs.mkdirSync(statePath, { recursive: true });
-    fs.writeFileSync(file, JSON.stringify({ doc, sha: record, at: new Date().toISOString(), rows: Object.fromEntries([...now.entries()].map(([n, r]) => [n, r.hash])) }, null, 1) + "\n");
+    fs.writeFileSync(file, JSON.stringify({ doc, sha: record, at: new Date().toISOString(),
+      rows: Object.fromEntries([...now.entries()].map(([n, r]) => [n, r.hash])), verdicts }, null, 1) + "\n");
     process.exit(0);
   }
   const seen = state.rows || {};
+  const verdicts = state.verdicts || {};
   const changed = [...now.entries()].filter(([n, r]) => seen[n] !== r.hash);
-  changed.sort((x, y) => (y[1].critical - x[1].critical));
-  process.stdout.write(changed.map(([n]) => n).join(","));
+  const pick = new Map(changed);
+  for (const [, r] of changed) {
+    for (const [m, q] of now.entries()) if (q.section === r.section && q.order > r.order && verdicts[m] !== "прошёл") pick.set(m, q);
+  }
+  process.stdout.write(sortRows([...pick.entries()]).map(([n]) => n).join(","));
 } else {
   const before = base && !/^0+$/.test(base) ? rows(read(base)) : new Map();
   const changed = [...now.entries()].filter(([n, r]) => !before.has(n) || before.get(n).hash !== r.hash);
-  changed.sort((x, y) => (y[1].critical - x[1].critical));
-  process.stdout.write(changed.map(([n]) => n).join(","));
+  process.stdout.write(sortRows(changed).map(([n]) => n).join(","));
 }

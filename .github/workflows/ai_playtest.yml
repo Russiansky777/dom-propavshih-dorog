@@ -48,18 +48,20 @@ jobs:
       gates: ${{ steps.req.outputs.gates }}
       sha: ${{ steps.req.outputs.sha }}
     steps:
+      # инструменты и состояние — с main; чеклисты — из опубликованного коммита (--ref)
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || github.sha }}
       - name: Что запускать
         id: req
         env:
           REQ_INPUT: ${{ github.event.inputs.request }}
           EVENT: ${{ github.event_name }}
           BEFORE: ${{ github.event.before }}
+          DEPLOYED: ${{ github.event.workflow_run.head_sha }}
         run: |
-          sha=$(git rev-parse HEAD)
+          sha=${DEPLOYED:-$(git rev-parse HEAD)}
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
           files=""; gates="[]"
           if [ "$EVENT" = "workflow_dispatch" ]; then
@@ -71,16 +73,13 @@ jobs:
               files=$(git diff --name-only --diff-filter=AM "$BEFORE" "$sha" -- 'pipeline/requests/playtest_*.json' | tr '\n' ' ' || true)
             fi
           else
-            # опубликованный коммит: чеклисты — из него, состояние прошлых ворот — с main (его пишут сами ворота)
-            git fetch -q origin main
-            rm -rf /tmp/gs && mkdir -p /tmp/gs
-            for f in $(git ls-tree --name-only origin/main Docs/playtest/gates_state/ 2>/dev/null); do git show "origin/main:$f" > "/tmp/gs/$(basename "$f")"; done
+            # опубликованный коммит: чеклисты — из него; состояние прошлых ворот (строки и вердикты) — с main
             list=""
             for cfg in pipeline/requests/playtest_gate_*.json; do
               [ -f "$cfg" ] || continue
               doc=$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).doc||"")' "$cfg")
-              [ -f "$doc" ] || { echo "$cfg: $doc ещё нет в опубликованной сборке"; continue; }
-              items=$(node tools/ai_playtest/changed_items.mjs "$doc" --state /tmp/gs)
+              git cat-file -e "$sha:$doc" 2>/dev/null || { echo "$cfg: $doc ещё нет в опубликованной сборке"; continue; }
+              items=$(node tools/ai_playtest/changed_items.mjs "$doc" --state Docs/playtest/gates_state --ref "$sha")
               [ -n "$items" ] || { echo "$doc: новых и изменённых пунктов нет"; continue; }
               echo "$doc: ворота по пунктам $items"
               list="$list{\"cfg\":\"$cfg\",\"doc\":\"$doc\",\"items\":\"$items\"},"
@@ -147,7 +146,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ needs.plan.outputs.sha }}
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -158,6 +157,11 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
+      - name: Чеклист — как на сайте
+        env:
+          DOC: ${{ matrix.gate.doc }}
+          SHA: ${{ needs.plan.outputs.sha }}
+        run: git show "$SHA:$DOC" > "$DOC"   # плейтестер с main, пункты — из опубликованного коммита
       - name: Дождаться, пока сайт отдаёт опубликованный коммит
         env:
           GH_TOKEN: ${{ github.token }}
@@ -175,10 +179,14 @@ jobs:
           echo "=== ворота $CFG: $DOC, пункты $ITEMS, сборка ${SHA:0:7}"
           rm -f build/ai_playtest/*/summary.txt
           node tools/ai_playtest/playtest.mjs --request "$CFG" --mode acceptance --items "$ITEMS" || status=1
+          # строки чеклиста этой сборки проверены воротами; вердикты — из отчёта приёмки
+          out=$(cat build/ai_playtest/last_out.txt 2>/dev/null || true)
+          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA" ${out:+--verdicts "$out/log.json"}
+          git checkout -- "$DOC" 2>/dev/null || true
           tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
+          git show "$SHA:$DOC" > "$DOC"
           rm -f build/ai_playtest/*/summary.txt
           node tools/ai_playtest/playtest.mjs --request "$CFG" --mode fresh || status=1
-          # эти строки чеклиста проверены воротами на этой сборке
-          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA"
+          git checkout -- "$DOC" 2>/dev/null || true
           tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
           exit $status

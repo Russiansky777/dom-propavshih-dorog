@@ -85,7 +85,7 @@ export function checklistText(cl) {
   out.push("\nПУНКТЫ ДЛЯ ПРОВЕРКИ (по порядку):");
   for (const r of cl.rows) out.push(`\n[${r.num}] Что сделать: ${r.what}\n      Как должно работать: ${r.expect}`);
   if (cl.context.length) {
-    out.push("\nСПРАВКА (как это делается; эти пункты НЕ проверять и вердикты по ним не давать):");
+    out.push("\nСПРАВКА (остальные пункты чеклиста — порядок блока и как что делается; их НЕ проверять и вердикты по ним не давать, но проходить сюжет через них можно и нужно, чтобы дойти до своих пунктов):");
     const ctxSecs = [];
     for (const r of cl.context) if (!cl.sections.includes(r.section) && !ctxSecs.includes(r.section)) ctxSecs.push(r.section);
     for (const s of ctxSecs) out.push(`(${s.title}) ${clip(proseOf(s), 1500)}`);

@@ -171,6 +171,15 @@ async function main() {
   if (!dry && !apiKey) run.stop = "нет ключа API (секрет CLAUDE_API → ANTHROPIC_API_KEY)";
   let checklist = null;
   if (mode === "acceptance") {
+    // context_all (default): every other row of the doc as reference — the route through the block to a row deep in it.
+    if (req.context_all !== false && cfg.items.length) {
+      const full = loadChecklist(ROOT, req.doc, cfg.items, []);
+      try {
+        const txt = fs.readFileSync(path.resolve(ROOT, full.doc), "utf8");
+        const all = [...txt.matchAll(/^\|\s*(\d+)\s*\|/gm)].map((m) => Number(m[1]));
+        cfg.contextItems = [...new Set([...cfg.contextItems, ...all.filter((n) => !cfg.items.includes(n))])];
+      } catch (_) { /* no doc */ }
+    }
     checklist = loadChecklist(ROOT, req.doc, cfg.items, cfg.contextItems);
     if (!checklist.rows.length) run.stop = run.stop || `пункты ${cfg.items.join(", ")} не найдены в Docs/ACCEPTANCE_*.md`;
     run.checklist = { doc: checklist.doc, items: checklist.rows.map((r) => r.num), missing: checklist.missing, context: checklist.context.map((r) => r.num) };
@@ -464,7 +473,7 @@ async function main() {
   let memory = "";
   const history = [];
   let noScreenChange = 0, noProgress = 0, invalidRow = 0, refusals = 0;
-  let lastClick = null, sameClick = 0;
+  let lastClick = null, sameClick = 0, rejectedDone = 0;
   const seenTexts = new Set();
   let pendingZoom = null;
   const reportReserve = Math.min(cfg.maxUsd * 0.25, estimateCost(cfg.reportModel, { textChars: 120000, images: Array(cfg.maxFrames).fill({ w: cfg.W, h: cfg.H }), maxOut: 9000 }));
@@ -771,6 +780,12 @@ async function main() {
         const r = Array.isArray(input.region) && input.region.length === 4 ? input.region.map(Number) : null;
         if (r && r.every(Number.isFinite)) { pendingZoom = r; desc = `увеличила (${r.map(Math.round).join(",")})`; }
         else events.push("zoom не выполнен: нужен region [x0,y0,x1,y1].");
+      } else if (act === "done" && mode === "acceptance" && pendingItems().length + Object.values(run.verdicts).filter((v) => v.status === "не дошёл").length > 0
+          && step < cfg.maxSteps * 0.8 && noProgress < 30 && rejectedDone < 3) {
+        // Too early: rows deep in the block need the story played up to them (gate r12 gave up after 24 steps).
+        rejectedDone += 1;
+        events.push("Завершать рано: есть пункты без проверки или «не дошёл», а шаги ещё есть. Пройди сюжет до этих пунктов (смотри справку — порядок дня), бери игровую «Подсказку», если не ясно, куда идти.");
+        desc = "попытка завершить (отклонена)";
       } else if (act === "done") {
         run.stop = `модель завершила прогон (done): ${short(input.thought, 200)}`;
       } else {
@@ -926,6 +941,7 @@ async function main() {
   const sum = mode === "acceptance"
     ? Object.values(run.verdicts).reduce((a, v) => { a[v.status] = (a[v.status] || 0) + 1; return a; }, {})
     : { шагов: run.steps.length };
+  fs.writeFileSync(path.join(ROOT, "build", "ai_playtest", "last_out.txt"), path.relative(ROOT, outDir));
   fs.writeFileSync(path.join(workDir, "summary.txt"), `${path.basename(outDir)}: ${Object.entries(sum).map(([k, v]) => `${k} ${v}`).join(", ")}; $${budget.spent.toFixed(2)}`);
   process.exit(0);
 }
