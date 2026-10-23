@@ -12,7 +12,8 @@
   8. постановка сцен (stage: затемнение, перенос в комнату, звуки) и контрольные сохранения (checkpoint):
      at — номер реплики или "end", комната — из locations сцены, звуки — из sfx.json, слот — не ручной;
   1г–1е. текст: цели и подсказки не называют факт раньше его флага (KNOWLEDGE_GATES), закадровый голос сцен не
-     говорит «мама» вне кавычек, в JSON сюжета нет повторяющихся ключей (ИИ-чтение непрерывности 23.10).
+     говорит «мама» вне кавычек, в JSON сюжета нет повторяющихся ключей (ИИ-чтение непрерывности 23.10);
+  1ж. одно имя тёти: «Евдокия» — только в первом объяснении (M01, Тамара), дальше «Дуня» (H1, Директор 24.10).
 Предмет, который игрок берёт сам в комнате (items.json source_hotspot «<комната>.<хотспот>»: хотспот с use.gives и
 use.requires), — единственный источник вместо выдачи сцены; симуляция даёт его, как только requires выполнены и
 комната достижима (скоба для плиты в мастерской — после плана из школы, блок 1 22.10).
@@ -299,6 +300,38 @@ for _jf in sorted(STORY.rglob("*.json")):
     json.loads(_jf.read_text(encoding="utf-8"), object_pairs_hook=_dup_hook)
     if _dups:
         err(f"{_jf.relative_to(ROOT)}: ключ повторяется в одном объекте — {', '.join(sorted(set(_dups)))}")
+
+# ---------- 1ж. одно имя тёти — «Дуня» (H1, Директор 24.10, 00:19) ----------
+# «Евдокия» — только в одном первом объяснении (M01, Тамара: «тёти Дуни, маминой сестры. Евдокией её только в
+# бумагах звали»); дальше везде, включая заметки, — «Дуня». Латиница в id флагов (knows_evdokia_death) не в счёт.
+AUNT_FULL_NAME_ALLOWED = "scenes/E0.json:M01.mandatory_lines"
+
+
+def _aunt_hits(o, path: str, out: list[str]) -> None:
+    if isinstance(o, dict):
+        for k, v in o.items():
+            _aunt_hits(v, f"{path}.{k}", out)
+    elif isinstance(o, list):
+        for i, v in enumerate(o):
+            _aunt_hits(v, f"{path}[{i}]", out)
+    elif isinstance(o, str) and "Евдоки" in o:
+        out.append(path)
+
+
+_aunt_found: list[str] = []
+for _jf in sorted(STORY.rglob("*.json")):
+    _doc = json.loads(_jf.read_text(encoding="utf-8"))
+    _rel = str(_jf.relative_to(STORY))
+    if _rel == "scenes/E0.json":
+        for _s in _doc.get("scenes", []):
+            _aunt_hits(_s, f"{_rel}:{_s.get('id')}", _aunt_found)
+    else:
+        _aunt_hits(_doc, _rel, _aunt_found)
+_aunt_bad = [p for p in _aunt_found if not p.startswith(AUNT_FULL_NAME_ALLOWED)]
+if _aunt_bad:
+    err(f"H1: «Евдокия» вне первого объяснения ({AUNT_FULL_NAME_ALLOWED}) — дальше только «Дуня»: {', '.join(_aunt_bad[:8])}")
+if len(_aunt_found) - len(_aunt_bad) != 1:
+    err(f"H1: первое объяснение «тётя Дуня — Евдокия, мамина сестра» должно быть ровно одно (в {AUNT_FULL_NAME_ALLOWED}), найдено {len(_aunt_found) - len(_aunt_bad)}")
 
 # ---------- 2. единственный источник предметов ----------
 item_sources: dict[str, list[str]] = {}

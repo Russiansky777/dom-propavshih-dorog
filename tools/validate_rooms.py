@@ -242,7 +242,7 @@ def walk_texts(ctx: str, obj) -> None:
         for k, v in obj.items():
             if k in ("label", "text", "look", "closed_text", "fail_text", "before_text", "after_text", "prompt",
                      "title", "intro", "check_label", "close_label", "error_text", "success_text", "complete_text",
-                     "drawing_label", "error_hint", "text_done"):
+                     "drawing_label", "error_hint", "text_done", "then"):
                 if isinstance(v, list):   # use.text — несколько ключей по очереди (ярлык колокола, затем мысль Агаты)
                     for i, vv in enumerate(v):
                         check_text(f"{ctx}.{k}[{i}]", vv)

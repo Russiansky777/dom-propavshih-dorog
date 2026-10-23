@@ -69,7 +69,7 @@
       "look": "@O3.notebooks.look",
       "view": {
         "id": "notebooks", "type": "papers", "title": "@O3.notebooks.title", "close_label": "@ui.close", "if": ["done_M21"],
-        "_note": "Тетради Евдокии (партия 4): четыре разворота, текст игры — её рукой (G33: рукописный шрифт Bad Script, UiTheme hand) в чистой части страницы; развороты — чистые партии 9 (closeup_notebook_*_clean, G33: без псевдорукописи-«каши», правые рисунки прежние пиксель в пиксель). Листаются «Назад»/«Дальше».",
+        "_note": "Тетради Дуни (партия 4): четыре разворота, текст игры — её рукой (G33: рукописный шрифт Bad Script, UiTheme hand) в чистой части страницы; развороты — чистые партии 9 (closeup_notebook_*_clean, G33: без псевдорукописи-«каши», правые рисунки прежние пиксель в пиксель). Листаются «Назад»/«Дальше».",
         "pages": [
           {"title": "@O3.notebooks.title_paths", "papers": [{"image": "res://assets/closeups/closeup_notebook_paths_clean.png", "image_size": [1672, 941], "text_rect": [345, 120, 480, 700], "text": "@O3.notebooks.paper_paths", "rect": [160, 150, 1600, 0], "font": "hand", "font_size": 30, "ink": "#2f2418"}]},
           {"title": "@O3.notebooks.title_rule", "papers": [{"image": "res://assets/closeups/closeup_notebook_rule_clean.png", "image_size": [1672, 941], "text_rect": [905, 130, 540, 690], "text": "@O3.notebooks.paper_rule", "rect": [160, 150, 1600, 0], "font": "hand", "font_size": 30, "ink": "#2f2418"}]},
@@ -134,7 +134,7 @@
   },
   "flags": {
     "o3_clock_compared": "Ходики Нины идут вровень с карманными часами Агаты",
-    "o3_read_notebooks": "Прочитаны тетради Евдокии: тропы, правило, стопор, мост",
+    "o3_read_notebooks": "Прочитаны тетради Дуни: тропы, правило, стопор, мост",
     "o3_read_village_list": "Прочитан список деревни: 22 живых, трое умерли",
     "ilya_saw_drawing": "Илья узнал свой детский рисунок моста"
   }

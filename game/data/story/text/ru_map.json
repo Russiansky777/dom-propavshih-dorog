@@ -2,7 +2,7 @@
   "_comment": "План Заречья (data/story/map_zarechye.json, game/scripts/ui/zarechye_map.gd): подписи мест из нескольких комнат и строки интерфейса плана. Названия отдельных комнат берутся из locations.json.",
   "lang": "ru",
   "texts": {
-    "map.house": {"text": "Дом Евдокии", "draft": false},
+    "map.house": {"text": "Дом тёти Дуни", "draft": false},
     "map.mill": {"text": "Мельница", "draft": false},
     "map.olkhovka": {"text": "Школа", "draft": false},
     "map.nina_house": {"text": "Дом Нины", "draft": false},

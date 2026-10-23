@@ -71,5 +71,18 @@
       "divider_dy": 34
     },
     "blur": {"radius_px": 3.2, "dim": 0.62, "fade_s": 0.18}
+  },
+  "credits": {
+    "_comment": "Титры после последней реплики игры (H55/H56, Директор 24.10): затухание в чёрное, благодарность и подпись автора, затухание — и главное меню. Тексты ui.credits_thanks / ui.credits_author; код game/scripts/ui/end_credits.gd (вызывает FrameView, когда игра окончена и титры ещё не показаны — флаг credits_seen; после них загрузка конца показывает «Конец» и следы выборов). Время в секундах; клик или Esc после появления текста пропускает ожидание.",
+    "fade_to_black_s": 2.0,
+    "text_fade_in_s": 1.6,
+    "hold_s": 8.0,
+    "text_fade_out_s": 1.6,
+    "black_after_s": 0.8,
+    "skip_after_s": 2.0,
+    "thanks_px": 46,
+    "author_px": 34,
+    "text_color": [0.93, 0.88, 0.78],
+    "author_color": [0.78, 0.70, 0.58]
   }
 }

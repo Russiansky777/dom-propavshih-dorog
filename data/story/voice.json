@@ -199,6 +199,11 @@
       "dwell_s": 0.6,
       "repeat_after_s": 30.0,
       "fade_out_s": 0.3
+    },
+    "ask_prompts": {
+      "_comment": "H4/H14 (Директор 24.10: «О чём спросить Пелагею» звучит при каждом клике): вопрос-приглашение разговора с персонажем звучит голосом при первом показе, потом — не чаще раза в repeat_after_s секунд игрового времени (пауза и главное меню не считаются); субтитр показывается всегда. keys — ключи вопросов (choice.prompt хотспотов kind=npc; tools/validate_voice.py требует, чтобы здесь был каждый).",
+      "repeat_after_s": 300.0,
+      "keys": ["H1.tikhon.prompt", "R1.pelageya.prompt", "Z1.tamara.prompt", "O1d.ulyana.prompt"]
     }
   }
 }
