@@ -1,0 +1,673 @@
+{
+ "mode": "say",
+ "set": "pron_probe",
+ "_comment": "Проба способов задать ударение в русском тексте для eleven_v4 (задание координатора 23.10: проход по произношению): 12 фраз из игры с рискованными словами (омографы замок/мука/ворот/узнаю/стоит/петли/доски/сестры, редкие скоба/стопор/бечева, топоним Ольховка) × 4 варианта — как есть, знак ударения U+0301, заглавная ударная гласная, IPA в /…/ (документация v4). С выравниванием по символам (/with-timestamps): ударная гласная — самая долгая; разбор — tools/voice_stress_check.py --probe pron_probe. Голоса — тех, кто говорит эту фразу в игре (управляющего пока нет — Павел).",
+ "max_chars": 1230,
+ "items": [
+  {
+   "id": "zamok_plain",
+   "speaker": "narrator",
+   "variant": "plain",
+   "text": "Замок поддался не сразу.",
+   "expect": [
+    {
+     "word": "Замок",
+     "stress": 2,
+     "ipa": "zɐˈmok"
+    }
+   ]
+  },
+  {
+   "id": "zamok_acute",
+   "speaker": "narrator",
+   "variant": "acute",
+   "text": "Замо́к поддался не сразу.",
+   "expect": [
+    {
+     "word": "Замок",
+     "stress": 2,
+     "ipa": "zɐˈmok"
+    }
+   ]
+  },
+  {
+   "id": "zamok_caps",
+   "speaker": "narrator",
+   "variant": "caps",
+   "text": "ЗамОк поддался не сразу.",
+   "expect": [
+    {
+     "word": "Замок",
+     "stress": 2,
+     "ipa": "zɐˈmok"
+    }
+   ]
+  },
+  {
+   "id": "zamok_ipa",
+   "speaker": "narrator",
+   "variant": "ipa",
+   "text": "/zɐˈmok/ поддался не сразу.",
+   "expect": [
+    {
+     "word": "Замок",
+     "stress": 2,
+     "ipa": "zɐˈmok"
+    }
+   ]
+  },
+  {
+   "id": "muki_plain",
+   "speaker": "pavel",
+   "variant": "plain",
+   "text": "Иначе Заречье без муки.",
+   "expect": [
+    {
+     "word": "муки",
+     "stress": 2,
+     "ipa": "mʊˈkʲi"
+    }
+   ]
+  },
+  {
+   "id": "muki_acute",
+   "speaker": "pavel",
+   "variant": "acute",
+   "text": "Иначе Заречье без муки́.",
+   "expect": [
+    {
+     "word": "муки",
+     "stress": 2,
+     "ipa": "mʊˈkʲi"
+    }
+   ]
+  },
+  {
+   "id": "muki_caps",
+   "speaker": "pavel",
+   "variant": "caps",
+   "text": "Иначе Заречье без мукИ.",
+   "expect": [
+    {
+     "word": "муки",
+     "stress": 2,
+     "ipa": "mʊˈkʲi"
+    }
+   ]
+  },
+  {
+   "id": "muki_ipa",
+   "speaker": "pavel",
+   "variant": "ipa",
+   "text": "Иначе Заречье без /mʊˈkʲi/.",
+   "expect": [
+    {
+     "word": "муки",
+     "stress": 2,
+     "ipa": "mʊˈkʲi"
+    }
+   ]
+  },
+  {
+   "id": "vorote_plain",
+   "speaker": "ilya",
+   "variant": "plain",
+   "text": "Я на вороте.",
+   "expect": [
+    {
+     "word": "вороте",
+     "stress": 1,
+     "ipa": "ˈvorətʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "vorote_acute",
+   "speaker": "ilya",
+   "variant": "acute",
+   "text": "Я на во́роте.",
+   "expect": [
+    {
+     "word": "вороте",
+     "stress": 1,
+     "ipa": "ˈvorətʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "vorote_caps",
+   "speaker": "ilya",
+   "variant": "caps",
+   "text": "Я на вОроте.",
+   "expect": [
+    {
+     "word": "вороте",
+     "stress": 1,
+     "ipa": "ˈvorətʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "vorote_ipa",
+   "speaker": "ilya",
+   "variant": "ipa",
+   "text": "Я на /ˈvorətʲɪ/.",
+   "expect": [
+    {
+     "word": "вороте",
+     "stress": 1,
+     "ipa": "ˈvorətʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "uznayu_find_plain",
+   "speaker": "agata",
+   "variant": "plain",
+   "text": "Сначала узнаю, что у Тамары.",
+   "expect": [
+    {
+     "word": "узнаю",
+     "stress": 2,
+     "ipa": "ʊzˈnajʊ"
+    }
+   ]
+  },
+  {
+   "id": "uznayu_find_acute",
+   "speaker": "agata",
+   "variant": "acute",
+   "text": "Сначала узна́ю, что у Тамары.",
+   "expect": [
+    {
+     "word": "узнаю",
+     "stress": 2,
+     "ipa": "ʊzˈnajʊ"
+    }
+   ]
+  },
+  {
+   "id": "uznayu_find_caps",
+   "speaker": "agata",
+   "variant": "caps",
+   "text": "Сначала узнАю, что у Тамары.",
+   "expect": [
+    {
+     "word": "узнаю",
+     "stress": 2,
+     "ipa": "ʊzˈnajʊ"
+    }
+   ]
+  },
+  {
+   "id": "uznayu_find_ipa",
+   "speaker": "agata",
+   "variant": "ipa",
+   "text": "Сначала /ʊzˈnajʊ/, что у Тамары.",
+   "expect": [
+    {
+     "word": "узнаю",
+     "stress": 2,
+     "ipa": "ʊzˈnajʊ"
+    }
+   ]
+  },
+  {
+   "id": "uznayu_know_plain",
+   "speaker": "agata",
+   "variant": "plain",
+   "text": "Почерк я не узнаю.",
+   "expect": [
+    {
+     "word": "узнаю",
+     "stress": 3,
+     "ipa": "ʊznɐˈju"
+    }
+   ]
+  },
+  {
+   "id": "uznayu_know_acute",
+   "speaker": "agata",
+   "variant": "acute",
+   "text": "Почерк я не узнаю́.",
+   "expect": [
+    {
+     "word": "узнаю",
+     "stress": 3,
+     "ipa": "ʊznɐˈju"
+    }
+   ]
+  },
+  {
+   "id": "uznayu_know_caps",
+   "speaker": "agata",
+   "variant": "caps",
+   "text": "Почерк я не узнаЮ.",
+   "expect": [
+    {
+     "word": "узнаю",
+     "stress": 3,
+     "ipa": "ʊznɐˈju"
+    }
+   ]
+  },
+  {
+   "id": "uznayu_know_ipa",
+   "speaker": "agata",
+   "variant": "ipa",
+   "text": "Почерк я не /ʊznɐˈju/.",
+   "expect": [
+    {
+     "word": "узнаю",
+     "stress": 3,
+     "ipa": "ʊznɐˈju"
+    }
+   ]
+  },
+  {
+   "id": "skoba_stoit_plain",
+   "speaker": "pelageya",
+   "variant": "plain",
+   "text": "Скоба стоит?",
+   "expect": [
+    {
+     "word": "Скоба",
+     "stress": 2,
+     "ipa": "skɐˈba"
+    },
+    {
+     "word": "стоит",
+     "stress": 2,
+     "ipa": "stɐˈit"
+    }
+   ]
+  },
+  {
+   "id": "skoba_stoit_acute",
+   "speaker": "pelageya",
+   "variant": "acute",
+   "text": "Скоба́ стои́т?",
+   "expect": [
+    {
+     "word": "Скоба",
+     "stress": 2,
+     "ipa": "skɐˈba"
+    },
+    {
+     "word": "стоит",
+     "stress": 2,
+     "ipa": "stɐˈit"
+    }
+   ]
+  },
+  {
+   "id": "skoba_stoit_caps",
+   "speaker": "pelageya",
+   "variant": "caps",
+   "text": "СкобА стоИт?",
+   "expect": [
+    {
+     "word": "Скоба",
+     "stress": 2,
+     "ipa": "skɐˈba"
+    },
+    {
+     "word": "стоит",
+     "stress": 2,
+     "ipa": "stɐˈit"
+    }
+   ]
+  },
+  {
+   "id": "skoba_stoit_ipa",
+   "speaker": "pelageya",
+   "variant": "ipa",
+   "text": "/skɐˈba/ /stɐˈit/?",
+   "expect": [
+    {
+     "word": "Скоба",
+     "stress": 2,
+     "ipa": "skɐˈba"
+    },
+    {
+     "word": "стоит",
+     "stress": 2,
+     "ipa": "stɐˈit"
+    }
+   ]
+  },
+  {
+   "id": "petli_plain",
+   "speaker": "agata",
+   "variant": "plain",
+   "text": "Родные петли школьной двери — все три.",
+   "expect": [
+    {
+     "word": "петли",
+     "stress": 1,
+     "ipa": "ˈpʲetlʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "petli_acute",
+   "speaker": "agata",
+   "variant": "acute",
+   "text": "Родные пе́тли школьной двери — все три.",
+   "expect": [
+    {
+     "word": "петли",
+     "stress": 1,
+     "ipa": "ˈpʲetlʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "petli_caps",
+   "speaker": "agata",
+   "variant": "caps",
+   "text": "Родные пЕтли школьной двери — все три.",
+   "expect": [
+    {
+     "word": "петли",
+     "stress": 1,
+     "ipa": "ˈpʲetlʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "petli_ipa",
+   "speaker": "agata",
+   "variant": "ipa",
+   "text": "Родные /ˈpʲetlʲɪ/ школьной двери — все три.",
+   "expect": [
+    {
+     "word": "петли",
+     "stress": 1,
+     "ipa": "ˈpʲetlʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "olkhovke_plain",
+   "speaker": "agata",
+   "variant": "plain",
+   "text": "Мама с Ильёй в Ольховке.",
+   "expect": [
+    {
+     "word": "Ольховке",
+     "stress": 2,
+     "ipa": "ɐlʲˈxofkʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "olkhovke_acute",
+   "speaker": "agata",
+   "variant": "acute",
+   "text": "Мама с Ильёй в Ольхо́вке.",
+   "expect": [
+    {
+     "word": "Ольховке",
+     "stress": 2,
+     "ipa": "ɐlʲˈxofkʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "olkhovke_caps",
+   "speaker": "agata",
+   "variant": "caps",
+   "text": "Мама с Ильёй в ОльхОвке.",
+   "expect": [
+    {
+     "word": "Ольховке",
+     "stress": 2,
+     "ipa": "ɐlʲˈxofkʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "olkhovke_ipa",
+   "speaker": "agata",
+   "variant": "ipa",
+   "text": "Мама с Ильёй в /ɐlʲˈxofkʲɪ/.",
+   "expect": [
+    {
+     "word": "Ольховке",
+     "stress": 2,
+     "ipa": "ɐlʲˈxofkʲɪ"
+    }
+   ]
+  },
+  {
+   "id": "zamkom_stopor_plain",
+   "speaker": "pelageya",
+   "variant": "plain",
+   "text": "Вот этот кол с замком — стопор.",
+   "expect": [
+    {
+     "word": "замком",
+     "stress": 2,
+     "ipa": "zɐmˈkom"
+    },
+    {
+     "word": "стопор",
+     "stress": 1,
+     "ipa": "ˈstopər"
+    }
+   ]
+  },
+  {
+   "id": "zamkom_stopor_acute",
+   "speaker": "pelageya",
+   "variant": "acute",
+   "text": "Вот этот кол с замко́м — сто́пор.",
+   "expect": [
+    {
+     "word": "замком",
+     "stress": 2,
+     "ipa": "zɐmˈkom"
+    },
+    {
+     "word": "стопор",
+     "stress": 1,
+     "ipa": "ˈstopər"
+    }
+   ]
+  },
+  {
+   "id": "zamkom_stopor_caps",
+   "speaker": "pelageya",
+   "variant": "caps",
+   "text": "Вот этот кол с замкОм — стОпор.",
+   "expect": [
+    {
+     "word": "замком",
+     "stress": 2,
+     "ipa": "zɐmˈkom"
+    },
+    {
+     "word": "стопор",
+     "stress": 1,
+     "ipa": "ˈstopər"
+    }
+   ]
+  },
+  {
+   "id": "zamkom_stopor_ipa",
+   "speaker": "pelageya",
+   "variant": "ipa",
+   "text": "Вот этот кол с /zɐmˈkom/ — /ˈstopər/.",
+   "expect": [
+    {
+     "word": "замком",
+     "stress": 2,
+     "ipa": "zɐmˈkom"
+    },
+    {
+     "word": "стопор",
+     "stress": 1,
+     "ipa": "ˈstopər"
+    }
+   ]
+  },
+  {
+   "id": "doski_plain",
+   "speaker": "narrator",
+   "variant": "plain",
+   "text": "В углу доски мелом.",
+   "expect": [
+    {
+     "word": "доски",
+     "stress": 2,
+     "ipa": "dɐˈskʲi"
+    }
+   ]
+  },
+  {
+   "id": "doski_acute",
+   "speaker": "narrator",
+   "variant": "acute",
+   "text": "В углу доски́ мелом.",
+   "expect": [
+    {
+     "word": "доски",
+     "stress": 2,
+     "ipa": "dɐˈskʲi"
+    }
+   ]
+  },
+  {
+   "id": "doski_caps",
+   "speaker": "narrator",
+   "variant": "caps",
+   "text": "В углу доскИ мелом.",
+   "expect": [
+    {
+     "word": "доски",
+     "stress": 2,
+     "ipa": "dɐˈskʲi"
+    }
+   ]
+  },
+  {
+   "id": "doski_ipa",
+   "speaker": "narrator",
+   "variant": "ipa",
+   "text": "В углу /dɐˈskʲi/ мелом.",
+   "expect": [
+    {
+     "word": "доски",
+     "stress": 2,
+     "ipa": "dɐˈskʲi"
+    }
+   ]
+  },
+  {
+   "id": "bechevu_plain",
+   "speaker": "narrator",
+   "variant": "plain",
+   "text": "Пелагея выбирает бечеву.",
+   "expect": [
+    {
+     "word": "бечеву",
+     "stress": 3,
+     "ipa": "bʲɪt͡ɕɪˈvu"
+    }
+   ]
+  },
+  {
+   "id": "bechevu_acute",
+   "speaker": "narrator",
+   "variant": "acute",
+   "text": "Пелагея выбирает бечеву́.",
+   "expect": [
+    {
+     "word": "бечеву",
+     "stress": 3,
+     "ipa": "bʲɪt͡ɕɪˈvu"
+    }
+   ]
+  },
+  {
+   "id": "bechevu_caps",
+   "speaker": "narrator",
+   "variant": "caps",
+   "text": "Пелагея выбирает бечевУ.",
+   "expect": [
+    {
+     "word": "бечеву",
+     "stress": 3,
+     "ipa": "bʲɪt͡ɕɪˈvu"
+    }
+   ]
+  },
+  {
+   "id": "bechevu_ipa",
+   "speaker": "narrator",
+   "variant": "ipa",
+   "text": "Пелагея выбирает /bʲɪt͡ɕɪˈvu/.",
+   "expect": [
+    {
+     "word": "бечеву",
+     "stress": 3,
+     "ipa": "bʲɪt͡ɕɪˈvu"
+    }
+   ]
+  },
+  {
+   "id": "sestry_plain",
+   "speaker": "narrator",
+   "variant": "plain",
+   "text": "Нина входит в дом сестры.",
+   "expect": [
+    {
+     "word": "сестры",
+     "stress": 2,
+     "ipa": "sʲɪˈstrɨ"
+    }
+   ]
+  },
+  {
+   "id": "sestry_acute",
+   "speaker": "narrator",
+   "variant": "acute",
+   "text": "Нина входит в дом сестры́.",
+   "expect": [
+    {
+     "word": "сестры",
+     "stress": 2,
+     "ipa": "sʲɪˈstrɨ"
+    }
+   ]
+  },
+  {
+   "id": "sestry_caps",
+   "speaker": "narrator",
+   "variant": "caps",
+   "text": "Нина входит в дом сестрЫ.",
+   "expect": [
+    {
+     "word": "сестры",
+     "stress": 2,
+     "ipa": "sʲɪˈstrɨ"
+    }
+   ]
+  },
+  {
+   "id": "sestry_ipa",
+   "speaker": "narrator",
+   "variant": "ipa",
+   "text": "Нина входит в дом /sʲɪˈstrɨ/.",
+   "expect": [
+    {
+     "word": "сестры",
+     "stress": 2,
+     "ipa": "sʲɪˈstrɨ"
+    }
+   ]
+  }
+ ],
+ "note": "2026-10-23: проба ударения"
+}
