@@ -32,6 +32,7 @@ func _ready() -> void:
 
 func reload() -> void:
 	load_errors.clear()
+	TimeOfDay.reload()   # время суток читает data/story/time заново (F17)
 	_load_locations()
 	_load_items()
 	_load_flags()

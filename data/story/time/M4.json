@@ -1,0 +1,7 @@
+{
+  "room": "M4",
+  "_comment": "Затвор: прежний оттенок сумерек (evening_dusk) заменён временем суток.",
+  "replaces_effects": [
+    "dusk"
+  ]
+}

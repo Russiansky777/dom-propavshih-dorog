@@ -1,0 +1,128 @@
+{
+  "room": "Z2",
+  "_comment": "Улица Заречья. Прежний оттенок сумерек (rooms/Z2.json effects.dusk, по evening_dusk — оставался и на 3–4 день) заменён временем суток класса exterior. Окна: тётин дом — слабый тёплый свет печи, когда печь затоплена (M03) и стемнело; дальние избы и мельница на том конце улицы — огоньки в темноте.",
+  "replaces_effects": [
+    "dusk"
+  ],
+  "windows": [
+    {
+      "id": "house_w1",
+      "rect": [
+        260,
+        343,
+        51,
+        100
+      ],
+      "color": "#ffb35c",
+      "alpha": 0.32,
+      "halo": 1.8,
+      "halo_alpha": 0.14,
+      "if": [
+        "tod_dark",
+        "stove_lit"
+      ]
+    },
+    {
+      "id": "house_w2",
+      "rect": [
+        456,
+        335,
+        63,
+        106
+      ],
+      "color": "#ffb35c",
+      "alpha": 0.36,
+      "halo": 1.8,
+      "halo_alpha": 0.15,
+      "if": [
+        "tod_dark",
+        "stove_lit"
+      ]
+    },
+    {
+      "id": "house_w3",
+      "rect": [
+        671,
+        328,
+        68,
+        111
+      ],
+      "color": "#ffb35c",
+      "alpha": 0.4,
+      "halo": 1.8,
+      "halo_alpha": 0.16,
+      "if": [
+        "tod_dark",
+        "stove_lit"
+      ]
+    },
+    {
+      "id": "far_1",
+      "rect": [
+        1535,
+        391,
+        5,
+        5
+      ],
+      "color": "#ffb35c",
+      "alpha": 0.85,
+      "halo": 4.0,
+      "halo_alpha": 0.3
+    },
+    {
+      "id": "far_2",
+      "rect": [
+        1621,
+        402,
+        6,
+        5
+      ],
+      "color": "#ffb35c",
+      "alpha": 0.85,
+      "halo": 4.0,
+      "halo_alpha": 0.3
+    },
+    {
+      "id": "far_3",
+      "rect": [
+        1652,
+        402,
+        6,
+        5
+      ],
+      "color": "#ffb35c",
+      "alpha": 0.7,
+      "halo": 4.0,
+      "halo_alpha": 0.25,
+      "if": [
+        "tod_night"
+      ]
+    },
+    {
+      "id": "mill_far",
+      "rect": [
+        1739,
+        421,
+        7,
+        13
+      ],
+      "color": "#ffb35c",
+      "alpha": 0.8,
+      "halo": 3.5,
+      "halo_alpha": 0.28
+    },
+    {
+      "id": "far_4",
+      "rect": [
+        1806,
+        383,
+        6,
+        5
+      ],
+      "color": "#ffb35c",
+      "alpha": 0.8,
+      "halo": 4.0,
+      "halo_alpha": 0.28
+    }
+  ]
+}

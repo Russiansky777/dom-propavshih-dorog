@@ -384,11 +384,21 @@ for rf_ in sorted((STORY / "rooms").glob("*.json")):
         _room_local_flags |= set((json.loads(rf_.read_text(encoding="utf-8")).get("flags") or {}).keys())
 
 
+_TOD_INDEX = STORY / "time" / "_index.json"
+_TOD: set[str] = set()
+if _TOD_INDEX.exists():   # время суток (F17): виртуальные флаги tod_<состояние|фаза>, tod_day<N>, tod_dark
+    _TOD.add("tod_dark")
+    for _s in json.loads(_TOD_INDEX.read_text(encoding="utf-8")).get("states", []):
+        for _n in (_s.get("id"), _s.get("phase"), f"day{_s.get('day', 0)}"):
+            if _n:
+                _TOD.add("tod_" + str(_n))
+
+
 def check_conditions(ctx: str, o: dict) -> None:
     """Условия реплики или постановки: флаги if / unless / if_any известны; switch — переключатель meta.json."""
     for k in ("if", "unless", "if_any"):
         for fl in o.get(k, []) or []:
-            if fl not in granted_flags and fl not in declared_flags and fl not in _room_local_flags \
+            if fl not in granted_flags and fl not in declared_flags and fl not in _room_local_flags and fl not in _TOD \
                     and not fl.startswith(("done_", "has_", "q0", "q1", "v0", "board_", "pavel_answer_", "tikhon_told_", "beam_")):
                 err(f"{ctx}: условие {k} — неизвестный флаг {fl}")
     sw = o.get("switch")

@@ -145,6 +145,10 @@ func _publish_probe_state() -> void:
 				var rect: Rect2 = _hotspot_rect(e)
 				exits[e.target_room] = {"x": rect.get_center().x, "y": rect.get_center().y, "open": e.is_open(),
 					"exists": e.target_exists()}
+				var cue: ExitCue = e.cue
+				if cue != null and is_instance_valid(cue):   # the visible mark (F20: where it stands, where it points)
+					exits[e.target_room]["mark"] = {"x": cue.global_position.x, "y": cue.global_position.y,
+						"angle": cue.angle_deg if not is_nan(cue.angle_deg) else ExitCue.dir_angle(cue.direction)}
 	var state := {
 		"room": GameState.current_room,
 		"flags": GameState.flags,
@@ -165,6 +169,7 @@ func _publish_probe_state() -> void:
 		"mechanic": mechanic_view.call("probe") if mechanic_view != null else {},
 		"examine": item_examine.call("probe") if item_examine != null else {},
 		"frame": frame_view.call("probe") if frame_view != null else {},
+		"time": TimeOfDay.probe(GameState.current_room),   # time of day (F17): state, phase, day, journal line
 		"ticks": Time.get_ticks_msec(),
 		"physics_frames": Engine.get_physics_frames(),
 	}

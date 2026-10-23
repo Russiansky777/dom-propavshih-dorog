@@ -77,6 +77,10 @@ static func build(room: Node2D, id: String) -> RoomLighting:
 	var spec := load_data(id)
 	if spec.is_empty():
 		return null
+	var tod := TimeOfDay.light_sources(id)   # время суток (F17): ambient по состояниям, data/story/time
+	if not tod.is_empty():
+		spec = spec.duplicate()
+		spec["sources"] = (spec.get("sources", []) as Array) + tod
 	var fx := room.get_node_or_null("Effects")
 	for eid in spec.get("suppress_effects", []):
 		var n: Node = fx.get_node_or_null(NodePath(String(eid))) if fx != null else null

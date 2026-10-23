@@ -109,6 +109,20 @@ def shader_uniforms(name: str) -> set[str]:
     return set(re.findall(r"^\s*uniform\s+\w+\s+(\w+)", path.read_text(encoding="utf-8"), re.M))
 
 
+def tod_flags() -> set[str]:
+    """Виртуальные флаги времени суток (F17, game/scripts/core/time_of_day.gd): tod_<состояние>, tod_<фаза>,
+    tod_day<N>, tod_dark — их отвечает GameState.has_flag, в сохранение они не пишутся."""
+    p = Path(__file__).resolve().parent.parent / "data" / "story" / "time" / "_index.json"
+    if not p.exists():
+        return set()
+    names = {"tod_dark"}
+    for s in json.loads(p.read_text(encoding="utf-8")).get("states", []):
+        for n in (s.get("id"), s.get("phase"), f"day{s.get('day', 0)}"):
+            if n:
+                names.add("tod_" + str(n))
+    return names
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
     if not LIGHTS.is_dir():
@@ -117,6 +131,7 @@ def main() -> int:
     index = load(ROOMS / "_index.json")
     in_scope = set(index.get("in_scope", []))
     known, auto = known_flag_set()
+    known = set(known) | tod_flags()   # время суток (F17): виртуальные флаги tod_*
 
     def check_flags(ctx: str, flags) -> None:
         if flags is None:

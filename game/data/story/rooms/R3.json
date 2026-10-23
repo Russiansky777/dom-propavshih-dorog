@@ -32,7 +32,7 @@
       "talk": {"after_text": "@R3.pelageya.after"}
     },
     {
-      "id": "stopor", "kind": "object", "label": "@R3.stopor.label", "rect": [330, 730, 260, 260], "stand": [480, 680], "draw": false,
+      "id": "stopor", "kind": "object", "label": "@R3.stopor.label", "rect": [330, 730, 260, 260], "stand": [300, 665], "draw": false,
       "_rect_note": "старое кольцо в стенке и деревянный стопор с канатом (слой fg_rope_stop)",
       "look": "@R3.stopor.look"
     },

@@ -56,6 +56,7 @@ var continue_label: Label
 var options_box: VBoxContainer
 var journal_panel: PanelContainer
 var journal_goal_label: Label
+var journal_time_label: Label    # «День второй · сумерки» — время суток (F17, TimeOfDay)
 var journal_facts_label: RichTextLabel
 var menu_panel: PanelContainer
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
@@ -277,6 +278,10 @@ func _build() -> void:
 	jt.text = StoryData.text("@ui.journal_title")
 	jt.theme_type_variation = &"HeaderLarge"
 	jv.add_child(jt)
+	journal_time_label = Label.new()
+	journal_time_label.name = "TimeOfDay"
+	journal_time_label.theme_type_variation = &"HeaderSmall"
+	jv.add_child(journal_time_label)
 	var jg := Label.new()
 	jg.text = StoryData.text("@ui.journal_goal")
 	jg.theme_type_variation = &"HeaderSmall"
@@ -777,6 +782,8 @@ func toggle_journal() -> void:
 	if journal_panel.visible:
 		journal_plan_button.visible = map_view.available_in_journal()
 		journal_goal_label.text = StoryRunner.journal_goal()
+		journal_time_label.text = TimeOfDay.label(GameState.current_room)
+		journal_time_label.visible = journal_time_label.text != ""
 		var facts := StoryRunner.journal_facts()
 		journal_facts_label.text = "\n".join(PackedStringArray(facts.map(func(f): return "• " + f))) if not facts.is_empty() else StoryData.text("@ui.journal_empty")
 	_update_modal()

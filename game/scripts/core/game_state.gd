@@ -40,6 +40,8 @@ func set_flag(flag: String, value: bool = true) -> void:
 
 
 func has_flag(flag: String) -> bool:
+	if flag.begins_with("tod_"):
+		return TimeOfDay.has_virtual(flag)   # time of day: derived from the story, never stored (F17)
 	return bool(flags.get(flag, false))
 
 

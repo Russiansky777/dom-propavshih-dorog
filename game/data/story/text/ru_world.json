@@ -1,0 +1,26 @@
+{
+  "_comment": "Мир (партия E, 23.10): время суток в журнале (F17, data/story/time/_index.json → states[].label) и лист «Распорядок смен» на доске двора мельницы (F19, rooms/M1.json → hotspots.schedule.view). Строки интерфейса (ui.*) и надписи на бумаге (*.title, *.paper_*) не озвучиваются (voice.json → narration.skip_*). Текст листа — черновик агента по SCENARIO_FINAL §7 (M09: «распорядок смен со старыми сигналами колокола») — правит владелец текста.",
+  "lang": "ru",
+  "texts": {
+    "ui.time_d1_afternoon": {"text": "День первый · после полудня", "draft": true},
+    "ui.time_d1_dusk": {"text": "День первый · сумерки", "draft": true},
+    "ui.time_d1_night": {"text": "День первый · ночь", "draft": true},
+    "ui.time_d2_morning": {"text": "День второй · утро", "draft": true},
+    "ui.time_d2_midday": {"text": "День второй · полдень", "draft": true},
+    "ui.time_d2_afternoon": {"text": "День второй · после полудня", "draft": true},
+    "ui.time_d2_dusk": {"text": "День второй · сумерки", "draft": true},
+    "ui.time_d2_evening": {"text": "День второй · вечер", "draft": true},
+    "ui.time_d2_night": {"text": "День второй · ночь", "draft": true},
+    "ui.time_d3_morning": {"text": "День третий · утро", "draft": true},
+    "ui.time_d3_day": {"text": "День третий · день", "draft": true},
+    "ui.time_d3_evening": {"text": "День третий · вечер", "draft": true},
+    "ui.time_d4_day": {"text": "День четвёртый · день", "draft": true},
+    "ui.time_ep_morning": {"text": "Три недели спустя · утро", "draft": true},
+    "ui.time_ep_evening": {"text": "Три недели спустя · вечер", "draft": true},
+    "ui.time_class_own": {"text": "в классе своё время: там зимний день", "draft": true},
+    "M1.schedule.title": {"text": "Распорядок смен", "draft": true},
+    "M1.schedule.paper_title": {"text": "Распорядок смен", "draft": true},
+    "M1.schedule.paper_shifts": {"text": "Утренняя — с шести до двух.\nВечерняя — с двух до десяти.\nВ воскресенье мельница стоит.\n\nЗатвор на ночь — закрыть,\nключ — на гвоздь в конторе.", "draft": true},
+    "M1.schedule.paper_signals": {"text": "Сигналы колоколом:\n\nОдин удар — пускай.\nДва — стой.\nДолгий — подымай.\n\nУправляющий", "draft": true}
+  }
+}

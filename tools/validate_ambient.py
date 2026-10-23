@@ -360,6 +360,20 @@ def check_puddle_rings(idx: dict) -> None:
             err(f"_index.presets.{name}.puddle_style: ring_w_px outside 0.8..3 px")
 
 
+def tod_flags() -> set[str]:
+    """Виртуальные флаги времени суток (F17, game/scripts/core/time_of_day.gd): tod_<состояние>, tod_<фаза>,
+    tod_day<N>, tod_dark — их отвечает GameState.has_flag, в сохранение они не пишутся."""
+    p = Path(__file__).resolve().parent.parent / "data" / "story" / "time" / "_index.json"
+    if not p.exists():
+        return set()
+    names = {"tod_dark"}
+    for s in json.loads(p.read_text(encoding="utf-8")).get("states", []):
+        for n in (s.get("id"), s.get("phase"), f"day{s.get('day', 0)}"):
+            if n:
+                names.add("tod_" + str(n))
+    return names
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
     idx_path = AMB / "_index.json"
@@ -369,7 +383,7 @@ def main() -> int:
     idx = json.loads(idx_path.read_text(encoding="utf-8"))
     check_index(idx)
     check_puddle_rings(idx)
-    flags = known_flags()
+    flags = known_flags() | tod_flags()   # время суток (F17): виртуальные флаги tod_*
     files = sorted(p for p in AMB.glob("*.json") if not p.name.startswith("_"))
     for p in files:
         check_room(p, idx, flags)

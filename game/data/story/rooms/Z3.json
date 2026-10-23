@@ -16,7 +16,7 @@
     {"id": "water_low", "image": "res://assets/rooms/Z3/state_water_low.png", "z": 0, "if": ["evening_dusk"], "_note": "партия 3: вода спущена, мокрые камни, сумерки всей сцены — поверх фона и воды, под Агатой; вечером (после мамина зеркала, M15а): пока вода сходит, у поворота ещё день"},
     {"id": "stone_no_plate_dusk", "image": "res://assets/rooms/Z3/state_stone_no_plate.png", "z": 0, "if": ["evening_dusk"], "modulate": "#8c8a9c", "_note": "вечером слой спущенной воды (партия 3) рисует на береговом камне кольцо и трещину — тот же камень без плиты поверх него, в тоне сумерек (умножение): плита у поворота только на опоре в воде"}
   ],
-  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [1050, 1000]},
+  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [1250, 1010]},
   "props": [],
   "hotspots": [
     {
@@ -31,7 +31,7 @@
       "look": "@Z3.plate.look"
     },
     {
-      "id": "pier_plate", "kind": "object", "label": "@Z3d.plate_dry.label", "rect": [1160, 500, 320, 120], "stand": [1120, 730], "draw": false, "visible_if": ["evening_dusk"],
+      "id": "pier_plate", "kind": "object", "label": "@Z3d.plate_dry.label", "rect": [1160, 500, 320, 120], "stand": [1300, 790], "draw": false, "visible_if": ["evening_dusk"],
       "item_use": {"brace_plate": {"sets": ["skoba_on_plate"], "consumes": true, "text": "@Z3d.plate_dry.skoba", "scene": "M15s", "open_mechanic": true}},
       "use": {"requires": {"items": ["brace_plate"]}, "text": "@Z3d.plate_dry.use_skoba", "fail_text": "@Z3d.plate_dry.no_skoba"},
       "mechanic": {

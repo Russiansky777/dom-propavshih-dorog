@@ -16,7 +16,7 @@
     {"id": "mirror_removed", "image": "res://assets/rooms/M2/bg_mirror_removed.png", "z": -9, "if": ["has_mirror_mill"], "_note": "зеркало отдано Агате — сени без зеркала (полный фон без него, по совету _meta_v3/M2.md)"}
   ],
   "effects": [],
-  "spawns": {"default": [960, 880], "from_M1": [960, 960], "from_M3": [700, 780]},
+  "spawns": {"default": [960, 880], "from_M1": [1300, 980], "from_M3": [700, 780]},
   "props": [],
   "hotspots": [
     {
@@ -32,7 +32,7 @@
       "look": "@M2.office_door_open.look"
     },
     {
-      "id": "mirror", "kind": "object", "label": "@M2.mirror.label", "rect": [990, 130, 230, 415], "stand": [1100, 760], "draw": false,
+      "id": "mirror", "kind": "object", "label": "@M2.mirror.label", "rect": [990, 130, 230, 415], "stand": [1190, 770], "draw": false,
       "hidden_if": ["has_mirror_mill"],
       "look": "@M2.mirror.look"
     },

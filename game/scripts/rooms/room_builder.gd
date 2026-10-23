@@ -39,6 +39,7 @@ static func build(room_id: String) -> Room:
 	_build_hotspots(room, room_id, spec)
 	_build_exits(room, room_id, spec, idx, horizon)
 	RoomLighting.build(room, room_id)  # свет, огонь, тени от источников: data/story/lights/<LOC>.json
+	TimeGrade.build(room, room_id)  # время суток: оттенок, окна — data/story/time (F17)
 	return room
 
 

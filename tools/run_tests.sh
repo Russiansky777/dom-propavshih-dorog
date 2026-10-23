@@ -18,6 +18,7 @@ echo "[data] validate_rooms.py" | tee -a "$BUILD_DIR/logs/tests.log"
 python3 -I "$ROOT/tools/validate_rooms.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 python3 -I "$ROOT/tools/validate_ambient.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # живой мир: data/story/ambient
 python3 -I "$ROOT/tools/validate_lights.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет комнат: data/story/lights
+python3 -I "$ROOT/tools/validate_time.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # время суток: data/story/time — сцены по порядку, без хода назад (F17)
 
 "$ROOT/tools/sync_story_data.sh" | tee -a "$BUILD_DIR/logs/tests.log"
 "$ROOT/tools/sync_music.sh" | tee -a "$BUILD_DIR/logs/tests.log"  # музыка: assets/music → game/assets/music (импорт loop=false)
@@ -45,6 +46,8 @@ set -e
 echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_lighting.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет, огонь, тени актёров
 "$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_ambient.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # живой мир: дождь, ветер, вода, следы
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_world.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # мир 23.10: доска распорядка M1 крупно мышью (F19), вид в зимний класс из открытой двери (F18)
+"$GODOT" --headless --path "$GAME_DIR" -s res://tests/test_time_of_day.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # время суток (F17): сцены по порядку, флаги tod_*, оттенок и окна комнат, журнал
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_music.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # музыка: темы комнат, кроссфейд, цикл, события, приглушение, громкость
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_sfx.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # звуки: шаги на кадрах постановки ноги, двери, огонь, дождь, сумка, громкость
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_closeups.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # крупные планы H3 только мышью: дверь (три петли перетаскиванием, брус, ручка), сохранение посреди загадки, зеркало с отражением и снимком
