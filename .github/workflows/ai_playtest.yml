@@ -35,8 +35,8 @@ permissions:
   actions: read
 
 concurrency:
-  # ворота по публикациям — по очереди (следующие читают обновлённое состояние); ручные запросы — параллельно
-  group: ${{ github.event_name == 'workflow_run' && 'ai-playtest-gates' || format('ai-playtest-{0}', github.sha) }}
+  # прогоны не ждут друг друга целиком; очередь — у каждых ворот своя (задача gates ниже)
+  group: ${{ github.event_name == 'workflow_run' && format('ai-playtest-run-{0}', github.run_id) || format('ai-playtest-{0}', github.sha) }}
   cancel-in-progress: false
 
 jobs:
@@ -142,6 +142,10 @@ jobs:
       max-parallel: 3
       matrix:
         gate: ${{ fromJSON(needs.plan.outputs.gates) }}
+    # одни и те же ворота — по очереди: следующие перед стартом сверяются с обновлённым состоянием
+    concurrency:
+      group: ai-playtest-gate-${{ matrix.gate.cfg }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
@@ -157,22 +161,30 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
-      - name: Чеклист — как на сайте
+      - name: Чеклист — как на сайте; пункты — по свежему состоянию
+        id: items
         env:
           DOC: ${{ matrix.gate.doc }}
           SHA: ${{ needs.plan.outputs.sha }}
-        run: git show "$SHA:$DOC" > "$DOC"   # плейтестер с main, пункты — из опубликованного коммита
+        run: |
+          # пока задача ждала очереди, прошлые ворота того же чеклиста могли проверить те же строки
+          items=$(node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --ref "$SHA")
+          echo "items=$items" >> "$GITHUB_OUTPUT"
+          echo "пункты к проверке: ${items:-нет — уже проверены}"
+          git show "$SHA:$DOC" > "$DOC"   # плейтестер с main, пункты — из опубликованного коммита
       - name: Дождаться, пока сайт отдаёт опубликованный коммит
+        if: steps.items.outputs.items != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: tools/ai_playtest/wait_site.sh "${{ needs.plan.outputs.sha }}"
       - name: Ворота
+        if: steps.items.outputs.items != ''
         env:
           ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
           ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
           CFG: ${{ matrix.gate.cfg }}
           DOC: ${{ matrix.gate.doc }}
-          ITEMS: ${{ matrix.gate.items }}
+          ITEMS: ${{ steps.items.outputs.items }}
           SHA: ${{ needs.plan.outputs.sha }}
         run: |
           status=0
