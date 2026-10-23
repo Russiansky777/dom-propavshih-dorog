@@ -38,7 +38,7 @@ function characters() {
   return out;
 }
 
-const castId = (dir) => dir.replace(/_v\d+[a-z]?$/, "");
+const castId = (dir) => dir.replace(/_mirror$/, "").replace(/_v\d+[a-z]?$/, "");
 
 function castInfo() {
   try {
@@ -113,7 +113,7 @@ async function main() {
     const c = cast[castId(name)] || {};
     const content = [];
     for (const it of items) { content.push({ type: "text", text: `Лист ${stem(it.file)}: ${it.caption}` }); content.push(img(it.file)); }
-    content.push({ type: "text", text: `Персонаж: ${name}${c.name ? ` — ${c.name}${c.age ? `, ${c.age} лет` : ""}; ${String(c.role || "").slice(0, 300)}` : ""}. Рост модели ${meta.character_height_m || "?"} м, кадр ${meta.frame_w}×${meta.frame_h}. Действия: ${Object.entries(meta.actions || {}).map(([k, v]) => `${k} (${v.frames} кадров, ${v.fps} к/с, клип ${v.clip || "?"})`).join("; ")}.\nОсмотри листы и ответь вызовом report (character = «${name}»).` });
+    content.push({ type: "text", text: `Персонаж: ${name}${c.name ? ` — ${c.name}${c.age ? `, ${c.age} лет` : ""}; ${String(c.role || "").slice(0, 300)}` : ""}. Рост модели ${meta.character_height_m || "?"} м, кадр ${meta.frame_w}×${meta.frame_h}. Действия: ${Object.entries(meta.actions || {}).map(([k, v]) => `${k} (${v.frames} кадров, ${v.fps} к/с, клип ${v.clip || "?"})`).join("; ")}.${meta.qa_note ? `\nОсобенность этих листов: ${meta.qa_note}` : ""}\nОсмотри листы и ответь вызовом report (character = «${name}»).` });
     try {
       const r = await askTool(budget, `sprite:${name}`, { model, max_tokens: 16000, system: SYSTEM, tools: [tool], output_config: { effort: "medium" }, messages: [{ role: "user", content }] }, "report");
       if (r) {

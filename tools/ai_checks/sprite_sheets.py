@@ -109,8 +109,10 @@ def character(name, out_dir):
         g = fit(grid(sheet, fw, fh, cols, rows, box, fr, 1.0))
         f = os.path.join(out_dir, f"{name}_{action}.jpg")
         g.save(f, quality=85)
+        cols_txt = ("столбцы — строки листа позы (вид из зеркала горницы; у ходьбы d0 — влево, d1 — вправо)"
+                    if meta.get("kind") == "mirror_poses" else "столбцы — направления d0..d7 (d0 анфас, дальше по часовой)")
         items.append({"file": f, "name": name, "action": action, "kind": "grid",
-                      "caption": f"{name}, «{action}» ({spec.get('clip', '')}): столбцы — направления d0..d7 (d0 анфас, дальше по часовой), строки — кадры {', '.join('f%d' % c for c in fr)} из {cols}"})
+                      "caption": f"{name}, «{action}» ({spec.get('clip', '')}): {cols_txt}, строки — кадры {', '.join('f%d' % c for c in fr)} из {cols}"})
         if action in ("walk", "idle"):
             # Lower part of the figure: from 72 % of its height to the bottom, every frame of the walk / 3 of idle, enlarged.
             fy0 = box[1] + int((box[3] - box[1]) * 0.72)
