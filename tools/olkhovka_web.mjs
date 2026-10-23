@@ -14,8 +14,8 @@
 //      gauge; «Закрыть» → the empty turn is not a dead end: to Pelageya's pier and the boat both ways by real clicks on
 //      the rope (~10 pulls each way, no room with arrows on the way). Frames: Docs/evidence/G/*.jpg.
 //   C  ?start=epilogue — M26 «через три недели, в среду»: every frame (EP_tamara … EP_dinner) in story order, the
-//      last line is Ulyana's «А завтра тоже можно прийти?», the dinner frame stays with «Конец», the traces and
-//      «Начать заново»; a click on it → a new game at the post office.
+//      Ulyana's «А завтра тоже можно прийти?» and Agata's answer are the last lines (H55); then the credits (H56: black,
+//      the thanks and «Made by Yahor Zavatski») and the title screen; «Новая игра» there → the post office.
 // Frames: Docs/evidence/M3/*.jpg. Exit code 0 only when every step reached its state and the console has no
 // errors (Godot warnings are listed, not counted). Log: build/shots/olkhovka/console.log, report.json there.
 
@@ -352,23 +352,24 @@ async function main() {
     await open("epilogue");
     const framesSeen = [];
     let last = "";
-    lines = await playThrough("M26", { done: (t) => t.flags.done_M26 && t.frame && t.frame.hold && t.frame.new_game, timeout: 1500000, onBeat: async (b) => {
+    lines = await playThrough("M26", { done: (t) => t.flags.done_M26 && t.frame && t.frame.credits && ["black", "text", "hold"].includes(t.frame.credits.phase), timeout: 1500000, onBeat: async (b) => {
       const f = b.frame && b.frame.frame;
       if (f && !framesSeen.includes(f)) { framesSeen.push(f); await sleep(700); await shot(`C_${String(framesSeen.length).padStart(2, "0")}_${f}`); }
       if (b.beat.type === "line") last = `${b.beat.speaker}: ${b.beat.text}`;
     } });
     const want = ["EP_tamara", "EP_boat", "EP_pavel", "EP_beam", "EP_lesson", "EP_dinner"];
     check(JSON.stringify(framesSeen) === JSON.stringify(want), `epilogue frames in order: ${framesSeen.join(", ")}`);
-    check(last.startsWith("ulyana: А завтра тоже можно прийти"), `the last line is Ulyana's: «${last}»`);
+    check(last.startsWith("agata: Можно, Уля"), `H55: the last line is Agata's answer to Ulyana: «${last}»`);
+    check(lines.some((l) => l.includes("А завтра тоже можно прийти")), "Ulyana's question before it");
     check(lines.some((l) => l.includes("Доучись. Мост теперь есть")), "C20: «Доучись. Мост теперь есть — будешь приезжать»");
-    s = await state();
-    check(s.frame.open && s.frame.frame === "EP_dinner" && s.frame.hold, "the dinner frame stays");
-    check((s.frame.traces || "").length > 0, `traces of the choices listed: «${(s.frame.traces || "").split("\n").slice(0, 3).join(" / ")}…»`);
-    await sleep(800);
-    await shot("C_99_the_end");
-    await click("«Начать заново»", s.frame.new_game);
+    s = await waitFor("the credits text over black", (t) => t.frame && t.frame.credits && t.frame.credits.phase === "hold", 60000);
+    check(s.frame.credits.author === "Made by Yahor Zavatski" && s.frame.credits.thanks.startsWith("Спасибо за уделённое внимание"), "H56: the thanks and the author");
+    await shot("C_99_credits");
+    s = await waitFor("the title screen after the credits", (t) => t.title && t.title.open && t.title.items && t.title.items.new_game, 60000);
+    check(s.title.open, "after the credits — the title screen");
+    await page.evaluate(() => window.probeTitle("new_game"));
     s = await waitFor("a new game at the post office", (t) => t.room === "Z1" && !(t.frame && t.frame.open) && !t.flags.done_M26, 30000);
-    check(s.room === "Z1", "«Начать заново» → Z1, the frame closed");
+    check(s.room === "Z1", "«Новая игра» → Z1, the frame closed");
     }
   } catch (e) {
     check(false, `exception: ${e && e.stack ? e.stack : e}`);

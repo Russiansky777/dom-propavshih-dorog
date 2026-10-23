@@ -240,6 +240,11 @@ func _test_board_in_time() -> void:
 	await _drain()
 	_check(not _layer(o1, "nina_answer_mama") and not _layer(o1, "nina_answer_here") and _layer(o1, "nina_answer_date"),
 		"a blank board: no answer, only the date")
+	# The acceptance start point (Docs/ACCEPTANCE_H.md): before the lesson, on the street of Olkhovka.
+	_check(rm.start_at("classmama"), "?start=classmama")
+	await _frames(3)
+	_check(rm.current_room.room_id == "O4" and gs.has_flag("done_M21b") and not gs.has_flag("done_M22"), "classmama: the street, before the lesson")
+	await _drain()
 
 
 func _test_ulyana_talk() -> void:

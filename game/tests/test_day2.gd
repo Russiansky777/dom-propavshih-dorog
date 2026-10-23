@@ -471,7 +471,7 @@ func _test_data() -> void:
 	# checkpoint «День второй» — a scene starting after the checkpoint replayed on loading it (defect 22.10).
 	var night: Dictionary = sd.scene("N01")
 	var nl: Array = night.get("mandatory_lines", [])
-	_check(String(nl[nl.size() - 1].get("speaker", "")) == "tikhon" and String(nl[nl.size() - 1].get("text", "")).begins_with("Колокол не трогай до обеда"), "N01 ends with Tikhon's morning line")
+	_check(String(nl[nl.size() - 1].get("speaker", "")) == "tikhon" and String(nl[nl.size() - 1].get("text", "")).begins_with("В колокол с утра не звони"), "N01 ends with Tikhon's morning line (H23)")
 	var morning_at := -1
 	for st in night.get("stage", []):
 		if float(st.get("dim", -1.0)) == 0.0:
@@ -750,7 +750,7 @@ func _test_walkthrough() -> void:
 	await _finish()
 	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "the night by the stove: %s" % str(seen))
 	_check(_room() == "H1", "morning in the living room (%s)" % _room())
-	_check(seen.any(func(x): return x.begins_with("tikhon:Колокол не трогай до обеда")), "Tikhon's morning line: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("tikhon:В колокол с утра не звони")), "Tikhon's morning line: %s" % str(seen))
 	_check(sr.journal_goal() == String(sd.scene("N01")["goal"]), "journal: the goal from yesterday — the mill, the sluice key")
 	_check(sr.current_beat.is_empty() and not sr.is_staging(), "after the morning nothing else plays by itself")
 	# To the mill: H1 → Z2 → M1.
@@ -971,6 +971,9 @@ func _test_walkthrough() -> void:
 	await _frames(2)
 	# The plate.
 	_check(await _go("H1"), "H2→H1")
+	# H33 (Director 24.10): back in the living room Tikhon talks about Nina first (three lines, once).
+	var h33 := await _finish()
+	_check(h33.size() == 3 and String(h33[0]).begins_with("tikhon:Видела Нину?"), "H33: Tikhon talks after the mirror: %s" % str(h33))
 	# Polish 22.10 (C17): mother's small mirror shows Dunya's stove — Agata can stand at the stove and wave (block 3 reads it in M19).
 	_check(_hotspot("wave") != null and _hotspot("wave").visible, "after mother's mirror: «Встать у печи и помахать»")
 	await _use("wave")
@@ -1124,7 +1127,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
 	var m18_end := String(sd.scene("M18").get("mandatory_lines", [])[-1].get("text", ""))
-	_check(seen.any(func(x): return x.begins_with("narration:Пелагея не сразу отпускает")) and m18_end.contains("Митя поднимает фонарь") and m18_end.contains("Пелагея остаётся у лодки"),
+	_check(seen.any(func(x): return x.begins_with("narration:Пелагея не отпускает Митин рукав")) and m18_end.contains("Митя поднимает фонарь") and m18_end.contains("Пелагея остаётся у лодки"),
 		"B13/C3: Mitya leads Agata with the lantern, Pelageya stays at the boat: %s / %s" % [m18_end, str(seen)])
 	# F13 (Director 23.10): back into the boat — not now; Pelageya: «Сейчас — к матери. Назад повезу завтра».
 	var back = rm.current_room.get_node_or_null("Exits/to_R2")

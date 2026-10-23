@@ -174,6 +174,8 @@ static func achieved() -> Array:
 ## Tests and the web probe: which frame, its layers and their visibility, the end panel.
 func probe() -> Dictionary:
 	var out := {"open": is_open(), "frame": frame_id, "hold": _hold}
+	if credits != null and credits.is_inside_tree():
+		out["credits"] = credits.probe()   # H56: the credits after the last line (phase, texts)
 	if room == null:
 		return out
 	var layers := {}

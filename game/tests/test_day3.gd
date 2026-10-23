@@ -567,7 +567,8 @@ func _test_data() -> void:
 	_check(m23b.get("grants", {}).get("flags", []).has("bridge_decided"), "the bridge is decided at the mill (M23b)")
 	# C18–C20: the lesson, then the dinner — Ulyana's line closes the game; Nina's «Доучись» always; on a Wednesday.
 	var ep: Array = sd.scene("M26").get("mandatory_lines", [])
-	_check(String(ep[ep.size() - 1].get("text", "")) == "А завтра тоже можно прийти?" and String(ep[ep.size() - 1].get("speaker", "")) == "ulyana", "the last line of the game is Ulyana's")
+	_check(String(ep[ep.size() - 2].get("text", "")) == "А завтра тоже можно прийти?" and String(ep[ep.size() - 2].get("speaker", "")) == "ulyana"
+		and String(ep[ep.size() - 1].get("speaker", "")) == "agata", "the last lines of the game: Ulyana's question, Agata's answer (H55)")
 	var has_doucheis := false
 	for ln in ep:
 		if String(ln.get("text", "")).begins_with("Доучись") and not ln.has("if") and not ln.has("switch"):
@@ -745,7 +746,7 @@ func _test_walkthrough() -> void:
 	seen = await _finish(["nina"])
 	_check(gs.has_flag("done_M23d") and gs.has_flag("tikhon_told_nina") and not gs.has_flag("tikhon_told_agata"), "M23d: mother tells Tikhon: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("tikhon:Значит, вечер кончился")), "«Значит, вечер кончился»")
-	_check(seen.any(func(x): return x.begins_with("tikhon:Хозяйка")), "Tikhon calls Nina «хозяйка»")
+	_check(seen.any(func(x): return x.begins_with("tikhon:Теперь ты хозяйка")), "Tikhon calls Nina «хозяйка» — sadly, about Dunya's pot (H51)")
 	await _frames(3)
 	var tk = _hotspot("tikhon")
 	_check(tk != null and tk.position.y < 300.0, "Tikhon moved from the armchair onto the stove (%s)" % str(tk.position if tk else null))
@@ -881,13 +882,24 @@ func _test_walkthrough() -> void:
 		_check(frames_seen.has(f), "epilogue shot %s (%s)" % [f, str(frames_seen)])
 	_check(String(frame_titles.get("EP_lesson", "")) == sd.location_name("O1") and String(frame_titles.get("EP_tamara", "")) == sd.text("@EP.place_bridge"),
 		"epilogue titles: the class, the bridge — not the turn under the frames (%s)" % str(frame_titles))
-	_check(seen.size() > 0 and seen[seen.size() - 1] == "ulyana:А завтра тоже можно прийти?", "the last line: Ulyana (%s)" % (seen[seen.size() - 1] if seen.size() > 0 else ""))
+	_check(seen.size() > 1 and seen[seen.size() - 2] == "ulyana:А завтра тоже можно прийти?" and String(seen[seen.size() - 1]).begins_with("agata:Можно, Уля"),
+		"the last lines: Ulyana's question, Agata's answer (H55): %s" % str(seen.slice(-2)))
 	await _frames(4)
 	var fp: Dictionary = fv.probe()
 	_check(bool(fp.get("open", false)) and String(fp.get("frame", "")) == "EP_dinner" and bool(fp.get("hold", false)), "the last shot stays: %s" % str(fp.get("frame")))
-	_check(fp.has("new_game") and String(fp.get("traces", "")).length() > 0, "the end panel with the traces and «Начать заново»")
 	_check(bool(fv.probe().get("layers", {}).get("cut_dunya", false)) == false, "(dinner has no beam layer)")
+	# H56: the first end plays the credits (black, thanks, author) and ends on the title; the save made now has
+	# credits_seen — loading it shows «Конец» and the traces (checked in the save/load test).
+	_check(String(fp.get("credits", {}).get("phase", "")) in ["black", "text", "hold"] and gs.has_flag("credits_seen"), "the credits begin: %s" % str(fp.get("credits")))
 	_check(rm.save_game(SLOT + "_end"), "save after the end")
+	var title: Node = main_node.get_node("Title")
+	for i in 2400:
+		if String(fv.probe().get("credits", {}).get("phase", "")) == "done":
+			break
+		await process_frame
+	_check(String(fv.probe().get("credits", {}).get("phase", "")) == "done" and bool(title.call("is_open")), "after the credits — the title screen")
+	title.call("close")
+	await _frames(2)
 	Engine.time_scale = 1.0
 	_reached_end = true
 
@@ -913,6 +925,8 @@ func _test_save_load() -> void:
 	await _frames(4)
 	var fp: Dictionary = fv.probe()
 	_check(bool(fp.get("open", false)) and String(fp.get("frame", "")) == "EP_dinner", "after the end the last shot is shown again (%s)" % str(fp))
+	_check(fp.has("new_game") and String(fp.get("traces", "")).length() > 0, "the end panel with the traces and «Начать заново» (credits already seen)")
+	_check(String(fp.get("credits", {}).get("phase", "")) in ["", "done"], "no credits again after the load: %s" % str(fp.get("credits")))
 	_check(sr.current_beat.is_empty(), "the epilogue does not replay")
 	# The held last shot belongs to the finished story: flags set without a load (the AI room check sets them room by
 	# room) that undo the end take the frame away (23.10: the dinner and «Конец» stayed over every later room).
@@ -1415,7 +1429,8 @@ func _test_q02_q06_traces() -> void:
 	_check(b.any(func(x): return x.contains("Ульяна объясняет гостю дорогу по своему рисунку")) and b.any(func(x): return x.contains("Илья заканчивает в мастерской рамку для семейной фотографии")), "B/B: Ulyana's drawing by the door; the frame for the family photo")
 	_check(b.any(func(x): return x.contains("на столике")), "B: the photo stays where it was put on day one (the frame is for it)")
 	_check(not b.any(func(x): return x.contains("как менялось место") or x.contains("уключину")), "B/B: no A lines")
-	_check(b[b.size() - 1] == "ulyana:А завтра тоже можно прийти?", "the last line is still Ulyana's: %s" % b[b.size() - 1])
+	_check(b[b.size() - 2] == "ulyana:А завтра тоже можно прийти?" and b[b.size() - 1].begins_with("agata:Можно, Уля"),
+		"the last lines are still Ulyana's question and Agata's answer (H55): %s" % str(b.slice(-2)))
 	var none := _beats_of("M26", [])
 	for t in ["как менялось место", "по своему рисунку", "уключину", "рамку для семейной"]:
 		_check(not none.any(func(x): return x.contains(t)), "skipped: no «%s»" % t)
@@ -1424,7 +1439,8 @@ func _test_q02_q06_traces() -> void:
 	# Q02/Q06 traces are follow-ups (`then`) of the lines before them, not lines of their own: the epilogue was voiced
 	# before they came (M26_<index>), an inserted line would shift every recording after it (23.10, 40 lines).
 	var own := lines.filter(func(ln): return (ln.get("if", []) as Array).any(func(f): return String(f).begins_with("q02_") or String(f).begins_with("q06_")))
-	_check(own.is_empty() and lines.size() == 37, "Q02/Q06 epilogue lines are follow-ups — M26 keeps its 37 voiced positions (%d lines, %d own)" % [lines.size(), own.size()])
+	# H55 (24.10) added Agata's answer as line 37 — after every recorded position, so nothing shifted.
+	_check(own.is_empty() and lines.size() == 38, "Q02/Q06 epilogue lines are follow-ups — M26 keeps its 37 voiced positions + Agata's answer (%d lines, %d own)" % [lines.size(), own.size()])
 	var flat: Array = []
 	for ln in lines:
 		flat.append(ln)

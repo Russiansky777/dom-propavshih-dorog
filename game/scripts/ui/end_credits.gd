@@ -49,6 +49,9 @@ func _ready() -> void:
 		MenuConfig.color(_cfg.get("text_color"), Color(0.93, 0.88, 0.78)))
 	author = _label("Author", "@ui.credits_author", "head", int(_cfg.get("author_px", 34)),
 		MenuConfig.color(_cfg.get("author_color"), Color(0.78, 0.70, 0.58)))
+	# The credits belong to the finished story: a load or a new game under them (or flags that undo the end) stop them.
+	GameState.state_reset.connect(_on_state_changed)
+	GameState.state_loaded.connect(func(_slot): _on_state_changed())
 
 
 func _label(node_name: String, key: String, font_role: String, px: int, col: Color) -> Label:
@@ -95,6 +98,9 @@ func _start_hold() -> void:
 
 
 func _process(delta: float) -> void:
+	if is_running() and StoryRunner.end_frame_now() == "":
+		abort()
+		return
 	if phase == "text" or phase == "hold":
 		_text_t += delta
 		_skippable = _skippable or _text_t >= float(_cfg.get("skip_after_s", 2.0))
@@ -128,6 +134,22 @@ func _to_title() -> void:
 	box.modulate.a = 0.0
 	_text_t = 0.0
 	finished.emit()
+
+
+func _on_state_changed() -> void:
+	if is_running():
+		abort()
+
+
+## Stops the credits where they are, without the title (the state they belonged to is gone).
+func abort() -> void:
+	if _tween != null and _tween.is_valid():
+		_tween.kill()
+	phase = ""
+	visible = false
+	black.color.a = 0.0
+	box.modulate.a = 0.0
+	_text_t = 0.0
 
 
 func _on_input(ev: InputEvent) -> void:

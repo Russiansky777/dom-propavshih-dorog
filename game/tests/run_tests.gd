@@ -1030,7 +1030,7 @@ func _test_walkthrough() -> void:
 	var night_lines: Array = seen.filter(func(x): return x != "stage")
 	# The morning staging, then Tikhon's morning line (SCENARIO_FINAL §7 «Утро», block 2 22.10) before the checkpoint.
 	_check(night_lines.size() == 4 and night_lines[0].begins_with("agata:") and night_lines[2].begins_with("tikhon:")
-		and seen.size() >= 2 and seen[seen.size() - 2] == "stage" and String(seen.back()).begins_with("tikhon:Колокол не трогай"),
+		and seen.size() >= 2 and seen[seen.size() - 2] == "stage" and String(seen.back()).begins_with("tikhon:В колокол с утра не звони"),
 		"N01: 2 lines of Agata, Tikhon's grumble, morning staging, Tikhon's morning line: %s" % str(seen))
 	_check(bot.room_id() == "H1", "the night moves Agata to the stove (H1), room=%s" % bot.room_id())
 	_check(sr.stage_dim == 0.0 and not sr.is_staging(), "morning: no dusk left")

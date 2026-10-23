@@ -361,6 +361,8 @@ func _test_finale() -> void:
 	gs.reset()
 	_check(await _enter("Z3", "roads"), "Z3: roads did not settle")
 	# The epilogue M26 (block 4, data/story/scenes/E5.json) starts by itself at the turn once the first span is laid.
+	# The credits after it (H56: then the title screen with its own theme) are test_batch_h's; here — as after them.
+	gs.set_flag("credits_seen")
 	gs.set_flag("done_M25")
 	await _frames(3)
 	if sr.active_scene != "M26":

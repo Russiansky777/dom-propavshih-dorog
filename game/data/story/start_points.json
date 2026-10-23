@@ -110,6 +110,31 @@
       ]
     },
     {
+      "id": "classmama",
+      "title": "Партия H: перед уроком с мамой — улица Ольховки, тропа к школе вернулась (H42 доска, H43 Ульяна)",
+      "done_through": "M21b",
+      "room": "O4",
+      "spawn": "from_O3",
+      "flags": [
+        "board_mama",
+        "v03_marked", "v03_add_boat",
+        "mitten_placed",
+        "v01_cup_blue",
+        "v01_photo_table",
+        "pavel_answer_promise",
+        "house_unlocked",
+        "house_open",
+        "h2_bundle_unwrapped",
+        "office_mirror_mounted",
+        "office_mirror_clamped",
+        "bell_clapper_hung",
+        "nina_mirror_clamped",
+        "sluice_key_inserted",
+        "skoba_on_plate",
+        "has_brace_plate"
+      ]
+    },
+    {
       "id": "freewalk",
       "title": "Блок 3: первый свободный день (после класса с мамой)",
       "done_through": "M22",

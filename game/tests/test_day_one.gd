@@ -340,7 +340,7 @@ func _test_night() -> void:
 	_check(dusk_alpha > 0.4 and dusk_alpha < 0.7, "the lines read over dusk (overlay %.2f)" % dusk_alpha)
 	# Then the morning: Tikhon on the armchair (SCENARIO_FINAL §7 «Утро», block 2 22.10) before the checkpoint.
 	_check(lines.size() == 4 and lines[0].begins_with("agata:") and lines[1].begins_with("agata:") and lines[2].begins_with("tikhon:")
-		and lines[3].begins_with("tikhon:Колокол не трогай до обеда"),
+		and lines[3].begins_with("tikhon:В колокол с утра не звони"),
 		"two lines of Agata (Ilya, the plan), Tikhon's grumble, Tikhon's morning line: %s" % str(lines))
 	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "N01 done")
 	_check(sr.stage_dim == 0.0 and (ui == null or float(ui.call("stage_probe")["alpha"]) < 0.02), "morning: the overlay is clear")
@@ -412,7 +412,7 @@ func _test_pier_attempt() -> void:
 	_check(gs.has_flag("knows_sluice_key") and ans.any(func(x): return x.contains("рычаг от затвора в конторе")), "the sluice question: the lever is in the office (G20): %s" % str(ans))
 	ans = await _interact(_hotspot("pelageya"), ["leave"])
 	_check(not ans.any(func(x): return x.contains("Ступай") or x.contains("дом")), "leaving Pelageya sends Agata nowhere: %s" % str(ans))
-	_check(seen[2].contains("Берег вижу") and seen[1].contains("Не довезу"), "«Не довезу. Год пробую.» — «Берег вижу…» (%s)" % str(seen))
+	_check(seen[2].contains("к своему причалу") and seen[1].contains("Не довезу"), "«Не довезу. Год пробую.» — «Гребу к тому берегу…» (H3, %s)" % str(seen))
 	_check(not sounds.has("door_heavy"), "G16: no staged knock any more: %s" % str(sounds))
 	# Director 22.10: the rope is the last piece of the bridge — the road itself; its far end is still on the other bank.
 	_check(seen.any(func(x): return x.contains("всё, что от него осталось") and x.contains("Тот конец до сих пор там") and x.contains("Пока этот сидел на плите опоры")), "the rope is what is left of the bridge: %s" % str(seen))
