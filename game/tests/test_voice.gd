@@ -101,6 +101,7 @@ func _run() -> void:
 	await _test("Bag: the item's line after a ≈0.6 s rest on its pocket, fades out on leaving, once per 30 s, not on receiving", _test_item_hover)
 	await _test("Agata's thoughts: her voice (agata:<key>), never the narrator; no file — subtitles; the narrator's spare returns by data", _test_thoughts)
 	await _test("A character's words next to Agata: his/her line (name, direct speech, own voice), not the narrator — Tamara, Pelageya, Tikhon", _test_character_lines)
+	await _test("Scene lines of the narrator (M15s_2) sound in the narrator's voice; a choice in a conversation (M13): question voiced, the chosen words play as <scene>_<index>_<option>", _test_scene_narrator_and_choice)
 	vd.stop("test end")
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -155,13 +156,38 @@ func _finish_dialogue() -> void:
 		await _frames(2)
 
 
-## The scene line `line_id` as data/story has it: {speaker, text} or {}.
+## The scene line `line_id` as data/story has it: {speaker, text} or {}. A choice inside a conversation
+## (M13_1_family): <scene>_<index>_<option> — the option's words, said by the line's speaker (Agata).
 func _line(line_id: String) -> Dictionary:
-	var k := line_id.rfind("_")
-	var sc: Dictionary = sd.scene(line_id.substr(0, k))
-	var lines: Array = sc.get("mandatory_lines", [])
-	var i := int(line_id.substr(k + 1))
-	return lines[i] if i >= 0 and i < lines.size() else {}
+	var parts := line_id.split("_")
+	if parts.size() < 2:
+		return {}
+	var sc: Dictionary = sd.scene(parts[0])
+	var lines: Array = sc.get("mandatory_lines", sc.get("lines", []))
+	if not parts[1].is_valid_int():
+		return {}
+	var i := int(parts[1])
+	if i < 0 or i >= lines.size():
+		return {}
+	var ln: Dictionary = lines[i]
+	if parts.size() == 2:
+		return ln
+	for o in ln.get("options", []):
+		if String(o.get("id", "")) == parts[2]:
+			return {"speaker": String(ln.get("speaker", "agata")), "text": String(o.get("text", ""))}
+	return {}
+
+
+## Sets the flags / items a scene requires, so it can start outside the walkthrough (the voice is under test).
+func _force_requires(scene_id: String) -> void:
+	var req: Dictionary = sd.scene(scene_id).get("requires", {})
+	for f in req.get("flags", []):
+		gs.set_flag(String(f), true)
+	for it in req.get("items", []):
+		if sd.item_is_inventory(String(it)):
+			gs.add_item(String(it))
+		else:
+			gs.set_flag("has_" + String(it), true)
 
 
 ## A 4 s tone for lines that have no recording yet (the checks then test the director, not the file).
@@ -959,3 +985,77 @@ func _test_character_lines() -> void:
 			var st: String = vd.line_status(k, sd.text("@" + k))
 			_check(st == "ok" or st == "text_changed", "%s: the narrator's spare is kept (%s)" % [k, st])
 
+
+## Defects of 23.10 (full voice-over): a narrator line inside a scene (mandatory_lines speaker "narrator") is a
+## narration beat with a line_id and no text key — it was never voiced; the question of a choice inside a
+## conversation (M13: what Agata answers Pavel) had no prompt_key — never voiced; the chosen words have their own
+## id <scene>_<index>_<option> (the pipeline did not know it and sent the empty line text to synthesis).
+func _test_scene_narrator_and_choice() -> void:
+	gs.reset()
+	await _enter("Z1")
+	# 1. the narrator's scene line
+	var lid := "M15s_2"
+	var ln := _line(lid)
+	_check(String(ln.get("speaker", "")) == "narrator", "%s is the narrator's scene line: %s" % [lid, ln])
+	var bv: Dictionary = vd.beat_voice({"type": "narration", "scene": "M15s", "line_id": lid, "text": String(ln.get("text", ""))})
+	_check(String(bv.get("id", "")) == lid and String(bv.get("speaker", "")) == vd.narr_speaker and String(bv.get("kind", "")) == "line",
+		"the narration beat of a scene line is voiced by its line id in the narrator's voice: %s" % [bv])
+	_ensure_voice(lid)
+	_force_requires("M15s")
+	var started: bool = sr.start_scene("M15s")
+	_check(started, "M15s starts (requires forced)")
+	# lines before it are clicked through; the staging between them (the boat to the pier: fade, hold, fade) runs by itself
+	for i in 120:
+		if String(sr.current_beat.get("line_id", "")) == lid:
+			break
+		var t := String(sr.current_beat.get("type", ""))
+		if t == "options":
+			sr.choose(String(sr.current_options()[0]["id"]))
+		elif t == "line" or t == "narration":
+			sr.advance()
+		await _wait(0.1)
+	_check(String(sr.current_beat.get("line_id", "")) == lid and String(sr.current_beat.get("type", "")) == "narration",
+		"the beat on screen is the narration %s: %s" % [lid, sr.current_beat])
+	_check(vd.is_playing() and vd.current_line == lid and vd.current_speaker == vd.narr_speaker,
+		"%s plays in the narrator's voice: %s" % [lid, vd.state()])
+	await _wait(0.4)
+	_check(md.dialogue_active() and absf(md.duck_db_now - md.duck_dialogue_db) < 0.05, "music ducked under the scene narration (%.2f dB)" % md.duck_db_now)
+	await _finish_dialogue()
+	# 2. the choice inside the conversation with Pavel
+	gs.reset()
+	await _enter("Z1")
+	var m13: Array = sd.scene("M13").get("mandatory_lines", [])
+	var ci := -1
+	for i in m13.size():
+		if (m13[i] as Dictionary).has("options"):
+			ci = i
+			break
+	_check(ci >= 0, "M13 has a choice line")
+	if ci < 0:
+		return
+	var pk := String(m13[ci].get("prompt", "")).trim_prefix("@")
+	_ensure_key(pk)
+	var opt_id := String(m13[ci]["options"][1]["id"])
+	var opt_lid := "M13_%d_%s" % [ci, opt_id]
+	_check(String(_line(opt_lid).get("text", "")) != "", "%s: the option's words" % opt_lid)
+	_ensure_voice(opt_lid)
+	_force_requires("M13")
+	_check(sr.start_scene("M13"), "M13 starts (requires forced)")
+	for i in 120:
+		var t := String(sr.current_beat.get("type", ""))
+		if t == "options":
+			break
+		if t == "line" or t == "narration":
+			sr.advance()
+		await _wait(0.1)
+	await _frames(2)
+	_check(String(sr.current_beat.get("type", "")) == "options" and String(sr.current_beat.get("prompt_key", "")) == pk,
+		"the choice beat carries its question's key %s: %s" % [pk, sr.current_beat])
+	_check(vd.is_playing() and vd.current_line == _vid(pk) and vd.current_kind == "narration",
+		"the question %s is voiced: %s" % [pk, vd.state()])
+	sr.choose(opt_id)
+	await _frames(2)
+	_check(String(sr.current_beat.get("line_id", "")) == opt_lid, "the chosen words are the line %s: %s" % [opt_lid, sr.current_beat])
+	_check(vd.is_playing() and vd.current_line == opt_lid and vd.current_speaker == "agata",
+		"%s plays in Agata's voice: %s" % [opt_lid, vd.state()])
+	await _finish_dialogue()

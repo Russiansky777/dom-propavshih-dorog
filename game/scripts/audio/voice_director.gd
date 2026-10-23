@@ -284,6 +284,10 @@ func beat_voice(b: Dictionary) -> Dictionary:
 		"narration":
 			if String(b.get("text_key", "")) != "":
 				return _narration_item(String(b["text_key"]), String(b.get("text", "")), "narration")
+			# A scene line of the narrator (speaker "narrator" in mandatory_lines — the empty boat goes into the
+			# fog): recorded as a scene line, id <scene>_<index>, in the narrator's voice.
+			if String(b.get("line_id", "")) != "":
+				return {"id": String(b["line_id"]), "speaker": narr_speaker, "text": String(b.get("text", "")), "kind": "line"}
 		"options":
 			if String(b.get("prompt_key", "")) != "":
 				return _narration_item(String(b["prompt_key"]), String(b.get("prompt", "")), "narration")

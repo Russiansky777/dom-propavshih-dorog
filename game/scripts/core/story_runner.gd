@@ -324,7 +324,9 @@ func start_scene(scene_id: String) -> bool:
 			var opts: Array = []
 			for o in line["options"]:
 				opts.append({"id": String(o["id"]), "label": StoryData.text(String(o.get("label", o.get("text", o["id"])))), "sets": String(o.get("sets", ""))})
+			# prompt_key: the question is voiced like a room choice's (VoiceDirector, voice.json → narration).
 			var ob := {"type": "options", "scene": scene_id, "prompt": StoryData.text(String(line.get("prompt", ""))),
+				"prompt_key": text_key_of(String(line.get("prompt", ""))),
 				"options": opts, "callback": _apply_line_option.bind(scene_id, i, line)}
 			ob.merge(cond)
 			beats.append(ob)
