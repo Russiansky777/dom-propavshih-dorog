@@ -1,110 +1,90 @@
-run 39961577802 2026-10-23T13:30:16Z requests: pipeline/requests/voice_textfix.json 
+run 39968281787 2026-10-23T14:17:37Z requests: pipeline/requests/voice_q02_q06.json 
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 37109 из 124889 символов
+план: creator (active), израсходовано 37830 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_textfix.json
+=== pipeline/requests/voice_q02_q06.json
   закадровые фразы без ссылок в данных игры — пропущены: H2d.bell.need_mirror, H2d.nina_mirror.watch_wait, H3.exit_R4.closed, R1.boat.look, R1d.lantern.use_day, Z3d.plate.rope_at_ring, agata:item.letter_tamara, pelageya:R2.pelageya.after, pelageya:Z3d.pelageya.done
   отложены (voice.json → by_speaker.<персонаж>.hold): agata:H1.photo.look
   skip (не записывать сейчас): 185 строк запроса по шаблонам ['*H1.shutter*', '*H1.shelf*', '*H1.scarf*', '*H1.towel*', '*H1.stove*', '*mech.shutter*', 'M09*', 'M10*', 'M11*', 'M12*', 'M13*', 'M14*', '*M1.*', '*M2.*', '*M3.*', '*M4.*', '*key_sluice*', '*clamp*', '*office_mirror*', '*stand_zm*', '*mirror_mill*', 'M15s', 'M15', 'M16s', 'M16', 'M17', 'M18p', 'M18', '*Z3d.*', '*Z3.plate*', '*Z3.old_pier*', '*R1d.*', '*R1.pelageya*', '*R1.rope*', '*R1.lantern*', '*R2.*', '*R3.*', '*mech.plate*', '*mech.knot*', '*mech.crossing*', '*brace*', '*skoba*', 'M07', '*O1.teacher_drawer*', '*O1.bird_drawing*', '*O1d.ulyana*', 'V03']
-  манифест ru: M09b_2: текст изменён
-  манифест ru: M15s_0: текст изменён
-  манифест ru: M15s_1: текст изменён
-  манифест ru: M16_0: текст изменён
-  манифест ru: M18_7: текст изменён
-  манифест ru: M18p_3: текст изменён
-  манифест ru: M19_4: текст изменён
-  манифест ru: M19_6: текст изменён
-  манифест ru: M19c_7: текст изменён
-  манифест ru: M19c_8: текст изменён
-  манифест ru: M20_9: текст изменён
-  манифест ru: M23a_3: текст изменён
-  манифест ru: M23b_9: текст изменён
-  манифест ru: M23c_3: текст изменён
-  манифест ru: M23d_5: текст изменён
-  манифест ru: M24_0: текст изменён
-  манифест ru: M25_4: текст изменён
-  манифест ru: M26_4: текст изменён
-  манифест ru: M26_16: текст изменён
-  манифест ru: M26_25: текст изменён
-  манифест ru: N01_2: текст изменён
-  манифест ru: H1.wave.look: текст изменён
-  манифест ru: O3.window.look: текст изменён
-  манифест ru: O4.exit_O2.closed: текст изменён
-  манифест ru: O4.exit_S1.closed: текст изменён
-  манифест ru: agata:H1.wave.use: текст изменён
-  манифест ru: agata:M1.exit_M2.closed: текст изменён
-  манифест ru: agata:M1.exit_M4.closed: текст изменён
-  манифест ru: agata:S1.street_sign.use: текст изменён
-  манифест ru: agata:examine.plan_crossing: текст изменён
-  манифест ru: agata:examine.school_ribbon: текст изменён
-  манифест ru: item.school_ribbon: текст изменён
-  манифест ru: mitya:O4.mitya.after: текст изменён
-  манифест ru: nina:O3.nina.before: текст изменён
-  манифест ru: pavel:M4.pavel.after: текст изменён
-  манифест ru: pavel:M4d.pavel.after_bridge: текст изменён
-  манифест ru: pelageya:R1d.pelageya.to_boat: текст изменён
-  манифест ru: pelageya:R1d.pelageya.wait_water: текст изменён
-  манифест ru: pelageya:R3.exit_R2.closed: текст изменён
-  манифест ru: pelageya:R3.pelageya.after: текст изменён
-  only_changed: к работе 27 из 364 реплик/фраз запроса
-  задание: Директор: полная озвучка (23.10); координатор — последняя партия: Q02/Q06 и правки текста, без сцен партии G, 2026-10-23 — строки, изменённые агентом текста (кроме сцен партии G) (потолок 80 файлов, 5000 символов)
-[textfix] реплик в сценах запроса: 364; файлов с вариантами голосов: 27; к синтезу: 27 (1642 символов); переобработка: 0
+  only_changed: к работе 37 из 400 реплик/фраз запроса
+  задание: Директор: полная озвучка (23.10); координатор — последняя партия: Q02/Q06 и правки текста, без сцен партии G, 2026-10-23 — Q02/Q06 и изменённое после записи (кроме сцен партии G) (потолок 80 файлов, 5000 символов)
+[q02_q06] реплик в сценах запроса: 400; файлов с вариантами голосов: 37; к синтезу: 37 (1877 символов); переобработка: 0
   N01_2   tikhon    ru           CAT-2      eleven_v4    [grumbling] Спи уже. Печь — на мне.
-  M19_4   narrator  ru           ZAKADR     eleven_v4    Нина обнимает Агату — молча, долго, прямо на крыльце.
-  M19_6   agata     ru           Agata      eleven_v4    Ходики. Те самые.
-  M19c_7  nina      ru           НИНА       eleven_v4    У тебя, выходит, год прошёл. Всего год.
-  M19c_8  agata     ru           Agata      eleven_v4    Год. А у тебя — больше, чем мне лет.
-  M20_9   nina      ru           НИНА       eleven_v4    Ляжешь в своей комнате. Ульяна там ночует, когда у нас, — потеснитесь.
-  M23a_3  tamara    ru           TAMARA-1   eleven_v4    Савелию — от сестры… Аксинье — от брата… Матрёне Петровне… А такой у вас нет?
-  M23b_9  ilya      ru           ИЛЬЯ       eleven_v4    Завтра с утра — первое бревно. Приходи к повороту.
-  M23c_3  nina      ru           НИНА       eleven_v4    Двадцать лет с той стороны тут был пустой проём. А полотно всё это время стояло здесь — в двух шагах.
-  M23d_5  tikhon    ru           CAT-2      eleven_v4    Хозяйка. Кастрюля — в печи, ещё тёплая.
-  M24_0   narrator  ru           ZAKADR     eleven_v4    Вечер третьего дня. Письма нашли адресатов, Нина побывала в доме сестры, Тихон перебрался на печь. Завтра — первое бревно.
-  M25_4   narrator  ru           ZAKADR     eleven_v4    Илья стопорит во́рот и выпрямляется.
-  M26_4   tamara    ru           TAMARA-1   eleven_v4    Три недели ношу́ — а мешок не пустеет. Теперь в обе стороны пишут.
-  M26_16  narrator  ru           ZAKADR     eleven_v4    Вечером — ужин в доме тёти: Нина, Илья с женой, Агата. Тихон на печи. На столе — кастрюля от Тамары.
-  M26_25  ilya_wife ru           ВАРВАРА    eleven_v4    Агата, гляди — заплатка твоя держится. И Ульянина птица на ней как живая.
-  H1.wave.look narrator  ru           ZAKADR     eleven_v4    Место у Дуниной печи. Мама в стекле не видит и не слышит. А вдруг у неё есть вещь, которая помнит этот дом?
-  agata:H1.wave.use agata     ru           Agata      eleven_v4    Мама, это я. Если ты хоть как-то меня видишь — я тут, у Дуниной печи.
-  item.school_ribbon narrator  ru           ZAKADR     eleven_v4    Мамина лента — синяя, с узкой каймой.
-  mitya:O4.mitya.after mitya     ru           МИТЯ       eleven_v4    Хожу теперь просто так. По мосту бы.
-  O4.exit_O2.closed narrator  ru           ZAKADR     eleven_v4    Тропу к школе замело по колено. Одной туда не пробраться.
-  O4.exit_S1.closed narrator  ru           ZAKADR     eleven_v4    Дорога вправо тонет в снегу. Туда — потом.
-  nina:O3.nina.before nina      ru           НИНА       eleven_v4    Сиди, грейся. Наговоримся утром.
-  O3.window.look narrator  ru           ZAKADR     eleven_v4    За окном снег. Двадцать зим тут прошло врозь — и вот первая общая.
-  pavel:M4d.pavel.after_bridge pavel     ru           Павел      eleven_v4    Пруд держу ниже рабочей, пока ставите пролёты. Ляжет последний — наберу, до льда.
-  agata:S1.street_sign.use agata     ru           Agata      eleven_v4    «Ольховая улица». Её, говорят, первой не стало. А вывеска держалась.
-  agata:examine.plan_crossing agata     ru           Agata      eleven_v4    Правлен не раз, разными чернилами. Кто-то расписал всё по порядку — и ждал, что лист прочтут.
-  agata:examine.school_ribbon agata     ru           Agata      eleven_v4    Синяя, с узкой каймой. Мама её сберегла.
-  квота: осталось 87780 из 124889, запас 12488, к синтезу ≤ 1642 кредитов (оценка сверху)
-  N01_2              синтез: 3.06 с, -17.0 LUFS, TP -3.2 dB (усиление +0.4 dB)
-  M19_4              синтез: 5.28 с, -17.1 LUFS, TP -5.2 dB (усиление -2.1 dB)
-  M19_6              синтез: 1.92 с, -17.0 LUFS, TP -3.7 dB (усиление -0.4 dB)
-  M19c_7             синтез: 3.99 с, -16.9 LUFS, TP -7.6 dB (усиление -0.6 dB)
-  M19c_8             синтез: 3.24 с, -16.9 LUFS, TP -6.4 dB (усиление -1.1 dB)
-  M20_9              синтез: 5.91 с, -17.0 LUFS, TP -7.2 dB (усиление -1.9 dB)
-  M23a_3             синтез: 7.52 с, -17.0 LUFS, TP -3.8 dB (усиление -1.1 dB)
-  M23b_9             синтез: 3.64 с, -17.0 LUFS, TP -6.4 dB (усиление -4.2 dB)
-  M23c_3             синтез: 8.55 с, -17.0 LUFS, TP -7.4 dB (усиление -1.0 dB)
-  M23d_5             синтез: 4.20 с, -17.0 LUFS, TP -3.7 dB (усиление -1.0 dB)
-  M24_0              синтез: 10.05 с, -17.0 LUFS, TP -4.5 dB (усиление -3.3 dB)
-  M25_4              синтез: 2.94 с, -17.0 LUFS, TP -4.8 dB (усиление -2.9 dB)
-  M26_4              синтез: 5.60 с, -17.1 LUFS, TP -4.8 dB (усиление -2.2 dB)
-  M26_16             синтез: 9.29 с, -17.0 LUFS, TP -4.1 dB (усиление -2.6 dB)
-  M26_25             синтез: 6.05 с, -17.0 LUFS, TP -5.8 dB (усиление -2.6 dB)
-  H1.wave.look       синтез: 8.60 с, -17.0 LUFS, TP -3.1 dB (усиление -1.1 dB)
-  agata:H1.wave.use  синтез: 6.18 с, -17.0 LUFS, TP -3.9 dB (усиление -0.5 dB)
-  item.school_ribbon синтез: 3.37 с, -16.9 LUFS, TP -5.5 dB (усиление -2.3 dB)
-  mitya:O4.mitya.after синтез: 2.93 с, -17.0 LUFS, TP -4.0 dB (усиление -1.2 dB)
-  O4.exit_O2.closed  синтез: 4.11 с, -17.0 LUFS, TP -7.0 dB (усиление -4.5 dB)
-  O4.exit_S1.closed  синтез: 3.91 с, -16.8 LUFS, TP -4.2 dB (усиление -3.2 dB)
-  nina:O3.nina.before синтез: 3.19 с, -17.0 LUFS, TP -7.9 dB (усиление -1.5 dB)
-  O3.window.look     синтез: 6.38 с, -17.0 LUFS, TP -4.0 dB (усиление -1.1 dB)
-  pavel:M4d.pavel.after_bridge синтез: 6.15 с, -17.0 LUFS, TP -7.2 dB (усиление -3.1 dB)
-  agata:S1.street_sign.use синтез: 5.55 с, -17.0 LUFS, TP -3.9 dB (усиление +1.3 dB)
-  agata:examine.plan_crossing синтез: 6.76 с, -17.0 LUFS, TP -2.0 dB (усиление -0.2 dB)
-  agata:examine.school_ribbon синтез: 3.38 с, -16.9 LUFS, TP -5.0 dB (усиление -0.4 dB)
-[textfix] синтезировано 27, переобработано 0, ошибок 0; символов текста 1642; списано кредитов (character-cost): 721, изменение счётчика подписки: 226
+  M26_8_then0 narrator  ru           ZAKADR     eleven_v4    Митя чинит уключину; рядом сушится их полка — сколотили на втором верстаке у Ильи.
+  M26_15_then0 narrator  ru           ZAKADR     eleven_v4    У доски́ — старая карта Ольховки, поверх приколота калька с садом Ильи. Нина показывает детям, как менялось место.
+  M26_23_then0 narrator  ru           ZAKADR     eleven_v4    Илья заканчивает в мастерской рамку для семейной фотографии — резную, на втором верстаке.
+  M26_35_then0 narrator  ru           ZAKADR     eleven_v4    У двери приколот Ульянин рисунок сада. Ульяна объясняет гостю дорогу по своему рисунку.
+  Q02_0   agata     ru           Agata      eleven_v4    Старое под новым. Мама покажет на уроке, как было — и как стало.
+  Q02_1   agata     ru           Agata      eleven_v4    Отдам Ульяне. Её сад — её и карта.
+  Q06_0   mitya     ru           МИТЯ       eleven_v4    Значит, третьим тут буду я. Уключину давно пора чинить.
+  Q06_1   ilya      ru           ИЛЬЯ       eleven_v4    Вот и почини. А полку вместе сколотим.
+  Q06_2   ilya      ru           ИЛЬЯ       eleven_v4    Донесём с Митей до тётиной мастерской. Встанет у окна, рядом с её верстаком.
+  O1q.village_map.look narrator  ru           ZAKADR     eleven_v4    Школьная карта Ольховки. Нина повесила её к уроку.
+  agata:O1q.village_map.use agata     ru           Agata      eleven_v4    Эту карту мы всем классом рисовали. Вот крайний дом — теперь Ильин. А рядом пусто, один забор.
+  ulyana:O1q.village_map.ulyana_runs ulyana    ru           ЛУНЯ       eleven_v4    Это же наш сад! С карты его не видно — пошли, покажу!
+  agata:O1q.village_map.traced agata     ru           Agata      eleven_v4    Там теперь смородина.
+  O1q.village_map.prompt narrator  ru           ZAKADR     eleven_v4    Куда кальку?
+  O1q.village_map.look_old narrator  ru           ZAKADR     eleven_v4    Старая карта Ольховки, поверх — калька с садом Ильи.
+  O1q.village_map.look_new narrator  ru           ZAKADR     eleven_v4    Старая карта Ольховки. Калька с садом теперь у Ульяны.
+  mech.village_map.slipped narrator  ru           ZAKADR     eleven_v4    Карандаш соскочил. Линию — заново, от начала.
+  O4q.ulyana.look narrator  ru           ZAKADR     eleven_v4    Ульяна по колено в снегу у отцовского сада.
+  ulyana:O4q.ulyana.say_map ulyana    ru           ЛУНЯ       eleven_v4    На твоей карте моего дома почти нет.
+  agata:O4q.ulyana.say_help agata     ru           Agata      eleven_v4    Тогда помоги мне его найти.
+  ulyana:O4q.ulyana.say_garden ulyana    ru           ЛУНЯ       eleven_v4    Вот смородина — два ряда, я сама сажала. Между ними дорожка. А там сарай — папина мастерская.
+  agata:O4q.ulyana.say_tracing agata     ru           Agata      eleven_v4    Перенесу на кальку — поверх старой карты, в классе.
+  ulyana:O4q.ulyana.again ulyana    ru           ЛУНЯ       eleven_v4    Смородина, дорожка, сарай. Не перепутай!
+  O4q.workshop.look narrator  ru           ZAKADR     eleven_v4    Сарай-мастерская во дворе Ильи. Стружка до самого порога.
+  mitya:O4q.workshop.mitya_cramped mitya     ru           МИТЯ       eleven_v4    Два человека здесь уже не помещаются.
+  ilya:O4q.workshop.ilya_third ilya      ru           ИЛЬЯ       eleven_v4    Тогда сделаем место третьему.
+  O4q.workshop.prompt narrator  ru           ZAKADR     eleven_v4    Где второму верстаку стоять?
+  O4q.workshop.look_ilya narrator  ru           ZAKADR     eleven_v4    Мастерская Ильи. У двери — второй верстак: места теперь троим.
+  O4q.workshop.look_agata narrator  ru           ZAKADR     eleven_v4    Мастерская Ильи. Второй верстак унесли в тётину мастерскую.
+  ilya:mech.bench.wedge_loose ilya      ru           ИЛЬЯ       eleven_v4    Клин в этом пазу болтаться будет. Паз-то прямой.
+  ilya:mech.bench.fitted ilya      ru           ИЛЬЯ       eleven_v4    Вот. Села как родная.
+  mitya:mech.bench.stopped mitya     ru           МИТЯ       eleven_v4    Теперь не уедет.
+  ilya:mech.bench.screw_slipped ilya      ru           ИЛЬЯ       eleven_v4    Сорвалось. Ещё раз — ровнее.
+  ilya:mech.bench.tightened ilya      ru           ИЛЬЯ       eleven_v4    Туго. Давай доску.
+  ilya:mech.bench.checked ilya      ru           ИЛЬЯ       eleven_v4    Держит. Хоть сейчас строгай.
+  H2q.second_bench.look narrator  ru           ZAKADR     eleven_v4    Второй верстак — Илья с Митей принесли его из Ильиной мастерской. В тётиной мастерской их теперь два.
+  квота: осталось 87059 из 124889, запас 12488, к синтезу ≤ 1877 кредитов (оценка сверху)
+  N01_2              синтез: 2.86 с, -16.9 LUFS, TP -1.9 dB (усиление +1.2 dB)
+  M26_8_then0        синтез: 6.20 с, -16.9 LUFS, TP -4.3 dB (усиление -3.0 dB)
+  M26_15_then0       синтез: 9.12 с, -17.0 LUFS, TP -4.2 dB (усиление -2.5 dB)
+  M26_23_then0       синтез: 6.23 с, -16.9 LUFS, TP -5.6 dB (усиление -3.6 dB)
+  M26_35_then0       синтез: 6.64 с, -16.9 LUFS, TP -4.8 dB (усиление -3.3 dB)
+  Q02_0              синтез: 4.94 с, -17.0 LUFS, TP -5.2 dB (усиление -2.3 dB)
+  Q02_1              синтез: 3.59 с, -16.8 LUFS, TP -4.2 dB (усиление -0.5 dB)
+  Q06_0              синтез: 4.49 с, -17.0 LUFS, TP -4.7 dB (усиление -2.5 dB)
+  Q06_1              синтез: 3.22 с, -16.9 LUFS, TP -6.1 dB (усиление -3.9 dB)
+  Q06_2              синтез: 5.34 с, -17.0 LUFS, TP -5.7 dB (усиление -2.4 dB)
+  O1q.village_map.look синтез: 4.18 с, -16.9 LUFS, TP -5.7 dB (усиление -4.1 dB)
+  agata:O1q.village_map.use синтез: 7.46 с, -16.9 LUFS, TP -2.7 dB (усиление -0.4 dB)
+  ulyana:O1q.village_map.ulyana_runs синтез: 4.16 с, -17.2 LUFS, TP -1.7 dB (усиление +1.6 dB)
+  agata:O1q.village_map.traced синтез: 1.41 с, -16.9 LUFS, TP -5.3 dB (усиление -0.7 dB)
+  O1q.village_map.prompt синтез: 1.08 с, -17.0 LUFS, TP -5.0 dB (усиление -2.8 dB)
+  O1q.village_map.look_old синтез: 4.66 с, -17.0 LUFS, TP -5.7 dB (усиление -2.7 dB)
+  O1q.village_map.look_new синтез: 4.43 с, -17.0 LUFS, TP -5.7 dB (усиление -3.5 dB)
+  mech.village_map.slipped синтез: 4.32 с, -17.1 LUFS, TP -6.1 dB (усиление -3.0 dB)
+  O4q.ulyana.look    синтез: 3.51 с, -17.0 LUFS, TP -5.8 dB (усиление -2.5 dB)
+  ulyana:O4q.ulyana.say_map синтез: 2.98 с, -17.0 LUFS, TP -3.3 dB (усиление +5.0 dB)
+  agata:O4q.ulyana.say_help синтез: 2.00 с, -16.9 LUFS, TP -6.3 dB (усиление -3.9 dB)
+  ulyana:O4q.ulyana.say_garden синтез: 7.96 с, -17.1 LUFS, TP -1.8 dB (усиление +2.3 dB)
+  agata:O4q.ulyana.say_tracing синтез: 3.63 с, -17.0 LUFS, TP -4.1 dB (усиление -0.2 dB)
+  ulyana:O4q.ulyana.again синтез: 3.92 с, -17.0 LUFS, TP -2.8 dB (усиление +2.2 dB)
+  O4q.workshop.look  синтез: 4.84 с, -17.0 LUFS, TP -5.1 dB (усиление -3.1 dB)
+  mitya:O4q.workshop.mitya_cramped синтез: 2.64 с, -17.0 LUFS, TP -7.0 dB (усиление -4.1 dB)
+  ilya:O4q.workshop.ilya_third синтез: 2.07 с, -16.9 LUFS, TP -8.2 dB (усиление -6.1 dB)
+  O4q.workshop.prompt синтез: 2.06 с, -17.0 LUFS, TP -5.1 dB (усиление -2.6 dB)
+  O4q.workshop.look_ilya синтез: 5.67 с, -17.0 LUFS, TP -5.0 dB (усиление -3.3 dB)
+  O4q.workshop.look_agata синтез: 4.90 с, -17.0 LUFS, TP -6.1 dB (усиление -3.5 dB)
+  ilya:mech.bench.wedge_loose синтез: 3.44 с, -17.0 LUFS, TP -6.8 dB (усиление -4.0 dB)
+  ilya:mech.bench.fitted синтез: 2.32 с, -17.0 LUFS, TP -6.2 dB (усиление -3.8 dB)
+  mitya:mech.bench.stopped синтез: 1.43 с, -17.0 LUFS, TP -8.8 dB (усиление -6.1 dB)
+  ilya:mech.bench.screw_slipped синтез: 2.83 с, -17.0 LUFS, TP -7.5 dB (усиление -4.9 dB)
+  ilya:mech.bench.tightened синтез: 1.95 с, -16.6 LUFS, TP -6.5 dB (усиление -3.3 dB)
+  ilya:mech.bench.checked синтез: 2.49 с, -17.0 LUFS, TP -5.7 dB (усиление -2.9 dB)
+  H2q.second_bench.look синтез: 7.35 с, -17.0 LUFS, TP -4.6 dB (усиление -3.1 dB)
+[q02_q06] синтезировано 37, переобработано 0, ошибок 0; символов текста 1877; списано кредитов (character-cost): 822, изменение счётчика подписки: 758
   предупреждение: M09b_2: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: M15s_0: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: M15s_1: устарела (текст изменён) — игра покажет только субтитры
@@ -120,5 +100,5 @@ run 39961577802 2026-10-23T13:30:16Z requests: pipeline/requests/voice_textfix.j
   предупреждение: pelageya:R3.exit_R2.closed: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: pelageya:R3.pelageya.after: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: к перезаписи 13 (текст изменён после записи, игра их не играет): M09b_2, M15s_0, M15s_1, M16_0, M18_7, M18p_3, agata:M1.exit_M2.closed, agata:M1.exit_M4.closed, pavel:M4.pavel.after, pelageya:R1d.pelageya.to_boat, pelageya:R1d.pelageya.wait_water, pelageya:R3.exit_R2.closed, pelageya:R3.pelageya.after — один запрос: pipeline/voice/README.md → «Текст изменился»
-validate_voice: манифесты: ru 570 (557 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, Q01, Q03, Q04, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 38; закадровых фраз по правилам voice.json: 457 (с тегами 22), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_bag, ru_mechanics
+validate_voice: манифесты: ru 606 (593 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, Q01, Q02, Q03, Q04, Q06, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 38; закадровых фраз по правилам voice.json: 500 (с тегами 22), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_Q02_Q06, ru_bag, ru_mechanics
 [voice] validate_voice.py: OK (0 ошибок, 15 предупреждений, strict; самопроверка 22/22)

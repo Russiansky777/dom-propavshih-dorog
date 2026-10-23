@@ -1,0 +1,69 @@
+{
+  "set": "q02_q06",
+  "runs": [
+    {
+      "run": "39968281787",
+      "at": "2026-10-23T14:18:33+00:00",
+      "request": "pipeline/requests/voice_q02_q06.json",
+      "synthesized": [
+        "N01_2",
+        "M26_8_then0",
+        "M26_15_then0",
+        "M26_23_then0",
+        "M26_35_then0",
+        "Q02_0",
+        "Q02_1",
+        "Q06_0",
+        "Q06_1",
+        "Q06_2",
+        "O1q.village_map.look",
+        "agata:O1q.village_map.use",
+        "ulyana:O1q.village_map.ulyana_runs",
+        "agata:O1q.village_map.traced",
+        "O1q.village_map.prompt",
+        "O1q.village_map.look_old",
+        "O1q.village_map.look_new",
+        "mech.village_map.slipped",
+        "O4q.ulyana.look",
+        "ulyana:O4q.ulyana.say_map",
+        "agata:O4q.ulyana.say_help",
+        "ulyana:O4q.ulyana.say_garden",
+        "agata:O4q.ulyana.say_tracing",
+        "ulyana:O4q.ulyana.again",
+        "O4q.workshop.look",
+        "mitya:O4q.workshop.mitya_cramped",
+        "ilya:O4q.workshop.ilya_third",
+        "O4q.workshop.prompt",
+        "O4q.workshop.look_ilya",
+        "O4q.workshop.look_agata",
+        "ilya:mech.bench.wedge_loose",
+        "ilya:mech.bench.fitted",
+        "mitya:mech.bench.stopped",
+        "ilya:mech.bench.screw_slipped",
+        "ilya:mech.bench.tightened",
+        "ilya:mech.bench.checked",
+        "H2q.second_bench.look"
+      ],
+      "reprocessed": [],
+      "characters_text": 1877,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 37830,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 38588,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 822,
+      "subscription_delta": 758
+    }
+  ]
+}
