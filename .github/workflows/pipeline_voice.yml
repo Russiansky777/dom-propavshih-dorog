@@ -53,8 +53,18 @@ jobs:
 
       - name: ffmpeg
         if: steps.req.outputs.files != ''
+        # 23.10 apt шёл 18 и 45+ минут (runs 39943689014, 39947069779): ставим без рекомендованных пакетов, с
+        # тайм-аутом; не успели — второй заход через archive.ubuntu.com вместо зеркала раннера.
         run: |
-          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; fi
+          if ! command -v ffmpeg >/dev/null; then
+            for mirror in "" "http://archive.ubuntu.com/ubuntu"; do
+              if [ -n "$mirror" ]; then
+                echo "apt: второй заход через $mirror"
+                sudo sed -i -E "s#https?://[a-z0-9.-]*\.ubuntu\.com/ubuntu/?#$mirror/#g" /etc/apt/sources.list /etc/apt/sources.list.d/*.sources /etc/apt/sources.list.d/*.list 2>/dev/null || true
+              fi
+              if timeout 480 bash -c 'sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update -q && sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y -q --no-install-recommends ffmpeg'; then break; fi
+            done
+          fi
           ffmpeg -hide_banner -version | head -1
           ffmpeg -hide_banner -encoders 2>/dev/null | grep -q libvorbis && echo "libvorbis: есть"
 
