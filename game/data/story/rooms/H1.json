@@ -1,7 +1,7 @@
 {
   "id": "H1",
   "_art": "Настоящий фон assets/reference/H1_bg.png (1672x941 → 1920x1080) и передний план H1_fg_table_chair.png (кресло со столиком, окклюдер z=950; слой нарисован крупнее фона — уменьшен до 0.6 и поставлен перед печью, см. scale_reason). Состояния (слои из assets/incoming, совмещены вручную offset/scale): закрытые ставни пока h1_shutter_open=false (эталон уже с открытыми), открытая печная дверца и программный огонь при stove_lit, платок на крючках после h1_scarf_removed, полка у печи / у стола по выбору Q04. Хотспоты и выходы не рисуются, подпись — при наведении.",
-  "art_source": {"files": {"state_nina_coat.png": "assets/incoming/H1_state_nina_coat.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Партия 8: только пальто Нины — полный холст к H1_bg, (0,0) 1:1. Остальные слои H1 совмещены вручную (offset/scale, tools/make_h1_layers.py) и этим импортом не трогаются. Копия — tools/import_room_art.py H1"},
+  "art_source": {"files": {"state_nina_coat.png": "assets/incoming/H1_state_nina_coat.png", "state_bench_bare.png": "assets/incoming/H1_state_bench_bare.png", "state_towel_hook.png": "assets/incoming/H1_state_towel_hook.png", "state_shelf_leaning.png": "assets/incoming/H1_state_shelf_leaning.png", "state_shelf_A.png": "assets/incoming/H1_state_shelf_A.png", "state_shelf_B.png": "assets/incoming/H1_state_shelf_B.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Партия 8: только пальто Нины — полный холст к H1_bg, (0,0) 1:1. Остальные слои H1 совмещены вручную (offset/scale, tools/make_h1_layers.py) и этим импортом не трогаются. Копия — tools/import_room_art.py H1"},
   "background": {
     "kind": "interior",
     "image": "res://assets/rooms/H1/bg.png",
@@ -60,23 +60,29 @@
     {
       "id": "stove_open",
       "image": "res://assets/rooms/H1/state_stove_open.png",
-      "offset": [-120, -120],
-      "scale": 0.9,
-      "scale_reason": "кадр состояния нарисован крупнее: печь с открытой дверцей больше печи фона; 0.9 и offset совмещают дверцу с устьем печи",
+      "offset": [-41, 37],
+      "scale": 0.76,
+      "scale_reason": "кадр состояния нарисован крупнее: рама открытой дверцы ≈ 177×191 px против закрытой дверцы фона 144×143. G13 (Директор 23.10: «топящаяся печь разорвана»): при 0.9 и (−120, −120) рама стояла на 80 px выше и на четверть крупнее — из-под неё торчал низ закрытой дверцы. Теперь низ рамы на приступке под устьем, рама закрывает дверцу фона",
+      "align": {"layer_rect": [207, 427, 177, 191], "base_rect": [121, 359, 144, 143], "tol_px": 14, "covers": true, "cover_rect": [205, 430, 215, 185],
+        "_note": "G13: рама дверцы на слое (пиксели слоя) ложится на дверцу фона (пиксели фона): низ — на приступок (±tol на экране), рама с побелкой вокруг (cover_rect) закрывает дверцу целиком (covers). Проверки — tools/validate_rooms.py (геометрия) и game/tests/test_h1.gd (пиксели: дверца фона тёмная, рама слоя непрозрачна)"},
       "if": ["stove_lit"]
     },
     {"id": "dunya_letter", "image": "res://assets/rooms/H1/state_dunya_letter.png", "if": ["dunya_letter_on_stove"], "compose": {"src": "assets/incoming/closeup_envelope.png", "crop": [230, 320, 1150, 440], "at": [552, 404], "width": 64, "rotate": -9, "tint": [0.92, 0.86, 0.78], "shadow": 0.25}, "_note": "блок 3 (M23a): письмо Тамары Дуне — невручённым на печи; вклейка из крупного плана конверта (tools/make_frame_layers.py)"},
     {
       "id": "hook_coat",
-      "image": "res://assets/rooms/H1/state_hook_coat.png",
-      "offset": [53, -11],
-      "_offset_note": "холст состояния 1602x981 (другой, чем фон 1672x941): рисуется масштабом фона, offset вешает платок петлёй на средний крючок (≈1267,255). Раньше холст растягивался до 1920x1080 сам по себе — платок искажался на 9 %",
-      "if": ["h1_scarf_removed"]
+      "image": "res://assets/rooms/H1/state_towel_hook.png",
+      "pending": "H1_state_towel_hook",
+      "stub": {"crops": [{"image": "res://assets/rooms/H1/bg.png", "region": [476, 522, 44, 108], "rect": [1192, 255, 50, 124]}]},
+      "if": ["h1_scarf_removed"],
+      "_note": "G10/G12 (партия 9): тот же полосатый мокрый платок, что лежал на лежанке, — на ЛЕВОМ крючке (≈1060, 215 фона); средний крючок — пальто Нины. До арта — заглушка: кусок того же платка с лежанки (фон) на левом крючке. Прежний серый платок (state_hook_coat.png, другой предмет) снят"
     },
     {"id": "nina_coat", "image": "res://assets/rooms/H1/state_nina_coat.png", "if": ["done_M23c"], "_note": "M23c «Нина в доме сестры»: тёмное пальто с серой накидкой на крючке у двери (Q03 — рукав) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к H1_bg, (0,0); x1034–1179, y245–575. Поверх платка Агаты (hook_coat) на том же крючке: пальто повешено позже (M23c), иначе платок закрывал его почти целиком (веб-проверка 23.10)."},
     {
       "id": "shelf_stove",
-      "image": "res://assets/rooms/H1/state_shelf_stove.png",
+      "image": "res://assets/rooms/H1/state_shelf_A.png",
+      "pending": "H1_state_shelf_A",
+      "stub": {"crops": [{"image": "res://assets/rooms/H1/state_shelf_stove.png", "region": [355, 405, 140, 100], "rect": [439, 474, 119, 85]}],
+        "_note": "G12: до арта — прежняя полка A, уменьшенная до общего размера доски 92 px фона (×0,74 вокруг ног Тихона на доске, 459, 435 фона): прислонённая, A и B — одна полка"},
       "if": ["q04_corner_stove"],
       "_note": "Полка A на боковой грани печи широкой стороной к печи (Директор 18.10: «полка идёт длинной в комнату, а не вдоль печи»): рисунок ChatGPT переложен перспективой на грань, тень на побелке, кочерги перед полкой — tools/make_h1_layers.py (оригинал assets/incoming/H1_state_shelf_stove.png не тронут)"
     },
@@ -88,9 +94,30 @@
     },
     {
       "id": "shelf_table",
-      "image": "res://assets/rooms/H1/state_shelf_table.png",
+      "image": "res://assets/rooms/H1/state_shelf_B.png",
+      "pending": "H1_state_shelf_B",
+      "stub": {"crops": [{"image": "res://assets/rooms/H1/state_shelf_table.png", "region": [630, 420, 92, 46], "rect": [713, 480, 125, 62]}],
+        "_note": "G12: до арта — прежняя полка B, увеличенная до общего размера доски 92 px фона (×1,18 вокруг ног Тихона на доске, 680, 432 фона)"},
       "if": ["q04_shelf_table"],
       "_note": "Полка B «у стола» (координатор 18.10: рисунок ChatGPT висел на челе печи над дверцей — по сценарию Q04 хвост не у горячей дверцы). Перенесена на заднюю стену слева от двери на крыльцо, под угловые полки, над кадкой — в кадре прямо над столиком; масштаб по глубине стены, мягкая тень — tools/make_h1_layers.py из assets/incoming/H1_state_shelf_table.png"
+    },
+    {
+      "id": "bench_bare",
+      "image": "res://assets/rooms/H1/state_bench_bare.png",
+      "pending": "H1_state_bench_bare",
+      "stub": {"crops": [{"image": "res://assets/rooms/H1/stub_bench_bare.png", "region": [0, 0, 322, 160], "rect": [434, 551, 370, 184]}],
+        "_note": "заглушка до арта — tools/make_g_stubs.py (место платка закрашено по соседним пикселям фона, доска сиденья вытянута с левого конца лавки)"},
+      "if": ["h1_scarf_removed"],
+      "_note": "G9/G12 (партия 9): мокрый полосатый платок нарисован на лежанке прямо в фоне; убран — лежанка голая (а платок на левом крючке, hook_coat)"
+    },
+    {
+      "id": "shelf_leaning",
+      "image": "res://assets/rooms/H1/state_shelf_leaning.png",
+      "pending": "H1_state_shelf_leaning",
+      "stub": {"crops": [{"image": "res://assets/rooms/H1/stub_shelf_leaning.png", "region": [0, 0, 75, 110], "rect": [442, 482, 86, 126]}],
+        "_note": "заглушка до арта — tools/make_g_stubs.py: та же полка (доска 92 px фона, как A и B), на ребре на левом конце лежанки, под местом A (ниже — спинка кресла)"},
+      "unless": ["done_Q04"],
+      "_note": "G12 (партия 9): снятая полка прислонена к левому концу лежанки, пока Тихону не выбрали место (Q04); тот же размер, что повешенная"
     },
     {
       "id": "photo_ledge",
@@ -144,11 +171,11 @@
     {
       "id": "stove_fire",
       "type": "fire",
-      "rect": [150, 400, 140, 110],
+      "rect": [161, 447, 106, 111],
       "if": ["stove_lit"],
       "z": 2,
       "amount": 50,
-      "_note": "проём открытой печной дверцы после подгонки слоя stove_open (≈150..290 x 400..510)"
+      "_note": "проём открытой печной дверцы после подгонки слоя stove_open (G13: 0.76, −41/+37 → x 161..267, y 447..558); огонь рисует свет комнаты (lights/H1.json stove_fire), этот эффект подавлен"
     }
   ],
   "spawns": {
@@ -172,6 +199,13 @@
       "color": "#8c8278",
       "draw": false,
       "states": [
+        {
+          "if": ["done_Q04"],
+          "label": "@H1.stove.label_lit",
+          "color": "#c8723a",
+          "look": "@H1.stove.look_settled",
+          "_note": "G14: полка повешена — осмотр печи больше не говорит о гнёздах креплений"
+        },
         {
           "if": ["stove_lit"],
           "label": "@H1.stove.label_lit",
@@ -214,9 +248,9 @@
       "id": "scarf", "action_anim": "pick",
       "kind": "object",
       "label": "@H1.scarf.label",
-      "rect": [490, 560, 180, 80],
+      "rect": [535, 555, 265, 85],
       "pick_priority": 1,
-      "_rect_note": "на лавке у печи (поверх прямоугольника печи — приоритет 1); верх опущен до 560, чтобы не накрывать гнёзда полки на боковой грани (shelf)",
+      "_rect_note": "платок на лежанке (нарисован в фоне: x 378–700, y 480–640 фона → экран 434–804 × 551–735), поверх прямоугольника печи — приоритет 1; левый конец лежанки — снятая полка (shelf), G12",
       "stand": [640, 805],
       "color": "#7a4a5a",
       "draw": false,
@@ -279,11 +313,11 @@
         "prompt": "@H1.tikhon.prompt",
         "requires": {"flags": ["met_tikhon"]},
         "fail_text": "@H1.tikhon.look",
-        "_note": "Домашнее знание Тихона по вопросам (Docs/SCENARIO_FINAL.md, M03): дверь из школы, свёрток на верстаке, колокол с мельницы. Спрашивать можно сколько угодно (без once_any); ответы — реплики Тихона его голосом (поле line у текста). До знакомства (M03) — только осмотр. Загадок не решает, мир не объясняет.",
+        "_note": "Домашнее знание Тихона по вопросам (Docs/SCENARIO_FINAL.md, M03): дверь из школы, свёрток на верстаке, колокол с мельницы. Спрашивать можно сколько угодно (без once_any), но только о том, что Агата уже видела (C13, ИИ-чтение 23.10: дверь — побывав в галерее, свёрток и колокол — в мастерской); ответы — реплики Тихона его голосом (поле line у текста). До знакомства (M03) — только осмотр. Загадок не решает, мир не объясняет.",
         "options": [
-          {"id": "door", "label": "@H1.tikhon.opt_door", "sets": "h1_asked_door", "text": "@H1.tikhon.door"},
-          {"id": "bundle", "label": "@H1.tikhon.opt_bundle", "sets": "h1_asked_bundle", "text": "@H1.tikhon.bundle"},
-          {"id": "bell", "label": "@H1.tikhon.opt_bell", "sets": "h1_asked_bell", "text": "@H1.tikhon.bell"},
+          {"id": "door", "label": "@H1.tikhon.opt_door", "sets": "h1_asked_door", "text": "@H1.tikhon.door", "requires": {"flags": ["visited_H3"]}},
+          {"id": "bundle", "label": "@H1.tikhon.opt_bundle", "sets": "h1_asked_bundle", "text": "@H1.tikhon.bundle", "requires": {"flags": ["visited_H2"]}},
+          {"id": "bell", "label": "@H1.tikhon.opt_bell", "sets": "h1_asked_bell", "text": "@H1.tikhon.bell", "requires": {"flags": ["visited_H2"]}},
           {"id": "leave", "label": "@H1.tikhon.opt_leave", "sets": "h1_tikhon_left", "text": "@H1.tikhon.leave"}
         ]
       },
@@ -392,9 +426,9 @@
       "id": "shelf", "action_anim": "reach",
       "kind": "object",
       "label": "@H1.shelf.label",
-      "rect": [405, 495, 165, 62],
+      "rect": [438, 478, 95, 132],
       "stand": [700, 800],
-      "_rect_note": "на гнёздах креплений боковой грани печи (слой holes_stove), где встанет полка A. Раньше лежал на челе над дверцей и перекрывал верх устья — клик по дверце уходил полке. Стоянка справа: после выбора A Агата не заслоняет Тихона на полке",
+      "_rect_note": "G12: на снятой полке, прислонённой к левому концу лежанки (слой shelf_leaning); было — на гнёздах креплений боковой грани печи (они остаются слоем holes_stove). Стоянка справа: после выбора A Агата не заслоняет Тихона на полке",
       "color": "#7a5a3a",
       "draw": false,
       "pick_priority": 1,
@@ -406,6 +440,16 @@
         {
           "if": ["q04_shelf_table"],
           "label": "@H1.shelf.label_table"
+        },
+        {
+          "if": ["h1_scarf_removed", "stove_lit"],
+          "fail_text": "@H1.shelf.not_yet_dark",
+          "_note": "G11: печь топится, а ставня закрыта — разговора у печи ещё не было"
+        },
+        {
+          "if": ["h1_scarf_removed"],
+          "fail_text": "@H1.shelf.not_yet",
+          "_note": "G11: лежанка свободна, печь холодная — полку потом, сперва обогреть избу"
         }
       ],
       "hidden_if": ["done_Q04"],
@@ -414,7 +458,8 @@
         "requires": {
           "flags": ["met_tikhon"]
         },
-        "fail_text": "@H1.shelf.look",
+        "fail_text": "@H1.shelf.look_wet",
+        "_fail_note": "G9/G11: повесить полку можно после первого разговора у затопленной печи (M03 → met_tikhon) — там Тихон и просит её повесить; до того клик по полке объясняет, почему не сейчас (states.fail_text): платок на лежанке — ни сесть, ни лечь; потом — сперва обогреть избу; печь топится — сперва ставню",
         "scene": "Q04",
         "options": [
           {
@@ -435,9 +480,9 @@
       "id": "shelf_done",
       "kind": "object",
       "label": "@H1.shelf.label_done",
-      "rect": [410, 468, 160, 90],
+      "rect": [439, 468, 119, 86],
       "stand": [700, 800],
-      "_rect_note": "по установленной полке: A — боковая грань печи (слой shelf_stove), B — задняя стена слева от двери на крыльцо, над столиком (слой shelf_table)",
+      "_rect_note": "по установленной полке (G12: обе — доска 92 px фона): A — боковая грань печи (слой shelf_stove), B — задняя стена слева от двери на крыльцо, над столиком (слой shelf_table)",
       "color": "#7a5a3a",
       "draw": false,
       "pick_priority": 1,
@@ -450,7 +495,7 @@
         {
           "if": ["q04_shelf_table"],
           "label": "@H1.shelf.label_table",
-          "rect": [728, 480, 98, 48],
+          "rect": [713, 480, 125, 62],
           "stand": [980, 760]
         }
       ],
@@ -473,7 +518,10 @@
       "label": "@H1.exit_H2.label",
       "side": "right",
       "spawn": "from_H1",
-      "draw": false
+      "draw": false,
+      "requires": ["h1_shutter_open"],
+      "closed_text": "@H1.exit_H2.dark",
+      "_requires_note": "G7 (Директор 23.10: «при закрытых ставнях свет из соседней комнаты»): пока ставня закрыта, Агата не идёт в тёмные комнаты — сначала ставня"
     },
     {
       "to": "H3",
@@ -483,6 +531,8 @@
       "spawn": "from_H1",
       "draw": false,
       "cue": "down",
+      "requires": ["h1_shutter_open"],
+      "closed_text": "@H1.exit_H3.dark",
       "_cue_note": "Директор 18.10: «проход в галерею не интуитивен». Двери в галерею на фоне H1 нет (видимая дверь — на крыльцо), стены слева (печь, окно) и справа (мастерская H2) заняты — галерея за спиной зрителя, выход к нижнему краю с меткой «вниз» (ExitCue). В галерее H3 проход в комнату — у правого края"
     },
     {
@@ -493,6 +543,8 @@
       "spawn": "from_H1",
       "draw": false,
       "cue": "up",
+      "requires": ["h1_shutter_open"],
+      "closed_text": "@H1.exit_H4.dark",
       "_cue_note": "18.10: чердак наверху — метка «вверх» под потолком в углу у печи, где труба уходит на чердак (лаз у трубы). Было: нижний край (вниз к зрителю — неочевидно). Лестницы на фоне нет; в прямоугольнике нет хотспотов (полки с чашками ниже y 290, печь левее x 565, дверь Z2 правее). На чердаке H4 выход обратно — вниз (нижний край), Агата спускается сюда же (спавн from_H4)"
     }
   ],

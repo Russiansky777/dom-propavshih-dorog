@@ -498,8 +498,16 @@
       "text": "25 октября",
       "draft": true
     },
-    "O1d.bird.written_reply": {
-      "text": "И я тут была. Уля",
+    "O1d.bird.reply_scarf": {
+      "text": "Теперь ей тепло.\nУля",
+      "draft": true
+    },
+    "O1d.bird.reply_boat": {
+      "text": "Так папа рисует!\nУля",
+      "draft": true
+    },
+    "O1d.bird.reply_bridge": {
+      "text": "А мост правда будет?\nУля",
       "draft": true
     },
     "O1d.nina.after": {
@@ -791,7 +799,7 @@
       "draft": true
     },
     "ach.title_bird": {
-      "text": "Птица в учебнике: шапка, сапоги и две подписи",
+      "text": "Синица на плакате: шапка, сапоги и мой рисунок",
       "draft": true
     },
     "ach.title_promise": {

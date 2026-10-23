@@ -20,7 +20,7 @@
     {"id": "second_bench", "image": "res://assets/rooms/H2/state_second_bench.png", "if": ["q06_table_at_agata"], "_note": "Q06, вариант B: второй верстак Ильи в тётиной мастерской — стоит торцом в промежутке справа от резной рамы «ЗМ», раму и колокол не закрывает (партия 8б, полный холст к H2_bg, (0,0); видимая альфа x1221–1355, y410–600)."},
     {"id": "bench_front", "image": "res://assets/rooms/H2/fg_bench_front.png", "occluder": true, "z": 1080}
   ],
-  "on_enter": [{"text": "@H2d.stand_zm.enter", "once_flag": "h2_saw_stand_zm", "if": ["done_M09b"], "unless": ["office_mirror_mounted"], "_note": "с зеркалом конторы в сумке — один раз мысль Агаты, где стойка: высокая резная рама посреди мастерской (Директор 23:53, 23.10 00:03)"}],
+  "on_enter": [{"text": "@H2d.stand_zm.enter", "once_flag": "h2_saw_stand_zm", "if": ["has_mirror_mill"], "unless": ["office_mirror_mounted"], "_note": "с зеркалом конторы в сумке — один раз мысль Агаты, где стойка: высокая резная рама посреди мастерской (Директор 23:53, 23.10 00:03)"}],
   "spawns": {"default": [500, 900], "from_H1": [280, 820]},
   "props": [],
   "hotspots": [

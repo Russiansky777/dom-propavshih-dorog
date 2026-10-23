@@ -1,7 +1,7 @@
 {
   "id": "O3",
   "_art": "Горница Нины (партия 3, ChatGPT 22.10, assets/incoming/_meta_p3): O3_bg.png — стол с дорожкой, свеча, чернильница, книга, Дунино зеркальце в деревянной рамке на столе, стул, кровать слева, шкаф, ходики на стене (оси стрелок 942,201, маятника 942,259 — холст 1672×941), окно в снегу, лавка под окном, икона. Слои ходиков и пламя свечи — те же файлы, что в мамином зеркале блока 2 (game/assets/closeups/O3_*, tools/import_closeups.py): одна копия на игру, комната ссылается на неё. Ночь — нарисованный слой night (партия 8, O3_night) и свет свечи (lights/O3.json); утро третьего дня — картина как написана.",
-  "art_source": {"files": {"night.png": "assets/incoming/O3_night.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Партия 8: только ночь горницы — полный холст к O3_bg, (0,0), полупрозрачный по всему кадру (alpha_min 0: не чистить). Фон и ходики — общие с крупным планом мамина зеркала (game/assets/closeups/O3_*, tools/import_closeups.py). Копия — tools/import_room_art.py O3"},
+  "art_source": {"files": {"night.png": "assets/incoming/O3_night.png", "state_notches_left.png": "assets/incoming/O3_state_notches_left.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Партия 8: только ночь горницы — полный холст к O3_bg, (0,0), полупрозрачный по всему кадру (alpha_min 0: не чистить). Фон и ходики — общие с крупным планом мамина зеркала (game/assets/closeups/O3_*, tools/import_closeups.py). Копия — tools/import_room_art.py O3"},
   "background": {"kind": "interior", "image": "res://assets/closeups/O3_bg.png", "wall": "#6a5040", "floor": "#5a3a24", "accent": "#8a6a4a", "horizon": 730},
   "walkable": [[1050, 745], [1290, 742], [1300, 775], [1755, 780], [1790, 800], [1840, 868], [1915, 885], [1915, 1075], [1060, 1075], [1050, 1000]],
   "no_walk_samples": [[600, 900, "стол"], [880, 900, "стул"], [1500, 700, "лавка под окном"], [150, 650, "кровать"], [1830, 700, "столик с кувшином"]],
@@ -15,11 +15,12 @@
     {"id": "pendulum", "image": "res://assets/closeups/O3_clock_pendulum.png", "pivot": [942, 259], "swing": {"deg": 5.0, "period_s": 1.6}, "_note": "маятник качается — время идёт; после трёх огней ровно как у Агаты (общее время)"},
     {"id": "hand_min", "image": "res://assets/closeups/O3_clock_hand_min.png", "pivot": [942, 201], "rotation_deg": 120.0, "spin": {"deg_per_s": 0.1}, "_note": "минутная стрелка: круг за час настоящего времени (0,1°/с) — вровень с карманными часами"},
     {"id": "hand_hour", "image": "res://assets/closeups/O3_clock_hand_hour.png", "pivot": [942, 201], "rotation_deg": 250.0, "spin": {"deg_per_s": 0.008333}, "_note": "часовая стрелка: круг за 12 часов"},
-    {"id": "night", "image": "res://assets/rooms/O3/night.png", "if": ["tod_dark"], "_note": "Вечер и ночь в горнице (M19–M20, вечер третьего дня): свеча и лампадка, тёмное окно — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): рассчитанный цветовой слой для O3_bg (полный холст, (0,0)), поверх ходиков, под пламенем свечи; вместо прежнего тона движка. Фигуры темнеют светом свечи (lights/O3.json candle_tone), время суток эти состояния не тонирует (time/O3.json)."},
+    {"id": "notches_left", "image": "res://assets/rooms/O3/state_notches_left.png", "pending": "O3_state_notches_left", "stub": {"shapes": [{"type": "line", "points": [[948, 532], [982, 529]], "width": 3, "color": "#3a2618c8"}, {"type": "line", "points": [[948, 512], [990, 509]], "width": 3, "color": "#3a2618c8"}, {"type": "line", "points": [[948, 494], [982, 491]], "width": 3, "color": "#3a2618c8"}, {"type": "line", "points": [[948, 470], [990, 467]], "width": 3, "color": "#3a2618c8"}, {"type": "line", "points": [[948, 450], [982, 447]], "width": 3, "color": "#3a2618c8"}, {"type": "line", "points": [[948, 428], [990, 425]], "width": 3, "color": "#3a2618c8"}, {"type": "line", "points": [[948, 404], [982, 401]], "width": 3, "color": "#3a2618c8"}, {"type": "line", "points": [[948, 384], [990, 381]], "width": 3, "color": "#3a2618c8"}], "_note": "до арта — восемь коротких зарубок на левой стойке простыми линиями"}, "_note": "G32: годовые зарубки Ульяны ножом на левой стойке у ходиков (партия 9, O3_state_notches_left); правая стойка не тронута"},
+    {"id": "night", "image": "res://assets/rooms/O3/night.png", "if": ["tod_dark"], "modulate": "#ffffffc4", "_g30": "G30 (Директор 23.10: «мало света»): ночной слой (полупрозрачный по всему кадру) ослаблен до ~77 % и добавлен тёплый свет свечи и лампы Варвары (lights/O3.json candle_room, lamp_varvara)", "_note": "Вечер и ночь в горнице (M19–M20, вечер третьего дня): свеча и лампадка, тёмное окно — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): рассчитанный цветовой слой для O3_bg (полный холст, (0,0)), поверх ходиков, под пламенем свечи; вместо прежнего тона движка. Фигуры темнеют светом свечи (lights/O3.json candle_tone), время суток эти состояния не тонирует (time/O3.json)."},
     {"id": "candle_flame", "image": "res://assets/closeups/O3_candle_flame.png", "if": ["tod_dark"], "_note": "свеча горит вечером и ночью; мерцание — свет lights/O3.json"}
   ],
   "effects": [],
-  "spawns": {"default": [1700, 960], "from_O4": [1650, 1000]},
+  "spawns": {"default": [1700, 960], "from_O4": [1070, 1050]},
   "props": [],
   "hotspots": [
     {
@@ -30,20 +31,20 @@
       "item_use": {"school_ribbon": {"text": "@O3.nina.ribbon", "sets": ["ribbon_braided"], "once_flag": "ribbon_braided", "text_done": "@O3.nina.ribbon_again"}}
     },
     {
-      "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1510, 110, 180, 720], "stand": [1300, 1000], "scene_only": "M20", "draw": false, "pick_priority": 2,
+      "id": "ilya", "kind": "npc", "_g40": "G40 (Директор 23.10: «комната с роднёй слишком маленькая, все толпятся друг на друге»): пол для Агаты — только правая половина (x 1050–1915), арт не меняем; родня расставлена по ней в глубину: Нина у ходиков (1330), Ульяна впереди между Ниной и отцом (1460, ближе к зрителю), Илья у окна (1610), Варвара с лампой у двери справа (1845); Агата входит у левого края пола (from_O4 1070, 1050) и никого не закрывает (validate_rooms 9b). Стоянки Ильи, Ульяны и Варвары — там же: они в кадре только в сцене M20", "label": "@char.ilya", "rect": [1520, 92, 180, 708], "stand": [1065, 1055], "scene_only": "M20", "draw": false, "pick_priority": 2,
       "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
       "_rect_note": "Илья у окна, ноги (1600, 830) (масштаб 1,93 → Агата 666 px; Илья 1,82 м ≈ 731); виден только в сцене M20 (ночь), утром ушёл",
       "talk": {"after_text": "@O3.ilya.after"},
       "item_use": {"drawing_ilya": {"text": "@O3.ilya.boat_drawing", "once_flag": "ilya_saw_drawing", "sets": ["ilya_saw_drawing"]}}
     },
     {
-      "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [1730, 400, 120, 480], "stand": [1560, 1000], "scene_only": "M20", "draw": false, "pick_priority": 3,
+      "id": "ulyana", "kind": "npc", "label": "@char.ulyana", "rect": [1400, 405, 120, 555], "stand": [1065, 1055], "scene_only": "M20", "draw": false, "pick_priority": 3,
       "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
       "_rect_note": "Ульяна у лавки под окном, ноги (1790, 880) (масштаб 2,03 → Ульяна 1,27 м ≈ 538 px); впереди отца — ребёнок в семейной группе",
       "talk": {"after_text": "@O3.ulyana.after"}
     },
     {
-      "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "rect": [1380, 160, 140, 615], "stand": [1700, 1000], "scene_only": "M20", "draw": false, "pick_priority": 3,
+      "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "rect": [1775, 162, 140, 623], "stand": [1065, 1055], "scene_only": "M20", "draw": false, "pick_priority": 3,
       "visible_if": ["wife_came"], "hidden_if": ["morning_day3"],
       "_rect_note": "Жена Ильи с лампой позади, между Ниной и Ильёй (голова видна между ними), ноги (1450, 775) (масштаб 1,81; 1,63 м ≈ 616 px); приходит по ходу M20 (wife_came)",
       "talk": {"after_text": "@O3.ilya_wife.after"}
@@ -66,12 +67,12 @@
       "look": "@O3.notebooks.look",
       "view": {
         "id": "notebooks", "type": "papers", "title": "@O3.notebooks.title", "close_label": "@ui.close", "if": ["done_M21"],
-        "_note": "Тетради Евдокии (партия 4): четыре разворота, текст игры — в чистой части страницы (рукопись рисунка условная). Листаются «Назад»/«Дальше».",
+        "_note": "Тетради Евдокии (партия 4): четыре разворота, текст игры — её рукой (G33: рукописный шрифт Bad Script, UiTheme hand) в чистой части страницы; псевдорукопись рисунка наверху левой страницы — G33 «каша»: до чистых разворотов партии 9 (closeup_notebook_*_clean) закрыта заплаткой цвета бумаги. Листаются «Назад»/«Дальше».",
         "pages": [
-          {"title": "@O3.notebooks.title_paths", "papers": [{"image": "res://assets/closeups/closeup_notebook_paths.png", "image_size": [1672, 941], "text_rect": [300, 450, 470, 360], "text": "@O3.notebooks.paper_paths", "rect": [160, 150, 1600, 0], "font_size": 26, "ink": "#2f2418"}]},
-          {"title": "@O3.notebooks.title_rule", "papers": [{"image": "res://assets/closeups/closeup_notebook_rule.png", "image_size": [1672, 941], "text_rect": [905, 130, 540, 690], "text": "@O3.notebooks.paper_rule", "rect": [160, 150, 1600, 0], "font_size": 26, "ink": "#2f2418"}]},
-          {"title": "@O3.notebooks.title_stopper", "papers": [{"image": "res://assets/closeups/closeup_notebook_stopper.png", "image_size": [1672, 941], "text_rect": [300, 470, 470, 330], "text": "@O3.notebooks.paper_stopper", "rect": [160, 150, 1600, 0], "font_size": 26, "ink": "#2f2418"}]},
-          {"title": "@O3.notebooks.title_bridge", "papers": [{"image": "res://assets/closeups/closeup_notebook_bridge.png", "image_size": [1672, 941], "text_rect": [300, 450, 470, 380], "text": "@O3.notebooks.paper_bridge", "rect": [160, 150, 1600, 0], "font_size": 24, "ink": "#2f2418"}]}
+          {"title": "@O3.notebooks.title_paths", "papers": [{"image": "res://assets/closeups/closeup_notebook_paths_clean.png", "pending": "closeup_notebook_paths_clean", "stub": {"image": "res://assets/closeups/closeup_notebook_paths.png", "covers": [[330, 95, 525, 340, "#d6a575e8"]], "_note": "до чистого разворота партии 9 — прежний разворот, поверх псевдорукописи («каши») наверху левой страницы — заплатка цвета бумаги"}, "image_size": [1672, 941], "text_rect": [345, 120, 480, 700], "text": "@O3.notebooks.paper_paths", "rect": [160, 150, 1600, 0], "font": "hand", "font_size": 30, "ink": "#2f2418"}]},
+          {"title": "@O3.notebooks.title_rule", "papers": [{"image": "res://assets/closeups/closeup_notebook_rule_clean.png", "pending": "closeup_notebook_rule_clean", "stub": {"image": "res://assets/closeups/closeup_notebook_rule.png", "covers": [[338, 95, 525, 385, "#d0a578e8"]], "_note": "до чистого разворота партии 9 — прежний разворот, поверх псевдорукописи («каши») наверху левой страницы — заплатка цвета бумаги"}, "image_size": [1672, 941], "text_rect": [905, 130, 540, 690], "text": "@O3.notebooks.paper_rule", "rect": [160, 150, 1600, 0], "font": "hand", "font_size": 30, "ink": "#2f2418"}]},
+          {"title": "@O3.notebooks.title_stopper", "papers": [{"image": "res://assets/closeups/closeup_notebook_stopper_clean.png", "pending": "closeup_notebook_stopper_clean", "stub": {"image": "res://assets/closeups/closeup_notebook_stopper.png", "covers": [[330, 95, 528, 392, "#d0a375e8"]], "_note": "до чистого разворота партии 9 — прежний разворот, поверх псевдорукописи («каши») наверху левой страницы — заплатка цвета бумаги"}, "image_size": [1672, 941], "text_rect": [345, 120, 480, 700], "text": "@O3.notebooks.paper_stopper", "rect": [160, 150, 1600, 0], "font": "hand", "font_size": 30, "ink": "#2f2418"}]},
+          {"title": "@O3.notebooks.title_bridge", "papers": [{"image": "res://assets/closeups/closeup_notebook_bridge_clean.png", "pending": "closeup_notebook_bridge_clean", "stub": {"image": "res://assets/closeups/closeup_notebook_bridge.png", "covers": [[338, 95, 515, 205, "#d9aa78e8"]], "_note": "до чистого разворота партии 9 — прежний разворот, поверх псевдорукописи («каши») наверху левой страницы — заплатка цвета бумаги"}, "image_size": [1672, 941], "text_rect": [345, 120, 480, 700], "text": "@O3.notebooks.paper_bridge", "rect": [160, 150, 1600, 0], "font": "hand", "font_size": 28, "ink": "#2f2418"}]}
         ]
       }
     },
@@ -81,7 +82,7 @@
       "look": "@O3.village_list.look",
       "view": {
         "id": "village_list", "type": "papers", "title": "@O3.village_list.title", "close_label": "@ui.close", "if": ["done_M21"],
-        "papers": [{"title": "@O3.village_list.title_paper", "text": "@O3.village_list.paper_list", "rect": [560, 130, 800, 820], "font_size": 27, "paper": "#e6dabb", "ink": "#2e2418", "edge": "#8a7350"}]
+        "papers": [{"title": "@O3.village_list.title_paper", "text": "@O3.village_list.paper_list", "rect": [560, 130, 800, 820], "font": "hand", "font_size": 29, "paper": "#e6dabb", "ink": "#2e2418", "edge": "#8a7350"}]
       }
     },
     {
@@ -94,14 +95,15 @@
         "id": "nina_letters", "type": "papers", "title": "@O3.nina_letters.title", "close_label": "@ui.close",
         "pages": [
           {"title": "@O3.nina_letters.title_bundle", "pictures": [{"image": "res://assets/closeups/closeup_nina_letters.png", "rect": [260, 130, 1400, 0], "angle_deg": 0.0}]},
-          {"title": "@O3.nina_letters.title_first", "papers": [{"text": "@O3.nina_letters.paper_first", "rect": [520, 130, 880, 800], "font_size": 28, "paper": "#e8dcc0", "ink": "#2e2418", "edge": "#8a7350"}]},
-          {"title": "@O3.nina_letters.title_tenth", "papers": [{"text": "@O3.nina_letters.paper_tenth", "rect": [520, 130, 880, 800], "font_size": 28, "paper": "#e3d6b4", "ink": "#2e2418", "edge": "#8a7350"}]},
-          {"title": "@O3.nina_letters.title_last", "papers": [{"text": "@O3.nina_letters.paper_last", "rect": [520, 130, 880, 800], "font_size": 28, "paper": "#eadfc6", "ink": "#2e2418", "edge": "#8a7350"}]}
+          {"title": "@O3.nina_letters.title_first", "papers": [{"image": "res://assets/closeups/closeup_letter_blank.png", "pending": "closeup_letter_blank", "stub": {"image": null, "rect": [520, 130, 880, 800], "font_size": 30, "_note": "до листа партии 9 — лист движка (прямоугольник бумаги), текст уже рукой Нины"}, "image_size": [1672, 941], "text_rect": [460, 110, 760, 760], "rect": [160, 150, 1600, 0], "text": "@O3.nina_letters.paper_first", "font": "hand", "font_size": 30, "paper": "#e8dcc0", "ink": "#2e2418", "edge": "#8a7350"}]},
+          {"title": "@O3.nina_letters.title_tenth", "papers": [{"image": "res://assets/closeups/closeup_letter_blank.png", "pending": "closeup_letter_blank", "stub": {"image": null, "rect": [520, 130, 880, 800], "font_size": 30, "_note": "до листа партии 9 — лист движка (прямоугольник бумаги), текст уже рукой Нины"}, "image_size": [1672, 941], "text_rect": [460, 110, 760, 760], "rect": [160, 150, 1600, 0], "text": "@O3.nina_letters.paper_tenth", "font": "hand", "font_size": 30, "paper": "#e3d6b4", "ink": "#2e2418", "edge": "#8a7350"}]},
+          {"title": "@O3.nina_letters.title_last", "papers": [{"image": "res://assets/closeups/closeup_letter_blank.png", "pending": "closeup_letter_blank", "stub": {"image": null, "rect": [520, 130, 880, 800], "font_size": 30, "_note": "до листа партии 9 — лист движка (прямоугольник бумаги), текст уже рукой Нины"}, "image_size": [1672, 941], "text_rect": [460, 110, 760, 760], "rect": [160, 150, 1600, 0], "text": "@O3.nina_letters.paper_last", "font": "hand", "font_size": 30, "paper": "#eadfc6", "ink": "#2e2418", "edge": "#8a7350"}]}
         ]
       }
     },
     {
-      "id": "notches", "kind": "object", "label": "@O3.notches.label", "rect": [1200, 60, 60, 620], "stand": [1110, 870], "draw": false,
+      "id": "notches", "kind": "object", "label": "@O3.notches.label", "rect": [935, 325, 75, 230], "stand": [1080, 860], "draw": false,
+      "_rect_note": "G32 (Директор 23.10: «на правом косяке почти не найти»): зарубки — на левой стойке у ходиков (слой notches_left, партия 9: x 823–866, y 305–444 фона → экран 945–995 × 350–510); было [1200, 60, 60, 620] — правый косяк, где ничего не нарисовано",
       "visible_if": ["started_M20"],
       "look": "@O3.notches.look",
       "view": {

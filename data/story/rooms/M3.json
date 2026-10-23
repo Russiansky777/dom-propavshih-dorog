@@ -2,7 +2,7 @@
   "id": "M3",
   "_art": "Фон M3_bg.png (контора, ChatGPT v3): дверь в сени слева у стены, ключ затвора на гвозде на левой стене, стол с журналами на переднем плане слева, полка с книгами, окно с рейкой уровня в воде, бочки и мешки справа. Струбцина — значок предмета на полке (assets/icons/clamp), пока её нет в арте. Слой M3_fg_desk_front не подключён: Агата за стол не заходит (пол справа от него).",
   "art_source": {
-    "files": {"bg.png": "assets/incoming/M3_bg.png"},
+    "files": {"bg.png": "assets/incoming/M3_bg.png", "state_hook_empty.png": "assets/incoming/M3_state_hook_empty.png", "state_sluice_lever.png": "assets/incoming/M3_state_sluice_lever.png", "state_clamp_table.png": "assets/incoming/M3_state_clamp_table.png"},
     "canvas": [1672, 941]
   },
   "background": {"kind": "interior", "image": "res://assets/rooms/M3/bg.png", "wall": "#5a4030", "floor": "#4a3020", "accent": "#2a1a10", "horizon": 670},
@@ -12,7 +12,11 @@
   "depth": {"top_y": 690, "bottom_y": 1070, "scale_top": 1.504, "scale_bottom": 2.826},
   "_depth_note": "D3 (ИИ-плейтест 22.10, координатор 23.10): прямая глубины через ноль на горизонте y 258 (горизонт — камера 1,5 м над порогом двери) и через рост Агаты у порога двери (y 670) = 0.9 высоты двери (550 px → 495 px, масштаб 1.435). Рост Агаты = 345 px × масштаб; у нижнего края 2.826 (было 2.0 — вблизи на треть мельче перспективы), в глубине 1.504. Проверка tools/validate_rooms.py: рост у двери 0,85–0,95 её высоты.",
   "height_refs": [{"what": "дверь в сени (порог y 670, верх y 120)", "y": 670, "px": 550, "m": 2.0, "door": true}],
-  "layers": [],
+  "layers": [
+    {"id": "hook_empty", "image": "res://assets/rooms/M3/state_hook_empty.png", "pending": "M3_state_hook_empty", "stub": {"crops": [{"image": "res://assets/rooms/M3/bg.png", "region": [10, 25, 150, 430], "rect": [11, 29, 172, 494]}], "_note": "до арта — фон как есть (нарисованный ключ остаётся): заглушка не меняет кадр"}, "_note": "G20 (партия 9): стена конторы без нарисованного ключа — крюк пустой; поверх — рычаг затвора (sluice_lever), пока он не в сумке"},
+    {"id": "sluice_lever", "image": "res://assets/rooms/M3/state_sluice_lever.png", "pending": "M3_state_sluice_lever", "unless": ["has_key_sluice"], "stub": {"crops": [{"image": "res://assets/rooms/M3/bg.png", "region": [10, 25, 150, 430], "rect": [11, 29, 172, 494]}], "_note": "до арта — нарисованный на фоне ключ (заглушка совпадает с фоном)"}, "_note": "G20 (Директор 23.10: «визуально — рычаг, как на мельнице; везде звать рычаг затвора»): рычаг на том же крюке, пока его не взяли"},
+    {"id": "clamp_table", "image": "res://assets/rooms/M3/state_clamp_table.png", "pending": "M3_state_clamp_table", "unless": ["has_clamp"], "stub": {"crops": [{"image": "res://assets/icons/clamp.png", "region": [0, 0, 192, 192], "rect": [640, 800, 92, 92]}], "_note": "до арта — иконка струбцины на столе у переднего края"}, "_note": "G22 (Директор 23.10: «положить на стол и добавить в речь Павла — для чего она»): струбцина на столе управляющего справа от нижнего журнала (партия 9: x 450–710, y 700–770 фона); Павел о ней — M3.pavel.before"}
+  ],
   "effects": [],
   "spawns": {"default": [1300, 900], "from_M2": [975, 720]},
   "props": [],
@@ -30,8 +34,8 @@
       "look": "@M3.journal.look"
     },
     {
-      "id": "clamp", "action_anim": "reach", "kind": "pickup", "label": "@M3.clamp.label", "rect": [395, 280, 70, 62], "stand": [960, 720], "draw": false,
-      "image": "res://assets/icons/clamp.png",
+      "id": "clamp", "action_anim": "reach", "kind": "pickup", "label": "@M3.clamp.label", "rect": [610, 790, 190, 95], "stand": [960, 800], "draw": false, "pick_priority": 2,
+      "_rect_note": "G22: на столе (слой clamp_table), было на полке [395, 280, 70, 62] — иконкой",
       "hidden_if": ["has_clamp"],
       "use": {"gives": ["clamp"], "text": "@M3.clamp.use", "scene": "M13"},
       "look": "@M3.clamp.look"
@@ -42,7 +46,8 @@
     },
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1164, 123, 183, 637], "stand": [970, 800], "draw": false, "pick_priority": 2,
-      "visible_if": ["office_shelf_lifted"], "hidden_if": ["done_M13"],
+      "visible_if": ["visited_M3"], "hidden_if": ["done_M13"],
+      "_visible_note": "G21: Павел в конторе с первого входа Агаты — до того он ждёт у двери в сенях (M2)",
       "talk": {"after_text": "@M3.pavel.before"}
     }
   ],

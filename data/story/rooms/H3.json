@@ -12,6 +12,7 @@
     {"id": "frame_empty", "image": "res://assets/rooms/H3/state_frame_empty.png", "offset": [161, 82], "scale": 0.77, "scale_reason": "кадр состояния нарисован крупнее фона (рама почти на весь кадр); 0.77 и offset вписывают раму в нишу фона — подгонка по косякам ниши", "unless": ["door_school_installed"]},
     {"id": "door_installed", "image": "res://assets/rooms/H3/state_door_installed.png", "offset": [161, 82], "scale": 0.77, "scale_reason": "кадр состояния нарисован крупнее фона (рама почти на весь кадр); 0.77 и offset вписывают раму в нишу фона — подгонка по косякам ниши", "if": ["door_school_installed"]}
   ],
+  "on_enter": [{"text": "@H3.side_door.unbolt", "once_flag": "house_open", "_note": "C12 (ИИ-чтение 23.10): боковую дверь галереи Агата открывает изнутри при первом входе в галерею — флаг house_open (ребро Z4–H3) ставит этот вход, а не M03 в жилой комнате, где боковой двери нет"}],
   "spawns": {"default": [960, 920], "from_H1": [1730, 900], "from_Z4": [700, 1000], "from_O1": [770, 810], "from_R4": [1470, 800]},
   "props": [],
   "hotspots": [

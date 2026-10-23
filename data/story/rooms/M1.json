@@ -27,7 +27,8 @@
   "hotspots": [
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1060, 320, 139, 295], "stand": [960, 690], "draw": false, "pick_priority": 2,
-      "hidden_if": ["office_unbolted"],
+      "hidden_if": ["pavel_blessed_mirror", "office_unbolted"],
+      "_hidden_note": "G18: после добра на зеркало Павел ушёл в сени (M2) и ждёт там у двери конторы",
       "talk": {"scenes": ["M09", "M09b"], "before_text": {"M09": "@M1.pavel.day1", "M09b": "@M1.pavel.before_agree"}, "after_text": "@M1.pavel.after"}
     },
     {

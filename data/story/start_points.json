@@ -7,7 +7,7 @@
       "done_through": "N01",
       "room": "H1",
       "spawn": "default",
-      "flags": ["board_mama", "v03_marked", "mitten_placed", "v01_cup_blue", "v01_photo_table", "house_unlocked", "house_open"],
+      "flags": ["board_mama", "v03_marked", "v03_add_boat", "mitten_placed", "v01_cup_blue", "v01_photo_table", "house_unlocked", "house_open"],
       "_note": "Для проверки дня второго (и его озвучки) без прохождения первого: ?start=day2. Выборы дня первого — как у точки olkhovka."
     },
     {
@@ -47,7 +47,7 @@
       "spawn": "default",
       "flags": [
         "board_mama",
-        "v03_marked",
+        "v03_marked", "v03_add_boat",
         "mitten_placed",
         "v01_cup_blue",
         "v01_photo_table",
@@ -72,7 +72,7 @@
       "spawn": "default",
       "flags": [
         "board_mama",
-        "v03_marked",
+        "v03_marked", "v03_add_boat",
         "mitten_placed",
         "v01_cup_blue",
         "v01_photo_table",
@@ -97,7 +97,7 @@
       "spawn": "from_O2",
       "flags": [
         "board_mama",
-        "v03_marked",
+        "v03_marked", "v03_add_boat",
         "mitten_placed",
         "v01_cup_blue",
         "v01_photo_table",
@@ -124,7 +124,7 @@
       "spawn": "from_Z2",
       "flags": [
         "board_mama",
-        "v03_marked",
+        "v03_marked", "v03_add_boat",
         "mitten_placed",
         "v01_cup_blue",
         "v01_photo_table",
@@ -152,7 +152,7 @@
       "spawn": "from_Z2",
       "flags": [
         "board_mama",
-        "v03_marked",
+        "v03_marked", "v03_add_boat",
         "mitten_placed",
         "v01_cup_blue",
         "v01_photo_table",

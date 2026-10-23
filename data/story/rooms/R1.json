@@ -19,7 +19,10 @@
     {"id": "dusk", "image": "res://assets/rooms/R1/dusk.png", "z": 0, "if": ["evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_unless_note": "днём третьего и четвёртого дня — дневной фон (сумерки только к вечеру: d3_evening — снова слой и оттенок времени)", "_note": "партия 3: сумерки, фонарь на столбе горит — поверх фона и слоёв настила/воды (иначе они остались бы дневными), под Агатой"},
     {"id": "far_dark", "image": "res://assets/rooms/R1/far_dark.png", "z": 0, "if": ["evening_dusk"], "unless": ["road_held_both_ends"], "_note": "тот берег — тёмный силуэт, ни огонька (год без ответа)"},
     {"id": "far_snow", "image": "res://assets/rooms/R1/far_snow.png", "z": 0, "if": ["road_held_both_ends"], "unless": ["done_M20"], "_note": "канат на кольце (узел, M15) — на том берегу проступает снег (там уже зима); вместо far_dark. Полировка 22.10 (A1): снег — по узлу, огни — по фонарю"},
-    {"id": "far_lights", "image": "res://assets/rooms/R1/far_lights.png", "z": 0, "if": ["far_lights_answered"], "unless": ["done_M20"], "_g52_note": "с третьего дня — дневной кадр water_low_day со своим зимним берегом: снег и огни второго дня его не перекрывают", "_note": "три огня с того берега — первые за год"}
+    {"id": "far_lights", "image": "res://assets/rooms/R1/far_lights.png", "z": 0, "if": ["far_lights_answered"], "unless": ["done_M20"], "_g52_note": "с третьего дня — дневной кадр water_low_day со своим зимним берегом: снег и огни второго дня его не перекрывают", "_note": "три огня с того берега — первые за год"},
+    {"id": "stopper_empty_morning", "image": "res://assets/rooms/R1/state_stopper_empty_day.png", "z": 0, "if": ["rope_brought", "tod_d3_morning"], "_note": "G28: канат снят со стопора Пелагеи (M15s) и сидит на кольце плиты у поворота — на причале его больше нет: заплатка без каната, tools/make_rope_layers.py (утро третьего дня)"},
+    {"id": "stopper_empty_day", "image": "res://assets/rooms/R1/state_stopper_empty_day.png", "z": 0, "if": ["rope_brought", "tod_day"], "_note": "G28: то же днём (дни 3–4)"},
+    {"id": "stopper_empty_dusk", "image": "res://assets/rooms/R1/state_stopper_empty_dusk.png", "z": 0, "if": ["rope_brought", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "G28: то же в сумерках и вечером (поверх слоя dusk; левее x 820 канат под слоями того берега)"}
   ],
   "on_enter": [{"text": "@R1d.pelageya.at_turn", "once_flag": "r1_saw_boat_gone", "if": ["evening_dusk"], "unless": ["done_M15"], "_note": "F11: вечером до узла Пелагеи с лодкой на причале нет — мысль Агаты, где она (цель — поворот)"}],
   "spawns": {"default": [900, 900], "from_Z3": [190, 900], "from_Z2": [200, 600], "from_R2": [1650, 840]},
@@ -48,9 +51,17 @@
     },
     {
       "id": "rope", "action_anim": "reach", "kind": "object", "label": "@R1.rope.label", "rect": [1470, 420, 75, 280], "stand": [1580, 815], "color": "#b09a70", "draw": false,
+      "hidden_if": ["rope_brought"],
       "use": {"sets": ["r1_seen_rope"], "text": "@R1.rope.use", "once_flag": "r1_seen_rope", "scene": "M02"},
       "item_use": {"photo_bridge": {"text": "@R1.rope.photo", "_note": "снимок старого моста (M07): канат держался за плиту опоры, не за стопор; не расходуется"}},
       "look": "@R1.rope.look"
+    },
+    {
+      "id": "stopper_empty", "kind": "object", "label": "@R1.stopper.label_empty", "rect": [1470, 420, 75, 280], "stand": [1580, 815], "draw": false,
+      "visible_if": ["rope_brought"],
+      "states": [{"if": ["rope_on_ring"], "look": "@R1.stopper.look_ring"}],
+      "look": "@R1.stopper.look_empty",
+      "_note": "G28: где канат сейчас — стопор пустой, канат на кольце плиты у поворота и над водой к тому берегу (слои stopper_empty_*, эффекты rope_from_turn_*)"
     },
     {
       "id": "lantern", "action_anim": "reach", "kind": "object", "label": "@R1.lantern.label", "rect": [340, 130, 90, 150], "stand": [380, 700], "color": "#d8c070", "draw": false,
@@ -86,8 +97,8 @@
   "exits": [
     {"to": "Z3", "label": "@R1.exit_Z3.label", "cue": "left", "rect": [0, 660, 100, 420], "stand": [120, 900], "spawn": "from_R1", "draw": false},
     {"to": "Z2", "label": "@R1.exit_Z2.label", "cue": "up", "rect": [40, 380, 200, 240], "stand": [160, 560], "spawn": "from_R1", "closed_text": "@R1.exit_Z2.closed", "draw": false},
-    {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1550, 550, 370, 170], "stand": [1660, 840], "spawn": "from_R1", "closed_text": "@R1.exit_R2.closed", "draw": false,
-      "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}], "_states_note": "ИИ-разбор логики п. 3: после узла «вернёт сюда же» уже неправда — сперва проверка пустой лодкой",
+    {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1550, 550, 370, 170], "stand": [1660, 840], "spawn": "from_R1", "closed_text": "@R1.exit_R2.closed_first", "draw": false,
+      "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}, {"if": ["done_M02"], "closed_text": "@R1.exit_R2.closed"}], "_states_note": "ИИ-разбор логики п. 3: после узла «вернёт сюда же» уже неправда — сперва проверка пустой лодкой. C27 (ИИ-чтение 23.10): до разговора с Пелагеей Агата ещё не знает, что лодку возвращает, — «сначала поговорю с лодочницей». G17: после него — почему: дороги нет, пока канат не на кольце плиты",
       "mechanic": {"type": "crossing", "title": "@mech.crossing.title", "requires": {"flags": ["boat_shuttle_open"]}, "art": {"bg": "res://assets/rooms/R2/bg.png", "rope": "res://assets/rooms/R2/fg_rope.png", "arrival": "res://assets/rooms/R3/bg.png"}, "pulls": 10, "pull_s": 0.9, "rope_speed": 140, "twist_px": 34, "vp": [780, 382], "ring": [1166, 660], "ring_r": 46, "ring_box": [1108, 598, 120, 124], "shore_band": [0, 140, 1672, 270], "shore_zoom": 1.6, "fog_rect": [0, 90, 1672, 430], "fog": [0.85, 0.12], "arrival_from": 0.82, "hint_pos": [520, 985], "texts": {"hint": "@mech.crossing.hint"}, "snow": [0.04, 1.0], "pier": {"image": "res://assets/rooms/R3/bg.png", "region": [40, 330, 1000, 540], "from_w": 70, "to_w": 680, "foot": [0.5, 0.94]}, "events": {"crossed": {"close": true, "room": "R3", "spawn": "from_R2"}}},
       "_mechanic_note": "G43 (Директор 23.10: «нажатия на кольцо ничего не делают, но есть стрелка»): с третьего дня (boat_shuttle_open) «В лодку» — та же переправа рывками, что M18p (~10 рывков, без провала), и сразу на дальнюю опору; комнаты R2 со стрелками на этом пути нет"}
   ],
@@ -98,6 +109,9 @@
     "M17": {"trigger": "talk:pelageya"}
   },
   "effects": [
+    {"id": "rope_from_turn_d3", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.18, "z": 1, "if": ["rope_on_ring", "tod_d3_morning"], "_note": "G28: утро третьего дня"},
+    {"id": "rope_from_turn_d34", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.18, "z": 1, "if": ["rope_on_ring", "tod_day"], "_note": "G28: день третьего и четвёртого дня"},
+    {"id": "rope_from_turn_dusk", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.12, "z": 1, "tint": "#6f7690", "if": ["rope_on_ring", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "G28: вечер и ночь — в тоне нарисованных сумерек (R1 не тонируется движком)"},
     {"id": "far_snowfall", "type": "snow", "rect": [480, 250, 1440, 200], "amount": 70, "z": 1, "if": ["road_held_both_ends"], "_note": "снег идёт над тем берегом — поверх слоёв (z 0), под Агатой"}
   ],
   "flags": {

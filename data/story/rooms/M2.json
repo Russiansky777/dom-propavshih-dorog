@@ -32,8 +32,10 @@
       "look": "@M2.office_door_open.look"
     },
     {
-      "id": "mirror", "kind": "object", "label": "@M2.mirror.label", "rect": [990, 130, 230, 415], "stand": [1190, 770], "draw": false,
+      "id": "mirror", "action_anim": "reach", "kind": "object", "label": "@M2.mirror.label", "rect": [990, 130, 230, 415], "stand": [1190, 770], "draw": false,
       "hidden_if": ["has_mirror_mill"],
+      "use": {"requires": {"flags": ["pavel_blessed_mirror"]}, "fail_text": "@M2.mirror.look", "gives": ["mirror_mill"], "text": "@M2.mirror.take", "once_flag": "has_mirror_mill",
+        "_note": "G18: взять можно только после добра Павла (M09b → pavel_blessed_mirror) и один раз (has_mirror_mill); без добра — «Без спросу не возьму — это Павла»"},
       "look": "@M2.mirror.look"
     },
     {
@@ -48,9 +50,11 @@
       "look": "@M2.photo.look"
     },
     {
-      "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [870, 192, 170, 508], "stand": [1150, 760], "draw": false, "pick_priority": 2,
-      "visible_if": ["office_unbolted"], "hidden_if": ["office_shelf_lifted"],
-      "talk": {"after_text": "@M2.pavel.after"}
+      "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1630, 190, 180, 710], "stand": [1480, 900], "draw": false, "pick_priority": 2,
+      "visible_if": ["pavel_blessed_mirror"], "hidden_if": ["visited_M3"],
+      "states": [{"if": ["has_mirror_mill"], "rect": [870, 192, 170, 508], "stand": [1150, 760], "_note": "с зеркалом у Агаты — Павел у двери конторы, с фонарём (M11), там же после засова"}],
+      "_g18_g21": "G18: после добра (M09b) Павел в сенях справа впереди, у двери в кладовую — не перед зеркалом и не перед фотографией конторы; зеркало взято — у двери конторы. G21 (Директор 23.10: «открываем вдвоём — мужик пропадает будто за дверь, а она закрыта»): после стеллажа Павел остаётся у двери, пока Агата не войдёт в контору (visited_M3) — там он уже внутри (M3: visible_if visited_M3); в двух местах сразу не стоит",
+      "talk": {"by_flags": [{"if": ["office_shelf_lifted"], "text": "@M2.pavel.after_lifted"}, {"if": ["office_unbolted"], "text": "@M2.pavel.after"}, {"if": ["has_mirror_mill"], "text": "@M1.pavel.after"}, {"if": ["pavel_blessed_mirror"], "text": "@M2.pavel.at_mirror"}], "after_text": "@M2.pavel.after"}
     }
   ],
   "exits": [

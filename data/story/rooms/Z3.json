@@ -74,6 +74,10 @@
     "M15s": {"complete_when": [{"all": ["plate_braced"]}]},
     "M15": {"complete_when": [{"all": ["rope_on_ring"]}]}
   },
-  "effects": [],
+  "effects": [
+    {"id": "rope_on_ring_dusk", "type": "rope", "from": [1281, 572], "to": [1150, 402], "sag": 14, "width": [7, 2.5], "shadow": 0.2, "z": 1, "tint": "#7a7488", "if": ["rope_on_ring", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "G28 (Директор 23.10: «канат натягиваем на берегу, а его там нет»): после узла канат виден у поворота — от кольца плиты на малой опоре в воде (≈1112, 503 фона) через воду к тому берегу; вечером и ночью — в тоне нарисованных сумерек (Z3 не тонируется движком)"},
+    {"id": "rope_on_ring_d3", "type": "rope", "from": [1281, 572], "to": [1150, 402], "sag": 14, "width": [7, 2.5], "shadow": 0.25, "z": 1, "if": ["rope_on_ring", "tod_d3_morning"], "_note": "G28: утро третьего дня (слой water_low_day — та же опора с плитой)"},
+    {"id": "rope_on_ring_day", "type": "rope", "from": [1281, 572], "to": [1150, 402], "sag": 14, "width": [7, 2.5], "shadow": 0.25, "z": 1, "if": ["rope_on_ring", "tod_day"], "_note": "G28: днём дни 3–4 (до моста канат — времянка, он на месте)"}
+  ],
   "flags": {}
 }

@@ -122,6 +122,8 @@
           "until": "span_first_laid",
           "spec": {
             "type": "windlass",
+            "closable": false,
+            "_closable_note": "G47 (23.10: «Закрыть» на крупном плане ворота → поворот Z3 пустой, без Ильи и Пелагеи, M25 начинается снова): обязательная сцена первого бревна — без «Закрыть» и Esc, как переправа M18p; выход один — уложить бревно",
             "title": "@E5.windlass.title",
             "art": {
               "waiting": "res://assets/rooms/F_span/beam_waiting.png",
