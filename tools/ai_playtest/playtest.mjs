@@ -148,7 +148,10 @@ async function main() {
   if (skip.length) cfg.items = cfg.items.filter((n) => !skip.includes(n));
   cfg.H = Math.round(cfg.W * FRAME_H / FRAME_W);
   const scale = cfg.W / FRAME_W;
-  const runTag = process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local");
+  // Gates of one workflow run go on separate runners with the same run number: the gate's name goes into the
+  // folder (…_acceptance_m3_r19), or parallel jobs would commit the same paths (M3 at f3b299c was lost so).
+  const gateTag = reqPath && /^playtest_gate_/.test(path.basename(reqPath)) ? `${path.basename(reqPath, ".json").replace(/^playtest_gate_/, "")}_` : "";
+  const runTag = `${gateTag}${process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local")}`;
   const date = new Date().toISOString().slice(0, 10);
   let outDir = A.out ? path.resolve(ROOT, A.out) : path.join(ROOT, "Docs", "playtest", `${date}_${mode}_${runTag}`);
   if (!A.out) { let n = 2; const base = outDir; while (fs.existsSync(outDir)) outDir = `${base}_${n++}`; }
@@ -328,42 +331,102 @@ async function main() {
   };
   const mouseTo = async (p, steps = 6) => { await page.mouse.move(p.x, p.y, { steps }); pointer = p; await showPointer(p); };
 
-  // «Точный удар» (F7/F8): the bar's state anywhere in the probe — an object with to_green_s / in_green / zone.
-  const findBar = (o, depth = 0) => {
-    if (!o || typeof o !== "object" || depth > 6) return null;
-    if ("to_green_s" in o && "zone" in o && "period_s" in o) return o;
-    for (const v of Object.values(o)) { const r = findBar(v, depth + 1); if (r) return r; }
-    return null;
+  // ---- Mechanics reflexes (agent of mechanics 23.10: probeState.mechanic = {open, type, close, panel}) ----
+  // The model decides WHAT to do (it read the game's explanation); the program does the motor part a person does
+  // by reflex. The game clock on software WebGL runs ≈0.15× the page clock, so everything is judged from fresh
+  // probe states (window.probePause(false) republishes at once), never from fixed real-time delays.
+  const fresh = async () => {
+    try { return await page.evaluate(() => { try { if (window.probePause) window.probePause(false); } catch (_) {} return window.probeState ? JSON.parse(JSON.stringify(window.probeState)) : null; }); }
+    catch (_) { return null; }
   };
-  // The player's reflex: a strike (a click on the bar) in the middle of the green, from a fresh probe publish
-  // (ticks change ≈ now) and the bar's own to_green_s; the series goes on until it is done or 12 strikes.
+  const panelOf = (s) => (s && s.mechanic && s.mechanic.open && s.mechanic.panel) || null;
+  const waitFor = async (pred, ms) => { const t = Date.now(); while (Date.now() - t < ms) { const s = await fresh(); if (s && pred(s)) return s; await sleep(60); } return null; };
+
+  // «Точный удар» (F7 brace, H1 shutter latch): Space while timing.in_green and state run; until done / 12 strikes.
   const timingSeries = async (events) => {
     let strikes = 0, last = null;
-    for (let guard = 0; guard < 400 && strikes < 12; guard++) {
-      const t0 = await state();
-      const b0 = t0 && findBar(t0);
-      if (!b0) { if (!strikes) events.push("Полосы «точного удара» на экране нет."); break; }
-      if (b0.state === "done" || (b0.needed && b0.hits >= b0.needed)) break;
-      // wait for the next publish: then the state is fresh (≤ one poll old)
-      let s1 = null;
-      const tw = Date.now();
-      while (Date.now() - tw < 1500) { const s = await state(); if (s && s.ticks !== t0.ticks) { s1 = s; break; } await sleep(15); }
-      const b = s1 && findBar(s1);
-      if (!b || b.state !== "run" || b.paused) { await sleep(120); continue; }
-      const w = Math.abs((b.zone && b.zone[1]) - (b.zone && b.zone[0])) || 0.2;
-      const cross = w * (b.period_s || 2) / 2;                     // seconds the marker spends in the green
-      let wait = (b.in_green ? 0 : Number(b.to_green_s) || 0) + cross / 2 - 0.035;   // aim at the middle, minus input lag
-      if (b.in_green) { await sleep(Math.max(0, (b.period_s || 2) * 0.5 * 1000 - 200)); continue; }   // mid-zone unknown: next pass
-      if (wait < 0) wait = 0;
-      await sleep(wait * 1000);
-      await page.mouse.click(b.x, b.y);
+    const bar = (s) => { const p = panelOf(s); return p && (p.timing || (p.hook && p.hook.timing)) || null; };
+    const t0 = Date.now();
+    while (strikes < 12 && Date.now() - t0 < 240000) {
+      const s = await fresh();
+      const t = bar(s);
+      if (!t) { if (!strikes) events.push("Полосы «точного удара» на экране нет."); break; }
+      last = t;
+      if (t.state === "done" || (t.needed && t.hits >= t.needed)) break;
+      if (t.state !== "run" || t.paused || !t.in_green) { await sleep(40); continue; }
+      const p = panelOf(s);
+      const target = (p && (p.strike || p.shutter)) || null;
+      if (target && typeof target.x === "number") await page.mouse.click(target.x, target.y); else await page.keyboard.press("Space");
       strikes += 1;
-      await sleep(350);
-      const after = findBar(await state());
-      last = after || last;
+      await waitFor((x) => { const b = bar(x); return !b || b.state !== "run" || b.hits !== t.hits; }, 8000);
+      await waitFor((x) => { const b = bar(x); return !b || b.state === "run" || b.state === "done"; }, 20000);
     }
-    const b = last || findBar(await state());
+    const b = bar(await fresh()) || last;
     events.push(`Точный удар (рефлекс программы): ударов ${strikes}${b ? `, попаданий подряд ${b.hits} из ${b.needed}, промахов всего ${b.misses}${b.state === "done" ? " — серия пройдена" : ""}` : ""}.`);
+  };
+
+  // Hook F8 (H2, stand «ЗМ»): ring once → wait «sway» → double ring while the hook is in the bolt zone → hold the
+  // bell until the bar lifts. A stop outside the zone: the hook falls, slips back to «wait» — start again.
+  const hookSequence = async (events) => {
+    const hk = (s) => { const p = panelOf(s); return p && p.hook ? { p, h: p.hook } : null; };
+    let tries = 0, s = await fresh(), c = hk(s);
+    if (!c) { events.push("Крюка на экране нет (крупный план зеркала конторы не открыт)."); return; }
+    const bell = c.p.strike || (c.p.signals_how && c.p.signals_how.bell) || null;
+    if (!bell || typeof bell.x !== "number") { events.push("Не нашла, куда звонить (strike колокола)."); return; }
+    while (tries < 5) {
+      tries += 1;
+      c = hk(await fresh());
+      if (!c) break;
+      if (c.h.state === "solved") break;
+      if (c.h.state === "wait") {
+        await page.mouse.click(bell.x, bell.y);
+        if (!(await waitFor((x) => { const k = hk(x); return k && k.h.state === "sway"; }, 60000))) { events.push("Крюк не пошёл после первого удара."); break; }
+      }
+      const inZone = await waitFor((x) => { const k = hk(x); return k && (k.h.in_zone || (k.h.timing && k.h.timing.in_green)) && k.h.state === "sway"; }, 90000);
+      if (!inZone) { events.push("Крюк не дошёл до зоны засова."); break; }
+      await page.mouse.click(bell.x, bell.y); await sleep(90); await page.mouse.click(bell.x, bell.y);   // «два — стой»
+      const st = await waitFor((x) => { const k = hk(x); return k && ["stopped", "falling", "slipping", "wait"].includes(k.h.state); }, 30000);
+      const k2 = st && hk(st);
+      if (!k2 || k2.h.state !== "stopped") {
+        events.push("Крюк остановился мимо засова и сорвался — заново.");
+        await waitFor((x) => { const k = hk(x); return k && k.h.state === "wait"; }, 60000);
+        continue;
+      }
+      await page.mouse.move(bell.x, bell.y);
+      await page.mouse.down();                                                                          // «долгий — подымай»
+      const lifted = await waitFor((x) => { const k = hk(x); return k && ["lift_bar", "solved"].includes(k.h.state); }, 60000);
+      await page.mouse.up();
+      if (lifted) { await waitFor((x) => { const k = hk(x); return !k || k.h.state === "solved"; }, 30000); break; }
+    }
+    const e = hk(await fresh());
+    events.push(`Крюк звоном (рефлекс программы): попыток ${tries}; состояние ${e ? e.h.state : "окно закрыто"}${e ? `, промахов ${e.h.misses}` : ""}.`);
+  };
+
+  // Knot F6: grab the rope end, trace the shown contour (current stroke, then the next ones) without releasing.
+  const knotTrace = async (events) => {
+    const kp = (s) => { const p = panelOf(s); return p && p.knot_path && p.knot_path.open ? p.knot_path : null; };
+    let k = kp(await fresh());
+    if (!k) { events.push("Узла на экране нет."); return; }
+    for (let attempt = 0; attempt < 3 && k && k.state !== "done"; attempt++) {
+      const pts = [...(k.next || []), ...((k.strokes || []).slice((k.loops_done || 0) + 1).flat())].filter((q) => q && typeof q.x === "number");
+      if (!k.end || !pts.length) { events.push("Контур узла не читается."); return; }
+      const dense = [];
+      let prev = { x: k.end.x, y: k.end.y };
+      for (const q of pts) {
+        const d = Math.hypot(q.x - prev.x, q.y - prev.y), n = Math.max(1, Math.ceil(d / 60));
+        for (let i = 1; i <= n; i++) dense.push({ x: prev.x + (q.x - prev.x) * i / n, y: prev.y + (q.y - prev.y) * i / n });
+        prev = q;
+      }
+      await page.mouse.move(k.end.x, k.end.y, { steps: 3 });
+      await page.mouse.down();
+      await sleep(150);
+      for (const q of dense) { await page.mouse.move(q.x, q.y, { steps: 2 }); await sleep(25); }
+      await sleep(200);
+      await page.mouse.up();
+      await sleep(600);
+      k = kp(await fresh());
+    }
+    events.push(`Узел (рефлекс программы): ${k ? `петель ${k.loops_done} из ${k.loops_total}, состояние ${k.state}` : "окно узла закрылось — узел завязан"}.`);
   };
 
   // Lines and narration in a row: read verbatim, frame each, real click on the text box. Options stop here.
@@ -716,7 +779,11 @@ async function main() {
         await mouseTo(p, 5);
         await sleep(120);
         if (act === "double_click") { await page.mouse.click(p.x, p.y); await sleep(140); await page.mouse.click(p.x, p.y); }
-        else await page.mouse.click(p.x, p.y, { button: act === "right_click" ? "right" : "left" });
+        else {
+          const times = act === "click" ? Math.round(clampNum(input.times, 1, 12, 1)) : 1;   // e.g. pulls on the crossing rope
+          for (let i = 0; i < times; i++) { await page.mouse.click(p.x, p.y, { button: act === "right_click" ? "right" : "left" }); if (times > 1) await sleep(1200); }
+          if (times > 1) stepRec.times = times;
+        }
         desc = `${act === "click" ? "щелчок" : act === "right_click" ? "правый щелчок" : "двойной щелчок"} (${Math.round(x)},${Math.round(y)})`;
         stepRec.at = { x: Math.round(p.x), y: Math.round(p.y) };
         if (lastClick && Math.hypot(lastClick.x - p.x, lastClick.y - p.y) < 20) sameClick += 1; else sameClick = 0;
@@ -784,6 +851,12 @@ async function main() {
       } else if (act === "timing") {
         await timingSeries(events);
         desc = "точный удар (серия)";
+      } else if (act === "hook") {
+        await hookSequence(events);
+        desc = "крюк звоном";
+      } else if (act === "knot") {
+        await knotTrace(events);
+        desc = "узел по контуру";
       } else if (act === "wait") {
         const sec = clampNum(input.seconds, 1, 20, 3);
         await sleep(sec * 1000);
@@ -831,9 +904,9 @@ async function main() {
         if (screenSig(after) === screenSig(before) && events.filter((e) => !e.startsWith("Подпись под курсором")).length === 0) noScreenChange += 1;
         else noScreenChange = 0;
         // Progress: the room / flags / bag / close-up changed, or a text never seen before was shown.
-        const fresh = run.transcript.filter((t) => t.step === step && !seenTexts.has(t.text));
+        const newTexts = run.transcript.filter((t) => t.step === step && !seenTexts.has(t.text));
         for (const t of run.transcript.filter((t) => t.step === step)) seenTexts.add(t.text);
-        if (progressSig(after) === progressSig(before) && !fresh.length) noProgress += 1;
+        if (progressSig(after) === progressSig(before) && !newTexts.length) noProgress += 1;
         else noProgress = 0;
         if (noScreenChange === 0) sameClick = Math.min(sameClick, 0);
       }

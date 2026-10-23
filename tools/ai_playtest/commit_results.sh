@@ -10,7 +10,8 @@ summary=$(cat build/ai_playtest/*/summary.txt 2>/dev/null | tail -n 1 | tr '\n' 
 git commit -q -m "ИИ-плейтест: ${summary:-результаты} (run ${1:-?}) [skip ci]"
 for i in 1 2 3 4 5 6 7 8; do
   git fetch -q origin main
-  if git rebase --autostash origin/main; then
+  # -X theirs: on a conflict our fresh results win (shared start saves written by parallel gates)
+  if git rebase --autostash -X theirs origin/main; then
     if git push origin HEAD:main; then echo "запушено с попытки $i"; exit 0; fi
   else
     git rebase --abort || true

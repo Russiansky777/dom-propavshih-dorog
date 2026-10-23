@@ -187,16 +187,17 @@ jobs:
           ITEMS: ${{ steps.items.outputs.items }}
           SHA: ${{ needs.plan.outputs.sha }}
         run: |
+          set +e   # отчёт и состояние коммитятся, даже если что-то по дороге упало
           status=0
           echo "=== ворота $CFG: $DOC, пункты $ITEMS, сборка ${SHA:0:7}"
           rm -f build/ai_playtest/*/summary.txt
           node tools/ai_playtest/playtest.mjs --request "$CFG" --mode acceptance --items "$ITEMS" || status=1
           # строки чеклиста этой сборки проверены воротами; вердикты — из отчёта приёмки
           out=$(cat build/ai_playtest/last_out.txt 2>/dev/null || true)
-          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA" ${out:+--verdicts "$out/log.json"}
+          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA" ${out:+--verdicts "$out/log.json"} || status=1
           git checkout -- "$DOC" 2>/dev/null || true
           tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
-          git show "$SHA:$DOC" > "$DOC"
+          git show "$SHA:$DOC" > "$DOC" || true
           rm -f build/ai_playtest/*/summary.txt
           node tools/ai_playtest/playtest.mjs --request "$CFG" --mode fresh || status=1
           git checkout -- "$DOC" 2>/dev/null || true
