@@ -1,0 +1,75 @@
+{
+  "_comment": "Главное меню (титульный экран) и меню паузы (запрос Директора 23.10: «главное меню и меню паузы … пауза всплывает на первый план, чуть замыливая картинку; Esc; анимации в меню — вода, деревья и ветки, свет в окне»). Все координаты — в пикселях арта 1672×941 (assets/incoming/main_menu_v2.png, pause_rushnik_horizontal_v2.png); игра растягивает арт на 1920×1080. Картинки в игре — game/assets/ui/menu/ (tools/import_menu_art.py из чистого арта ChatGPT 23.10: main_menu_clean.png, main_menu_signature.png, pause_rushnik_panel.png; лист-маркер вырезан из main_menu_v2.png). Маски анимации строит тот же импорт по полигонам `masks` и цвету арта: R — вода, G — ветви и травы (вес = размах), B — свет в окне. Пункты рисует игра (тексты ui.title_* / ui.pause_*), запечённые в арт пункты в игре не используются. Код — game/scripts/ui/title_screen.gd, pause_menu.gd; шейдеры — game/shaders/title_bg.gdshader, pause_blur.gdshader.",
+  "title": {
+    "music": "roads",
+    "items": [
+      {"id": "continue", "text": "@ui.title_continue", "needs_save": true},
+      {"id": "new_game", "text": "@ui.title_new_game"},
+      {"id": "load", "text": "@ui.title_load"},
+      {"id": "settings", "text": "@ui.title_settings"},
+      {"id": "quit", "text": "@ui.title_quit", "desktop_only": true}
+    ],
+    "layout": {
+      "text_x": 179,
+      "first_baseline": 419.5,
+      "pitch": 72,
+      "font_px": 38,
+      "glyph_spacing": -1,
+      "row_left": 112,
+      "row_right": 447,
+      "divider_left": 133,
+      "divider_right": 426,
+      "leaf_x": 117,
+      "text_color": [0.86, 0.79, 0.68],
+      "hover_color": [1.0, 0.86, 0.6],
+      "divider_color": [0.55, 0.40, 0.26, 0.55],
+      "line_color": [1.0, 0.72, 0.36],
+      "glow_color": [1.0, 0.62, 0.25, 0.30]
+    },
+    "leaf_box": [110, 378, 166, 438],
+    "fx": {
+      "water": {"amp_px": 1.4, "period_s": 8.0, "wavelength_px": 26.0, "shimmer": 0.07},
+      "sway": {"amp_px": 2.2, "period_s": 7.0, "noise_scale": 0.012},
+      "window": {"breathe": 0.04, "period_s": 6.0, "flicker": 0.012}
+    },
+    "masks": {
+      "_comment": "Полигоны зон [x, y, …] в пикселях арта. water — открытая вода без опор, островов и берегов (внутри — ещё отбор по гладкости: деревья у кромки не плывут); water_cut — опоры моста; sway — зоны ветвей и трав с привязкой: anchor — неподвижная линия (ствол или земля), reach_px — на каком расстоянии от неё размах полный; внутри зоны качаются только листья и тонкие ветки (цвет/контраст), ствол, панель и текст — нет; sway_cut — вырез (шпиль церкви под ветками). window — стёкла окна (светятся только тёплые светлые пиксели).",
+      "water": [[686, 512, 760, 514, 880, 503, 903, 470, 1000, 468, 1082, 463, 1106, 450, 1040, 442, 1004, 428, 1060, 410, 1112, 402, 1112, 448, 1158, 448, 1166, 456, 1166, 548, 1110, 540, 1060, 560, 1000, 575, 900, 580, 820, 578, 760, 572, 700, 560, 688, 540], [1212, 448, 1330, 440, 1330, 512, 1212, 516]],
+      "water_cut": [[1112, 388, 1156, 388, 1156, 448, 1112, 448], [938, 392, 990, 392, 990, 450, 938, 450], [696, 405, 745, 405, 745, 482, 696, 482]],
+      "sway": [
+        {"poly": [600, 0, 915, 0, 915, 165, 850, 175, 800, 300, 700, 308, 662, 300, 652, 440, 560, 440, 552, 300, 590, 0], "trunk": [574, 0, 610, 0, 582, 200, 568, 440, 538, 440, 548, 200], "reach_px": 160, "kind": "branches"},
+        {"poly": [0, 455, 138, 455, 138, 941, 0, 941], "anchor_y": 941, "reach_px": 300, "kind": "plants"},
+        {"poly": [550, 575, 700, 575, 760, 700, 795, 780, 765, 860, 805, 941, 550, 941], "anchor_y": 941, "reach_px": 260, "kind": "plants"}
+      ],
+      "sway_cut": [[733, 272, 762, 272, 762, 330, 733, 330]],
+      "window": [1500, 222, 1614, 222, 1614, 524, 1500, 524]
+    }
+  },
+  "pause": {
+    "items": [
+      {"id": "continue", "text": "@ui.pause_continue", "col": 0, "row": 0},
+      {"id": "save", "text": "@ui.pause_save", "col": 0, "row": 1},
+      {"id": "load", "text": "@ui.pause_load", "col": 0, "row": 2},
+      {"id": "settings", "text": "@ui.pause_settings", "col": 1, "row": 0},
+      {"id": "main_menu", "text": "@ui.pause_main_menu", "col": 1, "row": 1},
+      {"id": "quit", "text": "@ui.pause_quit", "col": 1, "row": 2, "desktop_only": true}
+    ],
+    "layout": {
+      "_comment": "Панель-рушник — 1672×941 с прозрачностью в координатах исходника (рушник y 449–876); offset_y сдвигает её так, чтобы рушник стоял посреди экрана. Колонки — центры x; строки — базовые линии.",
+      "offset_y": -185,
+      "col_x": [651, 1052],
+      "baselines": [633, 713, 793],
+      "row_h": 66,
+      "col_w": 380,
+      "font_px": 42,
+      "hint_x": 832,
+      "hint_baseline": 849,
+      "hint_px": 22,
+      "text_color": [0.15, 0.12, 0.10],
+      "hover_color": [0.55, 0.06, 0.07],
+      "red": [0.62, 0.09, 0.09],
+      "divider_dy": 34
+    },
+    "blur": {"radius_px": 3.2, "dim": 0.62, "fade_s": 0.18}
+  }
+}

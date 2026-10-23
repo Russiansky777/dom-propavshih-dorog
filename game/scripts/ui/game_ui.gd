@@ -16,6 +16,9 @@ signal bag_sound_requested(kind: String)
 ## item_hover_still() before it starts.
 signal item_hover_started(item_id: String)
 signal item_hover_ended(item_id: String)
+## «Меню» on the top bar: the pause menu (PauseMenu, Main wires it). Without a listener the button opens the
+## save / settings panel itself, as before.
+signal pause_requested
 
 const QUICK_SLOT: String = "quick"
 const HINT_SECONDS: float = 7.0
@@ -59,6 +62,15 @@ var journal_goal_label: Label
 var journal_time_label: Label    # «День второй · сумерки» — время суток (F17, TimeOfDay)
 var journal_facts_label: RichTextLabel
 var menu_panel: PanelContainer
+## The save / load / settings panel's own layer: above the pause menu (50) and the title screen (60), and running
+## while the tree is paused — it is opened from both.
+var menu_layer: CanvasLayer
+## What the panel shows: "all" (every row — toggle_menu, tests), "save" (the player's slots, «Сохранить»), "load"
+## (every existing save, «Загрузить»), "settings" (volumes, «Облегчить мини-игры», keys).
+var menu_mode: String = "all"
+var menu_title: Label
+var menu_empty_label: Label      # «Загрузить» with no save at all
+var settings_rows: Array = []    # the settings controls (hidden in "save" / "load")
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
 var fade: ColorRect
 var stage_overlay: ColorRect     # scene staging (StoryRunner.stage_fade): black between shots, dusk under lines
@@ -186,7 +198,7 @@ func _build() -> void:
 	h.add_child(hint_button)
 	menu_button = _button(StoryData.text("@ui.button_menu"), 120, &"BarButton")
 	menu_button.name = "MenuButton"
-	menu_button.pressed.connect(toggle_menu)
+	menu_button.pressed.connect(_on_menu_button)
 	h.add_child(menu_button)
 
 	# Hint line (bottom, click-through)
@@ -315,20 +327,34 @@ func _build() -> void:
 	journal_plan_button.pressed.connect(_open_map_from_journal)
 	jbuttons.add_child(journal_plan_button)
 
-	# Menu panel (save slots)
+	# Menu panel (save slots, settings) on its own layer (menu_layer: over the pause menu and the title screen).
+	menu_layer = CanvasLayer.new()
+	menu_layer.name = "MenuLayer"
+	menu_layer.layer = 70
+	menu_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(menu_layer)
 	menu_panel = PanelContainer.new()
 	menu_panel.name = "Menu"
+	menu_panel.theme = UiTheme.get_theme()
 	menu_panel.position = Vector2(510, 220)
 	menu_panel.size = Vector2(900, 560)
 	menu_panel.visible = false
-	add_child(menu_panel)
+	menu_layer.add_child(menu_panel)
 	var mv := VBoxContainer.new()
 	mv.add_theme_constant_override("separation", 12)
 	menu_panel.add_child(mv)
 	var mt := Label.new()
+	mt.name = "MenuTitle"
 	mt.text = StoryData.text("@ui.menu_title")
 	mt.theme_type_variation = &"HeaderLarge"
 	mv.add_child(mt)
+	menu_title = mt
+	menu_empty_label = Label.new()
+	menu_empty_label.name = "NoSaves"
+	menu_empty_label.text = StoryData.text("@ui.menu_no_saves")
+	menu_empty_label.theme_type_variation = &"MutedLabel"
+	menu_empty_label.visible = false
+	mv.add_child(menu_empty_label)
 	# G4/G5: the autosave (room changes, scene beats, every 5 minutes of play) — its own row, «Загрузить» only; it never
 	# overwrites the player's slots. Shown once it exists.
 	_slot_row_load_only(mv, RoomManager.autosave_slot, StoryData.text("@ui.autosave"), "Autosave")
@@ -336,6 +362,7 @@ func _build() -> void:
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 12)
 		mv.add_child(row)
+		row.name = "Slot" + slot
 		var name_l := Label.new()
 		name_l.text = StoryData.text("@ui.slot", {"n": slot})
 		name_l.custom_minimum_size = Vector2(120, 0)
@@ -355,7 +382,7 @@ func _build() -> void:
 		lb.name = "Load" + slot
 		lb.pressed.connect(_on_load_slot.bind(slot))
 		row.add_child(lb)
-		slot_rows[slot] = {"info": info, "save": sb, "load": lb}
+		slot_rows[slot] = {"info": info, "save": sb, "load": lb, "row": row, "manual": true}
 	# Checkpoint saves of scenes (scenes data `checkpoint`: «День второй» after the night by the stove): a row
 	# with the title and «Загрузить» only, shown once the save exists.
 	for cp in StoryData.checkpoints():
@@ -366,6 +393,7 @@ func _build() -> void:
 	var music_row := HBoxContainer.new()
 	music_row.add_theme_constant_override("separation", 12)
 	mv.add_child(music_row)
+	settings_rows.append(music_row)
 	var music_l := Label.new()
 	music_l.text = StoryData.text("@ui.music_volume")
 	music_l.custom_minimum_size = Vector2(120, 0)
@@ -390,6 +418,7 @@ func _build() -> void:
 	var sfx_row := HBoxContainer.new()
 	sfx_row.add_theme_constant_override("separation", 12)
 	mv.add_child(sfx_row)
+	settings_rows.append(sfx_row)
 	var sfx_l := Label.new()
 	sfx_l.text = StoryData.text("@ui.sfx_volume")
 	sfx_l.custom_minimum_size = Vector2(120, 0)
@@ -414,6 +443,7 @@ func _build() -> void:
 	var voice_row := HBoxContainer.new()
 	voice_row.add_theme_constant_override("separation", 12)
 	mv.add_child(voice_row)
+	settings_rows.append(voice_row)
 	var voice_l := Label.new()
 	voice_l.text = StoryData.text("@ui.voice_volume")
 	voice_l.custom_minimum_size = Vector2(120, 0)
@@ -445,6 +475,7 @@ func _build() -> void:
 	timing_slow_check.button_pressed = TimingBar.slow
 	timing_slow_check.toggled.connect(func(on): TimingBar.set_slow(on))
 	mv.add_child(timing_slow_check)
+	settings_rows.append(timing_slow_check)
 	# Controls line: the reveal key (exit_hints, Director 18.10).
 	var keys_l := Label.new()
 	keys_l.name = "KeysHint"
@@ -452,6 +483,7 @@ func _build() -> void:
 	keys_l.theme_type_variation = &"MutedLabel"
 	keys_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	mv.add_child(keys_l)
+	settings_rows.append(keys_l)
 	var bottom := HBoxContainer.new()
 	bottom.add_theme_constant_override("separation", 12)
 	mv.add_child(bottom)
@@ -775,22 +807,89 @@ func toggle_journal() -> void:
 	_update_modal()
 
 
+func _on_menu_button() -> void:
+	if pause_requested.get_connections().is_empty():
+		toggle_menu()
+	else:
+		pause_requested.emit()
+
+
+## The full panel — every slot row, the volumes, «Новая игра» (tests, the probe; a Main without a pause menu). The
+## player reaches the same rows through the pause menu and the title screen: open_menu_panel(mode).
 func toggle_menu() -> void:
-	if StoryRunner.is_busy() and not menu_panel.visible:
-		return
-	menu_panel.visible = not menu_panel.visible
-	journal_panel.visible = false
 	if menu_panel.visible:
-		_refresh_slots()
-		_fit_panel.call_deferred(menu_panel)
-		music_slider.set_value_no_signal(roundf(MusicDirector.music_volume * 100.0))
-		music_value_label.text = "%d %%" % int(music_slider.value)
-		sfx_slider.set_value_no_signal(roundf(SfxDirector.sfx_volume * 100.0))
-		sfx_value_label.text = "%d %%" % int(sfx_slider.value)
-		voice_slider.set_value_no_signal(roundf(VoiceDirector.voice_volume * 100.0))
-		voice_value_label.text = "%d %%" % int(voice_slider.value)
-		timing_slow_check.set_pressed_no_signal(TimingBar.slow)
+		close_menu_panel()
+		return
+	if StoryRunner.is_busy():
+		return
+	open_menu_panel("all")
+
+
+## The save / load / settings panel in one of its modes (menu_mode): over the pause menu or the title screen.
+func open_menu_panel(mode: String = "all") -> void:
+	menu_mode = mode
+	journal_panel.visible = false
+	menu_panel.visible = true
+	_apply_menu_mode()
+	_refresh_slots()
+	_fit_panel.call_deferred(menu_panel)
+	music_slider.set_value_no_signal(roundf(MusicDirector.music_volume * 100.0))
+	music_value_label.text = "%d %%" % int(music_slider.value)
+	sfx_slider.set_value_no_signal(roundf(SfxDirector.sfx_volume * 100.0))
+	sfx_value_label.text = "%d %%" % int(sfx_slider.value)
+	voice_slider.set_value_no_signal(roundf(VoiceDirector.voice_volume * 100.0))
+	voice_value_label.text = "%d %%" % int(voice_slider.value)
+	timing_slow_check.set_pressed_no_signal(TimingBar.slow)
 	_update_modal()
+
+
+## Closes the save / load / settings panel; false when it was not open (Esc goes on to the pause menu).
+func close_menu_panel() -> bool:
+	if not menu_panel.visible:
+		return false
+	menu_panel.visible = false
+	_update_modal()
+	return true
+
+
+func menu_panel_open() -> bool:
+	return menu_panel.visible
+
+
+## Esc with no close-up open: the plan, then the journal. False when neither was open.
+func close_top_panel() -> bool:
+	if map_view.visible:
+		map_view.close()
+		return true
+	if journal_panel.visible:
+		toggle_journal()
+		return true
+	return false
+
+
+## The pause menu comes up over the frame: the hint panel, the Space reveal, the hover caption, the journal and the
+## plan go away (the pause has its own way back to all of them).
+func prepare_for_pause() -> void:
+	hide_hint_panel()
+	reveal.cancel()
+	_set_hover(null)
+	if map_view.visible:
+		map_view.close()
+	journal_panel.visible = false
+	_update_modal()
+
+
+func _apply_menu_mode() -> void:
+	var titles := {"save": "@ui.menu_title_save", "load": "@ui.menu_title_load", "settings": "@ui.menu_title_settings"}
+	menu_title.text = StoryData.text(String(titles.get(menu_mode, "@ui.menu_title")))
+	for c in settings_rows:
+		(c as Control).visible = menu_mode == "all" or menu_mode == "settings"
+	var ng: Control = menu_panel.find_child("NewGame", true, false)
+	if ng != null:
+		ng.visible = menu_mode == "all"
+	var cl: Button = menu_panel.find_child("CloseMenu", true, false)
+	if cl != null:
+		cl.text = StoryData.text("@ui.close" if menu_mode == "all" else "@ui.back")
 
 
 ## A save row with a name, the place-and-time line and «Загрузить» only (scene checkpoints, the autosave): written by
@@ -844,6 +943,7 @@ func _refresh_slots() -> void:
 	for slot in slot_rows.keys():
 		var info: Dictionary = GameState.save_info(slot)
 		var label: Label = slot_rows[slot]["info"]
+		_show_slot_row(slot, info.is_empty())
 		if info.is_empty():
 			label.text = StoryData.text("@ui.slot_empty")
 		else:
@@ -851,8 +951,30 @@ func _refresh_slots() -> void:
 			# day in words; a checkpoint row already names its day.
 			label.text = String(info.get("place_time" if bool(slot_rows[slot].get("day_named", false)) else "label", ""))
 		(slot_rows[slot]["load"] as Button).disabled = info.is_empty()
-		if slot_rows[slot].has("row"):
-			(slot_rows[slot]["row"] as Control).visible = not info.is_empty()
+	var any := false
+	for slot in slot_rows.keys():
+		any = any or (slot_rows[slot]["row"] as Control).visible
+	menu_empty_label.visible = menu_mode == "load" and not any
+
+
+## Which rows and buttons a mode shows: «Сохранить» — the player's slots with «Сохранить»; «Загрузить» — every save
+## that exists with «Загрузить»; settings — no slots; all — the player's slots with both and the existing checkpoints.
+func _show_slot_row(slot: String, empty: bool) -> void:
+	var r: Dictionary = slot_rows[slot]
+	var checkpoint := bool(r.get("checkpoint", false))
+	var row: Control = r["row"]
+	match menu_mode:
+		"settings":
+			row.visible = false
+		"save":
+			row.visible = not checkpoint
+		"load":
+			row.visible = not empty
+		_:
+			row.visible = not checkpoint or not empty
+	if r["save"] != null:
+		(r["save"] as Button).visible = menu_mode != "load"
+	(r["load"] as Button).visible = menu_mode != "save"
 
 
 func _on_save_slot(slot: String) -> void:
@@ -1143,7 +1265,7 @@ func _on_loop_transition(_spec: Dictionary) -> void:
 func probe_positions() -> Dictionary:
 	var out := {"buttons": {}, "inventory": {}, "options": {}, "dialogue_open": dialogue.visible,
 		"map_open": map_view.visible, "map": map_view.probe() if map_view.visible else {},
-		"journal_open": journal_panel.visible, "menu_open": menu_panel.visible}
+		"journal_open": journal_panel.visible, "menu_open": menu_panel.visible, "menu_mode": menu_mode if menu_panel.visible else ""}
 	for b in [journal_button, hint_button, menu_button]:
 		out["buttons"][b.name] = _center(b)
 	if journal_panel.visible:

@@ -8,6 +8,8 @@
 [ext_resource type="Script" path="res://scripts/mechanics/mechanic_view.gd" id="6_mech"]
 [ext_resource type="Script" path="res://scripts/ui/frame_view.gd" id="7_frame"]
 [ext_resource type="Script" path="res://scripts/ui/item_examine.gd" id="8_examine"]
+[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="9_pause"]
+[ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="10_title"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -38,3 +40,11 @@ script = ExtResource("6_mech")
 [node name="ItemExamine" type="CanvasLayer" parent="."]
 layer = 4
 script = ExtResource("8_examine")
+
+[node name="Pause" type="CanvasLayer" parent="."]
+layer = 50
+script = ExtResource("9_pause")
+
+[node name="Title" type="CanvasLayer" parent="."]
+layer = 60
+script = ExtResource("10_title")

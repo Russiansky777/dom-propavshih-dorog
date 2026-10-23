@@ -1,0 +1,24 @@
+{
+  "_comment": "Главное меню и меню паузы (запрос Директора 23.10): пункты рисует игра поверх арта ChatGPT (data/story/menu.json, game/scripts/ui/title_screen.gd, pause_menu.gd), поэтому тексты здесь — для перевода и правки. Заголовки панели сохранений и настроек, открытой из паузы или с титульного экрана (game_ui.gd open_menu_panel). Ключи ui.* не озвучиваются (data/story/voice.json).",
+  "lang": "ru",
+  "texts": {
+    "ui.title_continue": {"text": "Продолжить", "draft": false},
+    "ui.title_new_game": {"text": "Новая игра", "draft": false},
+    "ui.title_load": {"text": "Загрузить", "draft": false},
+    "ui.title_settings": {"text": "Настройки", "draft": false},
+    "ui.title_quit": {"text": "Выход", "draft": false},
+    "ui.pause_continue": {"text": "Продолжить", "draft": false},
+    "ui.pause_save": {"text": "Сохранить", "draft": false},
+    "ui.pause_load": {"text": "Загрузить", "draft": false},
+    "ui.pause_settings": {"text": "Настройки", "draft": false},
+    "ui.pause_main_menu": {"text": "В главное меню", "draft": false},
+    "ui.pause_quit": {"text": "Выход из игры", "draft": false},
+    "ui.pause_esc_hint": {"text": "Esc — вернуться", "draft": false},
+    "ui.pause_busy": {"text": "Сохранить и загрузить можно, когда сцена закончится", "draft": false},
+    "ui.menu_title_save": {"text": "Сохранить игру", "draft": false},
+    "ui.menu_title_load": {"text": "Загрузить игру", "draft": false},
+    "ui.menu_title_settings": {"text": "Настройки", "draft": false},
+    "ui.menu_no_saves": {"text": "Сохранений пока нет.", "draft": false},
+    "ui.back": {"text": "Назад", "draft": false}
+  }
+}

@@ -454,6 +454,7 @@ func _complete_scene(scene_id: String) -> void:
 ## day four faded to black and showed the empty shore before Ilya and Pelageya «appeared»; the laid log vanished
 ## for a fade between the close-up and its frame).
 func _run_stage(spec: Dictionary) -> void:
+	# Timers below stop with the tree (create_timer(…, false)): the pause menu holds a staging where it is.
 	_stage_running = true
 	# A villager walks off first (`npc_go`), then the fade (G18, G29: no more «does nothing, then a cut»).
 	var go_serial := _stage_serial
@@ -478,20 +479,20 @@ func _run_stage(spec: Dictionary) -> void:
 	for snd in spec.get("sounds", []):
 		var sid := String(snd.get("id", ""))
 		var at := float(snd.get("at_s", 0.0))
-		tree.create_timer(at).timeout.connect(func():
+		tree.create_timer(at, false).timeout.connect(func():
 			if serial == _stage_serial:
 				stage_sound_requested.emit(sid))
-	await tree.create_timer(fade_out).timeout
+	await tree.create_timer(fade_out, false).timeout
 	if serial != _stage_serial:
 		return
 	_stage_apply(spec)
-	await tree.create_timer(float(spec.get("hold_s", 1.0))).timeout
+	await tree.create_timer(float(spec.get("hold_s", 1.0)), false).timeout
 	if serial != _stage_serial:
 		return
 	stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
 	var fade_in := float(spec.get("fade_in_s", 0.6))
 	stage_fade.emit(stage_dim, fade_in)
-	await tree.create_timer(fade_in).timeout
+	await tree.create_timer(fade_in, false).timeout
 	if serial != _stage_serial:
 		return
 	_stage_running = false
@@ -1084,7 +1085,7 @@ func _enter_room(room_id: String, spawn_id: String) -> void:
 func _run_loop(e: StoryExit, oc: Dictionary) -> void:
 	_loop_running = true
 	loop_transition.emit(oc)
-	await get_tree().create_timer(LOOP_FADE_SECONDS).timeout
+	await get_tree().create_timer(LOOP_FADE_SECONDS, false).timeout
 	var room := RoomManager.current_room
 	if room != null and RoomManager.player != null:
 		var spawn := room.get_spawn(String(oc.get("spawn", "default")))

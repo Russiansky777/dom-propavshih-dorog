@@ -394,6 +394,12 @@ func stop(reason: String = "stop") -> void:
 	_publish_web_state()
 
 
+## The pause menu holds a line where it is and lets it go on after (the players run with the tree paused).
+func set_paused(on: bool) -> void:
+	_plain.stream_paused = on
+	_panned.stream_paused = on
+
+
 func is_playing() -> bool:
 	return _plain.playing or _panned.playing
 

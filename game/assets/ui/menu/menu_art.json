@@ -1,0 +1,7 @@
+{
+  "title_bg": "assets/incoming/main_menu_clean.png",
+  "title_signature": "assets/incoming/main_menu_signature.png",
+  "pause_panel": "assets/incoming/pause_rushnik_panel.png",
+  "title_leaf": "cut from assets/incoming/main_menu_v2.png [110, 378, 166, 438]",
+  "title_fx_mask": "data/story/menu.json title.masks over main_menu_clean.png"
+}

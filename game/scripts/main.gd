@@ -1,6 +1,7 @@
 extends Node
-## Entry scene: wires RoomManager to the world container and the player, starts a new game at
-## locations.json `start`, and (on web) publishes `window.probeState` for automated walkthroughs.
+## Entry scene: wires RoomManager to the world container and the player, shows the title screen (or, for a start
+## point, a test run or an automated browser, starts the game at once), and (on web) publishes `window.probeState`
+## for automated walkthroughs.
 
 @onready var world: Node2D = $World
 @onready var player: Player = $World/Player
@@ -10,12 +11,19 @@ extends Node
 @onready var mechanic_view: CanvasLayer = get_node_or_null("MechanicView")
 @onready var item_examine: CanvasLayer = get_node_or_null("ItemExamine")
 @onready var frame_view: CanvasLayer = get_node_or_null("FrameView")
+@onready var title: TitleScreen = get_node_or_null("Title")
+@onready var pause_menu: PauseMenu = get_node_or_null("Pause")
+
+## The title screen on launch: "" — decided by _title_wanted(), "show" / "skip" — set by a test before _ready.
+var title_mode: String = ""
 
 var _last_hint: String = ""
 var _probe_dirty: bool = false
 var _js_pause_cb: JavaScriptObject = null
 var _js_isolate_cb: JavaScriptObject = null
 var _clear_color_saved: Color = Color.BLACK
+var _js_title_cb: JavaScriptObject = null
+var _probe_paused: bool = false
 
 
 func _ready() -> void:
@@ -40,12 +48,25 @@ func _ready() -> void:
 	player.walk_started.connect(func(_t): _mark_probe())
 	player.arrived.connect(func(_p): _mark_probe())
 
+	if title != null and pause_menu != null:
+		title.game_ui = game_ui
+		pause_menu.game_ui = game_ui
+		pause_menu.title = title
+		game_ui.pause_requested.connect(pause_menu.open)
+		title.visibility_changed.connect(_sync_pause)
+		pause_menu.visibility_changed.connect(_sync_pause)
+		title.visibility_changed.connect(_mark_probe)
+		pause_menu.visibility_changed.connect(_mark_probe)
+
 	if not StoryData.loaded:
 		push_error("Main: story data failed to load; see errors above")
 	# A start point for checking a later block (data/story/start_points.json): web `?start=<id>`, desktop
-	# `-- --start=<id>`. Without one — a new game from the post office, as always.
+	# `-- --start=<id>`. Without one — the title screen (the player starts or continues from it); a test run or an
+	# automated browser without one — a new game from the post office, as before the title existed.
 	var sp := _start_point_arg()
-	if sp == "" or not RoomManager.start_at(sp):
+	if sp == "" and _title_wanted():
+		title.open()
+	elif sp == "" or not RoomManager.start_at(sp):
 		RoomManager.new_game()
 	_publish_probe_state()
 	if OS.has_feature("web"):
@@ -56,12 +77,17 @@ func _ready() -> void:
 		win.probePause = _js_pause_cb
 		_js_isolate_cb = JavaScriptBridge.create_callback(_on_probe_isolate)
 		win.probeIsolate = _js_isolate_cb
+		# window.probeTitle(id): the same as clicking a title item («new_game», «continue», «load», «settings»).
+		_js_title_cb = JavaScriptBridge.create_callback(_on_probe_title)
+		win.probeTitle = _js_title_cb
 		JavaScriptBridge.eval("window.probeReady = true;", true)
 		# UI-only changes (journal/menu toggles, layout settling) have no signal: refresh periodically.
+		# It runs while the title or the pause menu holds the tree (process_mode always), not under probePause.
 		var t := Timer.new()
 		t.wait_time = 0.4
 		t.autostart = true
-		t.timeout.connect(_publish_probe_state)
+		t.process_mode = Node.PROCESS_MODE_ALWAYS
+		t.timeout.connect(_on_probe_timer)
 		add_child(t)
 
 
@@ -93,8 +119,53 @@ func _on_probe_pause(args: Array) -> void:
 		var sh: Node = player.get_node_or_null("Sprite/Shadow")
 		if sh is CanvasItem:
 			sh.visible = bool(args[2])
-	get_tree().paused = paused
+	_probe_paused = paused
+	_sync_pause()
 	_publish_probe_state()
+
+
+func _on_probe_timer() -> void:
+	if not _probe_paused:
+		_publish_probe_state()
+
+
+func _on_probe_title(args: Array) -> void:
+	if title != null and args.size() > 0:
+		title.activate(String(args[0]))
+
+
+## The tree stands still while the title screen or the pause menu is up, or the probe holds it.
+func _sync_pause() -> void:
+	var menus := (title != null and title.is_open()) or (pause_menu != null and pause_menu.is_open())
+	get_tree().paused = _probe_paused or menus
+
+
+## The title screen on launch — not for a test run (a `-s` script: the tree has a script), `-- --no-title`, an
+## automated browser (navigator.webdriver: Playwright runners, the AI playtest) or a probe/start URL flag;
+## `?title=1` / `-- --title` show it anyway (the menu's own web check).
+func _title_wanted() -> bool:
+	if title == null:
+		return false
+	if title_mode != "":
+		return title_mode == "show"
+	for a in OS.get_cmdline_user_args():
+		if String(a) == "--title":
+			return true
+		if String(a) == "--no-title":
+			return false
+	if get_tree().get_script() != null:
+		return false
+	if OS.has_feature("web"):
+		var v = JavaScriptBridge.eval("""(function () {
+			var q = new URLSearchParams(window.location.search);
+			if (q.get('title') === '1') return 'show';
+			if (q.get('title') === '0') return 'skip';
+			var flags = ['start', 'agata', 'probe', 'test', 'notitle'];
+			for (var i = 0; i < flags.length; i++) if (q.has(flags[i])) return 'skip';
+			return navigator.webdriver ? 'skip' : 'show';
+		})()""", true)
+		return String(v) == "show"
+	return true
 
 
 func _start_point_arg() -> String:
@@ -186,6 +257,9 @@ func _publish_probe_state() -> void:
 		"frame": frame_view.call("probe") if frame_view != null else {},
 		"layers": _layer_states(room),   # room art layers by id → shown (drawn states by flags, web checks)
 		"time": TimeOfDay.probe(GameState.current_room),   # time of day (F17): state, phase, day, journal line
+		"title": title.probe() if title != null else {},          # title screen: open, items → click targets
+		"pause": pause_menu.probe() if pause_menu != null else {}, # pause menu: open, items, blur
+		"paused": get_tree().paused,
 		"ticks": Time.get_ticks_msec(),
 		"physics_frames": Engine.get_physics_frames(),
 	}

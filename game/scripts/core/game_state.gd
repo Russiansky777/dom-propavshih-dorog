@@ -115,6 +115,7 @@ func to_dict(title: String = "") -> Dictionary:
 	var d := {
 		"version": SAVE_VERSION,
 		"saved_at": Time.get_datetime_string_from_system(true),
+		"saved_unix": Time.get_unix_time_from_system(),   # sub-second order of saves (title «Продолжить» — the newest)
 		"flags": flags.duplicate(),
 		"inventory": Array(inventory),
 		"current_room": current_room,
@@ -218,10 +219,33 @@ func save_info(slot: String) -> Dictionary:
 	var room := String(parsed.get("current_room", ""))
 	var fl: Dictionary = parsed.get("flags", {}) if parsed.get("flags", {}) is Dictionary else {}
 	var parts := place_parts(room, fl)
-	return {"saved_at": String(parsed.get("saved_at", "")), "room": room,
+	return {"saved_at": String(parsed.get("saved_at", "")), "saved_unix": _saved_unix(parsed), "room": room,
 		"goal": String(parsed.get("journal_goal", "")), "title": String(parsed.get("title", "")),
 		"label": " · ".join(PackedStringArray([parts["day"], parts["place"], parts["time"]].filter(func(x): return x != ""))),
 		"place_time": " · ".join(PackedStringArray([parts["place"], parts["time"]].filter(func(x): return x != "")))}
+
+
+## When a save was written, seconds since the epoch: `saved_unix`, or `saved_at` (whole seconds) for older saves.
+static func _saved_unix(parsed: Dictionary) -> float:
+	if parsed.has("saved_unix"):
+		return float(parsed["saved_unix"])
+	var at := String(parsed.get("saved_at", ""))
+	return float(Time.get_unix_time_from_datetime_string(at)) if at != "" else 0.0
+
+
+## The newest existing save among `slots` ("" — none): the title screen's «Продолжить».
+func latest_save(slots: Array) -> String:
+	var best := ""
+	var best_t := -1.0
+	for s in slots:
+		var info := save_info(String(s))
+		if info.is_empty():
+			continue
+		var t := float(info.get("saved_unix", 0.0))
+		if t > best_t:
+			best_t = t
+			best = String(s)
+	return best
 
 
 ## Where and when a state is, in words (G4, Director 23.10: «автосохранение с местом и временем: "День второй,

@@ -252,6 +252,16 @@ func _on_scene_completed(scene_id: String) -> void:
 		_queue_retarget()
 
 
+## The title screen (data/story/menu.json title.music): its theme, as if it were a room's — no scene events over it.
+## A new game or a load then picks the room's theme as usual (the same theme keeps playing, no restart).
+func play_menu_theme(theme: String) -> void:
+	if theme == "" or not themes.has(theme):
+		return
+	active_events.clear()
+	room_theme = theme
+	_queue_retarget()
+
+
 ## New game / loaded save: no scene is running, the room theme rules.
 func clear_events() -> void:
 	active_events.clear()
