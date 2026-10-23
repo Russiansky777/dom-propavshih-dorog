@@ -461,7 +461,7 @@
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 15.5,
      "sole_lift_mid_stance_max_m": 0.0795,
-     "slide_max_mm": 14.7,
+     "slide_max_mm": 14.6,
      "contact_frames": 420,
      "floor_m": -0.0,
      "body_yaw_deg": 2.0
@@ -475,7 +475,7 @@
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 25.3,
      "sole_lift_mid_stance_max_m": 0.0655,
-     "slide_max_mm": 15.1,
+     "slide_max_mm": 15.0,
      "contact_frames": 420,
      "floor_m": -0.0,
      "body_yaw_deg": 2.0

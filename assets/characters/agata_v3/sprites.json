@@ -39,31 +39,40 @@
       "clip": "open_door_open",
       "clip_seconds": 5.2,
       "natural_fps": 6.15,
-      "floor_shift_m": 0.0073
+      "floor_shift_m": 0.0075
     },
     "pick": {
       "sheet": "pick.png",
       "frames": 40,
       "fps": 24.0,
       "clip": "Female_Bend_Over_Pick_Up_Inspect_pick",
-      "clip_seconds": 3.8333,
-      "natural_fps": 10.43,
-      "floor_shift_m": -0.0039
+      "clip_seconds": 2.4,
+      "natural_fps": 16.67,
+      "floor_shift_m": -0.0053
     },
     "reach": {
       "sheet": "reach.png",
-      "frames": 32,
+      "frames": 30,
       "fps": 24.0,
-      "clip": "Female_Stand_Pick_Fruit_Basket_reach",
-      "clip_seconds": 6.1667,
-      "natural_fps": 5.19,
-      "floor_shift_m": 0.0004
+      "clip": "open_door_take_reach",
+      "clip_seconds": 1.6333,
+      "natural_fps": 18.37,
+      "floor_shift_m": 0.0076
+    },
+    "sit": {
+      "sheet": "sit.png",
+      "frames": 1,
+      "fps": 24.0,
+      "clip": "Chair_Sit_F_sit",
+      "clip_seconds": 11.3333,
+      "natural_fps": 0.09,
+      "floor_shift_m": -0.0162
     }
   },
   "fit": {
-    "half_width_m": 0.872,
+    "half_width_m": 0.874,
     "top_m": 0.844,
-    "frame_top_m": 0.926,
+    "frame_top_m": 0.925,
     "frame_w": 384
   },
   "matte_materials": true

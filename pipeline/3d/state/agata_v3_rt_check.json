@@ -25,17 +25,17 @@
    ],
    "max_dev_m": 1e-05
   },
-  "Female_Bend_Over_Pick_Up_Inspect_pick": {
+  "Chair_Sit_F_sit": {
    "frames": [
     0.0,
-    115.0
+    340.0
    ],
    "max_dev_m": 1e-05
   },
-  "Female_Stand_Pick_Fruit_Basket_reach": {
+  "Female_Bend_Over_Pick_Up_Inspect_pick": {
    "frames": [
     0.0,
-    185.0
+    72.0
    ],
    "max_dev_m": 1e-05
   },
@@ -102,6 +102,13 @@
    ],
    "max_dev_m": 1e-05
   },
+  "open_door_take_reach": {
+   "frames": [
+    0.0,
+    49.0
+   ],
+   "max_dev_m": 1e-05
+  },
   "Short_Breathe_and_Look_Around": {
    "frames": [
     0.0,
@@ -164,10 +171,10 @@
    "BakedMaterial"
   ]
  },
- "out_bytes": 6111628,
+ "out_bytes": 6189372,
  "result": {
   "triangles": 60000,
-  "clips": 16,
+  "clips": 17,
   "missing": [],
   "max_dev_m": 1e-05
  }
