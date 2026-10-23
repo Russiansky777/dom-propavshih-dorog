@@ -4,7 +4,8 @@
   "texts": {
     "map.house": {"text": "Дом Евдокии", "draft": false},
     "map.mill": {"text": "Мельница", "draft": false},
-    "map.olkhovka": {"text": "Ольховка (школа)", "draft": false},
+    "map.olkhovka": {"text": "Школа", "draft": false},
+    "map.nina_house": {"text": "Дом Нины", "draft": false},
     "map.here": {"text": "Вы здесь", "draft": false},
     "map.close_hint": {"text": "Щёлкните или нажмите Esc, чтобы вернуться", "draft": false},
     "ui.button_plan": {"text": "План", "draft": false}

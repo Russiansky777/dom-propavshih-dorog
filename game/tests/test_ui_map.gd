@@ -59,7 +59,7 @@ func _run() -> void:
 	mp = ui.get("map_view")
 	await _test("Plan data: places → real locations, points on the picture, texts; Z1.plan opens it", _test_data)
 	await _test("Click the plan in Z1: rides in from the wall, no look text, flag set; click closes back to the wall", _test_open_close)
-	await _test("«Вы здесь» = current room; unvisited paler; Olkhovka hidden until visited; visited_<room> on entry", _test_here_and_visits)
+	await _test("«Вы здесь» = current room; unvisited paler; Olkhovka hidden until visited; visited_<room> on entry; the far bank's layer and plaques (G2)", _test_here_and_visits)
 	await _test("Journal «План» only after the plan was seen; opens from the journal, Esc returns to it; load closes", _test_journal)
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -262,7 +262,32 @@ func _test_here_and_visits() -> void:
 	mp.call("open_from", Rect2())
 	_check(await _open_settled(), "open in H2")
 	_check(mp.call("probe")["here"] == "house", "H2 → the house")
+	_check((mp.call("probe")["overlays"] as Array).is_empty(), "G2: before the far bank the plan shows nothing new across the river")
 	mp.call("close_now")
+	# G2 (Director 23.10: «нанести на карту то, что изменилось или добавилось»): once Agata has been on the far bank —
+	# the batch-9 layer (school, houses, the rope crossing, the boat, the shed) and the plaques of the new places.
+	gs.set_flag("visited_R3", true)
+	mp.call("open_from", Rect2())
+	_check(await _open_settled(), "open after the far pier")
+	p = mp.call("probe")
+	_check((p["overlays"] as Array).has("Overlay_zarechye_plan_overlay"), "G2: the plan's new layer is on (%s)" % str(p["overlays"]))
+	for id in ["crossing", "far_pier", "ferry_shed"]:
+		_check(p["labels"].has(id) and p["labels"][id]["visible"], "G2: «%s» on the plan" % id)
+	_check(not p["labels"]["nina_house"]["visible"], "Nina's house only after a visit")
+	var names := {}
+	for id in p["labels"]:
+		names[id] = String(mp.call("place_name", _place(id)))
+	_check(names["crossing"] == "Переправа" and names["far_pier"] == "Дальняя опора" and names["ferry_shed"] == "Мастерская переправы"
+		and names["olkhovka"] == "Школа" and names["olkhovka_street"] == "Улица Ольховки" and names["nina_house"] == "Дом Нины"
+		and names["lower_street"] == "Нижняя улица", "G2: the plaques read as on the plan (%s)" % str(names))
+	mp.call("close_now")
+
+
+func _place(id: String) -> Dictionary:
+	for pl in mp.call("places"):
+		if String(pl.get("id", "")) == id:
+			return pl
+	return {}
 
 
 func _test_journal() -> void:

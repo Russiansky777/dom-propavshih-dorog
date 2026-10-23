@@ -12,7 +12,7 @@ DST="$ROOT/game/assets/ui/map"
 mkdir -p "$DST"
 changed=0
 n=0
-for f in "$SRC"/*.png; do
+for f in "$SRC"/*.png "$ROOT"/assets/incoming/zarechye_plan_*.png; do   # + слои плана партии 9 (G2: zarechye_plan_overlay)
   [[ -f "$f" ]] || continue
   name="$(basename "$f")"
   [[ "$name" == _* ]] && continue

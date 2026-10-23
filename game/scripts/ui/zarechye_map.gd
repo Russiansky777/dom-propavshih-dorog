@@ -8,7 +8,11 @@ extends Control
 ## screen; the room stays behind it, darkened at the edges. Over the picture, in the game typeface:
 ## place names (locations.json, or @map.* for places of several rooms), a dot at each place, «Вы здесь»
 ## at the place of the current room; places not visited yet (no visited_<room> flag) are paler,
-## places with hidden_until_visited (Olkhovka across the river) appear only after a visit.
+## places with hidden_until_visited (Olkhovka across the river) appear only after a visit; `shown_if` [flags] — shown
+## once those flags hold, visited or not (the ferry workshop across the river once the far bank is reached).
+## G2 (Director 23.10: «нанести на карту то, что изменилось или добавилось»): `overlays` [{image, if}] — pictures on the
+## plan's own canvas laid over it while their flags hold (art pack 9: the school, the houses, the rope crossing, the
+## boat and the shed across the river — zarechye_plan_overlay, once the far bank is reached).
 ## Everything placed comes from data/story/map_zarechye.json; the UI never sets story flags.
 
 signal closed(reopen_journal: bool)
@@ -36,6 +40,7 @@ var _final: Rect2
 var _tween: Tween = null
 var _closing: bool = false
 var _scale: float = 1.0
+var overlays: Array = []               # [{node: TextureRect, if: [flags]}] — G2
 
 
 func _init() -> void:
@@ -81,6 +86,20 @@ func _ready() -> void:
 	var img := String(spec.get("image", ""))
 	if img != "" and ResourceLoader.exists(img):
 		plan.texture = load(img)
+	for o in spec.get("overlays", []):
+		var oi := String(o.get("image", ""))
+		if oi == "" or not ResourceLoader.exists(oi):
+			continue
+		var tr := TextureRect.new()
+		tr.name = "Overlay_" + oi.get_file().get_basename()
+		tr.texture = load(oi)
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED   # the same crop as the plan under it
+		tr.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tr.set_anchors_preset(Control.PRESET_FULL_RECT)
+		plan.add_child(tr)
+		overlays.append({"node": tr, "if": o.get("if", [])})
 	var isz: Array = spec.get("image_size", [1376, 768])
 	var aspect := float(isz[0]) / float(isz[1])
 	var w := minf(FIT.x, FIT.y * aspect)
@@ -150,6 +169,8 @@ func _point(p: Dictionary) -> Vector2:
 
 
 func _build_marks() -> void:
+	for o in overlays:
+		(o["node"] as CanvasItem).visible = (o["if"] as Array).all(func(f): return GameState.has_flag(String(f)))
 	for c in marks.get_children():
 		c.queue_free()
 	place_nodes.clear()
@@ -160,6 +181,8 @@ func _build_marks() -> void:
 		var id := String(p.get("id", ""))
 		var visited := place_visited(p)
 		var shown := visited or not bool(p.get("hidden_until_visited", false))
+		if p.has("shown_if"):
+			shown = (p["shown_if"] as Array).all(func(f): return GameState.has_flag(String(f)))
 		var entry := {"label": null, "dot": null, "visited": visited, "shown": shown, "text": place_name(p)}
 		place_nodes[id] = entry
 		if not shown:
@@ -316,7 +339,8 @@ func probe() -> Dictionary:
 			d["y"] = r.get_center().y
 		labels[id] = d
 	return {"settled": settled, "here": here_place, "here_room": GameState.current_room, "labels": labels,
-		"from_journal": from_journal, "rect": [plan.position.x, plan.position.y, plan.size.x, plan.size.y]}
+		"from_journal": from_journal, "rect": [plan.position.x, plan.position.y, plan.size.x, plan.size.y],
+		"overlays": overlays.filter(func(o): return (o["node"] as CanvasItem).visible).map(func(o): return String((o["node"] as Node).name))}
 
 
 ## Ink dot at a place; the current place gets a pulsing red-ochre ring.
