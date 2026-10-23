@@ -19,6 +19,7 @@ python3 -I "$ROOT/tools/validate_rooms.py" --quiet 2>&1 | tee -a "$BUILD_DIR/log
 python3 -I "$ROOT/tools/validate_ambient.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # живой мир: data/story/ambient
 python3 -I "$ROOT/tools/validate_lights.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет комнат: data/story/lights
 python3 -I "$ROOT/tools/validate_time.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # время суток: data/story/time — сцены по порядку, без хода назад (F17)
+python3 -I "$ROOT/tools/validate_actor_actions.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # G1/G53: действия Агаты короткие, из стойки в стойку, без размаха рук; сидячая поза в кадре ужина
 
 "$ROOT/tools/sync_story_data.sh" | tee -a "$BUILD_DIR/logs/tests.log"
 "$ROOT/tools/sync_music.sh" | tee -a "$BUILD_DIR/logs/tests.log"  # музыка: assets/music → game/assets/music (импорт loop=false)

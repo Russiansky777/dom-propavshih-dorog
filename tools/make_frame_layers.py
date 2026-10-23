@@ -18,7 +18,10 @@ compose — персонаж:
    "tint": [r, g, b],         — умножение цвета (свет картины: тёплая свеча, зимний день, сумерки);
    "shadow": 0.35,            — контактная тень (непрозрачность эллипса у ног), 0 — без тени;
    "mirror": false,           — отразить по горизонтали;
-   "cut_below": y}            — обрезать ниже этой строки холста (ноги за столом / скамьёй).
+   "cut_below": y,            — обрезать ниже этой строки холста (ноги за столом / скамьёй);
+   "hide": [[[x, y], …], …],  — многоугольники холста, где фигура скрыта: то, что на картине перед ней (столешница,
+                                  кувшин, чашка) — слой под фигурой проступает (G53: Агата сидит за столом);
+   "hide_feather": 1.0}       — мягкость края скрытия, px.
 compose — вещь (кусок другой картинки):
   {"src": "game/assets/rooms/H1/state_cup_table_blue.png", "crop": [x, y, w, h], "at": [x, y], "width": w,
    "tint": [...], "rotate": градусы, "alpha": 0..1, "shadow": 0}
@@ -117,6 +120,15 @@ def render(c: dict, size: tuple[int, int]) -> Image.Image:
         if "cut_below" in c:
             cut = int(c["cut_below"])
             ImageDraw.Draw(layer).rectangle((0, cut, size[0], size[1]), fill=(0, 0, 0, 0))
+        if c.get("hide"):
+            keep = Image.new("L", size, 255)
+            dk = ImageDraw.Draw(keep)
+            for poly in c["hide"]:
+                dk.polygon([(float(x), float(y)) for x, y in poly], fill=0)
+            fe = float(c.get("hide_feather", 1.0))
+            if fe > 0:
+                keep = keep.filter(ImageFilter.GaussianBlur(fe))
+            layer.putalpha(ImageChops.multiply(layer.getchannel("A"), keep))
         out.alpha_composite(layer)
         return out
     src = Image.open(ROOT / c["src"]).convert("RGBA")
