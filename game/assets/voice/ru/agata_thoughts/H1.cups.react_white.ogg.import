@@ -2,6 +2,13 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
+uid="uid://cdew4451slwrr"
+path="res://.godot/imported/H1.cups.react_white.ogg-85e6ee4f3213472085c4bd77305beadf.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/voice/ru/agata_thoughts/H1.cups.react_white.ogg"
+dest_files=["res://.godot/imported/H1.cups.react_white.ogg-85e6ee4f3213472085c4bd77305beadf.oggvorbisstr"]
 
 [params]
 

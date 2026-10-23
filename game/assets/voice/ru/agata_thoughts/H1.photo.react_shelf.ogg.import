@@ -2,6 +2,13 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
+uid="uid://bn33xmp2symd4"
+path="res://.godot/imported/H1.photo.react_shelf.ogg-71198c823143555eaadc14aa3178f37a.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/voice/ru/agata_thoughts/H1.photo.react_shelf.ogg"
+dest_files=["res://.godot/imported/H1.photo.react_shelf.ogg-71198c823143555eaadc14aa3178f37a.oggvorbisstr"]
 
 [params]
 
