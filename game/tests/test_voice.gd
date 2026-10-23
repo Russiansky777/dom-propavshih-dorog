@@ -172,6 +172,14 @@ func _line(line_id: String) -> Dictionary:
 	var ln: Dictionary = lines[i]
 	if parts.size() == 2:
 		return ln
+	if parts[2].begins_with("then") and parts[2].substr(4).is_valid_int():
+		# a follow-up line (`then`: an optional story's trace in the epilogue), line_id <scene>_<index>_then<k>
+		var th: Array = ln.get("then", [])
+		var k := int(parts[2].substr(4))
+		if k >= 0 and k < th.size():
+			var sub: Dictionary = th[k]
+			return {"speaker": String(sub.get("speaker", "narrator")), "text": String(sub.get("text", ""))}
+		return {}
 	for o in ln.get("options", []):
 		if String(o.get("id", "")) == parts[2]:
 			return {"speaker": String(ln.get("speaker", "agata")), "text": String(o.get("text", ""))}

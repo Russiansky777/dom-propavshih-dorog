@@ -86,6 +86,10 @@ def story_lines() -> dict[str, dict]:
             for k, t in enumerate(ln.get("then") or []):
                 if str(t.get("text", "")).strip():
                     out[f"{scene_id}_{i}_then{k}"] = _line(scene_id, dict(t, speaker=t.get("speaker", "narrator") or "narrator"))
+            # продолжения эпилога (`then`) — line_id <scene>_<index>_then<k>
+            for k, sub in enumerate(ln.get("then") or []):
+                if str(sub.get("text", "")).strip():
+                    out[f"{scene_id}_{i}_then{k}"] = _line(scene_id, dict(sub, speaker=sub.get("speaker", "narrator") or "narrator"))
             if ln.get("options") or not str(ln.get("text", "")).strip():
                 continue
             out[f"{scene_id}_{i}"] = _line(scene_id, ln)

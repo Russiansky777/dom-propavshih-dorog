@@ -121,6 +121,17 @@ def story_lines() -> dict[str, dict]:
                     if o.get("voice_text"):
                         oe["voice_text"] = str(o["voice_text"])
                     out[f"{lid}_{o['id']}"] = oe
+            # Продолжения (`then`: следы необязательных историй в эпилоге) — StoryRunner: line_id <scene>_<index>_then<k>,
+            # места в mandatory_lines не занимают (записи после них не сдвигаются).
+            for k, sub in enumerate(ln.get("then") or []):
+                if str(sub.get("text", "")).strip():
+                    te = {"scene": scene_id, "index": i, "then": k, "speaker": str(sub.get("speaker", "narrator") or "narrator"),
+                          "text": str(sub["text"])}
+                    if sub.get("tags"):
+                        te["tags"] = [str(t) for t in sub["tags"]]
+                    if sub.get("voice_text"):
+                        te["voice_text"] = str(sub["voice_text"])
+                    out[f"{lid}_then{k}"] = te
             if ln.get("options") or not str(ln.get("text", "")).strip():
                 continue   # строка-выбор (вопрос — закадровая фраза prompt) или без текста: звучать нечему
             e = {"scene": scene_id, "index": i, "speaker": str(ln.get("speaker", "")), "text": str(ln.get("text", ""))}
@@ -975,6 +986,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                  else {"scene": ln["scene"], "index": ln["index"]})
         if ln.get("option"):
             where["option"] = ln["option"]
+        if "then" in ln and ln.get("kind") != "narration":
+            where["then"] = ln["then"]
         al_rel = "src/" + file_rel(ln, lid, "align.json")
         if (vs["dir"] / al_rel).is_file():
             where["alignment"] = al_rel
