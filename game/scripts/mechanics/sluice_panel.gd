@@ -109,27 +109,22 @@ func _build_gauge() -> void:
 	gauge.size = _gauge_rect.size
 	gauge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(gauge)
-	var board := ColorRect.new()
-	board.color = Color(0.78, 0.72, 0.6)
-	board.size = gauge.size
-	board.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	gauge.add_child(board)
+	# H30: the rail is drawn as painted wood with cut divisions in the carved frame (CarvedFrame.draw_rail); the
+	# nodes below keep the level, the notches and the red mark for the probe and the tests, unseen.
+	var rail := RailDraw.new()
+	rail.name = "Rail"
+	rail.panel = self
+	rail.size = gauge.size
+	rail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	gauge.add_child(rail)
 	gauge_water = ColorRect.new()
 	gauge_water.name = "Water"
-	gauge_water.color = Color(0.22, 0.34, 0.42, 0.85)
+	gauge_water.visible = false
 	gauge_water.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	gauge.add_child(gauge_water)
-	for i in logic.levels.size():
-		var t := ColorRect.new()
-		t.name = "Notch%d" % i
-		t.color = Color(0.15, 0.1, 0.06)
-		t.position = Vector2(0, gauge_y(float(logic.levels[i])) - 2.0)
-		t.size = Vector2(gauge.size.x * 0.55, 4)
-		t.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		gauge.add_child(t)
 	work_mark = ColorRect.new()
 	work_mark.name = "WorkMark"
-	work_mark.color = Color(0.7, 0.12, 0.08)
+	work_mark.visible = false
 	work_mark.position = Vector2(0, gauge_y(work_level()) - 3.0)
 	work_mark.size = Vector2(gauge.size.x, 6)
 	work_mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -227,3 +222,16 @@ func probe() -> Dictionary:
 		"strikes_by_click": strikes_by_click, "work_mark_level": work_level(),
 		"work_mark_at_last": is_equal_approx(work_level(), float(logic.levels[logic.last_notch()])),
 		"opened": opened_sent, "overlays": overlays, "last_notch_deg": float(angles[angles.size() - 1])}
+
+
+## The gauge drawn as a painted wooden rail (H30).
+class RailDraw extends Control:
+	var panel = null
+
+	func _process(_d: float) -> void:
+		queue_redraw()
+
+	func _draw() -> void:
+		if panel == null or panel.logic == null:
+			return
+		CarvedFrame.draw_rail(self, Rect2(Vector2.ZERO, size), panel.logic.level, panel.logic.levels, panel.work_level(), UiTheme.font("head_bold"))

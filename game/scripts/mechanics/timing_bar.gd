@@ -93,13 +93,13 @@ func restart() -> void:
 
 func _layout_hint() -> void:
 	if hint != null:
-		hint.position = Vector2(0, size.y + 6)
+		hint.position = Vector2(0, size.y + 20)   # below the carved frame (H34)
 		hint.size = Vector2(size.x, 36)
 	if slow_check != null:
 		if String(_cfg.get("slow_at", "right")) == "below":   # no room to the right (the wedges' bar at the screen edge)
-			slow_check.position = Vector2(0, size.y + (48.0 if hint != null else 8.0))
+			slow_check.position = Vector2(0, size.y + (62.0 if hint != null else 22.0))
 		else:
-			slow_check.position = Vector2(size.x + 24, (size.y - 44) * 0.5)
+			slow_check.position = Vector2(size.x + 36, (size.y - 44) * 0.5)
 		slow_check.size = Vector2(240, 44)
 
 
@@ -205,14 +205,9 @@ func _draw() -> void:
 	var shake := Vector2(sin(_shake * 40.0) * 6.0 * _shake, 0) if not vertical else Vector2(0, sin(_shake * 40.0) * 6.0 * _shake)
 	var thick := minf(THICK, (size.x if vertical else size.y) - 8.0)
 	var track := Rect2(Vector2.ZERO, size)
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = TRACK
-	sb.border_color = Color(0.68, 0.55, 0.35, 0.8)
-	sb.set_border_width_all(2)
-	sb.set_corner_radius_all(9)
-	sb.shadow_color = Color(0, 0, 0, 0.45)
-	sb.shadow_size = 8
-	draw_style_box(sb, track)
+	# H34: the carved dark-wood frame with a gold bead, as on the title menu (CarvedFrame — one style for every bar).
+	CarvedFrame.draw_frame(self, track, 17.0)
+	draw_rect(track, TRACK)
 	# The colours along the bar.
 	var n := 120
 	for i in n:
@@ -226,6 +221,8 @@ func _draw() -> void:
 		else:
 			r = Rect2(Vector2(a.x, a.y - thick * 0.5), Vector2(b.x - a.x + 0.6, thick))
 		draw_rect(r, color_at((p0 + p1) * 0.5))
+	# Enamel on wood: a light top edge and a darker bottom over the colours.
+	CarvedFrame.shade(self, track.grow(-4.0), vertical)
 	# The green zone's edges: brass ticks.
 	var z := logic.zone()
 	for e in [z.x, z.y]:
@@ -241,22 +238,23 @@ func _draw() -> void:
 	var m := _at(logic.pos()) + shake
 	var col := BRASS if logic.state != "miss" else Color(1.0, 0.55, 0.45)
 	if vertical:
-		draw_line(m + Vector2(-thick * 0.5 - 12, 0), m + Vector2(thick * 0.5 + 12, 0), Color(0, 0, 0, 0.6), 7.0)
-		draw_line(m + Vector2(-thick * 0.5 - 12, 0), m + Vector2(thick * 0.5 + 12, 0), col, 4.0)
-		draw_colored_polygon(PackedVector2Array([m + Vector2(-thick * 0.5 - 12, -9), m + Vector2(-thick * 0.5 - 12, 9), m + Vector2(-thick * 0.5 + 2, 0)]), col)
+		draw_line(m + Vector2(-thick * 0.5 - 4, 0), m + Vector2(thick * 0.5 + 4, 0), Color(0, 0, 0, 0.6), 7.0)
+		draw_line(m + Vector2(-thick * 0.5 - 4, 0), m + Vector2(thick * 0.5 + 4, 0), col, 4.0)
+		CarvedFrame.leaf(self, m + Vector2(-thick * 0.5 - 2, 0), Vector2.RIGHT, 34.0, col)
 	else:
-		draw_line(m + Vector2(0, -thick * 0.5 - 12), m + Vector2(0, thick * 0.5 + 12), Color(0, 0, 0, 0.6), 7.0)
-		draw_line(m + Vector2(0, -thick * 0.5 - 12), m + Vector2(0, thick * 0.5 + 12), col, 4.0)
-		draw_colored_polygon(PackedVector2Array([m + Vector2(-10, -thick * 0.5 - 14), m + Vector2(10, -thick * 0.5 - 14), m + Vector2(0, -thick * 0.5 + 2)]), col)
+		draw_line(m + Vector2(0, -thick * 0.5 - 4), m + Vector2(0, thick * 0.5 + 4), Color(0, 0, 0, 0.6), 7.0)
+		draw_line(m + Vector2(0, -thick * 0.5 - 4), m + Vector2(0, thick * 0.5 + 4), col, 4.0)
+		CarvedFrame.leaf(self, m + Vector2(0, -thick * 0.5 - 2), Vector2.DOWN, 34.0, col)
 	# Pips: the series.
 	if logic.hits_needed > 1 and not vertical:
 		var gap := 30.0
 		var x0 := size.x * 0.5 - gap * (logic.hits_needed - 1) * 0.5
 		for i in logic.hits_needed:
-			var c := Vector2(x0 + gap * i, -18.0)
+			var c := Vector2(x0 + gap * i, -40.0)   # above the carved frame and the leaf
 			var on := i < logic.hits or logic.done()
-			draw_circle(c, 9.0, Color(0, 0, 0, 0.55))
-			draw_circle(c, 7.0, GREEN.lightened(0.15) if on else Color(0.3, 0.24, 0.17))
+			draw_circle(c, 10.0, CarvedFrame.GOLD_DIM)
+			draw_circle(c, 8.0, CarvedFrame.WOOD_DARK)
+			draw_circle(c, 6.0, GREEN.lightened(0.15) if on else Color(0.3, 0.24, 0.17))
 
 
 # --- Settings (accessibility) -----------------------------------------------------------------

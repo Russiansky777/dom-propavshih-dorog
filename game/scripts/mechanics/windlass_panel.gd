@@ -278,13 +278,14 @@ class HeightGauge extends Control:
 		return clampf(p, 0.0, 1.0) * size.y
 
 	func _draw() -> void:
+		CarvedFrame.draw_frame(self, Rect2(Vector2.ZERO, size), 15.0)   # H34: one carved frame for every bar
 		draw_rect(Rect2(Vector2.ZERO, size), TimingBar.TRACK)
 		var zt := y_of(zone.x)
 		var zb := y_of(zone.y)
 		draw_rect(Rect2(0, zb, size.x, size.y - zb), TimingBar.RED.darkened(0.25))
 		draw_rect(Rect2(0, zt, size.x, zb - zt), TimingBar.GREEN.lightened(0.15) if in_zone else TimingBar.GREEN)
-		draw_rect(Rect2(Vector2.ZERO, size), TimingBar.BRASS.darkened(0.45), false, 2.0)
+		CarvedFrame.shade(self, Rect2(Vector2.ZERO, size), true)
 		var my := y_of(pos)
 		var col := TimingBar.BRASS if not bumped else Color(1.0, 0.55, 0.4)
 		draw_rect(Rect2(-6, my - 3, size.x + 12, 6), col)
-		draw_colored_polygon(PackedVector2Array([Vector2(-16, my - 9), Vector2(-4, my), Vector2(-16, my + 9)]), col)
+		CarvedFrame.leaf(self, Vector2(-4, my), Vector2.RIGHT, 30.0, col)
