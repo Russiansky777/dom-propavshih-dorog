@@ -1,29 +1,101 @@
-run 39848405119 2026-10-22T20:24:02Z requests: pipeline/requests/voice_list.json 
+run 39943184769 2026-10-23T11:02:34Z requests: pipeline/requests/voice_design_new.json pipeline/requests/voice_full_day1.json pipeline/requests/voice_full_quests.json 
 ключ: есть, длина 51, формат sk_…: да
 план: creator (active), израсходовано 21623 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_list.json
-ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 21623 из 124889 символов
-ключ принят API (GET /v2/voices → 200)
-голосов: 34, из них моих (My Voices): 11 → pipeline/voice/voices.json
-  [мой] 'Agata'                          ReYqW64ePwZHQReEArbt  generated  создан: 2026-10-17T20:38:17+00:00 (по порядку 2)  {"language": "ru"}
-  [мой] 'CAT'                            WVYD8dGGwhoMGyKwgFd7  generated  создан: 2026-10-17T21:09:40+00:00 (по порядку 5)  {"language": "ru"}
-  [мой] 'CAT-2'                          RRgQuGjVvCeyNderlonu  generated  создан: 2026-10-17T21:17:11+00:00 (по порядку 6)  {"language": "ru"}
-  [мой] 'PELAGEYA'                       mIbPOSXtLeiaroofXc7O  generated  создан: 2026-10-17T20:52:59+00:00 (по порядку 4)  {"language": "ru"}
-  [мой] 'TAMARA-1'                       GqJPI8zhNM5CF7q8EJ6l  generated  создан: 2026-10-17T20:47:58+00:00 (по порядку 3)  {"language": "ru"}
-  [мой] 'ZAKADR'                         kPaCtwsoLpkcqnqv9PyA  generated  создан: 2026-10-17T22:56:31+00:00 (по порядку 7)  {"language": "ru"}
-  [мой] 'Агата'                          B7zh39YGejeLEJzmFkHR  generated  создан: 2026-10-17T12:18:38+00:00 (по порядку 1)  {"language": "ru"}
-  [мой] 'ИЛЬЯ'                           YmNNmdPsbLNfVc6yh4G1  generated  создан: 2026-10-22T18:34:09+00:00 (по порядку 10)  {"language": "ru"}
-  [мой] 'МИТЯ'                           k3EpbtdM71O2VjgMkr1g  generated  создан: 2026-10-22T18:35:21+00:00 (по порядку 11)  {"language": "ru"}
-  [мой] 'НИНА'                           2LwZ4if25U4q3ufUlM8j  generated  создан: 2026-10-22T18:32:04+00:00 (по порядку 9)  {"language": "ru"}
-  [мой] 'Павел'                          aJmnBSfbFkDdduNK3YJt  generated  создан: 2026-10-22T18:21:03+00:00 (по порядку 8)  {"language": "ru"}
+=== pipeline/requests/voice_design_new.json
+  design ilya_wife: eleven_ttv_v3, mp3_44100_192, текст 157 символов, guidance_scale=5, quality=1.0, loudness=0.5, seed=23102026
+  ОШИБКА design ilya_wife: HTTP 400: {"type": "validation_error", "code": "invalid_parameters", "message": "Quality parameter is only supported for eleven_multilingual_ttv_v2.", "status": "invalid_parameters", "request_id": "ae7030ba42aa570858b1ce26d440562f", "param": "quality"}
+  design manager: eleven_ttv_v3, mp3_44100_192, текст 116 символов, guidance_scale=5, quality=1.0, loudness=0.5, seed=23102026
+  ОШИБКА design manager: HTTP 400: {"type": "validation_error", "code": "invalid_parameters", "message": "Quality parameter is only supported for eleven_multilingual_ttv_v2.", "status": "invalid_parameters", "request_id": "2e767b51e7649d6c41e17c46ff776547", "param": "quality"}
+  design: изменение счётчика подписки 0 (счётчик обновляется с задержкой)
+  предупреждение: H1.cups.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.photo.prompt: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.scarf.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.scarf.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.shelf.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.shelf.look_done: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.shelf.prompt: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.shutter.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.shutter.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.stove.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.stove.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H1.tikhon.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H2.clapper_box.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H2.hinges_box.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H2.hinges_box.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H3.exit_O1.closed: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H3.mirror_home.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H3.photo_school.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H3.puzzle.error: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H3.puzzle.intro: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H3.puzzle.need: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H3.puzzle.success: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H3.school_door.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H4.chest.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H4.v02.done: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: H4.window.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: M03_0: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: M03_1: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: M03_2: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: M05_0: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: M06_0: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: M08_0: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.bird_drawing.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.board.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.chalk.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.chalk.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.exit_H3.closed: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.notebooks.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.notebooks.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.sack.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.sack.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.teacher_drawer.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O1.v03.done: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: O2.porch_step.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: Q04_0: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: Q04_1: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: Q04_2: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: Q04_3: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: R1.lantern.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: R1.lantern.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: Z1.plan.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
   предупреждение: Z2.exit_H1.closed: устарела (текст изменён) — игра покажет только субтитры
-  предупреждение: к перезаписи 29 (текст изменён после записи, игра их не играет): H2.bell.look, H2.bell.use, H2.bench.use, H2.stand_zm.look, H3.exit_R4.closed, M01_0, M01_1, M01_2, M02_0, M02_1, M02_2, M03_3, M04_0, M07_0, O1.teacher_drawer.use, R1.exit_R2.closed, R1.instruction.look, R1.instruction.use, R1.rope.look, R1.rope.use, Z1.drawings.look, Z1.drawings.photo, Z1.drawings.use, Z1.letters.look, Z3.old_pier_base.look, Z3.plate.look, agata:H3.school_door.use, agata:O2.porch_step.mitten, pelageya:R1.pelageya.after — один запрос: pipeline/voice/README.md → «Текст изменился»
+  предупреждение: Z2.exit_H1.unlock: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: Z2.landmarks.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: Z4.lantern.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: Z4.post_sign.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:H1.cups.prompt: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:H1.cups.react_blue: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:H1.cups.react_white: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:H1.photo.react_shelf: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:H1.photo.react_table: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:H3.mirror_home.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:O1.bird_drawing.prompt: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:O1.board.chalk: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:O1.board.use: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:O2.exit_O4.loop: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:O2.tree.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:O2.window_other.look: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:R1.exit_Z2.closed: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:Z1.exit_Z4.closed: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:Z2.exit_H1.closed: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:Z2.exit_M1.closed: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:Z2.exit_R1.closed: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:Z2.exit_Z3.closed: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:item.key_house: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:item.letter_tamara: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:item.mitten: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: agata:item.pocket_watch: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: item.chalk: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: item.door_hinges: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: tamara:Z1.tamara.after: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: tikhon:H1.v01.done: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
+  предупреждение: к перезаписи 31 (текст изменён после записи, игра их не играет): H2.bell.look, H2.bell.use, H2.bench.look, H2.bench.use, H2.stand_zm.look, H3.exit_R4.closed, M01_0, M01_1, M01_2, M02_0, M02_1, M02_2, M03_3, M04_0, M07_0, O1.teacher_drawer.use, R1.exit_R2.closed, R1.instruction.look, R1.instruction.use, R1.rope.look, R1.rope.use, Z1.drawings.look, Z1.drawings.photo, Z1.drawings.use, Z1.letters.look, Z3.old_pier_base.look, Z3.plate.look, Z4.exit_H3.closed, agata:H3.school_door.use, agata:O2.porch_step.mitten, pelageya:R1.pelageya.after — один запрос: pipeline/voice/README.md → «Текст изменился»
   предупреждение: запасные записи с устаревшим текстом 5 (ключ сейчас читает другой голос; не перезаписываются): H3.school_door.use, O2.porch_step.mitten, R1.pelageya.after, Z2.exit_H1.closed, agata:H2.bell.use
   предупреждение: записи без ключа/реплики 2 (не звучат; после перезаписи помечаются stale): item.invoice_chalk, item.photo_school_pier
   ОШИБКА: H2.bell.look: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: H2.bell.use: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
+  ОШИБКА: H2.bench.look: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: H2.bench.use: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: H2.stand_zm.look: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: H3.exit_R4.closed: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
@@ -51,11 +123,12 @@ run 39848405119 2026-10-22T20:24:02Z requests: pipeline/requests/voice_list.json
   ОШИБКА: Z1.letters.look: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: Z3.old_pier_base.look: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: Z3.plate.look: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
+  ОШИБКА: Z4.exit_H3.closed: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: agata:H2.bell.use: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: agata:H3.school_door.use: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: agata:O2.porch_step.mitten: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: item.invoice_chalk: ключа больше нет в data/story/text, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: item.photo_school_pier: ключа больше нет в data/story/text, а запись не помечена stale — перегенерировать (pipeline-voice)
   ОШИБКА: pelageya:R1.pelageya.after: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
-validate_voice: манифесты: ru 139 (138 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, Q04; персонажей в cast.json: 10; реплик с тегами: 33; закадровых фраз по правилам voice.json: 252 (с тегами 22), заказаны тексты: ru_E0_E1, ru_bag
-[voice] validate_voice.py: FAIL (35 ошибок, 4 предупреждений, strict; самопроверка 21/21)
+validate_voice: манифесты: ru 139 (138 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, N01, Q01, Q03, Q04, Q07, Q08, Q09; персонажей в cast.json: 10; реплик с тегами: 34; закадровых фраз по правилам voice.json: 457 (с тегами 22), заказаны тексты: ru_E0_E1, ru_bag
+[voice] validate_voice.py: FAIL (37 ошибок, 85 предупреждений, strict; самопроверка 22/22)
