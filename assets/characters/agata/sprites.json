@@ -8,50 +8,64 @@
   },
   "directions": 8,
   "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.656,
+  "character_height_m": 1.653,
   "actions": {
     "idle": {
       "sheet": "idle.png",
-      "frames": 8,
-      "fps": 8,
+      "frames": 24,
+      "fps": 24.0,
       "clip": "Idle_4",
+      "clip_seconds": 1.5,
+      "natural_fps": 15.33,
       "window": [
-        0.0,
-        0.2
+        0.0788,
+        0.1862
       ],
       "playback": "pingpong"
     },
     "walk": {
       "sheet": "walk.png",
-      "frames": 12,
-      "fps": 12,
-      "clip": "Walking_Woman"
+      "frames": 24,
+      "fps": 24.0,
+      "clip": "Walking_Woman",
+      "clip_seconds": 0.9667,
+      "natural_fps": 24.83,
+      "floor_shift_m": 0.0366
     },
     "open": {
       "sheet": "open.png",
-      "frames": 16,
-      "fps": 8,
-      "clip": "open_door_open"
+      "frames": 32,
+      "fps": 24.0,
+      "clip": "open_door_open",
+      "clip_seconds": 5.2,
+      "natural_fps": 6.15,
+      "floor_shift_m": 0.0073
     },
     "pick": {
       "sheet": "pick.png",
-      "frames": 20,
-      "fps": 8,
-      "clip": "Female_Bend_Over_Pick_Up_Inspect_pick"
+      "frames": 40,
+      "fps": 24.0,
+      "clip": "Female_Bend_Over_Pick_Up_Inspect_pick",
+      "clip_seconds": 3.8333,
+      "natural_fps": 10.43,
+      "floor_shift_m": -0.0039
     },
     "reach": {
       "sheet": "reach.png",
-      "frames": 16,
-      "fps": 8,
-      "clip": "Female_Stand_Pick_Fruit_Basket_reach"
+      "frames": 32,
+      "fps": 24.0,
+      "clip": "Female_Stand_Pick_Fruit_Basket_reach",
+      "clip_seconds": 6.1667,
+      "natural_fps": 5.19,
+      "floor_shift_m": 0.0004
     }
   },
   "fit": {
-    "half_width_m": 0.878,
-    "top_m": 0.839,
-    "frame_top_m": 0.927,
+    "half_width_m": 0.872,
+    "top_m": 0.844,
+    "frame_top_m": 0.926,
     "frame_w": 384
   },
   "matte_materials": true,
-  "_source": "Агата v3 (pipeline/requests/agata_v3.json, прогон 39865082377): модель Meshy v3, клипы прежней Агаты переносом (retarget_clips.py), стопы исправлены (feet_fix), ткань матовая; копия assets/characters/agata_v3"
+  "_source": "Агата v3 (pipeline/requests/agata_v3.json, прогон 39879327009, F16/F22 23.10): 24 кадра на цикл ходьбы и 24 кадра одного покачивания стойки, 24 к/с; модель Meshy v3, клипы прежней Агаты переносом (retarget_clips.py), стопы исправлены (feet_fix), ткань матовая; копия assets/characters/agata_v3"
 }

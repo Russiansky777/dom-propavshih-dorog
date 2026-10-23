@@ -441,8 +441,10 @@ func _test_contacts() -> void:
 		return
 	var sheet_path := String(ff["sheet"])
 	var sprites: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(sheet_path.get_base_dir() + "/sprites.json"))
-	var img := Image.load_from_file(ProjectSettings.globalize_path(sheet_path))
-	_check(img != null and not img.is_empty(), "cannot read %s" % sheet_path)
+	# the game copy of the sheet is a packed atlas (tools/pack_sheets.py): read it as the grid
+	var ag = load("res://scripts/actors/actor_sheet.gd").load_actor("agata")
+	var img: Image = ag.grid_image(ag.walk_action) if ag.sheet_dir + "/" + String(ag.actions[ag.walk_action].get("sheet", "walk.png")) == sheet_path else null
+	_check(img != null and not img.is_empty(), "cannot read %s (as Agata's walk sheet)" % sheet_path)
 	if img == null or img.is_empty():
 		return
 	img.convert(Image.FORMAT_RGBA8)
@@ -482,7 +484,13 @@ func _test_contacts() -> void:
 		contacts_by_row[r] = c
 	var data_frames: Array = ff["contact_frames"]
 	print("    measured contacts: row 2 %s, row 6 %s; data %s" % [str(contacts_by_row[2]), str(contacts_by_row[6]), str(data_frames)])
-	_check(contacts_by_row[2] == contacts_by_row[6], "profile rows disagree on the contact frames: %s vs %s" % [str(contacts_by_row[2]), str(contacts_by_row[6])])
+	# 24 frames per cycle (F16): the swing's far point can fall one frame apart in the two profile rows
+	var agree: bool = (contacts_by_row[2] as Array).size() == (contacts_by_row[6] as Array).size()
+	if agree:
+		for i in (contacts_by_row[2] as Array).size():
+			var dd := wrapi(int(contacts_by_row[2][i]) - int(contacts_by_row[6][i]), 0, n)
+			agree = agree and mini(dd, n - dd) <= 1
+	_check(agree, "profile rows disagree on the contact frames by more than a frame: %s vs %s" % [str(contacts_by_row[2]), str(contacts_by_row[6])])
 	var df: Array[int] = []
 	for f in data_frames:
 		df.append(int(f))

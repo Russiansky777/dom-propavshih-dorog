@@ -44,6 +44,13 @@ var facing: int = 1
 var sheet: ActorSheet = null
 var sprite: AnimatedSprite2D = null
 var direction: int = 0          # sheet row of the current facing (0 = towards the viewer)
+## F22 (23.10): the row on screen turns through the neighbouring rows, one every TURN_STEP_S, instead of
+## flipping to `direction` (where she heads: speed and stride follow it). From standing she turns on the spot
+## (idle frames on the rows in between) and only then walks off; an action waits for the turn.
+const TURN_STEP_S: float = 0.07
+var shown_dir: int = 0
+var _turn_t: float = 0.0
+var _turn_hold: Array = []      # [action, node] waiting for the turn to finish
 
 var _walking: bool = false
 var _target: Vector2 = Vector2.ZERO
@@ -118,11 +125,52 @@ func _process(delta: float) -> void:
 	if is_3d():
 		_process_3d(delta)
 		return
+	_turn_tick(delta)
 	if _walking:
 		_walk_step(delta)
 	if _frame_pending:
 		_finish_frame_change()
 	_update_foot_lock()
+
+
+## Turning: one row towards `direction` every TURN_STEP_S, the animation going on (same frame) on the new row.
+func _turn_tick(delta: float) -> void:
+	if sheet == null or sprite == null:
+		return
+	if shown_dir == direction:
+		_turn_t = 0.0
+		if not _turn_hold.is_empty():
+			var h: Array = _turn_hold
+			_turn_hold = []
+			if h[1] != null and is_instance_valid(h[1]):
+				_start_action(String(h[0]), h[1])
+		return
+	_turn_t += delta
+	if _turn_t >= TURN_STEP_S:
+		# one row per step and at most one per frame: a slow frame never skips a row
+		_turn_t = minf(_turn_t - TURN_STEP_S, TURN_STEP_S)
+		shown_dir = ActorSheet.step_toward(shown_dir, direction, sheet.directions)
+		_show_row()
+
+
+## The current animation on the row `shown_dir`, same frame and progress, no cross-fade (a turn step).
+func _show_row() -> void:
+	var cur := String(sprite.animation)
+	var cut := cur.rfind("_")
+	var base := cur.substr(0, cut) if cut > 0 else sheet.idle_action
+	var anim := sheet.anim_name(base, shown_dir)
+	if anim == cur or not sprite.sprite_frames.has_animation(anim):
+		return
+	var f := sprite.frame
+	var p := sprite.frame_progress
+	var playing := sprite.is_playing()
+	_lock_hold = true  # a turn step is not a stride
+	sprite.play(anim)
+	if sprite.sprite_frames.get_frame_count(anim) > f:
+		sprite.set_frame_and_progress(f, p)
+	if not playing:
+		sprite.pause()
+	_lock_hold = false
 
 
 ## The drawn figure stands at `_drawn_pos` while a frame is shown: offset from the logical position,
@@ -302,7 +350,7 @@ func face_towards(target: Vector2) -> void:
 func _play_idle() -> void:
 	if sprite == null:
 		return
-	var anim := sheet.anim_name(sheet.idle_action, direction)
+	var anim := sheet.anim_name(sheet.idle_action, direction if is_3d() else shown_dir)
 	if sprite.animation != anim and not is_3d():
 		ActorCrossfade.begin(sprite, sheet.crossfade_s)
 	sprite.speed_scale = 1.0
@@ -341,7 +389,7 @@ func current_walk_fps() -> float:
 func _update_walk_anim() -> void:
 	if sprite == null:
 		return
-	var anim := sheet.anim_name(sheet.walk_action, direction)
+	var anim := sheet.anim_name(sheet.walk_action, shown_dir)
 	var base_fps := sprite.sprite_frames.get_animation_speed(anim)
 	var fps := current_walk_fps()
 	sprite.speed_scale = fps / base_fps if base_fps > 0.0 else 1.0
@@ -409,6 +457,7 @@ func walk_to_and_interact(node: Node2D) -> void:
 
 
 func _start_walk(target: Vector2) -> void:
+	_turn_hold = []
 	if _walking:
 		_adopt_drawn_position()  # a new target mid-walk: continue from where the figure is drawn
 	_target = target
@@ -489,6 +538,13 @@ func _walk_step(delta: float) -> void:
 	# corrections never twitch the sprite.
 	if sheet != null and dist > maxf(sheet.direction_threshold_px, 1.0):
 		direction = sheet.direction_index(to_next)
+	if sheet != null and sprite != null and ActorSheet.row_steps(shown_dir, direction, sheet.directions) > 1 \
+			and not String(sprite.animation).begins_with(sheet.walk_action):
+		# from standing, more than 45° off the path: turn on the spot first (idle on the rows in between)
+		if not String(sprite.animation).begins_with(sheet.idle_action):
+			_play_idle()
+		_update_depth()
+		return
 	var step := minf(current_speed_px() * delta, dist)
 	if dist > 0.001:
 		var motion := to_next / dist * step
@@ -558,6 +614,11 @@ func _action_for(node: Node2D) -> String:
 
 
 func _start_action(act: String, node: Node2D) -> void:
+	if not is_3d() and sheet != null and shown_dir != direction:
+		# turn towards the hotspot first (F22); the action starts when the drawn row arrives
+		_turn_hold = [act, node]
+		_play_idle()
+		return
 	_acting = true
 	_action = act
 	_action_node = node
@@ -566,7 +627,7 @@ func _start_action(act: String, node: Node2D) -> void:
 		_start_action_3d(act, node)
 		action_started.emit(act, node)
 		return
-	var anim := sheet.anim_name(act, direction)
+	var anim := sheet.anim_name(act, shown_dir)
 	if sprite.animation != anim:
 		ActorCrossfade.begin(sprite, sheet.crossfade_s)
 	sprite.speed_scale = 1.0
@@ -575,7 +636,7 @@ func _start_action(act: String, node: Node2D) -> void:
 
 
 func is_acting() -> bool:
-	return _acting
+	return _acting or not _turn_hold.is_empty()  # an action waiting for the turn counts (F22)
 
 
 func current_action() -> String:

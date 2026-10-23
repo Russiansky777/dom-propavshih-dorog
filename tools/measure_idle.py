@@ -64,6 +64,22 @@ def best_run(steps, min_frames=4):
     return 0, len(steps), None
 
 
+
+def grid_image(path, act, fw, fh, dirs):
+    """Лист как сетка (кадры — столбцы, направления — строки). Копия листа в игре упакована в атлас
+    (tools/pack_sheets.py: actions.<a>.atlas.rects = [x, y, w, h, ox, oy]) — разворачивается обратно."""
+    im = Image.open(path).convert("RGBA")
+    at = act.get("atlas")
+    if not at:
+        return im
+    n = int(act["frames"])
+    g = Image.new("RGBA", (n * fw, dirs * fh), (0, 0, 0, 0))
+    for k, (x, y, w, h, ox, oy) in enumerate(at["rects"]):
+        d, i = divmod(k, n)
+        if w > 0 and h > 0:
+            g.paste(im.crop((x, y, x + w, y + h)), (i * fw + ox, d * fh + oy))
+    return g
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("actors", nargs="*")
@@ -73,6 +89,7 @@ def main():
     ap.add_argument("--hold", type=float, default=0.35)
     ap.add_argument("--action", default="", help="action to measure (default: the actor's idle); e.g. talk")
     ap.add_argument("--all-frames", action="store_true", help="keep every frame (a gesture clip: time follows the measured path instead of dropping uneven steps)")
+    ap.add_argument("--first", type=int, default=0, help="with --all-frames: the first frame played (frames before it stay in the sheet, unplayed)")
     args = ap.parse_args()
     data_dir = os.path.join(ROOT, "game", "data", "actors")
     actors = args.actors or sorted(f[:-5] for f in os.listdir(data_dir) if f.endswith(".json"))
@@ -95,14 +112,14 @@ def main():
         with open(sheet, "rb") as f:
             md5 = hashlib.md5(f.read()).hexdigest()
         fw, fh, n = int(sprites["frame_w"]), int(sprites["frame_h"]), int(act["frames"])
-        img = np.asarray(Image.open(sheet).convert("RGBA"))
+        img = np.asarray(grid_image(sheet, act, fw, fh, int(sprites.get("directions", 8))))
         rows = []
         print(f"{actor}/{idle_name}: {os.path.relpath(sheet, ROOT)} ({n} frames, md5 {md5[:10]}…)")
         dirs = int(sprites.get("directions", 8))
         all_steps = [steps_of(img, r, n, fw, fh) for r in range(dirs)]
         # One frame range for every row (turning in place must not change the sway's amplitude):
         # the longest run of ≥ 4 frames whose steps stay even (max/min ≤ 1.6) in ALL rows.
-        common = (0, n - 1, n, 0.0) if args.all_frames else None
+        common = (args.first, n - 1, n - args.first, 0.0) if args.all_frames else None
         for length in ([] if args.all_frames else range(n, 3, -1)):
             for a in range(0, n - length + 1):
                 b = a + length - 1
@@ -122,7 +139,9 @@ def main():
             rows.append({"frames": list(range(a, b + 1)), "path": [round(float(x), 4) for x in cum]})
             print(f"  row {r}: steps {[round(x, 1) for x in st]} → frames {a}..{b} (max/min {max(seg) / min(seg):.2f}, limit {ratio}), path {[round(float(x), 2) for x in cum]}")
         motion = {
-            "_comment": f"Ровное качание «{idle_name}» (tools/measure_idle.py): для каждой строки — кадры с ровными шагами движения (рывки клипа отброшены) и их доля пути 0..1. ActorSheet играет их туда-обратно по косинусу (playback pingpong_eased): одинаковое время до обеих крайних поз, замедление до нуля и одинаковая выдержка у обоих краёв. Перемерить после замены листа: python3 tools/measure_idle.py --write" + (f" --action {idle_name}" if args.action else "") + ".",
+            "_comment": f"Ровное качание «{idle_name}» (tools/measure_idle.py): для каждой строки — кадры с ровными шагами движения (рывки клипа отброшены) и их доля пути 0..1. ActorSheet играет их туда-обратно по косинусу (playback pingpong_eased): одинаковое время до обеих крайних поз, замедление до нуля и одинаковая выдержка у обоих краёв. Перемерить после замены листа: python3 tools/measure_idle.py --write" + (f" --action {idle_name}" if args.action else "")
+            + (" --all-frames" if args.all_frames else "") + (f" --first {args.first}" if args.first else "")
+            + (f" --period {args.period:g} --hold {args.hold:g}" if (args.period, args.hold) != (3.6, 0.35) else "") + ".",
             "sheet_md5": md5,
             "rows": rows,
         }

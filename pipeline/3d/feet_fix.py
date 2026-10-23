@@ -862,7 +862,11 @@ def fix_action(arm, rig: Rig, act, kind: str, params=None, window=None) -> dict:
     if window:
         f0, f1 = frames[0], frames[-1]
         lo, hi = f0 + (f1 - f0) * window[0], f0 + (f1 - f0) * window[1]
-        frames = frames[(frames >= lo - 1e-6) & (frames <= hi + 1e-6)]
+        # и по ключу за краями окна: при импорте в 24 к/с ключ края (30 к/с) ложится на долю кадра раньше
+        # или позже окна — без него крайний кадр листа рисовался со стопами клипа (23.10, кадр 0 стойки)
+        i0 = max(0, int(np.searchsorted(frames, lo - 1e-6)) - 1)
+        i1 = min(len(frames), int(np.searchsorted(frames, hi + 1e-6, side="right")) + 1)
+        frames = frames[i0:i1]
     R, P = sample(arm, act, rig, frames)
     cyc = is_cyclic(rig, R, P) and not window
     before = measure(rig, R, P, kind, cyclic=cyc)

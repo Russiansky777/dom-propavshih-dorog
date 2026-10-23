@@ -16,6 +16,10 @@ var sprite: AnimatedSprite2D = null
 var hotspot: StoryHotspot = null
 var player: Node2D = null
 var direction: int = 0
+## F22 (23.10): the row on screen turns to `direction` through the neighbouring rows, one every TURN_STEP_S
+## (as Agata), the idle/talk animation going on — no flip when the NPC turns to face Agata.
+var shown_dir: int = 0
+var _turn_t: float = 0.0
 var talking: bool = false
 
 
@@ -95,6 +99,7 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	if img != null:
 		img.visible = false  # the sheet replaces the static front view
 	direction = sheet.direction_index(ActorSheet.facing_vector(sheet.facing))
+	shown_dir = direction
 	visible = h.visible
 	h.visibility_changed.connect(func(): visible = hotspot.visible)
 	StoryRunner.beat_changed.connect(_on_beat_changed)
@@ -113,17 +118,36 @@ func face_towards(target: Vector2) -> void:
 		direction = sheet.direction_index(v)
 
 
+func _process(delta: float) -> void:
+	if sheet == null or sprite == null or shown_dir == direction:
+		_turn_t = 0.0
+		return
+	_turn_t += delta
+	if _turn_t >= Player.TURN_STEP_S:
+		_turn_t = minf(_turn_t - Player.TURN_STEP_S, Player.TURN_STEP_S)  # one row per step, never two in a frame
+		shown_dir = ActorSheet.step_toward(shown_dir, direction, sheet.directions)
+		var cur := String(sprite.animation)
+		var cut := cur.rfind("_")
+		var anim := sheet.anim_name(cur.substr(0, cut) if cut > 0 else sheet.idle_action, shown_dir)
+		if anim != cur and sprite.sprite_frames.has_animation(anim):
+			var f := sprite.frame
+			var pr := sprite.frame_progress
+			sprite.play(anim)  # a turn step: same frame on the next row, no cross-fade
+			if sprite.sprite_frames.get_frame_count(anim) > f:
+				sprite.set_frame_and_progress(f, pr)
+
+
 func _play_idle() -> void:
 	talking = false
-	_play(sheet.anim_name(sheet.idle_action, direction))
+	_play(sheet.anim_name(sheet.idle_action, shown_dir))
 
 
 func _play_talk() -> void:
 	talking = true
 	if sheet.has_action(sheet.talk_action):
-		_play(sheet.anim_name(sheet.talk_action, direction))
+		_play(sheet.anim_name(sheet.talk_action, shown_dir))
 	else:
-		_play(sheet.anim_name(sheet.idle_action, direction))
+		_play(sheet.anim_name(sheet.idle_action, shown_dir))
 
 
 ## Switches animation with a short cross-fade from the current pose (no jump between clips).

@@ -174,6 +174,22 @@ def compact_json(obj):
                   lambda m: "[" + ", ".join(x.strip() for x in m.group(1).split(",")) + "]", text)
 
 
+
+def grid_image(path, act, fw, fh, dirs):
+    """Лист как сетка (кадры — столбцы, направления — строки). Копия листа в игре упакована в атлас
+    (tools/pack_sheets.py: actions.<a>.atlas.rects = [x, y, w, h, ox, oy]) — разворачивается обратно."""
+    im = Image.open(path).convert("RGBA")
+    at = act.get("atlas")
+    if not at:
+        return im
+    n = int(act["frames"])
+    g = Image.new("RGBA", (n * fw, dirs * fh), (0, 0, 0, 0))
+    for k, (x, y, w, h, ox, oy) in enumerate(at["rects"]):
+        d, i = divmod(k, n)
+        if w > 0 and h > 0:
+            g.paste(im.crop((x, y, x + w, y + h)), (i * fw + ox, d * fh + oy))
+    return g
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--actor", default="agata")
@@ -199,7 +215,7 @@ def main():
     dirs = int(sprites.get("directions", 8))
     px_per_m = fh / float(sprites.get("character_height_m", 1.657))
     elev = float(walk.get("camera_elev_deg", 14.0))
-    img = np.array(Image.open(sheet_path).convert("RGBA")).astype(np.float32)
+    img = np.array(grid_image(sheet_path, act, fw, fh, dirs)).astype(np.float32)
 
     geo = [row_geometry(r, dirs, elev) for r in range(dirs)]
     measured = [measure_row(img, r, N, fw, fh, geo[r][0]) for r in range(dirs)]

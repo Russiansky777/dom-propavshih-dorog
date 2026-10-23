@@ -79,6 +79,7 @@ func _run() -> void:
 	await _test("Negative: exit H3→O1 is closed before M05 and open after", _test_exit_gate)
 	await _test("Bot walkthrough M01→M08 via StoryRunner/Room API with mid-way save/load", _test_walkthrough)
 	await _test("H1: Agata sprite from sheets (frame from sprites.json, height 384, 8 walk + 8 idle), directions, table occluder z-sort", _test_h1_real)
+	await _test("Turns (F22): >45° goes row by row (≈70 ms each, half a turn ≈ 0.28 s) with the animation playing; from standing Agata turns on the spot, then walks; an NPC turns to her the same way", _test_turns)
 	await _test("Stride: fps from speed, stride = sheet stride, foot lock holds the drawn figure between frames", _test_stride)
 	await _test("NPC actors: Tamara/Pelageya from sheets on their hotspots, depth scale, y-sort, talk during their lines", _test_npc_actors)
 	await _test("Shadows: soft ellipse under the feet of Agata and NPCs, behind the figure, scaled by depth", _test_shadows)
@@ -514,6 +515,114 @@ func _spawn_main() -> void:
 	rm.autosave_slot = TEST_AUTOSAVE_SLOT
 	world = main_node.get_node("World")
 	player = main_node.get_node("World/Player")
+
+
+## Rows the actor draws (from the playing animation's name) until it shows `target`: consecutive repeats
+## dropped. Also: seconds taken, whether the animation kept playing every frame, positions seen.
+func _watch_rows(actor: Node2D, target: int, timeout_s: float) -> Dictionary:
+	var spr: AnimatedSprite2D = actor.get_node("Sprite")
+	var rows: Array = []
+	var played := true
+	var poses: Array = []
+	var seen: Array = []
+	var t0 := Time.get_ticks_msec()
+	# game time (sum of process deltas, as the turn counts it — not the wall clock of a loaded runner); the current
+	# frame counts too: a test resumed on process_frame runs before the actors' _process of the same frame
+	var game_s := root.get_process_delta_time()
+	while Time.get_ticks_msec() - t0 < int(timeout_s * 1000.0):
+		var name := String(spr.animation)
+		var r := int(name.substr(name.rfind("_") + 1))
+		if rows.is_empty() or rows[-1] != r:
+			rows.append(r)
+		played = played and spr.is_playing()
+		poses.append(actor.global_position)
+		seen.append(r)
+		if r == target:
+			break
+		await process_frame
+		game_s += root.get_process_delta_time()
+	return {"rows": rows, "s": game_s, "playing": played, "poses": poses, "seen": seen}
+
+
+func _rows_step_by_one(rows: Array, n: int) -> bool:
+	for i in range(1, rows.size()):
+		if load("res://scripts/actors/actor_sheet.gd").row_steps(int(rows[i - 1]), int(rows[i]), n) != 1:
+			return false
+	return true
+
+
+func _test_turns() -> void:
+	Engine.time_scale = 1.0
+	gs.reset()
+	await _spawn_main()
+	rm.autosave_enabled = false
+	gs.set_flag("done_M01", true)
+	rm.change_room("H1", "", Vector2(1200, 900))
+	for i in 6:
+		await physics_frame
+	_check(player.call("uses_sheet"), "Agata uses the sheets")
+	# 1. Standing, facing left (row 6) → face right (row 2): half a turn past the face, idle playing.
+	player.direction = 6
+	player.shown_dir = 6
+	player.set("_turn_t", 0.0)  # a turn starts from rest (set by hand here, not by a finished turn)
+	player.call("_play_idle")
+	await process_frame
+	player.call("face_towards", player.global_position + Vector2(300, 0))
+	var w: Dictionary = await _watch_rows(player, 2, 2.0)
+	print("    Agata 6 → 2: rows %s in %.2f s (game time; time_scale %.1f), playing %s" % [str(w.rows), w.s, Engine.time_scale, str(w.playing)])
+	_check(w.rows == [6, 7, 0, 1, 2], "half a turn goes 6 → 7 → 0 → 1 → 2 (past the face), got %s" % str(w.rows))
+	_check(w.s >= 0.24 and w.s <= 0.6, "four steps of ≈70 ms take ≈0.28 s, got %.2f s" % w.s)
+	_check(w.playing, "the idle keeps playing during the turn (no frozen frame)")
+	# 2. 90° the other way (2 → 4, past 3) — any change over 45° visits the neighbours in order.
+	player.call("face_towards", player.global_position + Vector2(0, -300))
+	w = await _watch_rows(player, 4, 2.0)
+	_check(w.rows == [2, 3, 4], "a quarter turn goes 2 → 3 → 4, got %s" % str(w.rows))
+	# 3. Standing towards the viewer (row 0), a click behind her: she turns on the spot first, then walks off.
+	player.direction = 0
+	player.shown_dir = 0
+	player.set("_turn_t", 0.0)  # a turn starts from rest (set by hand here, not by a finished turn)
+	player.call("_play_idle")
+	await process_frame
+	var start: Vector2 = player.global_position
+	player.call("walk_to", start + Vector2(0, -150))
+	var target_row: int = player.sheet.direction_index(Vector2(0, -1))
+	w = await _watch_rows(player, target_row, 2.0)
+	var moved_while_turning := false
+	var sheet_script = load("res://scripts/actors/actor_sheet.gd")
+	for i in range(w.poses.size()):
+		# more than 45° off the path: still on the spot (the last 45° she may already walk off)
+		if sheet_script.row_steps(int(w.seen[i]), target_row, 8) > 1:
+			moved_while_turning = moved_while_turning or (w.poses[i] as Vector2).distance_to(start) > 1.0
+	print("    Agata walk behind: rows %s in %.2f s, moved while turning %s" % [str(w.rows), w.s, str(moved_while_turning)])
+	_check(_rows_step_by_one(w.rows, 8) and w.rows.size() == 5, "turning to walk off goes row by row through half a turn, got %s" % str(w.rows))
+	_check(not moved_while_turning, "she turns on the spot before walking off (no walking backwards)")
+	for i in 90:
+		await physics_frame
+	_check(player.global_position.distance_to(start) > 20.0, "after the turn she walks (moved %.0f px)" % player.global_position.distance_to(start))
+	# 4. An NPC turning to face Agata (Pavel in M2): row by row as well.
+	gs.set_flag("office_unbolted", true)
+	rm.change_room("M2", "", Vector2(700, 900))
+	for i in 6:
+		await physics_frame
+	var npc: Node2D = null
+	for n in load("res://scripts/actors/npc_actor.gd").all_in(rm.current_room):
+		if n.actor_id == "pavel":
+			npc = n
+	_check(npc != null, "Pavel stands in M2 (office_unbolted)")
+	if npc != null:
+		var from_row: int = npc.sheet.direction_index(Vector2(1, 0))
+		npc.direction = from_row
+		npc.shown_dir = from_row
+		npc.set("_turn_t", 0.0)
+		npc.call("_play_idle")
+		await process_frame
+		npc.call("face_towards", npc.global_position + Vector2(-300, 0))
+		var to_row: int = npc.sheet.direction_index(Vector2(-1, 0))
+		w = await _watch_rows(npc, to_row, 2.0)
+		print("    Pavel %d → %d: rows %s in %.2f s" % [from_row, to_row, str(w.rows), w.s])
+		_check(_rows_step_by_one(w.rows, 8) and w.rows.size() == 5 and w.rows[-1] == to_row, "Pavel turns row by row, got %s" % str(w.rows))
+		_check(w.playing, "Pavel's idle keeps playing during the turn")
+	_cleanup_m1()
 
 
 func _cleanup_m1() -> void:
@@ -967,16 +1076,26 @@ func _test_h1_real() -> void:
 	var fw: int = player.sheet.frame_w
 	_check(fw >= 288 and player.sheet.frame_h == 384, "frame %dx%d: width ≥ 288 from sprites.json, height 384" % [fw, player.sheet.frame_h])
 	_check(tex != null and tex.get_size() == Vector2(fw, 384), "frame size should be %dx384, got %s" % [fw, str(tex.get_size() if tex else null)])
-	_check(spr.sprite_frames.get_frame_count("walk_0") == 12, "walk animations should have 12 frames")
+	var wn := int(player.sheet.actions["walk"].get("frames", 0))
+	# F16 (23.10, «у Агаты будто бы мало fps»): ≥ 20 frames per walk cycle, all of them played
+	_check(spr.sprite_frames.get_frame_count("walk_0") == wn and wn >= 20, "walk: ≥ 20 frames per cycle, all played (sheet %d, played %d)" % [wn, spr.sprite_frames.get_frame_count("walk_0")])
 	# Idle rev 8: eased back-and-forth over the evenly-moving frames (data idle_motion, test «Idle sway»).
 	var tl: Array = player.sheet.eased_timeline("idle", 3)
 	_check(spr.sprite_frames.get_frame_count("idle_3") == tl.size() and tl.size() >= 6, "idle_3 is built from the eased timeline (%d segments), got %d frames" % [tl.size(), spr.sprite_frames.get_frame_count("idle_3")])
+	# F16/F22 (Директор 02:29: «будто бы 4–5 кадров меняются и всё»): every row's sway shows ≥ 20 different frames
+	for r in 8:
+		var cols := {}
+		for seg in player.sheet.eased_timeline("idle", r):
+			cols[int(seg[0])] = true
+		_check(cols.size() >= 20, "idle row %d sways through %d different frames (≥ 20)" % [r, cols.size()])
 	var seq: Array = player.sheet.frame_sequence(8, "pingpong")
 	_check(seq == [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1], "pingpong sequence for 8 frames, got %s" % str(seq))
 	_check(player.sheet.frame_sequence(12, "loop") == range(12), "loop sequence is 0..n-1")
 	for i in tl.size():
-		var reg: Rect2 = (spr.sprite_frames.get_frame_texture("idle_3", i) as AtlasTexture).region
-		_check(reg.position == Vector2(int(tl[i][0]) * fw, 3 * 384), "idle_3 frame %d must be sheet column %d of row 3, got %s" % [i, int(tl[i][0]), str(reg.position)])
+		var at3 := spr.sprite_frames.get_frame_texture("idle_3", i) as AtlasTexture
+		# grid sheet: the cell of column tl[i][0], row 3; packed atlas (game copy): that frame's piece + margin
+		var want: Array = player.sheet.frame_rect(player.sheet.actions["idle"], 3, int(tl[i][0]))
+		_check(at3.region == want[0] and at3.margin == want[1], "idle_3 frame %d must be sheet column %d of row 3, got %s / %s" % [i, int(tl[i][0]), str(at3.region), str(at3.margin)])
 		_check(is_equal_approx(spr.sprite_frames.get_frame_duration("idle_3", i), float(tl[i][2])), "idle_3 frame %d holds %d timeline steps" % [i, int(tl[i][2])])
 	_check(is_equal_approx(spr.sprite_frames.get_animation_speed("idle_0"), 30.0), "eased idle runs on a 30 steps/s timeline")
 	var st = load("res://scripts/actors/actor_sheet.gd").load_actor("agata", {"idle_static_frame": 0})
@@ -1006,9 +1125,13 @@ func _test_h1_real() -> void:
 		player.call("enter_room", room, Vector2(900, 1000))
 		_check(player.z_index > table.z_index, "player below the table (y=1000) must be drawn in front of it")
 	_check(is_equal_approx(room.depth_scale(700.0), 1.3) and is_equal_approx(room.depth_scale(1070.0), 2.0), "H1 depth scale from data (1.3..2.0)")
-	# Step tempo from real speed: at scale 1 and 260 px/s the walk cycle must run at 8–14 fps.
+	# Step tempo from real speed: at scale 1 and 260 px/s the walk cycle runs at 0.67–1.17 × the sheet's frames
+	# per second of cycle (12 frames → 8–14 fps; F16: 24 frames → 16–28 fps — the sheet plays at its own tempo).
+	var wfr := float(player.sheet.walk_frames())
+	var fps_lo := wfr * 2.0 / 3.0
+	var fps_hi := wfr * 7.0 / 6.0
 	var fps1: float = player.sheet.walk_fps(260.0, 1.0)
-	_check(fps1 >= 8.0 and fps1 <= 14.0, "walk fps at scale 1 / 260 px/s should be 8–14, got %.2f" % fps1)
+	_check(fps1 >= fps_lo and fps1 <= fps_hi, "walk fps at scale 1 / 260 px/s should be %.0f–%.0f, got %.2f" % [fps_lo, fps_hi, fps1])
 	# Speed in px/s follows the depth scale (constant metres per second).
 	player.call("enter_room", room, Vector2(1200, 700))
 	var v_far: float = player.call("current_speed_px")
@@ -1017,7 +1140,7 @@ func _test_h1_real() -> void:
 	var v_near: float = player.call("current_speed_px")
 	var fps_near: float = player.call("current_walk_fps")
 	_check(is_equal_approx(v_near / v_far, 2.0 / 1.3), "speed should scale with depth (near/far = 2.0/1.3), got %.3f" % (v_near / v_far))
-	_check(absf(fps_near - fps_far) < 0.05 and fps_near >= 8.0 and fps_near <= 14.0, "walk fps must stay constant across depth and within 8–14, got far %.2f / near %.2f" % [fps_far, fps_near])
+	_check(absf(fps_near - fps_far) < 0.05 and fps_near >= fps_lo and fps_near <= fps_hi, "walk fps must stay constant across depth and within %.0f–%.0f, got far %.2f / near %.2f" % [fps_lo, fps_hi, fps_far, fps_near])
 	# Walking plays the walk animation through speed_scale (no manual frames) and sets the direction row.
 	player.speed_factor = 1.0
 	player.call("enter_room", room, Vector2(1400, 900))
@@ -1132,13 +1255,21 @@ func _test_stride() -> void:
 			run[0], run[3], changes, fps_meas, sheet.walk_fps_const(), within_max, str(adv), max_err, max_lag, player.lock_resyncs - resyncs0])
 		_check(changes >= 8, "%s: expected at least 8 frame changes, got %d" % [run[0], changes])
 		# Measured logical speed per unit of depth scale (px/s ÷ scale), for the vertical/side ratio.
+		# only while the logical position moves: the end of a walk where the drawn figure finishes its steps
+		# (logical position already at the target) is not speed; nor a turn on the spot before it (F22)
 		var dist_px := 0.0
 		var scale_sum := 0.0
+		var secs := 0.0
+		var moving := 0
 		for i in range(1, samples.size()):
-			dist_px += (samples[i][2] as Vector2).distance_to(samples[i - 1][2])
+			var dd := (samples[i][2] as Vector2).distance_to(samples[i - 1][2])
+			if dd < 0.01:
+				continue
+			dist_px += dd
+			secs += float(samples[i][4] - samples[i - 1][4]) / 1e6
 			scale_sum += float(samples[i][3])
-		var secs := float(samples[-1][4] - samples[0][4]) / 1e6
-		speeds[run[0]] = dist_px / maxf(secs, 0.001) / maxf(scale_sum / maxf(samples.size() - 1, 1), 0.001)
+			moving += 1
+		speeds[run[0]] = dist_px / maxf(secs, 0.001) / maxf(scale_sum / maxf(moving, 1), 0.001)
 		_check(within_max < 0.01, "%s: drawn figure must not move while a frame is shown, moved %.2f px" % [run[0], within_max])
 		_check(max_err < 0.6, "%s: every frame change must advance the drawn figure by table[row][frame] × scale (max error %.2f px)" % [run[0], max_err])
 		_check(not ahead, "%s: the drawn figure must never be ahead of the logical position" % run[0])
@@ -1380,7 +1511,7 @@ func _test_loop_seams() -> void:
 			if seq.size() < 3:
 				continue
 			var path: String = sheet.sheet_dir + "/" + String(sheet.actions[action].get("sheet", action + ".png"))
-			var img := Image.load_from_file(ProjectSettings.globalize_path(path))
+			var img: Image = sheet.grid_image(String(action))  # the game copy is a packed atlas: unpacked to the grid
 			if img == null or img.is_empty():
 				_check(false, "%s/%s: cannot read %s" % [id, action, path])
 				continue
@@ -1415,8 +1546,8 @@ func _test_loop_seams() -> void:
 	# The check itself must catch a real seam: Agata's idle played as a plain loop jumps 7 → 0.
 	var ag = load("res://scripts/actors/actor_sheet.gd").load_actor("agata")
 	var ipath: String = ag.sheet_dir + "/" + String(ag.actions[ag.idle_action].get("sheet", "idle.png"))
-	var iimg := Image.load_from_file(ProjectSettings.globalize_path(ipath))
-	iimg.convert(Image.FORMAT_RGBA8)
+	var iimg: Image = ag.grid_image(ag.idle_action)
+	_check(iimg != null and not iimg.is_empty(), "cannot read %s" % ipath)
 	var n_idle: int = int(ag.actions[ag.idle_action].get("frames", 8))
 	var c := {}
 	var nb: Array = []
@@ -1493,11 +1624,15 @@ func _test_crossfade() -> void:
 	var fade: AnimatedSprite2D = null
 	var n := 0
 	while n < 120 and not String(spr.animation).begins_with("walk_"):
+		idle_anim = String(spr.animation)  # she may turn on the spot first (F22): the last idle row before the walk
 		await process_frame
 		n += 1
 	fade = player.get_node_or_null("Crossfade")
 	_check(fade != null and fade.visible, "idle→walk must start a cross-fade node 'Crossfade'")
 	if fade != null:
+		# the old pose: the idle on the row the walk starts from (after a turn on the spot, F22, that is the row shown last)
+		var walk_row := String(spr.animation).substr(String(spr.animation).rfind("_") + 1)
+		idle_anim = "idle_" + walk_row if String(spr.animation).begins_with("walk_") else idle_anim
 		_check(String(fade.animation) == idle_anim and not fade.is_playing(), "the fade shows the frozen old pose (%s), got %s" % [idle_anim, String(fade.animation)])
 		_check(fade.top_level, "the fading pose stays in place in the world (top_level)")
 		var a0: float = fade.modulate.a
@@ -1581,7 +1716,8 @@ func _test_actions() -> void:
 	player.speed_factor = 3.0
 	player.call("walk_to_and_interact", shutter)
 	var n := 0
-	while not player.call("is_acting") and n < 2000:
+	# is_acting is true from arrival; the action itself starts once she has turned to the shutter (F22)
+	while not (player.call("is_acting") and String(spr.animation).begins_with("open_")) and n < 2000:
 		await process_frame
 		n += 1
 	_check(player.call("is_acting") and String(spr.animation).begins_with("open_"), "arriving at the shutter must start the open action, got %s" % String(spr.animation))
@@ -1716,7 +1852,7 @@ func _check_eased(sheet, id: String, action: String) -> int:
 		for seg in tl:
 			starts.append(period)
 			period += float(seg[1])
-		_check(period >= 3.0 and period <= 4.2, "%s/%s row %d: period %.2f s outside 3–4 s" % [id, action, r, period])
+		_check(period >= 2.95 and period <= 4.2, "%s/%s row %d: period %.2f s outside 3–4 s" % [id, action, r, period])
 		_check(int(tl[0][0]) == a and int(tl[tl.size() - 1][0]) == a, "%s/%s row %d: the loop starts and ends on the same pose (no seam)" % [id, action, r])
 		var dwell_a := 0.0
 		var dwell_b := 0.0

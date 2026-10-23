@@ -193,17 +193,57 @@ func _build_frames() -> void:
 				# as the eased path stays nearest to it (per-frame duration in steps).
 				frames.set_animation_speed(anim, EASE_FPS)
 				for seg in eased_timeline(String(action), d):
-					var at := AtlasTexture.new()
-					at.atlas = tex
-					at.region = Rect2(int(seg[0]) * frame_w, d * frame_h, frame_w, frame_h)
-					frames.add_frame(anim, at, float(seg[2]))
+					frames.add_frame(anim, frame_texture(tex, act, d, int(seg[0])), float(seg[2]))
 				continue
 			frames.set_animation_speed(anim, fps)
 			for i in frame_ids:
-				var at := AtlasTexture.new()
-				at.atlas = tex
-				at.region = Rect2(i * frame_w, d * frame_h, frame_w, frame_h)
-				frames.add_frame(anim, at)
+				frames.add_frame(anim, frame_texture(tex, act, d, int(i)))
+
+
+## Frame (row d, column i) of an action as [region in the sheet, margin]. A grid sheet: the cell, no margin.
+## A packed sheet (sprites.json actions.<a>.atlas.rects, tools/pack_sheets.py — the game copy of every sheet):
+## the figure cropped out of the frame and where it lay in it (ox, oy), so the margin restores the full frame:
+## same size, same pivot, the same pixels on screen.
+func frame_rect(act: Dictionary, d: int, i: int) -> Array:
+	var rects: Array = (act.get("atlas", {}) as Dictionary).get("rects", [])
+	var k := d * int(act.get("frames", 1)) + i
+	if k < rects.size():
+		var r: Array = rects[k]
+		return [Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3])),
+			Rect2(float(r[4]), float(r[5]), float(frame_w) - float(r[2]), float(frame_h) - float(r[3]))]
+	return [Rect2(i * frame_w, d * frame_h, frame_w, frame_h), Rect2()]
+
+
+func frame_texture(tex: Texture2D, act: Dictionary, d: int, i: int) -> AtlasTexture:
+	var fr := frame_rect(act, d, i)
+	var at := AtlasTexture.new()
+	at.atlas = tex
+	at.region = fr[0]
+	at.margin = fr[1]
+	at.filter_clip = act.has("atlas")  # filtering never samples the neighbouring piece of the atlas
+	return at
+
+
+## The action's sheet as a grid image (frames in columns, directions in rows, frame_w × frame_h cells) —
+## a packed sheet is unpacked. For measurements and tests that read pixels by frame.
+func grid_image(action: String) -> Image:
+	var act: Dictionary = actions.get(action, {})
+	var path := sheet_dir + "/" + String(act.get("sheet", action + ".png"))
+	var img := Image.load_from_file(ProjectSettings.globalize_path(path))
+	if img == null or img.is_empty():
+		return img
+	img.convert(Image.FORMAT_RGBA8)
+	if not act.has("atlas"):
+		return img
+	var n := int(act.get("frames", 1))
+	var grid := Image.create_empty(n * frame_w, directions * frame_h, false, Image.FORMAT_RGBA8)
+	for d in directions:
+		for i in n:
+			var fr := frame_rect(act, d, i)
+			var reg: Rect2 = fr[0]
+			var mar: Rect2 = fr[1]
+			grid.blit_rect(img, Rect2i(reg), Vector2i(i * frame_w + int(mar.position.x), d * frame_h + int(mar.position.y)))
+	return grid
 
 
 const EASE_FPS: float = 30.0
@@ -411,6 +451,29 @@ func action_key_frame(action: String) -> int:
 
 func has_action(action: String) -> bool:
 	return actions.has(action) and frames != null and frames.has_animation(anim_name(action, 0))
+
+
+## Turning (F22, 23.10: «сразу перелетает слева направо»): the drawn row moves one neighbouring row at a time.
+## Steps between two rows the short way round (0..n/2).
+static func row_steps(a: int, b: int, n: int) -> int:
+	var d := wrapi(b - a, 0, n)
+	return mini(d, n - d)
+
+
+## The next row from `cur` towards `target`, the short way round; half a turn goes past row 0 (the face
+## towards the viewer), not past the back.
+static func step_toward(cur: int, target: int, n: int) -> int:
+	if cur == target:
+		return cur
+	var ccw := wrapi(target - cur, 0, n)   # steps going +1
+	var cw := n - ccw                       # steps going −1
+	if ccw < cw:
+		return wrapi(cur + 1, 0, n)
+	if cw < ccw:
+		return wrapi(cur - 1, 0, n)
+	# half a turn: +1 passes row 0 when 0 lies within the ccw steps
+	var through_front := wrapi(0 - cur, 0, n) <= ccw
+	return wrapi(cur + (1 if through_front else -1), 0, n)
 
 
 ## Compass word → screen vector (y down): "down" = towards the viewer.
