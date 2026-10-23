@@ -137,6 +137,13 @@
       "unless": ["v01_cup_white"]
     },
     {
+      "id": "mug_table",
+      "image": "res://assets/rooms/H1/state_mug_table.png",
+      "occluder": true,
+      "z": 952,
+      "_note": "H54 (Директор 24.10: «кружка синяя очень маленькая»): синяя кружка партии 10а поверх нарисованной на столике маленькой — крупнее, донце на том же месте (tools/make_items_layers.py, mug10_table)"
+    },
+    {
       "id": "cup_table_blue",
       "image": "res://assets/rooms/H1/state_cup_table_blue.png",
       "if": ["v01_cup_blue"],

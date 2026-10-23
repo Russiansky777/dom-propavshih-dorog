@@ -81,6 +81,13 @@ PLACES = {
     "cup_sill_blue": (1598.0, 509.0, 21.0),
     "cup_sill_white": (1632.0, 509.0, 21.0),
     "cup_table": (823.0, 769.0, 35.0),
+    # H15/H54 (Директор 24.10, арт партии 10а): чашки с блюдцем и кружка — (x середины донца, y донца, ширина
+    # всей вещи с блюдцем / ручкой, px экрана). Крупнее прежних (21 / 35 px тулова); кружка — поверх нарисованной
+    # на столике маленькой (её донце — MUG_BASE, вся она ≈ 65 px экрана — новая шире и выше, закрывает её целиком).
+    "cup10_sill_blue": (1590.0, 512.0, 40.0),
+    "cup10_sill_white": (1636.0, 512.0, 40.0),
+    "cup10_table": (826.0, 769.0, 56.0),
+    "mug10_table": (762.0, 767.0, 74.0),
     # мел на парте: (x середины, y середины, длина)
     "chalk_desk": (612.0, 784.0, 44.0),
 }
@@ -287,6 +294,33 @@ def place_cup(img: Image.Image, key: str, tone: float, shadow_dx: float, shadow_
     return out
 
 
+ART10A = ROOT / "assets" / "incoming"
+ART10A_BASE = {"cup_blue": (256, 437), "cup_white": (256, 437), "mug_blue": (215, 463)}   # середина донца в px 512
+
+
+def place_art10a(name: str, key: str, tone: float, shadow_dx: float, shadow_dy: float) -> Image.Image:
+    """Чашка / кружка партии 10а (512×512, прозрачная) на месте `key`: ширина вещи — по PLACES, донце — в точку места."""
+    src = Image.open(ART10A / f"{name}.png").convert("RGBA")
+    box = src.getchannel("A").getbbox()
+    x, y, w = PLACES[key]
+    k = (w / ART) / (box[2] - box[0])                   # px исходника → px фона
+    cw, ch = max(2, int(round(src.width * k))), max(2, int(round(src.height * k)))
+    sp = src.resize((cw, ch), Image.LANCZOS)
+    if tone != 1.0:
+        a = np.array(sp).astype(np.float32)
+        a[:, :, :3] *= tone
+        sp = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGBA")
+    bx, by = to_bg(x, y)
+    b0 = ART10A_BASE[name]
+    pos = (int(round(bx - b0[0] * k)), int(round(by - b0[1] * k)))
+    body_w = (box[2] - box[0]) * k
+    out = canvas()
+    out.alpha_composite(shadow_blob((W, H), bx + shadow_dx * body_w, by + shadow_dy * body_w, body_w * 0.5,
+                                    max(1.5, body_w * 0.09), 0.55, max(0.9, body_w * 0.04)))
+    out.alpha_composite(sp, pos)
+    return out
+
+
 def h1_layers() -> dict[str, Image.Image]:
     bg = np.array(Image.open(H1_BG).convert("RGB"))
     tbl = np.array(Image.open(H1_TABLE).convert("RGBA"))
@@ -300,8 +334,16 @@ def h1_layers() -> dict[str, Image.Image]:
     out["state_photo_ledge.png"] = place_photo("photo_ledge", (-2.0, -1.0), tone_at("photo_ledge") * 0.95)
     out["state_photo_table.png"] = place_photo("photo_table", None, 1.0)
     out["state_photo_shelf.png"] = place_photo("photo_shelf", (-1.5, -0.8), tone_at("photo_shelf") * 0.95)
-    c = cups()
     sill_tone = min(1.0, tone_at("cup_sill_blue", 10.0)) * 0.92   # окно за спиной: вещь в контровом
+    if (ART10A / "cup_blue.png").exists():
+        # H15/H54: чашки и кружка партии 10а (старорусская роспись), крупнее, по перспективе места.
+        out["state_cup_sill_blue.png"] = place_art10a("cup_blue", "cup10_sill_blue", sill_tone, 0.0, 0.05)
+        out["state_cup_sill_white.png"] = place_art10a("cup_white", "cup10_sill_white", sill_tone, 0.0, 0.05)
+        out["state_cup_table_blue.png"] = place_art10a("cup_blue", "cup10_table", 0.96, -0.12, 0.01)
+        out["state_cup_table_white.png"] = place_art10a("cup_white", "cup10_table", 0.96, -0.12, 0.01)
+        out["state_mug_table.png"] = place_art10a("mug_blue", "mug10_table", 0.92, -0.15, 0.01)
+        return out
+    c = cups()
     out["state_cup_sill_blue.png"] = place_cup(c["blue"], "cup_sill_blue", sill_tone, 0.0, 0.12)
     out["state_cup_sill_white.png"] = place_cup(c["white"], "cup_sill_white", sill_tone, 0.0, 0.12)
     out["state_cup_table_blue.png"] = place_cup(c["blue"], "cup_table", 1.0, -0.22, 0.02)
@@ -440,8 +482,11 @@ def main() -> int:
         preview(Path(sys.argv[sys.argv.index("--preview") + 1]), files)
         return 0
     check = "--check" in sys.argv
+    only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else []
     bad = 0
     for target, im in files.items():
+        if only and not any(o in target.name for o in only):
+            continue
         if check:
             if not target.exists():
                 print(f"нет файла {target.relative_to(ROOT)}")

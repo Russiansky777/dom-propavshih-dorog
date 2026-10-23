@@ -205,18 +205,19 @@
       "id": "cup_blue",
       "image": "res://assets/rooms/EP_dinner/cup_blue.png",
       "compose": {
-        "src": "game/assets/rooms/H1/state_cup_table_blue.png",
+        "src": "assets/incoming/cup_blue.png",
         "crop": [
-          690,
-          634,
-          58,
-          44
+          36,
+          74,
+          440,
+          363
         ],
         "at": [
-          818,
-          545
+          815,
+          542
         ],
-        "width": 34
+        "width": 40,
+        "_note": "H15 (Директор 24.10): чашка партии 10а, чуть крупнее прежней"
       },
       "if": [
         "v01_cup_blue"
@@ -227,23 +228,30 @@
       "id": "cup_white",
       "image": "res://assets/rooms/EP_dinner/cup_white.png",
       "compose": {
-        "src": "game/assets/rooms/H1/state_cup_table_white.png",
+        "src": "assets/incoming/cup_white.png",
         "crop": [
-          690,
-          634,
-          58,
-          44
+          36,
+          74,
+          440,
+          363
         ],
         "at": [
-          818,
-          545
+          815,
+          542
         ],
-        "width": 34
+        "width": 40,
+        "_note": "H15 (Директор 24.10): чашка партии 10а, чуть крупнее прежней"
       },
       "if": [
         "v01_cup_white"
       ],
       "_note": "белая чашка дня первого — у Нины"
+    },
+    {
+      "id": "tikhon_shelf",
+      "image": "res://assets/rooms/EP_dinner/tikhon_shelf.png",
+      "compose": {"src": "game/assets/rooms/H1/state_shelf_A.png", "crop": [379, 414, 92, 76], "at": [476, 286], "width": 150, "tint": [0.86, 0.74, 0.62], "shadow": 0},
+      "_note": "H53 (Директор 24.10: «нет его полки»): полка Тихона с серой подстилкой (та же доска, что в доме, партия 9) на белёном боку печи над лавкой"
     },
     {
       "id": "tikhon",
@@ -257,17 +265,17 @@
           469
         ],
         "at": [
-          300,
-          232
+          490,
+          176
         ],
-        "width": 95,
+        "width": 122,
         "tint": [
-          0.95,
-          0.85,
-          0.72
+          0.86,
+          0.76,
+          0.64
         ]
       },
-      "_note": "Тихон на печи (картинка куклы блока 1)"
+      "_note": "H53 (Директор 24.10: «сидит неестественно, нет его полки, мелковат»): Тихон сидит на своей полке на подстилке (слой tikhon_shelf), крупнее — 122 px вместо 95, в тон тёплого света (картинка куклы блока 1)"
     }
   ],
   "effects": [],

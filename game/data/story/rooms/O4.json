@@ -13,7 +13,7 @@
   "layers": [
     {"id": "bench_shed", "image": "res://assets/rooms/O4/state_bench_shed.png", "if": ["q06_table_at_ilya"], "_note": "Q06, вариант A (второй верстак остался у Ильи): пристройка дома Ильи открыта — на месте дров дверь, верстак, стружка, тёплый свет (партия 8б, полный холст к O4_bg, (0,0); область x1402–1483, y419–526 — хотспот ilya_workshop)."},
     {"id": "letters_bag", "image": "res://assets/rooms/O4/state_letters_bag.png", "if": ["done_M23a"], "unless": ["done_Q01"], "_note": "Мешок Тамары с годом писем на снегу у ступеней (M23a; Q01 — письмо Аксинье; после Q01 Тамара его уносит) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к O4_bg, (0,0); x1248–1338, y558–630 — хотспот letters_bag"},
-    {"id": "mitya_board", "image": "res://assets/rooms/O4/state_mitya_board.png", "if": ["done_M22"], "unless": ["q07_board_to_pelageya"], "_note": "Митина дощечка с двадцатью зарубками у пристройки (Q07; отдана Пелагее — висит на стене сарая у лодки, кадр эпилога) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), x1419–1483, y568–606 — хотспот mitya_board"},
+    {"id": "mitya_board", "image": "res://assets/rooms/O4/state_mitya_board_fence.png", "compose": {"src": "assets/incoming/O4_state_mitya_board.png", "crop": [1419, 568, 64, 38], "at": [1060, 566], "width": 52, "rotate": -5, "shadow": 0.3}, "_h46": "H46 (Директор 24.10: «поставить у забора, лаконичнее»): та же дощечка партии 8 — меньше, прислонена к забору Ильи слева от калитки (справа с третьего дня стоит Митя), а не посреди тропы (до слоя партии 10б O4_state_mitya_board_fence)", "if": ["done_M22"], "unless": ["q07_board_to_pelageya"], "_note": "Митина дощечка с двадцатью зарубками у пристройки (Q07; отдана Пелагее — висит на стене сарая у лодки, кадр эпилога) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), x1419–1483, y568–606 — хотспот mitya_board"},
     {"id": "night", "image": "res://assets/rooms/O4/night.png", "if": ["tod_night"], "_note": "Вечер второго дня и ночь: окна горят (партия 4). С утра третьего дня — день как на фоне."}
   ],
   "effects": [
@@ -38,7 +38,7 @@
     },
     {"id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1300, 485, 110, 170], "stand": [1180, 740], "draw": false, "pick_priority": 4, "visible_if": ["started_M19"], "hidden_if": ["done_M19"], "_g29": "G29: Нина на крыльце своего дома, пока идёт встреча (M19); после «Пойдём в тепло» уходит в дом (stage npc_go к двери) — затемнение — горница", "look": "@char.nina"},
     {
-      "id": "mitya_board", "kind": "object", "action_anim": "reach", "label": "@O4.mitya_board.label", "rect": [1626, 648, 80, 52], "stand": [1540, 780], "draw": false, "pick_priority": 3,
+      "id": "mitya_board", "kind": "object", "action_anim": "reach", "label": "@O4.mitya_board.label", "rect": [1210, 642, 76, 52], "stand": [1250, 770], "draw": false, "pick_priority": 3,
       "visible_if": ["done_M22"], "hidden_if": ["done_Q07"],
       "_note": "блок 5, Q07: дощечка Мити с двадцатью зарубками (одна зарубка — одна зима вечерних дежурств у фонаря дальней опоры). Первый клик — крупный план (closeup_mitya_board), потом выбор: оставить Мите или отдать Пелагее; след — кадр эпилога EP_boat.",
       "use": {"sets": ["q07_seen_board"], "text": "@O4.mitya_board.use", "once_flag": "q07_seen_board"},
