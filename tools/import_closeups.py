@@ -38,8 +38,8 @@ WIDTH.update({n: 1672 for n in DAY2})
 # зарубки роста, конверт с прежним адресом, рукав пальто, вывеска «Ольховая улица», дощечка Мити — крупные планы
 # хотспотов; кадр торца бревна — фон кадра эпилога EP_beam (data/story/rooms/EP_beam.json). Ширина 1440 —
 # крупный план рисуется не шире 1600 px экрана.
-BLOCK3 = ["closeup_notebook_rule", "closeup_notebook_paths", "closeup_notebook_stopper", "closeup_notebook_bridge",
-          "closeup_nina_letters", "closeup_height_notches", "closeup_envelope", "closeup_sleeve",
+# (тетради партии 4 — closeup_notebook_rule/_paths/_stopper/_bridge — с партии 9 заменены чистыми разворотами, BATCH9)
+BLOCK3 = ["closeup_nina_letters", "closeup_height_notches", "closeup_envelope", "closeup_sleeve",
           "closeup_street_sign", "closeup_mitya_board"]
 WIDTH.update({n: 1440 for n in BLOCK3})
 # Партия 8б (Q02 «На карте вырос сад», Q06 «Второй верстак», Директор 23.10 11:51): карта Ольховки и слой кальки на
@@ -56,6 +56,12 @@ BATCH8 = ["M1_schedule_closeup", "closeup_key_house", "closeup_door_hinges", "cl
           "closeup_journal_manager", "closeup_pocket_watch"]
 WIDTH.update({n: 1440 for n in BATCH8})   # предмет «Рассмотреть» рисуется не шире ≈ 1320 px экрана
 WIDTH["M1_schedule_closeup"] = 1672           # доска во весь кадр (1584 px экрана)
+# Партия 9 (партия G, 23.10, assets/incoming/_meta_p9/README.md): чистые развороты тетрадей Евдокии (G33 — без
+# псевдорукописи, текст игры рукописным шрифтом; text_rect — в пикселях исходника 1672×941), чистый лист письма Нины
+# (G31: лист ≈ x 400–1270 исходника) и рычаг затвора для «Рассмотреть» (G20, items.json → key_sluice.examine.art).
+BATCH9 = ["closeup_notebook_paths_clean", "closeup_notebook_rule_clean", "closeup_notebook_stopper_clean",
+          "closeup_notebook_bridge_clean", "closeup_letter_blank", "closeup_sluice_lever"]
+WIDTH.update({n: 1440 for n in BATCH9})
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfccif40n4csn"
-path="res://.godot/imported/closeup_notebook_rule.png-bc8918e10fbfd8e7ff9c37c10ab59d4b.ctex"
+uid="uid://c3kf0n0t6s0ar"
+path="res://.godot/imported/closeup_notebook_bridge_clean.png-a21dd95ed8334ab3f4ece579a77cb142.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/closeups/closeup_notebook_rule.png"
-dest_files=["res://.godot/imported/closeup_notebook_rule.png-bc8918e10fbfd8e7ff9c37c10ab59d4b.ctex"]
+source_file="res://assets/closeups/closeup_notebook_bridge_clean.png"
+dest_files=["res://.godot/imported/closeup_notebook_bridge_clean.png-a21dd95ed8334ab3f4ece579a77cb142.ctex"]
 
 [params]
 

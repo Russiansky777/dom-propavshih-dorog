@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://143cpmolqtm3"
-path="res://.godot/imported/state_hook_coat.png-660b751808f573291a395c90003a81c7.ctex"
+uid="uid://cb08ms3p3gjtq"
+path="res://.godot/imported/closeup_letter_blank.png-c8a6873c0144153acf3e092d890fda05.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H1/state_hook_coat.png"
-dest_files=["res://.godot/imported/state_hook_coat.png-660b751808f573291a395c90003a81c7.ctex"]
+source_file="res://assets/closeups/closeup_letter_blank.png"
+dest_files=["res://.godot/imported/closeup_letter_blank.png-c8a6873c0144153acf3e092d890fda05.ctex"]
 
 [params]
 

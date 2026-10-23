@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hfqbagsdbn0f"
-path="res://.godot/imported/state_shelf_stove.png-3c5117bdc2cff51acc6cdb14bbf22bf1.ctex"
+uid="uid://bl1awmytq70nk"
+path="res://.godot/imported/state_hook_empty.png-71a35a7964d64d2ff6151fc55aa333f8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H1/state_shelf_stove.png"
-dest_files=["res://.godot/imported/state_shelf_stove.png-3c5117bdc2cff51acc6cdb14bbf22bf1.ctex"]
+source_file="res://assets/rooms/M3/state_hook_empty.png"
+dest_files=["res://.godot/imported/state_hook_empty.png-71a35a7964d64d2ff6151fc55aa333f8.ctex"]
 
 [params]
 

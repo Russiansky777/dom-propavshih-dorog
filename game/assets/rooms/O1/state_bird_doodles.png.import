@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwndp3xgk0etq"
-path="res://.godot/imported/closeup_notebook_stopper.png-af5e4b5b050226b3e9c707c308f9a007.ctex"
+uid="uid://ck5fy6fnm8h6f"
+path="res://.godot/imported/state_bird_doodles.png-05057af0ba4c9c64b25ab7a05b520672.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/closeups/closeup_notebook_stopper.png"
-dest_files=["res://.godot/imported/closeup_notebook_stopper.png-af5e4b5b050226b3e9c707c308f9a007.ctex"]
+source_file="res://assets/rooms/O1/state_bird_doodles.png"
+dest_files=["res://.godot/imported/state_bird_doodles.png-05057af0ba4c9c64b25ab7a05b520672.ctex"]
 
 [params]
 

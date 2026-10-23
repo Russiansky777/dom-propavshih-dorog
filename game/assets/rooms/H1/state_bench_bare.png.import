@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bk6x5jvxy3f0a"
-path="res://.godot/imported/state_bird_reply.png-bbb4af57d5ea07ac27f6702cd209f37a.ctex"
+uid="uid://ctgyaax0emf3v"
+path="res://.godot/imported/state_bench_bare.png-5570f765871489c9ae61dc02d09cf8aa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/O1/state_bird_reply.png"
-dest_files=["res://.godot/imported/state_bird_reply.png-bbb4af57d5ea07ac27f6702cd209f37a.ctex"]
+source_file="res://assets/rooms/H1/state_bench_bare.png"
+dest_files=["res://.godot/imported/state_bench_bare.png-5570f765871489c9ae61dc02d09cf8aa.ctex"]
 
 [params]
 

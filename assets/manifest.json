@@ -1068,7 +1068,8 @@
     },
     {
       "id": "icon_sluice_lever",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт иконка рычага — tools/sync_icons.sh key_sluice=assets/incoming/icon_sluice_lever.png, подключено (партия G, агент сюжета и комнат)"},
       "kind": "icon",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1086,7 +1087,8 @@
     },
     {
       "id": "closeup_sluice_lever",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_closeups.py, «Рассмотреть» рычага (items.json key_sluice.examine.art), подключено (партия G, агент сюжета и комнат)"},
       "kind": "closeup",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1104,7 +1106,8 @@
     },
     {
       "id": "M3_state_hook_empty",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "background_fix",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1122,7 +1125,8 @@
     },
     {
       "id": "M3_state_sluice_lever",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1140,7 +1144,8 @@
     },
     {
       "id": "M3_state_clamp_table",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1234,7 +1239,8 @@
     },
     {
       "id": "H1_state_bench_bare",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "background_fix",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1252,7 +1258,8 @@
     },
     {
       "id": "H1_state_towel_hook",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1270,7 +1277,8 @@
     },
     {
       "id": "H1_state_shelf_leaning",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1288,7 +1296,8 @@
     },
     {
       "id": "H1_state_shelf_A",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1306,7 +1315,8 @@
     },
     {
       "id": "H1_state_shelf_B",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1324,7 +1334,8 @@
     },
     {
       "id": "S1_state_sign_text",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1380,7 +1391,8 @@
     },
     {
       "id": "O1_state_bird_doodles",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1398,7 +1410,8 @@
     },
     {
       "id": "O1_state_bird_add_scarf",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1416,7 +1429,8 @@
     },
     {
       "id": "O1_state_bird_add_boat",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1434,7 +1448,8 @@
     },
     {
       "id": "O1_state_bird_add_bridge",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1452,7 +1467,8 @@
     },
     {
       "id": "O1_state_bird_reply_scarf",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1470,7 +1486,8 @@
     },
     {
       "id": "O1_state_bird_reply_boat",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1488,7 +1505,8 @@
     },
     {
       "id": "O1_state_bird_reply_bridge",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1525,7 +1543,8 @@
     },
     {
       "id": "O3_state_notches_left",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_room_art.py, подключено (партия G, агент сюжета и комнат)"},
       "kind": "prop_states",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1543,7 +1562,8 @@
     },
     {
       "id": "closeup_notebook_paths_clean",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_closeups.py, тетради Евдокии O3 (заплатки сняты), подключено (партия G, агент сюжета и комнат)"},
       "kind": "closeup",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1561,7 +1581,8 @@
     },
     {
       "id": "closeup_notebook_rule_clean",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_closeups.py, тетради Евдокии O3, подключено (партия G, агент сюжета и комнат)"},
       "kind": "closeup",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1579,7 +1600,8 @@
     },
     {
       "id": "closeup_notebook_stopper_clean",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_closeups.py, тетради Евдокии O3, подключено (партия G, агент сюжета и комнат)"},
       "kind": "closeup",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1597,7 +1619,8 @@
     },
     {
       "id": "closeup_notebook_bridge_clean",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_closeups.py, тетради Евдокии O3, подключено (партия G, агент сюжета и комнат)"},
       "kind": "closeup",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",
@@ -1615,7 +1638,8 @@
     },
     {
       "id": "closeup_letter_blank",
-      "status": "requested",
+      "status": "delivered",
+      "delivered": {"date": "2026-10-23", "by": "ChatGPT imagegen, партия 9 (assets/incoming/_meta_p9/README.md)", "note": "импорт tools/import_closeups.py, письма Нины O3 (текст в листе x 530–1150), подключено (партия G, агент сюжета и комнат)"},
       "kind": "closeup",
       "block": "Партия 9 (ChatGPT, правки G, 23.10)",
       "batch": "9",

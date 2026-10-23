@@ -39,6 +39,7 @@
           "fade_in_s": 0.8,
           "room": "O3",
           "spawn": "from_O4",
+          "sets": ["m19_nina_home"],
           "sounds": [
             {
               "id": "door_heavy",

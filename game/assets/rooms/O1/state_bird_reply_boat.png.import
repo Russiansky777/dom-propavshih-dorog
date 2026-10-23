@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://o6aciiuxdh53"
-path="res://.godot/imported/closeup_notebook_bridge.png-c61717436e4fbe498871212af806ee48.ctex"
+uid="uid://db77lmqrrvu5h"
+path="res://.godot/imported/state_bird_reply_boat.png-0c7beb53ae81f877c265e274e4e035c6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/closeups/closeup_notebook_bridge.png"
-dest_files=["res://.godot/imported/closeup_notebook_bridge.png-c61717436e4fbe498871212af806ee48.ctex"]
+source_file="res://assets/rooms/O1/state_bird_reply_boat.png"
+dest_files=["res://.godot/imported/state_bird_reply_boat.png-0c7beb53ae81f877c265e274e4e035c6.ctex"]
 
 [params]
 

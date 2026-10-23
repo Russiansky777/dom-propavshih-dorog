@@ -387,6 +387,8 @@ func _test_bird_mark() -> void:
 			_check(_visible(room, "bird_add_" + o) == (o == v), "%s: drawing %s shown %s" % [v, o, str(o == v)])
 		var r := _rect_of_node(room.get_node("Layers/bird_add_" + v))
 		_check(_hotspot_rect(h).encloses(r), "%s: the drawing is on the poster %s (%s)" % [v, str(_hotspot_rect(h)), str(r)])
+		_check(_visible(room, "bird_mark") and _visible(room, "bird_doodles"), "%s: Agata's pencil mark stays with her drawing, over the hat and boots" % v)
+		_check(room.get_node_or_null("Layers/ulyana_bird_reply") == null, "the old reply «И я тут была» is not in the room (batch 9: one reply per drawing)")
 	var room2: Node = await _enter("O1", _o1_flags(), [], Vector2(1000, 740))
 	var h2 := _hotspot(room2, "bird_drawing")
 	var key2: String = await _choose(h2, "leave")
@@ -403,9 +405,13 @@ func _rect_of_node(n: Node) -> Rect2:
 	for c in n.find_children("*", "", true, false):
 		var r := Rect2()
 		if c is Sprite2D and (c as Sprite2D).texture != null:
+			# The opaque part of the picture (batch 9 layers are full canvases at (0,0)).
 			var spr := c as Sprite2D
-			var sz: Vector2 = spr.texture.get_size() * spr.scale
-			r = Rect2(spr.global_position, sz)
+			var img: Image = spr.texture.get_image()
+			if img.is_compressed():
+				img.decompress()
+			var u: Rect2i = img.get_used_rect()
+			r = Rect2(spr.global_position + Vector2(u.position) * spr.scale, Vector2(u.size) * spr.scale)
 		elif c is Label:
 			r = Rect2((c as Label).global_position, (c as Label).size)
 		else:

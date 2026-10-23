@@ -274,12 +274,15 @@ func _test_nina_walk() -> void:
 			stage = i
 	_check(said >= 0 and stage > said and stage < seen.size() - 1 and String(seen[stage + 1]).begins_with("agata:Ходики"), "her line on the street, then the walk and the fade, then «Ходики» in the room (%d, %d): %s" % [said, stage, str(seen)])
 	_check(rm.current_room.room_id == "O3", "then the room: O3 (%s)" % rm.current_room.room_id)
+	_check(_visible(rm.current_room, "Hotspots/nina") and gs.has_flag("m19_nina_home"), "in the room Nina is there (m19_nina_home from the fade)")
 	_check(nina == null or not is_instance_valid(nina) or door.grow(80).has_point(nina.global_position), "she walked to her door %s" % str(door))
 	# Mitya is not at the far pier at the same time (one place).
 	_flags_before("M19")
 	gs.set_flag("started_M19", true)
 	var r3 := await _enter("R3", "from_O4")
 	_check(not _visible(r3, "Hotspots/mitya"), "during M19 Mitya is on the street, not at the far pier")
+	var o3 := await _enter("O3", "from_O4")
+	_check(not _visible(o3, "Hotspots/nina"), "G41: while Nina is on the porch (M19 before the fade), she is not in her room too")
 
 
 func _test_family_room() -> void:

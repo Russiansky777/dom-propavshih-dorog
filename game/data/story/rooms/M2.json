@@ -51,7 +51,7 @@
     },
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1630, 190, 180, 710], "stand": [1480, 900], "draw": false, "pick_priority": 2,
-      "visible_if": ["pavel_blessed_mirror"], "hidden_if": ["visited_M3"],
+      "visible_if": ["pavel_blessed_mirror"], "hidden_if": ["visited_M3", "done_M13"],
       "states": [{"if": ["has_mirror_mill"], "rect": [870, 192, 170, 508], "stand": [1150, 760], "_note": "с зеркалом у Агаты — Павел у двери конторы, с фонарём (M11), там же после засова"}],
       "_g18_g21": "G18: после добра (M09b) Павел в сенях справа впереди, у двери в кладовую — не перед зеркалом и не перед фотографией конторы; зеркало взято — у двери конторы. G21 (Директор 23.10: «открываем вдвоём — мужик пропадает будто за дверь, а она закрыта»): после стеллажа Павел остаётся у двери, пока Агата не войдёт в контору (visited_M3) — там он уже внутри (M3: visible_if visited_M3); в двух местах сразу не стоит",
       "talk": {"by_flags": [{"if": ["office_shelf_lifted"], "text": "@M2.pavel.after_lifted"}, {"if": ["office_unbolted"], "text": "@M2.pavel.after"}, {"if": ["has_mirror_mill"], "text": "@M1.pavel.after"}, {"if": ["pavel_blessed_mirror"], "text": "@M2.pavel.at_mirror"}], "after_text": "@M2.pavel.after"}

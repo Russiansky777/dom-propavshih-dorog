@@ -178,7 +178,7 @@
       "id": "key_sluice",
       "wrong_target": {"text": "@item.key_sluice.wrong"},
       "name": "Рычаг затвора",
-      "examine": {"text": "@examine.key_sluice", "backdrop": "table"},
+      "examine": {"text": "@examine.key_sluice", "backdrop": "table", "art": "res://assets/closeups/closeup_sluice_lever.png", "_art_note": "партия 9 (G20): рычаг затвора на столе, квадратное гнездо во втулке; иконка — icon_sluice_lever (tools/sync_icons.sh key_sluice=…)"},
       "inventory": true,
       "source_location": "M3",
       "source_scene": "M13",

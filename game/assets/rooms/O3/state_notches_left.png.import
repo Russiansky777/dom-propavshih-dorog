@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://borj6n37w04qv"
-path="res://.godot/imported/state_shelf_table.png-d4abed7c7947bb0d3847bcf913b994a8.ctex"
+uid="uid://bsk1vpt38pkni"
+path="res://.godot/imported/state_notches_left.png-1a7dd7e820c9e49807502e3addbb18b8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H1/state_shelf_table.png"
-dest_files=["res://.godot/imported/state_shelf_table.png-d4abed7c7947bb0d3847bcf913b994a8.ctex"]
+source_file="res://assets/rooms/O3/state_notches_left.png"
+dest_files=["res://.godot/imported/state_notches_left.png-1a7dd7e820c9e49807502e3addbb18b8.ctex"]
 
 [params]
 

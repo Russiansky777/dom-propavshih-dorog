@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fwsgtpqi26y5"
-path="res://.godot/imported/stub_shelf_leaning.png-a8d48768e247a156259cbd2cab91fe81.ctex"
+uid="uid://c28a07gcgi6p8"
+path="res://.godot/imported/state_sluice_lever.png-bf5660d1e5ba5ee25f80b1f1df190812.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H1/stub_shelf_leaning.png"
-dest_files=["res://.godot/imported/stub_shelf_leaning.png-a8d48768e247a156259cbd2cab91fe81.ctex"]
+source_file="res://assets/rooms/M3/state_sluice_lever.png"
+dest_files=["res://.godot/imported/state_sluice_lever.png-bf5660d1e5ba5ee25f80b1f1df190812.ctex"]
 
 [params]
 
