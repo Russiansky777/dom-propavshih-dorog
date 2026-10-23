@@ -23,6 +23,11 @@ const WEB_DIR = path.join(ROOT, "build", "web");
 const OUT_DIR = path.join(ROOT, "Docs", "evidence", "G");
 const LOG_DIR = path.join(ROOT, "build", "shots", "menu");
 const PORT = Number(process.env.MENU_WEB_PORT || 8781);
+// Viewport: 1280×720 by default — software GL (SwiftShader) on a loaded runner draws ~1 frame/s at 1920×1080 and a
+// screenshot then waits ~50 s; probe coordinates are canvas px (1920×1080) and are scaled to the viewport.
+const VW = Number(process.env.MENU_WEB_W || 1280), VH = Number(process.env.MENU_WEB_H || 720);
+const S = VH / 1080;
+const SHOT_MS = 240000;
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -73,11 +78,11 @@ async function main() {
   const browser = await chromium.launch({ headless: true, executablePath: findChromium(),
     args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist",
       "--no-sandbox", "--disable-dev-shm-usage", "--autoplay-policy=no-user-gesture-required"] });
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: VW, height: VH }, deviceScaleFactor: 1 });
   page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); if (m.type() !== "log") logLine(`console.${m.type()}: ${m.text()}`); });
   page.on("pageerror", (e) => { errors.push(e.message); logLine(`pageerror: ${e.message}`); });
   const state = () => page.evaluate(() => (window.probeState ? JSON.parse(JSON.stringify(window.probeState)) : null));
-  const waitFor = async (label, pred, timeout = 30000) => {
+  const waitFor = async (label, pred, timeout = 60000) => {
     const t0 = Date.now();
     while (Date.now() - t0 < timeout) { const s = await state(); if (s && pred(s)) return s; await sleep(100); }
     check(false, `${label}: timeout`);
@@ -86,16 +91,19 @@ async function main() {
   const click = async (label, pt) => {
     if (!pt || typeof pt.x !== "number") { check(false, `${label}: no target`); return; }
     logLine(`click ${label} at (${Math.round(pt.x)}, ${Math.round(pt.y)})`);
-    await page.mouse.move(pt.x, pt.y, { steps: 5 });
+    await page.mouse.move(pt.x * S, pt.y * S, { steps: 5 });
     await sleep(120);
-    await page.mouse.click(pt.x, pt.y);
+    await page.mouse.click(pt.x * S, pt.y * S);
   };
   const shot = async (name, opts = {}) => {
     const file = path.join(OUT_DIR, `menu_${name}.jpg`);
-    await page.screenshot({ path: file, type: "jpeg", quality: 86, ...opts });
+    await page.screenshot({ path: file, type: "jpeg", quality: 88, timeout: SHOT_MS, ...opts });
     logLine(`screenshot ${path.relative(ROOT, file)}`);
   };
-  const clip = (x, y, width, height) => page.screenshot({ clip: { x, y, width, height } });
+  const clip = (x, y, width, height) => page.screenshot({ clip: { x: x * S, y: y * S, width: width * S, height: height * S }, timeout: SHOT_MS });
+  const move = (pt, steps = 6) => page.mouse.move(pt.x * S, pt.y * S, { steps });
+  // Until the game has run `n` more physics frames (a new frame is drawn in between).
+  const frames = async (n) => { const f0 = (await state()).physics_frames; await waitFor(`${n} frames`, (t) => t.physics_frames >= f0 + n, 60000); };
   const beatKey = (s) => (s && s.beat && s.beat.type ? `${s.beat.type}|${s.beat.text || ""}|${s.beat.prompt || ""}` : "");
   const finishDialogue = async (label) => {
     for (let i = 0, idle = 0; i < 80 && idle < 8; i++) {
@@ -124,16 +132,16 @@ async function main() {
     await sleep(1500);
     // Animation: the water strip changes between two frames, the carved title of the panel does not.
     const w1 = await clip(860, 560, 420, 90), p1 = await clip(150, 60, 380, 330);
-    await sleep(700);
+    await frames(3);
     const w2 = await clip(860, 560, 420, 90), p2 = await clip(150, 60, 380, 330);
-    check(!w1.equals(w2), "the water moves (two frames 0.7 s apart differ)");
+    check(!w1.equals(w2), "the water moves (two frames apart differ)");
     check(p1.equals(p2), "the panel and its title stand still");
-    await page.mouse.move(1500, 900);
+    await move({ x: 1500, y: 900 });
     await sleep(300);
     await shot("title");
     // Hover «Новая игра»: the highlight (leaf, golden lines) moves there.
     s = await state();
-    await page.mouse.move(s.title.items.new_game.x, s.title.items.new_game.y, { steps: 8 });
+    await move(s.title.items.new_game, 8);
     s = await waitFor("hover «Новая игра»", (t) => t.title.highlighted === "new_game", 5000);
     check(s.title.highlighted === "new_game", "hover moves the highlight to «Новая игра»");
     await sleep(500);
@@ -152,18 +160,18 @@ async function main() {
     s = await waitFor("pause open", (t) => t.pause && t.pause.open && t.pause.blur > 0.99, 8000);
     check(s.pause.open && s.paused, "Esc opens the pause; the tree is held", JSON.stringify({ paused: s.paused, blur: s.pause.blur }));
     const at = { x: s.player.x, y: s.player.y };
-    await sleep(800);
+    await sleep(2500);
     s = await state();
     check(Math.hypot(s.player.x - at.x, s.player.y - at.y) < 0.5, "Agata stands still under the pause", `moved ${Math.hypot(s.player.x - at.x, s.player.y - at.y).toFixed(1)} px`);
     check(s.pause.hint === "Esc — вернуться" && s.pause.items.save && !s.pause.items.save.disabled, "the pause: «Esc — вернуться», «Сохранить» free");
-    await page.mouse.move(s.pause.items.save.x, s.pause.items.save.y, { steps: 6 });
+    await move(s.pause.items.save);
     await waitFor("hover «Сохранить»", (t) => t.pause.hovered === "save", 5000);
     await sleep(300);
     await shot("pause");
     await esc();
     s = await waitFor("Esc closes the pause", (t) => t.pause && !t.pause.open && !t.paused, 8000);
     check(!s.pause.open && !s.paused, "Esc again closes the pause, the game runs on");
-    await waitFor("the walk ends", (t) => t.player && !t.player.walking, 15000);
+    await waitFor("the walk ends", (t) => t.player && !t.player.walking, 120000);
     // Esc → «Сохранить» → slot 1 → «Назад» → «Продолжить».
     await esc();
     s = await waitFor("pause open again", (t) => t.pause && t.pause.open && t.pause.blur > 0.99, 8000);
@@ -180,7 +188,7 @@ async function main() {
     check(!s.pause.open, "«Продолжить» closes the pause");
     // Walk on, so the place left differs from slot 1.
     await click("walk on", { x: saved.x > 960 ? saved.x - 300 : saved.x + 300, y: saved.y });
-    await waitFor("walked", (t) => t.player && !t.player.walking && Math.hypot(t.player.x - saved.x, t.player.y - saved.y) > 60, 15000);
+    await waitFor("walked", (t) => t.player && !t.player.walking && Math.hypot(t.player.x - saved.x, t.player.y - saved.y) > 60, 120000);
     s = await state();
     const left = { x: s.player.x, y: s.player.y };
     // Esc → «В главное меню» → the title with «Продолжить» → back in the game where it was left.
@@ -190,7 +198,7 @@ async function main() {
     s = await waitFor("the title again", (t) => t.title && t.title.open && t.title.items && t.title.items.continue, 10000);
     check(s.title.open && s.title.order[0] === "continue" && s.paused, "«В главное меню» → the title offers «Продолжить» first", `${s.title.order.join(", ")} → ${s.title.continue_slot}`);
     await sleep(600);
-    await page.mouse.move(s.title.items.continue.x, s.title.items.continue.y, { steps: 6 });
+    await move(s.title.items.continue);
     await sleep(400);
     await shot("title_continue");
     await click("title «Продолжить»", s.title.items.continue);
