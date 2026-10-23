@@ -386,11 +386,13 @@ async function main() {
         check(s.examine && s.examine.item === it && s.examine.source === "art", `«Рассмотреть» ${it}: the drawn close-up (${JSON.stringify(s.examine).slice(0, 160)})`);
         await sleep(800);
         await shot(`9_b8_examine_${it}`);
-        await click("examine: «Закрыть»", s.examine.close);
-        await waitFor("examine put away", (t) => !(t.examine && t.examine.open), 30000);
-        await playThrough("after examine", { quietMs: 1200 });
+        // Agata's line over the picture first (a click there goes to the line), then «Закрыть».
+        await playThrough("examine: Agata's line", { quietMs: 1200 });
         s = await state();
-        if (s.ui && s.ui.cursor_item) { await page.keyboard.press("Escape"); await sleep(400); }
+        if (s.examine && s.examine.open) await click("examine: «Закрыть»", s.examine.close);
+        await waitFor("examine put away", (t) => !(t.examine && t.examine.open), 30000);
+        s = await state();
+        if (s.ui && s.ui.cursor_item) { await page.mouse.click(960, 600, { button: "right" }); await sleep(400); }   // put back
       }
       // Mum's coat on the hook in Dunya's house (M23c): through the school door, the gallery, home.
       check(await goExit("H3"), "class → the gallery (school door)");

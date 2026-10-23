@@ -66,7 +66,6 @@
       "if": ["stove_lit"]
     },
     {"id": "dunya_letter", "image": "res://assets/rooms/H1/state_dunya_letter.png", "if": ["dunya_letter_on_stove"], "compose": {"src": "assets/incoming/closeup_envelope.png", "crop": [230, 320, 1150, 440], "at": [552, 404], "width": 64, "rotate": -9, "tint": [0.92, 0.86, 0.78], "shadow": 0.25}, "_note": "блок 3 (M23a): письмо Тамары Дуне — невручённым на печи; вклейка из крупного плана конверта (tools/make_frame_layers.py)"},
-    {"id": "nina_coat", "image": "res://assets/rooms/H1/state_nina_coat.png", "if": ["done_M23c"], "_note": "M23c «Нина в доме сестры»: тёмное пальто с серой накидкой на крючке у двери (Q03 — рукав) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к H1_bg, (0,0); x1034–1179, y245–575. Под платком Агаты (hook_coat), если он висит."},
     {
       "id": "hook_coat",
       "image": "res://assets/rooms/H1/state_hook_coat.png",
@@ -74,6 +73,7 @@
       "_offset_note": "холст состояния 1602x981 (другой, чем фон 1672x941): рисуется масштабом фона, offset вешает платок петлёй на средний крючок (≈1267,255). Раньше холст растягивался до 1920x1080 сам по себе — платок искажался на 9 %",
       "if": ["h1_scarf_removed"]
     },
+    {"id": "nina_coat", "image": "res://assets/rooms/H1/state_nina_coat.png", "if": ["done_M23c"], "_note": "M23c «Нина в доме сестры»: тёмное пальто с серой накидкой на крючке у двери (Q03 — рукав) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к H1_bg, (0,0); x1034–1179, y245–575. Поверх платка Агаты (hook_coat) на том же крючке: пальто повешено позже (M23c), иначе платок закрывал его почти целиком (веб-проверка 23.10)."},
     {
       "id": "shelf_stove",
       "image": "res://assets/rooms/H1/state_shelf_stove.png",

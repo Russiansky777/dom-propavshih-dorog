@@ -1092,6 +1092,15 @@ func _test_batch8() -> void:
 	_check(not gs.has_flag("done_M23c") and not _layer_visible(rm.current_room, "nina_coat"), "H1: no coat before mum comes")
 	await _enter_with(["house_unlocked", "done_M22", "done_M23c"], "H1")
 	_check(_layer_visible(rm.current_room, "nina_coat") and _hotspot("nina_coat") != null and _hotspot("nina_coat").visible, "H1: mum's coat on the hook, a hotspot over it")
+	# Agata's scarf hangs on the same hook (h1_scarf_removed): the coat, hung later, is drawn over it — not hidden under it.
+	await _enter_with(["house_unlocked", "done_M22", "done_M23c", "h1_scarf_removed"], "H1")
+	var lay_box: Node = rm.current_room.get_node("Layers")
+	var coat_n: Node = lay_box.get_node_or_null("nina_coat")
+	var scarf_n: Node = lay_box.get_node_or_null("hook_coat")
+	_check(coat_n != null and scarf_n != null and (coat_n as CanvasItem).visible and (scarf_n as CanvasItem).visible
+		and ((coat_n as CanvasItem).z_index > (scarf_n as CanvasItem).z_index
+			or ((coat_n as CanvasItem).z_index == (scarf_n as CanvasItem).z_index and coat_n.get_index() > scarf_n.get_index())),
+		"H1: mum's coat over Agata's scarf on the same hook")
 	# The street: Tamara's bag (M23a until Q01), Mitya's board (after M22 until Q07 gives it away).
 	await _enter_with(["done_M22", "done_M23a"], "O4", "from_O2")
 	_check(_layer_visible(rm.current_room, "letters_bag") and _layer_visible(rm.current_room, "mitya_board"), "O4: Tamara's bag and Mitya's board drawn")

@@ -104,7 +104,7 @@ func _shot(n: String) -> void:
 		"b8_S1_sign_removed":
 			await _state(["lower_street_returned", "q09_original_in_classroom"], "S1")
 		"b8_H1_coat":
-			await _state(["done_M23c"], "H1")
+			await _state(["done_M23c", "h1_scarf_removed", "h1_shutter_open"], "H1")
 		"b8_O4_bag_board":
 			await _state(["done_M23a"], "O4", "from_O2")
 		"b8_O3_night":
