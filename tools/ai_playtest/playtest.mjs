@@ -402,6 +402,25 @@ async function main() {
     events.push(`Крюк звоном (рефлекс программы): попыток ${tries}; состояние ${e ? e.h.state : "окно закрыто"}${e ? `, промахов ${e.h.misses}` : ""}.`);
   };
 
+  // Crossing F12 (R2): one click is queued during a pull, the rest are dropped — click rope once while not pulling,
+  // wait for pulls to go up, until pulls_total; then the room changes to R3.
+  const crossingPulls = async (events) => {
+    const cp = (s) => { const p = panelOf(s); return p && typeof p.pulls === "number" && p.pulls_total ? p : null; };
+    let c = cp(await fresh()), clicks = 0;
+    if (!c) { events.push("Каната переправы на экране нет."); return; }
+    const t0 = Date.now();
+    while (c && c.pulls < c.pulls_total && Date.now() - t0 < 300000) {
+      if (c.pulling) { c = cp(await waitFor((x) => { const k = cp(x); return !k || !k.pulling; }, 30000)); continue; }
+      const at = c.rope && typeof c.rope.x === "number" ? c.rope : c.center;
+      const before = c.pulls;
+      await page.mouse.click(at.x, at.y);
+      clicks += 1;
+      c = cp(await waitFor((x) => { const k = cp(x); return !k || k.pulls > before; }, 30000));
+    }
+    const s = await waitFor((x) => !cp(x) || x.room === "R3", 60000);
+    events.push(`Переправа (рефлекс программы): щелчков ${clicks}; ${s && s.room === "R3" ? "лодка дошла — R3" : c ? `потянуто ${c.pulls} из ${c.pulls_total}` : "окно закрылось"}.`);
+  };
+
   // Knot F6: grab the rope end, trace the shown contour (current stroke, then the next ones) without releasing.
   const knotTrace = async (events) => {
     const kp = (s) => { const p = panelOf(s); return p && p.knot_path && p.knot_path.open ? p.knot_path : null; };
@@ -854,6 +873,9 @@ async function main() {
       } else if (act === "hook") {
         await hookSequence(events);
         desc = "крюк звоном";
+      } else if (act === "crossing") {
+        await crossingPulls(events);
+        desc = "переправа: тянуть канат";
       } else if (act === "knot") {
         await knotTrace(events);
         desc = "узел по контуру";
