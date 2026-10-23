@@ -1,0 +1,157 @@
+{
+  "url": "http://127.0.0.1:8776/index.html?start=day2",
+  "steps": {
+    "pavel": {
+      "voice": {
+        "after_puzzle": "",
+        "bus_mute": false,
+        "bus_volume_db": 0,
+        "errors": [],
+        "events": [
+          {
+            "kind": "start",
+            "line": "M09_0",
+            "mode": "plain",
+            "ms": 46892,
+            "pan": 0,
+            "speaker": "pavel",
+            "voice": "line"
+          }
+        ],
+        "fading": false,
+        "hover_item": "",
+        "kind": "line",
+        "length": 3.67494320869446,
+        "line": "M09_0",
+        "manifest_lines": 576,
+        "mode": "plain",
+        "pan": 0,
+        "pending": "",
+        "playing": true,
+        "plays": 1,
+        "position": 0,
+        "settings_saves": 0,
+        "speaker": "pavel",
+        "voice_volume": 1
+      },
+      "rms": {
+        "rms_db": -13.89336034044577,
+        "taps": 2
+      }
+    },
+    "m09_heard": [
+      "M09_0",
+      "M09_1",
+      "M09_2",
+      "M09_3",
+      "M09_4",
+      "M09_5",
+      "M09_6",
+      "M09_7"
+    ]
+  },
+  "checks": [
+    {
+      "ok": true,
+      "label": "web build carries the full voice manifest",
+      "detail": "576 lines, errors []"
+    },
+    {
+      "ok": true,
+      "label": "?start=day2 — the house, day one done, day two not started",
+      "detail": "{\"room\":\"H1\",\"done_N01\":true}"
+    },
+    {
+      "ok": true,
+      "label": "«Голос» at 100 %",
+      "detail": "{\"h\":40,\"value\":100,\"w\":649,\"x\":664,\"y\":644}"
+    },
+    {
+      "ok": true,
+      "label": "the menu offers a save slot",
+      "detail": "CloseMenu, HintButton, JournalButton, Load1, Load2, Load3, Loadday2, Loadday3, Loadday4, MenuButton, NewGame, Save1, Save2, Save3, Saveday2, Saveday3, Saveday4, TimingSlow"
+    },
+    {
+      "ok": true,
+      "label": "saved into slot 1",
+      "detail": "Сохранено: 1"
+    },
+    {
+      "ok": true,
+      "label": "«Новая игра»: back at the post office, day one not done",
+      "detail": "{\"room\":\"Z1\"}"
+    },
+    {
+      "ok": true,
+      "label": "«Загрузить»: the morning of day two from the save",
+      "detail": "{\"room\":\"H1\",\"done_N01\":true}"
+    },
+    {
+      "ok": true,
+      "label": "walked out to the street",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "walked to the mill yard",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "M09_0: Pavel's voice plays with his line on screen",
+      "detail": "{\"line\":\"M09_0\",\"speaker\":\"pavel\",\"beat\":\"M09_0\",\"length\":3.67494320869446}"
+    },
+    {
+      "ok": true,
+      "label": "the subtitle on screen is the line that sounds",
+      "detail": "{\"line_id\":\"M09_0\",\"scene\":\"M09\",\"speaker\":\"pavel\",\"speaker_name\":\"Павел\",\"text\":\"Дунина племянница? Похожа, когда хмуришься.\",\"type\":\"line\"}"
+    },
+    {
+      "ok": true,
+      "label": "Pavel's voice leaves the page",
+      "detail": "-13.9 dBFS"
+    },
+    {
+      "ok": true,
+      "label": "M09_1: Agata answers in her voice",
+      "detail": "{\"line\":\"M09_1\",\"speaker\":\"agata\"}"
+    },
+    {
+      "ok": true,
+      "label": "Agata's voice leaves the page",
+      "detail": "-17.4 dBFS"
+    },
+    {
+      "ok": true,
+      "label": "M09_2: Pavel again",
+      "detail": "{\"line\":\"M09_2\",\"speaker\":\"pavel\",\"length\":13.5881862640381}"
+    },
+    {
+      "ok": true,
+      "label": "«дальше» cuts Pavel mid-line and starts the next line",
+      "detail": "at 0.00 s; [{\"kind\":\"stop\",\"line\":\"M09_2\",\"ms\":58810,\"reason\":\"advance\",\"speaker\":\"pavel\",\"voice\":\"line\"}]"
+    },
+    {
+      "ok": true,
+      "label": "all eight M09 lines voiced, in order",
+      "detail": "M09_0, M09_1, M09_2, M09_3, M09_4, M09_5, M09_6, M09_7"
+    },
+    {
+      "ok": true,
+      "label": "the wheel's look in the narrator's voice (ZAKADR)",
+      "detail": "{\"line\":\"M1.wheel.look\",\"speaker\":\"narrator\",\"kind\":\"narration\"}"
+    },
+    {
+      "ok": true,
+      "label": "the narrator leaves the page",
+      "detail": "-13.9 dBFS"
+    },
+    {
+      "ok": true,
+      "label": "console: 0 errors / page errors",
+      "detail": ""
+    }
+  ],
+  "console_errors": [],
+  "failures": []
+}

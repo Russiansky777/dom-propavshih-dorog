@@ -1,0 +1,42 @@
+[2026-10-23T12:46:59.157Z] console.log: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[2026-10-23T12:46:59.579Z] console.log: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+[2026-10-23T12:47:00.115Z] console.log: Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+[2026-10-23T12:47:06.771Z] OK   web build carries the full voice manifest — 576 lines, errors []
+[2026-10-23T12:47:07.967Z] OK   ?start=day2 — the house, day one done, day two not started — {"room":"H1","done_N01":true}
+[2026-10-23T12:47:07.970Z] click ui MenuButton at (1846, 40)
+[2026-10-23T12:47:10.069Z] click music slider at 0 % at (665, 560)
+[2026-10-23T12:47:10.337Z] click sound slider at 0 % at (665, 612)
+[2026-10-23T12:47:11.428Z] OK   «Голос» at 100 % — {"h":40,"value":100,"w":649,"x":664,"y":644}
+[2026-10-23T12:47:11.429Z] OK   the menu offers a save slot — CloseMenu, HintButton, JournalButton, Load1, Load2, Load3, Loadday2, Loadday3, Loadday4, MenuButton, NewGame, Save1, Save2, Save3, Saveday2, Saveday3, Saveday4, TimingSlow
+[2026-10-23T12:47:11.429Z] click save into slot 1 at (1159, 399)
+[2026-10-23T12:47:12.114Z] OK   saved into slot 1 — Сохранено: 1
+[2026-10-23T12:47:12.114Z] click NewGame at (642, 821)
+[2026-10-23T12:47:13.347Z] OK   «Новая игра»: back at the post office, day one not done — {"room":"Z1"}
+[2026-10-23T12:47:14.294Z] click ui MenuButton at (1846, 40)
+[2026-10-23T12:47:14.980Z] click load slot 1 at (1335, 399)
+[2026-10-23T12:47:17.045Z] OK   «Загрузить»: the morning of day two from the save — {"room":"H1","done_N01":true}
+[2026-10-23T12:47:19.610Z] click exit to the street at (980, 420)
+[2026-10-23T12:47:24.033Z] OK   walked out to the street
+[2026-10-23T12:47:25.255Z] click exit to the mill at (1860, 920)
+[2026-10-23T12:47:37.160Z] OK   walked to the mill yard
+[2026-10-23T12:47:38.150Z] click hotspot pavel at (1130, 468)
+[2026-10-23T12:47:46.337Z] OK   M09_0: Pavel's voice plays with his line on screen — {"line":"M09_0","speaker":"pavel","beat":"M09_0","length":3.67494320869446}
+[2026-10-23T12:47:46.338Z] OK   the subtitle on screen is the line that sounds — {"line_id":"M09_0","scene":"M09","speaker":"pavel","speaker_name":"Павел","text":"Дунина племянница? Похожа, когда хмуришься.","type":"line"}
+[2026-10-23T12:47:47.982Z] OK   Pavel's voice leaves the page — -13.9 dBFS
+[2026-10-23T12:47:53.478Z] click continue → M09_1 at (960, 1006)
+[2026-10-23T12:47:54.511Z] OK   M09_1: Agata answers in her voice — {"line":"M09_1","speaker":"agata"}
+[2026-10-23T12:47:55.747Z] OK   Agata's voice leaves the page — -17.4 dBFS
+[2026-10-23T12:47:56.015Z] click continue → M09_2 at (960, 1006)
+[2026-10-23T12:47:56.616Z] OK   M09_2: Pavel again — {"line":"M09_2","speaker":"pavel","length":13.5881862640381}
+[2026-10-23T12:47:57.806Z] click continue mid-line → M09_3 at (960, 959)
+[2026-10-23T12:47:58.123Z] OK   «дальше» cuts Pavel mid-line and starts the next line — at 0.00 s; [{"kind":"stop","line":"M09_2","ms":58810,"reason":"advance","speaker":"pavel","voice":"line"}]
+[2026-10-23T12:47:58.580Z] click continue at (960, 959)
+[2026-10-23T12:48:00.010Z] click continue at (960, 982)
+[2026-10-23T12:48:00.887Z] click continue at (960, 1006)
+[2026-10-23T12:48:02.276Z] click continue at (960, 982)
+[2026-10-23T12:48:03.536Z] click continue at (960, 982)
+[2026-10-23T12:48:04.587Z] OK   all eight M09 lines voiced, in order — M09_0, M09_1, M09_2, M09_3, M09_4, M09_5, M09_6, M09_7
+[2026-10-23T12:48:04.815Z] click hotspot wheel at (1395, 500)
+[2026-10-23T12:48:07.590Z] OK   the wheel's look in the narrator's voice (ZAKADR) — {"line":"M1.wheel.look","speaker":"narrator","kind":"narration"}
+[2026-10-23T12:48:08.883Z] OK   the narrator leaves the page — -13.9 dBFS
+[2026-10-23T12:48:08.883Z] OK   console: 0 errors / page errors

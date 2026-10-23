@@ -61,7 +61,8 @@
         },
         {
           "speaker": "agata",
-          "text": "Мама."
+          "text": "Мама.",
+          "tags": ["softly"]
         },
         {
           "speaker": "narrator",
@@ -814,7 +815,8 @@
         },
         {
           "speaker": "tikhon",
-          "text": "Значит, вечер кончился."
+          "text": "Значит, вечер кончился.",
+          "tags": ["slowly", "quietly"]
         },
         {
           "speaker": "tikhon",
