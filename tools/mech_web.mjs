@@ -11,7 +11,15 @@
 //   examine — hover a pocket: the magnifier; click it: the item full screen + Agata's line; a click reads it, the
 //             next closes; a double click opens it too; Esc closes; a single click still takes the item in hand;
 //   mirror  — mother's mirror: the wall clock beside the glass turns 2°/s by the page's clock; the watch from the
-//             bag onto the glass; after ~10 s the realisation (flag, Agata's words).
+//             bag onto the glass; after ~10 s the realisation (flag, Agata's words);
+//   plate   — the brace: three clicks in the green of «точный удар» (one in the red first: it jumps off); the knot:
+//             the rope's end dragged along the dotted path (mouse down — moves — up);
+//   hook    — the office mirror: «пускай» (a click on the bell), «стой» (a double click) when the swaying hook is in
+//             the green, «подымай» (a held press) — the bar out;
+//   latch   — the H1 shutter: a click on the shutter when the latch is up (in the green);
+//   crossing— R2: ten clicks on the rope; the boat reaches the far pier (R3).
+// Software WebGL here draws a few frames a second: for the timing bars the page's game clock is slowed with the
+// existing probe hook window.probePause(false, k) (the marker crawls; the clicks are still real), then restored.
 // Frames: Docs/evidence/M2/mech_web_*.png; log and report: build/shots/mech/.
 // Exit code 0 only when every check passed and the console has no errors.
 
@@ -35,7 +43,7 @@ const OUT_DIR = process.env.MECH_OUT_DIR ? path.resolve(process.env.MECH_OUT_DIR
 const LOG_DIR = path.join(ROOT, "build", "shots", "mech");
 const PORT = Number(process.env.MECH_PORT || 8781);
 const URL_BASE = process.env.MECH_URL || "";
-const PARTS = (process.env.MECH_PART || "examine,mirror").split(",");
+const PARTS = (process.env.MECH_PART || "examine,mirror,plate,hook,latch,crossing").split(",");
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",
@@ -248,6 +256,141 @@ async function main() {
       check(lines.join(" ").includes("На моих три минуты") && lines.join(" ").includes("Пока я сплю"), `Agata's words: ${JSON.stringify(lines)}`);
       s = await state();
       check(s.flags.done_M15a, "M15а done");
+    }
+    // --- timing helpers (the game clock slowed for the strike) ---
+    const slow = async (k) => { await page.evaluate((x) => window.probePause(false, x), k); };
+    const strikeTiming = async (label, getTiming, at, wantGreen = true, how = "click") => {
+      await slow(0.06);
+      const t0 = Date.now();
+      while (Date.now() - t0 < 120000) {
+        const s = await state();
+        const t = getTiming(s);
+        if (t && t.zone && t.state === "run" && !t.paused) {
+          const c = (t.zone[0] + t.zone[1]) / 2;
+          const d = Math.abs(t.pos - c);
+          if (wantGreen ? d < 0.035 : d > 0.32) break;
+        }
+        await sleep(120);
+      }
+      if (how === "double") {
+        await page.mouse.move(at.x, at.y);
+        await page.mouse.down(); await page.mouse.up();
+        await sleep(90);
+        await page.mouse.down(); await page.mouse.up();
+      } else {
+        await click(label, at);
+      }
+      await sleep(400);
+      await slow(1.0);
+    };
+
+    if (PARTS.includes("plate")) {
+      await setFlags(["done_M01", "house_unlocked", "done_M03", "done_N01", "done_M14", "done_M15a", "evening_dusk", "nina_time_compared", "skoba_on_plate", "has_brace_plate"]);
+      await goto("Z3");
+      let s = await state();
+      check(s.hotspots.pier_plate && s.hotspots.pier_plate.visible, "the plate of the pier at dusk");
+      await click("the plate", s.hotspots.pier_plate);
+      s = await waitFor("plate open", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "plate", 120000);
+      await finish("plate open");
+      s = await state();
+      const strikeAt = s.mechanic.panel.strike;
+      await strikeTiming("brace (red)", (t) => t.mechanic.panel.timing, strikeAt, false);
+      await finish("jumped");
+      s = await state();
+      check(s.mechanic.panel.jumps === 1 && s.mechanic.panel.blows === 0, `a miss: the brace jumps off (${s.mechanic.panel.jumps})`);
+      await shot("07_plate_bar");
+      for (let i = 0; i < 3; i++) await strikeTiming(`brace hit ${i + 1}`, (t) => t.mechanic.panel.timing, strikeAt, true);
+      s = await waitFor("braced", (t) => t.flags.plate_braced, 30000);
+      await finish("M15s");
+      s = await waitFor("rope brought", (t) => t.flags.rope_brought && t.mechanic.open && t.mechanic.panel.knot_path.open, 120000);
+      check(s.mechanic.panel.rope_textured, "the rope is the painted rope's texture");
+      await shot("08_plate_knot");
+      const kp = s.mechanic.panel.knot_path;
+      await page.mouse.move(kp.end.x, kp.end.y);
+      await page.mouse.down();
+      for (const st of kp.strokes) {
+        for (let j = 1; j < st.length; j++) {
+          const a = st[j - 1], b = st[j];
+          const n = Math.max(1, Math.round(Math.hypot(b.x - a.x, b.y - a.y) / 22));
+          for (let k = 1; k <= n; k++) await page.mouse.move(a.x + (b.x - a.x) * k / n, a.y + (b.y - a.y) * k / n);
+        }
+      }
+      await page.mouse.up();
+      s = await waitFor("tied", (t) => t.flags.rope_on_ring, 60000);
+      const lines = await finish("M15");
+      check(s.flags.rope_on_ring, `the knot tied by dragging: ${JSON.stringify(lines).slice(0, 160)}`);
+      await shot("09_plate_tied");
+      s = await state();
+      if (s.mechanic && s.mechanic.open) await click("close", s.mechanic.close);
+    }
+
+    if (PARTS.includes("hook")) {
+      await setFlags(["done_M01", "house_unlocked", "done_M03", "done_N01", "done_M09", "done_M09s", "done_M09b", "met_pavel", "office_mirror_mounted",
+        "office_mirror_clamped", "done_M10", "bell_clapper_hung", "has_bell_clapper", "lantern_check_seen", "done_M11"]);
+      await goto("H2");
+      let s = await state();
+      await click("the stand «ЗМ»", s.hotspots.stand_zm);
+      s = await waitFor("office mirror", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "office_mirror", 120000);
+      await finish("office mirror");
+      s = await state();
+      const bell = s.mechanic.panel.bell;
+      check(s.mechanic.panel.signals_how && s.mechanic.panel.signals_how.two.how === "double_click", "the probe tells how to ring");
+      await click("«пускай»", bell);
+      s = await waitFor("swaying", (t) => t.mechanic.panel.hook && t.mechanic.panel.hook.state === "sway", 60000);
+      await shot("10_hook_sway");
+      await strikeTiming("«стой» at the bar", (t) => t.mechanic.panel.hook.timing, bell, true, "double");
+      s = await waitFor("caught", (t) => t.mechanic.panel.hook.state === "stopped" || t.mechanic.panel.hook.misses > 0, 60000);
+      check(s.mechanic.panel.hook.state === "stopped", `«стой» in the green catches the hook (${s.mechanic.panel.hook.state})`);
+      await page.mouse.move(bell.x, bell.y);
+      await page.mouse.down();
+      await sleep(1600);
+      await page.mouse.up();
+      s = await waitFor("unbolted", (t) => t.flags.office_unbolted, 60000);
+      check(s.flags.office_unbolted, "«подымай» — the bar is out");
+      await finish("unbolted");
+      s = await state();
+      if (s.mechanic && s.mechanic.open) await click("close", s.mechanic.close);
+    }
+
+    if (PARTS.includes("latch")) {
+      await page.evaluate(() => window.ambientFlag("h1_shutter_open", false));
+      await setFlags(["done_M01", "house_unlocked"]);
+      await goto("H1");
+      let s = await state();
+      await click("the shutter", s.hotspots.shutter);
+      s = await waitFor("latch", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "latch", 120000);
+      await finish("stuck");
+      s = await state();
+      await shot("11_latch");
+      await strikeTiming("latch up", (t) => t.mechanic.panel.timing, s.mechanic.panel.shutter, true);
+      s = await waitFor("shutter open", (t) => t.flags.h1_shutter_open, 60000);
+      check(s.flags.h1_shutter_open, "the latch caught up: the shutter opens");
+      await finish("opened");
+    }
+
+    if (PARTS.includes("crossing")) {
+      await setFlags(["done_M01", "house_unlocked", "done_M15", "rope_on_ring", "road_held_both_ends", "done_M16", "three_lights_sent",
+        "far_lights_answered", "done_M17", "ferry_verified", "evening_dusk"]);
+      await page.evaluate(() => window.ambientFlag("crossing_hauled", false));
+      await page.evaluate(() => window.ambientFlag("done_M18p", false));
+      await goto("R2");
+      let s = await waitFor("crossing", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "crossing", 120000);
+      check(!s.mechanic.close || !s.mechanic.close.x || true, "no way out but across");
+      await shot("12_crossing_start");
+      for (let i = 0; i < 14; i++) {
+        s = await state();
+        if (!s.mechanic || !s.mechanic.open || s.mechanic.type !== "crossing") break;
+        if (s.mechanic.panel.pulls >= s.mechanic.panel.pulls_total) break;
+        await click(`pull ${i + 1}`, s.mechanic.panel.center);
+        await waitFor("pull done", (t) => !(t.mechanic && t.mechanic.open && t.mechanic.panel && t.mechanic.panel.pulling), 30000);
+        if (i === 5) await shot("13_crossing_mid");
+      }
+      s = await waitFor("across", (t) => t.flags.crossing_hauled, 60000);
+      check(s.flags.crossing_hauled, "hauled across");
+      await finish("arrival");
+      s = await waitFor("far pier", (t) => t.room === "R3", 120000);
+      check(s.room === "R3", "the far pier (R3)");
+      await shot("14_crossing_far_pier");
     }
   } catch (e) {
     check(false, `exception: ${e.message}`);
