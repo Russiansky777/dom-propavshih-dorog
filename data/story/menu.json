@@ -27,10 +27,12 @@
       "glow_color": [1.0, 0.62, 0.25, 0.30]
     },
     "leaf_box": [110, 378, 166, 438],
+    "signature_shift": [-1115, 0],
     "fx": {
-      "water": {"amp_px": 1.4, "period_s": 8.0, "wavelength_px": 26.0, "shimmer": 0.07},
-      "sway": {"amp_px": 2.2, "period_s": 7.0, "noise_scale": 0.012},
-      "window": {"breathe": 0.04, "period_s": 6.0, "flicker": 0.012}
+      "_comment": "H57 (Директор 24.10): вода заметно живая, лампа чуть дрожит, ветки и кусты сильнее и порывами (gust — добавка размаха на пике порыва, gust_period_s — средний промежуток, lean — наклон по ветру).",
+      "water": {"amp_px": 2.6, "period_s": 6.0, "wavelength_px": 22.0, "shimmer": 0.16},
+      "sway": {"amp_px": 3.2, "period_s": 6.0, "noise_scale": 0.012, "gust": 1.6, "gust_period_s": 9.0, "lean": 2.4},
+      "window": {"breathe": 0.05, "period_s": 6.0, "flicker": 0.05, "flicker_hz": 11.0}
     },
     "masks": {
       "_comment": "Полигоны зон [x, y, …] в пикселях арта. water — открытая вода без опор, островов и берегов (внутри — ещё отбор по гладкости: деревья у кромки не плывут); water_cut — опоры моста; sway — зоны ветвей и трав с привязкой: anchor — неподвижная линия (ствол или земля), reach_px — на каком расстоянии от неё размах полный; внутри зоны качаются только листья и тонкие ветки (цвет/контраст), ствол, панель и текст — нет; sway_cut — вырез (шпиль церкви под ветками). window — стёкла окна (светятся только тёплые светлые пиксели).",
@@ -48,27 +50,31 @@
   "pause": {
     "items": [
       {"id": "continue", "text": "@ui.pause_continue", "col": 0, "row": 0},
-      {"id": "save", "text": "@ui.pause_save", "col": 0, "row": 1},
-      {"id": "load", "text": "@ui.pause_load", "col": 0, "row": 2},
-      {"id": "settings", "text": "@ui.pause_settings", "col": 1, "row": 0},
+      {"id": "save", "text": "@ui.pause_save", "col": 1, "row": 0},
+      {"id": "load", "text": "@ui.pause_load", "col": 2, "row": 0},
+      {"id": "settings", "text": "@ui.pause_settings", "col": 0, "row": 1},
       {"id": "main_menu", "text": "@ui.pause_main_menu", "col": 1, "row": 1},
-      {"id": "quit", "text": "@ui.pause_quit", "col": 1, "row": 2, "desktop_only": true}
+      {"id": "quit", "text": "@ui.pause_quit", "col": 2, "row": 1, "desktop_only": true}
     ],
     "layout": {
-      "_comment": "Панель-рушник — 1672×941 с прозрачностью в координатах исходника (рушник y 449–876); offset_y сдвигает её так, чтобы рушник стоял посреди экрана. Колонки — центры x; строки — базовые линии.",
-      "offset_y": -185,
-      "col_x": [651, 1052],
-      "baselines": [633, 713, 793],
-      "row_h": 66,
-      "col_w": 380,
-      "font_px": 42,
-      "hint_x": 832,
-      "hint_baseline": 849,
-      "hint_px": 22,
-      "text_color": [0.15, 0.12, 0.10],
-      "hover_color": [0.55, 0.06, 0.07],
-      "red": [0.62, 0.09, 0.09],
-      "divider_dy": 34
+      "_comment": "H58 (Директор 24.10): резная панель партии 10а внизу экрана (pause_panel_wood.png, доска x 226–1454, y 638–936; «Пауза» вырезан в арте). Пункты — в два ряда на пустом дереве (колонки — центры x, строки — базовые линии, art px); подсветка — как в главном меню: тёплое свечение, две золотые линии и лист слева от слова. «Esc — вернуться» — под коротким нижним орнаментом по центру.",
+      "offset_y": 0,
+      "col_x": [512, 840, 1168],
+      "baselines": [752, 814],
+      "row_h": 58,
+      "col_w": 300,
+      "font_px": 40,
+      "hl_top": 38,
+      "hl_bottom": 17,
+      "hint_x": 840,
+      "hint_baseline": 870,
+      "hint_px": 20,
+      "text_color": [0.86, 0.79, 0.68],
+      "hover_color": [1.0, 0.86, 0.6],
+      "hint_color": [0.80, 0.68, 0.50],
+      "line_color": [1.0, 0.72, 0.36],
+      "glow_color": [1.0, 0.62, 0.25, 0.30],
+      "pivot_y": 787
     },
     "blur": {"radius_px": 3.2, "dim": 0.62, "fade_s": 0.18}
   },

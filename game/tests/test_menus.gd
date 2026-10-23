@@ -153,6 +153,16 @@ func _test_title_launch() -> void:
 	_check(bg.texture != null and bg.texture.get_width() == 1672, "the clean panel art is the background")
 	_check(bg.material is ShaderMaterial and (bg.material as ShaderMaterial).get_shader_parameter("mask_tex") != null, "the background is animated through the fx mask")
 	_check((title.get("signature") as TextureRect).visible, "the scratched signature layer is on")
+	# H57 (Director 24.10): the larger signature of batch 10a, moved onto the LEFT panel (the menu is not mirrored).
+	var sig_img := ((title.get("signature") as TextureRect).texture as Texture2D).get_image()
+	var sig_box := sig_img.get_used_rect()
+	_check(sig_box.position.x >= 100 and sig_box.end.x <= 470 and sig_box.position.y > 700 and sig_box.size.x >= 300,
+		"H57: the signature sits on the bottom of the left panel, larger (art box %s)" % str(sig_box))
+	var mat_t := bg.material as ShaderMaterial
+	_check(float(mat_t.get_shader_parameter("sway_gust")) > 0.5 and float(mat_t.get_shader_parameter("water_amp_px")) >= 2.0
+		and float(mat_t.get_shader_parameter("window_flicker")) >= 0.03,
+		"H57: wind in gusts, livelier water, the lamp trembles (gust %s, water %s, flicker %s)" % [mat_t.get_shader_parameter("sway_gust"),
+		mat_t.get_shader_parameter("water_amp_px"), mat_t.get_shader_parameter("window_flicker")])
 	var md := root.get_node("MusicDirector")
 	_check(String(md.get("room_theme")) == String(MenuConfig.section("title").get("music", "")), "the menu theme plays (%s)" % md.get("room_theme"))
 	var pr: Dictionary = title.call("probe")
@@ -225,9 +235,22 @@ func _test_pause_esc() -> void:
 	await _seconds(0.35)
 	var pr: Dictionary = pause.call("probe")
 	_check(float(pr["blur"]) > 0.99, "the game frame behind is blurred (amount %.2f)" % float(pr["blur"]))
-	_check((pause.get("blur") as ColorRect).visible and pause.get("layer") > ui.get("layer"), "the blur and the towel are above the game UI")
+	_check((pause.get("blur") as ColorRect).visible and pause.get("layer") > ui.get("layer"), "the blur and the board are above the game UI")
 	_check(pr["items"].has("continue") and pr["items"].has("main_menu") and pr["items"].has("quit") == not OS.has_feature("web"), "two columns of items (%s)" % str(pr["order"]))
 	_check(String(pr["hint"]) == "Esc — вернуться", "the Esc hint in the border gap (%s)" % pr["hint"])
+	# H58 (Director 24.10): the carved board at the bottom of the screen; items in two rows on it; the Esc line below them,
+	# centred under the bottom ornament.
+	var board_img := ((pause.get("panel") as TextureRect).texture as Texture2D).get_image()
+	var bb := board_img.get_used_rect()
+	_check(bb.position.y > 560 and bb.size.x > 1100, "H58: the board stands in the lower part of the screen (art box %s)" % str(bb))
+	var ys := {}
+	for id in pr["items"].keys():
+		ys[int(round(float(pr["items"][id]["y"])))] = true
+		_check(float(pr["items"][id]["y"]) > bb.position.y * 1080.0 / 941.0, "H58: «%s» is on the board (y %.0f)" % [id, float(pr["items"][id]["y"])])
+	_check(ys.size() == 2, "H58: the items stand in two rows (%s)" % str(ys.keys()))
+	var hint_l: Label = pause.get("hint")
+	_check(absf(hint_l.get_global_rect().get_center().x - bb.get_center().x * 1920.0 / 1672.0) < 6.0 and hint_l.position.y > float(ys.keys().max()),
+		"H58: «Esc — вернуться» centred below the items (%s)" % str(hint_l.get_global_rect()))
 	# Walking stands still while paused.
 	await _esc()
 	_check(not pause.call("is_open") and not paused, "Esc again closes it")

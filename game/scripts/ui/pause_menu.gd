@@ -1,11 +1,12 @@
 class_name PauseMenu
 extends CanvasLayer
 ## Pause menu (Director 23.10: «паузы меню должно всплывать на первый план, чуть замыливая картинку на экране … по
-## нажатию Esc»): the embroidered towel (game/assets/ui/menu/pause_panel.png, ChatGPT's clean layer with the title
-## «Пауза» and the borders) pops up over the game frame, which is slightly blurred and dimmed behind it
-## (pause_blur.gdshader on the screen texture). Two columns drawn here (texts ui.pause_*, data/story/menu.json pause):
-## Продолжить, Сохранить, Загрузить | Настройки, В главное меню, Выход из игры (not on the web); hover — a red
-## cross-stitch frame drawn in code; «Esc — вернуться» in the gap of the bottom border.
+## нажатию Esc»): the carved wooden board at the bottom of the screen (H58, Director 24.10 — art of batch 10a,
+## game/assets/ui/menu/pause_panel.png, «Пауза» cut in the art) pops up over the game frame, which is slightly
+## blurred and dimmed behind it (pause_blur.gdshader on the screen texture). Two rows drawn here on the empty wood
+## (texts ui.pause_*, data/story/menu.json pause): Продолжить, Сохранить, Загрузить / Настройки, В главное меню,
+## Выход из игры (not on the web); hover — as on the title menu: a warm glow, two golden lines and the leaf;
+## «Esc — вернуться» under the short bottom ornament, centred.
 ##
 ## While it is open the tree is paused (Main syncs it from `visibility_changed`): game time, walking, NPCs, lines,
 ## stagings and mini-games stand still; a voice line is held and resumes. This layer always runs.
@@ -16,12 +17,11 @@ extends CanvasLayer
 signal action_taken(id: String)
 
 const LAYER := 50
-const FRAME_STAR := ["...X...", "..X.X..", ".X.X.X.", "X.XXX.X", ".X.X.X.", "..X.X..", "...X..."]
 
 var game_ui: Node = null       # GameUi: the save / load / settings panel, the journal and the plan
 var title: Node = null         # TitleScreen: «В главное меню»
 var blur: ColorRect
-var sheet: Control             # the towel with the items: pops in as one
+var sheet: Control             # the board with the items: pops in as one
 var panel: TextureRect
 var decor: Control
 var hint: Label
@@ -36,6 +36,8 @@ var _lay: Dictionary = {}
 var _font: Font
 var _tween: Tween = null
 var _hint_text: String = ""
+var _leaf: Texture2D = null
+var _glow: GradientTexture2D = null
 
 
 func _ready() -> void:
@@ -70,7 +72,7 @@ func _build(p: Dictionary) -> void:
 	add_child(sheet)
 	var oy := float(_lay.get("offset_y", 0)) * MenuConfig.sy()
 	panel = TextureRect.new()
-	panel.name = "Towel"
+	panel.name = "Board"
 	panel.texture = MenuConfig.texture("pause_panel.png")
 	panel.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	panel.stretch_mode = TextureRect.STRETCH_SCALE
@@ -78,8 +80,19 @@ func _build(p: Dictionary) -> void:
 	panel.size = MenuConfig.SCREEN
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sheet.add_child(panel)
-	# The towel's middle (art y 449–876) is the pivot of the pop-in.
-	sheet.pivot_offset = Vector2(960, (662.0 + float(_lay.get("offset_y", 0))) * MenuConfig.sy())
+	# The board's middle is the pivot of the pop-in.
+	sheet.pivot_offset = Vector2(960, (float(_lay.get("pivot_y", 787)) + float(_lay.get("offset_y", 0))) * MenuConfig.sy())
+	_leaf = MenuConfig.texture("title_leaf.png")
+	_glow = GradientTexture2D.new()
+	_glow.fill = GradientTexture2D.FILL_RADIAL
+	_glow.fill_from = Vector2(0.5, 0.5)
+	_glow.fill_to = Vector2(0.5, 0.0)
+	_glow.width = 128
+	_glow.height = 32
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 1))
+	g.set_color(1, Color(1, 1, 1, 0))
+	_glow.gradient = g
 	decor = Control.new()
 	decor.name = "Decor"
 	decor.size = MenuConfig.SCREEN
@@ -104,7 +117,9 @@ func _build(p: Dictionary) -> void:
 	hint.name = "EscHint"
 	hint.add_theme_font_override("font", UiTheme.font("body"))
 	hint.add_theme_font_size_override("font_size", int(_lay.get("hint_px", 22)))
-	hint.add_theme_color_override("font_color", MenuConfig.color(_lay.get("text_color"), Color(0.15, 0.12, 0.1)))
+	hint.add_theme_color_override("font_color", MenuConfig.color(_lay.get("hint_color"), Color(0.8, 0.68, 0.5)))
+	hint.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.6))
+	hint.add_theme_constant_override("shadow_offset_y", 2)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sheet.add_child(hint)
@@ -138,8 +153,8 @@ func _layout() -> void:
 
 ## Centre of an item's cell in art px (before the vertical offset): its column, its row's baseline − half a cap.
 func _cell_centre_art(it: Dictionary) -> Vector2:
-	var cols: Array = _lay.get("col_x", [651, 1052])
-	var rows: Array = _lay.get("baselines", [633, 713, 793])
+	var cols: Array = _lay.get("col_x", [512, 840, 1168])
+	var rows: Array = _lay.get("baselines", [752, 814])
 	return Vector2(float(cols[int(it.get("col", 0))]), float(rows[int(it.get("row", 0))]) - 13.0)
 
 
@@ -216,7 +231,7 @@ func handle_escape() -> bool:
 	return true
 
 
-## The save / load / settings panel opens over the blurred frame alone: the towel steps aside while it is up.
+## The save / load / settings panel opens over the blurred frame alone: the board steps aside while it is up.
 func _process(_delta: float) -> void:
 	if visible and game_ui != null:
 		sheet.visible = not bool(game_ui.call("menu_panel_open"))
@@ -267,79 +282,45 @@ func _draw_decor() -> void:
 	var sx := MenuConfig.sx()
 	var sy := MenuConfig.sy()
 	var oy := float(_lay.get("offset_y", 0))
-	var fs := int(_lay.get("font_px", 42))
-	var text_c := MenuConfig.color(_lay.get("text_color"), Color(0.15, 0.12, 0.1))
-	var hover_c := MenuConfig.color(_lay.get("hover_color"), Color(0.55, 0.06, 0.07))
-	var red := MenuConfig.color(_lay.get("red"), Color(0.62, 0.09, 0.09))
-	var rows: Array = _lay.get("baselines", [633, 713, 793])
-	var cols: Array = _lay.get("col_x", [651, 1052])
-	var dy := float(_lay.get("divider_dy", 34))
-	# A divider under every item shown (a thin red line, a rhomb in the middle, dots at the ends); a cell left empty —
-	# «Выход из игры» on the web — has none.
-	for id in order:
-		var cell := _item(id)
-		var y := (float(rows[int(cell.get("row", 0))]) + dy + oy) * sy
-		var cx := float(cols[int(cell.get("col", 0))]) * sx
-		var half := 168.0 * sx
-		decor.draw_line(Vector2(cx - half + 8, y), Vector2(cx - 12, y), Color(red, 0.85), 1.6, true)
-		decor.draw_line(Vector2(cx + 12, y), Vector2(cx + half - 8, y), Color(red, 0.85), 1.6, true)
-		_rhomb(Vector2(cx, y), 6.0, red)
-		_rhomb(Vector2(cx - half, y), 3.2, red)
-		_rhomb(Vector2(cx + half, y), 3.2, red)
+	var fs := int(_lay.get("font_px", 40))
+	var text_c := MenuConfig.color(_lay.get("text_color"), Color(0.86, 0.79, 0.68))
+	var hover_c := MenuConfig.color(_lay.get("hover_color"), Color(1, 0.86, 0.6))
+	var line_c := MenuConfig.color(_lay.get("line_color"), Color(1, 0.72, 0.36))
+	var glow_c := MenuConfig.color(_lay.get("glow_color"), Color(1, 0.62, 0.25, 0.3))
+	var rows: Array = _lay.get("baselines", [752, 814])
+	var cols: Array = _lay.get("col_x", [512, 840, 1168])
+	var top_k := float(_lay.get("hl_top", 38))
+	var bot_k := float(_lay.get("hl_bottom", 17))
 	for id in order:
 		var it := _item(id)
-		var cc := _cell_centre_art(it)
-		var base := Vector2(cc.x * sx, (float(rows[int(it.get("row", 0))]) + oy) * sy)
+		var cx := float(cols[int(it.get("col", 0))]) * sx
+		var bl := (float(rows[int(it.get("row", 0))]) + oy) * sy
 		var w := _font.get_string_size(labels[id], HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-		if id == hovered:
-			# As wide as the column, or wider for a long word: the stars at the ends never touch the letters.
-			var fw := maxf(float(_lay.get("col_w", 380)) * sx, w + 128.0)
-			var fh := float(_lay.get("row_h", 66)) * sy
-			_embroidered_frame(Rect2(cc.x * sx - fw / 2, (cc.y + oy) * sy - fh / 2, fw, fh), red)
+		var base := Vector2(cx - w / 2, bl)
+		if id == hovered and not bool(disabled.get(id, false)):
+			# As on the title menu: the glow, two golden rules fading at the ends, the leaf before the word.
+			var half := maxf(float(_lay.get("col_w", 300)) * sx, w + 110.0) * 0.5
+			var top := bl - top_k * sy
+			var bot := bl + bot_k * sy
+			decor.draw_texture_rect(_glow, Rect2(cx - half - 24, top - 6, half * 2 + 48, bot - top + 12), false, glow_c)
+			for y in [top, bot]:
+				_golden_line(cx - half, cx + half, y, line_c)
+			if _leaf != null:
+				var lh := (bot - top) * 0.92
+				var lw := lh * float(_leaf.get_width()) / maxf(1.0, float(_leaf.get_height()))
+				decor.draw_texture_rect(_leaf, Rect2(base.x - lw - 14, (top + bot) * 0.5 - lh * 0.5, lw, lh), false)
 		var col := hover_c if id == hovered else text_c
 		if bool(disabled.get(id, false)):
 			col = Color(text_c, 0.38)
-		decor.draw_string(_font, base - Vector2(w / 2, 0), labels[id], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
+		decor.draw_string(_font, base + Vector2(0, 2), labels[id], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0, 0, 0, 0.6))
+		decor.draw_string(_font, base, labels[id], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 
 
-## The hover frame, embroidered like the towel's borders: an outer red rule with cut corners, an inner row of cross
-## stitches, and a cross-stitch star at each end.
-func _embroidered_frame(r: Rect2, red: Color) -> void:
-	var k := 9.0
-	var o := PackedVector2Array([
-		r.position + Vector2(k, 0), Vector2(r.end.x - k, r.position.y), Vector2(r.end.x, r.position.y + k),
-		Vector2(r.end.x, r.end.y - k), Vector2(r.end.x - k, r.end.y), Vector2(r.position.x + k, r.end.y),
-		Vector2(r.position.x, r.end.y - k), r.position + Vector2(0, k), r.position + Vector2(k, 0)])
-	decor.draw_polyline(o, red, 2.6, true)
-	var ins := r.grow(-6.0)
-	var step := 7.0
-	var x := ins.position.x + 4.0
-	while x < ins.end.x - 3.0:
-		_stitch(Vector2(x, ins.position.y), red)
-		_stitch(Vector2(x, ins.end.y), red)
-		x += step
-	var y := ins.position.y + step
-	while y < ins.end.y - 3.0:
-		_stitch(Vector2(ins.position.x, y), red)
-		_stitch(Vector2(ins.end.x, y), red)
-		y += step
-	var cell := 3.4
-	for side in [r.position.x + 30.0, r.end.x - 30.0]:
-		var top := Vector2(side - cell * 3.5, r.get_center().y - cell * 3.5)
-		for j in FRAME_STAR.size():
-			var line: String = FRAME_STAR[j]
-			for i in line.length():
-				if line[i] == "X":
-					decor.draw_rect(Rect2(top + Vector2(i, j) * cell, Vector2(cell - 0.6, cell - 0.6)), red)
-
-
-func _stitch(at: Vector2, c: Color) -> void:
-	decor.draw_line(at + Vector2(-1.6, -1.6), at + Vector2(1.6, 1.6), c, 1.3, true)
-	decor.draw_line(at + Vector2(-1.6, 1.6), at + Vector2(1.6, -1.6), c, 1.3, true)
-
-
-func _rhomb(at: Vector2, r: float, c: Color) -> void:
-	decor.draw_colored_polygon(PackedVector2Array([at + Vector2(-r, 0), at + Vector2(0, -r), at + Vector2(r, 0), at + Vector2(0, r)]), c)
+## A golden rule of the highlight (the title menu's): bright in the middle, fading out at both ends.
+func _golden_line(x0: float, x1: float, y: float, c: Color) -> void:
+	var pts := PackedVector2Array([Vector2(x0, y), Vector2(x0 + 50, y), Vector2(x1 - 50, y), Vector2(x1, y)])
+	decor.draw_polyline_colors(pts, PackedColorArray([Color(c, 0), Color(c, 0.22), Color(c, 0.22), Color(c, 0)]), 7.0, true)
+	decor.draw_polyline_colors(pts, PackedColorArray([Color(c, 0), Color(c, 0.95), Color(c, 0.95), Color(c, 0)]), 2.0, true)
 
 
 # --- Probe ----------------------------------------------------------------------------------

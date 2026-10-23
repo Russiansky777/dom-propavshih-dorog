@@ -4,9 +4,11 @@
 Что пишет (все 1672×941, кроме листа и маски):
   title_bg.png         фон титульного экрана без пунктов меню — копия assets/incoming/main_menu_clean.png (чистый арт
                        ChatGPT 23.10: без пунктов, подсветки, листа, разделителей и подписи).
-  title_signature.png  слой подписи «made by Yahor Zavatski, 2026», процарапанной на панели, — main_menu_signature.png.
-  pause_panel.png      рушник с прозрачностью (заголовок «Пауза» и вышивка; без пунктов, рамки, разделителей и строки
-                       Esc) — pause_rushnik_panel.png.
+  title_signature.png  слой подписи «made by Yahor Zavatski, 2026», процарапанной на панели, — main_menu_signature_v2.png
+                       (партия 10а, крупнее; нарисована под отражённое меню — сдвигается на левую панель на
+                       title.signature_shift, H57: меню не отражаем, Директор 24.10, 01:06).
+  pause_panel.png      резная деревянная панель паузы внизу экрана с вырезанным «Пауза» (без пунктов и строки Esc) —
+                       pause_panel_wood.png (партия 10а, H58; прежний рушник pause_rushnik_panel.png не используется).
   title_leaf.png       лист-маркер, вырезанный из main_menu_v2.png (title.leaf_box) с мягкой прозрачностью.
   title_fx_mask.png    маска анимации 836×471 (половина арта): R — вода, G — ветви и травы (вес = размах), B — свет
                        окна. Полигоны — title.masks, внутри них отбор по цвету и гладкости арта.
@@ -125,15 +127,19 @@ def fx_mask(src: np.ndarray, masks: dict) -> np.ndarray:
     return half
 
 
-def copy_layer(name: str, out: str, mode: str) -> str:
+def copy_layer(name: str, out: str, mode: str, shift=(0, 0)) -> str:
     src = INCOMING / name
     if not src.exists():
         raise SystemExit(f"нет {src.relative_to(ROOT)} — чистый арт меню (ChatGPT) не доставлен")
     im = Image.open(src).convert(mode)
     if im.size != ART:
         raise SystemExit(f"{name}: {im.size}, ждём {ART}")
+    if tuple(shift) != (0, 0):
+        moved = Image.new(mode, ART, (0, 0, 0, 0))
+        moved.alpha_composite(im, (int(shift[0]), int(shift[1])))
+        im = moved
     im.save(OUT / out, optimize=True)
-    return f"assets/incoming/{name}"
+    return f"assets/incoming/{name}" + (f" shifted {list(shift)}" if tuple(shift) != (0, 0) else "")
 
 
 def main() -> int:
@@ -143,8 +149,9 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     record: dict = {}
     record["title_bg"] = copy_layer("main_menu_clean.png", "title_bg.png", "RGB")
-    record["title_signature"] = copy_layer("main_menu_signature.png", "title_signature.png", "RGBA")
-    record["pause_panel"] = copy_layer("pause_rushnik_panel.png", "pause_panel.png", "RGBA")
+    record["title_signature"] = copy_layer("main_menu_signature_v2.png", "title_signature.png", "RGBA",
+                                          t.get("signature_shift", [0, 0]))
+    record["pause_panel"] = copy_layer("pause_panel_wood.png", "pause_panel.png", "RGBA")
     save_png(leaf_from(load_rgb(INCOMING / "main_menu_v2.png"), t["leaf_box"]), OUT / "title_leaf.png")
     record["title_leaf"] = "cut from assets/incoming/main_menu_v2.png " + str(t["leaf_box"])
     bg = load_rgb(INCOMING / "main_menu_clean.png")
