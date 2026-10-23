@@ -1,0 +1,16 @@
+{
+  "task": "01a16841-e5db-70b9-9e69-a119e39ad525",
+  "rig_task": "01a16575-7b10-74d7-a741-1889a544b5af",
+  "actions": {
+    "chair_sit": 32,
+    "stand_drink": 342,
+    "mirror_viewing": 48
+  },
+  "action_ids": [
+    32,
+    342,
+    48
+  ],
+  "credits": 9,
+  "expires_at": 1793009832465
+}

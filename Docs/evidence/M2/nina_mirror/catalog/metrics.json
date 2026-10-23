@@ -1,0 +1,42 @@
+{
+ "32": {
+  "frames": 341,
+  "duration_s": 11.36,
+  "motion_mean": 0.0035,
+  "motion_max": 0.018,
+  "centroid_x_range": 0.015,
+  "name": "Chair Sit Idle Female",
+  "key": "Chair_Sit_Idle_F",
+  "subCategory": "Idle"
+ },
+ "342": {
+  "frames": 215,
+  "duration_s": 8.6,
+  "motion_mean": 0.0032,
+  "motion_max": 0.0102,
+  "centroid_x_range": 0.071,
+  "name": "Stand and Drink",
+  "key": "Stand_and_Drink",
+  "subCategory": "Drinking"
+ },
+ "48": {
+  "frames": 221,
+  "duration_s": 7.36,
+  "motion_mean": 0.0131,
+  "motion_max": 0.0357,
+  "centroid_x_range": 0.089,
+  "name": "Mirror Viewing",
+  "key": "Mirror_Viewing",
+  "subCategory": "Idle"
+ },
+ "343": {
+  "frames": 270,
+  "duration_s": 10.8,
+  "motion_mean": 0.0091,
+  "motion_max": 0.0326,
+  "centroid_x_range": 0.058,
+  "name": "Sit and Drink",
+  "key": "Sit_and_Drink",
+  "subCategory": "Drinking"
+ }
+}

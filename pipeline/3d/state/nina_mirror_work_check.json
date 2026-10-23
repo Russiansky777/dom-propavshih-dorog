@@ -1,0 +1,91 @@
+{
+ "base": "pipeline/3d/out/nina/animations.glb",
+ "extra": [
+  "pipeline/3d/out/nina/mirror_clips.glb"
+ ],
+ "tris_target": 100000,
+ "decimate": {
+  "char1": {
+   "before": 310464,
+   "after": 99998,
+   "ratio": 0.3221,
+   "vertices": 103254
+  }
+ },
+ "clips": {
+  "Chair_Sit_Idle_F": {
+   "frames": [
+    0.0,
+    340.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle": {
+   "frames": [
+    0.0,
+    120.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Idle_4": {
+   "frames": [
+    0.0,
+    419.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Listening_Gesture": {
+   "frames": [
+    0.0,
+    280.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Listening_Gesture_talk": {
+   "frames": [
+    0.0,
+    280.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Mirror_Viewing": {
+   "frames": [
+    0.0,
+    220.0
+   ],
+   "max_dev_m": 1e-05
+  },
+  "Stand_and_Drink": {
+   "frames": [
+    0.0,
+    266.0
+   ],
+   "max_dev_m": 1e-05
+  }
+ },
+ "materials": {
+  "scaled": [
+   [
+    "BakedMaterial_baseColor",
+    [
+     4096,
+     4096
+    ],
+    [
+     2048,
+     2048
+    ]
+   ]
+  ],
+  "matte": [
+   "BakedMaterial"
+  ]
+ },
+ "out_bytes": 7655288,
+ "result": {
+  "triangles": 99998,
+  "clips": 7,
+  "missing": [],
+  "max_dev_m": 1e-05
+ }
+}
