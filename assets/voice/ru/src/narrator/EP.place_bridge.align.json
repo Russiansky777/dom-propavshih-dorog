@@ -1,0 +1,23 @@
+{
+  "text": "Мост",
+  "alignment": {
+    "characters": [
+      "М",
+      "о",
+      "с",
+      "т"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.24,
+      0.373,
+      0.507
+    ],
+    "character_end_times_seconds": [
+      0.24,
+      0.373,
+      0.507,
+      0.96
+    ]
+  }
+}

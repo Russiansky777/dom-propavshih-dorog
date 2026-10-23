@@ -203,6 +203,20 @@
       },
       "credits_spent": 3113,
       "subscription_delta": 2896
+    },
+    {
+      "run": "39951925561",
+      "at": "2026-10-23T12:16:05+00:00",
+      "request": "pipeline/requests/voice_full_day1.json",
+      "synthesized": [],
+      "reprocessed": [
+        "M03_5"
+      ],
+      "characters_text": 0,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": null,
+      "subscription_after": null
     }
   ]
 }
