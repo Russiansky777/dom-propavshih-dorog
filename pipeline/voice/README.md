@@ -173,7 +173,8 @@ good» как с прежними моделями — сравнивать на
 ## Voice Design — новый голос по описанию (сверено 23.10.2026)
 1. `POST /v1/text-to-voice/design?output_format=mp3_44100_192` — тело `{voice_description (20–1000), model_id
    ("eleven_ttv_v3" | "eleven_multilingual_ttv_v2"), text (100–1000), guidance_scale (0–100, 5), quality (−1…1: выше —
-   лучше звук и меньше разброс), loudness (−1…1, 0,5), seed, should_enhance}` → `previews[]` {`generated_voice_id`,
+   лучше звук и меньше разброс; **только для eleven_multilingual_ttv_v2** — у eleven_ttv_v3 API отвечает 400 «Quality
+   parameter is only supported for eleven_multilingual_ttv_v2», run 39943184769), loudness (−1…1, 0,5), seed, should_enhance}` → `previews[]` {`generated_voice_id`,
    `audio_base_64`, `media_type`, `duration_secs`, `language`}
    ([Design a voice](https://elevenlabs.io/docs/api-reference/text-to-voice/design)).
 2. `POST /v1/text-to-voice` — `{voice_name, voice_description, generated_voice_id, labels?, played_not_selected_voice_ids?}`

@@ -440,7 +440,9 @@ def cmd_design(req_path: Path) -> int:
         log(f"  design {sp}: {body['model_id']}, {fmt}, текст {len(body['text'])} символов, "
             + ", ".join(f"{k}={body[k]}" for k in DESIGN_KEYS if k in body))
         st, hdr, payload = http("POST", "/v1/text-to-voice/design", {"output_format": fmt}, body, retry_on_disconnect=False)
-        rejected = [k for k in DESIGN_KEYS if k in body and st == 422 and k in error_text(st, payload)]
+        # 400/422 с именем параметра (так API отвечает, например, «Quality parameter is only supported for
+        # eleven_multilingual_ttv_v2») — повтор без него
+        rejected = [k for k in DESIGN_KEYS if k in body and st in (400, 422) and k in error_text(st, payload).lower()]
         if rejected:
             # отклонённый запрос кредитов не списывает; что убрано — в журнал и в design/<персонаж>.json
             log(f"    {error_text(st, payload)} — повтор без {', '.join(rejected)}")
