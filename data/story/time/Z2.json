@@ -20,7 +20,12 @@
       "if": [
         "tod_dark",
         "stove_lit"
-      ]
+      ],
+      "flicker": {
+        "amount": 0.2,
+        "speed": 0.7,
+        "seed": 310
+      }
     },
     {
       "id": "house_w2",
@@ -37,7 +42,12 @@
       "if": [
         "tod_dark",
         "stove_lit"
-      ]
+      ],
+      "flicker": {
+        "amount": 0.2,
+        "speed": 0.77,
+        "seed": 327
+      }
     },
     {
       "id": "house_w3",
@@ -54,7 +64,12 @@
       "if": [
         "tod_dark",
         "stove_lit"
-      ]
+      ],
+      "flicker": {
+        "amount": 0.2,
+        "speed": 0.84,
+        "seed": 344
+      }
     },
     {
       "id": "far_1",
@@ -67,7 +82,12 @@
       "color": "#ffb35c",
       "alpha": 0.85,
       "halo": 4.0,
-      "halo_alpha": 0.3
+      "halo_alpha": 0.3,
+      "flicker": {
+        "amount": 0.12,
+        "speed": 0.91,
+        "seed": 361
+      }
     },
     {
       "id": "far_2",
@@ -80,7 +100,12 @@
       "color": "#ffb35c",
       "alpha": 0.85,
       "halo": 4.0,
-      "halo_alpha": 0.3
+      "halo_alpha": 0.3,
+      "flicker": {
+        "amount": 0.12,
+        "speed": 0.98,
+        "seed": 378
+      }
     },
     {
       "id": "far_3",
@@ -96,7 +121,12 @@
       "halo_alpha": 0.25,
       "if": [
         "tod_night"
-      ]
+      ],
+      "flicker": {
+        "amount": 0.12,
+        "speed": 1.05,
+        "seed": 395
+      }
     },
     {
       "id": "mill_far",
@@ -109,7 +139,12 @@
       "color": "#ffb35c",
       "alpha": 0.8,
       "halo": 3.5,
-      "halo_alpha": 0.28
+      "halo_alpha": 0.28,
+      "flicker": {
+        "amount": 0.12,
+        "speed": 1.12,
+        "seed": 412
+      }
     },
     {
       "id": "far_4",
@@ -122,7 +157,13 @@
       "color": "#ffb35c",
       "alpha": 0.8,
       "halo": 4.0,
-      "halo_alpha": 0.28
+      "halo_alpha": 0.28,
+      "flicker": {
+        "amount": 0.12,
+        "speed": 1.19,
+        "seed": 429
+      }
     }
-  ]
+  ],
+  "_flicker_note": "G25 (Директор 23.10: «свет в окнах естественнее и чуть дрожит, как в мастерской»): у каждого освещённого окна flicker {amount, speed, seed} — тот же шум пламени, что у ламп и печи (LightFlicker); дальние огни дрожат слабее; у каждого окна своё зерно, окна не мигают разом"
 }

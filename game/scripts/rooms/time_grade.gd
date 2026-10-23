@@ -10,7 +10,9 @@ extends Node2D
 ##   - lit windows (time file `windows[]`): additive warm panes with a soft halo above the grade, on by their
 ##     `if` / `unless` / `if_any` flags (tod_ virtual flags: «tod_dark» — dusk, evening, night); `"blend": "mul"` —
 ##     a window going dark instead (the daylight painted in the glass of a room at dusk): a multiply pane right
-##     over the painting (z −5: under the figures), no halo;
+##     over the painting (z −5: under the figures), no halo; `flicker` {amount, speed, seed} — G25 (Director 23.10:
+##     «свет в окнах естественнее и чуть дрожит, как в мастерской»): the pane and its halo breathe with the same
+##     flame noise as the lamps (LightFlicker, lights/<LOC>.json `flicker`), each window on its own seed;
 ##   - a room lit by its Lighting (light route): the «living world» layer (river, puddles, trees swaying, dust,
 ##     drizzle — drawn from the unlit painting by its own shaders) takes the grade colour as its modulate, so the
 ##     water does not stay daylight-bright at night;
@@ -29,6 +31,8 @@ var windows: Array[Node2D] = []
 var ambient: CanvasItem = null    # the room's «Ambient» layer (light route: modulated by the grade)
 var fade_s: float = 2.0
 var _tween: Tween = null
+var _flickers: Array = []         # [{pane, halo, flicker: LightFlicker, alpha, halo_alpha}] — G25
+var _flicker_t: float = 0.0
 
 
 static func build(room: Node2D, id: String) -> TimeGrade:
@@ -141,7 +145,37 @@ func _make_window(w: Dictionary, mat: CanvasItemMaterial) -> Node2D:
 		halo.scale = box.size * halo_k / 64.0
 		halo.material = mat
 		holder.add_child(halo)
+	var fl = w.get("flicker", null)
+	if fl is Dictionary and not dark and float(fl.get("amount", 0.0)) > 0.0:
+		_flickers.append({"pane": pane, "halo": holder.get_node_or_null("Halo"), "holder": holder,
+			"flicker": LightFlicker.new(fl, holder.name.hash() & 0xffff), "alpha": pane.color.a})
 	return holder
+
+
+## G25: the lit windows' flame — the pane's alpha and the halo's brightness × LightFlicker.factor (never below 0).
+func _process(delta: float) -> void:
+	if _flickers.is_empty():
+		set_process(false)
+		return
+	_flicker_t += delta
+	for f in _flickers:
+		var holder: Node2D = f["holder"]
+		if holder.modulate.a <= 0.0:
+			continue
+		var k: float = (f["flicker"] as LightFlicker).factor(_flicker_t)
+		var pane: Polygon2D = f["pane"]
+		pane.color.a = clampf(float(f["alpha"]) * k, 0.0, 1.0)
+		var halo = f["halo"]
+		if halo != null:
+			halo.self_modulate = Color(k, k, k, 1.0)
+
+
+## The flickering windows now: {id: pane alpha} (tests).
+func flicker_probe() -> Dictionary:
+	var out := {}
+	for f in _flickers:
+		out[String((f["holder"] as Node2D).name)] = (f["pane"] as Polygon2D).color.a
+	return out
 
 
 func _window_on(w: Dictionary) -> bool:

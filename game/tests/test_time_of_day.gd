@@ -224,6 +224,33 @@ func _test_rooms() -> void:
 	var lit: Array = p["windows_lit"]
 	_check(lit.has("far_1") and lit.has("mill_far") and lit.has("house_w2"), "Z2 at dusk: far windows and the aunt's (stove lit) glow (%s)" % [lit])
 	_check(not lit.has("far_3"), "Z2: far_3 only at night")
+	# G25 (Director 23.10: after the clamp the windows outside «естественнее и чуть дрожат, как в мастерской»): every
+	# lit window breathes with the flame noise (LightFlicker) — within its amount, each on its own seed.
+	var samples := {}
+	for i in 40:
+		await _frames(2)
+		var fp: Dictionary = tg.call("flicker_probe")
+		for k in fp:
+			if not samples.has(k):
+				samples[k] = []
+			samples[k].append(float(fp[k]))
+	_check(samples.has("house_w2") and samples.has("far_1") and samples.has("mill_far"), "G25: Z2's lit windows flicker (%s)" % [samples.keys()])
+	var spec_w2: Dictionary = {}
+	for w in TOD.room_data("Z2").get("windows", []):
+		if String(w.get("id", "")) == "house_w2":
+			spec_w2 = w
+	if samples.has("house_w2") and not spec_w2.is_empty():
+		var a: Array = samples["house_w2"]
+		var base := float(spec_w2.get("alpha", 0.5))
+		var amt := float(spec_w2.get("flicker", {}).get("amount", 0.0))
+		_check(a.max() - a.min() > base * 0.02, "G25: the aunt's window is not a flat pane (alpha %.3f…%.3f)" % [a.min(), a.max()])
+		_check(a.min() >= base * (1.0 - amt) - 0.01 and a.max() <= base * (1.0 + amt) + 0.01, "G25: and only slightly — within ±%d %% (%.3f…%.3f)" % [int(amt * 100), a.min(), a.max()])
+	if samples.has("far_1") and samples.has("far_2"):
+		_check(samples["far_1"] != samples["far_2"], "G25: the windows do not flicker in unison")
+	for r in ["Z2", "Z4", "M1"]:
+		for w in TOD.room_data(r).get("windows", []):
+			if String(w.get("blend", "add")) == "add":
+				_check(w.get("flicker", {}) is Dictionary and float(w.get("flicker", {}).get("amount", 0.0)) > 0.0, "G25: %s.%s has its flicker in data" % [r, String(w.get("id", ""))])
 	_flags_before("M09")
 	await _enter("Z2")
 	poly = _grade_node().get("tint")

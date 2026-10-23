@@ -28,7 +28,7 @@
       "talk": {"after_text": "@R3.mitya.after"}
     },
     {
-      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [890, 425, 90, 240], "stand": [1000, 640], "draw": false, "pick_priority": 2, "hidden_if": ["boat_shuttle_open"], "_hidden_note": "со свободного дня лодка ходит в обе стороны — Пелагея у своего причала (R1)",
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [890, 425, 90, 240], "stand": [1000, 640], "draw": false, "pick_priority": 2, "visible_if": ["started_M18p"], "hidden_if": ["boat_shuttle_open"], "_visible_note": "G41: на дальней опоре Пелагея с ночной переправы (M18p — она в лодке с Агатой) до свободного дня — в это время её нет на ближнем причале (R1 hidden_when); раньше по данным она стояла сразу в двух местах", "_hidden_note": "со свободного дня лодка ходит в обе стороны — Пелагея у своего причала (R1)",
       "image": "res://assets/characters/pelageya/front.png",
       "talk": {"after_text": "@R3.pelageya.after"}
     },
