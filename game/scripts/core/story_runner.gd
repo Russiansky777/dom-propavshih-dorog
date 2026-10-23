@@ -1386,12 +1386,19 @@ func examine_item(item_id: String) -> bool:
 	examine_opened.emit(item_id)
 	var t := String(examine_spec(item_id).get("text", ""))
 	if t != "":
-		narrate_key(t)
+		var b := _text_beat(t)
+		b["examine"] = item_id   # Agata's line about this thing: it goes when the close-up is put away (G55)
+		_push(b)
 	return true
 
 
+## Puts the item close-up away. G55 (Director 23.10: the first «Закрыть» only turned Agata's line, the second closed):
+## her line about the thing, if it is still on screen, goes with the close-up — the voice stops on the beat change.
 func close_examine() -> void:
 	if examined_item == "":
 		return
+	var own_line := String(current_beat.get("examine", "")) != ""
 	examined_item = ""
 	examine_closed.emit()
+	if own_line:
+		_next()

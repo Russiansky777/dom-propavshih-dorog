@@ -39,6 +39,14 @@ func _init(cfg: Dictionary = {}) -> void:
 	bump_over = float(cfg.get("bump_over", bump_over))
 
 
+## «Облегчить мини-игры» (G3): the log moves `slow` times slower and the ring zone is `wide` times wider (kept above
+## the stone: the zone never reaches past the bump line).
+func ease(slow: float, wide: float) -> void:
+	speed /= maxf(slow, 0.01)
+	raise_speed /= maxf(slow, 0.01)
+	tolerance = minf(tolerance * maxf(wide, 1.0), maxf(1.0 - rest - bump_over, tolerance))
+
+
 func solved() -> bool:
 	return state == "solved"
 

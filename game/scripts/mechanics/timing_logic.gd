@@ -14,7 +14,8 @@ extends RefCounted
 ##   miss_s      the pause after a miss while the consequence plays (0.9)
 ##   hit_s       the marker holds a moment after a hit — the blow lands (0.25)
 ##   start       where the marker starts, 0..1 (0 — the left end)
-## Accessibility: `slow_k` multiplies the period (settings «Точный удар: медленнее» — TimingBar.SLOW_K).
+## Accessibility (G3, Director 23.10: «Облегчить мини-игры»): `slow_k` multiplies the period (TimingBar.SLOW_K) and
+## `green_k` widens the green zone round its centre (TimingBar.EASY_GREEN_K) — TimingBar.apply_ease sets both.
 
 var hits_needed: int = 3
 var period_s: float = 2.0
@@ -23,6 +24,7 @@ var center: float = 0.5
 var miss_s: float = 0.9
 var hit_s: float = 0.25
 var slow_k: float = 1.0
+var green_k: float = 1.0      # «Облегчить»: the green zone this many times wider (centre kept, clamped to the bar)
 
 var phase: float = 0.0        # 0..1 along one full sweep there and back
 var hits: int = 0             # hits in the current series
@@ -54,20 +56,30 @@ static func pos_at(ph: float) -> float:
 	return p * 2.0 if p < 0.5 else 2.0 - p * 2.0
 
 
+## The green zone's width now: `green` × `green_k` («Облегчить»), never wider than 0.9 of the bar.
+func green_w() -> float:
+	return clampf(green * green_k, 0.02, 0.9)
+
+
+## The zone [from, to] on the bar; a widened zone near an end is shifted inwards so it stays as wide.
 func zone() -> Vector2:
-	return Vector2(center - green * 0.5, center + green * 0.5)
+	var g := green_w()
+	var c := clampf(center, g * 0.5, 1.0 - g * 0.5)
+	return Vector2(c - g * 0.5, c + g * 0.5)
 
 
 func in_green(p: float) -> bool:
-	return p >= center - green * 0.5 - 1e-6 and p <= center + green * 0.5 + 1e-6
+	var z := zone()
+	return p >= z.x - 1e-6 and p <= z.y + 1e-6
 
 
 ## How warm the bar is at `p`: 1 in the green, falling to 0 at the ends (the bar's colours).
 func warmth(p: float) -> float:
-	var d := absf(p - center) - green * 0.5
+	var z := zone()
+	var d := maxf(z.x - p, p - z.y)
 	if d <= 0.0:
 		return 1.0
-	var far := maxf(center - green * 0.5, 1.0 - center - green * 0.5)
+	var far := maxf(z.x, 1.0 - z.y)
 	return clampf(1.0 - d / maxf(far, 0.01), 0.0, 1.0)
 
 
@@ -120,9 +132,12 @@ func seconds_to_green() -> float:
 		return -1.0
 	var per := period_s * slow_k
 	var p0 := phase
+	var z := zone()
+	var mid := (z.x + z.y) * 0.5
+	var near := green_w() * 0.3
 	for i in 400:
 		var ph := fmod(p0 + float(i) / 400.0, 1.0)
 		var q := ph * 2.0 if ph < 0.5 else 2.0 - ph * 2.0
-		if absf(q - center) <= green * 0.3:
+		if absf(q - mid) <= near:
 			return float(i) / 400.0 * per
 	return 0.0

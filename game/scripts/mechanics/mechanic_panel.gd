@@ -8,6 +8,11 @@ extends Control
 var view: MechanicView = null
 var spec: Dictionary = {}
 var clock: float = 0.0
+## G26 (Director 23.10: «кликать и мышью»): while this «точный удар» bar is on screen, a left click anywhere on the
+## close-up that nothing else takes (the picture, the background) strikes — as well as a click on the bar, the
+## owner's target, or Space. Panels with a timing bar set it in build().
+var strike_bar: TimingBar = null
+var strikes_by_click: int = 0   # tests: strikes that came from a click on the close-up itself
 
 
 func build() -> void:
@@ -78,6 +83,15 @@ func sound(sound_name: String) -> void:
 func _process(delta: float) -> void:
 	clock += delta
 	tick(delta)
+
+
+func _gui_input(ev: InputEvent) -> void:
+	if strike_bar == null or not is_instance_valid(strike_bar) or not strike_bar.is_visible_in_tree():
+		return
+	if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+		accept_event()
+		strikes_by_click += 1
+		strike_bar.strike()
 
 
 func tick(_delta: float) -> void:

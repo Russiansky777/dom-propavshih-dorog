@@ -102,6 +102,7 @@ func build() -> void:
 	add_child(timing)
 	timing.setup(spec.get("timing", {"hits": 3, "period_s": 2.0, "green": 0.2}))
 	timing.struck.connect(_on_struck)
+	strike_bar = timing   # G26: a click anywhere on the plate strikes too
 	hint = label("", v2(spec.get("hint_pos", [1150, 120])), 720)
 	_refresh()
 
@@ -365,6 +366,7 @@ func probe() -> Dictionary:
 			"how": "press on end, drag through next (then the following strokes) without releasing"},
 		"strike": sk, "blows": blows, "braced": braced(), "skoba": center_of(skoba_hit), "skoba_visible": skoba.visible, "jumps": jumps,
 		"timing": timing.probe() if timing.visible else {}, "ring": {"x": ring_c.x, "y": ring_c.y},
+		"free_click": {"x": 1500.0, "y": 300.0}, "strikes_by_click": strikes_by_click,
 		"rope_end": {"x": e.x, "y": e.y}, "knot_stage": knot_stage(), "stroke": knot.stroke, "strokes": strokes,
 		"slips": slips, "rope_on_ring": tied(), "rope_tied_visible": rope_art.visible,
 		"rope_textured": rope_back.texture != null}

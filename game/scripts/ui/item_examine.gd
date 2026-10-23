@@ -277,6 +277,14 @@ func _input(event: InputEvent) -> void:
 			(event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE):
 		get_viewport().set_input_as_handled()
 		StoryRunner.close_examine()
+		return
+	# G55: «Закрыть» closes at the first click even while Agata's line is up — the dialogue's modal (GameUi, the layer
+	# above) would take that click and only turn the line; here, before the GUI, the button's place is ours.
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT \
+			and close_button != null and close_button.is_visible_in_tree() \
+			and close_button.get_global_rect().has_point(event.position):
+		get_viewport().set_input_as_handled()
+		StoryRunner.close_examine()
 
 
 func probe() -> Dictionary:

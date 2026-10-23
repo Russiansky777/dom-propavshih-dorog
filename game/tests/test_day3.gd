@@ -370,6 +370,9 @@ func _test_windlass_panel() -> void:
 		pr = mv.probe().get("panel", {})
 		_check(p.logic.state == "bumped" and bool(pr.get("raise_highlight", false)), "%s: bumped — «Подымай» glows" % run)
 		_check(String(pr.get("reply", "")).contains("Подымай"), "Ilya's answer says «Подымай»: «%s»" % String(pr.get("reply", "")))
+		# G50: Ilya's recorded line is heard, not only read.
+		_check(String(pr.get("bump_line", "")) == "ilya:E5.windlass.bump" and String(pr.get("bump_voice", "")) in ["playing", "waiting"],
+			"G50: «Стукнулось о камень!» in Ilya's voice (%s → %s)" % [String(pr.get("bump_line", "")), String(pr.get("bump_voice", ""))])
 		await _click(pst)
 		await _click(plz)
 		await _frames(3)

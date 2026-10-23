@@ -11,12 +11,18 @@ extends Control
 ## the bar beside the glass shows where the bolt zone is. `drive = false` — the owner steps the logic
 ## itself (the hook moves the marker with the hook).
 ##
-## Accessibility: menu «Точный удар: медленнее» (user://settings.cfg [access] timing_slow) — every bar's
-## sweep is SLOW_K times slower; the green zone stays the same width.
+## Accessibility (G3, Director 23.10): menu «Облегчить мини-игры» (user://settings.cfg [access] timing_slow — the key
+## kept from «Точный удар — медленнее», so an old setting still holds) — every timing mini-game, now and to come, is
+## easier: the sweep SLOW_K times slower and the green zone EASY_GREEN_K times wider (apply_ease on a TimingLogic;
+## the hook in the office mirror and the log at the windlass read slow_k()/green_k() too).
 
 signal struck(result: String)
+## A strike while the marker still holds after a hit (the blow is landing, the water is falling): the owner may say
+## «погоди» (the sluice, G23). Not a miss — nothing changes.
+signal early()
 
 const SLOW_K := 1.8
+const EASY_GREEN_K := 1.5
 const SETTINGS_PATH := "user://settings.cfg"
 const RED := Color(0.63, 0.17, 0.12)
 const AMBER := Color(0.82, 0.57, 0.2)
@@ -35,7 +41,7 @@ var drive: bool = true
 var hold: bool = false          # the owner pauses the bar (e.g. the hook waits for «пускай»)
 var space_key: bool = true      # Space strikes (the owner may take the key for itself)
 var hint: Label = null
-var slow_check: CheckButton = null   # «медленнее» right beside the bar (the same setting as in the menu)
+var slow_check: CheckButton = null   # «Облегчить» right beside the bar (the same setting as in the menu)
 var _flash: float = 0.0
 var _flash_col: Color = GREEN
 var _shake: float = 0.0
@@ -51,7 +57,7 @@ func _init() -> void:
 func setup(cfg: Dictionary, p_vertical: bool = false) -> void:
 	load_settings()
 	logic = TimingLogic.new(cfg)
-	logic.slow_k = SLOW_K if slow else 1.0
+	apply_ease(logic)
 	vertical = p_vertical
 	var h := String(cfg.get("hint", "@ui.timing_hint"))
 	if h != "" and not vertical:
@@ -88,8 +94,29 @@ func _layout_hint() -> void:
 func _on_slow_toggled(on: bool) -> void:
 	set_slow(on)
 	if logic != null:
-		# keep the marker where it is: the phase is a fraction of the sweep, only its speed changes
-		logic.slow_k = SLOW_K if on else 1.0
+		# keep the marker where it is: the phase is a fraction of the sweep, only its speed and the zone change
+		apply_ease(logic)
+	queue_redraw()
+
+
+## «Облегчить мини-игры» on a timing logic: slower sweep, wider green (both 1 when the setting is off).
+static func apply_ease(l: TimingLogic) -> void:
+	if l == null:
+		return
+	l.slow_k = slow_k()
+	l.green_k = green_k()
+
+
+## The sweep's period multiplier now (every timing mini-game): SLOW_K with «Облегчить», else 1.
+static func slow_k() -> float:
+	load_settings()
+	return SLOW_K if slow else 1.0
+
+
+## The zone's width multiplier now (every timing mini-game): EASY_GREEN_K with «Облегчить», else 1.
+static func green_k() -> float:
+	load_settings()
+	return EASY_GREEN_K if slow else 1.0
 
 
 ## The bar is waiting: a text on screen (the modal takes the clicks) or the owner holds it.
@@ -112,6 +139,8 @@ func strike() -> String:
 	if logic == null or paused():
 		return "busy"
 	var r := logic.strike()
+	if r == "busy" and logic.state == "hit":
+		early.emit()
 	match r:
 		"hit", "done":
 			_flash = 1.0
@@ -245,4 +274,5 @@ func probe() -> Dictionary:
 	var r := get_global_rect()
 	return {"x": r.get_center().x, "y": r.get_center().y, "pos": logic.pos(), "hits": logic.hits, "needed": logic.hits_needed,
 		"misses": logic.misses, "state": logic.state, "in_green": logic.in_green(logic.pos()), "zone": [logic.zone().x, logic.zone().y],
-		"period_s": logic.period_s * logic.slow_k, "paused": paused(), "to_green_s": logic.seconds_to_green()}
+		"period_s": logic.period_s * logic.slow_k, "paused": paused(), "to_green_s": logic.seconds_to_green(),
+		"easy": slow, "green_w": logic.green_w()}

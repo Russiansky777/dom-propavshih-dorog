@@ -73,7 +73,7 @@ func _run() -> void:
 	_TB.settings_path = SETTINGS
 	await _test("Logic: timing — N hits in a row; a miss resets the series and holds the marker, then it goes on", _test_timing_logic)
 	await _test("Logic: knot path — along the stroke only; off it or let go: back to the stroke's start; no shortcut", _test_knot_logic)
-	await _test("Setting «медленнее»: saved beside the volumes, read back, slows every bar", _test_slow_setting)
+	await _test("Setting «Облегчить мини-игры» (G3): saved beside the volumes, old key read back, slower and wider for every timing game", _test_slow_setting)
 	main_node = load("res://scenes/Main.tscn").instantiate()
 	root.add_child(main_node)
 	await _frames(3)
@@ -86,13 +86,13 @@ func _run() -> void:
 	player.speed_factor = 6.0
 	await _test("Timing bar on screen: a real click and Space strike; nothing moves or strikes under a text", _test_timing_bar_input)
 	await _test("Data: every inventory item the game gives has an examine view (Agata's line + art or icon)", _test_examine_data)
-	await _test("Examine each item: full screen, its picture, Agata's line, closes by click", _test_examine_each)
+	await _test("Examine each item: full screen, its picture, Agata's line, closes by click; «Закрыть» at the first click (G55)", _test_examine_each)
 	await _test("Bag: double click / magnifier opens it, single click still takes in hand; Esc; load closes it", _test_examine_bag)
 	await _test("Mother's mirror (F4): the clock beside the glass goes 20×, the watch from the bag, the realisation", _test_fast_mirror)
 	await _test("Nina in the glass: every pose from her 3D sheet, at its place and height, moving too fast; common time — her own pace", _test_mirror_nina)
 	await _test("Examine inside a close-up: on top of it, Esc closes only the examine", _test_examine_over_mechanic)
 	await _test("The plate (F5–F7): the brace by «точный удар» — a miss makes it jump off and resets; the knot drawn along the path — slips back, no penalty; textured rope; save/load", _test_plate)
-	await _test("The shutter (F8): the latch caught up in the green opens it; dropped — again, nothing lost; then only a look", _test_latch)
+	await _test("The shutter (G8): a simple action opens it, no mini-game; then only a look; save/load", _test_latch)
 	await _test("The crossing (F12, F15): ~10 pulls by click or drag toward herself; the far bank grows, fog thins, snow; no failure, no way out but across; then the far pier", _test_crossing)
 	await _test("Living water (F14): every room that declares water builds it — ripple, trembling reflections, sparkles, flow lines from data", _test_water)
 	gs.reset()
@@ -312,14 +312,39 @@ func _test_slow_setting() -> void:
 	cf2.load(SETTINGS)
 	_check(is_equal_approx(float(cf2.get_value("audio", "music_volume", 0.0)), 0.42), "the volumes stay in the same file")
 	var bar = _TB.new()
-	bar.setup({"period_s": 2.0})
+	bar.setup({"period_s": 2.0, "green": 0.2})
 	_check(is_equal_approx(bar.logic.slow_k, _TB.SLOW_K), "a new bar is slow")
+	# G3 (Director 23.10: «Облегчить мини-игры»): slower AND a wider green zone, for every timing mini-game.
+	var z: Vector2 = bar.logic.zone()
+	_check(is_equal_approx(z.y - z.x, 0.2 * _TB.EASY_GREEN_K) and bar.logic.in_green(0.36) and bar.logic.in_green(0.64),
+		"«Облегчить»: the green zone is %.1f× wider (%.3f–%.3f)" % [_TB.EASY_GREEN_K, z.x, z.y])
+	var edge := TimingLogic.new({"green": 0.3, "center": 0.85})
+	_TB.apply_ease(edge)
+	_check(edge.zone().y <= 1.0 + 1e-6 and is_equal_approx(edge.zone().y - edge.zone().x, 0.45), "a widened zone near the end stays on the bar and as wide (%s)" % str(edge.zone()))
 	bar.free()
 	_TB.set_slow(false)
 	var bar2 = _TB.new()
-	bar2.setup({"period_s": 2.0})
-	_check(bar2.logic.slow_k == 1.0, "off again: normal speed")
+	bar2.setup({"period_s": 2.0, "green": 0.2})
+	_check(bar2.logic.slow_k == 1.0 and is_equal_approx(bar2.logic.zone().y - bar2.logic.zone().x, 0.2), "off again: normal speed, normal zone")
 	bar2.free()
+	# The setting key stays [access] timing_slow (an old settings file from «Точный удар — медленнее» still holds).
+	var old := ConfigFile.new()
+	old.set_value("access", "timing_slow", true)
+	old.save(SETTINGS)
+	_TB.slow = false
+	_TB.load_settings(true)
+	_check(_TB.slow and _TB.slow_k() == _TB.SLOW_K and _TB.green_k() == _TB.EASY_GREEN_K, "an old settings file (timing_slow = true) turns «Облегчить» on")
+	# The hook in the office mirror and the log at the windlass read it too.
+	var hk := HookPuzzle.new({"bar": 0.5, "tolerance": 0.07, "sway": [0.2, 0.8], "timing": {"period_s": 2.0}})
+	var g0 := hk.timing.green_w()
+	_TB.apply_ease(hk.timing)
+	_check(is_equal_approx(hk.timing.green_w(), g0 * _TB.EASY_GREEN_K) and hk.timing.slow_k == _TB.SLOW_K, "the hook: wider bolt zone, slower sway")
+	var wl := WindlassLogic.new({"rest": 0.82, "tolerance": 0.09, "speed": 0.1, "raise_speed": 0.25})
+	wl.ease(_TB.slow_k(), _TB.green_k())
+	_check(wl.tolerance > 0.09 and wl.rest + wl.tolerance + wl.bump_over <= 1.0 + 1e-6 and is_equal_approx(wl.speed, 0.1 / _TB.SLOW_K),
+		"the log: wider ring zone (±%.3f), slower (%.3f/s)" % [wl.tolerance, wl.speed])
+	_TB.set_slow(false)
+	_check(String(sd.text("@ui.timing_slow")) == "Облегчить мини-игры", "the menu says «Облегчить мини-игры»: %s" % sd.text("@ui.timing_slow"))
 	_reached_end = true
 
 
@@ -416,6 +441,20 @@ func _test_examine_each() -> void:
 		await _click(Vector2(1500, 900))
 		_check(not ex.is_open() and sr.examined_item == "", "%s: a click after the line closes it" % id)
 		_check(gs.has_item(id), "%s: still in the bag" % id)
+	# G55 (Director 23.10): «Закрыть» closes at the FIRST click, Agata's line still on screen — the line goes with it
+	# (no second click, no line left over the room, her voice stops).
+	var vd = root.get_node_or_null("VoiceDirector")
+	for id in items.slice(0, 3):
+		_check(sr.examine_item(id), "G55 %s: opens" % id)
+		await _frames(2)
+		_check(String(sr.current_beat.get("speaker", "")) == "agata", "G55 %s: Agata's line is up" % id)
+		var c := _v(ex.probe().get("close", {}))
+		await _click(c)
+		await _frames(2)
+		_check(not ex.is_open() and sr.examined_item == "" and sr.current_beat.is_empty(),
+			"G55 %s: one click on «Закрыть» closes it and its line (open %s, beat %s)" % [id, str(ex.is_open()), str(sr.current_beat)])
+		if vd != null:
+			_check(not bool(vd.call("is_playing")) or not String(vd.get("current_line")).contains("examine"), "G55 %s: her voice stops with it" % id)
 	_reached_end = true
 
 
@@ -790,7 +829,12 @@ func _test_plate() -> void:
 	var pr := _panel()
 	_check(not pr.get("timing", {}).is_empty() and int(pr["timing"].get("needed", 0)) == 3, "the «точный удар» bar under the plate: three in a row")
 	var sk := _v(pr.get("skoba", {}))
-	await _strike_at(sk, true)
+	# G26 (Director 23.10): «скорость +30 %» — the sweep there and back 1.9 s → 1.46 s; «кликать и мышью» — a click on
+	# the picture away from the brace and the bar strikes too.
+	_check(absf(float(pr["timing"].get("period_s", 0.0)) - 1.9 / 1.3) < 0.02, "G26: the brace's marker 30 %% faster (sweep %.2f s)" % float(pr["timing"].get("period_s", 0.0)))
+	var free_pt := _v(pr.get("free_click", {}))
+	await _strike_at(free_pt, true)
+	_check(int(_panel().get("blows", 0)) == 1 and int(_panel().get("strikes_by_click", 0)) == 1, "G26: a mouse click on the plate (not on the brace or the bar) strikes: one blow")
 	await _strike_at(sk, true)
 	_check(int(_panel().get("blows", 0)) == 2 and not gs.has_flag("plate_braced"), "two hits: two blows, not yet braced")
 	await _strike_at(sk, false)
@@ -844,7 +888,7 @@ func _test_plate() -> void:
 	_reached_end = true
 
 
-# --- The H1 shutter latch (F8) ----------------------------------------------------------------------
+# --- The H1 shutter (G8: a simple action again) ------------------------------------------------------
 
 func _test_latch() -> void:
 	Engine.time_scale = 1.0
@@ -854,35 +898,17 @@ func _test_latch() -> void:
 	await _finish()
 	var h = rm.current_room.get_node_or_null("Hotspots/shutter")
 	_check(sr.planned_interaction(h) == "use", "the first click: Agata reaches for the shutter (the open action)")
+	_check(sr.mechanic_spec(h).is_empty(), "G8: the shutter has no close-up mini-game in its data")
 	player.call("walk_to_and_interact", h)
 	var g := 0
-	while not sr.mechanic_open and g < 2000:
-		if not sr.current_beat.is_empty():
-			sr.advance()
+	var opened_mech := false
+	while (player.call("is_walking") or player.call("is_acting") or not gs.has_flag("h1_shutter_open")) and g < 2000:
+		opened_mech = opened_mech or sr.mechanic_open
 		await process_frame
 		g += 1
-	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "latch" and gs.has_flag("h1_shutter_latch") and not gs.has_flag("h1_shutter_open"),
-		"the tight latch close-up; the shutter not open yet")
-	await _finish()
-	var pr := _panel()
-	var at := _v(pr.get("shutter", {}))
-	_check(not pr.get("timing", {}).is_empty() and int(pr["timing"].get("needed", 0)) == 1, "one catch on the «точный удар» bar")
-	await _strike_at(at, false)
 	var seen := await _finish()
-	_check(int(_panel().get("drops", 0)) == 1 and not gs.has_flag("h1_shutter_open"), "released low: the latch drops back, still closed")
-	_check(seen.size() == 1 and seen[0].begins_with("agata:"), "Agata says so once (%s)" % str(seen))
-	# Closed and opened again: a direct click opens the close-up (no second action, no penalty).
-	sr.close_mechanic()
-	await _frames(2)
-	_check(sr.planned_interaction(h) == "mechanic", "the next click opens the latch at once")
-	sr.open_mechanic(sr.mechanic_spec(h), "shutter")
-	await _frames(3)
-	at = _v(_panel().get("shutter", {}))
-	await _strike_at(at, true)
-	await create_timer(1.2).timeout
-	seen = await _finish()
-	_check(gs.has_flag("h1_shutter_open") and not sr.mechanic_open, "caught up in the green: the shutter opens, the close-up closes (%s)" % str(seen))
-	_check(seen.any(func(x): return x.contains("посветлело")), "«Ставня подалась, в комнате посветлело»")
+	_check(gs.has_flag("h1_shutter_open") and not opened_mech and not sr.mechanic_open, "the action opens the shutter; no «точный удар» on the way")
+	_check(seen.any(func(x): return x.contains("посветлело")), "«Ставня подалась, в комнате посветлело» (%s)" % str(seen))
 	_check(sr.planned_interaction(h) == "text", "the open shutter is only a look now")
 	_check(rm.save_game(SLOT) and rm.load_game(SLOT), "save/load")
 	await _frames(3)

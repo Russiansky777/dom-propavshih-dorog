@@ -597,6 +597,48 @@ def check_shapes(ctx: str, shapes) -> None:
             check_text(f"{ctx}[{i}].text", sh.get("text", ""))
 
 
+def check_knot_around_ring(ctx: str, m: dict) -> None:
+    """G27 (Директор 23.10: узел «будто в воздухе, а не вокруг кольца»): путь узла идёт по нарисованному кольцу
+    (`ring` центр, `ring_r_in`…`ring_r` — тело кольца, пиксели холста). Первое движение начинается снаружи кольца и
+    кончается в его просвете, проходя под телом в нижней дуге, которую плита рисует поверх каната (`ring_front_deg`);
+    второе выходит из просвета поверх тела и идёт вокруг по внешнему краю — не дальше 1,35 наружного радиуса и дугой
+    не меньше 30°; ни одна точка первых двух движений не уходит от кольца дальше 1,35 наружного радиуса, кроме начала."""
+    import math
+    kp = m.get("knot_path", {})
+    st = kp.get("strokes", [])
+    if len(st) < 2 or "ring" not in m:
+        return
+    cx, cy = float(m["ring"][0]), float(m["ring"][1])
+    r_out = float(m.get("ring_r", 158))
+    r_in = float(m.get("ring_r_in", 98))
+    front = m.get("ring_front_deg", [12, 168])
+
+    def polar(q):
+        dx, dy = float(q[0]) - cx, float(q[1]) - cy
+        return math.hypot(dx, dy), math.degrees(math.atan2(dy, dx)) % 360.0
+
+    s1 = [polar(q) for q in st[0]]
+    if s1[0][0] <= r_out:
+        err(f"{ctx}.knot_path.strokes[0]: конец каната должен лежать снаружи кольца (r {s1[0][0]:.0f} ≤ {r_out:.0f})")
+    if s1[-1][0] >= r_in:
+        err(f"{ctx}.knot_path.strokes[0]: «под кольцо и вверх в него» кончается в просвете кольца (r {s1[-1][0]:.0f} ≥ {r_in:.0f})")
+    under = [a for r, a in s1 if r_in <= r <= r_out]
+    if not under or not all(float(front[0]) <= a <= float(front[1]) for a in under):
+        err(f"{ctx}.knot_path.strokes[0]: под телом кольца путь идёт в нижней дуге {front} (там плита рисуется поверх каната), углы {[round(a) for a in under]}")
+    for i, (r, a) in enumerate(s1[1:], 1):
+        if r > r_out * 1.35 and i >= len(s1) - 4:
+            err(f"{ctx}.knot_path.strokes[0][{i}]: у кольца путь не дальше 1,35 наружного радиуса (r {r:.0f})")
+    s2 = [polar(q) for q in st[1]]
+    if s2[0][0] >= r_in:
+        err(f"{ctx}.knot_path.strokes[1]: «вокруг» начинается в просвете кольца (r {s2[0][0]:.0f})")
+    far = [round(r) for r, _ in s2 if r > r_out * 1.35]
+    if far:
+        err(f"{ctx}.knot_path.strokes[1]: «вокруг» по контуру кольца — не дальше {r_out * 1.35:.0f} px от центра, есть {far} (G27: петля в воздухе)")
+    outside = [a for r, a in s2 if r >= r_out]
+    if not outside or max(outside) - min(outside) < 30.0:
+        err(f"{ctx}.knot_path.strokes[1]: «вокруг» идёт по внешнему краю кольца дугой ≥ 30° (есть {[round(a) for a in outside]})")
+
+
 def check_mechanic(ctx: str, m: dict, room: dict) -> None:
     """Крупный план-механика дня 2 (game/scripts/mechanics/*): тип известен; флаги условий и событий известны;
     тексты texts.* есть; картинки (любое поле image/icon) есть в game/; same_as ссылается на хотспот с механикой."""
@@ -664,6 +706,7 @@ def check_mechanic(ctx: str, m: dict, room: dict) -> None:
             check_text(f"{ctx}.knot_path.labels[{i}]", lb)
         if "timing" not in m:
             err(f"{ctx}.timing: скоба забивается «точным ударом» (F7)")
+        check_knot_around_ring(ctx, m)
     if m.get("type") == "latch":
         for kk in ("closed", "open"):
             if not m.get("art", {}).get(kk):
@@ -1703,6 +1746,76 @@ for rid, room in sorted(rooms.items()):
     for fl in sorted(_used):
         if not _AUTO_FLAG.match(fl) and fl not in _set_anywhere:
             err(f"{rid}: условие по флагу {fl} — его никто не ставит (ни сцена, ни задание, ни хотспот, ни вход в комнату)")
+
+# G41 (Директор 23.10: Тамара «стоит и на перекрёстке, и на почте»): один персонаж — одно место. Сюжет проходится по
+# порядку основных сцен так же, как точки старта (RoomManager.start_at): у каждой сцены два состояния — начата
+# (started_) и завершена (done_ + grants + флаги complete_when её комнат); необязательные истории — «идёт» (все флаги
+# условий с её префиксом, q02_…) и «завершена» (+ done_ и grants) с момента, когда выполнены её requires. В каждом
+# состоянии хотспот-NPC с одним id виден (visible_if / hidden_if / hidden_when) не больше чем в одной комнате. Кадры
+# (frame: true) не в счёт — это постановка, не место.
+def _npc_visible(h: dict, fl: set) -> bool:
+    if any(f not in fl for f in h.get("visible_if", [])):
+        return False
+    if any(f in fl for f in h.get("hidden_if", [])):
+        return False
+    for c in h.get("hidden_when", []):
+        if all(f in fl for f in c.get("all", [])) and not any(f in fl for f in c.get("not", [])):
+            return False
+    return True
+
+
+def check_one_place() -> None:
+    npcs: dict[str, list] = {}
+    cond: set[str] = set()
+    for rid, room in rooms.items():
+        if room.get("frame"):
+            continue
+        for h in room.get("hotspots", []):
+            if h.get("kind") == "npc":
+                npcs.setdefault(h["id"], []).append((rid, h))
+                cond |= set(h.get("visible_if", [])) | set(h.get("hidden_if", []))
+                for c in h.get("hidden_when", []):
+                    cond |= set(c.get("all", [])) | set(c.get("not", []))
+    fl: set[str] = set()
+    states: list[tuple[str, set]] = []
+    for sid, sc in scenes.items():
+        if sc.get("type") != "main":
+            continue
+        fl.add("started_" + sid)
+        states.append(("started_" + sid, set(fl)))
+        fl.add("done_" + sid)
+        fl |= set((sc.get("grants") or {}).get("flags", []))
+        for rid, room in rooms.items():
+            cw = (room.get("scenes") or {}).get(sid, {}).get("complete_when", [])
+            for c in (cw if isinstance(cw, list) else [cw]):
+                fl |= set(c.get("all", []))
+                if c.get("any"):
+                    fl.add(c["any"][0])
+        states.append(("done_" + sid, set(fl)))
+    extra: list[tuple[str, set]] = []
+    for q in quests:
+        if q.get("reserve"):
+            continue
+        qid = q["id"]
+        pre = qid.lower() + "_"
+        own = {f for f in cond if f.startswith(pre)}
+        need = set((q.get("requires") or {}).get("flags", []))
+        for name, s in states:
+            if need <= s:
+                extra.append((f"{name} + {qid} идёт", s | own | {"started_" + qid}))
+                extra.append((f"{name} + {qid} завершена", s | own | {"started_" + qid, "done_" + qid} | set(scenes[qid]["grants"]["flags"])))
+                break
+    seen: set[tuple] = set()
+    for name, s in states + extra:
+        for cid, places in sorted(npcs.items()):
+            where = sorted(rid for rid, h in places if _npc_visible(h, s))
+            if len(where) > 1 and (cid, tuple(where)) not in seen:
+                seen.add((cid, tuple(where)))
+                err(f"{cid}: виден сразу в {', '.join(where)} (состояние {name}) — один персонаж стоит в одном месте (G41): "
+                    f"разведите visible_if / hidden_if / hidden_when по сюжету")
+
+
+check_one_place()
 
 _cue_selfcheck()
 

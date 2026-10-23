@@ -98,6 +98,7 @@ func build() -> void:
 	add_child(timing)
 	timing.setup(spec.get("timing", {"hits": 3, "period_s": 1.9, "green": 0.2}))
 	timing.struck.connect(_on_struck)
+	strike_bar = timing   # G26: while the screw's bar is up, a click anywhere on the bench strikes too
 	step_label = label("", v2(spec.get("step_pos", [1180, 96])), 700, &"CloseupTitle")
 	hint = label("", v2(spec.get("hint_pos", [1180, 150])), 700)
 	_place_static()

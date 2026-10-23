@@ -149,7 +149,7 @@ func _build_hook_bar() -> void:
 	add_child(hook_bar)
 	hook_bar.setup({"hint": ""}, true)
 	hook_bar.logic = hook.timing
-	hook_bar.logic.slow_k = TimingBar.SLOW_K if TimingBar.slow else 1.0
+	TimingBar.apply_ease(hook_bar.logic)   # «Облегчить мини-игры» (G3): slower sway, wider bolt zone
 
 
 func opened() -> void:

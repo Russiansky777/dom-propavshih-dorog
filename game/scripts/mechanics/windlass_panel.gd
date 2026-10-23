@@ -29,6 +29,8 @@ var call_label: Label = null
 var reply_label: Label = null
 var signals_seen: Array[String] = []
 var laid_sent: bool = false
+var bump_voice: String = ""        # G50: what VoiceDirector answered to Ilya's recorded «Стукнулось о камень!» (tests)
+var _bump_line: String = ""
 var _call_t: float = -10.0
 var _k: float = 1920.0 / 1672.0
 
@@ -51,6 +53,7 @@ func build() -> void:
 	for o in spec.get("overlays", []):
 		crop(String(o), full, Vector2.ZERO, _k).name = "Figure_" + String(o).get_file().get_basename()
 	logic = WindlassLogic.new(spec.get("logic", {}))
+	logic.ease(TimingBar.slow_k(), TimingBar.green_k())   # «Облегчить мини-игры» (G3): slower log, wider ring zone
 	logic.event.connect(_on_logic_event)
 	if flag(String(spec.get("done_flag", "span_first_laid"))):
 		logic.pos = logic.rest
@@ -132,6 +135,7 @@ func _on_logic_event(name: String) -> void:
 			sound("hammer")
 			reply_label.text = text("reply_bump")
 			_call_t = clock
+			_say_bump()
 		"settling":
 			sound("knock")
 		"solved":
@@ -178,8 +182,25 @@ func _redraw() -> void:
 	(plaques["raise"] as Button).modulate = Color(1.25, 1.12, 0.85) if bumped else Color.WHITE
 
 
+## G50 (Director 23.10: «озвучена, но звучит только надписью»): Ilya's recorded line plays when the log knocks
+## against the stone — kind "puzzle" (ducks the music like a close-up's message); the reply line keeps its text.
+func _say_bump() -> void:
+	var key := String(spec.get("texts", {}).get("bump", ""))
+	var ln: Dictionary = StoryData.text_line(key)
+	if ln.is_empty():
+		bump_voice = "no_line"
+		return
+	_bump_line = "%s:%s" % [String(ln["speaker"]), StoryRunner.text_key_of(key)]
+	bump_voice = VoiceDirector.play_line(_bump_line, String(ln["speaker"]), String(ln["text"]), "puzzle")
+
+
+func closing() -> void:
+	if _bump_line != "" and VoiceDirector.current_line == _bump_line and VoiceDirector.is_playing():
+		VoiceDirector.stop("closed")
+
+
 func probe() -> Dictionary:
-	var out := {"state": logic.state, "pos": logic.pos, "rest": logic.rest, "tolerance": logic.tolerance,
+	var out := {"state": logic.state, "bump_voice": bump_voice, "bump_line": _bump_line, "pos": logic.pos, "rest": logic.rest, "tolerance": logic.tolerance,
 		"angle": rad_to_deg(beam.rotation) if beam != null else 0.0, "laid": laid_sent, "signals": signals_seen.duplicate(),
 		"reply": reply_label.text if reply_label != null else "", "hint": hint_label.text if hint_label != null else "",
 		"raise_highlight": raise_glow != null and raise_glow.visible}
