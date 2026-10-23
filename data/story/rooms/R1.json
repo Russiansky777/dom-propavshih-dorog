@@ -84,7 +84,9 @@
     {"to": "Z3", "label": "@R1.exit_Z3.label", "cue": "left", "rect": [0, 660, 100, 420], "stand": [120, 900], "spawn": "from_R1", "draw": false},
     {"to": "Z2", "label": "@R1.exit_Z2.label", "cue": "up", "rect": [40, 380, 200, 240], "stand": [160, 560], "spawn": "from_R1", "closed_text": "@R1.exit_Z2.closed", "draw": false},
     {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1550, 550, 370, 170], "stand": [1660, 840], "spawn": "from_R1", "closed_text": "@R1.exit_R2.closed", "draw": false,
-      "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}], "_states_note": "ИИ-разбор логики п. 3: после узла «вернёт сюда же» уже неправда — сперва проверка пустой лодкой"}
+      "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}], "_states_note": "ИИ-разбор логики п. 3: после узла «вернёт сюда же» уже неправда — сперва проверка пустой лодкой",
+      "mechanic": {"type": "crossing", "title": "@mech.crossing.title", "requires": {"flags": ["boat_shuttle_open"]}, "art": {"bg": "res://assets/rooms/R2/bg.png", "rope": "res://assets/rooms/R2/fg_rope.png", "arrival": "res://assets/rooms/R3/bg.png"}, "pulls": 10, "pull_s": 0.9, "rope_speed": 140, "twist_px": 34, "vp": [780, 382], "ring": [1166, 660], "ring_r": 46, "ring_box": [1108, 598, 120, 124], "shore_band": [0, 140, 1672, 270], "shore_zoom": 1.6, "fog_rect": [0, 90, 1672, 430], "fog": [0.85, 0.12], "arrival_from": 0.82, "hint_pos": [520, 985], "texts": {"hint": "@mech.crossing.hint"}, "snow": [0.04, 1.0], "pier": {"image": "res://assets/rooms/R3/bg.png", "region": [40, 330, 1000, 540], "from_w": 70, "to_w": 680, "foot": [0.5, 0.94]}, "events": {"crossed": {"close": true, "room": "R3", "spawn": "from_R2"}}},
+      "_mechanic_note": "G43 (Директор 23.10: «нажатия на кольцо ничего не делают, но есть стрелка»): с третьего дня (boat_shuttle_open) «В лодку» — та же переправа рывками, что M18p (~10 рывков, без провала), и сразу на дальнюю опору; комнаты R2 со стрелками на этом пути нет"}
   ],
   "scenes": {
     "M02": {"trigger": "talk:pelageya"},

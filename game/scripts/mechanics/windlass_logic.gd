@@ -5,10 +5,13 @@ extends RefCounted
 ## as for the hook in the office, but now her brother is next to her and hears her voice (scenario §8, M25).
 ##
 ## Positions are fractions of the way down: 0 — the far end hoisted high over the water (Ilya holds it there at the
-## start), `rest` — the far end on the ring of the old plate. Stopped within `tolerance` of `rest` the log settles on
-## the ring (solved). Let down past `rest + tolerance` — it knocks against the stone of the pier and stays there,
-## skewed, until the player signals «Подымай»: then Ilya hauls it up to the top and they try again. No penalty,
-## no counter (the same rule as the hook: «Наказания нет»). Stopped too high — «Пускай» again.
+## start), `rest` — the far end on the ring of the old plate. Any «Стой» within `tolerance` of `rest` settles the log on
+## the ring (solved): going down, going up, or already stopped there (G46, Director 23.10: «Стой» on the way up and a
+## second «Стой» in the zone did nothing — the log never settled). Let down past `rest + tolerance` — it knocks against
+## the stone of the pier and stays there, skewed (`bump_over` below the zone, so a «Стой» there is not «at the ring»),
+## until the player signals «Подымай»: then Ilya hauls it up (stop it at the ring on the way, or let it go to the
+## top) and they try again. No penalty, no counter (the same rule as the hook: «Наказания нет»). Stopped too high —
+## «Пускай» again.
 ##
 ## States (probe / tests): wait (at the top), down, stopped, up, bumped (on the stone edge), settling, solved.
 
@@ -19,6 +22,7 @@ var tolerance: float = 0.06
 var speed: float = 0.12          # fractions per second going down
 var raise_speed: float = 0.3     # going up
 var settle_s: float = 0.8
+var bump_over: float = 0.03      # how far below the ring zone the log lies against the stone
 
 var pos: float = 0.0
 var state: String = "wait"
@@ -32,6 +36,7 @@ func _init(cfg: Dictionary = {}) -> void:
 	speed = float(cfg.get("speed", speed))
 	raise_speed = float(cfg.get("raise_speed", raise_speed))
 	settle_s = float(cfg.get("settle_s", settle_s))
+	bump_over = float(cfg.get("bump_over", bump_over))
 
 
 func solved() -> bool:
@@ -54,25 +59,21 @@ func apply(sig: String) -> bool:
 				state = "up"
 				event.emit("moving")
 				return true
-		"down":
+			if sig == "stop" and state == "stopped" and at_ring():
+				_settle()   # stopped in the zone and «Стой» again: it is at the ring — let it settle
+				return true
+		"down", "up":
 			if sig == "stop":
 				if at_ring():
-					state = "settling"
-					_t = 0.0
-					event.emit("settling")
+					_settle()
 				else:
-					state = "stopped"
+					state = "stopped" if pos > 0.0 else "wait"
 					event.emit("stopped")
 				return true
-			if sig == "raise":
+			if sig == "raise" and state == "down":
 				state = "up"
 				return true
-		"up":
-			if sig == "stop":
-				state = "stopped" if pos > 0.0 else "wait"
-				event.emit("stopped")
-				return true
-			if sig == "lower":
+			if sig == "lower" and state == "up":
 				state = "down"
 				return true
 		"bumped":
@@ -83,12 +84,18 @@ func apply(sig: String) -> bool:
 	return false
 
 
+func _settle() -> void:
+	state = "settling"
+	_t = 0.0
+	event.emit("settling")
+
+
 func step(dt: float) -> void:
 	match state:
 		"down":
 			pos += speed * dt
 			if pos > rest + tolerance:
-				pos = rest + tolerance
+				pos = rest + tolerance + bump_over
 				state = "bumped"
 				event.emit("bumped")
 		"up":
@@ -113,3 +120,8 @@ func angle(max_deg: float) -> float:
 	if pos <= rest:
 		return max_deg * (1.0 - pos / maxf(rest, 0.01))
 	return -max_deg * 0.12 * (pos - rest) / maxf(tolerance, 0.01)
+
+
+## The zone of the ring in positions (the gauge's green band): [rest - tolerance, rest + tolerance].
+func zone() -> Vector2:
+	return Vector2(rest - tolerance, rest + tolerance)

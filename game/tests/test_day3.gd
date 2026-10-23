@@ -5,6 +5,10 @@ extends SceneTree
 ## What is proved:
 ##   - data: the scenes of blocks 3–4, frames (FrameView rooms) build, no old-chain words left, goals without codes;
 ##   - the windlass (M25): «пускай / стой / подымай», a bump on the stone without penalty, the log settles on the ring;
+##     G46: any «Стой» in the ring zone settles it (down, up, stopped there), the target is shown (the chalk mark on the
+##     ring, the gauge whose green band is logic.rest ± tolerance), after a bump «Подымай» glows — by real clicks;
+##   - G43: from day three the boat goes both ways by the same pulls on the rope (day three, day four before and after
+##     the log), no room with arrows on the way; G42: the people of the span are on screen from the first shot;
 ##   - start points (?start=…) give the state of the story up to their scene;
 ##   - the whole of blocks 3–4 by script from the far pier: mother, the clock, brother, the notebooks, the class with
 ##     mother (the answer on the board and the first common date), the free day in any order (letters, Nina in her
@@ -85,6 +89,8 @@ func _run() -> void:
 	sr.frame_changed.connect(func(f, _h): if f != "": frame_titles[f] = title_label.text)
 	await _test("Data: blocks 3–4 scenes, frames, texts — no old chain, goals without codes", _test_data)
 	await _test("Frames: every frame room builds over the world (layers by flags, no hotspots)", _test_frames_build)
+	await _test("G46: the windlass by real clicks — mark, gauge = rest ± tolerance, bump → «Подымай», stop up and down", _test_windlass_panel)
+	await _test("G43: the boat both ways by pulls on the rope — day three, day four before and after the log", _test_shuttle)
 	await _test("Start points: the state up to their scene, the right room, items in the bag", _test_start_points)
 	await _test("Blocks 3–4 by script: far pier → mother → … → first span by mouse → epilogue → end", _test_walkthrough)
 	await _test("Save/load at the checkpoints: nothing replays, the story goes on", _test_save_load)
@@ -273,6 +279,206 @@ func _test_windlass_logic() -> void:
 		w.step(0.1)
 	_check(w.solved() and "solved" in events and is_equal_approx(w.pos, w.rest), "the log lies on the ring")
 	_check(w.angle(9.0) == 0.0, "angle 0 on the ring — exactly the delivered picture")
+	# G46: «Стой» on the way UP at the ring settles too.
+	var u := WindlassLogic.new({"rest": 0.8, "tolerance": 0.06, "speed": 0.2, "raise_speed": 0.5, "settle_s": 0.5})
+	u.apply("lower")
+	for i in 60:
+		u.step(0.1)
+	_check(u.state == "bumped" and not u.at_ring(), "bumped lies below the ring zone (%.2f) — a «Стой» there is not «at the ring»" % u.pos)
+	_check(not u.apply("stop") and u.state == "bumped", "«Стой» against the stone does nothing — Ilya waits for «Подымай»")
+	u.apply("raise")
+	while u.pos > u.rest + u.tolerance * 0.3:
+		u.step(0.02)
+	_check(u.state == "up" and u.at_ring(), "hauled up into the ring zone (%.2f)" % u.pos)
+	_check(u.apply("stop") and u.state == "settling", "«Стой» at the ring on the way up — settles (%s)" % u.state)
+	for i in 10:
+		u.step(0.1)
+	_check(u.solved() and is_equal_approx(u.pos, u.rest), "up-stop: the log lies on the ring")
+	# G46: a log stopped in the zone and «Стой» again — settles.
+	var z := WindlassLogic.new({"rest": 0.8, "tolerance": 0.06})
+	z.pos = 0.83
+	z.state = "stopped"
+	_check(z.apply("stop") and z.state == "settling", "stopped in the zone, «Стой» again — settles (%s)" % z.state)
+	# G46: bump → raise → lower → stop at the ring — settles.
+	var r := WindlassLogic.new({"rest": 0.8, "tolerance": 0.06, "speed": 0.2, "raise_speed": 0.5, "settle_s": 0.5})
+	r.apply("lower")
+	for i in 60:
+		r.step(0.1)
+	r.apply("raise")
+	for i in 4:
+		r.step(0.1)
+	_check(r.state == "up" and r.pos < r.rest - r.tolerance, "bump, «Подымай» — above the ring again (%.2f)" % r.pos)
+	_check(r.apply("lower") and r.state == "down", "«Пускай» on the way up — down again")
+	while r.pos < r.rest - r.tolerance * 0.5:
+		r.step(0.02)
+	_check(r.apply("stop") and r.state == "settling", "bump → raise → lower → «Стой» at the ring — settles")
+	_check(r.zone().is_equal_approx(Vector2(0.74, 0.86)), "the zone is rest ± tolerance (%s)" % str(r.zone()))
+	# The data numbers of M25: a readable motion and a forgiving zone.
+	var spec: Dictionary = sd.scene("M25").get("mechanics", [{}])[0].get("spec", {})
+	var lg: Dictionary = spec.get("logic", {})
+	var max_deg := float(spec.get("max_deg", 0))
+	var tol := float(lg.get("tolerance", 0))
+	var rest := float(lg.get("rest", 1))
+	_check(max_deg >= 18.0, "the log swings visibly (max_deg %.1f ≥ 18)" % max_deg)
+	_check(max_deg * tol / rest * 2.0 >= 3.5, "the ring zone is ≥ 3.5° of swing (%.2f°)" % (max_deg * tol / rest * 2.0))
+	_check(2.0 * tol / float(lg.get("speed", 1)) >= 1.5, "the log stays ≥ 1.5 s in the zone going down (%.2f s)" % (2.0 * tol / float(lg.get("speed", 1))))
+	_reached_end = true
+
+
+## G46 by real input: the M25 close-up opened as in the scene, every signal a mouse click on its plaque (probe centres).
+func _test_windlass_panel() -> void:
+	gs.reset()
+	Engine.time_scale = 4.0
+	var spec: Dictionary = sd.scene("M25").get("mechanics", [{}])[0].get("spec", {})
+	for run in ["up", "down"]:
+		gs.set_flag("span_first_laid", false)
+		sr.open_mechanic(spec, "")
+		await _frames(3)
+		_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "windlass", "%s: the windlass close-up opens" % run)
+		var p = mv.panel
+		var pr: Dictionary = mv.probe().get("panel", {})
+		var figs: Array = pr.get("figures", [])
+		_check(figs.has("pelageya") and figs.has("agata") and figs.has("ilya"), "G42: Pelageya, Agata and Ilya are in the close-up (%s)" % str(figs))
+		_check(String(pr.get("hint", "")).contains("кольцо") and String(pr.get("hint", "")).contains("отметк"), "the hint says where: «%s»" % String(pr.get("hint", "")))
+		var gg: Dictionary = pr.get("gauge", {})
+		var h := float(gg.get("bottom", 0)) - float(gg.get("top", 0))
+		var zt := (float(gg.get("zone_top", 0)) - float(gg.get("top", 0))) / maxf(h, 1.0)
+		var zb := (float(gg.get("zone_bottom", 0)) - float(gg.get("top", 0))) / maxf(h, 1.0)
+		_check(h > 150.0 and absf(zt - (p.logic.rest - p.logic.tolerance)) < 0.01 and absf(zb - (p.logic.rest + p.logic.tolerance)) < 0.01,
+			"the gauge's green band «у кольца» = rest ± tolerance (%.3f–%.3f vs %.3f ± %.3f, %d px)" % [zt, zb, p.logic.rest, p.logic.tolerance, int(h)])
+		var rm_: Dictionary = pr.get("ring_mark", {})
+		var fe: Dictionary = pr.get("far_end", {})
+		var d0 := _v(rm_).distance_to(_v(fe))
+		_check(d0 > 80.0, "hoisted: the far end is well away from the mark on the ring (%d px)" % int(d0))
+		var plz: Vector2 = _v(pr.get("plaque_lower", {}))
+		var pst: Vector2 = _v(pr.get("plaque_stop", {}))
+		var prs: Vector2 = _v(pr.get("plaque_raise", {}))
+		# Let it down past the ring — a bump, no penalty; «Подымай» glows and Ilya says it.
+		await _click(plz)
+		var g := 0
+		while p.logic.state != "bumped" and g < 4000:
+			await process_frame
+			g += 1
+		await _frames(2)
+		pr = mv.probe().get("panel", {})
+		_check(p.logic.state == "bumped" and bool(pr.get("raise_highlight", false)), "%s: bumped — «Подымай» glows" % run)
+		_check(String(pr.get("reply", "")).contains("Подымай"), "Ilya's answer says «Подымай»: «%s»" % String(pr.get("reply", "")))
+		await _click(pst)
+		await _click(plz)
+		await _frames(3)
+		pr = mv.probe().get("panel", {})
+		_check(p.logic.state == "bumped" and String(pr.get("reply", "")).contains("Подымай"), "«Стой» / «Пускай» against the stone: still waits, says «Подымай» again")
+		_check(not gs.has_flag("span_first_laid"), "no log on the ring after a bump")
+		# The stops by real game time (×1): under load a frame at ×4 can carry the log past the zone.
+		Engine.time_scale = 1.0
+		await _click(prs)
+		if run == "up":
+			# «Стой» on the way up, in the zone.
+			g = 0
+			while p.logic.pos > p.logic.rest + p.logic.tolerance * 0.4 and g < 4000:
+				await process_frame
+				g += 1
+			_check(p.logic.state == "up" and p.logic.at_ring(), "hauled up into the zone (%s %.3f)" % [p.logic.state, p.logic.pos])
+			pr = mv.probe().get("panel", {})
+			_check(bool(pr.get("gauge", {}).get("in_zone", false)) and float(pr.get("ring_mark", {}).get("lit", 0)) > 0.5, "in the zone: the green band and the mark light up")
+			await _click(pst)
+		else:
+			# bump → raise → lower → stop at the ring.
+			g = 0
+			while p.logic.pos > p.logic.rest - p.logic.tolerance - 0.15 and g < 4000:
+				await process_frame
+				g += 1
+			await _click(plz)
+			_check(p.logic.state == "down", "«Пускай» on the way up — down again (%s)" % p.logic.state)
+			g = 0
+			while p.logic.pos < p.logic.rest - p.logic.tolerance * 0.4 and g < 4000:
+				await process_frame
+				g += 1
+			await _click(pst)
+		g = 0
+		while not gs.has_flag("span_first_laid") and g < 2000:
+			await process_frame
+			g += 1
+		_check(gs.has_flag("span_first_laid"), "%s: «Стой» at the ring — the log lies on the ring" % run)
+		_check(absf(p.logic.angle(float(spec.get("max_deg", 9.0)))) < 0.01 and _v(p.probe().get("far_end", {})).distance_to(_v(rm_)) < 2.0,
+			"%s: the far end lies on the chalk mark" % run)
+		await _finish()
+		if sr.mechanic_open:
+			sr.close_mechanic()
+		await _frames(2)
+		Engine.time_scale = 4.0
+	gs.reset()
+	Engine.time_scale = 1.0
+	_reached_end = true
+
+
+## The boat along the rope from the pier where the player stands (exit «В лодку» / «К лодке»): the crossing close-up,
+## pulls by mouse clicks on it (the panel's input path), then the other pier. Returns true when it got there.
+func _cross_by_rope(target: String) -> bool:
+	var e = rm.current_room.get_node_or_null("Exits/to_R2") if rm.current_room != null else null
+	if e == null:
+		_check(false, "no exit to the boat in %s" % _room())
+		return false
+	player.call("click_at", e.global_position)
+	await _wait_idle()
+	var g := 0
+	while not sr.mechanic_open and g < 120:
+		await process_frame
+		g += 1
+	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "crossing", "%s → %s: the boat by the rope — the pull close-up opens (room %s)" % [_room(), target, _room()])
+	if not sr.mechanic_open:
+		return false
+	_check(_room() != "R2", "no room with arrows on the way (the boat view R2 is the close-up)")
+	var pr: Dictionary = mv.probe().get("panel", {})
+	var total := int(pr.get("pulls_total", 0))
+	_check(total >= 8 and total <= 12, "about ten pulls (%d)" % total)
+	var c := _v(pr.get("center", {}))
+	g = 0
+	while sr.mechanic_open and int(mv.probe().get("panel", {}).get("pulls", 0)) < total and g < 40:
+		g += 1
+		await _click(c)
+		var w := 0
+		while sr.mechanic_open and bool(mv.probe().get("panel", {}).get("pulling", false)) and w < 400:
+			await process_frame
+			w += 1
+	g = 0
+	while _room() != target and g < 600:
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+		g += 1
+	await _finish()
+	return _room() == target and not sr.mechanic_open
+
+
+## G43: the boat both ways by real pulls — on the free day (day three), on day four before the log and after it.
+func _test_shuttle() -> void:
+	Engine.time_scale = 4.0
+	_check(rm.start_at("freewalk"), "start: the free day")
+	await _frames(3)
+	await _finish()
+	_check(gs.has_flag("boat_shuttle_open"), "day three: the boat goes both ways")
+	var states := {
+		"day three": [],
+		"day four, before the log": ["done_M23a", "done_M23b", "done_M23c", "done_M23d", "done_M24", "morning_day4"],
+		"day four, after the log": ["span_first_laid"],
+	}
+	for label in states:
+		for f in states[label]:
+			gs.set_flag(String(f), true)
+		rm.change_room("R1", "from_Z3")
+		await _frames(3)
+		await _finish()
+		_check(_room() == "R1", "%s: on Pelageya's pier" % label)
+		_check(await _cross_by_rope("R3"), "%s: R1 → R3 by pulls (now %s)" % [label, _room()])
+		_check(await _cross_by_rope("R1"), "%s: R3 → R1 by pulls (now %s)" % [label, _room()])
+	# An old save left in the boat view: the ring takes the boat on by the same pulls, the forward arrow too.
+	rm.change_room("R2", "from_R1")
+	await _frames(3)
+	await _finish()
+	var ring = _hotspot("rope")
+	_check(ring != null and sr.planned_interaction(ring) == "mechanic", "R2 from the free day: a click on the ring is the crossing, not a look")
+	Engine.time_scale = 1.0
 	_reached_end = true
 
 
@@ -498,7 +704,7 @@ func _test_walkthrough() -> void:
 	await _use("pelageya")
 	seen = await _finish()
 	_check(seen.any(func(x): return x.begins_with("pelageya:Садись — канат довезёт")), "Pelageya: the boat goes both ways now (%s)" % str(seen))
-	_check(await _route(["R2", "R3"]), "the crossing → the far pier")
+	_check(await _cross_by_rope("R3"), "the crossing by pulls → the far pier (G43)")
 	_check((_hotspot("mitya") == null or not _hotspot("mitya").visible) and (_hotspot("pelageya") == null or not _hotspot("pelageya").visible),
 		"the far pier on the free day: Mitya is on the street, Pelageya at her own pier — nobody here twice")
 	_check(await _route(["O4"]), "the far pier → Olkhovka")
@@ -515,8 +721,21 @@ func _test_walkthrough() -> void:
 	_check(gs.has_save(CP + "day4"), "checkpoint «День четвёртый» written")
 	_check(rm.save_game(SLOT + "_d4"), "save on the morning of day four")
 	# The first span.
-	_check(await _route(["R3", "R2", "R1", "Z3"]), "to the turn")
+	_check(await _route(["R3"]), "to the far pier")
+	_check(await _cross_by_rope("R1"), "back by pulls on day four (G43)")
+	var gui: Node = main_node.get_node("GameUi")
+	var span_alpha := {}
+	var on_frame := func(f, _h):
+		span_alpha[f if f != "" else "(none)"] = float(gui.call("stage_probe").get("alpha", -1.0))
+	sr.frame_changed.connect(on_frame)
+	_check(await _go("Z3"), "to the turn")
 	_check(not rm.current_room.get_node("Layers/water_low").visible and rm.current_room.get_node("Layers/stone_no_plate").visible, "Z3 on day four: daylight, not the dusk of day two (as in the span frames)")
+	# G42: the span shot comes by a cut — the people are there at once, no black, no empty shore first.
+	var fp0: Dictionary = fv.probe()
+	var ly0: Dictionary = fp0.get("layers", {})
+	_check(String(fp0.get("frame", "")) == "F_span" and float(gui.call("stage_probe").get("alpha", 1.0)) < 0.01 and not sr.is_staging(),
+		"G42: right on entering the turn — the frame F_span, no fade (%s, alpha %.2f)" % [String(fp0.get("frame", "")), float(gui.call("stage_probe").get("alpha", 1.0))])
+	_check(bool(ly0.get("ilya", false)) and bool(ly0.get("pelageya", false)) and bool(ly0.get("agata", false)), "G42: Ilya, Pelageya and Agata in the first shot (%s)" % str(ly0))
 	await _staging_done()
 	var gw := 0
 	while not sr.mechanic_open and gw < 300:
@@ -560,6 +779,20 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("span_first_laid"), "«Стой» at the ring — the log lies on the ring")
 	_check(p.signals_seen.has("lower") and p.signals_seen.has("stop") and p.signals_seen.has("raise"), "all three signals used: %s" % str(p.signals_seen))
 	frames_seen.clear()
+	# G42: the close-up closes straight onto the frame with the laid log and the three of them (a cut, no black).
+	var g3_ := 0
+	while sr.mechanic_open and g3_ < 600:
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+		g3_ += 1
+	await _frames(2)
+	var fp1: Dictionary = fv.probe()
+	var ly1: Dictionary = fp1.get("layers", {})
+	_check(String(fp1.get("frame", "")) == "F_span_done" and float(gui.call("stage_probe").get("alpha", 1.0)) < 0.01,
+		"G42: after the log — the frame F_span_done at once, no fade (%s, alpha %.2f)" % [String(fp1.get("frame", "")), float(gui.call("stage_probe").get("alpha", 1.0))])
+	_check(bool(ly1.get("ilya", false)) and bool(ly1.get("pelageya", false)) and bool(ly1.get("agata", false)) and bool(ly1.get("beam", false)),
+		"G42: the log on the pier and the three of them (%s)" % str(ly1))
 	seen = await _finish(["dunya"])
 	var g3 := 0
 	while not gs.has_flag("done_M26") and g3 < 600:
@@ -567,6 +800,8 @@ func _test_walkthrough() -> void:
 		await process_frame
 		g3 += 1
 	_check(gs.has_flag("done_M25") and gs.has_flag("beam_dunya"), "M25: the inscription «Дуня»")
+	sr.frame_changed.disconnect(on_frame)
+	_check(float(span_alpha.get("(none)", 1.0)) > 0.9, "G42: between the span and the epilogue the empty shore is never shown (frame cleared under black: %s)" % str(span_alpha))
 	_check(gs.has_flag("done_M26") and gs.has_flag("game_finished"), "M26: the epilogue to the end: %s" % str(seen.slice(0, 8)))
 	for f in ["F_span_done", "EP_tamara", "EP_boat", "EP_pavel", "EP_beam", "EP_lesson", "EP_dinner"]:
 		_check(frames_seen.has(f), "epilogue shot %s (%s)" % [f, str(frames_seen)])

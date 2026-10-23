@@ -97,26 +97,23 @@
       "stage": [
         {
           "at": 0,
-          "fade_out_s": 0.8,
-          "hold_s": 0.8,
-          "fade_in_s": 0.8,
+          "cut": true,
           "frame": "F_span",
-          "_note": "День четвёртый у поворота: ворот, прогоны, Илья, Пелагея с дощечкой."
+          "_note": "День четвёртый у поворота: ворот, прогоны, Илья, Пелагея с дощечкой. G42 (Директор 23.10): склейкой, без затемнения — люди с первого кадра (раньше: пустой берег, чёрное, потом «появляются»)."
         },
         {
           "at": 4,
-          "fade_out_s": 0.5,
-          "hold_s": 0.4,
-          "fade_in_s": 0.6,
+          "cut": true,
           "frame": "F_span_done",
-          "_note": "Бревно на опоре — кадр партии 5 (Z3_state_beam) с фигурами."
+          "_note": "Бревно на опоре — кадр партии 5 (Z3_state_beam) с фигурами. Склейкой сразу после крупного плана: бревно не пропадает на время затемнения (G42)."
         },
         {
           "at": "end",
           "fade_out_s": 1.2,
-          "hold_s": 0.8,
-          "fade_in_s": 0.4,
-          "frame": ""
+          "hold_s": 0.3,
+          "fade_in_s": 0.2,
+          "dim": 0.95,
+          "_note": "G42: в темноту прямо из кадра с бревном и людьми и сразу в эпилог (M26 начинается здесь же) — пустой поворот между ними больше не показывается"
         }
       ],
       "mechanics": [
@@ -132,23 +129,41 @@
               "_note": "tools/make_span_layers.py из Z3_bg + Z3_state_beam (партия 5): сцена без бревна и само бревно"
             },
             "overlays": [
+              "res://assets/rooms/F_span/pelageya.png",
+              "res://assets/rooms/F_span/agata.png",
               "res://assets/rooms/F_span/ilya.png"
             ],
+            "_overlays_note": "G42 (Директор 23.10): в крупном плане те же трое, что в кадре F_span под ним — Пелагея с дощечкой, Агата, Илья у ворота; никто не пропадает",
             "pivot": [
               1240,
               575
             ],
-            "max_deg": 9.0,
+            "max_deg": 22.0,
             "logic": {
               "rest": 0.82,
-              "tolerance": 0.07,
-              "speed": 0.12,
-              "raise_speed": 0.3,
+              "tolerance": 0.09,
+              "speed": 0.1,
+              "raise_speed": 0.25,
               "settle_s": 0.8
             },
+            "ring": [
+              1000,
+              446
+            ],
+            "ring_r": 26,
+            "_ring_note": "G46: отметка мелом на кольце старой плиты ближней опоры — дальний конец бревна при угле 0 (beam.png как нарисовано: торец ≈ 995–1005 × 440–449 холста); ring_r — радиус свечения, px холста",
+            "_logic_note": "G46 (Директор 23.10): ход крупнее (22° вместо 9° — дальний конец остаётся в кадре), зона кольца шире (±0,09), спуск медленнее (0,1/с: ~1,8 с в зоне); любая «Стой» в зоне кладёт бревно — вниз, вверх, повторная",
             "reply_pos": [
+              470,
+              420
+            ],
+            "call_pos": [
+              850,
+              868
+            ],
+            "hint_pos": [
               560,
-              460
+              948
             ],
             "done_flag": "span_first_laid",
             "texts": {
@@ -164,7 +179,10 @@
               "reply_stop": "@E5.windlass.label_reply_stop",
               "reply_raise": "@E5.windlass.label_reply_raise",
               "reply_wait": "@E5.windlass.label_reply_wait",
-              "bump": "@E5.windlass.bump"
+              "label_gauge": "@E5.windlass.label_gauge",
+              "label_stone": "@E5.windlass.label_stone",
+              "bump": "@E5.windlass.bump",
+              "reply_bump": "@E5.windlass.label_reply_bump"
             },
             "events": {
               "laid": {

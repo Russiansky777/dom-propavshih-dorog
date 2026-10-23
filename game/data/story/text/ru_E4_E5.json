@@ -359,7 +359,7 @@
       "draft": true
     },
     "E5.windlass.label_hint": {
-      "text": "Илья на вороте. «Пускай» — опускает, «Стой» — держит, «Подымай» — тянет вверх. Бревно — на кольцо плиты.",
+      "text": "Бревно должно лечь дальним концом на кольцо плиты — «Стой», когда оно у отметки.",
       "draft": true
     },
     "E5.windlass.label_signal_lower": {
@@ -400,6 +400,18 @@
     },
     "E5.windlass.label_reply_wait": {
       "text": "Илья ждёт другого сигнала.",
+      "draft": true
+    },
+    "E5.windlass.label_reply_bump": {
+      "text": "Илья: «Стукнулось о камень! Не на кольце. Подымай — переложим.»",
+      "draft": true
+    },
+    "E5.windlass.label_gauge": {
+      "text": "у кольца",
+      "draft": true
+    },
+    "E5.windlass.label_stone": {
+      "text": "камень",
       "draft": true
     },
     "E5.windlass.bump": {

@@ -16,6 +16,7 @@ var out_dir := ""
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
 	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3",
 	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "latch", "latch_up", "crossing_0", "crossing_5", "crossing_9",
+	"windlass_wait", "windlass_zone", "windlass_bumped", "windlass_laid", "shuttle_back_5",
 	"npc_M2_from_M1", "npc_M3_from_M2", "npc_M3_gauge", "npc_R3_stopor", "npc_R3_lamp_post", "npc_Z3_pier_plate", "npc_Z3_from_R1"]
 
 ## Agata at an item stand or an entry point next to an NPC (validate_rooms 9b): flags that show the NPC, then
@@ -206,6 +207,38 @@ func _shot(name: String) -> void:
 			var p = mv.panel
 			p.pulls = int(name.right(1))
 			p.progress = float(p.pulls) / float(p.pulls_total)
+			p.rope_phase = 37.0
+			for i in 40:
+				await process_frame
+		"windlass_wait", "windlass_zone", "windlass_bumped", "windlass_laid":
+			# G46: the first span close-up — the chalk mark on the ring, the gauge, «Подымай» after a bump.
+			await _state(["house_unlocked", "ferry_verified", "boat_shuttle_open"], [], "R1")
+			sr.open_mechanic(sd.scene("M25")["mechanics"][0]["spec"], "")
+			await _frames(3)
+			var p = mv.panel
+			match name:
+				"windlass_zone":
+					p.logic.pos = p.logic.rest - p.logic.tolerance * 0.5
+					p.logic.state = "down"
+					p.logic.speed = 0.0
+				"windlass_bumped":
+					p.logic.pos = p.logic.rest + p.logic.tolerance + p.logic.bump_over
+					p.logic.state = "bumped"
+					p.signal_pressed("lower")
+				"windlass_laid":
+					p.logic.pos = p.logic.rest
+					p.logic.state = "solved"
+			for i in 40:
+				await process_frame
+		"shuttle_back_5":
+			# G43: from the far pier back to Pelageya's by the rope (day three on).
+			await _state(["house_unlocked", "ferry_verified", "boat_shuttle_open", "done_M18p", "crossing_hauled", "done_M18"], [], "R3")
+			var e = rm.current_room.get_node_or_null("Exits/to_R2")
+			sr.use_exit(e)
+			await _frames(3)
+			var p = mv.panel
+			p.pulls = 5
+			p.progress = 0.5
 			p.rope_phase = 37.0
 			for i in 40:
 				await process_frame

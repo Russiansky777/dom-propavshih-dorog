@@ -423,8 +423,20 @@ func _complete_scene(scene_id: String) -> void:
 ## One staging: fade to black (`fade_out_s`), sounds at `at_s` from its start, an optional room change while
 ## black (`room`, `spawn`; no autosave and no door sound in between — an interrupted scene restarts where it
 ## began), `hold_s`, then back to `dim` (dusk under the next lines) in `fade_in_s`. The beat queue waits.
+## `cut: true` — a cut, no black at all: the room / frame / flags change at once (G42, Director 23.10: the turn on
+## day four faded to black and showed the empty shore before Ilya and Pelageya «appeared»; the laid log vanished
+## for a fade between the close-up and its frame).
 func _run_stage(spec: Dictionary) -> void:
 	_stage_running = true
+	if bool(spec.get("cut", false)):
+		for snd in spec.get("sounds", []):
+			stage_sound_requested.emit(String(snd.get("id", "")))
+		_stage_apply(spec)
+		stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
+		stage_fade.emit(stage_dim, 0.0)
+		_stage_running = false
+		_next()
+		return
 	var serial := _stage_serial
 	var tree := get_tree()
 	var fade_out := float(spec.get("fade_out_s", 0.6))
@@ -438,6 +450,22 @@ func _run_stage(spec: Dictionary) -> void:
 	await tree.create_timer(fade_out).timeout
 	if serial != _stage_serial:
 		return
+	_stage_apply(spec)
+	await tree.create_timer(float(spec.get("hold_s", 1.0))).timeout
+	if serial != _stage_serial:
+		return
+	stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
+	var fade_in := float(spec.get("fade_in_s", 0.6))
+	stage_fade.emit(stage_dim, fade_in)
+	await tree.create_timer(fade_in).timeout
+	if serial != _stage_serial:
+		return
+	_stage_running = false
+	_next()
+
+
+## What a staging changes while the screen is black (or at once, for a cut): the room, the frame, flags.
+func _stage_apply(spec: Dictionary) -> void:
 	if spec.has("room"):
 		var keep_autosave: bool = RoomManager.autosave_enabled
 		RoomManager.autosave_enabled = false
@@ -453,17 +481,6 @@ func _run_stage(spec: Dictionary) -> void:
 	# shows the same; the scene's own grants still come at its end.
 	for f in spec.get("sets", []):
 		GameState.set_flag(String(f), true)
-	await tree.create_timer(float(spec.get("hold_s", 1.0))).timeout
-	if serial != _stage_serial:
-		return
-	stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
-	var fade_in := float(spec.get("fade_in_s", 0.6))
-	stage_fade.emit(stage_dim, fade_in)
-	await tree.create_timer(fade_in).timeout
-	if serial != _stage_serial:
-		return
-	_stage_running = false
-	_next()
 
 
 ## Puts a frame over the world (FrameView builds it) or clears it ("").
@@ -970,6 +987,11 @@ func use_exit(e: StoryExit) -> void:
 	if not e.target_exists():
 		narrate_key(String(e.data.get("unbuilt_text", "@ui.not_built")))
 		return
+	# An exit that is travelled by hand (data exit `mechanic` with its `requires` — the boat along the rope once it
+	# goes both ways, G43): the close-up opens here, and its event takes the player across (`events.<name>.room`).
+	if e.data.has("mechanic") and mechanic_available(e.data["mechanic"]):
+		open_mechanic(e.data["mechanic"], "exit_" + e.target_room)
+		return
 	RoomManager.call_deferred("change_room", e.target_room, e.target_spawn)
 
 
@@ -1229,6 +1251,13 @@ func mechanic_event(event_name: String) -> bool:
 			close_mechanic()
 		else:
 			_beats.append({"type": "call", "fn": close_mechanic})
+	# `room` (+ `spawn`): the close-up took the player somewhere — the boat crossed by the rope (G43).
+	if ev.has("room"):
+		var go := _enter_room.bind(String(ev["room"]), String(ev.get("spawn", "default")))
+		if current_beat.is_empty() and not mechanic_open:
+			go.call()
+		else:
+			_beats.append({"type": "call", "fn": go})
 	if not ev.get("sets", []).is_empty():
 		RoomManager.autosave()
 	return true

@@ -10,6 +10,9 @@
 //   B  ?start=span — the turn Z3: M25 starts by itself, the windlass close-up opens; «Пускай» and no stop → the log
 //      knocks against the stone (bumped, no penalty), «Пускай» does nothing until «Подымай»; then «Пускай» → «Стой»
 //      at the ring → laid; the inscription «Ольховка — Заречье»; the frame with the log on the pier.
+//   D  (G42/G43/G46, Director 23.10) ?start=span — the people of the turn in the close-up, the chalk mark and the
+//      gauge; «Закрыть» → the empty turn is not a dead end: to Pelageya's pier and the boat both ways by real clicks on
+//      the rope (~10 pulls each way, no room with arrows on the way). Frames: Docs/evidence/G/*.jpg.
 //   C  ?start=epilogue — M26 «через три недели, в среду»: every frame (EP_tamara … EP_dinner) in story order, the
 //      last line is Ulyana's «А завтра тоже можно прийти?», the dinner frame stays with «Конец», the traces and
 //      «Начать заново»; a click on it → a new game at the post office.
@@ -203,7 +206,42 @@ async function main() {
 
   let s = null;
   let lines = [];
-  const RUNS = (process.env.OLKH_RUNS || "A,B,C").split(",");   // OLKH_RUNS=B,C — only those parts
+  const RUNS = (process.env.OLKH_RUNS || "A,B,C,D").split(",");   // OLKH_RUNS=B,C — only those parts
+  const shotG = async (name) => {
+    const dir = path.join(ROOT, "Docs", "evidence", "G");
+    fs.mkdirSync(dir, { recursive: true });
+    const file = path.join(dir, `${name}.jpg`);
+    await page.screenshot({ path: file, type: "jpeg", quality: 85, timeout: 180000 });
+    logLine(`screenshot ${path.relative(ROOT, file)}`);
+  };
+  /** The boat along the rope from the pier the player is on: the exit «В лодку» opens the pull close-up, clicks on it
+   *  pull the boat (~10), then the other pier. */
+  const crossByRope = async (target, shotName = "") => {
+    let t = await state();
+    const from = t.room;
+    const e = t.exits.R2;
+    if (!e) { check(false, `exit to the boat in ${from}`); return false; }
+    await click(`exit → the boat (${from})`, e);
+    t = await waitFor(`${from}: the pull close-up opens`, (x) => x.mechanic && x.mechanic.open && x.mechanic.type === "crossing", 60000);
+    check(t.mechanic && t.mechanic.type === "crossing" && t.room === from, `${from} → ${target}: the crossing close-up over the pier, no room with arrows (${t.room})`);
+    const P = t.mechanic.panel || {};
+    const total = P.pulls_total || 10;
+    let n = 0;
+    while (n < 30) {
+      t = await state();
+      if (!t.mechanic || !t.mechanic.open || (t.mechanic.panel && t.mechanic.panel.pulls >= total)) break;
+      if (!t.mechanic.panel.pulling) {
+        n += 1;
+        await click(`pull ${n}`, P.center);
+        if (shotName && n === 5) { await sleep(600); await shotG(shotName); }
+      }
+      await sleep(250);
+    }
+    t = await waitFor(`the boat at ${target}`, (x) => x.room === target && !(x.mechanic && x.mechanic.open), SLOW);
+    check(t.room === target, `${from} → ${target} by ${n} pulls (now ${t.room})`);
+    await sleep(800);
+    return t.room === target;
+  };
   try {
     // ---- A: Olkhovka at night, mother's room, the morning of day three.
     if (RUNS.includes("A")) {
@@ -278,6 +316,35 @@ async function main() {
     check(s.flags.span_first_laid && s.flags.done_M25, "M25 done: the first log laid");
     check(s.flags.beam_roads, "the inscription «Ольховка — Заречье» chosen by a click");
     check(caughtDone, "the frame with the log on the pier (F_span_done)");
+    }
+
+    // ---- D: the Director's path on day four (G42/G43/G46).
+    if (RUNS.includes("D")) {
+    await open("span");
+    await playThrough("M25 (before the windlass)", { done: (t) => t.mechanic && t.mechanic.open });
+    s = await state();
+    const W = s.mechanic.panel || {};
+    check(s.mechanic.type === "windlass" && (W.figures || []).includes("pelageya") && (W.figures || []).includes("agata") && (W.figures || []).includes("ilya"),
+      `G42: Pelageya, Agata, Ilya in the windlass close-up (${JSON.stringify(W.figures)})`);
+    check(W.gauge && W.ring_mark && (W.hint || "").includes("отметк"), `G46: the gauge, the mark on the ring, the hint «${W.hint}»`);
+    await click("plaque «Пускай»", W.plaque_lower);
+    s = await waitFor("G46: in the ring zone (green band)", (t) => t.mechanic.panel && t.mechanic.panel.gauge && t.mechanic.panel.gauge.in_zone, SLOW);
+    await click("plaque «Стой» at the mark", W.plaque_stop);
+    s = await waitFor("G46: the log settles on the ring", (t) => t.flags.span_first_laid || (t.mechanic.panel && ["settling", "solved"].includes(t.mechanic.panel.state)), SLOW);
+    await sleep(300);
+    await shotG("G46_windlass_laid");
+    check(s.flags.span_first_laid || ["settling", "solved"].includes(s.mechanic.panel.state), "G46: «Стой» in the zone — the log lies on the ring");
+    lines = await playThrough("M25 (after the log)", { choices: ["dunya"], done: (t) => t.flags.done_M25 });
+    // The Director's return to the boat after the turn (before the epilogue takes over, from the start point of day four).
+    await open("span");
+    await playThrough("M25 (before the windlass, 2)", { done: (t) => t.mechanic && t.mechanic.open });
+    s = await state();
+    await click("«Закрыть»", s.mechanic.close);
+    s = await waitFor("the close-up put away", (t) => !(t.mechanic && t.mechanic.open) && !t.busy, 30000);
+    check(await goExit("R1"), "the turn → Pelageya's pier");
+    check(await crossByRope("R3", "G43_boat_pulls"), "G43: day four, the boat to the far pier by pulls");
+    check(await crossByRope("R1"), "G43: day four, back to Pelageya's pier by pulls");
+    await shotG("G43_back_at_R1");
     }
 
     // ---- C: the epilogue to the last frame, then «Начать заново».
