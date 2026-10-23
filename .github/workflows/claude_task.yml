@@ -140,15 +140,28 @@ jobs:
             --output-format json > /tmp/claude_result.json 2> /tmp/claude_stderr.txt
           code=$?
           set -e
-          python3 - <<'PY'
-          import json
+          CODE="$code" python3 - <<'PY'
+          import json, os
+          run = os.environ['RUN_ID']; code = os.environ['CODE']
+          lines = [f'# claude-task run {run} — статус запуска', '', f'- exit code: {code}']
           try:
               d = json.load(open('/tmp/claude_result.json'))
+              lines += [f"- cost_usd: {round(float(d.get('total_cost_usd') or 0), 2)}", f"- turns: {d.get('num_turns')}",
+                        f"- is_error: {d.get('is_error')}", f"- subtype: {d.get('subtype')}"]
+              if d.get('is_error'):
+                  lines += ['', 'Ошибка (текст результата):', '', '```', str(d.get('result', ''))[:1500], '```']
           except Exception as e:
-              print('result: no JSON (', e, ')'); raise SystemExit(0)
-          print('cost_usd:', round(float(d.get('total_cost_usd') or 0), 2),
-                '| turns:', d.get('num_turns'), '| is_error:', d.get('is_error'), '| subtype:', d.get('subtype'))
+              lines += [f'- result: нет JSON ({e})']
+          err = open('/tmp/claude_stderr.txt', errors='replace').read()[-1500:] if os.path.exists('/tmp/claude_stderr.txt') else ''
+          if err.strip():
+              lines += ['', 'stderr (хвост):', '', '```', err, '```']
+          os.makedirs('Docs/agent_reports', exist_ok=True)
+          open(f'Docs/agent_reports/run_{run}_status.md', 'w').write('\n'.join(lines) + '\n')
+          print('\n'.join(lines[:7]))
           PY
+          git add "Docs/agent_reports/run_${RUN_ID}_status.md"
+          git commit -q -m "claude-task ${RUN_ID}: статус запуска [skip ci]" || true
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
           echo "exit code: $code"
           echo "code=$code" >> "$GITHUB_OUTPUT"
 
