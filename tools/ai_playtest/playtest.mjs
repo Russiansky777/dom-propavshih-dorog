@@ -35,6 +35,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { callClaude, callTool, Budget, ApiError, priceKnown, estimateCost } from "./claude.mjs";
 import { parseItems, loadChecklist, checklistText, actTool, systemPrompt, stepText, reportSystem } from "./prompts.mjs";
+import { docRowIds, normId, byDocOrder } from "./rows.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..", "..");
@@ -118,12 +119,14 @@ async function main() {
   // "gate" = acceptance then fresh: the workflow runs this script twice with --mode.
   const mode = (A.mode || req.mode) === "acceptance" || (!A.mode && req.mode === "gate") ? "acceptance" : "fresh";
   const dry = !!A.dry || req.dry_run === true;   // dry_run: scripted actions, no API (harness test in CI)
+  // Row ids of the checklist ("7", "6а", "И2") — ranges in items / skip_items / context_items take the lettered rows too.
+  const docIds = (() => { try { return req.doc ? docRowIds(fs.readFileSync(path.resolve(ROOT, String(req.doc)), "utf8")) : null; } catch (_) { return null; } })();
   const cfg = {
     mode,
     request: reqPath ? path.relative(ROOT, reqPath) : "",
     // --items: the rows of a gate (ai_playtest.yml); "unpassed": rows of the doc not passed at the last gate
-    items: String(A.items || req.items || "").trim() === "unpassed" ? unpassedRows(req.doc) : parseItems(A.items || req.items),
-    contextItems: parseItems(req.context_items),
+    items: String(A.items || req.items || "").trim() === "unpassed" ? unpassedRows(req.doc) : parseItems(A.items || req.items, docIds),
+    contextItems: parseItems(req.context_items, docIds),
     // max_usd is a safety stop against a looping run, not a budget (Director 22.10): default and ceiling $10.
     maxUsd: clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_usd ?? req.max_usd : req.max_usd, 0.05, HARD_MAX_USD, HARD_MAX_USD),
     maxSteps: Math.round(clampNum(mode === "fresh" && req.mode === "gate" ? req.fresh_max_steps ?? 150 : req.max_steps, 1, HARD_MAX_STEPS, mode === "acceptance" ? 300 : 150)),
@@ -144,14 +147,25 @@ async function main() {
     startSave: (mode === "fresh" && req.mode === "gate" ? req.fresh_start_save ?? req.start_save : req.start_save) || null,
   };
   // skip_items: rows of the doc this gate cannot reach from its start (e.g. day-one rows in a day-two doc).
-  const skip = parseItems(req.skip_items);
+  const skip = parseItems(req.skip_items, docIds);
   if (skip.length) cfg.items = cfg.items.filter((n) => !skip.includes(n));
+  // --segment N (run_acceptance.sh): the rows of segment N of the request, from that segment's own start point
+  // (segments.mjs: url relative to the request's url, note, start_save / start).
+  const segIndex = mode === "acceptance" && A.segment !== undefined && A.segment !== true && Array.isArray(req.segments) ? Number(A.segment) : null;
+  const seg = segIndex !== null ? req.segments[segIndex] || null : null;
+  if (seg) {
+    if (seg.url && !A.url) cfg.url = new URL(String(seg.url), cfg.url).href;
+    if (seg.note) cfg.note = [cfg.note, String(seg.note)].filter(Boolean).join(" ");
+    if (seg.start_save !== undefined) cfg.startSave = seg.start_save || null;
+    if (seg.start !== undefined) cfg.start = seg.start || null;
+    cfg.segment = segIndex + 1;
+  }
   cfg.H = Math.round(cfg.W * FRAME_H / FRAME_W);
   const scale = cfg.W / FRAME_W;
   // Gates of one workflow run go on separate runners with the same run number: the gate's name goes into the
   // folder (…_acceptance_m3_r19), or parallel jobs would commit the same paths (M3 at f3b299c was lost so).
   const gateTag = reqPath && /^playtest_gate_/.test(path.basename(reqPath)) ? `${path.basename(reqPath, ".json").replace(/^playtest_gate_/, "")}_` : "";
-  const runTag = `${gateTag}${process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local")}`;
+  const runTag = `${gateTag}${seg ? `s${segIndex + 1}_` : ""}${process.env.GITHUB_RUN_NUMBER ? `r${process.env.GITHUB_RUN_NUMBER}` : (dry ? "dry" : "local")}`;
   const date = new Date().toISOString().slice(0, 10);
   let outDir = A.out ? path.resolve(ROOT, A.out) : path.join(ROOT, "Docs", "playtest", `${date}_${mode}_${runTag}`);
   if (!A.out) { let n = 2; const base = outDir; while (fs.existsSync(outDir)) outDir = `${base}_${n++}`; }
@@ -180,7 +194,7 @@ async function main() {
       const full = loadChecklist(ROOT, req.doc, cfg.items, []);
       try {
         const txt = fs.readFileSync(path.resolve(ROOT, full.doc), "utf8");
-        const all = [...txt.matchAll(/^\|\s*(\d+)\s*\|/gm)].map((m) => Number(m[1]));
+        const all = docRowIds(txt);
         cfg.contextItems = [...new Set([...cfg.contextItems, ...all.filter((n) => !cfg.items.includes(n))])];
       } catch (_) { /* no doc */ }
     }
@@ -496,6 +510,20 @@ async function main() {
     }
   };
 
+  // Captions seen under the pointer, per room, at the pointer's place in the model's frame — what a player
+  // remembers after hovering («Вдоль берега» was at the left edge). M3 gate r29 (23.10): the model saw «Вдоль
+  // берега» at (30,647), decided to go there and clicked (93,332) — the street exit; the turn was never reached.
+  const seenLabels = {};
+  const rememberHover = (s) => {
+    const label = s && s.ui && s.ui.exit_hints && s.ui.exit_hints.hover;
+    if (!label || !pointer || !s.room) return;
+    const m = seenLabels[s.room] || (seenLabels[s.room] = new Map());
+    m.delete(label);
+    m.set(label, [Math.round(pointer.x * scale), Math.round(pointer.y * scale)]);
+    if (m.size > 16) m.delete(m.keys().next().value);
+  };
+  const placesOf = (room) => [...((room && seenLabels[room]) || new Map()).entries()].map(([l, [x, y]]) => `«${l}» — (${x},${y})`);
+
   // Events of one step from the states before / after (what a player would notice), plus the dialogue.
   const describe = (before, after, events) => {
     if (!after) { events.push("Состояние игры не читается (зонд недоступен) — смотри на кадр."); return; }
@@ -505,7 +533,7 @@ async function main() {
     else if (before && ai.join() !== bi.join()) events.push("Содержимое сумки изменилось.");
     if (before && after.selected_item !== before.selected_item) events.push(after.selected_item ? "Предмет взят в руку (иконка у курсора)." : "Предмета в руке больше нет.");
     const eh = (after.ui && after.ui.exit_hints) || {};
-    if (eh.hover) events.push(`Подпись под курсором: «${eh.hover}»`);
+    if (eh.hover) { events.push(`Подпись под курсором: «${eh.hover}»`); rememberHover(after); }
     if (eh.hint_panel && eh.hint_panel.visible) events.push(`Открыта подсказка: «${short(eh.hint_panel.title, 80)}» — «${short(eh.hint_panel.text, 400)}»`);
     if (after.last_hint && (!before || after.last_hint !== before.last_hint)) events.push(`Строка подсказки внизу: «${short(after.last_hint, 300)}»`);
     const b = after.beat || {};
@@ -706,7 +734,8 @@ async function main() {
 
       const recent = run.transcript.filter((t) => t.step < step).slice(-14).map((t) => `#${t.step} ${t.who}: «${short(t.text, 220)}»`);
       const text = stepText({ step, maxSteps: cfg.maxSteps, spent: budget.spent, maxUsd: cfg.maxUsd, memory,
-        verdicts: Object.values(run.verdicts), pending: pendingItems(), history: history.slice(-12), recent, events, warnings, imageLabels: labels });
+        verdicts: Object.values(run.verdicts), pending: pendingItems(), history: history.slice(-12), recent, events, warnings, imageLabels: labels,
+        places: placesOf(lastState && lastState.room) });
       const content = [];
       for (const f of extra.slice(-3)) {
         content.push({ type: "text", text: `${f.id}${f.kind === "staging" ? " (затемнение)" : " (реплика)"}:` });
@@ -773,7 +802,7 @@ async function main() {
       }
       if (mode === "acceptance") {
         for (const v of Array.isArray(input.verdicts) ? input.verdicts : []) {
-          const num = Number(v && v.item);
+          const num = normId(v && v.item);
           if (!checklist.rows.some((r) => r.num === num)) continue;
           const fr = validFrames(v.frames);
           const rec = { item: num, status: String(v.status || ""), seen: short(v.seen, 900), frames: fr.length ? fr : [cur.id], step };
@@ -991,7 +1020,7 @@ async function main() {
   // --- Frames for the report: failures first, then bugs / stuck notes, then passes, then the last frame.
   const chosen = [];
   const pick = (id) => { if (id && frames.has(id) && !chosen.includes(id) && chosen.length < cfg.maxFrames) chosen.push(id); };
-  const vs = Object.values(run.verdicts).sort((a, b) => a.item - b.item);
+  const vs = Object.values(run.verdicts).sort(vSort(checklist));
   for (const v of vs) if (v.status !== "прошёл") v.frames.slice(0, 3).forEach(pick);
   for (const n of run.notes) if (["баг", "застряла", "непонятно"].includes(n.kind)) n.frames.slice(0, 2).forEach(pick);
   for (const v of vs) if (v.status === "прошёл") v.frames.slice(0, 1).forEach(pick);
@@ -1093,12 +1122,15 @@ function blockedScenes(flags, rooms) {
   return out.slice(0, 25);
 }
 
+/** Verdicts in the checklist's order (row ids are strings: "6", "6а", "7"). */
+const vSort = (cl) => { const c = byDocOrder(cl ? cl.rows.map((r) => r.num) : []); return (a, b) => c(a.item, b.item); };
+
 /** Rows of a checklist whose last gate verdict is not «прошёл» (Docs/playtest/gates_state/ACCEPTANCE_<M>.json). */
 function unpassedRows(docRel) {
   try {
     const st = JSON.parse(fs.readFileSync(path.join(ROOT, "Docs", "playtest", "gates_state", `${path.basename(String(docRel), ".md")}.json`), "utf8"));
     const txt = fs.readFileSync(path.resolve(ROOT, String(docRel)), "utf8");
-    const all = [...txt.matchAll(/^\|\s*(\d+)\s*\|/gm)].map((m) => Number(m[1]));
+    const all = docRowIds(txt);
     return all.filter((n) => (st.verdicts || {})[n] !== "прошёл");
   } catch (_) { return []; }
 }
@@ -1116,7 +1148,7 @@ function buildReportInput(run, cfg, checklist) {
   if (checklist) L.push(`\nЧЕКЛИСТ:\n${checklistText(checklist)}`);
   if (cfg.mode === "acceptance") {
     L.push("\nВЕРДИКТЫ ШАГОВОЙ МОДЕЛИ (последний по пункту):");
-    for (const v of Object.values(run.verdicts).sort((a, b) => a.item - b.item)) L.push(`[${v.item}] ${v.status} (шаг ${v.step ?? "—"}; кадры ${v.frames.join(", ") || "—"}): ${v.seen}`);
+    for (const v of Object.values(run.verdicts).sort(vSort(checklist))) L.push(`[${v.item}] ${v.status} (шаг ${v.step ?? "—"}; кадры ${v.frames.join(", ") || "—"}): ${v.seen}`);
     const changed = run.verdictHistory.filter((v, i, arr) => arr.findLastIndex((w) => w.item === v.item) !== i);
     if (changed.length) { L.push("Ранние версии вердиктов:"); for (const v of changed) L.push(`[${v.item}] шаг ${v.step}: ${v.status} — ${short(v.seen, 200)}`); }
   }
@@ -1169,7 +1201,7 @@ function renderReport(run, cfg, checklist, body, budget, minutes) {
     L.push("");
     L.push("| № | Вердикт | Что видела | Кадры |");
     L.push("| --- | --- | --- | --- |");
-    for (const v of Object.values(run.verdicts).sort((a, b) => a.item - b.item)) {
+    for (const v of Object.values(run.verdicts).sort(vSort(checklist))) {
       L.push(`| ${v.item} | ${v.status} | ${String(v.seen).replace(/\|/g, "/").replace(/\n/g, " ")} | ${v.frames.map(link).join(", ") || "—"} |`);
     }
     L.push("");

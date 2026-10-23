@@ -6,6 +6,10 @@ name: ai-text-lint
 # Запуск: пуш, меняющий эти файлы (проверяются только новые и изменённые строки; если видимый текст не менялся —
 # API не вызывается), или пуш Docs/ai_checks/requests/text_lint.json ("all": true — весь текст).
 # Отчёт: Docs/ai_checks/text_lint_<дата>.md (коммит с [skip ci]). Правок в game/ и data/ нет.
+# Вторым шагом — подсказки против состояния (tools/ai_checks/hint_state.mjs, координатор 23.10): подсказка про
+# уже сделанное (результат уже в requires сцены, как D5), подсказка, не ведущая к месту (M25 в день четвёртый),
+# сцена без подсказок. Только сцены, у которых изменились условия, подсказки или то, что их ставит (rooms);
+# Docs/ai_checks/requests/hints.json — все сцены. Отчёт: Docs/ai_checks/hints_<дата>.md.
 
 on:
   push:
@@ -17,7 +21,9 @@ on:
       - "data/story/items.json"
       - "data/story/quests.json"
       - "data/story/locations.json"
+      - "data/story/rooms/*.json"
       - "Docs/ai_checks/requests/text_lint.json"
+      - "Docs/ai_checks/requests/hints.json"
   workflow_dispatch:
     inputs:
       all:
@@ -57,8 +63,24 @@ jobs:
             all="--all"
           fi
           node tools/ai_checks/text_lint.mjs --base "$BEFORE" $all
+      - name: Подсказки против состояния
+        if: always()
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
+          BEFORE: ${{ github.event.before }}
+          ALL_INPUT: ${{ github.event.inputs.all }}
+        run: |
+          all=""
+          if [ "$ALL_INPUT" = "true" ]; then all="--all"; fi
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null && \
+             git diff --name-only "$BEFORE" HEAD -- Docs/ai_checks/requests/hints.json | grep -q .; then
+            all="--all"
+          fi
+          node tools/ai_checks/hint_state.mjs --base "$BEFORE" $all
       - name: Коммит отчёта
         if: always()
         run: |
           [ -d Docs/ai_checks ] || exit 0
-          tools/ai_checks/commit.sh "ИИ-проверка текста: $(cat build/ai_checks/summary.txt 2>/dev/null || echo отчёт) (run ${{ github.run_number }})" Docs/ai_checks
+          sum=$(cat build/ai_checks/summary.txt build/ai_checks/summary_hints.txt 2>/dev/null | paste -sd ';' - | sed 's/;/; /g')
+          tools/ai_checks/commit.sh "ИИ-проверка текста: ${sum:-отчёт} (run ${{ github.run_number }})" Docs/ai_checks

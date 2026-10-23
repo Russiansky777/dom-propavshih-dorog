@@ -126,8 +126,13 @@ jobs:
             for m in $modes; do
               echo "=== $f ($m)"
               rm -f build/ai_playtest/*/summary.txt
-              tools/ai_playtest/run_logged.sh "$(basename "$f" .json)_$m" --request "$f" --mode "$m" || status=1
-              tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
+              if [ "$m" = "acceptance" ]; then
+                # по частям запроса ("segments": своя точка старта у каждой), коммит после каждой
+                tools/ai_playtest/run_acceptance.sh "$(basename "$f" .json)_$m" "$f" "" "${{ github.run_number }}" || status=1
+              else
+                tools/ai_playtest/run_logged.sh "$(basename "$f" .json)_$m" --request "$f" --mode "$m" || status=1
+                tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
+              fi
             done
           done
           exit $status
@@ -192,10 +197,12 @@ jobs:
           echo "=== ворота $CFG: $DOC, пункты $ITEMS, сборка ${SHA:0:7}"
           rm -f build/ai_playtest/*/summary.txt
           g=$(basename "$CFG" .json)
-          tools/ai_playtest/run_logged.sh "${g}_acceptance" --request "$CFG" --mode acceptance --items "$ITEMS" || status=1
-          # строки чеклиста этой сборки проверены воротами; вердикты — из отчёта приёмки
-          out=$(cat build/ai_playtest/last_out.txt 2>/dev/null || true)
-          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA" ${out:+--verdicts "$out/log.json"} || status=1
+          # приёмка — по частям ворот ("segments" в запросе: у каждой своя точка старта), коммит после каждой
+          DOC_SHA="$SHA" tools/ai_playtest/run_acceptance.sh "${g}_acceptance" "$CFG" "$ITEMS" "${{ github.run_number }}" || status=1
+          # строки чеклиста этой сборки проверены воротами; вердикты — из отчётов всех частей
+          outs=$(cat build/ai_playtest/acceptance_outs.txt 2>/dev/null || true)
+          logs=$(echo "$outs" | tr ',' '\n' | sed '/^$/d; s|$|/log.json|' | paste -sd, -)
+          node tools/ai_playtest/changed_items.mjs "$DOC" --state Docs/playtest/gates_state --record "${SHA:0:7}" --ref "$SHA" ${logs:+--verdicts "$logs"} || status=1
           git checkout -- "$DOC" 2>/dev/null || true
           tools/ai_playtest/commit_results.sh "${{ github.run_number }}" || status=1
           git show "$SHA:$DOC" > "$DOC" || true

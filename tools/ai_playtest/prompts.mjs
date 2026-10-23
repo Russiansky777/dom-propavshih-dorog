@@ -5,18 +5,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
-/** "140-154" | [140, "141-143"] | 140 → [140, 141, …]. */
-export function parseItems(v) {
-  const out = [];
-  const add = (x) => {
-    const s = String(x).trim();
-    const m = /^(\d+)\s*[-–]\s*(\d+)$/.exec(s);
-    if (m) { for (let i = Number(m[1]); i <= Number(m[2]); i++) out.push(i); }
-    else if (/^\d+$/.test(s)) out.push(Number(s));
-  };
-  if (Array.isArray(v)) v.forEach((x) => String(x).split(",").forEach(add));
-  else if (v !== undefined && v !== null) String(v).split(",").forEach(add);
-  return [...new Set(out)];
+import { resolveItems, rowIdOf } from "./rows.mjs";
+
+/** "140-154" | [140, "141-143", "6а"] | 140 → ["140", "141", …] (row ids are strings: "6а", "И2"). `ids` — the doc's rows. */
+export function parseItems(v, ids = null) {
+  return resolveItems(v, ids);
 }
 
 function cells(line) {
@@ -35,10 +28,10 @@ function readDoc(file) {
   for (const line of lines) {
     if (/^##\s/.test(line)) { cur = { title: line.replace(/^##\s+/, "").trim(), prose: [] }; sections.push(cur); continue; }
     if (/^Управление\b/.test(line.trim()) && !controls) controls = line.trim();
-    const m = /^\|\s*(\d+)\s*\|/.exec(line);
-    if (m) {
+    const id = rowIdOf(line);
+    if (id) {
       const c = cells(line);
-      rows.set(Number(m[1]), { num: Number(m[1]), what: c[1] || "", expect: c[2] || "", section: cur });
+      rows.set(id, { num: id, what: c[1] || "", expect: c[2] || "", section: cur });
       continue;
     }
     if (/^\|/.test(line)) continue;     // table header / separator
@@ -139,7 +132,7 @@ export function actTool(mode, W, H) {
       items: {
         type: "object",
         properties: {
-          item: { type: "integer" },
+          item: { type: "string", description: "Номер пункта так, как он написан в чеклисте: «7», «6а», «И2»." },
           status: { type: "string", enum: ["прошёл", "не прошёл", "частично", "не дошёл", "не проверяемо"] },
           seen: { type: "string", description: "Что именно увидела: цитаты текста, что на экране. Для «не прошёл»/«частично» — что отличается от ожидаемого." },
           frames: { type: "array", items: { type: "string" }, description: "Кадры-доказательства, напр. [\"f0012\", \"f0013\"]." },
@@ -225,6 +218,9 @@ export function stepText(ctx) {
   if (ctx.recent && ctx.recent.length) {
     L.push("\nРЕПЛИКИ И ТЕКСТЫ ПРОШЛЫХ ШАГОВ (дословно, последние):");
     for (const r of ctx.recent) L.push(r);
+  }
+  if (ctx.places && ctx.places.length) {
+    L.push(`\nПОДПИСИ, ЧТО ТЫ ВИДЕЛА В ЭТОЙ КОМНАТЕ ПОД КУРСОРОМ (где стоял курсор, пиксели кадра): ${ctx.places.join("; ")}. Чтобы пойти туда — щёлкай в эту точку.`);
   }
   L.push("\nЧТО ПРОИЗОШЛО ПОСЛЕ ПОСЛЕДНЕГО ДЕЙСТВИЯ:");
   if (ctx.events.length) for (const e of ctx.events) L.push(`- ${e}`);

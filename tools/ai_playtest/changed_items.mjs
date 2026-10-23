@@ -9,8 +9,8 @@
 //
 //   node tools/ai_playtest/changed_items.mjs <doc> <base-sha>                           rows changed since a commit
 //   node tools/ai_playtest/changed_items.mjs <doc> --state <dir> [--ref <sha>]           rows to check at a gate
-//   node tools/ai_playtest/changed_items.mjs <doc> --state <dir> --record <sha> --ref <sha> [--verdicts log.json]
-//        remember the rows of the doc at <sha> as gated, with the gate's verdicts (log.json of the acceptance run)
+//   node tools/ai_playtest/changed_items.mjs <doc> --state <dir> --record <sha> --ref <sha> [--verdicts a/log.json,b/log.json]
+//        remember the rows of the doc at <sha> as gated, with the gate's verdicts (log.json of each acceptance run)
 //
 // --ref reads the checklist at that commit (the deployed one), not from the working tree: a checklist change
 // that is not deployed yet is not seen, so the gate waits for the next successful deploy.
@@ -18,6 +18,7 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
+import { rowIdOf, normId, resolveItems } from "./rows.mjs";
 
 const a = process.argv.slice(2);
 const doc = a[0];
@@ -36,8 +37,8 @@ function rows(text) {
   let section = "", order = 0;
   for (const line of text.split("\n")) {
     if (/^##\s/.test(line)) section = line.replace(/^##\s+/, "");
-    const m = /^\|\s*(\d+)\s*\|/.exec(line);
-    if (m) out.set(Number(m[1]), { hash: h(line.trim()), critical: /критично/i.test(section), section, order: order++ });
+    const id = rowIdOf(line);    // "7", "6а", "И2" — lettered rows count too (23.10)
+    if (id) out.set(id, { hash: h(line.trim()), critical: /критично/i.test(section), section, order: order++ });
   }
   return out;
 }
@@ -50,24 +51,28 @@ if (statePath) {
   const state = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
   if (record) {
     const verdicts = { ...(state.verdicts || {}) };
-    const vf = opt("--verdicts");
-    if (vf && fs.existsSync(vf)) {
+    // --verdicts a/log.json[,b/log.json …]: one acceptance run per segment of the gate (run_acceptance.sh).
+    const vfs = String(opt("--verdicts") || "").split(",").map((f) => f.trim()).filter((f) => f && fs.existsSync(f));
+    for (const vf of vfs) {
       const log = JSON.parse(fs.readFileSync(vf, "utf8"));
       const last = {};
-      for (const v of log.verdict_history || []) last[v.item] = v.status;
+      for (const v of log.verdict_history || []) last[normId(v.item)] = v.status;
       // The report's table (the stronger model re-checked the step model) wins over the raw verdicts.
       const rep = vf.replace(/log\.json$/, "report.md");
       if (fs.existsSync(rep)) {
         const md = fs.readFileSync(rep, "utf8");
         const sec = (/## Пункты\n([\s\S]*?)(\n## |$)/.exec(md) || [])[1] || "";
+        const ids = [...now.keys()];
         for (const line of sec.split("\n")) {
-          const m = /^\|\s*(\d+)\s*\|\s*([^|]+?)\s*\|/.exec(line);
+          const m = /^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|/.exec(line);
           if (!m) continue;
           const st = ["не прошёл", "не дошёл", "не проверяемо", "частично", "прошёл"].find((x) => m[2].toLowerCase().startsWith(x));
-          if (st) last[Number(m[1])] = st;
+          if (!st) continue;
+          // One row («6а») or a span the report folded («13–20»: every row inside it, lettered ones too).
+          for (const id of /[-–—]/.test(m[1]) ? resolveItems(m[1], ids) : [normId(m[1])]) if (now.has(id)) last[id] = st;
         }
       }
-      for (const n of (log.checklist && log.checklist.items) || []) verdicts[n] = last[n] || "не дошёл";
+      for (const n of ((log.checklist && log.checklist.items) || []).map(normId)) verdicts[n] = last[n] || "не дошёл";
     }
     fs.mkdirSync(statePath, { recursive: true });
     fs.writeFileSync(file, JSON.stringify({ doc, sha: record, at: new Date().toISOString(),

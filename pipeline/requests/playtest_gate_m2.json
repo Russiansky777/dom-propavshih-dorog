@@ -1,13 +1,29 @@
 {
   "mode": "gate",
   "doc": "Docs/ACCEPTANCE_M2.md",
-  "items": "1-20",
-  "skip_items": [21, 22],
+  "items": "1-26, И1-И11, М1-М14",
   "max_steps": 300,
   "fresh_max_steps": 150,
-  "start_save": { "file": "Docs/playtest/saves/day2.json", "slot": "day2" },
-  "fresh_start_save": { "file": "Docs/playtest/saves/day2.json", "slot": "day2" },
-  "note": "День второй. Программа уже загрузила сохранение «День второй» через «Меню → Загрузить» — день первый пройден, начинать с утра у печи.",
+  "start_save": {
+    "file": "Docs/playtest/saves/day2.json",
+    "slot": "day2"
+  },
+  "fresh_start_save": {
+    "file": "Docs/playtest/saves/day2.json",
+    "slot": "day2"
+  },
+  "note": "День второй.",
+  "segments": [
+    {
+      "items": "1-20, 23-26, И1-И8, И10-И11, М1-М4, М7-М14",
+      "note": "Программа уже загрузила сохранение «День второй» через «Меню → Загрузить» — день первый пройден, начинать с утра у печи."
+    },
+    {
+      "items": "21-22, И9, М5-М6",
+      "start_save": null,
+      "note": "Новая игра с самого начала: эти пункты — про день первый (причал, почта, класс, ставня, журнал); после них день второй не нужен."
+    }
+  ],
   "fresh_note": "",
   "run": 1
 }
