@@ -10,5 +10,9 @@
   "Docs/playtest/requests/persona_impatient.json",
   "Docs/playtest/requests/persona_saveload.json",
   "Docs/playtest/requests/persona_slow.json"
- ]
+ ],
+ "merged": "Docs/playtest/defects_personas_2026-10-23.md",
+ "finished_at": "2026-10-23T23:35:34.148Z",
+ "spent_usd": 12.25,
+ "defects": 8
 }
