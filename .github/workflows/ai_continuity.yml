@@ -1,0 +1,54 @@
+name: ai-continuity
+
+# ИИ-чтение всей игры на непрерывность (разовое, перед окончательной записью голосов): лучшая модель с длинным
+# контекстом читает ВЕСЬ текст игры в порядке сюжета — сцены E0–E5 с обязательными репликами и условиями, реплики
+# NPC и тексты комнат по флагам, мысли Агаты и закадровый голос, предметы и «Рассмотреть», необязательные истории,
+# цели и факты журнала, подсказки — вместе с Docs/SCENARIO_FINAL.md и каноном CLAUDE.md. Три прохода с общим
+# кэшированным началом: непрерывность (кто что знает, противоречия, возраст и имена, цель после требования);
+# голоса персонажей и повторы; риски озвучки (ударение, ё, числа, произношение). Находки — с точными ключами и цитатами.
+#
+# Запуск: пуш Docs/ai_checks/requests/continuity.json (поменять поле "run") или вручную (workflow_dispatch).
+# Само по пушам текста НЕ запускается: построчную проверку изменений делает ai-text-lint.
+# Отчёт: Docs/ai_checks/continuity_<дата>.md (+ .json с находками), коммит с [skip ci]. Правок в game/ и data/ нет.
+# Ключ — секрет CLAUDE_API, рабочее пространство — CLAUDE_WORKSPACE; в публичный лог не печатаются ни они, ни ответы модели.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Docs/ai_checks/requests/continuity.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-continuity
+  cancel-in-progress: false
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Чтение всей игры
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.CLAUDE_WORKSPACE }}
+        run: |
+          req=Docs/ai_checks/requests/continuity.json
+          opt() { node -e 'const r=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));const v=r[process.argv[2]];console.log(v===undefined?"":Array.isArray(v)?v.join(","):v)' "$req" "$1"; }
+          model=$(opt model); effort=$(opt effort); max=$(opt max_usd); passes=$(opt passes); mt=$(opt max_tokens)
+          node tools/ai_checks/continuity.mjs ${model:+--model "$model"} ${effort:+--effort "$effort"} ${max:+--max-usd "$max"} \
+            ${passes:+--passes "$passes"} ${mt:+--max-tokens "$mt"} --dump build/ai_checks/continuity_corpus.txt
+      - name: Коммит отчёта
+        if: always()
+        run: |
+          sum=$(cat build/ai_checks/summary.txt 2>/dev/null || true)
+          tools/ai_checks/commit.sh "ИИ-чтение всей игры: ${sum:-отчёт} (run ${{ github.run_number }})" Docs/ai_checks

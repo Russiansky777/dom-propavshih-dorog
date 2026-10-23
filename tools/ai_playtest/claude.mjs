@@ -11,9 +11,11 @@ export const PRICES = {
   "claude-haiku-5-5": { in: 0.10, cw: 0.125, cr: 0.01, out: 0.50, long: { over: 100000, in: 0.50, cw: 0.625, cr: 0.05, out: 2.50 } },
   "claude-sonnet-5-5": { in: 2, cw: 2.5, cr: 0.10, out: 10 },
   "claude-opus-5-5": { in: 4, cw: 5, cr: 0.20, out: 20 },
+  // Fable 5.1 (released 2026-09-01): adaptive thinking always on, forced tool_choice is an error (models/fable-5-1/overview).
+  "claude-fable-5-1": { in: 10, cw: 12.5, cr: 0.25, out: 50 },
   "claude-haiku-4-5": { in: 1, cw: 1.25, cr: 0.10, out: 5 },
 };
-export const PRICES_SOURCE = "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22)";
+export const PRICES_SOURCE = "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22; claude-fable-5-1 — 2026-10-23)";
 
 const API_BASE = (process.env.ANTHROPIC_BASE_URL || "https://api.anthropic.com").replace(/\/$/, "");
 const API_URL = `${API_BASE}/v1/messages`;
@@ -89,7 +91,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
  * Long answers (Opus with deep thinking) do not survive minutes of silence on a plain request; with a stream the
  * bytes keep flowing and `idleMs` limits silence, not the whole answer.
  */
-async function readStream(res, idleMs) {
+async function readStream(res, idleMs, onStart) {
   const reader = res.body.getReader();
   const dec = new TextDecoder();
   let buf = "";
@@ -99,7 +101,7 @@ async function readStream(res, idleMs) {
     if (!data) return;
     const d = JSON.parse(data);
     switch (d.type) {
-      case "message_start": Object.assign(msg.usage, d.message.usage || {}); break;
+      case "message_start": Object.assign(msg.usage, d.message.usage || {}); if (onStart) { try { onStart(); } catch (_) {} } break;
       case "content_block_start": msg.content[d.index] = { ...d.content_block }; if (d.content_block.type === "tool_use") partial[d.index] = ""; break;
       case "content_block_delta": {
         const b = msg.content[d.index] || (msg.content[d.index] = { type: "text", text: "" });
@@ -140,7 +142,7 @@ async function readStream(res, idleMs) {
  * POST /v1/messages with retries on overload / rate limits / network errors. Never logs the key or the body.
  * Returns the parsed response. Throws ApiError on a permanent error (401, 400, …).
  */
-export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, timeoutMs = 180000, stream = false } = {}) {
+export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, timeoutMs = 180000, stream = false, onStart = null } = {}) {
   let lastErr = null;
   for (let a = 0; a < attempts; a++) {
     const ctrl = new AbortController();
@@ -157,7 +159,7 @@ export async function callClaude(apiKey, body, { log = () => {}, attempts = 6, t
       });
       if (stream && res.ok) {
         clearTimeout(timer);
-        try { return await readStream(res, timeoutMs); }
+        try { return await readStream(res, timeoutMs, onStart); }
         catch (e) {
           if (e instanceof ApiError && e.status !== 0 && e.status !== 529) throw e;
           lastErr = e instanceof ApiError ? e : new ApiError(0, "network", String((e && e.message) || e).slice(0, 120));

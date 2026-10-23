@@ -1,0 +1,10 @@
+{
+  "check": "continuity",
+  "model": "claude-fable-5-1",
+  "effort": "high",
+  "max_usd": 15,
+  "max_tokens": 80000,
+  "passes": ["continuity", "voices", "tts"],
+  "note": "Разовое чтение всей игры перед окончательной записью голосов (координатор 23.10). Повтор — поднять run.",
+  "run": 1
+}
