@@ -371,7 +371,26 @@ async function main() {
     }
     const fxBeforeH1 = await sfx();
     check(cnt(fxBeforeH1, "step:gravel") >= 2, "street: gravel steps", JSON.stringify(fxBeforeH1?.counts));
-    if (await goExit("H1")) {
+    // Batch G: the porch door opens with the key from the bag (taken in hand first), its line is read through.
+    {
+      const sk = await state();
+      const kp = sk.ui && sk.ui.inventory && sk.ui.inventory.key_house;
+      if (kp) {
+        await click("bag pocket key_house", kp);
+        await waitFor("key in hand", state, (t) => t.selected_item === "key_house", 10000);
+      }
+    }
+    const enterH1 = async () => {
+      const se = await state();
+      if (!se.exits.H1) { failures.push(`exit H1 missing in ${se.room}`); return false; }
+      await click("porch door (key in hand) → H1", se.exits.H1);
+      await waitFor("the door line or H1", state, (t) => t.room === "H1" || beatKey(t) !== "", 60000);
+      await finishDialogue("porch door");
+      const r = await waitFor("room == H1", state, (t) => t.room === "H1", 60000);
+      await sleep(400);
+      return !!r && r.room === "H1";
+    };
+    if (await enterH1()) {
       fx = await sfx();
       check(cnt(fx, "door:Z2>H1") - cnt(fxBeforeH1, "door:Z2>H1") === 1, "Z2 → H1: one door sound (heavy front door)", JSON.stringify(fx.counts));
       check(fx.rain.playing && fx.rain.mode === "inside" && fx.rain.bus === "SFX_Inside", "H1: rain muffled inside (SFX_Inside)", JSON.stringify(fx.rain));
@@ -424,6 +443,7 @@ async function main() {
     }
 
     // --- 5. Menu slider → bus, saved in user:// and back after a reload ----------------------
+    await finishDialogue("before the menu");   // a line on screen covers the top bar (its click turns the line)
     let s = await state();
     await click("ui MenuButton", s.ui.buttons.MenuButton);   // «Меню» → the pause → «Настройки»
     s = await waitFor("pause open", state, (t) => t.pause && t.pause.open && t.pause.blur > 0.99 && t.pause.items.settings, 5000);
