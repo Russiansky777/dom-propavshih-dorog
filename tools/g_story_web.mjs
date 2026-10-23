@@ -333,7 +333,7 @@ async function main() {
       await useHotspot("schedule");
       let s = await state();
       if (s.view && s.view.open && s.view.close) await click("close the board", s.view.close);
-      else await page.keyboard.press("Escape");
+      else if (s.view && s.view.open) await page.keyboard.press("Escape");   // with nothing open Esc is the pause menu
       await sleep(800);
       check(await goExit("M2"), "M1 → M2 (the passage)");
       await useHotspot("office_door");
