@@ -321,8 +321,10 @@ func _day_one_done(with_night: bool = true) -> void:
 			var meta: Dictionary = sd.item(String(it))
 			if bool(meta.get("inventory", false)) and not DAY_ONE_SPENT.has(String(it)):
 				gs.add_item(String(it))
-	# The house key went into the lock (exit item_use): its flags, not the key.
-	gs.set_flag("house_unlocked", true)
+	# The house key went into the lock (exit item_use): its flags, not the key. The living room steps of M03 (its room
+	# complete_when — G7: the shutter open, or the inner rooms stay dark) and the gallery's side bolt (C12: its first entry).
+	for f in ["house_unlocked", "h1_shutter_open", "h1_scarf_removed", "house_open"]:
+		gs.set_flag(f, true)
 	# What day two needs (M09 requires: the night by the stove of block 1, whose morning ends day one).
 	if with_night:
 		for f in sd.scene("M09").get("requires", {}).get("flags", []):
@@ -684,7 +686,7 @@ func _test_states() -> void:
 	_check(_npc_line_now(_hotspot("pelageya")).contains("у Павла, на мельнице"), "day two morning: «Вода у Павла, на мельнице» (%s)" % _npc_line_now(_hotspot("pelageya")))
 	gs.set_flag("done_M14")
 	await _frames(2)
-	_check(_npc_line_now(_hotspot("pelageya")).contains("лодку к повороту"), "the water going down: she brings the boat to the turn — the rope goes to the pier by water (%s)" % _npc_line_now(_hotspot("pelageya")))
+	_check(_npc_line_now(_hotspot("pelageya")).contains("сниму канат со стопора") and _npc_line_now(_hotspot("pelageya")).contains("к опоре"), "the water going down: G28 — she will take the rope off her stopper and bring it to the pier by boat (%s)" % _npc_line_now(_hotspot("pelageya")))
 	# At dusk before the knot: the boat is gone from the pier — Agata says where (once).
 	for f in ["done_M15a", "nina_time_compared", "evening_dusk"]:
 		gs.set_flag(f)
@@ -694,7 +696,9 @@ func _test_states() -> void:
 	rm.change_room("R1", "default")
 	await _frames(3)
 	var seen := await _finish()
-	_check(seen.any(func(x): return x.contains("Пелагея с ней")) and not _hotspot("pelageya").visible, "at dusk: «Лодки у причала нет. Пелагея с ней у поворота» (%s)" % str(seen))
+	_check(seen.any(func(x): return x.contains("Пелагеи на причале нет")) and not _hotspot("pelageya").visible, "at dusk: «Пелагеи на причале нет. Она у поворота…» (%s)" % str(seen))
+	# G28: until Pelageya takes it, the rope is on her stopper (the painted one); no rope at the turn yet.
+	_check(_hotspot("rope") != null and _hotspot("rope").visible and not rm.current_room.get_node("Layers/stopper_empty_dusk").visible, "G28: before M15s the rope is still on her stopper")
 	rm.change_room("Z3", "default")
 	await _frames(3)
 	rm.change_room("R1", "default")
@@ -779,11 +783,32 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M09s"), "M09s after the door, the photo and the schedule: %s" % str(seen))
 	_check(not (await _go("M3")), "the office door stays shut")
 	await _finish()
+	await _use("mirror")
+	seen = await _finish()
+	_check(not gs.has_item("mirror_mill") and seen.any(func(x): return String(x).contains("Без спросу")), "G18: the mirror is not taken before Pavel's leave: %s" % str(seen))
 	_check(await _go("M1"), "M2→M1")
+	var went: Array = []
+	var on_went := func(id: String): went.append(id)
+	sr.npc_went.connect(on_went)
 	await _use("pavel")
 	seen = await _finish()
-	_check(gs.has_flag("done_M09b") and gs.has_item("mirror_mill"), "Pavel gives the office mirror: %s" % str(gs.inventory))
+	var g18 := 0
+	while (sr.is_staging() or rm.current_room.room_id != "M2") and g18 < 600:
+		await process_frame
+		g18 += 1
+	seen += await _finish()
+	sr.npc_went.disconnect(on_went)
+	_check(gs.has_flag("done_M09b") and gs.has_flag("pavel_blessed_mirror") and not gs.has_item("mirror_mill"), "G18: Pavel gives his leave, the mirror is not handed over by the talk: %s" % str(gs.inventory))
+	_check(String(sd.scene("M09b")["mandatory_lines"][-1]["text"]).ends_with("Иди за мной.") and seen.any(func(x): return String(x).begins_with("pavel:Зеркало в сенях")), "G18: Pavel's last word «Иди за мной»: %s" % str(seen))
+	_check(went == ["pavel"], "G18: Pavel walks off to the passage door before the fade (npc_go): %s" % str(went))
+	_check(rm.current_room.room_id == "M2" and _hotspot("pavel") != null and _hotspot("pavel").visible, "G18: in the passage, Pavel is there (room %s)" % rm.current_room.room_id)
+	await _use("mirror")
+	seen = await _finish()
+	_check(gs.has_item("mirror_mill") and gs.inventory.count("mirror_mill") == 1 and seen.any(func(x): return String(x).begins_with("pavel:Бери")), "G18: the mirror taken in the passage, with Pavel's word: %s" % str(seen))
+	_check(_hotspot("mirror") == null or not _hotspot("mirror").visible, "G18: the mirror is gone from the passage — not taken twice")
 	_check(sr.journal_goal().contains("стойку"), "goal: the mirror onto the stand")
+	_check(await _go("M1"), "M2→M1")
+	_check(_hotspot("pavel") == null or not _hotspot("pavel").visible, "G18: Pavel is not in the yard any more (he waits in the passage)")
 	# Home: the stand, the wedges, the clapper, the lantern, the hook.
 	_check(await _go("Z2"), "M1→Z2")
 	_check(await _go("H1"), "Z2→H1")
@@ -864,14 +889,25 @@ func _test_walkthrough() -> void:
 	await _use("office_door_open")
 	seen = await _finish()
 	_check(gs.has_flag("office_shelf_lifted") and gs.has_flag("done_M13a"), "the shelf lifted together: %s" % str(seen))
+	# G21 (Director 23.10: «открываем вдвоём — мужик пропадает будто за дверь, а она закрыта»): he stays by the door.
+	_check(_hotspot("pavel") != null and _hotspot("pavel").visible, "G21: after the shelf Pavel is still in the passage by the door")
 	_check(await _go("M3"), "M2→M3 (the office)")
+	_check(_hotspot("pavel") != null and _hotspot("pavel").visible, "G21: Pavel is in the office when Agata comes in")
+	# G22: Pavel names the clamp and what it is for; the clamp lies on the table (layer), not on the shelf.
+	await _use("pavel")
+	seen = await _finish()
+	var pb: String = sd.text("@M3.pavel.before")
+	_check(seen.any(func(x): return String(x).begins_with("pavel:Бери, что надо")) and pb.contains("рычаг затвора") and pb.contains("струбцин") and pb.contains("раму"), "G20/G22: Pavel — the sluice lever on the nail, the clamp for Dunya's frame: %s" % pb)
+	_check(rm.current_room.get_node("Layers/clamp_table").visible, "G22: the clamp lies on the office table")
 	await _use("key_nail")
 	await _finish()
 	await _use("journal")
 	await _finish()
 	await _use("clamp")
 	seen = await _finish(["promise"])
-	_check(gs.has_item("key_sluice") and gs.has_item("journal_manager") and gs.has_item("clamp"), "key, journal, clamp: %s" % str(gs.inventory))
+	_check(gs.has_item("key_sluice") and gs.has_item("journal_manager") and gs.has_item("clamp"), "lever, journal, clamp: %s" % str(gs.inventory))
+	_check(sd.item_name("key_sluice") == "Рычаг затвора", "G20: the item is called «Рычаг затвора» (id key_sluice kept for saves): %s" % sd.item_name("key_sluice"))
+	_check(not rm.current_room.get_node("Layers/clamp_table").visible and not rm.current_room.get_node("Layers/sluice_lever").visible, "G20/G22: lever and clamp taken — gone from the wall and the table")
 	_check(gs.has_flag("done_M13") and gs.has_flag("pavel_answer_promise") and not gs.has_flag("pavel_answer_family"), "M13 with the answer to Pavel: %s" % str(seen))
 	# The sluice.
 	_check(await _go("M2"), "M3→M2")
@@ -1033,7 +1069,7 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("done_M17") and gs.has_item("school_ribbon") and gs.has_flag("ferry_verified"), "the empty boat returns with the ribbon: %s" % str(seen))
 	# Director 22.10: shown directly — the boat goes along the rope on its ring and no longer turns back to its pier.
-	_check(seen.any(func(x): return x.contains("Кольцо — на канат")), "Pelageya puts the ring on the rope: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю по-лодочному")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("кольцо — на канат"), "Pelageya puts the ring on the rope: %s" % str(seen))
 	var m17_text := ""
 	for ln in sd.scene("M17").get("mandatory_lines", []):
 		m17_text += String(ln.get("text", "")) + "\n"

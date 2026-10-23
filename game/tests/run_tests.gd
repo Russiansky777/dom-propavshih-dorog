@@ -688,6 +688,7 @@ func _test_exit_gate() -> void:
 	gs.reset()
 	await _spawn_main()
 	rm.autosave_enabled = false
+	gs.set_flag("house_open", true)   # the gallery was entered before (C12: its first entry draws the side bolt)
 	rm.change_room("H3", "default")
 	await physics_frame
 	await physics_frame
@@ -780,7 +781,7 @@ func _test_walkthrough() -> void:
 		"M02 flags missing")
 	# 9 lines and the shown attempt (a staging: fade, boat knocks its own pier) before Pelageya's «Берег вижу»;
 	# the sluice, the marsh, other boats and the manager are questions now (polish 22.10, D23).
-	_check(seen.size() == 10 and seen[2] == "stage", "M02: 2 lines, the staging, 7 lines; got %s" % str(seen))
+	_check(seen.size() == 9 and not seen.has("stage"), "M02: 9 lines, no staging (G16: no pointless fade); got %s" % str(seen))
 	_check(not sr.is_staging() and sr.stage_dim == 0.0, "the staging is over, no dusk left")
 	_check(not r2exit.is_open(), "R1→R2 stays closed after M02 (без плиты лодку вернёт сюда же)")
 
@@ -806,6 +807,14 @@ func _test_walkthrough() -> void:
 	await bot.wait_idle()
 	_check(bot.room_id() == "H1", "after the unlock text Agata walks in (room=%s)" % bot.room_id())
 	_check(not gs.has_flag("started_M03"), "M03 must not start before the three steps")
+	# G7 (Director 23.10): with the shutter closed Agata will not go into the dark rooms — first the shutter.
+	for dark in ["H2", "H3", "H4"]:
+		var dex = bot.exit_to(dark)
+		_check(dex != null and not dex.is_open(), "H1→%s is closed while the shutter is closed" % dark)
+		_check(not (await bot.go(dark)), "H1→%s does not go into the dark" % dark)
+		_check(String(sr.current_beat.get("text_key", "")) == "H1.exit_%s.dark" % dark, "H1→%s: Agata says it is dark — first the shutter: %s" % [dark, str(sr.current_beat)])
+		await bot.finish()
+		_check(bot.room_id() == "H1", "still in H1 after the dark-room refusal")
 	await bot.use("shutter")
 	await bot.finish()
 	await _open_latch()   # G8: the shutter opens by the action; read its line
@@ -813,18 +822,23 @@ func _test_walkthrough() -> void:
 	await bot.use("stove")
 	await bot.finish()
 	_check(gs.has_flag("stove_lit") and gs.has_flag("h1_shutter_open"), "M03 steps 1-2")
+	_check(bot.exit_to("H2").is_open() and bot.exit_to("H3").is_open() and bot.exit_to("H4").is_open(), "G7: with the shutter open the inner rooms are open")
 	await bot.use("scarf")
 	seen = await bot.finish()  # the scarf narration, then M03 (deferred trigger) in the same run
 	_check(gs.has_flag("started_M03"), "M03 should start after the third step")
-	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon") and gs.has_flag("house_open") and gs.has_flag("knows_tikhon_waits"), "M03 flags missing: %s" % str(seen))
+	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon") and gs.has_flag("knows_tikhon_waits"), "M03 flags missing: %s" % str(seen))
+	# C12 (ИИ-чтение 23.10): the side door of the gallery is opened on the first entry to the gallery, not by M03 here.
+	_check(not gs.has_flag("house_open"), "M03 does not open the gallery side door")
+	# G11: after the first talk at the lit stove Tikhon asks for his shelf.
+	_check(seen.any(func(x): return x.begins_with("tikhon:") and x.contains("повесь мне полку")), "M03: Tikhon asks to hang his shelf: %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Вечер долгий")), "M03: «Вечер долгий»: %s" % str(seen))
 	var tikhon = bot.hotspot("tikhon")
 	_check(tikhon != null and tikhon.visible, "Tikhon should be visible after M03")
-	# Home knowledge by questions (M03): the door from the school — «Нина просила», in his own voice.
+	# Home knowledge by questions (M03) — only about what Agata has seen (C13): before the gallery and the
+	# workshop there is nothing to ask about yet.
 	await bot.use("tikhon")
-	_check(sr.current_beat.get("type", "") == "options" and sr.current_options().size() == 4, "Tikhon: four questions: %s" % str(sr.current_beat))
-	seen = await bot.finish(["door"])
-	_check(gs.has_flag("h1_asked_door") and seen.any(func(x): return x.begins_with("tikhon:") and x.contains("Нина просила")), "Tikhon answers about the door: %s" % str(seen))
+	_check(sr.current_beat.get("type", "") == "options" and sr.current_options().size() == 1, "Tikhon: no questions about unseen rooms yet (C13): %s" % str(sr.current_beat))
+	seen = await bot.finish(["leave"])
 	_check(bot.hotspot("scarf") != null and not bot.hotspot("scarf").visible, "scarf hidden after removal")
 
 	# --- V01 (choices, exclusive) and Q04 ---
@@ -875,6 +889,9 @@ func _test_walkthrough() -> void:
 	_check(not gs.has_flag("done_M04"), "M04 not complete before seeing the door")
 	_check(await bot.go("H1"), "H2→H1")
 	_check(await bot.go("H3"), "H1→H3")
+	# C12: the first entry to the gallery — Agata draws the bolt of the side door (house_open, the edge Z4–H3).
+	var side_seen := await bot.finish()
+	_check(gs.has_flag("house_open") and side_seen.any(func(x): return String(x).contains("Боковая дверь галереи")), "first entry to the gallery opens its side door: %s" % str(side_seen))
 	await bot.use("school_door")
 	seen = await bot.finish()
 	await process_frame

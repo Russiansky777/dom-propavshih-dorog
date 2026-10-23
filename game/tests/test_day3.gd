@@ -728,7 +728,7 @@ func _test_walkthrough() -> void:
 	_check(seen.any(func(x): return x.begins_with("narration:Нина читает на доске: «Мама, я иду»")), "Nina answers «Мама, я иду»")
 	_check(seen.any(func(x): return x == "agata:У нас двадцать пятое октября."), "A3: Agata's date")
 	_check(rm.current_room.get_node("Layers/nina_answer_mama").visible and rm.current_room.get_node("Layers/nina_answer_date").visible and not rm.current_room.get_node("Layers/nina_answer_here").visible, "the answer and the common date on the board")
-	_check(rm.current_room.get_node("Layers/ulyana_bird_reply").visible, "Ulyana answered next to Agata's mark")
+	_check(rm.current_room.get_node("Layers/bird_reply_boat").visible and not rm.current_room.get_node("Layers/bird_reply_scarf").visible, "Ulyana answered next to Agata's boat (G37)")
 	_check(not _hotspot("nina").visible, "mother has gone to her sister's house")
 	_check(gs.has_flag("boat_shuttle_open"), "F13: from the free day the boat goes both ways (boat_shuttle_open for the R3 ↔ R1 passage of block 2)")
 	# The free day: through the school door — Nina in her sister's house (frames), Tikhon.
@@ -758,7 +758,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M23b") and gs.has_flag("bridge_decided"), "M23b at the mill: %s" % str(seen))
 	_check(frames_seen.has("F_mill_manager"), "the mill frame with four people")
 	_check(String(frame_titles.get("F_mill_manager", "")) == sd.location_name("M1"), "the title bar names the mill yard over the mill frame, not the room under it (%s)" % str(frame_titles.get("F_mill_manager")))
-	_check(seen.any(func(x): return x.begins_with("pavel:Год ключ на гвозде висел")) and seen.any(func(x): return x.begins_with("ilya:Значит, мост. Пока лёд не встал")), "the manager, Pavel, Agata, Ilya decide the bridge")
+	_check(seen.any(func(x): return x.begins_with("pavel:Год рычаг на гвозде висел")) and seen.any(func(x): return x.begins_with("ilya:Значит, мост. Пока лёд не встал")), "the manager, Pavel, Agata, Ilya decide the bridge")
 	_check(seen.any(func(x): return x.begins_with("pavel:Ты слово давала")), "Pavel remembers Agata's word (pavel_answer_promise)")
 	_check(not gs.has_flag("done_M24"), "the evening waits for Tamara's letters")
 	# Seams with block 2 on the free day (23.10): Pavel after the decision, Zarechye in daylight, the boat both ways.
@@ -959,8 +959,15 @@ func _test_traces() -> void:
 	var none := _beats_of("M22", [])
 	_check(none.any(func(x): return x.begins_with("narrator:Доска чистая")) and not none.any(func(x): return x.contains("Нина читает")), "no inscription: only the date")
 	_check(none.any(func(x): return x.contains("двадцать пятое октября")), "the common date in every branch")
-	var ilya := _beats_of("M22", ["board_ilya", "v03_marked"])
-	_check(ilya.any(func(x): return x.contains("лодки с дымом")) and ilya.any(func(x): return x.contains("Я ответила")), "board «Илюша…» and the bird mark: Ulyana answered")
+	var ilya := _beats_of("M22", ["board_ilya", "v03_marked", "v03_add_boat"])
+	_check(ilya.any(func(x): return x.contains("лодки с дымом")) and ilya.any(func(x): return x.begins_with("ulyana:А лодку с дымом")), "board «Илюша…» and the boat on the bird: Ulyana answers about it")
+	# G37: Ulyana's words follow what Agata drew on the bird.
+	for v in [["v03_add_scarf", "ulyana:А шарф"], ["v03_add_boat", "ulyana:А лодку"], ["v03_add_bridge", "ulyana:А мостик"]]:
+		var bv := _beats_of("M22", ["v03_marked", v[0]])
+		var others: int = bv.filter(func(x): return x.begins_with("ulyana:А шарф") or x.begins_with("ulyana:А лодку") or x.begins_with("ulyana:А мостик")).size()
+		_check(bv.any(func(x): return x.begins_with(v[1])) and others == 1, "G37 %s: one reply of Ulyana, about it (%s)" % [v[0], str(bv)])
+	var nob := _beats_of("M22", [])
+	_check(not nob.any(func(x): return x.begins_with("ulyana:А шарф") or x.begins_with("ulyana:А лодку") or x.begins_with("ulyana:А мостик")), "G37: nothing drawn — no reply about it")
 	var fam := _beats_of("M26", ["pavel_answer_family", "tikhon_told_agata", "v01_cup_white", "beam_blank"])
 	_check(fam.any(func(x): return x.begins_with("pavel:Мама с братом")) and not fam.any(func(x): return x.begins_with("pavel:Слово сдержала")), "Pavel's epilogue line follows the answer in the office")
 	_check(fam.any(func(x): return x.contains("спит у Агатиной лежанки")) and fam.any(func(x): return x.begins_with("agata:Среда")), "told by Agata: Tikhon sleeps by her bed; Agata answers «Среда»")
@@ -1136,13 +1143,13 @@ func _test_batch8() -> void:
 	Engine.time_scale = 1.0
 	# The class board: Nina's answers in chalk are pictures (not the game font), each under its question; the date; Ulyana's reply.
 	for q in ["here", "mama", "ilya"]:
-		await _enter_with(["done_M22", "board_" + q, "nina_answered_board", "v03_marked"], "O1", "from_O2")
+		await _enter_with(["done_M22", "board_" + q, "nina_answered_board", "v03_marked", "v03_add_bridge"], "O1", "from_O2")
 		var r: Node = rm.current_room
 		for o in ["here", "mama", "ilya"]:
 			_check(_layer_visible(r, "nina_answer_" + o) == (o == q), "O1 board «%s»: answer %s shown %s" % [q, o, str(o == q)])
 		_check(_layer_tex(r, "nina_answer_" + q) == "state_answer_%s.png" % q, "O1: Nina's answer «%s» is the chalk drawing (%s)" % [q, _layer_tex(r, "nina_answer_" + q)])
 		_check(_layer_visible(r, "nina_answer_date") and _layer_tex(r, "nina_answer_date") == "state_date.png", "O1: the date in chalk")
-		_check(_layer_visible(r, "ulyana_bird_reply") and _layer_tex(r, "ulyana_bird_reply") == "state_bird_reply.png", "O1: Ulyana's reply by the bird")
+		_check(_layer_visible(r, "bird_reply_bridge") and not _layer_visible(r, "bird_reply_boat"), "O1: Ulyana's reply by the bird — about the bridge (G37)")
 		_check(not _layer_visible(r, "class_sign"), "O1: no sign in the class without Q09")
 	await _enter_with(["done_M22", "q09_original_in_classroom"], "O1", "from_O2")
 	_check(_layer_visible(rm.current_room, "class_sign") and _layer_tex(rm.current_room, "class_sign") == "state_sign.png", "Q09 B: the old sign hangs in the class")

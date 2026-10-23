@@ -69,10 +69,10 @@ func _run() -> void:
 	sr.stage_sound_requested.connect(func(sid: String): sounds.append(sid))
 	Engine.time_scale = 4.0
 	await _test("Drawer (M07): photo, drawing and plan once — close-up with them, then an empty drawer; a load never gives them again", _test_drawer)
-	await _test("Drawer before the traces (D1, playtest 22.10): refused with a line; the goal and the hints lead to the traces, then to the drawer; the night chain plays on", _test_drawer_order)
+	await _test("Drawer before the traces (G15, Director 23.10: the refusal had no reason): it opens at once — the plan is a trace itself; M06 then M07 play, three things once; the night chain plays on", _test_drawer_order)
 	await _test("Brace (H2): only a look before the plan from the school; taken once after it; a load keeps it", _test_brace)
 	await _test("Night by the stove (N01): once after the school — dusk, lines, morning, «День второй»; never replays after re-entry or loads; a save from before plays it once; a load mid-night stops it", _test_night)
-	await _test("Pier (M02): the shown attempt — black, deck step, wooden knock — between Pelageya's lines", _test_pier_attempt)
+	await _test("Pier (M02): Pelageya's words only — no fade (G16); the closed boat says why (no road until the rope is on the plate ring; before her — «сначала поговорю», C27)", _test_pier_attempt)
 	await _test("Board (M08): three lines (Ilya's after the drawing) or none; written → chalk used, flag kept, board shows it", _test_board)
 	await _test("Mitten: left on the step, picked up again — the same one, once", _test_mitten)
 	await _test("Classroom: «Там зима. А у нас ещё октябрь» on the first entry only (not after a load)", _test_winter)
@@ -187,22 +187,31 @@ func _test_drawer_order() -> void:
 	hint = sr.next_hint()
 	_check(String(hint.get("text", "")).contains("Мешок") and String(hint.get("text", "")).contains("тетради"), "the second hint names the traces (%s)" % str(hint))
 	var before: int = gs.inventory.size()
-	var seen := await _interact(_hotspot("teacher_drawer"))
-	_check(gs.inventory.size() == before and not gs.has_flag("has_plan_crossing") and not sr.view_open, "the drawer before the traces gives nothing, no close-up")
-	_check(seen.any(func(x): return x.contains("Сначала оглядеться")), "Agata: first look around (%s)" % str(seen))
-	for id in ["sack", "notebooks"]:
-		await _interact(_hotspot(id))
-	_check(gs.has_flag("seen_class_traces") and gs.has_flag("done_M06"), "two traces → M06")
-	_check(sr.hint_scene() == "M07" and sd.scene_hints("M07")[1].contains("Ящик"), "now the hints lead to the drawer (%s)" % sr.hint_scene())
+	# G15: no «сначала оглядеться» — the drawer opens with its close-up and the three things, the plan written over
+	# and over in different inks is a trace itself: M06 («Кто-то продолжал здесь учиться») completes, then M07.
 	sr.interact(_hotspot("teacher_drawer"))
 	await process_frame
-	_check(sr.view_open, "now the drawer opens with its close-up")
-	seen = await _drain()
+	_check(sr.view_open, "the drawer opens at once, with its close-up")
+	var seen := await _drain()
 	await _frames(2)
 	seen += await _drain()
 	sr.close_view()
-	await _frames(2)
+	await _frames(3)
+	seen += await _drain()
+	_check(not seen.any(func(x): return x.contains("Сначала оглядеться")), "no refusal before the traces: %s" % str(seen))
+	_check(gs.has_flag("seen_class_traces") and gs.has_flag("done_M06"), "the drawer counts as the trace → M06")
 	_check(gs.has_flag("done_M07") and gs.inventory.size() == before + 3, "M07: the plan read, three things once (%s)" % str(gs.inventory))
+	var at6 := -1
+	var at7 := -1
+	for i in seen.size():
+		if at6 < 0 and String(seen[i]).contains("Кто-то продолжал здесь учиться"):
+			at6 = i
+		if at7 < 0 and String(seen[i]).contains("Держим мы»."):
+			at7 = i
+	_check(at6 >= 0 and at7 > at6, "M06 then M07 in order (%d, %d): %s" % [at6, at7, str(seen)])
+	for id in ["sack", "notebooks"]:
+		await _interact(_hotspot(id))
+	_check(gs.inventory.size() == before + 3, "the traces after the drawer give nothing again (%s)" % str(gs.inventory))
 
 
 func _test_drawer() -> void:
@@ -381,10 +390,16 @@ func _test_pier_attempt() -> void:
 	await _enter("R1", ["done_M01", "met_tamara"])
 	sounds.clear()
 	var ui := _ui()
+	# C27 (ИИ-чтение 23.10): before talking to Pelageya Agata does not know the boat is returned.
+	var r2_0: Node = rm.current_room.get_node_or_null("Exits/to_R2")
+	sr.use_exit(r2_0)
+	await process_frame
+	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed_first", "C27: before M02 — «Сначала поговорю с лодочницей» (%s)" % str(sr.current_beat))
+	await _drain()
 	var seen := await _interact(_hotspot("pelageya"))
 	_check(gs.has_flag("done_M02"), "M02 done")
 	# Polish 22.10 (D23, B9, B15): the boat shown, one line about the ice, the rope and its stopper, the plate, Mitya's post.
-	_check(seen.size() == 10 and seen[2] == "stage", "two lines, the shown attempt, seven lines: %s" % str(seen))
+	_check(seen.size() == 9 and not seen.has("stage") and not sr.is_staging(), "G16: nine lines, no fade (the shown attempt is gone): %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("по льду ходили — к своему же берегу")) and seen.any(func(x): return x.contains("кол с замком — стопор"))
 			and seen.any(func(x): return x.contains("Фонарь на той опоре — его")), "ice, the stopper shown, Mitya's post: %s" % str(seen))
 	_check(not seen.any(func(x): return x.contains("Болотом") or x.contains("Воду держит мельничный затвор")), "the marsh and the sluice are questions now, not the talk: %s" % str(seen))
@@ -394,11 +409,11 @@ func _test_pier_attempt() -> void:
 	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
 	_check(ids == ["boats", "marsh", "sluice", "manager", "leave"], "Pelageya's questions: %s" % str(ids))
 	var ans := await _drain(["sluice"])
-	_check(gs.has_flag("knows_sluice_key") and ans.any(func(x): return x.contains("ключ в конторе")), "the sluice question: the key is in the office: %s" % str(ans))
+	_check(gs.has_flag("knows_sluice_key") and ans.any(func(x): return x.contains("рычаг от затвора в конторе")), "the sluice question: the lever is in the office (G20): %s" % str(ans))
 	ans = await _interact(_hotspot("pelageya"), ["leave"])
 	_check(not ans.any(func(x): return x.contains("Ступай") or x.contains("дом")), "leaving Pelageya sends Agata nowhere: %s" % str(ans))
-	_check(seen[3].contains("Берег вижу"), "after the attempt: «Берег вижу…» (%s)" % seen[3])
-	_check(sounds.has("steps_soft") and sounds.has("door_heavy"), "deck step and wooden knock played: %s" % str(sounds))
+	_check(seen[2].contains("Берег вижу") and seen[1].contains("Не довезу"), "«Не довезу. Год пробую.» — «Берег вижу…» (%s)" % str(seen))
+	_check(not sounds.has("door_heavy"), "G16: no staged knock any more: %s" % str(sounds))
 	# Director 22.10: the rope is the last piece of the bridge — the road itself; its far end is still on the other bank.
 	_check(seen.any(func(x): return x.contains("всё, что от него осталось") and x.contains("Тот конец до сих пор там") and x.contains("Пока этот сидел на плите опоры")), "the rope is what is left of the bridge: %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Тянешь — как за корягу") and x.contains("Под водой её не тронешь")), "the plate under water, cracked: %s" % str(seen))
@@ -407,7 +422,8 @@ func _test_pier_attempt() -> void:
 	_check(r2 != null and not r2.is_open(), "the crossing stays closed")
 	sr.use_exit(r2)
 	await process_frame
-	_check(String(sr.current_beat.get("text", "")) == "Без плиты лодку вернёт сюда же.", "closed: «Без плиты лодку вернёт сюда же» (%s)" % sr.current_beat.get("text", ""))
+	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed" and String(sr.current_beat.get("text", "")).contains("дороги нет") and String(sr.current_beat.get("text", "")).contains("кольце плиты"),
+		"G17: closed — the boat comes back because there is no road until the rope sits on the plate ring (%s)" % sr.current_beat.get("text", ""))
 	await _drain()
 	for w in ["рейс", "пристан"]:
 		for k in ["R1.exit_R2.closed", "R1.instruction.use", "R1.pelageya.after", "Z3.old_pier_base.label", "Z1.drawings.use", "O1.teacher_drawer.use"]:
@@ -512,6 +528,19 @@ func _test_tikhon() -> void:
 	gs.set_flag("met_tikhon", true)
 	gs.set_flag("done_M03", true)
 	await _frames(2)
+	# C13 (ИИ-чтение 23.10): only about what Agata has seen — before the gallery and the workshop, nothing to ask.
+	sr.interact(t)
+	await process_frame
+	var ids0: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids0 == ["leave"], "C13: no questions about unseen things yet: %s" % str(ids0))
+	await _drain(["leave"])
+	gs.set_flag("visited_H2", true)
+	sr.interact(t)
+	await process_frame
+	var ids1: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids1 == ["bundle", "bell", "leave"], "C13: after the workshop — the bundle and the bell: %s" % str(ids1))
+	await _drain(["leave"])
+	gs.set_flag("visited_H3", true)
 	sr.interact(t)
 	await process_frame
 	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))

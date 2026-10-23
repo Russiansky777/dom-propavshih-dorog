@@ -77,6 +77,10 @@ func _run() -> void:
 	await _test("Q04 A: shelf on the stove side face, sockets hidden, Tikhon on the shelf (hotspot follows), loaded save keeps him there", _test_q04_a)
 	await _test("Q04 B: the shelf on the wall by the table (off the stove and the oven door), Tikhon on it, tail away from the stove; sockets", _test_q04_b)
 	await _test("Exits: the drawn door → porch (cue door), gallery behind the viewer (mark down), attic up under the ceiling by the stove; a click on the attic mark goes up to H4", _test_exits)
+	await _test("G7: shutter closed — Agata does not go into the workshop, the gallery or the attic (one line each, her voice); open — she does", _test_dark_rooms)
+	await _test("G9/G11/G14: the shelf says why not now (wet towel; cold stove; dark), Tikhon asks for it in M03, the stove look after the shelf has no sockets", _test_shelf_reasons)
+	await _test("G12: the leaning shelf, shelf A and shelf B are one shelf (same board size); the towel lies on the bench, then hangs on the left hook", _test_shelf_sizes)
+	await _test("G13: state layers of the stove line up with the base (the open door frame covers the closed door, its foot on the ledge)", _test_stove_align)
 	gs.reset()
 	gs.delete_save(SLOT)
 	if main_node != null and is_instance_valid(main_node):
@@ -182,6 +186,30 @@ func _layer_visible(room: Node, id: String) -> bool:
 		if n != null:
 			return (n as CanvasItem).is_visible_in_tree()
 	return false
+
+
+## A sprite's picture as an Image in the sprite's own pixels (an AtlasTexture crop of a stand-in — only its region).
+func _sprite_image(spr: Sprite2D) -> Image:
+	var tex := spr.texture
+	if tex is AtlasTexture:
+		var img: Image = (tex as AtlasTexture).atlas.get_image()
+		if img.is_compressed():
+			img.decompress()
+		return img.get_region(Rect2i((tex as AtlasTexture).region))
+	var im: Image = tex.get_image()
+	if im.is_compressed():
+		im.decompress()
+	return im
+
+
+## The picture of a layer: its image, or (art ordered, not delivered — batch 9) the first crop of its stand-in.
+func _layer_sprite(room: Node, id: String) -> Sprite2D:
+	var n := room.get_node_or_null("Layers/" + id)
+	if n == null:
+		return null
+	if n.get_node_or_null("Image") is Sprite2D:
+		return n.get_node("Image")
+	return n.get_node_or_null("StandIn/Crop0") as Sprite2D
 
 
 func _rect_of(h: Node2D) -> Rect2:
@@ -313,14 +341,24 @@ func _test_m03_once() -> void:
 	var tikhon_lines := seen.filter(func(x): return String(x).begins_with("tikhon:"))
 	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon"), "M03 done after the scarf: %s" % str(seen))
 	var m03_tikhon: Array = _m03_lines("tikhon")
-	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 5, "Tikhon's five M03 lines (Docs/SCENARIO_FINAL.md M03) play once: %s" % str(tikhon_lines))
+	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 7, "Tikhon's seven M03 lines (Docs/SCENARIO_FINAL.md M03, with the shelf request G11) play once: %s" % str(tikhon_lines))
+	_check(seen.any(func(x): return String(x).begins_with("tikhon:") and String(x).contains("повесь мне полку")), "G11: after the first talk at the lit stove Tikhon asks to hang his shelf: %s" % str(seen))
 	_check(seen.any(func(x): return String(x).contains("Вечер долгий")), "«Вечер долгий» in M03")
 	_check(seen.any(func(x): return String(x).contains("Ты здесь один?")) and seen.any(func(x): return String(x).contains("Печь тоже здесь.")), "«Ты здесь один?» / «Печь тоже здесь.» in M03")
 	_check(t != null and t.place_index == spec["place"]["H1"].size() - 1, "after M03 he is still in the armchair (place %d)" % (t.place_index if t else -9))
 	var inv_after: int = gs.inventory.size()
 	_check(inv_after == inv_before, "M03 grants no items (inventory %d → %d)" % [inv_before, inv_after])
-	# Clicking Tikhon now: his questions (home knowledge, M03 «по вопросам»), not M03 again.
+	# Clicking Tikhon now: his questions (home knowledge, M03 «по вопросам»), not M03 again — only about what Agata
+	# has seen (C13, ИИ-чтение 23.10): before the gallery and the workshop there is only «Ничего. Дежурь».
 	await _click(_hotspot(room, "tikhon").global_position)
+	var early: Array = sr.current_options().map(func(o): return String(o.get("id", ""))) if sr.current_beat.get("type", "") == "options" else []
+	_check(early == ["leave"], "C13: no questions about the door, the bundle or the bell before seeing them: %s" % str(early))
+	await _finish(["leave"])
+	gs.set_flag("visited_H2", true)
+	gs.set_flag("visited_H3", true)
+	await _click(_hotspot(room, "tikhon").global_position)
+	var later: Array = sr.current_options().map(func(o): return String(o.get("id", ""))) if sr.current_beat.get("type", "") == "options" else []
+	_check(later == ["door", "bundle", "bell", "leave"], "C13: after the gallery and the workshop all four questions: %s" % str(later))
 	var again := await _finish(["door"])
 	_check(not again.any(func(x): return m03_tikhon.has(String(x).trim_prefix("tikhon:"))), "a click on Tikhon after M03 does not replay M03: %s" % str(again))
 	_check(again.has("options:door") and again.any(func(x): return String(x).contains("Нина просила")), "a click on Tikhon after M03 opens his questions: %s" % str(again))
@@ -356,10 +394,8 @@ func _test_q04_a() -> void:
 	_check(t.visible and hs.visible, "Tikhon is visible on the shelf")
 	# Defect «полка идёт длинной в комнату»: the layer lies on the stove side face (screen x 400–600),
 	# a short shelf seen along the face (≤ 200 px wide, not the 580-px bench), and he sits on it.
-	var lay: Sprite2D = room.get_node("Layers/shelf_stove/Image")
-	var img: Image = lay.texture.get_image()
-	if img.is_compressed():
-		img.decompress()
+	var lay: Sprite2D = _layer_sprite(room, "shelf_stove")
+	var img: Image = _sprite_image(lay)
 	var used: Rect2i = img.get_used_rect()
 	var box := Rect2(lay.global_position + Vector2(used.position) * lay.scale, Vector2(used.size) * lay.scale)
 	_check(box.position.x > 380.0 and box.end.x < 620.0 and box.size.x < 200.0 and box.position.y > 430.0 and box.end.y < 600.0,
@@ -396,16 +432,14 @@ func _test_q04_b() -> void:
 		"B: its shelf is shown over its own sockets; the stove-side sockets stay (the other mount)")
 	# Defect «полка B над горячей дверцей» (scenario Q04: the tail must not be near the hot door): the B
 	# shelf is on the wall by the table — its layer does not touch the stove (click rect) nor the oven door.
-	var lay: Sprite2D = room.get_node("Layers/shelf_table/Image")
-	var img: Image = lay.texture.get_image()
-	if img.is_compressed():
-		img.decompress()
+	var lay: Sprite2D = _layer_sprite(room, "shelf_table")
+	var img: Image = _sprite_image(lay)
 	var used: Rect2i = img.get_used_rect()
 	var box := Rect2(lay.global_position + Vector2(used.position) * lay.scale, Vector2(used.size) * lay.scale)
 	var stove_r := _rect_of(_hotspot(room, "stove"))
 	var oven_door := Rect2(130, 400, 185, 180)
 	_check(not box.intersects(stove_r) and not box.intersects(oven_door), "the B shelf %s is off the stove %s and the oven door" % [str(box), str(stove_r)])
-	_check(box.position.x > 600.0 and box.end.x < 860.0 and box.end.y < 540.0, "the B shelf is on the wall left of the porch door, above the side table (box %s)" % str(box))
+	_check(box.position.x > 600.0 and box.end.x < 860.0 and box.end.y < 560.0, "the B shelf is on the wall left of the porch door, above the side table (box %s)" % str(box))
 	# He sits on it: feet on the plank (opaque right under them), not hanging; the tail goes right — away
 	# from the stove (drawn facing left, not mirrored), his body clear of the stove rect.
 	_check(box.has_point(t.global_position), "his feet %s are on the B shelf (box %s)" % [str(t.global_position), str(box)])
@@ -449,3 +483,172 @@ func _test_exits() -> void:
 		n += 1
 	await _finish()
 	_check(rm.current_room.room_id == "H4", "the attic mark leads to H4, got %s" % rm.current_room.room_id)
+
+
+## G7 (Director 23.10: «при закрытых ставнях свет из соседней комнаты»): while the shutter is closed the exits to the
+## workshop, the gallery and the attic refuse with Agata's own line (rooms/H1.json exits[].requires + closed_text).
+func _test_dark_rooms() -> void:
+	var room: Node = await _enter([])
+	for dark in ["H2", "H3", "H4"]:
+		var ex = room.get_node_or_null("Exits/to_" + dark)
+		_check(ex != null and not ex.is_open(), "H1→%s closed while the shutter is closed" % dark)
+		if ex == null:
+			continue
+		sr.use_exit(ex)
+		await _frames(3)
+		var b: Dictionary = sr.current_beat
+		_check(String(b.get("text_key", "")) == "H1.exit_%s.dark" % dark and String(b.get("speaker", "")) == "agata",
+			"H1→%s: Agata says it is dark — first the shutter: %s" % [dark, str(b)])
+		_check(String(b.get("text", "")).contains("ставн"), "H1→%s: the line names the shutter: %s" % [dark, String(b.get("text", ""))])
+		await _finish()
+		await _frames(6)
+		_check(rm.current_room.room_id == "H1", "H1→%s: still in the living room" % dark)
+	gs.set_flag("h1_shutter_open", true)
+	await _frames(3)
+	for dark in ["H2", "H3", "H4"]:
+		var ex2 = rm.current_room.get_node_or_null("Exits/to_" + dark)
+		_check(ex2 != null and ex2.is_open(), "H1→%s open with the shutter open" % dark)
+
+
+func _beat_key_after(h: Node2D) -> Dictionary:
+	sr.interact(h)
+	await _frames(3)
+	var b: Dictionary = sr.current_beat.duplicate()
+	await _finish()
+	return b
+
+
+## G9: the shelf, clicked before its time, speaks of the wet towel on the bench (ни сесть, ни лечь); G11: then of the
+## cold stove (or of the dark), and after the first talk at the lit stove Tikhon asks for it and the choice opens;
+## G14: the stove after the shelf no longer talks of the mount sockets.
+func _test_shelf_reasons() -> void:
+	var room: Node = await _enter([])
+	var shelf := _hotspot(room, "shelf")
+	_check(shelf != null and shelf.visible, "the leaning shelf is clickable before Q04")
+	var b := await _beat_key_after(shelf)
+	_check(String(b.get("text_key", "")) == "H1.shelf.look_wet" and String(b.get("text", "")).contains("мокрый платок") and String(b.get("text", "")).contains("ни лечь"),
+		"G9: the shelf names the wet towel on the bench: %s" % str(b))
+	gs.set_flag("h1_scarf_removed", true)
+	b = await _beat_key_after(shelf)
+	_check(String(b.get("text_key", "")) == "H1.shelf.not_yet" and String(b.get("text", "")).contains("печь"), "G11: towel gone, stove cold — first the stove: %s" % str(b))
+	gs.set_flag("stove_lit", true)
+	b = await _beat_key_after(shelf)
+	_check(String(b.get("text_key", "")) == "H1.shelf.not_yet_dark", "G11: stove lit, shutter closed — first the shutter: %s" % str(b))
+	# M03 lines carry Tikhon's request (data): after them the choice opens.
+	var asks := false
+	for l in sd.scene("M03")["mandatory_lines"]:
+		if String(l.get("speaker", "")) == "tikhon" and String(l.get("text", "")).contains("полку"):
+			asks = true
+	_check(asks, "G11: M03 has Tikhon asking for the shelf")
+	for f in ["h1_shutter_open", "done_M03", "met_tikhon"]:
+		gs.set_flag(f, true)
+	sr.interact(shelf)
+	await _frames(3)
+	_check(String(sr.current_beat.get("type", "")) == "options", "after M03 the shelf opens the choice: %s" % str(sr.current_beat))
+	await _finish(["B"])
+	_check(gs.has_flag("done_Q04"), "Q04 done")
+	var stove := _hotspot(room, "stove")
+	b = await _beat_key_after(stove)
+	_check(String(b.get("text_key", "")) == "H1.stove.look_settled" and not String(b.get("text", "")).contains("гнёзд"), "G14: the stove after the shelf: %s" % str(b))
+
+
+func _used_box(node: Node) -> Rect2:
+	## Screen box of the opaque pixels of a layer node: its picture, or the crops of its stand-in (art pending).
+	var box := Rect2()
+	var first := true
+	var sprites: Array = []
+	if node.get_node_or_null("Image") is Sprite2D:
+		sprites.append(node.get_node("Image"))
+	var si := node.get_node_or_null("StandIn")
+	if si != null:
+		for c in si.get_children():
+			if c is Sprite2D:
+				sprites.append(c)
+	for spr in sprites:
+		var img: Image = _sprite_image(spr)
+		var u: Rect2i = img.get_used_rect()
+		var r := Rect2((spr as Sprite2D).global_position + Vector2(u.position) * (spr as Sprite2D).scale, Vector2(u.size) * (spr as Sprite2D).scale)
+		box = r if first else box.merge(r)
+		first = false
+	return box
+
+
+## G12: the shelf leaning by the bench and the hung shelf (A on the stove, B by the porch door) are drawn at one size
+## (batch 9 art: one 92-px board; until it comes, the old pictures scaled to it in data); the towel lies on the bench
+## until taken, then hangs on the LEFT hook (the middle one is Nina's coat) and the bench is bare.
+func _test_shelf_sizes() -> void:
+	var room: Node = await _enter([])
+	_check(_layer_visible(room, "shelf_leaning") and not _layer_visible(room, "bench_bare") and not _layer_visible(room, "hook_coat"),
+		"before: the shelf leans by the bench, the towel is on the bench, the hook is empty")
+	var lean := _used_box(room.get_node("Layers/shelf_leaning"))
+	await _enter(["done_M03", "met_tikhon", "stove_lit", "h1_shutter_open", "h1_scarf_removed", "q04_corner_stove", "done_Q04"])
+	room = rm.current_room
+	_check(not _layer_visible(room, "shelf_leaning") and _layer_visible(room, "bench_bare") and _layer_visible(room, "hook_coat"),
+		"after: no leaning shelf, the bench is bare, the towel on the hook")
+	var a := _used_box(room.get_node("Layers/shelf_stove"))
+	var towel := _used_box(room.get_node("Layers/hook_coat"))
+	_check(towel.get_center().x < 1260.0 and towel.position.y > 220.0 and towel.position.y < 300.0,
+		"the towel hangs on the left hook (≈1217, 247 on screen), not the middle one where Nina's coat goes: %s" % str(towel))
+	await _enter(["done_M03", "met_tikhon", "stove_lit", "h1_shutter_open", "h1_scarf_removed", "q04_shelf_table", "done_Q04"])
+	var bb := _used_box(rm.current_room.get_node("Layers/shelf_table"))
+	_check(absf(a.size.x - bb.size.x) / maxf(a.size.x, bb.size.x) < 0.12, "shelf A and shelf B are one size on screen: %s vs %s" % [str(a.size), str(bb.size)])
+	var lean_len := maxf(lean.size.x, lean.size.y)
+	_check(absf(lean_len - a.size.x) / a.size.x < 0.25, "the leaning shelf is the same shelf (long side %.0f vs board %.0f)" % [lean_len, a.size.x])
+	print("        shelf A %s, B %s, leaning %s, towel %s" % [str(a), str(bb), str(lean), str(towel)])
+
+
+## G13 (Director 23.10: «топящаяся печь разорвана»): every state layer with `align` (rooms data) puts its detail onto the
+## same detail of the background — the frame of the open oven door onto the closed door: foot on the ledge, centred,
+## same size (±tol), and its opaque part covers the closed door, which is dark iron in the background.
+func _test_stove_align() -> void:
+	var room: Node = await _enter(["stove_lit", "h1_shutter_open"])
+	var bg: Sprite2D = room.get_node("Background/Image")
+	var bimg: Image = bg.texture.get_image()
+	if bimg.is_compressed():
+		bimg.decompress()
+	var n := 0
+	for l in room_spec.get("layers", []):
+		if not l.has("align"):
+			continue
+		n += 1
+		var al: Dictionary = l["align"]
+		var node: Node = room.get_node_or_null("Layers/" + String(l["id"]))
+		if node == null:
+			node = room.get_node_or_null("Occluders/" + String(l["id"]))
+		_check(node != null and (node as CanvasItem).is_visible_in_tree(), "%s is built and shown" % l["id"])
+		if node == null:
+			continue
+		var spr: Sprite2D = node.get_node("Image")
+		var img: Image = spr.texture.get_image()
+		if img.is_compressed():
+			img.decompress()
+		var lr: Array = al["layer_rect"]
+		var br: Array = al["base_rect"]
+		var tol := float(al.get("tol_px", 12))
+		var lrect := Rect2(spr.global_position + Vector2(lr[0], lr[1]) * spr.scale, Vector2(lr[2], lr[3]) * spr.scale)
+		var brect := Rect2(bg.global_position + Vector2(br[0], br[1]) * bg.scale, Vector2(br[2], br[3]) * bg.scale)
+		_check(absf(lrect.end.y - brect.end.y) <= tol, "%s: foot of the detail %.0f on the base's %.0f" % [l["id"], lrect.end.y, brect.end.y])
+		_check(absf(lrect.get_center().x - brect.get_center().x) <= tol, "%s: centred %.0f vs %.0f" % [l["id"], lrect.get_center().x, brect.get_center().x])
+		_check(absf(lrect.size.x - brect.size.x) <= 2.0 * tol and absf(lrect.size.y - brect.size.y) <= 2.0 * tol, "%s: same size %s vs %s" % [l["id"], str(lrect.size), str(brect.size)])
+		# The base detail is what the layer must hide (the closed door: dark iron) …
+		var dark := 0
+		var total := 0
+		for y in range(int(br[1]) + 4, int(br[1] + br[3]) - 4, 6):
+			for x in range(int(br[0]) + 4, int(br[0] + br[2]) - 4, 6):
+				total += 1
+				if bimg.get_pixel(x, y).get_luminance() < 0.35:
+					dark += 1
+		_check(total > 0 and float(dark) / total > 0.6, "%s: the base detail is the dark closed door (%d/%d dark)" % [l["id"], dark, total])
+		# … and every point of it is under an opaque pixel of the layer (nothing of the old state shows).
+		var holes := 0
+		var probes := 0
+		for y in range(int(brect.position.y) + 2, int(brect.end.y) - 2, 5):
+			for x in range(int(brect.position.x) + 2, int(brect.end.x) - 2, 5):
+				probes += 1
+				var q: Vector2 = (Vector2(x, y) - spr.global_position) / spr.scale
+				var inside := q.x >= 0 and q.y >= 0 and q.x < img.get_width() and q.y < img.get_height()
+				if not inside or img.get_pixelv(Vector2i(q)).a < 0.5:
+					holes += 1
+		_check(probes > 0 and holes <= probes / 50, "%s: the layer covers the base detail (%d of %d points uncovered)" % [l["id"], holes, probes])
+		print("        %s: detail %s on base %s, uncovered %d/%d" % [l["id"], str(lrect), str(brect), holes, probes])
+	_check(n >= 1, "H1 has the stove alignment data")

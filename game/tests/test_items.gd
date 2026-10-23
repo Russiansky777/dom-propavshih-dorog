@@ -63,7 +63,7 @@ func _run() -> void:
 	await _test("Photo (V01): on the stove ledge; «На столе» → on the side table, «На полке» → on the corner shelf, the ledge clear; hotspot follows; Agata's reaction; a load keeps it", _test_photo)
 	await _test("Cups (V01): both on the window sill; the chosen one on the side table above it, the other stays; switching swaps; reaction; a load keeps it", _test_cups)
 	await _test("Chalk: on a pupil's desk (visible, above the desks, on the desk), hotspot on it; the teacher's desk has no chalk and no hotspot; taken → gone; board → out of the bag, M08 does not give it back", _test_chalk)
-	await _test("V03: «Оставить свою пометку» → pencil mark on the bird picture; «Оставить как есть» → no mark, the reaction plays", _test_bird_mark)
+	await _test("V03 / G37: add a scarf, a boat with smoke or a little bridge to the bird (each its own drawing on the poster), or leave it", _test_bird_mark)
 	await _test("Voice: the new and changed item lines have recordings the game plays (first person — Agata, the rest — ZAKADR)", _test_voice)
 	gs.reset()
 	gs.delete_save(SLOT)
@@ -364,19 +364,55 @@ func _test_chalk() -> void:
 
 
 func _test_bird_mark() -> void:
-	var room: Node = await _enter("O1", _o1_flags(), [], Vector2(1000, 740))
-	var h := _hotspot(room, "bird_drawing")
-	_check(h != null and h.visible and not _visible(room, "bird_mark"), "no mark before V03")
-	var key: String = await _choose(h, "mark")
-	_check(gs.has_flag("v03_marked") and _visible(room, "bird_mark"), "«Оставить свою пометку» → the pencil mark is on the picture")
-	var r := _layer_rect(room, "bird_mark")
-	_check(_hotspot_rect(h).encloses(r), "the mark is on the bird picture %s (mark %s)" % [str(_hotspot_rect(h)), str(r)])
-	_check(key == "O1.v03.done" or key == "", "reaction after the choice (%s)" % key)
-	room = await _enter("O1", _o1_flags(), [], Vector2(1000, 740))
-	h = _hotspot(room, "bird_drawing")
-	key = await _choose(h, "leave")
-	_check(gs.has_flag("v03_left") and not _visible(room, "bird_mark"), "«как есть» → no mark")
-	_check(key == "O1.v03.done", "«как есть» → the reaction plays (%s)" % key)
+	# G37 (Director 23.10: «эпизод подрисовать птице — пусть будет, и ответ Ульяны зависит от выбора»): Agata adds a
+	# scarf, Ilya's boat with smoke or a little bridge on stone piers — or leaves the poster as it is.
+	for v in ["scarf", "boat", "bridge"]:
+		var room: Node = await _enter("O1", _o1_flags(), [], Vector2(1000, 740))
+		var h := _hotspot(room, "bird_drawing")
+		_check(h != null and h.visible and not _visible(room, "bird_add_" + v), "%s: nothing added before V03" % v)
+		_check(_visible(room, "bird_doodles"), "the hat (Agata, long ago) and the boots (Ulyana) are on the bird")
+		var ids: Array = []
+		sr.interact(h)
+		await process_frame
+		ids = sr.current_options().map(func(o): return String(o.get("id", "")))
+		_check(ids == ["scarf", "boat", "bridge", "leave"], "three things to add, or leave: %s" % str(ids))
+		sr.choose(v)
+		await process_frame
+		var key := String(sr.current_beat.get("text_key", ""))
+		await _drain()
+		await _frames(2)
+		_check(key == "O1.bird_drawing.react_" + v, "%s: Agata's own words after the choice (%s)" % [v, key])
+		_check(gs.has_flag("v03_add_" + v) and gs.has_flag("v03_marked") and gs.has_flag("done_V03"), "%s: its flag, «marked», V03 done" % v)
+		for o in ["scarf", "boat", "bridge"]:
+			_check(_visible(room, "bird_add_" + o) == (o == v), "%s: drawing %s shown %s" % [v, o, str(o == v)])
+		var r := _rect_of_node(room.get_node("Layers/bird_add_" + v))
+		_check(_hotspot_rect(h).encloses(r), "%s: the drawing is on the poster %s (%s)" % [v, str(_hotspot_rect(h)), str(r)])
+	var room2: Node = await _enter("O1", _o1_flags(), [], Vector2(1000, 740))
+	var h2 := _hotspot(room2, "bird_drawing")
+	var key2: String = await _choose(h2, "leave")
+	_check(gs.has_flag("v03_left") and not gs.has_flag("v03_marked"), "«как есть» → nothing added")
+	for o in ["scarf", "boat", "bridge"]:
+		_check(not _visible(room2, "bird_add_" + o), "«как есть» → no %s" % o)
+	_check(key2 == "O1.v03.done", "«как есть» → the reaction plays (%s)" % key2)
+
+
+## Screen box of a layer node (its picture or its stand-in's crops / shapes / texts).
+func _rect_of_node(n: Node) -> Rect2:
+	var box := Rect2()
+	var first := true
+	for c in n.find_children("*", "", true, false):
+		var r := Rect2()
+		if c is Sprite2D and (c as Sprite2D).texture != null:
+			var spr := c as Sprite2D
+			var sz: Vector2 = spr.texture.get_size() * spr.scale
+			r = Rect2(spr.global_position, sz)
+		elif c is Label:
+			r = Rect2((c as Label).global_position, (c as Label).size)
+		else:
+			continue
+		box = r if first else box.merge(r)
+		first = false
+	return box
 
 
 ## Recorded in one request (pipeline/voice, run 39124518023): the door, the reactions, the photo by the sketch,

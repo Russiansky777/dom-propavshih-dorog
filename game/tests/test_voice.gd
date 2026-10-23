@@ -737,6 +737,7 @@ func _test_narration_skips() -> void:
 
 func _test_narration_puzzle() -> void:
 	gs.reset()
+	gs.set_flag("house_open", true)   # the gallery seen before (C12: its first entry draws the side bolt with a line)
 	await _enter("H3")
 	gs.set_flag("done_M04")
 	gs.add_item("door_hinges")
