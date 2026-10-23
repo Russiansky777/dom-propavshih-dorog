@@ -3,10 +3,10 @@
  "clips": [
   {
    "kind": "idle",
-   "frames": 84,
+   "frames": 45,
    "cyclic": false,
-   "body_yaw_deg": 2.2,
-   "floor_m": 0.003,
+   "body_yaw_deg": 3.2,
+   "floor_m": 0.0029,
    "legs": {
     "L": {
      "stance_toe_out_before_deg": 3.0,
@@ -22,8 +22,8 @@
    "hip_drop_max_m": 0.0,
    "clip": "Idle_4",
    "window": [
-    0.0,
-    0.2
+    0.0788,
+    0.1862
    ],
    "before": {
     "L": {
@@ -34,11 +34,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0432,
+     "sole_lift_mid_stance_max_m": 0.0433,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
-     "floor_m": 0.003,
-     "body_yaw_deg": 2.2
+     "contact_frames": 45,
+     "floor_m": 0.0029,
+     "body_yaw_deg": 3.2
     },
     "R": {
      "stance_toe_out_deg": 3.0,
@@ -48,11 +48,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0392,
+     "sole_lift_mid_stance_max_m": 0.04,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
-     "floor_m": 0.003,
-     "body_yaw_deg": 2.2
+     "contact_frames": 45,
+     "floor_m": 0.0029,
+     "body_yaw_deg": 3.2
     }
    },
    "after": {
@@ -64,11 +64,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0423,
+     "sole_lift_mid_stance_max_m": 0.0428,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
-     "floor_m": 0.005,
-     "body_yaw_deg": 2.2
+     "contact_frames": 45,
+     "floor_m": 0.0049,
+     "body_yaw_deg": 3.2
     },
     "R": {
      "stance_toe_out_deg": 3.0,
@@ -78,11 +78,11 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0392,
+     "sole_lift_mid_stance_max_m": 0.04,
      "slide_max_mm": 0.0,
-     "contact_frames": 84,
-     "floor_m": 0.005,
-     "body_yaw_deg": 2.2
+     "contact_frames": 45,
+     "floor_m": 0.0049,
+     "body_yaw_deg": 3.2
     }
    },
    "upper_body_max_rot_diff_deg": 0.0,

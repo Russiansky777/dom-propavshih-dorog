@@ -15,11 +15,11 @@
       "frames": 24,
       "fps": 24.0,
       "clip": "Idle_4",
-      "clip_seconds": 2.2347,
-      "natural_fps": 10.74,
+      "clip_seconds": 1.5,
+      "natural_fps": 15.33,
       "window": [
-        0.0,
-        0.2
+        0.0788,
+        0.1862
       ],
       "playback": "pingpong"
     },
@@ -28,14 +28,14 @@
       "frames": 16,
       "fps": 24.0,
       "clip": "Listening_Gesture_talk",
-      "clip_seconds": 7.4667,
-      "natural_fps": 2.14,
-      "floor_shift_m": 0.0023
+      "clip_seconds": 9.3333,
+      "natural_fps": 1.71,
+      "floor_shift_m": 0.0031
     }
   },
   "fit": {
-    "half_width_m": 0.635,
-    "top_m": 0.9,
+    "half_width_m": 0.624,
+    "top_m": 0.898,
     "frame_top_m": 1.009,
     "frame_w": 288
   },
