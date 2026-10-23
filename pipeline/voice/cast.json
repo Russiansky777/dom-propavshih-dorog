@@ -6,6 +6,8 @@
  "output_format": "mp3_44100_192",
  "_output_format_reason": "Указание Директора 23.10 12:49 «где выбор качества — лучшее»: самый высокий формат, доступный плану Creator, — mp3_44100_192 (документация Create speech: «MP3 at 192kbps requires the Creator tier or above», «PCM and WAV at 44.1kHz require the Pro tier»; https://elevenlabs.io/docs/api-reference/text-to-speech/convert). До 23.10 — mp3_44100_128: записи E0–E1, утверждённые на слух, не перезаписываются ради формата (новый дубль — другое исполнение); формат каждой записи — поле output_format манифеста.",
  "use_seed": true,
+ "timestamps": true,
+ "_timestamps_reason": "Синтез через /v1/text-to-speech/{voice_id}/with-timestamps (та же модель и цена, https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps): выравнивание по символам сохраняется рядом с ответом (src/<id>.align.json) — по нему tools/voice_stress_check.py проверяет ударение в словах из pipeline/voice/pronunciation_ru.json.",
  "max_chars": 5000,
  "loudness": {
   "target_lufs": -17.0,

@@ -36,6 +36,7 @@ from __future__ import annotations
 import copy
 import fnmatch
 import hashlib
+import importlib.util
 import json
 import re
 import sys
@@ -52,6 +53,10 @@ TAG_RE = re.compile(r"\[([^\[\]]+)\]")
 REQUESTS = ROOT / "pipeline" / "requests"
 TEXT_DIR = STORY / "text"
 LUFS_TOL = 1.5
+
+_pspec = importlib.util.spec_from_file_location("pronounce", ROOT / "pipeline" / "voice" / "pronounce.py")
+pronounce = importlib.util.module_from_spec(_pspec)
+_pspec.loader.exec_module(pronounce)
 NARRATION_REQUIRED = ("speaker", "subdir", "skip_sections", "skip_fields")
 
 
@@ -244,10 +249,10 @@ def _line(scene: str, ln: dict) -> dict:
 
 
 def api_text(ln: dict) -> str:
-    """Как pipeline/voice/eleven_voice.py: voice_text или теги перед текстом."""
+    """Как pipeline/voice/eleven_voice.py: voice_text или теги перед текстом; произношение — pronounce.py."""
     if ln.get("voice_text"):
-        return str(ln["voice_text"])
-    return "".join(f"[{t}] " for t in ln.get("tags", [])) + str(ln["text"])
+        return pronounce.apply(str(ln["voice_text"]), str(ln.get("id", "")))
+    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(str(ln["text"]), str(ln.get("id", "")))
 
 
 def check_tags(lines: dict, allowed: set[str] | None) -> list[str]:
@@ -729,6 +734,8 @@ def main() -> int:
     texts = all_texts()
     lines = story_lines()
     lines.update(narration_lines(narration_cfg(voice_cfg), texts))
+    for lid, ln in lines.items():
+        ln["id"] = lid   # правила произношения по репликам (pronounce.py)
     manifests = manifests_on_disk()
     cast = load(CAST)
     voices = load(VOICES)

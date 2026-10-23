@@ -17,6 +17,7 @@
                               pipeline/voice/rerecord_template.json, pipeline/voice/README.md → «Текст изменился»
   design --request <файл>     Voice Design: превью новых голосов по описанию → pipeline/voice/design/<персонаж>/
   create_voice --request <ф>  выбранное превью → голос в My Voices (voice_id в design/<персонаж>.json) + список голосов
+  say --request <файл>        пробные фразы с выравниванием по символам → pipeline/voice/probe/<набор>/ (ударение)
   run --request <файл>        режим берётся из поля "mode" запроса (так запускает workflow)
 
 Идентификатор реплики: <scene>_<index>, index — позиция в mandatory_lines сцены (для заданий — lines), как её
@@ -45,6 +46,9 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pronounce  # noqa: E402  (правила произношения — общий модуль с tools/validate_voice.py)
 
 ROOT = Path(__file__).resolve().parents[2]
 API = "https://api.elevenlabs.io"
@@ -235,6 +239,8 @@ def all_lines() -> dict[str, dict]:
     """Реплики сцен (<scene>_<index>) и закадровые фразы (ключ текста) — всё, что может звучать в игре."""
     out = story_lines()
     out.update(narration_lines())
+    for lid, ln in out.items():
+        ln["id"] = lid   # правила произношения могут относиться к отдельным репликам (pronounce.py, поле lines)
     return out
 
 
@@ -250,10 +256,11 @@ TAG_IN_TEXT = re.compile(r"\[[^\[\]]+\]")
 
 
 def api_text(ln: dict) -> str:
-    """Текст запроса к API: voice_text (теги внутри фразы) или теги перед текстом; субтитры — text без тегов."""
+    """Текст запроса к API: voice_text (теги внутри фразы) или теги перед текстом; субтитры — text без тегов.
+    Произношение (pipeline/voice/pronunciation_ru.json, pronounce.py) — только здесь, не в субтитрах."""
     if ln.get("voice_text"):
-        return str(ln["voice_text"])
-    return "".join(f"[{t}] " for t in ln.get("tags", [])) + str(ln["text"])
+        return pronounce.apply(str(ln["voice_text"]), str(ln.get("id", "")))
+    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(str(ln["text"]), str(ln.get("id", "")))
 
 
 # --- Ключ и HTTP ---------------------------------------------------------------------------------
@@ -528,6 +535,54 @@ def cmd_create_voice(req_path: Path) -> int:
     return 1 if failed or rc else 0
 
 
+PROBE_DIR = VOICE_DIR / "probe"
+
+
+def cmd_say(req_path: Path) -> int:
+    """Режим say: короткие пробные фразы (не реплики игры) голосом персонажа с выравниванием по символам →
+    pipeline/voice/probe/<набор>/<id>.mp3 и <id>.json. Для проверки способов задать ударение (pronounce.py) —
+    tools/voice_stress_check.py --probe <набор>. Потолок символов — поле max_chars запроса."""
+    req = read_json(req_path, {})
+    set_name = str(req.get("set", req_path.stem))
+    cast = dict(read_json(CAST_PATH, {}) or {})
+    cast["timestamps"] = True
+    items = [it for it in req.get("items", []) if it.get("id") and it.get("text")]
+    chars = sum(len(str(it["text"])) for it in items)
+    if chars > int(req.get("max_chars", 0)):
+        raise VoiceError(f"say: {chars} символов > max_chars {req.get('max_chars')}")
+    sub_before = subscription()
+    if sub_before and sub_before.get("character_limit"):
+        reserve = float((cast.get("quota") or {}).get("margin_fraction", 0.10)) * int(sub_before["character_limit"])
+        if chars > int(sub_before["character_limit"]) - int(sub_before["character_count"]) - reserve:
+            raise VoiceError("say: не помещается в остаток квоты с запасом")
+    out = PROBE_DIR / set_name
+    out.mkdir(parents=True, exist_ok=True)
+    failed, spent = [], 0
+    for it in items:
+        sp = str(it.get("speaker", "narrator"))
+        spec = cast_for(cast, sp, None, str(it.get("profile", "")))
+        text = str(it["text"])
+        seed = int(hashlib.sha1(f"probe|{it['id']}".encode("utf-8")).hexdigest()[:8], 16)
+        try:
+            audio, info = synth(text, spec, cast, seed)
+        except VoiceError as e:
+            failed.append(f"{it['id']}: {e}")
+            log(f"  ОШИБКА {it['id']}: {e}")
+            continue
+        f = out / f"{it['id']}.mp3"
+        f.write_bytes(audio)
+        cc = str(info.get("character_cost", ""))
+        spent += int(cc) if cc.isdigit() else len(text)
+        write_json(out / f"{it['id']}.json", {"id": it["id"], "speaker": sp, "voice_name": spec["voice_name"],
+                                               "model_id": spec["model_id"], "text": text, "duration_s": duration_s(f),
+                                               "character_cost": cc, "alignment": info.get("alignment"),
+                                               "expect": it.get("expect"), "variant": it.get("variant", ""),
+                                               "run": os.environ.get("GITHUB_RUN_ID", "local")})
+        log(f"  {it['id']:28} {duration_s(f):5.2f} с  выравнивание: {'есть' if info.get('alignment') else 'нет'}  {text}")
+    log(f"[say {set_name}] фраз {len(items) - len(failed)}, ошибок {len(failed)}, символов {chars}, кредитов {spent}")
+    return 1 if failed else 0
+
+
 # --- Обработка звука (ffmpeg) ---------------------------------------------------------------------
 
 def _ffmpeg(args: list[str]) -> str:
@@ -636,28 +691,43 @@ def voice_sets(cast: dict) -> list[dict]:
 
 
 def synth(text: str, spec: dict, cast: dict, seed: int) -> tuple[bytes, dict]:
+    """Синтез одной фразы. cast.json → timestamps: true — тот же синтез через /with-timestamps (та же цена;
+    https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps): в info["alignment"] — время
+    каждого символа запроса; по нему tools/voice_stress_check.py проверяет ударение (ударная гласная — самая долгая)."""
     body = {"text": text, "model_id": spec["model_id"], "voice_settings": spec["voice_settings"]}
     if cast.get("language_code"):
         body["language_code"] = cast["language_code"]
     if cast.get("use_seed", True):
         body["seed"] = seed
     params = {"output_format": cast.get("output_format", "mp3_44100_128")}
-    path = f"/v1/text-to-speech/{spec['voice_id']}"
-    st, hdr, payload = http("POST", path, params, body, accept="audio/mpeg")
+    stamps = bool(cast.get("timestamps", False))
+    path = f"/v1/text-to-speech/{spec['voice_id']}" + ("/with-timestamps" if stamps else "")
+    accept = "application/json" if stamps else "audio/mpeg"
+    st, hdr, payload = http("POST", path, params, body, accept=accept)
     dropped: list[str] = []
     if st in (400, 422) and any(k in body for k in OPTIONAL_BODY_KEYS):
         log(f"    {error_text(st, payload)} — повтор без {', '.join(k for k in OPTIONAL_BODY_KEYS if k in body)}")
         for k in OPTIONAL_BODY_KEYS:
             if body.pop(k, None) is not None:
                 dropped.append(k)
-        st, hdr, payload = http("POST", path, params, body, accept="audio/mpeg")
+        st, hdr, payload = http("POST", path, params, body, accept=accept)
     if st != 200:
         raise VoiceError(f"синтез {spec['voice_name'] or spec['voice_id']}: {error_text(st, payload)}")
+    alignment = None
+    if stamps:
+        try:
+            d = json.loads(payload.decode("utf-8"))
+            payload = base64.b64decode(d.get("audio_base64", ""))
+            alignment = d.get("alignment") or d.get("normalized_alignment")
+        except (ValueError, UnicodeDecodeError) as e:
+            raise VoiceError(f"синтез с выравниванием: ответ не JSON ({e})") from e
     if len(payload) < 512:
         raise VoiceError(f"синтез: подозрительно короткий ответ ({len(payload)} байт)")
     info = {"request_id": hdr.get("request-id", ""), "history_item_id": hdr.get("history-item-id", ""),
             "character_cost": hdr.get("character-cost", hdr.get("x-character-count", "")), "dropped_params": dropped,
             "output_format": params["output_format"], "sent": {k: body[k] for k in ("language_code", "seed") if k in body}}
+    if alignment is not None:
+        info["alignment"] = alignment
     return payload, info
 
 
@@ -851,6 +921,12 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                 spent_now += int(cc) if cc.isdigit() else len(api_text(ln))
                 src.parent.mkdir(parents=True, exist_ok=True)
                 src.write_bytes(audio)
+                al = info.pop("alignment", None)
+                al_path = src.with_name(src.stem + ".align.json")
+                if al:
+                    write_json(al_path, {"text": api_text(ln), "alignment": al})
+                elif al_path.exists():
+                    al_path.unlink()   # выравнивание прежнего дубля к новому не относится
             meas = process(src, dst, lc)
         except VoiceError as e:
             failed.append(f"{tag}: {e}")
@@ -864,6 +940,9 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                  else {"scene": ln["scene"], "index": ln["index"]})
         if ln.get("option"):
             where["option"] = ln["option"]
+        al_rel = "src/" + file_rel(ln, lid, "align.json")
+        if (vs["dir"] / al_rel).is_file():
+            where["alignment"] = al_rel
         if ln.get("profile"):
             where["profile"] = ln["profile"]
         if ln.get("as_line"):
@@ -909,7 +988,7 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             for lid, e in sorted(vs["manifest"]["lines"].items()):
                 if "stale" not in e:
                     continue
-                for rel in (e.get("file"), e.get("source")):
+                for rel in (e.get("file"), e.get("source"), e.get("alignment")):
                     if rel and (vs["dir"] / rel).is_file():
                         (vs["dir"] / rel).unlink()
                 del vs["manifest"]["lines"][lid]
@@ -963,7 +1042,7 @@ def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "run"])
+    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "say", "run"])
     ap.add_argument("--request")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
@@ -977,10 +1056,10 @@ def main() -> int:
             return cmd_check()
         if mode == "list":
             return cmd_list()
-        if mode in ("design", "create_voice"):
+        if mode in ("design", "create_voice", "say"):
             if not a.request:
                 raise VoiceError(f"{mode}: нужен --request")
-            return cmd_design(Path(a.request)) if mode == "design" else cmd_create_voice(Path(a.request))
+            return {"design": cmd_design, "create_voice": cmd_create_voice, "say": cmd_say}[mode](Path(a.request))
         if mode == "generate":
             if not a.request:
                 raise VoiceError("generate: нужен --request")
