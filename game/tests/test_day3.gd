@@ -102,6 +102,7 @@ func _run() -> void:
 	await _test("Block 5: Q02 «На карте вырос сад» — the map, Ulyana in the garden, the tracing by mouse, the choice once, save/load", _test_q02)
 	await _test("Block 5: Q06 «Второй верстак» — the workshop, four steps by mouse, resumed after close and load, the choice once", _test_q06)
 	await _test("Block 5: Q02/Q06 traces — both choices in epilogue lines, frames and rooms; skipped — nothing, the end as before", _test_q02_q06_traces)
+	await _test("Batch 8 art: drawn states by flags (board answers, coat, bag, board, night, day frames, epilogues) — one at a time, never stacked", _test_batch8)
 	gs.reset()
 	for s in [AUTOSAVE, SLOT, SLOT + "_d4", SLOT + "_end", CP + "day3", CP + "day4", SLOT + "_q02", SLOT + "_q02_done", SLOT + "_q06"]:
 		gs.delete_save(s)
@@ -609,6 +610,8 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M19") and _room() == "O3", "M19: mother on the porch, then her room (%s): %s" % [_room(), str(seen)])
 	_check(seen.any(func(x): return x.begins_with("mitya:Илья! Сестра твоя")), "Mitya knocks: %s" % str(seen))
 	_check(rm.current_room.get_node("Layers/hand_min") != null, "Nina's clock is in her room")
+	var night_layer = rm.current_room.get_node_or_null("Layers/night")
+	_check(night_layer != null and night_layer.visible and night_layer.get_node_or_null("Image") != null, "night in mother's room: the painted night layer (O3_night, партия 8), not an engine tone")
 	# M19c: the clock against the pocket watch.
 	await _use("clock")
 	seen = await _finish()
@@ -626,7 +629,7 @@ func _test_walkthrough() -> void:
 	_check(seen.any(func(x): return x.begins_with("ilya:Ты не выросла")), "Ilya: «Ты не выросла»")
 	_check(gs.has_flag("wife_came"), "the wife came with the lamp: her figure is shown by wife_came (set in M20 before her line)")
 	_check(gs.has_save(CP + "day3"), "checkpoint «День третий» written")
-	_check(not _hotspot("ilya").visible and rm.current_room.get_node("Effects/night") != null and not rm.current_room.get_node("Effects/night").visible, "morning: the night tone is off, Ilya has gone home")
+	_check(not _hotspot("ilya").visible and rm.current_room.get_node_or_null("Layers/night") != null and not rm.current_room.get_node("Layers/night").visible, "morning: the painted night (O3_night, партия 8) is off, Ilya has gone home")
 	_check(rm.save_game(SLOT), "save in the morning of day three")
 	# M21: Nina about Dunya; notebooks, village list → M21b.
 	await _use("nina")
@@ -735,7 +738,11 @@ func _test_walkthrough() -> void:
 		span_alpha[f if f != "" else "(none)"] = float(gui.call("stage_probe").get("alpha", -1.0))
 	sr.frame_changed.connect(on_frame)
 	_check(await _go("Z3"), "to the turn")
-	_check(not rm.current_room.get_node("Layers/water_low").visible and rm.current_room.get_node("Layers/stone_no_plate").visible, "Z3 on day four: daylight, not the dusk of day two (as in the span frames)")
+	# Batch 8: Z3_state_water_low_day is the whole day-3–4 state (low water AND the stone without the plate) — never stacked
+	# on the dusk low water or the stone layer.
+	_check(not rm.current_room.get_node("Layers/water_low").visible and rm.current_room.get_node("Layers/water_low_day").visible
+		and not rm.current_room.get_node("Layers/stone_no_plate").visible and not rm.current_room.get_node("Layers/stone_no_plate_dusk").visible,
+		"Z3 on day four: the drawn low water by day (batch 8), not the dusk of day two, nothing stacked under it")
 	# G42: the span shot comes by a cut — the people are there at once, no black, no empty shore first.
 	var fp0: Dictionary = fv.probe()
 	var ly0: Dictionary = fp0.get("layers", {})
@@ -1036,6 +1043,120 @@ func _drag_path(points: Array, release: bool = true) -> Vector2:
 	if release:
 		await _button(last, false)
 	return last
+
+
+## The picture a room layer draws (its own texture or the first textured child), "" for a stand-in or text.
+func _layer_tex(room: Node, id: String) -> String:
+	var n: Node = null
+	for box in ["Layers", "Occluders"]:
+		if n == null and room != null:
+			n = room.get_node_or_null(box + "/" + id)
+	if n == null:
+		return ""
+	for c in [n] + n.find_children("*", "", true, false):
+		var t = c.get("texture") if (c is Sprite2D or c is TextureRect) else null
+		if t is Texture2D:
+			return (t as Texture2D).resource_path.get_file()
+	return ""
+
+
+func _enter_with(flags: Array, room: String, spawn: String = "default") -> void:
+	gs.reset()
+	for f in flags:
+		gs.set_flag(String(f), true)
+	rm.change_room(room, spawn)
+	await _frames(3)
+	await _finish()
+
+
+## Batch 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): the drawn states replace the engine's text and tones.
+## Each shows in its state only; the beam end carvings and the Z3 day water are never stacked on another variant.
+func _test_batch8() -> void:
+	Engine.time_scale = 1.0
+	# The class board: Nina's answers in chalk are pictures (not the game font), each under its question; the date; Ulyana's reply.
+	for q in ["here", "mama", "ilya"]:
+		await _enter_with(["done_M22", "board_" + q, "nina_answered_board", "v03_marked"], "O1", "from_O2")
+		var r: Node = rm.current_room
+		for o in ["here", "mama", "ilya"]:
+			_check(_layer_visible(r, "nina_answer_" + o) == (o == q), "O1 board «%s»: answer %s shown %s" % [q, o, str(o == q)])
+		_check(_layer_tex(r, "nina_answer_" + q) == "state_answer_%s.png" % q, "O1: Nina's answer «%s» is the chalk drawing (%s)" % [q, _layer_tex(r, "nina_answer_" + q)])
+		_check(_layer_visible(r, "nina_answer_date") and _layer_tex(r, "nina_answer_date") == "state_date.png", "O1: the date in chalk")
+		_check(_layer_visible(r, "ulyana_bird_reply") and _layer_tex(r, "ulyana_bird_reply") == "state_bird_reply.png", "O1: Ulyana's reply by the bird")
+		_check(not _layer_visible(r, "class_sign"), "O1: no sign in the class without Q09")
+	await _enter_with(["done_M22", "q09_original_in_classroom"], "O1", "from_O2")
+	_check(_layer_visible(rm.current_room, "class_sign") and _layer_tex(rm.current_room, "class_sign") == "state_sign.png", "Q09 B: the old sign hangs in the class")
+	await _enter_with(["done_M22", "lower_street_returned", "q09_original_in_classroom"], "S1")
+	_check(_layer_visible(rm.current_room, "sign_removed"), "Q09 B: on the lower street the sign is gone from the post")
+	# Nina's coat on the hook in Dunya's house after M23c.
+	await _enter_with(["house_unlocked", "done_M20"], "H1")   # (with done_M22 entering H1 plays M23c — mum comes)
+	_check(not gs.has_flag("done_M23c") and not _layer_visible(rm.current_room, "nina_coat"), "H1: no coat before mum comes")
+	await _enter_with(["house_unlocked", "done_M22", "done_M23c"], "H1")
+	_check(_layer_visible(rm.current_room, "nina_coat") and _hotspot("nina_coat") != null and _hotspot("nina_coat").visible, "H1: mum's coat on the hook, a hotspot over it")
+	# The street: Tamara's bag (M23a until Q01), Mitya's board (after M22 until Q07 gives it away).
+	await _enter_with(["done_M22", "done_M23a"], "O4", "from_O2")
+	_check(_layer_visible(rm.current_room, "letters_bag") and _layer_visible(rm.current_room, "mitya_board"), "O4: Tamara's bag and Mitya's board drawn")
+	await _enter_with(["done_M22", "done_M23a", "done_Q01", "q07_board_to_pelageya"], "O4", "from_O2")
+	_check(not _layer_visible(rm.current_room, "letters_bag") and not _layer_visible(rm.current_room, "mitya_board"), "O4: after Q01 / Q07 B — the bag and the board are gone")
+	# Nina's room at night: the drawn night frame with the dark time of day only.
+	await _enter_with(["house_unlocked", "done_M17", "done_M18", "done_M19", "met_nina"], "O3")
+	var dark: bool = gs.has_flag("tod_dark")
+	_check(dark and _layer_visible(rm.current_room, "night"), "O3 in the evening of day two: the night drawing (tod_dark %s)" % str(dark))
+	await _enter_with(["house_unlocked", "done_M22", "evening_dusk"], "O3")
+	_check(not gs.has_flag("tod_dark") and not _layer_visible(rm.current_room, "night"), "O3 on day three: no night layer")
+	# Days 3–4: the drawn day frames of the crossing and the far pier; the low water by day at the turn.
+	for rid in ["R2", "R3"]:
+		await _enter_with(["house_unlocked", "evening_dusk", "done_M15a", "done_M15", "done_M17"], rid)
+		_check(gs.has_flag("tod_day2") and not _layer_visible(rm.current_room, "day"), "%s on the night of day two: the evening drawing (no day frame)" % rid)
+		await _enter_with(["house_unlocked", "evening_dusk", "done_M18", "done_M20", "done_M22"], rid)
+		_check(_layer_visible(rm.current_room, "day") and _layer_tex(rm.current_room, "day") == "day.png", "%s on day three: the day frame" % rid)
+	await _enter_with(["house_unlocked", "evening_dusk", "done_M15a", "done_M20", "done_M22"], "Z3")
+	var r3: Node = rm.current_room
+	var stacked := ["water_low", "stone_no_plate", "stone_no_plate_dusk"].filter(func(x): return _layer_visible(r3, x))
+	_check(_layer_visible(r3, "water_low_day") and stacked.is_empty(), "Z3 on day three: the low water by day alone (stacked: %s)" % str(stacked))
+	# The mill board: the sheet is drawn.
+	await _enter_with(["house_unlocked", "done_N01", "done_M09", "met_pavel"], "M1")
+	_check(_layer_visible(rm.current_room, "schedule_sheet") and _layer_tex(rm.current_room, "schedule_sheet") == "state_schedule_sheet.png", "M1: the schedule sheet on the board")
+	# Epilogues: the beam end — exactly one carving for each choice; the dinner and the lesson — drawn figures, Agata added.
+	gs.reset()
+	rm.change_room("Z3", "default")
+	await _frames(2)
+	for c in ["dunya", "roads", "date"]:
+		gs.reset()
+		gs.set_flag("beam_" + c, true)
+		sr.set_frame("EP_beam")
+		await _frames(3)
+		var ly: Dictionary = fv.probe().get("layers", {})
+		var on := ["dunya", "roads", "date"].filter(func(x): return bool(ly.get("cut_" + x, false)))
+		_check(on == [c], "EP_beam «%s»: one carving (%s)" % [c, str(on)])
+		sr.set_frame("")
+		await _frames(2)
+	gs.reset()
+	sr.set_frame("EP_beam")
+	await _frames(3)
+	var none_on := (fv.probe().get("layers", {}) as Dictionary).keys().filter(func(k): return String(k).begins_with("cut_") and bool(fv.probe()["layers"][k]))
+	_check(none_on.is_empty(), "EP_beam with no inscription: a clean end (%s)" % str(none_on))
+	sr.set_frame("")
+	await _frames(2)
+	sr.set_frame("EP_dinner")
+	await _frames(3)
+	var dl: Dictionary = fv.probe().get("layers", {})
+	_check(bool(dl.get("family", false)) and bool(dl.get("agata", false)), "EP_dinner: the drawn family at the table, Agata added by the game")
+	_check(not dl.has("nina") and not dl.has("ilya") and not dl.has("ilya_wife") and not dl.has("ulyana"), "EP_dinner: no 3D composites over the drawn family (%s)" % str(dl.keys()))
+	sr.set_frame("")
+	await _frames(2)
+	sr.set_frame("EP_lesson")
+	await _frames(3)
+	var ll: Dictionary = fv.probe().get("layers", {})
+	_check(bool(ll.get("children", false)) and not ll.has("ulyana"), "EP_lesson: the drawn children, no 3D Ulyana over them (%s)" % str(ll.keys()))
+	sr.set_frame("")
+	await _frames(2)
+	# Examine: the 11 items of batch 8 have their own close-up pictures.
+	for id in ["key_house", "door_hinges", "brace_plate", "chalk", "mitten", "bell_clapper", "key_sluice", "clamp", "school_ribbon", "journal_manager", "pocket_watch"]:
+		var ex: Dictionary = (sd.items.get(id, {}) as Dictionary).get("examine", {})
+		var art := String(ex.get("art", ""))
+		_check(art.ends_with("closeup_%s.png" % id) and ResourceLoader.exists(art), "examine %s: the drawn close-up (%s)" % [id, art])
+	gs.reset()
+	_reached_end = true
 
 
 func _layer_visible(room: Node, id: String) -> bool:

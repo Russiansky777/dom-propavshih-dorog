@@ -965,6 +965,23 @@ for rid, room in rooms.items():
                 if covered > aref9.get("npc_overlap_max", 0.25):
                     report9b(f"{ctx}.{where} {[sx, sy]}: Агата и NPC {nh.get('id')} (ноги {fx:.0f},{fy:.0f}) — одна фигура в другой: "
                         f"закрыто {covered:.0%} фигуры ({who}); сдвиньте стоянку или NPC")
+        # Нарисованный предмет (слой с id своего хотспота) не стоит за фигурой NPC: O4 — Митя стоял прямо перед своей
+        # дощечкой партии 8 и закрывал её (23.10). Предмет за фигурой (низ выше ног NPC) закрыт больше чем наполовину — ошибка.
+        layer_ids9c = {str(l.get("id")) for l in room.get("layers", [])}
+        for oh in room.get("hotspots", []):
+            if oh.get("kind") == "npc" or str(oh.get("id")) not in layer_ids9c or "rect" not in oh:
+                continue
+            ox0, oy0, ow, oh_h = oh["rect"]
+            for nh, fx, fy, factor in npcs9b:
+                if apart(oh, nh) or oy0 + oh_h >= fy:
+                    continue
+                n_s = depth_scale(fy) * factor
+                n_hw, n_h = hw0 * n_s, fig0 * n_s
+                cx = min(ox0 + ow, fx + n_hw) - max(ox0, fx - n_hw)
+                cy = min(oy0 + oh_h, fy) - max(oy0, fy - n_h)
+                if cx > 0 and cy > 0 and cx * cy / float(ow * oh_h) > 0.5:
+                    err(f"{ctx}.hotspots.{oh.get('id')}: нарисованный предмет {oh['rect']} за фигурой NPC {nh.get('id')} "
+                        f"(ноги {fx:.0f},{fy:.0f}) — закрыт на {cx * cy / float(ow * oh_h):.0%}; сдвиньте NPC")
 
     # 8. рост Агаты против ориентиров
     # Каждая комната с Агатой в кадре сверяет её рост с дверью: ориентир с "door": true или явно "door_ref": "none — почему"

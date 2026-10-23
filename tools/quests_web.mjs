@@ -38,7 +38,7 @@ const WEB_DIR = process.env.QUESTS_WEB_DIR ? path.resolve(ROOT, process.env.QUES
 const OUT_DIR = path.join(ROOT, "Docs", "evidence", "M3");
 const LOG_DIR = path.join(ROOT, "build", "shots", "quests");
 const PORT = Number(process.env.QUESTS_PORT || 8781);
-const RUNS = (process.env.QUESTS_RUNS || "Q02,Q06").split(",");   // B8 — after the batch-8 wiring is in the build
+const RUNS = (process.env.QUESTS_RUNS || "Q02,Q06,B8").split(",");
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".wasm": "application/wasm",

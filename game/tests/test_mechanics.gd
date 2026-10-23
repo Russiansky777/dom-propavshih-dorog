@@ -688,7 +688,8 @@ func _test_water() -> void:
 		if water.is_empty():
 			continue
 		rooms_with_water += 1
-		for state in [[], ["evening_dusk"]]:
+		# the third state is the free day 3 (tod d3_day): the drawn day frames of batch 8 (R2/R3 «_day» water on the day layer).
+		for state in [[], ["evening_dusk"], ["evening_dusk", "done_M22"]]:
 			await _fresh([], ["house_unlocked"] + state)
 			rm.change_room(rid, "default")
 			await _frames(3)
@@ -710,11 +711,13 @@ func _test_water() -> void:
 				_check(mat != null and mat.shader.resource_path.ends_with("ambient_water.gdshader"), "%s/%s: the water shader" % [rid, id])
 				if mat == null:
 					continue
+				# gs.has_flag: the time-of-day flags tod_* are virtual (TimeOfDay) — R2/R3 «_day» regions follow the
+				# day layer of days 3–4 (batch 8), off on day one/two.
 				var want_vis := true
 				for f in w.get("if", []):
-					want_vis = want_vis and state.has(String(f))
+					want_vis = want_vis and gs.has_flag(String(f))
 				for f in w.get("unless", []):
-					want_vis = want_vis and not state.has(String(f))
+					want_vis = want_vis and not gs.has_flag(String(f))
 				_check(n.visible == want_vis, "%s/%s: shown %s with flags %s (per-state variant)" % [rid, id, str(want_vis), str(state)])
 				_check(float(mat.get_shader_parameter("tremble_px")) > 0.0 and float(mat.get_shader_parameter("sparkle")) > 0.0,
 					"%s/%s: reflections tremble, sparkles on" % [rid, id])
