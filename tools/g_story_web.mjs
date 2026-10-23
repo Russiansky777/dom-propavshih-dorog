@@ -3,7 +3,7 @@
 // ambientFlag / ambientItem / ambientGoto to put the story where a part begins; every step inside a part is a click):
 //
 //   tools/export_web.sh && node tools/g_story_web.mjs        (G_WEB_DIR — another build dir; G_PORT, default 8781;
-//                                                               G_PART=h1,mill,office,rope,boat,nina — a subset)
+//                                                               G_PART=h1,mill,office,rope,rope_after,boat,nina — a subset)
 //
 //   h1     — new game: Tamara (M01) → lane → street → H1. While the shutter is closed the workshop says why not (G7);
 //            the leaning shelf names the wet towel on the bench (G9); stove → shutter → towel → M03 ends with Tikhon
@@ -432,6 +432,32 @@ async function main() {
       const look = await useHotspot("stopper_empty");
       check(look.some((l) => l.includes("кольце плиты у поворота")), `C27: the empty stopper says where the rope is: ${JSON.stringify(look)}`);
     } catch (e) { check(false, `rope: exception ${e.message}`); }
+
+    // ---------------------------------------------------------------- after the knot, without the mini-games (G28, C27)
+    // (the brace and the knot by real clicks need a quiet machine — tools/mech_web.mjs «plate»; here the story state
+    // right after M15: where the rope is, at the turn and at the pier)
+    if (PARTS.includes("rope_after")) try {
+      await fresh("rope_after");
+      await setFlags(DAY1.concat(TO_M13A, TO_M15A, ["skoba_on_plate", "plate_braced", "rope_brought", "rope_on_ring",
+        "road_held_both_ends", "done_M15s", "started_M15", "done_M15"]));
+      await goto("Z3", "from_Z2");
+      let s = await state();
+      check(s.room === "Z3", "Z3 after the knot");
+      await page.mouse.move(1700, 1000);
+      await sleep(1500);
+      await shot("06_z3_rope_from_ring");
+      await goto("R1", "from_Z2");
+      await finish("M16s");
+      s = await state();
+      check(s.hotspots.stopper_empty && s.hotspots.stopper_empty.visible && !(s.hotspots.rope && s.hotspots.rope.visible), "C27/G28: at the pier the stopper is empty");
+      const sp = Object.keys(s.layers || {}).filter((k) => k.startsWith("stopper_empty") && s.layers[k]);
+      check(sp.length === 1, `C27: one empty-stopper patch for the light of the moment: ${JSON.stringify(sp)}`);
+      await page.mouse.move(1700, 1000);
+      await sleep(1000);
+      await shot("07_r1_stopper_empty");
+      const look = await useHotspot("stopper_empty");
+      check(look.some((l) => l.includes("кольце плиты у поворота")), `C27: the empty stopper says where the rope is: ${JSON.stringify(look)}`);
+    } catch (e) { check(false, `rope_after: exception ${e.message}`); }
 
     // ---------------------------------------------------------------- no boat ride back before the shuttle (G38)
     if (PARTS.includes("boat")) try {

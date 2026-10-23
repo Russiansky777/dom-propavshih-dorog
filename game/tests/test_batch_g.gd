@@ -199,6 +199,17 @@ func _test_rope_where() -> void:
 				ropes.append(id)
 		_check(patches.size() == 1 and ropes.size() == 1, "%s: at the pier the stopper is empty (one patch: %s) and the rope comes from the turn (%s)" % [st[0], str(patches), str(ropes)])
 		_check(not _visible(r1, "Hotspots/rope") and _visible(r1, "Hotspots/stopper_empty"), "%s: the stopper hotspot is the empty stopper" % st[0])
+		# Above the river ripple: the ambient water polygons draw the background (with its painted rope) at z 1 — a patch
+		# under them left the rope on the water in the web build (web check 23.10).
+		if patches.size() == 1:
+			var pz: int = (r1.get_node("Layers/" + String(patches[0])) as CanvasItem).z_index
+			var wz := -100
+			var water: Node = r1.get_node_or_null("Ambient/Water")
+			if water != null:
+				for w in water.get_children():
+					if w is CanvasItem and (w as CanvasItem).is_visible_in_tree():
+						wz = maxi(wz, (w as CanvasItem).z_index)
+			_check(pz > wz, "%s: the empty-stopper patch (z %d) draws above the river ripple (z %d)" % [st[0], pz, wz])
 		# The patch is cut from the frame shown under it: on days 3–4 that is the batch 9 low-water day frame (G52), not
 		# the autumn background — just outside the rope (the soft edge of the patch) its pixels are the frame's own.
 		if patches.size() == 1 and _visible(r1, "Layers/water_low_day"):
