@@ -1,3 +1,8 @@
+# Current state — TR2b трейлер (запуск 40118773422, 24.10)
+- **Сделано:** ролик 74,9 с (1080p/30, −13,9 LUFS) собран из планов `data/trailer/trailer_60s.json`; черновик 14 МБ — `Docs/evidence/trailer_60s/`; чеклист `Docs/ACCEPTANCE_TRAILER_60s.md`; отчёт `Docs/agent_reports/run_40118773422.md`; run_tests = 0.
+- **Не сделано:** релиз `trailer-60s-v1` (нет GH_TOKEN у запуска); лодка у каната (T8).
+- **Следующее действие:** создать релиз с полным mp4 (перерендер `tools/trailer_render.sh data/trailer/trailer_60s.json`, ~50 мин), отдать Директору чеклист.
+
 # Current state — 2026-10-23, 07:00 (координатор, утренняя сводка)
 
 ## T5b — Агата v4: модель, риг, движения, рендер 2,25× (запуск 40093021019, 24.10) — чеклист `Docs/ACCEPTANCE_T5b_agata_v4.md`
