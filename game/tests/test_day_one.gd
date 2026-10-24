@@ -248,7 +248,7 @@ func _test_drawer() -> void:
 	var rope_at := -1
 	var held_at := -1
 	for i in seen.size():
-		if seen[i].contains("Канат — всё, что от моста осталось") and seen[i].contains("с двух концов") and seen[i].contains("лодка по канату дойдёт"):
+		if seen[i].contains("Опоры стоят, канат цел") and seen[i].contains("на кольцо верну") and seen[i].contains("лодка пройдёт"):
 			rope_at = i
 		if seen[i].contains("Дальний держим мы»."):
 			held_at = i
@@ -434,14 +434,15 @@ func _test_pier_attempt() -> void:
 	_check(seen[2].contains("к своему причалу") and seen[1].contains("Не перевезу"), "«Не довезу. Год пробую.» — «Гребу к тому берегу…» (H3, %s)" % str(seen))
 	_check(not sounds.has("door_heavy"), "G16: no staged knock any more: %s" % str(sounds))
 	# Director 22.10: the rope is the last piece of the bridge — the road itself; its far end is still on the other bank.
-	_check(seen.any(func(x): return x.contains("Больше от моста ничего не осталось") and x.contains("Дальний конец всё там") and x.contains("Этот на плите опоры был закреплён")), "the rope is what is left of the bridge: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Пролёты снесло, каменные опоры остались") and x.contains("Дальний конец всё там") and x.contains("Этот на плите опоры был закреплён")), "the rope is what is left of the bridge: %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Тянешь, будто за корягу") and x.contains("Под водой к ней не подступиться")), "the plate under water, cracked: %s" % str(seen))
 	_check(sr.stage_dim == 0.0 and (ui == null or float(ui.call("stage_probe")["alpha"]) < 0.02), "no dusk left at the pier")
 	_check(rm.current_room.get_node_or_null("Exits/to_R2") == null and not gs.has_flag("ferry_verified"), "the crossing stays closed (H36: no exit into the boat at the pier)")
 	sr.interact(_hotspot("boat"))
 	await process_frame
-	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed" and String(sr.current_beat.get("text", "")).contains("нет дороги") and String(sr.current_beat.get("text", "")).contains("кольцо плиты"),
-		"G17: closed — the boat comes back because there is no road until the rope sits on the plate ring (%s)" % sr.current_beat.get("text", ""))
+	# T9 (R01): before the plan (M07) Agata does not know about the ring yet — the boat just comes back; the ring after the plan.
+	_check(String(sr.current_beat.get("text_key", "")) == ("R1.exit_R2.closed" if gs.has_flag("knows_crossing_plan") else "R1.boat.look_no_plan"),
+		"G17/R01: closed — before the plan no ring, after it the rope on the plate ring (%s)" % sr.current_beat.get("text", ""))
 	await _drain()
 	for w in ["рейс", "пристан"]:
 		for k in ["R1.exit_R2.closed", "R1.instruction.use", "R1.pelageya.after", "Z3.old_pier_base.label", "Z1.drawings.use", "O1.teacher_drawer.use"]:

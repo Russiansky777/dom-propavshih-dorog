@@ -783,11 +783,13 @@ func _test_walkthrough() -> void:
 	# Letters: back to Olkhovka by the rope, Tamara on the street.
 	_check(await _route(["M1", "Z2", "R1"]), "the mill → Zarechye → the pier")
 	_check(not rm.current_room.get_node("Layers/dusk").visible, "R1 on day three: daylight — the dusk layer of day two is off")
-	_check(_hotspot("pelageya") != null and _hotspot("pelageya").visible, "Pelageya at her pier with the boat")
+	# T9 (Director's decision 24.10, 22:26): on day three Pelageya waits by the boat at the turn, not at her pier.
+	_check(_hotspot("pelageya") == null or not _hotspot("pelageya").visible, "day three: Pelageya not at her pier")
+	_check(await _route(["Z3"]), "to the turn, to the boat (H36)")
+	_check(_hotspot("pelageya") != null and _hotspot("pelageya").visible, "Pelageya by the boat at the turn")
 	await _use("pelageya")
 	seen = await _finish()
-	_check(seen.any(func(x): return x.begins_with("pelageya:Лодка у поворота") and x.contains("Садись, канат довезёт")), "Pelageya: the boat goes both ways now, from the turn (H36: %s)" % str(seen))
-	_check(await _route(["Z3"]), "to the turn, to the boat (H36)")
+	_check(seen.any(func(x): return x.begins_with("pelageya:Садись, перевезу")), "Pelageya: the boat goes both ways now, from the turn (H36, T9: %s)" % str(seen))
 	_check(rm.current_room.get_node("Layers/boat_day").visible, "H36: the boat at the plate on day three")
 	_check(await _cross_by_rope("R3"), "the crossing by pulls → the far pier (G43)")
 	_check((_hotspot("mitya") == null or not _hotspot("mitya").visible) and (_hotspot("pelageya") == null or not _hotspot("pelageya").visible),
@@ -1286,7 +1288,7 @@ func _test_q02_q06_traces() -> void:
 	_check(a.any(func(x): return x.contains("Нина детям показывает, как место менялось")) and a.any(func(x): return x.contains("Рядом сохнет их полка")), "A/A: the lesson shows the map with the tracing; the oarlock and the drying shelf")
 	_check(not a.any(func(x): return x.contains("растолковывает гостю дорогу") or x.contains("рамку для семейного")), "A/A: no B lines")
 	var b := _beats_of("M26", ["q02_new_primary", "q06_table_at_agata", "v01_photo_table"])
-	_check(b.any(func(x): return x.contains("Ульяна по нему растолковывает гостю дорогу")) and b.any(func(x): return x.contains("Илья на втором верстаке доделывает резную рамку для семейного снимка")), "B/B: Ulyana's drawing by the door; the frame for the family photo")
+	_check(b.any(func(x): return x.contains("Ульяна по нему растолковывает гостю дорогу")) and b.any(func(x): return x.contains("Для семейного снимка Илья на новом верстаке резную рамку смастерил")), "B/B: Ulyana's drawing by the door; the frame for the family photo")
 	_check(b.any(func(x): return x.contains("На столике")), "B: the photo stays where it was put on day one (the frame is for it)")
 	_check(not b.any(func(x): return x.contains("как место менялось") or x.contains("уключину")), "B/B: no A lines")
 	_check(b[b.size() - 2] == "ulyana:А завтра тоже можно прийти?" and b[b.size() - 1].begins_with("agata:Можно, Уля"),
@@ -1305,7 +1307,7 @@ func _test_q02_q06_traces() -> void:
 	for ln in lines:
 		flat.append(ln)
 		flat.append_array(ln.get("then", []))
-	var want := {"EP_boat": "К зиме лодку Пелагея с Митей смолят", "EP_pavel": "Павел стоит у рейки", "EP_lesson": "Зимнее утро, класс", "EP_dinner": "Вечером ужинают"}
+	var want := {"EP_boat": "На зиму лодку Пелагея с Митей смолят", "EP_pavel": "Павел стоит у рейки", "EP_lesson": "Зимнее утро, класс", "EP_dinner": "Вечером ужинают"}
 	for st in sd.scene("M26").get("stage", []):
 		var f := String(st.get("frame", ""))
 		if want.has(f):

@@ -693,7 +693,7 @@ func _test_states() -> void:
 	rm.change_room("R1", "default")
 	await _frames(3)
 	await _finish()
-	_check(_npc_line_now(_hotspot("pelageya")).contains("у Павла ищи, на мельнице"), "day two morning: «Вода у Павла, на мельнице» (%s)" % _npc_line_now(_hotspot("pelageya")))
+	_check(_npc_line_now(_hotspot("pelageya")).contains("к Павлу на мельницу"), "day two morning: «Сперва к Павлу на мельницу» (T9, R14) (%s)" % _npc_line_now(_hotspot("pelageya")))
 	gs.set_flag("done_M14")
 	await _frames(2)
 	_check(_npc_line_now(_hotspot("pelageya")).contains("со стопора канат сниму") and _npc_line_now(_hotspot("pelageya")).contains("к опоре"), "the water going down: G28 — she will take the rope off her stopper and bring it to the pier by boat (%s)" % _npc_line_now(_hotspot("pelageya")))
@@ -744,7 +744,7 @@ func _test_states() -> void:
 	_check(not _hotspot("pelageya").visible, "after the crossing Pelageya is not at the near pier")
 	gs.set_flag("boat_shuttle_open")
 	await _frames(2)
-	_check(_hotspot("pelageya").visible, "once the boat goes both ways (blocks 3–5) she is at the pier again")
+	_check(not _hotspot("pelageya").visible, "once the boat goes both ways (blocks 3–5) she waits by the boat at the turn, not at the pier (T9, decision 24.10 22:26)")
 	_reached_end = true
 
 

@@ -483,7 +483,7 @@ func _test_save_load() -> void:
 	_check(box != null and box.visible, "the hinges' box in H2 is still there (N6) — empty")
 	sr.interact(box)
 	await _frames(2)
-	_check(String(sr.current_beat.get("text_key", "")) == "H2.hinges_box.empty" and _count_in_inventory("door_hinges") == 0, "the empty box: the set is never given twice (%s)" % str(sr.current_beat))
+	_check(String(sr.current_beat.get("text_key", "")).begins_with("H2.hinges_box.empty") and _count_in_inventory("door_hinges") == 0, "the empty box: the set is never given twice (%s)" % str(sr.current_beat))
 	while not sr.current_beat.is_empty():
 		sr.advance()
 		await _frames(1)

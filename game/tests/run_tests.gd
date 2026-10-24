@@ -1011,7 +1011,7 @@ func _test_walkthrough() -> void:
 	_check(porch != null and player.global_position.is_equal_approx(porch.global_position), "player teleported to the porch (was %s, now %s)" % [str(before_loop), str(player.global_position)])
 	_check(gs.has_flag("mitten_placed"), "the mitten stays in place after the loop")
 	# The board is optional now (Docs/SCENARIO_FINAL.md M08): the loop alone completes M08.
-	_check(gs.has_flag("done_M08") and seen.any(func(x): return x.contains("До класса добралась")), "M08 completes after the loop: %s" % str(seen))
+	_check(gs.has_flag("done_M08") and seen.any(func(x): return x.contains("Дверь только класс вернула")), "M08 completes after the loop (T9, R28): %s" % str(seen))
 	# The mitten can be picked up again — the same one, once.
 	await bot.use("mitten")
 	await bot.finish()

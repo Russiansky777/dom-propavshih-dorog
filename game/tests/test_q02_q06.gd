@@ -466,7 +466,7 @@ func _test_q06_a() -> void:
 	_check(not _layer_visible("bench_shed"), "the shed door is shut before the choice")
 	await _use("ilya_workshop")
 	var seen := await _finish()
-	_check(seen.any(func(x): return x.begins_with("mitya:Тут уж и вдвоём не поместиться")) and seen.any(func(x): return x.begins_with("ilya:А мы ещё и третьему место")) and seen.any(func(x): return x.begins_with("ilya:Уля давно")),
+	_check(seen.any(func(x): return x.begins_with("mitya:За одним верстаком и вдвоём тесно")) and seen.any(func(x): return x.begins_with("ilya:А мы ещё и третьему место")) and seen.any(func(x): return x.begins_with("ilya:Уля давно")),
 		"Mitya / Ilya / the goal — a bench for Ulya: %s" % str(seen))
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "workbench", "the second bench close-up")
 	var pr := _panel()
