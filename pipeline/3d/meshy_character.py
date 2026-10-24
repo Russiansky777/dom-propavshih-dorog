@@ -106,11 +106,78 @@ def pick_actions(wanted: list[str]) -> dict[str, dict]:
     return chosen
 
 
+def run_stages(req: dict) -> int:
+    """T5b (24.10): этапы по уже готовой модели, без новой генерации. Поле "stages" запроса — список из
+    retexture | text_motion | rig | motion | local_glb, выполняются по порядку; id задач — в состоянии (повтор не тратит кредиты).
+      retexture:   {"input_task_id", ...тело POST /retexture}            → state/<name>_retexture.json (ответ задачи без ключа)
+      text_motion: {"prompt","mode","duration"}                           → state/<name>_text_motion.json
+      rig:         {"model_url" (https) , "height_meters"}                → out/<name>/rigged.glb, state/<name>_rig.json
+      motion:      анимация по motion_task_id задачи text_motion на риг   → out/<name>/motion.glb, state/<name>_motion.json
+      local_glb:   {"url"} — готовый GLB (после правок в Blender)         → out/<name>/animations.glb
+    """
+    name = req["character"]
+    out = OUT / name
+    out.mkdir(parents=True, exist_ok=True)
+    st = load_state(name)
+    log = lambda m: print(m, flush=True)
+    stages = req["stages"]
+    meshy = any(s != "local_glb" for s in stages)
+    if meshy:
+        log(f"[{name}] баланс: {mc.balance()}")
+
+    def dump(stage: str, task: dict) -> None:
+        (STATE / f"{name}_{stage}.json").write_text(json.dumps(task, ensure_ascii=False, indent=2), encoding="utf-8")
+        st[f"{stage}_credits"] = task.get("consumed_credits")
+        save_state(name, st)
+        log(f"[{name}] {stage}: задача {st[stage + '_task']}, кредитов: {task.get('consumed_credits')}")
+
+    for stage in stages:
+        cfg = req.get(stage) or {}
+        if stage == "retexture":
+            if "retexture_task" not in st:
+                st["retexture_task"] = mc.create("/retexture", cfg)
+                st["retexture_body"] = cfg
+                save_state(name, st)
+            dump(stage, mc.wait("/retexture", st["retexture_task"], log=log))
+        elif stage == "text_motion":
+            if "text_motion_task" not in st:
+                st["text_motion_task"] = mc.create("/text-to-motion", cfg)
+                st["text_motion_body"] = cfg
+                save_state(name, st)
+            t = mc.wait("/text-to-motion", st["text_motion_task"], log=log)
+            dump(stage, t)
+            mc.download(t["result"]["motion_url"], out / f"text_motion.{t['result'].get('motion_format', 'fbx')}")
+        elif stage == "rig":
+            if "rig_task" not in st:
+                st["rig_task"] = mc.create("/rigging", {"model_url": cfg["model_url"], "height_meters": cfg.get("height_meters", req.get("height_m", 1.65))})
+                save_state(name, st)
+            t = mc.wait("/rigging", st["rig_task"], log=log)
+            dump(stage, t)
+            mc.download(t["result"]["rigged_character_glb_url"], out / "rigged.glb")
+        elif stage == "motion":
+            if "motion_task" not in st:
+                st["motion_task"] = mc.create("/animations", {"rig_task_id": st["rig_task"], "motion_task_id": st["text_motion_task"]})
+                save_state(name, st)
+            t = mc.wait("/animations", st["motion_task"], log=log)
+            dump(stage, t)
+            mc.download(t["result"]["animation_glb_url"], out / "motion.glb")
+        elif stage == "local_glb":
+            mc.download(cfg["url"], out / "animations.glb")
+            log(f"[{name}] animations.glb из {cfg['url'].split('?')[0]}")
+        else:
+            raise SystemExit(f"неизвестный этап {stage}")
+    if meshy:
+        log(f"[{name}] баланс после: {mc.balance()}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request", required=True)
     args = ap.parse_args()
     req = json.loads(Path(args.request).read_text(encoding="utf-8"))
+    if req.get("stages"):
+        return run_stages(req)
     name = req["character"]
     out = OUT / name
     out.mkdir(parents=True, exist_ok=True)
