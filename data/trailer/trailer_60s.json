@@ -543,7 +543,7 @@
   {
    "id": "letter",
    "kind": "room",
-   "duration": 5.0,
+   "duration": 6.6,
    "transition_in": {
     "kind": "dissolve",
     "duration": 0.8
@@ -1300,5 +1300,90 @@
    "_note": "TR2: золотой титр с бликом; под ним — «Бесплатная игра · Steam» (поменять на английский — только данные)."
   }
  ],
- "audio": {}
+ "audio": {
+  "music": [
+   {
+    "file": "res://assets/music/01_home.ogg",
+    "at": 0.0,
+    "start_s": 0.0,
+    "fade_in_s": 1.5
+   },
+   {
+    "file": "res://assets/music/02_roads.ogg",
+    "at": 39.0,
+    "start_s": 30.0,
+    "fade_in_s": 3.0
+   },
+   {
+    "file": "res://assets/music/06_finale.ogg",
+    "at": 66.0,
+    "start_s": 0.0,
+    "fade_in_s": 3.0
+   }
+  ],
+  "music_curve": [
+   [
+    0,
+    -9
+   ],
+   [
+    20,
+    -7
+   ],
+   [
+    40,
+    -5
+   ],
+   [
+    56,
+    -4
+   ],
+   [
+    68,
+    -4
+   ],
+   [
+    75,
+    -6
+   ]
+  ],
+  "music_fade_out_s": 2.5,
+  "voice": [
+   {
+    "shot": "olk_street",
+    "at_s": 0.1,
+    "file": "res://assets/voice/ru/M21b_4.ogg"
+   },
+   {
+    "shot": "letter",
+    "at_s": 0.9,
+    "file": "res://assets/voice/ru/character_lines/O3.nina_letters.look.ogg"
+   }
+  ],
+  "duck": {
+   "db": -8.0,
+   "attack_s": 0.25,
+   "release_s": 0.7
+  },
+  "game_audio_gain_db": 0.0,
+  "ambience": [
+   {
+    "id": "wind_water",
+    "shot": "house",
+    "synth": "wind_water",
+    "gain_db": -24.0,
+    "fade_s": [
+     0.8,
+     0.8
+    ]
+   }
+  ],
+  "impact": {
+   "at_shot": "title",
+   "offset_s": 0.25,
+   "gain_db": -10.0
+  },
+  "loudness_lufs": -14.0,
+  "true_peak_db": -1.5
+ }
 }
