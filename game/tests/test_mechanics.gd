@@ -554,6 +554,25 @@ func _test_fast_mirror() -> void:
 	var lo: float = pend.min()
 	var hi: float = pend.max()
 	_check(hi - lo > 10.0, "the pendulum swings (%.1f…%.1f°)" % [lo, hi])
+	# H32 (Director 24.10): the second hand on the ходики (in the glass and up close), a turn per Nina's minute.
+	_check(p.loupe_sec != null and p.hand_sec != null and p.loupe_sec.get_parent() == p.loupe_art, "the ходики have a second hand")
+	_check(absf(p.loupe_sec.rotation_degrees - p.fclock.second_hand_deg()) < 0.01 and is_equal_approx(p.loupe_sec.rotation_degrees, p.hand_sec.rotation_degrees), "the second hand goes with Nina's clock")
+	var c2 := FastClock.new(20.0, 0.0)
+	c2.advance(1.5)
+	_check(is_equal_approx(c2.second_hand_deg(), 180.0), "20×: half a turn of the second hand in 1.5 real s (%.1f°)" % c2.second_hand_deg())
+	# H32: both clocks in round windows with a soft edge (an ellipse mask), one style; Agata's watch is the painted
+	# close-up (no disc of another colour).
+	for wnd in [p.loupe, p.slot]:
+		_check(wnd is SoftWindow and wnd.content.clip_children != CanvasItem.CLIP_CHILDREN_DISABLED and wnd.feather > 0.0, "%s: a round window with a soft edge" % wnd.name)
+		_check(not wnd.has_point_inside(Vector2(4, 4)) and wnd.has_point_inside(wnd.size * 0.5), "%s: the corner is outside, not a rectangle" % wnd.name)
+	_check(p.loupe.feather == p.slot.feather and p.loupe.rim_color == p.slot.rim_color, "one style for both windows")
+	_check(not p.watch.face and p.watch.texture != null and p.watch.texture.resource_path.ends_with("closeup_pocket_watch.png"), "Agata's watch: the painted dial, hands over it, no enamel disc")
+	# H32: Nina's poses — a third slower inside, each half as long.
+	_check(absf(float(p.spec.get("motion_speedup", 0.0)) - 2.5 * 2.0 / 3.0) < 0.01, "motion ×2/3 (%s)" % str(p.spec.get("motion_speedup")))
+	var tot := 0.0
+	for po in p.spec.get("poses", []):
+		tot += float(po.get("minutes", 0.0))
+	_check(is_equal_approx(tot, 30.0), "the poses' cycle halved: 30 of Nina's minutes (%.1f)" % tot)
 	var c := FastClock.new(20.0, 0.0)
 	c.advance(180.0)
 	_check(is_equal_approx(c.nina_elapsed_minutes(), 60.0) and is_equal_approx(fmod(c.minute_hand_deg(), 360.0), 0.0), "180 real seconds = one turn of the minute hand")

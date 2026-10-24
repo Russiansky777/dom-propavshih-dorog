@@ -42,6 +42,13 @@ func configure(cfg: Dictionary) -> void:
 	if cfg.has("r"):
 		dial_r = float(cfg["r"])
 	face = bool(cfg.get("face", face))
+	# Another picture of the watch (e.g. the close-up of партия 8, its dial painted without hands — one style
+	# with the hands drawn over it, no disc of another colour).
+	var art := String(cfg.get("art", ""))
+	if art != "" and ResourceLoader.exists(art):
+		texture = load(art)
+	if cfg.has("zoom"):
+		zoom = float(cfg["zoom"])
 
 
 func _process(delta: float) -> void:
