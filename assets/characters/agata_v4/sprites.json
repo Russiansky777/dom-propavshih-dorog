@@ -1,6 +1,6 @@
 {
   "name": "agata_v4",
-  "frame_w": 736,
+  "frame_w": 648,
   "frame_h": 864,
   "pivot": {
     "x": 0.5,
@@ -48,7 +48,7 @@
       "clip": "Collect_Object_pick",
       "clip_seconds": 1.9583,
       "natural_fps": 20.43,
-      "floor_shift_m": 0.0009
+      "floor_shift_m": -0.0061
     },
     "reach": {
       "sheet": "reach.png",
@@ -70,10 +70,10 @@
     }
   },
   "fit": {
-    "half_width_m": 0.755,
+    "half_width_m": 0.639,
     "top_m": 0.846,
     "frame_top_m": 0.929,
-    "frame_w": 736
+    "frame_w": 648
   },
   "matte_materials": true
 }
