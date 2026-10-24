@@ -213,7 +213,18 @@ async function main() {
     const s = await state();
     const h = s.hotspots[id];
     if (!h || !h.visible) { check(false, `${label}: hotspot ${id} visible in ${s.room}`); return { lines: [], cards }; }
-    await click(`${label}: ${id}`, h);
+    // A click may be lost while the page is still settling: click again until Agata walks or something plays.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await click(`${label}: ${id}`, h);
+      const t0c = Date.now();
+      let moved = false;
+      while (Date.now() - t0c < 8000) {
+        const t = await state();
+        if (beatKey(t) || (t.player && (t.player.walking || t.player.acting)) || t.busy) { moved = true; break; }
+        await sleep(150);
+      }
+      if (moved) break;
+    }
     await waitIdle(label);
     const lines = [];
     const t0 = Date.now();
@@ -240,7 +251,6 @@ async function main() {
     if (RUNS.includes("D1")) {
       await page.goto(`http://127.0.0.1:${PORT}/index.html?start=bedtime`);
       let s = await waitFor("D1: game up in the gallery", (t) => t.room === "H3", 240000);
-      await page.mouse.click(960, 300);   // the first click unlocks the sound; the line waits for it in the browser
       s = await waitFor("D1: Agata's line in the gallery", (t) => t.beat && /пора спать/i.test(t.beat.text || ""), 60000);
       check(s.beat && /у печи/.test(s.beat.text || ""), `D1: «пора спать — лягу у печи» (${s.beat && s.beat.text})`);
       await playThrough("D1: the gallery", { quietMs: 2500 });
@@ -270,7 +280,6 @@ async function main() {
     if (RUNS.includes("D2")) {
       await page.goto(`http://127.0.0.1:${PORT}/index.html?start=bedtime2`);
       let s = await waitFor("D2: game up in mum's room", (t) => t.room === "O3", 240000);
-      await page.mouse.click(1500, 300);
       await playThrough("D2: start", { quietMs: 2000 });
       s = await state();
       check(s.flags.done_M20 && !s.flags.morning_day3, "D2: after the talk with Ilya it is still night");
@@ -284,7 +293,6 @@ async function main() {
     if (RUNS.includes("D3")) {
       await page.goto(`http://127.0.0.1:${PORT}/index.html?start=bedtime3`);
       let s = await waitFor("D3: game up in mum's room", (t) => t.room === "O3", 240000);
-      await page.mouse.click(1500, 300);
       await playThrough("D3: start", { quietMs: 2000 });
       const r = await sleepAt("D3", "bed", (t) => t.flags.done_M24);
       check(r.lines.length > 0 && /пора спать/i.test(r.lines[0]), `D3: «пора спать» (${r.lines[0]})`);
