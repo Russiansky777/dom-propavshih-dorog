@@ -32,6 +32,9 @@ signal stage_fade(alpha: float, seconds: float)
 signal stage_sound_requested(sound_id: String)
 ## A sound made by the engine (SynthSfx: the mill bell rung in the room before the office mirror is up).
 signal synth_sound_requested(sound_name: String)
+## T6 (Director 24.10): the change of day — «День второй» in the title screen's gold over black (DayCard). `own_black`:
+## the card brings its own black (a new game); else it plays over a staging's black.
+signal day_card_requested(text_key: String, own_black: bool)
 ## A scene's `checkpoint` save was written (slot, title) — «День второй» after the night by the stove.
 signal checkpoint_saved(slot: String, title: String)
 ## A hotspot with `mechanic: {type, requires, events, ...}` (rooms data) opens an interactive close-up
@@ -498,7 +501,11 @@ func _run_stage(spec: Dictionary) -> void:
 	if serial != _stage_serial:
 		return
 	_stage_apply(spec)
-	await tree.create_timer(float(spec.get("hold_s", 1.0)), false).timeout
+	# T6: a change of day (`day_card`: a text key) — the words come up on the black, which holds until they are gone.
+	var hold := float(spec.get("hold_s", 1.0))
+	if spec.has("day_card") and play_day_card(String(spec["day_card"])):
+		hold = maxf(hold, DayCard.seconds() + 0.3)
+	await tree.create_timer(hold, false).timeout
 	if serial != _stage_serial:
 		return
 	stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
@@ -616,6 +623,22 @@ func _stage_apply(spec: Dictionary) -> void:
 	# shows the same; the scene's own grants still come at its end.
 	for f in spec.get("sets", []):
 		GameState.set_flag(String(f), true)
+
+
+## T6: shows the change-of-day card `key` once: the flag day_card_<key> is part of the save, so neither a load nor
+## a scene restarted after an interruption shows it again. false — already shown.
+func play_day_card(key: String, own_black: bool = false) -> bool:
+	var flag := "day_card_" + key.trim_prefix("@").replace(".", "_")
+	if key == "" or GameState.has_flag(flag):
+		return false
+	GameState.set_flag(flag, true)
+	day_card_requested.emit(key, own_black)
+	return true
+
+
+## A new game opens with «День первый» (data/story/menu.json → day_card.first).
+func play_first_day_card() -> void:
+	play_day_card(String(MenuConfig.section("day_card").get("first", "")), true)
 
 
 ## Puts a frame over the world (FrameView builds it) or clears it ("").
@@ -1026,12 +1049,15 @@ func sleep_early_beat(sl: Dictionary) -> Dictionary:
 	return _text_beat("@ui.nothing_here")
 
 
-## H17: a time state's `bedtime` {text?, goal?} (data/story/time/_index.json) — the day's deeds are done: Agata
+## H17: a time state's `bedtime` {if?, text?, goal?} (data/story/time/_index.json) — the day's deeds are done: Agata
 ## says it is late (once: flag bedtime_<state> in the save) and the journal points to the bed.
 func _bedtime_check() -> void:
 	var st := TimeOfDay.current_state()
 	var bt: Dictionary = TimeOfDay.state_spec(st).get("bedtime", {})
 	if bt.is_empty() or GameState.has_flag("bedtime_" + st):
+		return
+	# `if`: flags the day's last deed sets inside the state (day two: the talk with Ilya, M20, ends the night).
+	if not requires_met({"flags": bt.get("if", [])}):
 		return
 	GameState.set_flag("bedtime_" + st, true)
 	if bt.has("goal"):

@@ -141,7 +141,9 @@ func _build_end_panel() -> void:
 	again.size = Vector2(300, 56)
 	again.position = Vector2(1290, 860)
 	again.focus_mode = Control.FOCUS_NONE
-	again.pressed.connect(func(): RoomManager.new_game())
+	again.pressed.connect(func():
+		RoomManager.new_game()
+		StoryRunner.play_first_day_card())
 	end_panel.add_child(again)
 
 

@@ -54,8 +54,8 @@ func _run() -> void:
 	root.add_child(main_node)
 	await _frames(3)
 	rm.autosave_enabled = false
-	await _test("H17: the bed — «рано ложиться» with what is left before the day's deeds, no night starts", _test_bed_early)
-	await _test("H17: the bed — «пора спать», the night of day one (N01) and the evening of day three (M24); time only goes on", _test_bed_sleep)
+	await _test("H17: the mill passage waits for the morning after the sleep", _test_bed_early)
+	await _test("H17: the time only goes on along the whole story", _test_bed_sleep)
 	await _test("H17: the windows of every room with a time file match the time of day", _test_windows)
 	await _test("G44: the clapper in the attic chest; the workshop crate without a label", _test_clapper_chest)
 	await _test("H12/H13: the scarf over the shelf on the bench; one place; help Tikhon or not", _test_shelf)
@@ -172,27 +172,8 @@ func _click_bed() -> Dictionary:
 # --- H17 ---------------------------------------------------------------------------------
 
 func _test_bed_early() -> void:
-	var cases := [
-		["M05", [], "H4.bed.early_d1_door"],
-		["M07", [], "H4.bed.early_d1_class"],
-		["M09", [], "H4.bed.early_d2"],
-		["M16", [], "H4.bed.early_d2"],
-		["M23a", ["done_M23b"], "H4.bed.early_d3"],
-	]
-	for c in cases:
-		_flags_before(String(c[0]), c[1])
-		await _enter("H4", "from_H1")
-		var st_before: String = TOD.current_state()
-		var b: Dictionary = await _click_bed()
-		_check(String(b.get("text_key", "")) == String(c[2]) and String(b.get("speaker", "")) == "agata",
-			"before %s: Agata says «рано» (%s), got %s" % [c[0], c[2], str(b)])
-		var seen := await _drain()
-		_check(sr.active_scene == "" and not (gs.has_flag("done_N01") and String(c[0]) in ["M05", "M07"]) and not gs.has_flag("done_M24") and TOD.current_state() == st_before and seen.size() == 1,
-			"before %s: no night, the time stays %s (%s)" % [c[0], st_before, str(seen)])
-		if String(c[0]) == "M23a":
-			var t := String(b.get("text", ""))
-			_check(t.contains("письма Тамары") and t.contains("мама в доме тёти") and t.contains("сказать Тихону") and not t.contains("Павел"),
-				"day three: what is left is named, the done deed is not: %s" % t)
+	# T6 (Director 24.10): the sleeping places moved — the lezhanka by the stove (day one) and the bed at Nina's
+	# (days two and three); «рано ложиться» there is checked in test_batch_h_t6.gd.
 	# Day one: Pavel's «приходи утром» — the passage of the mill opens with the morning after the bed (no own clock).
 	var locs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/locations.json"))
 	var found := false
@@ -203,51 +184,7 @@ func _test_bed_early() -> void:
 
 
 func _test_bed_sleep() -> void:
-	# Day one: back from the school.
-	_flags_before("N01")
-	rm.change_room("H3", "from_O1")
-	await _frames(3)
-	_check(String(sr.current_beat.get("text_key", "")) == "H3.night.to_bed", "the gallery: Agata says where the bed is (%s)" % str(sr.current_beat))
-	await _drain()
-	_check(not gs.has_flag("started_N01"), "the gallery: the night does not start by itself")
-	await _enter("H4", "from_H1")
-	var st0: String = TOD.current_state()
-	_check(st0 == "d1_night", "day one: night before the bed (%s)" % st0)
-	var b: Dictionary = await _click_bed()
-	_check(String(b.get("text_key", "")) == "H4.bed.late_d1", "«пора спать» first: %s" % str(b))
-	var seen := await _drain()
-	_check(gs.has_flag("done_N01"), "N01 done after the bed: %s" % str(seen))
-	var st1: String = TOD.current_state()
-	_check(_state_index(st1) > _state_index(st0) and TOD.day_of(st1) == TOD.day_of(st0) + 1 and TOD.phase_of(st1) == "morning",
-		"after the sleep: the next day's morning (%s → %s)" % [st0, st1])
-	_check(rm.current_room.room_id == "H1", "the night is by the stove (mother's letter M19), room %s" % rm.current_room.room_id)
-	await _enter("H4", "from_H1")
-	b = await _click_bed()
-	_check(String(b.get("text_key", "")) == "H4.bed.early_d2" and TOD.current_state() == st1, "the bed again in the morning: «рано», time stays")
-	await _drain()
-	# Day three: the four deeds done.
-	_flags_before("M24")
-	await _enter("H4", "from_H1")
-	var st2: String = TOD.current_state()
-	_check(st2 == "d3_evening", "day three: evening once the four deeds are done (%s)" % st2)
-	b = await _click_bed()
-	_check(String(b.get("text_key", "")) == "H4.bed.late_d3", "«пора спать» on day three: %s" % str(b))
-	seen = await _drain()
-	var st3: String = TOD.current_state()
-	_check(gs.has_flag("done_M24") and gs.has_flag("morning_day4") and _state_index(st3) > _state_index(st2) and TOD.day_of(st3) == 4,
-		"M24 → day four (%s → %s): %s" % [st2, st3, str(seen)])
-	_check(rm.current_room.room_id == "H4", "morning of day four in the attic")
-	b = await _click_bed()
-	_check(String(b.get("text_key", "")) == "H4.bed.after_d4", "the bed on day four: «выспалась, ждут у поворота»: %s" % str(b))
-	await _drain()
-	# The prompt once the deeds are done (time state `bedtime`): on day three, after the last deed.
-	_flags_before("M23d", [])
-	gs.set_flag("done_M23d", true)
-	sr._complete_scene("M23d")
-	await _frames(1)
-	_check(String(sr.current_beat.get("text_key", "")) == "H4.bed.bedtime_d3" and gs.journal_goal == sd.text("@ui.bedtime_d3_goal"),
-		"the last deed of day three: «пора домой — спать», the journal points to the bed (%s / %s)" % [str(sr.current_beat), gs.journal_goal])
-	await _drain()
+	# T6: the sleeps themselves (N01 at the lezhanka, N02 and M24 at Nina's) — test_batch_h_t6.gd.
 	# Time never goes back along the whole story: every main scene's grants keep the state index non-decreasing.
 	gs.reset()
 	var last := 0

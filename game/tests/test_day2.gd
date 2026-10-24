@@ -752,10 +752,10 @@ func _test_walkthrough() -> void:
 	rm.change_room("H3", "default")
 	await _frames(3)
 	var seen := await _finish()
-	# H17: the day ends at the bed in the attic.
-	rm.change_room("H4", "from_H1")
+	# H17/T6: the day ends with sleep on the lezhanka by the stove.
+	rm.change_room("H1", "from_H3")
 	await _frames(3)
-	await _use("bed")
+	await _use("lezhanka")
 	var g0 := 0
 	while not gs.has_flag("done_N01") and g0 < 600:
 		seen.append_array(await _finish())

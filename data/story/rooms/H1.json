@@ -472,6 +472,13 @@
       "look": "@H1.shelf.look"
     },
     {
+      "id": "lezhanka", "kind": "object", "action_anim": "reach", "label": "@H1.lezhanka.label", "rect": [566, 330, 160, 215], "stand": [640, 805], "color": "#8a5a3a", "draw": false,
+      "_rect_note": "T6: лежанка — тёплая ступень печи над лавкой (фон: x 566–720, y 330–550 экрана); лавка ниже — платок и снятая полка (их хотспоты), фотография на уступе (686–722 × 462–504) выше по pick_priority, тело печи левее x 566",
+      "sleep": {"scenes": ["N01"], "late": {"N01": "@H1.lezhanka.late_d1"},
+        "early": [{"unless": ["done_M05"], "text": "@H4.bed.early_d1_door"}, {"unless": ["done_N01"], "text": "@H4.bed.early_d1_class"}, {"unless": ["done_N02"], "text": "@H4.bed.early_d2"}, {"text": "@H1.lezhanka.after_d1"}]},
+      "_note": "T6 (решение Директора 24.10 «Сон и смена дня»): день первый кончается сном на лежанке у Дуниной печи — там Нина видит Агату в зеркальце (M19, канон). Дела дня не сделаны — «рано ложиться» (sleep.early); сделаны — «пора спать» и ночь N01 (затемнение, «День второй», утро). Дни 2–3 спят у Нины (O3.bed)."
+    },
+    {
       "id": "shelf_done",
       "kind": "object",
       "label": "@H1.shelf.label_done",
@@ -538,6 +545,7 @@
     }
   ],
   "scenes": {
+    "N01": {"trigger": "sleep:lezhanka", "_note": "T6: ночь первого дня — лежанка у печи (раньше — кровать на чердаке, H17)"},
     "Q03": {"complete_when": [{"any": ["q03_hidden_seam", "q03_patch_drawing"]}]},
     "Q08": {"complete_when": [{"any": ["q08_home_evening", "q08_open_table"]}]},
     "M23c": {"trigger": "enter"},

@@ -87,7 +87,7 @@
     {
       "id": "day3",
       "title": "Блок 3: утро третьего дня в горнице",
-      "done_through": "M20",
+      "done_through": "N02",
       "room": "O3",
       "spawn": "default",
       "flags": [
@@ -218,7 +218,8 @@
         "beam_dunya"
       ]
     },
-    {"id": "bedtime", "title": "Партия H (T2): день первый после школы — ночь, кровать на чердаке (H17)", "done_through": "M08", "room": "H3", "spawn": "from_O1", "flags": ["house_unlocked", "house_open", "h1_shutter_open", "stove_lit", "h1_scarf_removed", "met_tikhon"], "_note": "Приёмка H, T2 (Docs/ACCEPTANCE_H.md): ?start=bedtime — Агата говорит, что пора спать; жилая комната → чердак → кровать: ночь у печи, утро «День второй»"},
-    {"id": "bedtime3", "title": "Партия H (T2): день третий, все четыре дела сделаны — вечер, кровать на чердаке (H17)", "done_through": "M23d", "room": "H1", "spawn": "default", "flags": ["house_unlocked", "house_open", "h1_shutter_open", "stove_lit", "h1_scarf_removed", "met_tikhon"], "_note": "?start=bedtime3 — с чердака по кровати: «пора спать», утро четвёртого дня"}
+    {"id": "bedtime", "title": "Партия H (T2/T6): день первый после школы — ночь, лежанка у печи", "done_through": "M08", "room": "H3", "spawn": "from_O1", "flags": ["house_unlocked", "house_open", "h1_shutter_open", "stove_lit", "h1_scarf_removed", "met_tikhon"], "_note": "Приёмка H, T6 (Docs/ACCEPTANCE_H.md): ?start=bedtime — Агата говорит, что пора спать у печи; жилая комната → лежанка у печи: ночь, «День второй», утро (кровать на чердаке — Дунина: «Дунина… Лягу у печи — там теплее»)"},
+    {"id": "bedtime2", "title": "Партия H (T6): день второй — после разговора с братом, ночь в горнице", "done_through": "M20", "room": "O3", "spawn": "default", "flags": ["house_unlocked", "house_open", "h1_shutter_open", "stove_lit", "h1_scarf_removed", "met_tikhon", "board_mama", "skoba_on_plate", "has_brace_plate"], "_note": "?start=bedtime2 — кровать в горнице: «пора спать», ночь, «День третий», утро"},
+    {"id": "bedtime3", "title": "Партия H (T6): день третий, все четыре дела сделаны — вечер, кровать у мамы в горнице", "done_through": "M23d", "room": "O3", "spawn": "default", "flags": ["house_unlocked", "house_open", "h1_shutter_open", "stove_lit", "h1_scarf_removed", "met_tikhon"], "_note": "?start=bedtime3 — кровать в горнице: «пора спать», «День четвёртый», утро"}
   ]
 }

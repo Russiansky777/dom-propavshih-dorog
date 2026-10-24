@@ -279,6 +279,7 @@ func activate(id: String) -> void:
 		"new_game":
 			close()
 			RoomManager.new_game()
+			StoryRunner.play_first_day_card()
 		"load":
 			if game_ui != null:
 				game_ui.call("open_menu_panel", "load")

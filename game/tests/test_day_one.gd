@@ -308,10 +308,11 @@ func _night_flags() -> Array:
 
 ## H17: up to the attic and a click on the bed (the same path as the mouse: interact on the hotspot).
 func _to_bed() -> void:
-	rm.change_room("H4", "from_H1")
+	# T6 (Director 24.10): day one ends on the lezhanka by Dunya's stove (the attic bed is Dunya's).
+	rm.change_room("H1", "from_H3")
 	await _frames(2)
-	await _drain()   # the first visit of the attic (V02) says its line first
-	sr.interact(_hotspot("bed"))
+	await _drain()
+	sr.interact(_hotspot("lezhanka"))
 	await _frames(1)
 
 
@@ -327,7 +328,7 @@ func _test_night() -> void:
 	_check(not gs.has_flag("started_N01") and sr.current_beat.get("text_key", "") == "H3.night.to_bed", "H17: the gallery — «пора спать, кровать на чердаке», no night yet: %s" % str(sr.current_beat))
 	await _drain()
 	await _to_bed()
-	_check(sr.current_beat.get("text_key", "") == "H4.bed.late_d1", "H17: the bed — «пора спать» first: %s" % str(sr.current_beat))
+	_check(sr.current_beat.get("text_key", "") == "H1.lezhanka.late_d1", "H17/T6: the lezhanka — «пора спать» first: %s" % str(sr.current_beat))
 	sr.advance()
 	await _frames(2)
 	_check(gs.has_flag("started_N01") and sr.is_staging(), "the bed starts the night with a staging")

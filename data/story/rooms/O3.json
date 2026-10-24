@@ -122,6 +122,13 @@
     {
       "id": "icon", "kind": "object", "label": "@O3.icon.label", "rect": [1820, 90, 90, 200], "stand": [1850, 900], "draw": false,
       "look": "@O3.icon.look"
+    },
+    {
+      "id": "bed", "kind": "object", "action_anim": "reach", "label": "@O3.bed.label", "rect": [0, 400, 236, 340], "stand": [1062, 900], "agata_face": [300, 640], "draw": false,
+      "_rect_note": "T6: кровать слева в картине (O3_bg: «кровать слева» — экран x 0–340, y 390–770); правее x 236 — стол с зеркальцем и списком деревни. Пол Агаты — правая половина (G40), стоянка у левого края пола, Агата обращена к кровати",
+      "sleep": {"scenes": ["N02", "M24"], "late": {"N02": "@O3.bed.late_d2", "M24": "@H4.bed.late_d3"},
+        "early": [{"unless": ["done_M20"], "text": "@O3.bed.early_d2"}, {"unless": ["done_M22"], "text": "@H4.bed.early_d2"}, {"unless": ["done_M24"], "text": "@H4.bed.early_d3", "left": [{"unless": "done_M23a", "text": "@H4.bed.left_M23a"}, {"unless": "done_M23b", "text": "@H4.bed.left_M23b"}, {"unless": "done_M23c", "text": "@H4.bed.left_M23c"}, {"unless": "done_M23d", "text": "@H4.bed.left_M23d"}]}, {"unless": ["done_M25"], "text": "@H4.bed.after_d4"}, {"text": "@H4.bed.after_all"}]},
+      "_note": "T6 (решение Директора 24.10 «Сон и смена дня»): дни второй и третий кончаются сном в маминой горнице. День второй — после разговора с братом (M20 → N02: «День третий»), день третий — когда сделаны четыре дела (M24: «День четвёртый»). Дела не сделаны — «рано ложиться» со списком несделанного."
     }
   ],
   "exits": [
@@ -130,6 +137,8 @@
   "scenes": {
     "M19c": {"complete_when": [{"all": ["o3_clock_compared"]}]},
     "M20": {"trigger": "enter"},
+    "N02": {"trigger": "sleep:bed", "_note": "T6: ночь второго дня — кровать в горнице"},
+    "M24": {"trigger": "sleep:bed", "_note": "T6: вечер третьего дня — кровать в горнице (раньше — чердак тётиного дома, H17)"},
     "M21": {"trigger": "talk:nina"},
     "M21b": {"complete_when": [{"all": ["o3_read_notebooks", "o3_read_village_list"]}]}
   },

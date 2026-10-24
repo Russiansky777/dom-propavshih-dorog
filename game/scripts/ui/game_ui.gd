@@ -73,6 +73,7 @@ var menu_empty_label: Label      # «Загрузить» with no save at all
 var settings_rows: Array = []    # the settings controls (hidden in "save" / "load")
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
 var fade: ColorRect
+var day_card: DayCard          # T6: «День второй» … between the days (StoryRunner.day_card_requested)
 var stage_overlay: ColorRect     # scene staging (StoryRunner.stage_fade): black between shots, dusk under lines
 var _stage_tween: Tween = null
 var hover_label: Label
@@ -221,6 +222,10 @@ func _build() -> void:
 	stage_overlay.size = Vector2(1920, 1080)
 	stage_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(stage_overlay)
+	# T6: the change of day over the staging's black (its own layer).
+	day_card = DayCard.new()
+	day_card.name = "DayCard"
+	add_child(day_card)
 
 	# Modal catcher (dialogue / panels)
 	modal = Control.new()

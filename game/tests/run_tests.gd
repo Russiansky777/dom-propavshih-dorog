@@ -1036,8 +1036,8 @@ func _test_walkthrough() -> void:
 	_check(not gs.has_flag("started_N01") and gs.has_flag("h3_night_to_bed") and seen.any(func(x): return String(x).contains("пора спать")),
 		"H17: back home the night does not start by itself — Agata says the bed is in the attic: %s" % str(seen))
 	_check(gs.journal_goal == sd.text("@ui.bedtime_d1_goal"), "H17: the journal points to the bed: %s" % gs.journal_goal)
-	_check(await bot.go("H1") and await bot.go("H4"), "H3→H1→H4 (the attic)")
-	await bot.use("bed")
+	_check(await bot.go("H1"), "H3→H1 (T6: the lezhanka by the stove)")
+	await bot.use("lezhanka")
 	seen = await bot.finish()
 	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "N01 (night by the stove) done after the bed: %s" % str(seen))
 	_check(seen.size() > 0 and String(seen[0]).begins_with("agata:Поздно уже — пора спать"), "H17: «пора спать» at the bed first: %s" % str(seen))
