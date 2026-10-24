@@ -411,8 +411,7 @@ func _test_pier_attempt() -> void:
 	sounds.clear()
 	var ui := _ui()
 	# C27 (ИИ-чтение 23.10): before talking to Pelageya Agata does not know the boat is returned.
-	var r2_0: Node = rm.current_room.get_node_or_null("Exits/to_R2")
-	sr.use_exit(r2_0)
+	sr.interact(_hotspot("boat"))   # H36 (T8): the boat at the pier is looked at, no exit into it
 	await process_frame
 	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed_first", "C27: before M02 — «Сначала поговорю с лодочницей» (%s)" % str(sr.current_beat))
 	await _drain()
@@ -438,9 +437,8 @@ func _test_pier_attempt() -> void:
 	_check(seen.any(func(x): return x.contains("Больше от моста ничего не осталось") and x.contains("Дальний конец всё там") and x.contains("Этот на плите опоры был закреплён")), "the rope is what is left of the bridge: %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Тянешь, будто за корягу") and x.contains("Под водой к ней не подступиться")), "the plate under water, cracked: %s" % str(seen))
 	_check(sr.stage_dim == 0.0 and (ui == null or float(ui.call("stage_probe")["alpha"]) < 0.02), "no dusk left at the pier")
-	var r2: Node = rm.current_room.get_node_or_null("Exits/to_R2")
-	_check(r2 != null and not r2.is_open(), "the crossing stays closed")
-	sr.use_exit(r2)
+	_check(rm.current_room.get_node_or_null("Exits/to_R2") == null and not gs.has_flag("ferry_verified"), "the crossing stays closed (H36: no exit into the boat at the pier)")
+	sr.interact(_hotspot("boat"))
 	await process_frame
 	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed" and String(sr.current_beat.get("text", "")).contains("нет дороги") and String(sr.current_beat.get("text", "")).contains("кольцо плиты"),
 		"G17: closed — the boat comes back because there is no road until the rope sits on the plate ring (%s)" % sr.current_beat.get("text", ""))

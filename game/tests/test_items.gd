@@ -198,7 +198,8 @@ func _choose(h: Node, option: String) -> String:
 # --- Tests -------------------------------------------------------------------------------
 
 func _test_key() -> void:
-	var room: Node = await _enter("Z2", ["done_M01", "met_tamara", "knows_pier_trace"], ["key_house", "pocket_watch"])
+	# T8 (Director 24.10): the house after the talk with Pelageya (M02) — test_batch_h_t8 checks the door before it.
+	var room: Node = await _enter("Z2", ["done_M01", "met_tamara", "knows_pier_trace", "done_M02", "met_pelageya"], ["key_house", "pocket_watch"])
 	var e: Node = room.get_node_or_null("Exits/to_H1")
 	_check(e != null and not e.is_open(), "Z2→H1 locked before the key is applied")
 	if e == null:

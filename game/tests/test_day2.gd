@@ -715,18 +715,26 @@ func _test_states() -> void:
 	await _frames(3)
 	seen = await _finish()
 	_check(not seen.any(func(x): return x.contains("Пелагея с ней")), "said once: %s" % str(seen))
-	# Item 3: «В лодку» before the knot — «вернёт сюда же»; after the knot — first the empty-boat check.
-	var ex = rm.current_room.get_node("Exits/to_R2")
-	sr.use_exit(ex)
+	# Item 3: the boat before the knot — «вернёт сюда же» (H36: looked at at the pier, no exit into it); after the brace it
+	# is at the turn — «В лодку» there: first the empty-boat check.
+	_check(rm.current_room.get_node_or_null("Exits/to_R2") == null, "H36: no exit into the boat at the pier")
+	sr.interact(_hotspot("boat"))
 	await process_frame
 	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed", "before the knot: «Без плиты лодку вернёт сюда же»")
 	await _finish()
-	for f in ["done_M15s", "done_M15", "rope_on_ring", "road_held_both_ends", "done_M16s", "far_snow_seen"]:
+	for f in ["done_M15s", "skoba_on_plate", "plate_braced", "rope_brought", "done_M15", "rope_on_ring", "road_held_both_ends", "done_M16s", "far_snow_seen"]:
 		gs.set_flag(f)
 	await _frames(2)
+	_check(not _hotspot("boat").visible, "H36: after the brace no boat at the pier")
+	rm.change_room("Z3", "default")
+	await _frames(3)
+	var ex = rm.current_room.get_node("Exits/to_R2")
 	sr.use_exit(ex)
 	await process_frame
 	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed_check", "after the knot: first the empty boat (%s)" % str(sr.current_beat))
+	await _finish()
+	rm.change_room("R1", "default")
+	await _frames(3)
 	await _finish()
 	_check(_npc_line_now(_hotspot("pelageya")).contains("Три огня"), "after the knot Pelageya points to the lantern")
 	# F13: after the crossing Pelageya is with Mitya at the far pier — not at this pier too.
@@ -1139,6 +1147,9 @@ func _test_walkthrough() -> void:
 	await _frames(3)
 	var lseen := await _finish()
 	_check(not sr.mechanic_open and lseen.size() == 1, "G45: a click on the lantern — one line, no signals again (%s)" % str(lseen))
+	# H36 (T8): after the answer Pelageya goes to the boat at the turn — the empty boat from there.
+	_check(not _hotspot("pelageya").visible, "H36: after the lights Pelageya is not at the pier")
+	_check(await _go("Z3"), "H36: R1→Z3, to the boat at the turn")
 	# Ribbon (once).
 	await _use("pelageya")
 	seen = await _finish()
@@ -1161,7 +1172,7 @@ func _test_walkthrough() -> void:
 	_check(gs.inventory.count("school_ribbon") == 1 and n_before == 1, "the ribbon is given once (talk again, grant again)")
 	_check(not sr.can_start("M17"), "M17 never starts again")
 	# Crossing and the far pier.
-	_check(await _go("R2"), "R1→R2 (along the rope)")
+	_check(await _go("R2"), "Z3→R2 (along the rope, H36: from the turn)")
 	seen = await _finish()
 	_check(seen.any(func(x): return x.contains("Теперь назад не вынесет. По канату идём.")) and seen.any(func(x): return x.contains("Канат нас везёт, не лодка")),
 			"F10/F15 at the crossing: «Теперь не вернёт…», «Не лодка нас везёт — канат…»: %s" % str(seen))

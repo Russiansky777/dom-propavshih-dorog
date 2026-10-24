@@ -211,6 +211,8 @@ func _test_exit_icons() -> void:
 		for e in rm.current_room.get_exits():
 			if not e.has_method("icon_name"):
 				continue
+			if e.has_method("is_active") and not e.is_active():
+				continue   # H36: shown only in its state («В лодку» at the turn while the boat is there)
 			var se = e   # StoryExit (class names of room scripts need the autoloads: not typed here)
 			var want := String(se.data.get("icon", icons.get(se.target_room, "")))
 			_check(want != "" and UiGlyphs.exists(UiGlyphs.EXIT_PREFIX + want), "%s→%s: icon «%s» has a drawing" % [rid, se.target_room, want])

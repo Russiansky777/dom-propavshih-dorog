@@ -507,20 +507,24 @@ func _test_shuttle() -> void:
 	await _frames(3)
 	await _finish()
 	_check(gs.has_flag("boat_shuttle_open"), "day three: the boat goes both ways")
-	var states := {
-		"day three": [],
-		"day four, before the log": ["done_M23a", "done_M23b", "done_M23c", "done_M23d", "done_M24", "morning_day4"],
-		"day four, after the log": ["span_first_laid"],
-	}
-	for label in states:
-		for f in states[label]:
-			gs.set_flag(String(f), true)
-		rm.change_room("R1", "from_Z3")
-		await _frames(3)
-		await _finish()
-		_check(_room() == "R1", "%s: on Pelageya's pier" % label)
-		_check(await _cross_by_rope("R3"), "%s: R1 → R3 by pulls (now %s)" % [label, _room()])
-		_check(await _cross_by_rope("R1"), "%s: R3 → R1 by pulls (now %s)" % [label, _room()])
+	# Day three: both ways from the turn (H36: the boat is at the plate). Day four: from the far pier to the turn — the
+	# first span (M25) begins on arrival there, so the turn is not left by boat before it.
+	rm.change_room("Z3", "from_R1")
+	await _frames(3)
+	await _finish()
+	_check(_room() == "Z3", "day three: at the turn, by the boat (H36)")
+	_check(await _cross_by_rope("R3"), "day three: Z3 → R3 by pulls (now %s)" % _room())
+	_check(await _cross_by_rope("Z3"), "day three: R3 → Z3 by pulls (now %s)" % _room())
+	for f in ["done_M23a", "done_M23b", "done_M23c", "done_M23d", "done_M24", "morning_day4"]:
+		gs.set_flag(f, true)
+	rm.change_room("R3", "from_R2")
+	await _frames(3)
+	await _finish()
+	_check(await _cross_by_rope("Z3") or _room() == "Z3", "day four: R3 → Z3 by pulls (now %s)" % _room())
+	_check(gs.has_flag("started_M25"), "day four: at the turn the first span begins")
+	_check(rm.start_at("freewalk"), "back to the free day")
+	await _frames(3)
+	await _finish()
 	# An old save left in the boat view: the ring takes the boat on by the same pulls, the forward arrow too.
 	rm.change_room("R2", "from_R1")
 	await _frames(3)
@@ -779,7 +783,9 @@ func _test_walkthrough() -> void:
 	_check(_hotspot("pelageya") != null and _hotspot("pelageya").visible, "Pelageya at her pier with the boat")
 	await _use("pelageya")
 	seen = await _finish()
-	_check(seen.any(func(x): return x.begins_with("pelageya:Садись, канат довезёт")), "Pelageya: the boat goes both ways now (%s)" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("pelageya:Лодка у поворота") and x.contains("Садись, канат довезёт")), "Pelageya: the boat goes both ways now, from the turn (H36: %s)" % str(seen))
+	_check(await _route(["Z3"]), "to the turn, to the boat (H36)")
+	_check(rm.current_room.get_node("Layers/boat_day").visible, "H36: the boat at the plate on day three")
 	_check(await _cross_by_rope("R3"), "the crossing by pulls → the far pier (G43)")
 	_check((_hotspot("mitya") == null or not _hotspot("mitya").visible) and (_hotspot("pelageya") == null or not _hotspot("pelageya").visible),
 		"the far pier on the free day: Mitya is on the street, Pelageya at her own pier — nobody here twice")
@@ -804,13 +810,14 @@ func _test_walkthrough() -> void:
 	_check(rm.save_game(SLOT + "_d4"), "save on the morning of day four")
 	_check(_room() == "O3", "morning of day four at mum's (%s)" % _room())
 	# The first span.
-	_check(await _route(["O4", "R3"]) and await _cross_by_rope("R1"), "from mum's room to the far pier, across by the rope")
 	var gui: Node = main_node.get_node("GameUi")
 	var span_alpha := {}
 	var on_frame := func(f, _h):
 		span_alpha[f if f != "" else "(none)"] = float(gui.call("stage_probe").get("alpha", -1.0))
 	sr.frame_changed.connect(on_frame)
-	_check(await _go("Z3"), "to the turn")
+	# H36: the boat lands at the turn — the first span (M25) begins right there.
+	_check(await _route(["O4", "R3"]) and (await _cross_by_rope("Z3") or _room() == "Z3"), "from mum's room to the far pier, across by the rope (to the turn, H36)")
+	_check(_room() == "Z3", "at the turn (the boat lands there, H36)")
 	# Batch 8: Z3_state_water_low_day is the whole day-3–4 state (low water AND the stone without the plate) — never stacked
 	# on the dusk low water or the stone layer.
 	_check(not rm.current_room.get_node("Layers/water_low").visible and rm.current_room.get_node("Layers/water_low_day").visible

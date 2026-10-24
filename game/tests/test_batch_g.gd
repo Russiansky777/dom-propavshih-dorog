@@ -267,9 +267,9 @@ func _test_boat_back() -> void:
 		await _drain()
 		_check(rm.current_room.room_id == "R3", "still at the far pier")
 	# The boat view (R2) has no way back to the pier before the shuttle either.
-	var r2 := await _enter("R2", "from_R1")
-	var back = r2.get_node_or_null("Exits/to_R1")
-	_check(back != null and not back.is_open(), "R2 «Назад, к причалу» closed before the shuttle")
+	var r2 := await _enter("R2", "from_Z3")
+	var back = r2.get_node_or_null("Exits/to_Z3")
+	_check(back != null and not back.is_open(), "R2 «Назад, к повороту» closed before the shuttle (H36: the boat goes from the turn)")
 	if back != null:
 		sr.use_exit(back)
 		await _frames(2)

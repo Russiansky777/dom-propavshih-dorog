@@ -776,8 +776,8 @@ func _test_walkthrough() -> void:
 	sr.close_view()
 	await bot.finish()
 	_check(gs.has_flag("seen_ferry_instruction"), "instruction examine should set seen_ferry_instruction")
-	var r2exit = bot.exit_to("R2")
-	_check(r2exit != null and not r2exit.is_open(), "R1→R2 closed (ferry_verified)")
+	# H36 (T8): no exit into the boat at the pier — until the brace the boat is only looked at; then it is at the turn.
+	_check(bot.exit_to("R2") == null, "R1: no «В лодку» exit at the pier (H36)")
 	await bot.use("pelageya")
 	seen = await bot.finish()
 	_check(gs.has_flag("done_M02") and gs.has_flag("met_pelageya") and gs.has_flag("knows_no_road") and gs.has_flag("knows_rope_on_plate"),
@@ -786,7 +786,7 @@ func _test_walkthrough() -> void:
 	# the sluice, the marsh, other boats and the manager are questions now (polish 22.10, D23).
 	_check(seen.size() == 9 and not seen.has("stage"), "M02: 9 lines, no staging (G16: no pointless fade); got %s" % str(seen))
 	_check(not sr.is_staging() and sr.stage_dim == 0.0, "the staging is over, no dusk left")
-	_check(not r2exit.is_open(), "R1→R2 stays closed after M02 (без плиты лодку вернёт сюда же)")
+	_check(not gs.has_flag("ferry_verified") and bot.exit_to("R2") == null, "no crossing after M02 (без плиты лодку вернёт сюда же)")
 	_check(await bot.go("Z3"), "R1→Z3")
 	_check(bot.exit_to("Z2") == null, "H7: from the turn only the way to the pier")
 	await bot.use("old_pier_base")
