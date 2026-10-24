@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import wave
@@ -150,9 +151,140 @@ def synth_impact(seed: int = 5) -> np.ndarray:
     return x / (np.abs(x).max() + 1e-9) * 0.9
 
 
-def assemble(plan_id: str) -> Path:
-    plan = json.loads((ROOT / "data" / "trailer" / f"{plan_id}.json").read_text(encoding="utf-8"))
-    fps = int(plan.get("fps", 60))
+def load_plan(arg: str) -> tuple[str, dict]:
+    """`arg` is a plan file or the id of data/trailer/<id>.json."""
+    p = Path(arg)
+    if not p.suffix:
+        p = ROOT / "data" / "trailer" / f"{arg}.json"
+    return p.stem, json.loads(p.read_text(encoding="utf-8"))
+
+
+def decode_stereo(path: Path) -> np.ndarray:
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "2", "-ar", str(SR), "-f", "f32le", "-"],
+                         capture_output=True, check=True).stdout
+    return np.frombuffer(raw, np.float32).reshape(-1, 2).astype(np.float64)
+
+
+def lufs_of(x: np.ndarray) -> float:
+    """Integrated loudness (ebur128) of a stereo clip."""
+    tmp = ROOT / "build" / "trailer" / "_lufs.wav"
+    wav_write(tmp, x)
+    log = run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(tmp), "-af", "ebur128", "-f", "null", "-"], capture=True)
+    return float(log[log.rindex("I:"):].split()[1])
+
+
+def db(x: float) -> float:
+    return 10 ** (x / 20.0)
+
+
+def fade_env(n: int, fin: float, fout: float) -> np.ndarray:
+    e = np.ones(n)
+    k = min(n, int(fin * SR))
+    if k > 0:
+        e[:k] = np.sin(np.linspace(0, np.pi / 2, k)) ** 2
+    k = min(n, int(fout * SR))
+    if k > 0:
+        e[n - k:] *= np.cos(np.linspace(0, np.pi / 2, k)) ** 2
+    return e
+
+
+def place(buf: np.ndarray, x: np.ndarray, at_s: float) -> None:
+    i = max(0, int(round(at_s * SR)))
+    n = min(len(x), len(buf) - i)
+    if n > 0:
+        buf[i:i + n] += x[:n]
+
+
+def audio_mix(plan: dict, tl: list[dict], work: Path, total: float) -> np.ndarray:
+    """Everything on one timeline (numpy, 48 kHz stereo): music (one track or several crossfaded, with a gain curve
+    and ducking under the voices), the game's own sound of every shot, ambience, voices, the impact under the title.
+    Loudness is set afterwards (loudnorm)."""
+    a = plan["audio"]
+    n = int(total * SR)
+    by_id = {s["shot"]["id"]: s for s in tl}
+    # --- music
+    tracks = a["music"] if isinstance(a["music"], list) else [
+        {"file": a["music"], "at": 0.0, "start_s": a.get("music_start_s", 0.0), "fade_in_s": a.get("music_fade_in_s", 1.0)}]
+    music = np.zeros((n, 2))
+    for i, t in enumerate(tracks):
+        x = decode_stereo(res(t["file"]))
+        k0 = int(float(t.get("start_s", 0.0)) * SR)
+        at = float(t.get("at", 0.0))
+        end = float(tracks[i + 1]["at"]) + float(tracks[i + 1].get("fade_in_s", 0.0)) if i + 1 < len(tracks) else total
+        length = int((end - at) * SR)
+        seg = x[k0:k0 + length]
+        seg = seg * fade_env(len(seg), float(t.get("fade_in_s", 0.0)), float(tracks[i + 1].get("fade_in_s", 0.0)) if i + 1 < len(tracks) else 0.0)[:, None]
+        place(music, seg * db(float(t.get("gain_db", 0.0))), at)
+    curve = a.get("music_curve")
+    if curve:
+        tt = np.arange(n) / SR
+        music *= (10 ** (np.interp(tt, [c[0] for c in curve], [c[1] for c in curve]) / 20.0))[:, None]
+    fo = float(a.get("music_fade_out_s", 1.5))
+    music *= fade_env(n, 0.0, fo)[:, None]
+    music *= db(float(a.get("music_gain_db", 0.0)))
+    # --- voices: level = the music's own level at that place (Director: «ровно с музыкой»), the music ducks under them
+    voices = []
+    for v in a.get("voice", []):
+        s = by_id[v["shot"]]
+        at = s["start"] + float(v.get("at_s", 0.0))
+        x = decode_stereo(res(v["file"]))
+        i0, i1 = int(at * SR), min(n, int(at * SR) + len(x))
+        m = music[i0:i1]
+        gain = float(v.get("gain_db", 0.0))
+        if len(m) > SR and float(v.get("match_music", 1)):
+            gain += lufs_of(m) - lufs_of(x)
+        voices.append((at, len(x) / SR, x * db(gain)))
+    duck = np.ones(n)
+    dk = a.get("duck", {"db": -8.0, "attack_s": 0.25, "release_s": 0.7})
+    for at, dur, _ in voices:
+        i0, i1 = int((at - float(dk["attack_s"])) * SR), int((at + dur + float(dk["release_s"])) * SR)
+        ramp_in, ramp_out = int(dk["attack_s"] * SR), int(dk["release_s"] * SR)
+        env = np.ones(max(0, i1 - i0)) * db(float(dk["db"]))
+        if ramp_in > 0 and len(env) > ramp_in:
+            env[:ramp_in] = db(float(dk["db"])) ** np.linspace(0, 1, ramp_in)
+        if ramp_out > 0 and len(env) > ramp_out:
+            env[-ramp_out:] = db(float(dk["db"])) ** np.linspace(1, 0, ramp_out)
+        lo = max(0, i0)
+        duck[lo:i1] = np.minimum(duck[lo:i1], env[lo - i0:lo - i0 + (i1 - lo)])
+    mix = music * duck[:, None]
+    for at, _, x in voices:
+        place(mix, x, at)
+    # --- the game's own sound of every shot (Movie Maker's wav), faded with its transitions
+    for s in tl:
+        wavp = work / s["shot"]["id"] / "f.wav"
+        if not wavp.exists() or wavp.stat().st_size < 1000:
+            continue
+        x = decode_stereo(wavp)
+        pre = int(float(s["shot"].get("preroll_s", 0.0)) * SR)
+        x = x[pre:pre + int(s["len"] * SR)]
+        fin = max(0.05, float(s["tin"].get("duration", 0.05)))
+        fout = max(0.05, s["tail"])
+        x = x * fade_env(len(x), fin, fout)[:, None] * db(float(s["shot"].get("game_audio_db", a.get("game_audio_gain_db", 0.0))))
+        place(mix, x, s["start"])
+    # --- ambience (a file, or the placeholder wind and water) under a shot
+    for amb in a.get("ambience", []):
+        s = by_id.get(amb.get("shot"))
+        if s is None:
+            continue
+        length = int(s["len"] * SR)
+        if "synth" in amb:
+            x = synth_wind_water(s["len"] + 0.5)
+        else:
+            x = decode_stereo(res(amb["file"]))
+        x = np.tile(x, (length // len(x) + 1, 1))[:length]
+        fi, fo2 = amb.get("fade_s", [0.5, 0.5])
+        x = x * fade_env(length, float(fi), max(float(fo2), s["tail"]))[:, None] * db(float(amb.get("gain_db", -20)))
+        place(mix, x, s["start"])
+    imp = a.get("impact")
+    if imp and imp.get("at_shot") in by_id:
+        place(mix, np.stack([synth_impact()] * 2, 1) * db(float(imp.get("gain_db", -10))),
+              by_id[imp["at_shot"]]["start"] + float(imp.get("offset_s", 0.0)))
+    return mix * fade_env(n, 0.0, 0.25)[:, None]
+
+
+def assemble(plan_arg: str) -> Path:
+    plan_id, plan = load_plan(plan_arg)
+    fps = int(os.environ.get("FPS") or plan.get("fps", 60))
     ow, oh = plan.get("out_size", [1920, 1080])
     work = ROOT / "build" / "trailer" / plan_id
     tl = timeline(plan)
@@ -180,71 +312,8 @@ def assemble(plan_id: str) -> Path:
 
     # --- audio ---------------------------------------------------------------------------------
     a = plan["audio"]
-    ain, achains, mix = [], [], []
-    idx = len(tl)
-
-    def add_input(path: Path) -> int:
-        nonlocal idx
-        ain.extend(["-i", str(path)])
-        idx += 1
-        return idx - 1
-
-    ms = float(a.get("music_start_s", 0.0))
-    k = add_input(res(a["music"]))
-    achains.append(f"[{k}:a]atrim=start={ms}:duration={total},asetpts=PTS-STARTPTS,aresample={SR},aformat=channel_layouts=stereo,"
-                   f"afade=t=in:st=0:d={a.get('music_fade_in_s', 1.0)}:curve=qsin,"
-                   f"afade=t=out:st={total - float(a.get('music_fade_out_s', 1.5)):.3f}:d={a.get('music_fade_out_s', 1.5)}:curve=qsin,"
-                   f"volume={a.get('music_gain_db', 0.0)}dB[mus]")
-    mix.append("[mus]")
-    # The game's own sound of every shot (Movie Maker's wav), from the visible start, faded with its transitions.
-    for s in tl:
-        wavp = work / s["shot"]["id"] / "f.wav"
-        if not wavp.exists() or wavp.stat().st_size < 1000:
-            continue
-        k = add_input(wavp)
-        pre = float(s["shot"].get("preroll_s", 0.0))
-        fin = max(0.05, float(s["tin"].get("duration", 0.05)))
-        fout = max(0.05, s["tail"])
-        lab = f"g{k}"
-        achains.append(f"[{k}:a]atrim=start={pre}:duration={s['len']},asetpts=PTS-STARTPTS,aresample={SR},aformat=channel_layouts=stereo,"
-                       f"afade=t=in:d={fin}:curve=qsin,afade=t=out:st={s['len'] - fout:.3f}:d={fout}:curve=qsin,"
-                       f"volume={a.get('game_audio_gain_db', 0.0)}dB,adelay={int(s['start'] * 1000)}:all=1[{lab}]")
-        mix.append(f"[{lab}]")
-    by_id = {s["shot"]["id"]: s for s in tl}
-    for amb in a.get("ambience", []):
-        s = by_id.get(amb.get("shot"))
-        if s is None:
-            continue
-        begin = max(0.0, s["start"] - (float(s["tin"].get("duration", 0.0)) if s["tin"] else 0.0) * 0.0)
-        length = s["len"]
-        if "synth" in amb:
-            p = work / f"synth_{amb['id']}.wav"
-            wav_write(p, synth_wind_water(length + 0.5))
-        else:
-            p = res(amb["file"])
-        k = add_input(p)
-        fi, fo = amb.get("fade_s", [0.5, 0.5])
-        fo = max(float(fo), s["tail"])
-        lab = f"a{k}"
-        achains.append(f"[{k}:a]aloop=loop=-1:size=2e9,atrim=duration={length},asetpts=PTS-STARTPTS,aresample={SR},aformat=channel_layouts=stereo,"
-                       f"afade=t=in:d={fi}:curve=qsin,afade=t=out:st={length - fo:.3f}:d={fo}:curve=qsin,"
-                       f"volume={amb.get('gain_db', -20)}dB,adelay={int(begin * 1000)}:all=1[{lab}]")
-        mix.append(f"[{lab}]")
-    imp = a.get("impact")
-    if imp and imp.get("at_shot") in by_id:
-        p = work / "synth_impact.wav"
-        wav_write(p, synth_impact())
-        k = add_input(p)
-        at = by_id[imp["at_shot"]]["start"] + float(imp.get("offset_s", 0.0))
-        achains.append(f"[{k}:a]aresample={SR},volume={imp.get('gain_db', -10)}dB,adelay={int(at * 1000)}:all=1[imp]")
-        mix.append("[imp]")
-    achains.append(f"{''.join(mix)}amix=inputs={len(mix)}:normalize=0:duration=longest,atrim=duration={total},"
-                   f"afade=t=out:st={total - 0.25:.3f}:d=0.25[mixed]")
-
-    graph = ";".join(achains)   # the video inputs stay (indices), only the audio is mixed here
-    # Pass 1: measure the mix for loudnorm.
     pre = work / "premix.wav"
-    run(["ffmpeg", "-y", "-v", "error", *inputs, *ain, "-filter_complex", graph, "-map", "[mixed]", "-ar", str(SR), str(pre)])
+    wav_write(pre, audio_mix(plan, tl, work, total))
     target = float(a.get("loudness_lufs", -14.0))
     tp = float(a.get("true_peak_db", -1.5))
     log = run(["ffmpeg", "-hide_banner", "-i", str(pre), "-af", f"loudnorm=I={target}:TP={tp}:LRA=11:print_format=json",
@@ -266,11 +335,11 @@ def assemble(plan_id: str) -> Path:
 
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    plan_id = args[0] if args else "test_7s"
+    plan_arg = args[0] if args else "test_7s"
     if "--analyze" in sys.argv:
-        analyze(json.loads((ROOT / "data" / "trailer" / f"{plan_id}.json").read_text(encoding="utf-8")))
+        analyze(load_plan(plan_arg)[1])
         return 0
-    assemble(plan_id)
+    assemble(plan_arg)
     return 0
 
 
