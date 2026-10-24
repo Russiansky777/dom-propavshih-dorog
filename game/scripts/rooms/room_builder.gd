@@ -244,6 +244,15 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 			spr.position += pv * art * sc
 			spr.rotation_degrees = float(l.get("rotation_deg", 0.0))
 		node.add_child(spr)
+		# `frames` [res paths] + `fps`: a short loop (the M1 water and drips) - one sprite per frame, same canvas
+		# and transform as `image`; StateLayer shows one at a time.
+		for fpath in l.get("frames", []):
+			if String(fpath) == image or not ResourceLoader.exists(String(fpath)):
+				continue
+			var fs: Sprite2D = spr.duplicate()
+			fs.name = "Frame_" + String(fpath).get_file().get_basename()
+			fs.texture = load(String(fpath))
+			node.add_child(fs)
 		if bool(l.get("occluder", false)) and occluders != null:
 			node.z_index = clampi(int(l.get("z", 1080)), 0, 4096)
 			occluders.add_child(node)

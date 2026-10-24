@@ -143,7 +143,7 @@ def main() -> int:
             "origin_at": "bottom",
         }
         # детальность (Директор 22.10: «поднять уровень» против Агаты и Тамары v2): необязательные поля запроса
-        for k in ("geometry_resolution", "enable_pbr", "should_remesh", "target_polycount"):
+        for k in ("geometry_resolution", "enable_pbr", "should_remesh", "target_polycount", "multi_view_thumbnails"):
             if k in req:
                 body[k] = req[k]
         st["model_task"] = mc.create("/multi-image-to-3d", body)
@@ -154,7 +154,8 @@ def main() -> int:
         model = mc.wait("/multi-image-to-3d", st["model_task"], log=log)
     except mc.MeshyError as e:
         # повышенная детальность могла не пройти — один повтор без geometry_resolution/enable_pbr (текстуры 4k остаются)
-        if not any(k in st.get("model_body", {}) for k in ("geometry_resolution", "enable_pbr")):
+        # model_only — без автоповтора: вторую генерацию решает человек (бюджет кредитов)
+        if req.get("model_only") or not any(k in st.get("model_body", {}) for k in ("geometry_resolution", "enable_pbr")):
             raise
         log(f"[{name}] модель с повышенной детальностью не удалась: {e}; повтор без geometry_resolution/enable_pbr")
         body = {"image_urls": [mc.data_uri(v) for v in views], **{k: v for k, v in st["model_body"].items() if k not in ("geometry_resolution", "enable_pbr")}}
@@ -163,6 +164,15 @@ def main() -> int:
         st["model_body"] = {k: v for k, v in body.items() if k != "image_urls"}
         save_state(name, st)
         model = mc.wait("/multi-image-to-3d", st["model_task"], log=log)
+    # model_only (T5a, 24.10): только модель — Директор смотрит её на сайте Meshy; ответ задачи (без ключа) —
+    # в pipeline/3d/state/<name>_model.json, риг и движения — отдельным запуском по id задачи
+    if req.get("model_only"):
+        st["model_credits"] = model.get("consumed_credits")
+        save_state(name, st)
+        (STATE / f"{name}_model.json").write_text(json.dumps(model, ensure_ascii=False, indent=2), encoding="utf-8")
+        log(f"[{name}] модель готова (только модель): задача {st['model_task']}, кредитов: {st['model_credits']}")
+        log(f"[{name}] баланс после: {mc.balance()}")
+        return 0
     glb_url = model["model_urls"]["glb"]
     mc.download(glb_url, out / "model.glb")
     st["model_credits"] = model.get("consumed_credits")
