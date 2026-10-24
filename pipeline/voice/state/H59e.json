@@ -1,0 +1,34 @@
+{
+  "set": "H59e",
+  "runs": [
+    {
+      "run": "40105307426",
+      "at": "2026-10-24T15:05:42+00:00",
+      "request": "pipeline/requests/voice_H59e.json",
+      "synthesized": [
+        "M03_5",
+        "M12_0"
+      ],
+      "reprocessed": [],
+      "characters_text": 69,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 58696,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 58696,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 30,
+      "subscription_delta": 0
+    }
+  ]
+}
