@@ -34,5 +34,9 @@
     "mode": "prime",
     "duration": 5
   },
-  "text_motion_credits": 10
+  "text_motion_credits": 10,
+  "rig_task": "01a16dea-ceea-77a3-abf3-9ccb2770ec11",
+  "rig_credits": 5,
+  "motion_task": "01a16ded-1a3e-707b-b0c8-2de58942df4c",
+  "motion_credits": 3
 }

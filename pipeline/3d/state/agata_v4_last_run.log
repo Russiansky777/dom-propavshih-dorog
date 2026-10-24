@@ -1,30 +1,33 @@
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v4] баланс: {'balance': 320, 'monthly_credits': 0, 'permanent_credits': 320, 'monthly_resets_at': 1794445230000}
+[agata_v4] баланс: {'balance': 300, 'monthly_credits': 0, 'permanent_credits': 300, 'monthly_resets_at': 1794445230000}
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  retexture 01a16ddb-fcbb-7641-b446-745b8a882ec0: IN_PROGRESS 0
+  rigging 01a16dea-ceea-77a3-abf3-9ccb2770ec11: IN_PROGRESS 0
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16dea-ceea-77a3-abf3-9ccb2770ec11: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16dea-ceea-77a3-abf3-9ccb2770ec11: IN_PROGRESS 63
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a16dea-ceea-77a3-abf3-9ccb2770ec11: IN_PROGRESS 90
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  retexture 01a16ddb-fcbb-7641-b446-745b8a882ec0: IN_PROGRESS 34
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  retexture 01a16ddb-fcbb-7641-b446-745b8a882ec0: IN_PROGRESS 49
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  retexture 01a16ddb-fcbb-7641-b446-745b8a882ec0: IN_PROGRESS 69
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  retexture 01a16ddb-fcbb-7641-b446-745b8a882ec0: IN_PROGRESS 99
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  retexture 01a16ddb-fcbb-7641-b446-745b8a882ec0: SUCCEEDED 100
-[agata_v4] retexture: задача 01a16ddb-fcbb-7641-b446-745b8a882ec0, кредитов: 10
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  text-to-motion 01a16ddd-18d8-7389-b87e-0429f4c890c1: IN_PROGRESS 5
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  text-to-motion 01a16ddd-18d8-7389-b87e-0429f4c890c1: IN_PROGRESS 12
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  text-to-motion 01a16ddd-18d8-7389-b87e-0429f4c890c1: IN_PROGRESS 15
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  text-to-motion 01a16ddd-18d8-7389-b87e-0429f4c890c1: SUCCEEDED 100
-[agata_v4] text_motion: задача 01a16ddd-18d8-7389-b87e-0429f4c890c1, кредитов: 10
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v4] баланс после: {'balance': 300, 'monthly_credits': 0, 'permanent_credits': 300, 'monthly_resets_at': 1794445230000}
+  rigging 01a16dea-ceea-77a3-abf3-9ccb2770ec11: SUCCEEDED 100
+[agata_v4] rig: задача 01a16dea-ceea-77a3-abf3-9ccb2770ec11, кредитов: 5
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16ded-1a3e-707b-b0c8-2de58942df4c: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16ded-1a3e-707b-b0c8-2de58942df4c: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a16ded-1a3e-707b-b0c8-2de58942df4c: SUCCEEDED 100
+[agata_v4] motion: задача 01a16ded-1a3e-707b-b0c8-2de58942df4c, кредитов: 3
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[agata_v4] баланс после: {'balance': 292, 'monthly_credits': 0, 'permanent_credits': 292, 'monthly_resets_at': 1794445230000}
