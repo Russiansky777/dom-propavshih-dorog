@@ -15,7 +15,7 @@ var out_dir := ""
 
 const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_watch", "examine_key_sluice", "examine_mirror",
 	"examine_bag_badge", "fast_mirror", "fast_mirror_watch", "water_R2", "water_M4", "water_R1_dusk", "water_Z3",
-	"plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "crossing_0", "crossing_5", "crossing_9",
+	"lantern_half", "lantern_open", "plate_brace", "plate_knot0", "plate_knot1", "plate_knot2", "plate_tied", "office_hook_sway", "crossing_0", "crossing_5", "crossing_9",
 	"windlass_wait", "windlass_zone", "windlass_bumped", "windlass_laid", "shuttle_back_5", "map_far_bank", "z3_day4_site",
 	"npc_M2_from_M1", "npc_M3_from_M2", "npc_M3_gauge", "npc_R3_stopor", "npc_R3_lamp_post", "npc_Z3_pier_plate", "npc_Z3_from_R1"]
 
@@ -192,6 +192,23 @@ func _shot(name: String) -> void:
 				p.knot.progress = p.knot.lengths[st] * 0.55
 				p._refresh()
 			await _frames(6)
+		"lantern_half", "lantern_open":
+			# H35: the shutter plate lifted by the mouse — half way (following the pointer) and up (the flash).
+			await _state(["house_unlocked", "rope_on_ring", "road_held_both_ends", "done_M16s", "far_snow_seen", "r1_seen_lantern"], [], "R1")
+			var h = rm.current_room.get_node_or_null("Hotspots/lantern")
+			sr.open_mechanic(sr.mechanic_spec(h), "lantern")
+			await _frames(3)
+			while not sr.current_beat.is_empty():
+				sr.advance()
+				await process_frame
+			var p = mv.panel
+			if name == "lantern_half":
+				p._set_lid(0.5)
+			else:
+				p.spec["open_s"] = 99.0   # hold it open for the frame
+				p.flash()
+				await _frames(20)
+			await _frames(3)
 		"office_hook_sway":
 			await _state(["house_unlocked", "done_N01", "done_M09", "done_M09s", "done_M09b", "met_pavel", "office_mirror_mounted", "office_mirror_clamped",
 				"done_M10", "bell_clapper_hung", "has_bell_clapper", "lantern_check_seen", "done_M11"], [], "H2")

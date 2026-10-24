@@ -14,6 +14,8 @@ extends RefCounted
 ##   miss_s      the pause after a miss while the consequence plays (0.9)
 ##   hit_s       the marker holds a moment after a hit — the blow lands (0.25)
 ##   start       where the marker starts, 0..1 (0 — the left end)
+##   green_easy  the green zone's width with «Облегчить» (absolute; Director 24.10, H26: the normal zone is
+##               narrower while the easy one stays as it was) — else `green` × green_k
 ## Accessibility (G3, Director 23.10: «Облегчить мини-игры»): `slow_k` multiplies the period (TimingBar.SLOW_K) and
 ## `green_k` widens the green zone round its centre (TimingBar.EASY_GREEN_K) — TimingBar.apply_ease sets both.
 
@@ -25,6 +27,7 @@ var miss_s: float = 0.9
 var hit_s: float = 0.25
 var slow_k: float = 1.0
 var green_k: float = 1.0      # «Облегчить»: the green zone this many times wider (centre kept, clamped to the bar)
+var green_easy: float = 0.0   # «Облегчить»: this width instead of green × green_k (0 — not set)
 
 var phase: float = 0.0        # 0..1 along one full sweep there and back
 var hits: int = 0             # hits in the current series
@@ -39,6 +42,7 @@ func _init(cfg: Dictionary = {}) -> void:
 	hits_needed = maxi(int(cfg.get("hits", hits_needed)), 1)
 	period_s = maxf(float(cfg.get("period_s", period_s)), 0.2)
 	green = clampf(float(cfg.get("green", green)), 0.02, 0.9)
+	green_easy = clampf(float(cfg.get("green_easy", 0.0)), 0.0, 0.9)
 	center = clampf(float(cfg.get("center", center)), green * 0.5, 1.0 - green * 0.5)
 	miss_s = maxf(float(cfg.get("miss_s", miss_s)), 0.0)
 	hit_s = maxf(float(cfg.get("hit_s", hit_s)), 0.0)
@@ -56,8 +60,10 @@ static func pos_at(ph: float) -> float:
 	return p * 2.0 if p < 0.5 else 2.0 - p * 2.0
 
 
-## The green zone's width now: `green` × `green_k` («Облегчить»), never wider than 0.9 of the bar.
+## The green zone's width now: `green` × `green_k` («Облегчить»; `green_easy` when the data gives it), never wider than 0.9 of the bar.
 func green_w() -> float:
+	if green_k > 1.0 and green_easy > 0.0:
+		return green_easy
 	return clampf(green * green_k, 0.02, 0.9)
 
 

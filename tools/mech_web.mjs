@@ -20,7 +20,9 @@
 //   crossing— R2: ten clicks on the rope; the boat reaches the far pier (R3);
 //   menu    — batch G: «Облегчить мини-игры» (G3) by a click, the autosave row «День второй · Мастерская · вечер» (G4/G5);
 //   sluice  — batch G (G23/G24): the water down by «точный удар» — hits step it down, a miss back to the first notch;
-//   lantern — batch G (G45): after the far lights answered a click on the lantern is only its line;
+//   lantern — batch H (H35): the shutter plate lifted by the mouse — a click opens nothing, pulled half way it slides
+//             back, pulled up to the end it opens (a flash); three pulls — the far bank answers;
+//             batch G (G45): after the far lights answered a click on the lantern is only its line;
 //   nina    — mother's mirror: Nina's six poses from her 3D sheets (the mirror's clock moved on with the probe hook
 //             ambientMirrorAdvance — the poses come every few minutes of hers); a frame of each pose.
 // Software WebGL here draws a few frames a second: for the timing bars the page's game clock is slowed with the
@@ -505,6 +507,10 @@ async function main() {
       s = await state();
       const bell = s.mechanic.panel.bell;
       check(s.mechanic.panel.signals_how && s.mechanic.panel.signals_how.two.how === "double_click", "the probe tells how to ring");
+      // H27: the schedule card from the data's signals, the row wanted now lit.
+      check(/1 удар/.test(s.mechanic.panel.legend || "") && /2 удара быстро/.test(s.mechanic.panel.legend || "") && s.mechanic.panel.wanted_signal === "one",
+        `H27: the legend «1 удар — пускай / 2 удара быстро — стой / держать — подымай», now «${s.mechanic.panel.wanted_signal}»`);
+      await shot("H27_bell_legend");
       await click("«пускай»", bell);
       s = await waitFor("swaying", (t) => t.mechanic.panel.hook && t.mechanic.panel.hook.state === "sway", 60000);
       await shot("10_hook_sway");
@@ -616,6 +622,49 @@ async function main() {
     } catch (e) {
       check(false, `sluice: exception ${e.message}`);
       await page.evaluate(() => window.probePause && window.probePause(false, 1.0)).catch(() => {});
+      await page.keyboard.press("Escape").catch(() => {});
+    }
+
+    if (PARTS.includes("lantern")) try {
+      // H35: the plate by the mouse.
+      await fresh("lantern pull");
+      await setFlags(mainScenesUpTo("M16").concat(["house_unlocked", "rope_on_ring", "road_held_both_ends", "done_M16s", "far_snow_seen", "r1_seen_lantern"]));
+      await goto("R1");
+      let s = await state();
+      await click("the lantern", s.hotspots.lantern);
+      s = await waitFor("lantern close-up", (t) => t.mechanic && t.mechanic.open && t.mechanic.type === "lantern", 120000);
+      await finish("lantern close-up");
+      s = await state();
+      const ld = s.mechanic.panel.lid_drag;
+      await click("the plate (no pull)", ld);
+      await sleep(600);
+      s = await state();
+      check(s.mechanic.panel.flashes === 0 && s.mechanic.panel.lid < 0.01, "H35: a click on the plate opens nothing (the hint «потяни вверх»)");
+      const pull = async (label, frac) => {
+        await page.mouse.move(ld.x, ld.y);
+        await page.mouse.down();
+        for (let k = 1; k <= 12; k++) { await page.mouse.move(ld.x, ld.y - ld.pull * frac * k / 12); await sleep(40); }
+        await sleep(200);
+        if (frac < 0.9) await shot("H35_lantern_half");
+        await page.mouse.up();
+        logLine(`pull ${label} ${frac}`);
+      };
+      await pull("half way", 0.45);
+      s = await waitFor("slid back", (t) => t.mechanic.panel.lid < 0.01, 20000);
+      check(s.mechanic.panel.flashes === 0, "H35: let go half way — the plate slides back, no flash");
+      for (let i = 0; i < 3; i++) {
+        await pull(`flash ${i + 1}`, 1.0);
+        if (i === 0) { await sleep(150); await shot("H35_lantern_open"); }
+        await waitFor("closed again", (t) => !t.mechanic.panel.shutter_open, 20000);
+        await sleep(1200);
+      }
+      s = await waitFor("the far bank answers", (t) => t.flags.far_lights_answered, 60000);
+      check(s.flags.far_lights_answered, "H35: three pulls to the end — three lights answer");
+      await finish("answered");
+      s = await state();
+      if (s.mechanic && s.mechanic.open) await click("close", s.mechanic.close);
+    } catch (e) {
+      check(false, `lantern pull: exception ${e.message}`);
       await page.keyboard.press("Escape").catch(() => {});
     }
 

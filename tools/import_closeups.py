@@ -62,6 +62,12 @@ WIDTH["M1_schedule_closeup"] = 1672           # доска во весь кад�
 BATCH9 = ["closeup_notebook_paths_clean", "closeup_notebook_rule_clean", "closeup_notebook_stopper_clean",
           "closeup_notebook_bridge_clean", "closeup_letter_blank", "closeup_sluice_lever"]
 WIDTH.update({n: 1440 for n in BATCH9})
+# Партия 10б (H26, Директор 24.10: «колокол вписанный, а не картинка вставленная»; assets/incoming/_meta_p10b/README.txt):
+# колокол на подвесе над козлами — крупный план мини-игры колокола (data/story/rooms/H2.json → stand_zm.mechanic.bell.art).
+# Слои на одном холсте 1672×941 в (0, 0), без уменьшения: стойка без колокола (крюк неподвижен), тело колокола, язык;
+# полный кадр — запасной (без слоёв).
+BATCH10B_BELL = ["closeup_bell_stand", "closeup_bell_stand_nobell", "closeup_bell_body", "closeup_bell_clapper_hung"]
+WIDTH.update({n: 1672 for n in BATCH10B_BELL})
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:

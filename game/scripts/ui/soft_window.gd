@@ -5,6 +5,7 @@ extends Control
 ## it and a soft shadow under it. Add the content to `content` (it clips its children by the mask's alpha).
 ## Data (any of): {"feather": 0.12, "vignette": 0.45, "rim": [r, g, b, a], "rim_width": 3, "shadow": 0.5, "bg": [r, g, b, a]}.
 
+var shape: String = "ellipse"     # "ellipse" (a circle when square) or "rect" (a soft-edged rectangle, no rim)
 var feather: float = 0.12        # the soft edge, fraction of the radius
 var rim_color: Color = Color(0.72, 0.58, 0.34, 0.9)
 var rim_width: float = 3.0
@@ -40,6 +41,7 @@ func _init() -> void:
 
 
 func configure(cfg: Dictionary) -> void:
+	shape = String(cfg.get("shape", shape))
 	feather = float(cfg.get("feather", feather))
 	rim_width = float(cfg.get("rim_width", rim_width))
 	shadow = float(cfg.get("shadow", shadow))
@@ -65,7 +67,7 @@ func _layout() -> void:
 	g.colors = PackedColorArray([bg, bg, Color(bg, 0.0)])
 	var gt := GradientTexture2D.new()
 	gt.gradient = g
-	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill = GradientTexture2D.FILL_SQUARE if shape == "rect" else GradientTexture2D.FILL_RADIAL
 	gt.fill_from = Vector2(0.5, 0.5)
 	gt.fill_to = Vector2(1.0, 0.5)
 	gt.width = 256
@@ -78,7 +80,7 @@ func _layout() -> void:
 	vg.colors = PackedColorArray([Color(0, 0, 0, 0), Color(0, 0, 0, 0), Color(0.03, 0.02, 0.01, vignette), Color(0.03, 0.02, 0.01, 0)])
 	var vt := GradientTexture2D.new()
 	vt.gradient = vg
-	vt.fill = GradientTexture2D.FILL_RADIAL
+	vt.fill = GradientTexture2D.FILL_SQUARE if shape == "rect" else GradientTexture2D.FILL_RADIAL
 	vt.fill_from = Vector2(0.5, 0.5)
 	vt.fill_to = Vector2(1.0, 0.5)
 	vt.width = 256
@@ -94,6 +96,8 @@ func has_point_inside(p: Vector2) -> bool:
 	if r.x <= 0.0 or r.y <= 0.0:
 		return false
 	var d := (p - r) / r
+	if shape == "rect":
+		return maxf(absf(d.x), absf(d.y)) <= 1.0 - feather * 0.5
 	return d.length_squared() <= 1.0
 
 
@@ -108,7 +112,7 @@ func _ellipse(scale_r: float, n: int = 72) -> PackedVector2Array:
 
 ## The shadow under the window: a few soft ellipses, offset down.
 func _draw() -> void:
-	if shadow <= 0.0:
+	if shadow <= 0.0 or shape == "rect":
 		return
 	for i in 6:
 		var k := 1.0 + 0.02 * (6 - i)
@@ -120,7 +124,7 @@ func _draw() -> void:
 
 ## The rim: a thin brass line where the soft edge begins, a darker line outside it.
 func _draw_rim() -> void:
-	if rim_width <= 0.0:
+	if rim_width <= 0.0 or shape == "rect":
 		return
 	var inner := 1.0 - feather * 0.5
 	_rim.draw_polyline(_ellipse(inner), Color(0, 0, 0, 0.35), rim_width + 2.0, true)

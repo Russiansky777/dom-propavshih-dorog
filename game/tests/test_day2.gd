@@ -1044,10 +1044,36 @@ func _test_walkthrough() -> void:
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "lantern", "the signal lantern close-up (beat %s)" % str(sr.current_beat))
 	await _finish()
 	p = mv.panel
-	var lp := _v(_panel().get("lantern", {}))
+	var ld: Dictionary = _panel().get("lid_drag", {})
+	var lp := _v(ld)
+	var pull := float(ld.get("pull", 280.0))
+	# H35 (Director 24.10): the plate is lifted by the mouse. A click without pulling opens nothing, the hint flashes.
+	await _click(lp)
+	await _frames(3)
+	_check(int(_panel().get("flashes", -1)) == 0 and float(_panel().get("lid", 1.0)) < 0.01 and int(_panel().get("drag_clicks", 0)) == 1, "a click on the plate does not open it (%s)" % str(_panel().get("lid")))
+	_check(p.drag_hint != null and p.drag_hint.visible and String(p.drag_hint.text).contains("вверх"), "the hint: pull it up")
+	# Pulled half way: the plate follows the mouse; let go — it slides back down by itself, no flash.
+	await _move(lp)
+	await _button(lp, true)
+	for k in range(1, 5):
+		await _move(lp + Vector2(0, -pull * 0.45 * k / 4.0))
+	var half := float(_panel().get("lid", 0.0))
+	_check(half > 0.3 and half < 0.6 and bool(_panel().get("dragging", false)), "the plate follows the pointer (%.2f)" % half)
+	var lid_y: float = p.lid.position.y
+	_check(lid_y < float(p.lid.get_meta("rest_y")) - 10.0, "the plate moved up on screen")
+	await _button(lp + Vector2(0, -pull * 0.45), false)
+	var g2 := 0
+	var falling: Array[float] = []
+	while float(_panel().get("lid", 0.0)) > 0.0 and g2 < 300:
+		falling.append(float(_panel().get("lid", 0.0)))
+		await process_frame
+		g2 += 1
+	_check(falling.size() >= 3 and float(_panel().get("lid", 1.0)) == 0.0 and int(_panel().get("flashes", -1)) == 0, "let go half way: it slides back over %d frames, no flash" % falling.size())
 	# Director / AI gate 23.10 (M2 item 16): deliberate signals a second and a half apart must count as one series.
 	for i in 3:
-		await _click(lp)
+		await _drag(lp, lp + Vector2(0, -pull), 10)
+		if i == 0:
+			_check(int(_panel().get("flashes", 0)) == 1 and bool(_panel().get("shutter_open", false)), "pulled to the end — the shutter opens: one flash")
 		while bool(_panel().get("shutter_open", false)):
 			await process_frame
 		if i < 2:
@@ -1305,6 +1331,24 @@ func _test_office_mirror_mouse() -> void:
 	_check(gs.has_flag("office_mirror_clamped"), "four wedges, three hits each — the frame is clamped")
 	_check(String(_panel().get("wedge_timing", {}).get("state", "gone")) == "gone" or _panel().get("wedge_timing", {}).is_empty(), "the wedges' bar is gone once clamped")
 	_check(p.office_vp.render_target_update_mode == SubViewport.UPDATE_ALWAYS, "the office view is redrawn every frame")
+	# H26: the bell of партия 10б on its suspension over the trestles — stand (with the fixed hook), body, clapper; the
+	# body and the clapper swing together round the suspension point, the stand stays.
+	var bwin: Node = p.get_node_or_null("BellCloseup")
+	_check(bwin is SoftWindow and bwin.content.get_node_or_null("Stand") != null, "the bell close-up of партия 10б, its edges fading (no pasted rectangle)")
+	_check(p.bell.get_node_or_null("Body") != null and p.bell_clapper != null and p.bell_clapper.get_parent() == p.bell and p.bell_clapper.visible, "body and clapper on one swinging node; the clapper hung")
+	var piv: Vector2 = p.bell.get_global_rect().position + p.bell.pivot_offset
+	var bart: Dictionary = p.spec.get("bell", {}).get("art", {})
+	var bk := float(p.spec.get("bell", {}).get("scale", 1.0))
+	var bpos: Array = p.spec.get("bell", {}).get("pos", [0, 0])
+	var bpiv: Array = bart.get("pivot", [0, 0])
+	var bexp := Vector2(float(bpos[0]), float(bpos[1])) + (Vector2(float(bpiv[0]), float(bpiv[1])) - Vector2(float(bart["region"][0]), float(bart["region"][1]))) * bk
+	_check(piv.distance_to(bexp) < 1.5, "the swing's pivot is the suspension point (%s vs %s)" % [str(piv), str(bexp)])
+	# H27: the schedule card is built from the data's signals; the row wanted now is lit (the lantern: one strike).
+	var sigs: Array = p.spec.get("bell", {}).get("signals", [])
+	_check(sigs.size() == 3 and p.signal_rows.size() == 3, "a row per signal of the data (%d)" % p.signal_rows.size())
+	var lt: String = p.legend_text()
+	_check(lt.contains("1 удар") and lt.contains("пускай") and lt.contains("2 удара быстро") and lt.contains("стой") and lt.contains("держать"), "the legend: «1 удар — пускай», «2 удара быстро — стой», hold — «подымай» (%s)" % lt)
+	_check(p.wanted_signal() == "one", "before the lantern: one strike is the row lit (%s)" % p.wanted_signal())
 	# The strike and the light: same process frame.
 	var bell := _v(_panel().get("bell", {}))
 	await _move(bell)
@@ -1318,12 +1362,20 @@ func _test_office_mirror_mouse() -> void:
 	await process_frame
 	_check(p.strike_frame >= 0 and p.light_frame == p.strike_frame, "the light comes on in the glass in the strike's own frame (strike %d, light %d)" % [p.strike_frame, p.light_frame])
 	_check(p.office.light_on and gs.has_flag("lantern_check_seen"), "the light is on and the check is in the story state")
+	var sw_body: float = 0.0
+	for i in 6:
+		await process_frame
+		sw_body = maxf(sw_body, absf(p.bell.rotation_degrees))
+	_check(sw_body > 0.5, "the strike swings the bell round its suspension (%.1f°)" % sw_body)
+	_check(is_equal_approx(bwin.content.get_node("Stand").rotation, 0.0), "the hook and the stand stay still")
 	await _button(bell, false)
 	await _finish()
+	_check(p.wanted_signal() == "one", "the hook at the top: «1 удар — пускай» is lit (%s)" % p.wanted_signal())
 	# The hook: wrong first («стой» away from the bar) — it falls, back to the top, nothing lost.
 	var counters_before: Dictionary = gs.counters.duplicate()
 	await _ring(bell, 1)
 	_check(p.hook.state in ["down", "sway"], "one strike — the hook goes down (%s)" % p.hook.state)
+	_check(p.wanted_signal() == "two", "the hook goes: «2 удара быстро — стой» is lit (%s)" % p.wanted_signal())
 	var hb: Dictionary = _panel().get("hook", {}).get("timing", {})
 	_check(not hb.is_empty() and float(hb.get("zone", [0, 0])[1]) > float(hb.get("zone", [0, 0])[0]), "the upright bar beside the glass shows the bolt zone")
 	await _ring_stop_away(bell)
@@ -1337,12 +1389,13 @@ func _test_office_mirror_mouse() -> void:
 	_check(p.hook.state == "wait" and p.hook.pos == 0.0, "back at the top after the slip")
 	_check(not gs.has_flag("office_unbolted") and gs.counters == counters_before, "no penalty: no flag lost, no counter grown")
 	_check(p.signals_seen.has("one") and p.signals_seen.has("two"), "signals from the mouse: %s" % str(p.signals_seen))
-	var legend: Node = p.get_node_or_null("BellLegend")
-	_check(legend != null and String(legend.text).contains("держать") and String(legend.text).contains("Два"), "the bell legend on screen: one / two / hold for long (logic review M2, item 2)")
+	var legend: Node = p.find_child("BellLegend", true, false)
+	_check(legend != null and legend.is_visible_in_tree() and p.legend_text().contains("держать") and p.legend_text().contains("2 удара"), "the bell legend on screen: one / two / hold for long (logic review M2, item 2)")
 	# Right.
 	await _ring(bell, 1)
 	await _ring_stop_at_bar(bell)
 	_check(p.signals_seen.has("two") and p.hook.state == "stopped", "two strikes at the bar catch the hook (%s)" % p.hook.state)
+	_check(p.wanted_signal() == "long", "the hook under the bar: the long ring is lit (%s)" % p.wanted_signal())
 	await _ring_long(bell)
 	guard = 0
 	while not gs.has_flag("office_unbolted") and guard < 900:
@@ -1361,6 +1414,10 @@ func _test_office_mirror_mouse() -> void:
 func _drive_wedges(at: Vector2 = Vector2.INF, max_hits: int = 12) -> int:
 	var made := 0
 	var guard := 0
+	# H26: the normal green is narrow (0.12) — headless frames are long, so the marker is slowed while the bot aims
+	# (the clicks stay real; a player sees the normal speed).
+	var ts := Engine.time_scale
+	Engine.time_scale = minf(ts, 0.3)
 	while made < max_hits and not gs.has_flag("office_mirror_clamped") and guard < 20000 and sr.mechanic_open:
 		guard += 1
 		if not sr.current_beat.is_empty():
@@ -1377,6 +1434,7 @@ func _drive_wedges(at: Vector2 = Vector2.INF, max_hits: int = 12) -> int:
 			await _frames(2)
 		else:
 			await process_frame
+	Engine.time_scale = ts
 	return made
 
 

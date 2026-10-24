@@ -84,7 +84,9 @@
         "pause_s": 3.0, "confirm_s": 0.9,
         "answer_s": 2.4,
         "hint_pos": [1180, 860],
-        "texts": {"label_far": "@R1d.lantern.label_far", "label_count": "@R1d.lantern.label_count", "count_wrong": "@R1d.lantern.count_wrong"},
+        "texts": {"label_far": "@R1d.lantern.label_far", "label_count": "@R1d.lantern.label_count", "count_wrong": "@R1d.lantern.count_wrong", "label_drag": "@mech.lantern.label_drag"},
+        "lid": {"box": [696, 340, 228, 355], "window": [696, 340, 228, 355], "clip": [690, 180, 240, 520], "housing": [640, 180, 340, 162], "lift": 315, "drag_px": 260, "open_at": 0.8, "fade_from": 0.8, "open_anim_s": 0.15, "fall_s": 0.35,
+          "_note": "H35 (Директор 24.10: «крышку фонаря поднимать мышкой, чтобы тянулась-открывалась, с нормальной анимацией»): заслонка — вырезка закрытой картинки (box, px холста 1672×941), под ней окно открытой (window, пламя); тянуть вверх — заслонка идёт за мышью до lift px холста (drag_px — экранных px на весь ход) и уходит под верх фонаря (housing — над ней, clip — где её видно); отпущена ниже open_at — сама съезжает вниз за fall_s; дотянута — открыта (вспышка), open_s держится и падает; верх хода — сливается с открытой картинкой (fade_from); щелчок без протягивания — подсказка label_drag"},
         "events": {"answered": {"sets": ["three_lights_sent", "far_lights_answered"]}}
       }
     },

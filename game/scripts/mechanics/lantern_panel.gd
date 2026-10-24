@@ -13,6 +13,12 @@ extends MechanicPanel
 ## answer from the far bank — three lights and the snow coming through — is drawn by the engine over the
 ## painting's far bank (soft glows); in the room R1 the delivered layers R1_far_lights / R1_far_snow show it.
 ## Coordinates: `lantern_box`, `far_lights`, `far_snow` in canvas px (1672×941, shown full screen).
+## H35 (Director 24.10: «поднятие крышки фонаря сделать мышкой, чтобы он тянулся-открывался, с нормальной анимацией»):
+## the shutter plate is lifted by the mouse — press on it and pull up; the plate (`lid.box` of the closed picture)
+## follows the pointer up to `lid.lift` px, sliding behind the lantern's top (`lid.housing`) and baring the flame
+## (the open picture under it). Let go below `lid.open_at` — it slides back down by itself; pulled up to the end —
+## it opens (that is the flash), stays open `open_s` and drops back. A click without pulling opens nothing — the hint
+## «потяни вверх» flashes. `flash()` stays for tests and bots (the same as a full pull).
 
 var shutter: TextureRect = null      # the closed state; hidden while the shutter is open
 var lit: TextureRect = null          # the open state (flame in the glass)
@@ -26,6 +32,17 @@ var _open_t: float = -1.0
 var _last_flash_t: float = -100.0
 var _answer_t: float = -1.0
 var marks: Label = null           # «● ○ ○» — the flashes given in this series
+var lid_f: float = 0.0            # how far the shutter plate is up: 0 — closed, 1 — open
+var lid: TextureRect = null       # the plate (closed picture's crop), moves up inside LidClip
+var lid_open: TextureRect = null  # the open picture over all once the plate is up (its light, the plate seen above)
+var housing: TextureRect = null   # the lantern's top (closed picture): the plate slides behind it
+var drag_hint: Label = null
+var dragging: bool = false
+var drag_y0: float = 0.0
+var drag_px: float = 260.0        # screen px of pulling for the whole lift
+var _lid_target: float = -1.0     # the plate slides on its own toward this (−1 — it follows the mouse / rests)
+var _hint_t: float = -100.0
+var drag_clicks: int = 0          # presses released without a pull (tests)
 
 
 func build() -> void:
@@ -36,6 +53,7 @@ func build() -> void:
 	lit.name = "LanternOpen"
 	shutter = crop(String(art.get("closed", "")), full, Vector2.ZERO, k)
 	shutter.name = "Shutter"
+	_build_lid(art, k)
 	far_snow = Node2D.new()
 	far_snow.name = "FarSnow"
 	far_snow.modulate.a = 0.0
@@ -54,8 +72,10 @@ func build() -> void:
 	label(text("label_far"), fp, 420)
 	var hp := v2(spec.get("hint_pos", [1180, 860]))
 	label(text("label_count"), hp, 640)
-	marks = label("", hp + Vector2(0, 44), 640)
+	marks = label("", hp + Vector2(0, 84), 640)   # under the two lines of the hint
 	marks.name = "FlashMarks"
+	drag_hint = label(text("label_drag"), hp + Vector2(0, -50), 640)
+	drag_hint.name = "DragHint"
 	far_snow.modulate.a = 0.55 if flag("road_held_both_ends") else 0.0
 	if flag("far_lights_answered"):
 		answered_sent = true
@@ -63,18 +83,84 @@ func build() -> void:
 	_update_marks()
 
 
+## The plate: the closed picture under everything; over its window the open picture's window (the flame) — bared as
+## the plate (a crop of the closed picture) slides up inside its clip, behind the lantern's top (the closed
+## picture's housing, over it); the whole open picture fades in at the top of the lift.
+func _build_lid(art: Dictionary, k: float) -> void:
+	var ld: Dictionary = spec.get("lid", {})
+	var box: Array = ld.get("box", [696, 340, 228, 355])
+	var win: Array = ld.get("window", [696, 340, 228, 330])
+	var clip: Array = ld.get("clip", [690, 180, 240, 520])
+	var hs: Array = ld.get("housing", [640, 180, 340, 162])
+	drag_px = float(ld.get("drag_px", 260.0))
+	crop(String(art.get("open", "")), win, Vector2(float(win[0]), float(win[1])) * k, k).name = "OpenWindow"
+	var lc := Control.new()
+	lc.name = "LidClip"
+	lc.position = Vector2(float(clip[0]), float(clip[1])) * k
+	lc.size = Vector2(float(clip[2]), float(clip[3])) * k
+	lc.clip_contents = true
+	lc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(lc)
+	lid = crop(String(art.get("closed", "")), box, (Vector2(float(box[0]), float(box[1])) - Vector2(float(clip[0]), float(clip[1]))) * k, k, lc)
+	lid.name = "Lid"
+	lid.set_meta("rest_y", lid.position.y)
+	housing = crop(String(art.get("closed", "")), hs, Vector2(float(hs[0]), float(hs[1])) * k, k)
+	housing.name = "Housing"
+	lid_open = crop(String(art.get("open", "")), [0, 0, 1672, 941], Vector2.ZERO, k)
+	lid_open.name = "OpenFull"
+	lid_open.modulate.a = 0.0
+	lit.visible = false   # the open picture is now the plate's top state (OpenFull)
+
+
+func _set_lid(f: float) -> void:
+	lid_f = clampf(f, 0.0, 1.0)
+	if lid == null:
+		return
+	var k := 1920.0 / 1672.0
+	var lift := float(spec.get("lid", {}).get("lift", 315.0)) * k
+	lid.position.y = float(lid.get_meta("rest_y")) - lid_f * lift
+	var top := float(spec.get("lid", {}).get("fade_from", 0.8))
+	lid_open.modulate.a = smoothstep(top, 1.0, lid_f)
+
+
+## Mouse on the plate: press — take it; drag up — it follows; let go — it opens (pulled far enough) or slides back.
 func _on_lantern_input(ev: InputEvent) -> void:
-	if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+	if ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_LEFT:
 		accept_event()
+		if ev.pressed:
+			if _open_t >= 0.0:
+				return
+			# Caught while sliding back: it goes on from where it is.
+			_lid_target = -1.0
+			dragging = true
+			drag_y0 = ev.position.y + lid_f * drag_px
+		elif dragging:
+			dragging = false
+			_release_lid()
+	elif ev is InputEventMouseMotion and dragging:
+		accept_event()
+		_set_lid((drag_y0 - ev.position.y) / maxf(drag_px, 1.0))
+		if lid_f >= 1.0:
+			dragging = false
+			flash()
+
+
+func _release_lid() -> void:
+	if lid_f >= float(spec.get("lid", {}).get("open_at", 0.8)):
 		flash()
+		return
+	if lid_f < 0.04:
+		drag_clicks += 1
+		_hint_t = clock   # a click without a pull: «потяни вверх»
+	_lid_target = 0.0     # not far enough: it slides back down
 
 
-## One flash: the shutter opens for a moment and closes by itself.
+## One flash: the plate goes up to the end (the shutter opens), stays a moment and drops back by itself.
 func flash() -> void:
 	if _open_t >= 0.0:
 		return
 	_open_t = clock
-	shutter.visible = false
+	_lid_target = 1.0
 	sound("shutter")
 	if answered_sent or _answer_t >= 0.0:
 		return
@@ -85,10 +171,20 @@ func flash() -> void:
 		_judge()
 
 
-func tick(_delta: float) -> void:
-	if _open_t >= 0.0 and clock - _open_t >= float(spec.get("open_s", 0.45)):
+func tick(delta: float) -> void:
+	# The plate slides on its own: up to the end on a flash, back down when let go or after the flash.
+	if _lid_target >= 0.0 and not dragging:
+		var sp := 1.0 / maxf(float(spec.get("lid", {}).get("open_anim_s" if _lid_target > lid_f else "fall_s", 0.3)), 0.01)
+		_set_lid(move_toward(lid_f, _lid_target, sp * delta))
+		if is_equal_approx(lid_f, _lid_target):
+			_lid_target = -1.0
+	if drag_hint != null:
+		var hk := clampf(1.0 - (clock - _hint_t) / 1.2, 0.0, 1.0)
+		drag_hint.modulate = Color(1.0, 1.0 - 0.25 * hk, 1.0 - 0.6 * hk, 1.0)
+		drag_hint.scale = Vector2.ONE * (1.0 + 0.06 * hk)
+	if _open_t >= 0.0 and clock - _open_t >= float(spec.get("open_s", 0.45)) and lid_f >= 1.0:
 		_open_t = -1.0
-		shutter.visible = true
+		_lid_target = 0.0
 		sound("shutter")
 	if not answered_sent and _answer_t < 0.0 and flashes > 0 and _open_t < 0.0 and not dialogue_up():
 		var quiet := clock - _last_flash_t
@@ -139,5 +235,9 @@ func probe() -> Dictionary:
 	for l in far_lights:
 		if l.visible:
 			lights += 1
+	var lc := center_of(lid) if lid != null else center_of(lantern_hit)
 	return {"lantern": center_of(lantern_hit), "flashes": flashes, "answered": answered_sent, "lights": lights,
-		"shutter_open": not shutter.visible, "sequence": sequence.duplicate()}
+		"shutter_open": lid_f > 0.02 or _open_t >= 0.0, "sequence": sequence.duplicate(), "lid": lid_f,
+		"dragging": dragging, "drag_clicks": drag_clicks,
+		# How to give a flash (bots, web checks): press on the plate and pull it up by `pull` px, then let go.
+		"lid_drag": {"x": lc.get("x", 0), "y": lc.get("y", 0), "pull": drag_px + 20.0, "how": "drag_up"}}

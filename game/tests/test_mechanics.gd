@@ -321,6 +321,16 @@ func _test_slow_setting() -> void:
 	var edge := TimingLogic.new({"green": 0.3, "center": 0.85})
 	_TB.apply_ease(edge)
 	_check(edge.zone().y <= 1.0 + 1e-6 and is_equal_approx(edge.zone().y - edge.zone().x, 0.45), "a widened zone near the end stays on the bar and as wide (%s)" % str(edge.zone()))
+	# H26 (Director 24.10): the wedges' zone is narrower in the normal mode; «Облегчить» keeps the old width (green_easy).
+	var wt: Dictionary = {}
+	for h in sd.room("H2").get("hotspots", []):
+		if String(h.get("id", "")) == "stand_zm":
+			wt = h.get("mechanic", {}).get("wedges", {}).get("timing", {})
+	var we := TimingLogic.new(wt)
+	_TB.apply_ease(we)
+	_check(is_equal_approx(we.green_w(), 0.3), "the wedges with «Облегчить»: the zone as before, 0.3 (%.3f)" % we.green_w())
+	var wn := TimingLogic.new(wt)
+	_check(wn.green_w() <= 0.2 * 0.67 + 1e-6 and wn.green_w() >= 0.2 * 0.5 - 1e-6, "the wedges, normal mode: the zone a third to a half narrower than 0.2 (%.3f)" % wn.green_w())
 	bar.free()
 	_TB.set_slow(false)
 	var bar2 = _TB.new()
