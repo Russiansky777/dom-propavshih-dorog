@@ -1,0 +1,238 @@
+[
+  {
+    "id": "M1_wheel_v2",
+    "prompt": "Create a single isolated UNDERSHOT MILL WATERWHEEL sprite for the attached painterly Russian village game. Reference is only for dark aged timber, iron hub, painterly realism, not for the camera angle.\nTransparent PNG 1024x1024. STRICT FRONT VIEW, perfect circular wheel, NO perspective, NO ellipse, absolutely centered iron axle hub at (512,512). Outer paddle-tip diameter 1000 pixels, equal 12 px margins. Precisely TWELVE radial spokes at even 30 degree intervals and TWELVE broad wooden water-catching paddles/buckets between a double rim. Make it clearly a functional WATERWHEEL with deep broad scoop paddles, NOT a cart wheel. Repeated construction uniform in all 12 sectors: rotation by 30 degrees repeats the geometry. Two concentric heavy dark wooden rings, evenly repeated iron straps and nails, dark iron circular hub matching the mill axle end in the reference. Symmetrical flat diffuse illumination from everywhere, no directional highlights and no cast shadow: game rotates the sprite. Old wet dark brown wood, subtle restrained woodgrain and rusty black iron. No water, droplets, splash, background, scenery or text. True transparent holes between spokes and transparent outside silhouette. All wheel tips inside canvas, no cropping. Painted realistic materials, crisp clean alpha edges.",
+    "transparent_background": true,
+    "references": [
+      "M1_bg.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-4bade9c1-709c-4ab3-8494-5697c5be5eda.png"
+  },
+  {
+    "id": "M1_state_wheel_pit",
+    "prompt": "Precise local background edit of this exact 1672x941 mill courtyard. Only change rectangle [1020,240,1450,670), everything else unchanged.\nCreate a narrow lowered WATER RACE beneath the existing axle: water from the sluice on the RIGHT at x1330..1450 flows LEFT beneath the axle toward x1060. Extend the dark water channel and its low stone/wood front wall under the future waterwheel. Water surface under axle must be near y575, bottom of future 340px wheel is y605 so submerged by 30px. The axle iron end remains EXACTLY at center (1215,435), unchanged, with original iron plate. Preserve upper timber mill wall, nearby sluice posts, far bank and shrubs. Lower channel runs x1060..1420 and is physically connected to existing sluice, water flowing right to left. Natural dark gray-brown rippling water with restrained reflection, not bright blue. Near retaining lip at roughly y625. No wheel, no new loose objects, no people or text. Same painting style, perspective, camera and autumn lighting. Perimeter of rectangle must match original pixels without seam. Do not alter path left of x1020 or below y670. Entire full-frame opaque output 1672x941.",
+    "transparent_background": false,
+    "references": [
+      "M1_bg.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": null
+  },
+  {
+    "id": "water_foam",
+    "prompt": "Use case: compositing. Create one transparent game VFX sprite, on a wide transparent canvas. Reference is style, lighting and water color for the mill sluice. Only a SMALL low horizontal strip of foamy water ripples with a few modest splashes at the RIGHT end, current flows right to left. Warm gray-blue brownish autumn water, painterly realistic strokes matching this reference. Wide thin strip ratio about 5:1, clean alpha between droplets, no black outline, no basin, no stones, no wheel, no background. Right edge splashes only up to one third strip height. Subtle whitish pale foam and translucent gray water glints, not a huge wave or ocean surf. Keep sprite centered, plenty of transparent space, opaque foam only where needed. Will be placed over the water below the mill axle.",
+    "transparent_background": true,
+    "references": [
+      "M1_with_pit.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-766c2fbb-d38d-4a83-b397-a6e98a4f115a.png"
+  },
+  {
+    "id": "water_drips",
+    "prompt": "Use case: compositing. Single transparent water-drip game sprite. Reference is style and light only. Three to five thin broken vertical water trickles dripping from the rising LEFT side of a wet mill wheel into the channel. Draw ONLY the falling water, no wheel, no ground, no scene. Unequal lengths: one long narrow translucent string, two broken shorter strings, sparse small gravity elongated droplets below. Soft warm gray-white transparent water catching dim overcast light, painterly realism, muted not glowing. Loose vertical cluster ratio width:height about 0.65:1. Narrow streams, alpha transparent between all droplets, not rain, no arc, no foam blanket, no outline. Centered with generous transparent margins.",
+    "transparent_background": true,
+    "references": [
+      "M1_with_pit.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-39af08cd-ab54-4597-8870-b568abfe791d.png"
+  },
+  {
+    "id": "scarf_edit",
+    "prompt": "Use case: precise-object-edit. Edit the FIRST image, preserve composition and exact bench, stove, cloth pattern, camera and light. SECOND image is the small wooden shelf that is now hidden UNDER the cloth on the bench. In the right third of the bench put that small shelf lying FLAT horizontally under the existing wet striped embroidered cloth. The cloth rises into a visible straight shallow step across this short shelf. Let ONLY the right end of the shelf protrude clearly from under the cloth: about 70 pixels on this 1110-pixel-wide crop, at x approximately 915-985 and y approximately 155-230. Include a small dark iron bracket at its exposed tip. Shelf total length about 280 pixels in this enlarged crop, not the entire bench. Adjust the right cloth edge slightly left to expose this end. Keep same red gray cream woven fabric, embroidery and fringe, same moisture-darkness, natural draping. Do not add new cloth or a second bench. Every other object and outer 40 pixel perimeter must remain exactly unchanged. Same wide 1110x615 framing.",
+    "transparent_background": false,
+    "references": [
+      "H1_scarf.png",
+      "shelf_original.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-474ce13d-b33c-45bd-ad2a-4e67598f09ed.png"
+  },
+  {
+    "id": "shelf_flat",
+    "prompt": "Use case: precise-object-edit. Create a transparent cutout of the SMALL wooden wall shelf from FIRST image, now lying FLAT on the seat of the bench in SECOND image. Only shelf, two dark forged iron brackets folded/resting underneath and the same small folded gray cloth lining on top, no bench or room. Shelf is an old warm brown plank with worn edges, viewed obliquely from above, long axis going left-to-right and receding slightly upward toward right, matching the bench seat. Its right tip clearly visible. Low compact silhouette width to height roughly 3:1. Not a table, no legs; two small iron brackets tucked under the board. Painterly realism, warm soft light from right, no cast shadow on background. Center sprite on transparent canvas, high detail. No text.",
+    "transparent_background": true,
+    "references": [
+      "shelf_original.png",
+      "H1_scarf.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-31df6112-4d89-4da1-889d-91c7c35988f3.png"
+  },
+  {
+    "id": "bed",
+    "prompt": "Use case: compositing. Transparent game room overlay of a single simple rustic Russian wooden cot. References are environment/camera/light ONLY. Bed will stand against low right attic wall below sloping rafters. Draw whole bed isolated, no walls, floor or boxes. Long axis left to right, viewed from slightly above and from left/front, like chest in second reference. Far end/head at RIGHT with ONE plain gray linen pillow. Rough-hewn dark aged wood low frame, straw mattress, neatly spread homespun patchwork quilt in muted faded red, slate blue and gray. Low plain posts, no ornate tall headboard. Ratio width:height about 2.1:1. Soft warm ambient attic light, subtle cooler daylight from upper left. Match painterly texture and subdued darkness of original room, avoid photoreal glossy detail. All legs visible, no people. Transparent background, very modest contact shadow only.",
+    "transparent_background": true,
+    "references": [
+      "H4_bed_area.png",
+      "_сведено_H4_чердак.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-84824cbc-dbf7-4a44-8502-8e7fa702506c.png"
+  },
+  {
+    "id": "chest_open",
+    "prompt": "Use case: precise-object-edit. EDIT this exact attic crop. Open ONLY this existing iron-banded wooden chest: its SAME lid now hinged upwards and backwards toward the sloping roof. Leave lower front body, feet, iron straps, lock plate, handle, silhouette, perspective and position EXACTLY unchanged. Interior dark, lined with old burlap and a little dry hay, EMPTY, no objects. Back lid open 95 degrees, show inner worn wooden planks. Preserve same chest identity and same lower outline, sack at left and attic beams/background untouched. Do not enlarge, move or redesign chest. Retain original crop framing 1380x1170 and original warm dim painterly style. Entire open lid within canvas with top around y100. No text, no people.",
+    "transparent_background": false,
+    "references": [
+      "H4_chest.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-e9895559-dbf1-4b9c-9b04-6cbeedd5d8f0.png"
+  },
+  {
+    "id": "chest_clapper",
+    "prompt": "Use case: background-extraction / precise-object-edit. Isolate the EXACT forged iron bell clapper shown in reference: battered forged rod, large rounded metal ball at one end, closed iron suspension eye and loose ring at the other, identical old iron texture and silhouette. Transparent background, no wooden tabletop, no cast shadow. Lay it almost horizontally with ball at LEFT, loop at RIGHT slightly higher, seen slightly from above, to be placed inside an open chest. Whole object fully visible, ratio length:height about 4:1. Soft muted warm light, much dimmer than reference highlights as if inside attic chest, painterly rendering, no letters.",
+    "transparent_background": true,
+    "references": [
+      "closeup_bell_clapper.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-50feb95c-1ca2-482f-b9b2-69abf1587cd4.png"
+  },
+  {
+    "id": "crate_blank",
+    "prompt": "Use case: precise-object-edit. Remove ONLY the black Cyrillic lettering from the front face of the central crate in this image. Replace it with matching aged bare wooden grain, a faint rubbed/scraped trace is acceptable but absolutely no readable letters or marks. Preserve every plank boundary, corner, nail, catch, lid, shadows, adjacent left box, wall and bench and perspective exactly as source. Same framing and dimensions 840x480, no other changes.",
+    "transparent_background": false,
+    "references": [
+      "H2_crate.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-5d0bbe1f-6621-4e21-8dc9-48484477f0b2.png"
+  },
+  {
+    "id": "bell_stand_nobell",
+    "prompt": "Use case: historical-scene. Game closeup 1672x941 landscape. References give this old Russian village workshop, timber, palette and painterly realism. Create an EMPTY wooden support for hanging the mill bell, no bell yet. A heavy rough-hewn overhead crossbeam on two vertical posts fixed into the SAME style of wooden trestles as second reference. IMPORTANT entire support including feet strictly in center x520-1150,y40-900 of 1672x941 canvas; around it quiet workshop background only. Crossbeam approximately x555-1115,y75-150; posts around x580 and1080; two narrow separate trestles with splayed feet around y700-880. Large empty unobstructed rectangular space between posts, no horizontal shelf in the middle. One forged iron hanging hook at center x836 from crossbeam underside down to y265. No bell, clapper, chain or objects on hook. Camera eye level slightly below where bell rim would be, front view with subtle perspective. Dim plaster wall behind, window LEFT with snow and autumn branches, stack of planks far RIGHT. Soft warm light from left, serene painterly texture matching references. No people, animals, letters, signs or numbers.",
+    "transparent_background": false,
+    "references": [
+      "H2_bg.png",
+      "bell_reference.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-796f91e2-e4ae-403e-a0a6-d37f435ba34c.png"
+  },
+  {
+    "id": "bell_body",
+    "prompt": "Use case: precise-object-edit / background-extraction. Create ONLY the same bronze mill bell shown in the reference as a transparent game sprite. Preserve its crown with several curved ears, thin decorative upper ornamental band, lower band, small worn embossed emblem on body, flared bronze rim, deep brown bronze patina with subtle muted gold wear. Keep the paper tag hanging on twine from right crown ear but make tag completely BLANK. Change camera to just BELOW bell rim: show the dark elliptical open mouth and inside it a small EMPTY iron suspension loop under dome. NO CLAPPER. Whole bell from crown top to bottom rim, no hanging hook, no wooden trestle, no support, no scene. Dark interior is part of bell, not transparent; holes through crown ears and outside silhouette transparent. Soft warm light from upper left, cool faint fill right, no strong directional cast shadows. Painterly realism same style reference, not pristine photographic metal. Tall silhouette ratio bell width:height around 0.85, centered with transparent margins. No text.",
+    "transparent_background": true,
+    "references": [
+      "bell_reference.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-2b4bc36b-8b1c-4ecb-8185-35037ddad4c3.png"
+  },
+  {
+    "id": "stand_isolated",
+    "prompt": "Use case: background-extraction. Remove ALL workshop background from the reference. Keep ONLY the exact central tall wooden bell suspension FRAME: heavy horizontal top crossbeam, both vertical posts, both trestles and their feet, iron fasteners, the single central forged hanging hook. Whole support silhouette must be unchanged. Everything through the large openings and outside the structure must be truly transparent. No floor, no wall, no cast shadows, no window, no boards, no tools, no furniture at far left. This is one whole rigid support object, including BOTH wooden trestles. All original wood surfaces, camera and light unchanged. Center on transparent canvas with sufficient margins.",
+    "transparent_background": true,
+    "references": [
+      "exec-796f91e2-e4ae-403e-a0a6-d37f435ba34c.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-5201399d-05ba-4111-90a6-52fea7af94ba.png"
+  },
+  {
+    "id": "stand_background",
+    "prompt": "Use case: precise-object-edit. Remove the ENTIRE central wooden bell hanging apparatus from this image: remove both tall vertical posts, top crossbeam, central iron hook, both trestles and their floor shadows. Leave an EMPTY quiet workshop corner in their place: continuous old plaster wall, old timber floor, matching existing side wall beams. Preserve the window on LEFT, woodworking tools at far left, stack of planks and shelf far RIGHT, exact camera, framing, light and painterly style. No bell or other new objects, no text. Same 1672x941 wide scene, empty center.",
+    "transparent_background": false,
+    "references": [
+      "exec-796f91e2-e4ae-403e-a0a6-d37f435ba34c.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-c034a219-98b4-4188-9064-9513017de5c7.png"
+  },
+  {
+    "id": "hung_clapper",
+    "prompt": "Use case: precise-object-edit. Single transparent sprite: exact old forged iron bell clapper from FIRST reference, now hanging STRAIGHT VERTICALLY, eye/ring at TOP, long battered narrow rod below, round ball at BOTTOM. Match original hammered dark iron texture, proportions and ring design. Second image is the bell it hangs inside, match its soft warm upper-left light but clapper is dark in bell shadow, muted small metallic glints. NO BELL, no hook, no support, no background and no cast shadow. Whole clapper fully visible, centered with transparent margins, narrow vertical silhouette. Painterly realism matching original game. Not polished chrome. No text.",
+    "transparent_background": true,
+    "references": [
+      "closeup_bell_clapper.png",
+      "exec-2b4bc36b-8b1c-4ecb-8185-35037ddad4c3.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-e1009258-7025-4239-8e4a-41b6b614ff47.png"
+  },
+  {
+    "id": "mitya_board",
+    "prompt": "Use case: compositing. Transparent game sprite of the SAME little old gray counting board from FIRST reference, now standing UPRIGHT with long axis nearly vertical, leaning back slightly against fence as in SECOND reference. Keep aged gray split wood, chipped rounded ends, nailheads and exactly TWENTY subtle cut notches: two vertical columns of TEN short horizontal cuts each. The board was rotated upright, not redesigned. No label, no letters, no hanging rope loop visible. A light dusting of snow on its narrow upper end and tiny snow at its foot, small soft contact shadow only. Dim muted gray-brown like the fence, quiet low contrast, cold soft outdoor daylight. Sprite silhouette width about 0.42 of its height with slight lean, not a large sign. Whole isolated board, transparent background no fence, no bush or ground. Painterly style matching references.",
+    "transparent_background": true,
+    "references": [
+      "closeup_mitya_board.png",
+      "O4_fence.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-18823e35-78cd-49d5-995e-3176bd393444.png"
+  },
+  {
+    "id": "bench_clean",
+    "prompt": "Use case: precise-object-edit. EDIT this exact 1672x941 game closeup. Remove ONLY two movable objects: (1) the pale notched wooden stop block standing in the long slot at center x752-976,y346-476, leaving the existing long slot EMPTY and continuous; (2) the wooden threaded screw assembly with nut block and handles at x924-1466,y272-454, including its shadow. Reconstruct matching pale pine tabletop grain where screw was. Keep long slot boundaries in EXACT same place. Everything else must be IDENTICAL: hand plane, every shaving and curl, metal carpenter's square, trestles, table silhouette, background, lighting, grain outside the two edited areas. Do NOT remove hand plane or square. No new objects. Keep camera and exact original composition, no cropping.",
+    "transparent_background": false,
+    "references": [
+      "closeup_second_bench.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-b64a6c90-b17f-4c80-992e-2f4e93300e1f.png"
+  },
+  {
+    "id": "bench_stop",
+    "prompt": "Use case: background-extraction. Extract ONLY the pale pine notched stop block from this reference as a clean transparent sprite. Keep exact identity, rectangular upright body, small rectangular notch low at LEFT, small sloped/chipped corners, front grain, top and right end surfaces, camera angle and golden soft upper-left light. Remove EVERYTHING else: table, slot, screw in upper right, shavings and cast shadow. No background whatsoever, transparent hole in notch. Entire block, isolated with margins; wide low silhouette as in source. Do not redesign, rotate or enlarge notch. No cast shadow, only its own shaded faces.",
+    "transparent_background": true,
+    "references": [
+      "bench_stop.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-9db49280-d1db-47a8-ac1f-8ad869974f2a.png"
+  },
+  {
+    "id": "bench_screw",
+    "prompt": "Use case: background-extraction. Extract ONLY the wooden screw assembly from reference: long horizontal threaded shaft to LEFT, square pale pine nut block at middle, cylindrical hub and wooden handles at RIGHT. Exact same silhouette, viewpoint, proportions and warm soft upper-left light. Keep every screw thread and both handle details, whole object. Remove tabletop, every cast shadow, the stop block at lower left and metal square below. True transparent background and all gaps, no ambient rectangle, own shaded faces only. Painterly realism from source, no text.",
+    "transparent_background": true,
+    "references": [
+      "bench_screw.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-946fd3e4-058b-4c65-981d-c3cb7b772ad8.png"
+  },
+  {
+    "id": "bench_wedge",
+    "prompt": "Use case: compositing. One transparent game sprite of a SHORT PALE PINE WEDGE lying on this tabletop, matching its perspective and warm soft light from upper left. Clearly triangular taper, thick squared LEFT end and thin pointed RIGHT end. Visible top sloping face, darker front side face, pine grain and a small knot; handmade wood, not polished. Short wide wedge with width:height silhouette about 3.4:1. Camera looks down obliquely from front-left like source workbench. No table, background or cast shadow; only wedge and its own shaded faces. Single object centered with transparent margins. No text or markings.",
+    "transparent_background": true,
+    "references": [
+      "closeup_second_bench.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-2c5cc04d-43cd-4ce8-af81-83750bb94f14.png"
+  },
+  {
+    "id": "bench_key",
+    "prompt": "Use case: compositing. One transparent game sprite of a straight short rectangular PALE PINE KEY INSERT for the slot in the reference workbench. Uniform rectangular section, parallel faces, square ends, NO wedge/taper. Width of wood matches slot cross-section; shape long low narrow rectangular bar, viewed obliquely from above/front-left as tabletop. Long axis left to right slightly down toward right. Warm upper-left light, same fresh pine color and grain as tabletop, subtle handmade edge. Sprite width:height about 3:1 including perspective. No table, no background, no cast shadow, only its own shaded faces. No text.",
+    "transparent_background": true,
+    "references": [
+      "closeup_second_bench.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-5e25eb64-1078-4275-9aa9-751f695869dc.png"
+  },
+  {
+    "id": "bench_board",
+    "prompt": "Use case: compositing. A single LONG NARROW PLANED PALE PINE BOARD, upright leaning very slightly, to stand at far RIGHT of the reference workbench. Transparent game sprite, nothing else. Full board visible from top to bottom, thin side face visible on RIGHT, square cut top, subtle knots and straight lengthwise grain, softly worn sharp edges. Width:height about 1:10. Natural warm upper-left workshop light matching reference, front softly lit right edge shaded. Not a thick beam or pole, no feet, no table, no floor, no cast shadow or halo. Centered on transparent canvas.",
+    "transparent_background": true,
+    "references": [
+      "closeup_second_bench.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-02587300-06a9-4018-b2c1-5b076c47dd24.png"
+  },
+  {
+    "id": "mitya_board_fixed",
+    "prompt": "Use case: precise-object-edit. The board currently has TWO COLUMNS OF NINE NOTCHES, total eighteen. Make ONE LOCAL CHANGE ONLY: add ONE additional horizontal carved notch at the bottom of EACH column, directly below the existing ninth row, around y1250 in this 1536px high image, above the bottom nailheads. Final count must be TWO columns of TEN notches = TWENTY. Leave the existing eighteen cuts, all board shape, top snow, bottom snow, grain, nails, camera, illumination and transparency otherwise EXACTLY unchanged. Do not add anything else. Transparent background.",
+    "transparent_background": true,
+    "references": [
+      "exec-18823e35-78cd-49d5-995e-3176bd393444.png"
+    ],
+    "mode": "built-in image_gen",
+    "output_file": "exec-31f634c7-ebef-4f29-a4b1-a2a7a84b47df.png"
+  }
+]

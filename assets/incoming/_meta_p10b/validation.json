@@ -1,0 +1,200 @@
+{
+  "files": [
+    {
+      "file": "M1_wheel_v2.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "M1_state_wheel_pit.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "M1_wheel_water_front_1.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "M1_wheel_water_front_2.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "M1_wheel_water_front_3.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "M1_wheel_water_still.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "M1_wheel_drips_1.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "M1_wheel_drips_2.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "M1_wheel_drips_3.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "H1_state_scarf_over_shelf.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "H1_state_shelf_on_bench.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "H4_state_bed.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "H4_state_chest_open.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "H4_state_chest_clapper.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "H2_state_crate_blank.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "closeup_bell_stand.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "closeup_bell_clapper_hung.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "closeup_bell_body.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "closeup_bell_stand_nobell.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "O4_state_mitya_board_fence.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "closeup_second_bench_clean.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "bench_part_stop.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "bench_part_screw.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "bench_part_wedge.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "bench_part_key.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    },
+    {
+      "file": "bench_part_board.png",
+      "dimensions": true,
+      "mode": true,
+      "srgb": true,
+      "alpha_bounds": true
+    }
+  ],
+  "checks": {
+    "M1_state_wheel_pit.png_opaque_rect_and_exact_perimeter": true,
+    "H1_state_scarf_over_shelf.png_opaque_rect_and_exact_perimeter": true,
+    "H2_state_crate_blank.png_opaque_rect_and_exact_perimeter": true,
+    "axle_unchanged": true,
+    "bench_outside_edit_mask_unchanged": true,
+    "plane_unchanged": true,
+    "left_shavings_unchanged": true,
+    "central_shavings_unchanged": true,
+    "upper_right_shavings_unchanged": true,
+    "bell_background_unchanged_outside_body": true,
+    "wheel_bbox_1000px": true,
+    "bell_layers_reconstruct_full_frame_exactly": true
+  }
+}
