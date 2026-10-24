@@ -1,17 +1,1 @@
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v4] баланс: {'balance': 292, 'monthly_credits': 0, 'permanent_credits': 292, 'monthly_resets_at': 1794445230000}
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a16df5-c69a-760a-a209-886417f7bb20: IN_PROGRESS 0
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a16df5-c69a-760a-a209-886417f7bb20: IN_PROGRESS 31
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a16df5-c69a-760a-a209-886417f7bb20: IN_PROGRESS 57
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a16df5-c69a-760a-a209-886417f7bb20: IN_PROGRESS 90
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  animations 01a16df5-c69a-760a-a209-886417f7bb20: SUCCEEDED 100
-[agata_v4] actions: задача 01a16df5-c69a-760a-a209-886417f7bb20, кредитов: 3
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v4] баланс после: {'balance': 289, 'monthly_credits': 0, 'permanent_credits': 289, 'monthly_resets_at': 1794445230000}
+[agata_v4] animations.glb из https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/agata-v4-work/agata_v4_animations.glb
