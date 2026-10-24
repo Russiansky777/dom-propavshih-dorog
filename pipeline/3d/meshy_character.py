@@ -40,10 +40,14 @@ ACTION_KEYWORDS = {
 ACTION_STOPWORDS = ["swim", "sit", "crouch", "combat", "fight", "sword", "gun", "rifle", "zombie", "dance", "injured", "drunk", "sneak", "crawl", "jump", "fall", "fly", "turn", "look", "phone", "texting", "bored", "angry", "scared"]
 
 
-def split_sheet(sheet: Path, out_dir: Path, min_width: int = 60, pad: int = 24) -> list[Path]:
-    """Режет лист по пустым (прозрачным) столбцам на отдельные фигуры, выравнивает высоту кадров."""
+def split_sheet(sheet: Path, out_dir: Path, min_width: int = 60, pad: int = 24, bg_tol: int = 10) -> list[Path]:
+    """Режет лист по пустым (прозрачным) столбцам на отдельные фигуры, выравнивает высоту кадров.
+    Лист без прозрачности (agata_sheet_v2: ровный фон #DEDEDC) — фон по углу, допуск bg_tol; кадры остаются с фоном."""
     im = Image.open(sheet).convert("RGBA")
     a = np.array(im)[..., 3]
+    if (a < 10).sum() == 0:
+        rgb = np.array(im)[..., :3].astype(int)
+        a = np.where(np.abs(rgb - rgb[0, 0]).max(axis=2) > bg_tol, 255, 0)
     cols = (a >= 10).any(axis=0)
     segs, start = [], None
     for x, c in enumerate(cols):
