@@ -152,7 +152,28 @@ func from_dict(data: Dictionary) -> bool:
 	var raw_counters: Dictionary = data.get("counters", {})
 	for k in raw_counters.keys():
 		counters[String(k)] = int(raw_counters[k])
+	_apply_save_fixups()
 	return true
+
+
+## A save made before a rule changed (data/story/meta.json → save_fixups [{if, unless, scene}]): when the flags say so,
+## the scene counts as done with its grants (T8: the house after Pelageya — a day-two save that skipped M02).
+func _apply_save_fixups() -> void:
+	for fx in StoryData.save_fixups:
+		var ok := true
+		for f in fx.get("if", []):
+			if not bool(flags.get(String(f), false)):
+				ok = false
+		for f in fx.get("unless", []):
+			if bool(flags.get(String(f), false)):
+				ok = false
+		var id := String(fx.get("scene", ""))
+		if not ok or id == "":
+			continue
+		flags["started_" + id] = true
+		flags["done_" + id] = true
+		for f in StoryData.scene(id).get("grants", {}).get("flags", []):
+			flags[String(f)] = true
 
 
 static func save_path(slot: String) -> String:

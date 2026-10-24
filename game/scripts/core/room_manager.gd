@@ -234,7 +234,7 @@ func start_with(p: Dictionary) -> bool:
 				if not c.get("any", []).is_empty():
 					GameState.set_flag(String(c["any"][0]), true)
 		if sc.has("goal"):
-			last_goal = String(sc["goal"])
+			last_goal = StoryData.scene_goal(sc)
 			last_scene = id
 		if id == upto:
 			break

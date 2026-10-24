@@ -1171,7 +1171,7 @@ func reveal_hotspots() -> bool:
 		return false
 	var cues: Array = []
 	for e in room.get_exits():
-		if e is StoryExit and (e as StoryExit).cue != null:
+		if e is StoryExit and (e as StoryExit).cue != null and (e as StoryExit).is_active():
 			cues.append((e as StoryExit).cue)
 	reveal.show_targets(reveal_targets(), cues)
 	return true
@@ -1189,7 +1189,7 @@ func reveal_targets() -> Array:
 			# The node sits at the centre of its rect (a state may move it — StoryHotspot._apply_geometry).
 			out.append({"kind": "hotspot", "id": (h as StoryHotspot).hotspot_id, "label": (h as StoryHotspot).label_text(), "at": h.global_position, "dir": ""})
 	for e in room.get_exits():
-		if e is StoryExit:
+		if e is StoryExit and (e as StoryExit).is_active():
 			var se := e as StoryExit
 			var at: Vector2 = se.cue.global_position if se.cue != null else se.global_position
 			out.append({"kind": "exit", "id": se.target_room, "label": se.label_text(), "at": at, "dir": se.cue_dir, "icon": se.icon_name()})

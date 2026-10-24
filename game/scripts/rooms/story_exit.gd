@@ -81,7 +81,36 @@ func label_text() -> String:
 	return StoryData.text(String(st.get("label", data.get("label", target_room))))
 
 
+## Shown at all (H36: «В лодку» at the turn only while the boat is there): the same `visible_if` / `hidden_if` /
+## `hidden_when` [{all, not}] as a hotspot. A hidden exit is not drawn, its mark is gone and it takes no clicks.
+func is_active() -> bool:
+	for f in data.get("visible_if", []):
+		if not GameState.has_flag(String(f)):
+			return false
+	for f in data.get("hidden_if", []):
+		if GameState.has_flag(String(f)):
+			return false
+	for c in data.get("hidden_when", []):
+		var all_set := true
+		for f in c.get("all", []):
+			if not GameState.has_flag(String(f)):
+				all_set = false
+		var none_set := true
+		for f in c.get("not", []):
+			if GameState.has_flag(String(f)):
+				none_set = false
+		if all_set and none_set:
+			return false
+	return true
+
+
 func refresh() -> void:
+	var active := is_active()
+	if visible != active:
+		visible = active
+	var shape := get_node_or_null("Shape")
+	if shape is CollisionShape2D and shape.disabled == active:
+		shape.set_deferred("disabled", not active)
 	var st := current_state()
 	if fill != null:
 		var c := base_color

@@ -9,6 +9,8 @@ extends Node
 
 ## A villager walked off in a staging (stage[].npc_go) — tests and probes.
 signal npc_went(npc_id: String)
+## A room layer moved off in a staging (stage[].layer_go — the empty boat along the rope, H36) — tests and probes.
+signal layer_went(layer_id: String)
 signal beat_changed()
 signal scene_started(scene_id: String)
 signal scene_completed(scene_id: String)
@@ -423,7 +425,7 @@ func _complete_scene(scene_id: String) -> void:
 	GameState.set_flag("done_" + scene_id, true)
 	# Цель журнала для игрока — поле goal (без кодов комнат/эпизодов); result — заметка сценария, запасной вариант.
 	if String(sc.get("type", "")) == "main" and (sc.has("goal") or sc.has("result")):
-		GameState.set_goal(String(sc.get("goal", sc.get("result", ""))), scene_id)
+		GameState.set_goal(StoryData.scene_goal(sc), scene_id)
 	_bedtime_check()
 	var room_spec: Dictionary = StoryData.room(current_room_id()).get("scenes", {}).get(scene_id, {})
 	if room_spec.has("complete_text"):
@@ -473,11 +475,16 @@ func _run_stage(spec: Dictionary) -> void:
 			return
 	# A villager walks off first (`npc_go`), then the fade (G18, G29: no more «does nothing, then a cut»).
 	var go_serial := _stage_serial
-	var go_s := _stage_npc_go(spec)
+	var go_s := maxf(_stage_npc_go(spec), _stage_layer_go(spec))
 	if go_s > 0.0:
 		await get_tree().create_timer(go_s).timeout
 		if go_serial != _stage_serial:
 			return
+	# H36: a picture that moves by itself (`layer_go` — the empty boat off along the rope) needs no fade of its own.
+	if spec.has("layer_go") and not spec.has("fade_out_s") and not spec.has("room") and not spec.has("cut"):
+		_stage_running = false
+		_next()
+		return
 	if bool(spec.get("cut", false)):
 		for snd in spec.get("sounds", []):
 			stage_sound_requested.emit(String(snd.get("id", "")))
@@ -553,6 +560,48 @@ func _stage_npc_go(spec: Dictionary) -> float:
 	return longest
 
 
+## H36 (Director 24.10: «лодка на кольце скользит по канату и уходит в туман»): `layer_go` [{id, by: [dx, dy], scale,
+## pivot: [x, y], fade, s}] — a state layer of the room (rooms data `layers[].id`, if shown now) slides by `by` screen px,
+## shrinks to `scale` about `pivot` (screen px) and fades out (`fade`, default true) in `s` seconds. `layer_reset` [ids]
+## in a later staging puts it back while black (the boat hauled home). A rebuilt room (load, re-entry) draws the layer
+## in place anyway. Returns the longest of the seconds (0 — nothing to move).
+func _stage_layer_go(spec: Dictionary) -> float:
+	var longest := 0.0
+	var room := RoomManager.current_room
+	if room == null:
+		return 0.0
+	for g in spec.get("layer_go", []):
+		var node := room.get_node_or_null("Layers/" + String(g.get("id", ""))) as Node2D
+		if node == null or not node.visible:
+			continue
+		var secs := float(g.get("s", 2.0))
+		var k := float(g.get("scale", 1.0))
+		var pv: Array = g.get("pivot", [0, 0])
+		var by: Array = g.get("by", [0, 0])
+		var to := Vector2(float(pv[0]), float(pv[1])) * (1.0 - k) + Vector2(float(by[0]), float(by[1]))
+		layer_went.emit(String(g.get("id", "")))
+		var tw := node.create_tween()
+		tw.set_parallel(true)
+		tw.tween_property(node, "position", to, secs).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		tw.tween_property(node, "scale", Vector2(k, k), secs).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		if bool(g.get("fade", true)):
+			tw.tween_property(node, "modulate:a", 0.0, secs * 0.6).set_delay(secs * 0.4)
+		longest = maxf(longest, secs)
+	return longest
+
+
+func _stage_layer_reset(spec: Dictionary) -> void:
+	var room := RoomManager.current_room
+	if room == null:
+		return
+	for id in spec.get("layer_reset", []):
+		var node := room.get_node_or_null("Layers/" + String(id)) as Node2D
+		if node != null:
+			node.position = Vector2.ZERO
+			node.scale = Vector2.ONE
+			node.modulate.a = 1.0
+
+
 ## H24 (Director 24.10: «движение Павла в дом непонятное, дверь не открывается и не закрывается»): the painted door
 ## of npc_go `door` {rect: [x, y, w, h] on screen, hinge: "left" | "right"} swings open while the villager walks up,
 ## he goes into the dark doorway, and it swings shut behind him. The leaf is the door cut from the room's own
@@ -623,6 +672,7 @@ func _stage_apply(spec: Dictionary) -> void:
 	# shows the same; the scene's own grants still come at its end.
 	for f in spec.get("sets", []):
 		GameState.set_flag(String(f), true)
+	_stage_layer_reset(spec)
 
 
 ## T6: shows the change-of-day card `key` once: the flag day_card_<key> is part of the save, so neither a load nor
@@ -1235,7 +1285,7 @@ func use_exit(e: StoryExit) -> void:
 	RoomManager.call_deferred("change_room", e.target_room, e.target_spawn)
 
 
-## Exit `item_use` {sets, consumes, text, once_flag, enter}: the flags open the exit (its edge in
+## Exit `item_use` {sets, consumes, text, once_flag, enter, requires, fail_text}: the flags open the exit (its edge in
 ## locations.json requires them), a consumed item leaves the bag for good (the flag has_<item> stays, so it
 ## is never given again), `enter` walks through once the text is read. All of it is saved state: after a
 ## load the door stays open and the key stays used.
@@ -1243,6 +1293,11 @@ func _run_exit_item(e: StoryExit, act: Dictionary, item_id: String) -> void:
 	var once := String(act.get("once_flag", ""))
 	if once != "" and GameState.has_flag(once):
 		narrate_key(String(act.get("text_done", "@ui.item_no_effect")))
+		return
+	# T8 (Director 24.10: the house opens only after Pelageya, M02): `requires` {flags} not met — `fail_text`, the item
+	# stays in the bag and nothing is set.
+	if act.has("requires") and not requires_met(act["requires"]):
+		narrate_key(String(act.get("fail_text", "@ui.item_no_effect")))
 		return
 	for f in act.get("sets", []):
 		GameState.set_flag(String(f), true)

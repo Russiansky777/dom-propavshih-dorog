@@ -233,7 +233,7 @@ func _publish_probe_state() -> void:
 			if e is StoryExit:
 				var rect: Rect2 = _hotspot_rect(e)
 				exits[e.target_room] = {"x": rect.get_center().x, "y": rect.get_center().y, "open": e.is_open(),
-					"exists": e.target_exists()}
+					"exists": e.target_exists(), "visible": e.is_active()}
 				var cue: ExitCue = e.cue
 				if cue != null and is_instance_valid(cue):   # the visible mark (F20: where it stands, where it points)
 					exits[e.target_room]["mark"] = {"x": cue.global_position.x, "y": cue.global_position.y,

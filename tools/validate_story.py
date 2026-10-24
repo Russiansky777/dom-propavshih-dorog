@@ -581,6 +581,27 @@ def check_conditions(ctx: str, o: dict) -> None:
             err(f"{ctx}: switch {sw!r} — нет переключателя {name} в meta.json → switches")
 
 
+# ---------- 1и. цель журнала по флагам (goal_left, T8: свободный день называет только несделанное) ----------
+# Каждый пункт — с условием (if / unless — известные флаги), иначе он «сделанным» никогда не пропадёт; тексты без кодов.
+for s in scenes:
+    gl = s.get("goal_left")
+    if gl is None:
+        continue
+    gctx = f"{s['id']}.goal_left"
+    if not isinstance(gl, dict) or not gl.get("items") or not gl.get("none"):
+        err(f"{gctx}: нужны items (что ещё не сделано) и none (если сделано всё)")
+        continue
+    for k in ("lead", "head", "none"):
+        if gl.get(k) and _code.search(str(gl[k])):
+            err(f"{gctx}.{k}: служебный код «{_code.search(str(gl[k])).group(0)}»")
+    for j, it in enumerate(gl["items"]):
+        if not (it.get("if") or it.get("unless")):
+            err(f"{gctx}.items[{j}]: нет условия — пункт не пропадёт, когда сделан")
+        if _code.search(str(it.get("text", ""))):
+            err(f"{gctx}.items[{j}]: служебный код в тексте")
+        check_conditions(f"{gctx}.items[{j}]", it)
+
+
 _sfx_doc = load("sfx.json") if (STORY / "sfx.json").exists() else {}
 _sfx_ids = set((_sfx_doc.get("sounds") or {}).keys())
 for s in scenes:

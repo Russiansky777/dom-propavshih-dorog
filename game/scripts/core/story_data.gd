@@ -21,6 +21,7 @@ var texts: Dictionary = {}              # key -> {text, draft}
 ## value each, so an answer of the Director is a one-line change. Lines and stagings name them in `switch`.
 var switches: Dictionary = {}
 var autosave_cfg: Dictionary = {}       # meta.json `autosave` {interval_s} (G5)
+var save_fixups: Array = []             # meta.json `save_fixups` [{if, unless, scene}] — old saves after a rule change (T8)
 ## Start points (data/story/start_points.json): a state to start from for checking a later part of the game.
 var start_points: Dictionary = {}
 var loaded: bool = false
@@ -171,6 +172,7 @@ func _load_meta() -> void:
 	var meta = _read_json(DATA_DIR + "/meta.json")
 	switches = meta.get("switches", {}) if meta is Dictionary else {}
 	autosave_cfg = meta.get("autosave", {}) if meta is Dictionary and meta.get("autosave", {}) is Dictionary else {}
+	save_fixups = meta.get("save_fixups", []) if meta is Dictionary and meta.get("save_fixups", []) is Array else []
 	start_points.clear()
 	if FileAccess.file_exists(DATA_DIR + "/start_points.json"):
 		var sp = _read_json(DATA_DIR + "/start_points.json")
@@ -234,6 +236,29 @@ func place_name(room_id: String) -> String:
 
 func scene(scene_id: String) -> Dictionary:
 	return scenes.get(scene_id, {})
+
+
+## The journal goal after a scene (T8, Director 24.10: the free day names only what is still to do). `goal_left`
+## {lead, head, items: [{if, unless, text}], joiner, none}: `lead`, then `head` + the items whose flags hold now (done
+## ones drop out), joined by `joiner`; nothing left — `lead` + `none`. Without it — `goal` (or `result`).
+func scene_goal(sc: Dictionary) -> String:
+	var gl: Dictionary = sc.get("goal_left", {})
+	if gl.is_empty():
+		return String(sc.get("goal", sc.get("result", "")))
+	var left: Array[String] = []
+	for it in gl.get("items", []):
+		var ok := true
+		for f in it.get("if", []):
+			if not GameState.has_flag(String(f)):
+				ok = false
+		for f in it.get("unless", []):
+			if GameState.has_flag(String(f)):
+				ok = false
+		if ok:
+			left.append(text(String(it.get("text", ""))))
+	var lead := text(String(gl.get("lead", "")))
+	var tail := text(String(gl.get("none", ""))) if left.is_empty() else text(String(gl.get("head", ""))) + String(gl.get("joiner", ", ")).join(left) + "."
+	return (lead + " " + tail).strip_edges()
 
 
 func scenes_in(room_id: String) -> Array[String]:

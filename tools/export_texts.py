@@ -346,6 +346,13 @@ class Collector:
                 self._scene_lines("scene", sid, sc.get("mandatory_lines", []) or [], fpath, base, sr, head, "mandatory_lines")
                 if sc.get("type") == "main" and isinstance(sc.get("goal"), str) and not _is_ref(sc["goal"]):
                     self.add(f"scene:{sid}/goal", "ui", sr, f"{head} · цель в журнале после сцены", sc["goal"], fpath, base + ["goal"])
+                gl = sc.get("goal_left") or {}
+                for k in ("lead", "head", "none"):
+                    if isinstance(gl.get(k), str) and not _is_ref(gl[k]):
+                        self.add(f"scene:{sid}/goal_left/{k}", "ui", sr, f"{head} · цель по флагам: {k}", gl[k], fpath, base + ["goal_left", k])
+                for j, it in enumerate(gl.get("items", []) or []):
+                    if isinstance(it.get("text"), str) and not _is_ref(it["text"]):
+                        self.add(f"scene:{sid}/goal_left/items/{j}", "ui", sr, f"{head} · цель по флагам: несделанное", it["text"], fpath, base + ["goal_left", "items", j, "text"])
                 self._hints("scene", sid, sc, fpath, base, sr, head)
 
     def collect_quests(self):
