@@ -3,7 +3,7 @@ extends CanvasLayer
 ## Interactive close-ups of day two (rooms data: hotspot `mechanic: {type, …}`), opened by
 ## StoryRunner.open_mechanic(): the office mirror on Dunya's stand with the bell (H2), the sluice (M4),
 ## mother's mirror (H2), the plate on the pier (Z3), the signal lantern (R1), the photo in the mill passage
-## (M2); day three's optional stories — the old map of Olkhovka with a tracing sheet (O1, Q02), the second bench in
+## (M2); day three's optional stories — the old map of Olkhovka, the way shown by clicks (O1, Q02), the second bench in
 ## Ilya's workshop (O4, Q06). Layer 4 — under GameUi (5): the texts the close-up asks for (StoryRunner.mechanic_say /
 ## mechanic_event) play in the dialogue box above it, and while a text is on screen the dialogue's modal
 ## takes the clicks. Everything is done with the mouse; «Закрыть» and Esc put it away. Each type is its own
@@ -21,7 +21,7 @@ const PANELS := {
 	"windlass": preload("res://scripts/mechanics/windlass_panel.gd"),
 	"latch": preload("res://scripts/mechanics/latch_panel.gd"),
 	"crossing": preload("res://scripts/mechanics/crossing_panel.gd"),
-	"tracing": preload("res://scripts/mechanics/tracing_panel.gd"),
+	"map_route": preload("res://scripts/mechanics/map_route_panel.gd"),
 	"workbench": preload("res://scripts/mechanics/workbench_panel.gd"),
 }
 

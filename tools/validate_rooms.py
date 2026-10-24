@@ -539,7 +539,7 @@ EFFECT_TYPES = ("fire", "snow", "tint", "shapes", "rope")
 BLENDS = ("mul", "add", "sub", "mix")
 SHAPE_TYPES = ("gradient", "poly", "line", "circle", "glow", "text", "rect", "dashes")
 MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo", "windlass", "latch", "crossing",
-                  "tracing", "workbench")
+                  "map_route", "workbench")
 
 # 13. Арт заказан и ещё не доставлен (партия 8б, Q02/Q06, 23.10): слой или картинка крупного плана с `pending` — id
 # заявки assets/manifest.json. Пока заявка открыта (requested / in_progress), файла может не быть: вместо картинки
@@ -723,44 +723,61 @@ def check_mechanic(ctx: str, m: dict, room: dict) -> None:
             err(f"{ctx}.pulls: около 10 перехватов (F12), есть {m.get('pulls')}")
     if "stub" in m:
         check_stub(ctx + ".stub", m["stub"])
-    if m.get("type") == "tracing":
-        # Q02: «протянуть по контуру» по кальке — линии в долях участка plot (0..1), подпись у каждой; фаза кальки по флагам.
-        lines = m.get("lines", {})
-        st_ = lines.get("strokes", [])
-        if len(st_) < 2 or any(len(x) < 2 for x in st_):
-            err(f"{ctx}.lines.strokes: 2–4 линии по ≥ 2 точки")
-        for i, x in enumerate(st_):
-            if any(not (0.0 <= float(q[0]) <= 1.0 and 0.0 <= float(q[1]) <= 1.0) for q in x):
-                err(f"{ctx}.lines.strokes[{i}]: точки — доли участка plot, 0..1")
-        if len(lines.get("labels", [])) != len(st_):
-            err(f"{ctx}.lines.labels: подпись у каждой линии ({len(st_)})")
-        for i, lb in enumerate(lines.get("labels", [])):
-            check_text(f"{ctx}.lines.labels[{i}]", lb)
-        if len(m.get("plot", [])) != 4:
-            err(f"{ctx}.plot: [x, y, w, h] — участок на холсте 1672×941")
-        check_flags(ctx + ".trace_when", m.get("trace_when"))
-        if not m.get("trace_when") or not m.get("done_flag"):
-            err(f"{ctx}: trace_when (когда калька) и done_flag (линии проведены)")
-        if m.get("done_flag") not in (m.get("events", {}).get("traced", {}).get("sets") or []):
+    if m.get("type") == "map_route":
+        # Q02 (H47): дорогу показывают кликами по местам карты по порядку — три места с order 1..3 (подпись, контур
+        # ≥ 3 точек внутри холста 1672×941), остальные места — неверный выбор; после третьего — событие traced.
+        pl = m.get("places", [])
+        orders = sorted(int(x["order"]) for x in pl if "order" in x)
+        if orders != [1, 2, 3]:
+            err(f"{ctx}.places: три места дороги с order 1, 2, 3 (есть {orders})")
+        if len([x for x in pl if "order" not in x]) < 3:
+            err(f"{ctx}.places: нужны и неверные места (другие дома, мельница…) — без них сброс не наступает")
+        ids = [x.get("id") for x in pl]
+        if len(ids) != len(set(ids)):
+            err(f"{ctx}.places: id мест повторяются")
+        for i, x in enumerate(pl):
+            poly = x.get("poly", [])
+            if len(poly) < 3 or any(not (0 <= q[0] <= 1672 and 0 <= q[1] <= 941) for q in poly):
+                err(f"{ctx}.places[{i}].poly: контур места — ≥ 3 точки холста 1672×941")
+            if "order" in x:
+                check_text(f"{ctx}.places[{i}].label", x.get("label", ""))
+        for kk in ("label_hint", "wrong"):
+            check_text(f"{ctx}.texts.{kk}", m.get("texts", {}).get(kk, ""))
+        if not m.get("done_flag") or m.get("done_flag") not in (m.get("events", {}).get("traced", {}).get("sets") or []):
             err(f"{ctx}.events.traced: ставит done_flag {m.get('done_flag')}")
         if m.get("done_flag") not in (m.get("unless") or []):
-            err(f"{ctx}.unless: после линий крупный план не открывается снова (done_flag)")
+            err(f"{ctx}.unless: после дороги крупный план не открывается снова (done_flag)")
     if m.get("type") == "workbench":
-        # Q06: четыре шага — флаги steps ставят события fitted / stopped / tightened / checked по порядку.
+        # Q06 (H48): пять шагов — флаги steps ставят события fitted / stopped / screw_set / tightened / checked по порядку;
+        # каждая деталь — слой арта с рамкой rect; у каждого места перетаскивания (zones, кроме кольца винта) — контур.
         steps_ = m.get("steps", [])
-        if len(steps_) != 4:
-            err(f"{ctx}.steps: четыре флага шагов (паз, ограничитель, винт, доска)")
-        for name, fl in zip(("fitted", "stopped", "tightened", "checked"), steps_):
+        names = ("fitted", "stopped", "screw_set", "tightened", "checked")
+        if len(steps_) != len(names):
+            err(f"{ctx}.steps: пять флагов шагов (крепление, ограничитель, винт на место, винт затянут, доска)")
+        for name, fl in zip(names, steps_):
             if fl not in (m.get("events", {}).get(name, {}).get("sets") or []):
                 err(f"{ctx}.events.{name}: ставит флаг шага {fl}")
-        fa = m.get("parts", {}).get("fastenings", [])
-        if len(fa) < 2 or sum(1 for f in fa if f.get("fits")) != 1:
-            err(f"{ctx}.parts.fastenings: два и больше креплений, в паз садится ровно одно (fits)")
-        for i, f in enumerate(fa):
-            check_text(f"{ctx}.parts.fastenings[{i}].label", f.get("label", ""))
-            check_text(f"{ctx}.parts.fastenings[{i}].text", f.get("text", ""))
-        if "timing" not in m:
-            err(f"{ctx}.timing: винт затягивается «точным ударом»")
+        pc = m.get("parts", {})
+        for pid in ("wedge", "key", "stop", "screw", "board"):
+            p_ = pc.get(pid)
+            if not p_:
+                err(f"{ctx}.parts.{pid}: нет детали")
+                continue
+            if len(p_.get("rect", [])) != 4:
+                err(f"{ctx}.parts.{pid}.rect: [x, y, w, h] детали на её слое")
+            check_text(f"{ctx}.parts.{pid}.label", p_.get("label", ""))
+            img = p_.get("image", "")
+            if img.startswith("res://") and not (GAME_DIR / img[len("res://"):]).exists():
+                err(f"{ctx}.parts.{pid}.image: нет файла {img} (tools/import_closeups.py)")
+        check_text(f"{ctx}.parts.wedge.text", pc.get("wedge", {}).get("text", ""))
+        zs = m.get("zones", [])
+        if len(zs) != 5 or any(len(zs[i]) < 3 for i in (0, 1, 2, 4)):
+            err(f"{ctx}.zones: пять мест по шагам, у шагов 1, 2, 3, 5 — контур ≥ 3 точек (4 — кольцо винта, turn)")
+        if not m.get("turn", {}).get("pivot"):
+            err(f"{ctx}.turn.pivot: где крутить винт")
+        for i in range(1, 6):
+            check_text(f"{ctx}.texts.label_hint{i}", m.get("texts", {}).get(f"label_hint{i}", ""))
+        check_text(f"{ctx}.texts.label_goal", m.get("texts", {}).get("label_goal", ""))
         if steps_ and steps_[-1] not in (m.get("unless") or []):
             err(f"{ctx}.unless: собранный верстак крупным планом не открывается снова ({steps_[-1] if steps_ else '?'})")
     if m.get("type") == "office_mirror" and len(m.get("frame", {}).get("glass_polygon", [])) != 4:
