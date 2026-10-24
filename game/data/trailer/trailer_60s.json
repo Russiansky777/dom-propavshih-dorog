@@ -1,0 +1,1304 @@
+{
+ "_comment": "TR2 (Директор 24.10, 18:28): ролик ~60 с — вставки из игры (4–6 с), фраза на чёрном 3 с (проявление → пауза → гаснет), следующая вставка. Все планы и фразы — данные; фразы заменяются без кода (поле text). Рендер: tools/trailer_render.sh data/trailer/trailer_60s.json. Режим съёмки — game/scripts/trailer/trailer.gd (виды: art, room, title_card, phrase, daycard; ui: закрытые планы и мини-игры самой игры без кнопок, рука на мыши). Координаты комнат — экран 1920×1080.",
+ "id": "trailer_60s",
+ "fps": 60,
+ "render_size": [
+  3840,
+  2160
+ ],
+ "out_size": [
+  1920,
+  1080
+ ],
+ "handle_s": 0.8,
+ "shots": [
+  {
+   "id": "house",
+   "kind": "art",
+   "_note": "TR2: дом у воды — тот же план, что в пробнике, но медленнее (наезд 6,5 % вместо 8,5 % за 5,2 с).",
+   "duration": 5.2,
+   "art": "res://assets/ui/menu/title_bg.png",
+   "art_size": [
+    1672,
+    941
+   ],
+   "fx_mask": "res://assets/ui/menu/title_fx_mask.png",
+   "fx_from_menu": "title",
+   "view": [
+    598,
+    150,
+    1074,
+    604.1
+   ],
+   "anchor": [
+    1557,
+    372
+   ],
+   "zoom": [
+    1.0,
+    1.065
+   ],
+   "ease": "sine_in_out",
+   "depth_tex": "res://assets/trailer/house_depth.png",
+   "parallax": {
+    "k": [
+     0.5,
+     1.6
+    ],
+    "_note": "зум слоя относительно наезда камеры: z(d) = 1 + (zoom − 1)·(k0 + (k1 − k0)·d), d — глубина пикселя 0 (даль) … 1 (ближе всего)"
+   },
+   "layers": [
+    {
+     "id": "far",
+     "image": "res://assets/trailer/house_far.png",
+     "depth_channel": 0
+    },
+    {
+     "id": "mist",
+     "kind": "mist",
+     "depth": 0.02,
+     "rect": [
+      600,
+      360,
+      1072,
+      250
+     ],
+     "color": [
+      0.74,
+      0.8,
+      0.94
+     ],
+     "alpha": 0.3,
+     "speed_px": 10.0,
+     "scale": 0.006
+    },
+    {
+     "id": "front",
+     "image": "res://assets/trailer/house_front.png",
+     "depth_channel": 1,
+     "depth": [
+      0.08,
+      0.13
+     ]
+    }
+   ],
+   "glows": [
+    {
+     "id": "lamp",
+     "center": [
+      1557,
+      372
+     ],
+     "radius": 190,
+     "depth": 0.44,
+     "color": [
+      1.0,
+      0.66,
+      0.3
+     ],
+     "alpha": 0.22,
+     "flicker": 0.2,
+     "flicker_hz": 7.0
+    }
+   ],
+   "motes": {
+    "rect": [
+     1505,
+     228,
+     104,
+     290
+    ],
+    "depth": 0.44,
+    "amount": 22,
+    "color": [
+     1.0,
+     0.86,
+     0.58
+    ],
+    "alpha": 0.35,
+    "size_px": [
+     0.8,
+     1.6
+    ]
+   },
+   "grade": {
+    "tint": [
+     0.93,
+     0.96,
+     1.06
+    ],
+    "lift": [
+     0.0,
+     0.004,
+     0.012
+    ]
+   }
+  },
+  {
+   "id": "ph1",
+   "kind": "phrase",
+   "duration": 3.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "text": "Снаружи прошёл год.\nВнутри — двадцать лет.",
+   "px": 74,
+   "width": 1500,
+   "y": 520,
+   "gold_note": "золото меню: подсвеченный пункт",
+   "color": [
+    1.0,
+    0.86,
+    0.6
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "in": [
+    0.55,
+    1.5
+   ],
+   "out": [
+    2.15,
+    2.9
+   ],
+   "render_size": [
+    1920,
+    1080
+   ]
+  },
+  {
+   "id": "dunya",
+   "kind": "room",
+   "duration": 4.6,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "H1",
+   "state": {
+    "start_point": "day2"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.1,
+     1.2
+    ],
+    "center_from": [
+     1000,
+     610
+    ],
+    "follow": 0.7,
+    "spring_hz": 0.9,
+    "ease": "sine_in_out"
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "agata": {
+    "from": [
+     1010,
+     740
+    ],
+    "to": [
+     800,
+     880
+    ],
+    "start_s": 0.5
+   },
+   "motes": {
+    "rect": [
+     120,
+     280,
+     700,
+     520
+    ],
+    "amount": 60,
+    "color": [
+     1.0,
+     0.8,
+     0.5
+    ],
+    "alpha": 0.45,
+    "size_px": [
+     1.0,
+     2.4
+    ]
+   }
+  },
+  {
+   "id": "ph2",
+   "kind": "phrase",
+   "duration": 3.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "text": "Вещи помнят место,\nкоторому служили.",
+   "px": 74,
+   "width": 1500,
+   "y": 520,
+   "gold_note": "золото меню: подсвеченный пункт",
+   "color": [
+    1.0,
+    0.86,
+    0.6
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "in": [
+    0.55,
+    1.5
+   ],
+   "out": [
+    2.15,
+    2.9
+   ],
+   "render_size": [
+    1920,
+    1080
+   ]
+  },
+  {
+   "id": "mirror",
+   "kind": "room",
+   "duration": 5.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "H2",
+   "state": {
+    "start_point": "office"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.0,
+     1.28
+    ],
+    "center_from": [
+     900,
+     540
+    ],
+    "follow": 0.6,
+    "spring_hz": 0.9,
+    "ease": "sine_in_out"
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "agata": {
+    "from": [
+     760,
+     880
+    ],
+    "to": [
+     1180,
+     730
+    ],
+    "start_s": 0.3
+   },
+   "veil": [
+    {
+     "at_s": 2.5,
+     "dur": 0.35,
+     "from": 0.0,
+     "to": 1.0
+    },
+    {
+     "at_s": 2.85,
+     "dur": 0.45,
+     "from": 1.0,
+     "to": 0.0
+    }
+   ],
+   "ui": {
+    "hide_chrome": true,
+    "events": [
+     {
+      "at_s": 2.85,
+      "do": "mechanic",
+      "room": "H2",
+      "hotspot": "stand_zm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ph3",
+   "kind": "phrase",
+   "duration": 3.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "text": "Зеркала помнят, где висели, —\nи показывают, что там сейчас.",
+   "px": 74,
+   "width": 1500,
+   "y": 520,
+   "gold_note": "золото меню: подсвеченный пункт",
+   "color": [
+    1.0,
+    0.86,
+    0.6
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "in": [
+    0.55,
+    1.5
+   ],
+   "out": [
+    2.15,
+    2.9
+   ],
+   "render_size": [
+    1920,
+    1080
+   ]
+  },
+  {
+   "id": "olk_street",
+   "kind": "room",
+   "duration": 2.9,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "O4",
+   "state": {
+    "start_point": "classmama",
+    "flags": [
+     "started_M19"
+    ]
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.25,
+     1.45
+    ],
+    "center_from": [
+     1000,
+     600
+    ],
+    "follow": 0.8,
+    "spring_hz": 0.9,
+    "ease": "sine_in_out"
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     0.97,
+     0.98,
+     1.03
+    ],
+    "lift": [
+     0.0,
+     0.004,
+     0.01
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "agata": {
+    "from": [
+     700,
+     690
+    ],
+    "to": [
+     1060,
+     745
+    ],
+    "start_s": 0.2
+   }
+  },
+  {
+   "id": "olk_school",
+   "kind": "room",
+   "duration": 2.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.5
+   },
+   "room": "O1",
+   "state": {
+    "start_point": "classmama",
+    "room": "O1"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.12,
+     1.28
+    ],
+    "center_from": [
+     1080,
+     570
+    ],
+    "follow": 0.0,
+    "ease": "sine_in_out"
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "agata": {
+    "from": [
+     1000,
+     760
+    ]
+   }
+  },
+  {
+   "id": "ph4",
+   "kind": "phrase",
+   "duration": 3.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "text": "Раскройте историю Агаты\nи её семьи.",
+   "px": 74,
+   "width": 1500,
+   "y": 520,
+   "gold_note": "золото меню: подсвеченный пункт",
+   "color": [
+    1.0,
+    0.86,
+    0.6
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "in": [
+    0.55,
+    1.5
+   ],
+   "out": [
+    2.15,
+    2.9
+   ],
+   "render_size": [
+    1920,
+    1080
+   ]
+  },
+  {
+   "id": "letter",
+   "kind": "room",
+   "duration": 5.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "O3",
+   "state": {
+    "start_point": "day3"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.0,
+     1.0
+    ],
+    "center_from": [
+     960,
+     540
+    ]
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "agata": {
+    "from": [
+     1200,
+     900
+    ]
+   },
+   "veil": [
+    {
+     "at_s": 0.0,
+     "dur": 0.01,
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "at_s": 0.3,
+     "dur": 0.6,
+     "from": 1.0,
+     "to": 0.0
+    }
+   ],
+   "ui": {
+    "hide_chrome": true,
+    "cursor": true,
+    "cursor_in_s": 1.4,
+    "cursor_from": [
+     1480,
+     720
+    ],
+    "events": [
+     {
+      "at_s": 0.0,
+      "do": "view",
+      "room": "O3",
+      "hotspot": "nina_letters"
+     },
+     {
+      "at_s": 1.0,
+      "do": "say",
+      "key": "@O3.nina_letters.look"
+     }
+    ],
+    "moves": [
+     {
+      "at_s": 1.4,
+      "to": [
+       1100,
+       910
+      ],
+      "dur": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "id": "ph5",
+   "kind": "phrase",
+   "duration": 3.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "text": "Старинная речь Русского Севера.\nЖивые голоса.",
+   "px": 74,
+   "width": 1500,
+   "y": 520,
+   "gold_note": "золото меню: подсвеченный пункт",
+   "color": [
+    1.0,
+    0.86,
+    0.6
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "in": [
+    0.55,
+    1.5
+   ],
+   "out": [
+    2.15,
+    2.9
+   ],
+   "render_size": [
+    1920,
+    1080
+   ]
+  },
+  {
+   "id": "mg_wedges",
+   "kind": "room",
+   "duration": 1.7,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "H2",
+   "state": {
+    "start_point": "wedges",
+    "flags": [
+     "office_mirror_mounted"
+    ]
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.0,
+     1.0
+    ],
+    "center_from": [
+     960,
+     540
+    ]
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "ui": {
+    "hide_chrome": true,
+    "events": [
+     {
+      "at_s": 0.0,
+      "do": "mechanic",
+      "room": "H2",
+      "hotspot": "stand_zm"
+     },
+     {
+      "at_s": 0.4,
+      "do": "strike",
+      "count": 3,
+      "gap_s": 0.45
+     }
+    ]
+   }
+  },
+  {
+   "id": "mg_bell",
+   "kind": "room",
+   "duration": 1.7,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.12
+   },
+   "room": "H2",
+   "state": {
+    "start_point": "office"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.0,
+     1.0
+    ],
+    "center_from": [
+     960,
+     540
+    ]
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "ui": {
+    "hide_chrome": true,
+    "events": [
+     {
+      "at_s": 0.0,
+      "do": "mechanic",
+      "room": "H2",
+      "hotspot": "stand_zm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "mg_map",
+   "kind": "room",
+   "duration": 1.7,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.12
+   },
+   "room": "O1",
+   "state": {
+    "start_point": "freewalk",
+    "flags": [
+     "q02_seen_map"
+    ]
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.0,
+     1.0
+    ],
+    "center_from": [
+     960,
+     540
+    ]
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "ui": {
+    "hide_chrome": true,
+    "cursor": true,
+    "cursor_in_s": 0.0,
+    "cursor_from": [
+     900,
+     600
+    ],
+    "events": [
+     {
+      "at_s": 0.0,
+      "do": "mechanic",
+      "room": "O1",
+      "hotspot": "village_map"
+     }
+    ],
+    "moves": [
+     {
+      "at_s": 0.1,
+      "to": [
+       900,
+       360
+      ],
+      "dur": 0.5
+     },
+     {
+      "at_s": 0.7,
+      "to": [
+       1170,
+       570
+      ],
+      "dur": 0.4
+     }
+    ]
+   }
+  },
+  {
+   "id": "ph6",
+   "kind": "phrase",
+   "duration": 3.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "text": "Загадки и мини-игры.",
+   "px": 74,
+   "width": 1500,
+   "y": 520,
+   "gold_note": "золото меню: подсвеченный пункт",
+   "color": [
+    1.0,
+    0.86,
+    0.6
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "in": [
+    0.55,
+    1.5
+   ],
+   "out": [
+    2.15,
+    2.9
+   ],
+   "render_size": [
+    1920,
+    1080
+   ]
+  },
+  {
+   "id": "rain",
+   "kind": "room",
+   "duration": 1.9,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "Z2",
+   "state": {
+    "start_point": "plate",
+    "room": "Z2"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.0,
+     1.06
+    ],
+    "center_from": [
+     960,
+     540
+    ]
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     0.97,
+     0.98,
+     1.03
+    ],
+    "lift": [
+     0.0,
+     0.004,
+     0.01
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "agata": {
+    "from": [
+     1000,
+     700
+    ]
+   }
+  },
+  {
+   "id": "stove_night",
+   "kind": "room",
+   "duration": 1.9,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "H1",
+   "state": {
+    "start_point": "day2",
+    "done_through": "M08"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.12,
+     1.2
+    ],
+    "center_from": [
+     560,
+     640
+    ]
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "agata": {
+    "from": [
+     300,
+     830
+    ]
+   },
+   "motes": {
+    "rect": [
+     120,
+     280,
+     700,
+     520
+    ],
+    "amount": 60,
+    "color": [
+     1.0,
+     0.8,
+     0.5
+    ],
+    "alpha": 0.45,
+    "size_px": [
+     1.0,
+     2.4
+    ]
+   }
+  },
+  {
+   "id": "daynight",
+   "kind": "daycard",
+   "duration": 2.6,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "key": "@ui.day_card_2"
+  },
+  {
+   "id": "morning",
+   "kind": "room",
+   "duration": 2.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "H1",
+   "state": {
+    "start_point": "day2"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.04,
+     1.12
+    ],
+    "center_from": [
+     1100,
+     560
+    ]
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "agata": {
+    "from": [
+     300,
+     830
+    ]
+   },
+   "motes": {
+    "rect": [
+     1400,
+     200,
+     360,
+     420
+    ],
+    "amount": 50,
+    "color": [
+     1.0,
+     0.9,
+     0.7
+    ],
+    "alpha": 0.5,
+    "size_px": [
+     1.0,
+     2.4
+    ]
+   }
+  },
+  {
+   "id": "ph7",
+   "kind": "phrase",
+   "duration": 3.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "text": "Тёплый старый дом.\nНеспешная история.",
+   "px": 74,
+   "width": 1500,
+   "y": 520,
+   "gold_note": "золото меню: подсвеченный пункт",
+   "color": [
+    1.0,
+    0.86,
+    0.6
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "in": [
+    0.55,
+    1.5
+   ],
+   "out": [
+    2.15,
+    2.9
+   ],
+   "render_size": [
+    1920,
+    1080
+   ]
+  },
+  {
+   "id": "river",
+   "kind": "room",
+   "duration": 5.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "room": "R2",
+   "state": {
+    "start_point": "lights",
+    "flags": [
+     "boat_shuttle_open"
+    ],
+    "room": "R2"
+   },
+   "preroll_s": 0.8,
+   "camera": {
+    "zoom": [
+     1.0,
+     1.0
+    ],
+    "center_from": [
+     960,
+     540
+    ]
+   },
+   "occluder_parallax": 0.35,
+   "grade": {
+    "tint": [
+     1.04,
+     0.98,
+     0.9
+    ],
+    "lift": [
+     0.008,
+     0.004,
+     0.0
+    ]
+   },
+   "mute_buses": [
+    "Music",
+    "Voice"
+   ],
+   "veil": [
+    {
+     "at_s": 0.0,
+     "dur": 0.01,
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "at_s": 0.3,
+     "dur": 0.6,
+     "from": 1.0,
+     "to": 0.0
+    }
+   ],
+   "ui": {
+    "hide_chrome": true,
+    "events": [
+     {
+      "at_s": 0.0,
+      "do": "mechanic",
+      "room": "R2",
+      "hotspot": "rope"
+     },
+     {
+      "at_s": 0.6,
+      "do": "press_every",
+      "for_s": 4.2,
+      "gap_s": 0.55
+     }
+    ]
+   }
+  },
+  {
+   "id": "ph8",
+   "kind": "phrase",
+   "duration": 3.0,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "text": "Дорогу держат с двух концов.",
+   "px": 74,
+   "width": 1500,
+   "y": 520,
+   "gold_note": "золото меню: подсвеченный пункт",
+   "color": [
+    1.0,
+    0.86,
+    0.6
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "in": [
+    0.55,
+    1.5
+   ],
+   "out": [
+    2.15,
+    2.9
+   ],
+   "render_size": [
+    1920,
+    1080
+   ]
+  },
+  {
+   "id": "title",
+   "kind": "title_card",
+   "duration": 4.2,
+   "transition_in": {
+    "kind": "dissolve",
+    "duration": 0.8
+   },
+   "title": "Дом пропавших дорог",
+   "subtitle": "Бесплатная игра · Steam",
+   "font": "body",
+   "title_px": 132,
+   "subtitle_px": 48,
+   "title_y": 470,
+   "subtitle_y": 628,
+   "gold": [
+    [
+     0.55,
+     0.36,
+     0.14
+    ],
+    [
+     1.0,
+     0.86,
+     0.6
+    ],
+    [
+     0.78,
+     0.55,
+     0.24
+    ]
+   ],
+   "subtitle_color": [
+    0.86,
+    0.79,
+    0.68
+   ],
+   "line_color": [
+    1.0,
+    0.72,
+    0.36
+   ],
+   "rule_half_px": 330,
+   "rule_y": [
+    372,
+    574
+   ],
+   "title_in": [
+    0.6,
+    1.5
+   ],
+   "subtitle_in": [
+    1.5,
+    2.3
+   ],
+   "glint": [
+    1.5,
+    2.6
+   ],
+   "glint_width": 0.045,
+   "glint_gain": 0.55,
+   "_note": "TR2: золотой титр с бликом; под ним — «Бесплатная игра · Steam» (поменять на английский — только данные)."
+  }
+ ],
+ "audio": {}
+}

@@ -109,9 +109,14 @@ func build() -> void:
 			_build_room()
 		"title_card":
 			_build_title()
+		"phrase":
+			_build_phrase()
+		"daycard":
+			_build_daycard()
 		_:
 			push_error("Trailer: unknown shot kind '%s'" % shot.get("kind", ""))
 	_build_post()
+	_build_veil()
 	_apply(0.0)
 
 
@@ -135,6 +140,9 @@ func _apply(dt: float) -> void:
 			_tick_room(u, dt)
 		"title_card":
 			_tick_title()
+		"phrase":
+			_tick_phrase()
+	_tick_veil()
 
 
 ## Plan ease curves: no linear starts and stops.
@@ -361,6 +369,7 @@ func _build_room() -> void:
 	RoomManager.setup(_world, _player)
 	var state: Dictionary = shot.get("state", {}).duplicate()
 	state["room"] = String(shot.get("room", "H1"))
+	_merge_start_point(state)
 	var ag: Dictionary = shot.get("agata", {})
 	if not RoomManager.start_with(state):
 		push_error("Trailer: room %s did not start" % state["room"])
@@ -384,6 +393,24 @@ func _build_room() -> void:
 	_hide_cues()
 	if shot.has("motes"):
 		_add_motes(shot["motes"], _world)
+	_setup_ui()
+
+
+## `state.start_point` — a point of data/story/start_points.json as the base: its done_through and flags, then the
+## shot's own `flags` / `unset` / `add_items` on top (the shot's `done_through` / `room` win when given).
+func _merge_start_point(state: Dictionary) -> void:
+	var sp_id := String(state.get("start_point", ""))
+	if sp_id == "":
+		return
+	var base: Dictionary = StoryData.start_points.get(sp_id, {}).duplicate(true)
+	for k in ["flags", "add_items", "unset", "remove_items"]:
+		var merged: Array = base.get(k, []).duplicate()
+		merged.append_array(state.get(k, []))
+		state[k] = merged
+	if not state.has("done_through"):
+		state["done_through"] = base.get("done_through", "")
+	if not state.has("spawn") and base.has("spawn") and String(base.get("room", "")) == String(state.get("room", "")):
+		state["spawn"] = base["spawn"]
 
 
 func _hide_cues() -> void:
@@ -421,6 +448,7 @@ func _tick_room(u: float, dt: float) -> void:
 			(n as Node2D).position = _occ_base[n] - shift * p
 	for m in _motes:
 		(m as Node2D).queue_redraw()
+	_tick_ui()
 
 
 ## The camera never shows past the room's picture.
@@ -541,7 +569,7 @@ func _tick_title() -> void:
 # --- post: grade and vignette -----------------------------------------------------------------
 
 func _build_post() -> void:
-	if String(shot.get("kind", "")) == "title_card":
+	if String(shot.get("kind", "")) in ["title_card", "phrase", "daycard"]:
 		return
 	var layer := CanvasLayer.new()
 	layer.name = "Post"
@@ -559,3 +587,297 @@ func _build_post() -> void:
 	_post.set_shader_parameter("vignette", float(g.get("vignette", 0.3)))
 	cr.material = _post
 	layer.add_child(cr)
+
+
+# --- phrase: words on black -------------------------------------------------------------------
+
+func _build_phrase() -> void:
+	var layer := CanvasLayer.new()
+	layer.name = "Phrase"
+	add_child(layer)
+	var black := ColorRect.new()
+	black.color = Color.BLACK
+	black.size = SCREEN
+	layer.add_child(black)
+	var font := UiTheme.font(String(shot.get("font", "body")))
+	var px := int(shot.get("px", 72))
+	var width := float(shot.get("width", 1560))
+	var text := StoryData.text(String(shot.get("text", "")))
+	var y := float(shot.get("y", 540))
+	var l := Label.new()
+	l.text = text
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.position = Vector2((SCREEN.x - width) / 2.0, y - 160.0)
+	l.size = Vector2(width, 320.0)
+	l.add_theme_font_override("font", font)
+	l.add_theme_font_size_override("font_size", px)
+	l.add_theme_color_override("font_color", col(shot.get("color"), Color(1.0, 0.86, 0.6)))
+	l.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.75))
+	l.add_theme_constant_override("shadow_offset_x", 0)
+	l.add_theme_constant_override("shadow_offset_y", 2)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(l)
+	var rule := Control.new()
+	rule.size = SCREEN
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var line_c := col(shot.get("line_color"), Color(1.0, 0.72, 0.36))
+	var lines := l.get_line_count()
+	var ry := y + float(lines) * font.get_height(px) * 0.5 + 34.0
+	rule.draw.connect(func():
+		var half := float(shot.get("rule_half_px", 120))
+		var pts := PackedVector2Array([Vector2(SCREEN.x / 2 - half, ry), Vector2(SCREEN.x / 2, ry), Vector2(SCREEN.x / 2 + half, ry)])
+		rule.draw_polyline_colors(pts, PackedColorArray([Color(line_c, 0), Color(line_c, 0.8), Color(line_c, 0)]), 2.0, true))
+	layer.add_child(rule)
+	_title = {"label": l, "rule": rule}
+
+
+func _tick_phrase() -> void:
+	if _title.is_empty():
+		return
+	var a := _window(_t, shot.get("in", [0.5, 1.4])) * (1.0 - _window(_t, shot.get("out", [2.2, 2.9])))
+	(_title["label"] as Label).modulate.a = a
+	(_title["rule"] as Control).modulate.a = a * 0.9
+
+
+# --- day card: the game's own «День второй» -----------------------------------------------------
+
+func _build_daycard() -> void:
+	var black := CanvasLayer.new()
+	black.layer = 0
+	add_child(black)
+	var cr := ColorRect.new()
+	cr.color = Color.BLACK
+	cr.size = SCREEN
+	black.add_child(cr)
+	var card := CanvasLayer.new()
+	card.set_script(load("res://scripts/ui/day_card.gd"))
+	add_child(card)
+	_title = {"card": card}
+	(card as Object).call("show_card", String(shot.get("key", "@ui.day_card_2")), true)
+
+
+# --- ui: the game's own close-ups, panels and a line of text over a room, with a hand on the mouse ---------
+
+var _mech_view: CanvasLayer = null
+var _closeup_view: CanvasLayer = null
+var _game_ui: CanvasLayer = null
+var _cursor: Sprite2D = null
+var _cursor_pos := Vector2(960, 540)
+var _ui_done: Dictionary = {}      # event index -> true
+var _mouse_down: bool = false
+var _strikes_left: int = 0         # timing bars: strike each time the slider is in the green
+var _strike_gap: float = 0.6
+var _strike_next: float = 0.0
+var _press_until: float = -1.0     # a key (Space) pressed every _press_gap seconds
+var _press_gap: float = 0.5
+var _press_next: float = 0.0
+var _veil: ColorRect = null
+
+
+func _setup_ui() -> void:
+	var ui: Dictionary = shot.get("ui", {})
+	if ui.is_empty():
+		return
+	_mech_view = CanvasLayer.new()
+	_mech_view.set_script(load("res://scripts/mechanics/mechanic_view.gd"))
+	add_child(_mech_view)
+	_closeup_view = CanvasLayer.new()
+	_closeup_view.set_script(load("res://scripts/ui/closeup_view.gd"))
+	add_child(_closeup_view)
+	if ui.has("say"):
+		_game_ui = CanvasLayer.new()
+		_game_ui.set_script(load("res://scripts/ui/game_ui.gd"))
+		add_child(_game_ui)
+		_strip_game_ui()
+	if bool(ui.get("cursor", false)):
+		var layer := CanvasLayer.new()
+		layer.layer = 120
+		add_child(layer)
+		_cursor = Sprite2D.new()
+		var img := UiCursors.image(String(ui.get("cursor_kind", "arrow")), 2)
+		_cursor.texture = ImageTexture.create_from_image(img)
+		_cursor.centered = false
+		_cursor.offset = -UiCursors.hotspot(String(ui.get("cursor_kind", "arrow")), 2)
+		_cursor.visible = false
+		layer.add_child(_cursor)
+	_cursor_pos = v2(ui.get("cursor_from"), Vector2(1500, 900))
+
+
+## Only the dialogue box of the game's interface stays; the bag, the journal, the goal line are not for the picture.
+func _strip_game_ui() -> void:
+	var box: Node = (_game_ui.get("text_label") as Node)
+	if box == null:
+		return
+	while box.get_parent() != null and box.get_parent() != _game_ui:
+		box = box.get_parent()
+	for c in _game_ui.get_children():
+		if c != box and c is CanvasItem:
+			(c as CanvasItem).visible = false
+	_game_ui.set_meta("keep_only", box)
+
+
+func _tick_ui() -> void:
+	var ui: Dictionary = shot.get("ui", {})
+	if ui.is_empty():
+		return
+	if _game_ui != null and _game_ui.has_meta("keep_only"):
+		# The interface shows and hides its parts as the story moves: keep everything but the dialogue box hidden.
+		var keep: Node = _game_ui.get_meta("keep_only")
+		for c in _game_ui.get_children():
+			if c != keep and c is CanvasItem and (c as CanvasItem).visible:
+				(c as CanvasItem).visible = false
+	var events: Array = ui.get("events", [])
+	for i in events.size():
+		var e: Dictionary = events[i]
+		if _ui_done.has(i) or _t < float(e.get("at_s", 0.0)):
+			continue
+		_ui_done[i] = true
+		_run_event(e)
+	_tick_strikes()
+	if _t < _press_until and _t >= _press_next:
+		_press_next = _t + _press_gap
+		_run_event({"do": "press", "key": "Space"})
+	if bool(ui.get("hide_chrome", false)):
+		_hide_chrome()
+	# The hand: keyframes `moves` [{at_s, to, dur}] ease from where the last one left it.
+	var pos := _cursor_pos
+	var from := v2(ui.get("cursor_from"), Vector2(1500, 900))
+	for m in ui.get("moves", []):
+		var t0 := float(m.get("at_s", 0.0))
+		var u := clampf((_t - t0) / maxf(0.001, float(m.get("dur", 0.6))), 0.0, 1.0)
+		if _t >= t0:
+			var to := v2(m.get("to"))
+			pos = from.lerp(to, ease_curve("sine_in_out", u))
+			if u >= 1.0:
+				from = to
+		else:
+			break
+	if pos != _cursor_pos or _cursor != null and not _cursor.visible:
+		_cursor_pos = pos
+		_send_mouse_motion(pos)
+	if _cursor != null:
+		_cursor.visible = _t >= float(ui.get("cursor_in_s", 0.0))
+		_cursor.position = _cursor_pos
+
+
+func _run_event(e: Dictionary) -> void:
+	match String(e.get("do", "")):
+		"view":
+			var h := _hotspot_data(String(e.get("room", "")), String(e.get("hotspot", "")))
+			StoryRunner.open_view(h.get("view", {}), String(e.get("hotspot", "")))
+		"mechanic":
+			var h := _hotspot_data(String(e.get("room", "")), String(e.get("hotspot", "")))
+			for f in e.get("flags", []):
+				GameState.set_flag(String(f), true)
+			StoryRunner.open_mechanic(h.get("mechanic", {}), String(e.get("hotspot", "")))
+		"say":
+			StoryRunner.mechanic_say(String(e.get("key", "")))
+		"click":
+			_send_click(v2(e.get("at"), _cursor_pos))
+		"press":
+			var ev := InputEventKey.new()
+			ev.keycode = OS.find_keycode_from_string(String(e.get("key", "Space")))
+			ev.physical_keycode = ev.keycode
+			ev.pressed = true
+			Input.parse_input_event(ev)
+			var up := ev.duplicate() as InputEventKey
+			up.pressed = false
+			Input.parse_input_event(up)
+		"flag":
+			GameState.set_flag(String(e.get("flag", "")), bool(e.get("value", true)))
+		"counter":
+			GameState.set_counter(String(e.get("name", "")), int(e.get("value", 0)))
+		"strike":
+			_strikes_left = int(e.get("count", 1))
+			_strike_gap = float(e.get("gap_s", 0.6))
+			_strike_next = _t
+		"press_every":
+			_press_until = _t + float(e.get("for_s", 3.0))
+			_press_gap = float(e.get("gap_s", 0.5))
+			_press_next = _t
+		_:
+			push_error("Trailer: unknown ui event %s" % str(e))
+
+
+func _hotspot_data(room_id: String, hotspot_id: String) -> Dictionary:
+	for h in StoryData.room(room_id).get("hotspots", []):
+		if String(h.get("id", "")) == hotspot_id:
+			return h
+	push_error("Trailer: no hotspot %s/%s" % [room_id, hotspot_id])
+	return {}
+
+
+func _send_mouse_motion(p: Vector2) -> void:
+	var ev := InputEventMouseMotion.new()
+	ev.position = p
+	ev.global_position = p
+	ev.button_mask = MOUSE_BUTTON_MASK_LEFT if _mouse_down else 0
+	get_viewport().push_input(ev, true)
+
+
+func _send_click(p: Vector2) -> void:
+	for pressed in [true, false]:
+		var ev := InputEventMouseButton.new()
+		ev.position = p
+		ev.global_position = p
+		ev.button_index = MOUSE_BUTTON_LEFT
+		ev.pressed = pressed
+		ev.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
+		_mouse_down = pressed
+		get_viewport().push_input(ev, true)
+
+
+## A timing bar on screen is struck when its slider stands in the green (the film shows the game being won).
+func _tick_strikes() -> void:
+	if _strikes_left <= 0 or _t < _strike_next or _mech_view == null:
+		return
+	for b in _mech_view.find_children("*", "TimingBar", true, false):
+		var bar := b as TimingBar
+		if bar.is_visible_in_tree() and bar.logic != null and bar.logic.in_green(bar.logic.pos()):
+			bar.strike()
+			_strikes_left -= 1
+			_strike_next = _t + _strike_gap
+			return
+
+
+## The close buttons, page buttons and the like are the game's interface: not in the picture.
+func _hide_chrome() -> void:
+	if _mech_view != null:
+		for n in ["close_button"]:
+			var c = _mech_view.get(n)
+			if c != null:
+				(c as CanvasItem).visible = false
+	if _closeup_view != null:
+		for n in ["close_button", "prev_button", "next_button"]:
+			var c = _closeup_view.get(n)
+			if c != null:
+				(c as CanvasItem).visible = false
+
+
+# --- veil: black dips inside a shot ---------------------------------------------------------------
+
+func _build_veil() -> void:
+	if not shot.has("veil"):
+		return
+	var layer := CanvasLayer.new()
+	layer.layer = 200
+	add_child(layer)
+	_veil = ColorRect.new()
+	_veil.color = Color(0, 0, 0, 0)
+	_veil.size = SCREEN
+	_veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(_veil)
+
+
+## `veil` [{at_s, dur, from, to}] — the black's opacity eases from `from` to `to`; the last key that has begun rules.
+func _tick_veil() -> void:
+	if _veil == null:
+		return
+	var a := 0.0
+	for k in shot.get("veil", []):
+		if _t >= float(k.get("at_s", 0.0)):
+			var u := clampf((_t - float(k.get("at_s", 0.0))) / maxf(0.001, float(k.get("dur", 0.4))), 0.0, 1.0)
+			a = lerpf(float(k.get("from", 0.0)), float(k.get("to", 0.0)), ease_curve("sine_in_out", u))
+	_veil.color.a = a
