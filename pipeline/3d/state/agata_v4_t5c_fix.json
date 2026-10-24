@@ -1,0 +1,34 @@
+{
+ "src": "agata_v4_animations.glb",
+ "bag": {
+  "bag_vertices": 16341,
+  "rigid_added": 1848,
+  "blended": 16987,
+  "r0_cm": 1.5,
+  "falloff_cm": 8.0
+ },
+ "pick": {
+  "w_low": 0.6,
+  "w_up": 1.0,
+  "spine_deg": 15.0
+ },
+ "sit": {
+  "knee_gap_m": 0.059,
+  "knee_in_deg": 0.0,
+  "shift_m": [
+   -0.2112,
+   -0.4399
+  ],
+  "center_after": [
+   0.0,
+   0.0
+  ]
+ },
+ "pick_low": {
+  "frame": 36,
+  "hips": 0.736,
+  "head": 1.055,
+  "knee": 0.481,
+  "hand_min": 0.672
+ }
+}

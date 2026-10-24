@@ -1,0 +1,60 @@
+{
+  "character": "agata_v4",
+  "height_m": 1.65,
+  "stages": [
+    "local_glb"
+  ],
+  "local_glb": {
+    "url": "https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/agata-v4-work/agata_v4_animations_t5c.glb"
+  },
+  "actions": [
+    "idle",
+    "walk",
+    "open",
+    "pick",
+    "reach",
+    "sit"
+  ],
+  "retarget": false,
+  "clips": {
+    "idle": "Idle_T2M_idle",
+    "walk": "Walking_Woman",
+    "open": "open_door_open",
+    "pick": "Collect_Object_pick",
+    "reach": "open_door_take_reach",
+    "sit": "Chair_Sit_F_sit"
+  },
+  "frames": {
+    "idle": 30,
+    "walk": 24,
+    "open": 32,
+    "pick": 40,
+    "reach": 30,
+    "sit": 1
+  },
+  "fps": {
+    "idle": 24,
+    "walk": 24,
+    "open": 24,
+    "pick": 24,
+    "reach": 24,
+    "sit": 24
+  },
+  "clip_window": {
+    "idle": [
+      0.1513,
+      0.4034
+    ]
+  },
+  "feet_fix": [
+    "idle",
+    "walk",
+    "open",
+    "reach"
+  ],
+  "render_size": 864,
+  "render_samples": 16,
+  "elev": 14,
+  "front_yaw": 0,
+  "_note": "T5c (24.10): правки после ИИ-проверки спрайтов agata_v4 (Docs/ai_checks/sprite_qa_2026-10-24_2.md), 0 кредитов Meshy. GLB = GLB T5b (agata_v4_animations.glb) + pipeline/3d/agata_v4/t5c_fix.py: сумка — веса без разрывов (поле жёсткости по расстоянию до кожи сумки: «солома» из клапана была вытянутыми треугольниками), pick — присед мельче (низ 0,6 глубины Collect_Object, верх полностью, спина +15°; голова в нижней точке 1,06 м вместо 0,88), sit — таз сдвинут: середина силуэта сидя = середина стойки (была смещена на 0,49 м, d7 обрезалась). Правка сумки задевает все клипы — перерендер всех действий (0 кр., только время раннера). Проверка — pipeline/3d/state/agata_v4_t5c_check.json."
+}

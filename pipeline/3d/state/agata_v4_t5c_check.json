@@ -1,0 +1,97 @@
+{
+ "_note": "T5c: pipeline/3d/agata_v4/t5c_check.py, шаг 3 кадра. stretch_p99_9 — 99,9-й процентиль растяжения рёбер у сумки (≤10 см от кожи сумки): «солома» = десятки-сотни раз; hand_bag_gap_mm — наименьший зазор кисть ↔ кожа сумки (Collect_Object — сырой клип, в игре не используется).",
+ "before_T5b": {
+  "glb": "agata_v4_animations.glb",
+  "bag_vertices": 16341,
+  "zone_edges": 96251,
+  "clips": {
+   "Chair_Sit_F_sit": {
+    "edges_over_1_5x_max": 8346,
+    "stretch_p99_9": 206.55,
+    "hand_bag_gap_mm": 31.6
+   },
+   "Collect_Object": {
+    "edges_over_1_5x_max": 8225,
+    "stretch_p99_9": 153.11,
+    "hand_bag_gap_mm": 0.8
+   },
+   "Collect_Object_pick": {
+    "edges_over_1_5x_max": 8243,
+    "stretch_p99_9": 144.86,
+    "hand_bag_gap_mm": 8.3
+   },
+   "Idle_T2M": {
+    "edges_over_1_5x_max": 2814,
+    "stretch_p99_9": 33.02,
+    "hand_bag_gap_mm": 12.1
+   },
+   "Idle_T2M_idle": {
+    "edges_over_1_5x_max": 2814,
+    "stretch_p99_9": 33.02,
+    "hand_bag_gap_mm": 12.1
+   },
+   "open_door_open": {
+    "edges_over_1_5x_max": 3746,
+    "stretch_p99_9": 39.6,
+    "hand_bag_gap_mm": 22.3
+   },
+   "open_door_take_reach": {
+    "edges_over_1_5x_max": 3508,
+    "stretch_p99_9": 33.76,
+    "hand_bag_gap_mm": 22.3
+   },
+   "Walking_Woman": {
+    "edges_over_1_5x_max": 3229,
+    "stretch_p99_9": 63.21,
+    "hand_bag_gap_mm": 64.5
+   }
+  }
+ },
+ "after_T5c": {
+  "glb": "agata_v4_animations_t5c.glb",
+  "bag_vertices": 20432,
+  "zone_edges": 103493,
+  "clips": {
+   "Chair_Sit_F_sit": {
+    "edges_over_1_5x_max": 20626,
+    "stretch_p99_9": 13.69,
+    "hand_bag_gap_mm": 31.6
+   },
+   "Collect_Object": {
+    "edges_over_1_5x_max": 17228,
+    "stretch_p99_9": 13.27,
+    "hand_bag_gap_mm": 0.8
+   },
+   "Collect_Object_pick": {
+    "edges_over_1_5x_max": 12098,
+    "stretch_p99_9": 8.92,
+    "hand_bag_gap_mm": 22.3
+   },
+   "Idle_T2M": {
+    "edges_over_1_5x_max": 906,
+    "stretch_p99_9": 2.3,
+    "hand_bag_gap_mm": 12.1
+   },
+   "Idle_T2M_idle": {
+    "edges_over_1_5x_max": 906,
+    "stretch_p99_9": 2.3,
+    "hand_bag_gap_mm": 12.1
+   },
+   "open_door_open": {
+    "edges_over_1_5x_max": 2454,
+    "stretch_p99_9": 3.92,
+    "hand_bag_gap_mm": 22.3
+   },
+   "open_door_take_reach": {
+    "edges_over_1_5x_max": 1356,
+    "stretch_p99_9": 3.36,
+    "hand_bag_gap_mm": 22.3
+   },
+   "Walking_Woman": {
+    "edges_over_1_5x_max": 3722,
+    "stretch_p99_9": 2.79,
+    "hand_bag_gap_mm": 64.5
+   }
+  }
+ }
+}
