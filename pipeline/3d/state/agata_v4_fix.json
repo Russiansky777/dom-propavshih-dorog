@@ -1,0 +1,19 @@
+{
+ "height_m": 1.649999963119626,
+ "scarf": {
+  "moved_vertices": 17897,
+  "max_shift_mm": 11.689348867522412,
+  "corner_xyz": [
+   0.047,
+   0.0,
+   1.2546
+  ],
+  "radius_m": 0.032,
+  "triangles_moved": 35995,
+  "triangles_flipped": 193
+ },
+ "bag": {
+  "bag_vertices": 16341,
+  "strap_vertices": 11795
+ }
+}

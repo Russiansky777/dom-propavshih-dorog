@@ -1,0 +1,17 @@
+{
+  "character": "agata_v4",
+  "actions": ["idle", "walk", "open", "pick", "reach", "sit"],
+  "clip_window": {"idle": [0.1513, 0.4034]},
+  "feet_fix": ["idle", "walk", "open", "reach"],
+  "retarget": {
+    "library": "pipeline/3d/motions/agata_rev10_clips.glb",
+    "roles": {
+      "idle": {"own": true, "name": "Idle_T2M_idle"},
+      "walk": {"clip": "Walking_Woman"},
+      "open": {"clip": "open_door", "blend_from": "idle", "blend_s": 0.4},
+      "pick": {"own": true, "segments": [[0.2, 1.15], [2.75, 3.85]], "join_s": 0.15, "blend_from": "idle", "blend_s": 0.45, "name": "Collect_Object_pick"},
+      "reach": {"clip": "open_door", "segments": [[0.2, 1.05], [3.45, 4.3]], "join_s": 0.1, "blend_from": "idle", "blend_s": 0.25, "name": "open_door_take_reach"},
+      "sit": {"clip": "Chair_Sit_Idle_F", "library": "pipeline/3d/motions/nina_chair_sit.glb", "name": "Chair_Sit_F_sit"}
+    }
+  }
+}

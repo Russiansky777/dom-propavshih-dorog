@@ -1,0 +1,62 @@
+{
+ "rigid_vertices": 26155,
+ "edges": 68477,
+ "clips": {
+  "Chair_Sit_F_sit": {
+   "strap_bag_stretch_p995": 0.2764,
+   "hand_bag_gap_m": {
+    "RightHand": 0.0316,
+    "LeftHand": 0.1078
+   }
+  },
+  "Collect_Object": {
+   "strap_bag_stretch_p995": 0.3342,
+   "hand_bag_gap_m": {
+    "RightHand": 0.0008,
+    "LeftHand": 0.2521
+   }
+  },
+  "Collect_Object_pick": {
+   "strap_bag_stretch_p995": 0.3237,
+   "hand_bag_gap_m": {
+    "RightHand": 0.0083,
+    "LeftHand": 0.2035
+   }
+  },
+  "Idle_T2M": {
+   "strap_bag_stretch_p995": 0.1321,
+   "hand_bag_gap_m": {
+    "RightHand": 0.0121,
+    "LeftHand": 0.195
+   }
+  },
+  "Idle_T2M_idle": {
+   "strap_bag_stretch_p995": 0.132,
+   "hand_bag_gap_m": {
+    "RightHand": 0.0121,
+    "LeftHand": 0.195
+   }
+  },
+  "open_door_open": {
+   "strap_bag_stretch_p995": 0.127,
+   "hand_bag_gap_m": {
+    "RightHand": 0.0223,
+    "LeftHand": 0.2035
+   }
+  },
+  "open_door_take_reach": {
+   "strap_bag_stretch_p995": 0.127,
+   "hand_bag_gap_m": {
+    "RightHand": 0.0223,
+    "LeftHand": 0.2035
+   }
+  },
+  "Walking_Woman": {
+   "strap_bag_stretch_p995": 0.0777,
+   "hand_bag_gap_m": {
+    "RightHand": 0.0645,
+    "LeftHand": 0.2205
+   }
+  }
+ }
+}
