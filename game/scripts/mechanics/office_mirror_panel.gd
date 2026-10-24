@@ -27,8 +27,10 @@ var glass: Control = null          # the click area over the glass (bounding box
 var glass_poly: Polygon2D = null   # the office now, mapped onto the glass contour
 var glass_rect: Rect2 = Rect2()
 var glass_points: PackedVector2Array = PackedVector2Array()
-var bell: TextureRect = null
+var bell: Control = null           # the swinging part: the bell's body and clapper round the suspension point
+var bell_clapper: Control = null   # the clapper inside the mouth (lags the body a little)
 var bell_hit: Control = null
+var signal_rows: Array[Control] = []   # H27: one row per signal of the schedule (bell.signals) — the one wanted now is lit
 const WEDGE_COUNTER := "mech.wedges.driven"
 var wedges: Array[Control] = []        # one holder per wedge (its three state crops + the glow) — probe/tests
 var wedge_hits: Array[int] = []        # hits so far on each wedge (3 — driven)
@@ -106,32 +108,159 @@ func build() -> void:
 	_build_wedges(reg, fpos, fk)
 	# The bell.
 	var bs: Dictionary = spec.get("bell", {})
-	bell = crop(String(bs.get("image", "")), bs.get("region", [1376, 252, 192, 236]), v2(bs.get("pos", [1150, 250])), float(bs.get("scale", 1.7)))
-	bell.name = "Bell"
-	bell.pivot_offset = Vector2(bell.size.x * 0.5, 0)
-	bell_hit = hit_area(Rect2(bell.position, bell.size), _on_bell_input, "BellHit")
+	_build_bell(bs)
 	signal_parser = BellSignal.new(bs.get("signal", {}))
-	var card := PanelContainer.new()
-	card.name = "Schedule"
-	card.position = v2(spec.get("schedule_pos", [1120, 690]))
-	card.size = Vector2(560, 150)
-	card.add_theme_stylebox_override("panel", UiTheme.panel_style(Color(0.86, 0.80, 0.66, 0.96), Color(0.4, 0.3, 0.18), 18, 12))
-	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(card)
-	var cl := Label.new()
-	cl.text = text("label_schedule")
-	cl.add_theme_color_override("font_color", Color(0.22, 0.15, 0.08))
-	cl.add_theme_font_override("font", UiTheme.font("body"))
-	cl.add_theme_font_size_override("font_size", 26)
-	cl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	card.add_child(cl)
-	var legend := label(text("label_bell"), v2(spec.get("legend_pos", [1120, 878])), float(spec.get("legend_w", 760)))
-	legend.name = "BellLegend"
+	_build_signal_card(bs)
 	status_label = label("", v2(spec.get("status_pos", [1120, 950])), float(spec.get("status_w", 540)))
 	hook = HookPuzzle.new(spec.get("hook", {}))
 	hook.event.connect(_on_hook_event)
 	_build_hook_bar()
 	_sync_from_flags()
+
+
+## The bell (H26, Director 24.10: «колокол вписанный, а не картинка вставленная»): the close-up of партия 10б — the
+## stand over the trestles with its fixed hook (`art.stand`), the bell's body (`art.body`) and the clapper hung in it
+## (`art.clapper`, shown once `bell_clapper_hung`), layers on one 1672×941 canvas at (0, 0); `art.region` of it is
+## shown at `pos` × `scale`, its edges fading into the dark (SoftWindow, `window`). The body and the clapper swing
+## together round the suspension point `art.pivot`; the clapper lags a little round its own top `art.clapper_pivot`;
+## the hook stays still. No art — the old crop of the workshop painting (`image`, `region`).
+func _build_bell(bs: Dictionary) -> void:
+	var art: Dictionary = bs.get("art", {})
+	var pos := v2(bs.get("pos", [1150, 250]))
+	var k := float(bs.get("scale", 1.7))
+	if art.is_empty() or not ResourceLoader.exists(String(art.get("body", ""))):
+		bell = crop(String(bs.get("image", "")), bs.get("region", [1376, 252, 192, 236]), pos, k)
+		bell.name = "Bell"
+		bell.pivot_offset = Vector2(bell.size.x * 0.5, 0)
+		bell_hit = hit_area(Rect2(bell.position, bell.size), _on_bell_input, "BellHit")
+		return
+	var reg: Array = art.get("region", [520, 40, 640, 860])
+	var origin := Vector2(float(reg[0]), float(reg[1]))
+	var win := SoftWindow.new()
+	win.name = "BellCloseup"
+	win.position = pos
+	win.size = Vector2(float(reg[2]), float(reg[3])) * k
+	var wc: Dictionary = bs.get("window", {})
+	win.shape = String(wc.get("shape", "rect"))
+	win.configure(wc)
+	add_child(win)
+	crop(String(art.get("stand", "")), reg, Vector2.ZERO, k, win.content).name = "Stand"
+	bell = Control.new()
+	bell.name = "Bell"
+	bell.size = win.size
+	bell.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bell.pivot_offset = (v2(art.get("pivot", [818, 252])) - origin) * k
+	win.content.add_child(bell)
+	bell_clapper = crop(String(art.get("clapper", "")), reg, Vector2.ZERO, k, bell)
+	bell_clapper.name = "Clapper"
+	bell_clapper.pivot_offset = (v2(art.get("clapper_pivot", [818, 562])) - origin) * k
+	bell_clapper.visible = flag("bell_clapper_hung")
+	crop(String(art.get("body", "")), reg, Vector2.ZERO, k, bell).name = "Body"
+	var bb: Array = art.get("body_box", [659, 235, 323, 360])
+	bell_hit = hit_area(Rect2(pos + (Vector2(float(bb[0]), float(bb[1])) - origin) * k, Vector2(float(bb[2]), float(bb[3])) * k), _on_bell_input, "BellHit")
+
+
+## H27 (Director 24.10: «мини-игра запутанная… пояснение: позвонить 1 раз для запуска, 2 раза быстро для остановки»):
+## the shift schedule as a card of rows built from the data `bell.signals` — each signal how to ring it and what it
+## means for Pavel ({id: one | two | long, text, for: [the states it is wanted in]}); the row wanted now is lit.
+func _build_signal_card(bs: Dictionary) -> void:
+	var card := PanelContainer.new()
+	card.name = "Schedule"
+	card.position = v2(spec.get("schedule_pos", [1120, 690]))
+	card.custom_minimum_size = Vector2(float(spec.get("schedule_w", 760)), 0)
+	card.add_theme_stylebox_override("panel", UiTheme.panel_style(Color(0.86, 0.80, 0.66, 0.96), Color(0.4, 0.3, 0.18), 18, 12))
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(card)
+	var col := VBoxContainer.new()
+	col.name = "BellLegend"
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_theme_constant_override("separation", 6)
+	card.add_child(col)
+	var title := _card_label(text("label_schedule"), 26)
+	title.name = "Title"
+	col.add_child(title)
+	for sg in bs.get("signals", []):
+		var row := HBoxContainer.new()
+		row.name = "Signal_" + String(sg.get("id", ""))
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.set_meta("signal", sg)
+		row.add_theme_constant_override("separation", 12)
+		var glyph := SignalGlyph.new()
+		glyph.signal_id = String(sg.get("id", ""))
+		glyph.custom_minimum_size = Vector2(70, 30)
+		row.add_child(glyph)
+		var l := _card_label(StoryData.text(String(sg.get("text", ""))), 24)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		col.add_child(row)
+		signal_rows.append(row)
+
+
+func _card_label(t: String, fs: int) -> Label:
+	var l := Label.new()
+	l.text = t
+	l.add_theme_color_override("font_color", Color(0.22, 0.15, 0.08))
+	l.add_theme_font_override("font", UiTheme.font("body"))
+	l.add_theme_font_size_override("font_size", fs)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return l
+
+
+## The legend's whole text (tests, bots): the title and every row.
+func legend_text() -> String:
+	var parts: Array[String] = [text("label_schedule")]
+	for r in signal_rows:
+		parts.append(String((r.get_child(1) as Label).text))
+	return "\n".join(parts)
+
+
+## The signal wanted now (H27): by the stage — the lantern check and the hook at the top want one strike, the hook
+## swinging wants «стой», the hook under the bar wants the long ring. "" — none (the wedges, the end).
+func wanted_signal() -> String:
+	if not clamped() or not flag("bell_clapper_hung") or flag("office_unbolted"):
+		return ""
+	var st := "lantern" if not flag("lantern_check_seen") else (hook.state if hook != null else "")
+	for r in signal_rows:
+		var sg: Dictionary = r.get_meta("signal")
+		if (sg.get("for", []) as Array).has(st):
+			return String(sg.get("id", ""))
+	return ""
+
+
+func _light_rows() -> void:
+	var want := wanted_signal()
+	for r in signal_rows:
+		var on := String((r.get_meta("signal") as Dictionary).get("id", "")) == want
+		r.modulate = Color(1, 1, 1, 1) if on or want == "" else Color(1, 1, 1, 0.45)
+		(r.get_child(0) as SignalGlyph).lit = on
+
+
+## How a signal is rung, drawn: dots for strikes (two close together for «стой»), a long bar for the long ring.
+class SignalGlyph extends Control:
+	var signal_id: String = ""
+	var lit: bool = false:
+		set(v):
+			lit = v
+			queue_redraw()
+
+	func _init() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		var ink := Color(0.55, 0.22, 0.08) if lit else Color(0.22, 0.15, 0.08)
+		var cy := size.y * 0.5
+		match signal_id:
+			"one":
+				draw_circle(Vector2(14, cy), 7, ink)
+			"two":
+				draw_circle(Vector2(14, cy), 7, ink)
+				draw_circle(Vector2(32, cy), 7, ink)
+			"long":
+				draw_circle(Vector2(14, cy), 7, ink)
+				draw_rect(Rect2(14, cy - 4, 44, 8), ink)
+		if lit:
+			draw_line(Vector2(2, size.y - 2), Vector2(size.x - 4, size.y - 2), ink, 2.0)
 
 
 ## The upright bar beside the glass, level with the gap: its green is the bolt zone, its marker the hook.
@@ -391,7 +520,11 @@ func tick(delta: float) -> void:
 		hook_bar.modulate.a = 1.0 if hook.state in ["sway", "stopped", "lift_bar"] else 0.45
 	if _bell_swing > 0.0:
 		_bell_swing = maxf(_bell_swing - delta * 1.6, 0.0)
-		bell.rotation_degrees = sin(clock * 14.0) * 6.0 * _bell_swing
+		var amp := float(spec.get("bell", {}).get("swing_deg", 6.0))
+		bell.rotation_degrees = sin(clock * 14.0) * amp * _bell_swing
+		if bell_clapper != null:
+			# The clapper lags the body round its own top: the body swings, the clapper catches up.
+			bell_clapper.rotation_degrees = -sin(clock * 14.0 - 0.9) * amp * 0.5 * _bell_swing
 	if not clamped() and glass_poly != null:
 		glass_poly.modulate = Color(1, 1, 1, 0.22)
 		glass_poly.position = Vector2(sin(clock * 9.0) * 3.0, cos(clock * 7.0) * 2.0)
@@ -428,6 +561,9 @@ func _set_status() -> void:
 	_status = key
 	if status_label != null:
 		status_label.text = text(key)
+	if bell_clapper != null:
+		bell_clapper.visible = flag("bell_clapper_hung")
+	_light_rows()
 
 
 # --- Probe ----------------------------------------------------------------------------------
@@ -435,7 +571,8 @@ func _set_status() -> void:
 func probe() -> Dictionary:
 	var out := {"clamped": clamped(), "bell": center_of(bell_hit), "glass": center_of(glass),
 		"light": office.light_on if office != null else false, "status": _status,
-		"strike_frame": strike_frame, "light_frame": light_frame, "signals": signals_seen.duplicate()}
+		"strike_frame": strike_frame, "wanted_signal": wanted_signal(), "legend": legend_text(),
+		"bell_swing_deg": bell.rotation_degrees if bell != null else 0.0, "light_frame": light_frame, "signals": signals_seen.duplicate()}
 	var ws: Array = []
 	for w in wedges:
 		ws.append(center_of(w))

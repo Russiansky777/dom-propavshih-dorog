@@ -591,9 +591,19 @@ async function main() {
       p = await P();
       await drag("hinge_2 → bottom", p.pieces.hinge_2, { x: p.slots.bottom.x - 12, y: p.slots.bottom.y + 18 });
       await waitFor("hinge_2 in the bottom socket", (t) => t.puzzle.placed.bottom === "hinge_2", 5000);
-      // Threshold: drag the beam so the V notch comes under the door's mark (snaps within 40 px).
+      // H18: the beam pulled near a notch is knocked in from the end the arrow shows (a click on the beam's end).
+      const knockIn = async (i) => {
+        for (let k = 0; k < 12; k++) {
+          const q = await P();
+          if (q.mark === i || q.near !== i) break;
+          await click(`knock the beam (notch ${i}, ${Math.round(q.near_off)} px)`, q.near_off < 0 ? q.knock_left : q.knock_right);
+          await sleep(200);
+        }
+      };
+      // Threshold: drag the beam so the V notch comes near the door's mark, then knock it in.
       p = await P();
       await drag("beam: V notch under the door's mark", p.beam, { x: p.beam.x + (p.anchor.x - p.marks[2].x) + 14, y: p.beam.y }, { steps: 10 });
+      await knockIn(2);
       await waitFor("V notch aligned", (t) => t.puzzle.mark === 2, 5000);
       // Two hinges only: the door does not hold (three are needed).
       p = await P();
@@ -611,15 +621,19 @@ async function main() {
       // A wrong (straight) notch: no.
       p = await P();
       await drag("beam: straight notch 1 under the mark", p.beam, { x: p.beam.x + (p.anchor.x - p.marks[1].x) - 10, y: p.beam.y }, { steps: 10 });
+      await knockIn(1);
       await waitFor("notch 1 under the mark", (t) => t.puzzle.mark === 1, 5000);
       p = await P();
       await click("door handle (wrong notch)", p.handle);
       await waitFor("hint after the second error", (s) => s.puzzle.errors === 2 && s.puzzle.hint, 8000);
       await sleep(1800);
-      // A click on the V notch brings it under the mark; the handle closes the door.
+      // The V notch again: dragged near (the knock arrows show), then knocked in; the handle closes the door.
       p = await P();
-      await click("V notch (click)", p.marks[2]);
-      await waitFor("V notch aligned by click", (t) => t.puzzle.mark === 2, 5000);
+      await drag("beam: V notch near the mark", p.beam, { x: p.beam.x + (p.anchor.x - p.marks[2].x) - 26, y: p.beam.y }, { steps: 10 });
+      await sleep(300);
+      await evidenceShot("H18_notch_knock_arrows");
+      await knockIn(2);
+      await waitFor("V notch knocked in", (t) => t.puzzle.mark === 2, 5000);
       await sleep(400);
       await evidenceShot("H3_v2_door_ready");
       p = await P();

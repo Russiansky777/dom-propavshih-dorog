@@ -34,6 +34,12 @@ func minute_hand_deg() -> float:
 	return fmod(nina_minutes(), 60.0) * 6.0
 
 
+## The second hand of the ходики (Director 24.10, H32): a turn per Nina's minute — at 20× a turn in three of
+## Agata's seconds.
+func second_hand_deg() -> float:
+	return fmod(nina_minutes() * 60.0, 60.0) * 6.0
+
+
 func hour_hand_deg() -> float:
 	return fmod(nina_minutes() / 60.0, 12.0) * 30.0
 

@@ -20,6 +20,12 @@ extends CanvasLayer
 ##     flat colour and caption;
 ##   - cursor: open hand over a hinge or the beam, closed hand while one is held / the beam is pulled,
 ##     pointing hand on the handle (not the ↔ shapes: ExitCursors draws the exit arrows on those); sounds of sfx.json by puzzle `sounds` (take / snap / return / beam / close_*).
+##   - seating the notch (Director 24.10, H18: «для зарубки — подумать, как сделать установку игрой»; data
+##     `marks.seat`): the beam dragged near a notch (within `marks.snap_px`) is not chosen yet — it must be knocked
+##     exactly under the door's mark: a click on an end of the beam (`seat.end_frac` of its length) knocks it
+##     `seat.tap_px` toward the other end; within `seat.tol_px` it sits in the notch (that notch is chosen). The
+##     guide line is amber while near, the knock arrows at the beam's ends show which end to strike;
+##     a click in the middle of the beam only shows the hint. Without `seat` — the old snap and click-to-align.
 ## Rules stay in StoryRunner (puzzle_place / puzzle_set_mark / puzzle_check). Positions, snap distances
 ## and the number of hinges are rooms data (puzzle.art / drag / slots / pieces / marks) — no if-branches.
 
@@ -62,6 +68,14 @@ var snap_px: float = 60.0
 var click_px: float = 6.0
 var return_s: float = 0.25
 var mark_snap_px: float = 40.0
+var seat: Dictionary = {}          # H18: knocking the notch exactly under the mark (marks.seat); empty — old snap
+var seat_tol_px: float = 4.0
+var seat_tap_px: float = 8.0
+var seat_end_frac: float = 0.18
+var seat_taps: int = 0             # knocks given (tests)
+var seat_arrows: Array[Label] = [] # ▶ at the left end, ◀ at the right end: where to strike
+var seat_hint: Label = null
+var _seat_hint_t: float = -100.0
 var shift_range: Vector2 = Vector2(-400, 400)
 
 var _beam_dx: float = 0.0          # where the beam rests (aligned notch or where it was left)
@@ -210,6 +224,10 @@ func _build() -> void:
 	click_px = float(drag.get("click_px", 6.0))
 	return_s = float(drag.get("return_s", 0.25))
 	mark_snap_px = float(marks.get("snap_px", 40.0))
+	seat = marks.get("seat", {}) if marks.get("seat", {}) is Dictionary else {}
+	seat_tol_px = float(seat.get("tol_px", seat_tol_px))
+	seat_tap_px = float(seat.get("tap_px", seat_tap_px))
+	seat_end_frac = float(seat.get("end_frac", seat_end_frac))
 	piece_size = _v(art.get("hinge", {}).get("size", null), Vector2(100, 130))
 	tray_rect = _r(art.get("tray", null), Rect2(1400, 500, 440, 150))
 	handle_rect = _r(art.get("handle", null), Rect2())
@@ -328,6 +346,19 @@ func _build() -> void:
 	guide_line.visible = false
 	root.add_child(guide_line)
 	root.add_child(_label(StoryData.text(String(marks.get("label", ""))), Rect2(330, 960, 260, 40), 20, false))
+	seat_arrows.clear()
+	if not seat.is_empty():
+		for k in 2:
+			var a := _label("▶" if k == 0 else "◀", Rect2(0, 0, 40, 40), 30)
+			a.name = "Knock%s" % ("Left" if k == 0 else "Right")
+			a.add_theme_color_override("font_color", GLOW)
+			a.visible = false
+			root.add_child(a)
+			seat_arrows.append(a)
+		seat_hint = _label(StoryData.text(String(seat.get("label", ""))), Rect2(330, 1000, 1000, 40), 20, false)
+		seat_hint.name = "SeatHint"
+		seat_hint.visible = false
+		root.add_child(seat_hint)
 
 	# Reference drawing and its caption; piece tray.
 	var drawing := _art_layer("DrawingImage", art.get("drawing", {}))
@@ -749,13 +780,69 @@ func _update_beam_visuals() -> void:
 		var on := i == mark and absf(_beam_shown_dx - _beam_dx) < 1.0
 		var a := 0.9 if on else (0.55 if i == preview else 0.0)
 		notch_marks[i].color = Color(GLOW.r, GLOW.g, GLOW.b, a)
+	if not seat.is_empty() and preview < 0 and mark < 0:
+		preview = _notch_at_anchor(_beam_shown_dx)   # resting near a notch, not seated: still shown (amber)
 	var aligned := (mark >= 0 and absf(_beam_shown_dx - _beam_dx) < 1.0) or preview >= 0
 	guide_line.visible = aligned
+	var seated := mark >= 0 and absf(_beam_shown_dx - _beam_dx) < 1.0
+	guide_line.color = Color(0.55, 0.85, 0.45, 0.95) if seated or (preview >= 0 and _seat_off(preview, _beam_shown_dx) <= seat_tol_px) \
+		else (Color(1.0, 0.62, 0.25, 0.95) if not seat.is_empty() else Color(GLOW.r, GLOW.g, GLOW.b, 0.85))
+	_update_seat_arrows(preview if not seated else -1)
 	if aligned and notch_base.size() > 0:
 		var i := mark if preview < 0 else preview
 		var ny := notch_base[i].y
 		guide_line.position = Vector2(anchor.x - 1.5, minf(anchor.y, ny))
 		guide_line.size = Vector2(3, maxf(absf(ny - anchor.y), 6.0))
+
+
+## How far notch i is from the door's mark at shift dx (px, signed: + — the notch is right of the mark).
+func _notch_off(i: int, dx: float) -> float:
+	return _notch_x(i, dx) - anchor.x
+
+
+func _seat_off(i: int, dx: float) -> float:
+	return absf(_notch_off(i, dx))
+
+
+## The knock arrows at the beam's ends: shown while a notch is near the mark but not seated; the end to strike
+## glows (the notch right of the mark — strike the right end, it goes left), the other is faint.
+func _update_seat_arrows(near: int) -> void:
+	if seat_arrows.is_empty():
+		return
+	var hit := _beam_hit()
+	var show: bool = near >= 0 and String(_drag.get("kind", "")) != "beam" and not _solved()
+	var off := _notch_off(near, _beam_shown_dx) if near >= 0 else 0.0
+	for k in 2:
+		var a: Label = seat_arrows[k]
+		a.visible = show
+		a.position = Vector2(hit.position.x - 44.0 if k == 0 else hit.end.x + 4.0, hit.get_center().y - 20.0)
+		var want := (k == 0 and off < 0.0) or (k == 1 and off > 0.0)
+		a.modulate = Color(1, 1, 1, 1.0 if want else 0.3)
+	if seat_hint != null:
+		var hk := clampf(1.0 - (_pulse_t - _seat_hint_t) / 1.5, 0.0, 1.0)
+		seat_hint.visible = show or hk > 0.0
+		seat_hint.modulate = Color(1.0, 1.0 - 0.3 * hk, 1.0 - 0.6 * hk, 1.0)
+
+
+## A knock on an end of the beam (H18): it moves seat_tap_px toward the other end; within tol_px of the mark the
+## nearest notch sits in it (chosen).
+func _knock(dir: float) -> void:
+	seat_taps += 1
+	var to := clampf(_beam_shown_dx + dir * seat_tap_px, shift_range.x, shift_range.y)
+	_beam_dx = to
+	if int(StoryRunner.puzzle.get("mark", -1)) != -1:
+		StoryRunner.puzzle_set_mark(-1)
+	_sound("beam")
+	var i := _notch_at_anchor(to)
+	if i >= 0 and _seat_off(i, to) <= seat_tol_px:
+		_align_beam(i)
+		return
+	if _beam_tween != null and _beam_tween.is_valid():
+		_beam_tween.kill()
+	_beam_tween = create_tween()
+	_beam_tween.tween_method(func(v: float): _beam_shown_dx = v; _update_beam_visuals(), _beam_shown_dx, to, 0.08) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_beam_tween.finished.connect(func(): _beam_shown_dx = _beam_dx; _update_beam_visuals())
 
 
 func _update_glows() -> void:
@@ -794,6 +881,8 @@ func _process(delta: float) -> void:
 	_pulse_t += delta
 	if _drag.is_empty() and _carry == "":
 		_update_glows()
+	if seat_hint != null and seat_hint.visible:
+		_update_beam_visuals()
 
 
 func _auto_close() -> void:
@@ -955,6 +1044,10 @@ func _release(pos: Vector2) -> void:
 		_set_cursor(_cursor_for(pos) if _carry == "" else Control.CURSOR_CAN_DROP)
 		return
 	# Beam.
+	if not seat.is_empty():
+		_release_beam_seat(pos, d)
+		_set_cursor(_cursor_for(pos))
+		return
 	if not bool(d["moved"]):
 		# Click on the beam: the notch nearest the click comes under the door's mark.
 		var best := -1
@@ -976,6 +1069,32 @@ func _release(pos: Vector2) -> void:
 				StoryRunner.puzzle_set_mark(-1)
 			_update_beam_visuals()
 	_set_cursor(_cursor_for(pos))
+
+
+## H18: the beam let go — near a notch it rests there unseated (to be knocked in), exactly at it — seated; a click on
+## an end knocks it, a click in the middle shows the hint.
+func _release_beam_seat(pos: Vector2, d: Dictionary) -> void:
+	if not bool(d["moved"]):
+		var hit := _beam_hit()
+		var f := (pos.x - hit.position.x) / maxf(hit.size.x, 1.0)
+		if f <= seat_end_frac:
+			_knock(1.0)
+		elif f >= 1.0 - seat_end_frac:
+			_knock(-1.0)
+		else:
+			_seat_hint_t = _pulse_t
+			_update_beam_visuals()
+		return
+	_beam_dx = _beam_shown_dx
+	var i := _notch_at_anchor(_beam_shown_dx)
+	if i >= 0 and _seat_off(i, _beam_shown_dx) <= seat_tol_px:
+		_align_beam(i)
+		return
+	if int(StoryRunner.puzzle.get("mark", -1)) != -1:
+		StoryRunner.puzzle_set_mark(-1)
+	if i >= 0:
+		_sound("beam")
+	_update_beam_visuals()
 
 
 func _drop_piece(pid: String, center: Vector2, from_slot: String) -> void:
@@ -1065,6 +1184,17 @@ func probe_positions() -> Dictionary:
 	out["anchor"] = _xy(anchor)
 	out["beam"] = _xy(_beam_hit().get_center())
 	out["beam_dx"] = _beam_shown_dx
+	out["seat"] = not seat.is_empty()
+	out["seat_taps"] = seat_taps
+	var hb := _beam_hit()
+	# Where to knock (bots): a point on each end of the beam.
+	out["knock_left"] = _xy(Vector2(hb.position.x + hb.size.x * seat_end_frac * 0.5, hb.get_center().y))
+	out["knock_right"] = _xy(Vector2(hb.end.x - hb.size.x * seat_end_frac * 0.5, hb.get_center().y))
+	var near := _notch_at_anchor(_beam_shown_dx)
+	out["near"] = near
+	out["near_off"] = _notch_off(near, _beam_shown_dx) if near >= 0 else 0.0
+	out["seat_hint"] = seat_hint != null and seat_hint.visible
+	out["guide_color"] = guide_line.color.to_html() if guide_line != null else ""
 	if handle_rect.size != Vector2.ZERO:
 		out["handle"] = _xy(handle_rect.get_center())
 	out["tray"] = {}

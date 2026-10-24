@@ -207,9 +207,9 @@ async function main() {
     if (RUNS.includes("D1")) {
       await page.goto(`http://127.0.0.1:${PORT}/index.html?start=bedtime`);
       let s = await waitFor("D1: game up in the gallery", (t) => t.room === "H3", 240000);
-      await page.mouse.click(960, 540);
-      const said = await playThrough("D1: the gallery", { quietMs: 2500 });
-      check(said.some((l) => l.includes("пора спать")), `D1: Agata says it is time to sleep (${said.join(" / ")})`);
+      s = await waitFor("D1: Agata's line in the gallery", (t) => t.beat && /пора спать/i.test(t.beat.text || ""), 60000);
+      check(s.beat && /Кровать на чердаке/.test(s.beat.text || ""), `D1: Agata says it is time to sleep, the bed is in the attic (${s.beat && s.beat.text})`);
+      await playThrough("D1: the gallery", { quietMs: 2500 });
       s = await state();
       check(!s.flags.started_N01, "D1: the night does not start by itself");
       check(await goExit("H1") && await goExit("H4"), "D1: the living room → the attic");
@@ -230,7 +230,7 @@ async function main() {
       await playThrough("D3: start", { quietMs: 2000 });
       check(await goExit("H4"), "D3: up to the attic");
       const lines = await useHotspot("bed", { done: (t) => t.flags.done_M24 && !beatKey(t), timeout: 300000 });
-      check(lines.length > 0 && lines[0].includes("пора спать"), `D3: «пора спать» (${lines[0]})`);
+      check(lines.length > 0 && /пора спать/i.test(lines[0]), `D3: «пора спать» (${lines[0]})`);
       s = await state();
       check(s.flags.done_M24 && s.flags.morning_day4, "D3: morning of day four");
       await shot("H17_morning_day4");

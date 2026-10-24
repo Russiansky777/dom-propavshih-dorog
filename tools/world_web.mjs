@@ -255,8 +255,16 @@ async function main() {
         await drag(`${pieces[i]} → ${slots[i]}`, p.pieces[pieces[i]], p.slots[slots[i]]);
       }
       p = (await state()).puzzle;
-      await click("the V notch", p.marks[2]);
-      await sleep(600);
+      // H18: the beam near the V notch, then knocked in from the end the arrow shows.
+      await drag("the beam: V notch near the mark", p.beam, { x: p.beam.x + (p.anchor.x - p.marks[2].x) - 20, y: p.beam.y });
+      await sleep(300);
+      for (let k = 0; k < 12; k++) {
+        p = (await state()).puzzle;
+        if (p.mark === 2 || p.near !== 2) break;
+        await click("knock the beam", p.near_off < 0 ? p.knock_left : p.knock_right);
+        await sleep(200);
+      }
+      await sleep(400);
       p = (await state()).puzzle;
       await click("the handle", p.handle);
       s = await waitFor("the door open on the winter class", (t) => t.puzzle && t.puzzle.view === "winter", 15000);

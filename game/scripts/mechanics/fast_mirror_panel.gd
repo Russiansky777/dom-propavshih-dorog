@@ -34,12 +34,14 @@ var nina: Node2D = null
 var art: Node2D = null
 var hand_min: Node2D = null       # pivot node at the hands' axis; the sprite under it is drawn at 12
 var hand_hour: Node2D = null
+var hand_sec: Node2D = null       # the second hand (code-drawn, H32)
 var pendulum: Node2D = null       # pivot node at the pendulum's axis
 var flame: Node2D = null          # pivot node at the wick
 var loupe: Control = null         # «У мамы»: the wall clock up close
 var loupe_art: Node2D = null
 var loupe_min: Node2D = null
 var loupe_hour: Node2D = null
+var loupe_sec: Node2D = null
 var loupe_pend: Node2D = null
 var loupe_ghosts: Array[Node2D] = []
 var slot: Control = null          # «У меня»: where Agata's watch is held
@@ -119,6 +121,7 @@ func _build_room() -> void:
 	pendulum = _pivot(art, "Pendulum", String(ra.get("pendulum", "")), v2(ra.get("pendulum_axis", [942, 259])))
 	hand_min = _pivot(art, "HandMin", String(ra.get("hand_min", "")), v2(ra.get("hands_axis", [942, 201])))
 	hand_hour = _pivot(art, "HandHour", String(ra.get("hand_hour", "")), v2(ra.get("hands_axis", [942, 201])))
+	hand_sec = _second_hand(art)
 	# A layer of the room for one pose (`room_layer`: the table without the small mirror while she holds it) —
 	# over the painting, under Nina; hidden in the other poses or while the picture is not there.
 	pose_layer = _sprite(art, "PoseLayer", "", Vector2.ZERO)
@@ -204,9 +207,10 @@ func _build_side() -> void:
 	var k := w / float(reg[2])
 	var h := float(reg[3]) * k
 	var top := float(lp.get("top", room_rect.position.y + (room_rect.size.y - h) * 0.5 - 40.0))
-	# «У мамы»: a brass-rimmed window onto the clock (the same painting, its own copies of the moving layers).
-	loupe = _plate("Loupe", Rect2(x0, top, w, h))
-	loupe.clip_contents = true
+	# «У мамы»: a round window cut onto the clock (Director 24.10, H32: an ellipse round the face and the pendulum,
+	# a soft edge and a vignette — not a rectangle; the same painting, its own copies of the moving layers).
+	var win: Dictionary = spec.get("window", {})
+	loupe = _window("Loupe", Rect2(x0, top, w, h), win)
 	loupe.mouse_filter = Control.MOUSE_FILTER_STOP
 	loupe.gui_input.connect(_on_glass_input)
 	var ra: Dictionary = spec.get("room_art", {})
@@ -214,7 +218,7 @@ func _build_side() -> void:
 	loupe_art.name = "Art"
 	loupe_art.scale = Vector2(k, k)
 	loupe_art.position = -Vector2(float(reg[0]), float(reg[1])) * k
-	loupe.add_child(loupe_art)
+	(loupe as SoftWindow).content.add_child(loupe_art)
 	_sprite(loupe_art, "Room", String(ra.get("bg", "")), Vector2.ZERO)
 	_sprite(loupe_art, "ClockFace", String(ra.get("clock_face", "")), Vector2.ZERO)
 	var pax := v2(ra.get("pendulum_axis", [942, 259]))
@@ -225,18 +229,14 @@ func _build_side() -> void:
 	loupe_pend = _pivot(loupe_art, "Pendulum", String(ra.get("pendulum", "")), pax)
 	loupe_min = _pivot(loupe_art, "HandMin", String(ra.get("hand_min", "")), v2(ra.get("hands_axis", [942, 201])))
 	loupe_hour = _pivot(loupe_art, "HandHour", String(ra.get("hand_hour", "")), v2(ra.get("hands_axis", [942, 201])))
-	var glass := ColorRect.new()
-	glass.color = Color(0.75, 0.82, 0.9, 0.06)
-	glass.size = loupe.size
-	glass.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	loupe.add_child(glass)
+	loupe_sec = _second_hand(loupe_art)
 	label(text("label_nina_clock"), Vector2(x0, top + h + 10.0), w, &"CloseupLabel").horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	elapsed_nina = label("", Vector2(x0, top + h + 46.0), w, &"CloseupLabel")
 	elapsed_nina.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	# «У меня»: the place for Agata's watch.
 	var sx := x0 + w + 30.0
 	var sw := minf(w, 1900.0 - sx)
-	slot = _plate("WatchSlot", Rect2(sx, top + (h - sw) * 0.5, sw, sw))
+	slot = _window("WatchSlot", Rect2(sx, top + (h - sw) * 0.5, sw, sw), win)
 	slot.mouse_filter = Control.MOUSE_FILTER_STOP
 	slot.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	slot.gui_input.connect(_on_slot_input)
@@ -247,40 +247,65 @@ func _build_side() -> void:
 	slot_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	slot_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	slot_hint.theme_type_variation = &"CloseupLabel"
-	slot_hint.position = Vector2(14, 14)
-	slot_hint.size = slot.size - Vector2(28, 28)
+	slot_hint.position = slot.size * 0.15
+	slot_hint.size = slot.size * 0.7
 	slot_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slot.add_child(slot_hint)
 	watch = PocketWatchDial.new()
 	watch.name = "Watch"
+	watch.zoom = 1.7
 	watch.configure(spec.get("watch_dial", {}))
-	watch.zoom = float(spec.get("watch_dial", {}).get("zoom", 1.7))
-	slot.clip_contents = true
 	watch.size = slot.size
 	watch.visible = false
 	watch.run = false
-	slot.add_child(watch)
+	(slot as SoftWindow).content.add_child(watch)
 	label(text("label_my_watch"), Vector2(sx, top + h + 10.0), sw, &"CloseupLabel").horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	elapsed_mine = label("", Vector2(sx, top + h + 46.0), sw, &"CloseupLabel")
 	elapsed_mine.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 
-## A dark plate with a brass rim (the loupe, the watch's place).
-func _plate(node_name: String, r: Rect2) -> Control:
-	var p := Panel.new()
+## A round window with a soft edge, a brass rim and a shadow (the clock up close, the watch's place) — one style
+## for both (data `window`: SoftWindow.configure).
+func _window(node_name: String, r: Rect2, cfg: Dictionary) -> Control:
+	var p := SoftWindow.new()
 	p.name = node_name
 	p.position = r.position
 	p.size = r.size
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.07, 0.05, 0.035, 0.92)
-	sb.border_color = Color(0.72, 0.58, 0.34, 0.9)
-	sb.set_border_width_all(3)
-	sb.set_corner_radius_all(10)
-	sb.shadow_color = Color(0, 0, 0, 0.5)
-	sb.shadow_size = 10
-	p.add_theme_stylebox_override("panel", sb)
+	p.configure(cfg)
 	add_child(p)
 	return p
+
+
+## The ходики's second hand (H32), drawn like the painted hands: thin dark iron with a counterweight; geometry in
+## canvas px of the room (`room_art.second_hand`).
+func _second_hand(parent: Node2D) -> SecondHand:
+	var ra: Dictionary = spec.get("room_art", {})
+	var sh := SecondHand.new()
+	sh.name = "HandSec"
+	sh.position = v2(ra.get("hands_axis", [942, 201]))
+	sh.configure(ra.get("second_hand", {}))
+	parent.add_child(sh)
+	return sh
+
+
+class SecondHand extends Node2D:
+	var length: float = 29.0
+	var tail: float = 7.0
+	var width: float = 0.8
+	var color: Color = Color(0.19, 0.16, 0.14)
+
+	func configure(cfg: Dictionary) -> void:
+		length = float(cfg.get("length", length))
+		tail = float(cfg.get("tail", tail))
+		width = float(cfg.get("width", width))
+		if cfg.get("color", null) is Array:
+			var c: Array = cfg["color"]
+			color = Color(float(c[0]), float(c[1]), float(c[2]), float(c[3]) if c.size() > 3 else 1.0)
+
+	func _draw() -> void:
+		draw_line(Vector2(0, tail), Vector2(0, -length), color, width, true)
+		draw_circle(Vector2(0, tail * 0.85), width * 1.9, color)
+		draw_circle(Vector2.ZERO, width * 1.6, color)
 
 
 func _update_room() -> void:
@@ -288,6 +313,9 @@ func _update_room() -> void:
 	for hm in [hand_min, loupe_min]:
 		if hm != null:
 			hm.rotation_degrees = fclock.minute_hand_deg()
+	for sh in [hand_sec, loupe_sec]:
+		if sh != null:
+			sh.rotation_degrees = fclock.second_hand_deg()
 	for hh in [hand_hour, loupe_hour]:
 		if hh != null:
 			hh.rotation_degrees = fclock.hour_hand_deg()
@@ -528,6 +556,7 @@ func compare() -> bool:
 func probe() -> Dictionary:
 	return {"ratio": fclock.ratio, "real_s": fclock.real_s, "nina_minutes": fclock.nina_minutes(),
 		"nina_elapsed": fclock.nina_elapsed_minutes(), "minute_deg": fclock.minute_hand_deg(), "hour_deg": fclock.hour_hand_deg(),
+		"second_deg": loupe_sec.rotation_degrees if loupe_sec != null else -1.0,
 		"loupe_minute_deg": loupe_min.rotation_degrees if loupe_min != null else 0.0,
 		"pendulum_deg": loupe_pend.rotation_degrees if loupe_pend != null else 0.0, "pose": pose_id,
 		"poses_seen": poses_seen.duplicate(), "knocks": knocks, "glass": center_of(room), "loupe": center_of(loupe),

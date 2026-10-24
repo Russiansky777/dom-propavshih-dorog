@@ -226,6 +226,26 @@
       "text": "В петлю — и затянуть",
       "draft": true
     },
+    "mech.lantern.label_drag": {
+      "text": "Заслонку — мышью: взять и потянуть вверх до конца.",
+      "draft": true
+    },
+    "mech.office_mirror.schedule_title": {
+      "text": "Распорядок смен — сигналы колоколом:",
+      "draft": true
+    },
+    "mech.office_mirror.sig_one": {
+      "text": "1 удар — «пускай»: Павел опускает крюк",
+      "draft": true
+    },
+    "mech.office_mirror.sig_two": {
+      "text": "2 удара быстро — «стой»: крюк замирает",
+      "draft": true
+    },
+    "mech.office_mirror.sig_long": {
+      "text": "Долгий (нажать и держать) — «подымай»: засов вверх",
+      "draft": true
+    },
     "mech.office_mirror.label_bell": {
       "text": "Колокол: щелчок — удар («пускай»). Два щелчка подряд — «стой». Нажать и держать — долгий звон («подымай»).",
       "draft": true
