@@ -12,7 +12,7 @@ var forced: bool = false
 
 func setup(p_data: Dictionary) -> void:
 	data = p_data
-	if data.has("if") or data.has("unless") or data.has("spin") or data.has("swing"):
+	if data.has("if") or data.has("unless") or data.has("spin") or data.has("swing") or data.has("frames"):
 		if not GameState.flag_changed.is_connected(_on_flag_changed):
 			GameState.flag_changed.connect(_on_flag_changed)
 		if not GameState.state_reset.is_connected(refresh):
@@ -56,7 +56,7 @@ func is_active() -> bool:
 
 func refresh() -> void:
 	visible = is_active()
-	set_process(visible and (_spin_on() or data.has("swing")))
+	set_process(visible and (_spin_on() or data.has("swing") or data.has("frames")))
 
 
 ## `spin` {deg_per_s, if, unless}: the layer turns about its `pivot` while the flags allow (the M1 water
@@ -75,13 +75,29 @@ func _spin_on() -> bool:
 
 
 func is_spinning() -> bool:
-	return is_processing()
+	return visible and _spin_on()
+
+
+## Index of the shown sprite of a `frames` loop (tests).
+func frame_index() -> int:
+	return _frame
+
+
+var _frame: int = 0
+var _frame_t: float = 0.0
 
 
 var _swing_t: float = 0.0
 
 
 func _process(delta: float) -> void:
+	if data.has("frames"):
+		_frame_t += delta
+		var sprites := get_children().filter(func(c): return c is Sprite2D)
+		if sprites.size() > 1:
+			_frame = int(_frame_t * float(data.get("fps", 7.0))) % sprites.size()
+			for i in sprites.size():
+				sprites[i].visible = i == _frame
 	var img := get_node_or_null("Image") as Node2D
 	if img == null:
 		return
@@ -92,5 +108,7 @@ func _process(delta: float) -> void:
 		_swing_t += delta
 		var per := maxf(float(sw.get("period_s", 1.0)), 0.05)
 		img.rotation_degrees = float(data.get("rotation_deg", 0.0)) + float(sw.get("deg", 4.0)) * sin(TAU * (_swing_t / per + float(sw.get("phase", 0.0))))
+		return
+	if not _spin_on():
 		return
 	img.rotation_degrees = fmod(img.rotation_degrees + float(data.get("spin", {}).get("deg_per_s", 0.0)) * delta, 360.0)

@@ -31,6 +31,8 @@ func _run() -> void:
 		var parts := String(spec).split(":")
 		var rid := parts[0]
 		gs.set_flag("done_M01", true)
+		for f in OS.get_environment("SHOT_FLAGS").split(",", false):   # SHOT_FLAGS=done_M22,... — extra story flags
+			gs.set_flag(f, true)
 		rm.change_room(rid, "default")
 		for i in 10:
 			await physics_frame

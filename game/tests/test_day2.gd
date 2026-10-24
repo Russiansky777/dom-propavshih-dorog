@@ -953,6 +953,27 @@ func _test_walkthrough() -> void:
 	_check(await _go("M1"), "M4→M1")
 	var wheel = rm.current_room.get_node_or_null("Layers/wheel")
 	_check(wheel != null and not wheel.is_spinning(), "the wheel stands while the pond is let down")
+	# H9 (10б): water and drips loop while the water runs, the still water frame takes over with the wheel stopped.
+	var wlay: Node = rm.current_room.get_node("Layers")
+	_check(wlay.get_node("wheel_water_still").visible and not wlay.get_node("wheel_water").visible and not wlay.get_node("wheel_drips").visible,
+		"H9: pond let down — still water, no water loop, no drips")
+	gs.set_flag("pond_lowered", false)
+	await _frames(40)
+	var ww: Node = wlay.get_node("wheel_water")
+	var rot0: float = wheel.get_node("Image").rotation_degrees
+	var seen_frames := {}
+	for _i in 30:
+		await _frames(2)
+		seen_frames[ww.frame_index()] = true
+	_check(wheel.is_spinning() and ww.visible and wlay.get_node("wheel_drips").visible and not wlay.get_node("wheel_water_still").visible,
+		"H9: water runs — the wheel spins, water and drips drawn")
+	_check(not is_equal_approx(rot0, wheel.get_node("Image").rotation_degrees) and seen_frames.size() == 3,
+		"H9: the wheel turns and the water cycles through all 3 frames (%s)" % str(seen_frames.keys()))
+	gs.set_flag("pond_lowered", true)
+	await _frames(2)
+	var rot1: float = wheel.get_node("Image").rotation_degrees
+	await _frames(10)
+	_check(not wheel.is_spinning() and is_equal_approx(rot1, wheel.get_node("Image").rotation_degrees), "H9: pond let down again — the wheel stands")
 	_check(await _go("Z2"), "M1→Z2")
 	_check(await _go("H1"), "Z2→H1")
 	await _finish()

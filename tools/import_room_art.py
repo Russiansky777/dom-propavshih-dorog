@@ -5,6 +5,7 @@
   {"files": {"bg.png": "assets/incoming/Z4_bg.png", ...},  — куда (в game/assets/rooms/<LOC>/) и откуда
    "canvas": [1672, 941],     — холст фона: слой уже холста дополняется прозрачным справа/снизу
                                  (иначе после отражения он сдвинется на недостающие пиксели)
+   "own_size": ["wheel.png"], — файлы со своим размером (отдельный спрайт, не слой холста: колесо M1 1024×1024)
    "alpha_min": 9,            — пиксели с alpha < alpha_min обнуляются (цветной мусор генератора)
    "mirror_x": true}          — отразить по горизонтали (решение Директора: Z4 зеркально, чтобы
                                  боковое крыльцо было справа — продолжение дома с улицы Z2)
@@ -72,7 +73,7 @@ def main() -> int:
             # движка; как только файл ляжет в assets/incoming, этот же запуск положит его в игру.
             print(f"wait {src} — ещё не доставлен (в игре заглушка движка)")
             continue
-        im = build(ROOT / src, canvas, int(spec.get("alpha_min", 0)), bool(spec.get("mirror_x", False)))
+        im = build(ROOT / src, None if dst in spec.get("own_size", []) else canvas, int(spec.get("alpha_min", 0)), bool(spec.get("mirror_x", False)))
         target = out_dir / dst
         if check:
             same = target.exists() and ImageChops.difference(Image.open(target).convert(im.mode), im).getbbox() is None
