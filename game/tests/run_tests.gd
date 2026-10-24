@@ -1127,7 +1127,7 @@ func _test_h1_real() -> void:
 	_check(is_equal_approx(spr.sprite_frames.get_animation_speed("idle_0"), 30.0), "eased idle runs on a 30 steps/s timeline")
 	var st = load("res://scripts/actors/actor_sheet.gd").load_actor("agata", {"idle_static_frame": 0})
 	_check(st.is_loaded() and st.frames.get_frame_count("idle_0") == 1, "idle_static_frame still pins the idle to one frame when set")
-	_check(spr.offset.is_equal_approx(Vector2(-0.5 * fw, -0.9464285714285714 * 384.0)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
+	_check(spr.offset.is_equal_approx(Vector2(-0.5 * fw, -0.9464285714285714 * player.sheet.frame_h)), "sprite offset should put the pivot (feet) at the origin, got %s" % str(spr.offset))
 	_check(not player.get_node("Body").visible, "placeholder body hidden when the sheet is used")
 	# Direction mapping (data/actors/agata.json; verified against the sheet by eye):
 	# rows run counter-clockwise on screen: 0=S 1=SE 2=E 3=NE 4=N 5=NW 6=W 7=SW.
@@ -1303,7 +1303,7 @@ func _test_stride() -> void:
 		_check(max_lag <= sheet.row_cycle_px(run[3]) * 2.1, "%s: lag behind the logical position must stay under one cycle (%.1f px)" % [run[0], max_lag])
 		_check(player.lock_resyncs - resyncs0 <= 1, "%s: drawn figure clamped/re-synced %d times" % [run[0], player.lock_resyncs - resyncs0])
 		_check(absf(spr.speed_scale - 1.0) < 0.001 or not spr.animation.begins_with("walk_"), "after arrival the idle plays at speed 1")
-		_check(spr.position == Vector2.ZERO and spr.scale == Vector2.ONE, "%s: sprite offset/scale must be reset once standing" % run[0])
+		_check(spr.position == Vector2.ZERO and spr.scale.is_equal_approx(sheet.sprite_scale()), "%s: sprite offset/scale (1/k) must be reset once standing" % run[0])
 		print("    %s: stopped at %s (target %s)" % [run[0], str(player.global_position.round()), str(run[2])])
 		var tol: float = player.nav_agent.target_desired_distance + 1.0  # the navigation agent's own arrival tolerance
 		_check(player.global_position.distance_to(run[2]) < tol, "%s: the drawn figure finishes its steps and stops on the target (±%.0f px), at %s" % [run[0], tol, str(player.global_position)])

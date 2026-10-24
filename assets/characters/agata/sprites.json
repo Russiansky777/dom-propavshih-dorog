@@ -1,7 +1,7 @@
 {
   "name": "agata",
-  "frame_w": 384,
-  "frame_h": 384,
+  "frame_w": 848,
+  "frame_h": 864,
   "pivot": {
     "x": 0.5,
     "y": 0.9464285714285714
@@ -73,8 +73,8 @@
     "half_width_m": 0.874,
     "top_m": 0.844,
     "frame_top_m": 0.925,
-    "frame_w": 384
+    "frame_w": 848
   },
   "matte_materials": true,
-  "_source": "Агата v3 rev 9 (pipeline/requests/agata_v3.json, прогон 39983600002, партия G 23.10): 24 кадра на цикл ходьбы и 24 кадра одного покачивания стойки, 24 к/с; действия: open — open_door, pick — наклон и подъём без «осмотра» (G1), reach — «взять у пояса» из open_door вместо «сорвать яблоко в корзину» (G1), sit — Chair_Sit_Idle_F с рига Нины, 1 кадр для кадра ужина (G53); модель Meshy v3, клипы переносом (retarget_clips.py), стопы исправлены (feet_fix), ткань матовая; копия assets/characters/agata_v3"
+  "_source": "Агата v3 rev 10 (pipeline/requests/agata_v3.json, прогон 40022393949, G56 24.10): те же клипы rev 9, листы в 2,25× (render_size 864, 16 сэмплов с шумоподавлением) — в игре texture_scale 2,25, рост на экране прежний; 24 кадра на цикл ходьбы и 24 кадра одного покачивания стойки, 24 к/с; open — open_door, pick — наклон и подъём (G1), reach — «взять у пояса» (G1), sit — Chair_Sit_Idle_F, 1 кадр (G53); модель Meshy v3, клипы переносом, стопы исправлены (feet_fix), ткань матовая; копия assets/characters/agata_v3"
 }

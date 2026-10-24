@@ -3,20 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bcb33yxbilogc"
-path="res://.godot/imported/idle.png-d84e5719d7b78fbb19a94d1ac97d645e.ctex"
+path.bptc="res://.godot/imported/idle.png-d84e5719d7b78fbb19a94d1ac97d645e.bptc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/characters/agata/idle.png"
-dest_files=["res://.godot/imported/idle.png-d84e5719d7b78fbb19a94d1ac97d645e.ctex"]
+dest_files=["res://.godot/imported/idle.png-d84e5719d7b78fbb19a94d1ac97d645e.bptc.ctex"]
 
 [params]
 
-compress/mode=1
-compress/high_quality=false
+compress/mode=2
+compress/high_quality=true
 compress/lossy_quality=0.85
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

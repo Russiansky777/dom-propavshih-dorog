@@ -420,7 +420,7 @@ func _test_drawing() -> void:
 	var sh: Node = player.sprite.get_node_or_null("Shadow")
 	_check(sh != null and (sh as CanvasItem).visible and (sh as CanvasItem).material == null, "contact shadow missing or hidden")
 	# Feet of the live figure at the node origin: the pivot pixel of the texture lands on the feet.
-	var off: Vector2 = b.offset * b.scale
+	var off: Vector2 = b.offset * b.scale * player.sheet.sprite_scale()  # in the player's px: under the facade sprite (1/k, G56)
 	var expect: Vector2 = -player.view3d.pivot * player.view3d.frame_px
 	_check(off.distance_to(expect) < 1.0, "texture pivot %s ≠ %s" % [str(off), str(expect)])
 	# The occluder in H1 (table, z 950): behind it above y 950, in front below — same rule as sprites.

@@ -110,6 +110,7 @@
 
 ## 2026-10-23 — партия G: действия Агаты и сидячая поза (G1, G53)
 - Листы `reach`, `pick`, `sit` (и перерендер `idle`, `walk`, `open` с теми же клипами) — `assets/characters/agata_v3` (коммит pipeline-bot 9e64aac, run 39983600002, запрос `pipeline/requests/agata_v3.json` rev 9), копия набора игры — `assets/characters/agata`, в игре — `tools/sync_characters.sh agata`. Клипы — пресеты библиотеки анимаций Meshy, уже купленные (0 кредитов): `reach` — отрезки open_door (id 285, задача анимаций Агаты 18.10), `pick` — отрезок Female_Bend_Over_Pick_Up_Inspect (id 281), `sit` — Chair_Sit_Idle_F (id 32, куплен для Нины 23.10, перенос с её рига — `pipeline/3d/motions/nina_chair_sit.glb`, облегчённая копия её рига с одним клипом). Права — по условиям плана Meshy Директора.
+- G56 (24.10): все листы Агаты (`idle`, `walk`, `open`, `pick`, `reach`, `sit`) перерендерены в 2,25× (кадр 864 px вместо 384, 16 сэмплов) — те же модель и клипы rev 9, 0 кредитов Meshy: `assets/characters/agata_v3` (run 40022393949, запрос `pipeline/requests/agata_v3.json` rev 10), копия набора игры — `assets/characters/agata`, в игре — `tools/sync_characters.sh agata` (атлас, texture_scale 2,25, импорт BPTC). Права — те же.
 - Агата за ужином (`game/assets/rooms/EP_dinner/agata.png`) — `tools/make_frame_layers.py` из кадра листа `sit` (строка 7) поверх `ep_dinner.png`; то, что на картине перед ней (столешница, кувшин, кружка, миска), скрывает её по многоугольникам `compose.hide`; нового рисунка нет.
 
 ## 2026-10-23 — главное меню и пауза (ChatGPT, слои меню)
