@@ -1,0 +1,77 @@
+{
+  "set": "T9",
+  "runs": [
+    {
+      "run": "40132859491",
+      "at": "2026-10-24T21:10:37+00:00",
+      "request": "pipeline/requests/voice_T9.json",
+      "synthesized": [
+        "M01_1",
+        "M02_5",
+        "M07_5",
+        "M08_0",
+        "M09_6",
+        "M09s_0",
+        "M13_0",
+        "M19c_5",
+        "M19c_6",
+        "M21_0_then0",
+        "M21b_3",
+        "M23a_0",
+        "M23a_5_then0",
+        "M23b_1",
+        "M23b_8_then0",
+        "M25_8",
+        "M26_3",
+        "M26_5",
+        "M26_23_then0",
+        "M26_35",
+        "Q01_2",
+        "Q07_0",
+        "Q08_1_then0",
+        "agata:R1.exit_R2.closed",
+        "agata:R1.boat.look_no_plan",
+        "H1.stove.look",
+        "agata:H3.school_door.use",
+        "agata:O2.exit_O4.wait_signal",
+        "agata:O2.exit_O4.wait_crossing",
+        "agata:H2.hinges_box.empty_hung",
+        "agata:M2.mirror.look",
+        "pavel:M2.pavel.after",
+        "agata:M3.clamp.use",
+        "agata:R3.shed.look",
+        "H2d.office_mirror.view_again",
+        "agata:R1d.pelageya.at_turn_d3",
+        "pelageya:R1d.pelageya.day2",
+        "tamara:O4.tamara.after",
+        "nina:O3.notebooks.school_path_late",
+        "pelageya:R1d.pelageya.shuttle",
+        "H1d.tea_corner.go_home",
+        "H1d.tea_corner.go_all",
+        "mitya:O4q.workshop.mitya_cramped"
+      ],
+      "reprocessed": [],
+      "characters_text": 3493,
+      "failed": [],
+      "pruned": [
+        "agata:R3.exit_R4.unbuilt (нет в текстах)"
+      ],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 58835,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 59959,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 1539,
+      "subscription_delta": 1124
+    }
+  ]
+}
