@@ -13,7 +13,8 @@
 //   D  (G56) ?start=wedges — H2, Agata walks to the front edge (depth scale ≈ 3): the frame and a 1:1 crop of her.
 //      G_RUNS=C,D for these two.
 // Frames: Docs/evidence/G/G1_take_shelf.jpg, G53_dinner_seated.jpg, G10_carry_walk.jpg, G10_carry_hook.jpg,
-// G56_H2_close.jpg, G56_H2_close_crop.png. Exit code 0 only when every step reached its
+// G56_H2_close.jpg, G56_H2_close_crop.png; C also G10_pick_bench.jpg (T5c: the squat at its key frame). G_OUT — another
+// folder for the frames (T5c: G_OUT=Docs/evidence/agata_v4). Exit code 0 only when every step reached its
 // state and the console has no errors (Godot warnings are listed, not counted). Log: build/shots/g_agata/.
 
 import http from "node:http";
@@ -31,7 +32,7 @@ try {
   ({ chromium } = createRequire(process.env.PLAYWRIGHT_FROM || path.join(ROOT, "package.json"))("playwright"));
 }
 const WEB_DIR = process.env.G_WEB_DIR ? path.resolve(ROOT, process.env.G_WEB_DIR) : path.join(ROOT, "build", "web");
-const OUT_DIR = path.join(ROOT, "Docs", "evidence", "G");
+const OUT_DIR = process.env.G_OUT ? path.resolve(ROOT, process.env.G_OUT) : path.join(ROOT, "Docs", "evidence", "G");
 const LOG_DIR = path.join(ROOT, "build", "shots", "g_agata");
 const PORT = Number(process.env.G_PORT || 8793);
 const RUNS = (process.env.G_RUNS || "A,B").split(",");
@@ -243,8 +244,11 @@ async function main() {
       s = await state();
       const fires0 = s.actor.action_fires;
       const fresh = () => page.evaluate(() => { if (window.probePause) window.probePause(false); return window.probeState ? JSON.parse(JSON.stringify(window.probeState)) : null; });
+      // T5c: the pick itself at the key frame (the lowest point of the squat) — the game at 1/5 speed until it is captured
+      await page.evaluate(() => window.probePause && window.probePause(false, 0.2));
       await click("hotspot scarf (the wet kerchief on the bench)", s.hotspots.scarf);
       const stages = [];
+      let pickShot = false;
       let walkShot = false;
       let hookShot = false;
       const t0 = Date.now();
@@ -252,6 +256,13 @@ async function main() {
         s = await fresh();
         const st = String(s.actor.carry || "");
         if (st && stages[stages.length - 1] !== st) { stages.push(st); logLine(`carry stage ${st}`); }
+        if (!pickShot && String(s.actor.anim || "").startsWith("pick_") && s.actor.frame >= 20 && s.actor.frame <= 26) {
+          await page.evaluate(() => window.probePause(true));
+          await shot("G10_pick_bench");
+          logLine(`pick shot: ${s.actor.anim} frame ${s.actor.frame}`);
+          await page.evaluate(() => window.probePause(false, 1.0));
+          pickShot = true;
+        }
         if (st === "walk" && !walkShot && Math.abs(s.player.x - 1215) < 260) {
           await page.evaluate(() => window.probePause(true));
           await shot("G10_carry_walk");
@@ -269,7 +280,7 @@ async function main() {
         await sleep(40);
       }
       check(stages.join(",") === "pick,walk,place", `pick → walk → place (${stages.join(",")})`);
-      check(walkShot && hookShot, "the carry and the hook captured");
+      check(pickShot && walkShot && hookShot, "the pick, the carry and the hook captured");
       s = await state();
       check(s.flags.h1_scarf_removed && s.actor.action_fires - fires0 === 1, `the kerchief on the hook, the effect once (${s.actor.action_fires - fires0})`);
       await playThrough("after the kerchief", { quietMs: 3000, timeout: 300000 });

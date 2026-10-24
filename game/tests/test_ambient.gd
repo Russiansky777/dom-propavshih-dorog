@@ -500,7 +500,9 @@ func _test_contacts() -> void:
 	# Planted foot: the leading run along the travel x (rows 0/4: the lowest run).
 	var sx := [0, 1, 1, 1, 0, -1, -1, -1]
 	var table: Array = ff["planted_foot_px"]
+	var measured: Array = []  # весь замер одной строкой — для перемера данных после замены листа ходьбы
 	for r in 8:
+		measured.append([])
 		for k in df.size():
 			var rr := SheetProbe.runs(p.band(r, df[k], floors[r]))
 			if rr.is_empty():
@@ -514,9 +516,11 @@ func _test_contacts() -> void:
 				elif sx[r] * (run[0] + run[1]) > sx[r] * (best[0] + best[1]):
 					best = run
 			var off := Vector2((best[0] + best[1]) / 2.0 - pvx, best[2] - pvy)
+			measured[r].append([snappedf(off.x, 0.1), snappedf(off.y, 0.1)])
 			var d: Array = table[r][k]
 			var dv := Vector2(float(d[0]), float(d[1]))
 			_check(off.distance_to(dv) <= 4.0, "row %d contact %d: planted foot measured %s, data %s (> 4 px)" % [r, k, str(off.snapped(Vector2(0.1, 0.1))), str(dv)])
+	print("    measured planted_foot_px: %s" % JSON.stringify(measured))
 
 
 # --- 6. Footfall in Z2 ------------------------------------------------------------------------------
