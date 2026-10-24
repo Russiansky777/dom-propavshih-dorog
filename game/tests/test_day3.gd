@@ -17,9 +17,8 @@ extends SceneTree
 ##   - choices leave traces: board answers, Tikhon's master, epilogue lines by flags;
 ##   - save/load at each checkpoint («День третий», «День четвёртый», after the end) replays nothing and blocks nothing;
 ##   - block 5: the optional stories (letter, sleeve, notches, tea, street sign, Nina's letters) once, with traces;
-##     Q02 «На карте вырос сад» (the old map in the class, Ulyana in her father's garden, the tracing drawn by mouse) and
-##     Q06 «Второй верстак» (Ilya's workshop: groove and fastenings, stop block, vise by «точный удар», the board) —
-##     start, every step by mouse, both choices, epilogue lines and frame layers, skipped — no trace, save/load mid-way.
+##     Q02/Q06 traces: both choices in epilogue lines, frames and rooms, skipped — no trace (the mini-games themselves,
+##     reworked by H47/H48, step by step and both choices to the end — tests/test_q02_q06.gd).
 ## Exit code 0 only when every check passed.
 
 var AUTOSAVE := "test_day3_auto_%d" % OS.get_process_id()
@@ -99,8 +98,6 @@ func _run() -> void:
 	await _test("Save/load at the checkpoints: nothing replays, the story goes on", _test_save_load)
 	await _test("Choices leave traces: board answers, Tikhon, epilogue lines and layers by flags", _test_traces)
 	await _test("Block 5: optional stories — once each, traces in the epilogue", _test_optional)
-	await _test("Block 5: Q02 «На карте вырос сад» — the map, Ulyana in the garden, the tracing by mouse, the choice once, save/load", _test_q02)
-	await _test("Block 5: Q06 «Второй верстак» — the workshop, four steps by mouse, resumed after close and load, the choice once", _test_q06)
 	await _test("Block 5: Q02/Q06 traces — both choices in epilogue lines, frames and rooms; skipped — nothing, the end as before", _test_q02_q06_traces)
 	await _test("Batch 8 art: drawn states by flags (board answers, coat, bag, board, night, day frames, epilogues) — one at a time, never stacked", _test_batch8)
 	gs.reset()
@@ -1262,167 +1259,6 @@ func _layer_visible(room: Node, id: String) -> bool:
 		if n != null:
 			return (n as CanvasItem).visible
 	return false
-
-
-func _test_q02() -> void:
-	Engine.time_scale = 2.0
-	_check(not bool(sd.scene("Q02").get("reserve", false)) and not bool(sd.scene("Q06").get("reserve", false)), "Q02 and Q06 are in the build (no reserve)")
-	_check(rm.start_at("freewalk"), "start: the free day (the class after M22)")
-	await _frames(3)
-	await _finish()
-	_check(_room() == "O1", "in the class (%s)" % _room())
-	var lay = rm.current_room.get_node_or_null("Layers/village_map")
-	_check(lay != null and lay.visible, "the old map of Olkhovka hangs on the class wall")
-	_check(lay != null and (ResourceLoader.exists("res://assets/rooms/O1/state_village_map.png") != lay.has_meta("stub")), "the map: the ordered art or, until it comes, the engine's stand-in")
-	var hm := _hotspot("village_map")
-	_check(hm != null and hm.visible, "the map is a hotspot")
-	_check(_hotspot("ulyana") != null and _hotspot("ulyana").visible, "Ulyana studies in the class")
-	_check(not gs.has_flag("started_Q02"), "the quest scene waits for the choice (entering the class does not start it)")
-	# First click: Agata knows the map, the empty plot; Ulyana runs to show the garden; the close-up (look).
-	await _use("village_map")
-	var seen := await _finish()
-	_check(gs.has_flag("q02_seen_map") and seen.any(func(x): return x.begins_with("agata:Эту карту мы всем классом")) and seen.any(func(x): return x.begins_with("ulyana:")), "the map: «Эту карту мы всем классом рисовали… один забор», Ulyana runs to show the garden: %s" % str(seen))
-	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "tracing", "the map close-up opens")
-	var pr := _panel()
-	_check(String(pr.get("phase", "")) == "look" and bool(pr.get("ring_visible", false)) and not bool(pr.get("trace", {}).get("open", true)), "look: the empty plot ringed, no tracing before Ulyana (%s)" % str(pr.get("phase")))
-	_check(bool(pr.get("stand_in", false)) == not ResourceLoader.exists("res://assets/closeups/closeup_village_map_old.png"), "the map close-up: art or the engine's stand-in")
-	sr.close_mechanic()
-	await _frames(3)
-	_check(not _hotspot("ulyana").visible, "Ulyana has run off to her father's garden")
-	await _use("village_map")
-	await _finish()
-	_check(sr.mechanic_open and String(_panel().get("phase", "")) == "look", "before Ulyana the map opens again in the look (nothing to trace yet)")
-	sr.close_mechanic()
-	await _frames(2)
-	_check(rm.save_game(SLOT + "_q02"), "save in the middle of Q02 (map seen, Ulyana not yet)")
-	# Ulyana in the garden on the street.
-	_check(await _route(["O2", "O4"]), "class → yard → street")
-	var u := _hotspot("ulyana")
-	_check(u != null and u.visible, "Ulyana stands by her father's garden on the street")
-	await _use("ulyana")
-	seen = await _finish()
-	_check(gs.has_flag("q02_asked_ulyana") and seen.any(func(x): return x.contains("моего дома почти нет")) and seen.any(func(x): return x.contains("помоги мне его найти")),
-		"«На твоей карте моего дома почти нет» — «Тогда помоги мне его найти»: %s" % str(seen))
-	_check(seen.any(func(x): return x.contains("смородина")), "Ulyana shows the currants, the path, the shed")
-	await _use("ulyana")
-	seen = await _finish()
-	_check(seen.any(func(x): return x.contains("Не перепутай")) and not seen.any(func(x): return x.contains("почти нет")), "a second talk: a short reminder, the scene is not repeated")
-	# Back at the map: the tracing.
-	_check(await _route(["O2", "O1"]), "back to the class")
-	await _use("village_map")
-	await _finish()
-	_check(sr.mechanic_open and String(_panel().get("phase", "")) == "trace", "after Ulyana the map opens with the tracing sheet")
-	await _wait(func(): return bool(_panel().get("trace", {}).get("open", false)), 400)
-	pr = _panel()
-	_check(bool(pr.get("sheet_visible", false)) and not bool(pr.get("ring_visible", true)), "the tracing sheet lies over the plot")
-	var strokes: Array = pr.get("trace", {}).get("strokes", [])
-	_check(strokes.size() == 3, "three lines: currant rows, the path, the shed (%d)" % strokes.size())
-	if strokes.size() == 3:
-		# Let go in the middle of the first line: the pencil slips back, nothing lost.
-		await _drag_path((strokes[0] as Array).slice(0, 2))
-		await _finish()
-		pr = _panel()
-		_check(int(pr.get("slips", 0)) == 1 and int(pr.get("trace", {}).get("loops_done", -1)) == 0, "let go mid-line: back to its start, no penalty (%s)" % str(pr.get("trace", {}).get("state")))
-		for st in strokes:
-			await _drag_path(st)
-			await _frames(2)
-		await _wait(func(): return not sr.current_beat.is_empty() or gs.has_flag("q02_traced"), 300)
-	seen = await _finish(["A"])
-	_check(gs.has_flag("q02_traced") and seen.any(func(x): return x.contains("Там теперь смородина")), "the lines drawn: «Там теперь смородина»: %s" % str(seen))
-	_check(seen.any(func(x): return x == "options:A"), "the choice comes at once after the lines (no second click)")
-	_check(gs.has_flag("q02_old_under_new") and not gs.has_flag("q02_new_primary") and gs.has_flag("done_Q02"), "A — the tracing over the old map; Q02 done")
-	_check(seen.any(func(x): return x.contains("Старое под новым")), "the quest scene after the choice: %s" % str(seen))
-	_check(not sr.mechanic_open, "the close-up put away")
-	await _frames(2)
-	_check(_hotspot("ulyana").visible, "Ulyana is back in the class")
-	await _use("village_map")
-	seen = await _finish()
-	_check(not sr.mechanic_open and seen.any(func(x): return x.contains("калька")) and not seen.any(func(x): return x.begins_with("options")), "once: afterwards the map is only looked at: %s" % str(seen))
-	_check(rm.save_game(SLOT + "_q02_done"), "save after Q02")
-	# Loads: nothing replays, the story goes on from where it was.
-	_check(rm.load_game(SLOT + "_q02"), "load the middle of Q02")
-	await _frames(4)
-	_check(sr.current_beat.is_empty() and not sr.mechanic_open, "load mid-way: nothing replays")
-	_check(gs.has_flag("q02_seen_map") and not gs.has_flag("q02_asked_ulyana") and not _hotspot("ulyana").visible, "load mid-way: the map seen, Ulyana still in the garden")
-	_check(rm.load_game(SLOT + "_q02_done"), "load after Q02")
-	await _frames(4)
-	_check(sr.current_beat.is_empty() and gs.has_flag("done_Q02") and not sr.can_start("Q02"), "load after Q02: done, never again")
-	Engine.time_scale = 1.0
-	_reached_end = true
-
-
-func _test_q06() -> void:
-	Engine.time_scale = 1.0
-	_check(rm.start_at("freewalk"), "start: the free day")
-	await _frames(3)
-	await _finish()
-	_check(await _route(["O2", "O4"]), "class → yard → street")
-	var w := _hotspot("ilya_workshop")
-	_check(w != null and w.visible, "Ilya's workshop (the shed in his yard) is a hotspot on the street")
-	_check(not _layer_visible(rm.current_room, "bench_shed"), "the shed door is shut before the choice")
-	await _use("ilya_workshop")
-	var seen := await _finish()
-	_check(seen.any(func(x): return x.begins_with("mitya:Два человека здесь уже не помещаются")) and seen.any(func(x): return x.begins_with("ilya:Тогда сделаем место третьему")),
-		"Mitya: «Два человека здесь уже не помещаются» — Ilya: «Тогда сделаем место третьему»: %s" % str(seen))
-	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "workbench", "the second bench close-up")
-	var pr := _panel()
-	_check(int(pr.get("step", -1)) == 0 and pr.get("fastenings", {}).size() == 2, "step 1: the groove and two fastenings")
-	_check(bool(pr.get("stand_in", false)) == not ResourceLoader.exists("res://assets/closeups/closeup_second_bench.png"), "the close-up: art or the engine's stand-in")
-	# The wedge: wobbles in the groove and comes back; Ilya says why.
-	await _click(_v(pr["fastenings"]["wedge"]))
-	await _wait(func(): return not sr.current_beat.is_empty(), 300)
-	seen = await _finish()
-	await _wait(func(): return not bool(_panel().get("busy", true)), 300)
-	pr = _panel()
-	_check(int(pr.get("step", -1)) == 0 and int(pr.get("tries_wrong", 0)) == 1 and seen.any(func(x): return x.contains("болтаться")), "the wedge does not fit — back on the cloth, Ilya: «…болтаться будет»: %s" % str(seen))
-	await _click(_v(pr["fastenings"]["key"]))
-	await _wait(func(): return gs.has_flag("q06_fastening_fit"), 300)
-	await _finish()
-	_check(int(_panel().get("step", -1)) == 1, "the key sits in the groove — step 2")
-	# Put away midway; saved; opens again at the same step, without the first words.
-	sr.close_mechanic()
-	await _frames(2)
-	_check(rm.save_game(SLOT + "_q06") and rm.load_game(SLOT + "_q06"), "save/load in the middle of the bench")
-	await _frames(4)
-	_check(sr.current_beat.is_empty() and not sr.mechanic_open, "load mid-way: nothing replays")
-	await _use("ilya_workshop")
-	seen = await _finish()
-	_check(sr.mechanic_open and int(_panel().get("step", -1)) == 1 and not seen.any(func(x): return x.contains("не помещаются")), "reopened at the same step, the first words not repeated: %s" % str(seen))
-	pr = _panel()
-	await _click(_v(pr.get("stop", {})))
-	await _wait(func(): return gs.has_flag("q06_stop_in"), 300)
-	await _finish()
-	pr = _panel()
-	_check(int(pr.get("step", -1)) == 2 and not pr.get("timing", {}).is_empty() and int(pr["timing"].get("needed", 0)) == 3, "the stop block in — step 3: «точный удар», three in a row")
-	var sc := _v(pr.get("screw", {}))
-	await _strike_at(sc, false)
-	await _finish()
-	pr = _panel()
-	_check(int(pr.get("slips", 0)) == 1 and int(pr.get("turns", -1)) == 0, "a strike in the red: the screw slips back, the series again, nothing lost")
-	for i in 3:
-		await _strike_at(sc, true)
-		await _frames(2)
-	await _wait(func(): return gs.has_flag("q06_vise_tight"), 300)
-	await _finish()
-	pr = _panel()
-	_check(gs.has_flag("q06_vise_tight") and int(pr.get("step", -1)) == 3, "three in the green: the vise is tight — step 4")
-	await _click(_v(pr.get("board", {})))
-	await _wait(func(): return not sr.current_beat.is_empty() or gs.has_flag("q06_bench_built"), 400)
-	seen = await _finish(["B"])
-	_check(gs.has_flag("q06_bench_built") and seen.any(func(x): return x.contains("Держит")), "the board on the bench — it holds: %s" % str(seen))
-	_check(seen.any(func(x): return x == "options:B"), "the choice comes at once")
-	_check(gs.has_flag("q06_table_at_agata") and not gs.has_flag("q06_table_at_ilya") and gs.has_flag("done_Q06"), "B — the bench to Dunya's workshop; Q06 done")
-	_check(seen.any(func(x): return x.contains("тётиной мастерской")), "the quest scene after the choice: %s" % str(seen))
-	_check(not sr.mechanic_open and not _layer_visible(rm.current_room, "bench_shed"), "B: the shed door on the street stays shut")
-	await _use("ilya_workshop")
-	seen = await _finish()
-	_check(not sr.mechanic_open and seen.any(func(x): return x.contains("унесли")) and not seen.any(func(x): return x.begins_with("options")), "once: afterwards the workshop is only looked at: %s" % str(seen))
-	# Dunya's workshop: the second bench is there.
-	_check(await _route(["O2", "O1", "H3", "H1", "H2"]), "through the school door to Dunya's workshop")
-	await _finish()
-	_check(_layer_visible(rm.current_room, "second_bench"), "H2: the second bench stands in the workshop")
-	_check(_hotspot("second_bench") != null and _hotspot("second_bench").visible, "H2: the second bench is a hotspot")
-	_reached_end = true
 
 
 func _test_q02_q06_traces() -> void:

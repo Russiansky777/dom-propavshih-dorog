@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Frames of the optional stories Q02 «На карте вырос сад» and Q06 «Второй верстак» from the real game under Xvfb:
-# the old map in the class and its close-up (look, tracing), Ulyana in the garden, Ilya's workshop and the second bench
+# the old map in the class and its close-up (the way by clicks, H47), Ilya's workshop and the second bench (drags, H48)
 # step by step, both traces in the rooms and the epilogue frames → <out_dir>/q_<name>.png.
 # Usage: tools/shots_quests.sh [out_dir] [name ...]   (names: game/tests/shots_quests.gd SHOTS)
 set -euo pipefail

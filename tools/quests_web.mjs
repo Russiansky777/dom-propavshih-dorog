@@ -4,19 +4,20 @@
 //
 //   tools/export_web.sh && node tools/quests_web.mjs      (QUESTS_WEB_DIR — another build dir; QUESTS_PORT, default 8781)
 //
-//   Q02  the class O1: a click on «Старая карта Ольховки» → Agata knows the map, Ulyana runs off, the map close-up
-//        (look); the street O4: Ulyana by her father's garden — «На твоей карте моего дома почти нет» — «Тогда помоги
-//        мне его найти»; back in the class: the map with the tracing sheet, three lines dragged with the mouse along the
-//        dotted guides (one let go midway first — it slips back), «Там теперь смородина», the choice at once → B.
-//   Q06  the street: «Мастерская Ильи» → Mitya / Ilya, the second bench close-up: the wedge (does not fit, comes back),
-//        the key, the stop block seated, the wooden screw by «точный удар» (one in the red, three in the green), the board →
+//   Q02  (H47) the class O1: a click on «Старая карта Ольховки» → Agata knows the map, Ulyana (she stays in the class)
+//        — «это наш сад» and the way: from the school to their house to the garden; the close-up: a wrong house (her word,
+//        nothing coloured), the school, the garden out of turn (all uncoloured), then school → house → garden by clicks,
+//        each coloured; the garden of the tracing comes up, «Там теперь смородина», the choice at once → B, her reaction.
+//   Q06  (H48) the street: «Мастерская Ильи» → Mitya / Ilya / the goal (a bench for Ulya), the close-up: every action a
+//        drag onto the lit place — the wedge (sits, wobbles, glides home, Ilya says why), the key (a frame while it is
+//        over the groove), the stop block, the screw, the screw turned by driving the mouse round its handle, the board →
 //        «Держит», the choice at once → A; the shed door on the street is open (frame).
 //   B8   batch 8 art (ChatGPT 23.10): the class board — mum's chalk answer, the date, Ulyana's reply (layers from the probe);
 //        a double click on an item in the bag — its drawn close-up; school door → gallery → home: M23c, mum's coat on the
 //        hook, a click on it — the sleeve close-up (Q03).
 // Software WebGL draws a few frames a second: for the timing bar the game clock is slowed with window.probePause(false, k)
 // once the marker is where the click is wanted — the click itself is real.
-// Frames: Docs/evidence/M3/quests_web_*.jpg. Exit code 0 only when every check passed and the console has no errors.
+// Frames: Docs/evidence/H/T2_H47_*.jpg, T2_H48_*.jpg (Q02/Q06), Docs/evidence/M3/quests_web_*.jpg (B8). Exit code 0 only when every check passed and the console has no errors.
 // Log: build/shots/quests/console.log, report.json there.
 
 import http from "node:http";
@@ -36,6 +37,7 @@ try {
 }
 const WEB_DIR = process.env.QUESTS_WEB_DIR ? path.resolve(ROOT, process.env.QUESTS_WEB_DIR) : path.join(ROOT, "build", "web");
 const OUT_DIR = path.join(ROOT, "Docs", "evidence", "M3");
+const OUT_H = path.join(ROOT, "Docs", "evidence", "H");
 const LOG_DIR = path.join(ROOT, "build", "shots", "quests");
 const PORT = Number(process.env.QUESTS_PORT || 8781);
 const RUNS = (process.env.QUESTS_RUNS || "Q02,Q06,B8").split(",");
@@ -121,6 +123,12 @@ async function main() {
   };
   const shot = async (name) => {
     const file = path.join(OUT_DIR, `quests_web_${name}.jpg`);
+    await page.screenshot({ path: file, type: "jpeg", quality: 82, timeout: 180000 });
+    logLine(`screenshot ${path.relative(ROOT, file)}`);
+  };
+  const shotH = async (name) => {
+    fs.mkdirSync(OUT_H, { recursive: true });
+    const file = path.join(OUT_H, `T2_${name}.jpg`);
     await page.screenshot({ path: file, type: "jpeg", quality: 82, timeout: 180000 });
     logLine(`screenshot ${path.relative(ROOT, file)}`);
   };
@@ -256,106 +264,123 @@ async function main() {
     logLine(`build: ${fs.statSync(path.join(WEB_DIR, "index.pck")).mtime.toISOString()} (index.pck)`);
 
     if (RUNS.includes("Q02")) {
+      // H47 (Director 24.10): Ulyana stays in the class and tells the way; the way is shown on the map by clicks in
+      // order — right ones coloured, a wrong one resets; then the choice (B here; A — headless test_q02_q06.gd).
       check(s.hotspots.village_map && s.hotspots.village_map.visible, "Q02: «Старая карта Ольховки» on the class wall");
+      check(s.hotspots.ulyana && s.hotspots.ulyana.visible, "Ulyana in the class before Q02");
       lines = await useHotspot("village_map", { done: (t) => t.mechanic && t.mechanic.open && !beatKey(t) });
       s = await state();
-      check(s.flags.q02_seen_map && lines.some((l) => l.includes("один забор")) && lines.some((l) => l.startsWith("ulyana")),
-        `the map: Agata knows it — the empty plot; Ulyana runs to show the garden (${lines.length} lines)`);
-      check(s.mechanic.type === "tracing" && s.mechanic.panel.phase === "look" && s.mechanic.panel.ring_visible, `the map close-up, look: the plot ringed (${JSON.stringify(s.mechanic.panel.phase)})`);
+      check(s.flags.q02_seen_map && lines.some((l) => l.includes("один забор")) && lines.some((l) => l.startsWith("ulyana") && l.includes("наш сад"))
+        && lines.some((l) => l.startsWith("ulyana") && l.includes("От школы")), `the map: Agata knows it; Ulyana, there in the class, tells the way (${JSON.stringify(lines).slice(0, 260)})`);
+      check(s.hotspots.ulyana && s.hotspots.ulyana.visible, "H47: Ulyana does not vanish from the class");
+      check(s.mechanic.type === "map_route" && s.mechanic.panel.phase === "route" && s.mechanic.panel.found === 0, `the map close-up: the way, nothing coloured (${JSON.stringify(s.mechanic.panel.phase)})`);
+      const P = s.mechanic.panel.places;
+      await page.mouse.move(P.school.x, P.school.y, { steps: 3 });
       await sleep(600);
-      await shot("1_map_look");
-      await closeMechanic("map");
+      await shotH("H47_1_map_route");
+      await click("a wrong house", P.house_n1);
+      await waitFor("Ulyana's word on a wrong place", (t) => beatKey(t) !== "", 60000);
+      lines = await playThrough("wrong", { quietMs: 1500 });
       s = await state();
-      check(!(s.hotspots.ulyana && s.hotspots.ulyana.visible), "Ulyana has left the class");
-      check(await goExit("O2"), "class → school yard");
-      check(await goExit("O4"), "yard → street");
-      s = await state();
-      check(s.hotspots.ulyana && s.hotspots.ulyana.visible, "Ulyana by her father's garden on the street");
-      await page.mouse.move(400, 1000);
+      check(s.mechanic.panel.wrong === 1 && lines.some((l) => l.includes("Не там")), `a wrong house: «Не там! Давай сначала…» (${JSON.stringify(lines)})`);
+      await click("the school", P.school);
+      s = await waitFor("the school coloured", (t) => (t.mechanic.panel.coloured || []).includes("school"), 60000);
+      await click("the garden out of turn", P.garden);
+      await waitFor("the word on a wrong order", (t) => beatKey(t) !== "", 60000);
+      await playThrough("wrong order", { quietMs: 1500 });
+      s = await waitFor("everything uncoloured", (t) => (t.mechanic.panel.coloured || []).length === 0, 60000);
+      check(s.mechanic.panel.found === 0 && s.mechanic.panel.wrong === 2, `out of turn: all again (found ${s.mechanic.panel.found}, wrong ${s.mechanic.panel.wrong})`);
+      await click("the school", P.school);
+      await waitFor("the school coloured", (t) => (t.mechanic.panel.coloured || []).includes("school"), 60000);
+      await click("Ulya's house", P.ilya_house);
+      s = await waitFor("two coloured", (t) => (t.mechanic.panel.coloured || []).length === 2, 60000);
+      await page.mouse.move(P.garden.x, P.garden.y, { steps: 3 });
       await sleep(600);
-      await shot("2_O4_ulyana");
-      lines = await useHotspot("ulyana");
-      s = await state();
-      check(s.flags.q02_asked_ulyana && lines.some((l) => l.includes("моего дома почти нет")) && lines.some((l) => l.includes("помоги мне его найти")),
-        `«На твоей карте моего дома почти нет» — «Тогда помоги мне его найти»: ${JSON.stringify(lines).slice(0, 200)}`);
-      check(await goExit("O2"), "street → yard");
-      check(await goExit("O1"), "yard → class");
-      await useHotspot("village_map", { done: (t) => t.mechanic && t.mechanic.open && !beatKey(t) });
-      s = await waitFor("the tracing sheet laid, the view on the plot", (t) => t.mechanic && t.mechanic.open && t.mechanic.panel.phase === "trace" && t.mechanic.panel.trace.open, 120000);
-      await sleep(500);
-      await shot("3_map_trace");
-      const strokes = s.mechanic.panel.trace.strokes;
-      check(strokes.length === 3, `three dotted lines to draw (${strokes.length})`);
-      // Let go in the middle of the first line: the pencil slips back, nothing lost.
-      await drag("rows, let go midway", strokes[0].slice(0, 2));
-      await playThrough("slipped", { quietMs: 1500 });
-      s = await state();
-      check(s.mechanic.panel.slips === 1 && s.mechanic.panel.trace.loops_done === 0, `let go midway: back to the line's start, no penalty (${s.mechanic.panel.trace.state})`);
-      for (let i = 0; i < strokes.length; i++) {
-        await drag(`line ${i + 1}`, strokes[i]);
-        if (i < strokes.length - 1) {
-          s = await waitFor(`line ${i + 1} drawn`, (t) => t.mechanic.panel.trace.loops_done >= i + 1, 60000);
-          if (i === 0) await shot("4_map_rows_drawn");
-        }
-      }
-      s = await waitFor("all three lines → «Там теперь смородина»", (t) => t.flags.q02_traced || (t.beat && (t.beat.text || "").includes("смородина")), 120000);
+      await shotH("H47_2_two_coloured");
+      await click("the garden", P.garden);
+      s = await waitFor("the garden comes up → «Там теперь смородина»", (t) => t.flags.q02_traced || (t.beat && (t.beat.text || "").includes("смородина")), 120000);
+      await sleep(400);
+      await shotH("H47_3_garden");
       lines = await playThrough("traced → choice B", { choices: ["B"], done: (t) => t.flags.done_Q02 && !beatKey(t) });
       s = await state();
       check(lines.some((l) => l.includes("Там теперь смородина")) && lines.includes("options:B"), `«Там теперь смородина» and the choice at once: ${JSON.stringify(lines).slice(0, 220)}`);
       check(s.flags.q02_new_primary && !s.flags.q02_old_under_new && s.flags.done_Q02, "B — the tracing to Ulyana; Q02 done");
-      check(!(s.mechanic && s.mechanic.open), "the close-up is put away");
-      s = await waitFor("Ulyana back in the class", (t) => t.hotspots.ulyana && t.hotspots.ulyana.visible, 30000);
+      check(lines.some((l) => l.startsWith("ulyana") && l.includes("Моя карта")), `B: Ulyana's reaction (${JSON.stringify(lines).slice(-200)})`);
+      check(!(s.mechanic && s.mechanic.open) && s.hotspots.ulyana && s.hotspots.ulyana.visible, "the close-up put away, Ulyana in the class");
+      await page.mouse.move(400, 1000);
+      await sleep(600);
+      await shotH("H47_4_after_B");
       lines = await useHotspot("village_map");
       s = await state();
       check(!(s.mechanic && s.mechanic.open) && !lines.some((l) => l.startsWith("options")), `once: afterwards only a look (${JSON.stringify(lines)})`);
     }
 
     if (RUNS.includes("Q06")) {
+      // H48 (Director 24.10): the goal on screen, one hint per step, every action a drag onto the lit place.
       s = await state();
       if (s.room === "O1") { check(await goExit("O2"), "class → yard"); }
       check(await goExit("O4"), "→ street");
       s = await state();
       check(s.hotspots.ilya_workshop && s.hotspots.ilya_workshop.visible, "Q06: «Мастерская Ильи» on the street");
       lines = await useHotspot("ilya_workshop", { done: (t) => t.mechanic && t.mechanic.open && !beatKey(t) });
-      check(lines.some((l) => l.includes("Два человека здесь уже не помещаются")) && lines.some((l) => l.includes("Тогда сделаем место третьему")),
-        `Mitya / Ilya: ${JSON.stringify(lines)}`);
+      check(lines.some((l) => l.includes("Два человека здесь уже не помещаются")) && lines.some((l) => l.includes("Тогда сделаем место третьему")) && lines.some((l) => l.includes("Уля")),
+        `Mitya / Ilya / the goal: ${JSON.stringify(lines)}`);
       s = await state();
-      check(s.mechanic.type === "workbench" && s.mechanic.panel.step === 0, `the second bench close-up, step 1 (${s.mechanic.panel.step})`);
+      check(s.mechanic.type === "workbench" && s.mechanic.panel.step === 0 && (s.mechanic.panel.goal || "").includes("Ули") && s.mechanic.panel.hint, `the bench, step 1: goal and hint (${s.mechanic.panel.step_text} / ${s.mechanic.panel.hint})`);
+      await page.mouse.move(400, 1000);
       await sleep(500);
-      await shot("5_bench_step1");
-      await click("the wedge", s.mechanic.panel.fastenings.wedge);
+      await shotH("H48_1_step1");
+      const dragTo = async (label, id) => {
+        const t0 = await waitFor(`${label}: free`, (t) => t.mechanic && t.mechanic.panel && !t.mechanic.panel.busy && !beatKey(t), 60000);
+        await drag(label, [t0.mechanic.panel.parts[id], t0.mechanic.panel.target]);
+      };
+      await dragTo("the wedge into the groove", "wedge");
       await waitFor("the wedge tried — Ilya says why", (t) => beatKey(t) !== "", 60000);
       lines = await playThrough("the wedge", { quietMs: 1500 });
-      s = await waitFor("the wedge back on the cloth", (t) => !t.mechanic.panel.busy, 60000);
-      check(s.mechanic.panel.step === 0 && s.mechanic.panel.tries_wrong === 1 && lines.some((l) => l.includes("болтаться")), `the wedge does not fit, no penalty: ${JSON.stringify(lines)}`);
-      await click("the key", s.mechanic.panel.fastenings.key);
+      s = await waitFor("the wedge back home", (t) => !t.mechanic.panel.busy, 60000);
+      check(s.mechanic.panel.step === 0 && s.mechanic.panel.tries_wrong === 1 && lines.some((l) => l.includes("болтаться")), `the wedge does not fit, glides home: ${JSON.stringify(lines)}`);
+      // the key carried over the groove (not let go yet): the place glows — a frame — then let go
+      s = await state();
+      await drag("the key over the groove", [s.mechanic.panel.parts.key, s.mechanic.panel.target], false);
+      s = await state();
+      check(s.mechanic.panel.dragging === "key" && s.mechanic.panel.over_target, "dragged over the groove: the place glows brighter");
+      await shotH("H48_2_key_over_groove");
+      await page.mouse.up();
       s = await waitFor("the key in the groove", (t) => t.flags.q06_fastening_fit, 60000);
       await playThrough("fitted", { quietMs: 1500 });
-      s = await state();
-      await click("the stop block", s.mechanic.panel.stop);
-      s = await waitFor("the stop block in its slot", (t) => t.flags.q06_stop_in, 60000);
+      await dragTo("the stop block", "stop");
+      await waitFor("the stop block in", (t) => t.flags.q06_stop_in, 60000);
       await playThrough("stopped", { quietMs: 1500 });
-      s = await waitFor("step 3: the vise and «точный удар»", (t) => t.mechanic.panel.step === 2 && t.mechanic.panel.timing && t.mechanic.panel.timing.zone, 60000);
-      await shot("6_bench_vise");
-      const screw = s.mechanic.panel.screw;
-      await strikeTiming("the screw (red)", screw, false);
-      await playThrough("slipped", { quietMs: 1500 });
-      s = await state();
-      check(s.mechanic.panel.slips === 1 && s.mechanic.panel.turns === 0, `a strike in the red: the screw slips back (${s.mechanic.panel.slips})`);
-      for (let i = 0; i < 3; i++) await strikeTiming(`the screw, hit ${i + 1}`, screw, true);
-      s = await waitFor("the vise tight", (t) => t.flags.q06_vise_tight, 60000);
+      await dragTo("the screw", "screw");
+      await waitFor("the screw on its place", (t) => t.flags.q06_screw_set, 60000);
+      await playThrough("screw set", { quietMs: 1500 });
+      s = await waitFor("step 4: the ring round the handle", (t) => t.mechanic.panel.step === 3 && t.mechanic.panel.turn, 60000);
+      {
+        const tr = s.mechanic.panel.turn;
+        const pts = [];
+        for (let i = 0; i <= 80; i++) {
+          const a = (Math.PI * 2 * 2.4 * i) / 80;
+          pts.push({ x: tr.pivot.x + Math.cos(a) * tr.radius, y: tr.pivot.y + Math.sin(a) * tr.radius_y });
+        }
+        await drag("the screw turned round (2.4 turns)", pts.slice(0, 30), false);
+        await shotH("H48_3_turning");
+        for (const q of pts.slice(30)) await page.mouse.move(q.x, q.y);
+        await sleep(150);
+        await page.mouse.up();
+        await sleep(300);
+      }
+      s = await waitFor("the screw tight", (t) => t.flags.q06_vise_tight, 60000);
       await playThrough("tightened", { quietMs: 1500 });
-      s = await state();
-      check(s.mechanic.panel.step === 3, `step 4: the board (${s.mechanic.panel.step})`);
-      await click("the board", s.mechanic.panel.board);
+      await dragTo("the board onto the bench", "board");
       await waitFor("the board laid — Ilya", (t) => beatKey(t) !== "", 90000);
+      await shotH("H48_4_board_holds");
       lines = await playThrough("checked → choice A", { choices: ["A"], done: (t) => t.flags.done_Q06 && !beatKey(t) });
       s = await state();
       check(lines.some((l) => l.includes("Держит")) && lines.includes("options:A"), `«Держит» and the choice at once: ${JSON.stringify(lines).slice(0, 220)}`);
       check(s.flags.q06_table_at_ilya && !s.flags.q06_table_at_agata && s.flags.done_Q06, "A — the bench stays at Ilya's; Q06 done");
       await page.mouse.move(400, 1000);
       await sleep(800);
-      await shot("7_O4_shed_open");
+      await shotH("H48_5_O4_shed_open");
       lines = await useHotspot("ilya_workshop");
       s = await state();
       check(!(s.mechanic && s.mechanic.open) && lines.some((l) => l.includes("троим")), `once: afterwards only a look (${JSON.stringify(lines)})`);
