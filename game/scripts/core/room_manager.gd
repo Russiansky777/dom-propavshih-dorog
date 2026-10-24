@@ -203,6 +203,11 @@ func start_at(point_id: String) -> bool:
 	if p.is_empty():
 		push_warning("RoomManager: no start point '%s'" % point_id)
 		return false
+	return start_with(p)
+
+
+## The same from a start point given as data (TR1: a trailer shot's `state` — data/trailer/<id>.json).
+func start_with(p: Dictionary) -> bool:
 	GameState.reset()
 	var upto := String(p.get("done_through", ""))
 	var last_goal := ""

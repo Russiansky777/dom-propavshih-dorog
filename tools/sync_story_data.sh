@@ -8,28 +8,32 @@
 # and stale files are removed one by one; a reader sees either the old or the new file, never none.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SRC="$ROOT/data/story"
-DST="$ROOT/game/data/story"
-mkdir -p "$DST"
-changed=0
-while IFS= read -r -d '' f; do
-  rel="${f#"$SRC"/}"
-  out="$DST/$rel"
-  if ! cmp -s "$f" "$out"; then
-    mkdir -p "$(dirname "$out")"
-    tmp="$out.sync.$$"
-    cp "$f" "$tmp"
-    mv -f "$tmp" "$out"
-    changed=$((changed + 1))
-  fi
-done < <(find "$SRC" -name '*.json' -type f -print0)
-removed=0
-while IFS= read -r -d '' f; do
-  rel="${f#"$DST"/}"
-  if [[ ! -e "$SRC/$rel" ]]; then
-    rm -f "$f"
-    removed=$((removed + 1))
-  fi
-done < <(find "$DST" -name '*.json' -type f -print0)
-# Godot should not import JSON as resources; .gdignore is NOT used (it would hide the files from export).
-echo "[data] synced $(find "$DST" -name '*.json' | wc -l) json files → game/data/story (changed $changed, removed $removed)"
+sync_dir() {
+  local SRC="$1" DST="$2" changed=0 removed=0 f rel out tmp
+  mkdir -p "$DST"
+  while IFS= read -r -d '' f; do
+    rel="${f#"$SRC"/}"
+    out="$DST/$rel"
+    if ! cmp -s "$f" "$out"; then
+      mkdir -p "$(dirname "$out")"
+      tmp="$out.sync.$$"
+      cp "$f" "$tmp"
+      mv -f "$tmp" "$out"
+      changed=$((changed + 1))
+    fi
+  done < <(find "$SRC" -name '*.json' -type f -print0)
+  while IFS= read -r -d '' f; do
+    rel="${f#"$DST"/}"
+    if [[ ! -e "$SRC/$rel" ]]; then
+      rm -f "$f"
+      removed=$((removed + 1))
+    fi
+  done < <(find "$DST" -name '*.json' -type f -print0)
+  # Godot should not import JSON as resources; .gdignore is NOT used (it would hide the files from export).
+  echo "[data] synced $(find "$DST" -name '*.json' | wc -l) json files → ${DST#"$ROOT"/} (changed $changed, removed $removed)"
+}
+sync_dir "$ROOT/data/story" "$ROOT/game/data/story"
+# TR1: trailer plans (data/trailer/<id>.json) for the shooting mode res://scenes/trailer/Trailer.tscn.
+if [[ -d "$ROOT/data/trailer" ]]; then
+  sync_dir "$ROOT/data/trailer" "$ROOT/game/data/trailer"
+fi

@@ -74,6 +74,7 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_agata_scale_carry.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # G56: рост Агаты на экране в каждой комнате тот же при листе k× (texture_scale); G10: платок — к лежанке, pick, к вешалке, reach, крючок; клик посреди — тот же итог
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_gloss.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # H59/T7: подсказки к старым словам — каждое [[слово|значение]] в glossary.json, золотое слово с пунктиром, значение при наведении мышью, клик по тексту листает
 "$GODOT" --headless --audio-driver Dummy --fixed-fps 60 --path "$GAME_DIR" -s res://tests/test_agata_3d.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # Агата в 3D (render "3d"): любой угол поворота без скачков, стопа на полу ≤ 1 см, idle без рывков, старт/стоп, действия, отрисовка
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_trailer.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # TR1: режим съёмки трейлера (data/trailer) — планы читаются, планы собираются, комната в нужном состоянии, сохранения не пишутся
 # CI: every failure becomes an annotation (title, test, its messages) — the checks API shows annotations without the
 # job log, whose download host agents cannot reach (22.10: two red runs with no way to read why).
 if [[ -n "${GITHUB_ACTIONS:-}" && "$code" -ne 0 ]]; then

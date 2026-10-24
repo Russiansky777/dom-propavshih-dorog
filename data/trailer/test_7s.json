@@ -1,0 +1,90 @@
+{
+  "_comment": "TR1 (Директор 24.10, 16:37): пробный ролик ~7,5 с из игры — проверка способа сборки трейлера Steam. Планы проигрывает режим съёмки game/scenes/trailer/Trailer.tscn (game/scripts/trailer/trailer.gd), запись — Movie Maker (tools/make_trailer.sh), монтаж и звук — ffmpeg (tools/trailer_assemble.py). Время — секунды; координаты арта — пиксели исходной картинки, комнаты — экран 1920×1080. Планы снимаются по одному с запасом handle_s на переход (растворение/затемнение делает ffmpeg по transition_in следующего плана). Слои глубины первого плана строит tools/make_trailer_layers.py по оценке глубины (Depth Anything v2 small, CPU) — пороги в layers[].depth.",
+  "id": "test_7s",
+  "fps": 60,
+  "render_size": [3840, 2160],
+  "out_size": [1920, 1080],
+  "handle_s": 0.8,
+  "shots": [
+    {
+      "id": "house",
+      "kind": "art",
+      "_note": "Пейзаж главного меню без панели: кадр правее резной доски, медленный наезд к светлому окну. Слои глубины масштабируются вокруг окна по-разному (near быстрее far) — параллакс без сдвига за край арта.",
+      "duration": 3.0,
+      "art": "res://assets/ui/menu/title_bg.png",
+      "art_size": [1672, 941],
+      "fx_mask": "res://assets/ui/menu/title_fx_mask.png",
+      "fx_from_menu": "title",
+      "view": [598, 150, 1074, 604.1],
+      "anchor": [1557, 372],
+      "zoom": [1.0, 1.085],
+      "ease": "sine_in_out",
+      "depth_tex": "res://assets/trailer/house_depth.png",
+      "parallax": {"k": [0.5, 1.6], "_note": "зум слоя относительно наезда камеры: z(d) = 1 + (zoom − 1)·(k0 + (k1 − k0)·d), d — глубина пикселя 0 (даль) … 1 (ближе всего)"},
+      "layers": [
+        {"id": "far", "image": "res://assets/trailer/house_far.png", "depth_channel": 0},
+        {"id": "mist", "kind": "mist", "depth": 0.02, "rect": [600, 360, 1072, 250], "color": [0.74, 0.8, 0.94], "alpha": 0.3, "speed_px": 10.0, "scale": 0.006},
+        {"id": "front", "image": "res://assets/trailer/house_front.png", "depth_channel": 1, "depth": [0.08, 0.13]}
+      ],
+      "glows": [
+        {"id": "lamp", "center": [1557, 372], "radius": 190, "depth": 0.44, "color": [1.0, 0.66, 0.3], "alpha": 0.22, "flicker": 0.2, "flicker_hz": 7.0}
+      ],
+      "motes": {"rect": [1505, 228, 104, 290], "depth": 0.44, "amount": 22, "color": [1.0, 0.86, 0.58], "alpha": 0.35, "size_px": [0.8, 1.6]},
+      "grade": {"tint": [0.93, 0.96, 1.06], "lift": [0.0, 0.004, 0.012]}
+    },
+    {
+      "id": "gornitsa",
+      "kind": "room",
+      "_note": "Горница Дуни в сумерках первого дня (после M05: печь затоплена, за окном синие сумерки — настоящее время суток игры). Агата идёт от двери к печи, камера чуть ведёт за ней; кресло со столиком (окклюдеры) движется быстрее фона.",
+      "duration": 2.5,
+      "transition_in": {"kind": "dissolve", "duration": 0.6},
+      "room": "H1",
+      "state": {"done_through": "M05", "flags": ["house_unlocked", "h1_shutter_open", "stove_lit", "h1_scarf_removed"]},
+      "agata": {"from": [1060, 735], "to": [650, 800], "start_s": -0.15},
+      "preroll_s": 0.6,
+      "camera": {"zoom": [1.14, 1.2], "center_from": [930, 560], "follow": 0.45, "spring_hz": 1.1, "ease": "sine_in_out"},
+      "occluder_parallax": 0.35,
+      "motes": {"rect": [120, 280, 700, 520], "amount": 70, "color": [1.0, 0.8, 0.5], "alpha": 0.5, "size_px": [1.0, 2.6]},
+      "grade": {"tint": [1.04, 0.98, 0.9], "lift": [0.008, 0.004, 0.0]},
+      "mute_buses": ["Music", "Voice"]
+    },
+    {
+      "id": "title",
+      "kind": "title_card",
+      "duration": 2.0,
+      "transition_in": {"kind": "fadeblack", "duration": 0.5},
+      "title": "Дом пропавших дорог",
+      "subtitle": "Вещи помнят место, которому служили.",
+      "font": "body",
+      "title_px": 132,
+      "subtitle_px": 44,
+      "title_y": 470,
+      "subtitle_y": 628,
+      "gold": [[0.55, 0.36, 0.14], [1.0, 0.86, 0.6], [0.78, 0.55, 0.24]],
+      "subtitle_color": [0.86, 0.79, 0.68],
+      "line_color": [1.0, 0.72, 0.36],
+      "rule_half_px": 330,
+      "rule_y": [372, 574],
+      "title_in": [0.15, 0.95],
+      "subtitle_in": [0.75, 1.35],
+      "glint": [0.7, 1.7],
+      "glint_width": 0.14
+    }
+  ],
+  "audio": {
+    "music": "res://assets/music/02_roads.ogg",
+    "_music_note": "Тема главного меню (menu.json title.music = roads → music.json 02_roads.ogg). Начало в треке и длительности планов подобраны по долям (tools/trailer_assemble.py --analyze).",
+    "music_start_s": 4.7,
+    "music_fade_in_s": 1.2,
+    "music_fade_out_s": 1.6,
+    "music_gain_db": 0.0,
+    "game_audio_gain_db": 0.0,
+    "ambience": [
+      {"id": "wind_water", "shot": "house", "synth": "wind_water", "gain_db": -24.0, "fade_s": [0.8, 0.6]},
+      {"id": "stove", "shot": "gornitsa", "file": "res://assets/sfx/amb_stove_fire.ogg", "gain_db": -20.0, "fade_s": [0.5, 0.6]}
+    ],
+    "impact": {"at_shot": "title", "offset_s": 0.25, "gain_db": -10.0},
+    "loudness_lufs": -14.0,
+    "true_peak_db": -1.5
+  }
+}

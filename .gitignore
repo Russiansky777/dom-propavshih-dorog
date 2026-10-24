@@ -16,3 +16,4 @@ Thumbs.db
 
 # Рабочие копии агентов (git worktree) — не в репозиторий
 .claude/
+game/override.cfg
