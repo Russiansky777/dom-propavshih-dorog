@@ -33,6 +33,10 @@ def _mod(name: str, path: Path):
     return m
 
 
+# Финальная запись после H59 (T7, прогоны pipeline-voice 40103286671 и 40103298522): названные строки, записанные
+# не раньше этого времени, из списка уходят.
+H59_RECORDED_FROM = "2026-10-24T14:30"
+
 MANUAL = {
     "pelageya:R1.pelageya.after": "H5: «Без плиты лодку вернёт сюда же… я тут, у лодки» — шёпотом, тише остальных реплик "
                                   "Пелагеи; тег quietly снят (теперь firm) — записать её голосом и громкостью",
@@ -85,6 +89,8 @@ def build() -> dict:
         sp = str(man["lines"].get(lid, {}).get("speaker", ""))
         add(lid, sp, "H5: подача " + e.split(": подача", 1)[1].split(" — перезаписать", 1)[0].strip())
     for lid, why in MANUAL.items():
+        if str(man["lines"].get(lid, {}).get("generated_at", "")) >= H59_RECORDED_FROM:
+            continue   # перезаписана финальным прогоном после H59 (T7) — названная строка закрыта
         sp = str(man["lines"].get(lid, {}).get("speaker", "")) or lid.split(":", 1)[0]
         add(lid, sp, why)
     return {
