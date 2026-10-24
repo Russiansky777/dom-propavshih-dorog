@@ -1,194 +1,1134 @@
-run 40009041539 2026-10-23T19:10:12Z requests: pipeline/requests/voice_G.json 
+run 40103286671 2026-10-24T14:37:57Z requests: pipeline/requests/voice_H59a.json
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 38652 из 124889 символов
+план: creator (active), израсходовано 40838 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_G.json
-  закадровые фразы без ссылок в данных игры — пропущены: H2d.bell.need_mirror, H2d.nina_mirror.watch_wait, H3.exit_R4.closed, R1.boat.look, R1d.lantern.use_day, Z3d.plate.rope_at_ring, agata:item.letter_tamara, agata:mech.shutter.dropped, agata:mech.shutter.stuck, pelageya:R2.pelageya.after, pelageya:Z3d.pelageya.done
-  отложены (voice.json → by_speaker.<персонаж>.hold): agata:H1.photo.look
+=== pipeline/requests/voice_H59a.json
+  манифест ru: M01_0: текст изменён
+  манифест ru: M01_1: текст изменён
+  манифест ru: M01_2: текст изменён
+  манифест ru: M01_3: текст изменён
+  манифест ru: M01_4: текст изменён
+  манифест ru: M01_5: текст изменён
+  манифест ru: M01_6: текст изменён
+  манифест ru: M01_7: текст изменён
+  манифест ru: M01_8: текст изменён
+  манифест ru: M02_0: текст изменён
   манифест ru: M02_1: текст изменён
+  манифест ru: M02_2: текст изменён
+  манифест ru: M02_3: текст изменён
+  манифест ru: M02_5: текст изменён
+  манифест ru: M02_6: текст изменён
+  манифест ru: M02_7: текст изменён
+  манифест ru: M02_8: текст изменён
+  манифест ru: M03_0: текст изменён
+  манифест ru: M03_1: текст изменён
+  манифест ru: M03_2: текст изменён
+  манифест ru: M03_3: текст изменён
+  манифест ru: M03_4: текст изменён
+  манифест ru: M03_5: текст изменён
+  манифест ru: M03_7: текст изменён
+  манифест ru: M03_8: текст изменён
+  манифест ru: M03_10: текст изменён
+  манифест ru: M04_0: текст изменён
+  манифест ru: M05_0: текст изменён
+  манифест ru: M06_0: текст изменён
+  манифест ru: M07_0: текст изменён
+  манифест ru: M07_1: текст изменён
+  манифест ru: M07_2: текст изменён
   манифест ru: M07_3: текст изменён
+  манифест ru: M07_4: текст изменён
+  манифест ru: M07_5: текст изменён
+  манифест ru: M07_6: текст изменён
+  манифест ru: M08_0: текст изменён
+  манифест ru: M09_0: текст изменён
   манифест ru: M09_1: текст изменён
   манифест ru: M09_2: текст изменён
+  манифест ru: M09_3: текст изменён
+  манифест ru: M09_4: текст изменён
+  манифест ru: M09_5: текст изменён
+  манифест ru: M09_6: текст изменён
   манифест ru: M09_7: текст изменён
+  манифест ru: M09b_0: текст изменён
+  манифест ru: M09b_1: текст изменён
+  манифест ru: M09b_2: текст изменён
+  манифест ru: M09b_3: текст изменён
+  манифест ru: M09b_4: текст изменён
   манифест ru: M09b_5: текст изменён
+  манифест ru: M09s_0: текст изменён
+  манифест ru: M10_0: текст изменён
+  манифест ru: M11_0: текст изменён
+  манифест ru: M12_0: текст изменён
+  манифест ru: M13_0: текст изменён
+  манифест ru: M13_2: текст изменён
+  манифест ru: M13a_0: текст изменён
+  манифест ru: M14_0: текст изменён
   манифест ru: M14_1: текст изменён
+  манифест ru: M15_0: текст изменён
+  манифест ru: M15_1: текст изменён
+  манифест ru: M15_2: текст изменён
+  манифест ru: M15a_0: текст изменён
+  манифест ru: M15a_1: текст изменён
+  манифест ru: M15s_0: текст изменён
+  манифест ru: M15s_1: текст изменён
   манифест ru: M15s_2: текст изменён
+  манифест ru: M16_0: текст изменён
+  манифест ru: M16s_0: текст изменён
+  манифест ru: M16s_1: текст изменён
+  манифест ru: M16s_2: текст изменён
   манифест ru: M17_0: текст изменён
+  манифест ru: M17_1: текст изменён
+  манифест ru: M17_2: текст изменён
+  манифест ru: M17_3: текст изменён
+  манифест ru: M17_4: текст изменён
+  манифест ru: M17_5: текст изменён
+  манифест ru: M17_6: текст изменён
+  манифест ru: M17_7: текст изменён
+  манифест ru: M18_0: текст изменён
+  манифест ru: M18_2: текст изменён
+  манифест ru: M18_3: текст изменён
+  манифест ru: M18_4: текст изменён
+  манифест ru: M18_5: текст изменён
+  манифест ru: M18_6: текст изменён
+  манифест ru: M18_7: текст изменён
+  манифест ru: M18p_0: текст изменён
+  манифест ru: M18p_1: текст изменён
+  манифест ru: M18p_2: текст изменён
+  манифест ru: M18p_3: текст изменён
+  манифест ru: M18p_4: текст изменён
+  манифест ru: M19_0: текст изменён
+  манифест ru: M19_1: текст изменён
+  манифест ru: M19_2: текст изменён
+  манифест ru: M19_4: текст изменён
+  манифест ru: M19_5: текст изменён
+  манифест ru: M19_6: текст изменён
+  манифест ru: M19c_0: текст изменён
+  манифест ru: M19c_1: текст изменён
+  манифест ru: M19c_2: текст изменён
+  манифест ru: M19c_3: текст изменён
+  манифест ru: M19c_4: текст изменён
+  манифест ru: M19c_5: текст изменён
+  манифест ru: M19c_6: текст изменён
+  манифест ru: M19c_7: текст изменён
+  манифест ru: M19c_8: текст изменён
+  манифест ru: M20_0: текст изменён
+  манифест ru: M20_1: текст изменён
+  манифест ru: M20_3: текст изменён
+  манифест ru: M20_4: текст изменён
+  манифест ru: M20_5: текст изменён
+  манифест ru: M20_6: текст изменён
+  манифест ru: M20_7: текст изменён
+  манифест ru: M20_8: текст изменён
+  манифест ru: M20_9: текст изменён
+  манифест ru: M20_10: текст изменён
+  манифест ru: M21_0: текст изменён
+  манифест ru: M21_1: текст изменён
+  манифест ru: M21_2: текст изменён
+  манифест ru: M21b_0: текст изменён
+  манифест ru: M21b_1: текст изменён
+  манифест ru: M21b_2: текст изменён
+  манифест ru: M21b_3: текст изменён
+  манифест ru: M21b_4: текст изменён
+  манифест ru: M22_0: текст изменён
+  манифест ru: M22_1: текст изменён
+  манифест ru: M22_2: текст изменён
+  манифест ru: M22_3: текст изменён
+  манифест ru: M22_4: текст изменён
+  манифест ru: M22_5: текст изменён
+  манифест ru: M22_6: текст изменён
+  манифест ru: M22_7: текст изменён
+  манифест ru: M22_8: текст изменён
+  манифест ru: M22_9: текст изменён
+  манифест ru: M22_11: текст изменён
+  манифест ru: M22_12: текст изменён
   манифест ru: M22_13: текст изменён
   манифест ru: M22_14: текст изменён
+  манифест ru: M22_14_then0: текст изменён
+  манифест ru: M22_14_then1: текст изменён
+  манифест ru: M22_14_then2: текст изменён
+  манифест ru: M22_14_then3: текст изменён
+  манифест ru: M22_15: текст изменён
+  манифест ru: M23a_0: текст изменён
+  манифест ru: M23a_1: текст изменён
+  манифест ru: M23a_2: текст изменён
+  манифест ru: M23a_3: текст изменён
+  манифест ru: M23a_4: текст изменён
+  манифест ru: M23a_5: текст изменён
+  манифест ru: M23b_0: текст изменён
+  манифест ru: M23b_1: текст изменён
   манифест ru: M23b_2: текст изменён
+  манифест ru: M23b_3: текст изменён
+  манифест ru: M23b_4: текст изменён
+  манифест ru: M23b_5: текст изменён
+  манифест ru: M23b_6: текст изменён
+  манифест ru: M23b_7: текст изменён
+  манифест ru: M23b_8: текст изменён
+  манифест ru: M23b_9: текст изменён
+  манифест ru: M23c_0: текст изменён
+  манифест ru: M23c_1: текст изменён
+  манифест ru: M23c_2: текст изменён
+  манифест ru: M23c_3: текст изменён
+  манифест ru: M23c_4: текст изменён
+  манифест ru: M23c_5: текст изменён
+  манифест ru: M23c_6: текст изменён
+  манифест ru: M23c_7: текст изменён
+  манифест ru: M23c_8: текст изменён
+  манифест ru: M23d_1: текст изменён
+  манифест ru: M23d_2: текст изменён
+  манифест ru: M23d_3: текст изменён
+  манифест ru: M23d_5: текст изменён
+  манифест ru: M23d_6: текст изменён
+  манифест ru: M24_0: текст изменён
+  манифест ru: M24_1: текст изменён
+  манифест ru: M25_0: текст изменён
+  манифест ru: M25_1: текст изменён
+  манифест ru: M25_2: текст изменён
+  манифест ru: M25_3: текст изменён
+  манифест ru: M25_4: текст изменён
+  манифест ru: M25_5: текст изменён
+  манифест ru: M25_7: текст изменён
+  манифест ru: M25_8: текст изменён
+  манифест ru: M26_0: текст изменён
+  манифест ru: M26_1: текст изменён
+  манифест ru: M26_2: текст изменён
+  манифест ru: M26_3: текст изменён
+  манифест ru: M26_4: текст изменён
+  манифест ru: M26_5: текст изменён
+  манифест ru: M26_6: текст изменён
+  манифест ru: M26_7: текст изменён
+  манифест ru: M26_8: текст изменён
+  манифест ru: M26_8_then0: текст изменён
+  манифест ru: M26_9: текст изменён
+  манифест ru: M26_10: текст изменён
+  манифест ru: M26_11: текст изменён
+  манифест ru: M26_12: текст изменён
+  манифест ru: M26_13: текст изменён
+  манифест ru: M26_14: текст изменён
+  манифест ru: M26_15_then0: текст изменён
+  манифест ru: M26_16: текст изменён
+  манифест ru: M26_17: текст изменён
+  манифест ru: M26_20: текст изменён
+  манифест ru: M26_21: текст изменён
+  манифест ru: M26_22: текст изменён
+  манифест ru: M26_23: текст изменён
+  манифест ru: M26_23_then0: текст изменён
+  манифест ru: M26_24: текст изменён
+  манифест ru: M26_25: текст изменён
+  манифест ru: M26_26: текст изменён
+  манифест ru: M26_27: текст изменён
+  манифест ru: M26_28: текст изменён
+  манифест ru: M26_29: текст изменён
+  манифест ru: M26_30: текст изменён
+  манифест ru: M26_31: текст изменён
+  манифест ru: M26_32: текст изменён
+  манифест ru: M26_33: текст изменён
+  манифест ru: M26_34: текст изменён
+  манифест ru: M26_35: текст изменён
+  манифест ru: M26_35_then0: текст изменён
+  манифест ru: N01_0: текст изменён
+  манифест ru: N01_1: текст изменён
+  манифест ru: N01_2: текст изменён
+  манифест ru: N01_3: текст изменён
+  манифест ru: Q01_0: текст изменён
+  манифест ru: Q01_1: текст изменён
+  манифест ru: Q01_2: текст изменён
+  манифест ru: Q02_0: текст изменён
+  манифест ru: Q02_1: текст изменён
+  манифест ru: Q03_0: текст изменён
+  манифест ru: Q03_1: текст изменён
+  манифест ru: Q03_2: текст изменён
+  манифест ru: Q04_0: текст изменён
+  манифест ru: Q04_1: текст изменён
+  манифест ru: Q06_0: текст изменён
+  манифест ru: Q06_1: текст изменён
+  манифест ru: Q06_2: текст изменён
+  манифест ru: Q07_0: текст изменён
+  манифест ru: Q07_1: текст изменён
+  манифест ru: Q08_0: текст изменён
+  манифест ru: Q08_1: текст изменён
+  манифест ru: Q09_0: текст изменён
+  манифест ru: E4.M23d.prompt: текст изменён
+  манифест ru: E5.M25.prompt: текст изменён
+  манифест ru: E5.windlass.laid: текст изменён
+  манифест ru: H1.cups.look: текст изменён
+  манифест ru: H1.cups.prompt: текст изменён
+  манифест ru: H1.photo.look: текст изменён
+  манифест ru: H1.photo.prompt: текст изменён
+  манифест ru: H1.scarf.look: текст изменён
+  манифест ru: H1.scarf.use: текст изменён
   манифест ru: H1.shelf.look: текст изменён
+  манифест ru: H1.shelf.look_done: текст изменён
+  манифест ru: H1.shelf.look_wet: текст изменён
+  манифест ru: H1.shelf.prompt: текст изменён
+  манифест ru: H1.shutter.look: текст изменён
+  манифест ru: H1.shutter.use: текст изменён
+  манифест ru: H1.stove.look: текст изменён
+  манифест ru: H1.stove.look_settled: текст изменён
+  манифест ru: H1.stove.use: текст изменён
+  манифест ru: H1.tikhon.look: текст изменён
+  манифест ru: H1.tikhon.prompt: текст изменён
+  манифест ru: H1.v01.done: текст изменён
+  манифест ru: H1.wave.look: текст изменён
+  манифест ru: H1d.nina_coat.look: текст изменён
+  манифест ru: H1d.nina_coat.prompt: текст изменён
+  манифест ru: H1d.tea_corner.look: текст изменён
+  манифест ru: H1d.tea_corner.prompt: текст изменён
+  манифест ru: H2.bell.look: текст изменён
+  манифест ru: H2.bell.use: текст изменён
+  манифест ru: H2.bench.look: текст изменён
+  манифест ru: H2.bench.use: текст изменён
+  манифест ru: H2.brace.look: текст изменён
+  манифест ru: H2.bundle_nina.done: текст изменён
+  манифест ru: H2.bundle_nina.look: текст изменён
+  манифест ru: H2.bundle_nina.use: текст изменён
+  манифест ru: H2.clapper_box.look: текст изменён
+  манифест ru: H2.hinges_box.look: текст изменён
+  манифест ru: H2.hinges_box.use: текст изменён
+  манифест ru: H2.stand_zm.look: текст изменён
+  манифест ru: H2d.bell.hang: текст изменён
+  манифест ru: H2d.clapper_box.use: нет в текстах
+  манифест ru: H2d.nina_mirror.clamp: текст изменён
+  манифест ru: H2d.nina_mirror.knock_first: текст изменён
+  манифест ru: H2d.nina_mirror.watch_again: текст изменён
+  манифест ru: H2d.office_mirror.bell_mute: текст изменён
+  манифест ru: H2d.office_mirror.bell_unclamped: текст изменён
+  манифест ru: H2d.office_mirror.clamped: текст изменён
+  манифест ru: H2d.office_mirror.glass_loose: текст изменён
+  манифест ru: H2d.office_mirror.glass_touch: текст изменён
+  манифест ru: H2d.office_mirror.hook_slipped: текст изменён
+  манифест ru: H2d.office_mirror.view_again: текст изменён
+  манифест ru: H2d.office_mirror.view_first: текст изменён
+  манифест ru: H2d.stand_zm.mount: текст изменён
+  манифест ru: H2q.second_bench.look: текст изменён
+  манифест ru: H3.exit_O1.closed: текст изменён
+  манифест ru: H3.mirror_home.look: текст изменён
+  манифест ru: H3.mirror_home.use: текст изменён
+  манифест ru: H3.photo_school.look: текст изменён
+  манифест ru: H3.puzzle.error: текст изменён
+  манифест ru: H3.puzzle.intro: текст изменён
+  манифест ru: H3.puzzle.need: текст изменён
+  манифест ru: H3.puzzle.success: текст изменён
+  манифест ru: H3.school_door.look: текст изменён
+  манифест ru: H4.chest.look: текст изменён
+  манифест ru: H4.v02.done: текст изменён
+  манифест ru: H4.window.look: текст изменён
+  манифест ru: M1.bench.look: текст изменён
+  манифест ru: M1.schedule.look: текст изменён
+  манифест ru: M1.schedule.use: текст изменён
+  манифест ru: M1.wheel.look: текст изменён
+  манифест ru: M2.exit_M3.closed: текст изменён
+  манифест ru: M2.office_door.look: текст изменён
+  манифест ru: M2.office_door.use: текст изменён
+  манифест ru: M2.office_door_open.look: текст изменён
+  манифест ru: M2.office_door_open.use: текст изменён
+  манифест ru: M2.photo.look: текст изменён
+  манифест ru: M2.photo.use: текст изменён
+  манифест ru: M3.answer.prompt: текст изменён
   манифест ru: M3.clamp.look: текст изменён
+  манифест ru: M3.gauge.look: текст изменён
+  манифест ru: M3.journal.look: текст изменён
   манифест ru: M3.journal.use: текст изменён
   манифест ru: M3.key_nail.look: текст изменён
   манифест ru: M3.key_nail.use: текст изменён
   манифест ru: M4.gate.key: текст изменён
   манифест ru: M4.gate.locked: текст изменён
+  манифест ru: M4.gate.look: текст изменён
   манифест ru: O1.bird_drawing.look: текст изменён
-  манифест ru: O1.bird_drawing.prompt: текст изменён
-  манифест ru: R1.exit_R2.closed: текст изменён
+  манифест ru: O1.board.chalk: текст изменён
+  манифест ru: O1.board.chalk_ilya: текст изменён
+  манифест ru: O1.board.chalk_mama: текст изменён
+  манифест ru: O1.board.chalk_none: текст изменён
+  манифест ru: O1.board.look: текст изменён
+  манифест ru: O1.board.prompt: текст изменён
+  манифест ru: O1.board.use: текст изменён
+  манифест ru: O1.chalk.look: текст изменён
+  манифест ru: O1.chalk.use: текст изменён
+  манифест ru: O1.exit_H3.closed: текст изменён
+  манифест ru: O1.notebooks.look: текст изменён
+  манифест ru: O1.notebooks.use: текст изменён
+  манифест ru: O1.sack.look: текст изменён
+  манифест ru: O1.sack.use: текст изменён
+  манифест ru: O1.teacher_drawer.look: текст изменён
+  манифест ru: O1.teacher_drawer.use: текст изменён
+  манифест ru: O1.v03.done: текст изменён
+  манифест ru: O1d.class_sign.look: текст изменён
+  манифест ru: O1q.village_map.look: текст изменён
+  манифест ru: O1q.village_map.look_new: текст изменён
+  манифест ru: O1q.village_map.look_old: текст изменён
+  манифест ru: O1q.village_map.prompt: текст изменён
+  манифест ru: O2.exit_O4.loop: текст изменён
+  манифест ru: O2.porch_step.look: текст изменён
+  манифест ru: O2.tree.look: текст изменён
+  манифест ru: O2.window_other.look: текст изменён
+  манифест ru: O2d.mitten_path.look: текст изменён
+  манифест ru: O2d.mitten_path.take: текст изменён
+  манифест ru: O3.clock.look: текст изменён
+  манифест ru: O3.dunya_mirror.look: текст изменён
+  манифест ru: O3.icon.look: текст изменён
+  манифест ru: O3.nina.ribbon: текст изменён
+  манифест ru: O3.window.look: текст изменён
+  манифест ru: O4.exit_O2.closed: текст изменён
+  манифест ru: O4.exit_S1.closed: текст изменён
+  манифест ru: O4.letters_bag.look: текст изменён
+  манифест ru: O4.letters_bag.prompt: текст изменён
+  манифест ru: O4.mitya_board.look: текст изменён
+  манифест ru: O4.mitya_board.prompt: текст изменён
+  манифест ru: O4q.ulyana.look: нет в текстах
+  манифест ru: O4q.workshop.look: текст изменён
+  манифест ru: O4q.workshop.look_agata: текст изменён
+  манифест ru: O4q.workshop.look_ilya: текст изменён
+  манифест ru: O4q.workshop.prompt: текст изменён
+  манифест ru: R1.exit_R2.closed_check: текст изменён
+  манифест ru: R1.exit_Z2.closed: текст изменён
+  манифест ru: R1.instruction.look: текст изменён
+  манифест ru: R1.instruction.use: текст изменён
+  манифест ru: R1.lantern.look: текст изменён
+  манифест ru: R1.lantern.use: текст изменён
+  манифест ru: R1.pelageya.prompt: текст изменён
+  манифест ru: R1.rope.look: текст изменён
+  манифест ru: R1.rope.photo: текст изменён
+  манифест ru: R1.rope.use: текст изменён
+  манифест ru: R1.stopper.look_empty: текст изменён
+  манифест ru: R1.stopper.look_ring: текст изменён
+  манифест ru: R2.rope.look: текст изменён
+  манифест ru: R3.lamp_post.look: текст изменён
+  манифест ru: R3.stopor.look: текст изменён
+  манифест ru: S1.house.look: текст изменён
+  манифест ru: S1.river.look: текст изменён
+  манифест ru: S1.street_sign.look: текст изменён
+  манифест ru: S1.street_sign.look_moved: текст изменён
+  манифест ru: Z1.drawings.look: текст изменён
+  манифест ru: Z1.drawings.photo: текст изменён
+  манифест ru: Z1.drawings.use: текст изменён
+  манифест ru: Z1.exit_Z4.closed: текст изменён
+  манифест ru: Z1.letters.look: текст изменён
+  манифест ru: Z1.plan.look: текст изменён
+  манифест ru: Z1.tamara.after: текст изменён
+  манифест ru: Z1.tamara.prompt: текст изменён
+  манифест ru: Z2.exit_H1.unlock: текст изменён
+  манифест ru: Z2.exit_M1.closed: текст изменён
+  манифест ru: Z2.exit_R1.closed: текст изменён
+  манифест ru: Z2.exit_Z3.closed: текст изменён
+  манифест ru: Z2.landmarks.look: текст изменён
+  манифест ru: Z3.old_pier_base.look: текст изменён
+  манифест ru: Z3.old_pier_base.photo: текст изменён
+  манифест ru: Z3.plate.look: текст изменён
+  манифест ru: Z3d.plate_dry.look: текст изменён
+  манифест ru: Z3d.plate_dry.skoba: текст изменён
+  манифест ru: Z4.exit_H3.closed: текст изменён
+  манифест ru: Z4.lantern.look: текст изменён
+  манифест ru: Z4.post_sign.look: текст изменён
+  манифест ru: agata:H1.cups.prompt: текст изменён
+  манифест ru: agata:H1.cups.react_blue: текст изменён
+  манифест ru: agata:H1.cups.react_white: текст изменён
+  манифест ru: agata:H1.exit_H2.dark: текст изменён
+  манифест ru: agata:H1.exit_H3.dark: текст изменён
+  манифест ru: agata:H1.exit_H4.dark: текст изменён
+  манифест ru: agata:H1.photo.react_shelf: текст изменён
+  манифест ru: agata:H1.photo.react_table: текст изменён
+  манифест ru: agata:H1.shelf.not_yet: текст изменён
+  манифест ru: agata:H1.shelf.not_yet_dark: текст изменён
+  манифест ru: agata:H1.wave.use: текст изменён
+  манифест ru: agata:H1d.nina_coat.use: текст изменён
+  манифест ru: agata:H2.bell.thought: текст изменён
+  манифест ru: agata:H2.brace.before_plan: текст изменён
+  манифест ru: agata:H2.brace.take: текст изменён
+  манифест ru: agata:H2.hinges_box.empty: текст изменён
+  манифест ru: agata:H2.hinges_box.thought: текст изменён
+  манифест ru: agata:H2d.bell.ring_far: текст изменён
+  манифест ru: agata:H2d.nina_mirror.clamp_early: текст изменён
+  манифест ru: agata:H2d.stand_zm.enter: текст изменён
+  манифест ru: agata:H3.mirror_home.use: текст изменён
+  манифест ru: agata:H3.school_door.use: текст изменён
+  манифест ru: agata:H3.side_door.unbolt: текст изменён
+  манифест ru: agata:M1.exit_M2.closed: текст изменён
+  манифест ru: agata:M1.exit_M4.closed: текст изменён
+  манифест ru: agata:M2.mirror.look: текст изменён
+  манифест ru: agata:M3.clamp.use: текст изменён
   манифест ru: agata:O1.bird_drawing.prompt: текст изменён
-  манифест ru: agata:O1.teacher_drawer.before_traces: нет в текстах
+  манифест ru: agata:O1.bird_drawing.react_boat: текст изменён
+  манифест ru: agata:O1.bird_drawing.react_bridge: текст изменён
+  манифест ru: agata:O1.bird_drawing.react_scarf: текст изменён
+  манифест ru: agata:O1.board.chalk: текст изменён
+  манифест ru: agata:O1.board.use: текст изменён
+  манифест ru: agata:O1.enter.winter: текст изменён
+  манифест ru: agata:O1q.village_map.traced: текст изменён
+  манифест ru: agata:O1q.village_map.use: текст изменён
+  манифест ru: agata:O2.exit_O4.loop: текст изменён
+  манифест ru: agata:O2.mitten.look: текст изменён
+  манифест ru: agata:O2.mitten.take: текст изменён
+  манифест ru: agata:O2.porch_step.mitten: текст изменён
+  манифест ru: agata:O2.tree.look: текст изменён
+  манифест ru: agata:O2.window_other.look: текст изменён
+  манифест ru: agata:O3.clock.look_common: текст изменён
+  манифест ru: agata:O3.clock.watch: текст изменён
+  манифест ru: agata:O3.nina.ribbon_again: текст изменён
+  манифест ru: agata:O3.nina_letters.again: текст изменён
+  манифест ru: agata:O3.nina_letters.look: текст изменён
+  манифест ru: agata:O3.nina_letters.use: текст изменён
+  манифест ru: agata:O3.notches.look: текст изменён
+  манифест ru: agata:O3.notebooks.again: текст изменён
+  манифест ru: agata:O3.notebooks.look: текст изменён
+  манифест ru: agata:O3.notebooks.use: текст изменён
+  манифест ru: agata:O3.village_list.again: текст изменён
+  манифест ru: agata:O3.village_list.look: текст изменён
+  манифест ru: agata:O3.village_list.use: текст изменён
+  манифест ru: agata:O4.ilya_house.look: текст изменён
+  манифест ru: agata:O4.nina_house.look: текст изменён
+  манифест ru: agata:O4.river.look: текст изменён
+  манифест ru: agata:O4q.ulyana.say_help: нет в текстах
+  манифест ru: agata:O4q.ulyana.say_tracing: нет в текстах
+  манифест ru: agata:R1.exit_R2.closed: текст изменён
+  манифест ru: agata:R1.exit_R2.closed_first: текст изменён
+  манифест ru: agata:R1.exit_Z2.closed: текст изменён
   манифест ru: agata:R1d.pelageya.at_turn: текст изменён
+  манифест ru: agata:R3.exit_R4.unbuilt: текст изменён
+  манифест ru: agata:S1.street_sign.use: текст изменён
+  манифест ru: agata:Z1.exit_Z4.closed: текст изменён
+  манифест ru: agata:Z2.exit_H1.closed: текст изменён
+  манифест ru: agata:Z2.exit_M1.closed: текст изменён
+  манифест ru: agata:Z2.exit_R1.closed: текст изменён
+  манифест ru: agata:Z2.exit_Z3.closed: текст изменён
+  манифест ru: agata:Z3d.plate_dry.no_skoba: текст изменён
+  манифест ru: agata:Z3d.plate_dry.use_skoba: текст изменён
+  манифест ru: agata:examine.bell_clapper: текст изменён
+  манифест ru: agata:examine.brace_plate: текст изменён
+  манифест ru: agata:examine.chalk: текст изменён
+  манифест ru: agata:examine.clamp: текст изменён
+  манифест ru: agata:examine.door_hinges: текст изменён
+  манифест ru: agata:examine.drawing_ilya: текст изменён
+  манифест ru: agata:examine.journal_manager: текст изменён
+  манифест ru: agata:examine.key_house: текст изменён
   манифест ru: agata:examine.key_sluice: текст изменён
+  манифест ru: agata:examine.mirror_mill: текст изменён
+  манифест ru: agata:examine.mitten: текст изменён
+  манифест ru: agata:examine.photo_bridge: текст изменён
+  манифест ru: agata:examine.plan_crossing: текст изменён
+  манифест ru: agata:examine.pocket_watch: текст изменён
+  манифест ru: agata:examine.school_ribbon: текст изменён
+  манифест ru: agata:item.bell_clapper.wrong: текст изменён
+  манифест ru: agata:item.brace_plate.wrong: текст изменён
+  манифест ru: agata:item.chalk.wrong: текст изменён
   манифест ru: agata:item.clamp.wrong: текст изменён
+  манифест ru: agata:item.door_hinges.wrong: текст изменён
+  манифест ru: agata:item.key_house: текст изменён
+  манифест ru: agata:item.key_house.wrong: текст изменён
   манифест ru: agata:item.key_sluice.wrong: текст изменён
-  манифест ru: item.key_sluice: текст изменён
+  манифест ru: agata:item.letter_tamara: текст изменён
+  манифест ru: agata:item.mirror_mill.wrong: текст изменён
+  манифест ru: agata:item.mitten: текст изменён
+  манифест ru: agata:item.mitten.wrong: текст изменён
+  манифест ru: agata:item.pocket_watch: текст изменён
+  манифест ru: agata:mech.nina_mirror.watch_hint: текст изменён
+  манифест ru: agata:mech.nina_mirror.watch_slot_empty: текст изменён
+  манифест ru: agata:mech.nina_mirror.wrong_item: текст изменён
+  манифест ru: agata:mech.office_mirror.wedge_slipped: текст изменён
+  манифест ru: agata:mech.plate.brace_jumped: текст изменён
+  манифест ru: agata:mech.shutter.dropped: текст изменён
+  манифест ru: agata:mech.shutter.stuck: текст изменён
+  манифест ru: ilya:E5.windlass.bump: текст изменён
+  манифест ru: ilya:O3.ilya.after: текст изменён
+  манифест ru: ilya:O3.ilya.boat_drawing: текст изменён
+  манифест ru: ilya:O4q.workshop.ilya_third: текст изменён
+  манифест ru: ilya:mech.bench.checked: текст изменён
+  манифест ru: ilya:mech.bench.fitted: текст изменён
+  манифест ru: ilya:mech.bench.screw_slipped: нет в текстах
+  манифест ru: ilya:mech.bench.tightened: текст изменён
+  манифест ru: ilya:mech.bench.wedge_loose: текст изменён
+  манифест ru: ilya_wife:O3.ilya_wife.after: текст изменён
+  манифест ru: item.brace_plate: текст изменён
+  манифест ru: item.chalk: текст изменён
+  манифест ru: item.clamp: текст изменён
+  манифест ru: item.door_hinges: текст изменён
+  манифест ru: item.drawing_ilya: текст изменён
+  манифест ru: item.journal_manager: текст изменён
+  манифест ru: item.key_house: текст изменён
+  манифест ru: item.letter_tamara: текст изменён
+  манифест ru: item.mirror_mill: текст изменён
+  манифест ru: item.mitten: текст изменён
+  манифест ru: item.photo_bridge: текст изменён
+  манифест ru: item.plan_crossing: текст изменён
+  манифест ru: item.pocket_watch: текст изменён
+  манифест ru: item.school_ribbon: текст изменён
+  манифест ru: mech.nina_mirror.watch_hold: текст изменён
+  манифест ru: mech.office_mirror.wedges_hint: текст изменён
+  манифест ru: mech.village_map.slipped: нет в текстах
+  манифест ru: mitya:O4.mitya.after: текст изменён
+  манифест ru: mitya:O4.mitya_board.use: текст изменён
+  манифест ru: mitya:O4q.workshop.mitya_cramped: текст изменён
+  манифест ru: mitya:R3.mitya.after: текст изменён
+  манифест ru: mitya:mech.bench.stopped: текст изменён
+  манифест ru: nina:H1d.nina.after: текст изменён
+  манифест ru: nina:O1d.nina.after: текст изменён
+  манифест ru: nina:O3.nina.after: текст изменён
+  манифест ru: nina:O3.nina.before: текст изменён
+  манифест ru: pavel:M1.pavel.after: текст изменён
+  манифест ru: pavel:M1.pavel.before_agree: текст изменён
+  манифест ru: pavel:M1.pavel.day1: текст изменён
+  манифест ru: pavel:M2.mirror.take: текст изменён
+  манифест ru: pavel:M2.pavel.after: текст изменён
+  манифест ru: pavel:M2.pavel.after_lifted: текст изменён
+  манифест ru: pavel:M2.pavel.at_mirror: текст изменён
   манифест ru: pavel:M3.pavel.before: текст изменён
+  манифест ru: pavel:M4.pavel.after: текст изменён
   манифест ru: pavel:M4.pavel.before: текст изменён
+  манифест ru: pavel:M4.sluice.wait: текст изменён
+  манифест ru: pavel:M4d.pavel.after_bridge: текст изменён
+  манифест ru: pavel:mech.sluice.slipped: текст изменён
+  манифест ru: pelageya:R1.pelageya.after: текст изменён
+  манифест ru: pelageya:R1.pelageya.boats: текст изменён
+  манифест ru: pelageya:R1.pelageya.manager: текст изменён
+  манифест ru: pelageya:R1.pelageya.marsh: текст изменён
   манифест ru: pelageya:R1.pelageya.sluice: текст изменён
-  only_changed: к работе 73 из 612 реплик/фраз запроса
-  задание: Директор: полная озвучка (23.10); партия G — записать один раз после неё (координатор), 2026-10-23 — строки партии G: изменённые, новые и отложенные (потолок 120 файлов, 9000 символов)
-[G] реплик в сценах запроса: 612; файлов с вариантами голосов: 73; к синтезу: 73 (4981 символов); переобработка: 0
-  M02_1   pelageya  ru           PELAGEYA   eleven_v4    [firm] Не довезу. Год пробую.
-  M03_8   tikhon    ru           CAT-2      eleven_v4    [grumbling] Раз печь топится — повесь мне полку. Вон, у лежанки стои́т. С полки и печь видно, и кастрюлю.
-  M03_9   agata     ru           Agata      eleven_v4    [playful] А сам?
-  M03_10  tikhon    ru           CAT-2      eleven_v4    [sarcastic] Лапами вешать — не моё. Моё — лежать сверху.
-  M07_3   agata     ru           Agata      eleven_v4    Воду держит мельничный затвор, рычаг затвора — в конторе управляющего. Когда закрепишь — три огня с причала».
-  M09_1   agata     ru           Agata      eleven_v4    Мне нужен рычаг затвора. Он в конторе?
-  M09_2   pavel     ru           Павел      eleven_v4    На гвозде, где управляющий оставил. Вечером перед паводком он затвор на ночь запер, рычаг повесил, контору запер снаружи — и домой, в Ольховку. А ночью пришла вода.
-  M09_7   pavel     ru           Павел      eleven_v4    Пелагея просила воду спустить — а рычаг там. Затвор год закрыт: вода стои́т выше, чем при управляющем. Без рычага ломать не стану.
-  M09b_2  agata     ru           Agata      eleven_v4    Стойка у тёти тяжёлая, к полу прибита — сюда её не притащишь. Смотреть придётся из мастерской.
-  M09b_5  pavel     ru           Павел      eleven_v4    Зеркало в сеня́х стои́т: летом сняли — Дуне в починку, да так и простояло. Забирай, раз такое дело. Иди за мной.
-  M14_1   pavel     ru           Павел      eleven_v4    Лодкой туда не переплыть — вернёт: дороги нет. Посадишь канат на кольцо — будет дорога, и лодка по ней пойдёт. Ступай пока.
-  M15s_0  agata     ru           Agata      eleven_v4    Села. Тётина скоба́ — на своём месте.
-  M15s_1  pelageya  ru           PELAGEYA   eleven_v4    Добро. Теперь канат: сниму со своего сто́пора — и лодкой к опоре. На кольцо его с воды заводят.
-  M15s_2  narrator  ru           ZAKADR     eleven_v4    Пелагея уходит на свой причал и снимает канат со сто́пора. Лодка подходит к опоре, Пелагея подаёт конец каната к кольцу плиты́.
-  M16_0   pelageya  ru           PELAGEYA   eleven_v4    Отвечают. Первые огни за год.
-  M17_0   pelageya  ru           PELAGEYA   eleven_v4    Проверю по-лодочному: подгоню лодку к канату, кольцо — на канат, пущу пустую, бечеву́ держу.
-  M18p_3  pelageya  ru           PELAGEYA   eleven_v4    Не лодка нас везёт — канат. Его с того конца держат.
-  M18_7   narrator  ru           ZAKADR     eleven_v4    Пелагея не сразу отпускает Митин рукав. Митя поднимает фонарь и идёт к улице, Агата — следом за светом. Пелагея остаётся у лодки.
-  M22_13  ulyana    ru           ЛУНЯ       eleven_v4    А шарф ей кто намотал? Я рядом написала — вон, видишь? Теперь ей тепло.
-  M22_14_then0 ulyana    ru           ЛУНЯ       eleven_v4    А лодку с дымом кто нарисовал? Так только папа рисует!
-  M22_14_then1 agata     ru           Agata      eleven_v4    Это я у твоего папы подсмотрела. Давно.
-  M22_14_then2 ulyana    ru           ЛУНЯ       eleven_v4    А мостик кто нарисовал? Я спросила — вон, видишь: а мост правда будет?
-  M22_14_then3 agata     ru           Agata      eleven_v4    Будет, Уля. Для того и рисовала.
-  M22_14  agata     ru           Agata      eleven_v4    Шарф — тоже я. У вас ведь зима.
-  M23b_2  pavel     ru           Павел      eleven_v4    Год рычаг на гвозде висел. Как вы сказали.
-  agata:R1.exit_R2.closed agata     ru           Agata      eleven_v4    Лодку вернёт сюда же: дороги нет, пока канат не сидит на кольце плиты́.
-  agata:R1.exit_R2.closed_first agata     ru           Agata      eleven_v4    Сначала поговорю с лодочницей.
-  H1.stove.look_settled narrator  ru           ZAKADR     eleven_v4    Печь топится ровно, лежанка сухая. Тихон устроился — теперь его до утра не сдвинешь.
-  H1.shelf.look narrator  ru           ZAKADR     eleven_v4    Снятая полка прислонена к лежанке. Для неё оставлены крепления в двух местах.
-  H1.shelf.look_wet narrator  ru           ZAKADR     eleven_v4    Снятая полка прислонена к лежанке. А на лежанке мокрый платок — ни сесть, ни лечь.
-  agata:H1.shelf.not_yet agata     ru           Agata      eleven_v4    Полку — потом. Сперва печь затопить: в избе холодно и сыро.
-  agata:H1.shelf.not_yet_dark agata     ru           Agata      eleven_v4    Полку в темноте вешать? Сначала ставню.
-  agata:H1.exit_H2.dark agata     ru           Agata      eleven_v4    В мастерской темно хоть глаз выколи. Сначала ставню — пусть в доме будет свет.
-  agata:H1.exit_H3.dark agata     ru           Agata      eleven_v4    В галерее ни зги не видно. Открою ставню — тогда пойду.
-  agata:H1.exit_H4.dark agata     ru           Agata      eleven_v4    На чердак впотьмах не полезу. Сначала ставню.
-  agata:H3.side_door.unbolt agata     ru           Agata      eleven_v4    Боковая дверь галереи заперта изнутри на засов. Отодвину — в дом можно будет войти и из переулка.
-  agata:O1.bird_drawing.prompt agata     ru           Agata      eleven_v4    [softly] Шапку этой синице нарисовала я. А сапоги ей кто-то добавил после. Что пририсовать теперь?
-  agata:O1.bird_drawing.react_scarf agata     ru           Agata      eleven_v4    Шарф в полоску. Пусть ей будет тепло.
-  agata:O1.bird_drawing.react_boat agata     ru           Agata      eleven_v4    Лодка с трубой и дымом. Илюша бы узнал.
-  agata:O1.bird_drawing.react_bridge agata     ru           Agata      eleven_v4    Мостик на опорах. Пусть хоть нарисованный будет.
-  O1.bird_drawing.look narrator  ru           ZAKADR     eleven_v4    На полях учебного плаката — синица в шапке и сапогах.
-  pelageya:R1.pelageya.sluice pelageya  ru           PELAGEYA   eleven_v4    Воду держит мельничный затвор. Просила Павла спустить — а рычаг от затвора в конторе, и контору завалило. Павел знает больше.
-  agata:M1.exit_M2.closed agata     ru           Agata      eleven_v4    Сени — хозяйство Павла. Без хозяина не пойду. Завтра.
-  agata:M1.exit_M4.closed agata     ru           Agata      eleven_v4    К затвору без Павла не полезу. Завтра.
-  pavel:M2.mirror.take pavel     ru           Павел      eleven_v4    Бери. Стекло целое, только углы расходятся.
-  pavel:M2.pavel.at_mirror pavel     ru           Павел      eleven_v4    Вон оно, у стены. Забирай.
-  pavel:M2.pavel.after_lifted pavel     ru           Павел      eleven_v4    Заходи. Я следом.
-  M3.key_nail.use narrator  ru           ZAKADR     eleven_v4    Рычаг затвора висит на гвозде, где его оставил управляющий. Теперь он в сумке.
-  M3.key_nail.look narrator  ru           ZAKADR     eleven_v4    Железный рычаг с резной рукоятью — на гвозде. Во втулке квадратное гнездо.
-  M3.journal.use narrator  ru           ZAKADR     eleven_v4    Последняя запись рукой управляющего: «Затвор на ночь закрыт. Рычаг на гвозде. Ушёл домой». Число — год назад. Рядом правило: «Спускать пруд по зарубке и ждать, иначе берега́ поплывут». И рабочая отметка воды для помола.
-  M3.clamp.look narrator  ru           ZAKADR     eleven_v4    Исправная струбцина на столе управляющего.
-  pavel:M3.pavel.before pavel     ru           Павел      eleven_v4    Бери, что надо: рычаг затвора на гвозде, журнал на столе. И струбцину со стола прихвати — Дуня свою сломала, раму стянуть у меня просила.
-  M4.gate.key narrator  ru           ZAKADR     eleven_v4    Рычаг встаёт в гнездо во́рота. Теперь во́рот ходит — по зарубке.
-  M4.gate.locked narrator  ru           ZAKADR     eleven_v4    Во́рот не повернуть без рычага, а рычаг затвора — в конторе.
-  pavel:M4.pavel.before pavel     ru           Павел      eleven_v4    Рычаг в во́рот — и по зарубке. Как в журнале.
-  pavel:M4.pavel.after pavel     ru           Павел      eleven_v4    Вода идёт. Дальше — ждать. Ступай.
-  pelageya:R2.exit_R1.closed pelageya  ru           PELAGEYA   eleven_v4    Назад не поверну. Раз держат — идём к ним.
-  pelageya:R3.pelageya.after pelageya  ru           PELAGEYA   eleven_v4    Ступай. Я тут, у лодки.
-  agata:R1d.pelageya.at_turn agata     ru           Agata      eleven_v4    Пелагеи на причале нет. Она у поворота, у опоры: ждёт, пока я поставлю скобу́.
-  item.key_sluice narrator  ru           ZAKADR     eleven_v4    Рычаг затвора, с гвоздя в конторе.
-  agata:item.key_sluice.wrong agata     ru           Agata      eleven_v4    Рычаг затвора — к во́роту, у затвора на мельнице.
-  agata:item.clamp.wrong agata     ru           Agata      eleven_v4    Струбцина — для маминой рамы, в мастерской.
-  pelageya:R1d.pelageya.wait_water pelageya  ru           PELAGEYA   eleven_v4    Вода пошла. Как плита выйдет — сниму канат со сто́пора и лодкой довезу к опоре. На кольцо его с воды заводят.
-  pelageya:R1d.pelageya.to_boat pelageya  ru           PELAGEYA   eleven_v4    Садись. Кольцо на канате — пора.
-  R1.stopper.look_empty narrator  ru           ZAKADR     eleven_v4    Сто́пор Пелагеи пустой: канат она сняла и повезла к опоре у поворота.
-  R1.stopper.look_ring narrator  ru           ZAKADR     eleven_v4    Сто́пор пустой. Канат теперь сидит на кольце плиты́ у поворота — вон он, над водой, тянется к тому берегу. Его держат оттуда.
-  pelageya:R3.exit_R2.closed pelageya  ru           PELAGEYA   eleven_v4    Сейчас — к матери. Назад повезу завтра.
-  S1.street_sign.look_moved narrator  ru           ZAKADR     eleven_v4    Светлый след на заборе и гвозди. Вывеска «Ольховая улица» теперь висит в классе.
-  O1d.class_sign.look narrator  ru           ZAKADR     eleven_v4    Вывеска с нижней улицы — теперь в классе, слева от доски́. По ней учатся читать.
-  agata:examine.key_sluice agata     ru           Agata      eleven_v4    Рычаг затвора: железный стержень, резная рукоять, во втулке квадратное гнездо — под во́рот. Висел на гвозде, где его оставил управляющий.
-  mech.office_mirror.wedges_hint narrator  ru           ZAKADR     eleven_v4    По три точных удара в каждый клин.
-  agata:mech.office_mirror.wedge_slipped agata     ru           Agata      eleven_v4    Выскочил. Ровнее — и с начала.
-  pavel:mech.sluice.slipped pavel     ru           Павел      eleven_v4    Сорвался. Вода назад пошла — с первой зарубки, ровнее.
-  квота: осталось 86237 из 124889, запас 12488, к синтезу ≤ 4981 кредитов (оценка сверху)
-  M02_1              синтез: 2.32 с, -17.0 LUFS, TP -4.4 dB (усиление -1.7 dB)
-  M03_8              синтез: 7.93 с, -17.0 LUFS, TP -3.3 dB (усиление +0.0 dB)
-  M03_9              синтез: 0.83 с, -17.0 LUFS, TP -6.8 dB (усиление +1.3 dB)
-  M03_10             синтез: 4.54 с, -17.0 LUFS, TP -4.9 dB (усиление -2.4 dB)
-  M07_3              синтез: 8.00 с, -16.9 LUFS, TP -3.4 dB (усиление -2.1 dB)
-  M09_1              синтез: 2.91 с, -17.0 LUFS, TP -6.8 dB (усиление -1.0 dB)
-  M09_2              синтез: 13.70 с, -17.0 LUFS, TP -5.7 dB (усиление -2.9 dB)
-  M09_7              синтез: 10.21 с, -17.0 LUFS, TP -6.1 dB (усиление -3.7 dB)
-  M09b_2             синтез: 6.66 с, -16.9 LUFS, TP -4.5 dB (усиление +1.2 dB)
-  M09b_5             синтез: 9.22 с, -17.0 LUFS, TP -5.7 dB (усиление -1.8 dB)
-  M14_1              синтез: 9.58 с, -17.0 LUFS, TP -6.1 dB (усиление -2.7 dB)
-  M15s_0             синтез: 3.45 с, -16.8 LUFS, TP -3.1 dB (усиление -1.4 dB)
-  M15s_1             синтез: 7.58 с, -17.0 LUFS, TP -4.6 dB (усиление -1.2 dB)
-  M15s_2             синтез: 9.41 с, -17.0 LUFS, TP -4.9 dB (усиление -2.8 dB)
-  M16_0              синтез: 2.95 с, -17.0 LUFS, TP -5.9 dB (усиление -2.4 dB)
-  M17_0              синтез: 7.27 с, -17.0 LUFS, TP -4.6 dB (усиление -0.8 dB)
-  M18p_3             синтез: 4.37 с, -17.0 LUFS, TP -5.5 dB (усиление -2.0 dB)
-  M18_7              синтез: 10.66 с, -17.0 LUFS, TP -4.6 dB (усиление -2.3 dB)
-  M22_13             синтез: 5.76 с, -17.3 LUFS, TP -1.9 dB (усиление +2.4 dB)
-  M22_14_then0       синтез: 4.23 с, -17.3 LUFS, TP -1.8 dB (усиление +1.8 dB)
-  M22_14_then1       синтез: 3.02 с, -17.0 LUFS, TP -2.8 dB (усиление -0.8 dB)
-  M22_14_then2       синтез: 5.78 с, -17.2 LUFS, TP -1.8 dB (усиление +3.9 dB)
-  M22_14_then3       синтез: 2.68 с, -16.9 LUFS, TP -3.4 dB (усиление -0.6 dB)
-  M22_14             синтез: 3.03 с, -16.9 LUFS, TP -3.5 dB (усиление +0.6 dB)
-  M23b_2             синтез: 3.26 с, -17.0 LUFS, TP -5.4 dB (усиление -2.2 dB)
-  agata:R1.exit_R2.closed синтез: 4.98 с, -16.9 LUFS, TP -3.7 dB (усиление -1.0 dB)
-  agata:R1.exit_R2.closed_first синтез: 2.20 с, -17.0 LUFS, TP -5.0 dB (усиление -1.0 dB)
-  H1.stove.look_settled синтез: 6.78 с, -17.0 LUFS, TP -5.2 dB (усиление -2.9 dB)
-  H1.shelf.look      синтез: 5.66 с, -17.0 LUFS, TP -5.5 dB (усиление -3.4 dB)
-  H1.shelf.look_wet  синтез: 6.74 с, -17.0 LUFS, TP -4.1 dB (усиление -1.9 dB)
-  agata:H1.shelf.not_yet синтез: 4.67 с, -17.3 LUFS, TP -1.7 dB (усиление +1.1 dB)
-  agata:H1.shelf.not_yet_dark синтез: 2.94 с, -17.0 LUFS, TP -4.1 dB (усиление -2.0 dB)
-  agata:H1.exit_H2.dark синтез: 5.92 с, -17.0 LUFS, TP -1.9 dB (усиление -0.6 dB)
-  agata:H1.exit_H3.dark синтез: 4.21 с, -16.9 LUFS, TP -4.6 dB (усиление -2.2 dB)
-  agata:H1.exit_H4.dark синтез: 3.39 с, -17.0 LUFS, TP -3.5 dB (усиление -0.8 dB)
-  agata:H3.side_door.unbolt синтез: 6.87 с, -17.0 LUFS, TP -4.0 dB (усиление -0.5 dB)
-  agata:O1.bird_drawing.prompt синтез: 6.74 с, -17.0 LUFS, TP -2.4 dB (усиление +7.3 dB)
-  agata:O1.bird_drawing.react_scarf синтез: 2.90 с, -16.9 LUFS, TP -2.0 dB (усиление +0.6 dB)
-  agata:O1.bird_drawing.react_boat синтез: 3.52 с, -17.0 LUFS, TP -2.1 dB (усиление +2.2 dB)
-  agata:O1.bird_drawing.react_bridge синтез: 3.22 с, -16.9 LUFS, TP -5.6 dB (усиление -1.1 dB)
-  O1.bird_drawing.look синтез: 4.66 с, -16.9 LUFS, TP -4.6 dB (усиление -2.5 dB)
-  pelageya:R1.pelageya.sluice синтез: 9.25 с, -17.0 LUFS, TP -4.1 dB (усиление -1.0 dB)
-  agata:M1.exit_M2.closed синтез: 4.59 с, -16.9 LUFS, TP -3.7 dB (усиление -1.3 dB)
-  agata:M1.exit_M4.closed синтез: 2.98 с, -17.0 LUFS, TP -3.4 dB (усиление +0.0 dB)
-  pavel:M2.mirror.take синтез: 4.00 с, -16.9 LUFS, TP -7.4 dB (усиление -3.2 dB)
-  pavel:M2.pavel.at_mirror синтез: 2.46 с, -17.0 LUFS, TP -4.6 dB (усиление -1.8 dB)
-  pavel:M2.pavel.after_lifted синтез: 1.87 с, -16.9 LUFS, TP -4.6 dB (усиление -1.2 dB)
-  M3.key_nail.use    синтез: 6.02 с, -17.0 LUFS, TP -3.8 dB (усиление -1.6 dB)
-  M3.key_nail.look   синтез: 5.93 с, -17.0 LUFS, TP -4.7 dB (усиление -3.5 dB)
-  M3.journal.use     синтез: 17.75 с, -17.0 LUFS, TP -4.8 dB (усиление -2.6 dB)
-  M3.clamp.look      синтез: 3.02 с, -17.0 LUFS, TP -6.6 dB (усиление -3.9 dB)
-  pavel:M3.pavel.before синтез: 9.70 с, -17.0 LUFS, TP -5.9 dB (усиление -2.0 dB)
-  M4.gate.key        синтез: 5.23 с, -17.0 LUFS, TP -6.1 dB (усиление -3.6 dB)
-  M4.gate.locked     синтез: 4.61 с, -17.0 LUFS, TP -5.4 dB (усиление -3.3 dB)
-  pavel:M4.pavel.before синтез: 3.70 с, -17.0 LUFS, TP -6.7 dB (усиление -3.9 dB)
-  pavel:M4.pavel.after синтез: 3.77 с, -17.2 LUFS, TP -6.1 dB (усиление -2.8 dB)
-  pelageya:R2.exit_R1.closed синтез: 3.47 с, -17.2 LUFS, TP -6.2 dB (усиление -3.0 dB)
-  pelageya:R3.pelageya.after синтез: 2.41 с, -16.9 LUFS, TP -3.7 dB (усиление -0.3 dB)
-  agata:R1d.pelageya.at_turn синтез: 6.24 с, -16.9 LUFS, TP -2.7 dB (усиление -0.5 dB)
-  item.key_sluice    синтез: 2.82 с, -17.0 LUFS, TP -4.0 dB (усиление -2.5 dB)
-  agata:item.key_sluice.wrong синтез: 3.92 с, -17.0 LUFS, TP -3.7 dB (усиление -0.7 dB)
-  agata:item.clamp.wrong синтез: 3.28 с, -17.1 LUFS, TP -6.2 dB (усиление -0.9 dB)
-  pelageya:R1d.pelageya.wait_water синтез: 7.86 с, -16.9 LUFS, TP -3.3 dB (усиление -1.0 dB)
-  pelageya:R1d.pelageya.to_boat синтез: 2.97 с, -17.0 LUFS, TP -5.5 dB (усиление -1.0 dB)
-  R1.stopper.look_empty синтез: 5.46 с, -17.0 LUFS, TP -5.9 dB (усиление -3.6 dB)
-  R1.stopper.look_ring синтез: 9.74 с, -17.0 LUFS, TP -4.0 dB (усиление -2.1 dB)
-  pelageya:R3.exit_R2.closed синтез: 3.31 с, -17.0 LUFS, TP -5.1 dB (усиление -0.6 dB)
-  S1.street_sign.look_moved синтез: 6.81 с, -17.0 LUFS, TP -5.1 dB (усиление -2.5 dB)
-  O1d.class_sign.look синтез: 6.65 с, -17.0 LUFS, TP -4.1 dB (усиление -2.1 dB)
-  agata:examine.key_sluice синтез: 10.09 с, -17.0 LUFS, TP -2.8 dB (усиление -0.5 dB)
-  mech.office_mirror.wedges_hint синтез: 2.64 с, -17.0 LUFS, TP -5.7 dB (усиление -4.0 dB)
-  agata:mech.office_mirror.wedge_slipped синтез: 2.94 с, -17.0 LUFS, TP -3.9 dB (усиление -2.5 dB)
-  pavel:mech.sluice.slipped синтез: 4.72 с, -17.0 LUFS, TP -6.6 dB (усиление -3.7 dB)
-  убраны устаревшие записи (3): O1.bird_drawing.prompt (текст изменён), R1.exit_R2.closed (текст изменён), agata:O1.teacher_drawer.before_traces (нет в текстах)
-[G] синтезировано 73, переобработано 0, ошибок 0; символов текста 4981; списано кредитов (character-cost): 2186, изменение счётчика подписки: 1019
-  предупреждение: agata:item.letter_tamara: OGG Vorbis q5 < q7 из cast.json — переобработка из src без кредитов ("reprocess": true)
-validate_voice: манифесты: ru 634 (634 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, Q01, Q02, Q03, Q04, Q06, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 41; закадровых фраз по правилам voice.json: 538 (с тегами 22), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_Q02_Q06, ru_bag, ru_mechanics
-[voice] validate_voice.py: OK (0 ошибок, 1 предупреждений, strict; самопроверка 22/22)
+  манифест ru: pelageya:R1d.lantern.count_wrong: текст изменён
+  манифест ru: pelageya:R1d.pelageya.day2: текст изменён
+  манифест ru: pelageya:R1d.pelageya.lantern: текст изменён
+  манифест ru: pelageya:R1d.pelageya.shuttle: текст изменён
+  манифест ru: pelageya:R1d.pelageya.to_boat: текст изменён
+  манифест ru: pelageya:R1d.pelageya.wait_water: текст изменён
+  манифест ru: pelageya:R2.exit_R1.closed: текст изменён
+  манифест ru: pelageya:R3.exit_R2.closed: текст изменён
+  манифест ru: pelageya:R3.pelageya.after: текст изменён
+  манифест ru: pelageya:Z3d.pelageya.knot: текст изменён
+  манифест ru: pelageya:Z3d.pelageya.wait_skoba: текст изменён
+  манифест ru: pelageya:Z3d.plate.knot_wrong: текст изменён
+  манифест ru: tamara:O4.letters_bag.use: текст изменён
+  манифест ru: tamara:O4.tamara.after: текст изменён
+  манифест ru: tamara:Z1.tamara.after: текст изменён
+  манифест ru: tamara:Z1.tamara.late: текст изменён
+  манифест ru: tamara:Z1.tamara.school: текст изменён
+  манифест ru: tamara:Z1.tamara.sheet: текст изменён
+  манифест ru: tikhon:H1.tikhon.bell: текст изменён
+  манифест ru: tikhon:H1.tikhon.bundle: текст изменён
+  манифест ru: tikhon:H1.tikhon.door: текст изменён
+  манифест ru: tikhon:H1.tikhon.leave: текст изменён
+  манифест ru: tikhon:H1.v01.done: текст изменён
+  манифест ru: ulyana:O1d.ulyana.after: текст изменён
+  манифест ru: ulyana:O1q.village_map.ulyana_runs: нет в текстах
+  манифест ru: ulyana:O3.ulyana.after: текст изменён
+  манифест ru: ulyana:O4q.ulyana.again: нет в текстах
+  манифест ru: ulyana:O4q.ulyana.say_garden: нет в текстах
+  манифест ru: ulyana:O4q.ulyana.say_map: нет в текстах
+  only_changed: к работе 255 из 270 реплик/фраз запроса
+  задание: Директор 24.10, 14:34: записать сразу после H59 (символов хватает), 2026-10-24 — финальная перезапись после старорусской правки H59: изменённые, новые и ждущие строки (voice_after_H59.json) (потолок 700 файлов, 60000 символов)
+[H59a] реплик в сценах запроса: 270; файлов с вариантами голосов: 255; к синтезу: 255 (16743 символов); переобработка: 0
+  M01_0   tamara    ru           TAMARA-1   eleven_v4    [surprised] Агата? Ты ведь через меня домой письма слала.
+  M01_1   agata     ru           Agata      eleven_v4    [hesitant] Слала. Мама с Ильёй в Ольховке, я в городе, в гимназии. В учительницы готовлюсь, как мама.
+  M01_2   tamara    ru           TAMARA-1   eleven_v4    [concerned] Год тому паводком мост снесло. С той поры до Ольховки не добраться.
+  M01_3   tamara    ru           TAMARA-1   eleven_v4    Этой осенью вода спала, у поворота мостовая опора показалась. Вот, я набросала. А старый лист оставила твоя тётя Дуня — Евдокия, мамина сестра.
+  M01_4   tamara    ru           TAMARA-1   eleven_v4    [animated] Я сразу тебе написала: не приезжай пока, лодки назад выносит. Обещала весточку дать, если переменится что. Вот и переменилось.
+  M01_5   tamara    ru           TAMARA-1   eleven_v4    [sighs] За год письма в Ольховку. Отнести некому. И твои к маме тут.
+  M01_6   agata     ru           Agata      eleven_v4    [hesitant] От Дуни ничего?
+  M01_7   tamara    ru           TAMARA-1   eleven_v4    [warmly] Дуня в тот день к сестре пошла, там и осталась. Ключ от её дома я держу, как давно условились. Тихона её весь год кормила. Бери.
+  M01_8   agata     ru           Agata      eleven_v4    Сперва её записи гляну.
+  M02_0   agata     ru           Agata      eleven_v4    [hesitant] В Ольховку мне надо. Перевезёте?
+  M02_1   pelageya  ru           PELAGEYA   eleven_v4    [firm] Не перевезу. Год уж пробую.
+  M02_2   pelageya  ru           PELAGEYA   eleven_v4    [firm] На тот берег гребу, а всё к своему причалу выхожу.
+  M02_3   pelageya  ru           PELAGEYA   eleven_v4    [firm] Зимой по льду пробовали, к своему же берегу вышли. Не в воде дело. Нет дороги.
+  M02_5   pelageya  ru           PELAGEYA   eleven_v4    Мостовой поручень. Больше от моста ничего не осталось. Дальний конец всё там, у них. Этот на плите опоры был закреплён — дорога по нему шла. К своему сто́пору привязала: держит, да дороги нет.
+  M02_6   pelageya  ru           PELAGEYA   eleven_v4    Вот сто́пор — кол с замко́м.
+  M02_7   pelageya  ru           PELAGEYA   eleven_v4    Тянешь, будто за корягу зацепился: ни рывка, ни слабины. А плита глубоко, под водой. Ещё и треснула, Дуня чинить хотела. Под водой к ней не подступиться.
+  M02_8   pelageya  ru           PELAGEYA   eleven_v4    [sad] Мой Митя там. Семнадцать ему. Он фонарь на той опоре по вечерам зажигал, в сарайчике ночевал. Там и остался.
+  M03_0   tikhon    ru           CAT-2      eleven_v4    [grumbling] Мокрое на сухое не клади.
+  M03_1   agata     ru           Agata      eleven_v4    [curious] Один ты здесь?
+  M03_2   tikhon    ru           CAT-2      eleven_v4    [sarcastic] И печь тут, вестимо.
+  M03_3   agata     ru           Agata      eleven_v4    [hesitant] А Дуня где?
+  M03_4   tikhon    ru           CAT-2      eleven_v4    К сестре пошла. Баяла — к вечеру.
+  M03_5   agata     ru           Agata      eleven_v4    [sad] Так год уже прошёл.
+  M03_7   tikhon    ru           CAT-2      eleven_v4    [grumbling] По средам Тамара приносит. Нынче среда?
+  M03_8   tikhon    ru           CAT-2      eleven_v4    [grumbling] Раз печь затопила, полку мне повесь. У лежанки вон стои́т. С неё и печь видно, и кастрюлю.
+  M03_10  tikhon    ru           CAT-2      eleven_v4    [sarcastic] Лапами вешать — не моё дело. Моё дело — сверху лежать.
+  M04_0   agata     ru           Agata      eleven_v4    [thoughtful] За неё доделаю.
+  M05_0   agata     ru           Agata      eleven_v4    [excited] Наша школа-то.
+  M06_0   agata     ru           Agata      eleven_v4    [curious] Здесь всё это время кто-то учился.
+  M07_0   agata     ru           Agata      eleven_v4    [warmly] Илюша всё лодки с дымом рисовал. Хоть от лодки какой дым?
+  M07_1   agata     ru           Agata      eleven_v4    [slowly] «Тому, кто через эту дверь придёт. Дорогу с двух концов держат. Дальний держим мы. Ближний — плита на опоре у поворота: под водой она, с трещиной. Скоба́ для неё у Дуни на верстаке.
+  M07_2   agata     ru           Agata      eleven_v4    Канат только за её кольцо крепить — за камень опоры не держит, мы со своей стороны пробовали. Наш конец в старое кольцо дальней опоры заведён.
+  M07_3   agata     ru           Agata      eleven_v4    Воду мельничный затвор держит, рычаг от него — в конторе управляющего. Закрепишь — дай три огня с причала».
+  M07_4   agata     ru           Agata      eleven_v4    [thoughtful] Дверь на родных петлях свой проём вспомнила. Значит, и канат на своём кольце мост вспомнит.
+  M07_5   agata     ru           Agata      eleven_v4    [thoughtful] Канат — всё, что от моста осталось. На плиту ближний конец верну, и опять дорогу с двух концов держать будут. Тогда и лодка по канату дойдёт.
+  M07_6   agata     ru           Agata      eleven_v4    [excited] «Дальний держим мы». Значит, есть там кто-то. Тоже выход ищут.
+  M08_0   agata     ru           Agata      eleven_v4    До класса добралась. А до деревни ещё нет.
+  N01_0   agata     ru           Agata      eleven_v4    [sleepy] Поди, Илюша и теперь лодки с дымом рисует.
+  N01_1   agata     ru           Agata      eleven_v4    [thoughtful] А план взрослый переписывал, не раз. Кто-то дальний конец там держит. Трёх огней дожидается.
+  N01_2   tikhon    ru           CAT-2      eleven_v4    [grumbling] Спи уж. За печь я отвечаю.
+  N01_3   tikhon    ru           CAT-2      eleven_v4    [sleepy] Ты с утра в колокол не бей. Всю ночь печь караулил, отоспаться мне надо.
+  M09_0   pavel     ru           Павел      eleven_v4    Племянница Дунина? Хмуришься — похожа.
+  M09_1   agata     ru           Agata      eleven_v4    Рычаг от затвора мне нужен. В конторе он?
+  M09_2   pavel     ru           Павел      eleven_v4    На гвозде, управляющий там оставил. Вечером, перед паводком, затвор запер, рычаг повесил. Контору снаружи запер — и в Ольховку, домой. Ночью вода пришла.
+  M09_3   pavel     ru           Павел      eleven_v4    Ударом стеллаж с гирями на дверь повалило. Засов внутрь скоб и вбило. Замо́к в первую же неделю сбил — дверь не идёт. А стеллаж качнулся, чуть меня не задавил.
+  M09_4   pavel     ru           Павел      eleven_v4    Потянешь — стеллаж следом пойдёт. Через щель крюком засов не найдёшь. Не видно.
+  M09_5   agata     ru           Agata      eleven_v4    А после не пробовали?
+  M09_6   pavel     ru           Павел      eleven_v4    Одному стеллаж не поднять. А людей звать — контора чужая. Вернётся управляющий, спросит, кто ломал. Вот и ждал.
+  M09_7   pavel     ru           Павел      eleven_v4    Пелагея спустить просила, да рычаг там остался. Год затвор заперт. Вода выше стои́т, чем при управляющем. Ломать без рычага не буду.
+  M09s_0  agata     ru           Agata      eleven_v4    Конторское зеркало здесь. А у Дуни в мастерской стойка для него пустая стои́т. И колокол с мельницы там. Павлу рассказать надо.
+  M09b_0  agata     ru           Agata      eleven_v4    У Дуни в мастерской пустая стойка для конторского зеркала. И мельничный колокол. Записала она: на пробу ударила, Павел слышал.
+  M09b_1  pavel     ru           Павел      eleven_v4    Дуня у себя в колокол ударила, на пробу. А мне здесь слышно было. Думал, умом тронулся.
+  M09b_2  agata     ru           Agata      eleven_v4    Тяжёлая у Дуни стойка, к полу прибита. Сюда не донести. Из мастерской смотреть придётся.
+  M09b_3  pavel     ru           Павел      eleven_v4    Оттуда и звони. Дунин колокол здесь слышен.
+  M09b_4  pavel     ru           Павел      eleven_v4    Раз ударишь — к щели фонарь поднесу. Увидишь свет в зеркале, поведу крюк. А ты, как на мельнице, звони: раз — пускай, два — стой, долгий — подымай.
+  M09b_5  pavel     ru           Павел      eleven_v4    В сеня́х зеркало стои́т: летом сняли — Дуне в починку, да так и простояло. Забирай, коли так. За мной иди.
+  M10_0   tikhon    ru           CAT-2      eleven_v4    Снова Дунины выдумки. Едва задремал — сейчас трезвонить станут.
+  M11_0   agata     ru           Agata      eleven_v4    Сейчас. Прямо сейчас он там.
+  M12_0   agata     ru           Agata      eleven_v4    Вышел засов! Подалась дверь!
+  M13a_0  pavel     ru           Павел      eleven_v4    Слышал твой звон. Без него ещё год бы простоял.
+  M13_0   pavel     ru           Павел      eleven_v4    Ниже рабочей спущу — к зиме пруд не наберётся. А Заречью и зимой молоть надо.
+  M13_1_promise agata     ru           Agata      eleven_v4    Поднимем к зиме. Слово даю.
+  M13_2   pavel     ru           Павел      eleven_v4    Добро. К затвору пойдём.
+  M14_0   pavel     ru           Павел      eleven_v4    К вечеру вода сойдёт, покажется плита на опоре.
+  M14_1   pavel     ru           Павел      eleven_v4    Лодка туда не довезёт, назад вынесет: дороги нет. За кольцо канат закрепишь — дорога будет. По ней лодка и пойдёт. Пока ступай.
+  M15a_0  agata     ru           Agata      eleven_v4    У меня три минуты минуло, у неё целый час. Здесь минута — там двадцать.
+  M15a_1  agata     ru           Agata      eleven_v4    Я сплю, а у неё неделя проходит.
+  M15a_3  tikhon    ru           CAT-2      eleven_v4    [sad] Нина. [short pause] Совсем седая.
+  M15s_0  agata     ru           Agata      eleven_v4    Села. Дунина скоба́ на своём месте.
+  M15s_1  pelageya  ru           PELAGEYA   eleven_v4    Хорошо. Теперь канат со сто́пора сниму, лодкой к опоре свезу. Его на кольцо с воды заводят.
+  M15s_2  narrator  ru           ZAKADR     eleven_v4    На свой причал уходит Пелагея, со сто́пора канат снимает. Подводит лодку к опоре, подаёт канатный конец к кольцу плиты́.
+  M15_0   narrator  ru           ZAKADR     eleven_v4    Канат натянулся ровно. Не так, как целый год на стопоре держался. Будто за другой конец живой человек взялся.
+  M15_1   pelageya  ru           PELAGEYA   eleven_v4    Прежде он так и крепился.
+  M15_2   agata     ru           Agata      eleven_v4    Держат! На том конце держат. Снова дорогу с обоих концов держат.
+  M16s_0  narrator  ru           ZAKADR     eleven_v4    Впервые за год тот берег виден не чёрным силуэтом: белые крыши, берег снегом покрыт.
+  M16s_1  pelageya  ru           PELAGEYA   eleven_v4    Погляди. Весь год там черным-черно было. А теперь снег.
+  M16s_2  pelageya  ru           PELAGEYA   eleven_v4    Раз — пускай, два — стой, долгий — подымай. На пруду все так звонят, Павел тоже. А три не для работы. Три — «живые».
+  M16_0   pelageya  ru           PELAGEYA   eleven_v4    Есть ответ. Впервые за год огни.
+  M17_0   pelageya  ru           PELAGEYA   eleven_v4    Проверю, как на лодке полагается. К канату её подведу, кольцо надену. Пустую пущу, бечеву́ в руках оставлю.
+  M17_1   narrator  ru           ZAKADR     eleven_v4    По канату скользит кольцо, за ним пустая лодка в туман уходит. Целый год назад разворачивало, к родному причалу. Теперь идёт прямо. Дёрнулась бечева́.
+  M17_2   agata     ru           Agata      eleven_v4    Не поворачивает. По канату идёт.
+  M17_3   pelageya  ru           PELAGEYA   eleven_v4    Тянут. Вон, тянут!
+  M17_4   narrator  ru           ZAKADR     eleven_v4    Пелагея бечеву́ выбирает, лодку возвращает. На банке лента лежит.
+  M17_5   pelageya  ru           PELAGEYA   eleven_v4    Не вернуло её. Значит, держат там.
+  M17_6   agata     ru           Agata      eleven_v4    Мамина лента. На праздники она мне её в косу вплетала.
+  M17_7   agata     ru           Agata      eleven_v4    Мама это. Она поняла, что я здесь.
+  M18p_0  narrator  ru           ZAKADR     eleven_v4    Туман. По канату кольцо со скрипом идёт, за ним лодка. Назад уже не сворачивает. На мокрые доски́ ложится снег.
+  M18p_1  pelageya  ru           PELAGEYA   eleven_v4    Теперь назад не вынесет. По канату идём.
+  M18p_2  agata     ru           Agata      eleven_v4    А лодку-то год возвращало.
+  M18p_3  pelageya  ru           PELAGEYA   eleven_v4    Канат нас везёт, не лодка. На том конце его держат.
+  M18p_4  pelageya  ru           PELAGEYA   eleven_v4    Кольца держись. Не выпускай.
+  M18_0   narrator  ru           ZAKADR     eleven_v4    У сто́пора на дальней опоре мужчина с фонарём стои́т. Бородатый, седина в волосах. Дрогнули руки у Пелагеи.
+  M18_1   mitya     ru           МИТЯ       eleven_v4    [sad] Мама.
+  M18_2   pelageya  ru           PELAGEYA   eleven_v4    [voice breaking] Митя?.. Митенька!
+  M18_3   narrator  ru           ZAKADR     eleven_v4    Пелагея с лодки на опору поднимается, сына обнимает. Лицо его гладит, седую бороду — всё поверить не может.
+  M18_4   mitya     ru           МИТЯ       eleven_v4    Мне уж тридцать семь, мама. Двадцать лет по вечерам сюда хожу. Ни единого огня у вас не видел.
+  M18_5   pelageya  ru           PELAGEYA   eleven_v4    [crying] А у нас всего год миновал. Один год, Митя. День за днём к тебе гребла. Всё к своему причалу возвращалась.
+  M18_6   mitya     ru           МИТЯ       eleven_v4    А я всякий вечер фонарь зажигал. Чтоб ты знала, где меня искать.
+  M18_7   pelageya  ru           PELAGEYA   eleven_v4    Ты мне теперь почитай ровесник. Седой… А я всё мальчишку ждала.
+  M18_8   mitya     ru           МИТЯ       eleven_v4    Агата? Жива Нина. В зеркальце тебя у Дуниной печи видела. Тогда и ленту дала: будут огни, пошли ей. Дожидается тебя.
+  M18_9   narrator  ru           ZAKADR     eleven_v4    Пелагея Митин рукав не выпускает. Он поднимает фонарь, к улице идёт. Агата за светом следом. Пелагея у лодки остаётся.
+  M19_0   narrator  ru           ZAKADR     eleven_v4    Снег, свет в окнах. Впереди Митя с фонарём. Подходит к крайнему дому, в ставню стучит.
+  M19_1   mitya     ru           МИТЯ       eleven_v4    Илья! Сестра пришла.
+  M19_2   narrator  ru           ZAKADR     eleven_v4    У соседнего дома на крыльце седая женщина в платке стои́т. Три огня она из окна увидела.
+  M19_3   agata     ru           Agata      eleven_v4    [sad] Мама.
+  M19_4   narrator  ru           ZAKADR     eleven_v4    Нина прямо на крыльце Агату обнимает. Молчит. Долго не отпускает.
+  M19_5   nina      ru           НИНА       eleven_v4    В тепло пойдём. Ты вся в снегу.
+  M19_6   agata     ru           Agata      eleven_v4    Те самые ходики.
+  M19c_0  agata     ru           Agata      eleven_v4    В зеркале спешили. А теперь как мои идут.
+  M19c_1  narrator  ru           ZAKADR     eleven_v4    На стол Нина кладёт маленькое зеркальце в деревянной оправе.
+  M19c_2  nina      ru           НИНА       eleven_v4    У Дуни над печью висело. В тот день мне в подарок несла. Тут оно и осталось. А показывает её печь.
+  M19c_3  nina      ru           НИНА       eleven_v4    Три недели тому ты в нём показалась. Целую неделю у печи проспала, а Тихон в кресле.
+  M19c_4  agata     ru           Agata      eleven_v4    Да это вчера было.
+  M19c_5  nina      ru           НИНА       eleven_v4    Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в полгода. Ходила медленно, словно во сне. Знала я: там живут. Всё тебя ждала.
+  M19c_6  nina      ru           НИНА       eleven_v4    Позавчера встала ты у печи, рукой махала. Три часа по-нашему махала.
+  M19c_7  nina      ru           НИНА       eleven_v4    Значит, у тебя только год миновал. Один год.
+  M19c_8  agata     ru           Agata      eleven_v4    Год. А у тебя больше прошло, чем я живу.
+  M20_0   narrator  ru           ZAKADR     eleven_v4    Хлопнула дверь. Вошёл мужчина, весь в стружке, карандаш за ухом. За ним девочка вбежала — пальто на ночную рубашку накинуто.
+  M20_1   agata     ru           Agata      eleven_v4    Илюша… По карандашу за ухом узнала. А то бы не признала.
+  M20_3   agata     ru           Agata      eleven_v4    Ты вырос. На двадцать лет.
+  M20_4   ulyana    ru           ЛУНЯ       eleven_v4    Это тётя Агата? Папа, ты говорил, она тебя старше!
+  M20_5   agata     ru           Agata      eleven_v4    В учительском ящике план — ты писал?
+  M20_6   ilya      ru           ИЛЬЯ       eleven_v4    Всякую зиму переписывал, в ящик клал. Дуня сказала: дверь у неё в мастерской. Навесит кто — в класс и попадёт.
+  M20_7   narrator  ru           ZAKADR     eleven_v4    Позже жена Ильи приходит, лампу несёт.
+  M20_8   ilya_wife ru           ВАРВАРА    eleven_v4    Ульяна, пора спать. Никуда тётя не уйдёт. Теперь уж никуда.
+  M20_9   nina      ru           НИНА       eleven_v4    В своей комнате ляжешь. Ульяна у нас там спит. Потеснитесь вдвоём.
+  M20_10  narrator  ru           ZAKADR     eleven_v4    В старой комнате на стене — зарубки по годам. Отмечали чужой рост.
+  N02_0   narrator  ru           ZAKADR     eleven_v4    Старая кровать. Ульяна сопит у стенки, ходики за стеной тикают ровно — в такт с карманными часами.
+  M21_0   nina      ru           НИНА       eleven_v4    Прямо скажу. Дуня два года назад умерла, по нашему счёту. Семьдесят два ей было.
+  M21_1   agata     ru           Agata      eleven_v4    А Тихон её всё к вечеру дожидается.
+  M21_2   nina      ru           НИНА       eleven_v4    На столе её тетради. Восемнадцать лет пробовала. Рядом список: кто в деревне жив, кого не стало. Сама посмотри.
+  M21b_0  agata     ru           Agata      eleven_v4    А как прежде сделать нельзя?
+  M21b_1  nina      ru           НИНА       eleven_v4    Как прежде — нет. Свои двадцать лет я не отдам. В них Ульяна.
+  M21b_2  nina      ru           НИНА       eleven_v4    А дальше можно вместе жить.
+  M21b_3  narrator  ru           ZAKADR     eleven_v4    С улицы голоса слышны. Дети к школе бегут, поглядеть. Школьная тропа вернулась, и нижняя улица тоже.
+  M21b_4  nina      ru           НИНА       eleven_v4    Пойдём, класс тебе покажу. Как люди пойдём, через калитку.
+  M22_0   narrator  ru           ZAKADR     eleven_v4    Нина прочла на доске: «Я была здесь. Агата». Взяла мел, ниже вывела: «И я. Все двадцать лет. Мама».
+  M22_1   narrator  ru           ZAKADR     eleven_v4    На доске Нина читает: «Мама, я иду». Берёт мел. Ниже одно слово выводит: «Дождалась».
+  M22_2   narrator  ru           ZAKADR     eleven_v4    Нина прочла: «Илюша, я нашла твой рисунок». Берёт мел, подписывает ниже: «Он и сейчас рисует лодки с дымом. Мама».
+  M22_3   narrator  ru           ZAKADR     eleven_v4    Затем по привычке, как перед уроком, в углу число выводит. Своё, здешнее.
+  M22_4   narrator  ru           ZAKADR     eleven_v4    Доска чиста. Нина, как перед всяким уроком, в углу число выводит. По здешнему счёту.
+  M22_5   agata     ru           Agata      eleven_v4    У нас нынче двадцать пятое октября.
+  M22_6   narrator  ru           ZAKADR     eleven_v4    Нина помедлила. Под своим числом Ага́тино написала, верхнее стёрла. Впервые на обоих берегах одно число.
+  M22_7   agata     ru           Agata      eleven_v4    Я к тебе в стекло стучала. Не слышала ты.
+  M22_8   narrator  ru           ZAKADR     eleven_v4    По парте Нина костяшкой пальца стучит.
+  M22_9   nina      ru           НИНА       eleven_v4    Теперь-то слышишь?
+  M22_11  ulyana    ru           ЛУНЯ       eleven_v4    Это я сапоги птице пририсовала! А шапку кто рисовал?
+  M22_12  agata     ru           Agata      eleven_v4    Я шапку рисовала. Давно, за этой партой.
+  M22_13  ulyana    ru           ЛУНЯ       eleven_v4    А кто ей шарф повязал? Я рядом написала, посмотри! Теперь ей тепло.
+  M22_14_then0 ulyana    ru           ЛУНЯ       eleven_v4    А лодку с дымом кто? Папа один так рисует!
+  M22_14_then1 agata     ru           Agata      eleven_v4    Я у твоего папы подсмотрела, давным-давно.
+  M22_14_then2 ulyana    ru           ЛУНЯ       eleven_v4    Кто мостик нарисовал? Я рядом спросила, гляди: а мост правда будет?
+  M22_14_then3 agata     ru           Agata      eleven_v4    Будет, Уля. Затем и рисовала.
+  M22_14  agata     ru           Agata      eleven_v4    И шарф я. У вас же зима.
+  M22_15  nina      ru           НИНА       eleven_v4    К Дуне домой пойду. Как прежде, с крыльца войду. Пелагея перевезёт. Ты пока погуляй, нынче все на улицу выходят.
+  M23a_0  narrator  ru           ZAKADR     eleven_v4    Сама Тамара с мешком переправилась. Посреди улицы стои́т, адреса вслух разбирает.
+  M23a_1  tamara    ru           TAMARA-1   eleven_v4    Нине от Агаты. За весь год, по письму́ в месяц. На, Нина. Тебе первой.
+  M23a_2  narrator  ru           ZAKADR     eleven_v4    Первой получает Нина Ага́тины письма. За пазуху прячет.
+  M23a_3  tamara    ru           TAMARA-1   eleven_v4    Савелию от сестры… Аксинье от брата… Матрёне Петровне… А нет у вас такой?
+  M23a_4  tamara    ru           TAMARA-1   eleven_v4    Вот письмо несу, а человека уж нет. А другому писали мальчишкой — он уже взрослый.
+  M23a_5  tamara    ru           TAMARA-1   eleven_v4    Это Дуне. От меня. У её печи положу. Пусть там лежит.
+  M23b_0  narrator  ru           ZAKADR     eleven_v4    С палкой старик во дворе мельницы стои́т. Вернулся управляющий. Илья с ним пришёл.
+  M23b_1  manager   ru           ФЁДОР ЛУКИЧ eleven_v4    Цел затвор? Где ключ?
+  M23b_2  pavel     ru           Павел      eleven_v4    Год на гвозде рычаг провисел. По вашему слову.
+  M23b_3  manager   ru           ФЁДОР ЛУКИЧ eleven_v4    Год… А я всё к утру вернуться хотел. Двадцать лет.
+  M23b_4  narrator  ru           ZAKADR     eleven_v4    Неловко оба рассмеялись.
+  M23b_5  manager   ru           ФЁДОР ЛУКИЧ eleven_v4    К зиме пруд набрать. Не то Заречью без муки́ сидеть.
+  M23b_6  pavel     ru           Павел      eleven_v4    Обещала ты. Я помню.
+  M23b_7  agata     ru           Agata      eleven_v4    А канат ненадолго. Сорвёт первым паводком, опять дороги не станет.
+  M23b_8  ilya      ru           ИЛЬЯ       eleven_v4    Мост ставить надо. Пока льдом не схватило. По Дуниной тетради.
+  M23b_9  ilya      ru           ИЛЬЯ       eleven_v4    Завтра поутру первое бревно кладём. К повороту приходи.
+  M23c_0  narrator  ru           ZAKADR     eleven_v4    Нина в сестрин дом с обычного крыльца входит. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.
+  M23c_1  nina      ru           НИНА       eleven_v4    Всё Дунино. Даже пыль.
+  M23c_2  narrator  ru           ZAKADR     eleven_v4    Школьная дверь в галерее на родных петлях висит.
+  M23c_3  nina      ru           НИНА       eleven_v4    Двадцать лет по ту сторону пустой проём был. А дверь всё здесь стояла. Рядом, в двух шагах.
+  M23c_4  narrator  ru           ZAKADR     eleven_v4    В мастерской, на Дуниной стойке — Нинино зеркало.
+  M23c_5  narrator  ru           ZAKADR     eleven_v4    В нём её горница видна. Никого.
+  M23c_6  nina      ru           НИНА       eleven_v4    Моя горница-то. А меня нет.
+  M23c_7  agata     ru           Agata      eleven_v4    Я тебя там видела. Писала ты что-то.
+  M23c_8  nina      ru           НИНА       eleven_v4    Задания к уроку. Тебе — три недели назад.
+  M23d_1  agata     ru           Agata      eleven_v4    Тихон. Дуня не придёт. Умерла она у мамы. Давно, если по-ихнему считать.
+  M23d_2  nina      ru           НИНА       eleven_v4    Тихон, не придёт Дуня. Два года назад у меня умерла, по нашему счёту. Вспоминала тебя.
+  M23d_3  narrator  ru           ZAKADR     eleven_v4    Долго Тихон молчит. Потом с кресла на печь перелезает.
+  M23d_4  tikhon    ru           CAT-2      eleven_v4    [slowly] [sad] Значит, вечер кончился.
+  M23d_5  tikhon    ru           CAT-2      eleven_v4    [slowly] Теперь тебе хозяйкой быть. Кастрюлю только её не трогай пока. Пусть стои́т.
+  M23d_6  narrator  ru           ZAKADR     eleven_v4    На печи Тихон поближе к Ага́тиной лежанке укладывается.
+  M24_0   narrator  ru           ZAKADR     eleven_v4    Третий день к вечеру клонится. Дошли письма, Нина в доме сестры побывала, Тихон на печь перебрался. Завтра первое бревно класть.
+  M24_1   narrator  ru           ZAKADR     eleven_v4    Четвёртого дня утро. У поворота, возле во́рота, уже Илья с Пелагеей.
+  M25_0   narrator  ru           ZAKADR     eleven_v4    Четвёртый день. У поворота во́рот поставлен, брёвна-прогоны сложены, Илья ждёт. Пелагея дощечку с сигналами принесла.
+  M25_1   ilya      ru           ИЛЬЯ       eleven_v4    Я во́рот кручу, ты знаки подавай. Пускай, стой, подымай — по-мельничному.
+  M25_2   agata     ru           Agata      eleven_v4    Те же три сигнала, что у крюка в конторе.
+  M25_3   ilya      ru           ИЛЬЯ       eleven_v4    Только теперь слышно тебя.
+  M25_4   narrator  ru           ZAKADR     eleven_v4    Илья во́рот стопорит, спину распрямляет.
+  M25_5   ilya      ru           ИЛЬЯ       eleven_v4    Легло. На, нож возьми. Вырежи на торце, что хочешь.
+  M25_7   narrator  ru           ZAKADR     eleven_v4    Медленно Агата буквы на торце режет. Как когда-то на школьной парте.
+  M25_8   ilya      ru           ИЛЬЯ       eleven_v4    Двадцать лет я за него держался. Теперь твоя очередь.
+  M26_0   narrator  ru           ZAKADR     eleven_v4    Три недели спустя, среда. На обоих берегах зима. Готов мост, наполнен пруд, мельница мелет.
+  M26_1   narrator  ru           ZAKADR     eleven_v4    С почтой по мосту Тамара идёт.
+  M26_2   tamara    ru           TAMARA-1   eleven_v4    Аксинье от брата. Через Нину передать, как условились.
+  M26_3   tamara    ru           TAMARA-1   eleven_v4    По средам из ящика в галерее забираю. Аксинья туда кладёт.
+  M26_4   tamara    ru           TAMARA-1   eleven_v4    Третью неделю ношу́, а мешок всё полон. Теперь с обоих берегов письма идут.
+  M26_5   narrator  ru           ZAKADR     eleven_v4    К зиме лодку Пелагея с Митей смоля́т.
+  M26_6   pelageya  ru           PELAGEYA   eleven_v4    Дощечку-то не выкидывай. Все твои двадцать лет в этих зарубках.
+  M26_7   narrator  ru           ZAKADR     eleven_v4    На сарае Митина дощечка висит, двадцать зарубок на ней. Пелагея сама повесила.
+  M26_8_then0 narrator  ru           ZAKADR     eleven_v4    Митя уключину чинит. Рядом сохнет их полка, на втором верстаке у Ильи сколотили.
+  M26_8   mitya     ru           МИТЯ       eleven_v4    Мам, поровнее держи. Лодке ещё зиму стоять.
+  M26_9   narrator  ru           ZAKADR     eleven_v4    Павел стои́т у рейки уровня.
+  M26_10  pavel     ru           Павел      eleven_v4    Сдержала слово. По рабочей отметке вода.
+  M26_11  pavel     ru           Павел      eleven_v4    Мать и брат, это понятно. А пруд всё-таки набрали. Все вместе.
+  M26_12  narrator  ru           ZAKADR     eleven_v4    На первом прогоне, с торца — Агатина надпись вырезана.
+  M26_13  narrator  ru           ZAKADR     eleven_v4    Чист торец первого прогона. Илья сказал, и без надписи знают.
+  M26_14  narrator  ru           ZAKADR     eleven_v4    Зимнее утро, класс. Нина на доске число выводит — теперь на обоих берегах одно. Дети с обоих берегов за партами, Ульяна среди них. Агата сидит сзади, за той самой партой, где птице шапку рисовала.
+  M26_15_then0 narrator  ru           ZAKADR     eleven_v4    Старая карта Ольховки у доски́, сверху калька с Ильиным садом приколота. Нина детям показывает, как место менялось.
+  M26_16  narrator  ru           ZAKADR     eleven_v4    Вечером ужинают в Дунином доме. Нина, Илья с женой, Агата. На печи Тихон. Тамарина кастрюля на столе.
+  M26_17  tikhon    ru           CAT-2      eleven_v4    Нынче среда?
+  M26_20  nina      ru           НИНА       eleven_v4    Синяя… Моя ведь! Я её Дуне дарила.
+  M26_21  nina      ru           НИНА       eleven_v4    Белая, щербинка на ней. Помню.
+  M26_22  narrator  ru           ZAKADR     eleven_v4    На столике семейный снимок, где Агата поставила. Нина его в руки берёт.
+  M26_23_then0 narrator  ru           ZAKADR     eleven_v4    В мастерской Илья на втором верстаке доделывает резную рамку для семейного снимка.
+  M26_23  narrator  ru           ZAKADR     eleven_v4    На полке, среди Дуниных вещей — семейный снимок. Нина поправляет.
+  M26_24  nina      ru           НИНА       eleven_v4    Держится Дунин рукав. Шва и не разглядеть.
+  M26_25  ilya_wife ru           ВАРВАРА    eleven_v4    Агата, посмотри, держится заплатка на Дунином пальто. А Ульянина птица на ней словно живая.
+  M26_26  narrator  ru           ZAKADR     eleven_v4    На столе чашки стоят — из них у Дуниной печи первый раз вместе чай пили.
+  M26_27  narrator  ru           ZAKADR     eleven_v4    Над столом рисунок Ульяны: гости за первым общим чаем.
+  M26_28  ilya      ru           ИЛЬЯ       eleven_v4    «Ольховую» на нижней улице оставили. Пусть всякий видит.
+  M26_29  nina      ru           НИНА       eleven_v4    У меня в классе старая вывеска висит. Ребята по ней читать учатся.
+  M26_30  tikhon    ru           CAT-2      eleven_v4    Полка у печи — моя приёмная. Всё, приём окончен.
+  M26_31  tikhon    ru           CAT-2      eleven_v4    И на подстилке у печи кабинет устроить можно. Только без полки.
+  M26_32  narrator  ru           ZAKADR     eleven_v4    Ночью Тихон возле Ага́тиной лежанки спит.
+  M26_33  agata     ru           Agata      eleven_v4    Я мамины письма дочитала. За все двадцать зим.
+  M26_34  nina      ru           НИНА       eleven_v4    Доучись. Теперь мост есть — станешь приезжать.
+  M26_35_then0 narrator  ru           ZAKADR     eleven_v4    У двери приколот рисунок сада. Ульяна по нему растолковывает гостю дорогу.
+  M26_35  narrator  ru           ZAKADR     eleven_v4    Ульяна приходит не с моста: выходит из класса в галерею, оттуда — через школьную дверь.
+  M26_37  agata     ru           Agata      eleven_v4    Можно, Уля. Нынче дорогу с обоих концов держат — и завтра у нас одно на всех.
+  Q01_0   tamara    ru           TAMARA-1   eleven_v4    Аксинье письмо от брата. А дома по этому адресу уж нет.
+  Q01_1   agata     ru           Agata      eleven_v4    Аксинья жива. Я в мамином списке видела.
+  Q01_2   tamara    ru           TAMARA-1   eleven_v4    Ну вот. Теперь и ей ответить есть куда.
+  Q02_0   agata     ru           Agata      eleven_v4    Старое под новым. Мама на уроке покажет: вот как было, а вот как стало.
+  Q02_1   ulyana    ru           ЛУНЯ       eleven_v4    Пусть висит! Все увидят, что у нас сад.
+  Q02_2   agata     ru           Agata      eleven_v4    Ульяне отдам. Её сад — ей и карту.
+  Q02_3   ulyana    ru           ЛУНЯ       eleven_v4    Моя карта! У двери дома повешу — гостям показывать, как идти.
+  Q03_0   narrator  ru           ZAKADR     eleven_v4    Агата зашивает рукав Дуниного пальто и снова вешает пальто на крючок.
+  Q03_1   nina      ru           НИНА       eleven_v4    Всё собиралась этот рукав зашить. Так с ним двадцать зим и проходила.
+  Q03_2   nina      ru           НИНА       eleven_v4    И хорошо, что заплатка. Уля птицу на ней нарисует. Дуня бы посмеялась.
+  Q03_3   nina      ru           НИНА       eleven_v4    Пусть висит. Словно она ненадолго вышла.
+  Q04_0   tikhon    ru           CAT-2      eleven_v4    Это кабинет. Двери только ещё нет.
+  Q04_1   tikhon    ru           CAT-2      eleven_v4    Теперь и у меня приёмные часы есть.
+  Q06_0   mitya     ru           МИТЯ       eleven_v4    Вот и втроём: Уля — за новый верстак, я — за уключину. Давно пора её починить.
+  Q06_1   ilya      ru           ИЛЬЯ       eleven_v4    Вот и чини. А полку уж вместе сколотим.
+  Q06_2   ilya      ru           ИЛЬЯ       eleven_v4    Мы с Митей до Дуниной мастерской донесём. У окна поставим, возле её верстака.
+  Q07_0   mitya     ru           МИТЯ       eleven_v4    Двадцать зарубок. За каждую зиму по одной: всё я тут фонарь жёг.
+  Q07_1   pelageya  ru           PELAGEYA   eleven_v4    А я всё помню, какая у тебя ручонка была.
+  Q08_0   tamara    ru           TAMARA-1   eleven_v4    Помню, ещё новым этот чайник был.
+  Q08_1   ulyana    ru           ЛУНЯ       eleven_v4    А я думала, он таким и был всегда.
+  Q09_0   agata     ru           Agata      eleven_v4    Ольховая улица. Первой пропала — пустая ведь стояла.
+  квота: осталось 84051 из 124889, запас 12488, к синтезу ≤ 16743 кредитов (оценка сверху)
+  M01_0              синтез: 3.36 с, -17.0 LUFS, TP -6.1 dB (усиление -2.9 dB)
+  M01_1              синтез: 7.62 с, -17.0 LUFS, TP -2.0 dB (усиление -0.6 dB)
+  M01_2              синтез: 5.07 с, -17.0 LUFS, TP -4.5 dB (усиление -0.7 dB)
+  M01_3              синтез: 11.66 с, -17.0 LUFS, TP -4.1 dB (усиление -2.1 dB)
+  M01_4              синтез: 8.88 с, -17.0 LUFS, TP -5.4 dB (усиление -3.3 dB)
+  M01_5              синтез: 6.28 с, -17.0 LUFS, TP -4.1 dB (усиление +1.0 dB)
+  M01_6              синтез: 1.75 с, -17.0 LUFS, TP -8.5 dB (усиление +3.0 dB)
+  M01_7              синтез: 9.62 с, -16.9 LUFS, TP -4.9 dB (усиление -1.7 dB)
+  M01_8              синтез: 1.98 с, -17.0 LUFS, TP -5.0 dB (усиление -2.3 dB)
+  M02_0              синтез: 2.87 с, -17.0 LUFS, TP -4.9 dB (усиление +1.3 dB)
+  M02_1              синтез: 2.47 с, -17.0 LUFS, TP -5.4 dB (усиление -1.8 dB)
+  M02_2              синтез: 3.75 с, -17.0 LUFS, TP -5.5 dB (усиление -3.2 dB)
+  M02_3              синтез: 5.97 с, -16.9 LUFS, TP -5.6 dB (усиление -2.1 dB)
+  M02_5              синтез: 15.24 с, -17.1 LUFS, TP -4.1 dB (усиление -0.4 dB)
+  M02_6              синтез: 2.88 с, -16.9 LUFS, TP -5.6 dB (усиление -1.0 dB)
+  M02_7              синтез: 13.04 с, -16.9 LUFS, TP -3.2 dB (усиление -0.7 dB)
+  M02_8              синтез: 9.37 с, -17.0 LUFS, TP -3.1 dB (усиление +0.9 dB)
+  M03_0              синтез: 2.49 с, -17.0 LUFS, TP -2.0 dB (усиление +5.4 dB)
+  M03_1              синтез: 1.37 с, -16.9 LUFS, TP -5.9 dB (усиление -0.2 dB)
+  M03_2              синтез: 2.12 с, -17.0 LUFS, TP -2.5 dB (усиление +0.7 dB)
+  M03_3              синтез: 1.56 с, -16.9 LUFS, TP -7.4 dB (усиление +1.4 dB)
+  M03_4              синтез: 3.53 с, -17.0 LUFS, TP -3.6 dB (усиление -0.6 dB)
+  M03_5              синтез: 1.61 с, -17.0 LUFS, TP -3.5 dB (усиление +7.5 dB)
+  M03_7              синтез: 4.16 с, -17.1 LUFS, TP -1.9 dB (усиление +4.3 dB)
+  M03_8              синтез: 7.13 с, -17.0 LUFS, TP -3.7 dB (усиление +0.4 dB)
+  M03_10             синтез: 5.00 с, -17.0 LUFS, TP -5.1 dB (усиление -2.2 dB)
+  M04_0              синтез: 1.56 с, -16.9 LUFS, TP -4.8 dB (усиление +1.2 dB)
+  M05_0              синтез: 1.68 с, -17.0 LUFS, TP -7.9 dB (усиление -6.6 dB)
+  M06_0              синтез: 2.76 с, -17.0 LUFS, TP -4.8 dB (усиление +1.8 dB)
+  M07_0              синтез: 4.66 с, -16.9 LUFS, TP -3.9 dB (усиление -2.1 dB)
+  M07_1              синтез: 14.51 с, -16.9 LUFS, TP -2.2 dB (усиление -0.9 dB)
+  M07_2              синтез: 9.04 с, -17.0 LUFS, TP -4.1 dB (усиление -0.9 dB)
+  M07_3              синтез: 7.57 с, -16.9 LUFS, TP -2.5 dB (усиление -1.7 dB)
+  M07_4              синтез: 6.31 с, -17.0 LUFS, TP -3.4 dB (усиление +1.3 dB)
+  M07_5              синтез: 9.61 с, -16.9 LUFS, TP -3.1 dB (усиление -1.1 dB)
+  M07_6              синтез: 4.88 с, -17.0 LUFS, TP -4.9 dB (усиление -2.7 dB)
+  M08_0              синтез: 3.21 с, -17.2 LUFS, TP -2.7 dB (усиление +0.6 dB)
+  N01_0              синтез: 3.70 с, -17.0 LUFS, TP -4.9 dB (усиление +4.6 dB)
+  N01_1              синтез: 6.56 с, -16.8 LUFS, TP -2.6 dB (усиление +0.5 dB)
+  N01_2              синтез: 2.98 с, -17.4 LUFS, TP -1.9 dB (усиление +2.7 dB)
+  N01_3              синтез: 6.29 с, -17.0 LUFS, TP -2.4 dB (усиление +2.2 dB)
+  M09_0              синтез: 3.51 с, -17.0 LUFS, TP -6.4 dB (усиление -1.2 dB)
+  M09_1              синтез: 2.90 с, -17.0 LUFS, TP -4.6 dB (усиление -2.0 dB)
+  M09_2              синтез: 13.00 с, -17.0 LUFS, TP -5.2 dB (усиление -2.4 dB)
+  M09_3              синтез: 12.21 с, -17.0 LUFS, TP -7.4 dB (усиление -4.0 dB)
+  M09_4              синтез: 5.91 с, -17.0 LUFS, TP -6.5 dB (усиление -2.9 dB)
+  M09_5              синтез: 2.08 с, -16.7 LUFS, TP -2.3 dB (усиление +0.5 dB)
+  M09_6              синтез: 8.31 с, -17.0 LUFS, TP -5.4 dB (усиление -2.5 dB)
+  M09_7              синтез: 10.06 с, -16.9 LUFS, TP -6.9 dB (усиление -3.2 dB)
+  M09s_0             синтез: 8.97 с, -16.9 LUFS, TP -3.7 dB (усиление -0.8 dB)
+  M09b_0             синтез: 9.61 с, -16.9 LUFS, TP -2.2 dB (усиление -0.8 dB)
+  M09b_1             синтез: 6.81 с, -17.0 LUFS, TP -6.5 dB (усиление -2.1 dB)
+  M09b_2             синтез: 6.49 с, -16.8 LUFS, TP -3.1 dB (усиление +0.3 dB)
+  M09b_3             синтез: 3.62 с, -17.0 LUFS, TP -7.8 dB (усиление -4.2 dB)
+  M09b_4             синтез: 12.44 с, -16.9 LUFS, TP -6.0 dB (усиление -2.6 dB)
+  M09b_5             синтез: 8.53 с, -17.0 LUFS, TP -6.0 dB (усиление -2.1 dB)
+  M10_0              синтез: 5.37 с, -16.9 LUFS, TP -4.4 dB (усиление -1.0 dB)
+  M11_0              синтез: 2.92 с, -17.0 LUFS, TP -3.8 dB (усиление -2.8 dB)
+  M12_0              синтез: 2.50 с, -17.0 LUFS, TP -7.2 dB (усиление -6.4 dB)
+  M13a_0             синтез: 3.86 с, -17.0 LUFS, TP -7.9 dB (усиление -3.1 dB)
+  M13_0              синтез: 6.21 с, -17.0 LUFS, TP -5.9 dB (усиление -2.9 dB)
+  M13_1_promise      синтез: 2.34 с, -16.9 LUFS, TP -5.8 dB (усиление -4.8 dB)
+  M13_2              синтез: 2.24 с, -17.0 LUFS, TP -6.5 dB (усиление -3.3 dB)
+  M14_0              синтез: 3.72 с, -16.7 LUFS, TP -6.3 dB (усиление -3.1 dB)
+  M14_1              синтез: 9.95 с, -17.0 LUFS, TP -6.1 dB (усиление -2.3 dB)
+  M15a_0             синтез: 5.69 с, -16.9 LUFS, TP -4.8 dB (усиление -2.8 dB)
+  M15a_1             синтез: 2.82 с, -17.0 LUFS, TP -4.9 dB (усиление -2.7 dB)
+  M15a_3             синтез: 2.74 с, -17.0 LUFS, TP -4.6 dB (усиление +6.0 dB)
+  M15s_0             синтез: 3.21 с, -16.9 LUFS, TP -3.0 dB (усиление -1.4 dB)
+  M15s_1             синтез: 7.33 с, -17.0 LUFS, TP -4.8 dB (усиление -1.2 dB)
+  M15s_2             синтез: 9.46 с, -17.0 LUFS, TP -5.1 dB (усиление -2.7 dB)
+  M15_0              синтез: 8.49 с, -17.0 LUFS, TP -4.2 dB (усиление -2.9 dB)
+  M15_1              синтез: 1.95 с, -17.0 LUFS, TP -6.9 dB (усиление -1.8 dB)
+  M15_2              синтез: 5.33 с, -16.9 LUFS, TP -4.4 dB (усиление -2.5 dB)
+  M16s_0             синтез: 7.62 с, -17.0 LUFS, TP -4.8 dB (усиление -3.0 dB)
+  M16s_1             синтез: 5.04 с, -17.0 LUFS, TP -5.6 dB (усиление +0.0 dB)
+  M16s_2             синтез: 11.97 с, -17.0 LUFS, TP -3.2 dB (усиление -0.7 dB)
+  M16_0              синтез: 3.57 с, -17.0 LUFS, TP -5.8 dB (усиление -2.0 dB)
+  M17_0              синтез: 8.26 с, -16.9 LUFS, TP -3.9 dB (усиление -0.3 dB)
+  M17_1              синтез: 12.92 с, -16.9 LUFS, TP -4.2 dB (усиление -2.1 dB)
+  M17_2              синтез: 2.58 с, -17.0 LUFS, TP -5.4 dB (усиление -1.5 dB)
+  M17_3              синтез: 2.59 с, -17.0 LUFS, TP -5.0 dB (усиление -3.2 dB)
+  M17_4              синтез: 5.58 с, -16.9 LUFS, TP -5.3 dB (усиление -3.1 dB)
+  M17_5              синтез: 3.30 с, -17.0 LUFS, TP -6.0 dB (усиление -1.3 dB)
+  M17_6              синтез: 4.05 с, -17.0 LUFS, TP -5.4 dB (усиление +0.3 dB)
+  M17_7              синтез: 2.95 с, -17.0 LUFS, TP -2.6 dB (усиление -0.7 dB)
+  M18p_0             синтез: 9.99 с, -16.9 LUFS, TP -3.7 dB (усиление -1.9 dB)
+  M18p_1             синтез: 3.12 с, -16.9 LUFS, TP -5.7 dB (усиление -3.3 dB)
+  M18p_2             синтез: 2.15 с, -16.9 LUFS, TP -3.5 dB (усиление -0.3 dB)
+  M18p_3             синтез: 4.09 с, -17.0 LUFS, TP -5.5 dB (усиление -1.2 dB)
+  M18p_4             синтез: 2.65 с, -17.0 LUFS, TP -4.6 dB (усиление -2.7 dB)
+  M18_0              синтез: 8.94 с, -17.0 LUFS, TP -3.6 dB (усиление -1.8 dB)
+  M18_1              синтез: 0.75 с, -17.0 LUFS, TP -5.0 dB (усиление +1.7 dB)
+  M18_2              синтез: 2.16 с, -17.0 LUFS, TP -7.0 dB (усиление -5.1 dB)
+  M18_3              синтез: 8.87 с, -17.0 LUFS, TP -3.8 dB (усиление -1.2 dB)
+  M18_4              синтез: 6.29 с, -17.0 LUFS, TP -4.7 dB (усиление -2.5 dB)
+  M18_5              синтез: 9.02 с, -16.9 LUFS, TP -4.1 dB (усиление -2.5 dB)
+  M18_6              синтез: 4.40 с, -17.0 LUFS, TP -5.2 dB (усиление -3.0 dB)
+  M18_7              синтез: 5.49 с, -17.0 LUFS, TP -5.4 dB (усиление -1.3 dB)
+  M18_8              синтез: 9.05 с, -17.0 LUFS, TP -4.1 dB (усиление -2.1 dB)
+  M18_9              синтез: 9.45 с, -17.0 LUFS, TP -4.5 dB (усиление -2.7 dB)
+  M19_0              синтез: 7.44 с, -17.0 LUFS, TP -4.2 dB (усиление -2.1 dB)
+  M19_1              синтез: 1.78 с, -17.0 LUFS, TP -5.0 dB (усиление -2.6 dB)
+  M19_2              синтез: 6.82 с, -17.0 LUFS, TP -4.7 dB (усиление -3.2 dB)
+  M19_3              синтез: 0.85 с, -16.9 LUFS, TP -7.5 dB (усиление +4.6 dB)
+  M19_4              синтез: 6.02 с, -17.0 LUFS, TP -5.1 dB (усиление -3.0 dB)
+  M19_5              синтез: 2.77 с, -17.0 LUFS, TP -5.6 dB (усиление +0.2 dB)
+  M19_6              синтез: 1.45 с, -17.0 LUFS, TP -8.3 dB (усиление -0.9 dB)
+  M19c_0             синтез: 3.37 с, -16.8 LUFS, TP -4.1 dB (усиление -0.2 dB)
+  M19c_1             синтез: 4.27 с, -17.0 LUFS, TP -5.7 dB (усиление -3.7 dB)
+  M19c_2             синтез: 8.34 с, -16.9 LUFS, TP -7.1 dB (усиление -1.8 dB)
+  M19c_3             синтез: 7.43 с, -17.0 LUFS, TP -6.8 dB (усиление -1.2 dB)
+  M19c_4             синтез: 1.48 с, -17.0 LUFS, TP -4.7 dB (усиление -2.8 dB)
+  M19c_5             синтез: 17.55 с, -17.0 LUFS, TP -6.6 dB (усиление -0.2 dB)
+  M19c_6             синтез: 6.18 с, -17.1 LUFS, TP -7.4 dB (усиление -1.5 dB)
+  M19c_7             синтез: 4.40 с, -17.0 LUFS, TP -7.9 dB (усиление -0.9 dB)
+  M19c_8             синтез: 3.41 с, -17.0 LUFS, TP -3.6 dB (усиление -0.1 dB)
+  M20_0              синтез: 9.42 с, -17.0 LUFS, TP -5.1 dB (усиление -2.7 dB)
+  M20_1              синтез: 4.67 с, -17.0 LUFS, TP -4.2 dB (усиление -1.5 dB)
+  M20_3              синтез: 2.49 с, -16.8 LUFS, TP -4.7 dB (усиление +0.0 dB)
+  M20_4              синтез: 4.48 с, -17.1 LUFS, TP -2.0 dB (усиление +2.7 dB)
+  M20_5              синтез: 2.79 с, -16.9 LUFS, TP -3.1 dB (усиление +1.6 dB)
+  M20_6              синтез: 8.60 с, -17.0 LUFS, TP -5.7 dB (усиление -2.9 dB)
+  M20_7              синтез: 3.32 с, -17.0 LUFS, TP -6.5 dB (усиление -3.3 dB)
+  M20_8              синтез: 5.03 с, -16.8 LUFS, TP -5.7 dB (усиление -0.6 dB)
+  M20_9              синтез: 5.30 с, -16.9 LUFS, TP -7.4 dB (усиление -1.2 dB)
+  M20_10             синтез: 5.41 с, -17.0 LUFS, TP -5.7 dB (усиление -2.8 dB)
+  N02_0              синтез: 8.13 с, -17.0 LUFS, TP -4.6 dB (усиление -1.6 dB)
+  M21_0              синтез: 7.33 с, -16.9 LUFS, TP -8.0 dB (усиление -0.9 dB)
+  M21_1              синтез: 2.68 с, -16.9 LUFS, TP -5.1 dB (усиление -0.9 dB)
+  M21_2              синтез: 9.93 с, -16.9 LUFS, TP -6.8 dB (усиление +0.0 dB)
+  M21b_0             синтез: 1.96 с, -17.0 LUFS, TP -6.2 dB (усиление -1.0 dB)
+  M21b_1             синтез: 6.02 с, -17.0 LUFS, TP -8.1 dB (усиление -1.0 dB)
+  M21b_2             синтез: 2.48 с, -17.0 LUFS, TP -8.8 dB (усиление -2.7 dB)
+  M21b_3             синтез: 8.24 с, -17.0 LUFS, TP -5.2 dB (усиление -3.1 dB)
+  M21b_4             синтез: 4.77 с, -17.0 LUFS, TP -5.7 dB (усиление -0.1 dB)
+  M22_0              синтез: 10.08 с, -16.9 LUFS, TP -4.5 dB (усиление -1.4 dB)
+  M22_1              синтез: 8.46 с, -17.0 LUFS, TP -4.9 dB (усиление -2.5 dB)
+  M22_2              синтез: 10.26 с, -17.0 LUFS, TP -4.1 dB (усиление -1.9 dB)
+  M22_3              синтез: 6.03 с, -17.1 LUFS, TP -5.2 dB (усиление -2.5 dB)
+  M22_4              синтез: 7.09 с, -16.9 LUFS, TP -5.7 dB (усиление -2.8 dB)
+  M22_5              синтез: 2.45 с, -17.0 LUFS, TP -4.6 dB (усиление -0.5 dB)
+  M22_6              синтез: 9.35 с, -17.1 LUFS, TP -5.1 dB (усиление -3.6 dB)
+  M22_7              синтез: 3.07 с, -17.0 LUFS, TP -4.0 dB (усиление +0.5 dB)
+  M22_8              синтез: 3.11 с, -17.0 LUFS, TP -6.1 dB (усиление -3.0 dB)
+  M22_9              синтез: 1.51 с, -17.1 LUFS, TP -9.1 dB (усиление -1.8 dB)
+  M22_11             синтез: 4.33 с, -17.1 LUFS, TP -1.9 dB (усиление +0.9 dB)
+  M22_12             синтез: 3.48 с, -16.9 LUFS, TP -2.4 dB (усиление -0.8 dB)
+  M22_13             синтез: 5.32 с, -17.1 LUFS, TP -1.9 dB (усиление +3.3 dB)
+  M22_14_then0       синтез: 3.72 с, -17.1 LUFS, TP -1.9 dB (усиление +0.7 dB)
+  M22_14_then1       синтез: 2.97 с, -17.0 LUFS, TP -4.2 dB (усиление -2.6 dB)
+  M22_14_then2       синтез: 5.67 с, -17.1 LUFS, TP -1.9 dB (усиление +4.6 dB)
+  M22_14_then3       синтез: 2.94 с, -16.9 LUFS, TP -2.3 dB (усиление +0.0 dB)
+  M22_14             синтез: 2.31 с, -17.0 LUFS, TP -3.5 dB (усиление -1.0 dB)
+  M22_15             синтез: 9.81 с, -17.0 LUFS, TP -8.0 dB (усиление -1.4 dB)
+  M23a_0             синтез: 5.86 с, -16.9 LUFS, TP -5.1 dB (усиление -2.2 dB)
+  M23a_1             синтез: 6.66 с, -17.0 LUFS, TP -4.4 dB (усиление -1.0 dB)
+  M23a_2             синтез: 4.63 с, -17.0 LUFS, TP -5.0 dB (усиление -2.7 dB)
+  M23a_3             синтез: 7.37 с, -16.9 LUFS, TP -4.7 dB (усиление -1.1 dB)
+  M23a_4             синтез: 6.72 с, -16.9 LUFS, TP -5.0 dB (усиление -2.2 dB)
+  M23a_5             синтез: 4.90 с, -17.0 LUFS, TP -5.0 dB (усиление -0.9 dB)
+  M23b_0             синтез: 6.47 с, -16.9 LUFS, TP -5.1 dB (усиление -3.0 dB)
+  M23b_1             синтез: 2.20 с, -17.3 LUFS, TP -5.0 dB (усиление -2.5 dB)
+  M23b_2             синтез: 3.79 с, -17.0 LUFS, TP -6.7 dB (усиление -2.6 dB)
+  M23b_3             синтез: 5.34 с, -17.0 LUFS, TP -4.4 dB (усиление +1.8 dB)
+  M23b_4             синтез: 2.11 с, -16.9 LUFS, TP -5.6 dB (усиление -3.5 dB)
+  M23b_5             синтез: 4.39 с, -17.1 LUFS, TP -5.0 dB (усиление -1.8 dB)
+  M23b_6             синтез: 2.31 с, -17.0 LUFS, TP -6.3 dB (усиление -2.8 dB)
+  M23b_7             синтез: 5.00 с, -17.0 LUFS, TP -2.9 dB (усиление -1.9 dB)
+  M23b_8             синтез: 4.44 с, -17.0 LUFS, TP -4.7 dB (усиление -3.1 dB)
+  M23b_9             синтез: 4.10 с, -17.0 LUFS, TP -6.4 dB (усиление -4.3 dB)
+  M23c_0             синтез: 8.60 с, -17.0 LUFS, TP -5.7 dB (усиление -3.0 dB)
+  M23c_1             синтез: 2.77 с, -16.9 LUFS, TP -6.7 dB (усиление -0.5 dB)
+  M23c_2             синтез: 3.55 с, -17.0 LUFS, TP -7.1 dB (усиление -4.1 dB)
+  M23c_3             синтез: 8.14 с, -17.0 LUFS, TP -6.9 dB (усиление -0.3 dB)
+  M23c_4             синтез: 4.06 с, -17.0 LUFS, TP -5.2 dB (усиление -3.4 dB)
+  M23c_5             синтез: 2.95 с, -17.0 LUFS, TP -6.2 dB (усиление -1.7 dB)
+  M23c_6             синтез: 3.03 с, -16.9 LUFS, TP -10.1 dB (усиление -3.8 dB)
+  M23c_7             синтез: 2.83 с, -16.9 LUFS, TP -4.3 dB (усиление +0.1 dB)
+  M23c_8             синтез: 4.07 с, -17.0 LUFS, TP -9.4 dB (усиление -2.4 dB)
+  M23d_1             синтез: 6.17 с, -16.9 LUFS, TP -2.0 dB (усиление +2.2 dB)
+  M23d_2             синтез: 8.05 с, -17.0 LUFS, TP -8.6 dB (усиление -0.8 dB)
+  M23d_3             синтез: 4.51 с, -16.9 LUFS, TP -3.6 dB (усиление -2.1 dB)
+  M23d_4             синтез: 2.62 с, -17.0 LUFS, TP -3.3 dB (усиление +4.6 dB)
+  M23d_5             синтез: 6.95 с, -17.0 LUFS, TP -4.5 dB (усиление +0.6 dB)
+  M23d_6             синтез: 4.13 с, -17.0 LUFS, TP -5.1 dB (усиление -2.8 dB)
+  M24_0              синтез: 10.06 с, -16.9 LUFS, TP -3.6 dB (усиление -2.2 dB)
+  M24_1              синтез: 6.86 с, -17.0 LUFS, TP -4.6 dB (усиление -2.0 dB)
+  M25_0              синтез: 9.62 с, -17.0 LUFS, TP -4.3 dB (усиление -3.1 dB)
+  M25_1              синтез: 5.94 с, -17.0 LUFS, TP -6.2 dB (усиление -3.7 dB)
+  M25_2              синтез: 2.51 с, -17.0 LUFS, TP -5.3 dB (усиление -0.2 dB)
+  M25_3              синтез: 1.75 с, -16.9 LUFS, TP -5.4 dB (усиление -3.7 dB)
+  M25_4              синтез: 3.31 с, -17.0 LUFS, TP -5.5 dB (усиление -2.9 dB)
+  M25_5              синтез: 4.51 с, -17.0 LUFS, TP -4.8 dB (усиление -2.7 dB)
+  M25_7              синтез: 5.51 с, -17.0 LUFS, TP -4.3 dB (усиление -2.4 dB)
+  M25_8              синтез: 4.21 с, -16.9 LUFS, TP -5.3 dB (усиление -2.8 dB)
+  M26_0              синтез: 8.56 с, -17.0 LUFS, TP -3.6 dB (усиление -2.1 dB)
+  M26_1              синтез: 2.53 с, -17.0 LUFS, TP -5.8 dB (усиление -2.9 dB)
+  M26_2              синтез: 4.46 с, -17.0 LUFS, TP -5.7 dB (усиление -2.1 dB)
+  M26_3              синтез: 4.60 с, -16.9 LUFS, TP -5.5 dB (усиление -1.7 dB)
+  M26_4              синтез: 6.27 с, -16.9 LUFS, TP -5.7 dB (усиление -2.5 dB)
+  M26_5              синтез: 3.29 с, -17.0 LUFS, TP -6.8 dB (усиление -4.4 dB)
+  M26_6              синтез: 4.51 с, -17.0 LUFS, TP -4.5 dB (усиление -1.3 dB)
+  M26_7              синтез: 6.39 с, -17.0 LUFS, TP -6.5 dB (усиление -3.1 dB)
+  M26_8_then0        синтез: 6.38 с, -16.9 LUFS, TP -5.1 dB (усиление -2.7 dB)
+  M26_8              синтез: 3.62 с, -17.0 LUFS, TP -4.7 dB (усиление -3.3 dB)
+  M26_9              синтез: 2.23 с, -16.9 LUFS, TP -6.0 dB (усиление -3.0 dB)
+  M26_10             синтез: 3.35 с, -16.9 LUFS, TP -6.3 dB (усиление -3.0 dB)
+  M26_11             синтез: 5.58 с, -17.0 LUFS, TP -4.5 dB (усиление -2.4 dB)
+  M26_12             синтез: 4.14 с, -16.9 LUFS, TP -5.3 dB (усиление -2.7 dB)
+  M26_13             синтез: 4.96 с, -16.8 LUFS, TP -5.8 dB (усиление -3.5 dB)
+  M26_14             синтез: 15.80 с, -17.0 LUFS, TP -4.7 dB (усиление -2.4 dB)
+  M26_15_then0       синтез: 8.64 с, -17.1 LUFS, TP -4.9 dB (усиление -2.7 dB)
+  M26_16             синтез: 9.05 с, -16.9 LUFS, TP -4.3 dB (усиление -2.0 dB)
+  M26_17             синтез: 1.43 с, -17.0 LUFS, TP -6.0 dB (усиление -1.3 dB)
+  M26_20             синтез: 4.38 с, -17.0 LUFS, TP -9.7 dB (усиление -2.4 dB)
+  M26_21             синтез: 3.20 с, -16.9 LUFS, TP -8.6 dB (усиление -1.9 dB)
+  M26_22             синтез: 5.32 с, -17.0 LUFS, TP -6.3 dB (усиление -2.3 dB)
+  M26_23_then0       синтез: 5.91 с, -17.0 LUFS, TP -5.9 dB (усиление -4.0 dB)
+  M26_23             синтез: 5.26 с, -17.0 LUFS, TP -5.4 dB (усиление -2.3 dB)
+  M26_24             синтез: 4.06 с, -17.0 LUFS, TP -7.1 dB (усиление -0.6 dB)
+  M26_25             синтез: 7.11 с, -16.9 LUFS, TP -4.6 dB (усиление -1.5 dB)
+  M26_26             синтез: 6.00 с, -17.0 LUFS, TP -5.9 dB (усиление -2.9 dB)
+  M26_27             синтез: 4.71 с, -17.0 LUFS, TP -5.4 dB (усиление -3.6 dB)
+  M26_28             синтез: 3.82 с, -17.2 LUFS, TP -7.2 dB (усиление -5.7 dB)
+  M26_29             синтез: 5.20 с, -17.0 LUFS, TP -6.7 dB (усиление -0.8 dB)
+  M26_30             синтез: 4.80 с, -17.0 LUFS, TP -4.6 dB (усиление -2.2 dB)
+  M26_31             синтез: 4.99 с, -17.0 LUFS, TP -4.8 dB (усиление -0.6 dB)
+  M26_32             синтез: 3.52 с, -16.9 LUFS, TP -5.7 dB (усиление -3.7 dB)
+  M26_33             синтез: 3.87 с, -17.0 LUFS, TP -5.0 dB (усиление +1.9 dB)
+  M26_34             синтез: 4.30 с, -16.9 LUFS, TP -7.7 dB (усиление -2.2 dB)
+  M26_35_then0       синтез: 5.42 с, -16.9 LUFS, TP -5.5 dB (усиление -3.6 dB)
+  M26_35             синтез: 6.44 с, -16.9 LUFS, TP -6.0 dB (усиление -3.2 dB)
+  M26_37             синтез: 5.46 с, -16.9 LUFS, TP -2.9 dB (усиление -1.8 dB)
+  Q01_0              синтез: 4.83 с, -17.0 LUFS, TP -5.0 dB (усиление -1.8 dB)
+  Q01_1              синтез: 3.22 с, -17.0 LUFS, TP -4.7 dB (усиление -2.3 dB)
+  Q01_2              синтез: 3.39 с, -17.0 LUFS, TP -6.3 dB (усиление -2.8 dB)
+  Q02_0              синтез: 5.81 с, -17.0 LUFS, TP -4.3 dB (усиление -2.2 dB)
+  Q02_1              синтез: 3.28 с, -17.1 LUFS, TP -2.8 dB (усиление +1.5 dB)
+  Q02_2              синтез: 3.42 с, -16.9 LUFS, TP -3.7 dB (усиление -0.5 dB)
+  Q02_3              синтез: 5.07 с, -17.0 LUFS, TP -2.0 dB (усиление -1.0 dB)
+  Q03_0              синтез: 5.03 с, -17.0 LUFS, TP -4.4 dB (усиление -2.6 dB)
+  Q03_1              синтез: 5.73 с, -17.0 LUFS, TP -7.5 dB (усиление -0.5 dB)
+  Q03_2              синтез: 6.26 с, -17.1 LUFS, TP -8.4 dB (усиление -1.3 dB)
+  Q03_3              синтез: 3.63 с, -16.9 LUFS, TP -8.2 dB (усиление -2.0 dB)
+  Q04_0              синтез: 3.42 с, -17.0 LUFS, TP -3.3 dB (усиление -1.5 dB)
+  Q04_1              синтез: 2.86 с, -17.0 LUFS, TP -7.3 dB (усиление -2.8 dB)
+  Q06_0              синтез: 6.36 с, -17.0 LUFS, TP -4.0 dB (усиление -2.1 dB)
+  Q06_1              синтез: 3.22 с, -16.9 LUFS, TP -6.0 dB (усиление -4.1 dB)
+  Q06_2              синтез: 5.35 с, -17.0 LUFS, TP -5.8 dB (усиление -3.6 dB)
+  Q07_0              синтез: 4.95 с, -17.0 LUFS, TP -5.5 dB (усиление -2.3 dB)
+  Q07_1              синтез: 3.56 с, -17.0 LUFS, TP -4.6 dB (усиление -1.0 dB)
+  Q08_0              синтез: 2.90 с, -16.9 LUFS, TP -6.6 dB (усиление -2.6 dB)
+  Q08_1              синтез: 2.80 с, -17.0 LUFS, TP -5.2 dB (усиление +6.1 dB)
+  Q09_0              синтез: 4.29 с, -17.0 LUFS, TP -4.5 dB (усиление -0.3 dB)
+  убраны устаревшие записи (362): E4.M23d.prompt (текст изменён), E5.M25.prompt (текст изменён), E5.windlass.laid (текст изменён), H1.cups.look (текст изменён), H1.cups.prompt (текст изменён), H1.photo.look (текст изменён), H1.photo.prompt (текст изменён), H1.scarf.look (текст изменён), H1.scarf.use (текст изменён), H1.shelf.look (текст изменён), H1.shelf.look_done (текст изменён), H1.shelf.look_wet (текст изменён), H1.shelf.prompt (текст изменён), H1.shutter.look (текст изменён), H1.shutter.use (текст изменён), H1.stove.look (текст изменён), H1.stove.look_settled (текст изменён), H1.stove.use (текст изменён), H1.tikhon.look (текст изменён), H1.tikhon.prompt (текст изменён), H1.v01.done (текст изменён), H1.wave.look (текст изменён), H1d.nina_coat.look (текст изменён), H1d.nina_coat.prompt (текст изменён), H1d.tea_corner.look (текст изменён), H1d.tea_corner.prompt (текст изменён), H2.bell.look (текст изменён), H2.bell.use (текст изменён), H2.bench.look (текст изменён), H2.bench.use (текст изменён), H2.brace.look (текст изменён), H2.bundle_nina.done (текст изменён), H2.bundle_nina.look (текст изменён), H2.bundle_nina.use (текст изменён), H2.clapper_box.look (текст изменён), H2.hinges_box.look (текст изменён), H2.hinges_box.use (текст изменён), H2.stand_zm.look (текст изменён), H2d.bell.hang (текст изменён), H2d.clapper_box.use (нет в текстах), H2d.nina_mirror.clamp (текст изменён), H2d.nina_mirror.knock_first (текст изменён), H2d.nina_mirror.watch_again (текст изменён), H2d.office_mirror.bell_mute (текст изменён), H2d.office_mirror.bell_unclamped (текст изменён), H2d.office_mirror.clamped (текст изменён), H2d.office_mirror.glass_loose (текст изменён), H2d.office_mirror.glass_touch (текст изменён), H2d.office_mirror.hook_slipped (текст изменён), H2d.office_mirror.view_again (текст изменён), H2d.office_mirror.view_first (текст изменён), H2d.stand_zm.mount (текст изменён), H2q.second_bench.look (текст изменён), H3.exit_O1.closed (текст изменён), H3.mirror_home.look (текст изменён), H3.mirror_home.use (текст изменён), H3.photo_school.look (текст изменён), H3.puzzle.error (текст изменён), H3.puzzle.intro (текст изменён), H3.puzzle.need (текст изменён), H3.puzzle.success (текст изменён), H3.school_door.look (текст изменён), H4.chest.look (текст изменён), H4.v02.done (текст изменён), H4.window.look (текст изменён), M1.bench.look (текст изменён), M1.schedule.look (текст изменён), M1.schedule.use (текст изменён), M1.wheel.look (текст изменён), M2.exit_M3.closed (текст изменён), M2.office_door.look (текст изменён), M2.office_door.use (текст изменён), M2.office_door_open.look (текст изменён), M2.office_door_open.use (текст изменён), M2.photo.look (текст изменён), M2.photo.use (текст изменён), M3.answer.prompt (текст изменён), M3.clamp.look (текст изменён), M3.gauge.look (текст изменён), M3.journal.look (текст изменён), M3.journal.use (текст изменён), M3.key_nail.look (текст изменён), M3.key_nail.use (текст изменён), M4.gate.key (текст изменён), M4.gate.locked (текст изменён), M4.gate.look (текст изменён), O1.bird_drawing.look (текст изменён), O1.board.chalk (текст изменён), O1.board.chalk_ilya (текст изменён), O1.board.chalk_mama (текст изменён), O1.board.chalk_none (текст изменён), O1.board.look (текст изменён), O1.board.prompt (текст изменён), O1.board.use (текст изменён), O1.chalk.look (текст изменён), O1.chalk.use (текст изменён), O1.exit_H3.closed (текст изменён), O1.notebooks.look (текст изменён), O1.notebooks.use (текст изменён), O1.sack.look (текст изменён), O1.sack.use (текст изменён), O1.teacher_drawer.look (текст изменён), O1.teacher_drawer.use (текст изменён), O1.v03.done (текст изменён), O1d.class_sign.look (текст изменён), O1q.village_map.look (текст изменён), O1q.village_map.look_new (текст изменён), O1q.village_map.look_old (текст изменён), O1q.village_map.prompt (текст изменён), O2.exit_O4.loop (текст изменён), O2.porch_step.look (текст изменён), O2.tree.look (текст изменён), O2.window_other.look (текст изменён), O2d.mitten_path.look (текст изменён), O2d.mitten_path.take (текст изменён), O3.clock.look (текст изменён), O3.dunya_mirror.look (текст изменён), O3.icon.look (текст изменён), O3.nina.ribbon (текст изменён), O3.window.look (текст изменён), O4.exit_O2.closed (текст изменён), O4.exit_S1.closed (текст изменён), O4.letters_bag.look (текст изменён), O4.letters_bag.prompt (текст изменён), O4.mitya_board.look (текст изменён), O4.mitya_board.prompt (текст изменён), O4q.ulyana.look (нет в текстах), O4q.workshop.look (текст изменён), O4q.workshop.look_agata (текст изменён), O4q.workshop.look_ilya (текст изменён), O4q.workshop.prompt (текст изменён), R1.exit_R2.closed_check (текст изменён), R1.exit_Z2.closed (текст изменён), R1.instruction.look (текст изменён), R1.instruction.use (текст изменён), R1.lantern.look (текст изменён), R1.lantern.use (текст изменён), R1.pelageya.prompt (текст изменён), R1.rope.look (текст изменён), R1.rope.photo (текст изменён), R1.rope.use (текст изменён), R1.stopper.look_empty (текст изменён), R1.stopper.look_ring (текст изменён), R2.rope.look (текст изменён), R3.lamp_post.look (текст изменён), R3.stopor.look (текст изменён), S1.house.look (текст изменён), S1.river.look (текст изменён), S1.street_sign.look (текст изменён), S1.street_sign.look_moved (текст изменён), Z1.drawings.look (текст изменён), Z1.drawings.photo (текст изменён), Z1.drawings.use (текст изменён), Z1.exit_Z4.closed (текст изменён), Z1.letters.look (текст изменён), Z1.plan.look (текст изменён), Z1.tamara.after (текст изменён), Z1.tamara.prompt (текст изменён), Z2.exit_H1.unlock (текст изменён), Z2.exit_M1.closed (текст изменён), Z2.exit_R1.closed (текст изменён), Z2.exit_Z3.closed (текст изменён), Z2.landmarks.look (текст изменён), Z3.old_pier_base.look (текст изменён), Z3.old_pier_base.photo (текст изменён), Z3.plate.look (текст изменён), Z3d.plate_dry.look (текст изменён), Z3d.plate_dry.skoba (текст изменён), Z4.exit_H3.closed (текст изменён), Z4.lantern.look (текст изменён), Z4.post_sign.look (текст изменён), agata:H1.cups.prompt (текст изменён), agata:H1.cups.react_blue (текст изменён), agata:H1.cups.react_white (текст изменён), agata:H1.exit_H2.dark (текст изменён), agata:H1.exit_H3.dark (текст изменён), agata:H1.exit_H4.dark (текст изменён), agata:H1.photo.react_shelf (текст изменён), agata:H1.photo.react_table (текст изменён), agata:H1.shelf.not_yet (текст изменён), agata:H1.shelf.not_yet_dark (текст изменён), agata:H1.wave.use (текст изменён), agata:H1d.nina_coat.use (текст изменён), agata:H2.bell.thought (текст изменён), agata:H2.brace.before_plan (текст изменён), agata:H2.brace.take (текст изменён), agata:H2.hinges_box.empty (текст изменён), agata:H2.hinges_box.thought (текст изменён), agata:H2d.bell.ring_far (текст изменён), agata:H2d.nina_mirror.clamp_early (текст изменён), agata:H2d.stand_zm.enter (текст изменён), agata:H3.mirror_home.use (текст изменён), agata:H3.school_door.use (текст изменён), agata:H3.side_door.unbolt (текст изменён), agata:M1.exit_M2.closed (текст изменён), agata:M1.exit_M4.closed (текст изменён), agata:M2.mirror.look (текст изменён), agata:M3.clamp.use (текст изменён), agata:O1.bird_drawing.prompt (текст изменён), agata:O1.bird_drawing.react_boat (текст изменён), agata:O1.bird_drawing.react_bridge (текст изменён), agata:O1.bird_drawing.react_scarf (текст изменён), agata:O1.board.chalk (текст изменён), agata:O1.board.use (текст изменён), agata:O1.enter.winter (текст изменён), agata:O1q.village_map.traced (текст изменён), agata:O1q.village_map.use (текст изменён), agata:O2.exit_O4.loop (текст изменён), agata:O2.mitten.look (текст изменён), agata:O2.mitten.take (текст изменён), agata:O2.porch_step.mitten (текст изменён), agata:O2.tree.look (текст изменён), agata:O2.window_other.look (текст изменён), agata:O3.clock.look_common (текст изменён), agata:O3.clock.watch (текст изменён), agata:O3.nina.ribbon_again (текст изменён), agata:O3.nina_letters.again (текст изменён), agata:O3.nina_letters.look (текст изменён), agata:O3.nina_letters.use (текст изменён), agata:O3.notches.look (текст изменён), agata:O3.notebooks.again (текст изменён), agata:O3.notebooks.look (текст изменён), agata:O3.notebooks.use (текст изменён), agata:O3.village_list.again (текст изменён), agata:O3.village_list.look (текст изменён), agata:O3.village_list.use (текст изменён), agata:O4.ilya_house.look (текст изменён), agata:O4.nina_house.look (текст изменён), agata:O4.river.look (текст изменён), agata:O4q.ulyana.say_help (нет в текстах), agata:O4q.ulyana.say_tracing (нет в текстах), agata:R1.exit_R2.closed (текст изменён), agata:R1.exit_R2.closed_first (текст изменён), agata:R1.exit_Z2.closed (текст изменён), agata:R1d.pelageya.at_turn (текст изменён), agata:R3.exit_R4.unbuilt (текст изменён), agata:S1.street_sign.use (текст изменён), agata:Z1.exit_Z4.closed (текст изменён), agata:Z2.exit_H1.closed (текст изменён), agata:Z2.exit_M1.closed (текст изменён), agata:Z2.exit_R1.closed (текст изменён), agata:Z2.exit_Z3.closed (текст изменён), agata:Z3d.plate_dry.no_skoba (текст изменён), agata:Z3d.plate_dry.use_skoba (текст изменён), agata:examine.bell_clapper (текст изменён), agata:examine.brace_plate (текст изменён), agata:examine.chalk (текст изменён), agata:examine.clamp (текст изменён), agata:examine.door_hinges (текст изменён), agata:examine.drawing_ilya (текст изменён), agata:examine.journal_manager (текст изменён), agata:examine.key_house (текст изменён), agata:examine.key_sluice (текст изменён), agata:examine.mirror_mill (текст изменён), agata:examine.mitten (текст изменён), agata:examine.photo_bridge (текст изменён), agata:examine.plan_crossing (текст изменён), agata:examine.pocket_watch (текст изменён), agata:examine.school_ribbon (текст изменён), agata:item.bell_clapper.wrong (текст изменён), agata:item.brace_plate.wrong (текст изменён), agata:item.chalk.wrong (текст изменён), agata:item.clamp.wrong (текст изменён), agata:item.door_hinges.wrong (текст изменён), agata:item.key_house (текст изменён), agata:item.key_house.wrong (текст изменён), agata:item.key_sluice.wrong (текст изменён), agata:item.letter_tamara (текст изменён), agata:item.mirror_mill.wrong (текст изменён), agata:item.mitten (текст изменён), agata:item.mitten.wrong (текст изменён), agata:item.pocket_watch (текст изменён), agata:mech.nina_mirror.watch_hint (текст изменён), agata:mech.nina_mirror.watch_slot_empty (текст изменён), agata:mech.nina_mirror.wrong_item (текст изменён), agata:mech.office_mirror.wedge_slipped (текст изменён), agata:mech.plate.brace_jumped (текст изменён), agata:mech.shutter.dropped (текст изменён), agata:mech.shutter.stuck (текст изменён), ilya:E5.windlass.bump (текст изменён), ilya:O3.ilya.after (текст изменён), ilya:O3.ilya.boat_drawing (текст изменён), ilya:O4q.workshop.ilya_third (текст изменён), ilya:mech.bench.checked (текст изменён), ilya:mech.bench.fitted (текст изменён), ilya:mech.bench.screw_slipped (нет в текстах), ilya:mech.bench.tightened (текст изменён), ilya:mech.bench.wedge_loose (текст изменён), ilya_wife:O3.ilya_wife.after (текст изменён), item.brace_plate (текст изменён), item.chalk (текст изменён), item.clamp (текст изменён), item.door_hinges (текст изменён), item.drawing_ilya (текст изменён), item.journal_manager (текст изменён), item.key_house (текст изменён), item.letter_tamara (текст изменён), item.mirror_mill (текст изменён), item.mitten (текст изменён), item.photo_bridge (текст изменён), item.plan_crossing (текст изменён), item.pocket_watch (текст изменён), item.school_ribbon (текст изменён), mech.nina_mirror.watch_hold (текст изменён), mech.office_mirror.wedges_hint (текст изменён), mech.village_map.slipped (нет в текстах), mitya:O4.mitya.after (текст изменён), mitya:O4.mitya_board.use (текст изменён), mitya:O4q.workshop.mitya_cramped (текст изменён), mitya:R3.mitya.after (текст изменён), mitya:mech.bench.stopped (текст изменён), nina:H1d.nina.after (текст изменён), nina:O1d.nina.after (текст изменён), nina:O3.nina.after (текст изменён), nina:O3.nina.before (текст изменён), pavel:M1.pavel.after (текст изменён), pavel:M1.pavel.before_agree (текст изменён), pavel:M1.pavel.day1 (текст изменён), pavel:M2.mirror.take (текст изменён), pavel:M2.pavel.after (текст изменён), pavel:M2.pavel.after_lifted (текст изменён), pavel:M2.pavel.at_mirror (текст изменён), pavel:M3.pavel.before (текст изменён), pavel:M4.pavel.after (текст изменён), pavel:M4.pavel.before (текст изменён), pavel:M4.sluice.wait (текст изменён), pavel:M4d.pavel.after_bridge (текст изменён), pavel:mech.sluice.slipped (текст изменён), pelageya:R1.pelageya.after (текст изменён), pelageya:R1.pelageya.boats (текст изменён), pelageya:R1.pelageya.manager (текст изменён), pelageya:R1.pelageya.marsh (текст изменён), pelageya:R1.pelageya.sluice (текст изменён), pelageya:R1d.lantern.count_wrong (текст изменён), pelageya:R1d.pelageya.day2 (текст изменён), pelageya:R1d.pelageya.lantern (текст изменён), pelageya:R1d.pelageya.shuttle (текст изменён), pelageya:R1d.pelageya.to_boat (текст изменён), pelageya:R1d.pelageya.wait_water (текст изменён), pelageya:R2.exit_R1.closed (текст изменён), pelageya:R3.exit_R2.closed (текст изменён), pelageya:R3.pelageya.after (текст изменён), pelageya:Z3d.pelageya.knot (текст изменён), pelageya:Z3d.pelageya.wait_skoba (текст изменён), pelageya:Z3d.plate.knot_wrong (текст изменён), tamara:O4.letters_bag.use (текст изменён), tamara:O4.tamara.after (текст изменён), tamara:Z1.tamara.after (текст изменён), tamara:Z1.tamara.late (текст изменён), tamara:Z1.tamara.school (текст изменён), tamara:Z1.tamara.sheet (текст изменён), tikhon:H1.tikhon.bell (текст изменён), tikhon:H1.tikhon.bundle (текст изменён), tikhon:H1.tikhon.door (текст изменён), tikhon:H1.tikhon.leave (текст изменён), tikhon:H1.v01.done (текст изменён), ulyana:O1d.ulyana.after (текст изменён), ulyana:O1q.village_map.ulyana_runs (нет в текстах), ulyana:O3.ulyana.after (текст изменён), ulyana:O4q.ulyana.again (нет в текстах), ulyana:O4q.ulyana.say_garden (нет в текстах), ulyana:O4q.ulyana.say_map (нет в текстах)
+[H59a] синтезировано 255, переобработано 0, ошибок 0; символов текста 16743; списано кредитов (character-cost): 7364, изменение счётчика подписки: 7311
+  предупреждение: ru/M03_5: подача -24.5 LUFS до нормализации — -8.1 LU от медианы agata (-16.4); допустимо -6…+4 (нарочно тихая) — в списке перезаписи после H59
+  предупреждение: ru/M05_0: подача -10.4 LUFS до нормализации — +6.0 LU от медианы agata (-16.4); допустимо -4…+4 — в списке перезаписи после H59
+  предупреждение: ru/M12_0: подача -10.6 LUFS до нормализации — +5.8 LU от медианы agata (-16.4); допустимо -4…+4 — в списке перезаписи после H59
+  предупреждение: ru/M13_1_promise: подача -12.2 LUFS до нормализации — +4.2 LU от медианы agata (-16.4); допустимо -4…+4 — в списке перезаписи после H59
+  предупреждение: ru/M03_0: подача -22.4 LUFS до нормализации — -5.0 LU от медианы tikhon (-17.4); допустимо -4…+4 — в списке перезаписи после H59
+  ОШИБКА: ru/M02_4: подача -20.6 LUFS до нормализации — -4.2 LU от медианы agata (-16.4); допустимо -4…+4 — перезаписать голосом и громкостью персонажа (или внести в pipeline/requests/voice_after_H59.json, если ждёт H59)
+validate_voice: манифесты: ru 279 (279 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, N02, Q01, Q02, Q03, Q04, Q06, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 44; закадровых фраз по правилам voice.json: 611 (с тегами 22), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_Q02_Q06, ru_bag, ru_mechanics
+[voice] validate_voice.py: FAIL (1 ошибок, 5 предупреждений, strict; самопроверка 24/24)
