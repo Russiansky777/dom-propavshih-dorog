@@ -252,7 +252,7 @@ func _test_stove_click() -> void:
 	var sc := _hotspot(room, "scarf")
 	_check(sc != null and room.pick(sc.global_position) == sc, "the wet scarf on the bench wins over the stove")
 	var shelf := _hotspot(room, "shelf")
-	_check(shelf != null and room.pick(shelf.global_position) == shelf, "the shelf sockets on the side face win over the stove")
+	_check(shelf != null and (not shelf.visible or room.pick(shelf.global_position) == shelf), "H12: the shelf on the bench (once the scarf is off) wins over the stove")
 	var t := _hotspot(room, "tikhon")
 	_check(t != null and room.pick(t.global_position) == t, "Tikhon wins over everything under him")
 	# The stove look tells about the sockets (one phrase, no instruction).
@@ -312,8 +312,8 @@ func _test_tikhon_start() -> void:
 	_check(room.pick(body) == hs, "a click on his body %s picks Tikhon" % str(body.round()))
 	_check(_rect_of(hs).has_point(t.global_position + Vector2(0, -2)), "his hotspot rect %s is on the figure (feet %s)" % [str(_rect_of(hs)), str(t.global_position)])
 	# Sockets visible, no shelf yet.
-	_check(_layer_visible(room, "holes_stove") and _layer_visible(room, "holes_table") and not _layer_visible(room, "shelf_stove") and not _layer_visible(room, "shelf_table"),
-		"sockets in both places (stove side, wall by the table), no shelf before Q04")
+	_check(_layer_visible(room, "holes_stove") and room.get_node_or_null("Layers/holes_table") == null and not _layer_visible(room, "shelf_stove"),
+		"H13: sockets in one place (stove side), no shelf hung before Q04")
 
 
 ## Tikhon's M03 lines as the bot sees them (text cut like _finish does).
@@ -424,36 +424,22 @@ func _test_q04_a() -> void:
 
 
 func _test_q04_b() -> void:
-	var room: Node = await _enter(["done_M03", "started_M03", "met_tikhon", "house_open", "stove_lit", "h1_shutter_open", "h1_scarf_removed", "q04_shelf_table", "done_Q04"])
+	# H13 (Director 24.10): one place for the shelf; B is «Не сейчас» — the shelf stays on the bench, Tikhon in his
+	# armchair, the story stays open (the choice comes again).
+	var room: Node = await _enter(["done_M03", "started_M03", "met_tikhon", "house_open", "stove_lit", "h1_shutter_open", "h1_scarf_removed"])
+	sr.interact(_hotspot(room, "shelf"))
+	await _frames(3)
+	await _finish(["B"])
 	var t := _puppet(room)
-	var e := _place_entry(["q04_shelf_table"])
-	_check(t != null and t.global_position.is_equal_approx(Vector2(e["feet"][0], e["feet"][1])), "Q04 B: Tikhon on the shelf by the table %s" % str(e.get("feet")))
-	_check(_layer_visible(room, "shelf_table") and not _layer_visible(room, "holes_table") and _layer_visible(room, "holes_stove"),
-		"B: its shelf is shown over its own sockets; the stove-side sockets stay (the other mount)")
-	# Defect «полка B над горячей дверцей» (scenario Q04: the tail must not be near the hot door): the B
-	# shelf is on the wall by the table — its layer does not touch the stove (click rect) nor the oven door.
-	var lay: Sprite2D = _layer_sprite(room, "shelf_table")
-	var img: Image = _sprite_image(lay)
-	var used: Rect2i = img.get_used_rect()
-	var box := Rect2(lay.global_position + Vector2(used.position) * lay.scale, Vector2(used.size) * lay.scale)
-	var stove_r := _rect_of(_hotspot(room, "stove"))
-	var oven_door := Rect2(130, 400, 185, 180)
-	_check(not box.intersects(stove_r) and not box.intersects(oven_door), "the B shelf %s is off the stove %s and the oven door" % [str(box), str(stove_r)])
-	_check(box.position.x > 600.0 and box.end.x < 860.0 and box.end.y < 560.0, "the B shelf is on the wall left of the porch door, above the side table (box %s)" % str(box))
-	# He sits on it: feet on the plank (opaque right under them), not hanging; the tail goes right — away
-	# from the stove (drawn facing left, not mirrored), his body clear of the stove rect.
-	_check(box.has_point(t.global_position), "his feet %s are on the B shelf (box %s)" % [str(t.global_position), str(box)])
-	var q: Vector2 = (t.global_position + Vector2(0, 4) - lay.global_position) / lay.scale
-	_check(img.get_pixelv(Vector2i(q)).a > 0.5, "the B shelf is opaque right under his feet (does not hang in the air)")
-	_check(t.scale.x > 0.0 and t.global_position.x - t.figure_height_px() * 0.4 > stove_r.end.x, "B: tail to the right, away from the stove; he is clear of it (x %.0f)" % t.global_position.x)
-	await physics_frame
-	var hs := _hotspot(room, "tikhon")
-	var body: Vector2 = t.global_position + Vector2(0, -t.figure_height_px() * 0.45)
-	_check(room.pick(body) == hs, "B: a click on his body picks Tikhon")
-	var done := _hotspot(room, "shelf_done")
-	_check(done != null and room.pick(Vector2(t.global_position.x - 30, t.global_position.y + 18)) == done, "B: a click on the shelf under him picks the installed shelf")
-	print("        shelf B: feet %s, height %.0f px, layer %s" % [str(t.global_position), t.figure_height_px(), str(box)])
-
+	var e := _place_entry([])
+	_check(gs.has_flag("q04_declined") and not gs.has_flag("done_Q04") and _layer_visible(room, "shelf_on_bench") and not _layer_visible(room, "shelf_stove"),
+		"B «не сейчас»: the shelf stays on the bench, Q04 open")
+	_check(t != null and t.global_position.is_equal_approx(Vector2(e["feet"][0], e["feet"][1])), "B: Tikhon stays in the armchair %s" % str(e.get("feet")))
+	sr.interact(_hotspot(room, "shelf"))
+	await _frames(3)
+	_check(String(sr.current_beat.get("type", "")) == "options", "the choice comes again after «не сейчас»")
+	await _finish(["A"])
+	_check(gs.has_flag("done_Q04") and gs.has_flag("q04_corner_stove"), "changed her mind: the shelf by the stove")
 
 func _test_exits() -> void:
 	var room: Node = await _enter(["done_M03", "started_M03", "met_tikhon", "house_open", "stove_lit", "h1_shutter_open", "h1_scarf_removed"])
@@ -524,12 +510,11 @@ func _beat_key_after(h: Node2D) -> Dictionary:
 func _test_shelf_reasons() -> void:
 	var room: Node = await _enter([])
 	var shelf := _hotspot(room, "shelf")
-	_check(shelf != null and shelf.visible, "the leaning shelf is clickable before Q04")
-	var b := await _beat_key_after(shelf)
-	_check(String(b.get("text_key", "")) == "H1.shelf.look_wet" and String(b.get("text", "")).contains("мокрый платок") and String(b.get("text", "")).contains("ни лечь"),
-		"G9: the shelf names the wet towel on the bench: %s" % str(b))
+	_check(shelf != null and not shelf.visible, "H12: the shelf lies under the wet scarf — not clickable until the scarf is off")
 	gs.set_flag("h1_scarf_removed", true)
-	b = await _beat_key_after(shelf)
+	await _frames(2)
+	_check(shelf.visible, "H12: the scarf off — the shelf on the bench")
+	var b := await _beat_key_after(shelf)
 	_check(String(b.get("text_key", "")) == "H1.shelf.not_yet" and String(b.get("text", "")).contains("печь"), "G11: towel gone, stove cold — first the stove: %s" % str(b))
 	gs.set_flag("stove_lit", true)
 	b = await _beat_key_after(shelf)
@@ -545,7 +530,7 @@ func _test_shelf_reasons() -> void:
 	sr.interact(shelf)
 	await _frames(3)
 	_check(String(sr.current_beat.get("type", "")) == "options", "after M03 the shelf opens the choice: %s" % str(sr.current_beat))
-	await _finish(["B"])
+	await _finish(["A"])
 	_check(gs.has_flag("done_Q04"), "Q04 done")
 	var stove := _hotspot(room, "stove")
 	b = await _beat_key_after(stove)
@@ -577,25 +562,26 @@ func _used_box(node: Node) -> Rect2:
 ## (batch 9 art: one 92-px board; until it comes, the old pictures scaled to it in data); the towel lies on the bench
 ## until taken, then hangs on the LEFT hook (the middle one is Nina's coat) and the bench is bare.
 func _test_shelf_sizes() -> void:
+	# H12 (Director 24.10, batch 10b): the wet scarf lies over the shelf on the bench; taken — the bare bench and the shelf
+	# lying on it (the same 92-px board as the hung shelf A); hung — the shelf by the stove, the bench empty.
 	var room: Node = await _enter([])
-	_check(_layer_visible(room, "shelf_leaning") and not _layer_visible(room, "bench_bare") and not _layer_visible(room, "hook_coat"),
-		"before: the shelf leans by the bench, the towel is on the bench, the hook is empty")
-	var lean := _used_box(room.get_node("Layers/shelf_leaning"))
+	_check(_layer_visible(room, "scarf_over_shelf") and not _layer_visible(room, "shelf_on_bench") and not _layer_visible(room, "bench_bare") and not _layer_visible(room, "hook_coat"),
+		"before: the scarf over the shelf on the bench, the hook empty")
+	_check(room.get_node_or_null("Layers/shelf_leaning") == null and room.get_node_or_null("Layers/shelf_table") == null, "no leaning shelf, no place by the table")
+	await _enter(["done_M03", "met_tikhon", "stove_lit", "h1_shutter_open", "h1_scarf_removed"])
+	room = rm.current_room
+	_check(_layer_visible(room, "shelf_on_bench") and _layer_visible(room, "bench_bare") and not _layer_visible(room, "scarf_over_shelf"), "scarf off: the shelf lies on the bare bench")
+	var lying := _used_box(room.get_node("Layers/shelf_on_bench"))
 	await _enter(["done_M03", "met_tikhon", "stove_lit", "h1_shutter_open", "h1_scarf_removed", "q04_corner_stove", "done_Q04"])
 	room = rm.current_room
-	_check(not _layer_visible(room, "shelf_leaning") and _layer_visible(room, "bench_bare") and _layer_visible(room, "hook_coat"),
-		"after: no leaning shelf, the bench is bare, the towel on the hook")
+	_check(not _layer_visible(room, "shelf_on_bench") and _layer_visible(room, "bench_bare") and _layer_visible(room, "hook_coat"),
+		"after: the shelf is off the bench, the towel on the hook")
 	var a := _used_box(room.get_node("Layers/shelf_stove"))
 	var towel := _used_box(room.get_node("Layers/hook_coat"))
 	_check(towel.get_center().x < 1260.0 and towel.position.y > 220.0 and towel.position.y < 300.0,
 		"the towel hangs on the left hook (≈1217, 247 on screen), not the middle one where Nina's coat goes: %s" % str(towel))
-	await _enter(["done_M03", "met_tikhon", "stove_lit", "h1_shutter_open", "h1_scarf_removed", "q04_shelf_table", "done_Q04"])
-	var bb := _used_box(rm.current_room.get_node("Layers/shelf_table"))
-	_check(absf(a.size.x - bb.size.x) / maxf(a.size.x, bb.size.x) < 0.12, "shelf A and shelf B are one size on screen: %s vs %s" % [str(a.size), str(bb.size)])
-	var lean_len := maxf(lean.size.x, lean.size.y)
-	_check(absf(lean_len - a.size.x) / a.size.x < 0.25, "the leaning shelf is the same shelf (long side %.0f vs board %.0f)" % [lean_len, a.size.x])
-	print("        shelf A %s, B %s, leaning %s, towel %s" % [str(a), str(bb), str(lean), str(towel)])
-
+	_check(absf(lying.size.x - a.size.x) / a.size.x < 0.25, "the shelf on the bench is the same shelf (%.0f vs board %.0f)" % [lying.size.x, a.size.x])
+	print("        shelf A %s, on the bench %s, towel %s" % [str(a), str(lying), str(towel)])
 
 ## G13 (Director 23.10: «топящаяся печь разорвана»): every state layer with `align` (rooms data) puts its detail onto the
 ## same detail of the background — the frame of the open oven door onto the closed door: foot on the ledge, centred,

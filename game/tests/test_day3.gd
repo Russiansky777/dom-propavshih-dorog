@@ -783,6 +783,11 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("done_M23a") and gs.has_flag("dunya_letter_on_stove"), "M23a: a year of letters: %s" % str(seen))
 	seen.append_array(await _finish())
+	# H17 (Director 24.10): the last deed of the day — Agata says it is late; the day ends at the bed in the attic.
+	_check(gs.has_flag("bedtime_d3_evening"), "H17: all four deeds — Agata said «пора домой, спать» (flag bedtime_d3_evening)")
+	_check(not gs.has_flag("started_M24") and gs.journal_goal == sd.text("@ui.bedtime_d3_goal"), "H17: the evening waits for the bed; the journal says where it is")
+	_check(await _route(["R3"]) and await _cross_by_rope("R1") and await _route(["Z2", "H1", "H4"]), "home by the rope: the pier → the street → the house → the attic")
+	await _use("bed")
 	var g2 := 0
 	while not gs.has_flag("done_M24") and g2 < 200:
 		seen.append_array(await _finish())
@@ -791,9 +796,9 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M24") and gs.has_flag("morning_day4"), "M24: the evening of day three, then morning: %s" % str(seen))
 	_check(gs.has_save(CP + "day4"), "checkpoint «День четвёртый» written")
 	_check(rm.save_game(SLOT + "_d4"), "save on the morning of day four")
+	_check(_room() == "H4", "morning of day four in the attic (%s)" % _room())
 	# The first span.
-	_check(await _route(["R3"]), "to the far pier")
-	_check(await _cross_by_rope("R1"), "back by pulls on day four (G43)")
+	_check(await _route(["H1", "Z2", "R1"]), "from the attic down to the pier")
 	var gui: Node = main_node.get_node("GameUi")
 	var span_alpha := {}
 	var on_frame := func(f, _h):

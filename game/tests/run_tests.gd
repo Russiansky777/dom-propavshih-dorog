@@ -1029,11 +1029,19 @@ func _test_walkthrough() -> void:
 	_check(bm != null and bm.visible and bm.get_node_or_null("Image") != null and not rm.current_room.get_node("Layers/board_written").visible
 		and not rm.current_room.get_node("Layers/board_ilya").visible, "«Мама, я иду» drawn in chalk (batch 7), the only line on the board")
 
-	# --- home through the school door → the night by the stove (N01), checkpoint «День второй» ---
+	# --- home through the school door → H17: «пора спать» in the gallery, the bed in the attic → the night by the
+	# stove (N01), checkpoint «День второй» ---
 	await bot.go("H3")
-	_check(gs.has_flag("started_N01"), "back home through the school door → the night starts (room=%s)" % bot.room_id())
 	seen = await bot.finish()
-	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "N01 (night by the stove) done: %s" % str(seen))
+	_check(not gs.has_flag("started_N01") and gs.has_flag("h3_night_to_bed") and seen.any(func(x): return String(x).contains("пора спать")),
+		"H17: back home the night does not start by itself — Agata says the bed is in the attic: %s" % str(seen))
+	_check(gs.journal_goal == sd.text("@ui.bedtime_d1_goal"), "H17: the journal points to the bed: %s" % gs.journal_goal)
+	_check(await bot.go("H1") and await bot.go("H4"), "H3→H1→H4 (the attic)")
+	await bot.use("bed")
+	seen = await bot.finish()
+	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "N01 (night by the stove) done after the bed: %s" % str(seen))
+	_check(seen.size() > 0 and String(seen[0]).begins_with("agata:Поздно уже — пора спать"), "H17: «пора спать» at the bed first: %s" % str(seen))
+	seen = seen.slice(1)
 	# (the first staging may already be over inside bot.go — its wait_idle waits for stagings too)
 	var night_lines: Array = seen.filter(func(x): return x != "stage")
 	# The morning staging, then Tikhon's morning line (SCENARIO_FINAL §7 «Утро», block 2 22.10) before the checkpoint.

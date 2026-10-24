@@ -55,6 +55,8 @@ var _turn_hold: Array = []      # [action, node] waiting for the turn to finish
 var _walking: bool = false
 var _target: Vector2 = Vector2.ZERO
 var _pending: Node2D = null
+## perform_at: after the walk — {face: Vector2, act: String} (H15: to the chosen cup on the table and touch it).
+var _then_act: Dictionary = {}
 var _lock_active: bool = false
 var _lock_hold: bool = false    # true while an animation switch replays the same frame
 var _drawn_pos: Vector2 = Vector2.ZERO          # where the figure is drawn while the current frame is shown
@@ -433,11 +435,24 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 ## One click on the room: hotspot/exit → walk to its stand point and interact; else walk there.
+## Walks to `to`, turns to `face` and plays the action `act` (no hotspot is triggered): a choice's own little staging
+## (rooms data choice.options[].agata_go — H15: Agata carries the chosen cup to the table and touches it).
+func perform_at(to: Vector2, face: Vector2, act: String) -> void:
+	_then_act = {"face": face, "act": act}
+	_pending = null
+	if global_position.distance_to(to) < 4.0:
+		_arrive()
+	else:
+		_start_walk(to)
+
+
 func click_at(world_pos: Vector2) -> void:
+	_then_act = {}
 	if _carry_stage in ["walk", "place"] and not StoryRunner.is_busy():
 		_carry_finish_now()  # a click cuts the carry short: the thing is in its place, the click goes on
 	if StoryRunner.is_busy() or _acting:
 		return  # dialogue, puzzle, transition or an action in progress owns the input
+	_then_act = {}
 	var target_node: Node2D = null
 	if room != null:
 		target_node = room.pick(world_pos)
@@ -591,18 +606,35 @@ func _arrive() -> void:
 	if _carry_stage == "walk":
 		_carry_arrive()
 		return
+	if not _then_act.is_empty():
+		var ta := _then_act
+		_then_act = {}
+		_pending = null
+		var fv := (ta["face"] as Vector2) - global_position
+		if fv.length_squared() > 1.0:
+			if is_3d():
+				yaw3d_target = _yaw_for_screen(fv)
+			else:
+				direction = sheet.direction_index(fv)
+		arrived.emit(global_position)
+		var a := String(ta["act"])
+		if a != "" and sheet != null and sheet.has_action(a):
+			_start_action(a, null)
+		else:
+			_play_idle()
+		return
 	var node := _pending
 	_pending = null
 	var act := _action_for(node)
 	if act != "":
-		var v := node.global_position - global_position
+		var v := _look_point(node) - global_position
 		if v.length_squared() > 1.0:
 			if is_3d():
 				yaw3d_target = _yaw_for_screen(v)
 			else:
 				direction = sheet.direction_index(v)
 	elif node != null and is_instance_valid(node):
-		face_towards(node.global_position)
+		face_towards(_look_point(node))
 	else:
 		_play_idle()
 	arrived.emit(global_position)
@@ -612,6 +644,17 @@ func _arrive() -> void:
 			return
 		node.call("trigger")
 		interaction_performed.emit(node)
+
+
+## Where Agata looks at a hotspot: rooms data `agata_face` [x, y] on it or its current state (H15: the cup on the sill;
+## H29: the sluice lever where it hangs), else the hotspot's own position.
+func _look_point(node: Node2D) -> Vector2:
+	if node is StoryHotspot:
+		var h := node as StoryHotspot
+		var af: Array = h.current_state().get("agata_face", h.data.get("agata_face", []))
+		if af.size() >= 2:
+			return Vector2(float(af[0]), float(af[1]))
+	return node.global_position
 
 
 # --- One-shot actions at hotspots ------------------------------------------

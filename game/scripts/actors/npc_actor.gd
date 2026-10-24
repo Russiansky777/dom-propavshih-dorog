@@ -100,6 +100,7 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	if img != null:
 		img.visible = false  # the sheet replaces the static front view
 	direction = sheet.direction_index(ActorSheet.facing_vector(sheet.facing))
+	_face_data()
 	shown_dir = direction
 	visible = h.visible
 	h.visibility_changed.connect(func(): visible = hotspot.visible)
@@ -111,6 +112,16 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 func _exit_tree() -> void:
 	if StoryRunner.beat_changed.is_connected(_on_beat_changed):
 		StoryRunner.beat_changed.disconnect(_on_beat_changed)
+
+
+## H28 (Director 24.10: Pavel at the office door looked right, away from it): rooms data `face` [x, y] on the hotspot
+## or its current state — where the villager looks when not talking (the door he waits at).
+func _face_data() -> void:
+	if hotspot == null or not is_instance_valid(hotspot):
+		return
+	var f: Array = hotspot.current_state().get("face", hotspot.data.get("face", []))
+	if f.size() >= 2:
+		face_towards(Vector2(float(f[0]), float(f[1])))
 
 
 func face_towards(target: Vector2) -> void:
@@ -185,3 +196,4 @@ func _on_beat_changed() -> void:
 			_play_talk()
 	elif talking:
 		_play_idle()
+		_face_data()

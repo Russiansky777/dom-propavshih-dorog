@@ -2,6 +2,8 @@
   "_comment": "Мир (партия E, 23.10): время суток в журнале (F17, data/story/time/_index.json → states[].label) и лист «Распорядок смен» на доске двора мельницы (F19, rooms/M1.json → hotspots.schedule.view). Строки интерфейса (ui.*) и надписи на бумаге (*.title, *.paper_*) не озвучиваются (voice.json → narration.skip_*). Текст листа — черновик агента по SCENARIO_FINAL §7 (M09: «распорядок смен со старыми сигналами колокола») — правит владелец текста.",
   "lang": "ru",
   "texts": {
+    "ui.bedtime_d1_goal": {"text": "Ночь. Пора спать: кровать — на чердаке тётиного дома.", "draft": true},
+    "ui.bedtime_d3_goal": {"text": "Дела дня сделаны. Пора спать: кровать — на чердаке тётиного дома.", "draft": true},
     "ui.time_d1_afternoon": {"text": "День первый · после полудня", "draft": true},
     "ui.time_d1_dusk": {"text": "День первый · сумерки", "draft": true},
     "ui.time_d1_night": {"text": "День первый · ночь", "draft": true},

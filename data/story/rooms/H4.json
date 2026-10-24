@@ -1,34 +1,37 @@
 {
   "id": "H4",
-  "_art": "Фон H4_bg.png (чердак): слуховое окно, сундук слева, слой H4_fg_boxes.png — пустые коробки на переднем плане справа (окклюдер z=1000).",
+  "_art": "Фон H4_bg.png (чердак): слуховое окно, сундук слева, слой H4_fg_boxes.png — пустые коробки на переднем плане справа (окклюдер z=1000). Партия 10б (H17/G44, 24.10): кровать справа (state_bed — всегда, под коробками), открытый сундук (state_chest_open — после attic_chest_open) и язык колокола в нём (state_chest_clapper — пока его не взяли).",
   "background": {"kind": "interior", "image": "res://assets/rooms/H4/bg.png", "wall": "#4e4238", "floor": "#6a5a44", "accent": "#8a7a5a", "horizon": 620},
   "walkable": [[20, 1070], [20, 735], [150, 718], [570, 678], [600, 632], [760, 622], [1300, 622], [1450, 632], [1450, 690], [1340, 738], [1190, 790], [1140, 808], [1140, 1070]],
   "no_walk_samples": [[350, 650, "сундук"], [1400, 900, "коробки"], [1700, 820, "коробки"], [1750, 1000, "пол за коробками (не дойти)"], [60, 620, "мешок у стены"]],
   "walk_samples": [[800, 900], [700, 1000], [1020, 680], [560, 740], [1300, 680]],
   "_depth_note": "Рост Агаты = 345 px × scale (фигура в кадре 384 px, модель 1.657 м) — см. rooms/_index.json agata_ref; ориентиры height_refs проверяет tools/validate_rooms.py (±12 %). у сундука 1.35 → 466 px при 508 (−8 %); у ящиков 2.0 → 690 при 714",
-  "height_refs": [{"what": "сундук", "y": 705, "px": 230, "m": 0.75}, {"what": "ящик на переднем плане", "y": 1070, "px": 280, "m": 0.65}],
+  "height_refs": [
+    {"what": "сундук", "y": 705, "px": 230, "m": 0.75},
+    {"what": "ящик на переднем плане", "y": 1070, "px": 280, "m": 0.65}
+  ],
   "door_ref": "none — чердак, выход вниз по лестнице, двери в кадре нет",
   "depth": {"top_y": 620, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 2.0},
   "layers": [
+    {"id": "bed", "image": "res://assets/rooms/H4/state_bed.png", "z": 0, "_note": "H17: кровать на чердаке — конец дня («главы»): хотспот bed → sleep"},
+    {"id": "chest_open", "image": "res://assets/rooms/H4/state_chest_open.png", "z": 0, "if": ["attic_chest_open"], "_note": "G44: сундук открыт после первого клика"},
+    {"id": "chest_clapper", "image": "res://assets/rooms/H4/state_chest_clapper.png", "z": 1, "if": ["attic_chest_open"], "unless": ["has_bell_clapper"], "_note": "G44 (решение Директора 24.10): язык колокола лежит в сундуке на чердаке; взят — слой выключен"},
     {"id": "boxes", "image": "res://assets/rooms/H4/fg_boxes.png", "occluder": true, "z": 1000}
   ],
-  "spawns": {"default": [800, 900], "from_H1": [700, 1000]},
+  "spawns": {"default": [800, 900], "from_H1": [700, 1000], "bed": [1400, 668]},
   "props": [],
   "hotspots": [
-    {
-      "id": "window", "kind": "object", "label": "@H4.window.label", "rect": [780, 70, 500, 540], "stand": [1020, 680], "color": "#9fb8cc", "draw": false,
-      "look": "@H4.window.look"
-    },
-    {
-      "id": "chest", "kind": "object", "label": "@H4.chest.label", "rect": [130, 470, 440, 240], "stand": [560, 740], "color": "#7a5a3a", "draw": false,
-      "look": "@H4.chest.look"
-    }
+    {"id": "window", "kind": "object", "label": "@H4.window.label", "rect": [780, 70, 500, 540], "stand": [1020, 680], "color": "#9fb8cc", "draw": false, "look": "@H4.window.look"},
+    {"id": "chest", "action_anim": "reach", "kind": "object", "label": "@H4.chest.label", "rect": [130, 330, 440, 380], "stand": [560, 740], "color": "#7a5a3a", "draw": false, "look": "@H4.chest.look", "use": {"sets": ["attic_chest_open"], "gives": ["bell_clapper"], "once_flag": "has_bell_clapper", "text": "@H4.chest.open", "text_done": "@H4.chest.open_done"}, "_note": "G44/H17 (Директор 24.10): язык колокола — в сундуке на чердаке (раньше коробка в мастерской). Скатерть в сундуке не решена — не добавлена."},
+    {"id": "bed", "action_anim": "reach", "kind": "object", "label": "@H4.bed.label", "rect": [1376, 440, 486, 262], "stand": [1400, 668], "color": "#8a6a4a", "draw": false, "look": "@H4.bed.look", "sleep": {"scenes": ["N01", "M24"], "late": {"N01": "@H4.bed.late_d1", "M24": "@H4.bed.late_d3"}, "early": [{"unless": ["done_M05"], "text": "@H4.bed.early_d1_door"}, {"unless": ["done_N01"], "text": "@H4.bed.early_d1_class"}, {"unless": ["done_M20"], "text": "@H4.bed.early_d2"}, {"unless": ["done_M24"], "text": "@H4.bed.early_d3", "left": [{"unless": "done_M23a", "text": "@H4.bed.left_M23a"}, {"unless": "done_M23b", "text": "@H4.bed.left_M23b"}, {"unless": "done_M23c", "text": "@H4.bed.left_M23c"}, {"unless": "done_M23d", "text": "@H4.bed.left_M23d"}]}, {"unless": ["done_M25"], "text": "@H4.bed.after_d4"}, {"text": "@H4.bed.after_all"}]}, "_note": "H17 (Директор 24.10): кровать — конец дня. Дела дня сделаны — первая реплика сцены сна «пора спать, поздно уже» (N01 — день первый, M24 — день третий); не сделаны — «рано ложиться» с тем, что осталось (sleep.early: первая запись, чьи условия выполнены; left — список несделанного). День второй кончается ночью в Ольховке (M20) — по сюжету, не здесь."}
   ],
   "exits": [
     {"to": "H1", "label": "@H4.exit_H1.label", "cue": "down", "rect": [500, 1000, 400, 80], "stand": [700, 1030], "spawn": "from_H4", "draw": false}
   ],
   "scenes": {
-    "V02": {"trigger": "enter", "complete_text": "@H4.v02.done"}
+    "V02": {"trigger": "enter", "complete_text": "@H4.v02.done"},
+    "N01": {"trigger": "sleep:bed", "_note": "H17: ночь первого дня — по кровати (раньше начиналась сама при входе в галерею)"},
+    "M24": {"trigger": "sleep:bed", "_note": "H17: вечер третьего дня — по кровати (раньше начинался сам в комнате последнего дела)"}
   },
-  "flags": {}
+  "flags": {"attic_chest_open": "G44: сундук на чердаке открыт (язык колокола — в нём)"}
 }

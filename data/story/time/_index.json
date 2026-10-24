@@ -4,7 +4,7 @@
   "states": [
     {"id": "d1_afternoon", "day": 1, "phase": "afternoon", "label": "@ui.time_d1_afternoon", "when": {}, "_why": "приезд после полудня, пасмурная осень — как нарисовано (M01–M04)"},
     {"id": "d1_dusk", "day": 1, "phase": "dusk", "label": "@ui.time_d1_dusk", "when": {"all": ["done_M05"]}, "_why": "дверь навешена к сумеркам: в Заречье смеркается, пока в классе зимний день по его времени (M06–M08)"},
-    {"id": "d1_night", "day": 1, "phase": "night", "label": "@ui.time_d1_night", "when": {"all": ["done_M07", "done_M08"]}, "_why": "из класса Агата возвращается в ночь — у печи (N01; ночь ставит сама сцена затемнением)"},
+    {"id": "d1_night", "day": 1, "phase": "night", "label": "@ui.time_d1_night", "when": {"all": ["done_M07", "done_M08"]}, "bedtime": {"goal": "@ui.bedtime_d1_goal", "_why": "H17: день первый кончается кроватью (N01); реплика — на входе в галерею (rooms/H3 on_enter)"}, "_why": "из класса Агата возвращается в ночь — у печи (N01; ночь ставит сама сцена затемнением)"},
     {"id": "d2_morning", "day": 2, "phase": "morning", "label": "@ui.time_d2_morning", "when": {"all": ["done_N01"]}, "_why": "утро на мельнице (M09)"},
     {"id": "d2_midday", "day": 2, "phase": "midday", "label": "@ui.time_d2_midday", "when": {"all": ["done_M09b"]}, "_why": "полдень: зеркало конторы, фонарь, крюк (M10–M12)"},
     {"id": "d2_afternoon", "day": 2, "phase": "afternoon", "label": "@ui.time_d2_afternoon", "when": {"all": ["done_M12"]}, "_why": "после полудня: контора, затвор, мамино зеркало, пока сходит вода (M13–M15а)"},
@@ -13,7 +13,7 @@
     {"id": "d2_night", "day": 2, "phase": "night", "label": "@ui.time_d2_night", "when": {"all": ["done_M17"]}, "_why": "ночью — переправа, Митя, мама, брат (M18–M20)"},
     {"id": "d3_morning", "day": 3, "phase": "morning", "label": "@ui.time_d3_morning", "when": {"all": ["done_M20"]}, "_why": "утро третьего дня: тетради, класс с мамой (M21–M22)"},
     {"id": "d3_day", "day": 3, "phase": "day", "label": "@ui.time_d3_day", "when": {"all": ["done_M22"]}, "_why": "первый свободный день (M23а–г)"},
-    {"id": "d3_evening", "day": 3, "phase": "evening", "label": "@ui.time_d3_evening", "when": {"all": ["done_M23a", "done_M23b", "done_M23c", "done_M23d"]}, "_why": "вечер третьего дня (M24)"},
+    {"id": "d3_evening", "day": 3, "phase": "evening", "label": "@ui.time_d3_evening", "when": {"all": ["done_M23a", "done_M23b", "done_M23c", "done_M23d"]}, "bedtime": {"text": "@H4.bed.bedtime_d3", "goal": "@ui.bedtime_d3_goal", "_why": "H17: все четыре дела дня — Агата говорит, что пора спать; день кончается кроватью (M24)"}, "_why": "вечер третьего дня (M24)"},
     {"id": "d4_day", "day": 4, "phase": "day", "label": "@ui.time_d4_day", "when": {"all": ["done_M24"]}, "_why": "первое бревно (M25)"},
     {"id": "ep_morning", "day": 5, "phase": "morning", "label": "@ui.time_ep_morning", "when": {"all": ["done_M25"]}, "_why": "через три недели: кадры дня, утренний урок (M26)"},
     {"id": "ep_evening", "day": 5, "phase": "evening", "label": "@ui.time_ep_evening", "when": {"all": ["done_M26"]}, "_why": "ужин в доме тёти — последний кадр (кадр EP_dinner держит вечер сам: time/EP_dinner.json)"},

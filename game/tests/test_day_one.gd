@@ -306,6 +306,15 @@ func _night_flags() -> Array:
 		"has_photo_bridge", "has_drawing_ilya", "q04_corner_stove", "done_Q04"]
 
 
+## H17: up to the attic and a click on the bed (the same path as the mouse: interact on the hotspot).
+func _to_bed() -> void:
+	rm.change_room("H4", "from_H1")
+	await _frames(2)
+	await _drain()   # the first visit of the attic (V02) says its line first
+	sr.interact(_hotspot("bed"))
+	await _frames(1)
+
+
 func _test_night() -> void:
 	gs.delete_save(PREFIX + "day2")
 	# Back from the school: a save made in the classroom before the night.
@@ -314,7 +323,14 @@ func _test_night() -> void:
 	_check(rm.save_game(SLOT + "_pre"), "save before the night")
 	rm.change_room("H3", "from_O1")
 	await _frames(2)
-	_check(gs.has_flag("started_N01") and sr.is_staging(), "entering the gallery starts the night with a staging")
+	# H17 (Director 24.10): the night no longer starts by itself — Agata says it is late and where the bed is.
+	_check(not gs.has_flag("started_N01") and sr.current_beat.get("text_key", "") == "H3.night.to_bed", "H17: the gallery — «пора спать, кровать на чердаке», no night yet: %s" % str(sr.current_beat))
+	await _drain()
+	await _to_bed()
+	_check(sr.current_beat.get("text_key", "") == "H4.bed.late_d1", "H17: the bed — «пора спать» first: %s" % str(sr.current_beat))
+	sr.advance()
+	await _frames(2)
+	_check(gs.has_flag("started_N01") and sr.is_staging(), "the bed starts the night with a staging")
 	var ui := _ui()
 	var max_alpha := 0.0
 	var dusk_alpha := -1.0
@@ -368,12 +384,15 @@ func _test_night() -> void:
 	_check(not gs.has_flag("done_N01") and rm.current_room.room_id == "O1", "before the night: O1, N01 not done")
 	rm.change_room("H3", "from_O1")
 	await _frames(2)
+	await _drain()
+	await _to_bed()
 	var seen := await _drain()
 	_check(gs.has_flag("done_N01") and seen.count("stage") == 2, "the night plays once from the earlier save: %s" % str(seen))
 	# a load in the middle of the night stops it: no dusk, no lines left over
 	_check(rm.load_game(SLOT + "_pre"), "load before the night again")
 	await _frames(3)
-	rm.change_room("H3", "from_O1")
+	await _to_bed()
+	sr.advance()
 	var g2 := 0
 	while sr.is_staging() and g2 < 600:
 		g2 += 1

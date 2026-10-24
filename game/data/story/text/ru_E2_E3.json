@@ -431,7 +431,7 @@
       "draft": true
     },
     "H2d.office_mirror.bell_mute": {
-      "text": "Колокол без языка молчит. Язык лежит в коробке у колокола.",
+      "text": "Колокол без языка молчит. На бирке тётиной рукой: «Язык — в сундуке, на чердаке».",
       "draft": true
     },
     "H2d.office_mirror.bell_unclamped": {
@@ -488,10 +488,6 @@
     },
     "H2d.office_mirror.label_bell": {
       "text": "Колокол: щелчок — удар, долгое нажатие — долгий звон",
-      "draft": true
-    },
-    "H2d.clapper_box.use": {
-      "text": "В коробке — язык колокола. Теперь он в сумке.",
       "draft": true
     },
     "H2d.bell.hang": {

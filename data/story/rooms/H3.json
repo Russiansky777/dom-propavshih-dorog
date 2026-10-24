@@ -12,7 +12,7 @@
     {"id": "frame_empty", "image": "res://assets/rooms/H3/state_frame_empty.png", "offset": [161, 82], "scale": 0.77, "scale_reason": "кадр состояния нарисован крупнее фона (рама почти на весь кадр); 0.77 и offset вписывают раму в нишу фона — подгонка по косякам ниши", "unless": ["door_school_installed"]},
     {"id": "door_installed", "image": "res://assets/rooms/H3/state_door_installed.png", "offset": [161, 82], "scale": 0.77, "scale_reason": "кадр состояния нарисован крупнее фона (рама почти на весь кадр); 0.77 и offset вписывают раму в нишу фона — подгонка по косякам ниши", "if": ["door_school_installed"]}
   ],
-  "on_enter": [{"text": "@H3.side_door.unbolt", "once_flag": "house_open", "_note": "C12 (ИИ-чтение 23.10): боковую дверь галереи Агата открывает изнутри при первом входе в галерею — флаг house_open (ребро Z4–H3) ставит этот вход, а не M03 в жилой комнате, где боковой двери нет"}],
+  "on_enter": [{"text": "@H3.night.to_bed", "once_flag": "h3_night_to_bed", "if": ["done_M07", "done_M08"], "unless": ["done_N01"], "_note": "H17: из класса — в ночь; Агата говорит, где кончается день (кровать на чердаке)"}, {"text": "@H3.side_door.unbolt", "once_flag": "house_open", "_note": "C12 (ИИ-чтение 23.10): боковую дверь галереи Агата открывает изнутри при первом входе в галерею — флаг house_open (ребро Z4–H3) ставит этот вход, а не M03 в жилой комнате, где боковой двери нет"}],
   "spawns": {"default": [960, 920], "from_H1": [1730, 900], "from_Z4": [700, 1000], "from_O1": [770, 810], "from_R4": [1470, 800]},
   "props": [],
   "hotspots": [
@@ -97,10 +97,10 @@
   ],
   "scenes": {
     "M05": {"trigger": "puzzle:school_door"},
-    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges", "seen_bell"]}]},
-    "N01": {"trigger": "enter", "_note": "Ночь у печи (scenes/E1.json N01): после школы (M07 и M08) Агата возвращается в галерею — затемнение переносит её к печи в жилую комнату (stage.room H1), сохранение «День второй». Один раз: done_N01 в сохранении; комната меняется без автосохранения посреди сцены — прерванная ночь начнётся заново при входе в галерею"}
+    "M04": {"complete_when": [{"all": ["seen_school_door", "seen_workshop", "has_door_hinges", "seen_bell"]}]}
   },
   "flags": {
+    "h3_night_to_bed": "H17: Агата сказала при возвращении из класса, что пора спать (кровать на чердаке)",
     "h3_mirror_looked": "Агата посмотрела в домашнее зеркало (первый осмотр: старый снимок и отражение)"
   }
 }

@@ -421,6 +421,7 @@ func _complete_scene(scene_id: String) -> void:
 	# Цель журнала для игрока — поле goal (без кодов комнат/эпизодов); result — заметка сценария, запасной вариант.
 	if String(sc.get("type", "")) == "main" and (sc.has("goal") or sc.has("result")):
 		GameState.set_goal(String(sc.get("goal", sc.get("result", ""))), scene_id)
+	_bedtime_check()
 	var room_spec: Dictionary = StoryData.room(current_room_id()).get("scenes", {}).get(scene_id, {})
 	if room_spec.has("complete_text"):
 		_beats.push_front(_text_beat(String(room_spec["complete_text"])))
@@ -456,6 +457,17 @@ func _complete_scene(scene_id: String) -> void:
 func _run_stage(spec: Dictionary) -> void:
 	# Timers below stop with the tree (create_timer(…, false)): the pause menu holds a staging where it is.
 	_stage_running = true
+	# H39 (Director 24.10: «перед „мама“ Агата должна побежать к маме и обнять»): `agata_go` {to, face, action, run} —
+	# Agata runs there by herself (speed × run), turns to `face` and plays `action`; a staging with only that has no fade.
+	if spec.has("agata_go"):
+		var ag_serial := _stage_serial
+		await _stage_agata_go(spec["agata_go"])
+		if ag_serial != _stage_serial:
+			return
+		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go"):
+			_stage_running = false
+			_next()
+			return
 	# A villager walks off first (`npc_go`), then the fade (G18, G29: no more «does nothing, then a cut»).
 	var go_serial := _stage_serial
 	var go_s := _stage_npc_go(spec)
@@ -499,6 +511,22 @@ func _run_stage(spec: Dictionary) -> void:
 	_next()
 
 
+func _stage_agata_go(ag: Dictionary) -> void:
+	var pl: Node2D = RoomManager.player
+	if pl == null or not pl.has_method("perform_at"):
+		return
+	var to: Array = ag.get("to", [0, 0])
+	var fc: Array = ag.get("face", to)
+	var keep: float = float(pl.get("speed_factor"))
+	pl.set("speed_factor", keep * float(ag.get("run", 1.0)))
+	pl.call("perform_at", Vector2(float(to[0]), float(to[1])), Vector2(float(fc[0]), float(fc[1])), String(ag.get("action", "")))
+	var t := 0.0
+	while t < 8.0 and (bool(pl.call("is_walking")) or bool(pl.call("is_acting"))):
+		await get_tree().process_frame
+		t += get_process_delta_time()
+	pl.set("speed_factor", keep)
+
+
 ## `npc_go` [{id, to: [x, y], s, fade}]: before the fade, villagers in the room walk off (NpcActor.go_off) — toward a
 ## door, easing with the depth and fading out. Returns the longest of their seconds (0 — nobody to move).
 func _stage_npc_go(spec: Dictionary) -> float:
@@ -511,8 +539,64 @@ func _stage_npc_go(spec: Dictionary) -> float:
 		if npc != null and npc.has_method("go_off") and (npc as CanvasItem).visible:
 			var to: Array = g.get("to", [0, 0])
 			npc_went.emit(String(g.get("id", "")))
-			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), float(g.get("s", 1.2)), bool(g.get("fade", true)), room)))
+			var secs := float(g.get("s", 1.2))
+			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), secs, bool(g.get("fade", true)), room)))
+			if g.has("door"):
+				longest = maxf(longest, _stage_door(room, g["door"], secs))
 	return longest
+
+
+## H24 (Director 24.10: «движение Павла в дом непонятное, дверь не открывается и не закрывается»): the painted door
+## of npc_go `door` {rect: [x, y, w, h] on screen, hinge: "left" | "right"} swings open while the villager walks up,
+## he goes into the dark doorway, and it swings shut behind him. The leaf is the door cut from the room's own
+## background (no new art), turning on its hinge (narrowing, darker); the doorway behind it is dark. Returns the
+## seconds until it is shut.
+func _stage_door(room: Node, door: Dictionary, walk_s: float) -> float:
+	var r: Array = door.get("rect", [])
+	var bg_path := String(StoryData.room(current_room_id()).get("background", {}).get("image", ""))
+	if r.size() < 4 or bg_path == "" or not ResourceLoader.exists(bg_path):
+		return 0.0
+	var tex: Texture2D = load(bg_path)
+	var k := float(tex.get_width()) / 1920.0
+	var rect := Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
+	var hinge_left := String(door.get("hinge", "left")) == "left"
+	var root := Node2D.new()
+	root.name = "StageDoor"
+	root.z_index = clampi(int(rect.end.y) - 40, 0, 4096)   # under the villager who walks in (z = his feet y)
+	room.add_child(root)
+	var hole := ColorRect.new()
+	hole.color = Color(String(door.get("dark", "#0e0a07")))
+	hole.position = rect.position
+	hole.size = rect.size
+	hole.modulate.a = 0.0
+	root.add_child(hole)
+	var leaf := Sprite2D.new()
+	var at := AtlasTexture.new()
+	at.atlas = tex
+	at.region = Rect2(rect.position * k, rect.size * k)
+	leaf.texture = at
+	leaf.centered = false
+	leaf.scale = Vector2(1.0 / k, 1.0 / k)
+	if hinge_left:
+		leaf.position = rect.position
+	else:
+		leaf.offset = Vector2(-at.region.size.x, 0.0)
+		leaf.position = Vector2(rect.end.x, rect.position.y)
+	root.add_child(leaf)
+	var open_at := walk_s * 0.25
+	var open_s := 0.45
+	var shut_at := walk_s + 0.15
+	var tw := root.create_tween()
+	tw.tween_interval(open_at)
+	tw.tween_property(hole, "modulate:a", 1.0, 0.12)
+	tw.parallel().tween_property(leaf, "scale:x", 0.22 / k, open_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tw.parallel().tween_property(leaf, "modulate", Color(0.55, 0.5, 0.46), open_s)
+	tw.tween_interval(maxf(0.0, shut_at - open_at - open_s))
+	tw.tween_property(leaf, "scale:x", 1.0 / k, open_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(leaf, "modulate", Color(1, 1, 1), open_s)
+	tw.tween_property(hole, "modulate:a", 0.0, 0.05)
+	tw.tween_callback(root.queue_free)
+	return shut_at + open_s
 
 
 ## What a staging changes while the screen is black (or at once, for a cut): the room, the frame, flags.
@@ -750,6 +834,8 @@ func planned_interaction(h: StoryHotspot) -> String:
 		return "item_use" if d.get("item_use", {}).has(selected_item) else "item_none"
 	if d.has("panel"):
 		return "panel"
+	if d.has("sleep"):
+		return "use"
 	if d.has("talk"):
 		var t: Dictionary = d["talk"]
 		var scn := talk_scene(t)
@@ -818,6 +904,10 @@ func interact(h: StoryHotspot) -> void:
 			_run_action(h, iu[item], item)
 		else:
 			narrate_key(item_refusal(item))
+		return
+
+	if d.has("sleep"):
+		_sleep(d["sleep"])
 		return
 
 	if d.has("panel"):
@@ -903,6 +993,53 @@ func interact(h: StoryHotspot) -> void:
 	narrate_key(look)
 
 
+## H17 (Director 24.10: «не понятно, когда новый день»): the bed ends the day. rooms data `sleep` {scenes, late, early}:
+## the first of `scenes` that can start begins after Agata's «пора спать» (`late`: scene → text); none can — the
+## first `early` entry whose `if` / `unless` flags hold: «рано ложиться» with what is left (`left` [{unless, text}]
+## joined into {left}).
+func _sleep(sl: Dictionary) -> void:
+	for sc in sl.get("scenes", []):
+		var scn := String(sc)
+		if can_start(scn):
+			var late: Dictionary = sl.get("late", {})
+			if late.has(scn):
+				narrate_key(String(late[scn]))
+			start_scene(scn)
+			return
+	_push(sleep_early_beat(sl))
+
+
+## The «рано ложиться» beat for the state now (tests read its text too).
+func sleep_early_beat(sl: Dictionary) -> Dictionary:
+	for e in sl.get("early", []):
+		if not requires_met({"flags": e.get("if", [])}):
+			continue
+		if (e.get("unless", []) as Array).any(func(f): return GameState.has_flag(String(f))):
+			continue
+		var left: Array[String] = []
+		for l in e.get("left", []):
+			if not GameState.has_flag(String(l.get("unless", ""))):
+				left.append(StoryData.text(String(l.get("text", ""))))
+		var b := _text_beat(String(e.get("text", "")))
+		b["text"] = String(b["text"]).replace("{left}", ", ".join(left))
+		return b
+	return _text_beat("@ui.nothing_here")
+
+
+## H17: a time state's `bedtime` {text?, goal?} (data/story/time/_index.json) — the day's deeds are done: Agata
+## says it is late (once: flag bedtime_<state> in the save) and the journal points to the bed.
+func _bedtime_check() -> void:
+	var st := TimeOfDay.current_state()
+	var bt: Dictionary = TimeOfDay.state_spec(st).get("bedtime", {})
+	if bt.is_empty() or GameState.has_flag("bedtime_" + st):
+		return
+	GameState.set_flag("bedtime_" + st, true)
+	if bt.has("goal"):
+		GameState.set_goal(StoryData.text(String(bt["goal"])))
+	if bt.has("text"):
+		narrate_key(String(bt["text"]))
+
+
 ## The scene a conversation leads to: `talk.scene`, or the first of `talk.scenes` not done yet (Pavel: first
 ## the story of the office, then the agreement once Agata has looked round the passage). "" when all done.
 func talk_scene(t: Dictionary) -> String:
@@ -966,6 +1103,12 @@ func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary, item_id:
 				GameState.set_flag(f, false)
 	if chosen.has("sets"):
 		GameState.set_flag(String(chosen["sets"]), true)
+	# `agata_go` {to, face, action}: Agata walks there and touches the thing (H15: the chosen cup on the table).
+	var ag: Dictionary = chosen.get("agata_go", {})
+	if not ag.is_empty() and RoomManager.player != null and RoomManager.player.has_method("perform_at"):
+		var to: Array = ag.get("to", [0, 0])
+		var fc: Array = ag.get("face", to)
+		RoomManager.player.call("perform_at", Vector2(float(to[0]), float(to[1])), Vector2(float(fc[0]), float(fc[1])), String(ag.get("action", "reach")))
 	# `also`: flags the option sets besides its own (G37: any drawing on the bird is also «Agata marked it», v03_marked).
 	for f in chosen.get("also", []):
 		GameState.set_flag(String(f), true)
