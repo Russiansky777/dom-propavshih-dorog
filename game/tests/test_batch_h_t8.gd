@@ -191,7 +191,7 @@ func _test_boat_places() -> void:
 	gs.set_flag("done_M02", true)
 	sr.interact(_hotspot("boat"))
 	await _frames(1)
-	_check(String(sr.current_beat.get("text_key", "")) == "R1.exit_R2.closed", "after M02: G17 — no road until the rope is on the plate (%s)" % str(sr.current_beat))
+	_check(String(sr.current_beat.get("text_key", "")) == ("R1.exit_R2.closed" if gs.has_flag("knows_crossing_plan") else "R1.boat.look_no_plan"), "after M02: G17 — no road (the ring only after the plan, T9 R01) (%s)" % str(sr.current_beat))
 	await _drain()
 	# Dusk of day two, before the brace: still at the pier (Pelageya waits at the turn without it).
 	_flags_before("M15s")

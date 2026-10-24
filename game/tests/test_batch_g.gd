@@ -238,7 +238,7 @@ func _test_rope_where() -> void:
 	await _frames(2)
 	_check(String(sr.current_beat.get("text_key", "")) == "R1.stopper.look_ring" and String(sr.current_beat.get("text", "")).contains("кольцо плиты у поворота"), "the empty stopper: the rope is on the plate ring at the turn: %s" % str(sr.current_beat))
 	await _drain()
-	_check(sd.text("@R1.exit_R2.closed").contains("нет дороги") and sd.text("@R1.exit_R2.closed").contains("кольцо плиты"), "G17: the closed boat — no road until the rope is on the plate ring")
+	_check(sd.text("@R1.exit_R2.closed").contains("дороги нет") and sd.text("@R1.exit_R2.closed").contains("кольцо плиты"), "G17: the closed boat — no road until the rope is on the plate ring")
 
 
 func _layer_image(room: Node, id: String) -> Image:

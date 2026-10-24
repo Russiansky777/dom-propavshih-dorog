@@ -807,7 +807,7 @@ func _test_walkthrough() -> void:
 	await _finish()
 	await _use("mirror")
 	seen = await _finish()
-	_check(not gs.has_item("mirror_mill") and seen.any(func(x): return String(x).contains("Без спросу")), "G18: the mirror is not taken before Pavel's leave: %s" % str(seen))
+	_check(not gs.has_item("mirror_mill") and seen.any(func(x): return String(x).contains("Без Павлова слова")), "G18: the mirror is not taken before Pavel's leave: %s" % str(seen))
 	_check(await _go("M1"), "M2→M1")
 	var went: Array = []
 	var on_went := func(id: String): went.append(id)

@@ -576,7 +576,7 @@ func _test_q06_b() -> void:
 
 func _test_traces() -> void:
 	for pair in [[["q02_old_under_new", "q06_table_at_ilya"], ["Нина детям показывает, как место менялось", "чинит. Рядом сохнет их полка"]],
-			[["q02_new_primary", "q06_table_at_agata"], ["Ульяна по нему растолковывает гостю дорогу", "рамку для семейного снимка"]]]:
+			[["q02_new_primary", "q06_table_at_agata"], ["Ульяна по нему растолковывает гостю дорогу", "резную рамку смастерил"]]]:
 		gs.reset()
 		for f in pair[0]:
 			gs.set_flag(String(f), true)

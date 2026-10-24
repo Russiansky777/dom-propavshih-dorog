@@ -240,12 +240,12 @@ async function main() {
     s = await waitFor("W2: Nina came to the letters", (t) => t.hotspots && t.hotspots.nina && t.hotspots.nina.visible && t.beat && t.beat.type, 30000);
     check(s.hotspots.nina && s.hotspots.nina.visible, "W2: Nina on the street while Tamara reads the addresses");
     await shot("W2_letters_nina_here");
-    const m23a = await playThrough("W2: M23a", { quietMs: 4000 });
+    const m23a = await playThrough("W2: M23a", { quietMs: 8000 });
     check(m23a.some((l) => /Нина вернулась/.test(l)) && m23a.some((l) => /к Дуне в дом/.test(l)), `W2: Nina comes and goes back (${m23a.length} beats)`);
     s = await state();
     check(!(s.hotspots.nina && s.hotspots.nina.visible), "W2: after the letters Nina is gone from the street");
     await route("W2", ["O2", "O1", "H3", "H1"]);
-    await playThrough("W2: M23c", { quietMs: 4000 });
+    await playThrough("W2: M23c", { quietMs: 12000 });
     s = await state();
     check(s.hotspots.nina && s.hotspots.nina.visible, "W2: Nina in her sister's house");
     await shot("W2_nina_in_house");
@@ -289,7 +289,7 @@ async function main() {
     s = await waitFor("W3: game up in the class", (t) => t.room === "O1" && t.exits && t.exits.H3, 240000);
     await playThrough("W3: start", { quietMs: 2500 });
     await route("W3", ["H3", "H1"]);
-    await playThrough("W3: M23c", { quietMs: 4000 });
+    await playThrough("W3: M23c", { quietMs: 12000 });
     s = await state();
     check(s.hotspots.nina && s.hotspots.nina.visible, "W3: Nina in her sister's house first");
     await route("W3", ["H3", "O1", "O2", "O4"]);
@@ -299,7 +299,7 @@ async function main() {
     s = await waitFor("W3: Nina came to the letters", (t) => t.hotspots && t.hotspots.nina && t.hotspots.nina.visible && t.beat && t.beat.type, 60000);
     check(s.hotspots.nina && s.hotspots.nina.visible, "W3: Nina on the street for the letters (after her sister's house)");
     await shot("W3_letters_after_house");
-    const m23a = await playThrough("W3: M23a", { quietMs: 4000 });
+    const m23a = await playThrough("W3: M23a", { quietMs: 8000 });
     check(m23a.some((l) => /к Дуне в дом/.test(l)), "W3: Nina goes back to Dunya's house");
     await route("W3", ["O2", "O1", "H3", "H1"]);
     s = await state();

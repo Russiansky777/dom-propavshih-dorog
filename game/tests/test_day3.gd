@@ -683,7 +683,7 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("o3_clock_compared") and gs.has_flag("done_M19c"), "the watch against the clock → M19c: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("nina:Двадцать лет в него глядела")), "B12: Nina's twenty years at the hand mirror")
-	_check(seen.any(func(x): return x.begins_with("nina:Позавчера встала ты у печи")), "C17: the wave at the stove is remembered")
+	_check(seen.any(func(x): return x.begins_with("nina:А потом ты у печи встала")), "C17: the wave at the stove is remembered")
 	# M20 follows by itself: brother, his daughter, his wife, the night, the morning.
 	seen.append_array(await _finish())
 	var g := 0
@@ -1286,7 +1286,7 @@ func _test_q02_q06_traces() -> void:
 	# Epilogue lines by the four choices; none when skipped; the last word is still Ulyana's.
 	var a := _beats_of("M26", ["q02_old_under_new", "q06_table_at_ilya"])
 	_check(a.any(func(x): return x.contains("Нина детям показывает, как место менялось")) and a.any(func(x): return x.contains("Рядом сохнет их полка")), "A/A: the lesson shows the map with the tracing; the oarlock and the drying shelf")
-	_check(not a.any(func(x): return x.contains("растолковывает гостю дорогу") or x.contains("рамку для семейного")), "A/A: no B lines")
+	_check(not a.any(func(x): return x.contains("растолковывает гостю дорогу") or x.contains("резную рамку")), "A/A: no B lines")
 	var b := _beats_of("M26", ["q02_new_primary", "q06_table_at_agata", "v01_photo_table"])
 	_check(b.any(func(x): return x.contains("Ульяна по нему растолковывает гостю дорогу")) and b.any(func(x): return x.contains("Для семейного снимка Илья на новом верстаке резную рамку смастерил")), "B/B: Ulyana's drawing by the door; the frame for the family photo")
 	_check(b.any(func(x): return x.contains("На столике")), "B: the photo stays where it was put on day one (the frame is for it)")
@@ -1294,7 +1294,7 @@ func _test_q02_q06_traces() -> void:
 	_check(b[b.size() - 2] == "ulyana:А завтра тоже можно прийти?" and b[b.size() - 1].begins_with("agata:Можно, Уля"),
 		"the last lines are still Ulyana's question and Agata's answer (H55): %s" % str(b.slice(-2)))
 	var none := _beats_of("M26", [])
-	for t in ["как место менялось", "растолковывает гостю дорогу", "уключину", "рамку для семейного"]:
+	for t in ["как место менялось", "растолковывает гостю дорогу", "уключину", "резную рамку"]:
 		_check(not none.any(func(x): return x.contains(t)), "skipped: no «%s»" % t)
 	# The stagings still come on their lines.
 	var lines: Array = sd.scene("M26").get("mandatory_lines", [])
@@ -1364,7 +1364,7 @@ func _test_q02_q06_traces() -> void:
 	var seen := await _finish()
 	Engine.time_scale = 1.0
 	_check(gs.has_flag("done_M26") and not gs.has_flag("done_Q02") and not gs.has_flag("done_Q06"), "skipped: the game ends as before")
-	_check(not seen.any(func(x): return x.contains("как место менялось") or x.contains("уключину") or x.contains("рамку для семейного") or x.contains("растолковывает гостю дорогу")), "skipped: no trace lines")
+	_check(not seen.any(func(x): return x.contains("как место менялось") or x.contains("уключину") or x.contains("резную рамку") or x.contains("растолковывает гостю дорогу")), "skipped: no trace lines")
 	sr.set_frame("")
 	gs.reset()
 	_reached_end = true
