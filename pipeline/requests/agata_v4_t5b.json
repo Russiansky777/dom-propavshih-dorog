@@ -2,7 +2,7 @@
   "character": "agata_v4",
   "height_m": 1.65,
   "stages": [
-    "actions"
+    "local_glb"
   ],
   "retexture": {
     "input_task_id": "01a16bb8-620b-7160-abd2-6ee1700430df",
@@ -26,10 +26,58 @@
     "height_meters": 1.65
   },
   "_note_step2": "Шаг 2: GLB для рига — исходная геометрия 01a16bb8, упрощённая в Blender до 290 тыс. треугольников (UV те же), текстура: лицо и волосы смешаны с Retexture 01a16ddb (румянец, тени, деталь прядей), остальное — исходное (одежда в Retexture уехала в оранжевый/серый). Файл — релиз agata-v4-work (в git не кладётся, 42 МБ).",
-  "actions": {
-    "action_ids": [
-      284
+  "actions": [
+    "idle",
+    "walk",
+    "open",
+    "pick",
+    "reach",
+    "sit"
+  ],
+  "_note_step3": "Шаг 3 (3 кр.): наклон pick заменить приседом Collect_Object (id 284, каталог Meshy): голова остаётся над коленями (G56: в нижней точке Female_Bend_Over_Pick_Up_Inspect голова уходила к коленям — критичное ИИ-проверки).",
+  "local_glb": {
+    "url": "https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/agata-v4-work/agata_v4_animations.glb"
+  },
+  "retarget": false,
+  "clips": {
+    "idle": "Idle_T2M_idle",
+    "walk": "Walking_Woman",
+    "open": "open_door_open",
+    "pick": "Collect_Object_pick",
+    "reach": "open_door_take_reach",
+    "sit": "Chair_Sit_F_sit"
+  },
+  "frames": {
+    "idle": 30,
+    "walk": 24,
+    "open": 32,
+    "pick": 40,
+    "reach": 30,
+    "sit": 1
+  },
+  "fps": {
+    "idle": 24,
+    "walk": 24,
+    "open": 24,
+    "pick": 24,
+    "reach": 24,
+    "sit": 24
+  },
+  "clip_window": {
+    "idle": [
+      0.1513,
+      0.4034
     ]
   },
-  "_note_step3": "Шаг 3 (3 кр.): наклон pick заменить приседом Collect_Object (id 284, каталог Meshy): голова остаётся над коленями (G56: в нижней точке Female_Bend_Over_Pick_Up_Inspect голова уходила к коленям — критичное ИИ-проверки)."
+  "feet_fix": [
+    "idle",
+    "walk",
+    "open",
+    "reach"
+  ],
+  "render_size": 864,
+  "render_samples": 16,
+  "elev": 14,
+  "front_yaw": 0,
+  "_note_step4": "Шаг 4 (0 кр.): рендер 2,25× из готового GLB (релиз agata-v4-work, собран скриптами pipeline/3d/agata_v4/): риг 01a16dea + угол платка подогнут под ремень (сетка мельче в области угла, сдвиг к телу ≤ 12 мм), сумка и ремень — только Hips/Spine02/Spine01/Spine (без рук и бёдер), стойка Text to Motion 01a16ddd (амплитуда ×0,5, окно 0,76–2,0 с — одно покачивание с ноги на ногу, туда-обратно), pick — присед Collect_Object (01a16df5), walk/open/reach/sit — перенос с v3 (agata_rev10_clips, nina_chair_sit), правая рука на 12° от корпуса во всех клипах (кисть не входит в сумку: зазор ≥ 8 мм)."
 }
