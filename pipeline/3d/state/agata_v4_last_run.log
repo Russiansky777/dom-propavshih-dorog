@@ -1,37 +1,37 @@
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v4] баланс: {'balance': 390, 'monthly_credits': 0, 'permanent_credits': 390, 'monthly_resets_at': 1794445230000}
+[agata_v4] баланс: {'balance': 355, 'monthly_credits': 0, 'permanent_credits': 355, 'monthly_resets_at': 1794445230000}
 [agata_v4] ракурсов на листе: 3 → ['view_0.png', 'view_1.png', 'view_2.png']
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v4] создана задача модели 01a16b99-588b-7621-9bce-81008f4d7f6b c {'ai_model': 'meshy-7.1', 'pose_mode': 'a-pose', 'should_texture': True, 'texture_resolution': '4k', 'target_formats': ['glb'], 'auto_size': True, 'origin_at': 'bottom', 'geometry_resolution': '2k', 'enable_pbr': True, 'multi_view_thumbnails': True}
+[agata_v4] создана задача модели 01a16bb8-620b-7160-abd2-6ee1700430df c {'ai_model': 'meshy-7.1', 'pose_mode': 'a-pose', 'should_texture': True, 'texture_resolution': '4k', 'target_formats': ['glb'], 'auto_size': True, 'origin_at': 'bottom', 'geometry_resolution': '2k', 'enable_pbr': True, 'multi_view_thumbnails': True}
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 1
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16bb8-620b-7160-abd2-6ee1700430df: IN_PROGRESS 1
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 17
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 32
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 45
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 53
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 58
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 67
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 80
-MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: IN_PROGRESS 99
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-  multi-image-to-3d 01a16b99-588b-7621-9bce-81008f4d7f6b: SUCCEEDED 100
-[agata_v4] модель готова (только модель): задача 01a16b99-588b-7621-9bce-81008f4d7f6b, кредитов: 35
 MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
-[agata_v4] баланс после: {'balance': 355, 'monthly_credits': 0, 'permanent_credits': 355, 'monthly_resets_at': 1794445230000}
+  multi-image-to-3d 01a16bb8-620b-7160-abd2-6ee1700430df: IN_PROGRESS 14
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16bb8-620b-7160-abd2-6ee1700430df: IN_PROGRESS 33
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16bb8-620b-7160-abd2-6ee1700430df: IN_PROGRESS 45
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16bb8-620b-7160-abd2-6ee1700430df: IN_PROGRESS 58
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16bb8-620b-7160-abd2-6ee1700430df: IN_PROGRESS 67
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16bb8-620b-7160-abd2-6ee1700430df: IN_PROGRESS 99
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a16bb8-620b-7160-abd2-6ee1700430df: SUCCEEDED 100
+[agata_v4] модель готова (только модель): задача 01a16bb8-620b-7160-abd2-6ee1700430df, кредитов: 35
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[agata_v4] баланс после: {'balance': 320, 'monthly_credits': 0, 'permanent_credits': 320, 'monthly_resets_at': 1794445230000}
