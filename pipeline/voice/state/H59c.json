@@ -1,0 +1,43 @@
+{
+  "set": "H59c",
+  "runs": [
+    {
+      "run": "40104984487",
+      "at": "2026-10-24T15:01:35+00:00",
+      "request": "pipeline/requests/voice_H59c.json",
+      "synthesized": [
+        "M02_4",
+        "M03_0",
+        "M03_5",
+        "M03_7",
+        "M05_0",
+        "M12_0",
+        "M13_1_promise",
+        "M15a_3",
+        "Q02_3",
+        "agata:O3.bed.late_d2",
+        "ulyana:O1d.ulyana.after"
+      ],
+      "reprocessed": [],
+      "characters_text": 395,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 58400,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 58400,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 173,
+      "subscription_delta": 0
+    }
+  ]
+}
