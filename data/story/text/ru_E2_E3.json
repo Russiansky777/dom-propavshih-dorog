@@ -339,6 +339,7 @@
       "text": "Назад, к причалу",
       "draft": true
     },
+    "R2.exit_Z3.label": {"text": "Назад, к повороту", "draft": true},
     "R2.exit_R1.closed": {
       "text": "Не поверну назад. Коли держат — к ним и идём.",
       "draft": true,

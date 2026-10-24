@@ -18,13 +18,16 @@
     {"id": "stone_no_plate_dusk", "image": "res://assets/rooms/Z3/state_stone_no_plate.png", "z": 0, "if": ["evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "modulate": "#8c8a9c", "_note": "вечером слой спущенной воды (партия 3) рисует на береговом камне кольцо и трещину — тот же камень без плиты поверх него, в тоне сумерек (умножение): плита у поворота только на опоре в воде"},
     {"id": "water_low_day", "image": "res://assets/rooms/Z3/state_water_low_day.png", "z": 0, "if": ["evening_dusk"], "unless": ["tod_d2_dusk", "tod_d2_evening", "tod_d2_night", "tod_d3_evening"], "_note": "Дни 3–4 днём (d3_morning, d3_day, d4_day): вода спущена, дневной свет, снег на обоих берегах, плита с кольцом на малой опоре в воде — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): состояние всей сцены поверх Z3_bg (полный холст, (0,0)); уже включает камень без плиты — не складывать с water_low и stone_no_plate*."},
     {"id": "span_site_day4", "image": "res://assets/rooms/Z3/state_span_site_day4.png", "if": ["done_M24"], "modulate": "#dcc6aa", "_h52": "H52 (Директор 24.10: «на 4 день слишком зимно вдруг»): белёсые в иней прогоны и ворот партии 9 — в тёплый тон дня третьего (умножение цвета), берег тот же, что днём 3", "_note": "G47 (Директор 23.10: «Закрыть» крупный план ворота → поворот пустой): с четвёртого дня у поворота стройка — штабель из шести прогонов, ворот Ильи, ряж (партия 9, поверх низкой воды днём); тот же рисунок — фон крупного плана ворота и кадров F_span (tools/make_span_layers.py)"},
-    {"id": "span_beam_day4", "image": "res://assets/rooms/Z3/state_span_beam_day4.png", "if": ["span_first_laid"], "modulate": "#dcc6aa", "_note": "G47: первый прогон на опоре — после того, как бревно легло (span_first_laid); береговой конец (1218, 570) на ряже, дальний (1112, 503) на кольце"}
+    {"id": "span_beam_day4", "image": "res://assets/rooms/Z3/state_span_beam_day4.png", "if": ["span_first_laid"], "modulate": "#dcc6aa", "_note": "G47: первый прогон на опоре — после того, как бревно легло (span_first_laid); береговой конец (1218, 570) на ряже, дальний (1112, 503) на кольце"},
+    {"id": "boat_dusk", "image": "res://assets/rooms/Z3/state_boat.png", "if": ["rope_brought", "evening_dusk"], "unless": ["started_M18p", "tod_d3_morning", "tod_d3_day", "tod_d4_day"], "modulate": "#8c8a9c", "_note": "H36 (Директор 24.10): после скобы (M15s) лодка Пелагеи у поворота — носом к опоре с плитой, под канатом; с неё M17 (пустая лодка по канату, stage layer_go) и «В лодку» (M18p). Вечер дня второго до переправы; в тоне сумерек (умножение, как stone_no_plate_dusk). Временный слой — лодка с кадра R1 (tools/make_boat_layers.py); арт — заказ 10в"},
+    {"id": "boat_shuttle_dusk", "image": "res://assets/rooms/Z3/state_boat.png", "if": ["boat_shuttle_open", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "modulate": "#8c8a9c", "_note": "H36: лодка ходит в обе стороны (boat_shuttle_open) — снова у плиты; вечер третьего дня"},
+    {"id": "boat_day", "image": "res://assets/rooms/Z3/state_boat.png", "if": ["boat_shuttle_open"], "unless": ["tod_d2_dusk", "tod_d2_evening", "tod_d2_night", "tod_d3_evening"], "_note": "H36: днём дней 3–4 лодка у плиты (с переправы до моста; слой water_low_day — та же опора)"}
   ],
-  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [600, 680]},
+  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [600, 680], "from_R2": [1260, 810]},
   "props": [],
   "hotspots": [
     {
-      "id": "old_pier_base", "kind": "object", "label": "@Z3.old_pier_base.label", "rect": [1160, 510, 320, 100], "stand": [1120, 730], "color": "#6f6a5a", "draw": false,
+      "id": "old_pier_base", "kind": "object", "label": "@Z3.old_pier_base.label", "rect": [1240, 510, 240, 100], "_rect_note": "H36: левее x 1240 — лодка у плиты («В лодку»)", "stand": [1120, 730], "color": "#6f6a5a", "draw": false,
       "item_use": {"photo_bridge": {"text": "@Z3.old_pier_base.photo", "_note": "снимок старого моста (M07): канат сидел на плите этой опоры; не расходуется"}},
       "look": "@Z3.old_pier_base.look",
       "hidden_if": ["evening_dusk"]
@@ -35,7 +38,7 @@
       "look": "@Z3.plate.look"
     },
     {
-      "id": "pier_plate", "kind": "object", "label": "@Z3d.plate_dry.label", "rect": [1160, 500, 320, 120], "stand": [1300, 790], "draw": false, "visible_if": ["evening_dusk"],
+      "id": "pier_plate", "kind": "object", "label": "@Z3d.plate_dry.label", "rect": [1240, 500, 240, 120], "_rect_note": "H36: опора с плитой (кольцо ≈ 1277, 577) и правее; левее — лодка («В лодку»)", "stand": [1300, 790], "draw": false, "visible_if": ["evening_dusk"],
       "item_use": {"brace_plate": {"sets": ["skoba_on_plate"], "consumes": true, "text": "@Z3d.plate_dry.skoba", "scene": "M15s", "open_mechanic": true}},
       "use": {"requires": {"items": ["brace_plate"]}, "text": "@Z3d.plate_dry.use_skoba", "fail_text": "@Z3d.plate_dry.no_skoba"},
       "mechanic": {
@@ -61,17 +64,24 @@
       "look": "@Z3d.plate_dry.look"
     },
     {
-      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [1030, 520, 130, 280], "stand": [940, 840], "draw": false, "pick_priority": 2, "image": "res://assets/characters/pelageya/front.png", "visible_if": ["evening_dusk"], "hidden_if": ["done_M15"],
-      "talk": {"by_flags": [{"if": ["rope_brought"], "text": "@Z3d.pelageya.knot"}, {"if": ["evening_dusk"], "text": "@Z3d.pelageya.wait_skoba"}]},
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [900, 520, 130, 280], "stand": [820, 850], "_rect_note": "H36: левее лодки у плиты (выход «В лодку» 1070–1240)", "draw": false, "pick_priority": 2, "image": "res://assets/characters/pelageya/front.png", "visible_if": ["evening_dusk"],
+      "hidden_when": [{"all": ["done_M15"], "not": ["done_M16"]}, {"all": ["started_M18p"]}],
+      "_hidden_note": "H36: у поворота до узла (скоба, канат); после узла — на причале (белый берег, три огня, M16s–M16); после ответа огней уходит к лодке у поворота (M16, stage npc_go) — M17 и посадка отсюда; с переправы — на дальней опоре и дальше у причала",
+      "talk": {"scenes": ["M17"], "by_flags": [{"if": ["ferry_verified"], "text": "@R1d.pelageya.to_boat"}, {"if": ["rope_brought"], "text": "@Z3d.pelageya.knot"}, {"if": ["evening_dusk"], "text": "@Z3d.pelageya.wait_skoba"}]},
       "look": "@char.pelageya"
     }
   ],
   "exits": [
-    {"to": "R1", "label": "@Z3.exit_R1.label", "cue": "up", "cue_deg": -135, "rect": [380, 560, 320, 90], "stand": [560, 660], "spawn": "from_Z3", "draw": false, "_cue_note": "H7 (Директор 24.10): с поворота — только к причалу, метка прежнего выхода «на улицу», развёрнутая на северо-запад; выход на улицу снят (на улицу — через причал)"}
+    {"to": "R1", "label": "@Z3.exit_R1.label", "cue": "up", "cue_deg": -135, "rect": [380, 560, 320, 90], "stand": [560, 660], "spawn": "from_Z3", "draw": false, "_cue_note": "H7 (Директор 24.10): с поворота — только к причалу, метка прежнего выхода «на улицу», развёрнутая на северо-запад; выход на улицу снят (на улицу — через причал)"},
+    {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1070, 540, 170, 90], "stand": [1130, 745], "spawn": "from_Z3", "draw": false, "visible_if": ["rope_brought"], "hidden_when": [{"all": ["started_M18p"], "not": ["boat_shuttle_open"]}],
+      "closed_text": "@R1.exit_R2.closed", "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}],
+      "_note": "H36 (Директор 24.10): «В лодку» — у поворота, где лодка у плиты под канатом (слои boat_*), с M15s; на причале R1 выход в лодку с этой минуты скрыт. M18p — переход в R2 (вид из лодки); с третьего дня (boat_shuttle_open) — переправа рывками, как с причала прежде",
+      "mechanic": {"type": "crossing", "title": "@mech.crossing.title", "requires": {"flags": ["boat_shuttle_open"]}, "art": {"bg": "res://assets/rooms/R2/bg.png", "rope": "res://assets/rooms/R2/fg_rope.png", "arrival": "res://assets/rooms/R3/bg.png"}, "pulls": 10, "pull_s": 0.9, "rope_speed": 140, "twist_px": 34, "vp": [780, 382], "ring": [1166, 660], "ring_r": 46, "ring_box": [1108, 598, 120, 124], "shore_band": [0, 140, 1672, 270], "shore_zoom": 1.6, "fog_rect": [0, 90, 1672, 430], "fog": [0.85, 0.12], "arrival_from": 0.82, "hint_pos": [520, 985], "texts": {"hint": "@mech.crossing.hint"}, "snow": [0.04, 1.0], "pier": {"image": "res://assets/rooms/R3/bg.png", "region": [40, 330, 1000, 540], "from_w": 70, "to_w": 680, "foot": [0.5, 0.94]}, "events": {"crossed": {"close": true, "room": "R3", "spawn": "from_R2"}}}}
   ],
   "scenes": {
     "M15s": {"complete_when": [{"all": ["plate_braced"]}]},
-    "M15": {"complete_when": [{"all": ["rope_on_ring"]}]}
+    "M15": {"complete_when": [{"all": ["rope_on_ring"]}]},
+    "M17": {"trigger": "talk:pelageya"}
   },
   "effects": [
     {"id": "rope_on_ring_dusk", "type": "rope", "from": [1281, 572], "to": [1150, 402], "sag": 14, "width": [7, 2.5], "shadow": 0.2, "z": 1, "tint": "#7a7488", "if": ["rope_on_ring", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "G28 (Директор 23.10: «канат натягиваем на берегу, а его там нет»): после узла канат виден у поворота — от кольца плиты на малой опоре в воде (≈1112, 503 фона) через воду к тому берегу; вечером и ночью — в тоне нарисованных сумерек (Z3 не тонируется движком)"},
