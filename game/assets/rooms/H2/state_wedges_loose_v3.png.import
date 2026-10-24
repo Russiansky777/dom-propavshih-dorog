@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chvde5q30mw14"
-path="res://.godot/imported/state_wedges_half.png-44704d51ae03b60296f7e8eb73d08138.ctex"
+uid="uid://de8ekua7vrx07"
+path="res://.godot/imported/state_wedges_loose_v3.png-e517140aa55c7915816cb96a69f790dd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H2/state_wedges_half.png"
-dest_files=["res://.godot/imported/state_wedges_half.png-44704d51ae03b60296f7e8eb73d08138.ctex"]
+source_file="res://assets/rooms/H2/state_wedges_loose_v3.png"
+dest_files=["res://.godot/imported/state_wedges_loose_v3.png-e517140aa55c7915816cb96a69f790dd.ctex"]
 
 [params]
 

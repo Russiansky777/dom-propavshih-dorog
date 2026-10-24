@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ccgrfog3wnkdy"
-path="res://.godot/imported/state_wedges_loose.png-6ce2e771aea46634d80131d4a1d79b19.ctex"
+uid="uid://dvt05fbvqn4c8"
+path="res://.godot/imported/state_boat_day.png-b4fba1f62958b7776f578906c2ccbb87.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H2/state_wedges_loose.png"
-dest_files=["res://.godot/imported/state_wedges_loose.png-6ce2e771aea46634d80131d4a1d79b19.ctex"]
+source_file="res://assets/rooms/Z3/state_boat_day.png"
+dest_files=["res://.godot/imported/state_boat_day.png-b4fba1f62958b7776f578906c2ccbb87.ctex"]
 
 [params]
 

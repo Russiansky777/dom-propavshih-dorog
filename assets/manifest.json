@@ -2067,7 +2067,7 @@
     },
     {
       "id": "Z3_state_boat_dusk",
-      "status": "requested",
+      "status": "imported",
       "kind": "layer_moving",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",
@@ -2086,7 +2086,7 @@
     },
     {
       "id": "Z3_state_boat_day",
-      "status": "requested",
+      "status": "imported",
       "kind": "layer_moving",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",
@@ -2105,7 +2105,7 @@
     },
     {
       "id": "R1_state_no_boat_dusk",
-      "status": "requested",
+      "status": "imported",
       "kind": "background_fix",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",
@@ -2124,7 +2124,7 @@
     },
     {
       "id": "R1_state_no_boat_day",
-      "status": "requested",
+      "status": "imported",
       "kind": "background_fix",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",
@@ -2143,7 +2143,7 @@
     },
     {
       "id": "Z1_fg_counter_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "occluder",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",
@@ -2162,7 +2162,7 @@
     },
     {
       "id": "H2_state_office_mirror_center_v3",
-      "status": "requested",
+      "status": "imported",
       "kind": "prop_states",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",
@@ -2181,7 +2181,7 @@
     },
     {
       "id": "H2_state_wedges_v3",
-      "status": "requested",
+      "status": "imported",
       "kind": "prop_states",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",
@@ -2202,7 +2202,7 @@
     },
     {
       "id": "O4_state_mitya_board_fence_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "prop_states",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",
@@ -2221,7 +2221,7 @@
     },
     {
       "id": "H3_state_photo_school",
-      "status": "requested",
+      "status": "imported",
       "kind": "background_fix",
       "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
       "batch": "10c",

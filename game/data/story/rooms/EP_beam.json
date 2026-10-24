@@ -5,7 +5,7 @@
   "_art": "Эпилог: торец первого прогона (closeup_beam_end, партия 6) с надписью, которую выбрала Агата в M25 (или чистый).",
   "art_source": {
     "files": {
-      "bg.png": "assets/incoming/closeup_beam_end.png",
+      "bg.png": "assets/incoming/EP_beam_bg.png",
       "cut_dunya.png": "assets/incoming/EP_beam_cut_dunya.png",
       "cut_roads.png": "assets/incoming/EP_beam_cut_roads.png",
       "cut_date.png": "assets/incoming/EP_beam_cut_date.png"

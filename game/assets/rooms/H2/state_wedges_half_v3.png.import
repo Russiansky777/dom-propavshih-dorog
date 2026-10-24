@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://da38rq8ktm6x7"
-path="res://.godot/imported/state_office_mirror_center_v2.png-bb914b34a4f4e8ea134d37bf30184c02.ctex"
+uid="uid://ok1etsr8hel"
+path="res://.godot/imported/state_wedges_half_v3.png-c92b64811685c34c93c65b5b5f02fbe0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H2/state_office_mirror_center_v2.png"
-dest_files=["res://.godot/imported/state_office_mirror_center_v2.png-bb914b34a4f4e8ea134d37bf30184c02.ctex"]
+source_file="res://assets/rooms/H2/state_wedges_half_v3.png"
+dest_files=["res://.godot/imported/state_wedges_half_v3.png-c92b64811685c34c93c65b5b5f02fbe0.ctex"]
 
 [params]
 

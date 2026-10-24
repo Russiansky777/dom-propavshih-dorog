@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1w3q1365w3t0"
-path="res://.godot/imported/state_wedges_driven.png-d8d20331cc20b2adb402cd08e3679c29.ctex"
+uid="uid://p8gpj72ckd82"
+path="res://.godot/imported/state_boat_dusk.png-b6a276f830f2db79cbc2e4b1a4401112.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/H2/state_wedges_driven.png"
-dest_files=["res://.godot/imported/state_wedges_driven.png-d8d20331cc20b2adb402cd08e3679c29.ctex"]
+source_file="res://assets/rooms/Z3/state_boat_dusk.png"
+dest_files=["res://.godot/imported/state_boat_dusk.png-b6a276f830f2db79cbc2e4b1a4401112.ctex"]
 
 [params]
 
