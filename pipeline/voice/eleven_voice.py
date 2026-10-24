@@ -264,14 +264,16 @@ def file_rel(ln: dict, lid: str, ext: str) -> str:
 
 
 TAG_IN_TEXT = re.compile(r"\[[^\[\]]+\]")
+# Подсказка к старому слову в субтитрах (H59, T7): «[[слово|значение]]» — в голос идёт только слово.
+GLOSS_IN_TEXT = re.compile(r"\[\[([^\[\]|]+)\|[^\[\]|]+\]\]")
 
 
 def api_text(ln: dict) -> str:
     """Текст запроса к API: voice_text (теги внутри фразы) или теги перед текстом; субтитры — text без тегов.
     Произношение (pipeline/voice/pronunciation_ru.json, pronounce.py) — только здесь, не в субтитрах."""
     if ln.get("voice_text"):
-        return pronounce.apply(str(ln["voice_text"]), str(ln.get("id", "")))
-    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(str(ln["text"]), str(ln.get("id", "")))
+        return pronounce.apply(GLOSS_IN_TEXT.sub(r"\1", str(ln["voice_text"])), str(ln.get("id", "")))
+    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(GLOSS_IN_TEXT.sub(r"\1", str(ln["text"])), str(ln.get("id", "")))
 
 
 # --- Ключ и HTTP ---------------------------------------------------------------------------------

@@ -58,6 +58,8 @@ TAG_RE = re.compile(r"\[([^\[\]]+)\]")
 REQUESTS = ROOT / "pipeline" / "requests"
 TEXT_DIR = STORY / "text"
 LUFS_TOL = 1.5
+# Подсказка к старому слову «[[слово|значение]]» (H59, T7): в голос идёт только слово — как в eleven_voice.api_text.
+GLOSS_RE = re.compile(r"\[\[([^\[\]|]+)\|[^\[\]|]+\]\]")
 SPEAKER_LU_TOL = 4.0   # H5: подача реплики (громкость исходника до нормализации) не дальше 4 LU от медианы персонажа
 AFTER_H59 = REQUESTS / "voice_after_H59.json"   # строки, ждущие финальной перезаписи после старорусской правки (H59)
 
@@ -267,8 +269,8 @@ def _line(scene: str, ln: dict) -> dict:
 def api_text(ln: dict) -> str:
     """Как pipeline/voice/eleven_voice.py: voice_text или теги перед текстом; произношение — pronounce.py."""
     if ln.get("voice_text"):
-        return pronounce.apply(str(ln["voice_text"]), str(ln.get("id", "")))
-    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(str(ln["text"]), str(ln.get("id", "")))
+        return pronounce.apply(GLOSS_RE.sub(r"\1", str(ln["voice_text"])), str(ln.get("id", "")))
+    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(GLOSS_RE.sub(r"\1", str(ln["text"])), str(ln.get("id", "")))
 
 
 def check_tags(lines: dict, allowed: set[str] | None) -> list[str]:
@@ -289,7 +291,7 @@ def check_tags(lines: dict, allowed: set[str] | None) -> list[str]:
                 errors.append(f"{lid}: теги voice_text {in_text} ≠ tags {used}")
             used = in_text
             bare = " ".join(TAG_RE.sub(" ", str(vt)).split())
-            if bare != " ".join(str(ln["text"]).split()):
+            if bare != " ".join(GLOSS_RE.sub(r"\1", str(ln["text"])).split()):
                 errors.append(f"{lid}: voice_text без тегов ≠ text (слова сценария менять нельзя): «{bare}»")
         if allowed is not None:
             for t in used:
@@ -612,13 +614,21 @@ def after_h59() -> dict[str, str]:
             for r in doc.get("lines", []) if isinstance(r, dict) and r.get("id")}
 
 
-def check_speaker_loudness(manifests: dict[str, dict], waiting: dict[str, str]) -> tuple[list[str], list[str]]:
+def soft_lines(voice_cfg: dict | None = None) -> tuple[set[str], float]:
+    """data/story/voice.json → soft_lines: нарочно тихие реплики (Директор 24.10) — не тише min_lu от медианы."""
+    cfg = (voice_cfg if voice_cfg is not None else load(STORY / "voice.json", {}) or {}).get("soft_lines") or {}
+    return {str(x) for x in cfg.get("ids", [])}, float(cfg.get("min_lu", -6.0))
+
+
+def check_speaker_loudness(manifests: dict[str, dict], waiting: dict[str, str],
+                           soft_cfg: tuple[set[str], float] | None = None) -> tuple[list[str], list[str]]:
     """H5 (Директор 24.10: тихие реплики Пелагеи выбиваются): все записи нормализованы к одной цели LUFS, но шёпот
     после нормализации звучит тише и глуше. Мерило подачи — громкость исходника (source_lufs, до нормализации):
     дальше SPEAKER_LU_TOL от медианы своего персонажа (≥ 4 записи) — ошибка; строка из списка ожидания H59 —
     предупреждение (перезапишется в финальном прогоне)."""
     errors: list[str] = []
     warns: list[str] = []
+    soft, soft_min = soft_cfg if soft_cfg is not None else soft_lines()
     for rel, m in sorted(manifests.items()):
         by: dict[str, list[tuple[float, str]]] = {}
         for lid, e in m.get("lines", {}).items():
@@ -633,9 +643,10 @@ def check_speaker_loudness(manifests: dict[str, dict], waiting: dict[str, str]) 
             n = len(vals)
             med = vals[n // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2
             for v, lid in sorted(rows, key=lambda r: r[1]):
-                if abs(v - med) > SPEAKER_LU_TOL:
+                low = soft_min if lid in soft else -SPEAKER_LU_TOL
+                if not low <= v - med <= SPEAKER_LU_TOL:
                     msg = (f"{rel}/{lid}: подача {v:+.1f} LUFS до нормализации — {v - med:+.1f} LU от медианы {sp} "
-                           f"({med:.1f}); допустимо ± {SPEAKER_LU_TOL:g}")
+                           f"({med:.1f}); допустимо {low:+g}…+{SPEAKER_LU_TOL:g}" + (" (нарочно тихая)" if lid in soft else ""))
                     if lid in waiting:
                         warns.append(msg + " — в списке перезаписи после H59")
                     else:
@@ -849,8 +860,14 @@ def main() -> int:
     # самопроверка H5/H4: шёпот вне списка ожидания и вопрос персонажа без ограничения повтора — ошибки
     _sp = {"lines": {f"T_{i}": {"speaker": "tst", "source_lufs": -16.0} for i in range(5)}}
     _sp["lines"]["T_q"] = {"speaker": "tst", "source_lufs": -24.0}
-    if not check_speaker_loudness({"ru": _sp}, {})[0] or check_speaker_loudness({"ru": _sp}, {"T_q": "H59"})[0]:
+    if (not check_speaker_loudness({"ru": _sp}, {}, (set(), -6.0))[0]
+            or check_speaker_loudness({"ru": _sp}, {"T_q": "H59"}, (set(), -6.0))[0]):
         missed.append("тихая подача персонажа (H5) не поймана или список ожидания не понят")
+    # нарочно тихая (voice.json → soft_lines): −5 LU можно, −8 LU — нет
+    _sp["lines"]["T_s"] = {"speaker": "tst", "source_lufs": -21.0}
+    if (not check_speaker_loudness({"ru": _sp}, {}, ({"T_q", "T_s"}, -6.0))[0]
+            or any("T_s" in e for e in check_speaker_loudness({"ru": _sp}, {}, ({"T_q", "T_s"}, -6.0))[0])):
+        missed.append("нарочно тихая реплика: предел −6 LU не понят")
     _vc = copy.deepcopy(voice_cfg or {})
     _vc.setdefault("narration", {}).setdefault("ask_prompts", {})["keys"] = []
     if not any("ask_prompts.keys" in e for e in check_ask_prompts(_vc, texts)):

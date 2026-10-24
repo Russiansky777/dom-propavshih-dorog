@@ -12,7 +12,8 @@ TSV — колонки выгрузки (id, speaker, scene_room, context, text)
   * колонка text совпадает с нынешними данными (иначе выгрузка устарела — выгрузить заново);
   * подстановки и разметка ({item}, %s, $var, [тег голоса], [b]/BBCode, <тег>) в new_text те же,
     что в text (как мультимножество);
-  * new_text не начинается с «@» (так в данных пишутся ссылки на ключи).
+  * new_text не начинается с «@» (так в данных пишутся ссылки на ключи);
+  * подсказка к старому слову `[[слово|значение]]` (H59) — не подстановка; «висящие» `[[`/`]]` — ошибка.
 Строки ui_code:* (тексты, зашитые в код) не импортируются — только предупреждение.
 """
 from __future__ import annotations
@@ -49,7 +50,16 @@ PLACEHOLDER_RES = [
 ]
 
 
+# Glossary hint `[[слово|значение]]` (H59, T7): not a placeholder — the word is shown highlighted, the meaning on hover.
+GLOSS_RE = re.compile(r"\[\[([^\[\]|]+)\|([^\[\]|]+)\]\]")
+
+
+def strip_gloss(s: str) -> str:
+    return GLOSS_RE.sub(r"\1", s)
+
+
 def placeholders(s: str) -> Counter:
+    s = strip_gloss(s)
     c = Counter()
     for r in PLACEHOLDER_RES:
         c.update(r.findall(s))
@@ -238,6 +248,9 @@ def main() -> int:
         if not r.importable:
             warnings.append(f"line {no}: {rid}: hard-coded in {r.file} — not imported, change it in code")
             continue
+        if "[[" in strip_gloss(new) or "]]" in strip_gloss(new):
+            errors.append(f"line {no}: {rid}: broken glossary markup (expected [[слово|значение]])")
+            continue
         if new.startswith("@"):
             errors.append(f"line {no}: {rid}: new_text starts with '@' (would become a key reference)")
             continue
@@ -261,7 +274,7 @@ def main() -> int:
             if tid in fresh and (tid in new_by_id or rid in new_by_id):
                 t = new_by_id.get(tid, fresh[tid].text)
                 v = new_by_id.get(rid, r.text)
-                if " ".join(re.sub(r"\[[^\[\]]*\]", "", v).split()) != " ".join(t.split()):
+                if " ".join(re.sub(r"\[[^\[\]]*\]", "", strip_gloss(v)).split()) != " ".join(strip_gloss(t).split()):
                     warnings.append(f"{rid}: voice_text without [tags] no longer equals {tid} — edit both")
 
     for w in warnings:
