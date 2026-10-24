@@ -94,7 +94,7 @@
       "grants": {"flags": ["done_M12", "office_unbolted"], "items": []},
       "puzzle": {"verb": "guide_by_signal", "solution": "Один удар — крюк идёт вниз; два — стоп у засова; долгий — подымай: засов выходит из скоб", "error": "Рано или поздно — крюк соскальзывает, Павел возвращает его наверх; наказания нет"},
       "mandatory_lines": [
-        {"speaker": "agata", "text": "Вышел засов! Подалась дверь!"}
+        {"speaker": "agata", "text": "Вышел засов! Подалась дверь!", "tags": ["warmly"]}
       ],
       "result": "Засов поднят. Дверь конторы чуть подалась — за ней всё ещё стеллаж.",
       "hints": ["Вести крюк Павла звоном", "Один удар — дальше, два — стой, долгий — подымай", "Когда крюк у засова — два удара, потом долгий звон (зажать колокол)"],
@@ -122,7 +122,7 @@
         {"speaker": "pavel", "text": "Ниже рабочей спущу — к зиме пруд не наберётся. А Заречью и зимой молоть надо."},
         {"speaker": "agata", "prompt": "@M3.answer.prompt", "options": [
           {"id": "family", "label": "@M3.answer.opt_family", "text": "Там мама и брат.", "sets": "pavel_answer_family"},
-          {"id": "promise", "label": "@M3.answer.opt_promise", "text": "Поднимем к зиме. Слово даю.", "sets": "pavel_answer_promise"}
+          {"id": "promise", "label": "@M3.answer.opt_promise", "text": "Поднимем к зиме. Слово даю.", "tags": ["warmly"], "sets": "pavel_answer_promise"}
         ]},
         {"speaker": "pavel", "text": "Добро. К затвору пойдём."}
       ],

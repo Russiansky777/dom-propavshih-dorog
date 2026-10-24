@@ -145,7 +145,7 @@
         {
           "speaker": "agata",
           "text": "А канат?",
-          "tags": ["curious"]
+          "tags": ["surprised"]
         },
         {
           "speaker": "pelageya",
@@ -213,7 +213,7 @@
         {
           "speaker": "tikhon",
           "text": "Мокрое на сухое не клади.",
-          "tags": ["grumbling"]
+          "tags": ["sarcastic"]
         },
         {
           "speaker": "agata",
@@ -237,7 +237,7 @@
         {
           "speaker": "agata",
           "text": "Так год уже прошёл.",
-          "tags": ["sad"]
+          "tags": ["thoughtful"]
         },
         {
           "speaker": "tikhon",
@@ -248,7 +248,7 @@
         {
           "speaker": "tikhon",
           "text": "По средам Тамара приносит. Нынче среда?",
-          "tags": ["grumbling"]
+          "tags": ["sarcastic"]
         },
         {
           "speaker": "tikhon",
