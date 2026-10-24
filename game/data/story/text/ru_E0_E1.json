@@ -866,6 +866,10 @@
       "text": "Родная петля",
       "draft": false
     },
+    "H3.puzzle.seat_hint": {
+      "text": "Брус ещё не сел: подбей его с торца — щелчок по краю, куда указывает стрелка.",
+      "draft": true
+    },
     "H3.puzzle.marks": {
       "text": "Зарубка на пороге",
       "draft": false

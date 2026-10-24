@@ -208,6 +208,21 @@ func _slide_beam_to_notch(i: int, miss_px: float = 12.0) -> void:
 	var anchor := _v(p["anchor"])
 	var grab := _v(p["beam"])
 	await _drag(grab, grab + Vector2(anchor.x - notch.x + miss_px, 0), 6)
+	await _knock_in(i)
+
+
+## H18: knock the beam on the end the arrow shows until notch i sits under the door's mark (a few clicks).
+func _knock_in(i: int) -> int:
+	var n := 0
+	for k in 12:
+		var p := _probe()
+		if int(p["mark"]) == i or int(p.get("near", -1)) != i:
+			break
+		var off := float(p.get("near_off", 0.0))
+		await _click(_v(p["knock_left"] if off < 0.0 else p["knock_right"]))
+		await _wait(0.15)
+		n += 1
+	return n
 
 
 func _sounds_since(n0: int) -> Array:
@@ -283,6 +298,11 @@ func _test_door_mouse() -> void:
 	p = _probe()
 	_check(p["placed"].is_empty(), "a hinge dropped off the sockets is not placed: %s" % [p["placed"]])
 	_check(_v(p["pieces"]["hinge_1"]).distance_to(_v(p["tray"]["hinge_1"])) < 2.0, "the missed hinge slides back to its tray place")
+	# H18: the socket's catch area is smaller — released 40 px off a socket, the hinge goes back to the tray.
+	await _drop_hinge_into("hinge_1", "top", Vector2(32, 24))
+	p = _probe()
+	_check(p["placed"].is_empty(), "H18: 40 px off the socket does not snap any more (snap %s px): %s" % [str(cp.get("snap_px")), p["placed"]])
+	await _wait(0.35)
 	# Into the top socket (released 18 px off: snaps).
 	await _drop_hinge_into("hinge_1", "top")
 	p = _probe()
@@ -313,15 +333,26 @@ func _test_door_mouse() -> void:
 	p = _probe()
 	_check(not p["placed"].has("middle"), "a click on a placed hinge returns it to the tray: %s" % [p["placed"]])
 	_check(_v(p["pieces"]["hinge_2"]).distance_to(_v(p["tray"]["hinge_2"])) < 2.0, "…and it is back in the tray")
-	await _drop_hinge_into("hinge_2", "middle", Vector2(-20, -25))
+	await _drop_hinge_into("hinge_2", "middle", Vector2(-14, -18))
 	_check(_probe()["placed"].size() == 3, "hinge_2 back in the middle socket")
-	# Threshold: click on the V notch brings it under the door's mark.
+	# Threshold (H18): the beam pulled near the V notch does not sit by itself — it is knocked in from its end.
 	p = _probe()
-	await _click(_v(p["marks"][2]))
+	await _drag(_v(p["beam"]), _v(p["beam"]) + Vector2(_v(p["anchor"]).x - _v(p["marks"][2]).x - 26.0, 0), 6)
+	await _wait(0.1)
+	p = _probe()
+	_check(int(p["mark"]) == -1 and int(p["near"]) == 2 and bool(p["seat_hint"]), "near the V notch: not seated yet, the hint and the knock arrows show (%s)" % str([p["mark"], p["near"], p["near_off"]]))
+	var knock_l: Label = cp.get("seat_arrows")[0]
+	var knock_r: Label = cp.get("seat_arrows")[1]
+	_check(knock_l.visible and knock_l.modulate.a > 0.9 and knock_r.modulate.a < 0.5, "the arrow at the left end glows (the notch is left of the mark: knock it right)")
+	var dx0 := float(p["beam_dx"])
+	await _click(_v(p["beam"]))
+	await _wait(0.2)
+	_check(absf(float(_probe()["beam_dx"]) - dx0) < 0.5 and int(_probe()["mark"]) == -1, "a click in the middle of the beam does not move it (the hint only)")
+	var kn := await _knock_in(2)
 	await _wait(0.3)
 	p = _probe()
-	_check(int(p["mark"]) == 2, "a click on the V notch aligns it under the door's mark: mark=%d" % int(p["mark"]))
-	_check(absf(_v(p["marks"][2]).x - _v(p["anchor"]).x) < 1.0, "the V notch is exactly under the door's mark after the click")
+	_check(int(p["mark"]) == 2 and kn >= 2 and int(p["seat_taps"]) == kn, "knocked in %d times — the V notch sits under the mark: mark=%d" % [kn, int(p["mark"])])
+	_check(absf(_v(p["marks"][2]).x - _v(p["anchor"]).x) < 1.0, "the V notch is exactly under the door's mark")
 	# Close the door with the handle → winter.
 	await _click(_v(p["handle"]))
 	await _frames(3)
@@ -355,7 +386,7 @@ func _test_door_rules() -> void:
 	await _drop_hinge_into("hinge_2", "bottom")
 	await _slide_beam_to_notch(2)
 	var p := _probe()
-	_check(int(p["mark"]) == 2, "dragging the beam within the snap distance aligns the V notch: mark=%d" % int(p["mark"]))
+	_check(int(p["mark"]) == 2, "dragging the beam near the V notch and knocking it in seats it: mark=%d" % int(p["mark"]))
 	_check(absf(_v(p["marks"][2]).x - _v(p["anchor"]).x) < 1.0, "…and snaps it exactly under the mark")
 	await _click(_v(p["handle"]))
 	await _frames(2)
