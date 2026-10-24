@@ -1,0 +1,62 @@
+{
+	"counters": {
+		"hint_tier.M02": 1,
+		"hint_tier.M04": 3
+	},
+	"current_room": "H3",
+	"flags": {
+		"done_M01": true,
+		"done_M02": true,
+		"done_M03": true,
+		"h1_scarf_removed": true,
+		"h1_shutter_open": true,
+		"h2_bundle_unwrapped": true,
+		"has_door_hinges": true,
+		"has_key_house": true,
+		"has_letter_tamara": true,
+		"has_mitten": true,
+		"has_pocket_watch": true,
+		"house_open": true,
+		"house_unlocked": true,
+		"knows_bridge_lost": true,
+		"knows_dunya_left": true,
+		"knows_letters_bag": true,
+		"knows_no_road": true,
+		"knows_pier_trace": true,
+		"knows_rope_on_plate": true,
+		"knows_rule_things_remember": true,
+		"knows_tikhon_waits": true,
+		"met_pelageya": true,
+		"met_tamara": true,
+		"met_tikhon": true,
+		"r1_seen_lantern": true,
+		"seen_bell": true,
+		"seen_workshop": true,
+		"started_M01": true,
+		"started_M02": true,
+		"started_M03": true,
+		"stove_lit": true,
+		"visited_H1": true,
+		"visited_H2": true,
+		"visited_H3": true,
+		"visited_M1": true,
+		"visited_R1": true,
+		"visited_Z1": true,
+		"visited_Z2": true,
+		"visited_Z4": true
+	},
+	"inventory": [
+		"pocket_watch",
+		"mitten",
+		"door_hinges"
+	],
+	"journal_goal": "Печь затоплена, Тихон дежурит и ждёт тётю «к вечеру». Её чертежи и записи — в мастерской за жилой комнатой, на стене над ящиками «Петли» и «Язык колокола».",
+	"journal_goal_scene": "M03",
+	"player_pos": {
+		"x": 1730.0,
+		"y": 900.0
+	},
+	"saved_at": "2026-10-24T09:47:29",
+	"saved_unix": 1792835249.955,
+	"version": 2
+}
