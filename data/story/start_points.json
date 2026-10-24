@@ -217,6 +217,8 @@
         "tikhon_told_nina",
         "beam_dunya"
       ]
-    }
+    },
+    {"id": "bedtime", "title": "Партия H (T2): день первый после школы — ночь, кровать на чердаке (H17)", "done_through": "M08", "room": "H3", "spawn": "from_O1", "flags": ["house_unlocked", "house_open", "h1_shutter_open", "stove_lit", "h1_scarf_removed", "met_tikhon"], "_note": "Приёмка H, T2 (Docs/ACCEPTANCE_H.md): ?start=bedtime — Агата говорит, что пора спать; жилая комната → чердак → кровать: ночь у печи, утро «День второй»"},
+    {"id": "bedtime3", "title": "Партия H (T2): день третий, все четыре дела сделаны — вечер, кровать на чердаке (H17)", "done_through": "M23d", "room": "H1", "spawn": "default", "flags": ["house_unlocked", "house_open", "h1_shutter_open", "stove_lit", "h1_scarf_removed", "met_tikhon"], "_note": "?start=bedtime3 — с чердака по кровати: «пора спать», утро четвёртого дня"}
   ]
 }
