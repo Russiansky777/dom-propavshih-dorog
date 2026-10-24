@@ -8,7 +8,7 @@
 
 ## TR1 — пробный ролик 7,5 с из игры (запуск 40103677893, 24.10) — чеклист `Docs/ACCEPTANCE_TRAILER_TEST.md`
 - **Сделано:** режим съёмки `game/scenes/trailer/Trailer.tscn` по плану `data/trailer/test_7s.json` (пейзаж меню по слоям глубины, горница H1 с настоящей ходьбой Агаты, золотой титр с бликом); запись Movie Maker 4K (`tools/make_trailer.sh`), монтаж и звук ffmpeg (`tools/trailer_assemble.py`), проверка (`tools/trailer_check.py`). Ролик — релиз `trailer-test-1` (pre-release).
-- **Чем доказано:** `Docs/evidence/trailer/test_7s_check.json` (H.264 1080p60, 23,5 Мбит/с, AAC 48 кГц, −14,0 LUFS, пик −1,6 dBFS, повторов, скачков и чёрных кадров вне переходов нет), лист кадров `Docs/evidence/trailer/test_7s_contact.jpg`, тест `game/tests/test_trailer.gd` в run_tests (3/3). Весь run_tests — код 1: 33 проверок текстов реплик после T7 (`4fdff8b`), не TR1. Отчёт `Docs/agent_reports/run_40103677893.md`.
+- **Чем доказано:** `Docs/evidence/trailer/test_7s_check.json` (H.264 1080p60, 23,5 Мбит/с, AAC 48 кГц, −14,0 LUFS, пик −1,6 dBFS, повторов, скачков и чёрных кадров вне переходов нет), лист кадров `Docs/evidence/trailer/test_7s_contact.jpg`, тест `game/tests/test_trailer.gd` в run_tests (3/3). Весь tools/run_tests.sh — код 0. Отчёт `Docs/agent_reports/run_40103677893.md`.
 - **Не сделано / решить:** арт 1672 px мягковат для 1080 (нужен крупнее или апскейл); ветер и вода — временный синтез (нужен записанный звук).
 - **Следующее действие:** ответ Директора на три вопроса (темп, камера, титр), затем — план полного трейлера.
 
