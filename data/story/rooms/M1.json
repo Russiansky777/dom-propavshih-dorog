@@ -52,7 +52,7 @@
     },
     {
       "id": "wheel", "kind": "object", "label": "@M1.wheel.label", "rect": [1235, 340, 320, 320], "stand": [1340, 740], "draw": false,
-      "states": [{"if": ["pond_lowered"], "label": "@M1.wheel.label_still"}],
+      "states": [{"if": ["pond_lowered"], "label": "@M1.wheel.label_still", "look": "@M1.wheel.look_still", "_note": "T6 (ИИ-разбор): колесо стоит с T4 — осмотр не говорит «ходит»"}],
       "look": "@M1.wheel.look"
     },
     {

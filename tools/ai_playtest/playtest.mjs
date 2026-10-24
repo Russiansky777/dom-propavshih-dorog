@@ -397,7 +397,7 @@ async function main() {
   // «Точный удар» (F7 brace, H1 shutter latch): Space while timing.in_green and state run; until done / 12 strikes.
   const timingSeries = async (events) => {
     let strikes = 0, last = null;
-    const bar = (s) => { const p = panelOf(s); return p && (p.timing || (p.hook && p.hook.timing)) || null; };
+    const bar = (s) => { const p = panelOf(s); return p && (p.timing || p.wedge_timing || (p.hook && p.hook.timing)) || null; };   // T6: клинья зеркала конторы публикуют полосу как wedge_timing
     const t0 = Date.now();
     while (strikes < 12 && Date.now() - t0 < 240000) {
       const s = await fresh();

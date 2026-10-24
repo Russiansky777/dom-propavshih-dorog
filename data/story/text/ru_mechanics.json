@@ -295,7 +295,7 @@
       "draft": true
     },
     "mech.office_mirror.wedges_hint": {
-      "text": "По три точных удара в каждый клин.",
+      "text": "Щелчок или Пробел, когда бегунок в зелёном, — удар. По три точных удара в каждый клин.",
       "draft": true
     },
     "mech.office_mirror.wedge_slipped": {
