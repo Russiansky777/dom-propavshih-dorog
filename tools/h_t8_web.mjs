@@ -205,9 +205,11 @@ async function main() {
   const slow = async (k) => { await page.evaluate((x) => window.probePause(false, x), k); };
 
   try {
-    // --- D1: the house door before and after Pelageya ---
+    // --- D1: the house door before and after Pelageya ---  (H_ONLY=B1 — skip D1)
+    let s;
+    if (process.env.H_ONLY !== "B1") {
     await page.goto(`http://127.0.0.1:${PORT}/index.html?start=pier_first`);
-    let s = await waitFor("D1: game up on the street with the key", (t) => t.room === "Z2" && t.exits && t.exits.H1, 240000);
+    s = await waitFor("D1: game up on the street with the key", (t) => t.room === "Z2" && t.exits && t.exits.H1, 240000);
     await playThrough("D1: start", { quietMs: 2500 });
     s = await state();
     check(s.exits.H1 && !s.exits.H1.open, "D1: the house door shut before the pier");
@@ -231,6 +233,7 @@ async function main() {
     check(/ключ/.test(s.beat.text || "") && !/Сперва к причалу/.test(s.beat.text || ""), `D1: after M02 the door names the key («${s.beat.text}»)`);
     await shot("D1_door_after_M02");
     await playThrough("D1: line 2", { quietMs: 1500 });
+    }
 
     // --- B1: the boat at the turn, M17, «В лодку» ---
     await page.goto(`http://127.0.0.1:${PORT}/index.html?start=boat_turn`);
@@ -254,7 +257,7 @@ async function main() {
     await click("B1: continue (first line)", s.ui.dialogue_click || { x: 960, y: 780 });
     await sleep(1600);
     await shot("B1_M17_boat_slides");
-    const m17 = await playThrough("B1: M17", { quietMs: 3000 });
+    const m17 = await playThrough("B1: M17", { quietMs: 30000 });   // the boat slides 3.4 s with no line on screen (slow under swiftshader)
     check(m17.some((l) => /лента лежит/.test(l)) && m17.some((l) => /Мамина лента/.test(l)), `B1: the empty boat came back with the ribbon (${m17.length} beats)`);
     s = await state();
     check(s.exits.R2 && s.exits.R2.visible && s.exits.R2.open, "B1: «В лодку» open after M17");
