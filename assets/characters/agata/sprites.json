@@ -1,80 +1,80 @@
 {
-  "name": "agata",
-  "frame_w": 848,
-  "frame_h": 864,
-  "pivot": {
-    "x": 0.5,
-    "y": 0.9464285714285714
+ "name": "agata",
+ "frame_w": 736,
+ "frame_h": 864,
+ "pivot": {
+  "x": 0.5,
+  "y": 0.9464285714285714
+ },
+ "directions": 8,
+ "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
+ "character_height_m": 1.659,
+ "actions": {
+  "idle": {
+   "sheet": "idle.png",
+   "frames": 30,
+   "fps": 24.0,
+   "clip": "Idle_T2M_idle",
+   "clip_seconds": 1.25,
+   "natural_fps": 23.2,
+   "window": [
+    0.1513,
+    0.4034
+   ],
+   "playback": "pingpong"
   },
-  "directions": 8,
-  "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.653,
-  "actions": {
-    "idle": {
-      "sheet": "idle.png",
-      "frames": 24,
-      "fps": 24.0,
-      "clip": "Idle_4",
-      "clip_seconds": 1.5,
-      "natural_fps": 15.33,
-      "window": [
-        0.0788,
-        0.1862
-      ],
-      "playback": "pingpong"
-    },
-    "walk": {
-      "sheet": "walk.png",
-      "frames": 24,
-      "fps": 24.0,
-      "clip": "Walking_Woman",
-      "clip_seconds": 0.9667,
-      "natural_fps": 24.83,
-      "floor_shift_m": 0.0366
-    },
-    "open": {
-      "sheet": "open.png",
-      "frames": 32,
-      "fps": 24.0,
-      "clip": "open_door_open",
-      "clip_seconds": 5.2,
-      "natural_fps": 6.15,
-      "floor_shift_m": 0.0075
-    },
-    "pick": {
-      "sheet": "pick.png",
-      "frames": 40,
-      "fps": 24.0,
-      "clip": "Female_Bend_Over_Pick_Up_Inspect_pick",
-      "clip_seconds": 2.4,
-      "natural_fps": 16.67,
-      "floor_shift_m": -0.0053
-    },
-    "reach": {
-      "sheet": "reach.png",
-      "frames": 30,
-      "fps": 24.0,
-      "clip": "open_door_take_reach",
-      "clip_seconds": 1.6333,
-      "natural_fps": 18.37,
-      "floor_shift_m": 0.0076
-    },
-    "sit": {
-      "sheet": "sit.png",
-      "frames": 1,
-      "fps": 24.0,
-      "clip": "Chair_Sit_F_sit",
-      "clip_seconds": 11.3333,
-      "natural_fps": 0.09,
-      "floor_shift_m": -0.0162
-    }
+  "walk": {
+   "sheet": "walk.png",
+   "frames": 24,
+   "fps": 24.0,
+   "clip": "Walking_Woman",
+   "clip_seconds": 0.9583,
+   "natural_fps": 25.04,
+   "floor_shift_m": 0.0422
   },
-  "fit": {
-    "half_width_m": 0.874,
-    "top_m": 0.844,
-    "frame_top_m": 0.925,
-    "frame_w": 848
+  "open": {
+   "sheet": "open.png",
+   "frames": 32,
+   "fps": 24.0,
+   "clip": "open_door_open",
+   "clip_seconds": 5.2083,
+   "natural_fps": 6.14,
+   "floor_shift_m": -0.0058
   },
-  "matte_materials": true,
-  "_source": "Агата v3 rev 10 (pipeline/requests/agata_v3.json, прогон 40022393949, G56 24.10): те же клипы rev 9, листы в 2,25× (render_size 864, 16 сэмплов с шумоподавлением) — в игре texture_scale 2,25, рост на экране прежний; 24 кадра на цикл ходьбы и 24 кадра одного покачивания стойки, 24 к/с; open — open_door, pick — наклон и подъём (G1), reach — «взять у пояса» (G1), sit — Chair_Sit_Idle_F, 1 кадр (G53); модель Meshy v3, клипы переносом, стопы исправлены (feet_fix), ткань матовая; копия assets/characters/agata_v3"
+  "pick": {
+   "sheet": "pick.png",
+   "frames": 40,
+   "fps": 24.0,
+   "clip": "Collect_Object_pick",
+   "clip_seconds": 1.9583,
+   "natural_fps": 20.43,
+   "floor_shift_m": 0.0009
+  },
+  "reach": {
+   "sheet": "reach.png",
+   "frames": 30,
+   "fps": 24.0,
+   "clip": "open_door_take_reach",
+   "clip_seconds": 1.625,
+   "natural_fps": 18.46,
+   "floor_shift_m": -0.0057
+  },
+  "sit": {
+   "sheet": "sit.png",
+   "frames": 1,
+   "fps": 24.0,
+   "clip": "Chair_Sit_F_sit",
+   "clip_seconds": 11.3333,
+   "natural_fps": 0.09,
+   "floor_shift_m": -0.0134
+  }
+ },
+ "fit": {
+  "half_width_m": 0.755,
+  "top_m": 0.846,
+  "frame_top_m": 0.929,
+  "frame_w": 736
+ },
+ "matte_materials": true,
+ "_source": "Агата v4 (T5b, 24.10, pipeline/requests/agata_v4_t5b.json, запуск 40093021019): модель Meshy 01a16bb8 по листу v2, лицо и волосы — смешение с Retexture 01a16ddb по UV, угол платка подогнут, сумка и ремень жёсткие (только корпус), риг 01a16dea; стойка — Text to Motion 01a16ddd (амплитуда ×0,5, одно покачивание с ноги на ногу), pick — присед Collect_Object 01a16df5, walk/open/reach/sit — перенос с v3; правая рука на 12° от корпуса; листы 2,25× (render_size 864, 16 сэмплов), стопы исправлены; сборка GLB — pipeline/3d/agata_v4/build.sh; копия assets/characters/agata_v4"
 }
