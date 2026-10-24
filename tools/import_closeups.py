@@ -62,6 +62,12 @@ WIDTH["M1_schedule_closeup"] = 1672           # доска во весь кад�
 BATCH9 = ["closeup_notebook_paths_clean", "closeup_notebook_rule_clean", "closeup_notebook_stopper_clean",
           "closeup_notebook_bridge_clean", "closeup_letter_blank", "closeup_sluice_lever"]
 WIDTH.update({n: 1440 for n in BATCH9})
+# Партия 10б (24.10, assets/incoming/_meta_p10b/README.txt; H48 — Q06 переделан): чистый кадр второго верстака (паз пустой,
+# винта нет) и подвижные детали отдельными слоями на том же холсте 1672×941, (0, 0) — без уменьшения: в крупном плане
+# (O4.json → ilya_workshop.mechanic.parts) деталь — вырезка своего слоя по rect, лежит в стороне и тянется мышью на место.
+BATCH10B = ["closeup_second_bench_clean", "bench_part_board", "bench_part_key", "bench_part_screw", "bench_part_stop",
+            "bench_part_wedge"]
+WIDTH.update({n: 1672 for n in BATCH10B})
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:
