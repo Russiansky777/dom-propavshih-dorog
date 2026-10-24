@@ -80,6 +80,9 @@ func load_plan(path: String, shot_id: String) -> bool:
 		return false
 	plan = data
 	fps = int(plan.get("fps", 60))
+	for a in OS.get_cmdline_user_args():   # tools/trailer_render.sh passes the movie's fps: the frame count must match it
+		if String(a).begins_with("--fps="):
+			fps = int(String(a).substr(6))
 	var shots: Array = plan["shots"]
 	var idx := 0
 	if shot_id != "":

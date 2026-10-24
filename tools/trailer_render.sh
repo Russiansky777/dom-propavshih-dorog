@@ -43,7 +43,7 @@ for entry in "${ENTRIES[@]}"; do
   LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 ${W}x${H}x24" \
     "$GODOT" --path "$GAME_DIR" --rendering-driver opengl3 --disable-vsync \
       --write-movie "$OUT/$shot/f.png" --fixed-fps "$FPS_USE" \
-      res://scenes/trailer/Trailer.tscn -- "--trailer=res://data/trailer/$PLAN.json" "--shot=$shot" \
+      res://scenes/trailer/Trailer.tscn -- "--trailer=res://data/trailer/$PLAN.json" "--shot=$shot" "--fps=$FPS_USE" \
       >"$BUILD_DIR/logs/trailer_${PLAN}_${shot}.log" 2>&1 || {
         echo "[trailer] $shot: Godot exited with $? (log: build/logs/trailer_${PLAN}_${shot}.log)" >&2
         tail -20 "$BUILD_DIR/logs/trailer_${PLAN}_${shot}.log" >&2
