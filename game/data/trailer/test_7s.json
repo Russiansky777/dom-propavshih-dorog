@@ -40,9 +40,9 @@
       "transition_in": {"kind": "dissolve", "duration": 0.6},
       "room": "H1",
       "state": {"done_through": "M05", "flags": ["house_unlocked", "h1_shutter_open", "stove_lit", "h1_scarf_removed"]},
-      "agata": {"from": [1060, 735], "to": [650, 800], "start_s": -0.15},
+      "agata": {"from": [1400, 760], "to": [640, 795], "start_s": -0.3},
       "preroll_s": 0.6,
-      "camera": {"zoom": [1.14, 1.2], "center_from": [930, 560], "follow": 0.45, "spring_hz": 1.1, "ease": "sine_in_out"},
+      "camera": {"zoom": [1.14, 1.2], "center_from": [1090, 560], "follow": 0.5, "spring_hz": 1.1, "ease": "sine_in_out"},
       "occluder_parallax": 0.35,
       "motes": {"rect": [120, 280, 700, 520], "amount": 70, "color": [1.0, 0.8, 0.5], "alpha": 0.5, "size_px": [1.0, 2.6]},
       "grade": {"tint": [1.04, 0.98, 0.9], "lift": [0.008, 0.004, 0.0]},
@@ -57,7 +57,7 @@
       "subtitle": "Вещи помнят место, которому служили.",
       "font": "body",
       "title_px": 132,
-      "subtitle_px": 44,
+      "subtitle_px": 48,
       "title_y": 470,
       "subtitle_y": 628,
       "gold": [[0.55, 0.36, 0.14], [1.0, 0.86, 0.6], [0.78, 0.55, 0.24]],
@@ -68,7 +68,8 @@
       "title_in": [0.15, 0.95],
       "subtitle_in": [0.75, 1.35],
       "glint": [0.7, 1.7],
-      "glint_width": 0.14
+      "glint_width": 0.045,
+      "glint_gain": 0.55
     }
   ],
   "audio": {

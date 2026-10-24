@@ -1,0 +1,60 @@
+{
+ "file": "build/trailer/test_7s.mp4",
+ "format": {
+  "video": "h264",
+  "profile": "High",
+  "size": [
+   1920,
+   1080
+  ],
+  "fps": "60/1",
+  "video_kbps": 23540,
+  "audio": "aac",
+  "audio_hz": 48000,
+  "audio_kbps": 310,
+  "duration_s": 7.5,
+  "pix_fmt": "yuv420p"
+ },
+ "loudness": {
+  "integrated_lufs": -14.0,
+  "lra_lu": 3.1,
+  "true_peak_dbfs": -1.6,
+  "short_term_by_s": {
+   "0": -120.7,
+   "1": -120.7,
+   "2": -15.9,
+   "3": -14.0,
+   "4": -13.2,
+   "5": -12.2,
+   "6": -13.1,
+   "7": -13.9
+  }
+ },
+ "motion": {
+  "frames": 450,
+  "diff_min": 0.0,
+  "diff_median": 0.3807598054409027,
+  "repeats_outside_title_rest": [],
+  "jumps": [],
+  "black_outside_transitions": [],
+  "diff_by_0_5s": [
+   0.245,
+   0.359,
+   0.418,
+   0.432,
+   0.408,
+   0.352,
+   1.522,
+   2.062,
+   1.809,
+   0.532,
+   0.34,
+   1.683,
+   0.255,
+   0.245,
+   0.268
+  ]
+ },
+ "contact_sheet": "Docs/evidence/trailer/test_7s_contact.jpg",
+ "fails": []
+}

@@ -241,7 +241,7 @@ def assemble(plan_id: str) -> Path:
     achains.append(f"{''.join(mix)}amix=inputs={len(mix)}:normalize=0:duration=longest,atrim=duration={total},"
                    f"afade=t=out:st={total - 0.25:.3f}:d=0.25[mixed]")
 
-    graph = ";".join(chains + achains)
+    graph = ";".join(achains)   # the video inputs stay (indices), only the audio is mixed here
     # Pass 1: measure the mix for loudnorm.
     pre = work / "premix.wav"
     run(["ffmpeg", "-y", "-v", "error", *inputs, *ain, "-filter_complex", graph, "-map", "[mixed]", "-ar", str(SR), str(pre)])

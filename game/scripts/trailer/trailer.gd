@@ -486,7 +486,8 @@ func _build_title() -> void:
 	var top := (box_h - hgt) / 2.0
 	mat.set_shader_parameter("glyph_top", (top + asc * 0.28) / box_h)
 	mat.set_shader_parameter("glyph_bottom", (top + asc) / box_h)
-	mat.set_shader_parameter("glint_width", float(shot.get("glint_width", 0.14)))
+	mat.set_shader_parameter("glint_width", float(shot.get("glint_width", 0.05)))
+	mat.set_shader_parameter("glint_gain", float(shot.get("glint_gain", 0.6)))
 	title.material = mat
 	layer.add_child(title)
 	var sub := _title_label(StoryData.text(String(shot.get("subtitle", ""))), font, int(shot.get("subtitle_px", 40)), 100.0)
