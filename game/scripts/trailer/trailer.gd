@@ -751,7 +751,7 @@ func _tick_ui() -> void:
 		var t0 := float(m.get("at_s", 0.0))
 		var u := clampf((_t - t0) / maxf(0.001, float(m.get("dur", 0.6))), 0.0, 1.0)
 		if _t >= t0:
-			var to := v2(m.get("to"))
+			var to := _gloss_point(int(m.get("to_gloss", 0))) if m.has("to_gloss") else v2(m.get("to"))
 			pos = from.lerp(to, ease_curve("sine_in_out", u))
 			if u >= 1.0:
 				from = to
@@ -810,6 +810,17 @@ func _hotspot_data(room_id: String, hotspot_id: String) -> Dictionary:
 			return h
 	push_error("Trailer: no hotspot %s/%s" % [room_id, hotspot_id])
 	return {}
+
+
+## The centre of the n-th marked old word in the dialogue line (the hand hovers it, the meaning pops up).
+func _gloss_point(n: int) -> Vector2:
+	if _game_ui == null:
+		return _cursor_pos
+	var lab = _game_ui.get("text_label")
+	var targets: Array = lab.gloss_targets() if lab != null else []
+	if n >= targets.size():
+		return _cursor_pos
+	return Vector2(float(targets[n]["cx"]), float(targets[n]["cy"]))
 
 
 func _send_mouse_motion(p: Vector2) -> void:

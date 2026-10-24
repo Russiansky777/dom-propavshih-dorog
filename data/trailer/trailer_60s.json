@@ -290,7 +290,11 @@
    },
    "room": "H2",
    "state": {
-    "start_point": "office"
+    "start_point": "office",
+    "flags": [
+     "h2_bundle_unwrapped",
+     "nina_mirror_clamped"
+    ]
    },
    "preroll_s": 0.8,
    "camera": {
@@ -355,7 +359,7 @@
       "at_s": 2.85,
       "do": "mechanic",
       "room": "H2",
-      "hotspot": "stand_zm"
+      "hotspot": "bundle_nina"
      }
     ]
    }
@@ -399,7 +403,7 @@
   {
    "id": "olk_street",
    "kind": "room",
-   "duration": 2.9,
+   "duration": 2.4,
    "transition_in": {
     "kind": "dissolve",
     "duration": 0.8
@@ -457,7 +461,7 @@
   {
    "id": "olk_school",
    "kind": "room",
-   "duration": 2.0,
+   "duration": 4.4,
    "transition_in": {
     "kind": "dissolve",
     "duration": 0.5
@@ -603,7 +607,7 @@
    "ui": {
     "hide_chrome": true,
     "cursor": true,
-    "cursor_in_s": 1.4,
+    "cursor_in_s": 2.0,
     "cursor_from": [
      1480,
      720
@@ -623,14 +627,12 @@
     ],
     "moves": [
      {
-      "at_s": 1.4,
-      "to": [
-       1100,
-       910
-      ],
-      "dur": 1.0
+      "at_s": 2.3,
+      "to_gloss": 0,
+      "dur": 1.2
      }
-    ]
+    ],
+    "say": true
    }
   },
   {
@@ -1350,8 +1352,8 @@
   "music_fade_out_s": 2.5,
   "voice": [
    {
-    "shot": "olk_street",
-    "at_s": 0.1,
+    "shot": "olk_school",
+    "at_s": 0.3,
     "file": "res://assets/voice/ru/M21b_4.ogg"
    },
    {
