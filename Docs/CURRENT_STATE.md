@@ -345,3 +345,9 @@ Godot 4.7.2 (linux x86_64, headless) в `/home/claude/tools-cache`, экспор
 4. Z4: настоящий фон (ChatGPT v2 §C или Meshy), подгонка геометрии.
 5. Огонь в печи: отдельная запись ElevenLabs («crackling wood fire inside a closed clay stove…»).
 6. После приёмки M1 — M2 (мельница, E2) по `Docs/MILESTONES.md`.
+
+## Партия H, задание T2 — постановка и механики (запуск 40044879225, 24.10)
+- Сделано: H17 (кровать на чердаке — конец дня), G44, H12/H13, H15, H24, H28, H37, H39, H47, H48, H32, H26/H27, H35, H18. Подробно — `Docs/agent_reports/run_40044879225.md`, чеклист — `Docs/ACCEPTANCE_H.md`, раздел T2.
+- Доказано: tools/run_tests.sh код 0; test_batch_h_t2 6/6, test_q02_q06 7/7; веб-клики H17 — 8/10 (2 — ошибка ожидания в скрипте); кадры Docs/evidence/H/T2_*.
+- Не сделано: H36; поправить ожидание первой реплики в tools/h_t2_web.mjs.
+- Следующее: публикация (publish), приёмка Директором по ACCEPTANCE_H (T2).
