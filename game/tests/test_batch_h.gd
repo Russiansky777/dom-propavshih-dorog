@@ -158,20 +158,20 @@ func _line_text(scene_id: String, i: int) -> String:
 
 func _test_lines() -> void:
 	var m01 := _line_text("M01", 3)
-	_check(m01.contains("тёти Дуни, маминой сестры") and m01.contains("Евдокией"), "H1: Tamara explains the aunt once: %s" % m01)
+	_check(m01.contains("тётя Дуня — Евдокия, мамина сестра"), "H1: Tamara explains the aunt once: %s" % m01)
 	_check(sd.text("@ui.goal_start").contains("Дуни, маминой сестры") and not sd.text("@ui.goal_start").contains("Евдоки"),
 		"H1: the first goal says «тёти Дуни, маминой сестры»: %s" % sd.text("@ui.goal_start"))
 	_check(sd.text("@map.house").contains("Дуни") and String(sd.scene("M21").get("title", "")).contains("Дуня"), "H1: the plan and the scene title say Дуня")
 	var m02 := _line_text("M02", 2)
 	_check(not m02.contains("Берег вижу") and m02.contains("к своему причалу"), "H3: Pelageya's line rewritten in one tone: %s" % m02)
 	var n01 := _line_text("N01", 3)
-	_check(not n01.contains("до обеда") and n01.contains("отсыпаться"), "H23: Tikhon asks softly and says why: %s" % n01)
+	_check(not n01.contains("до обеда") and n01.contains("отоспаться"), "H23: Tikhon asks softly and says why: %s" % n01)
 	var m23d := ""
 	for ln in sd.scene("M23d")["mandatory_lines"]:
 		if (ln as Dictionary).get("if", []).has("tikhon_told_nina") and String(ln.get("speaker", "")) == "tikhon":
 			m23d = String(ln.get("text", ""))
 	_check(m23d != "" and not m23d.contains("ещё тёплая") and m23d.contains("не трогай"), "H51: Tikhon grieves in his way: %s" % m23d)
-	_check(sd.text("@Z3.old_pier_base.look").contains("кольце держался канат моста"), "H2: what the plate's ring was for: %s" % sd.text("@Z3.old_pier_base.look"))
+	_check(sd.text("@Z3.old_pier_base.look").contains("За него держался мостовой канат"), "H2: what the plate's ring was for: %s" % sd.text("@Z3.old_pier_base.look"))
 	_check(not sd.text("@H4.chest.look").contains("скатерть"), "H16: the chest is described as drawn (no tablecloth): %s" % sd.text("@H4.chest.look"))
 	_check(not sd.text("@O2.exit_O4.loop").contains("другого окна той же школы") and sd.text("@O2.exit_O4.loop").contains("вокруг школы"),
 		"H22: the loop explained: %s" % sd.text("@O2.exit_O4.loop"))
@@ -297,20 +297,20 @@ func _test_coat() -> void:
 	_check(gs.has_flag("q03_patch_drawing") and gs.has_flag("done_Q03"), "Q03 done by the patch: %s" % str(seen))
 	_check(seen.any(func(x): return String(x).begins_with("narration:") and String(x).contains("зашивает рукав Дуниного пальто")),
 		"H50: what happened is shown: %s" % str(seen))
-	_check(seen.any(func(x): return String(x).begins_with("nina:") and String(x).contains("Уля нарисует")), "Nina speaks of the patch")
+	_check(seen.any(func(x): return String(x).begins_with("nina:") and String(x).contains("Уля птицу на ней нарисует")), "Nina speaks of the patch")
 	coat = _hotspot(rm.current_room, "nina_coat")
 	_check(coat != null and coat.visible and _layer(rm.current_room, "nina_coat"), "the coat stays on its hook after the sleeve is sewn")
 	if coat != null:
 		sr.interact(coat)
 		await _frames(2)
 		var look := await _drain()
-		_check(look.size() == 1 and String(look[0]).contains("Рукав зашит"), "a click: «рукав зашит»: %s" % str(look))
+		_check(look.size() == 1 and String(look[0]).contains("Зашит рукав"), "a click: «рукав зашит»: %s" % str(look))
 
 
 func _test_finale() -> void:
 	var lines: Array = sd.scene("M26")["mandatory_lines"]
 	_check(String(lines[-2].get("text", "")) == "А завтра тоже можно прийти?" and String(lines[-1].get("speaker", "")) == "agata"
-		and String(lines[-1].get("text", "")).contains("с двух концов"), "H55: the last question and Agata's answer: %s" % [lines[-1]])
+		and String(lines[-1].get("text", "")).contains("с обоих концов"), "H55: the last question and Agata's answer: %s" % [lines[-1]])
 	var fv: Node = main_node.get_node("FrameView")
 	var title: Node = main_node.get_node("Title")
 	var credits: Node = fv.get("credits")

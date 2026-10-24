@@ -363,7 +363,7 @@ func _test_staging() -> void:
 	_flags_before("M18", ["started_M18p"])
 	await _enter("R3", "from_R2")
 	sr.start_scene("M18")   # (entering started it; _enter cleared the queue — start it again from its first line)
-	var at_beard := await _advance_to("Пелагея выбирается из лодки")
+	var at_beard := await _advance_to("Пелагея с лодки на опору поднимается")
 	await _wait_until(func(): return not sr.is_staging(), 600)
 	var pe := _npc("pelageya")
 	var mi := _npc("mitya")

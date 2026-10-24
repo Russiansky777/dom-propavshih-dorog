@@ -310,10 +310,10 @@ func _test_q02_a() -> void:
 	_check(u != null and u.visible, "Ulyana studies in the class")
 	await _use("village_map")
 	var seen := await _finish()
-	_check(gs.has_flag("q02_seen_map") and seen.any(func(x): return x.begins_with("agata:Эту карту мы всем классом")), "Agata knows the map: %s" % str(seen))
-	_check(seen.any(func(x): return x.begins_with("ulyana:Это же наш сад")) and seen.any(func(x): return x.begins_with("ulyana:От школы")),
+	_check(gs.has_flag("q02_seen_map") and seen.any(func(x): return x.begins_with("agata:Всем классом эту карту")), "Agata knows the map: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("ulyana:Да это наш сад")) and seen.any(func(x): return x.begins_with("ulyana:От школы")),
 		"Ulyana, there in the class: «Это же наш сад!» and the way «От школы — … до нашего дома … сад»: %s" % str(seen))
-	_check(seen.any(func(x): return x.begins_with("agata:Тогда помоги мне его найти")), "«Тогда помоги мне его найти»")
+	_check(seen.any(func(x): return x.begins_with("agata:Тогда [[пособи|помоги]] мне его найти")), "«Тогда помоги мне его найти»")
 	_check(_hotspot("ulyana").visible, "Ulyana stays in the class — she does not vanish")
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "map_route", "the map close-up opens on the way")
 	var pr := _panel()
@@ -323,7 +323,7 @@ func _test_q02_a() -> void:
 	# A wrong place first: Ulyana's word, nothing coloured.
 	await _click(_place("house_n1"))
 	seen = await _finish()
-	_check(int(_panel().get("wrong", 0)) == 1 and seen.any(func(x): return x.begins_with("ulyana:Не там")), "a wrong house: Ulyana «Не там! Давай сначала…»: %s" % str(seen))
+	_check(int(_panel().get("wrong", 0)) == 1 and seen.any(func(x): return x.begins_with("ulyana:Не туда")), "a wrong house: Ulyana «Не там! Давай сначала…»: %s" % str(seen))
 	# A click where there is no place does nothing.
 	await _click(Vector2(120, 1000))
 	await _frames(2)
@@ -338,7 +338,7 @@ func _test_q02_a() -> void:
 	await _wait(func(): return _coloured().is_empty(), 120)
 	pr = _panel()
 	_check(int(pr.get("wrong", 0)) == 2 and int(pr.get("found", -1)) == 0 and _coloured().is_empty(), "out of turn: all uncoloured, found 0 (%s)" % str(pr.get("coloured")))
-	_check(seen.any(func(x): return x.begins_with("ulyana:Не там. Заново")), "a second wrong: the short word: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("ulyana:Не здесь. Давай опять")), "a second wrong: the short word: %s" % str(seen))
 	# School and house, then put away midway: saved; reopened from the start of the way, the first words not again.
 	await _click(_place("school"))
 	await _click(_place("ilya_house"))
@@ -349,22 +349,22 @@ func _test_q02_a() -> void:
 	_check(rm.save_game(SLOT + "_q02_mid"), "save in the middle of Q02")
 	await _use("village_map")
 	seen = await _finish()
-	_check(sr.mechanic_open and not seen.any(func(x): return x.contains("Эту карту")), "reopened: the close-up again, the first words not repeated: %s" % str(seen))
+	_check(sr.mechanic_open and not seen.any(func(x): return x.contains("эту карту")), "reopened: the close-up again, the first words not repeated: %s" % str(seen))
 	_check(int(_panel().get("found", -1)) == 0, "reopened: the way from the start (nothing to lose — three clicks)")
 	await _q02_route()
 	_check(_coloured().size() == 3, "all three coloured (%s)" % str(_coloured()))
 	await _wait(func(): return not sr.current_beat.is_empty() or gs.has_flag("q02_traced"), 400)
 	_check(bool(_panel().get("tracing_visible", false)) or gs.has_flag("q02_traced"), "the garden of the tracing comes up on the plot")
 	seen = await _finish(["A"])
-	_check(gs.has_flag("q02_traced") and seen.any(func(x): return x.contains("Там теперь смородина")), "«Там теперь смородина»: %s" % str(seen))
-	_check(seen.any(func(x): return x.begins_with("ulyana:И яблоня")), "Ulyana: «И яблоня!»")
+	_check(gs.has_flag("q02_traced") and seen.any(func(x): return x.contains("Нынче там смородина")), "«Там теперь смородина»: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("ulyana:Ещё яблоня")), "Ulyana: «И яблоня!»")
 	_check(seen.any(func(x): return x == "options:A"), "the choice at once after the way")
 	_check(gs.has_flag("q02_old_under_new") and not gs.has_flag("q02_new_primary") and gs.has_flag("done_Q02"), "A — the tracing over the old map; Q02 done")
 	_check(seen.any(func(x): return x.contains("Старое под новым")) and seen.any(func(x): return x.begins_with("ulyana:Пусть висит")), "A: Agata's line and Ulyana's reaction: %s" % str(seen))
 	_check(not sr.mechanic_open and _hotspot("ulyana").visible, "the close-up put away, Ulyana still in the class")
 	await _use("village_map")
 	seen = await _finish()
-	_check(not sr.mechanic_open and seen.any(func(x): return x.contains("поверх — калька")) and not seen.any(func(x): return x.begins_with("options")), "once: afterwards the map is only looked at: %s" % str(seen))
+	_check(not sr.mechanic_open and seen.any(func(x): return x.contains("калька, на ней Ильин сад")) and not seen.any(func(x): return x.begins_with("options")), "once: afterwards the map is only looked at: %s" % str(seen))
 	_check(rm.save_game(SLOT + "_q02_done"), "save after Q02")
 	_check(rm.load_game(SLOT + "_q02_done"), "load after Q02")
 	await _frames(4)
@@ -387,12 +387,12 @@ func _test_q02_b() -> void:
 	var seen := await _finish(["B"])
 	_check(seen.any(func(x): return x == "options:B"), "choice B: %s" % str(seen))
 	_check(gs.has_flag("q02_new_primary") and not gs.has_flag("q02_old_under_new") and gs.has_flag("done_Q02"), "B — the tracing to Ulyana; Q02 done")
-	_check(seen.any(func(x): return x.contains("Отдам Ульяне")) and seen.any(func(x): return x.begins_with("ulyana:Моя карта")), "B: Agata gives it, Ulyana: «Моя карта! Повешу дома у двери…»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Ульяне отдам")) and seen.any(func(x): return x.begins_with("ulyana:Моя карта")), "B: Agata gives it, Ulyana: «Моя карта! Повешу дома у двери…»: %s" % str(seen))
 	_check(not seen.any(func(x): return x.contains("Старое под новым") or x.contains("Пусть висит")), "B: no A lines")
 	_check(_hotspot("ulyana").visible, "Ulyana still in the class (with her map)")
 	await _use("village_map")
 	seen = await _finish()
-	_check(not sr.mechanic_open and seen.any(func(x): return x.contains("теперь у Ульяны")) and not seen.any(func(x): return x.begins_with("options")), "B, once: the map without the tracing — it is Ulyana's now: %s" % str(seen))
+	_check(not sr.mechanic_open and seen.any(func(x): return x.contains("Ульяне отдали")) and not seen.any(func(x): return x.begins_with("options")), "B, once: the map without the tracing — it is Ulyana's now: %s" % str(seen))
 	Engine.time_scale = 1.0
 	_reached_end = true
 
@@ -466,7 +466,7 @@ func _test_q06_a() -> void:
 	_check(not _layer_visible("bench_shed"), "the shed door is shut before the choice")
 	await _use("ilya_workshop")
 	var seen := await _finish()
-	_check(seen.any(func(x): return x.begins_with("mitya:Два человека здесь уже не помещаются")) and seen.any(func(x): return x.begins_with("ilya:Тогда сделаем место третьему")) and seen.any(func(x): return x.begins_with("ilya:Уля давно")),
+	_check(seen.any(func(x): return x.begins_with("mitya:Тут уж и вдвоём не поместиться")) and seen.any(func(x): return x.begins_with("ilya:А мы ещё и третьему место")) and seen.any(func(x): return x.begins_with("ilya:Уля давно")),
 		"Mitya / Ilya / the goal — a bench for Ulya: %s" % str(seen))
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "workbench", "the second bench close-up")
 	var pr := _panel()
@@ -501,7 +501,7 @@ func _test_q06_a() -> void:
 	await _button(b, false)
 	await _wait(func(): return gs.has_flag("q06_fastening_fit"), 300)
 	seen = await _finish()
-	_check(gs.has_flag("q06_fastening_fit") and int(_panel().get("step", -1)) == 1 and seen.any(func(x): return x.contains("Шпонка села")), "the key sits — step 2: %s" % str(seen))
+	_check(gs.has_flag("q06_fastening_fit") and int(_panel().get("step", -1)) == 1 and seen.any(func(x): return x.contains("шпонка")), "the key sits — step 2: %s" % str(seen))
 	# Put away midway; saved; opens again at the same step, the key in its seat, without the first words.
 	sr.close_mechanic()
 	await _frames(2)
@@ -511,13 +511,13 @@ func _test_q06_a() -> void:
 	await _use("ilya_workshop")
 	seen = await _finish()
 	pr = _panel()
-	_check(sr.mechanic_open and int(pr.get("step", -1)) == 1 and not seen.any(func(x): return x.contains("не помещаются")), "reopened at the same step, the first words not repeated: %s" % str(seen))
+	_check(sr.mechanic_open and int(pr.get("step", -1)) == 1 and not seen.any(func(x): return x.contains("не поместиться")), "reopened at the same step, the first words not repeated: %s" % str(seen))
 	_check(_v(pr["parts"]["key"]["at"]).distance_to(_v(pr["parts"]["key"]["home"])) < 3.0 and _v(pr["parts"]["key"]["home"]).distance_to(home_key) > 100.0, "the key stays in the groove after the load")
 	_check(bool(pr.get("ghost_visible", false)), "step 2: the stop block's place shown")
 	await _q06_rest("A")
 	seen = _last_seen
 	_check(gs.has_flag("q06_table_at_ilya") and not gs.has_flag("q06_table_at_agata") and gs.has_flag("done_Q06"), "A — the bench stays at Ilya's; Q06 done")
-	_check(seen.any(func(x): return x.begins_with("mitya:Значит, втроём")) and seen.any(func(x): return x.contains("полку вместе")), "A: Mitya and Ilya after the choice: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("mitya:Вот и втроём")) and seen.any(func(x): return x.contains("полку уж вместе")), "A: Mitya and Ilya after the choice: %s" % str(seen))
 	_check(not sr.mechanic_open and _layer_visible("bench_shed"), "A: the shed door on the street is open, the bench inside")
 	await _use("ilya_workshop")
 	seen = await _finish()
@@ -566,7 +566,7 @@ func _test_q06_b() -> void:
 	await _q06_rest("B")
 	var seen := _last_seen
 	_check(gs.has_flag("q06_table_at_agata") and not gs.has_flag("q06_table_at_ilya") and gs.has_flag("done_Q06"), "B — the bench to Dunya's workshop; Q06 done")
-	_check(seen.any(func(x): return x.contains("тётиной мастерской")) and not seen.any(func(x): return x.contains("втроём")), "B: Ilya's line, no A lines: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Дуниной мастерской")) and not seen.any(func(x): return x.contains("втроём")), "B: Ilya's line, no A lines: %s" % str(seen))
 	_check(not _layer_visible("bench_shed"), "B: the shed door on the street stays shut")
 	_check(await _route(["O2", "O1", "H3", "H1", "H2"]), "through the school door to Dunya's workshop")
 	await _finish()
@@ -575,8 +575,8 @@ func _test_q06_b() -> void:
 
 
 func _test_traces() -> void:
-	for pair in [[["q02_old_under_new", "q06_table_at_ilya"], ["Нина показывает детям, как менялось место", "Митя чинит уключину"]],
-			[["q02_new_primary", "q06_table_at_agata"], ["Ульяна объясняет гостю дорогу по своему рисунку", "рамку для семейной фотографии"]]]:
+	for pair in [[["q02_old_under_new", "q06_table_at_ilya"], ["Нина детям показывает, как место менялось", "чинит. Рядом сохнет их полка"]],
+			[["q02_new_primary", "q06_table_at_agata"], ["Ульяна по нему растолковывает гостю дорогу", "рамку для семейного снимка"]]]:
 		gs.reset()
 		for f in pair[0]:
 			gs.set_flag(String(f), true)

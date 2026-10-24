@@ -342,9 +342,9 @@ func _test_m03_once() -> void:
 	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon"), "M03 done after the scarf: %s" % str(seen))
 	var m03_tikhon: Array = _m03_lines("tikhon")
 	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 7, "Tikhon's seven M03 lines (Docs/SCENARIO_FINAL.md M03, with the shelf request G11) play once: %s" % str(tikhon_lines))
-	_check(seen.any(func(x): return String(x).begins_with("tikhon:") and String(x).contains("повесь мне полку")), "G11: after the first talk at the lit stove Tikhon asks to hang his shelf: %s" % str(seen))
+	_check(seen.any(func(x): return String(x).begins_with("tikhon:") and String(x).contains("полку мне повесь")), "G11: after the first talk at the lit stove Tikhon asks to hang his shelf: %s" % str(seen))
 	_check(seen.any(func(x): return String(x).contains("Вечер долгий")), "«Вечер долгий» in M03")
-	_check(seen.any(func(x): return String(x).contains("Ты здесь один?")) and seen.any(func(x): return String(x).contains("Печь тоже здесь.")), "«Ты здесь один?» / «Печь тоже здесь.» in M03")
+	_check(seen.any(func(x): return String(x).contains("Один ты здесь?")) and seen.any(func(x): return String(x).contains("И печь тут,")), "«Ты здесь один?» / «Печь тоже здесь.» in M03")
 	_check(t != null and t.place_index == spec["place"]["H1"].size() - 1, "after M03 he is still in the armchair (place %d)" % (t.place_index if t else -9))
 	var inv_after: int = gs.inventory.size()
 	_check(inv_after == inv_before, "M03 grants no items (inventory %d → %d)" % [inv_before, inv_after])
@@ -485,7 +485,7 @@ func _test_dark_rooms() -> void:
 		var b: Dictionary = sr.current_beat
 		_check(String(b.get("text_key", "")) == "H1.exit_%s.dark" % dark and String(b.get("speaker", "")) == "agata",
 			"H1→%s: Agata says it is dark — first the shutter: %s" % [dark, str(b)])
-		_check(String(b.get("text", "")).contains("ставн"), "H1→%s: the line names the shutter: %s" % [dark, String(b.get("text", ""))])
+		_check(String(b.get("text", "")).to_lower().contains("ставн"), "H1→%s: the line names the shutter: %s" % [dark, String(b.get("text", ""))])
 		await _finish()
 		await _frames(6)
 		_check(rm.current_room.room_id == "H1", "H1→%s: still in the living room" % dark)

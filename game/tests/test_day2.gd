@@ -471,7 +471,7 @@ func _test_data() -> void:
 	# checkpoint «День второй» — a scene starting after the checkpoint replayed on loading it (defect 22.10).
 	var night: Dictionary = sd.scene("N01")
 	var nl: Array = night.get("mandatory_lines", [])
-	_check(String(nl[nl.size() - 1].get("speaker", "")) == "tikhon" and String(nl[nl.size() - 1].get("text", "")).begins_with("В колокол с утра не звони"), "N01 ends with Tikhon's morning line (H23)")
+	_check(String(nl[nl.size() - 1].get("speaker", "")) == "tikhon" and String(nl[nl.size() - 1].get("text", "")).begins_with("Ты с утра в колокол не бей"), "N01 ends with Tikhon's morning line (H23)")
 	var morning_at := -1
 	for st in night.get("stage", []):
 		if float(st.get("dim", -1.0)) == 0.0:
@@ -693,10 +693,10 @@ func _test_states() -> void:
 	rm.change_room("R1", "default")
 	await _frames(3)
 	await _finish()
-	_check(_npc_line_now(_hotspot("pelageya")).contains("у Павла, на мельнице"), "day two morning: «Вода у Павла, на мельнице» (%s)" % _npc_line_now(_hotspot("pelageya")))
+	_check(_npc_line_now(_hotspot("pelageya")).contains("у Павла ищи, на мельнице"), "day two morning: «Вода у Павла, на мельнице» (%s)" % _npc_line_now(_hotspot("pelageya")))
 	gs.set_flag("done_M14")
 	await _frames(2)
-	_check(_npc_line_now(_hotspot("pelageya")).contains("сниму канат со стопора") and _npc_line_now(_hotspot("pelageya")).contains("к опоре"), "the water going down: G28 — she will take the rope off her stopper and bring it to the pier by boat (%s)" % _npc_line_now(_hotspot("pelageya")))
+	_check(_npc_line_now(_hotspot("pelageya")).contains("со стопора канат сниму") and _npc_line_now(_hotspot("pelageya")).contains("к опоре"), "the water going down: G28 — she will take the rope off her stopper and bring it to the pier by boat (%s)" % _npc_line_now(_hotspot("pelageya")))
 	# At dusk before the knot: the boat is gone from the pier — Agata says where (once).
 	for f in ["done_M15a", "nina_time_compared", "evening_dusk"]:
 		gs.set_flag(f)
@@ -706,7 +706,7 @@ func _test_states() -> void:
 	rm.change_room("R1", "default")
 	await _frames(3)
 	var seen := await _finish()
-	_check(seen.any(func(x): return x.contains("Пелагеи на причале нет")) and not _hotspot("pelageya").visible, "at dusk: «Пелагеи на причале нет. Она у поворота…» (%s)" % str(seen))
+	_check(seen.any(func(x): return x.contains("На причале Пелагеи нет")) and not _hotspot("pelageya").visible, "at dusk: «Пелагеи на причале нет. Она у поворота…» (%s)" % str(seen))
 	# G28: until Pelageya takes it, the rope is on her stopper (the painted one); no rope at the turn yet.
 	_check(_hotspot("rope") != null and _hotspot("rope").visible and not rm.current_room.get_node("Layers/stopper_empty_dusk").visible, "G28: before M15s the rope is still on her stopper")
 	rm.change_room("Z3", "default")
@@ -764,7 +764,7 @@ func _test_walkthrough() -> void:
 	await _finish()
 	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "the night by the stove: %s" % str(seen))
 	_check(_room() == "H1", "morning in the living room (%s)" % _room())
-	_check(seen.any(func(x): return x.begins_with("tikhon:В колокол с утра не звони")), "Tikhon's morning line: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("tikhon:Ты с утра в колокол не бей")), "Tikhon's morning line: %s" % str(seen))
 	_check(sr.journal_goal() == String(sd.scene("N01")["goal"]), "journal: the goal from yesterday — the mill, the sluice key")
 	_check(sr.current_beat.is_empty() and not sr.is_staging(), "after the morning nothing else plays by itself")
 	# To the mill: H1 → Z2 → M1.
@@ -813,7 +813,7 @@ func _test_walkthrough() -> void:
 	seen += await _finish()
 	sr.npc_went.disconnect(on_went)
 	_check(gs.has_flag("done_M09b") and gs.has_flag("pavel_blessed_mirror") and not gs.has_item("mirror_mill"), "G18: Pavel gives his leave, the mirror is not handed over by the talk: %s" % str(gs.inventory))
-	_check(String(sd.scene("M09b")["mandatory_lines"][-1]["text"]).ends_with("Иди за мной.") and seen.any(func(x): return String(x).begins_with("pavel:Зеркало в сенях")), "G18: Pavel's last word «Иди за мной»: %s" % str(seen))
+	_check(String(sd.scene("M09b")["mandatory_lines"][-1]["text"]).ends_with("За мной иди.") and seen.any(func(x): return String(x).begins_with("pavel:В сенях зеркало")), "G18: Pavel's last word «Иди за мной»: %s" % str(seen))
 	_check(went == ["pavel"], "G18: Pavel walks off to the passage door before the fade (npc_go): %s" % str(went))
 	_check(rm.current_room.room_id == "M2" and _hotspot("pavel") != null and _hotspot("pavel").visible, "G18: in the passage, Pavel is there (room %s)" % rm.current_room.room_id)
 	await _use("mirror")
@@ -832,7 +832,7 @@ func _test_walkthrough() -> void:
 	_check(sr.item_refusal("mirror_mill") == "@item.mirror_mill.wrong", "in H1 the office mirror points to the stand «ЗМ»")
 	_check(await _go("H2"), "H1→H2")
 	seen = await _finish()
-	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("высокая резная")),
+	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("высокая рама резная")),
 			"entering the workshop with the office mirror: Agata names the stand — the tall carved frame: %s" % str(seen))
 	await _check_picks("H2 with the office mirror")
 	var sz := _hotspot("stand_zm")
@@ -840,13 +840,13 @@ func _test_walkthrough() -> void:
 			"the stand «ЗМ» is the tall carved frame in the middle of the workshop (Director 23.10)")
 	await _use_item("mirror_mill", "bench")
 	seen = await _finish()
-	_check(gs.has_item("mirror_mill") and seen.any(func(t): return t.contains("нужна тётина стойка")),
+	_check(gs.has_item("mirror_mill") and seen.any(func(t): return t.contains("в Дунину стойку")),
 			"the office mirror on another thing in the workshop says where the stand is: %s" % str(seen))
 	_check(await _go("H1"), "H2→H1 (the stand thought is said once)")
 	await _finish()
 	_check(await _go("H2"), "H1→H2 again")
 	seen = await _finish()
-	_check(not seen.any(func(t): return t.contains("высокая резная")), "the stand thought is not repeated: %s" % str(seen))
+	_check(not seen.any(func(t): return t.contains("высокая рама резная")), "the stand thought is not repeated: %s" % str(seen))
 	await _use_item("mirror_mill", "stand_zm")
 	await _frames(2)
 	_check(not gs.has_item("mirror_mill") and gs.has_flag("office_mirror_mounted"), "the mirror goes onto the stand (out of the bag)")
@@ -916,7 +916,7 @@ func _test_walkthrough() -> void:
 	await _use("pavel")
 	seen = await _finish()
 	var pb: String = sd.text("@M3.pavel.before")
-	_check(seen.any(func(x): return String(x).begins_with("pavel:Бери, что надо")) and pb.contains("рычаг затвора") and pb.contains("струбцин") and pb.contains("раму"), "G20/G22: Pavel — the sluice lever on the nail, the clamp for Dunya's frame: %s" % pb)
+	_check(seen.any(func(x): return String(x).begins_with("pavel:Нужное бери")) and pb.contains("рычаг на гвозде") and pb.contains("трубцин") and pb.contains("раму"), "G20/G22: Pavel — the sluice lever on the nail, the clamp for Dunya's frame: %s" % pb)
 	_check(rm.current_room.get_node("Layers/clamp_table").visible, "G22: the clamp lies on the office table")
 	await _use("key_nail")
 	await _finish()
@@ -947,7 +947,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("sluice_opened") and gs.has_flag("pond_lowered") and gs.has_flag("done_M14"), "the sluice opened notch by notch («точный удар», G23) → M14: %s" % str(seen))
 	_check(sr.journal_goal().contains("струбцин"), "goal: the clamp to mother's mirror")
 	# F10 (Director 23.10): why the water goes down — the plate comes out; the boat alone is turned back, the rope on the ring is not.
-	_check(sr.journal_goal().contains("плита на опоре выйдет") and seen.any(func(x): return x.contains("Лодкой туда не переплыть")),
+	_check(sr.journal_goal().contains("плита на опоре выйдет") and seen.any(func(x): return x.contains("Лодка туда не довезёт")),
 			"at the sluice: the plate comes out of the water; a boat is turned back, the rope on the ring is another matter: %s / %s" % [sr.journal_goal(), str(seen)])
 	# Mother's mirror.
 	_check(await _go("M1"), "M4→M1")
@@ -1013,7 +1013,7 @@ func _test_walkthrough() -> void:
 	_check(await _go("H1"), "H2→H1")
 	# H33 (Director 24.10): back in the living room Tikhon talks about Nina first (three lines, once).
 	var h33 := await _finish()
-	_check(h33.size() == 3 and String(h33[0]).begins_with("tikhon:Видела Нину?"), "H33: Tikhon talks after the mirror: %s" % str(h33))
+	_check(h33.size() == 3 and String(h33[0]).begins_with("tikhon:Нину видела?"), "H33: Tikhon talks after the mirror: %s" % str(h33))
 	# Polish 22.10 (C17): mother's small mirror shows Dunya's stove — Agata can stand at the stove and wave (block 3 reads it in M19).
 	_check(_hotspot("wave") != null and _hotspot("wave").visible, "after mother's mirror: «Встать у печи и помахать»")
 	await _use("wave")
@@ -1064,7 +1064,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("rope_on_ring") and gs.has_flag("done_M15"), "the knot → M15: %s" % str(seen))
 	# Polish 22.10 (A1): the road comes back here, at the knot — held from both ends; the lights only answer later.
 	_check(gs.has_flag("road_held_both_ends") and not gs.has_flag("far_lights_answered"), "the knot holds the road from both ends (before the lights)")
-	_check(seen.any(func(x): return x.contains("С того конца держат")), "Agata at the knot: «…держат с двух концов»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("На том конце держат")), "Agata at the knot: «…держат с двух концов»: %s" % str(seen))
 	if sr.mechanic_open:
 		sr.close_mechanic()
 		await _frames(2)
@@ -1073,8 +1073,8 @@ func _test_walkthrough() -> void:
 	# A1: back at the pier the far bank is white for the first time — Pelageya sees it first (M16s), then the lantern.
 	seen = await _finish()
 	_check(gs.has_flag("done_M16s") and gs.has_flag("far_snow_seen") and not gs.has_flag("started_M16"), "M16s at the pier, the lights still the player's: %s" % str(seen))
-	_check(seen.size() >= 2 and seen[1].begins_with("pelageya:") and seen[1].contains("чернота была"), "Pelageya notices the snow first: %s" % str(seen))
-	_check(seen.any(func(x): return x.contains("Один — пускай, два — стой")), "B10: three lights are «живые»: %s" % str(seen))
+	_check(seen.size() >= 2 and seen[1].begins_with("pelageya:") and seen[1].contains("черным-черно было"), "Pelageya notices the snow first: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Раз — пускай, два — стой")), "B10: three lights are «живые»: %s" % str(seen))
 	var lay0: Node = rm.current_room.get_node("Layers")
 	_check(lay0.get_node("far_snow").visible and not lay0.get_node("far_dark").visible and not lay0.get_node("far_lights").visible,
 			"before the lantern: the far bank white, no lights yet")
@@ -1126,7 +1126,7 @@ func _test_walkthrough() -> void:
 		guard += 1
 	seen = await _finish()
 	_check(gs.has_flag("far_lights_answered") and gs.has_flag("road_held_both_ends") and gs.has_flag("done_M16"), "three flashes → three lights → M16: %s" % str(seen))
-	_check(seen.any(func(x): return x.contains("Первые огни за год")), "Pelageya at the answer: «Отвечают. Первые огни за год» (V13: not one more «Год там…»): %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Впервые за год огни")), "Pelageya at the answer: «Отвечают. Первые огни за год» (V13: not one more «Год там…»): %s" % str(seen))
 	sr.close_mechanic()
 	await _frames(2)
 	var lay: Node = rm.current_room.get_node("Layers")
@@ -1144,26 +1144,26 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("done_M17") and gs.has_item("school_ribbon") and gs.has_flag("ferry_verified"), "the empty boat returns with the ribbon: %s" % str(seen))
 	# Director 22.10: shown directly — the boat goes along the rope on its ring and no longer turns back to its pier.
-	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю по-лодочному")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("кольцо — на канат"), "Pelageya puts the ring on the rope: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю, как на лодке")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("кольцо надену"), "Pelageya puts the ring on the rope: %s" % str(seen))
 	var m17_text := ""
 	for ln in sd.scene("M17").get("mandatory_lines", []):
 		m17_text += String(ln.get("text", "")) + "\n"
-	_check(seen.any(func(x): return x.begins_with("narration:Кольцо скользит по канату")) and m17_text.contains("теперь не разворачивает"),
+	_check(seen.any(func(x): return x.begins_with("narration:По канату скользит кольцо")) and m17_text.contains("Теперь идёт прямо"),
 		"the empty boat follows the ring along the rope, not back to the pier: %s" % str(seen))
-	_check(seen.any(func(x): return x == "agata:Не повернула. Идёт по канату."), "Agata: it did not turn back")
-	_check(seen.any(func(x): return x.contains("Не вернуло. Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
+	_check(seen.any(func(x): return x == "agata:Не поворачивает. По канату идёт."), "Agata: it did not turn back")
+	_check(seen.any(func(x): return x.contains("Не вернуло её. Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
 	_check(sr.journal_goal().contains("по канату"), "goal: into the boat, along the rope: %s" % sr.journal_goal())
 	var n_before: int = gs.inventory.count("school_ribbon")
 	await _use("pelageya")
 	seen = await _finish()
-	_check(seen.any(func(x): return x.begins_with("pelageya:Садись")) and not seen.any(func(x): return x.contains("дом")), "F11: after the empty boat Pelageya calls into the boat (V2: not the M18p.1 line again): %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("pelageya:") and x.contains("Садись")) and not seen.any(func(x): return x.contains("дом")), "F11: after the empty boat Pelageya calls into the boat (V2: not the M18p.1 line again): %s" % str(seen))
 	sr.grant_item("school_ribbon")
 	_check(gs.inventory.count("school_ribbon") == 1 and n_before == 1, "the ribbon is given once (talk again, grant again)")
 	_check(not sr.can_start("M17"), "M17 never starts again")
 	# Crossing and the far pier.
 	_check(await _go("R2"), "R1→R2 (along the rope)")
 	seen = await _finish()
-	_check(seen.any(func(x): return x.contains("Теперь не вернёт — идём по канату")) and seen.any(func(x): return x.contains("Не лодка нас везёт — канат")),
+	_check(seen.any(func(x): return x.contains("Теперь назад не вынесет. По канату идём.")) and seen.any(func(x): return x.contains("Канат нас везёт, не лодка")),
 			"F10/F15 at the crossing: «Теперь не вернёт…», «Не лодка нас везёт — канат…»: %s" % str(seen))
 	_check(not rm.player.visible, "R2 is seen from the boat: no figure of Agata (player_hidden)")
 	# F12 (Director 23.10): Agata hauls the boat along the rope — about ten pulls; then the far pier.
@@ -1199,7 +1199,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
 	var m18_end := String(sd.scene("M18").get("mandatory_lines", [])[-1].get("text", ""))
-	_check(seen.any(func(x): return x.begins_with("narration:Пелагея не отпускает Митин рукав")) and m18_end.contains("Митя поднимает фонарь") and m18_end.contains("Пелагея остаётся у лодки"),
+	_check(seen.any(func(x): return x.begins_with("narration:Пелагея Митин рукав не выпускает")) and m18_end.contains("Он поднимает фонарь") and m18_end.contains("Пелагея у лодки остаётся"),
 		"B13/C3: Mitya leads Agata with the lantern, Pelageya stays at the boat: %s / %s" % [m18_end, str(seen)])
 	# F13 (Director 23.10): back into the boat — not now; Pelageya: «Сейчас — к матери. Назад повезу завтра».
 	var back = rm.current_room.get_node_or_null("Exits/to_R2")

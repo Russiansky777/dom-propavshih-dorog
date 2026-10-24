@@ -169,11 +169,11 @@ func _test_rope_where() -> void:
 		_check(not _visible(z3, "Effects/" + id), "before the knot no rope at the turn (%s)" % id)
 	# The lines that carry the chain (G17): why the water, why the boat returns, what the rope on the ring changes, where the rope goes.
 	var m14: String = String(sd.scene("M14")["mandatory_lines"][1]["text"])
-	_check(m14.contains("вернёт") and m14.contains("дороги нет") and m14.contains("канат на кольцо") and m14.contains("лодка по ней пойдёт"), "G17: Pavel — the boat comes back for there is no road; the rope on the ring is the road: %s" % m14)
+	_check(m14.contains("вынесет") and m14.contains("дороги нет") and m14.contains("За кольцо канат") and m14.contains("По ней лодка и пойдёт"), "G17: Pavel — the boat comes back for there is no road; the rope on the ring is the road: %s" % m14)
 	var ww: String = sd.text("@R1d.pelageya.wait_water")
-	_check(ww.contains("сниму канат со стопора") and ww.contains("к опоре"), "G28: Pelageya says where the rope will go: %s" % ww)
+	_check(ww.contains("со стопора канат сниму") and ww.contains("к опоре"), "G28: Pelageya says where the rope will go: %s" % ww)
 	var s15: Array = sd.scene("M15s")["mandatory_lines"]
-	_check(String(s15[1]["text"]).contains("со своего стопора") and String(s15[2]["text"]).contains("снимает канат со стопора"), "G28: M15s — the rope taken off her stopper and brought to the plate")
+	_check(String(s15[1]["text"]).contains("канат со стопора сниму") and String(s15[2]["text"]).contains("со стопора канат снимает"), "G28: M15s — the rope taken off her stopper and brought to the plate")
 	# After the knot, every light of days 2–4: the rope at the turn from the ring over the water; the stopper empty.
 	for st in [["M16s", "dusk", []], ["M23a", "d3", []], ["M25", "d4", []]]:
 		_flags_before(String(st[0]), st[2])
@@ -236,9 +236,9 @@ func _test_rope_where() -> void:
 	await _drain()
 	sr.interact(_hotspot(r1, "stopper_empty"))
 	await _frames(2)
-	_check(String(sr.current_beat.get("text_key", "")) == "R1.stopper.look_ring" and String(sr.current_beat.get("text", "")).contains("кольце плиты у поворота"), "the empty stopper: the rope is on the plate ring at the turn: %s" % str(sr.current_beat))
+	_check(String(sr.current_beat.get("text_key", "")) == "R1.stopper.look_ring" and String(sr.current_beat.get("text", "")).contains("кольцо плиты у поворота"), "the empty stopper: the rope is on the plate ring at the turn: %s" % str(sr.current_beat))
 	await _drain()
-	_check(sd.text("@R1.exit_R2.closed").contains("дороги нет") and sd.text("@R1.exit_R2.closed").contains("кольце плиты"), "G17: the closed boat — no road until the rope is on the plate ring")
+	_check(sd.text("@R1.exit_R2.closed").contains("нет дороги") and sd.text("@R1.exit_R2.closed").contains("кольцо плиты"), "G17: the closed boat — no road until the rope is on the plate ring")
 
 
 func _layer_image(room: Node, id: String) -> Image:
@@ -307,11 +307,11 @@ func _test_nina_walk() -> void:
 	var said := -1
 	var stage := -1
 	for i in seen.size():
-		if String(seen[i]).begins_with("nina:Пойдём в тепло"):
+		if String(seen[i]).begins_with("nina:В тепло пойдём"):
 			said = i
 		if String(seen[i]) == "stage" and stage < 0 and said >= 0:
 			stage = i
-	_check(said >= 0 and stage > said and stage < seen.size() - 1 and String(seen[stage + 1]).begins_with("agata:Ходики"), "her line on the street, then the walk and the fade, then «Ходики» in the room (%d, %d): %s" % [said, stage, str(seen)])
+	_check(said >= 0 and stage > said and stage < seen.size() - 1 and String(seen[stage + 1]).begins_with("agata:Те самые ходики"), "her line on the street, then the walk and the fade, then «Ходики» in the room (%d, %d): %s" % [said, stage, str(seen)])
 	_check(rm.current_room.room_id == "O3", "then the room: O3 (%s)" % rm.current_room.room_id)
 	_check(_visible(rm.current_room, "Hotspots/nina") and gs.has_flag("m19_nina_home"), "in the room Nina is there (m19_nina_home from the fade)")
 	_check(nina == null or not is_instance_valid(nina) or door.grow(80).has_point(nina.global_position), "she walked to her door %s" % str(door))

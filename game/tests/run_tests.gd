@@ -838,7 +838,7 @@ func _test_walkthrough() -> void:
 	# C12 (ИИ-чтение 23.10): the side door of the gallery is opened on the first entry to the gallery, not by M03 here.
 	_check(not gs.has_flag("house_open"), "M03 does not open the gallery side door")
 	# G11: after the first talk at the lit stove Tikhon asks for his shelf.
-	_check(seen.any(func(x): return x.begins_with("tikhon:") and x.contains("повесь мне полку")), "M03: Tikhon asks to hang his shelf: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("tikhon:") and x.contains("полку мне повесь")), "M03: Tikhon asks to hang his shelf: %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Вечер долгий")), "M03: «Вечер долгий»: %s" % str(seen))
 	var tikhon = bot.hotspot("tikhon")
 	_check(tikhon != null and tikhon.visible, "Tikhon should be visible after M03")
@@ -881,7 +881,7 @@ func _test_walkthrough() -> void:
 	await bot.use("bell")
 	seen = await bot.finish()
 	_check(gs.has_item("door_hinges") and gs.has_flag("seen_workshop") and gs.has_flag("knows_rule_things_remember") and gs.has_flag("seen_bell"), "M04 workshop steps")
-	_check(seen.size() == 2 and seen[1].contains("Если колокол звенит"), "bell: the tag, then Agata's thought about the school door: %s" % str(seen))
+	_check(seen.size() == 2 and seen[1].contains("Коли колокол на мельнице звенит"), "bell: the tag, then Agata's thought about the school door: %s" % str(seen))
 	# N6 (playtest r7): the painted box stays — the hotspot too: empty now, the hinges go to the school door in the gallery.
 	_check(bot.hotspot("hinges_box") != null and bot.hotspot("hinges_box").visible, "the hinges' box stays clickable after pickup")
 	await bot.use("hinges_box")
@@ -906,7 +906,7 @@ func _test_walkthrough() -> void:
 	seen += await bot.finish()
 	_check(gs.has_flag("done_M04") and gs.has_flag("seen_school_door") and gs.has_flag("seen_mirror_home"), "M04 should complete in H3 (grants include seen_mirror_home)")
 	_check(gs.has_flag("has_school_door") and gs.has_flag("has_bell") and gs.has_flag("has_bundle_nina"), "non-inventory items become has_ flags")
-	_check(seen.any(func(x): return x.contains("Доделаю за неё")), "M04: «Доделаю за неё»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("За неё доделаю")), "M04: «Доделаю за неё»: %s" % str(seen))
 	_check(not gs.has_item("school_door"), "non-inventory items never enter the inventory")
 	_check(rm.save_game(MID_SLOT), "mid-way save")
 
@@ -959,7 +959,7 @@ func _test_walkthrough() -> void:
 	# --- O1: M06, M07, V03, chalk ---
 	_check(await bot.go("O1"), "H3→O1 through the installed door")
 	seen = await bot.finish()
-	_check(gs.has_flag("o1_saw_winter") and seen.any(func(x): return x.contains("Там зима")), "first entry: «Там зима. А у нас ещё октябрь»: %s" % str(seen))
+	_check(gs.has_flag("o1_saw_winter") and seen.any(func(x): return x.contains("Там уж зима")), "first entry: «Там зима. А у нас ещё октябрь»: %s" % str(seen))
 	await bot.use("sack")
 	await bot.finish()
 	await bot.use("notebooks")
@@ -976,7 +976,7 @@ func _test_walkthrough() -> void:
 	await process_frame
 	_check(gs.has_flag("done_M07") and gs.has_flag("knows_crossing_plan"), "M07; seen=%s" % str(seen))
 	_check(gs.has_item("photo_bridge") and gs.has_item("drawing_ilya") and gs.has_item("plan_crossing"), "M07 items: %s" % str(gs.inventory))
-	_check(seen.any(func(x): return x.contains("Тому, кто придёт через эту дверь")) and seen.any(func(x): return x.contains("Держим мы")), "M07: the plan is read, «Держим мы…»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Тому, кто через эту дверь придёт")) and seen.any(func(x): return x.contains("Дальний держим мы")), "M07: the plan is read, «Держим мы…»: %s" % str(seen))
 	var inv_before: int = gs.inventory.size()
 	await bot.use("teacher_drawer")
 	await bot.finish()
@@ -1011,7 +1011,7 @@ func _test_walkthrough() -> void:
 	_check(porch != null and player.global_position.is_equal_approx(porch.global_position), "player teleported to the porch (was %s, now %s)" % [str(before_loop), str(player.global_position)])
 	_check(gs.has_flag("mitten_placed"), "the mitten stays in place after the loop")
 	# The board is optional now (Docs/SCENARIO_FINAL.md M08): the loop alone completes M08.
-	_check(gs.has_flag("done_M08") and seen.any(func(x): return x.contains("До деревни — ещё нет")), "M08 completes after the loop: %s" % str(seen))
+	_check(gs.has_flag("done_M08") and seen.any(func(x): return x.contains("До класса добралась")), "M08 completes after the loop: %s" % str(seen))
 	# The mitten can be picked up again — the same one, once.
 	await bot.use("mitten")
 	await bot.finish()
@@ -1033,7 +1033,7 @@ func _test_walkthrough() -> void:
 	# stove (N01), checkpoint «День второй» ---
 	await bot.go("H3")
 	seen = await bot.finish()
-	_check(not gs.has_flag("started_N01") and gs.has_flag("h3_night_to_bed") and seen.any(func(x): return String(x).contains("пора спать")),
+	_check(not gs.has_flag("started_N01") and gs.has_flag("h3_night_to_bed") and seen.any(func(x): return (String(x).contains("пора спать") or String(x).contains("спать пора"))),
 		"H17: back home the night does not start by itself — Agata says the bed is in the attic: %s" % str(seen))
 	_check(gs.journal_goal == sd.text("@ui.bedtime_d1_goal"), "H17: the journal points to the bed: %s" % gs.journal_goal)
 	_check(await bot.go("H1"), "H3→H1 (T6: the lezhanka by the stove)")
@@ -1046,7 +1046,7 @@ func _test_walkthrough() -> void:
 	var night_lines: Array = seen.filter(func(x): return x != "stage")
 	# The morning staging, then Tikhon's morning line (SCENARIO_FINAL §7 «Утро», block 2 22.10) before the checkpoint.
 	_check(night_lines.size() == 4 and night_lines[0].begins_with("agata:") and night_lines[2].begins_with("tikhon:")
-		and seen.size() >= 2 and seen[seen.size() - 2] == "stage" and String(seen.back()).begins_with("tikhon:В колокол с утра не звони"),
+		and seen.size() >= 2 and seen[seen.size() - 2] == "stage" and String(seen.back()).begins_with("tikhon:Ты с утра в колокол не бей"),
 		"N01: 2 lines of Agata, Tikhon's grumble, morning staging, Tikhon's morning line: %s" % str(seen))
 	_check(bot.room_id() == "H1", "the night moves Agata to the stove (H1), room=%s" % bot.room_id())
 	_check(sr.stage_dim == 0.0 and not sr.is_staging(), "morning: no dusk left")

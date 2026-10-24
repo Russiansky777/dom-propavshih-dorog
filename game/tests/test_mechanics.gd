@@ -620,7 +620,7 @@ func _test_fast_mirror() -> void:
 	_check(String(p.elapsed_mine.text) != "" and String(p.elapsed_nina.text) != "", "how much passed on each: «%s» / «%s»" % [p.elapsed_mine.text, p.elapsed_nina.text])
 	seen = await _finish()
 	var all := " ".join(seen)
-	_check(all.contains("На моих три минуты") and all.contains("Пока я сплю"), "the realisation in Agata's words: %s" % str(seen))
+	_check(all.contains("У меня три минуты минуло") and all.contains("Я сплю, а у неё"), "the realisation in Agata's words: %s" % str(seen))
 	_check(gs.has_flag("done_M15a"), "M15а done")
 	# Save/load: compared stays; holding the watch again — no second event.
 	if sr.mechanic_open:
@@ -939,7 +939,7 @@ func _test_latch() -> void:
 		g += 1
 	var seen := await _finish()
 	_check(gs.has_flag("h1_shutter_open") and not opened_mech and not sr.mechanic_open, "the action opens the shutter; no «точный удар» on the way")
-	_check(seen.any(func(x): return x.contains("посветлело")), "«Ставня подалась, в комнате посветлело» (%s)" % str(seen))
+	_check(seen.any(func(x): return x.contains("светлее стало")), "«Ставня подалась, в комнате посветлело» (%s)" % str(seen))
 	_check(sr.planned_interaction(h) == "text", "the open shutter is only a look now")
 	_check(rm.save_game(SLOT) and rm.load_game(SLOT), "save/load")
 	await _frames(3)
