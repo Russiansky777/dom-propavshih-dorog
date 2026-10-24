@@ -1,0 +1,36 @@
+{
+  "id": "01a16ddb-fcbb-7641-b446-745b8a882ec0",
+  "type": "retexture",
+  "name": "",
+  "art_style": "realistic",
+  "object_prompt": "",
+  "style_prompt": "",
+  "negative_prompt": "",
+  "texture_prompt": "",
+  "texture_image_url": "",
+  "text_style_prompt": "Realistic 18-year-old village girl, painterly game character. Face: natural warm skin tone, not pale, not washed out; soft rosy blush on cheeks and nose tip, faint freckles, subtle shading under brows, around eyes, nose and jaw, warm brown eyes, natural pink lips, defined dark eyebrows. Hair: dark chestnut brown with visible individual strands, darker roots, lighter reddish-brown highlights, loose wisps around face, long braid down the back with clearly woven plaits. Brown-grey wool coat with wooden buttons, ochre-brown knitted shawl with grey patterned border, dark brown wool skirt, worn reddish-brown leather satchel and strap, brown leather lace-up boots. Matte fabrics, no plastic shine.",
+  "image_style_url": "",
+  "status": "SUCCEEDED",
+  "created_at": 1792844497633,
+  "progress": 100,
+  "started_at": 1792844497641,
+  "finished_at": 1792844566463,
+  "expires_at": 1793103766463,
+  "task_error": null,
+  "model_url": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a16ddb-fcbb-7641-b446-745b8a882ec0/output/model.glb?Expires=1793103766&Signature=cSc2gvEehiQ5Xk-zT-UsfywvqbQUqc3Y6~5XGAoXwO-yAwRSwGoudZ6OnlRlF7zgQDP8kEHkOeGeVyk~uSdh-O5ulotPsALIvxmTl3QVv3H9tI~xaxNEXZnDMGxC2pyNMgRwhxAM3qDfYeAkHlwTuqbc0S3sODgicJb3bb1wdcfpMO~DeE68Kyyfr6aShtQo9PArpYWFT00zuyBRm5Nw~X~qJ0FjteunDIbT4bqh9Cq5ANmx9dD9PEBueJ4FVR7hFBOHb5J8nAtz64EpAV8nIqPzjKcT1pzMOd~V1e4rWYhSAkPhIADuvYa7f2UNKayi6lfqxv18N7lZcYVysZUhKA__&Key-Pair-Id=K1VGYTHIYLM9UM",
+  "model_urls": {
+    "glb": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a16ddb-fcbb-7641-b446-745b8a882ec0/output/model.glb?Expires=1793103766&Signature=cSc2gvEehiQ5Xk-zT-UsfywvqbQUqc3Y6~5XGAoXwO-yAwRSwGoudZ6OnlRlF7zgQDP8kEHkOeGeVyk~uSdh-O5ulotPsALIvxmTl3QVv3H9tI~xaxNEXZnDMGxC2pyNMgRwhxAM3qDfYeAkHlwTuqbc0S3sODgicJb3bb1wdcfpMO~DeE68Kyyfr6aShtQo9PArpYWFT00zuyBRm5Nw~X~qJ0FjteunDIbT4bqh9Cq5ANmx9dD9PEBueJ4FVR7hFBOHb5J8nAtz64EpAV8nIqPzjKcT1pzMOd~V1e4rWYhSAkPhIADuvYa7f2UNKayi6lfqxv18N7lZcYVysZUhKA__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  },
+  "thumbnail_url": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a16ddb-fcbb-7641-b446-745b8a882ec0/output/preview.png?Expires=1793103766&Signature=UQBfVTUoxZ-5n4buFHNBY01yiH~8e4mrqodpmzw82kc1LqRT81jFY1r7UwxQPD4BgK5tXO38QEE3Yo18v2C5TZ8EOXNRxh8pjQZx33iK-V~nJ3iYC2yTnBESxdkNN9l28fM~lDQxw1VBzs0LFP-JlCPPFj7VrJT4jIIhee7Cx9k3wvhucC~rICD-JyalbBCKwNDLgokyBZaGH9FSeICb7JCRgd9t5qFBYD5NDXio4ZMs8LBc2m0qsXiqs3~~z6PSI29OHZJYy7-Z7NX5PwGF8LkO9L0mhoNkGd3uqKRxATQd0q~Ri72OKw~xyN2cpwhXimkod5V6hageKmvoqP4PSg__&Key-Pair-Id=K1VGYTHIYLM9UM",
+  "texture_urls": [
+    {
+      "base_color": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a16ddb-fcbb-7641-b446-745b8a882ec0/output/texture_0.png?Expires=1793103766&Signature=eHdSxFTwu~Blr1UA-61J85UXoEz2VrzT8C-bvuRZpWK1Npx~EA2GYPHvXHtBPpe0lOCIqKCV7VGUdPIJAVnuZZg4JtkOXP-w3DnZF43uL7oGYvWfR2I6upZ1HxF9z4QXpGZChKpvtEkrUsPrJsCrkMTDv7NkErAVhjH7y2DH2F8wvEADT9vKue3IT6B9Z7awLwZgfY8OkiGl8Ghp7S~2bqWZ9-TfstVXfqVhYhljzYy2wKdHrYA33Ygy9J-FV5FhVCZDHaHNUGBRTVbs5SEFqvJrwsddgMi-jVg9oEZM467SYkummjHluGPvYosVA6XN9NZi49PU~ZTJ5r6fWzzffQ__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "metallic": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a16ddb-fcbb-7641-b446-745b8a882ec0/output/texture_0_metallic.png?Expires=1793103766&Signature=g1YVdRIVzvb4BoEirE73L27fK8b0eBoHZ4NMKDAeJSooI-b-s3Ydyzlq3WpoL6KePAFpR~PJkB8Ql~~MAgTF8UX~wZCOSmmXPthKAftEBgqDYqjPY-FpccWZMNyRZCOzjp8LoVz569URKQ7~R7w9EtY6bP~TINts1qSDJm9BQLWfWjvVwizjhMlu4HZrOza2HIkQPQ2dvIvIoFA~U55BiMAysyZssk7qjpuQjAot5DGCmSd4RVoESJevKq1yTTu4zL~v~tcDsKX02C-gGbpYdPdTKNHKROuYP9GdbdajiKtsksn-MVpPkL5SoPl36L11UU2nQdCu8N-crGgEj0JqDw__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "roughness": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a16ddb-fcbb-7641-b446-745b8a882ec0/output/texture_0_roughness.png?Expires=1793103766&Signature=J4cBKfTr3Jl2TmoyKcYDKqvwj7bJwFn8cx1V10Ozy2mlmvu8BBaAlS4RokbaMmjRdsmYiZ~pmBKC62SYuKf28nUiMBnryHsDXXqodhW1-Chgm4XwkihoRwzbqZ3Nr1cfl7jjaZA5losMzu9sayz4E4t3SXa5FF~WpQvFowVZwpiV-nMlM~fK7~50Fu-rakl4E-X5rDPqsrhQxaPQzPw2gjK3ZmKXxJEngvSCKWU8OP1UscJ6a7F58Guq-vajbvAC-8yY7H3zDwV98exnwIAry3-4QE4PKerL7dSbHxS4Mjbx4m-rB0LJhqUiUolKppjAqjh1cczY2A1tQgjUxu2yHQ__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "normal": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a16ddb-fcbb-7641-b446-745b8a882ec0/output/texture_0_normal.png?Expires=1793103766&Signature=k0tqk5XqJxiimIva1HNxqEnVPf8z76KS0f7PPvy0UAYB-D0BklVDcJbaTvZ52Xef70PxvfXowaaU2lOOf2hNYjgSQjTS6EEbjDFdafJ2C33A7Y8dXFZ~uC12w8GkdLCZ1X5BM9BDYXdF1waCu6VCsRjD2Ig9MJm9vU8E3mHeqt00SgEftdiZEmlQcr6vk-yjbTQjPnjhXeLP8vq4SRSfDPOfnVZ8UKrCPLzQPld4hSJgLOtE0ONL8mDVbsPMFrqJ7a2IZVihAHbrMXPCGttwYhQZ8YUCdSYCjCB2rC7N4flYct7Gnp48YkkGQZ7Cd~6jBH5TgdsWX1y5uHNzfXNY~Q__&Key-Pair-Id=K1VGYTHIYLM9UM"
+    }
+  ],
+  "hd_texture": true,
+  "texture_resolution": "4k",
+  "consumed_credits": 10
+}

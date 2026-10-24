@@ -1,0 +1,19 @@
+{
+  "id": "01a16ddd-18d8-7389-b87e-0429f4c890c1",
+  "type": "text-to-motion",
+  "name": "",
+  "status": "SUCCEEDED",
+  "created_at": 1792844569505,
+  "progress": 100,
+  "started_at": 1792844569509,
+  "finished_at": 1792844591534,
+  "expires_at": 1793103791534,
+  "task_error": null,
+  "result": {
+    "motion_url": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a16ddd-18d8-7389-b87e-0429f4c890c1/output/clip.fbx?Expires=1793103791&Signature=AL7-f-INuf-iqE26ZuMqRkkHJWjUTr3vnvYDzfrOCe8XxVwQ8DjMGzPYU~p8uEDYyASehdCQPgyUYgdY2w-wnc3b9Kdlak3QP2VpaECL-jjfYGGGhyoXZypOlQdoxAc8NPVWoA8pxnSyHgtOHVgfrH9QaJyn98pA5PBBwDdcrHi1mYWPn3jHNiEo25YlgrnpCNkCQMAfpWWu3pHKJibfOAut15riye4NdrY3W2p-Ym7HNQfJskndn1ir5BnnsyyFyGp~8B-tPcz8Pt6i5MyPPBmpR-tPijMocaUG5L1y6gHA7K-EV8yg79XUi9ul1ThpMt5SlcFEX6WTbA0KK99JdA__&Key-Pair-Id=K1VGYTHIYLM9UM",
+    "motion_format": "fbx",
+    "duration_ms": 5000,
+    "mode": "prime"
+  },
+  "consumed_credits": 10
+}

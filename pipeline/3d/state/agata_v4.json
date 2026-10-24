@@ -14,5 +14,25 @@
     "enable_pbr": true,
     "multi_view_thumbnails": true
   },
-  "model_credits": 35
+  "model_credits": 35,
+  "retexture_task": "01a16ddb-fcbb-7641-b446-745b8a882ec0",
+  "retexture_body": {
+    "input_task_id": "01a16bb8-620b-7160-abd2-6ee1700430df",
+    "ai_model": "meshy-7",
+    "enable_original_uv": true,
+    "enable_pbr": true,
+    "texture_resolution": "4k",
+    "target_formats": [
+      "glb"
+    ],
+    "text_style_prompt": "Realistic 18-year-old village girl, painterly game character. Face: natural warm skin tone, not pale, not washed out; soft rosy blush on cheeks and nose tip, faint freckles, subtle shading under brows, around eyes, nose and jaw, warm brown eyes, natural pink lips, defined dark eyebrows. Hair: dark chestnut brown with visible individual strands, darker roots, lighter reddish-brown highlights, loose wisps around face, long braid down the back with clearly woven plaits. Brown-grey wool coat with wooden buttons, ochre-brown knitted shawl with grey patterned border, dark brown wool skirt, worn reddish-brown leather satchel and strap, brown leather lace-up boots. Matte fabrics, no plastic shine."
+  },
+  "retexture_credits": 10,
+  "text_motion_task": "01a16ddd-18d8-7389-b87e-0429f4c890c1",
+  "text_motion_body": {
+    "prompt": "A young woman stands calmly in place, natural relaxed breathing, a slight slow weight shift from one leg to the other and back, arms relaxed hanging at her sides, head still, feet stay planted, seamless loop that starts and ends in the same pose.",
+    "mode": "prime",
+    "duration": 5
+  },
+  "text_motion_credits": 10
 }
