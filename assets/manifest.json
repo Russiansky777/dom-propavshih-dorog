@@ -2064,6 +2064,179 @@
       "use": "workbench_panel.gd: parts.* — спрайты вместо вырезок и многоугольников (H48, T2/T4)",
       "pack": "Партия 10б, п. 7",
       "brief": "Docs/art_pack_10b/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "Z3_state_boat_dusk",
+      "status": "requested",
+      "kind": "layer_moving",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "H36",
+      "files": [
+        "incoming/Z3_state_boat_dusk.png"
+      ],
+      "base": "Z3_bg.png + Z3_state_water_low.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; только лодка, швартов и отражение в x 930–1120, y 440–585",
+      "spec": "Лодка Пелагеи у плиты на опоре (нос у кольца ≈ 1112, 503), сумерки; слой двигается в M17 (layer_go)",
+      "owner": "ChatGPT + Директор",
+      "use": "Z3.json → слои boat_dusk, boat_shuttle_dusk: image вместо state_boat.png, без modulate",
+      "pack": "Партия 10в, п. 1",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "Z3_state_boat_day",
+      "status": "requested",
+      "kind": "layer_moving",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "H36",
+      "files": [
+        "incoming/Z3_state_boat_day.png"
+      ],
+      "base": "Z3_bg.png + Z3_state_water_low_day.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 930–1120, y 440–585",
+      "spec": "Та же лодка днём (дни 3–4), снег на банке",
+      "owner": "ChatGPT + Директор",
+      "use": "Z3.json → слой boat_day",
+      "pack": "Партия 10в, п. 1",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "R1_state_no_boat_dusk",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "H36",
+      "files": [
+        "incoming/R1_state_no_boat_dusk.png"
+      ],
+      "base": "R1_bg.png + R1_fg_water.png + R1_dusk.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 1340–1672, y 460–745",
+      "spec": "Вода у причала вечером без лодки, отражения и швартова",
+      "owner": "ChatGPT + Директор",
+      "use": "R1.json → слои no_boat_dusk и no_boat_d3_evening (z 2, над рябью)",
+      "pack": "Партия 10в, п. 1",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "R1_state_no_boat_day",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "H36",
+      "files": [
+        "incoming/R1_state_no_boat_day.png"
+      ],
+      "base": "R1_state_water_low_day.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 1340–1672, y 460–745",
+      "spec": "То же днём дней 3–4 (низкая вода)",
+      "owner": "ChatGPT + Директор",
+      "use": "R1.json → слой no_boat_day",
+      "pack": "Партия 10в, п. 1",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "Z1_fg_counter_v2",
+      "status": "requested",
+      "kind": "occluder",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "T8",
+      "files": [
+        "incoming/Z1_fg_counter_v2.png"
+      ],
+      "base": "Z1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1, без масштаба; проекция на пол x 521–1239, y 642–775",
+      "spec": "Стойка почты высотой ≈ 1 м, Тамара за ней от пояса",
+      "owner": "ChatGPT + Директор",
+      "use": "Z1.json → слой counter: image, scale 1 (убрать scale 0.7 и offset), z по передним ножкам; проверить clearance и хотспот рисунков",
+      "pack": "Партия 10в, п. 2",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H2_state_office_mirror_center_v3",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "T8",
+      "files": [
+        "incoming/H2_state_office_mirror_center_v3.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; в проёме стойки x 1015–1172, y 198–522",
+      "spec": "Зеркало конторы во весь проём стойки «ЗМ», без зазоров",
+      "owner": "ChatGPT + Директор",
+      "use": "H2.json → слой office_mirror и mechanic.frame (images, glass_polygon из README)",
+      "pack": "Партия 10в, п. 3",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H2_state_wedges_v3",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "T8",
+      "files": [
+        "incoming/H2_state_wedges_loose_v3.png",
+        "incoming/H2_state_wedges_half_v3.png",
+        "incoming/H2_state_wedges_driven_v3.png"
+      ],
+      "base": "H2_bg.png + H2_state_office_mirror_center_v3.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; у углов рамы",
+      "spec": "Четыре клина: вставлены / наполовину / забиты",
+      "owner": "ChatGPT + Директор",
+      "use": "H2.json → слои wedges_*, мини-игра клиньев (центры из README)",
+      "pack": "Партия 10в, п. 3",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "O4_state_mitya_board_fence_v2",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "T8",
+      "files": [
+        "incoming/O4_state_mitya_board_fence_v2.png"
+      ],
+      "base": "O4_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1080–1114, y 550–616",
+      "spec": "Дощечка Мити: дерево, ряд зарубок, снег сверху",
+      "owner": "ChatGPT + Директор",
+      "use": "O4.json → слой mitya_board: image",
+      "pack": "Партия 10в, п. 4",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H3_state_photo_school",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10в (ChatGPT, задание T8, 24.10)",
+      "batch": "10c",
+      "g": "T8",
+      "files": [
+        "incoming/H3_state_photo_school.png"
+      ],
+      "base": "H3_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 938–1035, y 236–325",
+      "spec": "Старый снимок школьного крыльца с дверью в рамке на стене",
+      "owner": "ChatGPT + Директор",
+      "use": "H3.json → слой photo_school: image",
+      "pack": "Партия 10в, п. 5",
+      "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
     }
   ]
 }
