@@ -65,12 +65,20 @@ func _t_plans() -> void:
 		_check(plan is Dictionary, "%s: not JSON" % p)
 		if not plan is Dictionary:
 			continue
-		var paths: Array = [plan.get("audio", {}).get("music", "")]
+		var paths: Array = []
+		var music = plan.get("audio", {}).get("music", "")
+		if music is Array:
+			for t in music:
+				paths.append(t.get("file", ""))
+		else:
+			paths.append(music)
+		for v in plan.get("audio", {}).get("voice", []):
+			paths.append(v.get("file", ""))
 		for a in plan.get("audio", {}).get("ambience", []):
 			if a.has("file"):
 				paths.append(a["file"])
 		for s in plan.get("shots", []):
-			_check(String(s.get("kind", "")) in ["art", "room", "title_card"], "%s/%s: unknown kind" % [p, s.get("id")])
+			_check(String(s.get("kind", "")) in ["art", "room", "title_card", "phrase", "daycard"], "%s/%s: unknown kind" % [p, s.get("id")])
 			_check(float(s.get("duration", 0)) > 0.0, "%s/%s: no duration" % [p, s.get("id")])
 			for k in ["art", "fx_mask", "depth_tex"]:
 				if s.has(k):
@@ -100,13 +108,18 @@ func _t_shots() -> void:
 			var frames: int = tr.get("total_frames")
 			_check(frames == int(round((float(s.get("preroll_s", 0.0)) + float(s["duration"]) + _tail(plan, s)) * int(plan.get("fps", 60)))),
 				"%s/%s: frame count %d" % [p, s["id"], frames])
-			for i in 30:
+			var agata_to: bool = s.get("agata", {}).has("to")
+			var wait := 30
+			if agata_to:
+				wait = maxi(30, int((float(s.get("preroll_s", 0.0)) + float(s["agata"].get("start_s", 0.0)) + 0.4) * int(plan.get("fps", 60))))
+			for i in wait:
 				await process_frame
 			if s.get("kind") == "room":
 				_check(rm.current_room != null and rm.current_room.room_id == String(s["room"]), "%s: room not started" % s["id"])
 				_check(not rm.autosave_enabled, "%s: autosave left on" % s["id"])
 				var pl: Node2D = rm.player
-				_check(pl != null and bool(pl.call("is_walking")), "%s: Agata does not walk" % s["id"])
+				if agata_to:
+					_check(pl != null and bool(pl.call("is_walking")), "%s: Agata does not walk" % s["id"])
 				var cam: Camera2D = tr.get_node_or_null("World/Camera")
 				_check(cam != null and cam.is_current(), "%s: no camera" % s["id"])
 				if cam != null:
