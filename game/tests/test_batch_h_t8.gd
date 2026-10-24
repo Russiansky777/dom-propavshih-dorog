@@ -236,7 +236,10 @@ func _test_boat_places() -> void:
 	_check(await _boat_places() == ["Z3"], "evening of day three: the boat at the turn only")
 	await _enter("Z3")
 	_check(_layer_on("boat_shuttle_dusk") and not _layer_on("boat_day"), "evening of day three: the dusk boat at the turn")
-	_check(sd.text("@R1d.pelageya.shuttle").contains("у поворота"), "Pelageya on day three sends Agata to the boat at the turn")
+	# T9 (Director's decision 24.10, 22:26): on day three Pelageya waits by the boat at the turn, not at her pier.
+	_check(_hotspot("pelageya") != null and _hotspot("pelageya").visible, "day three: Pelageya by the boat at the turn")
+	await _enter("R1")
+	_check(_hotspot("pelageya") == null or not _hotspot("pelageya").visible, "day three: Pelageya not at the pier")
 
 
 func _test_boat_m17_m18p() -> void:
@@ -357,7 +360,7 @@ func _test_house() -> void:
 # --- 3. The free day ----------------------------------------------------------------------------
 
 func _test_free_day_goals() -> void:
-	var names := {"done_M23a": ["Тамара с письмами"], "done_M23b": ["мельница"], "done_M23c": ["мама в доме тёти"], "done_M23d": ["Тихону"]}
+	var names := {"done_M23a": ["Тамара с письмами"], "done_M23b": ["мельниц"], "done_M23c": ["мама в доме тёти"], "done_M23d": ["Тихону"]}
 	var deeds := ["done_M23a", "done_M23b", "done_M23c", "done_M23d"]
 	for scene_id in ["M23a", "M23b", "M23d"]:
 		for mask in 16:
@@ -388,5 +391,5 @@ func _test_free_day_goals() -> void:
 	gs.set_flag("done_M23b", true)
 	sr._complete_scene("M23a")
 	await _frames(1)
-	_check(gs.journal_goal.begins_with("Письма розданы.") and gs.journal_goal.contains("мама в доме тёти") and not gs.journal_goal.contains("мельница") and not gs.journal_goal.contains("Тамара с письмами"),
+	_check(gs.journal_goal.begins_with("Письма розданы.") and gs.journal_goal.contains("мама в доме тёти") and not gs.journal_goal.contains("мельниц") and not gs.journal_goal.contains("Тамара с письмами"),
 		"after M23a with the mill done — only mama left: %s" % gs.journal_goal)

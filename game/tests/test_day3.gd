@@ -480,10 +480,13 @@ func _cross_by_rope(target: String) -> bool:
 	_check(_room() != "R2", "no room with arrows on the way (the boat view R2 is the close-up)")
 	var pr: Dictionary = mv.probe().get("panel", {})
 	var total := int(pr.get("pulls_total", 0))
-	_check(total >= 8 and total <= 12, "about ten pulls (%d)" % total)
 	var c := _v(pr.get("center", {}))
+	# T9 (R51, Director 24.10): a repeated crossing is short — Pelageya ferries, the pulls run by themselves; one
+	# click goes straight to the shore. Only the first crossing (M18p) is ten pulls by hand.
+	_check(bool(pr.get("auto", false)) and total <= 6, "the free-day crossing is short and runs by itself (auto %s, %d pulls)" % [str(pr.get("auto")), total])
+	await _click(c)
 	g = 0
-	while sr.mechanic_open and int(mv.probe().get("panel", {}).get("pulls", 0)) < total and g < 40:
+	while not bool(pr.get("auto", false)) and sr.mechanic_open and int(mv.probe().get("panel", {}).get("pulls", 0)) < total and g < 40:
 		g += 1
 		await _click(c)
 		var w := 0
