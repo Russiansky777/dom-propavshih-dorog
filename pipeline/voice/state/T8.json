@@ -1,0 +1,36 @@
+{
+  "set": "T8",
+  "runs": [
+    {
+      "run": "40116830339",
+      "at": "2026-10-24T17:37:08+00:00",
+      "request": "pipeline/requests/voice_T8.json",
+      "synthesized": [
+        "M01_8",
+        "M16_0_then0",
+        "agata:Z2.exit_H1.not_yet",
+        "pelageya:R1d.pelageya.shuttle"
+      ],
+      "reprocessed": [],
+      "characters_text": 247,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 58726,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 58726,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 109,
+      "subscription_delta": 0
+    }
+  ]
+}
