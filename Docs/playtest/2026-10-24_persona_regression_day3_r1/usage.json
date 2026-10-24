@@ -1,0 +1,188 @@
+{
+ "max_usd": 1.4,
+ "spent_usd": 0.166656,
+ "by_model": {
+  "claude-sonnet-5-5": {
+   "calls": 14,
+   "input_tokens": 60126,
+   "output_tokens": 3200,
+   "cache_creation_input_tokens": 3893,
+   "cache_read_input_tokens": 46716,
+   "usd": 0.166656
+  }
+ },
+ "workspace": {
+  "source": "secret",
+  "error": ""
+ },
+ "prices_per_mtok": {
+  "claude-haiku-5-5": {
+   "in": 0.1,
+   "cw": 0.125,
+   "cr": 0.01,
+   "out": 0.5,
+   "long": {
+    "over": 100000,
+    "in": 0.5,
+    "cw": 0.625,
+    "cr": 0.05,
+    "out": 2.5
+   }
+  },
+  "claude-sonnet-5-5": {
+   "in": 2,
+   "cw": 2.5,
+   "cr": 0.1,
+   "out": 10
+  },
+  "claude-opus-5-5": {
+   "in": 4,
+   "cw": 5,
+   "cr": 0.2,
+   "out": 20
+  },
+  "claude-fable-5-1": {
+   "in": 10,
+   "cw": 12.5,
+   "cr": 0.25,
+   "out": 50
+  },
+  "claude-haiku-4-5": {
+   "in": 1,
+   "cw": 1.25,
+   "cr": 0.1,
+   "out": 5
+  }
+ },
+ "prices_source": "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22; claude-fable-5-1 — 2026-10-23)",
+ "calls": [
+  {
+   "tag": "step1",
+   "model": "claude-sonnet-5-5",
+   "in": 1550,
+   "out": 169,
+   "cw": 3893,
+   "cr": 0,
+   "usd": 0.014523
+  },
+  {
+   "tag": "step2",
+   "model": "claude-sonnet-5-5",
+   "in": 5890,
+   "out": 179,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.013959
+  },
+  {
+   "tag": "step3",
+   "model": "claude-sonnet-5-5",
+   "in": 2068,
+   "out": 159,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.006115
+  },
+  {
+   "tag": "step4",
+   "model": "claude-sonnet-5-5",
+   "in": 7342,
+   "out": 242,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.017493
+  },
+  {
+   "tag": "step5",
+   "model": "claude-sonnet-5-5",
+   "in": 5454,
+   "out": 162,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.012917
+  },
+  {
+   "tag": "step6",
+   "model": "claude-sonnet-5-5",
+   "in": 4204,
+   "out": 229,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.011087
+  },
+  {
+   "tag": "step7",
+   "model": "claude-sonnet-5-5",
+   "in": 2926,
+   "out": 185,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.008091
+  },
+  {
+   "tag": "step8",
+   "model": "claude-sonnet-5-5",
+   "in": 2965,
+   "out": 168,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.007999
+  },
+  {
+   "tag": "step9",
+   "model": "claude-sonnet-5-5",
+   "in": 5853,
+   "out": 164,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.013735
+  },
+  {
+   "tag": "step10",
+   "model": "claude-sonnet-5-5",
+   "in": 3133,
+   "out": 166,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.008315
+  },
+  {
+   "tag": "step11",
+   "model": "claude-sonnet-5-5",
+   "in": 3059,
+   "out": 191,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.008417
+  },
+  {
+   "tag": "step12",
+   "model": "claude-sonnet-5-5",
+   "in": 3225,
+   "out": 158,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.008419
+  },
+  {
+   "tag": "step13",
+   "model": "claude-sonnet-5-5",
+   "in": 3154,
+   "out": 154,
+   "cw": 0,
+   "cr": 3893,
+   "usd": 0.008237
+  },
+  {
+   "tag": "report",
+   "model": "claude-sonnet-5-5",
+   "in": 9303,
+   "out": 874,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.027346
+  }
+ ],
+ "report_reserve_usd": 0.2434,
+ "stop": "цель отрезка достигнута на шаге 13 (done_M22)"
+}
