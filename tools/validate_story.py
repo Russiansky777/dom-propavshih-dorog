@@ -14,6 +14,7 @@
   1г–1е. текст: цели и подсказки не называют факт раньше его флага (KNOWLEDGE_GATES), закадровый голос сцен не
      говорит «мама» вне кавычек, в JSON сюжета нет повторяющихся ключей (ИИ-чтение непрерывности 23.10);
   1ж. одно имя тёти: «Евдокия» — только в первом объяснении (M01, Тамара), дальше «Дуня» (H1, Директор 24.10).
+  1з. подсказки к старым словам: каждое [[слово|значение]] — в data/story/glossary.json (форма и значение), без «висящих» [[ ]] (H59, T7).
 Предмет, который игрок берёт сам в комнате (items.json source_hotspot «<комната>.<хотспот>»: хотспот с use.gives и
 use.requires), — единственный источник вместо выдачи сцены; симуляция даёт его, как только requires выполнены и
 комната достижима (скоба для плиты в мастерской — после плана из школы, блок 1 22.10).
@@ -24,6 +25,7 @@ use.requires), — единственный источник вместо выд
 from __future__ import annotations
 
 import json
+import re
 import sys
 from collections import Counter, deque
 from pathlib import Path
@@ -332,6 +334,57 @@ if _aunt_bad:
     err(f"H1: «Евдокия» вне первого объяснения ({AUNT_FULL_NAME_ALLOWED}) — дальше только «Дуня»: {', '.join(_aunt_bad[:8])}")
 if len(_aunt_found) - len(_aunt_bad) != 1:
     err(f"H1: первое объяснение «тётя Дуня — Евдокия, мамина сестра» должно быть ровно одно (в {AUNT_FULL_NAME_ALLOWED}), найдено {len(_aunt_found) - len(_aunt_bad)}")
+
+# ---------- 1з. подсказки к старым словам [[слово|значение]] (H59, T7, Директор 24.10) ----------
+# Каждое помеченное слово — в data/story/glossary.json (та же форма и то же значение, есть источник со ссылкой);
+# «висящих» [[ / ]] и пустых частей нет; в строке не больше одной подсказки; в каждой словарной статье слово встречается.
+GLOSS_RE = re.compile(r"\[\[([^\[\]|]+)\|([^\[\]|]+)\]\]")
+_gloss_doc = json.loads((STORY / "glossary.json").read_text(encoding="utf-8")) if (STORY / "glossary.json").is_file() else None
+if _gloss_doc is None:
+    err("H59: нет data/story/glossary.json — словарь подсказок к старым словам")
+_gloss = {}
+for _g in (_gloss_doc or {}).get("words", []):
+    _w = str(_g.get("word", ""))
+    if not _w or not str(_g.get("meaning", "")).strip() or not str(_g.get("lemma", "")).strip():
+        err(f"glossary.json: у статьи «{_w}» нет слова, леммы или значения")
+    if not str((_g.get("source") or {}).get("url", "")).startswith("http"):
+        err(f"glossary.json: у статьи «{_w}» нет ссылки на словарь (source.url)")
+    if _w.lower() in _gloss:
+        err(f"glossary.json: статья «{_w}» повторяется")
+    _gloss[_w.lower()] = _g
+_gloss_used: set[str] = set()
+
+
+def _gloss_walk(o, path: str) -> None:
+    if isinstance(o, dict):
+        for k, v in o.items():
+            _gloss_walk(v, f"{path}.{k}")
+    elif isinstance(o, list):
+        for i, v in enumerate(o):
+            _gloss_walk(v, f"{path}[{i}]")
+    elif isinstance(o, str) and ("[[" in o or "]]" in o or "|" in o and "[" in o):
+        marks = GLOSS_RE.findall(o)
+        rest = GLOSS_RE.sub("", o)
+        if "[[" in rest or "]]" in rest:
+            err(f"H59: {path}: «висящая» разметка подсказки (нужно [[слово|значение]]): «{o[:80]}»")
+        if len(marks) > 1:
+            err(f"H59: {path}: больше одной подсказки в строке")
+        for w, m in marks:
+            g = _gloss.get(w.lower())
+            if g is None:
+                err(f"H59: {path}: слова «{w}» нет в data/story/glossary.json")
+                continue
+            _gloss_used.add(w.lower())
+            if m.strip() != str(g.get("meaning", "")).strip():
+                err(f"H59: {path}: значение «{m}» у «{w}» ≠ glossary.json («{g.get('meaning')}»)")
+
+
+for _jf in sorted(STORY.rglob("*.json")):
+    if _jf.name == "glossary.json" or _jf.relative_to(STORY).parts[0] in ("ambient", "time"):
+        continue   # описания схем слоёв с [[x,y]] — не тексты игрока
+    _gloss_walk(json.loads(_jf.read_text(encoding="utf-8")), str(_jf.relative_to(STORY)))
+for _w in sorted(set(_gloss) - _gloss_used):
+    warn(f"glossary.json: слово «{_gloss[_w].get('word')}» нигде не помечено в тексте")
 
 # ---------- 2. единственный источник предметов ----------
 item_sources: dict[str, list[str]] = {}

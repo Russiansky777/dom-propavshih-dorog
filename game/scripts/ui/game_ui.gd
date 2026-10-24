@@ -54,13 +54,13 @@ var hint_line: Label
 var modal: Control
 var dialogue: PanelContainer
 var speaker_label: Label
-var text_label: RichTextLabel
+var text_label: GlossText
 var continue_label: Label
 var options_box: VBoxContainer
 var journal_panel: PanelContainer
 var journal_goal_label: Label
 var journal_time_label: Label    # «День второй · сумерки» — время суток (F17, TimeOfDay)
-var journal_facts_label: RichTextLabel
+var journal_facts_label: GlossText
 var menu_panel: PanelContainer
 ## The save / load / settings panel's own layer: above the pause menu (50) and the title screen (60), and running
 ## while the tree is paused — it is opened from both.
@@ -260,14 +260,14 @@ func _build() -> void:
 	text_row.name = "TextRow"
 	text_row.add_theme_constant_override("separation", 18)
 	v.add_child(text_row)
-	text_label = RichTextLabel.new()
+	# GlossText (H59/T7): old words marked [[слово|значение]] show gold and dashed, the meaning on hover; clicks pass
+	# through to the dialogue box.
+	text_label = GlossText.new()
 	text_label.name = "Text"
-	text_label.bbcode_enabled = false
 	text_label.fit_content = true
 	text_label.scroll_active = false
 	text_label.theme_type_variation = &"DialogueText"
 	text_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_row.add_child(text_label)
 	continue_label = Label.new()
 	continue_label.name = "Continue"
@@ -312,9 +312,8 @@ func _build() -> void:
 	jf.text = StoryData.text("@ui.journal_facts")
 	jf.theme_type_variation = &"HeaderSmall"
 	jv.add_child(jf)
-	journal_facts_label = RichTextLabel.new()
+	journal_facts_label = GlossText.new()
 	journal_facts_label.name = "Facts"
-	journal_facts_label.bbcode_enabled = false
 	journal_facts_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	journal_facts_label.theme_type_variation = &"JournalText"
 	jv.add_child(journal_facts_label)
@@ -671,18 +670,18 @@ func _render_dialogue() -> void:
 	speaker_label.visible = t == "line"
 	speaker_label.text = String(beat.get("speaker_name", ""))
 	if t == "options":
-		text_label.text = String(beat.get("prompt", ""))
-		text_label.visible = text_label.text != ""
+		text_label.set_story_text(String(beat.get("prompt", "")))
+		text_label.visible = text_label.story_text != ""
 		continue_label.visible = false
 		for o in beat.get("options", []):
-			var b := _button(String(o.get("label", o.get("id", ""))), 0.0, &"DialogueOption")
+			var b := _button(Gloss.plain(String(o.get("label", o.get("id", "")))), 0.0, &"DialogueOption")
 			b.name = "Option_" + String(o.get("id", ""))
 			b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			b.pressed.connect(func(): StoryRunner.choose(String(o.get("id", ""))))
 			options_box.add_child(b)
 	else:
 		text_label.visible = true
-		text_label.text = String(beat.get("text", ""))
+		text_label.set_story_text(String(beat.get("text", "")))
 		continue_label.visible = true
 	_update_modal()
 	_fit_dialogue.call_deferred()
@@ -804,11 +803,11 @@ func toggle_journal() -> void:
 	menu_panel.visible = false
 	if journal_panel.visible:
 		journal_plan_button.visible = map_view.available_in_journal()
-		journal_goal_label.text = StoryRunner.journal_goal()
+		journal_goal_label.text = Gloss.plain(StoryRunner.journal_goal())
 		journal_time_label.text = TimeOfDay.label(GameState.current_room)
 		journal_time_label.visible = journal_time_label.text != ""
 		var facts := StoryRunner.journal_facts()
-		journal_facts_label.text = "\n".join(PackedStringArray(facts.map(func(f): return "• " + f))) if not facts.is_empty() else StoryData.text("@ui.journal_empty")
+		journal_facts_label.set_story_text("\n".join(PackedStringArray(facts.map(func(f): return "• " + f))) if not facts.is_empty() else StoryData.text("@ui.journal_empty"))
 	_update_modal()
 
 
@@ -1305,6 +1304,7 @@ func probe_positions() -> Dictionary:
 	out["exit_hints"] = exit_hints_probe()
 	if dialogue.visible:
 		out["dialogue_click"] = _center(dialogue)
+		out["gloss"] = text_label.probe()   # H59/T7: marked old words (where) and the meaning pop-up
 		for c in options_box.get_children():
 			if c is Button:
 				out["options"][String(c.name).trim_prefix("Option_")] = _center(c)

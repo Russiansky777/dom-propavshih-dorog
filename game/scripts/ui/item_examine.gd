@@ -196,7 +196,7 @@ func _build_picture(area: Rect2) -> void:
 		var l: Label = HandWriting.new() if hand else Label.new()
 		l.name = "Writing"
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.text = StoryData.text(String(wr.get("text", "")))
+		l.text = Gloss.plain(StoryData.text(String(wr.get("text", ""))))
 		l.position = Vector2(float(trc[0]), float(trc[1])) * k
 		l.size = Vector2(float(trc[2]), float(trc[3])) * k
 		l.pivot_offset = l.size * 0.5
@@ -252,7 +252,7 @@ func _build_note(r: Rect2) -> void:
 	var body := Label.new()
 	body.name = "Text"
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.text = StoryData.text(String(nd.get("text", "")))
+	body.text = Gloss.plain(StoryData.text(String(nd.get("text", ""))))
 	body.position = Vector2(34, y)
 	body.size = Vector2(r.size.x - 68, r.size.y - y - 24)
 	body.add_theme_font_override("font", UiTheme.font("body_italic"))

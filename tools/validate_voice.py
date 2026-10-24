@@ -852,6 +852,9 @@ def main() -> int:
     waiting = after_h59()
     if not AFTER_H59.is_file():
         errors.append(f"нет {AFTER_H59.relative_to(ROOT)} — список строк к перезаписи после H59")
+    # H59/T7: в голос идёт только слово подсказки — ни «[[», ни «|значение]]» в тексте запроса к TTS
+    errors += [f"{lid}: в тексте для голоса осталась разметка подсказки: «{api_text(dict(ln, id=lid))[:80]}»"
+               for lid, ln in sorted(lines.items()) if "[[" in api_text(dict(ln, id=lid)) or "]]" in api_text(dict(ln, id=lid))]
     l_err, l_warn = check_speaker_loudness(manifests, waiting)
     errors += l_err
     warns += l_warn

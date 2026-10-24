@@ -122,7 +122,7 @@ func label(t: String, pos: Vector2, w: float, variation: StringName = &"CloseupL
 	# wrap before text and size: a Label without wrapping is as wide as its text and keeps that width
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.custom_minimum_size = Vector2(w, 0)
-	l.text = t
+	l.text = Gloss.plain(t)
 	l.position = pos
 	l.size = Vector2(w, 40)
 	l.theme_type_variation = variation

@@ -581,7 +581,7 @@ func _build_paper(p: Dictionary) -> void:
 		body_i.name = "Text"
 		# wrap before text and size: a Label without wrapping is as wide as its text and keeps that width
 		body_i.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		body_i.text = StoryData.text(String(p.get("text", "")))
+		body_i.text = Gloss.plain(StoryData.text(String(p.get("text", ""))))
 		body_i.position = Vector2(float(tr[0]), float(tr[1])) * k
 		body_i.size = Vector2(float(tr[2]), float(tr[3])) * k
 		body_i.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -628,7 +628,7 @@ func _build_paper(p: Dictionary) -> void:
 	var body: Label = HandWriting.new() if String(p.get("font", "")) == "hand" else Label.new()
 	body.name = "Text"
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.text = StoryData.text(String(p.get("text", "")))
+	body.text = Gloss.plain(StoryData.text(String(p.get("text", ""))))
 	body.position = Vector2(pad, y)
 	body.size = Vector2(sheet.size.x - pad * 2.0, sheet.size.y - y - pad * 0.6)
 	body.add_theme_font_override("font", UiTheme.font(String(p.get("font", "body_italic"))))
@@ -674,7 +674,7 @@ func _build_sheet_words(sheet: Control, p: Dictionary) -> void:
 			var body: Label = HandWriting.new() if hand else Label.new()
 			body.name = "Text%d" % i
 			body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			body.text = StoryData.text(String(b["text"]))
+			body.text = Gloss.plain(StoryData.text(String(b["text"])))
 			body.position = Vector2(box.position.x, y)
 			body.size = Vector2(box.size.x, maxf(box.end.y - y, 10.0))
 			body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if center else HORIZONTAL_ALIGNMENT_LEFT

@@ -712,7 +712,7 @@ func _render() -> void:
 	if root == null or not visible:
 		return
 	var st: Dictionary = StoryRunner.puzzle
-	message_label.text = String(st.get("message", ""))
+	message_label.text = Gloss.plain(String(st.get("message", "")))
 	hint_label.text = String(st.get("hint", ""))
 	var errors := int(st.get("errors", 0))
 	if errors > _last_errors:
