@@ -113,7 +113,9 @@ def run_stages(req: dict) -> int:
       text_motion: {"prompt","mode","duration"}                           → state/<name>_text_motion.json
       rig:         {"model_url" (https) , "height_meters"}                → out/<name>/rigged.glb, state/<name>_rig.json
       motion:      анимация по motion_task_id задачи text_motion на риг   → out/<name>/motion.glb, state/<name>_motion.json
-      local_glb:   {"url"} — готовый GLB (после правок в Blender)         → out/<name>/animations.glb
+      actions:     {"action_ids": [...]} — пресеты библиотеки на риг      → out/<name>/actions.glb, state/<name>_actions.json
+      local_glb:   {"url"} — готовый GLB (после правок в Blender)         → out/<name>/animations.glb;
+                   поле запроса "clips" {роль: клип} → out/<name>/clips.txt (клипы уже перенесены — "retarget": false)
     """
     name = req["character"]
     out = OUT / name
@@ -161,8 +163,17 @@ def run_stages(req: dict) -> int:
             t = mc.wait("/animations", st["motion_task"], log=log)
             dump(stage, t)
             mc.download(t["result"]["animation_glb_url"], out / "motion.glb")
+        elif stage == "actions":
+            if "actions_task" not in st:
+                st["actions_task"] = mc.create("/animations", {"rig_task_id": st["rig_task"], "action_ids": cfg["action_ids"]})
+                save_state(name, st)
+            t = mc.wait("/animations", st["actions_task"], log=log)
+            dump(stage, t)
+            mc.download(t["result"]["animation_glb_url"], out / "actions.glb")
         elif stage == "local_glb":
             mc.download(cfg["url"], out / "animations.glb")
+            if req.get("clips"):
+                (out / "clips.txt").write_text(" ".join(f"{r}={c}" for r, c in req["clips"].items()) + "\n", encoding="utf-8")
             log(f"[{name}] animations.glb из {cfg['url'].split('?')[0]}")
         else:
             raise SystemExit(f"неизвестный этап {stage}")

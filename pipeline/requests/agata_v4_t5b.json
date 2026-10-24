@@ -2,8 +2,7 @@
   "character": "agata_v4",
   "height_m": 1.65,
   "stages": [
-    "rig",
-    "motion"
+    "actions"
   ],
   "retexture": {
     "input_task_id": "01a16bb8-620b-7160-abd2-6ee1700430df",
@@ -26,5 +25,11 @@
     "model_url": "https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/agata-v4-work/agata_v4_rig_input.glb",
     "height_meters": 1.65
   },
-  "_note_step2": "Шаг 2: GLB для рига — исходная геометрия 01a16bb8, упрощённая в Blender до 290 тыс. треугольников (UV те же), текстура: лицо и волосы смешаны с Retexture 01a16ddb (румянец, тени, деталь прядей), остальное — исходное (одежда в Retexture уехала в оранжевый/серый). Файл — релиз agata-v4-work (в git не кладётся, 42 МБ)."
+  "_note_step2": "Шаг 2: GLB для рига — исходная геометрия 01a16bb8, упрощённая в Blender до 290 тыс. треугольников (UV те же), текстура: лицо и волосы смешаны с Retexture 01a16ddb (румянец, тени, деталь прядей), остальное — исходное (одежда в Retexture уехала в оранжевый/серый). Файл — релиз agata-v4-work (в git не кладётся, 42 МБ).",
+  "actions": {
+    "action_ids": [
+      284
+    ]
+  },
+  "_note_step3": "Шаг 3 (3 кр.): наклон pick заменить приседом Collect_Object (id 284, каталог Meshy): голова остаётся над коленями (G56: в нижней точке Female_Bend_Over_Pick_Up_Inspect голова уходила к коленям — критичное ИИ-проверки)."
 }
