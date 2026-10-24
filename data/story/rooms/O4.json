@@ -36,7 +36,7 @@
       "_rect_note": "Митя у забора Ильи с дощечкой (Q07): ноги y 820 (масштаб 0,74 → 255 px; Митя ≈ 1,82 м — 280 px). 23.10: сдвинут влево на 268 px — левее мешка Тамары (x 1437–1536) и дощечки (x 1629–1702) партии 8: стоял прямо перед дощечкой и закрывал её; между мешком и дощечкой не помещается, справа — Ульяна (Q02) и стоянка мастерской",
       "talk": {"after_text": "@O4.mitya.after"}
     },
-    {"id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1300, 485, 110, 170], "stand": [1180, 740], "draw": false, "pick_priority": 4, "visible_if": ["started_M19"], "hidden_if": ["done_M19"], "_g29": "G29: Нина на крыльце своего дома, пока идёт встреча (M19); после «Пойдём в тепло» уходит в дом (stage npc_go к двери) — затемнение — горница", "look": "@char.nina"},
+    {"id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1300, 485, 110, 170], "stand": [1180, 740], "draw": false, "pick_priority": 4, "visible_if": ["started_M19"], "hidden_when": [{"all": ["done_M19"], "not": ["m23a_nina_here"]}, {"all": ["m23a_nina_left"]}], "_t9": "T9 (R39): ещё и на раздаче писем — с затемнения в начале M23a (m23a_nina_here) до затемнения в её конце (m23a_nina_left)", "_g29": "G29: Нина на крыльце своего дома, пока идёт встреча (M19); после «Пойдём в тепло» уходит в дом (stage npc_go к двери) — затемнение — горница", "look": "@char.nina"},
     {
       "id": "mitya_board", "kind": "object", "action_anim": "reach", "label": "@O4.mitya_board.label", "rect": [1236, 626, 48, 86], "stand": [1250, 770], "draw": false, "pick_priority": 3,
       "visible_if": ["done_M22"], "hidden_if": ["done_Q07"],

@@ -31,7 +31,7 @@
 
     "O4q.workshop.label": {"text": "Мастерская Ильи", "draft": true},
     "O4q.workshop.look": {"text": "Во дворе Ильи сарай-мастерская. До порога стружкой засыпано.", "draft": true},
-    "O4q.workshop.mitya_cramped": {"text": "Тут уж и вдвоём не поместиться.", "draft": true, "line": {"speaker": "mitya", "text": "Тут уж и вдвоём не поместиться."}},
+    "O4q.workshop.mitya_cramped": {"text": "За одним верстаком и вдвоём тесно.", "draft": true, "line": {"speaker": "mitya", "text": "За одним верстаком и вдвоём тесно."}},
     "O4q.workshop.ilya_third": {"text": "А мы ещё и третьему место найдём.", "draft": true, "line": {"speaker": "ilya", "text": "А мы ещё и третьему место найдём."}},
     "O4q.workshop.ilya_ulya": {"text": "Уля давно за мной с рубанком бродит. Давай ей собственный верстак соберём, второй.", "draft": true, "line": {"speaker": "ilya", "text": "Уля давно за мной с рубанком бродит. Давай ей собственный верстак соберём, второй."}},
     "O4q.workshop.prompt": {"text": "Куда второй верстак поставить?", "draft": true},

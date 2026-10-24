@@ -20,7 +20,7 @@
     {"id": "class_own", "day": 0, "phase": "own", "label": "@ui.time_class_own", "room_only": true, "_why": "отрезанная школа живёт своим временем (×20): там зимний день, что бы ни было в Заречье — только для своих комнат (locals)"}
   ],
   "locals": [
-    {"rooms": ["O1", "O2"], "unless": ["school_path_open"], "state": "class_own", "_why": "до возвращения школьной тропы (M21б) класс и двор — своё время (SCENARIO_FINAL §4, M05–M08)"}
+    {"rooms": ["O1", "O2"], "unless": ["road_held_both_ends"], "state": "class_own", "_why": "пока дорогу не держат с двух концов (узел M15), класс и двор — своё время (SCENARIO_FINAL §4, M05–M08); T9 (R36): с узла время общее, тропу утром показывает Нина (M21b)"}
   ],
   "scenes": {
     "_comment": "Сцена основной истории → время, в которое она начинается (тест: game/tests/test_time_of_day.gd выводит то же из флагов). Таблица с погодой и светом — Docs/TIME_OF_DAY.md.",

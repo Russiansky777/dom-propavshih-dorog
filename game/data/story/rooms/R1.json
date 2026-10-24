@@ -28,7 +28,8 @@
     {"id": "no_boat_d3_evening", "image": "res://assets/rooms/R1/state_no_boat_d3_evening.png", "z": 2, "if": ["rope_brought", "morning_day3", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "H36: то же вечером третьего дня (низкая вода под слоем dusk)"}
   ],
   "_boat_note": "H36 (Директор 24.10): лодка в одном месте по флагам — до скобы (rope_brought, M15s) у причала (нарисована на фоне), потом у поворота (rooms/Z3.json → boat_*); здесь заплатки no_boat_* убирают её с вечернего и дневного кадра (tools/make_boat_layers.py; арт — заказ 10в)",
-  "on_enter": [{"text": "@R1d.pelageya.at_turn", "once_flag": "r1_saw_boat_gone", "if": ["evening_dusk"], "unless": ["done_M15"], "_note": "F11: вечером до узла Пелагеи с лодкой на причале нет — мысль Агаты, где она (цель — поворот)"}],
+  "on_enter": [{"text": "@R1d.pelageya.at_turn", "once_flag": "r1_saw_boat_gone", "if": ["evening_dusk"], "unless": ["done_M15"], "_note": "F11: вечером до узла Пелагеи с лодкой на причале нет — мысль Агаты, где она (цель — поворот)"},
+    {"text": "@R1d.pelageya.at_turn_d3", "once_flag": "r1_saw_pelageya_at_turn_d3", "if": ["boat_shuttle_open"], "unless": ["done_M24"], "_note": "T9 (решение 24.10, 22:26): с третьего дня лодка и Пелагея у поворота — мысль Агаты ведёт туда"}],
   "spawns": {"default": [900, 900], "from_Z3": [190, 900], "from_Z2": [200, 600], "from_R2": [1650, 840]},
   "props": [],
   "hotspots": [
@@ -50,7 +51,8 @@
           {"id": "manager", "label": "@R1.pelageya.opt_manager", "sets": "r1_asked_manager", "text": "@R1.pelageya.manager"},
           {"id": "leave", "label": "@R1.pelageya.opt_leave", "sets": "r1_pelageya_bye", "text": "@R1.pelageya.after"}
         ]},
-      "hidden_when": [{"all": ["evening_dusk"], "not": ["done_M15"]}, {"all": ["done_M16"], "not": ["boat_shuttle_open"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}, {"all": ["done_M18p"], "not": ["boat_shuttle_open"]}],
+      "hidden_when": [{"all": ["boat_shuttle_open"]}, {"all": ["evening_dusk"], "not": ["done_M15"]}, {"all": ["done_M16"], "not": ["boat_shuttle_open"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}, {"all": ["done_M18p"], "not": ["boat_shuttle_open"]}],
+      "_hidden_shuttle_note": "T9 (решение 24.10, 22:26): с третьего дня Пелагея ждёт у лодки у поворота (rooms/Z3.json), на причале её нет",
       "_hidden_note": "вечером до узла Пелагея с лодкой у поворота; H36: после ответа огней (M16) — снова у лодки у поворота (M17, посадка — rooms/Z3.json); после переправы — с Митей на дальней опоре, пока лодка не ходит в обе стороны (boat_shuttle_open — блоки 3–5, день третий)"
     },
     {
@@ -96,7 +98,8 @@
     },
     {
       "id": "boat", "kind": "object", "label": "@R1.boat.label", "rect": [1550, 550, 370, 170], "stand": [1660, 840], "draw": false, "hidden_if": ["rope_brought"],
-      "states": [{"if": ["done_M02"], "look": "@R1.exit_R2.closed"}],
+      "states": [{"if": ["knows_crossing_plan"], "look": "@R1.exit_R2.closed"}, {"if": ["done_M02"], "look": "@R1.boat.look_no_plan"}],
+      "_states_note": "T9 (вычитка R01): до плана M07 Агата не знает про кольцо плиты — только что лодку возвращает",
       "look": "@R1.exit_R2.closed_first",
       "_note": "H36 (Директор 24.10): лодка у причала — до скобы (M15s); дороги ещё нет, в лодку не садятся (до разговора с Пелагеей — «сперва с лодочницей», после — G17: почему — канат не на кольце плиты). После скобы лодка у поворота (rooms/Z3.json: слои boat_*, выход «В лодку»), здесь — заплатки no_boat_*. Прежний выход R1 → R2 снят"
     },

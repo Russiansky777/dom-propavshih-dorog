@@ -66,7 +66,7 @@
     },
     {
       "id": "notebooks", "kind": "object", "action_anim": "reach", "label": "@O3.notebooks.label", "rect": [540, 570, 160, 55], "stand": [1070, 860], "draw": false, "pick_priority": 2,
-      "use": {"requires": {"flags": ["done_M21"]}, "sets": ["o3_read_notebooks"], "text": "@O3.notebooks.use", "once_flag": "o3_read_notebooks", "text_done": "@O3.notebooks.again"},
+      "use": {"requires": {"flags": ["done_M21"]}, "sets": ["o3_read_notebooks"], "text": ["@O3.notebooks.use", "@O3.notebooks.school_path_late"], "_text_note": "T9 (вычитка R17): Дуня умерла раньше, чем пропала школьная тропа, — в её тетради тропы нет, Нина говорит о ней сама", "once_flag": "o3_read_notebooks", "text_done": "@O3.notebooks.again"},
       "look": "@O3.notebooks.look",
       "view": {
         "id": "notebooks", "type": "papers", "title": "@O3.notebooks.title", "close_label": "@ui.close", "if": ["done_M21"],

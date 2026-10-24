@@ -10,6 +10,8 @@ extends MechanicPanel
 ## fall near the pier; the last pulls cross-fade into the arrival painting (R3). No failure. Event "crossed".
 ## Everything is data (the scene's `mechanics` spec): art, vanishing point, band, pier crop, ring, numbers.
 ## Coordinates: canvas px of the 1672×941 paintings (shown full screen ×1920/1672).
+## `auto` (T9, R51 — Director 24.10: a repeated crossing is short): Pelageya ferries — the pulls run by themselves,
+## and a click, a drag or Space skips to the shore. The first crossing (M18p) stays by hand.
 
 ## (uv_rect: the crop's place in the whole painting — an AtlasTexture's UV runs over the whole picture)
 const BAND_SHADER := "shader_type canvas_item;\nuniform float feather = 0.28;\nuniform vec4 uv_rect = vec4(0.0, 0.0, 1.0, 1.0);\nvoid fragment() {\n\tvec4 c = texture(TEXTURE, UV);\n\tvec2 q = (UV - uv_rect.xy) / uv_rect.zw;\n\tfloat a = smoothstep(0.0, feather, q.y) * smoothstep(0.0, feather, 1.0 - q.y);\n\tCOLOR = vec4(c.rgb, c.a * a) * COLOR;\n}\n"
@@ -181,6 +183,8 @@ func _apply_view() -> void:
 
 func tick(delta: float) -> void:
 	fog_mat.set_shader_parameter("t", clock)
+	if bool(spec.get("auto", false)) and not pulling and pulls < pulls_total:
+		_start_pull()
 	if pulling:
 		pull_t += delta
 		var ps := float(spec.get("pull_s", 0.9))
@@ -216,12 +220,23 @@ func tick(delta: float) -> void:
 func pull() -> bool:
 	if pulls >= pulls_total or crossed_sent:
 		return false
+	if bool(spec.get("auto", false)):
+		skip()
+		return true
 	if pulling:
 		if pull_t > float(spec.get("pull_s", 0.9)) * 0.5 and queued == 0 and pulls + 1 < pulls_total:
 			queued = 1
 		return false
 	_start_pull()
 	return true
+
+
+## Auto crossing: straight to the shore (the arrival hold and the event follow in tick).
+func skip() -> void:
+	pulls = pulls_total
+	pulling = false
+	queued = 0
+	progress = 1.0
 
 
 func _start_pull() -> void:
@@ -259,7 +274,7 @@ func _input(ev: InputEvent) -> void:
 
 
 func probe() -> Dictionary:
-	return {"pulls": pulls, "pulls_total": pulls_total, "pulling": pulling, "progress": progress, "rope_phase": rope_phase,
+	return {"auto": bool(spec.get("auto", false)), "pulls": pulls, "pulls_total": pulls_total, "pulling": pulling, "progress": progress, "rope_phase": rope_phase,
 		"band_scale": band.scale.x, "fog": float(fog_mat.get_shader_parameter("density")), "snow": snow.ratio,
 		"pier_w": pier.size.x if pier != null else 0.0, "arrival": arrival.modulate.a, "crossed": crossed_sent,
 		"rope": {"x": _ring.x + 140.0, "y": _ring.y + 120.0}, "center": {"x": 960.0, "y": 640.0}}

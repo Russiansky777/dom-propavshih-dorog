@@ -256,7 +256,7 @@
     },
     {
       "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1342, 280, 125, 476], "stand": [1130, 800], "draw": false, "pick_priority": 3,
-      "visible_if": ["done_M22"],
+      "visible_if": ["done_M22"], "hidden_when": [{"all": ["m23a_nina_here"], "not": ["m23a_nina_left"]}], "_t9": "T9 (R39): пока Нина на раздаче писем (M23a), в доме сестры её нет",
       "_rect_note": "блок 3 (M23c): Нина в доме сестры у двери в сени, ноги y 756 (масштаб 1,41 → Нина 1,62 м ≈ 476 px); 23.10: сдвинута вправо на 52 px — стояла перед своим пальто на крючке (слой nina_coat партии 8, x 1206–1339) и закрывала его",
       "talk": {"after_text": "@H1d.nina.after"}
     },
@@ -282,8 +282,8 @@
       "_note": "блок 5, Q08: общий чай — мама в доме сестры. Выбор: у тётиной печи для своих или в маминой горнице для всех; след — кадр ужина (реплика). Стол с самоваром (H1_state_tea) в комнату не ставится: он перегородил бы пол — в эпилоге он на кадре ужина.",
       "choice": {"prompt": "@H1d.tea_corner.prompt", "once_any": true,
         "options": [
-          {"id": "A", "label": "@H1d.tea_corner.opt_home", "sets": "q08_home_evening"},
-          {"id": "B", "label": "@H1d.tea_corner.opt_all", "sets": "q08_open_table"}
+          {"id": "A", "label": "@H1d.tea_corner.opt_home", "sets": "q08_home_evening", "text": "@H1d.tea_corner.go_home"},
+          {"id": "B", "label": "@H1d.tea_corner.opt_all", "sets": "q08_open_table", "text": "@H1d.tea_corner.go_all"}
         ]},
       "look": "@H1d.tea_corner.look"
     },

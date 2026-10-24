@@ -1267,7 +1267,10 @@ func use_exit(e: StoryExit) -> void:
 		return
 	if not e.is_open():
 		var oc: Dictionary = e.data.get("on_closed", {})
-		if String(oc.get("type", "")) == "loop":
+		# `unless` flags end the loop (T9, R36: once the rope is on the ring, M15, the school path no longer turns
+		# back — the closed exit then says the state's `closed_text`: Agata herself goes to the crossing first).
+		var loop_over: bool = (oc.get("unless", []) as Array).any(func(f): return GameState.has_flag(String(f)))
+		if String(oc.get("type", "")) == "loop" and not loop_over:
 			_run_loop(e, oc)
 			return
 		# The closed text may follow the state (data exit `states` [{if, closed_text}]: «В лодку» after the knot —

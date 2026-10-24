@@ -156,8 +156,14 @@
         "spawn": "porch",
         "sets": ["observed_path_loop"],
         "scene": "M08",
-        "fade": true
+        "fade": true,
+        "unless": ["road_held_both_ends"]
       },
+      "states": [
+        {"if": ["done_M16"], "closed_text": "@O2.exit_O4.wait_crossing"},
+        {"if": ["road_held_both_ends"], "closed_text": "@O2.exit_O4.wait_signal"}
+      ],
+      "_r36_note": "T9 (R36, Директор 24.10, 19:02): с узла M15 дорогу держат с двух концов — петли больше нет, время общее (time/_index.json locals). До переправы M18 Агата сама не идёт к деревне: до огней — «сперва к причалу», после — «сначала к Пелагее». С M18 она в Ольховке; тропу утром показывает Нина (M21b, school_path_open)",
       "draw": false,
       "rect": [1450, 410, 360, 280],
       "stand": [1600, 760]

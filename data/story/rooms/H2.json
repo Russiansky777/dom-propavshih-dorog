@@ -35,6 +35,7 @@
       "id": "hinges_box", "action_anim": "reach", "kind": "pickup", "label": "@H2.hinges_box.label", "rect": [800, 430, 130, 80], "stand": [860, 760], "color": "#c9a86a", "draw": false,
       "_box_note": "N6 (ИИ-плейтест r7): коробка нарисована и после — хотспот остаётся: пустая, петли — к школьной двери в галерее",
       "use": {"gives": ["door_hinges"], "text": ["@H2.hinges_box.use", "@H2.hinges_box.thought"], "once_flag": "has_door_hinges", "text_done": "@H2.hinges_box.empty", "scene": "M04"},
+      "use_when": [{"if": ["door_school_installed"], "text": "@H2.hinges_box.empty_hung", "_note": "T9 (вычитка R07): дверь навешена — петли уже не в сумке, а на двери"}],
       "look": "@H2.hinges_box.look"
     },
     {

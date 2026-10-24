@@ -65,9 +65,10 @@
     },
     {
       "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [900, 520, 130, 280], "stand": [820, 850], "_rect_note": "H36: левее лодки у плиты (выход «В лодку» 1070–1240)", "draw": false, "pick_priority": 2, "image": "res://assets/characters/pelageya/front.png", "visible_if": ["evening_dusk"],
-      "hidden_when": [{"all": ["done_M15"], "not": ["done_M16"]}, {"all": ["started_M18p"]}],
+      "hidden_when": [{"all": ["done_M15"], "not": ["done_M16"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}],
+      "_shuttle_note": "T9 (решение 24.10, 22:26): с третьего дня (boat_shuttle_open) Пелагея ждёт у лодки здесь, у поворота, — лодка и лодочница в одном месте; повторная переправа короткая (R51: mechanic auto)",
       "_hidden_note": "H36: у поворота до узла (скоба, канат); после узла — на причале (белый берег, три огня, M16s–M16); после ответа огней уходит к лодке у поворота (M16, stage npc_go) — M17 и посадка отсюда; с переправы — на дальней опоре и дальше у причала",
-      "talk": {"scenes": ["M17"], "by_flags": [{"if": ["ferry_verified"], "text": "@R1d.pelageya.to_boat"}, {"if": ["rope_brought"], "text": "@Z3d.pelageya.knot"}, {"if": ["evening_dusk"], "text": "@Z3d.pelageya.wait_skoba"}]},
+      "talk": {"scenes": ["M17"], "by_flags": [{"if": ["boat_shuttle_open"], "text": "@R1d.pelageya.shuttle"}, {"if": ["ferry_verified"], "text": "@R1d.pelageya.to_boat"}, {"if": ["rope_brought"], "text": "@Z3d.pelageya.knot"}, {"if": ["evening_dusk"], "text": "@Z3d.pelageya.wait_skoba"}]},
       "look": "@char.pelageya"
     }
   ],
@@ -76,7 +77,7 @@
     {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1070, 540, 170, 90], "stand": [1130, 745], "spawn": "from_Z3", "draw": false, "visible_if": ["rope_brought"], "hidden_when": [{"all": ["started_M18p"], "not": ["boat_shuttle_open"]}],
       "closed_text": "@R1.exit_R2.closed", "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}],
       "_note": "H36 (Директор 24.10): «В лодку» — у поворота, где лодка у плиты под канатом (слои boat_*), с M15s; на причале R1 выход в лодку с этой минуты скрыт. M18p — переход в R2 (вид из лодки); с третьего дня (boat_shuttle_open) — переправа рывками, как с причала прежде",
-      "mechanic": {"type": "crossing", "title": "@mech.crossing.title", "requires": {"flags": ["boat_shuttle_open"]}, "art": {"bg": "res://assets/rooms/R2/bg.png", "rope": "res://assets/rooms/R2/fg_rope.png", "arrival": "res://assets/rooms/R3/bg.png"}, "pulls": 10, "pull_s": 0.9, "rope_speed": 140, "twist_px": 34, "vp": [780, 382], "ring": [1166, 660], "ring_r": 46, "ring_box": [1108, 598, 120, 124], "shore_band": [0, 140, 1672, 270], "shore_zoom": 1.6, "fog_rect": [0, 90, 1672, 430], "fog": [0.85, 0.12], "arrival_from": 0.82, "hint_pos": [520, 985], "texts": {"hint": "@mech.crossing.hint"}, "snow": [0.04, 1.0], "pier": {"image": "res://assets/rooms/R3/bg.png", "region": [40, 330, 1000, 540], "from_w": 70, "to_w": 680, "foot": [0.5, 0.94]}, "events": {"crossed": {"close": true, "room": "R3", "spawn": "from_R2"}}}}
+      "mechanic": {"type": "crossing", "title": "@mech.crossing.title", "requires": {"flags": ["boat_shuttle_open"]}, "art": {"bg": "res://assets/rooms/R2/bg.png", "rope": "res://assets/rooms/R2/fg_rope.png", "arrival": "res://assets/rooms/R3/bg.png"}, "auto": true, "pulls": 6, "pull_s": 0.55, "rope_speed": 140, "twist_px": 34, "vp": [780, 382], "ring": [1166, 660], "ring_r": 46, "ring_box": [1108, 598, 120, 124], "shore_band": [0, 140, 1672, 270], "shore_zoom": 1.6, "fog_rect": [0, 90, 1672, 430], "fog": [0.85, 0.12], "arrival_from": 0.82, "hint_pos": [520, 985], "texts": {"hint": "@mech.crossing.label_hint_auto"}, "snow": [0.04, 1.0], "pier": {"image": "res://assets/rooms/R3/bg.png", "region": [40, 330, 1000, 540], "from_w": 70, "to_w": 680, "foot": [0.5, 0.94]}, "events": {"crossed": {"close": true, "room": "R3", "spawn": "from_R2"}}}}
   ],
   "scenes": {
     "M15s": {"complete_when": [{"all": ["plate_braced"]}]},
