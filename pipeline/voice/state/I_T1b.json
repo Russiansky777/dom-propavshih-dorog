@@ -1,0 +1,35 @@
+{
+  "set": "I_T1b",
+  "runs": [
+    {
+      "run": "40194406287",
+      "at": "2026-10-25T12:45:22+00:00",
+      "request": "pipeline/requests/voice_I_T1b.json",
+      "synthesized": [
+        "M01_1",
+        "M26_11",
+        "H3.puzzle.intro"
+      ],
+      "reprocessed": [],
+      "characters_text": 315,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 72488,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 72488,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 139,
+      "subscription_delta": 0
+    }
+  ]
+}
