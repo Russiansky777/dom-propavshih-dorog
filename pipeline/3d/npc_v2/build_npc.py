@@ -238,7 +238,7 @@ if jaw:
     nose = min(mid, key=lambda b: sl[b])
     nose_z = hz + (nose + 0.5) * 0.004
     chin_z = hz
-    mouth_z = hz + jaw.get('mouth_frac', 0.57) * (nose_z - hz)
+    mouth_z = hz + jaw.get('mouth_frac', 0.57) * (nose_z - hz) + jaw.get('mouth_dz', 0.0)   # mouth_dz — поправка по кадрам проверки, м
     front_y = sl[nose]
     back_y = max(p.y for p in pts)
     pivot = Vector((cx, front_y + jaw.get('pivot_depth', 0.4) * (back_y - front_y), mouth_z + 0.005))

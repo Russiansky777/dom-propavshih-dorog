@@ -73,7 +73,8 @@
       "frames": 48,
       "open_deg": 4.5,
       "mouth_frac": 0.57,
-      "pivot_depth": 0.4
+      "pivot_depth": 0.4,
+      "mouth_dz": 0.035
     },
     "rigid": []
   },
