@@ -21,6 +21,8 @@ var direction: int = 0
 var shown_dir: int = 0
 var _turn_t: float = 0.0
 var talking: bool = false
+## I-T4: walking off in a staging (go_off with a walk sheet) — beats do not switch the clip meanwhile.
+var walking: bool = false
 ## I-T2 (Director 02:34): three states of every villager — "idle" (just stands: breathing, rare small
 ## moves), "listen" (turned to Agata, quiet: a scene with this villager is on and someone else speaks),
 ## "talk" (gesture/head while their own line is up). Per actor data `states.<state>` = {action, speed,
@@ -152,14 +154,35 @@ func face_towards(target: Vector2) -> void:
 		direction = sheet.direction_index(v)
 
 
+func _end_walk() -> void:
+	walking = false
+	if is_instance_valid(sprite):
+		set_state(wanted_state())
+
+
+func walks_off() -> bool:
+	return sheet != null and sheet.has_action(sheet.walk_action) and sprite != null
+
+
 ## A villager walks off in a staging (scenes data stage[].npc_go — G18: Pavel «Иди за мной» to the passage door; G29:
 ## Nina from her porch into the house): the villagers have idle and talk sheets only (no walk cycle), so the figure
 ## turns to the door, eases there — growing or shrinking with the room depth — and fades out in the second half,
 ## instead of vanishing in a cut. Returns its seconds (the staging waits for them before its fade).
+## I-T4: a villager whose sheet has a walk cycle (models v2: Nina, Ilya, Ulyana, Pelageya, Tamara) walks there at an
+## even pace instead — the cycle's cadence follows the speed (ActorSheet.walk_fps), so the feet do not slide.
 func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
 	face_towards(target)
 	var tw := create_tween().set_parallel(true)
-	tw.tween_property(self, "global_position", target, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	if walks_off():
+		walking = true
+		shown_dir = direction
+		var speed_px := global_position.distance_to(target) / maxf(seconds, 0.01)
+		_play(sheet.anim_name(sheet.walk_action, shown_dir))
+		sprite.speed_scale = sheet.walk_fps(speed_px, scale.x) / maxf(float(sheet.actions[sheet.walk_action].get("fps", 24)), 0.01)
+		tw.tween_property(self, "global_position", target, seconds)
+		get_tree().create_timer(seconds).timeout.connect(_end_walk)
+	else:
+		tw.tween_property(self, "global_position", target, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	if room != null and room.has_method("depth_scale") and sheet != null:
 		var s: float = room.depth_scale(target.y) * sheet.scale_factor
 		tw.tween_property(self, "scale", Vector2(s, s), seconds)
@@ -282,6 +305,8 @@ func wanted_state() -> String:
 ## A line of this character → talk (facing the player); a scene with them, someone else speaking → listen;
 ## anything else → idle.
 func _on_beat_changed() -> void:
+	if walking:
+		return
 	var want := wanted_state()
 	if want != state or (want == "talk" and not sprite.animation.begins_with(state_action("talk"))):
 		set_state(want)
