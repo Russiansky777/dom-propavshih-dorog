@@ -546,23 +546,31 @@ func _test_tikhon() -> void:
 	_check(seen.size() == 1 and String(seen[0]).begins_with("tikhon:"), "before M03: Tikhon grumbles his own line (I-T1: always talkable): %s" % str(seen))
 	gs.set_flag("met_tikhon", true)
 	gs.set_flag("done_M03", true)
-	gs.set_flag("q04_corner_stove", true)   # the shelf hung — no «Полку-то повесишь?» before the questions (I-T1)
 	await _frames(2)
 	# C13 (ИИ-чтение 23.10): only about what Agata has seen — before the gallery and the workshop, nothing to ask.
 	sr.interact(t)
 	await process_frame
+	if String(sr.current_beat.get("text_key", "")) == "H1.tikhon.ask_shelf":
+		sr.advance()
+		await process_frame
 	var ids0: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
 	_check(ids0 == ["tamara", "leave"], "C13: no questions about unseen things yet: %s" % str(ids0))
 	await _drain(["leave"])
 	gs.set_flag("visited_H2", true)
 	sr.interact(t)
 	await process_frame
+	if String(sr.current_beat.get("text_key", "")) == "H1.tikhon.ask_shelf":
+		sr.advance()
+		await process_frame
 	var ids1: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
 	_check(ids1 == ["bundle", "bell", "dunya_mend", "tamara", "leave"], "C13: after the workshop — the bundle and the bell: %s" % str(ids1))
 	await _drain(["leave"])
 	gs.set_flag("visited_H3", true)
 	sr.interact(t)
 	await process_frame
+	if String(sr.current_beat.get("text_key", "")) == "H1.tikhon.ask_shelf":
+		sr.advance()
+		await process_frame
 	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
 	_check(ids == ["door", "bundle", "bell", "dunya_mend", "tamara", "leave"], "four questions: %s" % str(ids))
 	seen = await _drain(["bundle"])
