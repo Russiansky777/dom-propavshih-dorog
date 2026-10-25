@@ -270,7 +270,7 @@ func _test_ulyana_talk() -> void:
 	sr.interact(h)
 	await _frames(2)
 	seen = await _drain(["lights"])
-	_check(seen.size() == 4 and String(seen[3]).contains("с двух концов"), "the lights: Mitya's twenty years, the road held at both ends: %s" % str(seen))
+	_check(seen.size() == 4 and String(seen[3]).contains("время одно у всех"), "the lights: Mitya's twenty years, the road held at both ends: %s" % str(seen))
 
 
 func _test_coat() -> void:

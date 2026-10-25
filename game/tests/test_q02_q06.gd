@@ -271,7 +271,7 @@ func _test_q02_data() -> void:
 	var said := ""
 	for k in hm.get("use", {}).get("text", []):
 		said += sd.text(String(k)) + " "
-	_check(said.contains("От школы") and said.contains("дома") and said.contains("сад"), "Ulyana tells the way before the close-up: %s" % said)
+	_check(said.contains("От школы") and said.contains("дом") and said.contains("сад"), "Ulyana tells the way before the close-up: %s" % said)
 	var hint: String = sd.text(String(m.get("texts", {}).get("label_hint", "")))
 	_check(hint.contains("школа") and hint.contains("дом") and hint.contains("сад") and hint.contains("сначала"), "the hint: the order and «wrong — from the start»: %s" % hint)
 	# Ulyana: no hiding in the class, no stand-in on the street

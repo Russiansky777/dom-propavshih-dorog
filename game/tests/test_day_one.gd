@@ -454,7 +454,7 @@ func _test_pier_attempt() -> void:
 	ids = sr.current_options().map(func(o): return String(o.get("id", "")))
 	_check(ids == ["school", "sheet", "late", "leave"], "Tamara's questions: %s" % str(ids))
 	ans = await _drain(["late"])
-	_check(ans.any(func(x): return x.contains("Я затем и писала")), "«Надо было сразу ехать» — «…Я для того и писала»: %s" % str(ans))
+	_check(ans.any(func(x): return x.contains("Потому и писала")), "«Надо было сразу ехать» — «…Я для того и писала»: %s" % str(ans))
 	ans = await _interact(_hotspot("tamara"), ["school"])
 	_check(ans.any(func(x): return x.contains("на оба берега")), "the school was one for both banks: %s" % str(ans))
 
@@ -554,7 +554,7 @@ func _test_tikhon() -> void:
 		sr.advance()
 		await process_frame
 	var ids0: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
-	_check(ids0 == ["tamara", "leave"], "C13: no questions about unseen things yet: %s" % str(ids0))
+	_check(ids0 == ["tamara", "cream", "leave"], "C13: no questions about unseen things yet: %s" % str(ids0))
 	await _drain(["leave"])
 	gs.set_flag("visited_H2", true)
 	sr.interact(t)
@@ -563,7 +563,7 @@ func _test_tikhon() -> void:
 		sr.advance()
 		await process_frame
 	var ids1: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
-	_check(ids1 == ["bundle", "bell", "dunya_mend", "tamara", "leave"], "C13: after the workshop — the bundle and the bell: %s" % str(ids1))
+	_check(ids1 == ["bundle", "bell", "dunya_mend", "tamara", "cream", "leave"], "C13: after the workshop — the bundle and the bell: %s" % str(ids1))
 	await _drain(["leave"])
 	gs.set_flag("visited_H3", true)
 	sr.interact(t)
@@ -572,7 +572,7 @@ func _test_tikhon() -> void:
 		sr.advance()
 		await process_frame
 	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
-	_check(ids == ["door", "bundle", "bell", "dunya_mend", "tamara", "leave"], "four questions: %s" % str(ids))
+	_check(ids == ["door", "bundle", "bell", "dunya_mend", "tamara", "cream", "leave"], "four questions: %s" % str(ids))
 	seen = await _drain(["bundle"])
 	_check(seen.any(func(x): return x.begins_with("tikhon:") and x.contains("Нинино зеркало")), "the bundle: Nina's mirror, in Tikhon's voice: %s" % str(seen))
 	seen = await _interact(t, ["bell"])
