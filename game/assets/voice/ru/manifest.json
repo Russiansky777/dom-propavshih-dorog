@@ -56,7 +56,6 @@
     "M01_1": {
       "scene": "M01",
       "index": 1,
-      "alignment": "src/M01_1.align.json",
       "speaker": "agata",
       "text": "Слала. Целый год слала — и ни строчки в ответ. Ни от мамы, ни от Илюши.",
       "text_sha1": "c3bd75524057f35db89d716aa7bd7fab2f554c2f",
@@ -76,7 +75,7 @@
       ],
       "characters": 77,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.75,
+      "duration_s": 6.44,
       "lufs": -16.9,
       "true_peak_db": -1.9,
       "gain_db": 3.7,
@@ -104,7 +103,9 @@
           "seed": 646331008
         }
       },
-      "seed_salt": 1
+      "seed_salt": 103,
+      "chosen_take": 3,
+      "chosen_by": "takes_I.json"
     },
     "M01_2": {
       "scene": "M01",
@@ -429,7 +430,6 @@
     "M01_9": {
       "scene": "M01",
       "index": 9,
-      "alignment": "src/M01_9.align.json",
       "speaker": "agata",
       "text": "Спасибо, Тамара. Только сперва к воде схожу. Лодочницу сама спрошу — что за чертовщина, что лодки назад приходят.",
       "text_sha1": "ab8964c32cfd8c18682af2050411e73202ae9f9b",
@@ -449,8 +449,8 @@
       ],
       "characters": 125,
       "loudness_target_lufs": -17.0,
-      "duration_s": 7.9,
-      "lufs": -16.9,
+      "duration_s": 7.99,
+      "lufs": -17.0,
       "true_peak_db": -3.4,
       "gain_db": -2.5,
       "limiter_extra_db": 0.0,
@@ -470,7 +470,10 @@
           "language_code": "ru",
           "seed": 351233801
         }
-      }
+      },
+      "seed_salt": 103,
+      "chosen_take": 3,
+      "chosen_by": "takes_I.json"
     },
     "M02_0": {
       "scene": "M02",
@@ -941,7 +944,6 @@
     "M03_1": {
       "scene": "M03",
       "index": 1,
-      "alignment": "src/M03_1.align.json",
       "speaker": "agata",
       "text": "Ой!.. А ты один здесь?",
       "text_sha1": "dc51c207111b094a73be3b7d0005b5739f8ad143",
@@ -961,8 +963,8 @@
       ],
       "characters": 34,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.18,
-      "lufs": -16.9,
+      "duration_s": 2.48,
+      "lufs": -16.8,
       "true_peak_db": -4.2,
       "gain_db": -3.5,
       "limiter_extra_db": 0.0,
@@ -982,7 +984,10 @@
           "language_code": "ru",
           "seed": 4234650801
         }
-      }
+      },
+      "seed_salt": 103,
+      "chosen_take": 3,
+      "chosen_by": "takes_I.json"
     },
     "M03_2": {
       "scene": "M03",
@@ -4816,7 +4821,6 @@
     "M19_1": {
       "scene": "M19",
       "index": 1,
-      "alignment": "src/M19_1.align.json",
       "speaker": "mitya",
       "text": "Илья! Илья, выходи — сестра твоя пришла!",
       "text_sha1": "ac0f2e189540bc709430847448f6ec27e29ef8d1",
@@ -4836,7 +4840,7 @@
       ],
       "characters": 50,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.37,
+      "duration_s": 3.5,
       "lufs": -17.0,
       "true_peak_db": -6.4,
       "gain_db": -3.9,
@@ -4857,7 +4861,10 @@
           "language_code": "ru",
           "seed": 1596930641
         }
-      }
+      },
+      "seed_salt": 103,
+      "chosen_take": 3,
+      "chosen_by": "takes_I.json"
     },
     "M19_2": {
       "scene": "M19",
@@ -6297,7 +6304,6 @@
     "M21b_1": {
       "scene": "M21b",
       "index": 1,
-      "alignment": "src/M21b_1.align.json",
       "speaker": "nina",
       "text": "Как прежде — нет… Да и свои двадцать лет я не отдам. В них Ульяна.",
       "text_sha1": "9cd8232a97b14519a0bcc6e5d5fc89d3069edf9e",
@@ -6315,8 +6321,8 @@
       "tags": [],
       "characters": 66,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.59,
-      "lufs": -17.0,
+      "duration_s": 6.91,
+      "lufs": -16.9,
       "true_peak_db": -7.0,
       "gain_db": -0.6,
       "limiter_extra_db": 0.0,
@@ -6336,7 +6342,10 @@
           "language_code": "ru",
           "seed": 1574324360
         }
-      }
+      },
+      "seed_salt": 102,
+      "chosen_take": 2,
+      "chosen_by": "takes_I.json"
     },
     "M21b_2": {
       "scene": "M21b",
@@ -7001,7 +7010,6 @@
     "M22_12": {
       "scene": "M22",
       "index": 12,
-      "alignment": "src/M22_12.align.json",
       "speaker": "agata",
       "text": "Я шапку рисовала. Давно, за этой партой.",
       "text_sha1": "50828a4fe0bd95097d0997633e2a21908ea5a62a",
@@ -7021,8 +7029,8 @@
       ],
       "characters": 49,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.37,
-      "lufs": -17.0,
+      "duration_s": 4.29,
+      "lufs": -16.9,
       "true_peak_db": -2.0,
       "gain_db": -1.2,
       "limiter_extra_db": 0.0,
@@ -7048,7 +7056,10 @@
           "language_code": "ru",
           "seed": 4106771225
         }
-      }
+      },
+      "seed_salt": 102,
+      "chosen_take": 2,
+      "chosen_by": "takes_I.json"
     },
     "M22_12_then0": {
       "scene": "M22",
@@ -9250,7 +9261,6 @@
     "M25_3": {
       "scene": "M25",
       "index": 3,
-      "alignment": "src/M25_3.align.json",
       "speaker": "ilya",
       "text": "Только теперь слышно тебя.",
       "text_sha1": "2b2f9af9b44ee676803cfc0070b754e49d135032",
@@ -9270,7 +9280,7 @@
       ],
       "characters": 35,
       "loudness_target_lufs": -17.0,
-      "duration_s": 1.94,
+      "duration_s": 2.03,
       "lufs": -17.0,
       "true_peak_db": -7.1,
       "gain_db": -4.3,
@@ -9297,7 +9307,10 @@
           "language_code": "ru",
           "seed": 193521574
         }
-      }
+      },
+      "seed_salt": 102,
+      "chosen_take": 2,
+      "chosen_by": "takes_I.json"
     },
     "M25_4": {
       "scene": "M25",
@@ -16596,7 +16609,6 @@
       "kind": "narration",
       "key": "M3.journal.use",
       "source_text": "ru_E2_E3",
-      "alignment": "src/narrator/M3.journal.use.align.json",
       "speaker": "narrator",
       "text": "Последняя запись управляющего: «На ночь затвор закрыт. Рычаг на гвозде. Ушёл домой». Число прошлогоднее. А ниже наказ: «Пруд спускать по зарубке и ждать, не то берега поплывут». И помечено, сколько воды для помола надо.",
       "text_sha1": "a687882052071c7e0b0ff0eb3b72ca64551f1438",
@@ -16614,7 +16626,7 @@
       "tags": [],
       "characters": 220,
       "loudness_target_lufs": -17.0,
-      "duration_s": 17.58,
+      "duration_s": 17.72,
       "lufs": -17.0,
       "true_peak_db": -3.7,
       "gain_db": -2.5,
@@ -16635,7 +16647,10 @@
           "language_code": "ru",
           "seed": 2849644215
         }
-      }
+      },
+      "seed_salt": 102,
+      "chosen_take": 2,
+      "chosen_by": "takes_I.json"
     },
     "M3.key_nail.look": {
       "kind": "narration",
