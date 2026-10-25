@@ -1356,7 +1356,7 @@ func _test_npc_actors() -> void:
 		return
 	var t: Node2D = npcs[0]
 	var spr: AnimatedSprite2D = t.get_node("Sprite")
-	_check(spr.sprite_frames.get_frame_count("idle_0") == t.sheet.eased_timeline("idle", 0).size() and spr.sprite_frames.get_frame_count("talk_0") == t.sheet.eased_timeline("talk", 0).size(), "tamara: eased idle and eased talk timelines (data overrides), got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
+	_check(spr.sprite_frames.get_frame_count("idle_0") == t.sheet.eased_timeline("idle", 0).size() and spr.sprite_frames.get_frame_count("talk_0") == t.sheet.action_sequence("talk", 0).size(), "tamara: eased idle timeline, talk — its own sheet (I-T4 v2: a loop with the mouth), got %d/%d" % [spr.sprite_frames.get_frame_count("idle_0"), spr.sprite_frames.get_frame_count("talk_0")])
 	_check(spr.animation == "idle_0" and spr.is_playing(), "tamara idles facing the viewer (idle_0), got %s" % spr.animation)
 	var hs: Node2D = room.get_node("Hotspots/tamara")
 	var shape: CollisionShape2D = hs.get_node("Shape")
@@ -1383,7 +1383,8 @@ func _test_npc_actors() -> void:
 			if String(b.get("speaker", "")) == "tamara":
 				_check(spr.animation == "talk_0" and spr.is_playing(), "during Tamara's line the talk sheet must play, got %s" % spr.animation)
 			else:
-				_check(spr.animation.begins_with("idle_"), "during another speaker's line Tamara idles, got %s" % spr.animation)
+				# I-T2/I-T4: with a listen clip she listens (turned to Agata) while someone else speaks
+				_check(spr.animation.begins_with("listen_" if t.sheet.has_action("listen") else "idle_"), "during another speaker's line Tamara listens (or idles without a listen clip), got %s" % spr.animation)
 			sr.advance()
 		elif b.get("type") == "options":
 			sr.choose(String(b.get("options", [])[0].get("id", "")))
@@ -1720,9 +1721,9 @@ func _test_crossfade() -> void:
 		if nb.get("type") == "line" and String(nb.get("speaker", "")) == "tamara":
 			var tf = t.get_node_or_null("Crossfade")
 			# one switch is enough (I-T2: her consecutive lines keep talking — no switch, no fade, and that is right)
-			saw_fade = saw_fade or (tf != null and tf.visible and String(tf.animation).begins_with("idle_"))
+			saw_fade = saw_fade or (tf != null and tf.visible and (String(tf.animation).begins_with("idle_") or String(tf.animation).begins_with("listen_")))
 		await process_frame
-	_check(saw_fade, "Tamara's idle→talk switch must cross-fade from the idle pose")
+	_check(saw_fade, "Tamara's idle/listen→talk switch must cross-fade from the previous pose")
 	gs.reset()
 	_cleanup_m1()
 
