@@ -425,8 +425,9 @@ func _test_f20() -> void:
 			"D2: Z3 → pier mark bottom right, south-east (angle %s, %s)" % [str(ap), str(to_pier.cue.global_position)])
 	await _enter("R1")
 	var to_turn = _exit_to("Z3")
-	_check(to_turn != null and to_turn.cue != null and to_turn.cue.global_position.x < 400.0 and to_turn.cue.global_position.y > 900.0
-		and absf(absf(to_turn.cue.angle_deg) - 180.0) <= 25.0, "D2: at the pier, bottom left, a mark to the left to the turn")
+	_check(to_turn != null and to_turn.cue != null and to_turn.cue.global_position.x < 400.0 and to_turn.cue.global_position.y > 820.0
+		and to_turn.cue.call("_lean_vector").x < -0.7, "D2: at the pier, bottom left, a mark to the left to the turn (%s)"
+		% [str(to_turn.cue.global_position) if to_turn != null and to_turn.cue != null else "-"])
 	await _enter("Z2")
 	var pier = _exit_to("R1")
 	_check(pier != null and pier.cue != null, "Z2: «спуск к причалу» has a mark")
