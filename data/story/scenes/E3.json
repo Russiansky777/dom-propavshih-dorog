@@ -25,7 +25,7 @@
       "locations": ["Z3"],
       "requires": {"flags": ["done_M15a"], "items": []},
       "grants": {"flags": ["done_M15s", "skoba_on_plate", "plate_braced", "rope_brought"], "items": []},
-      "stage": [{"at": 2, "fade_out_s": 0.6, "hold_s": 1.6, "fade_in_s": 0.6, "sounds": [{"id": "steps_soft", "at_s": 0.3}, {"id": "door_heavy", "at_s": 1.5}], "_note": "Вдвоём на лодке заводят конец каната к опоре: затемнение, шаг в лодку, стук борта о камень."}],
+      "stage": [{"at": 2, "npc_go": [{"id": "pelageya", "to": [1405, 1040], "s": 2.6, "fade": true}], "fade_out_s": 0.6, "hold_s": 1.6, "fade_in_s": 0.6, "room": "Z3", "spawn": "default", "sounds": [{"id": "steps_soft", "at_s": 0.3}, {"id": "door_heavy", "at_s": 1.5}], "_note": "Вдвоём на лодке заводят конец каната к опоре: затемнение, шаг в лодку, стук борта о камень.", "_i_t2": "I-T2 (Директор, стр. 114): сперва Пелагея сама уходит береговой дорожкой к причалу (по D2 — вправо вниз), в затемнении снимает канат и подводит лодку; комната собирается заново — она уже у лодки"}],
       "puzzle": {"verb": "hammer", "solution": "Скобу из сумки — на трещину плиты, три удара мышью", "error": "Без скобы Агата вспоминает, что она на тётином верстаке, и за ней надо вернуться"},
       "mandatory_lines": [
         {"speaker": "agata", "text": "Села! Дунина скоба на своё место села.", "direction": {"stress": "Села", "emotion": "радость", "pace": "живо", "takes": 3, "map": [113]}, "tags": ["excited"]},
