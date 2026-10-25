@@ -586,7 +586,12 @@ func _test_shelf_sizes() -> void:
 	var towel := _used_box(room.get_node("Layers/hook_coat"))
 	_check(towel.get_center().x < 1260.0 and towel.position.y > 220.0 and towel.position.y < 300.0,
 		"the towel hangs on the left hook (≈1217, 247 on screen), not the middle one where Nina's coat goes: %s" % str(towel))
-	_check(absf(lying.size.x - a.size.x) / a.size.x < 0.25, "the shelf on the bench is the same shelf (%.0f vs board %.0f)" % [lying.size.x, a.size.x])
+	# I-T2 (Director, line 32: «снятая полка крупнее»): the lying shelf is drawn × its layer `scale` — the board itself is the same
+	var lying_k := 1.0
+	for l in root.get_node("StoryData").room("H1").get("layers", []):
+		if String(l.get("id", "")) == "shelf_on_bench":
+			lying_k = float(l.get("scale", 1.0))
+	_check(absf(lying.size.x / lying_k - a.size.x) / a.size.x < 0.25, "the shelf on the bench is the same shelf (%.0f / %.2f vs board %.0f)" % [lying.size.x, lying_k, a.size.x])
 	print("        shelf A %s, on the bench %s, towel %s" % [str(a), str(lying), str(towel)])
 
 ## G13 (Director 23.10: «топящаяся печь разорвана»): every state layer with `align` (rooms data) puts its detail onto the

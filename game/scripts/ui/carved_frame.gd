@@ -103,12 +103,12 @@ static func draw_rail(ci: CanvasItem, r: Rect2, water: float, notches: Array, ma
 	for i in 22:
 		var gx := r.position.x + rng.randf() * r.size.x
 		var gy := r.position.y + rng.randf() * r.size.y * 0.8
-		ci.draw_line(Vector2(gx, gy), Vector2(gx + rng.randf_range(-2, 2), gy + rng.randf_range(40, 160)), Color(0.45, 0.33, 0.2, 0.25), 1.0)
+		ci.draw_line(Vector2(gx, gy), Vector2(gx + rng.randf_range(-2, 2), gy + rng.randf_range(40, 160)), Color(0.45, 0.33, 0.2, 0.25), 1.0, true)
 	# Divisions: a short cut every tenth, a long one every half, numbers in old style on the right.
 	for k in range(1, 10):
 		var y := r.end.y - r.size.y * k / 10.0
 		var long := k % 5 == 0
-		ci.draw_line(Vector2(r.position.x, y), Vector2(r.position.x + r.size.x * (0.55 if long else 0.32), y), Color(0.16, 0.1, 0.06, 0.9), 2.5 if long else 1.5)
+		ci.draw_line(Vector2(r.position.x, y), Vector2(r.position.x + r.size.x * (0.55 if long else 0.32), y), Color(0.16, 0.1, 0.06, 0.9), 2.5 if long else 1.5, true)
 		if font != null:
 			ci.draw_string(font, Vector2(r.position.x + r.size.x * 0.62, y + 7), str(k), HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(0.2, 0.13, 0.08, 0.85))
 	# The water: a glassy dark band from the bottom, a lighter rim at its surface.
@@ -120,7 +120,9 @@ static func draw_rail(ci: CanvasItem, r: Rect2, water: float, notches: Array, ma
 	# The step notches cut into the wood (dark wedges from the left edge).
 	for lv in notches:
 		var y := r.end.y - r.size.y * clampf(float(lv), 0.0, 1.0)
-		ci.draw_colored_polygon(PackedVector2Array([Vector2(r.position.x, y - 5), Vector2(r.position.x + r.size.x * 0.5, y), Vector2(r.position.x, y + 5)]), Color(0.12, 0.07, 0.04))
+		var tri := PackedVector2Array([Vector2(r.position.x, y - 5), Vector2(r.position.x + r.size.x * 0.5, y), Vector2(r.position.x, y + 5)])
+		ci.draw_colored_polygon(tri, Color(0.12, 0.07, 0.04))
+		ci.draw_polyline(PackedVector2Array([tri[0], tri[1], tri[2]]), Color(0.12, 0.07, 0.04), 1.0, true)  # I-T2 (line 100): smooth edges
 	# The red mark: a painted band right across, with a gold leaf pointing at it from the side.
 	var my := r.end.y - r.size.y * clampf(mark, 0.0, 1.0)
 	ci.draw_rect(Rect2(r.position.x, my - 3.5, r.size.x, 7), Color(0.68, 0.12, 0.08))

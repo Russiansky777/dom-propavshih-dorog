@@ -420,11 +420,13 @@ func _test_f20() -> void:
 	var to_pier = _exit_to("R1")
 	if to_pier != null and to_pier.cue != null:
 		var ap: float = to_pier.cue.angle_deg
-		_check(ap <= -110.0 and ap >= -160.0, "H7: Z3 → pier mark points north-west (angle %s)" % str(ap))
+		# I-T2 by D2 (Director 25.10: to the turn on the left, back on the right): back to the pier — bottom right, south-east
+		_check(ap >= 20.0 and ap <= 70.0 and to_pier.cue.global_position.x > 1200.0,
+			"D2: Z3 → pier mark bottom right, south-east (angle %s, %s)" % [str(ap), str(to_pier.cue.global_position)])
 	await _enter("R1")
 	var to_turn = _exit_to("Z3")
 	_check(to_turn != null and to_turn.cue != null and to_turn.cue.global_position.x < 400.0 and to_turn.cue.global_position.y > 900.0
-		and to_turn.cue.angle_deg >= 20.0 and to_turn.cue.angle_deg <= 70.0, "H7: at the pier, bottom left, a mark south-east to the turn")
+		and absf(absf(to_turn.cue.angle_deg) - 180.0) <= 25.0, "D2: at the pier, bottom left, a mark to the left to the turn")
 	await _enter("Z2")
 	var pier = _exit_to("R1")
 	_check(pier != null and pier.cue != null, "Z2: «спуск к причалу» has a mark")
