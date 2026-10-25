@@ -1,0 +1,4635 @@
+{
+  "_comment": "Дубли для выбора на слух (I-T1): id строки → текст, режиссура, дубли (take 1 — основная запись прогона). Пишет pipeline/voice/eleven_voice.py (запрос takes); страница прослушивания — tools/listen_page.py. Игра эти файлы не читает.",
+  "updated_at": "2026-10-25T12:40:06+00:00",
+  "lines": {
+    "H1.shelf.prompt": {
+      "speaker": "narrator",
+      "text": "Тихон то на полку поглядит, то на печь: крепления-то для неё там. Повесить ему полку?",
+      "text_sha1": "401a9fd12c2341a57670930b8a8241ad76625add",
+      "direction": {
+        "stress": "Повесить",
+        "emotion": "с улыбкой",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          65
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/H1.shelf.prompt/take1.ogg",
+          "source": "src/narrator/H1.shelf.prompt/take1.mp3",
+          "tags": [],
+          "voice_text": "Тихон то на полку поглядит, то на печь: крепления-то для неё там. Повесить ему полку?",
+          "duration_s": 6.5,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/H1.shelf.prompt/take2.ogg",
+          "source": "src/narrator/H1.shelf.prompt/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Тихон то на полку поглядит, то на печь: крепления-то для неё там. Повесить ему полку?",
+          "speed": null,
+          "duration_s": 6.56,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:40+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/H1.shelf.prompt/take3.ogg",
+          "source": "src/narrator/H1.shelf.prompt/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Тихон то на полку поглядит, то на печь: крепления-то для неё там. Повесить ему полку?",
+          "speed": 0.93,
+          "duration_s": 6.47,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:42+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H1.shelf.prompt"
+    },
+    "H1.stove.look_settled": {
+      "speaker": "narrator",
+      "text": "Ровно топится печь, лежанка сухая. Тихон улёгся — теперь до утра с места не сгонишь.",
+      "text_sha1": "9e114ffe6c4c1ffc5a8fe5f1036df9b7e86202c3",
+      "direction": {
+        "stress": "ровно",
+        "emotion": "уютно",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          89
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/H1.stove.look_settled/take1.ogg",
+          "source": "src/narrator/H1.stove.look_settled/take1.mp3",
+          "tags": [],
+          "voice_text": "Ровно топится печь, лежанка сухая. Тихон улёгся — теперь до утра с места не сгонишь.",
+          "duration_s": 6.72,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "narrator/H1.stove.look_settled/take2.ogg",
+          "source": "src/narrator/H1.stove.look_settled/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Ровно топится печь, лежанка сухая. Тихон улёгся — теперь до утра с места не сгонишь.",
+          "speed": null,
+          "duration_s": 6.61,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:24+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/H1.stove.look_settled/take3.ogg",
+          "source": "src/narrator/H1.stove.look_settled/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Ровно топится печь, лежанка сухая. Тихон улёгся — теперь до утра с места не сгонишь.",
+          "speed": 0.93,
+          "duration_s": 6.86,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:26+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H1.stove.look_settled"
+    },
+    "H2.bell.use": {
+      "speaker": "narrator",
+      "text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери конторы висел — по нему на мельнице работу начинали и кончали». Ниже, с нажимом: «Иные вещи помнят место, которому служили».",
+      "text_sha1": "df1004c79fccdcd77dac1287e2ee8c35e843d745",
+      "direction": {
+        "stress": "помнят место",
+        "emotion": "две первые фразы — читает ярлык просто; последняя — с нажимом",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          48
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/H2.bell.use/take1.ogg",
+          "source": "src/narrator/H2.bell.use/take1.mp3",
+          "tags": [],
+          "voice_text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери конторы висел — по нему на мельнице работу начинали и кончали». Ниже, с нажимом: «Иные вещи помнят место, которому служили».",
+          "duration_s": 14.81,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/H2.bell.use/take2.ogg",
+          "source": "src/narrator/H2.bell.use/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери конторы висел — по нему на мельнице работу начинали и кончали». Ниже, с нажимом: «Иные вещи помнят место, которому служили».",
+          "speed": null,
+          "duration_s": 14.65,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:47+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/H2.bell.use/take3.ogg",
+          "source": "src/narrator/H2.bell.use/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери конторы висел — по нему на мельнице работу начинали и кончали». Ниже, с нажимом: «Иные вещи помнят место, которому служили».",
+          "speed": 0.93,
+          "duration_s": 14.85,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:51+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H2.bell.use"
+    },
+    "H2d.bell.hang": {
+      "speaker": "narrator",
+      "text": "На место встал язык, колокол опять как новёхонький.",
+      "text_sha1": "ed780739a90d1129d8bdc8390114b875f9bc5776",
+      "direction": {
+        "stress": "новёхонький",
+        "emotion": "довольно",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          69
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/H2d.bell.hang/take1.ogg",
+          "source": "src/narrator/H2d.bell.hang/take1.mp3",
+          "tags": [],
+          "voice_text": "На место встал язык, колокол опять как новёхонький.",
+          "duration_s": 4.16,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/H2d.bell.hang/take2.ogg",
+          "source": "src/narrator/H2d.bell.hang/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "На место встал язык, колокол опять как новёхонький.",
+          "speed": null,
+          "duration_s": 4.22,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:38+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/H2d.bell.hang/take3.ogg",
+          "source": "src/narrator/H2d.bell.hang/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "На место встал язык, колокол опять как новёхонький.",
+          "speed": 0.93,
+          "duration_s": 4.13,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:40+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H2d.bell.hang"
+    },
+    "H2d.nina_mirror.clamp": {
+      "speaker": "narrator",
+      "text": "Стянула раму струбцина. И светлеет понемногу мутное стекло…",
+      "text_sha1": "a922bbc07569b982c9108f35d98e5c6e78d04719",
+      "direction": {
+        "stress": "светлеет",
+        "emotion": "обе фразы — ожидание чуда",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          106
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/H2d.nina_mirror.clamp/take1.ogg",
+          "source": "src/narrator/H2d.nina_mirror.clamp/take1.mp3",
+          "tags": [],
+          "voice_text": "Стянула раму струбцина. И светлеет понемногу мутное стекло…",
+          "duration_s": 5.24,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "narrator/H2d.nina_mirror.clamp/take2.ogg",
+          "source": "src/narrator/H2d.nina_mirror.clamp/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Стянула раму струбцина. И светлеет понемногу мутное стекло…",
+          "speed": null,
+          "duration_s": 5.07,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:41+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/H2d.nina_mirror.clamp/take3.ogg",
+          "source": "src/narrator/H2d.nina_mirror.clamp/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Стянула раму струбцина. И светлеет понемногу мутное стекло…",
+          "speed": 0.93,
+          "duration_s": 5.47,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:43+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H2d.nina_mirror.clamp"
+    },
+    "H2d.nina_mirror.watch_again": {
+      "speaker": "narrator",
+      "text": "Здесь минута — там двадцать.",
+      "text_sha1": "51f8bbbda36e17c327cd85446e28d42a201f8d3c",
+      "direction": {
+        "stress": "двадцать",
+        "emotion": "потрясение, тихо, но не шёпотом",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          107
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/H2d.nina_mirror.watch_again/take1.ogg",
+          "source": "src/narrator/H2d.nina_mirror.watch_again/take1.mp3",
+          "tags": [],
+          "voice_text": "Здесь минута — там двадцать.",
+          "duration_s": 2.54,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/H2d.nina_mirror.watch_again/take2.ogg",
+          "source": "src/narrator/H2d.nina_mirror.watch_again/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Здесь минута — там двадцать.",
+          "speed": null,
+          "duration_s": 2.52,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:44+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/H2d.nina_mirror.watch_again/take3.ogg",
+          "source": "src/narrator/H2d.nina_mirror.watch_again/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Здесь минута — там двадцать.",
+          "speed": 0.93,
+          "duration_s": 2.43,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:45+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H2d.nina_mirror.watch_again"
+    },
+    "H4.window.look": {
+      "speaker": "narrator",
+      "text": "Заречье отсюда всё как на ладони: крыши, почта, реки поворот.",
+      "text_sha1": "720d47d10d23b30920f74ad95696fb7dd1017e25",
+      "direction": {
+        "stress": "Заре́чье",
+        "emotion": "спокойно, любуясь",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          45
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/H4.window.look/take1.ogg",
+          "source": "src/narrator/H4.window.look/take1.mp3",
+          "tags": [],
+          "voice_text": "Заре́чье отсюда всё как на ладони: крыши, почта, реки поворот.",
+          "duration_s": 5.32,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/H4.window.look/take2.ogg",
+          "source": "src/narrator/H4.window.look/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Заре́чье отсюда всё как на ладони: крыши, почта, реки поворот.",
+          "speed": null,
+          "duration_s": 5.19,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:52+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/H4.window.look/take3.ogg",
+          "source": "src/narrator/H4.window.look/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Заре́чье отсюда всё как на ладони: крыши, почта, реки поворот.",
+          "speed": 0.93,
+          "duration_s": 5.31,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:54+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H4.window.look"
+    },
+    "M01_0": {
+      "speaker": "tamara",
+      "text": "Батюшки… Агата? Нинина дочка! Ты ж через меня домой письма слала.",
+      "text_sha1": "be3fab22c274be63708399283b52f6a443378bb7",
+      "direction": {
+        "stress": "Агата",
+        "emotion": "узнала с порога, радость и жалость",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          141
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_0/take1.ogg",
+          "source": "src/M01_0/take1.mp3",
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Батюшки… Агата? Нинина дочка! Ты ж через меня домой письма слала.",
+          "duration_s": 6.05,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M01_0/take2.ogg",
+          "source": "src/M01_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Батюшки… Агата? Нинина дочка! Ты ж через меня домой письма слала.",
+          "speed": null,
+          "duration_s": 6.29,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:38+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_0/take3.ogg",
+          "source": "src/M01_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Батюшки… Агата? Нинина дочка! Ты ж через меня домой письма слала.",
+          "speed": 0.93,
+          "duration_s": 6.41,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:39+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 0
+    },
+    "M01_1": {
+      "speaker": "agata",
+      "text": "Слала. Целый год слала — и ни строчки в ответ. Ни от мамы, ни от Илюши.",
+      "text_sha1": "c3bd75524057f35db89d716aa7bd7fab2f554c2f",
+      "direction": {
+        "stress": "ни строчки",
+        "emotion": "обида и тревога, сдержанно",
+        "pace": "неторопливо",
+        "takes": 3,
+        "map": [
+          8,
+          40
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_1/take1.ogg",
+          "source": "src/M01_1/take1.mp3",
+          "tags": [
+            "sad"
+          ],
+          "voice_text": "[sad] Слала. Целый год слала — и ни строчки в ответ. Ни от мамы, ни от Илюши.",
+          "duration_s": 6.79,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M01_1/take2.ogg",
+          "source": "src/M01_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "sad"
+          ],
+          "voice_text": "[sad] Слала. Целый год слала — и ни строчки в ответ. Ни от мамы, ни от Илюши.",
+          "speed": null,
+          "duration_s": 6.61,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:41+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_1/take3.ogg",
+          "source": "src/M01_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Слала. Целый год слала — и ни строчки в ответ. Ни от мамы, ни от Илюши.",
+          "speed": 0.93,
+          "duration_s": 6.44,
+          "lufs": -16.8,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:43+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 1
+    },
+    "M01_2": {
+      "speaker": "agata",
+      "text": "Вы мне писали: мост паводком снесло, лодки назад приходят — не ехать, пока не переменится. А теперь — «переменилось». Я в тот же день и поехала.",
+      "text_sha1": "9007ee8a60893a5a1c0306514277fca8fc7d3a24",
+      "direction": {
+        "stress": "переменилось",
+        "emotion": "надежда пробивается сквозь тревогу",
+        "pace": "быстрее к концу",
+        "takes": 3,
+        "map": [
+          8
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_2/take1.ogg",
+          "source": "src/M01_2/take1.mp3",
+          "tags": [
+            "animated"
+          ],
+          "voice_text": "[animated] Вы мне писали: мост паводком снесло, лодки назад приходят — не ехать, пока не переменится. А теперь — «переменилось». Я в тот же день и поехала.",
+          "duration_s": 10.21,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M01_2/take2.ogg",
+          "source": "src/M01_2/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "animated"
+          ],
+          "voice_text": "[animated] Вы мне писали: мост паводком снесло, лодки назад приходят — не ехать, пока не переменится. А теперь — «переменилось». Я в тот же день и поехала.",
+          "speed": null,
+          "duration_s": 10.14,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:46+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_2/take3.ogg",
+          "source": "src/M01_2/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Вы мне писали: мост паводком снесло, лодки назад приходят — не ехать, пока не переменится. А теперь — «переменилось». Я в тот же день и поехала.",
+          "speed": 0.93,
+          "duration_s": 10.89,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:49+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 2
+    },
+    "M01_3": {
+      "speaker": "tamara",
+      "text": "Переменилось, милая. Год вода высоко стояла, а этой осенью спала — у поворота мостовая опора показалась. Вот, я с берега набросала.",
+      "text_sha1": "bd1ac8944dbf33a78ee65a9da60b69e73da5344f",
+      "direction": {
+        "stress": "показалась",
+        "emotion": "тепло, по-деловому",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          141
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_3/take1.ogg",
+          "source": "src/M01_3/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Переменилось, милая. Год вода высоко стояла, а этой осенью спала — у поворота мостовая опора показалась. Вот, я с берега набросала.",
+          "duration_s": 10.22,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M01_3/take2.ogg",
+          "source": "src/M01_3/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Переменилось, милая. Год вода высоко стояла, а этой осенью спала — у поворота мостовая опора показалась. Вот, я с берега набросала.",
+          "speed": null,
+          "duration_s": 10.4,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:52+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_3/take3.ogg",
+          "source": "src/M01_3/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Переменилось, милая. Год вода высоко стояла, а этой осенью спала — у поворота мостовая опора показалась. Вот, я с берега набросала.",
+          "speed": 0.93,
+          "duration_s": 10.71,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:55+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 3
+    },
+    "M01_4": {
+      "speaker": "agata",
+      "text": "А это ж тётин лист! Тётя Дуня — Евдокия, мамина сестра… Она перед самым паводком к маме ушла. Так и не вернулась?",
+      "text_sha1": "5b50e2dfa382e800a6db3404d80157b536a4c335",
+      "direction": {
+        "stress": "не вернулась",
+        "emotion": "узнала почерк, страх за тётю",
+        "pace": "с остановкой перед вопросом",
+        "takes": 3,
+        "map": [
+          8,
+          40
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_4/take1.ogg",
+          "source": "src/M01_4/take1.mp3",
+          "tags": [
+            "hesitant"
+          ],
+          "voice_text": "[hesitant] А это ж тётин лист! Тётя Дуня — Евдокия, мамина сестра… Она перед самым паводком к маме ушла. Так и не вернулась?",
+          "duration_s": 8.69,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M01_4/take2.ogg",
+          "source": "src/M01_4/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "hesitant"
+          ],
+          "voice_text": "[hesitant] А это ж тётин лист! Тётя Дуня — Евдокия, мамина сестра… Она перед самым паводком к маме ушла. Так и не вернулась?",
+          "speed": null,
+          "duration_s": 8.85,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:34:58+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_4/take3.ogg",
+          "source": "src/M01_4/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "А это ж тётин лист! Тётя Дуня — Евдокия, мамина сестра… Она перед самым паводком к маме ушла. Так и не вернулась?",
+          "speed": 0.93,
+          "duration_s": 9.02,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:01+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 4
+    },
+    "M01_5": {
+      "speaker": "tamara",
+      "text": "Не вернулась. Мы с ней подруги давние — ключ от дома она мне оставила, как уговорено было. Я и Тихона её весь год по средам кормила.",
+      "text_sha1": "39b4ed21384d8a2b2a43f49ca09e9dcc2c3a040f",
+      "direction": {
+        "stress": "не вернулась",
+        "emotion": "грусть, без надрыва",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          141
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_5/take1.ogg",
+          "source": "src/M01_5/take1.mp3",
+          "tags": [
+            "sighs"
+          ],
+          "voice_text": "[sighs] Не вернулась. Мы с ней подруги давние — ключ от дома она мне оставила, как уговорено было. Я и Тихона её весь год по средам кормила.",
+          "duration_s": 10.82,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M01_5/take2.ogg",
+          "source": "src/M01_5/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "sighs"
+          ],
+          "voice_text": "[sighs] Не вернулась. Мы с ней подруги давние — ключ от дома она мне оставила, как уговорено было. Я и Тихона её весь год по средам кормила.",
+          "speed": null,
+          "duration_s": 10.88,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:03+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_5/take3.ogg",
+          "source": "src/M01_5/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Не вернулась. Мы с ней подруги давние — ключ от дома она мне оставила, как уговорено было. Я и Тихона её весь год по средам кормила.",
+          "speed": 0.93,
+          "duration_s": 10.23,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:06+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 5
+    },
+    "M01_7": {
+      "speaker": "tamara",
+      "text": "Тут вот письма в Ольховку. За год целый мешок, и твои маме тут же. Отнести-то некому.",
+      "text_sha1": "bc6ba69c0f5c051f7dcddb51c450c091a50ac87f",
+      "direction": {
+        "stress": "пи́сьма",
+        "emotion": "с горечью",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          7,
+          141
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_7/take1.ogg",
+          "source": "src/M01_7/take1.mp3",
+          "tags": [
+            "sighs"
+          ],
+          "voice_text": "[sighs] Тут вот пи́сьма в Ольховку. За год целый мешок, и твои маме тут же. Отнести-то некому.",
+          "duration_s": 8.06,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M01_7/take2.ogg",
+          "source": "src/M01_7/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "sighs"
+          ],
+          "voice_text": "[sighs] Тут вот пи́сьма в Ольховку. За год целый мешок, и твои маме тут же. Отнести-то некому.",
+          "speed": null,
+          "duration_s": 7.91,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:09+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_7/take3.ogg",
+          "source": "src/M01_7/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Тут вот пи́сьма в Ольховку. За год целый мешок, и твои маме тут же. Отнести-то некому.",
+          "speed": 0.93,
+          "duration_s": 7.02,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:11+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 7
+    },
+    "M01_8": {
+      "speaker": "tamara",
+      "text": "Бери ключ. Дом Дунин стоит, тебя дожидается.",
+      "text_sha1": "ff39e85a97ec016d04862068b02a75dd63d707b0",
+      "direction": {
+        "stress": "Бери",
+        "emotion": "тепло, подбадривая",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          141
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_8/take1.ogg",
+          "source": "src/M01_8/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Бери ключ. Дом Дунин стои́т, тебя дожидается.",
+          "duration_s": 4.0,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M01_8/take2.ogg",
+          "source": "src/M01_8/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Бери ключ. Дом Дунин стои́т, тебя дожидается.",
+          "speed": null,
+          "duration_s": 4.0,
+          "lufs": -16.8,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:12+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_8/take3.ogg",
+          "source": "src/M01_8/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Бери ключ. Дом Дунин стои́т, тебя дожидается.",
+          "speed": 0.93,
+          "duration_s": 3.96,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:13+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 8
+    },
+    "M01_9": {
+      "speaker": "agata",
+      "text": "Спасибо, Тамара. Только сперва к воде схожу. Лодочницу сама спрошу — что за чертовщина, что лодки назад приходят.",
+      "text_sha1": "ab8964c32cfd8c18682af2050411e73202ae9f9b",
+      "direction": {
+        "stress": "чертовщина",
+        "emotion": "удивление, решимость",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          9
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M01_9/take1.ogg",
+          "source": "src/M01_9/take1.mp3",
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Спасибо, Тамара. Только сперва к воде схожу. Лодочницу сама спрошу — что за чертовщина, что лодки назад приходят.",
+          "duration_s": 7.9,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M01_9/take2.ogg",
+          "source": "src/M01_9/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Спасибо, Тамара. Только сперва к воде схожу. Лодочницу сама спрошу — что за чертовщина, что лодки назад приходят.",
+          "speed": null,
+          "duration_s": 7.89,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:16+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M01_9/take3.ogg",
+          "source": "src/M01_9/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Спасибо, Тамара. Только сперва к воде схожу. Лодочницу сама спрошу — что за чертовщина, что лодки назад приходят.",
+          "speed": 0.93,
+          "duration_s": 7.99,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:19+00:00"
+        }
+      ],
+      "scene": "M01",
+      "index": 9
+    },
+    "M03_1": {
+      "speaker": "agata",
+      "text": "Ой!.. А ты один здесь?",
+      "text_sha1": "dc51c207111b094a73be3b7d0005b5739f8ad143",
+      "direction": {
+        "stress": "Ой",
+        "emotion": "испуг и удивление: зверёк заговорил",
+        "pace": "с остановкой после «Ой»",
+        "takes": 3,
+        "map": [
+          39
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M03_1/take1.ogg",
+          "source": "src/M03_1/take1.mp3",
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Ой!.. А ты один здесь?",
+          "duration_s": 2.18,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M03_1/take2.ogg",
+          "source": "src/M03_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Ой!.. А ты один здесь?",
+          "speed": null,
+          "duration_s": 2.08,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:20+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M03_1/take3.ogg",
+          "source": "src/M03_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Ой!.. А ты один здесь?",
+          "speed": 0.93,
+          "duration_s": 2.48,
+          "lufs": -16.8,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:20+00:00"
+        }
+      ],
+      "scene": "M03",
+      "index": 1
+    },
+    "M03_3": {
+      "speaker": "agata",
+      "text": "А тётя Дуня… так и не вернулась?",
+      "text_sha1": "1594a1f15cc6d970ec0fbc94d41b4670bc299f2a",
+      "direction": {
+        "stress": "не вернулась",
+        "emotion": "знает, что год без вестей; боится ответа",
+        "pace": "тихо, с остановкой",
+        "takes": 3,
+        "map": [
+          40
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M03_3/take1.ogg",
+          "source": "src/M03_3/take1.mp3",
+          "tags": [
+            "hesitant"
+          ],
+          "voice_text": "[hesitant] А тётя Дуня… так и не вернулась?",
+          "duration_s": 3.07,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M03_3/take2.ogg",
+          "source": "src/M03_3/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "hesitant"
+          ],
+          "voice_text": "[hesitant] А тётя Дуня… так и не вернулась?",
+          "speed": null,
+          "duration_s": 2.98,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:22+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M03_3/take3.ogg",
+          "source": "src/M03_3/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "А тётя Дуня… так и не вернулась?",
+          "speed": 0.93,
+          "duration_s": 2.93,
+          "lufs": -16.8,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:23+00:00"
+        }
+      ],
+      "scene": "M03",
+      "index": 3
+    },
+    "M03_8": {
+      "speaker": "tikhon",
+      "text": "Раз печь затопила, полку мне повесь, а? У лежанки вон стоит. С неё и печь видно, и кастрюлю.",
+      "text_sha1": "f5daca0d1cdb30bb3e8e4521bc80cbcc84e6c63e",
+      "direction": {
+        "stress": "полку",
+        "emotion": "мягче, не зло — просит по-кошачьи",
+        "pace": "ленивый",
+        "takes": 3,
+        "map": [
+          42
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M03_8/take1.ogg",
+          "source": "src/M03_8/take1.mp3",
+          "tags": [
+            "playful"
+          ],
+          "voice_text": "[playful] Раз печь затопила, полку мне повесь, а? У лежанки вон стои́т. С неё и печь видно, и кастрюлю.",
+          "duration_s": 7.49,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M03_8/take2.ogg",
+          "source": "src/M03_8/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "playful"
+          ],
+          "voice_text": "[playful] Раз печь затопила, полку мне повесь, а? У лежанки вон стои́т. С неё и печь видно, и кастрюлю.",
+          "speed": null,
+          "duration_s": 7.55,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:25+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M03_8/take3.ogg",
+          "source": "src/M03_8/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Раз печь затопила, полку мне повесь, а? У лежанки вон стои́т. С неё и печь видно, и кастрюлю.",
+          "speed": 0.93,
+          "duration_s": 7.7,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:27+00:00"
+        }
+      ],
+      "scene": "M03",
+      "index": 8
+    },
+    "M04_0": {
+      "speaker": "agata",
+      "text": "Не успела тётя… Ничего. За неё доделаю.",
+      "text_sha1": "ce80162b7a67b3a251485cf341cbb707f9f22ff4",
+      "direction": {
+        "stress": "доделаю",
+        "emotion": "грусть, потом решимость",
+        "pace": "пауза после «тётя»",
+        "takes": 3,
+        "map": [
+          49
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M04_0/take1.ogg",
+          "source": "src/M04_0/take1.mp3",
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Не успела тётя… Ничего. За неё доделаю.",
+          "duration_s": 3.99,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M04_0/take2.ogg",
+          "source": "src/M04_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Не успела тётя… Ничего. За неё доделаю.",
+          "speed": null,
+          "duration_s": 4.01,
+          "lufs": -16.8,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:29+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M04_0/take3.ogg",
+          "source": "src/M04_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Не успела тётя… Ничего. За неё доделаю.",
+          "speed": 0.93,
+          "duration_s": 4.06,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:30+00:00"
+        }
+      ],
+      "scene": "M04",
+      "index": 0
+    },
+    "M09_0": {
+      "speaker": "pavel",
+      "text": "Племянница Дунина, говоришь?.. Хотя… Похожа. Хмуришься так же.",
+      "text_sha1": "901508cdd0ae24dbc0ab2fdefb169e31b666264a",
+      "direction": {
+        "stress": "Похожа",
+        "emotion": "сначала недоверчиво, потом смеясь",
+        "pace": "с остановками на многоточиях",
+        "takes": 3,
+        "map": [
+          75
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M09_0/take1.ogg",
+          "source": "src/M09_0/take1.mp3",
+          "tags": [
+            "chuckling"
+          ],
+          "voice_text": "[chuckling] Племянница Дунина, говоришь?.. Хотя… Похожа. Хмуришься так же.",
+          "duration_s": 6.62,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M09_0/take2.ogg",
+          "source": "src/M09_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "chuckling"
+          ],
+          "voice_text": "[chuckling] Племянница Дунина, говоришь?.. Хотя… Похожа. Хмуришься так же.",
+          "speed": null,
+          "duration_s": 6.64,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:34+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M09_0/take3.ogg",
+          "source": "src/M09_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Племянница Дунина, говоришь?.. Хотя… Похожа. Хмуришься так же.",
+          "speed": 0.93,
+          "duration_s": 6.31,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:36+00:00"
+        }
+      ],
+      "scene": "M09",
+      "index": 0
+    },
+    "M09_2": {
+      "speaker": "pavel",
+      "text": "Рычаг нужен, а он в конторе, на гвозде. Управляющий в тот вечер, перед паводком, затвор запер, рычаг повесил, контору снаружи замкнул — и домой, в Ольховку. А ночью вода пришла.",
+      "text_sha1": "c4a43f21bd4eec19e2d6ccd9852031d4351b1bcf",
+      "direction": {
+        "stress": "в тот вечер",
+        "emotion": "рассказывает, вспоминает",
+        "pace": "ровно, последняя фраза тише",
+        "takes": 3,
+        "map": [
+          77,
+          23
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M09_2/take1.ogg",
+          "source": "src/M09_2/take1.mp3",
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Рычаг нужен, а он в конторе, на гвозде. Управляющий в тот вечер, перед паводком, затвор запер, рычаг повесил, контору снаружи замкнул — и домой, в Ольховку. А ночью вода пришла.",
+          "duration_s": 13.95,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M09_2/take2.ogg",
+          "source": "src/M09_2/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Рычаг нужен, а он в конторе, на гвозде. Управляющий в тот вечер, перед паводком, затвор запер, рычаг повесил, контору снаружи замкнул — и домой, в Ольховку. А ночью вода пришла.",
+          "speed": null,
+          "duration_s": 14.25,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:40+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M09_2/take3.ogg",
+          "source": "src/M09_2/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Рычаг нужен, а он в конторе, на гвозде. Управляющий в тот вечер, перед паводком, затвор запер, рычаг повесил, контору снаружи замкнул — и домой, в Ольховку. А ночью вода пришла.",
+          "speed": 0.93,
+          "duration_s": 15.12,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:44+00:00"
+        }
+      ],
+      "scene": "M09",
+      "index": 2
+    },
+    "M09_3": {
+      "speaker": "pavel",
+      "text": "Вода ударила — стеллаж с гирями на дверь повалило. Засов от удара в скобы и вбило. Замок я в первую же неделю сбил — а дверь не идёт. Стеллаж качнулся, чуть меня не задавил.",
+      "text_sha1": "8616dccb3cb19bf0590de9a345f5ed0e25a9f442",
+      "direction": {
+        "stress": "повалило",
+        "emotion": "досада, первые две фразы — как удар",
+        "pace": "первые две — коротко и твёрдо",
+        "takes": 3,
+        "map": [
+          78
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M09_3/take1.ogg",
+          "source": "src/M09_3/take1.mp3",
+          "tags": [],
+          "voice_text": "Вода ударила — стеллаж с гирями на дверь повалило. Засов от удара в ско́бы и вбило. Замо́к я в первую же неделю сбил — а дверь не идёт. Стеллаж качнулся, чуть меня не задавил.",
+          "duration_s": 13.5,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M09_3/take2.ogg",
+          "source": "src/M09_3/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Вода ударила — стеллаж с гирями на дверь повалило. Засов от удара в ско́бы и вбило. Замо́к я в первую же неделю сбил — а дверь не идёт. Стеллаж качнулся, чуть меня не задавил.",
+          "speed": null,
+          "duration_s": 13.94,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:48+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M09_3/take3.ogg",
+          "source": "src/M09_3/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Вода ударила — стеллаж с гирями на дверь повалило. Засов от удара в ско́бы и вбило. Замо́к я в первую же неделю сбил — а дверь не идёт. Стеллаж качнулся, чуть меня не задавил.",
+          "speed": 0.93,
+          "duration_s": 13.68,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:52+00:00"
+        }
+      ],
+      "scene": "M09",
+      "index": 3
+    },
+    "M09b_1": {
+      "speaker": "pavel",
+      "text": "Колокол… Слыхал я его. Он у Дуни висел, а звон — здесь, у конторы. Думал, умом тронулся.",
+      "text_sha1": "b61c96f1e7aef2e9b7c2665da58ad69041dc47d3",
+      "direction": {
+        "stress": "здесь",
+        "emotion": "сухо, но видно, что до сих пор не по себе",
+        "pace": "неторопливо",
+        "takes": 3,
+        "map": [
+          81,
+          48
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M09b_1/take1.ogg",
+          "source": "src/M09b_1/take1.mp3",
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Колокол… Слыхал я его. Он у Дуни висел, а звон — здесь, у конторы. Думал, умом тронулся.",
+          "duration_s": 8.3,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M09b_1/take2.ogg",
+          "source": "src/M09b_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Колокол… Слыхал я его. Он у Дуни висел, а звон — здесь, у конторы. Думал, умом тронулся.",
+          "speed": null,
+          "duration_s": 8.26,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:54+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M09b_1/take3.ogg",
+          "source": "src/M09b_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Колокол… Слыхал я его. Он у Дуни висел, а звон — здесь, у конторы. Думал, умом тронулся.",
+          "speed": 0.93,
+          "duration_s": 8.57,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:57+00:00"
+        }
+      ],
+      "scene": "M09b",
+      "index": 1
+    },
+    "M1.wheel.look": {
+      "speaker": "narrator",
+      "text": "Колесо от своего ставня ходит: и с запертым затвором мельница мелет. Пока в пруду воды полно.",
+      "text_sha1": "f8b4f3893142a910e92c00ea42bf56c59f621a77",
+      "direction": {
+        "stress": "воды́",
+        "emotion": "спокойно",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          17
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/M1.wheel.look/take1.ogg",
+          "source": "src/narrator/M1.wheel.look/take1.mp3",
+          "tags": [],
+          "voice_text": "Колесо от своего ставня ходит: и с запертым затвором мельница мелет. Пока в пруду воды́ полно.",
+          "duration_s": 7.91,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/M1.wheel.look/take2.ogg",
+          "source": "src/narrator/M1.wheel.look/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Колесо от своего ставня ходит: и с запертым затвором мельница мелет. Пока в пруду воды́ полно.",
+          "speed": null,
+          "duration_s": 7.87,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:18+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/M1.wheel.look/take3.ogg",
+          "source": "src/narrator/M1.wheel.look/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Колесо от своего ставня ходит: и с запертым затвором мельница мелет. Пока в пруду воды́ полно.",
+          "speed": 0.93,
+          "duration_s": 7.66,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:21+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "M1.wheel.look"
+    },
+    "M10_1": {
+      "speaker": "agata",
+      "text": "Да не бухти ты, для дела нужно.",
+      "text_sha1": "f8f7b7db7983173a607a18294f75805213ed155c",
+      "direction": {
+        "stress": "для дела",
+        "emotion": "с улыбкой, по-дружески",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          86
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M10_1/take1.ogg",
+          "source": "src/M10_1/take1.mp3",
+          "tags": [
+            "playful"
+          ],
+          "voice_text": "[playful] Да не бухти ты, для дела нужно.",
+          "duration_s": 2.92,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M10_1/take2.ogg",
+          "source": "src/M10_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "playful"
+          ],
+          "voice_text": "[playful] Да не бухти ты, для дела нужно.",
+          "speed": null,
+          "duration_s": 2.84,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:58+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M10_1/take3.ogg",
+          "source": "src/M10_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Да не бухти ты, для дела нужно.",
+          "speed": 0.93,
+          "duration_s": 2.5,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:59+00:00"
+        }
+      ],
+      "scene": "M10",
+      "index": 1
+    },
+    "M12_0": {
+      "speaker": "agata",
+      "text": "Вышел засов! Подалась дверь!",
+      "text_sha1": "1f11f06c1b1cf380b4d8649ffd55079ef65ad6b2",
+      "direction": {
+        "stress": "Вышел",
+        "emotion": "радостно",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          88
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M12_0/take1.ogg",
+          "source": "src/M12_0/take1.mp3",
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Вышел засов! Подалась дверь!",
+          "duration_s": 2.53,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M12_0/take2.ogg",
+          "source": "src/M12_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Вышел засов! Подалась дверь!",
+          "speed": null,
+          "duration_s": 2.52,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:00+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M12_0/take3.ogg",
+          "source": "src/M12_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Вышел засов! Подалась дверь!",
+          "speed": 0.93,
+          "duration_s": 2.57,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:01+00:00"
+        }
+      ],
+      "scene": "M12",
+      "index": 0
+    },
+    "M13_0": {
+      "speaker": "pavel",
+      "text": "Воду спущу — пруд пустой останется. А к зиме его заново набирать надо, не то Заречью молоть нечем будет.",
+      "text_sha1": "0dd221f15de14508e92c38f81acb5bdcc23f2a34",
+      "direction": {
+        "stress": "Заре́чью",
+        "emotion": "объясняет, почему тяжело решиться",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          97,
+          152
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M13_0/take1.ogg",
+          "source": "src/M13_0/take1.mp3",
+          "tags": [
+            "concerned"
+          ],
+          "voice_text": "[concerned] Воду спущу — пруд пустой останется. А к зиме его заново набирать надо, не то Заре́чью молоть нечем будет.",
+          "duration_s": 7.36,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M13_0/take2.ogg",
+          "source": "src/M13_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "concerned"
+          ],
+          "voice_text": "[concerned] Воду спущу — пруд пустой останется. А к зиме его заново набирать надо, не то Заре́чью молоть нечем будет.",
+          "speed": null,
+          "duration_s": 7.42,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:07+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M13_0/take3.ogg",
+          "source": "src/M13_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Воду спущу — пруд пустой останется. А к зиме его заново набирать надо, не то Заре́чью молоть нечем будет.",
+          "speed": 0.93,
+          "duration_s": 7.85,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:10+00:00"
+        }
+      ],
+      "scene": "M13",
+      "index": 0
+    },
+    "M13_2": {
+      "speaker": "pavel",
+      "text": "Эх… Ну, добро. Пойдём к затвору.",
+      "text_sha1": "f293c39ccb9ff29f22693ad8677651b2174cdb91",
+      "direction": {
+        "stress": "добро",
+        "emotion": "нехотя соглашается",
+        "pace": "пауза после «Эх»",
+        "takes": 3,
+        "map": [
+          99
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M13_2/take1.ogg",
+          "source": "src/M13_2/take1.mp3",
+          "tags": [
+            "sighs"
+          ],
+          "voice_text": "[sighs] Эх… Ну, добро. Пойдём к затвору.",
+          "duration_s": 4.57,
+          "lufs": -16.8
+        },
+        {
+          "take": 2,
+          "file": "M13_2/take2.ogg",
+          "source": "src/M13_2/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "sighs"
+          ],
+          "voice_text": "[sighs] Эх… Ну, добро. Пойдём к затвору.",
+          "speed": null,
+          "duration_s": 4.34,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:11+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M13_2/take3.ogg",
+          "source": "src/M13_2/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Эх… Ну, добро. Пойдём к затвору.",
+          "speed": 0.93,
+          "duration_s": 3.91,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:12+00:00"
+        }
+      ],
+      "scene": "M13",
+      "index": 2
+    },
+    "M13a_0": {
+      "speaker": "pavel",
+      "text": "Слышал я твой звон! Слышал! Без него ещё год бы простоял.",
+      "text_sha1": "e75071547924d8c9ce200b2fd44c62c1b29e8753",
+      "direction": {
+        "stress": "слышал",
+        "emotion": "волнение у сухого человека",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          91
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M13a_0/take1.ogg",
+          "source": "src/M13a_0/take1.mp3",
+          "tags": [
+            "animated"
+          ],
+          "voice_text": "[animated] Слышал я твой звон! Слышал! Без него ещё год бы простоял.",
+          "duration_s": 4.94,
+          "lufs": -17.1
+        },
+        {
+          "take": 2,
+          "file": "M13a_0/take2.ogg",
+          "source": "src/M13a_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "animated"
+          ],
+          "voice_text": "[animated] Слышал я твой звон! Слышал! Без него ещё год бы простоял.",
+          "speed": null,
+          "duration_s": 4.98,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:02+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M13a_0/take3.ogg",
+          "source": "src/M13a_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Слышал я твой звон! Слышал! Без него ещё год бы простоял.",
+          "speed": 0.93,
+          "duration_s": 5.17,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:04+00:00"
+        }
+      ],
+      "scene": "M13a",
+      "index": 0
+    },
+    "M15_2": {
+      "speaker": "agata",
+      "text": "Держат! На том конце будто бы держат! Снова дорогу с двух концов держат.",
+      "text_sha1": "c762242eaca80be16be89acd1ffb32dced92ad10",
+      "direction": {
+        "stress": "Держат",
+        "emotion": "очень радостно, не веря себе",
+        "pace": "быстро, на подъёме",
+        "takes": 3,
+        "map": [
+          115
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M15_2/take1.ogg",
+          "source": "src/M15_2/take1.mp3",
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Держат! На том конце будто бы держат! Снова дорогу с двух концов держат.",
+          "duration_s": 5.33,
+          "lufs": -17.1
+        },
+        {
+          "take": 2,
+          "file": "M15_2/take2.ogg",
+          "source": "src/M15_2/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Держат! На том конце будто бы держат! Снова дорогу с двух концов держат.",
+          "speed": null,
+          "duration_s": 5.36,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:16+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M15_2/take3.ogg",
+          "source": "src/M15_2/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Держат! На том конце будто бы держат! Снова дорогу с двух концов держат.",
+          "speed": 0.93,
+          "duration_s": 5.65,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:18+00:00"
+        }
+      ],
+      "scene": "M15",
+      "index": 2
+    },
+    "M15s_0": {
+      "speaker": "agata",
+      "text": "Села! Дунина скоба на своё место села.",
+      "text_sha1": "f835a477b10de3fab8465f4b9ff4d2377480ecd0",
+      "direction": {
+        "stress": "Села",
+        "emotion": "радость",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          113
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M15s_0/take1.ogg",
+          "source": "src/M15s_0/take1.mp3",
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Села! Дунина скоба́ на своё место села.",
+          "duration_s": 3.49,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M15s_0/take2.ogg",
+          "source": "src/M15s_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Села! Дунина скоба́ на своё место села.",
+          "speed": null,
+          "duration_s": 3.69,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:13+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M15s_0/take3.ogg",
+          "source": "src/M15s_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Села! Дунина скоба́ на своё место села.",
+          "speed": 0.93,
+          "duration_s": 3.76,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:15+00:00"
+        }
+      ],
+      "scene": "M15s",
+      "index": 0
+    },
+    "M16s_1": {
+      "speaker": "pelageya",
+      "text": "Погляди-ка! Весь год там черным-черно было… А теперь — снег!",
+      "text_sha1": "1581d8b401e82fb1f958cb3cf0acce46dd3701e7",
+      "direction": {
+        "stress": "снег",
+        "emotion": "удивление",
+        "pace": "с остановкой перед «снег»",
+        "takes": 3,
+        "map": [
+          118
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M16s_1/take1.ogg",
+          "source": "src/M16s_1/take1.mp3",
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Погляди-ка! Весь год там черным-черно было… А теперь — снег!",
+          "duration_s": 5.69,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M16s_1/take2.ogg",
+          "source": "src/M16s_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Погляди-ка! Весь год там черным-черно было… А теперь — снег!",
+          "speed": null,
+          "duration_s": 5.56,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:20+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M16s_1/take3.ogg",
+          "source": "src/M16s_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Погляди-ка! Весь год там черным-черно было… А теперь — снег!",
+          "speed": 0.93,
+          "duration_s": 5.8,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:22+00:00"
+        }
+      ],
+      "scene": "M16s",
+      "index": 1
+    },
+    "M17_0": {
+      "speaker": "pelageya",
+      "text": "Проверю, как на лодке полагается. К канату подведу, кольцо надену. Пустую пока пущу, а бечеву в руках оставлю — вот и глянем, что из того выйдет.",
+      "text_sha1": "a35238dac01848b46642ab85aab69d517966946e",
+      "direction": {
+        "stress": "глянем",
+        "emotion": "деловито, с затаённой надеждой",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          121
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M17_0/take1.ogg",
+          "source": "src/M17_0/take1.mp3",
+          "tags": [],
+          "voice_text": "Проверю, как на лодке полагается. К канату подведу, кольцо надену. Пустую пока пущу, а бечеву́ в руках оставлю — вот и глянем, что из того выйдет.",
+          "duration_s": 11.0,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M17_0/take2.ogg",
+          "source": "src/M17_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Проверю, как на лодке полагается. К канату подведу, кольцо надену. Пустую пока пущу, а бечеву́ в руках оставлю — вот и глянем, что из того выйдет.",
+          "speed": null,
+          "duration_s": 11.04,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:25+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M17_0/take3.ogg",
+          "source": "src/M17_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Проверю, как на лодке полагается. К канату подведу, кольцо надену. Пустую пока пущу, а бечеву́ в руках оставлю — вот и глянем, что из того выйдет.",
+          "speed": 0.93,
+          "duration_s": 10.54,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:28+00:00"
+        }
+      ],
+      "scene": "M17",
+      "index": 0
+    },
+    "M17_1": {
+      "speaker": "narrator",
+      "text": "По канату скользит кольцо, за ним пустая лодка в туман уходит. Целый год назад разворачивало, к родному причалу. Теперь идёт прямо. Дёрнулась бечева.",
+      "text_sha1": "3449224f1bbdcd637975b2a713aa61c66cdc42c4",
+      "direction": {
+        "stress": "прямо",
+        "emotion": "напряжённое ожидание",
+        "pace": "медленно, последняя фраза — коротко",
+        "takes": 3,
+        "map": [
+          121
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M17_1/take1.ogg",
+          "source": "src/M17_1/take1.mp3",
+          "tags": [],
+          "voice_text": "По канату скользит кольцо, за ним пустая лодка в туман уходит. Целый год назад разворачивало, к родному причалу. Теперь идёт прямо. Дёрнулась бечева́.",
+          "duration_s": 12.92,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M17_1/take2.ogg",
+          "source": "src/M17_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "По канату скользит кольцо, за ним пустая лодка в туман уходит. Целый год назад разворачивало, к родному причалу. Теперь идёт прямо. Дёрнулась бечева́.",
+          "speed": null,
+          "duration_s": 13.03,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:32+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M17_1/take3.ogg",
+          "source": "src/M17_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "По канату скользит кольцо, за ним пустая лодка в туман уходит. Целый год назад разворачивало, к родному причалу. Теперь идёт прямо. Дёрнулась бечева́.",
+          "speed": 0.93,
+          "duration_s": 12.95,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:35+00:00"
+        }
+      ],
+      "scene": "M17",
+      "index": 1
+    },
+    "M17_2": {
+      "speaker": "agata",
+      "text": "Не поворачивает. По канату идёт.",
+      "text_sha1": "ea6d8062b2e8349a9ada14b7fc8c40b7b06323c5",
+      "direction": {
+        "stress": "Не поворачивает",
+        "emotion": "изумление, шёпотом не надо",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          121
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M17_2/take1.ogg",
+          "source": "src/M17_2/take1.mp3",
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Не поворачивает. По канату идёт.",
+          "duration_s": 2.72,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M17_2/take2.ogg",
+          "source": "src/M17_2/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Не поворачивает. По канату идёт.",
+          "speed": null,
+          "duration_s": 2.69,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:36+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M17_2/take3.ogg",
+          "source": "src/M17_2/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Не поворачивает. По канату идёт.",
+          "speed": 0.93,
+          "duration_s": 2.7,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:37+00:00"
+        }
+      ],
+      "scene": "M17",
+      "index": 2
+    },
+    "M17_5": {
+      "speaker": "pelageya",
+      "text": "Не вернуло её! Значит, держат там.",
+      "text_sha1": "14e2f3dd4840870fa1beebce3f2a58859fdb8bac",
+      "direction": {
+        "stress": "Не вернуло",
+        "emotion": "удивлённо",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          123
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M17_5/take1.ogg",
+          "source": "src/M17_5/take1.mp3",
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Не вернуло её! Значит, держат там.",
+          "duration_s": 3.27,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M17_5/take2.ogg",
+          "source": "src/M17_5/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "surprised"
+          ],
+          "voice_text": "[surprised] Не вернуло её! Значит, держат там.",
+          "speed": null,
+          "duration_s": 3.18,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:38+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M17_5/take3.ogg",
+          "source": "src/M17_5/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Не вернуло её! Значит, держат там.",
+          "speed": 0.93,
+          "duration_s": 3.1,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:39+00:00"
+        }
+      ],
+      "scene": "M17",
+      "index": 5
+    },
+    "M17_6": {
+      "speaker": "agata",
+      "text": "Мамина лента! На праздники она мне её в косу вплетала.",
+      "text_sha1": "444fa07712f90677967df1e43542bb2f574196f0",
+      "direction": {
+        "stress": "Мамина",
+        "emotion": "радость, слёзы близко",
+        "pace": "живо, потом мягче",
+        "takes": 3,
+        "map": [
+          123
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M17_6/take1.ogg",
+          "source": "src/M17_6/take1.mp3",
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Мамина лента! На праздники она мне её в косу вплетала.",
+          "duration_s": 3.98,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M17_6/take2.ogg",
+          "source": "src/M17_6/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Мамина лента! На праздники она мне её в косу вплетала.",
+          "speed": null,
+          "duration_s": 3.92,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:40+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M17_6/take3.ogg",
+          "source": "src/M17_6/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Мамина лента! На праздники она мне её в косу вплетала.",
+          "speed": 0.93,
+          "duration_s": 4.09,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:41+00:00"
+        }
+      ],
+      "scene": "M17",
+      "index": 6
+    },
+    "M18_9": {
+      "speaker": "narrator",
+      "text": "Пелагея Митин рукав не выпускает. Он поднимает фонарь, к улице идёт. Агата за светом следом. Пелагея у лодки остаётся.",
+      "text_sha1": "7b485397991d5a8f0bb7e0041063794e1896c341",
+      "direction": {
+        "emotion": "спокойно, тепло",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          127
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M18_9/take1.ogg",
+          "source": "src/M18_9/take1.mp3",
+          "tags": [],
+          "voice_text": "Пелагея Митин рукав не выпускает. Он поднимает фонарь, к улице идёт. Агата за светом следом. Пелагея у лодки остаётся.",
+          "duration_s": 9.45,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M18_9/take2.ogg",
+          "source": "src/M18_9/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Пелагея Митин рукав не выпускает. Он поднимает фонарь, к улице идёт. Агата за светом следом. Пелагея у лодки остаётся.",
+          "speed": null,
+          "duration_s": 9.58,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:46+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M18_9/take3.ogg",
+          "source": "src/M18_9/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Пелагея Митин рукав не выпускает. Он поднимает фонарь, к улице идёт. Агата за светом следом. Пелагея у лодки остаётся.",
+          "speed": 0.93,
+          "duration_s": 9.37,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:49+00:00"
+        }
+      ],
+      "scene": "M18",
+      "index": 9
+    },
+    "M18p_4": {
+      "speaker": "pelageya",
+      "text": "Кольца держись. Не выпускай.",
+      "text_sha1": "af20ca277ff57c3501fbf4199356c5e7129ad5ae",
+      "direction": {
+        "stress": "кольца́",
+        "emotion": "заботливо и твёрдо",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          125
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M18p_4/take1.ogg",
+          "source": "src/M18p_4/take1.mp3",
+          "tags": [
+            "firm"
+          ],
+          "voice_text": "[firm] Кольца́ держись. Не выпускай.",
+          "duration_s": 2.52,
+          "lufs": -17.1
+        },
+        {
+          "take": 2,
+          "file": "M18p_4/take2.ogg",
+          "source": "src/M18p_4/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "firm"
+          ],
+          "voice_text": "[firm] Кольца́ держись. Не выпускай.",
+          "speed": null,
+          "duration_s": 2.54,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:42+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M18p_4/take3.ogg",
+          "source": "src/M18p_4/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Кольца́ держись. Не выпускай.",
+          "speed": 0.93,
+          "duration_s": 2.57,
+          "lufs": -16.8,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:43+00:00"
+        }
+      ],
+      "scene": "M18p",
+      "index": 4
+    },
+    "M19_1": {
+      "speaker": "mitya",
+      "text": "Илья! Илья, выходи — сестра твоя пришла!",
+      "text_sha1": "ac0f2e189540bc709430847448f6ec27e29ef8d1",
+      "direction": {
+        "stress": "сестра",
+        "emotion": "радость и странность",
+        "pace": "громко, на улицу",
+        "takes": 3,
+        "map": [
+          130
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M19_1/take1.ogg",
+          "source": "src/M19_1/take1.mp3",
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Илья! Илья, выходи — сестра твоя пришла!",
+          "duration_s": 3.37,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M19_1/take2.ogg",
+          "source": "src/M19_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Илья! Илья, выходи — сестра твоя пришла!",
+          "speed": null,
+          "duration_s": 3.4,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:50+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M19_1/take3.ogg",
+          "source": "src/M19_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Илья! Илья, выходи — сестра твоя пришла!",
+          "speed": 0.93,
+          "duration_s": 3.5,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:51+00:00"
+        }
+      ],
+      "scene": "M19",
+      "index": 1
+    },
+    "M19c_5": {
+      "speaker": "nina",
+      "text": "Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там живут. Всё тебя ждала и ждала.",
+      "text_sha1": "147323f578359385b040abbf243ba065cfbed859",
+      "direction": {
+        "stress": "живут",
+        "emotion": "нежность, давнее ожидание",
+        "pace": "неторопливо",
+        "takes": 3,
+        "map": [
+          131,
+          132
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M19c_5/take1.ogg",
+          "source": "src/M19c_5/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там живут. Всё тебя ждала и ждала.",
+          "duration_s": 18.71,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M19c_5/take2.ogg",
+          "source": "src/M19c_5/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там живут. Всё тебя ждала и ждала.",
+          "speed": null,
+          "duration_s": 18.65,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:36:56+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M19c_5/take3.ogg",
+          "source": "src/M19c_5/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там живут. Всё тебя ждала и ждала.",
+          "speed": 0.93,
+          "duration_s": 19.43,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:01+00:00"
+        }
+      ],
+      "scene": "M19c",
+      "index": 5
+    },
+    "M20_4_then0": {
+      "speaker": "ulyana",
+      "text": "Какая ж она тётя? Она как сестра! Я всегда сестру хотела — старшую.",
+      "text_sha1": "058edea73b4d31802bc79d3408aea38513cb46b1",
+      "direction": {
+        "stress": "сестра",
+        "emotion": "детская радость, по-ульяновски",
+        "pace": "быстро",
+        "takes": 3,
+        "map": [
+          "4а"
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M20_4_then0/take1.ogg",
+          "source": "src/M20_4_then0/take1.mp3",
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Какая ж она тётя? Она как сестра! Я всегда сестру хотела — старшую.",
+          "duration_s": 6.28,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M20_4_then0/take2.ogg",
+          "source": "src/M20_4_then0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Какая ж она тётя? Она как сестра! Я всегда сестру хотела — старшую.",
+          "speed": null,
+          "duration_s": 6.28,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:03+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M20_4_then0/take3.ogg",
+          "source": "src/M20_4_then0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Какая ж она тётя? Она как сестра! Я всегда сестру хотела — старшую.",
+          "speed": 0.93,
+          "duration_s": 6.46,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:04+00:00"
+        }
+      ],
+      "scene": "M20",
+      "index": 4,
+      "then": 0
+    },
+    "M20_4_then1": {
+      "speaker": "agata",
+      "text": "Ну, раз хотела — буду тебе сестрой, Уля.",
+      "text_sha1": "5b12bf741686d8b4415e3cab13d38c51b5ebfd3d",
+      "direction": {
+        "stress": "сестрой",
+        "emotion": "тепло, с улыбкой",
+        "pace": "мягко",
+        "takes": 3,
+        "map": [
+          "4а"
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M20_4_then1/take1.ogg",
+          "source": "src/M20_4_then1/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Ну, раз хотела — буду тебе сестрой, Уля.",
+          "duration_s": 3.58,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M20_4_then1/take2.ogg",
+          "source": "src/M20_4_then1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Ну, раз хотела — буду тебе сестрой, Уля.",
+          "speed": null,
+          "duration_s": 3.55,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:06+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M20_4_then1/take3.ogg",
+          "source": "src/M20_4_then1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Ну, раз хотела — буду тебе сестрой, Уля.",
+          "speed": 0.93,
+          "duration_s": 3.65,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:07+00:00"
+        }
+      ],
+      "scene": "M20",
+      "index": 4,
+      "then": 1
+    },
+    "M21b_0": {
+      "speaker": "agata",
+      "text": "А как прежде сделать нельзя?",
+      "text_sha1": "7aa330ab88316ccd5f130de8324ca7e42fbe9523",
+      "direction": {
+        "stress": "нельзя",
+        "emotion": "наивно, по-детски",
+        "pace": "просто",
+        "takes": 3,
+        "map": [
+          135
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M21b_0/take1.ogg",
+          "source": "src/M21b_0/take1.mp3",
+          "tags": [
+            "hesitant"
+          ],
+          "voice_text": "[hesitant] А как прежде сделать нельзя?",
+          "duration_s": 2.38,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M21b_0/take2.ogg",
+          "source": "src/M21b_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "hesitant"
+          ],
+          "voice_text": "[hesitant] А как прежде сделать нельзя?",
+          "speed": null,
+          "duration_s": 2.36,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:08+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M21b_0/take3.ogg",
+          "source": "src/M21b_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "А как прежде сделать нельзя?",
+          "speed": 0.93,
+          "duration_s": 2.0,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:09+00:00"
+        }
+      ],
+      "scene": "M21b",
+      "index": 0
+    },
+    "M21b_1": {
+      "speaker": "nina",
+      "text": "Как прежде — нет… Да и свои двадцать лет я не отдам. В них Ульяна.",
+      "text_sha1": "9cd8232a97b14519a0bcc6e5d5fc89d3069edf9e",
+      "direction": {
+        "stress": "Ульяна",
+        "emotion": "сначала грусть (не вернуть), потом радость (в них Ульяна)",
+        "pace": "пауза после «нет»",
+        "takes": 3,
+        "map": [
+          136
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M21b_1/take1.ogg",
+          "source": "src/M21b_1/take1.mp3",
+          "tags": [],
+          "voice_text": "Как прежде — нет… Да и свои двадцать лет я не отдам. В них Ульяна.",
+          "duration_s": 6.59,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M21b_1/take2.ogg",
+          "source": "src/M21b_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Как прежде — нет… Да и свои двадцать лет я не отдам. В них Ульяна.",
+          "speed": null,
+          "duration_s": 6.91,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:11+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M21b_1/take3.ogg",
+          "source": "src/M21b_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Как прежде — нет… Да и свои двадцать лет я не отдам. В них Ульяна.",
+          "speed": 0.93,
+          "duration_s": 6.51,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:13+00:00"
+        }
+      ],
+      "scene": "M21b",
+      "index": 1
+    },
+    "M21b_4": {
+      "speaker": "nina",
+      "text": "Пойдём, класс тебе покажу. Как люди пойдём, через калитку.",
+      "text_sha1": "10a7947b481d10539035d8b6b36ad0b4e3d54ab5",
+      "direction": {
+        "stress": "как люди",
+        "emotion": "с улыбкой",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          137
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M21b_4/take1.ogg",
+          "source": "src/M21b_4/take1.mp3",
+          "tags": [],
+          "voice_text": "Пойдём, класс тебе покажу. Как люди пойдём, через калитку.",
+          "duration_s": 4.77,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M21b_4/take2.ogg",
+          "source": "src/M21b_4/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Пойдём, класс тебе покажу. Как люди пойдём, через калитку.",
+          "speed": null,
+          "duration_s": 4.78,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:15+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M21b_4/take3.ogg",
+          "source": "src/M21b_4/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Пойдём, класс тебе покажу. Как люди пойдём, через калитку.",
+          "speed": 0.93,
+          "duration_s": 4.93,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:16+00:00"
+        }
+      ],
+      "scene": "M21b",
+      "index": 4
+    },
+    "M22_12": {
+      "speaker": "agata",
+      "text": "Я шапку рисовала. Давно, за этой партой.",
+      "text_sha1": "50828a4fe0bd95097d0997633e2a21908ea5a62a",
+      "direction": {
+        "stress": "Я",
+        "emotion": "смеясь",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          139
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M22_12/take1.ogg",
+          "source": "src/M22_12/take1.mp3",
+          "tags": [
+            "laughs"
+          ],
+          "voice_text": "[laughs] Я шапку рисовала. Давно, за этой партой.",
+          "duration_s": 4.37,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M22_12/take2.ogg",
+          "source": "src/M22_12/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "laughs"
+          ],
+          "voice_text": "[laughs] Я шапку рисовала. Давно, за этой партой.",
+          "speed": null,
+          "duration_s": 4.29,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:21+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M22_12/take3.ogg",
+          "source": "src/M22_12/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Я шапку рисовала. Давно, за этой партой.",
+          "speed": 0.93,
+          "duration_s": 3.41,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:23+00:00"
+        }
+      ],
+      "scene": "M22",
+      "index": 12
+    },
+    "M22_12_then0": {
+      "speaker": "ulyana",
+      "text": "Вот! Я всем скажу: у меня сестра рисовать умеет. Взаправдашняя!",
+      "text_sha1": "e00a4deeebd9630b306a4c2e9bbb1933e6af0488",
+      "direction": {
+        "stress": "Взаправдашняя",
+        "emotion": "гордость, детская радость",
+        "pace": "быстро",
+        "takes": 3,
+        "map": [
+          "4а"
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M22_12_then0/take1.ogg",
+          "source": "src/M22_12_then0/take1.mp3",
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Вот! Я всем скажу: у меня сестра рисовать умеет. Взаправдашняя!",
+          "duration_s": 5.65,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M22_12_then0/take2.ogg",
+          "source": "src/M22_12_then0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Вот! Я всем скажу: у меня сестра рисовать умеет. Взаправдашняя!",
+          "speed": null,
+          "duration_s": 5.75,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:18+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M22_12_then0/take3.ogg",
+          "source": "src/M22_12_then0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Вот! Я всем скажу: у меня сестра рисовать умеет. Взаправдашняя!",
+          "speed": 0.93,
+          "duration_s": 5.88,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:20+00:00"
+        }
+      ],
+      "scene": "M22",
+      "index": 12,
+      "then": 0
+    },
+    "M23a_1": {
+      "speaker": "tamara",
+      "text": "Нине — от Агаты! За весь год, каждый месяц по письму. На, Ниночка, держи. Тебе первой.",
+      "text_sha1": "1a56bc299ccb18d13942021f226db0f5dd5d5ee7",
+      "direction": {
+        "stress": "Нине",
+        "emotion": "радостно, торжественно",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          141,
+          168
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M23a_1/take1.ogg",
+          "source": "src/M23a_1/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Нине — от Агаты! За весь год, каждый месяц по письму́. На, Ниночка, держи. Тебе первой.",
+          "duration_s": 7.78,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M23a_1/take2.ogg",
+          "source": "src/M23a_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Нине — от Агаты! За весь год, каждый месяц по письму́. На, Ниночка, держи. Тебе первой.",
+          "speed": null,
+          "duration_s": 7.89,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:25+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M23a_1/take3.ogg",
+          "source": "src/M23a_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Нине — от Агаты! За весь год, каждый месяц по письму́. На, Ниночка, держи. Тебе первой.",
+          "speed": 0.93,
+          "duration_s": 7.92,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:28+00:00"
+        }
+      ],
+      "scene": "M23a",
+      "index": 1
+    },
+    "M23a_3": {
+      "speaker": "tamara",
+      "text": "Савелию — от сестры… Аксинье — от брата… Матрёне Петровне… Есть у вас такая?",
+      "text_sha1": "acc731ae1e4b6f3f80fb5b5e579c67f666298525",
+      "direction": {
+        "stress": "Есть",
+        "emotion": "разбирает адреса, последнее — вопрос",
+        "pace": "с паузами",
+        "takes": 3,
+        "map": [
+          141,
+          168
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M23a_3/take1.ogg",
+          "source": "src/M23a_3/take1.mp3",
+          "tags": [],
+          "voice_text": "Савелию — от сестры… Аксинье — от брата… Матрёне Петровне… Есть у вас такая?",
+          "duration_s": 7.46,
+          "lufs": -17.1
+        },
+        {
+          "take": 2,
+          "file": "M23a_3/take2.ogg",
+          "source": "src/M23a_3/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Савелию — от сестры… Аксинье — от брата… Матрёне Петровне… Есть у вас такая?",
+          "speed": null,
+          "duration_s": 7.95,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:30+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M23a_3/take3.ogg",
+          "source": "src/M23a_3/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Савелию — от сестры… Аксинье — от брата… Матрёне Петровне… Есть у вас такая?",
+          "speed": 0.93,
+          "duration_s": 7.54,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:33+00:00"
+        }
+      ],
+      "scene": "M23a",
+      "index": 3
+    },
+    "M23a_4": {
+      "speaker": "tamara",
+      "text": "Несу вот письмо, а человека уж нет… А иному мальчишкой писали — а он теперь сам с бородой.",
+      "text_sha1": "112c846bfe74f4d6354fddd8933d82256d72c7dd",
+      "direction": {
+        "stress": "нет",
+        "emotion": "грусть, потом невесёлая улыбка",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          141,
+          168
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M23a_4/take1.ogg",
+          "source": "src/M23a_4/take1.mp3",
+          "tags": [
+            "sad"
+          ],
+          "voice_text": "[sad] Несу вот письмо, а человека уж нет… А иному мальчишкой писали — а он теперь сам с бородой.",
+          "duration_s": 7.48,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M23a_4/take2.ogg",
+          "source": "src/M23a_4/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "sad"
+          ],
+          "voice_text": "[sad] Несу вот письмо, а человека уж нет… А иному мальчишкой писали — а он теперь сам с бородой.",
+          "speed": null,
+          "duration_s": 7.55,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:35+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M23a_4/take3.ogg",
+          "source": "src/M23a_4/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Несу вот письмо, а человека уж нет… А иному мальчишкой писали — а он теперь сам с бородой.",
+          "speed": 0.93,
+          "duration_s": 7.27,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:38+00:00"
+        }
+      ],
+      "scene": "M23a",
+      "index": 4
+    },
+    "M23a_5": {
+      "speaker": "tamara",
+      "text": "А это Дуне. От меня. У её печи положу — пускай там лежит.",
+      "text_sha1": "effb47b84022377675b5f42cacfb54d39120e0a3",
+      "direction": {
+        "stress": "Дуне",
+        "emotion": "тихо, нежно",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          141,
+          168
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M23a_5/take1.ogg",
+          "source": "src/M23a_5/take1.mp3",
+          "tags": [],
+          "voice_text": "А это Дуне. От меня. У её печи положу — пускай там лежит.",
+          "duration_s": 5.14,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M23a_5/take2.ogg",
+          "source": "src/M23a_5/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "А это Дуне. От меня. У её печи положу — пускай там лежит.",
+          "speed": null,
+          "duration_s": 5.22,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:39+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M23a_5/take3.ogg",
+          "source": "src/M23a_5/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "А это Дуне. От меня. У её печи положу — пускай там лежит.",
+          "speed": 0.93,
+          "duration_s": 5.08,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:41+00:00"
+        }
+      ],
+      "scene": "M23a",
+      "index": 5
+    },
+    "M23b_1": {
+      "speaker": "manager",
+      "text": "Цел затвор? Где рычаг?",
+      "text_sha1": "8210f63eb2d2e057ce7633f38360fd8849f422bd",
+      "direction": {
+        "stress": "Цел",
+        "emotion": "вопрос, тревога",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          149
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M23b_1/take1.ogg",
+          "source": "src/M23b_1/take1.mp3",
+          "tags": [],
+          "voice_text": "Цел затвор? Где рычаг?",
+          "duration_s": 2.21,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M23b_1/take2.ogg",
+          "source": "src/M23b_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Цел затвор? Где рычаг?",
+          "speed": null,
+          "duration_s": 2.19,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:42+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M23b_1/take3.ogg",
+          "source": "src/M23b_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Цел затвор? Где рычаг?",
+          "speed": 0.93,
+          "duration_s": 2.29,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:43+00:00"
+        }
+      ],
+      "scene": "M23b",
+      "index": 1
+    },
+    "M23c_0": {
+      "speaker": "narrator",
+      "text": "Нина в сестрин дом входит — теперь с обычного крыльца ходит. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.",
+      "text_sha1": "e0be6c7a85f342044ff1b28316105eadb18b96f5",
+      "direction": {
+        "stress": "с обычного крыльца",
+        "emotion": "спокойно",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          143
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M23c_0/take1.ogg",
+          "source": "src/M23c_0/take1.mp3",
+          "tags": [],
+          "voice_text": "Нина в сестрин дом входит — теперь с обычного крыльца ходит. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.",
+          "duration_s": 10.02,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M23c_0/take2.ogg",
+          "source": "src/M23c_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Нина в сестрин дом входит — теперь с обычного крыльца ходит. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.",
+          "speed": null,
+          "duration_s": 10.24,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:45+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M23c_0/take3.ogg",
+          "source": "src/M23c_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Нина в сестрин дом входит — теперь с обычного крыльца ходит. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.",
+          "speed": 0.93,
+          "duration_s": 10.09,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:48+00:00"
+        }
+      ],
+      "scene": "M23c",
+      "index": 0
+    },
+    "M23d_6_then0": {
+      "speaker": "tikhon",
+      "text": "Ты, Агата, это… Не уходи надолго. Привык я к тебе. Друг ты мне, стало быть. Только Тамаре не сказывай.",
+      "text_sha1": "6d2119673bd71ad87ea146c803ab926ed9f2e673",
+      "direction": {
+        "stress": "Друг",
+        "emotion": "ворчливо, а под этим нежность",
+        "pace": "с остановками",
+        "takes": 3,
+        "map": [
+          145
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M23d_6_then0/take1.ogg",
+          "source": "src/M23d_6_then0/take1.mp3",
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Ты, Агата, это… Не уходи надолго. Привык я к тебе. Друг ты мне, стало быть. Только Тамаре не сказывай.",
+          "duration_s": 8.63,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M23d_6_then0/take2.ogg",
+          "source": "src/M23d_6_then0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Ты, Агата, это… Не уходи надолго. Привык я к тебе. Друг ты мне, стало быть. Только Тамаре не сказывай.",
+          "speed": null,
+          "duration_s": 8.91,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:51+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M23d_6_then0/take3.ogg",
+          "source": "src/M23d_6_then0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Ты, Агата, это… Не уходи надолго. Привык я к тебе. Друг ты мне, стало быть. Только Тамаре не сказывай.",
+          "speed": 0.93,
+          "duration_s": 9.43,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:53+00:00"
+        }
+      ],
+      "scene": "M23d",
+      "index": 6,
+      "then": 0
+    },
+    "M23d_6_then1": {
+      "speaker": "agata",
+      "text": "Не скажу, Тихон. И ты мне друг.",
+      "text_sha1": "dda520de91a22e5da916b5fb2afdf6b1b25a903f",
+      "direction": {
+        "stress": "друг",
+        "emotion": "тепло, сквозь грусть",
+        "pace": "мягко",
+        "takes": 3,
+        "map": [
+          145
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M23d_6_then1/take1.ogg",
+          "source": "src/M23d_6_then1/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Не скажу, Тихон. И ты мне друг.",
+          "duration_s": 2.67,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M23d_6_then1/take2.ogg",
+          "source": "src/M23d_6_then1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Не скажу, Тихон. И ты мне друг.",
+          "speed": null,
+          "duration_s": 2.72,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:54+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M23d_6_then1/take3.ogg",
+          "source": "src/M23d_6_then1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Не скажу, Тихон. И ты мне друг.",
+          "speed": 0.93,
+          "duration_s": 2.62,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:56+00:00"
+        }
+      ],
+      "scene": "M23d",
+      "index": 6,
+      "then": 1
+    },
+    "M25_0": {
+      "speaker": "narrator",
+      "text": "У поворота ворот уже поставлен, брёвна-прогоны сложены. Илья у ворота ждёт, а Пелагея дощечку с сигналами принесла.",
+      "text_sha1": "a7bdc6edbbb41302c3594f4328e742e0956eaf5a",
+      "direction": {
+        "emotion": "одно за другим, без остановок",
+        "pace": "связно",
+        "takes": 3,
+        "map": [
+          160
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M25_0/take1.ogg",
+          "source": "src/M25_0/take1.mp3",
+          "tags": [],
+          "voice_text": "У поворота во́рот уже поставлен, брёвна-прогоны сложены. Илья у во́рота ждёт, а Пелагея дощечку с сигналами принесла.",
+          "duration_s": 9.54,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M25_0/take2.ogg",
+          "source": "src/M25_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "У поворота во́рот уже поставлен, брёвна-прогоны сложены. Илья у во́рота ждёт, а Пелагея дощечку с сигналами принесла.",
+          "speed": null,
+          "duration_s": 9.36,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:37:58+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M25_0/take3.ogg",
+          "source": "src/M25_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "У поворота во́рот уже поставлен, брёвна-прогоны сложены. Илья у во́рота ждёт, а Пелагея дощечку с сигналами принесла.",
+          "speed": 0.93,
+          "duration_s": 9.18,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:01+00:00"
+        }
+      ],
+      "scene": "M25",
+      "index": 0
+    },
+    "M25_1": {
+      "speaker": "ilya",
+      "text": "Я ворот кручу, ты знаки подавай. Пускай, стой, подымай — по-мельничному.",
+      "text_sha1": "8359277a5432727a43f6f574f42971c85330d0c0",
+      "direction": {
+        "stress": "знаки подавай",
+        "emotion": "командно",
+        "pace": "твёрдо",
+        "takes": 3,
+        "map": [
+          161
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M25_1/take1.ogg",
+          "source": "src/M25_1/take1.mp3",
+          "tags": [
+            "firm"
+          ],
+          "voice_text": "[firm] Я во́рот кручу, ты знаки подавай. Пускай, стой, подымай — по-мельничному.",
+          "duration_s": 5.82,
+          "lufs": -17.1
+        },
+        {
+          "take": 2,
+          "file": "M25_1/take2.ogg",
+          "source": "src/M25_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "firm"
+          ],
+          "voice_text": "[firm] Я во́рот кручу, ты знаки подавай. Пускай, стой, подымай — по-мельничному.",
+          "speed": null,
+          "duration_s": 5.75,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:03+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M25_1/take3.ogg",
+          "source": "src/M25_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Я во́рот кручу, ты знаки подавай. Пускай, стой, подымай — по-мельничному.",
+          "speed": 0.93,
+          "duration_s": 6.11,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:05+00:00"
+        }
+      ],
+      "scene": "M25",
+      "index": 1
+    },
+    "M25_3": {
+      "speaker": "ilya",
+      "text": "Только теперь слышно тебя.",
+      "text_sha1": "2b2f9af9b44ee676803cfc0070b754e49d135032",
+      "direction": {
+        "stress": "слышно",
+        "emotion": "тепло",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          162
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M25_3/take1.ogg",
+          "source": "src/M25_3/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Только теперь слышно тебя.",
+          "duration_s": 1.94,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M25_3/take2.ogg",
+          "source": "src/M25_3/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Только теперь слышно тебя.",
+          "speed": null,
+          "duration_s": 2.03,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:06+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M25_3/take3.ogg",
+          "source": "src/M25_3/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Только теперь слышно тебя.",
+          "speed": 0.93,
+          "duration_s": 1.99,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:06+00:00"
+        }
+      ],
+      "scene": "M25",
+      "index": 3
+    },
+    "M26_0": {
+      "speaker": "narrator",
+      "text": "Три недели спустя, среда. На обоих берегах зима. Мост — готов, пруд — наполнен, мельница — мелет.",
+      "text_sha1": "2fe3cd370b2d2e6885db7cab6886854fcff3a39c",
+      "direction": {
+        "stress": "готов, наполнен, мелет",
+        "emotion": "бодро, ободряюще",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          166
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M26_0/take1.ogg",
+          "source": "src/M26_0/take1.mp3",
+          "tags": [],
+          "voice_text": "Три недели спустя, среда. На обоих берегах зима. Мост — готов, пруд — наполнен, мельница — мелет.",
+          "duration_s": 9.96,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M26_0/take2.ogg",
+          "source": "src/M26_0/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Три недели спустя, среда. На обоих берегах зима. Мост — готов, пруд — наполнен, мельница — мелет.",
+          "speed": null,
+          "duration_s": 9.9,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:09+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M26_0/take3.ogg",
+          "source": "src/M26_0/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Три недели спустя, среда. На обоих берегах зима. Мост — готов, пруд — наполнен, мельница — мелет.",
+          "speed": 0.93,
+          "duration_s": 9.81,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:12+00:00"
+        }
+      ],
+      "scene": "M26",
+      "index": 0
+    },
+    "M26_1": {
+      "speaker": "narrator",
+      "text": "С почтой по мосту Тамара идёт.",
+      "text_sha1": "e59382350156ac4350a3a31fa55f26051aae68e3",
+      "direction": {
+        "emotion": "без акцента на каком-либо слове",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          167
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M26_1/take1.ogg",
+          "source": "src/M26_1/take1.mp3",
+          "tags": [],
+          "voice_text": "С почтой по мосту Тамара идёт.",
+          "duration_s": 2.53,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "M26_1/take2.ogg",
+          "source": "src/M26_1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "С почтой по мосту Тамара идёт.",
+          "speed": null,
+          "duration_s": 2.6,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:13+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M26_1/take3.ogg",
+          "source": "src/M26_1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "С почтой по мосту Тамара идёт.",
+          "speed": 0.93,
+          "duration_s": 2.53,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:14+00:00"
+        }
+      ],
+      "scene": "M26",
+      "index": 1
+    },
+    "M26_37": {
+      "speaker": "agata",
+      "text": "Можно, Уля! Нынче дорогу с обоих концов держат — и завтра у нас одно на всех.",
+      "text_sha1": "fd1316f39169629b0e8d87562812f1a55ee39b0f",
+      "direction": {
+        "stress": "одно на всех",
+        "emotion": "радостно",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          173
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "M26_37/take1.ogg",
+          "source": "src/M26_37/take1.mp3",
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Можно, Уля! Нынче дорогу с обоих концов держат — и завтра у нас одно на всех.",
+          "duration_s": 5.89,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "M26_37/take2.ogg",
+          "source": "src/M26_37/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "excited"
+          ],
+          "voice_text": "[excited] Можно, Уля! Нынче дорогу с обоих концов держат — и завтра у нас одно на всех.",
+          "speed": null,
+          "duration_s": 5.64,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:16+00:00"
+        },
+        {
+          "take": 3,
+          "file": "M26_37/take3.ogg",
+          "source": "src/M26_37/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Можно, Уля! Нынче дорогу с обоих концов держат — и завтра у нас одно на всех.",
+          "speed": 0.93,
+          "duration_s": 5.74,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:18+00:00"
+        }
+      ],
+      "scene": "M26",
+      "index": 37
+    },
+    "M3.journal.use": {
+      "speaker": "narrator",
+      "text": "Последняя запись управляющего: «На ночь затвор закрыт. Рычаг на гвозде. Ушёл домой». Число прошлогоднее. А ниже наказ: «Пруд спускать по зарубке и ждать, не то берега поплывут». И помечено, сколько воды для помола надо.",
+      "text_sha1": "a687882052071c7e0b0ff0eb3b72ca64551f1438",
+      "direction": {
+        "emotion": "читает запись спокойно и ясно",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          95
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/M3.journal.use/take1.ogg",
+          "source": "src/narrator/M3.journal.use/take1.mp3",
+          "tags": [],
+          "voice_text": "Последняя запись управляющего: «На ночь затвор закрыт. Рычаг на гвозде. Ушёл домой». Число прошлогоднее. А ниже наказ: «Пруд спускать по зарубке и ждать, не то берега́ поплывут». И помечено, сколько воды для помола надо.",
+          "duration_s": 17.58,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/M3.journal.use/take2.ogg",
+          "source": "src/narrator/M3.journal.use/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Последняя запись управляющего: «На ночь затвор закрыт. Рычаг на гвозде. Ушёл домой». Число прошлогоднее. А ниже наказ: «Пруд спускать по зарубке и ждать, не то берега́ поплывут». И помечено, сколько воды для помола надо.",
+          "speed": null,
+          "duration_s": 17.72,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:28+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/M3.journal.use/take3.ogg",
+          "source": "src/narrator/M3.journal.use/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Последняя запись управляющего: «На ночь затвор закрыт. Рычаг на гвозде. Ушёл домой». Число прошлогоднее. А ниже наказ: «Пруд спускать по зарубке и ждать, не то берега́ поплывут». И помечено, сколько воды для помола надо.",
+          "speed": 0.93,
+          "duration_s": 17.54,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:33+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "M3.journal.use"
+    },
+    "M4.gate.locked": {
+      "speaker": "narrator",
+      "text": "Без рычага ворот не повернёшь. А рычаг от затвора — в конторе.",
+      "text_sha1": "84dfcbd7e13668f08a87151cda721960e508ec9a",
+      "direction": {
+        "stress": "в конторе",
+        "emotion": "с тире перед «в конторе»",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          73
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/M4.gate.locked/take1.ogg",
+          "source": "src/narrator/M4.gate.locked/take1.mp3",
+          "tags": [],
+          "voice_text": "Без рычага во́рот не повернёшь. А рычаг от затвора — в конторе.",
+          "duration_s": 5.15,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/M4.gate.locked/take2.ogg",
+          "source": "src/narrator/M4.gate.locked/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Без рычага во́рот не повернёшь. А рычаг от затвора — в конторе.",
+          "speed": null,
+          "duration_s": 5.14,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:35+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/M4.gate.locked/take3.ogg",
+          "source": "src/narrator/M4.gate.locked/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Без рычага во́рот не повернёшь. А рычаг от затвора — в конторе.",
+          "speed": 0.93,
+          "duration_s": 5.18,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:37+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "M4.gate.locked"
+    },
+    "N01_2": {
+      "speaker": "tikhon",
+      "text": "Спи уж. За печь я отвечаю.",
+      "text_sha1": "06b51ff96c8772999ea192ea9a9e7aa548678fd5",
+      "direction": {
+        "stress": "я",
+        "emotion": "ворчливо-заботливо",
+        "pace": "лениво",
+        "takes": 3,
+        "map": [
+          67
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "N01_2/take1.ogg",
+          "source": "src/N01_2/take1.mp3",
+          "tags": [
+            "grumbling"
+          ],
+          "voice_text": "[grumbling] Спи уж. За печь я отвечаю.",
+          "duration_s": 2.98,
+          "lufs": -17.4
+        },
+        {
+          "take": 2,
+          "file": "N01_2/take2.ogg",
+          "source": "src/N01_2/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "grumbling"
+          ],
+          "voice_text": "[grumbling] Спи уж. За печь я отвечаю.",
+          "speed": null,
+          "duration_s": 2.92,
+          "lufs": -17.3,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:31+00:00"
+        },
+        {
+          "take": 3,
+          "file": "N01_2/take3.ogg",
+          "source": "src/N01_2/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Спи уж. За печь я отвечаю.",
+          "speed": 0.93,
+          "duration_s": 2.87,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:35:32+00:00"
+        }
+      ],
+      "scene": "N01",
+      "index": 2
+    },
+    "O3.clock.look": {
+      "speaker": "narrator",
+      "text": "Мамины ходики. Ровно маятник ходит, не торопясь.",
+      "text_sha1": "29919545581a193cca5625a7840eba1d03c95850",
+      "direction": {
+        "stress": "ровно",
+        "emotion": "спокойно",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          156
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/O3.clock.look/take1.ogg",
+          "source": "src/narrator/O3.clock.look/take1.mp3",
+          "tags": [],
+          "voice_text": "Мамины ходики. Ровно маятник ходит, не торопясь.",
+          "duration_s": 4.7,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/O3.clock.look/take2.ogg",
+          "source": "src/narrator/O3.clock.look/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Мамины ходики. Ровно маятник ходит, не торопясь.",
+          "speed": null,
+          "duration_s": 4.79,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:59+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/O3.clock.look/take3.ogg",
+          "source": "src/narrator/O3.clock.look/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Мамины ходики. Ровно маятник ходит, не торопясь.",
+          "speed": 0.93,
+          "duration_s": 4.78,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:40:01+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "O3.clock.look"
+    },
+    "Z1.letters.look": {
+      "speaker": "narrator",
+      "text": "Письма по домам разобраны. Для Ольховки Тамара особо складывает — за год целый мешок набрался.",
+      "text_sha1": "57a2eca4f4091f23e94c88e74d60209a38e73202",
+      "direction": {
+        "emotion": "спокойно, полным голосом — как следующая фраза",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          5
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/Z1.letters.look/take1.ogg",
+          "source": "src/narrator/Z1.letters.look/take1.mp3",
+          "tags": [],
+          "voice_text": "Письма по домам разобраны. Для Ольховки Тамара особо складывает — за год целый мешок набрался.",
+          "duration_s": 7.19,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/Z1.letters.look/take2.ogg",
+          "source": "src/narrator/Z1.letters.look/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Письма по домам разобраны. Для Ольховки Тамара особо складывает — за год целый мешок набрался.",
+          "speed": null,
+          "duration_s": 7.05,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:20+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/Z1.letters.look/take3.ogg",
+          "source": "src/narrator/Z1.letters.look/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Письма по домам разобраны. Для Ольховки Тамара особо складывает — за год целый мешок набрался.",
+          "speed": 0.93,
+          "duration_s": 7.01,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:22+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "Z1.letters.look"
+    },
+    "Z3d.plate_dry.skoba": {
+      "speaker": "narrator",
+      "text": "Кое-как, да легла скоба на трещину, благо пазы остались. Теперь забить хорошенько надо её.",
+      "text_sha1": "b984c9b7896e955045b84ed5e286c0811ac20e3e",
+      "direction": {
+        "stress": "легла",
+        "emotion": "облегчение, потом деловито",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          112
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "narrator/Z3d.plate_dry.skoba/take1.ogg",
+          "source": "src/narrator/Z3d.plate_dry.skoba/take1.mp3",
+          "tags": [],
+          "voice_text": "Кое-как, да легла скоба́ на трещину, благо пазы остались. Теперь забить хорошенько надо её.",
+          "duration_s": 7.17,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "narrator/Z3d.plate_dry.skoba/take2.ogg",
+          "source": "src/narrator/Z3d.plate_dry.skoba/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Кое-как, да легла скоба́ на трещину, благо пазы остались. Теперь забить хорошенько надо её.",
+          "speed": null,
+          "duration_s": 7.26,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:47+00:00"
+        },
+        {
+          "take": 3,
+          "file": "narrator/Z3d.plate_dry.skoba/take3.ogg",
+          "source": "src/narrator/Z3d.plate_dry.skoba/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Кое-как, да легла скоба́ на трещину, благо пазы остались. Теперь забить хорошенько надо её.",
+          "speed": 0.93,
+          "duration_s": 7.25,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:49+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "Z3d.plate_dry.skoba"
+    },
+    "agata:H1.after_mirror.agata": {
+      "speaker": "agata",
+      "text": "Видела, Тихон. Я ночь просплю, а мама там целую неделю проживёт… Как же мне теперь спать?",
+      "text_sha1": "4121bc7dccecf77bf686b6225482c18761507744",
+      "direction": {
+        "stress": "спать",
+        "emotion": "тревога, ищет поддержки у Тихона",
+        "pace": "с остановкой",
+        "takes": 3,
+        "map": [
+          108
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/H1.after_mirror.agata/take1.ogg",
+          "source": "src/character_lines/H1.after_mirror.agata/take1.mp3",
+          "tags": [],
+          "voice_text": "Видела, Тихон. Я ночь просплю, а мама там целую неделю проживёт… Как же мне теперь спать?",
+          "duration_s": 6.83,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "character_lines/H1.after_mirror.agata/take2.ogg",
+          "source": "src/character_lines/H1.after_mirror.agata/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Видела, Тихон. Я ночь просплю, а мама там целую неделю проживёт… Как же мне теперь спать?",
+          "speed": null,
+          "duration_s": 6.95,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:54+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/H1.after_mirror.agata/take3.ogg",
+          "source": "src/character_lines/H1.after_mirror.agata/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Видела, Тихон. Я ночь просплю, а мама там целую неделю проживёт… Как же мне теперь спать?",
+          "speed": 0.93,
+          "duration_s": 6.78,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:56+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H1.after_mirror.agata"
+    },
+    "agata:O1.bird_drawing.prompt": {
+      "speaker": "agata",
+      "text": "Шапку синице я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
+      "text_sha1": "4494828952083fbba81f56b11dd91f9c6e85451a",
+      "direction": {
+        "stress": "я",
+        "emotion": "с улыбкой узнавания",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          57
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "agata_thoughts/O1.bird_drawing.prompt/take1.ogg",
+          "source": "src/agata_thoughts/O1.bird_drawing.prompt/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Шапку синице я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
+          "duration_s": 6.42,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "agata_thoughts/O1.bird_drawing.prompt/take2.ogg",
+          "source": "src/agata_thoughts/O1.bird_drawing.prompt/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Шапку синице я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
+          "speed": null,
+          "duration_s": 6.31,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:01+00:00"
+        },
+        {
+          "take": 3,
+          "file": "agata_thoughts/O1.bird_drawing.prompt/take3.ogg",
+          "source": "src/agata_thoughts/O1.bird_drawing.prompt/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Шапку синице я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
+          "speed": 0.93,
+          "duration_s": 6.36,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:03+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "O1.bird_drawing.prompt"
+    },
+    "agata:O1.notebooks.use": {
+      "speaker": "agata",
+      "text": "До последнего листа исписаны, и почерки всё разные. Учились тут, все эти годы! Жива та сторона.",
+      "text_sha1": "bf15475e421ef300ead239dcabbfe7a7f729cf5c",
+      "direction": {
+        "stress": "Жива",
+        "emotion": "радость: та сторона жива",
+        "pace": "живо к концу",
+        "takes": 3,
+        "map": [
+          55,
+          56
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "agata_thoughts/O1.notebooks.use/take1.ogg",
+          "source": "src/agata_thoughts/O1.notebooks.use/take1.mp3",
+          "tags": [],
+          "voice_text": "До последнего листа исписаны, и почерки всё разные. Учились тут, все эти годы! Жива та сторона.",
+          "duration_s": 8.11,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "agata_thoughts/O1.notebooks.use/take2.ogg",
+          "source": "src/agata_thoughts/O1.notebooks.use/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "До последнего листа исписаны, и почерки всё разные. Учились тут, все эти годы! Жива та сторона.",
+          "speed": null,
+          "duration_s": 8.04,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:57+00:00"
+        },
+        {
+          "take": 3,
+          "file": "agata_thoughts/O1.notebooks.use/take3.ogg",
+          "source": "src/agata_thoughts/O1.notebooks.use/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "До последнего листа исписаны, и почерки всё разные. Учились тут, все эти годы! Жива та сторона.",
+          "speed": 0.93,
+          "duration_s": 8.19,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:59+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "O1.notebooks.use"
+    },
+    "agata:O2.exit_O4.loop": {
+      "speaker": "agata",
+      "text": "От калитки к деревне пошла — а тропа вокруг школы завернула, и я опять у школьного крыльца. Что за мистика? Кругами тропа водит.",
+      "text_sha1": "2c7660f9bbb1902ff095491debf7b07b99d56200",
+      "direction": {
+        "stress": "мистика",
+        "emotion": "удивление",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          62
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "agata_thoughts/O2.exit_O4.loop/take1.ogg",
+          "source": "src/agata_thoughts/O2.exit_O4.loop/take1.mp3",
+          "tags": [],
+          "voice_text": "От калитки к деревне пошла — а тропа вокруг школы завернула, и я опять у школьного крыльца. Что за мистика? Кругами тропа водит.",
+          "duration_s": 9.22,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "agata_thoughts/O2.exit_O4.loop/take2.ogg",
+          "source": "src/agata_thoughts/O2.exit_O4.loop/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "От калитки к деревне пошла — а тропа вокруг школы завернула, и я опять у школьного крыльца. Что за мистика? Кругами тропа водит.",
+          "speed": null,
+          "duration_s": 9.24,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:10+00:00"
+        },
+        {
+          "take": 3,
+          "file": "agata_thoughts/O2.exit_O4.loop/take3.ogg",
+          "source": "src/agata_thoughts/O2.exit_O4.loop/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "От калитки к деревне пошла — а тропа вокруг школы завернула, и я опять у школьного крыльца. Что за мистика? Кругами тропа водит.",
+          "speed": 0.93,
+          "duration_s": 9.13,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:13+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "O2.exit_O4.loop"
+    },
+    "agata:O2.tree.look": {
+      "speaker": "agata",
+      "text": "Помню, ниже было это дерево. Теперь ветви выше крыльца поднялись.",
+      "text_sha1": "82ae5f219256a733ca1f4c9968483c96a2da2a8d",
+      "direction": {
+        "stress": "ниже",
+        "emotion": "удивление, что выросло",
+        "pace": "неторопливо",
+        "takes": 3,
+        "map": [
+          61
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "agata_thoughts/O2.tree.look/take1.ogg",
+          "source": "src/agata_thoughts/O2.tree.look/take1.mp3",
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Помню, ниже было это дерево. Теперь ветви выше крыльца поднялись.",
+          "duration_s": 4.99,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "agata_thoughts/O2.tree.look/take2.ogg",
+          "source": "src/agata_thoughts/O2.tree.look/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "warmly"
+          ],
+          "voice_text": "[warmly] Помню, ниже было это дерево. Теперь ветви выше крыльца поднялись.",
+          "speed": null,
+          "duration_s": 4.99,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:05+00:00"
+        },
+        {
+          "take": 3,
+          "file": "agata_thoughts/O2.tree.look/take3.ogg",
+          "source": "src/agata_thoughts/O2.tree.look/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Помню, ниже было это дерево. Теперь ветви выше крыльца поднялись.",
+          "speed": 0.93,
+          "duration_s": 4.92,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:07+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "O2.tree.look"
+    },
+    "agata:examine.photo_bridge": {
+      "speaker": "agata",
+      "text": "Цел ещё мост. На каменных опорах пролёты, за плиту ближней опоры канат закреплён. У берега Пелагеина лодка.",
+      "text_sha1": "129a0a0df909db09ad9ae6958eeb47e28033e768",
+      "direction": {
+        "stress": "Цел",
+        "emotion": "грустно",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          72
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/examine.photo_bridge/take1.ogg",
+          "source": "src/character_lines/examine.photo_bridge/take1.mp3",
+          "tags": [],
+          "voice_text": "Цел ещё мост. На каменных опорах пролёты, за плиту ближней опоры канат закреплён. У берега Пелагеина лодка.",
+          "duration_s": 8.44,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "character_lines/examine.photo_bridge/take2.ogg",
+          "source": "src/character_lines/examine.photo_bridge/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Цел ещё мост. На каменных опорах пролёты, за плиту ближней опоры канат закреплён. У берега Пелагеина лодка.",
+          "speed": null,
+          "duration_s": 8.46,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:40:03+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/examine.photo_bridge/take3.ogg",
+          "source": "src/character_lines/examine.photo_bridge/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Цел ещё мост. На каменных опорах пролёты, за плиту ближней опоры канат закреплён. У берега Пелагеина лодка.",
+          "speed": 0.93,
+          "duration_s": 8.26,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:40:06+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "examine.photo_bridge"
+    },
+    "pavel:M1.pavel.day1": {
+      "speaker": "pavel",
+      "text": "Скоро вечер. Поутру приходи, по свету. Тогда и поговорим.",
+      "text_sha1": "150c9a955afbb19245814312a5102f91c7cc1ad7",
+      "direction": {
+        "stress": "поговорим",
+        "emotion": "бодрее",
+        "pace": "живо",
+        "takes": 3,
+        "map": [
+          14
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/M1.pavel.day1/take1.ogg",
+          "source": "src/character_lines/M1.pavel.day1/take1.mp3",
+          "tags": [],
+          "voice_text": "Скоро вечер. Поутру приходи, по свету. Тогда и поговорим.",
+          "duration_s": 4.74,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "character_lines/M1.pavel.day1/take2.ogg",
+          "source": "src/character_lines/M1.pavel.day1/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Скоро вечер. Поутру приходи, по свету. Тогда и поговорим.",
+          "speed": null,
+          "duration_s": 4.87,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:14+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/M1.pavel.day1/take3.ogg",
+          "source": "src/character_lines/M1.pavel.day1/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Скоро вечер. Поутру приходи, по свету. Тогда и поговорим.",
+          "speed": 0.93,
+          "duration_s": 4.89,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:16+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "M1.pavel.day1"
+    },
+    "pavel:M2.mirror.take": {
+      "speaker": "pavel",
+      "text": "Бери. Цело стекло, да рама по углам разошлась.",
+      "text_sha1": "36e3fe3906b29cdcbe5ccb36dba9b8d435dc693f",
+      "direction": {
+        "stress": "Цело́",
+        "emotion": "по-деловому",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          83,
+          85
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/M2.mirror.take/take1.ogg",
+          "source": "src/character_lines/M2.mirror.take/take1.mp3",
+          "tags": [],
+          "voice_text": "Бери. Цело́ стекло, да рама по углам разошлась.",
+          "duration_s": 3.98,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "character_lines/M2.mirror.take/take2.ogg",
+          "source": "src/character_lines/M2.mirror.take/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Бери. Цело́ стекло, да рама по углам разошлась.",
+          "speed": null,
+          "duration_s": 4.14,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:22+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/M2.mirror.take/take3.ogg",
+          "source": "src/character_lines/M2.mirror.take/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Бери. Цело́ стекло, да рама по углам разошлась.",
+          "speed": 0.93,
+          "duration_s": 4.06,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:23+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "M2.mirror.take"
+    },
+    "pelageya:R1d.pelageya.to_boat": {
+      "speaker": "pelageya",
+      "text": "Кольцо на канате, пора. Садись.",
+      "text_sha1": "dd309e8a0753b498b0abea237a48bc0255592d2d",
+      "direction": {
+        "stress": "пора",
+        "emotion": "решительно и тепло",
+        "pace": "ровно",
+        "takes": 3,
+        "map": [
+          124
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/R1d.pelageya.to_boat/take1.ogg",
+          "source": "src/character_lines/R1d.pelageya.to_boat/take1.mp3",
+          "tags": [],
+          "voice_text": "Кольцо на канате, пора. Садись.",
+          "duration_s": 2.82,
+          "lufs": -17.1
+        },
+        {
+          "take": 2,
+          "file": "character_lines/R1d.pelageya.to_boat/take2.ogg",
+          "source": "src/character_lines/R1d.pelageya.to_boat/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Кольцо на канате, пора. Садись.",
+          "speed": null,
+          "duration_s": 2.68,
+          "lufs": -16.9,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:51+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/R1d.pelageya.to_boat/take3.ogg",
+          "source": "src/character_lines/R1d.pelageya.to_boat/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Кольцо на канате, пора. Садись.",
+          "speed": 0.93,
+          "duration_s": 2.83,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:52+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "R1d.pelageya.to_boat"
+    },
+    "tikhon:H1.after_mirror.tikhon_2": {
+      "speaker": "tikhon",
+      "text": "Так ляг поспи. А печь я догляжу.",
+      "text_sha1": "98fdcdd9bf068a0c95e42d21b667c9272d7fc1f7",
+      "direction": {
+        "stress": "поспи",
+        "emotion": "ворчливая забота",
+        "pace": "лениво",
+        "takes": 3,
+        "map": [
+          109
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/H1.after_mirror.tikhon_2/take1.ogg",
+          "source": "src/character_lines/H1.after_mirror.tikhon_2/take1.mp3",
+          "tags": [],
+          "voice_text": "Так ляг поспи. А печь я догляжу.",
+          "duration_s": 3.56,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "character_lines/H1.after_mirror.tikhon_2/take2.ogg",
+          "source": "src/character_lines/H1.after_mirror.tikhon_2/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Так ляг поспи. А печь я догляжу.",
+          "speed": null,
+          "duration_s": 3.47,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:57+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/H1.after_mirror.tikhon_2/take3.ogg",
+          "source": "src/character_lines/H1.after_mirror.tikhon_2/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Так ляг поспи. А печь я догляжу.",
+          "speed": 0.93,
+          "duration_s": 3.52,
+          "lufs": -17.2,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:39:58+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H1.after_mirror.tikhon_2"
+    },
+    "tikhon:H1.tikhon.after_dunya": {
+      "speaker": "tikhon",
+      "text": "Лежу. Ждать некого — так просто лежу. Печь топится, кастрюля на месте… Хозяйка бы сказала: и то ладно.",
+      "text_sha1": "8b82b1c01f9323b722f8d46b972af9d1aa8e3733",
+      "direction": {
+        "stress": "некого",
+        "emotion": "тихая перемена: не ждёт, а живёт",
+        "pace": "медленно",
+        "takes": 3,
+        "map": [
+          "4"
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/H1.tikhon.after_dunya/take1.ogg",
+          "source": "src/character_lines/H1.tikhon.after_dunya/take1.mp3",
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Лежу. Ждать некого — так просто лежу. Печь топится, кастрюля на месте… Хозяйка бы сказала: и то ладно.",
+          "duration_s": 9.71,
+          "lufs": -17.0
+        },
+        {
+          "take": 2,
+          "file": "character_lines/H1.tikhon.after_dunya/take2.ogg",
+          "source": "src/character_lines/H1.tikhon.after_dunya/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "thoughtful"
+          ],
+          "voice_text": "[thoughtful] Лежу. Ждать некого — так просто лежу. Печь топится, кастрюля на месте… Хозяйка бы сказала: и то ладно.",
+          "speed": null,
+          "duration_s": 10.08,
+          "lufs": -17.1,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:35+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/H1.tikhon.after_dunya/take3.ogg",
+          "source": "src/character_lines/H1.tikhon.after_dunya/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Лежу. Ждать некого — так просто лежу. Печь топится, кастрюля на месте… Хозяйка бы сказала: и то ладно.",
+          "speed": 0.93,
+          "duration_s": 10.18,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:38+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H1.tikhon.after_dunya"
+    },
+    "tikhon:H1.tikhon.ask_shelf": {
+      "speaker": "tikhon",
+      "text": "Полку-то повесишь? Вон она, на лавке лежит. Сам я её, что ли, лапами прибью?",
+      "text_sha1": "b1a615aa6c2420fe0dc4b567d41edf6eafd0b2c7",
+      "direction": {
+        "stress": "повесишь",
+        "emotion": "ворчливая просьба",
+        "pace": "лениво",
+        "takes": 3,
+        "map": [
+          38,
+          66
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/H1.tikhon.ask_shelf/take1.ogg",
+          "source": "src/character_lines/H1.tikhon.ask_shelf/take1.mp3",
+          "tags": [
+            "grumbling"
+          ],
+          "voice_text": "[grumbling] Полку-то повесишь? Вон она, на лавке лежит. Сам я её, что ли, лапами прибью?",
+          "duration_s": 6.23,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "character_lines/H1.tikhon.ask_shelf/take2.ogg",
+          "source": "src/character_lines/H1.tikhon.ask_shelf/take2.mp3",
+          "seed_salt": 102,
+          "tags": [
+            "grumbling"
+          ],
+          "voice_text": "[grumbling] Полку-то повесишь? Вон она, на лавке лежит. Сам я её, что ли, лапами прибью?",
+          "speed": null,
+          "duration_s": 5.97,
+          "lufs": -17.2,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:30+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/H1.tikhon.ask_shelf/take3.ogg",
+          "source": "src/character_lines/H1.tikhon.ask_shelf/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Полку-то повесишь? Вон она, на лавке лежит. Сам я её, что ли, лапами прибью?",
+          "speed": 0.93,
+          "duration_s": 6.03,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:32+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H1.tikhon.ask_shelf"
+    },
+    "tikhon:H1.tikhon.door": {
+      "speaker": "tikhon",
+      "text": "Из школы дверь. Нина просила.",
+      "text_sha1": "3acdd04fe0af6546644bec7c529473f30dd50615",
+      "direction": {
+        "emotion": "повествовательно, без вопроса",
+        "pace": "лениво",
+        "takes": 3,
+        "map": [
+          44
+        ]
+      },
+      "takes": [
+        {
+          "take": 1,
+          "main": true,
+          "file": "character_lines/H1.tikhon.door/take1.ogg",
+          "source": "src/character_lines/H1.tikhon.door/take1.mp3",
+          "tags": [],
+          "voice_text": "Из школы дверь. Нина просила.",
+          "duration_s": 2.96,
+          "lufs": -16.9
+        },
+        {
+          "take": 2,
+          "file": "character_lines/H1.tikhon.door/take2.ogg",
+          "source": "src/character_lines/H1.tikhon.door/take2.mp3",
+          "seed_salt": 102,
+          "tags": [],
+          "voice_text": "Из школы дверь. Нина просила.",
+          "speed": null,
+          "duration_s": 2.95,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:27+00:00"
+        },
+        {
+          "take": 3,
+          "file": "character_lines/H1.tikhon.door/take3.ogg",
+          "source": "src/character_lines/H1.tikhon.door/take3.mp3",
+          "seed_salt": 103,
+          "tags": [],
+          "voice_text": "Из школы дверь. Нина просила.",
+          "speed": 0.93,
+          "duration_s": 3.04,
+          "lufs": -17.0,
+          "run": "40193152963",
+          "generated_at": "2026-10-25T12:38:28+00:00"
+        }
+      ],
+      "index": 0,
+      "key": "H1.tikhon.door"
+    }
+  }
+}
