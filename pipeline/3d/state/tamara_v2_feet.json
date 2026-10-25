@@ -217,28 +217,28 @@
     "L": {
      "stance_toe_out_deg": 2.2,
      "stance_toe_out_range_deg": [
-      0.5,
-      3.2
+      -0.4,
+      2.9
      ],
-     "swing_toe_abs_max_deg": 30.4,
-     "toe_abs_max_deg": 30.4,
-     "sole_lift_mid_stance_max_m": 0.0364,
+     "swing_toe_abs_max_deg": 23.3,
+     "toe_abs_max_deg": 23.3,
+     "sole_lift_mid_stance_max_m": 0.0452,
      "slide_max_mm": 0.0,
-     "contact_frames": 10,
-     "floor_m": 0.0164
+     "contact_frames": 8,
+     "floor_m": 0.0016
     },
     "R": {
-     "stance_toe_out_deg": 5.1,
+     "stance_toe_out_deg": 4.0,
      "stance_toe_out_range_deg": [
-      -1.5,
-      7.7
+      0.4,
+      8.2
      ],
-     "swing_toe_abs_max_deg": 27.2,
-     "toe_abs_max_deg": 27.2,
-     "sole_lift_mid_stance_max_m": 0.0393,
+     "swing_toe_abs_max_deg": 22.8,
+     "toe_abs_max_deg": 22.8,
+     "sole_lift_mid_stance_max_m": 0.0481,
      "slide_max_mm": 0.0,
-     "contact_frames": 13,
-     "floor_m": 0.0164
+     "contact_frames": 12,
+     "floor_m": 0.0016
     }
    },
    "after": {
@@ -248,12 +248,12 @@
       3.0,
       3.0
      ],
-     "swing_toe_abs_max_deg": 15.0,
-     "toe_abs_max_deg": 15.0,
+     "swing_toe_abs_max_deg": 7.5,
+     "toe_abs_max_deg": 7.5,
      "sole_lift_mid_stance_max_m": 0.0,
      "slide_max_mm": 0.0,
      "contact_frames": 10,
-     "floor_m": 0.0185
+     "floor_m": 0.0042
     },
     "R": {
      "stance_toe_out_deg": 3.0,
@@ -261,32 +261,30 @@
       3.0,
       3.0
      ],
-     "swing_toe_abs_max_deg": 8.6,
-     "toe_abs_max_deg": 8.6,
+     "swing_toe_abs_max_deg": 7.5,
+     "toe_abs_max_deg": 7.5,
      "sole_lift_mid_stance_max_m": 0.0,
      "slide_max_mm": 0.0,
-     "contact_frames": 13,
-     "floor_m": 0.0185
+     "contact_frames": 12,
+     "floor_m": 0.0042
     }
    },
-   "hip_drop_max_m": 0.0047,
+   "hip_drop_max_m": 0.0109,
    "upper_body_max_rot_diff_deg": 0.0,
    "legs": {
     "L": {
-     "stance_toe_out_before_deg": 2.2,
-     "hip_rotation_deg": 0.9,
+     "stance_toe_out_before_deg": 2.5,
+     "hip_rotation_deg": 0.5,
      "ankle_twist_max_deg": 14.0
     },
     "R": {
-     "stance_toe_out_before_deg": 5.1,
-     "hip_rotation_deg": 2.1,
+     "stance_toe_out_before_deg": 4.0,
+     "hip_rotation_deg": 1.0,
      "ankle_twist_max_deg": 14.0
     }
    },
-   "fail": [
-    "L: в переносе |носок| 15.0° > 10.0°"
-   ]
+   "fail": []
   }
  },
- "ok": false
+ "ok": true
 }

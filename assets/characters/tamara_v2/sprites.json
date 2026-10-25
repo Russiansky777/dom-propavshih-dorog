@@ -53,12 +53,12 @@
       "clip": "walk",
       "clip_seconds": 1.0,
       "natural_fps": 24.0,
-      "floor_shift_m": -0.0259
+      "floor_shift_m": -0.0123
     }
   },
   "fit": {
-    "half_width_m": 0.548,
-    "top_m": 0.857,
+    "half_width_m": 0.531,
+    "top_m": 0.853,
     "frame_top_m": 0.949,
     "frame_w": 648
   },
