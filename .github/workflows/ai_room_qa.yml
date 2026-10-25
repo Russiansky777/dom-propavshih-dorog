@@ -8,9 +8,7 @@ name: ai-room-qa
 # ("rooms": "all" или список). Отчёт: Docs/ai_checks/room_qa_<дата>.md + кадры с находками. Правок в game/ и data/ нет.
 
 on:
-  workflow_run:
-    workflows: ["build-and-publish"]
-    types: [completed]
+  # Автозапуск после сборки выключен (Директор 25.10, экономия): только вручную или запросом.
   push:
     branches: [main]
     paths:

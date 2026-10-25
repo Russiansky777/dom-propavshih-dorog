@@ -9,8 +9,7 @@ name: ai-regression
 # Docs/playtest/regression_state.json. Коммиты с [skip ci].
 
 on:
-  schedule:
-    - cron: "41 3 * * *"
+  # Ежедневный автозапуск выключен (Директор 25.10, экономия): только вручную, по запросу координатора после всех правок.
   workflow_dispatch:
     inputs:
       force:
