@@ -310,7 +310,7 @@ func _test_q02_a() -> void:
 	_check(u != null and u.visible, "Ulyana studies in the class")
 	await _use("village_map")
 	var seen := await _finish()
-	_check(gs.has_flag("q02_seen_map") and seen.any(func(x): return x.begins_with("agata:Всем классом эту карту")), "Agata knows the map: %s" % str(seen))
+	_check(gs.has_flag("q02_seen_map") and seen.any(func(x): return x.begins_with("agata:Эту карту мы всем классом")), "Agata knows the map: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("ulyana:Да это наш сад")) and seen.any(func(x): return x.begins_with("ulyana:От школы")),
 		"Ulyana, there in the class: «Это же наш сад!» and the way «От школы — … до нашего дома … сад»: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("agata:Тогда [[пособи|помоги]] мне его найти")), "«Тогда помоги мне его найти»")
@@ -349,7 +349,7 @@ func _test_q02_a() -> void:
 	_check(rm.save_game(SLOT + "_q02_mid"), "save in the middle of Q02")
 	await _use("village_map")
 	seen = await _finish()
-	_check(sr.mechanic_open and not seen.any(func(x): return x.contains("эту карту")), "reopened: the close-up again, the first words not repeated: %s" % str(seen))
+	_check(sr.mechanic_open and not seen.any(func(x): return x.contains("Эту карту мы")), "reopened: the close-up again, the first words not repeated: %s" % str(seen))
 	_check(int(_panel().get("found", -1)) == 0, "reopened: the way from the start (nothing to lose — three clicks)")
 	await _q02_route()
 	_check(_coloured().size() == 3, "all three coloured (%s)" % str(_coloured()))

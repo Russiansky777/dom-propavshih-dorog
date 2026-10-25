@@ -1289,7 +1289,7 @@ func _test_q02_q06_traces() -> void:
 	_check(not a.any(func(x): return x.contains("растолковывает гостю дорогу") or x.contains("резную рамку")), "A/A: no B lines")
 	var b := _beats_of("M26", ["q02_new_primary", "q06_table_at_agata", "v01_photo_table"])
 	_check(b.any(func(x): return x.contains("Ульяна по нему растолковывает гостю дорогу")) and b.any(func(x): return x.contains("Для семейного снимка Илья на новом верстаке резную рамку смастерил")), "B/B: Ulyana's drawing by the door; the frame for the family photo")
-	_check(b.any(func(x): return x.contains("На столике")), "B: the photo stays where it was put on day one (the frame is for it)")
+	_check(b.any(func(x): return x.contains("на столике")), "B: the photo stays where it was put on day one (the frame is for it)")
 	_check(not b.any(func(x): return x.contains("как место менялось") or x.contains("уключину")), "B/B: no A lines")
 	_check(b[b.size() - 2] == "ulyana:Сестрица Агата, а завтра тоже можно прийти?" and b[b.size() - 1].begins_with("agata:Можно, Уля"),
 		"the last lines are still Ulyana's question and Agata's answer (H55): %s" % str(b.slice(-2)))

@@ -159,13 +159,13 @@ func _test_applied() -> void:
 		var res := String(e["result"])
 		counts[res] = int(counts.get(res, 0)) + 1
 		var want := String(e["new"]) if e["new"] != null else String(e["old"])
-		var have := _text_of(String(e["id"]))
+		var have: String = _text_of(String(e["id"]))
 		_check(have == want, "%d %s (%s): «%s» ≠ «%s»" % [int(e["n"]), e["id"], res, have, want])
 	_check(counts == {"внесено": 110, "иначе": 5, "отклонено": 9}, "110 / 5 / 9: %s" % str(counts))
 
 
 func _test_director_words() -> void:
-	var water := sd.text("@H1.tikhon.water")
+	var water: String = sd.text("@H1.tikhon.water")
 	_check(water.contains("Мамино зеркало") and water.contains("Струбцину"), "the hint after the water stays (Director, page 19:01): %s" % water)
 	_check(sd.text("@H1.after_mirror.tikhon_2").contains("Так ляг поспи. А печь я догляжу"), "Tikhon after the mirror: map 109")
 	_check(sd.text("@O1.board.use").contains("Может, увидят послание-то моё"), "the board: map 59")
@@ -184,16 +184,18 @@ func _test_director_words() -> void:
 
 func _play(scene_id: String) -> Array:
 	_flags_before(scene_id)
+	var seen: Array = []
 	var rooms: Array = sd.scene_trigger_rooms(scene_id)
 	if not rooms.is_empty():
 		rm.change_room(String(rooms[0]), "default")
 		await physics_frame
 		await _frames(3)
-		await _drain()
+		seen += await _drain()
 	if not sr.is_done(scene_id) and sr.current_beat.is_empty():
-		sr.start_scene(scene_id)
+		_check(sr.start_scene(scene_id), "%s starts" % scene_id)
 		await _frames(1)
-	return await _drain()
+	seen += await _drain()
+	return seen
 
 
 func _test_play() -> void:
@@ -204,4 +206,4 @@ func _test_play() -> void:
 	_check(seen.any(func(x): return String(x) == "agata:Так здесь всё это время учились!"), "M06: the joy of the class: %s" % str(seen))
 	seen = await _play("M17")
 	_check(seen.any(func(x): return String(x) == "agata:Не сворачивает! По канату идёт!"), "M17: the boat goes on: %s" % str(seen))
-	_check(seen.any(func(x): return String(x).begins_with("agata:Проверю так — как на лодке полагается")), "M17: the Director's words heard")
+	_check(seen.any(func(x): return String(x).begins_with("pelageya:Проверю так — как на лодке полагается")), "M17: the Director's words heard: %s" % str(seen))

@@ -173,7 +173,7 @@ func _test_rope_where() -> void:
 	var ww: String = sd.text("@R1d.pelageya.wait_water")
 	_check(ww.contains("со стопора канат сниму") and ww.contains("к опоре"), "G28: Pelageya says where the rope will go: %s" % ww)
 	var s15: Array = sd.scene("M15s")["mandatory_lines"]
-	_check(String(s15[1]["text"]).contains("канат со стопора сниму") and String(s15[2]["text"]).contains("со стопора канат снимает"), "G28: M15s — the rope taken off her stopper and brought to the plate")
+	_check(String(s15[1]["text"]).contains("канат со стопора сниму") and String(s15[2]["text"]).contains("снимает канат со стопора"), "G28: M15s — the rope taken off her stopper and brought to the plate")
 	# After the knot, every light of days 2–4: the rope at the turn from the ring over the water; the stopper empty.
 	for st in [["M16s", "dusk", []], ["M23a", "d3", []], ["M25", "d4", []]]:
 		_flags_before(String(st[0]), st[2])
