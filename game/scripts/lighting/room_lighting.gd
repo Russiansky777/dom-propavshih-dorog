@@ -72,6 +72,7 @@ static func load_data(id: String) -> Dictionary:
 ## Hook for RoomBuilder: adds `Lighting` to the room when lights/<room_id>.json exists.
 static func build(room: Node2D, id: String) -> RoomLighting:
 	LightProbe.register()  # web only, with ?lightprobe in the URL (tools/light_fps.mjs); once
+	NpcProbe.register()  # web only, with ?npcprobe in the URL (tools/i_t4b_web.mjs, I-T4b); once
 	if not enabled:
 		return null
 	var spec := load_data(id)
