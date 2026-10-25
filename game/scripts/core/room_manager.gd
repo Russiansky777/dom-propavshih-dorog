@@ -14,6 +14,8 @@ const SCENE_DIRS: Array[String] = ["res://scenes/rooms", "res://scenes/probe"]
 
 var autosave_slot: String = "auto"
 var autosave_enabled: bool = true
+## The spawn the player came in by (rooms data on_enter `spawn`: a line only when entering through that door, I-T1).
+var last_spawn: String = ""
 ## G5 (Director 23.10: «автосохранение раз в 5 минут»): play time between timed autosaves (data/story/meta.json
 ## autosave.interval_s, 300). Counted while a room is on screen and the tree is not paused.
 var autosave_interval_s: float = 300.0
@@ -149,6 +151,7 @@ func change_room(room_id: String, spawn_id: String, override_pos: Vector2 = Vect
 	current_room.apply_flags()
 	room_changed.emit(room_id)
 
+	last_spawn = spawn_id
 	StoryRunner.on_room_entered(room_id)
 	if autosave_enabled:
 		autosave()   # after the room's first-entry lines are queued: a load never lands before them

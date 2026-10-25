@@ -175,7 +175,7 @@
     "night": [300, 830]
   },
   "_night_note": "Спавн night — у печи, слева от кресла: «Ночь у печи» (сцена N01, scenes/E1.json → stage.room/spawn) ставит сюда Агату в затемнении после возвращения из школы.",
-  "on_enter": [{"text": "@H1.dark_enter", "once_flag": "h1_dark_said", "unless": ["h1_shutter_open"], "_note": "I-T1 (Директор 25.10, стр. 30): первый вход в тёмный дом — реплика Агаты её голосом"}, {"text": "@H1.after_mirror.tikhon_1", "then": ["@H1.after_mirror.agata", "@H1.after_mirror.tikhon_2"], "once_flag": "h1_tikhon_after_mirror", "if": ["done_M15a"], "unless": ["done_M15s"], "_note": "H33 (Директор 24.10): после маминого зеркала (M15a, мастерская — выход только в жилую комнату) — короткий разговор с Тихоном при возвращении; один раз (флаг в сохранении)"}],
+  "on_enter": [{"text": "@H1.dark_enter", "once_flag": "h1_dark_said", "unless": ["h1_shutter_open"], "spawn": "from_Z2", "_note": "I-T1 (Директор 25.10, стр. 30): первый вход в тёмный дом — реплика Агаты её голосом"}, {"text": "@H1.after_mirror.tikhon_1", "then": ["@H1.after_mirror.agata", "@H1.after_mirror.tikhon_2"], "once_flag": "h1_tikhon_after_mirror", "if": ["done_M15a"], "unless": ["done_M15s"], "_note": "H33 (Директор 24.10): после маминого зеркала (M15a, мастерская — выход только в жилую комнату) — короткий разговор с Тихоном при возвращении; один раз (флаг в сохранении)"}],
   "props": [],
   "hotspots": [
     {

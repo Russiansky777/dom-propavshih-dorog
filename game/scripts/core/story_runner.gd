@@ -753,6 +753,9 @@ func _run_on_enter(room_id: String) -> void:
 			continue
 		if (oe.get("unless", []) as Array).any(func(f): return GameState.has_flag(String(f))):
 			continue
+		# `spawn`: only when the player came in through that door (I-T1: the dark house from the porch, not a load).
+		if oe.has("spawn") and String(oe["spawn"]) != RoomManager.last_spawn:
+			continue
 		if once != "":
 			GameState.set_flag(once, true)
 		# `reveal`: hotspot ids lit for a moment, as by the reveal key (I-T1: Ilya's workshop on the first visit after
