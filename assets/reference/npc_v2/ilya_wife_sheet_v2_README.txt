@@ -1,0 +1,45 @@
+Варвара — лист персонажа v2
+Файл: ilya_wife_sheet_v2.png
+Размер: 3264×2448 пикселей, PNG RGB, непрозрачный.
+Фон: ровный #DEDEDC / RGB(222, 222, 220).
+Виды: анфас; профиль вправо 90°; спина.
+Верх каждого силуэта y=184, высота 2080 пикселей, нижняя линия подошв y=2263.
+
+Варвара — жена Ильи, около 30 лет по ТЗ. Сохранены общий тип лица и телосложение, каштановые волосы с центральным пробором под бежевым цветочным головным платком, отдельная бежевая шаль с цветочной каймой и бахромой, тёмно-зелёная стёганая куртка с двумя передними карманами, зелёная складчатая юбка и простые тёмные сапоги. На корпусе куртки вертикальная стёжка, на рукавах поперечная. Новые предметы не добавлены.
+
+Что не получилось точно / ограничения
+1. В исходном ilya_wife_sheet.png — два анфаса и вид со спины. Профиль восстановлен по этим изображениям; отдельного авторского профиля для точного сравнения нет.
+2. В исходнике спереди виден узел головного платка под подбородком, а сзади — узел с концами на затылке. Эти признаки сохранены, но единая физически согласованная схема завязывания по референсу не установлена. В профиле видны оба признака. Перед моделированием эту конструкцию потребуется уточнить.
+3. Кисть в профиле отделена от юбки, но для этого рука отведена вперёд сильнее, чем в других видах. Поза не является одной строго общей позой во всех проекциях.
+4. В профиль большой палец и дальняя рука частично скрыты; одновременная видимость всех пяти пальцев на каждой кисти не подтверждена. Явных лишних пальцев при визуальной проверке не обнаружено.
+5. Черты лица слегка сглажены; рисунок платков, отдельные цветы, бахрома, стёжка и складки заново отрисованы и не совпадают с исходником пиксель в пиксель. Расположение мелких мотивов между видами не полностью согласовано.
+6. Нативный результат генератора — 1448×1086. При сборке фигуры увеличены примерно в 2,21 раза до целевого листа. Это увеличение, а не нативная генерация в 3264×2448; настоящих дополнительных деталей оно само по себе не создаёт.
+7. Это иллюстрированный референс, а не метрически согласованные проекции одной готовой 3D-модели.
+
+Создание
+Встроенный image_gen, два вызова. Первый — лист по исходнику, второй — коррекция ближней руки в профиле. В итог вошёл второй вариант.
+Техническая подготовка ImageMagick: однотонный фон, выравнивание высоты каждого силуэта без изменения его пропорций, общая линия подошв, экспорт 3264×2448. Художественные детали программно не дорисовывались.
+Проверены чтение PNG, размер, цвет фона и итоговый вид. Исходные файлы не изменены.
+
+Точный запрос 1
+Use case: identity-preserve.
+Primary request: improve the attached ORIGINAL VARVARA character sheet for a 3D character model, preserving this exact same woman. She is Ilya's wife, approximately 30, from "Дом пропавших дорог". Do NOT redesign her.
+REFERENCE IMAGE 1 ilya_wife_sheet.png is strict for face, adult age ~30, body proportions, every costume piece and colors. It contains two repeated front views and a rear. Replace the middle repeated front with a reconstructed strict RIGHT-FACING90° profile.
+OUTPUT ONE landscape4:3 sheet at exactly3264x2448px. THREE complete full-body views in ONE horizontal row: LEFT strict FRONT; CENTER strict90° SIDE PROFILE facing RIGHT with nose to the RIGHT; RIGHT strict BACK. Identical anatomical height and scale, head tops aligned, ALL boot soles on one common horizontal line. Full head-to-sole coverage, clear margins, no cropped hands, shawls or boots, figures never touch. No perspectives or three-quarter views.
+BACKGROUND: opaque completely UNIFORM light gray exact #DEDEDC RGB(222,222,220), NO gradients, ground plane, contact shadows or vignette. Soft even neutral studio light on figures, mild natural form shading, no hard shadows.
+FACE/BODY: exact recognizably same woman in image1, rounded softly mature adult face, natural nose and lips, gently defined cheeks, calm neutral expression, natural healthy warm fair skin not bleached or gray. Preserve her original comfortable average/sturdy female build and proportions, not younger, thinner or glamorous. Same light brown center-parted hair smoothed under her headscarf, small hair strands visible around forehead/temples, no new bangs, braid or uncovered hairstyle.
+COSTUME STRICT LOCK:
+1) Same small warm beige/tan floral HEADSCARF covering the crown and ears, close around head, with original small red and blue-green floral print and source short ties, fit neatly at neck. Preserve the visible tie arrangement in each provided front/rear reference. Do not create loose sticking-out corners, large flowing tails, extra fabric or new ornaments.
+2) Same separate large beige/tan triangular SHOULDER SHAWL, spread over both shoulders, original red/rust floral bands with muted blue-green small details and narrow geometric edging. In front its two triangular ends drape down along either side of chest ending above jacket hem. In back it forms one clear triangle pointing down to midback, same patterned border, short beige fringe evenly following border. Keep the shape, band order, motif scale and colors consistent across all three views. Do not turn shawl into poncho, headscarf or modern scarf.
+3) Same dark FOREST GREEN quilted hip-length jacket, long sleeves, original narrow VERTICAL quilting channels on the torso and TRANSVERSE quilting across the sleeves, simple center front closure, no new buttons or hardware, original two low rectangular front patch pockets, same dark edging at cuffs and hem. Back is the original plain vertically quilted green back, no extra pockets. Green sleeve cuffs extend to wrists as reference.
+4) Same full-length dark forest green plain pleated skirt ending above original black/dark charcoal calf boots. SAME original boot shapes and modest soles, no heels or added laces/buckles. No apron, bag, belt, jewelry, tools or other new props.
+POSE: upright neutral. Feet shoulder-width, weight even, knees straight. Arms down and gently away from sides, not raised T-pose. Both hands relaxed, warm skin, five anatomically correct separated fingers each with correct thumb, no merged or extra digits; leave a visible gap between hands and coat/skirt/shawl. For the CENTER profile specifically: gently angle the NEAR arm forward (toward RIGHT in the image), so its hand is completely outside and slightly IN FRONT OF the skirt silhouette with a small clear gray gap; hand hangs down below waist, not touching fabric, no body twist. Far arm may naturally be occluded.
+RENDER: refined realistic game character turnaround, sharply readable hair strands, seams, vertical jacket quilting, pleats, shawl fringe and printed floral pattern. Keep original pattern confined to the headscarf and shoulder shawl; coat/skirt/boots remain plain unornamented green/black. All colors and physical proportions follow image1.
+No letters, names, titles, captions, numbers, frames, panel lines, watermark, extra portraits or objects. Exactly3figures. Strict front / right profile / rear, equal height, plain gray background.
+
+Точный запрос 2
+Make a LOCAL ARM-POSE edit to Image1, the Varvara 3-view character sheet. Image2 is the original identity/costume reference.
+Keep the LEFT FRONT and RIGHT BACK figures unchanged. Keep every garment, material, color, pattern, skin tone, face, hairstyle, headscarf, shawl, hem, boots and body proportion of the CENTER right-profile figure unchanged, except its NEAR arm.
+The near hand currently sits IN FRONT OF THE SKIRT AS AN OVERLAP. This is wrong. Move the whole near arm FORWARD FROM THE SHOULDER, toward the RIGHT side of the image, until the ENTIRE HAND is visibly OUTSIDE the front contour of her skirt and jacket. Empty GRAY BACKGROUND must be visible between the back of her hand/ALL fingers/thumb and the garment. The hand should occupy approximately x865..925 at y510..600 on a1448x1086 canvas: beyond the center profile skirt's right edge near x840. If needed slightly move the center figure left to keep space between figures. Arm points diagonally down and forward about30degrees from vertical, wrist relaxed, fingers pointing down, a natural slight elbow bend; do not stretch or disconnect arm. Five separate normal fingers, no touching the skirt. Do NOT simply move fingers a tiny bit over the fabric. Her body and head stay strict90degree RIGHT profile with NO twist.
+Same approximately30-year-old woman: light-brown center-parted hair under beige floral headscarf, separate beige floral shoulder shawl with red/blue-green band and short fringe, plain forest-green quilted jacket with vertical torso quilting and transverse sleeve quilting, same two front pockets, plain matching pleated skirt, plain dark boots. No props or new clothing. Keep the original shape and motif scale of both scarves. Patterns remain only on scarf/shawl, plain green coat/skirt.
+One horizontal row of exactlythree complete full-body figures, aligned heads and soles, front/right profile/rear. OPAQUE flat uniform gray #DEDEDC RGB222,222,220, no gradients or floor shadows. No text/frames. Output3264x2448landscape4:3.
