@@ -1,0 +1,42 @@
+{
+  "character": "mitya_v2",
+  "sheet": "assets/reference/npc_v2/mitya_sheet_v2.png",
+  "height_m": 1.8,
+  "ai_model": "latest",
+  "pose_mode": "a-pose",
+  "texture_resolution": "4k",
+  "geometry_resolution": "2k",
+  "enable_pbr": true,
+  "multi_view_thumbnails": true,
+  "actions": [
+    "talk",
+    "talk2"
+  ],
+  "action_ids": {
+    "talk": 313,
+    "talk2": 56
+  },
+  "text_motions": {
+    "idle": {
+      "prompt": "A big 37-year-old bearded man in a sheepskin coat stands calmly in place, upright natural posture, relaxed slow breathing, a slight slow weight shift from one leg to the other and back, both arms hanging relaxed and close to the sides of the body, hands near the thighs, head almost still, feet stay planted, seamless loop that starts and ends in the same pose.",
+      "mode": "prime",
+      "duration": 5
+    },
+    "listen": {
+      "prompt": "A big 37-year-old bearded man in a sheepskin coat stands still and listens attentively to someone in front, upright natural posture, arms relaxed and close to the body, a small slow nod of the head once, slight slow breathing, feet stay planted, seamless loop that starts and ends in the same pose.",
+      "mode": "prime",
+      "duration": 5
+    }
+  },
+  "retarget": false,
+  "feet_fix": false,
+  "frames": {
+    "talk": 2,
+    "talk2": 2
+  },
+  "render_size": 96,
+  "render_samples": 1,
+  "elev": 14,
+  "front_yaw": 0,
+  "_note": "I-T4 (25.10), этап A — Meshy: модель по листу v2 (геометрия 2k, текстуры 4K, PBR) → Remesh 300 тыс. → риг → пресеты talk = Talk_with_Hands_Open (313), talk2 = Stand_and_Chat (56) — выбор глазами; стойка и «слушает» — Text to Motion prime (роли idle, listen). Рендер этого этапа — черновой (96 px, 2 кадра): игровой лист — этап B после Blender (руки к телу, рот, жёсткие предметы) запросом local_glb. Кредиты ≈ 35 + 5 + 5 + 3×2 + 2×(10+3)."
+}
