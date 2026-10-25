@@ -94,7 +94,7 @@
    "frames": 25,
    "cyclic": true,
    "body_yaw_deg": 0.0,
-   "floor_m": 0.0133,
+   "floor_m": 0.0109,
    "legs": {
     "L": {
      "stance_toe_out_before_deg": 0.7,
@@ -103,11 +103,11 @@
     },
     "R": {
      "stance_toe_out_before_deg": -2.8,
-     "hip_rotation_deg": 5.8,
+     "hip_rotation_deg": 5.9,
      "ankle_twist_max_deg": 14.0
     }
    },
-   "hip_drop_max_m": 0.0088,
+   "hip_drop_max_m": 0.0083,
    "clip": "walk",
    "window": null,
    "before": {
@@ -117,25 +117,25 @@
       -2.9,
       2.0
      ],
-     "swing_toe_abs_max_deg": 26.4,
-     "toe_abs_max_deg": 26.4,
-     "sole_lift_mid_stance_max_m": 0.0207,
+     "swing_toe_abs_max_deg": 26.3,
+     "toe_abs_max_deg": 26.3,
+     "sole_lift_mid_stance_max_m": 0.0214,
      "slide_max_mm": 0.0,
      "contact_frames": 11,
-     "floor_m": 0.0127
+     "floor_m": 0.0104
     },
     "R": {
      "stance_toe_out_deg": -2.8,
      "stance_toe_out_range_deg": [
-      -11.0,
-      -1.7
+      -10.8,
+      -1.6
      ],
-     "swing_toe_abs_max_deg": 22.5,
-     "toe_abs_max_deg": 22.5,
-     "sole_lift_mid_stance_max_m": 0.0343,
+     "swing_toe_abs_max_deg": 22.2,
+     "toe_abs_max_deg": 22.2,
+     "sole_lift_mid_stance_max_m": 0.0333,
      "slide_max_mm": 0.0,
      "contact_frames": 13,
-     "floor_m": 0.0127
+     "floor_m": 0.0104
     }
    },
    "after": {
@@ -145,12 +145,12 @@
       3.0,
       3.0
      ],
-     "swing_toe_abs_max_deg": 12.1,
-     "toe_abs_max_deg": 12.1,
+     "swing_toe_abs_max_deg": 11.8,
+     "toe_abs_max_deg": 11.8,
      "sole_lift_mid_stance_max_m": 0.0,
      "slide_max_mm": 0.0,
      "contact_frames": 12,
-     "floor_m": 0.0153
+     "floor_m": 0.0129
     },
     "R": {
      "stance_toe_out_deg": 3.0,
@@ -158,18 +158,18 @@
       3.0,
       3.0
      ],
-     "swing_toe_abs_max_deg": 11.9,
-     "toe_abs_max_deg": 11.9,
+     "swing_toe_abs_max_deg": 11.5,
+     "toe_abs_max_deg": 11.5,
      "sole_lift_mid_stance_max_m": 0.0,
      "slide_max_mm": 0.0,
-     "contact_frames": 12,
-     "floor_m": 0.0153
+     "contact_frames": 13,
+     "floor_m": 0.0129
     }
    },
    "upper_body_max_rot_diff_deg": 0.0,
    "fail": [
-    "L: в переносе |носок| 12.1° > 10.0°",
-    "R: в переносе |носок| 11.9° > 10.0°"
+    "L: в переносе |носок| 11.8° > 10.0°",
+    "R: в переносе |носок| 11.5° > 10.0°"
    ],
    "role": "walk"
   }
