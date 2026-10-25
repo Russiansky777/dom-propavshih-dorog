@@ -6,7 +6,7 @@
 
 Делает: tools/sync_characters.sh <id>_v2; sheet_dir → листы v2; состояния I-T2 (listen — свой клип, talk — свой, темп 1);
 talk — цикл (Talk_with_Hands_Open цикличный, рот по кадрам листа), прежнее pingpong_eased реплики снято;
-стойка — туда-обратно по замеру (tools/measure_idle.py --write); ходьба — цикл 1,18 м (Walking_Woman, как у Агаты).
+стойка и «слушает» — туда-обратно по листу; ходьба — цикл 1,18 м (Walking_Woman, как у Агаты).
 Рост и масштаб по замыслу (npc.scale_factor) — прежние: лист нормирует фигуру по кадру.
 """
 import json
@@ -33,7 +33,10 @@ def main() -> int:
         if not ready(i):
             print(f"{i}: листа v2 этапа B ещё нет — пропущен")
             continue
-        subprocess.run(["bash", os.path.join(ROOT, "tools", "sync_characters.sh"), f"{i}_v2"], check=True)
+        src = os.path.join(ROOT, "assets", "characters", f"{i}_v2", "sprites.json")
+        dst = os.path.join(ROOT, "game", "assets", "characters", f"{i}_v2", "sprites.json")
+        if not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(src):   # упаковка атласов — минуты
+            subprocess.run(["bash", os.path.join(ROOT, "tools", "sync_characters.sh"), f"{i}_v2"], check=True)
         p = os.path.join(ROOT, "game", "data", "actors", f"{i}.json")
         d = json.load(open(p, encoding="utf-8"))
         sprites = json.load(open(os.path.join(ROOT, "assets", "characters", f"{i}_v2", "sprites.json"), encoding="utf-8"))
@@ -44,10 +47,12 @@ def main() -> int:
                             "с ртом по кадрам листа%s. Перенос данных — tools/i_t4_npc_v2.py." %
                             (i, ", walk — ходьба Meshy (уходит шагом в постановке)" if "walk" in sprites["actions"] else ""))
         acts = d.setdefault("actions", {})
-        acts["_comment"] = ("I-T4: стойка — туда-обратно по замеру (eased_motion); «слушает» — туда-обратно по листу; "
+        acts["_comment"] = ("I-T4: стойка и «слушает» — туда-обратно по листу (стойка — по замеру measure_idle --all-frames: "
+                            "все 24 кадра окна, время по пути); "
                             "реплика — цикл листа (клип цикличный).")
         acts.pop("talk", None)
-        acts["idle"] = {"playback": "pingpong_eased", "period_s": 3.6, "hold_s": 0.35}
+        acts["idle"] = {"playback": "pingpong_eased", "period_s": 3.6, "hold_s": 0.2}
+        acts["listen"] = {"playback": "pingpong"}
         d["states"] = {"_comment": "I-T4: свои клипы v2 для состояний I-T2.",
                        "listen": {"action": "listen", "speed": 1.0}, "talk": {"action": "talk", "speed": 1.0}}
         if "walk" in sprites["actions"]:
@@ -61,8 +66,9 @@ def main() -> int:
         d["eased_motion"] = em
         json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
         open(p, "a", encoding="utf-8").write("\n")
-        subprocess.run([sys.executable, os.path.join(ROOT, "tools", "measure_idle.py"), i, "--write",
-                        "--period", "3.6", "--hold", "0.35"], check=True)
+        # все кадры окна (в нём и развороты на нулевой скорости), время — по измеренному пути
+        subprocess.run([sys.executable, os.path.join(ROOT, "tools", "measure_idle.py"), i, "--write", "--all-frames",
+                        "--period", "3.6", "--hold", "0.2"], check=True, stdout=subprocess.DEVNULL)
         print(f"{i}: v2 в данных")
     return 0
 
