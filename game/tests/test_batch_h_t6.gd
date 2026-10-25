@@ -239,7 +239,7 @@ func _test_day_three() -> void:
 	await _enter("O3", "from_O4")
 	var b := await _click("bed")
 	var t := String(b.get("text", ""))
-	_check(_key(b) == "H4.bed.early_d3" and t.contains("письма Тамары") and not t.contains("Павел"), "day three: «рано» with what is left: %s" % t)
+	_check(_key(b) == "H4.bed.early_d3" and t.contains("повидать Тамару на раздаче писем") and not t.contains("Павлу"), "day three: «рано» with what is left: %s" % t)
 	await _drain()
 	_flags_before("M23d")
 	gs.set_flag("done_M23d", true)

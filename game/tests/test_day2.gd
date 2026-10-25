@@ -1134,7 +1134,7 @@ func _test_walkthrough() -> void:
 		guard += 1
 	seen = await _finish()
 	_check(gs.has_flag("far_lights_answered") and gs.has_flag("road_held_both_ends") and gs.has_flag("done_M16"), "three flashes → three lights → M16: %s" % str(seen))
-	_check(seen.any(func(x): return x.contains("Впервые за год огни")), "Pelageya at the answer: «Отвечают. Первые огни за год» (V13: not one more «Год там…»): %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Целый год ни огонька")), "Pelageya at the answer: «Отвечают. Первые огни за год» (V13: not one more «Год там…»): %s" % str(seen))
 	sr.close_mechanic()
 	await _frames(2)
 	var lay: Node = rm.current_room.get_node("Layers")
@@ -1155,7 +1155,7 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("done_M17") and gs.has_item("school_ribbon") and gs.has_flag("ferry_verified"), "the empty boat returns with the ribbon: %s" % str(seen))
 	# Director 22.10: shown directly — the boat goes along the rope on its ring and no longer turns back to its pier.
-	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю, как на лодке")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("кольцо надену"), "Pelageya puts the ring on the rope: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю так — как на лодке")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("кольцо надену"), "Pelageya puts the ring on the rope: %s" % str(seen))
 	var m17_text := ""
 	for ln in sd.scene("M17").get("mandatory_lines", []):
 		m17_text += String(ln.get("text", "")) + "\n"
@@ -1210,7 +1210,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
 	var m18_end := String(sd.scene("M18").get("mandatory_lines", [])[-1].get("text", ""))
-	_check(seen.any(func(x): return x.begins_with("narration:Пелагея Митин рукав не выпускает")) and m18_end.contains("Он поднимает фонарь") and m18_end.contains("Пелагея у лодки остаётся"),
+	_check(seen.any(func(x): return x.begins_with("narration:Пелагея всё не выпустит Митин рукав")) and m18_end.contains("Митя поднимает фонарь") and m18_end.contains("Пелагея остаётся у лодки"),
 		"B13/C3: Mitya leads Agata with the lantern, Pelageya stays at the boat: %s / %s" % [m18_end, str(seen)])
 	# F13 (Director 23.10): back into the boat — not now; Pelageya: «Сейчас — к матери. Назад повезу завтра».
 	var back = rm.current_room.get_node_or_null("Exits/to_R2")

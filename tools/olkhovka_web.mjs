@@ -267,7 +267,7 @@ async function main() {
     s = await state();
     check(s.flags.done_M19c && s.flags.o3_clock_compared, "a click on the clock → M19c");
     check(caughtB12, "B12: «Двадцать лет я в него смотрела…»");
-    check(lines.some((l) => l.includes("Ты не выросла")), "M20: Ilya «Ты не выросла»");
+    check(lines.some((l) => l.includes("Не выросла")), "M20: Ilya «Ты всё такая же… Не выросла»");
     check(s.flags.done_M20 && s.flags.morning_day3, "M20 → the morning of day three");
     await sleep(1000);
     await page.mouse.move(400, 1000);

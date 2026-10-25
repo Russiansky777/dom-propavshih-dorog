@@ -270,7 +270,7 @@ async function main() {
       check(s.hotspots.ulyana && s.hotspots.ulyana.visible, "Ulyana in the class before Q02");
       lines = await useHotspot("village_map", { done: (t) => t.mechanic && t.mechanic.open && !beatKey(t) });
       s = await state();
-      check(s.flags.q02_seen_map && lines.some((l) => l.includes("один забор")) && lines.some((l) => l.startsWith("ulyana") && l.includes("наш сад"))
+      check(s.flags.q02_seen_map && lines.some((l) => l.includes("только забор")) && lines.some((l) => l.startsWith("ulyana") && l.includes("наш сад"))
         && lines.some((l) => l.startsWith("ulyana") && l.includes("От школы")), `the map: Agata knows it; Ulyana, there in the class, tells the way (${JSON.stringify(lines).slice(0, 260)})`);
       check(s.hotspots.ulyana && s.hotspots.ulyana.visible, "H47: Ulyana does not vanish from the class");
       check(s.mechanic.type === "map_route" && s.mechanic.panel.phase === "route" && s.mechanic.panel.found === 0, `the map close-up: the way, nothing coloured (${JSON.stringify(s.mechanic.panel.phase)})`);

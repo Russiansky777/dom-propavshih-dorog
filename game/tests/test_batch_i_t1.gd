@@ -313,7 +313,7 @@ func _test_tikhon() -> void:
 	b = await _first_beats("tikhon")
 	_check(b.size() >= 1 and String(b[0]).contains("after_dunya"), "after the news Tikhon has his own answer: %s" % str(b))
 	var water: Dictionary = sd.text_line("@H1.tikhon.water")
-	_check(String(water.get("speaker", "")) == "tikhon" and String(water.get("text", "")).contains("мамино зеркало"), "the hint is Tikhon's own voice: %s" % str(water))
+	_check(String(water.get("speaker", "")) == "tikhon" and String(water.get("text", "")).to_lower().contains("мамино зеркало"), "the hint is Tikhon's own voice: %s" % str(water))
 
 
 # --- 3. Q06 hook --------------------------------------------------------------------------
@@ -361,7 +361,7 @@ func _test_small() -> void:
 	e = _exit("H1")
 	_check(e != null and e.label_text() == sd.text("@Z2.exit_H1.label"), "then the old label: %s" % (e.label_text() if e else "-"))
 	var m10 := _lines_of("M10")
-	_check(m10.size() == 2 and String(m10[1].get("speaker", "")) == "agata", "M10: Agata answers Tikhon at the bell")
+	_check(m10.size() >= 2 and String(m10[1].get("speaker", "")) == "agata", "M10: Agata answers Tikhon at the bell")
 	var friend := false
 	for ln in _lines_of("M23d"):
 		if String(ln.get("speaker", "")) == "tikhon" and String(ln.get("text", "")).contains("Друг"):

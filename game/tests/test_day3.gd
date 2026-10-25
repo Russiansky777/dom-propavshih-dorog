@@ -700,7 +700,7 @@ func _test_walkthrough() -> void:
 		await process_frame
 		g += 1
 	_check(gs.has_flag("done_N02") and gs.has_flag("morning_day3"), "N02: the night in the old bed, then morning: %s" % str(seen))
-	_check(seen.any(func(x): return x.begins_with("ilya:Ты не выросла")), "Ilya: «Ты не выросла»")
+	_check(seen.any(func(x): return x.begins_with("ilya:Ты всё такая же… Не выросла")), "Ilya: «Ты всё такая же… Не выросла» (I-T5)")
 	_check(gs.has_flag("wife_came"), "the wife came with the lamp: her figure is shown by wife_came (set in M20 before her line)")
 	_check(gs.has_save(CP + "day3"), "checkpoint «День третий» written")
 	_check(not _hotspot("ilya").visible and rm.current_room.get_node_or_null("Layers/night") != null and not rm.current_room.get_node("Layers/night").visible, "morning: the painted night (O3_night, партия 8) is off, Ilya has gone home")
@@ -1006,11 +1006,11 @@ func _test_traces() -> void:
 	var nob := _beats_of("M22", [])
 	_check(not nob.any(func(x): return x.begins_with("ulyana:А кто ей шарф") or x.begins_with("ulyana:А лодку") or x.begins_with("ulyana:Кто мостик")), "G37: nothing drawn — no reply about it")
 	var fam := _beats_of("M26", ["pavel_answer_family", "tikhon_told_agata", "v01_cup_white", "beam_blank"])
-	_check(fam.any(func(x): return x.begins_with("pavel:Мать с братом")) and not fam.any(func(x): return x.begins_with("pavel:Сдержала слово")), "Pavel's epilogue line follows the answer in the office")
+	_check(fam.any(func(x): return x.begins_with("pavel:Мать с братом")) and not fam.any(func(x): return x.begins_with("pavel:Слово сдержала")), "Pavel's epilogue line follows the answer in the office")
 	_check(fam.any(func(x): return x.contains("возле Агатиной лежанки спит")) and fam.any(func(x): return x.begins_with("agata:Среда")), "told by Agata: Tikhon sleeps by her bed; Agata answers «Среда»")
 	_check(fam.any(func(x): return x.contains("Белая")) and fam.any(func(x): return x.contains("Чист торец первого бревна")), "the white cup; the clean beam end")
 	var prom := _beats_of("M26", ["pavel_answer_promise", "tikhon_told_nina", "q07_board_to_pelageya", "q01_mail_at_nina"])
-	_check(prom.any(func(x): return x.begins_with("pavel:Сдержала слово")) and prom.any(func(x): return x.begins_with("nina:Среда, Тихон")), "promise kept; Nina answers Tikhon")
+	_check(prom.any(func(x): return x.begins_with("pavel:Слово сдержала")) and prom.any(func(x): return x.begins_with("nina:Среда, Тихон")), "promise kept; Nina answers Tikhon")
 	_check(prom.any(func(x): return x.contains("Митина дощечка")) and prom.any(func(x): return x.contains("Через Нину")), "optional stories leave their lines")
 	# Frame layers by flags: the beam end inscription.
 	gs.reset()

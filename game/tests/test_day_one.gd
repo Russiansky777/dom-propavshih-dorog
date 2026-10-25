@@ -524,7 +524,7 @@ func _test_winter() -> void:
 	await _enter("H3", flags)
 	rm.change_room("O1", "from_H3")
 	await _frames(3)
-	_check(String(sr.current_beat.get("text", "")) == "Там уж зима. А у нас ещё октябрь.", "first entry: «Там зима…» (%s)" % sr.current_beat.get("text", ""))
+	_check(String(sr.current_beat.get("text", "")) == "Там уж зима?.. А у нас ещё октябрь! Как же это?", "first entry: «Там зима…» (%s)" % sr.current_beat.get("text", ""))
 	await _drain()
 	_check(gs.has_flag("o1_saw_winter"), "flag set")
 	_check(rm.save_game(SLOT), "save")

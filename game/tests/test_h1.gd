@@ -355,7 +355,7 @@ func _test_m03_once() -> void:
 		sr.advance()
 		await process_frame
 	var early: Array = sr.current_options().map(func(o): return String(o.get("id", ""))) if sr.current_beat.get("type", "") == "options" else []
-	_check(early == ["tamara", "leave"], "C13: no questions about the door, the bundle or the bell before seeing them: %s" % str(early))
+	_check(early == ["tamara", "cream", "leave"], "C13: no questions about the door, the bundle or the bell before seeing them: %s" % str(early))
 	await _finish(["leave"])
 	gs.set_flag("visited_H2", true)
 	gs.set_flag("visited_H3", true)
@@ -364,7 +364,7 @@ func _test_m03_once() -> void:
 		sr.advance()
 		await process_frame
 	var later: Array = sr.current_options().map(func(o): return String(o.get("id", ""))) if sr.current_beat.get("type", "") == "options" else []
-	_check(later == ["door", "bundle", "bell", "dunya_mend", "tamara", "leave"], "C13: after the gallery and the workshop all four questions: %s" % str(later))
+	_check(later == ["door", "bundle", "bell", "dunya_mend", "tamara", "cream", "leave"], "C13: after the gallery and the workshop all four questions: %s" % str(later))
 	var again := await _finish(["door"])
 	_check(not again.any(func(x): return m03_tikhon.has(String(x).trim_prefix("tikhon:"))), "a click on Tikhon after M03 does not replay M03: %s" % str(again))
 	_check(again.has("options:door") and again.any(func(x): return String(x).contains("Нина просила")), "a click on Tikhon after M03 opens his questions: %s" % str(again))

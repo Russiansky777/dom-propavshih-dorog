@@ -887,7 +887,7 @@ func _test_walkthrough() -> void:
 	await bot.use("bell")
 	seen = await bot.finish()
 	_check(gs.has_item("door_hinges") and gs.has_flag("seen_workshop") and gs.has_flag("knows_rule_things_remember") and gs.has_flag("seen_bell"), "M04 workshop steps")
-	_check(seen.size() == 2 and seen[1].contains("Коли колокол на мельнице звенит"), "bell: the tag, then Agata's thought about the school door: %s" % str(seen))
+	_check(seen.size() == 2 and seen[1].contains("Коли вещи своё место помнят"), "bell: the tag, then Agata's thought about the school door: %s" % str(seen))
 	# N6 (playtest r7): the painted box stays — the hotspot too: empty now, the hinges go to the school door in the gallery.
 	_check(bot.hotspot("hinges_box") != null and bot.hotspot("hinges_box").visible, "the hinges' box stays clickable after pickup")
 	await bot.use("hinges_box")
@@ -965,7 +965,7 @@ func _test_walkthrough() -> void:
 	# --- O1: M06, M07, V03, chalk ---
 	_check(await bot.go("O1"), "H3→O1 through the installed door")
 	seen = await bot.finish()
-	_check(gs.has_flag("o1_saw_winter") and seen.any(func(x): return x.contains("Там уж зима")), "first entry: «Там зима. А у нас ещё октябрь»: %s" % str(seen))
+	_check(gs.has_flag("o1_saw_winter") and seen.any(func(x): return x.contains("Там уж зима?")), "first entry: «Там зима. А у нас ещё октябрь»: %s" % str(seen))
 	await bot.use("sack")
 	await bot.finish()
 	await bot.use("notebooks")
