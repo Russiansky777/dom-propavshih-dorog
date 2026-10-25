@@ -330,6 +330,29 @@ def main() -> int:
     mc.download(anim["result"]["animation_glb_url"], out / "animations.glb")
     st["anim_credits"] = anim.get("consumed_credits")
     save_state(name, st)
+    # ответы задач (ссылки живут 3 дня) — для сборки в Blender вне конвейера (I-T4, 25.10)
+    for stage, task in (("model", model), ("rig", rig), ("anim", anim)):
+        (STATE / f"{name}_{stage}.json").write_text(json.dumps(task, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 5. Text to Motion по ролям (I-T4): {"роль": {"prompt", "mode": "prime", "duration"}} → out/<name>/motion_<роль>.glb
+    #    10 кредитов за движение + 3 за перенос на риг; id задач в состоянии — повтор не тратит кредиты
+    for role, cfg in (req.get("text_motions") or {}).items():
+        tk, ak = f"tm_{role}_task", f"tm_{role}_anim_task"
+        if tk not in st:
+            st[tk] = mc.create("/text-to-motion", cfg)
+            save_state(name, st)
+            log(f"[{name}] Text to Motion «{role}»: задача {st[tk]}")
+        tm = mc.wait("/text-to-motion", st[tk], log=log)
+        st[f"tm_{role}_credits"] = tm.get("consumed_credits")
+        if ak not in st:
+            st[ak] = mc.create("/animations", {"rig_task_id": st["rig_task"], "motion_task_id": st[tk]})
+            save_state(name, st)
+        am = mc.wait("/animations", st[ak], log=log)
+        st[f"tm_{role}_anim_credits"] = am.get("consumed_credits")
+        save_state(name, st)
+        mc.download(am["result"]["animation_glb_url"], out / f"motion_{role}.glb")
+        (STATE / f"{name}_tm_{role}.json").write_text(json.dumps({"text_motion": tm, "animation": am}, ensure_ascii=False, indent=2), encoding="utf-8")
+        log(f"[{name}] «{role}» готово, кредитов: {tm.get('consumed_credits')} + {am.get('consumed_credits')}")
 
     manifest = {
         "character": name,
