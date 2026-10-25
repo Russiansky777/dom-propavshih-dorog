@@ -50,6 +50,10 @@ func label_text() -> String:
 ## condition holds ({all: [flags], not: [flags]} — e.g. Pelageya is away from the pier in the evening until
 ## the rope is on the plate: hidden when evening_dusk is set and done_M15 is not).
 func is_active() -> bool:
+	return data_active(data)
+
+
+static func data_active(data: Dictionary) -> bool:
 	for f in data.get("visible_if", []):
 		if not GameState.has_flag(String(f)):
 			return false

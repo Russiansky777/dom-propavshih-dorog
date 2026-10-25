@@ -32,6 +32,16 @@ const DEFAULT_STATES: Dictionary = {
 	"talk": {"action": "", "speed": 1.0, "face_agata": true},
 }
 var states: Dictionary = {}
+## I-T2 (Director 25.10 14:07: «повороты — с человеческой скоростью»): 180° in `turn.seconds_180` of the actor data
+## (default DEFAULT_TURN_180), each row change a short cross-fade `turn.blend_s` — as Agata, never a snap.
+const DEFAULT_TURN_180: float = 0.36
+const DEFAULT_TURN_BLEND: float = 0.08
+var turn_step_s: float = Player.TURN_STEP_S
+var turn_blend_s: float = DEFAULT_TURN_BLEND
+## I-T2 (Director, lines 128–129): a staging can turn a villager to another one (npc_go[].face: "<id>" — Pelageya
+## hugging Mitya): idle and listen then face the partner, not Agata; a line of theirs marked `"to": "agata"` still
+## turns them to her. Cleared with the room (the node is rebuilt on the next entry).
+var partner: Node2D = null
 
 
 static func attach_all(room: Node, the_player: Node2D) -> Array:
@@ -154,7 +164,9 @@ func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
 		var s: float = room.depth_scale(target.y) * sheet.scale_factor
 		tw.tween_property(self, "scale", Vector2(s, s), seconds)
 	if fade:
-		tw.tween_property(self, "modulate:a", 0.0, seconds * 0.55).set_delay(seconds * 0.45)
+		# I-T2 (Director, line 140: «Нина уходит в дверь, не растворяется»): she walks the whole way and only
+		# at the door goes out of sight — the fade is the last fifth of the walk, not its second half.
+		tw.tween_property(self, "modulate:a", 0.0, seconds * 0.2).set_delay(seconds * 0.8)
 	return seconds
 
 
@@ -163,8 +175,8 @@ func _process(delta: float) -> void:
 		_turn_t = 0.0
 		return
 	_turn_t += delta
-	if _turn_t >= Player.TURN_STEP_S:
-		_turn_t = minf(_turn_t - Player.TURN_STEP_S, Player.TURN_STEP_S)  # one row per step, never two in a frame
+	if _turn_t >= turn_step_s:
+		_turn_t = minf(_turn_t - turn_step_s, turn_step_s)  # one row per step, never two in a frame
 		shown_dir = ActorSheet.step_toward(shown_dir, direction, sheet.directions)
 		var cur := String(sprite.animation)
 		var cut := cur.rfind("_")
@@ -172,7 +184,9 @@ func _process(delta: float) -> void:
 		if anim != cur and sprite.sprite_frames.has_animation(anim):
 			var f := sprite.frame
 			var pr := sprite.frame_progress
-			sprite.play(anim)  # a turn step: same frame on the next row, no cross-fade
+			if turn_blend_s > 0.0:
+				ActorCrossfade.begin(sprite, turn_blend_s)  # the pose of the old row melts into the new one
+			sprite.play(anim)  # a turn step: same frame on the next row
 			if sprite.sprite_frames.get_frame_count(anim) > f:
 				sprite.set_frame_and_progress(f, pr)
 
@@ -180,6 +194,9 @@ func _process(delta: float) -> void:
 func _load_states(id: String) -> void:
 	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 	var data: Dictionary = (spec.get("states", {}) if spec is Dictionary else {})
+	var tn: Dictionary = (spec.get("turn", {}) if spec is Dictionary else {})
+	turn_step_s = maxf(float(tn.get("seconds_180", DEFAULT_TURN_180)) / maxf(float(sheet.directions) * 0.5, 1.0), 0.02)
+	turn_blend_s = float(tn.get("blend_s", DEFAULT_TURN_BLEND))
 	for st in DEFAULT_STATES.keys():
 		var d: Dictionary = (DEFAULT_STATES[st] as Dictionary).duplicate()
 		var over = data.get(st, {})
@@ -204,12 +221,25 @@ func set_state(st: String) -> void:
 	state = st
 	talking = st == "talk"
 	var spec: Dictionary = states.get(st, {})
-	if bool(spec.get("face_agata", false)) and player != null and is_instance_valid(player):
+	if partner != null and is_instance_valid(partner) and not (st == "talk" and _line_to_agata()):
+		face_towards(partner.global_position)
+	elif bool(spec.get("face_agata", false)) and player != null and is_instance_valid(player):
 		face_towards(player.global_position)
 	elif st == "idle":
 		_face_data()
 	_play(sheet.anim_name(state_action(st), shown_dir))
 	sprite.speed_scale = float(spec.get("speed", 1.0))
+
+
+func _line_to_agata() -> bool:
+	return String(StoryRunner.current_beat.get("to", "")) == "agata"
+
+
+## npc_go[].face: turns to the partner and keeps to them (set_state reads it).
+func set_partner(other: Node2D) -> void:
+	partner = other
+	if other != null:
+		face_towards(other.global_position)
 
 
 func _play_idle() -> void:

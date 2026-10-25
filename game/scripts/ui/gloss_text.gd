@@ -32,7 +32,7 @@ func _make_custom_tooltip(for_text: String) -> Object:
 		if String(m["meaning"]).replace("\"", "'") == for_text:
 			word = String(m["word"])
 			break
-	last_tooltip = Gloss.make_tooltip(for_text, word)
+	last_tooltip = Gloss.make_tooltip(for_text, word, get_theme_font_size("normal_font_size"))
 	last_tooltip_text = for_text
 	return last_tooltip
 

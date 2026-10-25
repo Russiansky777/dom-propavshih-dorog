@@ -202,7 +202,11 @@ func _test_dialogue() -> void:
 	var meaning := tip.find_child("Meaning", true, false) as Label
 	var word := tip.find_child("Word", true, false) as Label
 	_check(meaning != null and meaning.text == "возле", "the pop-up carries the meaning")
-	_check(word != null and word.text == "подле", "the pop-up names the word")
+	# I-T2 (Director, line 22): the word is not repeated; the meaning in the word's gold, at the text's size
+	_check(word == null, "the pop-up does not repeat the word")
+	_check(meaning != null and meaning.get_theme_color("font_color") == Gloss.COLOR, "the meaning is in the gold of the marked word")
+	_check(meaning != null and meaning.get_theme_font_size("font_size") == tl.get_theme_font_size("normal_font_size"),
+		"the meaning is the size of the text it explains")
 	tip.free()
 	# A real hover: the mouse over the word → after the tooltip delay the pop-up is on screen.
 	await _move(Vector2(float(t["cx"]), float(t["cy"])))

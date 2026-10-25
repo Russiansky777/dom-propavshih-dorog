@@ -23,7 +23,7 @@
     {"id": "boat_shuttle_dusk", "image": "res://assets/rooms/Z3/state_boat_dusk.png", "if": ["boat_shuttle_open", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "H36: лодка ходит в обе стороны (boat_shuttle_open) — снова у плиты; вечер третьего дня"},
     {"id": "boat_day", "image": "res://assets/rooms/Z3/state_boat_day.png", "if": ["boat_shuttle_open"], "unless": ["tod_d2_dusk", "tod_d2_evening", "tod_d2_night", "tod_d3_evening"], "_note": "H36: днём дней 3–4 лодка у плиты (с переправы до моста; слой water_low_day — та же опора)"}
   ],
-  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [600, 680], "from_R2": [1260, 810]},
+  "spawns": {"default": [900, 850], "from_Z2": [600, 680], "from_R1": [1390, 1025], "from_R2": [1260, 810]},
   "props": [],
   "hotspots": [
     {
@@ -64,7 +64,7 @@
       "look": "@Z3d.plate_dry.look"
     },
     {
-      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [900, 520, 130, 280], "stand": [820, 850], "_rect_note": "H36: левее лодки у плиты (выход «В лодку» 1070–1240)", "draw": false, "pick_priority": 2, "image": "res://assets/characters/pelageya/front.png", "visible_if": ["evening_dusk"],
+      "id": "pelageya", "kind": "npc", "label": "@char.pelageya", "rect": [900, 520, 130, 280], "footprint": [110, 40], "_footprint_note": "I-T2 (Директор, стр. 147): Агата обходит Пелагею, а не проходит сквозь неё (препятствие у ног, пока Пелагея здесь)", "stand": [820, 850], "_rect_note": "H36: левее лодки у плиты (выход «В лодку» 1070–1240)", "draw": false, "pick_priority": 2, "image": "res://assets/characters/pelageya/front.png", "visible_if": ["evening_dusk"],
       "hidden_when": [{"all": ["done_M15"], "not": ["done_M16"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}],
       "_shuttle_note": "T9 (решение 24.10, 22:26): с третьего дня (boat_shuttle_open) Пелагея ждёт у лодки здесь, у поворота, — лодка и лодочница в одном месте; повторная переправа короткая (R51: mechanic auto)",
       "_hidden_note": "H36: у поворота до узла (скоба, канат); после узла — на причале (белый берег, три огня, M16s–M16); после ответа огней уходит к лодке у поворота (M16, stage npc_go) — M17 и посадка отсюда; с переправы — на дальней опоре и дальше у причала",
@@ -73,7 +73,7 @@
     }
   ],
   "exits": [
-    {"to": "R1", "label": "@Z3.exit_R1.label", "cue": "up", "cue_deg": -135, "rect": [380, 560, 320, 90], "stand": [560, 660], "spawn": "from_Z3", "draw": false, "_cue_note": "H7 (Директор 24.10): с поворота — только к причалу, метка прежнего выхода «на улицу», развёрнутая на северо-запад; выход на улицу снят (на улицу — через причал)"},
+    {"to": "R1", "label": "@Z3.exit_R1.label", "cue": "down", "cue_at": [1470, 1030], "cue_deg": 45, "rect": [1330, 960, 240, 120], "stand": [1405, 1040], "_d2": "I-T2 по D2 (Директор 25.10): к повороту с причала уходят налево — значит, возврат к причалу справа (выход и появление from_R1 у правого края)", "spawn": "from_Z3", "draw": false, "_cue_note": "H7 (Директор 24.10): с поворота — только к причалу, метка прежнего выхода «на улицу», развёрнутая на северо-запад; выход на улицу снят (на улицу — через причал)"},
     {"to": "R2", "label": "@R1.exit_R2.label", "cue": "door", "rect": [1070, 540, 170, 90], "stand": [1130, 745], "spawn": "from_Z3", "draw": false, "visible_if": ["rope_brought"], "hidden_when": [{"all": ["started_M18p"], "not": ["boat_shuttle_open"]}],
       "closed_text": "@R1.exit_R2.closed", "states": [{"if": ["done_M15"], "closed_text": "@R1.exit_R2.closed_check"}],
       "_note": "H36 (Директор 24.10): «В лодку» — у поворота, где лодка у плиты под канатом (слои boat_*), с M15s; на причале R1 выход в лодку с этой минуты скрыт. M18p — переход в R2 (вид из лодки); с третьего дня (boat_shuttle_open) — переправа рывками, как с причала прежде",

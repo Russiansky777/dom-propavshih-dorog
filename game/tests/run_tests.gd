@@ -1715,7 +1715,8 @@ func _test_crossfade() -> void:
 		var nb: Dictionary = sr.current_beat
 		if nb.get("type") == "line" and String(nb.get("speaker", "")) == "tamara":
 			var tf = t.get_node_or_null("Crossfade")
-			saw_fade = tf != null and tf.visible and String(tf.animation).begins_with("idle_")
+			# one switch is enough (I-T2: her consecutive lines keep talking — no switch, no fade, and that is right)
+			saw_fade = saw_fade or (tf != null and tf.visible and String(tf.animation).begins_with("idle_"))
 		await process_frame
 	_check(saw_fade, "Tamara's idle→talk switch must cross-fade from the idle pose")
 	gs.reset()

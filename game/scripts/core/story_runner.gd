@@ -362,6 +362,8 @@ func start_scene(scene_id: String) -> bool:
 		else:
 			lb = {"type": "line", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "speaker": sp,
 				"speaker_name": StoryData.character_name(sp), "text": String(line.get("text", ""))}
+			if line.has("to"):
+				lb["to"] = String(line["to"])  # I-T2: whom the speaker turns to (NpcActor partner)
 		lb.merge(cond)
 		beats.append(lb)
 		# Follow-up lines (`then`: [{speaker, text, if/unless}]) — shown right after this one, each by its own
@@ -563,6 +565,12 @@ func _stage_npc_go(spec: Dictionary) -> float:
 			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), secs, bool(g.get("fade", true)), room)))
 			if g.has("door"):
 				longest = maxf(longest, _stage_door(room, g["door"], secs))
+			# I-T2 (lines 128–129): `face` "<id>" — on arrival the villager turns to that one and keeps to them.
+			var other := room.get_node_or_null("npc_" + String(g.get("face", ""))) as Node2D
+			if other != null and npc.has_method("set_partner"):
+				get_tree().create_timer(secs).timeout.connect(func():
+					if is_instance_valid(npc) and is_instance_valid(other):
+						npc.call("set_partner", other))
 	return longest
 
 
@@ -679,6 +687,34 @@ func _stage_apply(spec: Dictionary) -> void:
 	for f in spec.get("sets", []):
 		GameState.set_flag(String(f), true)
 	_stage_layer_reset(spec)
+	if spec.has("layer_write"):
+		call_deferred("_stage_layer_write", spec["layer_write"])
+
+
+## I-T2 (Director, line 138: «когда мать пишет на доске — нужна анимация»): `layer_write` [{id, x: [x0, x1], s}] — a
+## layer just shown by the staging's `sets` is written in, left to right across its letters (x0..x1 in the layer's
+## own pixels) in `s` seconds, as chalk; hidden layers (the other answers) are skipped. A rebuilt room shows it whole.
+var layers_written: Array[String] = []   # tests
+
+
+func _stage_layer_write(list: Array) -> void:
+	var room := RoomManager.current_room
+	if room == null:
+		return
+	for g in list:
+		var node := room.get_node_or_null("Layers/" + String(g.get("id", ""))) as CanvasItem
+		var spr := node.get_node_or_null("Image") as Sprite2D if node != null else null
+		if spr == null or not node.visible or spr.texture == null:
+			continue
+		var full: Vector2 = spr.texture.get_size()
+		var xs: Array = g.get("x", [0, full.x])
+		layers_written.append(String(g.get("id", "")))
+		spr.region_enabled = true
+		spr.region_rect = Rect2(0, 0, float(xs[0]), full.y)
+		var tw := spr.create_tween()
+		tw.tween_method(func(w: float): spr.region_rect = Rect2(0, 0, w, full.y), float(xs[0]), float(xs[1]),
+			float(g.get("s", 1.5))).set_delay(float(g.get("delay", 0.0)))
+		tw.tween_callback(func(): spr.region_enabled = false)
 
 
 ## T6: shows the change-of-day card `key` once: the flag day_card_<key> is part of the save, so neither a load nor

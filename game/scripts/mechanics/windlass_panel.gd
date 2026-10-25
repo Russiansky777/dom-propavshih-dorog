@@ -123,9 +123,11 @@ func signal_pressed(sig: String) -> void:
 	signals_seen.append(sig)
 	call_label.text = text("call_" + sig)
 	_call_t = clock
+	_voice("call_" + sig)
 	if logic.apply(sig):
 		reply_label.text = text("reply_" + sig)
 		sound("knock" if sig == "stop" else "shutter")
+		_voice_later("reply_" + sig, 0.7)
 	elif logic.state == "bumped":
 		reply_label.text = text("reply_bump")   # against the stone: Ilya says again what he waits for — «Подымай»
 	else:
@@ -200,6 +202,27 @@ func _say_bump() -> void:
 		return
 	_bump_line = "%s:%s" % [String(ln["speaker"]), StoryRunner.text_key_of(key)]
 	bump_voice = VoiceDirector.play_line(_bump_line, String(ln["speaker"]), String(ln["text"]), "puzzle")
+
+
+## I-T2 (Director, lines 163–164): the calls and Ilya's answers are heard, not only read — texts `voice_<call>`: their `line`
+## (speaker, words) plays through VoiceDirector as a close-up message; without a recording it stays silent text.
+var voiced: Array[String] = []   # line ids asked for (tests)
+
+
+func _voice(tkey: String) -> void:
+	var key := String(spec.get("texts", {}).get("voice_" + tkey, ""))
+	var ln: Dictionary = StoryData.text_line(key)
+	if ln.is_empty():
+		return
+	var lid := "%s:%s" % [String(ln["speaker"]), StoryRunner.text_key_of(key)]
+	voiced.append(lid)
+	VoiceDirector.play_line(lid, String(ln["speaker"]), String(ln["text"]), "puzzle")
+
+
+func _voice_later(tkey: String, s: float) -> void:
+	get_tree().create_timer(s).timeout.connect(func():
+		if is_inside_tree() and not laid_sent:
+			_voice(tkey))
 
 
 func closing() -> void:

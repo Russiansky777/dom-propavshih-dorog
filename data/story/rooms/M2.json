@@ -58,7 +58,7 @@
     }
   ],
   "exits": [
-    {"to": "M1", "label": "@M2.exit_M1.label", "cue": "down", "rect": [640, 1000, 640, 80], "stand": [960, 1035], "spawn": "from_M2", "draw": false},
+    {"to": "M1", "label": "@M2.exit_M1.label", "cue": "down", "cue_at": [1060, 990], "_cue_i_t2": "I-T2 (Директор, стр. 18/74): метка «Во двор» выше и правее (прямоугольник выхода выше на 40 px)", "rect": [640, 960, 680, 120], "stand": [960, 1035], "spawn": "from_M2", "draw": false},
     {"to": "M3", "label": "@M2.exit_M3.label", "cue": "door", "rect": [560, 160, 280, 530], "stand": [700, 760], "spawn": "from_M2", "closed_text": "@M2.exit_M3.closed", "draw": false}
   ],
   "scenes": {

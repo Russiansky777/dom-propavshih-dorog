@@ -55,21 +55,19 @@ static func _esc(s: String) -> String:
 	return s.replace("[", "[lb]")
 
 
-## The pop-up with the modern meaning: the word in gold capitals of the heading face, the meaning in cream body
-## text — inside the theme's TooltipPanel (dark wood, brass rule: UiTheme), as the menu and the bag's tooltips.
-static func make_tooltip(meaning: String, word: String = "") -> Control:
+## The pop-up with the modern meaning inside the theme's TooltipPanel (dark wood, brass rule: UiTheme).
+## I-T2 (Director, line 22): the word is not repeated — only its meaning, in the gold of the marked word and at the
+## size of the text it stands in (`font_size`, 0 — the theme's), so it reads as the same voice.
+static func make_tooltip(meaning: String, word: String = "", font_size: int = 0) -> Control:
 	var v := VBoxContainer.new()
 	v.name = "GlossTooltip"
-	v.add_theme_constant_override("separation", 2)
-	if word != "":
-		var w := Label.new()
-		w.name = "Word"
-		w.text = word
-		w.theme_type_variation = &"BagTooltipTitle"
-		v.add_child(w)
+	v.set_meta("word", word)
 	var m := Label.new()
 	m.name = "Meaning"
 	m.text = meaning
 	m.theme_type_variation = &"BagTooltipText"
+	m.add_theme_color_override("font_color", COLOR)
+	if font_size > 0:
+		m.add_theme_font_size_override("font_size", font_size)
 	v.add_child(m)
 	return v

@@ -397,25 +397,73 @@
       "text": "Агата: «Пускай!»",
       "draft": true
     },
+    "E5.windlass.voice_call_lower": {
+      "text": "Пускай!",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Пускай!"
+      }
+    },
     "E5.windlass.label_call_stop": {
       "text": "Агата: «Стой!»",
       "draft": true
+    },
+    "E5.windlass.voice_call_stop": {
+      "text": "Стой!",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Стой!"
+      }
     },
     "E5.windlass.label_call_raise": {
       "text": "Агата: «Подымай!»",
       "draft": true
     },
+    "E5.windlass.voice_call_raise": {
+      "text": "Подымай!",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Подымай!"
+      }
+    },
     "E5.windlass.label_reply_lower": {
       "text": "Илья: «Пускаю…»",
       "draft": true
+    },
+    "E5.windlass.voice_reply_lower": {
+      "text": "Пускаю…",
+      "draft": true,
+      "line": {
+        "speaker": "ilya",
+        "text": "Пускаю…"
+      }
     },
     "E5.windlass.label_reply_stop": {
       "text": "Илья: «Держу!»",
       "draft": true
     },
+    "E5.windlass.voice_reply_stop": {
+      "text": "Держу!",
+      "draft": true,
+      "line": {
+        "speaker": "ilya",
+        "text": "Держу!"
+      }
+    },
     "E5.windlass.label_reply_raise": {
       "text": "Илья: «Тяну!»",
       "draft": true
+    },
+    "E5.windlass.voice_reply_raise": {
+      "text": "Тяну!",
+      "draft": true,
+      "line": {
+        "speaker": "ilya",
+        "text": "Тяну!"
+      }
     },
     "E5.windlass.label_reply_wait": {
       "text": "Илья ждёт другого сигнала.",

@@ -187,6 +187,8 @@
     },
     {
       "id": "ulyana_map",
+      "modulate": "#c99f73",
+      "_i_t2": "I-T2 (Директор, стр. 170: «бело-прозрачная карта, непонятно что это»): лист в тоне комнаты при свече (modulate); арт — заявка партии 10г",
       "image": "res://assets/rooms/EP_dinner/ulyana_map.png",
       "if": [
         "q02_new_primary"
@@ -258,17 +260,18 @@
       "image": "res://assets/rooms/EP_dinner/tikhon.png",
       "compose": {
         "src": "game/assets/characters/tikhon/tikhon.png",
+        "_i_t2": "I-T2 (Директор, стр. 172: «Тихон обрезан»): кроп с запасом 12 px вокруг фигуры (прежний срезал кончики ушей и бок), масштаб тот же",
         "crop": [
-          55,
-          23,
-          449,
-          469
+          40,
+          8,
+          477,
+          496
         ],
         "at": [
-          490,
-          176
+          486,
+          172
         ],
-        "width": 122,
+        "width": 130,
         "tint": [
           0.86,
           0.76,

@@ -135,6 +135,18 @@ static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dic
 		for p in hole:
 			hv.append(Vector2(float(p[0]), float(p[1])))
 		source.add_obstruction_outline(hv)
+	# I-T2 (Director, line 147: «Агата проходит насквозь модели Пелагеи»): an npc hotspot with `footprint` [w, h]
+	# is an obstruction around its feet (the bottom centre of its rect) while it is shown when the room is built.
+	for h in spec.get("hotspots", []):
+		if h is Dictionary and h.has("footprint") and StoryHotspot.data_active(h):
+			var r: Array = h.get("rect", [0, 0, 0, 0])
+			var c := Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]))
+			var half := Vector2(float(h["footprint"][0]), float(h["footprint"][1])) * 0.5
+			var fv := PackedVector2Array()
+			for k in 12:
+				var a := TAU * float(k) / 12.0
+				fv.append(c + Vector2(cos(a) * half.x, sin(a) * half.y))
+			source.add_obstruction_outline(fv)
 	poly.agent_radius = 0.0
 	# Bake synchronously: the outline may be concave (e.g. H1 floor around the armchair) and the
 	# navigation server needs convex polygons.

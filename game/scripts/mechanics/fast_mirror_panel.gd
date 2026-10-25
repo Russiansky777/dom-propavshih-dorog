@@ -341,6 +341,9 @@ func _update_room() -> void:
 		if not poses_seen.has(pid):
 			poses_seen.append(pid)
 		_draw_nina(pose)
+	# I-T2 (Director, line 146): once she is in Dunya's house (data `nina_away_if` flags), her room in the glass
+	# is empty — the clock and the candle go on without her.
+	nina.visible = not nina_away()
 	if nina_sprite != null:
 		nina_sprite.speed_scale = motion_speed()
 	else:
@@ -349,6 +352,13 @@ func _update_room() -> void:
 	if holding:
 		elapsed_mine.text = text("label_elapsed").format({"t": _mmss(hold_s)})
 		elapsed_nina.text = text("label_elapsed").format({"t": _mmss((ne - hold_start_nina) * 60.0)})
+
+
+func nina_away() -> bool:
+	for f in spec.get("nina_away_if", []):
+		if GameState.has_flag(String(f)):
+			return true
+	return false
 
 
 static func _mmss(s: float) -> String:
@@ -382,7 +392,7 @@ func _draw_nina(pose: Dictionary) -> void:
 	nina_pose = pose
 	nina.position = Vector2.ZERO
 	var layer := String(pose.get("room_layer", ""))
-	pose_layer.visible = layer != "" and ResourceLoader.exists(layer)
+	pose_layer.visible = layer != "" and ResourceLoader.exists(layer) and not nina_away()
 	if pose_layer.visible:
 		pose_layer.texture = load(layer)
 	var at := v2(pose.get("at", [300, 440]))

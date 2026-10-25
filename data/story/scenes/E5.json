@@ -183,7 +183,14 @@
               "label_gauge": "@E5.windlass.label_gauge",
               "label_stone": "@E5.windlass.label_stone",
               "bump": "@E5.windlass.bump",
-              "reply_bump": "@E5.windlass.label_reply_bump"
+              "reply_bump": "@E5.windlass.label_reply_bump",
+              "voice_call_lower": "@E5.windlass.voice_call_lower",
+              "voice_call_stop": "@E5.windlass.voice_call_stop",
+              "voice_call_raise": "@E5.windlass.voice_call_raise",
+              "voice_reply_lower": "@E5.windlass.voice_reply_lower",
+              "voice_reply_stop": "@E5.windlass.voice_reply_stop",
+              "voice_reply_raise": "@E5.windlass.voice_reply_raise",
+              "_voice_note": "I-T2 (Директор, стр. 163–164): сигналы и ответы Ильи звучат голосом (до записи — только надпись)"
             },
             "events": {
               "laid": {
