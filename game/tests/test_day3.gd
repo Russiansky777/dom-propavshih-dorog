@@ -700,7 +700,7 @@ func _test_walkthrough() -> void:
 		await process_frame
 		g += 1
 	_check(gs.has_flag("done_N02") and gs.has_flag("morning_day3"), "N02: the night in the old bed, then morning: %s" % str(seen))
-	_check(seen.any(func(x): return x.begins_with("ilya:Ты всё такая же… Не выросла")), "Ilya: «Ты всё такая же… Не выросла» (I-T5)")
+	_check(seen.any(func(x): return x.begins_with("ilya:Да ты всё такая же… Не выросла")), "Ilya: «Да ты всё такая же… Не выросла» (I-T6)")
 	_check(gs.has_flag("wife_came"), "the wife came with the lamp: her figure is shown by wife_came (set in M20 before her line)")
 	_check(gs.has_save(CP + "day3"), "checkpoint «День третий» written")
 	_check(not _hotspot("ilya").visible and rm.current_room.get_node_or_null("Layers/night") != null and not rm.current_room.get_node("Layers/night").visible, "morning: the painted night (O3_night, партия 8) is off, Ilya has gone home")

@@ -1161,7 +1161,7 @@ func _test_walkthrough() -> void:
 		m17_text += String(ln.get("text", "")) + "\n"
 	_check(seen.any(func(x): return x.begins_with("narration:По канату скользит кольцо")) and m17_text.contains("Теперь идёт прямо"),
 		"the empty boat follows the ring along the rope, not back to the pier: %s" % str(seen))
-	_check(seen.any(func(x): return x == "agata:Не поворачивает. По канату идёт."), "Agata: it did not turn back")
+	_check(seen.any(func(x): return x == "agata:Не сворачивает! По канату идёт!"), "Agata: it did not turn back")
 	_check(seen.any(func(x): return x.contains("Не вернуло её! Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
 	_check(sr.journal_goal().contains("по канату"), "goal: into the boat, along the rope: %s" % sr.journal_goal())
 	var n_before: int = gs.inventory.count("school_ribbon")
@@ -1210,7 +1210,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("done_M18") and gs.has_flag("met_mitya") and gs.has_flag("knows_twenty_years"), "Mitya at the far pier: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("mitya:")), "Mitya speaks")
 	var m18_end := String(sd.scene("M18").get("mandatory_lines", [])[-1].get("text", ""))
-	_check(seen.any(func(x): return x.begins_with("narration:Пелагея всё не выпустит Митин рукав")) and m18_end.contains("Митя поднимает фонарь") and m18_end.contains("Пелагея остаётся у лодки"),
+	_check(seen.any(func(x): return x.begins_with("narration:Пелагея всё держится за Митин рукав")) and m18_end.contains("Митя поднимает фонарь") and m18_end.contains("Пелагея остаётся у лодки"),
 		"B13/C3: Mitya leads Agata with the lantern, Pelageya stays at the boat: %s / %s" % [m18_end, str(seen)])
 	# F13 (Director 23.10): back into the boat — not now; Pelageya: «Сейчас — к матери. Назад повезу завтра».
 	var back = rm.current_room.get_node_or_null("Exits/to_R2")

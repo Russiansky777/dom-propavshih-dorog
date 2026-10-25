@@ -204,7 +204,7 @@ func _test_drawer_order() -> void:
 	var at6 := -1
 	var at7 := -1
 	for i in seen.size():
-		if at6 < 0 and String(seen[i]).contains("Здесь всё это время кто-то учился"):
+		if at6 < 0 and String(seen[i]).contains("Так здесь всё это время учились"):
 			at6 = i
 		if at7 < 0 and String(seen[i]).contains("Дальний держим мы»."):
 			at7 = i
@@ -431,7 +431,7 @@ func _test_pier_attempt() -> void:
 	_check(gs.has_flag("knows_sluice_key") and ans.any(func(x): return x.contains("рычаг в конторе остался")), "the sluice question: the lever is in the office (G20): %s" % str(ans))
 	ans = await _interact(_hotspot("pelageya"), ["leave"])
 	_check(not ans.any(func(x): return x.contains("Ступай") or x.contains("дом")), "leaving Pelageya sends Agata nowhere: %s" % str(ans))
-	_check(seen[2].contains("к своему причалу") and seen[1].contains("Не перевезу"), "«Не довезу. Год пробую.» — «Гребу к тому берегу…» (H3, %s)" % str(seen))
+	_check(seen[2].contains("к своему причалу") and seen[1].contains("не перевезу"), "«Не довезу. Год пробую.» — «Гребу к тому берегу…» (H3, %s)" % str(seen))
 	_check(not sounds.has("door_heavy"), "G16: no staged knock any more: %s" % str(sounds))
 	# Director 22.10: the rope is the last piece of the bridge — the road itself; its far end is still on the other bank.
 	_check(seen.any(func(x): return x.contains("Пролёты снесло, каменные опоры остались") and x.contains("Дальний конец всё там") and x.contains("Этот на плите опоры был закреплён")), "the rope is what is left of the bridge: %s" % str(seen))

@@ -360,7 +360,7 @@ func _test_q02_a() -> void:
 	_check(seen.any(func(x): return x.begins_with("ulyana:Ещё яблоня")), "Ulyana: «И яблоня!»")
 	_check(seen.any(func(x): return x == "options:A"), "the choice at once after the way")
 	_check(gs.has_flag("q02_old_under_new") and not gs.has_flag("q02_new_primary") and gs.has_flag("done_Q02"), "A — the tracing over the old map; Q02 done")
-	_check(seen.any(func(x): return x.contains("Старое под новым")) and seen.any(func(x): return x.begins_with("ulyana:Пусть висит")), "A: Agata's line and Ulyana's reaction: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Под новым рисунком старая карта")) and seen.any(func(x): return x.begins_with("ulyana:Пусть висит")), "A: Agata's line and Ulyana's reaction: %s" % str(seen))
 	_check(not sr.mechanic_open and _hotspot("ulyana").visible, "the close-up put away, Ulyana still in the class")
 	await _use("village_map")
 	seen = await _finish()
@@ -388,7 +388,7 @@ func _test_q02_b() -> void:
 	_check(seen.any(func(x): return x == "options:B"), "choice B: %s" % str(seen))
 	_check(gs.has_flag("q02_new_primary") and not gs.has_flag("q02_old_under_new") and gs.has_flag("done_Q02"), "B — the tracing to Ulyana; Q02 done")
 	_check(seen.any(func(x): return x.contains("Ульяне отдам")) and seen.any(func(x): return x.begins_with("ulyana:Моя карта")), "B: Agata gives it, Ulyana: «Моя карта! Повешу дома у двери…»: %s" % str(seen))
-	_check(not seen.any(func(x): return x.contains("Старое под новым") or x.contains("Пусть висит")), "B: no A lines")
+	_check(not seen.any(func(x): return x.contains("Под новым рисунком старая карта") or x.contains("Пусть висит")), "B: no A lines")
 	_check(_hotspot("ulyana").visible, "Ulyana still in the class (with her map)")
 	await _use("village_map")
 	seen = await _finish()
@@ -466,7 +466,7 @@ func _test_q06_a() -> void:
 	_check(not _layer_visible("bench_shed"), "the shed door is shut before the choice")
 	await _use("ilya_workshop")
 	var seen := await _finish()
-	_check(seen.any(func(x): return x.begins_with("mitya:За одним верстаком и вдвоём тесно")) and seen.any(func(x): return x.begins_with("ilya:А мы ещё и третьему место")) and seen.any(func(x): return x.begins_with("ilya:Уля давно")),
+	_check(seen.any(func(x): return x.begins_with("mitya:У одного верстака и двоим тесно")) and seen.any(func(x): return x.begins_with("ilya:А мы ещё и третьему место")) and seen.any(func(x): return x.begins_with("ilya:Уля за мной")),
 		"Mitya / Ilya / the goal — a bench for Ulya: %s" % str(seen))
 	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "workbench", "the second bench close-up")
 	var pr := _panel()
