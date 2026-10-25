@@ -8,7 +8,7 @@
   },
   "directions": 8,
   "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.657,
+  "character_height_m": 1.644,
   "actions": {
     "idle": {
       "sheet": "idle.png",
@@ -30,7 +30,7 @@
       "clip": "listen",
       "clip_seconds": 2.5,
       "natural_fps": 9.2,
-      "floor_shift_m": 0.0029,
+      "floor_shift_m": -0.0013,
       "window": [
         0.1,
         0.6
@@ -44,7 +44,7 @@
       "clip": "talk",
       "clip_seconds": 4.0,
       "natural_fps": 9.0,
-      "floor_shift_m": 0.045
+      "floor_shift_m": 0.0577
     },
     "walk": {
       "sheet": "walk.png",
@@ -53,13 +53,13 @@
       "clip": "walk",
       "clip_seconds": 1.0,
       "natural_fps": 24.0,
-      "floor_shift_m": 0.0076
+      "floor_shift_m": 0.0202
     }
   },
   "fit": {
-    "half_width_m": 0.583,
-    "top_m": 0.823,
-    "frame_top_m": 0.928,
+    "half_width_m": 0.584,
+    "top_m": 0.817,
+    "frame_top_m": 0.921,
     "frame_w": 648
   },
   "matte_materials": true
