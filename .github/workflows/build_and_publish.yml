@@ -69,6 +69,10 @@ jobs:
           cp tpz/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
           rm -rf godot.zip templates.tpz tpz
 
+      # Pillow для tools/make_web_sheets.py (веб-копии листов жителей, I-T4b) — без него веб-экспорт падал на 4-й минуте.
+      - name: Python + Pillow
+        run: python3 -m pip install -q --break-system-packages pillow || python3 -m pip install -q pillow
+
       # Кэш импорта Godot (.godot/imported и др.): без него каждая сборка заново обрабатывает ~1,2 ГБ атласов жителей v2 (~40 мин).
       - name: Cache Godot import
         uses: actions/cache@v4
