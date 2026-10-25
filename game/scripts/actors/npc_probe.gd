@@ -18,8 +18,8 @@ static func register() -> void:
 	if search == null or String(search).find("npcprobe") < 0:
 		return
 	var win: JavaScriptObject = JavaScriptBridge.get_interface("window")
-	var show_cb := JavaScriptBridge.create_callback(_show)
-	var set_cb := JavaScriptBridge.create_callback(_set)
+	var show_cb := JavaScriptBridge.create_callback(_show_room)
+	var set_cb := JavaScriptBridge.create_callback(_set_state)
 	_cbs = [show_cb, set_cb]
 	win.npcShow = show_cb
 	win.npcSet = set_cb
@@ -56,7 +56,7 @@ static func _npc(id: String) -> Node2D:
 	return (Engine.get_main_loop() as SceneTree).root.find_child("npc_" + id, true, false) as Node2D
 
 
-static func _show(args: Array) -> void:
+static func _show_room(args: Array) -> void:
 	var rm := _node("RoomManager")
 	var gs := _node("GameState")
 	if rm == null or gs == null or args.size() < 1:
@@ -71,7 +71,7 @@ static func _show(args: Array) -> void:
 	rm.call("change_room", rid, "default")
 
 
-static func _set(args: Array) -> void:
+static func _set_state(args: Array) -> void:
 	if args.size() < 2:
 		return
 	var npc := _npc(String(args[0]))
