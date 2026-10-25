@@ -603,7 +603,7 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
     return errors, warns
 
 
-SELFTEST_CASES = 24
+SELFTEST_CASES = 25
 
 
 def after_h59() -> dict[str, str]:
@@ -828,6 +828,30 @@ def selftest(lines, cast, voice_cfg, scenes) -> list[str]:
     return missed
 
 
+def check_main_takes(takes_man: dict | None, game_man: dict | None, takes_dir: Path = VOICE_SRC.parent / "ru_takes",
+                     game_dir: Path = VOICE_SRC) -> list[str]:
+    """I-T3 (вариант Б): дубль «в игре» — выбранный Директором (chosen_take основной записи, tools/apply_takes.py),
+    иначе отмеченный конвейером main (ровно один); это тот же файл, что играет игра. Так же его подписывает страница
+    прослушивания (tools/listen_page.py). Строка, текст которой с тех пор изменился (text_sha1 не тот), не проверяется."""
+    import hashlib
+    errs: list[str] = []
+    glines = (game_man or {}).get("lines", {})
+    for lid, e in sorted(((takes_man or {}).get("lines") or {}).items()):
+        g = glines.get(lid)
+        if not g or "stale" in g or g.get("text_sha1") != e.get("text_sha1"):
+            continue
+        mains = [t for t in e.get("takes", []) if t.get("main")]
+        if g.get("chosen_take"):
+            mains = [t for t in e.get("takes", []) if t.get("take") == g["chosen_take"]]
+        if len(mains) != 1:
+            errs.append(f"дубли {lid}: «в игре» отмечено {len(mains)} дублей, нужен один")
+            continue
+        a, b = takes_dir / str(mains[0].get("file", "")), game_dir / str(g.get("file", ""))
+        if a.is_file() and b.is_file() and hashlib.sha1(a.read_bytes()).digest() != hashlib.sha1(b.read_bytes()).digest():
+            errs.append(f"дубли {lid}: дубль {mains[0].get('take')} отмечен «в игре», а игра играет другой файл")
+    return errs
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
     strict = "--strict" in sys.argv
@@ -869,6 +893,7 @@ def main() -> int:
     errors += l_err
     warns += l_warn
     errors += check_ask_prompts(voice_cfg, texts)
+    errors += check_main_takes(load(VOICE_SRC.parent / "ru_takes" / "manifest.json"), manifests.get("ru"))
     missed = selftest(lines, cast, voice_cfg, scenes)
     # самопроверка H5/H4: шёпот вне списка ожидания и вопрос персонажа без ограничения повтора — ошибки
     _sp = {"lines": {f"T_{i}": {"speaker": "tst", "source_lufs": -16.0} for i in range(5)}}
@@ -891,6 +916,10 @@ def main() -> int:
     _vc.setdefault("narration", {}).setdefault("ask_prompts", {})["keys"] = []
     if not any("ask_prompts.keys" in e for e in check_ask_prompts(_vc, texts)):
         missed.append("вопрос персонажа без ограничения повтора (H4) не пойман")
+    # I-T3: два дубля «в игре» у одной строки — ошибка
+    _tm = {"lines": {"T_t": {"text_sha1": "a", "takes": [{"take": 1, "main": True}, {"take": 2, "main": True}]}}}
+    if not check_main_takes(_tm, {"lines": {"T_t": {"text_sha1": "a"}}}):
+        missed.append("два дубля «в игре» у одной строки")
     for m in missed:
         errors.append(f"самопроверка: порча «{m}» не поймана")
     for w in warns:

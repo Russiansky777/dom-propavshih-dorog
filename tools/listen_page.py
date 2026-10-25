@@ -57,9 +57,13 @@ def main() -> int:
         order.append(q["id"])
 
     man = read(tdir / "manifest.json", {}) or {}
+    # «сейчас в игре» — дубль, выбранный Директором и вставленный tools/apply_takes.py (chosen_take основной записи),
+    # иначе main от конвейера; проверка — tools/validate_voice.py (check_main_takes)
+    game = (read(ROOT / "assets" / "voice" / "ru" / "manifest.json", {}) or {}).get("lines", {})
     rows = []
     for lid, e in (man.get("lines") or {}).items():
         takes = []
+        chosen = (game.get(lid) or {}).get("chosen_take")
         for t in e.get("takes", []):
             rel = str(t.get("file", ""))
             if not rel or not (tdir / rel).is_file():
@@ -67,7 +71,7 @@ def main() -> int:
             dst = out / "takes" / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(tdir / rel, dst)
-            item = {"take": t.get("take"), "ogg": "takes/" + rel, "tags": t.get("tags", []), "main": bool(t.get("main"))}
+            item = {"take": t.get("take"), "ogg": "takes/" + rel, "tags": t.get("tags", []), "main": t.get("take") == chosen if chosen else bool(t.get("main"))}
             srel = str(t.get("source", ""))
             if srel and (tdir / srel).is_file():
                 mdst = out / "takes" / srel
