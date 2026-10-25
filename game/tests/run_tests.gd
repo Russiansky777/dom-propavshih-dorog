@@ -1122,7 +1122,9 @@ func _test_h1_real() -> void:
 		var cols := {}
 		for seg in player.sheet.eased_timeline("idle", r):
 			cols[int(seg[0])] = true
-		_check(cols.size() >= 20, "idle row %d sways through %d different frames (≥ 20)" % [r, cols.size()])
+		# I-T2 (Директор 25.10, стр. 1: «стойка дёргается»): amplitude 0.6 — the calm sway uses the middle 60 % of the
+		# path, ≥ 12 frames (each a small step: no frame jump bigger than before)
+		_check(cols.size() >= 12, "idle row %d sways through %d different frames (≥ 12)" % [r, cols.size()])
 	var seq: Array = player.sheet.frame_sequence(8, "pingpong")
 	_check(seq == [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1], "pingpong sequence for 8 frames, got %s" % str(seq))
 	_check(player.sheet.frame_sequence(12, "loop") == range(12), "loop sequence is 0..n-1")
@@ -1873,8 +1875,20 @@ func _check_eased(sheet, id: String, action: String) -> int:
 		if cols.size() < 3:
 			_check(false, "%s/%s row %d: eased_motion needs ≥ 3 frames" % [id, action, r])
 			continue
-		var a: int = int(cols[0])
+		# The extremes are the first pose of the loop and the pose half a period later (I-T2: with
+		# `amplitude` < 1 they are inner frames of the path, not its ends).
+		var a: int = int(tl[0][0])
 		var b: int = int(cols[cols.size() - 1])
+		var half := 0.0
+		for seg in tl:
+			half += float(seg[1])
+		half *= 0.5
+		var acc := 0.0
+		for seg in tl:
+			if acc + float(seg[1]) >= half:
+				b = int(seg[0])
+				break
+			acc += float(seg[1])
 		# Position of each frame along the (symmetrised) path; the middle of the motion is where the
 		# shown pose crosses 0.5 — the centre of the middle frame (odd count) or the switch between
 		# the two middle frames (even count).
@@ -1886,7 +1900,8 @@ func _check_eased(sheet, id: String, action: String) -> int:
 		for seg in tl:
 			starts.append(period)
 			period += float(seg[1])
-		_check(period >= 2.95 and period <= 4.2, "%s/%s row %d: period %.2f s outside 3–4 s" % [id, action, r, period])
+		var want_period := float(act.get("period_s", 3.6))
+		_check(period >= 2.95 and period <= 6.2 and absf(period - want_period) <= 0.35, "%s/%s row %d: period %.2f s outside 3–6 s or off the data %.2f s" % [id, action, r, period, want_period])
 		_check(int(tl[0][0]) == a and int(tl[tl.size() - 1][0]) == a, "%s/%s row %d: the loop starts and ends on the same pose (no seam)" % [id, action, r])
 		var dwell_a := 0.0
 		var dwell_b := 0.0

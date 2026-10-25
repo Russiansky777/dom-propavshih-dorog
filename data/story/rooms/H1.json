@@ -57,6 +57,10 @@
     },
     {
       "id": "shelf_on_bench",
+      "scale": 1.4,
+      "scale_pivot": [630, 526],
+      "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+      "_i_t2": "I-T2 (Директор, стр. 32): снятая полка крупнее (×1,4 вокруг середины низа, лежит на той же лавке)",
       "image": "res://assets/rooms/H1/state_shelf_on_bench.png",
       "if": ["h1_scarf_removed"],
       "unless": ["q04_corner_stove"],
@@ -122,12 +126,19 @@
     },
     {
       "id": "cup_sill_blue",
+      "scale": 0.88,
+      "scale_pivot": [1385, 454],
+      "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+      "_i_t2": "I-T2 (Директор, стр. 28/31): чашки одного размера — на подоконнике чуть меньше, выбранная на столике крупнее; масштаб вокруг донца",
       "image": "res://assets/rooms/H1/state_cup_sill_blue.png",
       "unless": ["v01_cup_blue"],
       "_note": "V01: две чашки (синяя и белая) ждут на подоконнике между кувшином и книгами; выбранная уходит на столик. Чашки — кружка со столика в другой глазури, tools/make_items_layers.py"
     },
     {
       "id": "cup_sill_white",
+      "scale": 0.88,
+      "scale_pivot": [1425, 454],
+      "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
       "image": "res://assets/rooms/H1/state_cup_sill_white.png",
       "unless": ["v01_cup_white"]
     },
@@ -140,6 +151,10 @@
     },
     {
       "id": "cup_table_blue",
+      "scale": 1.18,
+      "scale_pivot": [715, 680],
+      "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+      "_i_t2": "I-T2 (Директор, стр. 28/31): чашки одного размера — на подоконнике чуть меньше, выбранная на столике крупнее; масштаб вокруг донца",
       "image": "res://assets/rooms/H1/state_cup_table_blue.png",
       "if": ["v01_cup_blue"],
       "occluder": true,
@@ -148,6 +163,9 @@
     },
     {
       "id": "cup_table_white",
+      "scale": 1.18,
+      "scale_pivot": [715, 680],
+      "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
       "image": "res://assets/rooms/H1/state_cup_table_white.png",
       "if": ["v01_cup_white"],
       "occluder": true,
@@ -307,6 +325,8 @@
         "fail_text": "@H1.tikhon.look",
         "_note": "Домашнее знание Тихона по вопросам (Docs/SCENARIO_FINAL.md, M03): дверь из школы, свёрток на верстаке, колокол с мельницы. Спрашивать можно сколько угодно (без once_any), но только о том, что Агата уже видела (C13, ИИ-чтение 23.10: дверь — побывав в галерее, свёрток и колокол — в мастерской); ответы — реплики Тихона его голосом (поле line у текста). До знакомства (M03) — только осмотр. Загадок не решает, мир не объясняет.",
         "options": [
+          {"id": "shelf", "label": "@H1.tikhon.opt_shelf", "sets": "h1_asked_shelf", "text": "@H1.tikhon.shelf", "requires": {"flags": ["met_tikhon"], "not_flags": ["q04_corner_stove"]}, "_i_t2": "I-T2 (Директор, стр. 38/66): говорить с Тихоном можно всегда; до полки он сам просит её повесить"},
+          {"id": "next", "label": "@H1.tikhon.opt_next", "sets": "h1_asked_next", "text": "@H1.tikhon.next_mirror", "requires": {"flags": ["sluice_opened"], "not_flags": ["nina_mirror_clamped"]}, "_i_t2": "I-T2 (Директор, стр. 103): вода сходит, мамино зеркало ещё не стянуто — Тихон намекает, что делать"},
           {"id": "door", "label": "@H1.tikhon.opt_door", "sets": "h1_asked_door", "text": "@H1.tikhon.door", "requires": {"flags": ["visited_H3"]}},
           {"id": "bundle", "label": "@H1.tikhon.opt_bundle", "sets": "h1_asked_bundle", "text": "@H1.tikhon.bundle", "requires": {"flags": ["visited_H2"]}},
           {"id": "bell", "label": "@H1.tikhon.opt_bell", "sets": "h1_asked_bell", "text": "@H1.tikhon.bell", "requires": {"flags": ["visited_H2"]}},
@@ -422,7 +442,7 @@
       "id": "shelf", "action_anim": "reach",
       "kind": "object",
       "label": "@H1.shelf.label",
-      "rect": [665, 548, 120, 62],
+      "rect": [645, 540, 155, 66],
       "visible_if": ["h1_scarf_removed"],
       "stand": [700, 800],
       "_rect_note": "H12 (партия 10б): снятая полка лежит на лавке под платком (слой shelf_on_bench, [584,488,676,526) фона → экран 671–776 × 560–604); видна, когда платок убран. Стоянка справа: после выбора A Агата не заслоняет Тихона на полке",

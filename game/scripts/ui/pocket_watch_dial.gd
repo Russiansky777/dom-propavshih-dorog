@@ -94,7 +94,7 @@ func _draw() -> void:
 				continue
 			var a := TAU * i / 60.0
 			var d := Vector2(sin(a), -cos(a))
-			draw_line(c + d * r * 0.62, c + d * r * 0.67, Color(INK, 0.55), maxf(1.0, r * 0.012))
+			draw_line(c + d * r * 0.62, c + d * r * 0.67, Color(INK, 0.55), maxf(1.0, r * 0.012), true)
 	var h := fmod(seconds / 3600.0, 12.0)
 	var m := fmod(seconds / 60.0, 60.0)
 	var sec := fmod(seconds, 60.0)
@@ -102,7 +102,7 @@ func _draw() -> void:
 	_hand(c, m / 60.0 * TAU, r * 0.6, r * 0.045, INK)
 	var sa := floorf(sec) / 60.0 * TAU     # the second hand ticks
 	var sd := Vector2(sin(sa), -cos(sa))
-	draw_line(c - sd * r * 0.14, c + sd * r * 0.64, RED, maxf(1.5, r * 0.02))
+	draw_line(c - sd * r * 0.14, c + sd * r * 0.64, RED, maxf(1.5, r * 0.02), true)
 	draw_circle(c, r * 0.05, Color(0.55, 0.42, 0.2))
 	draw_circle(c, r * 0.025, INK)
 
@@ -114,6 +114,11 @@ func _hand(c: Vector2, ang: float, length: float, width: float, col: Color) -> v
 	var pts := PackedVector2Array([c - d * length * 0.15 + n * width * 0.5, c + d * length * 0.55 + n * width,
 		c + d * length, c + d * length * 0.55 - n * width, c - d * length * 0.15 - n * width * 0.5])
 	draw_colored_polygon(pts, col)
+	# I-T2 (Director, line 10: «стрелки сгладить»): a polygon has no antialiasing — a thin antialiased outline
+	# of the same colour smooths its edges at any size.
+	var ring := pts.duplicate()
+	ring.append(pts[0])
+	draw_polyline(ring, col, 1.2, true)
 
 
 ## Minute hand angle in degrees (tests).

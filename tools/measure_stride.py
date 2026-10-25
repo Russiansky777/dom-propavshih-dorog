@@ -183,12 +183,14 @@ def grid_image(path, act, fw, fh, dirs):
     at = act.get("atlas")
     if not at:
         return im
+    # страницы атласа (≤ 8192 px по стороне): седьмое число куска — номер страницы, файлы — atlas.pages
+    pages = [im] + [Image.open(os.path.join(os.path.dirname(str(path)), name)).convert("RGBA") for name in at.get("pages", [])[1:]]
     n = int(act["frames"])
     g = Image.new("RGBA", (n * fw, dirs * fh), (0, 0, 0, 0))
-    for k, (x, y, w, h, ox, oy) in enumerate(at["rects"]):
+    for k, (x, y, w, h, ox, oy, *pg) in enumerate(at["rects"]):
         d, i = divmod(k, n)
         if w > 0 and h > 0:
-            g.paste(im.crop((x, y, x + w, y + h)), (i * fw + ox, d * fh + oy))
+            g.paste(pages[pg[0] if pg else 0].crop((x, y, x + w, y + h)), (i * fw + ox, d * fh + oy))
     return g
 
 

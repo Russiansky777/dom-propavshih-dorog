@@ -47,13 +47,17 @@ def res_path(res: str) -> Path:
 
 
 def frame_mask(sheet, act: dict, fw: int, fh: int, d: int, i: int):
+    """sheet — картинка листа или список страниц атласа (седьмое число куска — номер страницы)."""
     n = int(act["frames"])
     rects = (act.get("atlas") or {}).get("rects")
     if rects:
         x, y, w, h, ox, oy = rects[d * n + i][:6]
+        pg = rects[d * n + i][6] if len(rects[d * n + i]) > 6 else 0
+        page = sheet[pg] if isinstance(sheet, list) else sheet
         fr = Image.new("L", (fw, fh), 0)
-        fr.paste(sheet.crop((x, y, x + w, y + h)).getchannel("A"), (ox, oy))
+        fr.paste(page.crop((x, y, x + w, y + h)).getchannel("A"), (ox, oy))
     else:
+        sheet = sheet[0] if isinstance(sheet, list) else sheet
         fr = sheet.crop((i * fw, d * fh, (i + 1) * fw, (d + 1) * fh)).getchannel("A")
     return fr.point(lambda v: 255 if v >= ALPHA else 0)
 
@@ -104,7 +108,8 @@ def check_actor(path: Path, quiet: bool) -> list:
             bad.append(f"{path.stem}/{a}: {n} кадров / {fps:g} к/с = {dur:.2f} с > {cap:g} с")
         if a in keyf and not (0 < int(keyf[a]) < n):
             bad.append(f"{path.stem}/{a}: ключевой кадр {keyf[a]} вне 1..{n - 1}")
-        img = Image.open(sdir / act["sheet"]).convert("RGBA")
+        img = [Image.open(sdir / act["sheet"]).convert("RGBA")] + [
+            Image.open(sdir / name).convert("RGBA") for name in (act.get("atlas") or {}).get("pages", [])[1:]]
         worst_io, worst_w = 1.0, 0.0
         for d in range(dirs):
             first, last = frame_mask(img, act, fw, fh, d, 0), frame_mask(img, act, fw, fh, d, n - 1)

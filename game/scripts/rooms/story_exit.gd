@@ -71,6 +71,10 @@ func current_state() -> Dictionary:
 			if not GameState.has_flag(String(f)):
 				ok = false
 				break
+		for f in st.get("unless", []):
+			if GameState.has_flag(String(f)):
+				ok = false
+				break
 		if ok:
 			return st
 	return {}

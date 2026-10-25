@@ -110,6 +110,10 @@ func requires_met(req: Dictionary) -> bool:
 	for f in req.get("flags", []):
 		if not GameState.has_flag(String(f)):
 			return false
+	# `not_flags`: none of them may be set (I-T2: Tikhon asks for his shelf only until it hangs).
+	for f in req.get("not_flags", []):
+		if GameState.has_flag(String(f)):
+			return false
 	for it in req.get("items", []):
 		var id := String(it)
 		if StoryData.item_is_inventory(id):
@@ -922,7 +926,7 @@ func planned_interaction(h: StoryHotspot) -> String:
 		var pz: Dictionary = d["puzzle"]
 		var success_scene := String(pz.get("success", {}).get("scene", ""))
 		if requires_met(pz.get("requires", {})) and (success_scene == "" or not is_done(success_scene)):
-			return "puzzle"
+			return "text" if pz.has("by_item_text") else "puzzle"
 		if _use_state(d) != "ready":
 			return "text"
 	if d.has("choice"):
@@ -1020,6 +1024,11 @@ func interact(h: StoryHotspot) -> void:
 		var pz: Dictionary = d["puzzle"]
 		var success_scene := String(pz.get("success", {}).get("scene", ""))
 		if requires_met(pz.get("requires", {})) and (success_scene == "" or not is_done(success_scene)):
+			# I-T2 (Director, line 52: «петли мышкой применить, как и ключ»): puzzle `by_item_text` — a plain click
+			# only says what to do; the close-up opens from the item in hand (item_use {puzzle: true}).
+			if pz.has("by_item_text"):
+				narrate_key(String(pz["by_item_text"]))
+				return
 			open_puzzle(h)
 			return
 		if _use_state(d) != "ready":
@@ -1285,6 +1294,10 @@ func use_exit(e: StoryExit) -> void:
 	if e.data.has("mechanic") and mechanic_available(e.data["mechanic"]):
 		open_mechanic(e.data["mechanic"], "exit_" + e.target_room)
 		return
+	# I-T2 (Director, lines 34–35): exit `on_pass` {sets} — flags set when Agata walks through (the gallery side door:
+	# «Отпереть дверь» until the first pass, then her line in the lane, then the usual label).
+	for f in (e.data.get("on_pass", {}) as Dictionary).get("sets", []):
+		GameState.set_flag(String(f), true)
 	RoomManager.call_deferred("change_room", e.target_room, e.target_spawn)
 
 

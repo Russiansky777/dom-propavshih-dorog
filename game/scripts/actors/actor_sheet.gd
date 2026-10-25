@@ -184,7 +184,7 @@ func _build_frames() -> void:
 			else:
 				push_warning("ActorSheet %s: no sheet for action '%s' (%s) — action skipped" % [id, action, path])
 			continue
-		var tex: Texture2D = load(path)
+		var tex: Array = page_textures(act, load(path))
 		var n := int(act.get("frames", 1))
 		var fps := float(act.get("fps", 8))
 		var frame_ids: Array = frame_sequence(n, String(act.get("playback", "loop")))
@@ -211,20 +211,45 @@ func _build_frames() -> void:
 ## A packed sheet (sprites.json actions.<a>.atlas.rects, tools/pack_sheets.py — the game copy of every sheet):
 ## the figure cropped out of the frame and where it lay in it (ox, oy), so the margin restores the full frame:
 ## same size, same pivot, the same pixels on screen.
+## A seventh number of a rect is the atlas page (atlas.pages: files of at most 8192 px a side — the WebGL
+## texture limit; a larger page is drawn as a black rectangle in the browser, T11/I-T2). Returned third.
 func frame_rect(act: Dictionary, d: int, i: int) -> Array:
 	var rects: Array = (act.get("atlas", {}) as Dictionary).get("rects", [])
 	var k := d * int(act.get("frames", 1)) + i
 	if k < rects.size():
 		var r: Array = rects[k]
 		return [Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3])),
-			Rect2(float(r[4]), float(r[5]), float(frame_w) - float(r[2]), float(frame_h) - float(r[3]))]
-	return [Rect2(i * frame_w, d * frame_h, frame_w, frame_h), Rect2()]
+			Rect2(float(r[4]), float(r[5]), float(frame_w) - float(r[2]), float(frame_h) - float(r[3])),
+			int(r[6]) if r.size() > 6 else 0]
+	return [Rect2(i * frame_w, d * frame_h, frame_w, frame_h), Rect2(), 0]
 
 
-func frame_texture(tex: Texture2D, act: Dictionary, d: int, i: int) -> AtlasTexture:
+## Sheet paths of an action: page 0 is the sheet itself, then atlas.pages[1..].
+func page_paths(act: Dictionary, action: String) -> Array:
+	var first := sheet_dir + "/" + String(act.get("sheet", action + ".png"))
+	var out: Array = [first]
+	var pages: Array = (act.get("atlas", {}) as Dictionary).get("pages", [])
+	for k in range(1, pages.size()):
+		out.append(sheet_dir + "/" + String(pages[k]))
+	return out
+
+
+func page_textures(act: Dictionary, first: Texture2D) -> Array:
+	var out: Array = [first]
+	var pages: Array = (act.get("atlas", {}) as Dictionary).get("pages", [])
+	for k in range(1, pages.size()):
+		out.append(load(sheet_dir + "/" + String(pages[k])))
+	return out
+
+
+func frame_texture(tex_or_pages, act: Dictionary, d: int, i: int) -> AtlasTexture:
 	var fr := frame_rect(act, d, i)
 	var at := AtlasTexture.new()
-	at.atlas = tex
+	if tex_or_pages is Array:
+		var pages: Array = tex_or_pages
+		at.atlas = pages[mini(int(fr[2]), pages.size() - 1)]
+	else:
+		at.atlas = tex_or_pages
 	at.region = fr[0]
 	at.margin = fr[1]
 	at.filter_clip = act.has("atlas")  # filtering never samples the neighbouring piece of the atlas
@@ -235,11 +260,14 @@ func frame_texture(tex: Texture2D, act: Dictionary, d: int, i: int) -> AtlasText
 ## a packed sheet is unpacked. For measurements and tests that read pixels by frame.
 func grid_image(action: String) -> Image:
 	var act: Dictionary = actions.get(action, {})
-	var path := sheet_dir + "/" + String(act.get("sheet", action + ".png"))
-	var img := Image.load_from_file(ProjectSettings.globalize_path(path))
-	if img == null or img.is_empty():
-		return img
-	img.convert(Image.FORMAT_RGBA8)
+	var imgs: Array = []
+	for path in page_paths(act, action):
+		var pimg := Image.load_from_file(ProjectSettings.globalize_path(String(path)))
+		if pimg == null or pimg.is_empty():
+			return pimg
+		pimg.convert(Image.FORMAT_RGBA8)
+		imgs.append(pimg)
+	var img: Image = imgs[0]
 	if not act.has("atlas"):
 		return img
 	var n := int(act.get("frames", 1))
@@ -249,7 +277,7 @@ func grid_image(action: String) -> Image:
 			var fr := frame_rect(act, d, i)
 			var reg: Rect2 = fr[0]
 			var mar: Rect2 = fr[1]
-			grid.blit_rect(img, Rect2i(reg), Vector2i(i * frame_w + int(mar.position.x), d * frame_h + int(mar.position.y)))
+			grid.blit_rect(imgs[mini(int(fr[2]), imgs.size() - 1)], Rect2i(reg), Vector2i(i * frame_w + int(mar.position.x), d * frame_h + int(mar.position.y)))
 	return grid
 
 
@@ -282,6 +310,9 @@ func eased_timeline(action: String, row: int) -> Array:
 	path = sym
 	var period: float = float(act.get("period_s", 3.6))
 	var hold: float = float(act.get("hold_s", 0.35))
+	# I-T2 (Director, line 1: «стойка дёргается»): `amplitude` < 1 sways only the middle part of the path
+	# (0.5 ± amplitude/2) — calm breathing instead of shifting weight from foot to foot.
+	var amp: float = clampf(float(act.get("amplitude", 1.0)), 0.05, 1.0)
 	var ease: float = maxf((period - 2.0 * hold) / 2.0, 0.2)
 	# Time the ease spends in each extreme pose (nearest-frame boundaries at half the end gaps).
 	var n := cols.size()
@@ -292,6 +323,9 @@ func eased_timeline(action: String, row: int) -> Array:
 		tau1 = ease * acos(clampf(float(path[n - 2]), -1.0, 1.0)) / PI
 	var h0 := hold + maxf(0.0, 2.0 * (tau1 - tau0))
 	var h1 := hold + maxf(0.0, 2.0 * (tau0 - tau1))
+	if amp < 1.0:
+		h0 = hold
+		h1 = hold
 	var total := 2.0 * ease + h0 + h1
 	var steps := int(round(total * EASE_FPS))
 	var dt := total / float(steps)
@@ -307,6 +341,7 @@ func eased_timeline(action: String, row: int) -> Array:
 			u = 1.0
 		elif t < h0 * 0.5 + 2.0 * ease + h1:
 			u = (1.0 + cos(PI * (t - h0 * 0.5 - ease - h1) / ease)) * 0.5
+		u = 0.5 + (u - 0.5) * amp
 		var best := 0
 		for k in n:
 			if absf(float(path[k]) - u) < absf(float(path[best]) - u):
@@ -384,11 +419,13 @@ func unit_grid_image(action: String) -> Image:
 	if is_equal_approx(texture_scale, 1.0):
 		return grid_image(action)
 	var act: Dictionary = actions.get(action, {})
-	var path := sheet_dir + "/" + String(act.get("sheet", action + ".png"))
-	var img := Image.load_from_file(ProjectSettings.globalize_path(path))
-	if img == null or img.is_empty():
-		return img
-	img.convert(Image.FORMAT_RGBA8)
+	var imgs: Array = []
+	for path in page_paths(act, action):
+		var pimg := Image.load_from_file(ProjectSettings.globalize_path(String(path)))
+		if pimg == null or pimg.is_empty():
+			return pimg
+		pimg.convert(Image.FORMAT_RGBA8)
+		imgs.append(pimg)
 	var n := int(act.get("frames", 1))
 	var uw := unit_frame_size().x
 	var uh := unit_frame_size().y
@@ -400,7 +437,7 @@ func unit_grid_image(action: String) -> Image:
 			var reg: Rect2 = fr[0]
 			var mar: Rect2 = fr[1]
 			cell.fill(Color(0, 0, 0, 0))
-			cell.blit_rect(img, Rect2i(reg), Vector2i(int(mar.position.x), int(mar.position.y)))
+			cell.blit_rect(imgs[mini(int(fr[2]), imgs.size() - 1)], Rect2i(reg), Vector2i(int(mar.position.x), int(mar.position.y)))
 			var small := cell.duplicate() as Image
 			small.resize(uw, uh, Image.INTERPOLATE_LANCZOS)
 			grid.blit_rect(small, Rect2i(0, 0, uw, uh), Vector2i(i * uw, d * uh))

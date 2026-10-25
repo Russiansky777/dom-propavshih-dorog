@@ -238,6 +238,11 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 			spr.modulate = Color.html(String(l["modulate"]))
 		# `pivot` [x, y] in the layer's own pixels: the sprite turns about it — static `rotation_deg` (the M4
 		# lever in a notch) or `spin` (the M1 wheel); the canvas origin still lands at `offset`.
+		# `scale_pivot` [x, y] in the layer's own pixels: `scale` resizes the drawing about that point, which stays
+		# where it is on the canvas (I-T2: the cups, the shelf, the mitten — bigger or smaller on the same spot).
+		if l.has("scale_pivot"):
+			var sp := Vector2(float(l["scale_pivot"][0]), float(l["scale_pivot"][1]))
+			spr.position += sp * art * (1.0 - sc)
 		if l.has("pivot"):
 			var pv := Vector2(float(l["pivot"][0]), float(l["pivot"][1]))
 			spr.offset = -pv

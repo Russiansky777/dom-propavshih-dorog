@@ -305,7 +305,7 @@ func _npc_states(room: Node) -> Dictionary:
 	for n in NpcActor.all_in(room):
 		var spr: AnimatedSprite2D = n.get_node_or_null("Sprite")
 		out[n.actor_id] = {"x": n.global_position.x, "y": n.global_position.y, "scale": n.scale.y, "visible": n.visible,
-			"anim": String(spr.animation) if spr else "", "frame": spr.frame if spr else -1, "talking": n.talking}
+			"anim": String(spr.animation) if spr else "", "frame": spr.frame if spr else -1, "talking": n.talking, "state": n.state}
 	return out
 
 
