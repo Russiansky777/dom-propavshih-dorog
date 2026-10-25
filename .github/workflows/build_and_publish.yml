@@ -70,8 +70,13 @@ jobs:
           rm -rf godot.zip templates.tpz tpz
 
       # Pillow для tools/make_web_sheets.py (веб-копии листов жителей, I-T4b) — без него веб-экспорт падал на 4-й минуте.
+      # setup-python: скрипты зовутся как `python3 -I` (изолированно) — такой Python не видит пакеты из ~/.local,
+      # куда pip на раннере ставит без прав root; поэтому прежняя установка Pillow не помогала (веб падал за 0 с).
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Python + Pillow
-        run: python3 -m pip install -q --break-system-packages pillow || python3 -m pip install -q pillow
+        run: python -m pip install -q pillow && python3 -I -c "import PIL; print('Pillow', PIL.__version__)"
 
       # Кэш импорта Godot (.godot/imported и др.): без него каждая сборка заново обрабатывает ~1,2 ГБ атласов жителей v2 (~40 мин).
       - name: Cache Godot import
