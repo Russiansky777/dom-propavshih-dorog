@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hayadelhvk3j"
-path="res://.godot/imported/state_bird_boots_mute.png-39d3b96437c28c069f72b363cf043884.ctex"
+uid="uid://deilf8qltpxf"
+path="res://.godot/imported/mouth_2.png-622bea31e020c9a3861909f208415fef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rooms/O1/state_bird_boots_mute.png"
-dest_files=["res://.godot/imported/state_bird_boots_mute.png-39d3b96437c28c069f72b363cf043884.ctex"]
+source_file="res://assets/characters/tikhon/mouth_2.png"
+dest_files=["res://.godot/imported/mouth_2.png-622bea31e020c9a3861909f208415fef.ctex"]
 
 [params]
 

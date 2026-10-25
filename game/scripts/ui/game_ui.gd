@@ -85,6 +85,7 @@ var sfx_slider: HSlider                 # menu: sound effects volume 0–100 % (
 var sfx_value_label: Label
 var voice_slider: HSlider               # menu: voice volume 0–100 % (VoiceDirector, user://settings.cfg)
 var voice_value_label: Label
+var fullscreen_check: CheckButton       # menu: «Полный экран» (I-T3; DisplaySettings, user://settings.cfg [display] fullscreen; F11)
 var timing_slow_check: CheckButton      # menu: «Облегчить мини-игры» (G3; TimingBar.slow, user://settings.cfg [access] timing_slow)
 var reveal: HotspotReveal               # Space: every hotspot and exit of the room for 1.5 s (exit_hints)
 var hover_icon: TextureRect             # destination icon left of an exit caption
@@ -481,6 +482,16 @@ func _build() -> void:
 	timing_slow_check.toggled.connect(func(on): TimingBar.set_slow(on))
 	mv.add_child(timing_slow_check)
 	settings_rows.append(timing_slow_check)
+	# I-T3 §2а (Director 25.10): full screen / window, kept between runs; F11 does the same.
+	DisplaySettings.load_settings()
+	fullscreen_check = CheckButton.new()
+	fullscreen_check.name = "Fullscreen"
+	fullscreen_check.text = StoryData.text("@ui.fullscreen")
+	fullscreen_check.focus_mode = Control.FOCUS_NONE
+	fullscreen_check.button_pressed = DisplaySettings.fullscreen
+	fullscreen_check.toggled.connect(func(on): DisplaySettings.set_fullscreen(on))
+	mv.add_child(fullscreen_check)
+	settings_rows.append(fullscreen_check)
 	# Controls line: the reveal key (exit_hints, Director 18.10).
 	var keys_l := Label.new()
 	keys_l.name = "KeysHint"
@@ -1013,12 +1024,24 @@ func _on_new_game() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F11:
+		toggle_fullscreen()
+		get_viewport().set_input_as_handled()
+		return
 	# The held item's icon follows the pointer without waiting for _process.
 	if event is InputEventMouseMotion and cursor_item.visible:
 		cursor_item.position = get_viewport().get_mouse_position() + CURSOR_ITEM_OFFSET
 	# Any click puts the hint panel away (the click itself goes on; «Подсказка» again shows the next tier).
 	if event is InputEventMouseButton and event.pressed and hint_panel.visible:
 		hide_hint_panel()
+
+
+## F11 and the menu switch: full screen ⇄ window, saved; the menu's switch shows the new state.
+func toggle_fullscreen() -> bool:
+	var on := DisplaySettings.toggle()
+	if fullscreen_check != null:
+		fullscreen_check.set_pressed_no_signal(on)
+	return on
 
 
 func _unhandled_input(event: InputEvent) -> void:

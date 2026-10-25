@@ -27,6 +27,7 @@ var _probe_paused: bool = false
 
 
 func _ready() -> void:
+	DisplaySettings.apply_saved()   # I-T3 §2а: full screen / window as the player left it
 	RoomManager.setup(world, player)
 	RoomManager.room_changed.connect(_mark_probe)
 	GameState.flag_changed.connect(func(_f, _v): _mark_probe())

@@ -15,6 +15,8 @@ extends Node2D
 ## (sitting on furniture), `mirror` — faces the other way. No match → the hotspot's bottom centre. Flags
 ## and a moved hotspot (StoryHotspot.geometry_changed) re-place it. The room's light tones it like the
 ## sheet actors (RoomLighting.actor_tone_at, eased); a small soft contact shadow sits under it.
+## Mouth (I-T3, art 10g): data `mouth_frames` — cut-outs of the mouth on the head bone; while the voice of his own line
+## sounds the frame follows the Voice bus level (no level, as on the web — a steady 1-2-1-3), silent — the drawn mouth.
 
 const TONE_RATE := 6.0
 
@@ -37,6 +39,12 @@ var _next_accent: float = 0.0
 var _tone: Color = Color.WHITE
 var _tone_set: bool = false
 var _room: Node = null
+var _bone_from: Dictionary = {}     # bone name -> its origin in rig space (rest pose)
+var mouth: Sprite2D = null
+var mouth_frames: Array[Texture2D] = []
+var mouth_frame: int = 0            # 0 — the drawn mouth, 1..n — mouth_frames (tests)
+var _mouth_t: float = 0.0
+var _mouth_seq: int = 0
 
 
 static func all_in(room: Node) -> Array:
@@ -66,6 +74,7 @@ func setup(id: String, h: Node2D, room: Node, the_player: Node2D) -> bool:
 	var src: float = float(spec.get("source_size", tex.get_width()))
 	tex_scale = float(tex.get_width()) / src
 	_build_rig(tex)
+	_build_mouth()
 	_place(room, h)
 	_build_shadow()
 	_build_animations()
@@ -137,6 +146,7 @@ func _build_rig(tex: Texture2D) -> void:
 		parent.add_child(bone)
 		bone.rest = bone.transform
 		bones[bone.name] = bone
+		_bone_from[String(bone.name)] = from
 	# Mesh: grid cells that contain any visible pixel.
 	var img: Image = tex.get_image()
 	if img.is_compressed():
@@ -177,6 +187,68 @@ func _build_rig(tex: Texture2D) -> void:
 	rig.move_child(poly, 0)
 	poly.skeleton = poly.get_path_to(skeleton)
 	_skin(verts)
+
+
+## The mouth cut-outs on their bone (region in source px; the sprite sits where it was cut from, at rest).
+func _build_mouth() -> void:
+	var m: Dictionary = spec.get("mouth_frames", {})
+	var bone_name := String(m.get("bone", "head"))
+	if m.is_empty() or not bones.has(bone_name):
+		return
+	for path in m.get("images", []):
+		if ResourceLoader.exists(String(path)):
+			mouth_frames.append(load(String(path)))
+	if mouth_frames.is_empty():
+		return
+	var r: Array = m.get("region", [0, 0, 0, 0])
+	var centre := _rig(Vector2((float(r[0]) + float(r[2])) / 2.0, (float(r[1]) + float(r[3])) / 2.0))
+	mouth = Sprite2D.new()
+	mouth.name = "Mouth"
+	mouth.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	mouth.scale = Vector2(tex_scale, tex_scale)
+	mouth.position = centre - Vector2(_bone_from[bone_name])
+	mouth.visible = false
+	bones[bone_name].add_child(mouth)
+
+
+func _speaking() -> bool:
+	return VoiceDirector.is_playing() and String(VoiceDirector.current_speaker) == actor_id
+
+
+func _update_mouth(delta: float) -> void:
+	if mouth == null:
+		return
+	var want := mouth_frame
+	if not _speaking():
+		want = 0
+		_mouth_t = 0.0
+	else:
+		_mouth_t -= delta
+		if _mouth_t > 0.0:
+			return
+		var m: Dictionary = spec.get("mouth_frames", {})
+		_mouth_t = float(m.get("step_s", 0.09))
+		var bus := AudioServer.get_bus_index("Voice")
+		var db := -200.0
+		if bus >= 0:
+			db = maxf(AudioServer.get_bus_peak_volume_left_db(bus, 0), AudioServer.get_bus_peak_volume_right_db(bus, 0))
+		if db <= -150.0:
+			# No level (web: sample playback bypasses the bus meters) — a steady chatter.
+			_mouth_seq = (_mouth_seq + 1) % 4
+			want = [1, 2, 1, 3][_mouth_seq]
+		else:
+			var lv: Array = m.get("level_db", [-38.0, -26.0, -15.0])
+			want = 0
+			for i in lv.size():
+				if db >= float(lv[i]):
+					want = i + 1
+		want = mini(want, mouth_frames.size())
+	if want == mouth_frame and mouth.visible == (want > 0):
+		return
+	mouth_frame = want
+	mouth.visible = want > 0
+	if want > 0:
+		mouth.texture = mouth_frames[want - 1]
 
 
 ## Weights from the data regions: tail (right part), head (upper part), ears (above the ear line,
@@ -405,6 +477,7 @@ static func _common_period(a: float, b: float) -> float:
 
 func _process(delta: float) -> void:
 	_update_tone(delta)
+	_update_mouth(delta)
 	if not visible or talking or scared or accent.is_playing():
 		return
 	_next_accent -= delta
@@ -461,3 +534,5 @@ func _update_tone(delta: float) -> void:
 	else:
 		_tone = _tone.lerp(target, 1.0 - exp(-delta * TONE_RATE))
 	poly.self_modulate = _tone
+	if mouth != null:
+		mouth.self_modulate = _tone

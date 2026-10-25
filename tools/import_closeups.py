@@ -74,6 +74,10 @@ WIDTH.update({n: 1672 for n in BATCH10B})
 # полный кадр — запасной (без слоёв).
 BATCH10B_BELL = ["closeup_bell_stand", "closeup_bell_stand_nobell", "closeup_bell_body", "closeup_bell_clapper_hung"]
 WIDTH.update({n: 1672 for n in BATCH10B_BELL})
+# Партия 10г (I-T3, 25.10, assets/incoming/_meta_p10g/README.txt): старый снимок галереи с Агатой-девочкой у зеркала ЗГ —
+# участок фона H3 [0, 20, 500, 610) ×2 (data/story/rooms/H3.json → mirror_home.view.photo), без уменьшения.
+BATCH10G = ["closeup_h3_old_photo_agata"]
+WIDTH.update({n: 1000 for n in BATCH10G})
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:

@@ -1,0 +1,67 @@
+{
+  "id": "F_hug_nina",
+  "frame": true,
+  "place": "O4",
+  "_art": "M19: Нина обнимает Агату на крыльце вечером (партия 10г, assets/incoming/_meta_p10g/README.txt, п. 09; Директор 24.10 H39, карта 25.10 стр. 128–129). Фигуры игры (3D-спрайты) обняться не могут — в момент объятия сцена показывает этот кадр: затемнение → кадр → обратно (stage сцены).",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/F_hug_nina.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/F_hug_nina/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты).",
+  "player_hidden": true,
+  "layers": [],
+  "effects": [
+    {
+      "id": "snow",
+      "type": "snow",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "amount": 40,
+      "z": 4000
+    }
+  ],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}

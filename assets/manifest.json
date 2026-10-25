@@ -2240,7 +2240,7 @@
     },
     {
       "id": "H4_state_bed_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "prop_states",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2259,7 +2259,7 @@
     },
     {
       "id": "Z3_state_water_low_day_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "scene_layer",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2278,7 +2278,7 @@
     },
     {
       "id": "R1_state_water_low_day_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "scene_layer",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2297,7 +2297,7 @@
     },
     {
       "id": "R1_state_no_boat_day_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "background_fix",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2316,7 +2316,7 @@
     },
     {
       "id": "Z3_state_boat_day_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "layer_moving",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2335,7 +2335,7 @@
     },
     {
       "id": "Z3_state_span_site_day4_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "prop_states",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2354,7 +2354,7 @@
     },
     {
       "id": "M05_wall_behind",
-      "status": "requested",
+      "status": "imported",
       "kind": "closeup_layers",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2373,7 +2373,7 @@
     },
     {
       "id": "O1_state_bird_doodles_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "prop_states",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2392,7 +2392,7 @@
     },
     {
       "id": "F_hug_nina",
-      "status": "requested",
+      "status": "imported",
       "kind": "frame",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2411,7 +2411,7 @@
     },
     {
       "id": "F_hug_pelageya",
-      "status": "requested",
+      "status": "imported",
       "kind": "frame",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2430,7 +2430,7 @@
     },
     {
       "id": "tikhon_mouth",
-      "status": "requested",
+      "status": "imported",
       "kind": "anim_frames",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2451,7 +2451,7 @@
     },
     {
       "id": "closeup_h3_old_photo_agata",
-      "status": "requested",
+      "status": "imported",
       "kind": "closeup",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",
@@ -2470,7 +2470,7 @@
     },
     {
       "id": "EP_dinner_ulyana_map_v2",
-      "status": "requested",
+      "status": "imported",
       "kind": "prop_states",
       "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
       "batch": "10g",

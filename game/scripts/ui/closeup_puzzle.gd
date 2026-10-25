@@ -43,6 +43,7 @@ var door_leaf: Control
 var snow: CPUParticles2D
 var winter_label: Label
 var winter_view: TextureRect = null   # the classroom through the open door (F18)
+var wall_view: TextureRect = null     # the gallery wall behind the open door when the leaf is hung wrong (I-T3, art 10g)
 var winter_front: Node2D = null       # cold light on the threshold, snow drifting out, breath of cold (F18)
 var check_button: Button
 var close_button: Button
@@ -261,6 +262,10 @@ func _build() -> void:
 	winter_label = _label("", Rect2(opening.position + Vector2(10, 14), Vector2(opening.size.x - 20, 50)), 24)
 	winter_label.name = "WinterLabel"
 	root.add_child(winter_label)
+	# I-T3 (art 10g, M05_wall_behind): plaster and skirting instead of the flat brown when the door opens onto the wall.
+	wall_view = _art_layer("WallView", art.get("wall_view", {}))
+	if wall_view != null:
+		root.add_child(wall_view)
 	var wv: Dictionary = art.get("winter_view", {})
 	if not wv.is_empty():
 		winter_view = _winter_picture(wv, opening)
@@ -751,6 +756,8 @@ func _render() -> void:
 		snow.emitting = false
 	if winter_view != null:
 		winter_view.visible = view == "winter"
+	if wall_view != null:
+		wall_view.visible = view != "winter"
 	if winter_front != null:
 		winter_front.visible = view == "winter"
 		for c in winter_front.get_children():

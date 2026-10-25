@@ -6,7 +6,7 @@
   "art_source": {
     "files": {
       "bg.png": "assets/incoming/ep_dinner.png",
-      "ulyana_map.png": "assets/incoming/ep_dinner_ulyana_map.png",
+      "ulyana_map.png": "assets/incoming/EP_dinner_ulyana_map_v2.png",
       "photo_frame.png": "assets/incoming/ep_dinner_photo_frame.png",
       "family.png": "assets/incoming/ep_dinner_family.png"
     },
@@ -187,7 +187,7 @@
     },
     {
       "id": "ulyana_map",
-      "modulate": "#c99f73",
+      "_i_t3": "I-T3 (партия 10г): новый рисунок карты (река, школа, красный пунктир, дом, сад) — EP_dinner_ulyana_map_v2, modulate снят",
       "_i_t2": "I-T2 (Директор, стр. 170: «бело-прозрачная карта, непонятно что это»): лист в тоне комнаты при свече (modulate); арт — заявка партии 10г",
       "image": "res://assets/rooms/EP_dinner/ulyana_map.png",
       "if": [

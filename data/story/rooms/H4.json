@@ -1,6 +1,7 @@
 {
   "id": "H4",
   "_art": "Фон H4_bg.png (чердак): слуховое окно, сундук слева, слой H4_fg_boxes.png — пустые коробки на переднем плане справа (окклюдер z=1000). Партия 10б (H17/G44, 24.10): кровать справа (state_bed — всегда, под коробками), открытый сундук (state_chest_open — после attic_chest_open) и язык колокола в нём (state_chest_clapper — пока его не взяли).",
+  "art_source": {"files": {"state_bed.png": "assets/incoming/H4_state_bed_v2.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "I-T3 (партия 10г): кровать ровно у задней стены, ножки на полу (габарит листа [1192, 500, 1508, 597)) — копия tools/import_room_art.py H4"},
   "background": {"kind": "interior", "image": "res://assets/rooms/H4/bg.png", "wall": "#4e4238", "floor": "#6a5a44", "accent": "#8a7a5a", "horizon": 620},
   "walkable": [[20, 1070], [20, 735], [150, 718], [570, 678], [600, 632], [760, 622], [1300, 622], [1450, 632], [1450, 690], [1340, 738], [1190, 790], [1140, 808], [1140, 1070]],
   "no_walk_samples": [[350, 650, "сундук"], [1400, 900, "коробки"], [1700, 820, "коробки"], [1750, 1000, "пол за коробками (не дойти)"], [60, 620, "мешок у стены"]],
@@ -23,7 +24,7 @@
   "hotspots": [
     {"id": "window", "kind": "object", "label": "@H4.window.label", "rect": [780, 70, 500, 540], "stand": [1020, 680], "color": "#9fb8cc", "draw": false, "look": "@H4.window.look"},
     {"id": "chest", "action_anim": "reach", "kind": "object", "label": "@H4.chest.label", "rect": [130, 330, 440, 380], "stand": [560, 740], "color": "#7a5a3a", "draw": false, "look": "@H4.chest.look", "use": {"sets": ["attic_chest_open"], "gives": ["bell_clapper"], "once_flag": "has_bell_clapper", "text": "@H4.chest.open", "text_done": "@H4.chest.open_done"}, "_note": "G44/H17 (Директор 24.10): язык колокола — в сундуке на чердаке (раньше коробка в мастерской). Скатерть в сундуке не решена — не добавлена."},
-    {"id": "bed", "kind": "object", "label": "@H4.bed.label", "rect": [1376, 440, 486, 262], "stand": [1400, 668], "color": "#8a6a4a", "draw": false, "states": [{"if": ["tod_d1_night"], "look": "@H4.bed.dunya_night"}], "look": "@H4.bed.look", "_note": "T6 (решение Директора 24.10 «Сон и смена дня»): кровать на чердаке — Дунина, Агата на ней не спит. Ночью первого дня (день кончается в H1): «Дунина… Лягу у печи — там теплее»; сон — лежанка у печи (H1.lezhanka), дни 2–3 — кровать у Нины (O3.bed)."}
+    {"id": "bed", "kind": "object", "label": "@H4.bed.label", "rect": [1362, 556, 384, 140], "stand": [1400, 668], "color": "#8a6a4a", "draw": false, "states": [{"if": ["tod_d1_night"], "look": "@H4.bed.dunya_night"}], "look": "@H4.bed.look", "_note": "T6 (решение Директора 24.10 «Сон и смена дня»): кровать на чердаке — Дунина, Агата на ней не спит. Ночью первого дня (день кончается в H1): «Дунина… Лягу у печи — там теплее»; сон — лежанка у печи (H1.lezhanka), дни 2–3 — кровать у Нины (O3.bed)."}
   ],
   "exits": [
     {"to": "H1", "label": "@H4.exit_H1.label", "cue": "down", "rect": [500, 1000, 400, 80], "stand": [700, 1030], "spawn": "from_H4", "draw": false}

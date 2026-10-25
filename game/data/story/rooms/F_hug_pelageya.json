@@ -1,0 +1,67 @@
+{
+  "id": "F_hug_pelageya",
+  "frame": true,
+  "place": "R3",
+  "_art": "M18: объятие Пелагеи и Мити на дальней опоре вечером — Митя уткнулся лицом в плечо матери, она держит его затылок (партия 10г, assets/incoming/_meta_p10g/F_hug_pelageya_v2_README.txt; Директор 24.10 H37, карта 25.10 стр. 128–129). Фигуры игры (3D-спрайты) обняться не могут — в момент объятия сцена показывает этот кадр: затемнение → кадр → обратно (stage сцены).",
+  "art_source": {
+    "files": {
+      "bg.png": "assets/incoming/F_hug_pelageya.png"
+    },
+    "canvas": [
+      1672,
+      941
+    ],
+    "alpha_min": 0
+  },
+  "background": {
+    "kind": "exterior",
+    "image": "res://assets/rooms/F_hug_pelageya/bg.png",
+    "horizon": 700
+  },
+  "walkable": [
+    [
+      0,
+      1000
+    ],
+    [
+      1920,
+      1000
+    ],
+    [
+      1920,
+      1078
+    ],
+    [
+      0,
+      1078
+    ]
+  ],
+  "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты).",
+  "player_hidden": true,
+  "layers": [],
+  "effects": [
+    {
+      "id": "snow",
+      "type": "snow",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "amount": 40,
+      "z": 4000
+    }
+  ],
+  "spawns": {
+    "default": [
+      960,
+      1040
+    ]
+  },
+  "props": [],
+  "hotspots": [],
+  "exits": [],
+  "scenes": {},
+  "flags": {}
+}
