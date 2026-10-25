@@ -1,0 +1,626 @@
+{
+ "what": "Вычитка-3: решение Директора (страница согласования, 25.10)",
+ "updated": "2026-10-25T17:57:26.903Z",
+ "decisions": {
+  "1": {
+   "d": "ok",
+   "id": "text:Z1.plan.look",
+   "note": ""
+  },
+  "2": {
+   "d": "ok",
+   "id": "text:H1.stove.use",
+   "note": ""
+  },
+  "3": {
+   "d": "no",
+   "id": "text:H1.tikhon.water",
+   "note": ""
+  },
+  "4": {
+   "d": "no",
+   "id": "text:H1.tikhon.water#line",
+   "note": ""
+  },
+  "5": {
+   "d": "ok",
+   "id": "text:H1.tikhon.tea_3",
+   "note": ""
+  },
+  "6": {
+   "d": "ok",
+   "id": "text:H1.tikhon.tea_3#line",
+   "note": ""
+  },
+  "7": {
+   "d": "ok",
+   "id": "text:H1.shelf.look_done",
+   "note": ""
+  },
+  "8": {
+   "d": "ok",
+   "id": "text:H2.bench.use",
+   "note": ""
+  },
+  "9": {
+   "d": "ok",
+   "id": "text:H2.bench.look",
+   "note": ""
+  },
+  "10": {
+   "d": "ok",
+   "id": "text:H2.bundle_nina.done",
+   "note": ""
+  },
+  "11": {
+   "d": "ok",
+   "id": "text:H2.brace.take",
+   "note": ""
+  },
+  "12": {
+   "d": "ok",
+   "id": "text:H3.puzzle.success",
+   "note": ""
+  },
+  "13": {
+   "d": "ok",
+   "id": "text:H4.chest.open_done",
+   "note": ""
+  },
+  "14": {
+   "d": "ok",
+   "id": "text:H4.bed.early_d2",
+   "note": ""
+  },
+  "15": {
+   "d": "ok",
+   "id": "text:H4.bed.early_d2#line",
+   "note": ""
+  },
+  "16": {
+   "d": "ok",
+   "id": "text:H4.bed.after_all",
+   "note": ""
+  },
+  "17": {
+   "d": "ok",
+   "id": "text:H4.bed.after_all#line",
+   "note": ""
+  },
+  "18": {
+   "d": "ok",
+   "id": "text:O1.board.use",
+   "note": ""
+  },
+  "19": {
+   "d": "ok",
+   "id": "text:O1.bird_drawing.react_boat",
+   "note": ""
+  },
+  "20": {
+   "d": "ok",
+   "id": "text:O1.bird_drawing.react_boat#line",
+   "note": ""
+  },
+  "21": {
+   "d": "ok",
+   "id": "text:R1.pelageya.manager",
+   "note": ""
+  },
+  "22": {
+   "d": "ok",
+   "id": "text:R1.pelageya.manager#line",
+   "note": ""
+  },
+  "23": {
+   "d": "ok",
+   "id": "text:Z1.tamara.sheet",
+   "note": ""
+  },
+  "24": {
+   "d": "ok",
+   "id": "text:Z1.tamara.sheet#line",
+   "note": ""
+  },
+  "25": {
+   "d": "ok",
+   "id": "text:M1.pavel.before_agree",
+   "note": ""
+  },
+  "26": {
+   "d": "ok",
+   "id": "text:M1.pavel.before_agree#line",
+   "note": ""
+  },
+  "27": {
+   "d": "ok",
+   "id": "text:M1.wheel.look_still",
+   "note": ""
+  },
+  "28": {
+   "d": "ok",
+   "id": "text:M3.key_nail.use",
+   "note": ""
+  },
+  "29": {
+   "d": "ok",
+   "id": "text:M3.clamp.use",
+   "note": ""
+  },
+  "30": {
+   "d": "ok",
+   "id": "text:M3.clamp.use#line",
+   "note": ""
+  },
+  "31": {
+   "d": "ok",
+   "id": "text:M3.gauge.look",
+   "note": ""
+  },
+  "32": {
+   "d": "ok",
+   "id": "text:M4.gate.key",
+   "note": ""
+  },
+  "33": {
+   "d": "ok",
+   "id": "text:M4.sluice.label_status_settled",
+   "note": ""
+  },
+  "34": {
+   "d": "ok",
+   "id": "text:R3.pelageya.after",
+   "note": ""
+  },
+  "35": {
+   "d": "ok",
+   "id": "text:R3.pelageya.after#line",
+   "note": ""
+  },
+  "36": {
+   "d": "ok",
+   "id": "text:H2d.stand_zm.mount",
+   "note": ""
+  },
+  "37": {
+   "d": "ok",
+   "id": "text:Z3d.plate_dry.use_skoba",
+   "note": ""
+  },
+  "38": {
+   "d": "ok",
+   "id": "text:Z3d.plate_dry.use_skoba#line",
+   "note": ""
+  },
+  "39": {
+   "d": "ok",
+   "id": "text:Z3d.plate_dry.no_skoba",
+   "note": ""
+  },
+  "40": {
+   "d": "ok",
+   "id": "text:Z3d.plate_dry.no_skoba#line",
+   "note": ""
+  },
+  "41": {
+   "d": "ok",
+   "id": "text:Z3d.plate.knot_wrong",
+   "note": ""
+  },
+  "42": {
+   "d": "ok",
+   "id": "text:Z3d.plate.knot_wrong#line",
+   "note": ""
+  },
+  "43": {
+   "d": "ok",
+   "id": "text:Z3d.pelageya.done",
+   "note": ""
+  },
+  "44": {
+   "d": "ok",
+   "id": "text:Z3d.pelageya.done#line",
+   "note": ""
+  },
+  "45": {
+   "d": "ok",
+   "id": "text:H1.after_mirror.tikhon_1",
+   "note": ""
+  },
+  "46": {
+   "d": "ok",
+   "id": "text:H1.after_mirror.tikhon_1#line",
+   "note": ""
+  },
+  "47": {
+   "d": "ok",
+   "id": "text:H1.after_mirror.tikhon_2",
+   "note": ""
+  },
+  "48": {
+   "d": "ok",
+   "id": "text:H1.after_mirror.tikhon_2#line",
+   "note": ""
+  },
+  "49": {
+   "d": "ok",
+   "id": "text:M3.answer.opt_promise",
+   "note": ""
+  },
+  "50": {
+   "d": "ok",
+   "id": "text:O3.nina.after",
+   "note": ""
+  },
+  "51": {
+   "d": "ok",
+   "id": "text:O3.nina.after#line",
+   "note": ""
+  },
+  "52": {
+   "d": "ok",
+   "id": "text:O3.ilya.after",
+   "note": ""
+  },
+  "53": {
+   "d": "ok",
+   "id": "text:O3.ilya.after#line",
+   "note": ""
+  },
+  "54": {
+   "d": "ok",
+   "id": "text:O3.notebooks.again",
+   "note": ""
+  },
+  "55": {
+   "d": "ok",
+   "id": "text:O3.notebooks.again#line",
+   "note": ""
+  },
+  "56": {
+   "d": "ok",
+   "id": "text:O4.mitya_board.use",
+   "note": ""
+  },
+  "57": {
+   "d": "ok",
+   "id": "text:O4.mitya_board.use#line",
+   "note": ""
+  },
+  "58": {
+   "d": "ok",
+   "id": "text:O4.letters_bag.use",
+   "note": ""
+  },
+  "59": {
+   "d": "ok",
+   "id": "text:O4.letters_bag.use#line",
+   "note": ""
+  },
+  "60": {
+   "d": "ok",
+   "id": "text:H1d.tea_corner.go_home",
+   "note": ""
+  },
+  "61": {
+   "d": "ok",
+   "id": "text:H1d.tea_corner.go_all",
+   "note": ""
+  },
+  "62": {
+   "d": "ok",
+   "id": "text:O1q.village_map.look",
+   "note": ""
+  },
+  "63": {
+   "d": "ok",
+   "id": "text:O1q.village_map.use",
+   "note": ""
+  },
+  "64": {
+   "d": "ok",
+   "id": "text:O1q.village_map.use#line",
+   "note": ""
+  },
+  "65": {
+   "d": "ok",
+   "id": "text:O1q.village_map.agata_mark",
+   "note": ""
+  },
+  "66": {
+   "d": "ok",
+   "id": "text:O1q.village_map.agata_mark#line",
+   "note": ""
+  },
+  "67": {
+   "d": "ok",
+   "id": "text:O4q.workshop.mitya_cramped",
+   "note": ""
+  },
+  "68": {
+   "d": "ok",
+   "id": "text:O4q.workshop.mitya_cramped#line",
+   "note": ""
+  },
+  "69": {
+   "d": "ok",
+   "id": "text:O4q.workshop.ilya_ulya",
+   "note": ""
+  },
+  "70": {
+   "d": "ok",
+   "id": "text:O4q.workshop.ilya_ulya#line",
+   "note": ""
+  },
+  "71": {
+   "d": "ok",
+   "id": "text:mech.bench.screw_set",
+   "note": ""
+  },
+  "72": {
+   "d": "ok",
+   "id": "text:mech.bench.screw_set#line",
+   "note": ""
+  },
+  "73": {
+   "d": "ok",
+   "id": "text:mech.bench.checked",
+   "note": ""
+  },
+  "74": {
+   "d": "ok",
+   "id": "text:mech.bench.checked#line",
+   "note": ""
+  },
+  "75": {
+   "d": "ok",
+   "id": "text:examine.mirror_mill",
+   "note": ""
+  },
+  "76": {
+   "d": "ok",
+   "id": "text:examine.mirror_mill#line",
+   "note": ""
+  },
+  "77": {
+   "d": "ok",
+   "id": "text:mech.nina_mirror.watch_hold",
+   "note": ""
+  },
+  "78": {
+   "d": "ok",
+   "id": "text:mech.nina_mirror.wrong_item",
+   "note": ""
+  },
+  "79": {
+   "d": "ok",
+   "id": "text:mech.nina_mirror.wrong_item#line",
+   "note": ""
+  },
+  "80": {
+   "d": "ok",
+   "id": "text:mech.sluice.slipped",
+   "note": ""
+  },
+  "81": {
+   "d": "ok",
+   "id": "text:mech.sluice.slipped#line",
+   "note": ""
+  },
+  "82": {
+   "d": "ok",
+   "id": "scene:M01/lines[9].text",
+   "note": ""
+  },
+  "83": {
+   "d": "ok",
+   "id": "scene:M02/lines[1].text",
+   "note": ""
+  },
+  "84": {
+   "d": "ok",
+   "id": "scene:M02/lines[8].text",
+   "note": ""
+  },
+  "85": {
+   "d": "ok",
+   "id": "scene:M06/lines[0].text",
+   "note": ""
+  },
+  "86": {
+   "d": "ok",
+   "id": "scene:M07/lines[6].text",
+   "note": ""
+  },
+  "87": {
+   "d": "ok",
+   "id": "scene:M08/lines[0].text",
+   "note": ""
+  },
+  "88": {
+   "d": "ok",
+   "id": "scene:M09/lines[1].text",
+   "note": ""
+  },
+  "89": {
+   "d": "ok",
+   "id": "scene:M10/lines[1].text",
+   "note": ""
+  },
+  "90": {
+   "d": "ok",
+   "id": "scene:M11/lines[0].text",
+   "note": ""
+  },
+  "91": {
+   "d": "ok",
+   "id": "scene:M13/lines[1].options[promise].text",
+   "note": ""
+  },
+  "92": {
+   "d": "ok",
+   "id": "scene:M15s/lines[0].text",
+   "note": ""
+  },
+  "93": {
+   "d": "ok",
+   "id": "scene:M15s/lines[2].text",
+   "note": ""
+  },
+  "94": {
+   "d": "ok",
+   "id": "scene:M15/lines[1].text",
+   "note": ""
+  },
+  "95": {
+   "d": "ok",
+   "id": "scene:M16s/lines[0].text",
+   "note": ""
+  },
+  "96": {
+   "d": "ok",
+   "id": "scene:M17/lines[0].text",
+   "note": ""
+  },
+  "97": {
+   "d": "ok",
+   "id": "scene:M17/lines[2].text",
+   "note": ""
+  },
+  "98": {
+   "d": "ok",
+   "id": "scene:M17/lines[7].text",
+   "note": ""
+  },
+  "99": {
+   "d": "ok",
+   "id": "scene:M18/lines[3].text",
+   "note": ""
+  },
+  "100": {
+   "d": "ok",
+   "id": "scene:M18/lines[8].text",
+   "note": ""
+  },
+  "101": {
+   "d": "ok",
+   "id": "scene:M18/lines[9].text",
+   "note": ""
+  },
+  "102": {
+   "d": "ok",
+   "id": "scene:M19c/lines[0].text",
+   "note": ""
+  },
+  "103": {
+   "d": "ok",
+   "id": "scene:M19c/lines[4].text",
+   "note": ""
+  },
+  "104": {
+   "d": "ok",
+   "id": "scene:M20/lines[2].text",
+   "note": ""
+  },
+  "105": {
+   "d": "ok",
+   "id": "scene:M20/lines[4].text",
+   "note": ""
+  },
+  "106": {
+   "d": "ok",
+   "id": "scene:M20/lines[5].text",
+   "note": ""
+  },
+  "107": {
+   "d": "ok",
+   "id": "scene:M21/lines[2].text",
+   "note": ""
+  },
+  "108": {
+   "d": "ok",
+   "id": "scene:M22/lines[7].text",
+   "note": ""
+  },
+  "109": {
+   "d": "ok",
+   "id": "scene:M22/lines[14].then[3].text",
+   "note": ""
+  },
+  "110": {
+   "d": "ok",
+   "id": "scene:M23a/lines[0].text",
+   "note": ""
+  },
+  "111": {
+   "d": "ok",
+   "id": "scene:M23a/lines[2].text",
+   "note": ""
+  },
+  "112": {
+   "d": "ok",
+   "id": "scene:M23b/lines[3].text",
+   "note": ""
+  },
+  "113": {
+   "d": "ok",
+   "id": "scene:M23b/lines[7].text",
+   "note": ""
+  },
+  "114": {
+   "d": "ok",
+   "id": "scene:M23c/lines[6].text",
+   "note": ""
+  },
+  "115": {
+   "d": "ok",
+   "id": "scene:M23c/lines[8].text",
+   "note": ""
+  },
+  "116": {
+   "d": "ok",
+   "id": "scene:M25/lines[0].text",
+   "note": ""
+  },
+  "117": {
+   "d": "ok",
+   "id": "scene:M25/lines[2].text",
+   "note": ""
+  },
+  "118": {
+   "d": "ok",
+   "id": "scene:M25/lines[3].text",
+   "note": ""
+  },
+  "119": {
+   "d": "ok",
+   "id": "scene:M26/lines[11].text",
+   "note": ""
+  },
+  "120": {
+   "d": "ok",
+   "id": "scene:M26/lines[21].text",
+   "note": ""
+  },
+  "121": {
+   "d": "ok",
+   "id": "scene:M26/lines[22].text",
+   "note": ""
+  },
+  "122": {
+   "d": "ok",
+   "id": "quest:Q02/lines[0].text",
+   "note": ""
+  },
+  "123": {
+   "d": "ok",
+   "id": "quest:Q03/lines[0].text",
+   "note": ""
+  },
+  "124": {
+   "d": "ok",
+   "id": "quest:Q06/lines[0].text",
+   "note": ""
+  }
+ }
+}
