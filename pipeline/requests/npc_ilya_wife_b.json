@@ -1,0 +1,81 @@
+{
+  "character": "ilya_wife_v2",
+  "height_m": 1.71,
+  "stages": [
+    "local_glb"
+  ],
+  "local_glb": {
+    "url": "https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/npc-v2-work/ilya_wife_v2_game.glb"
+  },
+  "retarget": false,
+  "clips": {
+    "idle": "idle",
+    "listen": "listen",
+    "talk": "talk"
+  },
+  "actions": [
+    "idle",
+    "listen",
+    "talk"
+  ],
+  "frames": {
+    "idle": 24,
+    "listen": 24,
+    "talk": 48
+  },
+  "fps": {
+    "idle": 12,
+    "listen": 12,
+    "talk": 12
+  },
+  "clip_window": {
+    "idle": [
+      0.1,
+      0.5
+    ],
+    "listen": [
+      0.1,
+      0.6
+    ]
+  },
+  "feet_fix": [
+    "idle"
+  ],
+  "render_size": 864,
+  "render_samples": 16,
+  "elev": 14,
+  "front_yaw": 0,
+  "blender": {
+    "_how": "pipeline/3d/npc_v2/build_npc.py по GLB этапа A (артефакт glb-<run>); правка параметров = пересборка GLB + перерендер, 0 кредитов",
+    "clips": {
+      "talk": "Talk_with_Hands_Open"
+    },
+    "text_motion_roles": [
+      "idle",
+      "listen"
+    ],
+    "straighten": {
+      "idle": {
+        "legs": 0.8,
+        "hips": 0.6
+      },
+      "listen": {
+        "legs": 0.8,
+        "hips": 0.6
+      }
+    },
+    "arms_in_deg": {
+      "idle": -5,
+      "listen": -5
+    },
+    "jaw": {
+      "role": "talk",
+      "frames": 48,
+      "open_deg": 4.5,
+      "mouth_frac": 0.57,
+      "pivot_depth": 0.4
+    },
+    "rigid": []
+  },
+  "_note": "I-T4 этап B (0 кредитов): рендер 2,25× (864 px, 16 сэмплов, 8 направлений) игрового GLB после Blender: стойка и «слушает» — Text to Motion prime, ноги выпрямлены к позе покоя (×0,8, таз ×0,6: клип сажал фигуру), кисти на 5° от корпуса (не в юбке); «говорит» — пресет Talk_with_Hands_Open, рот: кость Jaw + разрез губ, чередование закрыт/приоткрыт по кадрам листа (48 кадров, 12 к/с — живой темп клипа 4 с). Окна стойки и «слушает» — туда-обратно."
+}

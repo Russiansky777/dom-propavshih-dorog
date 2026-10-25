@@ -254,6 +254,48 @@ if jaw:
     soft = jaw.get('soft_m', 0.006)
     width = jaw.get('half_width_m', 0.045)
     lowest = chin_z - jaw.get('below_chin_m', 0.03)
+    # разрез рта: у сетки Meshy губы — одна поверхность, без щели рот при опускании челюсти только тянется.
+    # Грани у линии рта (ширина губ, передний слой) делятся на верхние и нижние, общие рёбра разрезаются;
+    # за щелью — тёмная полость (сплюснутая сфера на кости Head)
+    import bmesh
+    lip_hw = jaw.get('lip_half_width_m', 0.024)
+    lip_front = min((p.y for p in face if abs(p.z - mouth_z) < 0.004), default=front_y)
+    side = {}
+    nslit = 0
+    for ob in meshes:
+        mw = ob.matrix_world
+        bm = bmesh.new(); bm.from_mesh(ob.data)
+        reg = {}
+        for f in bm.faces:
+            c = mw @ f.calc_center_median()
+            if abs(c.x - cx) < lip_hw and c.y < lip_front + 0.012 and abs(c.z - mouth_z) < 0.01:
+                reg[f] = c.z >= mouth_z
+        cut = [e for e in bm.edges if len(e.link_faces) == 2 and all(f in reg for f in e.link_faces)
+               and reg[e.link_faces[0]] != reg[e.link_faces[1]]]
+        nslit += len(cut)
+        if cut:
+            bmesh.ops.split_edges(bm, edges=cut)
+        bm.verts.index_update()
+        lower, upper = set(), set()
+        for f, up in reg.items():
+            for v in f.verts:
+                (upper if up else lower).add(v.index)
+        bm.to_mesh(ob.data); bm.free()
+        side[ob.name] = (lower - upper, upper - lower)
+    if nslit and jaw.get('cavity', True):
+        me = bpy.data.meshes.new('mouth_cavity'); bm = bmesh.new()
+        bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=1.0)
+        for v in bm.verts:
+            v.co = Vector((cx + v.co.x * lip_hw * 0.9, lip_front + 0.016 + v.co.y * 0.009, mouth_z - 0.003 + v.co.z * 0.008))
+        bm.to_mesh(me); bm.free()
+        mat = bpy.data.materials.new('mouth_dark'); mat.use_nodes = True
+        bsdf = mat.node_tree.nodes.get('Principled BSDF')
+        bsdf.inputs['Base Color'].default_value = (0.25, 0.08, 0.07, 1); bsdf.inputs['Roughness'].default_value = 1.0
+        me.materials.append(mat)
+        cav = bpy.data.objects.new('mouth_cavity', me); bpy.context.scene.collection.objects.link(cav)
+        cav.vertex_groups.new(name='Head').add(list(range(len(me.vertices))), 1.0, 'REPLACE')
+        cav.parent = arm; mod = cav.modifiers.new('Armature', 'ARMATURE'); mod.object = arm
+    report['mouth_slit_edges'] = nslit
     nmove = 0
     for ob in meshes:
         g = ob.vertex_groups.get('Head')
@@ -268,7 +310,13 @@ if jaw:
             p = mw @ v.co
             if p.y > pivot.y or p.z < lowest - soft or abs(p.x - cx) > width + 0.02:
                 continue
-            t = max(0.0, min(1.0, (mouth_z - p.z) / soft * 0.5 + 0.5))      # над линией рта 0, ниже 1
+            lo, up = side.get(ob.name, (set(), set()))
+            if v.index in lo:
+                t = 1.0                                                       # нижний край разреза
+            elif v.index in up:
+                t = 0.0                                                       # верхний край разреза
+            else:
+                t = max(0.0, min(1.0, (mouth_z - p.z) / soft * 0.5 + 0.5))  # над линией рта 0, ниже 1
             s = max(0.0, min(1.0, (width + 0.02 - abs(p.x - cx)) / 0.02))    # спад к щекам
             d = max(0.0, min(1.0, (pivot.y - p.y) / 0.03))                    # спад к уху
             u = max(0.0, min(1.0, (p.z - (lowest - soft)) / soft))            # спад к шее
