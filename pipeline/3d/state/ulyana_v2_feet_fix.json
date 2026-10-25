@@ -1,0 +1,177 @@
+{
+ "name": "ulyana_v2",
+ "clips": [
+  {
+   "kind": "idle",
+   "frames": 51,
+   "cyclic": false,
+   "body_yaw_deg": 0.7,
+   "floor_m": -0.013,
+   "legs": {
+    "L": {
+     "stance_toe_out_before_deg": 19.3,
+     "hip_rotation_deg": 6.1,
+     "ankle_twist_max_deg": 11.4
+    },
+    "R": {
+     "stance_toe_out_before_deg": 15.0,
+     "hip_rotation_deg": 6.0,
+     "ankle_twist_max_deg": 7.4
+    }
+   },
+   "hip_drop_max_m": 0.0,
+   "clip": "idle",
+   "window": [
+    0.1,
+    0.5
+   ],
+   "before": {
+    "L": {
+     "stance_toe_out_deg": 19.3,
+     "stance_toe_out_range_deg": [
+      19.0,
+      19.4
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 19.4,
+     "sole_lift_mid_stance_max_m": 0.0203,
+     "slide_max_mm": 11.9,
+     "contact_frames": 51,
+     "floor_m": -0.013,
+     "body_yaw_deg": 0.7
+    },
+    "R": {
+     "stance_toe_out_deg": 15.0,
+     "stance_toe_out_range_deg": [
+      14.7,
+      15.6
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 15.6,
+     "sole_lift_mid_stance_max_m": 0.0107,
+     "slide_max_mm": 10.9,
+     "contact_frames": 51,
+     "floor_m": -0.013,
+     "body_yaw_deg": 0.7
+    }
+   },
+   "after": {
+    "L": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 3.0,
+     "sole_lift_mid_stance_max_m": 0.0206,
+     "slide_max_mm": 0.0,
+     "contact_frames": 51,
+     "floor_m": -0.011,
+     "body_yaw_deg": 0.7
+    },
+    "R": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 3.0,
+     "sole_lift_mid_stance_max_m": 0.0074,
+     "slide_max_mm": 1.4,
+     "contact_frames": 51,
+     "floor_m": -0.011,
+     "body_yaw_deg": 0.7
+    }
+   },
+   "upper_body_max_rot_diff_deg": 0.0,
+   "fail": [],
+   "role": "idle"
+  },
+  {
+   "kind": "walk",
+   "frames": 25,
+   "cyclic": true,
+   "body_yaw_deg": 0.0,
+   "floor_m": -0.0493,
+   "legs": {
+    "L": {
+     "stance_toe_out_before_deg": 7.5,
+     "hip_rotation_deg": 4.7,
+     "ankle_twist_max_deg": 14.0
+    },
+    "R": {
+     "stance_toe_out_before_deg": 13.3,
+     "hip_rotation_deg": 10.5,
+     "ankle_twist_max_deg": 14.0
+    }
+   },
+   "hip_drop_max_m": 0.0124,
+   "clip": "walk",
+   "window": null,
+   "before": {
+    "L": {
+     "stance_toe_out_deg": 7.5,
+     "stance_toe_out_range_deg": [
+      1.6,
+      8.5
+     ],
+     "swing_toe_abs_max_deg": 31.7,
+     "toe_abs_max_deg": 31.7,
+     "sole_lift_mid_stance_max_m": 0.0651,
+     "slide_max_mm": 0.0,
+     "contact_frames": 7,
+     "floor_m": -0.0496
+    },
+    "R": {
+     "stance_toe_out_deg": 13.3,
+     "stance_toe_out_range_deg": [
+      4.0,
+      13.6
+     ],
+     "swing_toe_abs_max_deg": 27.8,
+     "toe_abs_max_deg": 27.8,
+     "sole_lift_mid_stance_max_m": 0.0179,
+     "slide_max_mm": 0.0,
+     "contact_frames": 12,
+     "floor_m": -0.0496
+    }
+   },
+   "after": {
+    "L": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      2.2,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 10.7,
+     "toe_abs_max_deg": 10.7,
+     "sole_lift_mid_stance_max_m": 0.041,
+     "slide_max_mm": 0.0,
+     "contact_frames": 10,
+     "floor_m": -0.0473
+    },
+    "R": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 7.4,
+     "toe_abs_max_deg": 7.4,
+     "sole_lift_mid_stance_max_m": 0.0,
+     "slide_max_mm": 1.1,
+     "contact_frames": 12,
+     "floor_m": -0.0473
+    }
+   },
+   "upper_body_max_rot_diff_deg": 0.0,
+   "fail": [
+    "L: в переносе |носок| 10.7° > 10.0°",
+    "L: подошва в опоре над полом 4.1 см > 1 см"
+   ],
+   "role": "walk"
+  }
+ ]
+}
