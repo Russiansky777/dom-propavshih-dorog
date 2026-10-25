@@ -91,7 +91,7 @@
     },
     {
       "id": "brace_plate",
-      "wrong_target": {"text": "@item.brace_plate.wrong"},
+      "wrong_target": {"text": "@item.brace_plate.wrong", "states": [{"if": ["evening_dusk"], "text": "@item.brace_plate.wrong_dry"}], "_states_note": "I-T5 (вычитка-2, неопределённость 3): пока плита под водой — «при такой воде до плиты не достать» (слово Директора, карта стр. 70); в сумерки плита вышла из воды — «там и поставлю»"},
       "name": "Скоба для плиты",
       "examine": {"text": "@examine.brace_plate", "backdrop": "table", "art": "res://assets/closeups/closeup_brace_plate.png"},
       "icon": "skoba_plate",
@@ -221,7 +221,7 @@
     },
     {
       "id": "mirror_home",
-      "name": "Домашнее зеркало ЗГ",
+      "name": "Домашнее зеркало",
       "inventory": false,
       "source_location": "H3",
       "source_scene": "M04",

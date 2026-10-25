@@ -327,6 +327,7 @@
         "fail_text": "@H1.tikhon.before_met",
         "_fail_i_t1": "I-T1 (стр. 38): говорить с Тихоном можно всегда — до знакомства (M03, платок на лежанке) он ворчит своё, а не молчит осмотром",
         "_note": "Домашнее знание Тихона по вопросам (Docs/SCENARIO_FINAL.md, M03): дверь из школы, свёрток на верстаке, колокол с мельницы. Спрашивать можно сколько угодно (без once_any), но только о том, что Агата уже видела (C13, ИИ-чтение 23.10: дверь — побывав в галерее, свёрток и колокол — в мастерской); ответы — реплики Тихона его голосом (поле line у текста). До знакомства (M03) — только осмотр. Загадок не решает, мир не объясняет.",
+        "_i_t5": "I-T5 (вычитка-2 ChatGPT, 10 новых разговоров Тихона; Директор просил больше разговоров с ним): 8 тем здесь — однократные (not_flags — свой sets), необязательные, по флагам дня; ещё две — внутри сцен M10 и M26 (then). Вопрос — подпись кнопки, дальше Тихон, Агата, Тихон",
         "options": [
           {"id": "door", "label": "@H1.tikhon.opt_door", "sets": "h1_asked_door", "text": "@H1.tikhon.door", "requires": {"flags": ["visited_H3"], "not_flags": ["done_N01"]}},
           {"id": "bundle", "label": "@H1.tikhon.opt_bundle", "sets": "h1_asked_bundle", "text": "@H1.tikhon.bundle", "requires": {"flags": ["visited_H2"], "not_flags": ["done_M15a"]}},
@@ -338,6 +339,14 @@
           {"id": "water", "label": "@H1.tikhon.opt_water", "sets": "h1_asked_water", "text": "@H1.tikhon.water", "requires": {"flags": ["done_M14"], "not_flags": ["done_M15a"]}},
           {"id": "nina", "label": "@H1.tikhon.opt_nina", "sets": "h1_asked_nina", "text": "@H1.tikhon.nina", "requires": {"flags": ["done_M15a"], "not_flags": ["done_M18p"]}},
           {"id": "after_dunya", "label": "@H1.tikhon.opt_after_dunya", "sets": "h1_asked_after_dunya", "text": "@H1.tikhon.after_dunya", "requires": {"flags": ["tikhon_knows_dunya"]}},
+          {"id": "cream", "label": "@H1.tikhon.opt_cream", "sets": "h1_asked_cream", "text": "@H1.tikhon.cream", "then": ["@H1.tikhon.cream_2", "@H1.tikhon.cream_3"], "requires": {"flags": ["done_M03"], "not_flags": ["done_N01", "h1_asked_cream"]}},
+          {"id": "supper", "label": "@H1.tikhon.opt_supper", "sets": "h1_asked_supper", "text": "@H1.tikhon.supper", "then": ["@H1.tikhon.supper_2", "@H1.tikhon.supper_3"], "requires": {"flags": ["visited_H2", "h1_asked_mend"], "not_flags": ["done_N01", "h1_asked_supper"]}},
+          {"id": "tea", "label": "@H1.tikhon.opt_tea", "sets": "h1_asked_tea", "text": "@H1.tikhon.tea", "then": ["@H1.tikhon.tea_2", "@H1.tikhon.tea_3"], "requires": {"flags": ["visited_H3", "h1_asked_door"], "not_flags": ["done_N01", "h1_asked_tea"]}},
+          {"id": "snow", "label": "@H1.tikhon.opt_snow", "sets": "h1_asked_snow", "text": "@H1.tikhon.snow", "then": ["@H1.tikhon.snow_2", "@H1.tikhon.snow_3"], "requires": {"flags": ["done_M06"], "not_flags": ["done_N01", "h1_asked_snow"]}},
+          {"id": "duty", "label": "@H1.tikhon.opt_duty", "sets": "h1_asked_duty", "text": "@H1.tikhon.duty", "then": ["@H1.tikhon.duty_2", "@H1.tikhon.duty_3"], "requires": {"flags": ["done_N01"], "not_flags": ["done_M09", "h1_asked_duty"]}},
+          {"id": "quiet", "label": "@H1.tikhon.opt_quiet", "sets": "h1_asked_quiet", "text": "@H1.tikhon.quiet", "then": ["@H1.tikhon.quiet_2", "@H1.tikhon.quiet_3"], "requires": {"flags": ["done_M14"], "not_flags": ["done_M15a", "h1_asked_quiet"]}},
+          {"id": "hear", "label": "@H1.tikhon.opt_hear", "sets": "h1_asked_hear", "text": "@H1.tikhon.hear", "then": ["@H1.tikhon.hear_2", "@H1.tikhon.hear_3"], "requires": {"flags": ["done_M15a", "h1_tikhon_after_mirror"], "not_flags": ["done_M15s", "h1_asked_hear"]}},
+          {"id": "home", "label": "@H1.tikhon.opt_home", "sets": "h1_asked_home", "text": "@H1.tikhon.home", "then": ["@H1.tikhon.home_2", "@H1.tikhon.home_3"], "requires": {"flags": ["done_M23d", "tikhon_knows_dunya", "h1_asked_after_dunya"], "not_flags": ["done_M24", "h1_asked_home"]}},
           {"id": "leave", "label": "@H1.tikhon.opt_leave", "sets": "h1_tikhon_left", "text": "@H1.tikhon.leave"}
         ]
       },
@@ -622,9 +631,17 @@
     "h1_asked_tamara": "Тихон рассказал, как Тамара его кормила по средам",
     "h1_asked_night": "Тихон всю ночь «караулил» печь",
     "h1_asked_stove_mirror": "Тихон рассказал про Дунино зеркальце над печью: в тот день она унесла его сестре в подарок",
-    "h1_asked_water": "Тихон напомнил про мамино зеркало на верстаке, пока вода сходит",
+    "h1_asked_water": "Агата поговорила с Тихоном, пока вода сходит: он поворчал на сырость и колокол и напомнил про мамино зеркало на верстаке",
     "h1_asked_nina": "Тихон помнит Нину девчонкой",
     "h1_asked_after_dunya": "Тихон больше никого не ждёт к вечеру",
+    "h1_asked_cream": "Тихон вспомнил, как Дуня бранила его за сметану на усах",
+    "h1_asked_supper": "Тихон вспомнил, что за Дуниным ужином велено было помалкивать",
+    "h1_asked_tea": "Тихон вспомнил, как Дуня выговаривала Нине за остывший чай",
+    "h1_asked_snow": "Агата рассказала Тихону про снег в классе",
+    "h1_asked_duty": "Тихон караулит весь дом — кастрюля в него входит",
+    "h1_asked_quiet": "Тихон вспомнил, как Дуня любила у печи помолчать",
+    "h1_asked_hear": "Агата сказала Тихону, как хочет услышать мамин голос",
+    "h1_asked_home": "Тихон напомнил Агате, что она дома",
     "q03_seen_sleeve": "У Дуниного пальто разошёлся рукав"
   }
 }

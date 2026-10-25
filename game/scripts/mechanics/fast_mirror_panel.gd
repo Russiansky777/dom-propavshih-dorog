@@ -552,7 +552,10 @@ func hold_watch() -> bool:
 	sound("knock")
 	if flag(String(spec.get("compared_flag", "nina_time_compared"))):
 		compared_sent = true
-		say("watch_again")
+		# I-T5: once the road is held at both ends the clocks go together — «Здесь минута — там двадцать» is no
+		# longer true; `watch_again_common` (if the data has it) is said instead.
+		var common := flag(String(spec.get("common_time_flag", "road_held_both_ends")))
+		say("watch_again_common" if common and spec.get("texts", {}).has("watch_again_common") else "watch_again")
 	else:
 		say("watch_hold")
 	return true

@@ -111,7 +111,7 @@
           "nina_away_if": ["nina_visited_house"], "_nina_away_note": "I-T2 (Директор, стр. 146): мама побывала в доме сестры — в стекле её пустая горница (ходики и свеча идут, Нины нет)",
           "motion_speedup": 1.67,
           "_motion_note": "в позе она движется motion_speedup раз быстрее естественного (20:1 — глазу уже не уследить, как маятник ходиков); при общем времени — 1×. Директор 24.10 (H32): темп на треть медленнее (2,5 → 1,67), каждая поза вдвое короче (minutes поз ÷ 2)",
-          "texts": {"knock_first": "@H2d.nina_mirror.knock_first", "watch_again": "@H2d.nina_mirror.watch_again", "label_nina_clock": "@mech.nina_mirror.label_nina_clock", "label_my_watch": "@mech.nina_mirror.label_my_watch", "label_watch_slot": "@mech.nina_mirror.label_watch_slot", "label_elapsed": "@mech.nina_mirror.label_elapsed", "watch_hold": "@mech.nina_mirror.watch_hold", "watch_slot_empty": "@mech.nina_mirror.watch_slot_empty", "wrong_item": "@mech.nina_mirror.wrong_item", "watch_hint": "@mech.nina_mirror.watch_hint"},
+          "texts": {"knock_first": "@H2d.nina_mirror.knock_first", "watch_again": "@H2d.nina_mirror.watch_again", "watch_again_common": "@H2d.nina_mirror.watch_again_common", "label_nina_clock": "@mech.nina_mirror.label_nina_clock", "label_my_watch": "@mech.nina_mirror.label_my_watch", "label_watch_slot": "@mech.nina_mirror.label_watch_slot", "label_elapsed": "@mech.nina_mirror.label_elapsed", "watch_hold": "@mech.nina_mirror.watch_hold", "watch_slot_empty": "@mech.nina_mirror.watch_slot_empty", "wrong_item": "@mech.nina_mirror.wrong_item", "watch_hint": "@mech.nina_mirror.watch_hint"},
           "events": {"compared": {"sets": ["nina_time_compared"]}},
           "watch_item": "pocket_watch",
           "compare_s": 10,

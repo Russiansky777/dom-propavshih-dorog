@@ -809,10 +809,15 @@ func _run_on_enter(room_id: String) -> void:
 ## What Agata says when an item is used on the wrong thing: items.json `wrong_target` {text, rooms?} — where the
 ## item goes (Director 23:53: «как поставить зеркало на стойку тети?»); the generic refusal only for items
 ## without it or outside its `rooms`. tools/validate_rooms.py requires it for every item that moves the story.
+## `states` [{if?, unless?, text}] — the first that holds says its text instead (I-T5: the brace — «при такой воде до
+## плиты не достать» while the plate is under water, «там и поставлю» once it is out at dusk).
 func item_refusal(item_id: String) -> String:
 	var wt: Dictionary = StoryData.item(item_id).get("wrong_target", {})
 	var rooms: Array = wt.get("rooms", [])
 	if wt.has("text") and (rooms.is_empty() or rooms.has(current_room_id())):
+		for st in wt.get("states", []):
+			if requires_met({"flags": st.get("if", []), "not_flags": st.get("unless", [])}):
+				return String(st.get("text", wt["text"]))
 		return String(wt["text"])
 	return "@ui.item_no_effect"
 
@@ -1156,7 +1161,13 @@ func sleep_early_beat(sl: Dictionary) -> Dictionary:
 			if not GameState.has_flag(String(l.get("unless", ""))):
 				left.append(StoryData.text(String(l.get("text", ""))))
 		var b := _text_beat(String(e.get("text", "")))
-		b["text"] = String(b["text"]).replace("{left}", ", ".join(left))
+		# I-T5: «Надо ещё повидать Тамару…, зайти к Павлу… и поговорить с Тихоном…» — the last deed joined by `left_last`.
+		var joined := ""
+		if left.size() > 1:
+			joined = String(e.get("left_sep", ", ")).join(left.slice(0, left.size() - 1)) + String(e.get("left_last", ", ")) + left.back()
+		elif left.size() == 1:
+			joined = left[0]
+		b["text"] = String(b["text"]).replace("{left}", joined)
 		return b
 	return _text_beat("@ui.nothing_here")
 
