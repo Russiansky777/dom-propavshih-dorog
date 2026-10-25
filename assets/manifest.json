@@ -2237,6 +2237,255 @@
       "use": "H3.json → слой photo_school: image",
       "pack": "Партия 10в, п. 5",
       "brief": "Docs/art_pack_10c/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H4_state_bed_v2",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-46",
+      "files": [
+        "incoming/H4_state_bed_v2.png"
+      ],
+      "base": "H4_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1190–1560, y 370–612",
+      "spec": "Дунина кровать на чердаке ровно, параллельно задней стене, не в углу, ножки на полу",
+      "owner": "ChatGPT + Директор",
+      "use": "H4.json → слой bed: image; хотспот bed.rect — по новому габариту (экран = лист × 1920/1672)",
+      "pack": "Партия 10г, п. 1",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "Z3_state_water_low_day_v2",
+      "status": "requested",
+      "kind": "scene_layer",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-120 (D6)",
+      "files": [
+        "incoming/Z3_state_water_low_day_v2.png"
+      ],
+      "base": "Z3_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), непрозрачно целиком",
+      "spec": "День 3–4 у поворота, низкая вода: наш берег осень без снега и инея, тот берег в снегу (D6)",
+      "owner": "ChatGPT + Директор",
+      "use": "Z3.json → слой water_low_day: image",
+      "pack": "Партия 10г, п. 2",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "R1_state_water_low_day_v2",
+      "status": "requested",
+      "kind": "scene_layer",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-120 (D6)",
+      "files": [
+        "incoming/R1_state_water_low_day_v2.png"
+      ],
+      "base": "R1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), непрозрачно целиком",
+      "spec": "День 3–4 у причала: наш берег осень без снега, тот берег в снегу (D6)",
+      "owner": "ChatGPT + Директор",
+      "use": "R1.json → слой water_low_day: image",
+      "pack": "Партия 10г, п. 2",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "R1_state_no_boat_day_v2",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-120 (D6)",
+      "files": [
+        "incoming/R1_state_no_boat_day_v2.png"
+      ],
+      "base": "R1_state_water_low_day_v2.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 1340–1672, y 460–745",
+      "spec": "Вода у причала днём без лодки, осенняя кромка — к новому дню R1",
+      "owner": "ChatGPT + Директор",
+      "use": "R1.json → слой no_boat_day: image",
+      "pack": "Партия 10г, п. 2",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "Z3_state_boat_day_v2",
+      "status": "requested",
+      "kind": "layer_moving",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-120 (D6)",
+      "files": [
+        "incoming/Z3_state_boat_day_v2.png"
+      ],
+      "base": "Z3_bg.png + Z3_state_water_low_day_v2.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; только лодка, швартов и отражение в x 930–1120, y 440–585",
+      "spec": "Лодка Пелагеи у плиты днём без снега",
+      "owner": "ChatGPT + Директор",
+      "use": "Z3.json → слой boat_day: image",
+      "pack": "Партия 10г, п. 2",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "Z3_state_span_site_day4_v2",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-120 (D6)",
+      "files": [
+        "incoming/Z3_state_span_site_day4_v2.png"
+      ],
+      "base": "Z3_bg.png + Z3_state_water_low_day_v2.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 325–1290, y 486–720",
+      "spec": "Стройка дня 4 без снега и инея (брёвна, ворот, жерди)",
+      "owner": "ChatGPT + Директор",
+      "use": "Z3.json → слой span_site_day4: image, убрать modulate",
+      "pack": "Партия 10г, п. 2",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "M05_wall_behind",
+      "status": "requested",
+      "kind": "closeup_layers",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-53",
+      "files": [
+        "incoming/M05_wall_behind.png"
+      ],
+      "base": "M05_frame.png (лист крупного плана 1672×941)",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), как M05_frame/door_leaf; непрозрачно в x 644–1022, y 41–896",
+      "spec": "Стена ниши галереи за открытой дверью (вместо серого прямоугольника)",
+      "owner": "ChatGPT + Директор",
+      "use": "H3.json → puzzle.art.wall_view (новое поле; closeup_puzzle.gd — картинка вместо ColorRect door_view при неверной сборке)",
+      "pack": "Партия 10г, п. 3",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "O1_state_bird_doodles_v2",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-57/58",
+      "files": [
+        "incoming/O1_state_bird_doodles_v2.png"
+      ],
+      "base": "O1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1326–1410, y 176–306",
+      "spec": "Синица на плакате: шапка (Агата) и сапоги (Ульяна) видны, детский карандаш",
+      "owner": "ChatGPT + Директор",
+      "use": "O1.json → слой bird_doodles: image; слой bird_boots_mute убрать",
+      "pack": "Партия 10г, п. 4",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "F_hug_nina",
+      "status": "requested",
+      "kind": "frame",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-128/129, H37/H39",
+      "files": [
+        "incoming/F_hug_nina.png"
+      ],
+      "base": "— (своя иллюстрация; место — O4_bg.png + O4_night.png)",
+      "size": "1672×941",
+      "placement": "полный кадр, непрозрачный",
+      "spec": "Нина обнимает Агату на крыльце своего дома, зимний вечер (M19)",
+      "owner": "ChatGPT + Директор",
+      "use": "новый кадр data/story/rooms/F_hug_nina.json (frame: true, как EP_*; art_source → bg.png); E4.json M19 — показ после «Мама.»",
+      "pack": "Партия 10г, п. 5",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "F_hug_pelageya",
+      "status": "requested",
+      "kind": "frame",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-128/129, H37/H39",
+      "files": [
+        "incoming/F_hug_pelageya.png"
+      ],
+      "base": "— (своя иллюстрация; место — R3_bg.png + R3_fg_*)",
+      "size": "1672×941",
+      "placement": "полный кадр, непрозрачный",
+      "spec": "Пелагея обнимает сына Митю на дальней опоре, гладит седую бороду, вечер (M18)",
+      "owner": "ChatGPT + Директор",
+      "use": "новый кадр data/story/rooms/F_hug_pelageya.json (frame: true); E3.json M18 — показ на «сына обнимает»",
+      "pack": "Партия 10г, п. 5",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "tikhon_mouth",
+      "status": "requested",
+      "kind": "anim_frames",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-43",
+      "files": [
+        "incoming/tikhon_mouth_1.png",
+        "incoming/tikhon_mouth_2.png",
+        "incoming/tikhon_mouth_3.png"
+      ],
+      "base": "tikhon_assembled.png",
+      "size": "1254×1254",
+      "placement": "полный холст в (0, 0), как tikhon_assembled; непрозрачно в x 262–392, y 420–518",
+      "spec": "Рот Тихона: приоткрыт / открыт / широко (ворчит); заплатки морды",
+      "owner": "ChatGPT + Директор",
+      "use": "game/data/actors/tikhon.json → mouth_frames (новое поле, привязка к кости head; PuppetActor меняет кадр по речи)",
+      "pack": "Партия 10г, п. 6",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "closeup_h3_old_photo_agata",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-36",
+      "files": [
+        "incoming/closeup_h3_old_photo_agata.png"
+      ],
+      "base": "H3_bg.png (участок [0, 20, 500, 610))",
+      "size": "1000×1180",
+      "placement": "отдельная картинка, непрозрачная; кадр = участок фона ×2",
+      "spec": "Старый снимок галереи: зеркало ЗГ на том же месте, перед ним девочка Агата 7–8 лет и её отражение",
+      "owner": "ChatGPT + Директор",
+      "use": "H3.json → mirror_home.view.photo: image вместо bg.png, region [0, 0, 1000, 1180]; текст H3.mirror_home.use — вернуть «в нём — я»",
+      "pack": "Партия 10г, п. 7",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "EP_dinner_ulyana_map_v2",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10г (ChatGPT, задание I-T2, 25.10)",
+      "batch": "10g",
+      "g": "I-170",
+      "files": [
+        "incoming/EP_dinner_ulyana_map_v2.png"
+      ],
+      "base": "ep_dinner.png + ep_dinner_family.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 990–1079, y 146–218",
+      "spec": "Ульянина карта у двери: детский рисунок цветными карандашами — река, школа, дорожка к крайнему дому, сад со смородиной; тёплый свет свечи",
+      "owner": "ChatGPT + Директор",
+      "use": "EP_dinner.json → слой ulyana_map: image (art_source ulyana_map.png), убрать modulate",
+      "pack": "Партия 10г, п. 8",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
     }
   ]
 }
