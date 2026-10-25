@@ -133,38 +133,38 @@
    "clip": "listen",
    "kind": "action",
    "window": [
-    0.1,
-    0.6
+    0.5,
+    0.9
    ],
    "fixed": false,
    "after": {
     "L": {
-     "stance_toe_out_deg": 10.7,
+     "stance_toe_out_deg": 12.7,
      "stance_toe_out_range_deg": [
-      10.6,
-      10.8
+      12.6,
+      12.7
      ],
      "swing_toe_abs_max_deg": 0.0,
-     "toe_abs_max_deg": 10.8,
-     "sole_lift_mid_stance_max_m": 0.0368,
+     "toe_abs_max_deg": 12.7,
+     "sole_lift_mid_stance_max_m": 0.0373,
      "slide_max_mm": 0.0,
-     "contact_frames": 61,
-     "floor_m": -0.0302,
-     "body_yaw_deg": 1.0
+     "contact_frames": 49,
+     "floor_m": -0.032,
+     "body_yaw_deg": 0.2
     },
     "R": {
-     "stance_toe_out_deg": 6.2,
+     "stance_toe_out_deg": 9.3,
      "stance_toe_out_range_deg": [
-      6.2,
-      6.3
+      9.3,
+      9.4
      ],
      "swing_toe_abs_max_deg": 0.0,
-     "toe_abs_max_deg": 6.3,
-     "sole_lift_mid_stance_max_m": 0.0365,
+     "toe_abs_max_deg": 9.4,
+     "sole_lift_mid_stance_max_m": 0.0386,
      "slide_max_mm": 0.0,
-     "contact_frames": 61,
-     "floor_m": -0.0302,
-     "body_yaw_deg": 1.0
+     "contact_frames": 49,
+     "floor_m": -0.032,
+     "body_yaw_deg": 0.2
     }
    },
    "fail": [],
