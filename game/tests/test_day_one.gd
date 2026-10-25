@@ -420,7 +420,7 @@ func _test_pier_attempt() -> void:
 	# Polish 22.10 (D23, B9, B15): the boat shown, one line about the ice, the rope and its stopper, the plate, Mitya's post.
 	_check(seen.size() == 9 and not seen.has("stage") and not sr.is_staging(), "G16: nine lines, no fade (the shown attempt is gone): %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("по льду пробовали, к своему же берегу")) and seen.any(func(x): return x.contains("Вот стопор — кол с замком"))
-			and seen.any(func(x): return x.contains("Он фонарь на той опоре")), "ice, the stopper shown, Mitya's post: %s" % str(seen))
+			and seen.any(func(x): return x.contains("на той опоре фонарь зажигал")), "ice, the stopper shown, Mitya's post: %s" % str(seen))
 	_check(not seen.any(func(x): return x.contains("болотом") or x.contains("Воду держит мельничный затвор")), "the marsh and the sluice are questions now, not the talk: %s" % str(seen))
 	# The rest — by the player's questions (any order, as often as wanted); the sluice question tells about the key.
 	sr.interact(_hotspot("pelageya"))
