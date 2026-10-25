@@ -52,7 +52,7 @@ def main() -> int:
                             "реплика — цикл листа (клип цикличный).")
         acts.pop("talk", None)
         acts["idle"] = {"playback": "pingpong_eased", "period_s": 3.6, "hold_s": 0.2}
-        acts["listen"] = {"playback": "pingpong"}
+        acts["listen"] = {"playback": "pingpong_eased", "period_s": 3.0, "hold_s": 0.2}
         d["states"] = {"_comment": "I-T4: свои клипы v2 для состояний I-T2.",
                        "listen": {"action": "listen", "speed": 1.0}, "talk": {"action": "talk", "speed": 1.0}}
         if "walk" in sprites["actions"]:
@@ -69,6 +69,8 @@ def main() -> int:
         # все кадры окна (в нём и развороты на нулевой скорости), время — по измеренному пути
         subprocess.run([sys.executable, os.path.join(ROOT, "tools", "measure_idle.py"), i, "--write", "--all-frames",
                         "--period", "3.6", "--hold", "0.2"], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run([sys.executable, os.path.join(ROOT, "tools", "measure_idle.py"), i, "--write", "--all-frames",
+                        "--action", "listen", "--period", "3.0", "--hold", "0.2"], check=True, stdout=subprocess.DEVNULL)
         print(f"{i}: v2 в данных")
     return 0
 
