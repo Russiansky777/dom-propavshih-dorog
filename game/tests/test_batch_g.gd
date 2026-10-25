@@ -307,7 +307,7 @@ func _test_nina_walk() -> void:
 	var said := -1
 	var stage := -1
 	for i in seen.size():
-		if String(seen[i]).begins_with("nina:В тепло пойдём"):
+		if String(seen[i]).begins_with("nina:Пойдём в тепло"):
 			said = i
 		if String(seen[i]) == "stage" and stage < 0 and said >= 0:
 			stage = i

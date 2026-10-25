@@ -157,7 +157,7 @@ func _line_text(scene_id: String, i: int) -> String:
 # --- Tests -------------------------------------------------------------------------------
 
 func _test_lines() -> void:
-	var m01 := _line_text("M01", 3)
+	var m01 := _line_text("M01", 4)
 	_check(m01.contains("Дуня — Евдокия, мамина сестра"), "H1: Tamara explains the aunt once: %s" % m01)
 	_check(sd.text("@ui.goal_start").contains("Дуни, маминой сестры") and not sd.text("@ui.goal_start").contains("Евдоки"),
 		"H1: the first goal says «тёти Дуни, маминой сестры»: %s" % sd.text("@ui.goal_start"))

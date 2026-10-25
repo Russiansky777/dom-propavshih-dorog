@@ -840,7 +840,7 @@ func _test_walkthrough() -> void:
 	_check(sr.item_refusal("mirror_mill") == "@item.mirror_mill.wrong", "in H1 the office mirror points to the stand «ЗМ»")
 	_check(await _go("H2"), "H1→H2")
 	seen = await _finish()
-	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("высокая резная рама посреди мастерской")),
+	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("Вот Дунина стойка")),
 			"entering the workshop with the office mirror: Agata names the stand — the tall carved frame: %s" % str(seen))
 	await _check_picks("H2 with the office mirror")
 	var sz := _hotspot("stand_zm")
@@ -1081,7 +1081,7 @@ func _test_walkthrough() -> void:
 	# A1: back at the pier the far bank is white for the first time — Pelageya sees it first (M16s), then the lantern.
 	seen = await _finish()
 	_check(gs.has_flag("done_M16s") and gs.has_flag("far_snow_seen") and not gs.has_flag("started_M16"), "M16s at the pier, the lights still the player's: %s" % str(seen))
-	_check(seen.size() >= 2 and seen[1].begins_with("pelageya:") and seen[1].contains("черным-черно было"), "Pelageya notices the snow first: %s" % str(seen))
+	_check(seen.size() >= 2 and seen[1].begins_with("pelageya:") and seen[1].contains("черным-черно"), "Pelageya notices the snow first: %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Раз — пускай, два — стой")), "B10: three lights are «живые»: %s" % str(seen))
 	var lay0: Node = rm.current_room.get_node("Layers")
 	_check(lay0.get_node("far_snow").visible and not lay0.get_node("far_dark").visible and not lay0.get_node("far_lights").visible,

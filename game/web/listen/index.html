@@ -59,6 +59,7 @@ const KEY = "dpd_listen_choice_v1";
 let data = { lines: [] };
 let choice = JSON.parse(localStorage.getItem(KEY) || "{}");
 const player = new Audio();
+window.listenPlayer = player;   // для проверки tools/i_t1_listen_web.mjs
 let queue = [];
 
 function save() { localStorage.setItem(KEY, JSON.stringify(choice)); render(); }
