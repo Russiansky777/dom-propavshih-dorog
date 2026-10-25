@@ -1,0 +1,1016 @@
+{
+ "max_usd": 1.5,
+ "spent_usd": 0.927802,
+ "by_model": {
+  "claude-sonnet-5-5": {
+   "calls": 106,
+   "input_tokens": 332759,
+   "output_tokens": 20214,
+   "cache_creation_input_tokens": 7862,
+   "cache_read_input_tokens": 404893,
+   "usd": 0.927802
+  }
+ },
+ "workspace": {
+  "source": "secret",
+  "error": ""
+ },
+ "prices_per_mtok": {
+  "claude-haiku-5-5": {
+   "in": 0.1,
+   "cw": 0.125,
+   "cr": 0.01,
+   "out": 0.5,
+   "long": {
+    "over": 100000,
+    "in": 0.5,
+    "cw": 0.625,
+    "cr": 0.05,
+    "out": 2.5
+   }
+  },
+  "claude-sonnet-5-5": {
+   "in": 2,
+   "cw": 2.5,
+   "cr": 0.1,
+   "out": 10
+  },
+  "claude-opus-5-5": {
+   "in": 4,
+   "cw": 5,
+   "cr": 0.2,
+   "out": 20
+  },
+  "claude-fable-5-1": {
+   "in": 10,
+   "cw": 12.5,
+   "cr": 0.25,
+   "out": 50
+  },
+  "claude-haiku-4-5": {
+   "in": 1,
+   "cw": 1.25,
+   "cr": 0.1,
+   "out": 5
+  }
+ },
+ "prices_source": "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22; claude-fable-5-1 — 2026-10-23)",
+ "calls": [
+  {
+   "tag": "step1",
+   "model": "claude-sonnet-5-5",
+   "in": 1428,
+   "out": 155,
+   "cw": 3931,
+   "cr": 0,
+   "usd": 0.014233
+  },
+  {
+   "tag": "step2",
+   "model": "claude-sonnet-5-5",
+   "in": 1686,
+   "out": 150,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.005265
+  },
+  {
+   "tag": "step3",
+   "model": "claude-sonnet-5-5",
+   "in": 1718,
+   "out": 193,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.005759
+  },
+  {
+   "tag": "step4",
+   "model": "claude-sonnet-5-5",
+   "in": 1751,
+   "out": 168,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.005575
+  },
+  {
+   "tag": "step5",
+   "model": "claude-sonnet-5-5",
+   "in": 1801,
+   "out": 188,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.005875
+  },
+  {
+   "tag": "step6",
+   "model": "claude-sonnet-5-5",
+   "in": 1840,
+   "out": 173,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.005803
+  },
+  {
+   "tag": "step7",
+   "model": "claude-sonnet-5-5",
+   "in": 6583,
+   "out": 255,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.016109
+  },
+  {
+   "tag": "step8",
+   "model": "claude-sonnet-5-5",
+   "in": 2794,
+   "out": 195,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007931
+  },
+  {
+   "tag": "step9",
+   "model": "claude-sonnet-5-5",
+   "in": 2651,
+   "out": 163,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007325
+  },
+  {
+   "tag": "step10",
+   "model": "claude-sonnet-5-5",
+   "in": 2694,
+   "out": 164,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007421
+  },
+  {
+   "tag": "step11",
+   "model": "claude-sonnet-5-5",
+   "in": 2741,
+   "out": 183,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007705
+  },
+  {
+   "tag": "step12",
+   "model": "claude-sonnet-5-5",
+   "in": 3003,
+   "out": 168,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008079
+  },
+  {
+   "tag": "step13",
+   "model": "claude-sonnet-5-5",
+   "in": 2943,
+   "out": 170,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007979
+  },
+  {
+   "tag": "step14",
+   "model": "claude-sonnet-5-5",
+   "in": 2860,
+   "out": 155,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007663
+  },
+  {
+   "tag": "step15",
+   "model": "claude-sonnet-5-5",
+   "in": 2804,
+   "out": 180,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007801
+  },
+  {
+   "tag": "step16",
+   "model": "claude-sonnet-5-5",
+   "in": 2972,
+   "out": 191,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008247
+  },
+  {
+   "tag": "step17",
+   "model": "claude-sonnet-5-5",
+   "in": 3120,
+   "out": 187,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008503
+  },
+  {
+   "tag": "step18",
+   "model": "claude-sonnet-5-5",
+   "in": 2906,
+   "out": 172,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007925
+  },
+  {
+   "tag": "step19",
+   "model": "claude-sonnet-5-5",
+   "in": 2930,
+   "out": 148,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007733
+  },
+  {
+   "tag": "step20",
+   "model": "claude-sonnet-5-5",
+   "in": 2817,
+   "out": 196,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007987
+  },
+  {
+   "tag": "step21",
+   "model": "claude-sonnet-5-5",
+   "in": 2846,
+   "out": 160,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007685
+  },
+  {
+   "tag": "step22",
+   "model": "claude-sonnet-5-5",
+   "in": 2837,
+   "out": 161,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007677
+  },
+  {
+   "tag": "step23",
+   "model": "claude-sonnet-5-5",
+   "in": 2856,
+   "out": 172,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007825
+  },
+  {
+   "tag": "step24",
+   "model": "claude-sonnet-5-5",
+   "in": 2821,
+   "out": 187,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007905
+  },
+  {
+   "tag": "step25",
+   "model": "claude-sonnet-5-5",
+   "in": 2928,
+   "out": 182,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008069
+  },
+  {
+   "tag": "step26",
+   "model": "claude-sonnet-5-5",
+   "in": 2738,
+   "out": 166,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007529
+  },
+  {
+   "tag": "step27",
+   "model": "claude-sonnet-5-5",
+   "in": 2897,
+   "out": 154,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007727
+  },
+  {
+   "tag": "step28",
+   "model": "claude-sonnet-5-5",
+   "in": 2852,
+   "out": 187,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007967
+  },
+  {
+   "tag": "step29",
+   "model": "claude-sonnet-5-5",
+   "in": 2631,
+   "out": 160,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007255
+  },
+  {
+   "tag": "step30",
+   "model": "claude-sonnet-5-5",
+   "in": 2629,
+   "out": 158,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007231
+  },
+  {
+   "tag": "step31",
+   "model": "claude-sonnet-5-5",
+   "in": 2618,
+   "out": 181,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007439
+  },
+  {
+   "tag": "step32",
+   "model": "claude-sonnet-5-5",
+   "in": 2709,
+   "out": 181,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007621
+  },
+  {
+   "tag": "step33",
+   "model": "claude-sonnet-5-5",
+   "in": 2801,
+   "out": 171,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007705
+  },
+  {
+   "tag": "step34",
+   "model": "claude-sonnet-5-5",
+   "in": 2866,
+   "out": 158,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007705
+  },
+  {
+   "tag": "step35",
+   "model": "claude-sonnet-5-5",
+   "in": 2903,
+   "out": 208,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008279
+  },
+  {
+   "tag": "step36",
+   "model": "claude-sonnet-5-5",
+   "in": 2725,
+   "out": 167,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007513
+  },
+  {
+   "tag": "step37",
+   "model": "claude-sonnet-5-5",
+   "in": 2836,
+   "out": 160,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007665
+  },
+  {
+   "tag": "step38",
+   "model": "claude-sonnet-5-5",
+   "in": 2869,
+   "out": 267,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008801
+  },
+  {
+   "tag": "step39",
+   "model": "claude-sonnet-5-5",
+   "in": 2694,
+   "out": 178,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007561
+  },
+  {
+   "tag": "step40",
+   "model": "claude-sonnet-5-5",
+   "in": 2688,
+   "out": 173,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007499
+  },
+  {
+   "tag": "step41",
+   "model": "claude-sonnet-5-5",
+   "in": 2845,
+   "out": 187,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007953
+  },
+  {
+   "tag": "step42",
+   "model": "claude-sonnet-5-5",
+   "in": 2711,
+   "out": 155,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007365
+  },
+  {
+   "tag": "step43",
+   "model": "claude-sonnet-5-5",
+   "in": 2707,
+   "out": 160,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007407
+  },
+  {
+   "tag": "step44",
+   "model": "claude-sonnet-5-5",
+   "in": 2659,
+   "out": 198,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007691
+  },
+  {
+   "tag": "step45",
+   "model": "claude-sonnet-5-5",
+   "in": 2837,
+   "out": 150,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007567
+  },
+  {
+   "tag": "step46",
+   "model": "claude-sonnet-5-5",
+   "in": 2787,
+   "out": 179,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007757
+  },
+  {
+   "tag": "step47",
+   "model": "claude-sonnet-5-5",
+   "in": 2757,
+   "out": 168,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007587
+  },
+  {
+   "tag": "step48",
+   "model": "claude-sonnet-5-5",
+   "in": 2770,
+   "out": 175,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007683
+  },
+  {
+   "tag": "step49",
+   "model": "claude-sonnet-5-5",
+   "in": 2772,
+   "out": 180,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007737
+  },
+  {
+   "tag": "step50",
+   "model": "claude-sonnet-5-5",
+   "in": 4142,
+   "out": 189,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.010567
+  },
+  {
+   "tag": "step51",
+   "model": "claude-sonnet-5-5",
+   "in": 2901,
+   "out": 190,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008095
+  },
+  {
+   "tag": "step52",
+   "model": "claude-sonnet-5-5",
+   "in": 2728,
+   "out": 176,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007609
+  },
+  {
+   "tag": "step53",
+   "model": "claude-sonnet-5-5",
+   "in": 2716,
+   "out": 184,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007665
+  },
+  {
+   "tag": "step54",
+   "model": "claude-sonnet-5-5",
+   "in": 2695,
+   "out": 164,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007423
+  },
+  {
+   "tag": "step55",
+   "model": "claude-sonnet-5-5",
+   "in": 2690,
+   "out": 157,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007343
+  },
+  {
+   "tag": "step56",
+   "model": "claude-sonnet-5-5",
+   "in": 2760,
+   "out": 156,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007473
+  },
+  {
+   "tag": "step57",
+   "model": "claude-sonnet-5-5",
+   "in": 2768,
+   "out": 195,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007879
+  },
+  {
+   "tag": "step58",
+   "model": "claude-sonnet-5-5",
+   "in": 2921,
+   "out": 162,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007855
+  },
+  {
+   "tag": "step59",
+   "model": "claude-sonnet-5-5",
+   "in": 2731,
+   "out": 155,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007405
+  },
+  {
+   "tag": "step60",
+   "model": "claude-sonnet-5-5",
+   "in": 2694,
+   "out": 178,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007561
+  },
+  {
+   "tag": "step61",
+   "model": "claude-sonnet-5-5",
+   "in": 2709,
+   "out": 177,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007581
+  },
+  {
+   "tag": "step62",
+   "model": "claude-sonnet-5-5",
+   "in": 7255,
+   "out": 209,
+   "cw": 3931,
+   "cr": 0,
+   "usd": 0.026427
+  },
+  {
+   "tag": "step63",
+   "model": "claude-sonnet-5-5",
+   "in": 3138,
+   "out": 240,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.009069
+  },
+  {
+   "tag": "step64",
+   "model": "claude-sonnet-5-5",
+   "in": 5728,
+   "out": 252,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.014369
+  },
+  {
+   "tag": "step65",
+   "model": "claude-sonnet-5-5",
+   "in": 3166,
+   "out": 188,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008605
+  },
+  {
+   "tag": "step66",
+   "model": "claude-sonnet-5-5",
+   "in": 3025,
+   "out": 167,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008113
+  },
+  {
+   "tag": "step67",
+   "model": "claude-sonnet-5-5",
+   "in": 3183,
+   "out": 157,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008329
+  },
+  {
+   "tag": "step68",
+   "model": "claude-sonnet-5-5",
+   "in": 3019,
+   "out": 189,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008321
+  },
+  {
+   "tag": "step69",
+   "model": "claude-sonnet-5-5",
+   "in": 3111,
+   "out": 165,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008265
+  },
+  {
+   "tag": "step70",
+   "model": "claude-sonnet-5-5",
+   "in": 3150,
+   "out": 178,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008473
+  },
+  {
+   "tag": "step71",
+   "model": "claude-sonnet-5-5",
+   "in": 3017,
+   "out": 183,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008257
+  },
+  {
+   "tag": "step72",
+   "model": "claude-sonnet-5-5",
+   "in": 7482,
+   "out": 235,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.017707
+  },
+  {
+   "tag": "step73",
+   "model": "claude-sonnet-5-5",
+   "in": 3139,
+   "out": 172,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008391
+  },
+  {
+   "tag": "step74",
+   "model": "claude-sonnet-5-5",
+   "in": 3127,
+   "out": 155,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008197
+  },
+  {
+   "tag": "step75",
+   "model": "claude-sonnet-5-5",
+   "in": 2954,
+   "out": 156,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007861
+  },
+  {
+   "tag": "step76",
+   "model": "claude-sonnet-5-5",
+   "in": 3010,
+   "out": 155,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007963
+  },
+  {
+   "tag": "step77",
+   "model": "claude-sonnet-5-5",
+   "in": 2849,
+   "out": 174,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007831
+  },
+  {
+   "tag": "step78",
+   "model": "claude-sonnet-5-5",
+   "in": 2978,
+   "out": 180,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008149
+  },
+  {
+   "tag": "step79",
+   "model": "claude-sonnet-5-5",
+   "in": 3070,
+   "out": 195,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008483
+  },
+  {
+   "tag": "step80",
+   "model": "claude-sonnet-5-5",
+   "in": 3094,
+   "out": 178,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008361
+  },
+  {
+   "tag": "step81",
+   "model": "claude-sonnet-5-5",
+   "in": 3099,
+   "out": 162,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008211
+  },
+  {
+   "tag": "step82",
+   "model": "claude-sonnet-5-5",
+   "in": 3055,
+   "out": 155,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008053
+  },
+  {
+   "tag": "step83",
+   "model": "claude-sonnet-5-5",
+   "in": 3033,
+   "out": 152,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007979
+  },
+  {
+   "tag": "step84",
+   "model": "claude-sonnet-5-5",
+   "in": 2908,
+   "out": 148,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007689
+  },
+  {
+   "tag": "step85",
+   "model": "claude-sonnet-5-5",
+   "in": 2879,
+   "out": 181,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007961
+  },
+  {
+   "tag": "step86",
+   "model": "claude-sonnet-5-5",
+   "in": 2885,
+   "out": 151,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007673
+  },
+  {
+   "tag": "step87",
+   "model": "claude-sonnet-5-5",
+   "in": 2885,
+   "out": 174,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007903
+  },
+  {
+   "tag": "step88",
+   "model": "claude-sonnet-5-5",
+   "in": 3057,
+   "out": 173,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008237
+  },
+  {
+   "tag": "step89",
+   "model": "claude-sonnet-5-5",
+   "in": 3137,
+   "out": 177,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008437
+  },
+  {
+   "tag": "step90",
+   "model": "claude-sonnet-5-5",
+   "in": 3025,
+   "out": 190,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008343
+  },
+  {
+   "tag": "step91",
+   "model": "claude-sonnet-5-5",
+   "in": 2887,
+   "out": 157,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007737
+  },
+  {
+   "tag": "step92",
+   "model": "claude-sonnet-5-5",
+   "in": 2843,
+   "out": 160,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007679
+  },
+  {
+   "tag": "step93",
+   "model": "claude-sonnet-5-5",
+   "in": 2800,
+   "out": 173,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007723
+  },
+  {
+   "tag": "step94",
+   "model": "claude-sonnet-5-5",
+   "in": 2924,
+   "out": 167,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007911
+  },
+  {
+   "tag": "step95",
+   "model": "claude-sonnet-5-5",
+   "in": 2939,
+   "out": 175,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008021
+  },
+  {
+   "tag": "step96",
+   "model": "claude-sonnet-5-5",
+   "in": 3005,
+   "out": 169,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008093
+  },
+  {
+   "tag": "step97",
+   "model": "claude-sonnet-5-5",
+   "in": 3032,
+   "out": 161,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008067
+  },
+  {
+   "tag": "step98",
+   "model": "claude-sonnet-5-5",
+   "in": 3029,
+   "out": 174,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008191
+  },
+  {
+   "tag": "step99",
+   "model": "claude-sonnet-5-5",
+   "in": 3031,
+   "out": 176,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008215
+  },
+  {
+   "tag": "step100",
+   "model": "claude-sonnet-5-5",
+   "in": 3010,
+   "out": 183,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008243
+  },
+  {
+   "tag": "step101",
+   "model": "claude-sonnet-5-5",
+   "in": 2783,
+   "out": 173,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007689
+  },
+  {
+   "tag": "step102",
+   "model": "claude-sonnet-5-5",
+   "in": 2878,
+   "out": 196,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008109
+  },
+  {
+   "tag": "step103",
+   "model": "claude-sonnet-5-5",
+   "in": 2927,
+   "out": 184,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.008087
+  },
+  {
+   "tag": "step104",
+   "model": "claude-sonnet-5-5",
+   "in": 2800,
+   "out": 159,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.007583
+  },
+  {
+   "tag": "step105",
+   "model": "claude-sonnet-5-5",
+   "in": 2984,
+   "out": 360,
+   "cw": 0,
+   "cr": 3931,
+   "usd": 0.009961
+  },
+  {
+   "tag": "report",
+   "model": "claude-sonnet-5-5",
+   "in": 20343,
+   "out": 1536,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.056046
+  }
+ ],
+ "report_reserve_usd": 0.2434,
+ "stop": "модель завершила прогон (done): Записываю итог: навигация к Ольховке запутанна, до кровати не дошла."
+}
