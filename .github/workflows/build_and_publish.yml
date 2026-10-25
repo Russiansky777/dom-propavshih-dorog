@@ -84,7 +84,10 @@ jobs:
           GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
         run: tools/run_tests.sh
 
+      # Веб не должен мешать exe: при ошибке веба (размер, атласы) Windows всё равно собирается и публикуется.
       - name: Export web
+        id: export_web
+        continue-on-error: true
         env:
           GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
         run: tools/export_web.sh
