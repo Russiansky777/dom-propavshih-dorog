@@ -1,0 +1,35 @@
+{
+  "set": "I_T5b",
+  "runs": [
+    {
+      "run": "40211379312",
+      "at": "2026-10-25T16:24:26+00:00",
+      "request": "pipeline/requests/voice_I_T5b.json",
+      "synthesized": [
+        "M15_2",
+        "agata:E5.windlass.voice_call_stop",
+        "ilya:E5.windlass.voice_reply_raise"
+      ],
+      "reprocessed": [],
+      "characters_text": 87,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 81034,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 81034,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 38,
+      "subscription_delta": 0
+    }
+  ]
+}
