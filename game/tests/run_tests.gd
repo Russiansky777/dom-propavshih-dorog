@@ -1401,7 +1401,11 @@ func _test_npc_actors() -> void:
 	if not npcs.is_empty():
 		var p: Node2D = npcs[0]
 		_check(is_equal_approx(p.scale.y, room.depth_scale(p.global_position.y) * 0.94), "pelageya scale = depth scale × 0.94 (1,55 м при Агате 1,65 м — по замыслу)")
-		_check(p.get_node("Sprite").sprite_frames.get_frame_count("talk_0") == p.sheet.eased_timeline("talk", 0).size(), "pelageya talk plays the eased back-and-forth")
+		# I-T4: модель v2 — реплика цикл своего листа (рот по кадрам), «слушает» — свой клип
+		_check(p.get_node("Sprite").sprite_frames.get_frame_count("talk_0") == p.sheet.action_sequence("talk", 0).size() and p.sheet.has_action("listen") and p.state_action("listen") == "listen", "pelageya v2: talk plays its sheet, listen has its own clip")
+		var tgt: Vector2 = p.global_position + Vector2(-120, 0)
+		p.go_off(tgt, 1.0, false, room)
+		_check(p.walking and String(p.get_node("Sprite").animation).begins_with("walk_"), "pelageya v2 walks off on her walk sheet (go_off)")
 	gs.reset()
 	_cleanup_m1()
 
