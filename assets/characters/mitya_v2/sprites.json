@@ -28,12 +28,12 @@
       "frames": 24,
       "fps": 12.0,
       "clip": "listen",
-      "clip_seconds": 2.5,
-      "natural_fps": 9.2,
-      "floor_shift_m": -0.0002,
+      "clip_seconds": 2.0,
+      "natural_fps": 11.5,
+      "floor_shift_m": 0.0001,
       "window": [
-        0.1,
-        0.6
+        0.5,
+        0.9
       ],
       "playback": "pingpong"
     },
@@ -49,7 +49,7 @@
   },
   "fit": {
     "half_width_m": 0.84,
-    "top_m": 0.9,
+    "top_m": 0.902,
     "frame_top_m": 1.016,
     "frame_w": 736
   },
