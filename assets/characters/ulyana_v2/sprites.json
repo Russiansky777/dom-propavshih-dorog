@@ -1,6 +1,6 @@
 {
   "name": "ulyana_v2",
-  "frame_w": 648,
+  "frame_w": 656,
   "frame_h": 864,
   "pivot": {
     "x": 0.5,
@@ -44,7 +44,7 @@
       "clip": "talk",
       "clip_seconds": 4.0,
       "natural_fps": 9.0,
-      "floor_shift_m": 0.0913
+      "floor_shift_m": 0.0735
     },
     "walk": {
       "sheet": "walk.png",
@@ -57,10 +57,10 @@
     }
   },
   "fit": {
-    "half_width_m": 0.51,
+    "half_width_m": 0.535,
     "top_m": 0.649,
     "frame_top_m": 0.73,
-    "frame_w": 648
+    "frame_w": 656
   },
   "matte_materials": true
 }
