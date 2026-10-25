@@ -1,0 +1,152 @@
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[mitya_v2] баланс: {'balance': 2114, 'monthly_credits': 1825, 'permanent_credits': 289, 'monthly_resets_at': 1795612506000}
+[mitya_v2] ракурсов на листе: 3 → ['view_0.png', 'view_1.png', 'view_2.png']
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[mitya_v2] создана задача модели 01a17340-fd99-760f-8842-d74b504c08ab c {'ai_model': 'latest', 'pose_mode': 'a-pose', 'should_texture': True, 'texture_resolution': '4k', 'target_formats': ['glb'], 'auto_size': True, 'origin_at': 'bottom', 'geometry_resolution': '2k', 'enable_pbr': True, 'multi_view_thumbnails': True}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: IN_PROGRESS 15
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: IN_PROGRESS 33
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: IN_PROGRESS 53
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: IN_PROGRESS 58
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: IN_PROGRESS 67
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: IN_PROGRESS 80
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: IN_PROGRESS 99
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  multi-image-to-3d 01a17340-fd99-760f-8842-d74b504c08ab: SUCCEEDED 100
+[mitya_v2] model.glb скачан, кредитов: 35
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[mitya_v2] создана задача Remesh 01a17344-c227-70ba-a184-ab634bc3f780
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a17344-c227-70ba-a184-ab634bc3f780: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a17344-c227-70ba-a184-ab634bc3f780: IN_PROGRESS 24
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a17344-c227-70ba-a184-ab634bc3f780: IN_PROGRESS 42
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a17344-c227-70ba-a184-ab634bc3f780: IN_PROGRESS 60
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a17344-c227-70ba-a184-ab634bc3f780: IN_PROGRESS 79
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a17344-c227-70ba-a184-ab634bc3f780: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  remesh 01a17344-c227-70ba-a184-ab634bc3f780: SUCCEEDED 100
+[mitya_v2] Remesh готов, кредитов: 5
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[mitya_v2] создана задача рига 01a17348-54a4-7025-a285-3de5da6374e2
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a17348-54a4-7025-a285-3de5da6374e2: IN_PROGRESS 0
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a17348-54a4-7025-a285-3de5da6374e2: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a17348-54a4-7025-a285-3de5da6374e2: IN_PROGRESS 57
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a17348-54a4-7025-a285-3de5da6374e2: IN_PROGRESS 84
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a17348-54a4-7025-a285-3de5da6374e2: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  rigging 01a17348-54a4-7025-a285-3de5da6374e2: SUCCEEDED 100
+[mitya_v2] rigged.glb скачан
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[mitya_v2] создана задача анимаций 01a1734a-eb75-7615-9d6a-91402b505b64: {'talk': {'action_id': 313, 'name': 'Talk with Hands Open', 'key': 'Talk_with_Hands_Open'}, 'talk2': {'action_id': 56, 'name': 'Stand and Chat', 'key': 'Stand_and_Chat'}}
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734a-eb75-7615-9d6a-91402b505b64: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734a-eb75-7615-9d6a-91402b505b64: IN_PROGRESS 80
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734a-eb75-7615-9d6a-91402b505b64: IN_PROGRESS 82
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734a-eb75-7615-9d6a-91402b505b64: IN_PROGRESS 85
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734a-eb75-7615-9d6a-91402b505b64: IN_PROGRESS 87
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734a-eb75-7615-9d6a-91402b505b64: IN_PROGRESS 90
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734a-eb75-7615-9d6a-91402b505b64: IN_PROGRESS 92
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734a-eb75-7615-9d6a-91402b505b64: SUCCEEDED 100
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[mitya_v2] Text to Motion «idle»: задача 01a1734c-5586-77eb-a7b4-4c85c75035f1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  text-to-motion 01a1734c-5586-77eb-a7b4-4c85c75035f1: IN_PROGRESS 10
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  text-to-motion 01a1734c-5586-77eb-a7b4-4c85c75035f1: SUCCEEDED 100
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734c-8088-7747-881e-9b6fe4823018: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734c-8088-7747-881e-9b6fe4823018: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734c-8088-7747-881e-9b6fe4823018: SUCCEEDED 100
+[mitya_v2] «idle» готово, кредитов: 10 + 3
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+[mitya_v2] Text to Motion «listen»: задача 01a1734c-d81e-745c-9c22-5bccfed7b44f
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  text-to-motion 01a1734c-d81e-745c-9c22-5bccfed7b44f: IN_PROGRESS 5
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  text-to-motion 01a1734c-d81e-745c-9c22-5bccfed7b44f: SUCCEEDED 100
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734d-0359-71c4-b903-e31ec7f7423b: IN_PROGRESS 1
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734d-0359-71c4-b903-e31ec7f7423b: IN_PROGRESS 31
+MESHY_API_KEY: в значении есть лишнее, использую найденный msy_-ключ
+  animations 01a1734d-0359-71c4-b903-e31ec7f7423b: SUCCEEDED 100
+[mitya_v2] «listen» готово, кредитов: 10 + 3
+[mitya_v2] готово: /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/3d/out/mitya_v2

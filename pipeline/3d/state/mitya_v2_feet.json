@@ -1,0 +1,113 @@
+{
+ "name": "mitya_v2",
+ "glb": "pipeline/3d/out/mitya_v2/animations.glb",
+ "thresholds": {
+  "walk": {
+   "stance_toe_out_min": 0.0,
+   "stance_toe_out_max": 6.0,
+   "swing_abs_max": 10.0,
+   "sole_lift_max_m": 0.01,
+   "slide_max_mm": 5.0
+  },
+  "idle": {
+   "toe_abs_max": 8.0,
+   "slide_max_mm": 3.0
+  }
+ },
+ "params": {
+  "stance_target_deg": 3.0,
+  "soft_limit_deg": 7.5,
+  "ankle_max_deg": 14.0,
+  "hip_extra_max_deg": 12.0,
+  "idle_hip_max_deg": 6.0,
+  "idle_ankle_max_deg": 24.0,
+  "flat_ramp": 0.12,
+  "contact_pitch_max_deg": 12.0,
+  "floor_z": 0.002,
+  "contact_h": 0.03,
+  "hip_drop_max": 0.016
+ },
+ "rest_toe_out_deg": {
+  "L": 13.7,
+  "R": -16.0
+ },
+ "roles": {
+  "talk": {
+   "clip": "Talk_with_Hands_Open",
+   "kind": "action",
+   "window": null,
+   "fixed": false,
+   "after": {
+    "L": {
+     "stance_toe_out_deg": 9.9,
+     "stance_toe_out_range_deg": [
+      9.8,
+      10.2
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 10.2,
+     "sole_lift_mid_stance_max_m": 0.0643,
+     "slide_max_mm": 13.1,
+     "contact_frames": 120,
+     "floor_m": -0.0709,
+     "body_yaw_deg": -15.8
+    },
+    "R": {
+     "stance_toe_out_deg": 13.7,
+     "stance_toe_out_range_deg": [
+      13.6,
+      13.7
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 13.7,
+     "sole_lift_mid_stance_max_m": 0.0486,
+     "slide_max_mm": 7.5,
+     "contact_frames": 120,
+     "floor_m": -0.0709,
+     "body_yaw_deg": -15.8
+    }
+   },
+   "fail": [],
+   "enforced": false
+  },
+  "talk2": {
+   "clip": "Stand_and_Chat",
+   "kind": "action",
+   "window": null,
+   "fixed": false,
+   "after": {
+    "L": {
+     "stance_toe_out_deg": 15.5,
+     "stance_toe_out_range_deg": [
+      14.8,
+      40.8
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 40.8,
+     "sole_lift_mid_stance_max_m": 0.0843,
+     "slide_max_mm": 95.4,
+     "contact_frames": 156,
+     "floor_m": -0.069,
+     "body_yaw_deg": -36.8
+    },
+    "R": {
+     "stance_toe_out_deg": 0.3,
+     "stance_toe_out_range_deg": [
+      -5.2,
+      9.1
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 9.1,
+     "sole_lift_mid_stance_max_m": 0.0887,
+     "slide_max_mm": 0.0,
+     "contact_frames": 156,
+     "floor_m": -0.069,
+     "body_yaw_deg": -36.8
+    }
+   },
+   "fail": [],
+   "enforced": false
+  }
+ },
+ "ok": true
+}

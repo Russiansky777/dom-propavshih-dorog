@@ -1,0 +1,38 @@
+{
+  "name": "mitya_v2",
+  "frame_w": 80,
+  "frame_h": 96,
+  "pivot": {
+    "x": 0.5,
+    "y": 0.9464285714285714
+  },
+  "directions": 8,
+  "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
+  "character_height_m": 1.823,
+  "actions": {
+    "talk": {
+      "sheet": "talk.png",
+      "frames": 2,
+      "fps": 24.0,
+      "clip": "Talk_with_Hands_Open",
+      "clip_seconds": 3.9667,
+      "natural_fps": 0.5
+    },
+    "talk2": {
+      "sheet": "talk2.png",
+      "frames": 2,
+      "fps": 24.0,
+      "clip": "Stand_and_Chat",
+      "clip_seconds": 5.1667,
+      "natural_fps": 0.39,
+      "floor_shift_m": -0.0132
+    }
+  },
+  "fit": {
+    "half_width_m": 0.787,
+    "top_m": 1.02,
+    "frame_top_m": 1.021,
+    "frame_w": 80
+  },
+  "matte_materials": true
+}
