@@ -1332,6 +1332,9 @@ func probe_positions() -> Dictionary:
 		out["buttons"]["TimingSlow"] = _center(timing_slow_check)
 		out["timing_slow"] = TimingBar.slow
 		out["timing_slow_label"] = timing_slow_check.text
+		out["buttons"]["Fullscreen"] = _center(fullscreen_check)
+		out["fullscreen"] = DisplaySettings.fullscreen
+		out["fullscreen_on"] = fullscreen_check.button_pressed
 	# inventory: item -> centre of its pocket (only items on the bag's current page are clickable).
 	var bp: Dictionary = bag.probe()
 	for item_id in bp["items"].keys():
