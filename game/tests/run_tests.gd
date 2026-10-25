@@ -845,7 +845,13 @@ func _test_walkthrough() -> void:
 	# Home knowledge by questions (M03) — only about what Agata has seen (C13): before the gallery and the
 	# workshop there is nothing to ask about yet.
 	await bot.use("tikhon")
-	_check(sr.current_beat.get("type", "") == "options" and sr.current_options().size() == 1, "Tikhon: no questions about unseen rooms yet (C13): %s" % str(sr.current_beat))
+	# I-T1 (стр. 38, 66): until the shelf hangs Tikhon first asks for it, then the questions.
+	_check(String(sr.current_beat.get("text_key", "")) == "H1.tikhon.ask_shelf", "Tikhon asks for his shelf first (I-T1): %s" % str(sr.current_beat))
+	if sr.current_beat.get("type", "") == "line":
+		sr.advance()
+		await process_frame
+	var t_ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(sr.current_beat.get("type", "") == "options" and not t_ids.has("door") and not t_ids.has("bundle") and not t_ids.has("bell") and not t_ids.has("dunya_mend"), "Tikhon: no questions about unseen rooms yet (C13): %s" % str(t_ids))
 	seen = await bot.finish(["leave"])
 	_check(bot.hotspot("scarf") != null and not bot.hotspot("scarf").visible, "scarf hidden after removal")
 
@@ -1741,6 +1747,10 @@ func _test_actions() -> void:
 	rm.change_room("H1", "default")
 	await physics_frame
 	await physics_frame
+	# I-T1 (стр. 30): first entry to the dark house — Agata's «Темень — хоть глаз выколи» is read first.
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
 	var room: Node = rm.current_room
 	var spr: AnimatedSprite2D = player.get_node("Sprite")
 	var shutter: Node2D = room.get_node("Hotspots/shutter")

@@ -120,6 +120,8 @@ def story_lines() -> dict[str, dict]:
                         oe["tags"] = [str(t) for t in o["tags"]]
                     if o.get("voice_text"):
                         oe["voice_text"] = str(o["voice_text"])
+                    if o.get("direction") or ln.get("direction"):
+                        oe["direction"] = o.get("direction") or ln.get("direction")
                     out[f"{lid}_{o['id']}"] = oe
             # Продолжения (`then`: следы необязательных историй в эпилоге) — StoryRunner: line_id <scene>_<index>_then<k>,
             # места в mandatory_lines не занимают (записи после них не сдвигаются).
@@ -131,6 +133,8 @@ def story_lines() -> dict[str, dict]:
                         te["tags"] = [str(t) for t in sub["tags"]]
                     if sub.get("voice_text"):
                         te["voice_text"] = str(sub["voice_text"])
+                    if sub.get("direction"):
+                        te["direction"] = sub["direction"]
                     out[f"{lid}_then{k}"] = te
             if ln.get("options") or not str(ln.get("text", "")).strip():
                 continue   # строка-выбор (вопрос — закадровая фраза prompt) или без текста: звучать нечему
@@ -141,6 +145,8 @@ def story_lines() -> dict[str, dict]:
                 e["tags"] = [str(t) for t in ln["tags"]]
             if ln.get("voice_text"):
                 e["voice_text"] = str(ln["voice_text"])
+            if ln.get("direction"):
+                e["direction"] = ln["direction"]   # режиссура строки (I-T1): ударное слово, эмоция, темп, число дублей
             out[lid] = e
 
     for f in sorted(SCENES_DIR.glob("E*.json")):
@@ -222,6 +228,8 @@ def narration_lines() -> dict[str, dict]:
                 e["tags"] = [str(t) for t in v["tags"]]
             if v.get("voice_text"):
                 e["voice_text"] = str(v["voice_text"])
+            if v.get("direction"):
+                e["direction"] = v["direction"]
             out[k] = e
             if ln_spec is not None and ln_spec.get("speaker") and ln_spec.get("text"):
                 # Реплика персонажа рядом с Агатой (поле line): его голос, настройки его реплик, текст прямой речи.
@@ -231,6 +239,8 @@ def narration_lines() -> dict[str, dict]:
                       "subdir": str((cfg.get("character_lines") or {}).get("subdir", "character_lines"))}
                 if ln_spec.get("tags"):
                     ce["tags"] = [str(t) for t in ln_spec["tags"]]
+                if v.get("direction"):
+                    ce["direction"] = v["direction"]
                 out[f"{sp}:{k}"] = ce
                 continue
             if k in owner:
@@ -242,6 +252,8 @@ def narration_lines() -> dict[str, dict]:
                 tags = (bs.get("tags") or {}).get(k)
                 if tags:
                     pe["tags"] = [str(t) for t in tags]
+                if v.get("direction"):
+                    pe["direction"] = v["direction"]
                 out[f"{sp}:{k}"] = pe
     return out
 
@@ -899,6 +911,11 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         log(f"  only_changed: к работе {len(plan)} из {sum(1 for _ in scope)} реплик/фраз запроса")
     synth_items = [it for it in plan if it["action"] == "synth"]
     chars = sum(len(api_text(it["line"])) for it in synth_items)
+    take_items = plan_takes(req, scope, sets, synth_items, cast)
+    if take_items:
+        chars += sum(len(take_api_text(it)) for it in take_items)
+        total_lines += len(take_items)
+        log(f"  дубли (takes): {len(take_items)} файлов для {len({it['id'] for it in take_items})} строк с режиссурой takes ≥ 2")
     meta = read_json(META_PATH, {})
     if not meta.get("text_freeze", False):
         if not req.get("probe"):
@@ -921,6 +938,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
     for it in synth_items:
         log(f"  {it['id']:7} {it['line']['speaker']:9} {(it['set']['variant'] or 'ru'):12} {it['spec']['voice_name']:10} "
             f"{it['spec']['model_id']:12} {api_text(it['line'])}")
+    for it in take_items:
+        log(f"  {it['id']:7} дубль {it['take']}  {take_api_text(it)}")
     if dry_run:
         return 0
     if not shutil.which("ffmpeg"):
@@ -1033,6 +1052,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         write_json(vs["dir"] / "manifest.json", _manifest_doc(manifest, cast, vs))
         log(f"  {tag:18} {'синтез' if fresh_audio else 'обработка'}: {meas['duration_s']:.2f} с, {meas['lufs']} LUFS, "
             f"TP {meas['true_peak_db']} dB (усиление {meas['gain_db']:+.1f} dB)")
+    if take_items and not stop:
+        spent_now = record_takes(take_items, scope, lc, cast, sub_before, reserve, spent_now, failed)
     pruned: list[str] = []
     if req.get("prune_stale") and not stop:
         # Уборка: запись, которая после этого запроса всё ещё stale (ключа/реплики нет; запасная запись другого голоса
@@ -1077,6 +1098,125 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         f"символов текста {run['characters_text']}; списано кредитов (character-cost): {run.get('credits_spent', 'н/д')}, "
         f"изменение счётчика подписки: {run.get('subscription_delta', 'н/д')}")
     return 1 if failed else 0
+
+
+# --- Дубли для выбора на слух (I-T1, Директор 25.10) ------------------------------------------------
+# Запрос: "takes": {"max": 3, "ids": [...]}. Строке с режиссурой direction.takes = N (≥ 2) в этом прогоне пишется N
+# дублей: дубль 1 — основная запись (её же играет игра), дубли 2…N — другим seed; дубль 3 — другая подача (теги
+# direction.alt_tags, иначе без тегов строки; темп ×0,93). Строки берутся, если основная запись синтезирована сейчас
+# или id назван в takes.ids. Файлы — assets/voice/ru_takes/<файл записи без расширения>/take<k>.ogg (+ src/…mp3),
+# список — assets/voice/ru_takes/manifest.json; игра их не читает (страница прослушивания — tools/listen_page.py).
+# Выбранный Директором дубль I-T3 кладёт на место основной записи (README → «Дубли»).
+TAKE_SALT = 100
+
+
+def plan_takes(req: dict, scope: dict, sets: list[dict], synth_items: list[dict], cast: dict) -> list[dict]:
+    tk = req.get("takes") or {}
+    if not tk:
+        return []
+    main_vs = next((vs for vs in sets if not vs["variant"] and vs["speaker"] is None), None)
+    if main_vs is None:
+        return []
+    want = {str(x) for x in tk.get("ids", [])}
+    fresh = {it["id"] for it in synth_items if it["set"] is main_vs}
+    out: list[dict] = []
+    for lid, ln in scope.items():
+        n = min(int((ln.get("direction") or {}).get("takes", 1) or 1), int(tk.get("max", 3)))
+        if n < 2 or not (lid in fresh or lid in want):
+            continue
+        spec = cast_for(cast, ln["speaker"], None, str(ln.get("profile", "")))
+        for k in range(2, n + 1):
+            out.append({"id": lid, "line": ln, "spec": spec, "take": k, "set": main_vs})
+    return out
+
+
+def take_line(it: dict) -> dict:
+    ln = dict(it["line"])
+    if it["take"] >= 3:
+        alt = (ln.get("direction") or {}).get("alt_tags")
+        ln["tags"] = [str(t) for t in alt] if alt is not None else []
+        if alt is None and ln.get("voice_text"):
+            ln["voice_text"] = TAG_IN_TEXT.sub("", str(ln["voice_text"])).strip()
+    return ln
+
+
+def take_api_text(it: dict) -> str:
+    return api_text(take_line(it))
+
+
+def take_spec(it: dict) -> dict:
+    spec = json.loads(json.dumps(it["spec"]))
+    if it["take"] >= 3:
+        vset = spec.setdefault("voice_settings", {})
+        vset["speed"] = round(float(vset.get("speed", 1.0)) * 0.93, 3)
+    return spec
+
+
+def record_takes(take_items: list[dict], scope: dict, lc: dict, cast: dict, sub_before, reserve, spent_now: int, failed: list) -> int:
+    vs = take_items[0]["set"]
+    tdir = vs["dir"].parent / f"{vs['dir'].name}_takes"
+    tman = read_json(tdir / "manifest.json", {}) or {}
+    tlines = tman.get("lines", {})
+    for lid in sorted({it["id"] for it in take_items}):
+        ln = scope[lid]
+        base = file_rel(ln, lid, "x")[:-2]
+        e = vs["manifest"]["lines"].get(lid) or {}
+        ent = {"speaker": ln["speaker"], "text": ln["text"], "text_sha1": text_sha1(ln["text"]),
+               "direction": ln.get("direction", {}), "takes": []}
+        for key in ("scene", "index", "then", "option", "key", "context"):
+            if ln.get(key) not in (None, ""):
+                ent[key] = ln[key]
+        if e and "stale" not in e and (vs["dir"] / e.get("file", "-")).is_file() and e.get("text_sha1") == ent["text_sha1"]:
+            dst = tdir / base / "take1.ogg"
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(vs["dir"] / e["file"], dst)
+            src_rel = ""
+            if (vs["dir"] / e.get("source", "-")).is_file():
+                src_rel = f"src/{base}/take1.mp3"
+                (tdir / src_rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(vs["dir"] / e["source"], tdir / src_rel)
+            ent["takes"].append({"take": 1, "main": True, "file": f"{base}/take1.ogg", "source": src_rel,
+                                 "tags": e.get("tags", []), "voice_text": e.get("voice_text", ""),
+                                 "duration_s": e.get("duration_s"), "lufs": e.get("lufs")})
+        tlines[lid] = ent
+    for it in take_items:
+        lid, k = it["id"], it["take"]
+        ln = take_line(it)
+        text = api_text(ln)
+        base = file_rel(it["line"], lid, "x")[:-2]
+        if reserve is not None and sub_before and int(sub_before["character_count"]) + spent_now + len(text) > int(sub_before["character_limit"]) - reserve:
+            failed.append(f"{lid} дубль {k}: квота — дальше запас, остановлено")
+            break
+        seed = int(hashlib.sha1(f"{lid}|{it['line']['text']}|{TAKE_SALT + k}".encode("utf-8")).hexdigest()[:8], 16)
+        try:
+            audio, info = synth(text, take_spec(it), cast, seed)
+            info.pop("alignment", None)
+            cc = str(info.get("character_cost", ""))
+            spent_now += int(cc) if cc.isdigit() else len(text)
+            src = tdir / "src" / base / f"take{k}.mp3"
+            src.parent.mkdir(parents=True, exist_ok=True)
+            src.write_bytes(audio)
+            dst = tdir / base / f"take{k}.ogg"
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            meas = process(src, dst, lc)
+        except VoiceError as e:
+            failed.append(f"{lid} дубль {k}: {e}")
+            log(f"  ОШИБКА {lid} дубль {k}: {e}")
+            if "401" in str(e) or "quota" in str(e).lower():
+                break
+            continue
+        tk = [t for t in tlines[lid]["takes"] if t.get("take") != k]
+        tk.append({"take": k, "file": f"{base}/take{k}.ogg", "source": f"src/{base}/take{k}.mp3", "seed_salt": TAKE_SALT + k,
+                   "tags": ln.get("tags", []), "voice_text": text, "speed": take_spec(it).get("voice_settings", {}).get("speed"),
+                   "duration_s": meas.get("duration_s"), "lufs": meas.get("lufs"), "run": os.environ.get("GITHUB_RUN_ID", "local"),
+                   "generated_at": now_iso()})
+        tlines[lid]["takes"] = sorted(tk, key=lambda t: t["take"])
+        log(f"  {lid:18} дубль {k}: {meas['duration_s']:.2f} с, {meas['lufs']} LUFS")
+    tman = {"_comment": "Дубли для выбора на слух (I-T1): id строки → текст, режиссура, дубли (take 1 — основная запись прогона). "
+                        "Пишет pipeline/voice/eleven_voice.py (запрос takes); страница прослушивания — tools/listen_page.py. "
+                        "Игра эти файлы не читает.", "updated_at": now_iso(), "lines": dict(sorted(tlines.items()))}
+    write_json(tdir / "manifest.json", tman)
+    return spent_now
 
 
 def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:

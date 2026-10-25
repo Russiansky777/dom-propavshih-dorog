@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Дом пропавших дорог — дубли озвучки</title>
+<!-- I-T1 (Директор 25.10): страница прослушивания дублей. Данные — takes.json рядом (tools/listen_page.py).
+     Выбор хранится в localStorage этого браузера и выгружается кнопкой «Скачать выбор» (JSON для I-T3). -->
+<style>
+@font-face { font-family: "OldStandard"; src: url("fonts/OldStandard-Regular.ttf"); }
+@font-face { font-family: "OldStandard"; font-weight: bold; src: url("fonts/OldStandard-Bold.ttf"); }
+:root { --gold: #d9b45a; --gold2: #f1d58c; --ink: #f3e7cc; --dim: #b9a582; --wood1: #2a1b10; --wood2: #3b2716; --line: #6b4a26; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); font: 18px/1.45 "OldStandard", "PT Serif", Georgia, serif;
+  background: radial-gradient(ellipse at top, #4a3019 0%, var(--wood1) 70%) fixed,
+              repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 3px, transparent 3px 11px); }
+header { position: sticky; top: 0; z-index: 2; padding: 14px 22px; background: linear-gradient(#1d120a, #2a1b10ee);
+  border-bottom: 2px solid var(--gold); box-shadow: 0 4px 18px #000a; }
+h1 { margin: 0 0 6px; font-size: 26px; color: var(--gold2); letter-spacing: .5px; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: var(--dim); font-size: 16px; }
+button, select, label.chk { font: inherit; font-size: 16px; color: var(--ink); background: var(--wood2); border: 1px solid var(--gold);
+  border-radius: 7px; padding: 5px 12px; cursor: pointer; }
+button:hover { background: #4d331c; color: var(--gold2); }
+button.primary { background: #6b4a1e; color: #fff6dc; border-color: var(--gold2); }
+main { max-width: 1100px; margin: 0 auto; padding: 18px 16px 80px; }
+h2 { color: var(--gold); font-size: 21px; margin: 26px 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.row { display: grid; grid-template-columns: 150px 1fr; gap: 6px 16px; padding: 12px 14px; margin: 8px 0; border-radius: 10px;
+  background: linear-gradient(#3a2614cc, #2b1c10cc); border: 1px solid var(--line); }
+.row.chosen { border-color: var(--gold); box-shadow: 0 0 0 1px #d9b45a55 inset; }
+.meta { color: var(--dim); font-size: 14px; }
+.meta b { color: var(--gold2); font-size: 16px; display: block; }
+.text { font-size: 19px; }
+.dir { color: var(--dim); font-size: 14px; margin-top: 3px; }
+.dir em { color: var(--gold2); font-style: normal; }
+.takes { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.take { display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 8px; padding: 3px 8px 3px 4px; }
+.take.sel { border-color: var(--gold2); background: #5a3d1b; }
+.take button { padding: 3px 10px; }
+.take input { accent-color: var(--gold); width: 18px; height: 18px; }
+.tag { font-size: 12px; color: var(--dim); }
+.empty { color: var(--dim); padding: 30px; text-align: center; }
+@media (max-width: 700px) { .row { grid-template-columns: 1fr; } .takes { grid-column: 1; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Дубли озвучки — выбор на слух</h1>
+  <div class="bar">
+    <span id="count">загрузка…</span>
+    <label class="chk"><input type="checkbox" id="only"> только без выбора</label>
+    <button id="autoplay" title="Сыграть все дубли строки подряд">▶ подряд</button>
+    <button class="primary" id="download">Скачать выбор</button>
+    <button id="reset" title="Стереть выбор в этом браузере">Сбросить</button>
+  </div>
+</header>
+<main id="list"><div class="empty">Загрузка…</div></main>
+<script>
+const KEY = "dpd_listen_choice_v1";
+let data = { lines: [] };
+let choice = JSON.parse(localStorage.getItem(KEY) || "{}");
+const player = new Audio();
+let queue = [];
+
+function save() { localStorage.setItem(KEY, JSON.stringify(choice)); render(); }
+function playUrl(t) {
+  queue = [];
+  const ogg = player.canPlayType('audio/ogg; codecs="vorbis"');
+  player.src = (ogg && t.ogg) ? t.ogg : (t.mp3 || t.ogg);
+  player.play();
+}
+player.addEventListener("ended", () => { if (queue.length) { playUrl(queue.shift()); } });
+function playAll(line) {
+  const ts = line.takes.slice();
+  playUrl(ts.shift()); queue = ts;
+}
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function render() {
+  const only = document.getElementById("only").checked;
+  const list = document.getElementById("list");
+  const chosen = data.lines.filter(l => choice[l.id]).length;
+  document.getElementById("count").textContent = `строк: ${data.lines.length}, выбрано: ${chosen}`;
+  if (!data.lines.length) { list.innerHTML = '<div class="empty">Дублей пока нет — запись ещё не пришла.</div>'; return; }
+  let html = "", group = "";
+  for (const l of data.lines) {
+    if (only && choice[l.id]) continue;
+    if (l.group !== group) { group = l.group; html += `<h2>${esc(group)}</h2>`; }
+    const d = l.direction || {};
+    const dir = [d.stress ? `ударное: <em>${esc(d.stress)}</em>` : "", d.emotion ? `чувство: <em>${esc(d.emotion)}</em>` : "",
+                 d.pace ? `темп: <em>${esc(d.pace)}</em>` : "", d.map ? `строки замечаний: ${esc([].concat(d.map).join(", "))}` : ""].filter(Boolean).join(" · ");
+    html += `<div class="row ${choice[l.id] ? "chosen" : ""}" id="r-${esc(l.id)}">
+      <div class="meta"><b>${esc(l.speaker_name)}</b>${esc(l.context)}<br><span class="tag">${esc(l.id)}</span></div>
+      <div><div class="text">${esc(l.text)}</div>${dir ? `<div class="dir">${dir}</div>` : ""}</div>
+      <div class="takes">${l.takes.map(t => `
+        <span class="take ${choice[l.id] == t.take ? "sel" : ""}">
+          <button data-id="${esc(l.id)}" data-take="${t.take}" class="play">▶ Дубль ${t.take}</button>
+          <input type="radio" name="c-${esc(l.id)}" data-id="${esc(l.id)}" data-take="${t.take}" ${choice[l.id] == t.take ? "checked" : ""} title="выбрать этот дубль">
+          <span class="tag">${t.main ? "сейчас в игре" : esc((t.tags || []).join(", "))}</span>
+        </span>`).join("")}
+        <button class="all" data-id="${esc(l.id)}">▶ все</button>
+      </div></div>`;
+  }
+  list.innerHTML = html || '<div class="empty">Все строки выбраны.</div>';
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const line = data.lines.find(l => l.id === b.dataset.id);
+  if (b.classList.contains("play") && line) playUrl(line.takes.find(t => t.take == b.dataset.take));
+  if (b.classList.contains("all") && line) playAll(line);
+});
+document.addEventListener("change", e => {
+  if (e.target.type === "radio") { choice[e.target.dataset.id] = Number(e.target.dataset.take); save(); }
+  if (e.target.id === "only") render();
+});
+document.getElementById("autoplay").onclick = () => {
+  const first = data.lines.find(l => !choice[l.id]) || data.lines[0];
+  if (first) { document.getElementById("r-" + first.id)?.scrollIntoView({ block: "center" }); playAll(first); }
+};
+document.getElementById("download").onclick = () => {
+  const out = { what: "Выбор дублей озвучки (Директор), для I-T3", made: new Date().toISOString(), build: data.generated_at,
+    choices: Object.fromEntries(data.lines.filter(l => choice[l.id]).map(l => [l.id, { take: choice[l.id], speaker: l.speaker, text: l.text }])) };
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
+  a.download = "takes_choice.json"; a.click();
+};
+document.getElementById("reset").onclick = () => { if (confirm("Стереть выбор в этом браузере?")) { choice = {}; save(); } };
+fetch("takes.json", { cache: "no-store" }).then(r => r.ok ? r.json() : { lines: [] }).then(d => { data = d; render(); })
+  .catch(() => { data = { lines: [] }; render(); });
+</script>
+</body>
+</html>

@@ -897,7 +897,7 @@ func _test_walkthrough() -> void:
 		seen.append_array(await _finish(["dunya"]))
 		await process_frame
 		g3 += 1
-	_check(gs.has_flag("done_M25") and gs.has_flag("beam_dunya"), "M25: the inscription «Дуня»")
+	_check(gs.has_flag("done_M25") and gs.has_flag("beam_dunya"), "M25: the inscription (D5: «Агата», flag beam_dunya kept)")
 	sr.frame_changed.disconnect(on_frame)
 	_check(float(span_alpha.get("(none)", 1.0)) > 0.9, "G42: between the span and the epilogue the empty shore is never shown (frame cleared under black: %s)" % str(span_alpha))
 	_check(gs.has_flag("done_M26") and gs.has_flag("game_finished"), "M26: the epilogue to the end: %s" % str(seen.slice(0, 8)))

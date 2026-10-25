@@ -94,6 +94,22 @@ E0–E1, 18.10: 90 фраз, потолок 100 файлов / 6 000 симво�
 Локально без сети: `python3 pipeline/voice/eleven_voice.py generate --request pipeline/requests/voice_e0e1.json --dry-run`
 — список реплик и число символов, без запросов к API.
 
+## Дубли для выбора на слух (I-T1, 25.10)
+- Режиссура строки — поле `direction` в данных (реплика сцены, её `then`, запись текста): `stress` (ударное слово),
+  `emotion`, `pace`, `takes` (сколько дублей: 3 — строки с пометой Директора «интонация/ударение/акцент», 1 — просто
+  изменённый текст), `map` (строки замечаний Директора), по желанию `alt_tags` (теги третьего дубля). Ударения — правила
+  `pronunciation_ru.json`, пометы подачи — `tags` (как в T7).
+- Запрос `"takes": {"max": 3, "ids": [...]}`: строке с `direction.takes ≥ 2`, синтезированной в этом прогоне (или
+  названной в `ids` — интонация без правки текста, вместе с `redo`), пишутся дубли: 1 — основная запись (её играет игра),
+  2 — другой seed, 3 — другая подача (теги `alt_tags`, иначе без тегов; темп ×0,93). Файлы —
+  `assets/voice/ru_takes/<файл записи>/take<k>.ogg` и `src/…/take<k>.mp3`, список — `assets/voice/ru_takes/manifest.json`.
+  Игра их не читает.
+- Страница прослушивания — `tools/listen_page.py` (из `tools/export_web.sh`) → `build/web/listen/` на сайте:
+  строка, кто, где, текст, режиссура, кнопки дублей, выбор (localStorage), «Скачать выбор» → `takes_choice.json`.
+- Вставка выбранного (I-T3): для `take ≠ 1` — скопировать `ru_takes/<файл>/take<k>.ogg` и `src/…/take<k>.mp3` на место
+  основной записи (`ru/<файл>.ogg`, `ru/src/<файл>.mp3`), в записи манифеста — `seed_salt` дубля (100 + k), `duration_s`,
+  `lufs` из `ru_takes/manifest.json`; `tools/sync_voice.sh`, `tools/validate_voice.py --strict`.
+
 ## Выжимка документации ElevenLabs (сверено 17.10.2026)
 
 **Аутентификация.** Заголовок `xi-api-key: <ключ>`, хост `https://api.elevenlabs.io`

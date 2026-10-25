@@ -15,6 +15,7 @@ if [[ "$code" -ne 0 || ! -f "$BUILD_DIR/web/index.wasm" ]]; then
   echo "[godot] web export FAILED (exit $code); see $BUILD_DIR/logs/export_web.log" >&2
   exit 1
 fi
+python3 -I "$ROOT/tools/listen_page.py" --out "$BUILD_DIR/web/listen"   # I-T1: страница прослушивания дублей озвучки
 echo "[godot] web export OK:"
 ls -la "$BUILD_DIR/web"
 du -sh "$BUILD_DIR/web"
