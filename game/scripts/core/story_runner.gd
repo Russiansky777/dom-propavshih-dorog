@@ -9,6 +9,8 @@ extends Node
 
 ## A villager walked off in a staging (stage[].npc_go) — tests and probes.
 signal npc_went(npc_id: String)
+## Rooms data on_enter `reveal`: these hotspots are lit for a moment (GameUi → HotspotReveal), I-T1.
+signal hotspots_beckoned(ids: Array)
 ## A room layer moved off in a staging (stage[].layer_go — the empty boat along the rope, H36) — tests and probes.
 signal layer_went(layer_id: String)
 signal beat_changed()
@@ -109,6 +111,10 @@ func current_room_id() -> String:
 func requires_met(req: Dictionary) -> bool:
 	for f in req.get("flags", []):
 		if not GameState.has_flag(String(f)):
+			return false
+	# `not_flags`: flags that must NOT be set (I-T1: Tikhon's topics of one day go when the day is over).
+	for f in req.get("not_flags", []):
+		if GameState.has_flag(String(f)):
 			return false
 	for it in req.get("items", []):
 		var id := String(it)
@@ -749,6 +755,12 @@ func _run_on_enter(room_id: String) -> void:
 			continue
 		if once != "":
 			GameState.set_flag(once, true)
+		# `reveal`: hotspot ids lit for a moment, as by the reveal key (I-T1: Ilya's workshop on the first visit after
+		# Nina's word about it — Q06 was never found).
+		if oe.has("reveal"):
+			hotspots_beckoned.emit(oe["reveal"])
+		if String(oe.get("text", "")) == "":
+			continue
 		narrate_key(String(oe.get("text", "")))
 		# `then`: more text keys right after it — a short exchange on entry (H33: Tikhon after the mother's mirror).
 		for k in oe.get("then", []):
@@ -1009,6 +1021,12 @@ func interact(h: StoryHotspot) -> void:
 		if t.has("after_text"):
 			narrate_key(String(t["after_text"]))
 			return
+		# `intro` [{if, unless, text}]: what the person says first, before the questions (I-T1, Director 25.10:
+		# Tikhon asks for his shelf at every talk until it hangs) — the first entry that holds; the choice follows.
+		for e in t.get("intro", []):
+			if requires_met({"flags": e.get("if", []), "not_flags": e.get("unless", [])}):
+				narrate_key(String(e.get("text", "")))
+				break
 
 	if d.has("mechanic"):
 		var ms := mechanic_spec(h)
@@ -1308,6 +1326,9 @@ func _run_exit_item(e: StoryExit, act: Dictionary, item_id: String) -> void:
 		GameState.remove_item(item_id)
 	if act.has("text"):
 		narrate_key(String(act["text"]))
+	# `then`: more text keys right after it (I-T1, Director 25.10: «Теперь и отсюда в дом заходить смогу»).
+	for k in act.get("then", []):
+		narrate_key(String(k))
 	if bool(act.get("enter", false)) and e.is_open() and e.target_exists():
 		_push({"type": "call", "fn": _enter_room.bind(e.target_room, e.target_spawn)})
 	RoomManager.autosave()

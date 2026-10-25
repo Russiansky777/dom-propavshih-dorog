@@ -116,6 +116,7 @@ func _ready() -> void:
 	StoryRunner.loop_transition.connect(_on_loop_transition)
 	StoryRunner.stage_fade.connect(_on_stage_fade)
 	StoryRunner.hint_revealed.connect(_on_hint_revealed)
+	StoryRunner.hotspots_beckoned.connect(_on_hotspots_beckoned)
 	GameState.inventory_changed.connect(_render_inventory)
 	GameState.state_reset.connect(func(): bag.cancel_flights())
 	GameState.state_loaded.connect(func(_s): bag.cancel_flights())
@@ -1175,6 +1176,19 @@ func reveal_hotspots() -> bool:
 			cues.append((e as StoryExit).cue)
 	reveal.show_targets(reveal_targets(), cues)
 	return true
+
+
+## Rooms data on_enter `reveal` (I-T1: Ilya's workshop after Nina's word — Q06 was never found): only these hotspots,
+## a little longer than the reveal key; after the room change has settled (a room change cancels the reveal).
+const BECKON_S := 3.0
+
+func _on_hotspots_beckoned(ids: Array) -> void:
+	await get_tree().create_timer(0.5).timeout
+	if StoryRunner.is_busy() or modal.visible or map_view.visible:
+		return
+	var picked := reveal_targets().filter(func(t): return t["kind"] == "hotspot" and ids.has(t["id"]))
+	if not picked.is_empty():
+		reveal.show_targets(picked, [], BECKON_S)
 
 
 ## What the reveal shows: [{kind: "hotspot"|"exit", id, label, at: Vector2, dir}] — active hotspots at

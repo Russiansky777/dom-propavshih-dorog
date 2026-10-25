@@ -821,7 +821,7 @@ func _test_walkthrough() -> void:
 	seen += await _finish()
 	sr.npc_went.disconnect(on_went)
 	_check(gs.has_flag("done_M09b") and gs.has_flag("pavel_blessed_mirror") and not gs.has_item("mirror_mill"), "G18: Pavel gives his leave, the mirror is not handed over by the talk: %s" % str(gs.inventory))
-	_check(String(sd.scene("M09b")["mandatory_lines"][-1]["text"]).ends_with("За мной иди.") and seen.any(func(x): return String(x).begins_with("pavel:В сенях зеркало")), "G18: Pavel's last word «Иди за мной»: %s" % str(seen))
+	_check(String(sd.scene("M09b")["mandatory_lines"][-1]["text"]).ends_with("За мной иди.") and seen.any(func(x): return String(x).begins_with("pavel:Оттуда и звони")), "G18: Pavel's last word «Иди за мной»: %s" % str(seen))
 	_check(went == ["pavel"], "G18: Pavel walks off to the passage door before the fade (npc_go): %s" % str(went))
 	_check(rm.current_room.room_id == "M2" and _hotspot("pavel") != null and _hotspot("pavel").visible, "G18: in the passage, Pavel is there (room %s)" % rm.current_room.room_id)
 	await _use("mirror")
@@ -840,7 +840,7 @@ func _test_walkthrough() -> void:
 	_check(sr.item_refusal("mirror_mill") == "@item.mirror_mill.wrong", "in H1 the office mirror points to the stand «ЗМ»")
 	_check(await _go("H2"), "H1→H2")
 	seen = await _finish()
-	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("высокая рама резная")),
+	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("высокая резная рама посреди мастерской")),
 			"entering the workshop with the office mirror: Agata names the stand — the tall carved frame: %s" % str(seen))
 	await _check_picks("H2 with the office mirror")
 	var sz := _hotspot("stand_zm")
@@ -854,7 +854,7 @@ func _test_walkthrough() -> void:
 	await _finish()
 	_check(await _go("H2"), "H1→H2 again")
 	seen = await _finish()
-	_check(not seen.any(func(t): return t.contains("высокая рама резная")), "the stand thought is not repeated: %s" % str(seen))
+	_check(not seen.any(func(t): return t.contains("высокая резная рама посреди мастерской")), "the stand thought is not repeated: %s" % str(seen))
 	await _use_item("mirror_mill", "stand_zm")
 	await _frames(2)
 	_check(not gs.has_item("mirror_mill") and gs.has_flag("office_mirror_mounted"), "the mirror goes onto the stand (out of the bag)")
@@ -1072,7 +1072,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("rope_on_ring") and gs.has_flag("done_M15"), "the knot → M15: %s" % str(seen))
 	# Polish 22.10 (A1): the road comes back here, at the knot — held from both ends; the lights only answer later.
 	_check(gs.has_flag("road_held_both_ends") and not gs.has_flag("far_lights_answered"), "the knot holds the road from both ends (before the lights)")
-	_check(seen.any(func(x): return x.contains("На том конце держат")), "Agata at the knot: «…держат с двух концов»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("На том конце будто бы держат")), "Agata at the knot: «…держат с двух концов»: %s" % str(seen))
 	if sr.mechanic_open:
 		sr.close_mechanic()
 		await _frames(2)
@@ -1162,7 +1162,7 @@ func _test_walkthrough() -> void:
 	_check(seen.any(func(x): return x.begins_with("narration:По канату скользит кольцо")) and m17_text.contains("Теперь идёт прямо"),
 		"the empty boat follows the ring along the rope, not back to the pier: %s" % str(seen))
 	_check(seen.any(func(x): return x == "agata:Не поворачивает. По канату идёт."), "Agata: it did not turn back")
-	_check(seen.any(func(x): return x.contains("Не вернуло её. Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Не вернуло её! Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
 	_check(sr.journal_goal().contains("по канату"), "goal: into the boat, along the rope: %s" % sr.journal_goal())
 	var n_before: int = gs.inventory.count("school_ribbon")
 	await _use("pelageya")

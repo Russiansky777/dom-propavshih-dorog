@@ -1613,6 +1613,16 @@ for rid, room in rooms.items():
 
     # текст при первом входе (on_enter): ключ текста и флаг «один раз» (иначе повторится после загрузки)
     for i_, oe in enumerate(room.get("on_enter", []) or []):
+        if oe.get("reveal") and not oe.get("text"):
+            # I-T1: только подсветка хотспотов (без текста) — повтор при входе допустим, нужен unless, чтобы кончилась
+            for hid in oe["reveal"]:
+                if hid not in {h.get("id") for h in room.get("hotspots", [])}:
+                    err(f"{ctx}.on_enter[{i_}]: reveal — нет хотспота {hid}")
+            if not oe.get("unless") and not oe.get("once_flag"):
+                err(f"{ctx}.on_enter[{i_}]: reveal без unless/once_flag — подсветка не кончится никогда")
+            check_flags(f"{ctx}.on_enter[{i_}].if", oe.get("if"))
+            check_flags(f"{ctx}.on_enter[{i_}].unless", oe.get("unless"))
+            continue
         if not oe.get("once_flag"):
             err(f"{ctx}.on_enter[{i_}]: без once_flag — текст повторится при каждом входе и после загрузки")
         else:

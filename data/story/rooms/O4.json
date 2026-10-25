@@ -80,6 +80,7 @@
       "look": "@O4.river.look"
     }
   ],
+  "on_enter": [{"reveal": ["ilya_workshop"], "if": ["q06_hook"], "unless": ["q06_started"], "_note": "I-T1 (Директор 25.10: верстак Q06 за всю игру не найден): после слов Нины (M22, q06_hook) мастерская Ильи подсвечивается на 3 с при входе на улицу, пока задание не начато; без текста"}],
   "exits": [
     {"to": "R3", "label": "@O4.exit_R3.label", "cue": "up", "rect": [640, 520, 170, 80], "stand": [728, 625], "spawn": "from_O4", "draw": false},
     {"to": "O3", "label": "@O4.exit_O3.label", "cue": "door", "rect": [1395, 385, 110, 165], "stand": [1470, 660], "spawn": "from_O4", "draw": false},

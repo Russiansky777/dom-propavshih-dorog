@@ -273,7 +273,7 @@
         },
         {
           "speaker": "tikhon",
-          "text": "Спи уж. За печь я отвечаю.",
+          "text": "Спи уж. За печь я отвечаю.", "direction": {"stress": "я", "emotion": "ворчливо-заботливо", "pace": "лениво", "takes": 3, "map": [67]},
           "tags": ["grumbling"]
         },
         {

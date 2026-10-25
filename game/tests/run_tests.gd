@@ -743,7 +743,7 @@ func _test_walkthrough() -> void:
 	await bot.use("tamara")
 	_check(gs.has_flag("started_M01"), "talking to Tamara should start M01")
 	seen = await bot.finish()
-	_check(seen.size() == sd.scene("M01")["mandatory_lines"].size() and seen.size() == 9, "M01 should play its 9 lines, got %s" % str(seen))
+	_check(seen.size() == sd.scene("M01")["mandatory_lines"].size() and seen.size() == 10, "M01 should play its 10 lines (I-T1), got %s" % str(seen))
 	_check(gs.has_flag("done_M01") and gs.has_flag("met_tamara") and gs.has_flag("knows_pier_trace") and gs.has_flag("knows_letters_bag")
 		and gs.has_flag("knows_dunya_left") and gs.has_flag("knows_bridge_lost"), "M01 flags missing")
 	_check(gs.has_item("key_house") and gs.has_item("pocket_watch") and gs.has_item("mitten"), "M01 items missing: %s" % str(gs.inventory))

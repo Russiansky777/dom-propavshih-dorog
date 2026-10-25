@@ -454,7 +454,7 @@ func _test_pier_attempt() -> void:
 	ids = sr.current_options().map(func(o): return String(o.get("id", "")))
 	_check(ids == ["school", "sheet", "late", "leave"], "Tamara's questions: %s" % str(ids))
 	ans = await _drain(["late"])
-	_check(ans.any(func(x): return x.contains("Я ведь про то и писала")), "«Надо было сразу ехать» — «…Я для того и писала»: %s" % str(ans))
+	_check(ans.any(func(x): return x.contains("Я затем и писала")), "«Надо было сразу ехать» — «…Я для того и писала»: %s" % str(ans))
 	ans = await _interact(_hotspot("tamara"), ["school"])
 	_check(ans.any(func(x): return x.contains("на оба берега")), "the school was one for both banks: %s" % str(ans))
 
@@ -572,5 +572,5 @@ func _test_tikhon() -> void:
 	_check(seen.any(func(x): return x.begins_with("tikhon:") and x.contains("Нина просила")), "the door: Nina asked: %s" % str(seen))
 	# M03 itself: «к вечеру» / «Вечер долгий» / «Сегодня среда?»
 	var texts: Array = sd.scene("M03")["mandatory_lines"].map(func(l): return String(l["text"]))
-	for want in ["К сестре пошла. [[Баяла|говорила]] — к вечеру.", "Так год уже прошёл.", "Вечер долгий.", "По средам Тамара приносит. Нынче среда?"]:
+	for want in ["К сестре пошла. [[Баяла|говорила]] — к вечеру.", "Так год уже прошёл.", "Вечер долгий.", "По средам Тамара еду приносит. Нынче среда?"]:
 		_check(texts.has(want), "M03 has «%s»" % want)

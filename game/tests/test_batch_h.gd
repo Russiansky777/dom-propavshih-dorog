@@ -158,7 +158,7 @@ func _line_text(scene_id: String, i: int) -> String:
 
 func _test_lines() -> void:
 	var m01 := _line_text("M01", 3)
-	_check(m01.contains("тётя Дуня — Евдокия, мамина сестра"), "H1: Tamara explains the aunt once: %s" % m01)
+	_check(m01.contains("Дуня — Евдокия, мамина сестра"), "H1: Tamara explains the aunt once: %s" % m01)
 	_check(sd.text("@ui.goal_start").contains("Дуни, маминой сестры") and not sd.text("@ui.goal_start").contains("Евдоки"),
 		"H1: the first goal says «тёти Дуни, маминой сестры»: %s" % sd.text("@ui.goal_start"))
 	_check(sd.text("@map.house").contains("Дуни") and String(sd.scene("M21").get("title", "")).contains("Дуня"), "H1: the plan and the scene title say Дуня")
@@ -309,7 +309,7 @@ func _test_coat() -> void:
 
 func _test_finale() -> void:
 	var lines: Array = sd.scene("M26")["mandatory_lines"]
-	_check(String(lines[-2].get("text", "")) == "А завтра тоже можно прийти?" and String(lines[-1].get("speaker", "")) == "agata"
+	_check(String(lines[-2].get("text", "")) == "Сестрица Агата, а завтра тоже можно прийти?" and String(lines[-1].get("speaker", "")) == "agata"
 		and String(lines[-1].get("text", "")).contains("с обоих концов"), "H55: the last question and Agata's answer: %s" % [lines[-1]])
 	var fv: Node = main_node.get_node("FrameView")
 	var title: Node = main_node.get_node("Title")

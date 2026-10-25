@@ -344,7 +344,7 @@ func _test_m03_once() -> void:
 	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 7, "Tikhon's seven M03 lines (Docs/SCENARIO_FINAL.md M03, with the shelf request G11) play once: %s" % str(tikhon_lines))
 	_check(seen.any(func(x): return String(x).begins_with("tikhon:") and String(x).contains("полку мне повесь")), "G11: after the first talk at the lit stove Tikhon asks to hang his shelf: %s" % str(seen))
 	_check(seen.any(func(x): return String(x).contains("Вечер долгий")), "«Вечер долгий» in M03")
-	_check(seen.any(func(x): return String(x).contains("Один ты здесь?")) and seen.any(func(x): return String(x).contains("И печь тут,")), "«Ты здесь один?» / «Печь тоже здесь.» in M03")
+	_check(seen.any(func(x): return String(x).contains("А ты один здесь?")) and seen.any(func(x): return String(x).contains("И печь тут,")), "«Ты здесь один?» / «Печь тоже здесь.» in M03")
 	_check(t != null and t.place_index == spec["place"]["H1"].size() - 1, "after M03 he is still in the armchair (place %d)" % (t.place_index if t else -9))
 	var inv_after: int = gs.inventory.size()
 	_check(inv_after == inv_before, "M03 grants no items (inventory %d → %d)" % [inv_before, inv_after])

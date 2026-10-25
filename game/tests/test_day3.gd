@@ -571,7 +571,7 @@ func _test_data() -> void:
 	_check(m23b.get("grants", {}).get("flags", []).has("bridge_decided"), "the bridge is decided at the mill (M23b)")
 	# C18–C20: the lesson, then the dinner — Ulyana's line closes the game; Nina's «Доучись» always; on a Wednesday.
 	var ep: Array = sd.scene("M26").get("mandatory_lines", [])
-	_check(String(ep[ep.size() - 2].get("text", "")) == "А завтра тоже можно прийти?" and String(ep[ep.size() - 2].get("speaker", "")) == "ulyana"
+	_check(String(ep[ep.size() - 2].get("text", "")) == "Сестрица Агата, а завтра тоже можно прийти?" and String(ep[ep.size() - 2].get("speaker", "")) == "ulyana"
 		and String(ep[ep.size() - 1].get("speaker", "")) == "agata", "the last lines of the game: Ulyana's question, Agata's answer (H55)")
 	var has_doucheis := false
 	for ln in ep:
@@ -1008,7 +1008,7 @@ func _test_traces() -> void:
 	var fam := _beats_of("M26", ["pavel_answer_family", "tikhon_told_agata", "v01_cup_white", "beam_blank"])
 	_check(fam.any(func(x): return x.begins_with("pavel:Мать и брат")) and not fam.any(func(x): return x.begins_with("pavel:Сдержала слово")), "Pavel's epilogue line follows the answer in the office")
 	_check(fam.any(func(x): return x.contains("возле Агатиной лежанки спит")) and fam.any(func(x): return x.begins_with("agata:Среда")), "told by Agata: Tikhon sleeps by her bed; Agata answers «Среда»")
-	_check(fam.any(func(x): return x.contains("Белая")) and fam.any(func(x): return x.contains("Чист торец первого прогона")), "the white cup; the clean beam end")
+	_check(fam.any(func(x): return x.contains("Белая")) and fam.any(func(x): return x.contains("Чист торец первого бревна")), "the white cup; the clean beam end")
 	var prom := _beats_of("M26", ["pavel_answer_promise", "tikhon_told_nina", "q07_board_to_pelageya", "q01_mail_at_nina"])
 	_check(prom.any(func(x): return x.begins_with("pavel:Сдержала слово")) and prom.any(func(x): return x.begins_with("nina:Среда, Тихон")), "promise kept; Nina answers Tikhon")
 	_check(prom.any(func(x): return x.contains("Митина дощечка")) and prom.any(func(x): return x.contains("Через Нину")), "optional stories leave their lines")
@@ -1307,7 +1307,7 @@ func _test_q02_q06_traces() -> void:
 	for ln in lines:
 		flat.append(ln)
 		flat.append_array(ln.get("then", []))
-	var want := {"EP_boat": "На зиму лодку Пелагея с Митей смолят", "EP_pavel": "Павел стоит у рейки", "EP_lesson": "Зимнее утро, класс", "EP_dinner": "Вечером ужинают"}
+	var want := {"EP_boat": "На зиму лодку Пелагея с Митей смолят", "EP_pavel": "Павел у рейки стоит", "EP_lesson": "Зимнее утро, класс", "EP_dinner": "Вечером ужинают"}
 	for st in sd.scene("M26").get("stage", []):
 		var f := String(st.get("frame", ""))
 		if want.has(f):

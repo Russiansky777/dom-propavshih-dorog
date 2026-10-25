@@ -35,13 +35,13 @@ func active() -> bool:
 
 
 ## Shows `p_targets` (GameUi.reveal_targets()) for DURATION seconds and lights the given exit marks.
-func show_targets(p_targets: Array, cues: Array) -> void:
+func show_targets(p_targets: Array, cues: Array, seconds: float = DURATION) -> void:
 	_set_cues(false)
 	targets = p_targets
 	_cues = cues
 	_set_cues(true)
 	_layout_labels()
-	_left = DURATION
+	_left = seconds
 	visible = true
 	queue_redraw()
 
