@@ -90,7 +90,7 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 		return a
 	for k in overrides.keys():
 		spec[k] = overrides[k]
-	a.sheet_dir = String(spec.get("sheet_dir", "res://assets/characters/" + actor_id))
+	a.sheet_dir = web_sheet_dir(String(spec.get("sheet_dir", "res://assets/characters/" + actor_id)))
 	a.direction_zero = String(spec.get("direction_zero", "down"))
 	a.direction_order = String(spec.get("direction_order", "ccw"))
 	a.figure_height_px = float(spec.get("figure_height_px", a.figure_height_px))
@@ -232,6 +232,21 @@ func page_paths(act: Dictionary, action: String) -> Array:
 	for k in range(1, pages.size()):
 		out.append(sheet_dir + "/" + String(pages[k]))
 	return out
+
+
+## I-T4b: the web build (export feature `web_atlas`, export_presets.cfg) carries smaller copies of the k× sheets
+## (tools/make_web_sheets.py → assets/characters_web/<id>/, texture_scale of the copy) — the site limit is 1 GB;
+## the desktop builds keep the full sheets. `force_web_sheets` — tests.
+static var force_web_sheets: bool = false
+
+
+static func web_sheet_dir(dir: String) -> String:
+	if not (force_web_sheets or OS.has_feature("web_atlas")):
+		return dir
+	var alt := dir.replace("res://assets/characters/", "res://assets/characters_web/")
+	if alt != dir and FileAccess.file_exists(alt + "/sprites.json"):
+		return alt
+	return dir
 
 
 func page_textures(act: Dictionary, first: Texture2D) -> Array:

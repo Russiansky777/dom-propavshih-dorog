@@ -12,6 +12,12 @@
      в клипе "role" рот чередуется «приоткрыт / закрыт» точно по кадрам листа (frames, окно) — в игре он идёт, пока звучит реплика;
   5. "rigid": [{"bone", "box": [x0,y0,z0,x1,y1,z1]}] — жёсткие предметы (очки на шнурке, сумка, рукавицы): вершины в коробке
      (поза покоя, метры) целиком на одну кость — не тянутся с руками.
+I-T4b (25.10, по ИИ-проверке спрайтов 25.10, 0 кредитов):
+  "text_motion_src": {роль: другая роль} — клип Text to Motion другой роли (руки за спиной ушли в тулуп — «слушает» из стойки);
+  "damp": {роль: k | {"k": k, "bones": "legs"}} — амплитуда только ног (широкий шаг сквозь узкую юбку);
+  "legs_out_deg": {роль: θ} — бёдра от оси тела на θ° (походка «по канату»: стопы заходят одна за другую);
+  "matte": {"roughness", "specular", "tex_knee", "tex_k"} — ткань матовее, светлые пятна текстуры (мука) мягче: яркость выше
+     колена tex_knee сжимается в tex_k раз.
 """
 import bpy, sys, json, math
 from mathutils import Quaternion, Vector, Matrix
@@ -54,7 +60,8 @@ for role, clip in cfg.get('clips', {}).items():
     roles[role] = act
 for role in cfg.get('text_motion_roles', []):
     before = set(bpy.data.actions)
-    bpy.ops.import_scene.gltf(filepath=f"{src_dir}/motion_{role}.glb", disable_bone_shape=True)
+    src_role = cfg.get('text_motion_src', {}).get(role, role)
+    bpy.ops.import_scene.gltf(filepath=f"{src_dir}/motion_{src_role}.glb", disable_bone_shape=True)
     new = [a for a in bpy.data.actions if a not in before]
     new.sort(key=lambda a: -(a.frame_range[1] - a.frame_range[0]))
     roles[role] = new[0]
@@ -72,12 +79,19 @@ for a in [a for a in bpy.data.actions if a not in roles.values()]:
 report['roles'] = {r: [a.name, list(a.frame_range)] for r, a in roles.items()}
 
 # 2. амплитуда покачивания
+LEG_BONES = ('LeftUpLeg', 'LeftLeg', 'LeftFoot', 'LeftToeBase', 'RightUpLeg', 'RightLeg', 'RightFoot', 'RightToeBase')
 for role, k in cfg.get('damp', {}).items():
+    only = None
+    if isinstance(k, dict):
+        only = LEG_BONES if k.get('bones') == 'legs' else tuple(k.get('bones') or ()) or None
+        k = k['k']
     act = roles[role]
     fcs = {}
     for fc in fcurves(act):
         fcs.setdefault(fc.data_path, {})[fc.array_index] = fc
     for path, comp in fcs.items():
+        if only is not None and ('"' not in path or path.split('"')[1] not in only):
+            continue
         if path.endswith('rotation_quaternion') and len(comp) == 4:
             n = len(comp[0].keyframe_points)
             qs = [Quaternion([comp[i].keyframe_points[j].co[1] for i in range(4)]) for j in range(n)]
@@ -188,6 +202,52 @@ for role, theta in cfg.get('arms_in_deg', {}).items():
             pb.matrix = mats[f]
             bpy.context.view_layer.update()
             pb.keyframe_insert('rotation_quaternion', frame=f)
+
+# 3б. бёдра от оси тела (тот же поворот вокруг «вперёд»): стопа левой ноги — к +X, правой — к −X
+#     (поворот +θ вокруг Y уводит направленную вниз кость к −X, поэтому у левой знак минус)
+for role, theta in cfg.get('legs_out_deg', {}).items():
+    if not theta:
+        continue
+    act = roles[role]
+    use(act)
+    f0, f1 = frames_of(act)
+    for side, sign in (('Left', -1.0), ('Right', 1.0)):
+        pb = arm.pose.bones.get(f'{side}UpLeg')
+        if pb is None:
+            continue
+        mats = {}
+        for f in range(f0, f1 + 1):
+            sc.frame_set(f)
+            head = (arm.matrix_world @ pb.matrix).translation
+            R = Matrix.Translation(head) @ Matrix.Rotation(math.radians(sign * theta), 4, 'Y') @ Matrix.Translation(-head)
+            mats[f] = arm.matrix_world.inverted() @ R @ arm.matrix_world @ pb.matrix
+        for f in range(f0, f1 + 1):
+            sc.frame_set(f)
+            pb.matrix = mats[f]
+            bpy.context.view_layer.update()
+            pb.keyframe_insert('rotation_quaternion', frame=f)
+
+# 3в. матовая ткань и мягкие светлые пятна текстуры (мука Павла блестела, как мокрая)
+matte = cfg.get('matte')
+if matte:
+    import numpy as np
+    for m in bpy.data.materials:
+        for n in (m.node_tree.nodes if m.node_tree else []):
+            if n.type == 'BSDF_PRINCIPLED':
+                n.inputs['Roughness'].default_value = matte.get('roughness', 1.0)
+                n.inputs['Specular IOR Level'].default_value = matte.get('specular', 0.3)
+    knee, kk = matte.get('tex_knee'), matte.get('tex_k', 0.4)
+    if knee is not None:
+        for im in bpy.data.images:
+            if 'basecolor' not in im.name.lower().replace('_', ''):
+                continue
+            px = np.array(im.pixels[:], dtype=np.float32).reshape(-1, 4)
+            v = px[:, :3].max(1, keepdims=True)
+            nv = np.where(v > knee, knee + (v - knee) * kk, v)
+            px[:, :3] *= nv / np.maximum(v, 1e-6)
+            im.pixels[:] = px.ravel()
+            im.pack()
+            report.setdefault('matte_textures', []).append(im.name)
 
 # 5. жёсткие предметы (до челюсти: веса предметов не трогаются ею)
 for item in cfg.get('rigid', []):
