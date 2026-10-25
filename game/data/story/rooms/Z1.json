@@ -19,7 +19,7 @@
   "props": [],
   "hotspots": [
     {
-      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [972, 210, 196, 215], "stand": [1510, 800], "hidden_if": ["done_M22"], "_hidden_note": "G41 (Директор 23.10: «стоит и на перекрёстке, и на почте»): с утра третьего дня (M22) Тамара переправилась с мешком в Ольховку (O4, M23a) — на почте её нет; проверка — tools/validate_rooms.py «один персонаж — одно место»", "_rect_note": "T10: за стойкой видна от головы до столешницы (экран y 210–425) — хотспот по видимой части, ниже столешница с рисунками (drawings)", "_stand_note": "у правого торца стойки, сбоку от Тамары: при разговоре видны обе, Агата повёрнута к ней (стоянка прямо перед Тамарой закрывала её — кадр ui_10). 18.10: x 1440 → 1495 — вырез стойки раздвинут на полуширину Агаты (clearance), прежняя точка оказалась бы боком в столешнице", "color": "#c47a5a", "draw": false, "pick_priority": 2, "image": "res://assets/characters/tamara/front.png",
+      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [972, 210, 196, 490], "stand": [1510, 800], "hidden_if": ["done_M22"], "_hidden_note": "G41 (Директор 23.10: «стоит и на перекрёстке, и на почте»): с утра третьего дня (M22) Тамара переправилась с мешком в Ольховку (O4, M23a) — на почте её нет; проверка — tools/validate_rooms.py «один персонаж — одно место»", "_stand_note": "у правого торца стойки, сбоку от Тамары: при разговоре видны обе, Агата повёрнута к ней (стоянка прямо перед Тамарой закрывала её — кадр ui_10). 18.10: x 1440 → 1495 — вырез стойки раздвинут на полуширину Агаты (clearance), прежняя точка оказалась бы боком в столешнице", "color": "#c47a5a", "draw": false, "pick_priority": 2, "image": "res://assets/characters/tamara/front.png",
       "talk": {"scene": "M01"},
       "choice": {"prompt": "@Z1.tamara.prompt", "requires": {"flags": ["done_M01"]},
         "_note": "Полировка 22.10 (B11, B14, B16): по вопросам игрока после разговора — школа на оба берега, Дунин лист на почте, «надо было сразу ехать». Спрашивать можно сколько угодно.",
@@ -31,7 +31,7 @@
         ]}
     },
     {
-      "id": "drawings", "action_anim": "reach", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 430, 660, 80], "stand": [840, 940], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
+      "id": "drawings", "action_anim": "reach", "kind": "object", "label": "@Z1.drawings.label", "rect": [688, 458, 660, 52], "stand": [840, 940], "color": "#e8dcc0", "draw": false, "pick_priority": 3,
       "use": {"sets": ["z1_compared_drawings"], "text": "@Z1.drawings.use", "once_flag": "z1_compared_drawings"},
       "item_use": {"photo_bridge": {"sets": ["z1_compared_photo"], "text": "@Z1.drawings.photo", "_note": "снимок старого моста из учительского ящика (M07) рядом с Дуниным листом: та же опора, канат на её плите; не расходуется"}},
       "look": "@Z1.drawings.look"

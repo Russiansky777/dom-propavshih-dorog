@@ -7,7 +7,7 @@
 //   R1  the pier without the boat at dusk; ?start=t10_turn_day — the boat by day at the turn, the pier by day;
 //   H2  ?start=t10_h2 — the office mirror in the stand «ЗМ», a click: the close-up with the wedges; ?start=t10_h2_done — driven;
 //   Z1  ?start=t10_post — the new counter, Tamara behind it, Agata beside (the talk), the drawings on the counter;
-//   O4  ?start=classmama — Mitya's board by the fence;   H3  ?start=bedtime — the school photo in its frame;
+//   O4  ?start=t10_o4 — Mitya's board by the fence;   H3  ?start=bedtime — the school photo in its frame;
 //   EP  ?start=epilogue — the bridge (EP_tamara) and the beam end with the cut (EP_beam) as they come in the epilogue.
 // Exit code 0 only when every check passed and the console has no errors.
 
@@ -205,6 +205,7 @@ async function main() {
   };
   const slow = async (k) => { await page.evaluate((x) => window.probePause(false, x), k); };
 
+  const only = (k) => !process.env.H_ONLY || process.env.H_ONLY.split(",").includes(k);
   const start = async (id, ready) => {
     await page.goto(`http://127.0.0.1:${PORT}/index.html?start=${id}`);
     const s = await waitFor(`${id}: game up`, ready, 240000);
@@ -214,6 +215,7 @@ async function main() {
   };
   try {
     let s;
+    if (only("B")) {   // H_ONLY=B,Z1,OH,EP (any of them, comma-separated) — only those sections: boats and H2 / post / O4 and H3 / epilogue
     // --- Z3 dusk, R1 dusk, M17 ---
     s = await start("boat_turn", (t) => t.room === "Z3" && t.hotspots && t.hotspots.pelageya);
     check(s.exits.R2 && s.exits.R2.visible, "Z3 dusk: the boat at the plate («В лодку» shown)");
@@ -266,6 +268,8 @@ async function main() {
     await sleep(1200);
     await shot("H2_wedges_closeup_driven");
 
+    }
+    if (only("Z1")) {
     // --- Z1: the counter ---
     s = await start("t10_post", (t) => t.room === "Z1" && t.hotspots && t.hotspots.tamara);
     await shot("Z1_counter");
@@ -284,9 +288,16 @@ async function main() {
     await shot("Z1_drawings");
     await playThrough("Z1: drawings", { quietMs: 2500 });
 
+    }
+    if (only("OH")) {
     // --- O4: Mitya's board ---
-    s = await start("classmama", (t) => t.room === "O4" && t.hotspots);
+    s = await start("t10_o4", (t) => t.room === "O4" && t.hotspots && t.hotspots.mitya_board);
+    check(s.hotspots.mitya_board.visible, "O4: Mitya's board hotspot visible");
     await shot("O4_board");
+    await click("hotspot mitya_board", s.hotspots.mitya_board);
+    await waitIdle("mitya_board");
+    await sleep(1500);
+    await shot("O4_board_closeup");
 
     // --- H3: the school photo ---
     s = await start("bedtime", (t) => t.room === "H3" && t.hotspots);
@@ -299,6 +310,8 @@ async function main() {
       await playThrough("H3: photo", { quietMs: 2500 });
     } else check(false, "H3: photo_school hotspot visible");
 
+    }
+    if (only("EP")) {
     // --- the epilogue: the bridge and the beam end ---
     await page.goto(`http://127.0.0.1:${PORT}/index.html?start=epilogue`);
     await waitFor("epilogue: game up", (t) => t.room !== undefined, 240000);
@@ -306,17 +319,18 @@ async function main() {
     const t0 = Date.now();
     while (Date.now() - t0 < 420000 && seen.size < 2) {
       s = await state();
-      if (s && (s.room === "EP_tamara" || s.room === "EP_beam") && !seen.has(s.room)) {
+      const f = s && s.frame && s.frame.frame;
+      if ((f === "EP_tamara" || f === "EP_beam") && !seen.has(f)) {
         await sleep(2500);
-        s = await state();
-        if (s.room === "EP_tamara" || s.room === "EP_beam") { seen.add(s.room); await shot(s.room === "EP_tamara" ? "EP_tamara_bridge" : "EP_beam_end"); }
+        seen.add(f);
+        await shot(f === "EP_tamara" ? "EP_tamara_bridge" : "EP_beam_end");
       }
-      const key = beatKey(s);
-      if (key) { await click("epilogue: continue", (s.ui && s.ui.dialogue_click) || { x: 960, y: 780 }); await sleep(500); }
+      if (beatKey(s)) { await click("epilogue: continue", (s.ui && s.ui.dialogue_click) || { x: 960, y: 780 }); await sleep(500); }
       else await sleep(250);
     }
     check(seen.has("EP_tamara"), "EP_tamara reached and framed");
     check(seen.has("EP_beam"), "EP_beam reached and framed");
+    }
   } catch (e) {
     check(false, `exception: ${e.message}`);
   } finally {
