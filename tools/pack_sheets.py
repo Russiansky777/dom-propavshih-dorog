@@ -28,9 +28,6 @@ Image.MAX_IMAGE_PIXELS = None  # листы Агаты 2,25× (G56): сетка 
 GAP = 8      # пустота между кусками (px): мипмап 2-го уровня не берёт соседа
 ALIGN = 4    # края кусков кратны 4
 MAX_SIDE = 8192
-# Лист сверх этого предела — только у листа k× (G56: Агата 864 px, pick ≈ 9300 px по стороне); 16384 — предел
-# текстуры Godot и WebGL2 на настольных видеокартах
-MAX_SIDE_HI = 16384
 # Единица игры — кадр высотой 384 px: под него подобраны масштабы глубины всех комнат. Лист, отрисованный
 # крупнее (render_size в запросе конвейера), получает в sprites.json игры texture_scale = frame_h / 384 —
 # ActorSheet рисует его в 1/k, рост на экране прежний, деталей в k раз больше (G56)
@@ -46,7 +43,11 @@ def _up(v: int, a: int = ALIGN) -> int:
 
 
 def pack(sheet: Image.Image, fw: int, fh: int, n: int, dirs: int, max_side: int = MAX_SIDE):
-    """→ (атлас RGBA, rects [[x, y, w, h, ox, oy]] по k = d·n + i)."""
+    """→ (страницы-атласы RGBA, rects [[x, y, w, h, ox, oy, page]] по k = d·n + i).
+
+    Ни одна сторона страницы не больше max_side (8192 — предел текстуры WebGL у swiftshader и многих видеокарт;
+    T11/I-T2: лист 8832 px по стороне в вебе рисовался чёрным прямоугольником). Не влезло — следующая страница:
+    файл <лист>_p<N>.png, номер страницы — седьмое число куска (у первой страницы его нет)."""
     pieces = []
     for d in range(dirs):
         for i in range(n):
@@ -61,23 +62,26 @@ def pack(sheet: Image.Image, fw: int, fh: int, n: int, dirs: int, max_side: int 
     width = min(max_side, _up(int(math.sqrt(area * 1.12)), 64))
     order = sorted(pieces, key=lambda p: -p[1].height)
     while True:
-        rects, x, y, shelf = {}, 0, 0, 0
+        rects, x, y, shelf, page, heights = {}, 0, 0, 0, 0, []
         for k, im, ox, oy in order:
             w, h = im.width, im.height
             if x + w > width:
                 x, y, shelf = 0, y + shelf + GAP, 0
-            rects[k] = [x, y, w, h, ox, oy]
+            if y + h > max_side:
+                heights.append(_up(y - GAP))
+                x, y, shelf, page = 0, 0, 0, page + 1
+            rects[k] = [x, y, w, h, ox, oy] + ([page] if page else [])
             x += _up(w + GAP)
             shelf = max(shelf, h)
-        height = _up(y + shelf)
-        if height <= max_side or width >= max_side:
+        heights.append(_up(y + shelf))
+        if page == 0 or width >= max_side:
             break
         width = min(max_side, width + 512)
-    atlas = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    atlases = [Image.new("RGBA", (width, hh), (0, 0, 0, 0)) for hh in heights]
     for k, im, ox, oy in pieces:
         r = rects[k]
-        atlas.paste(im, (r[0], r[1]))
-    return atlas, [rects[k] for k in range(len(pieces))]
+        atlases[r[6] if len(r) > 6 else 0].paste(im, (r[0], r[1]))
+    return atlases, [rects[k] for k in range(len(pieces))]
 
 
 def main() -> int:
@@ -122,7 +126,8 @@ def main() -> int:
                 changed += 1
             after += out.stat().st_size
             continue
-        if out.exists() and prev.get("atlas", {}).get("src_md5") == h and int(prev.get("frames", -1)) == int(act["frames"]):
+        if (out.exists() and prev.get("atlas", {}).get("src_md5") == h and int(prev.get("frames", -1)) == int(act["frames"])
+                and int(prev["atlas"].get("max_side", 0)) == MAX_SIDE):
             act["atlas"] = prev["atlas"]
             kept += 1
             after += out.stat().st_size
@@ -130,14 +135,24 @@ def main() -> int:
         n = int(act["frames"])
         # строки листа: направления персонажа или, у поз зеркала, свои строки действия (ходьба — влево и вправо)
         rows = len(act["rows"]) if act.get("rows") else dirs
-        atlas, rects = pack(Image.open(sheet).convert("RGBA"), fw, fh, n, rows,
-                            MAX_SIDE if fh <= UNIT_FRAME_H else MAX_SIDE_HI)
-        atlas.save(out, optimize=True)
-        act["atlas"] = {"rects": rects, "size": [atlas.width, atlas.height], "src_md5": h, "gap": GAP}
+        atlases, rects = pack(Image.open(sheet).convert("RGBA"), fw, fh, n, rows, MAX_SIDE)
+        pages = [sheet.name] + [f"{sheet.stem}_p{p}.png" for p in range(1, len(atlases))]
+        for old_page in dst.glob(f"{sheet.stem}_p*.png"):
+            if old_page.name not in pages:
+                old_page.unlink()
+                Path(str(old_page) + ".import").unlink(missing_ok=True)
+        for name, atlas in zip(pages, atlases):
+            atlas.save(dst / name, optimize=True)
+            after += (dst / name).stat().st_size
+        act["atlas"] = {"rects": rects, "size": [atlases[0].width, atlases[0].height], "src_md5": h, "gap": GAP,
+                        "max_side": MAX_SIDE}
+        if len(pages) > 1:
+            act["atlas"]["pages"] = pages
+            act["atlas"]["page_sizes"] = [[a.width, a.height] for a in atlases]
         changed += 1
-        after += out.stat().st_size
-        print(f"  {dst.name}/{sheet.name}: сетка {n * fw}×{rows * fh} → атлас {atlas.width}×{atlas.height} "
-              f"({atlas.width * atlas.height / (n * fw * rows * fh) * 100:.0f} % пикселей), {sheet.stat().st_size // 1024} → {out.stat().st_size // 1024} КБ")
+        sizes = ", ".join(f"{a.width}×{a.height}" for a in atlases)
+        print(f"  {dst.name}/{sheet.name}: сетка {n * fw}×{rows * fh} → атлас {sizes} "
+              f"({sum(a.width * a.height for a in atlases) / (n * fw * rows * fh) * 100:.0f} % пикселей)")
     for action, act in meta.get("actions", {}).items():
         ref = meta["actions"].get(act.get("same_as", ""))
         if ref is not None and "atlas" in ref:

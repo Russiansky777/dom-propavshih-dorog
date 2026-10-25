@@ -97,6 +97,7 @@ func refresh() -> void:
 			c = Color.html(String(st["color"]))
 		if fill.color != c:
 			fill.color = c  # assigning an equal colour still forces a polygon re-upload (WebGL noise)
+	_update_beckon(active)
 	if caption != null:
 		var t := label_text()
 		if caption.text != t:
@@ -128,6 +129,34 @@ func _apply_geometry(st: Dictionary) -> void:
 	if fill != null:
 		fill.polygon = PackedVector2Array([-size / 2.0, Vector2(size.x, -size.y) / 2.0, size / 2.0, Vector2(-size.x, size.y) / 2.0])
 	geometry_changed.emit()
+
+
+## Rooms data `beckon` {if, unless}: a pulsing glow while the flags hold (HotspotBeckon).
+func beckon_on() -> bool:
+	var b: Dictionary = data.get("beckon", {})
+	if b.is_empty():
+		return false
+	for f in b.get("if", []):
+		if not GameState.has_flag(String(f)):
+			return false
+	for f in b.get("unless", []):
+		if GameState.has_flag(String(f)):
+			return false
+	return true
+
+
+func _update_beckon(active: bool) -> void:
+	var on := active and beckon_on()
+	var bk := get_node_or_null("Beckon") as HotspotBeckon
+	if on and bk == null:
+		bk = HotspotBeckon.new()
+		bk.name = "Beckon"
+		var r: Array = current_state().get("rect", data.get("rect", [0, 0, 80, 80]))
+		bk.radius = clampf(maxf(float(r[2]), float(r[3])) * 0.6, 30.0, 160.0)
+		add_child(bk)
+	elif not on and bk != null:
+		bk.queue_free()
+		remove_child(bk)
 
 
 func trigger() -> void:

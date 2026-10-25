@@ -21,6 +21,17 @@ var direction: int = 0
 var shown_dir: int = 0
 var _turn_t: float = 0.0
 var talking: bool = false
+## I-T2 (Director 02:34): three states of every villager — "idle" (just stands: breathing, rare small
+## moves), "listen" (turned to Agata, quiet: a scene with this villager is on and someone else speaks),
+## "talk" (gesture/head while their own line is up). Per actor data `states.<state>` = {action, speed,
+## face_agata}: a new model (I-T4) just names its own clips; missing clips fall back to idle.
+var state: String = "idle"
+const DEFAULT_STATES: Dictionary = {
+	"idle": {"action": "", "speed": 1.0, "face_agata": false},
+	"listen": {"action": "listen", "speed": 0.6, "face_agata": true},
+	"talk": {"action": "", "speed": 1.0, "face_agata": true},
+}
+var states: Dictionary = {}
 
 
 static func attach_all(room: Node, the_player: Node2D) -> Array:
@@ -99,6 +110,7 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	var img := h.get_node_or_null("Image")
 	if img != null:
 		img.visible = false  # the sheet replaces the static front view
+	_load_states(id)
 	direction = sheet.direction_index(ActorSheet.facing_vector(sheet.facing))
 	_face_data()
 	shown_dir = direction
@@ -165,17 +177,47 @@ func _process(delta: float) -> void:
 				sprite.set_frame_and_progress(f, pr)
 
 
+func _load_states(id: String) -> void:
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	var data: Dictionary = (spec.get("states", {}) if spec is Dictionary else {})
+	for st in DEFAULT_STATES.keys():
+		var d: Dictionary = (DEFAULT_STATES[st] as Dictionary).duplicate()
+		var over = data.get(st, {})
+		if over is Dictionary:
+			for k in over.keys():
+				if not String(k).begins_with("_"):
+					d[k] = over[k]
+		states[st] = d
+
+
+## The sheet action that plays in a state: the data clip if the sheet has it, else talk/idle.
+func state_action(st: String) -> String:
+	var want := String((states.get(st, {}) as Dictionary).get("action", ""))
+	if want != "" and sheet.has_action(want):
+		return want
+	if st == "talk" and sheet.has_action(sheet.talk_action):
+		return sheet.talk_action
+	return sheet.idle_action
+
+
+func set_state(st: String) -> void:
+	state = st
+	talking = st == "talk"
+	var spec: Dictionary = states.get(st, {})
+	if bool(spec.get("face_agata", false)) and player != null and is_instance_valid(player):
+		face_towards(player.global_position)
+	elif st == "idle":
+		_face_data()
+	_play(sheet.anim_name(state_action(st), shown_dir))
+	sprite.speed_scale = float(spec.get("speed", 1.0))
+
+
 func _play_idle() -> void:
-	talking = false
-	_play(sheet.anim_name(sheet.idle_action, shown_dir))
+	set_state("idle")
 
 
 func _play_talk() -> void:
-	talking = true
-	if sheet.has_action(sheet.talk_action):
-		_play(sheet.anim_name(sheet.talk_action, shown_dir))
-	else:
-		_play(sheet.anim_name(sheet.idle_action, shown_dir))
+	set_state("talk")
 
 
 ## Switches animation with a short cross-fade from the current pose (no jump between clips).
@@ -185,15 +227,31 @@ func _play(anim: String) -> void:
 	sprite.play(anim)
 
 
-## A line of this character → talk (facing the player); anything else → idle.
-func _on_beat_changed() -> void:
+## True while a scene this villager speaks in is running (they listen when someone else has the line).
+func in_active_scene() -> bool:
+	var sid := String(StoryRunner.active_scene)
+	if sid == "":
+		return false
+	for l in StoryData.scene(sid).get("mandatory_lines", []):
+		if l is Dictionary and String(l.get("speaker", "")) == actor_id:
+			return true
+	return false
+
+
+## The state the current beat asks for.
+func wanted_state() -> String:
 	var b: Dictionary = StoryRunner.current_beat
-	var mine: bool = String(b.get("type", "")) == "line" and String(b.get("speaker", "")) == actor_id
-	if mine:
-		if player != null and is_instance_valid(player):
-			face_towards(player.global_position)
-		if not talking or not sprite.animation.begins_with(sheet.talk_action):
-			_play_talk()
-	elif talking:
-		_play_idle()
-		_face_data()
+	var is_line: bool = String(b.get("type", "")) == "line"
+	if is_line and String(b.get("speaker", "")) == actor_id:
+		return "talk"
+	if not b.is_empty() and in_active_scene():
+		return "listen"
+	return "idle"
+
+
+## A line of this character → talk (facing the player); a scene with them, someone else speaking → listen;
+## anything else → idle.
+func _on_beat_changed() -> void:
+	var want := wanted_state()
+	if want != state or (want == "talk" and not sprite.animation.begins_with(state_action("talk"))):
+		set_state(want)

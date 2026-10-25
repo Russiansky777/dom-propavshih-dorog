@@ -47,7 +47,11 @@ var direction: int = 0          # sheet row of the current facing (0 = towards t
 ## F22 (23.10): the row on screen turns through the neighbouring rows, one every TURN_STEP_S, instead of
 ## flipping to `direction` (where she heads: speed and stride follow it). From standing she turns on the spot
 ## (idle frames on the rows in between) and only then walks off; an action waits for the turn.
+## I-T2: the step comes from data `turn.seconds_180` (180° = directions / 2 steps), each row change a short
+## cross-fade `turn.blend_s` — the pose never jumps.
 const TURN_STEP_S: float = 0.07
+var turn_step_s: float = TURN_STEP_S
+var turn_blend_s: float = 0.0
 var shown_dir: int = 0
 var _turn_t: float = 0.0
 var _turn_hold: Array = []      # [action, node] waiting for the turn to finish
@@ -155,9 +159,9 @@ func _turn_tick(delta: float) -> void:
 				_start_action(String(h[0]), h[1])
 		return
 	_turn_t += delta
-	if _turn_t >= TURN_STEP_S:
+	if _turn_t >= turn_step_s:
 		# one row per step and at most one per frame: a slow frame never skips a row
-		_turn_t = minf(_turn_t - TURN_STEP_S, TURN_STEP_S)
+		_turn_t = minf(_turn_t - turn_step_s, turn_step_s)
 		shown_dir = ActorSheet.step_toward(shown_dir, direction, sheet.directions)
 		_show_row()
 
@@ -174,6 +178,8 @@ func _show_row() -> void:
 	var p := sprite.frame_progress
 	var playing := sprite.is_playing()
 	_lock_hold = true  # a turn step is not a stride
+	if turn_blend_s > 0.0:
+		ActorCrossfade.begin(sprite, turn_blend_s)
 	sprite.play(anim)
 	if sprite.sprite_frames.get_frame_count(anim) > f:
 		sprite.set_frame_and_progress(f, p)
@@ -329,6 +335,10 @@ func _setup_sprite() -> void:
 	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % actor_id))
 	_spec = spec if spec is Dictionary else {}
 	_rt = _spec.get("rt3d", {})
+	var tn: Dictionary = _spec.get("turn", {})
+	if tn.has("seconds_180"):
+		turn_step_s = maxf(float(tn["seconds_180"]) / maxf(float(sheet.directions) * 0.5, 1.0), 0.02)
+	turn_blend_s = float(tn.get("blend_s", 0.0))
 	var want := forced_render if forced_render != "" else _render_from_env()
 	if want == "":
 		want = String(_spec.get("render", "sprites"))

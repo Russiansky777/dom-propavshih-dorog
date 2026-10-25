@@ -26,6 +26,7 @@
       "item_use": {"door_hinges": {"puzzle": true}},
       "puzzle": {
         "id": "school_door_fit", "type": "match_marks", "title": "@H3.puzzle.title",
+        "by_item_text": "@H3.puzzle.by_item", "_by_item_note": "I-T2 (Директор, стр. 52): петли — мышкой из сумки на дверь, как ключ; простой щелчок по двери только подсказывает",
         "requires": {"flags": ["done_M04"], "items": ["door_hinges"]},
         "fail_text": "@H3.puzzle.need",
         "intro": "@H3.puzzle.intro",
@@ -92,7 +93,7 @@
   ],
   "exits": [
     {"to": "H1", "label": "@H3.exit_H1.label", "rect": [1800, 560, 120, 520], "stand": [1810, 900], "spawn": "from_H3", "draw": false},
-    {"to": "Z4", "label": "@H3.exit_Z4.label", "side": "bottom", "x": 700, "spawn": "from_H3", "draw": false, "_note": "боковое крыльцо галереи выходит в переулок у почты Z4"},
+    {"to": "Z4", "label": "@H3.exit_Z4.label", "side": "bottom", "x": 700, "spawn": "from_H3", "draw": false, "states": [{"unless": ["side_door_passed"], "label": "@H3.exit_Z4.label_unbolt"}], "on_pass": {"sets": ["side_door_passed"]}, "_i_t2": "I-T2 (Директор, стр. 34–35): Агата сказала, что боковую дверь надо отпереть, — до первого выхода подпись «Отпереть дверь»; в переулке реплика «Теперь и отсюда в дом заходить смогу» (Z4 on_enter), дальше обычная подпись", "_note": "боковое крыльцо галереи выходит в переулок у почты Z4"},
     {"to": "O1", "label": "@H3.exit_O1.label", "rect": [610, 140, 330, 580], "stand": [770, 790], "spawn": "from_H3", "closed_text": "@H3.exit_O1.closed", "draw": false,
       "states": [{"if": ["door_school_installed"], "label": "@H3.exit_O1.label_open"}]}
   ],
@@ -102,6 +103,7 @@
   },
   "flags": {
     "h3_night_to_bed": "H17: Агата сказала при возвращении из класса, что пора спать (кровать на чердаке)",
-    "h3_mirror_looked": "Агата посмотрела в домашнее зеркало (первый осмотр: старый снимок и отражение)"
+    "h3_mirror_looked": "Агата посмотрела в домашнее зеркало (первый осмотр: старый снимок и отражение)",
+    "side_door_passed": "I-T2: Агата вышла через боковую дверь галереи в переулок (подпись «Отпереть дверь» сменилась обычной)"
   }
 }

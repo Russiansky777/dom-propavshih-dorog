@@ -36,6 +36,10 @@
     },
     {
       "id": "mitten",
+      "scale": 0.5,
+      "scale_pivot": [582, 622],
+      "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+      "_i_t2": "I-T2 (Директор, стр. 64): варежка вдвое меньше, на том же месте ступени",
       "image": "res://assets/rooms/O2/state_mitten.png",
       "if": ["mitten_placed"],
       "unless": ["mitten_taken_back"]
@@ -104,7 +108,7 @@
       "action_anim": "pick",
       "kind": "pickup",
       "label": "@O2.mitten.label",
-      "rect": [585, 630, 165, 100],
+      "rect": [622, 662, 95, 58],
       "stand": [640, 800],
       "color": "#b06060",
       "pick_priority": 2,
@@ -116,7 +120,7 @@
       "draw": false
     },
     {
-      "id": "mitten_path", "action_anim": "pick", "kind": "pickup", "label": "@O2d.mitten_path.label", "rect": [585, 630, 165, 100], "stand": [640, 800], "color": "#b06060", "pick_priority": 3,
+      "id": "mitten_path", "action_anim": "pick", "kind": "pickup", "label": "@O2d.mitten_path.label", "rect": [622, 662, 95, 58], "stand": [640, 800], "color": "#b06060", "pick_priority": 3,
       "visible_if": ["mitten_placed", "school_path_open"], "hidden_if": ["mitten_taken_back"],
       "_note": "Блок 3 (M22, SCENARIO_FINAL §8): варежка всё ещё у ступени, но теперь она лежит на дороге, которая ведёт домой, — Агата поднимает её молча. Тот же предмет (use.restores), один раз; прежний хотспот mitten с этого дня скрыт.",
       "use": {"restores": ["mitten"], "sets": ["mitten_taken_back", "mitten_found_on_path"], "text": "@O2d.mitten_path.take", "once_flag": "mitten_taken_back"},

@@ -1153,6 +1153,26 @@
       "text": "На боковое крыльцо",
       "draft": false
     },
+    "H3.puzzle.by_item": {
+      "text": "Петли родные в сумке. Достану да к двери приложу.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Петли родные в сумке. Достану да к двери приложу."
+      }
+    },
+    "H3.exit_Z4.label_unbolt": {
+      "text": "Отпереть дверь",
+      "draft": false
+    },
+    "Z4.side_door.now_open": {
+      "text": "Теперь и отсюда в дом заходить смогу.",
+      "draft": true,
+      "line": {
+        "speaker": "agata",
+        "text": "Теперь и отсюда в дом заходить смогу."
+      }
+    },
     "H3.exit_O1.label": {
       "text": "Рама для школьной двери",
       "draft": false

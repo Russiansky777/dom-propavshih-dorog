@@ -41,6 +41,10 @@ static func begin(sprite: AnimatedSprite2D, duration: float) -> ActorCrossfade:
 	fade._duration = duration
 	fade._t = 0.0
 	fade.modulate = Color(1, 1, 1, 1)
+	# I-T2 (Director, line 27: white blinks in the dark H1): the old pose keeps the room tone and the
+	# material of the sprite — a copy at full brightness flashed white on every change in the dark.
+	fade.self_modulate = sprite.self_modulate
+	fade.material = sprite.material
 	fade.visible = true
 	fade.set_process(true)
 	return fade
