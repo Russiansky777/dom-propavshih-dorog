@@ -5,7 +5,7 @@
     "local_glb"
   ],
   "local_glb": {
-    "url": "https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/npc-v2-work/pavel_v2_game.glb"
+    "url": "https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/npc-v2-work/pavel_v2_game_r4.glb"
   },
   "retarget": false,
   "clips": {
@@ -75,8 +75,28 @@
       "mouth_frac": 0.57,
       "pivot_depth": 0.4
     },
-    "rigid": []
+    "rigid": [],
+    "rest_bones": {
+      "idle": [
+        "LeftToeBase",
+        "RightToeBase"
+      ],
+      "listen": [
+        "LeftToeBase",
+        "RightToeBase"
+      ],
+      "talk": [
+        "LeftToeBase",
+        "RightToeBase"
+      ]
+    },
+    "matte": {
+      "roughness": 1.0,
+      "specular": 0.3,
+      "tex_knee": 0.55,
+      "tex_k": 0.4
+    }
   },
-  "_note": "I-T4 этап B (0 кредитов): рендер 2,25× (864 px, 16 сэмплов, 8 направлений) игрового GLB после Blender: стойка и «слушает» — Text to Motion prime, ноги выпрямлены к позе покоя (×0,8, таз ×0,6: клип сажал фигуру), кисти на 5° от корпуса (не в юбке); «говорит» — пресет Talk_with_Hands_Open, рот: кость Jaw + разрез губ, чередование закрыт/приоткрыт по кадрам листа (36 кадров, 9 к/с — живой темп клипа 4 с). Окна стойки и «слушает» — туда-обратно. | 25.10 15:15: talk 48 кадров не влез в git (лист Мити 105 МБ > 100 МБ) — 36 кадров.",
-  "rev": 3
+  "_note": "I-T4 этап B (0 кредитов): рендер 2,25× (864 px, 16 сэмплов, 8 направлений) игрового GLB после Blender: стойка и «слушает» — Text to Motion prime, ноги выпрямлены к позе покоя (×0,8, таз ×0,6: клип сажал фигуру), кисти на 5° от корпуса (не в юбке); «говорит» — пресет Talk_with_Hands_Open, рот: кость Jaw + разрез губ, чередование закрыт/приоткрыт по кадрам листа (36 кадров, 9 к/с — живой темп клипа 4 с). Окна стойки и «слушает» — туда-обратно. | 25.10 15:15: talk 48 кадров не влез в git (лист Мити 105 МБ > 100 МБ) — 36 кадров. | I-T4b 25.10 (ИИ-проверка sprite_qa_2026-10-25, 0 кредитов): мука матовая (яркость текстуры выше 0,55 ×0,4, шероховатость 1), носки сапог в покое. Знак arms_in_deg: + — от корпуса.",
+  "rev": 4
 }
