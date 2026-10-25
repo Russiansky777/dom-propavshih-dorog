@@ -1,0 +1,41 @@
+{
+  "text_motion": {
+    "id": "01a1734c-a477-773a-a59d-6c9739455f1e",
+    "type": "text-to-motion",
+    "name": "",
+    "status": "SUCCEEDED",
+    "created_at": 1792935765673,
+    "progress": 100,
+    "started_at": 1792935765678,
+    "finished_at": 1792935772868,
+    "expires_at": 1793194972868,
+    "task_error": null,
+    "result": {
+      "motion_url": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a1734c-a477-773a-a59d-6c9739455f1e/output/clip.fbx?Expires=1793194972&Signature=FE7SM09kE7-FePI6MKzrQL48NIHot5HxQyUXY5QeYyjBEGlotxbMrqgiNtZRYw9DjRPoFmxIXEgzcTWvObsX1a5yzYE1w4zrHyJJ-mSZLeIxqjn8Z1IRMVDYCw6Q4tYNjC5Q9TFxJlO1SOXzpo0S43aNnSjMAFNAybsxAYeXQwu83tih1PqdqF99py6AzSn1FRqf8PgAtIKKyQmrhzFcuSMR-Otll~PrDj6Qia3L4iT3TOSxQt3uDBoSceaivrsRd6qUnTtozXLIqeZqkZ8V~28IpRT21-wn3EqYbY5UJldUb-fH~Z1OU32BHzLKWluxbYb8HVoPxsOSQGwCQdjVTQ__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "motion_format": "fbx",
+      "duration_ms": 5000,
+      "mode": "prime"
+    },
+    "consumed_credits": 10
+  },
+  "animation": {
+    "id": "01a1734c-cfd3-71ee-93f3-78ee204f1f06",
+    "type": "animate",
+    "name": "",
+    "status": "SUCCEEDED",
+    "created_at": 1792935777294,
+    "progress": 100,
+    "started_at": 1792935777299,
+    "finished_at": 1792935796296,
+    "expires_at": 1793194996296,
+    "task_error": null,
+    "result": {
+      "animation_glb_url": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a1734c-cfd3-71ee-93f3-78ee204f1f06/output/Animation_01a1734c-a477-773a-a59d-6c9739455f1e_withSkin.glb?Expires=1793194996&Signature=A8e7TaK9mqdnqG3SsUt-czTLpmY0C2uW0LkBiw66euNRgNNOrsMMSxc5rvLJnCC2~VC~FKAQdxdY7AJR3pRul~nl9oZRbP6fzRaKYWBNOIlencsDFjmL0YTqYCQwg4h4k-Ps~ncKd0YcVN72HV9hxARBHHBeBvVl7zw5elJBdSCC5iUmOMuVi8a2YxhpXlcx-1vPBa4NWnipgE-c9IkbbwDdfoQciUltqd-kNKcHuAl~Z5NCyCk3iPs7DB6Anp6uWbz000oJKQyeFz3vZFkrABEXvNsY0r4cA4LD8dyW0MoUkrPSS~2NHnfzAKomcLkHha66xMv3xcgxLTvbkK0SHg__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "animation_fbx_url": "https://assets.meshy.ai/61e8bb67-462c-498c-a35c-36233a066a19/tasks/01a1734c-cfd3-71ee-93f3-78ee204f1f06/output/Animation_01a1734c-a477-773a-a59d-6c9739455f1e_withSkin.fbx?Expires=1793194996&Signature=VlsZhSyIZlue7J3~CwJtjnGwdLNpZYT8jtkRii-wBKroGtbeuemf4YNi9Jx07Y-IFV3P0Tuy6grvkYYUG3uImY1JYoYHG1Oeea8qWUSCLuG09~bYw3eIpEFIwSfC3nxebSPWmBGRKrkcYPbsX3Ht84BajMjFtvnAQnu76ds2qxJlEqIWU3u5y7Wysir-srkk0HPSuSwbpGQzulAaEhzqIxGCn0~srhfKz23bnCLMww2eXiofgpoV1zM5-qOo6d7I4142KfRZhb6ZVnhjgXwywrw-lxWHupB7mShFCl1PZ0ghqdiM0rAdAJzylmbUWsNUdGgGwV~0Y7bAICziBlEJ7A__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "processed_usdz_url": "",
+      "processed_armature_fbx_url": "",
+      "processed_animation_fps_fbx_url": ""
+    },
+    "consumed_credits": 3
+  }
+}
