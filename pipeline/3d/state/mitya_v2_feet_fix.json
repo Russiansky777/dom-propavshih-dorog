@@ -1,0 +1,93 @@
+{
+ "name": "mitya_v2",
+ "clips": [
+  {
+   "kind": "idle",
+   "frames": 51,
+   "cyclic": false,
+   "body_yaw_deg": 2.6,
+   "floor_m": -0.033,
+   "legs": {
+    "L": {
+     "stance_toe_out_before_deg": 12.9,
+     "hip_rotation_deg": 6.1,
+     "ankle_twist_max_deg": 4.6
+    },
+    "R": {
+     "stance_toe_out_before_deg": 14.7,
+     "hip_rotation_deg": 6.1,
+     "ankle_twist_max_deg": 6.5
+    }
+   },
+   "hip_drop_max_m": 0.0,
+   "clip": "idle",
+   "window": [
+    0.1,
+    0.5
+   ],
+   "before": {
+    "L": {
+     "stance_toe_out_deg": 12.9,
+     "stance_toe_out_range_deg": [
+      12.5,
+      13.5
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 13.5,
+     "sole_lift_mid_stance_max_m": 0.0368,
+     "slide_max_mm": 0.0,
+     "contact_frames": 51,
+     "floor_m": -0.033,
+     "body_yaw_deg": 2.6
+    },
+    "R": {
+     "stance_toe_out_deg": 14.7,
+     "stance_toe_out_range_deg": [
+      14.0,
+      15.2
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 15.2,
+     "sole_lift_mid_stance_max_m": 0.0295,
+     "slide_max_mm": 0.0,
+     "contact_frames": 51,
+     "floor_m": -0.033,
+     "body_yaw_deg": 2.6
+    }
+   },
+   "after": {
+    "L": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 3.0,
+     "sole_lift_mid_stance_max_m": 0.0371,
+     "slide_max_mm": 0.0,
+     "contact_frames": 51,
+     "floor_m": -0.031,
+     "body_yaw_deg": 2.6
+    },
+    "R": {
+     "stance_toe_out_deg": 3.0,
+     "stance_toe_out_range_deg": [
+      3.0,
+      3.0
+     ],
+     "swing_toe_abs_max_deg": 0.0,
+     "toe_abs_max_deg": 3.0,
+     "sole_lift_mid_stance_max_m": 0.0257,
+     "slide_max_mm": 0.0,
+     "contact_frames": 51,
+     "floor_m": -0.031,
+     "body_yaw_deg": 2.6
+    }
+   },
+   "upper_body_max_rot_diff_deg": 0.0,
+   "fail": [],
+   "role": "idle"
+  }
+ ]
+}

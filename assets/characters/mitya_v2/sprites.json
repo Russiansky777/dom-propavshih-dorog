@@ -1,38 +1,57 @@
 {
   "name": "mitya_v2",
-  "frame_w": 80,
-  "frame_h": 96,
+  "frame_w": 736,
+  "frame_h": 864,
   "pivot": {
     "x": 0.5,
     "y": 0.9464285714285714
   },
   "directions": 8,
   "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.823,
+  "character_height_m": 1.814,
   "actions": {
+    "idle": {
+      "sheet": "idle.png",
+      "frames": 24,
+      "fps": 12.0,
+      "clip": "idle",
+      "clip_seconds": 2.0,
+      "natural_fps": 11.5,
+      "window": [
+        0.1,
+        0.5
+      ],
+      "playback": "pingpong"
+    },
+    "listen": {
+      "sheet": "listen.png",
+      "frames": 24,
+      "fps": 12.0,
+      "clip": "listen",
+      "clip_seconds": 2.5,
+      "natural_fps": 9.2,
+      "floor_shift_m": -0.0002,
+      "window": [
+        0.1,
+        0.6
+      ],
+      "playback": "pingpong"
+    },
     "talk": {
       "sheet": "talk.png",
-      "frames": 2,
-      "fps": 24.0,
-      "clip": "Talk_with_Hands_Open",
-      "clip_seconds": 3.9667,
-      "natural_fps": 0.5
-    },
-    "talk2": {
-      "sheet": "talk2.png",
-      "frames": 2,
-      "fps": 24.0,
-      "clip": "Stand_and_Chat",
-      "clip_seconds": 5.1667,
-      "natural_fps": 0.39,
-      "floor_shift_m": -0.0132
+      "frames": 36,
+      "fps": 9.0,
+      "clip": "talk",
+      "clip_seconds": 4.0,
+      "natural_fps": 9.0,
+      "floor_shift_m": 0.0493
     }
   },
   "fit": {
-    "half_width_m": 0.787,
-    "top_m": 1.02,
-    "frame_top_m": 1.021,
-    "frame_w": 80
+    "half_width_m": 0.84,
+    "top_m": 0.9,
+    "frame_top_m": 1.016,
+    "frame_w": 736
   },
   "matte_materials": true
 }
