@@ -1,0 +1,26 @@
+{
+  "text": "Стой!",
+  "alignment": {
+    "characters": [
+      "С",
+      "т",
+      "о",
+      "й",
+      "!"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.24,
+      0.32,
+      0.48,
+      0.64
+    ],
+    "character_end_times_seconds": [
+      0.24,
+      0.32,
+      0.48,
+      0.64,
+      0.96
+    ]
+  }
+}

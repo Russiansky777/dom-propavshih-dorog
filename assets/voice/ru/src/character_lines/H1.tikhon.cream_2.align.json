@@ -1,0 +1,23 @@
+{
+  "text": "Где?",
+  "alignment": {
+    "characters": [
+      "Г",
+      "д",
+      "е",
+      "?"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.24,
+      0.36,
+      0.48
+    ],
+    "character_end_times_seconds": [
+      0.24,
+      0.36,
+      0.48,
+      0.8
+    ]
+  }
+}

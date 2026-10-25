@@ -1,0 +1,29 @@
+{
+  "text": "И всё?",
+  "alignment": {
+    "characters": [
+      "И",
+      " ",
+      "в",
+      "с",
+      "ё",
+      "?"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.16,
+      0.28,
+      0.4,
+      0.56,
+      0.72
+    ],
+    "character_end_times_seconds": [
+      0.16,
+      0.28,
+      0.4,
+      0.56,
+      0.72,
+      0.96
+    ]
+  }
+}
