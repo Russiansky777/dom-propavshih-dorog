@@ -620,8 +620,15 @@ def soft_lines(voice_cfg: dict | None = None) -> tuple[set[str], float]:
     return {str(x) for x in cfg.get("ids", [])}, float(cfg.get("min_lu", -6.0))
 
 
+def loud_lines(voice_cfg: dict | None = None) -> tuple[set[str], float]:
+    """data/story/voice.json → loud_lines: нарочно громкие (выкрик, ликование; I-T5) — не громче max_lu от медианы."""
+    cfg = (voice_cfg if voice_cfg is not None else load(STORY / "voice.json", {}) or {}).get("loud_lines") or {}
+    return {str(x) for x in cfg.get("ids", [])}, float(cfg.get("max_lu", 6.0))
+
+
 def check_speaker_loudness(manifests: dict[str, dict], waiting: dict[str, str],
-                           soft_cfg: tuple[set[str], float] | None = None) -> tuple[list[str], list[str]]:
+                           soft_cfg: tuple[set[str], float] | None = None,
+                           loud_cfg: tuple[set[str], float] | None = None) -> tuple[list[str], list[str]]:
     """H5 (Директор 24.10: тихие реплики Пелагеи выбиваются): все записи нормализованы к одной цели LUFS, но шёпот
     после нормализации звучит тише и глуше. Мерило подачи — громкость исходника (source_lufs, до нормализации):
     дальше SPEAKER_LU_TOL от медианы своего персонажа (≥ 4 записи) — ошибка; строка из списка ожидания H59 —
@@ -629,6 +636,7 @@ def check_speaker_loudness(manifests: dict[str, dict], waiting: dict[str, str],
     errors: list[str] = []
     warns: list[str] = []
     soft, soft_min = soft_cfg if soft_cfg is not None else soft_lines()
+    loud, loud_max = loud_cfg if loud_cfg is not None else (loud_lines() if soft_cfg is None else (set(), 6.0))
     for rel, m in sorted(manifests.items()):
         by: dict[str, list[tuple[float, str]]] = {}
         for lid, e in m.get("lines", {}).items():
@@ -644,9 +652,11 @@ def check_speaker_loudness(manifests: dict[str, dict], waiting: dict[str, str],
             med = vals[n // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2
             for v, lid in sorted(rows, key=lambda r: r[1]):
                 low = soft_min if lid in soft else -SPEAKER_LU_TOL
-                if not low <= v - med <= SPEAKER_LU_TOL:
+                high = loud_max if lid in loud else SPEAKER_LU_TOL
+                if not low <= v - med <= high:
                     msg = (f"{rel}/{lid}: подача {v:+.1f} LUFS до нормализации — {v - med:+.1f} LU от медианы {sp} "
-                           f"({med:.1f}); допустимо {low:+g}…+{SPEAKER_LU_TOL:g}" + (" (нарочно тихая)" if lid in soft else ""))
+                           f"({med:.1f}); допустимо {low:+g}…+{high:g}" + (" (нарочно тихая)" if lid in soft else "")
+                           + (" (нарочно громкая)" if lid in loud else ""))
                     if lid in waiting:
                         warns.append(msg + " — в списке перезаписи после H59")
                     else:
@@ -871,6 +881,12 @@ def main() -> int:
     if (not check_speaker_loudness({"ru": _sp}, {}, ({"T_q", "T_s"}, -6.0))[0]
             or any("T_s" in e for e in check_speaker_loudness({"ru": _sp}, {}, ({"T_q", "T_s"}, -6.0))[0])):
         missed.append("нарочно тихая реплика: предел −6 LU не понят")
+    # нарочно громкая (voice.json → loud_lines, I-T5): +5 LU можно, +8 LU — нет
+    _sp["lines"]["T_l"] = {"speaker": "tst", "source_lufs": -11.0}
+    _sp["lines"]["T_x"] = {"speaker": "tst", "source_lufs": -8.0}
+    _le = check_speaker_loudness({"ru": _sp}, {}, ({"T_q", "T_s"}, -6.0), ({"T_l", "T_x"}, 6.0))[0]
+    if any("T_l" in e for e in _le) or not any("T_x" in e for e in _le):
+        missed.append("нарочно громкая реплика: предел +6 LU не понят")
     _vc = copy.deepcopy(voice_cfg or {})
     _vc.setdefault("narration", {}).setdefault("ask_prompts", {})["keys"] = []
     if not any("ask_prompts.keys" in e for e in check_ask_prompts(_vc, texts)):
