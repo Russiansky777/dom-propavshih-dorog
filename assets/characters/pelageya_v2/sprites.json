@@ -1,0 +1,47 @@
+{
+  "name": "pelageya_v2",
+  "frame_w": 80,
+  "frame_h": 96,
+  "pivot": {
+    "x": 0.5,
+    "y": 0.9464285714285714
+  },
+  "directions": 8,
+  "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
+  "character_height_m": 1.583,
+  "actions": {
+    "talk": {
+      "sheet": "talk.png",
+      "frames": 2,
+      "fps": 24.0,
+      "clip": "Talk_with_Hands_Open",
+      "clip_seconds": 3.9667,
+      "natural_fps": 0.5
+    },
+    "talk2": {
+      "sheet": "talk2.png",
+      "frames": 2,
+      "fps": 24.0,
+      "clip": "Stand_and_Chat",
+      "clip_seconds": 5.1667,
+      "natural_fps": 0.39,
+      "floor_shift_m": -0.0029
+    },
+    "walk": {
+      "sheet": "walk.png",
+      "frames": 2,
+      "fps": 24.0,
+      "clip": "Walking_Woman",
+      "clip_seconds": 0.9667,
+      "natural_fps": 2.07,
+      "floor_shift_m": -0.0574
+    }
+  },
+  "fit": {
+    "half_width_m": 0.673,
+    "top_m": 0.892,
+    "frame_top_m": 0.887,
+    "frame_w": 80
+  },
+  "matte_materials": true
+}

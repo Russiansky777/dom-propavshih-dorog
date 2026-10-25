@@ -1,0 +1,38 @@
+{
+  "character": "pelageya_v2",
+  "sheet": "assets/reference/npc_v2/pelageya_sheet_v2.png",
+  "height_m": 1.59,
+  "tasks": {
+    "model_task": "01a17340-f98e-7103-905d-16fc8f4023d1",
+    "rig_task": "01a17348-905b-719a-b2ad-48d220d1eda9",
+    "anim_task": "01a1734b-23a2-715d-84f8-9dc55e2c4440"
+  },
+  "actions": {
+    "talk": {
+      "action_id": 313,
+      "name": "Talk with Hands Open",
+      "key": "Talk_with_Hands_Open"
+    },
+    "talk2": {
+      "action_id": 56,
+      "name": "Stand and Chat",
+      "key": "Stand_and_Chat"
+    },
+    "walk": {
+      "action_id": 1,
+      "name": "Walking Woman",
+      "key": "Walking_Woman"
+    }
+  },
+  "credits": {
+    "model_credits": 35,
+    "rig_credits": 5,
+    "anim_credits": 9
+  },
+  "files": {
+    "model": "model.glb",
+    "rigged": "rigged.glb",
+    "animations": "animations.glb"
+  },
+  "note": "animations.glb содержит по одному клипу на action в порядке actions; клипы называть по ключам Meshy"
+}
