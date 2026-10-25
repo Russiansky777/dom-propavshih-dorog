@@ -1,0 +1,49 @@
+{
+  "model_task": "01a17340-94b2-7281-8b54-ffdf6179b103",
+  "model_body": {
+    "ai_model": "latest",
+    "pose_mode": "a-pose",
+    "should_texture": true,
+    "texture_resolution": "4k",
+    "target_formats": [
+      "glb"
+    ],
+    "auto_size": true,
+    "origin_at": "bottom",
+    "geometry_resolution": "2k",
+    "enable_pbr": true,
+    "multi_view_thumbnails": true
+  },
+  "model_credits": 35,
+  "remesh_task": "01a17344-2f9a-74a3-846b-45dfd2838440",
+  "remesh_credits": 5,
+  "rig_task": "01a17347-7343-733b-a358-feb595f747e2",
+  "rig_credits": 5,
+  "actions": {
+    "talk": {
+      "action_id": 313,
+      "name": "Talk with Hands Open",
+      "key": "Talk_with_Hands_Open"
+    },
+    "talk2": {
+      "action_id": 56,
+      "name": "Stand and Chat",
+      "key": "Stand_and_Chat"
+    },
+    "walk": {
+      "action_id": 30,
+      "name": "Casual Walk",
+      "key": "Casual_Walk"
+    }
+  },
+  "anim_task": "01a1734a-09c2-72c4-8a10-196e38a11c66",
+  "anim_credits": 9,
+  "tm_idle_task": "01a1734b-9b0d-7759-95c4-cce8faeb6416",
+  "tm_idle_credits": 10,
+  "tm_idle_anim_task": "01a1734b-c611-726c-920b-4f879819e16f",
+  "tm_idle_anim_credits": 3,
+  "tm_listen_task": "01a1734c-1dc1-765e-a58e-7eaf2333be8b",
+  "tm_listen_credits": 10,
+  "tm_listen_anim_task": "01a1734c-48b3-76fa-a9ad-58d35e5a0d12",
+  "tm_listen_anim_credits": 3
+}
