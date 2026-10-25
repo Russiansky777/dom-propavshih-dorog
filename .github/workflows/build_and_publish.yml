@@ -33,7 +33,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # 120: с жителями v2 (атласы ~1,2 ГБ) импорт и тесты дольше 40 минут — сборка 40231228355 оборвалась по времени на тестах.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
 
@@ -82,7 +83,9 @@ jobs:
         run: |
           echo "${GITHUB_SHA::7} $(date -u +%Y-%m-%dT%H:%MZ)" > build/web/version.txt
 
+      # Веб может не влезть в предел Pages (1 ГБ) — это не должно мешать exe ниже.
       - uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
         with:
           path: build/web
 
@@ -105,10 +108,12 @@ jobs:
             printf '%s\n' "$out"
           }
           notes="Текущая сборка main @ ${GITHUB_SHA::7} ($(date -u +%Y-%m-%d\ %H:%M) UTC). Не подписана: SmartScreen → «Подробнее» → «Выполнить в любом случае». Веб-версия: https://russiansky777.github.io/dom-propavshih-dorog/"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          step git tag -f latest "$GITHUB_SHA"
-          step git push -f origin refs/tags/latest
+          # Тег двигаем через API, а не git push: из неглубокого клона push тега падал HTTP 500 (с 24.10 exe не обновлялся).
+          if gh api "repos/${GITHUB_REPOSITORY}/git/refs/tags/latest" >/dev/null 2>&1; then
+            step gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/latest" -f sha="$GITHUB_SHA" -F force=true
+          else
+            step gh api -X POST "repos/${GITHUB_REPOSITORY}/git/refs" -f ref=refs/tags/latest -f sha="$GITHUB_SHA"
+          fi
           if gh release view latest >/dev/null 2>&1; then
             step gh release edit latest --title "Текущая сборка (main)" --notes "$notes" --target "$GITHUB_SHA"
           else
