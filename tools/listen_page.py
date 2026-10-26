@@ -5,7 +5,7 @@
 
 Берёт game/web/listen/index.html, шрифт игры и дубли из assets/voice/ru_takes (manifest.json пишет
 pipeline/voice/eleven_voice.py, запрос "takes"), кладёт рядом takes.json: по строке — id, кто, где (сцена или комната),
-текст, режиссура (data/story: поле direction), дубли (ogg и mp3 для Safari). Директор слушает и отмечает выбор
+текст, режиссура (data/story: поле direction), дубли (mp3, если есть, иначе ogg). Директор слушает и отмечает выбор
 (localStorage), «Скачать выбор» — JSON для I-T3. Дублей нет — страница всё равно собирается (пишет «запись ещё не пришла»).
 Вызывается из tools/export_web.sh после экспорта игры.
 """
@@ -68,16 +68,17 @@ def main() -> int:
             rel = str(t.get("file", ""))
             if not rel or not (tdir / rel).is_file():
                 continue
-            dst = out / "takes" / rel
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(tdir / rel, dst)
-            item = {"take": t.get("take"), "ogg": "takes/" + rel, "tags": t.get("tags", []), "main": t.get("take") == chosen if chosen else bool(t.get("main"))}
+            item = {"take": t.get("take"), "tags": t.get("tags", []), "main": t.get("take") == chosen if chosen else bool(t.get("main"))}
+            # I-T7 (26.10): только mp3, если он есть (играет во всех браузерах) — сайт упирался в предел 950 МБ;
+            # ogg — запасной, когда mp3 нет
             srel = str(t.get("source", ""))
-            if srel and (tdir / srel).is_file():
-                mdst = out / "takes" / srel
-                mdst.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(tdir / srel, mdst)
-                item["mp3"] = "takes/" + srel
+            if not (srel and (tdir / srel).is_file()):
+                srel = ""
+            pick = srel or rel
+            dst = out / "takes" / pick
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(tdir / pick, dst)
+            item["mp3" if srel else "ogg"] = "takes/" + pick
             takes.append(item)
         if not takes:
             continue
