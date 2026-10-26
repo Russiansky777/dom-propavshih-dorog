@@ -1,0 +1,3831 @@
+{
+ "cfg": {
+  "mode": "fresh",
+  "request": "Docs/playtest/requests/regression.json",
+  "items": [],
+  "contextItems": [],
+  "maxUsd": 1.5,
+  "maxSteps": 110,
+  "maxMinutes": 150,
+  "url": "https://russiansky777.github.io/dom-propavshih-dorog/?start=freewalk",
+  "note": "Встроенная точка старта ?start=freewalk: класс после ответа мамы на доске. Необязательные истории не нужны.",
+  "model": "claude-sonnet-5-5",
+  "modelStuck": "claude-opus-5-5",
+  "reportModel": "claude-sonnet-5-5",
+  "W": 1280,
+  "maxFrames": 24,
+  "autoDialogue": true,
+  "persona": "regression",
+  "start": null,
+  "startSave": null,
+  "goalFlags": [
+   "done_M24"
+  ],
+  "goal": "свободный день: письма, мельница, Нина в доме сестры, Тихон — до вечера третьего дня",
+  "route": [
+   "M23a",
+   "M24"
+  ],
+  "segment": 4,
+  "segmentId": "freewalk",
+  "H": 720,
+  "actions_run": "3 (id 40285331074)"
+ },
+ "version": "8e5f959 2026-10-26T03:12Z",
+ "started": "2026-10-26T07:27:20.689Z",
+ "stop": "модель завершила прогон (done): Записываю итоги и завершаю.",
+ "probe": true,
+ "end": {
+  "room": "M1",
+  "inventory": [
+   "pocket_watch",
+   "photo_bridge",
+   "drawing_ilya",
+   "plan_crossing",
+   "journal_manager",
+   "school_ribbon"
+  ],
+  "goal": "Решили: мост, пока лёд не встал. Завтра с утра — первое бревно у поворота. Сегодня ещё не сделано: Тамара с письмами на улице, к Илье в мастерскую — верстак для Ули.",
+  "flags": 204
+ },
+ "saves": [
+  {
+   "slot": "auto",
+   "title": "",
+   "key": "/userfs/godot/app_userdata/Dom propavshih dorog/saves/auto.json"
+  }
+ ],
+ "rooms": [
+  "O1",
+  "H3",
+  "O1",
+  "H3",
+  "O1",
+  "H3",
+  "H1",
+  "Z2",
+  "M1",
+  "Z2",
+  "Z4",
+  "Z2",
+  "M1",
+  "Z2",
+  "R1",
+  "Z2",
+  "H1",
+  "Z2",
+  "M1",
+  "Z2",
+  "M1",
+  "M4",
+  "M1",
+  "Z2",
+  "Z4",
+  "Z2",
+  "H1",
+  "Z2",
+  "M1",
+  "Z2",
+  "Z4",
+  "H3",
+  "Z4",
+  "Z2",
+  "R1",
+  "Z2",
+  "M1",
+  "Z2",
+  "M1",
+  "Z2",
+  "M1",
+  "M4",
+  "M1",
+  "Z2",
+  "R1",
+  "Z2",
+  "M1",
+  "M4",
+  "M1",
+  "M4",
+  "M1",
+  "M4",
+  "M1",
+  "M4",
+  "M1",
+  "Z2",
+  "M1",
+  "Z2",
+  "M1",
+  "Z2",
+  "M1"
+ ],
+ "flags_order": [
+  {
+   "flag": "bell_clapper_hung",
+   "step": 0
+  },
+  {
+   "flag": "board_mama",
+   "step": 0
+  },
+  {
+   "flag": "boat_shuttle_open",
+   "step": 0
+  },
+  {
+   "flag": "done_M01",
+   "step": 0
+  },
+  {
+   "flag": "done_M02",
+   "step": 0
+  },
+  {
+   "flag": "done_M03",
+   "step": 0
+  },
+  {
+   "flag": "done_M04",
+   "step": 0
+  },
+  {
+   "flag": "done_M05",
+   "step": 0
+  },
+  {
+   "flag": "done_M06",
+   "step": 0
+  },
+  {
+   "flag": "done_M07",
+   "step": 0
+  },
+  {
+   "flag": "done_M08",
+   "step": 0
+  },
+  {
+   "flag": "done_M09",
+   "step": 0
+  },
+  {
+   "flag": "done_M09b",
+   "step": 0
+  },
+  {
+   "flag": "done_M09s",
+   "step": 0
+  },
+  {
+   "flag": "done_M10",
+   "step": 0
+  },
+  {
+   "flag": "done_M11",
+   "step": 0
+  },
+  {
+   "flag": "done_M12",
+   "step": 0
+  },
+  {
+   "flag": "done_M13",
+   "step": 0
+  },
+  {
+   "flag": "done_M13a",
+   "step": 0
+  },
+  {
+   "flag": "done_M14",
+   "step": 0
+  },
+  {
+   "flag": "done_M15",
+   "step": 0
+  },
+  {
+   "flag": "done_M15a",
+   "step": 0
+  },
+  {
+   "flag": "done_M15s",
+   "step": 0
+  },
+  {
+   "flag": "done_M16",
+   "step": 0
+  },
+  {
+   "flag": "done_M16s",
+   "step": 0
+  },
+  {
+   "flag": "done_M17",
+   "step": 0
+  },
+  {
+   "flag": "done_M18",
+   "step": 0
+  },
+  {
+   "flag": "done_M18p",
+   "step": 0
+  },
+  {
+   "flag": "done_M19",
+   "step": 0
+  },
+  {
+   "flag": "done_M19c",
+   "step": 0
+  },
+  {
+   "flag": "done_M20",
+   "step": 0
+  },
+  {
+   "flag": "done_M21",
+   "step": 0
+  },
+  {
+   "flag": "done_M21b",
+   "step": 0
+  },
+  {
+   "flag": "done_M22",
+   "step": 0
+  },
+  {
+   "flag": "done_N01",
+   "step": 0
+  },
+  {
+   "flag": "done_N02",
+   "step": 0
+  },
+  {
+   "flag": "done_V01",
+   "step": 0
+  },
+  {
+   "flag": "done_V02",
+   "step": 0
+  },
+  {
+   "flag": "done_V03",
+   "step": 0
+  },
+  {
+   "flag": "door_school_installed",
+   "step": 0
+  },
+  {
+   "flag": "evening_dusk",
+   "step": 0
+  },
+  {
+   "flag": "far_lights_answered",
+   "step": 0
+  },
+  {
+   "flag": "far_snow_seen",
+   "step": 0
+  },
+  {
+   "flag": "ferry_verified",
+   "step": 0
+  },
+  {
+   "flag": "free_walk_day3",
+   "step": 0
+  },
+  {
+   "flag": "h1_dark_said",
+   "step": 0
+  },
+  {
+   "flag": "h1_scarf_removed",
+   "step": 0
+  },
+  {
+   "flag": "h1_shutter_open",
+   "step": 0
+  },
+  {
+   "flag": "h1_tikhon_after_mirror",
+   "step": 0
+  },
+  {
+   "flag": "h2_bundle_unwrapped",
+   "step": 0
+  },
+  {
+   "flag": "h2_saw_stand_zm",
+   "step": 0
+  },
+  {
+   "flag": "h3_night_to_bed",
+   "step": 0
+  },
+  {
+   "flag": "has_bell",
+   "step": 0
+  },
+  {
+   "flag": "has_brace_plate",
+   "step": 0
+  },
+  {
+   "flag": "has_bundle_nina",
+   "step": 0
+  },
+  {
+   "flag": "has_chalk",
+   "step": 0
+  },
+  {
+   "flag": "has_clamp",
+   "step": 0
+  },
+  {
+   "flag": "has_door_hinges",
+   "step": 0
+  },
+  {
+   "flag": "has_drawing_ilya",
+   "step": 0
+  },
+  {
+   "flag": "has_journal_manager",
+   "step": 0
+  },
+  {
+   "flag": "has_key_house",
+   "step": 0
+  },
+  {
+   "flag": "has_key_sluice",
+   "step": 0
+  },
+  {
+   "flag": "has_letter_tamara",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_mill",
+   "step": 0
+  },
+  {
+   "flag": "has_mitten",
+   "step": 0
+  },
+  {
+   "flag": "has_photo_bridge",
+   "step": 0
+  },
+  {
+   "flag": "has_plan_crossing",
+   "step": 0
+  },
+  {
+   "flag": "has_pocket_watch",
+   "step": 0
+  },
+  {
+   "flag": "has_school_door",
+   "step": 0
+  },
+  {
+   "flag": "has_school_ribbon",
+   "step": 0
+  },
+  {
+   "flag": "house_open",
+   "step": 0
+  },
+  {
+   "flag": "house_unlocked",
+   "step": 0
+  },
+  {
+   "flag": "in_olkhovka",
+   "step": 0
+  },
+  {
+   "flag": "knows_bridge_lost",
+   "step": 0
+  },
+  {
+   "flag": "knows_crossing_plan",
+   "step": 0
+  },
+  {
+   "flag": "knows_dunya_left",
+   "step": 0
+  },
+  {
+   "flag": "knows_evdokia_death",
+   "step": 0
+  },
+  {
+   "flag": "knows_letters_bag",
+   "step": 0
+  },
+  {
+   "flag": "knows_nina_saw_agata",
+   "step": 0
+  },
+  {
+   "flag": "knows_no_road",
+   "step": 0
+  },
+  {
+   "flag": "knows_pier_trace",
+   "step": 0
+  },
+  {
+   "flag": "knows_rope_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "knows_rule_things_remember",
+   "step": 0
+  },
+  {
+   "flag": "knows_tikhon_waits",
+   "step": 0
+  },
+  {
+   "flag": "knows_twenty_years",
+   "step": 0
+  },
+  {
+   "flag": "lantern_check_seen",
+   "step": 0
+  },
+  {
+   "flag": "lower_street_returned",
+   "step": 0
+  },
+  {
+   "flag": "met_ilya",
+   "step": 0
+  },
+  {
+   "flag": "met_ilya_wife",
+   "step": 0
+  },
+  {
+   "flag": "met_mitya",
+   "step": 0
+  },
+  {
+   "flag": "met_nina",
+   "step": 0
+  },
+  {
+   "flag": "met_pavel",
+   "step": 0
+  },
+  {
+   "flag": "met_pelageya",
+   "step": 0
+  },
+  {
+   "flag": "met_tamara",
+   "step": 0
+  },
+  {
+   "flag": "met_tikhon",
+   "step": 0
+  },
+  {
+   "flag": "met_ulyana",
+   "step": 0
+  },
+  {
+   "flag": "mitten_found_on_path",
+   "step": 0
+  },
+  {
+   "flag": "mitten_placed",
+   "step": 0
+  },
+  {
+   "flag": "mitten_taken_back",
+   "step": 0
+  },
+  {
+   "flag": "morning_day3",
+   "step": 0
+  },
+  {
+   "flag": "night_day1",
+   "step": 0
+  },
+  {
+   "flag": "night_olkhovka",
+   "step": 0
+  },
+  {
+   "flag": "nina_answered_board",
+   "step": 0
+  },
+  {
+   "flag": "nina_mirror_clamped",
+   "step": 0
+  },
+  {
+   "flag": "nina_time_compared",
+   "step": 0
+  },
+  {
+   "flag": "nina_wrote_date",
+   "step": 0
+  },
+  {
+   "flag": "o1_saw_winter",
+   "step": 0
+  },
+  {
+   "flag": "o3_clock_compared",
+   "step": 0
+  },
+  {
+   "flag": "o3_read_notebooks",
+   "step": 0
+  },
+  {
+   "flag": "o3_read_village_list",
+   "step": 0
+  },
+  {
+   "flag": "observed_path_loop",
+   "step": 0
+  },
+  {
+   "flag": "office_mirror_clamped",
+   "step": 0
+  },
+  {
+   "flag": "office_mirror_mounted",
+   "step": 0
+  },
+  {
+   "flag": "office_shelf_lifted",
+   "step": 0
+  },
+  {
+   "flag": "office_unbolted",
+   "step": 0
+  },
+  {
+   "flag": "pavel_agreed_signals",
+   "step": 0
+  },
+  {
+   "flag": "pavel_answer_promise",
+   "step": 0
+  },
+  {
+   "flag": "pavel_blessed_mirror",
+   "step": 0
+  },
+  {
+   "flag": "plate_braced",
+   "step": 0
+  },
+  {
+   "flag": "pond_lowered",
+   "step": 0
+  },
+  {
+   "flag": "q06_hook",
+   "step": 0
+  },
+  {
+   "flag": "r1_saw_boat_gone",
+   "step": 0
+  },
+  {
+   "flag": "r1_saw_pelageya_at_turn_d3",
+   "step": 0
+  },
+  {
+   "flag": "road_held_both_ends",
+   "step": 0
+  },
+  {
+   "flag": "rope_brought",
+   "step": 0
+  },
+  {
+   "flag": "rope_on_ring",
+   "step": 0
+  },
+  {
+   "flag": "school_path_open",
+   "step": 0
+  },
+  {
+   "flag": "seen_bell",
+   "step": 0
+  },
+  {
+   "flag": "seen_class_traces",
+   "step": 0
+  },
+  {
+   "flag": "seen_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "seen_office_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_office_photo",
+   "step": 0
+  },
+  {
+   "flag": "seen_school_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_shift_schedule",
+   "step": 0
+  },
+  {
+   "flag": "seen_workshop",
+   "step": 0
+  },
+  {
+   "flag": "skoba_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "sluice_key_inserted",
+   "step": 0
+  },
+  {
+   "flag": "sluice_opened",
+   "step": 0
+  },
+  {
+   "flag": "started_M01",
+   "step": 0
+  },
+  {
+   "flag": "started_M02",
+   "step": 0
+  },
+  {
+   "flag": "started_M03",
+   "step": 0
+  },
+  {
+   "flag": "started_M04",
+   "step": 0
+  },
+  {
+   "flag": "started_M05",
+   "step": 0
+  },
+  {
+   "flag": "started_M06",
+   "step": 0
+  },
+  {
+   "flag": "started_M07",
+   "step": 0
+  },
+  {
+   "flag": "started_M08",
+   "step": 0
+  },
+  {
+   "flag": "started_M09",
+   "step": 0
+  },
+  {
+   "flag": "started_M09b",
+   "step": 0
+  },
+  {
+   "flag": "started_M09s",
+   "step": 0
+  },
+  {
+   "flag": "started_M10",
+   "step": 0
+  },
+  {
+   "flag": "started_M11",
+   "step": 0
+  },
+  {
+   "flag": "started_M12",
+   "step": 0
+  },
+  {
+   "flag": "started_M13",
+   "step": 0
+  },
+  {
+   "flag": "started_M13a",
+   "step": 0
+  },
+  {
+   "flag": "started_M14",
+   "step": 0
+  },
+  {
+   "flag": "started_M15",
+   "step": 0
+  },
+  {
+   "flag": "started_M15a",
+   "step": 0
+  },
+  {
+   "flag": "started_M15s",
+   "step": 0
+  },
+  {
+   "flag": "started_M16",
+   "step": 0
+  },
+  {
+   "flag": "started_M16s",
+   "step": 0
+  },
+  {
+   "flag": "started_M17",
+   "step": 0
+  },
+  {
+   "flag": "started_M18",
+   "step": 0
+  },
+  {
+   "flag": "started_M18p",
+   "step": 0
+  },
+  {
+   "flag": "started_M19",
+   "step": 0
+  },
+  {
+   "flag": "started_M19c",
+   "step": 0
+  },
+  {
+   "flag": "started_M20",
+   "step": 0
+  },
+  {
+   "flag": "started_M21",
+   "step": 0
+  },
+  {
+   "flag": "started_M21b",
+   "step": 0
+  },
+  {
+   "flag": "started_M22",
+   "step": 0
+  },
+  {
+   "flag": "started_N01",
+   "step": 0
+  },
+  {
+   "flag": "started_N02",
+   "step": 0
+  },
+  {
+   "flag": "stove_lit",
+   "step": 0
+  },
+  {
+   "flag": "three_lights_sent",
+   "step": 0
+  },
+  {
+   "flag": "time_common_seen",
+   "step": 0
+  },
+  {
+   "flag": "v01_cup_blue",
+   "step": 0
+  },
+  {
+   "flag": "v01_photo_table",
+   "step": 0
+  },
+  {
+   "flag": "v03_add_boat",
+   "step": 0
+  },
+  {
+   "flag": "v03_marked",
+   "step": 0
+  },
+  {
+   "flag": "visited_O1",
+   "step": 0
+  },
+  {
+   "flag": "wife_came",
+   "step": 0
+  },
+  {
+   "flag": "z4_side_door_said",
+   "step": 0
+  },
+  {
+   "flag": "visited_H3",
+   "step": 4
+  },
+  {
+   "flag": "done_M23c",
+   "step": 10
+  },
+  {
+   "flag": "nina_visited_house",
+   "step": 10
+  },
+  {
+   "flag": "started_M23c",
+   "step": 10
+  },
+  {
+   "flag": "visited_H1",
+   "step": 10
+  },
+  {
+   "flag": "started_M23d",
+   "step": 12
+  },
+  {
+   "flag": "done_M23d",
+   "step": 13
+  },
+  {
+   "flag": "tikhon_knows_dunya",
+   "step": 13
+  },
+  {
+   "flag": "tikhon_told_agata",
+   "step": 13
+  },
+  {
+   "flag": "visited_Z2",
+   "step": 16
+  },
+  {
+   "flag": "bridge_decided",
+   "step": 17
+  },
+  {
+   "flag": "council_held",
+   "step": 17
+  },
+  {
+   "flag": "done_M23b",
+   "step": 17
+  },
+  {
+   "flag": "manager_returned",
+   "step": 17
+  },
+  {
+   "flag": "started_M23b",
+   "step": 17
+  },
+  {
+   "flag": "visited_M1",
+   "step": 17
+  },
+  {
+   "flag": "visited_Z4",
+   "step": 19
+  },
+  {
+   "flag": "visited_R1",
+   "step": 25
+  },
+  {
+   "flag": "h1_asked_after_dunya",
+   "step": 33
+  },
+  {
+   "flag": "visited_M4",
+   "step": 41
+  },
+  {
+   "flag": "h1_asked_home",
+   "step": 50
+  },
+  {
+   "flag": "side_door_passed",
+   "step": 60
+  }
+ ],
+ "blocked_scenes": [],
+ "harness": [],
+ "console_errors": [],
+ "console_warnings": [],
+ "persona": "regression",
+ "segment": "freewalk",
+ "goal": {
+  "flags": [
+   "done_M24"
+  ],
+  "reached": false,
+  "step": null
+ },
+ "anomalies": [],
+ "inventory_log": [],
+ "coverage": {
+  "quests": [
+   {
+    "id": "Q01",
+    "title": "Письмо с прежним адресом",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q02",
+    "title": "На карте вырос сад",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q03",
+    "title": "Незашитый рукав",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q04",
+    "title": "Угол для Тихона",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q05",
+    "title": "Чужая мера",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q06",
+    "title": "Второй верстак",
+    "reserve": false,
+    "done": false,
+    "started": true,
+    "choice": ""
+   },
+   {
+    "id": "Q07",
+    "title": "Двадцать зарубок",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q08",
+    "title": "Общий чай",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q09",
+    "title": "Ольховая улица",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q10",
+    "title": "Яблоня для следующей весны",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   }
+  ],
+  "choices": [
+   "board_mama",
+   "mitten_found_on_path",
+   "mitten_placed",
+   "mitten_taken_back",
+   "pavel_answer_promise",
+   "q06_hook",
+   "v01_cup_blue",
+   "v01_photo_table",
+   "v03_add_boat",
+   "v03_marked"
+  ],
+  "rooms": [
+   {
+    "room": "O1",
+    "total": 8,
+    "seen": 0,
+    "unseen": [
+     "Классная доска",
+     "Залатанный мешок",
+     "Стопка тетрадей",
+     "Ящик учительского стола",
+     "Кусочек мела",
+     "Вывеска «Нижняя улица»",
+     "Старая карта Ольховки",
+     "Плакат с синицей"
+    ]
+   },
+   {
+    "room": "H3",
+    "total": 3,
+    "seen": 0,
+    "unseen": [
+     "Дверь у рамы",
+     "Домашнее зеркало",
+     "Снимок школы"
+    ]
+   },
+   {
+    "room": "H1",
+    "total": 11,
+    "seen": 0,
+    "unseen": [
+     "Печь",
+     "Ставня",
+     "Мокрый платок",
+     "Дунино пальто",
+     "Чай",
+     "tikhon",
+     "Встать у печи и помахать",
+     "Семейная фотография",
+     "Две чашки",
+     "Снятая полка",
+     "Полка Тихона"
+    ]
+   },
+   {
+    "room": "Z2",
+    "total": 1,
+    "seen": 0,
+    "unseen": [
+     "Вид на Заречье"
+    ]
+   },
+   {
+    "room": "M1",
+    "total": 3,
+    "seen": 0,
+    "unseen": [
+     "Распорядок смен",
+     "Мельничное колесо",
+     "Верстак"
+    ]
+   },
+   {
+    "room": "Z4",
+    "total": 2,
+    "seen": 0,
+    "unseen": [
+     "Вывеска почты",
+     "Фонарь над дверью"
+    ]
+   },
+   {
+    "room": "R1",
+    "total": 5,
+    "seen": 0,
+    "unseen": [
+     "Канат моста",
+     "Пустой стопор",
+     "Сигнальный фонарь",
+     "Лодка Пелагеи",
+     "Порядок сигналов"
+    ]
+   },
+   {
+    "room": "M4",
+    "total": 2,
+    "seen": 0,
+    "unseen": [
+     "Затвор",
+     "Лоток"
+    ]
+   }
+  ]
+ },
+ "end_flags": [
+  "bell_clapper_hung",
+  "board_mama",
+  "boat_shuttle_open",
+  "bridge_decided",
+  "council_held",
+  "done_M01",
+  "done_M02",
+  "done_M03",
+  "done_M04",
+  "done_M05",
+  "done_M06",
+  "done_M07",
+  "done_M08",
+  "done_M09",
+  "done_M09b",
+  "done_M09s",
+  "done_M10",
+  "done_M11",
+  "done_M12",
+  "done_M13",
+  "done_M13a",
+  "done_M14",
+  "done_M15",
+  "done_M15a",
+  "done_M15s",
+  "done_M16",
+  "done_M16s",
+  "done_M17",
+  "done_M18",
+  "done_M18p",
+  "done_M19",
+  "done_M19c",
+  "done_M20",
+  "done_M21",
+  "done_M21b",
+  "done_M22",
+  "done_M23b",
+  "done_M23c",
+  "done_M23d",
+  "done_N01",
+  "done_N02",
+  "done_V01",
+  "done_V02",
+  "done_V03",
+  "door_school_installed",
+  "evening_dusk",
+  "far_lights_answered",
+  "far_snow_seen",
+  "ferry_verified",
+  "free_walk_day3",
+  "h1_asked_after_dunya",
+  "h1_asked_home",
+  "h1_dark_said",
+  "h1_scarf_removed",
+  "h1_shutter_open",
+  "h1_tikhon_after_mirror",
+  "h2_bundle_unwrapped",
+  "h2_saw_stand_zm",
+  "h3_night_to_bed",
+  "has_bell",
+  "has_brace_plate",
+  "has_bundle_nina",
+  "has_chalk",
+  "has_clamp",
+  "has_door_hinges",
+  "has_drawing_ilya",
+  "has_journal_manager",
+  "has_key_house",
+  "has_key_sluice",
+  "has_letter_tamara",
+  "has_mirror_home",
+  "has_mirror_mill",
+  "has_mitten",
+  "has_photo_bridge",
+  "has_plan_crossing",
+  "has_pocket_watch",
+  "has_school_door",
+  "has_school_ribbon",
+  "house_open",
+  "house_unlocked",
+  "in_olkhovka",
+  "knows_bridge_lost",
+  "knows_crossing_plan",
+  "knows_dunya_left",
+  "knows_evdokia_death",
+  "knows_letters_bag",
+  "knows_nina_saw_agata",
+  "knows_no_road",
+  "knows_pier_trace",
+  "knows_rope_on_plate",
+  "knows_rule_things_remember",
+  "knows_tikhon_waits",
+  "knows_twenty_years",
+  "lantern_check_seen",
+  "lower_street_returned",
+  "manager_returned",
+  "met_ilya",
+  "met_ilya_wife",
+  "met_mitya",
+  "met_nina",
+  "met_pavel",
+  "met_pelageya",
+  "met_tamara",
+  "met_tikhon",
+  "met_ulyana",
+  "mitten_found_on_path",
+  "mitten_placed",
+  "mitten_taken_back",
+  "morning_day3",
+  "night_day1",
+  "night_olkhovka",
+  "nina_answered_board",
+  "nina_mirror_clamped",
+  "nina_time_compared",
+  "nina_visited_house",
+  "nina_wrote_date",
+  "o1_saw_winter",
+  "o3_clock_compared",
+  "o3_read_notebooks",
+  "o3_read_village_list",
+  "observed_path_loop",
+  "office_mirror_clamped",
+  "office_mirror_mounted",
+  "office_shelf_lifted",
+  "office_unbolted",
+  "pavel_agreed_signals",
+  "pavel_answer_promise",
+  "pavel_blessed_mirror",
+  "plate_braced",
+  "pond_lowered",
+  "q06_hook",
+  "r1_saw_boat_gone",
+  "r1_saw_pelageya_at_turn_d3",
+  "road_held_both_ends",
+  "rope_brought",
+  "rope_on_ring",
+  "school_path_open",
+  "seen_bell",
+  "seen_class_traces",
+  "seen_mirror_home",
+  "seen_office_door",
+  "seen_office_photo",
+  "seen_school_door",
+  "seen_shift_schedule",
+  "seen_workshop",
+  "side_door_passed",
+  "skoba_on_plate",
+  "sluice_key_inserted",
+  "sluice_opened",
+  "started_M01",
+  "started_M02",
+  "started_M03",
+  "started_M04",
+  "started_M05",
+  "started_M06",
+  "started_M07",
+  "started_M08",
+  "started_M09",
+  "started_M09b",
+  "started_M09s",
+  "started_M10",
+  "started_M11",
+  "started_M12",
+  "started_M13",
+  "started_M13a",
+  "started_M14",
+  "started_M15",
+  "started_M15a",
+  "started_M15s",
+  "started_M16",
+  "started_M16s",
+  "started_M17",
+  "started_M18",
+  "started_M18p",
+  "started_M19",
+  "started_M19c",
+  "started_M20",
+  "started_M21",
+  "started_M21b",
+  "started_M22",
+  "started_M23b",
+  "started_M23c",
+  "started_M23d",
+  "started_N01",
+  "started_N02",
+  "stove_lit",
+  "three_lights_sent",
+  "tikhon_knows_dunya",
+  "tikhon_told_agata",
+  "time_common_seen",
+  "v01_cup_blue",
+  "v01_photo_table",
+  "v03_add_boat",
+  "v03_marked",
+  "visited_H1",
+  "visited_H3",
+  "visited_M1",
+  "visited_M4",
+  "visited_O1",
+  "visited_R1",
+  "visited_Z2",
+  "visited_Z4",
+  "wife_came",
+  "z4_side_door_said"
+ ],
+ "verdict_history": [],
+ "notes": [
+  {
+   "step": 105,
+   "kind": "застряла",
+   "text": "После разговора с Тихоном в доме тёти не смогла дойти до горницы Нины (вечер третьего дня). Со двора мельницы клики по левой дороге (30,370), (60,290), (110,290) и по стрелке 'К затвору' (1252,612) только переключают между двором и затвором. Подсказка 3/3: «Кликни Тамару на улице Ольховки». Маршрут от мельницы к Ольховке не ясен. Кадры f0141 и около.",
+   "frames": [
+    "f0141"
+   ]
+  }
+ ],
+ "frames": [
+  {
+   "id": "f0141",
+   "step": 105,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0142",
+   "step": 106,
+   "kind": "final",
+   "label": "последний кадр"
+  }
+ ],
+ "steps": [
+  {
+   "step": 1,
+   "model": "claude-sonnet-5-5",
+   "room": "O1",
+   "frame": "f0001",
+   "action": "click",
+   "observe": "Класс, мама справа у двери.",
+   "thought": "Возьму подсказку.",
+   "usd": 0.01419,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "O1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 182,
+   "events": [
+    "Открыта подсказка: «Подсказка 1 из 3» — «Тамара принесла в Ольховку год писем — она на улице Ольховки.»",
+    "Строка подсказки внизу: «Подсказка 1 из 3: Тамара принесла в Ольховку год писем — она на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 2,
+   "model": "claude-sonnet-5-5",
+   "room": "O1",
+   "frame": "f0002",
+   "action": "key",
+   "observe": "Класс, подсказка открыта. Мама справа, дверь справа.",
+   "thought": "Нажму пробел, чтобы увидеть места.",
+   "usd": 0.00527,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "O1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 182,
+   "events": [
+    "Открыта подсказка: «Подсказка 1 из 3» — «Тамара принесла в Ольховку год писем — она на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 3,
+   "model": "claude-sonnet-5-5",
+   "room": "O1",
+   "frame": "f0003",
+   "action": "key",
+   "observe": "Класс, подсказка открыта. Справа дверь, мама рядом.",
+   "thought": "Нажму пробел ещё раз, чтобы увидеть места.",
+   "usd": 0.00539,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "O1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 182,
+   "events": [
+    "Открыта подсказка: «Подсказка 1 из 3» — «Тамара принесла в Ольховку год писем — она на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 4,
+   "model": "claude-sonnet-5-5",
+   "room": "O1",
+   "frame": "f0004",
+   "action": "click",
+   "observe": "Класс, видны подписи мест; слева дверь домой в галерею.",
+   "thought": "Иду через дверь в галерею.",
+   "usd": 0.00565,
+   "at": {
+    "x": 443,
+    "y": 395
+   },
+   "desc": "щелчок (295,263)",
+   "room_after": "H3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 183,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 5,
+   "model": "claude-sonnet-5-5",
+   "room": "H3",
+   "frame": "f0005",
+   "action": "click",
+   "observe": "Галерея порогов, зелёная дверь перед героиней, справа стрелка.",
+   "thought": "Нужен дом тёти; пробую зелёную дверь.",
+   "usd": 0.00579,
+   "at": {
+    "x": 765,
+    "y": 450
+   },
+   "desc": "щелчок (510,300)",
+   "room_after": "O1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 183,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 6,
+   "model": "claude-sonnet-5-5",
+   "room": "O1",
+   "frame": "f0006",
+   "action": "click",
+   "observe": "Снова зимний класс, героиня и мама. Похоже, вернулась в класс.",
+   "thought": "Иду снова через дверь в галерею слева.",
+   "usd": 0.00586,
+   "at": {
+    "x": 443,
+    "y": 395
+   },
+   "desc": "щелчок (295,263)",
+   "room_after": "H3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 183,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 7,
+   "model": "claude-sonnet-5-5",
+   "room": "H3",
+   "frame": "f0007",
+   "action": "click",
+   "observe": "Галерея порогов, зелёная дверь по центру, справа стрелка.",
+   "thought": "Пробую зелёную дверь в дом тёти.",
+   "usd": 0.00594,
+   "at": {
+    "x": 765,
+    "y": 450
+   },
+   "desc": "щелчок (510,300)",
+   "room_after": "O1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 183,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 8,
+   "model": "claude-sonnet-5-5",
+   "room": "O1",
+   "frame": "f0008",
+   "action": "click",
+   "observe": "Зимний класс, мама стоит слева, Агата в центре. Похоже, я вернулась в класс.",
+   "thought": "Попробую снова дверь в галерею (слева), затем смотреть, где окажусь.",
+   "usd": 0.00626,
+   "at": {
+    "x": 443,
+    "y": 395
+   },
+   "desc": "щелчок (295,263)",
+   "room_after": "H3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 183,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 9,
+   "model": "claude-sonnet-5-5",
+   "room": "H3",
+   "frame": "f0009",
+   "action": "click",
+   "observe": "Галерея порогов, зелёная дверь по центру, героиня перед ней.",
+   "thought": "Похоже хожу по кругу. Нажму на дверь справа в проём (1240,300) вдаль.",
+   "usd": 0.00719,
+   "at": {
+    "x": 1860,
+    "y": 450
+   },
+   "desc": "щелчок (1240,300)",
+   "room_after": "H3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 183,
+   "events": []
+  },
+  {
+   "step": 10,
+   "model": "claude-sonnet-5-5",
+   "room": "H3",
+   "frame": "f0010",
+   "action": "click",
+   "observe": "Галерея порогов, героиня справа у проёма, стрелка вправо внизу справа.",
+   "thought": "Нажму стрелку вправо.",
+   "usd": 0.00643,
+   "at": {
+    "x": 1875,
+    "y": 819
+   },
+   "desc": "щелчок (1250,546)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 187,
+   "events": [
+    "Текст: «Нина входит в сестрин дом — теперь, как все, с крыльца. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.» [f0011]",
+    "Нина: «Всё Дунино. Даже пыль.» [f0012]",
+    "Затемнение / постановка сцены ~3.4 с (кадр f0012)",
+    "Текст: «Школьная дверь в галерее на родных петлях висит.» [f0013]",
+    "Нина: «Двадцать лет по ту сторону пустой проём был. А дверь всё здесь стояла. Рядом, в двух шагах.» [f0014]",
+    "Затемнение / постановка сцены ~3.5 с (кадр f0014)",
+    "Текст: «В мастерской, на верстаке — Нинино зеркало.» [f0015]",
+    "Затемнение / постановка сцены ~4.8 с (кадр f0015)",
+    "Текст: «В нём её горница видна. Никого.» [f0016]",
+    "Нина: «Моя горница-то… А я здесь стою.» [f0017]",
+    "Агата: «Я тебя там видела. Писала ты что-то.» [f0018]",
+    "Нина: «Задания к уроку. Да тебе — письма, из раза в раз.» [f0019]",
+    "Затемнение / постановка сцены ~4.0 с (кадр f0019)",
+    "Текст закончился: показано реплик и текстов — 9, окно текста закрыто. Можно действовать дальше.",
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «В мастерскую»"
+   ]
+  },
+  {
+   "step": 11,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0020",
+   "action": "click",
+   "observe": "Жилая комната в доме тёти, Нина с Агатой, сцена Нины прошла.",
+   "thought": "Беру подсказку, чтобы понять, что дальше.",
+   "usd": 0.02404,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 187,
+   "events": [
+    "Открыта подсказка: «Подсказка 2 из 3» — «Из Заречья — через переправу: поворот → Пелагея с лодкой → дальняя опора → тропа к улице.»",
+    "Строка подсказки внизу: «Подсказка 2 из 3: Из Заречья — через переправу: поворот → Пелагея с лодкой → дальняя опора → тропа к улице.»"
+   ]
+  },
+  {
+   "step": 12,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0021",
+   "action": "click",
+   "observe": "Жилая комната дома тёти, Тихона не видно, виден Нина/силуэты.",
+   "thought": "Кликну по женщине справа (возможно Нина) / Тихон у печи — кликну на печь-область кота.",
+   "usd": 0.00854,
+   "at": {
+    "x": 450,
+    "y": 780
+   },
+   "desc": "щелчок (300,520)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 188,
+   "events": [
+    "На экране выбор «Кто Тихону о Дуне скажет?»: 1) «Скажу сама» 2) «Пусть скажет мама» — щёлкни по строке варианта."
+   ]
+  },
+  {
+   "step": 13,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0022",
+   "action": "click",
+   "observe": "Выбор «Кто Тихону о Дуне скажет?»",
+   "thought": "Скажу сама.",
+   "usd": 0.00823,
+   "at": {
+    "x": 506,
+    "y": 962
+   },
+   "desc": "щелчок (337,641)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 191,
+   "events": [
+    "Агата: «Тихон… Дуня не придёт. У матушки умерла. Два года назад, по их счёту.» [f0023]",
+    "Текст: «Долго Тихон молчит. Потом встаёт и перебирается повыше, на самый верх печи.» [f0024]",
+    "Тихон: «Значит, вечер кончился.» [f0025]",
+    "Текст: «Устраивается Тихон на печи — с того краю, что к Агатиной лежанке поближе.» [f0026]",
+    "Тихон: «Ты, Агата, это… Не уходи надолго. Привык я к тебе. Друг ты мне, стало быть. Только Тамаре не сказывай.» [f0027]",
+    "Агата: «Не скажу, Тихон. И ты мне друг.» [f0028]",
+    "Текст закончился: показано реплик и текстов — 6, окно текста закрыто. Можно действовать дальше."
+   ]
+  },
+  {
+   "step": 14,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0029",
+   "action": "click",
+   "observe": "Тихон на печи, разговор окончен. Нужен вечер: Ольховка → дом Нины → горница, кровать.",
+   "thought": "Возьму подсказку.",
+   "usd": 0.01412,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 191,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»",
+    "Строка подсказки внизу: «Подсказка 3 из 3: Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 15,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0030",
+   "action": "key",
+   "observe": "Жилая комната дома тёти, Тихон уже сказал. Подсказка: идти к Тамаре на улицу Ольховки.",
+   "thought": "Нажму пробел, чтобы увидеть выходы.",
+   "usd": 0.00879,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 191,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 16,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0031",
+   "action": "click",
+   "observe": "Жилая комната дома тёти, подсказка 3 из 3: Тамара на улице Ольховки.",
+   "thought": "Выход через входную дверь по центру — пробую.",
+   "usd": 0.00875,
+   "at": {
+    "x": 1005,
+    "y": 495
+   },
+   "desc": "щелчок (670,330)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 192,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «На крыльцо дома»"
+   ]
+  },
+  {
+   "step": 17,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0032",
+   "action": "click",
+   "observe": "Улица Заречья, у крыльца дома тёти.",
+   "thought": "Нужно к переправе в Ольховку; иду вправо.",
+   "usd": 0.00867,
+   "at": {
+    "x": 1875,
+    "y": 915
+   },
+   "desc": "щелчок (1250,610)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 198,
+   "events": [
+    "Затемнение / постановка сцены ~9.7 с.",
+    "Текст: «С палкой старик во дворе мельницы стоит. Вернулся управляющий. Илья с ним пришёл.» [f0034]",
+    "Фёдор Лукич: «Цел затвор? Где рычаг?» [f0035]",
+    "Павел: «Год на гвозде рычаг провисел. По вашему слову.» [f0036]",
+    "Фёдор Лукич: «Год… Я-то к утру вернуться думал. А двадцать лет миновало.» [f0037]",
+    "Текст: «Оба неловко рассмеялись.» [f0038]",
+    "Фёдор Лукич: «К зиме пруд набрать надо. Не то Заречье без муки останется.» [f0039]",
+    "Павел: «Обещала ты. Я помню.» [f0040]",
+    "Агата: «А канат — ненадолго. Первый паводок сорвёт — опять без дороги останемся.» [f0041]",
+    "Илья: «Мост ставить надо. Пока льдом не схватило. По Дуниной тетради.» [f0042]",
+    "Илья: «Пролёты выше прежних поставим — вода под ними пройдёт. А работать надо сейчас, пока пруд спущен.» [f0043]",
+    "Илья: «Завтра поутру первое бревно кладём. С Нижней улицы его возьмём: там сруб пустой с самой беды стоит, брёвна сухие. К повороту приходи.» [f0044]",
+    "Текст закончился: показано реплик и текстов — 11, окно текста закрыто. Можно действовать дальше.",
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 18,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0045",
+   "action": "click",
+   "observe": "Двор мельницы, сцена с управляющим прошла. Нужно в Ольховку к Тамаре.",
+   "thought": "Выход налево по тропе, где стоит женщина.",
+   "usd": 0.01763,
+   "at": {
+    "x": 90,
+    "y": 450
+   },
+   "desc": "щелчок (60,300)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 198,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 19,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0046",
+   "action": "click",
+   "observe": "Улица Заречья, героиня справа, слева стрелка, справа стрелка.",
+   "thought": "Нужно в Ольховку через переправу; пробую стрелку влево.",
+   "usd": 0.00916,
+   "at": {
+    "x": 143,
+    "y": 699
+   },
+   "desc": "щелчок (95,466)",
+   "room_after": "Z4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 199,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 20,
+   "model": "claude-sonnet-5-5",
+   "room": "Z4",
+   "frame": "f0047",
+   "action": "click",
+   "observe": "Переулок у почты, героиня стоит. Нужна Ольховка/Тамара.",
+   "thought": "Иду к улице вправо по дороге.",
+   "usd": 0.00885,
+   "at": {
+    "x": 1350,
+    "y": 600
+   },
+   "desc": "щелчок (900,400)",
+   "room_after": "Z4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 199,
+   "events": []
+  },
+  {
+   "step": 21,
+   "model": "claude-sonnet-5-5",
+   "room": "Z4",
+   "frame": "f0048",
+   "action": "click",
+   "observe": "Переулок у почты, героиня справа у крыльца, вид на реку.",
+   "thought": "Войду в дверь справа крыльца дома, или иду вперёд по дороге. Нажму стрелку вниз.",
+   "usd": 0.00899,
+   "at": {
+    "x": 840,
+    "y": 1038
+   },
+   "desc": "щелчок (560,692)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 199,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 22,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0049",
+   "action": "click",
+   "observe": "Улица Заречья, у дома тёти. Нужно в Ольховку к Тамаре.",
+   "thought": "Пойду вправо к переправе.",
+   "usd": 0.00907,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 199,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 23,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0050",
+   "action": "click",
+   "observe": "Двор мельницы, я снова здесь; цель — Тамара на улице Ольховки.",
+   "thought": "Выход налево по тропе, где стоит женщина, ведёт к Заречью. Попробую ещё раз влево.",
+   "usd": 0.00911,
+   "at": {
+    "x": 60,
+    "y": 450
+   },
+   "desc": "щелчок (40,300)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 199,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 24,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0051",
+   "action": "key",
+   "observe": "Улица Заречья, крыльцо дома, переправа справа.",
+   "thought": "Вернулась в Заречье. Иду вправо к мельнице/переправе... лучше пробел для подписей.",
+   "usd": 0.00864,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 199,
+   "events": []
+  },
+  {
+   "step": 25,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0052",
+   "action": "click",
+   "observe": "Улица Заречья, выходы: крыльцо, переулок к почте слева, к мельнице справа, спуск к причалу.",
+   "thought": "Тамара в Ольховке, через переправу: пробую спуск к причалу.",
+   "usd": 0.00881,
+   "at": {
+    "x": 1575,
+    "y": 675
+   },
+   "desc": "щелчок (1050,450)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 200,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 26,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0053",
+   "action": "click",
+   "observe": "Ближний причал, лодки нет, героиня слева у столба.",
+   "thought": "Нужна Пелагея с лодкой; попробую Подсказку.",
+   "usd": 0.00829,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 200,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 27,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0054",
+   "action": "click",
+   "observe": "Ближний причал, Агата слева, подсказка открыта. Лодки нет.",
+   "thought": "Попробую кликнуть по причалу, чтобы позвать Пелагею.",
+   "usd": 0.00837,
+   "at": {
+    "x": 1275,
+    "y": 630
+   },
+   "desc": "щелчок (850,420)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 200,
+   "events": []
+  },
+  {
+   "step": 28,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0055",
+   "action": "click",
+   "observe": "Ближний причал, лодки нет, Агата на причале.",
+   "thought": "Попробую кликнуть по воде у дальнего берега, чтобы позвать лодку.",
+   "usd": 0.00821,
+   "at": {
+    "x": 1500,
+    "y": 375
+   },
+   "desc": "щелчок (1000,250)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 200,
+   "events": []
+  },
+  {
+   "step": 29,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0056",
+   "action": "click",
+   "observe": "Причал, Агата стоит на краю, лодки нет.",
+   "thought": "Кликну по Агате/краю причала.",
+   "usd": 0.008,
+   "at": {
+    "x": 1395,
+    "y": 450
+   },
+   "desc": "щелчок (930,300)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 200,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 30,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0057",
+   "action": "click",
+   "observe": "Ближний причал, лодки нет, на причале Агата.",
+   "thought": "Попробую стрелку вверх (к повороту/тропе), чтобы найти Пелагею.",
+   "usd": 0.00793,
+   "at": {
+    "x": 140,
+    "y": 495
+   },
+   "desc": "щелчок (93,330)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 200,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 31,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0058",
+   "action": "click",
+   "observe": "Улица Заречья, дом тёти с крыльцом.",
+   "thought": "Зайду в дом тёти к Тихону.",
+   "usd": 0.00803,
+   "at": {
+    "x": 1005,
+    "y": 495
+   },
+   "desc": "щелчок (670,330)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 200,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «На крыльцо»"
+   ]
+  },
+  {
+   "step": 32,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0059",
+   "action": "click",
+   "observe": "Жилая комната дома тёти, Тихон на печи (белка), рядом пожилая женщина.",
+   "thought": "Кликну Тихона на печи.",
+   "usd": 0.00821,
+   "at": {
+    "x": 578,
+    "y": 278
+   },
+   "desc": "щелчок (385,185)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 200,
+   "events": [
+    "Тихон: «Полку-то повесишь? Вон она, на лавке лежит. Сам я её, что ли, лапами прибью?» [f0060]",
+    "На экране выбор «О чём бы Тихона спросить?»: 1) «Как ты, Тихон?» 2) «Ничего. Дежурь.» — щёлкни по строке варианта."
+   ]
+  },
+  {
+   "step": 33,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0061",
+   "action": "click",
+   "observe": "Выбор вариантов у Тихона.",
+   "thought": "Спрошу «Как ты, Тихон?» — вдруг начнётся сцена про тётю.",
+   "usd": 0.01108,
+   "at": {
+    "x": 518,
+    "y": 963
+   },
+   "desc": "щелчок (345,642)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 201,
+   "events": [
+    "Тихон: «Лежу. Ждать некого — так просто лежу. Печь топится, кастрюля на месте… Хозяйка бы сказала: и то ладно.» [f0062]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше."
+   ]
+  },
+  {
+   "step": 34,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0063",
+   "action": "click",
+   "observe": "Жилая комната, Тихон ответил, сцены про тётю нет; рядом стоит пожилая женщина.",
+   "thought": "Кликну женщину у окна.",
+   "usd": 0.01111,
+   "at": {
+    "x": 1400,
+    "y": 510
+   },
+   "desc": "щелчок (933,340)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 201,
+   "events": [
+    "Нина: «Здесь посижу. Дуня к моему приходу всегда чайник ставила.» [f0064]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше.",
+    "Подпись под курсором: «Нина»"
+   ]
+  },
+  {
+   "step": 35,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0065",
+   "action": "click",
+   "observe": "Жилая комната, Нина у окна, диалог закончился.",
+   "thought": "Тихон уже спрошен; проверю Подсказку для следующего шага.",
+   "usd": 0.01115,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 201,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 36,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0066",
+   "action": "click",
+   "observe": "Жилая комната дома тёти, подсказка открыта: идти к Тамаре на улицу Ольховки.",
+   "thought": "Выйду на крыльцо и дойду до Заречья/переправы.",
+   "usd": 0.00876,
+   "at": {
+    "x": 1005,
+    "y": 495
+   },
+   "desc": "щелчок (670,330)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 201,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «На крыльцо дома»"
+   ]
+  },
+  {
+   "step": 37,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0067",
+   "action": "click",
+   "observe": "Улица Заречья у дома тёти, подсказка велит найти Тамару в Ольховке.",
+   "thought": "Пойду вправо к переправе/Ольховке.",
+   "usd": 0.00864,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 201,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 38,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0068",
+   "action": "click",
+   "observe": "Двор мельницы, слева тропа вверх.",
+   "thought": "Попробую Подсказку, чтобы понять, что дальше.",
+   "usd": 0.00852,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 201,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 39,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0069",
+   "action": "click",
+   "observe": "Двор мельницы, слева у тропы стоит женщина (Тамара?).",
+   "thought": "Кликну женщину слева на тропе.",
+   "usd": 0.00855,
+   "at": {
+    "x": 138,
+    "y": 443
+   },
+   "desc": "щелчок (92,295)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 201,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 40,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0070",
+   "action": "click",
+   "observe": "Улица Заречья, Агата справа, стрелка вправо внизу и указатель к затвору.",
+   "thought": "Иду вправо к переправе/Ольховке.",
+   "usd": 0.0086,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 201,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 41,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0071",
+   "action": "click",
+   "observe": "Двор мельницы, женщина слева на тропе.",
+   "thought": "Хожу по кругу. Попробую Подсказку не нужна; пойду к затвору, затем к переправе дальше.",
+   "usd": 0.00874,
+   "at": {
+    "x": 1878,
+    "y": 960
+   },
+   "desc": "щелчок (1252,640)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 42,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0072",
+   "action": "click",
+   "observe": "Затвор, Павел и Агата на настиле.",
+   "thought": "Нажму стрелку вниз внизу экрана — выход.",
+   "usd": 0.00835,
+   "at": {
+    "x": 1709,
+    "y": 1035
+   },
+   "desc": "щелчок (1139,690)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 43,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0073",
+   "action": "click",
+   "observe": "Двор мельницы, героиня справа. Нужно к Тамаре на улицу Ольховки через переправу.",
+   "thought": "Открою подсказку для маршрута.",
+   "usd": 0.00868,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 44,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0074",
+   "action": "click",
+   "observe": "Двор мельницы, подсказка открыта. Нужна улица Ольховки.",
+   "thought": "Выход слева по тропе к деревне.",
+   "usd": 0.00865,
+   "at": {
+    "x": 150,
+    "y": 435
+   },
+   "desc": "щелчок (100,290)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 45,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0075",
+   "action": "click",
+   "observe": "Улица Заречья, слева стрелка выхода.",
+   "thought": "Попробую стрелку слева.",
+   "usd": 0.00828,
+   "at": {
+    "x": 146,
+    "y": 699
+   },
+   "desc": "щелчок (97,466)",
+   "room_after": "Z4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 46,
+   "model": "claude-sonnet-5-5",
+   "room": "Z4",
+   "frame": "f0076",
+   "action": "click",
+   "observe": "Переулок у почты, героиня по центру, стрелка вниз внизу.",
+   "thought": "Пойду вправо к улице Ольховки через дорогу вдаль.",
+   "usd": 0.00817,
+   "at": {
+    "x": 1050,
+    "y": 600
+   },
+   "desc": "щелчок (700,400)",
+   "room_after": "Z4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": []
+  },
+  {
+   "step": 47,
+   "model": "claude-sonnet-5-5",
+   "room": "Z4",
+   "frame": "f0077",
+   "action": "click",
+   "observe": "Переулок у почты, героиня стоит у воды.",
+   "thought": "Попробую выход внизу экрана (стрелка).",
+   "usd": 0.00793,
+   "at": {
+    "x": 839,
+    "y": 1038
+   },
+   "desc": "щелчок (559,692)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 48,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0078",
+   "action": "click",
+   "observe": "Улица Заречья, у дома тёти. Хожу по кругу.",
+   "thought": "Войду в дом тёти — нужен Тихон.",
+   "usd": 0.00891,
+   "at": {
+    "x": 1026,
+    "y": 435
+   },
+   "desc": "щелчок (684,290)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «На крыльцо»"
+   ]
+  },
+  {
+   "step": 49,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0079",
+   "action": "click",
+   "observe": "Жилая комната дома тёти, Нина стоит справа, Тихон (белка) на печи.",
+   "thought": "Кликну Тихона на печи.",
+   "usd": 0.00826,
+   "at": {
+    "x": 582,
+    "y": 285
+   },
+   "desc": "щелчок (388,190)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 202,
+   "events": [
+    "Тихон: «Полку-то повесишь? Вон она, на лавке лежит. Сам я её, что ли, лапами прибью?» [f0080]",
+    "На экране выбор «О чём бы Тихона спросить?»: 1) «Как ты, Тихон?» 2) «Тётя бы нас всех к столу усадила.» 3) «Ничего. Дежурь.» — щёлкни по строке варианта."
+   ]
+  },
+  {
+   "step": 50,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0081",
+   "action": "click",
+   "observe": "Выбор вопросов к Тихону в доме тёти.",
+   "thought": "Выберу «Тётя бы нас всех к столу усадила» — про тётю.",
+   "usd": 0.01114,
+   "at": {
+    "x": 645,
+    "y": 962
+   },
+   "desc": "щелчок (430,641)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Тихон: «И велела есть, пока горячее.» [f0082]",
+    "Агата: «Как будто мы дома.» [f0083]",
+    "Тихон: «А ты где, по-твоему?» [f0084]",
+    "Текст закончился: показано реплик и текстов — 3, окно текста закрыто. Можно действовать дальше."
+   ]
+  },
+  {
+   "step": 51,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0085",
+   "action": "click",
+   "observe": "Разговор с Тихоном закончился, Нина стоит у окна.",
+   "thought": "Шаг 4 вроде сделан; открою Подсказку, чтобы узнать, что дальше.",
+   "usd": 0.01444,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "H1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 52,
+   "model": "claude-sonnet-5-5",
+   "room": "H1",
+   "frame": "f0086",
+   "action": "click",
+   "observe": "Жилая комната дома тёти, подсказка про Тамару на улице Ольховки.",
+   "thought": "Выйду на крыльцо и пойду к Ольховке.",
+   "usd": 0.00857,
+   "at": {
+    "x": 1026,
+    "y": 435
+   },
+   "desc": "щелчок (684,290)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «На крыльцо дома»"
+   ]
+  },
+  {
+   "step": 53,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0087",
+   "action": "click",
+   "observe": "Улица Заречья, у дома тёти.",
+   "thought": "Иду вправо к переправе/Ольховке.",
+   "usd": 0.00834,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 54,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0088",
+   "action": "click",
+   "observe": "Двор мельницы, слева тропа, справа «К затвору».",
+   "thought": "Мне нужна Ольховка; пойду влево по тропе.",
+   "usd": 0.00842,
+   "at": {
+    "x": 150,
+    "y": 435
+   },
+   "desc": "щелчок (100,290)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 55,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0089",
+   "action": "click",
+   "observe": "Улица Заречья, возле дома тёти.",
+   "thought": "Иду влево к Ольховке.",
+   "usd": 0.00824,
+   "at": {
+    "x": 146,
+    "y": 699
+   },
+   "desc": "щелчок (97,466)",
+   "room_after": "Z4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 56,
+   "model": "claude-sonnet-5-5",
+   "room": "Z4",
+   "frame": "f0090",
+   "action": "click",
+   "observe": "Переулок у почты, героиня по центре.",
+   "thought": "Иду вправо к улице Ольховки по дороге.",
+   "usd": 0.00801,
+   "at": {
+    "x": 1350,
+    "y": 600
+   },
+   "desc": "щелчок (900,400)",
+   "room_after": "Z4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": []
+  },
+  {
+   "step": 57,
+   "model": "claude-sonnet-5-5",
+   "room": "Z4",
+   "frame": "f0091",
+   "action": "click",
+   "observe": "Переулок у почты, справа крыльцо дома.",
+   "thought": "Попробую войти в дверь справа (возможно дом Нины/Ольховка).",
+   "usd": 0.00811,
+   "at": {
+    "x": 1500,
+    "y": 450
+   },
+   "desc": "щелчок (1000,300)",
+   "room_after": "H3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 58,
+   "model": "claude-sonnet-5-5",
+   "room": "H3",
+   "frame": "f0092",
+   "action": "click",
+   "observe": "Галерея порогов, дверь зелёная слева.",
+   "thought": "Открою Подсказку для ориентира.",
+   "usd": 0.00802,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "H3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 59,
+   "model": "claude-sonnet-5-5",
+   "room": "H3",
+   "frame": "f0093",
+   "action": "key",
+   "observe": "Галерея порогов, подсказка открыта.",
+   "thought": "Нажму пробел, чтобы увидеть подписи мест.",
+   "usd": 0.00798,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "H3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 60,
+   "model": "claude-sonnet-5-5",
+   "room": "H3",
+   "frame": "f0094",
+   "action": "click",
+   "observe": "Галерея порогов, подсказка открыта. Выходы: в жилую комнату (вправо), дверь в зимний класс, вниз.",
+   "thought": "Ольховка далеко от галереи; попробую выход вниз.",
+   "usd": 0.00855,
+   "at": {
+    "x": 699,
+    "y": 1043
+   },
+   "desc": "щелчок (466,695)",
+   "room_after": "Z4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «На улицу»"
+   ]
+  },
+  {
+   "step": 61,
+   "model": "claude-sonnet-5-5",
+   "room": "Z4",
+   "frame": "f0095",
+   "action": "click",
+   "observe": "Переулок у почты, внизу выход «На улицу».",
+   "thought": "Иду на улицу.",
+   "usd": 0.00833,
+   "at": {
+    "x": 780,
+    "y": 1032
+   },
+   "desc": "щелчок (520,688)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 62,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0096",
+   "action": "click",
+   "observe": "Улица Заречья, у дома тёти. Стрелка вправо внизу, левая стрелка.",
+   "thought": "Ольховка через переправу: иду вправо к затвору/переправе.",
+   "usd": 0.00838,
+   "at": {
+    "x": 1568,
+    "y": 668
+   },
+   "desc": "щелчок (1045,445)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 63,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0097",
+   "action": "click",
+   "observe": "Ближний причал, Агата слева, дорога влево.",
+   "thought": "Подсказка говорит через переправу; кликну на причал/верёвку.",
+   "usd": 0.00795,
+   "at": {
+    "x": 1478,
+    "y": 630
+   },
+   "desc": "щелчок (985,420)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Текст: «Пустой стопор. Канат теперь за кольцо плиты у поворота закреплён. Вон, над водой к тому берегу тянется. Оттуда его держат.» [f0098]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше.",
+    "Подпись под курсором: «Пустой стопор»"
+   ]
+  },
+  {
+   "step": 64,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0099",
+   "action": "click",
+   "observe": "Ближний причал, канат натянут к тому берегу; стопор пуст. Есть выходы вверх-влево и влево.",
+   "thought": "Переправа требует лодки Пелагеи; вернусь по тропе вверх (поворот).",
+   "usd": 0.01126,
+   "at": {
+    "x": 140,
+    "y": 495
+   },
+   "desc": "щелчок (93,330)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 65,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0100",
+   "action": "click",
+   "observe": "Улица Заречья, у дома.",
+   "thought": "Иду вправо к переправе.",
+   "usd": 0.00807,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 66,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0101",
+   "action": "click",
+   "observe": "Двор мельницы, справа стрелка «К затвору». Цель — Ольховка через переправу.",
+   "thought": "Открою Подсказку для маршрута.",
+   "usd": 0.00834,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 67,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0102",
+   "action": "click",
+   "observe": "Двор мельницы, подсказка открыта. Слева на дороге стоит фигура.",
+   "thought": "Иду влево по дороге к улице.",
+   "usd": 0.00834,
+   "at": {
+    "x": 150,
+    "y": 435
+   },
+   "desc": "щелчок (100,290)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 68,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0103",
+   "action": "click",
+   "observe": "Улица Заречья, я у реки справа.",
+   "thought": "Пойду к переправе вправо-вниз стрелкой.",
+   "usd": 0.00823,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 69,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0104",
+   "action": "click",
+   "observe": "Двор мельницы, у меня кружение между локациями.",
+   "thought": "Путь к Ольховке через переправу: вернусь влево по дороге к повороту.",
+   "usd": 0.00843,
+   "at": {
+    "x": 150,
+    "y": 435
+   },
+   "desc": "щелчок (100,290)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 70,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0105",
+   "action": "click",
+   "observe": "Улица Заречья, у дома тёти.",
+   "thought": "Подсказка: Ольховка через переправу. Иду к повороту/переправе: стрелка вправо.",
+   "usd": 0.00844,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 71,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0106",
+   "action": "click",
+   "observe": "Двор мельницы, я хожу по кругу между мельницей и поворотом.",
+   "thought": "Попробую зайти в дверь мельницы? Лучше нажать Подсказку заново; но уже знаю. Пойду к затвору и дальше.",
+   "usd": 0.00876,
+   "at": {
+    "x": 1878,
+    "y": 968
+   },
+   "desc": "щелчок (1252,645)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 72,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0107",
+   "action": "click",
+   "observe": "Затвор, мельница.",
+   "thought": "Открою Подсказку.",
+   "usd": 0.00791,
+   "at": {
+    "x": 1686,
+    "y": 39
+   },
+   "desc": "щелчок (1124,26)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 73,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0108",
+   "action": "key",
+   "observe": "Затвор мельницы, подсказка открыта.",
+   "thought": "Вернусь к повороту через пробел, чтобы увидеть места.",
+   "usd": 0.00799,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 74,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0109",
+   "action": "click",
+   "observe": "Затвор, Павел, подсказка открыта. Выход «Во двор мельницы» внизу справа.",
+   "thought": "Переправа: нужно пройти к Пелагее с лодкой. Попробую кликнуть вправо на берег/лодку... сначала выйти во двор, вернуться к повороту.",
+   "usd": 0.00885,
+   "at": {
+    "x": 1695,
+    "y": 990
+   },
+   "desc": "щелчок (1130,660)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": []
+  },
+  {
+   "step": 75,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0110",
+   "action": "click",
+   "observe": "Мы на затворе мельницы, справа внизу стрелка выхода.",
+   "thought": "Пойду по стрелке назад, потом к переправе у поворота.",
+   "usd": 0.00831,
+   "at": {
+    "x": 1707,
+    "y": 1035
+   },
+   "desc": "щелчок (1138,690)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 76,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0111",
+   "action": "click",
+   "observe": "Двор мельницы, героиня справа.",
+   "thought": "Короче через школьную дверь: иду влево по дороге к улице Заречья.",
+   "usd": 0.00838,
+   "at": {
+    "x": 90,
+    "y": 435
+   },
+   "desc": "щелчок (60,290)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 77,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0112",
+   "action": "click",
+   "observe": "Улица Заречья, дом тёти справа от входа; слева стрелка назад.",
+   "thought": "Надо в Ольховку через переправу: иду вправо к мельнице/повороту.",
+   "usd": 0.00854,
+   "at": {
+    "x": 1575,
+    "y": 668
+   },
+   "desc": "щелчок (1050,445)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 78,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0113",
+   "action": "crossing",
+   "observe": "Ближний причал, канат тянется к тому берегу, стопор справа.",
+   "thought": "Переправа: протяну канат кнопкой crossing.",
+   "usd": 0.00801,
+   "desc": "переправа: тянуть канат",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Каната переправы на экране нет."
+   ]
+  },
+  {
+   "step": 79,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0114",
+   "action": "click",
+   "observe": "Ближний причал, пустой стопор, канат натянут к тому берегу. Лодки нет.",
+   "thought": "Попробую кликнуть по канату/стопору, чтобы позвать переправу.",
+   "usd": 0.00852,
+   "at": {
+    "x": 1478,
+    "y": 630
+   },
+   "desc": "щелчок (985,420)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Текст: «Пустой стопор. Канат теперь за кольцо плиты у поворота закреплён. Вон, над водой к тому берегу тянется. Оттуда его держат.» [f0115]",
+    "Текст закончился: показано реплик и текстов — 1, окно текста закрыто. Можно действовать дальше.",
+    "Подпись под курсором: «Пустой стопор»"
+   ]
+  },
+  {
+   "step": 80,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0116",
+   "action": "click",
+   "observe": "Ближний причал, пустой стопор, лодки нет. Канат тянется к тому берегу.",
+   "thought": "Попробую позвать лодку: щёлк по канату над водой.",
+   "usd": 0.01131,
+   "at": {
+    "x": 660,
+    "y": 443
+   },
+   "desc": "щелчок (440,295)",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": []
+  },
+  {
+   "step": 81,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0117",
+   "action": "crossing",
+   "observe": "Ближний причал, канат над водой.",
+   "thought": "Попробую переправу ещё раз здесь.",
+   "usd": 0.00791,
+   "desc": "переправа: тянуть канат",
+   "room_after": "R1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Каната переправы на экране нет."
+   ]
+  },
+  {
+   "step": 82,
+   "model": "claude-sonnet-5-5",
+   "room": "R1",
+   "frame": "f0118",
+   "action": "click",
+   "observe": "Ближний причал, Агата стоит на берегу, канат тянется к тому берегу.",
+   "thought": "Пойду по стрелке вверх-влево к тропе, возможно к повороту.",
+   "usd": 0.00858,
+   "at": {
+    "x": 138,
+    "y": 495
+   },
+   "desc": "щелчок (92,330)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 83,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0119",
+   "action": "click",
+   "observe": "Улица Заречья, героиня справа у воды. Нужно в Ольховку через переправу.",
+   "thought": "Пойду вправо к мельнице/повороту стрелкой.",
+   "usd": 0.00851,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 84,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0120",
+   "action": "click",
+   "observe": "Двор мельницы, стрелка «К затвору» справа.",
+   "thought": "Пойду к затвору, оттуда к повороту и переправе.",
+   "usd": 0.0084,
+   "at": {
+    "x": 1878,
+    "y": 968
+   },
+   "desc": "щелчок (1252,645)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 85,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0121",
+   "action": "click",
+   "observe": "Затвор мельницы, Павел рядом. Путь к повороту неясен.",
+   "thought": "Открою Подсказку.",
+   "usd": 0.00804,
+   "at": {
+    "x": 1686,
+    "y": 38
+   },
+   "desc": "щелчок (1124,25)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 86,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0122",
+   "action": "key",
+   "observe": "Затвор мельницы, подсказка открыта.",
+   "thought": "Нажму пробел, чтобы увидеть места и найти путь к повороту.",
+   "usd": 0.00795,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 87,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0123",
+   "action": "click",
+   "observe": "Затвор у мельницы, подсказка открыта. Внизу справа «Во двор мельницы».",
+   "thought": "Вернусь во двор мельницы, оттуда к повороту.",
+   "usd": 0.00829,
+   "at": {
+    "x": 1707,
+    "y": 990
+   },
+   "desc": "щелчок (1138,660)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": []
+  },
+  {
+   "step": 88,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0124",
+   "action": "click",
+   "observe": "Затвор мельницы, Павел рядом, стрелка вниз внизу справа.",
+   "thought": "Нажму стрелку вниз, чтобы выйти во двор.",
+   "usd": 0.00816,
+   "at": {
+    "x": 1707,
+    "y": 1035
+   },
+   "desc": "щелчок (1138,690)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 89,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0125",
+   "action": "click",
+   "observe": "Двор мельницы, стрелка вправо «К затвору».",
+   "thought": "Иду к затвору и дальше к повороту.",
+   "usd": 0.00824,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 90,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0126",
+   "action": "click",
+   "observe": "Затвор мельницы, Павел рядом. Нужен путь к повороту/переправе.",
+   "thought": "Попробую стрелку вниз внизу экрана.",
+   "usd": 0.00811,
+   "at": {
+    "x": 1707,
+    "y": 1038
+   },
+   "desc": "щелчок (1138,692)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 91,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0127",
+   "action": "click",
+   "observe": "Двор мельницы, стрелка вправо.",
+   "thought": "Иду к затвору/повороту.",
+   "usd": 0.00813,
+   "at": {
+    "x": 1878,
+    "y": 968
+   },
+   "desc": "щелчок (1252,645)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 92,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0128",
+   "action": "key",
+   "observe": "Затвор у мельницы; я хожу кругами, путь к повороту не найден.",
+   "thought": "Нажму Space, чтобы увидеть подписи мест.",
+   "usd": 0.00778,
+   "key": "Space",
+   "desc": "клавиша Space",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": []
+  },
+  {
+   "step": 93,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0129",
+   "action": "click",
+   "observe": "Затвор мельницы, внизу «Во двор мельницы».",
+   "thought": "Вернусь во двор и найду путь к повороту/улице Заречья.",
+   "usd": 0.00794,
+   "at": {
+    "x": 1725,
+    "y": 987
+   },
+   "desc": "щелчок (1150,658)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": []
+  },
+  {
+   "step": 94,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0130",
+   "action": "click",
+   "observe": "Затвор мельницы, стрелка вниз внизу экрана (1138,692).",
+   "thought": "Попробую нажать на стрелку вниз ещё раз чуть иначе — через Escape не стоит; кликну стрелку.",
+   "usd": 0.0082,
+   "at": {
+    "x": 1707,
+    "y": 1050
+   },
+   "desc": "щелчок (1138,700)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 95,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0131",
+   "action": "click",
+   "observe": "Двор мельницы, героиня справа, стрелка вниз-вправо внизу.",
+   "thought": "Иду по стрелке справа внизу к затвору и дальше.",
+   "usd": 0.00826,
+   "at": {
+    "x": 1878,
+    "y": 968
+   },
+   "desc": "щелчок (1252,645)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 96,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0132",
+   "action": "click",
+   "observe": "Я на затворе мельницы, Павел рядом. Нужен путь к повороту.",
+   "thought": "Попробую щёлкнуть по левому краю, возможно там выход к повороту.",
+   "usd": 0.00806,
+   "at": {
+    "x": 1500,
+    "y": 450
+   },
+   "desc": "щелчок (1000,300)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": []
+  },
+  {
+   "step": 97,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0133",
+   "action": "click",
+   "observe": "Мы на затворе мельницы, Павел и Нина рядом. Цель — вечер, Ольховка.",
+   "thought": "Открою Подсказку для пути.",
+   "usd": 0.00796,
+   "at": {
+    "x": 1686,
+    "y": 38
+   },
+   "desc": "щелчок (1124,25)",
+   "room_after": "M4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Открыта подсказка: «Подсказка 3 из 3» — «Кликни Тамару на улице Ольховки.»"
+   ]
+  },
+  {
+   "step": 98,
+   "model": "claude-sonnet-5-5",
+   "room": "M4",
+   "frame": "f0134",
+   "action": "click",
+   "observe": "Затвор мельницы, подсказка открыта. Внизу стрелка вниз (1138,692).",
+   "thought": "Закрою подсказку и пойду назад через стрелку вниз.",
+   "usd": 0.00811,
+   "at": {
+    "x": 1707,
+    "y": 1038
+   },
+   "desc": "щелчок (1138,692)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 99,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0135",
+   "action": "click",
+   "observe": "Двор мельницы, стрелка внизу справа.",
+   "thought": "Попробую выйти через левую дорогу к улице Заречья.",
+   "usd": 0.00805,
+   "at": {
+    "x": 90,
+    "y": 435
+   },
+   "desc": "щелчок (60,290)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 100,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0136",
+   "action": "click",
+   "observe": "Улица Заречья, стрелка вправо внизу.",
+   "thought": "Иду вправо к переправе/Ольховке.",
+   "usd": 0.00805,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 101,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0137",
+   "action": "click",
+   "observe": "Двор мельницы, я хожу кругами между затвором и двором.",
+   "thought": "Попробую левую дорогу у фигуры (90,290) — выход к улице Заречья.",
+   "usd": 0.00827,
+   "at": {
+    "x": 45,
+    "y": 555
+   },
+   "desc": "щелчок (30,370)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 102,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0138",
+   "action": "click",
+   "observe": "Улица Заречья, дом тёти справа с крыльцом. Нужна Ольховка через переправу.",
+   "thought": "Пойду вправо к переправе (стрелка справа внизу).",
+   "usd": 0.00832,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 103,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0139",
+   "action": "click",
+   "observe": "Двор мельницы, я хожу кругами между двором и затвором.",
+   "thought": "Левая дорога у фигуры, кликну по ней выше (100,280).",
+   "usd": 0.00827,
+   "at": {
+    "x": 165,
+    "y": 435
+   },
+   "desc": "щелчок (110,290)",
+   "room_after": "Z2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 104,
+   "model": "claude-sonnet-5-5",
+   "room": "Z2",
+   "frame": "f0140",
+   "action": "click",
+   "observe": "Улица Заречья, дом тёти справа; стрелка вправо внизу.",
+   "thought": "Иду вправо к переправе/Ольховке.",
+   "usd": 0.00824,
+   "at": {
+    "x": 1878,
+    "y": 918
+   },
+   "desc": "щелчок (1252,612)",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": [
+    "Место сменилось (другая комната / локация).",
+    "Подпись под курсором: «К затвору»"
+   ]
+  },
+  {
+   "step": 105,
+   "model": "claude-sonnet-5-5",
+   "room": "M1",
+   "frame": "f0141",
+   "action": "done",
+   "observe": "Двор мельницы, шаги почти кончились; не нашла выход к улице Ольховки, хожу между двором и затвором.",
+   "thought": "Записываю итоги и завершаю.",
+   "usd": 0.01019,
+   "desc": "done",
+   "room_after": "M1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 204,
+   "events": []
+  }
+ ],
+ "transcript": [
+  {
+   "step": 10,
+   "frame": "f0011",
+   "room": "H1",
+   "who": "Текст",
+   "text": "Нина входит в сестрин дом — теперь, как все, с крыльца. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело."
+  },
+  {
+   "step": 10,
+   "frame": "f0012",
+   "room": "H1",
+   "who": "Нина",
+   "text": "Всё Дунино. Даже пыль."
+  },
+  {
+   "step": 10,
+   "frame": "f0013",
+   "room": "H1",
+   "who": "Текст",
+   "text": "Школьная дверь в галерее на родных петлях висит."
+  },
+  {
+   "step": 10,
+   "frame": "f0014",
+   "room": "H1",
+   "who": "Нина",
+   "text": "Двадцать лет по ту сторону пустой проём был. А дверь всё здесь стояла. Рядом, в двух шагах."
+  },
+  {
+   "step": 10,
+   "frame": "f0015",
+   "room": "H1",
+   "who": "Текст",
+   "text": "В мастерской, на верстаке — Нинино зеркало."
+  },
+  {
+   "step": 10,
+   "frame": "f0016",
+   "room": "H1",
+   "who": "Текст",
+   "text": "В нём её горница видна. Никого."
+  },
+  {
+   "step": 10,
+   "frame": "f0017",
+   "room": "H1",
+   "who": "Нина",
+   "text": "Моя горница-то… А я здесь стою."
+  },
+  {
+   "step": 10,
+   "frame": "f0018",
+   "room": "H1",
+   "who": "Агата",
+   "text": "Я тебя там видела. Писала ты что-то."
+  },
+  {
+   "step": 10,
+   "frame": "f0019",
+   "room": "H1",
+   "who": "Нина",
+   "text": "Задания к уроку. Да тебе — письма, из раза в раз."
+  },
+  {
+   "step": 13,
+   "frame": "f0023",
+   "room": "H1",
+   "who": "Агата",
+   "text": "Тихон… Дуня не придёт. У матушки умерла. Два года назад, по их счёту."
+  },
+  {
+   "step": 13,
+   "frame": "f0024",
+   "room": "H1",
+   "who": "Текст",
+   "text": "Долго Тихон молчит. Потом встаёт и перебирается повыше, на самый верх печи."
+  },
+  {
+   "step": 13,
+   "frame": "f0025",
+   "room": "H1",
+   "who": "Тихон",
+   "text": "Значит, вечер кончился."
+  },
+  {
+   "step": 13,
+   "frame": "f0026",
+   "room": "H1",
+   "who": "Текст",
+   "text": "Устраивается Тихон на печи — с того краю, что к Агатиной лежанке поближе."
+  },
+  {
+   "step": 13,
+   "frame": "f0027",
+   "room": "H1",
+   "who": "Тихон",
+   "text": "Ты, Агата, это… Не уходи надолго. Привык я к тебе. Друг ты мне, стало быть. Только Тамаре не сказывай."
+  },
+  {
+   "step": 13,
+   "frame": "f0028",
+   "room": "H1",
+   "who": "Агата",
+   "text": "Не скажу, Тихон. И ты мне друг."
+  },
+  {
+   "step": 17,
+   "frame": "f0034",
+   "room": "M1",
+   "who": "Текст",
+   "text": "С палкой старик во дворе мельницы стоит. Вернулся управляющий. Илья с ним пришёл."
+  },
+  {
+   "step": 17,
+   "frame": "f0035",
+   "room": "M1",
+   "who": "Фёдор Лукич",
+   "text": "Цел затвор? Где рычаг?"
+  },
+  {
+   "step": 17,
+   "frame": "f0036",
+   "room": "M1",
+   "who": "Павел",
+   "text": "Год на гвозде рычаг провисел. По вашему слову."
+  },
+  {
+   "step": 17,
+   "frame": "f0037",
+   "room": "M1",
+   "who": "Фёдор Лукич",
+   "text": "Год… Я-то к утру вернуться думал. А двадцать лет миновало."
+  },
+  {
+   "step": 17,
+   "frame": "f0038",
+   "room": "M1",
+   "who": "Текст",
+   "text": "Оба неловко рассмеялись."
+  },
+  {
+   "step": 17,
+   "frame": "f0039",
+   "room": "M1",
+   "who": "Фёдор Лукич",
+   "text": "К зиме пруд набрать надо. Не то Заречье без муки останется."
+  },
+  {
+   "step": 17,
+   "frame": "f0040",
+   "room": "M1",
+   "who": "Павел",
+   "text": "Обещала ты. Я помню."
+  },
+  {
+   "step": 17,
+   "frame": "f0041",
+   "room": "M1",
+   "who": "Агата",
+   "text": "А канат — ненадолго. Первый паводок сорвёт — опять без дороги останемся."
+  },
+  {
+   "step": 17,
+   "frame": "f0042",
+   "room": "M1",
+   "who": "Илья",
+   "text": "Мост ставить надо. Пока льдом не схватило. По Дуниной тетради."
+  },
+  {
+   "step": 17,
+   "frame": "f0043",
+   "room": "M1",
+   "who": "Илья",
+   "text": "Пролёты выше прежних поставим — вода под ними пройдёт. А работать надо сейчас, пока пруд спущен."
+  },
+  {
+   "step": 17,
+   "frame": "f0044",
+   "room": "M1",
+   "who": "Илья",
+   "text": "Завтра поутру первое бревно кладём. С Нижней улицы его возьмём: там сруб пустой с самой беды стоит, брёвна сухие. К повороту приходи."
+  },
+  {
+   "step": 32,
+   "frame": "f0060",
+   "room": "H1",
+   "who": "Тихон",
+   "text": "Полку-то повесишь? Вон она, на лавке лежит. Сам я её, что ли, лапами прибью?"
+  },
+  {
+   "step": 33,
+   "frame": "f0062",
+   "room": "H1",
+   "who": "Тихон",
+   "text": "Лежу. Ждать некого — так просто лежу. Печь топится, кастрюля на месте… Хозяйка бы сказала: и то ладно."
+  },
+  {
+   "step": 34,
+   "frame": "f0064",
+   "room": "H1",
+   "who": "Нина",
+   "text": "Здесь посижу. Дуня к моему приходу всегда чайник ставила."
+  },
+  {
+   "step": 49,
+   "frame": "f0080",
+   "room": "H1",
+   "who": "Тихон",
+   "text": "Полку-то повесишь? Вон она, на лавке лежит. Сам я её, что ли, лапами прибью?"
+  },
+  {
+   "step": 50,
+   "frame": "f0082",
+   "room": "H1",
+   "who": "Тихон",
+   "text": "И велела есть, пока горячее."
+  },
+  {
+   "step": 50,
+   "frame": "f0083",
+   "room": "H1",
+   "who": "Агата",
+   "text": "Как будто мы дома."
+  },
+  {
+   "step": 50,
+   "frame": "f0084",
+   "room": "H1",
+   "who": "Тихон",
+   "text": "А ты где, по-твоему?"
+  },
+  {
+   "step": 63,
+   "frame": "f0098",
+   "room": "R1",
+   "who": "Текст",
+   "text": "Пустой стопор. Канат теперь за кольцо плиты у поворота закреплён. Вон, над водой к тому берегу тянется. Оттуда его держат."
+  },
+  {
+   "step": 79,
+   "frame": "f0115",
+   "room": "R1",
+   "who": "Текст",
+   "text": "Пустой стопор. Канат теперь за кольцо плиты у поворота закреплён. Вон, над водой к тому берегу тянется. Оттуда его держат."
+  }
+ ]
+}
