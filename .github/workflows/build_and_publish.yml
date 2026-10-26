@@ -83,7 +83,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: game/.godot
-          key: godot-import-${{ env.GODOT_VERSION }}-${{ github.sha }}
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('game/assets/**/*.import', 'game/assets/characters/**/sprites.json', 'game/export_presets.cfg') }}
           restore-keys: |
             godot-import-${{ env.GODOT_VERSION }}-
 
@@ -138,7 +138,7 @@ jobs:
             fi
             printf '%s\n' "$out"
           }
-          notes="Текущая сборка main @ ${GITHUB_SHA::7} ($(date -u +%Y-%m-%d\ %H:%M) UTC). Не подписана: SmartScreen → «Подробнее» → «Выполнить в любом случае». Веб-версия: https://russiansky777.github.io/dom-propavshih-dorog/"
+          notes="Текущая сборка main @ ${GITHUB_SHA::7} ($(date -u +%Y-%m-%d\ %H:%M) UTC). DomPropavshihDorog.exe — один файл, картинка как на сайте; DomPropavshihDorog_win.zip — полное качество, распаковать целиком (exe и pck рядом). Не подписана: SmartScreen → «Подробнее» → «Выполнить в любом случае». Веб-версия: https://russiansky777.github.io/dom-propavshih-dorog/"
           # Тег двигаем через API, а не git push: из неглубокого клона push тега падал HTTP 500 (с 24.10 exe не обновлялся).
           if gh api "repos/${GITHUB_REPOSITORY}/git/refs/tags/latest" >/dev/null 2>&1; then
             step gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/latest" -f sha="$GITHUB_SHA" -F force=true
@@ -152,6 +152,10 @@ jobs:
           fi
           ls -la build/windows/
           step gh release upload latest build/windows/DomPropavshihDorog.exe --clobber
+          # Полная ПК-версия (I-T7): exe + pck в zip (≤ 1,9 ГБ), картинка в полном качестве.
+          if [ -f build/windows/DomPropavshihDorog_win.zip ]; then
+            step gh release upload latest build/windows/DomPropavshihDorog_win.zip --clobber
+          fi
 
   deploy:
     needs: build
