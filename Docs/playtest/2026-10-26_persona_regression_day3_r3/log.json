@@ -1,0 +1,1951 @@
+{
+ "cfg": {
+  "mode": "fresh",
+  "request": "Docs/playtest/requests/regression.json",
+  "items": [],
+  "contextItems": [],
+  "maxUsd": 1.4,
+  "maxSteps": 110,
+  "maxMinutes": 150,
+  "url": "https://russiansky777.github.io/dom-propavshih-dorog/?start=olkhovka",
+  "note": "Встроенная точка старта ?start=olkhovka: Митя на дальней опоре вечером второго дня — первые два дня пройдены.",
+  "model": "claude-sonnet-5-5",
+  "modelStuck": "claude-opus-5-5",
+  "reportModel": "claude-sonnet-5-5",
+  "W": 1280,
+  "maxFrames": 24,
+  "autoDialogue": true,
+  "persona": "regression",
+  "start": null,
+  "startSave": null,
+  "goalFlags": [
+   "done_M22"
+  ],
+  "goal": "Ольховка: мама, ходики, брат, утро третьего дня, класс с мамой",
+  "route": [
+   "M19",
+   "M22"
+  ],
+  "segment": 3,
+  "segmentId": "day3",
+  "H": 720,
+  "actions_run": "3 (id 40285331074)"
+ },
+ "version": "8e5f959 2026-10-26T03:12Z",
+ "started": "2026-10-26T07:27:23.025Z",
+ "stop": "цель отрезка достигнута на шаге 13 (done_M22)",
+ "probe": true,
+ "end": {
+  "room": "O1",
+  "inventory": [
+   "pocket_watch",
+   "photo_bridge",
+   "drawing_ilya",
+   "plan_crossing",
+   "journal_manager",
+   "school_ribbon"
+  ],
+  "goal": "Тамара разбирает письма на улице Ольховки, мама пошла в дом Дуни. Пруд ещё спущен: загляну к Павлу, узнаю, когда воду поднимать. Мама звала к Илье в мастерскую — Уле верстак ладить. Побываю у всех — в любом порядке.",
+  "flags": 187
+ },
+ "saves": [
+  {
+   "slot": "auto",
+   "title": "",
+   "key": "/userfs/godot/app_userdata/Dom propavshih dorog/saves/auto.json"
+  },
+  {
+   "slot": "day3",
+   "title": "День третий: Ольховка",
+   "key": "/userfs/godot/app_userdata/Dom propavshih dorog/saves/day3.json"
+  }
+ ],
+ "rooms": [
+  "R3",
+  "O3",
+  "O4",
+  "O2",
+  "O1"
+ ],
+ "flags_order": [
+  {
+   "flag": "bell_clapper_hung",
+   "step": 0
+  },
+  {
+   "flag": "board_mama",
+   "step": 0
+  },
+  {
+   "flag": "done_M01",
+   "step": 0
+  },
+  {
+   "flag": "done_M02",
+   "step": 0
+  },
+  {
+   "flag": "done_M03",
+   "step": 0
+  },
+  {
+   "flag": "done_M04",
+   "step": 0
+  },
+  {
+   "flag": "done_M05",
+   "step": 0
+  },
+  {
+   "flag": "done_M06",
+   "step": 0
+  },
+  {
+   "flag": "done_M07",
+   "step": 0
+  },
+  {
+   "flag": "done_M08",
+   "step": 0
+  },
+  {
+   "flag": "done_M09",
+   "step": 0
+  },
+  {
+   "flag": "done_M09b",
+   "step": 0
+  },
+  {
+   "flag": "done_M09s",
+   "step": 0
+  },
+  {
+   "flag": "done_M10",
+   "step": 0
+  },
+  {
+   "flag": "done_M11",
+   "step": 0
+  },
+  {
+   "flag": "done_M12",
+   "step": 0
+  },
+  {
+   "flag": "done_M13",
+   "step": 0
+  },
+  {
+   "flag": "done_M13a",
+   "step": 0
+  },
+  {
+   "flag": "done_M14",
+   "step": 0
+  },
+  {
+   "flag": "done_M15",
+   "step": 0
+  },
+  {
+   "flag": "done_M15a",
+   "step": 0
+  },
+  {
+   "flag": "done_M15s",
+   "step": 0
+  },
+  {
+   "flag": "done_M16",
+   "step": 0
+  },
+  {
+   "flag": "done_M16s",
+   "step": 0
+  },
+  {
+   "flag": "done_M17",
+   "step": 0
+  },
+  {
+   "flag": "done_M18",
+   "step": 0
+  },
+  {
+   "flag": "done_M18p",
+   "step": 0
+  },
+  {
+   "flag": "done_N01",
+   "step": 0
+  },
+  {
+   "flag": "done_V01",
+   "step": 0
+  },
+  {
+   "flag": "done_V02",
+   "step": 0
+  },
+  {
+   "flag": "done_V03",
+   "step": 0
+  },
+  {
+   "flag": "door_school_installed",
+   "step": 0
+  },
+  {
+   "flag": "evening_dusk",
+   "step": 0
+  },
+  {
+   "flag": "far_lights_answered",
+   "step": 0
+  },
+  {
+   "flag": "far_snow_seen",
+   "step": 0
+  },
+  {
+   "flag": "ferry_verified",
+   "step": 0
+  },
+  {
+   "flag": "h1_dark_said",
+   "step": 0
+  },
+  {
+   "flag": "h1_scarf_removed",
+   "step": 0
+  },
+  {
+   "flag": "h1_shutter_open",
+   "step": 0
+  },
+  {
+   "flag": "h1_tikhon_after_mirror",
+   "step": 0
+  },
+  {
+   "flag": "h2_bundle_unwrapped",
+   "step": 0
+  },
+  {
+   "flag": "h2_saw_stand_zm",
+   "step": 0
+  },
+  {
+   "flag": "h3_night_to_bed",
+   "step": 0
+  },
+  {
+   "flag": "has_bell",
+   "step": 0
+  },
+  {
+   "flag": "has_brace_plate",
+   "step": 0
+  },
+  {
+   "flag": "has_bundle_nina",
+   "step": 0
+  },
+  {
+   "flag": "has_chalk",
+   "step": 0
+  },
+  {
+   "flag": "has_clamp",
+   "step": 0
+  },
+  {
+   "flag": "has_door_hinges",
+   "step": 0
+  },
+  {
+   "flag": "has_drawing_ilya",
+   "step": 0
+  },
+  {
+   "flag": "has_journal_manager",
+   "step": 0
+  },
+  {
+   "flag": "has_key_house",
+   "step": 0
+  },
+  {
+   "flag": "has_key_sluice",
+   "step": 0
+  },
+  {
+   "flag": "has_letter_tamara",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_mill",
+   "step": 0
+  },
+  {
+   "flag": "has_mitten",
+   "step": 0
+  },
+  {
+   "flag": "has_photo_bridge",
+   "step": 0
+  },
+  {
+   "flag": "has_plan_crossing",
+   "step": 0
+  },
+  {
+   "flag": "has_pocket_watch",
+   "step": 0
+  },
+  {
+   "flag": "has_school_door",
+   "step": 0
+  },
+  {
+   "flag": "has_school_ribbon",
+   "step": 0
+  },
+  {
+   "flag": "house_open",
+   "step": 0
+  },
+  {
+   "flag": "house_unlocked",
+   "step": 0
+  },
+  {
+   "flag": "knows_bridge_lost",
+   "step": 0
+  },
+  {
+   "flag": "knows_crossing_plan",
+   "step": 0
+  },
+  {
+   "flag": "knows_dunya_left",
+   "step": 0
+  },
+  {
+   "flag": "knows_letters_bag",
+   "step": 0
+  },
+  {
+   "flag": "knows_no_road",
+   "step": 0
+  },
+  {
+   "flag": "knows_pier_trace",
+   "step": 0
+  },
+  {
+   "flag": "knows_rope_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "knows_rule_things_remember",
+   "step": 0
+  },
+  {
+   "flag": "knows_tikhon_waits",
+   "step": 0
+  },
+  {
+   "flag": "knows_twenty_years",
+   "step": 0
+  },
+  {
+   "flag": "lantern_check_seen",
+   "step": 0
+  },
+  {
+   "flag": "met_mitya",
+   "step": 0
+  },
+  {
+   "flag": "met_pavel",
+   "step": 0
+  },
+  {
+   "flag": "met_pelageya",
+   "step": 0
+  },
+  {
+   "flag": "met_tamara",
+   "step": 0
+  },
+  {
+   "flag": "met_tikhon",
+   "step": 0
+  },
+  {
+   "flag": "mitten_placed",
+   "step": 0
+  },
+  {
+   "flag": "night_day1",
+   "step": 0
+  },
+  {
+   "flag": "nina_mirror_clamped",
+   "step": 0
+  },
+  {
+   "flag": "nina_time_compared",
+   "step": 0
+  },
+  {
+   "flag": "o1_saw_winter",
+   "step": 0
+  },
+  {
+   "flag": "observed_path_loop",
+   "step": 0
+  },
+  {
+   "flag": "office_mirror_clamped",
+   "step": 0
+  },
+  {
+   "flag": "office_mirror_mounted",
+   "step": 0
+  },
+  {
+   "flag": "office_shelf_lifted",
+   "step": 0
+  },
+  {
+   "flag": "office_unbolted",
+   "step": 0
+  },
+  {
+   "flag": "pavel_agreed_signals",
+   "step": 0
+  },
+  {
+   "flag": "pavel_answer_promise",
+   "step": 0
+  },
+  {
+   "flag": "pavel_blessed_mirror",
+   "step": 0
+  },
+  {
+   "flag": "plate_braced",
+   "step": 0
+  },
+  {
+   "flag": "pond_lowered",
+   "step": 0
+  },
+  {
+   "flag": "r1_saw_boat_gone",
+   "step": 0
+  },
+  {
+   "flag": "r1_saw_pelageya_at_turn_d3",
+   "step": 0
+  },
+  {
+   "flag": "road_held_both_ends",
+   "step": 0
+  },
+  {
+   "flag": "rope_brought",
+   "step": 0
+  },
+  {
+   "flag": "rope_on_ring",
+   "step": 0
+  },
+  {
+   "flag": "seen_bell",
+   "step": 0
+  },
+  {
+   "flag": "seen_class_traces",
+   "step": 0
+  },
+  {
+   "flag": "seen_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "seen_office_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_office_photo",
+   "step": 0
+  },
+  {
+   "flag": "seen_school_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_shift_schedule",
+   "step": 0
+  },
+  {
+   "flag": "seen_workshop",
+   "step": 0
+  },
+  {
+   "flag": "skoba_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "sluice_key_inserted",
+   "step": 0
+  },
+  {
+   "flag": "sluice_opened",
+   "step": 0
+  },
+  {
+   "flag": "started_M01",
+   "step": 0
+  },
+  {
+   "flag": "started_M02",
+   "step": 0
+  },
+  {
+   "flag": "started_M03",
+   "step": 0
+  },
+  {
+   "flag": "started_M04",
+   "step": 0
+  },
+  {
+   "flag": "started_M05",
+   "step": 0
+  },
+  {
+   "flag": "started_M06",
+   "step": 0
+  },
+  {
+   "flag": "started_M07",
+   "step": 0
+  },
+  {
+   "flag": "started_M08",
+   "step": 0
+  },
+  {
+   "flag": "started_M09",
+   "step": 0
+  },
+  {
+   "flag": "started_M09b",
+   "step": 0
+  },
+  {
+   "flag": "started_M09s",
+   "step": 0
+  },
+  {
+   "flag": "started_M10",
+   "step": 0
+  },
+  {
+   "flag": "started_M11",
+   "step": 0
+  },
+  {
+   "flag": "started_M12",
+   "step": 0
+  },
+  {
+   "flag": "started_M13",
+   "step": 0
+  },
+  {
+   "flag": "started_M13a",
+   "step": 0
+  },
+  {
+   "flag": "started_M14",
+   "step": 0
+  },
+  {
+   "flag": "started_M15",
+   "step": 0
+  },
+  {
+   "flag": "started_M15a",
+   "step": 0
+  },
+  {
+   "flag": "started_M15s",
+   "step": 0
+  },
+  {
+   "flag": "started_M16",
+   "step": 0
+  },
+  {
+   "flag": "started_M16s",
+   "step": 0
+  },
+  {
+   "flag": "started_M17",
+   "step": 0
+  },
+  {
+   "flag": "started_M18",
+   "step": 0
+  },
+  {
+   "flag": "started_M18p",
+   "step": 0
+  },
+  {
+   "flag": "started_N01",
+   "step": 0
+  },
+  {
+   "flag": "stove_lit",
+   "step": 0
+  },
+  {
+   "flag": "three_lights_sent",
+   "step": 0
+  },
+  {
+   "flag": "v01_cup_blue",
+   "step": 0
+  },
+  {
+   "flag": "v01_photo_table",
+   "step": 0
+  },
+  {
+   "flag": "v03_add_boat",
+   "step": 0
+  },
+  {
+   "flag": "v03_marked",
+   "step": 0
+  },
+  {
+   "flag": "visited_R3",
+   "step": 0
+  },
+  {
+   "flag": "z4_side_door_said",
+   "step": 0
+  },
+  {
+   "flag": "done_M19",
+   "step": 1
+  },
+  {
+   "flag": "in_olkhovka",
+   "step": 1
+  },
+  {
+   "flag": "m19_nina_home",
+   "step": 1
+  },
+  {
+   "flag": "met_nina",
+   "step": 1
+  },
+  {
+   "flag": "started_M19",
+   "step": 1
+  },
+  {
+   "flag": "visited_O3",
+   "step": 1
+  },
+  {
+   "flag": "visited_O4",
+   "step": 1
+  },
+  {
+   "flag": "bedtime_d2_night",
+   "step": 3
+  },
+  {
+   "flag": "done_M19c",
+   "step": 3
+  },
+  {
+   "flag": "done_M20",
+   "step": 3
+  },
+  {
+   "flag": "knows_nina_saw_agata",
+   "step": 3
+  },
+  {
+   "flag": "met_ilya",
+   "step": 3
+  },
+  {
+   "flag": "met_ilya_wife",
+   "step": 3
+  },
+  {
+   "flag": "met_ulyana",
+   "step": 3
+  },
+  {
+   "flag": "night_olkhovka",
+   "step": 3
+  },
+  {
+   "flag": "o3_clock_compared",
+   "step": 3
+  },
+  {
+   "flag": "started_M19c",
+   "step": 3
+  },
+  {
+   "flag": "started_M20",
+   "step": 3
+  },
+  {
+   "flag": "time_common_seen",
+   "step": 3
+  },
+  {
+   "flag": "wife_came",
+   "step": 3
+  },
+  {
+   "flag": "day_card_ui_day_card_3",
+   "step": 4
+  },
+  {
+   "flag": "done_N02",
+   "step": 4
+  },
+  {
+   "flag": "morning_day3",
+   "step": 4
+  },
+  {
+   "flag": "started_N02",
+   "step": 4
+  },
+  {
+   "flag": "done_M21",
+   "step": 5
+  },
+  {
+   "flag": "knows_evdokia_death",
+   "step": 5
+  },
+  {
+   "flag": "started_M21",
+   "step": 5
+  },
+  {
+   "flag": "o3_read_notebooks",
+   "step": 6
+  },
+  {
+   "flag": "done_M21b",
+   "step": 9
+  },
+  {
+   "flag": "lower_street_returned",
+   "step": 9
+  },
+  {
+   "flag": "o3_read_village_list",
+   "step": 9
+  },
+  {
+   "flag": "school_path_open",
+   "step": 9
+  },
+  {
+   "flag": "started_M21b",
+   "step": 9
+  },
+  {
+   "flag": "visited_O2",
+   "step": 12
+  },
+  {
+   "flag": "boat_shuttle_open",
+   "step": 13
+  },
+  {
+   "flag": "done_M22",
+   "step": 13
+  },
+  {
+   "flag": "free_walk_day3",
+   "step": 13
+  },
+  {
+   "flag": "nina_answered_board",
+   "step": 13
+  },
+  {
+   "flag": "nina_wrote_date",
+   "step": 13
+  },
+  {
+   "flag": "q06_hook",
+   "step": 13
+  },
+  {
+   "flag": "started_M22",
+   "step": 13
+  },
+  {
+   "flag": "visited_O1",
+   "step": 13
+  }
+ ],
+ "blocked_scenes": [
+  "M23a «Письма» (O4): условия выполнены, но сцена не завершена (её действие не сделано)"
+ ],
+ "harness": [],
+ "console_errors": [],
+ "console_warnings": [],
+ "persona": "regression",
+ "segment": "day3",
+ "goal": {
+  "flags": [
+   "done_M22"
+  ],
+  "reached": true,
+  "step": 13
+ },
+ "anomalies": [],
+ "inventory_log": [],
+ "coverage": {
+  "quests": [
+   {
+    "id": "Q01",
+    "title": "Письмо с прежним адресом",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q02",
+    "title": "На карте вырос сад",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q03",
+    "title": "Незашитый рукав",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q04",
+    "title": "Угол для Тихона",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q05",
+    "title": "Чужая мера",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q06",
+    "title": "Второй верстак",
+    "reserve": false,
+    "done": false,
+    "started": true,
+    "choice": ""
+   },
+   {
+    "id": "Q07",
+    "title": "Двадцать зарубок",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q08",
+    "title": "Общий чай",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q09",
+    "title": "Ольховая улица",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q10",
+    "title": "Яблоня для следующей весны",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   }
+  ],
+  "choices": [
+   "board_mama",
+   "mitten_placed",
+   "pavel_answer_promise",
+   "q06_hook",
+   "v01_cup_blue",
+   "v01_photo_table",
+   "v03_add_boat",
+   "v03_marked"
+  ],
+  "rooms": [
+   {
+    "room": "R3",
+    "total": 3,
+    "seen": 0,
+    "unseen": [
+     "Дальний стопор",
+     "Сарайчик переправы",
+     "Фонарь на столбике"
+    ]
+   },
+   {
+    "room": "O3",
+    "total": 8,
+    "seen": 0,
+    "unseen": [
+     "Ходики",
+     "Зеркальце в рамке",
+     "Тетради тёти",
+     "Список деревни",
+     "Письма мамы",
+     "Зарубки на косяке",
+     "Окно",
+     "Божница"
+    ]
+   },
+   {
+    "room": "O4",
+    "total": 6,
+    "seen": 0,
+    "unseen": [
+     "Дощечка Мити",
+     "Мешок Тамары",
+     "Мастерская Ильи",
+     "Дом мамы",
+     "Дом Ильи",
+     "Река"
+    ]
+   },
+   {
+    "room": "O2",
+    "total": 5,
+    "seen": 0,
+    "unseen": [
+     "Дерево у школы",
+     "Ступень крыльца",
+     "Моя варежка",
+     "Варежка на тропе",
+     "Окно школы"
+    ]
+   },
+   {
+    "room": "O1",
+    "total": 8,
+    "seen": 0,
+    "unseen": [
+     "Классная доска",
+     "Залатанный мешок",
+     "Стопка тетрадей",
+     "Ящик учительского стола",
+     "Кусочек мела",
+     "Вывеска «Нижняя улица»",
+     "Старая карта Ольховки",
+     "Плакат с синицей"
+    ]
+   }
+  ]
+ },
+ "end_flags": [
+  "bedtime_d2_night",
+  "bell_clapper_hung",
+  "board_mama",
+  "boat_shuttle_open",
+  "day_card_ui_day_card_3",
+  "done_M01",
+  "done_M02",
+  "done_M03",
+  "done_M04",
+  "done_M05",
+  "done_M06",
+  "done_M07",
+  "done_M08",
+  "done_M09",
+  "done_M09b",
+  "done_M09s",
+  "done_M10",
+  "done_M11",
+  "done_M12",
+  "done_M13",
+  "done_M13a",
+  "done_M14",
+  "done_M15",
+  "done_M15a",
+  "done_M15s",
+  "done_M16",
+  "done_M16s",
+  "done_M17",
+  "done_M18",
+  "done_M18p",
+  "done_M19",
+  "done_M19c",
+  "done_M20",
+  "done_M21",
+  "done_M21b",
+  "done_M22",
+  "done_N01",
+  "done_N02",
+  "done_V01",
+  "done_V02",
+  "done_V03",
+  "door_school_installed",
+  "evening_dusk",
+  "far_lights_answered",
+  "far_snow_seen",
+  "ferry_verified",
+  "free_walk_day3",
+  "h1_dark_said",
+  "h1_scarf_removed",
+  "h1_shutter_open",
+  "h1_tikhon_after_mirror",
+  "h2_bundle_unwrapped",
+  "h2_saw_stand_zm",
+  "h3_night_to_bed",
+  "has_bell",
+  "has_brace_plate",
+  "has_bundle_nina",
+  "has_chalk",
+  "has_clamp",
+  "has_door_hinges",
+  "has_drawing_ilya",
+  "has_journal_manager",
+  "has_key_house",
+  "has_key_sluice",
+  "has_letter_tamara",
+  "has_mirror_home",
+  "has_mirror_mill",
+  "has_mitten",
+  "has_photo_bridge",
+  "has_plan_crossing",
+  "has_pocket_watch",
+  "has_school_door",
+  "has_school_ribbon",
+  "house_open",
+  "house_unlocked",
+  "in_olkhovka",
+  "knows_bridge_lost",
+  "knows_crossing_plan",
+  "knows_dunya_left",
+  "knows_evdokia_death",
+  "knows_letters_bag",
+  "knows_nina_saw_agata",
+  "knows_no_road",
+  "knows_pier_trace",
+  "knows_rope_on_plate",
+  "knows_rule_things_remember",
+  "knows_tikhon_waits",
+  "knows_twenty_years",
+  "lantern_check_seen",
+  "lower_street_returned",
+  "m19_nina_home",
+  "met_ilya",
+  "met_ilya_wife",
+  "met_mitya",
+  "met_nina",
+  "met_pavel",
+  "met_pelageya",
+  "met_tamara",
+  "met_tikhon",
+  "met_ulyana",
+  "mitten_placed",
+  "morning_day3",
+  "night_day1",
+  "night_olkhovka",
+  "nina_answered_board",
+  "nina_mirror_clamped",
+  "nina_time_compared",
+  "nina_wrote_date",
+  "o1_saw_winter",
+  "o3_clock_compared",
+  "o3_read_notebooks",
+  "o3_read_village_list",
+  "observed_path_loop",
+  "office_mirror_clamped",
+  "office_mirror_mounted",
+  "office_shelf_lifted",
+  "office_unbolted",
+  "pavel_agreed_signals",
+  "pavel_answer_promise",
+  "pavel_blessed_mirror",
+  "plate_braced",
+  "pond_lowered",
+  "q06_hook",
+  "r1_saw_boat_gone",
+  "r1_saw_pelageya_at_turn_d3",
+  "road_held_both_ends",
+  "rope_brought",
+  "rope_on_ring",
+  "school_path_open",
+  "seen_bell",
+  "seen_class_traces",
+  "seen_mirror_home",
+  "seen_office_door",
+  "seen_office_photo",
+  "seen_school_door",
+  "seen_shift_schedule",
+  "seen_workshop",
+  "skoba_on_plate",
+  "sluice_key_inserted",
+  "sluice_opened",
+  "started_M01",
+  "started_M02",
+  "started_M03",
+  "started_M04",
+  "started_M05",
+  "started_M06",
+  "started_M07",
+  "started_M08",
+  "started_M09",
+  "started_M09b",
+  "started_M09s",
+  "started_M10",
+  "started_M11",
+  "started_M12",
+  "started_M13",
+  "started_M13a",
+  "started_M14",
+  "started_M15",
+  "started_M15a",
+  "started_M15s",
+  "started_M16",
+  "started_M16s",
+  "started_M17",
+  "started_M18",
+  "started_M18p",
+  "started_M19",
+  "started_M19c",
+  "started_M20",
+  "started_M21",
+  "started_M21b",
+  "started_M22",
+  "started_N01",
+  "started_N02",
+  "stove_lit",
+  "three_lights_sent",
+  "time_common_seen",
+  "v01_cup_blue",
+  "v01_photo_table",
+  "v03_add_boat",
+  "v03_marked",
+  "visited_O1",
+  "visited_O2",
+  "visited_O3",
+  "visited_O4",
+  "visited_R3",
+  "wife_came",
+  "z4_side_door_said"
+ ],
+ "verdict_history": [],
+ "notes": [],
+ "frames": [
+  {
+   "id": "f0079",
+   "step": 14,
+   "kind": "final",
+   "label": "последний кадр"
+  }
+ ],
+ "steps": [
+  {
+   "step": 1,
+   "model": "claude-sonnet-5-5",
+   "room": "R3",
+   "frame": "f0001",
+   "action": "click",
+   "observe": "Дальняя опора, стрелка вверх к тропе.",
+   "thought": "Иду вверх по тропе к улице.",
+   "usd": 0.01495,
+   "at": {
+    "x": 747,
+    "y": 417
+   },
+   "desc": "щелчок (498,278)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 152,
+   "events": [
+    "Текст: «Снег, свет в окнах. Впереди Митя с фонарём. Подходит к крайнему дому, в ставню стучит.» [f0002]",
+    "Митя: «Илья! Илья, выходи — сестра твоя пришла!» [f0003]",
+    "Текст: «У соседнего дома на крыльце седая женщина в платке стоит. Три огня она из окна увидела.» [f0004]",
+    "Затемнение / постановка сцены ~5.4 с (кадр f0005)",
+    "Агата: «Мама.» [f0006]",
+    "Затемнение / постановка сцены ~3.4 с (кадр f0007)",
+    "Текст: «Нина прямо на крыльце Агату обнимает. Молчит. Долго не отпускает.» [f0008]",
+    "Затемнение / постановка сцены ~3.1 с (кадр f0009)",
+    "Нина: «Пойдём в тепло, доченька. Ты вся в снегу.» [f0010]",
+    "Затемнение / постановка сцены ~18.2 с (кадр f0011)",
+    "Агата: «Те самые ходики.» [f0012]",
+    "Текст закончился: показано реплик и текстов — 7, окно текста закрыто. Можно действовать дальше.",
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 2,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0013",
+   "action": "click",
+   "observe": "Горница Нины, ходики на стене, мама рядом.",
+   "thought": "Беру часы из сумки (первый предмет) и кликаю по ходикам.",
+   "usd": 0.01476,
+   "at": {
+    "x": 701,
+    "y": 41
+   },
+   "desc": "щелчок (467,27)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 152,
+   "events": [
+    "Предмет взят в руку (иконка у курсора).",
+    "Строка подсказки внизу: «Выбрано: Карманные часы Агаты — нажмите на объект, чтобы применить. Повторный клик по предмету отменит выбор.»"
+   ]
+  },
+  {
+   "step": 3,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0014",
+   "action": "click",
+   "observe": "Часы в руке, ходики на стене.",
+   "thought": "Применяю часы к ходикам.",
+   "usd": 0.0063,
+   "at": {
+    "x": 1080,
+    "y": 225
+   },
+   "desc": "щелчок (720,150)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 165,
+   "events": [
+    "Агата: «Выну часы. Секундная стрелка с маятником шаг в шаг идёт. Минута в минуту.» [f0015]",
+    "Агата: «В зеркале стрелки бежали. А тут — вровень с моими.» [f0016]",
+    "Текст: «На стол Нина кладёт маленькое зеркальце в деревянной оправе.» [f0017]",
+    "Нина: «У Дуни над печью висело. В тот день мне в подарок несла. Тут оно и осталось. А показывает её печь.» [f0018]",
+    "Нина: «Три недели тому ты в нём показалась. Целую неделю у печи проспала, а Тихон в кресле.» [f0019]",
+    "Агата: «Да это ж вчера было!» [f0020]",
+    "Нина: «Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там живут. Всё тебя ждала и ждала.» [f0021]",
+    "Нина: «Значит, у тебя только год миновал… Один год, доченька.» [f0022]",
+    "Агата: «Год. А у тебя больше прошло, чем я живу.» [f0023]",
+    "Текст: «Хлопнула дверь. Вошёл мужчина, весь в стружке, карандаш за ухом. За ним девочка вбежала — пальто на ночную рубашку накинуто.» [f0024]",
+    "Агата: «Илюша… По карандашу за ухом узнала. А то бы не признала.» [f0025]",
+    "Илья: «Да ты всё такая же… Не выросла.» [f0026]",
+    "Агата: «Ты вырос. На двадцать лет.» [f0027]",
+    "Ульяна: «Это тётя Агата? Папа, ты говорил, раньше она тебя старше была!» [f0028]",
+    "Ульяна: «Какая ж она тётя? Она как сестра! Я всегда сестру хотела — старшую.» [f0029]",
+    "Агата: «Ну, раз хотела — буду тебе сестрой, Уля.» [f0030]",
+    "Агата: «В учительском ящике план лежал. Твой?» [f0031]",
+    "Илья: «Всякую зиму переписывал, в ящик клал. Дуня сказала: дверь у неё в мастерской. Навесит кто — в класс и попадёт.» [f0032]",
+    "Текст: «Позже жена Ильи приходит, лампу несёт.» [f0033]",
+    "Варвара: «Ульяна, пора спать. Тётя здесь, нынче никуда не уйдёт.» [f0034]",
+    "Нина: «В своей комнате ляжешь. Ульяна у нас там спит. Потеснитесь вдвоём.» [f0035]",
+    "Текст: «В старой комнате на стене — зарубки по годам. Отмечали чужой рост.» [f0036]",
+    "Текст закончился: показано реплик и текстов — 22, окно текста закрыто. Можно действовать дальше.",
+    "Предмета в руке больше нет.",
+    "Подпись под курсором: «Ходики: идут вровень»"
+   ]
+  },
+  {
+   "step": 4,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0037",
+   "action": "click",
+   "observe": "Сцена с братом закончилась, в горнице все стоят. Нужно лечь спать — кровать слева.",
+   "thought": "Кликаю по кровати слева.",
+   "usd": 0.02498,
+   "at": {
+    "x": 165,
+    "y": 600
+   },
+   "desc": "щелчок (110,400)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 169,
+   "events": [
+    "Агата: «Поздно уже. Ляжем с Улей вдвоём — потеснимся.» [f0038]",
+    "Затемнение / постановка сцены ~14.3 с (кадр f0039)",
+    "Текст: «Старая кровать. За стеной ровно тикают ходики — в такт с карманными часами. Уснула Агата и сама не заметила как.» [f0040]",
+    "Затемнение / постановка сцены ~33.0 с (кадр f0041)",
+    "Текст закончился: показано реплик и текстов — 2, окно текста закрыто. Можно действовать дальше.",
+    "Подпись под курсором: «Кровать»",
+    "Строка подсказки внизу: «Сохранено: День третий: Ольховка»"
+   ]
+  },
+  {
+   "step": 5,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0042",
+   "action": "click",
+   "observe": "Утро третьего дня, в горнице мама (Нина) стоит у окна.",
+   "thought": "Кликаю по маме.",
+   "usd": 0.0161,
+   "at": {
+    "x": 1328,
+    "y": 480
+   },
+   "desc": "щелчок (885,320)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 172,
+   "events": [
+    "Нина: «Доченька… Дуня два года назад умерла, по нашему счёту. Семьдесят два ей было.» [f0043]",
+    "Агата: «Я всё думала: доберусь — и она опять дома.» [f0044]",
+    "Агата: «А Тихон её всё к вечеру дожидается.» [f0045]",
+    "Нина: «На столе её тетради. Восемнадцать лет всё дорогу вернуть пробовала. Рядом список: кто в деревне жив, кого не стало. Погляди, доченька.» [f0046]",
+    "Текст закончился: показано реплик и текстов — 4, окно текста закрыто. Можно действовать дальше.",
+    "Подпись под курсором: «Нина»"
+   ]
+  },
+  {
+   "step": 6,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0047",
+   "action": "click",
+   "observe": "Мама договорила, на столе тетради (бумага у края стола).",
+   "thought": "Кликаю тетради на столе.",
+   "usd": 0.01399,
+   "at": {
+    "x": 615,
+    "y": 603
+   },
+   "desc": "щелчок (410,402)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 173,
+   "events": [
+    "Агата: «Восемнадцать лет пыталась дорогу вернуть. Столько тетрадей… И каждая её рукой исписана.» [f0048]",
+    "Нина: «А школьная тропа уже после Дуни пропала. Прошлой зимой.» [f0049]",
+    "Текст закончился: показано реплик и текстов — 2, окно текста закрыто. Можно действовать дальше.",
+    "Открылся крупный план (просмотр)."
+   ]
+  },
+  {
+   "step": 7,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0050",
+   "action": "click",
+   "observe": "Открыт крупный план тетради, есть кнопки Дальше и Закрыть.",
+   "thought": "Листаю дальше.",
+   "usd": 0.01357,
+   "at": {
+    "x": 1559,
+    "y": 1016
+   },
+   "desc": "щелчок (1039,677)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 173,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 8,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0051",
+   "action": "click",
+   "observe": "Открыта тетрадь, страница «Правило», кнопки Назад/Далее/Закрыть.",
+   "thought": "Закрою тетрадь и перейду к списку деревни.",
+   "usd": 0.00864,
+   "at": {
+    "x": 1779,
+    "y": 1016
+   },
+   "desc": "щелчок (1186,677)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 173,
+   "events": []
+  },
+  {
+   "step": 9,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0052",
+   "action": "click",
+   "observe": "Горница, просмотр закрыт. На столе лежит список (бумага слева, ~212,400).",
+   "thought": "Кликаю список деревни на столе.",
+   "usd": 0.00861,
+   "at": {
+    "x": 318,
+    "y": 600
+   },
+   "desc": "щелчок (212,400)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 178,
+   "events": [
+    "Агата: «Живых двадцать два. От прежних восемнадцати пятнадцать осталось, семеро здесь родились. Трое умерли. Дуня тоже.» [f0053]",
+    "Агата: «А как прежде сделать — нельзя?» [f0054]",
+    "Нина: «Как прежде — нет… Да и свои двадцать лет я не отдам. В них Ульяна.» [f0055]",
+    "Нина: «А дальше можно вместе жить.» [f0056]",
+    "Текст: «С улицы голоса слышны. Дети к школе бегут, поглядеть: тропа к школе с вечера снова есть. И нижняя улица вернулась.» [f0057]",
+    "Нина: «Пойдём, класс тебе покажу. Как люди пойдём, через калитку.» [f0058]",
+    "Текст закончился: показано реплик и текстов — 6, окно текста закрыто. Можно действовать дальше.",
+    "Открылся крупный план (просмотр)."
+   ]
+  },
+  {
+   "step": 10,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0059",
+   "action": "click",
+   "observe": "Список деревни в крупном плане, текст закончился.",
+   "thought": "Закрываю просмотр.",
+   "usd": 0.01494,
+   "at": {
+    "x": 1779,
+    "y": 1016
+   },
+   "desc": "щелчок (1186,677)",
+   "room_after": "O3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 178,
+   "events": []
+  },
+  {
+   "step": 11,
+   "model": "claude-sonnet-5-5",
+   "room": "O3",
+   "frame": "f0060",
+   "action": "click",
+   "observe": "Горница, просмотр закрыт. Выход, вероятно, внизу (стрелки).",
+   "thought": "Жму стрелку выхода внизу.",
+   "usd": 0.00895,
+   "at": {
+    "x": 1499,
+    "y": 1037
+   },
+   "desc": "щелчок (999,691)",
+   "room_after": "O4",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 178,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 12,
+   "model": "claude-sonnet-5-5",
+   "room": "O4",
+   "frame": "f0061",
+   "action": "click",
+   "observe": "Улица Ольховки, слева вверху стрелка, справа стрелка.",
+   "thought": "Ищу «К школе»; наведу на левую стрелку.",
+   "usd": 0.0088,
+   "at": {
+    "x": 294,
+    "y": 417
+   },
+   "desc": "щелчок (196,278)",
+   "room_after": "O2",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 179,
+   "events": [
+    "Место сменилось (другая комната / локация)."
+   ]
+  },
+  {
+   "step": 13,
+   "model": "claude-sonnet-5-5",
+   "room": "O2",
+   "frame": "f0062",
+   "action": "click",
+   "observe": "Школьный двор, дверь школы",
+   "thought": "Кликаю дверь",
+   "usd": 0.00898,
+   "at": {
+    "x": 533,
+    "y": 435
+   },
+   "desc": "щелчок (355,290)",
+   "room_after": "O1",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 187,
+   "events": [
+    "Текст: «На доске Нина читает: «Мама, я иду». Берёт мел. Ниже одно слово выводит: «Дождалась».» [f0063]",
+    "Текст: «Затем по привычке, как перед уроком, в углу число выводит. Своё, здешнее.» [f0064]",
+    "Агата: «У нас нынче двадцать пятое октября.» [f0065]",
+    "Текст: «Нина помедлила. Под своим числом Агатино написала, верхнее стёрла. Впервые на обоих берегах одно число.» [f0066]",
+    "Агата: «Я тебе в стекло стучала — а ты не слышала.» [f0067]",
+    "Текст: «По парте Нина костяшкой пальца стучит.» [f0068]",
+    "Нина: «Теперь-то слышишь?» [f0069]",
+    "Агата: «Теперь да.» [f0070]",
+    "Ульяна: «Это я сапоги птице пририсовала! А шапку кто рисовал?» [f0071]",
+    "Агата: «Я шапку рисовала. Давно, за этой партой.» [f0072]",
+    "Ульяна: «Вот! Я всем скажу: у меня сестра рисовать умеет. Почти настоящая!» [f0073]",
+    "Ульяна: «А лодку с дымом кто? Папа один так рисует!» [f0074]",
+    "Агата: «Я у твоего папы подсмотрела, давным-давно.» [f0075]",
+    "Нина: «К Дуне домой пойду. Как прежде, с крыльца войду. Пелагея перевезёт. Ты пока погуляй, нынче все на улицу выходят.» [f0076]",
+    "Нина: «Да к Илье в мастерскую загляни — сарай у его дома. Тесно им там с Митей, а Уле своё место нужно. Он тебе обрадуется.» [f0077]",
+    "Затемнение / постановка сцены ~14.0 с (кадр f0078)",
+    "Текст закончился: показано реплик и текстов — 15, окно текста закрыто. Можно действовать дальше.",
+    "Место сменилось (другая комната / локация)."
+   ]
+  }
+ ],
+ "transcript": [
+  {
+   "step": 1,
+   "frame": "f0002",
+   "room": "O4",
+   "who": "Текст",
+   "text": "Снег, свет в окнах. Впереди Митя с фонарём. Подходит к крайнему дому, в ставню стучит."
+  },
+  {
+   "step": 1,
+   "frame": "f0003",
+   "room": "O4",
+   "who": "Митя",
+   "text": "Илья! Илья, выходи — сестра твоя пришла!"
+  },
+  {
+   "step": 1,
+   "frame": "f0004",
+   "room": "O4",
+   "who": "Текст",
+   "text": "У соседнего дома на крыльце седая женщина в платке стоит. Три огня она из окна увидела."
+  },
+  {
+   "step": 1,
+   "frame": "f0006",
+   "room": "O4",
+   "who": "Агата",
+   "text": "Мама."
+  },
+  {
+   "step": 1,
+   "frame": "f0008",
+   "room": "O4",
+   "who": "Текст",
+   "text": "Нина прямо на крыльце Агату обнимает. Молчит. Долго не отпускает."
+  },
+  {
+   "step": 1,
+   "frame": "f0010",
+   "room": "O4",
+   "who": "Нина",
+   "text": "Пойдём в тепло, доченька. Ты вся в снегу."
+  },
+  {
+   "step": 1,
+   "frame": "f0012",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Те самые ходики."
+  },
+  {
+   "step": 3,
+   "frame": "f0015",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Выну часы. Секундная стрелка с маятником шаг в шаг идёт. Минута в минуту."
+  },
+  {
+   "step": 3,
+   "frame": "f0016",
+   "room": "O3",
+   "who": "Агата",
+   "text": "В зеркале стрелки бежали. А тут — вровень с моими."
+  },
+  {
+   "step": 3,
+   "frame": "f0017",
+   "room": "O3",
+   "who": "Текст",
+   "text": "На стол Нина кладёт маленькое зеркальце в деревянной оправе."
+  },
+  {
+   "step": 3,
+   "frame": "f0018",
+   "room": "O3",
+   "who": "Нина",
+   "text": "У Дуни над печью висело. В тот день мне в подарок несла. Тут оно и осталось. А показывает её печь."
+  },
+  {
+   "step": 3,
+   "frame": "f0019",
+   "room": "O3",
+   "who": "Нина",
+   "text": "Три недели тому ты в нём показалась. Целую неделю у печи проспала, а Тихон в кресле."
+  },
+  {
+   "step": 3,
+   "frame": "f0020",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Да это ж вчера было!"
+  },
+  {
+   "step": 3,
+   "frame": "f0021",
+   "room": "O3",
+   "who": "Нина",
+   "text": "Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там живут. Всё тебя ждала и ждала."
+  },
+  {
+   "step": 3,
+   "frame": "f0022",
+   "room": "O3",
+   "who": "Нина",
+   "text": "Значит, у тебя только год миновал… Один год, доченька."
+  },
+  {
+   "step": 3,
+   "frame": "f0023",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Год. А у тебя больше прошло, чем я живу."
+  },
+  {
+   "step": 3,
+   "frame": "f0024",
+   "room": "O3",
+   "who": "Текст",
+   "text": "Хлопнула дверь. Вошёл мужчина, весь в стружке, карандаш за ухом. За ним девочка вбежала — пальто на ночную рубашку накинуто."
+  },
+  {
+   "step": 3,
+   "frame": "f0025",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Илюша… По карандашу за ухом узнала. А то бы не признала."
+  },
+  {
+   "step": 3,
+   "frame": "f0026",
+   "room": "O3",
+   "who": "Илья",
+   "text": "Да ты всё такая же… Не выросла."
+  },
+  {
+   "step": 3,
+   "frame": "f0027",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Ты вырос. На двадцать лет."
+  },
+  {
+   "step": 3,
+   "frame": "f0028",
+   "room": "O3",
+   "who": "Ульяна",
+   "text": "Это тётя Агата? Папа, ты говорил, раньше она тебя старше была!"
+  },
+  {
+   "step": 3,
+   "frame": "f0029",
+   "room": "O3",
+   "who": "Ульяна",
+   "text": "Какая ж она тётя? Она как сестра! Я всегда сестру хотела — старшую."
+  },
+  {
+   "step": 3,
+   "frame": "f0030",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Ну, раз хотела — буду тебе сестрой, Уля."
+  },
+  {
+   "step": 3,
+   "frame": "f0031",
+   "room": "O3",
+   "who": "Агата",
+   "text": "В учительском ящике план лежал. Твой?"
+  },
+  {
+   "step": 3,
+   "frame": "f0032",
+   "room": "O3",
+   "who": "Илья",
+   "text": "Всякую зиму переписывал, в ящик клал. Дуня сказала: дверь у неё в мастерской. Навесит кто — в класс и попадёт."
+  },
+  {
+   "step": 3,
+   "frame": "f0033",
+   "room": "O3",
+   "who": "Текст",
+   "text": "Позже жена Ильи приходит, лампу несёт."
+  },
+  {
+   "step": 3,
+   "frame": "f0034",
+   "room": "O3",
+   "who": "Варвара",
+   "text": "Ульяна, пора спать. Тётя здесь, нынче никуда не уйдёт."
+  },
+  {
+   "step": 3,
+   "frame": "f0035",
+   "room": "O3",
+   "who": "Нина",
+   "text": "В своей комнате ляжешь. Ульяна у нас там спит. Потеснитесь вдвоём."
+  },
+  {
+   "step": 3,
+   "frame": "f0036",
+   "room": "O3",
+   "who": "Текст",
+   "text": "В старой комнате на стене — зарубки по годам. Отмечали чужой рост."
+  },
+  {
+   "step": 4,
+   "frame": "f0038",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Поздно уже. Ляжем с Улей вдвоём — потеснимся."
+  },
+  {
+   "step": 4,
+   "frame": "f0040",
+   "room": "O3",
+   "who": "Текст",
+   "text": "Старая кровать. За стеной ровно тикают ходики — в такт с карманными часами. Уснула Агата и сама не заметила как."
+  },
+  {
+   "step": 5,
+   "frame": "f0043",
+   "room": "O3",
+   "who": "Нина",
+   "text": "Доченька… Дуня два года назад умерла, по нашему счёту. Семьдесят два ей было."
+  },
+  {
+   "step": 5,
+   "frame": "f0044",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Я всё думала: доберусь — и она опять дома."
+  },
+  {
+   "step": 5,
+   "frame": "f0045",
+   "room": "O3",
+   "who": "Агата",
+   "text": "А Тихон её всё к вечеру дожидается."
+  },
+  {
+   "step": 5,
+   "frame": "f0046",
+   "room": "O3",
+   "who": "Нина",
+   "text": "На столе её тетради. Восемнадцать лет всё дорогу вернуть пробовала. Рядом список: кто в деревне жив, кого не стало. Погляди, доченька."
+  },
+  {
+   "step": 6,
+   "frame": "f0048",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Восемнадцать лет пыталась дорогу вернуть. Столько тетрадей… И каждая её рукой исписана."
+  },
+  {
+   "step": 6,
+   "frame": "f0049",
+   "room": "O3",
+   "who": "Нина",
+   "text": "А школьная тропа уже после Дуни пропала. Прошлой зимой."
+  },
+  {
+   "step": 9,
+   "frame": "f0053",
+   "room": "O3",
+   "who": "Агата",
+   "text": "Живых двадцать два. От прежних восемнадцати пятнадцать осталось, семеро здесь родились. Трое умерли. Дуня тоже."
+  },
+  {
+   "step": 9,
+   "frame": "f0054",
+   "room": "O3",
+   "who": "Агата",
+   "text": "А как прежде сделать — нельзя?"
+  },
+  {
+   "step": 9,
+   "frame": "f0055",
+   "room": "O3",
+   "who": "Нина",
+   "text": "Как прежде — нет… Да и свои двадцать лет я не отдам. В них Ульяна."
+  },
+  {
+   "step": 9,
+   "frame": "f0056",
+   "room": "O3",
+   "who": "Нина",
+   "text": "А дальше можно вместе жить."
+  },
+  {
+   "step": 9,
+   "frame": "f0057",
+   "room": "O3",
+   "who": "Текст",
+   "text": "С улицы голоса слышны. Дети к школе бегут, поглядеть: тропа к школе с вечера снова есть. И нижняя улица вернулась."
+  },
+  {
+   "step": 9,
+   "frame": "f0058",
+   "room": "O3",
+   "who": "Нина",
+   "text": "Пойдём, класс тебе покажу. Как люди пойдём, через калитку."
+  },
+  {
+   "step": 13,
+   "frame": "f0063",
+   "room": "O1",
+   "who": "Текст",
+   "text": "На доске Нина читает: «Мама, я иду». Берёт мел. Ниже одно слово выводит: «Дождалась»."
+  },
+  {
+   "step": 13,
+   "frame": "f0064",
+   "room": "O1",
+   "who": "Текст",
+   "text": "Затем по привычке, как перед уроком, в углу число выводит. Своё, здешнее."
+  },
+  {
+   "step": 13,
+   "frame": "f0065",
+   "room": "O1",
+   "who": "Агата",
+   "text": "У нас нынче двадцать пятое октября."
+  },
+  {
+   "step": 13,
+   "frame": "f0066",
+   "room": "O1",
+   "who": "Текст",
+   "text": "Нина помедлила. Под своим числом Агатино написала, верхнее стёрла. Впервые на обоих берегах одно число."
+  },
+  {
+   "step": 13,
+   "frame": "f0067",
+   "room": "O1",
+   "who": "Агата",
+   "text": "Я тебе в стекло стучала — а ты не слышала."
+  },
+  {
+   "step": 13,
+   "frame": "f0068",
+   "room": "O1",
+   "who": "Текст",
+   "text": "По парте Нина костяшкой пальца стучит."
+  },
+  {
+   "step": 13,
+   "frame": "f0069",
+   "room": "O1",
+   "who": "Нина",
+   "text": "Теперь-то слышишь?"
+  },
+  {
+   "step": 13,
+   "frame": "f0070",
+   "room": "O1",
+   "who": "Агата",
+   "text": "Теперь да."
+  },
+  {
+   "step": 13,
+   "frame": "f0071",
+   "room": "O1",
+   "who": "Ульяна",
+   "text": "Это я сапоги птице пририсовала! А шапку кто рисовал?"
+  },
+  {
+   "step": 13,
+   "frame": "f0072",
+   "room": "O1",
+   "who": "Агата",
+   "text": "Я шапку рисовала. Давно, за этой партой."
+  },
+  {
+   "step": 13,
+   "frame": "f0073",
+   "room": "O1",
+   "who": "Ульяна",
+   "text": "Вот! Я всем скажу: у меня сестра рисовать умеет. Почти настоящая!"
+  },
+  {
+   "step": 13,
+   "frame": "f0074",
+   "room": "O1",
+   "who": "Ульяна",
+   "text": "А лодку с дымом кто? Папа один так рисует!"
+  },
+  {
+   "step": 13,
+   "frame": "f0075",
+   "room": "O1",
+   "who": "Агата",
+   "text": "Я у твоего папы подсмотрела, давным-давно."
+  },
+  {
+   "step": 13,
+   "frame": "f0076",
+   "room": "O1",
+   "who": "Нина",
+   "text": "К Дуне домой пойду. Как прежде, с крыльца войду. Пелагея перевезёт. Ты пока погуляй, нынче все на улицу выходят."
+  },
+  {
+   "step": 13,
+   "frame": "f0077",
+   "room": "O1",
+   "who": "Нина",
+   "text": "Да к Илье в мастерскую загляни — сарай у его дома. Тесно им там с Митей, а Уле своё место нужно. Он тебе обрадуется."
+  }
+ ]
+}
