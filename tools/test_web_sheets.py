@@ -4,7 +4,7 @@
 1. Синтетический атлас 2,25× (две страницы, куски разного цвета вплотную через зазор) → веб-копия 1×: размер кадра,
    texture_scale, прямоугольники в доле 1/2,25, поле не выводит кусок за кадр, цвет каждого куска не смешан с соседом.
 2. export_presets.cfg: веб — фича web_atlas и без полных листов k× (жители v2, Агата); Linux и Windows — без
-   assets/characters_web (настольные сборки остаются в 2,25×).
+   assets/characters_web (настольные сборки остаются в 2,25×); Windows Lite (I-T7) — как веб, один exe.
 3. Таблица SCALES покрывает всех жителей v2 и Агату, и веб-разрешение меньше исходного.
 
   python3 tools/test_web_sheets.py [--quiet]
@@ -80,7 +80,10 @@ def presets() -> None:
     for part in txt.split("[preset.")[1:]:
         name = next((ln.split("=", 1)[1].strip('"') for ln in part.splitlines() if ln.startswith("name=")), "")
         if name:
+            last = name
             blocks[name] = part
+        elif blocks:
+            blocks[last] += part   # [preset.N.options]
     web = blocks.get("Web", "")
     check('custom_features="web_atlas"' in web, "веб-пресет без фичи web_atlas")
     check("assets/characters/*_v2/*.png" in web, "веб-пресет везёт полные листы жителей v2")
@@ -88,6 +91,14 @@ def presets() -> None:
     for n in ("Linux", "Windows"):
         check("assets/characters_web/*" in blocks.get(n, ""), f"{n}: везёт веб-копии листов")
         check("web_atlas" not in blocks.get(n, "").split("custom_features=")[1].splitlines()[0], f"{n}: фича web_atlas")
+    # I-T7: полная Windows — PCK рядом (вшитый с листами 2,25× > 2 ГиБ); Lite — один exe на веб-копиях, как сайт
+    check("binary_format/embed_pck=false" in blocks.get("Windows", ""), "Windows: PCK вшит (с листами 2,25× > 2 ГиБ)")
+    lite = blocks.get("Windows Lite", "")
+    check('custom_features="web_atlas"' in lite, "Windows Lite: нет фичи web_atlas")
+    check("binary_format/embed_pck=true" in lite, "Windows Lite: PCK не вшит")
+    check("assets/characters/*_v2/*.png" in lite and "assets/characters/agata/idle*.png" in lite,
+          "Windows Lite везёт полные листы")
+    check('export_path="../build/windows/DomPropavshihDorog.exe"' in lite, "Windows Lite: не тот путь exe (его выкладывает workflow)")
 
 
 def scales() -> None:
