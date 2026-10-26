@@ -1,0 +1,1704 @@
+{
+ "cfg": {
+  "mode": "fresh",
+  "request": "Docs/playtest/requests/regression.json",
+  "items": [],
+  "contextItems": [],
+  "maxUsd": 1.3,
+  "maxSteps": 90,
+  "maxMinutes": 150,
+  "url": "https://russiansky777.github.io/dom-propavshih-dorog/?start=span",
+  "note": "Встроенная точка старта ?start=span: утро четвёртого дня у поворота.",
+  "model": "claude-sonnet-5-5",
+  "modelStuck": "claude-opus-5-5",
+  "reportModel": "claude-sonnet-5-5",
+  "W": 1280,
+  "maxFrames": 24,
+  "autoDialogue": true,
+  "persona": "regression",
+  "start": null,
+  "startSave": null,
+  "goalFlags": [
+   "done_M26"
+  ],
+  "goal": "утро четвёртого дня у поворота: первое бревно и эпилог",
+  "route": [
+   "M25",
+   "M26"
+  ],
+  "segment": 5,
+  "segmentId": "finale",
+  "H": 720,
+  "actions_run": "3 (id 40285331074)"
+ },
+ "version": "8e5f959 2026-10-26T03:12Z",
+ "started": "2026-10-26T07:27:20.676Z",
+ "stop": "модель завершила прогон (done): Кнопки не работают уже много шагов; фиксирую и завершаю.",
+ "probe": true,
+ "end": {
+  "room": "Z3",
+  "inventory": [
+   "pocket_watch",
+   "photo_bridge",
+   "drawing_ilya",
+   "plan_crossing",
+   "journal_manager",
+   "school_ribbon"
+  ],
+  "goal": "К повороту: Илья ждёт у ворота, будем класть первое бревно. С бревном история закончится — до поворота можно доделать остальное: мамины письма, письмо Аксинье, чай, рукав, вывеску, дощечку Мити, карту и верстак.",
+  "flags": 203
+ },
+ "rooms": [
+  "Z3"
+ ],
+ "flags_order": [
+  {
+   "flag": "bell_clapper_hung",
+   "step": 0
+  },
+  {
+   "flag": "board_mama",
+   "step": 0
+  },
+  {
+   "flag": "boat_shuttle_open",
+   "step": 0
+  },
+  {
+   "flag": "bridge_decided",
+   "step": 0
+  },
+  {
+   "flag": "council_held",
+   "step": 0
+  },
+  {
+   "flag": "day3_done",
+   "step": 0
+  },
+  {
+   "flag": "done_M01",
+   "step": 0
+  },
+  {
+   "flag": "done_M02",
+   "step": 0
+  },
+  {
+   "flag": "done_M03",
+   "step": 0
+  },
+  {
+   "flag": "done_M04",
+   "step": 0
+  },
+  {
+   "flag": "done_M05",
+   "step": 0
+  },
+  {
+   "flag": "done_M06",
+   "step": 0
+  },
+  {
+   "flag": "done_M07",
+   "step": 0
+  },
+  {
+   "flag": "done_M08",
+   "step": 0
+  },
+  {
+   "flag": "done_M09",
+   "step": 0
+  },
+  {
+   "flag": "done_M09b",
+   "step": 0
+  },
+  {
+   "flag": "done_M09s",
+   "step": 0
+  },
+  {
+   "flag": "done_M10",
+   "step": 0
+  },
+  {
+   "flag": "done_M11",
+   "step": 0
+  },
+  {
+   "flag": "done_M12",
+   "step": 0
+  },
+  {
+   "flag": "done_M13",
+   "step": 0
+  },
+  {
+   "flag": "done_M13a",
+   "step": 0
+  },
+  {
+   "flag": "done_M14",
+   "step": 0
+  },
+  {
+   "flag": "done_M15",
+   "step": 0
+  },
+  {
+   "flag": "done_M15a",
+   "step": 0
+  },
+  {
+   "flag": "done_M15s",
+   "step": 0
+  },
+  {
+   "flag": "done_M16",
+   "step": 0
+  },
+  {
+   "flag": "done_M16s",
+   "step": 0
+  },
+  {
+   "flag": "done_M17",
+   "step": 0
+  },
+  {
+   "flag": "done_M18",
+   "step": 0
+  },
+  {
+   "flag": "done_M18p",
+   "step": 0
+  },
+  {
+   "flag": "done_M19",
+   "step": 0
+  },
+  {
+   "flag": "done_M19c",
+   "step": 0
+  },
+  {
+   "flag": "done_M20",
+   "step": 0
+  },
+  {
+   "flag": "done_M21",
+   "step": 0
+  },
+  {
+   "flag": "done_M21b",
+   "step": 0
+  },
+  {
+   "flag": "done_M22",
+   "step": 0
+  },
+  {
+   "flag": "done_M23a",
+   "step": 0
+  },
+  {
+   "flag": "done_M23b",
+   "step": 0
+  },
+  {
+   "flag": "done_M23c",
+   "step": 0
+  },
+  {
+   "flag": "done_M23d",
+   "step": 0
+  },
+  {
+   "flag": "done_M24",
+   "step": 0
+  },
+  {
+   "flag": "done_N01",
+   "step": 0
+  },
+  {
+   "flag": "done_N02",
+   "step": 0
+  },
+  {
+   "flag": "done_V01",
+   "step": 0
+  },
+  {
+   "flag": "done_V02",
+   "step": 0
+  },
+  {
+   "flag": "done_V03",
+   "step": 0
+  },
+  {
+   "flag": "door_school_installed",
+   "step": 0
+  },
+  {
+   "flag": "dunya_letter_on_stove",
+   "step": 0
+  },
+  {
+   "flag": "evening_dusk",
+   "step": 0
+  },
+  {
+   "flag": "far_lights_answered",
+   "step": 0
+  },
+  {
+   "flag": "far_snow_seen",
+   "step": 0
+  },
+  {
+   "flag": "ferry_verified",
+   "step": 0
+  },
+  {
+   "flag": "free_walk_day3",
+   "step": 0
+  },
+  {
+   "flag": "h1_dark_said",
+   "step": 0
+  },
+  {
+   "flag": "h1_scarf_removed",
+   "step": 0
+  },
+  {
+   "flag": "h1_shutter_open",
+   "step": 0
+  },
+  {
+   "flag": "h1_tikhon_after_mirror",
+   "step": 0
+  },
+  {
+   "flag": "h2_bundle_unwrapped",
+   "step": 0
+  },
+  {
+   "flag": "h2_saw_stand_zm",
+   "step": 0
+  },
+  {
+   "flag": "h3_night_to_bed",
+   "step": 0
+  },
+  {
+   "flag": "has_bell",
+   "step": 0
+  },
+  {
+   "flag": "has_brace_plate",
+   "step": 0
+  },
+  {
+   "flag": "has_bundle_nina",
+   "step": 0
+  },
+  {
+   "flag": "has_chalk",
+   "step": 0
+  },
+  {
+   "flag": "has_clamp",
+   "step": 0
+  },
+  {
+   "flag": "has_door_hinges",
+   "step": 0
+  },
+  {
+   "flag": "has_drawing_ilya",
+   "step": 0
+  },
+  {
+   "flag": "has_journal_manager",
+   "step": 0
+  },
+  {
+   "flag": "has_key_house",
+   "step": 0
+  },
+  {
+   "flag": "has_key_sluice",
+   "step": 0
+  },
+  {
+   "flag": "has_letter_tamara",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "has_mirror_mill",
+   "step": 0
+  },
+  {
+   "flag": "has_mitten",
+   "step": 0
+  },
+  {
+   "flag": "has_photo_bridge",
+   "step": 0
+  },
+  {
+   "flag": "has_plan_crossing",
+   "step": 0
+  },
+  {
+   "flag": "has_pocket_watch",
+   "step": 0
+  },
+  {
+   "flag": "has_school_door",
+   "step": 0
+  },
+  {
+   "flag": "has_school_ribbon",
+   "step": 0
+  },
+  {
+   "flag": "house_open",
+   "step": 0
+  },
+  {
+   "flag": "house_unlocked",
+   "step": 0
+  },
+  {
+   "flag": "in_olkhovka",
+   "step": 0
+  },
+  {
+   "flag": "knows_bridge_lost",
+   "step": 0
+  },
+  {
+   "flag": "knows_crossing_plan",
+   "step": 0
+  },
+  {
+   "flag": "knows_dunya_left",
+   "step": 0
+  },
+  {
+   "flag": "knows_evdokia_death",
+   "step": 0
+  },
+  {
+   "flag": "knows_letters_bag",
+   "step": 0
+  },
+  {
+   "flag": "knows_nina_saw_agata",
+   "step": 0
+  },
+  {
+   "flag": "knows_no_road",
+   "step": 0
+  },
+  {
+   "flag": "knows_pier_trace",
+   "step": 0
+  },
+  {
+   "flag": "knows_rope_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "knows_rule_things_remember",
+   "step": 0
+  },
+  {
+   "flag": "knows_tikhon_waits",
+   "step": 0
+  },
+  {
+   "flag": "knows_twenty_years",
+   "step": 0
+  },
+  {
+   "flag": "lantern_check_seen",
+   "step": 0
+  },
+  {
+   "flag": "letters_delivered",
+   "step": 0
+  },
+  {
+   "flag": "lower_street_returned",
+   "step": 0
+  },
+  {
+   "flag": "manager_returned",
+   "step": 0
+  },
+  {
+   "flag": "met_ilya",
+   "step": 0
+  },
+  {
+   "flag": "met_ilya_wife",
+   "step": 0
+  },
+  {
+   "flag": "met_mitya",
+   "step": 0
+  },
+  {
+   "flag": "met_nina",
+   "step": 0
+  },
+  {
+   "flag": "met_pavel",
+   "step": 0
+  },
+  {
+   "flag": "met_pelageya",
+   "step": 0
+  },
+  {
+   "flag": "met_tamara",
+   "step": 0
+  },
+  {
+   "flag": "met_tikhon",
+   "step": 0
+  },
+  {
+   "flag": "met_ulyana",
+   "step": 0
+  },
+  {
+   "flag": "mitten_found_on_path",
+   "step": 0
+  },
+  {
+   "flag": "mitten_placed",
+   "step": 0
+  },
+  {
+   "flag": "mitten_taken_back",
+   "step": 0
+  },
+  {
+   "flag": "morning_day3",
+   "step": 0
+  },
+  {
+   "flag": "morning_day4",
+   "step": 0
+  },
+  {
+   "flag": "night_day1",
+   "step": 0
+  },
+  {
+   "flag": "night_olkhovka",
+   "step": 0
+  },
+  {
+   "flag": "nina_answered_board",
+   "step": 0
+  },
+  {
+   "flag": "nina_mirror_clamped",
+   "step": 0
+  },
+  {
+   "flag": "nina_time_compared",
+   "step": 0
+  },
+  {
+   "flag": "nina_visited_house",
+   "step": 0
+  },
+  {
+   "flag": "nina_wrote_date",
+   "step": 0
+  },
+  {
+   "flag": "o1_saw_winter",
+   "step": 0
+  },
+  {
+   "flag": "o3_clock_compared",
+   "step": 0
+  },
+  {
+   "flag": "o3_read_notebooks",
+   "step": 0
+  },
+  {
+   "flag": "o3_read_village_list",
+   "step": 0
+  },
+  {
+   "flag": "observed_path_loop",
+   "step": 0
+  },
+  {
+   "flag": "office_mirror_clamped",
+   "step": 0
+  },
+  {
+   "flag": "office_mirror_mounted",
+   "step": 0
+  },
+  {
+   "flag": "office_shelf_lifted",
+   "step": 0
+  },
+  {
+   "flag": "office_unbolted",
+   "step": 0
+  },
+  {
+   "flag": "pavel_agreed_signals",
+   "step": 0
+  },
+  {
+   "flag": "pavel_answer_promise",
+   "step": 0
+  },
+  {
+   "flag": "pavel_blessed_mirror",
+   "step": 0
+  },
+  {
+   "flag": "plate_braced",
+   "step": 0
+  },
+  {
+   "flag": "pond_lowered",
+   "step": 0
+  },
+  {
+   "flag": "q06_hook",
+   "step": 0
+  },
+  {
+   "flag": "r1_saw_boat_gone",
+   "step": 0
+  },
+  {
+   "flag": "r1_saw_pelageya_at_turn_d3",
+   "step": 0
+  },
+  {
+   "flag": "road_held_both_ends",
+   "step": 0
+  },
+  {
+   "flag": "rope_brought",
+   "step": 0
+  },
+  {
+   "flag": "rope_on_ring",
+   "step": 0
+  },
+  {
+   "flag": "school_path_open",
+   "step": 0
+  },
+  {
+   "flag": "seen_bell",
+   "step": 0
+  },
+  {
+   "flag": "seen_class_traces",
+   "step": 0
+  },
+  {
+   "flag": "seen_mirror_home",
+   "step": 0
+  },
+  {
+   "flag": "seen_office_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_office_photo",
+   "step": 0
+  },
+  {
+   "flag": "seen_school_door",
+   "step": 0
+  },
+  {
+   "flag": "seen_shift_schedule",
+   "step": 0
+  },
+  {
+   "flag": "seen_workshop",
+   "step": 0
+  },
+  {
+   "flag": "skoba_on_plate",
+   "step": 0
+  },
+  {
+   "flag": "sluice_key_inserted",
+   "step": 0
+  },
+  {
+   "flag": "sluice_opened",
+   "step": 0
+  },
+  {
+   "flag": "started_M01",
+   "step": 0
+  },
+  {
+   "flag": "started_M02",
+   "step": 0
+  },
+  {
+   "flag": "started_M03",
+   "step": 0
+  },
+  {
+   "flag": "started_M04",
+   "step": 0
+  },
+  {
+   "flag": "started_M05",
+   "step": 0
+  },
+  {
+   "flag": "started_M06",
+   "step": 0
+  },
+  {
+   "flag": "started_M07",
+   "step": 0
+  },
+  {
+   "flag": "started_M08",
+   "step": 0
+  },
+  {
+   "flag": "started_M09",
+   "step": 0
+  },
+  {
+   "flag": "started_M09b",
+   "step": 0
+  },
+  {
+   "flag": "started_M09s",
+   "step": 0
+  },
+  {
+   "flag": "started_M10",
+   "step": 0
+  },
+  {
+   "flag": "started_M11",
+   "step": 0
+  },
+  {
+   "flag": "started_M12",
+   "step": 0
+  },
+  {
+   "flag": "started_M13",
+   "step": 0
+  },
+  {
+   "flag": "started_M13a",
+   "step": 0
+  },
+  {
+   "flag": "started_M14",
+   "step": 0
+  },
+  {
+   "flag": "started_M15",
+   "step": 0
+  },
+  {
+   "flag": "started_M15a",
+   "step": 0
+  },
+  {
+   "flag": "started_M15s",
+   "step": 0
+  },
+  {
+   "flag": "started_M16",
+   "step": 0
+  },
+  {
+   "flag": "started_M16s",
+   "step": 0
+  },
+  {
+   "flag": "started_M17",
+   "step": 0
+  },
+  {
+   "flag": "started_M18",
+   "step": 0
+  },
+  {
+   "flag": "started_M18p",
+   "step": 0
+  },
+  {
+   "flag": "started_M19",
+   "step": 0
+  },
+  {
+   "flag": "started_M19c",
+   "step": 0
+  },
+  {
+   "flag": "started_M20",
+   "step": 0
+  },
+  {
+   "flag": "started_M21",
+   "step": 0
+  },
+  {
+   "flag": "started_M21b",
+   "step": 0
+  },
+  {
+   "flag": "started_M22",
+   "step": 0
+  },
+  {
+   "flag": "started_M23a",
+   "step": 0
+  },
+  {
+   "flag": "started_M23b",
+   "step": 0
+  },
+  {
+   "flag": "started_M23c",
+   "step": 0
+  },
+  {
+   "flag": "started_M23d",
+   "step": 0
+  },
+  {
+   "flag": "started_M24",
+   "step": 0
+  },
+  {
+   "flag": "started_M25",
+   "step": 0
+  },
+  {
+   "flag": "started_N01",
+   "step": 0
+  },
+  {
+   "flag": "started_N02",
+   "step": 0
+  },
+  {
+   "flag": "stove_lit",
+   "step": 0
+  },
+  {
+   "flag": "three_lights_sent",
+   "step": 0
+  },
+  {
+   "flag": "tikhon_knows_dunya",
+   "step": 0
+  },
+  {
+   "flag": "tikhon_told_nina",
+   "step": 0
+  },
+  {
+   "flag": "time_common_seen",
+   "step": 0
+  },
+  {
+   "flag": "v01_cup_blue",
+   "step": 0
+  },
+  {
+   "flag": "v01_photo_table",
+   "step": 0
+  },
+  {
+   "flag": "v03_add_boat",
+   "step": 0
+  },
+  {
+   "flag": "v03_marked",
+   "step": 0
+  },
+  {
+   "flag": "visited_Z3",
+   "step": 0
+  },
+  {
+   "flag": "wife_came",
+   "step": 0
+  },
+  {
+   "flag": "z4_side_door_said",
+   "step": 0
+  }
+ ],
+ "blocked_scenes": [
+  "M25 «Первый пролёт» (Z3): условия выполнены, но сцена не завершена (её действие не сделано)",
+  "M26 «Три недели спустя» (Z3): не хватает done_M25 ← M25 «Первый пролёт»"
+ ],
+ "harness": [],
+ "console_errors": [],
+ "console_warnings": [],
+ "persona": "regression",
+ "segment": "finale",
+ "goal": {
+  "flags": [
+   "done_M26"
+  ],
+  "reached": false,
+  "step": null
+ },
+ "anomalies": [],
+ "inventory_log": [],
+ "coverage": {
+  "quests": [
+   {
+    "id": "Q01",
+    "title": "Письмо с прежним адресом",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q02",
+    "title": "На карте вырос сад",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q03",
+    "title": "Незашитый рукав",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q04",
+    "title": "Угол для Тихона",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q05",
+    "title": "Чужая мера",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q06",
+    "title": "Второй верстак",
+    "reserve": false,
+    "done": false,
+    "started": true,
+    "choice": ""
+   },
+   {
+    "id": "Q07",
+    "title": "Двадцать зарубок",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q08",
+    "title": "Общий чай",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q09",
+    "title": "Ольховая улица",
+    "reserve": false,
+    "done": false,
+    "started": false,
+    "choice": ""
+   },
+   {
+    "id": "Q10",
+    "title": "Яблоня для следующей весны",
+    "reserve": true,
+    "done": false,
+    "started": false,
+    "choice": ""
+   }
+  ],
+  "choices": [
+   "board_mama",
+   "mitten_found_on_path",
+   "mitten_placed",
+   "mitten_taken_back",
+   "pavel_answer_promise",
+   "q06_hook",
+   "v01_cup_blue",
+   "v01_photo_table",
+   "v03_add_boat",
+   "v03_marked"
+  ],
+  "rooms": [
+   {
+    "room": "Z3",
+    "total": 3,
+    "seen": 0,
+    "unseen": [
+     "Опора моста",
+     "Камень на берегу",
+     "Плита опоры"
+    ]
+   }
+  ]
+ },
+ "end_flags": [
+  "bell_clapper_hung",
+  "board_mama",
+  "boat_shuttle_open",
+  "bridge_decided",
+  "council_held",
+  "day3_done",
+  "done_M01",
+  "done_M02",
+  "done_M03",
+  "done_M04",
+  "done_M05",
+  "done_M06",
+  "done_M07",
+  "done_M08",
+  "done_M09",
+  "done_M09b",
+  "done_M09s",
+  "done_M10",
+  "done_M11",
+  "done_M12",
+  "done_M13",
+  "done_M13a",
+  "done_M14",
+  "done_M15",
+  "done_M15a",
+  "done_M15s",
+  "done_M16",
+  "done_M16s",
+  "done_M17",
+  "done_M18",
+  "done_M18p",
+  "done_M19",
+  "done_M19c",
+  "done_M20",
+  "done_M21",
+  "done_M21b",
+  "done_M22",
+  "done_M23a",
+  "done_M23b",
+  "done_M23c",
+  "done_M23d",
+  "done_M24",
+  "done_N01",
+  "done_N02",
+  "done_V01",
+  "done_V02",
+  "done_V03",
+  "door_school_installed",
+  "dunya_letter_on_stove",
+  "evening_dusk",
+  "far_lights_answered",
+  "far_snow_seen",
+  "ferry_verified",
+  "free_walk_day3",
+  "h1_dark_said",
+  "h1_scarf_removed",
+  "h1_shutter_open",
+  "h1_tikhon_after_mirror",
+  "h2_bundle_unwrapped",
+  "h2_saw_stand_zm",
+  "h3_night_to_bed",
+  "has_bell",
+  "has_brace_plate",
+  "has_bundle_nina",
+  "has_chalk",
+  "has_clamp",
+  "has_door_hinges",
+  "has_drawing_ilya",
+  "has_journal_manager",
+  "has_key_house",
+  "has_key_sluice",
+  "has_letter_tamara",
+  "has_mirror_home",
+  "has_mirror_mill",
+  "has_mitten",
+  "has_photo_bridge",
+  "has_plan_crossing",
+  "has_pocket_watch",
+  "has_school_door",
+  "has_school_ribbon",
+  "house_open",
+  "house_unlocked",
+  "in_olkhovka",
+  "knows_bridge_lost",
+  "knows_crossing_plan",
+  "knows_dunya_left",
+  "knows_evdokia_death",
+  "knows_letters_bag",
+  "knows_nina_saw_agata",
+  "knows_no_road",
+  "knows_pier_trace",
+  "knows_rope_on_plate",
+  "knows_rule_things_remember",
+  "knows_tikhon_waits",
+  "knows_twenty_years",
+  "lantern_check_seen",
+  "letters_delivered",
+  "lower_street_returned",
+  "manager_returned",
+  "met_ilya",
+  "met_ilya_wife",
+  "met_mitya",
+  "met_nina",
+  "met_pavel",
+  "met_pelageya",
+  "met_tamara",
+  "met_tikhon",
+  "met_ulyana",
+  "mitten_found_on_path",
+  "mitten_placed",
+  "mitten_taken_back",
+  "morning_day3",
+  "morning_day4",
+  "night_day1",
+  "night_olkhovka",
+  "nina_answered_board",
+  "nina_mirror_clamped",
+  "nina_time_compared",
+  "nina_visited_house",
+  "nina_wrote_date",
+  "o1_saw_winter",
+  "o3_clock_compared",
+  "o3_read_notebooks",
+  "o3_read_village_list",
+  "observed_path_loop",
+  "office_mirror_clamped",
+  "office_mirror_mounted",
+  "office_shelf_lifted",
+  "office_unbolted",
+  "pavel_agreed_signals",
+  "pavel_answer_promise",
+  "pavel_blessed_mirror",
+  "plate_braced",
+  "pond_lowered",
+  "q06_hook",
+  "r1_saw_boat_gone",
+  "r1_saw_pelageya_at_turn_d3",
+  "road_held_both_ends",
+  "rope_brought",
+  "rope_on_ring",
+  "school_path_open",
+  "seen_bell",
+  "seen_class_traces",
+  "seen_mirror_home",
+  "seen_office_door",
+  "seen_office_photo",
+  "seen_school_door",
+  "seen_shift_schedule",
+  "seen_workshop",
+  "skoba_on_plate",
+  "sluice_key_inserted",
+  "sluice_opened",
+  "started_M01",
+  "started_M02",
+  "started_M03",
+  "started_M04",
+  "started_M05",
+  "started_M06",
+  "started_M07",
+  "started_M08",
+  "started_M09",
+  "started_M09b",
+  "started_M09s",
+  "started_M10",
+  "started_M11",
+  "started_M12",
+  "started_M13",
+  "started_M13a",
+  "started_M14",
+  "started_M15",
+  "started_M15a",
+  "started_M15s",
+  "started_M16",
+  "started_M16s",
+  "started_M17",
+  "started_M18",
+  "started_M18p",
+  "started_M19",
+  "started_M19c",
+  "started_M20",
+  "started_M21",
+  "started_M21b",
+  "started_M22",
+  "started_M23a",
+  "started_M23b",
+  "started_M23c",
+  "started_M23d",
+  "started_M24",
+  "started_M25",
+  "started_N01",
+  "started_N02",
+  "stove_lit",
+  "three_lights_sent",
+  "tikhon_knows_dunya",
+  "tikhon_told_nina",
+  "time_common_seen",
+  "v01_cup_blue",
+  "v01_photo_table",
+  "v03_add_boat",
+  "v03_marked",
+  "visited_Z3",
+  "wife_came",
+  "z4_side_door_said"
+ ],
+ "verdict_history": [],
+ "notes": [
+  {
+   "step": 4,
+   "kind": "непонятно",
+   "text": "Дощечка Пелагеи: одиночные щелчки по «Пускай» (136,468) дважды и «Подымай» (136,579) не меняют шкалу, f0008. Непонятно, как подавать сигнал.",
+   "frames": [
+    "f0008"
+   ]
+  },
+  {
+   "step": 10,
+   "kind": "баг",
+   "text": "Береговой поворот, «Первый прогон: сигналы Илье»: кнопки дощечки Пелагеи (Пускай 136,468; Подымай 136,579; Стой) не реагируют на щелчок, долгое нажатие и клавишу 1; Подсказка ничего не изменила. Бегунок не двигается. Ожидалось: бревно идёт вниз. Кадр f0014.",
+   "frames": [
+    "f0014"
+   ]
+  },
+  {
+   "step": 12,
+   "kind": "баг",
+   "text": "Береговой поворот, панель «Дощечка Пелагеи»: щелчки по «Пускай»(136,468), «Стой»(136,524), «Подымай»(136,579), удержание, двойной щелчок, клавиша 1 — ничего не меняют, бегунок не двигается; Подсказка тоже без видимой реакции.",
+   "frames": [
+    "f0016"
+   ]
+  },
+  {
+   "step": 14,
+   "kind": "софтлок",
+   "text": "Береговой поворот, «Первый прогон: сигналы Илье»: после «Стукнулось о камень… Подымай» кнопки на Дощечке Пелагеи (Пускай 136,468 / Стой 136,524 / Подымай 136,579) не реагируют ни на щелчок, ни на долгое или двойное нажатие, ни на клавиши; бегунок стоит на «камень». Кнопка «Подсказка» тоже ничего не изменила. Кадр f0018.",
+   "frames": [
+    "f0018"
+   ]
+  },
+  {
+   "step": 15,
+   "kind": "баг",
+   "text": "Сцена «Первый прогон: сигналы Илье», Береговой поворот. Панель «Дощечка Пелагеи»: кнопки Пускай/Стой/Подымай не реагируют на щелчок, двойной щелчок, hold, клавишу 1; после реплики Ильи «Стукнулось о камень… Подымай» ничего не меняется, бегунок стоит внизу. Подсказка тоже не помогла. Кадры f0018-f0019.",
+   "frames": [
+    "f0019"
+   ]
+  },
+  {
+   "step": 16,
+   "kind": "баг",
+   "text": "Береговой поворот, «Первый прогон: сигналы Илье»: кнопки Пускай/Стой/Подымай на Дощечке Пелагеи никак не отвечают. Пробовала щелчок, двойной щелчок, удержание 1,5 и 3 с, клавишу 1, щелчок по подписи, ожидание 3 с и Подсказку. Бегунок на полосе так и стоит у отметки «камень». Кадры f0018, f0020.",
+   "frames": [
+    "f0020"
+   ]
+  },
+  {
+   "step": 17,
+   "kind": "баг",
+   "text": "Сцена «Первый прогон: сигналы Илье», Береговой поворот: кнопки «Пускай», «Стой», «Подымай» на дощечке Пелагеи не реагируют (щелчок, двойной, удержание, клавиши) — бревно не движется, шкала не меняется. Пробовала также timing и hook — не применимы. Кадры f0018, f0020, f0021.",
+   "frames": [
+    "f0018",
+    "f0020",
+    "f0021"
+   ]
+  },
+  {
+   "step": 18,
+   "kind": "софтлок",
+   "text": "Береговой поворот, «Первый прогон: сигналы Илье». Щелчки по «Пускай»/«Стой»/«Подымай» на дощечке Пелагеи (одинарный, двойной, удержание 3 с, клавиша 1), щелчок по шкале и ожидание ничего не меняют: бегунок стоит у «камня», бревно не двигается. Подсказку брала («Подымай, потом Пускай, потом Стой») — не помогло. Дальше по сюжету пройти не удалось, эпилог «Три недели спустя» недостижим.",
+   "frames": [
+    "f0018",
+    "f0020",
+    "f0022"
+   ]
+  }
+ ],
+ "frames": [
+  {
+   "id": "f0008",
+   "step": 4,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0014",
+   "step": 10,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0016",
+   "step": 12,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0018",
+   "step": 14,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0019",
+   "step": 15,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0020",
+   "step": 16,
+   "kind": "step",
+   "label": ""
+  },
+  {
+   "id": "f0023",
+   "step": 19,
+   "kind": "final",
+   "label": "последний кадр"
+  }
+ ],
+ "steps": [
+  {
+   "step": 1,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0005",
+   "action": "click",
+   "observe": "Мини-игра сигналов Илье: кнопки Пускай/Стой/Подымай, шкала с отметкой «у кольца».",
+   "thought": "Нажимаю «Пускай».",
+   "usd": 0.0194,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 2,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0006",
+   "action": "click",
+   "observe": "Дощечка сигналов, шкала с бегунком слева у отметки, зелёная зона внизу.",
+   "thought": "Нажимаю Пускай ещё раз и смотрю, движется ли бегунок.",
+   "usd": 0.00571,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "desc": "щелчок (136,468)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 3,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0007",
+   "action": "click",
+   "observe": "Дощечка сигналов, бегунок у камня внизу, Илья говорит «Стукнулось о камень. Подымай».",
+   "thought": "Сейчас по тексту нужно «Подымай».",
+   "usd": 0.00587,
+   "at": {
+    "x": 204,
+    "y": 869
+   },
+   "desc": "щелчок (136,579)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 4,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0008",
+   "action": "hold",
+   "observe": "Дощечка с тремя кнопками, шкала не меняется от щелчков.",
+   "thought": "Может, сигнал нужно держать — пробую долгое нажатие на «Пускай».",
+   "usd": 0.03363,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "hold": 1.5,
+   "desc": "держала кнопку 1.5 с в (136,468)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 5,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0009",
+   "action": "timing",
+   "observe": "Дощечка с кнопками и вертикальная полоса; кнопки не меняют кадр.",
+   "thought": "Механика похожа на timing: полоса с бегунком. Пробую timing.",
+   "usd": 0.00563,
+   "desc": "точный удар (серия)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Полосы «точного удара» на экране нет.",
+    "Точный удар (рефлекс программы): ударов 0."
+   ]
+  },
+  {
+   "step": 6,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0010",
+   "action": "click",
+   "observe": "Дощечка с кнопками Пускай/Стой/Подымай, вертикальная шкала, бегунок внизу у \"камень\". Текст Ильи: стукнулось о камень, подымай.",
+   "thought": "Подсказка игры: Подымай, потом Пускай, потом Стой. Пробую взять подсказку, чтобы понять механику.",
+   "usd": 0.00671,
+   "at": {
+    "x": 1676,
+    "y": 38
+   },
+   "desc": "щелчок (1117,25)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 7,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0011",
+   "action": "click",
+   "observe": "Панель сигналов, кнопка «Подымай» подсвечена, бегунок внизу у камня.",
+   "thought": "Жму «Подымай», затем «Пускай».",
+   "usd": 0.00618,
+   "at": {
+    "x": 204,
+    "y": 869
+   },
+   "desc": "щелчок (136,579)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 8,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0012",
+   "action": "zoom",
+   "observe": "Панель сигналов, бегунок не двигается.",
+   "thought": "Посмотрю панель ближе.",
+   "usd": 0.00604,
+   "desc": "увеличила (0,400,360,620)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 9,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0013",
+   "action": "key",
+   "observe": "Панель сигналов, бегунок вверху, кнопки не реагируют.",
+   "thought": "Попробую клавиши: Пробел/цифра 1 для сигнала.",
+   "usd": 0.00857,
+   "key": "1",
+   "desc": "клавиша 1",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 10,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0014",
+   "action": "double_click",
+   "observe": "Панель сигналов не отвечает на щелчки, бегунок не двигается.",
+   "thought": "Пробую двойной щелчок по «Пускай».",
+   "usd": 0.03766,
+   "at": {
+    "x": 180,
+    "y": 705
+   },
+   "desc": "двойной щелчок (120,470)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 11,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0015",
+   "action": "click",
+   "observe": "Панель сигналов, бегунок не движется, кнопки не реагируют.",
+   "thought": "Попробую «Стой» и наведение.",
+   "usd": 0.00648,
+   "at": {
+    "x": 204,
+    "y": 786
+   },
+   "desc": "щелчок (136,524)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 12,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0016",
+   "action": "wait",
+   "observe": "Панель сигналов, бегунок у низа, на щелчки не реагирует.",
+   "thought": "Подожду — может, бревно движется само после «Пускай».",
+   "usd": 0.01905,
+   "desc": "ждала 3 с",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 13,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0017",
+   "action": "hold",
+   "observe": "Панель сигналов, бегунок на старте, ничего не движется.",
+   "thought": "Попробую подержать «Пускай» подольше и посмотреть.",
+   "usd": 0.00693,
+   "at": {
+    "x": 204,
+    "y": 702
+   },
+   "hold": 3,
+   "desc": "держала кнопку 3 с в (136,468)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 14,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0018",
+   "action": "click",
+   "observe": "Панель сигналов не реагирует ни на щелчки, ни на клавиши; висят реплики «Стукнулось о камень» и «Агата: Пускай!».",
+   "thought": "Может, мешает неснятая реплика — щёлкаю по тексту в сцене.",
+   "usd": 0.02461,
+   "at": {
+    "x": 975,
+    "y": 882
+   },
+   "desc": "щелчок (650,588)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 15,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0019",
+   "action": "click",
+   "observe": "Панель сигналов, бегунок внизу у \"камень\", текст Ильи \"Подымай — переложим\". Кнопки не реагируют.",
+   "thought": "Попробую щёлкнуть по подписи Подымай ещё раз в другом месте кнопки, затем зафиксирую баг.",
+   "usd": 0.00956,
+   "at": {
+    "x": 120,
+    "y": 870
+   },
+   "desc": "щелчок (80,580)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 16,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0020",
+   "action": "hook",
+   "observe": "Панель сигналов не отвечает ни на какие нажатия, бегунок стоит на месте.",
+   "thought": "Игра сама сравнила сигналы с крюком в конторе («те же три знака»), так что пробую механику hook.",
+   "usd": 0.02089,
+   "desc": "крюк звоном",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Крюка на экране нет (крупный план зеркала конторы не открыт)."
+   ]
+  },
+  {
+   "step": 17,
+   "model": "claude-sonnet-5-5",
+   "room": "Z3",
+   "frame": "f0021",
+   "action": "click",
+   "observe": "Панель сигналов, кнопки не реагируют; индикатор справа с зелёной зоной.",
+   "thought": "Попробую нажать на сам индикатор/шкалу.",
+   "usd": 0.00897,
+   "at": {
+    "x": 389,
+    "y": 840
+   },
+   "desc": "щелчок (259,560)",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  },
+  {
+   "step": 18,
+   "model": "claude-opus-5-5",
+   "room": "Z3",
+   "frame": "f0022",
+   "action": "done",
+   "observe": "Панель сигналов, бегунок у камня, без изменений.",
+   "thought": "Кнопки не работают уже много шагов; фиксирую и завершаю.",
+   "usd": 0.01801,
+   "desc": "done",
+   "room_after": "Z3",
+   "inv": "pocket_watch,photo_bridge,drawing_ilya,plan_crossing,journal_manager,school_ribbon",
+   "flags": 203,
+   "events": [
+    "Видимых изменений нет."
+   ]
+  }
+ ],
+ "transcript": [
+  {
+   "step": 0,
+   "frame": "f0001",
+   "room": "Z3",
+   "who": "Текст",
+   "text": "У поворота уж и ворот стоит, и брёвна-прогоны сложены. Илья ждёт, Пелагея дощечку с сигналами принесла."
+  },
+  {
+   "step": 0,
+   "frame": "f0002",
+   "room": "Z3",
+   "who": "Илья",
+   "text": "Я ворот кручу, а ты знаки подавай. Пускай, стой, подымай — по-мельничному."
+  },
+  {
+   "step": 0,
+   "frame": "f0003",
+   "room": "Z3",
+   "who": "Агата",
+   "text": "Как тогда в конторе, с крюком. Те же три знака."
+  },
+  {
+   "step": 0,
+   "frame": "f0004",
+   "room": "Z3",
+   "who": "Илья",
+   "text": "Зато теперь тебя слышно!"
+  }
+ ]
+}

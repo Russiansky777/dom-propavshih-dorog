@@ -1,0 +1,241 @@
+{
+ "max_usd": 1.3,
+ "spent_usd": 0.296195,
+ "by_model": {
+  "claude-sonnet-5-5": {
+   "calls": 13,
+   "input_tokens": 44563,
+   "output_tokens": 4035,
+   "cache_creation_input_tokens": 3573,
+   "cache_read_input_tokens": 39303,
+   "usd": 0.142339
+  },
+  "claude-opus-5-5": {
+   "calls": 6,
+   "input_tokens": 13537,
+   "output_tokens": 3056,
+   "cache_creation_input_tokens": 7146,
+   "cache_read_input_tokens": 14292,
+   "usd": 0.153856
+  }
+ },
+ "workspace": {
+  "source": "secret",
+  "error": ""
+ },
+ "prices_per_mtok": {
+  "claude-haiku-5-5": {
+   "in": 0.1,
+   "cw": 0.125,
+   "cr": 0.01,
+   "out": 0.5,
+   "long": {
+    "over": 100000,
+    "in": 0.5,
+    "cw": 0.625,
+    "cr": 0.05,
+    "out": 2.5
+   }
+  },
+  "claude-sonnet-5-5": {
+   "in": 2,
+   "cw": 2.5,
+   "cr": 0.1,
+   "out": 10
+  },
+  "claude-opus-5-5": {
+   "in": 4,
+   "cw": 5,
+   "cr": 0.2,
+   "out": 20
+  },
+  "claude-fable-5-1": {
+   "in": 10,
+   "cw": 12.5,
+   "cr": 0.25,
+   "out": 50
+  },
+  "claude-haiku-4-5": {
+   "in": 1,
+   "cw": 1.25,
+   "cr": 0.1,
+   "out": 5
+  }
+ },
+ "prices_source": "https://platform.claude.com/docs/en/about-claude/pricing (2026-10-22; claude-fable-5-1 — 2026-10-23)",
+ "calls": [
+  {
+   "tag": "step1",
+   "model": "claude-sonnet-5-5",
+   "in": 4298,
+   "out": 187,
+   "cw": 3573,
+   "cr": 0,
+   "usd": 0.019398
+  },
+  {
+   "tag": "step2",
+   "model": "claude-sonnet-5-5",
+   "in": 1708,
+   "out": 194,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.005713
+  },
+  {
+   "tag": "step3",
+   "model": "claude-sonnet-5-5",
+   "in": 1807,
+   "out": 190,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.005871
+  },
+  {
+   "tag": "step4",
+   "model": "claude-opus-5-5",
+   "in": 1846,
+   "out": 419,
+   "cw": 3573,
+   "cr": 0,
+   "usd": 0.033629
+  },
+  {
+   "tag": "step5",
+   "model": "claude-sonnet-5-5",
+   "in": 1906,
+   "out": 146,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.005629
+  },
+  {
+   "tag": "step6",
+   "model": "claude-sonnet-5-5",
+   "in": 1965,
+   "out": 242,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.006707
+  },
+  {
+   "tag": "step7",
+   "model": "claude-sonnet-5-5",
+   "in": 2005,
+   "out": 181,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.006177
+  },
+  {
+   "tag": "step8",
+   "model": "claude-sonnet-5-5",
+   "in": 2091,
+   "out": 150,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.006039
+  },
+  {
+   "tag": "step9",
+   "model": "claude-sonnet-5-5",
+   "in": 3306,
+   "out": 160,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.008569
+  },
+  {
+   "tag": "step10",
+   "model": "claude-opus-5-5",
+   "in": 2173,
+   "out": 555,
+   "cw": 3573,
+   "cr": 0,
+   "usd": 0.037657
+  },
+  {
+   "tag": "step11",
+   "model": "claude-sonnet-5-5",
+   "in": 2215,
+   "out": 169,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.006477
+  },
+  {
+   "tag": "step12",
+   "model": "claude-opus-5-5",
+   "in": 2250,
+   "out": 467,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.019055
+  },
+  {
+   "tag": "step13",
+   "model": "claude-sonnet-5-5",
+   "in": 2289,
+   "out": 199,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.006925
+  },
+  {
+   "tag": "step14",
+   "model": "claude-opus-5-5",
+   "in": 2359,
+   "out": 723,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.024611
+  },
+  {
+   "tag": "step15",
+   "model": "claude-sonnet-5-5",
+   "in": 2473,
+   "out": 426,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.009563
+  },
+  {
+   "tag": "step16",
+   "model": "claude-opus-5-5",
+   "in": 2500,
+   "out": 509,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.020895
+  },
+  {
+   "tag": "step17",
+   "model": "claude-sonnet-5-5",
+   "in": 2463,
+   "out": 369,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.008973
+  },
+  {
+   "tag": "step18",
+   "model": "claude-opus-5-5",
+   "in": 2409,
+   "out": 383,
+   "cw": 0,
+   "cr": 3573,
+   "usd": 0.018011
+  },
+  {
+   "tag": "report",
+   "model": "claude-sonnet-5-5",
+   "in": 16037,
+   "out": 1422,
+   "cw": 0,
+   "cr": 0,
+   "usd": 0.046294
+  }
+ ],
+ "report_reserve_usd": 0.2434,
+ "stop": "модель завершила прогон (done): Кнопки не работают уже много шагов; фиксирую и завершаю."
+}
