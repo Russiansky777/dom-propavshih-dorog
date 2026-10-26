@@ -101,11 +101,6 @@ jobs:
           GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
         run: tools/export_web.sh
 
-      - name: Export Windows
-        env:
-          GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
-        run: tools/export_windows.sh
-
       - name: Stamp build
         run: |
           echo "${GITHUB_SHA::7} $(date -u +%Y-%m-%dT%H:%MZ)" > build/web/version.txt
@@ -116,11 +111,20 @@ jobs:
         with:
           path: build/web
 
+      # Сайт уже выгружен выше: падение экспорта Windows (размер ПК-сборки с жителями v2) не мешает сайту.
+      - name: Export Windows
+        id: export_win
+        continue-on-error: true
+        env:
+          GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+        run: tools/export_windows.sh
+
       # The site (deploy below) must not wait on the exe: a failed release upload (22.10: twice in a row, step
       # «Publish Windows exe», tests and exports green) left the site unpublished. The step stays visible — its
       # failure is an annotation with the command and its output (readable through the checks API without the
       # job log), and the job still succeeds so GitHub Pages gets the new build.
       - name: Publish Windows exe to rolling release «latest»
+        if: steps.export_win.outcome == 'success'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
