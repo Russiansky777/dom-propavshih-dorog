@@ -66,6 +66,32 @@ func say(key: String) -> void:
 	StoryRunner.mechanic_say(t)
 
 
+## A word said on the go, not a line in the text box (the bar keeps running): it rises and fades over the close-up at
+## `at`, Agata's voice when recorded (`speaker:key`, subtitles only otherwise) — J, стр. 120: «Раз!», «Два!» at the brace.
+func pop_word(key: String, at: Vector2, speaker: String = "agata") -> Label:
+	var t := StoryData.text("@" + key)
+	var l := Label.new()
+	l.name = "Word_" + key.get_file()
+	l.text = t
+	l.theme = UiTheme.get_theme()
+	l.theme_type_variation = &"HeaderLarge"
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.position = at
+	l.modulate.a = 0.0
+	add_child(l)
+	var tw := l.create_tween()
+	tw.tween_property(l, "modulate:a", 1.0, 0.12)
+	tw.parallel().tween_property(l, "position:y", at.y - 26.0, 0.9)
+	tw.tween_property(l, "modulate:a", 0.0, 0.35)
+	tw.tween_callback(l.queue_free)
+	words_said.append(key)
+	VoiceDirector.play_line("%s:%s" % [speaker, key], speaker, t, "puzzle")
+	return l
+
+
+var words_said: Array[String] = []   # pop_word keys (tests)
+
+
 func text(key: String) -> String:
 	return StoryData.text(String(spec.get("texts", {}).get(key, key)))
 

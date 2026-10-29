@@ -14,8 +14,8 @@ extends RefCounted
 ##   miss_s      the pause after a miss while the consequence plays (0.9)
 ##   hit_s       the marker holds a moment after a hit — the blow lands (0.25)
 ##   start       where the marker starts, 0..1 (0 — the left end)
-##   green_easy  the green zone's width with «Облегчить» (absolute; Director 24.10, H26: the normal zone is
-##               narrower while the easy one stays as it was) — else `green` × green_k
+##   green_easy  (kept in the data, no longer read: J, Director 29.10 — every zone is `green` × green_k, normal 0.7,
+##               «Облегчить» 1.1)
 ## Accessibility (G3, Director 23.10: «Облегчить мини-игры»): `slow_k` multiplies the period (TimingBar.SLOW_K) and
 ## `green_k` widens the green zone round its centre (TimingBar.EASY_GREEN_K) — TimingBar.apply_ease sets both.
 
@@ -62,9 +62,7 @@ static func pos_at(ph: float) -> float:
 
 ## The green zone's width now: `green` × `green_k` («Облегчить»; `green_easy` when the data gives it), never wider than 0.9 of the bar.
 func green_w() -> float:
-	if green_k > 1.0 and green_easy > 0.0:
-		return green_easy
-	return clampf(green * green_k, 0.02, 0.9)
+	return clampf(green * green_k, 0.04, 0.9)
 
 
 ## The zone [from, to] on the bar; a widened zone near an end is shifted inwards so it stays as wide.

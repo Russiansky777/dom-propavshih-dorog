@@ -203,6 +203,17 @@
       },
       "draft": true
     },
+    "mech.plate.count_1": {
+      "text": "Раз!",
+      "line": {"speaker": "agata", "text": "Раз!"},
+      "_j": "J (Директор 29.10, стр. 120): после первого и второго удара по скобе Агата считает",
+      "draft": false
+    },
+    "mech.plate.count_2": {
+      "text": "Два!",
+      "line": {"speaker": "agata", "text": "Два!"},
+      "draft": false
+    },
     "mech.plate.label_hint_brace": {
       "text": "Скоба: три точных удара подряд — когда бегунок в зелёном.",
       "draft": true

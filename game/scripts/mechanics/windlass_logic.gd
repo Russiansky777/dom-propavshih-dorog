@@ -44,7 +44,8 @@ func _init(cfg: Dictionary = {}) -> void:
 func ease(slow: float, wide: float) -> void:
 	speed /= maxf(slow, 0.01)
 	raise_speed /= maxf(slow, 0.01)
-	tolerance = minf(tolerance * maxf(wide, 1.0), maxf(1.0 - rest - bump_over, tolerance))
+	# J (стр. 192): the normal zone narrower too (wide < 1), «Облегчить» a little wider; never past the stone
+	tolerance = minf(tolerance * maxf(wide, 0.3), maxf(1.0 - rest - bump_over, tolerance))
 
 
 func solved() -> bool:

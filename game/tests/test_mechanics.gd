@@ -316,26 +316,27 @@ func _test_slow_setting() -> void:
 	_check(is_equal_approx(bar.logic.slow_k, _TB.SLOW_K), "a new bar is slow")
 	# G3 (Director 23.10: «Облегчить мини-игры»): slower AND a wider green zone, for every timing mini-game.
 	var z: Vector2 = bar.logic.zone()
-	_check(is_equal_approx(z.y - z.x, 0.2 * _TB.EASY_GREEN_K) and bar.logic.in_green(0.36) and bar.logic.in_green(0.64),
+	_check(is_equal_approx(z.y - z.x, 0.2 * _TB.EASY_GREEN_K) and bar.logic.in_green(0.4) and bar.logic.in_green(0.6),
 		"«Облегчить»: the green zone is %.1f× wider (%.3f–%.3f)" % [_TB.EASY_GREEN_K, z.x, z.y])
 	var edge := TimingLogic.new({"green": 0.3, "center": 0.85})
 	_TB.apply_ease(edge)
-	_check(edge.zone().y <= 1.0 + 1e-6 and is_equal_approx(edge.zone().y - edge.zone().x, 0.45), "a widened zone near the end stays on the bar and as wide (%s)" % str(edge.zone()))
-	# H26 (Director 24.10): the wedges' zone is narrower in the normal mode; «Облегчить» keeps the old width (green_easy).
+	_check(edge.zone().y <= 1.0 + 1e-6 and is_equal_approx(edge.zone().y - edge.zone().x, 0.3 * _TB.EASY_GREEN_K), "a widened zone near the end stays on the bar and as wide (%s)" % str(edge.zone()))
+	# H26 (Director 24.10): the wedges' zone is narrower in the normal mode; J (29.10, стр. 192): «Облегчить» — the data's
+	# width × EASY_GREEN_K (green_easy no longer read), the normal mode × NORMAL_GREEN_K.
 	var wt: Dictionary = {}
 	for h in sd.room("H2").get("hotspots", []):
 		if String(h.get("id", "")) == "stand_zm":
 			wt = h.get("mechanic", {}).get("wedges", {}).get("timing", {})
 	var we := TimingLogic.new(wt)
 	_TB.apply_ease(we)
-	_check(is_equal_approx(we.green_w(), 0.3), "the wedges with «Облегчить»: the zone as before, 0.3 (%.3f)" % we.green_w())
+	_check(is_equal_approx(we.green_w(), float(wt.get("green", 0.2)) * _TB.EASY_GREEN_K), "the wedges with «Облегчить»: the data's zone a little wider (%.3f)" % we.green_w())
 	var wn := TimingLogic.new(wt)
 	_check(wn.green_w() <= 0.2 * 0.67 + 1e-6 and wn.green_w() >= 0.2 * 0.5 - 1e-6, "the wedges, normal mode: the zone a third to a half narrower than 0.2 (%.3f)" % wn.green_w())
 	bar.free()
 	_TB.set_slow(false)
 	var bar2 = _TB.new()
 	bar2.setup({"period_s": 2.0, "green": 0.2})
-	_check(bar2.logic.slow_k == 1.0 and is_equal_approx(bar2.logic.zone().y - bar2.logic.zone().x, 0.2), "off again: normal speed, normal zone")
+	_check(bar2.logic.slow_k == 1.0 and is_equal_approx(bar2.logic.zone().y - bar2.logic.zone().x, 0.2 * _TB.NORMAL_GREEN_K), "off again: normal speed, the normal zone narrower than the data (J, стр. 192)")
 	bar2.free()
 	# The setting key stays [access] timing_slow (an old settings file from «Точный удар — медленнее» still holds).
 	var old := ConfigFile.new()

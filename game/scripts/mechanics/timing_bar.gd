@@ -22,7 +22,10 @@ signal struck(result: String)
 signal early()
 
 const SLOW_K := 1.8
-const EASY_GREEN_K := 1.5
+## J (Director 29.10, стр. 192: «обычный режим — зелёные зоны меньше; облегчённый — как нынешний обычный или чуть шире»):
+## the normal green zone 0.7 of the data's width, the easy one 1.1 (was 1 and 1.5).
+const NORMAL_GREEN_K := 0.7
+const EASY_GREEN_K := 1.1
 const SETTINGS_PATH := "user://settings.cfg"
 const RED := Color(0.63, 0.17, 0.12)
 const AMBER := Color(0.82, 0.57, 0.2)
@@ -125,10 +128,10 @@ static func slow_k() -> float:
 	return SLOW_K if slow else 1.0
 
 
-## The zone's width multiplier now (every timing mini-game): EASY_GREEN_K with «Облегчить», else 1.
+## The zone's width multiplier now (every timing mini-game): EASY_GREEN_K with «Облегчить», else NORMAL_GREEN_K.
 static func green_k() -> float:
 	load_settings()
-	return EASY_GREEN_K if slow else 1.0
+	return EASY_GREEN_K if slow else NORMAL_GREEN_K
 
 
 ## The bar is waiting: a text on screen (the modal takes the clicks) or the owner holds it.

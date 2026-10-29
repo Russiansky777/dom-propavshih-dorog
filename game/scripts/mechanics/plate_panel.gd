@@ -213,6 +213,9 @@ func _on_struck(r: String) -> void:
 		"hit", "done":
 			blows = timing.logic.hits
 			sound("hammer")
+			if r == "hit" and blows in [1, 2]:
+				# J (стр. 120): Agata counts the blows — «Раз!», «Два!» (the third one drives it home)
+				pop_word("mech.plate.count_%d" % blows, v2(spec.get("count_pos", [700, 300])))
 			if r == "done":
 				timing.visible = false
 				event("braced")

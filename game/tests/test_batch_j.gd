@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   G1 (стр. 120, 191, 192): «Раз!», «Два!» at the brace; zones by mode; the log's red band;
 ##   F1 (стр. 6, 7): the save's real date and time; «Удалить» with the game's yes / no dialog;
 ##   E9 (стр. 15, 96, 144): the flume by the sluice state, Z3 lapping at the bank, R3 ripple under the stones;
 ##   E8 (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror carved, no handle;
@@ -95,6 +96,7 @@ func _run() -> void:
 	await _test("J-E7 lit windows (стр. 72): under the figures, as warm as before the grade, dimmer at the curtains", _test_windows)
 	await _test("J-E9 water (стр. 15, 96, 144): the flume holds, then rushes once the sluice is open; Z3's near water laps at the bank; R3 ripples under the stones", _test_water)
 	await _test("J-F1 saves (стр. 6, 7): the real date and time on a slot; «Удалить» asks in the game's dialog, the red cross keeps, the green tick deletes", _test_save_delete)
+	await _test("J-G1 mini-games (стр. 120, 191, 192): «Раз!», «Два!» at the brace; normal zones narrower, «Облегчить» a little wider; the log's red band bigger", _test_minigames)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -797,6 +799,51 @@ func _test_save_delete() -> void:
 	await _frames(2)
 	_check(not gs.has_save(slot) and not db.visible, "the green tick deletes it")
 	ui.call("close_menu_panel")
+
+
+func _test_minigames() -> void:
+	var TB = load("res://scripts/mechanics/timing_bar.gd")
+	var was: bool = TB.slow
+	TB.slow = false
+	_check(is_equal_approx(TB.green_k(), 0.7), "normal mode: the green zone 0.7 of the data's width")
+	TB.slow = true
+	_check(is_equal_approx(TB.green_k(), 1.1), "«Облегчить»: 1.1 — about as the old normal")
+	TB.slow = was
+	# The log: the red band (the stone) under the green one is about a third of the gauge, not a tenth.
+	var wspec: Dictionary = {}
+	for sc in (sd.get("scenes") as Dictionary).values():
+		for m in (sc as Dictionary).get("mechanics", []):
+			if String(m.get("spec", {}).get("type", "")) == "windlass":
+				wspec = m["spec"]
+	var lg := WindlassLogic.new(wspec.get("logic", {}))
+	lg.ease(1.0, 0.7)
+	_check(1.0 - lg.zone().y >= 0.25, "the log's red band: %.2f of the gauge" % (1.0 - lg.zone().y))
+	# The brace: Agata counts the first two blows.
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M15a", "evening_dusk", "has_brace_plate"])
+	await _enter("Z3")
+	await _drain()
+	var h: Node = _hotspot("pier_plate")
+	var spec: Dictionary = sr.mechanic_spec(h) if h != null else {}
+	if spec.is_empty():
+		for hh in sd.room("Z3").get("hotspots", []):
+			if String(hh.get("id", "")) == "pier_plate":
+				spec = hh.get("mechanic", {})
+	sr.open_mechanic(spec, "pier_plate")
+	await _frames(3)
+	var mvn: Node = main_node.get_node("MechanicView")
+	var panel = mvn.get("panel")
+	_check(panel != null and panel.has_method("pop_word"), "the plate close-up is open")
+	if panel != null and panel.get("timing") != null:
+		for n in [1, 2]:
+			panel.timing.logic.hits = n
+			panel.call("_on_struck", "hit")
+			await _frames(1)
+		var said: Array = panel.get("words_said")
+		_check(said.has("mech.plate.count_1") and said.has("mech.plate.count_2"), "«Раз!», «Два!» after the first two blows: %s" % str(said))
+	sr.call("close_mechanic")
+	await _frames(2)
 
 
 func _layer_vis(id: String) -> bool:
