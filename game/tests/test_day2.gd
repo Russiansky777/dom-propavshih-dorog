@@ -949,7 +949,7 @@ func _test_walkthrough() -> void:
 	# J (Р5, Director 29.10): the winch has not turned for a year — rusted; Pavel sends Agata for Dunya's tar.
 	_check(not sr.mechanic_open and not gs.has_item("key_sluice") and gs.has_flag("sluice_key_inserted") and gs.has_flag("windlass_rusty"),
 		"Р5: the lever in the winch — no close-up yet, the winch is rusted")
-	_check(seen.any(func(x): return String(x).begins_with("pavel:") and String(x).contains("Дёготь у Дуни")) and sr.journal_goal().contains("дёготь"),
+	_check(seen.any(func(x): return String(x).begins_with("pavel:") and String(x).contains("заржав")) and sr.journal_goal().contains("дёготь") and sr.journal_goal().contains("мастерской"),
 		"Р5: Pavel asks for Dunya's tar; the goal says where: %s / %s" % [str(seen), sr.journal_goal()])
 	await _use("gate")
 	seen = await _finish()
