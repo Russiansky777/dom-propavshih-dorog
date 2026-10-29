@@ -109,6 +109,7 @@ func _run() -> void:
 	await _test("J-D5 the crossing (стр. 137): the rope runs through the iron eye (the iron alone stays); at the shore the boat's view goes to black and the far pier comes out of it — never the boat again", _test_crossing_black)
 	await _test("J-G2 crosses and noughts with Ulyana: from her choice in class; chalk grid and marks by hand; she plays well, not perfectly; a game ends in a word and «Ещё раз» / «Хватит»", _test_ttt)
 	await _test("J-G3 the spoons with Tikhon: from his questions; he taps, Agata answers in the same rhythm; a miss — the same round again; «Хватит» puts it away", _test_rhythm)
+	await _test("J-G4 the string with Mitya (fishing): from his questions on the free day; strike when the float dives; keep the string in the green — the perch comes in; too hard — it snaps", _test_fishing)
 	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks to the door and fades before the black", _test_staging_d3)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -996,6 +997,73 @@ func _test_rhythm() -> void:
 			sr.advance()
 		await process_frame
 	_check(not sr.mechanic_open, "«Хватит» puts it away")
+
+
+func _test_fishing() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["started_M19", "done_M19", "done_M21b", "done_M22", "free_walk_day3", "morning_day3", "house_open", "met_nina", "met_mitya"])
+	await _enter("O4", "from_O2")
+	await _drain()
+	var h: Node = _hotspot("mitya")
+	_check(h != null and h.visible, "Mitya by the fence")
+	if h == null:
+		return
+	sr.interact(h)
+	var tw := 0
+	while sr.current_options().is_empty() and tw < 300:
+		tw += 1
+		if not sr.current_beat.is_empty() and sr.current_beat.get("type") != "options":
+			sr.advance()
+		await process_frame
+	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids.has("fish"), "his questions offer fishing: %s" % str(ids))
+	sr.choose("fish")
+	tw = 0
+	while not sr.mechanic_open and tw < 300:
+		tw += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+	var panel = main_node.get_node("MechanicView").get("panel")
+	_check(sr.mechanic_open and panel != null, "the river opens")
+	if panel == null:
+		return
+	_check(panel.find_child("River", true, false) != null, "the river is a part of the painting")
+	# the float dives: strike, then keep the string in the green
+	panel.set("phase", "bite")
+	panel.set("phase_t", 0.0)
+	panel.call("press", true)
+	_check(String(panel.call("probe")["phase"]) == "fight", "a strike in time hooks the fish")
+	var g: Array = panel.call("probe")["green"]
+	var mid := (float(g[0]) + float(g[1])) * 0.5
+	var t0 := Time.get_ticks_msec()
+	while String(panel.call("probe")["phase"]) == "fight" and Time.get_ticks_msec() - t0 < 25000:
+		panel.call("press", float(panel.call("probe")["tension"]) < mid)
+		await process_frame
+	_check(String(panel.call("probe")["phase"]) == "caught" and gs.has_flag("mitya_fish_caught"), "kept in the green — the perch is in: %s" % str(panel.call("probe")))
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	_check(bool(panel.call("probe")["again"]), "«Ещё» after the catch")
+	panel.get("again_btn").emit_signal("pressed")
+	panel.set("phase", "bite")
+	panel.set("phase_t", 0.0)
+	panel.call("press", true)
+	var lost0 := int(panel.call("probe")["lost"])
+	t0 = Time.get_ticks_msec()
+	while String(panel.call("probe")["phase"]) == "fight" and Time.get_ticks_msec() - t0 < 10000:
+		panel.call("press", true)   # pulling all the time
+		await process_frame
+	_check(String(panel.call("probe")["phase"]) == "wait" and int(panel.call("probe")["lost"]) == lost0 + 1, "pulled too hard — the string snaps, wait again")
+	panel.get("stop_btn").emit_signal("pressed")
+	tw = 0
+	while (sr.mechanic_open or not sr.current_beat.is_empty()) and tw < 300:
+		tw += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+	_check(not sr.mechanic_open and gs.has_flag("mitya_fished"), "«Хватит» — back on the street")
 
 
 func _test_staging_d3() -> void:

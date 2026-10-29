@@ -25,6 +25,7 @@ const PANELS := {
 	"workbench": preload("res://scripts/mechanics/workbench_panel.gd"),
 	"tictactoe": preload("res://scripts/mechanics/tictactoe_panel.gd"),
 	"rhythm": preload("res://scripts/mechanics/rhythm_panel.gd"),
+	"fishing": preload("res://scripts/mechanics/fishing_panel.gd"),
 }
 
 var spec: Dictionary = {}
