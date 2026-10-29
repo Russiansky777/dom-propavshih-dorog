@@ -292,6 +292,17 @@ func _apply(st: String, ease: bool) -> void:
 			create_tween().tween_property(ambient, "modulate", target, fade_s)
 		else:
 			ambient.modulate = target
+		# J (Director 29.10, стр. 57: «вечер, кадр с почтой и домом — нет капель дождя»): the drizzle is a child of the
+		# «living world» layer and took the night grade with it — dark streaks on a dark frame. It keeps at least 0.6 of
+		# its brightness: rain.modulate = max(grade, 0.6) / grade per channel (1 by day).
+		var rain = ambient.get("rain")
+		if rain is CanvasItem and is_instance_valid(rain):
+			var rk := Color(maxf(target.r, 0.6) / maxf(target.r, 0.01), maxf(target.g, 0.6) / maxf(target.g, 0.01),
+				maxf(target.b, 0.6) / maxf(target.b, 0.01), 1.0)
+			if ease and is_inside_tree():
+				create_tween().tween_property(rain, "modulate", rk, fade_s)
+			else:
+				(rain as CanvasItem).modulate = rk
 	if route != "tint":
 		target = Color.WHITE
 	if tint != null:

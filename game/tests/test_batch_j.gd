@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   E10 (стр. 57): the drizzle at night in the lane by the post (light route) not darkened with the ambient layer;
 ##   G1 (стр. 120, 191, 192): «Раз!», «Два!» at the brace; zones by mode; the log's red band;
 ##   F1 (стр. 6, 7): the save's real date and time; «Удалить» with the game's yes / no dialog;
 ##   E9 (стр. 15, 96, 144): the flume by the sluice state, Z3 lapping at the bank, R3 ripple under the stones;
@@ -97,6 +98,7 @@ func _run() -> void:
 	await _test("J-E9 water (стр. 15, 96, 144): the flume holds, then rushes once the sluice is open; Z3's near water laps at the bank; R3 ripples under the stones", _test_water)
 	await _test("J-F1 saves (стр. 6, 7): the real date and time on a slot; «Удалить» asks in the game's dialog, the red cross keeps, the green tick deletes", _test_save_delete)
 	await _test("J-G1 mini-games (стр. 120, 191, 192): «Раз!», «Два!» at the brace; normal zones narrower, «Облегчить» a little wider; the log's red band bigger", _test_minigames)
+	await _test("J-E10 the drizzle at night in the lane by the post (стр. 57): not darkened with the «living world» layer", _test_rain_night)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -854,6 +856,23 @@ func _test_minigames() -> void:
 		_check(said.has("mech.plate.count_1") and said.has("mech.plate.count_2"), "«Раз!», «Два!» after the first two blows: %s" % str(said))
 	sr.call("close_mechanic")
 	await _frames(2)
+
+
+func _test_rain_night() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "done_M04", "done_M05", "done_M07", "done_M08", "house_open"])
+	await _enter("Z4")
+	await _drain()
+	await _frames(3)
+	var amb: Node = _fog_root()
+	var tg: Node = rm.current_room.get_node_or_null("TimeOfDay")
+	_check(amb != null and tg != null and String(tg.get("route")) == "light", "Z4 is lit by its lights (the «living world» takes the grade)")
+	var rain = amb.get("rain") if amb != null else null
+	_check(rain != null, "it drizzles in Z4")
+	if rain != null:
+		var m: Color = (amb as CanvasItem).modulate * (rain as CanvasItem).modulate
+		_check(m.r >= 0.59 and m.g >= 0.59 and m.b >= 0.59, "the drizzle keeps at least 0.6 of its brightness at night: %s (layer %s)" % [str(m), str((amb as CanvasItem).modulate)])
 
 
 func _layer_vis(id: String) -> bool:
