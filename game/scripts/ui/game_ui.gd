@@ -352,6 +352,7 @@ func _build() -> void:
 	menu_panel.position = Vector2(510, 220)
 	menu_panel.size = Vector2(900, 560)
 	menu_panel.visible = false
+	_style_menu_board(menu_panel)
 	menu_layer.add_child(menu_panel)
 	var mv := VBoxContainer.new()
 	mv.add_theme_constant_override("separation", 12)
@@ -360,8 +361,14 @@ func _build() -> void:
 	mt.name = "MenuTitle"
 	mt.text = StoryData.text("@ui.menu_title")
 	mt.theme_type_variation = &"HeaderLarge"
+	mt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER   # J (стр. 5): as the plaque on the pause board
 	mv.add_child(mt)
 	menu_title = mt
+	var leaf_gap := Control.new()
+	leaf_gap.name = "LeafGap"
+	leaf_gap.custom_minimum_size = Vector2(0, 26)   # room for the board's leaf ornament under the title
+	leaf_gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mv.add_child(leaf_gap)
 	menu_empty_label = Label.new()
 	menu_empty_label.name = "NoSaves"
 	menu_empty_label.text = StoryData.text("@ui.menu_no_saves")
@@ -945,6 +952,47 @@ func _slot_row_load_only(parent: Control, slot: String, title: String, row_name:
 	var db := _delete_button(slot)
 	row.add_child(db)
 	slot_rows[slot] = {"info": info, "save": null, "load": lb, "delete": db, "row": row, "checkpoint": true}
+
+
+## J (Director 29.10, стр. 5: «Настройки», «Загрузить» — оформить как меню паузы и главное): the save / load / settings
+## panel is a board of the pause menu's art — its dark planks (pause_panel.png), the game's carved frame with the gold
+## bead and rosettes round them (CarvedFrame), the leaf ornament of the board under the title — not a flat dark box.
+const BOARD_PLANKS := Rect2(330, 712, 1010, 120)      # pause_panel.png: the planks between the bands
+const BOARD_LEAF := Rect2(690, 836, 290, 34)          # pause_panel.png: the leaf-and-rosette ornament
+
+
+func _style_menu_board(p: PanelContainer) -> void:
+	var band := 18.0
+	var sb := StyleBoxEmpty.new()
+	sb.content_margin_left = 54
+	sb.content_margin_right = 54
+	sb.content_margin_top = 46
+	sb.content_margin_bottom = 50
+	p.add_theme_stylebox_override("panel", sb)
+	var src := MenuConfig.texture("pause_panel.png")
+	var planks: AtlasTexture = null
+	var leaf: AtlasTexture = null
+	if src != null:
+		planks = AtlasTexture.new()
+		planks.atlas = src
+		planks.region = BOARD_PLANKS
+		leaf = AtlasTexture.new()
+		leaf.atlas = src
+		leaf.region = BOARD_LEAF
+	p.draw.connect(func() -> void:
+		var inner := Rect2(Vector2(band, band), p.size - Vector2(band, band) * 2.0)
+		CarvedFrame.draw_frame(p, inner, band)
+		if planks != null:
+			p.draw_texture_rect(planks, inner, false)
+		else:
+			p.draw_rect(inner, CarvedFrame.WOOD)
+		p.draw_rect(inner, Color(0, 0, 0, 0.18))   # a little darker than the pause board: the text sits on it
+		if leaf != null and menu_title != null:
+			var lw := minf(290.0, inner.size.x * 0.5)
+			var lh := lw * BOARD_LEAF.size.y / BOARD_LEAF.size.x
+			var y := menu_title.get_global_rect().end.y - p.get_global_rect().position.y + 2.0
+			p.draw_texture_rect(leaf, Rect2(Vector2((p.size.x - lw) * 0.5, y), Vector2(lw, lh)), false))
+	p.resized.connect(p.queue_redraw)
 
 
 ## J (Director 29.10, стр. 7): «Удалить» on every save that exists — it asks first (the game's own dialog).
