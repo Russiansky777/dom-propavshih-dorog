@@ -57,9 +57,24 @@ func build() -> void:
 	var fpos := v2(fr.get("pos", [300, 110]))
 	var fk := float(fr.get("scale", 2.8))
 	# The frame and the stand: the workshop painting and the layer with the mirror in Dunya's stand, one crop.
+	# J (Director 29.10, стр. 77, 79: «снова прямоугольник — вписать в раму», «края смягчить, как у колокола»): the
+	# crop's edges fade into the dark like the bell's (`frame.window` — SoftWindow «rect»), not a cut rectangle.
 	var images: Array = fr.get("images", [fr.get("image", "")])
+	var fparent: Control = null
+	var fat := fpos
+	if fr.has("window"):
+		var fw := SoftWindow.new()
+		fw.name = "FrameCloseup"
+		fw.position = fpos
+		fw.size = Vector2(float(reg[2]), float(reg[3])) * fk
+		var fwc: Dictionary = fr["window"]
+		fw.shape = String(fwc.get("shape", "rect"))
+		fw.configure(fwc)
+		add_child(fw)
+		fparent = fw.content
+		fat = Vector2.ZERO
 	for i in images.size():
-		crop(String(images[i]), reg, fpos, fk).name = "Frame" if i == 0 else "Frame%d" % i
+		crop(String(images[i]), reg, fat, fk, fparent).name = "Frame" if i == 0 else "Frame%d" % i
 	# The glass: its contour on the canvas → the screen.
 	var pts := PackedVector2Array()
 	for q in fr.get("glass_polygon", [[454, 187], [560, 180], [565, 361], [460, 373]]):

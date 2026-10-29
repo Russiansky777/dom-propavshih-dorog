@@ -73,17 +73,16 @@ func build() -> void:
 	var r: Array = spec.get("glass", [150, 160, 1130, 747])
 	room_rect = Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
 	# The frame (wood, drawn): mother's mirror with its corners drawn together by the clamp.
-	var frame := Panel.new()
+	# J (Director 29.10, стр. 109: «края красивее, убрать серую ручку сбоку»): the game's carved frame (dark wood,
+	# grooves, a gold bead and rosettes — CarvedFrame, as the bars and the menu panel) instead of a flat brown box;
+	# the grey clamp drawn at the side is gone (the clamp is in the story and in the room, not a handle on the glass).
+	var band := float(spec.get("frame_band", 34.0))
+	var frame := Control.new()
 	frame.name = "Frame"
-	frame.position = room_rect.position - Vector2(46, 46)
-	frame.size = room_rect.size + Vector2(92, 92)
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.34, 0.21, 0.11)
-	sb.border_color = Color(0.52, 0.36, 0.2)
-	sb.set_border_width_all(6)
-	sb.set_corner_radius_all(10)
-	frame.add_theme_stylebox_override("panel", sb)
+	frame.position = room_rect.position - Vector2(band, band)
+	frame.size = room_rect.size + Vector2(band, band) * 2.0
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.draw.connect(func() -> void: CarvedFrame.draw_frame(frame, Rect2(Vector2(band, band), room_rect.size), band))
 	add_child(frame)
 	room = Control.new()
 	room.name = "Room"
@@ -101,7 +100,8 @@ func build() -> void:
 	tint.size = room.size
 	tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	room.add_child(tint)
-	_build_clamp()
+	if bool(spec.get("clamp_drawn", false)):
+		_build_clamp()
 	_build_side()
 	_update_room()
 

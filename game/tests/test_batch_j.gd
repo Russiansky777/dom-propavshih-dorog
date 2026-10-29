@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   E8 (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror carved, no handle;
 ##   E7 (стр. 72): lit windows under the figures, boosted through the grade, dimmer at the curtains;
 ##   E6 (a real-game frame): R1 at dusk with the rope off the stopper — no white streak over the dark far bank;
 ##   E5 (стр. 95, 46): the H1 mug as big as the chosen cup (the painted clay mug under it gone); the H4 bed larger;
@@ -90,6 +91,7 @@ func _run() -> void:
 	await _test("J-E5 sizes: the H1 mug as big as the chosen cup (стр. 95), no clay mug under it; the H4 bed larger (стр. 46)", _test_sizes)
 	await _test("J-E6 R1 dusk, the rope off the stopper: before the knot the patch is the dark bank's, after it the snowy one's", _test_rope_patch)
 	await _test("J-E7 lit windows (стр. 72): under the figures, as warm as before the grade, dimmer at the curtains", _test_windows)
+	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -691,6 +693,35 @@ func _test_windows() -> void:
 			var mid := img.get_pixel(img.get_width() / 2, img.get_height() / 2).a
 			var side := img.get_pixel(int(img.get_width() * 0.2), img.get_height() / 2).a
 			_check(side < mid * 0.85, "dimmer towards the curtains: side %.2f, middle %.2f" % [side, mid])
+
+
+func _test_mirror_frames() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "house_open", "done_M09", "done_M09b", "office_mirror_mounted", "has_mirror_mill"])
+	await _enter("H2")
+	await _drain()
+	var mvn: Node = main_node.get_node("MechanicView")
+	var h: Node = _hotspot("stand_zm")
+	sr.open_mechanic(sr.mechanic_spec(h), "stand_zm")
+	await _frames(3)
+	_check(sr.mechanic_open and mvn.find_child("FrameCloseup", true, false) is SoftWindow, "the office mirror's frame sits in a soft window (as the bell)")
+	var fc: Node = mvn.find_child("FrameCloseup", true, false)
+	_check(fc != null and fc.find_child("Frame", true, false) != null, "the workshop crop is inside it")
+	sr.call("close_mechanic")
+	await _frames(2)
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "house_open", "done_M14", "nina_mirror_clamped", "h2_bundle_unwrapped"])
+	await _enter("H2")
+	await _drain()
+	sr.open_mechanic(sr.mechanic_spec(_hotspot("bundle_nina")), "bundle_nina")
+	await _frames(3)
+	var fr: Node = mvn.find_child("Frame", true, false)
+	_check(sr.mechanic_open and fr != null and not (fr is Panel), "mother's mirror: the carved frame, not the flat brown panel")
+	_check(mvn.find_child("Clamp", true, false) == null, "no grey handle at the side")
+	sr.call("close_mechanic")
+	await _frames(2)
 
 
 func _layer_vis(id: String) -> bool:
