@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-29T20:55:34+00:00",
+  "updated_at": "2026-10-29T22:32:11+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -1243,37 +1243,50 @@
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.4,
         "similarity_boost": 0.8
       },
       "file": "M03_4.ogg",
       "source": "src/M03_4.mp3",
-      "voice_text": "К сестре пошла. БА́ЯЛА — к вечеру.",
-      "voice_sha1": "e857e414518a3d3d0b4c204a155dbe93924d54b7",
+      "voice_text": "К сестре пошла. /ˈbajəɫə/ к вечеру.",
+      "voice_sha1": "6a0b2d6c78b2f9303056dfac47c48982a7963990",
       "tags": [],
-      "characters": 34,
+      "characters": 35,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.78,
+      "duration_s": 2.97,
       "lufs": -17.0,
-      "true_peak_db": -4.0,
-      "gain_db": -0.4,
+      "true_peak_db": -3.3,
+      "gain_db": 0.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.6,
-      "source_true_peak_db": -3.5,
+      "source_lufs": -17.1,
+      "source_true_peak_db": -3.4,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T17:59:41+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:31:58+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K003_A",
       "api": {
-        "request_id": "EcXEstYQjEBebtV85xbj",
-        "history_item_id": "ZF3APqKWou05NwB0tkFk",
+        "history_item_id": "D2MotCKFbWvvfmkLa5jE",
         "character_cost": "15",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 993900639
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "К сестре пошла. Баяла к вечеру",
+        "words": [
+          "К",
+          "сестре",
+          "пошла.",
+          "Баяла",
+          "к",
+          "вечеру"
+        ],
+        "missing": [],
+        "extra": [
+          "баяла"
+        ],
+        "ratio": 0.909
       }
     },
     "M03_5": {
@@ -2182,45 +2195,73 @@
       "voice_name": "Павел",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M09_2.ogg",
       "source": "src/M09_2.mp3",
-      "voice_text": "[thoughtful] РЫЧАГ нужен, а он в конторе, на гвозде. Управляющий в тот вечер, перед паводком, затвор запер, рычаг повесил, контору снаружи замкнул — и домой, в Ольховку. А ночью вода пришла.",
-      "voice_sha1": "d6f7fd61e9f953c1ce56b08d9e572a8d5bcfb3e6",
+      "voice_text": "Рычаг нужен, а он в конторе, на гвозде. Управляющий в тот вечер, перед паводком, затвор запер, рычаг повесил, контору снаружи замкнул — и домой, в Ольховку. А ночью вода пришла.",
+      "voice_sha1": "c4a43f21bd4eec19e2d6ccd9852031d4351b1bcf",
       "tags": [
         "thoughtful"
       ],
-      "characters": 190,
+      "characters": 177,
       "loudness_target_lufs": -17.0,
-      "duration_s": 14.24,
-      "lufs": -17.0,
-      "true_peak_db": -6.4,
-      "gain_db": -2.0,
+      "duration_s": 15.59,
+      "lufs": -17.1,
+      "true_peak_db": -5.3,
+      "gain_db": -3.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.0,
-      "source_true_peak_db": -4.5,
+      "source_lufs": -13.7,
+      "source_true_peak_db": -2.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T17:59:55+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 13.93,
-        "delta_s": 0.31,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:31:59+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K005_C",
       "api": {
-        "request_id": "cbUeOxIfxpkgCjuYdEdR",
-        "history_item_id": "DoqmofCHcPrBylmGVmU4",
-        "character_cost": "84",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1818242760
-        }
+        "history_item_id": "IulESRhPxEDar61cGuuc",
+        "character_cost": "78",
+        "previous_text": "Что для затвора нужно, Павел?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Рычаг нужен, а он в конторе на гвозде. Управляющий в тот вечер перед паводком затвор запер, рычаг повесил, контору снаружи замкнул и домой в Ольховку. А ночью вода пришла",
+        "words": [
+          "Рычаг",
+          "нужен,",
+          "а",
+          "он",
+          "в",
+          "конторе",
+          "на",
+          "гвозде.",
+          "Управляющий",
+          "в",
+          "тот",
+          "вечер",
+          "перед",
+          "паводком",
+          "затвор",
+          "запер,",
+          "рычаг",
+          "повесил,",
+          "контору",
+          "снаружи",
+          "замкнул",
+          "и",
+          "домой",
+          "в",
+          "Ольховку.",
+          "А",
+          "ночью",
+          "вода",
+          "пришла"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M09_3": {
@@ -2366,7 +2407,7 @@
       "voice_name": "Павел",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M09_6.ogg",
@@ -2376,27 +2417,53 @@
       "tags": [],
       "characters": 127,
       "loudness_target_lufs": -17.0,
-      "duration_s": 10.82,
-      "lufs": -16.9,
-      "true_peak_db": -5.2,
-      "gain_db": -1.7,
+      "duration_s": 10.85,
+      "lufs": -17.1,
+      "true_peak_db": -5.0,
+      "gain_db": -2.4,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.3,
-      "source_true_peak_db": -3.5,
+      "source_lufs": -14.6,
+      "source_true_peak_db": -2.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:04+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:31:59+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K006_C",
       "api": {
-        "request_id": "SXHn2iN0FNRLlV7ORApG",
-        "history_item_id": "NYbN3ooFSqH8QUpJgxdU",
+        "history_item_id": "C0VF2PB3X1mPaYTrv1Zq",
         "character_cost": "56",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1812468699
-        }
+        "previous_text": "А через окно никак?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Пробовал ломом только косяк крошить, окно в решетке, а вслепую крюком скрести - засов глубже в скобы загонишь. Так и стоит",
+        "words": [
+          "Пробовал",
+          "ломом",
+          "только",
+          "косяк",
+          "крошить,",
+          "окно",
+          "в",
+          "решетке,",
+          "а",
+          "вслепую",
+          "крюком",
+          "скрести",
+          "-",
+          "засов",
+          "глубже",
+          "в",
+          "скобы",
+          "загонишь.",
+          "Так",
+          "и",
+          "стоит"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M09_7": {
@@ -2588,37 +2655,54 @@
       "voice_name": "Павел",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M09b_3.ogg",
       "source": "src/M09b_3.mp3",
-      "voice_text": "Оттуда и звони… её колокол тут слыхать. А зеркало из сеней забирай.",
-      "voice_sha1": "2c45a2657d1bc93e6ce965a57a1603a3b1605e3d",
+      "voice_text": "Оттуда и звони — её колокол тут слыхать. А зеркало из сеней забирай.",
+      "voice_sha1": "d1c9470a179faaa2bd39b53ec4266dc6df0197c9",
       "tags": [],
-      "characters": 67,
+      "characters": 68,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.97,
-      "lufs": -17.1,
-      "true_peak_db": -7.9,
-      "gain_db": -4.0,
+      "duration_s": 5.69,
+      "lufs": -17.0,
+      "true_peak_db": -7.3,
+      "gain_db": -4.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.0,
-      "source_true_peak_db": -3.9,
+      "source_lufs": -12.8,
+      "source_true_peak_db": -3.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:11+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:00+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K008_C",
       "api": {
-        "request_id": "LJtV1bSQ4Hakw443Wuel",
-        "history_item_id": "9rzYLrUOnuzOVcAOCIMl",
-        "character_cost": "29",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2309613069
-        }
+        "history_item_id": "EL2x0xypSFcTuZm10Yfj",
+        "character_cost": "30",
+        "previous_text": "А колокол её тут слышно?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Оттуда и звони. Ее колокол тут слыхать, а зеркало из сеней забирай",
+        "words": [
+          "Оттуда",
+          "и",
+          "звони.",
+          "Ее",
+          "колокол",
+          "тут",
+          "слыхать,",
+          "а",
+          "зеркало",
+          "из",
+          "сеней",
+          "забирай"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M09b_4": {
@@ -3370,37 +3454,65 @@
       "voice_name": "Павел",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M14_1.ogg",
       "source": "src/M14_1.mp3",
-      "voice_text": "Лодка туда не довезёт, назад вынесет: дороги нет. За кольцо канат ЗАКРЕПИШЬ — дорога будет. По ней лодка и пойдёт. А пока — ступай.",
-      "voice_sha1": "55b992ece77dccf0e3f1c7c9733442eaf1d4c25d",
+      "voice_text": "Лодка туда не довезёт, назад вынесет: дороги нет. За кольцо канат ЗАКРЕПИШЬ — дорога будет. По ней лодка и пойдёт. А пока ступай.",
+      "voice_sha1": "7fdc7f376e2349e4f2b59d94efe5c5e3426327e9",
       "tags": [],
-      "characters": 131,
+      "characters": 129,
       "loudness_target_lufs": -17.0,
-      "duration_s": 10.6,
-      "lufs": -16.9,
-      "true_peak_db": -5.9,
-      "gain_db": -2.5,
+      "duration_s": 10.59,
+      "lufs": -17.0,
+      "true_peak_db": -6.0,
+      "gain_db": -3.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.5,
-      "source_true_peak_db": -3.4,
+      "source_lufs": -13.9,
+      "source_true_peak_db": -2.9,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:20+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:00+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K010_B",
       "api": {
-        "request_id": "uvRTmzffCOyKXsz11inf",
-        "history_item_id": "kMCG4JhgAQhnEhUDgQPw",
-        "character_cost": "58",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1922343847
-        }
+        "history_item_id": "uW4FAx7cQ72MM27rlzTG",
+        "character_cost": "57",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Лодка туда не довезет, назад вынесет. Дороги нет. За кольцо канат закрепишь — дорога будет, по ней лодка и пойдет. А пока ступай",
+        "words": [
+          "Лодка",
+          "туда",
+          "не",
+          "довезет,",
+          "назад",
+          "вынесет.",
+          "Дороги",
+          "нет.",
+          "За",
+          "кольцо",
+          "канат",
+          "закрепишь",
+          "—",
+          "дорога",
+          "будет,",
+          "по",
+          "ней",
+          "лодка",
+          "и",
+          "пойдет.",
+          "А",
+          "пока",
+          "ступай"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M15_0": {
@@ -3791,7 +3903,7 @@
       "voice_name": "PELAGEYA",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M15s_1.ogg",
@@ -3801,27 +3913,45 @@
       "tags": [],
       "characters": 72,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.55,
+      "duration_s": 5.47,
       "lufs": -17.0,
-      "true_peak_db": -5.4,
-      "gain_db": -2.1,
+      "true_peak_db": -4.4,
+      "gain_db": -2.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.9,
-      "source_true_peak_db": -3.2,
+      "source_lufs": -14.8,
+      "source_true_peak_db": -2.3,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:24+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:00+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K012_C",
       "api": {
-        "request_id": "7aX39TL6gA9YwPuSgGGW",
-        "history_item_id": "lCumD3r7KnhRfHG5MYOE",
+        "history_item_id": "JobYHJ0yF1i65K1SWf1W",
         "character_cost": "32",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4090404317
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Теперь канат со стопора сниму да лодкой до опоры доплыву. Жди, я мигом",
+        "words": [
+          "Теперь",
+          "канат",
+          "со",
+          "стопора",
+          "сниму",
+          "да",
+          "лодкой",
+          "до",
+          "опоры",
+          "доплыву.",
+          "Жди,",
+          "я",
+          "мигом"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M15s_2": {
@@ -3924,37 +4054,55 @@
       "voice_name": "PELAGEYA",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M16_0_then0.ogg",
       "source": "src/M16_0_then0.mp3",
-      "voice_text": "Лодку к плите отведу, к повороту. Туда приходи, там и проверим.",
-      "voice_sha1": "1f0c6f48fe5097ccb8825e69cbcd616d402fc7f1",
+      "voice_text": "Лодку к /plʲɪˈtʲe/ отведу, к повороту. Туда приходи, там и проверим.",
+      "voice_sha1": "fd0a7d9317b80abad826ad41744fc49343c596bb",
       "tags": [],
-      "characters": 63,
+      "characters": 68,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.72,
+      "duration_s": 4.9,
       "lufs": -17.0,
-      "true_peak_db": -3.6,
-      "gain_db": -0.7,
+      "true_peak_db": -3.4,
+      "gain_db": -0.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.3,
-      "source_true_peak_db": -2.9,
+      "source_lufs": -16.2,
+      "source_true_peak_db": -2.6,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:31+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:00+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K014_A",
       "api": {
-        "request_id": "RW1VBKgxCTzPRXPhdd5V",
-        "history_item_id": "GDj1Rluq6odyOlMj0Zl4",
-        "character_cost": "28",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 346821440
-        }
+        "history_item_id": "28LOJDAXE9IU5krrRjto",
+        "character_cost": "30",
+        "previous_text": "Ответили! Целый год ни огонька!",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Лодку к плети отведу, к повороту. Туда приходи, там и проверим",
+        "words": [
+          "Лодку",
+          "к",
+          "плети",
+          "отведу,",
+          "к",
+          "повороту.",
+          "Туда",
+          "приходи,",
+          "там",
+          "и",
+          "проверим"
+        ],
+        "missing": [],
+        "extra": [
+          "плети"
+        ],
+        "ratio": 0.952
       }
     },
     "M16s_0": {
@@ -4113,32 +4261,66 @@
       },
       "file": "M17_0.ogg",
       "source": "src/M17_0.mp3",
-      "voice_text": "Проверю так… как на лодке полагается. Кольцо на канат надену да пустую пущу: течение её само поведёт. А бечеву́ в руках оставлю — вот и глянем, что из того выйдет.",
-      "voice_sha1": "ca62fcc99923f8bec5e9b6f0b7227608b04eddef",
+      "voice_text": "Проверю так — как на лодке полагается. Кольцо на канат надену да пустую пущу: течение её само поведёт. А бечеву́ в руках оставлю — вот и глянем, что из того выйдет.",
+      "voice_sha1": "22a15a410fd65fc3481ebfc06620ef01fac22575",
       "tags": [],
-      "characters": 163,
+      "characters": 164,
       "loudness_target_lufs": -17.0,
-      "duration_s": 13.4,
+      "duration_s": 13.35,
       "lufs": -17.0,
-      "true_peak_db": -4.0,
-      "gain_db": -1.0,
+      "true_peak_db": -2.9,
+      "gain_db": -0.7,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.0,
-      "source_true_peak_db": -3.1,
+      "source_lufs": -16.3,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:35+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:01+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K015_B",
       "api": {
-        "request_id": "FATPgcAGFSJaXrcN6YaH",
-        "history_item_id": "rUBAVPTgJqrYnMtRdEwT",
+        "history_item_id": "2mseBM7ZoOVmVDAodwSa",
         "character_cost": "72",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1958472318
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Проверю так, как на лодке полагается: кольцо на канат надену да пустую пущу, течение ее само поведет, а бечеву в руках оставлю. Вот и глянем, что из того выйдет",
+        "words": [
+          "Проверю",
+          "так,",
+          "как",
+          "на",
+          "лодке",
+          "полагается:",
+          "кольцо",
+          "на",
+          "канат",
+          "надену",
+          "да",
+          "пустую",
+          "пущу,",
+          "течение",
+          "ее",
+          "само",
+          "поведет,",
+          "а",
+          "бечеву",
+          "в",
+          "руках",
+          "оставлю.",
+          "Вот",
+          "и",
+          "глянем,",
+          "что",
+          "из",
+          "того",
+          "выйдет"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M17_1": {
@@ -4152,7 +4334,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "M17_1.ogg",
@@ -4162,27 +4344,60 @@
       "tags": [],
       "characters": 174,
       "loudness_target_lufs": -17.0,
-      "duration_s": 15.55,
+      "duration_s": 16.49,
       "lufs": -17.0,
-      "true_peak_db": -4.5,
-      "gain_db": -2.2,
+      "true_peak_db": -4.4,
+      "gain_db": -2.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.8,
-      "source_true_peak_db": -2.0,
+      "source_lufs": -14.4,
+      "source_true_peak_db": -1.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:41+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:01+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K016_A",
       "api": {
-        "request_id": "7hEb8Hu1VusaNEL3yq1g",
-        "history_item_id": "TRVzfzP2BSE4PpZdSVey",
+        "history_item_id": "g8XJ6pN92WMMcK0Cd8lk",
         "character_cost": "77",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2296319436
-        }
+        "previous_text": "И что бечева?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Течение повело лодку. По канату скользит кольцо. Пустая лодка в туман уходит. Весь год ее возвращало к родному причалу. Теперь идет прямо. Дернулась бечева раз и еще раз",
+        "words": [
+          "Течение",
+          "повело",
+          "лодку.",
+          "По",
+          "канату",
+          "скользит",
+          "кольцо.",
+          "Пустая",
+          "лодка",
+          "в",
+          "туман",
+          "уходит.",
+          "Весь",
+          "год",
+          "ее",
+          "возвращало",
+          "к",
+          "родному",
+          "причалу.",
+          "Теперь",
+          "идет",
+          "прямо.",
+          "Дернулась",
+          "бечева",
+          "раз",
+          "и",
+          "еще",
+          "раз"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M17_2": {
@@ -4242,7 +4457,7 @@
       "voice_name": "PELAGEYA",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M17_3.ogg",
@@ -4252,33 +4467,35 @@
       "tags": [],
       "characters": 30,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.18,
+      "duration_s": 2.5,
       "lufs": -17.0,
-      "true_peak_db": -7.3,
-      "gain_db": -5.1,
+      "true_peak_db": -8.0,
+      "gain_db": -6.4,
       "limiter_extra_db": 0.0,
-      "source_lufs": -11.9,
-      "source_true_peak_db": -2.2,
+      "source_lufs": -10.6,
+      "source_true_peak_db": -1.6,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:42+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 2.59,
-        "delta_s": -0.41,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:01+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K017_A",
       "api": {
-        "request_id": "8AuTSvsmtzVMORs5jOu2",
-        "history_item_id": "bJOkWgJJeuZV5tR66CiX",
+        "history_item_id": "qmN2dZu3YdlZo3Am1yh9",
         "character_cost": "13",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1341648355
-        }
+        "previous_text": "Не сворачивает! По канату идёт!",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Тянут! Вон тянут!",
+        "words": [
+          "Тянут!",
+          "Вон",
+          "тянут!"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M17_4": {
@@ -5814,43 +6031,51 @@
       "voice_name": "НИНА",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "M19c_7.ogg",
       "source": "src/M19c_7.mp3",
-      "voice_text": "[warmly] Значит, у тебя только год миновал… ОДИН год, доченька.",
-      "voice_sha1": "5279a9cc78e3a335e2656307f988ff9fe392124e",
+      "voice_text": "[warmly] Значит, у тебя только год миновал… Один год, доченька.",
+      "voice_sha1": "fb99cfc830e1b6b51c5446111f540e9000fc3794",
       "tags": [],
       "characters": 63,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.24,
+      "duration_s": 5.41,
       "lufs": -16.9,
-      "true_peak_db": -7.8,
-      "gain_db": -1.2,
+      "true_peak_db": -7.3,
+      "gain_db": -0.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.8,
-      "source_true_peak_db": -6.7,
+      "source_lufs": -16.2,
+      "source_true_peak_db": -6.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:04+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 5.5,
-        "delta_s": -0.26,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:01+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K022_C",
       "api": {
-        "request_id": "MIeCJl59j2q6GGedHJR4",
-        "history_item_id": "anfcEOpfh4Ek7F58nXVU",
+        "history_item_id": "c1DQR4MRdKPcawuuzjM4",
         "character_cost": "28",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4220693149
-        }
+        "previous_text": "Сколько у тебя прошло, доченька?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Значит, у тебя только год миновал. Один год, доченька",
+        "words": [
+          "Значит,",
+          "у",
+          "тебя",
+          "только",
+          "год",
+          "миновал.",
+          "Один",
+          "год,",
+          "доченька"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M19c_8": {
@@ -5908,43 +6133,61 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "M20_0.ogg",
       "source": "src/M20_0.mp3",
-      "voice_text": "[firm] Хлопнула дверь. Вошёл мужчина, весь в стружке, карандаш за ухом. За ним девочка вбежала — пальто на ночную рубашку накинуто.",
-      "voice_sha1": "e9f31f1524890bbe537be19a68469e1735cde7a0",
+      "voice_text": "Хлопнула дверь. Вошёл мужчина, весь в стружке, карандаш за ухом. За ним девочка вбежала — пальто на ночную рубашку накинуто.",
+      "voice_sha1": "3662335cafb036a1f4b28cbedb098930850f6ef4",
       "tags": [],
-      "characters": 131,
+      "characters": 124,
       "loudness_target_lufs": -17.0,
-      "duration_s": 8.64,
+      "duration_s": 9.28,
       "lufs": -17.0,
-      "true_peak_db": -5.4,
-      "gain_db": -3.2,
+      "true_peak_db": -4.8,
+      "gain_db": -2.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.8,
+      "source_lufs": -14.2,
       "source_true_peak_db": -2.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:07+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 9.42,
-        "delta_s": -0.78,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:02+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K023_C",
       "api": {
-        "request_id": "fhPmeXkHWCLT1IMBPyjT",
-        "history_item_id": "HBSF0sMExGgvAu9EO8fS",
-        "character_cost": "58",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3141378307
-        }
+        "history_item_id": "1XX69hNANuiuAJsopDOs",
+        "character_cost": "55",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Хлопнула дверь. Вошел мужчина, весь в стружке, карандаш за ухом. За ним девочка вбежала, пальто на ночную рубашку накинуто",
+        "words": [
+          "Хлопнула",
+          "дверь.",
+          "Вошел",
+          "мужчина,",
+          "весь",
+          "в",
+          "стружке,",
+          "карандаш",
+          "за",
+          "ухом.",
+          "За",
+          "ним",
+          "девочка",
+          "вбежала,",
+          "пальто",
+          "на",
+          "ночную",
+          "рубашку",
+          "накинуто"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M20_1": {
@@ -6835,7 +7078,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "M21b_3.ogg",
@@ -6845,27 +7088,48 @@
       "tags": [],
       "characters": 88,
       "loudness_target_lufs": -17.0,
-      "duration_s": 7.19,
+      "duration_s": 7.23,
       "lufs": -17.0,
-      "true_peak_db": -5.3,
-      "gain_db": -2.4,
+      "true_peak_db": -4.9,
+      "gain_db": -2.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.6,
-      "source_true_peak_db": -2.9,
+      "source_lufs": -14.5,
+      "source_true_peak_db": -2.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:19+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:02+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K025_A",
       "api": {
-        "request_id": "vHIE1kQ8LMGx14NBbHGb",
-        "history_item_id": "s6KOVJ2jPmT2wtcDcGVc",
+        "history_item_id": "uoA5ORGaI6A16pbGjTPB",
         "character_cost": "39",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2871602655
-        }
+        "previous_text": "А дальше можно вместе жить.",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "С улицы голоса слышны. Дети к школе бегут. Поглядеть. Тропа к школе с вечера снова есть",
+        "words": [
+          "С",
+          "улицы",
+          "голоса",
+          "слышны.",
+          "Дети",
+          "к",
+          "школе",
+          "бегут.",
+          "Поглядеть.",
+          "Тропа",
+          "к",
+          "школе",
+          "с",
+          "вечера",
+          "снова",
+          "есть"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M21b_4": {
@@ -6879,7 +7143,7 @@
       "voice_name": "НИНА",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "M21b_4.ogg",
@@ -6889,27 +7153,41 @@
       "tags": [],
       "characters": 58,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.29,
-      "lufs": -16.9,
-      "true_peak_db": -7.3,
-      "gain_db": -0.1,
+      "duration_s": 5.42,
+      "lufs": -17.0,
+      "true_peak_db": -6.7,
+      "gain_db": -0.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.9,
-      "source_true_peak_db": -7.2,
+      "source_lufs": -16.1,
+      "source_true_peak_db": -5.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:21+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:02+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K026_A",
       "api": {
-        "request_id": "4TC19GJo3NC5a83z3G7T",
-        "history_item_id": "pxOTLFyvZqlXw0ctruC7",
+        "history_item_id": "b5ugihWGf48iPX81CaWx",
         "character_cost": "26",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 118284286
-        }
+        "previous_text": "А как пойдём — как люди или через забор?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Пойдем, класс тебе покажу. Как люди пойдем через калитку",
+        "words": [
+          "Пойдем,",
+          "класс",
+          "тебе",
+          "покажу.",
+          "Как",
+          "люди",
+          "пойдем",
+          "через",
+          "калитку"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M22_0": {
@@ -7281,7 +7559,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "M22_8.ogg",
@@ -7291,27 +7569,38 @@
       "tags": [],
       "characters": 41,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.03,
+      "duration_s": 3.25,
       "lufs": -17.0,
-      "true_peak_db": -5.0,
-      "gain_db": -2.7,
+      "true_peak_db": -5.1,
+      "gain_db": -2.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.3,
-      "source_true_peak_db": -2.3,
+      "source_lufs": -14.2,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:24+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:02+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K028_A",
       "api": {
-        "request_id": "maDlUrbR88afjL9cFxNx",
-        "history_item_id": "MV1TfwxaAERD7HqCLClv",
+        "history_item_id": "xUiU4HX5xPHwBKygSw31",
         "character_cost": "18",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1709066308
-        }
+        "previous_text": "Я тебе в стекло стучала — а ты не слышала.",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Нина по доске костяшкой пальца постучала",
+        "words": [
+          "Нина",
+          "по",
+          "доске",
+          "костяшкой",
+          "пальца",
+          "постучала"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M22_9": {
@@ -7602,37 +7891,49 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "M22_14.ogg",
       "source": "src/M22_14.mp3",
-      "voice_text": "И шарф… Я. У вас же зима.",
-      "voice_sha1": "76475ac169fedde0da71a6e20b96ef3a4d3d1ce8",
+      "voice_text": "И шарф Я. У вас же зима.",
+      "voice_sha1": "d77e2f7cf968bb6f6975b35e4c4afc45b018bbc0",
       "tags": [],
-      "characters": 25,
+      "characters": 24,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.34,
+      "duration_s": 2.36,
       "lufs": -17.0,
-      "true_peak_db": -2.9,
-      "gain_db": 2.1,
+      "true_peak_db": -3.7,
+      "gain_db": -1.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -19.1,
-      "source_true_peak_db": -5.1,
+      "source_lufs": -15.5,
+      "source_true_peak_db": -2.4,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:25+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:02+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K029_A",
       "api": {
-        "request_id": "zZfqYvctPe9MP8z3PWVl",
-        "history_item_id": "eRi2aDiKte8t76a8cxBx",
+        "history_item_id": "zFSpgPxj0W6i8xxNheuE",
         "character_cost": "11",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1559746328
-        }
+        "previous_text": "А шарф ей кто нарисовал?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "И шарф я. У вас же зима",
+        "words": [
+          "И",
+          "шарф",
+          "я.",
+          "У",
+          "вас",
+          "же",
+          "зима"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M22_14_then0": {
@@ -8206,27 +8507,45 @@
       "tags": [],
       "characters": 63,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.01,
+      "duration_s": 5.03,
       "lufs": -16.9,
-      "true_peak_db": -5.6,
-      "gain_db": -2.7,
+      "true_peak_db": -5.1,
+      "gain_db": -2.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.3,
-      "source_true_peak_db": -3.0,
+      "source_lufs": -14.4,
+      "source_true_peak_db": -2.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:29+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:02+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K032_B",
       "api": {
-        "request_id": "JUrIQxxVJ4XGDQQuZ9Fi",
-        "history_item_id": "VAMgMk2Fndii2y4pMVn1",
+        "history_item_id": "Bz899ugdPy9ZGlX7Snmr",
         "character_cost": "28",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 312053936
-        }
+        "previous_text": "А это Дуне. От меня. У её печи положу — пускай там лежит.",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Нина с письмами к реке пошла опять в Дунин дом на тот берег",
+        "words": [
+          "Нина",
+          "с",
+          "письмами",
+          "к",
+          "реке",
+          "пошла",
+          "опять",
+          "в",
+          "Дунин",
+          "дом",
+          "на",
+          "тот",
+          "берег"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M23b_0": {
@@ -8681,7 +9000,7 @@
       "voice_name": "ИЛЬЯ",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M23b_9.ogg",
@@ -8691,27 +9010,50 @@
       "tags": [],
       "characters": 113,
       "loudness_target_lufs": -17.0,
-      "duration_s": 8.02,
-      "lufs": -16.9,
+      "duration_s": 8.4,
+      "lufs": -17.0,
       "true_peak_db": -5.9,
-      "gain_db": -3.8,
+      "gain_db": -4.0,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.2,
-      "source_true_peak_db": -2.2,
+      "source_lufs": -13.0,
+      "source_true_peak_db": -2.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:35+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:03+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K034_A",
       "api": {
-        "request_id": "BcghG1gPy25wYRVnEskX",
-        "history_item_id": "pU0LdWX3BzJWl1fizaX4",
+        "history_item_id": "qwCunX3aalS9OMJDlg4V",
         "character_cost": "50",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2822302268
-        }
+        "previous_text": "Мост ставить надо. Пока льдом не схватило. По Дуниной тетради.",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Завтра поутру первое бревно кладем. С пустого сруба у околицы его возьмем. Бревна там сухие. К повороту приходи",
+        "words": [
+          "Завтра",
+          "поутру",
+          "первое",
+          "бревно",
+          "кладем.",
+          "С",
+          "пустого",
+          "сруба",
+          "у",
+          "околицы",
+          "его",
+          "возьмем.",
+          "Бревна",
+          "там",
+          "сухие.",
+          "К",
+          "повороту",
+          "приходи"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M23c_0": {
@@ -8769,7 +9111,7 @@
       "voice_name": "НИНА",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "M23c_1.ogg",
@@ -8779,27 +9121,36 @@
       "tags": [],
       "characters": 22,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.73,
-      "lufs": -16.9,
-      "true_peak_db": -8.1,
-      "gain_db": -0.4,
+      "duration_s": 2.69,
+      "lufs": -17.0,
+      "true_peak_db": -9.2,
+      "gain_db": -2.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.6,
-      "source_true_peak_db": -7.8,
+      "source_lufs": -14.5,
+      "source_true_peak_db": -6.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:39+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:03+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K036_A",
       "api": {
-        "request_id": "9uwReQckfzfd2ML2Nqj1",
-        "history_item_id": "seBIsQHQlxEwNcUt49Px",
+        "history_item_id": "vJlwT1RmbDVW0JIPM15t",
         "character_cost": "10",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1806860719
-        }
+        "previous_text": "Что здесь Дунино, мама?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Все Дунино, даже пыль",
+        "words": [
+          "Все",
+          "Дунино,",
+          "даже",
+          "пыль"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M23c_2": {
@@ -9399,45 +9750,63 @@
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.4,
         "similarity_boost": 0.8
       },
       "file": "M23d_6_then0.ogg",
       "source": "src/M23d_6_then0.mp3",
-      "voice_text": "[warmly] Ты, Агата, это… Не уходи надолго… Привык я к тебе… Друг ты мне, стало быть… Только Тамаре не сказывай.",
-      "voice_sha1": "d5644ddc3bc6f572a4c47e2c8d9e8551b490a809",
+      "voice_text": "[warmly] Ты, Агата, это… [pause] Не уходи надолго. [pause] Привык я к тебе. [pause] Друг ты мне, стало быть. [pause] Только Тамаре не сказывай.",
+      "voice_sha1": "d7e8c073aba46448a513545df76e409cd65b9e09",
       "tags": [
         "thoughtful"
       ],
-      "characters": 111,
+      "characters": 143,
       "loudness_target_lufs": -17.0,
-      "duration_s": 9.05,
+      "duration_s": 11.12,
       "lufs": -17.0,
-      "true_peak_db": -2.0,
-      "gain_db": 1.2,
+      "true_peak_db": -2.2,
+      "gain_db": 0.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -18.2,
-      "source_true_peak_db": -3.0,
+      "source_lufs": -17.6,
+      "source_true_peak_db": -2.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:42+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 8.63,
-        "delta_s": 0.42,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:03+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K037_A",
       "api": {
-        "request_id": "cqJh9L9h5fDIr1K9Gpnw",
-        "history_item_id": "IarGa4zpaqICvCMK2E0h",
-        "character_cost": "49",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2617990918
-        }
+        "history_item_id": "Pk5XGFCzsna6TYJOpJDS",
+        "character_cost": "63",
+        "previous_text": "Устраивается Тихон на печи — с того краю, что к Агатиной лежанке поближе.",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Ты, Агата, это не уходи надолго. Привык я к тебе. Друг ты мне, стало быть. Только Тамаре не сказывай",
+        "words": [
+          "Ты,",
+          "Агата,",
+          "это",
+          "не",
+          "уходи",
+          "надолго.",
+          "Привык",
+          "я",
+          "к",
+          "тебе.",
+          "Друг",
+          "ты",
+          "мне,",
+          "стало",
+          "быть.",
+          "Только",
+          "Тамаре",
+          "не",
+          "сказывай"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M23d_6_then1": {
@@ -10397,7 +10766,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "M26_9.ogg",
@@ -10407,27 +10776,41 @@
       "tags": [],
       "characters": 54,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.38,
-      "lufs": -17.0,
+      "duration_s": 4.34,
+      "lufs": -17.1,
       "true_peak_db": -5.9,
-      "gain_db": -3.7,
+      "gain_db": -3.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.3,
-      "source_true_peak_db": -2.3,
+      "source_lufs": -13.1,
+      "source_true_peak_db": -2.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:02:02+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:03+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K044_A",
       "api": {
-        "request_id": "u8yAL6hpa1iiELTUlM0O",
-        "history_item_id": "OGB3BAQReR5y5jc944i6",
+        "history_item_id": "iWxCrbYpDKrHzDYm72G7",
         "character_cost": "24",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 581606907
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Павел у рейки стоит да на воду глядит, приглядывает",
+        "words": [
+          "Павел",
+          "у",
+          "рейки",
+          "стоит",
+          "да",
+          "на",
+          "воду",
+          "глядит,",
+          "приглядывает"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M26_10": {
@@ -13956,43 +14339,57 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/H1.stove.look_settled.ogg",
       "source": "src/narrator/H1.stove.look_settled.mp3",
-      "voice_text": "[animated] РОВНО топится печь, лежанка — сухая. Тихон уже улёгся — теперь до утра с места не сгонишь.",
-      "voice_sha1": "b11120213d6115bc165002b7132cb8d6d76c0a76",
+      "voice_text": "Ровно топится печь, лежанка — сухая. Тихон уже улёгся — теперь до утра с места не сгонишь.",
+      "voice_sha1": "bb4ba16238533bb74ed89ddedc37bc1c6055feec",
       "tags": [],
-      "characters": 101,
+      "characters": 90,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.66,
+      "duration_s": 7.41,
       "lufs": -17.0,
-      "true_peak_db": -5.8,
-      "gain_db": -3.9,
+      "true_peak_db": -4.5,
+      "gain_db": -2.7,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.1,
-      "source_true_peak_db": -2.0,
+      "source_lufs": -14.3,
+      "source_true_peak_db": -1.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:02:58+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 7.44,
-        "delta_s": -0.78,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:03+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K053_C",
       "api": {
-        "request_id": "iLMffwekAuu5jh0N3JAv",
-        "history_item_id": "7zRC6fXUDKgNjwCIZN69",
-        "character_cost": "44",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 378788188
-        }
+        "history_item_id": "r6LGwDcrWoOWhoZZE2lb",
+        "character_cost": "40",
+        "previous_text": "Как печь топится?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Ровно топится печь, лежанка сухая. Тихон уже улегся, теперь до утра с места не сгонишь",
+        "words": [
+          "Ровно",
+          "топится",
+          "печь,",
+          "лежанка",
+          "сухая.",
+          "Тихон",
+          "уже",
+          "улегся,",
+          "теперь",
+          "до",
+          "утра",
+          "с",
+          "места",
+          "не",
+          "сгонишь"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H1.stove.use": {
@@ -14637,37 +15034,57 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/H2.bench.use.ogg",
       "source": "src/narrator/H2.bench.use.mp3",
-      "voice_text": "На рисунке школьной двери Дуня приписала: петли… родные… их сберечь, а порог по зарубке выставить.",
-      "voice_sha1": "2fbb718b363cb5998a376b320aebd0299fc7b160",
+      "voice_text": "На рисунке школьной двери Дуня приписала: петли — родные, их сберечь, а порог по зарубке выставить.",
+      "voice_sha1": "2c34f0211e8de3e064ff96317002f97b07c22fde",
       "tags": [],
-      "characters": 98,
+      "characters": 99,
       "loudness_target_lufs": -17.0,
-      "duration_s": 8.31,
+      "duration_s": 7.99,
       "lufs": -16.9,
-      "true_peak_db": -3.9,
-      "gain_db": -2.8,
+      "true_peak_db": -5.0,
+      "gain_db": -3.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.2,
-      "source_true_peak_db": -1.3,
+      "source_lufs": -13.5,
+      "source_true_peak_db": -1.6,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:31+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:04+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K054_A",
       "api": {
-        "request_id": "XnRSjPy4t1RcooSDUSfg",
-        "history_item_id": "W63golrOMDuC2ul4uvT4",
-        "character_cost": "43",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2539146876
-        }
+        "history_item_id": "48anhMnI48Nc9uMSOr5g",
+        "character_cost": "44",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "На рисунке школьной двери Дуня приписала: \"Петли родные, их сберечь, а порог по зарубке выставить\".",
+        "words": [
+          "На",
+          "рисунке",
+          "школьной",
+          "двери",
+          "Дуня",
+          "приписала:",
+          "\"Петли",
+          "родные,",
+          "их",
+          "сберечь,",
+          "а",
+          "порог",
+          "по",
+          "зарубке",
+          "выставить\"."
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H2.brace.look": {
@@ -14997,37 +15414,50 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/H2d.bell.hang.ogg",
       "source": "src/narrator/H2d.bell.hang.mp3",
-      "voice_text": "НА МЕСТО встал язык, колокол… опять как новёхонький.",
-      "voice_sha1": "54048a4d0930309dcb8123b8622a1ef52457361e",
+      "voice_text": "НА МЕСТО встал язык, колокол опять как новёхонький.",
+      "voice_sha1": "e030731ed73820a2f479effa0f23c00e6891add7",
       "tags": [],
-      "characters": 52,
+      "characters": 51,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.79,
-      "lufs": -16.9,
-      "true_peak_db": -4.5,
-      "gain_db": -2.7,
+      "duration_s": 4.14,
+      "lufs": -17.0,
+      "true_peak_db": -6.0,
+      "gain_db": -4.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.3,
-      "source_true_peak_db": -1.8,
+      "source_lufs": -12.1,
+      "source_true_peak_db": -1.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:10+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:04+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K055_A",
       "api": {
-        "request_id": "rpVVwHsQINom5WyWES8x",
-        "history_item_id": "nSS6lCjXRVi5Z9bO4KAy",
-        "character_cost": "23",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 573844643
-        }
+        "history_item_id": "tJ4l2WISimy3IYFYRNZ8",
+        "character_cost": "22",
+        "previous_text": "Где теперь язык колокола?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "На место встал язык. Колокол опять как новехонький",
+        "words": [
+          "На",
+          "место",
+          "встал",
+          "язык.",
+          "Колокол",
+          "опять",
+          "как",
+          "новехонький"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H2d.nina_mirror.clamp": {
@@ -15042,43 +15472,50 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/H2d.nina_mirror.clamp.ogg",
       "source": "src/narrator/H2d.nina_mirror.clamp.mp3",
-      "voice_text": "[warmly] СТЯНУЛА раму струбцина — и СВЕТЛЕЕТ понемногу мутное стекло…",
-      "voice_sha1": "43a974c349a248fb6ff847a94974d53ca9e8498a",
+      "voice_text": "СТЯНУЛА раму струбцина — и светлеет понемногу мутное стекло…",
+      "voice_sha1": "fbfd1c5f262b76260a46507ea96f58d273252ccb",
       "tags": [],
-      "characters": 69,
+      "characters": 60,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.63,
+      "duration_s": 4.83,
       "lufs": -17.0,
-      "true_peak_db": -6.0,
-      "gain_db": -2.9,
+      "true_peak_db": -5.5,
+      "gain_db": -2.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.1,
-      "source_true_peak_db": -2.9,
+      "source_lufs": -14.9,
+      "source_true_peak_db": -3.4,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:12+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 5.12,
-        "delta_s": -0.49,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:04+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K056_B",
       "api": {
-        "request_id": "VgINROuGRLACiKcAX0x6",
-        "history_item_id": "zLtLTE9BLNRnxQcksRAq",
-        "character_cost": "30",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2489510504
-        }
+        "history_item_id": "g4bfX9QczsjTntFyAaZv",
+        "character_cost": "26",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Стянула раму струбцина, и светлеет понемногу мутное стекло",
+        "words": [
+          "Стянула",
+          "раму",
+          "струбцина,",
+          "и",
+          "светлеет",
+          "понемногу",
+          "мутное",
+          "стекло"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H2d.nina_mirror.knock_first": {
@@ -15093,37 +15530,54 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/H2d.nina_mirror.knock_first.ogg",
       "source": "src/narrator/H2d.nina_mirror.knock_first.mp3",
-      "voice_text": "[sad] Агата в стекло стучит — а в ответ ничего. Не слышит её мама.",
-      "voice_sha1": "b7d592da4e87dffaea784ee522ffd5eb90422712",
+      "voice_text": "Агата в стекло стучит — а в ответ ничего. Не слышит её мама.",
+      "voice_sha1": "e92e698e1db0ee7ff5d06b910e8dec0b9263c7b6",
       "tags": [],
-      "characters": 66,
+      "characters": 60,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.3,
-      "lufs": -17.1,
-      "true_peak_db": -3.5,
-      "gain_db": 3.3,
+      "duration_s": 5.04,
+      "lufs": -17.0,
+      "true_peak_db": -2.8,
+      "gain_db": 0.0,
       "limiter_extra_db": 0.0,
-      "source_lufs": -20.3,
-      "source_true_peak_db": -6.9,
+      "source_lufs": -17.0,
+      "source_true_peak_db": -2.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:14+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:04+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K057_C",
       "api": {
-        "request_id": "pqq94spbsLEf98iYTW9X",
-        "history_item_id": "zMZuKSGXhg2q0Avv7DUW",
-        "character_cost": "29",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3738677333
-        }
+        "history_item_id": "JdK0p4zFxh3GHeZVC0sn",
+        "character_cost": "26",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Агата в стекло стучит, а в ответ ничего. Не слышит ее мама",
+        "words": [
+          "Агата",
+          "в",
+          "стекло",
+          "стучит,",
+          "а",
+          "в",
+          "ответ",
+          "ничего.",
+          "Не",
+          "слышит",
+          "ее",
+          "мама"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H2d.nina_mirror.watch_again": {
@@ -15649,27 +16103,41 @@
       "tags": [],
       "characters": 52,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.3,
-      "lufs": -17.0,
-      "true_peak_db": -6.1,
-      "gain_db": -3.4,
+      "duration_s": 4.37,
+      "lufs": -16.9,
+      "true_peak_db": -6.8,
+      "gain_db": -3.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.6,
-      "source_true_peak_db": -2.8,
+      "source_lufs": -13.5,
+      "source_true_peak_db": -3.4,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:51+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:04+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K061_B",
       "api": {
-        "request_id": "HUEtyNKHokq7EDaWSaoD",
-        "history_item_id": "PKVn48k7iUKkRWUr2VV2",
+        "history_item_id": "aGoPvBuVx75bh8BOEmFn",
         "character_cost": "23",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2266654514
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Полотно рядом стоит, в пустой раме прохода ещё нет",
+        "words": [
+          "Полотно",
+          "рядом",
+          "стоит,",
+          "в",
+          "пустой",
+          "раме",
+          "прохода",
+          "ещё",
+          "нет"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H3.mirror_home.look": {
@@ -15858,43 +16326,68 @@
       "source_text": "ru_E0_E1",
       "alignment": "src/narrator/H3.puzzle.error_pieces.align.json",
       "speaker": "narrator",
-      "text": "За дверью всё та же стена галереи. Петли не все на месте: все три — в гнёзда на раме.",
-      "text_sha1": "b63b88028695db4a341141d2ba6090feca4ec7af",
+      "text": "За дверью всё та же стена галереи. Не все петли на месте — все три должны сесть в гнёзда на раме.",
+      "text_sha1": "007bbf8faafd5dda04133689096ef89dca7f255e",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/H3.puzzle.error_pieces.ogg",
       "source": "src/narrator/H3.puzzle.error_pieces.mp3",
-      "voice_text": "За дверью всё та же стена галереи. Петли не все на месте: все три — в гнёзда на раме.",
-      "voice_sha1": "b63b88028695db4a341141d2ba6090feca4ec7af",
+      "voice_text": "За дверью всё та же стена галереи. Не все петли на месте — все три должны сесть в гнёзда на раме.",
+      "voice_sha1": "007bbf8faafd5dda04133689096ef89dca7f255e",
       "tags": [],
-      "characters": 85,
+      "characters": 97,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.8,
+      "duration_s": 7.5,
       "lufs": -17.0,
-      "true_peak_db": -4.8,
-      "gain_db": -2.8,
+      "true_peak_db": -4.5,
+      "gain_db": -3.0,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.2,
-      "source_true_peak_db": -1.8,
+      "source_lufs": -14.0,
+      "source_true_peak_db": -1.6,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:44+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:05+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K062_A",
       "api": {
-        "request_id": "22hSHkIQ4ukwQQ3vcFiY",
-        "history_item_id": "mPwjq7tYjOHnToNiL19O",
-        "character_cost": "37",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3284504458
-        }
+        "history_item_id": "MZVc5FOYmSyd1wuaeeHy",
+        "character_cost": "43",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "За дверью все та же стена галереи. Не все петли на месте. Все три должны сесть в гнезда на раме",
+        "words": [
+          "За",
+          "дверью",
+          "все",
+          "та",
+          "же",
+          "стена",
+          "галереи.",
+          "Не",
+          "все",
+          "петли",
+          "на",
+          "месте.",
+          "Все",
+          "три",
+          "должны",
+          "сесть",
+          "в",
+          "гнезда",
+          "на",
+          "раме"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H3.puzzle.intro": {
@@ -16044,37 +16537,56 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/H3.puzzle.success.ogg",
       "source": "src/narrator/H3.puzzle.success.mp3",
-      "voice_text": "Легли петли в гнёзда, зарубки сошлись… А за дверью — КЛАСС, за окнами его — ЗИМА.",
-      "voice_sha1": "0fa01f906eca165667b922a32aca4b4724fc69cb",
+      "voice_text": "Легли петли в гнёзда, зарубки сошлись. А за дверью — КЛАСС, за окнами его — ЗИМА.",
+      "voice_sha1": "d7cd11f612d6a05c65864ef1e32fd0c0b7bc7add",
       "tags": [],
       "characters": 81,
       "loudness_target_lufs": -17.0,
-      "duration_s": 7.72,
-      "lufs": -17.0,
-      "true_peak_db": -3.8,
-      "gain_db": -1.9,
+      "duration_s": 7.88,
+      "lufs": -16.9,
+      "true_peak_db": -4.2,
+      "gain_db": -1.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.1,
-      "source_true_peak_db": -1.9,
+      "source_lufs": -15.2,
+      "source_true_peak_db": -2.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:49+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:05+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K063_B",
       "api": {
-        "request_id": "dMYZTHCCsSmMaYrigwaU",
-        "history_item_id": "DCZ1tyl5Hylr9N3FKXok",
+        "history_item_id": "lWhV4t6XO2gyWQdtnQ3J",
         "character_cost": "36",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2534612800
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Легли петли в гнезда, зарубки сошлись, а за дверью класс, за окнами его зима",
+        "words": [
+          "Легли",
+          "петли",
+          "в",
+          "гнезда,",
+          "зарубки",
+          "сошлись,",
+          "а",
+          "за",
+          "дверью",
+          "класс,",
+          "за",
+          "окнами",
+          "его",
+          "зима"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H3.school_door.look": {
@@ -16772,7 +17284,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/M2.exit_M3.closed.ogg",
@@ -16782,27 +17294,38 @@
       "tags": [],
       "characters": 41,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.33,
-      "lufs": -17.1,
-      "true_peak_db": -6.5,
-      "gain_db": -3.6,
+      "duration_s": 3.19,
+      "lufs": -17.0,
+      "true_peak_db": -5.5,
+      "gain_db": -3.4,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.4,
-      "source_true_peak_db": -2.8,
+      "source_lufs": -13.6,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:52+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:05+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K066_C",
       "api": {
-        "request_id": "ZcbSm0VBDXjhgPW5sPll",
-        "history_item_id": "LhqCqyHEMRe2q4gmLvmE",
+        "history_item_id": "Ra6CAcxrBNCVJwqWiFlK",
         "character_cost": "18",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2778607971
-        }
+        "previous_text": "А в контору можно?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Не открыть контору. Засов изнутри держит",
+        "words": [
+          "Не",
+          "открыть",
+          "контору.",
+          "Засов",
+          "изнутри",
+          "держит"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M2.office_door.look": {
@@ -16817,7 +17340,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/M2.office_door.look.ogg",
@@ -16827,27 +17350,44 @@
       "tags": [],
       "characters": 69,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.32,
+      "duration_s": 6.15,
       "lufs": -17.0,
-      "true_peak_db": -5.3,
-      "gain_db": -2.4,
+      "true_peak_db": -4.5,
+      "gain_db": -2.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.6,
-      "source_true_peak_db": -3.0,
+      "source_lufs": -14.4,
+      "source_true_peak_db": -1.9,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:44+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:05+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K067_C",
       "api": {
-        "request_id": "TJG60P0IFijsUJ6fCoRx",
-        "history_item_id": "kY0ylSviXjEskEio8hvc",
+        "history_item_id": "EXmLezNSDnA46Tu16DA6",
         "character_cost": "30",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 311026752
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Изнутри контора заперта . Дверь дубовая, не высадишь",
+        "words": [
+          "Изнутри",
+          "контора",
+          "заперта",
+          ".",
+          "Дверь",
+          "дубовая,",
+          "не",
+          "высадишь"
+        ],
+        "missing": [
+          "засов",
+          "в",
+          "скобах"
+        ],
+        "extra": [],
+        "ratio": 0.824
       }
     },
     "M2.office_door.use": {
@@ -16862,7 +17402,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/M2.office_door.use.ogg",
@@ -16872,27 +17412,48 @@
       "tags": [],
       "characters": 71,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.69,
+      "duration_s": 5.78,
       "lufs": -17.1,
-      "true_peak_db": -5.0,
-      "gain_db": -2.6,
+      "true_peak_db": -4.7,
+      "gain_db": -2.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.4,
-      "source_true_peak_db": -2.4,
+      "source_lufs": -14.1,
+      "source_true_peak_db": -1.9,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:42+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:05+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K068_C",
       "api": {
-        "request_id": "RliW5RTuRxJGsrkr4War",
-        "history_item_id": "8CAbt9vcEhmmDE7a7DuW",
+        "history_item_id": "Dt3mK0adawLIG0QqFdcg",
         "character_cost": "31",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2070600683
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Не поддаётся дверь конторы. В щели у косяка темно. Засов изнутри держит",
+        "words": [
+          "Не",
+          "поддаётся",
+          "дверь",
+          "конторы.",
+          "В",
+          "щели",
+          "у",
+          "косяка",
+          "темно.",
+          "Засов",
+          "изнутри",
+          "держит"
+        ],
+        "missing": [
+          "подается"
+        ],
+        "extra": [
+          "поддается"
+        ],
+        "ratio": 0.917
       }
     },
     "M2.office_door_open.look": {
@@ -16964,25 +17525,42 @@
       "loudness_target_lufs": -17.0,
       "duration_s": 6.34,
       "lufs": -17.0,
-      "true_peak_db": -5.7,
-      "gain_db": -2.9,
+      "true_peak_db": -4.7,
+      "gain_db": -2.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.1,
-      "source_true_peak_db": -2.9,
+      "source_lufs": -14.4,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:46+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:06+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K070_B",
       "api": {
-        "request_id": "HTaIMVQLRJdr0I8cYRzw",
-        "history_item_id": "tpzQsuOd21oL2JBCc5Md",
+        "history_item_id": "3Kg3ShxwGzBXhnUpRP3b",
         "character_cost": "35",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 452851429
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Навалились Павел с Агатой на дверь, и та, скрипнув, подалась. Контора открыта",
+        "words": [
+          "Навалились",
+          "Павел",
+          "с",
+          "Агатой",
+          "на",
+          "дверь,",
+          "и",
+          "та,",
+          "скрипнув,",
+          "подалась.",
+          "Контора",
+          "открыта"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M2.photo.look": {
@@ -17398,43 +17976,53 @@
       "source_text": "ru_E2_E3",
       "alignment": "src/narrator/M4.gate.key.align.json",
       "speaker": "narrator",
-      "text": "Рычаг сел в гнездо [[ворота|подъёмного механизма с валом]]. Теперь ворот можно поворачивать — по зарубке.",
-      "text_sha1": "358e49f32553bbfac1a7eb6ae60c25e2cfd540a3",
+      "text": "Рычаг сел в гнездо [[ворота|подъёмного механизма с валом]].",
+      "text_sha1": "3dbd34757c895cbb53a3bdff50902cfaf90b678b",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/M4.gate.key.ogg",
       "source": "src/narrator/M4.gate.key.mp3",
-      "voice_text": "Рычаг сел в гнездо во́рота. Теперь во́рот можно поворачивать — по зарубке.",
-      "voice_sha1": "680bd2f41f682f7785375336593de35b2cc25394",
+      "voice_text": "Рычаг сел в гнездо во́рота.",
+      "voice_sha1": "d25deb8d15eb85bfbedaa9d0911d9d4c624a1c04",
       "tags": [],
-      "characters": 74,
+      "characters": 27,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.67,
+      "duration_s": 2.43,
       "lufs": -17.0,
-      "true_peak_db": -5.8,
-      "gain_db": -3.2,
+      "true_peak_db": -5.7,
+      "gain_db": -3.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.8,
-      "source_true_peak_db": -2.6,
+      "source_lufs": -13.2,
+      "source_true_peak_db": -1.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-25T18:38:21+00:00",
-      "run": "40221867838",
+      "generated_at": "2026-10-29T22:32:06+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K073_A",
       "api": {
-        "request_id": "eYAwQXRAJ71nWNfven6c",
-        "history_item_id": "OVRYXs5isosYqZx0kU0f",
-        "character_cost": "33",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3965445809
-        }
+        "history_item_id": "woMjyshdTSlmgR2dAmqm",
+        "character_cost": "12",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Рычаг сел в гнездо ворота",
+        "words": [
+          "Рычаг",
+          "сел",
+          "в",
+          "гнездо",
+          "ворота"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M4.gate.locked": {
@@ -17449,7 +18037,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/M4.gate.locked.ogg",
@@ -17459,27 +18047,43 @@
       "tags": [],
       "characters": 63,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.15,
+      "duration_s": 5.31,
       "lufs": -17.0,
-      "true_peak_db": -5.0,
-      "gain_db": -3.4,
+      "true_peak_db": -5.2,
+      "gain_db": -3.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.6,
-      "source_true_peak_db": -1.6,
+      "source_lufs": -13.7,
+      "source_true_peak_db": -1.9,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:57+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:06+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K072_A",
       "api": {
-        "request_id": "E0Bvb1zfqRmyh0zjcVTs",
-        "history_item_id": "0ici4E2Yr4a7dchPV2gP",
+        "history_item_id": "YC9IGdwRoBhZwGT2AKwj",
         "character_cost": "28",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 987422340
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Без рычага ворот не повернешь, а рычаг от затвора в конторе",
+        "words": [
+          "Без",
+          "рычага",
+          "ворот",
+          "не",
+          "повернешь,",
+          "а",
+          "рычаг",
+          "от",
+          "затвора",
+          "в",
+          "конторе"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M4.gate.look": {
@@ -19699,7 +20303,7 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/R1.rope.use.ogg",
@@ -19709,27 +20313,59 @@
       "tags": [],
       "characters": 154,
       "loudness_target_lufs": -17.0,
-      "duration_s": 12.59,
+      "duration_s": 12.76,
       "lufs": -17.0,
-      "true_peak_db": -5.0,
-      "gain_db": -2.7,
+      "true_peak_db": -4.8,
+      "gain_db": -2.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.3,
-      "source_true_peak_db": -2.2,
+      "source_lufs": -14.4,
+      "source_true_peak_db": -2.3,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:02:51+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:06+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K075_C",
       "api": {
-        "request_id": "KlkyXPJGRLc7ZEzirA4G",
-        "history_item_id": "OfCw99Kw0a4GijlpwH7H",
+        "history_item_id": "equziU5vKDwkyURoTZ9w",
         "character_cost": "68",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1499911741
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Канат от моста, от поручня. Мост у поворота стоял, там этот конец на плите опоры и сидел. Пелагея его к своему стопору перевязала. Держит, а дороги нет",
+        "words": [
+          "Канат",
+          "от",
+          "моста,",
+          "от",
+          "поручня.",
+          "Мост",
+          "у",
+          "поворота",
+          "стоял,",
+          "там",
+          "этот",
+          "конец",
+          "на",
+          "плите",
+          "опоры",
+          "и",
+          "сидел.",
+          "Пелагея",
+          "его",
+          "к",
+          "своему",
+          "стопору",
+          "перевязала.",
+          "Держит,",
+          "а",
+          "дороги",
+          "нет"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "R1.stopper.look_empty": {
@@ -20053,43 +20689,75 @@
       "source_text": "ru_E0_E1",
       "alignment": "src/narrator/Z1.drawings.use.align.json",
       "speaker": "narrator",
-      "text": "На Дунином листе — опора моста у поворота; её рукой приписано: плита треснула, чинить надо. А на свежем рисунке Тамары от той же опоры одна верхушка над водой.",
-      "text_sha1": "38b80456028d142635f0bf058562f0257f6c717c",
+      "text": "На Дунином листе — опора моста у поворота; её рукой приписано: плита треснула, чинить надо. А на свежем рисунке Тамары от той же опоры — одна верхушка над водой.",
+      "text_sha1": "d1b651d72c90dc08afebde0b91a8df1c3abd89e1",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/Z1.drawings.use.ogg",
       "source": "src/narrator/Z1.drawings.use.mp3",
-      "voice_text": "На Дунином листе — опора моста у поворота; её рукой приписано: плита треснула, чинить надо. А на свежем рисунке Тамары от той же опоры одна верхушка над водой.",
-      "voice_sha1": "38b80456028d142635f0bf058562f0257f6c717c",
+      "voice_text": "На Дунином листе — опора моста у поворота; её рукой приписано: плита треснула, чинить надо. А на свежем рисунке Тамары от той же опоры — одна верхушка над водой.",
+      "voice_sha1": "d1b651d72c90dc08afebde0b91a8df1c3abd89e1",
       "tags": [],
-      "characters": 159,
+      "characters": 161,
       "loudness_target_lufs": -17.0,
-      "duration_s": 12.19,
+      "duration_s": 12.81,
       "lufs": -17.0,
-      "true_peak_db": -5.5,
-      "gain_db": -3.5,
+      "true_peak_db": -4.8,
+      "gain_db": -3.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.5,
-      "source_true_peak_db": -2.0,
+      "source_lufs": -13.9,
+      "source_true_peak_db": -1.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:02:44+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:07+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K076_C",
       "api": {
-        "request_id": "2PE4dj5vj6tWDGOuq5fk",
-        "history_item_id": "CFKe9OgtRvLDqViUfi0P",
-        "character_cost": "70",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2623861308
-        }
+        "history_item_id": "phyvj3HuRioJ1702v1zF",
+        "character_cost": "71",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "На дунином листе опора моста у поворота, ее рукой приписано: \"Плита треснула, чинить надо\". А на свежем рисунке Тамары от той же опоры одна верхушка над водой",
+        "words": [
+          "На",
+          "дунином",
+          "листе",
+          "опора",
+          "моста",
+          "у",
+          "поворота,",
+          "ее",
+          "рукой",
+          "приписано:",
+          "\"Плита",
+          "треснула,",
+          "чинить",
+          "надо\".",
+          "А",
+          "на",
+          "свежем",
+          "рисунке",
+          "Тамары",
+          "от",
+          "той",
+          "же",
+          "опоры",
+          "одна",
+          "верхушка",
+          "над",
+          "водой"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "Z1.letters.look": {
@@ -20829,43 +21497,58 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/H1.after_mirror.agata.ogg",
       "source": "src/character_lines/H1.after_mirror.agata.mp3",
-      "voice_text": "[surprised] Видела, Тихон. Я НОЧЬ просплю, а мама там целую неделю проживёт… Как же мне теперь спать?",
-      "voice_sha1": "de0b0a79ce9f6aa93b8082092670cd5725498978",
+      "voice_text": "[surprised] Видела, Тихон. Я ночь просплю, а мама там целую неделю проживёт… Как же мне теперь спать?",
+      "voice_sha1": "132bed41417bf8a9eae1a2428363d16f977ad18d",
       "tags": [],
       "characters": 101,
       "loudness_target_lufs": -17.0,
-      "duration_s": 7.04,
-      "lufs": -17.0,
-      "true_peak_db": -5.0,
-      "gain_db": -3.4,
+      "duration_s": 7.0,
+      "lufs": -16.9,
+      "true_peak_db": -5.1,
+      "gain_db": -3.0,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.6,
-      "source_true_peak_db": -1.7,
+      "source_lufs": -14.0,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:29+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 6.84,
-        "delta_s": 0.2,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:07+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K078_C",
       "api": {
-        "request_id": "jaWNBJiuD5xBDsKMneL5",
-        "history_item_id": "fhDlqLxc0a6bpIE53XXA",
+        "history_item_id": "Ay4ACP56ecySeJDGycE8",
         "character_cost": "44",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 45692948
-        }
+        "previous_text": "Видела, как там время бежит?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Видела, Тихон. Я ночь просплю, а мама там целую неделю проживет. Как же мне теперь спать?",
+        "words": [
+          "Видела,",
+          "Тихон.",
+          "Я",
+          "ночь",
+          "просплю,",
+          "а",
+          "мама",
+          "там",
+          "целую",
+          "неделю",
+          "проживет.",
+          "Как",
+          "же",
+          "мне",
+          "теперь",
+          "спать?"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:H1.cups.prompt": {
@@ -21525,7 +22208,7 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/H1.tikhon.cream_2.ogg",
@@ -21535,33 +22218,33 @@
       "tags": [],
       "characters": 16,
       "loudness_target_lufs": -17.0,
-      "duration_s": 0.91,
-      "lufs": -16.7,
-      "true_peak_db": -8.2,
-      "gain_db": -2.8,
+      "duration_s": 0.82,
+      "lufs": -16.9,
+      "true_peak_db": -8.8,
+      "gain_db": -7.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.2,
-      "source_true_peak_db": -5.4,
+      "source_lufs": -9.7,
+      "source_true_peak_db": -1.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:15+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 0.65,
-        "delta_s": 0.26,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:07+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K079_A",
       "api": {
-        "request_id": "gwDIj2oqgljoMDH3HDDa",
-        "history_item_id": "EDO5iBLXIrl5dB4FQZkG",
+        "history_item_id": "BHTowl3yQjTr5yEjz3gj",
         "character_cost": "7",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2841289180
-        }
+        "previous_text": "Если сметану находила.",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Где?",
+        "words": [
+          "Где?"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:H1.tikhon.duty_2": {
@@ -22641,37 +23324,60 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "agata_thoughts/H3.school_door.use.ogg",
       "source": "src/agata_thoughts/H3.school_door.use.mp3",
-      "voice_text": "Из нашей ШКОЛЫ дверь. НА БИРКЕ: «Школа Ольховки. В ремонт от Нины». На брусе зарубка, а петли сняты.",
-      "voice_sha1": "03cca449de1a23b0d6762315aa900464d86e7042",
+      "voice_text": "Из нашей ШКОЛЫ дверь. На бирке: «Школа Ольховки. В ремонт от Нины». На брусе зарубка, а петли сняты.",
+      "voice_sha1": "7bfbcc22c7dfcc01750fa26a610147a559507674",
       "tags": [],
       "characters": 100,
       "loudness_target_lufs": -17.0,
-      "duration_s": 8.51,
+      "duration_s": 8.13,
       "lufs": -17.0,
-      "true_peak_db": -3.0,
-      "gain_db": -1.0,
+      "true_peak_db": -2.5,
+      "gain_db": -0.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.0,
-      "source_true_peak_db": -2.2,
+      "source_lufs": -16.2,
+      "source_true_peak_db": -1.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:40+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:07+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K080_B",
       "api": {
-        "request_id": "IFKtxjXHpqEqgqpIOewP",
-        "history_item_id": "UIfnXWTBzPEf8bkVBl9H",
+        "history_item_id": "692s4SQzAvJD7SCdNsLa",
         "character_cost": "44",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2211668287
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Из нашей школы дверь. На бирке: \"Школа Ольховки, в ремонт от Нины\". На брусе зарубка, а петли сняты",
+        "words": [
+          "Из",
+          "нашей",
+          "школы",
+          "дверь.",
+          "На",
+          "бирке:",
+          "\"Школа",
+          "Ольховки,",
+          "в",
+          "ремонт",
+          "от",
+          "Нины\".",
+          "На",
+          "брусе",
+          "зарубка,",
+          "а",
+          "петли",
+          "сняты"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:H3.side_door.unbolt": {
@@ -22687,37 +23393,60 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/H3.side_door.unbolt.ogg",
       "source": "src/character_lines/H3.side_door.unbolt.mp3",
-      "voice_text": "Боковая дверь галереи изнутри НА ЗАСОВ за́перта. Отодвину — и из переулка в дом войти можно будет.",
-      "voice_sha1": "1b4e1899aeffdec43eea7b385e15e16ec5c4a922",
+      "voice_text": "Боковая дверь галереи изнутри НА ЗАСОВ /ˈzapʲɪrtə/. Отодвину — и из переулка в дом войти можно будет.",
+      "voice_sha1": "648a5a10be2727a079146304089ed7e40b7602ab",
       "tags": [],
-      "characters": 98,
+      "characters": 101,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.95,
+      "duration_s": 6.81,
       "lufs": -16.9,
-      "true_peak_db": -3.8,
+      "true_peak_db": -3.9,
       "gain_db": -1.8,
       "limiter_extra_db": 0.0,
       "source_lufs": -15.2,
-      "source_true_peak_db": -2.1,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:53+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:07+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K081_B",
       "api": {
-        "request_id": "OYang3xyei3IjgdnkulM",
-        "history_item_id": "OsoiDZADQeUpByGCfCXK",
-        "character_cost": "43",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3032200134
-        }
+        "history_item_id": "YqJD5d2AXD5Sx1b5jIpe",
+        "character_cost": "44",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Боковая дверь галереи изнутри на засов запирта. Отодвину, и из переулка в дом войти можно будет",
+        "words": [
+          "Боковая",
+          "дверь",
+          "галереи",
+          "изнутри",
+          "на",
+          "засов",
+          "запирта.",
+          "Отодвину,",
+          "и",
+          "из",
+          "переулка",
+          "в",
+          "дом",
+          "войти",
+          "можно",
+          "будет"
+        ],
+        "missing": [],
+        "extra": [
+          "запирта"
+        ],
+        "ratio": 0.968
       }
     },
     "agata:H4.bed.after_all": {
@@ -23101,37 +23830,45 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/H4.bed.early_short.ogg",
       "source": "src/character_lines/H4.bed.early_short.mp3",
-      "voice_text": "Рано ещё спать.",
-      "voice_sha1": "f9bf21195b3111932e007f19400378f21d3e23bf",
+      "voice_text": "РАНО ещё спать.",
+      "voice_sha1": "e63424e3774cf94f8901f6eb2a66755e1b61796f",
       "tags": [],
       "characters": 15,
       "loudness_target_lufs": -17.0,
-      "duration_s": 1.33,
+      "duration_s": 1.27,
       "lufs": -16.9,
-      "true_peak_db": -5.8,
-      "gain_db": 2.6,
+      "true_peak_db": -4.6,
+      "gain_db": -0.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -19.6,
-      "source_true_peak_db": -8.4,
+      "source_lufs": -16.5,
+      "source_true_peak_db": -4.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:54+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:07+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K082_A",
       "api": {
-        "request_id": "jI059T34Xyf3E8af4Bzg",
-        "history_item_id": "HaGT3GTUByXICIzvtTaU",
+        "history_item_id": "NaQcG3Vq7xHd3gfQEFsj",
         "character_cost": "7",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 16691769
-        }
+        "previous_text": "Спать ляжешь?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Рано еще спать",
+        "words": [
+          "Рано",
+          "еще",
+          "спать"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:H4.bed.late_d3": {
@@ -23193,7 +23930,7 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/H4.bed.todo_M23a.ogg",
@@ -23203,27 +23940,39 @@
       "tags": [],
       "characters": 46,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.22,
+      "duration_s": 3.17,
       "lufs": -16.9,
-      "true_peak_db": -5.0,
-      "gain_db": -0.8,
+      "true_peak_db": -6.3,
+      "gain_db": 0.0,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.2,
-      "source_true_peak_db": -4.2,
+      "source_lufs": -17.0,
+      "source_true_peak_db": -6.3,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:55+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:07+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K083_C",
       "api": {
-        "request_id": "d7iu7ndyMekrMBRe0egy",
-        "history_item_id": "Nf0PjBnuY803RMijmQEb",
+        "history_item_id": "UMoxSViWi5jnPtl4zLC7",
         "character_cost": "20",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 624496820
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Надо еще Тамару повидать, она письма раздает",
+        "words": [
+          "Надо",
+          "еще",
+          "Тамару",
+          "повидать,",
+          "она",
+          "письма",
+          "раздает"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:H4.bed.todo_M23b": {
@@ -23285,7 +24034,7 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/H4.bed.todo_M23c.ogg",
@@ -23295,27 +24044,40 @@
       "tags": [],
       "characters": 37,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.8,
+      "duration_s": 2.83,
       "lufs": -16.9,
-      "true_peak_db": -6.2,
-      "gain_db": -2.1,
+      "true_peak_db": -7.2,
+      "gain_db": -1.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.9,
-      "source_true_peak_db": -4.2,
+      "source_lufs": -15.5,
+      "source_true_peak_db": -5.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:57+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:08+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K084_C",
       "api": {
-        "request_id": "o064opga1DucxhvxBV1P",
-        "history_item_id": "IiD1nTNyzHCXa92UzoAp",
+        "history_item_id": "6nOBbEho3H4t0BUJ9vit",
         "character_cost": "16",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2043220728
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Надо еще к маме сходить в Дунин дом",
+        "words": [
+          "Надо",
+          "еще",
+          "к",
+          "маме",
+          "сходить",
+          "в",
+          "Дунин",
+          "дом"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:H4.bed.todo_M23d": {
@@ -23331,7 +24093,7 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/H4.bed.todo_M23d.ogg",
@@ -23341,27 +24103,39 @@
       "tags": [],
       "characters": 37,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.49,
-      "lufs": -17.0,
-      "true_peak_db": -4.3,
-      "gain_db": 3.1,
+      "duration_s": 2.6,
+      "lufs": -16.9,
+      "true_peak_db": -5.2,
+      "gain_db": -1.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -20.1,
-      "source_true_peak_db": -7.5,
+      "source_lufs": -15.4,
+      "source_true_peak_db": -3.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:58+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:08+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K085_C",
       "api": {
-        "request_id": "YvmLmN5jMncxMsIkuQrM",
-        "history_item_id": "tN4Nmr9OiYrfEiNJuBRC",
+        "history_item_id": "pvDxOQcbM0cHUyzVlfbU",
         "character_cost": "16",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2170890738
-        }
+        "previous_text": "О чём с Тихоном поговорить надо?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Надо еще с Тихоном о Дуне поговорить",
+        "words": [
+          "Надо",
+          "еще",
+          "с",
+          "Тихоном",
+          "о",
+          "Дуне",
+          "поговорить"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:H4.chest.open": {
@@ -23607,45 +24381,62 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "agata_thoughts/O1.bird_drawing.prompt.ogg",
       "source": "src/agata_thoughts/O1.bird_drawing.prompt.mp3",
-      "voice_text": "[warmly] Шапку синице Я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
-      "voice_sha1": "ae78c5305e0a99a9db0feaac95a31d83b4add264",
+      "voice_text": "Шапку синице я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
+      "voice_sha1": "4494828952083fbba81f56b11dd91f9c6e85451a",
       "tags": [
         "warmly"
       ],
-      "characters": 91,
+      "characters": 82,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.4,
-      "lufs": -16.9,
-      "true_peak_db": -2.7,
-      "gain_db": -0.3,
+      "duration_s": 6.56,
+      "lufs": -17.1,
+      "true_peak_db": -3.8,
+      "gain_db": -1.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.7,
+      "source_lufs": -15.7,
       "source_true_peak_db": -2.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:06+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 6.43,
-        "delta_s": -0.03,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:08+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K086_C",
       "api": {
-        "request_id": "gJZIVz5iZaJLtloq3VxU",
-        "history_item_id": "ILCfyAL1DQWFQHbReHyX",
-        "character_cost": "40",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1440273448
-        }
+        "history_item_id": "bs3bcOgnCXfb1zSz3XoH",
+        "character_cost": "36",
+        "previous_text": "Кто синице шапку рисовал?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Шапку синицы я рисовала, а сапоги уж после кто-то добавил. Что бы еще пририсовать?",
+        "words": [
+          "Шапку",
+          "синицы",
+          "я",
+          "рисовала,",
+          "а",
+          "сапоги",
+          "уж",
+          "после",
+          "кто-то",
+          "добавил.",
+          "Что",
+          "бы",
+          "еще",
+          "пририсовать?"
+        ],
+        "missing": [
+          "синице"
+        ],
+        "extra": [
+          "синицы"
+        ],
+        "ratio": 0.929
       }
     },
     "agata:O1.bird_drawing.react_boat": {
@@ -24585,45 +25376,54 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "agata_thoughts/O2.tree.look.ogg",
       "source": "src/agata_thoughts/O2.tree.look.mp3",
-      "voice_text": "[thoughtful] Помню, НИЖЕ было это дерево. Теперь ветви ВЫШЕ крыльца поднялись.",
-      "voice_sha1": "39a8b04857b4b37b7201de66d2a717a2a177d8b0",
+      "voice_text": "[thoughtful] Помню, ниже было это дерево. Теперь ветви выше крыльца поднялись.",
+      "voice_sha1": "e057b6386d254d286a5addfe5bbd71333a23f154",
       "tags": [
         "warmly"
       ],
       "characters": 78,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.25,
-      "lufs": -16.9,
-      "true_peak_db": -5.3,
-      "gain_db": 0.6,
+      "duration_s": 5.09,
+      "lufs": -17.0,
+      "true_peak_db": -6.4,
+      "gain_db": -1.7,
       "limiter_extra_db": 0.0,
-      "source_lufs": -17.6,
-      "source_true_peak_db": -5.9,
+      "source_lufs": -15.3,
+      "source_true_peak_db": -4.6,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:10+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 4.99,
-        "delta_s": 0.26,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:08+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K087_C",
       "api": {
-        "request_id": "M8oqdR6riTGPPzJccMWM",
-        "history_item_id": "T91BqoHPomeiDrjJBfOA",
+        "history_item_id": "rMoAEWvyFGOPJX8QMq3h",
         "character_cost": "34",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1708627769
-        }
+        "previous_text": "Каким дерево было раньше?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Помню, ниже было это дерево. Теперь ветви выше крыльца поднялись",
+        "words": [
+          "Помню,",
+          "ниже",
+          "было",
+          "это",
+          "дерево.",
+          "Теперь",
+          "ветви",
+          "выше",
+          "крыльца",
+          "поднялись"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:O2.window_other.look": {
@@ -25421,7 +26221,7 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/O4.nina_house.look.ogg",
@@ -25431,27 +26231,41 @@
       "tags": [],
       "characters": 57,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.54,
-      "lufs": -17.0,
-      "true_peak_db": -3.6,
-      "gain_db": 0.8,
+      "duration_s": 4.53,
+      "lufs": -16.9,
+      "true_peak_db": -4.7,
+      "gain_db": 1.7,
       "limiter_extra_db": 0.0,
-      "source_lufs": -17.8,
-      "source_true_peak_db": -4.5,
+      "source_lufs": -18.7,
+      "source_true_peak_db": -6.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:35+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:08+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K088_B",
       "api": {
-        "request_id": "oduueFgEpygeGw85a3lb",
-        "history_item_id": "V9OnUUiYqmBORY3rM9Oa",
+        "history_item_id": "6Fy2JRibUGXf4sLBDCRR",
         "character_cost": "25",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 850822489
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Мамин дом. Все то же крыльцо, лишь ступеньку перестелили",
+        "words": [
+          "Мамин",
+          "дом.",
+          "Все",
+          "то",
+          "же",
+          "крыльцо,",
+          "лишь",
+          "ступеньку",
+          "перестелили"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:O4.river.look": {
@@ -26617,37 +27431,56 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/examine.key_sluice.ogg",
       "source": "src/character_lines/examine.key_sluice.mp3",
-      "voice_text": "От ЗАТВОРА рычаг. Железный стержень, резная рукоять, а во втулке гнездо квадратное — для во́рота.",
-      "voice_sha1": "d07176295e680dcd2c5d524943c463ded73f7ed1",
+      "voice_text": "От затвора рычаг. Железный стержень, резная рукоять, а во втулке гнездо квадратное — для во́рота.",
+      "voice_sha1": "ee586af499b7463ac5afdfc475a6ebdf39d6be69",
       "tags": [],
       "characters": 97,
       "loudness_target_lufs": -17.0,
-      "duration_s": 7.75,
-      "lufs": -16.9,
-      "true_peak_db": -3.8,
-      "gain_db": -1.4,
+      "duration_s": 7.66,
+      "lufs": -17.0,
+      "true_peak_db": -4.0,
+      "gain_db": -1.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.6,
-      "source_true_peak_db": -2.5,
+      "source_lufs": -15.8,
+      "source_true_peak_db": -3.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:57+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:08+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K089_A",
       "api": {
-        "request_id": "5OXKElVWJ1ybaWzvvKl9",
-        "history_item_id": "ZfJHHxfAdfdjPu0IjwZU",
+        "history_item_id": "QUM2OV1RuoIrzEp2q7H2",
         "character_cost": "43",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3546733661
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "От затвора рычаг, железный стержень, резная рукоять, а во втулке гнездо квадратное для ворота",
+        "words": [
+          "От",
+          "затвора",
+          "рычаг,",
+          "железный",
+          "стержень,",
+          "резная",
+          "рукоять,",
+          "а",
+          "во",
+          "втулке",
+          "гнездо",
+          "квадратное",
+          "для",
+          "ворота"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:examine.mirror_mill": {
@@ -26668,32 +27501,52 @@
       },
       "file": "character_lines/examine.mirror_mill.ogg",
       "source": "src/character_lines/examine.mirror_mill.mp3",
-      "voice_text": "Це́ло стекло, да рама по углам разошлась. Стянуть бы её, чтоб не рассыпалась.",
-      "voice_sha1": "bade627477980c51468f7816178990d4930cf6f6",
+      "voice_text": "/ˈt͡sɛɫə/ стекло, да рама по углам разошлась. Стянуть бы её, чтоб не рассыпалась.",
+      "voice_sha1": "123cb289cb2b21a1d78a705aac9d067f8e30bf86",
       "tags": [],
-      "characters": 77,
+      "characters": 81,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.67,
-      "lufs": -16.7,
-      "true_peak_db": -2.6,
-      "gain_db": -0.1,
+      "duration_s": 5.74,
+      "lufs": -16.9,
+      "true_peak_db": -3.8,
+      "gain_db": 0.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.9,
-      "source_true_peak_db": -2.6,
+      "source_lufs": -17.6,
+      "source_true_peak_db": -4.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:54+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:09+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K090_B",
       "api": {
-        "request_id": "dTOJkmp1wcXqAukLTRtr",
-        "history_item_id": "PiWsNtxq45GKa8UbSZar",
-        "character_cost": "34",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1472505301
-        }
+        "history_item_id": "IJ92IzHRI0F2m8cNw3vK",
+        "character_cost": "36",
+        "previous_text": "Стекло-то цело?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Цело стекло, да рама по углам разошлась. Стянуть бы ее, чтоб не рассыпалась",
+        "words": [
+          "Цело",
+          "стекло,",
+          "да",
+          "рама",
+          "по",
+          "углам",
+          "разошлась.",
+          "Стянуть",
+          "бы",
+          "ее,",
+          "чтоб",
+          "не",
+          "рассыпалась"
+        ],
+        "missing": [],
+        "extra": [
+          "цело"
+        ],
+        "ratio": 0.96
       }
     },
     "agata:examine.mitten": {
@@ -28180,37 +29033,48 @@
       "voice_name": "ИЛЬЯ",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "character_lines/mech.bench.checked.ogg",
       "source": "src/character_lines/mech.bench.checked.mp3",
-      "voice_text": "Держит! Хоть сейчас за руба́нок берись.",
-      "voice_sha1": "a01baef08593ac6f3d6e5d6fd99ffdcd37ce09b3",
+      "voice_text": "Держит! Хоть СЕЙЧАС за руба́нок берись.",
+      "voice_sha1": "d5e885d9b57d70733046ab987785600d47ee75d6",
       "tags": [],
       "characters": 39,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.02,
+      "duration_s": 2.8,
       "lufs": -17.0,
-      "true_peak_db": -6.1,
-      "gain_db": -5.4,
+      "true_peak_db": -6.9,
+      "gain_db": -5.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -11.6,
-      "source_true_peak_db": -0.9,
+      "source_lufs": -11.8,
+      "source_true_peak_db": -1.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:49+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:09+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K092_A",
       "api": {
-        "request_id": "GA1VPRdvZpgwQQa9GBfi",
-        "history_item_id": "lRkd3HnZNRiU2wPJ4yKq",
+        "history_item_id": "OOPIPruPFf9R5vVqn4vD",
         "character_cost": "17",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2453222505
-        }
+        "previous_text": "Когда за работу можно?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Держит! Хоть сейчас за рубанок берись",
+        "words": [
+          "Держит!",
+          "Хоть",
+          "сейчас",
+          "за",
+          "рубанок",
+          "берись"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "ilya:mech.bench.fitted": {
@@ -28449,43 +29313,66 @@
       "source_text": "ru_E0_E1",
       "alignment": "src/narrator/intro.opening_1.align.json",
       "speaker": "narrator",
-      "text": "Агате восемнадцать. Она учится в уездном городе, а дома, в Ольховке за рекой, остались мама и младший брат.",
-      "text_sha1": "1d24bb1f69ac731cd209eb32b4bd429e7b91c2bc",
+      "text": "Агате восемнадцать. Она учится в уездном городе, а дома, в Ольховке, за рекой, остались мама и младший брат.",
+      "text_sha1": "191d9ae0736d1332b39b5d067a3cd82943258238",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "narrator/intro.opening_1.ogg",
       "source": "src/narrator/intro.opening_1.mp3",
-      "voice_text": "Агате восемнадцать. Она учится в уездном городе, а дома, в Ольховке за рекой, остались мама и младший брат.",
-      "voice_sha1": "1d24bb1f69ac731cd209eb32b4bd429e7b91c2bc",
+      "voice_text": "Агате восемнадцать. Она учится в уездном городе, а дома, в Ольховке, за рекой, остались мама и младший брат.",
+      "voice_sha1": "191d9ae0736d1332b39b5d067a3cd82943258238",
       "tags": [],
-      "characters": 107,
+      "characters": 108,
       "loudness_target_lufs": -17.0,
-      "duration_s": 8.58,
+      "duration_s": 8.6,
       "lufs": -17.0,
-      "true_peak_db": -4.6,
-      "gain_db": -2.6,
+      "true_peak_db": -5.2,
+      "gain_db": -2.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.4,
-      "source_true_peak_db": -2.2,
+      "source_lufs": -14.8,
+      "source_true_peak_db": -3.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:02:30+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:09+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K093_C",
       "api": {
-        "request_id": "VL7ozeAfXMMcbNI2Omti",
-        "history_item_id": "NUEXfsWS0eBreoggqX2H",
-        "character_cost": "47",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1192501675
-        }
+        "history_item_id": "3QYRJlaeYJ5zcmSE4iik",
+        "character_cost": "48",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Агате восемнадцать. Она учится в уездном городе, а дома в Ольховке за рекой остались мама и младший брат",
+        "words": [
+          "Агате",
+          "восемнадцать.",
+          "Она",
+          "учится",
+          "в",
+          "уездном",
+          "городе,",
+          "а",
+          "дома",
+          "в",
+          "Ольховке",
+          "за",
+          "рекой",
+          "остались",
+          "мама",
+          "и",
+          "младший",
+          "брат"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "intro.opening_2": {
@@ -30224,7 +31111,7 @@
       "voice_name": "Павел",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "character_lines/M1.pavel.before_agree.ogg",
@@ -30234,27 +31121,53 @@
       "tags": [],
       "characters": 120,
       "loudness_target_lufs": -17.0,
-      "duration_s": 8.77,
-      "lufs": -16.9,
-      "true_peak_db": -6.3,
-      "gain_db": -2.9,
+      "duration_s": 8.83,
+      "lufs": -17.0,
+      "true_peak_db": -5.6,
+      "gain_db": -3.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.1,
-      "source_true_peak_db": -3.4,
+      "source_lufs": -13.9,
+      "source_true_peak_db": -2.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:29+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:09+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K095_C",
       "api": {
-        "request_id": "hWoZVQfnmCoVpp90M4Sr",
-        "history_item_id": "VknnyErnyygm7VfCVmI4",
+        "history_item_id": "uI9t8mNOONfv3MTAM7ZM",
         "character_cost": "53",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1760978777
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "В сенях на дверь конторы да снимок на стене погляди. Порядок на мельнице во дворе, на доске прочти. Тогда и поговорим",
+        "words": [
+          "В",
+          "сенях",
+          "на",
+          "дверь",
+          "конторы",
+          "да",
+          "снимок",
+          "на",
+          "стене",
+          "погляди.",
+          "Порядок",
+          "на",
+          "мельнице",
+          "во",
+          "дворе,",
+          "на",
+          "доске",
+          "прочти.",
+          "Тогда",
+          "и",
+          "поговорим"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "pavel:M1.pavel.day1": {
@@ -30542,37 +31455,50 @@
       "voice_name": "Павел",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "character_lines/M4.pavel.after.ogg",
       "source": "src/character_lines/M4.pavel.after.mp3",
-      "voice_text": "ИДЁТ вода. Теперь ждать надо. А пока — ступай.",
-      "voice_sha1": "664077307447d1200e2a9df0962d133c0a72be16",
+      "voice_text": "Идёт вода. Теперь ждать надо. А пока ступай.",
+      "voice_sha1": "963ce38994ec641ae2f244d229158b26bfde693d",
       "tags": [],
-      "characters": 46,
+      "characters": 44,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.41,
-      "lufs": -17.0,
-      "true_peak_db": -5.4,
-      "gain_db": -1.7,
+      "duration_s": 4.24,
+      "lufs": -16.9,
+      "true_peak_db": -4.9,
+      "gain_db": -2.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.3,
-      "source_true_peak_db": -3.6,
+      "source_lufs": -14.5,
+      "source_true_peak_db": -2.6,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:59+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:09+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K096_C",
       "api": {
-        "request_id": "GAagil7bGg8jfIabANuj",
-        "history_item_id": "rJRboPy1Cj9JnyXfyc7S",
-        "character_cost": "20",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1884655786
-        }
+        "history_item_id": "nn2gXiuz3eH5qNNE9DSK",
+        "character_cost": "19",
+        "previous_text": "Ну что, вода идёт?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Идет вода. Теперь ждать надо. А пока ступай",
+        "words": [
+          "Идет",
+          "вода.",
+          "Теперь",
+          "ждать",
+          "надо.",
+          "А",
+          "пока",
+          "ступай"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "pavel:M4.pavel.after_dusk": {
@@ -31332,37 +32258,51 @@
       "voice_name": "PELAGEYA",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "character_lines/R2.exit_R1.closed.ogg",
       "source": "src/character_lines/R2.exit_R1.closed.mp3",
-      "voice_text": "Не поверну назад. Ко́ли держат — к ним и идём.",
-      "voice_sha1": "633e473b4c74a72b770e84a62f658a9fd1052c77",
+      "voice_text": "Не поверну назад. кОли держат — к ним и идём.",
+      "voice_sha1": "e42bcffe6fe9963d7197b04b7fa43328f09fb425",
       "tags": [],
-      "characters": 46,
+      "characters": 45,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.98,
-      "lufs": -16.9,
-      "true_peak_db": -6.8,
-      "gain_db": -3.2,
+      "duration_s": 3.99,
+      "lufs": -17.0,
+      "true_peak_db": -5.5,
+      "gain_db": -2.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.8,
-      "source_true_peak_db": -3.4,
+      "source_lufs": -14.2,
+      "source_true_peak_db": -2.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:02+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:09+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K097_B",
       "api": {
-        "request_id": "lYs7At9CxLpDmBG65cCe",
-        "history_item_id": "yKZGLpyZuDcfMQUvGNaa",
+        "history_item_id": "1Qzya62SsC5qC5GgF6xt",
         "character_cost": "20",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2113797022
-        }
+        "previous_text": "Может, назад повернём?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Не поверну назад. Коли держат, к ним и идем",
+        "words": [
+          "Не",
+          "поверну",
+          "назад.",
+          "Коли",
+          "держат,",
+          "к",
+          "ним",
+          "и",
+          "идем"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "pelageya:R3.exit_R2.closed": {
@@ -31700,45 +32640,56 @@
       "voice_name": "TAMARA-1",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.45,
+        "stability": 0.25,
         "similarity_boost": 0.75
       },
       "file": "character_lines/Z1.tamara.after.ogg",
       "source": "src/character_lines/Z1.tamara.after.mp3",
-      "voice_text": "[warmly] Ключ У ТЕБЯ, а я ТУТ, на почте. Будет нужда — заходи.",
-      "voice_sha1": "746cb5c8164df2de77e59f29c3fba4de21b5fb79",
+      "voice_text": "[warmly] Ключ у тебя, а я тут, на почте. Будет нужда — заходи.",
+      "voice_sha1": "3574e012be7048a3ff53e34e5f26f944d8bbaafc",
       "tags": [
         "warmly"
       ],
       "characters": 62,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.82,
+      "duration_s": 4.93,
       "lufs": -17.0,
-      "true_peak_db": -4.8,
-      "gain_db": -2.1,
+      "true_peak_db": -4.6,
+      "gain_db": -2.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.9,
-      "source_true_peak_db": -2.8,
+      "source_lufs": -14.2,
+      "source_true_peak_db": -2.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:02:40+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 4.69,
-        "delta_s": 0.13,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:10+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K098_C",
       "api": {
-        "request_id": "bPSNb1XScHxClAzEzU72",
-        "history_item_id": "tBCHKu539IGyKaH7nu1a",
+        "history_item_id": "MMxdW5NotHxXfdPKjqeT",
         "character_cost": "27",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 520827379
-        }
+        "previous_text": "А ключ теперь где, у кого?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Ключ у тебя, а я тут на почте. Будет нужда — заходи",
+        "words": [
+          "Ключ",
+          "у",
+          "тебя,",
+          "а",
+          "я",
+          "тут",
+          "на",
+          "почте.",
+          "Будет",
+          "нужда",
+          "—",
+          "заходи"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "tamara:Z1.tamara.late": {
@@ -31800,7 +32751,7 @@
       "voice_name": "TAMARA-1",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.45,
+        "stability": 0.25,
         "similarity_boost": 0.75
       },
       "file": "character_lines/Z1.tamara.school.ogg",
@@ -31810,27 +32761,54 @@
       "tags": [],
       "characters": 109,
       "loudness_target_lufs": -17.0,
-      "duration_s": 8.18,
+      "duration_s": 8.03,
       "lufs": -17.0,
-      "true_peak_db": -4.5,
-      "gain_db": -2.0,
+      "true_peak_db": -4.9,
+      "gain_db": -2.7,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.0,
-      "source_true_peak_db": -2.5,
+      "source_lufs": -14.3,
+      "source_true_peak_db": -2.3,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:23+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:10+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K099_B",
       "api": {
-        "request_id": "a7fNAKM2wrlBBCSlPNRc",
-        "history_item_id": "0fx6zTyrDGuVWAQZbR75",
+        "history_item_id": "x4IZFYsKKJdhLGbYZp4K",
         "character_cost": "48",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3397262121
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Одна у нас школа на оба берега была. Ребятишек наших туда по мосту водили, а теперь вот год никто их не учит",
+        "words": [
+          "Одна",
+          "у",
+          "нас",
+          "школа",
+          "на",
+          "оба",
+          "берега",
+          "была.",
+          "Ребятишек",
+          "наших",
+          "туда",
+          "по",
+          "мосту",
+          "водили,",
+          "а",
+          "теперь",
+          "вот",
+          "год",
+          "никто",
+          "их",
+          "не",
+          "учит"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "tamara:Z1.tamara.sheet": {
@@ -32137,34 +33115,48 @@
       },
       "file": "character_lines/H1.tikhon.before_met.ogg",
       "source": "src/character_lines/H1.tikhon.before_met.mp3",
-      "voice_text": "[grumbling] Кто там топчется?.. Сыро. Печь сперва затопи — потом поговорим.",
-      "voice_sha1": "d79634cdc8dba209de883448b27584f3bd31bf28",
+      "voice_text": "Кто там топчется?.. Сыро. Печь сперва затопи — потом поговорим.",
+      "voice_sha1": "ac8962354bdd9f84bc8acd12b27c1f3285a2688c",
       "tags": [
         "grumbling"
       ],
-      "characters": 75,
+      "characters": 63,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.9,
-      "lufs": -17.1,
-      "true_peak_db": -2.0,
-      "gain_db": 1.3,
+      "duration_s": 5.92,
+      "lufs": -17.0,
+      "true_peak_db": -4.1,
+      "gain_db": -2.0,
       "limiter_extra_db": 0.0,
-      "source_lufs": -18.3,
-      "source_true_peak_db": -3.5,
+      "source_lufs": -15.0,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:10+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:10+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K101_B",
       "api": {
-        "request_id": "euHORCFELgNfwsdmbPWp",
-        "history_item_id": "cETpjGHlqZ1eerO2i2MX",
-        "character_cost": "33",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3092693027
-        }
+        "history_item_id": "5nNqznncDgMvOsmc2XHb",
+        "character_cost": "28",
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Кто там топчется? Сыро. Печь сперва затопи, потом поговорим",
+        "words": [
+          "Кто",
+          "там",
+          "топчется?",
+          "Сыро.",
+          "Печь",
+          "сперва",
+          "затопи,",
+          "потом",
+          "поговорим"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "tikhon:H1.tikhon.bell": {
@@ -32180,45 +33172,52 @@
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.4,
         "similarity_boost": 0.8
       },
       "file": "character_lines/H1.tikhon.bell.ogg",
       "source": "src/character_lines/H1.tikhon.bell.mp3",
-      "voice_text": "[sarcastic] С МЕЛЬНИЦЫ колокол. Дурной он. Не здесь звенит.",
-      "voice_sha1": "d9afd0c3f3e608aabb08e33679853b46f660aba7",
+      "voice_text": "С мельницы колокол. Дурной он. Не здесь звенит.",
+      "voice_sha1": "69132720e4000ae225ef77e2c03b3cc23344a278",
       "tags": [
         "sarcastic"
       ],
-      "characters": 59,
+      "characters": 47,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.35,
-      "lufs": -17.0,
-      "true_peak_db": -6.1,
-      "gain_db": -1.4,
+      "duration_s": 4.72,
+      "lufs": -17.2,
+      "true_peak_db": -7.0,
+      "gain_db": -1.7,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.6,
-      "source_true_peak_db": -4.9,
+      "source_lufs": -15.3,
+      "source_true_peak_db": -5.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:07+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 4.5,
-        "delta_s": -0.15,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:10+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K102_C",
       "api": {
-        "request_id": "baTJwCflgJVYZqFSxuBL",
-        "history_item_id": "6cRPrgxILwiIWQwanQU7",
-        "character_cost": "26",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4007446692
-        }
+        "history_item_id": "2kSUn7iZniBCD8GvTres",
+        "character_cost": "21",
+        "previous_text": "Откуда этот колокол?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "С мельницы колокол. Дурной он, не здесь звенит",
+        "words": [
+          "С",
+          "мельницы",
+          "колокол.",
+          "Дурной",
+          "он,",
+          "не",
+          "здесь",
+          "звенит"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "tikhon:H1.tikhon.bundle": {
@@ -32380,37 +33379,47 @@
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.4,
         "similarity_boost": 0.8
       },
       "file": "character_lines/H1.tikhon.door.ogg",
       "source": "src/character_lines/H1.tikhon.door.mp3",
-      "voice_text": "Из ШКОЛЫ дверь… Нина просила.",
-      "voice_sha1": "4913f2ab453678e15b961b3da7a9db3a07487904",
+      "voice_text": "Из ШКОЛЫ дверь — Нина просила.",
+      "voice_sha1": "624eac613ec73da48b9d942bd412ec7c80de69a9",
       "tags": [],
-      "characters": 29,
+      "characters": 30,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.17,
+      "duration_s": 2.82,
       "lufs": -17.0,
-      "true_peak_db": -5.3,
-      "gain_db": 1.3,
+      "true_peak_db": -5.0,
+      "gain_db": -0.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -18.3,
-      "source_true_peak_db": -6.7,
+      "source_lufs": -16.1,
+      "source_true_peak_db": -4.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:03+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:10+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K103_A",
       "api": {
-        "request_id": "qP7eYOIhXO7quQaDbgQX",
-        "history_item_id": "rFDq5fJLQNJwuPwdyKoP",
+        "history_item_id": "3LIlgIWlUjKc0wvMiW1k",
         "character_cost": "13",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3772448545
-        }
+        "previous_text": "Откуда тут дверь?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Из школы дверь! Нина просила",
+        "words": [
+          "Из",
+          "школы",
+          "дверь!",
+          "Нина",
+          "просила"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "tikhon:H1.tikhon.duty": {
@@ -32698,7 +33707,7 @@
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.4,
         "similarity_boost": 0.8
       },
       "file": "character_lines/H1.tikhon.leave.ogg",
@@ -32710,33 +33719,37 @@
       ],
       "characters": 32,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.91,
-      "lufs": -17.1,
-      "true_peak_db": -4.2,
-      "gain_db": 2.0,
+      "duration_s": 2.97,
+      "lufs": -17.0,
+      "true_peak_db": -5.1,
+      "gain_db": 3.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -19.0,
-      "source_true_peak_db": -5.9,
+      "source_lufs": -20.8,
+      "source_true_peak_db": -8.9,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:08+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 2.89,
-        "delta_s": 0.02,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T22:32:10+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K104_A",
       "api": {
-        "request_id": "j2hgJ0BiZdhRe3d7oaKl",
-        "history_item_id": "YHyLydIUcteJ6kskQvYi",
+        "history_item_id": "7D0YJqY0SSfLxdMqLXne",
         "character_cost": "14",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2778292009
-        }
+        "previous_text": "",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Не сплю я, лежа дежурю",
+        "words": [
+          "Не",
+          "сплю",
+          "я,",
+          "лежа",
+          "дежурю"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "tikhon:H1.tikhon.mend": {
@@ -33325,32 +34338,46 @@
       },
       "file": "character_lines/H1.tikhon.tea_3.ogg",
       "source": "src/character_lines/H1.tikhon.tea_3.mp3",
-      "voice_text": "ЧАЙ у неё остывал, покуда она с тетрадями возилась.",
-      "voice_sha1": "bf61fe40b946b0bde3ac027d4b6963091f1d204a",
+      "voice_text": "Чай у неё остывал, покуда она с тетрадями возилась.",
+      "voice_sha1": "01e8f97f89e5f8106a5a06e83065535a15450d34",
       "tags": [],
       "characters": 51,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.93,
+      "duration_s": 4.12,
       "lufs": -17.0,
-      "true_peak_db": -4.2,
-      "gain_db": -0.6,
+      "true_peak_db": -4.0,
+      "gain_db": -1.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.4,
-      "source_true_peak_db": -3.7,
+      "source_lufs": -15.1,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:17+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:11+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K105_B",
       "api": {
-        "request_id": "ueLEmyVs1WYweSI4CxKo",
-        "history_item_id": "Pwrno4thGMhIpnWLc6cl",
+        "history_item_id": "ACt8cG1WQcytRUkhEviN",
         "character_cost": "22",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1958017831
-        }
+        "previous_text": "А что у неё остывало?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Чай у нее остывал, покуда она с тетрадями возилась",
+        "words": [
+          "Чай",
+          "у",
+          "нее",
+          "остывал,",
+          "покуда",
+          "она",
+          "с",
+          "тетрадями",
+          "возилась"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "tikhon:H1.tikhon.water": {
@@ -33691,37 +34718,49 @@
       "voice_name": "ЛУНЯ",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "character_lines/O1q.village_map.ulyana_apple.ogg",
       "source": "src/character_lines/O1q.village_map.ulyana_apple.mp3",
-      "voice_text": "Ещё ЯБЛОНЯ! Папа посадил, когда я родилась.",
-      "voice_sha1": "54680869f7c3a7470f9efe259e7d66482b37bbcd",
+      "voice_text": "[excited] Ещё яблоня! Папа посадил, когда я родилась.",
+      "voice_sha1": "d2f177b03062402e3611132bfc0011132d5cbbf8",
       "tags": [],
-      "characters": 43,
+      "characters": 53,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.92,
+      "duration_s": 3.79,
       "lufs": -17.0,
-      "true_peak_db": -3.4,
-      "gain_db": 0.4,
+      "true_peak_db": -2.0,
+      "gain_db": -1.0,
       "limiter_extra_db": 0.0,
-      "source_lufs": -17.4,
-      "source_true_peak_db": -3.9,
+      "source_lufs": -16.0,
+      "source_true_peak_db": -1.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:48+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T22:32:11+00:00",
+      "run": "40965675143",
+      "adopted_from": "probe/K/K106_C",
       "api": {
-        "request_id": "pKDnLJVYfJoD4CnjbZrV",
-        "history_item_id": "UXt8ZOljwx2Aj7b77e5a",
-        "character_cost": "19",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 14345036
-        }
+        "history_item_id": "16iA2iVWiu87zB2zJjHc",
+        "character_cost": "23",
+        "previous_text": "А что ещё у вас в саду?",
+        "probe_run": "40953402085"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Еще яблоня. Папа посадил, когда я родилась",
+        "words": [
+          "Еще",
+          "яблоня.",
+          "Папа",
+          "посадил,",
+          "когда",
+          "я",
+          "родилась"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "ulyana:O1q.village_map.ulyana_ours": {
