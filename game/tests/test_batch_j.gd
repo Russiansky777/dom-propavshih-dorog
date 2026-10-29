@@ -108,6 +108,7 @@ func _run() -> void:
 	await _test("J-D4 the empty boat (стр. 133): its bow rides on the painted rope to the far bank and melts only near its end", _test_boat_rope)
 	await _test("J-D5 the crossing (стр. 137): the rope runs through the iron eye (the iron alone stays); at the shore the boat's view goes to black and the far pier comes out of it — never the boat again", _test_crossing_black)
 	await _test("J-G2 crosses and noughts with Ulyana: from her choice in class; chalk grid and marks by hand; she plays well, not perfectly; a game ends in a word and «Ещё раз» / «Хватит»", _test_ttt)
+	await _test("J-G3 the spoons with Tikhon: from his questions; he taps, Agata answers in the same rhythm; a miss — the same round again; «Хватит» puts it away", _test_rhythm)
 	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks to the door and fades before the black", _test_staging_d3)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -927,6 +928,74 @@ func _test_ttt() -> void:
 			sr.advance()
 		await process_frame
 	_check(not sr.mechanic_open and gs.has_flag("ttt_played"), "«Хватит» puts the board away")
+
+
+func _rhythm_wait(panel, ph: String, limit_s: float = 12.0) -> bool:
+	var t0 := Time.get_ticks_msec()
+	while String(panel.call("probe")["phase"]) != ph and Time.get_ticks_msec() - t0 < int(limit_s * 1000.0):
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+	return String(panel.call("probe")["phase"]) == ph
+
+
+func _test_rhythm() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "house_unlocked", "house_open", "met_tikhon"])
+	await _enter("H1")
+	await _drain()
+	var h: Node = _hotspot("tikhon")
+	_check(h != null, "Tikhon in the room")
+	if h == null:
+		return
+	sr.interact(h)
+	var tw := 0
+	while sr.current_options().is_empty() and tw < 300:
+		tw += 1
+		if not sr.current_beat.is_empty() and sr.current_beat.get("type") != "options":
+			sr.advance()
+		await process_frame
+	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids.has("spoons"), "his questions offer the spoons: %s" % str(ids))
+	sr.choose("spoons")
+	tw = 0
+	while not sr.mechanic_open and tw < 300:
+		tw += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+	var panel = main_node.get_node("MechanicView").get("panel")
+	_check(sr.mechanic_open and panel != null, "the board with the cups opens")
+	if panel == null:
+		return
+	var pattern: Array = panel.get("rounds")[0]
+	_check(await _rhythm_wait(panel, "agata"), "he taps first, then it is her turn")
+	_check(int(panel.call("probe")["played"]) == pattern.size(), "all his taps sounded")
+	# answered in his rhythm
+	for i in pattern.size():
+		if i > 0:
+			await _wait(float(pattern[i]) - float(pattern[i - 1]))
+		panel.call("tap")
+	await _frames(2)
+	_check(bool(panel.call("probe")["ok"]), "in time — right: %s" % str(panel.call("probe")["judged"]))
+	_check(await _rhythm_wait(panel, "agata", 15.0) and int(panel.call("probe")["round"]) == 1, "the next round, longer")
+	# out of time: all at once
+	var n2: int = (panel.get("rounds")[1] as Array).size()
+	for i in n2:
+		panel.call("tap")
+		await _wait(0.05)
+	await _frames(2)
+	_check(not bool(panel.call("probe")["ok"]), "out of time — wrong")
+	_check(await _rhythm_wait(panel, "agata", 15.0) and int(panel.call("probe")["round"]) == 1 and int(panel.call("probe")["misses"]) == 1, "a miss — the same round again")
+	panel.get("stop_btn").emit_signal("pressed")
+	tw = 0
+	while (sr.mechanic_open or not sr.current_beat.is_empty()) and tw < 300:
+		tw += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+	_check(not sr.mechanic_open, "«Хватит» puts it away")
 
 
 func _test_staging_d3() -> void:

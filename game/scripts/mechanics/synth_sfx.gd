@@ -41,6 +41,10 @@ static func stream(sound_name: String) -> AudioStreamWAV:
 			pcm = _scratch(0.32, 0.55, 41)
 		"paper":
 			pcm = _scratch(0.5, 0.25, 43)
+		"spoon_tikhon":   # J, часть G: Tikhon's spoon on an empty cup (lower, longer)
+			pcm = _spoon([1180.0, 2690.0, 4210.0, 6020.0], [0.42, 0.26, 0.16, 0.09], [1.0, 0.55, 0.32, 0.18], 53)
+		"spoon_agata":    # Agata's spoon on a cup of tea (higher, shorter)
+			pcm = _spoon([1460.0, 3150.0, 4880.0, 6900.0], [0.30, 0.19, 0.12, 0.07], [1.0, 0.5, 0.28, 0.15], 59)
 		_:
 			pcm = PackedFloat32Array([0.0])
 	var s := _to_wav(pcm)
@@ -66,6 +70,30 @@ static func _bell(seconds: float, strikes: int, every: float) -> PackedFloat32Ar
 				v += float(p[1]) * exp(-float(p[2]) * t) * sin(TAU * f0 * float(p[0]) * t)
 			var attack := minf(t / 0.004, 1.0)
 			out[i] += v * amp * attack * 0.22
+	return out
+
+
+## A spoon on a cup (the rhythm with Tikhon): the cup's own inharmonic tones, the high ones dying first, and the click
+## of the touch.
+static func _spoon(freqs: Array, decays: Array, amps: Array, rseed: int) -> PackedFloat32Array:
+	var n := int(0.6 * RATE)
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = rseed
+	var ph: Array = []
+	for f in freqs:
+		ph.append(rng.randf() * TAU)
+	var prev := 0.0
+	for i in n:
+		var t := float(i) / RATE
+		var v := 0.0
+		for k in freqs.size():
+			v += float(amps[k]) * exp(-t / float(decays[k])) * sin(TAU * float(freqs[k]) * t + float(ph[k]))
+		var nz := rng.randf_range(-1.0, 1.0) * exp(-t / 0.0009)
+		v += (nz - prev) * 0.5   # the touch, high-passed
+		prev = nz
+		out[i] = v * minf(t / 0.0008, 1.0) * 0.32
 	return out
 
 

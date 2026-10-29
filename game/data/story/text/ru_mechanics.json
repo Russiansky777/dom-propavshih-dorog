@@ -390,6 +390,71 @@
     "mech.ttt.label_stop": {
       "text": "Хватит",
       "draft": true
+    },
+    "mech.rhythm.label_title": {
+      "text": "Ложечкой по чашке",
+      "draft": true,
+      "_j": "J (часть G, Директор 25.10 / 29.10: ритм ложечкой с Тихоном); черновик Claude — на утверждение"
+    },
+    "mech.rhythm.label_listen": {
+      "text": "Тихон стучит — слушай.",
+      "draft": true
+    },
+    "mech.rhythm.label_repeat": {
+      "text": "Теперь ты: клик или Пробел — так же, в лад.",
+      "draft": true
+    },
+    "mech.rhythm.label_right": {
+      "text": "Так!",
+      "draft": true
+    },
+    "mech.rhythm.label_wrong": {
+      "text": "Не в лад…",
+      "draft": true
+    },
+    "mech.rhythm.label_who_tikhon": {
+      "text": "Тихон",
+      "draft": true
+    },
+    "mech.rhythm.label_who_agata": {
+      "text": "Агата",
+      "draft": true
+    },
+    "mech.rhythm.label_stop": {
+      "text": "Хватит",
+      "draft": true
+    },
+    "mech.rhythm.good_1": {
+      "text": "Ишь ты. Ну, а так?",
+      "draft": true,
+      "line": {
+        "speaker": "tikhon",
+        "text": "Ишь ты. Ну, а так?"
+      }
+    },
+    "mech.rhythm.good_2": {
+      "text": "Ладно, слух есть. Последний — позаковыристей.",
+      "draft": true,
+      "line": {
+        "speaker": "tikhon",
+        "text": "Ладно, слух есть. Последний — позаковыристей."
+      }
+    },
+    "mech.rhythm.miss_1": {
+      "text": "Мимо. Медведь на ухо наступил? Слушай ещё.",
+      "draft": true,
+      "line": {
+        "speaker": "tikhon",
+        "text": "Мимо. Медведь на ухо наступил? Слушай ещё."
+      }
+    },
+    "mech.rhythm.miss_2": {
+      "text": "Не торопись. Я ж не тороплюсь.",
+      "draft": true,
+      "line": {
+        "speaker": "tikhon",
+        "text": "Не торопись. Я ж не тороплюсь."
+      }
     }
   }
 }
