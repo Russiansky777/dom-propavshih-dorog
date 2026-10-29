@@ -1151,7 +1151,7 @@ func _test_staging_d3() -> void:
 	var faces := false
 	for st in m22.get("stage", []):
 		for g in st.get("npc_go", []):
-			if str(st.get("at")) == "end" and String(g.get("id")) == "nina" and bool(g.get("fade", true)):
+			if _at_key(st) == "end" and String(g.get("id")) == "nina" and bool(g.get("fade", true)):
 				goes = true
 		for g in st.get("npc_face", []):
 			if int(st.get("at", -1)) == 0 and String(g.get("id")) == "agata" and String(g.get("face")) == "nina":
@@ -1373,11 +1373,11 @@ func _test_m18_staging() -> void:
 	var end_go := false
 	var apart := false
 	for st in m18.get("stage", []):
-		ats.append(str(st.get("at")))
+		ats.append(_at_key(st))
 		for g in st.get("npc_go", []):
-			if str(st.get("at")) == "end" and String(g.get("id")) == "mitya":
+			if _at_key(st) == "end" and String(g.get("id")) == "mitya":
 				end_go = true
-			if str(st.get("at", -1)) == "4" and String(g.get("id")) == "pelageya":
+			if _at_key(st) == "4" and String(g.get("id")) == "pelageya":
 				apart = absf(float(g["to"][0]) - 520.0) > 120.0
 	_check(ats.has("1") and end_go and apart, "M18: faces at «Мама.», apart after the hug, Mitya off up the path at the end: %s" % str(ats))
 	gs.set_flag("done_M18", true)
@@ -1385,6 +1385,12 @@ func _test_m18_staging() -> void:
 		h.call("refresh")
 	await _frames(2)
 	_check(not _hotspot("mitya").visible, "after M18 Mitya is gone from the pier (up the path)")
+
+
+## A staging's `at` as text: a line number (JSON gives it as a float) or "end".
+func _at_key(st: Dictionary) -> String:
+	var a = st.get("at", -1)
+	return String(a) if a is String else str(int(a))
 
 
 func _layer_vis(id: String) -> bool:
