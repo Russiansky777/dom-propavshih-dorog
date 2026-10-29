@@ -71,7 +71,9 @@ var menu_mode: String = "all"
 var menu_title: Label
 var menu_empty_label: Label      # «Загрузить» with no save at all
 var settings_rows: Array = []    # the settings controls (hidden in "save" / "load")
-var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
+var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button, delete: Button}
+var delete_dialog: Control = null   # J (стр. 7): «Вы действительно хотите удалить это сохранение?»
+var delete_slot: String = ""
 var fade: ColorRect
 var day_card: DayCard          # T6: «День второй» … between the days (StoryRunner.day_card_requested)
 var intro_card: IntroCard      # Р13: the intro of a new game (StoryRunner.intro_requested)
@@ -393,7 +395,9 @@ func _build() -> void:
 		lb.name = "Load" + slot
 		lb.pressed.connect(_on_load_slot.bind(slot))
 		row.add_child(lb)
-		slot_rows[slot] = {"info": info, "save": sb, "load": lb, "row": row, "manual": true}
+		var db := _delete_button(slot)
+		row.add_child(db)
+		slot_rows[slot] = {"info": info, "save": sb, "load": lb, "delete": db, "row": row, "manual": true}
 	# Checkpoint saves of scenes (scenes data `checkpoint`: «День второй» after the night by the stove): a row
 	# with the title and «Загрузить» only, shown once the save exists.
 	for cp in StoryData.checkpoints():
@@ -866,6 +870,9 @@ func open_menu_panel(mode: String = "all") -> void:
 
 ## Closes the save / load / settings panel; false when it was not open (Esc goes on to the pause menu).
 func close_menu_panel() -> bool:
+	if delete_dialog_open():
+		_close_delete(false)   # Esc on the question keeps the save and the panel
+		return true
 	if not menu_panel.visible:
 		return false
 	menu_panel.visible = false
@@ -935,7 +942,127 @@ func _slot_row_load_only(parent: Control, slot: String, title: String, row_name:
 	lb.name = "Load" + slot
 	lb.pressed.connect(_on_load_slot.bind(slot))
 	row.add_child(lb)
-	slot_rows[slot] = {"info": info, "save": null, "load": lb, "row": row, "checkpoint": true}
+	var db := _delete_button(slot)
+	row.add_child(db)
+	slot_rows[slot] = {"info": info, "save": null, "load": lb, "delete": db, "row": row, "checkpoint": true}
+
+
+## J (Director 29.10, стр. 7): «Удалить» on every save that exists — it asks first (the game's own dialog).
+func _delete_button(slot: String) -> Button:
+	var db := _button(StoryData.text("@ui.delete"), 130)
+	db.name = "Delete" + slot
+	db.pressed.connect(_ask_delete.bind(slot))
+	return db
+
+
+## The question in the game's style: «Вы действительно хотите удалить это сохранение?», a green tick (yes, delete) and a
+## red cross (no, keep it) drawn as marks on carved wooden buttons; Esc and a click past the panel keep the save.
+func _ask_delete(slot: String) -> void:
+	if delete_dialog == null:
+		_build_delete_dialog()
+	delete_slot = slot
+	delete_dialog.visible = true
+	(delete_dialog.find_child("No", true, false) as Button).grab_focus()
+
+
+func _build_delete_dialog() -> void:
+	delete_dialog = Control.new()
+	delete_dialog.name = "DeleteDialog"
+	delete_dialog.set_anchors_preset(Control.PRESET_FULL_RECT)
+	delete_dialog.size = Vector2(1920, 1080)
+	delete_dialog.mouse_filter = Control.MOUSE_FILTER_STOP
+	delete_dialog.theme = UiTheme.get_theme()
+	menu_layer.add_child(delete_dialog)
+	var dim := ColorRect.new()
+	dim.name = "Dim"
+	dim.color = Color(0, 0, 0, 0.55)
+	dim.size = Vector2(1920, 1080)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	dim.gui_input.connect(func(e: InputEvent) -> void:
+		if e is InputEventMouseButton and e.pressed:
+			_close_delete(false))
+	delete_dialog.add_child(dim)
+	var panel := Control.new()
+	panel.name = "Panel"
+	panel.size = Vector2(760, 300)
+	panel.position = (Vector2(1920, 1080) - panel.size) * 0.5
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.draw.connect(func() -> void:
+		panel.draw_rect(Rect2(Vector2.ZERO, panel.size).grow(-18), Color(0.12, 0.075, 0.045, 0.97))
+		CarvedFrame.draw_frame(panel, Rect2(Vector2.ZERO, panel.size).grow(-18), 18.0))
+	delete_dialog.add_child(panel)
+	var q := Label.new()
+	q.name = "Question"
+	q.text = StoryData.text("@ui.delete_confirm")
+	q.theme_type_variation = &"HeaderSmall"
+	q.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	q.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	q.position = Vector2(60, 52)
+	q.size = Vector2(panel.size.x - 120, 90)
+	panel.add_child(q)
+	var yes := _mark_button("Yes", true)
+	yes.position = Vector2(panel.size.x * 0.5 - 150, 170)
+	yes.tooltip_text = StoryData.text("@ui.delete_yes")
+	yes.pressed.connect(_close_delete.bind(true))
+	panel.add_child(yes)
+	var no := _mark_button("No", false)
+	no.position = Vector2(panel.size.x * 0.5 + 50, 170)
+	no.tooltip_text = StoryData.text("@ui.delete_no")
+	no.pressed.connect(_close_delete.bind(false))
+	panel.add_child(no)
+	delete_dialog.visible = false
+
+
+## A round wooden button with a mark: a green tick (yes) or a red cross (no).
+func _mark_button(node_name: String, tick: bool) -> Button:
+	var b := Button.new()
+	b.name = node_name
+	b.flat = true
+	b.focus_mode = Control.FOCUS_ALL
+	b.size = Vector2(100, 100)
+	b.custom_minimum_size = b.size
+	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	b.draw.connect(func() -> void:
+		var c := b.size * 0.5
+		var hot := b.is_hovered() or b.has_focus()
+		b.draw_circle(c + Vector2(0, 4), 46.0, Color(0, 0, 0, 0.35))
+		b.draw_circle(c, 46.0, CarvedFrame.WOOD_DARK)
+		b.draw_circle(c, 41.0, CarvedFrame.WOOD.lightened(0.12 if hot else 0.0))
+		b.draw_arc(c, 43.5, 0.0, TAU, 48, CarvedFrame.GOLD if hot else CarvedFrame.GOLD_DIM, 2.0, true)
+		var col := Color(0.33, 0.72, 0.36) if tick else Color(0.82, 0.22, 0.18)
+		if tick:
+			b.draw_polyline(PackedVector2Array([c + Vector2(-20, 2), c + Vector2(-6, 17), c + Vector2(22, -16)]), col, 9.0, true)
+		else:
+			b.draw_line(c + Vector2(-17, -17), c + Vector2(17, 17), col, 9.0, true)
+			b.draw_line(c + Vector2(17, -17), c + Vector2(-17, 17), col, 9.0, true))
+	b.mouse_entered.connect(b.queue_redraw)
+	b.mouse_exited.connect(b.queue_redraw)
+	b.focus_entered.connect(b.queue_redraw)
+	b.focus_exited.connect(b.queue_redraw)
+	return b
+
+
+func _close_delete(confirmed: bool) -> void:
+	if delete_dialog == null or not delete_dialog.visible:
+		return
+	delete_dialog.visible = false
+	if confirmed and delete_slot != "":
+		GameState.delete_save(delete_slot)
+	delete_slot = ""
+	_refresh_slots()
+
+
+func delete_dialog_open() -> bool:
+	return delete_dialog != null and delete_dialog.visible
+
+
+## The real date and time a save was written (J, Director 29.10, стр. 6), in the player's local time: «29.10.2026, 20:31».
+static func save_when(unix: float) -> String:
+	if unix <= 0.0:
+		return ""
+	var bias := int(Time.get_time_zone_from_system().get("bias", 0)) * 60
+	var d := Time.get_datetime_dict_from_unix_time(int(unix) + bias)
+	return StoryData.text("@ui.saved_when", {"date": "%02d.%02d.%04d" % [d["day"], d["month"], d["year"]], "time": "%02d:%02d" % [d["hour"], d["minute"]]})
 
 
 ## Panel as tall as its content, centred under the top bar (and across: the save / settings modes are narrower).
@@ -972,7 +1099,13 @@ func _refresh_slots() -> void:
 			# G4 (Director 23.10: «"День второй H1…"» → «День второй, мастерская, вечер»): the day, the place and the time of
 			# day in words; a checkpoint row already names its day.
 			label.text = String(info.get("place_time" if bool(slot_rows[slot].get("day_named", false)) else "label", ""))
+			var when := save_when(float(info.get("saved_unix", 0.0)))
+			if when != "":
+				label.text += "\n" + when
 		(slot_rows[slot]["load"] as Button).disabled = info.is_empty()
+		var db = slot_rows[slot].get("delete", null)
+		if db != null:
+			(db as Button).visible = not info.is_empty() and menu_mode != "settings"
 	var any := false
 	for slot in slot_rows.keys():
 		any = any or (slot_rows[slot]["row"] as Control).visible

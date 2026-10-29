@@ -106,6 +106,26 @@
       "text": "Загрузить",
       "draft": false
     },
+    "ui.delete": {
+      "text": "Удалить",
+      "draft": false
+    },
+    "ui.delete_confirm": {
+      "text": "Вы действительно хотите удалить это сохранение?",
+      "draft": false
+    },
+    "ui.delete_yes": {
+      "text": "Да, удалить",
+      "draft": false
+    },
+    "ui.delete_no": {
+      "text": "Нет, оставить",
+      "draft": false
+    },
+    "ui.saved_when": {
+      "text": "{date}, {time}",
+      "draft": false
+    },
     "ui.new_game": {
       "text": "Новая игра",
       "draft": false

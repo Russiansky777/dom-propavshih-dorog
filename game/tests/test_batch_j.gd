@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   F1 (стр. 6, 7): the save's real date and time; «Удалить» with the game's yes / no dialog;
 ##   E9 (стр. 15, 96, 144): the flume by the sluice state, Z3 lapping at the bank, R3 ripple under the stones;
 ##   E8 (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror carved, no handle;
 ##   E7 (стр. 72): lit windows under the figures, boosted through the grade, dimmer at the curtains;
@@ -93,6 +94,7 @@ func _run() -> void:
 	await _test("J-E6 R1 dusk, the rope off the stopper: before the knot the patch is the dark bank's, after it the snowy one's", _test_rope_patch)
 	await _test("J-E7 lit windows (стр. 72): under the figures, as warm as before the grade, dimmer at the curtains", _test_windows)
 	await _test("J-E9 water (стр. 15, 96, 144): the flume holds, then rushes once the sluice is open; Z3's near water laps at the bank; R3 ripples under the stones", _test_water)
+	await _test("J-F1 saves (стр. 6, 7): the real date and time on a slot; «Удалить» asks in the game's dialog, the red cross keeps, the green tick deletes", _test_save_delete)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -764,6 +766,37 @@ func _test_water() -> void:
 	await _enter("R3")
 	await _drain()
 	_check(_water("near_stones") != null and _water("near_stones").visible, "R3: the water under the stone bank ripples")
+
+
+func _test_save_delete() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01"])
+	await _enter("Z2")
+	await _drain()
+	var slot := "1"   # GameState.MANUAL_SLOTS[0]
+	_check(rm.save_game(slot), "saved to slot %s" % slot)
+	ui.call("open_menu_panel", "load")
+	await _frames(2)
+	var row: Dictionary = ui.get("slot_rows")[slot]
+	var txt := (row["info"] as Label).text
+	var re := RegEx.create_from_string("\\d{2}\\.\\d{2}\\.\\d{4}, \\d{2}:\\d{2}")
+	_check(re.search(txt) != null, "the slot shows when it was saved: «%s»" % txt)
+	var db: Button = row.get("delete", null)
+	_check(db != null and db.visible, "«Удалить» on the saved slot")
+	db.pressed.emit()
+	await _frames(2)
+	_check(ui.call("delete_dialog_open"), "it asks first")
+	var dlg: Control = ui.get("delete_dialog")
+	(dlg.find_child("No", true, false) as Button).pressed.emit()
+	await _frames(2)
+	_check(not ui.call("delete_dialog_open") and gs.has_save(slot), "the red cross keeps the save")
+	db.pressed.emit()
+	await _frames(2)
+	(dlg.find_child("Yes", true, false) as Button).pressed.emit()
+	await _frames(2)
+	_check(not gs.has_save(slot) and not db.visible, "the green tick deletes it")
+	ui.call("close_menu_panel")
 
 
 func _layer_vis(id: String) -> bool:
