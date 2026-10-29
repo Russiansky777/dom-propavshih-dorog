@@ -404,7 +404,7 @@ func _test_sizes() -> void:
 	var cup := _layer_box("cup_table_blue")
 	_check(mug.size.y > 0 and cup.size.y > 0, "the mug and the chosen cup are on the table")
 	_check(absf(mug.size.y / maxf(cup.size.y, 1.0) - 1.0) < 0.3, "the mug about the cup's height: %.0f vs %.0f px" % [mug.size.y, cup.size.y])
-	_check(mug.size.x < 75.0, "the mug no wider than the cup with its saucer: %.0f px" % mug.size.x)
+	_check(mug.size.x < cup.size.x * 1.25, "the mug about as wide as the cup with its saucer: %.0f vs %.0f px (both with their shadow)" % [mug.size.x, cup.size.x])
 	var table: Node = rm.current_room.find_child("table_chair", true, false)
 	var tspr: Sprite2D = table.get_node_or_null("Image") if table != null else null
 	_check(tspr != null and tspr.texture.resource_path.ends_with("fg_table_chair_nomug.png"), "the table without the painted clay mug")

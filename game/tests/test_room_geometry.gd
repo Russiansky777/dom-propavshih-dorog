@@ -257,10 +257,12 @@ func _check_scales(room: Node, spec: Dictionary) -> void:
 		if img == null:
 			_check(false, "layer %s has no Image" % lid)
 			continue
-		var sc := float(l.get("scale", 1.0))
-		var want := bg.scale.x * sc
-		_check(absf(img.scale.x - want) <= 0.001 and absf(img.scale.y - img.scale.x) <= 0.000001,
-			"layer %s scale %s, expected uniform background scale × %.3f = %.4f" % [lid, str(img.scale), sc, want])
+		# `scale` a number (uniform) or [x, y] (J, Z1: the counter lower, width kept)
+		var sc_raw = l.get("scale", 1.0)
+		var sv := Vector2(float(sc_raw[0]), float(sc_raw[1])) if sc_raw is Array else Vector2.ONE * float(sc_raw)
+		var want := bg.scale.x * sv
+		_check(absf(img.scale.x - want.x) <= 0.001 and absf(img.scale.y - want.y) <= 0.001,
+			"layer %s scale %s, expected background scale × %s = %s" % [lid, str(img.scale), str(sv), str(want)])
 		if String(l.get("scale_reason", "")).strip_edges() == "":
 			_check(absf(img.scale.x - bg.scale.x) <= 0.001, "layer %s is drawn at %.4f, not the background's %.4f, and the data gives no scale_reason" % [lid, img.scale.x, bg.scale.x])
 
