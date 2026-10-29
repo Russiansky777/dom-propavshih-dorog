@@ -19,7 +19,8 @@ const SHOTS := ["q02_O1_map", "q02_map_route", "q02_map_route_two", "q02_map_don
 	"b8_O1_board", "b8_O1_board_here", "b8_H1_coat", "b8_O4_bag_board", "b8_O3_night", "b8_M1_board",
 	"b8_M1_closeup", "b8_Z3_day", "b8_R2_day", "b8_R3_day", "b8_H2_glass", "b8_H2_glass_closeup", "b8_ep_lesson", "b8_ep_dinner",
 	"b8_ep_beam_roads", "b8_examine_watch", "b8_examine_journal", "b8_examine_key",
-	"j_view_H1_coat", "j_view_O3_letters", "j_view_O4_board"]
+	"j_view_H1_coat", "j_view_O3_letters", "j_view_O4_board",
+	"j_ttt", "j_rhythm", "j_fish_wait", "j_fish_fight", "j_fish_caught"]
 const FREE := ["house_unlocked", "house_open", "done_M21b", "done_M22", "met_ilya", "met_ulyana", "met_nina", "morning_day3", "free_walk_day3", "school_path_open"]
 
 
@@ -125,6 +126,52 @@ func _shot(n: String) -> void:
 			if hv != null:
 				sr.open_view(hv.data["view"], String(v[2]))
 			await _frames(60)
+		"j_ttt", "j_rhythm", "j_fish_wait", "j_fish_fight", "j_fish_caught":   # часть G: the games from the choices
+			var gm := {"j_ttt": [["done_M03", "met_ulyana"], "O1", "ulyana", "tictactoe"], "j_rhythm": [["done_M03"], "H1", "tikhon", "rhythm"]}
+			var g: Array = gm.get(n, [["done_M22", "met_mitya"], "O4", "mitya", "fishing"])
+			await _state(g[0], g[1], "from_O2" if g[1] != "H1" else "default")
+			var hm = rm.current_room.get_node_or_null("Hotspots/" + String(g[2]))
+			var spec := {}
+			if hm != null:
+				for o in hm.data.get("choice", {}).get("options", []):
+					if o.get("mechanic", {}).get("type", "") == g[3]:
+						spec = o["mechanic"]
+			sr.open_mechanic(spec, String(g[2]))
+			await _frames(40)
+			var pn = _panel()
+			if pn != null:
+				match n:
+					"j_ttt":
+						pn.call("play_cell", 4)
+						await _frames(90)
+						for c in [0, 2, 6, 8, 1, 3, 5, 7]:
+							if pn.call("play_cell", c):
+								break
+						await _frames(90)
+					"j_rhythm":
+						var t0 := Time.get_ticks_msec()
+						while String(pn.get("phase")) != "agata" and Time.get_ticks_msec() - t0 < 15000:
+							await process_frame
+						pn.call("tap")
+						await _frames(30)
+						pn.call("tap")
+						await _frames(20)
+					"j_fish_wait":
+						await _frames(60)
+					"j_fish_fight", "j_fish_caught":
+						pn.set("phase", "bite")
+						pn.set("phase_t", 0.0)
+						pn.call("press", true)
+						if n == "j_fish_fight":
+							await _frames(50)
+						else:
+							var g2: Array = pn.call("probe")["green"]
+							var mid := (float(g2[0]) + float(g2[1])) * 0.5
+							var t1 := Time.get_ticks_msec()
+							while String(pn.call("probe")["phase"]) == "fight" and Time.get_ticks_msec() - t1 < 25000:
+								pn.call("press", float(pn.call("probe")["tension"]) < mid)
+								await process_frame
+							await _frames(40)
 		"b8_Z3_day":
 			await _state(["evening_dusk", "done_M15a", "done_M15", "done_M17", "done_M18", "done_M19", "done_M20"], "Z3")
 		"b8_R2_day":
