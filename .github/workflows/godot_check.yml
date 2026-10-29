@@ -65,6 +65,7 @@ jobs:
             godot-import-${{ env.GODOT_VERSION }}-
 
       - name: Validators, sync, import
+        shell: bash {0}
         env:
           GODOT: /home/runner/godot-check/Godot_v4.7.2-stable_linux.x86_64
           VALIDATORS: ${{ inputs.validators }}
@@ -84,6 +85,7 @@ jobs:
           godot_import
 
       - name: Run tests
+        shell: bash {0}
         env:
           GODOT: /home/runner/godot-check/Godot_v4.7.2-stable_linux.x86_64
           SCRIPTS: ${{ inputs.scripts }}
@@ -104,6 +106,7 @@ jobs:
           exit 0
 
       - name: Publish log to branch «checks»
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -116,4 +119,4 @@ jobs:
           git config user.name "godot-check" && git config user.email "actions@users.noreply.github.com"
           git add -A && git commit -qm "godot-check ${GITHUB_RUN_ID} @ ${GITHUB_SHA::7} [skip ci]"
           git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/checks
-          test "$(cat code)" = "0"
+          test "$(cat code 2>/dev/null)" = "0"
