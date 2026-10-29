@@ -973,6 +973,10 @@ func _press(pos: Vector2) -> bool:
 	if handle_rect.size != Vector2.ZERO and handle_rect.has_point(pos) and _leaf_shown():
 		_close_door()
 		return true
+	var ak := _arrow_at(pos)
+	if ak >= 0:
+		_knock(1.0 if ak == 0 else -1.0)
+		return true
 	if _beam_hit().has_point(pos):
 		if _beam_tween != null and _beam_tween.is_valid():
 			_beam_tween.kill()
@@ -1018,9 +1022,24 @@ func _cursor_for(pos: Vector2) -> Control.CursorShape:
 		return Control.CURSOR_DRAG
 	if handle_rect.size != Vector2.ZERO and handle_rect.has_point(pos) and _leaf_shown():
 		return Control.CURSOR_POINTING_HAND
+	if _arrow_at(pos) >= 0:
+		return Control.CURSOR_POINTING_HAND
 	if _beam_hit().has_point(pos):
 		return Control.CURSOR_DRAG
 	return Control.CURSOR_ARROW
+
+
+## J-A1 (ИИ-регрессия 26.10, Директор 29.10 стр. 47): the knock arrows strike too — a player clicks the arrow that
+## «points at the edge», not only the edge of the beam (the arrows stand just outside the beam's ends). 0 — the left
+## arrow (strike the left end: the beam goes right), 1 — the right one, -1 — none under the pointer.
+func _arrow_at(pos: Vector2) -> int:
+	if _solved():
+		return -1
+	for k in seat_arrows.size():
+		var a: Label = seat_arrows[k]
+		if a.visible and Rect2(a.position, a.size).grow(14.0).has_point(pos):
+			return k
+	return -1
 
 
 func _set_cursor(shape: Control.CursorShape) -> void:

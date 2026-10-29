@@ -201,7 +201,9 @@ func _refresh() -> void:
 	if status_label != null:
 		var key := "label_status_settled"
 		if logic.finished():
-			key = "label_status_open"
+			# J-A4 (Директор 29.10, стр. 184): после сумерек вода уже сошла — не «к вечеру сойдёт».
+			var drained := spec.get("texts", {}).has("label_status_drained") and flag("evening_dusk")
+			key = "label_status_drained" if drained else "label_status_open"
 		elif _slip_t >= 0.0:
 			key = "label_status_slipped"
 		elif not logic.settled():

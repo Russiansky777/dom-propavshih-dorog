@@ -44,7 +44,7 @@
         "_gauge_note": "G24: на рейке — зарубка на каждой ступени и красная метка на ПОСЛЕДНЕЙ (work_mark по умолчанию — уровень последней зарубки); красная метка на дуге затвора нарисована в арте M4 на третьей зарубке — заявка в арт 9",
         "status_pos": [1460, 230],
         "done_flag": "sluice_opened",
-        "texts": {"label_hint": "@mech.sluice.label_hint", "slipped": "@mech.sluice.slipped", "label_status_slipped": "@mech.sluice.label_status_slipped", "label_gauge": "@M4.sluice.label_gauge", "label_status_settled": "@M4.sluice.label_status_settled", "label_status_falling": "@M4.sluice.label_status_falling", "label_status_open": "@M4.sluice.label_status_open", "wait": "@M4.sluice.wait"},
+        "texts": {"label_hint": "@mech.sluice.label_hint", "slipped": "@mech.sluice.slipped", "label_status_slipped": "@mech.sluice.label_status_slipped", "label_gauge": "@M4.sluice.label_gauge", "label_status_settled": "@M4.sluice.label_status_settled", "label_status_falling": "@M4.sluice.label_status_falling", "label_status_open": "@M4.sluice.label_status_open", "label_status_drained": "@M4.sluice.label_status_drained", "wait": "@M4.sluice.wait"},
         "events": {"opened": {"sets": ["sluice_opened", "pond_lowered"], "close": true}}
       },
       "look": "@M4.gate.look"
@@ -52,7 +52,7 @@
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1060, 406, 130, 354], "stand": [950, 800], "draw": false, "pick_priority": 2,
       "visible_if": ["done_M13"],
-      "talk": {"by_flags": [{"if": ["bridge_decided"], "text": "@M4d.pavel.after_bridge"}, {"if": ["sluice_opened"], "text": "@M4.pavel.after"}], "after_text": "@M4.pavel.before"},
+      "talk": {"by_flags": [{"if": ["bridge_decided"], "text": "@M4d.pavel.after_bridge"}, {"if": ["evening_dusk"], "text": "@M4.pavel.after_dusk", "_j": "J-A4 (Директор 29.10, стр. 117): вода сошла — Павел больше не говорит «теперь ждать надо»"}, {"if": ["sluice_opened"], "text": "@M4.pavel.after"}], "after_text": "@M4.pavel.before"},
       "_talk_note": "один хотспот — одна 3D-фигура (data/actors/pavel.json): до открытия затвора — «Ключ в ворот — и по зарубке», после — «К вечеру сойдёт. Ступай пока» (раньше — два хотспота pavel / pavel_rest с плоской картинкой)"
     },
     {

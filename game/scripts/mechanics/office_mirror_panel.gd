@@ -592,7 +592,12 @@ func probe() -> Dictionary:
 		out["signals_how"] = {"one": {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "click"},
 			"two": {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "double_click", "gap_ms": 150},
 			"long": {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "hold", "hold_ms": 800}}
-		out["strike"] = {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "double_click (= «стой»), when timing.in_green"}
+		# J-A2 (ИИ-регрессия 26.10): while the wedges go in, the strike is on the wedge in work (a click on the bell then
+		# only says «Сперва раму закрепить» — the bot struck the bell and its series never grew past two).
+		if wedge_in_work() >= 0 and not clamped():
+			out["strike"] = {"x": out["wedge_strike"].get("x", 0), "y": out["wedge_strike"].get("y", 0), "how": "click, when wedge_timing marker is in the green"}
+		else:
+			out["strike"] = {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "double_click (= «стой»), when timing.in_green"}
 		out["hook"] = {"pos": hook.pos, "state": hook.state, "bar": hook.bar, "tolerance": hook.tolerance, "misses": hook.misses,
 			"sway": [hook.sway.x, hook.sway.y], "in_zone": hook.state == "sway" and hook.timing.in_green(hook.timing.pos()),
 			"timing": hook_bar.probe() if hook_bar != null else {}}

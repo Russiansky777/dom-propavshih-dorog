@@ -1,0 +1,119 @@
+name: godot-check
+
+# Быстрая проверка без сборки сайта и exe (партия J, 29.10: работа идёт в чате координатора, в сессии мало места под
+# импорт игры). Запуск вручную: выбранные GDScript-тесты headless после импорта (кэш импорта — тот же, что у сборки).
+# Итог: журнал и кадры — в ветку `checks` (git fetch origin checks), короткий итог — аннотациями (checks API).
+on:
+  workflow_dispatch:
+    inputs:
+      scripts:
+        description: "Тесты res:// через пробел, напр. res://tests/test_closeups.gd res://tests/test_j.gd"
+        required: true
+      validators:
+        description: "Сначала проверки данных (validate_story / rooms / voice)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: godot-check
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_ZIP_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot-check
+          key: godot-check-${{ env.GODOT_VERSION }}-v1
+
+      - name: Download Godot ${{ env.GODOT_VERSION }}
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot-check && cd ~/godot-check
+          base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable"
+          curl -sSL --retry 3 -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          echo "${GODOT_ZIP_SHA256}  godot.zip" | sha256sum -c -
+          unzip -q -o godot.zip && rm godot.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python + Pillow
+        run: python -m pip install -q pillow
+
+      - name: Cache Godot import (shared with build-and-publish)
+        uses: actions/cache@v4
+        with:
+          path: game/.godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('game/assets/**/*.import', 'game/assets/characters/**/sprites.json', 'game/export_presets.cfg') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
+
+      - name: Validators, sync, import
+        env:
+          GODOT: /home/runner/godot-check/Godot_v4.7.2-stable_linux.x86_64
+          VALIDATORS: ${{ inputs.validators }}
+        run: |
+          set -uo pipefail
+          mkdir -p build/check
+          if [ "$VALIDATORS" = "true" ]; then
+            for v in validate_story validate_rooms validate_voice; do
+              python3 -I tools/$v.py --quiet 2>&1 | tee -a build/check/out.log
+              echo "[exit] $v ${PIPESTATUS[0]}" | tee -a build/check/out.log
+            done
+          fi
+          tools/sync_story_data.sh >/dev/null
+          tools/sync_music.sh >/dev/null
+          tools/sync_voice.sh >/dev/null
+          source tools/godot_env.sh
+          godot_import
+
+      - name: Run tests
+        env:
+          GODOT: /home/runner/godot-check/Godot_v4.7.2-stable_linux.x86_64
+          SCRIPTS: ${{ inputs.scripts }}
+        run: |
+          set -uo pipefail
+          code=0
+          for s in $SCRIPTS; do
+            echo "=== $s" | tee -a build/check/out.log
+            timeout 1500 "$GODOT" --headless --audio-driver Dummy --path game -s "$s" 2>&1 | tee -a build/check/out.log
+            rc=${PIPESTATUS[0]}
+            echo "[exit] $s $rc" | tee -a build/check/out.log
+            [ "$rc" -ne 0 ] && code=1
+          done
+          grep -E "^(FAIL|\[exit\])|^        - " build/check/out.log | head -40 | while IFS= read -r l; do
+            echo "::notice title=godot-check::$(printf '%s' "$l" | cut -c1-300)"
+          done
+          echo "$code" > build/check/code
+          exit 0
+
+      - name: Publish log to branch «checks»
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/out && cp -r build/check/. /tmp/out/
+          [ -d game/user_shots ] && cp -r game/user_shots /tmp/out/shots || true
+          cd /tmp/out
+          printf '%s\n' "run ${GITHUB_RUN_ID} @ ${GITHUB_SHA::7}: ${{ inputs.scripts }}" > RUN.txt
+          git init -q && git checkout -q -b checks
+          git config user.name "godot-check" && git config user.email "actions@users.noreply.github.com"
+          git add -A && git commit -qm "godot-check ${GITHUB_RUN_ID} @ ${GITHUB_SHA::7} [skip ci]"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/checks
+          test "$(cat code)" = "0"

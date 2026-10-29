@@ -64,7 +64,7 @@
         "sounds": {"take": "bag_handle", "snap": "steps_soft", "return": "bag_handle", "beam": "steps_soft", "close_error": "door_light", "close_success": "door_passage", "_note": "существующие звуки sfx.json (без новых генераций): взять петлю, защёлкнуть, вернуть в лоток, брус встал на зарубку, дверь закрыта неверно / верно"},
         "check_label": "@H3.puzzle.check",
         "close_label": "@ui.close",
-        "error_text": "@H3.puzzle.error",
+        "error_text": "@H3.puzzle.error", "error_text_pieces": "@H3.puzzle.error_pieces", "error_text_mark": "@H3.puzzle.error_mark",
         "error_hint_after": 2,
         "success_text": "@H3.puzzle.success",
         "success": {"scene": "M05", "view": "winter"}

@@ -101,7 +101,7 @@
         "_note": "H43 (Директор 24.10: «на вопрос Ульяны про шапку нет ответа»): после урока с мамой — разговор по вопросам; про шапку — её вопрос и ответ Агаты; про огни — 20 лет ожидания Мити глазами ребёнка, родившегося внутри",
         "options": [
           {"id": "hat", "label": "@O1d.ulyana.opt_hat", "sets": "o1_ulyana_hat", "text": "@O1d.ulyana.hat_q", "then": ["@O1d.ulyana.hat_a", "@O1d.ulyana.hat_b"]},
-          {"id": "lights", "label": "@O1d.ulyana.opt_lights", "sets": "o1_ulyana_lights", "text": "@O1d.ulyana.lights_q", "then": ["@O1d.ulyana.lights_a", "@O1d.ulyana.lights_b"]},
+          {"id": "lights", "label": "@O1d.ulyana.opt_lights", "sets": "o1_ulyana_lights", "text": "@O1d.ulyana.lights_q", "then": ["@O1d.ulyana.lights_a", "@O1d.ulyana.lights_b", "@O1d.ulyana.lights_c"]},
           {"id": "leave", "label": "@O1d.ulyana.opt_leave", "sets": "o1_ulyana_bye", "text": "@O1d.ulyana.after"}
         ]}
     },

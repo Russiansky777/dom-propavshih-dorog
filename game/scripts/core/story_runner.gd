@@ -1488,6 +1488,19 @@ func puzzle_is_correct() -> bool:
 	return int(puzzle.get("mark", -1)) == int(spec.get("marks", {}).get("correct", -1))
 
 
+## J-A1 (Директор 29.10, стр. 47: «Видно, либо петли, либо порог… — исправить фразу»): the error says what is wrong —
+## the hinges (`error_text_pieces`: not all in, or in a wrong socket) or the threshold (`error_text_mark`); without
+## those texts — the common `error_text`.
+func _puzzle_error_text(spec: Dictionary) -> String:
+	var placed: Dictionary = puzzle.get("placed", {})
+	var pieces_ok: bool = placed.size() == (spec.get("pieces", []) as Array).size()
+	for s in spec.get("slots", []):
+		if bool(s.get("correct", false)) != placed.has(String(s["id"])):
+			pieces_ok = false
+	var key := "error_text_pieces" if not pieces_ok else "error_text_mark"
+	return String(spec.get(key, spec.get("error_text", "")))
+
+
 ## "Close the door": evaluates the placement. Returns true on success.
 func puzzle_check() -> bool:
 	if not puzzle_open or bool(puzzle.get("solved", false)):
@@ -1505,7 +1518,7 @@ func puzzle_check() -> bool:
 		return true
 	var errors := GameState.inc_counter("puzzle_errors." + pid)
 	puzzle["errors"] = errors
-	_set_puzzle_message(String(spec.get("error_text", "")))
+	_set_puzzle_message(_puzzle_error_text(spec))
 	puzzle["view"] = "wall"
 	if errors >= int(spec.get("error_hint_after", 2)):
 		var scn := String(spec.get("success", {}).get("scene", ""))
@@ -1568,6 +1581,13 @@ func mechanic_spec(h: Node) -> Dictionary:
 			if String(other.get("id", "")) == String(ms["same_as"]):
 				var base: Dictionary = other.get("mechanic", {}).duplicate(true)
 				base["opened_from"] = String(d.get("id", ""))
+				# J-A5 (Директор 29.10, стр. 112: «кликаю на колокол — даёт ту же картинку, что и стекло»): the borrowing
+				# hotspot adds its own `unless` — after the office is open the bell no longer opens the mirror's close-up.
+				for f in ms.get("unless", []):
+					var un: Array = base.get("unless", [])
+					if not un.has(f):
+						un.append(f)
+					base["unless"] = un
 				return base
 	return ms
 

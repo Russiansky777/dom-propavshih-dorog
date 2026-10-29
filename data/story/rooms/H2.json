@@ -44,9 +44,9 @@
         "_text_note": "ярлык колокола (закадровый голос), затем мысль Агаты её голосом — причина вешать школьную дверь (Docs/SCENARIO_FINAL.md, M04); text — список ключей, читаются по очереди"},
       "look": "@H2.bell.look",
       "item_use": {"bell_clapper": {"sets": ["bell_clapper_hung"], "consumes": true, "text": "@H2d.bell.hang"}},
-      "use_when": [{"if": ["bell_clapper_hung"], "unless": ["office_mirror_mounted"], "text": "@H2d.bell.ring_far", "synth_sound": "bell",
+      "use_when": [{"if": ["office_unbolted"], "text": "@H2d.bell.after_office", "synth_sound": "bell", "_j": "J-A5: колокол своё отзвонил"}, {"if": ["bell_clapper_hung"], "unless": ["office_mirror_mounted"], "text": "@H2d.bell.ring_far", "synth_sound": "bell",
         "_note": "язык повешен до зеркала конторы (Директор 23.10): колокол звенит, отзывается далеко на мельнице — ничего не ломается; с зеркалом на стойке колокол открывает крупный план"}],
-      "mechanic": {"same_as": "stand_zm"}
+      "mechanic": {"same_as": "stand_zm", "unless": ["office_unbolted"], "_j": "J-A5 (Директор 29.10, стр. 112): контора открыта — колокол больше не открывает крупный план зеркала, у него свой отклик (use_when)"}
     },
     {
       "id": "stand_zm", "kind": "object", "label": "@H2.stand_zm.label", "rect": [1105, 135, 290, 545], "stand": [1250, 705], "_rect_note": "Директор 23.10 00:03 («рама новая почти нереальна к нахождению, нужно поменять её с основной рамой»): тётина стойка «ЗМ» — высокая резная рама на ножках посреди мастерской (фон: холст 965–1210 × 120–590 → экран 1108–1390 × 138–677), тяжёлая, к полу прибита; проём 1016–1168 × 197–518 холста", "color": "#7a7a70", "draw": false,
