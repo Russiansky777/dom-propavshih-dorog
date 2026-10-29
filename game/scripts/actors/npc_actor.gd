@@ -246,7 +246,9 @@ func set_state(st: String) -> void:
 	var spec: Dictionary = states.get(st, {})
 	if partner != null and is_instance_valid(partner) and not (st == "talk" and _line_to_agata()):
 		face_towards(partner.global_position)
-	elif bool(spec.get("face_agata", false)) and player != null and is_instance_valid(player):
+	elif bool(spec.get("face_agata", st == "talk")) and player != null and is_instance_valid(player):
+		# J (Director 29.10, стр. 157: «не смотрят на собеседника»): talking, a person turns to Agata unless the data
+		# says otherwise (`face_agata: false`) or they talk to someone else (partner, above)
 		face_towards(player.global_position)
 	elif st == "idle":
 		_face_data()

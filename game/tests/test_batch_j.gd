@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   D1 (стр. 89, 157): Agata looks at a person's feet (not over their head — her back was to the screen); they turn to her;
 ##   E10 (стр. 57): the drizzle at night in the lane by the post (light route) not darkened with the ambient layer;
 ##   G1 (стр. 120, 191, 192): «Раз!», «Два!» at the brace; zones by mode; the log's red band;
 ##   F1 (стр. 6, 7): the save's real date and time; «Удалить» with the game's yes / no dialog;
@@ -99,6 +100,7 @@ func _run() -> void:
 	await _test("J-F1 saves (стр. 6, 7): the real date and time on a slot; «Удалить» asks in the game's dialog, the red cross keeps, the green tick deletes", _test_save_delete)
 	await _test("J-G1 mini-games (стр. 120, 191, 192): «Раз!», «Два!» at the brace; normal zones narrower, «Облегчить» a little wider; the log's red band bigger", _test_minigames)
 	await _test("J-E10 the drizzle at night in the lane by the post (стр. 57): not darkened with the «living world» layer", _test_rain_night)
+	await _test("J-D1 talking (стр. 89, 157): Agata looks at a person's feet, not above them (no more back to the screen); the person turns to her", _test_facing)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -873,6 +875,32 @@ func _test_rain_night() -> void:
 	if rain != null:
 		var m: Color = (amb as CanvasItem).modulate * (rain as CanvasItem).modulate
 		_check(m.r >= 0.59 and m.g >= 0.59 and m.b >= 0.59, "the drizzle keeps at least 0.6 of its brightness at night: %s (layer %s)" % [str(m), str((amb as CanvasItem).modulate)])
+
+
+func _test_facing() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_N01", "house_unlocked"])
+	await _enter("M1")
+	await _drain()
+	var h: Node = _hotspot("pavel")
+	var actor: Node2D = rm.current_room.get_node_or_null("npc_pavel")
+	var player: Node2D = main_node.get_node("World/Player")
+	_check(h != null and actor != null, "Pavel stands in the mill yard")
+	if h == null or actor == null:
+		return
+	var lp: Vector2 = player.call("_look_point", h)
+	_check(absf(lp.y - actor.global_position.y) < 4.0, "Agata looks at Pavel's feet (%s), not the middle of his box (%s)" % [str(lp), str(h.global_position)])
+	# from her stand the look is across, not up: the sheet row is a side or front one, not the back
+	var stand: Vector2 = h.call("get_stand_position")
+	var v := lp - stand
+	_check(absf(v.x) > absf(v.y) or v.y > 0.0, "from her stand the look goes across or down to him: %s" % str(v))
+	actor.call("set_state", "talk")
+	await _frames(2)
+	var to_her := player.global_position - actor.global_position
+	var sheet = actor.get("sheet")
+	if sheet != null and not bool(actor.call("is_3d")):
+		_check(int(actor.get("direction")) == int(sheet.call("direction_index", to_her)), "talking, Pavel turns to Agata")
 
 
 func _layer_vis(id: String) -> bool:

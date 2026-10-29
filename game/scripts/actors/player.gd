@@ -664,6 +664,17 @@ func _look_point(node: Node2D) -> Vector2:
 		var af: Array = h.current_state().get("agata_face", h.data.get("agata_face", []))
 		if af.size() >= 2:
 			return Vector2(float(af[0]), float(af[1]))
+		# J (Director 29.10, стр. 89, 157: «Агата отвёрнута от Павла», «стоят от экрана, не смотрят на собеседника»):
+		# a person is looked at where they stand — their feet, on the floor as hers — not the middle of the figure's
+		# box, which is high above her feet and turned her back to the screen.
+		if String(h.data.get("kind", "")) == "npc":
+			var room := h.get_parent().get_parent() if h.get_parent() != null else null
+			var actor: Node2D = room.get_node_or_null("npc_" + String(h.hotspot_id)) as Node2D if room != null else null
+			if actor != null and actor.visible:
+				return actor.global_position
+			var shape := h.get_node_or_null("Shape") as CollisionShape2D
+			if shape != null and shape.shape is RectangleShape2D:
+				return h.global_position + Vector2(0, (shape.shape as RectangleShape2D).size.y * 0.5)
 	return node.global_position
 
 
