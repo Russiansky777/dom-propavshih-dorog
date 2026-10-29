@@ -2,7 +2,8 @@ class_name RoomEffect
 extends Node2D
 ## Programmatic effects declared in rooms/<id>.json `effects[]`: {type, rect, if, unless, z}.
 ## fire: upward orange particles + a flickering light patch inside `rect` (stove opening).
-## snow: falling white particles over `rect` (the whole room by default).
+## snow: falling white particles over `rect` (the whole room by default); `far: true` — only on the far bank (small,
+##   slow, fading before the bottom of `rect`).
 ## tint: the room under a colour (`color`, `blend` "mul" — dusk, darkness of the far shore; "add" — snow
 ##   showing through, light) over `rect` or `points` — a stand-in until the dusk / far-shore layers come
 ##   (BRIEF_CHATGPT_v4 §C6), drawn by the engine, not painted.
@@ -136,6 +137,9 @@ func _setup_fire(rect: Rect2) -> void:
 
 
 func _setup_snow(rect: Rect2) -> void:
+	if bool(data.get("far", false)):
+		_setup_far_snow(rect)
+		return
 	particles.position = Vector2(rect.position.x + rect.size.x / 2, rect.position.y)
 	particles.amount = int(data.get("amount", 220))
 	particles.lifetime = 6.0
@@ -150,6 +154,31 @@ func _setup_snow(rect: Rect2) -> void:
 	particles.scale_amount_min = 1.5
 	particles.scale_amount_max = 4.0
 	particles.color = Color(1, 1, 1, 0.85)
+
+
+## `far: true` — snow on the far bank only (Р2, партия J: the fog lifts — there it is already winter, on our bank
+## autumn): small slow flakes born in the upper half of `rect`, fading in and out, gone before its bottom edge — they
+## never fall onto our side. `speed_px_s` (22), `alpha` (0.75), `amount` (60).
+func _setup_far_snow(rect: Rect2) -> void:
+	var speed := maxf(float(data.get("speed_px_s", 22.0)), 1.0)
+	particles.position = rect.position + Vector2(rect.size.x / 2, rect.size.y * 0.25)
+	particles.amount = int(data.get("amount", 60))
+	particles.lifetime = clampf(rect.size.y * 0.4 / speed, 1.5, 12.0)
+	particles.preprocess = particles.lifetime
+	particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	particles.emission_rect_extents = Vector2(rect.size.x / 2, rect.size.y * 0.25)
+	particles.direction = Vector2(0.25, 1)
+	particles.spread = 12.0
+	particles.gravity = Vector2(0, 2)
+	particles.initial_velocity_min = speed * 0.6
+	particles.initial_velocity_max = speed * 1.4
+	particles.scale_amount_min = 1.0
+	particles.scale_amount_max = 2.2
+	var a := float(data.get("alpha", 0.75))
+	var ramp := Gradient.new()
+	ramp.offsets = PackedFloat32Array([0.0, 0.2, 0.75, 1.0])
+	ramp.colors = PackedColorArray([Color(1, 1, 1, 0), Color(1, 1, 1, a), Color(1, 1, 1, a), Color(1, 1, 1, 0)])
+	particles.color_ramp = ramp
 
 
 func _process(delta: float) -> void:

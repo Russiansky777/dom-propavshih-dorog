@@ -13,6 +13,8 @@ Checks:
     rects have a positive size; puddles lie on the room's floor (rooms/<LOC>.json walkable, centroid);
   - sway: kind tree|grass, 0 < amp_px ≤ 12, 0 < freq_hz ≤ 2, tree anchor below its top, a `layer`
     image or a `source: layer:<id>` exists; water: ≤ 4 exclude rects, ripple pair;
+  - fog (Р2, партия J — туман над тем берегом): a polygon/rect, density and wisps 0..1, profile [top, core_top,
+    core_bottom, bottom] not decreasing, color #rrggbb, 0 ≤ fade_s ≤ 20, flags known; counted in the overdraw;
   - dust ≤ 40 particles per emitter and ≤ 60 per room; rain intensity 0..1, |slant| ≤ 30°, ≤ 3 layers;
   - `if` / `unless` flags are known somewhere in data/story (flags.json or a room's sets/flags);
   - shader overdraw per room (regions + full-screen rain) ≤ 3 frames;
@@ -37,7 +39,7 @@ GAME = ROOT / "game"
 W, H, MARGIN = 1920, 1080, 10
 MAX_POLY = 32
 TOP_KEYS = {"id", "preset", "rain", "wind", "sway_regions", "water", "puddles", "mud", "dust",
-            "footfall", "water_style", "puddle_style"}
+            "footfall", "water_style", "puddle_style", "fog"}
 
 errors: list[str] = []
 warnings: list[str] = []
@@ -299,6 +301,26 @@ def check_room(path: Path, idx: dict, flags: set[str]) -> None:
         total_dust += n
     if total_dust > 60:
         err(f"{rid}: {total_dust} dust particles in the room (budget 60)")
+    for i, f in enumerate(spec.get("fog", [])):
+        where = f"{rid}.fog[{f.get('id', i)}]"
+        uniq(f, where)
+        check_flags(f, where, flags)
+        pts = shape(f, where)
+        if pts is None:
+            err(f"{where}: needs a polygon or a rect")
+            continue
+        overdraw += area(pts)
+        for fk in ("density", "wisps"):
+            if fk in f and not (isinstance(f[fk], (int, float)) and 0.0 <= float(f[fk]) <= 1.0):
+                err(f"{where}: {fk} {f[fk]} outside 0..1")
+        pr = f.get("profile")
+        if pr is not None and not (isinstance(pr, list) and len(pr) == 4 and all(float(pr[j]) <= float(pr[j + 1]) for j in range(3))):
+            err(f"{where}: profile must be [top, core_top, core_bottom, bottom], not decreasing")
+        col = str(f.get("color", "#a9afbc"))
+        if not (col.startswith("#") and len(col) in (7, 9)):
+            err(f"{where}: color must be #rrggbb")
+        if not 0.0 <= float(f.get("fade_s", 6.0)) <= 20.0:
+            err(f"{where}: fade_s outside 0..20")
     rain = spec.get("rain")
     if rain:
         it = float(rain.get("intensity", 0.5))

@@ -9,6 +9,9 @@ extends SceneTree
 ##   A5 (стр. 112): once the office is open the bell does not open the mirror's close-up again;
 ##   A6 (стр. 176): at the end of M23a Nina walks off toward the river, not into her own porch;
 ##   A8 (стр. 175): Agata answers Ulyana «никто больше не потеряется».
+##   E1 (Р2): river fog over the far bank in R1 / Z3 / M1 / H4 until the knot (road_held_both_ends); the knot tied
+##      with the room on screen — the fog lifts (eases out, then hidden); a load after the knot — no fog at once;
+##      at dusk the painted-dusk rooms (R1, Z3) switch to their dusk fog; snow on the far bank only after the knot.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -65,6 +68,7 @@ func _run() -> void:
 	await _test("J-A4 M4: after dusk Pavel says the water is down, the gate's status too", _test_water_down)
 	await _test("J-A5 H2: once the office is open the bell rings by itself, no mirror close-up", _test_bell_after)
 	await _test("J-A6/A8 data: Nina walks to the river at the end of M23a; Agata answers Ulyana", _test_data)
+	await _test("J-E1 fog over the far bank until the knot, lifting when the knot is tied", _test_fog)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -391,3 +395,55 @@ func _test_data() -> void:
 	_check(then.size() >= 3 and String(then[-1]) == "@O1d.ulyana.lights_c", "Ulyana's question gets Agata's answer (%s)" % str(then))
 	var ln: Dictionary = sd.text_line("@O1d.ulyana.lights_c")
 	_check(String(ln.get("speaker", "")) == "agata" and String(ln.get("text", "")).contains("Обещаю"), "Agata: «…Обещаю» (%s)" % str(ln))
+
+
+func _fog_root() -> Node:
+	return rm.current_room.get_node_or_null("Ambient") if rm.current_room != null else null
+
+
+func _test_fog() -> void:
+	gs.reset()
+	for rid in ["R1", "Z3", "M1", "H4"]:
+		await _enter(rid)
+		var amb := _fog_root()
+		_check(amb != null and amb.fog.size() >= 1, "%s: fog regions built (%s)" % [rid, str(amb.stats() if amb != null else {})])
+		if amb == null:
+			continue
+		var showing: Array = amb.fog_showing()
+		_check(not showing.is_empty() and not String(showing[0]).ends_with("_dusk"), "%s: day fog on before the knot (%s)" % [rid, str(showing)])
+		for n in amb.fog:
+			_check(n.z_index >= 0 and n.z_index < 100, "%s/%s: fog z %d — over the layers, under the figures" % [rid, n.name, n.z_index])
+	# Dusk of day two in the painted-dusk rooms: their own dusk fog instead of the day one.
+	gs.reset()
+	_set_flags(["evening_dusk"])
+	await _enter("Z3")
+	var z3 := _fog_root()
+	if z3 != null:
+		var sh: Array = z3.fog_showing()
+		_check(sh.size() == 1 and String(sh[0]) == "fog_far_dusk", "Z3 at dusk: only the dusk fog (%s)" % str(sh))
+		# The knot tied here, on screen: the fog lifts — still drawn a moment, rising and thinning, then gone.
+		gs.set_flag("road_held_both_ends", true)
+		await _frames(3)
+		var n: Polygon2D = z3.fog[1] if z3.fog.size() > 1 else null
+		var lift0 := float((n.material as ShaderMaterial).get_shader_parameter("lift")) if n != null else -1.0
+		_check(n != null and n.visible and lift0 < 0.5, "Z3: right after the knot the fog is still there, lifting (lift %.2f)" % lift0)
+		await _wait(2.5)
+		var lift1 := float((n.material as ShaderMaterial).get_shader_parameter("lift")) if n != null else -1.0
+		_check(lift1 > lift0 and lift1 < 1.0, "Z3: the fog rises and thins over its fade (lift %.2f → %.2f)" % [lift0, lift1])
+		await _wait(6.5)
+		_check(z3.fog_showing().is_empty(), "Z3: after the fade no fog (%s)" % str(z3.fog_showing()))
+		var snow: Node = rm.current_room.get_node_or_null("Effects/far_snowfall")
+		_check(snow != null and snow.visible, "Z3: after the knot snow falls on the far bank")
+	# A save after the knot: no fog at once in any room, snow on the far bank.
+	gs.reset()
+	_set_flags(["evening_dusk", "road_held_both_ends"])
+	for rid in ["R1", "M1", "H4"]:
+		await _enter(rid)
+		var amb := _fog_root()
+		if amb != null:
+			_check(amb.fog_showing().is_empty(), "%s after the knot: no fog (%s)" % [rid, str(amb.fog_showing())])
+		var sn: Node = rm.current_room.get_node_or_null("Effects/far_snowfall")
+		if sn == null:
+			sn = rm.current_room.get_node_or_null("Effects/far_snowfall_left")
+		_check(sn != null and sn.visible, "%s after the knot: snow falls on the far bank" % rid)
+	gs.reset()

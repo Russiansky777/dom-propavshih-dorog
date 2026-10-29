@@ -6,6 +6,9 @@ extends Node2D
 ##   Sway/<id>  Polygon2D per `sway_regions` entry, ambient_sway.gdshader              (z −9, drawn
 ##              after the water: a bush on the shore sways over the water behind it)
 ##   Dust/<id>  CPUParticles2D per `dust` entry                                        (z per entry)
+##   Fog/<id>   Polygon2D per `fog` entry, ambient_fog.gdshader — river fog over the far bank (z 1 by
+##              default: over the room layers at z 0, under the figures); when its flags turn it off
+##              in the room, it lifts over `fade_s` (Р2, партия J) instead of vanishing
 ##   Rain       AmbientRain: streak particles in depth layers                        (z 4096)
 ##   Footfall   splashes in puddles, prints in mud when Agata's foot is planted        (see its doc)
 ## A region redraws the background picture; with `source: "layer:<id>"` it redraws that room layer
@@ -16,6 +19,7 @@ extends Node2D
 
 const SWAY_SHADER: Shader = preload("res://shaders/ambient_sway.gdshader")
 const WATER_SHADER: Shader = preload("res://shaders/ambient_water.gdshader")
+const FOG_SHADER: Shader = preload("res://shaders/ambient_fog.gdshader")
 const MAX_POLY: int = 32
 
 var room: Room = null
@@ -28,6 +32,7 @@ var footfall: AmbientFootfall = null
 var sway: Array[Polygon2D] = []
 var water: Array[Polygon2D] = []
 var dust: Array[CPUParticles2D] = []
+var fog: Array[Polygon2D] = []
 
 var _bg_tex: Texture2D = null
 var _bg_origin := Vector2.ZERO
@@ -75,6 +80,13 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 			dust_box.add_child(n)
 			dust.append(n)
 			_conditional(n, d)
+	var fog_box := _group("Fog")
+	for f in spec.get("fog", []):
+		var n := _make_fog(f)
+		if n != null:
+			fog_box.add_child(n)
+			fog.append(n)
+			_conditional(n, f)
 	if spec.has("rain"):
 		rain = AmbientRain.new()
 		rain.name = "Rain"
@@ -110,10 +122,12 @@ func _game_state() -> Node:
 
 
 func _on_flag_changed(_f: String, _v: bool) -> void:
-	_refresh_conditions()
+	_refresh_conditions(true)
 
 
-func _refresh_conditions() -> void:
+## `animate`: a flag changed while the room is shown — fog lifts over its `fade_s`; otherwise (build, load, new
+## game) everything takes its final look at once.
+func _refresh_conditions(animate: bool = false) -> void:
 	var gs := _game_state()
 	for c in _cond:
 		var on := true
@@ -124,6 +138,9 @@ func _refresh_conditions() -> void:
 			if gs != null and gs.call("has_flag", String(f)):
 				on = false
 		var node: CanvasItem = c[0]
+		if node.has_meta("fog"):
+			_set_fog(node as Polygon2D, on, animate)
+			continue
 		node.visible = on
 		if node is CPUParticles2D:
 			(node as CPUParticles2D).emitting = on and _active
@@ -470,6 +487,69 @@ static func _dot_texture() -> Texture2D:
 	return _dot
 
 
+## River fog (Р2, партия J): a veil of `color` over the far bank, see ambient_fog.gdshader.
+func _make_fog(f: Dictionary) -> Polygon2D:
+	var pts := AmbientData.shape_of(f)
+	if pts.size() < 3 or pts.size() > MAX_POLY:
+		push_warning("Ambient %s: fog %s needs 3..%d points" % [room_id, f.get("id", "?"), MAX_POLY])
+		return null
+	var box := AmbientData.bbox(pts)
+	var n := Polygon2D.new()
+	n.name = String(f.get("id", "fog"))
+	n.polygon = pts
+	n.z_index = clampi(int(f.get("z", 1)), -10, 4096)
+	var m := ShaderMaterial.new()
+	m.shader = FOG_SHADER
+	set_edge(m, f, pts, float(f.get("feather_px", 60.0)))
+	m.set_shader_parameter("color", Color.html(String(f.get("color", "#a9afbc"))))
+	m.set_shader_parameter("density", clampf(float(f.get("density", 0.7)), 0.0, 1.0))
+	m.set_shader_parameter("wisps", clampf(float(f.get("wisps", 0.5)), 0.0, 1.0))
+	var pr: Array = f.get("profile", [box.position.y, box.position.y + box.size.y * 0.4, box.end.y - box.size.y * 0.15, box.end.y])
+	m.set_shader_parameter("profile", Vector4(float(pr[0]), float(pr[1]), float(pr[2]), float(pr[3])))
+	var dr: Array = f.get("drift", [8.0, 0.0])
+	m.set_shader_parameter("drift", Vector2(float(dr[0]), float(dr[1])))
+	m.set_shader_parameter("scale_px", float(f.get("scale_px", 200.0)))
+	m.set_shader_parameter("lift_px", float(f.get("lift_px", 60.0)))
+	m.set_shader_parameter("lift", 0.0)
+	n.material = m
+	n.set_meta("fog", true)
+	n.set_meta("fade_s", float(f.get("fade_s", 6.0)))
+	return n
+
+
+## Fog on: at once (lift 0). Off: hidden at once, or — a flag changed while the room is shown — lifting over
+## `fade_s` (rises and thins), then hidden. A lift in progress is cut short by the next change.
+func _set_fog(n: Polygon2D, on: bool, animate: bool) -> void:
+	var m := n.material as ShaderMaterial
+	var old: Variant = n.get_meta("fog_tween", null)
+	if old is Tween and (old as Tween).is_valid():
+		(old as Tween).kill()
+	n.remove_meta("fog_tween")
+	if on:
+		m.set_shader_parameter("lift", 0.0)
+		n.visible = true
+		return
+	var dur := float(n.get_meta("fade_s", 6.0))
+	if not animate or not n.visible or dur <= 0.0 or not n.is_inside_tree() or not _active:
+		n.visible = false
+		m.set_shader_parameter("lift", 1.0)
+		return
+	var tw := n.create_tween()
+	tw.tween_method(func(v: float) -> void: m.set_shader_parameter("lift", v), float(m.get_shader_parameter("lift")), 1.0, dur) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_callback(func() -> void: n.visible = false)
+	n.set_meta("fog_tween", tw)
+
+
+## Fog still showing (lift < 1) — for tests and the web probe.
+func fog_showing() -> Array[String]:
+	var out: Array[String] = []
+	for n in fog:
+		if n.visible:
+			out.append(String(n.name))
+	return out
+
+
 ## On/off without rebuilding (FPS comparison through the web probe).
 func set_active(on: bool) -> void:
 	_active = on
@@ -486,7 +566,7 @@ func set_active(on: bool) -> void:
 ## Counts for tests and the web probe.
 func stats() -> Dictionary:
 	var out := {"room": room_id, "rain": rain != null, "sway": sway.size(), "water": 0, "puddles": 0,
-		"dust": dust.size(), "dust_particles": 0, "visible": visible, "quality": String(quality.get("id", "high")),
+		"dust": dust.size(), "dust_particles": 0, "fog": fog.size(), "visible": visible, "quality": String(quality.get("id", "high")),
 		"rain_layers": rain.emitters.size() if rain != null else 0, "rain_particles": rain.particle_count() if rain != null else 0}
 	for w in water:
 		if String(w.get_meta("ambient_kind", "water")) == "puddle":

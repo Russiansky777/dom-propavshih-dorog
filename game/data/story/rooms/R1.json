@@ -126,7 +126,7 @@
     {"id": "rope_from_turn_d3", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.18, "z": 1, "if": ["rope_on_ring", "tod_d3_morning"], "_note": "G28: утро третьего дня"},
     {"id": "rope_from_turn_d34", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.18, "z": 1, "if": ["rope_on_ring", "tod_day"], "_note": "G28: день третьего и четвёртого дня"},
     {"id": "rope_from_turn_dusk", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.12, "z": 1, "tint": "#6f7690", "if": ["rope_on_ring", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "G28: вечер и ночь — в тоне нарисованных сумерек (R1 не тонируется движком)"},
-    {"id": "far_snowfall", "type": "snow", "rect": [480, 250, 1440, 200], "amount": 70, "z": 1, "if": ["road_held_both_ends"], "_note": "снег идёт над тем берегом — поверх слоёв (z 0), под Агатой"}
+    {"id": "far_snowfall", "type": "snow", "far": true, "rect": [540, 236, 1380, 200], "amount": 90, "z": 1, "if": ["road_held_both_ends"], "_j_note": "Р2 (партия J): снег только над тем берегом — мелкий, медленный, тает до низа рамки (раньше падал через весь кадр на наш осенний берег)", "_note": "снег идёт над тем берегом — поверх слоёв (z 0), под Агатой"}
   ],
   "flags": {
     "r1_asked_boats": "Пелагея: другие лодки — так же, год там ни огня, ни человека",

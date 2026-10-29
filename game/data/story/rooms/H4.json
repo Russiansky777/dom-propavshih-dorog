@@ -29,6 +29,10 @@
   "exits": [
     {"to": "H1", "label": "@H4.exit_H1.label", "cue": "down", "rect": [500, 1000, 400, 80], "stand": [700, 1030], "spawn": "from_H4", "draw": false}
   ],
+  "effects": [
+    {"id": "far_snowfall_left", "type": "snow", "far": true, "rect": [848, 300, 158, 86], "amount": 10, "speed_px_s": 12, "z": 1, "if": ["road_held_both_ends"], "_note": "Р2 (партия J): узел на кольце — туман над тем берегом сходит, там уже зима: снег только над тем берегом (far — мелкий, медленный, тает до низа рамки); нарисованный снежный берег — в заказе 10д; по стеклу левой створки"},
+    {"id": "far_snowfall_right", "type": "snow", "far": true, "rect": [1054, 300, 162, 86], "amount": 10, "speed_px_s": 12, "z": 1, "if": ["road_held_both_ends"], "_note": "то же — правая створка"}
+  ],
   "scenes": {
     "V02": {"trigger": "enter", "complete_text": "@H4.v02.done"}
   },

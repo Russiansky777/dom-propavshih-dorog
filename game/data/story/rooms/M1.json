@@ -25,7 +25,8 @@
     {"id": "sacks", "image": "res://assets/rooms/M1/fg_sacks.png", "occluder": true, "z": 1080, "scale": 0.6, "scale_reason": "мешки в слое получились крупнее задания (высота 525 px вместо ≈ 280); 0.6 — совет файла _meta_v3/M1.md", "offset": [0, 432.4], "_note": "левый нижний угол слоя (0, 941) — в угол кадра (0, 1080)"}
   ],
   "effects": [
-    {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки после мамина зеркала — до слоя вечера (BRIEF_CHATGPT_v4 §C)"}
+    {"id": "dusk", "type": "tint", "color": "#8a90b4", "blend": "mul", "z": 4090, "if": ["evening_dusk"], "_note": "сумерки после мамина зеркала — до слоя вечера (BRIEF_CHATGPT_v4 §C)"},
+    {"id": "far_snowfall", "type": "snow", "far": true, "rect": [1580, 230, 340, 165], "amount": 26, "z": 1, "if": ["road_held_both_ends"], "_note": "Р2 (партия J): узел на кольце — туман над тем берегом сходит, там уже зима: снег только над тем берегом (far — мелкий, медленный, тает до низа рамки); нарисованный снежный берег — в заказе 10д"}
   ],
   "spawns": {"default": [900, 800], "from_Z2": [140, 545], "from_M2": [700, 640], "from_M4": [1780, 960]},
   "props": [],
