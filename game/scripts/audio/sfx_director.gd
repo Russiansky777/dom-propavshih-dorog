@@ -112,7 +112,12 @@ func _ready() -> void:
 	add_child(_save_timer)
 	load_settings()
 	RoomManager.room_changed.connect(_on_room_changed)
-	StoryRunner.stage_sound_requested.connect(func(sid: String): play_sound(sid, "stage"))
+	# `synth:<name>` — a sound the engine makes (SynthSfx): the knock on the shutter (J, стр. 145), Nina's knuckle (169)
+	StoryRunner.stage_sound_requested.connect(func(sid: String):
+		if sid.begins_with("synth:"):
+			play_synth(sid.substr(6))
+		else:
+			play_sound(sid, "stage"))
 	StoryRunner.synth_sound_requested.connect(play_synth)
 	GameState.state_reset.connect(func(): _suppress_door = true)
 	GameState.state_loaded.connect(func(_s): _suppress_door = true)

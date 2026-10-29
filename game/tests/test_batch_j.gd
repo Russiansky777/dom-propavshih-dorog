@@ -1039,6 +1039,17 @@ func _test_staging_d3() -> void:
 			if int(st.get("at", -1)) == 0 and String(g.get("id")) == "agata" and String(g.get("face")) == "nina":
 				faces = true
 	_check(goes and faces, "M22: Agata turns to mother at the start; Nina walks off and fades at the end")
+	# 145, 169: the knock on Ilya's shutter, Nina's knuckle on the board — sounds the engine makes, at their lines
+	var knocks := {}
+	for sid in ["M19", "M22"]:
+		for st in sd.call("scene", sid).get("stage", []):
+			for snd in st.get("sounds", []):
+				if String(snd.get("id", "")).begins_with("synth:knock"):
+					knocks[sid] = String(snd["id"])
+	var synth = load("res://scripts/mechanics/synth_sfx.gd")
+	_check(knocks.get("M19", "") == "synth:knock_shutter" and knocks.get("M22", "") == "synth:knock_board"
+			and synth.stream("knock_shutter").data.size() > 1000 and synth.stream("knock_board").data.size() > 1000,
+			"the knocks are there and sound: %s" % str(knocks))
 	await _drain()
 	await _wait(3.5)
 	await _drain()

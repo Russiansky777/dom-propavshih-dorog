@@ -41,6 +41,10 @@ static func stream(sound_name: String) -> AudioStreamWAV:
 			pcm = _scratch(0.32, 0.55, 41)
 		"paper":
 			pcm = _scratch(0.5, 0.25, 43)
+		"knock_shutter":  # J, стр. 145: Mitya bangs on Ilya's shutter — three fist blows on wood
+			pcm = _knocks(3, 0.3, 115.0, 0.9, 61)
+		"knock_board":    # J, стр. 169: Nina's knuckle on the class board — two light raps
+			pcm = _knocks(2, 0.22, 330.0, 0.45, 67)
 		"spoon_tikhon":   # J, часть G: Tikhon's spoon on an empty cup (lower, longer)
 			pcm = _spoon([1180.0, 2690.0, 4210.0, 6020.0], [0.42, 0.26, 0.16, 0.09], [1.0, 0.55, 0.32, 0.18], 53)
 		"spoon_agata":    # Agata's spoon on a cup of tea (higher, shorter)
@@ -70,6 +74,25 @@ static func _bell(seconds: float, strikes: int, every: float) -> PackedFloat32Ar
 				v += float(p[1]) * exp(-float(p[2]) * t) * sin(TAU * f0 * float(p[0]) * t)
 			var attack := minf(t / 0.004, 1.0)
 			out[i] += v * amp * attack * 0.22
+	return out
+
+
+## Knocks on wood: `n` blows `every` s apart, each a low thump of the board (`f0`) under a short dull noise.
+static func _knocks(n: int, every: float, f0: float, gain: float, rseed: int) -> PackedFloat32Array:
+	var total := int((every * (n - 1) + 0.35) * RATE)
+	var out := PackedFloat32Array()
+	out.resize(total)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = rseed
+	for k in n:
+		var start := int(k * every * RATE * rng.randf_range(0.95, 1.05))
+		var amp := gain * rng.randf_range(0.85, 1.0)
+		var lp := 0.0
+		for i in range(start, mini(total, start + int(0.3 * RATE))):
+			var t := float(i - start) / RATE
+			lp = lp * 0.7 + rng.randf_range(-1.0, 1.0) * 0.3
+			var body := sin(TAU * f0 * t) * exp(-t / 0.05) + 0.45 * sin(TAU * f0 * 2.3 * t) * exp(-t / 0.025)
+			out[i] += (body * 0.7 + lp * exp(-t / 0.012) * 1.2) * amp * minf(t / 0.0015, 1.0) * 0.5
 	return out
 
 

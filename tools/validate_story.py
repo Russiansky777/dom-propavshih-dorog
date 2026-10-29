@@ -631,6 +631,9 @@ for s in scenes:
 
 _sfx_doc = load("sfx.json") if (STORY / "sfx.json").exists() else {}
 _sfx_ids = set((_sfx_doc.get("sounds") or {}).keys())
+# J (стр. 145, 169): «synth:<имя>» — звук, который делает движок (SynthSfx), имена — ветки match в synth_sfx.gd
+_synth_src = (ROOT / "game" / "scripts" / "mechanics" / "synth_sfx.gd")
+_synth_ids = set(re.findall(r'^\t\t"([a-z_]+)":', _synth_src.read_text(encoding="utf-8"), re.M)) if _synth_src.exists() else set()
 for s in scenes:
     lines_n = len(s.get("mandatory_lines", []))
     for i, st in enumerate(s.get("stage", []) or []):
@@ -653,7 +656,11 @@ for s in scenes:
             if st.get("spawn", "default") not in spawns_:
                 err(f"{sctx}: в комнате {st['room']} нет спавна {st.get('spawn', 'default')}")
         for snd in st.get("sounds", []) or []:
-            if _sfx_ids and snd.get("id") not in _sfx_ids:
+            sid_ = str(snd.get("id", ""))
+            if sid_.startswith("synth:"):
+                if _synth_ids and sid_[6:] not in _synth_ids:
+                    err(f"{sctx}: звука движка {sid_} нет в SynthSfx")
+            elif _sfx_ids and snd.get("id") not in _sfx_ids:
                 err(f"{sctx}: звука {snd.get('id')} нет в sfx.json (новых звуков не заводим)")
         # блоки 3–4: кадр поверх мира (FrameView) — комната-картина с "frame": true; "" — убрать кадр
         if "frame" in st and st["frame"] != "":
