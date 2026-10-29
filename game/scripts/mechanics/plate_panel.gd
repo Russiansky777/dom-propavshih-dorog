@@ -224,7 +224,8 @@ func _on_struck(r: String) -> void:
 			sound("hammer")
 			if r == "hit" and blows in [1, 2]:
 				# J (стр. 120): Agata counts the blows — «Раз!», «Два!» (the third one drives it home)
-				pop_word("mech.plate.count_%d" % blows, v2(spec.get("count_pos", [700, 300])))
+				var ck := String(spec.get("texts", {}).get("count_%d" % blows, "@mech.plate.count_%d" % blows)).trim_prefix("@")
+				pop_word(ck, v2(spec.get("count_pos", [700, 300])))
 			if r == "done":
 				timing.visible = false
 				event("braced")

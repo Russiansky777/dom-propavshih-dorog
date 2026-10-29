@@ -763,8 +763,9 @@ func _test_schedule() -> void:
 	var h: Node = _hotspot("schedule")
 	sr.open_view(h.data["view"], "schedule")
 	await _wait(1.2)
+	var cv: Node = main_node.get_node("CloseupView")   # the view ("Closeup" is the door puzzle)
 	var blocks: Array = []
-	for n in cp.find_children("Text*", "Label", true, false):
+	for n in cv.find_children("Text*", "Label", true, false):
 		if n is HandWriting:
 			blocks.append(n)
 	_check(blocks.size() == 2, "two written blocks on the sheet (shifts, signals): %d" % blocks.size())
@@ -772,9 +773,9 @@ func _test_schedule() -> void:
 		var hw: HandWriting = b
 		hw.call("_fit")
 		_check(hw.written_bottom() <= hw.fit_height + 0.5, "%s ends on the sheet: %.0f of %.0f px" % [hw.name, hw.written_bottom(), hw.fit_height])
-	var fr: Node = cp.find_child("Frame", true, false)
+	var fr: Node = cv.find_child("Frame", true, false)
 	_check(fr is Control, "the close-up sits in the carved frame")
-	var close_btn: Control = cp.get("close_button")
+	var close_btn: Control = cv.get("close_button")
 	if fr is Control and close_btn != null:
 		var fb := (fr as Control).get_global_rect().end.y + 16.0
 		_check(close_btn.get_global_rect().position.y >= fb - 1.0, "«Закрыть» below the frame: %.0f ≥ %.0f" % [close_btn.get_global_rect().position.y, fb])
@@ -1042,7 +1043,7 @@ func _test_rope_alive() -> void:
 	_check(drawn_end.distance_to(logic_end) > 20.0 and drawn_end.distance_to(hand) < logic_end.distance_to(hand), "the drawn end follows the hand off the path (%s → %s, hand %s)" % [str(logic_end), str(drawn_end), str(hand)])
 	_check(float(p.get("_sag")) < sag0 - 1.0, "the lead-in tightens as the rope goes in (sag %.1f → %.1f)" % [sag0, float(p.get("_sag"))])
 	await _button(hand, false)
-	await _frames(30)
+	await _wait(0.6)
 	_check(not kn.grabbed and kn.progress == 0.0 and String(p.call("probe")["knot_path"]["state"]) == "free", "let go mid-stroke — slips back as before")
 	sr.close_mechanic()
 	await _frames(3)
@@ -1150,7 +1151,7 @@ func _test_staging_d3() -> void:
 	var faces := false
 	for st in m22.get("stage", []):
 		for g in st.get("npc_go", []):
-			if String(st.get("at")) == "end" and String(g.get("id")) == "nina" and bool(g.get("fade", true)):
+			if str(st.get("at")) == "end" and String(g.get("id")) == "nina" and bool(g.get("fade", true)):
 				goes = true
 		for g in st.get("npc_face", []):
 			if int(st.get("at", -1)) == 0 and String(g.get("id")) == "agata" and String(g.get("face")) == "nina":
@@ -1349,7 +1350,7 @@ func _test_facing() -> void:
 	await _frames(2)
 	var to_her := player.global_position - actor.global_position
 	var sheet = actor.get("sheet")
-	if sheet != null and not bool(actor.call("is_3d")):
+	if sheet != null and not (actor.has_method("is_3d") and bool(actor.call("is_3d"))):
 		_check(int(actor.get("direction")) == int(sheet.call("direction_index", to_her)), "talking, Pavel turns to Agata")
 
 
@@ -1372,13 +1373,13 @@ func _test_m18_staging() -> void:
 	var end_go := false
 	var apart := false
 	for st in m18.get("stage", []):
-		ats.append(st.get("at"))
+		ats.append(str(st.get("at")))
 		for g in st.get("npc_go", []):
-			if String(st.get("at")) == "end" and String(g.get("id")) == "mitya":
+			if str(st.get("at")) == "end" and String(g.get("id")) == "mitya":
 				end_go = true
-			if int(st.get("at", -1)) == 4 and String(g.get("id")) == "pelageya":
+			if str(st.get("at", -1)) == "4" and String(g.get("id")) == "pelageya":
 				apart = absf(float(g["to"][0]) - 520.0) > 120.0
-	_check(ats.has(1) and end_go and apart, "M18: faces at «Мама.», apart after the hug, Mitya off up the path at the end: %s" % str(ats))
+	_check(ats.has("1") and end_go and apart, "M18: faces at «Мама.», apart after the hug, Mitya off up the path at the end: %s" % str(ats))
 	gs.set_flag("done_M18", true)
 	for h in rm.current_room.get_hotspots():
 		h.call("refresh")
