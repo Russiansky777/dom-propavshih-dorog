@@ -1,15 +1,71 @@
-run 40967311320 2026-10-29T22:40:33Z requests: pipeline/requests/voice_K2.json
+run 40967362464 2026-10-29T22:43:39Z requests: pipeline/requests/voice_J_minigames.json
 ключ: есть, длина 51, формат sk_…: да
 план: creator (active), израсходовано 107183 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_K2.json
-  квота: осталось 17706, запас 12488, к синтезу ≈ 6244 кредитов (12488 символов × 0.5)
-ОШИБКА: say: не помещается в остаток квоты с запасом
+=== pipeline/requests/voice_J_minigames.json
+  манифест ru: M09s_0: текст изменён
+  манифест ru: M23c_0: текст изменён
+  only_changed: к работе 24 из 25 реплик/фраз запроса
+[J_minigames] реплик в сценах запроса: 25; файлов с вариантами голосов: 24; к синтезу: 24 (941 символов); переобработка: 0
+  agata:H1.tikhon.spoons_q agata     ru           Agata      eleven_v4    Тихон, постучим ложечками? Кто кого перестучит.
+  tikhon:H1.tikhon.spoons_a tikhon    ru           CAT-2      eleven_v4    Перестучит она… Ну, слушай. Повторишь — поглядим.
+  tikhon:H1.tikhon.spoons_done tikhon    ru           CAT-2      eleven_v4    Сойдёт. За такое бы сметанки… да где ж её взять.
+  tikhon:H1.tikhon.spoons_quit tikhon    ru           CAT-2      eleven_v4    Устала? То-то. Это тебе не мост строить.
+  agata:O4.mitya.fish_q agata     ru           Agata      eleven_v4    Митя, а ты рыбу удишь?
+  mitya:O4.mitya.fish_a mitya     ru           МИТЯ       eleven_v4    А то! Пойдём к причалу — покажу, как у нас окуня берут.
+  mitya:O4.mitya.fish_bye mitya     ru           МИТЯ       eleven_v4    Приходи ещё. Рыба не торопится — и нам спешить некуда.
+  agata:O1d.ulyana.ttt_q agata     ru           Agata      eleven_v4    Уля, сыграем в крестики-нолики? Мелом, прямо на доске.
+  ulyana:O1d.ulyana.ttt_a ulyana    ru           ЛУНЯ       eleven_v4    Давай! Чур, у меня нолики. А у тебя тогда крестики — ты и начинай.
+  ulyana:O1d.ulyana.ttt_bye ulyana    ru           ЛУНЯ       eleven_v4    Ладно. Завтра ещё сыграем — я тогда буду первая!
+  agata:mech.plate.count_1 agata     ru           Agata      eleven_v4    Раз!
+  agata:mech.plate.count_2 agata     ru           Agata      eleven_v4    Два!
+  ulyana:mech.ttt.win ulyana    ru           ЛУНЯ       eleven_v4    Ой, обыграла! Ещё разок — теперь я первая.
+  ulyana:mech.ttt.lose ulyana    ru           ЛУНЯ       eleven_v4    Я выиграла! Три нолика в ряд!
+  ulyana:mech.ttt.draw ulyana    ru           ЛУНЯ       eleven_v4    Ничья. Мы с папой тоже всё вничью да вничью.
+  tikhon:mech.rhythm.good_1 tikhon    ru           CAT-2      eleven_v4    Ишь ты. Ну, а так?
+  tikhon:mech.rhythm.good_2 tikhon    ru           CAT-2      eleven_v4    Ладно, слух есть. Последний — позаковыристей.
+  tikhon:mech.rhythm.miss_1 tikhon    ru           CAT-2      eleven_v4    Мимо. Медведь на ухо наступил? Слушай ещё.
+  tikhon:mech.rhythm.miss_2 tikhon    ru           CAT-2      eleven_v4    Не торопись. Я ж не тороплюсь.
+  mitya:mech.fish.early mitya     ru           МИТЯ       eleven_v4    Рано! Это она только пробует.
+  mitya:mech.fish.late mitya     ru           МИТЯ       eleven_v4    Прозевала. Ничего, тут их много.
+  mitya:mech.fish.snap mitya     ru           МИТЯ       eleven_v4    Лопнула… Тянуть — тоже с умом надо.
+  mitya:mech.fish.escaped mitya     ru           МИТЯ       eleven_v4    Провисла бечёвка — она и ушла.
+  mitya:mech.fish.caught mitya     ru           МИТЯ       eleven_v4    Окунь! Хорош. Я тут двадцать лет с фонарём сидел — а такого не вытаскивал.
+  квота: осталось 17706 из 124889, запас 12488, к синтезу ≤ 941 кредитов (оценка сверху)
+  agata:H1.tikhon.spoons_q синтез: 3.65 с, -17.0 LUFS, TP -4.5 dB (усиление -1.9 dB)
+  tikhon:H1.tikhon.spoons_a синтез: 5.13 с, -17.0 LUFS, TP -3.7 dB (усиление +0.4 dB)
+  tikhon:H1.tikhon.spoons_done синтез: 5.37 с, -17.0 LUFS, TP -4.0 dB (усиление -0.2 dB)
+  tikhon:H1.tikhon.spoons_quit синтез: 4.27 с, -17.0 LUFS, TP -3.3 dB (усиление -0.5 dB)
+  agata:O4.mitya.fish_q синтез: 2.32 с, -17.2 LUFS, TP -5.9 dB (усиление -0.8 dB)
+  mitya:O4.mitya.fish_a синтез: 4.02 с, -17.1 LUFS, TP -5.1 dB (усиление -2.5 dB)
+  mitya:O4.mitya.fish_bye синтез: 3.88 с, -17.0 LUFS, TP -4.6 dB (усиление -2.4 dB)
+  agata:O1d.ulyana.ttt_q синтез: 4.08 с, -17.1 LUFS, TP -4.7 dB (усиление -2.9 dB)
+  ulyana:O1d.ulyana.ttt_a синтез: 4.99 с, -17.2 LUFS, TP -1.7 dB (усиление +2.0 dB)
+  ulyana:O1d.ulyana.ttt_bye синтез: 4.06 с, -17.2 LUFS, TP -2.0 dB (усиление -1.1 dB)
+  agata:mech.plate.count_1 синтез: 0.69 с, -16.9 LUFS, TP -6.4 dB (усиление -5.9 dB)
+  agata:mech.plate.count_2 синтез: 0.60 с, -17.0 LUFS, TP -7.2 dB (усиление -6.3 dB)
+  ulyana:mech.ttt.win синтез: 4.29 с, -17.1 LUFS, TP -3.1 dB (усиление -2.0 dB)
+  ulyana:mech.ttt.lose синтез: 3.02 с, -16.9 LUFS, TP -3.3 dB (усиление -1.2 dB)
+  ulyana:mech.ttt.draw синтез: 4.20 с, -17.4 LUFS, TP -1.8 dB (усиление +3.7 dB)
+  tikhon:mech.rhythm.good_1 синтез: 2.54 с, -17.2 LUFS, TP -2.8 dB (усиление +0.4 dB)
+  tikhon:mech.rhythm.good_2 синтез: 4.63 с, -16.9 LUFS, TP -4.3 dB (усиление -1.2 dB)
+  tikhon:mech.rhythm.miss_1 синтез: 4.19 с, -17.0 LUFS, TP -4.4 dB (усиление -0.9 dB)
+  tikhon:mech.rhythm.miss_2 синтез: 2.96 с, -17.0 LUFS, TP -6.2 dB (усиление -2.1 dB)
+  mitya:mech.fish.early синтез: 2.37 с, -17.0 LUFS, TP -5.4 dB (усиление -4.1 dB)
+  mitya:mech.fish.late синтез: 3.06 с, -17.0 LUFS, TP -4.3 dB (усиление -1.2 dB)
+  mitya:mech.fish.snap синтез: 3.60 с, -17.0 LUFS, TP -5.6 dB (усиление -0.9 dB)
+  mitya:mech.fish.escaped синтез: 2.46 с, -16.9 LUFS, TP -3.2 dB (усиление -0.9 dB)
+  mitya:mech.fish.caught синтез: 5.75 с, -17.0 LUFS, TP -4.9 dB (усиление -1.5 dB)
+[J_minigames] синтезировано 24, переобработано 0, ошибок 0; символов текста 941; списано кредитов (character-cost): 415, изменение счётчика подписки: 0
+  предупреждение: M09s_0: устарела (текст изменён) — игра покажет только субтитры
+  предупреждение: M23c_0: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: к перезаписи 2 (текст изменён после записи, игра их не играет): M09s_0, M23c_0 — один запрос: pipeline/voice/README.md → «Текст изменился»
   предупреждение: ru/M03_5: подача -23.2 LUFS до нормализации — -7.0 LU от медианы agata (-16.2); допустимо -6…+4 (нарочно тихая) — в списке перезаписи после H59
   предупреждение: ru/M12_0: подача -10.9 LUFS до нормализации — +5.3 LU от медианы agata (-16.2); допустимо -4…+4 — в списке перезаписи после H59
   предупреждение: ru/M21_0_then0: подача -22.6 LUFS до нормализации — -6.4 LU от медианы agata (-16.2); допустимо -4…+4 — в списке перезаписи после H59
-  ОШИБКА: M09s_0: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
-  ОШИБКА: M23c_0: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
-validate_voice: манифесты: ru 742 (742 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, N02, Q01, Q02, Q03, Q04, Q06, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 80; закадровых фраз по правилам voice.json: 800 (с тегами 33), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_Q02_Q06, ru_bag, ru_mechanics
-[voice] validate_voice.py: FAIL (2 ошибок, 4 предупреждений, strict; самопроверка 25/25)
+  ОШИБКА: ru/agata:mech.plate.count_1: подача -11.1 LUFS до нормализации — +5.1 LU от медианы agata (-16.2); допустимо -4…+4 — перезаписать голосом и громкостью персонажа (или внести в pipeline/requests/voice_after_H59.json, если ждёт H59)
+  ОШИБКА: ru/agata:mech.plate.count_2: подача -10.7 LUFS до нормализации — +5.5 LU от медианы agata (-16.2); допустимо -4…+4 — перезаписать голосом и громкостью персонажа (или внести в pipeline/requests/voice_after_H59.json, если ждёт H59)
+  ОШИБКА: ru/Q08_1: подача -23.1 LUFS до нормализации — -4.1 LU от медианы ulyana (-19.0); допустимо -4…+4 — перезаписать голосом и громкостью персонажа (или внести в pipeline/requests/voice_after_H59.json, если ждёт H59)
+  ОШИБКА: ru/ulyana:O1d.ulyana.lights_q: подача -23.1 LUFS до нормализации — -4.1 LU от медианы ulyana (-19.0); допустимо -4…+4 — перезаписать голосом и громкостью персонажа (или внести в pipeline/requests/voice_after_H59.json, если ждёт H59)
+validate_voice: манифесты: ru 766 (764 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, N02, Q01, Q02, Q03, Q04, Q06, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 80; закадровых фраз по правилам voice.json: 800 (с тегами 33), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_Q02_Q06, ru_bag, ru_mechanics
+[voice] validate_voice.py: FAIL (4 ошибок, 6 предупреждений, strict; самопроверка 25/25)

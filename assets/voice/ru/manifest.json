@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-29T22:32:11+00:00",
+  "updated_at": "2026-10-29T22:44:13+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -2791,7 +2791,8 @@
           "language_code": "ru",
           "seed": 3825945460
         }
-      }
+      },
+      "stale": "текст изменён"
     },
     "M10_0": {
       "scene": "M10",
@@ -9098,7 +9099,8 @@
           "language_code": "ru",
           "seed": 527429139
         }
-      }
+      },
+      "stale": "текст изменён"
     },
     "M23c_1": {
       "scene": "M23c",
@@ -22483,6 +22485,52 @@
         }
       }
     },
+    "agata:H1.tikhon.spoons_q": {
+      "kind": "narration",
+      "key": "H1.tikhon.spoons_q",
+      "source_text": "ru_E0_E1",
+      "alignment": "src/character_lines/H1.tikhon.spoons_q.align.json",
+      "as_line": true,
+      "speaker": "agata",
+      "text": "Тихон, постучим ложечками? Кто кого перестучит.",
+      "text_sha1": "45adb54043c97d916f2fbdaaea44df88ac63b0e0",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/H1.tikhon.spoons_q.ogg",
+      "source": "src/character_lines/H1.tikhon.spoons_q.mp3",
+      "voice_text": "Тихон, постучим ложечками? Кто кого перестучит.",
+      "voice_sha1": "45adb54043c97d916f2fbdaaea44df88ac63b0e0",
+      "tags": [],
+      "characters": 47,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.65,
+      "lufs": -17.0,
+      "true_peak_db": -4.5,
+      "gain_db": -1.9,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.1,
+      "source_true_peak_db": -2.6,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:43+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "WSCjQ2yubroly4sIKGiH",
+        "history_item_id": "AJFNCDdN31PHIFjEZMnp",
+        "character_cost": "21",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3490417747
+        }
+      }
+    },
     "agata:H1.tikhon.supper_2": {
       "kind": "narration",
       "key": "H1.tikhon.supper_2",
@@ -24903,6 +24951,52 @@
         }
       }
     },
+    "agata:O1d.ulyana.ttt_q": {
+      "kind": "narration",
+      "key": "O1d.ulyana.ttt_q",
+      "source_text": "ru_E4_E5",
+      "alignment": "src/character_lines/O1d.ulyana.ttt_q.align.json",
+      "as_line": true,
+      "speaker": "agata",
+      "text": "Уля, сыграем в крестики-нолики? Мелом, прямо на доске.",
+      "text_sha1": "182890aea1db81a179431868ab5834e5c68f3994",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/O1d.ulyana.ttt_q.ogg",
+      "source": "src/character_lines/O1d.ulyana.ttt_q.mp3",
+      "voice_text": "Уля, сыграем в крестики-нолики? Мелом, прямо на доске.",
+      "voice_sha1": "182890aea1db81a179431868ab5834e5c68f3994",
+      "tags": [],
+      "characters": 54,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.08,
+      "lufs": -17.1,
+      "true_peak_db": -4.7,
+      "gain_db": -2.9,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -14.1,
+      "source_true_peak_db": -1.9,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:53+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "tbCo4M9W46KnWshVwP82",
+        "history_item_id": "eYGtTsNfCM7PDYlQ9Q3X",
+        "character_cost": "24",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1096561859
+        }
+      }
+    },
     "agata:O1q.village_map.agata_help": {
       "kind": "narration",
       "key": "O1q.village_map.agata_help",
@@ -26205,6 +26299,52 @@
         "sent": {
           "language_code": "ru",
           "seed": 373070750
+        }
+      }
+    },
+    "agata:O4.mitya.fish_q": {
+      "kind": "narration",
+      "key": "O4.mitya.fish_q",
+      "source_text": "ru_E4_E5",
+      "alignment": "src/character_lines/O4.mitya.fish_q.align.json",
+      "as_line": true,
+      "speaker": "agata",
+      "text": "Митя, а ты рыбу удишь?",
+      "text_sha1": "cfb136345a8b0ac38ff6587c03cab251b975f083",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/O4.mitya.fish_q.ogg",
+      "source": "src/character_lines/O4.mitya.fish_q.mp3",
+      "voice_text": "Митя, а ты рыбу удишь?",
+      "voice_sha1": "cfb136345a8b0ac38ff6587c03cab251b975f083",
+      "tags": [],
+      "characters": 22,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.32,
+      "lufs": -17.2,
+      "true_peak_db": -5.9,
+      "gain_db": -0.8,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -16.2,
+      "source_true_peak_db": -5.1,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:49+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "tfnJQArSI5YtCi4k7chy",
+        "history_item_id": "FgsbFZxbZ7DagIbfm0p2",
+        "character_cost": "10",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1829087426
         }
       }
     },
@@ -28651,6 +28791,98 @@
         }
       }
     },
+    "agata:mech.plate.count_1": {
+      "kind": "narration",
+      "key": "mech.plate.count_1",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.plate.count_1.align.json",
+      "as_line": true,
+      "speaker": "agata",
+      "text": "Раз!",
+      "text_sha1": "7306d88eacd260a5c7705cf6b05d606715184e63",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.plate.count_1.ogg",
+      "source": "src/character_lines/mech.plate.count_1.mp3",
+      "voice_text": "Раз!",
+      "voice_sha1": "7306d88eacd260a5c7705cf6b05d606715184e63",
+      "tags": [],
+      "characters": 4,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 0.69,
+      "lufs": -16.9,
+      "true_peak_db": -6.4,
+      "gain_db": -5.9,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -11.1,
+      "source_true_peak_db": -0.6,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:57+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "vUtmyxJX43GPKfIfrOZ1",
+        "history_item_id": "e5pepBPEKf4uN83cf1c7",
+        "character_cost": "2",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 4187792065
+        }
+      }
+    },
+    "agata:mech.plate.count_2": {
+      "kind": "narration",
+      "key": "mech.plate.count_2",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.plate.count_2.align.json",
+      "as_line": true,
+      "speaker": "agata",
+      "text": "Два!",
+      "text_sha1": "f4c6d472eff7a38af82230375f23f3924fb948a7",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.plate.count_2.ogg",
+      "source": "src/character_lines/mech.plate.count_2.mp3",
+      "voice_text": "Два!",
+      "voice_sha1": "f4c6d472eff7a38af82230375f23f3924fb948a7",
+      "tags": [],
+      "characters": 4,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 0.6,
+      "lufs": -17.0,
+      "true_peak_db": -7.2,
+      "gain_db": -6.3,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -10.7,
+      "source_true_peak_db": -1.0,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:58+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "HcLUgUvqc1JHwcAQjSRk",
+        "history_item_id": "hxOwDEaWVUH1xsXW0iwf",
+        "character_cost": "2",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2724495592
+        }
+      }
+    },
     "ilya:E5.windlass.bump": {
       "kind": "narration",
       "key": "E5.windlass.bump",
@@ -30638,6 +30870,98 @@
         }
       }
     },
+    "mitya:O4.mitya.fish_a": {
+      "kind": "narration",
+      "key": "O4.mitya.fish_a",
+      "source_text": "ru_E4_E5",
+      "alignment": "src/character_lines/O4.mitya.fish_a.align.json",
+      "as_line": true,
+      "speaker": "mitya",
+      "text": "А то! Пойдём к причалу — покажу, как у нас окуня берут.",
+      "text_sha1": "4aa9836a3f92ad2152acb2487e099ed292934c14",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "voice_name": "МИТЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/O4.mitya.fish_a.ogg",
+      "source": "src/character_lines/O4.mitya.fish_a.mp3",
+      "voice_text": "А то! Пойдём к причалу — покажу, как у нас окуня берут.",
+      "voice_sha1": "4aa9836a3f92ad2152acb2487e099ed292934c14",
+      "tags": [],
+      "characters": 55,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.02,
+      "lufs": -17.1,
+      "true_peak_db": -5.1,
+      "gain_db": -2.5,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -14.5,
+      "source_true_peak_db": -2.6,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:51+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "hgLmmAhYURkDHOLy43oV",
+        "history_item_id": "3kLKfOnpdUy9z94SG4tF",
+        "character_cost": "24",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2424188636
+        }
+      }
+    },
+    "mitya:O4.mitya.fish_bye": {
+      "kind": "narration",
+      "key": "O4.mitya.fish_bye",
+      "source_text": "ru_E4_E5",
+      "alignment": "src/character_lines/O4.mitya.fish_bye.align.json",
+      "as_line": true,
+      "speaker": "mitya",
+      "text": "Приходи ещё. Рыба не торопится — и нам спешить некуда.",
+      "text_sha1": "40c2cd6ad559edebc643fb89fcf1d56745e01b81",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "voice_name": "МИТЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/O4.mitya.fish_bye.ogg",
+      "source": "src/character_lines/O4.mitya.fish_bye.mp3",
+      "voice_text": "Приходи ещё. Рыба не торопится — и нам спешить некуда.",
+      "voice_sha1": "40c2cd6ad559edebc643fb89fcf1d56745e01b81",
+      "tags": [],
+      "characters": 54,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.88,
+      "lufs": -17.0,
+      "true_peak_db": -4.6,
+      "gain_db": -2.4,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -14.6,
+      "source_true_peak_db": -2.0,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:52+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "TTPHytIwELG5H1d9dAj9",
+        "history_item_id": "tlfozNhAsg7k27I8AOqD",
+        "character_cost": "24",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3371781297
+        }
+      }
+    },
     "mitya:O4.mitya_board.use": {
       "kind": "narration",
       "key": "O4.mitya_board.use",
@@ -30819,6 +31143,236 @@
         "sent": {
           "language_code": "ru",
           "seed": 3829133918
+        }
+      }
+    },
+    "mitya:mech.fish.caught": {
+      "kind": "narration",
+      "key": "mech.fish.caught",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.fish.caught.align.json",
+      "as_line": true,
+      "speaker": "mitya",
+      "text": "Окунь! Хорош. Я тут двадцать лет с фонарём сидел — а такого не вытаскивал.",
+      "text_sha1": "c3c8f1fc49fb2695de103100004be5a7ff9bce60",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "voice_name": "МИТЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.fish.caught.ogg",
+      "source": "src/character_lines/mech.fish.caught.mp3",
+      "voice_text": "Окунь! Хорош. Я тут двадцать лет с фонарём сидел — а такого не вытаскивал.",
+      "voice_sha1": "c3c8f1fc49fb2695de103100004be5a7ff9bce60",
+      "tags": [],
+      "characters": 74,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 5.75,
+      "lufs": -17.0,
+      "true_peak_db": -4.9,
+      "gain_db": -1.5,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.5,
+      "source_true_peak_db": -3.4,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:13+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "esyoJObdy9Zk5iinx4M9",
+        "history_item_id": "1ToqyoZ5m5vgEdNkWCCJ",
+        "character_cost": "33",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3566505526
+        }
+      }
+    },
+    "mitya:mech.fish.early": {
+      "kind": "narration",
+      "key": "mech.fish.early",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.fish.early.align.json",
+      "as_line": true,
+      "speaker": "mitya",
+      "text": "Рано! Это она только пробует.",
+      "text_sha1": "ac61f927ec1bea28d9218b545eed033e20d5d1f8",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "voice_name": "МИТЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.fish.early.ogg",
+      "source": "src/character_lines/mech.fish.early.mp3",
+      "voice_text": "Рано! Это она только пробует.",
+      "voice_sha1": "ac61f927ec1bea28d9218b545eed033e20d5d1f8",
+      "tags": [],
+      "characters": 29,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.37,
+      "lufs": -17.0,
+      "true_peak_db": -5.4,
+      "gain_db": -4.1,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -12.9,
+      "source_true_peak_db": -1.3,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:08+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "RN2xlXixpiVciWnR9jfY",
+        "history_item_id": "eBz6g77ZHZOSXVNmm1Qg",
+        "character_cost": "13",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3221185060
+        }
+      }
+    },
+    "mitya:mech.fish.escaped": {
+      "kind": "narration",
+      "key": "mech.fish.escaped",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.fish.escaped.align.json",
+      "as_line": true,
+      "speaker": "mitya",
+      "text": "Провисла бечёвка — она и ушла.",
+      "text_sha1": "e69cbd46e41320df60ae5124fff50e437add7e2d",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "voice_name": "МИТЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.fish.escaped.ogg",
+      "source": "src/character_lines/mech.fish.escaped.mp3",
+      "voice_text": "Провисла бечёвка — она и ушла.",
+      "voice_sha1": "e69cbd46e41320df60ae5124fff50e437add7e2d",
+      "tags": [],
+      "characters": 30,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.46,
+      "lufs": -16.9,
+      "true_peak_db": -3.2,
+      "gain_db": -0.9,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -16.1,
+      "source_true_peak_db": -2.4,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:11+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "rYw9OAWAtAsujDLyjX0Z",
+        "history_item_id": "VhVWXxA9g2A4jfqJGOmF",
+        "character_cost": "13",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 458228676
+        }
+      }
+    },
+    "mitya:mech.fish.late": {
+      "kind": "narration",
+      "key": "mech.fish.late",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.fish.late.align.json",
+      "as_line": true,
+      "speaker": "mitya",
+      "text": "Прозевала. Ничего, тут их много.",
+      "text_sha1": "ac2e8c0dd5b34ae70c7209cd9d5cc32943dfe153",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "voice_name": "МИТЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.fish.late.ogg",
+      "source": "src/character_lines/mech.fish.late.mp3",
+      "voice_text": "Прозевала. Ничего, тут их много.",
+      "voice_sha1": "ac2e8c0dd5b34ae70c7209cd9d5cc32943dfe153",
+      "tags": [],
+      "characters": 32,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.06,
+      "lufs": -17.0,
+      "true_peak_db": -4.3,
+      "gain_db": -1.2,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.8,
+      "source_true_peak_db": -3.1,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:09+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "zq8iyQIaUjL1PiEQnKqz",
+        "history_item_id": "2A3l2ZlICI0FTxPwD3Ye",
+        "character_cost": "14",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1057989259
+        }
+      }
+    },
+    "mitya:mech.fish.snap": {
+      "kind": "narration",
+      "key": "mech.fish.snap",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.fish.snap.align.json",
+      "as_line": true,
+      "speaker": "mitya",
+      "text": "Лопнула… Тянуть — тоже с умом надо.",
+      "text_sha1": "78762c66ced7cb229649393c7b267369ef4dd038",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "voice_name": "МИТЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.fish.snap.ogg",
+      "source": "src/character_lines/mech.fish.snap.mp3",
+      "voice_text": "Лопнула… Тянуть — тоже с умом надо.",
+      "voice_sha1": "78762c66ced7cb229649393c7b267369ef4dd038",
+      "tags": [],
+      "characters": 35,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.6,
+      "lufs": -17.0,
+      "true_peak_db": -5.6,
+      "gain_db": -0.9,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -16.1,
+      "source_true_peak_db": -4.8,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:10+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "bhMxw6vpsnJ81VslIKKR",
+        "history_item_id": "9RuhjG9dkGqJQ30XqQk0",
+        "character_cost": "15",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3704124347
         }
       }
     },
@@ -34086,6 +34640,144 @@
         }
       }
     },
+    "tikhon:H1.tikhon.spoons_a": {
+      "kind": "narration",
+      "key": "H1.tikhon.spoons_a",
+      "source_text": "ru_E0_E1",
+      "alignment": "src/character_lines/H1.tikhon.spoons_a.align.json",
+      "as_line": true,
+      "speaker": "tikhon",
+      "text": "Перестучит она… Ну, слушай. Повторишь — поглядим.",
+      "text_sha1": "ed1886214079d8fe052b8b9b862f18ed5d38bbe1",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "character_lines/H1.tikhon.spoons_a.ogg",
+      "source": "src/character_lines/H1.tikhon.spoons_a.mp3",
+      "voice_text": "Перестучит она… Ну, слушай. Повторишь — поглядим.",
+      "voice_sha1": "ed1886214079d8fe052b8b9b862f18ed5d38bbe1",
+      "tags": [],
+      "characters": 49,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 5.13,
+      "lufs": -17.0,
+      "true_peak_db": -3.7,
+      "gain_db": 0.4,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -17.4,
+      "source_true_peak_db": -3.9,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:45+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "gVonxCwhyO0H3uKQSI8Y",
+        "history_item_id": "W777cpeLFEoboTBIm7US",
+        "character_cost": "22",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3653769812
+        }
+      }
+    },
+    "tikhon:H1.tikhon.spoons_done": {
+      "kind": "narration",
+      "key": "H1.tikhon.spoons_done",
+      "source_text": "ru_E0_E1",
+      "alignment": "src/character_lines/H1.tikhon.spoons_done.align.json",
+      "as_line": true,
+      "speaker": "tikhon",
+      "text": "Сойдёт. За такое бы сметанки… да где ж её взять.",
+      "text_sha1": "287d3193afe68d49a299cc0d6a3c7c6120014ea8",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "character_lines/H1.tikhon.spoons_done.ogg",
+      "source": "src/character_lines/H1.tikhon.spoons_done.mp3",
+      "voice_text": "Сойдёт. За такое бы сметанки… да где ж её взять.",
+      "voice_sha1": "287d3193afe68d49a299cc0d6a3c7c6120014ea8",
+      "tags": [],
+      "characters": 48,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 5.37,
+      "lufs": -17.0,
+      "true_peak_db": -4.0,
+      "gain_db": -0.2,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -16.8,
+      "source_true_peak_db": -3.7,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:47+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "ABGSvVidLz4WjsgtGwub",
+        "history_item_id": "YL9MRI3ZoKXJ30mK3HRY",
+        "character_cost": "21",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 473201496
+        }
+      }
+    },
+    "tikhon:H1.tikhon.spoons_quit": {
+      "kind": "narration",
+      "key": "H1.tikhon.spoons_quit",
+      "source_text": "ru_E0_E1",
+      "alignment": "src/character_lines/H1.tikhon.spoons_quit.align.json",
+      "as_line": true,
+      "speaker": "tikhon",
+      "text": "Устала? То-то. Это тебе не мост строить.",
+      "text_sha1": "81ed58806a00c2d9b1ad4013f78b19aa7e7f6940",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "character_lines/H1.tikhon.spoons_quit.ogg",
+      "source": "src/character_lines/H1.tikhon.spoons_quit.mp3",
+      "voice_text": "Устала? То-то. Это тебе не мост строить.",
+      "voice_sha1": "81ed58806a00c2d9b1ad4013f78b19aa7e7f6940",
+      "tags": [],
+      "characters": 40,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.27,
+      "lufs": -17.0,
+      "true_peak_db": -3.3,
+      "gain_db": -0.5,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -16.5,
+      "source_true_peak_db": -2.9,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:48+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "9YoraohTLRAyuIkqLBmj",
+        "history_item_id": "pgNAZqeMG7mjNPZN0jXp",
+        "character_cost": "18",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2184969381
+        }
+      }
+    },
     "tikhon:H1.tikhon.stove_mirror": {
       "kind": "narration",
       "key": "H1.tikhon.stove_mirror",
@@ -34474,6 +35166,190 @@
         }
       }
     },
+    "tikhon:mech.rhythm.good_1": {
+      "kind": "narration",
+      "key": "mech.rhythm.good_1",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.rhythm.good_1.align.json",
+      "as_line": true,
+      "speaker": "tikhon",
+      "text": "Ишь ты. Ну, а так?",
+      "text_sha1": "b5bde7a52c1f3e497bbee7bb51d2bf7d29c4572a",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "character_lines/mech.rhythm.good_1.ogg",
+      "source": "src/character_lines/mech.rhythm.good_1.mp3",
+      "voice_text": "Ишь ты. Ну, а так?",
+      "voice_sha1": "b5bde7a52c1f3e497bbee7bb51d2bf7d29c4572a",
+      "tags": [],
+      "characters": 18,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.54,
+      "lufs": -17.2,
+      "true_peak_db": -2.8,
+      "gain_db": 0.4,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -17.4,
+      "source_true_peak_db": -3.1,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:03+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "GhikAkBqHHek2mcO4KMN",
+        "history_item_id": "fs6dLMmuyyGuhXWfkmsG",
+        "character_cost": "8",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 638161337
+        }
+      }
+    },
+    "tikhon:mech.rhythm.good_2": {
+      "kind": "narration",
+      "key": "mech.rhythm.good_2",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.rhythm.good_2.align.json",
+      "as_line": true,
+      "speaker": "tikhon",
+      "text": "Ладно, слух есть. Последний — позаковыристей.",
+      "text_sha1": "0c2dfc928e8c27f6bd02c2a43a5616aa00ac7df3",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "character_lines/mech.rhythm.good_2.ogg",
+      "source": "src/character_lines/mech.rhythm.good_2.mp3",
+      "voice_text": "Ладно, слух есть. Последний — позаковыристей.",
+      "voice_sha1": "0c2dfc928e8c27f6bd02c2a43a5616aa00ac7df3",
+      "tags": [],
+      "characters": 45,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.63,
+      "lufs": -16.9,
+      "true_peak_db": -4.3,
+      "gain_db": -1.2,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.8,
+      "source_true_peak_db": -3.2,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:04+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "lkh6pc9lJA6OtuRhQD8L",
+        "history_item_id": "VMlvYTBtxAI17AJS9sYO",
+        "character_cost": "20",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1386110768
+        }
+      }
+    },
+    "tikhon:mech.rhythm.miss_1": {
+      "kind": "narration",
+      "key": "mech.rhythm.miss_1",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.rhythm.miss_1.align.json",
+      "as_line": true,
+      "speaker": "tikhon",
+      "text": "Мимо. Медведь на ухо наступил? Слушай ещё.",
+      "text_sha1": "bf812ddbd4136b21c7be96b0eecb4076706bf132",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "character_lines/mech.rhythm.miss_1.ogg",
+      "source": "src/character_lines/mech.rhythm.miss_1.mp3",
+      "voice_text": "Мимо. Медведь на ухо наступил? Слушай ещё.",
+      "voice_sha1": "bf812ddbd4136b21c7be96b0eecb4076706bf132",
+      "tags": [],
+      "characters": 42,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.19,
+      "lufs": -17.0,
+      "true_peak_db": -4.4,
+      "gain_db": -0.9,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -16.1,
+      "source_true_peak_db": -3.5,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:05+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "Hb1pgK8ALf8VR1wLLjAb",
+        "history_item_id": "dgXrlqqqeP3ZHNTliPXV",
+        "character_cost": "18",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3794103564
+        }
+      }
+    },
+    "tikhon:mech.rhythm.miss_2": {
+      "kind": "narration",
+      "key": "mech.rhythm.miss_2",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.rhythm.miss_2.align.json",
+      "as_line": true,
+      "speaker": "tikhon",
+      "text": "Не торопись. Я ж не тороплюсь.",
+      "text_sha1": "ed7703796ec61ec915b3b701d8bafd48bb6830fe",
+      "voice_id": "RRgQuGjVvCeyNderlonu",
+      "voice_name": "CAT-2",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.8
+      },
+      "file": "character_lines/mech.rhythm.miss_2.ogg",
+      "source": "src/character_lines/mech.rhythm.miss_2.mp3",
+      "voice_text": "Не торопись. Я ж не тороплюсь.",
+      "voice_sha1": "ed7703796ec61ec915b3b701d8bafd48bb6830fe",
+      "tags": [],
+      "characters": 30,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 2.96,
+      "lufs": -17.0,
+      "true_peak_db": -6.2,
+      "gain_db": -2.1,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -14.9,
+      "source_true_peak_db": -4.2,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:07+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "hW0N22lw9gz9MWqdk1VN",
+        "history_item_id": "vOkPzI3CahNJuAu9m09z",
+        "character_cost": "13",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 1567638805
+        }
+      }
+    },
     "ulyana:O1d.ulyana.after": {
       "kind": "narration",
       "key": "O1d.ulyana.after",
@@ -34705,6 +35581,98 @@
         }
       }
     },
+    "ulyana:O1d.ulyana.ttt_a": {
+      "kind": "narration",
+      "key": "O1d.ulyana.ttt_a",
+      "source_text": "ru_E4_E5",
+      "alignment": "src/character_lines/O1d.ulyana.ttt_a.align.json",
+      "as_line": true,
+      "speaker": "ulyana",
+      "text": "Давай! Чур, у меня нолики. А у тебя тогда крестики — ты и начинай.",
+      "text_sha1": "eb6f1f0efa00453317332f9cc42b65d5179f7729",
+      "voice_id": "rSfuQoQ3FY8SVKeraMAp",
+      "voice_name": "ЛУНЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/O1d.ulyana.ttt_a.ogg",
+      "source": "src/character_lines/O1d.ulyana.ttt_a.mp3",
+      "voice_text": "Давай! Чур, у меня нолики. А у тебя тогда крестики — ты и начинай.",
+      "voice_sha1": "eb6f1f0efa00453317332f9cc42b65d5179f7729",
+      "tags": [],
+      "characters": 66,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.99,
+      "lufs": -17.2,
+      "true_peak_db": -1.7,
+      "gain_db": 2.0,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -19.0,
+      "source_true_peak_db": -1.2,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:55+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "Z9TMgdUv3M0IYYm7VAgO",
+        "history_item_id": "Ijygx8EM4ZGEdApbr1id",
+        "character_cost": "29",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3119064256
+        }
+      }
+    },
+    "ulyana:O1d.ulyana.ttt_bye": {
+      "kind": "narration",
+      "key": "O1d.ulyana.ttt_bye",
+      "source_text": "ru_E4_E5",
+      "alignment": "src/character_lines/O1d.ulyana.ttt_bye.align.json",
+      "as_line": true,
+      "speaker": "ulyana",
+      "text": "Ладно. Завтра ещё сыграем — я тогда буду первая!",
+      "text_sha1": "e3cb53fb8994dffd5411d0091a9970d64c6aed66",
+      "voice_id": "rSfuQoQ3FY8SVKeraMAp",
+      "voice_name": "ЛУНЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/O1d.ulyana.ttt_bye.ogg",
+      "source": "src/character_lines/O1d.ulyana.ttt_bye.mp3",
+      "voice_text": "Ладно. Завтра ещё сыграем — я тогда буду первая!",
+      "voice_sha1": "e3cb53fb8994dffd5411d0091a9970d64c6aed66",
+      "tags": [],
+      "characters": 48,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.06,
+      "lufs": -17.2,
+      "true_peak_db": -2.0,
+      "gain_db": -1.1,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.9,
+      "source_true_peak_db": -0.8,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:57+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "CcXTKHUuAyOtZ0EBr8qg",
+        "history_item_id": "VcHBfAuA3gSAk8lknh18",
+        "character_cost": "21",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 883547856
+        }
+      }
+    },
     "ulyana:O1q.village_map.ulyana_apple": {
       "kind": "narration",
       "key": "O1q.village_map.ulyana_apple",
@@ -34898,6 +35866,144 @@
         "sent": {
           "language_code": "ru",
           "seed": 995711778
+        }
+      }
+    },
+    "ulyana:mech.ttt.draw": {
+      "kind": "narration",
+      "key": "mech.ttt.draw",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.ttt.draw.align.json",
+      "as_line": true,
+      "speaker": "ulyana",
+      "text": "Ничья. Мы с папой тоже всё вничью да вничью.",
+      "text_sha1": "840e5e51a73995f3fae20556ac4d8b3f66b976db",
+      "voice_id": "rSfuQoQ3FY8SVKeraMAp",
+      "voice_name": "ЛУНЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.ttt.draw.ogg",
+      "source": "src/character_lines/mech.ttt.draw.mp3",
+      "voice_text": "Ничья. Мы с папой тоже всё вничью да вничью.",
+      "voice_sha1": "840e5e51a73995f3fae20556ac4d8b3f66b976db",
+      "tags": [],
+      "characters": 44,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.2,
+      "lufs": -17.4,
+      "true_peak_db": -1.8,
+      "gain_db": 3.7,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -20.7,
+      "source_true_peak_db": -4.4,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:02+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "xGCSw54wSNmavczsDYCl",
+        "history_item_id": "FZwj4jQ4BMYoDHq7ITGP",
+        "character_cost": "19",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 426441129
+        }
+      }
+    },
+    "ulyana:mech.ttt.lose": {
+      "kind": "narration",
+      "key": "mech.ttt.lose",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.ttt.lose.align.json",
+      "as_line": true,
+      "speaker": "ulyana",
+      "text": "Я выиграла! Три нолика в ряд!",
+      "text_sha1": "2aa73f909b462f6573dfdd8cd2f995fd77946ab0",
+      "voice_id": "rSfuQoQ3FY8SVKeraMAp",
+      "voice_name": "ЛУНЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.ttt.lose.ogg",
+      "source": "src/character_lines/mech.ttt.lose.mp3",
+      "voice_text": "Я выиграла! Три нолика в ряд!",
+      "voice_sha1": "2aa73f909b462f6573dfdd8cd2f995fd77946ab0",
+      "tags": [],
+      "characters": 29,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.02,
+      "lufs": -16.9,
+      "true_peak_db": -3.3,
+      "gain_db": -1.2,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.8,
+      "source_true_peak_db": -2.1,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:44:00+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "frOBdyN0QCnhPsbd89j6",
+        "history_item_id": "TZHyNQJP8RyKVz3pCGAV",
+        "character_cost": "13",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 4207875003
+        }
+      }
+    },
+    "ulyana:mech.ttt.win": {
+      "kind": "narration",
+      "key": "mech.ttt.win",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.ttt.win.align.json",
+      "as_line": true,
+      "speaker": "ulyana",
+      "text": "Ой, обыграла! Ещё разок — теперь я первая.",
+      "text_sha1": "3f9b7ab00f25166d4238889cc51987d8265bbd0b",
+      "voice_id": "rSfuQoQ3FY8SVKeraMAp",
+      "voice_name": "ЛУНЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.ttt.win.ogg",
+      "source": "src/character_lines/mech.ttt.win.mp3",
+      "voice_text": "Ой, обыграла! Ещё разок — теперь я первая.",
+      "voice_sha1": "3f9b7ab00f25166d4238889cc51987d8265bbd0b",
+      "tags": [],
+      "characters": 42,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.29,
+      "lufs": -17.1,
+      "true_peak_db": -3.1,
+      "gain_db": -2.0,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.0,
+      "source_true_peak_db": -1.2,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-29T22:43:59+00:00",
+      "run": "40967362464",
+      "api": {
+        "request_id": "CdsEnuVJet9ghjtgHciK",
+        "history_item_id": "0nJlD0cH5dMHIW4QNZlA",
+        "character_cost": "18",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 3497154031
         }
       }
     },

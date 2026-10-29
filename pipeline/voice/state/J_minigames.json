@@ -1,0 +1,56 @@
+{
+  "set": "J_minigames",
+  "runs": [
+    {
+      "run": "40967362464",
+      "at": "2026-10-29T22:44:14+00:00",
+      "request": "pipeline/requests/voice_J_minigames.json",
+      "synthesized": [
+        "agata:H1.tikhon.spoons_q",
+        "tikhon:H1.tikhon.spoons_a",
+        "tikhon:H1.tikhon.spoons_done",
+        "tikhon:H1.tikhon.spoons_quit",
+        "agata:O4.mitya.fish_q",
+        "mitya:O4.mitya.fish_a",
+        "mitya:O4.mitya.fish_bye",
+        "agata:O1d.ulyana.ttt_q",
+        "ulyana:O1d.ulyana.ttt_a",
+        "ulyana:O1d.ulyana.ttt_bye",
+        "agata:mech.plate.count_1",
+        "agata:mech.plate.count_2",
+        "ulyana:mech.ttt.win",
+        "ulyana:mech.ttt.lose",
+        "ulyana:mech.ttt.draw",
+        "tikhon:mech.rhythm.good_1",
+        "tikhon:mech.rhythm.good_2",
+        "tikhon:mech.rhythm.miss_1",
+        "tikhon:mech.rhythm.miss_2",
+        "mitya:mech.fish.early",
+        "mitya:mech.fish.late",
+        "mitya:mech.fish.snap",
+        "mitya:mech.fish.escaped",
+        "mitya:mech.fish.caught"
+      ],
+      "reprocessed": [],
+      "characters_text": 941,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 107183,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 107183,
+        "character_limit": 124889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 415,
+      "subscription_delta": 0
+    }
+  ]
+}
