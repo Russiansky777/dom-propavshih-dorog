@@ -11,6 +11,8 @@ extends SceneTree
 ##   A8 (стр. 175): Agata answers Ulyana «никто больше не потеряется».
 ##   A9 (Р11): where the boat is, there is Pelageya — after the knot she rows it to her pier (M16s–M16 there), after the
 ##      lights back to the plate; the turn and the pier never show the boat without her;
+##   A10 (Р5 + Director 18:51): the tar pot on Dunya's workbench — before Pavel's request «not now», then once into the bag;
+##      the lever alone does not open the sluice, the tar on the winch does (the walk itself — test_day2.gd);
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
@@ -75,6 +77,7 @@ func _run() -> void:
 	await _test("J-A6/A8 data: Nina walks to the river at the end of M23a; Agata answers Ulyana", _test_data)
 	await _test("J-E1 fog over the far bank until the knot, lifting when the knot is tied", _test_fog)
 	await _test("J-A9 Р11: the boat and Pelageya always together (the knot → her pier, the lights → the turn)", _test_boat_with_pelageya)
+	await _test("J-A10 Р5: the tar — «not now» before Pavel asks, then once; the tar on the winch opens the sluice", _test_tar)
 	await _test("J-B1 intro: three cards on black with the voice-over, a click goes on, then «День первый», once", _test_intro)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -555,4 +558,38 @@ func _test_boat_with_pelageya() -> void:
 	_check(_layer_vis("no_boat_dusk") and not _pel_vis(), "after the lights, at the pier: neither")
 	await _enter("Z3")
 	_check(_layer_vis("boat_dusk") and _pel_vis(), "after the lights, at the turn: the boat and Pelageya")
+	gs.reset()
+
+
+
+func _test_tar() -> void:
+	gs.reset()
+	_set_flags(["done_M01", "house_unlocked", "house_open", "done_M13", "has_key_sluice"])
+	await _enter("H2")
+	var pot := _hotspot("tar_pot")
+	_check(pot != null and pot.visible, "H2: the tar pot on the workbench")
+	if pot == null:
+		return
+	sr.interact(pot)
+	await _frames(2)
+	var seen := await _drain()
+	_check(seen.has("H2.tar_pot.not_now") and not gs.has_item("tar"), "before Pavel asks: «сейчас ни к чему», nothing taken (%s)" % str(seen))
+	gs.set_flag("sluice_key_inserted", true)
+	sr.interact(pot)
+	await _frames(2)
+	seen = await _drain()
+	_check(seen.has("H2.tar_pot.take") and gs.has_item("tar") and sr.journal_goal().contains("К затвору"), "after: poured into a jar, the goal — back to the sluice (%s, %s)" % [str(seen), sr.journal_goal()])
+	sr.interact(pot)
+	await _frames(2)
+	seen = await _drain()
+	_check(gs.inventory.count("tar") == 1 and seen.has("H2.tar_pot.taken"), "once only (%s)" % str(seen))
+	# The sluice: the lever in — no close-up; the tar on the winch — the close-up.
+	var gate: Dictionary = {}
+	for h in sd.room("M4").get("hotspots", []):
+		if String(h.get("id", "")) == "gate":
+			gate = h
+	var iu: Dictionary = gate.get("item_use", {})
+	_check(not bool(iu.get("key_sluice", {}).get("open_mechanic", false)) and bool(iu.get("tar", {}).get("open_mechanic", false)),
+		"the lever does not open the sluice any more, the tar does")
+	_check((gate.get("mechanic", {}).get("requires", {}).get("flags", []) as Array).has("windlass_tarred"), "the sluice close-up needs the winch tarred")
 	gs.reset()

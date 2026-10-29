@@ -27,11 +27,16 @@
   "hotspots": [
     {
       "id": "gate", "action_anim": "reach", "kind": "object", "label": "@M4.gate.label", "rect": [690, 420, 330, 280], "stand": [880, 760], "draw": false,
-      "item_use": {"key_sluice": {"sets": ["sluice_key_inserted"], "consumes": true, "text": "@M4.gate.key", "scene": "M14", "open_mechanic": true}},
-      "use": {"requires": {"flags": ["sluice_key_inserted"]}, "text": "@M4.gate.look", "fail_text": "@M4.gate.locked"},
+      "item_use": {
+        "key_sluice": {"sets": ["sluice_key_inserted", "windlass_rusty"], "consumes": true, "text": ["@M4.gate.key", "@M4.pavel.rusty"], "goal": "@ui.goal_tar_fetch"},
+        "tar": {"requires": {"flags": ["sluice_key_inserted"]}, "fail_text": "@M4.gate.locked", "sets": ["windlass_tarred"], "consumes": true, "text": "@M4.gate.tarred", "goal": "@ui.goal_tar_back", "scene": "M14", "open_mechanic": true}
+      },
+      "_r5": "J (Р5, Директор 29.10): рычаг сел в ворот — Павел: ворот заржавел, нужен дёготь из Дуниной мастерской; дёготь на затвор — ворот смазан, открывается крупный план (mini-игра затвора после задания)",
+      "use": {"requires": {"flags": ["sluice_key_inserted", "windlass_tarred"]}, "text": "@M4.gate.look", "fail_text": "@M4.gate.locked"},
+      "use_when": [{"if": ["sluice_key_inserted"], "unless": ["windlass_tarred"], "text": "@M4.gate.rusty"}],
       "mechanic": {
         "type": "sluice",
-        "requires": {"flags": ["sluice_key_inserted"]},
+        "requires": {"flags": ["sluice_key_inserted", "windlass_tarred"]},
         "title": "@M4.sluice.title",
         "gate": {"image": "res://assets/rooms/M4/bg.png", "region": [512, 234, 386, 394], "pos": [230, 120], "scale": 2.0, "socket": [697, 523], "overlay_layers": ["dial_mark_last"], "_overlay_note": "слои комнаты M4 (по id) поверх вырезки фона, если их картинка уже есть — G24: метка на последней зарубке (партия 9)"},
         "lever": {"image": "res://assets/rooms/M4/lever_up.png", "pivot": [738.5, 610], "scale": 0.7},
@@ -52,7 +57,7 @@
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1060, 406, 130, 354], "stand": [950, 800], "draw": false, "pick_priority": 2,
       "visible_if": ["done_M13"],
-      "talk": {"by_flags": [{"if": ["bridge_decided"], "text": "@M4d.pavel.after_bridge"}, {"if": ["evening_dusk"], "text": "@M4.pavel.after_dusk", "_j": "J-A4 (Директор 29.10, стр. 117): вода сошла — Павел больше не говорит «теперь ждать надо»"}, {"if": ["sluice_opened"], "text": "@M4.pavel.after"}], "after_text": "@M4.pavel.before"},
+      "talk": {"by_flags": [{"if": ["bridge_decided"], "text": "@M4d.pavel.after_bridge"}, {"if": ["evening_dusk"], "text": "@M4.pavel.after_dusk", "_j": "J-A4 (Директор 29.10, стр. 117): вода сошла — Павел больше не говорит «теперь ждать надо»"}, {"if": ["sluice_opened"], "text": "@M4.pavel.after"}, {"if": ["windlass_tarred"], "text": "@M4.pavel.turn", "_r5": "J (Р5): ворот смазан — крути"}, {"if": ["sluice_key_inserted"], "text": "@M4.pavel.rusty", "_r5": "J (Р5): ворот заржавел — за дёгтем"}], "after_text": "@M4.pavel.before"},
       "_talk_note": "один хотспот — одна 3D-фигура (data/actors/pavel.json): до открытия затвора — «Ключ в ворот — и по зарубке», после — «К вечеру сойдёт. Ступай пока» (раньше — два хотспота pavel / pavel_rest с плоской картинкой)"
     },
     {

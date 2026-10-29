@@ -945,7 +945,27 @@ func _test_walkthrough() -> void:
 	_check(not sr.mechanic_open, "without the key the gate does not open")
 	await _use_item("key_sluice", "gate")
 	await _frames(2)
-	_check(sr.mechanic_open and not gs.has_item("key_sluice") and gs.has_flag("sluice_key_inserted"), "the key in the winch opens the sluice close-up")
+	seen = await _finish()
+	# J (Р5, Director 29.10): the winch has not turned for a year — rusted; Pavel sends Agata for Dunya's tar.
+	_check(not sr.mechanic_open and not gs.has_item("key_sluice") and gs.has_flag("sluice_key_inserted") and gs.has_flag("windlass_rusty"),
+		"Р5: the lever in the winch — no close-up yet, the winch is rusted")
+	_check(seen.any(func(x): return String(x).begins_with("pavel:") and String(x).contains("Дёготь у Дуни")) and sr.journal_goal().contains("дёготь"),
+		"Р5: Pavel asks for Dunya's tar; the goal says where: %s / %s" % [str(seen), sr.journal_goal()])
+	await _use("gate")
+	seen = await _finish()
+	_check(not sr.mechanic_open and seen.any(func(x): return String(x).contains("заржавел")), "Р5: the gate without tar says it is rusted: %s" % str(seen))
+	for r in ["M1", "Z2", "H1", "H2"]:
+		_check(await _go(r), "Р5: → %s for the tar" % r)
+		await _finish()
+	await _use("tar_pot")
+	seen = await _finish()
+	_check(gs.has_item("tar") and seen.any(func(x): return String(x).contains("дёгтя")), "Р5: Agata pours the tar into a jar: %s" % str(seen))
+	for r in ["H1", "Z2", "M1", "M4"]:
+		_check(await _go(r), "Р5: → %s back to the sluice" % r)
+		await _finish()
+	await _use_item("tar", "gate")
+	await _frames(2)
+	_check(sr.mechanic_open and not gs.has_item("tar") and gs.has_flag("windlass_tarred"), "Р5: the tar on the winch opens the sluice close-up")
 	await _finish()
 	p = mv.panel
 	await _sluice_strikes(p, 4)
@@ -1528,7 +1548,7 @@ func _test_sluice_mouse() -> void:
 	Engine.time_scale = 2.0
 	await _day_one_done()
 	for f in ["done_N01", "done_M09", "done_M09s", "done_M09b", "done_M10", "done_M11", "done_M12", "done_M13a", "done_M13", "office_unbolted", "office_shelf_lifted",
-			"has_key_sluice", "has_journal_manager", "has_clamp", "sluice_key_inserted"]:
+			"has_key_sluice", "has_journal_manager", "has_clamp", "sluice_key_inserted", "windlass_rusty", "windlass_tarred"]:
 		gs.set_flag(f, true)
 	gs.add_item("clamp")
 	rm.change_room("M4", "default")

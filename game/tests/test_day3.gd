@@ -638,7 +638,7 @@ func _test_start_points() -> void:
 		sr.set_frame("")
 	# Batch G acceptance points (Docs/ACCEPTANCE_G.md): the sluice with the lever in the bag, the plate with the brace,
 	# the pier with the rope on the ring — each before its own mini-game.
-	var g_points := {"wedges": ["H2", "mirror_mill", "office_mirror_clamped"], "sluice": ["M4", "key_sluice", "sluice_opened"], "plate": ["Z3", "brace_plate", "plate_braced"], "lights": ["R1", "", "far_lights_answered"]}
+	var g_points := {"wedges": ["H2", "mirror_mill", "office_mirror_clamped"], "sluice": ["M4", "tar", "sluice_opened"], "plate": ["Z3", "brace_plate", "plate_braced"], "lights": ["R1", "", "far_lights_answered"]}
 	for pid in g_points.keys():
 		_check(rm.start_at(pid), "start point %s" % pid)
 		await _frames(3)

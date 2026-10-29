@@ -198,6 +198,18 @@
       "_consumed_note": "Остаётся на раме маминого зеркала в мастерской."
     },
     {
+      "id": "tar",
+      "wrong_target": {"text": "@item.wrong_generic"},
+      "name": "Дёготь",
+      "examine": {"text": "@examine.tar", "backdrop": "table"},
+      "inventory": true,
+      "source_location": "H2",
+      "source_hotspot": "H2.tar_pot",
+      "use": "J (Р5, Директор 29.10): ворот затвора год не крутили — заржавел; Павел просит дёготь из Дуниной мастерской (кувшин на верстаке у ящика «Петли»). Агата отливает его в баночку после того, как рычаг сел в ворот (sluice_key_inserted); смазывает ворот — и открывается крупный план затвора",
+      "consumed": true,
+      "_art_note": "иконка и крупный план — заказ ChatGPT 10д; пока — заплатка с буквой (InventoryBag) и иконка крупно на столе (ItemExamine)"
+    },
+    {
       "id": "school_ribbon",
       "name": "Мамина лента",
       "examine": {"text": "@examine.school_ribbon", "art": "res://assets/closeups/closeup_school_ribbon.png"},

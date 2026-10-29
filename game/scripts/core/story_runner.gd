@@ -1335,6 +1335,10 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 			item_received.emit(rid)
 	if item_id != "" and bool(act.get("consumes", false)):
 		GameState.remove_item(item_id)
+	# `goal`: the journal's goal changes with the action (J, Р5: the lever in the rusted winch — «принести дёготь»;
+	# the tar taken — «к затвору»): a text key, like a scene's goal.
+	if act.has("goal"):
+		GameState.set_goal(StoryData.text(String(act["goal"])))
 	if act.has("synth_sound"):
 		synth_sound_requested.emit(String(act["synth_sound"]))
 	if act.has("text"):

@@ -59,7 +59,7 @@ func _day(level: int) -> void:
 		["done_M09s", "seen_office_door", "seen_office_photo", "seen_shift_schedule", "done_M09b", "has_mirror_mill"],
 		["office_mirror_mounted", "office_mirror_clamped", "done_M10", "bell_clapper_hung", "has_bell_clapper", "lantern_check_seen", "done_M11"],
 		["office_unbolted", "done_M12", "office_shelf_lifted", "done_M13a"],
-		["done_M13", "has_key_sluice", "has_journal_manager", "has_clamp", "sluice_key_inserted"],
+		["done_M13", "has_key_sluice", "has_journal_manager", "has_clamp", "sluice_key_inserted", "windlass_rusty", "windlass_tarred"],
 		["sluice_opened", "pond_lowered", "done_M14"],
 		["nina_mirror_clamped", "nina_time_compared", "evening_dusk", "done_M15a", "has_brace_plate", "skoba_on_plate"],
 		["plate_braced", "rope_brought", "done_M15s", "rope_on_ring", "done_M15"],

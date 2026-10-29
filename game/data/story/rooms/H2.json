@@ -129,6 +129,12 @@
       "use": {"requires": {"flags": ["knows_crossing_plan"]}, "fail_text": "@H2.brace.before_plan", "gives": ["brace_plate"], "text": "@H2.brace.take", "once_flag": "has_brace_plate"},
       "look": "@H2.brace.look"
     },
+    {
+      "id": "tar_pot", "action_anim": "reach", "kind": "object", "label": "@H2.tar_pot.label", "rect": [704, 418, 60, 54], "stand": [760, 790], "draw": false, "pick_priority": 2,
+      "_r5": "J (Р5, Директор 29.10; 18:51: «горшок на верстаке ок, но… при нажатии ранее — что взять нельзя»): нарисованный жестяной кувшин на левом верстаке у ящика «Петли»; до просьбы Павла (рычаг в вороте — sluice_key_inserted; так и в сохранениях до Р5) — «сейчас ни к чему», потом Агата отливает дёготь в баночку (tar), кувшин остаётся на месте",
+      "use": {"requires": {"flags": ["sluice_key_inserted"]}, "fail_text": "@H2.tar_pot.not_now", "gives": ["tar"], "text": "@H2.tar_pot.take", "once_flag": "has_tar", "text_done": "@H2.tar_pot.taken", "goal": "@ui.goal_tar_back"},
+      "look": "@H2.tar_pot.look"
+    },
     {"id": "second_bench", "kind": "object", "label": "@H2q.second_bench.label", "rect": [1402, 471, 152, 216], "stand": [1450, 692], "draw": false, "pick_priority": 2, "visible_if": ["q06_table_at_agata"], "_note": "Q06, вариант B: второй верстак Ильи торцом между рамой «ЗМ» и колоколом (слой second_bench).", "look": "@H2q.second_bench.look"}
   ],
   "exits": [

@@ -88,6 +88,11 @@
           "H2.bell.thought",
           "H2.brace.before_plan",
           "H2.brace.take",
+          "H2.tar_pot.not_now",
+          "H2.tar_pot.take",
+          "H2.tar_pot.taken",
+          "item.tar",
+          "M4.gate.rusty",
           "O1.enter.winter",
           "O2.mitten.take"
         ],

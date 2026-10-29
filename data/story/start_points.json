@@ -38,9 +38,9 @@
       "done_through": "M13",
       "room": "M4",
       "spawn": "default",
-      "flags": ["board_mama", "v03_marked", "v03_add_boat", "mitten_placed", "v01_cup_blue", "v01_photo_table", "pavel_answer_promise", "house_unlocked", "house_open", "h2_bundle_unwrapped", "office_mirror_mounted", "office_mirror_clamped", "bell_clapper_hung"],
-      "add_items": ["key_sluice", "clamp"],
-      "_note": "Приёмка G (Docs/ACCEPTANCE_G.md): после конторы, рычаг затвора в сумке — ?start=sluice; предмет на затвор открывает крупный план."
+      "flags": ["board_mama", "v03_marked", "v03_add_boat", "mitten_placed", "v01_cup_blue", "v01_photo_table", "pavel_answer_promise", "house_unlocked", "house_open", "h2_bundle_unwrapped", "office_mirror_mounted", "office_mirror_clamped", "bell_clapper_hung", "sluice_key_inserted", "windlass_rusty", "has_tar"],
+      "add_items": ["tar", "clamp"],
+      "_note": "Приёмка G (Docs/ACCEPTANCE_G.md): после конторы — ?start=sluice; J (Р5): рычаг уже в вороте, дёготь в сумке — дёготь на затвор открывает крупный план."
     },
     {
       "id": "plate",
