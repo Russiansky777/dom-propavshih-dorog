@@ -48,7 +48,7 @@
     {
       "id": "photo_bridge",
       "name": "Фотография старого моста",
-      "examine": {"text": "@examine.photo_bridge", "art": "res://assets/closeups/closeup_bridge_photo.png", "width": 1180, "angle_deg": -1.5, "backdrop": "table"},
+      "examine": {"text": "@examine.photo_bridge", "art": "res://assets/closeups/closeup_bridge_photo.png", "held": true, "width": 1180, "angle_deg": -1.5, "backdrop": "table"},
       "icon": "bridge_photo",
       "inventory": true,
       "source_location": "O1",
@@ -59,7 +59,7 @@
     {
       "id": "drawing_ilya",
       "name": "Детский рисунок моста",
-      "examine": {"text": "@examine.drawing_ilya", "art": "res://assets/closeups/closeup_ilya_drawing.png", "width": 1120, "angle_deg": 1.5, "backdrop": "table"},
+      "examine": {"text": "@examine.drawing_ilya", "art": "res://assets/closeups/closeup_ilya_drawing.png", "held": true, "width": 1120, "angle_deg": 1.5, "backdrop": "table"},
       "icon": "ilya_drawing",
       "inventory": true,
       "source_location": "O1",
@@ -71,7 +71,7 @@
     {
       "id": "plan_crossing",
       "name": "План переправы",
-      "examine": {"text": "@examine.plan_crossing", "art": "res://assets/closeups/closeup_plan.png", "width": 1500, "angle_deg": -0.6, "backdrop": "table", "writing": {"text": "@O1.teacher_drawer.paper_plan", "image_size": [1672, 941], "text_rect": [150, 625, 1360, 245], "font_size": 25, "ink": "#2a2117"}},
+      "examine": {"text": "@examine.plan_crossing", "art": "res://assets/closeups/closeup_plan.png", "held": true, "width": 1500, "angle_deg": -0.6, "backdrop": "table", "writing": {"text": "@O1.teacher_drawer.paper_plan", "image_size": [1672, 941], "text_rect": [150, 625, 1360, 245], "font_size": 25, "ink": "#2a2117"}},
       "icon": "crossing_plan",
       "inventory": true,
       "source_location": "O1",

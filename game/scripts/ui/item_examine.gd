@@ -157,6 +157,10 @@ func _build_picture(area: Rect2) -> void:
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(holder)
 	picture = holder
+	if bool(spec.get("held", false)):   # J, стр. 161: a photo, a drawing, the plan — in the hands, it sways a little
+		var sw := PaperSway.new()
+		sw.name = "Sway"
+		holder.add_child(sw)
 	if spec.has("watch"):
 		dial = PocketWatchDial.new()
 		dial.name = "Watch"

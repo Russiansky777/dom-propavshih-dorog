@@ -56,6 +56,7 @@ var prev_button: Button = null
 var next_button: Button = null
 var _into: Control = null        # where the builders put sheets: the view itself or the page being built
 var close_button: Button = null
+const FLAME_SHADER: Shader = preload("res://shaders/candle_flame.gdshader")
 const FRAME_MIN_W := 1200.0   # a picture this wide and up is a whole close-up — in the carved frame (стр. 80)
 const FRAME_BAND := 16.0
 var glass_screen_rect: Rect2 = Rect2()
@@ -422,6 +423,7 @@ func _build_photo(p: Dictionary) -> void:
 	photo.rotation = deg_to_rad(float(p.get("angle_deg", -3.0)))
 	photo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_into.add_child(photo)
+	_sway(photo, p, true)
 	var shadow := ColorRect.new()
 	shadow.color = Color(0, 0, 0, 0.45)
 	shadow.position = Vector2(10, 12)
@@ -508,6 +510,9 @@ func _build_picture(p: Dictionary) -> void:
 		tr.modulate = Color(0, 0, 0, 0.45) if i == 0 else Color.WHITE
 		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		holder.add_child(tr)
+		if i == 1 and p.has("flames"):
+			_flame(tr, p["flames"], tex.get_size())
+	_sway(holder, p, not framed)
 	if p.has("label"):
 		var cap := Label.new()
 		cap.name = "Text"
@@ -520,6 +525,32 @@ func _build_picture(p: Dictionary) -> void:
 		cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		holder.add_child(cap)
 	sheets.append(holder)
+
+
+## J (стр. 161): a sheet or a photo held in the hands sways a little (PaperSway) — by default every sheet with its
+## own paper and every picture smaller than a whole close-up; `"sway": false` in the data keeps one still.
+func _sway(node: Control, p: Dictionary, by_default: bool) -> void:
+	if bool(p.get("sway", by_default)):
+		var sw := PaperSway.new()
+		sw.name = "Sway"
+		node.add_child(sw)
+
+
+## J (стр. 161: «огонь свечи шевелится»): `flames` [{at: [x, y], r: [rx, ry], base, tip}] in the picture's own pixels —
+## the painted flame lives (shaders/candle_flame.gdshader on the picture). One flame per picture.
+func _flame(tr: TextureRect, flames: Array, src: Vector2) -> void:
+	if flames.is_empty() or src.x <= 0.0 or src.y <= 0.0:
+		return
+	var f: Dictionary = flames[0]
+	var at: Array = f.get("at", [0, 0])
+	var rr: Array = f.get("r", [20, 40])
+	var mat := ShaderMaterial.new()
+	mat.shader = FLAME_SHADER
+	mat.set_shader_parameter("center", Vector2(float(at[0]) / src.x, float(at[1]) / src.y))
+	mat.set_shader_parameter("radius", Vector2(float(rr[0]) / src.x, float(rr[1]) / src.y))
+	mat.set_shader_parameter("base_y", float(f.get("base", float(at[1]) + float(rr[1]) * 0.8)) / src.y)
+	mat.set_shader_parameter("tip_y", float(f.get("tip", float(at[1]) - float(rr[1]) * 0.8)) / src.y)
+	tr.material = mat
 
 
 ## A sheet of paper: `rect` [x, y, w, h], `angle_deg`, `paper` / `ink` / `edge` colours, `title` and `text`
@@ -560,9 +591,10 @@ func _build_paper(p: Dictionary) -> void:
 	sheet.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_into.add_child(sheet)
 	if String(p.get("sheet", "")) == "none":
-		_build_sheet_words(sheet, p)
+		_build_sheet_words(sheet, p)   # words on a painted sheet: they stay with the picture (no sway)
 		sheets.append(sheet)
 		return
+	_sway(sheet, p, true)
 	var shadow := ColorRect.new()
 	shadow.color = Color(0, 0, 0, 0.45)
 	shadow.position = Vector2(10, 12)
