@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Синица на плакате в классе (O1) — шапка, сапоги и шарф по месту (партия J, Директор 29.10, стр. 53: «шарф не видно,
 шапка и ботинки не на идеальном месте — сверить место до введения в игру, показав мне»; 19:19: «синица получилась
-намного лучше, разве что боты — чтобы закрывали пальцы птицы и в том же направлении, что и палочки лап, побольше»).
+намного лучше, разве что боты — чтобы закрывали пальцы птицы и в том же направлении, что и палочки лап, побольше»;
+19:24–19:27 по предпросмотру: левый — вдоль лапки, правый — выше и правее, правым краем на пальцы).
 
 Из поставки партии 9 (assets/incoming/O1_state_bird_doodles_v2.png, O1_state_bird_add_scarf.png) пишет слои игры:
   game/assets/rooms/O1/state_bird_doodles.png  — шапка сдвинута на макушку (глаз открыт); каждый сапог — отдельно,
@@ -20,8 +21,10 @@ INC = ROOT / "assets" / "incoming"
 OUT = ROOT / "game" / "assets" / "rooms" / "O1"
 
 HAT_SHIFT = (-9, -3)                        # на макушку: левее и выше
-LEFT_BOOT = ((1355, 294), 1.3, 35)          # центр на пальцах левой лапки, масштаб, поворот (° против часовой — вдоль лапки)
-RIGHT_BOOT = ((1372, 290), 1.3, 55)         # правая лапка обхватывает ветку
+LEFT_BOOT = ((1354, 290), 1.3, 66)          # центр на пальцах левой лапки, масштаб, поворот (° против часовой; в поставке сапог
+                                            # уже наклонён на 33° по часовой — +33° выпрямляют, ещё +33° кладут голенище вдоль лапки)
+RIGHT_BOOT = ((1380, 282), 1.3, 55)         # правая лапка обхватывает ветку; правый край сапога закрывает пальцы (Директор 19:24, 19:27)
+BOOT_SPLIT_X = 1349                         # граница сапог в поставке: x=1349 — левый контур правого сапога
 SCARF = {"gain": 1.8, "alpha_max": 205, "stripe_px": 3, "red": (150, 62, 52), "cream": (214, 202, 180), "lift_px": 3}
 
 
@@ -34,10 +37,35 @@ def _rgba(p: Path, size=None) -> np.ndarray:
     return np.asarray(im).copy()
 
 
+def _largest(m: np.ndarray) -> np.ndarray:
+    """Самая большая 8-связная область маски."""
+    lab = np.zeros(m.shape, int)
+    best, best_n, cur = 0, 0, 0
+    for y0, x0 in zip(*np.where(m)):
+        if lab[y0, x0]:
+            continue
+        cur += 1
+        stack, n = [(y0, x0)], 0
+        lab[y0, x0] = cur
+        while stack:
+            y, x = stack.pop()
+            n += 1
+            for dy in (-1, 0, 1):
+                for dx in (-1, 0, 1):
+                    yy, xx = y + dy, x + dx
+                    if 0 <= yy < m.shape[0] and 0 <= xx < m.shape[1] and m[yy, xx] and not lab[yy, xx]:
+                        lab[yy, xx] = cur
+                        stack.append((yy, xx))
+        if n > best_n:
+            best, best_n = cur, n
+    return lab == best
+
+
 def _boot(a: np.ndarray, x0: int, x1: int) -> Image.Image:
     h, w = a.shape[:2]
     yy, xx = np.mgrid[0:h, 0:w]
     m = (a[..., 3] > 25) & (yy >= 276) & (xx >= x0) & (xx < x1)
+    m = _largest(m)                         # без отдельных крупинок (у левого сапога отлетала красная точка)
     ys, xs = np.where(m)
     sub = np.zeros_like(a)
     sub[m] = a[m]
@@ -58,8 +86,8 @@ def doodles() -> Image.Image:
     ys, xs = np.where((a[..., 3] > 0) & (yy < 240))
     out[ys + HAT_SHIFT[1], xs + HAT_SHIFT[0]] = a[ys, xs]
     canvas = Image.fromarray(out)
-    _place(canvas, _boot(a, 0, 1350), *LEFT_BOOT)
-    _place(canvas, _boot(a, 1350, 10000), *RIGHT_BOOT)
+    _place(canvas, _boot(a, 0, BOOT_SPLIT_X), *LEFT_BOOT)
+    _place(canvas, _boot(a, BOOT_SPLIT_X, 10000), *RIGHT_BOOT)
     return canvas
 
 
