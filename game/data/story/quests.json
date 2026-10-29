@@ -188,8 +188,8 @@
         {
           "speaker": "tikhon",
           "text": "Когда я не сплю. Иногда.",
-          "tags": ["sleepy", "sarcastic"],
-          "voice_text": "[sleepy] Когда я не сплю. [sarcastic] Иногда."
+          "tags": ["sarcastic"],
+          "_j": "J (стр. 30): без «сонно» — подача как у прочих реплик Тихона"
         }
       ]
     },

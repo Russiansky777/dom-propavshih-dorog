@@ -2,6 +2,8 @@
   "_comment": "Озвучка реплик (VoiceDirector, game/scripts/audio/voice_director.gd). Файлы — res://assets/voice/ru/<scene>_<index>.ogg и manifest.json (копия assets/voice/ru из конвейера pipeline/voice, tools/sync_voice.sh); реплика звучит, только если манифест знает её и sha1 текста совпадает с текущим. Проверки: tools/validate_voice.py, game/tests/test_voice.gd.",
   "dir": "res://assets/voice/ru",
   "volume_db": 0.0,
+  "removed_scenes": ["Q09"],
+  "listen": {"_comment": "Страница прослушивания (tools/listen_page.py): записи не раньше review_since — на проверку Директору с текстом и тем, что ушло в синтезатор; ab_line — проба А/Б (исходный MP3 и наш OGG). Партия J, 29.10.", "review_since": "2026-10-29T00:00:00+00:00", "title": "Партия J — новые записи (29.10)", "ab_line": "M26_37"},
   "pan": {
     "_comment": "Персонажи, чья реплика звучит со стороны их хотспота в комнате (id хотспота = id персонажа), если он виден: панорама по смещению от центра экрана × panning_strength (Godot: 1 — обычная, 0 — без панорамы, до 3). Тихон в H1 у печи слева (фигура x≈390): при 1.5 левый канал ≈ на 4 dB громче правого — лёгкое смещение, не «из одной колонки».",
     "tikhon": {

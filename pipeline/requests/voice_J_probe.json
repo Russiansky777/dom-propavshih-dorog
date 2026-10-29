@@ -1,0 +1,16 @@
+{
+ "mode": "say",
+ "set": "J_probe",
+ "_comment": "Партия J (29.10): проба — читает ли eleven_v4 слово капсом как ударное по смыслу, а не по буквам (ElevenLabs, Prompting Eleven v4: «Capitalization increases emphasis»), и даёт ли «…» паузу. Пары: как есть / с режиссурой data/story/voice_direction.json. С выравниванием по символам: длительность выделенного слова не больше 1,6× от простой записи — иначе капс читается по буквам. Разбор — координатор.",
+ "max_chars": 420,
+ "items": [
+  {"id": "school_plain", "speaker": "tikhon", "variant": "plain", "text": "Из школы дверь — Нина просила."},
+  {"id": "school_dir", "speaker": "tikhon", "variant": "direction", "text": "Из ШКОЛЫ дверь… Нина просила."},
+  {"id": "cel_plain", "speaker": "agata", "variant": "plain", "text": "Цел ещё мост. На каменных опорах — пролёты."},
+  {"id": "cel_dir", "speaker": "agata", "variant": "direction", "text": "ЦЕЛ ещё мост. На каменных опорах — пролёты."},
+  {"id": "rovno_plain", "speaker": "narrator", "variant": "plain", "text": "Мамины ходики. Ровно маятник ходит, не торопясь."},
+  {"id": "rovno_dir", "speaker": "narrator", "variant": "direction", "text": "Мамины ходики. РОВНО маятник ходит, не торопясь."},
+  {"id": "ya_plain", "speaker": "agata", "variant": "plain", "text": "Шапку синице я рисовала."},
+  {"id": "ya_dir", "speaker": "agata", "variant": "direction", "text": "Шапку синице Я рисовала."}
+ ]
+}

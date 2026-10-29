@@ -92,9 +92,13 @@ def apply(text: str, line_id: str) -> str:
         if r:
             _, b = r
             rest = out[b:]
+            if rest[:1] in "?!":
+                # «Цел затвор? Где рычаг?» → «Цел затвор?… Где рычаг?» — знак остаётся, пауза после него
+                out = out[:b] + rest[0] + "… " + rest[1:].lstrip()
+                continue
             m = re.match(r"\s*[—,–-]?\s*", rest)
             tail = rest[m.end():] if m else rest
-            if tail[:1] in ".!?…":
+            if tail[:1] in ".…":
                 out = out[:b] + "…" + tail.lstrip(".…")
             else:
                 out = out[:b] + "… " + tail

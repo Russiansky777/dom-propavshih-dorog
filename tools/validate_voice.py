@@ -445,7 +445,10 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                      and ln.get("assigned", True)}
     for m in manifests.values():
         speakers |= {str(e.get("speaker", "")) for e in m.get("lines", {}).values() if "stale" not in e}
-    for s in sorted(s for s in scenes if not any(ln["scene"] == s for ln in lines.values())):
+    # Сцены, снятые решением Директора (data/story/voice.json → removed_scenes, напр. Q09 — партия J, Р10), в прежних
+    # запросах остаются как история: их запросы не перезапускаются (workflow берёт только изменённые файлы запросов).
+    removed = {str(x) for x in ((voice_cfg or {}).get("removed_scenes") or [])}
+    for s in sorted(s for s in scenes if s not in removed and not any(ln["scene"] == s for ln in lines.values())):
         errors.append(f"запрос озвучки: сцены {s} нет (или у неё нет реплик)")
     cast_map = (cast or {}).get("cast", {})
     if speakers and cast is None:

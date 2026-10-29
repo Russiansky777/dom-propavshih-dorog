@@ -40,12 +40,20 @@ h2 { color: var(--gold); font-size: 21px; margin: 26px 0 8px; border-bottom: 1px
 .take input { accent-color: var(--gold); width: 18px; height: 18px; }
 .tag { font-size: 12px; color: var(--dim); }
 .empty { color: var(--dim); padding: 30px; text-align: center; }
+.vt { color: var(--dim); font-size: 14px; margin-top: 3px; font-family: Georgia, serif; }
+.vt b { color: var(--gold); font-weight: normal; }
+.note { color: #c8b48c; font-size: 14px; margin-top: 2px; font-style: italic; }
+.mark { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; grid-column: 2; }
+.mark label { display: flex; align-items: center; gap: 4px; font-size: 15px; cursor: pointer; }
+.mark input[type=text] { flex: 1 1 260px; font: inherit; font-size: 15px; color: var(--ink); background: #1e130a; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
+.row.ok { border-color: #7fa34e; } .row.redo { border-color: #c0573a; }
+.reveal { font-size: 14px; color: var(--gold2); }
 @media (max-width: 700px) { .row { grid-template-columns: 1fr; } .takes { grid-column: 1; } }
 </style>
 </head>
 <body>
 <header>
-  <h1>Дубли озвучки — выбор на слух</h1>
+  <h1 id="title">Дубли озвучки — выбор на слух</h1>
   <div class="bar">
     <span id="count">загрузка…</span>
     <label class="chk"><input type="checkbox" id="only"> только без выбора</label>
@@ -76,7 +84,39 @@ function playAll(line) {
   playUrl(ts.shift()); queue = ts;
 }
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+// Партия J (Директор 29.10): записи по одной — «хорошо» / «переделать» и замечание; проба А/Б вслепую.
+const RKEY = "dpd_listen_review_j_v1";
+let marks = JSON.parse(localStorage.getItem(RKEY) || "{}");
+function saveMarks() { localStorage.setItem(RKEY, JSON.stringify(marks)); }
+function renderReview() {
+  const list = document.getElementById("list");
+  const rv = data.review || [];
+  const only = document.getElementById("only").checked;
+  const done = rv.filter(l => marks[l.id] && marks[l.id].v).length;
+  document.getElementById("count").textContent = `записей: ${rv.length}, отмечено: ${done}`;
+  let html = "", group = "";
+  for (const l of rv) {
+    const m = marks[l.id] || {};
+    if (only && m.v) continue;
+    if (l.group !== group) { group = l.group; html += `<h2>${esc(group)}</h2>`; }
+    const vt = l.voice_text && l.voice_text !== l.text ? `<div class="vt"><b>в синтезатор:</b> ${esc(l.voice_text)}</div>` : "";
+    html += `<div class="row ${m.v === "ok" ? "ok" : (m.v === "redo" ? "redo" : "")}" id="r-${esc(l.id)}">
+      <div class="meta"><b>${esc(l.speaker_name)}</b>${esc(l.context)}<br><span class="tag">${esc(l.id)}</span></div>
+      <div><div class="text">${esc(l.text)}</div>${vt}${l.note ? `<div class="note">${esc(l.note)}</div>` : ""}</div>
+      <div class="takes">${l.takes.map(t => `<span class="take"><button data-id="${esc(l.id)}" data-take="${t.take}" class="play">▶ ${t.label ? esc(t.label) : "Слушать"}</button></span>`).join("")}
+        ${l.ab ? `<button class="revealbtn" data-id="${esc(l.id)}">Что где?</button><span class="reveal" id="rv-${esc(l.id)}"></span>` : ""}</div>
+      <div class="mark">${l.ab ? `<label><input type="radio" name="m-${esc(l.id)}" data-id="${esc(l.id)}" value="same" ${m.v === "same" ? "checked" : ""}> разницы не слышу</label>
+          <label><input type="radio" name="m-${esc(l.id)}" data-id="${esc(l.id)}" value="A" ${m.v === "A" ? "checked" : ""}> А лучше</label>
+          <label><input type="radio" name="m-${esc(l.id)}" data-id="${esc(l.id)}" value="B" ${m.v === "B" ? "checked" : ""}> Б лучше</label>` :
+        `<label><input type="radio" name="m-${esc(l.id)}" data-id="${esc(l.id)}" value="ok" ${m.v === "ok" ? "checked" : ""}> хорошо</label>
+          <label><input type="radio" name="m-${esc(l.id)}" data-id="${esc(l.id)}" value="redo" ${m.v === "redo" ? "checked" : ""}> переделать</label>`}
+        <input type="text" data-id="${esc(l.id)}" class="cm" placeholder="что не так (необязательно)" value="${esc(m.c || "")}"></div>
+    </div>`;
+  }
+  list.innerHTML = html || '<div class="empty">Всё отмечено.</div>';
+}
 function render() {
+  if ((data.review || []).length) { renderReview(); return; }
   const only = document.getElementById("only").checked;
   const list = document.getElementById("list");
   const chosen = data.lines.filter(l => choice[l.id]).length;
@@ -105,19 +145,38 @@ function render() {
 }
 document.addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
-  const line = data.lines.find(l => l.id === b.dataset.id);
+  const line = data.lines.find(l => l.id === b.dataset.id) || (data.review || []).find(l => l.id === b.dataset.id);
+  if (b.classList.contains("revealbtn") && line) { document.getElementById("rv-" + line.id).textContent = line.takes.map(t => `${t.label} — ${t.what}`).join("; "); }
   if (b.classList.contains("play") && line) playUrl(line.takes.find(t => t.take == b.dataset.take));
   if (b.classList.contains("all") && line) playAll(line);
 });
 document.addEventListener("change", e => {
+  if ((data.review || []).length && e.target.dataset.id) {
+    const m = marks[e.target.dataset.id] || (marks[e.target.dataset.id] = {});
+    if (e.target.type === "radio") m.v = e.target.value; else m.c = e.target.value;
+    saveMarks(); if (e.target.type === "radio") renderReview(); return;
+  }
   if (e.target.type === "radio") { choice[e.target.dataset.id] = Number(e.target.dataset.take); save(); }
   if (e.target.id === "only") render();
 });
 document.getElementById("autoplay").onclick = () => {
+  if ((data.review || []).length) {
+    const rest = (data.review || []).filter(l => !l.ab && !(marks[l.id] && marks[l.id].v));
+    if (!rest.length) return;
+    document.getElementById("r-" + rest[0].id)?.scrollIntoView({ block: "center" });
+    playUrl(rest[0].takes[0]); queue = rest.slice(1).map(l => l.takes[0]); return;
+  }
   const first = data.lines.find(l => !choice[l.id]) || data.lines[0];
   if (first) { document.getElementById("r-" + first.id)?.scrollIntoView({ block: "center" }); playAll(first); }
 };
 document.getElementById("download").onclick = () => {
+  if ((data.review || []).length) {
+    const out = { what: "Проверка новых записей на слух (Директор), партия J", made: new Date().toISOString(), build: data.generated_at,
+      marks: Object.fromEntries((data.review || []).filter(l => marks[l.id]).map(l => [l.id, { mark: marks[l.id].v || "", note: marks[l.id].c || "", text: l.text }])) };
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
+    a.download = "voice_review_J.json"; a.click(); return;
+  }
   const out = { what: "Выбор дублей озвучки (Директор), для I-T3", made: new Date().toISOString(), build: data.generated_at,
     choices: Object.fromEntries(data.lines.filter(l => choice[l.id]).map(l => [l.id, { take: choice[l.id], speaker: l.speaker, text: l.text }])) };
   const a = document.createElement("a");
@@ -125,7 +184,14 @@ document.getElementById("download").onclick = () => {
   a.download = "takes_choice.json"; a.click();
 };
 document.getElementById("reset").onclick = () => { if (confirm("Стереть выбор в этом браузере?")) { choice = {}; save(); } };
-fetch("takes.json", { cache: "no-store" }).then(r => r.ok ? r.json() : { lines: [] }).then(d => { data = d; render(); })
+fetch("takes.json", { cache: "no-store" }).then(r => r.ok ? r.json() : { lines: [] }).then(d => {
+    data = d;
+    if ((d.review || []).length) {
+      document.getElementById("title").textContent = d.review_title || "Новые записи — проверка на слух";
+      document.getElementById("download").textContent = "Скачать отметки";
+      document.querySelector('label.chk').lastChild.textContent = " только без отметки";
+    }
+    render(); })
   .catch(() => { data = { lines: [] }; render(); });
 </script>
 </body>

@@ -100,11 +100,73 @@ def main() -> int:
     for r in rows:
         r.pop("_rank")
         r.pop("_id")
-    doc = {"generated_at": man.get("updated_at", ""), "lines": rows}
+    review = review_rows(game, out, names, scenes, order, locs)
+    doc = {"generated_at": man.get("updated_at", ""), "lines": rows, "review": review,
+           "review_title": ((read(STORY / "voice.json", {}) or {}).get("listen") or {}).get("title", "")}
     (out / "takes.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8")
     n = sum(len(r["takes"]) for r in rows)
-    print(f"[listen] {out}: строк {len(rows)}, файлов дублей {n}")
+    print(f"[listen] {out}: строк {len(rows)}, файлов дублей {n}; на проверку (партия J): {len(review)}")
     return 0
+
+
+def review_rows(game: dict, out: Path, names: dict, scenes: dict, order: list, locs: dict) -> list:
+    """Партия J (Директор 29.10): новые записи по одной — на проверку на слух вместе с текстом и тем, что ушло в
+    синтезатор (voice_text: капс — акцент, «…» — пауза, [тег] — подача). Какие — data/story/voice.json → listen:
+    {review_since: ISO-время — записи не раньше него, title}. Плюс проба А/Б: исходный MP3 ElevenLabs и наш OGG одной
+    фразы (listen.ab_line) — Директор слушает вслепую, какая где, страница показывает по кнопке."""
+    cfg = ((read(STORY / "voice.json", {}) or {}).get("listen") or {})
+    since = str(cfg.get("review_since", ""))
+    if not since:
+        return []
+    vdir = ROOT / "assets" / "voice" / "ru"
+    notes = {k: v for k, v in (read(STORY / "voice_direction.json", {}) or {}).items() if not k.startswith("_")}
+    rows = []
+    for lid, e in game.items():
+        if "stale" in e or str(e.get("generated_at", "")) < since:
+            continue
+        src = str(e.get("source", ""))
+        rel = src if src and (vdir / src).is_file() else str(e.get("file", ""))
+        if not rel or not (vdir / rel).is_file():
+            continue
+        dst = out / "review" / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(vdir / rel, dst)
+        sid = str(e.get("scene", ""))
+        if sid and sid in scenes:
+            sc = scenes[sid]
+            group = f"{sid} · {sc.get('title', '')}"
+            context = ", ".join(locs.get(x, x) for x in sc.get("locations", []))
+            rank = (order.index(sid), int(e.get("index", 0)), int(e.get("then", -1) if e.get("then") is not None else -1))
+        else:
+            key = str(e.get("key", lid.split(":", 1)[-1]))
+            room = key.split(".", 1)[0]
+            group = "Осмотры и реплики в комнатах"
+            context, rank = f"{locs.get(room.rstrip('d'), room)} — {key}", (10_000, 0, 0)
+        sp = str(e.get("speaker", "") or "narrator")
+        rows.append({"id": lid, "speaker": sp, "speaker_name": names.get(sp, sp), "group": group, "context": context,
+                     "text": e.get("text", ""), "voice_text": e.get("voice_text", ""),
+                     "note": (notes.get(lid) or {}).get("note", ""),
+                     "takes": [{"take": 1, "main": True, ("mp3" if rel.endswith(".mp3") else "ogg"): "review/" + rel}],
+                     "_rank": rank})
+    rows.sort(key=lambda r: (r["_rank"], r["id"]))
+    for r in rows:
+        r.pop("_rank")
+    ab = str(cfg.get("ab_line", ""))
+    e = game.get(ab) or {}
+    src, ogg = str(e.get("source", "")), str(e.get("file", ""))
+    if src and ogg and (vdir / src).is_file() and (vdir / ogg).is_file():
+        for rel in (src, ogg):
+            dst = out / "review" / "ab" / Path(rel).name
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(vdir / rel, dst)
+        rows.insert(0, {"id": "ab:" + ab, "ab": True, "speaker": str(e.get("speaker", "")),
+                        "speaker_name": names.get(str(e.get("speaker", "")), ""), "group": "Проба А/Б: одна фраза в двух видах",
+                        "context": "А и Б — какой где, покажет кнопка «Что где?» после прослушивания",
+                        "text": e.get("text", ""), "voice_text": "",
+                        "note": "Исходный MP3 ElevenLabs (192 кбит/с) и наш OGG после выравнивания громкости",
+                        "takes": [{"take": 1, "label": "А", "mp3": "review/ab/" + Path(src).name, "what": "исходный MP3"},
+                                  {"take": 2, "label": "Б", "ogg": "review/ab/" + Path(ogg).name, "what": "наш OGG"}]})
+    return rows
 
 
 if __name__ == "__main__":
