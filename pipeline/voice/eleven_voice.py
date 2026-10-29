@@ -349,6 +349,61 @@ def error_text(status: int, payload: bytes) -> str:
         return f"HTTP {status}: {payload[:300]!r}"
 
 
+# --- Распознавание речи (проверка слов записи) ------------------------------------------------------------
+# POST /v1/speech-to-text (multipart: model_id, file, language_code, timestamps_granularity) — ElevenLabs Scribe;
+# цена по прайсу ($0,22 за час звука, https://elevenlabs.io/pricing/api). Партия J (29.10): «смеются» пропущено,
+# у Тихона «фраза и текст разные» — до Директора доходит запись, в которой каждое слово на месте.
+STT_MODELS = ("scribe_v2", "scribe_v1")
+
+
+def stt(audio: bytes, filename: str = "line.mp3") -> dict:
+    boundary = "----dpd" + hashlib.sha1(audio[:4096]).hexdigest()[:16]
+    last = ""
+    for model in STT_MODELS:
+        parts = []
+        for k, v in (("model_id", model), ("language_code", "ru"), ("tag_audio_events", "false"), ("timestamps_granularity", "word")):
+            parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'.encode("utf-8"))
+        parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+                     f'Content-Type: audio/mpeg\r\n\r\n'.encode("utf-8") + audio + b"\r\n")
+        parts.append(f"--{boundary}--\r\n".encode("utf-8"))
+        req = urllib.request.Request(API + "/v1/speech-to-text", data=b"".join(parts), method="POST",
+                                     headers={"xi-api-key": api_key(), "Accept": "application/json",
+                                              "Content-Type": f"multipart/form-data; boundary={boundary}"})
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT_S) as r:
+                d = json.loads(r.read().decode("utf-8"))
+                return {"model": model, "text": str(d.get("text", "")),
+                        "words": [w.get("text", "") for w in d.get("words", []) if w.get("type", "word") == "word"]}
+        except urllib.error.HTTPError as e:
+            last = error_text(e.code, e.read())
+            if e.code in (400, 404, 422):
+                continue
+            break
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            last = str(e)
+            break
+    return {"error": last}
+
+
+def _stt_words(t: str) -> list[str]:
+    t = re.sub(r"\[\[([^|\]]+)\|[^\]]*\]\]", r"\1", t)
+    t = re.sub(r"\[[^\]]*\]", " ", t).replace("\u0301", "").lower().replace("ё", "е")
+    return re.findall(r"[a-zа-я0-9]+(?:-[a-zа-я0-9]+)*", t)
+
+
+def stt_compare(text: str, heard: str) -> dict:
+    """Слова текста, которых нет в услышанном (и лишние): по выравниванию последовательностей (difflib)."""
+    import difflib
+    a, b = _stt_words(text), _stt_words(heard)
+    missing, extra = [], []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes():
+        if op in ("delete", "replace"):
+            missing += a[i1:i2]
+        if op in ("insert", "replace"):
+            extra += b[j1:j2]
+    return {"missing": missing, "extra": extra, "ratio": round(difflib.SequenceMatcher(a=a, b=b).ratio(), 3)}
+
+
 def get_json(path: str, params: dict | None = None) -> dict:
     st, _, payload = http("GET", path, params)
     if st != 200:
@@ -568,6 +623,34 @@ def cmd_create_voice(req_path: Path) -> int:
 PROBE_DIR = VOICE_DIR / "probe"
 
 
+def cmd_transcribe(req_path: Path) -> int:
+    """Режим transcribe: записи игры (assets/voice/ru, исходные mp3) — распознать и сверить слова с текстом.
+    Запрос: {"mode": "transcribe", "set": <имя>, "lines": [id…]} → pipeline/voice/state/stt_<имя>.json."""
+    req = read_json(req_path, {})
+    set_name = str(req.get("set", req_path.stem))
+    man = load_manifest(OUT_DIR)["lines"]
+    res, bad = {}, 0
+    for lid in req.get("lines", []):
+        e = man.get(lid)
+        if not e:
+            res[lid] = {"error": "нет в манифесте"}
+            continue
+        src = OUT_DIR / str(e.get("source") or e.get("file", ""))
+        if not src.is_file():
+            res[lid] = {"error": f"нет файла {src.name}"}
+            continue
+        heard = stt(src.read_bytes(), src.name)
+        if heard.get("text"):
+            heard.update(stt_compare(str(e.get("voice_text") or e.get("text", "")), heard["text"]))
+            bad += 1 if heard["missing"] else 0
+        res[lid] = {"text": e.get("text", ""), **heard}
+        log(f"  {lid:40} {heard.get('ratio', '-')}  {heard.get('text', heard.get('error', ''))[:120]}"
+            + (f" | нет: {heard['missing']}" if heard.get("missing") else ""))
+    write_json(STATE_DIR / f"stt_{set_name}.json", {"set": set_name, "updated_at": now_iso(), "lines": res})
+    log(f"[transcribe {set_name}] строк {len(res)}, с пропущенными словами {bad}")
+    return 0
+
+
 def cmd_say(req_path: Path) -> int:
     """Режим say: короткие пробные фразы (не реплики игры) голосом персонажа с выравниванием по символам →
     pipeline/voice/probe/<набор>/<id>.mp3 и <id>.json. Для проверки способов задать ударение (pronounce.py) —
@@ -603,6 +686,13 @@ def cmd_say(req_path: Path) -> int:
             continue
         f = out / f"{it['id']}.mp3"
         f.write_bytes(audio)
+        heard = {}
+        if req.get("stt"):
+            heard = stt(audio, f.name)
+            if heard.get("text"):
+                heard.update(stt_compare(re.sub(r"/[^/]+/", " ", text), heard["text"]))
+            log(f"    распознано: {heard.get('text', heard.get('error', ''))[:160]}"
+                + (f" | нет слов: {heard.get('missing')}" if heard.get("missing") else ""))
         cc = str(info.get("character_cost", ""))
         spent += int(cc) if cc.isdigit() else len(text)
         write_json(out / f"{it['id']}.json", {"id": it["id"], "speaker": sp, "voice_name": spec["voice_name"],
@@ -614,6 +704,7 @@ def cmd_say(req_path: Path) -> int:
                                                "previous_text": it.get("previous_text", ""),
                                                "dropped_params": info.get("dropped_params", []),
                                                "history_item_id": info.get("history_item_id", ""),
+                                               "stt": heard,
                                                "run": os.environ.get("GITHUB_RUN_ID", "local")})
         log(f"  {it['id']:28} {duration_s(f):5.2f} с  выравнивание: {'есть' if info.get('alignment') else 'нет'}  {text}")
     log(f"[say {set_name}] фраз {len(items) - len(failed)}, ошибок {len(failed)}, символов {chars}, кредитов {spent}")
@@ -1254,7 +1345,7 @@ def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "say", "run"])
+    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "say", "transcribe", "run"])
     ap.add_argument("--request")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
@@ -1268,10 +1359,10 @@ def main() -> int:
             return cmd_check()
         if mode == "list":
             return cmd_list()
-        if mode in ("design", "create_voice", "say"):
+        if mode in ("design", "create_voice", "say", "transcribe"):
             if not a.request:
                 raise VoiceError(f"{mode}: нужен --request")
-            return {"design": cmd_design, "create_voice": cmd_create_voice, "say": cmd_say}[mode](Path(a.request))
+            return {"design": cmd_design, "create_voice": cmd_create_voice, "say": cmd_say, "transcribe": cmd_transcribe}[mode](Path(a.request))
         if mode == "generate":
             if not a.request:
                 raise VoiceError("generate: нужен --request")
