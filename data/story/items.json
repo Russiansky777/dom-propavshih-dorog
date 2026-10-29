@@ -201,7 +201,7 @@
       "id": "tar",
       "wrong_target": {"text": "@item.wrong_generic"},
       "name": "Дёготь",
-      "examine": {"text": "@examine.tar", "backdrop": "table"},
+      "examine": {"text": "@examine.tar", "art": "res://assets/closeups/closeup_tar.png", "_j": "J (Р5, партия 10д): баночка дёгтя на верстаке крупно"},
       "inventory": true,
       "source_location": "H2",
       "source_hotspot": "H2.tar_pot",

@@ -1,7 +1,7 @@
 {
   "id": "H4",
   "_art": "Фон H4_bg.png (чердак): слуховое окно, сундук слева, слой H4_fg_boxes.png — пустые коробки на переднем плане справа (окклюдер z=1000). Партия 10б (H17/G44, 24.10): кровать справа (state_bed — всегда, под коробками), открытый сундук (state_chest_open — после attic_chest_open) и язык колокола в нём (state_chest_clapper — пока его не взяли).",
-  "art_source": {"files": {"state_bed.png": "assets/incoming/H4_state_bed_v2.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "I-T3 (партия 10г): кровать ровно у задней стены, ножки на полу (габарит листа [1192, 500, 1508, 597)) — копия tools/import_room_art.py H4"},
+  "art_source": {"files": {"state_far_snow.png": "assets/incoming/H4_state_far_snow.png", "state_bed.png": "assets/incoming/H4_state_bed_v2.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "I-T3 (партия 10г): кровать ровно у задней стены, ножки на полу (габарит листа [1192, 500, 1508, 597)) — копия tools/import_room_art.py H4"},
   "background": {"kind": "interior", "image": "res://assets/rooms/H4/bg.png", "wall": "#4e4238", "floor": "#6a5a44", "accent": "#8a7a5a", "horizon": 620},
   "walkable": [[20, 1070], [20, 735], [150, 718], [570, 678], [600, 632], [760, 622], [1215, 622], [1222, 700], [1450, 700], [1340, 738], [1190, 790], [1140, 808], [1140, 1070]],
   "no_walk_samples": [[350, 650, "сундук"], [1450, 670, "кровать"], [1300, 650, "кровать, левый край"], [1400, 900, "коробки"], [1700, 820, "коробки"], [1750, 1000, "пол за коробками (не дойти)"], [60, 620, "мешок у стены"]],
@@ -14,6 +14,7 @@
   "door_ref": "none — чердак, выход вниз по лестнице, двери в кадре нет",
   "depth": {"top_y": 620, "bottom_y": 1070, "scale_top": 1.2, "scale_bottom": 2.0},
   "layers": [
+    {"id": "far_snow", "image": "res://assets/rooms/H4/state_far_snow.png", "z": 0, "if": ["road_held_both_ends"], "_j": "J (Р2, партия 10д): после узла туман над тем берегом сходит — там уже зима (в стёклах окна чердака)"},
     {"id": "bed", "image": "res://assets/rooms/H4/state_bed.png", "z": 0, "scale": 1.4, "scale_pivot": [1502, 594], "scale_reason": "J (Директор 29.10, стр. 46: «кровать крупнее»): кровать в 1,4 раза больше от правой задней ножки у стойки — длина ≈ 490 px вместо 350 (≈ 2 м против Агаты у стены, была кукольная ≈ 1,35 м); пол под ней вырезан из walkable (Агата не встаёт в кровать)", "_note": "H17/T6: Дунина кровать на чердаке (хотспот bed — только осмотр; спят у печи и у Нины)"},
     {"id": "chest_open", "image": "res://assets/rooms/H4/state_chest_open.png", "z": 0, "if": ["attic_chest_open"], "_note": "G44: сундук открыт после первого клика"},
     {"id": "chest_clapper", "image": "res://assets/rooms/H4/state_chest_clapper.png", "z": 1, "if": ["attic_chest_open"], "unless": ["has_bell_clapper"], "_note": "G44 (решение Директора 24.10): язык колокола лежит в сундуке на чердаке; взят — слой выключен"},

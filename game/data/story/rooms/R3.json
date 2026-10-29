@@ -1,7 +1,7 @@
 {
   "id": "R3",
   "_art": "Партия 3 (ChatGPT 22.10, assets/incoming/_meta_p3/README_RU.txt): R3_bg.png — дальняя опора в снегу вечером: каменная стенка причала, тропа вверх к улице Ольховки, сарайчик переправы, мостки справа, фонарь на столбике; R3_fg_pier.png — передняя каменная стенка (верхний край ≈ y 590–690 экрана, перекрывает ноги у края); R3_fg_rope_stop.png — канат моста и деревянный стопор у старого кольца (передний план). Митя — 3D-фигура Meshy (листы idle/talk, data/actors/mitya.json; тон вечера — lights/R3.json actor_tint), свет его фонаря — glow mitya_lantern в lights/R3.json.",
-  "art_source": {"files": {"bg.png": "assets/incoming/R3_bg.png", "day.png": "assets/incoming/R3_day.png", "fg_pier.png": "assets/incoming/R3_fg_pier.png", "fg_rope_stop.png": "assets/incoming/R3_fg_rope_stop.png"}, "canvas": [1672, 941], "alpha_min": 0,
+  "art_source": {"files": {"bg.png": "assets/incoming/R3_bg.png", "day.png": "assets/incoming/R3_day.png", "fg_pier.png": "assets/incoming/R3_fg_pier.png", "fg_rope_stop.png": "assets/incoming/R3_fg_rope_stop.png", "state_boat_evening.png": "assets/incoming/R3_state_boat_evening.png", "state_boat_day.png": "assets/incoming/R3_state_boat_day.png"}, "canvas": [1672, 941], "alpha_min": 0,
     "_note": "Копии — tools/import_room_art.py R3; слои в координатах фона, (0,0) 1:1"},
   "background": {"kind": "exterior", "image": "res://assets/rooms/R3/bg.png", "wall": "#4a5470", "floor": "#c8ccd8", "accent": "#7a6040", "horizon": 430},
   "walkable": [[232, 680], [232, 640], [420, 610], [600, 585], [680, 520], [700, 432], [790, 422], [880, 520], [1000, 540], [1090, 552], [1200, 578], [1268, 600], [1190, 628], [1000, 652], [800, 672], [600, 684], [400, 686]],
@@ -12,7 +12,9 @@
   "_depth_note": "Рост Агаты = 345 px × scale (rooms/_index.json agata_ref). Дверь сарайчика (порог y 500, верх y 380, ≈ 1,95 м) — 0,3 × 345 ≈ 104 px при ожидаемых 102; у края опоры (y ≈ 680) ≈ 265 px: камни стенки ≈ 100 px.",
   "height_refs": [{"what": "дверь сарайчика (порог y 500, верх y 380)", "y": 500, "px": 120, "m": 1.95, "door": true}],
   "layers": [
+    {"id": "boat_evening", "image": "res://assets/rooms/R3/state_boat_evening.png", "if": ["started_M18p"], "unless": ["boat_shuttle_open"], "_j": "J (Директор 29.10, стр. 189; Р11 — где лодка, там Пелагея; T9 — со свободного дня лодка с Пелагеей у поворота): лодка у дальней опоры с переправы M18p до свободного дня (как Пелагея здесь). Партия 10д: вечер — под дневной картиной (днём её закрывает day)"},
     {"id": "day", "image": "res://assets/rooms/R3/day.png", "unless": ["tod_day1", "tod_day2", "tod_d3_evening"], "_note": "Дальняя опора днём (дни 3–4 до вечера третьего дня) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный кадр поверх R3_bg, ракурс прежний; передние слои опоры и каната поверх. Вечер второго дня (Митя с фонарём) — прежний рисунок."},
+    {"id": "boat_day", "image": "res://assets/rooms/R3/state_boat_day.png", "if": ["started_M18p"], "unless": ["boat_shuttle_open", "tod_day1", "tod_day2", "tod_d3_evening"], "_j": "J, партия 10д: та же лодка днём — поверх day"},
     {"id": "fg_pier", "image": "res://assets/rooms/R3/fg_pier.png", "occluder": true, "z": 1080, "_note": "передняя стенка опоры: у края верхней площадки перекрывает ноги"},
     {"id": "fg_rope_stop", "image": "res://assets/rooms/R3/fg_rope_stop.png", "occluder": true, "z": 1080, "_note": "канат моста и стопор в старом кольце — передний план"}
   ],

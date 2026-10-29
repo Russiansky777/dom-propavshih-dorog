@@ -1,7 +1,7 @@
 {
   "id": "O3",
   "_art": "Горница Нины (партия 3, ChatGPT 22.10, assets/incoming/_meta_p3): O3_bg.png — стол с дорожкой, свеча, чернильница, книга, Дунино зеркальце в деревянной рамке на столе, стул, кровать слева, шкаф, ходики на стене (оси стрелок 942,201, маятника 942,259 — холст 1672×941), окно в снегу, лавка под окном, икона. Слои ходиков и пламя свечи — те же файлы, что в мамином зеркале блока 2 (game/assets/closeups/O3_*, tools/import_closeups.py): одна копия на игру, комната ссылается на неё. Ночь — нарисованный слой night (партия 8, O3_night) и свет свечи (lights/O3.json); утро третьего дня — картина как написана.",
-  "art_source": {"files": {"night.png": "assets/incoming/O3_night.png", "state_notches_left.png": "assets/incoming/O3_state_notches_left.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Партия 8: только ночь горницы — полный холст к O3_bg, (0,0), полупрозрачный по всему кадру (alpha_min 0: не чистить). Фон и ходики — общие с крупным планом мамина зеркала (game/assets/closeups/O3_*, tools/import_closeups.py). Копия — tools/import_room_art.py O3"},
+  "art_source": {"files": {"night.png": "assets/incoming/O3_night.png", "state_notches_left.png": "assets/incoming/O3_state_notches_left.png", "state_table_no_mirror.png": "assets/incoming/O3_state_table_no_mirror.png", "state_table_no_mirror_night.png": "assets/incoming/O3_state_table_no_mirror_night.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Партия 8: только ночь горницы — полный холст к O3_bg, (0,0), полупрозрачный по всему кадру (alpha_min 0: не чистить). Фон и ходики — общие с крупным планом мамина зеркала (game/assets/closeups/O3_*, tools/import_closeups.py). Копия — tools/import_room_art.py O3"},
   "background": {"kind": "interior", "image": "res://assets/closeups/O3_bg.png", "wall": "#6a5040", "floor": "#5a3a24", "accent": "#8a6a4a", "horizon": 730},
   "walkable": [[1050, 745], [1290, 742], [1300, 775], [1755, 780], [1790, 800], [1840, 868], [1915, 885], [1915, 1075], [1060, 1075], [1050, 1000]],
   "no_walk_samples": [[600, 900, "стол"], [880, 900, "стул"], [1500, 700, "лавка под окном"], [150, 650, "кровать"], [1830, 700, "столик с кувшином"]],
@@ -17,7 +17,9 @@
     {"id": "hand_hour", "image": "res://assets/closeups/O3_clock_hand_hour.png", "pivot": [942, 201], "rotation_deg": 250.0, "spin": {"deg_per_s": 0.008333}, "_note": "часовая стрелка: круг за 12 часов"},
     {"id": "notches_left", "image": "res://assets/rooms/O3/state_notches_left.png", "_note": "G32: годовые зарубки Ульяны ножом на левой стойке у ходиков (партия 9, O3_state_notches_left [823,305,866,444) фона, (0,0) 1:1: восемь свежих и три старые); правая стойка не тронута"},
     {"id": "village_list", "image": "res://assets/rooms/O3/state_village_list.png", "if": ["done_M21"], "_note": "H40 (Директор 24.10: «список деревни на столе — не видно его»): лист списка на столе у зеркальца, tools/make_h_layers.py"},
+    {"id": "table_no_mirror", "image": "res://assets/rooms/O3/state_table_no_mirror.png", "unless": ["nina_mirror_on_table", "done_M19c", "tod_dark"], "_j": "J (стр. 151, партия 10д): стол без зеркальца, пока Нина его не положила (M19c; done_M19c — для сохранений до этой правки)"},
     {"id": "night", "image": "res://assets/rooms/O3/night.png", "if": ["tod_dark"], "modulate": "#ffffffc4", "_g30": "G30 (Директор 23.10: «мало света»): ночной слой (полупрозрачный по всему кадру) ослаблен до ~77 % и добавлен тёплый свет свечи и лампы Варвары (lights/O3.json candle_room, lamp_varvara)", "_note": "Вечер и ночь в горнице (M19–M20, вечер третьего дня): свеча и лампадка, тёмное окно — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): рассчитанный цветовой слой для O3_bg (полный холст, (0,0)), поверх ходиков, под пламенем свечи; вместо прежнего тона движка. Фигуры темнеют светом свечи (lights/O3.json candle_tone), время суток эти состояния не тонирует (time/O3.json)."},
+    {"id": "table_no_mirror_night", "image": "res://assets/rooms/O3/state_table_no_mirror_night.png", "if": ["tod_dark"], "unless": ["nina_mirror_on_table", "done_M19c"], "_j": "J (стр. 151, партия 10д): то же ночью — поверх ночного слоя"},
     {"id": "candle_flame", "image": "res://assets/closeups/O3_candle_flame.png", "if": ["tod_dark"], "_note": "свеча горит вечером и ночью; мерцание — свет lights/O3.json"}
   ],
   "effects": [],
@@ -60,7 +62,7 @@
       "look": "@O3.clock.look"
     },
     {
-      "id": "dunya_mirror", "kind": "object", "label": "@O3.dunya_mirror.label", "rect": [338, 455, 110, 150], "stand": [1075, 840], "draw": false,
+      "id": "dunya_mirror", "kind": "object", "label": "@O3.dunya_mirror.label", "rect": [338, 455, 110, 150], "stand": [1075, 840], "draw": false, "visible_if": ["nina_mirror_on_table"], "_j151": "J (стр. 151): зеркальце на столе — с того, как Нина его положила (M19c)",
       "look": "@O3.dunya_mirror.look",
       "states": [{"if": ["knows_nina_saw_agata"], "label": "@O3.dunya_mirror.label_known"}]
     },

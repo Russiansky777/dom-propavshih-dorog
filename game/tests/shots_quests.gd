@@ -20,7 +20,7 @@ const SHOTS := ["q02_O1_map", "q02_map_route", "q02_map_route_two", "q02_map_don
 	"b8_M1_closeup", "b8_Z3_day", "b8_R2_day", "b8_R3_day", "b8_H2_glass", "b8_H2_glass_closeup", "b8_ep_lesson", "b8_ep_dinner",
 	"b8_ep_beam_roads", "b8_examine_watch", "b8_examine_journal", "b8_examine_key",
 	"j_view_H1_coat", "j_view_O3_letters", "j_view_O4_board",
-	"j_ttt", "j_rhythm", "j_fish_wait", "j_fish_fight", "j_fish_caught"]
+	"j_ttt", "j_rhythm", "j_fish_wait", "j_fish_fight", "j_fish_caught", "j_signal_board", "j_tar"]
 const FREE := ["house_unlocked", "house_open", "done_M21b", "done_M22", "met_ilya", "met_ulyana", "met_nina", "morning_day3", "free_walk_day3", "school_path_open"]
 
 
@@ -176,6 +176,16 @@ func _shot(n: String) -> void:
 								pn.call("press", float(pn.call("probe")["tension"]) < mid)
 								await process_frame
 							await _frames(40)
+		"j_signal_board":   # Р14, партия 10д: the painted board, the lines carved by the game
+			await _state(["seen_ferry_instruction"], "R1", "default", false)
+			var hs = rm.current_room.get_node_or_null("Hotspots/instruction")
+			if hs != null:
+				sr.open_view(hs.data["view"], "instruction")
+			await _frames(60)
+		"j_tar":   # Р5, партия 10д: the tar jar examined
+			await _state(["has_tar"], "H2", "from_H1", false)
+			await _examine("tar")
+			await _frames(30)
 		"b8_Z3_day":
 			await _state(["evening_dusk", "done_M15a", "done_M15", "done_M17", "done_M18", "done_M19", "done_M20"], "Z3")
 		"b8_R2_day":

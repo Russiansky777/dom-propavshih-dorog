@@ -78,6 +78,11 @@ WIDTH.update({n: 1672 for n in BATCH10B_BELL})
 # участок фона H3 [0, 20, 500, 610) ×2 (data/story/rooms/H3.json → mirror_home.view.photo), без уменьшения.
 BATCH10G = ["closeup_h3_old_photo_agata"]
 WIDTH.update({n: 1000 for n in BATCH10G})
+# Партия 10д (партия J, 29.10, assets/incoming/_meta_p10d/README_RU.txt): дощечка «Порядок сигналов» во весь кадр
+# (R1.json → instruction.view: строки вырезает игра на гладком поле холста [470,180,1200,770)), баночка дёгтя для
+# «Рассмотреть» (items.json → tar.examine.art).
+BATCH10D = ["closeup_signal_board", "closeup_tar"]
+WIDTH.update({"closeup_signal_board": 1672, "closeup_tar": 1440})
 
 
 def target_size(w: int, h: int, name: str) -> tuple[int, int]:

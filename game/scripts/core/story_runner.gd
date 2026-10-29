@@ -1748,6 +1748,8 @@ func mechanic_event(event_name: String) -> bool:
 	var hotspot_id := String(mechanic.get("hotspot", ""))
 	for f in ev.get("sets", []):
 		GameState.set_flag(String(f), true)
+	for f in ev.get("clears", []):   # J (стр. 189, Р11): the boat leaves the far pier — `boat_at_far` off
+		GameState.set_flag(String(f), false)
 	if ev.has("text"):
 		var t = ev["text"]
 		for k in (t if t is Array else [t]):

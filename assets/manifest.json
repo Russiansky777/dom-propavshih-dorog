@@ -2489,7 +2489,7 @@
     },
     {
       "id": "closeup_signal_board",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "closeup",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2508,7 +2508,7 @@
     },
     {
       "id": "R3_state_boat_evening",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "prop_states",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2527,7 +2527,7 @@
     },
     {
       "id": "R3_state_boat_day",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "prop_states",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2546,7 +2546,7 @@
     },
     {
       "id": "H2_state_bell_hung",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "background_fix",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2565,7 +2565,7 @@
     },
     {
       "id": "O3_state_table_no_mirror",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "background_fix",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2584,7 +2584,7 @@
     },
     {
       "id": "O3_state_table_no_mirror_night",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "background_fix",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2603,7 +2603,7 @@
     },
     {
       "id": "Z3_state_far_snow_dusk",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "prop_states",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2622,7 +2622,7 @@
     },
     {
       "id": "M1_state_far_snow",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "prop_states",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2641,7 +2641,7 @@
     },
     {
       "id": "H4_state_far_snow",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "prop_states",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2660,7 +2660,7 @@
     },
     {
       "id": "icon_tar",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "icon",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
@@ -2679,7 +2679,7 @@
     },
     {
       "id": "closeup_tar",
-      "status": "requested",
+      "status": "imported", "imported": "2026-10-29 (партия J; README — assets/incoming/_meta_p10d/README_RU.txt)",
       "kind": "closeup",
       "block": "Партия 10д (ChatGPT, партия J, 29.10)",
       "batch": "10d",
