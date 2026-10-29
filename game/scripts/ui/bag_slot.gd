@@ -120,22 +120,25 @@ func _draw() -> void:
 
 
 func _draw_pocket(r: Rect2) -> void:
+	# J (Director 29.10, стр. 208: «ближе к стилю паузы»): a niche cut into the board — a dark recess with its upper
+	# edge in shadow and a fine gold bead round it, as on the pause board's carvings (was a stitched leather pocket).
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = SELECT_FILL if selected else LEATHER_POCKET
-	sb.set_corner_radius_all(7)
+	sb.bg_color = SELECT_FILL if selected else Color(0.075, 0.046, 0.028, 0.92)
+	sb.set_corner_radius_all(4)
 	sb.set_border_width_all(1)
-	sb.border_color = LEATHER_EDGE
+	sb.border_color = Color(0.03, 0.018, 0.01)
 	if selected:
 		sb.shadow_color = GLOW
 		sb.shadow_size = 9
 	draw_style_box(sb, r)
-	# Pocket opening: a shadowed band along the top edge with a lighter lip under it.
-	draw_rect(Rect2(r.position + Vector2(3, 3), Vector2(r.size.x - 6, 8)), Color(0, 0, 0, 0.30))
-	draw_line(Vector2(5, 12), Vector2(r.size.x - 5, 12), Color(1.0, 0.88, 0.66, 0.10), 1.0)
-	# Stitched seam around the pocket.
-	_dashed_rect(r.grow(-4.0), THREAD, 1.4, 4.0)
-	# Bottom highlight: worn leather catches the light.
-	draw_line(Vector2(7, r.size.y - 2), Vector2(r.size.x - 7, r.size.y - 2), Color(1.0, 0.9, 0.7, 0.07), 1.0)
+	draw_rect(Rect2(r.position + Vector2(2, 2), Vector2(r.size.x - 4, 7)), Color(0, 0, 0, 0.38))   # the cut's shadow
+	var bead := StyleBoxFlat.new()
+	bead.draw_center = false
+	bead.set_border_width_all(1)
+	bead.border_color = Color(0.93, 0.76, 0.45, 0.55)
+	bead.set_corner_radius_all(3)
+	draw_style_box(bead, r.grow(-3.0))
+	draw_line(Vector2(6, r.size.y - 2), Vector2(r.size.x - 6, r.size.y - 2), Color(1.0, 0.86, 0.6, 0.12), 1.0)   # lit lower lip
 	if selected:
 		var rim := StyleBoxFlat.new()
 		rim.draw_center = false

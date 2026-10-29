@@ -31,11 +31,13 @@ const FLY_SECONDS: float = 0.55
 const FLY_STAGGER: float = 0.12
 const TOOLTIP_W: float = 420.0
 
+const FRAME_BAND := 9.0
 const LEATHER := Color(0.30, 0.185, 0.105)
 const LEATHER_DARK := Color(0.12, 0.075, 0.045)
 const THREAD := Color(0.84, 0.70, 0.47, 0.5)
 
 static var _icon_cache: Dictionary = {}
+var _planks: AtlasTexture = null
 
 var page: int = 0
 var slots: Array[BagSlot] = []
@@ -62,19 +64,19 @@ var _batch_reset_queued: bool = false
 
 func _init() -> void:
 	name = "Bag"
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = LEATHER
-	sb.set_corner_radius_all(10)
-	sb.set_border_width_all(2)
-	sb.border_color = LEATHER_DARK
-	sb.shadow_color = Color(0, 0, 0, 0.35)
-	sb.shadow_size = 4
-	sb.shadow_offset = Vector2(0, 2)
-	sb.content_margin_left = 8
-	sb.content_margin_right = 8
-	sb.content_margin_top = 4
-	sb.content_margin_bottom = 4
+	# J (Director 29.10, стр. 208: «рамка предметов — ещё ближе к стилю паузы»): the strip is a small board of the pause
+	# menu — its dark planks in the game's carved frame with the gold bead (drawn in _draw), not stitched leather.
+	var sb := StyleBoxEmpty.new()
+	sb.content_margin_left = FRAME_BAND + 6
+	sb.content_margin_right = FRAME_BAND + 6
+	sb.content_margin_top = FRAME_BAND - 2
+	sb.content_margin_bottom = FRAME_BAND - 2
 	add_theme_stylebox_override("panel", sb)
+	var src := MenuConfig.texture("pause_panel.png")
+	if src != null:
+		_planks = AtlasTexture.new()
+		_planks.atlas = src
+		_planks.region = Rect2(330, 712, 1010, 120)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
 	_row = HBoxContainer.new()
@@ -291,11 +293,13 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
-	# Stitched seam along the strip and a worn highlight on its upper edge.
-	var r := Rect2(Vector2.ZERO, size).grow(-5.0)
-	draw_line(Vector2(12, 3), Vector2(size.x - 12, 3), Color(1.0, 0.9, 0.7, 0.10), 1.0)
-	for e in [[r.position, Vector2(r.end.x, r.position.y)], [Vector2(r.position.x, r.end.y), r.end]]:
-		draw_dashed_line(e[0] + Vector2(6, 0), e[1] - Vector2(6, 0), THREAD, 1.3, 5.0)
+	# J (стр. 208): the carved frame with its gold bead round the pause board's planks.
+	var inner := Rect2(Vector2(FRAME_BAND, FRAME_BAND), size - Vector2(FRAME_BAND, FRAME_BAND) * 2.0)
+	CarvedFrame.draw_frame(self, inner, FRAME_BAND)
+	if _planks != null:
+		draw_texture_rect(_planks, inner, false, Color(0.8, 0.8, 0.8, 1.0))
+	else:
+		draw_rect(inner, CarvedFrame.WOOD)
 	# Page dots under the pockets when the bag has more than one page.
 	var n := pages()
 	if n > 1:
