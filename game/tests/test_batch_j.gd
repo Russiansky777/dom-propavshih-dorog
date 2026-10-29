@@ -104,6 +104,7 @@ func _run() -> void:
 	await _test("J-D1 talking (стр. 89, 157): Agata looks at a person's feet, not above them (no more back to the screen); the person turns to her", _test_facing)
 	await _test("J-D2 M18 at the far pier (стр. 139, 140, 143): mother and son turn to each other at once, step apart after the hug, Mitya walks up the path", _test_m18_staging)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
+	await _test("J-F2 the mill's schedule (стр. 80): the words stay on the sheet; the whole close-up in the carved frame, «Закрыть» below it", _test_schedule)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -743,6 +744,34 @@ func _test_mirror_frames() -> void:
 	_check(sr.mechanic_open and fr != null and not (fr is Panel), "mother's mirror: the carved frame, not the flat brown panel")
 	_check(mvn.find_child("Clamp", true, false) == null, "no grey handle at the side")
 	sr.call("close_mechanic")
+	await _frames(2)
+
+
+func _test_schedule() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["house_unlocked", "done_N01", "done_M09", "met_pavel"])
+	await _enter("M1")
+	await _drain()
+	var h: Node = _hotspot("schedule")
+	sr.open_view(h.data["view"], "schedule")
+	await _wait(1.2)
+	var blocks: Array = []
+	for n in cp.find_children("Text*", "Label", true, false):
+		if n is HandWriting:
+			blocks.append(n)
+	_check(blocks.size() == 2, "two written blocks on the sheet (shifts, signals): %d" % blocks.size())
+	for b in blocks:
+		var hw: HandWriting = b
+		hw.call("_fit")
+		_check(hw.written_bottom() <= hw.fit_height + 0.5, "%s ends on the sheet: %.0f of %.0f px" % [hw.name, hw.written_bottom(), hw.fit_height])
+	var fr: Node = cp.find_child("Frame", true, false)
+	_check(fr is Control, "the close-up sits in the carved frame")
+	var close_btn: Control = cp.get("close_button")
+	if fr is Control and close_btn != null:
+		var fb := (fr as Control).get_global_rect().end.y + 16.0
+		_check(close_btn.get_global_rect().position.y >= fb - 1.0, "«Закрыть» below the frame: %.0f ≥ %.0f" % [close_btn.get_global_rect().position.y, fb])
+	sr.close_view()
 	await _frames(2)
 
 

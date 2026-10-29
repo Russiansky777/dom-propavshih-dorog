@@ -12,6 +12,10 @@ extends Label
 ## (px of the block, before scaling), "hand_jitter" (1 — normal), "hand_slant_deg" (extra lean, default 0),
 ## "carved" — cut with a knife into wood (Р14, J: the signal board): the ink is the groove's shadow, each letter with a
 ## pale lit lower edge, no fading of the ink through a word.
+## Fit (J, стр. 80: the mill's schedule ran off its sheet onto the logs): a block without a ruling that would run past
+## `fit_height` (its box on the sheet; 0 — the Label's own height) is set tighter, step by step, until it fits — blank
+## lines first to half a line, then the lines closer (down to 0.8 of the font's height), then the letters smaller
+## (down to 0.6 of the size). A block that fits is drawn exactly as before.
 
 var ink: Color = Color(0.17, 0.13, 0.09)
 var line_pitch: float = 0.0       # 0 — by the font (1.18 × its height)
@@ -21,8 +25,12 @@ var slant_deg: float = 0.0
 var seed_value: int = 0
 var center_lines: bool = false
 var carved: bool = false
+var fit_height: float = 0.0       # the block's box height to stay inside (0 — the Label's height)
 
 var _lines: Array = []            # [{"words": [String], "w": float}]
+var _fit_fs: int = 0              # a smaller size found by _fit (0 — the theme's)
+var _pitch_k: float = 1.18        # line pitch, × the font's height (no ruling)
+var _blank_k: float = 1.0         # a blank line's share of the pitch
 
 
 ## Turns a Label-like block into handwriting: the hand font at `size`, the ink, the ruling (scaled by `k`).
@@ -53,7 +61,7 @@ func _font() -> Font:
 
 
 func _fs() -> int:
-	return get_theme_font_size("font_size")
+	return _fit_fs if _fit_fs > 0 else get_theme_font_size("font_size")
 
 
 func _wrap() -> void:
@@ -86,17 +94,59 @@ func line_total() -> int:
 func baseline_of(i: int) -> float:
 	var f := _font()
 	var fs := _fs()
-	var pitch := line_pitch if line_pitch > 0.0 else f.get_height(fs) * 1.18
+	var pitch := line_pitch if line_pitch > 0.0 else f.get_height(fs) * _pitch_k
 	var first := first_baseline
 	if first <= 0.0:
 		first = f.get_ascent(fs)
 		if vertical_alignment == VERTICAL_ALIGNMENT_CENTER:
-			first += maxf(0.0, (size.y - pitch * (_lines.size() - 1) - f.get_height(fs)) * 0.5)
-	return first + pitch * i
+			first += maxf(0.0, (size.y - pitch * _units(_lines.size() - 1) - f.get_height(fs)) * 0.5)
+	return first + pitch * _units(i)
+
+
+## Pitches from the first line to line i: a blank line takes `_blank_k` of one (only without a ruling).
+func _units(i: int) -> float:
+	if line_pitch > 0.0 or _blank_k >= 1.0:
+		return float(i)
+	var u := 0.0
+	for j in mini(i, _lines.size()):
+		u += _blank_k if (_lines[j]["words"] as Array).is_empty() else 1.0
+	return u
+
+
+## The lowest point of the written block (block px).
+func written_bottom() -> float:
+	if _lines.is_empty():
+		return 0.0
+	return baseline_of(_lines.size() - 1) + _font().get_descent(_fs())
+
+
+## Wraps the text and, with no ruling, sets it tighter until it stays inside its box (стр. 80).
+func _fit() -> void:
+	_fit_fs = 0
+	_pitch_k = 1.18
+	_blank_k = 1.0
+	_wrap()
+	var room := fit_height if fit_height > 0.0 else size.y
+	if line_pitch > 0.0 or room <= 0.0:
+		return
+	var base := get_theme_font_size("font_size")
+	var min_fs := maxi(8, int(round(base * 0.6)))
+	for _step in 60:
+		if written_bottom() <= room:
+			return
+		if _blank_k > 0.5:
+			_blank_k = 0.5
+		elif _pitch_k > 0.8:
+			_pitch_k = maxf(0.8, _pitch_k - 0.04)
+		elif _fs() > min_fs:
+			_fit_fs = _fs() - 1
+			_wrap()
+		else:
+			return
 
 
 func _draw() -> void:
-	_wrap()
+	_fit()
 	var f := _font()
 	var fs := _fs()
 	var rng := RandomNumberGenerator.new()

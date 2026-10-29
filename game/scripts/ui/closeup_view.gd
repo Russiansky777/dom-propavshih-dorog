@@ -56,6 +56,8 @@ var prev_button: Button = null
 var next_button: Button = null
 var _into: Control = null        # where the builders put sheets: the view itself or the page being built
 var close_button: Button = null
+const FRAME_MIN_W := 1200.0   # a picture this wide and up is a whole close-up — in the carved frame (стр. 80)
+const FRAME_BAND := 16.0
 var glass_screen_rect: Rect2 = Rect2()
 var _player: Node2D = null
 var _player_layer_saved: int = -1
@@ -190,7 +192,7 @@ func _build() -> void:
 	close_button.name = "Close"
 	close_button.text = StoryData.text(String(spec.get("close_label", "@ui.close")))
 	close_button.size = Vector2(200, 56)
-	close_button.position = Vector2(1680, 990)
+	close_button.position = Vector2(1680, 1010)   # below the carved frame of a whole close-up (стр. 80)
 	close_button.focus_mode = Control.FOCUS_NONE
 	close_button.theme = t
 	close_button.pressed.connect(func(): StoryRunner.close_view())
@@ -213,7 +215,7 @@ func _build_page_buttons(t: Theme) -> void:
 	prev_button.name = "Prev"
 	prev_button.text = StoryData.text("@ui.page_prev")
 	prev_button.size = Vector2(200, 56)
-	prev_button.position = Vector2(1240, 990)
+	prev_button.position = Vector2(1240, 1010)
 	prev_button.focus_mode = Control.FOCUS_NONE
 	prev_button.theme = t
 	prev_button.pressed.connect(func(): turn_page(-1))
@@ -222,7 +224,7 @@ func _build_page_buttons(t: Theme) -> void:
 	next_button.name = "Next"
 	next_button.text = StoryData.text("@ui.page_next")
 	next_button.size = Vector2(200, 56)
-	next_button.position = Vector2(1460, 990)
+	next_button.position = Vector2(1460, 1010)
 	next_button.focus_mode = Control.FOCUS_NONE
 	next_button.theme = t
 	next_button.pressed.connect(func(): turn_page(1))
@@ -482,7 +484,20 @@ func _build_picture(p: Dictionary) -> void:
 	holder.rotation = deg_to_rad(float(p.get("angle_deg", 0.0)))
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_into.add_child(holder)
+	# J, стр. 80 («оформить в стиле игры, как пауза; глобально — что ещё не в стиле»): a whole painted close-up (as wide
+	# as the screen's middle, FRAME_MIN_W and up) sits in the carved frame of the pause board and the bag, not on a
+	# flat shadow; `"frame": "carved"` / `"none"` in the data says it for any picture.
+	var framed := String(p.get("frame", "carved" if w >= FRAME_MIN_W else "none")) == "carved"
+	if framed:
+		var fr := Control.new()
+		fr.name = "Frame"
+		fr.size = Vector2(w, h)
+		fr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		fr.draw.connect(func(): CarvedFrame.draw_frame(fr, Rect2(Vector2.ZERO, Vector2(w, h)), FRAME_BAND))
+		holder.add_child(fr)
 	for i in 2:
+		if i == 0 and framed:
+			continue
 		var tr := TextureRect.new()
 		tr.name = "Shadow" if i == 0 else "Image"
 		tr.texture = tex
@@ -712,6 +727,7 @@ func _build_sheet_words(sheet: Control, p: Dictionary) -> void:
 			body.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			if hand:
 				(body as HandWriting).setup(b.merged({"ink": p.get("ink", "#2e2a24")}), int(b.get("font_size", p.get("font_size", 26))))
+				(body as HandWriting).fit_height = maxf(box.end.y - y, 10.0)   # стр. 80: stays on its sheet
 			sheet.add_child(body)
 		i += 1
 

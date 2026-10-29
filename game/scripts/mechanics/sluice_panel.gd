@@ -236,4 +236,4 @@ class RailDraw extends Control:
 	func _draw() -> void:
 		if panel == null or panel.logic == null:
 			return
-		CarvedFrame.draw_rail(self, Rect2(Vector2.ZERO, size), panel.logic.level, panel.logic.levels, panel.work_level(), UiTheme.font("head_bold"))
+		CarvedFrame.draw_rail(self, Rect2(Vector2.ZERO, size), panel.logic.level, panel.logic.levels, panel.work_level(), UiTheme.font("head_bold"), Time.get_ticks_msec() / 1000.0)
