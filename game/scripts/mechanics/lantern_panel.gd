@@ -1,6 +1,7 @@
 extends MechanicPanel
 ## M16, three lights from the pier (R1): Pelageya's signal lantern; each click opens the shutter for a
-## moment — a flash. Three flashes and a pause: from the far bank, dark for a year, three lights answer —
+## moment — a flash. Three flashes and a pause: from the far bank, dark for a year, a lantern answers the same way
+## (J, стр. 130: one light flashes three times and stays lit) —
 ## event "answered" (`far_lights_answered`). The snow over there (it is winter there already) shows since the
 ## knot (`road_held_both_ends`, polish 22.10 A1: the road comes back at the knot, the lights only answer). Any other count — Pelageya
 ## says how it is done, the count starts again, no penalty.
@@ -61,11 +62,16 @@ func build() -> void:
 	for sh in spec.get("far_snow", [[1320, 330, 420, 34], [180, 330, 260, 30]]):
 		far_snow.add_child(PlaceholderArt.shape_node({"type": "glow", "center": [float(sh[0]) * k, float(sh[1]) * k],
 			"r": float(sh[2]) * k, "ry": float(sh[3]) * k, "color": "#dfe6f2c0"}))
-	for q in spec.get("far_lights", [[1090, 338], [1290, 326], [1480, 342]]):
-		var gl := PlaceholderArt.glow(v2(q) * k, 30.0, Color(1.0, 0.8, 0.42, 0.95))
-		gl.visible = false
-		add_child(gl)
-		far_lights.append(gl)
+	# J (Director 29.10, стр. 130): the far bank answers like us — one lantern flashes `count` times, then stays lit
+	# (it was three separate lights). `far_light` [x, y]; the old `far_lights` list — its middle point.
+	var fl: Array = spec.get("far_light", [])
+	if fl.is_empty():
+		var old: Array = spec.get("far_lights", [[1290, 326]])
+		fl = old[old.size() / 2]
+	var gl := PlaceholderArt.glow(v2(fl) * k, 30.0, Color(1.0, 0.8, 0.42, 0.95))
+	gl.visible = false
+	add_child(gl)
+	far_lights.append(gl)
 	var lb: Array = spec.get("lantern_box", [560, 60, 420, 820])
 	lantern_hit = hit_area(Rect2(Vector2(float(lb[0]), float(lb[1])) * k, Vector2(float(lb[2]), float(lb[3])) * k), _on_lantern_input, "LanternHit")
 	var fp := v2(spec.get("far_label_pos", [1250, 300]))
@@ -79,7 +85,7 @@ func build() -> void:
 	far_snow.modulate.a = 0.55 if flag("road_held_both_ends") else 0.0
 	if flag("far_lights_answered"):
 		answered_sent = true
-		_show_answer(1.0)
+		_show_answer(INF)
 	_update_marks()
 
 
@@ -193,9 +199,9 @@ func tick(delta: float) -> void:
 				or (flashes < need and quiet >= float(spec.get("pause_s", 3.0))):
 			_judge()
 	if _answer_t >= 0.0 and not answered_sent:
-		var k := clampf((clock - _answer_t) / float(spec.get("answer_s", 2.4)), 0.0, 1.0)
-		_show_answer(k)
-		if k >= 1.0:
+		var t := clock - _answer_t
+		_show_answer(t)
+		if t >= answer_seconds():
 			answered_sent = true
 			event("answered")
 
@@ -224,10 +230,28 @@ func _update_marks() -> void:
 	marks.text = " ".join(parts)
 
 
-## The far bank answers: three lights one after another (the snow is there since the knot).
-func _show_answer(k: float) -> void:
-	for i in far_lights.size():
-		far_lights[i].visible = k >= 0.25 + 0.2 * i
+## The far bank answers (стр. 130): after `answer_delay_s` one lantern flashes `count` times — `answer_on_s` lit,
+## `answer_off_s` dark — then stays lit (the snow is there since the knot). `t` — seconds since the answer began;
+## INF — answered before (the panel reopened): lit.
+func _show_answer(t: float) -> void:
+	var lit_now := true
+	var delay := float(spec.get("answer_delay_s", 0.8))
+	var on_s := float(spec.get("answer_on_s", spec.get("open_s", 0.45)))
+	var period := on_s + float(spec.get("answer_off_s", 0.55))
+	var n := int(spec.get("count", 3))
+	if t < delay:
+		lit_now = false
+	elif t < delay + n * period:
+		lit_now = fmod(t - delay, period) < on_s
+	for l in far_lights:
+		l.visible = lit_now
+
+
+## Seconds from the right count to the event «answered»: the flashes, then the light held a moment.
+func answer_seconds() -> float:
+	var on_s := float(spec.get("answer_on_s", spec.get("open_s", 0.45)))
+	var period := on_s + float(spec.get("answer_off_s", 0.55))
+	return float(spec.get("answer_delay_s", 0.8)) + int(spec.get("count", 3)) * period + float(spec.get("answer_hold_s", 1.0))
 
 
 func probe() -> Dictionary:

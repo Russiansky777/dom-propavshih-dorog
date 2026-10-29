@@ -9,8 +9,11 @@ extends SceneTree
 ##   A5 (стр. 112): once the office is open the bell does not open the mirror's close-up again;
 ##   A6 (стр. 176): at the end of M23a Nina walks off toward the river, not into her own porch;
 ##   A8 (стр. 175): Agata answers Ulyana «никто больше не потеряется».
+##   A9 (Р11): where the boat is, there is Pelageya — after the knot she rows it to her pier (M16s–M16 there), after the
+##      lights back to the plate; the turn and the pier never show the boat without her;
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
+##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
 ##   E1 (Р2): river fog over the far bank in R1 / Z3 / M1 / H4 until the knot (road_held_both_ends); the knot tied
 ##      with the room on screen — the fog lifts (eases out, then hidden); a load after the knot — no fog at once;
 ##      at dusk the painted-dusk rooms (R1, Z3) switch to their dusk fog; snow on the far bank only after the knot.
@@ -71,6 +74,7 @@ func _run() -> void:
 	await _test("J-A5 H2: once the office is open the bell rings by itself, no mirror close-up", _test_bell_after)
 	await _test("J-A6/A8 data: Nina walks to the river at the end of M23a; Agata answers Ulyana", _test_data)
 	await _test("J-E1 fog over the far bank until the knot, lifting when the knot is tied", _test_fog)
+	await _test("J-A9 Р11: the boat and Pelageya always together (the knot → her pier, the lights → the turn)", _test_boat_with_pelageya)
 	await _test("J-B1 intro: three cards on black with the voice-over, a click goes on, then «День первый», once", _test_intro)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -449,6 +453,13 @@ func _test_fog() -> void:
 		if sn == null:
 			sn = rm.current_room.get_node_or_null("Effects/far_snowfall_left")
 		_check(sn != null and sn.visible, "%s after the knot: snow falls on the far bank" % rid)
+	# стр. 130–131: the far bank answered — one lantern, steady, at the pier (R1) and back at the boat (Z3).
+	_set_flags(["far_lights_answered"])
+	for rid in ["R1", "Z3"]:
+		await _enter(rid)
+		var fl: Node = rm.current_room.get_node_or_null("Effects/far_light")
+		_check(fl != null and fl.visible, "%s after the lights: the answering lantern burns on the far bank" % rid)
+		_check(rm.current_room.get_node_or_null("Layers/far_lights") == null, "%s: no three painted lights any more" % rid)
 	gs.reset()
 
 
@@ -510,4 +521,38 @@ func _test_intro() -> void:
 	gs.state_loaded.emit("test")
 	await _frames(2)
 	_check(String(intro.probe()["phase"]) == "" and float(intro.probe()["black"]) == 0.0, "a load stops the intro")
+	gs.reset()
+
+
+func _layer_vis(id: String) -> bool:
+	var n: Node = rm.current_room.get_node_or_null("Layers/" + id)
+	return n != null and (n as CanvasItem).visible
+
+
+func _pel_vis() -> bool:
+	var h := _hotspot("pelageya")
+	return h != null and h.visible
+
+
+func _test_boat_with_pelageya() -> void:
+	var ends := {}
+	for sid in ["M15", "M16"]:
+		for st in sd.scene(sid).get("stage", []):
+			if String(st.get("at", "")) == "end":
+				ends[sid] = st.get("sets", [])
+	_check((ends.get("M15", []) as Array).has("boat_to_pier"), "M15 ends rowing the boat to the pier (%s)" % str(ends))
+	_check((ends.get("M16", []) as Array).has("boat_back_at_turn"), "M16 ends rowing it back to the plate (%s)" % str(ends))
+	# The knot tied: the boat and Pelageya at her pier, none at the turn.
+	gs.reset()
+	_set_flags(["evening_dusk", "rope_brought", "done_M15s", "done_M15", "rope_on_ring", "road_held_both_ends", "boat_to_pier"])
+	await _enter("Z3")
+	_check(not _layer_vis("boat_dusk") and not _pel_vis(), "after the knot, at the turn: neither the boat nor Pelageya")
+	await _enter("R1")
+	_check(not _layer_vis("no_boat_dusk") and _pel_vis(), "after the knot, at the pier: the boat (no «empty» patch) and Pelageya")
+	# The lights answered: both back at the plate.
+	_set_flags(["done_M16s", "far_snow_seen", "far_lights_answered", "boat_back_at_turn", "done_M16"])
+	await _enter("R1")
+	_check(_layer_vis("no_boat_dusk") and not _pel_vis(), "after the lights, at the pier: neither")
+	await _enter("Z3")
+	_check(_layer_vis("boat_dusk") and _pel_vis(), "after the lights, at the turn: the boat and Pelageya")
 	gs.reset()

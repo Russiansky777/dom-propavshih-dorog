@@ -784,7 +784,7 @@ func _test_walkthrough() -> void:
 		"M02 flags missing")
 	# 9 lines and the shown attempt (a staging: fade, boat knocks its own pier) before Pelageya's «Берег вижу»;
 	# the sluice, the marsh, other boats and the manager are questions now (polish 22.10, D23).
-	_check(seen.size() == 9 and not seen.has("stage"), "M02: 9 lines, no staging (G16: no pointless fade); got %s" % str(seen))
+	_check(seen.size() == 10 and not seen.has("stage"), "M02: 10 lines (J: + the fog over the river), no staging (G16: no pointless fade); got %s" % str(seen))
 	_check(not sr.is_staging() and sr.stage_dim == 0.0, "the staging is over, no dusk left")
 	_check(not gs.has_flag("ferry_verified") and bot.exit_to("R2") == null, "no crossing after M02 (без плиты лодку вернёт сюда же)")
 	_check(await bot.go("Z3"), "R1→Z3")

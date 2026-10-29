@@ -270,7 +270,7 @@ func _test_ulyana_talk() -> void:
 	sr.interact(h)
 	await _frames(2)
 	seen = await _drain(["lights"])
-	_check(seen.size() == 4 and String(seen[3]).contains("время одно у всех"), "the lights: Mitya's twenty years, the road held at both ends: %s" % str(seen))
+	_check(seen.size() == 5 and String(seen[3]).contains("время одно у всех") and String(seen[4]).contains("Обещаю"), "the lights: Mitya's twenty years, the road held at both ends, Agata's promise (J-A8): %s" % str(seen))
 
 
 func _test_coat() -> void:
@@ -309,7 +309,7 @@ func _test_coat() -> void:
 
 func _test_finale() -> void:
 	var lines: Array = sd.scene("M26")["mandatory_lines"]
-	_check(String(lines[-2].get("text", "")) == "Сестрица Агата, а завтра тоже можно прийти?" and String(lines[-1].get("speaker", "")) == "agata"
+	_check(String(lines[-2].get("text", "")).contains("завтра тоже можно") and String(lines[-2].get("speaker", "")) == "ulyana" and String(lines[-1].get("speaker", "")) == "agata"
 		and String(lines[-1].get("text", "")).contains("с обоих концов"), "H55: the last question and Agata's answer: %s" % [lines[-1]])
 	var fv: Node = main_node.get_node("FrameView")
 	var title: Node = main_node.get_node("Title")

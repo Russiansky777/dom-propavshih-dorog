@@ -323,6 +323,10 @@ func _m03_lines(speaker: String) -> Array:
 	for l in sd.scene("M03")["mandatory_lines"]:
 		if String(l["speaker"]) == speaker:
 			out.append(String(l["text"]))
+		# J (стр. 23, 32): Tikhon introduces himself in a `then` line right after his first words
+		for t in l.get("then", []):
+			if t is Dictionary and String(t.get("speaker", "")) == speaker:
+				out.append(String(t.get("text", "")))
 	return out
 
 
@@ -341,7 +345,7 @@ func _test_m03_once() -> void:
 	var tikhon_lines := seen.filter(func(x): return String(x).begins_with("tikhon:"))
 	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon"), "M03 done after the scarf: %s" % str(seen))
 	var m03_tikhon: Array = _m03_lines("tikhon")
-	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 7, "Tikhon's seven M03 lines (Docs/SCENARIO_FINAL.md M03, with the shelf request G11) play once: %s" % str(tikhon_lines))
+	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 8, "Tikhon's eight M03 lines (Docs/SCENARIO_FINAL.md M03, with the shelf request G11; J: + «Тихон. При печи смотрителем состою…») play once: %s" % str(tikhon_lines))
 	_check(seen.any(func(x): return String(x).begins_with("tikhon:") and String(x).contains("полку мне повесь")), "G11: after the first talk at the lit stove Tikhon asks to hang his shelf: %s" % str(seen))
 	_check(seen.any(func(x): return String(x).contains("Вечер долгий")), "«Вечер долгий» in M03")
 	_check(seen.any(func(x): return String(x).contains("А ты один здесь?")) and seen.any(func(x): return String(x).contains("И печь тут,")), "«Ты здесь один?» / «Печь тоже здесь.» in M03")

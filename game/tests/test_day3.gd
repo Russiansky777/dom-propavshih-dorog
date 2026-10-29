@@ -361,7 +361,7 @@ func _test_windlass_panel() -> void:
 	rm.change_room("R1", "default")
 	await _frames(3)
 	var r1l: Node = rm.current_room.get_node_or_null("Layers")
-	_check(r1l != null and r1l.get_node("water_low_day").visible and not r1l.get_node("far_snow").visible and not r1l.get_node("far_lights").visible,
+	_check(r1l != null and r1l.get_node("water_low_day").visible and not r1l.get_node("far_snow").visible and not rm.current_room.get_node("Effects/far_light").visible,
 		"G52: R1 on day three — the day picture of pack 9, not the evening layers of day two")
 	# G54: the date on the board of the lesson — Nina's chalk (pack 9), not the game's font.
 	var dl := {}
@@ -571,7 +571,7 @@ func _test_data() -> void:
 	_check(m23b.get("grants", {}).get("flags", []).has("bridge_decided"), "the bridge is decided at the mill (M23b)")
 	# C18–C20: the lesson, then the dinner — Ulyana's line closes the game; Nina's «Доучись» always; on a Wednesday.
 	var ep: Array = sd.scene("M26").get("mandatory_lines", [])
-	_check(String(ep[ep.size() - 2].get("text", "")) == "Сестрица Агата, а завтра тоже можно прийти?" and String(ep[ep.size() - 2].get("speaker", "")) == "ulyana"
+	_check(String(ep[ep.size() - 2].get("text", "")).contains("завтра тоже можно") and String(ep[ep.size() - 2].get("text", "")).contains("по мосту") and String(ep[ep.size() - 2].get("speaker", "")) == "ulyana"
 		and String(ep[ep.size() - 1].get("speaker", "")) == "agata", "the last lines of the game: Ulyana's question, Agata's answer (H55)")
 	var has_doucheis := false
 	for ln in ep:
@@ -906,7 +906,7 @@ func _test_walkthrough() -> void:
 		_check(frames_seen.has(f), "epilogue shot %s (%s)" % [f, str(frames_seen)])
 	_check(String(frame_titles.get("EP_lesson", "")) == sd.location_name("O1") and String(frame_titles.get("EP_tamara", "")) == sd.text("@EP.place_bridge"),
 		"epilogue titles: the class, the bridge — not the turn under the frames (%s)" % str(frame_titles))
-	_check(seen.size() > 1 and seen[seen.size() - 2] == "ulyana:Сестрица Агата, а завтра тоже можно прийти?" and String(seen[seen.size() - 1]).begins_with("agata:Можно, Уля"),
+	_check(seen.size() > 1 and String(seen[seen.size() - 2]).begins_with("ulyana:") and String(seen[seen.size() - 2]).contains("завтра тоже можно") and String(seen[seen.size() - 1]).begins_with("agata:Можно, Уля"),
 		"the last lines: Ulyana's question, Agata's answer (H55): %s" % str(seen.slice(-2)))
 	await _frames(4)
 	var fp: Dictionary = fv.probe()
@@ -1280,7 +1280,7 @@ func _test_q02_q06_traces() -> void:
 	_check(b.any(func(x): return x.contains("Ульяна по нему растолковывает гостю дорогу")) and b.any(func(x): return x.contains("Для семейного снимка Илья на новом верстаке резную рамку смастерил")), "B/B: Ulyana's drawing by the door; the frame for the family photo")
 	_check(b.any(func(x): return x.contains("на столике")), "B: the photo stays where it was put on day one (the frame is for it)")
 	_check(not b.any(func(x): return x.contains("как место менялось") or x.contains("уключину")), "B/B: no A lines")
-	_check(b[b.size() - 2] == "ulyana:Сестрица Агата, а завтра тоже можно прийти?" and b[b.size() - 1].begins_with("agata:Можно, Уля"),
+	_check(String(b[b.size() - 2]).begins_with("ulyana:") and String(b[b.size() - 2]).contains("завтра тоже можно") and b[b.size() - 1].begins_with("agata:Можно, Уля"),
 		"the last lines are still Ulyana's question and Agata's answer (H55): %s" % str(b.slice(-2)))
 	var none := _beats_of("M26", [])
 	for t in ["как место менялось", "растолковывает гостю дорогу", "уключину", "резную рамку"]:

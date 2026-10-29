@@ -1,7 +1,8 @@
 class_name StateLayer
 extends Node2D
 ## Image layer of a room built from `layers[]` in rooms/<id>.json. Visible when every `if` flag
-## holds and no `unless` flag holds (both optional). Drawn with the room's art scale (the same as
+## holds and no `unless` flag holds (both optional), and no `hidden_when` condition holds ({all: [flags], not: [flags]},
+## as on hotspots — J, Р11: the boat at the turn is away while Pelageya has rowed it to her pier, M15 → M16). Drawn with the room's art scale (the same as
 ## the background), moved by `offset`; an extra `scale` only with `scale_reason` (RoomBuilder).
 
 var data: Dictionary = {}
@@ -12,7 +13,7 @@ var forced: bool = false
 
 func setup(p_data: Dictionary) -> void:
 	data = p_data
-	if data.has("if") or data.has("unless") or data.has("spin") or data.has("swing") or data.has("frames"):
+	if data.has("if") or data.has("unless") or data.has("hidden_when") or data.has("spin") or data.has("swing") or data.has("frames"):
 		if not GameState.flag_changed.is_connected(_on_flag_changed):
 			GameState.flag_changed.connect(_on_flag_changed)
 		if not GameState.state_reset.is_connected(refresh):
@@ -50,6 +51,17 @@ func is_active() -> bool:
 			return false
 	for f in data.get("unless", []):
 		if GameState.has_flag(String(f)):
+			return false
+	for c in data.get("hidden_when", []):
+		var all_set := true
+		for f in c.get("all", []):
+			if not GameState.has_flag(String(f)):
+				all_set = false
+		var none_set := true
+		for f in c.get("not", []):
+			if GameState.has_flag(String(f)):
+				none_set = false
+		if all_set and none_set:
 			return false
 	return true
 

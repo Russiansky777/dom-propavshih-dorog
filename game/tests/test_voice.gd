@@ -159,6 +159,13 @@ func _finish_dialogue() -> void:
 
 ## The scene line `line_id` as data/story has it: {speaker, text} or {}. A choice inside a conversation
 ## (M13_1_family): <scene>_<index>_<option> — the option's words, said by the line's speaker (Agata).
+## J (Р10): a scene taken out of the game — data/story/voice.json → removed_scenes (Q09 with the lower street).
+func _removed_scene(line_id: String) -> bool:
+	var doc: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/voice.json"))
+	var removed: Array = (doc as Dictionary).get("removed_scenes", []) if doc is Dictionary else []
+	return removed.has(line_id.get_slice("_", 0))
+
+
 func _line(line_id: String) -> Dictionary:
 	var parts := line_id.split("_")
 	if parts.size() < 2:
@@ -288,6 +295,11 @@ func _test_manifest() -> void:
 			_check(vd.file_path(id) == "%s/%s/%s.ogg" % [vd.voice_dir, sub, key], "%s: file %s, expected %s/%s.ogg" % [id, vd.file_path(id), sub, key])
 			continue
 		var ln := _line(String(lid))
+		if ln.is_empty() and _removed_scene(String(lid)):
+			# J (Р10): a scene taken out of the game (voice.json → removed_scenes: Q09 with the lower street) — its old
+			# recordings are never played; the pipeline marks them stale (validate_voice.py: a warning, not an error)
+			outdated.append(String(lid))
+			continue
 		_check(not ln.is_empty(), "%s: no such scene line" % lid)
 		if ln.is_empty():
 			continue

@@ -418,7 +418,7 @@ func _test_pier_attempt() -> void:
 	var seen := await _interact(_hotspot("pelageya"))
 	_check(gs.has_flag("done_M02"), "M02 done")
 	# Polish 22.10 (D23, B9, B15): the boat shown, one line about the ice, the rope and its stopper, the plate, Mitya's post.
-	_check(seen.size() == 9 and not seen.has("stage") and not sr.is_staging(), "G16: nine lines, no fade (the shown attempt is gone): %s" % str(seen))
+	_check(seen.size() == 10 and not seen.has("stage") and not sr.is_staging(), "G16: ten lines (J, Р2: + the fog over the river), no fade (the shown attempt is gone): %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("по льду пробовали, к своему же берегу")) and seen.any(func(x): return x.contains("Вот стопор — кол с замком"))
 			and seen.any(func(x): return x.contains("на той опоре фонарь зажигал")), "ice, the stopper shown, Mitya's post: %s" % str(seen))
 	_check(not seen.any(func(x): return x.contains("болотом") or x.contains("Воду держит мельничный затвор")), "the marsh and the sluice are questions now, not the talk: %s" % str(seen))
@@ -434,7 +434,7 @@ func _test_pier_attempt() -> void:
 	_check(seen[2].contains("к своему причалу") and seen[1].contains("не перевезу"), "«Не довезу. Год пробую.» — «Гребу к тому берегу…» (H3, %s)" % str(seen))
 	_check(not sounds.has("door_heavy"), "G16: no staged knock any more: %s" % str(sounds))
 	# Director 22.10: the rope is the last piece of the bridge — the road itself; its far end is still on the other bank.
-	_check(seen.any(func(x): return x.contains("Пролёты снесло, каменные опоры остались") and x.contains("Дальний конец всё там") and x.contains("Этот на плите опоры был закреплён")), "the rope is what is left of the bridge: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Пролёты снесло, каменные опоры остались") and x.contains("Дальний конец всё там") and x.contains("на плите ближней опоры был закреплён")), "the rope is what is left of the bridge (J, Р1: «ближней опоры»): %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Тянешь, будто за корягу") and x.contains("Под водой к ней не подступиться")), "the plate under water, cracked: %s" % str(seen))
 	_check(sr.stage_dim == 0.0 and (ui == null or float(ui.call("stage_probe")["alpha"]) < 0.02), "no dusk left at the pier")
 	_check(rm.current_room.get_node_or_null("Exits/to_R2") == null and not gs.has_flag("ferry_verified"), "the crossing stays closed (H36: no exit into the boat at the pier)")

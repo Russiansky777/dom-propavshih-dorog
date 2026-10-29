@@ -20,12 +20,11 @@
     {"id": "dusk", "image": "res://assets/rooms/R1/dusk.png", "z": 0, "if": ["evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_unless_note": "днём третьего и четвёртого дня — дневной фон (сумерки только к вечеру: d3_evening — снова слой и оттенок времени)", "_note": "партия 3: сумерки, фонарь на столбе горит — поверх фона и слоёв настила/воды (иначе они остались бы дневными), под Агатой"},
     {"id": "far_dark", "image": "res://assets/rooms/R1/far_dark.png", "z": 0, "if": ["evening_dusk"], "unless": ["road_held_both_ends"], "_note": "тот берег — тёмный силуэт, ни огонька (год без ответа)"},
     {"id": "far_snow", "image": "res://assets/rooms/R1/far_snow.png", "z": 0, "if": ["road_held_both_ends"], "unless": ["morning_day3"], "_note": "канат на кольце (узел, M15) — на том берегу проступает снег (там уже зима); вместо far_dark. Полировка 22.10 (A1): снег — по узлу, огни — по фонарю"},
-    {"id": "far_lights", "image": "res://assets/rooms/R1/far_lights.png", "z": 0, "if": ["far_lights_answered"], "unless": ["morning_day3"], "_g52_note": "с третьего дня — дневной кадр water_low_day со своим зимним берегом: снег и огни второго дня его не перекрывают", "_note": "три огня с того берега — первые за год"},
     {"id": "stopper_empty_morning", "image": "res://assets/rooms/R1/state_stopper_empty_day.png", "z": 2, "_z_note": "над рябью реки (Ambient/Water river_* — z 1, рисует фон с канатом), под фигурами", "if": ["rope_brought", "tod_d3_morning"], "_note": "G28: канат снят со стопора Пелагеи (M15s) и сидит на кольце плиты у поворота — на причале его больше нет: заплатка без каната, tools/make_rope_layers.py (утро третьего дня)"},
     {"id": "stopper_empty_day", "image": "res://assets/rooms/R1/state_stopper_empty_day.png", "z": 2, "_z_note": "над рябью реки (Ambient/Water river_* — z 1, рисует фон с канатом), под фигурами", "if": ["rope_brought", "tod_day"], "_note": "G28: то же днём (дни 3–4) — заплатка снята с дневного кадра низкой воды партии 9 (water_low_day, G52): канат со стопора убран из него самого"},
     {"id": "stopper_empty_dusk", "image": "res://assets/rooms/R1/state_stopper_empty_dusk.png", "z": 2, "_z_note": "над рябью реки (Ambient/Water river_* — z 1, рисует фон с канатом), под фигурами", "if": ["rope_brought", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "G28: то же в сумерках и вечером (поверх слоя dusk; левее x 820 канат под слоями того берега)"},
     {"id": "no_boat_day", "image": "res://assets/rooms/R1/state_no_boat_day.png", "z": 2, "if": ["rope_brought", "morning_day3"], "unless": ["tod_d3_evening", "tod_ep_morning", "tod_ep_evening"], "_note": "H36: лодка у поворота — у причала вода без лодки, отражения и швартова; днём дней 3–4 поверх кадра низкой воды (там, где нет слоя dusk; вечером — no_boat_d3_evening). z 2 — над рябью реки (Ambient/Water river_* — z 1, рисует слой с лодкой)"},
-    {"id": "no_boat_dusk", "image": "res://assets/rooms/R1/state_no_boat_dusk.png", "z": 2, "if": ["rope_brought", "evening_dusk"], "unless": ["morning_day3", "tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "H36: то же вечером дня второго (поверх dusk)"},
+    {"id": "no_boat_dusk", "hidden_when": [{"all": ["boat_to_pier"], "not": ["boat_back_at_turn", "done_M16"]}, {"all": ["done_M15"], "not": ["done_M16", "boat_back_at_turn"]}], "_r11": "J (Р11, Директор 29.10: «где лодка — там и Пелагея»): после узла (M15) Пелагея ведёт лодку к своему причалу (M16s–M16 там), после огней (M16) — обратно к плите; флаги boat_to_pier / boat_back_at_turn ставят затемнения концов M15 и M16, done_M15 / done_M16 — то же для старых сохранений и тестов; на причале в это окно — нарисованная лодка (заплатка «без лодки» снята)", "image": "res://assets/rooms/R1/state_no_boat_dusk.png", "z": 2, "if": ["rope_brought", "evening_dusk"], "unless": ["morning_day3", "tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "H36: то же вечером дня второго (поверх dusk)"},
     {"id": "no_boat_d3_evening", "image": "res://assets/rooms/R1/state_no_boat_d3_evening.png", "z": 2, "if": ["rope_brought", "morning_day3", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "H36: то же вечером третьего дня (низкая вода под слоем dusk)"}
   ],
   "_boat_note": "H36 (Директор 24.10): лодка в одном месте по флагам — до скобы (rope_brought, M15s) у причала (нарисована на фоне), потом у поворота (rooms/Z3.json → boat_*); здесь заплатки no_boat_* убирают её с вечернего и дневного кадра (T10: арт партии 10в R1_state_no_boat_*)",
@@ -52,7 +51,7 @@
           {"id": "manager", "label": "@R1.pelageya.opt_manager", "sets": "r1_asked_manager", "text": "@R1.pelageya.manager"},
           {"id": "leave", "label": "@R1.pelageya.opt_leave", "sets": "r1_pelageya_bye", "text": "@R1.pelageya.after"}
         ]},
-      "hidden_when": [{"all": ["boat_shuttle_open"]}, {"all": ["evening_dusk"], "not": ["done_M15"]}, {"all": ["done_M16"], "not": ["boat_shuttle_open"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}, {"all": ["done_M18p"], "not": ["boat_shuttle_open"]}],
+      "hidden_when": [{"all": ["boat_shuttle_open"]}, {"all": ["evening_dusk"], "not": ["done_M15", "boat_to_pier"]}, {"all": ["done_M16"], "not": ["boat_shuttle_open"]}, {"all": ["boat_back_at_turn"], "not": ["boat_shuttle_open"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}, {"all": ["done_M18p"], "not": ["boat_shuttle_open"]}],
       "_hidden_shuttle_note": "T9 (решение 24.10, 22:26): с третьего дня Пелагея ждёт у лодки у поворота (rooms/Z3.json), на причале её нет",
       "_hidden_note": "вечером до узла Пелагея с лодкой у поворота; H36: после ответа огней (M16) — снова у лодки у поворота (M17, посадка — rooms/Z3.json); после переправы — с Митей на дальней опоре, пока лодка не ходит в обе стороны (boat_shuttle_open — блоки 3–5, день третий)"
     },
@@ -82,14 +81,13 @@
         "title": "@R1d.lantern.title",
         "art": {"closed": "res://assets/closeups/closeup_lantern_closed.png", "open": "res://assets/closeups/closeup_lantern_open.png", "_note": "партия 3: два полноэкранных состояния одного фонаря — заслонка закрыта / открыта (вспышка), переключаются целиком"},
         "lantern_box": [560, 60, 420, 820],
-        "far_lights": [[1100, 345], [1300, 335], [1500, 350]],
+        "far_light": [1300, 335], "_far_light_j": "J (Директор 29.10, стр. 130): отвечает один фонарь — три вспышки, как у нас, и горит дальше (было три отдельных огня); answer_delay_s / answer_on_s / answer_off_s / answer_hold_s — по умолчанию 0,8 / open_s / 0,55 / 1,0",
         "far_snow": [[1330, 335, 380, 28], [400, 330, 170, 22]],
         "_coords_note": "lantern_box, far_lights, far_snow (центр x, y, радиусы rx, ry) — в пикселях холста крупного плана 1672×941; ответ того берега в крупном плане — мягкие огни и снег движка поверх тёмного берега картины, в комнате — слои R1_far_lights / R1_far_snow",
         "far_label_pos": [1250, 250],
         "count": 3,
         "open_s": 0.45,
         "pause_s": 3.0, "confirm_s": 0.9,
-        "answer_s": 2.4,
         "hint_pos": [1180, 860],
         "texts": {"label_far": "@R1d.lantern.label_far", "label_count": "@R1d.lantern.label_count", "count_wrong": "@R1d.lantern.count_wrong", "label_drag": "@mech.lantern.label_drag"},
         "lid": {"box": [696, 340, 228, 355], "window": [696, 340, 228, 355], "clip": [690, 180, 240, 520], "housing": [640, 180, 340, 162], "lift": 315, "drag_px": 260, "open_at": 0.8, "fade_from": 0.8, "open_anim_s": 0.15, "fall_s": 0.35,
@@ -126,7 +124,8 @@
     {"id": "rope_from_turn_d3", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.18, "z": 1, "if": ["rope_on_ring", "tod_d3_morning"], "_note": "G28: утро третьего дня"},
     {"id": "rope_from_turn_d34", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.18, "z": 1, "if": ["rope_on_ring", "tod_day"], "_note": "G28: день третьего и четвёртого дня"},
     {"id": "rope_from_turn_dusk", "type": "rope", "from": [537, 482], "to": [767, 394], "sag": 6, "width": [4.5, 2.5], "shadow": 0.12, "z": 1, "tint": "#6f7690", "if": ["rope_on_ring", "evening_dusk"], "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day"], "_note": "G28: вечер и ночь — в тоне нарисованных сумерек (R1 не тонируется движком)"},
-    {"id": "far_snowfall", "type": "snow", "far": true, "rect": [540, 236, 1380, 200], "amount": 90, "z": 1, "if": ["road_held_both_ends"], "_j_note": "Р2 (партия J): снег только над тем берегом — мелкий, медленный, тает до низа рамки (раньше падал через весь кадр на наш осенний берег)", "_note": "снег идёт над тем берегом — поверх слоёв (z 0), под Агатой"}
+    {"id": "far_snowfall", "type": "snow", "far": true, "rect": [540, 236, 1380, 200], "amount": 90, "z": 1, "if": ["road_held_both_ends"], "_j_note": "Р2 (партия J): снег только над тем берегом — мелкий, медленный, тает до низа рамки (раньше падал через весь кадр на наш осенний берег)", "_note": "снег идёт над тем берегом — поверх слоёв (z 0), под Агатой"},
+    {"id": "far_light", "type": "shapes", "z": 1, "shapes": [{"type": "glow", "center": [1056, 402], "r": 26, "ry": 22, "color": "#ffb85a70"}, {"type": "glow", "center": [1056, 402], "r": 7, "color": "#fff0c8f0"}, {"type": "glow", "center": [1056, 446], "r": 5, "ry": 22, "color": "#ffc46a50"}], "if": ["far_lights_answered"], "unless": ["morning_day3"], "_note": "J (Директор 29.10, стр. 130): с того берега ответил один фонарь — после трёх вспышек (крупный план фонаря) он так и горит: ядро, ореол и отблеск на воде. Вместо слоя far_lights (три нарисованных огня)."}
   ],
   "flags": {
     "r1_asked_boats": "Пелагея: другие лодки — так же, год там ни огня, ни человека",

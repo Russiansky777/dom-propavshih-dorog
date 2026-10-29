@@ -202,7 +202,7 @@ func _has_line(seen: Array, speaker: String, begins: String) -> bool:
 
 func _test_drawing() -> void:
 	var answers := {
-		"v03_add_scarf": ["ulyana:А кто ей шарф повязал", "agata:И шарф я"],
+		"v03_add_scarf": ["ulyana:А кто ей шарф повязал", "agata:И шарф — я"],
 		"v03_add_boat": ["ulyana:А лодку с дымом кто", "agata:Я у твоего папы подсмотрела"],
 		"v03_add_bridge": ["ulyana:Кто мостик нарисовал", "agata:Будет, Уля"],
 	}
@@ -340,7 +340,7 @@ func _test_tikhon_talks() -> void:
 	await _frames(2)
 	var seen26 := await _drain()
 	_check(_has_line(seen26, "nina", "Среда, Тихон") and not seen26.has("agata:Среда.") and _has_line(seen26, "agata", "Ворчишь, а сам гостей")
-		and _has_line(seen26, "tikhon", "Ещё смеются"), "M26 with Nina's answer: the talk still sounds: %s" % str(seen26))
+		and _has_line(seen26, "tikhon", "смеются"), "M26 with Nina's answer: the talk still sounds: %s" % str(seen26))
 
 
 # --- 5. The brace and the mirror -------------------------------------------------------------
@@ -400,7 +400,7 @@ func _test_director_words() -> void:
 			if String(ln.get("text", "")).contains(said[id]):
 				found = true
 		_check(found, "%s: the Director's words «%s»" % [id, said[id]])
-	_check(sd.text("@H1.after_mirror.tikhon_2").contains("Так ляг поспи"), "Tikhon after the mirror: the Director's own words stay (map 109)")
+	_check(sd.text("@H1.after_mirror.tikhon_2").contains("покуда день — делами займись"), "Tikhon after the mirror: the Director's words of 29.10 (стр. 116, batch J)")
 	_check(sd.text("@Z2.exit_H1.unlock_after").contains("Теперь и отсюда"), "the house door: the Director's own words stay (map 34–35)")
 	_check(sd.text("@O1.board.use").contains("послание-то моё"), "the board: the Director's own words stay (map 59)")
 	var m20 := _lines_of("M20")

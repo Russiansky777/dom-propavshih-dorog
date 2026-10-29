@@ -848,8 +848,8 @@ func _test_walkthrough() -> void:
 			"the stand «ЗМ» is the tall carved frame in the middle of the workshop (Director 23.10)")
 	await _use_item("mirror_mill", "bench")
 	seen = await _finish()
-	_check(gs.has_item("mirror_mill") and seen.any(func(t): return t.contains("в Дунину стойку")),
-			"the office mirror on another thing in the workshop says where the stand is: %s" % str(seen))
+	_check(gs.has_item("mirror_mill") and seen.any(func(t): return t.contains("Сюда не подходит")),
+			"J (Р8): the office mirror on another thing in the workshop — the short «Сюда не подходит»: %s" % str(seen))
 	_check(await _go("H1"), "H2→H1 (the stand thought is said once)")
 	await _finish()
 	_check(await _go("H2"), "H1→H2 again")
@@ -1084,7 +1084,7 @@ func _test_walkthrough() -> void:
 	_check(seen.size() >= 2 and seen[1].begins_with("pelageya:") and seen[1].contains("черным-черно"), "Pelageya notices the snow first: %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Раз — пускай, два — стой")), "B10: three lights are «живые»: %s" % str(seen))
 	var lay0: Node = rm.current_room.get_node("Layers")
-	_check(lay0.get_node("far_snow").visible and not lay0.get_node("far_dark").visible and not lay0.get_node("far_lights").visible,
+	_check(lay0.get_node("far_snow").visible and not lay0.get_node("far_dark").visible and not rm.current_room.get_node("Effects/far_light").visible,
 			"before the lantern: the far bank white, no lights yet")
 	_check(_hotspot("pelageya").visible, "Pelageya back at the pier")
 	await _use("lantern")
@@ -1138,8 +1138,8 @@ func _test_walkthrough() -> void:
 	sr.close_mechanic()
 	await _frames(2)
 	var lay: Node = rm.current_room.get_node("Layers")
-	_check(lay.get_node("far_lights").visible and lay.get_node("far_snow").visible and not lay.get_node("far_dark").visible and lay.get_node("dusk").visible,
-		"batch 3 layers: dusk, the far bank under snow (not dark), the three lights")
+	_check(rm.current_room.get_node("Effects/far_light").visible and lay.get_node("far_snow").visible and not lay.get_node("far_dark").visible and lay.get_node("dusk").visible,
+		"batch 3 layers: dusk, the far bank under snow (not dark), the answering lantern (J, стр. 130: one light)")
 	# G45 (Director 23.10: «после использования ещё активен»): the lights have answered — the lantern is only a look now.
 	var lh = rm.current_room.get_node_or_null("Hotspots/lantern")
 	_check(lh != null and sr.planned_interaction(lh) in ["text", "use"], "G45: after the answer the lantern is only a look (%s)" % (sr.planned_interaction(lh) if lh else "?"))
@@ -1155,11 +1155,11 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("done_M17") and gs.has_item("school_ribbon") and gs.has_flag("ferry_verified"), "the empty boat returns with the ribbon: %s" % str(seen))
 	# Director 22.10: shown directly — the boat goes along the rope on its ring and no longer turns back to its pier.
-	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю так — как на лодке")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("кольцо надену"), "Pelageya puts the ring on the rope: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю так — как на лодке")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("на канат надену"), "Pelageya puts the ring on the rope: %s" % str(seen))
 	var m17_text := ""
 	for ln in sd.scene("M17").get("mandatory_lines", []):
 		m17_text += String(ln.get("text", "")) + "\n"
-	_check(seen.any(func(x): return x.begins_with("narration:По канату скользит кольцо")) and m17_text.contains("Теперь идёт прямо"),
+	_check(seen.any(func(x): return x.begins_with("narration:Течение повело лодку")) and m17_text.contains("Теперь идёт прямо"),
 		"the empty boat follows the ring along the rope, not back to the pier: %s" % str(seen))
 	_check(seen.any(func(x): return x == "agata:Не сворачивает! По канату идёт!"), "Agata: it did not turn back")
 	_check(seen.any(func(x): return x.contains("Не вернуло её! Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
