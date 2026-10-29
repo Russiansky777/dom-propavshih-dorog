@@ -207,13 +207,13 @@ func _shot(name: String) -> void:
 				Input.parse_input_event(down)
 				await process_frame
 				var st: PackedVector2Array = kn.strokes[0]
-				var upto := st.size() - 1 if n == "plate_rope_pull" else st.size() - 3
+				var upto := st.size() - 1 if name == "plate_rope_pull" else st.size() - 3
 				for i in range(1, upto + 1):
 					for j in 6:
 						var mv_ev := InputEventMouseMotion.new()
 						var q: Vector2 = st[i - 1].lerp(st[i], float(j + 1) / 6.0)
 						var nrm := (st[i] - st[i - 1]).orthogonal().normalized()
-						mv_ev.position = root.get_final_transform() * (q + nrm * (40.0 if n == "plate_rope_pull" else -40.0))
+						mv_ev.position = root.get_final_transform() * (q + nrm * (40.0 if name == "plate_rope_pull" else -40.0))
 						mv_ev.global_position = mv_ev.position
 						Input.parse_input_event(mv_ev)
 						await process_frame

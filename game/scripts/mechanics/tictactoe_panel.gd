@@ -97,11 +97,11 @@ func _grid() -> Array:
 	var out: Array = []
 	var s := _cell.size.x / 3.0
 	for i in [1, 2]:
-		var x := _cell.position.x + s * i + _rng.randf_range(-6.0, 6.0)
+		var x: float = _cell.position.x + s * i + _rng.randf_range(-6.0, 6.0)
 		out.append(_stroke(Vector2(x + _rng.randf_range(-5, 5), _cell.position.y - _rng.randf_range(4, 22)),
 				Vector2(x + _rng.randf_range(-8, 8), _cell.end.y + _rng.randf_range(4, 22)), 3.0))
 	for i in [1, 2]:
-		var y := _cell.position.y + s * i + _rng.randf_range(-6.0, 6.0)
+		var y: float = _cell.position.y + s * i + _rng.randf_range(-6.0, 6.0)
 		out.append(_stroke(Vector2(_cell.position.x - _rng.randf_range(4, 22), y + _rng.randf_range(-5, 5)),
 				Vector2(_cell.end.x + _rng.randf_range(4, 22), y + _rng.randf_range(-8, 8)), 3.0))
 	return out

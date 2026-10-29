@@ -916,7 +916,7 @@ func _test_ttt() -> void:
 		await process_frame
 	pr = panel.call("probe")
 	_check(pr["again"] and pr["stop"], "«Ещё раз» and «Хватит» after the game")
-	var flag := {"won": "ttt_won", "lost": "ttt_lost", "draw": "ttt_draw"}[String(pr["result"])]
+	var flag: String = {"won": "ttt_won", "lost": "ttt_lost", "draw": "ttt_draw"}[String(pr["result"])]
 	_check(gs.has_flag(String(flag)), "the game's event sets %s" % flag)
 	panel.get("again_btn").emit_signal("pressed")
 	await _frames(2)

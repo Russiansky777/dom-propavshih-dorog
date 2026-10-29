@@ -262,7 +262,7 @@ func _test_ulyana_talk() -> void:
 	var ids: Array = []
 	for o in sr.current_options():
 		ids.append(String(o["id"]))
-	_check(ids == ["hat", "lights", "leave"], "questions: the hat, the lights, bye: %s" % str(ids))
+	_check(ids == ["hat", "lights", "ttt", "leave"], "questions: the hat, the lights, noughts and crosses (J-G2), bye: %s" % str(ids))
 	var seen := await _drain(["hat"])
 	var want := ["options:hat", "ulyana:" + sd.text("@O1d.ulyana.hat_q"), "agata:" + sd.text("@O1d.ulyana.hat_a"), "ulyana:" + sd.text("@O1d.ulyana.hat_b")]
 	_check(seen == want, "H43: her question, Agata's answer, hers: %s" % str(seen))

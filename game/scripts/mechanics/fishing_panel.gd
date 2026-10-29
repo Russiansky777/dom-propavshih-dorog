@@ -10,7 +10,7 @@ extends MechanicPanel
 ##            red the string snaps (texts.snap), slack too long — it gets away (texts.escaped);
 ##   caught — the perch shown (drawn by the engine), Mitya's word (texts.caught), event "caught"; «Ещё» / «Хватит»
 ##            (event "done").
-## Everything is data: art, wait_s, bite_s, green, pull, surge, texts, events.
+## Everything is data: art (image, variants by time of day), wait_s, bite_s, green, pull, surge, texts, events.
 
 const FLOAT_RED := Color(0.82, 0.16, 0.1)
 const FLOAT_WHITE := Color(0.95, 0.93, 0.88)
@@ -59,9 +59,18 @@ func build() -> void:
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	frame.draw.connect(func(): CarvedFrame.draw_frame(frame, _pic, 16.0))
 	add_child(frame)
-	if art.has("image"):
+	# the river as it is now: `image` (the day), or the first of `variants` whose `if_any` flags are set (dusk, night)
+	var img := String(art.get("image", ""))
+	for v in art.get("variants", []):
+		var hit := false
+		for f in v.get("if_any", []):
+			hit = hit or flag(String(f))
+		if hit:
+			img = String(v.get("image", img))
+			break
+	if img != "":
 		var r: Array = art.get("region", [880, 420, 792, 446])
-		var tr := crop(String(art["image"]), r, _pic.position, _pic.size.x / float(r[2]), self)
+		var tr := crop(img, r, _pic.position, _pic.size.x / float(r[2]), self)
 		tr.name = "River"
 		tr.size = _pic.size
 	_draw = Control.new()

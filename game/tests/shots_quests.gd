@@ -163,7 +163,11 @@ func _shot(n: String) -> void:
 						pn.set("phase_t", 0.0)
 						pn.call("press", true)
 						if n == "j_fish_fight":
-							await _frames(50)
+							var g1: Array = pn.call("probe")["green"]
+							var mid1 := (float(g1[0]) + float(g1[1])) * 0.5
+							for f in 70:   # keep the string in the green a while — the fish is half way in
+								pn.call("press", float(pn.call("probe")["tension"]) < mid1)
+								await process_frame
 						else:
 							var g2: Array = pn.call("probe")["green"]
 							var mid := (float(g2[0]) + float(g2[1])) * 0.5
