@@ -644,6 +644,12 @@ func _test_rope_patch() -> void:
 					lum += c.get_luminance()
 					cnt += 1
 		_check(cnt > 0 and lum / cnt < 0.35, "the patch over the dark bank is dark too: mean luminance %.2f over %d px" % [lum / maxf(cnt, 1), cnt])
+	# …and the river fog lies over it (the next frame showed the patch as a dark band without fog)
+	var amb: Node = _fog_root()
+	if amb != null and n != null:
+		for f in amb.get("fog"):
+			if (f as CanvasItem).visible:
+				_check((f as CanvasItem).z_index > (n as CanvasItem).z_index, "fog %s (z %d) over the rope patch (z %d)" % [f.name, f.z_index, n.z_index])
 	gs.set_flag("road_held_both_ends", true)
 	await _frames(3)
 	_check(_layer_vis("stopper_empty_dusk") and not _layer_vis("stopper_empty_dusk_dark"), "after the knot — the snowy-bank patch")
