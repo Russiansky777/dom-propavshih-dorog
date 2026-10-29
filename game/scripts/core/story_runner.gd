@@ -626,6 +626,10 @@ func _stage_layer_reset(spec: Dictionary) -> void:
 func _stage_door(room: Node, door: Dictionary, walk_s: float) -> float:
 	var r: Array = door.get("rect", [])
 	var bg_path := String(StoryData.room(current_room_id()).get("background", {}).get("image", ""))
+	# `image`: the picture the leaf is cut from when the room is shown over its background by a full-scene layer
+	# (J, стр. 149: Nina's door in Olkhovka at night — the night picture, not the daylight one).
+	if door.has("image"):
+		bg_path = String(door["image"])
 	if r.size() < 4 or bg_path == "" or not ResourceLoader.exists(bg_path):
 		return 0.0
 	var tex: Texture2D = load(bg_path)
