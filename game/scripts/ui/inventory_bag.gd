@@ -31,7 +31,7 @@ const FLY_SECONDS: float = 0.55
 const FLY_STAGGER: float = 0.12
 const TOOLTIP_W: float = 420.0
 
-const FRAME_BAND := 9.0
+const FRAME_BAND := 5.0   # thin: the bar keeps its height (pockets 64 + 4 + 4)
 const LEATHER := Color(0.30, 0.185, 0.105)
 const LEATHER_DARK := Color(0.12, 0.075, 0.045)
 const THREAD := Color(0.84, 0.70, 0.47, 0.5)
@@ -69,8 +69,8 @@ func _init() -> void:
 	var sb := StyleBoxEmpty.new()
 	sb.content_margin_left = FRAME_BAND + 6
 	sb.content_margin_right = FRAME_BAND + 6
-	sb.content_margin_top = FRAME_BAND - 2
-	sb.content_margin_bottom = FRAME_BAND - 2
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
 	add_theme_stylebox_override("panel", sb)
 	var src := MenuConfig.texture("pause_panel.png")
 	if src != null:
