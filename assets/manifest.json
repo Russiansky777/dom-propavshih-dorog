@@ -2486,6 +2486,215 @@
       "use": "EP_dinner.json → слой ulyana_map: image (art_source ulyana_map.png), убрать modulate",
       "pack": "Партия 10г, п. 8",
       "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "closeup_signal_board",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J стр. 73–74, Р14",
+      "files": [
+        "incoming/closeup_signal_board.png"
+      ],
+      "base": "R1_bg.png (образ)",
+      "size": "1672×941",
+      "placement": "полноэкранный крупный план, непрозрачно целиком",
+      "spec": "Дощечка «Порядок сигналов» крупно, гладкое поле под вырезанные игрой строки",
+      "owner": "ChatGPT + Директор",
+      "use": "R1.json → хотспот instruction.view: картинка дощечки + строки, вырезанные игрой (Р14)",
+      "pack": "Партия 10г, п. 1",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "R3_state_boat_evening",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J стр. 189, Р11",
+      "files": [
+        "incoming/R3_state_boat_evening.png"
+      ],
+      "base": "R3_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 940–1672, y 620–941",
+      "spec": "Лодка Пелагеи у дальней опоры на кольце каната, вечер",
+      "owner": "ChatGPT + Директор",
+      "use": "R3.json → слой boat_evening (вечер), выход «К лодке» к лодке, Пелагея рядом (Р11)",
+      "pack": "Партия 10г, п. 2",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "R3_state_boat_day",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J стр. 189, Р11",
+      "files": [
+        "incoming/R3_state_boat_day.png"
+      ],
+      "base": "R3_bg.png + R3_day.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 940–1672, y 620–941",
+      "spec": "Лодка Пелагеи у дальней опоры на кольце каната, день",
+      "owner": "ChatGPT + Директор",
+      "use": "R3.json → слой boat_day (дни 3–4)",
+      "pack": "Партия 10г, п. 2",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H2_state_bell_hung",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J стр. 113",
+      "files": [
+        "incoming/H2_state_bell_hung.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 1360–1672, y 150–660",
+      "spec": "Колокол на подвесе над козлами в мастерской — как в крупном плане",
+      "owner": "ChatGPT + Директор",
+      "use": "H2.json → слой bell_hung (всегда), хотспот bell — по колоколу",
+      "pack": "Партия 10г, п. 3",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "O3_state_table_no_mirror",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J стр. 151",
+      "files": [
+        "incoming/O3_state_table_no_mirror.png"
+      ],
+      "base": "O3_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 270–410, y 378–534",
+      "spec": "Стол в горнице без зеркальца — день",
+      "owner": "ChatGPT + Директор",
+      "use": "O3.json → слой table_no_mirror (до того, как Нина положит зеркальце)",
+      "pack": "Партия 10г, п. 4",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "O3_state_table_no_mirror_night",
+      "status": "requested",
+      "kind": "background_fix",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J стр. 151",
+      "files": [
+        "incoming/O3_state_table_no_mirror_night.png"
+      ],
+      "base": "O3_bg.png + O3_night.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; непрозрачно в x 270–410, y 378–534",
+      "spec": "Стол в горнице без зеркальца — ночь со свечой",
+      "owner": "ChatGPT + Директор",
+      "use": "O3.json → слой table_no_mirror_night",
+      "pack": "Партия 10г, п. 4",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "Z3_state_far_snow_dusk",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J Р2",
+      "files": [
+        "incoming/Z3_state_far_snow_dusk.png"
+      ],
+      "base": "Z3_bg.png + Z3_state_water_low.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 240–1672, y 140–372",
+      "spec": "Тот берег у поворота в сумерки — под снегом (после узла)",
+      "owner": "ChatGPT + Директор",
+      "use": "Z3.json → слой far_snow_dusk: if road_held_both_ends, evening_dusk; unless дневные tod",
+      "pack": "Партия 10г, п. 5",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "M1_state_far_snow",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J Р2",
+      "files": [
+        "incoming/M1_state_far_snow.png"
+      ],
+      "base": "M1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 1370–1672, y 195–360",
+      "spec": "Тот берег за мельницей — под снегом (после узла)",
+      "owner": "ChatGPT + Директор",
+      "use": "M1.json → слой far_snow: if road_held_both_ends",
+      "pack": "Партия 10г, п. 5",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "H4_state_far_snow",
+      "status": "requested",
+      "kind": "prop_states",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J Р2",
+      "files": [
+        "incoming/H4_state_far_snow.png"
+      ],
+      "base": "H4_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0, 0), 1:1; x 735–1065, y 270–345, только стёкла",
+      "spec": "Тот берег в окне чердака — под снегом (после узла)",
+      "owner": "ChatGPT + Директор",
+      "use": "H4.json → слой far_snow: if road_held_both_ends",
+      "pack": "Партия 10г, п. 5",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "icon_tar",
+      "status": "requested",
+      "kind": "icon",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J Р5",
+      "files": [
+        "incoming/icon_tar.png"
+      ],
+      "base": "—",
+      "size": "1024×1024",
+      "placement": "иконка, прозрачный фон",
+      "spec": "Баночка дёгтя с палочкой — иконка сумки",
+      "owner": "ChatGPT + Директор",
+      "use": "assets/icons/tar.png (tools/sync_icons.sh), items.json → tar.icon",
+      "pack": "Партия 10г, п. 6",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "id": "closeup_tar",
+      "status": "requested",
+      "kind": "closeup",
+      "block": "Партия 10д (ChatGPT, партия J, 29.10)",
+      "batch": "10d",
+      "g": "J Р5",
+      "files": [
+        "incoming/closeup_tar.png"
+      ],
+      "base": "—",
+      "size": "1672×941",
+      "placement": "полноэкранный крупный план",
+      "spec": "Баночка дёгтя на верстаке — крупный план «Рассмотреть»",
+      "owner": "ChatGPT + Директор",
+      "use": "items.json → tar.examine.art",
+      "pack": "Партия 10г, п. 6",
+      "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
     }
   ]
 }
