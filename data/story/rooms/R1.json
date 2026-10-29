@@ -107,7 +107,7 @@
       "use": {"sets": ["seen_ferry_instruction"], "text": "@R1.instruction.use", "once_flag": "seen_ferry_instruction", "scene": "M02"},
       "view": {"id": "signal_board", "type": "papers", "title": "@R1.instruction.label", "close_label": "@ui.close", "zoom_from": [320, 350, 120, 180],
         "_note": "H6 (Директор 24.10: «порядок сигналов — просто доска без наполнения»): крупно — дощечка с порядком сигналов, слова рукой (HandWriting); живописный крупный план дощечки — при нужде в партии 10б",
-        "papers": [{"title": "@R1.instruction.paper_title", "text": "@R1.instruction.paper", "rect": [560, 150, 800, 760], "font": "hand", "font_size": 34, "paper": "#c9ad80", "ink": "#2a1c10", "edge": "#5b3b20"}]},
+        "papers": [{"title": "@R1.instruction.paper_title", "text": "@R1.instruction.paper", "rect": [560, 150, 800, 760], "font": "hand", "font_size": 34, "paper": "#7a5c3f", "ink": "#1e130a", "edge": "#3b2616", "material": "wood", "carved": true, "_r14": "J (Р14, Директор 29.10): сигналы вырезаны на самой дощечке, без бумажки — доска рисует движок (closeup_wood.gdshader), буквы — ножом (HandWriting carved); живописная доска — заказ 10д closeup_signal_board"}]},
       "look": "@R1.instruction.look"
     }
   ],

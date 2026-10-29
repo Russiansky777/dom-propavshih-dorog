@@ -9,7 +9,9 @@ extends Label
 ## `_draw` writes the letters. One seed per sheet: the same page looks the same every time it is opened.
 ##
 ## Data (a paper / writing block): "font": "hand" turns it on; "ink"; optional "line_pitch" and "first_baseline"
-## (px of the block, before scaling), "hand_jitter" (1 — normal), "hand_slant_deg" (extra lean, default 0).
+## (px of the block, before scaling), "hand_jitter" (1 — normal), "hand_slant_deg" (extra lean, default 0),
+## "carved" — cut with a knife into wood (Р14, J: the signal board): the ink is the groove's shadow, each letter with a
+## pale lit lower edge, no fading of the ink through a word.
 
 var ink: Color = Color(0.17, 0.13, 0.09)
 var line_pitch: float = 0.0       # 0 — by the font (1.18 × its height)
@@ -18,6 +20,7 @@ var jitter: float = 1.0
 var slant_deg: float = 0.0
 var seed_value: int = 0
 var center_lines: bool = false
+var carved: bool = false
 
 var _lines: Array = []            # [{"words": [String], "w": float}]
 
@@ -33,6 +36,7 @@ func setup(p: Dictionary, size_px: int, k: float = 1.0) -> void:
 	first_baseline = float(p.get("first_baseline", 0.0)) * k
 	jitter = float(p.get("hand_jitter", 1.0))
 	slant_deg = float(p.get("hand_slant_deg", 0.0))
+	carved = bool(p.get("carved", false))
 	seed_value = hash(text)
 	autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -119,6 +123,10 @@ func _draw() -> void:
 				var sc := 1.0 + rng.randf_range(-0.045, 0.05) * jitter
 				var col := Color(ink, ink.a * a0 * (1.0 - 0.14 * float(ci) / maxf(1.0, float(n))))
 				draw_set_transform(Vector2(x, y + dy), rot, Vector2(sc, sc))
+				if carved:
+					# a knife cut: the lit far edge of the groove, then the groove itself, the same depth all along
+					draw_char(f, Vector2(maxf(1.0, fs * 0.04), maxf(1.4, fs * 0.055)), ch, fs, Color(1.0, 0.9, 0.74, 0.30))
+					col = Color(ink, ink.a * 0.92)
 				draw_char(f, Vector2.ZERO, ch, fs, col)
 				x += adv * sc * rng.randf_range(0.98, 1.03)
 			x += space * rng.randf_range(0.85, 1.25)

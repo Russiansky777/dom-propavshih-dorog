@@ -34,6 +34,7 @@ extends CanvasLayer
 const LAYER := 4
 const MIRROR_SHADER: Shader = preload("res://shaders/closeup_mirror.gdshader")
 const PHOTO_SHADER: Shader = preload("res://shaders/closeup_photo.gdshader")
+const WOOD_SHADER: Shader = preload("res://shaders/closeup_wood.gdshader")
 const PLAYER_VIEW_LAYER := 2     # the player's visibility layer while the reflection is built
 const ROOM_VIEW_MASK := 1        # the gallery view draws the room only
 
@@ -608,7 +609,28 @@ func _build_paper(p: Dictionary) -> void:
 	paper.color = Color.html(String(p.get("paper", "#e3d6b4")))
 	paper.size = sheet.size
 	paper.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if String(p.get("material", "")) == "wood":
+		# Р14 (J): the signal board — weathered planks drawn by the engine (wood grain, darker ends, nails) until its
+		# painting comes (art pack 10д, closeup_signal_board); the words are carved into it ("carved").
+		var wm := ShaderMaterial.new()
+		wm.shader = WOOD_SHADER
+		wm.set_shader_parameter("base", paper.color)
+		wm.set_shader_parameter("rect_size", sheet.size)
+		paper.material = wm
 	sheet.add_child(paper)
+	if String(p.get("material", "")) == "wood":
+		for corner in [Vector2(22, 22), Vector2(sheet.size.x - 22, 22), Vector2(22, sheet.size.y - 22), Vector2(sheet.size.x - 22, sheet.size.y - 22)]:
+			var nail := Panel.new()
+			var sb := StyleBoxFlat.new()
+			sb.bg_color = Color(0.16, 0.13, 0.11)
+			sb.set_corner_radius_all(6)
+			sb.border_color = Color(0.42, 0.36, 0.3, 0.8)
+			sb.set_border_width_all(1)
+			nail.add_theme_stylebox_override("panel", sb)
+			nail.size = Vector2(11, 11)
+			nail.position = corner - nail.size / 2.0
+			nail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			sheet.add_child(nail)
 	var ink := Color.html(String(p.get("ink", "#2e2a24")))
 	var pad := 26.0
 	var y := pad * 0.8
@@ -622,6 +644,11 @@ func _build_paper(p: Dictionary) -> void:
 		title.add_theme_font_override("font", UiTheme.font("hand" if hand_t else "head"))
 		title.add_theme_font_size_override("font_size", 34 if hand_t else 24)
 		title.add_theme_color_override("font_color", Color(ink, 0.7))
+		if bool(p.get("carved", false)):
+			title.add_theme_color_override("font_color", Color(ink, 0.92))
+			title.add_theme_color_override("font_shadow_color", Color(1.0, 0.9, 0.74, 0.3))
+			title.add_theme_constant_override("shadow_offset_x", 1)
+			title.add_theme_constant_override("shadow_offset_y", 2)
 		title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		sheet.add_child(title)
 		y += 56.0 if String(p.get("font", "")) == "hand" else 44.0
