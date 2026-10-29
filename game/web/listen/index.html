@@ -145,7 +145,10 @@ function render() {
 }
 document.addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
-  const line = data.lines.find(l => l.id === b.dataset.id) || (data.review || []).find(l => l.id === b.dataset.id);
+  // J (29.10): in the review mode only the review rows are on the page — look there, never in the old takes of the
+  // same line (they played the 25.10 recording under the new text; tools/listen_review_web.mjs)
+  const pool = (data.review || []).length ? data.review : data.lines;
+  const line = pool.find(l => l.id === b.dataset.id);
   if (b.classList.contains("revealbtn") && line) { document.getElementById("rv-" + line.id).textContent = line.takes.map(t => `${t.label} — ${t.what}`).join("; "); }
   if (b.classList.contains("play") && line) playUrl(line.takes.find(t => t.take == b.dataset.take));
   if (b.classList.contains("all") && line) playAll(line);
