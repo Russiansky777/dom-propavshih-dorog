@@ -105,6 +105,7 @@ func _run() -> void:
 	await _test("J-D2 M18 at the far pier (стр. 139, 140, 143): mother and son turn to each other at once, step apart after the hug, Mitya walks up the path", _test_m18_staging)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	await _test("J-F2 the mill's schedule (стр. 80): the words stay on the sheet; the whole close-up in the carved frame, «Закрыть» below it", _test_schedule)
+	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks to the door and fades before the black", _test_staging_d3)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -773,6 +774,53 @@ func _test_schedule() -> void:
 		_check(close_btn.get_global_rect().position.y >= fb - 1.0, "«Закрыть» below the frame: %.0f ≥ %.0f" % [close_btn.get_global_rect().position.y, fb])
 	sr.close_view()
 	await _frames(2)
+
+
+func _test_staging_d3() -> void:
+	# 147: Nina by her house in O4 — in front of the fence at the foot of her steps, not behind it to the left
+	var o4: Dictionary = sd.call("room", "O4")
+	var nina_r: Array = []
+	for h in o4.get("hotspots", []):
+		if String(h.get("id")) == "nina":
+			nina_r = h.get("rect", [])
+	_check(nina_r.size() == 4 and float(nina_r[1]) + float(nina_r[3]) >= 690.0 and float(nina_r[0]) + float(nina_r[2]) * 0.5 >= 1370.0,
+			"O4: Nina's feet by her porch (%s)" % str(nina_r))
+	# 167: in class Agata turns to the speaker
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M21b", "house_open", "met_nina", "met_ulyana"])
+	await _enter("O1", "from_O2")
+	await _frames(4)
+	var player: Node2D = main_node.get_node("World/Player")
+	var nina: Node2D = rm.current_room.get_node_or_null("npc_nina")
+	var uly: Node2D = rm.current_room.get_node_or_null("npc_ulyana")
+	_check(nina != null and uly != null, "Nina and Ulyana in the class")
+	if nina != null and uly != null:
+		sr.call("_face_speaker", {"speaker": "ulyana"})
+		var sheet = player.get("sheet")
+		if sheet != null and not bool(player.call("is_3d")):
+			_check(int(player.get("direction")) == int(sheet.call("direction_index", uly.global_position - player.global_position)), "Ulyana speaks — Agata turns to her")
+			sr.call("_face_speaker", {"speaker": "nina"})
+			_check(int(player.get("direction")) == int(sheet.call("direction_index", nina.global_position - player.global_position)), "Nina speaks — Agata turns to her")
+			var before := int(player.get("direction"))
+			sr.call("_face_speaker", {"speaker": "narrator"})
+			_check(int(player.get("direction")) == before, "the narrator's line keeps her as she is")
+	# 172: the end of M22 — Nina walks off and fades before the black
+	var m22: Dictionary = sd.call("scene", "M22")
+	var goes := false
+	var faces := false
+	for st in m22.get("stage", []):
+		for g in st.get("npc_go", []):
+			if String(st.get("at")) == "end" and String(g.get("id")) == "nina" and bool(g.get("fade", true)):
+				goes = true
+		for g in st.get("npc_face", []):
+			if int(st.get("at", -1)) == 0 and String(g.get("id")) == "agata" and String(g.get("face")) == "nina":
+				faces = true
+	_check(goes and faces, "M22: Agata turns to mother at the start; Nina walks off and fades at the end")
+	await _drain()
+	await _wait(3.5)
+	await _drain()
+	_check(gs.has_flag("done_M22") and (nina == null or not is_instance_valid(nina) or not nina.visible), "after M22 Nina has left the class")
 
 
 func _water(id: String) -> Polygon2D:

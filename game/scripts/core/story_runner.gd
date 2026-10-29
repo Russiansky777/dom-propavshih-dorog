@@ -253,11 +253,34 @@ func _next() -> void:
 			_run_stage(b.get("spec", {}))
 			return
 		current_beat = b
+		_face_speaker(b)
 		beat_changed.emit()
 		return
 	current_beat = {}
 	beat_changed.emit()
 	_queue_check()
+
+
+## J (Директор 29.10, стр. 167: «Агата входит в класс — не повёрнута к Ульяне и Нине»): when a villager who stands in
+## the room says a line, Agata, standing still, turns to them (to their feet, as when she talks to them — J-D1); her own
+## lines and the narrator's keep her as she is. Walking, a hand action or a staging keep their own facing.
+func _face_speaker(b: Dictionary) -> void:
+	var sp := String(b.get("speaker", ""))
+	if sp == "" or sp == "agata" or sp == "narrator" or _stage_running:
+		return
+	var room := RoomManager.current_room
+	var pl: Node2D = RoomManager.player
+	if room == null or pl == null or not is_instance_valid(pl):
+		return
+	var npc := room.get_node_or_null("npc_" + sp) as Node2D
+	if npc == null or not npc.visible:
+		return
+	if pl.has_method("is_walking") and bool(pl.call("is_walking")):
+		return
+	if String(pl.get("_action")) != "":
+		return
+	if pl.has_method("face_towards"):
+		pl.call("face_towards", npc.global_position)
 
 
 ## A beat's own conditions (copied from its line / stage in data): every `if` flag set, no `unless` flag set,
@@ -488,8 +511,14 @@ func _run_stage(spec: Dictionary) -> void:
 	if spec.has("npc_face"):
 		var room := RoomManager.current_room
 		for g in spec["npc_face"]:
-			var npc := room.get_node_or_null("npc_" + String(g.get("id", ""))) if room != null else null
 			var other := room.get_node_or_null("npc_" + String(g.get("face", ""))) as Node2D if room != null else null
+			if String(g.get("id", "")) == "agata":
+				# J, стр. 167: «agata» — Agata herself turns to that villager where she stands
+				var pl: Node2D = RoomManager.player
+				if pl != null and other != null and pl.has_method("face_towards"):
+					pl.call("face_towards", other.global_position)
+				continue
+			var npc := room.get_node_or_null("npc_" + String(g.get("id", ""))) if room != null else null
 			if npc != null and other != null and npc.has_method("set_partner"):
 				npc.call("set_partner", other)
 		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
