@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-29T18:06:02+00:00",
+  "updated_at": "2026-10-29T20:55:34+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -3289,40 +3289,30 @@
       },
       "file": "M13a_0.ogg",
       "source": "src/M13a_0.mp3",
-      "voice_text": "[animated] СЛЫШАЛ я твой звон! Слышал! Без него ещё год бы простоял.",
-      "voice_sha1": "4483a74329630b059b44dbb8e2d1f12a0d7fbb34",
+      "voice_text": "СЛЫШАЛ я твой звон! Слышал! Без него ещё год бы простоял.",
+      "voice_sha1": "635e5f018031cc031d2c30da07180cc3050c7eab",
       "tags": [
         "animated"
       ],
-      "characters": 68,
+      "characters": 57,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.85,
+      "duration_s": 5.24,
       "lufs": -16.9,
-      "true_peak_db": -6.4,
-      "gain_db": -2.6,
+      "true_peak_db": -8.0,
+      "gain_db": -4.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.4,
-      "source_true_peak_db": -3.9,
+      "source_lufs": -12.7,
+      "source_true_peak_db": -3.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:14+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 4.94,
-        "delta_s": -0.09,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T20:55:33+00:00",
+      "run": "40952024075",
+      "adopted_from": "probe/J_probe25/P09_A",
       "api": {
-        "request_id": "mTD4l5nRhyBtaova6dun",
-        "history_item_id": "M6lvHrfyFql5bHYjL38Q",
-        "character_cost": "30",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1452381095
-        }
+        "history_item_id": "6YC09MNRjKDkSqn0Irk9",
+        "character_cost": "25",
+        "previous_text": "",
+        "probe_run": "40945640835"
       }
     },
     "M14_0": {
@@ -9646,45 +9636,35 @@
       "voice_name": "ИЛЬЯ",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.3,
         "similarity_boost": 0.75
       },
       "file": "M25_1.ogg",
       "source": "src/M25_1.mp3",
-      "voice_text": "[firm] Я… во́рот кручу, а ты… знаки подавай. Пускай, стой, подымай — по-мельничному.",
-      "voice_sha1": "41a28db04d37c183848a17de5c1d43fb21e248bc",
+      "voice_text": "Я — ворот кручу, а ТЫ — знаки подавай. Пускай, стой, подымай — по-мельничному.",
+      "voice_sha1": "3f4ef3f71bafefdc2a5b0817b44a1636c7b967bd",
       "tags": [
         "firm"
       ],
-      "characters": 84,
+      "characters": 78,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.72,
-      "lufs": -17.0,
-      "true_peak_db": -6.1,
-      "gain_db": -4.3,
+      "duration_s": 6.56,
+      "lufs": -16.9,
+      "true_peak_db": -4.8,
+      "gain_db": -3.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -12.7,
-      "source_true_peak_db": -1.8,
+      "source_lufs": -13.8,
+      "source_true_peak_db": -1.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:53+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 5.67,
-        "delta_s": 1.05,
-        "suspect": true
-      },
+      "generated_at": "2026-10-29T20:55:34+00:00",
+      "run": "40952024075",
+      "adopted_from": "probe/J_probe25/P18_Cb",
       "api": {
-        "request_id": "D78oh7qfYAb0l0H0V4fN",
-        "history_item_id": "KipLYexoMPiYym2QMt8A",
-        "character_cost": "37",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 993565763
-        }
+        "history_item_id": "Yz8kWcUzKMBSajRegFtE",
+        "character_cost": "34",
+        "previous_text": "",
+        "probe_run": "40945640835"
       }
     },
     "M25_2": {
@@ -11347,37 +11327,33 @@
       "voice_name": "НИНА",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "M26_24.ogg",
       "source": "src/M26_24.mp3",
-      "voice_text": "ДЕРЖИТСЯ Дунин рукав. Шва и не разглядеть.",
-      "voice_sha1": "ecd1b2fd60d855596674d31229e07c8431332e51",
+      "voice_text": "ДЕРЖИТСЯ — Дунин рукав. Шва и не разглядеть.",
+      "voice_sha1": "83ac3878387c5646bf9f7c69bb79f7d21581c392",
       "tags": [],
-      "characters": 42,
+      "characters": 44,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.0,
-      "lufs": -17.0,
-      "true_peak_db": -8.3,
-      "gain_db": -0.9,
+      "duration_s": 4.61,
+      "lufs": -16.9,
+      "true_peak_db": -7.4,
+      "gain_db": -1.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.1,
-      "source_true_peak_db": -7.6,
+      "source_lufs": -15.8,
+      "source_true_peak_db": -6.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:02:14+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T20:55:33+00:00",
+      "run": "40952024075",
+      "adopted_from": "probe/J_probe25/P03_C",
       "api": {
-        "request_id": "i37wthuhZAwiN8aaikJ4",
-        "history_item_id": "J7MziFGmUD6OvhMwyyGs",
-        "character_cost": "18",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4157603693
-        }
+        "history_item_id": "RwvronSPgYJ64aXzPqI0",
+        "character_cost": "19",
+        "previous_text": "Ну как, держится рукав?",
+        "probe_run": "40945640835"
       }
     },
     "M26_25": {
@@ -12102,45 +12078,35 @@
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.4,
         "similarity_boost": 0.8
       },
       "file": "N01_2.ogg",
       "source": "src/N01_2.mp3",
-      "voice_text": "[grumbling] Спи уж. За печь я ОТВЕЧАЮ.",
-      "voice_sha1": "ab9429a68a0c797a92994473c1c52eae82be300a",
+      "voice_text": "Спи уж. За печь — я ОТВЕЧАЮ.",
+      "voice_sha1": "a8424d231115cd53f4b88288142f4cf0a8f12e9c",
       "tags": [
         "grumbling"
       ],
-      "characters": 38,
+      "characters": 28,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.44,
-      "lufs": -17.2,
-      "true_peak_db": -2.3,
-      "gain_db": 1.2,
+      "duration_s": 3.35,
+      "lufs": -16.9,
+      "true_peak_db": -4.3,
+      "gain_db": -0.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -18.2,
-      "source_true_peak_db": -2.8,
+      "source_lufs": -16.5,
+      "source_true_peak_db": -4.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T17:59:48+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 2.99,
-        "delta_s": 0.45,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T20:55:34+00:00",
+      "run": "40952024075",
+      "adopted_from": "probe/J_probe25/P14_Cb",
       "api": {
-        "request_id": "CVroyIV9TVzecmm1r99g",
-        "history_item_id": "ZknjvRuDE09shwaHrKox",
-        "character_cost": "17",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3506190482
-        }
+        "history_item_id": "jc9pd2B2e4cMYN5Scp9z",
+        "character_cost": "12",
+        "previous_text": "",
+        "probe_run": "40945640835"
       }
     },
     "N01_3": {
@@ -22031,45 +21997,35 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "agata_thoughts/H2.bell.thought.ogg",
       "source": "src/agata_thoughts/H2.bell.thought.mp3",
-      "voice_text": "[warmly] Ко́ли вещи своё место помнят… что ж будет, если школьную дверь на родные петли вернуть?",
-      "voice_sha1": "96e2c859ddf368b8e6f2a18a986698d968d06ef0",
+      "voice_text": "[warmly] Коли вещи своё МЕСТО — помнят… что ж будет, если школьную дверь на родные петли вернуть?",
+      "voice_sha1": "5bd91238a53d02ed2ae3be5f492c9659d0cbe1fe",
       "tags": [
         "warmly"
       ],
-      "characters": 96,
+      "characters": 97,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.69,
-      "lufs": -16.9,
-      "true_peak_db": -3.4,
-      "gain_db": -1.6,
+      "duration_s": 6.13,
+      "lufs": -17.0,
+      "true_peak_db": -5.0,
+      "gain_db": -1.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.4,
-      "source_true_peak_db": -1.9,
+      "source_lufs": -15.1,
+      "source_true_peak_db": -3.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:37+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 5.75,
-        "delta_s": -0.06,
-        "suspect": false
-      },
+      "generated_at": "2026-10-29T20:55:34+00:00",
+      "run": "40952024075",
+      "adopted_from": "probe/J_probe25/P19_Cb",
       "api": {
-        "request_id": "hsmpDaGjbAxiFQJ0k2bq",
-        "history_item_id": "EfK6d7rGN3gXxzTyYa5H",
-        "character_cost": "42",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3483186841
-        }
+        "history_item_id": "UxnFuHiv6PVcPmiMEljs",
+        "character_cost": "43",
+        "previous_text": "",
+        "probe_run": "40945640835"
       }
     },
     "agata:H2.brace.before_plan": {
@@ -26799,37 +26755,33 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/examine.photo_bridge.ogg",
       "source": "src/character_lines/examine.photo_bridge.mp3",
-      "voice_text": "ЦЕЛ ещё мост. На каменных опорах — пролёты, а за плиту ближней опоры — канат закреплён. У берега Пелагеина лодка.",
-      "voice_sha1": "ad9a2219b3cf13cfc55e843adc7330d31a41a812",
+      "voice_text": "ЦЕЛ ещё мост. На каменных опорах пролёты, а за плиту ближней опоры канат закреплён. У берега Пелагеина лодка.",
+      "voice_sha1": "d41aa096c68810e6a2eca7631f87f63c90eec733",
       "tags": [],
-      "characters": 113,
+      "characters": 109,
       "loudness_target_lufs": -17.0,
-      "duration_s": 8.94,
-      "lufs": -16.9,
+      "duration_s": 8.44,
+      "lufs": -17.0,
       "true_peak_db": -4.6,
-      "gain_db": -1.3,
+      "gain_db": -1.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.7,
+      "source_lufs": -15.4,
       "source_true_peak_db": -3.3,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:05:52+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T20:55:33+00:00",
+      "run": "40952024075",
+      "adopted_from": "probe/J_probe25/P04_C",
       "api": {
-        "request_id": "WyMJr9dQmeQxzK3dUf91",
-        "history_item_id": "K0HlLHVCpIxdVsqLKnFz",
-        "character_cost": "50",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2708036401
-        }
+        "history_item_id": "JjgBUxBAUU9Ubh24yuxm",
+        "character_cost": "48",
+        "previous_text": "Мост на снимке — цел или нет?",
+        "probe_run": "40945640835"
       }
     },
     "agata:examine.plan_crossing": {
@@ -30369,32 +30321,28 @@
       },
       "file": "character_lines/M2.mirror.take.ogg",
       "source": "src/character_lines/M2.mirror.take.mp3",
-      "voice_text": "Бери. ЦЕ́ЛО стекло, да рама по углам разошлась.",
-      "voice_sha1": "252817533b8bbbe88af1fdb8bfa79a941fb9378b",
+      "voice_text": "Бери. /ˈt͡sɛɫə/ — стекло, да рама по углам разошлась.",
+      "voice_sha1": "0cb2a4f680cee3821b387075342c1ed5d83630eb",
       "tags": [],
-      "characters": 47,
+      "characters": 53,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.17,
-      "lufs": -17.0,
-      "true_peak_db": -6.0,
-      "gain_db": -3.4,
+      "duration_s": 4.6,
+      "lufs": -16.9,
+      "true_peak_db": -4.4,
+      "gain_db": -2.4,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.6,
-      "source_true_peak_db": -2.7,
+      "source_lufs": -14.6,
+      "source_true_peak_db": -2.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:49+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T20:55:34+00:00",
+      "run": "40952024075",
+      "adopted_from": "probe/J_probe25/P22_C",
       "api": {
-        "request_id": "4ZDJ8zrDfrbhUzHxuMO4",
-        "history_item_id": "vqG7PFdZfmb22CpJItCy",
-        "character_cost": "21",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2506764972
-        }
+        "history_item_id": "eXQpAKdRLxUlBqpndstt",
+        "character_cost": "23",
+        "previous_text": "",
+        "probe_run": "40945640835"
       }
     },
     "pavel:M2.pavel.after": {
@@ -32478,37 +32426,33 @@
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.4,
         "similarity_boost": 0.8
       },
       "file": "character_lines/H1.tikhon.duty.ogg",
       "source": "src/character_lines/H1.tikhon.duty.mp3",
-      "voice_text": "Весь дом. Кастрюля в него ВХОДИТ.",
-      "voice_sha1": "3c2263e33c1d878ffd3bcab28269a45e30ab3560",
+      "voice_text": "Весь дом. Кастрюля в него — ВХОДИТ.",
+      "voice_sha1": "f4b624f3d61aa20eb923f49c032f679c078d3253",
       "tags": [],
-      "characters": 33,
+      "characters": 35,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.13,
-      "lufs": -17.3,
-      "true_peak_db": -4.0,
-      "gain_db": -1.3,
+      "duration_s": 3.63,
+      "lufs": -16.8,
+      "true_peak_db": -5.1,
+      "gain_db": -1.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.7,
-      "source_true_peak_db": -2.9,
+      "source_lufs": -15.9,
+      "source_true_peak_db": -3.9,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:03:18+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-29T20:55:34+00:00",
+      "run": "40952024075",
+      "adopted_from": "probe/J_probe25/P13_B",
       "api": {
-        "request_id": "z8ITbhCE8jagkDDWQnnK",
-        "history_item_id": "qXRUqXGqeyR7t8GBD8Ot",
+        "history_item_id": "OCS2TBOiRA1m8BS2IRb3",
         "character_cost": "15",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1496490011
-        }
+        "previous_text": "",
+        "probe_run": "40945640835"
       }
     },
     "tikhon:H1.tikhon.duty_3": {
