@@ -18,8 +18,7 @@
     {"id": "nina_house", "locs": ["O3"], "label": "@map.nina_house", "point": [974, 194], "align": "above", "hidden_until_visited": true},
     {"id": "crossing", "locs": ["R2"], "point": [1032, 417], "align": "above", "shown_if": ["visited_R3"]},
     {"id": "far_pier", "locs": ["R3"], "point": [1169, 388], "align": "below", "shown_if": ["visited_R3"]},
-    {"id": "ferry_shed", "locs": ["R4"], "point": [1218, 343], "align": "above", "shown_if": ["visited_R3"]},
-    {"id": "lower_street", "locs": ["S1"], "point": [1155, 320], "align": "left", "hidden_until_visited": true}
+    {"id": "ferry_shed", "locs": ["R4"], "point": [1218, 343], "align": "above", "shown_if": ["visited_R3"]}
   ],
   "overlays": [
     {"image": "res://assets/ui/map/zarechye_plan_overlay.png", "if": ["visited_R3"], "_note": "G2 (Директор 23.10: «нанести на карту то, что изменилось или добавилось»): слой партии 9 на холсте плана 1376×768 — школа, дома Нины и Ильи, улица и нижняя улица, канат переправы, лодка, сарай с фонарём; появляется, когда Агата побывала на том берегу (дальняя опора). Таблички — places по таблице README партии 9"}

@@ -19,7 +19,7 @@
   "effects": [
     {"id": "snow", "type": "snow", "rect": [0, 0, 1920, 1080], "amount": 90, "z": 4000}
   ],
-  "spawns": {"default": [960, 850], "from_R3": [725, 660], "from_O3": [1470, 670], "from_O2": [300, 540], "from_S1": [1800, 650]},
+  "spawns": {"default": [960, 850], "from_R3": [725, 660], "from_O3": [1470, 670], "from_O2": [300, 540]},
   "props": [],
   "hotspots": [
     {
@@ -84,8 +84,8 @@
   "exits": [
     {"to": "R3", "label": "@O4.exit_R3.label", "cue": "up", "rect": [640, 520, 170, 80], "stand": [728, 625], "spawn": "from_O4", "draw": false},
     {"to": "O3", "label": "@O4.exit_O3.label", "cue": "door", "rect": [1395, 385, 110, 165], "stand": [1470, 660], "spawn": "from_O4", "draw": false},
-    {"to": "O2", "label": "@O4.exit_O2.label", "cue": "up", "rect": [210, 380, 170, 85], "stand": [290, 495], "spawn": "from_O4", "closed_text": "@O4.exit_O2.closed", "draw": false},
-    {"to": "S1", "label": "@O4.exit_S1.label", "cue": "right", "rect": [1790, 540, 130, 110], "stand": [1840, 640], "spawn": "from_O4", "closed_text": "@O4.exit_S1.closed", "draw": false}
+    {"to": "O2", "label": "@O4.exit_O2.label", "cue": "up", "rect": [210, 380, 170, 85], "stand": [290, 495], "spawn": "from_O4", "closed_text": "@O4.exit_O2.closed", "draw": false}
+
   ],
   "scenes": {
     "M19": {"trigger": "enter"},

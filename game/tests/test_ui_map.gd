@@ -279,7 +279,7 @@ func _test_here_and_visits() -> void:
 		names[id] = String(mp.call("place_name", _place(id)))
 	_check(names["crossing"] == "Переправа" and names["far_pier"] == "Дальняя опора" and names["ferry_shed"] == "Мастерская переправы"
 		and names["olkhovka"] == "Школа" and names["olkhovka_street"] == "Улица Ольховки" and names["nina_house"] == "Дом Нины"
-		and names["lower_street"] == "Нижняя улица", "G2: the plaques read as on the plan (%s)" % str(names))
+		and not names.has("lower_street"), "G2: the plaques read as on the plan; no lower street (J, Р10) (%s)" % str(names))
 	mp.call("close_now")
 
 

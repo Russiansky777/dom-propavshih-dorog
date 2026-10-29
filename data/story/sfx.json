@@ -20,7 +20,7 @@
       "H1": "wood", "H2": "wood", "H3": "wood", "H4": "wood",
       "R1": "gravel", "R2": "gravel", "R3": "snow", "R4": "wood",
       "M1": "gravel", "M2": "wood", "M3": "wood", "M4": "gravel",
-      "O1": "wood", "O2": "snow", "O3": "wood", "O4": "snow", "S1": "snow"
+      "O1": "wood", "O2": "snow", "O3": "wood", "O4": "snow"
     },
     "areas": {
       "R1": [{"surface": "wood", "poly": [[940, 600], [1405, 600], [1405, 745], [1060, 700], [940, 690]], "_note": "настил причала (walk_samples R1: «настил причала», «край настила», «корень причала»)"}]

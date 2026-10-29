@@ -728,7 +728,8 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	await _close_view()
 	seen.append_array(await _finish())
-	_check(gs.has_flag("done_M21b") and gs.has_flag("school_path_open") and gs.has_flag("lower_street_returned"), "M21b: «Как было — нет», the paths came back: %s" % str(seen))
+	_check(gs.has_flag("done_M21b") and gs.has_flag("school_path_open"), "M21b: «Как было — нет», the school path came back: %s" % str(seen))
+	_check(not gs.has_flag("lower_street_returned"), "J (Р10): no lower street any more")
 	# M22: by the returned path to the class.
 	_check(await _route(["O4", "O2"]), "O3→O4→O2 by the returned school path")
 	_check(_hotspot("mitten_path") != null and _hotspot("mitten_path").visible and not _hotspot("mitten").visible, "the mitten lies on the path home")
@@ -1054,16 +1055,8 @@ func _test_optional() -> void:
 		_check(gs.has_flag("q01_mail_at_nina") and gs.has_flag("done_Q01"), "Q01: the letter through Nina: %s" % str(seen2))
 	else:
 		_check(false, "Q01: no letters bag hotspot in O4")
-	# Q09 on the lower street.
-	_check(await _go("S1"), "O4→S1 (the lower street came back)")
-	await _finish()
-	await _use("street_sign")
-	await _finish()
-	await _close_view()
-	await _use("street_sign")
-	var seen3 := await _finish(["B"])
-	_check(gs.has_flag("q09_original_in_classroom") and gs.has_flag("done_Q09"), "Q09: the sign into the class: %s" % str(seen3))
-	_check(await _go("O4"), "S1→O4")
+	# J (Директор 29.10, Р10): the lower street and Q09 are gone — no exit O4→S1.
+	_check(_exit_to_room("S1") == null, "O4: no exit to the lower street")
 	# Nina's letters in her room.
 	_check(await _go("O3"), "O4→O3")
 	await _finish()
@@ -1087,10 +1080,10 @@ func _test_optional() -> void:
 	var seen5 := await _finish(["A"])
 	_check(gs.has_flag("q08_home_evening") and gs.has_flag("done_Q08"), "Q08: tea by the stove: %s" % str(seen5))
 	var all_q := 0
-	for q in ["Q01", "Q03", "Q07", "Q08", "Q09"]:
+	for q in ["Q01", "Q03", "Q07", "Q08"]:
 		if gs.has_flag("done_" + q):
 			all_q += 1
-	_check(all_q == 5, "all five optional stories done (%d)" % all_q)
+	_check(all_q == 4, "all four optional stories done (%d)" % all_q)
 	# Traces at the end panel.
 	var tr: Array = fv.call("achieved")
 	_check(tr.size() >= 5, "achievements reached: %d" % tr.size())
@@ -1187,11 +1180,7 @@ func _test_batch8() -> void:
 		_check(_layer_tex(r, "nina_answer_" + q) == "state_answer_%s.png" % q, "O1: Nina's answer «%s» is the chalk drawing (%s)" % [q, _layer_tex(r, "nina_answer_" + q)])
 		_check(_layer_visible(r, "nina_answer_date") and _layer_tex(r, "nina_answer_date") == "state_date.png", "O1: the date in chalk")
 		_check(_layer_visible(r, "bird_reply_bridge") and not _layer_visible(r, "bird_reply_boat"), "O1: Ulyana's reply by the bird — about the bridge (G37)")
-		_check(not _layer_visible(r, "class_sign"), "O1: no sign in the class without Q09")
-	await _enter_with(["done_M22", "q09_original_in_classroom"], "O1", "from_O2")
-	_check(_layer_visible(rm.current_room, "class_sign") and _layer_tex(rm.current_room, "class_sign") == "state_sign.png", "Q09 B: the old sign hangs in the class")
-	await _enter_with(["done_M22", "lower_street_returned", "q09_original_in_classroom"], "S1")
-	_check(_layer_visible(rm.current_room, "sign_removed"), "Q09 B: on the lower street the sign is gone from the post")
+		_check(not _layer_visible(r, "class_sign"), "O1: no street sign in the class (J, Р10: the lower street is gone)")
 	# Nina's coat on the hook in Dunya's house after M23c.
 	await _enter_with(["house_unlocked", "done_M20"], "H1")   # (with done_M22 entering H1 plays M23c — mum comes)
 	_check(not gs.has_flag("done_M23c") and not _layer_visible(rm.current_room, "nina_coat"), "H1: no coat before mum comes")
@@ -1368,3 +1357,10 @@ func _test_q02_q06_traces() -> void:
 	sr.set_frame("")
 	gs.reset()
 	_reached_end = true
+
+
+func _exit_to_room(to: String) -> Node:
+	for e in rm.current_room.get_exits():
+		if String(e.get("target_room")) == to:
+			return e
+	return null

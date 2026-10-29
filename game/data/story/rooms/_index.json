@@ -1,7 +1,7 @@
 {
   "_comment": "Комнаты, собираемые RoomBuilder из data/story/rooms/<LOC>.json. in_scope — построенные в текущей вехе; выход в локацию вне списка даёт техническую реакцию ui.not_built, а не ошибку. Геометрия: 1920x1080, горизонт (стык стены и пола) задаётся в background.horizon. Все пользовательские строки — ключи вида @section.key в data/story/text/ru_E0_E1.json.",
   "milestone": "M1",
-  "in_scope": ["Z1", "Z4", "Z2", "Z3", "R1", "H1", "H2", "H3", "H4", "O1", "O2", "M1", "M2", "M3", "M4", "R2", "R3", "O4", "O3", "S1"],
+  "in_scope": ["Z1", "Z4", "Z2", "Z3", "R1", "H1", "H2", "H3", "H4", "O1", "O2", "M1", "M2", "M3", "M4", "R2", "R3", "O4", "O3"],
   "agata_ref": {
     "_comment": "Рост Агаты на экране = figure_px × depth scale комнаты. figure_px — высота фигуры в кадре 288x384 при scale 1 (альфа-рамка листов: walk 347–351 px, idle 341 px); height_m — рост модели (бриф Директора). Каждый ориентир комнаты height_refs {what, y — линия земли под предметом, px — его высота на фоне, m — настоящая высота} проверяется в tools/validate_rooms.py: figure_px × scale(y) против height_m × px / m, допуск tolerance. scale(y) — прямая глубины комнаты, продолженная за кромку пола (предметы у стены стоят дальше, чем Агата может подойти).",
     "figure_px": 345,
@@ -75,8 +75,7 @@
       "Z1": "post", "Z2": "street", "Z3": "road", "Z4": "street",
       "M1": "mill", "M2": "mill", "M3": "mill", "M4": "mill",
       "R1": "boat", "R2": "boat", "R3": "boat", "R4": "door",
-      "O1": "school", "O2": "school", "O3": "house", "O4": "street",
-      "S1": "road"
+      "O1": "school", "O2": "school", "O3": "house", "O4": "street"
     }
   },
   "auto_flag_prefixes": ["done_", "has_", "started_", "q0", "q1"]

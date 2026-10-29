@@ -224,7 +224,7 @@ func _test_steps() -> void:
 	_check(sx.surface_at("R1", Vector2(1200, 650)) == "wood" and sx.surface_at("R1", Vector2(900, 900)) == "gravel",
 		"R1: deck must be wood, bank gravel (%s / %s)" % [sx.surface_at("R1", Vector2(1200, 650)), sx.surface_at("R1", Vector2(900, 900))])
 	# G39 (Director 23.10: on the far bank the steps sounded «по квартире»): snow outside in the winter rooms, floor inside.
-	for rid in ["R3", "O2", "O4", "S1"]:
+	for rid in ["R3", "O2", "O4"]:
 		_check(sx.surface_at(rid, Vector2(960, 800)) == "snow", "G39: %s — snow underfoot (%s)" % [rid, sx.surface_at(rid, Vector2(960, 800))])
 	for rid in ["O1", "O3"]:
 		_check(sx.surface_at(rid, Vector2(960, 800)) == "wood", "G39: %s — a floor indoors (%s)" % [rid, sx.surface_at(rid, Vector2(960, 800))])

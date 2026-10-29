@@ -16,7 +16,7 @@ const SHOTS := ["q02_O1_map", "q02_map_route", "q02_map_route_two", "q02_map_don
 	"q06_O4_shed_A", "q06_H2_bench_B",
 	"ep_lesson_A", "ep_dinner_B", "ep_boat_A",
 	# партия 8 in the old places
-	"b8_O1_board", "b8_O1_board_here", "b8_S1_sign_removed", "b8_H1_coat", "b8_O4_bag_board", "b8_O3_night", "b8_M1_board",
+	"b8_O1_board", "b8_O1_board_here", "b8_H1_coat", "b8_O4_bag_board", "b8_O3_night", "b8_M1_board",
 	"b8_M1_closeup", "b8_Z3_day", "b8_R2_day", "b8_R3_day", "b8_H2_glass", "b8_H2_glass_closeup", "b8_ep_lesson", "b8_ep_dinner",
 	"b8_ep_beam_roads", "b8_examine_watch", "b8_examine_journal", "b8_examine_key"]
 const FREE := ["house_unlocked", "house_open", "done_M21b", "done_M22", "met_ilya", "met_ulyana", "met_nina", "morning_day3", "free_walk_day3", "school_path_open"]
@@ -102,8 +102,6 @@ func _shot(n: String) -> void:
 			await _state(["board_mama", "v03_marked", "nina_answered_board", "nina_wrote_date", "q09_original_in_classroom"], "O1", "from_O2")
 		"b8_O1_board_here":
 			await _state(["board_here", "nina_answered_board", "nina_wrote_date"], "O1", "from_O2")
-		"b8_S1_sign_removed":
-			await _state(["lower_street_returned", "q09_original_in_classroom"], "S1")
 		"b8_H1_coat":
 			await _state(["done_M23c", "h1_scarf_removed", "h1_shutter_open"], "H1")
 		"b8_O4_bag_board":
