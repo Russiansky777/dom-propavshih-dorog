@@ -3,7 +3,7 @@ extends SceneTree
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" godot --path game --display-driver x11 --rendering-driver opengl3 \
 ##     --resolution 1920x1080 -s res://tests/shots_menus.gd -- <out_dir>
 ## Writes menu_title.png, menu_title_hover.png, menu_pause.png, menu_pause_hover.png, menu_pause_save.png,
-## menu_pause_settings.png (1920×1080).
+## menu_pause_settings.png, menu_pause_load.png, menu_delete_confirm.png (1920×1080).
 
 
 func _initialize() -> void:
@@ -68,4 +68,18 @@ func _run() -> void:
 	pause.call("activate", "settings")
 	await _wait(0.4)
 	await _shot(out_dir, "menu_pause_settings.png")
+	# J (стр. 5–7): «Загрузить» with a save (its real date and time) and the delete question.
+	var gui = main_node.get_node("GameUi")
+	gui.call("close_menu_panel")
+	rm.save_game("1")
+	pause.call("activate", "load")
+	await _wait(0.4)
+	await _shot(out_dir, "menu_pause_load.png")
+	var db = gui.get("slot_rows")["1"].get("delete", null)
+	if db != null:
+		db.pressed.emit()
+		await _wait(0.3)
+		await _shot(out_dir, "menu_delete_confirm.png")
+		gui.call("close_menu_panel")
+	root.get_node("GameState").delete_save("1")
 	quit(0)
