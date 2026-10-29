@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       scripts:
-        description: "Тесты res:// через пробел, напр. res://tests/test_closeups.gd res://tests/test_j.gd"
+        description: "Тесты res:// через пробел, напр. res://tests/test_closeups.gd res://tests/test_j.gd (или full — весь tools/run_tests.sh)"
         required: true
       validators:
         description: "Сначала проверки данных (validate_story / rooms / voice)"
@@ -92,6 +92,11 @@ jobs:
         run: |
           set -uo pipefail
           code=0
+          if [ "$SCRIPTS" = "full" ]; then
+            tools/run_tests.sh > build/check/out.log 2>&1; code=$?
+            cp build/logs/tests.log build/check/tests.log 2>/dev/null || true
+            SCRIPTS=""
+          fi
           for s in $SCRIPTS; do
             echo "=== $s" | tee -a build/check/out.log
             timeout 1500 "$GODOT" --headless --audio-driver Dummy --path game -s "$s" 2>&1 | tee -a build/check/out.log

@@ -202,7 +202,7 @@ func _refresh() -> void:
 		var key := "label_status_settled"
 		if logic.finished():
 			# J-A4 (Директор 29.10, стр. 184): после сумерек вода уже сошла — не «к вечеру сойдёт».
-			var drained := spec.get("texts", {}).has("label_status_drained") and flag("evening_dusk")
+			var drained: bool = (spec.get("texts", {}) as Dictionary).has("label_status_drained") and flag("evening_dusk")
 			key = "label_status_drained" if drained else "label_status_open"
 		elif _slip_t >= 0.0:
 			key = "label_status_slipped"

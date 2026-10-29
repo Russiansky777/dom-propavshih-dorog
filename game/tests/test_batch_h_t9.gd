@@ -284,7 +284,7 @@ func _test_letters_both_orders() -> void:
 	_flags_before("M23a")
 	var lines := await _run_letters()
 	_check(lines.any(func(t): return String(t).contains("Нина к письмам вернулась")), "M23a: Nina's coming back is shown: %s" % str(lines))
-	_check(lines.any(func(t): return String(t).contains("к Дуне в дом")), "M23a: Nina goes back to Dunya's house: %s" % str(lines))
+	_check(lines.any(func(t): return String(t).contains("в Дунин дом")), "M23a: Nina goes back to Dunya's house: %s" % str(lines))
 	await _enter("H1")
 	_check(gs.has_flag("done_M23c") or _nina_shown("H1") or gs.has_flag("started_M23c"), "then Dunya's house: Nina there (M23c)")
 	# The one-figure rule while the letters go: Nina is not in H1 at the same time.
@@ -300,7 +300,7 @@ func _test_letters_both_orders() -> void:
 	await _enter("H1")
 	_check(_nina_shown("H1"), "M23c done first: Nina in her sister's house")
 	lines = await _run_letters()
-	_check(lines.any(func(t): return String(t).contains("Нина к письмам вернулась")) and lines.any(func(t): return String(t).contains("к Дуне в дом")), "order 2: Nina comes to the letters and goes back: %s" % str(lines))
+	_check(lines.any(func(t): return String(t).contains("Нина к письмам вернулась")) and lines.any(func(t): return String(t).contains("в Дунин дом")), "order 2: Nina comes to the letters and goes back: %s" % str(lines))
 	await _enter("H1")
 	_check(_nina_shown("H1"), "order 2: after the letters Nina is in her sister's house again")
 
