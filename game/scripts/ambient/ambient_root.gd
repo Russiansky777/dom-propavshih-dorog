@@ -401,6 +401,12 @@ func _make_water(w: Dictionary, style: Dictionary, rain_amount: float, mode: int
 	m.set_shader_parameter("tremble_px", float(e.get("tremble_px", 1.1 if mode == 0 else 0.0)))
 	m.set_shader_parameter("sparkle", float(e.get("sparkle", 0.45 if mode == 0 else 0.0)))
 	m.set_shader_parameter("streaks", float(e.get("streaks", 0.0)))
+	# J (стр. 15): a cut-out water layer laps at its bank (`lap` 0..1, `lap_px`, `lap_period_s`, `lap_foam`)
+	m.set_shader_parameter("lap", float(e.get("lap", 0.0)))
+	m.set_shader_parameter("lap_px", float(e.get("lap_px", 10.0)))
+	m.set_shader_parameter("lap_period", float(e.get("lap_period_s", 3.2)))
+	if e.has("lap_foam"):
+		m.set_shader_parameter("lap_foam", Color.html(String(e["lap_foam"])))
 	if e.has("streak_color"):
 		m.set_shader_parameter("streak_color", Color.html(String(e["streak_color"])))
 	m.set_shader_parameter("depth", ground.depth_uniform())

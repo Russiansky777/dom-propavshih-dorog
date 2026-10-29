@@ -277,6 +277,14 @@ def check_room(path: Path, idx: dict, flags: set[str]) -> None:
             for fk, lo, hi in (("tremble_px", 0.0, 6.0), ("sparkle", 0.0, 1.0), ("streaks", 0.0, 1.0)):
                 if fk in w and not (isinstance(w[fk], (int, float)) and lo <= float(w[fk]) <= hi):
                     err(f"{where}: {fk} {w[fk]} outside {lo}..{hi}")
+            # J (стр. 15): lapping at the bank — only a water cut out of a layer has a bank (its alpha)
+            if "lap" in w:
+                if not (isinstance(w["lap"], (int, float)) and 0.0 <= float(w["lap"]) <= 1.0):
+                    err(f"{where}: lap {w['lap']} outside 0..1")
+                if not str(w.get("source", "")).startswith("layer:"):
+                    err(f"{where}: lap needs a water layer source (\"source\": \"layer:<id>\") — its alpha is the bank")
+                if not (2.0 <= float(w.get("lap_px", 10.0)) <= 30.0):
+                    err(f"{where}: lap_px {w.get('lap_px')} outside 2..30")
             if float(w.get("streaks", 0.0)) > 0.0 and not w.get("flow"):
                 err(f"{where}: streaks need a flow [x, y] (the direction the lines run)")
             if key == "puddles" and room is not None and room.get("walkable"):

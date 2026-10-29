@@ -11,6 +11,10 @@
 //                the water waver), stronger near the viewer;
 //   sparkle    — twinkling points of light on the bright parts of the water (sky, lanterns), drifting with it;
 //   streaks    — flow lines and foam running with `flow` (the mill race, the flume at the sluice, a current).
+// J (Director 29.10, стр. 15; 25.10 стр. 21: «кромка воды у опоры — живая, плещется», «вода у земли не рваная»):
+//   lap 0..1   — a water layer cut out of the painting (src_alpha) laps at its bank: the edge is the layer's alpha
+//                smoothed over `lap_px` and pushed onto the bank and back every `lap_period` s (out of phase along the
+//                shore), a thin foam line rides the front; the ragged cut-out edge stays under the smoothed one.
 shader_type canvas_item;
 render_mode blend_mix;
 
@@ -40,6 +44,10 @@ uniform float tremble_px = 0.0;
 uniform float sparkle = 0.0;
 uniform float streaks = 0.0;
 uniform vec4 streak_color : source_color = vec4(0.9, 0.93, 0.95, 1.0);
+uniform float lap = 0.0;
+uniform float lap_px = 10.0;
+uniform float lap_period = 3.2;
+uniform vec4 lap_foam : source_color = vec4(0.86, 0.88, 0.86, 1.0);
 uniform vec4 exclude[4];
 uniform int exclude_n = 0;
 
@@ -156,5 +164,29 @@ void fragment() {
 		st = smoothstep(0.3, 0.62, st);
 		col = mix(col, streak_color.rgb, st * streaks * 0.5 * still);
 	}
-	COLOR = vec4(col * COLOR.rgb, src_alpha ? base.a * COLOR.a : COLOR.a);
+	float out_a = src_alpha ? base.a : 1.0;
+	if (lap > 0.0 && src_alpha) {
+		// The wave's reach here: in and out with its own phase along the shore.
+		float ph = 0.5 + 0.5 * sin(6.2831853 * t / max(lap_period, 0.3) + amb_noise2(vec2(p.x / 70.0, p.y / 50.0)) * 4.0);
+		float r = mix(3.0, lap_px, ph * ph);
+		vec2 dirs[8] = vec2[8](vec2(1.0, 0.0), vec2(-1.0, 0.0), vec2(0.0, 1.0), vec2(0.0, -1.0),
+			vec2(0.71, 0.71), vec2(-0.71, 0.71), vec2(0.71, -0.71), vec2(-0.71, -0.71));
+		float sa = base.a;
+		vec3 sc = base.rgb * base.a;
+		for (int i = 0; i < 8; i++) {
+			vec4 sm = amb_src(p + dirs[i] * r);
+			sa += sm.a;
+			sc += sm.rgb * sm.a;
+		}
+		float aw = sa / 9.0;                                // how much water is around within the wave's reach
+		vec3 wc = sc / max(sa, 0.001);                      // the water's colour there
+		float a_lap = smoothstep(0.2, 0.5, aw);             // smoothed edge, pushed out by the reach
+		if (base.a < 0.99) {
+			col = mix(wc, col, base.a);                     // past the cut-out edge: the water's own colour
+		}
+		float foam = (smoothstep(0.12, 0.3, aw) - smoothstep(0.38, 0.62, aw)) * (0.45 + 0.55 * ph);
+		col = mix(col, lap_foam.rgb, clamp(foam * lap * 0.75, 0.0, 1.0));
+		out_a = max(max(base.a * (1.0 - lap), a_lap), base.a * smoothstep(0.55, 0.9, aw));
+	}
+	COLOR = vec4(col * COLOR.rgb, out_a * COLOR.a);
 }

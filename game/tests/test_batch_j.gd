@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   E9 (стр. 15, 96, 144): the flume by the sluice state, Z3 lapping at the bank, R3 ripple under the stones;
 ##   E8 (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror carved, no handle;
 ##   E7 (стр. 72): lit windows under the figures, boosted through the grade, dimmer at the curtains;
 ##   E6 (a real-game frame): R1 at dusk with the rope off the stopper — no white streak over the dark far bank;
@@ -91,6 +92,7 @@ func _run() -> void:
 	await _test("J-E5 sizes: the H1 mug as big as the chosen cup (стр. 95), no clay mug under it; the H4 bed larger (стр. 46)", _test_sizes)
 	await _test("J-E6 R1 dusk, the rope off the stopper: before the knot the patch is the dark bank's, after it the snowy one's", _test_rope_patch)
 	await _test("J-E7 lit windows (стр. 72): under the figures, as warm as before the grade, dimmer at the curtains", _test_windows)
+	await _test("J-E9 water (стр. 15, 96, 144): the flume holds, then rushes once the sluice is open; Z3's near water laps at the bank; R3 ripples under the stones", _test_water)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -722,6 +724,46 @@ func _test_mirror_frames() -> void:
 	_check(mvn.find_child("Clamp", true, false) == null, "no grey handle at the side")
 	sr.call("close_mechanic")
 	await _frames(2)
+
+
+func _water(id: String) -> Polygon2D:
+	var amb: Node = _fog_root()
+	if amb == null:
+		return null
+	for w in amb.get("water"):
+		if String(w.name) == id:
+			return w
+	return null
+
+
+func _test_water() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_N01", "done_M09", "met_pavel"])
+	await _enter("M4")
+	await _drain()
+	var held := _water("flume_held")
+	var rush := _water("flume_rush")
+	_check(held != null and held.visible and rush != null and not rush.visible, "the sluice shut: the flume's water stands at the gate")
+	gs.set_flag("sluice_opened", true)
+	await _frames(3)
+	_check(rush != null and rush.visible and not held.visible, "the sluice open: the pond rushes through the flume")
+	if rush != null:
+		var fl: Vector2 = (rush.material as ShaderMaterial).get_shader_parameter("flow")
+		_check(fl.length() > 40.0 and float((rush.material as ShaderMaterial).get_shader_parameter("streaks")) >= 0.9, "a fast flow with foam lines: flow %s" % str(fl))
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01"])
+	await _enter("Z3")
+	await _drain()
+	var near := _water("near_water")
+	_check(near != null and float((near.material as ShaderMaterial).get_shader_parameter("lap")) > 0.5, "Z3: the near water laps at the bank")
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01"])
+	await _enter("R3")
+	await _drain()
+	_check(_water("near_stones") != null and _water("near_stones").visible, "R3: the water under the stone bank ripples")
 
 
 func _layer_vis(id: String) -> bool:
