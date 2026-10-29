@@ -107,6 +107,7 @@ func _run() -> void:
 	await _test("J-F2 the mill's schedule (стр. 80): the words stay on the sheet; the whole close-up in the carved frame, «Закрыть» below it", _test_schedule)
 	await _test("J-D4 the empty boat (стр. 133): its bow rides on the painted rope to the far bank and melts only near its end", _test_boat_rope)
 	await _test("J-D5 the crossing (стр. 137): the rope runs through the iron eye (the iron alone stays); at the shore the boat's view goes to black and the far pier comes out of it — never the boat again", _test_crossing_black)
+	await _test("J-G2 crosses and noughts with Ulyana: from her choice in class; chalk grid and marks by hand; she plays well, not perfectly; a game ends in a word and «Ещё раз» / «Хватит»", _test_ttt)
 	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks to the door and fades before the black", _test_staging_d3)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -852,6 +853,80 @@ func _test_crossing_black() -> void:
 	_check(bad == 0, "the boat's view (R2) is never seen after the close-up (%d frames)" % bad)
 	_check(not sr.mechanic_open and rm.current_room != null and rm.current_room.room_id == "R3" and float(ui.call("stage_probe")["alpha"]) < 0.05,
 			"at the far pier, out of the black")
+
+
+func _test_ttt() -> void:
+	var TTT = load("res://scripts/mechanics/tictactoe_panel.gd")
+	# the best move: take a win, block a line of two
+	_check(int(TTT.best_move(["o", "o", "", "x", "x", "", "", "", ""], "o")) == 2, "she takes a win in one")
+	_check(int(TTT.best_move(["x", "x", "", "", "o", "", "", "", ""], "o")) == 2, "she blocks a line of two")
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M21b", "done_M22", "house_open", "met_nina", "met_ulyana"])
+	await _enter("O1", "from_O2")
+	await _drain()
+	var h: Node = _hotspot("ulyana")
+	_check(h != null and h.visible, "Ulyana in class")
+	if h == null:
+		return
+	sr.interact(h)
+	var tw := 0
+	while sr.current_options().is_empty() and tw < 240:
+		tw += 1
+		if not sr.current_beat.is_empty() and sr.current_beat.get("type") != "options":
+			sr.advance()
+		await process_frame
+	var opts: Array = sr.current_options()
+	var ids: Array = opts.map(func(o): return String(o.get("id", "")))
+	_check(ids.has("ttt"), "her choice offers the game: %s" % str(ids))
+	sr.choose("ttt")
+	var guard := 0
+	while not sr.mechanic_open and guard < 200:
+		guard += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+	_check(sr.mechanic_open, "after the words the board opens")
+	var mvn: Node = main_node.get_node("MechanicView")
+	var panel = mvn.get("panel")
+	if panel == null:
+		return
+	await _wait(0.8)
+	var pr: Dictionary = panel.call("probe")
+	_check(pr["turn"] == "x" and not pr["over"], "Agata starts")
+	# play the centre, then keep taking the first free cell until the game ends
+	panel.call("play_cell", 4)
+	var t0 := Time.get_ticks_msec()
+	while not bool(panel.call("probe")["over"]) and Time.get_ticks_msec() - t0 < 20000:
+		var b: Array = panel.call("probe")["board"]
+		if String(panel.call("probe")["turn"]) == "x":
+			for i in 9:
+				if String(b[i]) == "":
+					panel.call("play_cell", i)
+					break
+		await _wait(0.2)
+	pr = panel.call("probe")
+	_check(pr["over"] and pr["games"] == 1 and int(pr["marks"]) >= 5, "a game played to its end: %s" % str(pr["result"]))
+	await _wait(1.3)
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	pr = panel.call("probe")
+	_check(pr["again"] and pr["stop"], "«Ещё раз» and «Хватит» after the game")
+	var flag := {"won": "ttt_won", "lost": "ttt_lost", "draw": "ttt_draw"}[String(pr["result"])]
+	_check(gs.has_flag(String(flag)), "the game's event sets %s" % flag)
+	panel.get("again_btn").emit_signal("pressed")
+	await _frames(2)
+	pr = panel.call("probe")
+	_check(not pr["over"] and int(pr["marks"]) == 0 and pr["turn"] == "o", "again: a clean board, Ulyana starts now")
+	panel.get("stop_btn").emit_signal("pressed")
+	guard = 0
+	while (sr.mechanic_open or not sr.current_beat.is_empty()) and guard < 300:
+		guard += 1
+		if not sr.current_beat.is_empty():
+			sr.advance()
+		await process_frame
+	_check(not sr.mechanic_open and gs.has_flag("ttt_played"), "«Хватит» puts the board away")
 
 
 func _test_staging_d3() -> void:

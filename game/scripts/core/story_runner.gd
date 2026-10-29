@@ -1363,6 +1363,9 @@ func _apply_choice(option_id: String, _h: StoryHotspot, ch: Dictionary, item_id:
 		said.append(String(chosen["text"]))
 	for k in chosen.get("then", []):
 		said.append(String(k))
+	# J, часть G: `mechanic` — after the words, a close-up opens (crosses and noughts with Ulyana on the board)
+	if chosen.has("mechanic"):
+		_beats.push_front({"type": "call", "fn": open_mechanic.bind(chosen["mechanic"], String(_h.hotspot_id) if _h != null else "")})
 	for i in range(said.size() - 1, -1, -1):
 		_beats.push_front(_text_beat(String(said[i])))
 

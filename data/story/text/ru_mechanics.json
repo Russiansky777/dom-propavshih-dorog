@@ -341,6 +341,55 @@
     "mech.sluice.label_status_slipped": {
       "text": "Ворот сорвался, вода поднялась. Снова с первой зарубки.",
       "draft": true
+    },
+    "mech.ttt.label_title": {
+      "text": "Крестики-нолики",
+      "draft": true,
+      "_j": "J (часть G, Директор 25.10 / 29.10: крестики-нолики с Ульяной — мелом, рукой); черновик Claude — на утверждение"
+    },
+    "mech.ttt.label_hint": {
+      "text": "Твой ход: кликни клетку — нарисуешь крестик.",
+      "draft": true
+    },
+    "mech.ttt.label_her_first": {
+      "text": "Теперь Ульяна начинает.",
+      "draft": true
+    },
+    "mech.ttt.label_her_turn": {
+      "text": "Ульяна думает…",
+      "draft": true
+    },
+    "mech.ttt.win": {
+      "text": "Ой, обыграла! Ещё разок — теперь я первая.",
+      "draft": true,
+      "line": {
+        "speaker": "ulyana",
+        "text": "Ой, обыграла! Ещё разок — теперь я первая."
+      }
+    },
+    "mech.ttt.lose": {
+      "text": "Я выиграла! Три нолика в ряд!",
+      "draft": true,
+      "line": {
+        "speaker": "ulyana",
+        "text": "Я выиграла! Три нолика в ряд!"
+      }
+    },
+    "mech.ttt.draw": {
+      "text": "Ничья. Мы с папой тоже всё вничью да вничью.",
+      "draft": true,
+      "line": {
+        "speaker": "ulyana",
+        "text": "Ничья. Мы с папой тоже всё вничью да вничью."
+      }
+    },
+    "mech.ttt.label_again": {
+      "text": "Ещё раз",
+      "draft": true
+    },
+    "mech.ttt.label_stop": {
+      "text": "Хватит",
+      "draft": true
     }
   }
 }
