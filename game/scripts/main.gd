@@ -259,7 +259,8 @@ func _publish_probe_state() -> void:
 		"mechanic": mechanic_view.call("probe") if mechanic_view != null else {},
 		"examine": item_examine.call("probe") if item_examine != null else {},
 		"frame": frame_view.call("probe") if frame_view != null else {},
-		"day_card": game_ui.get("day_card").call("probe") if game_ui.get("day_card") != null else {},   # T6: «День второй» … between the days
+		"day_card": game_ui.get("day_card").call("probe") if game_ui.get("day_card") != null else {},
+		"intro": game_ui.get("intro_card").call("probe") if game_ui.get("intro_card") != null else {},   # Р13: the intro cards   # T6: «День второй» … between the days
 		"layers": _layer_states(room),   # room art layers by id → shown (drawn states by flags, web checks)
 		"time": TimeOfDay.probe(GameState.current_room),   # time of day (F17): state, phase, day, journal line
 		"title": title.probe() if title != null else {},          # title screen: open, items → click targets

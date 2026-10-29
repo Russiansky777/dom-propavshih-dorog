@@ -74,6 +74,7 @@ var settings_rows: Array = []    # the settings controls (hidden in "save" / "lo
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button}
 var fade: ColorRect
 var day_card: DayCard          # T6: «День второй» … between the days (StoryRunner.day_card_requested)
+var intro_card: IntroCard      # Р13: the intro of a new game (StoryRunner.intro_requested)
 var stage_overlay: ColorRect     # scene staging (StoryRunner.stage_fade): black between shots, dusk under lines
 var _stage_tween: Tween = null
 var hover_label: Label
@@ -228,6 +229,10 @@ func _build() -> void:
 	day_card = DayCard.new()
 	day_card.name = "DayCard"
 	add_child(day_card)
+	# Р13: the intro cards of a new game (before «День первый»).
+	intro_card = IntroCard.new()
+	intro_card.name = "IntroCard"
+	add_child(intro_card)
 
 	# Modal catcher (dialogue / panels)
 	modal = Control.new()

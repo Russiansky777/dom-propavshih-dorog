@@ -44,6 +44,9 @@ func _run() -> void:
 	await _shot(out_dir, "menu_title_hover.png")
 	title.call("activate", "new_game")
 	rm.autosave_enabled = false
+	var gui0 = main_node.get_node_or_null("GameUi")
+	if gui0 != null and gui0.get("intro_card") != null:
+		gui0.get("intro_card").call("finish_now")   # J (Р13): the shot is of the room, not of the intro
 	await _wait(2.5)
 	var sr = root.get_node("StoryRunner")
 	var g := 0

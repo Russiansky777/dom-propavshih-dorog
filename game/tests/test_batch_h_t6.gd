@@ -299,6 +299,7 @@ func _test_card_once() -> void:
 	_check(_card_seen.is_empty() and gs.has_flag("done_N01"), "a sleep replayed after its card: no second card (%s)" % str(_card_seen))
 	# A new game: «День первый» over its own black, then the room.
 	rm.new_game()
+	gs.set_flag("intro_seen", true)   # J (Р13): the intro cards come first — tested in test_batch_j.gd (J-B1)
 	sr.play_first_day_card()
 	await _frames(2)
 	var p: Dictionary = card.probe()

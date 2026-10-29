@@ -39,6 +39,8 @@ signal synth_sound_requested(sound_name: String)
 ## T6 (Director 24.10): the change of day — «День второй» in the title screen's gold over black (DayCard). `own_black`:
 ## the card brings its own black (a new game); else it plays over a staging's black.
 signal day_card_requested(text_key: String, own_black: bool)
+## Р13 (Director 29.10): a new game opens with the intro cards (IntroCard; data/story/menu.json → intro.keys).
+signal intro_requested(keys: Array)
 ## A scene's `checkpoint` save was written (slot, title) — «День второй» after the night by the stove.
 signal checkpoint_saved(slot: String, title: String)
 ## A hotspot with `mechanic: {type, requires, events, ...}` (rooms data) opens an interactive close-up
@@ -728,8 +730,15 @@ func play_day_card(key: String, own_black: bool = false) -> bool:
 	return true
 
 
-## A new game opens with «День первый» (data/story/menu.json → day_card.first).
+## A new game opens with the intro (Р13: cards on black with the voice-over, menu.json → intro.keys; once — the flag
+## intro_seen is part of the save), then «День первый» (menu.json → day_card.first): IntroCard calls this again when
+## its last card is gone.
 func play_first_day_card() -> void:
+	var intro: Array = MenuConfig.section("intro").get("keys", [])
+	if not intro.is_empty() and not GameState.has_flag("intro_seen"):
+		GameState.set_flag("intro_seen", true)
+		intro_requested.emit(intro)
+		return
 	play_day_card(String(MenuConfig.section("day_card").get("first", "")), true)
 
 

@@ -9,6 +9,8 @@ extends SceneTree
 ##   A5 (стр. 112): once the office is open the bell does not open the mirror's close-up again;
 ##   A6 (стр. 176): at the end of M23a Nina walks off toward the river, not into her own porch;
 ##   A8 (стр. 175): Agata answers Ulyana «никто больше не потеряется».
+##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
+##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E1 (Р2): river fog over the far bank in R1 / Z3 / M1 / H4 until the knot (road_held_both_ends); the knot tied
 ##      with the room on screen — the fog lifts (eases out, then hidden); a load after the knot — no fog at once;
 ##      at dusk the painted-dusk rooms (R1, Z3) switch to their dusk fog; snow on the far bank only after the knot.
@@ -69,6 +71,7 @@ func _run() -> void:
 	await _test("J-A5 H2: once the office is open the bell rings by itself, no mirror close-up", _test_bell_after)
 	await _test("J-A6/A8 data: Nina walks to the river at the end of M23a; Agata answers Ulyana", _test_data)
 	await _test("J-E1 fog over the far bank until the knot, lifting when the knot is tied", _test_fog)
+	await _test("J-B1 intro: three cards on black with the voice-over, a click goes on, then «День первый», once", _test_intro)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -446,4 +449,65 @@ func _test_fog() -> void:
 		if sn == null:
 			sn = rm.current_room.get_node_or_null("Effects/far_snowfall_left")
 		_check(sn != null and sn.visible, "%s after the knot: snow falls on the far bank" % rid)
+	gs.reset()
+
+
+func _test_intro() -> void:
+	var intro: Node = ui.get("intro_card")
+	var card: Node = ui.get("day_card")
+	_check(intro != null and card != null, "GameUi has the intro and the day cards")
+	if intro == null or card == null:
+		return
+	var keys: Array = MenuConfig.section("intro").get("keys", [])
+	_check(keys.size() >= 2 and keys.size() <= 3, "2–3 intro cards (Director 18:30): %s" % str(keys))
+	for k in keys:
+		_check(sd.text(String(k)) != String(k) and not sd.text(String(k)).is_empty(), "intro text %s exists" % k)
+		_check(root.get_node("VoiceDirector").is_narration_key(String(k).trim_prefix("@")), "intro card %s is voiced by the narrator" % k)
+	rm.new_game()
+	sr.play_first_day_card()
+	await _frames(3)
+	var p: Dictionary = intro.probe()
+	_check(String(p["phase"]) != "" and int(p["index"]) == 0 and float(p["black"]) > 0.99, "the intro starts on black with the first card (%s)" % str(p))
+	_check(String(card.probe()["phase"]) == "", "«День первый» waits for the intro")
+	_check(gs.has_flag("intro_seen"), "intro_seen in the save")
+	await _wait(1.6)
+	_check(float(intro.probe()["alpha"]) > 0.9, "the first card faded in (alpha %.2f)" % float(intro.probe()["alpha"]))
+	# A click: the card fades out at once, the next fades in.
+	await _click(Vector2(960, 540))
+	await _wait(1.2)
+	p = intro.probe()
+	_check(int(p["index"]) == 1 and int(p["skipped"]) >= 1, "a click goes on to the second card (%s)" % str(p))
+	# Space: the same.
+	var ev := InputEventKey.new()
+	ev.keycode = KEY_SPACE
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await _frames(2)
+	var up := InputEventKey.new()
+	up.keycode = KEY_SPACE
+	up.pressed = false
+	Input.parse_input_event(up)
+	await _wait(1.2)
+	_check(int(intro.probe()["index"]) == keys.size() - 1, "Space goes on to the last card (%s)" % str(intro.probe()))
+	# The last card left to its own timing: it holds (voice or reading time), then «День первый» over black.
+	var t0 := Time.get_ticks_msec()
+	while String(intro.probe()["phase"]) != "" and Time.get_ticks_msec() - t0 < 30000:
+		await process_frame
+	_check(String(intro.probe()["phase"]) == "" and (intro.probe()["shown"] as Array).size() >= keys.size(), "the last card goes by itself (%s)" % str(intro.probe()))
+	await _frames(2)
+	var dp: Dictionary = card.probe()
+	_check(String(dp["key"]) == "@ui.day_card_1" and String(dp["phase"]) != "" and float(dp["black"]) > 0.9, "then «День первый» on black (%s)" % str(dp))
+	# Once: the next call goes straight to the day card's «once» rule; a load stops a running intro.
+	var n := (intro.probe()["shown"] as Array).size()
+	sr.play_first_day_card()
+	await _frames(2)
+	_check((intro.probe()["shown"] as Array).size() == n, "the intro only once per game")
+	gs.reset()
+	rm.new_game()
+	sr.play_first_day_card()
+	await _frames(2)
+	_check(String(intro.probe()["phase"]) != "", "a new game: the intro again")
+	gs.state_loaded.emit("test")
+	await _frames(2)
+	_check(String(intro.probe()["phase"]) == "" and float(intro.probe()["black"]) == 0.0, "a load stops the intro")
 	gs.reset()
