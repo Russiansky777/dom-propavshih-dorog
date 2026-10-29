@@ -19,6 +19,7 @@ python3 -I "$ROOT/tools/validate_rooms.py" --quiet 2>&1 | tee -a "$BUILD_DIR/log
 python3 -I "$ROOT/tools/validate_ambient.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # живой мир: data/story/ambient
 python3 -I "$ROOT/tools/validate_lights.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # свет комнат: data/story/lights
 python3 -I "$ROOT/tools/validate_time.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # время суток: data/story/time — сцены по порядку, без хода назад (F17)
+python3 -I "$ROOT/tools/check_gdscript.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # J: функция/поле дважды в файле — Godot не разбирает класс (дефект carved_frame.gd b278bf83)
 python3 -I "$ROOT/tools/validate_actor_actions.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # G1/G53: действия Агаты короткие, из стойки в стойку, без размаха рук; сидячая поза в кадре ужина
 python3 -I "$ROOT/tools/test_web_sheets.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # I-T4b: веб-копии листов k× (доля, поля, без смешения кусков), пресеты: веб — web_atlas без полных листов, ПК — 2,25×
 

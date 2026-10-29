@@ -82,7 +82,7 @@ jobs:
           set -uo pipefail
           mkdir -p build/check
           if [ "$VALIDATORS" = "true" ]; then
-            for v in validate_story validate_rooms validate_voice; do
+            for v in check_gdscript validate_story validate_rooms validate_voice; do
               python3 -I tools/$v.py --quiet 2>&1 | tee -a build/check/out.log
               echo "[exit] $v ${PIPESTATUS[0]}" | tee -a build/check/out.log
             done
@@ -113,6 +113,10 @@ jobs:
             echo "[exit] $s $rc" | tee -a build/check/out.log
             [ "$rc" -ne 0 ] && code=1
           done
+          # J (29.10): a script that does not parse (carved_frame.gd b278bf83) left tests half passing — count it as a failure
+          pe=$(grep -c "Parse Error" build/check/out.log || true)
+          echo "[exit] parse_errors ${pe:-0}" | tee -a build/check/out.log
+          [ "${pe:-0}" -gt 0 ] && code=1
           grep -E "^(FAIL|\[exit\])|^        - " build/check/out.log | head -40 | while IFS= read -r l; do
             echo "::notice title=godot-check::$(printf '%s' "$l" | cut -c1-300)"
           done
