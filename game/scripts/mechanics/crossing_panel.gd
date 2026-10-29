@@ -21,7 +21,12 @@ const FOG_SHADER := "shader_type canvas_item;\nuniform float density = 0.8;\nuni
 ## The painted rope runs back through the ring: pixels of the rope layer are sampled further along the rope's
 ## axis (towards the vanishing point) by `phase` — scaled by the distance from the vanishing point, so near strands
 ## move faster than far ones; the ring (a circle) stays still.
-const ROPE_SHADER := "shader_type canvas_item;\nuniform vec2 vp;\nuniform vec2 dir;\nuniform float phase = 0.0;\nuniform float period = 60.0;\nuniform float ref_dist = 600.0;\nuniform vec2 tex_size;\nuniform vec2 ring;\nuniform float ring_r = 40.0;\nvarying vec2 pos;\nvoid vertex() { pos = VERTEX; }\nvoid fragment() {\n\tfloat d = max(dot(pos - vp, dir), 1.0);\n\tfloat k = d / ref_dist;\n\tfloat off = mod(phase * k, period * k);\n\tfloat keep = smoothstep(ring_r, ring_r * 1.25, length(pos - ring));\n\tvec2 q = pos - dir * off * keep;\n\tvec4 moved = texture(TEXTURE, q / tex_size);\n\tvec4 here = texture(TEXTURE, UV);\n\tCOLOR = (moved.a > 0.5 && here.a > 0.5) ? moved : here;\n}\n"
+const ROPE_SHADER := "shader_type canvas_item;\nuniform vec2 vp;\nuniform vec2 dir;\nuniform float phase = 0.0;\nuniform float period = 60.0;\nuniform float ref_dist = 600.0;\nuniform vec2 tex_size;\nuniform vec2 ring;\nuniform float ring_r = 40.0;\nuniform bool use_eye = false;\nuniform vec2 eye;\nuniform vec2 eye_r = vec2(40.0);\nuniform vec2 hole;\nuniform vec2 hole_r = vec2(20.0);\nuniform vec4 bracket;\nvarying vec2 pos;\nvoid vertex() { pos = VERTEX; }\nbool in_iron(vec2 p) {\n\tvec2 e = (p - eye) / eye_r;\n\tvec2 h = (p - hole) / hole_r;\n\tbool ring_part = dot(e, e) < 1.0 && dot(h, h) >= 1.0;\n\tbool plate = p.x > bracket.x && p.x < bracket.x + bracket.z && p.y > bracket.y && p.y < bracket.y + bracket.w;\n\treturn ring_part || plate;\n}\nvoid fragment() {\n\tvec4 here = texture(TEXTURE, UV);\n\tif (use_eye && in_iron(pos)) { COLOR = here; } else {\n\tfloat d = max(dot(pos - vp, dir), 1.0);\n\tfloat k = d / ref_dist;\n\tfloat per = period * k;\n\tfloat off = mod(phase * k, per);\n\tfloat keep = use_eye ? 1.0 : smoothstep(ring_r, ring_r * 1.25, length(pos - ring));\n\tvec2 q = pos - dir * off * keep;\n\tif (use_eye) { for (int i = 0; i < 4; i++) { vec2 e2 = (q - eye) / eye_r; bool pl = q.x > bracket.x && q.x < bracket.x + bracket.z && q.y > bracket.y && q.y < bracket.y + bracket.w; if (dot(e2, e2) >= 1.0 && !pl) { break; } q -= dir * per; } }\n\tvec4 moved = texture(TEXTURE, q / tex_size);\n\tCOLOR = (moved.a > 0.5 && here.a > 0.5) ? moved : here;\n\t}\n}\n"
+## J (Директор 29.10, стр. 137: «кольцо и канат у кольца стоят, движется только остальной канат»): with the iron eye
+## given (`eye` in the data), the rope runs on through the eye's hole too; samples are never taken from the iron (they
+## step a twist further along), so the eye stays put and the rope slides through it. The overlay on top keeps the iron
+## only (the plate and the eye round its hole) — not a frozen piece of rope.
+const IRON_SHADER := "shader_type canvas_item;\nuniform vec2 origin;\nuniform vec2 eye;\nuniform vec2 eye_r = vec2(40.0);\nuniform vec2 hole;\nuniform vec2 hole_r = vec2(20.0);\nuniform vec4 bracket;\nvarying vec2 pos;\nvoid vertex() { pos = VERTEX; }\nvoid fragment() {\n\tvec2 p = origin + pos;\n\tvec2 e = (p - eye) / eye_r;\n\tvec2 h = (p - hole) / hole_r;\n\tbool ring_part = dot(e, e) < 1.0 && dot(h, h) >= 1.0;\n\tbool plate = p.x > bracket.x && p.x < bracket.x + bracket.z && p.y > bracket.y && p.y < bracket.y + bracket.w;\n\tvec4 c = texture(TEXTURE, UV);\n\tCOLOR = vec4(c.rgb, (ring_part || plate) ? c.a : 0.0) * COLOR;\n}\n"
 
 var k: float = 1.0
 var stage: Control = null        # everything that bobs with the boat
@@ -122,6 +127,24 @@ func build() -> void:
 	ring = crop(String(art.get("rope", "")), rr, Vector2(float(rr[0]), float(rr[1])) * k, k, stage)
 	ring.name = "Ring"
 	ring.pivot_offset = _ring - ring.position
+	var eye: Dictionary = spec.get("eye", {})
+	if not eye.is_empty():
+		var bk: Array = eye.get("bracket", [0, 0, 0, 0])
+		var bracket := Vector4(float(bk[0]) * k, float(bk[1]) * k, float(bk[2]) * k, float(bk[3]) * k)
+		for m in [rope_mat, null]:
+			var mat: ShaderMaterial = m
+			if mat == null:
+				mat = ShaderMaterial.new()
+				mat.shader = _shader(IRON_SHADER)
+				mat.set_shader_parameter("origin", ring.position)
+				ring.material = mat
+			else:
+				mat.set_shader_parameter("use_eye", true)
+			mat.set_shader_parameter("eye", v2(eye.get("center", rr.slice(0, 2))) * k)
+			mat.set_shader_parameter("eye_r", v2(eye.get("r", [40, 40])) * k)
+			mat.set_shader_parameter("hole", v2(eye.get("hole", eye.get("center", rr.slice(0, 2)))) * k)
+			mat.set_shader_parameter("hole_r", v2(eye.get("hole_r", [20, 20])) * k)
+			mat.set_shader_parameter("bracket", bracket)
 	# Arrival: the far pier's own painting fades in over the last pulls.
 	arrival = crop(String(art.get("arrival", "")), full, Vector2.ZERO, k, self)
 	arrival.name = "Arrival"

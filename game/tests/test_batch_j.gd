@@ -105,6 +105,8 @@ func _run() -> void:
 	await _test("J-D2 M18 at the far pier (стр. 139, 140, 143): mother and son turn to each other at once, step apart after the hug, Mitya walks up the path", _test_m18_staging)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	await _test("J-F2 the mill's schedule (стр. 80): the words stay on the sheet; the whole close-up in the carved frame, «Закрыть» below it", _test_schedule)
+	await _test("J-D4 the empty boat (стр. 133): its bow rides on the painted rope to the far bank and melts only near its end", _test_boat_rope)
+	await _test("J-D5 the crossing (стр. 137): the rope runs through the iron eye (the iron alone stays); at the shore the boat's view goes to black and the far pier comes out of it — never the boat again", _test_crossing_black)
 	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks to the door and fades before the black", _test_staging_d3)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -776,6 +778,82 @@ func _test_schedule() -> void:
 	await _frames(2)
 
 
+func _test_boat_rope() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "evening_dusk", "rope_brought", "rope_on_ring", "plate_braced", "done_M15", "done_M16", "boat_back_at_turn"])
+	await _enter("Z3")
+	await _drain()
+	var spec: Dictionary = {}
+	for st in sd.call("scene", "M17").get("stage", []):
+		if st.has("layer_go"):
+			spec = st
+	var bl := rm.current_room.get_node_or_null("Layers/boat_dusk") as Node2D
+	_check(not spec.is_empty() and bl != null and bl.visible, "the boat at the plate and its staging")
+	if spec.is_empty() or bl == null:
+		return
+	var g: Dictionary = spec["layer_go"][0]
+	var pv := Vector2(float(g["pivot"][0]), float(g["pivot"][1]))
+	# the painted rope (rooms Z3 effects rope_on_ring_dusk): from the ring to the far bank, sagging
+	var a := Vector2(1281, 572)
+	var b := Vector2(1150, 402)
+	var rope: Array[Vector2] = []
+	for i in 41:
+		var e := float(i) / 40.0
+		rope.append(a.lerp(b, e) + Vector2(0, 14.0 * 4.0 * e * (1.0 - e)))
+	sr.call("_stage_layer_go", {"layer_go": [g]})
+	var worst := 0.0
+	var alpha_mid := 1.0
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t0 < int(float(g["s"]) * 1000.0) - 100:
+		var q := pv * bl.scale.x + bl.position
+		var dmin := 1e9
+		for r in rope:
+			dmin = minf(dmin, q.distance_to(r))
+		worst = maxf(worst, dmin)
+		if Time.get_ticks_msec() - t0 < int(float(g["s"]) * 500.0):
+			alpha_mid = minf(alpha_mid, bl.modulate.a)
+		await process_frame
+	_check(worst < 8.0, "the bow stays on the rope all the way (worst %.1f px)" % worst)
+	_check(alpha_mid > 0.95, "still clearly seen on the first half of the way (alpha %.2f)" % alpha_mid)
+	await _wait(0.4)
+	_check(bl.modulate.a < 0.1, "melted at the far end (alpha %.2f)" % bl.modulate.a)
+
+
+func _test_crossing_black() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "house_unlocked", "ferry_verified", "boat_shuttle_open", "done_M17", "done_M18p", "crossing_hauled", "done_M18", "evening_dusk"])
+	await _enter("R2", "from_Z3")
+	await _drain()
+	var h: Node = _hotspot("rope")
+	_check(h != null, "the rope in the boat")
+	if h == null:
+		return
+	sr.open_mechanic(sr.mechanic_spec(h), "rope")
+	await _frames(3)
+	var mvn: Node = main_node.get_node("MechanicView")
+	var panel = mvn.get("panel")
+	_check(sr.mechanic_open and panel != null, "the crossing is open")
+	if panel == null:
+		return
+	var rm_mat: ShaderMaterial = panel.get("rope_mat")
+	var ring: Control = panel.get("ring")
+	_check(rm_mat != null and bool(rm_mat.get_shader_parameter("use_eye")), "the rope runs through the eye (no frozen piece by the ring)")
+	_check(ring != null and ring.material is ShaderMaterial, "the ring on top keeps the iron only")
+	sr.mechanic_event("crossed")
+	var bad := 0
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t0 < 4000:
+		var a := float(ui.call("stage_probe")["alpha"])
+		if not sr.mechanic_open and rm.current_room != null and rm.current_room.room_id == "R2" and a < 0.98:
+			bad += 1
+		await process_frame
+	_check(bad == 0, "the boat's view (R2) is never seen after the close-up (%d frames)" % bad)
+	_check(not sr.mechanic_open and rm.current_room != null and rm.current_room.room_id == "R3" and float(ui.call("stage_probe")["alpha"]) < 0.05,
+			"at the far pier, out of the black")
+
+
 func _test_staging_d3() -> void:
 	# 147: Nina by her house in O4 — in front of the fence at the foot of her steps, not behind it to the left
 	var o4: Dictionary = sd.call("room", "O4")
@@ -821,6 +899,27 @@ func _test_staging_d3() -> void:
 	await _wait(3.5)
 	await _drain()
 	_check(gs.has_flag("done_M22") and (nina == null or not is_instance_valid(nina) or not nina.visible), "after M22 Nina has left the class")
+	# 177: on the free day Agata walks round Mitya by the fence in O4, not through him
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["started_M19", "done_M19", "done_M21b", "done_M22", "free_walk_day3", "morning_day3", "house_open", "met_nina", "met_mitya"])
+	await _enter("O4", "from_O2")
+	await _drain()
+	await physics_frame
+	await physics_frame
+	var reg := rm.current_room.get_node_or_null("Walkable") as NavigationRegion2D
+	_check(reg != null, "O4 has its floor")
+	if reg != null:
+		var nm := reg.get_navigation_map()
+		var path := NavigationServer2D.map_get_path(nm, Vector2(1150, 822), Vector2(1600, 822), true)
+		var inside := 0
+		for i in range(1, path.size()):
+			for k in 11:
+				var q := path[i - 1].lerp(path[i], float(k) / 10.0)
+				var dq := (q - Vector2(1367, 820)) / Vector2(44, 15)
+				if dq.length() < 1.0:
+					inside += 1
+		_check(path.size() >= 2 and inside == 0, "the way past Mitya goes round his feet (%d points inside, path %d)" % [inside, path.size()])
 
 
 func _water(id: String) -> Polygon2D:

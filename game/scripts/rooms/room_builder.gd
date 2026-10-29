@@ -139,7 +139,7 @@ static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dic
 	# is an obstruction around its feet (the bottom centre of its rect) while it is shown when the room is built.
 	for h in spec.get("hotspots", []):
 		if h is Dictionary and h.has("footprint") and StoryHotspot.data_active(h):
-			var r: Array = h.get("rect", [0, 0, 0, 0])
+			var r: Array = _state_rect(h)   # J, стр. 177: where the villager stands now (Mitya by the fence on day 3)
 			var c := Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]))
 			var half := Vector2(float(h["footprint"][0]), float(h["footprint"][1])) * 0.5
 			var fv := PackedVector2Array()
@@ -160,6 +160,19 @@ static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dic
 		poly.add_polygon(indices)
 	region.navigation_polygon = poly
 	room.add_child(region)
+
+
+## The hotspot's rect in its current state: the first `states` entry whose `if` flags all hold and that moves it.
+static func _state_rect(h: Dictionary) -> Array:
+	for st in h.get("states", []):
+		var ok := true
+		for f in st.get("if", []):
+			if not GameState.has_flag(String(f)):
+				ok = false
+				break
+		if ok:
+			return st.get("rect", h.get("rect", [0, 0, 0, 0]))
+	return h.get("rect", [0, 0, 0, 0])
 
 
 static func _build_props(room: Room, spec: Dictionary) -> void:

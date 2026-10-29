@@ -493,6 +493,11 @@ func _complete_scene(scene_id: String) -> void:
 ## day four faded to black and showed the empty shore before Ilya and Pelageya «appeared»; the laid log vanished
 ## for a fade between the close-up and its frame).
 func _run_stage(spec: Dictionary) -> void:
+	# J (стр. 137): `only_if_elsewhere` — a move to `room` that is skipped when the player is already there (the
+	# crossing's close-up took her to the far pier through the black itself; a load after it still needs the move).
+	if bool(spec.get("only_if_elsewhere", false)) and String(spec.get("room", "")) == current_room_id():
+		_next()
+		return
 	# Timers below stop with the tree (create_timer(…, false)): the pause menu holds a staging where it is.
 	_stage_running = true
 	# H39 (Director 24.10: «перед „мама“ Агата должна побежать к маме и обнять»): `agata_go` {to, face, action, run} —
@@ -639,12 +644,22 @@ func _stage_layer_go(spec: Dictionary) -> float:
 		var by: Array = g.get("by", [0, 0])
 		var to := Vector2(float(pv[0]), float(pv[1])) * (1.0 - k) + Vector2(float(by[0]), float(by[1]))
 		layer_went.emit(String(g.get("id", "")))
+		# J (Директор 29.10, стр. 133: «пустая лодка уходит в затемнение, не по канату»): `sag` px — the path bows down
+		# by that much at its middle, as the painted rope does (the pivot point rides on the rope); `fade_from` — the
+		# share of the way after which it melts (default 0.4; later — it is seen going along the rope first).
+		var sag := float(g.get("sag", 0.0))
+		var start_pos := node.position
 		var tw := node.create_tween()
 		tw.set_parallel(true)
-		tw.tween_property(node, "position", to, secs).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		tw.tween_property(node, "scale", Vector2(k, k), secs).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		tw.tween_method(func(e: float) -> void:
+			if not is_instance_valid(node):
+				return
+			node.scale = Vector2.ONE.lerp(Vector2(k, k), e)
+			node.position = start_pos.lerp(to, e) + Vector2(0.0, sag * 4.0 * e * (1.0 - e)), 0.0, 1.0, secs) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		if bool(g.get("fade", true)):
-			tw.tween_property(node, "modulate:a", 0.0, secs * 0.6).set_delay(secs * 0.4)
+			var ff := clampf(float(g.get("fade_from", 0.4)), 0.0, 0.95)
+			tw.tween_property(node, "modulate:a", 0.0, secs * (1.0 - ff)).set_delay(secs * ff)
 		longest = maxf(longest, secs)
 	return longest
 
@@ -720,6 +735,10 @@ func _stage_door(room: Node, door: Dictionary, walk_s: float) -> float:
 
 ## What a staging changes while the screen is black (or at once, for a cut): the room, the frame, flags.
 func _stage_apply(spec: Dictionary) -> void:
+	# J (стр. 137): a close-up put away while black (`close_black` of a close-up's event) — the room under it is
+	# never seen between the close-up's last picture and the next place.
+	if bool(spec.get("close_mechanic", false)) and mechanic_open:
+		close_mechanic()
 	if spec.has("room"):
 		var keep_autosave: bool = RoomManager.autosave_enabled
 		RoomManager.autosave_enabled = false
@@ -1730,13 +1749,26 @@ func mechanic_event(event_name: String) -> bool:
 		var t = ev["text"]
 		for k in (t if t is Array else [t]):
 			narrate_key(String(k))
-	if bool(ev.get("close", false)):
+	# J (Директор 29.10, стр. 137: «после затемнения на берегу снова вид из лодки»): `close_black` {fade_out_s, hold_s,
+	# fade_in_s, sounds} — the close-up goes to black over its last picture, is put away while black (with the
+	# `room` change, if any) and the next place comes up out of the black: no glimpse of the room under it.
+	if ev.has("close_black"):
+		var cb: Dictionary = (ev["close_black"] as Dictionary).duplicate()
+		cb["close_mechanic"] = true
+		if ev.has("room"):
+			cb["room"] = String(ev["room"])
+			cb["spawn"] = String(ev.get("spawn", "default"))
+		if current_beat.is_empty():
+			_run_stage(cb)
+		else:
+			_beats.append({"type": "stage", "spec": cb})
+	elif bool(ev.get("close", false)):
 		if current_beat.is_empty():
 			close_mechanic()
 		else:
 			_beats.append({"type": "call", "fn": close_mechanic})
 	# `room` (+ `spawn`): the close-up took the player somewhere — the boat crossed by the rope (G43).
-	if ev.has("room"):
+	if ev.has("room") and not ev.has("close_black"):
 		var go := _enter_room.bind(String(ev["room"]), String(ev.get("spawn", "default")))
 		if current_beat.is_empty() and not mechanic_open:
 			go.call()
