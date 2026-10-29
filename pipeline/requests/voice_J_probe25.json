@@ -1,0 +1,842 @@
+{
+ "mode": "say",
+ "set": "J_probe25",
+ "max_chars": 5879,
+ "_comment": "Партия J, проба 25 фраз (Директор 29.10, 20:58: «сделаем например 25 фраз, а я снова укажу, где норм, где нет» — чтобы не тратить кредиты на 116 без результата). Слова прежние, меняются знаки: выделяемое слово — конец фразы (тире, «!», «?»), лишние теги сняты; дубли: устойчивость персонажа / ниже на 0,2 / ниже + вопрос-контекст previous_text (если v4 его примет); ударение — без знака / знак / IPA (документация v4). Измеритель tools/voice_prominence.py выбирает дубль; Директор слушает выбранный.",
+ "items": [
+  {
+   "id": "P01_A",
+   "line": "tikhon:H1.tikhon.tea_3",
+   "take": "A",
+   "speaker": "tikhon",
+   "text": "ЧАЙ — у неё остывал, покуда она с тетрадями возилась.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "устойчивость 0.6 (как у персонажа)"
+  },
+  {
+   "id": "P01_B",
+   "line": "tikhon:H1.tikhon.tea_3",
+   "take": "B",
+   "speaker": "tikhon",
+   "text": "ЧАЙ — у неё остывал, покуда она с тетрадями возилась.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "устойчивость 0.4"
+  },
+  {
+   "id": "P01_C",
+   "line": "tikhon:H1.tikhon.tea_3",
+   "take": "C",
+   "speaker": "tikhon",
+   "text": "ЧАЙ — у неё остывал, покуда она с тетрадями возилась.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "устойчивость 0.4 + вопрос-контекст",
+   "previous_text": "А что у неё остывало?"
+  },
+  {
+   "id": "P02_A",
+   "line": "pavel:M4.pavel.after",
+   "take": "A",
+   "speaker": "pavel",
+   "text": "ИДЁТ — вода. Теперь ждать надо. А пока ступай.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "устойчивость 0.5 (как у персонажа)"
+  },
+  {
+   "id": "P02_B",
+   "line": "pavel:M4.pavel.after",
+   "take": "B",
+   "speaker": "pavel",
+   "text": "ИДЁТ — вода. Теперь ждать надо. А пока ступай.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3"
+  },
+  {
+   "id": "P02_C",
+   "line": "pavel:M4.pavel.after",
+   "take": "C",
+   "speaker": "pavel",
+   "text": "ИДЁТ — вода. Теперь ждать надо. А пока ступай.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3 + вопрос-контекст",
+   "previous_text": "Ну что, идёт вода или нет?"
+  },
+  {
+   "id": "P03_A",
+   "line": "M26_24",
+   "take": "A",
+   "speaker": "nina",
+   "text": "ДЕРЖИТСЯ — Дунин рукав. Шва и не разглядеть.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "устойчивость 0.55 (как у персонажа)"
+  },
+  {
+   "id": "P03_B",
+   "line": "M26_24",
+   "take": "B",
+   "speaker": "nina",
+   "text": "ДЕРЖИТСЯ — Дунин рукав. Шва и не разглядеть.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35"
+  },
+  {
+   "id": "P03_C",
+   "line": "M26_24",
+   "take": "C",
+   "speaker": "nina",
+   "text": "ДЕРЖИТСЯ — Дунин рукав. Шва и не разглядеть.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35 + вопрос-контекст",
+   "previous_text": "Ну как, держится рукав?"
+  },
+  {
+   "id": "P04_A",
+   "line": "agata:examine.photo_bridge",
+   "take": "A",
+   "speaker": "agata",
+   "text": "ЦЕЛ ещё мост. На каменных опорах пролёты, а за плиту ближней опоры канат закреплён. У берега Пелагеина лодка.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "устойчивость 0.55 (как у персонажа)"
+  },
+  {
+   "id": "P04_B",
+   "line": "agata:examine.photo_bridge",
+   "take": "B",
+   "speaker": "agata",
+   "text": "ЦЕЛ ещё мост. На каменных опорах пролёты, а за плиту ближней опоры канат закреплён. У берега Пелагеина лодка.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35"
+  },
+  {
+   "id": "P04_C",
+   "line": "agata:examine.photo_bridge",
+   "take": "C",
+   "speaker": "agata",
+   "text": "ЦЕЛ ещё мост. На каменных опорах пролёты, а за плиту ближней опоры канат закреплён. У берега Пелагеина лодка.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35 + вопрос-контекст",
+   "previous_text": "Мост на снимке — цел или нет?"
+  },
+  {
+   "id": "P05_A",
+   "line": "tamara:Z1.tamara.school",
+   "take": "A",
+   "speaker": "tamara",
+   "text": "ОДНА у нас школа на оба берега была, ребятишек наших туда по мосту водили. А теперь вот год никто их не учит.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "устойчивость 0.45 (как у персонажа)"
+  },
+  {
+   "id": "P05_B",
+   "line": "tamara:Z1.tamara.school",
+   "take": "B",
+   "speaker": "tamara",
+   "text": "ОДНА у нас школа на оба берега была, ребятишек наших туда по мосту водили. А теперь вот год никто их не учит.",
+   "voice_settings": {
+    "stability": 0.25
+   },
+   "variant": "устойчивость 0.25"
+  },
+  {
+   "id": "P05_C",
+   "line": "tamara:Z1.tamara.school",
+   "take": "C",
+   "speaker": "tamara",
+   "text": "ОДНА у нас школа на оба берега была, ребятишек наших туда по мосту водили. А теперь вот год никто их не учит.",
+   "voice_settings": {
+    "stability": 0.25
+   },
+   "variant": "устойчивость 0.25 + вопрос-контекст",
+   "previous_text": "А сколько у вас школ было?"
+  },
+  {
+   "id": "P06_A",
+   "line": "M12_0",
+   "take": "A",
+   "speaker": "agata",
+   "text": "[excited] ВЫШЕЛ — засов! ПОДАЛАСЬ — дверь!",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "устойчивость 0.55 (как у персонажа)"
+  },
+  {
+   "id": "P06_B",
+   "line": "M12_0",
+   "take": "B",
+   "speaker": "agata",
+   "text": "[excited] ВЫШЕЛ — засов! ПОДАЛАСЬ — дверь!",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35"
+  },
+  {
+   "id": "P06_C",
+   "line": "M12_0",
+   "take": "C",
+   "speaker": "agata",
+   "text": "[excited] ВЫШЕЛ — засов! ПОДАЛАСЬ — дверь!",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35 + вопрос-контекст",
+   "previous_text": "Ну что, вышел засов? Подалась дверь?"
+  },
+  {
+   "id": "P07_A",
+   "line": "M3.key_nail.use",
+   "take": "A",
+   "speaker": "narrator",
+   "text": "СНИМАЕТ Агата рычаг с гвоздя. Тяжёлый, холодный — да в сумку его.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "устойчивость 0.65 (как у персонажа)"
+  },
+  {
+   "id": "P07_B",
+   "line": "M3.key_nail.use",
+   "take": "B",
+   "speaker": "narrator",
+   "text": "СНИМАЕТ Агата рычаг с гвоздя. Тяжёлый, холодный — да в сумку его.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "устойчивость 0.45"
+  },
+  {
+   "id": "P07_Cb",
+   "line": "M3.key_nail.use",
+   "take": "C",
+   "speaker": "narrator",
+   "text": "СНИМАЕТ Агата рычаг с гвоздя. Тяжёлый, холодный — да в сумку его.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "устойчивость 0.45, другой seed"
+  },
+  {
+   "id": "P08_A",
+   "line": "M09_0",
+   "take": "A",
+   "speaker": "pavel",
+   "text": "[chuckling] ПЛЕМЯННИЦА?.. Дунина, говоришь?.. Хотя… Похожа. ХМУРИШЬСЯ… так же.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "устойчивость 0.5 (как у персонажа)"
+  },
+  {
+   "id": "P08_B",
+   "line": "M09_0",
+   "take": "B",
+   "speaker": "pavel",
+   "text": "[chuckling] ПЛЕМЯННИЦА?.. Дунина, говоришь?.. Хотя… Похожа. ХМУРИШЬСЯ… так же.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3"
+  },
+  {
+   "id": "P08_Cb",
+   "line": "M09_0",
+   "take": "C",
+   "speaker": "pavel",
+   "text": "[chuckling] ПЛЕМЯННИЦА?.. Дунина, говоришь?.. Хотя… Похожа. ХМУРИШЬСЯ… так же.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3, другой seed"
+  },
+  {
+   "id": "P09_A",
+   "line": "M13a_0",
+   "take": "A",
+   "speaker": "pavel",
+   "text": "СЛЫШАЛ я твой звон! Слышал! Без него ещё год бы простоял.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "устойчивость 0.5 (как у персонажа)"
+  },
+  {
+   "id": "P09_B",
+   "line": "M13a_0",
+   "take": "B",
+   "speaker": "pavel",
+   "text": "СЛЫШАЛ я твой звон! Слышал! Без него ещё год бы простоял.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3"
+  },
+  {
+   "id": "P09_C",
+   "line": "M13a_0",
+   "take": "C",
+   "speaker": "pavel",
+   "text": "СЛЫШАЛ я твой звон! Слышал! Без него ещё год бы простоял.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3 + вопрос-контекст",
+   "previous_text": "Павел, ты мой звон слышал?"
+  },
+  {
+   "id": "P10_A",
+   "line": "M14_1",
+   "take": "A",
+   "speaker": "pavel",
+   "text": "Лодка туда не довезёт, назад вынесет: дороги нет. За кольцо канат ЗАКРЕПИШЬ! Дорога будет. По ней лодка и пойдёт. А пока ступай.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "устойчивость 0.5 (как у персонажа)"
+  },
+  {
+   "id": "P10_B",
+   "line": "M14_1",
+   "take": "B",
+   "speaker": "pavel",
+   "text": "Лодка туда не довезёт, назад вынесет: дороги нет. За кольцо канат ЗАКРЕПИШЬ! Дорога будет. По ней лодка и пойдёт. А пока ступай.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3"
+  },
+  {
+   "id": "P10_Cb",
+   "line": "M14_1",
+   "take": "C",
+   "speaker": "pavel",
+   "text": "Лодка туда не довезёт, назад вынесет: дороги нет. За кольцо канат ЗАКРЕПИШЬ! Дорога будет. По ней лодка и пойдёт. А пока ступай.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3, другой seed"
+  },
+  {
+   "id": "P11_A",
+   "line": "M19c_5",
+   "take": "A",
+   "speaker": "nina",
+   "text": "[warmly] Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там… ЖИВУТ! Всё тебя ждала и ждала.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "устойчивость 0.55 (как у персонажа)"
+  },
+  {
+   "id": "P11_B",
+   "line": "M19c_5",
+   "take": "B",
+   "speaker": "nina",
+   "text": "[warmly] Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там… ЖИВУТ! Всё тебя ждала и ждала.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35"
+  },
+  {
+   "id": "P11_Cb",
+   "line": "M19c_5",
+   "take": "C",
+   "speaker": "nina",
+   "text": "[warmly] Двадцать лет в него глядела. Дунина печь, зверёк в кресле. Тамара кормить приходила — по-нашему раз в несколько месяцев. Ходила медленно, словно во сне. Знала я: там… ЖИВУТ! Всё тебя ждала и ждала.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35, другой seed"
+  },
+  {
+   "id": "P12_A",
+   "line": "agata:O1.bird_drawing.prompt",
+   "take": "A",
+   "speaker": "agata",
+   "text": "Шапку синице — Я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "устойчивость 0.55 (как у персонажа)"
+  },
+  {
+   "id": "P12_B",
+   "line": "agata:O1.bird_drawing.prompt",
+   "take": "B",
+   "speaker": "agata",
+   "text": "Шапку синице — Я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35"
+  },
+  {
+   "id": "P12_C",
+   "line": "agata:O1.bird_drawing.prompt",
+   "take": "C",
+   "speaker": "agata",
+   "text": "Шапку синице — Я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35 + вопрос-контекст",
+   "previous_text": "Кто синице шапку рисовал?"
+  },
+  {
+   "id": "P13_A",
+   "line": "tikhon:H1.tikhon.duty",
+   "take": "A",
+   "speaker": "tikhon",
+   "text": "Весь дом. Кастрюля в него — ВХОДИТ.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "устойчивость 0.6 (как у персонажа)"
+  },
+  {
+   "id": "P13_B",
+   "line": "tikhon:H1.tikhon.duty",
+   "take": "B",
+   "speaker": "tikhon",
+   "text": "Весь дом. Кастрюля в него — ВХОДИТ.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "устойчивость 0.4"
+  },
+  {
+   "id": "P13_C",
+   "line": "tikhon:H1.tikhon.duty",
+   "take": "C",
+   "speaker": "tikhon",
+   "text": "Весь дом. Кастрюля в него — ВХОДИТ.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "устойчивость 0.4 + вопрос-контекст",
+   "previous_text": "И кастрюля тоже входит?"
+  },
+  {
+   "id": "P14_A",
+   "line": "N01_2",
+   "take": "A",
+   "speaker": "tikhon",
+   "text": "Спи уж. За печь — я ОТВЕЧАЮ.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "устойчивость 0.6 (как у персонажа)"
+  },
+  {
+   "id": "P14_B",
+   "line": "N01_2",
+   "take": "B",
+   "speaker": "tikhon",
+   "text": "Спи уж. За печь — я ОТВЕЧАЮ.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "устойчивость 0.4"
+  },
+  {
+   "id": "P14_Cb",
+   "line": "N01_2",
+   "take": "C",
+   "speaker": "tikhon",
+   "text": "Спи уж. За печь — я ОТВЕЧАЮ.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "устойчивость 0.4, другой seed"
+  },
+  {
+   "id": "P15_A",
+   "line": "M09s_0",
+   "take": "A",
+   "speaker": "agata",
+   "text": "Вот зеркало из конторы — в сенях стоит. У Дуни под него стойка пустая. Дверь на родных петлях в класс открылась… А ЗЕРКАЛО — ВДРУГ… покажет то, где прежде висело? Стойка раму удержит. Надо Павлу сказать.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "устойчивость 0.55 (как у персонажа)"
+  },
+  {
+   "id": "P15_B",
+   "line": "M09s_0",
+   "take": "B",
+   "speaker": "agata",
+   "text": "Вот зеркало из конторы — в сенях стоит. У Дуни под него стойка пустая. Дверь на родных петлях в класс открылась… А ЗЕРКАЛО — ВДРУГ… покажет то, где прежде висело? Стойка раму удержит. Надо Павлу сказать.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35"
+  },
+  {
+   "id": "P15_Cb",
+   "line": "M09s_0",
+   "take": "C",
+   "speaker": "agata",
+   "text": "Вот зеркало из конторы — в сенях стоит. У Дуни под него стойка пустая. Дверь на родных петлях в класс открылась… А ЗЕРКАЛО — ВДРУГ… покажет то, где прежде висело? Стойка раму удержит. Надо Павлу сказать.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35, другой seed"
+  },
+  {
+   "id": "P16_A",
+   "line": "tamara:Z1.tamara.after",
+   "take": "A",
+   "speaker": "tamara",
+   "text": "[warmly] Ключ — у ТЕБЯ. А я — ТУТ, на почте. Будет нужда — заходи.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "устойчивость 0.45 (как у персонажа)"
+  },
+  {
+   "id": "P16_B",
+   "line": "tamara:Z1.tamara.after",
+   "take": "B",
+   "speaker": "tamara",
+   "text": "[warmly] Ключ — у ТЕБЯ. А я — ТУТ, на почте. Будет нужда — заходи.",
+   "voice_settings": {
+    "stability": 0.25
+   },
+   "variant": "устойчивость 0.25"
+  },
+  {
+   "id": "P16_Cb",
+   "line": "tamara:Z1.tamara.after",
+   "take": "C",
+   "speaker": "tamara",
+   "text": "[warmly] Ключ — у ТЕБЯ. А я — ТУТ, на почте. Будет нужда — заходи.",
+   "voice_settings": {
+    "stability": 0.25
+   },
+   "variant": "устойчивость 0.25, другой seed"
+  },
+  {
+   "id": "P17_A",
+   "line": "ulyana:O1q.village_map.ulyana_ours",
+   "take": "A",
+   "speaker": "ulyana",
+   "text": "[excited] Да это — НАШ САД! А у тебя на карте за нашим домом только забор.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "устойчивость 0.5 (как у персонажа)"
+  },
+  {
+   "id": "P17_B",
+   "line": "ulyana:O1q.village_map.ulyana_ours",
+   "take": "B",
+   "speaker": "ulyana",
+   "text": "[excited] Да это — НАШ САД! А у тебя на карте за нашим домом только забор.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3"
+  },
+  {
+   "id": "P17_Cb",
+   "line": "ulyana:O1q.village_map.ulyana_ours",
+   "take": "C",
+   "speaker": "ulyana",
+   "text": "[excited] Да это — НАШ САД! А у тебя на карте за нашим домом только забор.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3, другой seed"
+  },
+  {
+   "id": "P18_A",
+   "line": "M25_1",
+   "take": "A",
+   "speaker": "ilya",
+   "text": "Я — ворот кручу, а ТЫ — знаки подавай. Пускай, стой, подымай — по-мельничному.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "устойчивость 0.5 (как у персонажа)"
+  },
+  {
+   "id": "P18_B",
+   "line": "M25_1",
+   "take": "B",
+   "speaker": "ilya",
+   "text": "Я — ворот кручу, а ТЫ — знаки подавай. Пускай, стой, подымай — по-мельничному.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3"
+  },
+  {
+   "id": "P18_Cb",
+   "line": "M25_1",
+   "take": "C",
+   "speaker": "ilya",
+   "text": "Я — ворот кручу, а ТЫ — знаки подавай. Пускай, стой, подымай — по-мельничному.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "устойчивость 0.3, другой seed"
+  },
+  {
+   "id": "P19_A",
+   "line": "agata:H2.bell.thought",
+   "take": "A",
+   "speaker": "agata",
+   "text": "[warmly] Коли вещи своё МЕСТО — помнят… что ж будет, если школьную дверь на родные петли вернуть?",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "устойчивость 0.55 (как у персонажа)"
+  },
+  {
+   "id": "P19_B",
+   "line": "agata:H2.bell.thought",
+   "take": "B",
+   "speaker": "agata",
+   "text": "[warmly] Коли вещи своё МЕСТО — помнят… что ж будет, если школьную дверь на родные петли вернуть?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35"
+  },
+  {
+   "id": "P19_Cb",
+   "line": "agata:H2.bell.thought",
+   "take": "C",
+   "speaker": "agata",
+   "text": "[warmly] Коли вещи своё МЕСТО — помнят… что ж будет, если школьную дверь на родные петли вернуть?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35, другой seed"
+  },
+  {
+   "id": "P20_A",
+   "line": "pelageya:R2.exit_R1.closed",
+   "take": "A",
+   "speaker": "pelageya",
+   "text": "Не поверну назад. Коли держат — к ним и идём.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "без знака ударения"
+  },
+  {
+   "id": "P20_B",
+   "line": "pelageya:R2.exit_R1.closed",
+   "take": "B",
+   "speaker": "pelageya",
+   "text": "Не поверну назад. Ко́ли держат — к ним и идём.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "знак ударения"
+  },
+  {
+   "id": "P20_C",
+   "line": "pelageya:R2.exit_R1.closed",
+   "take": "C",
+   "speaker": "pelageya",
+   "text": "Не поверну назад. /ˈkolʲɪ/ держат — к ним и идём.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "IPA"
+  },
+  {
+   "id": "P21_A",
+   "line": "H1.shelf.prompt",
+   "take": "A",
+   "speaker": "narrator",
+   "text": "Тихон то на полку поглядит, то на печь: крепления-то для неё — ТАМ. Повесить ему полку?",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "без знака ударения"
+  },
+  {
+   "id": "P21_B",
+   "line": "H1.shelf.prompt",
+   "take": "B",
+   "speaker": "narrator",
+   "text": "Тихон то на по́лку поглядит, то на печь: крепления-то для неё — ТАМ. Повесить ему по́лку?",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "знак ударения"
+  },
+  {
+   "id": "P21_C",
+   "line": "H1.shelf.prompt",
+   "take": "C",
+   "speaker": "narrator",
+   "text": "Тихон то на /ˈpoɫkʊ/ поглядит, то на печь: крепления-то для неё — ТАМ. Повесить ему /ˈpoɫkʊ/?",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "IPA"
+  },
+  {
+   "id": "P22_A",
+   "line": "pavel:M2.mirror.take",
+   "take": "A",
+   "speaker": "pavel",
+   "text": "Бери. ЦЕЛО — стекло, да рама по углам разошлась.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "без знака ударения"
+  },
+  {
+   "id": "P22_B",
+   "line": "pavel:M2.mirror.take",
+   "take": "B",
+   "speaker": "pavel",
+   "text": "Бери. ЦЕ́ЛО — стекло, да рама по углам разошлась.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "знак ударения"
+  },
+  {
+   "id": "P22_C",
+   "line": "pavel:M2.mirror.take",
+   "take": "C",
+   "speaker": "pavel",
+   "text": "Бери. /ˈt͡sɛɫə/ — стекло, да рама по углам разошлась.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "IPA"
+  },
+  {
+   "id": "P23_A",
+   "line": "M03_4",
+   "take": "A",
+   "speaker": "tikhon",
+   "text": "К сестре пошла. Баяла, к вечеру.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "без знака ударения"
+  },
+  {
+   "id": "P23_B",
+   "line": "M03_4",
+   "take": "B",
+   "speaker": "tikhon",
+   "text": "К сестре пошла. Ба́яла, к вечеру.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "знак ударения"
+  },
+  {
+   "id": "P23_C",
+   "line": "M03_4",
+   "take": "C",
+   "speaker": "tikhon",
+   "text": "К сестре пошла. /ˈbajəɫə/, к вечеру.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "IPA"
+  },
+  {
+   "id": "P24_A",
+   "line": "nina:O3.nina.before",
+   "take": "A",
+   "speaker": "nina",
+   "text": "Сиди да грейся. Поутру наговоримся.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "как у персонажа"
+  },
+  {
+   "id": "P24_B",
+   "line": "nina:O3.nina.before",
+   "take": "B",
+   "speaker": "nina",
+   "text": "Сиди да грейся. Поутру наговоримся.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "устойчивость 0.7"
+  },
+  {
+   "id": "P24_Cb",
+   "line": "nina:O3.nina.before",
+   "take": "C",
+   "speaker": "nina",
+   "text": "Сиди да грейся. Поутру наговоримся.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "устойчивость 0.7, другой seed"
+  },
+  {
+   "id": "P25_A",
+   "line": "M26_19_then3",
+   "take": "A",
+   "speaker": "tikhon",
+   "text": "[warmly] Ещё — смеются. Спать мешают… Но я всё равно почему-то всегда этому очень рад.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "устойчивость 0.6 (как у персонажа)"
+  },
+  {
+   "id": "P25_B",
+   "line": "M26_19_then3",
+   "take": "B",
+   "speaker": "tikhon",
+   "text": "[warmly] Ещё — смеются. Спать мешают… Но я всё равно почему-то всегда этому очень рад.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "устойчивость 0.4"
+  },
+  {
+   "id": "P25_Cb",
+   "line": "M26_19_then3",
+   "take": "C",
+   "speaker": "tikhon",
+   "text": "[warmly] Ещё — смеются. Спать мешают… Но я всё равно почему-то всегда этому очень рад.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "устойчивость 0.4, другой seed"
+  }
+ ]
+}

@@ -70,7 +70,7 @@ VOICE_CFG_PATH = STORY_DIR / "voice.json"
 PROBE_MAX_LINES = 40          # пока text_freeze=false — только проба (решение Директора 17.10)
 ORDER_KEYS = ("by", "date", "what", "max_lines", "max_chars")   # явное задание Директора на объём сверх пробы
 RETRY_STATUSES = (429, 500, 502, 503, 504)
-OPTIONAL_BODY_KEYS = ("language_code", "seed")
+OPTIONAL_BODY_KEYS = ("language_code", "seed", "previous_text", "next_text")   # пробы (say) шлют previous_text: не принят — повтор без них, в dropped_params
 TIMEOUT_S = 120
 
 
@@ -591,10 +591,12 @@ def cmd_say(req_path: Path) -> int:
     for it in items:
         sp = str(it.get("speaker", "narrator"))
         spec = cast_for(cast, sp, None, str(it.get("profile", "")))
+        if it.get("voice_settings"):   # проба: своя устойчивость и т. п. поверх настроек персонажа
+            spec["voice_settings"] = dict(spec["voice_settings"], **it["voice_settings"])
         text = str(it["text"])
         seed = int(hashlib.sha1(f"probe|{it['id']}".encode("utf-8")).hexdigest()[:8], 16)
         try:
-            audio, info = synth(text, spec, cast, seed)
+            audio, info = synth(text, spec, cast, seed, {k: it.get(k) for k in ("previous_text", "next_text")})
         except VoiceError as e:
             failed.append(f"{it['id']}: {e}")
             log(f"  ОШИБКА {it['id']}: {e}")
@@ -607,6 +609,11 @@ def cmd_say(req_path: Path) -> int:
                                                "model_id": spec["model_id"], "text": text, "duration_s": duration_s(f),
                                                "character_cost": cc, "alignment": info.get("alignment"),
                                                "expect": it.get("expect"), "variant": it.get("variant", ""),
+                                               "line": it.get("line", ""), "take": it.get("take", ""),
+                                               "voice_settings": spec["voice_settings"],
+                                               "previous_text": it.get("previous_text", ""),
+                                               "dropped_params": info.get("dropped_params", []),
+                                               "history_item_id": info.get("history_item_id", ""),
                                                "run": os.environ.get("GITHUB_RUN_ID", "local")})
         log(f"  {it['id']:28} {duration_s(f):5.2f} с  выравнивание: {'есть' if info.get('alignment') else 'нет'}  {text}")
     log(f"[say {set_name}] фраз {len(items) - len(failed)}, ошибок {len(failed)}, символов {chars}, кредитов {spent}")
@@ -740,7 +747,7 @@ def voice_sets(cast: dict) -> list[dict]:
     return sets
 
 
-def synth(text: str, spec: dict, cast: dict, seed: int) -> tuple[bytes, dict]:
+def synth(text: str, spec: dict, cast: dict, seed: int, extra: dict | None = None) -> tuple[bytes, dict]:
     """Синтез одной фразы. cast.json → timestamps: true — тот же синтез через /with-timestamps (та же цена;
     https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps): в info["alignment"] — время
     каждого символа запроса; по нему tools/voice_stress_check.py проверяет ударение (ударная гласная — самая долгая)."""
@@ -749,6 +756,9 @@ def synth(text: str, spec: dict, cast: dict, seed: int) -> tuple[bytes, dict]:
         body["language_code"] = cast["language_code"]
     if cast.get("use_seed", True):
         body["seed"] = seed
+    for k, v in (extra or {}).items():   # say: previous_text / next_text — контекст для просодии (проба J_probe25)
+        if k in ("previous_text", "next_text") and v:
+            body[k] = str(v)
     params = {"output_format": cast.get("output_format", "mp3_44100_128")}
     stamps = bool(cast.get("timestamps", False))
     path = f"/v1/text-to-speech/{spec['voice_id']}" + ("/with-timestamps" if stamps else "")
