@@ -94,6 +94,13 @@ def fx_mask(src: np.ndarray, masks: dict) -> np.ndarray:
     smooth = 1.0 - smoothstep(70.0, 260.0, var)
     water = cv2.GaussianBlur(zone * smooth, (0, 0), 3.0) * cv2.GaussianBlur(zone, (0, 0), 2.0)
     water = np.clip(water * 1.25, 0, 1)
+    # J (Директор 29.10, стр. 4: «ближняя вода тоже качается»): лужи на тропинке у крыльца — свой отбор, мягче (в
+    # них листья и блики заката), и слабее (`water_near_weight`): рябь лужи, не течение реки.
+    if masks.get("water_near"):
+        zn = poly_mask(masks["water_near"], feather=6.0)
+        smooth_n = 1.0 - smoothstep(180.0, 900.0, var)
+        near = cv2.GaussianBlur(zn * smooth_n, (0, 0), 2.0) * float(masks.get("water_near_weight", 0.6))
+        water = np.maximum(water, np.clip(near, 0, 1))
     # Sway: leaves (warm, saturated) and thin twigs (darker than the sky around them) inside each zone; the weight
     # grows with the distance from the anchor (trunk / ground) up to reach_px — tips move, the base does not.
     sway = np.zeros((H, W), np.float32)
