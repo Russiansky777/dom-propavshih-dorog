@@ -79,7 +79,7 @@
       }
     },
     {
-      "id": "chalk", "action_anim": "reach", "kind": "pickup", "label": "@O1.chalk.label", "rect": [584, 766, 58, 34], "stand": [612, 815], "color": "#f0f0e8", "draw": false,
+      "id": "chalk", "action_anim": "reach", "kind": "pickup", "label": "@O1.chalk.label", "rect": [584, 766, 58, 34], "stand": [612, 815], "agata_face": [612, 980], "_face_j": "J (Директор 29.10, стр. 51): мел на передней парте — Агата за ней, берёт его лицом к экрану", "color": "#f0f0e8", "draw": false,
       "_rect_note": "18.10: на левой парте (слой chalk_desk), было [590,470,90,30] — учительский стол, где мел терялся. Стоянка — в проходе за партами, прямо за мелом",
       "hidden_if": ["has_chalk"],
       "use": {"gives": ["chalk"], "text": "@O1.chalk.use", "scene": "M08"},
