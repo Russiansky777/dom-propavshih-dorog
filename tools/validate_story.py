@@ -335,6 +335,33 @@ if _aunt_bad:
 if len(_aunt_found) - len(_aunt_bad) != 1:
     err(f"H1: первое объяснение «тётя Дуня — Евдокия, мамина сестра» должно быть ровно одно (в {AUNT_FULL_NAME_ALLOWED}), найдено {len(_aunt_found) - len(_aunt_bad)}")
 
+# ---------- 1и. снятое решениями Директора — нигде, кроме заметок ----------
+# Р4 (29.10): стеллажа в конторе нет — дверь перекосило паводком, засов изнутри сам упал в скобы (стр. 86: «в тексте его
+# двигают, а в игре его нигде нет»). Ключи «_…» — заметки разработки, в игру не идут.
+GONE_WORDS = {"стеллаж": "Р4 (29.10): стеллажа в конторе нет"}
+
+
+def _gone_walk(o, path: str, out: list[tuple[str, str]]) -> None:
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if not str(k).startswith("_"):
+                _gone_walk(v, f"{path}.{k}", out)
+    elif isinstance(o, list):
+        for i, v in enumerate(o):
+            _gone_walk(v, f"{path}[{i}]", out)
+    elif isinstance(o, str):
+        low = o.lower()
+        for w in GONE_WORDS:
+            if w in low:
+                out.append((path, w))
+
+
+_gone: list[tuple[str, str]] = []
+for _jf in sorted(STORY.rglob("*.json")):
+    _gone_walk(json.loads(_jf.read_text(encoding="utf-8")), str(_jf.relative_to(STORY)), _gone)
+for _p, _w in _gone[:12]:
+    err(f"{_p}: «{_w}» — {GONE_WORDS[_w]}")
+
 # ---------- 1з. подсказки к старым словам [[слово|значение]] (H59, T7, Директор 24.10) ----------
 # Каждое помеченное слово — в data/story/glossary.json (та же форма и то же значение, есть источник со ссылкой);
 # «висящих» [[ / ]] и пустых частей нет; в строке не больше одной подсказки; в каждой словарной статье слово встречается.

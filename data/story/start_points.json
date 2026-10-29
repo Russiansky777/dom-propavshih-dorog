@@ -30,7 +30,7 @@
       "room": "M3",
       "spawn": "from_M2",
       "flags": ["board_mama", "v03_marked", "v03_add_boat", "mitten_placed", "v01_cup_blue", "v01_photo_table", "house_unlocked", "house_open", "h2_bundle_unwrapped", "office_mirror_mounted", "office_mirror_clamped", "bell_clapper_hung"],
-      "_note": "Приёмка G (Docs/ACCEPTANCE_G.md, раздел сюжета): стеллаж поднят, Агата входит в контору — ?start=office."
+      "_note": "Приёмка G (Docs/ACCEPTANCE_G.md, раздел сюжета): дверь конторы открыта, Агата входит в контору — ?start=office."
     },
     {
       "id": "sluice",
