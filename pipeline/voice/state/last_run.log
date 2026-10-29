@@ -1,77 +1,15 @@
-run 40965675143 2026-10-29T22:31:56Z requests: pipeline/requests/voice_K_adopt2.json
+run 40967311320 2026-10-29T22:40:33Z requests: pipeline/requests/voice_K2.json
 ключ: есть, длина 51, формат sk_…: да
 план: creator (active), израсходовано 107183 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_K_adopt2.json
-  M03_4                                    ← K003_A: 2.97 с, -17.0 LUFS
-  M09_2                                    ← K005_C: 15.59 с, -17.1 LUFS
-  M09_6                                    ← K006_C: 10.85 с, -17.1 LUFS
-  M09b_3                                   ← K008_C: 5.69 с, -17.0 LUFS
-  M14_1                                    ← K010_B: 10.59 с, -17.0 LUFS
-  M15s_1                                   ← K012_C: 5.47 с, -17.0 LUFS
-  M16_0_then0                              ← K014_A: 4.90 с, -17.0 LUFS
-  M17_0                                    ← K015_B: 13.35 с, -17.0 LUFS
-  M17_1                                    ← K016_A: 16.49 с, -17.0 LUFS
-  M17_3                                    ← K017_A: 2.50 с, -17.0 LUFS
-  M19c_7                                   ← K022_C: 5.41 с, -16.9 LUFS
-  M20_0                                    ← K023_C: 9.28 с, -17.0 LUFS
-  M21b_3                                   ← K025_A: 7.23 с, -17.0 LUFS
-  M21b_4                                   ← K026_A: 5.42 с, -17.0 LUFS
-  M22_8                                    ← K028_A: 3.25 с, -17.0 LUFS
-  M22_14                                   ← K029_A: 2.36 с, -17.0 LUFS
-  M23a_5_then0                             ← K032_B: 5.03 с, -16.9 LUFS
-  M23b_9                                   ← K034_A: 8.40 с, -17.0 LUFS
-  M23c_1                                   ← K036_A: 2.69 с, -17.0 LUFS
-  M23d_6_then0                             ← K037_A: 11.12 с, -17.0 LUFS
-  M26_9                                    ← K044_A: 4.34 с, -17.1 LUFS
-  H1.stove.look_settled                    ← K053_C: 7.41 с, -17.0 LUFS
-  H2.bench.use                             ← K054_A: 7.99 с, -16.9 LUFS
-  H2d.bell.hang                            ← K055_A: 4.14 с, -17.0 LUFS
-  H2d.nina_mirror.clamp                    ← K056_B: 4.83 с, -17.0 LUFS
-  H2d.nina_mirror.knock_first              ← K057_C: 5.04 с, -17.0 LUFS
-  H3.exit_O1.closed                        ← K061_B: 4.37 с, -16.9 LUFS
-  H3.puzzle.error_pieces                   ← K062_A: 7.50 с, -17.0 LUFS
-  H3.puzzle.success                        ← K063_B: 7.88 с, -16.9 LUFS
-  M2.exit_M3.closed                        ← K066_C: 3.19 с, -17.0 LUFS
-  M2.office_door.look                      ← K067_C: 6.15 с, -17.0 LUFS
-  M2.office_door.use                       ← K068_C: 5.78 с, -17.1 LUFS
-  M2.office_door_open.use                  ← K070_B: 6.34 с, -17.0 LUFS
-  M4.gate.locked                           ← K072_A: 5.31 с, -17.0 LUFS
-  M4.gate.key                              ← K073_A: 2.43 с, -17.0 LUFS
-  R1.rope.use                              ← K075_C: 12.76 с, -17.0 LUFS
-  Z1.drawings.use                          ← K076_C: 12.81 с, -17.0 LUFS
-  agata:H1.after_mirror.agata              ← K078_C: 7.00 с, -16.9 LUFS
-  agata:H1.tikhon.cream_2                  ← K079_A: 0.82 с, -16.9 LUFS
-  agata:H3.school_door.use                 ← K080_B: 8.13 с, -17.0 LUFS
-  agata:H3.side_door.unbolt                ← K081_B: 6.81 с, -16.9 LUFS
-  agata:H4.bed.early_short                 ← K082_A: 1.27 с, -16.9 LUFS
-  agata:H4.bed.todo_M23a                   ← K083_C: 3.17 с, -16.9 LUFS
-  agata:H4.bed.todo_M23c                   ← K084_C: 2.83 с, -16.9 LUFS
-  agata:H4.bed.todo_M23d                   ← K085_C: 2.60 с, -16.9 LUFS
-  agata:O1.bird_drawing.prompt             ← K086_C: 6.56 с, -17.1 LUFS
-  agata:O2.tree.look                       ← K087_C: 5.09 с, -17.0 LUFS
-  agata:O4.nina_house.look                 ← K088_B: 4.53 с, -16.9 LUFS
-  agata:examine.key_sluice                 ← K089_A: 7.66 с, -17.0 LUFS
-  agata:examine.mirror_mill                ← K090_B: 5.74 с, -16.9 LUFS
-  ilya:mech.bench.checked                  ← K092_A: 2.80 с, -17.0 LUFS
-  intro.opening_1                          ← K093_C: 8.60 с, -17.0 LUFS
-  pavel:M1.pavel.before_agree              ← K095_C: 8.83 с, -17.0 LUFS
-  pavel:M4.pavel.after                     ← K096_C: 4.24 с, -16.9 LUFS
-  pelageya:R2.exit_R1.closed               ← K097_B: 3.99 с, -17.0 LUFS
-  tamara:Z1.tamara.after                   ← K098_C: 4.93 с, -17.0 LUFS
-  tamara:Z1.tamara.school                  ← K099_B: 8.03 с, -17.0 LUFS
-  tikhon:H1.tikhon.before_met              ← K101_B: 5.92 с, -17.0 LUFS
-  tikhon:H1.tikhon.bell                    ← K102_C: 4.72 с, -17.2 LUFS
-  tikhon:H1.tikhon.door                    ← K103_A: 2.82 с, -17.0 LUFS
-  tikhon:H1.tikhon.leave                   ← K104_A: 2.97 с, -17.0 LUFS
-  tikhon:H1.tikhon.tea_3                   ← K105_B: 4.12 с, -17.0 LUFS
-  ulyana:O1q.village_map.ulyana_apple      ← K106_C: 3.79 с, -17.0 LUFS
-[adopt K] в игру 63, ошибок 0
+=== pipeline/requests/voice_K2.json
+  квота: осталось 17706, запас 12488, к синтезу ≈ 6244 кредитов (12488 символов × 0.5)
+ОШИБКА: say: не помещается в остаток квоты с запасом
+  предупреждение: к перезаписи 2 (текст изменён после записи, игра их не играет): M09s_0, M23c_0 — один запрос: pipeline/voice/README.md → «Текст изменился»
   предупреждение: ru/M03_5: подача -23.2 LUFS до нормализации — -7.0 LU от медианы agata (-16.2); допустимо -6…+4 (нарочно тихая) — в списке перезаписи после H59
   предупреждение: ru/M12_0: подача -10.9 LUFS до нормализации — +5.3 LU от медианы agata (-16.2); допустимо -4…+4 — в списке перезаписи после H59
   предупреждение: ru/M21_0_then0: подача -22.6 LUFS до нормализации — -6.4 LU от медианы agata (-16.2); допустимо -4…+4 — в списке перезаписи после H59
-  ОШИБКА: ru/agata:H1.tikhon.cream_2: подача -9.7 LUFS до нормализации — +6.5 LU от медианы agata (-16.2); допустимо -4…+4 — перезаписать голосом и громкостью персонажа (или внести в pipeline/requests/voice_after_H59.json, если ждёт H59)
-  ОШИБКА: ru/M17_3: подача -10.6 LUFS до нормализации — +4.7 LU от медианы pelageya (-15.3); допустимо -4…+4 — перезаписать голосом и громкостью персонажа (или внести в pipeline/requests/voice_after_H59.json, если ждёт H59)
-  ОШИБКА: ru/tikhon:H1.tikhon.leave: подача -20.8 LUFS до нормализации — -4.6 LU от медианы tikhon (-16.2); допустимо -4…+4 — перезаписать голосом и громкостью персонажа (или внести в pipeline/requests/voice_after_H59.json, если ждёт H59)
+  ОШИБКА: M09s_0: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
+  ОШИБКА: M23c_0: текст изменён после записи (sha1 не совпадает) — игра молчит, а запись не помечена stale — перегенерировать (pipeline-voice)
 validate_voice: манифесты: ru 742 (742 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, N02, Q01, Q02, Q03, Q04, Q06, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 80; закадровых фраз по правилам voice.json: 800 (с тегами 33), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_Q02_Q06, ru_bag, ru_mechanics
-[voice] validate_voice.py: FAIL (3 ошибок, 3 предупреждений, strict; самопроверка 25/25)
+[voice] validate_voice.py: FAIL (2 ошибок, 4 предупреждений, strict; самопроверка 25/25)
