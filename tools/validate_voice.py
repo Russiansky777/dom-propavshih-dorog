@@ -66,6 +66,9 @@ AFTER_H59 = REQUESTS / "voice_after_H59.json"   # строки, ждущие ф�
 _pspec = importlib.util.spec_from_file_location("pronounce", ROOT / "pipeline" / "voice" / "pronounce.py")
 pronounce = importlib.util.module_from_spec(_pspec)
 _pspec.loader.exec_module(pronounce)
+_dspec = importlib.util.spec_from_file_location("direction", ROOT / "pipeline" / "voice" / "direction.py")
+direction = importlib.util.module_from_spec(_dspec)
+_dspec.loader.exec_module(direction)
 NARRATION_REQUIRED = ("speaker", "subdir", "skip_sections", "skip_fields")
 
 
@@ -268,9 +271,22 @@ def _line(scene: str, ln: dict) -> dict:
 
 def api_text(ln: dict) -> str:
     """Как pipeline/voice/eleven_voice.py: voice_text или теги перед текстом; произношение — pronounce.py."""
+    lid = str(ln.get("id", ""))
     if ln.get("voice_text"):
-        return pronounce.apply(GLOSS_RE.sub(r"\1", str(ln["voice_text"])), str(ln.get("id", "")))
-    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(GLOSS_RE.sub(r"\1", str(ln["text"])), str(ln.get("id", "")))
+        return pronounce.apply(direction.apply(GLOSS_RE.sub(r"\1", str(ln["voice_text"])), lid), lid)
+    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(direction.apply(GLOSS_RE.sub(r"\1", str(ln["text"])), lid), lid)
+
+
+def check_direction(lines: dict, allowed: set[str] | None) -> list[str]:
+    """Партия J: data/story/voice_direction.json — id есть среди реплик, слова акцента и паузы есть в тексте, теги из списка."""
+    errors: list[str] = []
+    for lid in sorted(direction.table()):
+        ln = lines.get(lid)
+        if ln is None:
+            errors.append(f"voice_direction.json: {lid} — нет такой реплики (id как в манифесте озвучки)")
+            continue
+        errors += direction.problems(lid, GLOSS_RE.sub(r"\1", str(ln.get("text", ""))), allowed)
+    return errors
 
 
 def check_tags(lines: dict, allowed: set[str] | None) -> list[str]:
@@ -879,6 +895,7 @@ def main() -> int:
     if tags_doc is None:
         errors.append("нет pipeline/voice/tags.json — список разрешённых тегов")
     errors += check_tags(lines, set(tags_doc.get("tags", {}).keys()) if tags_doc else None)
+    errors += check_direction(lines, set(tags_doc.get("tags", {}).keys()) if tags_doc else None)
     errors += check_empty(lines)
     tagged = sum(1 for ln in lines.values() if ln.get("kind") != "narration" and (ln.get("tags") or ln.get("voice_text")))
     n_tagged = sum(1 for ln in lines.values() if ln.get("kind") == "narration" and (ln.get("tags") or ln.get("voice_text")))

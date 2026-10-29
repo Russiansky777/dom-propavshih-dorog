@@ -49,6 +49,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import pronounce  # noqa: E402  (правила произношения — общий модуль с tools/validate_voice.py)
+import direction  # noqa: E402  (режиссура строки: акцент капсом, «…», теги — data/story/voice_direction.json, партия J)
 
 ROOT = Path(__file__).resolve().parents[2]
 API = "https://api.elevenlabs.io"
@@ -283,9 +284,10 @@ GLOSS_IN_TEXT = re.compile(r"\[\[([^\[\]|]+)\|[^\[\]|]+\]\]")
 def api_text(ln: dict) -> str:
     """Текст запроса к API: voice_text (теги внутри фразы) или теги перед текстом; субтитры — text без тегов.
     Произношение (pipeline/voice/pronunciation_ru.json, pronounce.py) — только здесь, не в субтитрах."""
+    lid = str(ln.get("id", ""))
     if ln.get("voice_text"):
-        return pronounce.apply(GLOSS_IN_TEXT.sub(r"\1", str(ln["voice_text"])), str(ln.get("id", "")))
-    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(GLOSS_IN_TEXT.sub(r"\1", str(ln["text"])), str(ln.get("id", "")))
+        return pronounce.apply(direction.apply(GLOSS_IN_TEXT.sub(r"\1", str(ln["voice_text"])), lid), lid)
+    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(direction.apply(GLOSS_IN_TEXT.sub(r"\1", str(ln["text"])), lid), lid)
 
 
 # --- Ключ и HTTP ---------------------------------------------------------------------------------
