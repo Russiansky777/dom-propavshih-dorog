@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   E6 (a real-game frame): R1 at dusk with the rope off the stopper — no white streak over the dark far bank;
 ##   E5 (стр. 95, 46): the H1 mug as big as the chosen cup (the painted clay mug under it gone); the H4 bed larger;
 ##   E4 (стр. 9): the Z1 counter lower (same width, ×0.84 from the front legs); Tamara clicked through it too;
 ##   E1 (Р2): river fog over the far bank in R1 / Z3 / M1 / H4 until the knot (road_held_both_ends); the knot tied
@@ -86,6 +87,7 @@ func _run() -> void:
 	await _test("J-B1 intro: three cards on black with the voice-over, a click goes on, then «День первый», once", _test_intro)
 	await _test("J-E4 Z1 (стр. 9): the counter lower (×0.84, legs in place); Tamara is clicked through the counter too", _test_counter)
 	await _test("J-E5 sizes: the H1 mug as big as the chosen cup (стр. 95), no clay mug under it; the H4 bed larger (стр. 46)", _test_sizes)
+	await _test("J-E6 R1 dusk, the rope off the stopper: before the knot the patch is the dark bank's, after it the snowy one's", _test_rope_patch)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -615,6 +617,36 @@ func _test_intro() -> void:
 	await _frames(2)
 	_check(String(intro.probe()["phase"]) == "" and float(intro.probe()["black"]) == 0.0, "a load stops the intro")
 	gs.reset()
+
+
+## J-E6 (a real-game frame 29.10): at dusk before the knot the rope patch, filled over the snowy bank, glowed as a
+## white streak over the dark one. Two patches now, by road_held_both_ends; the dark one is not lighter than the
+## far bank it lies on (its opaque pixels in the far-bank strip, mean luminance).
+func _test_rope_patch() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "rope_brought", "evening_dusk"])
+	await _enter("R1")
+	await _drain()
+	_check(_layer_vis("stopper_empty_dusk_dark") and not _layer_vis("stopper_empty_dusk"), "before the knot — the dark-bank patch")
+	var n: Node = rm.current_room.get_node_or_null("Layers/stopper_empty_dusk_dark")
+	var spr: Sprite2D = n.get_node_or_null("Image") if n != null else null
+	if spr != null:
+		var img := spr.texture.get_image()
+		if img.is_compressed():
+			img.decompress()
+		var lum := 0.0
+		var cnt := 0
+		for y in range(340, 400):         # the far-bank strip of the rope, layer px (x 680–820)
+			for x in range(680, 820):
+				var c := img.get_pixel(x, y)
+				if c.a > 0.6:
+					lum += c.get_luminance()
+					cnt += 1
+		_check(cnt > 0 and lum / cnt < 0.35, "the patch over the dark bank is dark too: mean luminance %.2f over %d px" % [lum / maxf(cnt, 1), cnt])
+	gs.set_flag("road_held_both_ends", true)
+	await _frames(3)
+	_check(_layer_vis("stopper_empty_dusk") and not _layer_vis("stopper_empty_dusk_dark"), "after the knot — the snowy-bank patch")
 
 
 func _layer_vis(id: String) -> bool:
