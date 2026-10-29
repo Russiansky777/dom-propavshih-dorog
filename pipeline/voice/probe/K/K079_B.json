@@ -1,0 +1,87 @@
+{
+  "id": "K079_B",
+  "speaker": "agata",
+  "voice_name": "Agata",
+  "model_id": "eleven_v4",
+  "text": "[surprised] Где?",
+  "duration_s": 1.04,
+  "character_cost": "7",
+  "alignment": {
+    "characters": [
+      "[",
+      "s",
+      "u",
+      "r",
+      "p",
+      "r",
+      "i",
+      "s",
+      "e",
+      "d",
+      "]",
+      " ",
+      "Г",
+      "д",
+      "е",
+      "?"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.008,
+      0.016,
+      0.024,
+      0.032,
+      0.04,
+      0.048,
+      0.052,
+      0.056,
+      0.06,
+      0.064,
+      0.08,
+      0.16,
+      0.32,
+      0.52,
+      0.72
+    ],
+    "character_end_times_seconds": [
+      0.008,
+      0.016,
+      0.024,
+      0.032,
+      0.04,
+      0.048,
+      0.052,
+      0.056,
+      0.06,
+      0.064,
+      0.08,
+      0.16,
+      0.32,
+      0.52,
+      0.72,
+      1.04
+    ]
+  },
+  "expect": null,
+  "variant": "устойчивость 0.55 + контекст",
+  "line": "agata:H1.tikhon.cream_2",
+  "take": "B",
+  "voice_settings": {
+    "stability": 0.55,
+    "similarity_boost": 0.75
+  },
+  "previous_text": "Если сметану находила.",
+  "dropped_params": [],
+  "history_item_id": "DFnS8Bh8IBpvdnMn9e6G",
+  "stt": {
+    "model": "scribe_v2",
+    "text": "Где?",
+    "words": [
+      "Где?"
+    ],
+    "missing": [],
+    "extra": [],
+    "ratio": 1.0
+  },
+  "run": "40953402085"
+}

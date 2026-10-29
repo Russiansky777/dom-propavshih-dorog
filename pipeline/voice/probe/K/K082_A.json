@@ -1,0 +1,86 @@
+{
+  "id": "K082_A",
+  "speaker": "agata",
+  "voice_name": "Agata",
+  "model_id": "eleven_v4",
+  "text": "РАНО ещё спать.",
+  "duration_s": 1.36,
+  "character_cost": "7",
+  "alignment": {
+    "characters": [
+      "Р",
+      "А",
+      "Н",
+      "О",
+      " ",
+      "е",
+      "щ",
+      "ё",
+      " ",
+      "с",
+      "п",
+      "а",
+      "т",
+      "ь",
+      "."
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.12,
+      0.24,
+      0.32,
+      0.4,
+      0.48,
+      0.52,
+      0.56,
+      0.64,
+      0.72,
+      0.8,
+      0.88,
+      0.96,
+      1.04,
+      1.12
+    ],
+    "character_end_times_seconds": [
+      0.12,
+      0.24,
+      0.32,
+      0.4,
+      0.48,
+      0.52,
+      0.56,
+      0.64,
+      0.72,
+      0.8,
+      0.88,
+      0.96,
+      1.04,
+      1.12,
+      1.44
+    ]
+  },
+  "expect": null,
+  "variant": "капс, устойчивость 0.35 + контекст",
+  "line": "agata:H4.bed.early_short",
+  "take": "A",
+  "voice_settings": {
+    "stability": 0.35,
+    "similarity_boost": 0.75
+  },
+  "previous_text": "Спать ляжешь?",
+  "dropped_params": [],
+  "history_item_id": "NaQcG3Vq7xHd3gfQEFsj",
+  "stt": {
+    "model": "scribe_v2",
+    "text": "Рано еще спать",
+    "words": [
+      "Рано",
+      "еще",
+      "спать"
+    ],
+    "missing": [],
+    "extra": [],
+    "ratio": 1.0
+  },
+  "run": "40953402085"
+}
