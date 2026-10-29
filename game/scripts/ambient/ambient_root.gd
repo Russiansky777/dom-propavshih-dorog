@@ -521,10 +521,11 @@ func _make_fog(f: Dictionary) -> Polygon2D:
 ## `fade_s` (rises and thins), then hidden. A lift in progress is cut short by the next change.
 func _set_fog(n: Polygon2D, on: bool, animate: bool) -> void:
 	var m := n.material as ShaderMaterial
-	var old: Variant = n.get_meta("fog_tween", null)
-	if old is Tween and (old as Tween).is_valid():
-		(old as Tween).kill()
+	# has_meta first: get_meta(key, null) with a null default still reports a missing key (Godot 4)
 	if n.has_meta("fog_tween"):
+		var old: Variant = n.get_meta("fog_tween")
+		if old is Tween and (old as Tween).is_valid():
+			(old as Tween).kill()
 		n.remove_meta("fog_tween")
 	if on:
 		m.set_shader_parameter("lift", 0.0)
