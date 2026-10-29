@@ -275,11 +275,12 @@ func _test_brace() -> void:
 	await _enter("H2", flags)
 	var h := _hotspot("brace")
 	_check(h != null and h.visible, "the brace is on the bench")
-	var layers: Node = rm.current_room.get_node("Layers")
-	_check(layers.get_node("skoba").visible and layers.get_node("bundle").visible and not layers.get_node("nina_mirror").visible,
+	# J (стр. 94): the bundle and the mirror lie on the big near bench — occluders now, so found anywhere in the room
+	var layers: Node = rm.current_room
+	_check(layers.find_child("skoba", true, false).visible and layers.find_child("bundle", true, false).visible and not layers.find_child("nina_mirror", true, false).visible,
 		"art batch 2 on the bench: the brace with the plate drawing, the bundle wrapped")
 	await _interact(_hotspot("bundle_nina"))
-	_check(not layers.get_node("bundle").visible and layers.get_node("nina_mirror").visible and not gs.has_item("bundle_nina"),
+	_check(not layers.find_child("bundle", true, false).visible and layers.find_child("nina_mirror", true, false).visible and not gs.has_item("bundle_nina"),
 		"unwrapped: the mirror in its split frame instead of the bundle, nothing in the bag")
 	var seen := await _interact(h)
 	_check(not gs.has_item("brace_plate") and not gs.has_flag("has_brace_plate"), "not taken before the plan")
@@ -292,7 +293,7 @@ func _test_brace() -> void:
 	seen = await _interact(h)
 	_check(gs.inventory.count("brace_plate") == 1, "taken after the plan: %s" % str(gs.inventory))
 	_check(seen.any(func(x): return x.contains("так в плане написано. Возьму")), "Agata recalls the plan: %s" % str(seen))
-	_check(not h.visible and not layers.get_node("skoba").visible, "the bench is empty after taking it (no brace drawn)")
+	_check(not h.visible and not layers.find_child("skoba", true, false).visible, "the bench is empty after taking it (no brace drawn)")
 	sr.grant_item("brace_plate")
 	_check(gs.inventory.count("brace_plate") == 1, "never given twice")
 	_check(rm.save_game(SLOT), "save")
