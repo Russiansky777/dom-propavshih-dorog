@@ -1,0 +1,700 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 4530,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Партия K3 (Директор 30.10, 00:47–00:49): третий заход — 15 строк по заметкам страницы «Второй заход», запас квоты снят — акцент контекстом (известное — в вопросе), без лишних пауз, подача тегами, ударение знаком или звуками; по 4–6 записей, измеритель ударения сортирует; выбор на странице, выбранное — в игру режимом adopt.",
+ "items": [
+  {
+   "id": "W001_1",
+   "line": "M01_8",
+   "take": "1",
+   "speaker": "tamara",
+   "text": "Бери ключ. Дом Дунин СТОИТ, тебя дожидается.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Дом Дунин — как он там?"
+  },
+  {
+   "id": "W001_2",
+   "line": "M01_8",
+   "take": "2",
+   "speaker": "tamara",
+   "text": "Бери ключ. Дом Дунин СТОИТ, тебя дожидается.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Дом Дунин — как он там?"
+  },
+  {
+   "id": "W001_3",
+   "line": "M01_8",
+   "take": "3",
+   "speaker": "tamara",
+   "text": "Бери ключ. Дом Дунин СТОИТ, тебя дожидается.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Дунин дом-то цел?"
+  },
+  {
+   "id": "W001_4",
+   "line": "M01_8",
+   "take": "4",
+   "speaker": "tamara",
+   "text": "Бери ключ. Дом Дунин СТОИТ, тебя дожидается.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Дунин дом-то цел?"
+  },
+  {
+   "id": "W002_1",
+   "line": "M09_0",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "[surprised] ПЛЕМЯННИЦА Дунина говоришь? Хотя похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "st 0.3 + контекст",
+   "previous_text": "Тут Дунина родня приехала, Павел."
+  },
+  {
+   "id": "W002_2",
+   "line": "M09_0",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "[surprised] ПЛЕМЯННИЦА Дунина говоришь? Хотя похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Тут Дунина родня приехала, Павел."
+  },
+  {
+   "id": "W002_3",
+   "line": "M09_0",
+   "take": "3",
+   "speaker": "pavel",
+   "text": "[surprised] ПЛЕМЯННИЦА дунина говоришь? Хотя похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "st 0.3 + контекст",
+   "previous_text": "Тут Дунина родня приехала, Павел."
+  },
+  {
+   "id": "W002_4",
+   "line": "M09_0",
+   "take": "4",
+   "speaker": "pavel",
+   "text": "[surprised] ПЛЕМЯННИЦА дунина говоришь? Хотя похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Тут Дунина родня приехала, Павел."
+  },
+  {
+   "id": "W003_1",
+   "line": "M09s_0",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Вот зеркало из конторы — в сеня́х стои́т. У Дуни под него стойка пустая. Дверь на родных петлях в класс открылась… А зеркало… вдруг покажет ТО, где ПРЕЖДЕ висело? Стойка раму должна выдержать. Надо Павлу сказать.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W003_2",
+   "line": "M09s_0",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Вот зеркало из конторы — в сеня́х стои́т. У Дуни под него стойка пустая. Дверь на родных петлях в класс открылась… А зеркало… вдруг покажет ТО, где ПРЕЖДЕ висело? Стойка раму должна выдержать. Надо Павлу сказать.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W003_3",
+   "line": "M09s_0",
+   "take": "3",
+   "speaker": "agata",
+   "text": "Вот зеркало из конторы — в сеня́х стои́т. У Дуни под него стойка пустая. Дверь на родных петлях в класс открылась… А зеркало… вдруг покажет ТО, где ПРЕЖДЕ висело? Стойка раму должна выдержать! Надо Павлу сказать.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W003_4",
+   "line": "M09s_0",
+   "take": "4",
+   "speaker": "agata",
+   "text": "Вот зеркало из конторы — в сеня́х стои́т. У Дуни под него стойка пустая. Дверь на родных петлях в класс открылась… А зеркало… вдруг покажет ТО, где ПРЕЖДЕ висело? Стойка раму должна выдержать! Надо Павлу сказать.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W004_1",
+   "line": "M12_0",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[excited] ВЫШЕЛ засов! ПОДАЛАСЬ дверь!",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Ну что там засов? А дверь?"
+  },
+  {
+   "id": "W004_2",
+   "line": "M12_0",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[excited] ВЫШЕЛ засов! ПОДАЛАСЬ дверь!",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Ну что там засов? А дверь?"
+  },
+  {
+   "id": "W004_3",
+   "line": "M12_0",
+   "take": "3",
+   "speaker": "agata",
+   "text": "ВЫШЕЛ засов, ПОДАЛАСЬ дверь!",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Ну что там засов? А дверь?"
+  },
+  {
+   "id": "W004_4",
+   "line": "M12_0",
+   "take": "4",
+   "speaker": "agata",
+   "text": "ВЫШЕЛ засов, ПОДАЛАСЬ дверь!",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Ну что там засов? А дверь?"
+  },
+  {
+   "id": "W005_1",
+   "line": "M23b_1",
+   "take": "1",
+   "speaker": "manager",
+   "text": "ЦЕЛ затвор? Где рычаг?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Затвор, рычаг — с чего начнёте, управляющий?"
+  },
+  {
+   "id": "W005_2",
+   "line": "M23b_1",
+   "take": "2",
+   "speaker": "manager",
+   "text": "ЦЕЛ затвор? Где рычаг?",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7 + контекст",
+   "previous_text": "Затвор, рычаг — с чего начнёте, управляющий?"
+  },
+  {
+   "id": "W005_3",
+   "line": "M23b_1",
+   "take": "3",
+   "speaker": "manager",
+   "text": "[worried] ЦЕЛ затвор? Где рычаг?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Затвор, рычаг — с чего начнёте, управляющий?"
+  },
+  {
+   "id": "W005_4",
+   "line": "M23b_1",
+   "take": "4",
+   "speaker": "manager",
+   "text": "[worried] ЦЕЛ затвор? Где рычаг?",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7 + контекст",
+   "previous_text": "Затвор, рычаг — с чего начнёте, управляющий?"
+  },
+  {
+   "id": "W006_1",
+   "line": "M25_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "У поворота уж и во́рот стоит, и брёвна-прогоны сложены. Илья ждёт, Пелагея дощечку с сигналами принесла.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7"
+  },
+  {
+   "id": "W006_2",
+   "line": "M25_0",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "У поворота уж и во́рот стоит, и брёвна-прогоны сложены. Илья ждёт, Пелагея дощечку с сигналами принесла.",
+   "voice_settings": {
+    "stability": 0.8
+   },
+   "variant": "st 0.8"
+  },
+  {
+   "id": "W006_3",
+   "line": "M25_0",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "У поворота уж и во́рот стоит, и брёвна-прогоны сложены, Илья ждёт, Пелагея дощечку с сигналами принесла.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7"
+  },
+  {
+   "id": "W006_4",
+   "line": "M25_0",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "У поворота уж и во́рот стоит, и брёвна-прогоны сложены, Илья ждёт, Пелагея дощечку с сигналами принесла.",
+   "voice_settings": {
+    "stability": 0.8
+   },
+   "variant": "st 0.8"
+  },
+  {
+   "id": "W007_1",
+   "line": "H1.scarf.use",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "На крючке у двери платок ПРОСОХНЕТ. Так-то лучше.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Платок на крючке у двери — а дальше?"
+  },
+  {
+   "id": "W007_2",
+   "line": "H1.scarf.use",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "На крючке у двери платок ПРОСОХНЕТ. Так-то лучше.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7 + контекст",
+   "previous_text": "Платок на крючке у двери — а дальше?"
+  },
+  {
+   "id": "W007_3",
+   "line": "H1.scarf.use",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "На крючке у двери платок ПРОСОХНЕТ. Так-то лучше.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Платок-то куда?"
+  },
+  {
+   "id": "W007_4",
+   "line": "H1.scarf.use",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "На крючке у двери платок ПРОСОХНЕТ. Так-то лучше.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7 + контекст",
+   "previous_text": "Платок-то куда?"
+  },
+  {
+   "id": "W008_1",
+   "line": "H1.shutter.use",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "ПОДАЛАСЬ ставня, светлее стало в комнате.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Ставня-то как?"
+  },
+  {
+   "id": "W008_2",
+   "line": "H1.shutter.use",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "ПОДАЛАСЬ ставня, светлее стало в комнате.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65 + контекст",
+   "previous_text": "Ставня-то как?"
+  },
+  {
+   "id": "W008_3",
+   "line": "H1.shutter.use",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "ПОДАЛАСЬ ставня, светлее стало в комнате.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W008_4",
+   "line": "H1.shutter.use",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "ПОДАЛАСЬ ставня, светлее стало в комнате.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W009_1",
+   "line": "H2d.office_mirror.clamped",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Клинья сели. Потемнев, стекло показывает комнату со снимка: стол, дверь, засов в скобах. Ни звука.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W009_2",
+   "line": "H2d.office_mirror.clamped",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Клинья сели. Потемнев, стекло показывает комнату со снимка: стол, дверь, засов в скобах. Ни звука.",
+   "voice_settings": {
+    "stability": 0.8
+   },
+   "variant": "st 0.8"
+  },
+  {
+   "id": "W009_3",
+   "line": "H2d.office_mirror.clamped",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Клинья сели. Потемнев, стекло показывает комнату со снимка: стол, дверь… засов в скобах. Ни звука.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W009_4",
+   "line": "H2d.office_mirror.clamped",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "Клинья сели. Потемнев, стекло показывает комнату со снимка: стол, дверь… засов в скобах. Ни звука.",
+   "voice_settings": {
+    "stability": 0.8
+   },
+   "variant": "st 0.8"
+  },
+  {
+   "id": "W010_1",
+   "line": "H4.v02.done",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "СВЕТЛО́ под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55 + контекст",
+   "previous_text": "Как там, под крышей?"
+  },
+  {
+   "id": "W010_2",
+   "line": "H4.v02.done",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "СВЕТЛО́ под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7 + контекст",
+   "previous_text": "Как там, под крышей?"
+  },
+  {
+   "id": "W010_3",
+   "line": "H4.v02.done",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "СВЕТЛО́ под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  },
+  {
+   "id": "W010_4",
+   "line": "H4.v02.done",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "СВЕТЛО́ под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7"
+  },
+  {
+   "id": "W011_1",
+   "line": "M2.office_door.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Изнутри контора заперта: засов в скобах. Дверь дубовая — не высадишь.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W011_2",
+   "line": "M2.office_door.look",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Изнутри контора заперта: засов в скобах. Дверь дубовая — не высадишь.",
+   "voice_settings": {
+    "stability": 0.8
+   },
+   "variant": "st 0.8"
+  },
+  {
+   "id": "W011_3",
+   "line": "M2.office_door.look",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Изнутри контора заперта — засов в скобах, дверь дубовая — не высадишь.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W011_4",
+   "line": "M2.office_door.look",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "Изнутри контора заперта — засов в скобах, дверь дубовая — не высадишь.",
+   "voice_settings": {
+    "stability": 0.8
+   },
+   "variant": "st 0.8"
+  },
+  {
+   "id": "W012_1",
+   "line": "O3.clock.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Мамины ходики. РОВНО маятник ходит, не торопясь.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W012_2",
+   "line": "O3.clock.look",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Мамины ходики. РОВНО маятник ходит, не торопясь.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W012_3",
+   "line": "O3.clock.look",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Мамины ходики. РОВНО маятник ходит, не торопясь.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Маятник ходит?"
+  },
+  {
+   "id": "W012_4",
+   "line": "O3.clock.look",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "Мамины ходики. РОВНО маятник ходит, не торопясь.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Маятник ходит?"
+  },
+  {
+   "id": "W013_1",
+   "line": "agata:H3.side_door.unbolt",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Боковая дверь галереи изнутри НА ЗАСОВ за́перта. Отодвину — и из переулка в дом войти можно будет.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W013_2",
+   "line": "agata:H3.side_door.unbolt",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Боковая дверь галереи изнутри НА ЗАСОВ за́перта. Отодвину — и из переулка в дом войти можно будет.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W013_3",
+   "line": "agata:H3.side_door.unbolt",
+   "take": "3",
+   "speaker": "agata",
+   "text": "Боковая дверь галереи изнутри на ЗАСОВ за́перта. Отодвину — и из переулка в дом войти можно будет.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W013_4",
+   "line": "agata:H3.side_door.unbolt",
+   "take": "4",
+   "speaker": "agata",
+   "text": "Боковая дверь галереи изнутри на ЗАСОВ за́перта. Отодвину — и из переулка в дом войти можно будет.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W014_1",
+   "line": "tamara:Z1.tamara.sheet",
+   "take": "1",
+   "speaker": "tamara",
+   "text": "Дуня как УХОДИЛА так тут, на прилавке, лист и оставила: отошли мол в управу. А ночью паводок. Так он и лежит.",
+   "voice_settings": {
+    "stability": 0.25
+   },
+   "variant": "st 0.25 + контекст",
+   "previous_text": "Когда Дуня лист оставила?"
+  },
+  {
+   "id": "W014_2",
+   "line": "tamara:Z1.tamara.sheet",
+   "take": "2",
+   "speaker": "tamara",
+   "text": "Дуня как УХОДИЛА так тут, на прилавке, лист и оставила: отошли мол в управу. А ночью паводок. Так он и лежит.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "Когда Дуня лист оставила?"
+  },
+  {
+   "id": "W014_3",
+   "line": "tamara:Z1.tamara.sheet",
+   "take": "3",
+   "speaker": "tamara",
+   "text": "Дуня как УХОДИЛА — так тут, на прилавке, лист и оставила: отошли мол в управу. А ночью паводок. Так он и лежит.",
+   "voice_settings": {
+    "stability": 0.25
+   },
+   "variant": "st 0.25 + контекст",
+   "previous_text": "Когда Дуня лист оставила?"
+  },
+  {
+   "id": "W014_4",
+   "line": "tamara:Z1.tamara.sheet",
+   "take": "4",
+   "speaker": "tamara",
+   "text": "Дуня как УХОДИЛА — так тут, на прилавке, лист и оставила: отошли мол в управу. А ночью паводок. Так он и лежит.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "Когда Дуня лист оставила?"
+  },
+  {
+   "id": "W015_1",
+   "line": "M21b_0",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[thoughtful] А как прежде сделать — НЕЛЬЗЯ?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W015_2",
+   "line": "M21b_0",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[thoughtful] А как прежде сделать — НЕЛЬЗЯ?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W015_3",
+   "line": "M21b_0",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[pleading] А как прежде сделать — нельзя?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W015_4",
+   "line": "M21b_0",
+   "take": "4",
+   "speaker": "agata",
+   "text": "[pleading] А как прежде сделать — нельзя?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  }
+ ]
+}
