@@ -521,6 +521,20 @@ func has_path() -> bool:
 
 
 ## Called by RoomManager when a room is entered: binds depth parameters and places the figure.
+## J (Director 29.10, стр. 22: «входит в дом — появляется лицом к экрану, не спиной»): coming in through a door she
+## faces the room (the screen) at once, not the way she walked into the door on the other side.
+func face_screen_dir(v: Vector2) -> void:
+	if v.length_squared() < 0.0001:
+		return
+	if is_3d():
+		yaw3d_target = _yaw_for_screen(v)
+		yaw3d = yaw3d_target
+	elif sheet != null:
+		direction = sheet.direction_index(v)
+		shown_dir = direction
+	_play_idle()
+
+
 func enter_room(new_room: Room, pos: Vector2) -> void:
 	room = new_room
 	_walking = false

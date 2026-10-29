@@ -142,6 +142,12 @@ func change_room(room_id: String, spawn_id: String, override_pos: Vector2 = Vect
 		player.call("enter_room", current_room, pos)
 	else:
 		player.global_position = pos
+	# J (стр. 22): through a door into a room she faces the screen (rooms/<id>.json `spawn_face` {spawn: [x, y]} — a
+	# screen direction for a spawn that wants another one); a save loaded or a position given keeps her as she was.
+	if spawn_id != "" and override_pos == Vector2.INF and player.has_method("face_screen_dir"):
+		var sf: Dictionary = StoryData.room(room_id).get("spawn_face", {}) if StoryData.has_room(room_id) else {}
+		var fv: Array = sf.get(spawn_id, [0, 1])
+		player.call("face_screen_dir", Vector2(float(fv[0]), float(fv[1])))
 	# A room seen through Agata's eyes (R2, the crossing from the boat: rooms/<id>.json "player_hidden")
 	# has no figure of her; every other room shows her again.
 	player.visible = not (StoryData.has_room(room_id) and bool(StoryData.room(room_id).get("player_hidden", false)))
