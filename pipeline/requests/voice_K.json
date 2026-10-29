@@ -2,7 +2,8 @@
  "mode": "say",
  "set": "K",
  "stt": true,
- "max_chars": 25011,
+ "max_chars": 25092,
+ "credits_per_char_assumed": 0.5,
  "_comment": "Партия K (Директор 29.10, 21:40: «3 записи»): строки «переделать» партии J по выводам пробы 25 фраз — знаки как в субтитрах, капс на одном слове, невидимый вопрос-контекст (previous_text), ударение звуками (IPA), устойчивость ниже; три записи на строку, каждая проверена распознаванием речи (stt); Директор выбирает на странице, выбранное — в игру режимом adopt.",
  "items": [
   {
@@ -2483,6 +2484,39 @@
   },
   {
    "id": "K073_A",
+   "line": "M4.gate.key",
+   "take": "A",
+   "speaker": "narrator",
+   "text": "Рычаг сел в гнездо во́рота.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "устойчивость 0.45 + контекст"
+  },
+  {
+   "id": "K073_B",
+   "line": "M4.gate.key",
+   "take": "B",
+   "speaker": "narrator",
+   "text": "Рычаг сел в гнездо во́рота.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "устойчивость 0.65 + контекст"
+  },
+  {
+   "id": "K073_C",
+   "line": "M4.gate.key",
+   "take": "C",
+   "speaker": "narrator",
+   "text": "Рычаг сел в гнездо во́рота.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "устойчивость 0.45, без контекста"
+  },
+  {
+   "id": "K074_A",
    "line": "O3.clock.look",
    "take": "A",
    "speaker": "narrator",
@@ -2494,7 +2528,7 @@
    "previous_text": "Как ходики идут?"
   },
   {
-   "id": "K073_B",
+   "id": "K074_B",
    "line": "O3.clock.look",
    "take": "B",
    "speaker": "narrator",
@@ -2505,7 +2539,7 @@
    "variant": "капс, устойчивость 0.45"
   },
   {
-   "id": "K073_C",
+   "id": "K074_C",
    "line": "O3.clock.look",
    "take": "C",
    "speaker": "narrator",
@@ -2517,44 +2551,11 @@
    "previous_text": "Как ходики идут?"
   },
   {
-   "id": "K074_A",
-   "line": "R1.rope.use",
-   "take": "A",
-   "speaker": "narrator",
-   "text": "Канат от моста, от поручня. Мост у поворота стоял — там этот конец на плите опоры и сидел. Пелагея его к своему сто́пору перевязала: держит, а дороги нет.",
-   "voice_settings": {
-    "stability": 0.45
-   },
-   "variant": "устойчивость 0.45 + контекст"
-  },
-  {
-   "id": "K074_B",
-   "line": "R1.rope.use",
-   "take": "B",
-   "speaker": "narrator",
-   "text": "Канат от моста, от поручня. Мост у поворота стоял — там этот конец на плите опоры и сидел. Пелагея его к своему сто́пору перевязала: держит, а дороги нет.",
-   "voice_settings": {
-    "stability": 0.65
-   },
-   "variant": "устойчивость 0.65 + контекст"
-  },
-  {
-   "id": "K074_C",
-   "line": "R1.rope.use",
-   "take": "C",
-   "speaker": "narrator",
-   "text": "Канат от моста, от поручня. Мост у поворота стоял — там этот конец на плите опоры и сидел. Пелагея его к своему сто́пору перевязала: держит, а дороги нет.",
-   "voice_settings": {
-    "stability": 0.45
-   },
-   "variant": "устойчивость 0.45, без контекста"
-  },
-  {
    "id": "K075_A",
-   "line": "Z1.drawings.use",
+   "line": "R1.rope.use",
    "take": "A",
    "speaker": "narrator",
-   "text": "На Дунином листе — опора моста у поворота; её рукой приписано: плита треснула, чинить надо. А на свежем рисунке Тамары от той же опоры — одна верхушка над водой.",
+   "text": "Канат от моста, от поручня. Мост у поворота стоял — там этот конец на плите опоры и сидел. Пелагея его к своему сто́пору перевязала: держит, а дороги нет.",
    "voice_settings": {
     "stability": 0.45
    },
@@ -2562,6 +2563,39 @@
   },
   {
    "id": "K075_B",
+   "line": "R1.rope.use",
+   "take": "B",
+   "speaker": "narrator",
+   "text": "Канат от моста, от поручня. Мост у поворота стоял — там этот конец на плите опоры и сидел. Пелагея его к своему сто́пору перевязала: держит, а дороги нет.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "устойчивость 0.65 + контекст"
+  },
+  {
+   "id": "K075_C",
+   "line": "R1.rope.use",
+   "take": "C",
+   "speaker": "narrator",
+   "text": "Канат от моста, от поручня. Мост у поворота стоял — там этот конец на плите опоры и сидел. Пелагея его к своему сто́пору перевязала: держит, а дороги нет.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "устойчивость 0.45, без контекста"
+  },
+  {
+   "id": "K076_A",
+   "line": "Z1.drawings.use",
+   "take": "A",
+   "speaker": "narrator",
+   "text": "На Дунином листе — опора моста у поворота; её рукой приписано: плита треснула, чинить надо. А на свежем рисунке Тамары от той же опоры — одна верхушка над водой.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "устойчивость 0.45 + контекст"
+  },
+  {
+   "id": "K076_B",
    "line": "Z1.drawings.use",
    "take": "B",
    "speaker": "narrator",
@@ -2572,7 +2606,7 @@
    "variant": "устойчивость 0.65 + контекст"
   },
   {
-   "id": "K075_C",
+   "id": "K076_C",
    "line": "Z1.drawings.use",
    "take": "C",
    "speaker": "narrator",
@@ -2583,7 +2617,7 @@
    "variant": "устойчивость 0.45, без контекста"
   },
   {
-   "id": "K076_A",
+   "id": "K077_A",
    "line": "Z1.letters.look",
    "take": "A",
    "speaker": "narrator",
@@ -2595,7 +2629,7 @@
    "previous_text": "Как письма разложены?"
   },
   {
-   "id": "K076_B",
+   "id": "K077_B",
    "line": "Z1.letters.look",
    "take": "B",
    "speaker": "narrator",
@@ -2606,7 +2640,7 @@
    "variant": "капс, устойчивость 0.45"
   },
   {
-   "id": "K076_C",
+   "id": "K077_C",
    "line": "Z1.letters.look",
    "take": "C",
    "speaker": "narrator",
@@ -2618,7 +2652,7 @@
    "previous_text": "Как письма разложены?"
   },
   {
-   "id": "K077_A",
+   "id": "K078_A",
    "line": "agata:H1.after_mirror.agata",
    "take": "A",
    "speaker": "agata",
@@ -2630,7 +2664,7 @@
    "previous_text": "Видела, как там время бежит?"
   },
   {
-   "id": "K077_B",
+   "id": "K078_B",
    "line": "agata:H1.after_mirror.agata",
    "take": "B",
    "speaker": "agata",
@@ -2641,7 +2675,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K077_C",
+   "id": "K078_C",
    "line": "agata:H1.after_mirror.agata",
    "take": "C",
    "speaker": "agata",
@@ -2653,7 +2687,7 @@
    "previous_text": "Видела, как там время бежит?"
   },
   {
-   "id": "K078_A",
+   "id": "K079_A",
    "line": "agata:H1.tikhon.cream_2",
    "take": "A",
    "speaker": "agata",
@@ -2665,7 +2699,7 @@
    "previous_text": "Если сметану находила."
   },
   {
-   "id": "K078_B",
+   "id": "K079_B",
    "line": "agata:H1.tikhon.cream_2",
    "take": "B",
    "speaker": "agata",
@@ -2677,7 +2711,7 @@
    "previous_text": "Если сметану находила."
   },
   {
-   "id": "K078_C",
+   "id": "K079_C",
    "line": "agata:H1.tikhon.cream_2",
    "take": "C",
    "speaker": "agata",
@@ -2688,7 +2722,7 @@
    "variant": "устойчивость 0.35, без контекста"
   },
   {
-   "id": "K079_A",
+   "id": "K080_A",
    "line": "agata:H3.school_door.use",
    "take": "A",
    "speaker": "agata",
@@ -2700,7 +2734,7 @@
    "previous_text": "Что это за дверь?"
   },
   {
-   "id": "K079_B",
+   "id": "K080_B",
    "line": "agata:H3.school_door.use",
    "take": "B",
    "speaker": "agata",
@@ -2711,7 +2745,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K079_C",
+   "id": "K080_C",
    "line": "agata:H3.school_door.use",
    "take": "C",
    "speaker": "agata",
@@ -2723,7 +2757,7 @@
    "previous_text": "Что это за дверь?"
   },
   {
-   "id": "K080_A",
+   "id": "K081_A",
    "line": "agata:H3.side_door.unbolt",
    "take": "A",
    "speaker": "agata",
@@ -2735,7 +2769,7 @@
    "previous_text": "Как заперта боковая дверь?"
   },
   {
-   "id": "K080_B",
+   "id": "K081_B",
    "line": "agata:H3.side_door.unbolt",
    "take": "B",
    "speaker": "agata",
@@ -2746,7 +2780,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K080_C",
+   "id": "K081_C",
    "line": "agata:H3.side_door.unbolt",
    "take": "C",
    "speaker": "agata",
@@ -2758,7 +2792,7 @@
    "previous_text": "Как заперта боковая дверь?"
   },
   {
-   "id": "K081_A",
+   "id": "K082_A",
    "line": "agata:H4.bed.early_short",
    "take": "A",
    "speaker": "agata",
@@ -2770,7 +2804,7 @@
    "previous_text": "Спать ляжешь?"
   },
   {
-   "id": "K081_B",
+   "id": "K082_B",
    "line": "agata:H4.bed.early_short",
    "take": "B",
    "speaker": "agata",
@@ -2781,7 +2815,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K081_C",
+   "id": "K082_C",
    "line": "agata:H4.bed.early_short",
    "take": "C",
    "speaker": "agata",
@@ -2793,44 +2827,11 @@
    "previous_text": "Спать ляжешь?"
   },
   {
-   "id": "K082_A",
-   "line": "agata:H4.bed.todo_M23a",
-   "take": "A",
-   "speaker": "agata",
-   "text": "Надо ещё Тамару повидать — она письма раздаёт.",
-   "voice_settings": {
-    "stability": 0.35
-   },
-   "variant": "устойчивость 0.35 + контекст"
-  },
-  {
-   "id": "K082_B",
-   "line": "agata:H4.bed.todo_M23a",
-   "take": "B",
-   "speaker": "agata",
-   "text": "Надо ещё Тамару повидать — она письма раздаёт.",
-   "voice_settings": {
-    "stability": 0.55
-   },
-   "variant": "устойчивость 0.55 + контекст"
-  },
-  {
-   "id": "K082_C",
-   "line": "agata:H4.bed.todo_M23a",
-   "take": "C",
-   "speaker": "agata",
-   "text": "Надо ещё Тамару повидать — она письма раздаёт.",
-   "voice_settings": {
-    "stability": 0.35
-   },
-   "variant": "устойчивость 0.35, без контекста"
-  },
-  {
    "id": "K083_A",
-   "line": "agata:H4.bed.todo_M23c",
+   "line": "agata:H4.bed.todo_M23a",
    "take": "A",
    "speaker": "agata",
-   "text": "Надо ещё к маме сходить, в Дунин дом.",
+   "text": "Надо ещё Тамару повидать — она письма раздаёт.",
    "voice_settings": {
     "stability": 0.35
    },
@@ -2838,6 +2839,39 @@
   },
   {
    "id": "K083_B",
+   "line": "agata:H4.bed.todo_M23a",
+   "take": "B",
+   "speaker": "agata",
+   "text": "Надо ещё Тамару повидать — она письма раздаёт.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "устойчивость 0.55 + контекст"
+  },
+  {
+   "id": "K083_C",
+   "line": "agata:H4.bed.todo_M23a",
+   "take": "C",
+   "speaker": "agata",
+   "text": "Надо ещё Тамару повидать — она письма раздаёт.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35, без контекста"
+  },
+  {
+   "id": "K084_A",
+   "line": "agata:H4.bed.todo_M23c",
+   "take": "A",
+   "speaker": "agata",
+   "text": "Надо ещё к маме сходить, в Дунин дом.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "устойчивость 0.35 + контекст"
+  },
+  {
+   "id": "K084_B",
    "line": "agata:H4.bed.todo_M23c",
    "take": "B",
    "speaker": "agata",
@@ -2848,7 +2882,7 @@
    "variant": "устойчивость 0.55 + контекст"
   },
   {
-   "id": "K083_C",
+   "id": "K084_C",
    "line": "agata:H4.bed.todo_M23c",
    "take": "C",
    "speaker": "agata",
@@ -2859,7 +2893,7 @@
    "variant": "устойчивость 0.35, без контекста"
   },
   {
-   "id": "K084_A",
+   "id": "K085_A",
    "line": "agata:H4.bed.todo_M23d",
    "take": "A",
    "speaker": "agata",
@@ -2871,7 +2905,7 @@
    "previous_text": "О чём с Тихоном поговорить надо?"
   },
   {
-   "id": "K084_B",
+   "id": "K085_B",
    "line": "agata:H4.bed.todo_M23d",
    "take": "B",
    "speaker": "agata",
@@ -2882,7 +2916,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K084_C",
+   "id": "K085_C",
    "line": "agata:H4.bed.todo_M23d",
    "take": "C",
    "speaker": "agata",
@@ -2894,7 +2928,7 @@
    "previous_text": "О чём с Тихоном поговорить надо?"
   },
   {
-   "id": "K085_A",
+   "id": "K086_A",
    "line": "agata:O1.bird_drawing.prompt",
    "take": "A",
    "speaker": "agata",
@@ -2906,7 +2940,7 @@
    "previous_text": "Кто синице шапку рисовал?"
   },
   {
-   "id": "K085_B",
+   "id": "K086_B",
    "line": "agata:O1.bird_drawing.prompt",
    "take": "B",
    "speaker": "agata",
@@ -2917,7 +2951,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K085_C",
+   "id": "K086_C",
    "line": "agata:O1.bird_drawing.prompt",
    "take": "C",
    "speaker": "agata",
@@ -2929,7 +2963,7 @@
    "previous_text": "Кто синице шапку рисовал?"
   },
   {
-   "id": "K086_A",
+   "id": "K087_A",
    "line": "agata:O2.tree.look",
    "take": "A",
    "speaker": "agata",
@@ -2941,7 +2975,7 @@
    "previous_text": "Каким дерево было раньше?"
   },
   {
-   "id": "K086_B",
+   "id": "K087_B",
    "line": "agata:O2.tree.look",
    "take": "B",
    "speaker": "agata",
@@ -2952,7 +2986,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K086_C",
+   "id": "K087_C",
    "line": "agata:O2.tree.look",
    "take": "C",
    "speaker": "agata",
@@ -2964,7 +2998,7 @@
    "previous_text": "Каким дерево было раньше?"
   },
   {
-   "id": "K087_A",
+   "id": "K088_A",
    "line": "agata:O4.nina_house.look",
    "take": "A",
    "speaker": "agata",
@@ -2976,7 +3010,7 @@
    "previous_text": "Крыльцо у мамы новое?"
   },
   {
-   "id": "K087_B",
+   "id": "K088_B",
    "line": "agata:O4.nina_house.look",
    "take": "B",
    "speaker": "agata",
@@ -2987,7 +3021,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K087_C",
+   "id": "K088_C",
    "line": "agata:O4.nina_house.look",
    "take": "C",
    "speaker": "agata",
@@ -2999,7 +3033,7 @@
    "previous_text": "Крыльцо у мамы новое?"
   },
   {
-   "id": "K088_A",
+   "id": "K089_A",
    "line": "agata:examine.key_sluice",
    "take": "A",
    "speaker": "agata",
@@ -3010,7 +3044,7 @@
    "variant": "устойчивость 0.35 + контекст"
   },
   {
-   "id": "K088_B",
+   "id": "K089_B",
    "line": "agata:examine.key_sluice",
    "take": "B",
    "speaker": "agata",
@@ -3021,7 +3055,7 @@
    "variant": "устойчивость 0.55 + контекст"
   },
   {
-   "id": "K088_C",
+   "id": "K089_C",
    "line": "agata:examine.key_sluice",
    "take": "C",
    "speaker": "agata",
@@ -3032,7 +3066,7 @@
    "variant": "устойчивость 0.35, без контекста"
   },
   {
-   "id": "K089_A",
+   "id": "K090_A",
    "line": "agata:examine.mirror_mill",
    "take": "A",
    "speaker": "agata",
@@ -3044,7 +3078,7 @@
    "previous_text": "Стекло-то цело?"
   },
   {
-   "id": "K089_B",
+   "id": "K090_B",
    "line": "agata:examine.mirror_mill",
    "take": "B",
    "speaker": "agata",
@@ -3056,7 +3090,7 @@
    "previous_text": "Стекло-то цело?"
   },
   {
-   "id": "K089_C",
+   "id": "K090_C",
    "line": "agata:examine.mirror_mill",
    "take": "C",
    "speaker": "agata",
@@ -3067,7 +3101,7 @@
    "variant": "устойчивость 0.35, без контекста"
   },
   {
-   "id": "K090_A",
+   "id": "K091_A",
    "line": "agata:examine.school_ribbon",
    "take": "A",
    "speaker": "agata",
@@ -3079,7 +3113,7 @@
    "previous_text": "Мама её сохранила?"
   },
   {
-   "id": "K090_B",
+   "id": "K091_B",
    "line": "agata:examine.school_ribbon",
    "take": "B",
    "speaker": "agata",
@@ -3090,7 +3124,7 @@
    "variant": "капс, устойчивость 0.35"
   },
   {
-   "id": "K090_C",
+   "id": "K091_C",
    "line": "agata:examine.school_ribbon",
    "take": "C",
    "speaker": "agata",
@@ -3102,7 +3136,7 @@
    "previous_text": "Мама её сохранила?"
   },
   {
-   "id": "K091_A",
+   "id": "K092_A",
    "line": "ilya:mech.bench.checked",
    "take": "A",
    "speaker": "ilya",
@@ -3114,7 +3148,7 @@
    "previous_text": "Когда за работу можно?"
   },
   {
-   "id": "K091_B",
+   "id": "K092_B",
    "line": "ilya:mech.bench.checked",
    "take": "B",
    "speaker": "ilya",
@@ -3125,7 +3159,7 @@
    "variant": "капс, устойчивость 0.3"
   },
   {
-   "id": "K091_C",
+   "id": "K092_C",
    "line": "ilya:mech.bench.checked",
    "take": "C",
    "speaker": "ilya",
@@ -3137,7 +3171,7 @@
    "previous_text": "Когда за работу можно?"
   },
   {
-   "id": "K092_A",
+   "id": "K093_A",
    "line": "intro.opening_1",
    "take": "A",
    "speaker": "narrator",
@@ -3148,7 +3182,7 @@
    "variant": "устойчивость 0.45 + контекст"
   },
   {
-   "id": "K092_B",
+   "id": "K093_B",
    "line": "intro.opening_1",
    "take": "B",
    "speaker": "narrator",
@@ -3159,7 +3193,7 @@
    "variant": "устойчивость 0.65 + контекст"
   },
   {
-   "id": "K092_C",
+   "id": "K093_C",
    "line": "intro.opening_1",
    "take": "C",
    "speaker": "narrator",
@@ -3170,7 +3204,7 @@
    "variant": "устойчивость 0.45, без контекста"
   },
   {
-   "id": "K093_A",
+   "id": "K094_A",
    "line": "nina:O3.nina.before",
    "take": "A",
    "speaker": "nina",
@@ -3181,7 +3215,7 @@
    "variant": "устойчивость 0.35 + контекст"
   },
   {
-   "id": "K093_B",
+   "id": "K094_B",
    "line": "nina:O3.nina.before",
    "take": "B",
    "speaker": "nina",
@@ -3192,7 +3226,7 @@
    "variant": "устойчивость 0.55 + контекст"
   },
   {
-   "id": "K093_C",
+   "id": "K094_C",
    "line": "nina:O3.nina.before",
    "take": "C",
    "speaker": "nina",
@@ -3203,7 +3237,7 @@
    "variant": "устойчивость 0.35, без контекста"
   },
   {
-   "id": "K094_A",
+   "id": "K095_A",
    "line": "pavel:M1.pavel.before_agree",
    "take": "A",
    "speaker": "pavel",
@@ -3214,7 +3248,7 @@
    "variant": "устойчивость 0.3 + контекст"
   },
   {
-   "id": "K094_B",
+   "id": "K095_B",
    "line": "pavel:M1.pavel.before_agree",
    "take": "B",
    "speaker": "pavel",
@@ -3225,7 +3259,7 @@
    "variant": "устойчивость 0.5 + контекст"
   },
   {
-   "id": "K094_C",
+   "id": "K095_C",
    "line": "pavel:M1.pavel.before_agree",
    "take": "C",
    "speaker": "pavel",
@@ -3236,7 +3270,7 @@
    "variant": "устойчивость 0.3, без контекста"
   },
   {
-   "id": "K095_A",
+   "id": "K096_A",
    "line": "pavel:M4.pavel.after",
    "take": "A",
    "speaker": "pavel",
@@ -3248,7 +3282,7 @@
    "previous_text": "Ну что, вода идёт?"
   },
   {
-   "id": "K095_B",
+   "id": "K096_B",
    "line": "pavel:M4.pavel.after",
    "take": "B",
    "speaker": "pavel",
@@ -3259,7 +3293,7 @@
    "variant": "капс, устойчивость 0.3"
   },
   {
-   "id": "K095_C",
+   "id": "K096_C",
    "line": "pavel:M4.pavel.after",
    "take": "C",
    "speaker": "pavel",
@@ -3271,7 +3305,7 @@
    "previous_text": "Ну что, вода идёт?"
   },
   {
-   "id": "K096_A",
+   "id": "K097_A",
    "line": "pelageya:R2.exit_R1.closed",
    "take": "A",
    "speaker": "pelageya",
@@ -3283,7 +3317,7 @@
    "previous_text": "Может, назад повернём?"
   },
   {
-   "id": "K096_B",
+   "id": "K097_B",
    "line": "pelageya:R2.exit_R1.closed",
    "take": "B",
    "speaker": "pelageya",
@@ -3295,7 +3329,7 @@
    "previous_text": "Может, назад повернём?"
   },
   {
-   "id": "K096_C",
+   "id": "K097_C",
    "line": "pelageya:R2.exit_R1.closed",
    "take": "C",
    "speaker": "pelageya",
@@ -3307,7 +3341,7 @@
    "previous_text": "Может, назад повернём?"
   },
   {
-   "id": "K097_A",
+   "id": "K098_A",
    "line": "tamara:Z1.tamara.after",
    "take": "A",
    "speaker": "tamara",
@@ -3319,7 +3353,7 @@
    "previous_text": "А ключ теперь где, у кого?"
   },
   {
-   "id": "K097_B",
+   "id": "K098_B",
    "line": "tamara:Z1.tamara.after",
    "take": "B",
    "speaker": "tamara",
@@ -3330,7 +3364,7 @@
    "variant": "капс, устойчивость 0.25"
   },
   {
-   "id": "K097_C",
+   "id": "K098_C",
    "line": "tamara:Z1.tamara.after",
    "take": "C",
    "speaker": "tamara",
@@ -3342,7 +3376,7 @@
    "previous_text": "А ключ теперь где, у кого?"
   },
   {
-   "id": "K098_A",
+   "id": "K099_A",
    "line": "tamara:Z1.tamara.school",
    "take": "A",
    "speaker": "tamara",
@@ -3354,7 +3388,7 @@
    "previous_text": "Сколько у вас школ было?"
   },
   {
-   "id": "K098_B",
+   "id": "K099_B",
    "line": "tamara:Z1.tamara.school",
    "take": "B",
    "speaker": "tamara",
@@ -3365,7 +3399,7 @@
    "variant": "капс, устойчивость 0.25"
   },
   {
-   "id": "K098_C",
+   "id": "K099_C",
    "line": "tamara:Z1.tamara.school",
    "take": "C",
    "speaker": "tamara",
@@ -3377,7 +3411,7 @@
    "previous_text": "Сколько у вас школ было?"
   },
   {
-   "id": "K099_A",
+   "id": "K100_A",
    "line": "tamara:Z1.tamara.sheet",
    "take": "A",
    "speaker": "tamara",
@@ -3389,7 +3423,7 @@
    "previous_text": "Когда Дуня лист оставила?"
   },
   {
-   "id": "K099_B",
+   "id": "K100_B",
    "line": "tamara:Z1.tamara.sheet",
    "take": "B",
    "speaker": "tamara",
@@ -3400,7 +3434,7 @@
    "variant": "капс, устойчивость 0.25"
   },
   {
-   "id": "K099_C",
+   "id": "K100_C",
    "line": "tamara:Z1.tamara.sheet",
    "take": "C",
    "speaker": "tamara",
@@ -3412,7 +3446,7 @@
    "previous_text": "Когда Дуня лист оставила?"
   },
   {
-   "id": "K100_A",
+   "id": "K101_A",
    "line": "tikhon:H1.tikhon.before_met",
    "take": "A",
    "speaker": "tikhon",
@@ -3423,7 +3457,7 @@
    "variant": "устойчивость 0.4 + контекст"
   },
   {
-   "id": "K100_B",
+   "id": "K101_B",
    "line": "tikhon:H1.tikhon.before_met",
    "take": "B",
    "speaker": "tikhon",
@@ -3434,7 +3468,7 @@
    "variant": "устойчивость 0.6 + контекст"
   },
   {
-   "id": "K100_C",
+   "id": "K101_C",
    "line": "tikhon:H1.tikhon.before_met",
    "take": "C",
    "speaker": "tikhon",
@@ -3445,7 +3479,7 @@
    "variant": "устойчивость 0.4, без контекста"
   },
   {
-   "id": "K101_A",
+   "id": "K102_A",
    "line": "tikhon:H1.tikhon.bell",
    "take": "A",
    "speaker": "tikhon",
@@ -3457,7 +3491,7 @@
    "previous_text": "Откуда этот колокол?"
   },
   {
-   "id": "K101_B",
+   "id": "K102_B",
    "line": "tikhon:H1.tikhon.bell",
    "take": "B",
    "speaker": "tikhon",
@@ -3468,7 +3502,7 @@
    "variant": "капс, устойчивость 0.4"
   },
   {
-   "id": "K101_C",
+   "id": "K102_C",
    "line": "tikhon:H1.tikhon.bell",
    "take": "C",
    "speaker": "tikhon",
@@ -3480,7 +3514,7 @@
    "previous_text": "Откуда этот колокол?"
   },
   {
-   "id": "K102_A",
+   "id": "K103_A",
    "line": "tikhon:H1.tikhon.door",
    "take": "A",
    "speaker": "tikhon",
@@ -3492,7 +3526,7 @@
    "previous_text": "Откуда тут дверь?"
   },
   {
-   "id": "K102_B",
+   "id": "K103_B",
    "line": "tikhon:H1.tikhon.door",
    "take": "B",
    "speaker": "tikhon",
@@ -3503,7 +3537,7 @@
    "variant": "капс, устойчивость 0.4"
   },
   {
-   "id": "K102_C",
+   "id": "K103_C",
    "line": "tikhon:H1.tikhon.door",
    "take": "C",
    "speaker": "tikhon",
@@ -3515,7 +3549,7 @@
    "previous_text": "Откуда тут дверь?"
   },
   {
-   "id": "K103_A",
+   "id": "K104_A",
    "line": "tikhon:H1.tikhon.leave",
    "take": "A",
    "speaker": "tikhon",
@@ -3526,7 +3560,7 @@
    "variant": "устойчивость 0.4 + контекст"
   },
   {
-   "id": "K103_B",
+   "id": "K104_B",
    "line": "tikhon:H1.tikhon.leave",
    "take": "B",
    "speaker": "tikhon",
@@ -3537,7 +3571,7 @@
    "variant": "устойчивость 0.6 + контекст"
   },
   {
-   "id": "K103_C",
+   "id": "K104_C",
    "line": "tikhon:H1.tikhon.leave",
    "take": "C",
    "speaker": "tikhon",
@@ -3548,7 +3582,7 @@
    "variant": "устойчивость 0.4, без контекста"
   },
   {
-   "id": "K104_A",
+   "id": "K105_A",
    "line": "tikhon:H1.tikhon.tea_3",
    "take": "A",
    "speaker": "tikhon",
@@ -3560,7 +3594,7 @@
    "previous_text": "А что у неё остывало?"
   },
   {
-   "id": "K104_B",
+   "id": "K105_B",
    "line": "tikhon:H1.tikhon.tea_3",
    "take": "B",
    "speaker": "tikhon",
@@ -3572,7 +3606,7 @@
    "previous_text": "А что у неё остывало?"
   },
   {
-   "id": "K104_C",
+   "id": "K105_C",
    "line": "tikhon:H1.tikhon.tea_3",
    "take": "C",
    "speaker": "tikhon",
@@ -3583,7 +3617,7 @@
    "variant": "устойчивость 0.4, без контекста"
   },
   {
-   "id": "K105_A",
+   "id": "K106_A",
    "line": "ulyana:O1q.village_map.ulyana_apple",
    "take": "A",
    "speaker": "ulyana",
@@ -3595,7 +3629,7 @@
    "previous_text": "А что ещё у вас в саду?"
   },
   {
-   "id": "K105_B",
+   "id": "K106_B",
    "line": "ulyana:O1q.village_map.ulyana_apple",
    "take": "B",
    "speaker": "ulyana",
@@ -3606,7 +3640,7 @@
    "variant": "капс, устойчивость 0.3"
   },
   {
-   "id": "K105_C",
+   "id": "K106_C",
    "line": "ulyana:O1q.village_map.ulyana_apple",
    "take": "C",
    "speaker": "ulyana",
@@ -3618,7 +3652,7 @@
    "previous_text": "А что ещё у вас в саду?"
   },
   {
-   "id": "K106_A",
+   "id": "K107_A",
    "line": "ulyana:O1q.village_map.ulyana_ours",
    "take": "A",
    "speaker": "ulyana",
@@ -3630,7 +3664,7 @@
    "previous_text": "Чей это сад на карте?"
   },
   {
-   "id": "K106_B",
+   "id": "K107_B",
    "line": "ulyana:O1q.village_map.ulyana_ours",
    "take": "B",
    "speaker": "ulyana",
@@ -3641,7 +3675,7 @@
    "variant": "капс, устойчивость 0.3"
   },
   {
-   "id": "K106_C",
+   "id": "K107_C",
    "line": "ulyana:O1q.village_map.ulyana_ours",
    "take": "C",
    "speaker": "ulyana",
@@ -3652,6 +3686,5 @@
    "variant": "без капса, устойчивость 0.3 + контекст",
    "previous_text": "Чей это сад на карте?"
   }
- ],
- "credits_per_char_assumed": 0.5
+ ]
 }
