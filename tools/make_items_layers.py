@@ -87,7 +87,10 @@ PLACES = {
     "cup10_sill_blue": (1590.0, 512.0, 40.0),
     "cup10_sill_white": (1636.0, 512.0, 40.0),
     "cup10_table": (826.0, 769.0, 56.0),
-    "mug10_table": (762.0, 767.0, 92.0),   # H54/T6 (Директор: «кружка синяя очень маленькая»): 74 → 92 px
+    # H54/T6 (Директор 24.10: «кружка синяя очень маленькая»): 74 → 92 px; J (Директор 29.10, стр. 95: «большую
+    # неподвижную — к размеру маленькой»): 92 → 66 px — вровень с выбранной чашкой (56 px × 1.18 в данных ≈ 66 px).
+    # Нарисованная глиняная кружка столика из-под неё выглядывала бы — её больше нет: fg_table_chair_nomug.png.
+    "mug10_table": (762.0, 767.0, 66.0),
     # мел на парте: (x середины, y середины, длина)
     "chalk_desk": (612.0, 784.0, 44.0),
 }
@@ -431,10 +434,49 @@ def o1_layers() -> dict[str, Image.Image]:
     return out
 
 
+# Верх столика у кружки в px слоя: слева от неё (x 780) y 464, справа (x 885) y 477 — край столешницы.
+TABLE_EDGE = ((780.0, 464.0), (885.0, 477.0))
+
+
+def table_without_mug() -> Image.Image:
+    """J (стр. 95): столик без нарисованной глиняной кружки — синяя кружка 10а стала меньше и её больше не закрывает.
+    Что выше края столешницы — прозрачно (за ним пол фона), что на дорожке — дорисовано той же дорожкой справа."""
+    import cv2
+    fg = np.array(Image.open(H1_TABLE).convert("RGBA"))
+    m = Image.new("L", (fg.shape[1], fg.shape[0]), 0)
+    d = ImageDraw.Draw(m)
+    d.polygon(MUG_BODY, fill=255)
+    d.polygon(MUG_HANDLE, fill=255)
+    mask = cv2.dilate(np.array(m), np.ones((3, 3), np.uint8), iterations=2)
+    (x0, y0), (x1, y1) = TABLE_EDGE
+    yy, xx = np.mgrid[0:fg.shape[0], 0:fg.shape[1]]
+    above = yy < y0 + (xx - x0) * (y1 - y0) / (x1 - x0) + 1.0
+    sel = mask > 0
+    fill = sel & ~above
+    # Дорожка полосатая, полосы идут вдоль края столешницы: пиксель берём той же полосы правее (сдвиг по наклону края),
+    # столбцы — справа налево, так что источник уже чистый; шов — мягкий (cv2.inpaint по кромке в 1 px).
+    out = fg.copy()
+    slope = (y1 - y0) / (x1 - x0)
+    shift = 60
+    ys, xs = np.where(fill)
+    for x in sorted(set(xs.tolist()), reverse=True):
+        for y in ys[xs == x]:
+            sy, sx = int(round(y + shift * slope)), x + shift
+            out[y, x, :3] = out[sy, sx, :3]
+    edge = cv2.dilate(fill.astype(np.uint8), np.ones((3, 3), np.uint8)) - cv2.erode(fill.astype(np.uint8), np.ones((3, 3), np.uint8))
+    rgb = cv2.inpaint(np.ascontiguousarray(out[:, :, 2::-1]), (edge * 255).astype(np.uint8), 2, cv2.INPAINT_TELEA)[:, :, ::-1]
+    e = edge > 0
+    out[e & fill, :3] = ((out[e & fill, :3].astype(np.float32) + rgb[e & fill].astype(np.float32)) / 2).astype(np.uint8)
+    out[sel & above, 3] = 0
+    out[fill, 3] = 255
+    return Image.fromarray(out, "RGBA")
+
+
 def outputs() -> dict[Path, Image.Image]:
     res: dict[Path, Image.Image] = {}
     for name, im in h1_layers().items():
         res[ROOMS / "H1" / name] = im
+    res[ROOMS / "H1" / "fg_table_chair_nomug.png"] = table_without_mug()
     for name, im in o1_layers().items():
         res[ROOMS / "O1" / name] = im
     return res

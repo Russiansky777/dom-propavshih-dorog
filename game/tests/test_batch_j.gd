@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   E5 (стр. 95, 46): the H1 mug as big as the chosen cup (the painted clay mug under it gone); the H4 bed larger;
 ##   E4 (стр. 9): the Z1 counter lower (same width, ×0.84 from the front legs); Tamara clicked through it too;
 ##   E1 (Р2): river fog over the far bank in R1 / Z3 / M1 / H4 until the knot (road_held_both_ends); the knot tied
 ##      with the room on screen — the fog lifts (eases out, then hidden); a load after the knot — no fog at once;
@@ -84,6 +85,7 @@ func _run() -> void:
 	await _test("J-E3 the last frame: the candle burns, snow behind the window, the cup on the table, Tikhon to the people", _test_last_frame)
 	await _test("J-B1 intro: three cards on black with the voice-over, a click goes on, then «День первый», once", _test_intro)
 	await _test("J-E4 Z1 (стр. 9): the counter lower (×0.84, legs in place); Tamara is clicked through the counter too", _test_counter)
+	await _test("J-E5 sizes: the H1 mug as big as the chosen cup (стр. 95), no clay mug under it; the H4 bed larger (стр. 46)", _test_sizes)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -364,6 +366,56 @@ func _test_counter() -> void:
 	await physics_frame
 	await physics_frame
 	_check(_pick_id(Vector2(1070, 820)) != "tamara", "no Tamara through the counter after M22, got %s" % _pick_id(Vector2(1070, 820)))
+
+
+# --- E5. Sizes: the mug and the cup, the attic bed --------------------------------------------
+
+## Screen-space opaque bbox of a layer's sprite (alpha > 0.25).
+func _layer_box(layer_id: String) -> Rect2:
+	var layer: Node = rm.current_room.find_child(layer_id, true, false)
+	var spr: Sprite2D = layer.get_node_or_null("Image") if layer != null else null
+	if spr == null or spr.texture == null:
+		return Rect2()
+	var img := spr.texture.get_image()
+	if img.is_compressed():
+		img.decompress()
+	var used := img.get_used_rect()   # transparent margins off
+	var lo := Vector2(INF, INF)
+	var hi := Vector2(-INF, -INF)
+	for y in range(used.position.y, used.end.y, 2):
+		for x in range(used.position.x, used.end.x, 2):
+			if img.get_pixel(x, y).a > 0.25:
+				lo = Vector2(minf(lo.x, x), minf(lo.y, y))
+				hi = Vector2(maxf(hi.x, x), maxf(hi.y, y))
+	if lo.x == INF:
+		return Rect2()
+	return Rect2(spr.position + lo * spr.scale, (hi - lo) * spr.scale)
+
+
+func _test_sizes() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "house_open", "v01_cup_blue"])
+	await _enter("H1")
+	await _drain()
+	var mug := _layer_box("mug_table")
+	var cup := _layer_box("cup_table_blue")
+	_check(mug.size.y > 0 and cup.size.y > 0, "the mug and the chosen cup are on the table")
+	_check(absf(mug.size.y / maxf(cup.size.y, 1.0) - 1.0) < 0.3, "the mug about the cup's height: %.0f vs %.0f px" % [mug.size.y, cup.size.y])
+	_check(mug.size.x < 75.0, "the mug no wider than the cup with its saucer: %.0f px" % mug.size.x)
+	var table: Node = rm.current_room.find_child("table_chair", true, false)
+	var tspr: Sprite2D = table.get_node_or_null("Image") if table != null else null
+	_check(tspr != null and tspr.texture.resource_path.ends_with("fg_table_chair_nomug.png"), "the table without the painted clay mug")
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "house_open"])
+	await _enter("H4")
+	await _drain()
+	var bed := _layer_box("bed")
+	_check(bed.size.x > 460.0, "the attic bed is a real bed now: %.0f px long (was ≈ 350)" % bed.size.x)
+	_check(absf(bed.end.y - 682.0) < 6.0, "its legs stay on the floor at y ≈ 682, got %.0f" % bed.end.y)
+	var hs: Node = _hotspot("bed")
+	_check(hs != null and _pick_id(Vector2(1300, 600)) == "bed", "the bigger bed is clicked on its left half too, got %s" % _pick_id(Vector2(1300, 600)))
 
 
 # --- A4. The water is down ------------------------------------------------------------------
