@@ -524,7 +524,8 @@ func _set_fog(n: Polygon2D, on: bool, animate: bool) -> void:
 	var old: Variant = n.get_meta("fog_tween", null)
 	if old is Tween and (old as Tween).is_valid():
 		(old as Tween).kill()
-	n.remove_meta("fog_tween")
+	if n.has_meta("fog_tween"):
+		n.remove_meta("fog_tween")
 	if on:
 		m.set_shader_parameter("lift", 0.0)
 		n.visible = true

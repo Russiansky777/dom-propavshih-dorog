@@ -434,7 +434,7 @@ func _test_pier_attempt() -> void:
 	_check(seen[2].contains("к своему причалу") and seen[1].contains("не перевезу"), "«Не довезу. Год пробую.» — «Гребу к тому берегу…» (H3, %s)" % str(seen))
 	_check(not sounds.has("door_heavy"), "G16: no staged knock any more: %s" % str(sounds))
 	# Director 22.10: the rope is the last piece of the bridge — the road itself; its far end is still on the other bank.
-	_check(seen.any(func(x): return x.contains("Пролёты снесло, каменные опоры остались") and x.contains("Дальний конец всё там") and x.contains("на плите ближней опоры был закреплён")), "the rope is what is left of the bridge (J, Р1: «ближней опоры»): %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("пролёты снесло, каменные опоры остались") and x.contains("Дальний конец всё там") and x.contains("на плите ближней опоры был закреплён")), "the rope is what is left of the bridge (J, Р1: «ближней опоры»): %s" % str(seen))
 	_check(seen.any(func(x): return x.contains("Тянешь, будто за корягу") and x.contains("Под водой к ней не подступиться")), "the plate under water, cracked: %s" % str(seen))
 	_check(sr.stage_dim == 0.0 and (ui == null or float(ui.call("stage_probe")["alpha"]) < 0.02), "no dusk left at the pier")
 	_check(rm.current_room.get_node_or_null("Exits/to_R2") == null and not gs.has_flag("ferry_verified"), "the crossing stays closed (H36: no exit into the boat at the pier)")

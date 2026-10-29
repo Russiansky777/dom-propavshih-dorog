@@ -383,7 +383,7 @@ func _test_data() -> void:
 	var m23a: Dictionary = sd.scene("M23a")
 	var end_go: Array = []
 	for st in m23a.get("stage", []):
-		if String(st.get("at", "")) == "end":
+		if str(st.get("at", "")) == "end":
 			end_go = st.get("npc_go", [])
 	_check(end_go.size() == 1 and String(end_go[0].get("id", "")) == "nina", "M23a ends with Nina walking off (%s)" % str(end_go))
 	if end_go.size() == 1:
@@ -538,7 +538,7 @@ func _test_boat_with_pelageya() -> void:
 	var ends := {}
 	for sid in ["M15", "M16"]:
 		for st in sd.scene(sid).get("stage", []):
-			if String(st.get("at", "")) == "end":
+			if str(st.get("at", "")) == "end":
 				ends[sid] = st.get("sets", [])
 	_check((ends.get("M15", []) as Array).has("boat_to_pier"), "M15 ends rowing the boat to the pier (%s)" % str(ends))
 	_check((ends.get("M16", []) as Array).has("boat_back_at_turn"), "M16 ends rowing it back to the plate (%s)" % str(ends))
