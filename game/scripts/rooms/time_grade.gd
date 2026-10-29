@@ -22,10 +22,9 @@ extends Node2D
 
 const GRADE_Z := 4090
 const WINDOW_Z := 4091
-## J (Director 29.10, стр. 72 / 25.10 стр. 155: «свет окна сквозь модели», «не ложится на фигуры»): a lit window is
-## drawn over the painting and under the figures and the foreground occluders (feet-sorted, z ≥ ~300), not over
-## everything; under the grade polygon it is brought back to its own colour by `modulate` = 1 / grade (_process).
-const WINDOW_UNDER_Z := 5
+## J (Director 29.10, стр. 72 / 25.10 стр. 155: «свет окна сквозь модели», «не ложится на фигуры»): a lit window stays
+## over the grade (a warm light under a blue night multiply turns grey-green — tried, frame 29.10), and a figure in
+## front of it now covers it: the window's light fades by how much of the pane the figure hides (_occlusion).
 
 var room_id: String = ""
 var route: String = "tint"        # "tint" — the polygon; "light" — ambient sources in the room's Lighting
@@ -117,9 +116,13 @@ func _make_window(w: Dictionary, mat: CanvasItemMaterial) -> Node2D:
 	var dark := String(w.get("blend", "add")) == "mul"
 	var holder := Node2D.new()
 	holder.name = String(w.get("id", "window"))
-	holder.z_index = int(w.get("z", -5 if dark else WINDOW_UNDER_Z))
+	holder.z_index = int(w.get("z", -5 if dark else WINDOW_Z))
 	holder.z_as_relative = false
 	holder.set_meta("spec", w)
+	var bx := Rect2(pts[0], Vector2.ZERO)
+	for q in pts:
+		bx = bx.expand(q)
+	holder.set_meta("box", bx)
 	var col := Color.html(String(w.get("color", "#ffb766")))
 	var pane := Polygon2D.new()
 	pane.name = "Pane"
@@ -181,9 +184,9 @@ func _make_window(w: Dictionary, mat: CanvasItemMaterial) -> Node2D:
 
 ## G25: the lit windows' flame — the pane's alpha and the halo's brightness × LightFlicker.factor (never below 0).
 func _process(delta: float) -> void:
-	_compensate_grade()
+	_occlusion(delta)
 	if _flickers.is_empty():
-		if tint == null or windows.is_empty():
+		if windows.is_empty():
 			set_process(false)
 		return
 	_flicker_t += delta
@@ -199,22 +202,43 @@ func _process(delta: float) -> void:
 			halo.self_modulate = Color(k, k, k, 1.0)
 
 
-## Lit windows under the figures are under the grade polygon too: their colour × 1 / grade keeps them as bright and
-## warm as before (the pane's own alpha stays; modulate.a is the on/off fade).
-## The fragment is clamped to 1 before the additive blend, so the boost goes into alpha: rgb × k / K, alpha × K
-## (k = 1 / grade per channel, K = its largest) — the window adds c × alpha × k, as bright as over the grade.
-## modulate.a also carries the on/off fade (meta «on», eased by _apply_windows).
-func _compensate_grade() -> void:
-	var g := tint.color if tint != null and tint.visible else Color.WHITE
-	var k := Vector3(1.0 / maxf(g.r, 0.05), 1.0 / maxf(g.g, 0.05), 1.0 / maxf(g.b, 0.05))
-	var kk := maxf(k.x, maxf(k.y, k.z))
+## A figure in front of a lit window hides its light (J, стр. 72): the share of the pane under the figure's box (feet,
+## height by the room's depth scale) — eased, so the glow dims as she walks past and comes back behind her.
+## modulate.a = on (meta «on», eased by _apply_windows) × what is left uncovered.
+func _occlusion(delta: float) -> void:
+	var boxes: Array[Rect2] = []
+	var room := get_parent()
+	var p: Node2D = RoomManager.player
+	if p != null and is_instance_valid(p) and p.is_inside_tree() and RoomManager.current_room == room:
+		boxes.append(_figure_box(p, room))
+	if room != null:
+		for c in room.get_children():
+			if c is NpcActor and (c as Node2D).visible:
+				boxes.append(_figure_box(c, room))
 	for n in windows:
 		var on := float(n.get_meta("on", n.modulate.a))
 		var w: Dictionary = n.get_meta("spec")
-		if n.z_index >= GRADE_Z or String(w.get("blend", "add")) == "mul":
-			n.modulate.a = on
-			continue
-		n.modulate = Color(k.x / kk, k.y / kk, k.z / kk, on * kk)
+		var cover := 0.0
+		if String(w.get("blend", "add")) != "mul" and n.has_meta("box"):
+			var box: Rect2 = n.get_meta("box")
+			for b in boxes:
+				var inter := box.intersection(b)
+				if inter.has_area():
+					cover = maxf(cover, inter.get_area() / maxf(box.get_area(), 1.0))
+		var target := 1.0 - clampf(cover * 2.0, 0.0, 1.0) * 0.92
+		var cur := float(n.get_meta("uncovered", 1.0))
+		cur = target if delta <= 0.0 else move_toward(cur, target, delta * 4.0)
+		n.set_meta("uncovered", cur)
+		n.modulate.a = on * cur
+
+
+func _figure_box(a: Node2D, room: Node) -> Rect2:
+	var feet := a.global_position
+	var s := 1.0
+	if room != null and room.has_method("depth_scale"):
+		s = float(room.call("depth_scale", feet.y))
+	var h := 345.0 * s
+	return Rect2(feet.x - h * 0.2, feet.y - h, h * 0.4, h)
 
 
 ## The flickering windows now: {id: pane alpha} (tests).
@@ -291,11 +315,11 @@ func _apply_windows(ease: bool) -> void:
 		var cur := float(n.get_meta("on", 0.0))
 		if ease and is_inside_tree() and not is_equal_approx(cur, a):
 			var t := create_tween()
-			t.tween_method(func(v: float) -> void: n.set_meta("on", v); _compensate_grade(), cur, a, fade_s * 0.75)
+			t.tween_method(func(v: float) -> void: n.set_meta("on", v); n.modulate.a = v * float(n.get_meta("uncovered", 1.0)), cur, a, fade_s * 0.75)
 		else:
 			n.set_meta("on", a)
 		n.visible = true
-	_compensate_grade()
+	_occlusion(0.0)
 	set_process(true)
 
 
