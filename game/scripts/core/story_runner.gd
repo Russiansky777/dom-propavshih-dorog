@@ -483,6 +483,20 @@ func _run_stage(spec: Dictionary) -> void:
 			_stage_running = false
 			_next()
 			return
+	# J (Director 29.10, стр. 139: «Пелагея в этот момент повёрнута в другую сторону»): `npc_face` [{id, face}] — villagers
+	# turn to each other where they stand (no walk, no fade); a staging with only that goes straight on.
+	if spec.has("npc_face"):
+		var room := RoomManager.current_room
+		for g in spec["npc_face"]:
+			var npc := room.get_node_or_null("npc_" + String(g.get("id", ""))) if room != null else null
+			var other := room.get_node_or_null("npc_" + String(g.get("face", ""))) as Node2D if room != null else null
+			if npc != null and other != null and npc.has_method("set_partner"):
+				npc.call("set_partner", other)
+		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
+				and not spec.has("frame") and not spec.has("layer_go"):
+			_stage_running = false
+			_next()
+			return
 	# A villager walks off first (`npc_go`), then the fade (G18, G29: no more «does nothing, then a cut»).
 	var go_serial := _stage_serial
 	var go_s := maxf(_stage_npc_go(spec), _stage_layer_go(spec))

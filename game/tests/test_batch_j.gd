@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   D2 (стр. 139, 140, 143): M18 — turned to each other at once, apart after the hug, Mitya walks up the path;
 ##   D1 (стр. 89, 157): Agata looks at a person's feet (not over their head — her back was to the screen); they turn to her;
 ##   E10 (стр. 57): the drizzle at night in the lane by the post (light route) not darkened with the ambient layer;
 ##   G1 (стр. 120, 191, 192): «Раз!», «Два!» at the brace; zones by mode; the log's red band;
@@ -101,6 +102,7 @@ func _run() -> void:
 	await _test("J-G1 mini-games (стр. 120, 191, 192): «Раз!», «Два!» at the brace; normal zones narrower, «Облегчить» a little wider; the log's red band bigger", _test_minigames)
 	await _test("J-E10 the drizzle at night in the lane by the post (стр. 57): not darkened with the «living world» layer", _test_rain_night)
 	await _test("J-D1 talking (стр. 89, 157): Agata looks at a person's feet, not above them (no more back to the screen); the person turns to her", _test_facing)
+	await _test("J-D2 M18 at the far pier (стр. 139, 140, 143): mother and son turn to each other at once, step apart after the hug, Mitya walks up the path", _test_m18_staging)
 	await _test("J-E8 mirror close-ups (стр. 77, 79, 109): the office mirror's frame fades into the dark like the bell; mother's mirror in a carved frame, no grey handle", _test_mirror_frames)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -901,6 +903,39 @@ func _test_facing() -> void:
 	var sheet = actor.get("sheet")
 	if sheet != null and not bool(actor.call("is_3d")):
 		_check(int(actor.get("direction")) == int(sheet.call("direction_index", to_her)), "talking, Pavel turns to Agata")
+
+
+func _test_m18_staging() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "started_M18p", "done_M18p", "evening_dusk"])
+	await _enter("R3")
+	await _drain()
+	var pel: Node = rm.current_room.get_node_or_null("npc_pelageya")
+	var mit: Node = rm.current_room.get_node_or_null("npc_mitya")
+	_check(pel != null and mit != null, "Pelageya and Mitya at the far pier")
+	if pel == null or mit == null:
+		return
+	sr.call("_run_stage", {"npc_face": [{"id": "pelageya", "face": "mitya"}, {"id": "mitya", "face": "pelageya"}]})
+	await _frames(2)
+	_check(pel.get("partner") == mit and mit.get("partner") == pel, "npc_face: they turn to each other where they stand")
+	var m18: Dictionary = sd.call("scene", "M18")
+	var ats: Array = []
+	var end_go := false
+	var apart := false
+	for st in m18.get("stage", []):
+		ats.append(st.get("at"))
+		for g in st.get("npc_go", []):
+			if String(st.get("at")) == "end" and String(g.get("id")) == "mitya":
+				end_go = true
+			if int(st.get("at", -1)) == 4 and String(g.get("id")) == "pelageya":
+				apart = absf(float(g["to"][0]) - 520.0) > 120.0
+	_check(ats.has(1) and end_go and apart, "M18: faces at «Мама.», apart after the hug, Mitya off up the path at the end: %s" % str(ats))
+	gs.set_flag("done_M18", true)
+	for h in rm.current_room.get_hotspots():
+		h.call("refresh")
+	await _frames(2)
+	_check(not _hotspot("mitya").visible, "after M18 Mitya is gone from the pier (up the path)")
 
 
 func _layer_vis(id: String) -> bool:
