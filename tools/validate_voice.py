@@ -868,6 +868,14 @@ def check_main_takes(takes_man: dict | None, game_man: dict | None, takes_dir: P
         if len(mains) != 1:
             errs.append(f"дубли {lid}: «в игре» отмечено {len(mains)} дублей, нужен один")
             continue
+        # Партия J: строку перезаписали с новой режиссурой (текст тот же, запрос другой) — дубли прежней записи больше не
+        # «в игре», игра играет новую запись.
+        if g.get("voice_text") and mains[0].get("voice_text") and g["voice_text"] != mains[0]["voice_text"] and not g.get("chosen_take"):
+            continue
+        # …или записали заново тем же запросом (redo — Директор просил переписать): прогон записи новее всех дублей.
+        runs = [int(str(t.get("run", "0")) or 0) for t in e.get("takes", []) if str(t.get("run", "0")).isdigit()]
+        if not g.get("chosen_take") and str(g.get("run", "")).isdigit() and int(g["run"]) > max(runs + [0]):
+            continue
         a, b = takes_dir / str(mains[0].get("file", "")), game_dir / str(g.get("file", ""))
         if a.is_file() and b.is_file() and hashlib.sha1(a.read_bytes()).digest() != hashlib.sha1(b.read_bytes()).digest():
             errs.append(f"дубли {lid}: дубль {mains[0].get('take')} отмечен «в игре», а игра играет другой файл")
