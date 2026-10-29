@@ -10,6 +10,8 @@ extends RefCounted
 ##
 ## Optional `gradient` {from:[x,y], to:[x,y], alpha_from, alpha_to}: alpha is also multiplied along
 ## that screen-space axis (a window shaft is bright at the glass and fades towards the floor).
+## Optional `sides` {cx, half, depth} (J, Director 29.10, стр. 72: «градиент у занавесок»): alpha falls off towards
+## both sides of a lit window — `depth` at |x − cx| = half, full in the middle third (the curtains at the jambs).
 
 static var _cache: Dictionary = {}
 
@@ -58,7 +60,11 @@ static func build(polys: Array, feather: float, gradient: Dictionary = {}) -> Di
 			a[y * w + x] = cov
 	for _pass in 3:
 		a = _box_blur(a, w, h)
-	var has_grad := not gradient.is_empty()
+	var sides: Dictionary = gradient.get("sides", {})
+	var s_cx := float(sides.get("cx", 0.0))
+	var s_half := maxf(float(sides.get("half", 1.0)), 1.0)
+	var s_depth := clampf(float(sides.get("depth", 0.0)), 0.0, 1.0)
+	var has_grad := gradient.has("from") or gradient.has("to")
 	var g_from := Vector2.ZERO
 	var g_axis := Vector2.RIGHT
 	var g_len2 := 1.0
@@ -80,6 +86,9 @@ static func build(polys: Array, feather: float, gradient: Dictionary = {}) -> Di
 				var p: Vector2 = bounds.position + (Vector2(x, y) + Vector2(0.5, 0.5)) * texel
 				var k := clampf((p - g_from).dot(g_axis) / g_len2, 0.0, 1.0)
 				v *= lerpf(af, at, smoothstep(0.0, 1.0, k))
+			if s_depth > 0.0:
+				var px: float = bounds.position.x + (float(x) + 0.5) * texel
+				v *= 1.0 - s_depth * smoothstep(0.3, 1.0, absf(px - s_cx) / s_half)
 			v = clampf(v, 0.0, 1.0)
 			a[y * w + x] = v
 			img.set_pixel(x, y, Color(1, 1, 1, v))

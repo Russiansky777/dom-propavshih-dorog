@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   E7 (стр. 72): lit windows under the figures, boosted through the grade, dimmer at the curtains;
 ##   E6 (a real-game frame): R1 at dusk with the rope off the stopper — no white streak over the dark far bank;
 ##   E5 (стр. 95, 46): the H1 mug as big as the chosen cup (the painted clay mug under it gone); the H4 bed larger;
 ##   E4 (стр. 9): the Z1 counter lower (same width, ×0.84 from the front legs); Tamara clicked through it too;
@@ -88,6 +89,7 @@ func _run() -> void:
 	await _test("J-E4 Z1 (стр. 9): the counter lower (×0.84, legs in place); Tamara is clicked through the counter too", _test_counter)
 	await _test("J-E5 sizes: the H1 mug as big as the chosen cup (стр. 95), no clay mug under it; the H4 bed larger (стр. 46)", _test_sizes)
 	await _test("J-E6 R1 dusk, the rope off the stopper: before the knot the patch is the dark bank's, after it the snowy one's", _test_rope_patch)
+	await _test("J-E7 lit windows (стр. 72): under the figures, as warm as before the grade, dimmer at the curtains", _test_windows)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -653,6 +655,42 @@ func _test_rope_patch() -> void:
 	gs.set_flag("road_held_both_ends", true)
 	await _frames(3)
 	_check(_layer_vis("stopper_empty_dusk") and not _layer_vis("stopper_empty_dusk_dark"), "after the knot — the snowy-bank patch")
+
+
+## J-E7 (Director 29.10, стр. 72; 25.10 стр. 110, 155): the lit windows were drawn over everything (z 4091) — the light
+## lay on Agata walking past; now over the painting, under the figures, and boosted back through the grade.
+func _test_windows() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "done_M04", "done_M05", "house_open", "stove_lit"])
+	await _enter("Z2")
+	await _drain()
+	await _frames(3)
+	var tg: Node = rm.current_room.get_node_or_null("TimeOfDay")
+	_check(tg != null, "Z2 has its time of day")
+	if tg == null:
+		return
+	var lit: Array = tg.call("probe")["windows_lit"]
+	_check(lit.has("house_w2"), "dusk with the stove lit: the house windows glow (%s)" % str(lit))
+	var player: Node2D = main_node.get_node("World/Player")
+	var tint: Polygon2D = tg.get("tint")
+	for n in tg.get("windows"):
+		var w := n as Node2D
+		if String(w.name) != "house_w2":
+			continue
+		_check(w.z_index < player.z_index and w.z_index < 300, "the window (z %d) is under Agata (z %d)" % [w.z_index, player.z_index])
+		if tint != null and tint.visible:
+			var g := tint.color
+			var m := w.modulate
+			# contribution c × alpha: rgb × a must equal 1 / grade per channel (as bright as before the grade)
+			_check(absf(m.r * m.a - 1.0 / g.r) < 0.05 and absf(m.b * m.a - 1.0 / g.b) < 0.05 and m.r <= 1.001 and m.g <= 1.001 and m.b <= 1.001,
+				"the window brought back through the grade %s: modulate %s" % [g.to_html(false), str(m)])
+		var pane: Polygon2D = w.get_node_or_null("Pane")
+		if pane != null and pane.texture != null:
+			var img := pane.texture.get_image()
+			var mid := img.get_pixel(img.get_width() / 2, img.get_height() / 2).a
+			var side := img.get_pixel(int(img.get_width() * 0.2), img.get_height() / 2).a
+			_check(side < mid * 0.85, "dimmer towards the curtains: side %.2f, middle %.2f" % [side, mid])
 
 
 func _layer_vis(id: String) -> bool:
