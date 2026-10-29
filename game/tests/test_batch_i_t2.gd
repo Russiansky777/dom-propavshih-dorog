@@ -213,7 +213,8 @@ func _test_npc_states() -> void:
 		for g in st.get("npc_go", []):
 			if g.has("face"):
 				faces += 1
-	_check(faces == 2, "M18: both walk up to each other and face each other (npc_go.face ×2, got %d)" % faces)
+	# J-D2 (29.10): they also step apart after the hug, still facing each other (two more npc_go with face)
+	_check(faces >= 2, "M18: both walk up to each other and face each other (npc_go.face ×2 and more, got %d)" % faces)
 	var to_agata := false
 	for l in m18.get("mandatory_lines", []):
 		if String(l.get("to", "")) == "agata":

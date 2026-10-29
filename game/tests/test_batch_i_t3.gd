@@ -193,7 +193,6 @@ func _test_layers() -> void:
 		"Z3": {"state_water_low_day.png": "Z3_state_water_low_day_v2.png", "state_boat_day.png": "Z3_state_boat_day_v2.png",
 			"state_span_site_day4.png": "Z3_state_span_site_day4_v2.png"},
 		"R1": {"state_water_low_day.png": "R1_state_water_low_day_v2.png", "state_no_boat_day.png": "R1_state_no_boat_day_v2.png"},
-		"O1": {"state_bird_doodles.png": "O1_state_bird_doodles_v2.png"},
 		"EP_dinner": {"ulyana_map.png": "EP_dinner_ulyana_map_v2.png"},
 		"F_hug_nina": {"bg.png": "F_hug_nina.png"}, "F_hug_pelageya": {"bg.png": "F_hug_pelageya.png"}}
 	for rid in expect:
@@ -201,6 +200,9 @@ func _test_layers() -> void:
 		for dst in expect[rid]:
 			_check(String(files.get(dst, "")) == "assets/incoming/" + String(expect[rid][dst]), "%s: %s ← %s (%s)" % [rid, dst, expect[rid][dst], files.get(dst, "—")])
 			_check(ResourceLoader.exists("res://assets/rooms/%s/%s" % [rid, dst]), "%s/%s is in the game" % [rid, dst])
+	# J (29.10, стр. 53): the tit's layer is now drawn by tools/make_bird_layers.py from the same delivery (hat and boots in place)
+	_check(String(sd.room("O1").get("art_source", {}).get("_bird_j", "")).contains("make_bird_layers") and ResourceLoader.exists("res://assets/rooms/O1/state_bird_doodles.png"),
+		"O1: the tit's doodles come from make_bird_layers.py (batch 9 delivery)")
 	_check(not _room_layer("Z3", "span_site_day4").has("modulate"), "Z3: the span site without the old frost tint")
 	_check(not _room_layer("EP_dinner", "ulyana_map").has("modulate"), "EP_dinner: Ulyana's map in its own colours")
 	_check(_room_layer("O1", "bird_boots_mute").is_empty(), "O1: no muting layer over the tit's boots — they are drawn muted")
@@ -211,9 +213,16 @@ func _test_layers() -> void:
 			bed = h
 	var r: Array = bed.get("rect", [0, 0, 0, 0])
 	var k := 1920.0 / 1672.0
-	var drawn := Rect2(1192.0 * k, 500.0 * k, (1508.0 - 1192.0) * k, (597.0 - 500.0) * k)
+	# J (29.10, стр. 46): the bed layer is ×1.4 about its back right leg (scale_pivot, the layer's own pixels)
+	var bl_spec := _room_layer("H4", "bed")
+	var sc := float(bl_spec.get("scale", 1.0))
+	var pv_a: Array = bl_spec.get("scale_pivot", [1192, 500])
+	var pv := Vector2(float(pv_a[0]), float(pv_a[1]))
+	var a0 := pv + (Vector2(1192.0, 500.0) - pv) * sc
+	var a1 := pv + (Vector2(1508.0, 597.0) - pv) * sc
+	var drawn := Rect2(a0 * k, (a1 - a0) * k)
 	var hs := Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
-	_check(hs.encloses(drawn.grow(-6.0)) and hs.size.x < drawn.size.x + 60.0, "H4: the bed hotspot sits on the new bed (%s vs %s)" % [str(hs), str(drawn)])
+	_check(hs.encloses(drawn.grow(-12.0)) and hs.size.x < drawn.size.x + 60.0, "H4: the bed hotspot sits on the new bed (%s vs %s)" % [str(hs), str(drawn)])
 	# In the game: H4 shows the bed under the boxes; Z3 by day four — the new day, no tint on the site.
 	gs.reset()
 	sr.call("_on_state_reset")

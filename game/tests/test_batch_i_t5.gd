@@ -340,7 +340,7 @@ func _test_tikhon_talks() -> void:
 	await _frames(2)
 	var seen26 := await _drain()
 	_check(_has_line(seen26, "nina", "Среда, Тихон") and not seen26.has("agata:Среда.") and _has_line(seen26, "agata", "Ворчишь, а сам гостей")
-		and _has_line(seen26, "tikhon", "смеются"), "M26 with Nina's answer: the talk still sounds: %s" % str(seen26))
+		and _has_line(seen26, "tikhon", "Ещё смеются"), "M26 with Nina's answer: the talk still sounds: %s" % str(seen26))
 
 
 # --- 5. The brace and the mirror -------------------------------------------------------------

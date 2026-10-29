@@ -755,7 +755,7 @@ func _test_narration_puzzle() -> void:
 	gs.set_flag("done_M04")
 	gs.add_item("door_hinges")
 	await _frames(2)
-	for k in ["H3.puzzle.intro", "H3.puzzle.error", "H3.puzzle.success"]:
+	for k in ["H3.puzzle.intro", "H3.puzzle.error", "H3.puzzle.error_pieces", "H3.puzzle.error_mark", "H3.puzzle.success"]:
 		_ensure_key(k)
 	_ensure_voice("M05_0")
 	var h := _hotspot("school_door")
@@ -773,10 +773,11 @@ func _test_narration_puzzle() -> void:
 	sr.puzzle_set_mark(0)
 	_check(not sr.puzzle_check(), "wrong placement fails")
 	await _frames(2)
-	_check(vd.current_line == "H3.puzzle.error" and vd.is_playing(), "the error message is voiced (cuts the intro): %s" % [vd.state()])
+	# J-A1 (29.10): the error says what is wrong — here a hinge is still in the tray (error_pieces)
+	_check(vd.current_line == "H3.puzzle.error_pieces" and vd.is_playing(), "the error message is voiced (cuts the intro): %s" % [vd.state()])
 	_check(not sr.puzzle_check(), "second wrong attempt")
 	await _frames(2)
-	_check(vd.plays == plays0 + 2 and vd.current_line == "H3.puzzle.error", "the second error is a new message: voiced again (plays %d)" % (vd.plays - plays0))
+	_check(vd.plays == plays0 + 2 and vd.current_line == "H3.puzzle.error_pieces", "the second error is a new message: voiced again (plays %d)" % (vd.plays - plays0))
 	sr.puzzle_place("hinge_2", "bottom")
 	sr.puzzle_place("hinge_3", "middle")   # three hinges (Director 18.10)
 	sr.puzzle_set_mark(2)

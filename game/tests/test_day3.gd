@@ -906,7 +906,8 @@ func _test_walkthrough() -> void:
 		_check(frames_seen.has(f), "epilogue shot %s (%s)" % [f, str(frames_seen)])
 	_check(String(frame_titles.get("EP_lesson", "")) == sd.location_name("O1") and String(frame_titles.get("EP_tamara", "")) == sd.text("@EP.place_bridge"),
 		"epilogue titles: the class, the bridge — not the turn under the frames (%s)" % str(frame_titles))
-	_check(seen.size() > 1 and String(seen[seen.size() - 2]).begins_with("ulyana:") and String(seen[seen.size() - 2]).contains("завтра тоже можно") and String(seen[seen.size() - 1]).begins_with("agata:Можно, Уля"),
+	# the seen lines are cut to 40 letters (see _finish): Ulyana's line is told by its start
+	_check(seen.size() > 1 and String(seen[seen.size() - 2]).begins_with("ulyana:") and String(seen[seen.size() - 2]).contains("Я по мосту пришла") and String(seen[seen.size() - 1]).begins_with("agata:Можно, Уля"),
 		"the last lines: Ulyana's question, Agata's answer (H55): %s" % str(seen.slice(-2)))
 	await _frames(4)
 	var fp: Dictionary = fv.probe()
