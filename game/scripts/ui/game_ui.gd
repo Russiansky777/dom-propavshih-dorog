@@ -516,8 +516,14 @@ func _build() -> void:
 	keys_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	mv.add_child(keys_l)
 	settings_rows.append(keys_l)
+	var gap := Control.new()   # a breath between the last row and «Назад» (shots 29.10: the button pressed to the rows)
+	gap.name = "BottomGap"
+	gap.custom_minimum_size = Vector2(0, 10)
+	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mv.add_child(gap)
 	var bottom := HBoxContainer.new()
 	bottom.add_theme_constant_override("separation", 12)
+	bottom.alignment = BoxContainer.ALIGNMENT_CENTER   # «Назад» / «Закрыть» in the board's middle, as the title
 	mv.add_child(bottom)
 	var ng := _button(StoryData.text("@ui.new_game"), 220)
 	ng.name = "NewGame"
@@ -1035,9 +1041,20 @@ func _build_delete_dialog() -> void:
 	panel.size = Vector2(760, 300)
 	panel.position = (Vector2(1920, 1080) - panel.size) * 0.5
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	var src := MenuConfig.texture("pause_panel.png")
+	var planks: AtlasTexture = null
+	if src != null:   # the same planks as the board under it (shots 29.10: the question sat on a flat dark box)
+		planks = AtlasTexture.new()
+		planks.atlas = src
+		planks.region = BOARD_PLANKS
 	panel.draw.connect(func() -> void:
-		panel.draw_rect(Rect2(Vector2.ZERO, panel.size).grow(-18), Color(0.12, 0.075, 0.045, 0.97))
-		CarvedFrame.draw_frame(panel, Rect2(Vector2.ZERO, panel.size).grow(-18), 18.0))
+		var inner := Rect2(Vector2.ZERO, panel.size).grow(-18)
+		CarvedFrame.draw_frame(panel, inner, 18.0)
+		if planks != null:
+			panel.draw_texture_rect(planks, inner, false)
+			panel.draw_rect(inner, Color(0, 0, 0, 0.3))
+		else:
+			panel.draw_rect(inner, Color(0.12, 0.075, 0.045, 0.97)))
 	delete_dialog.add_child(panel)
 	var q := Label.new()
 	q.name = "Question"

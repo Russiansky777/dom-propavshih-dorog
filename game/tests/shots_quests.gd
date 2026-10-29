@@ -18,7 +18,8 @@ const SHOTS := ["q02_O1_map", "q02_map_route", "q02_map_route_two", "q02_map_don
 	# партия 8 in the old places
 	"b8_O1_board", "b8_O1_board_here", "b8_H1_coat", "b8_O4_bag_board", "b8_O3_night", "b8_M1_board",
 	"b8_M1_closeup", "b8_Z3_day", "b8_R2_day", "b8_R3_day", "b8_H2_glass", "b8_H2_glass_closeup", "b8_ep_lesson", "b8_ep_dinner",
-	"b8_ep_beam_roads", "b8_examine_watch", "b8_examine_journal", "b8_examine_key"]
+	"b8_ep_beam_roads", "b8_examine_watch", "b8_examine_journal", "b8_examine_key",
+	"j_view_H1_coat", "j_view_O3_letters", "j_view_O4_board"]
 const FREE := ["house_unlocked", "house_open", "done_M21b", "done_M22", "met_ilya", "met_ulyana", "met_nina", "morning_day3", "free_walk_day3", "school_path_open"]
 
 
@@ -114,6 +115,15 @@ func _shot(n: String) -> void:
 			await _state(["house_unlocked", "done_N01", "done_M09", "met_pavel"], "M1", "default", false)
 			var h = rm.current_room.get_node_or_null("Hotspots/schedule")
 			sr.open_view(h.data["view"], "schedule")
+			await _frames(60)
+		"j_view_H1_coat", "j_view_O3_letters", "j_view_O4_board":   # стр. 80: whole close-ups in the carved frame
+			var vs := {"j_view_H1_coat": [["done_M23c"], "H1", "nina_coat"], "j_view_O3_letters": [["done_M21"], "O3", "nina_letters"],
+					"j_view_O4_board": [["done_M22"], "O4", "mitya_board"]}
+			var v: Array = vs[n]
+			await _state(v[0], v[1])
+			var hv = rm.current_room.get_node_or_null("Hotspots/" + String(v[2]))
+			if hv != null:
+				sr.open_view(hv.data["view"], String(v[2]))
 			await _frames(60)
 		"b8_Z3_day":
 			await _state(["evening_dusk", "done_M15a", "done_M15", "done_M17", "done_M18", "done_M19", "done_M20"], "Z3")
