@@ -274,7 +274,10 @@ def api_text(ln: dict) -> str:
     lid = str(ln.get("id", ""))
     if ln.get("voice_text"):
         return pronounce.apply(direction.apply(GLOSS_RE.sub(r"\1", str(ln["voice_text"])), lid), lid)
-    return "".join(f"[{t}] " for t in ln.get("tags", [])) + pronounce.apply(direction.apply(GLOSS_RE.sub(r"\1", str(ln["text"])), lid), lid)
+    # Теги подачи из voice_direction.json (правка Директора) заменяют прежние теги строки, а не добавляются к ним
+    # (партия J: «[warmly] [surprised]» — два противоречащих тега).
+    line_tags = [] if direction.for_line(lid).get("tags") else ln.get("tags", [])
+    return "".join(f"[{t}] " for t in line_tags) + pronounce.apply(direction.apply(GLOSS_RE.sub(r"\1", str(ln["text"])), lid), lid)
 
 
 def check_direction(lines: dict, allowed: set[str] | None) -> list[str]:

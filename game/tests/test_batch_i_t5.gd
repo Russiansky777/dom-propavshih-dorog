@@ -202,7 +202,7 @@ func _has_line(seen: Array, speaker: String, begins: String) -> bool:
 
 func _test_drawing() -> void:
 	var answers := {
-		"v03_add_scarf": ["ulyana:А кто ей шарф повязал", "agata:И шарф — я"],
+		"v03_add_scarf": ["ulyana:А кто ей шарф повязал", "agata:И шарф я"],
 		"v03_add_boat": ["ulyana:А лодку с дымом кто", "agata:Я у твоего папы подсмотрела"],
 		"v03_add_bridge": ["ulyana:Кто мостик нарисовал", "agata:Будет, Уля"],
 	}

@@ -19,7 +19,7 @@ var main_node: Node = null
 const APPLIED := "Docs/review_chatgpt_2026-10-25_r3/review3_applied.json"
 ## Lines the Director rewrote later, in his playthrough of 29.10 (batch J, Docs/FEEDBACK_DIRECTOR_2026-10-29_map.md):
 ## review-3's text no longer applies to them — the J tests pin the new ones.
-const J_SUPERSEDED := [8, 21, 22, 23, 24, 25, 26, 27, 28, 34, 35, 41, 42, 47, 48, 80, 81, 96]
+const J_SUPERSEDED := [21, 22, 23, 24, 25, 26, 27, 28, 34, 35, 41, 42, 47, 48, 80, 81, 96]
 
 
 func _initialize() -> void:
