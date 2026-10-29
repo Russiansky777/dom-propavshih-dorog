@@ -109,6 +109,7 @@ func _run() -> void:
 	await _test("J-D5 the crossing (стр. 137): the rope runs through the iron eye (the iron alone stays); at the shore the boat's view goes to black and the far pier comes out of it — never the boat again", _test_crossing_black)
 	await _test("J-G2 crosses and noughts with Ulyana: from her choice in class; chalk grid and marks by hand; she plays well, not perfectly; a game ends in a word and «Ещё раз» / «Хватит»", _test_ttt)
 	await _test("J-G3 the spoons with Tikhon: from his questions; he taps, Agata answers in the same rhythm; a miss — the same round again; «Хватит» puts it away", _test_rhythm)
+	await _test("J-G5 the knot's rope is alive (стр. 125): the lead-in sways and tightens as the end goes through; the end follows the hand off the path; the knot logic is the same", _test_rope_alive)
 	await _test("J-G4 the string with Mitya (fishing): from his questions on the free day; strike when the float dives; keep the string in the green — the perch comes in; too hard — it snaps", _test_fishing)
 	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks to the door and fades before the black", _test_staging_d3)
 	gs.reset()
@@ -997,6 +998,54 @@ func _test_rhythm() -> void:
 			sr.advance()
 		await process_frame
 	_check(not sr.mechanic_open, "«Хватит» puts it away")
+
+
+func _test_rope_alive() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["evening_dusk", "done_M15a", "nina_mirror_clamped", "nina_time_compared", "has_brace_plate", "skoba_on_plate", "plate_braced", "rope_brought", "done_M15s"])
+	await _enter("Z3")
+	await _drain()
+	var h: Node = _hotspot("pier_plate")
+	_check(h != null, "the plate by the pier")
+	if h == null:
+		return
+	sr.open_mechanic(sr.mechanic_spec(h), "pier_plate")
+	await _frames(10)
+	var p = main_node.get_node("MechanicView").get("panel")
+	_check(p != null and bool(p.call("probe").get("knot_stage", false)), "the knot waits")
+	if p == null:
+		return
+	var back: Line2D = p.get("rope_back")
+	var a0: PackedVector2Array = back.points
+	await _frames(40)
+	var a1: PackedVector2Array = back.points
+	var moved := 0.0
+	for i in mini(a0.size(), a1.size()):
+		moved = maxf(moved, a0[i].distance_to(a1[i]))
+	_check(moved > 1.5, "the lead-in sways by itself (max shift %.1f px in 40 frames)" % moved)
+	var kn = p.get("knot")
+	var st: PackedVector2Array = kn.strokes[0]
+	var sag0 := float(p.get("_sag"))
+	await _move(kn.end_point())
+	await _button(kn.end_point(), true)
+	var hand := Vector2.ZERO
+	for i in range(1, st.size() - 1):
+		var nrm := (st[i] - st[i - 1]).orthogonal().normalized()
+		hand = st[i] + nrm * 45.0
+		await _move(hand)
+	await _frames(20)
+	var pts: PackedVector2Array = back.points
+	var drawn_end: Vector2 = pts[pts.size() - 1]
+	var logic_end: Vector2 = kn.end_point()
+	_check(kn.grabbed and kn.stroke == 0 and kn.progress > 0.0, "the end goes along the first stroke (progress %.0f)" % kn.progress)
+	_check(drawn_end.distance_to(logic_end) > 20.0 and drawn_end.distance_to(hand) < logic_end.distance_to(hand), "the drawn end follows the hand off the path (%s → %s, hand %s)" % [str(logic_end), str(drawn_end), str(hand)])
+	_check(float(p.get("_sag")) < sag0 - 1.0, "the lead-in tightens as the rope goes in (sag %.1f → %.1f)" % [sag0, float(p.get("_sag"))])
+	await _button(hand, false)
+	await _frames(30)
+	_check(not kn.grabbed and kn.progress == 0.0 and String(p.call("probe")["knot_path"]["state"]) == "free", "let go mid-stroke — slips back as before")
+	sr.close_mechanic()
+	await _frames(3)
 
 
 func _test_fishing() -> void:

@@ -44,6 +44,15 @@ var _slip_from: Vector2 = Vector2.ZERO
 var _slip_t: float = -1.0
 var _drag_pos: Vector2 = Vector2.ZERO
 var _skoba_box: Rect2 = Rect2()
+# The living rope (J, стр. 125: «будто он полу-статичный и ни влево ни вправо не ходит совсем»): the lead-in from the
+# boat sways with the current and tightens as the end is drawn through (a springy sag — it drops and bounces back
+# when the end slips); the strands slide along the rope as it is hauled; the end follows the hand off the path
+# (within the knot's tolerance) and the last part of the rope bends after it. Drawing only — the knot is KnotPath.
+var _t: float = 0.0
+var _sag: float = 48.0
+var _sag_v: float = 0.0
+var _hand_vis: Vector2 = Vector2.ZERO    # the end's offset from the path, eased
+var _drawn_vis: float = 0.0             # how much rope has gone into the knot (for the strands), eased
 
 
 func build() -> void:
@@ -264,6 +273,8 @@ func _after(r: String) -> void:
 			slips += 1
 			_slip_from = _drag_pos
 			_slip_t = 0.0
+			_hand_vis = Vector2.ZERO
+			_sag_v += 90.0   # the slack drops back and bounces
 			sound("rope_slip")
 			if slips == 1:
 				say("knot_slipped")
@@ -291,7 +302,9 @@ func _draw_rope() -> void:
 		kp = knot.rope_points()
 		if kp.size() > 0:
 			kp[kp.size() - 1] = end
-	var lead := RopeLine.sag_points(from, kp[0] if kp.size() > 0 else end, 40.0, 10)
+	if _slip_t < 0.0:
+		kp = _bend_to_hand(kp)
+	var lead := _lead_points(from, kp[0] if kp.size() > 0 else end)
 	var back := PackedVector2Array(lead)
 	var front := PackedVector2Array()
 	# The first stroke goes up behind the ring's lower arc (under its painted arc); the rest is in front of it.
@@ -305,6 +318,10 @@ func _draw_rope() -> void:
 			front.append(kp[i])
 	rope_back.points = back
 	rope_front.points = front
+	# the strands slide toward the end as the rope is hauled through the ring
+	var back_len := KnotPath._length(back)
+	RopeLine.set_phase(rope_back, -_drawn_vis)
+	RopeLine.set_phase(rope_front, back_len - _drawn_vis)
 	var all := PackedVector2Array(back)
 	all.append_array(front)
 	var sh := PackedVector2Array()
@@ -326,7 +343,71 @@ func _draw_rope() -> void:
 			stroke_label.position = tip + Vector2(30, -20)
 
 
+## The lead-in from the boat to where the knot begins: sagging (`_sag`, springy) and bowing with the current.
+func _lead_points(a: Vector2, b: Vector2) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	var n := 14
+	var nrm := (b - a).orthogonal().normalized()
+	if nrm.y < 0.0:
+		nrm = -nrm
+	var bow := sin(_t * 0.85) * 11.0 + sin(_t * 2.1 + 1.3) * 4.0
+	for i in n + 1:
+		var u := float(i) / n
+		var hump := 4.0 * u * (1.0 - u)
+		var ripple := sin(TAU * u * 1.5 - _t * 2.4) * 3.0 * sin(PI * u)
+		out.append(a.lerp(b, u) + Vector2(0, _sag * hump) + nrm * (bow * sin(PI * u) + ripple))
+	return out
+
+
+## The last stretch of the drawn rope bends toward the hand: the end by the whole offset, less and less back
+## along the rope over `reach` px.
+func _bend_to_hand(kp: PackedVector2Array) -> PackedVector2Array:
+	if kp.size() < 2 or _hand_vis.length() < 0.3:
+		return kp
+	var out := PackedVector2Array(kp)
+	var reach := 190.0
+	var d := 0.0
+	out[out.size() - 1] = kp[kp.size() - 1] + _hand_vis
+	for i in range(kp.size() - 2, -1, -1):
+		d += kp[i].distance_to(kp[i + 1])
+		if d >= reach:
+			break
+		var w := 1.0 - d / reach
+		out[i] = kp[i] + _hand_vis * w * w * (3.0 - 2.0 * w)
+	# a long last segment: put a point in its middle so it bends, not swings straight
+	var a := out[out.size() - 2]
+	var b := out[out.size() - 1]
+	if a.distance_to(b) > 40.0:
+		var mid := kp[kp.size() - 2].lerp(kp[kp.size() - 1], 0.5) + _hand_vis * 0.6
+		out.insert(out.size() - 1, mid)
+	return out
+
+
+func _live(delta: float) -> void:
+	_t += delta
+	var total := 0.0
+	for l in knot.lengths:
+		total += l
+	var drawn := 0.0
+	for i in mini(knot.stroke, knot.lengths.size()):
+		drawn += knot.lengths[i]
+	if not knot.done():
+		drawn += knot.progress
+	var pulled := clampf(drawn / maxf(total, 1.0), 0.0, 1.0)
+	var target := lerpf(48.0, 14.0, pulled)
+	_sag_v += (60.0 * (target - _sag) - 5.5 * _sag_v) * delta
+	_sag += _sag_v * delta
+	_drawn_vis = lerpf(_drawn_vis, drawn, 1.0 - exp(-12.0 * delta))
+	var want := Vector2(sin(_t * 1.3) * 3.0, cos(_t * 0.9) * 2.0)   # lying by the ring, the end stirs a little
+	if knot.grabbed:
+		var off := _drag_pos - knot.end_point()
+		want = off.limit_length(knot.tolerance * 0.8)
+	_hand_vis = _hand_vis.lerp(want, 1.0 - exp(-14.0 * delta))
+
+
 func tick(delta: float) -> void:
+	if knot != null and rope_back.visible:
+		_live(delta)
 	if _jump_t >= 0.0:
 		_jump_t += delta
 		if _jump_t >= 0.6:
@@ -336,8 +417,7 @@ func tick(delta: float) -> void:
 		_slip_t += delta
 		if _slip_t >= 0.3:
 			_slip_t = -1.0
-		_draw_rope()
-	elif knot != null and knot.grabbed:
+	if knot != null and rope_back.visible:
 		_draw_rope()
 	if tied_t >= 0.0:
 		tied_t += delta

@@ -14,7 +14,7 @@ var player: Node2D
 var mv: Node
 var out_dir := ""
 
-const SHOTS := ["M1", "M2", "M3", "M4", "R2", "R3", "Z3_evening", "R1_dusk", "R1_answered", "H2_mirror", "office_mirror", "office_wedges", "office_hook", "sluice", "fast_mirror", "plate", "plate_rope", "plate_tied", "lantern", "photo"]
+const SHOTS := ["M1", "M2", "M3", "M4", "R2", "R3", "Z3_evening", "R1_dusk", "R1_answered", "H2_mirror", "office_mirror", "office_wedges", "office_hook", "sluice", "fast_mirror", "plate", "plate_rope", "plate_rope_pull", "plate_rope_pull2", "plate_tied", "lantern", "photo"]
 
 
 func _initialize() -> void:
@@ -190,6 +190,35 @@ func _shot(name: String) -> void:
 			_flags(["plate_braced", "rope_brought", "done_M15s"])
 			await _room("Z3")
 			await _open("pier_plate")
+		"plate_rope_pull", "plate_rope_pull2":   # J, стр. 125: the end follows the hand off the path, the lead tightens
+			await _day(7)
+			_flags(["plate_braced", "rope_brought", "done_M15s"])
+			await _room("Z3")
+			await _open("pier_plate")
+			var pn = mv.get("panel")
+			if pn != null:
+				var kn = pn.get("knot")
+				var e: Vector2 = kn.end_point()
+				var down := InputEventMouseButton.new()
+				down.button_index = MOUSE_BUTTON_LEFT
+				down.pressed = true
+				down.position = root.get_final_transform() * e
+				down.global_position = down.position
+				Input.parse_input_event(down)
+				await process_frame
+				var st: PackedVector2Array = kn.strokes[0]
+				var upto := st.size() - 1 if n == "plate_rope_pull" else st.size() - 3
+				for i in range(1, upto + 1):
+					for j in 6:
+						var mv_ev := InputEventMouseMotion.new()
+						var q: Vector2 = st[i - 1].lerp(st[i], float(j + 1) / 6.0)
+						var nrm := (st[i] - st[i - 1]).orthogonal().normalized()
+						mv_ev.position = root.get_final_transform() * (q + nrm * (40.0 if n == "plate_rope_pull" else -40.0))
+						mv_ev.global_position = mv_ev.position
+						Input.parse_input_event(mv_ev)
+						await process_frame
+				for f in 30:
+					await process_frame
 		"lantern":
 			await _day(9)
 			await _room("R1")
