@@ -18,6 +18,10 @@ on:
         description: "Кадры настоящей игры под Xvfb (tests/shots_room.gd): КОМНАТА[:x,y][@флаг+флаг][~сек][#имя] через пробел"
         required: false
         default: ""
+      xshots:
+        description: "Другие съёмочные скрипты под Xvfb: tests/shots_<x>.gd:имя,имя через пробел (напр. shots_day2.gd:office_mirror,fast_mirror)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -127,6 +131,28 @@ jobs:
           mkdir -p build/check/shots
           timeout 900 xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path game --display-driver x11 --rendering-driver opengl3 \
             --resolution 1920x1080 -s res://tests/shots_room.gd -- "$PWD/build/check/shots" $SHOTS 2>&1 | grep -E "room frame|ERROR|SCRIPT" | tee -a build/check/out.log
+          for f in build/check/shots/*.png; do
+            [ -f "$f" ] && python3 -c "from PIL import Image; import sys; im=Image.open(sys.argv[1]).convert('RGB'); im.save(sys.argv[1][:-4]+'.jpg', quality=85)" "$f" && rm "$f"
+          done
+          exit 0
+
+      - name: Other shot scripts (Xvfb)
+        if: ${{ inputs.xshots != '' }}
+        shell: bash {0}
+        env:
+          GODOT: /home/runner/godot-check/Godot_v4.7.2-stable_linux.x86_64
+          XSHOTS: ${{ inputs.xshots }}
+        run: |
+          set -uo pipefail
+          sudo apt-get install -y -qq xvfb > /dev/null 2>&1
+          mkdir -p build/check/shots
+          for item in $XSHOTS; do
+            script="${item%%:*}"; names="${item#*:}"
+            [ "$names" = "$item" ] && names=""
+            echo "=== xshots $script $names" | tee -a build/check/out.log
+            timeout 900 xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path game --display-driver x11 --rendering-driver opengl3 \
+              --resolution 1920x1080 -s "res://tests/$script" -- "$PWD/build/check/shots" ${names//,/ } 2>&1 | grep -E "ERROR|SCRIPT|saved|shot" | head -60 | tee -a build/check/out.log
+          done
           for f in build/check/shots/*.png; do
             [ -f "$f" ] && python3 -c "from PIL import Image; import sys; im=Image.open(sys.argv[1]).convert('RGB'); im.save(sys.argv[1][:-4]+'.jpg', quality=85)" "$f" && rm "$f"
           done
