@@ -1,0 +1,43 @@
+{
+ "mode": "generate",
+ "set": "J_minigames",
+ "probe": true,
+ "only_changed": true,
+ "prune_stale": false,
+ "_comment": "Реплики мини-игр, утверждённые Директором 29.10 (23:27), и «Раз!», «Два!» у скобы (стр. 120) — голосом персонажей, по одной записи.",
+ "scenes": [],
+ "narration": {
+  "texts": [
+   "ru_E0_E1",
+   "ru_E4_E5",
+   "ru_mechanics"
+  ],
+  "keys": [
+   "H1.tikhon.spoons_a",
+   "H1.tikhon.spoons_done",
+   "H1.tikhon.spoons_q",
+   "H1.tikhon.spoons_quit",
+   "O1d.ulyana.ttt_a",
+   "O1d.ulyana.ttt_bye",
+   "O1d.ulyana.ttt_q",
+   "O4.mitya.after",
+   "O4.mitya.fish_a",
+   "O4.mitya.fish_bye",
+   "O4.mitya.fish_q",
+   "mech.fish.caught",
+   "mech.fish.early",
+   "mech.fish.escaped",
+   "mech.fish.late",
+   "mech.fish.snap",
+   "mech.plate.count_1",
+   "mech.plate.count_2",
+   "mech.rhythm.good_1",
+   "mech.rhythm.good_2",
+   "mech.rhythm.miss_1",
+   "mech.rhythm.miss_2",
+   "mech.ttt.draw",
+   "mech.ttt.lose",
+   "mech.ttt.win"
+  ]
+ }
+}
