@@ -1,0 +1,15 @@
+{
+ "mode": "adopt",
+ "set": "J_probe25",
+ "_comment": "Партия K: записи пробы с отметкой Директора «ок» — в игру как есть (voice_direction.voice_text = текст записи)",
+ "picks": {
+  "M26_24": "P03_C",
+  "agata:examine.photo_bridge": "P04_C",
+  "M13a_0": "P09_A",
+  "tikhon:H1.tikhon.duty": "P13_B",
+  "N01_2": "P14_Cb",
+  "M25_1": "P18_Cb",
+  "agata:H2.bell.thought": "P19_Cb",
+  "pavel:M2.mirror.take": "P22_C"
+ }
+}
