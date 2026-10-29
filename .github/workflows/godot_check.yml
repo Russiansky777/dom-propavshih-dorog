@@ -7,12 +7,17 @@ on:
   workflow_dispatch:
     inputs:
       scripts:
-        description: "Тесты res:// через пробел, напр. res://tests/test_closeups.gd res://tests/test_j.gd (или full — весь tools/run_tests.sh)"
-        required: true
+        description: "Тесты res:// через пробел, напр. res://tests/test_closeups.gd res://tests/test_j.gd (или full — весь tools/run_tests.sh; пусто — только кадры)"
+        required: false
+        default: ""
       validators:
         description: "Сначала проверки данных (validate_story / rooms / voice)"
         type: boolean
         default: true
+      shots:
+        description: "Кадры настоящей игры под Xvfb (tests/shots_room.gd): КОМНАТА[:x,y][@флаг+флаг][~сек][#имя] через пробел"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -108,6 +113,23 @@ jobs:
             echo "::notice title=godot-check::$(printf '%s' "$l" | cut -c1-300)"
           done
           echo "$code" > build/check/code
+          exit 0
+
+      - name: Room frames (Xvfb)
+        if: ${{ inputs.shots != '' }}
+        shell: bash {0}
+        env:
+          GODOT: /home/runner/godot-check/Godot_v4.7.2-stable_linux.x86_64
+          SHOTS: ${{ inputs.shots }}
+        run: |
+          set -uo pipefail
+          sudo apt-get install -y -qq xvfb > /dev/null 2>&1
+          mkdir -p build/check/shots
+          timeout 900 xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path game --display-driver x11 --rendering-driver opengl3 \
+            --resolution 1920x1080 -s res://tests/shots_room.gd -- "$PWD/build/check/shots" $SHOTS 2>&1 | grep -E "room frame|ERROR|SCRIPT" | tee -a build/check/out.log
+          for f in build/check/shots/*.png; do
+            [ -f "$f" ] && python3 -c "from PIL import Image; import sys; im=Image.open(sys.argv[1]).convert('RGB'); im.save(sys.argv[1][:-4]+'.jpg', quality=85)" "$f" && rm "$f"
+          done
           exit 0
 
       - name: Publish log to branch «checks»
