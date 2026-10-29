@@ -347,11 +347,10 @@ func _test_tikhon_talks() -> void:
 
 func _test_brace_mirror() -> void:
 	_flags_before("M15a")
-	_check(sr.item_refusal("brace_plate") == "@item.brace_plate.wrong", "before dusk: «при такой воде до плиты не достать»")
-	_check(sd.text("@item.brace_plate.wrong").contains("при такой воде"), "the early line keeps the Director's words (map 70)")
+	# J (Р8, Директор 29.10): a thing on a wrong place — everywhere the short «Сюда не подходит».
+	_check(sr.item_refusal("brace_plate") == "@item.wrong_generic", "before dusk: «Сюда не подходит» (J, Р8)")
 	gs.set_flag("evening_dusk", true)
-	_check(sr.item_refusal("brace_plate") == "@item.brace_plate.wrong_dry", "at dusk, the plate out of the water: «там и поставлю»")
-	_check(not sd.text("@item.brace_plate.wrong_dry").contains("воде"), "the late line does not speak of the high water")
+	_check(sr.item_refusal("brace_plate") == "@item.wrong_generic", "at dusk: the same short refusal (J, Р8)")
 	for common in [false, true]:
 		var base := ["done_M14", "nina_mirror_clamped", "has_clamp", "house_unlocked", "h2_bundle_unwrapped", "nina_time_compared"]
 		_flags_before("M15a", base + (["road_held_both_ends"] if common else []))

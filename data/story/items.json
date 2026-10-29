@@ -3,7 +3,7 @@
   "items": [
     {
       "id": "key_house",
-      "wrong_target": {"text": "@item.key_house.wrong"},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.key_house.wrong'}"},
       "name": "Ключ от дома тёти Дуни",
       "examine": {"text": "@examine.key_house", "art": "res://assets/closeups/closeup_key_house.png"},
       "inventory": true,
@@ -34,7 +34,7 @@
     },
     {
       "id": "door_hinges",
-      "wrong_target": {"text": "@item.door_hinges.wrong"},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.door_hinges.wrong'}"},
       "name": "Родные петли школьной двери",
       "examine": {"text": "@examine.door_hinges", "art": "res://assets/closeups/closeup_door_hinges.png"},
       "inventory": true,
@@ -91,7 +91,7 @@
     },
     {
       "id": "brace_plate",
-      "wrong_target": {"text": "@item.brace_plate.wrong", "states": [{"if": ["evening_dusk"], "text": "@item.brace_plate.wrong_dry"}], "_states_note": "I-T5 (вычитка-2, неопределённость 3): пока плита под водой — «при такой воде до плиты не достать» (слово Директора, карта стр. 70); в сумерки плита вышла из воды — «там и поставлю»"},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.brace_plate.wrong', 'states': [{'if': ['evening_dusk'], 'text': '@item.brace_plate.wrong_dry'}], '_states_note': 'I-T5 (вычитка-2, неопределённо"},
       "name": "Скоба для плиты",
       "examine": {"text": "@examine.brace_plate", "backdrop": "table", "art": "res://assets/closeups/closeup_brace_plate.png"},
       "icon": "skoba_plate",
@@ -106,7 +106,7 @@
     },
     {
       "id": "chalk",
-      "wrong_target": {"text": "@item.chalk.wrong"},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.chalk.wrong'}"},
       "name": "Мел",
       "examine": {"text": "@examine.chalk", "art": "res://assets/closeups/closeup_chalk.png"},
       "inventory": true,
@@ -118,7 +118,7 @@
     },
     {
       "id": "mitten",
-      "wrong_target": {"text": "@item.mitten.wrong"},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.mitten.wrong'}"},
       "name": "Варежка",
       "examine": {"text": "@examine.mitten", "art": "res://assets/closeups/closeup_mitten.png"},
       "inventory": true,
@@ -131,7 +131,7 @@
     },
     {
       "id": "mirror_mill",
-      "wrong_target": {"text": "@item.mirror_mill.wrong", "rooms": ["H1", "H2", "H3"]},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.mirror_mill.wrong', 'rooms': ['H1', 'H2', 'H3']}"},
       "name": "Зеркало конторы",
       "examine": {"text": "@examine.mirror_mill", "art": "res://assets/rooms/M2/bg.png", "region": [855, 100, 220, 385], "width": 400, "backdrop": "table"},
       "inventory": true,
@@ -152,7 +152,7 @@
     },
     {
       "id": "bell_clapper",
-      "wrong_target": {"text": "@item.bell_clapper.wrong"},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.bell_clapper.wrong'}"},
       "name": "Язык колокола",
       "examine": {"text": "@examine.bell_clapper", "backdrop": "table", "art": "res://assets/closeups/closeup_bell_clapper.png"},
       "inventory": true,
@@ -176,7 +176,7 @@
     },
     {
       "id": "key_sluice",
-      "wrong_target": {"text": "@item.key_sluice.wrong"},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.key_sluice.wrong'}"},
       "name": "Рычаг затвора",
       "examine": {"text": "@examine.key_sluice", "backdrop": "table", "art": "res://assets/closeups/closeup_sluice_lever.png", "_art_note": "партия 9 (G20): рычаг затвора на столе, квадратное гнездо во втулке; иконка — icon_sluice_lever (tools/sync_icons.sh key_sluice=…)"},
       "inventory": true,
@@ -187,7 +187,7 @@
     },
     {
       "id": "clamp",
-      "wrong_target": {"text": "@item.clamp.wrong"},
+      "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.clamp.wrong'}"},
       "name": "Струбцина",
       "examine": {"text": "@examine.clamp", "backdrop": "table", "art": "res://assets/closeups/closeup_clamp.png"},
       "inventory": true,

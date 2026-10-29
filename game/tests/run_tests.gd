@@ -965,7 +965,7 @@ func _test_walkthrough() -> void:
 	# --- O1: M06, M07, V03, chalk ---
 	_check(await bot.go("O1"), "H3→O1 through the installed door")
 	seen = await bot.finish()
-	_check(gs.has_flag("o1_saw_winter") and seen.any(func(x): return x.contains("Там уж зима?")), "first entry: «Там зима. А у нас ещё октябрь»: %s" % str(seen))
+	_check(gs.has_flag("o1_saw_winter") and seen.any(func(x): return x.contains("Тут уж зима?")), "first entry: «Там зима. А у нас ещё октябрь»: %s" % str(seen))
 	await bot.use("sack")
 	await bot.finish()
 	await bot.use("notebooks")

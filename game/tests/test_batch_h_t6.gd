@@ -239,7 +239,17 @@ func _test_day_three() -> void:
 	await _enter("O3", "from_O4")
 	var b := await _click("bed")
 	var t := String(b.get("text", ""))
-	_check(_key(b) == "H4.bed.early_d3" and t.contains("повидать Тамару на раздаче писем") and not t.contains("Павлу"), "day three: «рано» with what is left: %s" % t)
+	# J (стр. 178): spoken as recorded lines — «Рано ещё спать.», then each deed left on its own.
+	_check(_key(b) == "H4.bed.early_short", "day three: «Рано ещё спать.» first (%s)" % _key(b))
+	var keys: Array[String] = [_key(b)]
+	var g := 0
+	while not sr.current_beat.is_empty() and g < 20:
+		sr.advance()
+		await process_frame
+		g += 1
+		if not sr.current_beat.is_empty():
+			keys.append(_key(sr.current_beat))
+	_check(keys.has("H4.bed.todo_M23a") and not keys.has("H4.bed.todo_M23b"), "day three: what is left, each its own line: %s" % str(keys))
 	await _drain()
 	_flags_before("M23d")
 	gs.set_flag("done_M23d", true)

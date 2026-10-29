@@ -1146,7 +1146,28 @@ func _sleep(sl: Dictionary) -> void:
 				narrate_key(String(late[scn]))
 			start_scene(scn)
 			return
+	# J (Директор 29.10, стр. 178: «Рано ещё спать. Надо… — не озвучено»): an entry with `say_head` is spoken as
+	# separate recorded lines — the head («Рано ещё спать.») and each deed still left (its `say` key) — instead of one
+	# composed sentence that cannot be recorded ahead.
+	var e := sleep_early_entry(sl)
+	if not e.is_empty() and e.has("say_head"):
+		narrate_key(String(e["say_head"]))
+		for l in e.get("left", []):
+			if not GameState.has_flag(String(l.get("unless", ""))) and l.has("say"):
+				narrate_key(String(l["say"]))
+		return
 	_push(sleep_early_beat(sl))
+
+
+## The `early` entry that holds now ({} — none).
+func sleep_early_entry(sl: Dictionary) -> Dictionary:
+	for e in sl.get("early", []):
+		if not requires_met({"flags": e.get("if", [])}):
+			continue
+		if (e.get("unless", []) as Array).any(func(f): return GameState.has_flag(String(f))):
+			continue
+		return e
+	return {}
 
 
 ## The «рано ложиться» beat for the state now (tests read its text too).

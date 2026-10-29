@@ -836,8 +836,8 @@ func _test_walkthrough() -> void:
 	_check(await _go("H1"), "Z2→H1")
 	await _finish()
 	_check(sr.journal_goal().contains("мастерской"), "the goal names the room of the stand: %s" % sr.journal_goal())
-	# The mirror tried on a wrong place in the house says where the stand is (Director 23:53).
-	_check(sr.item_refusal("mirror_mill") == "@item.mirror_mill.wrong", "in H1 the office mirror points to the stand «ЗМ»")
+	# J (Р8, Директор 29.10): a thing on a wrong place — the short «Сюда не подходит» (the journal goal names the room).
+	_check(sr.item_refusal("mirror_mill") == "@item.wrong_generic", "in H1 the office mirror: «Сюда не подходит»")
 	_check(await _go("H2"), "H1→H2")
 	seen = await _finish()
 	_check(gs.has_flag("h2_saw_stand_zm") and seen.any(func(t): return t.contains("Вот Дунина стойка")),

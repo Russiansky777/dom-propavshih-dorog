@@ -25,9 +25,9 @@
     "ui.time_ep_morning": {"text": "Три недели спустя · утро", "draft": true},
     "ui.time_ep_evening": {"text": "Три недели спустя · вечер", "draft": true},
     "ui.time_class_own": {"text": "в классе своё время: там зимний день", "draft": true},
-    "M1.schedule.title": {"text": "Распорядок смен", "draft": true},
-    "M1.schedule.paper_title": {"text": "Распорядок смен", "draft": true},
-    "M1.schedule.paper_shifts": {"text": "Утренняя — с шести до двух.\nВечерняя — с двух до десяти.\nПо воскресеньям мельнице стоять.\n\nНа ночь затвор закрыть,\nрычаг повесить в конторе на гвоздь.", "draft": true},
-    "M1.schedule.paper_signals": {"text": "Сигналы колоколом:\n\nОдин удар — пускай.\nДва — стой.\nДолгий — подымай.\n\nУправляющий", "draft": true}
+    "M1.schedule.title": {"text": "Порядок на мельнице", "draft": true},
+    "M1.schedule.paper_title": {"text": "Порядок на мельнице", "draft": true},
+    "M1.schedule.paper_shifts": {"text": "Смены:\n\nУтренняя — с шести до двух.\nВечерняя — с двух до десяти.\nПо воскресеньям мельнице стоять.\n\nНа ночь затвор закрыть,\nрычаг повесить в конторе на гвоздь.", "draft": true},
+    "M1.schedule.paper_signals": {"text": "Сигналы колоколом:\nим смену начинают и кончают,\nим же у затвора знаки подают.\n\nОдин удар — пускай.\nДва — стой.\nДолгий — подымай.\n\nУправляющий", "draft": true}
   }
 }
