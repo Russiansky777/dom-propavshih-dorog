@@ -744,14 +744,24 @@ def cmd_say(req_path: Path) -> int:
     if chars > int(req.get("max_chars", 0)):
         raise VoiceError(f"say: {chars} символов > max_chars {req.get('max_chars')}")
     sub_before = subscription()
+    reserve = None
+    # Оценка списания: кредитов за символ — из запроса (измерено по журналам: eleven_v4 ≈ 0,44) или из cast.quota (1,0);
+    # во время синтеза — остановка по фактическому списанию (character-cost), не заходя в запас.
+    cpc = float(req.get("credits_per_char_assumed", (cast.get("quota") or {}).get("credits_per_char_assumed", 1.0)))
     if sub_before and sub_before.get("character_limit"):
         reserve = float((cast.get("quota") or {}).get("margin_fraction", 0.10)) * int(sub_before["character_limit"])
-        if chars > int(sub_before["character_limit"]) - int(sub_before["character_count"]) - reserve:
+        log(f"  квота: осталось {int(sub_before['character_limit']) - int(sub_before['character_count'])}, запас {int(reserve)}, "
+            f"к синтезу ≈ {int(chars * cpc)} кредитов ({chars} символов × {cpc})")
+        if chars * cpc > int(sub_before["character_limit"]) - int(sub_before["character_count"]) - reserve:
             raise VoiceError("say: не помещается в остаток квоты с запасом")
     out = PROBE_DIR / set_name
     out.mkdir(parents=True, exist_ok=True)
     failed, spent = [], 0
     for it in items:
+        if reserve is not None and int(sub_before["character_count"]) + spent + len(str(it["text"])) > int(sub_before["character_limit"]) - reserve:
+            failed.append(f"{it['id']}: квота — дальше запас, остановлено")
+            log(f"  СТОП {it['id']}: списано {spent}, следующая фраза зашла бы в запас квоты")
+            break
         sp = str(it.get("speaker", "narrator"))
         spec = cast_for(cast, sp, None, str(it.get("profile", "")))
         if it.get("voice_settings"):   # проба: своя устойчивость и т. п. поверх настроек персонажа
