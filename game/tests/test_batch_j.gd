@@ -18,6 +18,7 @@ extends SceneTree
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
+##   E4 (стр. 9): the Z1 counter lower (same width, ×0.84 from the front legs); Tamara clicked through it too;
 ##   E1 (Р2): river fog over the far bank in R1 / Z3 / M1 / H4 until the knot (road_held_both_ends); the knot tied
 ##      with the room on screen — the fog lifts (eases out, then hidden); a load after the knot — no fog at once;
 ##      at dusk the painted-dusk rooms (R1, Z3) switch to their dusk fog; snow on the far bank only after the knot.
@@ -82,6 +83,7 @@ func _run() -> void:
 	await _test("J-A10 Р5: the tar — «not now» before Pavel asks, then once; the tar on the winch opens the sluice", _test_tar)
 	await _test("J-E3 the last frame: the candle burns, snow behind the window, the cup on the table, Tikhon to the people", _test_last_frame)
 	await _test("J-B1 intro: three cards on black with the voice-over, a click goes on, then «День первый», once", _test_intro)
+	await _test("J-E4 Z1 (стр. 9): the counter lower (×0.84, legs in place); Tamara is clicked through the counter too", _test_counter)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -329,6 +331,39 @@ func _test_lezhanka() -> void:
 	await _drain()
 	hit = rm.current_room.call("pick", Vector2(640, 600))
 	_check(hit != null and String(hit.get("hotspot_id")) == "scarf", "the scarf on the bench wins, got %s" % (String(hit.get("hotspot_id")) if hit != null else "none"))
+
+
+# --- E4. The post-office counter -------------------------------------------------------------
+
+func _pick_id(at: Vector2) -> String:
+	var hit: Node = rm.current_room.call("pick", at)
+	return String(hit.get("hotspot_id")) if hit != null and hit.get("hotspot_id") != null else "none"
+
+
+func _test_counter() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01"])
+	await _enter("Z1")
+	await _drain()
+	var layer: Node = rm.current_room.find_child("counter", true, false)
+	var spr: Sprite2D = layer.get_node_or_null("Image") if layer != null else null
+	_check(spr != null, "the counter layer is built")
+	if spr != null:
+		_check(absf(spr.scale.y / spr.scale.x - 0.84) < 0.005, "the counter is lower, same width: scale %s" % str(spr.scale))
+		var legs_y := spr.position.y + 775.0 * spr.scale.y
+		_check(absf(legs_y - 890.0) < 2.0, "the front legs stay on the floor at y 890, got %.1f" % legs_y)
+	_check(_pick_id(Vector2(1070, 350)) == "tamara", "Tamara above the counter, got %s" % _pick_id(Vector2(1070, 350)))
+	_check(_pick_id(Vector2(1070, 820)) == "tamara", "through the counter in front of her — Tamara, got %s" % _pick_id(Vector2(1070, 820)))
+	_check(_pick_id(Vector2(1000, 530)) == "drawings", "the sheets on the counter stay the drawings, got %s" % _pick_id(Vector2(1000, 530)))
+	_check(_pick_id(Vector2(800, 820)) != "tamara", "the counter away from her is not Tamara")
+	# Morning of day 3 (M22): Tamara has crossed to Olkhovka — her click area through the counter goes with her.
+	_set_flags(["done_M22"])
+	for h in rm.current_room.get_hotspots():
+		h.call("refresh")
+	await physics_frame
+	await physics_frame
+	_check(_pick_id(Vector2(1070, 820)) != "tamara", "no Tamara through the counter after M22, got %s" % _pick_id(Vector2(1070, 820)))
 
 
 # --- A4. The water is down ------------------------------------------------------------------

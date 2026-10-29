@@ -90,9 +90,9 @@ func current_state() -> Dictionary:
 func refresh() -> void:
 	var active := is_active()
 	visible = active
-	var shape := get_node_or_null("Shape")
-	if shape is CollisionShape2D:
-		shape.set_deferred("disabled", not active)
+	for c in get_children():  # "Shape" and the extra `pick_rects` shapes (PickShape0…)
+		if c is CollisionShape2D:
+			c.set_deferred("disabled", not active)
 	var st := current_state()
 	_apply_geometry(st)
 	if fill != null:
@@ -126,6 +126,9 @@ func _apply_geometry(st: Dictionary) -> void:
 			and (not (stand is Node2D) or (stand as Node2D).position.is_equal_approx(stand_at)):
 		return
 	position = centre
+	for c in get_children():  # extra `pick_rects` stay where the data put them on screen
+		if c is CollisionShape2D and c.has_meta("abs_centre"):
+			c.position = (c.get_meta("abs_centre") as Vector2) - centre
 	if rs != null:
 		rs.size = size
 	if stand is Node2D:

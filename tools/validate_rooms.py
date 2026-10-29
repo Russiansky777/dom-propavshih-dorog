@@ -882,12 +882,18 @@ for rid, room in rooms.items():
                     f"{bg_size[1] * bg_scale:.0f} px — кадр 1920x1080 будет обрезан или с полосами (нужен 16:9)")
     for l in room.get("layers", []):
         lctx = f"{ctx}.layers.{l.get('id', '?')}"
-        sc = float(l.get("scale", 1.0))
-        if abs(sc - 1.0) > SCALE_TOL and not str(l.get("scale_reason", "")).strip():
-            err(f"{lctx}: scale {sc} без scale_reason — слои и состояния рисуются масштабом фона "
+        # scale — число или [x, y] (J, Z1: стойка той же ширины, ниже ×0.84)
+        raw_sc = l.get("scale", 1.0)
+        sc_x, sc_y = (float(raw_sc[0]), float(raw_sc[1])) if isinstance(raw_sc, list) else (float(raw_sc), float(raw_sc))
+        sc = sc_x
+        scaled = abs(sc_x - 1.0) > SCALE_TOL or abs(sc_y - 1.0) > SCALE_TOL
+        if scaled and not str(l.get("scale_reason", "")).strip():
+            err(f"{lctx}: scale {raw_sc} без scale_reason — слои и состояния рисуются масштабом фона "
                 f"({bg_scale:.4f}), отдельный масштаб только с объяснением")
-        if "scale_reason" in l and abs(sc - 1.0) <= SCALE_TOL:
+        if "scale_reason" in l and not scaled:
             warn(f"{lctx}: scale_reason при scale 1 — лишнее поле")
+        if abs(sc_x - sc_y) > SCALE_TOL and "align" in l:
+            err(f"{lctx}: align при разном масштабе по x и y не проверяется — задайте scale числом")
         # 7в. Состояние, нарисованное другим кадром, совмещено с основой (G13, Директор 23.10: «топящаяся печь
         # разорвана» — рама открытой дверцы стояла на 80 px выше закрытой дверцы фона и на четверть крупнее):
         # `align` {layer_rect — деталь в пикселях слоя, base_rect — та же деталь в пикселях фона, tol_px, covers}.
@@ -1351,8 +1357,9 @@ for rid, room in rooms.items():
         return a[0] < b[0] + b[2] and b[0] < a[0] + a[2] and a[1] < b[1] + b[3] and b[1] < a[1] + a[3]
 
     def hs_rects(h: dict) -> list:
-        """Базовый прямоугольник хотспота и прямоугольники его состояний (states[].rect)."""
-        return [h["rect"]] + [s["rect"] for s in h.get("states", []) if "rect" in s]
+        """Базовый прямоугольник хотспота, прямоугольники его состояний (states[].rect) и добавочные места щелчка
+        (pick_rects — J, Z1: Тамару щёлкают и сквозь стойку)."""
+        return [h["rect"]] + [s["rect"] for s in h.get("states", []) if "rect" in s] + list(h.get("pick_rects", []))
 
     for h in room.get("hotspots", []):
         if "rect" not in h:

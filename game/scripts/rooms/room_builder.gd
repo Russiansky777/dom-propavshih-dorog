@@ -238,10 +238,13 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 		spr.texture = load(image)
 		spr.centered = false
 		var ts: Vector2 = spr.texture.get_size()
-		var sc := float(l.get("scale", 1.0))
+		# `scale` a number, or [x, y] — a drawing made lower (or wider) on the same spot (J, Z1: the post-office
+		# counter between the old low table and the tall v2 counter — width kept, height ×0.84).
+		var sc_raw = l.get("scale", 1.0)
+		var sc := Vector2(float(sc_raw[0]), float(sc_raw[1])) if sc_raw is Array else Vector2.ONE * float(sc_raw)
 		# No background picture (placeholder room): the layer's own width defines the art scale.
 		var art := room.art_scale if room.art_scale > 0.0 else (1920.0 / ts.x if ts.x > 0 else 1.0)
-		spr.scale = Vector2(art * sc, art * sc)
+		spr.scale = art * sc
 		var off: Array = l.get("offset", [0, 0])
 		spr.position = Vector2(float(off[0]), float(off[1]))
 		# `modulate` "#rrggbb": a day patch laid over an evening state takes its tone (Z3: the shore stone
@@ -254,7 +257,7 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 		# where it is on the canvas (I-T2: the cups, the shelf, the mitten — bigger or smaller on the same spot).
 		if l.has("scale_pivot"):
 			var sp := Vector2(float(l["scale_pivot"][0]), float(l["scale_pivot"][1]))
-			spr.position += sp * art * (1.0 - sc)
+			spr.position += sp * art * (Vector2.ONE - sc)
 		if l.has("pivot"):
 			var pv := Vector2(float(l["pivot"][0]), float(l["pivot"][1]))
 			spr.offset = -pv
@@ -350,6 +353,20 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 		rs.size = Vector2(w, hgt)
 		shape.shape = rs
 		hs.add_child(shape)
+		# `pick_rects` [[x, y, w, h]] (screen): more click area for the same hotspot — J, Z1: Tamara is clicked
+		# through the counter in front of her too. Same pick_priority; the picture and the label stay on `rect`.
+		var pi := 0
+		for pr in h.get("pick_rects", []):
+			var extra := CollisionShape2D.new()
+			extra.name = "PickShape%d" % pi
+			pi += 1
+			var ers := RectangleShape2D.new()
+			ers.size = Vector2(float(pr[2]), float(pr[3]))
+			extra.shape = ers
+			var abs_centre := Vector2(float(pr[0]) + float(pr[2]) / 2, float(pr[1]) + float(pr[3]) / 2)
+			extra.set_meta("abs_centre", abs_centre)
+			extra.position = abs_centre - hs.position
+			hs.add_child(extra)
 		var visual := Node2D.new()
 		visual.name = "Visual"
 		var fill := Polygon2D.new()
