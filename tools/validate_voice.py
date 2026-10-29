@@ -272,6 +272,11 @@ def _line(scene: str, ln: dict) -> dict:
 def api_text(ln: dict) -> str:
     """Как pipeline/voice/eleven_voice.py: voice_text или теги перед текстом; произношение — pronounce.py."""
     lid = str(ln.get("id", ""))
+    # Партия K (проба 29.10): выбранная Директором запись — её текст запроса целиком (voice_direction.json → voice_text:
+    # знаки, капс, IPA ударения); правила произношения к нему уже не применяются.
+    ov = direction.for_line(lid).get("voice_text")
+    if ov:
+        return str(ov)
     if ln.get("voice_text"):
         return pronounce.apply(direction.apply(GLOSS_RE.sub(r"\1", str(ln["voice_text"])), lid), lid)
     # Теги подачи из voice_direction.json (правка Директора) заменяют прежние теги строки, а не добавляются к ним

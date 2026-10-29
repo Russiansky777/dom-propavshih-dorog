@@ -108,10 +108,25 @@ def apply(text: str, line_id: str) -> str:
     return out
 
 
+def words(t: str) -> list[str]:
+    """Слова фразы для сверки: без тегов [..], IPA /../, знаков ударения и препинания; строчные, ё → е."""
+    t = re.sub(r"\[\[([^|\]]+)\|[^\]]*\]\]", r"\1", t)
+    t = re.sub(r"\[[^\]]*\]", " ", t)
+    t = t.replace("\u0301", "").lower().replace("ё", "е")
+    return re.findall(r"[a-zа-я0-9]+(?:-[a-zа-я0-9]+)*|/[^/\s]+/", t)
+
+
 def problems(line_id: str, text: str, allowed_tags: set[str] | None = None) -> list[str]:
     """Что в записи таблицы не сходится с текстом реплики (слова не найдены, тег не из списка)."""
     d = for_line(line_id)
     out: list[str] = []
+    ov = d.get("voice_text")
+    if ov:
+        # текст запроса — те же слова, что в субтитрах (IPA-запись слова считается за него, если стоит на его месте)
+        a, b = words(text), words(str(ov))
+        same = len(a) == len(b) and all(x == y or y.startswith("/") for x, y in zip(a, b))
+        if not same:
+            out.append(f"{line_id}: voice_text — другие слова, чем в субтитрах: «{str(ov)[:70]}» / «{text[:70]}»")
     for key in ("emph", "pause_after"):
         for w in d.get(key, []):
             if _find(text, str(w)) is None:

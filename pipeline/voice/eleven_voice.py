@@ -285,6 +285,11 @@ def api_text(ln: dict) -> str:
     """Текст запроса к API: voice_text (теги внутри фразы) или теги перед текстом; субтитры — text без тегов.
     Произношение (pipeline/voice/pronunciation_ru.json, pronounce.py) — только здесь, не в субтитрах."""
     lid = str(ln.get("id", ""))
+    # Партия K (проба 29.10): выбранная Директором запись — её текст запроса целиком (voice_direction.json → voice_text:
+    # знаки, капс, IPA ударения); правила произношения к нему уже не применяются.
+    ov = direction.for_line(lid).get("voice_text")
+    if ov:
+        return str(ov)
     if ln.get("voice_text"):
         return pronounce.apply(direction.apply(GLOSS_IN_TEXT.sub(r"\1", str(ln["voice_text"])), lid), lid)
     # Теги подачи из voice_direction.json (правка Директора) заменяют прежние теги строки, а не добавляются к ним
@@ -651,6 +656,81 @@ def cmd_transcribe(req_path: Path) -> int:
     return 0
 
 
+def cmd_adopt(req_path: Path) -> int:
+    """Режим adopt (партия K, 29.10): записи пробы, выбранные Директором на странице, — в игру без нового синтеза.
+    Запрос: {"mode": "adopt", "set": <папка пробы pipeline/voice/probe/<set>>, "picks": {id реплики: id записи пробы}}.
+    Текст запроса каждой выбранной записи уже лежит в data/story/voice_direction.json → <id>.voice_text (его пишет
+    координатор вместе с запросом), иначе запись не берётся: api_text реплики должен совпасть с текстом записи — тогда
+    проверка (validate_voice) и следующий generate считают её актуальной. mp3 → src/, выравнивание, OGG по громкости
+    (process), запись манифеста как у generate (api — из пробы: history_item_id, character_cost)."""
+    req = read_json(req_path, {})
+    pdir = PROBE_DIR / str(req.get("set", ""))
+    cast = read_json(CAST_PATH, {}) or {}
+    lc = cast.get("loudness", {})
+    target = float(lc.get("target_lufs", -17.0))
+    lines = all_lines()
+    vs = voice_sets(cast)[0]
+    manifest = load_manifest(vs["dir"])
+    failed, done = [], []
+    for lid, pid in (req.get("picks") or {}).items():
+        ln = lines.get(lid)
+        pj = read_json(pdir / f"{pid}.json", None)
+        mp3 = pdir / f"{pid}.mp3"
+        if ln is None or pj is None or not mp3.is_file():
+            failed.append(f"{lid}: нет реплики или записи пробы {pid}")
+            continue
+        if api_text(ln) != str(pj.get("text", "")):
+            failed.append(f"{lid}: текст запроса реплики ≠ тексту записи {pid} (voice_direction.voice_text не тот)")
+            continue
+        src = vs["dir"] / "src" / file_rel(ln, lid, "mp3")
+        dst = vs["dir"] / file_rel(ln, lid, "ogg")
+        src.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(mp3, src)
+        al = pj.get("alignment")
+        if isinstance(al, str):
+            import ast
+            al = ast.literal_eval(al)
+        al_rel = "src/" + file_rel(ln, lid, "align.json")
+        if al:
+            write_json(vs["dir"] / al_rel, {"text": api_text(ln), "alignment": al})
+        try:
+            meas = process(src, dst, lc)
+        except VoiceError as e:
+            failed.append(f"{lid}: {e}")
+            continue
+        spec = cast_for(cast, ln["speaker"], None, str(ln.get("profile", "")))
+        spec = dict(spec, voice_settings=dict(spec["voice_settings"], **(pj.get("voice_settings") or {})))
+        where = ({"kind": "narration", "key": ln["key"], "source_text": ln["source"]} if ln.get("kind") == "narration"
+                 else {"scene": ln["scene"], "index": ln["index"]})
+        if ln.get("option"):
+            where["option"] = ln["option"]
+        if "then" in ln and ln.get("kind") != "narration":
+            where["then"] = ln["then"]
+        if al:
+            where["alignment"] = al_rel
+        if ln.get("profile"):
+            where["profile"] = ln["profile"]
+        if ln.get("as_line"):
+            where["as_line"] = True
+        entry = {**where, "speaker": ln["speaker"], "text": ln["text"], "text_sha1": text_sha1(ln["text"]),
+                 "voice_id": spec["voice_id"], "voice_name": spec["voice_name"], "model_id": spec["model_id"],
+                 "voice_settings": spec["voice_settings"], "file": file_rel(ln, lid, "ogg"), "source": "src/" + file_rel(ln, lid, "mp3"),
+                 "voice_text": api_text(ln), "voice_sha1": text_sha1(api_text(ln)), "tags": ln.get("tags", []),
+                 "characters": len(api_text(ln)), "loudness_target_lufs": target, **meas,
+                 "output_format": "mp3_44100_192", "generated_at": now_iso(), "run": os.environ.get("GITHUB_RUN_ID", "local"),
+                 "adopted_from": f"probe/{req.get('set')}/{pid}",
+                 "api": {"history_item_id": pj.get("history_item_id", ""), "character_cost": pj.get("character_cost", ""),
+                         "previous_text": pj.get("previous_text", ""), "probe_run": pj.get("run", "")}}
+        if pj.get("stt"):
+            entry["stt"] = pj["stt"]
+        manifest["lines"][lid] = entry
+        done.append(lid)
+        log(f"  {lid:40} ← {pid}: {meas['duration_s']:.2f} с, {meas['lufs']} LUFS")
+    write_json(vs["dir"] / "manifest.json", _manifest_doc(manifest, cast, vs))
+    log(f"[adopt {req.get('set')}] в игру {len(done)}, ошибок {len(failed)}" + ("".join(f"\n  ОШИБКА {f}" for f in failed)))
+    return 1 if failed else 0
+
+
 def cmd_say(req_path: Path) -> int:
     """Режим say: короткие пробные фразы (не реплики игры) голосом персонажа с выравниванием по символам →
     pipeline/voice/probe/<набор>/<id>.mp3 и <id>.json. Для проверки способов задать ударение (pronounce.py) —
@@ -990,6 +1070,9 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                 continue
             try:
                 spec = cast_for(cast, ln["speaker"], vs["alt"], str(ln.get("profile", "")))
+                dvs = direction.for_line(lid).get("voice_settings")
+                if dvs:   # партия K: устойчивость выбранной записи — часть «того же синтеза» (иначе вечная перезапись)
+                    spec = dict(spec, voice_settings=dict(spec["voice_settings"], **dvs))
             except VoiceError as e:
                 missing.append(str(e))
                 continue
@@ -1089,7 +1172,8 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
             if it["action"] == "synth":
                 salt = int((req.get("reseed") or {}).get(lid, 0) or 0)
                 seed = int(hashlib.sha1((f"{lid}|{ln['text']}" + (f"|{salt}" if salt else "")).encode("utf-8")).hexdigest()[:8], 16)
-                audio, info = synth(api_text(ln), spec, cast, seed)
+                dline = direction.for_line(lid)
+                audio, info = synth(api_text(ln), spec, cast, seed, {"previous_text": dline.get("previous_text", "")})
                 cc = str(info.get("character_cost", ""))
                 spent_now += int(cc) if cc.isdigit() else len(api_text(ln))
                 src.parent.mkdir(parents=True, exist_ok=True)
@@ -1345,7 +1429,7 @@ def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "say", "transcribe", "run"])
+    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "say", "transcribe", "adopt", "run"])
     ap.add_argument("--request")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
@@ -1359,10 +1443,11 @@ def main() -> int:
             return cmd_check()
         if mode == "list":
             return cmd_list()
-        if mode in ("design", "create_voice", "say", "transcribe"):
+        if mode in ("design", "create_voice", "say", "transcribe", "adopt"):
             if not a.request:
                 raise VoiceError(f"{mode}: нужен --request")
-            return {"design": cmd_design, "create_voice": cmd_create_voice, "say": cmd_say, "transcribe": cmd_transcribe}[mode](Path(a.request))
+            return {"design": cmd_design, "create_voice": cmd_create_voice, "say": cmd_say, "transcribe": cmd_transcribe,
+                    "adopt": cmd_adopt}[mode](Path(a.request))
         if mode == "generate":
             if not a.request:
                 raise VoiceError("generate: нужен --request")
