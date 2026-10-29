@@ -13,6 +13,8 @@ extends SceneTree
 ##      lights back to the plate; the turn and the pier never show the boat without her;
 ##   A10 (Р5 + Director 18:51): the tar pot on Dunya's workbench — before Pavel's request «not now», then once into the bag;
 ##      the lever alone does not open the sluice, the tar on the winch does (the walk itself — test_day2.gd);
+##   E3 (стр. 199, 202): the last frame — the candle burns on its wick (a live flame), snow falls behind the window panes,
+##      Nina's cup larger and on the table, Tikhon turned to the people;
 ##   B1 (Р13 + Director 29.10 18:30): a new game opens with the intro — three cards on black with the voice-over,
 ##      a click / Space fades to the next, after the last «День первый»; once (intro_seen in the save); a load stops it;
 ##   E2 (стр. 130–131): one answering lantern (flashes three times in the close-up, then burns) — in R1 and at the boat (Z3);
@@ -78,6 +80,7 @@ func _run() -> void:
 	await _test("J-E1 fog over the far bank until the knot, lifting when the knot is tied", _test_fog)
 	await _test("J-A9 Р11: the boat and Pelageya always together (the knot → her pier, the lights → the turn)", _test_boat_with_pelageya)
 	await _test("J-A10 Р5: the tar — «not now» before Pavel asks, then once; the tar on the winch opens the sluice", _test_tar)
+	await _test("J-E3 the last frame: the candle burns, snow behind the window, the cup on the table, Tikhon to the people", _test_last_frame)
 	await _test("J-B1 intro: three cards on black with the voice-over, a click goes on, then «День первый», once", _test_intro)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -593,3 +596,26 @@ func _test_tar() -> void:
 		"the lever does not open the sluice any more, the tar does")
 	_check((gate.get("mechanic", {}).get("requires", {}).get("flags", []) as Array).has("windlass_tarred"), "the sluice close-up needs the winch tarred")
 	gs.reset()
+
+
+func _test_last_frame() -> void:
+	var room: Dictionary = sd.room("EP_dinner")
+	var snow := 0
+	for e in room.get("effects", []):
+		if String(e.get("type", "")) == "snow" and bool(e.get("far", false)) and int(e.get("z", 1)) < 0:
+			snow += 1
+	_check(snow >= 2, "snow behind the window panes, under the people (%d effects)" % snow)
+	var lights: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/lights/EP_dinner.json"))
+	var lit := false
+	for src in (lights as Dictionary).get("sources", []) if lights is Dictionary else []:
+		var r: Array = src.get("rect", [0, 0, 0, 0])
+		var on_wick := Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3])).has_point(Vector2(1287, 520))
+		if on_wick and float(src.get("params", {}).get("flame", 0.0)) > 0.5:
+			lit = true
+	_check(lit, "the candle light sits on the wick and draws a live flame")
+	for l in room.get("layers", []):
+		var c: Dictionary = l.get("compose", {})
+		if String(l.get("id", "")) == "tikhon":
+			_check(bool(c.get("mirror", false)), "Tikhon turned to the people at the table")
+		if String(l.get("id", "")) == "cup_blue":
+			_check(float(c.get("width", 0)) >= 50.0 and float(c.get("at", [0, 0])[1]) < 540.0, "the cup larger and on the table (%s)" % str(c.get("at")))

@@ -24,7 +24,7 @@ compose — персонаж:
    "hide_feather": 1.0}       — мягкость края скрытия, px.
 compose — вещь (кусок другой картинки):
   {"src": "game/assets/rooms/H1/state_cup_table_blue.png", "crop": [x, y, w, h], "at": [x, y], "width": w,
-   "tint": [...], "rotate": градусы, "alpha": 0..1, "shadow": 0}
+   "tint": [...], "rotate": градусы, "alpha": 0..1, "shadow": 0, "mirror": false}
 Повторный запуск с теми же исходниками даёт те же файлы; --check сверяет без записи (код 1 — расходятся или нет файла).
 Когда приходят листы 3D (assets/characters/<имя>/), запуск без правки данных заменяет заглушки фигурами из листов.
 Нужен Pillow. Запуск: python3 tools/make_frame_layers.py [--check] [ID …]
@@ -139,6 +139,8 @@ def render(c: dict, size: tuple[int, int]) -> Image.Image:
     if "width" in c:
         k = float(c["width"]) / src.size[0]
         src = src.resize((max(1, round(src.size[0] * k)), max(1, round(src.size[1] * k))), Image.LANCZOS)
+    if c.get("mirror"):
+        src = src.transpose(Image.Transpose.FLIP_LEFT_RIGHT)   # J (стр. 199): Тихон на ужине — лицом к людям
     if c.get("rotate"):
         src = src.rotate(float(c["rotate"]), resample=Image.BICUBIC, expand=True)
     src = tinted(src, c.get("tint"))

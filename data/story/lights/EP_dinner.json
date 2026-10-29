@@ -1,41 +1,50 @@
 {
-  "_comment": "Ужин в доме тёти: свеча на столе мерцает.",
-  "room": "EP_dinner",
-  "floor_foreshortening": 0.35,
-  "sources": [
-    {
-      "id": "candle",
-      "type": "glow",
-      "rect": [
-        1230,
-        300,
-        90,
-        110
-      ],
-      "z": 3,
-      "params": {
-        "glass_center": [
-          0.5,
-          0.5
-        ],
-        "glass_size": [
-          0.5,
-          0.6
-        ],
-        "glass": 0.2,
-        "halo": 0.6,
-        "halo_aspect": 1.2,
-        "halo_power": 2.0,
-        "flame": 0.0,
-        "color": "#ffc070",
-        "seed": 9.3
-      },
-      "flicker": {
-        "group": "candle",
-        "amount": 0.3,
-        "speed": 1.6
-      },
-      "fade_s": 0.0
-    }
-  ]
+ "_comment": "Ужин в доме тёти: свеча на столе мерцает.",
+ "room": "EP_dinner",
+ "floor_foreshortening": 0.35,
+ "sources": [
+  {
+   "id": "candle",
+   "type": "glow",
+   "rect": [
+    1207,
+    437,
+    160,
+    160
+   ],
+   "z": 3,
+   "params": {
+    "glass_center": [
+     0.5,
+     0.48
+    ],
+    "glass_size": [
+     0.3,
+     0.36
+    ],
+    "glass": 0.25,
+    "halo": 0.62,
+    "halo_aspect": 1.25,
+    "halo_power": 2.0,
+    "flame": 1.0,
+    "color": "#ffc070",
+    "seed": 9.3,
+    "flame_base": [
+     0.5,
+     0.606
+    ],
+    "flame_size": [
+     0.03,
+     0.17
+    ]
+   },
+   "flicker": {
+    "group": "candle",
+    "amount": 0.35,
+    "speed": 1.8
+   },
+   "fade_s": 0.0,
+   "_j": "J (Директор 29.10, стр. 202: «в последнем кадре свечу сделать горящей»): свет был над свечой (y 300–410) и без пламени — теперь на фитиле (1287, 534), живое пламя и ореол"
+  }
+ ]
 }
