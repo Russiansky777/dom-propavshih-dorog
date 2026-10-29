@@ -173,13 +173,89 @@ def analyse_line(lid: str, man: dict) -> tuple[list[dict], str]:
     return analyse(mp3, al), str(e.get("voice_text", ""))
 
 
+CAPS = re.compile(r"\b[А-ЯЁA-Z\u0301-]{2,}\b|(?<![А-Яа-яЁё])[ЯA-Z](?![А-Яа-яЁё])")
+
+
+def caps_targets(text: str) -> list[str]:
+    """Слова-цели дубля — набранные капсом (как их отметили для синтезатора); теги [..] не в счёт."""
+    t = re.sub(r"\[[^\]]*\]", " ", text)
+    out = []
+    for m in re.finditer(r"[A-Za-zА-Яа-яЁё\u0301-]+", t):
+        w = m.group(0).replace("\u0301", "").strip("-")
+        if len(w) >= 1 and w.upper() == w and any(c.isalpha() for c in w) and (len(w) > 1 or w in ("Я",)):
+            out.append(w)
+    return out
+
+
+def take_quality(words: list[dict], align: dict) -> dict:
+    """Изъяны дубля по времени: долгая тишина внутри (> 1,6 с между словами) и «проглоченные» слова (меньше 30 мс на букву)."""
+    gaps = [b["t0"] - a["t1"] for a, b in zip(words, words[1:])]
+    swallowed = [w["word"] for w in words if w["letters"] >= 4 and w["dur_per_letter"] < 0.03]
+    return {"max_gap": round(max(gaps), 2) if gaps else 0.0, "swallowed": swallowed}
+
+
+def pick_takes(probe_dir: Path, kinds: dict) -> dict:
+    """Выбор дубля на фразу: kinds {line: "accent" | "neutral" | "stress"}.
+    accent — у кого слова-цели (капс) выделены сильнее всего (средняя выделенность целей, минус штраф за изъяны);
+    neutral — самый ровный (меньше всего отрыв самого выделенного слова); stress — не выбираем (слушать все)."""
+    import ast
+    by_line: dict[str, list] = {}
+    for js in sorted(probe_dir.glob("*.json")):
+        d = json.loads(js.read_text(encoding="utf-8"))
+        al = d.get("alignment")
+        if isinstance(al, str):
+            al = ast.literal_eval(al)
+        mp3 = js.with_suffix(".mp3")
+        if not al or not mp3.is_file():
+            continue
+        words = analyse(mp3, al)
+        q = take_quality(words, al)
+        tg = target_hits(words, caps_targets(str(d.get("text", ""))))
+        proms = sorted((w["prom"] for w in words), reverse=True)
+        rec = {"id": d["id"], "take": d.get("take", ""), "variant": d.get("variant", ""), "text": d.get("text", ""),
+               "targets": tg, "top": max(words, key=lambda w: w["prom"])["word"] if words else "",
+               "top_gap": round(proms[0] - proms[1], 3) if len(proms) > 1 else 0.0, "quality": q,
+               "dropped": d.get("dropped_params", []), "duration_s": d.get("duration_s"),
+               "history_item_id": d.get("history_item_id", ""), "words": [[w["word"], w["prom"], w["rank"]] for w in words]}
+        tp = [t["prom"] for t in tg if t.get("prom") is not None]
+        rec["target_prom"] = round(sum(tp) / len(tp), 3) if tp else None
+        rec["target_best_rank"] = min((t["rank"] for t in tg if t.get("rank")), default=None)
+        penalty = (0.6 if q["max_gap"] > 1.6 else 0.0) + 0.8 * len(q["swallowed"])
+        kind = kinds.get(str(d.get("line", "")), "accent")
+        if kind == "neutral":
+            rec["score"] = round(-(rec["top_gap"] + max(proms[:1] or [0.0])) - penalty, 3)
+        else:
+            rec["score"] = round((rec["target_prom"] if rec["target_prom"] is not None else -9.0) - penalty, 3)
+        by_line.setdefault(str(d.get("line", "")), []).append(rec)
+    out = {}
+    for line, recs in by_line.items():
+        recs.sort(key=lambda r: r["take"])
+        kind = kinds.get(line, "accent")
+        best = None if kind == "stress" else max(recs, key=lambda r: r["score"])["id"]
+        out[line] = {"kind": kind, "pick": best, "takes": recs}
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("ids", nargs="*")
     ap.add_argument("--probe")
+    ap.add_argument("--pick", help="папка пробы: выбрать дубль на фразу (нужен --kinds JSON {line: kind})")
+    ap.add_argument("--kinds")
     ap.add_argument("--calibrate")
     ap.add_argument("--json")
     a = ap.parse_args()
+    if a.pick:
+        kinds = json.loads(Path(a.kinds).read_text(encoding="utf-8")) if a.kinds else {}
+        res = pick_takes(Path(a.pick), kinds)
+        for line, r in res.items():
+            print(f"{line} [{r['kind']}] выбран {r['pick']}: " + "; ".join(
+                f"{t['take']} {t['score']:+.2f} (цели {', '.join(str(x['rank']) for x in t['targets'])}, топ «{t['top']}»"
+                f"{', изъяны ' + str(t['quality']) if t['quality']['swallowed'] or t['quality']['max_gap'] > 1.6 else ''})"
+                for t in r["takes"]))
+        if a.json:
+            Path(a.json).write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+        return 0
     man, dirs = _manifest(), _direction()
     out = []
     if a.probe:
