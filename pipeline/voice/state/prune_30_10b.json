@@ -1,0 +1,20 @@
+{
+  "set": "prune_30_10b",
+  "runs": [
+    {
+      "run": "41106973063",
+      "at": "2026-10-30T18:28:48+00:00",
+      "request": "pipeline/requests/voice_prune_30_10b.json",
+      "synthesized": [],
+      "reprocessed": [],
+      "characters_text": 0,
+      "failed": [],
+      "pruned": [
+        "M03_3 (текст изменён)",
+        "M23d_6 (нет в сценах)"
+      ],
+      "subscription_before": null,
+      "subscription_after": null
+    }
+  ]
+}
