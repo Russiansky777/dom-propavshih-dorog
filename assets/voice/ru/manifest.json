@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-30T00:50:38+00:00",
+  "updated_at": "2026-10-30T00:54:06+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -3176,51 +3176,61 @@
       "index": 0,
       "alignment": "src/M12_0.align.json",
       "speaker": "agata",
-      "text": "Вышел засов! Подалась дверь!",
-      "text_sha1": "1f11f06c1b1cf380b4d8649ffd55079ef65ad6b2",
+      "text": "Ну вот, вышел засов! Наконец подалась дверь!",
+      "text_sha1": "921946790e9432deddd77e75a80aa7dad7cb7b45",
       "voice_id": "ReYqW64ePwZHQReEArbt",
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "M12_0.ogg",
       "source": "src/M12_0.mp3",
-      "voice_text": "[excited] ВЫШЕЛ засов! ПОДАЛАСЬ дверь!",
-      "voice_sha1": "43acf3100979245df4df3d0b8502f5288b5ad720",
+      "voice_text": "Ну вот, вышел засов! Наконец подалась дверь!",
+      "voice_sha1": "921946790e9432deddd77e75a80aa7dad7cb7b45",
       "tags": [
         "excited"
       ],
-      "characters": 38,
+      "characters": 44,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.46,
+      "duration_s": 3.89,
       "lufs": -17.0,
-      "true_peak_db": -7.4,
-      "gain_db": -6.1,
+      "true_peak_db": -5.7,
+      "gain_db": -4.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -10.9,
-      "source_true_peak_db": -1.4,
+      "source_lufs": -12.8,
+      "source_true_peak_db": -1.6,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:00:12+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 2.53,
-        "delta_s": -0.07,
-        "suspect": false
-      },
+      "generated_at": "2026-10-30T00:54:06+00:00",
+      "run": "40982280283",
+      "adopted_from": "probe/K3/W022_3",
       "api": {
-        "request_id": "G533WkjXXF78Gc5BnBpY",
-        "history_item_id": "xXnrLJR90z0l27vm2JO1",
-        "character_cost": "17",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4189493823
-        }
+        "history_item_id": "vDfjkdWTZGtOYItFkOvS",
+        "character_cost": "19",
+        "previous_text": "",
+        "probe_run": "40979686835"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Ну вот, вышел засов. Наконец поддалась дверь",
+        "words": [
+          "Ну",
+          "вот,",
+          "вышел",
+          "засов.",
+          "Наконец",
+          "поддалась",
+          "дверь"
+        ],
+        "missing": [
+          "подалась"
+        ],
+        "extra": [
+          "поддалась"
+        ],
+        "ratio": 0.857
       }
     },
     "M13_0": {
@@ -12079,7 +12089,7 @@
       "voice_name": "ВАРВАРА",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "M26_25.ogg",
@@ -12089,27 +12099,27 @@
       "tags": [],
       "characters": 86,
       "loudness_target_lufs": -17.0,
-      "duration_s": 7.18,
-      "lufs": -16.9,
-      "true_peak_db": -7.2,
-      "gain_db": -3.2,
+      "duration_s": 7.34,
+      "lufs": -17.0,
+      "true_peak_db": -7.0,
+      "gain_db": -3.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.8,
-      "source_true_peak_db": -4.0,
+      "source_lufs": -13.1,
+      "source_true_peak_db": -3.1,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-30T00:50:37+00:00",
-      "run": "40981759016",
-      "adopted_from": "probe/K3/W016_4",
+      "generated_at": "2026-10-30T00:54:06+00:00",
+      "run": "40982280283",
+      "adopted_from": "probe/K3/W016_3",
       "api": {
-        "history_item_id": "QzK11ZV67QjOwDwSqLvk",
+        "history_item_id": "QyDWKIHhfNn8ODElF1kZ",
         "character_cost": "38",
         "previous_text": "Ну как, держится заплатка?",
         "probe_run": "40978700987"
       },
       "stt": {
         "model": "scribe_v2",
-        "text": "Агата, погляди-ка, заплатка на Дунином пальто держится, а Ульянина птица словно живая",
+        "text": "Агата, погляди-ка, заплатка на Дунином пальто держится, а у Лянина птица словно живая",
         "words": [
           "Агата,",
           "погляди-ка,",
@@ -12119,14 +12129,20 @@
           "пальто",
           "держится,",
           "а",
-          "Ульянина",
+          "у",
+          "Лянина",
           "птица",
           "словно",
           "живая"
         ],
-        "missing": [],
-        "extra": [],
-        "ratio": 1.0
+        "missing": [
+          "ульянина"
+        ],
+        "extra": [
+          "у",
+          "лянина"
+        ],
+        "ratio": 0.88
       }
     },
     "M26_26": {
@@ -17814,60 +17830,57 @@
       "source_text": "ru_E2_E3",
       "alignment": "src/narrator/M2.office_door.look.align.json",
       "speaker": "narrator",
-      "text": "Изнутри контора заперта: засов в скобах. Дверь дубовая — не высадишь.",
-      "text_sha1": "cb1bc7ce34804f9b6a4d0075a4eb34f9cb69b85b",
+      "text": "Не открыть: засов изнутри задвинут. Дубовую дверь не выломаешь.",
+      "text_sha1": "94a57c48a76a56db42238ba95d1c19baad4c5a41",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.45,
+        "stability": 0.5,
         "similarity_boost": 0.75
       },
       "file": "narrator/M2.office_door.look.ogg",
       "source": "src/narrator/M2.office_door.look.mp3",
-      "voice_text": "Изнутри контора заперта: засов в скобах. Дверь дубовая — не высадишь.",
-      "voice_sha1": "cb1bc7ce34804f9b6a4d0075a4eb34f9cb69b85b",
+      "voice_text": "Не открыть: засов изнутри задвинут… Дубовую дверь не выломаешь.",
+      "voice_sha1": "caa09747d05e403a86505e8695521f2029b1a03d",
       "tags": [],
-      "characters": 69,
+      "characters": 63,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.15,
+      "duration_s": 5.7,
       "lufs": -17.0,
-      "true_peak_db": -4.5,
-      "gain_db": -2.6,
+      "true_peak_db": -5.4,
+      "gain_db": -3.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.4,
+      "source_lufs": -13.5,
       "source_true_peak_db": -1.9,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T22:32:05+00:00",
-      "run": "40965675143",
-      "adopted_from": "probe/K/K067_C",
+      "generated_at": "2026-10-30T00:54:06+00:00",
+      "run": "40982280283",
+      "adopted_from": "probe/K3/W024_4",
       "api": {
-        "history_item_id": "EXmLezNSDnA46Tu16DA6",
-        "character_cost": "30",
+        "history_item_id": "a3OoCw1RxuFHrdLK00JM",
+        "character_cost": "28",
         "previous_text": "",
-        "probe_run": "40953402085"
+        "probe_run": "40979686835"
       },
       "stt": {
         "model": "scribe_v2",
-        "text": "Изнутри контора заперта . Дверь дубовая, не высадишь",
+        "text": "Не открыть. Засов изнутри задвинут. Дубовую дверь не выломаешь",
         "words": [
-          "Изнутри",
-          "контора",
-          "заперта",
-          ".",
-          "Дверь",
-          "дубовая,",
+          "Не",
+          "открыть.",
+          "Засов",
+          "изнутри",
+          "задвинут.",
+          "Дубовую",
+          "дверь",
           "не",
-          "высадишь"
+          "выломаешь"
         ],
-        "missing": [
-          "засов",
-          "в",
-          "скобах"
-        ],
+        "missing": [],
         "extra": [],
-        "ratio": 0.824
+        "ratio": 1.0
       }
     },
     "M2.office_door.use": {

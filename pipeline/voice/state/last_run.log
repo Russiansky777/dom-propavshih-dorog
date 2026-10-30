@@ -1,18 +1,14 @@
-run 40981759016 2026-10-30T00:50:35Z requests: pipeline/requests/voice_K4_adopt.json
+run 40982280283 2026-10-30T00:54:04Z requests: pipeline/requests/voice_K4b_adopt.json
 ключ: есть, длина 51, формат sk_…: да
 план: creator (active), израсходовано 115044 из 124889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_K4_adopt.json
-  M26_25                                   ← W016_4: 7.18 с, -16.9 LUFS
-  H2d.office_mirror.view_again             ← W017_1: 4.69 с, -16.9 LUFS
-  M16s_1                                   ← W018_4: 5.64 с, -17.1 LUFS
-  M22_12                                   ← W019_1: 4.34 с, -16.8 LUFS
-  agata:O1.enter.winter                    ← W020_4: 4.40 с, -17.0 LUFS
-  M23b_1                                   ← W023_4: 2.37 с, -16.9 LUFS
-[adopt K3] в игру 6, ошибок 0
+=== pipeline/requests/voice_K4b_adopt.json
+  M26_25                                   ← W016_3: 7.34 с, -17.0 LUFS
+  M12_0                                    ← W022_3: 3.89 с, -17.0 LUFS
+  M2.office_door.look                      ← W024_4: 5.70 с, -17.0 LUFS
+[adopt K3] в игру 3, ошибок 0
   предупреждение: ru/M03_5: подача -23.2 LUFS до нормализации — -7.0 LU от медианы agata (-16.2); допустимо -6…+4 (нарочно тихая) — в списке перезаписи после H59
-  предупреждение: ru/M12_0: подача -10.9 LUFS до нормализации — +5.3 LU от медианы agata (-16.2); допустимо -4…+4 — в списке перезаписи после H59
   предупреждение: ru/M21_0_then0: подача -22.6 LUFS до нормализации — -6.4 LU от медианы agata (-16.2); допустимо -4…+4 — в списке перезаписи после H59
   предупреждение: ru/H2d.nina_mirror.knock_first: подача -19.2 LUFS до нормализации — -5.1 LU от медианы narrator (-14.1); допустимо -4…+4 — в списке перезаписи после H59
 validate_voice: манифесты: ru 766 (766 актуальных); сцены к озвучке: M01, M02, M03, M04, M05, M06, M07, M08, M09, M09b, M09s, M10, M11, M12, M13, M13a, M14, M15, M15a, M15s, M16, M16s, M17, M18, M18p, M19, M19c, M20, M21, M21b, M22, M23a, M23b, M23c, M23d, M24, M25, M26, N01, N02, Q01, Q02, Q03, Q04, Q06, Q07, Q08, Q09; персонажей в cast.json: 12; реплик с тегами: 80; закадровых фраз по правилам voice.json: 800 (с тегами 33), заказаны тексты: ru_E0_E1, ru_E2_E3, ru_E4_E5, ru_Q02_Q06, ru_bag, ru_mechanics
-[voice] validate_voice.py: OK (0 ошибок, 4 предупреждений, strict; самопроверка 25/25)
+[voice] validate_voice.py: OK (0 ошибок, 3 предупреждений, strict; самопроверка 25/25)
