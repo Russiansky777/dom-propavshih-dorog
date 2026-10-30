@@ -1658,6 +1658,46 @@ func _test_wheel_water() -> void:
 			else:
 				right += 1
 	_check(left > 20 and right < left / 8 + 1, "the water pours off the rising left side (%d left, %d right)" % [left, right])
+	# 30.10, 14:30 («воду — до реалистичной»): the pour is continuous clear streams (ribbons drawn with the water shader),
+	# not separate sticks; they leave the lips on the left, hold together for a while, then tear into drops.
+	var pr: Dictionary = ww.probe()
+	_check(int(pr["streams"]) >= 4 and int(pr["stream_pts"]) > 60, "the buckets pour as streams: %d streams, %d parcels in them" % [int(pr["streams"]), int(pr["stream_pts"])])
+	var streams_item = ww.get_node_or_null("Streams")
+	_check(streams_item != null and streams_item.material is ShaderMaterial and (streams_item.material as ShaderMaterial).shader.resource_path.ends_with("wheel_water_ribbon.gdshader"),
+		"the streams are drawn by the water shader (the background through them, a sky highlight)")
+	var foam_item = ww.get_node_or_null("Foam")
+	_check(foam_item != null and foam_item.material is ShaderMaterial, "the foam under the wheel is lace (noise shader), not flat discs")
+	# Smooth at any frame rate: parcels that leave in one long frame get their own head start — never two on one spot
+	# (a pile-up drew saw-tooth shards in the first try).
+	var piled := 0
+	var pairs := 0
+	var on_left := 0
+	var on_right := 0
+	for key in ww.get("_streams"):
+		var pts: Array = ww.get("_streams")[key]["pts"]
+		for j in range(1, pts.size()):
+			if bool(pts[j][6]) and bool(pts[j - 1][6]):
+				pairs += 1
+				if (pts[j][0] as Vector2).distance_to(pts[j - 1][0]) < 0.02:
+					piled += 1
+		for q in pts:
+			if bool(q[6]):
+				if (q[0] as Vector2).x < hub.x:
+					on_left += 1
+				else:
+					on_right += 1
+	_check(pairs > 40 and piled == 0, "no parcels piled on one spot in a stream (%d of %d neighbours)" % [piled, pairs])
+	_check(on_left > 40 and on_right == 0, "the streams hang off the rising left side (%d left, %d right)" % [on_left, on_right])
+	# A slow frame (as in the web build on a weak machine): one 0.05-s step lets several parcels out — they are spread
+	# along their fall, not stacked.
+	ww.call("_step", 0.05, false)
+	piled = 0
+	for key in ww.get("_streams"):
+		var pts2: Array = ww.get("_streams")[key]["pts"]
+		for j in range(1, pts2.size()):
+			if bool(pts2[j][6]) and bool(pts2[j - 1][6]) and (pts2[j][0] as Vector2).distance_to(pts2[j - 1][0]) < 0.02:
+				piled += 1
+	_check(piled == 0, "after a 50-ms frame the new parcels are spread out too (%d piled)" % piled)
 	# The pond let down: the wheel stands, nothing pours, the node is hidden.
 	gs.set_flag("pond_lowered", true)
 	await _frames(3)
