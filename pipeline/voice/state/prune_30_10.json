@@ -1,0 +1,25 @@
+{
+  "set": "prune_30_10",
+  "runs": [
+    {
+      "run": "41078034332",
+      "at": "2026-10-30T15:12:11+00:00",
+      "request": "pipeline/requests/voice_prune_30_10.json",
+      "synthesized": [],
+      "reprocessed": [],
+      "characters_text": 0,
+      "failed": [],
+      "pruned": [
+        "M03_2_then0 (нет в сценах)",
+        "M03_2_then1 (нет в сценах)",
+        "M09b_0 (текст изменён)",
+        "M16s_0 (текст изменён)",
+        "M23d_3 (текст изменён)",
+        "agata:O1.board.use (текст изменён)",
+        "pelageya:R1d.pelageya.wait_water (текст изменён)"
+      ],
+      "subscription_before": null,
+      "subscription_after": null
+    }
+  ]
+}

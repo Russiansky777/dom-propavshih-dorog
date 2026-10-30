@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-30T14:26:26+00:00",
+  "updated_at": "2026-10-30T15:12:11+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -1236,106 +1236,6 @@
         }
       }
     },
-    "M03_2_then0": {
-      "scene": "M03",
-      "index": 2,
-      "then": 0,
-      "alignment": "src/M03_2_then0.align.json",
-      "speaker": "agata",
-      "text": "А ты кто такой будешь?",
-      "text_sha1": "01c8ae51712737db6b92cf2061da36b254fe8cc0",
-      "voice_id": "ReYqW64ePwZHQReEArbt",
-      "voice_name": "Agata",
-      "model_id": "eleven_v4",
-      "voice_settings": {
-        "stability": 0.35,
-        "similarity_boost": 0.75
-      },
-      "file": "M03_2_then0.ogg",
-      "source": "src/M03_2_then0.mp3",
-      "voice_text": "А ты КТО ТАКОЙ будешь?",
-      "voice_sha1": "74bd2c05a377d2ebd997a4626f87ee48652bd00f",
-      "tags": [],
-      "characters": 22,
-      "loudness_target_lufs": -17.0,
-      "duration_s": 1.67,
-      "lufs": -17.0,
-      "true_peak_db": -5.4,
-      "gain_db": -3.5,
-      "limiter_extra_db": 0.0,
-      "source_lufs": -13.5,
-      "source_true_peak_db": -1.9,
-      "vorbis_q": 7,
-      "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T23:53:46+00:00",
-      "run": "40975795968",
-      "adopted_from": "probe/K2/Q002_1",
-      "api": {
-        "history_item_id": "GsRzyfs0Ob9cX3BFOCiN",
-        "character_cost": "10",
-        "previous_text": "Мур… Я тут, на печи, лежу.",
-        "probe_run": "40969602571"
-      },
-      "stt": {
-        "model": "scribe_v2",
-        "text": "А ты кто такой будешь?",
-        "words": [
-          "А",
-          "ты",
-          "кто",
-          "такой",
-          "будешь?"
-        ],
-        "missing": [],
-        "extra": [],
-        "ratio": 1.0
-      }
-    },
-    "M03_2_then1": {
-      "scene": "M03",
-      "index": 2,
-      "then": 1,
-      "alignment": "src/M03_2_then1.align.json",
-      "speaker": "tikhon",
-      "text": "Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.",
-      "text_sha1": "b00091036c197b1549152cdd7a6a2b54feab6e9d",
-      "voice_id": "RRgQuGjVvCeyNderlonu",
-      "voice_name": "CAT-2",
-      "model_id": "eleven_v4",
-      "voice_settings": {
-        "stability": 0.6,
-        "similarity_boost": 0.8
-      },
-      "file": "M03_2_then1.ogg",
-      "source": "src/M03_2_then1.mp3",
-      "voice_text": "Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.",
-      "voice_sha1": "b00091036c197b1549152cdd7a6a2b54feab6e9d",
-      "tags": [],
-      "characters": 87,
-      "loudness_target_lufs": -17.0,
-      "duration_s": 8.03,
-      "lufs": -17.1,
-      "true_peak_db": -4.7,
-      "gain_db": -0.4,
-      "limiter_extra_db": 0.0,
-      "source_lufs": -16.6,
-      "source_true_peak_db": -4.3,
-      "vorbis_q": 7,
-      "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T17:59:40+00:00",
-      "run": "40926041525",
-      "api": {
-        "request_id": "ks1SzyqsQgEQxHNEo85L",
-        "history_item_id": "eQmjNIlHRPBl4dcZpBS1",
-        "character_cost": "38",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3960193955
-        }
-      }
-    },
     "M03_3": {
       "scene": "M03",
       "index": 3,
@@ -1380,7 +1280,8 @@
           "language_code": "ru",
           "seed": 3350123787
         }
-      }
+      },
+      "stale": "текст изменён"
     },
     "M03_4": {
       "scene": "M03",
@@ -2667,50 +2568,6 @@
         "sent": {
           "language_code": "ru",
           "seed": 2231510328
-        }
-      }
-    },
-    "M09b_0": {
-      "scene": "M09b",
-      "index": 0,
-      "alignment": "src/M09b_0.align.json",
-      "speaker": "agata",
-      "text": "У Дуни в мастерской стойка под ваше зеркало. Вдруг оно контору покажет? И колокол ваш там висит, мельничный.",
-      "text_sha1": "483d0d0074a30dc5be7c4ab13f9c679af7bcb898",
-      "voice_id": "ReYqW64ePwZHQReEArbt",
-      "voice_name": "Agata",
-      "model_id": "eleven_v4",
-      "voice_settings": {
-        "stability": 0.55,
-        "similarity_boost": 0.75
-      },
-      "file": "M09b_0.ogg",
-      "source": "src/M09b_0.mp3",
-      "voice_text": "У Дуни в мастерской стойка под ваше зеркало. Вдруг оно контору покажет? И колокол ваш там висит, мельничный.",
-      "voice_sha1": "483d0d0074a30dc5be7c4ab13f9c679af7bcb898",
-      "tags": [],
-      "characters": 108,
-      "loudness_target_lufs": -17.0,
-      "duration_s": 7.48,
-      "lufs": -16.8,
-      "true_peak_db": -4.1,
-      "gain_db": -1.8,
-      "limiter_extra_db": 0.0,
-      "source_lufs": -15.2,
-      "source_true_peak_db": -2.3,
-      "vorbis_q": 7,
-      "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-25T16:12:55+00:00",
-      "run": "40210445300",
-      "api": {
-        "request_id": "Jiu2wXnJ2hsydUHa7pn7",
-        "history_item_id": "dsFx3Ndt2sJ5T0sDXaJR",
-        "character_cost": "48",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1340370868
         }
       }
     },
@@ -4313,50 +4170,6 @@
           "плети"
         ],
         "ratio": 0.952
-      }
-    },
-    "M16s_0": {
-      "scene": "M16s",
-      "index": 0,
-      "alignment": "src/M16s_0.align.json",
-      "speaker": "narrator",
-      "text": "Впервые за год тот берег не чёрным силуэтом виден: белеют крыши, снег по берегу лежит.",
-      "text_sha1": "63d465efac12a82dfc59ab69ddb9826af1e3549a",
-      "voice_id": "kPaCtwsoLpkcqnqv9PyA",
-      "voice_name": "ZAKADR",
-      "model_id": "eleven_v4",
-      "voice_settings": {
-        "stability": 0.65,
-        "similarity_boost": 0.75
-      },
-      "file": "M16s_0.ogg",
-      "source": "src/M16s_0.mp3",
-      "voice_text": "Впервые за год тот берег не чёрным силуэтом виден: белеют крыши, снег по берегу лежит.",
-      "voice_sha1": "63d465efac12a82dfc59ab69ddb9826af1e3549a",
-      "tags": [],
-      "characters": 86,
-      "loudness_target_lufs": -17.0,
-      "duration_s": 7.05,
-      "lufs": -17.0,
-      "true_peak_db": -4.6,
-      "gain_db": -2.1,
-      "limiter_extra_db": 0.0,
-      "source_lufs": -14.9,
-      "source_true_peak_db": -2.6,
-      "vorbis_q": 7,
-      "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-25T18:36:45+00:00",
-      "run": "40221867838",
-      "api": {
-        "request_id": "xAl086WvaMBR5dklpAWE",
-        "history_item_id": "FSmokPvHJChIVm9CllyQ",
-        "character_cost": "38",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2944480228
-        }
       }
     },
     "M16s_1": {
@@ -9915,50 +9728,6 @@
         "sent": {
           "language_code": "ru",
           "seed": 3127698946
-        }
-      }
-    },
-    "M23d_3": {
-      "scene": "M23d",
-      "index": 3,
-      "alignment": "src/M23d_3.align.json",
-      "speaker": "narrator",
-      "text": "Долго Тихон молчит. Потом встаёт и перебирается повыше, на самый верх печи.",
-      "text_sha1": "769a61991d815848499ec117f65953cc2a022358",
-      "voice_id": "kPaCtwsoLpkcqnqv9PyA",
-      "voice_name": "ZAKADR",
-      "model_id": "eleven_v4",
-      "voice_settings": {
-        "stability": 0.65,
-        "similarity_boost": 0.75
-      },
-      "file": "M23d_3.ogg",
-      "source": "src/M23d_3.mp3",
-      "voice_text": "Долго Тихон молчит. Потом встаёт и перебирается повыше, на самый верх печи.",
-      "voice_sha1": "769a61991d815848499ec117f65953cc2a022358",
-      "tags": [],
-      "characters": 75,
-      "loudness_target_lufs": -17.0,
-      "duration_s": 6.62,
-      "lufs": -17.0,
-      "true_peak_db": -4.0,
-      "gain_db": -2.3,
-      "limiter_extra_db": 0.0,
-      "source_lufs": -14.7,
-      "source_true_peak_db": -1.8,
-      "vorbis_q": 7,
-      "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-25T12:31:09+00:00",
-      "run": "40193152963",
-      "api": {
-        "request_id": "S1mTWGs4CsK86IUrxRWU",
-        "history_item_id": "UkxgjbpMVrZHZQlgqXQ6",
-        "character_cost": "33",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4163835079
         }
       }
     },
@@ -25515,52 +25284,6 @@
         }
       }
     },
-    "agata:O1.board.use": {
-      "kind": "narration",
-      "key": "O1.board.use",
-      "source_text": "ru_E0_E1",
-      "alignment": "src/agata_thoughts/O1.board.use.align.json",
-      "profile": "inner",
-      "speaker": "agata",
-      "text": "Почерк незнакомый — кто-то тут задачу до конца довёл. Может, увидят послание-то моё.",
-      "text_sha1": "2d825731f683ec75b878620603650f52ab676c7e",
-      "voice_id": "ReYqW64ePwZHQReEArbt",
-      "voice_name": "Agata",
-      "model_id": "eleven_v4",
-      "voice_settings": {
-        "stability": 0.6,
-        "similarity_boost": 0.75
-      },
-      "file": "agata_thoughts/O1.board.use.ogg",
-      "source": "src/agata_thoughts/O1.board.use.mp3",
-      "voice_text": "Почерк незнакомый — кто-то тут задачу до конца довёл. Может, увидят послание-то моё.",
-      "voice_sha1": "2d825731f683ec75b878620603650f52ab676c7e",
-      "tags": [],
-      "characters": 84,
-      "loudness_target_lufs": -17.0,
-      "duration_s": 6.29,
-      "lufs": -17.0,
-      "true_peak_db": -1.9,
-      "gain_db": 1.0,
-      "limiter_extra_db": 0.0,
-      "source_lufs": -18.0,
-      "source_true_peak_db": -2.4,
-      "vorbis_q": 7,
-      "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-25T12:33:19+00:00",
-      "run": "40193152963",
-      "api": {
-        "request_id": "mn2c3EH8MGJZMyvCJJcJ",
-        "history_item_id": "HLCBPGtIwIPfckFyvMSo",
-        "character_cost": "37",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3459484923
-        }
-      }
-    },
     "agata:O1.enter.winter": {
       "kind": "narration",
       "key": "O1.enter.winter",
@@ -33630,52 +33353,6 @@
         "sent": {
           "language_code": "ru",
           "seed": 706054225
-        }
-      }
-    },
-    "pelageya:R1d.pelageya.wait_water": {
-      "kind": "narration",
-      "key": "R1d.pelageya.wait_water",
-      "source_text": "ru_E2_E3",
-      "alignment": "src/character_lines/R1d.pelageya.wait_water.align.json",
-      "as_line": true,
-      "speaker": "pelageya",
-      "text": "Вода пошла. Покажется плита — со стопора канат сниму, лодкой к опоре свезу. Его на кольцо с воды заводить надо.",
-      "text_sha1": "793f2fa1330dba2ef63a8e5987c0e11eac5aa431",
-      "voice_id": "mIbPOSXtLeiaroofXc7O",
-      "voice_name": "PELAGEYA",
-      "model_id": "eleven_v4",
-      "voice_settings": {
-        "stability": 0.5,
-        "similarity_boost": 0.75
-      },
-      "file": "character_lines/R1d.pelageya.wait_water.ogg",
-      "source": "src/character_lines/R1d.pelageya.wait_water.mp3",
-      "voice_text": "Вода пошла. Покажется плита — со сто́пора канат сниму, лодкой к опоре свезу. Его на кольцо с воды заводить надо.",
-      "voice_sha1": "9f104bef0f2292ce0e67cfcbcca1f190c3535872",
-      "tags": [],
-      "characters": 112,
-      "loudness_target_lufs": -17.0,
-      "duration_s": 8.22,
-      "lufs": -17.0,
-      "true_peak_db": -4.0,
-      "gain_db": -0.2,
-      "limiter_extra_db": 0.0,
-      "source_lufs": -16.8,
-      "source_true_peak_db": -3.9,
-      "vorbis_q": 7,
-      "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-24T14:55:03+00:00",
-      "run": "40103298522",
-      "api": {
-        "request_id": "RT3oEUmm3RESu2ZEbMQY",
-        "history_item_id": "Vb3JK8tNMDHIoTFD1wuh",
-        "character_cost": "49",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1958873763
         }
       }
     },
