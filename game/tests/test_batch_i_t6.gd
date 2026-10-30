@@ -19,7 +19,7 @@ var main_node: Node = null
 const APPLIED := "Docs/review_chatgpt_2026-10-25_r3/review3_applied.json"
 ## Lines the Director rewrote later, in his playthrough of 29.10 (batch J, Docs/FEEDBACK_DIRECTOR_2026-10-29_map.md):
 ## review-3's text no longer applies to them — the J tests pin the new ones.
-const J_SUPERSEDED := [21, 22, 23, 24, 25, 26, 27, 28, 32, 34, 35, 41, 42, 47, 48, 80, 81, 96]   # 32: M4.gate.key — J (Р5): ворот заржавел, «теперь можно поворачивать» снято
+const J_SUPERSEDED := [21, 22, 23, 24, 25, 26, 27, 28, 32, 34, 35, 41, 42, 47, 48, 80, 81, 96, 18, 95]   # 32: M4.gate.key — J (Р5): ворот заржавел, «теперь можно поворачивать» снято; 18 (доска) и 95 (снег на том берегу) — тексты, утверждённые Директором 30.10 на странице сверки (F10, F07)
 
 
 func _initialize() -> void:
@@ -175,7 +175,7 @@ func _test_director_words() -> void:
 	_check(water.contains("Мамино зеркало") and water.contains("Струбцину"), "the hint after the water stays (Director, page 19:01): %s" % water)
 	_check(sd.text("@H1.after_mirror.tikhon_2").contains("покуда день — делами займись") and sd.text("@H1.after_mirror.tikhon_2").contains("Печь я догляжу"),
 		"Tikhon after the mirror: the Director's words of 29.10 (стр. 116: not «ляг поспи» in the daytime)")
-	_check(sd.text("@O1.board.use").contains("Может, увидят послание-то моё"), "the board: map 59")
+	_check(sd.text("@O1.board.use").contains("Вот бы и моё послание кто прочёл"), "the board: map 59 → the Director's approved text of 30.10 (F10)")
 	_check(sd.text("@R1.pelageya.manager").contains("в тот вечер, перед паводком, год назад"), "Pelageya on the manager: map 23")
 	_check(sd.text("@M1.pavel.before_agree").ends_with("Тогда и поговорим."), "Pavel before agreeing: map 79")
 	var said := {
