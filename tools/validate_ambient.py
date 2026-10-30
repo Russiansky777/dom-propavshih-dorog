@@ -335,6 +335,28 @@ def check_room(path: Path, idx: dict, flags: set[str]) -> None:
                 err(f"{where}.sources[{j}]: rate outside 1..400 drops/s")
         if not any(k in w for k in ("pour", "entry", "sources", "foam")):
             err(f"{where}: nothing to draw (pour / entry / sources / foam)")
+        # 30.10 (вода у колеса — сплошные струи): `stream` — how the pour and the spouts are drawn as ribbons;
+        # `foam.style` — "lace" (noise-shader froth) or the soft ellipses by default.
+        st = w.get("stream", {})
+        known = {"emit_hz", "per_bucket", "width_px", "break_s", "wobble_hz", "u_per_s", "refract_px", "highlight",
+                 "body_mix", "aeration", "aer_lip", "exit_churn_deg"}
+        for k in st:
+            if k not in known and not k.startswith("_"):
+                err(f"{where}.stream: unknown key {k!r}")
+        if st:
+            if not 10 <= float(st.get("emit_hz", 50)) <= 120:
+                err(f"{where}.stream.emit_hz outside 10..120 parcels/s (fewer — the ribbon turns angular; more — wasted)")
+            if not 1 <= int(st.get("per_bucket", 1)) <= 4:
+                err(f"{where}.stream.per_bucket outside 1..4")
+            b = st.get("break_s", [0.16, 0.42])
+            if not (isinstance(b, list) and len(b) == 2 and 0.05 <= float(b[0]) <= float(b[1]) <= 2.0):
+                err(f"{where}.stream.break_s must be [min, max] seconds, 0.05 ≤ min ≤ max ≤ 2")
+            for k, lo, hi in (("body_mix", 0, 1), ("aeration", 0, 1), ("aer_lip", 0, 1), ("highlight", 0, 1.5), ("refract_px", 0, 12)):
+                if k in st and not lo <= float(st[k]) <= hi:
+                    err(f"{where}.stream.{k} {st[k]} outside {lo}..{hi}")
+        fs = w.get("foam", {}).get("style", "")
+        if fs not in ("", "lace"):
+            err(f"{where}.foam.style {fs!r}: only \"lace\" (or none — soft ellipses)")
     for i, f in enumerate(spec.get("fog", [])):
         where = f"{rid}.fog[{f.get('id', i)}]"
         uniq(f, where)
