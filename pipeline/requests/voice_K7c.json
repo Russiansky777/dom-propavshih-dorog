@@ -1,0 +1,76 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 473,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Партия K7c (30.10, 15:21): по заметкам к дублям — «избу́» с ударением на последний слог, «Сыро» без акцента на «потом», с акцентом на «поговорим»; по 3 записи (W054–W055)",
+ "items": [
+  {
+   "id": "W054_1",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[sighs] Платок-то мокрый с лежанки прибери… От него сырость на всю избу́.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W054_2",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sighs] Платок-то мокрый с лежанки прибери… От него сырость на всю избу́.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7"
+  },
+  {
+   "id": "W054_3",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[sighs] Платок-то мокрый с лежанки прибери… От него сырость на всю ИЗБУ́.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W055_1",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[sighs] Сыро… Печь сперва затопи — потом ПОГОВОРИМ.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W055_2",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sighs] Сыро… Печь сперва затопи — потом ПОГОВОРИ́М.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "st 0.7"
+  },
+  {
+   "id": "W055_3",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[sighs] Сыро… Печь сперва затопи, потом поговори́м.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  }
+ ]
+}
