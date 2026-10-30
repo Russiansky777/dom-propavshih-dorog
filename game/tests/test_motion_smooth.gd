@@ -118,45 +118,39 @@ func _run() -> void:
 	quit(0 if failed == 0 else 1)
 
 
-## Short walks from a stand facing across the way (60–100° off; M1 walk 6 set off 90° off, 1.1 m away): how far she
-## goes on past the point after coming closest to it, at most (m) — and the most she then turns (rad).
-func _short_walks(gs: Node, rm: Node, player: Node2D) -> Array:
-	var worst_turn := 0.0
-	var worst_past := 0.0
-	for k in 12:
-		gs.reset()
-		for f in ["done_M01", "done_M02", "house_unlocked", "done_M03", "met_tikhon", "stove_lit"]:
-			gs.set_flag(f, true)
-		rm.change_room("M1", "default", Vector2(991, 1031))
-		for i in 10:
-			await process_frame
-		var a := -2.6 + (k % 4) * 0.35
-		var dist := 90.0 + (k / 4) * 20.0
-		var kf: float = player.floor_foreshortening()
-		var goal: Vector2 = player.global_position + Vector2(cos(a), sin(a) * kf) * dist
-		var off: float = [1.05, 1.57, -1.05, -1.57][k % 4]
-		var start_yaw: float = player._yaw_for_screen(goal - player.global_position) + off
-		player.yaw3d = start_yaw
-		player.yaw3d_target = start_yaw
-		for i in 20:
-			await process_frame
-		player.click_at(goal)
-		var closest := INF
-		var turn_after := 0.0
-		var last: float = player.yaw3d
-		var guard := 0
-		var ppm_s: float = player.view3d.ppm * absf(player.scale.y)
-		while (player.is_walking() or absf(player._yaw_v) > 0.05) and guard < 600:
-			await process_frame
-			guard += 1
-			var d: float = player.global_position.distance_to(goal)
-			closest = minf(closest, d)
-			if d > closest + 1.0:
-				turn_after += absf(angle_difference(last, player.yaw3d))
-				worst_past = maxf(worst_past, (d - closest) / ppm_s)
-			last = player.yaw3d
-		worst_turn = maxf(worst_turn, turn_after)
-	return [worst_turn, worst_past]
+## A walk set up at its end: walking towards a point 100 px off, then on its last leg 9 px past the end with the
+## nearest so far 7 px. Returns whether she has arrived two frames later.
+func _pass_by(gs: Node, rm: Node, player: Node2D, on: bool) -> bool:
+	gs.reset()
+	for f in ["done_M01", "done_M02", "house_unlocked", "done_M03", "met_tikhon", "stove_lit"]:
+		gs.set_flag(f, true)
+	rm.change_room("M1", "default", Vector2(900, 800))
+	for i in 10:
+		await process_frame
+	var walk_rt: Dictionary = player._rt.get("walk", {})
+	var keep = walk_rt.get("pass_m", null)
+	if not on:
+		walk_rt["pass_m"] = 0.0
+	var goal: Vector2 = player.global_position + Vector2(-100, 0)
+	player.click_at(goal)
+	var guard := 0
+	while (player.nav_agent.get_current_navigation_path().size() < 2 or not player.is_walking()) and guard < 120:
+		await process_frame
+		guard += 1
+	var path: PackedVector2Array = player.nav_agent.get_current_navigation_path()
+	var end: Vector2 = path[path.size() - 1]
+	var leg: Vector2 = (end - path[path.size() - 2]).normalized()
+	player.global_position = end + leg * 6.0 + leg.orthogonal() * 7.0   # 9.2 px off the end, past it
+	player._closest_px = 7.0
+	player._path_seg = path.size() - 2
+	await process_frame
+	await process_frame
+	var arrived: bool = not player.is_walking()
+	if keep == null:
+		walk_rt.erase("pass_m")
+	else:
+		walk_rt["pass_m"] = keep
+	return arrived
 
 
 ## The turning a walk's path asks for (rad): from the yaw she stands at to its first leg, then every bend, all of it
@@ -376,9 +370,9 @@ func _test_agata() -> void:
 	print(line)
 	# circling (Director 19:16): 60 walks to random points in four rooms — the longest one-way turn is no more than the
 	# path itself asks for (turning to its first leg, then its bends) plus what braking takes (≤ 120°); circling
-	# round the point was 331° for a path needing 44°. A walk that ends in another room (a door) counts until the
-	# room changes — the new room's start yaw is not a turn. (The bare 260° bound failed on a legal path in M1:
-	# a half turn to the first leg and a 62° bend on, 259–267° as navigation timing varied.)
+	# round the point was 331° for a path needing 44°, round a corner of the path 228–386° for 44° (M1 walk 2, when
+	# the navigation timing let her pass the corner wide). A walk that ends in another room (a door) counts until the
+	# room changes — the new room's start yaw is not a turn.
 	var wrng := RandomNumberGenerator.new()
 	wrng.seed = 11
 	var walks := 0
@@ -424,20 +418,30 @@ func _test_agata() -> void:
 			_check(max_run <= need + deg_to_rad(120.0), "agata %s walk %d: turned %.0f° one way for a path asking %.0f° (circling)" % [room[0], wk, rad_to_deg(max_run), rad_to_deg(need)])
 	print("        agata: %d walks, the longest one-way turn %.0f°, at most %.0f° beyond what its path asks" % [walks, rad_to_deg(longest), rad_to_deg(worst_excess)])
 	_check(walks >= 30, "only %d of 60 clicks became walks" % walks)
-	# passing by: short walks set off across the way curve in and miss the point by a few centimetres; she must not
-	# go on past it, stop, turn round and walk back (M1 walk 6: 223° one way for a path asking 77°).
-	# Self-check: with passing-by off (pass_m 0) the same walks do overshoot.
-	var on_pass: Array = await _short_walks(gs, rm, player)
-	var walk_rt: Dictionary = player._rt.get("walk", {})
-	var keep_pass = walk_rt.get("pass_m", null)
-	walk_rt["pass_m"] = 0.0
-	var off_pass: Array = await _short_walks(gs, rm, player)
-	if keep_pass == null:
-		walk_rt.erase("pass_m")
-	else:
-		walk_rt["pass_m"] = keep_pass
-	print("        short walks set off across the way: went on past the point %.0f mm at most (turning %.0f° after); with passing-by off %.0f mm (%.0f°)" % [on_pass[1] * 1000.0, rad_to_deg(on_pass[0]), off_pass[1] * 1000.0, rad_to_deg(off_pass[0])])
-	_check(on_pass[1] <= 0.03, "a short walk set off across the way goes on %.0f mm past its point (to stop, turn round and come back; ≤ 30)" % (on_pass[1] * 1000.0))
-	_check(off_pass[1] > 0.06, "self-check: without passing-by no short walk went past its point (%.0f mm) — the case is not reproduced" % (off_pass[1] * 1000.0))
+	# following the path (corners): the point she heads for is ahead of her along the path even when she has gone a
+	# little wide of a corner — the agent's corner was then behind her and she turned back to it (M1: 228–386°)
+	var corner := PackedVector2Array([Vector2(0, 0), Vector2(100, 0), Vector2(100, 100)])
+	var wide := Vector2(112, 14)    # past the corner, 12 px wide of it: the agent never came within its 10 px
+	var pf: Array = PS.path_follow(corner, wide, 0, 30.0)
+	var ahead: Vector2 = (pf[0] as Vector2) - wide
+	_check(int(pf[1]) == 1 and ahead.dot(Vector2(0, 1)) > 0.0, "past a corner, wide of it, the path point she heads for is not ahead along the next leg (%s, segment %d)" % [str(pf[0]), int(pf[1])])
+	_check((Vector2(100, 0) - wide).dot(Vector2(0, 1)) < 0.0, "self-check: the corner itself is behind her there (what she used to turn back to)")
+	var back: Array = PS.path_follow(corner, Vector2(50, 3), 1, 30.0)
+	_check(int(back[1]) == 1, "a segment reached is never left for an earlier one (%d)" % int(back[1]))
+	var r_prev := INF
+	var decreasing := true
+	for x in [0.0, 30.0, 60.0, 90.0]:
+		var r: float = PS.path_follow(corner, Vector2(x, 4), 0, 30.0)[2]
+		decreasing = decreasing and r < r_prev
+		r_prev = r
+	_check(decreasing and absf(float(PS.path_follow(corner, Vector2(100, 100), 1, 30.0)[2])) < 0.01, "the path left shrinks as she goes and is 0 at its end")
+	# passing by the end: on the last leg, once within pass_m and moving away again, she has arrived (M1 walk 6:
+	# she went on past, turned round and came back — 223° one way). Set up exactly: walking, nearest so far 7 px, now
+	# 9 px off the end (the agent's own tolerance is 6 px). Self-check: with pass_m 0 she walks on.
+	var passed_on := await _pass_by(gs, rm, player, true)
+	var passed_off := await _pass_by(gs, rm, player, false)
+	print("        passing by the end of a walk: arrived %s; with passing-by off %s" % [str(passed_on), str(passed_off)])
+	_check(passed_on, "on the last leg, 9 px past her nearest 7 px to the end, she still walks (goes on past, turns round, comes back)")
+	_check(not passed_off, "self-check: with passing-by off she stops there anyway — the case is not set up")
 	PS.forced_render = ""
 	Engine.max_fps = 0

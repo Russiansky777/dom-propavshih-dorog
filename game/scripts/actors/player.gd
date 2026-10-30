@@ -88,6 +88,10 @@ var _carry_stage: String = ""
 var _settling: bool = false       # logical position arrived; the drawn figure is finishing its steps
 var walk_time: float = 0.0      # game seconds spent in the current walk (probe/measurements)
 var _closest_px: float = INF    # nearest the figure has come to the walk's end (3D: passing by is arriving)
+var _path_seg: int = 0           # 3D: the path segment she has reached (path_follow; never goes back)
+var _path_n: int = 0
+var _path_first := Vector2.INF
+var _path_last := Vector2.INF
 var _distance_walked: float = 0.0
 var _step_phase: int = 0
 var _path_ready: bool = false
@@ -526,6 +530,8 @@ func _start_walk(target: Vector2) -> void:
 	_walking = true
 	walk_time = 0.0
 	_closest_px = INF
+	_path_seg = 0
+	_path_n = 0
 	_lock_start()
 	walk_started.emit(target)
 
@@ -1250,7 +1256,7 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 		var d := Vector2(walk_part.x + turn_part.x, walk_part.z + turn_part.z)
 		var ppm_s := view3d.ppm * absf(scale.y)
 		var mv := Vector2(d.x * ppm_s, d.y * ppm_s * floor_foreshortening())
-		var remaining := global_position.distance_to(_target) if nav_agent.is_navigation_finished() else _remaining_px()
+		var remaining := global_position.distance_to(_target) if nav_agent.is_navigation_finished() else float(path_follow(nav_agent.get_current_navigation_path(), global_position, _path_seg, 0.0)[2])
 		if mv.length() > remaining and remaining < 12.0:
 			mv = mv.normalized() * remaining  # never past the end of the walk
 		var np := global_position + mv
@@ -1290,20 +1296,82 @@ func _walk_step_3d(delta: float) -> void:
 			_cancel_walk()
 		return
 	_path_ready = true
+	nav_agent.get_next_path_position()   # the agent keeps its own bookkeeping (path updates, finished)
+	var path := nav_agent.get_current_navigation_path()
+	var n := path.size()
+	if n != _path_n or path[0] != _path_first or path[n - 1] != _path_last:
+		_path_n = n
+		_path_first = path[0]
+		_path_last = path[n - 1]
+		_path_seg = 0
+	var px_m := view3d.ppm * absf(scale.y)
+	var pf := path_follow(path, global_position, _path_seg, _rtf("walk", "lookahead_m", 0.25) * px_m)
+	_path_seg = int(pf[1])
+	var rem: float = pf[2]
+	var goal_pt: Vector2 = path[n - 1]
+	var d_goal := global_position.distance_to(goal_pt)
+	if rem <= nav_agent.target_desired_distance or d_goal <= nav_agent.target_desired_distance:
+		_arrive()   # at the end of the path, whatever corners the agent still counts
+		return
 	# passing by (Director 30.10, 19:16 «крутится на 360, прежде чем повернуться»): a short walk that sets off facing
 	# away curves in, misses the point by a few centimetres, goes on past it, stops, turns round and walks back —
 	# a half turn more for nothing. On the last leg, once she has come within pass_m and moves away again, she is
 	# there.
-	var d_goal := global_position.distance_to(_target)
-	var pass_px := _rtf("walk", "pass_m", 0.1) * view3d.ppm * absf(scale.y)
+	var pass_px := _rtf("walk", "pass_m", 0.1) * px_m
 	if d_goal < _closest_px:
 		_closest_px = d_goal
-	elif _closest_px < pass_px and d_goal > _closest_px + 0.5 and _remaining_px() <= d_goal + 1.0:
+	elif _closest_px < pass_px and d_goal > _closest_px + 0.5 and _path_seg >= n - 2:
 		_arrive()
 		return
-	var next: Vector2 = nav_agent.get_next_path_position()
-	var to_next := next - global_position
-	_move_3d(to_next, to_next.length(), _remaining_px(), delta)
+	var to_next: Vector2 = (pf[0] as Vector2) - global_position
+	_move_3d(to_next, to_next.length(), rem, delta)
+
+
+## Following the path (Director 30.10 «крутится»): she used to steer at the agent's next corner; a body that turns
+## with its momentum passes a corner a centimetre or two wider than the agent's 10 px, the corner is then behind her,
+## and she stopped, turned round, walked back and missed it again (M1: 228–386° one way for a path asking 44°). Now
+## she heads for a point `lookahead` px ahead of her along the path, measured from where she is nearest to it and
+## never going back past a segment she has reached: it rounds the corners and is always in front of her.
+## Returns [that point, the segment she is on, the path left from her (px), her nearest point on it].
+static func path_follow(path: PackedVector2Array, pos: Vector2, seg_from: int, lookahead: float) -> Array:
+	var n := path.size()
+	if n == 0:
+		return [pos, 0, 0.0, pos]
+	if n == 1:
+		return [path[0], 0, pos.distance_to(path[0]), path[0]]
+	var j0 := clampi(seg_from, 0, n - 2)
+	var best_d := INF
+	var best_j := j0
+	var best_p: Vector2 = path[j0]
+	for j in range(j0, mini(j0 + 3, n - 1)):   # the next few segments only: never back, never across the room
+		var a: Vector2 = path[j]
+		var ab: Vector2 = path[j + 1] - a
+		var t := 0.0 if ab.length_squared() < 1e-6 else clampf((pos - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
+		var q := a + ab * t
+		var d := pos.distance_to(q)
+		if d < best_d - 0.01:
+			best_d = d
+			best_j = j
+			best_p = q
+	var left := lookahead
+	var at := best_p
+	var j := best_j
+	var carrot: Vector2 = path[n - 1]
+	while j < n - 1:
+		var nxt: Vector2 = path[j + 1]
+		var seg := at.distance_to(nxt)
+		if seg >= left and seg > 1e-6:
+			carrot = at + (nxt - at) / seg * left
+			break
+		left -= seg
+		at = nxt
+		j += 1
+	var rem := best_d
+	at = best_p
+	for k in range(best_j, n - 1):
+		rem += at.distance_to(path[k + 1])
+		at = path[k + 1]
+	return [carrot, best_j, rem, best_p]
 
 
 ## Length of the rest of the navigation path from the current position (screen px).

@@ -53,7 +53,10 @@ func _run() -> void:
 				if paths.is_empty() or paths[-1] != ps:
 					paths.append(ps)
 					trace.append("PATH@%d %s" % [guard, ps])
-				if guard % 4 == 0:
+				if room[0] == "M1" and wk == 2:
+					var nx: Vector2 = player.nav_agent.get_next_path_position()
+					trace.append("F%d %s y%.0f tgt%.0f yv%.2f w%.2f next %s idx %d fin %s rem %.0f off %.0f" % [guard, str(player.global_position.round()), rad_to_deg(player.yaw3d), rad_to_deg(player.yaw3d_target), player._yaw_v, player.walk_w, str(nx.round()), player.nav_agent.get_current_navigation_path_index(), str(player.nav_agent.is_navigation_finished()), player._remaining_px(), rad_to_deg(absf(angle_difference(player.yaw3d, player.yaw3d_target)))])
+				elif guard % 4 == 0:
 					trace.append("%.0f,%.0f y%.0f w%.2f" % [player.global_position.x, player.global_position.y, rad_to_deg(player.yaw3d), player.walk_w])
 				if absf(stp) > 1e-4:
 					run = run + absf(stp) if signf(stp) == run_sign else absf(stp)
