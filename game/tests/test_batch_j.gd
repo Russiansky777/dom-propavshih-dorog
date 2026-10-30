@@ -120,6 +120,7 @@ func _run() -> void:
 	await _test("J-E14 the beam end (25.10 стр. 165): the choice «Агата» shows «Агата» cut in the wood, not the painted «Дуня»", _test_beam_agata)
 	await _test("J-P161 sheets in the hands sway so one sees it (29.10 стр. 161; 30.10: ±0.32° was not seen): Nina's letters turn about their middle by ≥0.5°, the writing stays readable", _test_paper_sway)
 	await _test("J-N67 the night by the stove (25.10 стр. 67): after her two lines Agata is asleep — out of sight at «Спи уж», up again in the morning", _test_night_asleep)
+	await _test("J-T145 Tikhon after the news (25.10 стр. 145: «на деле он только выше на печь залезает»): he settles on Agata's bench by the stove, not higher up the stove than his shelf", _test_tikhon_bench)
 	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -1799,4 +1800,19 @@ func _test_night_asleep() -> void:
 		await process_frame
 	_check(at_sleep == "hidden", "at «Спи уж» Agata is not standing by the stove (%s)" % at_sleep)
 	_check(morning_seen and rm.player.visible and gs.has_flag("done_N01"), "in the morning she is up again")
+
+
+func _test_tikhon_bench() -> void:
+	var cfg: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/tikhon.json"))
+	var after: Dictionary = {}
+	var shelf: Dictionary = {}
+	for p in cfg.get("place", {}).get("H1", []):
+		if (p.get("if", []) as Array).has("tikhon_knows_dunya"):
+			after = p
+		elif (p.get("if", []) as Array).has("q04_corner_stove"):
+			shelf = p
+	var f: Array = after.get("feet", [0, 0])
+	_check(not after.is_empty() and float(f[1]) >= float(shelf.get("feet", [0, 9999])[1]), "not higher than his shelf (feet y %s vs %s)" % [str(f[1]), str(shelf.get("feet", [0, 0])[1])])
+	# The bench (лежанка) in front of the stove: its seat x 420–800, y ≈ 560–640 on screen (rooms/H1.json, the scarf on it).
+	_check(float(f[0]) >= 420.0 and float(f[0]) <= 800.0 and float(f[1]) >= 560.0 and float(f[1]) <= 640.0, "on Agata's bench by the stove (feet %s)" % str(f))
 
