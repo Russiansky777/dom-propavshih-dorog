@@ -383,7 +383,11 @@ func start_scene(scene_id: String) -> bool:
 		var sp := String(line.get("speaker", ""))
 		# line_id <scene>_<index>: the stable id of the recorded voice (VoiceDirector, assets/voice/ru).
 		var lb: Dictionary
-		if sp == "narrator":
+		if String(line.get("text", "")).strip_edges() == "" and line.has("then"):
+			# a line taken out but whose follow-ups stay (M23d: the narration said twice): no beat of its own, the
+			# `then` lines keep their ids <scene>_<index>_then<k> and recorded voices
+			lb = {}
+		elif sp == "narrator":
 			# What nobody says (the empty boat goes into the fog): a narration beat inside the scene.
 			lb = {"type": "narration", "scene": scene_id, "line_id": "%s_%d" % [scene_id, i], "text": String(line.get("text", ""))}
 		else:
@@ -391,8 +395,9 @@ func start_scene(scene_id: String) -> bool:
 				"speaker_name": StoryData.character_name(sp), "text": String(line.get("text", ""))}
 			if line.has("to"):
 				lb["to"] = String(line["to"])  # I-T2: whom the speaker turns to (NpcActor partner)
-		lb.merge(cond)
-		beats.append(lb)
+		if not lb.is_empty():
+			lb.merge(cond)
+			beats.append(lb)
 		# Follow-up lines (`then`: [{speaker, text, if/unless}]) — shown right after this one, each by its own
 		# conditions (an optional story's trace in the epilogue). They take no position in mandatory_lines, so adding
 		# one never shifts the recorded voices <scene>_<index> after it; line_id <scene>_<index>_then<k>.

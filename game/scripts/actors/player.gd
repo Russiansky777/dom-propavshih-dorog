@@ -105,6 +105,8 @@ var _hide_mat: ShaderMaterial = null
 var yaw3d: float = 0.0            # body yaw (radians; 0 = towards the viewer, +90° = screen right)
 var yaw3d_target: float = 0.0
 var _yaw_v: float = 0.0           # body yaw speed (rad/s): turns set off and settle softly (Actor3D.turn_step)
+var _yaw_dir: float = 0.0         # the way the body turns to its target (−1/+1; 0 — settled), chosen once per target
+var _yaw_dir_target: float = 0.0
 var walk_w: float = 0.0           # idle(0) ↔ walk(1) blend
 var walk_phase: float = 0.0       # walk cycle phase, unwrapped (whole cycles count up)
 var _turn_step_w: float = 0.0     # stepping while turning on the spot
@@ -545,6 +547,7 @@ func face_screen_dir(v: Vector2) -> void:
 		yaw3d_target = _yaw_for_screen(v)
 		yaw3d = yaw3d_target
 		_yaw_v = 0.0
+		_yaw_dir = 0.0
 	elif sheet != null:
 		direction = sheet.direction_index(v)
 		shown_dir = direction
@@ -568,6 +571,7 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 	walk_w = 0.0
 	_turn_step_w = 0.0
 	_yaw_v = 0.0
+	_yaw_dir = 0.0
 	if view3d != null:
 		view3d.snap_weights()
 	_rm_feet = []
@@ -990,6 +994,7 @@ func set_render_mode(mode: String) -> bool:
 		yaw3d = _yaw_for_row(direction)
 		yaw3d_target = yaw3d
 		_yaw_v = 0.0
+		_yaw_dir = 0.0
 		walk_w = 0.0
 		_turn_step_w = 0.0
 		_act_w = 0.0
@@ -1123,9 +1128,11 @@ func _turn_3d(delta: float) -> void:
 	var diff := angle_difference(yaw3d, yaw3d_target)
 	var sf := maxf(speed_factor, 1.0)
 	var cap := deg_to_rad(_rtf("turn", "max_deg_s", 400.0 if _walking else 300.0)) * sf
-	var r := Actor3D.turn_step(yaw3d, _yaw_v, yaw3d_target, delta, cap, _rtf("turn", "ease_per_s", 9.0) * sf, deg_to_rad(_rtf("turn", "accel_deg_s2", 1500.0)) * sf * sf)
+	var r := Actor3D.turn_step(Vector4(yaw3d, _yaw_v, _yaw_dir, _yaw_dir_target), yaw3d_target, delta, cap, _rtf("turn", "ease_per_s", 9.0) * sf, deg_to_rad(_rtf("turn", "accel_deg_s2", 1500.0)) * sf * sf)
 	yaw3d = r.x
 	_yaw_v = r.y
+	_yaw_dir = r.z
+	_yaw_dir_target = r.w
 	var stepping := not _acting and walk_w < 0.3 and absf(diff) > deg_to_rad(_rtf("turn", "step_above_deg", 50.0))
 	var sw := _rtf("turn", "step_weight", 0.3) if stepping else 0.0
 	_turn_step_w = move_toward(_turn_step_w, sw, delta / 0.2)
@@ -1232,9 +1239,10 @@ func _move_3d(dir: Vector2, seg_len: float, remaining: float, delta: float) -> v
 	var stop_px := _rtf("walk", "stop_m", 0.45) * px_per_m
 	var goal := 1.0 if remaining > stop_px else sqrt(clampf(remaining / maxf(stop_px, 0.001), 0.0, 1.0))
 	var off := absf(angle_difference(yaw3d, yaw3d_target))
-	# facing away from the path: turn first (on the spot, with small steps), then walk off
-	if remaining > stop_px:
-		goal *= clampf((cos(off) - 0.2) / 0.6, 0.0, 1.0)
+	# facing away from the path: turn first (on the spot, with small steps), then walk on — also in the last stretch
+	# (Director 30.10, 19:16 «крутится на 360, прежде чем повернуться»: within stop_m of the end she used to keep
+	# walking while turning towards the point, and circled round it before she faced it)
+	goal *= clampf((cos(off) - 0.2) / 0.6, 0.0, 1.0)
 	if goal > walk_w:
 		walk_w = minf(walk_w + delta * maxf(speed_factor, 1.0) / maxf(_rtf("walk", "accel_s", 0.35), 0.01), goal)
 	else:

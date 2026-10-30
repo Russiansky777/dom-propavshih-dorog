@@ -361,12 +361,31 @@ static func spring(x: float, v: float, target: float, omega: float, dt: float) -
 
 ## One frame of a body turn: the yaw speed follows the speed wanted for the angle left (an eased approach, capped,
 ## and never faster than can be stopped in time) and changes by at most `accel` per second² — a turn sets off and
-## settles softly, whatever the angle. Returns (yaw, yaw speed).
-static func turn_step(yaw: float, yaw_v: float, target: float, delta: float, cap: float, ease: float, accel: float) -> Vector2:
-	var diff := angle_difference(yaw, target)
-	var want := signf(diff) * minf(minf(cap, absf(diff) * ease), sqrt(2.0 * accel * absf(diff)))
-	yaw_v = move_toward(yaw_v, want, accel * delta)
-	return Vector2(wrapf(yaw + yaw_v * delta, -PI, PI), yaw_v)
+## settles softly, whatever the angle. `state` = (yaw, yaw speed, turning way −1/0/+1, target); returns the next state.
+## The way is the cheaper of the two counting the body's momentum — the angle along it, plus braking and coming back
+## when the body turns the other way now — and it changes only when the other is cheaper by 30° (Director 30.10,
+## 19:16: «крутится на 360, прежде чем повернуться в нужную сторону»: a body carried past its target by braking, or
+## past «straight behind», took the way round the whole circle).
+static func turn_step(state: Vector4, target: float, delta: float, cap: float, ease: float, accel: float) -> Vector4:
+	var yaw := state.x
+	var v := state.y
+	var dir := state.z
+	var d := angle_difference(yaw, target)
+	var l_pos := fposmod(d, TAU)                     # going +: [0, 2π)
+	var l_neg := l_pos - TAU if l_pos > 0.0 else 0.0  # going −: (−2π, 0]
+	var brake := v * v / (2.0 * maxf(accel, 0.01))
+	var c_pos := l_pos + (2.0 * brake if v < -0.05 else 0.0)
+	var c_neg := -l_neg + (2.0 * brake if v > 0.05 else 0.0)
+	var best := 1.0 if c_pos <= c_neg else -1.0
+	if dir == 0.0 or (best != dir and absf(c_pos - c_neg) > deg_to_rad(30.0)):
+		dir = best
+	var left := l_pos if dir > 0.0 else l_neg
+	var want := signf(left) * minf(minf(cap, absf(left) * ease), sqrt(2.0 * accel * absf(left)))
+	v = move_toward(v, want, accel * delta)
+	yaw = wrapf(yaw + v * delta, -PI, PI)
+	if absf(d) < deg_to_rad(0.5) and absf(v) < 0.05:
+		dir = 0.0
+	return Vector4(yaw, v, dir, target)
 
 
 ## Times of a clip played as a seamless loop (`tau` seconds since it started; clip `len_s`, crossfade `xf`):

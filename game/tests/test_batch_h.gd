@@ -171,6 +171,15 @@ func _test_lines() -> void:
 		if (ln as Dictionary).get("if", []).has("tikhon_told_nina") and String(ln.get("speaker", "")) == "tikhon":
 			m23d = String(ln.get("text", ""))
 	_check(m23d != "" and not m23d.contains("ещё тёплая") and m23d.contains("не трогай"), "H51: Tikhon grieves in his way: %s" % m23d)
+	# Director 30.10, 19:15: in Agata's branch the narrator laid Tikhon down by her bench twice — once only now
+	var told_agata := 0
+	for ln in sd.scene("M23d")["mandatory_lines"]:
+		var lns: Array = [ln] + Array((ln as Dictionary).get("then", []))
+		for x in lns:
+			var conds: Array = (x as Dictionary).get("if", [])
+			if String(x.get("speaker", "narrator")) == "narrator" and String(x.get("text", "")).contains("лежанк") and not conds.has("tikhon_told_nina"):
+				told_agata += 1
+	_check(told_agata == 1, "M23d, Agata's branch: the narrator lays Tikhon by her bench %d times (once)" % told_agata)
 	_check(sd.text("@Z3.old_pier_base.look").contains("За него держался мостовой канат"), "H2: what the plate's ring was for: %s" % sd.text("@Z3.old_pier_base.look"))
 	_check(not sd.text("@H4.chest.look").contains("скатерть"), "H16: the chest is described as drawn (no tablecloth): %s" % sd.text("@H4.chest.look"))
 	_check(not sd.text("@O2.exit_O4.loop").contains("другого окна той же школы") and sd.text("@O2.exit_O4.loop").contains("вокруг школы"),

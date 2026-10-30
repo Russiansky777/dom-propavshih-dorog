@@ -8,7 +8,10 @@ extends SceneTree
 ##   - linear fades (talk/listen, walk, actions, gesture) and the first-order turn started and stopped with a jolt
 ##     → weights through critically damped followers, turns with a limited angular acceleration;
 ##   - listen/talk played to and fro reversed every motion mid-air → forward loop with a crossfade;
-##   - «open» squeezed 5.2 s of motion capture into 2.2 s (the hand at 2.4× its speed) → a cut, natural rate.
+##   - «open» squeezed 5.2 s of motion capture into 2.2 s (the hand at 2.4× its speed) → a cut, natural rate;
+##   - Director 30.10, 19:16 «крутится на 360, прежде чем повернуться в нужную сторону»: in the last stretch of a walk
+##     she kept walking while turning to the point and circled round it (331° one way for a path needing 44°) →
+##     facing first in the last stretch too; the turn's way is chosen once per target, with the body's momentum.
 ## Thresholds — how much a bone may change its step per 1/60 s frame, above what the clips themselves do:
 ##   standing (idle, listen, talk, their fades, the gesture, turning): 14 mm (clips ≤ 9; the to-and-fro reversal
 ##   of a talking hand was ≈ 45, a fade's linear end ≈ 20, the old turn's start ≈ 20);
@@ -101,8 +104,11 @@ func _run() -> void:
 	await _test_villagers()
 	_report("Villagers: idle, listen, talk (forward loop), their fades, a 150° turn, walking off and stopping — no jolt", t0)
 	t0 = Time.get_ticks_msec()
+	_test_turn_way()
+	_report("Turn way: a turn takes the short way, or goes on the way it already turns when coming back would take longer — never round the circle", t0)
+	t0 = Time.get_ticks_msec()
 	await _test_agata()
-	_report("Agata: idle, the talk gesture, a 150° turn, walk and stop, open/pick/reach at the clip's own pace — no jolt", t0)
+	_report("Agata: idle, the talk gesture, a 150° turn, walk and stop, open/pick/reach at the clip's own pace — no jolt; no circling on 60 walks", t0)
 	var failed := 0
 	for r in _results:
 		if not r[1]:
@@ -159,6 +165,35 @@ func _test_walk_seams() -> void:
 		else:
 			_check(seam <= maxf(inner * 1.05, 4.0), "%s: walk seam %.1f mm per 1/60 s — sharper than the cycle's own steps (%.1f)" % [id, seam, inner])
 		v.queue_free()
+
+
+# --- Turn way ------------------------------------------------------------------------------------
+
+## Actor3D.turn_step from 3000 random states (yaw, speed up to the cap) to random targets: it settles on the target
+## having turned at most the short way plus what braking takes, never 270°+ one way; and the case that went round the
+## circle: turning one way, a new target just behind on the other side.
+func _test_turn_way() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 5
+	var cap := deg_to_rad(400.0)
+	var accel := deg_to_rad(1500.0)
+	var worst := 0.0
+	for c in 3000:
+		var st := Vector4(rng.randf_range(-PI, PI), rng.randf_range(-cap, cap), 0.0, 0.0)
+		st.z = signf(st.y)
+		st.w = st.x + st.y * 0.3
+		var tgt := rng.randf_range(-PI, PI)
+		var total := 0.0
+		for f in 600:
+			var y0 := st.x
+			st = Actor3D.turn_step(st, tgt, DT, cap, 9.0, accel)
+			total += absf(angle_difference(y0, st.x))
+		var err := absf(angle_difference(st.x, tgt))
+		worst = maxf(worst, total)
+		if err > deg_to_rad(1.0) or total > deg_to_rad(270.0):
+			_check(false, "turn from yaw %.0f° at %.0f°/s to %.0f°: turned %.0f°, %.1f° off at the end" % [rad_to_deg(st.x), rad_to_deg(st.y), rad_to_deg(tgt), rad_to_deg(total), rad_to_deg(err)])
+			break
+	print("        turn_step: 3000 random turns, the longest %.0f°" % rad_to_deg(worst))
 
 
 # --- Villagers ---------------------------------------------------------------------------------
@@ -277,5 +312,41 @@ func _test_agata() -> void:
 			# the clip at (about) its own pace: motion capture hands do not move 2.4× faster than recorded
 			_check(player._act_speed >= 0.8 and player._act_speed <= 1.25, "agata %s: played at %.2f× the clip's pace (0.8–1.25)" % [r[0], player._act_speed])
 	print(line)
+	# circling (Director 19:16): 60 walks to random points in four rooms — no one-way turn beyond 230°
+	var wrng := RandomNumberGenerator.new()
+	wrng.seed = 11
+	var walks := 0
+	var longest := 0.0
+	for room in [["Z2", Vector2(960, 900)], ["H1", Vector2(1200, 960)], ["R1", Vector2(900, 900)], ["M1", Vector2(900, 900)]]:
+		gs.reset()
+		for f in ["done_M01", "done_M02", "house_unlocked", "done_M03", "met_tikhon", "stove_lit"]:
+			gs.set_flag(f, true)
+		rm.change_room(room[0], "default", room[1])
+		for i in 10:
+			await process_frame
+		for wk in 15:
+			player.click_at(player.global_position + Vector2(wrng.randf_range(-600, 600), wrng.randf_range(-250, 250)))
+			await process_frame
+			if not player.is_walking():
+				continue
+			walks += 1
+			var run := 0.0
+			var run_sign := 0.0
+			var max_run := 0.0
+			var last: float = player.yaw3d
+			var guard := 0
+			while (player.is_walking() or absf(player._yaw_v) > 0.05) and guard < 900:
+				await process_frame
+				guard += 1
+				var stp := angle_difference(last, player.yaw3d)
+				last = player.yaw3d
+				if absf(stp) > 1e-4:
+					run = run + absf(stp) if signf(stp) == run_sign else absf(stp)
+					run_sign = signf(stp)
+					max_run = maxf(max_run, run)
+			longest = maxf(longest, max_run)
+			_check(max_run <= deg_to_rad(230.0), "agata %s walk %d: turned %.0f° one way (circling)" % [room[0], wk, rad_to_deg(max_run)])
+	print("        agata: %d walks, the longest one-way turn %.0f°" % [walks, rad_to_deg(longest)])
+	_check(walks >= 30, "only %d of 60 clicks became walks" % walks)
 	PS.forced_render = ""
 	Engine.max_fps = 0

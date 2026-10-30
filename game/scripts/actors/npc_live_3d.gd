@@ -18,6 +18,8 @@ var rt: Dictionary = {}
 var yaw: float = 0.0
 var yaw_target: float = 0.0
 var yaw_v: float = 0.0               # yaw speed, rad/s
+var _yaw_dir: float = 0.0            # the way it turns to the target (Actor3D.turn_step), chosen once per target
+var _yaw_dir_target: float = 0.0
 var step_w: float = 0.0              # stepping while turning on the spot
 var state: String = "idle"
 var walk_w: float = 0.0
@@ -84,6 +86,7 @@ func face(v: Vector2, floor_k: float, at_once: bool = false) -> void:
 	if at_once:
 		yaw = yaw_target
 		yaw_v = 0.0
+		_yaw_dir = 0.0
 
 
 func set_state(st: String) -> void:
@@ -110,9 +113,11 @@ func process(delta: float) -> void:
 	if view == null:
 		return
 	var diff := angle_difference(yaw, yaw_target)
-	var r := Actor3D.turn_step(yaw, yaw_v, yaw_target, delta, deg_to_rad(float(rt.get("turn_deg_s", 240.0))), float(rt.get("turn_ease_per_s", 7.0)), deg_to_rad(float(rt.get("turn_accel_deg_s2", 1100.0))))
+	var r := Actor3D.turn_step(Vector4(yaw, yaw_v, _yaw_dir, _yaw_dir_target), yaw_target, delta, deg_to_rad(float(rt.get("turn_deg_s", 240.0))), float(rt.get("turn_ease_per_s", 7.0)), deg_to_rad(float(rt.get("turn_accel_deg_s2", 1100.0))))
 	yaw = r.x
 	yaw_v = r.y
+	_yaw_dir = r.z
+	_yaw_dir_target = r.w
 	view.set_yaw(yaw)
 	walk_w = move_toward(walk_w, 1.0 if walking else 0.0, delta / 0.3)
 	# a big turn standing: small steps on the spot (a little of the walk), as Agata
