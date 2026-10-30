@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-30T01:37:45+00:00",
+  "updated_at": "2026-10-30T02:00:00+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -1316,47 +1316,49 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.6,
         "similarity_boost": 0.75
       },
       "file": "M03_5.ogg",
       "source": "src/M03_5.mp3",
-      "voice_text": "[thoughtful] Так год уже прошёл.",
-      "voice_sha1": "3db2e3c136ce2be702b7fe98acae81782a0a3cea",
+      "voice_text": "Так… год уже прошёл.",
+      "voice_sha1": "059d19301c618a11f4ed9548bc084914455d26be",
       "tags": [
         "thoughtful"
       ],
-      "characters": 32,
+      "characters": 20,
       "loudness_target_lufs": -17.0,
-      "duration_s": 1.92,
-      "lufs": -17.0,
-      "true_peak_db": -4.1,
-      "gain_db": 6.2,
+      "duration_s": 2.45,
+      "lufs": -16.9,
+      "true_peak_db": -6.4,
+      "gain_db": 0.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -23.2,
-      "source_true_peak_db": -10.3,
+      "source_lufs": -17.1,
+      "source_true_peak_db": -6.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-24T15:05:40+00:00",
-      "run": "40105307426",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 1.63,
-        "delta_s": 0.29,
-        "suspect": false
-      },
+      "generated_at": "2026-10-30T02:00:00+00:00",
+      "run": "40988872618",
+      "adopted_from": "probe/K3/W029_4",
       "api": {
-        "request_id": "64IDA96Q1aZXf6w6CRjB",
-        "history_item_id": "1fSHr73xPPuDGP71gTjC",
-        "character_cost": "14",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4007477197
-        }
+        "history_item_id": "in3AWDVLk8ClcJS3xYzX",
+        "character_cost": "9",
+        "previous_text": "К сестре пошла. Баяла — к вечеру.",
+        "probe_run": "40982720319"
       },
-      "seed_salt": 2
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Так, год уже прошел",
+        "words": [
+          "Так,",
+          "год",
+          "уже",
+          "прошел"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
+      }
     },
     "M03_6": {
       "scene": "M03",
@@ -6941,43 +6943,50 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "M21_0_then0.ogg",
       "source": "src/M21_0_then0.mp3",
-      "voice_text": "[sad] Я всё думала: доберусь — и она опять дома.",
-      "voice_sha1": "65a2b2b08eec6635a24f58a6c135209892c3ec9d",
+      "voice_text": "Я всё думала: доберусь — и она опять дома…",
+      "voice_sha1": "3b6e7c41820d1c01c852c24dd3f66f86f656704d",
       "tags": [],
-      "characters": 48,
+      "characters": 42,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.72,
-      "lufs": -17.0,
-      "true_peak_db": -5.5,
-      "gain_db": 5.6,
+      "duration_s": 3.76,
+      "lufs": -16.9,
+      "true_peak_db": -4.8,
+      "gain_db": -1.5,
       "limiter_extra_db": 0.0,
-      "source_lufs": -22.6,
-      "source_true_peak_db": -11.2,
+      "source_lufs": -15.5,
+      "source_true_peak_db": -3.4,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:14+00:00",
-      "run": "40926041525",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 3.59,
-        "delta_s": 0.13,
-        "suspect": false
-      },
+      "generated_at": "2026-10-30T02:00:00+00:00",
+      "run": "40988872618",
+      "adopted_from": "probe/K3/W030_3",
       "api": {
-        "request_id": "cNvz7Ncudw8lQlE7ffWm",
-        "history_item_id": "8bqTcEDlGmMi2YwSTL4P",
-        "character_cost": "21",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2730181743
-        }
+        "history_item_id": "BNWXiAweUz7WKd9u69av",
+        "character_cost": "18",
+        "previous_text": "Доченька… Дуня два года назад умерла, по нашему счёту. Семьдесят два ей было.",
+        "probe_run": "40982720319"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Я все думала: доберусь, и она опять дома",
+        "words": [
+          "Я",
+          "все",
+          "думала:",
+          "доберусь,",
+          "и",
+          "она",
+          "опять",
+          "дома"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M21_1": {
@@ -16002,33 +16011,33 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.45,
+        "stability": 0.7,
         "similarity_boost": 0.75
       },
       "file": "narrator/H2d.nina_mirror.knock_first.ogg",
       "source": "src/narrator/H2d.nina_mirror.knock_first.mp3",
-      "voice_text": "Агата в стекло стучит — а в ответ ничего. [sad] Не слышит её мама.",
-      "voice_sha1": "6c88cd79212a35c964e9d548bd7869f46728c4e5",
+      "voice_text": "Агата в стекло стучит — а в ответ ничего. Не слышит её мама.",
+      "voice_sha1": "e92e698e1db0ee7ff5d06b910e8dec0b9263c7b6",
       "tags": [],
-      "characters": 66,
+      "characters": 60,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.7,
-      "lufs": -17.2,
-      "true_peak_db": -1.8,
-      "gain_db": 2.2,
+      "duration_s": 5.04,
+      "lufs": -17.0,
+      "true_peak_db": -3.1,
+      "gain_db": -0.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -19.2,
-      "source_true_peak_db": -2.4,
+      "source_lufs": -16.7,
+      "source_true_peak_db": -2.7,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T23:53:50+00:00",
-      "run": "40975795968",
-      "adopted_from": "probe/K2/Q022_1",
+      "generated_at": "2026-10-30T02:00:00+00:00",
+      "run": "40988872618",
+      "adopted_from": "probe/K3/W031_4",
       "api": {
-        "history_item_id": "hHuLdbqqtkEcjZVJMQcW",
-        "character_cost": "29",
+        "history_item_id": "9sFpU3wO6hNjxJoBwNXS",
+        "character_cost": "26",
         "previous_text": "",
-        "probe_run": "40969602571"
+        "probe_run": "40982720319"
       },
       "stt": {
         "model": "scribe_v2",
