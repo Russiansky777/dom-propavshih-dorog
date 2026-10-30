@@ -88,7 +88,7 @@ func _run() -> void:
 		if _v != v:
 			_v = v
 			v.skeleton.skeleton_updated.connect(_on_updated)
-		var ang: float = int(k) * 0.6
+		var ang: float = (int(k) * 1.05 + 0.3) if OS.get_environment("ANG_TEST") != "" else int(k) * 0.6
 		player.yaw3d = ang
 		player.yaw3d_target = ang
 		for i in 30:

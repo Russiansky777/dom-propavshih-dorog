@@ -563,9 +563,11 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			# lifted first, carried, set down: the foot leaves and meets the floor going straight up and down
 			var h := clampf((u - 0.15) / 0.7, 0.0, 1.0)
 			var e := h * h * (3.0 - 2.0 * h)
-			var to: Vector3 = _clear_of_other(lead_b * f[i * 2], i, yaw_b, f, o, k, float(fk.get("min_sep_m", 0.12)))
+			# the landing spot was chosen as the foot left the floor (st[3], by the body, the turn foreseen): a foot that
+			# follows a spot turning with her and then stops dead on it jolts (17.6 mm per frame turning on the spot)
+			var to: Vector3 = st[3]
 			var pos: Vector3 = _floor_local(st[0], o, k).lerp(to, e)
-			pos.y = lerpf(float(st[2]), to.y, e) + float(fk.get("step_lift_m", 0.05)) * sin(PI * u)
+			pos.y = lerpf(float(st[2]), a.y, e) + float(fk.get("step_lift_m", 0.05)) * sin(PI * u)
 			lock = pos
 			if u >= 1.0 or walking or lifted:
 				st = null
@@ -598,7 +600,12 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 		var other = _foot_step[1 - i]
 		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need and (other == null or float(other[1]) >= 0.75):
 			# it leaves from the height it stands at now (the lock or the stance, whichever is higher — as drawn)
-			_foot_step[i] = [_floor_screen(locks[i], o, k), 0.0, maxf((locks[i] as Vector3).y, (anim[i] as Vector3).y)]
+			# and lands where the stance will be when it is set down (the turn going on at its present speed)
+			var t_land := float(fk.get("lead_s", 0.08)) + step_s * 0.85
+			var land_b := Basis(Vector3.UP, yaw + _feet_yaw_v * t_land)
+			var land := _clear_of_other(land_b * f[i * 2], i, yaw_b, f, o, k, float(fk.get("min_sep_m", 0.12)))
+			# kept by the body (it goes with her as she still comes to a stop), not turned with her
+			_foot_step[i] = [_floor_screen(locks[i], o, k), 0.0, maxf((locks[i] as Vector3).y, (anim[i] as Vector3).y), land]
 	for i in 2:
 		var lock = locks[i]
 		var a: Vector3 = anim[i]

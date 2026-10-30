@@ -1201,8 +1201,12 @@ func _gesture_3d(delta: float) -> bool:
 func _turn_3d(delta: float) -> void:
 	var diff := angle_difference(yaw3d, yaw3d_target)
 	var sf := maxf(speed_factor, 1.0)
-	var cap := deg_to_rad(_rtf("turn", "max_deg_s", 400.0 if _walking else 300.0)) * sf
-	var r := Actor3D.turn_step(Vector4(yaw3d, _yaw_v, _yaw_dir, _yaw_dir_target), yaw3d_target, delta, cap, _rtf("turn", "ease_per_s", 9.0) * sf, deg_to_rad(_rtf("turn", "accel_deg_s2", 1500.0)) * sf * sf)
+	# standing she turns slower and steps round (Director 30.10: a half turn on the spot in under half a second looked
+	# like a spin on a stand; people take about a second and two or three steps) — blended by the walk weight
+	var stand := 1.0 - clampf(walk_w, 0.0, 1.0)
+	var cap := deg_to_rad(lerpf(_rtf("turn", "max_deg_s", 400.0), _rtf("turn", "stand_max_deg_s", _rtf("turn", "max_deg_s", 400.0)), stand)) * sf
+	var acc := deg_to_rad(lerpf(_rtf("turn", "accel_deg_s2", 1500.0), _rtf("turn", "stand_accel_deg_s2", _rtf("turn", "accel_deg_s2", 1500.0)), stand))
+	var r := Actor3D.turn_step(Vector4(yaw3d, _yaw_v, _yaw_dir, _yaw_dir_target), yaw3d_target, delta, cap, _rtf("turn", "ease_per_s", 9.0) * sf, acc * sf * sf)
 	yaw3d = r.x
 	_yaw_v = r.y
 	_yaw_dir = r.z
@@ -1210,7 +1214,14 @@ func _turn_3d(delta: float) -> void:
 	var stepping := not _acting and walk_w < 0.3 and absf(diff) > deg_to_rad(_rtf("turn", "step_above_deg", 50.0))
 	var sw := _rtf("turn", "step_weight", 0.3) if stepping else 0.0
 	_turn_step_w = move_toward(_turn_step_w, sw, delta / 0.2)
-	if _turn_step_w > 0.001 and walk_w <= 0.001 and view3d != null:
+	# the stepping goes on while any of it is still shown (the weight reaches the pose through a follower): a phase
+	# that stopped with the weight still fading froze the feet mid-step — a jolt (30.10, slower turn on the spot)
+	# (only the stepping of a turn: after a walk's stop the phase stays where the walk left it)
+	if _turn_step_w > 0.001:
+		_turn_step_tail = true
+	elif walk_w > 0.001 or view3d == null or view3d.shown_w() <= 0.001:
+		_turn_step_tail = false
+	if (_turn_step_w > 0.001 or _turn_step_tail) and walk_w <= 0.001 and view3d != null:
 		walk_phase += delta * walk_rate_3d() / maxf(view3d.walk_len, 0.01)
 
 
@@ -1233,6 +1244,7 @@ var plant_on_start: bool = true
 ## Feet locked to the floor while set down (Actor3D.feet_step; off — probes).
 var foot_lock_3d: bool = true
 var _rm_shown_w: float = 0.0
+var _turn_step_tail: bool = false   # the turn's stepping still fading out of the shown pose
 
 
 func _root_motion_3d(probe: Array, blend: float) -> void:
