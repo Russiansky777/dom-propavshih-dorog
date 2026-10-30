@@ -15,6 +15,9 @@ extends Node2D
 ## (sitting on furniture), `mirror` — faces the other way. No match → the hotspot's bottom centre. Flags
 ## and a moved hotspot (StoryHotspot.geometry_changed) re-place it. The room's light tones it like the
 ## sheet actors (RoomLighting.actor_tone_at, eased); a small soft contact shadow sits under it.
+## More life (Директор 25.10, стр. 51: «больше анимаций»; ночь 30.10): a quick tail flick (grumbling), a yawn — head back,
+## ears out, the wide-open mouth cut-out (the lazy stove-keeper), a stretch — tail up, body drawn up; chosen by data
+## `anim.accent_weights`, the yawn more often in the dark (`anim.night_flags`, `night_yawn_k`).
 ## Mouth (I-T3, art 10g): data `mouth_frames` — cut-outs of the mouth on the head bone; while the voice of his own line
 ## sounds the frame follows the Voice bus level (no level, as on the web — a steady 1-2-1-3), silent — the drawn mouth.
 
@@ -222,6 +225,11 @@ func _update_mouth(delta: float) -> void:
 	if not _speaking():
 		want = 0
 		_mouth_t = 0.0
+		# a yawn: the wide-open mouth while the head is back
+		if accent != null and accent.is_playing() and accent.current_animation == "yawn":
+			var pos := accent.current_animation_position
+			if pos > 0.35 and pos < accent.current_animation_length - 0.45:
+				want = mouth_frames.size()
 	else:
 		_mouth_t -= delta
 		if _mouth_t > 0.0:
@@ -447,6 +455,65 @@ func _build_animations() -> void:
 		sc.track_insert_key(scl, 0.5, Vector2(1.0, 1.35))   # fluffed across the tail
 		n += 1
 	lib_acc.add_animation("scared", sc)
+	# Стр. 51 (25.10): more of him — tail flick, yawn, stretch (one-shots from the rest pose back to it).
+	var fl := Animation.new()
+	fl.length = 0.7
+	n = 0
+	for name in ["tail2", "tail3", "tail4"]:
+		if not bones.has(name):
+			continue
+		var r0: float = bones[name].rest.get_rotation()
+		var tr := fl.add_track(Animation.TYPE_VALUE)
+		fl.track_set_path(tr, "%s:rotation" % get_path_to(bones[name]))
+		var amp := deg_to_rad(float(a.get("tail_flick_deg", 16.0)) * (0.6 + 0.4 * n))
+		for k in [[0.0, 0.0], [0.12, 1.0], [0.26, -0.6], [0.42, 0.7], [0.56, -0.2], [0.7, 0.0]]:
+			fl.track_insert_key(tr, float(k[0]), r0 + amp * float(k[1]))
+		fl.track_set_interpolation_type(tr, Animation.INTERPOLATION_CUBIC)
+		n += 1
+	lib_acc.add_animation("tail_flick", fl)
+	var yw := Animation.new()
+	yw.length = float(a.get("yawn_s", 1.9))
+	var y_hold := [0.0, 0.45, yw.length - 0.5, yw.length]
+	var head_r: float = bones["head"].rest.get_rotation()
+	var yh := yw.add_track(Animation.TYPE_VALUE)
+	yw.track_set_path(yh, "%s:rotation" % get_path_to(bones["head"]))
+	for i in 4:
+		yw.track_insert_key(yh, float(y_hold[i]), head_r + (deg_to_rad(float(a.get("yawn_head_deg", -11.0))) if i in [1, 2] else 0.0))
+	yw.track_set_interpolation_type(yh, Animation.INTERPOLATION_CUBIC)
+	for e in [["ear_l", -1.0], ["ear_r", 1.0]]:
+		if not bones.has(e[0]):
+			continue
+		var er: float = bones[e[0]].rest.get_rotation()
+		var et := yw.add_track(Animation.TYPE_VALUE)
+		yw.track_set_path(et, "%s:rotation" % get_path_to(bones[e[0]]))
+		for i in 4:
+			yw.track_insert_key(et, float(y_hold[i]), er + (deg_to_rad(12.0) * float(e[1]) if i in [1, 2] else 0.0))
+		yw.track_set_interpolation_type(et, Animation.INTERPOLATION_CUBIC)
+	var yb := yw.add_track(Animation.TYPE_VALUE)
+	yw.track_set_path(yb, "%s:scale" % get_path_to(bones["body"]))
+	for i in 4:
+		yw.track_insert_key(yb, float(y_hold[i]), Vector2(1.0, 1.035) if i in [1, 2] else Vector2.ONE)
+	lib_acc.add_animation("yawn", yw)
+	var st := Animation.new()
+	st.length = float(a.get("stretch_s", 2.4))
+	var s_hold := [0.0, 0.8, st.length - 0.7, st.length]
+	var sb := st.add_track(Animation.TYPE_VALUE)
+	st.track_set_path(sb, "%s:scale" % get_path_to(bones["body"]))
+	for i in 4:
+		st.track_insert_key(sb, float(s_hold[i]), Vector2(0.985, 1.06) if i in [1, 2] else Vector2.ONE)
+	st.track_set_interpolation_type(sb, Animation.INTERPOLATION_CUBIC)
+	n = 0
+	for name in ["tail1", "tail2", "tail3", "tail4"]:
+		if not bones.has(name):
+			continue
+		var r0: float = bones[name].rest.get_rotation()
+		var tr := st.add_track(Animation.TYPE_VALUE)
+		st.track_set_path(tr, "%s:rotation" % get_path_to(bones[name]))
+		for i in 4:
+			st.track_insert_key(tr, float(s_hold[i]), r0 - (deg_to_rad(8.0 + 5.0 * n) if i in [1, 2] else 0.0))
+		st.track_set_interpolation_type(tr, Animation.INTERPOLATION_CUBIC)
+		n += 1
+	lib_acc.add_animation("stretch", st)
 	accent.add_animation_library("", lib_acc)
 
 
@@ -486,10 +553,40 @@ func _process(delta: float) -> void:
 	var a: Dictionary = spec.get("anim", {})
 	var every: Array = a.get("accent_every_s", [5.0, 12.0])
 	_next_accent = _rng.randf_range(float(every[0]), float(every[1]))
-	if _rng.randf() < float(a.get("head_tilt_share", 0.3)):
-		accent.play("head_tilt")
-	else:
-		accent.play("ear_twitch_l" if _rng.randf() < 0.5 else "ear_twitch_r")
+	accent.play(pick_accent(_rng.randf()))
+
+
+## Which one-shot to play for a roll in 0…1 (data `anim.accent_weights` {ear, tilt, tail_flick, yawn, stretch}; the
+## yawn × `night_yawn_k` while a flag of `night_flags` is set). Without weights — the old ear twitch / head tilt mix.
+func pick_accent(roll: float) -> String:
+	var a: Dictionary = spec.get("anim", {})
+	var w: Dictionary = a.get("accent_weights", {})
+	if w.is_empty():
+		if roll < float(a.get("head_tilt_share", 0.3)):
+			return "head_tilt"
+		return "ear_twitch_l" if roll < 0.65 else "ear_twitch_r"
+	var night := false
+	for f in a.get("night_flags", []):
+		night = night or GameState.has_flag(String(f))
+	var order := ["ear", "tilt", "tail_flick", "yawn", "stretch"]
+	var ws: Array = []
+	var total := 0.0
+	for k in order:
+		var v := float(w.get(k, 0.0)) * (float(a.get("night_yawn_k", 1.0)) if night and k == "yawn" else 1.0)
+		ws.append(v)
+		total += v
+	var x := roll * total
+	for i in order.size():
+		x -= float(ws[i])
+		if x <= 0.0:
+			match String(order[i]):
+				"ear":
+					return "ear_twitch_l" if _rng.randf() < 0.5 else "ear_twitch_r"
+				"tilt":
+					return "head_tilt"
+				_:
+					return String(order[i])
+	return "head_tilt"
 
 
 ## His own line → lifts the head (and keeps it up while he speaks); anything else → back down.

@@ -113,6 +113,7 @@ func _run() -> void:
 	await _test("J-G4 the string with Mitya (fishing): from his questions on the free day; strike when the float dives; keep the string in the green — the perch comes in; too hard — it snaps", _test_fishing)
 	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks out through the class door, gone in the black", _test_staging_d3)
 	await _test("J-E11 the dinner (стр. 203): the main door shut and an empty chair first; Ulyana comes in through it at «Ульяна по новому мосту прибежала»", _test_dinner_door)
+	await _test("J-T51 Tikhon livelier (25.10 стр. 51): besides ears and head — a tail flick, a yawn with the wide mouth, a stretch; more yawns in the dark", _test_tikhon_life)
 	await _test("J-R4 no shelf anywhere: the office door flag renamed; an old save with the old name loads with the new", _test_flag_rename)
 	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
@@ -1157,6 +1158,34 @@ func _test_dinner_door() -> void:
 	var lines: Array = m26.get("mandatory_lines", [])
 	_check(at >= 0 and at < lines.size() and String(lines[at].get("text", "")).contains("Ульяна") and String(lines[at + 1].get("speaker", "")) == "ulyana",
 			"the door opens at the line that brings her in, just before her own words (at %d)" % at)
+
+
+func _test_tikhon_life() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "house_unlocked", "house_open", "met_tikhon"])
+	await _enter("H1")
+	await _drain()
+	var pup: Node = null
+	for c in rm.current_room.get_children():
+		if c.has_method("pick_accent"):
+			pup = c
+	_check(pup != null, "Tikhon (the puppet) in the house")
+	if pup == null:
+		return
+	var acc: AnimationPlayer = pup.get("accent")
+	for an in ["tail_flick", "yawn", "stretch", "ear_twitch_l", "head_tilt"]:
+		_check(acc.has_animation(an), "he can %s" % an)
+	var seen := {}
+	for i in 200:
+		seen[String(pup.call("pick_accent", float(i) / 200.0))] = true
+	_check(seen.has("yawn") and seen.has("stretch") and seen.has("tail_flick") and seen.has("head_tilt"), "all of them come up in turn: %s" % str(seen.keys()))
+	acc.play("yawn")
+	await _wait(0.9)
+	var mf := int(pup.get("mouth_frame"))
+	_check(mf == (pup.get("mouth_frames") as Array).size() and mf > 0, "the yawn opens the mouth wide (frame %d)" % mf)
+	await _wait(1.4)
+	_check(int(pup.get("mouth_frame")) == 0, "and closes it after")
 
 
 func _test_flag_rename() -> void:

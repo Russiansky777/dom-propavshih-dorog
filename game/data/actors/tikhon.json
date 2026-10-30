@@ -59,7 +59,15 @@
     "head_tilt_share": 0.3,
     "ear_twitch_deg": 14.0,
     "head_tilt_deg": 5.0,
-    "talk_lift_deg": -6.0
+    "talk_lift_deg": -6.0,
+    "_more": "Директор 25.10, стр. 51 («больше анимаций»), ночь 30.10: ещё хвостом дёрнуть (ворчит), зевнуть — голова назад, уши врозь, пасть широко (кадр рта 3), потянуться — хвост вверх, корпус вытянут; вес выбора accent_weights, в темноте зевает чаще (night_flags × night_yawn_k)",
+    "accent_weights": {"ear": 0.45, "tilt": 0.2, "tail_flick": 0.17, "yawn": 0.1, "stretch": 0.08},
+    "night_flags": ["tod_dark", "evening_dusk"],
+    "night_yawn_k": 2.5,
+    "tail_flick_deg": 16.0,
+    "yawn_s": 1.9,
+    "yawn_head_deg": -11.0,
+    "stretch_s": 2.4
   },
   "shadow": {"width_rel": 0.62, "height_ratio": 0.3, "alpha": 0.45}
 }
