@@ -1,0 +1,16 @@
+[exit] parse_errors 0
+=== xshots shots_npc_v2.gd nina,pavel,mitya,pelageya,ilya,ilya_wife,ulyana,tamara
+ERROR: Condition "status < 0" is true. Returning: ERR_CANT_OPEN
+npc_v2 shot nina in H1 → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots/npc_v2_nina.png
+npc_v2 shot pavel in M1 → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots/npc_v2_pavel.png
+npc_v2 shot mitya in O4 → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots/npc_v2_mitya.png
+npc_v2 shot pelageya in R1 → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots/npc_v2_pelageya.png
+npc_v2 shot ilya in O3 → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots/npc_v2_ilya.png
+npc_v2 shot ilya_wife in O3 → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots/npc_v2_ilya_wife.png
+npc_v2 shot ulyana in O1 → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots/npc_v2_ulyana.png
+npc_v2 shot tamara in O4 → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots/npc_v2_tamara.png
+ERROR: 4 resources still in use at exit (run with --verbose for details).
+=== xshots shots_agata_3d.gd walk,stove
+ERROR: Condition "status < 0" is true. Returning: ERR_CANT_OPEN
+shots done → /home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/build/check/shots
+ERROR: 8 resources still in use at exit (run with --verbose for details).
