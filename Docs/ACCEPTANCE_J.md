@@ -4,7 +4,8 @@
 
 ## Где проверять
 
-- **Браузер:** https://russiansky777.github.io/dom-propavshih-dorog/ — после публикации (координатор напишет, когда она готова). Затем Ctrl+F5.
+- **Браузер:** https://russiansky777.github.io/dom-propavshih-dorog/ — опубликовано 30.10 в 04:00 по вашему времени (сборка c823abdf, ночная полировка). Затем Ctrl+F5.
+- **Windows:** https://github.com/Russiansky777/dom-propavshih-dorog/releases/tag/latest — `DomPropavshihDorog_win.zip`, та же сборка.
 - **Новая игра** — с самого начала: вступление, почта, причал, дом.
 - **Быстрые входы** — дописать к ссылке:
   - дом Дуни до Тихона — `?start=house`;
