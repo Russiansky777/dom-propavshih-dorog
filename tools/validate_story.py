@@ -744,6 +744,25 @@ for _old, _new in (meta.get("flag_renames") or {}).items():
     if _old in declared_flags or f'"{_old}"' in _story_text:
         err(f"meta.json flag_renames: старое имя {_old} ещё в данных — заменить на {_new}")
 
+# Снятое решением Директора не возвращается в то, что видит игрок (сверка 30.10: Р10 убрал нижнюю улицу «со всеми
+# упоминаниями», а две бумаги в горнице Нины её ещё называли): тексты text/*.json и имена зон/локаций.
+_GONE = [(re.compile(r"нижн\w*\s+улиц", re.I), "Р10 (29.10): нижняя улица убрана со всеми упоминаниями")]
+def _player_strings():
+    for _p in sorted((STORY / "text").glob("*.json")):
+        for _k, _v in json.loads(_p.read_text(encoding="utf-8")).get("texts", {}).items():
+            _t = _v.get("text") if isinstance(_v, dict) else _v
+            if isinstance(_t, str):
+                yield f"text/{_p.name}: {_k}", _t
+    _loc = json.loads((STORY / "locations.json").read_text(encoding="utf-8"))
+    for _z, _n in _loc.get("zones", {}).items():
+        yield f"locations.json zones.{_z}", str(_n)
+    for _l in _loc.get("locations", []):
+        yield f"locations.json {_l.get('id')}", str(_l.get("name", ""))
+for _where, _t in _player_strings():
+    for _rx, _why in _GONE:
+        if _rx.search(_t):
+            err(f"{_where}: «{_rx.search(_t).group(0)}» — {_why}")
+
 # Копия для игры (game/data/story, tools/sync_story_data.sh) совпадает с data/story: 30.10 правка воды эпилога
 # (EP_pavel.json) ушла в коммит только в data/story — сборки синхронизируют сами, но в репозитории копия разошлась.
 _GAME_STORY = ROOT / "game" / "data" / "story"

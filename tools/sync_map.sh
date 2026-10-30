@@ -22,6 +22,8 @@ for f in "$SRC"/*.png "$ROOT"/assets/incoming/zarechye_plan_*.png; do   # + сл
     chmod 644 "$DST/$name"
     changed=$((changed + 1))
     echo "  ui/map/$name updated"
+    # Р10 (29.10): на слое плана нижней улицы нет — стереть её с копии (tools/plan_overlay_r10.py)
+    [[ "$name" == "zarechye_plan_overlay.png" ]] && python3 "$ROOT/tools/plan_overlay_r10.py" "$DST/$name"
   fi
   if [[ ! -f "$DST/$name.import" ]]; then
     cat > "$DST/$name.import" <<EOF
