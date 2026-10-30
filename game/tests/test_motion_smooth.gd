@@ -312,7 +312,8 @@ func _test_agata() -> void:
 			# the clip at (about) its own pace: motion capture hands do not move 2.4× faster than recorded
 			_check(player._act_speed >= 0.8 and player._act_speed <= 1.25, "agata %s: played at %.2f× the clip's pace (0.8–1.25)" % [r[0], player._act_speed])
 	print(line)
-	# circling (Director 19:16): 60 walks to random points in four rooms — no one-way turn beyond 230°
+	# circling (Director 19:16): 60 walks to random points in four rooms — no one-way turn beyond 260° (a half turn plus
+	# braking from full speed is ≤ 235°; circling round the point was 331°)
 	var wrng := RandomNumberGenerator.new()
 	wrng.seed = 11
 	var walks := 0
@@ -345,7 +346,7 @@ func _test_agata() -> void:
 					run_sign = signf(stp)
 					max_run = maxf(max_run, run)
 			longest = maxf(longest, max_run)
-			_check(max_run <= deg_to_rad(230.0), "agata %s walk %d: turned %.0f° one way (circling)" % [room[0], wk, rad_to_deg(max_run)])
+			_check(max_run <= deg_to_rad(260.0), "agata %s walk %d: turned %.0f° one way (circling)" % [room[0], wk, rad_to_deg(max_run)])
 	print("        agata: %d walks, the longest one-way turn %.0f°" % [walks, rad_to_deg(longest)])
 	_check(walks >= 30, "only %d of 60 clicks became walks" % walks)
 	PS.forced_render = ""

@@ -143,6 +143,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	life.name = "Life"
 	life.setup(spec.get("life", {}), skeleton)
 	skeleton.add_child(life)
+	_setup_skirt()
 	for b in ["LeftFoot", "LeftToeBase", "RightFoot", "RightToeBase"]:
 		foot_bones.append(skeleton.find_bone(b))
 	_measure_mids()
@@ -348,6 +349,56 @@ static func _smooth_seam(vals: Array, m: int, is_rot: bool) -> void:
 			vals[idx] = q0 * (Quaternion.IDENTITY if ang < 1e-9 else Quaternion(p / ang, ang))
 		else:
 			vals[idx] = p
+
+
+## The skirt on its own bones (tools/rig_skirt.py: a ring of chains Skirt<c>_<k> from the hips to the hem; Director
+## 30.10, 19:16 «сгибы юбки не красиво» — the auto-rig had the hem on the shins, so a step split the skirt into two
+## «trouser legs» creased between them): each chain is a spring (SpringBoneSimulator3D) that hangs, swings after a turn
+## or a step and is pushed by capsules on the thighs and shins (data rt3d.skirt). Nothing when the model has no skirt.
+var skirt: SpringBoneSimulator3D = null
+
+
+func _setup_skirt() -> void:
+	var sk: Dictionary = spec.get("skirt", {})
+	if sk.is_empty() or skeleton.find_bone("Skirt0_0") < 0:
+		return
+	var n := 0
+	while skeleton.find_bone("Skirt%d_0" % n) >= 0:
+		n += 1
+	var last := 0
+	while skeleton.find_bone("Skirt0_%d" % (last + 1)) >= 0:
+		last += 1
+	skirt = SpringBoneSimulator3D.new()
+	skirt.name = "Skirt"
+	skeleton.add_child(skirt)
+	skirt.setting_count = n
+	# springs and pushers work in world metres (the Meshy skeleton itself is in centimetres under a 0.01 scale)
+	var u := float(sk.get("units_per_m", 1.0))
+	for c in n:
+		skirt.set_root_bone_name(c, "Skirt%d_0" % c)
+		skirt.set_end_bone_name(c, "Skirt%d_%d" % [c, last])
+		skirt.set_extend_end_bone(c, true)
+		skirt.set_end_bone_direction(c, SkeletonModifier3D.BONE_DIRECTION_FROM_PARENT)
+		skirt.set_end_bone_length(c, float(sk.get("end_length_m", 0.18)) * u)
+		skirt.set_radius(c, float(sk.get("radius_m", 0.03)) * u)
+		skirt.set_stiffness(c, float(sk.get("stiffness", 1.5)))
+		skirt.set_drag(c, float(sk.get("drag", 0.4)))
+		skirt.set_gravity(c, float(sk.get("gravity", 0.3)) * u)
+		skirt.set_gravity_direction(c, Vector3.DOWN)
+		skirt.set_enable_all_child_collisions(c, true)
+	for col in sk.get("colliders", []):
+		var b := skeleton.find_bone(String(col.get("bone", "")))
+		if b < 0:
+			continue
+		var cap := SpringBoneCollisionCapsule3D.new()
+		cap.name = "Push_" + String(col["bone"])
+		skirt.add_child(cap)   # in the tree first: the bone name resolves against the skeleton
+		cap.bone_name = String(col["bone"])
+		cap.bone = b
+		var h := float(col.get("height_m", 0.4)) * u
+		cap.radius = float(col.get("radius_m", 0.07)) * u
+		cap.height = h + 2.0 * cap.radius
+		cap.position_offset = Vector3(0.0, h * 0.5, 0.0)   # the bone's own +Y runs along it (Blender rig)
 
 
 ## A critically damped follower, exact for any step: position and velocity after `dt` going to `target`

@@ -90,6 +90,7 @@ func _run() -> void:
 	await _test("Actions open/pick/reach in 3D: once, on the key fraction; fade into idle; room change cancels", _test_actions)
 	await _test("Drawing: live figure under the y-sorted node (same z, occluders as before), facade invisible, shadow kept, footsteps on contacts", _test_drawing)
 	await _test("Talking (Director 30.10 «как живая»): her line → the talk gesture fades in over the stance, feet stay; line over → fades out; short line — none", _test_gesture)
+	await _test("Skirt (Director 30.10 «сгибы юбки не красиво»): on its own spring bones, not on the legs — no «trouser legs»; the knees push it, standing it settles", _test_skirt)
 	PlayerScript.forced_render = ""
 	gs.reset()
 	var failed := 0
@@ -121,7 +122,11 @@ func _test_model() -> void:
 	var tris := v.triangle_count()
 	# Director 30.10: the live model is the game's figure for Steam — v4, 250k triangles (web budget no longer applies).
 	_check(tris > 150000 and tris <= 300000, "triangles %d: expected the v4 Meshy mesh decimated for Steam (150k..300k)" % tris)
-	_check(v.skeleton.get_bone_count() == 24, "skeleton has %d bones, Meshy rig has 24" % v.skeleton.get_bone_count())
+	var skirt_bones := 0
+	for i in v.skeleton.get_bone_count():
+		if v.skeleton.get_bone_name(i).begins_with("Skirt"):
+			skirt_bones += 1
+	_check(v.skeleton.get_bone_count() - skirt_bones == 24, "skeleton has %d bones besides the skirt, Meshy rig has 24" % (v.skeleton.get_bone_count() - skirt_bones))
 	for role in ["walk", "idle", "open", "pick", "reach"]:
 		_check(v.clips.has(role), "clip for '%s' missing (rt3d.clips)" % role)
 	_check(v.idle_pool.size() >= 3, "idle pool has %d variants (≥ 3 expected)" % v.idle_pool.size())
@@ -474,4 +479,113 @@ func _test_gesture() -> void:
 	await _wait_s(0.6)
 	_check(player._gest_w <= 0.0, "someone else's line: no gesture (weight %.2f)" % player._gest_w)
 	sr.current_beat = {}
+	_completed = true
+
+
+# --- Skirt ---------------------------------------------------------------------------------------
+
+var _skirt_rows: Array = []
+
+
+func _on_skirt_updated() -> void:
+	var v: Actor3D = player.view3d
+	var sk := v.skeleton
+	var row := {}
+	for c in [0, 4]:
+		var b := sk.find_bone("Skirt%d_2" % c)
+		row[c] = v._skel_to_turn() * sk.get_bone_global_pose(b).origin - v.bone_model("Hips")
+	_skirt_rows.append(row)
+
+
+## The skirt (tools/rig_skirt.py, Actor3D._setup_skirt): (1) a spring per chain and pushers on thighs and shins at the
+## legs; (2) the skin: outer skirt between 0.3 and 0.65 m hangs on its own bones — before, almost all of it followed
+## one shin or thigh and a step split it into two «trouser legs»; (3) walking, the knees push the front and back of it
+## (it moves against the hips), standing it settles back.
+func _test_skirt() -> void:
+	await _enter("H1", Vector2(1200, 960))
+	var v: Actor3D = player.view3d
+	_check(v.skirt != null and v.skirt.setting_count == 8, "no spring skirt (rt3d.skirt / bones Skirt<c>_<k>)")
+	if v.skirt == null:
+		_completed = true
+		return
+	var pushers := 0
+	for ch in v.skirt.get_children():
+		if ch is SpringBoneCollisionCapsule3D:
+			var cap := ch as SpringBoneCollisionCapsule3D
+			var b := v.skeleton.find_bone(cap.bone_name)
+			var mid: Vector3 = (v.skeleton.global_transform * v.skeleton.get_bone_global_pose(b)).origin
+			_check(cap.global_position.distance_to(mid) < 0.3, "pusher on %s is %.2f m from its bone" % [cap.bone_name, cap.global_position.distance_to(mid)])
+			pushers += 1
+	_check(pushers == 4, "%d pushers on the legs (4 expected)" % pushers)
+	# skin: outer skirt vertices at 0.3–0.65 m — weight on the leg bones
+	var mi: MeshInstance3D = null
+	for m in v.meshes:
+		if mi == null or m.mesh.get_surface_count() > 0 and (m.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] as PackedVector3Array).size() > (mi.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] as PackedVector3Array).size():
+			mi = m
+	var legs := ["LeftUpLeg", "RightUpLeg", "LeftLeg", "RightLeg"]
+	# the mesh's own space is the model in metres (feet at 0, as exported); the axis is the middle of the pelvis band
+	var total := 0
+	var on_legs := 0
+	for si in mi.mesh.get_surface_count():
+		var arr := mi.mesh.surface_get_arrays(si)
+		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var bones = arr[Mesh.ARRAY_BONES]
+		var weights = arr[Mesh.ARRAY_WEIGHTS]
+		if bones == null or weights == null or verts.is_empty():
+			continue
+		var ctr := Vector2.ZERO
+		var nc := 0
+		for q in verts:
+			if q.y > 0.85 and q.y < 0.95:
+				ctr += Vector2(q.x, q.z)
+				nc += 1
+		ctr /= maxf(float(nc), 1.0)
+		var per := int(bones.size() / verts.size())
+		for i in verts.size():
+			var q := verts[i]
+			if q.y < 0.30 or q.y > 0.65 or Vector2(q.x, q.z).distance_to(ctr) < 0.17:
+				continue
+			total += 1
+			var wl := 0.0
+			for j in per:
+				var bi := int(bones[i * per + j])
+				var nm := String(mi.skin.get_bind_name(bi)) if mi.skin != null else v.skeleton.get_bone_name(bi)
+				if nm == "" and mi.skin != null:
+					nm = v.skeleton.get_bone_name(mi.skin.get_bind_bone(bi))
+				if legs.has(nm):
+					wl += float(weights[i * per + j])
+			if wl > 0.5:
+				on_legs += 1
+	print("        skirt: %d outer vertices at 0.30–0.65 m, %d of them mostly on the legs" % [total, on_legs])
+	_check(total > 1000, "only %d outer skirt vertices found at 0.30–0.65 m" % total)
+	_check(on_legs <= total * 0.05, "%d of %d outer skirt vertices follow a leg (trouser legs)" % [on_legs, total])
+	# springs: walking, the front/back hem joints move against the hips; standing, they settle
+	_skirt_rows = []
+	v.skeleton.skeleton_updated.connect(_on_skirt_updated)
+	player.click_at(player.global_position + Vector2(-420, 0))
+	await _wait_s(2.0)
+	var walk_rows := _skirt_rows.duplicate()
+	await _wait_s(3.0)
+	_skirt_rows = []
+	await _wait_s(1.0)
+	v.skeleton.skeleton_updated.disconnect(_on_skirt_updated)
+	var swing := 0.0
+	for c in [0, 4]:
+		var lo := Vector3.INF
+		var hi := -Vector3.INF
+		for r in walk_rows:
+			lo = lo.min(r[c])
+			hi = hi.max(r[c])
+		swing = maxf(swing, (hi - lo).length())
+	var settle := 0.0
+	for c in [0, 4]:
+		var lo := Vector3.INF
+		var hi := -Vector3.INF
+		for r in _skirt_rows:
+			lo = lo.min(r[c])
+			hi = hi.max(r[c])
+		settle = maxf(settle, (hi - lo).length())
+	print("        skirt: walking the hem joints move %.1f cm against the hips; standing, %.1f cm" % [swing * 100.0, settle * 100.0])
+	_check(swing > 0.03, "walking, the skirt does not move against the hips (%.1f cm): no springs or no push" % (swing * 100.0))
+	_check(settle < 0.02, "standing, the skirt keeps swinging (%.1f cm)" % (settle * 100.0))
 	_completed = true
