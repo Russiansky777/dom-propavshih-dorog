@@ -1,0 +1,9 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Седьмой заход, ударения (K7c): записи, выбранные Директором (30.10, 16:27), — в игру без нового синтеза.",
+ "picks": {
+  "tikhon:H1.tikhon.before_met_scarf": "W054_1",
+  "tikhon:H1.tikhon.before_met": "W055_2"
+ }
+}
