@@ -127,7 +127,7 @@ func _shot(n: String) -> void:
 				sr.open_view(hv.data["view"], String(v[2]))
 			await _frames(60)
 		"j_ttt", "j_rhythm", "j_fish_wait", "j_fish_fight", "j_fish_caught":   # часть G: the games from the choices
-			var gm := {"j_ttt": [["done_M03", "met_ulyana"], "O1", "ulyana", "tictactoe"], "j_rhythm": [["done_M03"], "H1", "tikhon", "rhythm"]}
+			var gm := {"j_ttt": [["done_M03", "met_ulyana"], "O1", "ulyana", "tictactoe"], "j_rhythm": [["done_M03", "done_M23c", "nina_visited_house"], "H1", "tikhon", "rhythm"]}   # M23c played: its frame and lines are not over the game (shot 30.10)
 			var g: Array = gm.get(n, [["done_M22", "met_mitya"], "O4", "mitya", "fishing"])
 			await _state(g[0], g[1], "from_O2" if g[1] != "H1" else "default")
 			var hm = rm.current_room.get_node_or_null("Hotspots/" + String(g[2]))
