@@ -100,12 +100,12 @@
           "candle_burn_minutes": 120,
           "compared_flag": "nina_time_compared",
           "poses": [
-            {"id": "write", "minutes": 7, "sheet": "write", "at": [600.0, 739.6], "height": 495.3, "sitting": true},
-            {"id": "cup", "minutes": 2, "sheet": "cup", "at": [680.0, 683.7], "height": 427.7, "hold": "cup"},
-            {"id": "window", "minutes": 4, "sheet": "window", "at": [1195, 690], "height": 435.4, "shadow_m": 0.55},
-            {"id": "walk", "minutes": 1.5, "sheet": "walk", "at": [1065, 700], "height": 447.4, "path": [[950, 700], [1180, 700]], "shadow_m": 0.55},
-            {"id": "small_mirror", "minutes": 6, "sheet": "small_mirror", "at": [340.0, 692.5], "height": 438.3, "hold": "mirror", "room_layer": "res://assets/closeups/O3_table_no_mirror.png", "_room_layer_note": "партия 9 (O3_table_no_mirror, [280,385,402,532) холста): пока Нина в стекле держит Дунино зеркальце, на столе его нет"},
-            {"id": "write_again", "minutes": 9.5, "sheet": "write", "at": [600.0, 739.6], "height": 495.3, "sitting": true}
+            {"id": "write", "minutes": 7, "sheet": "write", "at": [600.0, 738.2], "height": 498.7, "sitting": true},
+            {"id": "cup", "minutes": 2, "sheet": "cup", "at": [680.0, 687.5], "height": 436.7, "hold": "cup"},
+            {"id": "window", "minutes": 4, "sheet": "window", "at": [1195, 690], "height": 439.7, "shadow_m": 0.55},
+            {"id": "walk", "minutes": 1.5, "sheet": "walk", "at": [1065, 700], "height": 452.0, "path": [[950, 700], [1180, 700]], "shadow_m": 0.55},
+            {"id": "small_mirror", "minutes": 6, "sheet": "small_mirror", "at": [340.0, 693.1], "height": 443.5, "hold": "mirror", "room_layer": "res://assets/closeups/O3_table_no_mirror.png", "_room_layer_note": "партия 9 (O3_table_no_mirror, [280,385,402,532) холста): пока Нина в стекле держит Дунино зеркальце, на столе его нет"},
+            {"id": "write_again", "minutes": 9.5, "sheet": "write", "at": [600.0, 738.2], "height": 498.7, "sitting": true}
           ],
           "_poses_note": "позы Нины — её 3D-фигура (листы nina_sheets, pipeline/requests/mirror_nina.json → pipeline/render/render_mirror.py): sheet — лист позы, at — пол под ней (px холста горницы), height — её рост там (перспектива рисунка: горизонт 330, взгляд 1,35 м — render_spec.room); at и height — те, для которых лист отрисован (тест сверяет с sprites.json). walk — ходит по path (скорость — по опорной стопе листа); shadow_m — мягкая тень у ног; room_layer — слой горницы на время позы (для small_mirror — стол без зеркальца, заявка O3_table_no_mirror в assets/manifest.json; ставится, когда картинка придёт); sitting/hold — для силуэта, если листа нет",
           "nina_sheets": "res://assets/characters/nina_mirror",
