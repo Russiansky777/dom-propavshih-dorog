@@ -117,6 +117,7 @@ func _run() -> void:
 	await _test("J-R4 no shelf anywhere: the office door flag renamed; an old save with the old name loads with the new", _test_flag_rename)
 	await _test("J-E12 the mill wheel's water (25.10 стр. 15, 29.10 стр. 96 — «ничего не изменилось»): the race runs TO the wheel, the rising buckets pour off the left, each paddle cuts in on the right with spray; nothing pours with the pond let down; the epilogue cascade runs", _test_wheel_water)
 	await _test("J-R11b the boat on the free day (29.10 стр. 189: «лодки на втором берегу нет, а «К лодке» есть»): the boat and Pelageya are where the boat was last taken along the rope; «К лодке» over the boat, only while it is there", _test_boat_follows)
+	await _test("J-E14 the beam end (25.10 стр. 165): the choice «Агата» shows «Агата» cut in the wood, not the painted «Дуня»", _test_beam_agata)
 	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -1724,3 +1725,14 @@ func _test_boat_follows() -> void:
 	await _frames(30)
 	_check(not gs.has_flag("boat_at_far") and rm.current_room.room_id == "Z3" and (_layer_vis("boat_day") or _layer_vis("boat_shuttle_dusk")), "back: the boat at the turn again")
 	gs.reset()
+
+
+func _test_beam_agata() -> void:
+	var lay: Dictionary = {}
+	for l in sd.room("EP_beam").get("layers", []):
+		if (l.get("if", []) as Array).has("beam_dunya"):
+			lay = l
+	_check(String(lay.get("image", "")).ends_with("cut_agata.png") and ResourceLoader.exists(String(lay.get("image", ""))),
+		"the «Агата» choice draws cut_agata.png (%s)" % str(lay.get("image", "")))
+	_check(sd.text("@EP.beam.written_dunya") == "Агата", "and the word is «Агата»")
+
