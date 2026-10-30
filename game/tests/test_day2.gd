@@ -1500,7 +1500,13 @@ func _drive_wedges(at: Vector2 = Vector2.INF, max_hits: int = 12) -> int:
 			continue
 		var z: Array = t.get("zone", [0.4, 0.6])
 		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and absf(float(t.get("pos", 0.0)) - (float(z[0]) + float(z[1])) * 0.5) < 0.03:
+			# The marker waits where the bot aimed while the click travels (move, press, release — three frames): a long
+			# CI frame once carried it out of the green and the «hit» became a slip (CI 40984799744: [2, 0, 0, 0]).
+			var bar = mv.panel.wedge_timing
+			bar.drive = false
 			await _click(at if at != Vector2.INF else _v(pr.get("wedge_strike", {})))
+			if is_instance_valid(bar):
+				bar.drive = true
 			made += 1
 			await _frames(2)
 		else:
@@ -1526,7 +1532,12 @@ func _sluice_strikes(p, n: int) -> int:
 			continue
 		var z: Array = t.get("zone", [0.4, 0.6])
 		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and absf(float(t.get("pos", 0.0)) - (float(z[0]) + float(z[1])) * 0.5) < 0.03:
+			# The marker waits while the click travels (see _drive_wedges): a long CI frame must not turn the hit into a slip.
+			var bar = p.timing
+			bar.drive = false
 			await _click(_v(_panel().get("strike", {})))
+			if is_instance_valid(bar):
+				bar.drive = true
 			made += 1
 			await _frames(2)
 		else:
@@ -1610,7 +1621,11 @@ func _test_sluice_mouse() -> void:
 		var t: Dictionary = _panel().get("timing", {})
 		var z: Array = t.get("zone", [0.4, 0.6])
 		if String(t.get("state", "")) == "run" and not bool(t.get("paused", true)) and absf(float(t.get("pos", 0.0)) - (float(z[0]) + float(z[1])) * 0.5) < 0.03:
+			var bar = mv.panel.timing   # waits while the click travels (see _drive_wedges)
+			bar.drive = false
 			await _click(_v(_panel().get("free_click", {})))
+			if is_instance_valid(bar):
+				bar.drive = true
 			made += 1
 		await process_frame
 	_check(int(_panel().get("notch", -1)) == 1 and int(_panel().get("strikes_by_click", 0)) >= 1, "a click anywhere on the close-up strikes (notch %d)" % int(_panel().get("notch", -1)))
