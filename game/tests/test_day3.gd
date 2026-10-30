@@ -1244,7 +1244,13 @@ func _test_batch8() -> void:
 	sr.set_frame("EP_dinner")
 	await _frames(3)
 	var dl: Dictionary = fv.probe().get("layers", {})
-	_check(bool(dl.get("family", false)) and bool(dl.get("agata", false)), "EP_dinner: the drawn family at the table, Agata added by the game")
+	# J (стр. 203): before Ulyana comes in, the family at the table with the main door shut (family_closed); then family
+	_check(bool(dl.get("family_closed", false)) != bool(dl.get("family", false)) and bool(dl.get("agata", false)),
+			"EP_dinner: the drawn family at the table (door shut or Ulyana in it — one of the two), Agata added by the game: %s" % str(dl))
+	gs.set_flag("ep_ulyana_came", true)
+	await _frames(2)
+	dl = fv.probe().get("layers", {})
+	_check(bool(dl.get("family", false)) and not bool(dl.get("family_closed", false)), "EP_dinner: Ulyana in the door once she has come")
 	_check(not dl.has("nina") and not dl.has("ilya") and not dl.has("ilya_wife") and not dl.has("ulyana"), "EP_dinner: no 3D composites over the drawn family (%s)" % str(dl.keys()))
 	sr.set_frame("")
 	await _frames(2)
