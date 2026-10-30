@@ -721,7 +721,8 @@ func _test_walkthrough() -> void:
 	var paths_text := ""
 	for s in sheets:
 		paths_text += String(s.get("text", ""))
-	_check(paths_text.contains("Ещё до беды пустой стояла"), "A6: the lower street stood empty before the flood")
+	# Р10 (29.10, сверка 30.10): no lower street any more — the path to the old pasture went first, nobody walked it.
+	_check(paths_text.contains("тропа к старому выгону") and not paths_text.to_lower().contains("нижняя улица"), "A6: what went first — the path nobody walked (no lower street)")
 	await _close_view()
 	await _use("village_list")
 	await _frames(2)
@@ -762,7 +763,8 @@ func _test_walkthrough() -> void:
 	_check(seen.any(func(x): return x.begins_with("tikhon:Теперь тебе хозяйкой быть")), "Tikhon calls Nina «хозяйка» — sadly, about Dunya's pot (H51)")
 	await _frames(3)
 	var tk = _hotspot("tikhon")
-	_check(tk != null and tk.position.y < 300.0, "Tikhon moved from the armchair onto the stove (%s)" % str(tk.position if tk else null))
+	# 25.10 стр. 145 (сверка 30.10): onto Agata's bench by the stove — not higher up the stove (his rect top ≈ 448).
+	_check(tk != null and tk.position.y > 400.0 and tk.position.y < 560.0 and tk.position.x < 560.0, "Tikhon moved from the armchair onto Agata's bench by the stove (%s)" % str(tk.position if tk else null))
 	# The mill: the manager comes back — the bridge is decided (D21).
 	frames_seen.clear()
 	_check(await _go("Z2"), "H1→Z2")

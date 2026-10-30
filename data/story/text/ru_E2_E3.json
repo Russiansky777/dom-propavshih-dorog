@@ -403,6 +403,14 @@
       "text": "У тропы на столбике фонарь. Каждый вечер его здесь зажигали.",
       "draft": true
     },
+    "R3.exit_R2.label_pull": {
+      "text": "Подтянуть лодку по канату",
+      "draft": true
+    },
+    "Z3.exit_R2.label_pull": {
+      "text": "Подтянуть лодку по канату",
+      "draft": true
+    },
     "R3.exit_R2.label": {
       "text": "К лодке",
       "draft": true

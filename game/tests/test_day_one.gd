@@ -389,7 +389,8 @@ func _test_night() -> void:
 	await _drain()
 	await _to_bed()
 	var seen := await _drain()
-	_check(gs.has_flag("done_N01") and seen.count("stage") == 2, "the night plays once from the earlier save: %s" % str(seen))
+	# 30.10 (25.10 стр. 67): three stagings — dusk, Agata lying down before «Спи уж», morning.
+	_check(gs.has_flag("done_N01") and seen.count("stage") == 3, "the night plays once from the earlier save: %s" % str(seen))
 	# a load in the middle of the night stops it: no dusk, no lines left over
 	_check(rm.load_game(SLOT + "_pre"), "load before the night again")
 	await _frames(3)
