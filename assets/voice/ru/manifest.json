@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-30T00:29:44+00:00",
+  "updated_at": "2026-10-30T00:50:38+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -4221,40 +4221,58 @@
       },
       "file": "M16s_1.ogg",
       "source": "src/M16s_1.mp3",
-      "voice_text": "[surprised] Погляди-ка! Весь год там черны́м-черно́ было… А теперь — снег!",
-      "voice_sha1": "f5f532b8695f77eb8d8acf09b0ee863ced91ed68",
+      "voice_text": "[surprised] Погляди-ка! Весь год там черны́м-черно́ было… А теперь — СНЕГ!",
+      "voice_sha1": "05f053b8df52fa7b1303360bda4f308e87e55451",
       "tags": [
         "surprised"
       ],
       "characters": 74,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.69,
-      "lufs": -16.9,
+      "duration_s": 5.64,
+      "lufs": -17.1,
       "true_peak_db": -6.8,
-      "gain_db": -2.9,
+      "gain_db": -4.9,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.1,
-      "source_true_peak_db": -3.9,
+      "source_lufs": -12.1,
+      "source_true_peak_db": -1.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-25T16:13:13+00:00",
-      "run": "40210445300",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 5.69,
-        "delta_s": 0.0,
-        "suspect": false
-      },
+      "generated_at": "2026-10-30T00:50:38+00:00",
+      "run": "40981759016",
+      "adopted_from": "probe/K3/W018_4",
       "api": {
-        "request_id": "ARhV3Pfvdk2lNz9nY0ZK",
-        "history_item_id": "49FqiSake2bHvsa64Mu1",
+        "history_item_id": "vptqiCNlwGhfL7q6a9gC",
         "character_cost": "33",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3847589832
-        }
+        "previous_text": "",
+        "probe_run": "40978700987"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Погляди ка, весь год там черным черно было, а теперь снег!",
+        "words": [
+          "Погляди",
+          "ка,",
+          "весь",
+          "год",
+          "там",
+          "черным",
+          "черно",
+          "было,",
+          "а",
+          "теперь",
+          "снег!"
+        ],
+        "missing": [
+          "погляди-ка",
+          "черным-черно"
+        ],
+        "extra": [
+          "погляди",
+          "ка",
+          "черным",
+          "черно"
+        ],
+        "ratio": 0.7
       }
     },
     "M16s_2": {
@@ -7838,6 +7856,7 @@
     "M22_12": {
       "scene": "M22",
       "index": 12,
+      "alignment": "src/M22_12.align.json",
       "speaker": "agata",
       "text": "Я шапку рисовала. Давно, за этой партой.",
       "text_sha1": "50828a4fe0bd95097d0997633e2a21908ea5a62a",
@@ -7845,7 +7864,7 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "M22_12.ogg",
@@ -7857,37 +7876,40 @@
       ],
       "characters": 49,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.29,
-      "lufs": -16.9,
-      "true_peak_db": -2.0,
-      "gain_db": -1.2,
+      "duration_s": 4.34,
+      "lufs": -16.8,
+      "true_peak_db": -3.9,
+      "gain_db": -3.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.8,
+      "source_lufs": -13.8,
       "source_true_peak_db": -0.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-25T12:30:44+00:00",
-      "run": "40193152963",
-      "tag_check": {
-        "tags": 1,
-        "prev_duration_s": 3.48,
-        "delta_s": 0.89,
-        "suspect": true
-      },
+      "generated_at": "2026-10-30T00:50:38+00:00",
+      "run": "40981759016",
+      "adopted_from": "probe/K3/W019_1",
       "api": {
-        "request_id": "WRbafctxC9mVnfY2DKJG",
-        "history_item_id": "Bhe0zt5GkJBsCHdOcdeL",
+        "history_item_id": "J0cs5Fi1nX81qTluH2w6",
         "character_cost": "22",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4106771225
-        }
+        "previous_text": "Это я сапоги птице пририсовала! А шапку кто рисовал?",
+        "probe_run": "40978700987"
       },
-      "seed_salt": 102,
-      "chosen_take": 2,
-      "chosen_by": "takes_I.json"
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Я шапку рисовала давно за этой партой",
+        "words": [
+          "Я",
+          "шапку",
+          "рисовала",
+          "давно",
+          "за",
+          "этой",
+          "партой"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
+      }
     },
     "M22_12_then0": {
       "scene": "M22",
@@ -8697,8 +8719,8 @@
       "index": 1,
       "alignment": "src/M23b_1.align.json",
       "speaker": "manager",
-      "text": "Цел затвор? Где рычаг?",
-      "text_sha1": "8210f63eb2d2e057ce7633f38360fd8849f422bd",
+      "text": "А затвор-то цел? Где рычаг?",
+      "text_sha1": "2563c1ce2e47b7ea0281694980d7fd8a466915a0",
       "voice_id": "NUaCYt9nonRqOdH6QgLM",
       "voice_name": "ФЁДОР ЛУКИЧ",
       "model_id": "eleven_v4",
@@ -8708,32 +8730,42 @@
       },
       "file": "M23b_1.ogg",
       "source": "src/M23b_1.mp3",
-      "voice_text": "ЦЕЛ затвор?… Где рычаг?",
-      "voice_sha1": "0360e69df4f7a5f5c4e3b928248f267f05fdd377",
+      "voice_text": "А затвор-то ЦЕЛ? Где рычаг?",
+      "voice_sha1": "5b87dfcd7ba59eb71105d780c5ffd684e2069fc6",
       "tags": [],
-      "characters": 23,
+      "characters": 27,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.35,
-      "lufs": -17.0,
-      "true_peak_db": -5.7,
-      "gain_db": -2.4,
+      "duration_s": 2.37,
+      "lufs": -16.9,
+      "true_peak_db": -5.0,
+      "gain_db": -3.4,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.6,
-      "source_true_peak_db": -3.1,
+      "source_lufs": -13.6,
+      "source_true_peak_db": -1.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:01:32+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-30T00:50:38+00:00",
+      "run": "40981759016",
+      "adopted_from": "probe/K3/W023_4",
       "api": {
-        "request_id": "p7rYoI9PQlrPVUUB4oe1",
-        "history_item_id": "NLKgbvb3rcCZKWc1CkZi",
-        "character_cost": "10",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 272916707
-        }
+        "history_item_id": "UEz4b6m6ujFcgtPQe4vb",
+        "character_cost": "12",
+        "previous_text": "",
+        "probe_run": "40979686835"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "А затвор-то цел? Где рычаг?",
+        "words": [
+          "А",
+          "затвор-то",
+          "цел?",
+          "Где",
+          "рычаг?"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M23b_2": {
@@ -12047,37 +12079,54 @@
       "voice_name": "ВАРВАРА",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.55,
+        "stability": 0.5,
         "similarity_boost": 0.75
       },
       "file": "M26_25.ogg",
       "source": "src/M26_25.mp3",
-      "voice_text": "Агата, погляди-ка: заплатка на Дунином пальто держится! А Ульянина птица словно живая.",
-      "voice_sha1": "5d81c20c79a5245fd3ea858810df2ee966b6fb07",
+      "voice_text": "Агата, погляди-ка: заплатка на Дунином пальто ДЕРЖИТСЯ! А Ульянина птица словно живая.",
+      "voice_sha1": "350368088ee555f2f2eec5db9294b2b5e768ecf0",
       "tags": [],
       "characters": 86,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.5,
+      "duration_s": 7.18,
       "lufs": -16.9,
-      "true_peak_db": -5.9,
+      "true_peak_db": -7.2,
       "gain_db": -3.2,
       "limiter_extra_db": 0.0,
       "source_lufs": -13.8,
-      "source_true_peak_db": -2.9,
+      "source_true_peak_db": -4.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-25T16:14:43+00:00",
-      "run": "40210445300",
+      "generated_at": "2026-10-30T00:50:37+00:00",
+      "run": "40981759016",
+      "adopted_from": "probe/K3/W016_4",
       "api": {
-        "request_id": "bL8WO9CR8jnOYsnGY6xT",
-        "history_item_id": "sys8JTH6Lt74oYBfkzHE",
+        "history_item_id": "QzK11ZV67QjOwDwSqLvk",
         "character_cost": "38",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 1301628459
-        }
+        "previous_text": "Ну как, держится заплатка?",
+        "probe_run": "40978700987"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Агата, погляди-ка, заплатка на Дунином пальто держится, а Ульянина птица словно живая",
+        "words": [
+          "Агата,",
+          "погляди-ка,",
+          "заплатка",
+          "на",
+          "Дунином",
+          "пальто",
+          "держится,",
+          "а",
+          "Ульянина",
+          "птица",
+          "словно",
+          "живая"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M26_26": {
@@ -16300,37 +16349,50 @@
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.6,
         "similarity_boost": 0.75
       },
       "file": "narrator/H2d.office_mirror.view_again.ogg",
       "source": "src/narrator/H2d.office_mirror.view_again.mp3",
-      "voice_text": "В стекле — контора мельницы. Всё та же тишина.",
-      "voice_sha1": "365495c1d7633793c17c74e87e3ebf15a2048bd8",
+      "voice_text": "В стекле — [short pause] контора мельницы. Всё та же тишина.",
+      "voice_sha1": "2acfa582b8098dc944babc20a73c3687c4ae443d",
       "tags": [],
-      "characters": 46,
+      "characters": 60,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.12,
-      "lufs": -17.0,
-      "true_peak_db": -3.7,
-      "gain_db": -2.1,
+      "duration_s": 4.69,
+      "lufs": -16.9,
+      "true_peak_db": -4.1,
+      "gain_db": -1.7,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.9,
-      "source_true_peak_db": -1.7,
+      "source_lufs": -15.3,
+      "source_true_peak_db": -2.6,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-24T21:10:23+00:00",
-      "run": "40132859491",
+      "generated_at": "2026-10-30T00:50:38+00:00",
+      "run": "40981759016",
+      "adopted_from": "probe/K3/W017_1",
       "api": {
-        "request_id": "0LUUDyBnUPQv5mLXjiS1",
-        "history_item_id": "bM88c9nm5O6KEZ4U2ZZg",
-        "character_cost": "20",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4266597758
-        }
+        "history_item_id": "wIJORw99nFtc6xX0fWF6",
+        "character_cost": "26",
+        "previous_text": "",
+        "probe_run": "40978700987"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "В стекле контора мельницы. Все та же тишина",
+        "words": [
+          "В",
+          "стекле",
+          "контора",
+          "мельницы.",
+          "Все",
+          "та",
+          "же",
+          "тишина"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "H2d.office_mirror.view_first": {
@@ -25187,39 +25249,55 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.5,
         "similarity_boost": 0.75
       },
       "file": "agata_thoughts/O1.enter.winter.ogg",
       "source": "src/agata_thoughts/O1.enter.winter.mp3",
-      "voice_text": "[warmly] Тут уж зима?.. А у нас ещё октябрь! Как же это?",
-      "voice_sha1": "75f434d33f76271ce92bdce85c9c45193c1094db",
+      "voice_text": "[surprised] Тут уж зима?.. [hesitant] А у нас ещё октябрь! Как же это?",
+      "voice_sha1": "d98b0b82da8a97b2ff34b4441cb619972f628c93",
       "tags": [
-        "warmly"
+        "hesitant"
       ],
-      "characters": 56,
+      "characters": 70,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.14,
-      "lufs": -16.9,
-      "true_peak_db": -4.2,
-      "gain_db": -2.8,
+      "duration_s": 4.4,
+      "lufs": -17.0,
+      "true_peak_db": -4.3,
+      "gain_db": -2.4,
       "limiter_extra_db": 0.0,
-      "source_lufs": -14.2,
-      "source_true_peak_db": -1.5,
+      "source_lufs": -14.6,
+      "source_true_peak_db": -2.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T18:04:08+00:00",
-      "run": "40926041525",
+      "generated_at": "2026-10-30T00:50:38+00:00",
+      "run": "40981759016",
+      "adopted_from": "probe/K3/W020_4",
       "api": {
-        "request_id": "4YXh0cBST1Zx1OW2xY1i",
-        "history_item_id": "iU7MDwim2MUeSpMq4kvc",
-        "character_cost": "25",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 2489707219
-        }
+        "history_item_id": "daZ0cQAZvSoIt4qfDzcw",
+        "character_cost": "31",
+        "previous_text": "",
+        "probe_run": "40978700987"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Тут уж зима? А у нас еще октябрь. Как же это?",
+        "words": [
+          "Тут",
+          "уж",
+          "зима?",
+          "А",
+          "у",
+          "нас",
+          "еще",
+          "октябрь.",
+          "Как",
+          "же",
+          "это?"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "agata:O1.notebooks.use": {
