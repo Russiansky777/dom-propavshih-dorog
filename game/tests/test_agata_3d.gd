@@ -92,6 +92,7 @@ func _run() -> void:
 	await _test("Talking (Director 30.10 «как живая»): her line → the talk gesture fades in over the stance, feet stay; line over → fades out; short line — none", _test_gesture)
 	await _test("Skirt (Director 30.10 «сгибы юбки не красиво»): on its own spring bones, not on the legs — no «trouser legs»; the knees push it, standing it settles", _test_skirt)
 	await _test("Look (Director 30.10 «идеальная Агата»): a villager's line — her head turns to him (within the neck's limits), softly; line over — back", _test_look)
+	await _test("Setting off (Director 30.10 «идеальная Агата»): the planted foot stays put as the stance blends into the stride (it skated 12–15 cm)", _test_set_off)
 	PlayerScript.forced_render = ""
 	gs.reset()
 	var failed := 0
@@ -663,4 +664,56 @@ func _test_look() -> void:
 	_check(after > during + 15.0, "line over: the head stays on him (%.0f°)" % after)
 	npc.queue_free()
 	v.skeleton.skeleton_updated.disconnect(_on_head_updated)
+	_completed = true
+
+
+# --- Setting off -----------------------------------------------------------------------------------
+
+## 12 walks from standing in Z2 (each facing its way): the slide of the lower (planted) foot on the floor in the
+## first 0.8 s. With the planting off (self-check) the same starts must slide far more.
+func _starts(plant: bool) -> Array:
+	player.start_at_mid_stance = plant
+	player.plant_on_start = plant
+	var tot := 0.0
+	var worst := 0.0
+	var n := 0
+	for k in 12:
+		await _enter("Z2", Vector2(700 + (k % 3) * 200, 850 + (k % 2) * 100))
+		var v: Actor3D = player.view3d
+		var ang := k * 0.52
+		player.yaw3d = ang
+		player.yaw3d_target = ang
+		await _frames(40)
+		var kf: float = player.floor_foreshortening()
+		player.click_at(player.global_position + Vector2(sin(ang), cos(ang) * kf) * 420.0)
+		var ppm_s: float = v.ppm * absf(player.scale.y)
+		var start: Vector2 = player.global_position
+		var planted := {}
+		var w_max := 0.0
+		var t := 0.0
+		while t < 0.8:
+			await process_frame
+			t += player.get_process_delta_time()
+			var f := v.feet_model()
+			var p: Vector2 = player.global_position - start
+			var side := 0 if minf(f[0].y, f[1].y) <= minf(f[2].y, f[3].y) else 1
+			var foot: Vector3 = Basis(Vector3.UP, player.yaw3d) * f[side * 2]
+			var w := Vector2(p.x / ppm_s + foot.x, p.y / (ppm_s * kf) + foot.z)
+			if not planted.has(side):
+				planted = {side: w}
+			w_max = maxf(w_max, (w - planted[side]).length())
+		tot += w_max
+		worst = maxf(worst, w_max)
+		n += 1
+	player.start_at_mid_stance = true
+	player.plant_on_start = true
+	return [tot / maxf(n, 1), worst]
+
+
+func _test_set_off() -> void:
+	var on: Array = await _starts(true)
+	var off: Array = await _starts(false)
+	print("        setting off: the planted foot slides %.0f mm (worst %.0f); without planting %.0f mm (worst %.0f)" % [on[0] * 1000.0, on[1] * 1000.0, off[0] * 1000.0, off[1] * 1000.0])
+	_check(on[0] <= 0.05 and on[1] <= 0.08, "setting off, the planted foot slides %.0f mm on average (worst %.0f; ≤ 50 / 80)" % [on[0] * 1000.0, on[1] * 1000.0])
+	_check(off[0] > on[0] * 2.0, "self-check: without planting the start slides only %.0f mm — the metric would not see skating" % (off[0] * 1000.0))
 	_completed = true

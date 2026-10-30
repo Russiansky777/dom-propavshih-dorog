@@ -516,6 +516,12 @@ func _start_walk(target: Vector2) -> void:
 	_path_ready = false
 	_path_wait_frames = 0
 	nav_agent.target_position = target
+	if start_at_mid_stance and is_3d() and not _walking and view3d != null and view3d.shown_w() < 0.05:
+		# from standing (Director 30.10 «идеальная Агата»: the planted foot skated 12–15 cm as the stance blended into
+		# the stride): the cycle starts in the stance of the foot that already stands where the stride puts it
+		var ph := view3d.start_phase(view3d.feet_model(), _rtf("walk", "start_ahead", 0.0))
+		if ph >= 0.0:
+			walk_phase = floorf(walk_phase) + 1.0 + ph
 	_walking = true
 	walk_time = 0.0
 	_lock_start()
@@ -1208,6 +1214,11 @@ var _rm_blend: float = 0.0
 var rm_last_px: Vector2 = Vector2.ZERO   # this frame's root motion on screen (tests, probe)
 ## Off only in the foot test's self-check: the figure then slides along the path at constant speed.
 var root_motion_3d: bool = true
+## A walk from standing starts in the stance of the foot already under her (Actor3D.start_phase); off — probes.
+var start_at_mid_stance: bool = true
+## Setting off, the planted foot stays put through the blend into the stride too (off — probes).
+var plant_on_start: bool = true
+var _rm_shown_w: float = 0.0
 
 
 func _root_motion_3d(probe: Array, blend: float) -> void:
@@ -1221,6 +1232,12 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 		# she turns about her centre instead — no lurch sideways while she is still almost standing.
 		var share := clampf(walk_w / maxf(_rm_blend, 0.001), 0.0, 1.0)
 		var walk_part: Vector3 = r_old * (f_old - f_new) * share
+		# setting off (the shown walk weight rising; Director 30.10 «идеальная Агата»): the planted foot is kept on the
+		# floor through the blend from the stance into the stride too — it skated 10–15 cm back as she set off. Only
+		# while the weight rises: stopping keeps the figure exactly at the end of its path.
+		if plant_on_start and view3d.shown_w() > _rm_shown_w + 1e-5:
+			var posed: Array = view3d.feet_model()
+			walk_part += r_old * (f_new - (posed[_rm_side * 2] as Vector3))
 		var turn_part: Vector3 = (r_old * f_new - Basis(Vector3.UP, yaw3d) * f_new) * clampf(walk_w, 0.0, 1.0)
 		var d := Vector2(walk_part.x + turn_part.x, walk_part.z + turn_part.z)
 		var ppm_s := view3d.ppm * absf(scale.y)
@@ -1249,6 +1266,7 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 		_rm_side = view3d.stance_at(walk_phase)
 	_rm_yaw = yaw3d
 	_rm_blend = blend
+	_rm_shown_w = view3d.shown_w()
 
 
 func _walk_step_3d(delta: float) -> void:

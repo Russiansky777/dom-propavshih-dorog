@@ -50,6 +50,8 @@ var root_d: PackedFloat32Array = PackedFloat32Array()  # cumulative stance-foot 
 var contacts: PackedFloat32Array = PackedFloat32Array()  # phases where a foot gets planted
 var stance_side: PackedByteArray = PackedByteArray()    # 0 = left, 1 = right planted, per phase sample
 var foot_bones: Array = []       # [left foot, left toe, right foot, right toe] bone indices
+## Middle of each stance of the walk cycle: [phase, side (0 left / 1 right), stance foot position (model frame)].
+var stance_mids: Array = []
 ## Mid-point of the two feet (floor x, z in the model frame, clip average) per clip: the model is shifted
 ## by the blend of these so the feet stay centred on her position whatever clip is in front — idle
 ## variants with a stance a few cm forward or back do not make the feet skate over a crossfade.
@@ -861,8 +863,33 @@ func build_root_motion() -> void:
 		prev_z = z
 	stride_m = maxf(acc, 0.01)
 	walk_speed_mps = stride_m / maxf(walk_len, 0.01)
+	stance_mids = []
+	var seg_start := 0
+	for i in range(1, RM_N + 2):
+		if i == RM_N + 1 or stance_side[i] != stance_side[seg_start]:
+			if i - seg_start >= 8 and i <= RM_N:
+				var mid := (seg_start + i - 1) / 2
+				stance_mids.append([float(mid) / float(RM_N), int(stance_side[mid]), samples[mid][int(stance_side[mid]) * 2]])
+			seg_start = i
 	if life != null:
 		life.active = was_life
+
+
+## Walk phase to set off from standing: a phase of the stance whose planted foot lies where that foot stands now
+## (`feet_now`: feet_model() in the stance) — the blend from the stance into the stride then hardly moves it.
+## `ahead` (0..1 of the stance) starts a little past its middle. −1 when unknown.
+func start_phase(feet_now: Array, ahead: float = 0.0) -> float:
+	var best := -1.0
+	var best_d := INF
+	for m in stance_mids:
+		var side := int(m[1])
+		if feet_now.size() < 4:
+			return float(m[0])
+		var d := Vector2(feet_now[side * 2].x - m[2].x, feet_now[side * 2].z - m[2].z).length()
+		if d < best_d:
+			best_d = d
+			best = float(m[0])
+	return best + ahead if best >= 0.0 else best
 
 
 ## Which foot the walk clip has planted at this phase (0 = left, 1 = right): the root-motion foot, also
