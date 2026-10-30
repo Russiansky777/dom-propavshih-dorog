@@ -3,7 +3,9 @@
   "id": "agata",
   "sheet_dir": "res://assets/characters/agata",
   "sprites": "sprites.json",
-  "render": "sprites",
+  "render": "3d",
+  "render_web": "sprites",
+  "_render_30_10": "Директор 30.10 (14:38, 14:47): живая модель — основная фигура игры (Steam: 60 к/с, любой угол, наплывы); веб-сборка остаётся на листах (render_web). F8 — переключатель для сравнения.",
   "_render_note": "Режим отрисовки Агаты: \"sprites\" — листы (8 направлений, как было); \"3d\" — та же модель Meshy живьём (game/scripts/actors/actor_3d.gd): любой угол поворота, плавные переходы стоять↔идти↔действие, idle из вариантов с наплывом, ходьба по измеренному root motion опорной ступни, разрешение по размеру на экране. Переключение для сравнения — F8, в вебе ?agata=3d|sprites, в командной строке -- --agata=3d. Остальное (тень, свет, тон, окклюзия, шаги, ключевые кадры действий) — общее.",
   "figure_height_px": 337,
   "idle_action": "idle",
@@ -132,22 +134,35 @@
   },
   "rt3d": {
     "_comment": "Агата в реальном 3D. Модель — assets/characters/agata/rt3d/agata_rt.glb: Агата v3 (23.10, pipeline/requests/agata_v3.json, прогон 39865082377): модель Meshy v3 (4K, Remesh 300 тыс.), упрощена до 60 тыс. треугольников, текстуры 2K, ткань матовая; все 15 клипов прежней Агаты перенесены на риг v3 (pipeline/3d/retarget_clips.py), стопы у ходьбы и стоек исправлены (pipeline/3d/feet_fix.py); open/pick/reach — те же клипы, начало и конец из стойки Idle_4 (имена *_open/_pick/_reach); с rev 9 (прогон 39983600002, партия G) reach — open_door_take_reach («взять у пояса»), pick — без «осмотра» у лица, есть сидячая Chair_Sit_F_sit. sheet_ppm = 384 / (1,653 м × 1,12) — рост фигуры на экране как у листов. Копия в игру — tools/sync_characters.sh.",
-    "scene": "res://assets/characters/agata/rt3d/agata_rt.glb",
+    "scene": "res://assets/characters/agata/rt3d/agata_v4_rt.glb",
+    "_v4": "30.10: Агата v4 — та же модель, что в листах (pipeline/requests/agata_v4_t5c.json, релиз agata-v4-work → agata_v4_animations_t5c.glb): сетка 381 тыс. → 250 тыс. треугольников (Steam, не веб), текстура 4K без потерь, ткань матовая; к её клипам перенесены с библиотеки прежней Агаты (pipeline/3d/motions/agata_rev10_clips.glb, retarget_clips.py, 0 кредитов) спокойные стойки Idle_3/4/6/7/9/12, «вдох и оглядеться», Casual_Walk и жест реплики (ноги — из её стойки). Сборка — tools/build_agata_live.sh.",
     "camera_elev_deg": 14.0,
     "_camera_note": "Угол ортокамеры над горизонтом. 14° — как у листов (облик тот же: лицо, пропорции); рост на экране сохраняется при любом угле (масштаб × cos14/cos угла). \"room\" — угол пола комнаты (asin floor_foreshortening ≈ 33°). oblique_floor: true — камера 14°, но глубина мира растянута до наклона пола комнаты (k / sin14 ≈ 2,27): шаг к зрителю и от зрителя сдвигает нарисованную стопу ровно как пол (≤ 1,5 px за опору), но верх головы и плеч виден как сверху (≈ «room»). При 14° без растяжения нарисованная стопа при ходьбе вглубь проезжает 20–40 px за опору при масштабе 1 — так же, как у листов. Выбор — за Директором (Docs/evidence/M1/agata_v2/camera_options.jpg).",
     "frame_px": [320, 420],
     "pivot": [0.5, 0.94],
-    "sheet_ppm": 207.4,
+    "sheet_ppm": 206.7,
+    "_sheet_ppm_v4": "384 / (1,659 м × 1,12) — рост v4 по sprites.json",
     "msaa": 4,
+    "supersample": 2.0,
+    "_supersample": "30.10 (Директор: «волосы рваные»): кадр фигуры рисуется в 2× размера на экране и сглаживается при уменьшении — края прядей и лица мягче",
     "max_render_scale": 3.0,
     "premultiplied": true,
     "clips": {
       "walk": "Walking_Woman",
-      "idle": "Idle_4",
+      "idle": "Idle_T2M_idle",
       "open": "open_door_open",
-      "pick": "Female_Bend_Over_Pick_Up_Inspect_pick",
+      "pick": "Collect_Object_pick",
       "reach": "open_door_take_reach",
-      "talk": "Talk_with_Right_Hand_Open"
+      "talk": "Talk_with_Right_Hand_Open",
+      "sit": "Chair_Sit_F_sit"
+    },
+    "gesture": {
+      "_comment": "30.10 «как живая»: пока на экране реплика Агаты (не короче min_chars), стоя, она говорит руками — клип talk поверх стойки (ноги из стойки), наплыв fade_in_s / уход fade_out_s, вес weight, начало — случайное в первых start_jitter клипа",
+      "min_chars": 24,
+      "weight": 0.85,
+      "fade_in_s": 0.5,
+      "fade_out_s": 0.7,
+      "start_jitter": 0.2
     },
     "idle": {
       "_comment": "Спокойные женские idle (превью каталога Meshy: Docs/evidence/M1/agata_v2/catalog/). Два слота: за crossfade_s до конца клипа следующий вариант наплывает — шва цикла не видно, повторов подряд нет.",
@@ -155,7 +170,7 @@
       "pool": [
         {
           "clip": "Idle_4",
-          "weight": 3
+          "weight": 2
         },
         {
           "clip": "Idle_3",
@@ -166,6 +181,7 @@
           "weight": 1
         }
       ],
+      "_pool_v4": "30.10, v4: своя стойка Idle_T2M_idle (как в листах) в набор не входит — стоит иначе, наплыв на неё сдвигал стопу на 5,4 см за 20 с (тест idle, предел 4 см); Idle_4/3/9 перенесены на риг v4 и проходят",
       "_pool_note": "Только клипы с близкой стойкой (после выравнивания по середине стоп расхождение ≤ ~5 см): Idle_4, Idle_3, Idle_9. Idle_7, Idle_12, Short/Long_Breathe_and_Look_Around стоят шире или с выставленной ногой — наплыв на них скользит стопами (замер tests/test_agata_3d.gd); для них нужен переход шагом (IK стоп)."
     },
     "walk": {

@@ -82,13 +82,14 @@ func _run() -> void:
 	await _frames(3)
 	rm.autosave_enabled = false
 	player = main_node.get_node("World/Player")
-	await _test("Model: same Meshy mesh/texture/skeleton (≤ 80k triangles), all clips; switch sprites ↔ 3D in place; sprites mode untouched", _test_model)
+	await _test("Model: same Meshy mesh/texture/skeleton (v4, 150k–300k triangles), all clips; switch sprites ↔ 3D in place; sprites mode untouched", _test_model)
 	await _test("Turning: any angle (not 8 rows), no jump between frames, reaches the target", _test_turning)
 	await _test("Feet planted while walking: stance foot ≤ 1 cm per stance in 5 directions; speed from the clip", _test_feet_planted)
 	await _test("Idle alive without jerks: 20 s with variant crossfades — no bone jumps, hips do not turn, head moves, feet stay", _test_idle)
 	await _test("Start/stop: speed ramps up and down, pose continuous, arrives at the target", _test_start_stop)
 	await _test("Actions open/pick/reach in 3D: once, on the key fraction; fade into idle; room change cancels", _test_actions)
 	await _test("Drawing: live figure under the y-sorted node (same z, occluders as before), facade invisible, shadow kept, footsteps on contacts", _test_drawing)
+	await _test("Talking (Director 30.10 «как живая»): her line → the talk gesture fades in over the stance, feet stay; line over → fades out; short line — none", _test_gesture)
 	PlayerScript.forced_render = ""
 	gs.reset()
 	var failed := 0
@@ -118,13 +119,14 @@ func _test_model() -> void:
 		return
 	var v: Actor3D = player.view3d
 	var tris := v.triangle_count()
-	_check(tris > 20000 and tris <= 80000, "triangles %d: expected the decimated Meshy mesh (20k..80k)" % tris)
+	# Director 30.10: the live model is the game's figure for Steam — v4, 250k triangles (web budget no longer applies).
+	_check(tris > 150000 and tris <= 300000, "triangles %d: expected the v4 Meshy mesh decimated for Steam (150k..300k)" % tris)
 	_check(v.skeleton.get_bone_count() == 24, "skeleton has %d bones, Meshy rig has 24" % v.skeleton.get_bone_count())
 	for role in ["walk", "idle", "open", "pick", "reach"]:
 		_check(v.clips.has(role), "clip for '%s' missing (rt3d.clips)" % role)
 	_check(v.idle_pool.size() >= 3, "idle pool has %d variants (≥ 3 expected)" % v.idle_pool.size())
 	var tex = v.material.get_shader_parameter("albedo_tex")
-	_check(tex is Texture2D and (tex as Texture2D).get_width() == 2048, "albedo is not the model's 2K texture: %s" % str(tex))
+	_check(tex is Texture2D and (tex as Texture2D).get_width() == 4096, "albedo is not the model's 4K texture: %s" % str(tex))
 	_check(v.stride_m > 0.9 and v.stride_m < 1.6, "walk stride per cycle %.3f m (clip Walking_Woman ≈ 1.1–1.3)" % v.stride_m)
 	_check(v.contacts.size() == 2, "walk cycle contacts %s: two steps per cycle expected" % str(v.contacts))
 	# Figure height on screen = the sprite figure's (same scene height).
@@ -441,4 +443,34 @@ func _test_drawing() -> void:
 		cycles = player.walk_phase - ph0
 		var steps: int = int(sfx.get("step_count")) - c0
 		_check(steps >= int(cycles * 2.0) - 2 and steps <= int(cycles * 2.0) + 2, "footsteps %d for %.1f walk cycles (2 per cycle)" % [steps, cycles])
+	_completed = true
+
+
+# --- Talk gesture (rt3d.gesture) -----------------------------------------------------------------
+
+func _test_gesture() -> void:
+	await _enter("H1", Vector2(1200, 960))
+	if not player.is_3d():
+		_check(false, "not in 3D")
+		return
+	var v: Actor3D = player.view3d
+	_check(v.clips.has("talk"), "talk clip resolved (rt3d.clips.talk)")
+	await _wait_s(0.5)
+	var feet0: Array = v.feet_model()
+	sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "T_gesture", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут."}
+	await _wait_s(1.0)
+	_check(player._gest_w > 0.6, "her line: the gesture is in (weight %.2f)" % player._gest_w)
+	var feet1: Array = v.feet_model()
+	var drift := maxf(Vector2(feet1[0].x - feet0[0].x, feet1[0].z - feet0[0].z).length(), Vector2(feet1[2].x - feet0[2].x, feet1[2].z - feet0[2].z).length())
+	_check(drift < 0.04, "talking keeps the feet where they stood (%.1f cm)" % (drift * 100.0))
+	sr.current_beat = {}
+	await _wait_s(1.2)
+	_check(player._gest_w <= 0.0, "line over: the gesture faded out (weight %.2f)" % player._gest_w)
+	sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "T_short", "text": "Ой!"}
+	await _wait_s(0.6)
+	_check(player._gest_w <= 0.0, "a short line: no gesture (weight %.2f)" % player._gest_w)
+	sr.current_beat = {"type": "line", "speaker": "tikhon", "line_id": "T_other", "text": "Кто там топчется?.. Сыро. Печь сперва затопи."}
+	await _wait_s(0.6)
+	_check(player._gest_w <= 0.0, "someone else's line: no gesture (weight %.2f)" % player._gest_w)
+	sr.current_beat = {}
 	_completed = true

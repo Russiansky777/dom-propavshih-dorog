@@ -112,6 +112,13 @@ var _act_w: float = 0.0
 var _act_len: float = 1.0
 var _act_speed: float = 1.0
 var _act_fading: String = ""      # an action that ended: its last pose fades out
+## Talking (3D only, data rt3d.gesture): while a line of Agata's is on screen she gestures with the talk clip
+## (legs from the stance, so the feet stay put), faded in and out over the idle — Director 30.10 «как живая».
+var _gest_key: String = ""
+var _gest_t: float = 0.0
+var _gest_w: float = 0.0
+var _gest_on: bool = false
+var _gest_rng := RandomNumberGenerator.new()
 var _facade_row: int = -1
 var _facade_anim: String = ""
 
@@ -341,7 +348,13 @@ func _setup_sprite() -> void:
 	turn_blend_s = float(tn.get("blend_s", 0.0))
 	var want := forced_render if forced_render != "" else _render_from_env()
 	if want == "":
-		want = String(_spec.get("render", "sprites"))
+		# Director 30.10 (14:38, 14:47): the live model is the figure of the game (Steam); the web build keeps the
+		# sheets (`render_web`) — the site has no GPU budget to count on and a 1 GB limit.
+		want = String(_spec.get("render_web" if OS.has_feature("web") else "render", "sprites"))
+		# Headless test runs keep the sheets (their timings were measured on them); tests of the live model force
+		# "3d" (forced_render), the game and the frame shots (a display) get the data's mode.
+		if DisplayServer.get_name() == "headless":
+			want = "sprites"
 	if want == "3d":
 		set_render_mode("3d")
 	_play_idle()
@@ -1039,18 +1052,54 @@ func _process_3d(delta: float) -> void:
 		act_name = _act_fading
 		if _act_w <= 0.0:
 			_act_fading = ""
+	var act_w := _act_w
+	var act_t := _act_t
+	if act_name == "" and _gesture_3d(delta):
+		act_name = "talk"
+		act_w = _gest_w
+		act_t = _gest_t
 	view3d.set_yaw(yaw3d)
 	var blend := maxf(walk_w, _turn_step_w)
 	var probe: Array = []
 	if root_motion_3d and _walking and _rm_side >= 0:
 		# new phase, last frame's weights: only the walk itself moves the planted foot
-		probe = view3d.feet_with(fposmod(walk_phase, 1.0), _rm_blend, _act_w, act_name, _act_t)
-	view3d.pose(delta, fposmod(walk_phase, 1.0), blend, _act_w, act_name, _act_t)
+		probe = view3d.feet_with(fposmod(walk_phase, 1.0), _rm_blend, act_w, act_name, act_t)
+	view3d.pose(delta, fposmod(walk_phase, 1.0), blend, act_w, act_name, act_t)
 	_root_motion_3d(probe, blend)
 	_sync_facade_3d()
 	_sync_body3d()
 	if _acting and _act_t >= _act_len - 0.0001:
 		_on_animation_finished()
+
+
+## The talk gesture's weight and time this frame; false when it is not shown. A new line of Agata's (long enough,
+## standing) starts the clip at a random early point, so lines do not all open with the same hand; the clip is
+## blended in its whole length (it starts and ends in the stance) and starts again while the line lasts.
+func _gesture_3d(delta: float) -> bool:
+	var g: Dictionary = _rt.get("gesture", {})
+	if g.is_empty() or view3d == null or not view3d.clips.has("talk"):
+		return false
+	var b: Dictionary = StoryRunner.current_beat
+	var talking := String(b.get("type", "")) == "line" and String(b.get("speaker", "")) == "agata" and not _walking \
+		and String(b.get("text", "")).length() >= int(g.get("min_chars", 24))
+	var key := String(b.get("line_id", "")) + "|" + String(b.get("text", ""))
+	var len_s := view3d.action_length("talk")
+	if talking and key != _gest_key:
+		_gest_key = key
+		if _gest_w < 0.05:
+			_gest_t = _gest_rng.randf_range(0.0, float(g.get("start_jitter", 0.2))) * len_s
+		_gest_on = true
+	elif not talking:
+		_gest_on = false
+		_gest_key = "" if b.is_empty() else _gest_key
+	var fade := float(g.get("fade_in_s", 0.5)) if _gest_on else float(g.get("fade_out_s", 0.7))
+	_gest_w = move_toward(_gest_w, float(g.get("weight", 0.85)) if _gest_on else 0.0, delta / maxf(fade, 0.01))
+	if _gest_w <= 0.0:
+		return false
+	_gest_t += delta * float(g.get("rate", 1.0))
+	if _gest_t >= len_s:
+		_gest_t = 0.0 if _gest_on else len_s
+	return true
 
 
 ## Body yaw eases towards its target (exponential approach, capped turn rate): any angle, no step.
