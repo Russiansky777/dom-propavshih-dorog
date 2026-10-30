@@ -91,6 +91,7 @@ func _run() -> void:
 	await _test("Drawing: live figure under the y-sorted node (same z, occluders as before), facade invisible, shadow kept, footsteps on contacts", _test_drawing)
 	await _test("Talking (Director 30.10 «как живая»): her line → the talk gesture fades in over the stance, feet stay; line over → fades out; short line — none", _test_gesture)
 	await _test("Skirt (Director 30.10 «сгибы юбки не красиво»): on its own spring bones, not on the legs — no «trouser legs»; the knees push it, standing it settles", _test_skirt)
+	await _test("Look (Director 30.10 «идеальная Агата»): a villager's line — her head turns to him (within the neck's limits), softly; line over — back", _test_look)
 	PlayerScript.forced_render = ""
 	gs.reset()
 	var failed := 0
@@ -491,9 +492,13 @@ func _on_skirt_updated() -> void:
 	var v: Actor3D = player.view3d
 	var sk := v.skeleton
 	var row := {}
+	# the spring's own part: where the joint is minus where the hips would carry it without springs (rests)
+	var hips := sk.find_bone("Hips")
 	for c in [0, 4]:
 		var b := sk.find_bone("Skirt%d_2" % c)
-		row[c] = v._skel_to_turn() * sk.get_bone_global_pose(b).origin - v.bone_model("Hips")
+		var carried: Transform3D = sk.get_bone_global_pose(hips) * sk.get_bone_rest(sk.find_bone("Skirt%d_0" % c)) \
+			* sk.get_bone_rest(sk.find_bone("Skirt%d_1" % c)) * sk.get_bone_rest(b)
+		row[c] = v._skel_to_turn() * sk.get_bone_global_pose(b).origin - v._skel_to_turn() * carried.origin
 	_skirt_rows.append(row)
 
 
@@ -585,7 +590,77 @@ func _test_skirt() -> void:
 			lo = lo.min(r[c])
 			hi = hi.max(r[c])
 		settle = maxf(settle, (hi - lo).length())
-	print("        skirt: walking the hem joints move %.1f cm against the hips; standing, %.1f cm" % [swing * 100.0, settle * 100.0])
-	_check(swing > 0.03, "walking, the skirt does not move against the hips (%.1f cm): no springs or no push" % (swing * 100.0))
-	_check(settle < 0.02, "standing, the skirt keeps swinging (%.1f cm)" % (settle * 100.0))
+	print("        skirt: the springs swing the hem joints %.1f cm walking; standing, %.1f cm" % [swing * 100.0, settle * 100.0])
+	# standing, the idle's own sway still moves it a little (1–3 cm); a skirt that keeps swinging goes far beyond
+	_check(swing > 0.04, "walking, the springs do not swing the skirt (%.1f cm): no springs or no push" % (swing * 100.0))
+	_check(settle < 0.04 and settle < swing * 0.5, "standing, the skirt keeps swinging (%.1f cm, walking %.1f cm)" % [settle * 100.0, swing * 100.0])
+	_completed = true
+
+
+# --- Look ----------------------------------------------------------------------------------------
+
+var _head_now := Vector2.ZERO
+
+
+## The head as drawn (after the modifiers: read when the skeleton has its final pose).
+func _on_head_updated() -> void:
+	_head_now = _head_dir_now(player.view3d)
+
+
+func _head_dir(_v: Actor3D) -> Vector2:
+	return _head_now
+
+
+## Head forward on the floor (x right, z towards the viewer), from the posed head bone and the body yaw.
+func _head_dir_now(v: Actor3D) -> Vector2:
+	var b := v.skeleton.find_bone("Head")
+	var hb: Basis = (Basis(Vector3.UP, v.get_yaw()) * v._skel_to_turn().basis * v.skeleton.get_bone_global_pose(b).basis).orthonormalized()
+	var f := hb * Vector3.BACK
+	return Vector2(f.x, f.z).normalized()
+
+
+func _test_look() -> void:
+	await _enter("Z2", Vector2(900, 900))
+	var v: Actor3D = player.view3d
+	# a villager standing to her right and a little back (a node with actor_id, as NpcActor; feet on the floor)
+	var gd := GDScript.new()
+	gd.source_code = "extends Node2D\nvar actor_id := \"look_test\"\n"
+	gd.reload()
+	var npc := Node2D.new()
+	npc.set_script(gd)
+	rm.current_room.add_child(npc)
+	npc.global_position = player.global_position + Vector2(320, -40)
+	_check(v.look != null, "no look-at on the head (rt3d.look)")
+	if v.look == null or npc == null:
+		_completed = true
+		return
+	# Agata faces 50° away from Pelageya
+	v.skeleton.skeleton_updated.connect(_on_head_updated)
+	var to_npc: Vector2 = npc.global_position - player.global_position
+	var k: float = player.floor_foreshortening()
+	var dir_floor := Vector2(to_npc.x, to_npc.y / k).normalized()
+	var a_npc := atan2(dir_floor.x, dir_floor.y)
+	player.yaw3d = a_npc + deg_to_rad(50.0)
+	player.yaw3d_target = player.yaw3d
+	await _wait_s(1.0)
+	var before := absf(rad_to_deg(dir_floor.angle_to(_head_dir(v))))
+	sr.current_beat = {"type": "line", "speaker": String(npc.get("actor_id")), "line_id": "T_1", "text": "Погляди-ка!"}
+	var max_step := 0.0
+	var prev := _head_dir(v)
+	for i in 90:
+		await process_frame
+		var hd := _head_dir(v)
+		max_step = maxf(max_step, absf(rad_to_deg(prev.angle_to(hd))))
+		prev = hd
+	var during := absf(rad_to_deg(dir_floor.angle_to(_head_dir(v))))
+	sr.current_beat = {}
+	await _wait_s(2.0)
+	var after := absf(rad_to_deg(dir_floor.angle_to(_head_dir(v))))
+	print("        look: head off the villager %.0f° before his line, %.0f° while he speaks, %.0f° after; fastest %.1f°/frame (influence %.2f)" % [before, during, after, max_step, v.look.influence])
+	# the head alone turns (no eyes in the rig): at 50° off it takes most of the way, not all
+	_check(during < before * 0.65, "the villager's line: the head did not turn to him (%.0f° → %.0f°)" % [before, during])
+	_check(max_step < 4.0, "the head turned %.1f° in a frame (soft turn expected)" % max_step)
+	_check(after > during + 15.0, "line over: the head stays on him (%.0f°)" % after)
+	npc.queue_free()
+	v.skeleton.skeleton_updated.disconnect(_on_head_updated)
 	_completed = true

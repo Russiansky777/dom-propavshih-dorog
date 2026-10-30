@@ -1078,6 +1078,7 @@ func _process_3d(delta: float) -> void:
 		act_w = _gest_w
 		ct = Actor3D.loop_times(_gest_t, view3d.action_length("talk"), float(_rt.get("gesture", {}).get("crossfade_s", 0.6)))
 	view3d.set_yaw(yaw3d)
+	_look_3d()
 	var blend := maxf(walk_w, _turn_step_w)
 	var probe: Array = []
 	if root_motion_3d and _walking and _rm_side >= 0:
@@ -1089,6 +1090,61 @@ func _process_3d(delta: float) -> void:
 	_sync_body3d()
 	if _acting and _act_t >= _act_len - 0.0001:
 		_on_animation_finished()
+
+
+## Where Agata looks (rt3d.look; Actor3D.set_look): at the one who has the line — or, her own line, at the one she
+## speaks to (beat `to`) — then at the thing she does (action) or goes to (a hotspot within walk_look_px); else nowhere
+## in particular (the clip and the breathing lead the head). A villager is looked at in the eyes, a thing at thing_m.
+func _look_3d() -> void:
+	if view3d == null or view3d.look == null:
+		return
+	var lk: Dictionary = _rt.get("look", {})
+	var target := Vector2.INF
+	var h := float(lk.get("thing_m", 1.0))
+	var on_floor := false
+	var b: Dictionary = StoryRunner.current_beat
+	if String(b.get("type", "")) == "line":
+		var sp := String(b.get("speaker", ""))
+		var who := String(b.get("to", "")) if sp == "agata" else sp
+		var n := _speaker_node(who)
+		if n != null:
+			target = n.global_position
+			if n.get("actor_id") != null:
+				on_floor = true    # a villager: his feet are on the floor; look at the eyes
+				h = float(lk.get("speaker_eye_m", 1.5))
+				var lv = n.get("live")
+				if lv != null and lv.view != null:
+					h = lv.view.bone_model("Head").y + 0.06
+	if target == Vector2.INF and (_acting or not _turn_hold.is_empty()) and _action_node != null and is_instance_valid(_action_node):
+		target = _look_point(_action_node)
+	if target == Vector2.INF and _walking and _pending != null and is_instance_valid(_pending):
+		var lp := _look_point(_pending)
+		if lp.distance_to(global_position) < float(lk.get("walk_look_px", 520.0)):
+			target = lp
+	if target == Vector2.INF:
+		view3d.set_look(Vector3.ZERO, false)
+		return
+	var s := absf(scale.y)
+	var ppm_s := view3d.ppm * maxf(s, 0.01)
+	var e := deg_to_rad(view3d.elev_deg)
+	var d := target - global_position
+	if not on_floor:
+		d.y += h * ppm_s * cos(e)     # a point drawn at height h: its floor point lies below it on screen
+	var k := maxf(floor_foreshortening(), 0.05)
+	view3d.set_look(Vector3(d.x / ppm_s, h, d.y / (ppm_s * k)), true)
+
+
+## The node of a character in the room: a villager (NpcActor actor_id) or a hotspot with that id (Tikhon).
+func _speaker_node(who: String) -> Node2D:
+	if who == "" or who == "agata" or room == null:
+		return null
+	for c in room.get_children():
+		if c is Node2D and String(c.get("actor_id") if c.get("actor_id") != null else "") == who:
+			return c
+	for c in room.get_children():
+		if c is StoryHotspot and String((c as StoryHotspot).data.get("id", "")) == who:
+			return c
+	return null
 
 
 ## The talk gesture's weight and time this frame; false when it is not shown. A new line of Agata's (long enough,

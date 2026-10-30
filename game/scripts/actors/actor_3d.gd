@@ -143,6 +143,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	life.name = "Life"
 	life.setup(spec.get("life", {}), skeleton)
 	skeleton.add_child(life)
+	_setup_look()    # before the skirt: the springs run last, once per frame
 	_setup_skirt()
 	for b in ["LeftFoot", "LeftToeBase", "RightFoot", "RightToeBase"]:
 		foot_bones.append(skeleton.find_bone(b))
@@ -399,6 +400,66 @@ func _setup_skirt() -> void:
 		cap.radius = float(col.get("radius_m", 0.07)) * u
 		cap.height = h + 2.0 * cap.radius
 		cap.position_offset = Vector3(0.0, h * 0.5, 0.0)   # the bone's own +Y runs along it (Blender rig)
+
+
+## Where the eyes go (Director 30.10, 19:16 «как сделать идеальную Агату»: she looks at the one who speaks and at what
+## she goes to): a LookAtModifier3D on the head, after the clip, the breathing and the skirt; the head turns softly
+## towards a point (duration, eased) within the neck's limits, the influence fades in and out with the follower.
+## Data rt3d.look {weight, duration_s, yaw_limit_deg, pitch_limit_deg}; nothing when absent.
+var look: LookAtModifier3D = null
+var look_target: Node3D = null
+var _look_on: bool = false
+var _look_w: float = 0.0
+var _look_v: float = 0.0
+
+
+func _setup_look() -> void:
+	var lk: Dictionary = spec.get("look", {})
+	if lk.is_empty() or skeleton.find_bone("Head") < 0:
+		return
+	look_target = Node3D.new()
+	look_target.name = "LookTarget"
+	oblique.add_child(look_target)
+	look = LookAtModifier3D.new()
+	look.name = "Look"
+	skeleton.add_child(look)
+	look.bone_name = "Head"
+	look.bone = skeleton.find_bone("Head")
+	look.forward_axis = SkeletonModifier3D.BONE_AXIS_PLUS_Z     # the face looks along the head's +Z (Meshy rig)
+	look.primary_rotation_axis = Vector3.AXIS_Y
+	look.use_secondary_rotation = true
+	look.relative = false   # aims from the rest pose: while she looks at someone the head holds steady
+	look.duration = float(lk.get("duration_s", 0.5))
+	look.transition_type = Tween.TRANS_SINE
+	look.ease_type = Tween.EASE_IN_OUT
+	look.use_angle_limitation = true
+	look.symmetry_limitation = true
+	look.primary_limit_angle = deg_to_rad(float(lk.get("yaw_limit_deg", 60.0)))
+	look.primary_damp_threshold = 1.0
+	look.secondary_limit_angle = deg_to_rad(float(lk.get("pitch_limit_deg", 25.0)))
+	look.secondary_damp_threshold = 1.0
+	look.target_node = look.get_path_to(look_target)
+	look.influence = 0.0
+
+
+## The point to look at, in the floor frame (x right, y up, z towards the viewer; metres from the feet), or off.
+func set_look(p_floor: Vector3, on: bool) -> void:
+	if look == null:
+		return
+	_look_on = on
+	if on:
+		look_target.position = p_floor
+
+
+func _advance_look(delta: float) -> void:
+	if look == null:
+		return
+	var w := float(spec.get("look", {}).get("weight", 0.8)) if _look_on else 0.0
+	if delta > 0.0:
+		var r := spring(_look_w, _look_v, w, float(spec.get("look", {}).get("fade_omega", 6.0)), delta)
+		_look_w = r.x
+		_look_v = r.y
+	look.influence = clampf(_look_w, 0.0, 1.0)
 
 
 ## A critically damped follower, exact for any step: position and velocity after `dt` going to `target`
@@ -662,6 +723,7 @@ func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: Str
 	if life != null:
 		life.idle_weight = (1.0 - _w_s) * (1.0 - _a_s)
 		life.advance(delta)
+	_advance_look(delta)
 	_shown_t = act_t
 	_shown_t2 = act_t2
 	_shown_mix = act_mix
