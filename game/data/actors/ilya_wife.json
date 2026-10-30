@@ -139,9 +139,9 @@
     "keep_materials": [
       "mouth_dark"
     ],
-    "require_walk": false,
-    "_require_walk": "в модели v2 нет клипа ходьбы (листы — без walk); в постановке он переходит без шага, как на листах",
+    "_walk": "30.10: в модели v2 не было ходьбы — перенесена с рига Нины (pipeline/3d/retarget_clips.py, 0 кредитов; tools/build_npc_live.sh): в постановке уходит шагом",
     "clips": {
+      "walk": "walk",
       "idle": "idle",
       "listen": "listen",
       "talk": "talk"

@@ -79,17 +79,26 @@ func _report(name: String, t0: int) -> void:
 
 ## A villager standing in a room: the first NpcActor with a live view, trying rooms where villagers stand.
 func _find_live() -> Node:
-	var tries := [["R1", ["done_M01"]], ["M3", ["done_M01", "done_M02", "house_unlocked", "done_M03", "done_N01", "done_M09", "done_M09s"]],
-		["O3", ["done_M01", "done_M02", "done_M03"]], ["Z1", ["done_M01"]]]
-	for t in tries:
-		gs.reset()
-		for f in t[1]:
-			gs.set_flag(f, true)
-		rm.change_room(t[0], "default")
-		await _frames(8)
-		for n in rm.current_room.get_children():
-			if n.get("live") != null:
-				return n
+	# every room × two moments of the story (day one after the post; day two after the mill) — the first live villager
+	var sd: Node = root.get_node("StoryData")
+	var early := ["done_M01"]
+	var mid: Array = []
+	for id in sd.scene_order:
+		if id == "M17":
+			break
+		mid.append("done_" + id)
+		for f in sd.scene(id).get("grants", {}).get("flags", []):
+			mid.append(String(f))
+	for flags in [early, mid]:
+		for rid in ["R1", "M3", "O3", "O1", "Z1", "M2", "R3", "Z3", "R2", "M1", "O4", "H1"]:
+			gs.reset()
+			for f in flags:
+				gs.set_flag(f, true)
+			rm.change_room(rid, "default")
+			await _frames(8)
+			for n in rm.current_room.get_children():
+				if n.get("live") != null:
+					return n
 	return null
 
 
@@ -117,7 +126,7 @@ func _test_models() -> void:
 
 func _test_states() -> void:
 	var n: Node = await _find_live()
-	_check(n != null, "no villager drawn live in R1 / M3 / O3 / Z1")
+	_check(n != null, "no villager drawn live in any room on day one or day two")
 	if n == null:
 		return
 	var live = n.live
