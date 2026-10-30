@@ -1,0 +1,17 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Седьмой заход (K7): записи, выбранные Директором на странице «Седьмой заход» (30.10, 15:09), — в игру без нового синтеза; текст запроса — voice_direction.voice_text.",
+ "picks": {
+  "M03_1": "W040_1",
+  "M03_1_then0": "W041_3",
+  "M03_1_then1": "W042_1",
+  "tikhon:H1.tikhon.first_who": "W043_3",
+  "agata:H1.tikhon.first_ask": "W044_1",
+  "tikhon:H1.tikhon.first_name": "W045_3",
+  "agata:H1.tikhon.first_alone": "W046_1",
+  "tikhon:H1.tikhon.first_stove": "W047_1",
+  "tikhon:H1.tikhon.before_met": "W048_1",
+  "tikhon:H1.tikhon.before_met_shutter": "W049_3"
+ }
+}
