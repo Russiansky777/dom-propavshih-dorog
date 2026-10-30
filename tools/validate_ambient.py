@@ -430,6 +430,72 @@ def tod_flags() -> set[str]:
     return names
 
 
+def check_boats_over_water(files) -> None:
+    """Сверка 30.10 (29.10 стр. 189 «лодки на втором берегу нет»): дневная вода R3 (`source: layer:day`, z слоя + 1)
+    перерисовывала свой слой поверх лодки — лодка не была видна ни разу. Лодка (слой `boat*`) не должна лежать под
+    водой, которая перерисовывает другой слой: доля непрозрачных пикселей лодки внутри полигона воды, где у слоя-
+    источника непрозрачно, — не больше 20 % (иначе поднять лодку по z). Нужен Pillow (в CI есть); без него — пропуск."""
+    try:
+        from PIL import Image, ImageDraw
+    except ImportError:
+        warn("check_boats_over_water: нет Pillow — пропуск")
+        return
+    game = ROOT / "game"
+    for p in files:
+        rid = p.stem
+        rf = ROOT / "data" / "story" / "rooms" / f"{rid}.json"
+        if not rf.exists():
+            continue
+        room = json.loads(rf.read_text(encoding="utf-8"))
+        spec = json.loads(p.read_text(encoding="utf-8"))
+        layers = room.get("layers", [])
+        ids = [l.get("id") for l in layers]
+        canvas = room.get("art_source", {}).get("canvas", [1672, 941])
+        k = W / float(canvas[0])
+
+        def layer_img(l):
+            f = game / str(l.get("image", "")).replace("res://", "")
+            if not f.exists() or l.get("offset") or l.get("scale") or l.get("pivot"):
+                return None   # only full-canvas layers drawn at the room's art scale
+            return Image.open(f).convert("RGBA").resize((W, H))
+
+        for w in spec.get("water", []):
+            src = str(w.get("source", ""))
+            if not src.startswith("layer:") or src[6:] not in ids or "polygon" not in w:
+                continue
+            sl = layers[ids.index(src[6:])]
+            wz = int(w.get("z", int(sl.get("z", 0)) + 1))
+            si = ids.index(src[6:])
+            sz = int(sl.get("z", 0))
+            # Boats drawn above the source picture (later in the list or higher z) but not above the water redraw. A boat
+            # under the source picture itself (R3 boat_evening under the day picture) is meant to be covered by it.
+            boats = [l for i, l in enumerate(layers) if str(l.get("id", "")).startswith("boat") and "image" in l
+                     and int(l.get("z", 0)) <= wz and (int(l.get("z", 0)) > sz or i > si)]
+            if not boats:
+                continue
+            simg = layer_img(sl)
+            if simg is None:
+                continue
+            poly = Image.new("L", (W, H), 0)
+            ImageDraw.Draw(poly).polygon([tuple(pt) for pt in w["polygon"]], fill=255)
+            sa = simg.getchannel("A").point(lambda v: 255 if v > 128 else 0)
+            cover = Image.new("L", (W, H), 0)
+            cover.paste(sa, (0, 0), poly)
+            for b in boats:
+                bimg = layer_img(b)
+                if bimg is None:
+                    continue
+                ba = bimg.getchannel("A").point(lambda v: 255 if v > 128 else 0)
+                total = sum(ba.histogram()[255:])
+                if total == 0:
+                    continue
+                both = Image.new("L", (W, H), 0)
+                both.paste(cover, (0, 0), ba)
+                hidden = sum(both.histogram()[255:]) / total
+                if hidden > 0.2:
+                    err(f"{rid}: лодка {b['id']} (z {b.get('z', 0)}) на {hidden:.0%} под водой {w.get('id')} (перерисовывает слой {src[6:]}, z {wz}) — поднять лодку: z ≥ {wz + 1}")
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
     idx_path = AMB / "_index.json"
@@ -443,6 +509,7 @@ def main() -> int:
     files = sorted(p for p in AMB.glob("*.json") if not p.name.startswith("_"))
     for p in files:
         check_room(p, idx, flags)
+    check_boats_over_water(files)
     for w in warnings:
         print("WARN  " + w)
     for e in errors:
