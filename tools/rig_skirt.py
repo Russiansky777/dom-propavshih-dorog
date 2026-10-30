@@ -7,6 +7,13 @@
 о капсулы ног (rt3d.skirt, game/scripts/actors/actor_3d.gd): колено толкает подол, при повороте юбка запаздывает.
 Клипы, сетка, текстура и прежние 24 кости не меняются (проверка после экспорта: кости клипов совпадают до 1 мм).
 
+Коса (Директор 30.10, 23:22: «так почему не делаешь?!» — коса и сумка на пружинах): цепочка Braid0..2 от затылка до
+кончика (родитель — Head); вершины косы — тёмные (волосы) позади шали, узкой полосой по середине спины, с наплывом к
+голове у затылка. В игре её качает свой SpringBoneSimulator3D с упором о спину (rt3d.springs).
+Сумка (--bag, по умолчанию выключена): одна кость Bag0 (родитель — Hips) от верха сумки к середине дна. Пробы 30.10:
+сумка и пальто в сетке Meshy — общие лоскуты, ни цвет кожи, ни лоскуты не отделяют сумку чисто — при качании на 15°
+в ней дыры. Нужна отдельная сетка сумки (конвейер) или ручная разметка.
+
     python3.13 tools/rig_skirt.py --glb game/assets/characters/agata/rt3d/agata_v4_rt.glb --out /tmp/agata_skirt.glb \
         --report /tmp/agata_skirt.json
 Нужен Python 3.13 с bpy 5.2.2 (pipeline/requirements.txt). 0 кредитов.
@@ -70,6 +77,230 @@ def smooth(e0: float, e1: float, x: float) -> float:
     return t * t * (3.0 - 2.0 * t)
 
 
+def texture_colours(mesh) -> dict:
+    """Цвет текстуры (base color) в каждой вершине — по её первой развёртке."""
+    img = None
+    for mat in mesh.data.materials:
+        if mat is None or not mat.use_nodes:
+            continue
+        for n in mat.node_tree.nodes:
+            if n.type == "TEX_IMAGE" and n.image is not None and (img is None or "Base" in n.image.name):
+                img = n.image
+    if img is None:
+        return {}
+    w, h = img.size
+    px = img.pixels[:]
+    uv = mesh.data.uv_layers.active.data
+    out = {}
+    for poly in mesh.data.polygons:
+        for li in poly.loop_indices:
+            vi = mesh.data.loops[li].vertex_index
+            if vi in out:
+                continue
+            u, v = uv[li].uv
+            x = min(max(int(u * w), 0), w - 1)
+            y = min(max(int(v * h), 0), h - 1)
+            i = (y * w + x) * 4
+            out[vi] = (px[i], px[i + 1], px[i + 2])
+    return out
+
+
+def islands(mesh) -> list:
+    """Связные куски сетки (по рёбрам)."""
+    n = len(mesh.data.vertices)
+    par = list(range(n))
+
+    def find(a: int) -> int:
+        while par[a] != a:
+            par[a] = par[par[a]]
+            a = par[a]
+        return a
+
+    for e in mesh.data.edges:
+        a, b = find(e.vertices[0]), find(e.vertices[1])
+        if a != b:
+            par[a] = b
+    out: dict = {}
+    for i in range(n):
+        out.setdefault(find(i), []).append(i)
+    return list(out.values())
+
+
+def rig_braid(arm, mesh, args, report: dict) -> None:
+    """Коса: цепочка Braid0..N-1 (родитель Head) по середине косы; вершины косы — на ней, у затылка — наплыв к голове."""
+    levels = [float(x) for x in args.braid.split(",")]
+    b0, b1 = [float(x) for x in args.braid_fade.split(",")]
+    neck = arm.matrix_world @ arm.data.bones["neck"].head_local
+    col = texture_colours(mesh)
+    mw = mesh.matrix_world
+    names = {g.index: g.name for g in mesh.vertex_groups}
+    sel = []
+    for v in mesh.data.vertices:
+        p = mw @ v.co
+        if p.z < levels[-1] - 0.03 or p.z > b1:
+            continue
+        if abs(p.x - neck.x) > args.braid_half or p.y - neck.y < args.braid_back - 0.02:
+            continue
+        c = col.get(v.index, (1.0, 1.0, 1.0))
+        if 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2] > args.braid_lum:
+            continue
+        sel.append(v.index)
+    # сетка Meshy — из лоскутов (отдельных кусков поверхности): лоскут, который в основном коса, идёт целиком — иначе
+    # светлые пряди и кончик оставались на шали тёмными клиньями; лоскут, где косы мало, — не коса
+    isl = islands(mesh)
+    chosen = set(sel)
+    full = []
+    for vs in isl:
+        k = sum(1 for i in vs if i in chosen)
+        if k and k >= 0.4 * len(vs):
+            full.extend(vs)
+    sel = full
+    # середина косы на каждом уровне
+    joints = []
+    for z in levels:
+        pts = [mw @ mesh.data.vertices[i].co for i in sel if abs((mw @ mesh.data.vertices[i].co).z - z) < 0.015]
+        if not pts:
+            pts = [mw @ mesh.data.vertices[i].co for i in sel]
+        joints.append(Vector((sum(p.x for p in pts) / len(pts), sum(p.y for p in pts) / len(pts), z)))
+    report["braid_vertices"] = len(sel)
+    report["braid_joints"] = [[round(x, 3) for x in j] for j in joints]
+    bpy.context.view_layer.objects.active = arm
+    bpy.ops.object.mode_set(mode="EDIT")
+    eb = arm.data.edit_bones
+    inv = arm.matrix_world.inverted()
+    parent = eb["Head"]
+    for k in range(len(levels) - 1):
+        b = eb.new(f"Braid{k}")
+        b.head = inv @ joints[k]
+        b.tail = inv @ joints[k + 1]
+        b.roll = 0.0
+        b.parent = parent
+        b.use_connect = k > 0
+        b.use_deform = True
+        parent = b
+    bpy.ops.object.mode_set(mode="OBJECT")
+    mids = [(levels[k] + levels[k + 1]) * 0.5 for k in range(len(levels) - 1)]
+    for idx in sel:
+        v = mesh.data.vertices[idx]
+        p = mw @ v.co
+        if p.z >= mids[0]:
+            vert_w = {0: 1.0}
+        elif p.z <= mids[-1]:
+            vert_w = {len(mids) - 1: 1.0}
+        else:
+            vert_w = {}
+            for k in range(len(mids) - 1):
+                if mids[k + 1] <= p.z <= mids[k]:
+                    u = (mids[k] - p.z) / (mids[k] - mids[k + 1])
+                    vert_w = {k: 1.0 - u, k + 1: u}
+                    break
+        s = 1.0 - smooth(b0, b1, p.z)          # 1 — только кости косы, 0 — прежние веса (голова)
+        old = {names[g.group]: g.weight for g in v.groups}
+        tot_old = sum(old.values()) or 1.0
+        new = {nm: (1.0 - s) * w / tot_old for nm, w in old.items()}
+        if s < 1.0:
+            # у затылка коса уходит в волосы головы: прежняя часть — голове (не плечам), чтобы коса шла с головой
+            hold = sum(new.values())
+            new = {"Head": hold}
+        for k, wk in vert_w.items():
+            nm = f"Braid{k}"
+            new[nm] = new.get(nm, 0.0) + s * wk
+        top = sorted(new.items(), key=lambda kv: kv[1], reverse=True)[:4]
+        tw = sum(w for _, w in top) or 1.0
+        keep = {nm: w / tw for nm, w in top if w / tw > 0.002}
+        for g in list(v.groups):
+            mesh.vertex_groups[g.group].remove([idx])
+        for nm, w in keep.items():
+            vg = mesh.vertex_groups.get(nm) or mesh.vertex_groups.new(name=nm)
+            vg.add([idx], w, "REPLACE")
+
+
+def rig_bag(arm, mesh, args, report: dict) -> None:
+    """Сумка: кость Bag0 (родитель Hips) от верха сумки к середине дна; сумка на ней целиком, у верха — наплыв."""
+    z0, z1 = [float(x) for x in args.bag.split(",")]
+    hips = arm.matrix_world @ arm.data.bones["Hips"].head_local
+    col = texture_colours(mesh)
+    mw = mesh.matrix_world
+    names = {g.index: g.name for g in mesh.vertex_groups}
+    side = args.bag_side
+    sel = []
+    for v in mesh.data.vertices:
+        p = mw @ v.co
+        if not (z0 < p.z < z1):
+            continue
+        if (p.x - hips.x) * (1.0 if side > 0 else -1.0) < abs(side):
+            continue
+        dom = max(((g.weight, names[g.group]) for g in v.groups), default=(0.0, "-"))[1]
+        if "Arm" in dom or "Hand" in dom:
+            continue
+        c = col.get(v.index, (0.0, 0.0, 0.0))
+        if c[0] - c[2] < args.bag_warm:
+            continue
+        sel.append(v.index)
+    # уверенные вершины сумки задают её коробку (2–98 % по каждой оси — без случайных пятен на пальто); сумка —
+    # лоскуты сетки, лежащие в коробке почти целиком, с кожей теплее пальто (пальто у бедра — 0,09–0,10, кожа сумки
+    # темнее в тени, но теплее). Цвет по вершине оставлял на сумке дыры (тёмная кожа клапана), лоскуты — нет.
+    seeds = [mw @ mesh.data.vertices[i].co for i in sel]
+
+    def pct(vals, q):
+        vals = sorted(vals)
+        return vals[min(max(int(q * (len(vals) - 1)), 0), len(vals) - 1)]
+
+    lo = Vector((pct([p.x for p in seeds], 0.02), pct([p.y for p in seeds], 0.02), pct([p.z for p in seeds], 0.02))) - Vector((0.01, 0.01, 0.01))
+    hi = Vector((pct([p.x for p in seeds], 0.98), pct([p.y for p in seeds], 0.98), pct([p.z for p in seeds], 0.98))) + Vector((0.01, 0.01, 0.01))
+    report["bag_box"] = [[round(x, 3) for x in lo], [round(x, 3) for x in hi]]
+    full = []
+    for vs in islands(mesh):
+        inside = 0
+        warm = 0.0
+        for i in vs:
+            p = mw @ mesh.data.vertices[i].co
+            if lo.x <= p.x <= hi.x and lo.y <= p.y <= hi.y and lo.z <= p.z <= hi.z:
+                inside += 1
+            c = col.get(i, (0.0, 0.0, 0.0))
+            warm += c[0] - c[2]
+        if inside >= 0.9 * len(vs) and warm / len(vs) > args.bag_island_warm:
+            full.extend(vs)
+    sel = full
+    pts = [mw @ mesh.data.vertices[i].co for i in sel]
+    top = max(p.z for p in pts)
+    bot = min(p.z for p in pts)
+    up = [p for p in pts if p.z > top - 0.03]
+    dn = [p for p in pts if p.z < bot + 0.03]
+    head = Vector((sum(p.x for p in up) / len(up), sum(p.y for p in up) / len(up), top - 0.01))
+    tail = Vector((sum(p.x for p in dn) / len(dn), sum(p.y for p in dn) / len(dn), bot + 0.01))
+    report["bag_vertices"] = len(sel)
+    report["bag_bone"] = [[round(x, 3) for x in head], [round(x, 3) for x in tail]]
+    bpy.context.view_layer.objects.active = arm
+    bpy.ops.object.mode_set(mode="EDIT")
+    eb = arm.data.edit_bones
+    inv = arm.matrix_world.inverted()
+    b = eb.new("Bag0")
+    b.head = inv @ head
+    b.tail = inv @ tail
+    b.roll = 0.0
+    b.parent = eb["Hips"]
+    b.use_deform = True
+    bpy.ops.object.mode_set(mode="OBJECT")
+    vg = mesh.vertex_groups.get("Bag0") or mesh.vertex_groups.new(name="Bag0")
+    for idx in sel:
+        v = mesh.data.vertices[idx]
+        p = mw @ v.co
+        s = 1.0 - smooth(top - args.bag_fade, top, p.z)       # 1 — только сумка, 0 — прежние веса (ремень, таз)
+        old = {names[g.group]: g.weight for g in v.groups}
+        tot_old = sum(old.values()) or 1.0
+        new = {nm: (1.0 - s) * w / tot_old for nm, w in old.items()}
+        new["Bag0"] = new.get("Bag0", 0.0) + s
+        top4 = sorted(new.items(), key=lambda kv: kv[1], reverse=True)[:4]
+        tw = sum(w for _, w in top4) or 1.0
+        keep = {nm: w / tw for nm, w in top4 if w / tw > 0.002}
+        for g in list(v.groups):
+            mesh.vertex_groups[g.group].remove([idx])
+        for nm, w in keep.items():
+            g = mesh.vertex_groups.get(nm) or mesh.vertex_groups.new(name=nm)
+            g.add([idx], w, "REPLACE")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--glb", required=True)
@@ -82,6 +313,18 @@ def main() -> int:
     ap.add_argument("--leg_top", type=float, default=0.40, help="выше — юбка совсем не идёт за голенью (м)")
     ap.add_argument("--fade", default="0.72,0.86", help="наплыв к прежним весам у пояса: полностью кости юбки ниже первой, прежние — выше второй")
     ap.add_argument("--inset", type=float, default=0.85, help="сустав внутри юбки: доля её радиуса")
+    ap.add_argument("--braid", default="1.36,1.30,1.25,1.20", help="суставы косы сверху вниз, м (пусто — без косы)")
+    ap.add_argument("--braid_fade", default="1.34,1.39", help="наплыв косы к голове: ниже первой — только кости косы, выше второй — голова")
+    ap.add_argument("--braid_half", type=float, default=0.05, help="коса — не дальше этого от середины спины по ширине, м")
+    ap.add_argument("--braid_back", type=float, default=0.14, help="коса — дальше этого назад от оси, м (шаль ближе)")
+    ap.add_argument("--braid_lum", type=float, default=0.22, help="коса — темнее этого (волосы; шаль светлая)")
+    ap.add_argument("--bag", default="", help="сумка — по высоте от и до, м, например 0.70,1.0 (пусто — без сумки; пока выключена: "
+                    "в сетке Meshy сумка и пальто — общие лоскуты, ни цвет, ни лоскуты не отделяют её чисто — при качании дыры, "
+                    "кадры 30.10 в Docs/DECISIONS.md)")
+    ap.add_argument("--bag_side", type=float, default=-0.11, help="сумка — дальше этого вбок от середины таза, м (знак — сторона: − правая)")
+    ap.add_argument("--bag_warm", type=float, default=0.17, help="сумка — красно-коричневая кожа: красный минус синий больше этого")
+    ap.add_argument("--bag_island_warm", type=float, default=0.12, help="лоскут сумки — в среднем теплее этого (пальто 0,09–0,10)")
+    ap.add_argument("--bag_fade", type=float, default=0.03, help="у верха сумки столько метров — наплыв к прежним весам (ремень)")
     args = ap.parse_args()
     levels = [float(x) for x in args.levels.split(",")]
     f0, f1 = [float(x) for x in args.fade.split(",")]
@@ -213,6 +456,11 @@ def main() -> int:
         for nm, w in keep.items():
             vg = mesh.vertex_groups.get(nm) or mesh.vertex_groups.new(name=nm)
             vg.add([idx], w, "REPLACE")
+
+    if args.braid.strip():
+        rig_braid(arm, mesh, args, report)
+    if args.bag.strip():
+        rig_bag(arm, mesh, args, report)
 
     # клипы: каждое действие — дорожка NLA (экспорт ACTIONS берёт все по именам, как build_rt3d_glb.py)
     ranges = {a.name: tuple(a.frame_range) for a in acts}

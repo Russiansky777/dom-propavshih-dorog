@@ -93,6 +93,7 @@ func _run() -> void:
 	await _test("Skirt (Director 30.10 «сгибы юбки не красиво»): on its own spring bones, not on the legs — no «trouser legs»; the knees push it, standing it settles", _test_skirt)
 	await _test("Look (Director 30.10 «идеальная Агата»): a villager's line — her head turns to him (within the neck's limits), softly; line over — back", _test_look)
 	await _test("Setting off (Director 30.10 «идеальная Агата»): the planted foot stays put as the stance blends into the stride (it skated 12–15 cm)", _test_set_off)
+	await _test("Braid (Director 30.10, 23:22 «коса и сумка на пружинах»): on its own spring chain from the head — swings walking and turning, settles standing, stays clear of the back", _test_braid)
 	await _test("Feet hold the floor (Director 30.10 «идеальная Агата»): stopping and turning on the spot, a foot set down does not skate (14–21 cm before) — it stays or steps", _test_feet_hold)
 	PlayerScript.forced_render = ""
 	gs.reset()
@@ -127,9 +128,10 @@ func _test_model() -> void:
 	_check(tris > 150000 and tris <= 300000, "triangles %d: expected the v4 Meshy mesh decimated for Steam (150k..300k)" % tris)
 	var skirt_bones := 0
 	for i in v.skeleton.get_bone_count():
-		if v.skeleton.get_bone_name(i).begins_with("Skirt"):
-			skirt_bones += 1
-	_check(v.skeleton.get_bone_count() - skirt_bones == 24, "skeleton has %d bones besides the skirt, Meshy rig has 24" % (v.skeleton.get_bone_count() - skirt_bones))
+		var bn := v.skeleton.get_bone_name(i)
+		if bn.begins_with("Skirt") or bn.begins_with("Braid") or bn.begins_with("Bag"):
+			skirt_bones += 1   # the rig's own spring chains (tools/rig_skirt.py)
+	_check(v.skeleton.get_bone_count() - skirt_bones == 24, "skeleton has %d bones besides the spring chains (skirt, braid, bag), Meshy rig has 24" % (v.skeleton.get_bone_count() - skirt_bones))
 	for role in ["walk", "idle", "open", "pick", "reach"]:
 		_check(v.clips.has(role), "clip for '%s' missing (rt3d.clips)" % role)
 	_check(v.idle_pool.size() >= 3, "idle pool has %d variants (≥ 3 expected)" % v.idle_pool.size())
@@ -823,4 +825,80 @@ func _test_feet_hold() -> void:
 	_check(float(on["lift"]) <= 0.05, "a locked foot comes %.0f mm up off the floor — the leg cannot reach and it does not step (≤ 50)" % (float(on["lift"]) * 1000.0))
 	_check(float(on["sep"]) >= 0.09, "turning on the spot, the feet stand %.0f mm apart — one on the other, in one line (≥ 90)" % (float(on["sep"]) * 1000.0))
 	_check(float(on["off_stance"]) <= 0.05, "settled, a foot stays %.0f mm off where the stance has it (≤ 50)" % (float(on["off_stance"]) * 1000.0))
+	_completed = true
+
+
+# --- Braid -------------------------------------------------------------------------------------------
+
+var _braid_rows: Array = []
+
+
+## The braid tip's own spring part: where it is minus where the head would carry it without the spring (rests).
+func _on_braid_updated() -> void:
+	var v: Actor3D = player.view3d
+	var sk := v.skeleton
+	var head := sk.find_bone("Head")
+	var carried: Transform3D = sk.get_bone_global_pose(head)
+	for k in 3:
+		carried = carried * sk.get_bone_rest(sk.find_bone("Braid%d" % k))
+	var tip := sk.find_bone("Braid2")
+	var spine := sk.find_bone("Spine01")
+	var xf := v._skel_to_turn()
+	var tip_now: Vector3 = xf * sk.get_bone_global_pose(tip).origin
+	# clear of the back: the tip's distance from the Spine01 axis (as posed)
+	var sp: Transform3D = sk.get_bone_global_pose(spine)
+	var a: Vector3 = xf * sp.origin
+	var up: Vector3 = (xf.basis * sp.basis * Vector3.UP).normalized()
+	var d := tip_now - a
+	var off := (d - up * d.dot(up)).length()
+	_braid_rows.append([tip_now - xf * carried.origin, off])
+
+
+func _test_braid() -> void:
+	await _enter("H1", Vector2(1200, 960))
+	var v: Actor3D = player.view3d
+	var sim: SpringBoneSimulator3D = v.springs.get("braid", null)
+	_check(sim != null, "no spring braid (rt3d.springs braid / bones Braid0..2)")
+	if sim == null:
+		_completed = true
+		return
+	_braid_rows = []
+	v.skeleton.skeleton_updated.connect(_on_braid_updated)
+	await _wait_s(1.0)
+	var rest_rows := _braid_rows.duplicate()
+	_braid_rows = []
+	player.click_at(player.global_position + Vector2(-420, 0))
+	await _wait_s(2.0)
+	var k: float = player.floor_foreshortening()
+	player.face_towards(player.global_position + Vector2(0.5, 0.9 * k) * 200.0)
+	await _wait_s(1.2)
+	var move_rows := _braid_rows.duplicate()
+	await _wait_s(2.5)
+	_braid_rows = []
+	await _wait_s(1.0)
+	var still_rows := _braid_rows.duplicate()
+	v.skeleton.skeleton_updated.disconnect(_on_braid_updated)
+	var span := func(rows: Array) -> float:
+		var lo := Vector3.INF
+		var hi := -Vector3.INF
+		for r in rows:
+			lo = lo.min(r[0])
+			hi = hi.max(r[0])
+		return (hi - lo).length() if not rows.is_empty() else 0.0
+	var swing: float = span.call(move_rows)
+	var settle: float = span.call(still_rows)
+	var clear := INF
+	var rest_clear := INF
+	for r in move_rows + still_rows:
+		clear = minf(clear, float(r[1]))
+	for r in rest_rows:
+		rest_clear = minf(rest_clear, float(r[1]))
+	var radius := 0.0
+	for ch in sim.get_children():
+		if ch is SpringBoneCollisionCapsule3D:
+			radius = maxf(radius, (ch as SpringBoneCollisionCapsule3D).radius)
+	print("        braid: the spring swings the tip %.1f cm walking and turning; standing, %.1f cm; tip from the spine axis %.1f cm at least (at rest %.1f, the back's pusher %.1f)" % [swing * 100.0, settle * 100.0, clear * 100.0, rest_clear * 100.0, radius * 100.0])
+	_check(swing > 0.02, "walking and turning, the braid does not swing (%.1f cm): no spring" % (swing * 100.0))
+	_check(settle < 0.03 and settle < swing * 0.5, "standing, the braid keeps swinging (%.1f cm, moving %.1f cm)" % [settle * 100.0, swing * 100.0])
+	_check(clear >= radius, "the braid's tip goes into the back (%.1f cm from the spine axis, the back %.1f)" % [clear * 100.0, radius * 100.0])
 	_completed = true

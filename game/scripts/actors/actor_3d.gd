@@ -150,6 +150,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	_setup_feet()    # legs first: the skirt's pushers ride on the legs as the IK leaves them
 	_setup_look()    # before the skirt: the springs run last, once per frame
 	_setup_skirt()
+	_setup_springs()
 	_measure_mids()
 	if clips.has("walk"):
 		build_root_motion()
@@ -404,6 +405,52 @@ func _setup_skirt() -> void:
 		cap.radius = float(col.get("radius_m", 0.07)) * u
 		cap.height = h + 2.0 * cap.radius
 		cap.position_offset = Vector3(0.0, h * 0.5, 0.0)   # the bone's own +Y runs along it (Blender rig)
+
+
+## Other things that hang and swing (Director 30.10, 23:22 — the braid and the bag on springs): each entry of
+## rt3d.springs is a bone chain the rig gives it (tools/rig_skirt.py: Braid0..2 under Head) with its own
+## SpringBoneSimulator3D — after the skirt, so it swings off the finished pose — and its own pushers (the back for the
+## braid), so the skirt's leg capsules do not touch it. Data: {name, root, end, stiffness, drag, gravity, radius_m,
+## end_length_m, colliders: [{bone, height_m, radius_m, offset_m}]}; nothing when the rig has no such bones.
+var springs: Dictionary = {}       # name → SpringBoneSimulator3D
+
+
+func _setup_springs() -> void:
+	for sp in spec.get("springs", []):
+		var root := String(sp.get("root", ""))
+		var end := String(sp.get("end", ""))
+		if skeleton.find_bone(root) < 0 or skeleton.find_bone(end) < 0:
+			continue
+		var sim := SpringBoneSimulator3D.new()
+		sim.name = "Spring_" + String(sp.get("name", root))
+		skeleton.add_child(sim)
+		sim.setting_count = 1
+		sim.set_root_bone_name(0, root)
+		sim.set_end_bone_name(0, end)
+		sim.set_extend_end_bone(0, true)
+		sim.set_end_bone_direction(0, SkeletonModifier3D.BONE_DIRECTION_FROM_PARENT)
+		sim.set_end_bone_length(0, float(sp.get("end_length_m", 0.03)))
+		sim.set_radius(0, float(sp.get("radius_m", 0.015)))
+		sim.set_stiffness(0, float(sp.get("stiffness", 2.0)))
+		sim.set_drag(0, float(sp.get("drag", 0.5)))
+		sim.set_gravity(0, float(sp.get("gravity", 0.4)))
+		sim.set_gravity_direction(0, Vector3.DOWN)
+		sim.set_enable_all_child_collisions(0, true)
+		for col in sp.get("colliders", []):
+			var b := skeleton.find_bone(String(col.get("bone", "")))
+			if b < 0:
+				continue
+			var cap := SpringBoneCollisionCapsule3D.new()
+			cap.name = "Push_" + String(col["bone"])
+			sim.add_child(cap)   # in the tree first: the bone name resolves against the skeleton
+			cap.bone_name = String(col["bone"])
+			cap.bone = b
+			var h := float(col.get("height_m", 0.2))
+			cap.radius = float(col.get("radius_m", 0.1))
+			cap.height = h + 2.0 * cap.radius
+			var off: Array = col.get("offset_m", [0.0, 0.0, 0.0])
+			cap.position_offset = Vector3(float(off[0]), h * 0.5 + float(off[1]), float(off[2]))
+		springs[String(sp.get("name", root))] = sim
 
 
 ## Feet that stay where they stand (Director 30.10 «идеальная Агата»: stopping, a foot set down skated 14 cm on
