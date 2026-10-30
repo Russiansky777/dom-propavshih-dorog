@@ -1,0 +1,192 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 952,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Партия K3c (Директор 30.10, 01:17, страница «Третий заход»): 4 строки «Ни одна» с заметками — M09_0 «ты» и акцент на «племянница», M12_0 без акцентов на первых словах или фраза Директора, M23b_1 — новый текст Директора, M2.office_door.look — два новых текста (черновик); по 4 записи (W021–W024); выбранное — в игру режимом adopt (с текстом записи).",
+ "items": [
+  {
+   "id": "W021_1",
+   "line": "M09_0",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "[surprised] Ты ПЛЕМЯННИЦА дунина, говоришь?.. Хотя… похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "st 0.3 + контекст",
+   "previous_text": "Я Агата. Дунина племянница."
+  },
+  {
+   "id": "W021_2",
+   "line": "M09_0",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "[surprised] Ты ПЛЕМЯННИЦА дунина, говоришь?.. Хотя… похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Я Агата. Дунина племянница."
+  },
+  {
+   "id": "W021_3",
+   "line": "M09_0",
+   "take": "3",
+   "speaker": "pavel",
+   "text": "[surprised] Ты ПЛЕМЯННИЦА дунина, говоришь?.. Хотя… похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "st 0.3 + контекст",
+   "previous_text": "Я — Агата, Дуни родная племянница."
+  },
+  {
+   "id": "W021_4",
+   "line": "M09_0",
+   "take": "4",
+   "speaker": "pavel",
+   "text": "[surprised] Ты ПЛЕМЯННИЦА дунина, говоришь?.. Хотя… похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Я — Агата, Дуни родная племянница."
+  },
+  {
+   "id": "W022_1",
+   "line": "M12_0",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[exhales] Вышел засов. Подалась дверь!",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W022_2",
+   "line": "M12_0",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Вышел засов! Подалась дверь!",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W022_3",
+   "line": "M12_0",
+   "take": "3",
+   "speaker": "agata",
+   "text": "Ну вот, вышел засов! Наконец подалась дверь!",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W022_4",
+   "line": "M12_0",
+   "take": "4",
+   "speaker": "agata",
+   "text": "[excited] Ну вот, вышел засов! Наконец подалась дверь!",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W023_1",
+   "line": "M23b_1",
+   "take": "1",
+   "speaker": "manager",
+   "text": "А затвор-то ЦЕЛ? Где рычаг?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Затвор, рычаг — с чего начнёте, управляющий?"
+  },
+  {
+   "id": "W023_2",
+   "line": "M23b_1",
+   "take": "2",
+   "speaker": "manager",
+   "text": "А затвор-то ЦЕЛ? Где рычаг?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Затвор, рычаг — с чего начнёте, управляющий?"
+  },
+  {
+   "id": "W023_3",
+   "line": "M23b_1",
+   "take": "3",
+   "speaker": "manager",
+   "text": "А затвор-то ЦЕЛ? Где рычаг?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W023_4",
+   "line": "M23b_1",
+   "take": "4",
+   "speaker": "manager",
+   "text": "А затвор-то ЦЕЛ? Где рычаг?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W024_1",
+   "line": "M2.office_door.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Заперто изнутри — засов в скобах. А дверь дубовая, плечом не выбьешь.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W024_2",
+   "line": "M2.office_door.look",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[pause] Заперто изнутри — засов в скобах. А дверь дубовая, плечом не выбьешь.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W024_3",
+   "line": "M2.office_door.look",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Не открыть: засов изнутри задвинут. Дубовую дверь не выломаешь.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W024_4",
+   "line": "M2.office_door.look",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "Не открыть: засов изнутри задвинут… Дубовую дверь не выломаешь.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  }
+ ]
+}

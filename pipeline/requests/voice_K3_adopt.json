@@ -1,0 +1,18 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Третий заход K3: записи, выбранные Директором на странице «Третий заход» (30.10, 01:17), — в игру без нового синтеза; текст запроса — voice_direction.voice_text.",
+ "picks": {
+  "M01_8": "W001_4",
+  "M09s_0": "W003_3",
+  "M25_0": "W006_4",
+  "H1.scarf.use": "W007_2",
+  "H1.shutter.use": "W008_2",
+  "H2d.office_mirror.clamped": "W009_1",
+  "H4.v02.done": "W010_4",
+  "O3.clock.look": "W012_4",
+  "agata:H3.side_door.unbolt": "W013_1",
+  "tamara:Z1.tamara.sheet": "W014_4",
+  "M21b_0": "W015_3"
+ }
+}
