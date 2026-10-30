@@ -206,7 +206,8 @@ func _walk_and_measure(room: String, a: Vector2, b: Vector2) -> Dictionary:
 		var d := p - last
 		floor_pos += Vector2(d.x / ppm_s, d.y / (ppm_s * k))
 		last = p
-		if player.walk_w < 0.97:
+		# full walking as shown (the weights pass through Actor3D's followers: the shown one lags the asked one)
+		if player.walk_w < 0.97 or v.shown_w() < 0.97:
 			stance_side = -1
 			continue
 		var f: Array = v.feet_model()

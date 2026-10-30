@@ -1,0 +1,281 @@
+extends SceneTree
+## Smooth motion of the live figures (Director 30.10, 17:36: «движения всё ещё не достаточно естественные и иногда
+## странные или рваные у некоторых персонажей»). Every bone's acceleration is measured frame by frame (second
+## difference of its position, with the body's yaw, scaled to 1/60 s frames) through what the figures do in play;
+## a pop or a kink is a frame far above the motion around it. Defects this guards (found by tests/probe_motion.gd):
+##   - walk loops: Agata's Walking_Woman jumped 6 cm once a cycle (no closing step), the long villager walks
+##     11–12 cm once in 4 s, the one-second walks hitched (two closing keys) → baked loops (rt3d.walk_loop);
+##   - linear fades (talk/listen, walk, actions, gesture) and the first-order turn started and stopped with a jolt
+##     → weights through critically damped followers, turns with a limited angular acceleration;
+##   - listen/talk played to and fro reversed every motion mid-air → forward loop with a crossfade;
+##   - «open» squeezed 5.2 s of motion capture into 2.2 s (the hand at 2.4× its speed) → a cut, natural rate.
+## Thresholds — how much a bone may change its step per 1/60 s frame, above what the clips themselves do:
+##   standing (idle, listen, talk, their fades, the gesture, turning): 14 mm (clips ≤ 9; the to-and-fro reversal
+##   of a talking hand was ≈ 45, a fade's linear end ≈ 20, the old turn's start ≈ 20);
+##   walking and stopping: 26 mm (heel strikes of the clips ≈ 20; the old walk seams 60–150);
+##   actions: 22 mm (the grab of «pick» ≈ 16; «open» at 2.4× its pace ≈ 75) and the pace within 0.8–1.25×.
+## The walk seam itself: no sharper than the cycle's own steps.
+##   godot --headless --path game -s res://tests/test_motion_smooth.gd
+
+const DT := 1.0 / 60.0
+const BONES := ["Hips", "Spine", "Head", "LeftHand", "RightHand", "LeftFoot", "RightFoot"]
+const NPCS := ["nina", "pavel", "mitya", "pelageya", "ilya", "ilya_wife", "ulyana", "tamara"]
+const STAND_MM := 14.0
+const WALK_MM := 26.0
+const ACT_MM := 22.0
+
+var _results: Array = []
+var _cur_ok := true
+var _cur_msgs: Array = []
+var _sr: Node = null
+
+
+func _initialize() -> void:
+	_run()
+
+
+func _check(ok: bool, msg: String) -> void:
+	if not ok:
+		_cur_ok = false
+		_cur_msgs.append(msg)
+
+
+func _report(name: String, t0: int) -> void:
+	print(("PASS  " if _cur_ok else "FAIL  ") + name + "  (%d ms)" % (Time.get_ticks_msec() - t0))
+	for m in _cur_msgs:
+		print("        - " + str(m))
+	_results.append([name, _cur_ok])
+	_cur_ok = true
+	_cur_msgs = []
+
+
+func _sample(v: Actor3D) -> Dictionary:
+	var out := {}
+	for b in BONES:
+		if v.skeleton.find_bone(b) >= 0:
+			out[b] = v.turn.transform * v.bone_model(b)   # with the body yaw: a jolt in a turn counts too
+	return out
+
+
+## Worst acceleration over a run as a change of step per 1/60 s (mm): [mm, bone, frame].
+func _worst(frames: Array, dts: Array) -> Array:
+	var best := [0.0, "", -1]
+	for i in range(2, frames.size()):
+		var d1: float = maxf(float(dts[i - 1]), 1e-4)
+		var d2: float = maxf(float(dts[i]), 1e-4)
+		for b in BONES:
+			if not frames[i].has(b):
+				continue
+			var v1: Vector3 = (frames[i - 1][b] - frames[i - 2][b]) / d1
+			var v2: Vector3 = (frames[i][b] - frames[i - 1][b]) / d2
+			var acc := (v2 - v1) / ((d1 + d2) * 0.5)
+			var mm := acc.length() * DT * DT * 1000.0
+			if mm > best[0]:
+				best = [mm, b, i]
+	return best
+
+
+func _fake_npc() -> Node2D:
+	var s := GDScript.new()
+	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
+	s.reload()
+	var n := Node2D.new()
+	n.set_script(s)
+	var sp := Sprite2D.new()
+	n.add_child(sp)
+	n.set("sprite", sp)
+	var sh := GDScript.new()
+	sh.source_code = "extends RefCounted\nvar texture_scale: float = 2.25\n"
+	sh.reload()
+	n.set("sheet", sh.new())
+	root.add_child(n)
+	return n
+
+
+func _run() -> void:
+	await process_frame
+	var t0 := Time.get_ticks_msec()
+	_test_walk_seams()
+	_report("Walk loops: the seam of every walk cycle is no sharper than the cycle's own steps (no pop, no hitch)", t0)
+	t0 = Time.get_ticks_msec()
+	await _test_villagers()
+	_report("Villagers: idle, listen, talk (forward loop), their fades, a 150° turn, walking off and stopping — no jolt", t0)
+	t0 = Time.get_ticks_msec()
+	await _test_agata()
+	_report("Agata: idle, the talk gesture, a 150° turn, walk and stop, open/pick/reach at the clip's own pace — no jolt", t0)
+	var failed := 0
+	for r in _results:
+		if not r[1]:
+			failed += 1
+	print("")
+	print("==== motion smoothness: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
+	quit(0 if failed == 0 else 1)
+
+
+# --- Walk seams ------------------------------------------------------------------------------------
+
+func _test_walk_seams() -> void:
+	for id in ["agata"] + NPCS + ["agata:raw"]:
+		var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % String(id).get_slice(":", 0)))
+		var raw := String(id).ends_with(":raw")
+		if raw:
+			# self-check of the metric: Agata's clip as recorded (no baked loop) must show its seam
+			(spec["rt3d"] as Dictionary).erase("walk_loop")
+		var v := Actor3D.new()
+		root.add_child(v)
+		if not v.setup(spec):
+			_check(false, "%s: live model not loaded (%s)" % [id, v.load_error])
+			v.queue_free()
+			continue
+		if v.life != null:
+			v.life.active = false
+		if not v.clips.has("walk"):
+			v.queue_free()
+			continue
+		_check(raw or String(v.clips["walk"]).begins_with("rt_loop/"), "%s: the walk is not a baked loop (rt3d.walk_loop)" % id)
+		var frames: Array = []
+		var dts: Array = []
+		var phases: Array = []
+		var n := int(round(v.walk_len * 60.0 * 2.2))
+		for i in n:
+			var ph := fposmod(float(i) * DT / v.walk_len, 1.0)
+			v._apply(ph, 1.0, 0.0, "", 0.0)
+			frames.append(_sample(v))
+			dts.append(DT)
+			phases.append(ph)
+		# worst inside the cycle vs worst within ±4 frames of the seam
+		var inner := 0.0
+		var seam := 0.0
+		for i in range(2, frames.size()):
+			var w := _worst([frames[i - 2], frames[i - 1], frames[i]], [DT, DT, DT])
+			var near := minf(float(phases[i]), 1.0 - float(phases[i])) * v.walk_len < 4.5 * DT
+			if near:
+				seam = maxf(seam, w[0])
+			else:
+				inner = maxf(inner, w[0])
+		print("        %s walk %.3f s: seam %.1f mm, inside the cycle up to %.1f mm per 1/60 s" % [id, v.walk_len, seam, inner])
+		if raw:
+			_check(seam > inner * 1.5, "self-check: the recorded clip's seam (%.1f mm) did not stand out of its cycle (%.1f) — the metric would not catch a pop" % [seam, inner])
+		else:
+			_check(seam <= maxf(inner * 1.05, 4.0), "%s: walk seam %.1f mm per 1/60 s — sharper than the cycle's own steps (%.1f)" % [id, seam, inner])
+		v.queue_free()
+
+
+# --- Villagers ---------------------------------------------------------------------------------
+
+func _test_villagers() -> void:
+	var NL = load("res://scripts/actors/npc_live_3d.gd")
+	for id in NPCS:
+		var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+		var n := _fake_npc()
+		var live = NL.new()
+		n.add_child(live)
+		if not live.setup(n, spec, 0.55):
+			_check(false, "%s: live model not loaded" % id)
+			n.queue_free()
+			continue
+		live.view.seed_idle(7)
+		var scen := [
+			["idle", 6.0, func(_t): pass, STAND_MM],
+			["listen", 7.0, func(t): if t == 0.0: live.set_state("listen"), STAND_MM],
+			["listen→idle", 1.5, func(t): if t == 0.0: live.set_state("idle"), STAND_MM],
+			["talk (loop seam at %.1f s)" % (live.view.action_length("talk") - 0.8), 9.0, func(t): if t == 0.0: live.set_state("talk"), STAND_MM],
+			["talk→idle", 1.5, func(t): if t == 0.0: live.set_state("idle"), STAND_MM],
+			["idle→talk", 1.5, func(t): if t == 0.0: live.set_state("talk"), STAND_MM],
+			["turn 150°", 2.0, func(t): if t == 0.0: live.face(Vector2(-60, -100), 0.55), STAND_MM],
+			["walk off", 2.5, func(t): if t == 0.0: live.set_state("idle"); live.walk(true, 110.0, 1.0), WALK_MM],
+			["stop", 1.5, func(t): if t == 0.0: live.walk(false), WALK_MM],
+		]
+		var line := "        %-9s" % id
+		for sc in scen:
+			var frames: Array = []
+			var dts: Array = []
+			var t := 0.0
+			while t < float(sc[1]):
+				(sc[2] as Callable).call(t)
+				live.process(DT)
+				frames.append(_sample(live.view))
+				dts.append(DT)
+				t += DT
+			var w := _worst(frames, dts)
+			line += " %s %.0f" % [String(sc[0]).get_slice(" ", 0), w[0]]
+			_check(w[0] <= float(sc[3]), "%s %s: %s jolted %.1f mm per 1/60 s at %.2f s (≤ %.0f)" % [id, sc[0], w[1], w[0], w[2] * DT, float(sc[3])])
+		print(line)
+		n.queue_free()
+		await process_frame
+
+
+# --- Agata ---------------------------------------------------------------------------------------
+
+func _gesture_beat(t: float) -> void:
+	if t == 0.0:
+		_sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
+	elif t > 4.0 and not _sr.current_beat.is_empty():
+		_sr.current_beat = {}
+
+
+func _rec(player: Node2D, secs: float, frames: Array, dts: Array, every: Callable = Callable()) -> void:
+	var t := 0.0
+	var guard := 0
+	while t < secs and guard < 4000:
+		if every.is_valid():
+			every.call(t)
+		await process_frame
+		guard += 1
+		var d: float = player.get_process_delta_time()
+		t += d
+		frames.append(_sample(player.view3d))
+		dts.append(d)
+
+
+func _test_agata() -> void:
+	var gs = root.get_node("GameState")
+	var rm = root.get_node("RoomManager")
+	_sr = root.get_node("StoryRunner")
+	var PS = load("res://scripts/actors/player.gd")
+	PS.forced_render = "3d"
+	Engine.max_fps = 60
+	var main_node = load("res://scenes/Main.tscn").instantiate()
+	root.add_child(main_node)
+	for i in 4:
+		await process_frame
+	rm.autosave_enabled = false
+	var player: Node2D = main_node.get_node("World/Player")
+	gs.reset()
+	for f in ["done_M01", "done_M02", "house_unlocked", "done_M03", "met_tikhon"]:
+		gs.set_flag(f, true)
+	rm.change_room("H1", "default", Vector2(1200, 960))
+	for i in 8:
+		await process_frame
+	_check(player.is_3d(), "Agata is not drawn in 3D (forced): %s" % (player.view3d.load_error if player.view3d else "no view"))
+	if not player.is_3d():
+		PS.forced_render = ""
+		Engine.max_fps = 0
+		return
+	var k: float = player.floor_foreshortening()
+	var runs := [
+		["idle", 8.0, Callable(), STAND_MM],
+		["gesture", 6.0, _gesture_beat, STAND_MM],
+		["turn 150°", 2.0, func(t): if t == 0.0: player.face_towards(player.global_position + Vector2(-0.5, -0.9 * k) * 200.0), STAND_MM],
+		["walk+stop", 4.0, func(t): if t == 0.0: player.click_at(player.global_position + Vector2(-380, -40)), WALK_MM],
+	]
+	for act in ["open", "pick", "reach"]:
+		runs.append(["act " + act, 4.5, func(t): if t == 0.0: player._start_action(act, null), ACT_MM])
+	var line := "        agata    "
+	for r in runs:
+		var frames: Array = []
+		var dts: Array = []
+		await _rec(player, float(r[1]), frames, dts, r[2])
+		var w := _worst(frames, dts)
+		line += " %s %.0f" % [String(r[0]).get_slice(" ", 0) + (String(r[0]).get_slice(" ", 1) if String(r[0]).begins_with("act") else ""), w[0]]
+		_check(w[0] <= float(r[3]), "agata %s: %s jolted %.1f mm per 1/60 s at %.2f s (≤ %.0f)" % [r[0], w[1], w[0], float(w[2]) * DT, float(r[3])])
+		if w[0] > float(r[3]) and w[2] >= 2:
+			var at: int = w[2]
+			for i in range(maxi(2, at - 4), mini(frames.size(), at + 3)):
+				print("          f%d dt %.4f step %.1f mm" % [i, dts[i], (frames[i][w[1]] - frames[i - 1][w[1]]).length() * 1000.0])
+		if String(r[0]).begins_with("act "):
+			# the clip at (about) its own pace: motion capture hands do not move 2.4× faster than recorded
+			_check(player._act_speed >= 0.8 and player._act_speed <= 1.25, "agata %s: played at %.2f× the clip's pace (0.8–1.25)" % [r[0], player._act_speed])
+	print(line)
+	PS.forced_render = ""
+	Engine.max_fps = 0

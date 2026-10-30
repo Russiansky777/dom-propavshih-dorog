@@ -3,9 +3,11 @@ extends Node
 ## A villager in real 3D (Director 30.10, 14:38: «как живые… остальные можно чуточку попроще»): the same Meshy model
 ## the villager's sheets were rendered from (actor data `rt3d`), drawn live by an Actor3D under the NpcActor's
 ## facade sprite — the sheet keeps the placement, depth scale, y-sort, contact shadow and room tone; the picture is
-## the live one. Simpler than Agata: three looping states (idle with crossfaded repeats, listen and talk played to
-## and fro over the stance), a walk cycle whose cadence follows the staging's speed, and a body yaw that eases to
-## where the villager looks (any angle). The facade sprite is drawn invisible (its children — the shadow — stay).
+## the live one. Simpler than Agata: three looping states (idle with crossfaded repeats; listen and talk played
+## forward, the end of each pass fading into the start of the next — Director 30.10, 17:36: «движения… иногда
+## странные или рваные»: the old to-and-fro playback reversed every motion mid-air), a walk cycle whose cadence
+## follows the staging's speed, and a body yaw that sets off and settles softly (any angle); a big turn standing
+## is taken with small steps, as Agata does. The facade sprite is drawn invisible (its children — the shadow — stay).
 
 const HIDE_SHADER_CODE := "shader_type canvas_item;\nvoid fragment() { COLOR = vec4(0.0); }\n"
 
@@ -15,6 +17,8 @@ var body: Sprite2D = null
 var rt: Dictionary = {}
 var yaw: float = 0.0
 var yaw_target: float = 0.0
+var yaw_v: float = 0.0               # yaw speed, rad/s
+var step_w: float = 0.0              # stepping while turning on the spot
 var state: String = "idle"
 var walk_w: float = 0.0
 var walking: bool = false
@@ -23,7 +27,6 @@ var walk_phase: float = 0.0
 var act_name: String = ""
 var act_w: float = 0.0
 var act_t: float = 0.0
-var _act_dir: float = 1.0
 var _hide_mat: ShaderMaterial = null
 
 
@@ -80,6 +83,7 @@ func face(v: Vector2, floor_k: float, at_once: bool = false) -> void:
 	yaw_target = atan2(v.x, v.y / maxf(floor_k, 0.05))
 	if at_once:
 		yaw = yaw_target
+		yaw_v = 0.0
 
 
 func set_state(st: String) -> void:
@@ -92,7 +96,6 @@ func set_state(st: String) -> void:
 	if want != act_name and want != "":
 		act_name = want
 		act_t = 0.0
-		_act_dir = 1.0
 
 
 ## Walking off in a staging at `speed_px` screen px/s (node scale `s`): the cycle's cadence follows the speed.
@@ -107,26 +110,27 @@ func process(delta: float) -> void:
 	if view == null:
 		return
 	var diff := angle_difference(yaw, yaw_target)
-	var cap := deg_to_rad(float(rt.get("turn_deg_s", 240.0))) * delta
-	yaw = wrapf(yaw + clampf(diff * (1.0 - exp(-float(rt.get("turn_ease_per_s", 7.0)) * delta)), -cap, cap), -PI, PI)
+	var r := Actor3D.turn_step(yaw, yaw_v, yaw_target, delta, deg_to_rad(float(rt.get("turn_deg_s", 240.0))), float(rt.get("turn_ease_per_s", 7.0)), deg_to_rad(float(rt.get("turn_accel_deg_s2", 1100.0))))
+	yaw = r.x
+	yaw_v = r.y
 	view.set_yaw(yaw)
 	walk_w = move_toward(walk_w, 1.0 if walking else 0.0, delta / 0.3)
+	# a big turn standing: small steps on the spot (a little of the walk), as Agata
+	var stepping := not walking and view.clips.has("walk") and absf(diff) > deg_to_rad(float(rt.get("step_above_deg", 50.0)))
+	step_w = move_toward(step_w, float(rt.get("step_weight", 0.3)) if stepping else 0.0, delta / 0.25)
 	if walk_w > 0.0:
 		walk_phase += delta * walk_rate
+	elif step_w > 0.0:
+		walk_phase += delta / maxf(view.walk_len, 0.1)
 	var talk_on := not walking and state in ["talk", "listen"] and act_name != ""
 	act_w = move_toward(act_w, 1.0 if talk_on else 0.0, delta / float(rt.get("state_fade_s", 0.4)))
-	if act_name != "" and act_w > 0.0:
-		# listen / talk: to and fro over the clip (they start and end near the stance; no loop seam)
-		var len_s := maxf(view.action_length(act_name), 0.1)
+	var lt: Array = [act_t, 0.0, 0.0]
+	if act_name != "" and (act_w > 0.0 or view.shown_act_w() > 0.0):
+		# listen / talk: forward, each pass's end fading into the next one's start (on while it is still shown)
 		var sp := float(rt.get("talk_speed" if act_name == "talk" else "listen_speed", 1.0))
-		act_t += delta * sp * _act_dir
-		if act_t >= len_s:
-			act_t = len_s - (act_t - len_s)
-			_act_dir = -1.0
-		elif act_t <= 0.0:
-			act_t = -act_t
-			_act_dir = 1.0
-	view.pose(delta, fposmod(walk_phase, 1.0), walk_w, act_w, act_name, act_t)
+		act_t += delta * sp
+		lt = Actor3D.loop_times(act_t, maxf(view.action_length(act_name), 0.1), float(rt.get("loop_crossfade_s", 0.8)))
+	view.pose(delta, fposmod(walk_phase, 1.0), maxf(walk_w, step_w), act_w, act_name, float(lt[0]), float(lt[1]), float(lt[2]))
 	_update_scale()
 	body.self_modulate = (npc.get("sprite") as CanvasItem).self_modulate
 

@@ -13,7 +13,12 @@ extends SubViewport
 ##   - locomotion weight w (0 = idle, 1 = walk) and the walk phase;
 ##   - idle: two slots crossfading between variants of calm idles (no loop seam ever shows: at the
 ##     end of a clip the next one fades in over `idle.crossfade_s`);
-##   - one-shot action (open / pick / reach) with fade in/out.
+##   - one-shot action (open / pick / reach) with fade in/out; a second instance of the same clip (act2) blends in
+##     for seamless loops (talk, listen: the end of one pass fades into the start of the next) and for cuts
+##     inside a clip (the long hold of «open» skipped by a crossfade);
+##   - every weight the callers ramp is shown through a critically damped follower (`blend_omega`), and all
+##     tracks are interpolated cubically: no velocity kink where a fade, a step or a key starts or ends;
+##   - the walk plays as a loop baked from its best cycle (`walk_loop`): no pop at the cycle's seam.
 ## Root motion of the walk is measured from the clip itself (`build_root_motion`): the stance foot's
 ## backward slide per phase → the Player advances by exactly that, so the planted foot stays on the floor.
 
@@ -66,6 +71,16 @@ var _slot_mix: float = 0.0       # 0 = slot A, 1 = slot B (eased towards the act
 var _idle_rng := RandomNumberGenerator.new()
 var _act_name: String = ""
 
+# Weights as shown (critically damped followers of what the callers ask) and the action slot as shown.
+var _w_s: float = 0.0
+var _w_v: float = 0.0
+var _a_s: float = 0.0
+var _a_v: float = 0.0
+var _shown_t: float = 0.0
+var _shown_t2: float = 0.0
+var _shown_mix: float = 0.0
+var _shown_phase: float = 0.0
+
 
 ## Builds everything from the actor data. Returns false (load_error set) when the model or a clip is missing.
 func setup(actor_spec: Dictionary) -> bool:
@@ -115,6 +130,8 @@ func setup(actor_spec: Dictionary) -> bool:
 			meshes.append(n)
 	_apply_material()
 	_resolve_clips()
+	_smooth_tracks()
+	_bake_walk_loop()
 	# A villager may have no walk clip (data `require_walk` false: Pavel, Mitya, Ilya's wife — their stagings slide):
 	# the stance stands in for it, nothing walks.
 	if idle_pool.is_empty() or (not clips.has("walk") and bool(spec.get("require_walk", true))):
@@ -220,13 +237,159 @@ func _resolve_clips() -> void:
 	walk_len = anim.get_animation(clips["walk"]).length if clips.has("walk") else 1.0
 
 
+## Cubic interpolation between the clips' keys (30 per second): linear interpolation draws every bone along a
+## polyline — a small velocity kink at each key, 30 times a second, which reads as a faint tremor at 60 fps.
+func _smooth_tracks() -> void:
+	if not bool(spec.get("cubic", true)):
+		return
+	var names: Array = []
+	for e in idle_pool:
+		names.append(e["name"])
+	for role in clips.keys():
+		if not names.has(clips[role]):
+			names.append(clips[role])
+	for nm in names:
+		var a := anim.get_animation(nm)
+		if a == null:
+			continue
+		for i in a.get_track_count():
+			var ty := a.track_get_type(i)
+			if ty == Animation.TYPE_POSITION_3D or ty == Animation.TYPE_ROTATION_3D or ty == Animation.TYPE_SCALE_3D:
+				a.track_set_interpolation_type(i, Animation.INTERPOLATION_CUBIC)
+
+
+## The walk as a seamless loop (data `walk_loop` [from, to], seconds of the clip): keys every 1/30 s from `from`,
+## and after the last one the first again, one key interval later. Agata's Walking_Woman ends on its last key, so
+## the clip as such jumped 6 cm back to its first pose in no time once a cycle; the villagers' one-second walks end
+## on two closing keys (a hitch once a cycle); the long walks (Pavel, Mitya, Ilya) loop on their best-matching
+## cycle. Windows from tests/probe_walkloop.gd (seam second difference ≤ the clip's own).
+func _bake_walk_loop() -> void:
+	if not clips.has("walk"):
+		return
+	var wl = spec.get("walk_loop", null)
+	if not (wl is Array) or (wl as Array).size() < 2:
+		return
+	var src := anim.get_animation(clips["walk"])
+	var h := 1.0 / float(spec.get("walk_loop_fps", 30.0))
+	var from := float(wl[0])
+	var n := int(round((float(wl[1]) - from) / h))
+	if n < 8 or from < 0.0 or from + (n - 1) * h > src.length + 0.001:
+		push_warning("Actor3D: walk_loop %s outside the clip (%.3f s)" % [str(wl), src.length])
+		return
+	var dst := Animation.new()
+	dst.length = n * h
+	dst.loop_mode = Animation.LOOP_LINEAR
+	for i in src.get_track_count():
+		var ty := src.track_get_type(i)
+		if ty != Animation.TYPE_POSITION_3D and ty != Animation.TYPE_ROTATION_3D and ty != Animation.TYPE_SCALE_3D:
+			continue
+		var j := dst.add_track(ty)
+		dst.track_set_path(j, src.track_get_path(i))
+		dst.track_set_interpolation_type(j, Animation.INTERPOLATION_CUBIC if bool(spec.get("cubic", true)) else Animation.INTERPOLATION_LINEAR)
+		dst.track_set_interpolation_loop_wrap(j, true)
+		var vals: Array = []
+		for k in n:
+			var t := minf(from + k * h, src.length)
+			if ty == Animation.TYPE_POSITION_3D:
+				vals.append(src.position_track_interpolate(i, t))
+			elif ty == Animation.TYPE_ROTATION_3D:
+				vals.append(src.rotation_track_interpolate(i, t))
+			else:
+				vals.append(src.scale_track_interpolate(i, t))
+		_smooth_seam(vals, int(spec.get("walk_loop_smooth", 0)), ty == Animation.TYPE_ROTATION_3D)
+		for k in n:
+			if ty == Animation.TYPE_POSITION_3D:
+				dst.position_track_insert_key(j, k * h, vals[k])
+			elif ty == Animation.TYPE_ROTATION_3D:
+				dst.rotation_track_insert_key(j, k * h, vals[k])
+			else:
+				dst.scale_track_insert_key(j, k * h, vals[k])
+	var lib := AnimationLibrary.new()
+	lib.add_animation("walk", dst)
+	anim.add_animation_library("rt_loop", lib)
+	clips["walk"] = "rt_loop/walk"
+	walk_len = dst.length
+
+
+## Seam of a looped key sequence (values at equal steps, the last followed by the first): the `m` keys before
+## and after the seam are redrawn as one cubic Hermite arc from the key m+1 before it to the key m after it, with
+## the motion's own speed at both ends — a cycle that does not quite close (Agata's walk) closes smoothly.
+## Rotations are redrawn in the rotation-vector space around the arc's first key.
+static func _smooth_seam(vals: Array, m: int, is_rot: bool) -> void:
+	var n := vals.size()
+	if m <= 0 or n < 4 * m + 4:
+		return
+	var ia := n - 1 - m          # arc start (kept)
+	var ib := m                  # arc end (kept), index after the wrap
+	var span := float(2 * m + 1) # key steps from ia to ib across the seam
+	var to_v := func(x):
+		return x
+	var q0 := Quaternion.IDENTITY
+	if is_rot:
+		q0 = (vals[ia] as Quaternion).normalized()
+		to_v = func(x):
+			var d: Quaternion = q0.inverse() * (x as Quaternion).normalized()
+			if d.w < 0.0:
+				d = -d
+			var ang := d.get_angle()
+			return Vector3.ZERO if ang < 1e-9 else d.get_axis() * ang
+	var pa: Vector3 = to_v.call(vals[ia])
+	var pb: Vector3 = to_v.call(vals[ib])
+	var ma: Vector3 = pa - to_v.call(vals[ia - 1])          # per key step
+	var mb: Vector3 = to_v.call(vals[ib + 1]) - pb
+	for s in range(1, 2 * m + 1):
+		var u := float(s) / span
+		var u2 := u * u
+		var u3 := u2 * u
+		var p: Vector3 = (2.0 * u3 - 3.0 * u2 + 1.0) * pa + (u3 - 2.0 * u2 + u) * span * ma + (-2.0 * u3 + 3.0 * u2) * pb + (u3 - u2) * span * mb
+		var idx := (ia + s) % n
+		if is_rot:
+			var ang := p.length()
+			vals[idx] = q0 * (Quaternion.IDENTITY if ang < 1e-9 else Quaternion(p / ang, ang))
+		else:
+			vals[idx] = p
+
+
+## A critically damped follower, exact for any step: position and velocity after `dt` going to `target`
+## (no overshoot, velocity continuous whatever the target does).
+static func spring(x: float, v: float, target: float, omega: float, dt: float) -> Vector2:
+	var y := x - target
+	var j := v + omega * y
+	var e := exp(-omega * dt)
+	return Vector2(target + (y + j * dt) * e, (v - omega * j * dt) * e)
+
+
+## One frame of a body turn: the yaw speed follows the speed wanted for the angle left (an eased approach, capped,
+## and never faster than can be stopped in time) and changes by at most `accel` per second² — a turn sets off and
+## settles softly, whatever the angle. Returns (yaw, yaw speed).
+static func turn_step(yaw: float, yaw_v: float, target: float, delta: float, cap: float, ease: float, accel: float) -> Vector2:
+	var diff := angle_difference(yaw, target)
+	var want := signf(diff) * minf(minf(cap, absf(diff) * ease), sqrt(2.0 * accel * absf(diff)))
+	yaw_v = move_toward(yaw_v, want, accel * delta)
+	return Vector2(wrapf(yaw + yaw_v * delta, -PI, PI), yaw_v)
+
+
+## Times of a clip played as a seamless loop (`tau` seconds since it started; clip `len_s`, crossfade `xf`):
+## [time in the act slot, time in act2, mix 0..1 towards act2]. Each pass starts `len_s − xf` after the last;
+## while one pass ends the next one fades in (smoothstep), so no seam is ever seen.
+static func loop_times(tau: float, len_s: float, xf: float) -> Array:
+	xf = clampf(xf, 0.0, len_s * 0.45)
+	var period := maxf(len_s - xf, 0.05)
+	var k := floorf(maxf(tau, 0.0) / period)
+	var u := maxf(tau, 0.0) - k * period
+	if k >= 1.0 and u < xf and xf > 0.0:
+		var m := u / xf
+		return [u + period, u, m * m * (3.0 - 2.0 * m)]
+	return [u, 0.0, 0.0]
+
+
 func _build_tree() -> void:
 	tree = AnimationTree.new()
 	tree.name = "Tree"
 	model.add_child(tree)
 	tree.anim_player = tree.get_path_to(anim)
 	var bt := AnimationNodeBlendTree.new()
-	for slot in ["idle_a", "idle_b", "walk", "act"]:
+	for slot in ["idle_a", "idle_b", "walk", "act", "act2"]:
 		var a := AnimationNodeAnimation.new()
 		a.animation = clips.get("walk", idle_pool[0]["name"]) if slot == "walk" else idle_pool[0]["name"]
 		bt.add_node(slot, a)
@@ -241,10 +404,14 @@ func _build_tree() -> void:
 	bt.add_node("loco", loco)
 	bt.connect_node("loco", 0, "idle_mix")
 	bt.connect_node("loco", 1, "walk_seek")
+	var act_mix := AnimationNodeBlend2.new()
+	bt.add_node("act_mix", act_mix)
+	bt.connect_node("act_mix", 0, "act_seek")
+	bt.connect_node("act_mix", 1, "act2_seek")
 	var actb := AnimationNodeBlend2.new()
 	bt.add_node("actb", actb)
 	bt.connect_node("actb", 0, "loco")
-	bt.connect_node("actb", 1, "act_seek")
+	bt.connect_node("actb", 1, "act_mix")
 	bt.connect_node("output", 0, "actb")
 	tree.tree_root = bt
 	tree.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
@@ -387,23 +554,77 @@ func _idle_blend() -> float:
 # --- Pose ---------------------------------------------------------------------------------------
 
 ## Poses the skeleton for this frame. `walk_phase` 0..1, `w` locomotion weight, action time/weight.
-func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: String = "", act_t: float = 0.0) -> void:
+## `act_t2`/`act_mix`: a second instance of the same clip at that time, blended in by `act_mix` (loops, cuts).
+## The weights pass through the followers; a new clip in the action slot waits until the one shown has faded out.
+func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: String = "", act_t: float = 0.0, act_t2: float = 0.0, act_mix: float = 0.0) -> void:
 	_advance_idle(delta)
+	var om := float(spec.get("blend_omega", 16.0))
+	var a_target := clampf(act_w, 0.0, 1.0)
+	if act_name != "" and act_name != _act_name and _act_name != "" and _a_s > 0.01:
+		a_target = 0.0   # the previous clip fades out first
+		act_name = _act_name
+		act_t = _shown_t
+		act_t2 = _shown_t2
+		act_mix = _shown_mix
+	elif act_name == "":
+		act_name = _act_name
+		act_t = _shown_t
+		act_t2 = _shown_t2
+		act_mix = _shown_mix
+	if delta > 0.0:
+		var r := spring(_w_s, _w_v, clampf(w, 0.0, 1.0), om, delta)
+		_w_s = r.x
+		_w_v = r.y
+		r = spring(_a_s, _a_v, a_target, om, delta)
+		_a_s = r.x
+		_a_v = r.y
+		if absf(_w_s - clampf(w, 0.0, 1.0)) < 0.0005 and absf(_w_v) < 0.01:
+			_w_s = clampf(w, 0.0, 1.0)
+			_w_v = 0.0
+		if absf(_a_s - a_target) < 0.0005 and absf(_a_v) < 0.01:
+			_a_s = a_target
+			_a_v = 0.0
+	else:
+		_w_s = clampf(w, 0.0, 1.0)
+		_a_s = a_target
+		_w_v = 0.0
+		_a_v = 0.0
 	if life != null:
-		life.idle_weight = clampf(1.0 - w, 0.0, 1.0) * (1.0 - clampf(act_w, 0.0, 1.0))
+		life.idle_weight = (1.0 - _w_s) * (1.0 - _a_s)
 		life.advance(delta)
-	_apply(walk_phase, w, act_w, act_name, act_t)
+	_shown_t = act_t
+	_shown_t2 = act_t2
+	_shown_mix = act_mix
+	_shown_phase = walk_phase
+	_apply(walk_phase, _w_s, _a_s, act_name, act_t, act_t2, act_mix)
 
 
-## Feet for a walk phase and weights at the current idle times (root-motion probe: the planted foot's
-## displacement due to the walk itself, without the part caused by changing blend weights). The next
-## pose() overrides it.
-func feet_with(walk_phase: float, w: float, act_w: float = 0.0, act_name: String = "", act_t: float = 0.0) -> Array:
-	_apply(walk_phase, w, act_w, act_name, act_t)
+## A cut (room change, load, render switch): the shown weights jump to zero at once, no fade from before.
+func snap_weights() -> void:
+	_w_s = 0.0
+	_w_v = 0.0
+	_a_s = 0.0
+	_a_v = 0.0
+
+
+## Locomotion and action weights as shown this frame (after the followers).
+func shown_w() -> float:
+	return _w_s
+
+
+func shown_act_w() -> float:
+	return _a_s
+
+
+## Feet at another walk phase with everything else as shown last frame (root-motion probe: the planted foot's
+## displacement due to the walk itself, without the part caused by changing blend weights). The next pose()
+## overrides it.
+func feet_at_phase(walk_phase: float) -> Array:
+	_apply(walk_phase, _w_s, _a_s, _act_name, _shown_t, _shown_t2, _shown_mix)
 	return feet_model()
 
 
-func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: float) -> void:
+func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: float, act_t2: float = 0.0, act_mix: float = 0.0) -> void:
 	tree.set("parameters/idle_a_seek/seek_request", float(_slot_t[0]))
 	tree.set("parameters/idle_b_seek/seek_request", float(_slot_t[1]))
 	tree.set("parameters/idle_mix/blend_amount", _idle_blend())
@@ -411,9 +632,13 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 	tree.set("parameters/loco/blend_amount", clampf(w, 0.0, 1.0))
 	if act_name != "" and clips.has(act_name):
 		if act_name != _act_name:
-			((tree.tree_root as AnimationNodeBlendTree).get_node("act") as AnimationNodeAnimation).animation = clips[act_name]
+			var bt := tree.tree_root as AnimationNodeBlendTree
+			(bt.get_node("act") as AnimationNodeAnimation).animation = clips[act_name]
+			(bt.get_node("act2") as AnimationNodeAnimation).animation = clips[act_name]
 			_act_name = act_name
 		tree.set("parameters/act_seek/seek_request", act_t)
+		tree.set("parameters/act2_seek/seek_request", act_t2)
+	tree.set("parameters/act_mix/blend_amount", clampf(act_mix, 0.0, 1.0))
 	tree.set("parameters/actb/blend_amount", clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0)
 	if bool(spec.get("center_feet", true)):
 		var ib := _idle_blend()

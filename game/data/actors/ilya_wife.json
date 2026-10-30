@@ -120,7 +120,7 @@
   "render": "3d",
   "render_web": "sprites",
   "rt3d": {
-    "_comment": "30.10 (Директор: модели — живое 3D; «остальные можно чуточку попроще»): та же модель Meshy, что в листах ilya_wife_v2 (релиз npc-v2-work → ilya_wife_v2_game_r4.glb, после build_npc.py), сетка до 120 тыс. треугольников, ткань матовая (pipeline/3d/build_rt3d_glb.py, tools/build_npc_live.sh). Состояния — game/scripts/actors/npc_live_3d.gd: стойка (повтор с наплывом), «слушает» и «говорит» туда-обратно по клипу, ходьба в постановке. sheet_ppm = кадр листа / (2 × fit.frame_top_m) — рост на экране как у листов.",
+    "_comment": "30.10 (Директор: модели — живое 3D; «остальные можно чуточку попроще»): та же модель Meshy, что в листах ilya_wife_v2 (релиз npc-v2-work → ilya_wife_v2_game_r4.glb, после build_npc.py), сетка до 120 тыс. треугольников, ткань матовая (pipeline/3d/build_rt3d_glb.py, tools/build_npc_live.sh). Состояния — game/scripts/actors/npc_live_3d.gd: стойка (повтор с наплывом), «слушает» и «говорит» вперёд по клипу, конец прохода наплывает на начало следующего (30.10, 17:36: туда-обратно движение разворачивалось на полпути), ходьба в постановке — петля лучшего цикла (walk_loop). sheet_ppm = кадр листа / (2 × fit.frame_top_m) — рост на экране как у листов.",
     "scene": "res://assets/characters/ilya_wife_v2/rt3d/ilya_wife_rt.glb",
     "camera_elev_deg": 14.0,
     "frame_px": [
@@ -140,6 +140,8 @@
       "mouth_dark"
     ],
     "_walk": "30.10: в модели v2 не было ходьбы — перенесена с рига Нины (pipeline/3d/retarget_clips.py, 0 кредитов; tools/build_npc_live.sh): в постановке уходит шагом",
+    "walk_loop": [0.0, 0.9667],
+    "_walk_loop": "30.10 (Директор, 17:36: «движения… иногда рваные»): односекундная ходьба кончается двумя замыкающими ключами — раз за цикл стопа замирала и срывалась. Петля — ключи 0–0,933 с, затем первый через 1/30 с (game/tests/probe_walkloop.gd: шов не резче самого клипа).",
     "clips": {
       "walk": "walk",
       "idle": "idle",

@@ -104,6 +104,7 @@ var _rt: Dictionary = {}          # spec.rt3d
 var _hide_mat: ShaderMaterial = null
 var yaw3d: float = 0.0            # body yaw (radians; 0 = towards the viewer, +90° = screen right)
 var yaw3d_target: float = 0.0
+var _yaw_v: float = 0.0           # body yaw speed (rad/s): turns set off and settle softly (Actor3D.turn_step)
 var walk_w: float = 0.0           # idle(0) ↔ walk(1) blend
 var walk_phase: float = 0.0       # walk cycle phase, unwrapped (whole cycles count up)
 var _turn_step_w: float = 0.0     # stepping while turning on the spot
@@ -112,6 +113,7 @@ var _act_w: float = 0.0
 var _act_len: float = 1.0
 var _act_speed: float = 1.0
 var _act_fading: String = ""      # an action that ended: its last pose fades out
+var _act_cfg: Dictionary = {}     # rt3d.actions[act]: the part of the clip played (from/to), a cut, the rate
 ## Talking (3D only, data rt3d.gesture): while a line of Agata's is on screen she gestures with the talk clip
 ## (legs from the stance, so the feet stay put), faded in and out over the idle — Director 30.10 «как живая».
 var _gest_key: String = ""
@@ -542,6 +544,7 @@ func face_screen_dir(v: Vector2) -> void:
 	if is_3d():
 		yaw3d_target = _yaw_for_screen(v)
 		yaw3d = yaw3d_target
+		_yaw_v = 0.0
 	elif sheet != null:
 		direction = sheet.direction_index(v)
 		shown_dir = direction
@@ -564,6 +567,9 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 		view3d.set_floor_k(floor_foreshortening())
 	walk_w = 0.0
 	_turn_step_w = 0.0
+	_yaw_v = 0.0
+	if view3d != null:
+		view3d.snap_weights()
 	_rm_feet = []
 	_rm_side = -1
 	yaw3d_target = yaw3d
@@ -870,6 +876,8 @@ func _cancel_action() -> void:
 	_action_fired = false
 	_act_fading = ""
 	_act_w = 0.0
+	if view3d != null:
+		view3d.snap_weights()
 
 
 # --- Step animation (distance driven) -------------------------------------
@@ -981,10 +989,12 @@ func set_render_mode(mode: String) -> bool:
 		render_mode = "3d"
 		yaw3d = _yaw_for_row(direction)
 		yaw3d_target = yaw3d
+		_yaw_v = 0.0
 		walk_w = 0.0
 		_turn_step_w = 0.0
 		_act_w = 0.0
 		_act_fading = ""
+		view3d.snap_weights()
 		var fade := get_node_or_null("Crossfade") as CanvasItem
 		if fade != null:
 			fade.visible = false
@@ -1046,6 +1056,10 @@ func _process_3d(delta: float) -> void:
 	if _acting:
 		_act_t = minf(_act_t + delta * _act_speed, _act_len)
 		_act_w = move_toward(_act_w, 1.0, delta / maxf(_rtf("action", "fade_in_s", 0.2), 0.01))
+		# the stance fades back in over the clip's last fade_out_s, while the clip still moves (not over a frozen
+		# last pose after it)
+		var left_s := (_act_len - _act_t) / maxf(_act_speed, 0.01)
+		_act_w = minf(_act_w, left_s / maxf(_rtf("action", "fade_out_s", 0.35), 0.01))
 		act_name = _action
 	elif _act_fading != "":
 		_act_w = move_toward(_act_w, 0.0, delta / maxf(_rtf("action", "fade_out_s", 0.35), 0.01))
@@ -1053,18 +1067,18 @@ func _process_3d(delta: float) -> void:
 		if _act_w <= 0.0:
 			_act_fading = ""
 	var act_w := _act_w
-	var act_t := _act_t
+	var ct := _act_clip_times(_act_t)
 	if act_name == "" and _gesture_3d(delta):
 		act_name = "talk"
 		act_w = _gest_w
-		act_t = _gest_t
+		ct = Actor3D.loop_times(_gest_t, view3d.action_length("talk"), float(_rt.get("gesture", {}).get("crossfade_s", 0.6)))
 	view3d.set_yaw(yaw3d)
 	var blend := maxf(walk_w, _turn_step_w)
 	var probe: Array = []
 	if root_motion_3d and _walking and _rm_side >= 0:
-		# new phase, last frame's weights: only the walk itself moves the planted foot
-		probe = view3d.feet_with(fposmod(walk_phase, 1.0), _rm_blend, act_w, act_name, act_t)
-	view3d.pose(delta, fposmod(walk_phase, 1.0), blend, act_w, act_name, act_t)
+		# new phase, everything else as shown last frame: only the walk itself moves the planted foot
+		probe = view3d.feet_at_phase(fposmod(walk_phase, 1.0))
+	view3d.pose(delta, fposmod(walk_phase, 1.0), blend, act_w, act_name, float(ct[0]), float(ct[1]), float(ct[2]))
 	_root_motion_3d(probe, blend)
 	_sync_facade_3d()
 	_sync_body3d()
@@ -1074,7 +1088,8 @@ func _process_3d(delta: float) -> void:
 
 ## The talk gesture's weight and time this frame; false when it is not shown. A new line of Agata's (long enough,
 ## standing) starts the clip at a random early point, so lines do not all open with the same hand; the clip is
-## blended in its whole length (it starts and ends in the stance) and starts again while the line lasts.
+## blended in its whole length (it starts and ends in the stance) and, while the line lasts, its end fades into
+## its start again (gesture.crossfade_s) — no seam.
 func _gesture_3d(delta: float) -> bool:
 	var g: Dictionary = _rt.get("gesture", {})
 	if g.is_empty() or view3d == null or not view3d.clips.has("talk"):
@@ -1094,21 +1109,23 @@ func _gesture_3d(delta: float) -> bool:
 		_gest_key = "" if b.is_empty() else _gest_key
 	var fade := float(g.get("fade_in_s", 0.5)) if _gest_on else float(g.get("fade_out_s", 0.7))
 	_gest_w = move_toward(_gest_w, float(g.get("weight", 0.85)) if _gest_on else 0.0, delta / maxf(fade, 0.01))
-	if _gest_w <= 0.0:
+	if _gest_w <= 0.0 and view3d.shown_act_w() < 0.001:
 		return false
+	# runs on through the clip's passes; Actor3D.loop_times crossfades the end of one pass into the next
 	_gest_t += delta * float(g.get("rate", 1.0))
-	if _gest_t >= len_s:
-		_gest_t = 0.0 if _gest_on else len_s
 	return true
 
 
-## Body yaw eases towards its target (exponential approach, capped turn rate): any angle, no step.
+## Body yaw eases towards its target (capped turn rate, and the rate itself changes softly — turn.accel_deg_s2 —
+## so a turn sets off and settles without a jolt): any angle, no step.
 ## Standing, a big turn is taken with small steps (a little of the walk on the spot).
 func _turn_3d(delta: float) -> void:
 	var diff := angle_difference(yaw3d, yaw3d_target)
-	var cap := deg_to_rad(_rtf("turn", "max_deg_s", 400.0 if _walking else 300.0)) * delta * maxf(speed_factor, 1.0)
-	var step := clampf(diff * (1.0 - exp(-_rtf("turn", "ease_per_s", 9.0) * delta * maxf(speed_factor, 1.0))), -cap, cap)
-	yaw3d = wrapf(yaw3d + step, -PI, PI)
+	var sf := maxf(speed_factor, 1.0)
+	var cap := deg_to_rad(_rtf("turn", "max_deg_s", 400.0 if _walking else 300.0)) * sf
+	var r := Actor3D.turn_step(yaw3d, _yaw_v, yaw3d_target, delta, cap, _rtf("turn", "ease_per_s", 9.0) * sf, deg_to_rad(_rtf("turn", "accel_deg_s2", 1500.0)) * sf * sf)
+	yaw3d = r.x
+	_yaw_v = r.y
 	var stepping := not _acting and walk_w < 0.3 and absf(diff) > deg_to_rad(_rtf("turn", "step_above_deg", 50.0))
 	var sw := _rtf("turn", "step_weight", 0.3) if stepping else 0.0
 	_turn_step_w = move_toward(_turn_step_w, sw, delta / 0.2)
@@ -1139,7 +1156,8 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 		# walking part: the planted foot slid back in the body frame; turning part: the body turned about
 		# the planted foot. Turning on a foot is what walking people do; starting from a stand (low weight)
 		# she turns about her centre instead — no lurch sideways while she is still almost standing.
-		var walk_part: Vector3 = r_old * (f_old - f_new) * clampf(walk_w / maxf(_rm_blend, 0.001), 0.0, 1.0)
+		var share := clampf(walk_w / maxf(_rm_blend, 0.001), 0.0, 1.0)
+		var walk_part: Vector3 = r_old * (f_old - f_new) * share
 		var turn_part: Vector3 = (r_old * f_new - Basis(Vector3.UP, yaw3d) * f_new) * clampf(walk_w, 0.0, 1.0)
 		var d := Vector2(walk_part.x + turn_part.x, walk_part.z + turn_part.z)
 		var ppm_s := view3d.ppm * absf(scale.y)
@@ -1231,15 +1249,50 @@ func _move_3d(dir: Vector2, seg_len: float, remaining: float, delta: float) -> v
 		_update_depth()
 
 
+## One-shot action in 3D. Data rt3d.actions[act]: the part of the clip played (`from`, `to`, s), an optional cut
+## (`cut` [from, to, crossfade s]: a long hold inside the clip skipped by a crossfade of the clip into itself) and
+## the playback `rate` (1 = the clip's own speed: a hand moves as fast as the motion capture moved it); old data
+## `duration_s` sets the rate from the length instead.
 func _start_action_3d(act: String, _node: Node2D) -> void:
 	_act_fading = ""
 	_act_t = 0.0
-	_act_len = maxf(view3d.action_length(act), 0.05)
-	var a: Dictionary = sheet.actions.get(act, {})
-	var sheet_s := float(a.get("frames", 16)) / maxf(float(a.get("fps", 12)), 1.0)
-	var cfg: Dictionary = _rt.get("actions", {}).get(act, {})
-	_act_speed = _act_len / maxf(float(cfg.get("duration_s", sheet_s)), 0.1)
+	var clip_len := maxf(view3d.action_length(act), 0.05)
+	_act_cfg = _rt.get("actions", {}).get(act, {}).duplicate()
+	var from := clampf(float(_act_cfg.get("from", 0.0)), 0.0, clip_len)
+	var to := clampf(float(_act_cfg.get("to", clip_len)), from + 0.05, clip_len)
+	_act_cfg["from"] = from
+	_act_cfg["to"] = to
+	_act_len = to - from
+	var cut: Array = _act_cfg.get("cut", [])
+	if cut.size() >= 2 and float(cut[0]) > from and float(cut[1]) > float(cut[0]) and float(cut[1]) < to:
+		_act_len = (float(cut[0]) - from) + (to - float(cut[1]))
+	else:
+		_act_cfg.erase("cut")
+	_act_len = maxf(_act_len, 0.05)
+	if _act_cfg.has("rate"):
+		_act_speed = clampf(float(_act_cfg["rate"]), 0.2, 3.0)
+	else:
+		var a: Dictionary = sheet.actions.get(act, {})
+		var sheet_s := float(a.get("frames", 16)) / maxf(float(a.get("fps", 12)), 1.0)
+		_act_speed = _act_len / maxf(float(_act_cfg.get("duration_s", sheet_s)), 0.1)
 	_act_w = minf(_act_w, 1.0)
+
+
+## Clip times of the action at action time `tau` (0.._act_len): [act slot, act2 slot, mix] — before a cut the clip
+## plays on; over the crossfade the part after the cut fades in; then it plays from there.
+func _act_clip_times(tau: float) -> Array:
+	var from := float(_act_cfg.get("from", 0.0))
+	var cut: Array = _act_cfg.get("cut", [])
+	if cut.size() < 2:
+		return [from + tau, 0.0, 0.0]
+	var tc := float(cut[0]) - from
+	var xf := clampf(float(cut[2]) if cut.size() > 2 else 0.35, 0.0, 1.5)
+	if tau < tc:
+		return [from + tau, 0.0, 0.0]
+	if tau < tc + xf and xf > 0.0:
+		var m := (tau - tc) / xf
+		return [from + tau, float(cut[1]) + (tau - tc), m * m * (3.0 - 2.0 * m)]
+	return [float(cut[1]) + (tau - tc), 0.0, 0.0]
 
 
 ## The facade (sheet sprite, drawn invisible) shows the row nearest to the yaw and the frame of the
