@@ -1,0 +1,250 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 2047,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Партия K6 (30.10, 14:13): строки, утверждённые Директором на странице «Тексты по сверке» — F01 M03_3, F02 M09b_0, F05 M23d_3, F06 M23d_5_then0 (новая), F07 M16s_0, F09 R1d.pelageya.wait_water, F10 O1.board.use; по 3 записи (W032–W038), на страницу «Шестой заход»",
+ "items": [
+  {
+   "id": "W032_1",
+   "line": "M03_3",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[hesitant] А тётя Дуня тебе что сказала, как уходила?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "И печь тут, вестимо."
+  },
+  {
+   "id": "W032_2",
+   "line": "M03_3",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[hesitant] А тётя Дуня тебе что сказала, как уходила?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "И печь тут, вестимо."
+  },
+  {
+   "id": "W032_3",
+   "line": "M03_3",
+   "take": "3",
+   "speaker": "agata",
+   "text": "А тётя Дуня… тебе что сказала, как уходила?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "И печь тут, вестимо."
+  },
+  {
+   "id": "W033_1",
+   "line": "M09b_0",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[excited] Павел, у Дуни в мастерской стойка пустая — точь-в-точь под ваше зеркало. И колокол ваш мельничный там висит.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W033_2",
+   "line": "M09b_0",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[excited] Павел, у Дуни в мастерской стойка пустая — точь-в-точь под ваше зеркало. И колокол ваш мельничный там висит.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W033_3",
+   "line": "M09b_0",
+   "take": "3",
+   "speaker": "agata",
+   "text": "Павел, у Дуни в мастерской стойка пустая — точь-в-точь под ваше зеркало. И колокол ваш мельничный там висит.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W034_1",
+   "line": "M23d_3",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "[softly] Долго Тихон молчит. Потом перебирается поближе к Агатиной лежанке и там укладывается.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Тихон, не придёт Дуня. Два года назад у меня умерла, по нашему счёту. Вспоминала тебя."
+  },
+  {
+   "id": "W034_2",
+   "line": "M23d_3",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[softly] Долго Тихон молчит. Потом перебирается поближе к Агатиной лежанке и там укладывается.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "st 0.75 + контекст",
+   "previous_text": "Тихон, не придёт Дуня. Два года назад у меня умерла, по нашему счёту. Вспоминала тебя."
+  },
+  {
+   "id": "W034_3",
+   "line": "M23d_3",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Долго Тихон молчит… Потом перебирается поближе к Агатиной лежанке и там укладывается.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65 + контекст",
+   "previous_text": "Тихон, не придёт Дуня. Два года назад у меня умерла, по нашему счёту. Вспоминала тебя."
+  },
+  {
+   "id": "W035_1",
+   "line": "M23d_5_then0",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[thoughtful] А ты, Агата, не пропадай надолго. С тобой и печь теплее.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Теперь тебе хозяйкой быть. Кастрюлю только её не трогай пока. Пусть стоит."
+  },
+  {
+   "id": "W035_2",
+   "line": "M23d_5_then0",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[thoughtful] А ты, Агата, не пропадай надолго. С тобой и печь теплее.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Теперь тебе хозяйкой быть. Кастрюлю только её не трогай пока. Пусть стоит."
+  },
+  {
+   "id": "W035_3",
+   "line": "M23d_5_then0",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[warmly] А ты, Агата, не пропадай надолго. С тобой и печь теплее.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Теперь тебе хозяйкой быть. Кастрюлю только её не трогай пока. Пусть стоит."
+  },
+  {
+   "id": "W036_1",
+   "line": "M16s_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "[softly] Впервые за год туман с того берега сошёл: белеют крыши, снег по берегу лежит.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W036_2",
+   "line": "M16s_0",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[softly] Впервые за год туман с того берега сошёл: белеют крыши, снег по берегу лежит.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "st 0.75"
+  },
+  {
+   "id": "W036_3",
+   "line": "M16s_0",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Впервые за год туман с того берега сошёл… белеют крыши, снег по берегу лежит.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W037_1",
+   "line": "pelageya:R1d.pelageya.wait_water",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "[excited] Пошла вода, пошла! Как плита из воды покажется — сниму канат со стопора да на лодке к опоре свезу. На кольцо его только с воды и заведёшь.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "st 0.4"
+  },
+  {
+   "id": "W037_2",
+   "line": "pelageya:R1d.pelageya.wait_water",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[excited] Пошла вода, пошла! Как плита из воды покажется — сниму канат со стопора да на лодке к опоре свезу. На кольцо его только с воды и заведёшь.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  },
+  {
+   "id": "W037_3",
+   "line": "pelageya:R1d.pelageya.wait_water",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "[animated] Пошла вода, пошла! Как плита из воды покажется — сниму канат со стопора да на лодке к опоре свезу. На кольцо его только с воды и заведёшь.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W038_1",
+   "line": "agata:O1.board.use",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[thoughtful] Доску недавно вытирали — мел свежий. Учились тут. Вот бы и моё послание кто прочёл.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W038_2",
+   "line": "agata:O1.board.use",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[thoughtful] Доску недавно вытирали — мел свежий. Учились тут. Вот бы и моё послание кто прочёл.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W038_3",
+   "line": "agata:O1.board.use",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[warmly] Доску недавно вытирали — мел свежий. Учились тут. Вот бы и моё послание кто прочёл.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  }
+ ]
+}
