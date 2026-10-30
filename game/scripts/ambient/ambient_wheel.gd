@@ -119,14 +119,20 @@ func deg_per_s() -> float:
 	return float(cfg.get("deg_per_s", 0.0))
 
 
-## Water surface y at x (a straight line through `water_line` [[x0, y0], [x1, y1]]).
+## Water surface y at x: `water_line` — points [[x, y], …] left to right, straight between them (a wheel's water is
+## one segment; a bank's edge under stones bends).
 func water_y(x: float) -> float:
 	var wl: Array = cfg.get("water_line", [[0, 1080], [1920, 1080]])
-	var a := Vector2(float(wl[0][0]), float(wl[0][1]))
-	var b := Vector2(float(wl[1][0]), float(wl[1][1]))
-	if absf(b.x - a.x) < 0.01:
-		return a.y
-	return a.y + (x - a.x) * (b.y - a.y) / (b.x - a.x)
+	if wl.size() < 2:
+		return 1080.0
+	for i in range(wl.size() - 1):
+		var a := Vector2(float(wl[i][0]), float(wl[i][1]))
+		var b := Vector2(float(wl[i + 1][0]), float(wl[i + 1][1]))
+		if x <= b.x or i == wl.size() - 2:
+			if absf(b.x - a.x) < 0.01:
+				return a.y
+			return a.y + (x - a.x) * (b.y - a.y) / (b.x - a.x)
+	return float(wl[0][1])
 
 
 ## Angles (deg, clockwise from +x) where the rim meets the water: [entry on the descending side, exit on the rising one].
@@ -279,7 +285,10 @@ func _add_foam(p: Vector2, k: float) -> void:
 	var dr: Array = f.get("drift_px_s", [-70, 0])
 	var sz: Array = f.get("size_px", [10, 30])
 	var w := _rng.randf_range(float(sz[0]), float(sz[1])) * k
-	_foam.append([p, Vector2(float(dr[0]), float(dr[1])) * _rng.randf_range(0.75, 1.25), 0.0, _rng.randf_range(0.9, float(f.get("life_s", 2.2))), Vector2(w, w * _rng.randf_range(0.22, 0.38)), _foam_col.a * _rng.randf_range(0.6, 1.0)])
+	# `aspect` [min, max] — height / width of a patch: churned water under a wheel is lumpy (≈0.3), the lap at a bank
+	# is a thin line of froth (≈0.07).
+	var asp: Array = f.get("aspect", [0.22, 0.38])
+	_foam.append([p, Vector2(float(dr[0]), float(dr[1])) * _rng.randf_range(0.75, 1.25), 0.0, _rng.randf_range(0.9, float(f.get("life_s", 2.2))), Vector2(w, w * _rng.randf_range(float(asp[0]), float(asp[1]))), _foam_col.a * _rng.randf_range(0.6, 1.0)])
 
 
 func _move(dt: float) -> void:

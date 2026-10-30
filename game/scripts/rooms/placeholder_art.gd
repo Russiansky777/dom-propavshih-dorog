@@ -78,6 +78,22 @@ static func text_label(l: Dictionary) -> Label:
 	var c := Color.html(String(l.get("color", "#ecebe4")))
 	c.a = float(l.get("alpha", 0.75))
 	lbl.add_theme_color_override("font_color", c)
+	# 30.10 (сверка, 25.10 стр. 19 — порядок сигналов на дощечке R1 «на фоне не виден»): `wrap` false keeps the lines as
+	# written (a narrow board broke «Кругом — подмога» below its frame), `line_spacing` px between lines, `shadow`
+	# {color, alpha, offset} — a lighter edge under the letters reads as cut into the wood (Р14).
+	if not bool(l.get("wrap", true)):
+		lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
+		lbl.clip_text = false
+	if l.has("line_spacing"):
+		lbl.add_theme_constant_override("line_spacing", int(l["line_spacing"]))
+	if l.has("shadow"):
+		var sd: Dictionary = l["shadow"]
+		var sc := Color.html(String(sd.get("color", "#e8d6b8")))
+		sc.a = float(sd.get("alpha", 0.35))
+		var so: Array = sd.get("offset", [0, 1])
+		lbl.add_theme_color_override("font_shadow_color", sc)
+		lbl.add_theme_constant_override("shadow_offset_x", int(so[0]))
+		lbl.add_theme_constant_override("shadow_offset_y", int(so[1]))
 	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return lbl
 

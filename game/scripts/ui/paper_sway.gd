@@ -5,8 +5,9 @@ extends Node
 ## never enough to blur the writing. Added as a child of the Control it moves (a close-up's sheet, an examined photo);
 ## the sheet's own rotation and place stay the middle of the sway. One seed per sheet: neighbours don't move in step.
 
-var amp_deg: float = 0.32
-var amp_px: float = 1.6
+## 30.10 (сверка: ±0,32° и ±1,6 px на глаз не видно): заметно, как в руках, — ±0,8° вокруг середины листа и до 4 px.
+var amp_deg: float = 0.8
+var amp_px: float = 4.0
 var _target: Control = null
 var _rot0: float = 0.0
 var _pos0: Vector2 = Vector2.ZERO
@@ -28,8 +29,12 @@ func _process(delta: float) -> void:
 		return
 	_t += delta
 	var r := (sin(_t * 0.83) + 0.4 * sin(_t * 1.71 + 1.3)) / 1.4
-	_target.rotation = _rot0 + deg_to_rad(amp_deg * r)
-	_target.position = _pos0 + Vector2(sin(_t * 0.61) * amp_px * 0.4, sin(_t * 0.97 + 0.6) * amp_px)
+	var rot := _rot0 + deg_to_rad(amp_deg * r)
+	_target.rotation = rot
+	# The turn is about the middle of the sheet (held in both hands), not about its pivot corner.
+	var v := _target.size * 0.5 - _target.pivot_offset
+	var keep := v.rotated(_rot0) - v.rotated(rot)
+	_target.position = _pos0 + keep + Vector2(sin(_t * 0.61) * amp_px * 0.4, sin(_t * 0.97 + 0.6) * amp_px)
 
 
 ## The sheet back where it lies (tests, a close-up that is being put away).

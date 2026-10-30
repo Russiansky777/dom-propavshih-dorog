@@ -39,7 +39,7 @@ GAME = ROOT / "game"
 W, H, MARGIN = 1920, 1080, 10
 MAX_POLY = 32
 TOP_KEYS = {"id", "preset", "rain", "wind", "sway_regions", "water", "puddles", "mud", "dust",
-            "footfall", "water_style", "puddle_style", "fog", "wheel_water"}
+            "footfall", "water_style", "puddle_style", "fog", "wheel_water", "shore_foam"}
 
 errors: list[str] = []
 warnings: list[str] = []
@@ -309,13 +309,14 @@ def check_room(path: Path, idx: dict, flags: set[str]) -> None:
         total_dust += n
     if total_dust > 60:
         err(f"{rid}: {total_dust} dust particles in the room (budget 60)")
-    for i, w in enumerate(spec.get("wheel_water", [])):
-        where = f"{rid}.wheel_water[{w.get('id', i)}]"
+    for i, w in enumerate(spec.get("wheel_water", []) + spec.get("shore_foam", [])):
+        where = f"{rid}.wheel_water/shore_foam[{w.get('id', i)}]"
         uniq(w, where)
         check_flags(w, where, flags)
         wl = w.get("water_line")
-        if not (isinstance(wl, list) and len(wl) == 2 and all(isinstance(p, list) and len(p) == 2 for p in wl)):
-            err(f"{where}: water_line must be [[x0, y0], [x1, y1]]")
+        if not (isinstance(wl, list) and len(wl) >= 2 and all(isinstance(p, list) and len(p) == 2 for p in wl)
+                and all(float(wl[j][0]) < float(wl[j + 1][0]) for j in range(len(wl) - 1))):
+            err(f"{where}: water_line must be points [[x, y], …] left to right")
         if "pour" in w or "entry" in w:
             if not (isinstance(w.get("hub"), list) and len(w["hub"]) == 2) or float(w.get("radius_px", 0)) <= 0:
                 err(f"{where}: pour/entry need the wheel: hub [x, y] and radius_px > 0")

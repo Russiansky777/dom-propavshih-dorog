@@ -85,9 +85,11 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 			_conditional(n, d)
 	# J (Директор 25.10 стр. 15, 29.10 стр. 96): water at a mill wheel — pours off the rising buckets, splashes
 	# where the paddles cut in, foam carried under the wheel (AmbientWheel).
-	if not spec.get("wheel_water", []).is_empty():
+	# `shore_foam` — the same node without a wheel: foam lapping along a bank's water line (R3 стр. 144).
+	var wheel_list: Array = spec.get("wheel_water", []) + spec.get("shore_foam", [])
+	if not wheel_list.is_empty():
 		var wheel_box := _group("Wheel")
-		for w in spec.get("wheel_water", []):
+		for w in wheel_list:
 			var n := AmbientWheel.new()
 			n.name = String(w.get("id", "wheel_water"))
 			n.z_index = clampi(int(w.get("z", 3)), -10, 4096)

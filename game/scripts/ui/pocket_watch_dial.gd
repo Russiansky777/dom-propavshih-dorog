@@ -98,27 +98,51 @@ func _draw() -> void:
 	var h := fmod(seconds / 3600.0, 12.0)
 	var m := fmod(seconds / 60.0, 60.0)
 	var sec := fmod(seconds, 60.0)
-	_hand(c, h / 12.0 * TAU, r * 0.4, r * 0.06, INK)
-	_hand(c, m / 60.0 * TAU, r * 0.6, r * 0.045, INK)
+	# 30.10 (сверка, 25.10 стр. 10 «стрелки сгладить до реализма»): гладкие края были, но стрелки — плоские чёрные
+	# клинья. Теперь как у старых карманных часов: тонкая воронёная сталь с бликом вдоль оси, у часовой — кольцо
+	# «яблоко» (бреге), под стрелками мягкая тень на эмали, секундная — тонкая с противовесом.
+	_hand(c, h / 12.0 * TAU, r * 0.42, r * 0.034, true)
+	_hand(c, m / 60.0 * TAU, r * 0.62, r * 0.026, false)
 	var sa := floorf(sec) / 60.0 * TAU     # the second hand ticks
 	var sd := Vector2(sin(sa), -cos(sa))
-	draw_line(c - sd * r * 0.14, c + sd * r * 0.64, RED, maxf(1.5, r * 0.02), true)
-	draw_circle(c, r * 0.05, Color(0.55, 0.42, 0.2))
-	draw_circle(c, r * 0.025, INK)
+	var sh := Vector2(1.0, 1.6) * maxf(1.0, r * 0.012)
+	draw_line(c - sd * r * 0.16 + sh, c + sd * r * 0.64 + sh, Color(0, 0, 0, 0.18), maxf(1.2, r * 0.013), true)
+	draw_line(c - sd * r * 0.16, c + sd * r * 0.64, RED, maxf(1.0, r * 0.011), true)
+	draw_circle(c - sd * r * 0.12, maxf(1.5, r * 0.022), RED)
+	draw_circle(c, r * 0.05, Color(0.62, 0.48, 0.24))
+	draw_circle(c + Vector2(-0.3, -0.3) * r * 0.02, r * 0.022, Color(0.85, 0.72, 0.42))
+	draw_circle(c, r * 0.014, Color(0.3, 0.22, 0.1))
 
 
-## A tapered blued-steel hand.
-func _hand(c: Vector2, ang: float, length: float, width: float, col: Color) -> void:
+## A tapered blued-steel hand: a soft shadow on the enamel, the dark steel, a light streak along its axis; the hour
+## hand has the Breguet ring near its tip.
+const STEEL := Color(0.07, 0.08, 0.14)
+const STEEL_LIGHT := Color(0.42, 0.5, 0.72)
+
+
+func _hand(c: Vector2, ang: float, length: float, width: float, ring: bool) -> void:
 	var d := Vector2(sin(ang), -cos(ang))
 	var n := Vector2(-d.y, d.x)
-	var pts := PackedVector2Array([c - d * length * 0.15 + n * width * 0.5, c + d * length * 0.55 + n * width,
-		c + d * length, c + d * length * 0.55 - n * width, c - d * length * 0.15 - n * width * 0.5])
-	draw_colored_polygon(pts, col)
-	# I-T2 (Director, line 10: «стрелки сгладить»): a polygon has no antialiasing — a thin antialiased outline
-	# of the same colour smooths its edges at any size.
-	var ring := pts.duplicate()
-	ring.append(pts[0])
-	draw_polyline(ring, col, 1.2, true)
+	var tip := length
+	var pts := PackedVector2Array([c - d * length * 0.16 + n * width * 0.7, c + d * length * 0.5 + n * width * 0.55,
+		c + d * tip * 0.93 + n * width * 0.35, c + d * tip, c + d * tip * 0.93 - n * width * 0.35,
+		c + d * length * 0.5 - n * width * 0.55, c - d * length * 0.16 - n * width * 0.7])
+	var sh := Vector2(1.0, 1.6) * maxf(1.0, width * 0.5)
+	var shadow := PackedVector2Array()
+	for p in pts:
+		shadow.append(p + sh)
+	draw_colored_polygon(shadow, Color(0, 0, 0, 0.16))
+	draw_colored_polygon(pts, STEEL)
+	var rim := pts.duplicate()
+	rim.append(pts[0])
+	draw_polyline(rim, STEEL, 1.0, true)
+	if ring:
+		var rc := c + d * length * 0.7
+		var rr := width * 1.55
+		draw_arc(rc + sh, rr, 0.0, TAU, 28, Color(0, 0, 0, 0.16), maxf(1.0, width * 0.55), true)
+		draw_arc(rc, rr, 0.0, TAU, 28, STEEL, maxf(1.0, width * 0.55), true)
+	# The light along the steel (the hand is a little rounded): from the base to near the tip.
+	draw_line(c + d * length * 0.02 + n * width * 0.12, c + d * length * 0.85 + n * width * 0.08, Color(STEEL_LIGHT, 0.55), maxf(0.8, width * 0.28), true)
 
 
 ## Minute hand angle in degrees (tests).

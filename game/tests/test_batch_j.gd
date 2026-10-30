@@ -118,6 +118,7 @@ func _run() -> void:
 	await _test("J-E12 the mill wheel's water (25.10 стр. 15, 29.10 стр. 96 — «ничего не изменилось»): the race runs TO the wheel, the rising buckets pour off the left, each paddle cuts in on the right with spray; nothing pours with the pond let down; the epilogue cascade runs", _test_wheel_water)
 	await _test("J-R11b the boat on the free day (29.10 стр. 189: «лодки на втором берегу нет, а «К лодке» есть»): the boat and Pelageya are where the boat was last taken along the rope; «К лодке» over the boat, only while it is there", _test_boat_follows)
 	await _test("J-E14 the beam end (25.10 стр. 165): the choice «Агата» shows «Агата» cut in the wood, not the painted «Дуня»", _test_beam_agata)
+	await _test("J-P161 sheets in the hands sway so one sees it (29.10 стр. 161; 30.10: ±0.32° was not seen): Nina's letters turn about their middle by ≥0.5°, the writing stays readable", _test_paper_sway)
 	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -1735,4 +1736,42 @@ func _test_beam_agata() -> void:
 	_check(String(lay.get("image", "")).ends_with("cut_agata.png") and ResourceLoader.exists(String(lay.get("image", ""))),
 		"the «Агата» choice draws cut_agata.png (%s)" % str(lay.get("image", "")))
 	_check(sd.text("@EP.beam.written_dunya") == "Агата", "and the word is «Агата»")
+
+
+func _test_paper_sway() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M21", "house_unlocked", "met_nina"])
+	await _enter("O3")
+	await _drain()
+	var hv := _hotspot("nina_letters")
+	_check(hv != null, "O3: Nina's letters")
+	if hv == null:
+		return
+	sr.open_view(hv.data["view"], "nina_letters")
+	await _frames(10)
+	var cv: Node = main_node.get_node("CloseupView")
+	cv.call("turn_page", 1)   # page 1 is the bundle on the table; a letter in the hands comes next
+	await _frames(10)
+	var sheet: Control = null
+	for sh in cv.get("sheets"):
+		if (sh as Control).get_node_or_null("Sway") != null and (sh as Control).is_visible_in_tree():
+			sheet = sh
+	_check(sheet != null, "a letter held in the hands has the sway")
+	if sheet == null:
+		return
+	var rots: Array[float] = []
+	var mids: Array[Vector2] = []
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t0 < 4000:
+		rots.append(rad_to_deg(sheet.rotation))
+		mids.append(sheet.get_global_transform() * (sheet.size * 0.5))
+		await process_frame
+	var span: float = rots.max() - rots.min()
+	var drift := 0.0
+	for m in mids:
+		drift = maxf(drift, m.distance_to(mids[0]))
+	_check(span >= 0.5 and span <= 2.0, "it turns enough to be seen: %.2f° over 4 s" % span)
+	_check(drift <= 9.0, "about its middle — the middle moves only %.1f px (no swinging from a corner)" % drift)
+	sr.close_view()
 
