@@ -119,6 +119,7 @@ func _run() -> void:
 	await _test("J-R11b the boat on the free day (29.10 стр. 189: «лодки на втором берегу нет, а «К лодке» есть»): the boat and Pelageya are where the boat was last taken along the rope; «К лодке» over the boat, only while it is there", _test_boat_follows)
 	await _test("J-E14 the beam end (25.10 стр. 165): the choice «Агата» shows «Агата» cut in the wood, not the painted «Дуня»", _test_beam_agata)
 	await _test("J-P161 sheets in the hands sway so one sees it (29.10 стр. 161; 30.10: ±0.32° was not seen): Nina's letters turn about their middle by ≥0.5°, the writing stays readable", _test_paper_sway)
+	await _test("J-N67 the night by the stove (25.10 стр. 67): after her two lines Agata is asleep — out of sight at «Спи уж», up again in the morning", _test_night_asleep)
 	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -1774,4 +1775,28 @@ func _test_paper_sway() -> void:
 	_check(span >= 0.5 and span <= 2.0, "it turns enough to be seen: %.2f° over 4 s" % span)
 	_check(drift <= 9.0, "about its middle — the middle moves only %.1f px (no swinging from a corner)" % drift)
 	sr.close_view()
+
+
+func _test_night_asleep() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "house_unlocked", "house_open", "done_M04", "done_M05", "done_M07", "done_M08", "h3_night_to_bed"])
+	await _enter("H1")
+	_check(sr.start_scene("N01"), "N01 starts")
+	var at_sleep := ""
+	var morning_seen := false
+	var g := 0
+	while g < 3000 and not gs.has_flag("done_N01"):
+		g += 1
+		var b: Dictionary = sr.current_beat
+		if not b.is_empty() and not sr.is_staging():
+			var t := String(b.get("text", ""))
+			if t.begins_with("Спи уж") and at_sleep == "":
+				at_sleep = "hidden" if not rm.player.visible else "visible"
+			if t.begins_with("Ты с утра"):
+				morning_seen = rm.player.visible
+			sr.advance()
+		await process_frame
+	_check(at_sleep == "hidden", "at «Спи уж» Agata is not standing by the stove (%s)" % at_sleep)
+	_check(morning_seen and rm.player.visible and gs.has_flag("done_N01"), "in the morning she is up again")
 

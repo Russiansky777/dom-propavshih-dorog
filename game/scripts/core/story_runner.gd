@@ -86,6 +86,7 @@ var _check_queued: bool = false
 var _loop_running: bool = false
 var _stage_running: bool = false
 var _stage_serial: int = 0   # grows on reset/load: a staging in flight stops at its next await
+var player_hidden_by_stage: bool = false   # stage `player_hidden` (N01: Agata asleep) — tests
 var _black_hide: Array = []   # npc_go `in_black`: villagers and their open doors put away in the next black
 
 
@@ -448,6 +449,11 @@ func _apply_line_option(option_id: String, scene_id: String, index: int, line: D
 
 
 func _complete_scene(scene_id: String) -> void:
+	# A scene that laid Agata down (`player_hidden`) never leaves her hidden after it.
+	if player_hidden_by_stage:
+		player_hidden_by_stage = false
+		if RoomManager.player != null:
+			(RoomManager.player as CanvasItem).visible = true
 	var sc := StoryData.scene(scene_id)
 	var grants: Dictionary = sc.get("grants", {})
 	for it in grants.get("items", []):
@@ -754,6 +760,12 @@ func _stage_apply(spec: Dictionary) -> void:
 				(n as CanvasItem).modulate.a = 0.0   # (a refresh of the room's people may show her node again)
 				(n as CanvasItem).visible = false
 	_black_hide.clear()
+	# 30.10 (сверка, 25.10 стр. 67: «в этот короткий момент по логике Агата спать должна»): `player_hidden` true —
+	# Agata lies down in the black (out of sight on her bench behind the stove), false — she is up again. Kept until
+	# a stage says otherwise or the scene ends (_complete_scene).
+	if spec.has("player_hidden") and RoomManager.player != null:
+		player_hidden_by_stage = bool(spec["player_hidden"])
+		(RoomManager.player as CanvasItem).visible = not player_hidden_by_stage
 	# J (стр. 137): a close-up put away while black (`close_black` of a close-up's event) — the room under it is
 	# never seen between the close-up's last picture and the next place.
 	if bool(spec.get("close_mechanic", false)) and mechanic_open:

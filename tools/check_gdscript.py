@@ -8,7 +8,8 @@ shade / draw_rail объявлены дважды, класс CarvedFrame не �
   - тест, который запускается сам (`extends SceneTree`, godot -s), называет по имени класс, которому нужны автозагрузки
     (StoryData, GameState…, прямо или через другой класс): тест компилируется раньше, чем они появятся, — «Identifier
     not found: StoryData», тест не загружается (J, ночь 30.10: TimingBar.slow в test_batch_j.gd). Такой класс
-    загружают в тесте по пути: load("res://scripts/…").
+    загружают в тесте по пути: load("res://scripts/…");
+  - такой тест называет саму автозагрузку (RoomManager.player): её берут узлом root.get_node("RoomManager").
 Код 0 — чисто; 1 — ошибки (печатает файл:строка). Запуск: python3 tools/check_gdscript.py [--quiet]"""
 import re
 import sys
@@ -73,6 +74,16 @@ def main() -> int:
         code = _code(f.read_text(encoding="utf-8", errors="replace"))
         if "extends SceneTree" not in code:
             continue
+        # The autoloads themselves by name (30.10: RoomManager.player in test_batch_j.gd — «Identifier not found:
+        # RoomManager»): a godot -s test reaches them through root.get_node("RoomManager").
+        for a in re.findall(r'^(\w+)="\*res://', (ROOT / "project.godot").read_text(encoding="utf-8"), re.M):
+            if re.search(r"\bvar\s+%s\b" % a, code):
+                continue
+            for n, ln in enumerate(code.splitlines(), 1):
+                if re.search(r"(?<![.\w])%s\s*\." % a, ln):
+                    errors.append(f"{f.relative_to(ROOT)}:{n}: автозагрузка {a} по имени в тесте (godot -s) — тест не скомпилируется; "
+                                  f"возьмите узел: root.get_node(\"{a}\")")
+                    break
         for c in need_auto:
             if re.search(r"\bvar\s+%s\b" % c, code):   # a local `var TimingBar: GDScript = load(...)` shadows the class
                 continue
