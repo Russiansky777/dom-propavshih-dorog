@@ -545,6 +545,10 @@ func _test_tikhon() -> void:
 	await _enter("H1", ["done_M01", "done_M02", "house_unlocked"])
 	var t := _hotspot("tikhon")
 	var seen := await _interact(t)
+	# К7 (Director 30.10): the first click is the meeting (surprise, «кто такой» at once), ending in his grumble.
+	_check(seen.size() == 6 and String(seen[1]).begins_with("agata:Ой!.. А ты кто такой") and String(seen[5]).begins_with("tikhon:Сыро. Печь"),
+		"first click before M03: the meeting, then Tikhon grumbles his own line: %s" % str(seen))
+	seen = await _interact(t)
 	_check(seen.size() == 1 and String(seen[0]).begins_with("tikhon:"), "before M03: Tikhon grumbles his own line (I-T1: always talkable): %s" % str(seen))
 	gs.set_flag("met_tikhon", true)
 	gs.set_flag("done_M03", true)

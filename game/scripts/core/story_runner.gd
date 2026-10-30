@@ -1173,9 +1173,16 @@ func interact(h: StoryHotspot) -> void:
 			return
 		# `intro` [{if, unless, text}]: what the person says first, before the questions (I-T1, Director 25.10:
 		# Tikhon asks for his shelf at every talk until it hangs) — the first entry that holds; the choice follows.
+		# К7 (Director 30.10): an entry may go on (`then`: more text keys, any speaker — the first meeting with Tikhon:
+		# Agata's surprise and «кто такой» at once) and mark itself done (`sets`: a flag, so it is said once and the
+		# scene that would repeat it skips those lines).
 		for e in t.get("intro", []):
 			if requires_met({"flags": e.get("if", []), "not_flags": e.get("unless", [])}):
 				narrate_key(String(e.get("text", "")))
+				for k in e.get("then", []):
+					narrate_key(String(k))
+				if e.has("sets"):
+					GameState.set_flag(String(e["sets"]), true)
 				break
 
 	if d.has("mechanic"):

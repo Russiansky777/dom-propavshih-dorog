@@ -288,8 +288,29 @@ func _test_tikhon() -> void:
 	var house := ["house_unlocked", "h1_shutter_open"]
 	_flags_before("M03", house)
 	await _enter("H1")
-	var b := await _first_beats("tikhon")
-	_check(b.size() > 0 and String(b[0]) == "tikhon:H1.tikhon.before_met", "before M03 Tikhon grumbles (his line, not a look): %s" % str(b))
+	# К7 (Director 30.10, 14:30): the first click is the meeting — Agata is surprised and asks who he is at once; then his
+	# grumble about what the house still needs.
+	var b := await _first_beats("tikhon", 6)
+	_check(b.size() == 6 and String(b[0]) == "tikhon:H1.tikhon.first_who" and String(b[1]) == "agata:H1.tikhon.first_ask"
+		and String(b[2]) == "tikhon:H1.tikhon.first_name" and String(b[5]) == "tikhon:H1.tikhon.before_met",
+		"first click: «Кто там топчется?..» — «Ой!.. А ты кто такой будешь?» — «Тихон…» … then «печь сперва затопи»: %s" % str(b))
+	_check(gs.has_flag("tikhon_introduced"), "the meeting is remembered (tikhon_introduced)")
+	b = await _first_beats("tikhon", 3)
+	_check(b.size() == 1 and String(b[0]) == "tikhon:H1.tikhon.before_met", "before M03 Tikhon grumbles (his line, not a look), no second meeting: %s" % str(b))
+	gs.set_flag("stove_lit", true)
+	await _frames(2)
+	b = await _first_beats("tikhon", 3)
+	_check(b.size() == 1 and String(b[0]) == "tikhon:H1.tikhon.before_met_scarf", "stove lit, shutter open: he no longer says «печь затопи» — the wet scarf: %s" % str(b))
+	gs.set_flag("h1_shutter_open", false)
+	await _frames(2)
+	b = await _first_beats("tikhon", 3)
+	_check(b.size() == 1 and String(b[0]) == "tikhon:H1.tikhon.before_met_shutter", "stove lit, shutter shut: the shutter: %s" % str(b))
+	# M03 after the meeting by click: the scarf line, then straight to the aunt — no second «кто такой»
+	var m03_skip := 0
+	for ln in sd.scene("M03").get("mandatory_lines", []):
+		if (ln.get("unless", []) as Array).has("tikhon_introduced"):
+			m03_skip += 1
+	_check(m03_skip == 2, "M03 skips its meeting lines (surprise + «И печь тут») once he was met by click: %d" % m03_skip)
 	_flags_before("M04", house + ["stove_lit", "h1_scarf_removed", "visited_H2", "visited_H3"])
 	await _enter("H1")
 	b = await _first_beats("tikhon")
