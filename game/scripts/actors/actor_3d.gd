@@ -516,7 +516,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			# lifted first, carried, set down: the foot leaves and meets the floor going straight up and down
 			var h := clampf((u - 0.15) / 0.7, 0.0, 1.0)
 			var e := h * h * (3.0 - 2.0 * h)
-			var to: Vector3 = lead_b * f[i * 2]
+			var to: Vector3 = _clear_of_other(lead_b * f[i * 2], i, yaw_b, f, o, k, float(fk.get("min_sep_m", 0.12)))
 			var pos: Vector3 = _floor_local(st[0], o, k).lerp(to, e)
 			pos.y = lerpf(float(st[2]), to.y, e) + float(fk.get("step_lift_m", 0.05)) * sin(PI * u)
 			lock = pos
@@ -569,6 +569,20 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 		var knee: Vector3 = yaw_b * (_skel_to_turn() * skeleton.get_bone_global_pose(skeleton.find_bone(("Left" if i == 0 else "Right") + "Leg")).origin)
 		(_foot_pole[i] as Node3D).position = knee + yaw_b * Vector3(0.0, 0.0, 0.6)
 		(foot_ik[i] as TwoBoneIK3D).influence = w * w * (3.0 - 2.0 * w)
+
+
+## A step's landing kept clear of the other foot: turning far on the spot the stance comes round to where the other
+## foot still stands — the step stops short beside it instead of landing on it (the feet crossed into one line).
+func _clear_of_other(to: Vector3, i: int, yaw_b: Basis, f: Array, o: Vector2, k: Vector2, min_sep: float) -> Vector3:
+	var other: Vector3 = _floor_local(_foot_lock[1 - i], o, k) if _foot_lock[1 - i] != null else yaw_b * f[(1 - i) * 2]
+	var d := Vector2(to.x - other.x, to.z - other.z)
+	if d.length() >= min_sep:
+		return to
+	if d.length() < 1e-4:
+		var side := yaw_b * Vector3(1.0 if i == 1 else -1.0, 0.0, 0.0)   # left foot on her left
+		d = Vector2(side.x, side.z)
+	d = d.normalized() * min_sep
+	return Vector3(other.x + d.x, to.y, other.z + d.y)
 
 
 func _out_of_reach(p: Vector3, hip: Vector3, reach: float) -> bool:

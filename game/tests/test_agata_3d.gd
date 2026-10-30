@@ -736,7 +736,7 @@ func _on_skel_updated() -> void:
 ## and the feet back in the stance once she has settled.
 func _feet_runs(locks: bool) -> Dictionary:
 	player.foot_lock_3d = locks
-	var res := {"stop": [], "turn": [], "miss": 0.0, "lift": 0.0, "off_stance": 0.0}
+	var res := {"stop": [], "turn": [], "miss": 0.0, "lift": 0.0, "off_stance": 0.0, "sep": INF}
 	for k in 6:
 		await _enter("Z2", Vector2(700 + (k % 3) * 200, 850 + (k % 2) * 100))
 		var v: Actor3D = player.view3d
@@ -768,12 +768,15 @@ func _feet_runs(locks: bool) -> Dictionary:
 				var yb := Basis(Vector3.UP, player.yaw3d)
 				var counting: bool = phase == "turn" or player.walk_w < 0.97 or not player.is_walking()
 				var low: float = minf(f[0].y, f[2].y)
+				var both_down := 0
 				for i in 2:
 					var foot: Vector3 = yb * f[i * 2]
 					var wp := Vector2(player.global_position.x + foot.x * ppm_s, player.global_position.y + foot.z * ppm_s * kf)
 					var down: bool = foot.y <= float(v._foot_rest_h[i]) + 0.02 and foot.y <= low + 0.015
 					if not down or not counting or not planted.has(i):
 						planted[i] = wp
+					if down:
+						both_down += 1
 					if down and counting:
 						var dd: Vector2 = wp - planted[i]
 						worst = maxf(worst, Vector2(dd.x / ppm_s, dd.y / (ppm_s * kf)).length())
@@ -781,6 +784,9 @@ func _feet_runs(locks: bool) -> Dictionary:
 						var tg: Vector3 = (v._foot_target[i] as Node3D).position
 						res["miss"] = maxf(float(res["miss"]), Vector2(tg.x - foot.x, tg.z - foot.z).length())
 						res["lift"] = maxf(float(res["lift"]), foot.y - tg.y)
+				if both_down == 2 and phase == "turn":
+					# both feet on the floor: not one on (or right behind) the other
+					res["sep"] = minf(float(res["sep"]), Vector2(f[0].x - f[2].x, f[0].z - f[2].z).length())
 			(res[phase] as Array).append(worst)
 		# settled: each foot back where the stance has it
 		await _frames(60)
@@ -807,11 +813,12 @@ func _test_feet_hold() -> void:
 	var s_off := _mean(off["stop"])
 	var t_off := _mean(off["turn"])
 	print("        stopping: a foot set down skates %.0f mm (worst %.0f), without the locks %.0f (worst %.0f); turning on the spot %.0f (worst %.0f), without %.0f (worst %.0f)" % [s_on * 1000.0, (on["stop"] as Array).max() * 1000.0, s_off * 1000.0, (off["stop"] as Array).max() * 1000.0, t_on * 1000.0, (on["turn"] as Array).max() * 1000.0, t_off * 1000.0, (off["turn"] as Array).max() * 1000.0])
-	print("        a locked foot off its spot along the floor %.1f mm at most, up off it %.0f mm; settled, off the stance %.0f mm" % [float(on["miss"]) * 1000.0, float(on["lift"]) * 1000.0, float(on["off_stance"]) * 1000.0])
+	print("        a locked foot off its spot along the floor %.1f mm at most, up off it %.0f mm; settled, off the stance %.0f mm; feet apart turning, both down, at least %.0f mm (without the locks %.0f)" % [float(on["miss"]) * 1000.0, float(on["lift"]) * 1000.0, float(on["off_stance"]) * 1000.0, float(on["sep"]) * 1000.0, float(off["sep"]) * 1000.0])
 	_check(s_on <= 0.045 and (on["stop"] as Array).max() <= 0.09, "stopping, a foot set down skates %.0f mm on average (worst %.0f; ≤ 45 / 90)" % [s_on * 1000.0, (on["stop"] as Array).max() * 1000.0])
 	_check(t_on <= 0.06 and (on["turn"] as Array).max() <= 0.1, "turning on the spot, a foot set down skates %.0f mm on average (worst %.0f; ≤ 60 / 100)" % [t_on * 1000.0, (on["turn"] as Array).max() * 1000.0])
 	_check(s_off > s_on * 2.0 and t_off > t_on * 2.0, "self-check: without the locks the feet skate only %.0f / %.0f mm — the metric would not see skating" % [s_off * 1000.0, t_off * 1000.0])
 	_check(float(on["miss"]) <= 0.015, "a locked foot is %.0f mm off its spot along the floor — dragged" % (float(on["miss"]) * 1000.0))
 	_check(float(on["lift"]) <= 0.05, "a locked foot comes %.0f mm up off the floor — the leg cannot reach and it does not step (≤ 50)" % (float(on["lift"]) * 1000.0))
+	_check(float(on["sep"]) >= 0.09, "turning on the spot, the feet stand %.0f mm apart — one on the other, in one line (≥ 90)" % (float(on["sep"]) * 1000.0))
 	_check(float(on["off_stance"]) <= 0.05, "settled, a foot stays %.0f mm off where the stance has it (≤ 50)" % (float(on["off_stance"]) * 1000.0))
 	_completed = true

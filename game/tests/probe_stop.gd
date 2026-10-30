@@ -54,9 +54,10 @@ func _track(player, v: Actor3D, secs: float, until_stop: bool) -> float:
 				if miss > 0.015:
 					var an2 := v.feet_model()
 					print("   MISS %s %.0f mm t %.2f walk %.2f shown %.2f step %s tgt %s drawn %s anim %s" % ["L" if i == 0 else "R", miss * 1000.0, t, player.walk_w, v.shown_w(), str(v._foot_step[i] != null), str(v._foot_target[i].position.snapped(Vector3.ONE * 0.01)), str(foot.snapped(Vector3.ONE * 0.01)), str((yb * an2[i * 2]).snapped(Vector3.ONE * 0.01))])
-			line += " | %s %s y %.3f slide %.0f lock %s st %s" % ["L" if i == 0 else "R", "down" if down else "up  ", foot.y, _m(wp - planted[i], ppm_s, kf) * 1000.0, str(v._foot_lock[i] != null), str(v._foot_step[i] != null)]
+			var an3: Vector3 = yb * v.feet_model()[i * 2]
+			line += " | %s %s drawn %s anim %s lock %s st %s" % ["L" if i == 0 else "R", "down" if down else "up  ", str(Vector2(foot.x, foot.z).snapped(Vector2.ONE * 0.01)), str(Vector2(an3.x, an3.z).snapped(Vector2.ONE * 0.01)), str(v._foot_lock[i] != null), ("%.2f" % v._foot_step[i][1]) if v._foot_step[i] != null else "-"]
 		if OS.get_environment("TRACE") != "" and Engine.get_process_frames() % 3 == 0:
-			print("   t %.2f walk %.2f shown %.2f%s" % [t, player.walk_w, v.shown_w(), line])
+			print("   t %.2f yaw %.0f yawv %.1f shown %.2f%s" % [t, rad_to_deg(player.yaw3d), v._feet_yaw_v, v.shown_w(), line])
 	return worst
 
 
