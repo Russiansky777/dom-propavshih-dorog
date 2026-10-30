@@ -44,6 +44,9 @@ var turn_blend_s: float = DEFAULT_TURN_BLEND
 ## hugging Mitya): idle and listen then face the partner, not Agata; a line of theirs marked `"to": "agata"` still
 ## turns them to her. Cleared with the room (the node is rebuilt on the next entry).
 var partner: Node2D = null
+## Director 30.10: the villager drawn live (NpcLive3D, actor data `rt3d` + `render` "3d") — null on sheets.
+var live: NpcLive3D = null
+var _floor_k: float = ActorSheet.FLOOR_FORESHORTENING_DEFAULT
 
 
 static func attach_all(room: Node, the_player: Node2D) -> Array:
@@ -124,6 +127,19 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 		img.visible = false  # the sheet replaces the static front view
 	_load_states(id)
 	direction = sheet.direction_index(ActorSheet.facing_vector(sheet.facing))
+	var rid := String(room.get("room_id")) if room.get("room_id") != null else ""
+	if rid != "" and StoryData.rooms.has(rid):
+		_floor_k = float(StoryData.rooms[rid].get("floor_foreshortening", ActorSheet.FLOOR_FORESHORTENING_DEFAULT))
+	var aspec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	if aspec is Dictionary and NpcLive3D.wanted(aspec):
+		live = NpcLive3D.new()
+		live.name = "Live3D"
+		add_child(live)
+		if live.setup(self, aspec, _floor_k):
+			live.face(ActorSheet.facing_vector(sheet.facing), _floor_k, true)
+		else:
+			live.queue_free()
+			live = null
 	_face_data()
 	shown_dir = direction
 	visible = h.visible
@@ -152,10 +168,14 @@ func face_towards(target: Vector2) -> void:
 	var v := target - global_position
 	if v.length_squared() > 1.0:
 		direction = sheet.direction_index(v)
+		if live != null:
+			live.face(v, _floor_k)
 
 
 func _end_walk() -> void:
 	walking = false
+	if live != null:
+		live.walk(false)
 	if is_instance_valid(sprite):
 		set_state(wanted_state())
 
@@ -173,7 +193,13 @@ func walks_off() -> bool:
 func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
 	face_towards(target)
 	var tw := create_tween().set_parallel(true)
-	if walks_off():
+	if live != null and live.view != null and live.view.clips.has("walk"):
+		# live: every villager model has a walk clip — she walks there at the staging's pace, whatever the sheets have
+		walking = true
+		live.walk(true, global_position.distance_to(target) / maxf(seconds, 0.01), scale.x)
+		tw.tween_property(self, "global_position", target, seconds)
+		get_tree().create_timer(seconds).timeout.connect(_end_walk)
+	elif walks_off():
 		walking = true
 		shown_dir = direction
 		var speed_px := global_position.distance_to(target) / maxf(seconds, 0.01)
@@ -194,6 +220,8 @@ func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
 
 
 func _process(delta: float) -> void:
+	if live != null:
+		live.process(delta)
 	if sheet == null or sprite == null or shown_dir == direction:
 		_turn_t = 0.0
 		return
@@ -254,6 +282,8 @@ func set_state(st: String) -> void:
 		_face_data()
 	_play(sheet.anim_name(state_action(st), shown_dir))
 	sprite.speed_scale = float(spec.get("speed", 1.0))
+	if live != null:
+		live.set_state(st)
 
 
 func _line_to_agata() -> bool:

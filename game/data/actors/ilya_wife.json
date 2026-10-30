@@ -116,5 +116,95 @@
       "action": "talk",
       "speed": 1.0
     }
+  },
+  "render": "3d",
+  "render_web": "sprites",
+  "rt3d": {
+    "_comment": "30.10 (Директор: модели — живое 3D; «остальные можно чуточку попроще»): та же модель Meshy, что в листах ilya_wife_v2 (релиз npc-v2-work → ilya_wife_v2_game_r4.glb, после build_npc.py), сетка до 120 тыс. треугольников, ткань матовая (pipeline/3d/build_rt3d_glb.py, tools/build_npc_live.sh). Состояния — game/scripts/actors/npc_live_3d.gd: стойка (повтор с наплывом), «слушает» и «говорит» туда-обратно по клипу, ходьба в постановке. sheet_ppm = кадр листа / (2 × fit.frame_top_m) — рост на экране как у листов.",
+    "scene": "res://assets/characters/ilya_wife_v2/rt3d/ilya_wife_rt.glb",
+    "camera_elev_deg": 14.0,
+    "frame_px": [
+      320,
+      420
+    ],
+    "pivot": [
+      0.5,
+      0.94
+    ],
+    "sheet_ppm": 199.2,
+    "msaa": 4,
+    "supersample": 1.5,
+    "max_render_scale": 3.0,
+    "premultiplied": true,
+    "keep_materials": [
+      "mouth_dark"
+    ],
+    "require_walk": false,
+    "_require_walk": "в модели v2 нет клипа ходьбы (листы — без walk); в постановке он переходит без шага, как на листах",
+    "clips": {
+      "idle": "idle",
+      "listen": "listen",
+      "talk": "talk"
+    },
+    "idle": {
+      "crossfade_s": 1.0,
+      "pool": [
+        {
+          "clip": "idle",
+          "weight": 1
+        }
+      ]
+    },
+    "listen_speed": 0.8,
+    "talk_speed": 1.0,
+    "state_fade_s": 0.4,
+    "turn_deg_s": 240.0,
+    "turn_ease_per_s": 7.0,
+    "life": {
+      "breath_deg": 0.7,
+      "breath_period_s": 4.4,
+      "head_drift_deg": 1.2,
+      "glance_deg": 6.0,
+      "glance_every_s": [
+        9,
+        16
+      ],
+      "glance_hold_s": [
+        1.2,
+        2.2
+      ],
+      "glance_move_s": 0.8,
+      "seed": 11
+    },
+    "light": {
+      "_comment": "Свет рендера листов (pipeline/render/render_sprites.py): солнца Key 4.5 / Fill 2.0 / Rim 2.5 (÷π), фон мира 0.6/0.6/0.65; направления — к свету, оси Godot.",
+      "key_dir": [
+        -0.47,
+        0.574,
+        0.671
+      ],
+      "fill_dir": [
+        0.604,
+        0.342,
+        -0.72
+      ],
+      "rim_dir": [
+        0.296,
+        -0.5,
+        0.814
+      ],
+      "key_e": 1.432,
+      "fill_e": 0.637,
+      "rim_e": 0.796,
+      "ambient": [
+        0.6,
+        0.6,
+        0.65
+      ],
+      "wrap": 0.0,
+      "gain": 1.0
+    },
+    "center_feet": true,
+    "oblique_floor": false
   }
 }

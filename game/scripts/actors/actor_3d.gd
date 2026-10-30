@@ -115,7 +115,9 @@ func setup(actor_spec: Dictionary) -> bool:
 			meshes.append(n)
 	_apply_material()
 	_resolve_clips()
-	if not clips.has("walk") or idle_pool.is_empty():
+	# A villager may have no walk clip (data `require_walk` false: Pavel, Mitya, Ilya's wife — their stagings slide):
+	# the stance stands in for it, nothing walks.
+	if idle_pool.is_empty() or (not clips.has("walk") and bool(spec.get("require_walk", true))):
 		load_error = "clips missing: " + str(clips)
 		return false
 	_build_tree()
@@ -127,7 +129,8 @@ func setup(actor_spec: Dictionary) -> bool:
 	for b in ["LeftFoot", "LeftToeBase", "RightFoot", "RightToeBase"]:
 		foot_bones.append(skeleton.find_bone(b))
 	_measure_mids()
-	build_root_motion()
+	if clips.has("walk"):
+		build_root_motion()
 	_start_idle_slot(0, _pick_idle(""), 0.0)
 	pose(0.0, 0.0, 0.0, 0.0)
 	ok = true
@@ -172,9 +175,17 @@ func _apply_material() -> void:
 			material.set_shader_parameter(k, Vector3(float(v[0]), float(v[1]), float(v[2])))
 		else:
 			material.set_shader_parameter(k, float(v))
+	# Data `keep_materials`: surfaces of these materials keep their own (the villagers' dark mouth cavity — no texture).
+	var keep: Array = spec.get("keep_materials", [])
 	for mi in meshes:
-		mi.material_override = material
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var kept := false
+		for s in mi.mesh.get_surface_count():
+			var m := mi.get_active_material(s)
+			if m != null and keep.has(String(m.resource_name)):
+				kept = true
+		if not kept:
+			mi.material_override = material
 
 
 ## Roles → clip names from data (`clips`, `idle.pool`); a name is matched against the player's
@@ -217,7 +228,7 @@ func _build_tree() -> void:
 	var bt := AnimationNodeBlendTree.new()
 	for slot in ["idle_a", "idle_b", "walk", "act"]:
 		var a := AnimationNodeAnimation.new()
-		a.animation = clips.get("walk", "") if slot == "walk" else idle_pool[0]["name"]
+		a.animation = clips.get("walk", idle_pool[0]["name"]) if slot == "walk" else idle_pool[0]["name"]
 		bt.add_node(slot, a)
 		var s := AnimationNodeTimeSeek.new()
 		bt.add_node(slot + "_seek", s)
