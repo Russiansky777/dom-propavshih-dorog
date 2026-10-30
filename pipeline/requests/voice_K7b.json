@@ -1,0 +1,112 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 556,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Партия K7b (30.10, 15:09): по заметкам Директора к седьмому заходу — M03_5 утвердительно и спокойнее, ворчание про платок тише, «Сыро» мягче; по 3 записи (W051–W053)",
+ "items": [
+  {
+   "id": "W051_1",
+   "line": "M03_5",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[quietly] Так ГОД уже прошёл.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55 + контекст",
+   "previous_text": "К сестре пошла. Баяла — к вечеру."
+  },
+  {
+   "id": "W051_2",
+   "line": "M03_5",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Так ГОД уже прошёл.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65 + контекст",
+   "previous_text": "К сестре пошла. Баяла — к вечеру."
+  },
+  {
+   "id": "W051_3",
+   "line": "M03_5",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[sighs] Так ГОД уже прошёл.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "К сестре пошла. Баяла — к вечеру."
+  },
+  {
+   "id": "W052_1",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[muttering] Платок-то мокрый с лежанки прибери. От него сырость на всю избу.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  },
+  {
+   "id": "W052_2",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sighs] Платок-то мокрый с лежанки прибери… От него сырость на всю избу.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W052_3",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[quietly] Платок-то мокрый с лежанки прибери. От него сырость на всю избу.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W053_1",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[muttering] Сыро. Печь сперва затопи — потом поговорим.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  },
+  {
+   "id": "W053_2",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sighs] Сыро… Печь сперва затопи — потом поговорим.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W053_3",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[quietly] Сыро. Печь сперва затопи — потом поговорим.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  }
+ ]
+}
