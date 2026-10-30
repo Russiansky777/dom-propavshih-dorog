@@ -1,0 +1,238 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 1418,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Партия K3b (ночь 30.10): 5 строк прохождений 25.10 и 29.10, которые аудит нашёл неперезаписанными (25.10 стр. 171; 29.10 стр. 50, 93, 129, 170) — по 4 записи, на ту же страницу «Третий заход» (W016–W020); выбранное — в игру режимом adopt.",
+ "items": [
+  {
+   "id": "W016_1",
+   "line": "M26_25",
+   "take": "1",
+   "speaker": "ilya_wife",
+   "text": "Агата, погляди-ка: заплатка на Дунином пальто ДЕРЖИТСЯ! А Ульянина птица словно живая.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "А заплатка на Дунином пальто — как?"
+  },
+  {
+   "id": "W016_2",
+   "line": "M26_25",
+   "take": "2",
+   "speaker": "ilya_wife",
+   "text": "Агата, погляди-ка: заплатка на Дунином пальто ДЕРЖИТСЯ! А Ульянина птица словно живая.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "А заплатка на Дунином пальто — как?"
+  },
+  {
+   "id": "W016_3",
+   "line": "M26_25",
+   "take": "3",
+   "speaker": "ilya_wife",
+   "text": "Агата, погляди-ка: заплатка на Дунином пальто ДЕРЖИТСЯ! А Ульянина птица словно живая.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "Ну как, держится заплатка?"
+  },
+  {
+   "id": "W016_4",
+   "line": "M26_25",
+   "take": "4",
+   "speaker": "ilya_wife",
+   "text": "Агата, погляди-ка: заплатка на Дунином пальто ДЕРЖИТСЯ! А Ульянина птица словно живая.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Ну как, держится заплатка?"
+  },
+  {
+   "id": "W017_1",
+   "line": "H2d.office_mirror.view_again",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "В стекле — [short pause] контора мельницы. Всё та же тишина.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W017_2",
+   "line": "H2d.office_mirror.view_again",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "В стекле — [short pause] контора мельницы. Всё та же тишина.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "st 0.75"
+  },
+  {
+   "id": "W017_3",
+   "line": "H2d.office_mirror.view_again",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "В стекле… [pause] контора мельницы. Всё та же тишина.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6"
+  },
+  {
+   "id": "W017_4",
+   "line": "H2d.office_mirror.view_again",
+   "take": "4",
+   "speaker": "narrator",
+   "text": "В стекле… [pause] контора мельницы. Всё та же тишина.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "st 0.75"
+  },
+  {
+   "id": "W018_1",
+   "line": "M16s_1",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "[surprised] Погляди-ка! Весь год там черны́м-черно́ было… А теперь — снег!",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W018_2",
+   "line": "M16s_1",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[surprised] Погляди-ка! Весь год там черны́м-черно́ было… А теперь — снег!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W018_3",
+   "line": "M16s_1",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "[surprised] Погляди-ка! Весь год там черны́м-черно́ было… А теперь — СНЕГ!",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W018_4",
+   "line": "M16s_1",
+   "take": "4",
+   "speaker": "pelageya",
+   "text": "[surprised] Погляди-ка! Весь год там черны́м-черно́ было… А теперь — СНЕГ!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W019_1",
+   "line": "M22_12",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[laughs] Я шапку рисовала. Давно, за этой партой.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "Это я сапоги птице пририсовала! А шапку кто рисовал?"
+  },
+  {
+   "id": "W019_2",
+   "line": "M22_12",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[laughs] Я шапку рисовала. Давно, за этой партой.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Это я сапоги птице пририсовала! А шапку кто рисовал?"
+  },
+  {
+   "id": "W019_3",
+   "line": "M22_12",
+   "take": "3",
+   "speaker": "agata",
+   "text": "Я шапку рисовала! [laughs] Давно, за этой партой.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "Это я сапоги птице пририсовала! А шапку кто рисовал?"
+  },
+  {
+   "id": "W019_4",
+   "line": "M22_12",
+   "take": "4",
+   "speaker": "agata",
+   "text": "Я шапку рисовала! [laughs] Давно, за этой партой.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Это я сапоги птице пририсовала! А шапку кто рисовал?"
+  },
+  {
+   "id": "W020_1",
+   "line": "agata:O1.enter.winter",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[hesitant] Тут уж зима?.. А у нас ещё октябрь! Как же это?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W020_2",
+   "line": "agata:O1.enter.winter",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[hesitant] Тут уж зима?.. А у нас ещё октябрь! Как же это?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W020_3",
+   "line": "agata:O1.enter.winter",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[surprised] Тут уж зима?.. [hesitant] А у нас ещё октябрь! Как же это?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W020_4",
+   "line": "agata:O1.enter.winter",
+   "take": "4",
+   "speaker": "agata",
+   "text": "[surprised] Тут уж зима?.. [hesitant] А у нас ещё октябрь! Как же это?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  }
+ ]
+}
