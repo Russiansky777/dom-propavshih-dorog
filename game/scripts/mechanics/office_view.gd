@@ -4,8 +4,8 @@ extends Node2D
 ## прежнего места»). Lives inside a SubViewport of OfficeMirrorPanel and is redrawn every frame, so what
 ## happens at the mill (Pavel's lantern at the gap, his hook, the bar) is in the glass the same frame it
 ## happens.
-## Art: «Контора — вид на дверь» (партия 3): M3_view_bg (the door, three hinges, the empty bar brackets, the
-## fallen shelf), and layers on the same 1672×941 canvas, placed at (0, 0): the lantern light in the gap,
+## Art: «Контора — вид на дверь» (партия 3): M3_view_bg (the door, three hinges, the empty bar brackets; the
+## fallen shelf of the delivery lies outside `region` — Р4, Director 29.10: no shelf anywhere), and layers on the same 1672×941 canvas, placed at (0, 0): the lantern light in the gap,
 ## the hook (drawn at the lowered bar), the bar in its brackets. Order: bg → light → hook → bar. The bar
 ## lifted is the same layer 46 px higher (bar_up_translation_px of the delivery), the hook goes up with it.
 ## Data (mechanic.office.art): images, `region` [x, y, w, h] — the part of the canvas the glass shows,
@@ -18,7 +18,7 @@ var hook_frac: float = 0.0       # 0 top of the gap … 1 bottom
 var hook_bar: float = 0.5        # where the hook meets the bar (HookPuzzle.bar)
 var bar_lift: float = 0.0        # 0 in the brackets … 1 out (lifted by the hook)
 var door_given: bool = false     # the door has moved a little (bar out)
-var shelf_down: bool = true      # the shelf still lies on the door (the delivered view has it down)
+var door_shut: bool = true       # the door not yet opened together with Pavel (Р4: no shelf anywhere — the glass shows only the door)
 
 var _art: Node2D
 var _light: Sprite2D

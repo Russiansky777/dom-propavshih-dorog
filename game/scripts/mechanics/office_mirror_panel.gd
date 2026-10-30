@@ -447,7 +447,7 @@ func _sync_from_flags() -> void:
 	office.hook_visible = flag("lantern_check_seen") and not flag("office_unbolted")
 	office.door_given = flag("office_unbolted")
 	office.bar_lift = 1.0 if flag("office_unbolted") else 0.0
-	office.shelf_down = not flag("office_shelf_lifted")
+	office.door_shut = not flag("office_door_opened")
 	office.refresh()
 	_set_status()
 

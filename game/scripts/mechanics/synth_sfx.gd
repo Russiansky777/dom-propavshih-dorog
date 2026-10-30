@@ -3,7 +3,9 @@ extends RefCounted
 ## Sounds of the day-two close-ups made by the engine (no recording ordered yet): the mill bell struck in
 ## Dunya's workshop, its long ring, a knuckle on glass, a hammer on the iron brace, the lantern shutter; and for
 ## the mechanics of 23.10: the brace jumping off (clank), the rope slipping back (rope_slip), the rope tightening
-## (rope_creak), the ring creaking along the rope on the crossing (ring_creak), water at the bow (water_slap).
+## (rope_creak), the ring creaking along the rope on the crossing (ring_creak), water at the bow (water_slap); the
+## mini-games of J (часть G): spoons on cups, chalk on the class board, the float's plop and dive, the string taut and
+## snapping.
 ## PCM is computed once (additive partials with exponential decay, filtered noise) into AudioStreamWAV and
 ## cached; MechanicView plays them on the SFX bus, so the «Звуки» slider governs them. A real recording can
 ## replace any of them later without touching the panels (they ask for a sound by name).
@@ -49,6 +51,18 @@ static func stream(sound_name: String) -> AudioStreamWAV:
 			pcm = _spoon([1180.0, 2690.0, 4210.0, 6020.0], [0.42, 0.26, 0.16, 0.09], [1.0, 0.55, 0.32, 0.18], 53)
 		"spoon_agata":    # Agata's spoon on a cup of tea (higher, shorter)
 			pcm = _spoon([1460.0, 3150.0, 4880.0, 6900.0], [0.30, 0.19, 0.12, 0.07], [1.0, 0.5, 0.28, 0.15], 59)
+		"chalk":          # J, часть G: a chalk stroke on the class board (crosses and noughts, the grid)
+			pcm = _chalk(0.3, 71)
+		"chalk_long":     # the grid chalked in / the winning line crossed out
+			pcm = _chalk(0.62, 73)
+		"plop":           # the fishing: a nibble — the float dips
+			pcm = _plop(430.0, 980.0, 0.05, 0.35, 0.28, 79)
+		"float_dive":     # the float goes under — the bite
+			pcm = _plop(240.0, 620.0, 0.09, 0.75, 0.55, 83)
+		"line_taut":      # the string pulled taut against the fish
+			pcm = _creak(0.38, 780.0, 89)
+		"line_snap":      # the string snaps
+			pcm = _snap()
 		_:
 			pcm = PackedFloat32Array([0.0])
 	var s := _to_wav(pcm)
@@ -249,6 +263,67 @@ static func _water_slap() -> PackedFloat32Array:
 		var wash := lp * 3.0 * exp(-4.5 * t) * minf(t / 0.04, 1.0)
 		var hiss := lp2 * 0.25 * exp(-11.0 * t) * minf(t / 0.02, 1.0)
 		out[i] = (thud + wash + hiss) * 0.45
+	return out
+
+
+## Chalk on the board: a dry, gritty scrape — high-passed noise in little bursts as the stick catches and skips.
+static func _chalk(seconds: float, rseed: int) -> PackedFloat32Array:
+	var n := int(seconds * RATE)
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = rseed
+	var prev := 0.0
+	var lp := 0.0
+	var grit := 0.0
+	for i in n:
+		var t := float(i) / RATE
+		var nz := rng.randf_range(-1.0, 1.0)
+		lp = lp * 0.55 + (nz - prev) * 0.45
+		prev = nz
+		if rng.randf() < 0.0035:   # the stick catches on the board
+			grit = 1.0
+		grit = maxf(grit - 1.0 / (0.014 * RATE), 0.0)
+		var env := sin(clampf(t / seconds, 0.0, 1.0) * PI)
+		out[i] = lp * env * (0.3 + 0.7 * grit + 0.2 * sin(TAU * 47.0 * t)) * 0.32
+	return out
+
+
+## A drop into water: a bubble whose pitch rises (`f0` → `f1` over `sweep` s) and dies, over a little wash of noise;
+## `wash` — how much water is moved (a nibble — little, the float going under — more).
+static func _plop(f0: float, f1: float, sweep: float, gain: float, wash: float, rseed: int) -> PackedFloat32Array:
+	var n := int(0.4 * RATE)
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = rseed
+	var ph := 0.0
+	var lp := 0.0
+	for i in n:
+		var t := float(i) / RATE
+		var f := lerpf(f0, f1, minf(t / sweep, 1.0))
+		ph += TAU * f / RATE
+		lp = lp * 0.9 + rng.randf_range(-1.0, 1.0) * 0.1
+		var bubble := sin(ph) * exp(-t / (sweep * 0.9)) * minf(t / 0.002, 1.0)
+		var water := lp * 2.5 * wash * exp(-t / 0.09) * minf(t / 0.01, 1.0)
+		out[i] = (bubble + water) * gain * 0.5
+	return out
+
+
+## The string snapping: a sharp crack and a short falling twang.
+static func _snap() -> PackedFloat32Array:
+	var n := int(0.35 * RATE)
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 97
+	var ph := 0.0
+	for i in n:
+		var t := float(i) / RATE
+		ph += TAU * lerpf(1900.0, 520.0, minf(t / 0.18, 1.0)) / RATE
+		var crack := rng.randf_range(-1.0, 1.0) * exp(-t / 0.004)
+		var twang := sin(ph) * exp(-t / 0.07) * 0.5
+		out[i] = (crack + twang) * 0.45
 	return out
 
 

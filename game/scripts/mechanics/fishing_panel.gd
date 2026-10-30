@@ -8,9 +8,15 @@ extends MechanicPanel
 ##   fight  — hold the mouse button or Space to pull: the string's tension rises; let go — it falls; the fish surges
 ##            now and then. In the green (`green`, wider with «Облегчить») the fish comes nearer (progress); past the
 ##            red the string snaps (texts.snap), slack too long — it gets away (texts.escaped);
-##   caught — the perch shown (drawn by the engine), Mitya's word (texts.caught), event "caught"; «Ещё» / «Хватит»
-##            (event "done").
+##   caught — the perch shown (drawn by the engine), Mitya's word (texts.caught), event "caught"; «Ещё»; «Хватит» is the
+##            close-up's own button, bottom right (spec `close_label`, `close_event` "done" — his word).
 ## Everything is data: art (image, variants by time of day), wait_s, bite_s, green, pull, surge, texts, events.
+## Polish (J, ночь 30.10, «как в прошлых мини-играх»): the rod comes in from her hands at the lower left and bends to
+## the fish as the string tightens; the float plops at a nibble and goes under with a splash (sounds — SynthSfx);
+## the string creaks taut, snaps with a crack; the tension bar in the carved frame — red at the top, the green band,
+## the gold leaf of the string, a little fish climbing the gauge beside it as it comes in, the bar shaking near the
+## snap and the green pulsing while the string hangs slack; the perches caught lie in a row in the corner;
+## «Облегчить» under the bar (a wider green). The picture sits higher so the hint and «Ещё» stay above the text box.
 
 const FLOAT_RED := Color(0.82, 0.16, 0.1)
 const FLOAT_WHITE := Color(0.95, 0.93, 0.88)
@@ -39,14 +45,13 @@ var _bar: Rect2 = Rect2(1700, 200, 46, 640)
 var _draw: Control = null
 var hint: Label = null
 var again_btn: Button = null
-var stop_btn: Button = null
+var slow_check: CheckButton = null
+var _taut_snd: float = 0.0       # time to the next creak of the taut string
 
 
 func build() -> void:
 	_rng.seed = int(spec.get("seed", Time.get_ticks_usec()))
-	var easy := TimingBar.slow_k() > 1.0
-	var g: Array = spec.get("green_easy", [0.25, 0.85]) if easy else spec.get("green", [0.35, 0.75])
-	green = Vector2(float(g[0]), float(g[1]))
+	eased()
 	var art: Dictionary = spec.get("art", {})
 	var pr: Array = spec.get("picture", [260, 130, 1400, 788])
 	_pic = Rect2(float(pr[0]), float(pr[1]), float(pr[2]), float(pr[3]))
@@ -82,12 +87,16 @@ func build() -> void:
 	add_child(_draw)
 	hint = label(text("wait"), Vector2(_pic.position.x, _pic.end.y + 26.0), _pic.size.x, &"CloseupLabel")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	again_btn = _button(text("again"), Vector2(_pic.get_center().x - 230.0, _pic.end.y + 66.0), "Again")
+	again_btn = _button(text("again"), Vector2(_pic.get_center().x - 100.0, _pic.end.y + 66.0), "Again")
 	again_btn.pressed.connect(_restart)
-	stop_btn = _button(text("stop"), Vector2(_pic.get_center().x + 30.0, _pic.end.y + 66.0), "Stop")
-	stop_btn.visible = true
-	stop_btn.pressed.connect(func(): event("done"))
+	slow_check = easy_toggle(Vector2(_bar.get_center().x - 60.0, _pic.end.y + 20.0))
 	_restart()
+
+
+func eased() -> void:
+	var easy := TimingBar.slow_k() > 1.0
+	var g: Array = spec.get("green_easy", [0.25, 0.85]) if easy else spec.get("green", [0.35, 0.75])
+	green = Vector2(float(g[0]), float(g[1]))
 
 
 func _button(t: String, at: Vector2, node_name: String) -> Button:
@@ -123,6 +132,8 @@ func _to_wait() -> void:
 
 
 func tick(delta: float) -> void:
+	# «Ещё» waits for Mitya's word to be read (the text box would cover it)
+	_sync_again()
 	if dialogue_up():
 		_draw.queue_redraw()
 		return
@@ -134,10 +145,12 @@ func tick(delta: float) -> void:
 				if nibbles < _nibbles_to:
 					nibbles += 1
 					_dip = 0.45
+					sound("plop")
 					next_event = phase_t + _rng.randf_range(0.9, 1.8)
 				else:
 					phase = "bite"
 					phase_t = 0.0
+					sound("float_dive")
 		"bite":
 			if phase_t > float(spec.get("bite_s", 0.9)):
 				lost += 1
@@ -158,6 +171,10 @@ func _fight(delta: float) -> void:
 	tension += surge * delta * 3.0
 	surge = maxf(surge - delta * 0.9, 0.0)
 	tension = clampf(tension, 0.0, 1.0)
+	_taut_snd -= delta
+	if pulling and tension > green.x and _taut_snd <= 0.0:
+		sound("line_taut")
+		_taut_snd = lerpf(0.75, 0.35, tension)
 	if tension >= green.x and tension <= green.y:
 		progress += delta * float(spec.get("reel", 0.16))
 	elif tension > green.y:
@@ -166,6 +183,7 @@ func _fight(delta: float) -> void:
 	over_t = over_t + delta if tension > 0.97 else 0.0
 	if over_t > 0.35:
 		lost += 1
+		sound("line_snap")
 		say("snap")
 		_to_wait()
 	elif slack_t > 2.2:
@@ -177,10 +195,10 @@ func _fight(delta: float) -> void:
 		phase_t = 0.0
 		caught += 1
 		pulling = false
+		sound("water_slap")
 		hint.text = ""
 		event("caught")
 		say("caught")
-		again_btn.visible = true
 
 
 ## A strike or a pull: a press (mouse button / Space) — `down` true, a release — false.
@@ -239,9 +257,24 @@ func _float_pos() -> Vector2:
 func _on_draw() -> void:
 	var c := _draw
 	var fp := _float_pos()
-	var tip := Vector2(_pic.position.x + 120.0, _pic.position.y - 4.0)
-	# the string: sags while slack, straight when taut
 	var taut := tension if phase == "fight" else 0.1
+	# the rod: from her hands below the lower left corner up over the water; it bends to the fish as the string tightens
+	var butt := Vector2(_pic.position.x + 64.0, _pic.end.y - 3.0)   # it comes in at the frame's lower edge
+	var tip0 := Vector2(_pic.position.x + _pic.size.x * 0.24, _pic.position.y + _pic.size.y * 0.16)
+	var bend := (taut if phase == "fight" else 0.0) + (0.25 if phase == "bite" else 0.0)
+	var tip := tip0 + (fp - tip0).normalized() * 70.0 * bend + Vector2(0.0, sin(clock * 1.3) * 2.0)
+	var ctrl := butt.lerp(tip0, 0.55) + (fp - tip0).normalized() * 40.0 * bend
+	var rod := PackedVector2Array()
+	for i in 17:
+		var tt := float(i) / 16.0
+		rod.append(butt.lerp(ctrl, tt).lerp(ctrl.lerp(tip, tt), tt))
+	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	for i in rod.size() - 1:
+		var w := lerpf(11.0, 2.5, float(i) / (rod.size() - 1))
+		c.draw_line(rod[i] + Vector2(2, 3), rod[i + 1] + Vector2(2, 3), Color(0, 0, 0, 0.3), w + 1.0, true)
+		c.draw_line(rod[i], rod[i + 1], Color(0.33, 0.22, 0.12), w, true)
+		c.draw_line(rod[i] + Vector2(-w * 0.2, -w * 0.25), rod[i + 1] + Vector2(-w * 0.2, -w * 0.25), Color(0.6, 0.45, 0.28, 0.6), maxf(w * 0.25, 1.0), true)
+	# the string: sags while slack, straight when taut
 	var mid := tip.lerp(fp, 0.5) + Vector2(0.0, 60.0 * (1.0 - taut))
 	var pts := PackedVector2Array()
 	for i in 21:
@@ -258,6 +291,12 @@ func _on_draw() -> void:
 			c.draw_arc(Vector2.ZERO, 14.0 + age * 40.0 * big, 0.0, TAU, 40, Color(1, 1, 1, 0.35 * (1.0 - age)), 2.0, true)
 			c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		var under := phase == "bite" or phase == "fight"
+		if phase == "bite" and phase_t < 0.35:   # the splash as it goes under
+			var k := phase_t / 0.35
+			for d in 6:
+				var ang := -PI * (0.15 + 0.7 * float(d) / 5.0)
+				var dp := fp + Vector2(cos(ang), sin(ang)) * (10.0 + 34.0 * k) + Vector2(0.0, 60.0 * k * k)
+				c.draw_circle(dp, 3.0 * (1.0 - k) + 1.0, Color(1, 1, 1, 0.75 * (1.0 - k)))
 		if not under:   # the float: white top over red, its stick
 			c.draw_line(fp + Vector2(0, -24), fp + Vector2(0, -8), Color(0.2, 0.15, 0.1), 2.0, true)
 			c.draw_set_transform(fp, 0.0, Vector2(1.0, 1.6))
@@ -270,28 +309,50 @@ func _on_draw() -> void:
 		_fish(c, fp + Vector2(0, 30))
 	if phase == "fight":
 		_tension_bar(c)
+	# the perches caught so far, in a row in the upper corner of the picture
+	for k in caught:
+		c.draw_set_transform(Vector2(_pic.end.x - 60.0 - 66.0 * k, _pic.position.y + 40.0), 0.0, Vector2(0.38, 0.38))
+		_fish_shape(c)
+		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _tension_bar(c: CanvasItem) -> void:
-	CarvedFrame.draw_frame(c, _bar, 12.0)
-	c.draw_rect(_bar, CarvedFrame.WOOD_DARK)
-	var y := func(v: float) -> float: return _bar.end.y - _bar.size.y * v
-	c.draw_rect(Rect2(_bar.position.x, y.call(green.y), _bar.size.x, y.call(green.x) - y.call(green.y)), Color(0.35, 0.55, 0.3, 0.85))
-	c.draw_rect(Rect2(_bar.position.x, _bar.position.y, _bar.size.x, y.call(0.92) - _bar.position.y), Color(0.65, 0.16, 0.1, 0.85))
+	# near the snap the bar shakes; slack — the green band pulses (pull!)
+	var shake := Vector2(sin(clock * 61.0), cos(clock * 47.0)) * 3.0 * clampf(over_t / 0.35 + (tension - 0.9) * 4.0, 0.0, 1.0)
+	var bar := Rect2(_bar.position + shake, _bar.size)
+	CarvedFrame.draw_frame(c, bar, 12.0)
+	c.draw_rect(bar, TimingBar.TRACK)
+	var y := func(v: float) -> float: return bar.end.y - bar.size.y * v
+	var gl := 0.85 if slack_t <= 0.4 else 0.6 + 0.35 * sin(clock * 10.0)
+	c.draw_rect(Rect2(bar.position.x, y.call(green.y), bar.size.x, y.call(green.x) - y.call(green.y)), Color(TimingBar.GREEN, gl))
+	c.draw_rect(Rect2(bar.position.x, bar.position.y, bar.size.x, y.call(0.92) - bar.position.y), Color(TimingBar.RED, 0.9))
+	for k in range(1, 10):   # carved notches
+		var ny: float = y.call(k / 10.0)
+		c.draw_line(Vector2(bar.position.x, ny), Vector2(bar.position.x + (14.0 if k % 5 == 0 else 8.0), ny), Color(0, 0, 0, 0.45), 2.0)
 	var ty: float = y.call(tension)
-	CarvedFrame.leaf(c, Vector2(_bar.position.x - 6.0, ty), Vector2.RIGHT, 30.0)
-	c.draw_line(Vector2(_bar.position.x, ty), Vector2(_bar.end.x, ty), CarvedFrame.GOLD, 3.0)
-	# how near the fish is: a thin strip beside
-	var pr := Rect2(_bar.end.x + 16.0, _bar.position.y, 8.0, _bar.size.y)
-	c.draw_rect(pr, Color(0, 0, 0, 0.4))
+	CarvedFrame.leaf(c, Vector2(bar.position.x - 6.0, ty), Vector2.RIGHT, 30.0)
+	c.draw_line(Vector2(bar.position.x, ty), Vector2(bar.end.x, ty), TimingBar.BRASS, 3.0)
+	CarvedFrame.shade(c, bar, true)
+	# how near the fish is: a gauge beside, a little fish climbing it
+	var pr := Rect2(bar.end.x + 18.0, bar.position.y, 10.0, bar.size.y)
+	c.draw_rect(pr, Color(0, 0, 0, 0.45))
 	c.draw_rect(Rect2(pr.position.x, pr.end.y - pr.size.y * progress, pr.size.x, pr.size.y * progress), CarvedFrame.GOLD_DIM)
+	c.draw_set_transform(Vector2(pr.get_center().x, pr.end.y - pr.size.y * progress), -PI * 0.5, Vector2(0.2, 0.2))
+	_fish_shape(c)
+	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 ## A perch, drawn: olive back, golden flank, dark bands, red fins, held up on the string.
 func _fish(c: CanvasItem, at: Vector2) -> void:
+	c.draw_set_transform(at, deg_to_rad(-12.0), Vector2.ONE)
+	_fish_shape(c)
+	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## The perch at the origin of the current transform (head to the left).
+func _fish_shape(c: CanvasItem) -> void:
 	var L := 150.0
 	var H := 52.0
-	c.draw_set_transform(at, deg_to_rad(-12.0), Vector2.ONE)
 	var body := PackedVector2Array()
 	for i in 33:
 		var a := TAU * float(i) / 32.0
@@ -306,9 +367,15 @@ func _fish(c: CanvasItem, at: Vector2) -> void:
 	c.draw_circle(Vector2(-L * 0.38, -H * 0.08), 5.0, Color(0.95, 0.85, 0.4))
 	c.draw_circle(Vector2(-L * 0.38, -H * 0.08), 2.5, Color(0.05, 0.05, 0.05))
 	c.draw_polyline(body, Color(0, 0, 0, 0.5), 2.0, true)
-	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## «Ещё» shows once the word after the game is read (the text box would cover it).
+func _sync_again() -> void:
+	again_btn.visible = phase == "caught" and not dialogue_up()
 
 
 func probe() -> Dictionary:
+	_sync_again()
 	return {"phase": phase, "tension": tension, "progress": progress, "caught": caught, "lost": lost, "nibbles": nibbles,
-		"green": [green.x, green.y], "again": again_btn.visible, "picture": {"x": _pic.get_center().x, "y": _pic.get_center().y}}
+		"green": [green.x, green.y], "again": again_btn.visible, "picture": {"x": _pic.get_center().x, "y": _pic.get_center().y},
+		"slow": {"x": slow_check.get_global_rect().get_center().x, "y": slow_check.get_global_rect().get_center().y} if slow_check != null else {}}

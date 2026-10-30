@@ -21,6 +21,7 @@ var texts: Dictionary = {}              # key -> {text, draft}
 ## value each, so an answer of the Director is a one-line change. Lines and stagings name them in `switch`.
 var switches: Dictionary = {}
 var autosave_cfg: Dictionary = {}       # meta.json `autosave` {interval_s} (G5)
+var flag_renames: Dictionary = {}       # meta.json `flag_renames` {old: new} — a flag renamed after saves were made (Р4)
 var save_fixups: Array = []             # meta.json `save_fixups` [{if, unless, scene}] — old saves after a rule change (T8)
 ## Start points (data/story/start_points.json): a state to start from for checking a later part of the game.
 var start_points: Dictionary = {}
@@ -173,6 +174,7 @@ func _load_meta() -> void:
 	switches = meta.get("switches", {}) if meta is Dictionary else {}
 	autosave_cfg = meta.get("autosave", {}) if meta is Dictionary and meta.get("autosave", {}) is Dictionary else {}
 	save_fixups = meta.get("save_fixups", []) if meta is Dictionary and meta.get("save_fixups", []) is Array else []
+	flag_renames = meta.get("flag_renames", {}) if meta is Dictionary and meta.get("flag_renames", {}) is Dictionary else {}
 	start_points.clear()
 	if FileAccess.file_exists(DATA_DIR + "/start_points.json"):
 		var sp = _read_json(DATA_DIR + "/start_points.json")

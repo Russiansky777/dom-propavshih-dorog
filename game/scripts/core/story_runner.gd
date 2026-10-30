@@ -86,6 +86,7 @@ var _check_queued: bool = false
 var _loop_running: bool = false
 var _stage_running: bool = false
 var _stage_serial: int = 0   # grows on reset/load: a staging in flight stops at its next await
+var _black_hide: Array = []   # npc_go `in_black`: villagers and their open doors put away in the next black
 
 
 func _ready() -> void:
@@ -612,9 +613,15 @@ func _stage_npc_go(spec: Dictionary) -> float:
 			var to: Array = g.get("to", [0, 0])
 			npc_went.emit(String(g.get("id", "")))
 			var secs := float(g.get("s", 1.2))
-			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), secs, bool(g.get("fade", true)), room)))
+			# J (Директор 29.10, стр. 172; 25.10, стр. 140): `in_black` — she walks into the open doorway and is gone
+			# in the black that follows: no fading on screen, the door is shut while black (no dissolve to be seen).
+			var in_black := bool(g.get("in_black", false))
+			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), secs, bool(g.get("fade", true)) and not in_black, room)))
+			if in_black:
+				_black_hide.append(npc)
 			if g.has("door"):
-				longest = maxf(longest, _stage_door(room, g["door"], secs))
+				var door_s := _stage_door(room, g["door"], secs, in_black)
+				longest = maxf(longest, secs + 0.15 if in_black else door_s)
 			# I-T2 (lines 128–129): `face` "<id>" — on arrival the villager turns to that one and keeps to them.
 			var other := room.get_node_or_null("npc_" + String(g.get("face", ""))) as Node2D
 			if other != null and npc.has_method("set_partner"):
@@ -681,7 +688,7 @@ func _stage_layer_reset(spec: Dictionary) -> void:
 ## he goes into the dark doorway, and it swings shut behind him. The leaf is the door cut from the room's own
 ## background (no new art), turning on its hinge (narrowing, darker); the doorway behind it is dark. Returns the
 ## seconds until it is shut.
-func _stage_door(room: Node, door: Dictionary, walk_s: float) -> float:
+func _stage_door(room: Node, door: Dictionary, walk_s: float, keep_open: bool = false) -> float:
 	var r: Array = door.get("rect", [])
 	var bg_path := String(StoryData.room(current_room_id()).get("background", {}).get("image", ""))
 	# `image`: the picture the leaf is cut from when the room is shown over its background by a full-scene layer
@@ -725,6 +732,9 @@ func _stage_door(room: Node, door: Dictionary, walk_s: float) -> float:
 	tw.tween_property(hole, "modulate:a", 1.0, 0.12)
 	tw.parallel().tween_property(leaf, "scale:x", 0.22 / k, open_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tw.parallel().tween_property(leaf, "modulate", Color(0.55, 0.5, 0.46), open_s)
+	if keep_open:   # `in_black`: it stays open until the black, where it is put away with her
+		_black_hide.append(root)
+		return open_at + open_s
 	tw.tween_interval(maxf(0.0, shut_at - open_at - open_s))
 	tw.tween_property(leaf, "scale:x", 1.0 / k, open_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tw.parallel().tween_property(leaf, "modulate", Color(1, 1, 1), open_s)
@@ -735,6 +745,15 @@ func _stage_door(room: Node, door: Dictionary, walk_s: float) -> float:
 
 ## What a staging changes while the screen is black (or at once, for a cut): the room, the frame, flags.
 func _stage_apply(spec: Dictionary) -> void:
+	# `npc_go[].in_black`: the villager who walked into the doorway is gone, the door stands shut again — in the black
+	for n in _black_hide:
+		if is_instance_valid(n):
+			if n.name == "StageDoor":
+				n.queue_free()
+			else:
+				(n as CanvasItem).modulate.a = 0.0   # (a refresh of the room's people may show her node again)
+				(n as CanvasItem).visible = false
+	_black_hide.clear()
 	# J (стр. 137): a close-up put away while black (`close_black` of a close-up's event) — the room under it is
 	# never seen between the close-up's last picture and the next place.
 	if bool(spec.get("close_mechanic", false)) and mechanic_open:

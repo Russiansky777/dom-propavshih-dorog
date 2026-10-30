@@ -139,7 +139,9 @@ func from_dict(data: Dictionary) -> bool:
 	flags.clear()
 	var raw_flags: Dictionary = data.get("flags", {})
 	for k in raw_flags.keys():
-		flags[String(k)] = bool(raw_flags[k])
+		# a flag renamed since the save was made (meta.json flag_renames: Р4 — office_shelf_lifted → office_door_opened)
+		var key := String(StoryData.flag_renames.get(String(k), String(k)))
+		flags[key] = bool(raw_flags[k]) or bool(flags.get(key, false))
 	inventory.clear()
 	for item in data.get("inventory", []):
 		inventory.append(String(item))

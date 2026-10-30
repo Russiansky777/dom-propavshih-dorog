@@ -23,8 +23,8 @@ const SHOTS := ["examine_photo", "examine_plan", "examine_journal", "examine_wat
 ## "spawn:<id>" or "stand:<hotspot>"; she faces the NPC.
 const NPC_SHOTS := {
 	"npc_M2_from_M1": ["M2", "pavel", "spawn:from_M1", ["house_unlocked", "office_unbolted"]],
-	"npc_M3_from_M2": ["M3", "pavel", "spawn:from_M2", ["house_unlocked", "office_unbolted", "office_shelf_lifted"]],
-	"npc_M3_gauge": ["M3", "pavel", "stand:gauge", ["house_unlocked", "office_unbolted", "office_shelf_lifted"]],
+	"npc_M3_from_M2": ["M3", "pavel", "spawn:from_M2", ["house_unlocked", "office_unbolted", "office_door_opened"]],
+	"npc_M3_gauge": ["M3", "pavel", "stand:gauge", ["house_unlocked", "office_unbolted", "office_door_opened"]],
 	"npc_R3_stopor": ["R3", "mitya", "stand:stopor", ["house_unlocked", "ferry_verified", "done_M18"]],
 	"npc_R3_lamp_post": ["R3", "mitya", "stand:lamp_post", ["house_unlocked", "ferry_verified", "done_M18"]],
 	"npc_Z3_pier_plate": ["Z3", "pelageya", "stand:pier_plate", ["house_unlocked", "evening_dusk", "done_M15a"]],

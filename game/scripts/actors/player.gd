@@ -195,7 +195,7 @@ func _update_foot_lock() -> void:
 		return
 	if _lock_active and _walking and sprite.animation.begins_with(sheet.walk_action):
 		var s := maxf(absf(scale.y), 0.001)
-		var s_drawn := room.depth_scale(_drawn_pos.y) if room != null else s
+		var s_drawn := room.depth_scale_at(_drawn_pos) if room != null else s
 		sprite.position = (_drawn_pos - global_position) / s
 		sprite.scale = sheet.sprite_scale() * (s_drawn / s)
 	else:
@@ -885,7 +885,7 @@ func _set_step_phase(phase: int) -> void:
 func _update_depth() -> void:
 	var s := 1.0
 	if room != null:
-		s = room.depth_scale(global_position.y)
+		s = room.depth_scale_at(global_position)
 	# Sheets carry every direction, so no mirroring; the placeholder body flips on `facing`.
 	scale = Vector2(s, s) if sprite != null else Vector2(s * facing, s)
 	z_index = clampi(int(global_position.y), -4096, 4096)

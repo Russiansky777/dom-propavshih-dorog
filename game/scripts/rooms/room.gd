@@ -26,6 +26,11 @@ var art_scale: float = 0.0
 @export var depth_bottom_y: float = 1070.0
 @export var scale_top: float = 0.6
 @export var scale_bottom: float = 1.1
+## H41 / 25.10 стр. 12 (Директор: «подъём по лестнице будто бы не поднимается»): steps a figure climbs (rooms data
+## `stairs` [{rect: [x, y, w, h], base_y, k}]). On them the screen y goes up much faster than the floor goes back:
+## the depth is read at base_y − (base_y − y)·k (k ≈ 0.25 — the flight is about a metre deep), so she climbs, not shrinks
+## into the distance as on a flat floor.
+var stairs: Array = []
 
 @export_group("Flags")
 ## { "Hotspots/Door/DoorOpen": "office_latch_open", "Hotspots/Door/DoorClosed": "!office_latch_open" }
@@ -110,6 +115,20 @@ func depth_t(y: float) -> float:
 
 func depth_scale(y: float) -> float:
 	return lerpf(scale_top, scale_bottom, depth_t(y))
+
+
+## The depth scale where a figure stands: depth_scale(y), but on `stairs` the y of the floor under the flight.
+func depth_scale_at(p: Vector2) -> float:
+	return depth_scale(floor_y_at(p))
+
+
+func floor_y_at(p: Vector2) -> float:
+	for s in stairs:
+		var r: Rect2 = s["rect"]
+		var base := float(s["base_y"])
+		if r.has_point(p) and p.y < base:
+			return base - (base - p.y) * float(s["k"])
+	return p.y
 
 
 # --- Picking ---------------------------------------------------------------

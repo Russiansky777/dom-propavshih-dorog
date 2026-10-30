@@ -170,6 +170,30 @@ func hit_area(rect: Rect2, on_input: Callable, node_name: String = "Hit") -> Con
 	return c
 
 
+## «Облегчить» on the close-up itself (G3: the same setting as the menu's «Облегчить мини-игры» and the check beside
+## every timing bar) — for the games without a timing bar (the spoons, the fishing string): toggling it calls eased().
+func easy_toggle(at: Vector2) -> CheckButton:
+	var cb := CheckButton.new()
+	cb.name = "Slow"
+	cb.text = StoryData.text("@ui.timing_slow_short")
+	cb.focus_mode = Control.FOCUS_NONE
+	cb.theme = UiTheme.get_theme()
+	TimingBar.load_settings()
+	cb.button_pressed = TimingBar.slow
+	cb.position = at
+	cb.size = Vector2(240, 44)
+	cb.toggled.connect(func(on: bool):
+		TimingBar.set_slow(on)
+		eased())
+	add_child(cb)
+	return cb
+
+
+## «Облегчить» was toggled on the close-up: the panel re-reads TimingBar.slow_k() for its tolerances.
+func eased() -> void:
+	pass
+
+
 static func v2(a) -> Vector2:
 	return Vector2(float(a[0]), float(a[1]))
 

@@ -114,8 +114,8 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 		size = shape.shape.size
 	global_position = h.global_position + Vector2(0, size.y / 2) + sheet.feet_offset
 	var s := 1.0
-	if room.has_method("depth_scale"):
-		s = room.depth_scale(global_position.y)
+	if room.has_method("depth_scale_at"):
+		s = room.depth_scale_at(global_position)
 	s *= sheet.scale_factor
 	scale = Vector2(s, s)
 	z_index = clampi(int(global_position.y), -4096, 4096)
@@ -183,8 +183,8 @@ func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
 		get_tree().create_timer(seconds).timeout.connect(_end_walk)
 	else:
 		tw.tween_property(self, "global_position", target, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	if room != null and room.has_method("depth_scale") and sheet != null:
-		var s: float = room.depth_scale(target.y) * sheet.scale_factor
+	if room != null and room.has_method("depth_scale_at") and sheet != null:
+		var s: float = room.depth_scale_at(target) * sheet.scale_factor
 		tw.tween_property(self, "scale", Vector2(s, s), seconds)
 	if fade:
 		# I-T2 (Director, line 140: «Нина уходит в дверь, не растворяется»): she walks the whole way and only

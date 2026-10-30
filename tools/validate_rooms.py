@@ -539,7 +539,7 @@ EFFECT_TYPES = ("fire", "snow", "tint", "shapes", "rope")
 BLENDS = ("mul", "add", "sub", "mix")
 SHAPE_TYPES = ("gradient", "poly", "line", "circle", "glow", "text", "rect", "dashes")
 MECHANIC_TYPES = ("office_mirror", "sluice", "fast_mirror", "plate", "lantern", "photo", "windlass", "latch", "crossing",
-                  "map_route", "workbench")
+                  "map_route", "workbench", "tictactoe", "rhythm", "fishing")
 
 # 13. Арт заказан и ещё не доставлен (партия 8б, Q02/Q06, 23.10): слой или картинка крупного плана с `pending` — id
 # заявки assets/manifest.json. Пока заявка открыта (requested / in_progress), файла может не быть: вместо картинки
@@ -663,6 +663,16 @@ def check_mechanic(ctx: str, m: dict, room: dict) -> None:
     for key in ("clamped_flag", "done_flag", "compared_flag", "common_time_flag"):
         if key in m:
             check_flags(f"{ctx}.{key}", [m[key]])
+    # «Хватит» мини-игры (J, ночь 30.10): кнопка крупного плана справа внизу с прощальной репликой — событие из events
+    if "close_label" in m:
+        check_text(f"{ctx}.close_label", m["close_label"])
+    if "close_event" in m:
+        if m["close_event"] not in (m.get("events") or {}):
+            err(f"{ctx}.close_event: нет события {m['close_event']} в events")
+        elif not (m["events"][m["close_event"]].get("close") or m["events"][m["close_event"]].get("close_black")):
+            err(f"{ctx}.close_event: событие {m['close_event']} не закрывает крупный план (close: true)")
+        if not m.get("closable", True):
+            err(f"{ctx}.close_event при closable: false — кнопки нет")
 
     def images(o, path):
         if isinstance(o, dict):
@@ -1214,6 +1224,20 @@ for rid, room in rooms.items():
             err(f"{ctx}: walk_sample {s[:2]} вне кадра 1920x1080")
         elif not walkable_point(s[:2]):
             err(f"{ctx}: walk_sample {s[:2]} не на полу (или в вырезе)")
+    # 6а. лестница (H41 / 25.10 стр. 12): `stairs` [{rect, base_y, k}] — ступени, по которым Агата поднимается; прямоугольник в
+    # кадре, base_y — его нижний край (передний край нижней ступени) или внутри, 0 ≤ k < 1, на ступенях есть пол
+    for i_, st_ in enumerate(room.get("stairs", []) or []):
+        r_ = st_.get("rect", [])
+        if len(r_) != 4 or r_[2] <= 0 or r_[3] <= 0:
+            err(f"{ctx}.stairs[{i_}]: rect [x, y, w, h]")
+            continue
+        if not (r_[1] < float(st_.get("base_y", r_[1] + r_[3])) <= r_[1] + r_[3]):
+            err(f"{ctx}.stairs[{i_}]: base_y {st_.get('base_y')} вне прямоугольника по высоте")
+        if not (0.0 <= float(st_.get("k", 0.25)) < 1.0):
+            err(f"{ctx}.stairs[{i_}]: k {st_.get('k')} — от 0 до 1 (доля, на которую пол уходит вглубь)")
+        cx_, cy_ = r_[0] + r_[2] / 2, r_[1] + r_[3] / 2
+        if not walkable_point([cx_, cy_]):
+            err(f"{ctx}.stairs[{i_}]: середина ступеней {[cx_, cy_]} не на полу — по ним не пройти")
     for nc in room.get("nearest_checks", []):
         frm, box = nc.get("from"), nc.get("in")
         if not frm or not box or len(box) != 4:
@@ -1535,6 +1559,9 @@ for rid, room in rooms.items():
             for o in ch.get("options", []):
                 if "sets" not in o or "id" not in o:
                     err(f"{hctx}.choice: вариант без id/sets")
+                # J, часть G: мини-игра из выбора разговора (крестики-нолики, ложечки, рыбалка) — тот же крупный план
+                if isinstance(o.get("mechanic"), dict):
+                    check_mechanic(f"{hctx}.choice.options[{o.get('id')}].mechanic", o["mechanic"], room)
             scn = ch.get("scene")
             if scn and scn not in scenes:
                 err(f"{hctx}.choice: неизвестная сцена {scn}")

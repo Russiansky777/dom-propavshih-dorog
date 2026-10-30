@@ -28,6 +28,10 @@ static func build(room_id: String) -> Room:
 	room.depth_bottom_y = float(depth.get("bottom_y", 1070))
 	room.scale_top = float(depth.get("scale_top", 0.6))
 	room.scale_bottom = float(depth.get("scale_bottom", 1.1))
+	for s in spec.get("stairs", []):
+		var sr: Array = s.get("rect", [0, 0, 0, 0])
+		room.stairs.append({"rect": Rect2(float(sr[0]), float(sr[1]), float(sr[2]), float(sr[3])),
+				"base_y": float(s.get("base_y", float(sr[1]) + float(sr[3]))), "k": float(s.get("k", 0.25))})
 
 	_build_background(room, room_id, bg, horizon)
 	_build_walkable(room, spec, kind, idx)

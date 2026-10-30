@@ -6,7 +6,8 @@ extends CanvasLayer
 ## (M2); day three's optional stories — the old map of Olkhovka, the way shown by clicks (O1, Q02), the second bench in
 ## Ilya's workshop (O4, Q06). Layer 4 — under GameUi (5): the texts the close-up asks for (StoryRunner.mechanic_say /
 ## mechanic_event) play in the dialogue box above it, and while a text is on screen the dialogue's modal
-## takes the clicks. Everything is done with the mouse; «Закрыть» and Esc put it away. Each type is its own
+## takes the clicks. Everything is done with the mouse; «Закрыть» and Esc put it away (a mini-game's «Хватит» — with
+## its farewell, `close_event`). Each type is its own
 ## panel (MechanicPanel subclass) built from the spec; the story state they change goes through
 ## StoryRunner.mechanic_event(name) → `events.<name>` in data.
 
@@ -35,6 +36,7 @@ var title_label: Label = null
 var close_button: Button = null
 var _players: Array[AudioStreamPlayer] = []
 var sounds_played: Array[String] = []   # tests: what the close-up sounded (name per play)
+var _close_sent: bool = false
 
 
 func _ready() -> void:
@@ -95,8 +97,9 @@ func _open(s: Dictionary) -> void:
 	close_button.size = Vector2(200, 56)
 	close_button.position = Vector2(1680, 990)
 	close_button.focus_mode = Control.FOCUS_NONE
-	close_button.pressed.connect(func(): StoryRunner.close_mechanic())
+	close_button.pressed.connect(close_pressed)
 	root.add_child(close_button)
+	_close_sent = false
 	# `closable: false` — no «Закрыть», no Esc (the crossing: the boat is on the rope, the only way is across).
 	close_button.visible = bool(spec.get("closable", true))
 	visible = true
@@ -120,6 +123,23 @@ func _free_nodes() -> void:
 	close_button = null
 
 
+## «Закрыть» / Esc. The mini-games put it away with a word (J, часть G: one way out for every close-up, bottom right —
+## not a «Хватит» of their own beside «Закрыть»): `close_label` names the button («Хватит»), `close_event` is the
+## spec's event it fires (Ulyana's «Ладно. Завтра ещё сыграем…», the flags of having played, then the close).
+func close_pressed() -> void:
+	var ev := String(spec.get("close_event", ""))
+	if ev == "":
+		StoryRunner.close_mechanic()
+		return
+	if _close_sent:
+		return
+	_close_sent = true
+	if close_button != null:
+		close_button.disabled = true
+	if not StoryRunner.mechanic_event(ev):
+		StoryRunner.close_mechanic()
+
+
 func play(sound_name: String) -> void:
 	sounds_played.append(sound_name)
 	for p in _players:
@@ -138,7 +158,10 @@ func _input(event: InputEvent) -> void:
 			(event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE):
 		get_viewport().set_input_as_handled()
 		if bool(spec.get("closable", true)):
-			StoryRunner.close_mechanic()
+			# a game's farewell (`close_event`) waits for the text on screen; a plain close-up goes at once, as before
+			if String(spec.get("close_event", "")) != "" and not StoryRunner.current_beat.is_empty():
+				return
+			close_pressed()
 
 
 ## Click targets and state for tests and the web probe (window.probeState.mechanic).

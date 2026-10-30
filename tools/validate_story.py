@@ -733,6 +733,18 @@ for k, v in expected.items():
 
 proposed = [(s["id"], s["proposed_change"]) for s in scenes if s.get("proposed_change")]
 
+# Переименованный флаг (meta.json flag_renames, Р4 29.10: office_shelf_lifted → office_door_opened): новое имя объявлено,
+# старого нет ни во flags.json, ни в данных — иначе старые сохранения и новые данные разойдутся.
+_story_text = "\n".join(p_.read_text(encoding="utf-8") for p_ in STORY.rglob("*.json") if p_.name != "meta.json")
+for _old, _new in (meta.get("flag_renames") or {}).items():
+    if _old.startswith("_"):
+        continue
+    if _new not in declared_flags:
+        err(f"meta.json flag_renames: {_old} → {_new}: нового флага нет во flags.json")
+    if _old in declared_flags or f'"{_old}"' in _story_text:
+        err(f"meta.json flag_renames: старое имя {_old} ещё в данных — заменить на {_new}")
+
+
 # ---------- отчёт ----------
 lines = []
 lines.append("# Отчёт валидатора сценария\n")

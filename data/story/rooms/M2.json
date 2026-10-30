@@ -27,8 +27,8 @@
     },
     {
       "id": "office_door_open", "kind": "object", "label": "@M2.office_door_open.label", "rect": [622, 215, 156, 430], "stand": [700, 760], "draw": false, "pick_priority": 2,
-      "visible_if": ["office_unbolted"], "hidden_if": ["office_shelf_lifted"],
-      "use": {"sets": ["office_shelf_lifted"], "text": "@M2.office_door_open.use", "once_flag": "office_shelf_lifted", "scene": "M13a"},
+      "visible_if": ["office_unbolted"], "hidden_if": ["office_door_opened"],
+      "use": {"sets": ["office_door_opened"], "text": "@M2.office_door_open.use", "once_flag": "office_door_opened", "scene": "M13a"},
       "look": "@M2.office_door_open.look"
     },
     {
@@ -54,7 +54,7 @@
       "visible_if": ["pavel_blessed_mirror"], "hidden_if": ["visited_M3", "done_M13"],
       "states": [{"if": ["has_mirror_mill"], "rect": [870, 192, 170, 508], "stand": [1150, 760], "face": [700, 560], "_h28": "H28: у двери конторы смотрит влево, на дверь (npc_actor._face_data)", "_note": "с зеркалом у Агаты — Павел у двери конторы, с фонарём (M11), там же после засова"}],
       "_g18_g21": "G18: после добра (M09b) Павел в сенях справа впереди, у двери в кладовую — не перед зеркалом и не перед фотографией конторы; зеркало взято — у двери конторы. G21 (Директор 23.10: «открываем вдвоём — мужик пропадает будто за дверь, а она закрыта»): после стеллажа Павел остаётся у двери, пока Агата не войдёт в контору (visited_M3) — там он уже внутри (M3: visible_if visited_M3); в двух местах сразу не стоит",
-      "talk": {"by_flags": [{"if": ["office_shelf_lifted"], "text": "@M2.pavel.after_lifted"}, {"if": ["office_unbolted"], "text": "@M2.pavel.after"}, {"if": ["has_mirror_mill"], "text": "@M1.pavel.after"}, {"if": ["pavel_blessed_mirror"], "text": "@M2.pavel.at_mirror"}], "after_text": "@M2.pavel.after"}
+      "talk": {"by_flags": [{"if": ["office_door_opened"], "text": "@M2.pavel.after_lifted"}, {"if": ["office_unbolted"], "text": "@M2.pavel.after"}, {"if": ["has_mirror_mill"], "text": "@M1.pavel.after"}, {"if": ["pavel_blessed_mirror"], "text": "@M2.pavel.at_mirror"}], "after_text": "@M2.pavel.after"}
     }
   ],
   "exits": [
@@ -63,7 +63,7 @@
   ],
   "scenes": {
     "M09s": {"complete_when": [{"all": ["seen_office_door", "seen_office_photo", "seen_shift_schedule"]}]},
-    "M13a": {"complete_when": [{"all": ["office_shelf_lifted"]}]}
+    "M13a": {"complete_when": [{"all": ["office_door_opened"]}]}
   },
   "flags": {}
 }

@@ -915,7 +915,7 @@ func _test_walkthrough() -> void:
 	_check(_hotspot("pavel") != null and _hotspot("pavel").visible, "Pavel waits at the office door")
 	await _use("office_door_open")
 	seen = await _finish()
-	_check(gs.has_flag("office_shelf_lifted") and gs.has_flag("done_M13a"), "the shelf lifted together: %s" % str(seen))
+	_check(gs.has_flag("office_door_opened") and gs.has_flag("done_M13a"), "the shelf lifted together: %s" % str(seen))
 	# G21 (Director 23.10: «открываем вдвоём — мужик пропадает будто за дверь, а она закрыта»): he stays by the door.
 	_check(_hotspot("pavel") != null and _hotspot("pavel").visible, "G21: after the shelf Pavel is still in the passage by the door")
 	_check(await _go("M3"), "M2→M3 (the office)")
@@ -1547,7 +1547,7 @@ func _wait_sluice_open() -> void:
 func _test_sluice_mouse() -> void:
 	Engine.time_scale = 2.0
 	await _day_one_done()
-	for f in ["done_N01", "done_M09", "done_M09s", "done_M09b", "done_M10", "done_M11", "done_M12", "done_M13a", "done_M13", "office_unbolted", "office_shelf_lifted",
+	for f in ["done_N01", "done_M09", "done_M09s", "done_M09b", "done_M10", "done_M11", "done_M12", "done_M13a", "done_M13", "office_unbolted", "office_door_opened",
 			"has_key_sluice", "has_journal_manager", "has_clamp", "sluice_key_inserted", "windlass_rusty", "windlass_tarred"]:
 		gs.set_flag(f, true)
 	gs.add_item("clamp")
@@ -1713,7 +1713,7 @@ func _test_save_load() -> void:
 	for id in ["N01", "M09", "M09s", "M09b", "M10", "M11", "M12"]:
 		_check(gs.has_flag("done_" + id) and not sr.can_start(id), "%s stays done" % id)
 	_check(not gs.has_item("mirror_mill") and not gs.has_item("bell_clapper"), "the mirror and the clapper are not back in the bag")
-	_check(not gs.has_flag("office_shelf_lifted") and not gs.has_flag("done_M13"), "what came after the save is undone")
+	_check(not gs.has_flag("office_door_opened") and not gs.has_flag("done_M13"), "what came after the save is undone")
 	# Re-entering rooms plays nothing old.
 	_check(await _go("H1"), "H2→H1")
 	_check(sr.current_beat.is_empty(), "no morning again in H1")

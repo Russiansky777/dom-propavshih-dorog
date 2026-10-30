@@ -5,8 +5,12 @@ extends MechanicPanel
 ## never twice the same: the length, the slant, a little overshoot, a loop that does not quite close. Ulyana is eight:
 ## she plays well, not perfectly (`skill` — the share of her moves that are the best; the rest are any free cell),
 ## and she thinks a moment before her move. A line of three is crossed out in chalk. Then a word from her (texts
-## win / lose / draw), and «Ещё раз» (who starts goes to the other) or «Хватит» (event "done"). Events: "won", "lost",
-## "draw" (data `events`) after each game. Everything is data: the spec's `skill`, `think_s`, `texts`, `events`.
+## win / lose / draw) and «Ещё раз» (who starts goes to the other); «Хватит» is the close-up's own button, bottom right
+## (spec `close_label`, `close_event` "done" — her farewell). Events: "won", "lost", "draw" (data `events`) after each
+## game. Everything is data: the spec's `skill`, `think_s`, `texts`, `events`.
+## Polish (J, ночь 30.10, «как в прошлых мини-играх»): a free cell under the mouse shows a faint chalk cross on her turn
+## (and the hand cursor); the score is kept at the top of the board in chalk — the two names in a child's hand and a
+## tally stick for every game won; every stroke has its chalk scrape (SynthSfx «chalk»).
 
 const LINES := [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 const CHALK := Color(0.93, 0.93, 0.88, 0.92)
@@ -35,7 +39,9 @@ var _cell: Rect2 = Rect2(660, 230, 600, 600)
 var _draw: Control = null
 var hint: Label = null
 var again_btn: Button = null
-var stop_btn: Button = null
+var _said: bool = false          # her word after the game is out (then «Ещё раз»)
+var _hover: int = -1             # the free cell under the mouse on Agata's turn (-1 — none)
+var _tally: Array = []           # chalk tally sticks per player: {"x": [strokes], "o": [strokes]}
 
 
 func build() -> void:
@@ -52,13 +58,15 @@ func build() -> void:
 	_draw.mouse_filter = Control.MOUSE_FILTER_STOP
 	_draw.draw.connect(_on_draw)
 	_draw.gui_input.connect(_on_slate_input)
+	_draw.mouse_exited.connect(func():
+		_hover = -1
+		_draw.mouse_default_cursor_shape = Control.CURSOR_ARROW)
 	add_child(_draw)
 	hint = label(text("hint"), Vector2(_slate.position.x, _slate.end.y + 24.0), _slate.size.x, &"CloseupLabel")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	again_btn = _button(text("again"), Vector2(_slate.get_center().x - 230.0, _slate.end.y + 70.0), "Again")
+	again_btn = _button(text("again"), Vector2(_slate.get_center().x - 100.0, _slate.end.y + 70.0), "Again")
 	again_btn.pressed.connect(_new_game)
-	stop_btn = _button(text("stop"), Vector2(_slate.get_center().x + 30.0, _slate.end.y + 70.0), "Stop")
-	stop_btn.pressed.connect(func(): event("done"))
+	_tally = [[], []]
 	_new_game()
 
 
@@ -87,8 +95,10 @@ func _new_game() -> void:
 	turn = "x" if agata_starts else "o"
 	_think = think_s + 1.0 if turn == "o" else -1.0   # the grid first, then her move
 	again_btn.visible = false
-	stop_btn.visible = false
+	_said = false
+	_hover = -1
 	hint.text = text("hint") if turn == "x" else text("her_first")
+	sound("chalk_long")
 	_draw.queue_redraw()
 
 
@@ -158,8 +168,8 @@ func _nought(i: int) -> Array:
 func _place(i: int, kind: String) -> void:
 	board[i] = kind
 	marks.append({"cell": i, "kind": kind, "strokes": _cross(i) if kind == "x" else _nought(i), "t0": clock})
-	if String(spec.get("sound_chalk", "")) != "":
-		sound(String(spec["sound_chalk"]))
+	_hover = -1
+	sound(String(spec.get("sound_chalk", "chalk")))
 	var w := _winner(board)
 	if w != "":
 		var ln: Array = _line_of(board)
@@ -168,6 +178,9 @@ func _place(i: int, kind: String) -> void:
 		var d := (b - a).normalized()
 		win_line = [_stroke(a - d * 40.0, b + d * 40.0, 3.0)]
 		win_t0 = clock + 0.35
+		get_tree().create_timer(0.35, false).timeout.connect(func():
+			if is_instance_valid(self):
+				sound("chalk_long"))
 		_finish("won" if w == "x" else "lost")
 	elif not board.has(""):
 		_finish("draw")
@@ -188,8 +201,10 @@ func _finish(r: String) -> void:
 	match r:
 		"won":
 			wins += 1
+			_tally[0].append(_tally_stick(wins))
 		"lost":
 			losses += 1
+			_tally[1].append(_tally_stick(losses))
 		_:
 			draws += 1
 	agata_starts = not agata_starts
@@ -200,8 +215,7 @@ func _finish(r: String) -> void:
 			return
 		event(r)
 		say(key)
-		again_btn.visible = true
-		stop_btn.visible = true)
+		_said = true)
 
 
 static func _winner(b: Array) -> String:
@@ -270,6 +284,8 @@ func _her_move() -> int:
 
 
 func tick(delta: float) -> void:
+	# «Ещё раз» waits for her word to be read (the text box would cover it)
+	_sync_again()
 	if not over and turn == "o" and _think >= 0.0:
 		_think -= delta
 		if _think < 0.0:
@@ -283,6 +299,26 @@ func _on_slate_input(ev: InputEvent) -> void:
 	if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 		_draw.accept_event()
 		click_at(ev.position)
+	elif ev is InputEventMouseMotion:
+		var h := -1
+		if not over and turn == "x":
+			for i in 9:
+				if board[i] == "" and _cell_rect(i).has_point(ev.position):
+					h = i
+		if h != _hover:
+			_hover = h
+			_draw.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if h >= 0 else Control.CURSOR_ARROW
+			_draw.queue_redraw()
+
+
+## One chalk tally stick (the `n`-th): four upright, the fifth across them — the way a score is kept on a board.
+func _tally_stick(n: int) -> PackedVector2Array:
+	var k := (n - 1) % 5
+	var group := int((n - 1) / 5)
+	var x := 18.0 * k + 104.0 * group
+	if k == 4:
+		return _stroke(Vector2(x - 80.0, 6.0), Vector2(x - 2.0, 30.0), 1.5)
+	return _stroke(Vector2(x + _rng.randf_range(-2, 2), 0.0), Vector2(x + _rng.randf_range(-3, 3), 36.0), 1.5)
 
 
 func _unhandled_key_input(ev: InputEvent) -> void:
@@ -324,6 +360,26 @@ func _on_draw() -> void:
 	var gt := clampf((clock - grid_t0) / 0.6, 0.0, 1.0) * grid_strokes.size()
 	for k in grid_strokes.size():
 		_chalk(c, grid_strokes[k], clampf(gt - k, 0.0, 1.0), 5.0)
+	# the score at the top, in chalk: her name and Ulyana's in a child's hand, a stick for every game won
+	var hand := UiTheme.font("hand")
+	if hand != null:
+		var who := [StoryData.character_name("agata"), StoryData.character_name("ulyana")]
+		var x0 := [outer.position.x + 26.0, outer.end.x - 26.0]
+		for s in 2:
+			var w := hand.get_string_size(who[s], HORIZONTAL_ALIGNMENT_LEFT, -1, 34).x
+			var nx: float = x0[s] if s == 0 else x0[s] - w
+			c.draw_string(hand, Vector2(nx, outer.position.y + 44.0), who[s], HORIZONTAL_ALIGNMENT_LEFT, -1, 34, Color(CHALK, 0.85))
+			var tx: float = nx + 6.0   # the sticks under the name
+			for st in _tally[s]:
+				var moved := PackedVector2Array()
+				for p in st:
+					moved.append(p + Vector2(tx, outer.position.y + 58.0))
+				_chalk(c, moved, 1.0, 3.5)
+	# a faint cross where her next one would go (her turn, a free cell under the mouse)
+	if _hover >= 0 and not over and turn == "x" and board[_hover] == "":
+		var hr := _cell_rect(_hover).grow(-_cell.size.x / 3.0 * 0.26)
+		c.draw_line(hr.position, hr.end, Color(CHALK, 0.16), 6.0, true)
+		c.draw_line(Vector2(hr.end.x, hr.position.y), Vector2(hr.position.x, hr.end.y), Color(CHALK, 0.16), 6.0, true)
 	for m in marks:
 		var strokes: Array = m["strokes"]
 		var per := 0.18 if m["kind"] == "x" else 0.32
@@ -353,11 +409,18 @@ func _chalk(c: CanvasItem, pts: PackedVector2Array, frac: float, w: float) -> vo
 		c.draw_circle(part[i] + Vector2(1.5, -1.0), w * 0.3, Color(SLATE, 0.5))   # the chalk skips on the board
 
 
+## «Ещё» shows once the word after the game is read (the text box would cover it).
+func _sync_again() -> void:
+	again_btn.visible = over and result != "" and _said and not dialogue_up()
+
+
 func probe() -> Dictionary:
+	_sync_again()
 	var cells := {}
 	for i in 9:
 		var r := _cell_rect(i)
 		cells[str(i)] = {"x": r.get_center().x, "y": r.get_center().y}
 	return {"board": board.duplicate(), "turn": turn, "over": over, "result": result, "games": games, "wins": wins,
 		"losses": losses, "draws": draws, "cells": cells, "marks": marks.size(),
-		"again": again_btn.visible, "stop": stop_btn.visible}
+		"again": again_btn.visible, "stop": view != null and view.close_button != null and view.close_button.visible,
+		"hover": _hover, "tally": [_tally[0].size(), _tally[1].size()]}

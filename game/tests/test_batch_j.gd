@@ -111,7 +111,10 @@ func _run() -> void:
 	await _test("J-G3 the spoons with Tikhon: from his questions; he taps, Agata answers in the same rhythm; a miss — the same round again; «Хватит» puts it away", _test_rhythm)
 	await _test("J-G5 the knot's rope is alive (стр. 125): the lead-in sways and tightens as the end goes through; the end follows the hand off the path; the knot logic is the same", _test_rope_alive)
 	await _test("J-G4 the string with Mitya (fishing): from his questions on the free day; strike when the float dives; keep the string in the green — the perch comes in; too hard — it snaps", _test_fishing)
-	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks to the door and fades before the black", _test_staging_d3)
+	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks out through the class door, gone in the black", _test_staging_d3)
+	await _test("J-E11 the dinner (стр. 203): the main door shut and an empty chair first; Ulyana comes in through it at «Ульяна по новому мосту прибежала»", _test_dinner_door)
+	await _test("J-R4 no shelf anywhere: the office door flag renamed; an old save with the old name loads with the new", _test_flag_rename)
+	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -916,14 +919,18 @@ func _test_ttt() -> void:
 		sr.advance()
 		await process_frame
 	pr = panel.call("probe")
-	_check(pr["again"] and pr["stop"], "«Ещё раз» and «Хватит» after the game")
+	_check(pr["again"] and pr["stop"], "«Ещё раз» after the game, «Хватит» — the close-up's own button")
+	_check(int((pr["tally"] as Array)[0]) + int((pr["tally"] as Array)[1]) == (0 if pr["result"] == "draw" else 1), "the score in chalk: a stick for the game won (%s)" % str(pr["tally"]))
+	_check(mvn.get("sounds_played").count("chalk") >= 5, "every mark has its chalk scrape: %s" % str(mvn.get("sounds_played")))
 	var flag: String = {"won": "ttt_won", "lost": "ttt_lost", "draw": "ttt_draw"}[String(pr["result"])]
 	_check(gs.has_flag(String(flag)), "the game's event sets %s" % flag)
 	panel.get("again_btn").emit_signal("pressed")
 	await _frames(2)
 	pr = panel.call("probe")
 	_check(not pr["over"] and int(pr["marks"]) == 0 and pr["turn"] == "o", "again: a clean board, Ulyana starts now")
-	panel.get("stop_btn").emit_signal("pressed")
+	var cb: Button = mvn.get("close_button")
+	_check(cb != null and cb.visible and cb.text == sd.text("@mech.ttt.label_stop"), "one way out, bottom right: «%s»" % (cb.text if cb != null else "?"))
+	cb.emit_signal("pressed")
 	guard = 0
 	while (sr.mechanic_open or not sr.current_beat.is_empty()) and guard < 300:
 		guard += 1
@@ -991,14 +998,24 @@ func _test_rhythm() -> void:
 	await _frames(2)
 	_check(not bool(panel.call("probe")["ok"]), "out of time — wrong")
 	_check(await _rhythm_wait(panel, "agata", 15.0) and int(panel.call("probe")["round"]) == 1 and int(panel.call("probe")["misses"]) == 1, "a miss — the same round again")
-	panel.get("stop_btn").emit_signal("pressed")
+	_check(panel.find_child("Slow", true, false) != null, "«Облегчить» on the board")
+	var tol0 := float(panel.call("probe")["tol"])
+	var slow_cb := panel.find_child("Slow", true, false) as CheckButton  # (not TimingBar.slow: the test compiles before the autoloads)
+	slow_cb.button_pressed = not slow_cb.button_pressed
+	_check(float(panel.call("probe")["tol"]) != tol0, "«Облегчить» changes the tolerance at once (%.2f → %.2f)" % [tol0, float(panel.call("probe")["tol"])])
+	slow_cb.button_pressed = not slow_cb.button_pressed
+	var mv: Node = main_node.get_node("MechanicView")
+	mv.get("close_button").emit_signal("pressed")
+	var said := false
 	tw = 0
 	while (sr.mechanic_open or not sr.current_beat.is_empty()) and tw < 300:
 		tw += 1
 		if not sr.current_beat.is_empty():
+			said = said or String(sr.current_beat.get("text", "")).contains(sd.text("@H1.tikhon.spoons_quit").left(10))
 			sr.advance()
 		await process_frame
 	_check(not sr.mechanic_open, "«Хватит» puts it away")
+	_check(said, "with his word: «%s»" % sd.text("@H1.tikhon.spoons_quit"))
 
 
 func _test_rope_alive() -> void:
@@ -1106,7 +1123,15 @@ func _test_fishing() -> void:
 		panel.call("press", true)   # pulling all the time
 		await process_frame
 	_check(String(panel.call("probe")["phase"]) == "wait" and int(panel.call("probe")["lost"]) == lost0 + 1, "pulled too hard — the string snaps, wait again")
-	panel.get("stop_btn").emit_signal("pressed")
+	var mvf: Node = main_node.get_node("MechanicView")
+	var snd: Array = mvf.get("sounds_played")
+	_check(snd.has("line_snap") and snd.has("water_slap"), "the string snaps with a crack, the perch comes out with a splash: %s" % str(snd))
+	_check(panel.find_child("Slow", true, false) != null, "«Облегчить» under the bar")
+	var hint_l: Label = panel.get("hint")
+	var hb := hint_l.get_global_rect().end.y
+	var ab := (panel.get("again_btn") as Button).get_global_rect().end.y
+	_check(hb < 930.0 and ab < 940.0, "the hint and «Ещё» stay above the text box (hint bottom %.0f, «Ещё» %.0f)" % [hb, ab])
+	mvf.get("close_button").emit_signal("pressed")
 	tw = 0
 	while (sr.mechanic_open or not sr.current_beat.is_empty()) and tw < 300:
 		tw += 1
@@ -1114,6 +1139,68 @@ func _test_fishing() -> void:
 			sr.advance()
 		await process_frame
 	_check(not sr.mechanic_open and gs.has_flag("mitya_fished"), "«Хватит» — back on the street")
+
+
+func _test_dinner_door() -> void:
+	var room: Dictionary = sd.call("room", "EP_dinner")
+	var lay := {}
+	for l in room.get("layers", []):
+		lay[String(l.get("id", ""))] = l
+	_check(lay.has("family_closed") and (lay["family_closed"].get("unless", []) as Array).has("ep_ulyana_came")
+			and (lay.get("family", {}).get("if", []) as Array).has("ep_ulyana_came"), "two states of the family layer: the door shut, then open with Ulyana")
+	_check(ResourceLoader.exists(String(lay.get("family_closed", {}).get("image", ""))), "the shut-door layer is in the game")
+	var m26: Dictionary = sd.call("scene", "M26")
+	var at := -1
+	for st in m26.get("stage", []):
+		if (st.get("sets", []) as Array).has("ep_ulyana_came"):
+			at = int(st.get("at", -1))
+	var lines: Array = m26.get("mandatory_lines", [])
+	_check(at >= 0 and at < lines.size() and String(lines[at].get("text", "")).contains("Ульяна") and String(lines[at + 1].get("speaker", "")) == "ulyana",
+			"the door opens at the line that brings her in, just before her own words (at %d)" % at)
+
+
+func _test_flag_rename() -> void:
+	gs.reset()
+	var d: Dictionary = gs.call("to_dict")
+	d["flags"] = {"office_shelf_lifted": true, "done_M13a": true}
+	_check(bool(gs.call("from_dict", d)), "an old save loads")
+	_check(gs.has_flag("office_door_opened") and not gs.has_flag("office_shelf_lifted"), "the old flag comes in under its new name")
+	gs.reset()
+
+
+func _test_school_steps() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M21b", "house_open", "met_nina", "met_ulyana", "school_path_open"])
+	await _enter("O2", "porch")
+	await _drain()
+	var player: Node2D = main_node.get_node("World/Player")
+	var room: Node = rm.current_room
+	_check(room.get("stairs") is Array and (room.get("stairs") as Array).size() == 1, "the porch steps are in the room data")
+	var bottom := Vector2(560, 738)   # the front edge of the lowest step
+	var top := Vector2(556, 622)
+	var s_bottom := float(room.call("depth_scale_at", bottom))
+	var s_top := float(room.call("depth_scale_at", top))
+	var s_flat := float(room.call("depth_scale", top.y))
+	_check(s_top > s_bottom * 0.9 and s_top > s_flat * 1.05, "on the steps she keeps her size (bottom %.3f, door %.3f; a flat floor would give %.3f)" % [s_bottom, s_top, s_flat])
+	# she walks there by herself: the exit to the class is at the top of the steps
+	var ex: Node = null
+	for e in room.call("get_exits"):
+		if String(e.get("target_room")) == "O1":
+			ex = e
+	_check(ex != null, "the door to the class")
+	if ex == null:
+		return
+	var stand: Vector2 = ex.call("get_stand_position") if ex.has_method("get_stand_position") else top
+	_check(stand.y < 640.0, "the door is reached at the top of the steps (stand %s)" % str(stand))
+	player.call("walk_to", stand)
+	var t0 := Time.get_ticks_msec()
+	var min_y := 2000.0
+	while bool(player.call("is_walking")) and Time.get_ticks_msec() - t0 < 12000:
+		min_y = minf(min_y, player.global_position.y)
+		await process_frame
+	_check(player.global_position.distance_to(stand) < 12.0, "she gets up to the door (%s, wanted %s)" % [str(player.global_position), str(stand)])
+	_check(absf(player.scale.y) > s_flat * 1.05, "and is not shrunk at the door (scale %.3f)" % absf(player.scale.y))
 
 
 func _test_staging_d3() -> void:
@@ -1145,18 +1232,19 @@ func _test_staging_d3() -> void:
 			var before := int(player.get("direction"))
 			sr.call("_face_speaker", {"speaker": "narrator"})
 			_check(int(player.get("direction")) == before, "the narrator's line keeps her as she is")
-	# 172: the end of M22 — Nina walks off and fades before the black
+	# 172, 140 (25.10): the end of M22 — Nina walks into the open class door; the black comes while she is in the
+	# doorway (no dissolve on screen), and in the black she is gone and the door is shut
 	var m22: Dictionary = sd.call("scene", "M22")
 	var goes := false
 	var faces := false
 	for st in m22.get("stage", []):
 		for g in st.get("npc_go", []):
-			if _at_key(st) == "end" and String(g.get("id")) == "nina" and bool(g.get("fade", true)):
+			if _at_key(st) == "end" and String(g.get("id")) == "nina" and bool(g.get("in_black", false)) and g.has("door"):
 				goes = true
 		for g in st.get("npc_face", []):
 			if int(st.get("at", -1)) == 0 and String(g.get("id")) == "agata" and String(g.get("face")) == "nina":
 				faces = true
-	_check(goes and faces, "M22: Agata turns to mother at the start; Nina walks off and fades at the end")
+	_check(goes and faces, "M22: Agata turns to mother at the start; Nina walks out through the class door at the end, gone in the black")
 	# 145, 169: the knock on Ilya's shutter, Nina's knuckle on the board — sounds the engine makes, at their lines
 	var knocks := {}
 	for sid in ["M19", "M22"]:
@@ -1168,10 +1256,21 @@ func _test_staging_d3() -> void:
 	_check(knocks.get("M19", "") == "synth:knock_shutter" and knocks.get("M22", "") == "synth:knock_board"
 			and synth.stream("knock_shutter").data.size() > 1000 and synth.stream("knock_board").data.size() > 1000,
 			"the knocks are there and sound: %s" % str(knocks))
+	var alpha_at_black := [-1.0]
+	var door_seen := [false]
+	var on_fade := func(to: float, _s: float) -> void:
+		if to >= 0.99 and alpha_at_black[0] < 0.0 and nina != null and is_instance_valid(nina):
+			alpha_at_black[0] = (nina as CanvasItem).modulate.a
+			door_seen[0] = rm.current_room.get_node_or_null("StageDoor") != null
+	sr.stage_fade.connect(on_fade)
 	await _drain()
 	await _wait(3.5)
 	await _drain()
+	sr.stage_fade.disconnect(on_fade)
 	_check(gs.has_flag("done_M22") and (nina == null or not is_instance_valid(nina) or not nina.visible), "after M22 Nina has left the class")
+	if nina != null and alpha_at_black[0] >= 0.0:
+		_check(alpha_at_black[0] > 0.95 and door_seen[0], "she is still there, in the open door, when the black comes — no dissolve on screen (alpha %.2f, door %s)" % [alpha_at_black[0], str(door_seen[0])])
+	_check(rm.current_room.get_node_or_null("StageDoor") == null, "the door is shut again after the black")
 	# 177: on the free day Agata walks round Mitya by the fence in O4, not through him
 	gs.reset()
 	sr.call("_on_state_reset")

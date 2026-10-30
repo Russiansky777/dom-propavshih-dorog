@@ -591,7 +591,7 @@ async function main() {
 
     if (PARTS.includes("sluice")) try {
       await fresh("sluice");
-      await setFlags(mainScenesUpTo("M14").concat(["house_unlocked", "office_unbolted", "office_shelf_lifted", "sluice_key_inserted"]));
+      await setFlags(mainScenesUpTo("M14").concat(["house_unlocked", "office_unbolted", "office_door_opened", "sluice_key_inserted"]));
       await page.evaluate(() => { window.ambientFlag("sluice_opened", false); window.ambientFlag("pond_lowered", false); });
       await goto("M4");
       let s = await state();

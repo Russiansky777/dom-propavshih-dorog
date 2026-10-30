@@ -165,7 +165,7 @@ func _shot(n: String) -> void:
 						if n == "j_fish_fight":
 							var g1: Array = pn.call("probe")["green"]
 							var mid1 := (float(g1[0]) + float(g1[1])) * 0.5
-							for f in 70:   # keep the string in the green a while — the fish is half way in
+							for f in 18:   # keep the string in the green a while — the fish on the way in, the bar on screen
 								pn.call("press", float(pn.call("probe")["tension"]) < mid1)
 								await process_frame
 						else:

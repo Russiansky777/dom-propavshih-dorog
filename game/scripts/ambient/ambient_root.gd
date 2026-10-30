@@ -452,8 +452,14 @@ func _make_dust(d: Dictionary) -> CPUParticles2D:
 	p.emission_points = emit
 	p.direction = Vector2(float(d.get("drift_x", 1.0)), -0.15)
 	p.spread = 180.0
+	# J (Директор 25.10 стр. 15, 29.10 стр. 96: «вход и сброс воды реалистично»): spray and drops — `dir` [x, y] and
+	# `spread_deg` aim them (up out of the splash, down off the rising paddles), `speed_min_px_s` throws them
+	if d.has("dir"):
+		var dv: Array = d["dir"]
+		p.direction = Vector2(float(dv[0]), float(dv[1]))
+		p.spread = float(d.get("spread_deg", 30.0))
 	p.gravity = Vector2(0.0, float(d.get("gravity", 1.5)))
-	p.initial_velocity_min = 1.5
+	p.initial_velocity_min = float(d.get("speed_min_px_s", 1.5))
 	p.initial_velocity_max = float(d.get("speed_px_s", 6.0))
 	p.tangential_accel_min = -1.5
 	p.tangential_accel_max = 1.5

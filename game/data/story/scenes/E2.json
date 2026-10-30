@@ -106,7 +106,7 @@
       "id": "M13a", "type": "main", "title": "Дверь конторы",
       "locations": ["M2"],
       "requires": {"flags": ["done_M12"], "items": []},
-      "grants": {"flags": ["done_M13a", "office_shelf_lifted"], "items": []},
+      "grants": {"flags": ["done_M13a", "office_door_opened"], "items": []},
       "stage": [{"at": 0, "fade_out_s": 0.5, "hold_s": 1.0, "fade_in_s": 0.6, "sounds": [{"id": "door_heavy", "at_s": 0.7}], "_note": "Р4 (Директор 29.10: стеллажа нет): перекошенную дверь конторы тянут вдвоём — затемнение и тяжёлый деревянный стук (звуки sfx.json), без нового арта."}],
       "mandatory_lines": [
         {"speaker": "pavel", "text": "Слышал я твой звон! Слышал! Без него ещё год бы простоял.", "direction": {"stress": "Слышал", "emotion": "в первой фразе ударное — первое слово «Слышал»; волнение у сухого человека", "pace": "живо", "takes": 3, "map": [91], "voice_fb": [9]}, "tags": ["animated"]}
