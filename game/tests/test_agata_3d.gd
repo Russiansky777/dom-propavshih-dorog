@@ -93,6 +93,7 @@ func _run() -> void:
 	await _test("Skirt (Director 30.10 «сгибы юбки не красиво»): on its own spring bones, not on the legs — no «trouser legs»; the knees push it, standing it settles", _test_skirt)
 	await _test("Look (Director 30.10 «идеальная Агата»): a villager's line — her head turns to him (within the neck's limits), softly; line over — back", _test_look)
 	await _test("Setting off (Director 30.10 «идеальная Агата»): the planted foot stays put as the stance blends into the stride (it skated 12–15 cm)", _test_set_off)
+	await _test("Feet hold the floor (Director 30.10 «идеальная Агата»): stopping and turning on the spot, a foot set down does not skate (14–21 cm before) — it stays or steps", _test_feet_hold)
 	PlayerScript.forced_render = ""
 	gs.reset()
 	var failed := 0
@@ -716,4 +717,101 @@ func _test_set_off() -> void:
 	print("        setting off: the planted foot slides %.0f mm (worst %.0f); without planting %.0f mm (worst %.0f)" % [on[0] * 1000.0, on[1] * 1000.0, off[0] * 1000.0, off[1] * 1000.0])
 	_check(on[0] <= 0.05 and on[1] <= 0.08, "setting off, the planted foot slides %.0f mm on average (worst %.0f; ≤ 50 / 80)" % [on[0] * 1000.0, on[1] * 1000.0])
 	_check(off[0] > on[0] * 2.0, "self-check: without planting the start slides only %.0f mm — the metric would not see skating" % (off[0] * 1000.0))
+	_completed = true
+
+
+# --- Feet hold the floor -----------------------------------------------------------------------------
+
+var _drawn_feet: Array = []
+
+
+func _on_skel_updated() -> void:
+	_drawn_feet = player.view3d.feet_model()   # as drawn: after the modifiers (the foot locks)
+
+
+## Each foot set down on the floor (ankle ≤ 2 cm above its stance height and ≤ 1.5 cm above the other foot): how
+## far its point on the screen floor goes until it is lifted — the skating a viewer sees. Stopping (from the walk
+## weight's fall) and a 150° turn on the spot, per walk; plus the IK holding its target (on the floor the locked
+## foot stays at its spot; past the straight leg's reach it may only come up a little, like a heel, until it steps)
+## and the feet back in the stance once she has settled.
+func _feet_runs(locks: bool) -> Dictionary:
+	player.foot_lock_3d = locks
+	var res := {"stop": [], "turn": [], "miss": 0.0, "lift": 0.0, "off_stance": 0.0}
+	for k in 6:
+		await _enter("Z2", Vector2(700 + (k % 3) * 200, 850 + (k % 2) * 100))
+		var v: Actor3D = player.view3d
+		if not v.skeleton.skeleton_updated.is_connected(_on_skel_updated):
+			v.skeleton.skeleton_updated.connect(_on_skel_updated)
+		var ang := k * 1.05 + 0.3
+		player.yaw3d = ang
+		player.yaw3d_target = ang
+		await _frames(40)
+		var kf: float = player.floor_foreshortening()
+		player.click_at(player.global_position + Vector2(sin(ang), cos(ang) * kf) * 380.0)
+		await _frames(40)
+		for phase in ["stop", "turn"]:
+			if phase == "turn":
+				await _frames(30)
+				player.face_towards(player.global_position + Vector2(sin(ang + 2.6), cos(ang + 2.6) * kf) * 200.0)
+			var planted := {}
+			var worst := 0.0
+			var t := 0.0
+			var after := 0.0
+			while (phase == "stop" and (player.is_walking() or after < 0.6)) or (phase == "turn" and t < 1.2):
+				await process_frame
+				var d: float = player.get_process_delta_time()
+				t += d
+				if not player.is_walking():
+					after += d
+				var f: Array = _drawn_feet if not _drawn_feet.is_empty() else v.feet_model()
+				var ppm_s: float = v.ppm * absf(player.scale.y)
+				var yb := Basis(Vector3.UP, player.yaw3d)
+				var counting: bool = phase == "turn" or player.walk_w < 0.97 or not player.is_walking()
+				var low: float = minf(f[0].y, f[2].y)
+				for i in 2:
+					var foot: Vector3 = yb * f[i * 2]
+					var wp := Vector2(player.global_position.x + foot.x * ppm_s, player.global_position.y + foot.z * ppm_s * kf)
+					var down: bool = foot.y <= float(v._foot_rest_h[i]) + 0.02 and foot.y <= low + 0.015
+					if not down or not counting or not planted.has(i):
+						planted[i] = wp
+					if down and counting:
+						var dd: Vector2 = wp - planted[i]
+						worst = maxf(worst, Vector2(dd.x / ppm_s, dd.y / (ppm_s * kf)).length())
+					if locks and not v.foot_ik.is_empty() and (v.foot_ik[i] as TwoBoneIK3D).influence >= 0.999:
+						var tg: Vector3 = (v._foot_target[i] as Node3D).position
+						res["miss"] = maxf(float(res["miss"]), Vector2(tg.x - foot.x, tg.z - foot.z).length())
+						res["lift"] = maxf(float(res["lift"]), foot.y - tg.y)
+			(res[phase] as Array).append(worst)
+		# settled: each foot back where the stance has it
+		await _frames(60)
+		var fa: Array = v.feet_model()
+		var fd: Array = _drawn_feet if not _drawn_feet.is_empty() else fa
+		for i in 2:
+			res["off_stance"] = maxf(float(res["off_stance"]), Vector2(fd[i * 2].x - fa[i * 2].x, fd[i * 2].z - fa[i * 2].z).length())
+	player.foot_lock_3d = true
+	return res
+
+
+func _mean(a: Array) -> float:
+	var t := 0.0
+	for x in a:
+		t += float(x)
+	return t / maxf(a.size(), 1)
+
+
+func _test_feet_hold() -> void:
+	var on := await _feet_runs(true)
+	var off := await _feet_runs(false)
+	var s_on := _mean(on["stop"])
+	var t_on := _mean(on["turn"])
+	var s_off := _mean(off["stop"])
+	var t_off := _mean(off["turn"])
+	print("        stopping: a foot set down skates %.0f mm (worst %.0f), without the locks %.0f (worst %.0f); turning on the spot %.0f (worst %.0f), without %.0f (worst %.0f)" % [s_on * 1000.0, (on["stop"] as Array).max() * 1000.0, s_off * 1000.0, (off["stop"] as Array).max() * 1000.0, t_on * 1000.0, (on["turn"] as Array).max() * 1000.0, t_off * 1000.0, (off["turn"] as Array).max() * 1000.0])
+	print("        a locked foot off its spot along the floor %.1f mm at most, up off it %.0f mm; settled, off the stance %.0f mm" % [float(on["miss"]) * 1000.0, float(on["lift"]) * 1000.0, float(on["off_stance"]) * 1000.0])
+	_check(s_on <= 0.045 and (on["stop"] as Array).max() <= 0.09, "stopping, a foot set down skates %.0f mm on average (worst %.0f; ≤ 45 / 90)" % [s_on * 1000.0, (on["stop"] as Array).max() * 1000.0])
+	_check(t_on <= 0.06 and (on["turn"] as Array).max() <= 0.1, "turning on the spot, a foot set down skates %.0f mm on average (worst %.0f; ≤ 60 / 100)" % [t_on * 1000.0, (on["turn"] as Array).max() * 1000.0])
+	_check(s_off > s_on * 2.0 and t_off > t_on * 2.0, "self-check: without the locks the feet skate only %.0f / %.0f mm — the metric would not see skating" % [s_off * 1000.0, t_off * 1000.0])
+	_check(float(on["miss"]) <= 0.015, "a locked foot is %.0f mm off its spot along the floor — dragged" % (float(on["miss"]) * 1000.0))
+	_check(float(on["lift"]) <= 0.05, "a locked foot comes %.0f mm up off the floor — the leg cannot reach and it does not step (≤ 50)" % (float(on["lift"]) * 1000.0))
+	_check(float(on["off_stance"]) <= 0.05, "settled, a foot stays %.0f mm off where the stance has it (≤ 50)" % (float(on["off_stance"]) * 1000.0))
 	_completed = true

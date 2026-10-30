@@ -87,6 +87,7 @@ var _carry_node: Node2D = null
 var _carry_stage: String = ""
 var _settling: bool = false       # logical position arrived; the drawn figure is finishing its steps
 var walk_time: float = 0.0      # game seconds spent in the current walk (probe/measurements)
+var _closest_px: float = INF    # nearest the figure has come to the walk's end (3D: passing by is arriving)
 var _distance_walked: float = 0.0
 var _step_phase: int = 0
 var _path_ready: bool = false
@@ -524,6 +525,7 @@ func _start_walk(target: Vector2) -> void:
 			walk_phase = floorf(walk_phase) + 1.0 + ph
 	_walking = true
 	walk_time = 0.0
+	_closest_px = INF
 	_lock_start()
 	walk_started.emit(target)
 
@@ -580,6 +582,7 @@ func enter_room(new_room: Room, pos: Vector2) -> void:
 	_yaw_dir = 0.0
 	if view3d != null:
 		view3d.snap_weights()
+		view3d.feet_reset()
 	_rm_feet = []
 	_rm_side = -1
 	yaw3d_target = yaw3d
@@ -1092,6 +1095,9 @@ func _process_3d(delta: float) -> void:
 		probe = view3d.feet_at_phase(fposmod(walk_phase, 1.0))
 	view3d.pose(delta, fposmod(walk_phase, 1.0), blend, act_w, act_name, float(ct[0]), float(ct[1]), float(ct[2]))
 	_root_motion_3d(probe, blend)
+	if foot_lock_3d:
+		var ppm_s := view3d.ppm * maxf(absf(scale.y), 0.01)
+		view3d.feet_step(delta, global_position, Vector2(ppm_s, ppm_s * maxf(floor_foreshortening(), 0.05)))
 	_sync_facade_3d()
 	_sync_body3d()
 	if _acting and _act_t >= _act_len - 0.0001:
@@ -1218,6 +1224,8 @@ var root_motion_3d: bool = true
 var start_at_mid_stance: bool = true
 ## Setting off, the planted foot stays put through the blend into the stride too (off — probes).
 var plant_on_start: bool = true
+## Feet locked to the floor while set down (Actor3D.feet_step; off — probes).
+var foot_lock_3d: bool = true
 var _rm_shown_w: float = 0.0
 
 
@@ -1282,6 +1290,17 @@ func _walk_step_3d(delta: float) -> void:
 			_cancel_walk()
 		return
 	_path_ready = true
+	# passing by (Director 30.10, 19:16 «крутится на 360, прежде чем повернуться»): a short walk that sets off facing
+	# away curves in, misses the point by a few centimetres, goes on past it, stops, turns round and walks back —
+	# a half turn more for nothing. On the last leg, once she has come within pass_m and moves away again, she is
+	# there.
+	var d_goal := global_position.distance_to(_target)
+	var pass_px := _rtf("walk", "pass_m", 0.1) * view3d.ppm * absf(scale.y)
+	if d_goal < _closest_px:
+		_closest_px = d_goal
+	elif _closest_px < pass_px and d_goal > _closest_px + 0.5 and _remaining_px() <= d_goal + 1.0:
+		_arrive()
+		return
 	var next: Vector2 = nav_agent.get_next_path_position()
 	var to_next := next - global_position
 	_move_3d(to_next, to_next.length(), _remaining_px(), delta)

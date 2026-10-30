@@ -141,19 +141,21 @@ func setup(actor_spec: Dictionary) -> bool:
 		return false
 	_build_tree()
 	_build_camera()
+	for b in ["LeftFoot", "LeftToeBase", "RightFoot", "RightToeBase"]:
+		foot_bones.append(skeleton.find_bone(b))
 	life = ActorLife3D.new()
 	life.name = "Life"
 	life.setup(spec.get("life", {}), skeleton)
 	skeleton.add_child(life)
+	_setup_feet()    # legs first: the skirt's pushers ride on the legs as the IK leaves them
 	_setup_look()    # before the skirt: the springs run last, once per frame
 	_setup_skirt()
-	for b in ["LeftFoot", "LeftToeBase", "RightFoot", "RightToeBase"]:
-		foot_bones.append(skeleton.find_bone(b))
 	_measure_mids()
 	if clips.has("walk"):
 		build_root_motion()
 	_start_idle_slot(0, _pick_idle(""), 0.0)
 	pose(0.0, 0.0, 0.0, 0.0)
+	_measure_foot_rest()
 	ok = true
 	return true
 
@@ -402,6 +404,187 @@ func _setup_skirt() -> void:
 		cap.radius = float(col.get("radius_m", 0.07)) * u
 		cap.height = h + 2.0 * cap.radius
 		cap.position_offset = Vector3(0.0, h * 0.5, 0.0)   # the bone's own +Y runs along it (Blender rig)
+
+
+## Feet that stay where they stand (Director 30.10 «идеальная Агата»: stopping, a foot set down skated 14 cm on
+## average, up to 22; turning on the spot 21, up to 25 — game/tests/test_agata_3d.gd «Feet hold the floor»): a foot
+## the animation has set down is locked to its spot of the screen floor and a TwoBoneIK3D per leg keeps it there
+## while the body moves, the blend changes or the stance turns; when the stance has gone on from it (step_m; turning
+## step_turn_m, out of the straight leg's reach at once) it steps — lifted, carried where the stance will be a moment
+## later (lead_s), set down — one foot in the air at a time; once she has come to rest it steps into the stance
+## (settle_m within settle_s). It lets go when the animation lifts the foot or the full stride takes over (the
+## walk's root motion keeps the planted foot there already), fading in and out. Data rt3d.feet.
+var foot_ik: Array = []          # TwoBoneIK3D per leg [left, right]
+var _foot_target: Array = []     # Node3D in the floor frame (under `oblique`)
+var _foot_pole: Array = []
+var _foot_lock: Array = [null, null]   # locked point (Vector3: screen floor x px, height m, screen floor y px) or null
+var _foot_w: Array = [0.0, 0.0]
+var _foot_rest_h: Array = [0.0, 0.0]
+
+
+func _setup_feet() -> void:
+	var fk: Dictionary = spec.get("feet", {})
+	if fk.is_empty() or foot_bones.size() < 4 or foot_bones[0] < 0 or foot_bones[2] < 0:
+		return
+	var sides := ["Left", "Right"]
+	for i in 2:
+		var ik := TwoBoneIK3D.new()
+		ik.name = "FootIK_" + sides[i]
+		skeleton.add_child(ik)
+		ik.setting_count = 1
+		ik.set_root_bone_name(0, sides[i] + "UpLeg")
+		ik.set_middle_bone_name(0, sides[i] + "Leg")
+		ik.set_end_bone_name(0, sides[i] + "Foot")
+		var tg := Node3D.new()
+		tg.name = "FootTarget_" + sides[i]
+		oblique.add_child(tg)
+		var pl := Node3D.new()
+		pl.name = "KneePole_" + sides[i]
+		oblique.add_child(pl)
+		ik.set_target_node(0, ik.get_path_to(tg))
+		ik.set_pole_node(0, ik.get_path_to(pl))
+		ik.influence = 0.0
+		foot_ik.append(ik)
+		_foot_target.append(tg)
+		_foot_pole.append(pl)
+
+
+## Rest heights of the feet (ankle above the floor in the stance), measured once the stance is posed.
+func _measure_foot_rest() -> void:
+	var f := feet_model()
+	_foot_rest_h = [f[0].y, f[2].y]
+
+
+## One frame of the foot locks, after the pose and the body's move: `origin_px` — where the figure stands on the
+## screen floor, `px_per_m` — screen px per metre across (x) and in depth (y) at its present depth scale. A locked
+## point is kept on the screen floor itself, so neither the body's move nor the figure growing as it comes nearer
+## drags it. A locked foot the stance has drifted away from (turning on the spot, a new stance) is not dragged
+## either: it steps — lifted in a low arc and set down where the stance wants it, one foot at a time.
+var _foot_step: Array = [null, null]   # [from (screen floor point), t 0..1] while stepping
+
+
+func _floor_local(p: Vector3, o: Vector2, k: Vector2) -> Vector3:
+	return Vector3((p.x - o.x) / k.x, p.y, (p.z - o.y) / k.y)
+
+
+func _floor_screen(p: Vector3, o: Vector2, k: Vector2) -> Vector3:
+	return Vector3(o.x + p.x * k.x, p.y, o.y + p.z * k.y)
+
+
+var _feet_yaw: float = 0.0
+var _feet_yaw_v: float = 0.0
+var _feet_still_t: float = 0.0
+
+
+func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
+	if foot_ik.is_empty():
+		return
+	var fk: Dictionary = spec.get("feet", {})
+	var f := feet_model()
+	var yaw := get_yaw()
+	var yaw_b := Basis(Vector3.UP, yaw)
+	# how fast the body turns: a step goes where the stance will be a moment later (into the turn), as people step
+	_feet_yaw_v = lerpf(_feet_yaw_v, angle_difference(_feet_yaw, yaw) / maxf(delta, 1e-4), clampf(delta * 20.0, 0.0, 1.0))
+	_feet_yaw = yaw
+	var lead_b := Basis(Vector3.UP, yaw + _feet_yaw_v * float(fk.get("lead_s", 0.12)))
+	var turning := absf(_feet_yaw_v) > 0.6
+	var walking := _w_s > float(fk.get("walk_off", 0.97))
+	var o := origin_px
+	var k := Vector2(maxf(px_per_m.x, 1e-3), maxf(px_per_m.y, 1e-3))
+	var step_s := maxf(float(fk.get("step_s", 0.24)), 0.05)
+	var anim: Array = []
+	var locks: Array = []
+	var errs: Array = []
+	var targets: Array = []
+	var xf := _skel_to_turn()
+	for i in 2:
+		var a: Vector3 = yaw_b * f[i * 2]                     # the animated ankle in the floor frame
+		anim.append(a)
+		# the leg's reach from the hip (thigh + shin as posed, a little short of straight)
+		var side := "Left" if i == 0 else "Right"
+		var hip: Vector3 = yaw_b * (xf * skeleton.get_bone_global_pose(skeleton.find_bone(side + "UpLeg")).origin)
+		var knee: Vector3 = yaw_b * (xf * skeleton.get_bone_global_pose(skeleton.find_bone(side + "Leg")).origin)
+		var reach: float = ((knee - hip).length() + (a - knee).length()) * float(fk.get("reach", 1.0))
+		var lifted: bool = a.y > float(_foot_rest_h[i]) + float(fk.get("lift_m", 0.035))
+		var lock = null if _foot_lock[i] == null else _floor_local(_foot_lock[i], o, k)
+		var st = _foot_step[i]
+		var err := 0.0
+		if st != null:
+			# stepping: from the old spot (fixed on the floor) to where the stance wants the foot
+			st[1] = minf(float(st[1]) + delta / step_s, 1.0)
+			var u: float = st[1]
+			# lifted first, carried, set down: the foot leaves and meets the floor going straight up and down
+			var h := clampf((u - 0.15) / 0.7, 0.0, 1.0)
+			var e := h * h * (3.0 - 2.0 * h)
+			var to: Vector3 = lead_b * f[i * 2]
+			var pos: Vector3 = _floor_local(st[0], o, k).lerp(to, e)
+			pos.y = lerpf(float(st[2]), to.y, e) + float(fk.get("step_lift_m", 0.05)) * sin(PI * u)
+			lock = pos
+			if u >= 1.0 or walking or lifted:
+				st = null
+				lock = null if (walking or lifted) else lock
+			_foot_step[i] = st
+		elif lock != null:
+			err = Vector2(lock.x - a.x, lock.z - a.z).length()
+			if lifted or walking or err > float(fk.get("release_m", 0.3)):
+				lock = null
+				err = 0.0
+			elif _out_of_reach(Vector3(lock.x, maxf(lock.y, a.y), lock.z), hip, reach):
+				# the body has gone on past the leg's reach: the leg straightens, the heel comes up — and this foot
+				# steps first
+				err = maxf(err, 10.0)
+		elif not lifted and not walking and float(_foot_w[i]) <= 0.001:
+			lock = Vector3(a.x, a.y, a.z)
+		locks.append(lock)
+		errs.append(err)
+		# held at the lock's spot, never below where the stance has the foot
+		targets.append(null if lock == null else (lock if _foot_step[i] != null else Vector3(lock.x, maxf(lock.y, a.y), lock.z)))
+	# a foot the stance has moved away from steps after it — the farther one first, one foot in the air at a time
+	# (the next may leave as the other is being set down)
+	# once she has come to rest after a turn or a stop, a foot left off its stance steps into place once more
+	var still := not turning and _w_s < 0.05
+	_feet_still_t = (_feet_still_t + delta) if still else 0.0
+	var settling := _feet_still_t > 0.15 and _feet_still_t < float(fk.get("settle_s", 0.8))
+	var need := float(fk.get("step_turn_m", 0.035)) if turning else (float(fk.get("settle_m", 0.035)) if settling else float(fk.get("step_m", 0.07)))
+	var first := 0 if float(errs[0]) >= float(errs[1]) else 1
+	for i in [first, 1 - first]:
+		var other = _foot_step[1 - i]
+		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need and (other == null or float(other[1]) >= 0.75):
+			# it leaves from the height it stands at now (the lock or the stance, whichever is higher — as drawn)
+			_foot_step[i] = [_floor_screen(locks[i], o, k), 0.0, maxf((locks[i] as Vector3).y, (anim[i] as Vector3).y)]
+	for i in 2:
+		var lock = locks[i]
+		var a: Vector3 = anim[i]
+		_foot_lock[i] = null if lock == null else _floor_screen(lock, o, k)
+		var want := 1.0 if lock != null else 0.0
+		_foot_w[i] = move_toward(float(_foot_w[i]), want, delta / maxf(float(fk.get("fade_s", 0.12)), 0.01))
+		var w: float = _foot_w[i]
+		if lock != null:
+			(_foot_target[i] as Node3D).position = targets[i]
+		elif w > 0.0:
+			# fading out: the target slides back to the animated foot
+			var t: Vector3 = (_foot_target[i] as Node3D).position
+			(_foot_target[i] as Node3D).position = t.lerp(a, clampf(delta / 0.08, 0.0, 1.0))
+		# the knee points the way the body faces
+		var knee: Vector3 = yaw_b * (_skel_to_turn() * skeleton.get_bone_global_pose(skeleton.find_bone(("Left" if i == 0 else "Right") + "Leg")).origin)
+		(_foot_pole[i] as Node3D).position = knee + yaw_b * Vector3(0.0, 0.0, 0.6)
+		(foot_ik[i] as TwoBoneIK3D).influence = w * w * (3.0 - 2.0 * w)
+
+
+func _out_of_reach(p: Vector3, hip: Vector3, reach: float) -> bool:
+	return p.distance_to(hip) > reach
+
+
+## A cut (room change, load): the feet stand where the new pose puts them.
+func feet_reset() -> void:
+	for i in 2:
+		_foot_lock[i] = null
+		_foot_step[i] = null
+		_foot_w[i] = 0.0
+	_feet_yaw = get_yaw()
+	_feet_yaw_v = 0.0
+	for ik in foot_ik:
+		(ik as TwoBoneIK3D).influence = 0.0
 
 
 ## Where the eyes go (Director 30.10, 19:16 «как сделать идеальную Агату»: she looks at the one who speaks and at what

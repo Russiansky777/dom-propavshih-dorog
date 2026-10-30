@@ -118,6 +118,68 @@ func _run() -> void:
 	quit(0 if failed == 0 else 1)
 
 
+## Short walks from a stand facing across the way (60–100° off; M1 walk 6 set off 90° off, 1.1 m away): how far she
+## goes on past the point after coming closest to it, at most (m) — and the most she then turns (rad).
+func _short_walks(gs: Node, rm: Node, player: Node2D) -> Array:
+	var worst_turn := 0.0
+	var worst_past := 0.0
+	for k in 12:
+		gs.reset()
+		for f in ["done_M01", "done_M02", "house_unlocked", "done_M03", "met_tikhon", "stove_lit"]:
+			gs.set_flag(f, true)
+		rm.change_room("M1", "default", Vector2(991, 1031))
+		for i in 10:
+			await process_frame
+		var a := -2.6 + (k % 4) * 0.35
+		var dist := 90.0 + (k / 4) * 20.0
+		var kf: float = player.floor_foreshortening()
+		var goal: Vector2 = player.global_position + Vector2(cos(a), sin(a) * kf) * dist
+		var off: float = [1.05, 1.57, -1.05, -1.57][k % 4]
+		var start_yaw: float = player._yaw_for_screen(goal - player.global_position) + off
+		player.yaw3d = start_yaw
+		player.yaw3d_target = start_yaw
+		for i in 20:
+			await process_frame
+		player.click_at(goal)
+		var closest := INF
+		var turn_after := 0.0
+		var last: float = player.yaw3d
+		var guard := 0
+		var ppm_s: float = player.view3d.ppm * absf(player.scale.y)
+		while (player.is_walking() or absf(player._yaw_v) > 0.05) and guard < 600:
+			await process_frame
+			guard += 1
+			var d: float = player.global_position.distance_to(goal)
+			closest = minf(closest, d)
+			if d > closest + 1.0:
+				turn_after += absf(angle_difference(last, player.yaw3d))
+				worst_past = maxf(worst_past, (d - closest) / ppm_s)
+			last = player.yaw3d
+		worst_turn = maxf(worst_turn, turn_after)
+	return [worst_turn, worst_past]
+
+
+## The turning a walk's path asks for (rad): from the yaw she stands at to its first leg, then every bend, all of it
+## added up one way (an upper bound for one-way turning when she follows it). The path as seen on the screen floor
+## is turned into yaws the way the player heads (Player._yaw_for_screen).
+func _path_turn(p, yaw0: float) -> float:
+	var path: PackedVector2Array = p.nav_agent.get_current_navigation_path()
+	if path.size() < 2:
+		return -1.0
+	var total := 0.0
+	var prev := yaw0
+	var at: Vector2 = p.global_position
+	for q in path:
+		var d: Vector2 = q - at
+		if d.length() < 4.0:
+			continue
+		var y: float = p._yaw_for_screen(d)
+		total += absf(angle_difference(prev, y))
+		prev = y
+		at = q
+	return total
+
+
 # --- Walk seams ------------------------------------------------------------------------------------
 
 func _test_walk_seams() -> void:
@@ -312,12 +374,16 @@ func _test_agata() -> void:
 			# the clip at (about) its own pace: motion capture hands do not move 2.4× faster than recorded
 			_check(player._act_speed >= 0.8 and player._act_speed <= 1.25, "agata %s: played at %.2f× the clip's pace (0.8–1.25)" % [r[0], player._act_speed])
 	print(line)
-	# circling (Director 19:16): 60 walks to random points in four rooms — no one-way turn beyond 260° (a half turn plus
-	# braking from full speed is ≤ 235°; circling round the point was 331°)
+	# circling (Director 19:16): 60 walks to random points in four rooms — the longest one-way turn is no more than the
+	# path itself asks for (turning to its first leg, then its bends) plus what braking takes (≤ 120°); circling
+	# round the point was 331° for a path needing 44°. A walk that ends in another room (a door) counts until the
+	# room changes — the new room's start yaw is not a turn. (The bare 260° bound failed on a legal path in M1:
+	# a half turn to the first leg and a 62° bend on, 259–267° as navigation timing varied.)
 	var wrng := RandomNumberGenerator.new()
 	wrng.seed = 11
 	var walks := 0
 	var longest := 0.0
+	var worst_excess := -INF
 	for room in [["Z2", Vector2(960, 900)], ["H1", Vector2(1200, 960)], ["R1", Vector2(900, 900)], ["M1", Vector2(900, 900)]]:
 		gs.reset()
 		for f in ["done_M01", "done_M02", "house_unlocked", "done_M03", "met_tikhon", "stove_lit"]:
@@ -326,19 +392,26 @@ func _test_agata() -> void:
 		for i in 10:
 			await process_frame
 		for wk in 15:
+			var yaw0: float = player.yaw3d
 			player.click_at(player.global_position + Vector2(wrng.randf_range(-600, 600), wrng.randf_range(-250, 250)))
 			await process_frame
 			if not player.is_walking():
 				continue
 			walks += 1
+			var in_room = rm.current_room
 			var run := 0.0
 			var run_sign := 0.0
 			var max_run := 0.0
 			var last: float = player.yaw3d
 			var guard := 0
-			while (player.is_walking() or absf(player._yaw_v) > 0.05) and guard < 900:
+			var need := -1.0
+			while (player.is_walking() or absf(player._yaw_v) > 0.05) and guard < 900 and rm.current_room == in_room:
+				if need < 0.0:
+					need = _path_turn(player, yaw0)
 				await process_frame
 				guard += 1
+				if rm.current_room != in_room:
+					break
 				var stp := angle_difference(last, player.yaw3d)
 				last = player.yaw3d
 				if absf(stp) > 1e-4:
@@ -346,8 +419,25 @@ func _test_agata() -> void:
 					run_sign = signf(stp)
 					max_run = maxf(max_run, run)
 			longest = maxf(longest, max_run)
-			_check(max_run <= deg_to_rad(260.0), "agata %s walk %d: turned %.0f° one way (circling)" % [room[0], wk, rad_to_deg(max_run)])
-	print("        agata: %d walks, the longest one-way turn %.0f°" % [walks, rad_to_deg(longest)])
+			need = maxf(need, 0.0)
+			worst_excess = maxf(worst_excess, max_run - need)
+			_check(max_run <= need + deg_to_rad(120.0), "agata %s walk %d: turned %.0f° one way for a path asking %.0f° (circling)" % [room[0], wk, rad_to_deg(max_run), rad_to_deg(need)])
+	print("        agata: %d walks, the longest one-way turn %.0f°, at most %.0f° beyond what its path asks" % [walks, rad_to_deg(longest), rad_to_deg(worst_excess)])
 	_check(walks >= 30, "only %d of 60 clicks became walks" % walks)
+	# passing by: short walks set off across the way curve in and miss the point by a few centimetres; she must not
+	# go on past it, stop, turn round and walk back (M1 walk 6: 223° one way for a path asking 77°).
+	# Self-check: with passing-by off (pass_m 0) the same walks do overshoot.
+	var on_pass: Array = await _short_walks(gs, rm, player)
+	var walk_rt: Dictionary = player._rt.get("walk", {})
+	var keep_pass = walk_rt.get("pass_m", null)
+	walk_rt["pass_m"] = 0.0
+	var off_pass: Array = await _short_walks(gs, rm, player)
+	if keep_pass == null:
+		walk_rt.erase("pass_m")
+	else:
+		walk_rt["pass_m"] = keep_pass
+	print("        short walks set off across the way: went on past the point %.0f mm at most (turning %.0f° after); with passing-by off %.0f mm (%.0f°)" % [on_pass[1] * 1000.0, rad_to_deg(on_pass[0]), off_pass[1] * 1000.0, rad_to_deg(off_pass[0])])
+	_check(on_pass[1] <= 0.03, "a short walk set off across the way goes on %.0f mm past its point (to stop, turn round and come back; ≤ 30)" % (on_pass[1] * 1000.0))
+	_check(off_pass[1] > 0.06, "self-check: without passing-by no short walk went past its point (%.0f mm) — the case is not reproduced" % (off_pass[1] * 1000.0))
 	PS.forced_render = ""
 	Engine.max_fps = 0
