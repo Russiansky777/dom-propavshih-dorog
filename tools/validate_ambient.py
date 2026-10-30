@@ -39,7 +39,7 @@ GAME = ROOT / "game"
 W, H, MARGIN = 1920, 1080, 10
 MAX_POLY = 32
 TOP_KEYS = {"id", "preset", "rain", "wind", "sway_regions", "water", "puddles", "mud", "dust",
-            "footfall", "water_style", "puddle_style", "fog"}
+            "footfall", "water_style", "puddle_style", "fog", "wheel_water"}
 
 errors: list[str] = []
 warnings: list[str] = []
@@ -309,6 +309,31 @@ def check_room(path: Path, idx: dict, flags: set[str]) -> None:
         total_dust += n
     if total_dust > 60:
         err(f"{rid}: {total_dust} dust particles in the room (budget 60)")
+    for i, w in enumerate(spec.get("wheel_water", [])):
+        where = f"{rid}.wheel_water[{w.get('id', i)}]"
+        uniq(w, where)
+        check_flags(w, where, flags)
+        wl = w.get("water_line")
+        if not (isinstance(wl, list) and len(wl) == 2 and all(isinstance(p, list) and len(p) == 2 for p in wl)):
+            err(f"{where}: water_line must be [[x0, y0], [x1, y1]]")
+        if "pour" in w or "entry" in w:
+            if not (isinstance(w.get("hub"), list) and len(w["hub"]) == 2) or float(w.get("radius_px", 0)) <= 0:
+                err(f"{where}: pour/entry need the wheel: hub [x, y] and radius_px > 0")
+            if not 4 <= int(w.get("paddles", 16)) <= 48:
+                err(f"{where}: paddles outside 4..48")
+            if "layer" not in w and float(w.get("deg_per_s", 0)) == 0:
+                err(f"{where}: pour/entry need the spinning room layer (`layer`) or deg_per_s")
+        if "pour" in w:
+            r = float(w["pour"].get("rate", 70))
+            if not 1 <= r <= 200:
+                err(f"{where}: pour.rate {r} outside 1..200 drops/s per bucket")
+        for j, s in enumerate(w.get("sources", [])):
+            if not (isinstance(s.get("from"), list) and len(s["from"]) == 2):
+                err(f"{where}.sources[{j}]: needs from [x, y]")
+            if not 1 <= float(s.get("rate", 60)) <= 400:
+                err(f"{where}.sources[{j}]: rate outside 1..400 drops/s")
+        if not any(k in w for k in ("pour", "entry", "sources", "foam")):
+            err(f"{where}: nothing to draw (pour / entry / sources / foam)")
     for i, f in enumerate(spec.get("fog", [])):
         where = f"{rid}.fog[{f.get('id', i)}]"
         uniq(f, where)

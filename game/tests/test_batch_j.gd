@@ -115,6 +115,7 @@ func _run() -> void:
 	await _test("J-E11 the dinner (стр. 203): the main door shut and an empty chair first; Ulyana comes in through it at «Ульяна по новому мосту прибежала»", _test_dinner_door)
 	await _test("J-T51 Tikhon livelier (25.10 стр. 51): besides ears and head — a tail flick, a yawn with the wide mouth, a stretch; more yawns in the dark", _test_tikhon_life)
 	await _test("J-R4 no shelf anywhere: the office door flag renamed; an old save with the old name loads with the new", _test_flag_rename)
+	await _test("J-E12 the mill wheel's water (25.10 стр. 15, 29.10 стр. 96 — «ничего не изменилось»): the race runs TO the wheel, the rising buckets pour off the left, each paddle cuts in on the right with spray; nothing pours with the pond let down; the epilogue cascade runs", _test_wheel_water)
 	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -1610,3 +1611,61 @@ func _test_last_frame() -> void:
 			_check(bool(c.get("mirror", false)), "Tikhon turned to the people at the table")
 		if String(l.get("id", "")) == "cup_blue":
 			_check(float(c.get("width", 0)) >= 50.0 and float(c.get("at", [0, 0])[1]) < 540.0, "the cup larger and on the table (%s)" % str(c.get("at")))
+
+
+# --- J-E12. The mill wheel's water ----------------------------------------------------------------
+
+func _test_wheel_water() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_N01", "done_M09", "met_pavel"])
+	await _enter("M1")
+	await _drain()
+	var amb: Node = _fog_root()
+	var ww = rm.current_room.get_node_or_null("Ambient/Wheel/wheel_water")
+	var wheel = rm.current_room.get_node_or_null("Layers/wheel")
+	_check(ww is AmbientWheel and wheel != null and wheel.is_spinning(), "M1: the wheel turns and its water is drawn over it")
+	if not (ww is AmbientWheel):
+		return
+	_check(rm.current_room.get_node_or_null("Layers/wheel_drips") == null, "no painted drips standing still beside the turning paddles")
+	# Which way the water must go: the wheel turns clockwise (its bottom goes left) — the race brings the water from the
+	# gate on the right TO the wheel, so it pushes the bottom paddles the way they go.
+	var race := _water("race")
+	var fl: Vector2 = (race.material as ShaderMaterial).get_shader_parameter("flow") if race != null else Vector2.ZERO
+	_check(float(wheel.data.get("spin", {}).get("deg_per_s", 0.0)) > 0.0 and fl.x < -30.0, "the race runs toward the wheel, the way its bottom paddles go (flow %s)" % str(fl))
+	var cut: Array = ww.probe()["cut"]
+	var hub: Vector2 = ww.hub()
+	_check(cos(deg_to_rad(float(cut[0]))) > 0.2 and cos(deg_to_rad(float(cut[1]))) < -0.2, "paddles cut in on the right, come up on the left (%s)" % str(cut))
+	var p0: Dictionary = ww.probe()
+	await create_timer(3.0).timeout
+	var p1: Dictionary = ww.probe()
+	var poured := int(p1["poured"]) - int(p0["poured"])
+	var entries := int(p1["entries"]) - int(p0["entries"])
+	# 16 paddles at 22°/s — about one paddle a second cuts in; the buckets pour all the time.
+	_check(poured > 200 and entries >= 2 and entries <= 5 and int(p1["drops"]) > 40, "3 s: %d drops poured, %d paddles cut in, %d drops in the air" % [poured, entries, int(p1["drops"])])
+	# The pour is on the rising (left) side, below the axle: sample the drops in the air.
+	var left := 0
+	var right := 0
+	for d in ww.get("_drops"):
+		if int(d[3]) == AmbientWheel.POUR:
+			if (d[0] as Vector2).x < hub.x:
+				left += 1
+			else:
+				right += 1
+	_check(left > 20 and right < left / 8 + 1, "the water pours off the rising left side (%d left, %d right)" % [left, right])
+	# The pond let down: the wheel stands, nothing pours, the node is hidden.
+	gs.set_flag("pond_lowered", true)
+	await _frames(3)
+	var q0 := int(ww.probe()["poured"])
+	await create_timer(1.0).timeout
+	_check(not ww.visible and not wheel.is_spinning() and int(ww.probe()["poured"]) == q0, "pond let down: the wheel stands, no water pours")
+	# The epilogue picture: the cascade off the painted wheel runs.
+	gs.set_flag("pond_lowered", false)
+	await _enter("EP_pavel")
+	var cas = rm.current_room.get_node_or_null("Ambient/Wheel/cascade")
+	_check(cas is AmbientWheel, "EP_pavel: the cascade is drawn")
+	if cas is AmbientWheel:
+		var c0 := int(cas.probe()["poured"])
+		await create_timer(1.0).timeout
+		_check(int(cas.probe()["poured"]) - c0 > 150 and int(cas.probe()["landed"]) > 0, "EP_pavel: water falls off the buckets into the race (%s)" % str(cas.probe()))
+

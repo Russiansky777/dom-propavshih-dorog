@@ -9,6 +9,8 @@ extends Node2D
 ##   Fog/<id>   Polygon2D per `fog` entry, ambient_fog.gdshader — river fog over the far bank (z 1 by
 ##              default: over the room layers at z 0, under the figures); when its flags turn it off
 ##              in the room, it lifts over `fade_s` (Р2, партия J) instead of vanishing
+##   Wheel/<id> AmbientWheel per `wheel_water` entry — water pouring off a mill wheel's buckets, spray where the
+##              paddles cut in, foam under it (z 3 by default: over the wheel layer and its painted water)
 ##   Rain       AmbientRain: streak particles in depth layers                        (z 4096)
 ##   Footfall   splashes in puddles, prints in mud when Agata's foot is planted        (see its doc)
 ## A region redraws the background picture; with `source: "layer:<id>"` it redraws that room layer
@@ -33,6 +35,7 @@ var sway: Array[Polygon2D] = []
 var water: Array[Polygon2D] = []
 var dust: Array[CPUParticles2D] = []
 var fog: Array[Polygon2D] = []
+var wheels: Array[AmbientWheel] = []
 
 var _bg_tex: Texture2D = null
 var _bg_origin := Vector2.ZERO
@@ -80,6 +83,18 @@ func setup(p_room: Room, p_room_id: String, p_spec: Dictionary) -> void:
 			dust_box.add_child(n)
 			dust.append(n)
 			_conditional(n, d)
+	# J (Директор 25.10 стр. 15, 29.10 стр. 96): water at a mill wheel — pours off the rising buckets, splashes
+	# where the paddles cut in, foam carried under the wheel (AmbientWheel).
+	if not spec.get("wheel_water", []).is_empty():
+		var wheel_box := _group("Wheel")
+		for w in spec.get("wheel_water", []):
+			var n := AmbientWheel.new()
+			n.name = String(w.get("id", "wheel_water"))
+			n.z_index = clampi(int(w.get("z", 3)), -10, 4096)
+			wheel_box.add_child(n)
+			n.setup(w, room, float(quality.get("particles", 1.0)))
+			wheels.append(n)
+			_conditional(n, w)
 	var fog_box := _group("Fog")
 	for f in spec.get("fog", []):
 		var n := _make_fog(f)

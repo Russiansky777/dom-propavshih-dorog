@@ -983,8 +983,9 @@ func _test_walkthrough() -> void:
 	_check(wheel != null and not wheel.is_spinning(), "the wheel stands while the pond is let down")
 	# H9 (10б): water and drips loop while the water runs, the still water frame takes over with the wheel stopped.
 	var wlay: Node = rm.current_room.get_node("Layers")
-	_check(wlay.get_node("wheel_water_still").visible and not wlay.get_node("wheel_water").visible and not wlay.get_node("wheel_drips").visible,
-		"H9: pond let down — still water, no water loop, no drips")
+	var wwat: Node = rm.current_room.get_node_or_null("Ambient/Wheel/wheel_water")
+	_check(wlay.get_node("wheel_water_still").visible and not wlay.get_node("wheel_water").visible and wlay.get_node_or_null("wheel_drips") == null
+		and wwat != null and not wwat.visible, "H9: pond let down — still water, no water loop, nothing pours off the wheel")
 	gs.set_flag("pond_lowered", false)
 	await _frames(40)
 	var ww: Node = wlay.get_node("wheel_water")
@@ -993,8 +994,8 @@ func _test_walkthrough() -> void:
 	for _i in 30:
 		await _frames(2)
 		seen_frames[ww.frame_index()] = true
-	_check(wheel.is_spinning() and ww.visible and wlay.get_node("wheel_drips").visible and not wlay.get_node("wheel_water_still").visible,
-		"H9: water runs — the wheel spins, water and drips drawn")
+	_check(wheel.is_spinning() and ww.visible and wwat.visible and int(wwat.probe()["poured"]) > 0 and not wlay.get_node("wheel_water_still").visible,
+		"H9: water runs — the wheel spins, water drawn, the buckets pour (%s)" % str(wwat.probe()))
 	_check(not is_equal_approx(rot0, wheel.get_node("Image").rotation_degrees) and seen_frames.size() == 3,
 		"H9: the wheel turns and the water cycles through all 3 frames (%s)" % str(seen_frames.keys()))
 	gs.set_flag("pond_lowered", true)
