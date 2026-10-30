@@ -162,7 +162,7 @@ API без кредитов — всё делаю в чате координат
   - живое 3D фигуры. Оно уже сделано для Агаты за переключателем 18.10 и ждёт решения: сравнение и цифры в `Docs/DECISIONS.md`. Прототип быстрый.
 
   Живое 3D переоткрывает «3D только как источник 2D» — решает Директор.
-- **Рендер — на ноутбуке Директора**: GTX 1060 Max-Q, чат привязан через приложение, коннектор Blender. Пробный клип там и на GitHub — честное «во сколько раз».
+- **Рендер — на ноутбуке Директора** (ASUS ROG Zephyrus G14 2020 — по Директору 29.10; видеокарта в этой модели одна из RTX 2060 Max-Q, GTX 1660 Ti Max-Q, GTX 1650 Ti, GTX 1650 — [prodwiki](https://www.prodwiki.com/ASUS_ROG_Zephyrus_G14_(2020)); прежняя строка «GTX 1060 Max-Q» была ошибкой). 30.10: путь — живое 3D, перерендер листов не нужен.
 - **Хвосты:** возраст Тамары, лист Ильи, стойка Агаты, находки проверки (кисти, носки, шаг).
 - **Смотрим в exe.**
 
@@ -170,4 +170,4 @@ API без кредитов — всё делаю в чате координат
 - [Prompting Eleven v4/v3 — ElevenLabs](https://elevenlabs.io/docs/best-practices/prompting)
 - [Animate — Meshy docs](https://docs.meshy.ai/en/webapp/guides/animate)
 - [Reaction ferry — Wikipedia](https://en.wikipedia.org/wiki/Reaction_ferry)
-- [GTX 1060 for Blender — Renderjuice (Blender score 349, Blender 4.5)](https://www.renderjuice.com/gpus/gtx-1060-for-blender)
+- [ASUS ROG Zephyrus G14 (2020) — prodwiki](https://www.prodwiki.com/ASUS_ROG_Zephyrus_G14_(2020))
