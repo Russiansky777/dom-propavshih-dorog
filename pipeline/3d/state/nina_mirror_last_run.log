@@ -219,3 +219,56 @@ run 39946971861 · success
   строка 1/1 готова
 готово: assets/characters/nina_mirror
 run 39951236129 · success
+01:49:15 | INFO: Data are loaded, start creating Blender stuff
+01:49:15 | INFO: Blender create Mesh node char1
+01:49:17 | INFO: glTF import finished in 1.84s
+01:49:17 | INFO: Data are loaded, start creating Blender stuff
+01:49:17 | INFO: Blender create Mesh node char1
+01:49:19 | INFO: glTF import finished in 1.80s
+  клипы из mirror_clips.glb: ['Chair_Sit_Idle_F', 'Mirror_Viewing', 'Stand_and_Drink']
+матовые материалы: ['BakedMaterial']
+01:49:19 | INFO: Data are loaded, start creating Blender stuff
+01:49:19 | INFO: Blender create Mesh node char1
+01:49:20 | INFO: glTF import finished in 0.68s
+  стопы Walking_Woman: не прошло ['L: в переносе |носок| 22.4° > 10.0°', 'R: в переносе |носок| 11.9° > 10.0°']
+  перенос Walking_Woman: 30 кадров
+клипы: Idle, Idle_4, Listening_Gesture, Listening_Gesture_talk, Chair_Sit_Idle_F, Mirror_Viewing, Stand_and_Drink, Walking_Woman
+рост модели 1.633 м
+  кисть Left: пальцы [ 0.94 -0.17  0.3 ], ладонь [-0.17 -0.98 -0.03], большой [-0.3   0.02  0.95]
+  кисть Right: пальцы [-0.95 -0.2   0.24], ладонь [ 0.19 -0.98 -0.07], большой [ 0.25 -0.02  0.97]
+/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/render/render_mirror.py:287: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  w.use_nodes = True
+  свеча: (-1.53, 6.24, 1.03)
+  окно: (2.17, 7.32, 1.49)
+/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/pipeline/render/render_mirror.py:188: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m.use_nodes = True
+  write: полюс IK right -122.5°
+  write: полюс IK left -57.5°
+  write: at 600.0, 739.6; рост в кадре холста 495.3 px; габарит (152.86864296185638, 409.3347340631679, -22.89727662739795)
+  cup: полюс IK left -57.5°
+  cup: at 680.0, 683.7; рост в кадре холста 427.7 px; габарит (73.95878780291098, 476.69045839109594, 13.087595129707006)
+  window: полюс IK left -70.0°
+  window: at 1195.0, 690.0; рост в кадре холста 435.4 px; габарит (96.25635175564477, 492.81067286795525, -3.42864989681489)
+  walk: скорость по полу 1.302 м/с (опорная стопа)
+  walk: at 1065.0, 700.0; рост в кадре холста 447.4 px; габарит (166.05490256189515, 486.6099989123871, 6.205556026925483)
+  small_mirror: полюс IK left -70.0°
+  small_mirror: at 340.0, 692.5; рост в кадре холста 438.3 px; габарит (79.05678863213333, 480.26480880283333, -4.722067678472324)
+кадр 368×544, опора (184.0, 504.81067286795525)
+  write: полюс IK right -122.5°
+  write: полюс IK left -57.5°
+== рендер write: 24 кадров × 1 строк
+  строка 1/1 готова
+  cup: полюс IK left -57.5°
+== рендер cup: 24 кадров × 1 строк
+  строка 1/1 готова
+  window: полюс IK left -70.0°
+== рендер window: 24 кадров × 1 строк
+  строка 1/1 готова
+== рендер walk: 24 кадров × 2 строк
+  строка 1/2 готова
+  строка 2/2 готова
+  small_mirror: полюс IK left -70.0°
+== рендер small_mirror: 24 кадров × 1 строк
+  строка 1/1 готова
+готово: assets/characters/nina_mirror
+run 40981944853 · success
