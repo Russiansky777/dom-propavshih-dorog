@@ -696,7 +696,7 @@ func _test_states() -> void:
 	_check(_npc_line_now(_hotspot("pelageya")).contains("к Павлу на мельницу"), "day two morning: «Сперва к Павлу на мельницу» (T9, R14) (%s)" % _npc_line_now(_hotspot("pelageya")))
 	gs.set_flag("done_M14")
 	await _frames(2)
-	_check(_npc_line_now(_hotspot("pelageya")).contains("со стопора канат сниму") and _npc_line_now(_hotspot("pelageya")).contains("к опоре"), "the water going down: G28 — she will take the rope off her stopper and bring it to the pier by boat (%s)" % _npc_line_now(_hotspot("pelageya")))
+	_check(_npc_line_now(_hotspot("pelageya")).contains("сниму канат со стопора") and _npc_line_now(_hotspot("pelageya")).contains("к опоре"), "the water going down: G28 — she will take the rope off her stopper and bring it to the pier by boat (%s)" % _npc_line_now(_hotspot("pelageya")))
 	# At dusk before the knot: the boat is gone from the pier — Agata says where (once).
 	for f in ["done_M15a", "nina_time_compared", "evening_dusk"]:
 		gs.set_flag(f)
