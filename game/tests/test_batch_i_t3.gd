@@ -290,6 +290,12 @@ func _test_mouth() -> void:
 	if m == null:
 		return
 	_check(m.get_parent() == (pup.get("bones") as Dictionary).get("head"), "the mouth rides the head bone")
+	# his idle accents held off: a random yawn opens the mouth wide on its own (the yawn's mouth is meant) — CI 30.10
+	# failed twice so («after the voice — the drawn mouth», «Tamara's voice…»: the yawn, not a voice)
+	pup.set("_next_accent", 1e9)
+	var acc: AnimationPlayer = pup.get("accent")
+	if acc != null:
+		acc.stop()
 	await _frames(3)
 	_check(int(pup.get("mouth_frame")) == 0 and not m.visible, "silent — the drawn mouth")
 	var vd: Node = root.get_node("VoiceDirector")
