@@ -1,0 +1,102 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 628,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Партия K5 (Директор 30.10, 01:48, страница «Четвёртый заход»): M09_0 — без акцента на «Дунина», ударение ду́нина; M12_0 — фраза Директора, акцент на «подалась»; по 4 записи (W025–W026), на страницу «Пятый заход»",
+ "items": [
+  {
+   "id": "W025_1",
+   "line": "M09_0",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "[surprised] Ты ПЛЕМЯННИЦА ду́нина, говоришь?.. Хотя… похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "st 0.3 + контекст",
+   "previous_text": "Я Агата, Дунина племянница."
+  },
+  {
+   "id": "W025_2",
+   "line": "M09_0",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "[surprised] Ты ПЛЕМЯННИЦА ду́нина, говоришь?.. Хотя… похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Я Агата, Дунина племянница."
+  },
+  {
+   "id": "W025_3",
+   "line": "M09_0",
+   "take": "3",
+   "speaker": "pavel",
+   "text": "[surprised] Ты ПЛЕМЯННИЦА ду́нина, говоришь?.. Хотя… похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "st 0.3"
+  },
+  {
+   "id": "W025_4",
+   "line": "M09_0",
+   "take": "4",
+   "speaker": "pavel",
+   "text": "[surprised] Ты ПЛЕМЯННИЦА ду́нина, говоришь?.. Хотя… похожа. Хмуришься так же.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45"
+  },
+  {
+   "id": "W026_1",
+   "line": "M12_0",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[excited] Ну вот, вышел засов! Наконец ПОДАЛАСЬ дверь!",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "Ну что там засов? А дверь?"
+  },
+  {
+   "id": "W026_2",
+   "line": "M12_0",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[excited] Ну вот, вышел засов! Наконец ПОДАЛАСЬ дверь!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Ну что там засов? А дверь?"
+  },
+  {
+   "id": "W026_3",
+   "line": "M12_0",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[excited] Ну вот, вышел засов! Наконец ПОДАЛАСЬ дверь!",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35"
+  },
+  {
+   "id": "W026_4",
+   "line": "M12_0",
+   "take": "4",
+   "speaker": "agata",
+   "text": "[excited] Ну вот, вышел засов! Наконец ПОДАЛАСЬ дверь!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  }
+ ]
+}
