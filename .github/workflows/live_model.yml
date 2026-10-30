@@ -1,0 +1,79 @@
+name: live-model
+
+# Живая модель жителя для игры (решение Директора 30.10: модели — живое 3D) из GLB прогона pipeline-character, когда
+# артефакт недоступен из сессии: скачать glb-<run>, упростить сетку (pipeline/3d/build_rt3d_glb.py, ткань матовая),
+# положить в game/assets/characters/<папка>/rt3d/<имя>_rt.glb и закоммитить ([skip ci]). 0 кредитов Meshy.
+# Запуск: gh workflow run live_model.yml -f run_id=39879331774 -f character=tamara_v3 -f name=tamara -f tris=120000
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "прогон pipeline-character, чей артефакт glb-<id> даёт модель"
+        required: true
+      character:
+        description: "папка модели в артефакте (out/<character>) и в game/assets/characters/<character>"
+        required: true
+      name:
+        description: "имя файла: <name>_rt.glb"
+        required: true
+      tris:
+        description: "треугольников после упрощения"
+        default: "120000"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: live-model
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+      - name: Зависимости (bpy = Blender как модуль)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r pipeline/requirements.txt
+      - name: GLB из прогона
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          gh run download "${{ inputs.run_id }}" -n "glb-${{ inputs.run_id }}" -D _prev -R "${{ github.repository }}"
+          find _prev -name '*.glb' -printf '  %p %s\n'
+      - name: Упрощение и проверка костей
+        run: |
+          set -o pipefail
+          c="${{ inputs.character }}"
+          src=$(find _prev -path "*out/$c/animations.glb" | head -1)
+          [ -n "$src" ] || { echo "::error::нет out/$c/animations.glb в артефакте"; exit 1; }
+          mkdir -p "game/assets/characters/$c/rt3d"
+          python pipeline/3d/build_rt3d_glb.py --base "$src" --tris "${{ inputs.tris }}" --matte \
+            --out "game/assets/characters/$c/rt3d/${{ inputs.name }}_rt.glb" --check-out "build/${{ inputs.name }}_rt_check.json" \
+            2>&1 | grep -v "render  *| Saved" || true
+          ls -la "game/assets/characters/$c/rt3d"
+          cat "build/${{ inputs.name }}_rt_check.json" | head -40
+      - name: Коммит
+        run: |
+          git config user.name "live-model-bot"
+          git config user.email "live-model-bot@users.noreply.github.com"
+          git add "game/assets/characters/${{ inputs.character }}/rt3d"
+          git diff --cached --quiet && { echo "нечего коммитить"; exit 0; }
+          git commit -q -m "live-model: ${{ inputs.name }} — GLB для живой фигуры из прогона ${{ inputs.run_id }} (run ${{ github.run_id }}) [skip ci]"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main
+            if git rebase origin/main && git push origin HEAD:main; then exit 0; fi
+            git rebase --abort || true
+            sleep 10
+          done
+          exit 1
