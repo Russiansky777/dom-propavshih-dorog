@@ -101,6 +101,22 @@ def fx_mask(src: np.ndarray, masks: dict) -> np.ndarray:
         smooth_n = 1.0 - smoothstep(180.0, 900.0, var)
         near = cv2.GaussianBlur(zn * smooth_n, (0, 0), 2.0) * float(masks.get("water_near_weight", 0.6))
         water = np.maximum(water, np.clip(near, 0, 1))
+    # Директор 25.10 стр. 2, 29.10 стр. 4: «вода ближе к берегу статична» — полоса озера у ближнего берега, между
+    # верхушками прибрежных деревьев, и дорожка солнца у берега. Здесь вода в бликах (рябь заката) — отбор мягче, чем
+    # у открытой воды, но без деревьев: кроны тёплые/тёмные, стволы и ветки дают вертикальные перепады (|gx| > |gy|),
+    # а рябь — горизонтальные; всё «не вода» расширено на 3 px, чтобы края крон не плыли.
+    if masks.get("water_shore"):
+        zs = poly_mask(masks["water_shore"], feather=4.0)
+        smooth_s = 1.0 - smoothstep(300.0, 1400.0, var)
+        gx = cv2.GaussianBlur(np.abs(cv2.Sobel(L, cv2.CV_32F, 1, 0, ksize=3)), (0, 0), 3.0)
+        gy = cv2.GaussianBlur(np.abs(cv2.Sobel(L, cv2.CV_32F, 0, 1, ksize=3)), (0, 0), 3.0)
+        flat = 1.0 - smoothstep(0.9, 1.5, gx / (gy + 4.0))
+        tree = smoothstep(90, 140, sat) * (1.0 - smoothstep(170, 215, val))
+        dark = 1.0 - smoothstep(55, 85, val)
+        ok = np.clip(smooth_s * flat * (1.0 - tree) * (1.0 - dark), 0, 1)
+        not_water = cv2.dilate((ok < 0.5).astype(np.uint8), np.ones((7, 7), np.uint8)).astype(np.float32)
+        shore = cv2.GaussianBlur(zs * (1.0 - not_water), (0, 0), 1.5) * float(masks.get("water_shore_weight", 0.85))
+        water = np.maximum(water, np.clip(shore, 0, 1))
     # Sway: leaves (warm, saturated) and thin twigs (darker than the sky around them) inside each zone; the weight
     # grows with the distance from the anchor (trunk / ground) up to reach_px — tips move, the base does not.
     sway = np.zeros((H, W), np.float32)

@@ -116,6 +116,7 @@ func _run() -> void:
 	await _test("J-T51 Tikhon livelier (25.10 стр. 51): besides ears and head — a tail flick, a yawn with the wide mouth, a stretch; more yawns in the dark", _test_tikhon_life)
 	await _test("J-R4 no shelf anywhere: the office door flag renamed; an old save with the old name loads with the new", _test_flag_rename)
 	await _test("J-E12 the mill wheel's water (25.10 стр. 15, 29.10 стр. 96 — «ничего не изменилось»): the race runs TO the wheel, the rising buckets pour off the left, each paddle cuts in on the right with spray; nothing pours with the pond let down; the epilogue cascade runs", _test_wheel_water)
+	await _test("J-R11b the boat on the free day (29.10 стр. 189: «лодки на втором берегу нет, а «К лодке» есть»): the boat and Pelageya are where the boat was last taken along the rope; «К лодке» over the boat, only while it is there", _test_boat_follows)
 	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -1669,3 +1670,57 @@ func _test_wheel_water() -> void:
 		await create_timer(1.0).timeout
 		_check(int(cas.probe()["poured"]) - c0 > 150 and int(cas.probe()["landed"]) > 0, "EP_pavel: water falls off the buckets into the race (%s)" % str(cas.probe()))
 
+
+
+
+# --- J-R11b. The boat follows the crossings ------------------------------------------------------
+
+func _exit_vis(to: String) -> Node:
+	for e in rm.current_room.get_exits():
+		if String(e.target_room) == to:
+			return e
+	return null
+
+
+func _test_boat_follows() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "house_unlocked", "ferry_verified", "rope_brought", "rope_on_ring", "road_held_both_ends", "done_M15", "done_M16", "boat_back_at_turn",
+		"done_M17", "started_M18p", "done_M18p", "crossing_hauled", "done_M18", "evening_dusk", "done_M21b", "done_M22", "boat_shuttle_open", "morning_day3", "free_walk_day3"])
+	# The free day begins with the boat at the turn: at the far pier — no boat, no Pelageya, no «К лодке».
+	await _enter("R3", "from_O4")
+	await _drain()
+	var ex = _exit_vis("R2")
+	_check(not _layer_vis("boat_day") and not _layer_vis("boat_evening") and not _pel_vis() and (ex == null or not ex.visible),
+		"the boat at the turn: at the far pier neither the boat, nor Pelageya, nor «К лодке»")
+	await _enter("Z3")
+	await _drain()
+	var zx = _exit_vis("R2")
+	_check((_layer_vis("boat_day") or _layer_vis("boat_shuttle_dusk")) and zx != null and zx.visible, "at the turn: the boat and «В лодку» (%s)" % str(zx.visible if zx != null else null))
+	# Across along the rope (the close-up's own event): the boat comes with Agata.
+	sr.open_mechanic(zx.data["mechanic"], "exit_R2")
+	await _frames(3)
+	sr.mechanic_event("crossed")
+	var g := 0
+	while (rm.current_room == null or rm.current_room.room_id != "R3") and g < 600:
+		g += 1
+		await process_frame
+	await _frames(30)
+	await _drain()
+	ex = _exit_vis("R2")
+	_check(gs.has_flag("boat_at_far") and rm.current_room.room_id == "R3" and (_layer_vis("boat_day") or _layer_vis("boat_evening")) and _pel_vis()
+		and ex != null and ex.visible, "across: at the far pier the boat, Pelageya and «К лодке»")
+	if ex != null:
+		var lb := _layer_box("boat_day") if _layer_vis("boat_day") else _layer_box("boat_evening")
+		_check(lb.size.x > 0.0 and Rect2(Vector2(1150, 760), Vector2(640, 300)).intersects(lb), "«К лодке» is over the boat by the rope's post (boat %s)" % str(lb))
+	# Back: the boat goes to the turn again.
+	sr.open_mechanic(ex.data["mechanic"], "exit_R2")
+	await _frames(3)
+	sr.mechanic_event("crossed")
+	g = 0
+	while (rm.current_room == null or rm.current_room.room_id != "Z3") and g < 600:
+		g += 1
+		await process_frame
+	await _frames(30)
+	_check(not gs.has_flag("boat_at_far") and rm.current_room.room_id == "Z3" and (_layer_vis("boat_day") or _layer_vis("boat_shuttle_dusk")), "back: the boat at the turn again")
+	gs.reset()

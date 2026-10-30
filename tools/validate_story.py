@@ -744,6 +744,17 @@ for _old, _new in (meta.get("flag_renames") or {}).items():
     if _old in declared_flags or f'"{_old}"' in _story_text:
         err(f"meta.json flag_renames: старое имя {_old} ещё в данных — заменить на {_new}")
 
+# Копия для игры (game/data/story, tools/sync_story_data.sh) совпадает с data/story: 30.10 правка воды эпилога
+# (EP_pavel.json) ушла в коммит только в data/story — сборки синхронизируют сами, но в репозитории копия разошлась.
+_GAME_STORY = ROOT / "game" / "data" / "story"
+if _GAME_STORY.is_dir():
+    for _src in sorted(STORY.rglob("*")):
+        if not _src.is_file():
+            continue
+        _dst = _GAME_STORY / _src.relative_to(STORY)
+        if not _dst.is_file() or _dst.read_bytes() != _src.read_bytes():
+            err(f"game/data/story/{_src.relative_to(STORY)} не совпадает с data/story — запустить tools/sync_story_data.sh")
+
 
 # ---------- отчёт ----------
 lines = []
