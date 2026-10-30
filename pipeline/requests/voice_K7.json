@@ -1,0 +1,430 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 1966,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Партия K7 (30.10, 14:30): «Так ГОД уже прошёл» (M03_5); знакомство с Тихоном сразу (M03_1 и его then, первый клик по Тихону — H1.tikhon.first_*); ворчание Тихона по состоянию избы (before_met, _shutter, _scarf); по 3 записи (W039–W050), на страницу «Седьмой заход»",
+ "items": [
+  {
+   "id": "W039_1",
+   "line": "M03_5",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[thoughtful] Так ГОД уже прошёл.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "К сестре пошла. Баяла — к вечеру."
+  },
+  {
+   "id": "W039_2",
+   "line": "M03_5",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Так… ГОД уже прошёл.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55 + контекст",
+   "previous_text": "К сестре пошла. Баяла — к вечеру."
+  },
+  {
+   "id": "W039_3",
+   "line": "M03_5",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[surprised] Так ГОД уже прошёл!",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "К сестре пошла. Баяла — к вечеру."
+  },
+  {
+   "id": "W040_1",
+   "line": "M03_1",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[surprised] Ой!.. А ты КТО ТАКОЙ будешь?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "Мокрое на сухое не клади."
+  },
+  {
+   "id": "W040_2",
+   "line": "M03_1",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[surprised] Ой!.. А ты КТО ТАКОЙ будешь?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Мокрое на сухое не клади."
+  },
+  {
+   "id": "W040_3",
+   "line": "M03_1",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[gasping] Ой!.. А ты кто такой будешь?",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "st 0.4 + контекст",
+   "previous_text": "Мокрое на сухое не клади."
+  },
+  {
+   "id": "W041_1",
+   "line": "M03_1_then0",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Ой!.. А ты кто такой будешь?"
+  },
+  {
+   "id": "W041_2",
+   "line": "M03_1_then0",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65 + контекст",
+   "previous_text": "Ой!.. А ты кто такой будешь?"
+  },
+  {
+   "id": "W041_3",
+   "line": "M03_1_then0",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[slowly] Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55 + контекст",
+   "previous_text": "Ой!.. А ты кто такой будешь?"
+  },
+  {
+   "id": "W042_1",
+   "line": "M03_1_then1",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[curious] А ты один здесь?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла."
+  },
+  {
+   "id": "W042_2",
+   "line": "M03_1_then1",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[curious] А ты один здесь?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла."
+  },
+  {
+   "id": "W042_3",
+   "line": "M03_1_then1",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[quietly] А ты один здесь?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла."
+  },
+  {
+   "id": "W043_1",
+   "line": "tikhon:H1.tikhon.first_who",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[grumbling] Кто там топчется?..",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W043_2",
+   "line": "tikhon:H1.tikhon.first_who",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[grumbling] Кто там топчется?..",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W043_3",
+   "line": "tikhon:H1.tikhon.first_who",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[sleepy] Кто там топчется?..",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  },
+  {
+   "id": "W044_1",
+   "line": "agata:H1.tikhon.first_ask",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[surprised] Ой!.. А ты КТО ТАКОЙ будешь?",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "st 0.35 + контекст",
+   "previous_text": "Кто там топчется?.."
+  },
+  {
+   "id": "W044_2",
+   "line": "agata:H1.tikhon.first_ask",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[surprised] Ой!.. А ты КТО ТАКОЙ будешь?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Кто там топчется?.."
+  },
+  {
+   "id": "W044_3",
+   "line": "agata:H1.tikhon.first_ask",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[gasping] Ой!.. А ты кто такой будешь?",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "st 0.4 + контекст",
+   "previous_text": "Кто там топчется?.."
+  },
+  {
+   "id": "W045_1",
+   "line": "tikhon:H1.tikhon.first_name",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Ой!.. А ты кто такой будешь?"
+  },
+  {
+   "id": "W045_2",
+   "line": "tikhon:H1.tikhon.first_name",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65 + контекст",
+   "previous_text": "Ой!.. А ты кто такой будешь?"
+  },
+  {
+   "id": "W045_3",
+   "line": "tikhon:H1.tikhon.first_name",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[slowly] Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55 + контекст",
+   "previous_text": "Ой!.. А ты кто такой будешь?"
+  },
+  {
+   "id": "W046_1",
+   "line": "agata:H1.tikhon.first_alone",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[curious] А ты один здесь?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "st 0.45 + контекст",
+   "previous_text": "Тихон. При печи смотрителем состою."
+  },
+  {
+   "id": "W046_2",
+   "line": "agata:H1.tikhon.first_alone",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[curious] А ты один здесь?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "st 0.6 + контекст",
+   "previous_text": "Тихон. При печи смотрителем состою."
+  },
+  {
+   "id": "W046_3",
+   "line": "agata:H1.tikhon.first_alone",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[quietly] А ты один здесь?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "Тихон. При печи смотрителем состою."
+  },
+  {
+   "id": "W047_1",
+   "line": "tikhon:H1.tikhon.first_stove",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[sarcastic] И печь тут, вестимо.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5 + контекст",
+   "previous_text": "А ты один здесь?"
+  },
+  {
+   "id": "W047_2",
+   "line": "tikhon:H1.tikhon.first_stove",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sarcastic] И печь тут, вестимо.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65 + контекст",
+   "previous_text": "А ты один здесь?"
+  },
+  {
+   "id": "W047_3",
+   "line": "tikhon:H1.tikhon.first_stove",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[slowly] И печь тут… вестимо.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55 + контекст",
+   "previous_text": "А ты один здесь?"
+  },
+  {
+   "id": "W048_1",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[grumbling] Сыро. Печь сперва затопи — потом поговорим.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W048_2",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[grumbling] Сыро. Печь сперва затопи — потом поговорим.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W048_3",
+   "line": "tikhon:H1.tikhon.before_met",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[annoyed] Сыро. Печь сперва затопи — потом поговорим.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  },
+  {
+   "id": "W049_1",
+   "line": "tikhon:H1.tikhon.before_met_shutter",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[grumbling] Затопила — и ладно. Теперь ставню открой: темень, как в подпечье.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W049_2",
+   "line": "tikhon:H1.tikhon.before_met_shutter",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[grumbling] Затопила — и ладно. Теперь ставню открой: темень, как в подпечье.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W049_3",
+   "line": "tikhon:H1.tikhon.before_met_shutter",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Затопила — и ладно. Теперь ставню открой: темень, как в подпечье.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  },
+  {
+   "id": "W050_1",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[grumbling] Платок-то мокрый с лежанки прибери. От него сырость на всю избу.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "st 0.5"
+  },
+  {
+   "id": "W050_2",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[grumbling] Платок-то мокрый с лежанки прибери. От него сырость на всю избу.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "st 0.65"
+  },
+  {
+   "id": "W050_3",
+   "line": "tikhon:H1.tikhon.before_met_scarf",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[annoyed] Платок-то мокрый с лежанки прибери. От него сырость на всю избу.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "st 0.55"
+  }
+ ]
+}
