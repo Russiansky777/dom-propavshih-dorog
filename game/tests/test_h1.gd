@@ -547,6 +547,26 @@ func _test_shelf_reasons() -> void:
 	_check(String(b.get("text_key", "")) == "H1.stove.look_settled" and not String(b.get("text", "")).contains("гнёзд"), "G14: the stove after the shelf: %s" % str(b))
 
 
+func _diff_box(node: Node, under: Node) -> Rect2:
+	## Screen box of the pixels where two full-canvas layers at the same place differ (the thing one adds to the other).
+	var sa: Sprite2D = node.get_node("Image")
+	var sb: Sprite2D = under.get_node("Image")
+	var ia: Image = _sprite_image(sa)
+	var ib: Image = _sprite_image(sb)
+	var lo := Vector2i(ia.get_width(), ia.get_height())
+	var hi := Vector2i(-1, -1)
+	for y in range(0, mini(ia.get_height(), ib.get_height()), 2):
+		for x in range(0, mini(ia.get_width(), ib.get_width()), 2):
+			var ca := ia.get_pixel(x, y)
+			var cb := ib.get_pixel(x, y)
+			if absf(ca.r - cb.r) + absf(ca.g - cb.g) + absf(ca.b - cb.b) > 0.45:
+				lo = Vector2i(mini(lo.x, x), mini(lo.y, y))
+				hi = Vector2i(maxi(hi.x, x), maxi(hi.y, y))
+	if hi.x < 0:
+		return Rect2()
+	return Rect2(sa.global_position + Vector2(lo) * sa.scale, Vector2(hi - lo) * sa.scale)
+
+
 func _used_box(node: Node) -> Rect2:
 	## Screen box of the opaque pixels of a layer node: its picture, or the crops of its stand-in (art pending).
 	var box := Rect2()
@@ -581,7 +601,8 @@ func _test_shelf_sizes() -> void:
 	await _enter(["done_M03", "met_tikhon", "stove_lit", "h1_shutter_open", "h1_scarf_removed"])
 	room = rm.current_room
 	_check(_layer_visible(room, "shelf_on_bench") and _layer_visible(room, "bench_bare") and not _layer_visible(room, "scarf_over_shelf"), "scarf off: the shelf lies on the bare bench")
-	var lying := _used_box(room.get_node("Layers/shelf_on_bench"))
+	# Batch 11 (30.10): the layer is the whole wide bench with the shelf on it — the shelf is where it differs from the bare bench.
+	var lying := _diff_box(room.get_node("Layers/shelf_on_bench"), room.get_node("Layers/bench_bare"))
 	await _enter(["done_M03", "met_tikhon", "stove_lit", "h1_shutter_open", "h1_scarf_removed", "q04_corner_stove", "done_Q04"])
 	room = rm.current_room
 	_check(not _layer_visible(room, "shelf_on_bench") and _layer_visible(room, "bench_bare") and _layer_visible(room, "hook_coat"),
@@ -590,11 +611,8 @@ func _test_shelf_sizes() -> void:
 	var towel := _used_box(room.get_node("Layers/hook_coat"))
 	_check(towel.get_center().x < 1260.0 and towel.position.y > 220.0 and towel.position.y < 300.0,
 		"the towel hangs on the left hook (≈1217, 247 on screen), not the middle one where Nina's coat goes: %s" % str(towel))
-	# I-T2 (Director, line 32: «снятая полка крупнее»): the lying shelf is drawn × its layer `scale` — the board itself is the same
-	var lying_k := 1.0
-	for l in root.get_node("StoryData").room("H1").get("layers", []):
-		if String(l.get("id", "")) == "shelf_on_bench":
-			lying_k = float(l.get("scale", 1.0))
+	# I-T2 (Director, line 32: «снятая полка крупнее»): the lying shelf is the same board drawn ×1.4 (± 25 %) — nearer the eye
+	var lying_k := 1.4
 	_check(absf(lying.size.x / lying_k - a.size.x) / a.size.x < 0.25, "the shelf on the bench is the same shelf (%.0f / %.2f vs board %.0f)" % [lying.size.x, lying_k, a.size.x])
 	print("        shelf A %s, on the bench %s, towel %s" % [str(a), str(lying), str(towel)])
 

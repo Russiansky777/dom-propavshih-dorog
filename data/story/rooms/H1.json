@@ -1,7 +1,7 @@
 {
   "id": "H1",
   "_art": "Настоящий фон assets/reference/H1_bg.png (1672x941 → 1920x1080) и передний план H1_fg_table_chair.png (кресло со столиком, окклюдер z=950; слой нарисован крупнее фона — уменьшен до 0.6 и поставлен перед печью, см. scale_reason). Состояния (слои из assets/incoming, совмещены вручную offset/scale): закрытые ставни пока h1_shutter_open=false (эталон уже с открытыми), открытая печная дверца и программный огонь при stove_lit, платок на крючках после h1_scarf_removed, полка у печи / у стола по выбору Q04. Хотспоты и выходы не рисуются, подпись — при наведении.",
-  "art_source": {"files": {"state_nina_coat.png": "assets/incoming/H1_state_nina_coat.png", "state_bench_bare.png": "assets/incoming/H1_state_bench_bare.png", "state_towel_hook.png": "assets/incoming/H1_state_towel_hook.png", "state_shelf_leaning.png": "assets/incoming/H1_state_shelf_leaning.png", "state_shelf_A.png": "assets/incoming/H1_state_shelf_A.png", "state_shelf_B.png": "assets/incoming/H1_state_shelf_B.png", "state_scarf_over_shelf.png": "assets/incoming/H1_state_scarf_over_shelf.png", "state_shelf_on_bench.png": "assets/incoming/H1_state_shelf_on_bench.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Полные холсты к H1_bg, (0,0) 1:1: пальто Нины (партия 8), лежанка без платка, платок на левом крючке, полка прислонённая / A / B (партия 9, G9–G12; рамки — assets/incoming/_meta_p9/README.md). Остальные слои H1 совмещены вручную (offset/scale) или построены tools/make_h1_layers.py (гнёзда, подлокотник) и этим импортом не трогаются. Копия — tools/import_room_art.py H1"},
+  "art_source": {"files": {"state_nina_coat.png": "assets/incoming/H1_state_nina_coat.png", "state_bench_bare.png": "assets/incoming/H1_state_bench_bare.png", "state_towel_hook.png": "assets/incoming/H1_state_towel_hook.png", "state_shelf_leaning.png": "assets/incoming/H1_state_shelf_leaning.png", "state_shelf_A.png": "assets/incoming/H1_state_shelf_A.png", "state_shelf_B.png": "assets/incoming/H1_state_shelf_B.png", "state_scarf_over_shelf.png": "assets/incoming/H1_state_scarf_over_shelf.png", "state_shelf_on_bench.png": "assets/incoming/H1_state_shelf_on_bench.png", "state_bench_wide_scarf.png": "assets/incoming/H1_state_bench_wide_scarf.png", "state_bench_wide_shelf.png": "assets/incoming/H1_state_bench_wide_shelf.png", "state_bench_wide_bare.png": "assets/incoming/H1_state_bench_wide_bare.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Полные холсты к H1_bg, (0,0) 1:1: пальто Нины (партия 8), лежанка без платка, платок на левом крючке, полка прислонённая / A / B (партия 9, G9–G12; рамки — assets/incoming/_meta_p9/README.md). Остальные слои H1 совмещены вручную (offset/scale) или построены tools/make_h1_layers.py (гнёзда, подлокотник) и этим импортом не трогаются. Копия — tools/import_room_art.py H1"},
   "background": {
     "kind": "interior",
     "image": "res://assets/rooms/H1/bg.png",
@@ -46,26 +46,22 @@
     },
     {
       "id": "scarf_over_shelf",
-      "image": "res://assets/rooms/H1/state_scarf_over_shelf.png",
+      "image": "res://assets/rooms/H1/state_bench_wide_scarf.png",
       "unless": ["h1_scarf_removed"],
-      "_note": "H12 (Директор 24.10, партия 10б: H1_state_scarf_over_shelf [378,480,700,640) фона, (0,0) 1:1): мокрый платок лежит на лавке поверх снятой полки — видно, почему сперва убрать платок. Платок снят — его закрывает bench_bare"
+      "_note": "Партия 11 (ChatGPT 30.10, assets/incoming/_meta_p11/README.txt; Директор 29.10 стр. 60–61: на ней спят — значит лежанка, шире): широкая лежанка, на ней снятая полка, поверх — мокрый платок; непрозрачная заплата [360,462,712,684) фона, (0,0) 1:1. Три слоя лежанки рисуют её целиком; левый конец [372,470,480,560) у печи пуст во всех (там сидит Тихон)"
     },
     {
       "id": "bench_bare",
-      "image": "res://assets/rooms/H1/state_bench_bare.png",
+      "image": "res://assets/rooms/H1/state_bench_wide_bare.png",
       "if": ["h1_scarf_removed"],
-      "_note": "G9/G12 (партия 9, H1_state_bench_bare — непрозрачная заплата [378,480,700,640) фона, (0,0) 1:1): мокрый полосатый платок нарисован на лежанке прямо в фоне; убран — лежанка голая (а платок на левом крючке, hook_coat). Первый из слоёв состояния: заплата задевает стену под местом полки A — гнёзда и полка рисуются поверх неё"
+      "_note": "Партия 11: платок снят (он на левом крючке, hook_coat) — пустая широкая лежанка; полка, пока лежит, рисуется поверх слоем shelf_on_bench (та же лежанка с полкой)"
     },
     {
       "id": "shelf_on_bench",
-      "scale": 1.4,
-      "scale_pivot": [630, 526],
-      "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
-      "_i_t2": "I-T2 (Директор, стр. 32): снятая полка крупнее (×1,4 вокруг середины низа, лежит на той же лавке)",
-      "image": "res://assets/rooms/H1/state_shelf_on_bench.png",
+      "image": "res://assets/rooms/H1/state_bench_wide_shelf.png",
       "if": ["h1_scarf_removed"],
       "unless": ["q04_corner_stove"],
-      "_note": "H12 (партия 10б: H1_state_shelf_on_bench [584,488,676,526) фона): снятая полка лежит на лавке, под платком; повешена у печи (Q04 A) — слой shelf_stove. Не повесили — так и лежит"
+      "_note": "Партия 11: снятая полка лежит на широкой лежанке (фон [533,487,676,538) — крупнее доски на стене, как просил Директор 25.10 стр. 32), поверх bench_bare; повешена у печи (Q04 A) — слой shelf_stove, лежанка пустая"
     },
     {
       "id": "holes_stove",
@@ -258,7 +254,7 @@
         "_note": "G10 (Директор 23.10: «Агата забирает платок и относит на крючок»): наклон у лежанки (pick) — на ключевом кадре платок уходит с лежанки (слой bench_bare раньше флага), Агата идёт к вешалке у двери и тянется к левому крючку (reach, крючок [1042,215,1086,383) фона → экран x 1196–1247, y 247–440); флаг h1_scarf_removed, текст и M03 — на ключевом кадре reach. Клик посреди — сразу тот же итог. Новых клипов нет"},
       "kind": "object",
       "label": "@H1.scarf.label",
-      "rect": [535, 555, 265, 85],
+      "rect": [598, 552, 190, 95], "_p11_rect": "партия 11: платок на полке, правее середины лежанки — фон [526,486,681,558) → экран 604–782 × 558–641",
       "pick_priority": 2,
       "_rect_note": "платок на лежанке (нарисован в фоне: x 378–700, y 480–640 фона → экран 434–804 × 551–735), поверх прямоугольника печи — приоритет 1; левый конец лежанки — снятая полка (shelf), G12",
       "stand": [640, 805],
@@ -314,7 +310,7 @@
       "stand": [700, 860],
       "pick_priority": 2,
       "states": [
-        {"if": ["tikhon_knows_dunya"], "rect": [424, 448, 110, 152], "stand": [700, 800], "_30_10": "сверка 30.10: на самой лежанке у печного конца (было — верх ступени печи, выше прежнего)", "_note": "блок 3 (M23d): узнал о Дуне — перебрался поближе к Агатиной лежанке; I-T2 (Директор, стр. 145): прежде он лез выше на печь, а по смыслу — к лежанке"},
+        {"if": ["tikhon_knows_dunya"], "rect": [426, 462, 110, 156], "stand": [700, 800], "_p11": "партия 11: на середине верха широкой лежанки", "_30_10": "сверка 30.10: на самой лежанке у печного конца (было — верх ступени печи, выше прежнего)", "_note": "блок 3 (M23d): узнал о Дуне — перебрался поближе к Агатиной лежанке; I-T2 (Директор, стр. 145): прежде он лез выше на печь, а по смыслу — к лежанке"},
         {"if": ["q04_corner_stove"], "rect": [442, 346, 98, 152], "stand": [700, 795]}
       ],
       "_stand_note": "Директор 18.10: «Тихон изначально в комнате, а не появляется … посадить на кресло, пока нет полки». Без visible_if: виден с первого входа. До Q04 сидит на подушке переднего кресла (под ближним подлокотником — слой chair_arm), после Q04 — на выбранной полке (states: rect/stand по флагу; кукла — game/data/actors/tikhon.json place.H1 с теми же флагами, validate_rooms.py п. 9 сверяет ноги с rect). Стоянки — сбоку, Агата его не заслоняет. Приоритет 2: поверх печи, гнёзд и полки. Разговор M03 запускается, как раньше, третьим шагом (платок), не кликом по Тихону",
@@ -463,7 +459,7 @@
       "id": "shelf", "action_anim": "reach",
       "kind": "object",
       "label": "@H1.shelf.label",
-      "rect": [645, 540, 155, 66],
+      "rect": [606, 552, 176, 72], "_p11_rect": "партия 11: снятая полка на широкой лежанке — фон [533,487,676,538) → экран 612–776 × 559–618",
       "visible_if": ["h1_scarf_removed"],
       "stand": [700, 800],
       "_rect_note": "H12 (партия 10б): снятая полка лежит на лавке под платком (слой shelf_on_bench, [584,488,676,526) фона → экран 671–776 × 560–604); видна, когда платок убран. Стоянка справа: после выбора A Агата не заслоняет Тихона на полке",
@@ -513,7 +509,7 @@
       "look": "@H1.shelf.look"
     },
     {
-      "id": "lezhanka", "kind": "object", "action_anim": "reach", "label": "@H1.lezhanka.label", "rect": [410, 556, 395, 150], "stand": [640, 805], "pick_priority": 1, "_j_rect": "J-A3 (Директор 29.10, стр. 60: «кликать надо на печь почему-то»): лежанку игрок видит как лавку с покрывалом перед печью (фон 960-шкалы x 205–400, y 268–350 → экран 410–800 × 536–700; верх с 556 — ниже повешенной полки A, она кликается своей областью), а не узкую ступень над ней; приоритет 1 — выше тела печи (0), ниже платка и снятой полки (2), что лежат на ней", "color": "#8a5a3a", "draw": false,
+      "id": "lezhanka", "kind": "object", "action_anim": "reach", "label": "@H1.lezhanka.label", "rect": [412, 578, 404, 182], "_p11_rect": "партия 11 (30.10): широкая лежанка — экран x 412–816, y 578–760 (верх ниже повешенной полки A, низ — ножки над полом прохода)", "stand": [640, 805], "pick_priority": 1, "_j_rect": "J-A3 (Директор 29.10, стр. 60: «кликать надо на печь почему-то»): лежанку игрок видит как лавку с покрывалом перед печью (фон 960-шкалы x 205–400, y 268–350 → экран 410–800 × 536–700; верх с 556 — ниже повешенной полки A, она кликается своей областью), а не узкую ступень над ней; приоритет 1 — выше тела печи (0), ниже платка и снятой полки (2), что лежат на ней", "color": "#8a5a3a", "draw": false,
       "_rect_note": "T6: лежанка — тёплая ступень печи над лавкой (фон: x 566–720, y 330–550 экрана); лавка ниже — платок и снятая полка (их хотспоты), фотография на уступе (686–722 × 462–504) выше по pick_priority, тело печи левее x 566",
       "sleep": {"scenes": ["N01"], "late": {"N01": "@H1.lezhanka.late_d1"},
         "early": [{"unless": ["done_M05"], "text": "@H4.bed.early_d1_door"}, {"unless": ["done_N01"], "text": "@H4.bed.early_d1_class"}, {"unless": ["done_N02"], "text": "@H4.bed.early_d2"}, {"text": "@H1.lezhanka.after_d1"}]},

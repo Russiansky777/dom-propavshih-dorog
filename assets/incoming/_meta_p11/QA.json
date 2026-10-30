@@ -1,0 +1,71 @@
+[
+  {
+    "file": "H1_state_bench_wide_scarf.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      360,
+      462,
+      712,
+      684
+    ],
+    "alpha_zero_outside_rect": true,
+    "opaque_inside_rect": true,
+    "left_end_identical": true,
+    "outer_edge_identical_to_base": true
+  },
+  {
+    "file": "H1_state_bench_wide_shelf.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      360,
+      462,
+      712,
+      684
+    ],
+    "alpha_zero_outside_rect": true,
+    "opaque_inside_rect": true,
+    "left_end_identical": true,
+    "outer_edge_identical_to_base": true
+  },
+  {
+    "file": "H1_state_bench_wide_bare.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      360,
+      462,
+      712,
+      684
+    ],
+    "alpha_zero_outside_rect": true,
+    "opaque_inside_rect": true,
+    "left_end_identical": true,
+    "outer_edge_identical_to_base": true
+  },
+  {
+    "file": "EP_beam_cut_agata.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      527,
+      398,
+      859,
+      507
+    ],
+    "alpha_zero_outside_rect": true
+  }
+]

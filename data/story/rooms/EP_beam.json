@@ -7,6 +7,7 @@
     "files": {
       "bg.png": "assets/incoming/EP_beam_bg.png",
       "cut_dunya.png": "assets/incoming/EP_beam_cut_dunya.png",
+      "cut_agata.png": "assets/incoming/EP_beam_cut_agata.png",
       "cut_roads.png": "assets/incoming/EP_beam_cut_roads.png",
       "cut_date.png": "assets/incoming/EP_beam_cut_date.png"
     },
@@ -45,7 +46,7 @@
     {
       "id": "cut_dunya",
       "image": "res://assets/rooms/EP_beam/cut_agata.png",
-      "_d5": "Директор 25.10 стр. 165 (D5): вырезано «Агата», не «Дуня» — арт партии 8 вырезан «Дуня»; слой cut_agata.png нарисован кодом в той же манере (tools/make_beam_cut.py: канавка по шрифту Old Standard, свет сверху слева, цвет из древесины фона), пока нет рисованного; id и флаг beam_dunya оставлены ради сохранений",
+      "_d5": "Директор 25.10 стр. 165 (D5): вырезано «Агата», не «Дуня». Партия 11 (ChatGPT 30.10, assets/incoming/_meta_p11): рисованная резьба «Агата» в манере «Дуни» — вместо нарисованной кодом (tools/make_beam_cut.py больше не используется); id и флаг beam_dunya оставлены ради сохранений",
       "if": [
         "beam_dunya"
       ],
