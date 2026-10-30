@@ -3,7 +3,7 @@
 #   W=/tmp/npc_live PY=python3.13 tools/build_npc_live.sh
 S="${W:-/tmp/npc_live}"; ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; mkdir -p "$S/n3d"
 cd $S/n3d
-for n in nina pavel mitya pelageya ilya ilya_wife ulyana; do
+for n in nina pavel mitya pelageya ilya ilya_wife ulyana tamara; do
   f=${n}_v2_game_r4.glb
   if [ ! -s $f ]; then
     id=$(gh api repos/Russiansky777/dom-propavshih-dorog/releases/tags/npc-v2-work --jq ".assets[] | select(.name==\"$f\") | .id")

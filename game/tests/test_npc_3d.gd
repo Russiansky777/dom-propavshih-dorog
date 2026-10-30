@@ -103,7 +103,7 @@ func _find_live() -> Node:
 
 
 func _test_models() -> void:
-	var ids := ["nina", "pavel", "mitya", "pelageya", "ilya", "ilya_wife", "ulyana"]
+	var ids := ["nina", "pavel", "mitya", "pelageya", "ilya", "ilya_wife", "ulyana", "tamara"]
 	for id in ids:
 		var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 		_check(spec is Dictionary and spec.has("rt3d"), "%s: actor data without rt3d" % id)
