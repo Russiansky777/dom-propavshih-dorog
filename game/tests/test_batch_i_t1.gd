@@ -229,9 +229,9 @@ func _test_spine() -> void:
 	_check(m01_agata.contains("чертовщина"), "M01: Agata's surprise about the boats (line 9)")
 	var asked := false
 	for ln in _lines_of("M03"):
-		if String(ln.get("speaker", "")) == "agata" and String(ln.get("text", "")).contains("так и не вернулась"):
+		if String(ln.get("speaker", "")) == "agata" and String(ln.get("text", "")).contains("что сказала, как уходила"):
 			asked = true
-	_check(asked, "M03: «Где тётя?» asked as «так и не вернулась?»")
+	_check(asked, "M03: «Где тётя?» asked as «что сказала, как уходила?» (F01, 30.10: Tamara already said she did not come back)")
 	# Words Agata cannot say before she learns it: scene where it is learned → words.
 	var early := {"M15a": ["двадцать", "Здесь минута"], "M21": ["умерла", "умерл"], "M09b": ["Павел слышал", "Павел на мельнице слышал"]}
 	for learned in early.keys():
