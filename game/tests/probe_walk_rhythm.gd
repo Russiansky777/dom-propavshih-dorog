@@ -5,6 +5,24 @@ extends SceneTree
 
 var _drawn: Array = []
 var _prev_c: Array = []
+var _arms: Array = []
+var _arm_rows: Array = []
+
+
+## Drawn arms: per side the elbow's bend, the upper arm's spread out of the side plane and the wrist's bend (deg).
+func _arm_angles(v: Actor3D) -> Array:
+	var out: Array = []
+	var xf := v._skel_to_turn()
+	var sk := v.skeleton
+	for side in ["Left", "Right"]:
+		var a: Vector3 = xf * sk.get_bone_global_pose(sk.find_bone(side + "Arm")).origin
+		var e: Vector3 = xf * sk.get_bone_global_pose(sk.find_bone(side + "ForeArm")).origin
+		var h: Vector3 = xf * sk.get_bone_global_pose(sk.find_bone(side + "Hand")).origin
+		var fy: Vector3 = xf.basis * sk.get_bone_global_pose(sk.find_bone(side + "ForeArm")).basis * Vector3.UP
+		var hy: Vector3 = xf.basis * sk.get_bone_global_pose(sk.find_bone(side + "Hand")).basis * Vector3.UP
+		var up := e - a
+		out.append([rad_to_deg((e - a).angle_to(h - e)), rad_to_deg(atan2(absf(up.x), -up.y)), rad_to_deg(fy.angle_to(hy))])
+	return out
 
 
 func _initialize() -> void:
@@ -35,7 +53,9 @@ func _run() -> void:
 		await process_frame
 	player.click_at(player.global_position + Vector2(900, 0))
 	var v: Actor3D = player.view3d
-	v.skeleton.skeleton_updated.connect(func(): _drawn = v.feet_model())
+	v.skeleton.skeleton_updated.connect(func():
+		_drawn = v.feet_model()
+		_arms = _arm_angles(v))
 	var prev: Vector2 = player.global_position
 	var sp: Array = []
 	var hz: Array = []
@@ -71,7 +91,18 @@ func _run() -> void:
 			hz.append(v.bone_model("Hips").y * 100.0)
 			hs.append(absf(hx - prev_h) * 60.0)
 			sk.append(slip)
+			if not _arms.is_empty():
+				_arm_rows.append(_arms)
 		prev_h = v.bone_floor("Hips").x
+	for side in 2:
+		var el: Array = []
+		var ab: Array = []
+		var wr: Array = []
+		for r in _arm_rows:
+			el.append(r[side][0])
+			ab.append(r[side][1])
+			wr.append(r[side][2])
+		print("%s arm walking (drawn): elbow %.0f–%.0f°, spread %.0f–%.0f°, wrist %.0f–%.0f°" % ["left" if side == 0 else "right", el.min(), el.max(), ab.min(), ab.max(), wr.min(), wr.max()])
 	var skm: Array = sk.duplicate()
 	skm.sort()
 	print("drawn foot contacts (ankle or ball within 1 cm of the floor) per frame: median %.1f mm, 90%% %.1f, max %.1f" % [skm[skm.size() / 2], skm[int(skm.size() * 0.9)], skm.max()])

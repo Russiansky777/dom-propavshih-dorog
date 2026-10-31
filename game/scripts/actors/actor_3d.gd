@@ -148,6 +148,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	life.name = "Life"
 	life.setup(spec.get("life", {}), skeleton)
 	skeleton.add_child(life)
+	_setup_arm_tone()
 	_setup_limit()   # the clips' pose first: the IKs and the look come after it and are not slowed by it
 	_setup_feet()    # legs first: the skirt's pushers ride on the legs as the IK leaves them
 	_setup_arm_clear()
@@ -160,6 +161,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	_start_idle_slot(0, _pick_idle(""), 0.0)
 	pose(0.0, 0.0, 0.0, 0.0)
 	_measure_foot_rest()
+	_measure_arm_ref()
 	ok = true
 	return true
 
@@ -428,6 +430,57 @@ func _setup_limit() -> void:
 	skeleton.add_child(limiter)
 	limiter.exclude = true          # no chains excluded: every bone is limited
 	limiter.max_angular_velocity = deg_to_rad(deg)
+
+
+## The walking arms' tone (ArmToneModifier, right after the clip and the breathing; data rt3d.walk.arm_tone
+## {elbow_keep, wrist_keep, abd_keep}): nothing when absent.
+const ArmTone := preload("res://scripts/actors/arm_tone_modifier.gd")
+var arm_tone: SkeletonModifier3D = null    # ArmTone
+
+
+func _setup_arm_tone() -> void:
+	var at: Dictionary = spec.get("walk", {}).get("arm_tone", {})
+	if at.is_empty():
+		return
+	arm_tone = ArmTone.new()
+	arm_tone.name = "ArmTone"
+	skeleton.add_child(arm_tone)
+	arm_tone.elbow_keep = float(at.get("elbow_keep", 0.55))
+	arm_tone.wrist_keep = float(at.get("wrist_keep", 0.5))
+	arm_tone.abd_keep = float(at.get("abd_keep", 0.5))
+	arm_tone.to_model = _skel_to_model().basis.orthonormalized()
+	var ab: Array = []
+	var fb: Array = []
+	var hb: Array = []
+	var rf: Array = []
+	var rh: Array = []
+	for side in ["Left", "Right"]:
+		ab.append(skeleton.find_bone(side + "Arm"))
+		var f := skeleton.find_bone(side + "ForeArm")
+		var h := skeleton.find_bone(side + "Hand")
+		fb.append(f)
+		hb.append(h)
+		rf.append(skeleton.get_bone_rest(f).basis.get_rotation_quaternion() if f >= 0 else Quaternion.IDENTITY)
+		rh.append(skeleton.get_bone_rest(h).basis.get_rotation_quaternion() if h >= 0 else Quaternion.IDENTITY)
+	arm_tone.arm_bones = ab
+	arm_tone.fore_bones = fb
+	arm_tone.hand_bones = hb
+	arm_tone.rest_fore = rf
+	arm_tone.rest_hand = rh
+
+
+## The standing spread of each upper arm (frontal plane, rad), from the stance as posed — the walking arm is brought in
+## towards it.
+func _measure_arm_ref() -> void:
+	if arm_tone == null:
+		return
+	var ref: Array = []
+	for i in 2:
+		var a: int = arm_tone.arm_bones[i]
+		var f: int = arm_tone.fore_bones[i]
+		var d: Vector3 = arm_tone.to_model * (skeleton.get_bone_global_pose(f).origin - skeleton.get_bone_global_pose(a).origin)
+		ref.append(atan2((1.0 if i == 0 else -1.0) * d.x, -d.y))
+	arm_tone.abd_ref = ref
 
 
 ## Other things that hang and swing (Director 30.10, 23:22 — the braid and the bag on springs): each entry of
@@ -1341,6 +1394,8 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 		tree.set("parameters/act2_seek/seek_request", act_t2)
 	tree.set("parameters/act_mix/blend_amount", clampf(act_mix, 0.0, 1.0))
 	tree.set("parameters/actb/blend_amount", clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0)
+	if arm_tone != null:
+		arm_tone.weight = clampf(w, 0.0, 1.0) * (1.0 - (clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0))
 	if bool(spec.get("center_feet", true)):
 		var ib := _idle_blend()
 		var idle_mid := _mid_of(_slot_name[0]).lerp(_mid_of(_slot_name[1]), ib)
