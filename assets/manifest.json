@@ -2857,6 +2857,27 @@
       "spec": "Пруд у затвора ниже после спуска, полоса ила",
       "use": "M4.json → новый слой if sluice_opened",
       "g": "K стр. 100"
+    },
+    {
+      "id": "map_zarechye_v2",
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "kind": "ui_map",
+      "files": [
+        "incoming/zarechye_plan_v2.png",
+        "incoming/zarechye_plan_overlay_v2.png"
+      ],
+      "base": "ui/map/zarechye_plan.png + overlay",
+      "size": "1376×768",
+      "placement": "план целиком",
+      "spec": "План Заречья по игре: мельница по другую сторону от дома (как на улице Z2), плотина не до того берега, карандашный кружок у поворота, вывеска «ПОЧТА», один причал без лодки после переправы, тропа к улице Ольховки",
+      "use": "data/story/map_zarechye.json → image, overlays; точки мест — по ответу художника",
+      "g": "K стр. 10; сверка плана 01.11 П1, П2, П5–П8"
     }
   ]
 }

@@ -5,7 +5,9 @@
     "map.house": {"text": "Дом тёти Дуни", "draft": false},
     "map.mill": {"text": "Мельница", "draft": false},
     "map.olkhovka": {"text": "Школа", "draft": false},
-    "map.nina_house": {"text": "Дом Нины", "draft": false},
+    "map.nina_house": {"text": "Дом мамы", "draft": false, "_k": "K (сверка плана 01.11, П4): в игре — «Дом мамы»"},
+    "map.ferry_shed": {"text": "Сарайчик переправы", "draft": false, "_k": "K (сверка плана 01.11, П3): в игре R3.shed — «Сарайчик переправы»; комнаты R4 нет"},
+    "map.ilya_house": {"text": "Дом Ильи", "draft": false, "_k": "K (сверка плана 01.11, П8)"},
     "map.here": {"text": "Вы здесь", "draft": false},
     "map.close_hint": {"text": "Щёлкните или нажмите Esc, чтобы вернуться", "draft": false},
     "ui.button_plan": {"text": "План", "draft": false}

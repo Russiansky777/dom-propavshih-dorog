@@ -326,11 +326,8 @@ func _build() -> void:
 	journal_goal_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	journal_goal_label.theme_type_variation = &"BodyLabel"
 	jv.add_child(journal_goal_label)
-	var jf := Label.new()
-	jf.text = StoryData.text("@ui.journal_facts")
-	jf.theme_type_variation = &"HeaderSmall"
-	jv.add_child(jf)
-	# the hint asked for in the journal (K, стр. 11): «Подсказка N из 3» and its text, under the goal
+	# the hint asked for in the journal (K, стр. 11): «Подсказка N из 3» and its text, right under the goal (the journal
+	# review 01.11, п. 15: it stood under «Что я знаю» and read like one of the facts)
 	journal_hint_label = Label.new()
 	journal_hint_label.name = "JournalHint"
 	journal_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -338,6 +335,10 @@ func _build() -> void:
 	journal_hint_label.add_theme_color_override("font_color", UiTheme.GOLD)
 	journal_hint_label.visible = false
 	jv.add_child(journal_hint_label)
+	var jf := Label.new()
+	jf.text = StoryData.text("@ui.journal_facts")
+	jf.theme_type_variation = &"HeaderSmall"
+	jv.add_child(jf)
 	journal_facts_label = GlossText.new()
 	journal_facts_label.name = "Facts"
 	journal_facts_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -877,6 +878,8 @@ func toggle_journal() -> void:
 		journal_time_label.text = TimeOfDay.label(GameState.current_room)
 		journal_time_label.visible = journal_time_label.text != ""
 		var facts := StoryRunner.journal_facts()
+		# newest first (the journal review 01.11, п. 15: ~90 entries by the end — the latest stood out of sight at the bottom)
+		facts.reverse()
 		journal_facts_label.set_story_text("\n".join(PackedStringArray(facts.map(func(f): return "• " + f))) if not facts.is_empty() else StoryData.text("@ui.journal_empty"))
 	_update_modal()
 

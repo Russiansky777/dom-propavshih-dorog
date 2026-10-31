@@ -1928,6 +1928,13 @@ func next_hint() -> Dictionary:
 
 
 func journal_goal() -> String:
+	# K (сверка журнала 01.11, п. 9): a goal with a list of what is left (scenes data `goal_left`: the free day, the
+	# morning before the first log) is worked out when the journal is read — the list follows every flag (a story done,
+	# letters read), not only the main scene that set it.
+	if GameState.journal_goal_scene != "":
+		var gsc := StoryData.scene(GameState.journal_goal_scene)
+		if gsc.has("goal_left"):
+			return StoryData.scene_goal(gsc)
 	if GameState.journal_goal != "":
 		return GameState.journal_goal
 	return StoryData.text("@ui.goal_start")
