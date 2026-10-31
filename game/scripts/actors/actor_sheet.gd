@@ -66,6 +66,8 @@ var eased_motion: Dictionary = {}
 var idle_static_frame: int = -1   # >= 0: the idle animation uses only this frame (turn clips, placeholders)
 var sheet_dir: String = ""
 var frames: SpriteFrames = null
+var textures_loaded: bool = true   # false: placement only (load_actor with_textures false), frames on a 1-px stand-in
+static var _stand_in: Texture2D = null
 var load_error: String = ""
 
 
@@ -81,9 +83,14 @@ static func _read_json(path: String) -> Variant:
 
 
 ## `overrides` replaces top-level keys of data/actors/<id>.json (tests: e.g. {"idle_static_frame": -1}).
-static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorSheet:
+## `with_textures` false (K, Director 31.10, стр. 16 — transitions slower): the figure is drawn live (NpcLive3D)
+## and the sheet only places it — sizes, pivot, directions, timing — so its pages (up to 8192² px each, ~150 MB
+## of PNG per villager) are not read: every frame points at one shared 1-px texture with the same region and
+## margin, i.e. the same size on screen. The facade sprite is drawn invisible anyway (NpcLive3D._hide_mat).
+static func load_actor(actor_id: String, overrides: Dictionary = {}, with_textures: bool = true) -> ActorSheet:
 	var a := ActorSheet.new()
 	a.id = actor_id
+	a.textures_loaded = with_textures
 	var spec = _read_json("res://data/actors/%s.json" % actor_id)
 	if typeof(spec) != TYPE_DICTIONARY:
 		a.load_error = "missing data/actors/%s.json" % actor_id
@@ -196,7 +203,7 @@ func _build_frames() -> void:
 			else:
 				push_warning("ActorSheet %s: no sheet for action '%s' (%s) — action skipped" % [id, action, path])
 			continue
-		var tex: Array = page_textures(act, load(path))
+		var tex: Array = page_textures(act, load(path)) if textures_loaded else [stand_in()]
 		var n := int(act.get("frames", 1))
 		var fps := float(act.get("fps", 8))
 		var frame_ids: Array = frame_sequence(n, String(act.get("playback", "loop")))
@@ -259,6 +266,14 @@ static func web_sheet_dir(dir: String) -> String:
 	if alt != dir and FileAccess.file_exists(alt + "/sprites.json"):
 		return alt
 	return dir
+
+
+static func stand_in() -> Texture2D:
+	if _stand_in == null:
+		var img := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+		img.fill(Color(0, 0, 0, 0))
+		_stand_in = ImageTexture.create_from_image(img)
+	return _stand_in
 
 
 func page_textures(act: Dictionary, first: Texture2D) -> Array:

@@ -99,7 +99,11 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	actor_id = id
 	hotspot = h
 	player = the_player
-	sheet = ActorSheet.load_actor(id)
+	# K (стр. 16): a villager drawn live needs the sheet for placement only — its pages are not read (a room change
+	# loaded ~150 MB of PNG per villager to draw it invisible); if the model then fails, the full sheet is loaded.
+	var aspec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	var live_wanted: bool = aspec is Dictionary and NpcLive3D.wanted(aspec)
+	sheet = ActorSheet.load_actor(id, {}, not live_wanted)
 	if sheet == null or not sheet.is_loaded():
 		push_warning("NpcActor: sheet for '%s' not loaded (%s)" % [id, sheet.load_error if sheet else "?"])
 		return false
@@ -133,8 +137,7 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	var rid := String(room.get("room_id")) if room.get("room_id") != null else ""
 	if rid != "" and StoryData.rooms.has(rid):
 		_floor_k = float(StoryData.rooms[rid].get("floor_foreshortening", ActorSheet.FLOOR_FORESHORTENING_DEFAULT))
-	var aspec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
-	if aspec is Dictionary and NpcLive3D.wanted(aspec):
+	if live_wanted:
 		live = NpcLive3D.new()
 		live.name = "Live3D"
 		add_child(live)
@@ -143,6 +146,9 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 		else:
 			live.queue_free()
 			live = null
+	if live == null and not sheet.textures_loaded:
+		sheet = ActorSheet.load_actor(id)
+		sprite.sprite_frames = sheet.frames
 	_face_data()
 	shown_dir = direction
 	visible = h.visible

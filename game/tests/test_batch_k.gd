@@ -95,6 +95,7 @@ func _run() -> void:
 	await _test("K-46/62/87/61 the world: night fog dark, windows dimmer; the pond at the sluice moves; the journal written on its ruling", _test_world_k)
 	await _test("K-108 the first span → the bridge: one black, never lifted in between", _test_one_black)
 	await _test("K-108 a kept black that no scene takes up lifts by itself", _test_kept_black_lifts)
+	await _test("K-16 a room change: a villager drawn live does not read its sheets, a 3D model is read once a game", _test_room_change_cost)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -622,3 +623,60 @@ func _test_world_k() -> void:
 	_check(ws.has("river") and ws["river"].has("flow") and float(ws["river"]["ripple_px"][1]) >= 2.5, "M4: the pond right of the sluice drifts and ripples")
 	var wr: Dictionary = sd.item("journal_manager").get("examine", {}).get("writing", {})
 	_check(absf(float(wr.get("angle_deg", 0)) - 10.0) < 1.5 and absf(float(wr.get("line_pitch", 0)) - 27.0) < 1.5, "the journal on its ruling: %s°, pitch %s" % [wr.get("angle_deg"), wr.get("line_pitch")])
+
+
+func _test_room_change_cost() -> void:
+	# The placement-only sheet has the same frames, the same sizes on screen — and costs a fraction.
+	var AS = load("res://scripts/actors/actor_sheet.gd")
+	var t0 := Time.get_ticks_usec()
+	var bare = AS.load_actor("nina", {}, false)
+	var t_bare := (Time.get_ticks_usec() - t0) / 1000.0
+	t0 = Time.get_ticks_usec()
+	var full = AS.load_actor("nina")
+	var t_full := (Time.get_ticks_usec() - t0) / 1000.0
+	print("  K-16: nina placement-only %.0f ms, full %.0f ms" % [t_bare, t_full])
+	_check(full.is_loaded() and bare.is_loaded(), "both sheets load")
+	_check(not bare.textures_loaded and full.textures_loaded, "the placement-only sheet says so")
+	var names: PackedStringArray = full.frames.get_animation_names()
+	_check(names == bare.frames.get_animation_names(), "the same animations")
+	var same := true
+	for a in names:
+		if full.frames.get_frame_count(a) != bare.frames.get_frame_count(a):
+			same = false
+			continue
+		for i in full.frames.get_frame_count(a):
+			if full.frames.get_frame_texture(a, i).get_size() != bare.frames.get_frame_texture(a, i).get_size():
+				same = false
+	_check(same, "every frame the same size on screen (placement unchanged)")
+	var pages := {}
+	for a in names:
+		for i in bare.frames.get_frame_count(a):
+			pages[(bare.frames.get_frame_texture(a, i) as AtlasTexture).atlas] = true
+	_check(pages.size() == 1 and pages.has(AS.stand_in()), "placement-only frames point at the 1-px stand-in only (%d textures)" % pages.size())
+	# In a room: live villagers carry the placement-only sheet; a villager whose model is missing (a machine without
+	# the models) falls back to the full sheet, so it is never drawn from the 1-px stand-in.
+	var LV = load("res://scripts/actors/npc_live_3d.gd")
+	LV.forced = "3d"
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "house_unlocked", "house_open", "done_M03"])
+	var seen := 0
+	for pass_i in 2:
+		await _enter("O3")
+		for n in rm.current_room.get_children():
+			if String(n.name).begins_with("npc_") and n.get("sheet") != null:
+				seen += 1
+				if n.live != null:
+					_check(not n.sheet.textures_loaded, "%s live: sheet pages not read" % n.name)
+				else:
+					_check(n.sheet.textures_loaded, "%s not live: the full sheet (no stand-in figure)" % n.name)
+		await _enter("H1")
+	LV.forced = ""
+	_check(seen > 0, "O3 has villagers (%d)" % seen)
+	var A3 = load("res://scripts/actors/actor_3d.gd")
+	for path in A3._scene_cache.keys():
+		_check(A3._scene_cache[path] is PackedScene, "a cached model is a scene: " + String(path))
+	# a model that failed to load is not remembered (locally the villagers' models are not imported)
+	for n in [A3._packed("res://no/such/model.glb")]:
+		_check(n == null and not A3._scene_cache.has("res://no/such/model.glb"), "a missing model is not cached")
+

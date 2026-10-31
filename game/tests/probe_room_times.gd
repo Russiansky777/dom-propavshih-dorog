@@ -18,6 +18,9 @@ func _run() -> void:
 	for i in 4:
 		await process_frame
 	rm.autosave_enabled = false
+	# FORCE3D=1: villagers drawn live (as in the desktop build; headless keeps the sheets otherwise)
+	if OS.get_environment("FORCE3D") != "":
+		load("res://scripts/actors/npc_live_3d.gd").forced = "3d"
 	var rooms: Array = Array(OS.get_cmdline_user_args())
 	if rooms.is_empty():
 		for r in sd.rooms.keys():

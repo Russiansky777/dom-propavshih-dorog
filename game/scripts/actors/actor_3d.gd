@@ -113,7 +113,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	if path == "" or not ResourceLoader.exists(path):
 		load_error = "no 3D model " + path
 		return false
-	var packed = load(path)
+	var packed = _packed(path)
 	if not (packed is PackedScene):
 		load_error = "not a scene: " + path
 		return false
@@ -189,6 +189,22 @@ func _all(n: Node) -> Array:
 
 
 ## The model's own albedo, lit like the sprite renders (shaders/actor_3d.gdshader, values from data).
+## K (Director 31.10, стр. 16: «будто бы стал больше лаг при переходе между локациями»): the model is loaded once
+## per game and kept — a room change used to read every villager's GLB again (the last instance freed with the old
+## room drops it from the resource cache). Instances do not share mutable state: each gets its own material
+## override (_apply_material), the scene and meshes stay as imported.
+static var _scene_cache: Dictionary = {}
+
+
+static func _packed(path: String) -> Resource:
+	if _scene_cache.has(path):
+		return _scene_cache[path]
+	var r = load(path)
+	if r is PackedScene:
+		_scene_cache[path] = r   # a failed load is not kept: the next room tries again
+	return r
+
+
 func _apply_material() -> void:
 	var tex: Texture2D = null
 	for mi in meshes:
