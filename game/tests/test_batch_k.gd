@@ -95,7 +95,7 @@ func _run() -> void:
 	await _test("K-46/62/87/61 the world: night fog dark, windows dimmer; the pond at the sluice moves; the journal written on its ruling", _test_world_k)
 	await _test("K-108 the first span → the bridge: one black, never lifted in between", _test_one_black)
 	await _test("K-108 a kept black that no scene takes up lifts by itself", _test_kept_black_lifts)
-	await _test("K-16 a room change: a villager drawn live does not read its sheets, a 3D model is read once a game", _test_room_change_cost)
+	await _test("K-16 a room change: a villager drawn live does not read its sheets", _test_room_change_cost)
 	await _test("K-74 the far pier by day: the lanterns do not glow and the figures keep daylight; in the evening both lanterns burn", _test_r3_day_lights)
 	await _test("K (AI №4) the mill on day three: «Помню, Павел» only after the promise; after «матушка и брат» — «Наберём, Павел» without it", _test_m23b_promise)
 	gs.reset()
@@ -675,12 +675,7 @@ func _test_room_change_cost() -> void:
 		await _enter("H1")
 	LV.forced = ""
 	_check(seen > 0, "O3 has villagers (%d)" % seen)
-	var A3 = load("res://scripts/actors/actor_3d.gd")
-	for path in A3._scene_cache.keys():
-		_check(A3._scene_cache[path] is PackedScene, "a cached model is a scene: " + String(path))
-	# a model that failed to load is not remembered (locally the villagers' models are not imported)
-	for n in [A3._packed("res://no/such/model.glb")]:
-		_check(n == null and not A3._scene_cache.has("res://no/such/model.glb"), "a missing model is not cached")
+	# (the model cache tried here was taken back: instances share the scene's Animation resources — see Actor3D._packed)
 
 
 func _test_r3_day_lights() -> void:

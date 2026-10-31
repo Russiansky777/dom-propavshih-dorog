@@ -923,15 +923,22 @@ func _test_thoughts() -> void:
 	await _finish_dialogue()
 	vd.reload_config()
 	_check(_vid("Z1.exit_Z4.closed") == "agata:Z1.exit_Z4.closed", "reloaded data: Agata's again")
-	# No file of Agata's (H1.photo.look is held back): subtitles only, the narrator's «Наш…» never plays.
+	# No file of Agata's: subtitles only, the narrator's spare never plays. The key is one of hers without a recording
+	# (it was H1.photo.look until the Director chose its recording, K8 31.10) — or one taken out of the manifest here.
+	var bare := "H1.photo.look"
+	vd.set_test_stream("agata:" + bare, null)
+	var held: Variant = vd.manifest.get("agata:" + bare, null)
+	vd.manifest.erase("agata:" + bare)
 	var n0: int = vd.events.size()
-	sr.narrate_key("@H1.photo.look")
+	sr.narrate_key("@" + bare)
 	await _frames(2)
-	_check(not vd.is_playing(), "H1.photo.look without Agata's file: no voice (%s)" % [vd.state()])
+	_check(not vd.is_playing(), "%s without Agata's file: no voice (%s)" % [bare, vd.state()])
 	var ev := _last_event("subtitles_only")
-	_check(String(ev.get("line", "")) == "agata:H1.photo.look", "logged under Agata's id: %s" % [ev])
+	_check(String(ev.get("line", "")) == "agata:" + bare, "logged under Agata's id: %s" % [ev])
 	_check(_starts_since(n0).is_empty(), "no fallback to the narrator")
 	await _finish_dialogue()
+	if held != null:
+		vd.manifest["agata:" + bare] = held
 	_drop_key("Z1.exit_Z4.closed")
 	vd.set_test_stream("Z1.exit_Z4.closed", null)
 

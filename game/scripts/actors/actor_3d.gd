@@ -189,20 +189,13 @@ func _all(n: Node) -> Array:
 
 
 ## The model's own albedo, lit like the sprite renders (shaders/actor_3d.gdshader, values from data).
-## K (Director 31.10, стр. 16: «будто бы стал больше лаг при переходе между локациями»): the model is loaded once
-## per game and kept — a room change used to read every villager's GLB again (the last instance freed with the old
-## room drops it from the resource cache). Instances do not share mutable state: each gets its own material
-## override (_apply_material), the scene and meshes stay as imported.
-static var _scene_cache: Dictionary = {}
-
-
+## K (стр. 16): the model was briefly kept for the whole game — but the instances share the scene's Animation resources,
+## which setup tunes in place (loop modes, cubic keys), so a second instance (tests that vary the data, a reload) started
+## from already tuned clips (CI 41249423897: the walk-stop jolt and the braid's rest changed). Back to the resource
+## cache: the model stays loaded while a figure uses it. The big cost of a room change was the villagers' sheets
+## (NpcActor: placement-only sheet for a live villager).
 static func _packed(path: String) -> Resource:
-	if _scene_cache.has(path):
-		return _scene_cache[path]
-	var r = load(path)
-	if r is PackedScene:
-		_scene_cache[path] = r   # a failed load is not kept: the next room tries again
-	return r
+	return load(path)
 
 
 func _apply_material() -> void:

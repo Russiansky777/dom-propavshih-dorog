@@ -277,9 +277,9 @@ func _test_here_and_visits() -> void:
 	var names := {}
 	for id in p["labels"]:
 		names[id] = String(mp.call("place_name", _place(id)))
-	_check(names["crossing"] == "Переправа" and names["far_pier"] == "Дальняя опора" and names["ferry_shed"] == "Мастерская переправы"
-		and names["olkhovka"] == "Школа" and names["olkhovka_street"] == "Улица Ольховки" and names["nina_house"] == "Дом Нины"
-		and not names.has("lower_street"), "G2: the plaques read as on the plan; no lower street (J, Р10) (%s)" % str(names))
+	_check(names["crossing"] == "Переправа" and names["far_pier"] == "Дальняя опора" and names["ferry_shed"] == "Сарайчик переправы"
+		and names["olkhovka"] == "Школа" and names["olkhovka_street"] == "Улица Ольховки" and names["nina_house"] == "Дом мамы"
+		and not names.has("lower_street"), "G2: the plaques read as in the game (K, сверка плана 01.11: «Дом мамы», «Сарайчик переправы»); no lower street (J, Р10) (%s)" % str(names))
 	mp.call("close_now")
 
 

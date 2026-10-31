@@ -563,7 +563,11 @@ func _test_fog() -> void:
 		# The knot tied here, on screen: the fog lifts — still drawn a moment, rising and thinning, then gone.
 		gs.set_flag("road_held_both_ends", true)
 		await _frames(3)
-		var n: Polygon2D = z3.fog[1] if z3.fog.size() > 1 else null
+		# the dusk fog by name (K, 31.10: every fog got a night twin — the index of the dusk one moved)
+		var n: Polygon2D = null
+		for f in z3.fog:
+			if String(f.name) == "fog_far_dusk":
+				n = f
 		var lift0 := float((n.material as ShaderMaterial).get_shader_parameter("lift")) if n != null else -1.0
 		_check(n != null and n.visible and lift0 < 0.5, "Z3: right after the knot the fog is still there, lifting (lift %.2f)" % lift0)
 		await _wait(2.5)
