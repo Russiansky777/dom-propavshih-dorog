@@ -20,6 +20,7 @@ uniform float roughness = 0.553;   // glTF roughnessFactor of the Meshy material
 uniform float f0 = 0.04;           // dielectric (Principled IOR 1.5)
 uniform float spec_gain = 1.0;
 uniform float alpha_cut = 0.5;
+uniform float inside_light = 0.45;   // back faces (the inside of the clothes): share of the light that reaches them
 uniform float debug_flat = -1.0;   // >= 0: output this grey (colour-pipeline probe)
 uniform bool debug_albedo = false; // output the texture as sampled (no light)
 
@@ -47,9 +48,11 @@ void fragment() {
 	vec3 lk = normalize((VIEW_MATRIX * vec4(key_dir, 0.0)).xyz);
 	vec3 lf = normalize((VIEW_MATRIX * vec4(fill_dir, 0.0)).xyz);
 	vec3 lr = normalize((VIEW_MATRIX * vec4(rim_dir, 0.0)).xyz);
-	if (!FRONT_FACING) {
-		n = -n;  // double-sided material (inside of the skirt hem)
-	}
+	// Double-sided material (inside of the skirt, the coat): with cull_disabled Godot already turns NORMAL towards
+	// the viewer on back faces (debug render 31.10: back faces green = facing the camera). Flipping it again here lit
+	// the inside of the skirt from behind with the full grazing Fresnel of the world — a flat blue-grey patch between
+	// the legs when she bent to the floor. The inside of clothes is in the cloth's own shadow: inside_light.
+	float inside = FRONT_FACING ? 1.0 : inside_light;
 	vec3 v = vec3(0.0, 0.0, 1.0);  // orthographic camera
 	vec3 light = ambient + key_e * lam(n, lk) + fill_e * lam(n, lf) + rim_e * lam(n, lr);
 	// Specular of a rough dielectric (normalised Blinn-Phong ≈ GGX at this roughness, Schlick
@@ -67,7 +70,7 @@ void fragment() {
 		float fr = f0 + (1.0 - f0) * pow(1.0 - max(dot(h, v), 0.0), 5.0);
 		spec += vec3(es[i] * nl * fr * (sh + 8.0) / (8.0 * PI) * pow(max(dot(n, h), 0.0), sh));
 	}
-	vec3 lin = to_linear(a.rgb) * light * (1.0 - fr_env) + spec * spec_gain;
+	vec3 lin = (to_linear(a.rgb) * light * (1.0 - fr_env) + spec * spec_gain) * inside;
 	ALBEDO = to_srgb(lin * gain);
 	if (debug_albedo) {
 		ALBEDO = a.rgb;

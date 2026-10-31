@@ -106,6 +106,7 @@ func _run() -> void:
 	await _test("Feet hold the floor (Director 30.10 «идеальная Агата»): stopping and turning on the spot, a foot set down does not skate (14–21 cm before) — it stays or steps", _test_feet_hold)
 	await _test("Boots (Director 31.10, 02:14 «сапоги с задёрнутыми носами»): a boot set down stands on its sole at the height it was made at, its toe not turned up", _test_boots)
 	await _test("Stopping (Director 31.10, 15:04 «мельтешит в конце хода»): she stops in the steps a person stops in — the last one shorter, the other foot closing up — not a run of quick little steps", _test_stop_steps)
+	await _test("Pick from the floor (Director 31.10, 17:45 and 18:32 «с пола заменить»): things on the floor and snow are taken with a bend down to the floor, not a crouch to table height; the thing is not lifted to the face (G1); the feet stay", _test_pick_floor)
 	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; arms swing by her sides; she looks ahead", _test_walk_rhythm)
 	PlayerScript.forced_render = ""
 	gs.reset()
@@ -144,7 +145,7 @@ func _test_model() -> void:
 		if bn.begins_with("Skirt") or bn.begins_with("Braid") or bn.begins_with("Bag"):
 			skirt_bones += 1   # the rig's own spring chains (tools/rig_skirt.py)
 	_check(v.skeleton.get_bone_count() - skirt_bones == 24, "skeleton has %d bones besides the spring chains (skirt, braid, bag), Meshy rig has 24" % (v.skeleton.get_bone_count() - skirt_bones))
-	for role in ["walk", "idle", "open", "pick", "reach"]:
+	for role in ["walk", "idle", "open", "pick", "pick_low", "reach"]:
 		_check(v.clips.has(role), "clip for '%s' missing (rt3d.clips)" % role)
 	_check(v.idle_pool.size() >= 3, "idle pool has %d variants (≥ 3 expected)" % v.idle_pool.size())
 	var tex = v.material.get_shader_parameter("albedo_tex")
@@ -1273,3 +1274,107 @@ func _test_stop_steps() -> void:
 	_check(int(sf[sf.size() / 2]) >= 4, "self-check: the old stop took only %s steps — the metric would not see the fidgeting" % str(off))
 	_completed = true
 
+
+# --- Pick from the floor -------------------------------------------------------------------------------
+
+var _pick_rows: Array = []
+
+
+## As drawn (after the modifiers): the left hand's height above the floor (m) — the hand that takes the thing in both
+## clips — the feet, and whether the action's effect has fired yet.
+func _on_pick_updated() -> void:
+	var v: Actor3D = player.view3d
+	_pick_rows.append([v.bone_model("LeftHand").y, v.feet_model(), player._action_fired, player.is_acting()])
+
+
+## One action from the stance at H1: [lowest hand (m), hand at the effect (m), highest hand after the lowest point until
+## 0.6 s after the end (m), the most a foot moves along the floor (m), the action's length (s)].
+func _pick_run(act: String) -> Array:
+	await _enter("H1", Vector2(1200, 960))
+	var v: Actor3D = player.view3d
+	await _frames(30)
+	if not v.skeleton.skeleton_updated.is_connected(_on_pick_updated):
+		v.skeleton.skeleton_updated.connect(_on_pick_updated)
+	_pick_rows = []
+	player._start_action(act, null)
+	var len_s: float = player._act_len / maxf(player._act_speed, 0.01)
+	var guard := 0
+	while player.is_acting() and guard < 600:
+		await process_frame
+		guard += 1
+	await _wait_s(0.6)
+	v.skeleton.skeleton_updated.disconnect(_on_pick_updated)
+	var low := 9.0
+	var low_i := 0
+	var at_fire := -1.0
+	for i in _pick_rows.size():
+		var h := float(_pick_rows[i][0])
+		if h < low:
+			low = h
+			low_i = i
+		if at_fire < 0.0 and bool(_pick_rows[i][2]):
+			at_fire = h
+	var high_after := 0.0
+	for i in range(low_i, _pick_rows.size()):
+		high_after = maxf(high_after, float(_pick_rows[i][0]))
+	# A foot on the floor (ankle within 15 mm of its lowest) does not skate: its travel along the floor while set
+	# down, per stint; a step (lifted, set down elsewhere — the clip steps forward to bend and back) is not skating.
+	var slide := 0.0
+	var steps := 0
+	for k in [0, 2]:
+		var floor_y := 9.0
+		for r in _pick_rows:
+			floor_y = minf(floor_y, float(((r[1] as Array)[k] as Vector3).y))
+		var stint := 0.0
+		var was_down := true
+		for i in range(1, _pick_rows.size()):
+			var a: Vector3 = (_pick_rows[i - 1][1] as Array)[k]
+			var b: Vector3 = (_pick_rows[i][1] as Array)[k]
+			var down := a.y <= floor_y + 0.015 and b.y <= floor_y + 0.015
+			if down:
+				stint += Vector2(b.x - a.x, b.z - a.z).length()
+				slide = maxf(slide, stint)
+			else:
+				stint = 0.0
+				if was_down:
+					steps += 1
+			was_down = down
+	return [low, at_fire, high_after, slide, len_s, steps]
+
+
+func _test_pick_floor() -> void:
+	# Data: which things are taken from the floor.
+	var sd = root.get_node("StoryData")
+	var floor_things := {"O1": ["sack"], "O2": ["porch_step", "mitten", "mitten_path"], "O4": ["letters_bag"]}
+	for rid in floor_things.keys():
+		for h in sd.rooms[rid].get("hotspots", []):
+			if (floor_things[rid] as Array).has(String(h.get("id", ""))):
+				_check(String(h.get("action_anim", "")) == "pick_low", "%s.%s lies on the floor: action_anim '%s', pick_low expected" % [rid, h.get("id", ""), h.get("action_anim", "")])
+	for h in sd.rooms["H1"].get("hotspots", []):
+		if String(h.get("id", "")) == "scarf":
+			_check(String(h.get("action_anim", "")) == "pick", "H1.scarf lies on the bench (knee height): keeps the crouch pick, got '%s'" % h.get("action_anim", ""))
+	# The drawn figure plays the pick sheet for it, with the same key frame.
+	var sheet = player.sheet
+	_check(sheet.has_action("pick_low") and sheet.action_sequence("pick_low").size() == sheet.action_sequence("pick").size() and not sheet.action_loops("pick_low"),
+		"sheet: pick_low should play the pick sheet once (same_as)")
+	_check(sheet.action_key_frame("pick_low") == sheet.action_key_frame("pick"), "sheet: pick_low key frame %d, pick %d" % [sheet.action_key_frame("pick_low"), sheet.action_key_frame("pick")])
+	if not player.is_3d():
+		_completed = true
+		return
+	_check(String(player.view3d.clips.get("pick_low", "")) == "Female_Bend_Over_Pick_Up_Inspect", "rt3d.clips.pick_low: %s" % player.view3d.clips.get("pick_low", ""))
+	# Bent to the floor the inside of the skirt shows between the legs: it was a flat blue-grey patch — the shader
+	# flipped the back faces' normal that Godot had already turned to the viewer (debug render 31.10). The inside of
+	# the clothes is lit as the inside: no second flip, inside_light.
+	var code: String = (player.view3d.material.shader as Shader).code
+	_check(not code.contains("n = -n") and code.contains("inside_light"), "shader: back faces must keep Godot's normal and be shaded as the inside (inside_light)")
+	var low: Array = await _pick_run("pick_low")
+	var old: Array = await _pick_run("pick")
+	print("        floor pick: hand down to %.0f mm (at the effect %.0f), up to %.0f mm after; a set-down foot skates %.0f mm, %d lifts; %.2f s. Crouch pick: hand down to %.0f mm" % [
+		float(low[0]) * 1000.0, float(low[1]) * 1000.0, float(low[2]) * 1000.0, float(low[3]) * 1000.0, int(low[5]), float(low[4]), float(old[0]) * 1000.0])
+	_check(float(low[0]) <= 0.35, "the hand reaches down to %.0f mm — not to the floor (≤ 350)" % (float(low[0]) * 1000.0))
+	_check(float(low[1]) >= 0.0 and float(low[1]) <= 0.40, "at the effect the hand is %.0f mm above the floor (≤ 400: the thing leaves the floor in her hand)" % (float(low[1]) * 1000.0))
+	_check(float(low[2]) <= 1.10, "after taking it the hand rises to %.0f mm — lifts the thing to the face (G1: ≤ 1100)" % (float(low[2]) * 1000.0))
+	_check(float(low[3]) <= 0.02, "a foot set down skates %.0f mm along the floor while she bends (≤ 20)" % (float(low[3]) * 1000.0))
+	_check(float(low[4]) <= 3.0, "the floor pick takes %.2f s (≤ 3)" % float(low[4]))
+	_check(float(old[0]) > 0.5, "self-check: the crouch pick also reaches %.0f mm — the metric would not tell a floor pick from it" % (float(old[0]) * 1000.0))
+	_completed = true

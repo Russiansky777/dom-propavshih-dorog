@@ -352,7 +352,7 @@ func _test_agata() -> void:
 		["turn 150°", 2.0, func(t): if t == 0.0: player.face_towards(player.global_position + Vector2(-0.5, -0.9 * k) * 200.0), STAND_MM],
 		["walk+stop", 4.0, func(t): if t == 0.0: player.click_at(player.global_position + Vector2(-380, -40)), WALK_MM],
 	]
-	for act in ["open", "pick", "reach"]:
+	for act in ["open", "pick", "pick_low", "reach"]:
 		runs.append(["act " + act, 4.5, func(t): if t == 0.0: player._start_action(act, null), ACT_MM])
 	var line := "        agata    "
 	for r in runs:

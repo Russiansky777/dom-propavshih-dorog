@@ -54,6 +54,28 @@ func _place(room: String, pos: Vector2, yaw: float) -> void:
 		await process_frame
 
 
+## Skirt experiments (SKIRT=off, SKIRT_STIFF, SKIRT_GRAV, SKIRT_NOCOL=1).
+func _skirt_env() -> void:
+	var sk: SpringBoneSimulator3D = player.view3d.skirt
+	if sk == null:
+		return
+	if OS.get_environment("SKIRT") == "off":
+		sk.active = false
+	for c in sk.setting_count:
+		if OS.get_environment("SKIRT_STIFF") != "":
+			sk.set_stiffness(c, float(OS.get_environment("SKIRT_STIFF")))
+		if OS.get_environment("SKIRT_GRAV") != "":
+			sk.set_gravity(c, sk.get_gravity(c) * float(OS.get_environment("SKIRT_GRAV")))
+		if OS.get_environment("SKIRT_NOCOL") != "":
+			sk.set_enable_all_child_collisions(c, false)
+		if OS.get_environment("SKIRT_R") != "":
+			sk.set_radius(c, sk.get_radius(c) * float(OS.get_environment("SKIRT_R")))
+	if OS.get_environment("SKIRT_CAPR") != "":
+		for cap in sk.get_children():
+			if cap is SpringBoneCollisionCapsule3D:
+				(cap as SpringBoneCollisionCapsule3D).radius *= float(OS.get_environment("SKIRT_CAPR"))
+
+
 func _run() -> void:
 	var args := OS.get_cmdline_user_args()
 	out = args[0]
@@ -100,8 +122,9 @@ func _run() -> void:
 			await _rec("act_open", 200),
 		"act_pick": func():
 			await _place("H1", Vector2(1200, 960), 0.6)
-			player._start_action("pick", null)
-			await _rec("act_pick", 150),
+			_skirt_env()
+			player._start_action(OS.get_environment("PICK_ACT") if OS.get_environment("PICK_ACT") != "" else "pick", null)
+			await _rec("act_pick", int(OS.get_environment("FRAMES")) if OS.get_environment("FRAMES") != "" else 150),
 		"act_reach": func():
 			await _place("H1", Vector2(1200, 960), 0.6)
 			player._start_action("reach", null)

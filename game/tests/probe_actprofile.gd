@@ -13,8 +13,15 @@ func _run() -> void:
 	root.add_child(v)
 	v.setup(spec)
 	v.life.active = false
-	for role in ["open", "pick", "reach", "talk"]:
-		var nm: String = v.clips[role]
+	# PROFILE_CLIPS=name,name — clips by name (a clip not yet in a role); default — the action roles
+	var names: Array = []
+	if OS.get_environment("PROFILE_CLIPS") != "":
+		names = Array(OS.get_environment("PROFILE_CLIPS").split(","))
+	else:
+		for role in ["open", "pick", "reach", "talk"]:
+			names.append(v.clips[role])
+	for nm in names:
+		var role := String(nm)
 		var L := v.anim.get_animation(nm).length
 		var bt := v.tree.tree_root as AnimationNodeBlendTree
 		(bt.get_node("idle_a") as AnimationNodeAnimation).animation = nm

@@ -51,7 +51,7 @@
       "look": "@O1.board.look"
     },
     {
-      "id": "sack", "action_anim": "pick", "kind": "object", "label": "@O1.sack.label", "rect": [330, 570, 130, 150], "pick_priority": 2, "stand": [470, 760], "color": "#8a7a5a", "draw": false,
+      "id": "sack", "action_anim": "pick_low", "kind": "object", "label": "@O1.sack.label", "rect": [330, 570, 130, 150], "pick_priority": 2, "stand": [470, 760], "color": "#8a7a5a", "draw": false,
       "use": {"sets": ["o1_seen_sack"], "text": "@O1.sack.use", "once_flag": "o1_seen_sack", "scene": "M06"},
       "look": "@O1.sack.look"
     },

@@ -154,11 +154,15 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 	var over: Dictionary = spec.get("actions", {})
 	for act_name in over.keys():
 		if a.actions.has(act_name) and typeof(over[act_name]) == TYPE_DICTIONARY:
-			var merged: Dictionary = (a.actions[act_name] as Dictionary).duplicate()
-			for k in over[act_name].keys():
-				if not String(k).begins_with("_"):
-					merged[k] = over[act_name][k]
-			a.actions[act_name] = merged
+			a.actions[act_name] = _merged_action(a.actions[act_name], over[act_name])
+	# An action of the live model only (`same_as`: another action's sheet, as overridden above) — the drawn
+	# figure plays that sheet, the 3D figure its own clip (31.10, Director 18:32: «взять» from the floor —
+	# rt3d.clips.pick_low).
+	for act_name in over.keys():
+		if typeof(over[act_name]) == TYPE_DICTIONARY and not a.actions.has(act_name):
+			var base := String((over[act_name] as Dictionary).get("same_as", ""))
+			if base != "" and a.actions.has(base):
+				a.actions[act_name] = _merged_action(a.actions[base], over[act_name])
 	a.crossfade_s = float(spec.get("crossfade_s", a.crossfade_s))
 	a.skip_actions = spec.get("skip_actions", [])
 	a.eased_motion = spec.get("eased_motion", {})
@@ -168,6 +172,14 @@ static func load_actor(actor_id: String, overrides: Dictionary = {}) -> ActorShe
 			a.action_key_frames[String(k)] = int(kf[k])
 	a._build_frames()
 	return a
+
+
+static func _merged_action(act: Dictionary, over: Dictionary) -> Dictionary:
+	var merged: Dictionary = act.duplicate()
+	for k in over.keys():
+		if not String(k).begins_with("_") and String(k) != "same_as":
+			merged[k] = over[k]
+	return merged
 
 
 func _build_frames() -> void:

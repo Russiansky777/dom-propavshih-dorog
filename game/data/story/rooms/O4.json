@@ -53,7 +53,7 @@
       "look": "@O4.mitya_board.look"
     },
     {
-      "id": "letters_bag", "kind": "object", "action_anim": "pick", "label": "@O4.letters_bag.label", "rect": [1430, 638, 110, 88], "stand": [1480, 765], "draw": false, "pick_priority": 3,
+      "id": "letters_bag", "kind": "object", "action_anim": "pick_low", "label": "@O4.letters_bag.label", "rect": [1430, 638, 110, 88], "stand": [1480, 765], "draw": false, "pick_priority": 3,
       "visible_if": ["done_M23a"], "hidden_if": ["done_Q01"],
       "_note": "блок 5, Q01: в мешке Тамары — письмо Аксинье от брата по прежнему адресу (closeup_envelope + адрес текстом игры). Первый клик — конверт крупно, потом выбор, как Аксинье получать почту; след — реплика Тамары в эпилоге.",
       "use": {"sets": ["q01_seen_envelope"], "text": "@O4.letters_bag.use", "once_flag": "q01_seen_envelope"},
