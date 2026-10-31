@@ -50,6 +50,11 @@ var root_d: PackedFloat32Array = PackedFloat32Array()  # cumulative stance-foot 
 var contacts: PackedFloat32Array = PackedFloat32Array()  # phases where a foot gets planted
 var stance_side: PackedByteArray = PackedByteArray()    # 0 = left, 1 = right planted, per phase sample
 var stride_floor: Array = [0.0, 0.0, 0.0, 0.0]           # lowest height of [L ankle, L ball, R ankle, R ball] walking
+var hips_h: PackedFloat32Array = PackedFloat32Array()    # the walk's hips height per phase sample (model m)
+## The walk's bob deepened (data walk.bob_deepen): the body goes down this much more at the bottom of each step — the
+## figure lowered by it, the feet kept where the clip has them by the leg IK (stride planting). Metres, ≤ 0, shown now.
+var _bob_y: float = 0.0
+var _hips_top: float = 0.0
 var foot_bones: Array = []       # [left foot, left toe, right foot, right toe] bone indices
 ## Middle of each stance of the walk cycle: [phase, side (0 left / 1 right), stance foot position (model frame)].
 var stance_mids: Array = []
@@ -849,6 +854,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	var xf := _skel_to_turn()
 	for i in 2:
 		var a: Vector3 = yaw_b * f[i * 2]                     # the animated ankle in the floor frame
+		a.y -= _bob_y                                         # where the clip has it: the deepened bob is the body's only
 		anim.append(a)
 		if stride_on and walking and _st_t[i] == null:
 			# into the stride: a foot held (locked or stepping) goes on being held where it is shown
@@ -856,7 +862,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			_st_prev[i] = null
 			_st_w[i] = float(_foot_w[i])
 		if stride_on and (walking or float(_st_w[i]) > 0.0):
-			_stride_plant(i, a, yaw_b * f[i * 2 + 1], delta, o, k, sk)
+			_stride_plant(i, a, yaw_b * f[i * 2 + 1] - Vector3(0.0, _bob_y, 0.0), delta, o, k, sk)
 		# the leg's reach from the hip (thigh + shin as posed, a little short of straight)
 		var side := "Left" if i == 0 else "Right"
 		var hip: Vector3 = yaw_b * (xf * skeleton.get_bone_global_pose(skeleton.find_bone(side + "UpLeg")).origin)
@@ -1404,7 +1410,8 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 		var aw := clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0
 		var mid := loco_mid.lerp(_mid_of(clips.get(_act_name, "")), aw)
 		# out of the stride the clips (captured on a flat-footed body) hold her 4 cm up off her boots — down by that much
-		model.position = Vector3(-mid.x, -_boot_drop * (1.0 - wc), -mid.y)
+		_bob_y = _bob_at(walk_phase) * wc
+		model.position = Vector3(-mid.x, -_boot_drop * (1.0 - wc) + _bob_y, -mid.y)
 	tree.advance(0.0)
 
 
@@ -1457,6 +1464,7 @@ func build_root_motion() -> void:
 	root_d = PackedFloat32Array()
 	contacts = PackedFloat32Array()
 	root_d.resize(RM_N + 1)
+	hips_h.resize(RM_N + 1)
 	var prev_side := -1
 	var prev_z := 0.0
 	var acc := 0.0
@@ -1469,6 +1477,7 @@ func build_root_motion() -> void:
 		tree.set("parameters/actb/blend_amount", 0.0)
 		tree.advance(0.0)
 		samples.append(feet_model())
+		hips_h[i] = bone_model("Hips").y
 	stance_side.resize(RM_N + 1)
 	for i in RM_N + 1:
 		var f: Array = samples[i]
@@ -1486,6 +1495,9 @@ func build_root_motion() -> void:
 		prev_z = z
 	stride_m = maxf(acc, 0.01)
 	walk_speed_mps = stride_m / maxf(walk_len, 0.01)
+	_hips_top = -INF
+	for v in hips_h:
+		_hips_top = maxf(_hips_top, v)
 	# the stance's floor: per foot the lowest the clip puts the ankle and the ball (stride planting, feet_step)
 	for k in 4:
 		var lo := INF
@@ -1548,6 +1560,20 @@ func stance_at(phase: float) -> int:
 	if stance_side.is_empty():
 		return 0
 	return int(stance_side[clampi(int(round(fposmod(phase, 1.0) * RM_N)), 0, RM_N)])
+
+
+## The walk's bob deepened (Director 31.10, 02:14 «плывёт… равномерно»): the clip's hips rise and fall 3.1 cm a step,
+## a walking body's centre of mass about 5 cm — highest over the planted foot, lowest in the double support (OUHSC gait
+## kinematics; Frontiers Hum Neurosci 2017, 10.3389/fnhum.2017.00187). Below its highest the body goes down `k` times
+## more (data walk.bob_deepen; only with the stride planting, which keeps the feet on the floor); 0 off.
+func _bob_at(phase: float) -> float:
+	var k := float(spec.get("walk", {}).get("bob_deepen", 0.0))
+	if k <= 0.0 or hips_h.size() < RM_N + 1 or spec.get("feet", {}).get("stride", {}).is_empty():
+		return 0.0
+	var x := fposmod(phase, 1.0) * RM_N
+	var i := int(floor(x))
+	var h := lerpf(hips_h[i], hips_h[mini(i + 1, RM_N)], x - float(i))
+	return -k * (_hips_top - h)
 
 
 ## The walk goes on evenly (data walk.root "even"), the feet held by the stride planting.

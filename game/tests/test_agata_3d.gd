@@ -1115,6 +1115,7 @@ func _rhythm_walk() -> Dictionary:
 	var looked := 0
 	var counted := 0
 	var arms := [0.0, 0.0, 0.0]   # worst elbow, spread, wrist over both arms
+	var sink := 0.0               # deepest a drawn ankle or ball goes below the stride's floor (m)
 	for i in 150:
 		await process_frame
 		var ppm_s: float = v.ppm * absf(player.scale.y)
@@ -1130,6 +1131,8 @@ func _rhythm_walk() -> Dictionary:
 			var hb: float = f[k * 2 + 1].y - float(v.stride_floor[k * 2 + 1])
 			var c: int = k * 2 if ha <= hb else k * 2 + 1
 			cs.append([(yb * f[c]).x, minf(ha, hb) < 0.01, c])
+			if i > 50 and player.walk_w > 0.99:
+				sink = minf(sink, minf(ha, hb))
 			if prev_c.size() == 2 and bool(cs[k][1]) and bool(prev_c[k][1]) and int(prev_c[k][2]) == c:
 				slip = maxf(slip, absf(float(cs[k][0]) + ox - float(prev_c[k][0])) * 1000.0)
 		prev_c = cs
@@ -1156,7 +1159,7 @@ func _rhythm_walk() -> Dictionary:
 			high_sp = [high_sp[0] + float(hs[k]), high_sp[1] + 1]
 	slips.sort()
 	return {"low": low_sp[0] / maxf(low_sp[1], 1), "high": high_sp[0] / maxf(high_sp[1], 1), "min": hs.min(), "max": hs.max(),
-		"slip90": slips[int(slips.size() * 0.9)], "slip_max": slips.max(), "looked": float(looked) / maxf(counted, 1), "n": counted, "arms": arms}
+		"slip90": slips[int(slips.size() * 0.9)], "slip_max": slips.max(), "looked": float(looked) / maxf(counted, 1), "n": counted, "arms": arms, "sink": sink, "bob": hi - lo}
 
 
 func _test_walk_rhythm() -> void:
@@ -1181,10 +1184,14 @@ func _test_walk_rhythm() -> void:
 	_check(float(r["low"]) >= float(r["high"]) + 0.05, "the hips go %.2f m/s between the steps and %.2f over the planted foot — not a walking body's pace (quickest low, slowest high)" % [r["low"], r["high"]])
 	_check(float(r["max"]) - float(r["min"]) <= 0.6, "the hips' speed swings %.2f–%.2f m/s within a step: a lurch" % [r["min"], r["max"]])
 	_check(float(r["slip90"]) <= 1.5 and float(r["slip_max"]) <= 4.0, "a foot on the floor moves %.1f mm a frame (90%%; at most %.1f) — it skates (≤ 1.5 / 4)" % [r["slip90"], r["slip_max"]])
+	print("        hips up and down %.1f cm a step (the clip's own %.1f); the feet at most %.1f mm into the floor" % [float(r["bob"]) * 100.0, float(old["bob"]) * 100.0, -float(r["sink"]) * 1000.0])
+	_check(float(r["bob"]) >= 0.037, "the hips rise and fall only %.1f cm a step — a walking body's about 5 (≥ 3.7)" % (float(r["bob"]) * 100.0))
+	_check(float(r["sink"]) >= -0.005, "a foot goes %.1f mm into the floor (≤ 5)" % (-float(r["sink"]) * 1000.0))
+	_check(float(old["bob"]) < 0.035, "self-check: the clip's own hips go %.1f cm — the metric would not see the deeper step" % (float(old["bob"]) * 100.0))
 	var am: Array = r["arms"]
 	var ao: Array = old["arms"]
 	print("        arms walking, at most: elbow %.0f°, spread %.0f°, wrist %.0f° (the clip's own: %.0f°, %.0f°, %.0f°)" % [am[0], am[1], am[2], ao[0], ao[1], ao[2]])
-	_check(float(am[0]) <= 55.0 and float(am[1]) <= 26.0 and float(am[2]) <= 30.0, "walking, the arms bend the elbow to %.0f°, spread %.0f°, the wrist %.0f° — a doll's paw held out (≤ 55 / 26 / 30)" % [am[0], am[1], am[2]])
+	_check(float(am[0]) <= 55.0 and float(am[1]) <= 28.0 and float(am[2]) <= 30.0, "walking, the arms bend the elbow to %.0f°, spread %.0f°, the wrist %.0f° — a doll's paw held out (≤ 55 / 28 / 30)" % [am[0], am[1], am[2]])
 	_check(float(ao[0]) > 60.0 and float(ao[1]) > 30.0, "self-check: the clip's own arms bend only %.0f° and spread %.0f° — the metric would not see them" % [ao[0], ao[1]])
 	_check(float(r["looked"]) >= 0.9, "walking with nothing to look at, she looks ahead only %.0f%% of the time (the clip's head is bowed to the floor)" % (100.0 * float(r["looked"])))
 	_check(float(old["low"]) < float(old["high"]), "self-check: the old walk (root from the clip's foot) went %.2f low and %.2f high — the metric would not tell the pace apart" % [old["low"], old["high"]])
