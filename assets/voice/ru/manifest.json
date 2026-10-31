@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-10-30T18:28:48+00:00",
+  "updated_at": "2026-10-31T20:42:20+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -1234,6 +1234,65 @@
           "language_code": "ru",
           "seed": 3435800624
         }
+      }
+    },
+    "M03_3": {
+      "scene": "M03",
+      "index": 3,
+      "alignment": "src/M03_3.align.json",
+      "speaker": "agata",
+      "text": "А тётя Дуня тебе что сказала, как уходила?",
+      "text_sha1": "9030c5dde28188356de0a64ab17d58c794ee9e09",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.45,
+        "similarity_boost": 0.75
+      },
+      "file": "M03_3.ogg",
+      "source": "src/M03_3.mp3",
+      "voice_text": "[hesitant] А тётя Дуня тебе что сказала, как уходила?",
+      "voice_sha1": "6a64436555a243288385f7e9f5ba499c370753f5",
+      "tags": [
+        "hesitant"
+      ],
+      "characters": 53,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.4,
+      "lufs": -16.9,
+      "true_peak_db": -3.5,
+      "gain_db": 2.1,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -19.1,
+      "source_true_peak_db": -5.6,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-31T20:42:20+00:00",
+      "run": "41239964908",
+      "adopted_from": "probe/K3/W032_1",
+      "api": {
+        "history_item_id": "fKFMMeD2joJtyiy12dOW",
+        "character_cost": "23",
+        "previous_text": "И печь тут, вестимо.",
+        "probe_run": "41062710030"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "А тетя Дуня тебе что сказала, как уходила?",
+        "words": [
+          "А",
+          "тетя",
+          "Дуня",
+          "тебе",
+          "что",
+          "сказала,",
+          "как",
+          "уходила?"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M03_4": {
@@ -2522,6 +2581,72 @@
           "language_code": "ru",
           "seed": 2231510328
         }
+      }
+    },
+    "M09b_0": {
+      "scene": "M09b",
+      "index": 0,
+      "alignment": "src/M09b_0.align.json",
+      "speaker": "agata",
+      "text": "Павел, у Дуни в мастерской стойка пустая — точь-в-точь под ваше зеркало. И колокол ваш мельничный там висит.",
+      "text_sha1": "dbfaf8559fe307cba5465d6ca3da01ff05366948",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "M09b_0.ogg",
+      "source": "src/M09b_0.mp3",
+      "voice_text": "Павел, у Дуни в мастерской стойка пустая — точь-в-точь под ваше зеркало. И колокол ваш мельничный там висит.",
+      "voice_sha1": "dbfaf8559fe307cba5465d6ca3da01ff05366948",
+      "tags": [],
+      "characters": 108,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 7.28,
+      "lufs": -16.9,
+      "true_peak_db": -2.3,
+      "gain_db": -0.3,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -16.7,
+      "source_true_peak_db": -2.1,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-31T20:42:20+00:00",
+      "run": "41239964908",
+      "adopted_from": "probe/K3/W033_3",
+      "api": {
+        "history_item_id": "uL83pyJUoxIgV7yeGOiH",
+        "character_cost": "48",
+        "previous_text": "",
+        "probe_run": "41062710030"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Павел, у Дуни в мастерской стойка пустая, точь-в-точь под ваше зеркало. И колокол ваш мельничный там висит",
+        "words": [
+          "Павел,",
+          "у",
+          "Дуни",
+          "в",
+          "мастерской",
+          "стойка",
+          "пустая,",
+          "точь-в-точь",
+          "под",
+          "ваше",
+          "зеркало.",
+          "И",
+          "колокол",
+          "ваш",
+          "мельничный",
+          "там",
+          "висит"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M09b_1": {
@@ -9682,6 +9807,67 @@
           "language_code": "ru",
           "seed": 3127698946
         }
+      }
+    },
+    "M23d_3": {
+      "scene": "M23d",
+      "index": 3,
+      "alignment": "src/M23d_3.align.json",
+      "speaker": "narrator",
+      "text": "Долго Тихон молчит. Потом перебирается поближе к Агатиной лежанке и там укладывается.",
+      "text_sha1": "1629cdfda6808d0915092c280c1f54091131a58a",
+      "voice_id": "kPaCtwsoLpkcqnqv9PyA",
+      "voice_name": "ZAKADR",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.65,
+        "similarity_boost": 0.75
+      },
+      "file": "M23d_3.ogg",
+      "source": "src/M23d_3.mp3",
+      "voice_text": "Долго Тихон молчит… Потом перебирается поближе к Агатиной лежанке и там укладывается.",
+      "voice_sha1": "3a75bb656c65526efff6702ee9e46c97cfd54f60",
+      "tags": [],
+      "characters": 85,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 7.03,
+      "lufs": -17.0,
+      "true_peak_db": -2.8,
+      "gain_db": -1.7,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.3,
+      "source_true_peak_db": -1.1,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-31T20:42:20+00:00",
+      "run": "41239964908",
+      "adopted_from": "probe/K3/W034_3",
+      "api": {
+        "history_item_id": "vdYR0Z5ekJgYtPgwHvQi",
+        "character_cost": "37",
+        "previous_text": "Тихон, не придёт Дуня. Два года назад у меня умерла, по нашему счёту. Вспоминала тебя.",
+        "probe_run": "41062710030"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Долго Тихон молчит, потом перебирается поближе к Агатиной лежанке и там укладывается",
+        "words": [
+          "Долго",
+          "Тихон",
+          "молчит,",
+          "потом",
+          "перебирается",
+          "поближе",
+          "к",
+          "Агатиной",
+          "лежанке",
+          "и",
+          "там",
+          "укладывается"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "M23d_4": {
@@ -25193,6 +25379,71 @@
         }
       }
     },
+    "agata:O1.board.use": {
+      "kind": "narration",
+      "key": "O1.board.use",
+      "source_text": "ru_E0_E1",
+      "alignment": "src/agata_thoughts/O1.board.use.align.json",
+      "profile": "inner",
+      "speaker": "agata",
+      "text": "Доску недавно вытирали — мел свежий. Учились тут. Вот бы и моё послание кто прочёл.",
+      "text_sha1": "d89b091c3c469039f9b2b57fdfb3589b5698b84a",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.65,
+        "similarity_boost": 0.75
+      },
+      "file": "agata_thoughts/O1.board.use.ogg",
+      "source": "src/agata_thoughts/O1.board.use.mp3",
+      "voice_text": "[thoughtful] Доску недавно вытирали — мел свежий. Учились тут. Вот бы и моё послание кто прочёл.",
+      "voice_sha1": "25de8ba2e75e9701cf18a7e5fa921b5c8bc8e23a",
+      "tags": [],
+      "characters": 96,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 6.84,
+      "lufs": -16.9,
+      "true_peak_db": -3.3,
+      "gain_db": 2.1,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -19.1,
+      "source_true_peak_db": -5.5,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-31T20:42:20+00:00",
+      "run": "41239964908",
+      "adopted_from": "probe/K3/W038_2",
+      "api": {
+        "history_item_id": "wYIk5uMgdrPXVnDgoZQv",
+        "character_cost": "42",
+        "previous_text": "",
+        "probe_run": "41062710030"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Доску недавно вытирали, мел свежий. Учились тут. Вот бы и мое послание кто прочел",
+        "words": [
+          "Доску",
+          "недавно",
+          "вытирали,",
+          "мел",
+          "свежий.",
+          "Учились",
+          "тут.",
+          "Вот",
+          "бы",
+          "и",
+          "мое",
+          "послание",
+          "кто",
+          "прочел"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
+      }
+    },
     "agata:O1.enter.winter": {
       "kind": "narration",
       "key": "O1.enter.winter",
@@ -33263,6 +33514,83 @@
           "language_code": "ru",
           "seed": 706054225
         }
+      }
+    },
+    "pelageya:R1d.pelageya.wait_water": {
+      "kind": "narration",
+      "key": "R1d.pelageya.wait_water",
+      "source_text": "ru_E2_E3",
+      "alignment": "src/character_lines/R1d.pelageya.wait_water.align.json",
+      "as_line": true,
+      "speaker": "pelageya",
+      "text": "Пошла вода, пошла! Как плита из воды покажется — сниму канат со стопора да на лодке к опоре свезу. На кольцо его только с воды и заведёшь.",
+      "text_sha1": "8bfab7be089c9700e3aebcc901af77e692cb0e5a",
+      "voice_id": "mIbPOSXtLeiaroofXc7O",
+      "voice_name": "PELAGEYA",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/R1d.pelageya.wait_water.ogg",
+      "source": "src/character_lines/R1d.pelageya.wait_water.mp3",
+      "voice_text": "[animated] Пошла вода, пошла! Как плита из воды покажется — сниму канат со стопора да на лодке к опоре свезу. На кольцо его только с воды и заведёшь.",
+      "voice_sha1": "abb979f0e27b7233f4b0b481b9a7e2af2db906ce",
+      "tags": [],
+      "characters": 149,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 9.24,
+      "lufs": -17.0,
+      "true_peak_db": -4.1,
+      "gain_db": -1.8,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -15.2,
+      "source_true_peak_db": -2.2,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-10-31T20:42:20+00:00",
+      "run": "41239964908",
+      "adopted_from": "probe/K3/W037_3",
+      "api": {
+        "history_item_id": "mnckXchmaousc24jJdVd",
+        "character_cost": "66",
+        "previous_text": "",
+        "probe_run": "41062710030"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Пошла вода, пошла! Как плита из воды покажется, сниму канат со стопора да на лодке к опоре свезу. На кольцо его только с воды и заведешь",
+        "words": [
+          "Пошла",
+          "вода,",
+          "пошла!",
+          "Как",
+          "плита",
+          "из",
+          "воды",
+          "покажется,",
+          "сниму",
+          "канат",
+          "со",
+          "стопора",
+          "да",
+          "на",
+          "лодке",
+          "к",
+          "опоре",
+          "свезу.",
+          "На",
+          "кольцо",
+          "его",
+          "только",
+          "с",
+          "воды",
+          "и",
+          "заведешь"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "pelageya:R2.exit_R1.closed": {
