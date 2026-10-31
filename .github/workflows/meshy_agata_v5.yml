@@ -16,6 +16,10 @@ on:
         description: "уже созданные задачи: A=<id>,B=<id> (без новых кредитов)"
         required: false
         default: ""
+      mode:
+        description: "generate — кандидаты; rig — риг кандидата (variants = одна буква): упрощение в Blender, вход рига в релиз, риг Meshy (5 кр.)"
+        required: false
+        default: "generate"
 
 permissions:
   contents: write
@@ -38,7 +42,32 @@ jobs:
       - name: Зависимости
         run: python -m pip install --quiet pillow numpy
 
+      - name: Blender (bpy) — для рига
+        if: github.event.inputs.mode == 'rig'
+        run: python -m pip install --quiet bpy==5.2.2
+
+      - name: Вход рига — упрощение кандидата и в релиз
+        if: github.event.inputs.mode == 'rig'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          v="${{ github.event.inputs.variants }}"
+          mkdir -p _v5
+          gh release download agata-v5-work -p "agata_v5${v}.glb" -D _v5 --clobber
+          python tools/v5_rig_input.py -- "_v5/agata_v5${v}.glb" "_v5/agata_v5${v}_rig_input.glb" 290000
+          gh release upload agata-v5-work "_v5/agata_v5${v}_rig_input.glb" --clobber
+          rm -f "_v5/agata_v5${v}.glb"
+
+      - name: Meshy — риг
+        if: github.event.inputs.mode == 'rig'
+        env:
+          MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
+        run: python tools/meshy_v5_rig.py --variant "${{ github.event.inputs.variants }}" --resume "${{ github.event.inputs.resume }}" --out _v5 2>&1 | tee -a _v5/run.log
+        shell: bash
+
       - name: Meshy — кандидаты
+        if: github.event.inputs.mode != 'rig'
         env:
           MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
         run: mkdir -p _v5 && python tools/meshy_v5.py --variants "${{ github.event.inputs.variants }}" --resume "${{ github.event.inputs.resume }}" --out _v5 2>&1 | tee _v5/run.log
