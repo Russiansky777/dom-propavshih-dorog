@@ -643,11 +643,22 @@ func arm_clear_step(delta: float) -> void:
 	var far_f := (qf.x - (_arm_box.end.x + r)) if outer == _arm_box.position.x else ((_arm_box.position.x - r) - qf.x)
 	var extra := 0.0
 	if depth_f > 0.0 and far_f < 0.0 and arm_clear_on:
-		extra = depth_f * 2.0 * f_yz_f   # the middle of the forearm goes half as far as the hand
+		extra = depth_f * float(bc.get("forearm_k", 2.0)) * f_yz_f   # the middle of the forearm goes half as far as the hand
 		want = maxf(want, clampf(depth_f / 0.02, 0.0, 1.0) * f_yz_f)
 	_arm_w = move_toward(_arm_w, want, delta / 0.08)
 	var qt := q
 	qt.x = (outer - r - extra) if outer == _arm_box.position.x else (outer + r + extra)
+	# or behind the bag (Director 31.10, 17:45: «рука, которая у сумки, чуть более оттопырена»): standing, the hand and
+	# the forearm hang over the bag's back edge — out sideways that took the arm a hand's breadth off the coat; behind
+	# it, a few centimetres back. Whichever way is shorter (the forearm's middle counts double, as above).
+	if bool(bc.get("behind", false)):
+		var back_h := q.z - (_arm_box.position.z - r)
+		var back_f := (qf.z - (_arm_box.position.z - r)) * float(bc.get("forearm_k", 2.0)) if (depth_f > 0.0 and far_f < 0.0) else 0.0
+		var need_back := maxf(back_h, back_f)
+		var need_out := absf(qt.x - q.x)
+		if need_back > 0.0 and need_back < need_out:
+			qt = q
+			qt.z = q.z - need_back
 	var target_m: Vector3 = hips_now * (_arm_rest_hips.affine_inverse() * qt)
 	var yaw_b := Basis(Vector3.UP, get_yaw())
 	var model_to_turn := to_turn * to_model.affine_inverse()
@@ -888,7 +899,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 		var err := 0.0
 		if st != null:
 			# stepping: from the old spot (fixed on the floor) to where the stance wants the foot
-			st[1] = minf(float(st[1]) + delta / step_s, 1.0)
+			st[1] = minf(float(st[1]) + delta / (float(st[4]) if st.size() > 4 else step_s), 1.0)
 			var u: float = st[1]
 			# lifted first, carried, set down: the foot leaves and meets the floor going straight up and down
 			var h := clampf((u - 0.15) / 0.7, 0.0, 1.0)
@@ -945,15 +956,17 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 		if _closing == 0 and not turning:
 			need_i = maxf(need, float(fk.get("close_m", 0.15)))   # closed up: the other foot stays unless far off
 		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need_i and (other == null or float(other[1]) >= 0.75):
+			var dur := step_s
 			if _closing > 0:
 				_closing -= 1
+				dur = maxf(float(fk.get("close_step_s", step_s)), 0.05)   # closing up after a stop: an unhurried step
 			# it leaves from the height it stands at now (the lock or the stance, whichever is higher — as drawn)
 			# and lands where the stance will be when it is set down (the turn going on at its present speed)
 			var t_land := float(fk.get("lead_s", 0.08)) + step_s * 0.85
 			var land_b := Basis(Vector3.UP, yaw + _feet_yaw_v * t_land)
 			var land := _clear_of_other(land_b * f[i * 2], i, yaw_b, f, o, k, float(fk.get("min_sep_m", 0.12)))
 			# kept by the body (it goes with her as she still comes to a stop), not turned with her
-			_foot_step[i] = [_floor_screen(locks[i], o, k), 0.0, _planted_y(i, anim[i]), land]
+			_foot_step[i] = [_floor_screen(locks[i], o, k), 0.0, _planted_y(i, anim[i]), land, dur]
 	for i in 2:
 		var lock = locks[i]
 		var a: Vector3 = anim[i]

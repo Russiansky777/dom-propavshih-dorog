@@ -1514,44 +1514,39 @@ func _planned_stop_3d(rem_m: float, delta: float) -> bool:
 	if str(_rt.get("walk", {}).get("stop", "")) != "planned" or not view3d.even_root() or not root_motion_3d:
 		return false
 	var rate := walk_rate_3d()
-	var vbar := view3d.walk_speed_mps * rate
-	var cyc := view3d.walk_len / maxf(rate, 0.01)      # seconds per cycle
 	if _stop_plan.is_empty():
 		var crossed := _contact_between(_stop_last_phase, walk_phase)
 		_stop_last_phase = walk_phase
 		var step_m := view3d.stride_m * 0.5
-		if crossed and OS.get_environment("PLANDBG") != "":
-			print("PLAN contact rem %.3f ww %.2f sw %.2f" % [rem_m, walk_w, view3d.shown_w()])
-		if not crossed or walk_w < 0.5 or view3d.shown_w() < 0.5 or rem_m > 1.5 * step_m or vbar <= 0.01:
+		if not crossed or walk_w < 0.5 or view3d.shown_w() < 0.5 or rem_m > 1.5 * step_m or view3d.stride_m <= 0.01:
 			return false
 		var n := 1 if rem_m <= 0.75 * step_m else 2
-		var T := _time_to_contact(walk_phase, n) * cyc
-		if T < 0.1:
+		var dph := _time_to_contact(walk_phase, n)      # the plan in the clip's phase: the ground is per phase
+		if dph < 0.1:
 			return false
 		var w0 := walk_w
-		var r := clampf(rem_m / (vbar * w0 * T), 0.2, 0.9)
-		_stop_plan = {"t": 0.0, "T": T, "p": r / (1.0 - r), "rem0": rem_m, "w0": w0}
-		if OS.get_environment("PLANDBG") != "":
-			print("PLAN start n %d T %.3f phase %.3f contacts %s" % [n, T, fposmod(walk_phase, 1.0), str(view3d.contacts)])
+		var r := clampf(rem_m / (view3d.stride_m * dph * w0), 0.2, 0.9)
+		_stop_plan = {"ph0": walk_phase, "dph": dph, "p": r / (1.0 - r), "rem0": rem_m, "w0": w0}
 	var pl := _stop_plan
-	pl["t"] = float(pl["t"]) + delta * speed_factor
-	var u := clampf(float(pl["t"]) / maxf(float(pl["T"]), 0.01), 0.0, 1.0)
+	var w0p := float(pl.get("w0", 1.0))
+	# the legs slow down with the body (Director 31.10, 17:45: «всё ещё мельтешит ногами при окончании движения»: at the
+	# clip's own cadence the last, ever shorter steps came quick — a person stopping takes the last step slower):
+	# the cadence falls with the walk weight to `stop_cadence` of the clip's at the end
+	var c0 := float(_rt.get("walk", {}).get("stop_cadence", 0.55))
+	walk_phase += delta * speed_factor * rate * (c0 + (1.0 - c0) * walk_w) / maxf(view3d.walk_len, 0.01)
+	_stop_last_phase = walk_phase
+	var u := clampf((walk_phase - float(pl["ph0"])) / maxf(float(pl["dph"]), 0.01), 0.0, 1.0)
 	var p: float = pl["p"]
-	var w := float(pl.get("w0", 1.0)) * (1.0 - pow(u, p))
+	var w := w0p * (1.0 - pow(u, p))
 	# the ground the plan still has to cover (as a share of rem0) — and what is really left: the weight corrects for it
 	var f := ((1.0 - u) - (1.0 - pow(u, p + 1.0)) / (p + 1.0)) / maxf(p / (p + 1.0), 1e-4)
 	var rem_plan := float(pl["rem0"]) * f
 	if rem_plan > 0.02:
 		w *= clampf(rem_m / rem_plan, 0.6, 1.6)
 	walk_w = clampf(w, 0.0, 1.0)
-	# the legs at the clip's cadence (as fast as the weight shows the stride — a half-blended stride at half speed)
-	walk_phase += delta * speed_factor * rate * (0.55 + 0.45 * float(pl.get("w0", 1.0))) / maxf(view3d.walk_len, 0.01)
-	_stop_last_phase = walk_phase
 	view3d.stride_hold = true
 	view3d.stride_hold_keep = true
 	if u >= 1.0:
-		if OS.get_environment("PLANDBG") != "":
-			print("PLAN end rem %.3f t %.3f" % [rem_m, float(pl["t"])])
 		walk_w = 0.0
 		_stop_plan = {}
 		view3d.stride_hold_keep = false   # held until the stance is shown (Actor3D.feet_step lets go)

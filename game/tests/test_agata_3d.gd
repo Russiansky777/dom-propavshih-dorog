@@ -933,6 +933,8 @@ func _test_braid() -> void:
 		_completed = true
 		return
 	_braid_rows = []
+	v.seed_idle(21)   # the same stance clips every run (a big weight shift in the standing window swung the tip 1.4 cm)
+	seed(21)
 	v.skeleton.skeleton_updated.connect(_on_braid_updated)
 	await _wait_s(1.0)
 	var rest_rows := _braid_rows.duplicate()
