@@ -345,7 +345,10 @@ func _test_m03_once() -> void:
 	var tikhon_lines := seen.filter(func(x): return String(x).begins_with("tikhon:"))
 	_check(gs.has_flag("done_M03") and gs.has_flag("met_tikhon"), "M03 done after the scarf: %s" % str(seen))
 	var m03_tikhon: Array = _m03_lines("tikhon")
-	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 8, "Tikhon's eight M03 lines (Docs/SCENARIO_FINAL.md M03, with the shelf request G11; J: + «Тихон. При печи смотрителем состою…») play once: %s" % str(tikhon_lines))
+	# K (Director 31.10, 21:24 «давай поправим про Дуню и вещи места… вставку в диалоге одобряю»): + «Дуня всё
+	# приговаривала: вещи своё место помнят…» before «Нынче среда?» — nine
+	_check(tikhon_lines.size() == m03_tikhon.size() and tikhon_lines.size() == 9 and tikhon_lines.any(func(x): return String(x).contains("вещи своё место помнят")),
+		"Tikhon's nine M03 lines (Docs/SCENARIO_FINAL.md M03, with the shelf request G11; J: + «Тихон. При печи смотрителем состою…»; K: + Dunya's saying) play once: %s" % str(tikhon_lines))
 	_check(seen.any(func(x): return String(x).begins_with("tikhon:") and String(x).contains("полку мне повесь")), "G11: after the first talk at the lit stove Tikhon asks to hang his shelf: %s" % str(seen))
 	_check(seen.any(func(x): return String(x).contains("Вечер долгий")), "«Вечер долгий» in M03")
 	_check(seen.any(func(x): return String(x).contains("А ты один здесь?")) and seen.any(func(x): return String(x).contains("И печь тут,")), "«Ты здесь один?» / «Печь тоже здесь.» in M03")
