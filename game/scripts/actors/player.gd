@@ -527,6 +527,7 @@ func _start_walk(target: Vector2) -> void:
 		var ph := view3d.start_phase(view3d.feet_model(), _rtf("walk", "start_ahead", 0.0))
 		if ph >= 0.0:
 			walk_phase = floorf(walk_phase) + 1.0 + ph
+			_rm_phase = walk_phase   # the even root motion counts from the new phase, not across the jump
 	_walking = true
 	walk_time = 0.0
 	_closest_px = INF
@@ -1155,7 +1156,18 @@ func _look_3d() -> void:
 		# nothing to look at, standing: ahead at eye level, now and then a glance aside (Director 31.10: in the stance
 		# and the gesture the clips keep her head down at the floor — a downcast girl all the time)
 		var idle: Dictionary = lk.get("idle", {})
-		if idle.is_empty() or _walking:
+		if _walking:
+			# walking with nothing to look at: where she is going, a few steps ahead (Director 31.10, 02:14 «как живые»:
+			# the walk clip carries her head bowed to the floor at her feet) — along the way she turns to, before the body
+			var wk: Dictionary = lk.get("walk", {})
+			if wk.is_empty():
+				view3d.set_look(Vector3.ZERO, false)
+				return
+			var wa := yaw3d_target
+			var wahead := float(wk.get("ahead_m", 4.0))
+			view3d.set_look(Vector3(sin(wa) * wahead, float(wk.get("eye_m", 1.3)), cos(wa) * wahead), true, float(wk.get("weight", 0.5)))
+			return
+		if idle.is_empty():
 			view3d.set_look(Vector3.ZERO, false)
 			return
 		_glance_t -= get_process_delta_time()
@@ -1260,6 +1272,7 @@ var _rm_feet: Array = []
 var _rm_side: int = -1
 var _rm_yaw: float = 0.0
 var _rm_blend: float = 0.0
+var _rm_phase: float = 0.0
 var rm_last_px: Vector2 = Vector2.ZERO   # this frame's root motion on screen (tests, probe)
 ## Off only in the foot test's self-check: the figure then slides along the path at constant speed.
 var root_motion_3d: bool = true
@@ -1284,6 +1297,14 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 		# she turns about her centre instead — no lurch sideways while she is still almost standing.
 		var share := clampf(walk_w / maxf(_rm_blend, 0.001), 0.0, 1.0)
 		var walk_part: Vector3 = r_old * (f_old - f_new) * share
+		if view3d.even_root():
+			# an even walk (data walk.root "even"): straight on by the clip's ground per phase, the hips' own swing
+			# making the pace; the feet are held on the floor by the stride planting (Actor3D.feet_step). Only in the
+			# full stride: setting off and stopping, the body goes as the shown planted foot pushes it (the foot locks
+			# hold that foot; going on evenly ahead of the half-blended stance, the lock fell behind and stepped 50 cm)
+			var ground := view3d.root_between(_rm_phase, walk_phase)
+			var even: Vector3 = r_old * Vector3(0.0, 0.0, ground) * clampf(walk_w, 0.0, 1.0)
+			walk_part = walk_part.lerp(even, smoothstep(0.85, 0.98, view3d.shown_w()))
 		# setting off (the shown walk weight rising; Director 30.10 «идеальная Агата»): the planted foot is kept on the
 		# floor through the blend from the stance into the stride too — it skated 10–15 cm back as she set off. Only
 		# while the weight rises: stopping keeps the figure exactly at the end of its path.
@@ -1317,6 +1338,7 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 	else:
 		_rm_side = view3d.stance_at(walk_phase)
 	_rm_yaw = yaw3d
+	_rm_phase = walk_phase
 	_rm_blend = blend
 	_rm_shown_w = view3d.shown_w()
 

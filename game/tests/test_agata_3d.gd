@@ -41,6 +41,14 @@ func _check(cond: bool, message: String) -> void:
 
 
 func _test(test_name: String, fn: Callable) -> void:
+	# ONLY=<words> in the environment: just the tests whose name contains one of them (a quicker local run)
+	var only := OS.get_environment("ONLY")
+	if only != "":
+		var hit := false
+		for w in only.split(","):
+			hit = hit or test_name.contains(w)
+		if not hit:
+			return
 	_fails = []
 	_completed = false
 	var started := Time.get_ticks_msec()
@@ -96,6 +104,8 @@ func _run() -> void:
 	await _test("Braid (Director 30.10, 23:22 «коса и сумка на пружинах»): on its own spring chain from the head — swings walking and turning, settles standing, stays clear of the back", _test_braid)
 	await _test("Arm and bag (Director 31.10 «пересмотри и увидь сам»): the right hand and forearm stay out of the bag at her hip — standing, walking, talking, opening", _test_arm_bag)
 	await _test("Feet hold the floor (Director 30.10 «идеальная Агата»): stopping and turning on the spot, a foot set down does not skate (14–21 cm before) — it stays or steps", _test_feet_hold)
+	await _test("Boots (Director 31.10, 02:14 «сапоги с задёрнутыми носами»): a boot set down stands on its sole at the height it was made at, its toe not turned up", _test_boots)
+	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; she looks ahead", _test_walk_rhythm)
 	PlayerScript.forced_render = ""
 	gs.reset()
 	var failed := 0
@@ -186,26 +196,28 @@ func _test_turning() -> void:
 
 # --- Feet planted --------------------------------------------------------------------------------
 
-## Walks between two points and measures, in floor metres, the drift of the stance foot during each
-## stance (foot below the other, weight ≈ 1): player floor position + yaw-rotated foot position.
+## Walks between two points and measures, in floor metres, the drift of each foot as drawn (after the IK: with the
+## even walk the stride planting holds it, not the clip) while it stands flat — its ankle and ball both within 8 mm of
+## the stride's floor: player floor position + yaw-rotated ankle.
 func _walk_and_measure(room: String, a: Vector2, b: Vector2) -> Dictionary:
 	await _enter(room, a)
 	var v: Actor3D = player.view3d
+	if not v.skeleton.skeleton_updated.is_connected(_on_skel_updated):
+		v.skeleton.skeleton_updated.connect(_on_skel_updated)
+	_drawn_feet = []
 	player.walk_to(b)
 	var k: float = player.floor_foreshortening()
 	var floor_pos := Vector2.ZERO   # integrated floor position (m)
 	var last: Vector2 = player.global_position
-	var stance_side := -1
-	var stance_start := Vector3.ZERO
+	var flat_start: Array = [null, null]
 	var worst := 0.0
 	var worst_fwd := 0.0
 	var worst_lat := 0.0
 	var yaw_change := 0.0
-	var stance_yaw := 0.0
-	var stance_scr := Vector2.ZERO
+	var stance_yaw: Array = [0.0, 0.0]
+	var stance_scr: Array = [Vector2.ZERO, Vector2.ZERO]
 	var worst_scr := 0.0
 	var stances := 0
-	var t := 0.0
 	var speeds: Array = []
 	var guard := 0
 	while player.is_walking() and guard < 2000:
@@ -219,28 +231,32 @@ func _walk_and_measure(room: String, a: Vector2, b: Vector2) -> Dictionary:
 		last = p
 		# full walking as shown (the weights pass through Actor3D's followers: the shown one lags the asked one)
 		if player.walk_w < 0.97 or v.shown_w() < 0.97:
-			stance_side = -1
+			flat_start = [null, null]
 			continue
-		var f: Array = v.feet_model()
-		var side := 0 if minf(f[0].y, f[1].y) <= minf(f[2].y, f[3].y) else 1
-		var foot: Vector3 = Basis(Vector3.UP, player.yaw3d) * f[side * 2]
-		var world := Vector3(floor_pos.x + foot.x, foot.y, floor_pos.y + foot.z)
-		# as drawn: the planted foot's screen position (player on screen + camera projection of the foot)
-		var scr: Vector2 = player.global_position + v.screen_of(Vector3(foot.x, 0.0, foot.z)) * s  # its floor contact point
-		if side != stance_side:
-			stance_side = side
-			stance_start = world
-			stance_scr = scr
-			stance_yaw = player.yaw3d
-			stances += 1
-		else:
-			var dv := Vector2(world.x - stance_start.x, world.z - stance_start.z)
-			worst = maxf(worst, dv.length())
-			var fwd := Vector2(sin(player.yaw3d), cos(player.yaw3d))
-			worst_fwd = maxf(worst_fwd, absf(dv.dot(fwd)))
-			worst_lat = maxf(worst_lat, absf(dv.cross(fwd)))
-			yaw_change = maxf(yaw_change, absf(angle_difference(stance_yaw, player.yaw3d)))
-			worst_scr = maxf(worst_scr, scr.distance_to(stance_scr) / maxf(s, 0.01))
+		var f: Array = _drawn_feet if not _drawn_feet.is_empty() else v.feet_model()
+		for i in 2:
+			var flat: bool = f[i * 2].y - float(v.stride_floor[i * 2]) < 0.008 and f[i * 2 + 1].y - float(v.stride_floor[i * 2 + 1]) < 0.008
+			if not flat:
+				flat_start[i] = null
+				continue
+			var foot: Vector3 = Basis(Vector3.UP, player.yaw3d) * f[i * 2]
+			var world := Vector3(floor_pos.x + foot.x, foot.y, floor_pos.y + foot.z)
+			# as drawn: the planted foot's screen position (player on screen + camera projection of the foot)
+			var scr: Vector2 = player.global_position + v.screen_of(Vector3(foot.x, 0.0, foot.z)) * s  # its floor contact point
+			if flat_start[i] == null:
+				flat_start[i] = world
+				stance_scr[i] = scr
+				stance_yaw[i] = player.yaw3d
+				stances += 1
+			else:
+				var st: Vector3 = flat_start[i]
+				var dv := Vector2(world.x - st.x, world.z - st.z)
+				worst = maxf(worst, dv.length())
+				var fwd := Vector2(sin(player.yaw3d), cos(player.yaw3d))
+				worst_fwd = maxf(worst_fwd, absf(dv.dot(fwd)))
+				worst_lat = maxf(worst_lat, absf(dv.cross(fwd)))
+				yaw_change = maxf(yaw_change, absf(angle_difference(float(stance_yaw[i]), player.yaw3d)))
+				worst_scr = maxf(worst_scr, scr.distance_to(stance_scr[i]) / maxf(s, 0.01))
 		speeds.append(d.length() / maxf(player.get_process_delta_time(), 0.0001) / ppm_s)
 	return {"worst_m": worst, "scr_px": worst_scr, "elev": v.elev_deg, "stretch": v.depth_stretch(), "k": k, "fwd_m": worst_fwd, "lat_m": worst_lat, "yaw_deg": rad_to_deg(yaw_change), "stances": stances, "arrived": player.global_position.distance_to(b) < 12.0, "frames": guard}
 
@@ -261,9 +277,11 @@ func _test_feet_planted() -> void:
 	# Self-check of the metric: the same walk with the figure sliding along the path at the clip's mean
 	# speed (no root motion — what the sheets did) must be caught.
 	player.root_motion_3d = false
+	player.foot_lock_3d = false
 	var bad: Dictionary = await _walk_and_measure("Z2", Vector2(500, 900), Vector2(1450, 900))
 	player.root_motion_3d = true
-	print("        self-check (constant speed, no root motion): stance drift %.1f mm" % (bad["worst_m"] * 1000.0))
+	player.foot_lock_3d = true
+	print("        self-check (constant speed, no root motion, no planting): stance drift %.1f mm" % (bad["worst_m"] * 1000.0))
 	_check(bad["worst_m"] > 0.010, "self-check: constant-speed walking slid only %.1f mm — the metric would not catch skating" % (bad["worst_m"] * 1000.0))
 	_completed = true
 
@@ -682,6 +700,7 @@ func _test_look() -> void:
 func _starts(plant: bool) -> Array:
 	player.start_at_mid_stance = plant
 	player.plant_on_start = plant
+	player.foot_lock_3d = plant
 	var tot := 0.0
 	var worst := 0.0
 	var n := 0
@@ -689,6 +708,9 @@ func _starts(plant: bool) -> Array:
 		await _enter("Z2", Vector2(700 + (k % 3) * 200, 850 + (k % 2) * 100))
 		var v: Actor3D = player.view3d
 		var ang := k * 0.52
+		if not v.skeleton.skeleton_updated.is_connected(_on_skel_updated):
+			v.skeleton.skeleton_updated.connect(_on_skel_updated)
+		_drawn_feet = []
 		player.yaw3d = ang
 		player.yaw3d_target = ang
 		await _frames(40)
@@ -702,19 +724,29 @@ func _starts(plant: bool) -> Array:
 		while t < 0.8:
 			await process_frame
 			t += player.get_process_delta_time()
-			var f := v.feet_model()
+			var f: Array = _drawn_feet if not _drawn_feet.is_empty() else v.feet_model()   # as drawn (the IK holding it)
 			var p: Vector2 = player.global_position - start
-			var side := 0 if minf(f[0].y, f[1].y) <= minf(f[2].y, f[3].y) else 1
-			var foot: Vector3 = Basis(Vector3.UP, player.yaw3d) * f[side * 2]
+			# the foot on the floor and its contact: the ankle while the heel is down, the ball once the heel is up (the
+			# ankle then rolls forward over the ball, as it should)
+			var hgt: Array = []
+			for j in 4:
+				hgt.append(f[j].y - float(v.stride_floor[j]))
+			var side := 0 if minf(hgt[0], hgt[1]) <= minf(hgt[2], hgt[3]) else 1
+			var c: int = side * 2 if hgt[side * 2] <= hgt[side * 2 + 1] + 0.004 else side * 2 + 1
+			if float(hgt[c]) > 0.015:
+				planted = {}   # both feet up off the floor (one lifting, the other being set down): none planted
+				continue
+			var foot: Vector3 = Basis(Vector3.UP, player.yaw3d) * f[c]
 			var w := Vector2(p.x / ppm_s + foot.x, p.y / (ppm_s * kf) + foot.z)
-			if not planted.has(side):
-				planted = {side: w}
-			w_max = maxf(w_max, (w - planted[side]).length())
+			if not planted.has(c):
+				planted = {c: w}
+			w_max = maxf(w_max, (w - planted[c]).length())
 		tot += w_max
 		worst = maxf(worst, w_max)
 		n += 1
 	player.start_at_mid_stance = true
 	player.plant_on_start = true
+	player.foot_lock_3d = true
 	return [tot / maxf(n, 1), worst]
 
 
@@ -965,3 +997,149 @@ func _test_arm_bag() -> void:
 	_check(float(on[1]) <= 0.03, "the right forearm goes %.0f mm into the bag (≤ 30)" % (float(on[1]) * 1000.0))
 	_check(float(off[0]) > 0.025, "self-check: without the clearance the hand goes only %.0f mm into the bag — the case is not reproduced" % (float(off[0]) * 1000.0))
 	_completed = true
+
+
+# --- Boots -------------------------------------------------------------------------------------------
+
+var _boot_rows: Array = []
+
+
+## As drawn (after the boot modifier): per foot the boot's pitch against its bind pose — the elevation of the
+## ankle→ball line, degrees, + toe up — and the ankle's height above its bind height (m).
+func _on_boot_updated() -> void:
+	var v: Actor3D = player.view3d
+	var sk := v.skeleton
+	var xf := v._skel_to_turn()
+	var row: Array = []
+	for i in 2:
+		var fb: int = v.foot_bones[i * 2]
+		var tb: int = v.foot_bones[i * 2 + 1]
+		var d: Vector3 = xf.basis * (sk.get_bone_global_pose(tb).origin - sk.get_bone_global_pose(fb).origin)
+		var r: Vector3 = xf.basis * (sk.get_bone_global_rest(tb).origin - sk.get_bone_global_rest(fb).origin)
+		var el := rad_to_deg(atan2(d.y, Vector2(d.x, d.z).length()))
+		var el_r := rad_to_deg(atan2(r.y, Vector2(r.x, r.z).length()))
+		var ank: float = (xf * sk.get_bone_global_pose(fb).origin).y - float(v._foot_bind_h[i])
+		row.append([el - el_r, ank])
+	_boot_rows.append(row)
+
+
+func _boot_stand(fix: bool) -> Array:
+	await _enter("H1", Vector2(1200, 960))
+	var v: Actor3D = player.view3d
+	v.boot.active = fix
+	if not v.skeleton.skeleton_updated.is_connected(_on_boot_updated):
+		v.skeleton.skeleton_updated.connect(_on_boot_updated)
+	await _frames(60)
+	_boot_rows = []
+	await _frames(240)
+	v.skeleton.skeleton_updated.disconnect(_on_boot_updated)
+	v.boot.active = true
+	var up := 0.0
+	var high := 0.0
+	for row in _boot_rows:
+		for i in 2:
+			up = maxf(up, absf(float(row[i][0])))
+			high = maxf(high, absf(float(row[i][1])))
+	return [up, high]
+
+
+func _test_boots() -> void:
+	var v: Actor3D = player.view3d
+	_check(v.boot != null, "no boot modifier (rt3d.feet.boot)")
+	if v.boot == null:
+		_completed = true
+		return
+	var on: Array = await _boot_stand(true)
+	var off: Array = await _boot_stand(false)
+	print("        standing, the boot off its bind pitch %.1f° at most, the ankle off its height in the boot %.0f mm; without the boot fix %.1f° (the toe turned up)" % [on[0], on[1] * 1000.0, off[0]])
+	_check(float(on[0]) <= 6.0, "standing, the boot is turned %.1f° off the pose it was made in (≤ 6°): its toe turns up or digs in" % on[0])
+	_check(float(on[1]) <= 0.012, "standing, the ankle is %.0f mm off its height in the boot (≤ 12): the sole off the floor or in it" % (float(on[1]) * 1000.0))
+	_check(float(off[0]) > float(on[0]) + 10.0, "self-check: without the boot fix the boot is off only %.1f° — the metric would not see the toe turned up" % off[0])
+	_completed = true
+
+
+# --- Walk rhythm -------------------------------------------------------------------------------------
+
+## A steady walk across Z2: per frame the hips' speed on the floor (the figure's move + the hips inside it), the
+## hips' height and the worst move of a drawn foot contact (ankle or ball within 1 cm of the floor), mm per frame.
+func _rhythm_walk() -> Dictionary:
+	await _enter("Z2", Vector2(400, 900))
+	var v: Actor3D = player.view3d
+	if not v.skeleton.skeleton_updated.is_connected(_on_skel_updated):
+		v.skeleton.skeleton_updated.connect(_on_skel_updated)
+	_drawn_feet = []
+	player.yaw3d = PI * 0.5
+	player.yaw3d_target = PI * 0.5
+	await _frames(30)
+	player.click_at(player.global_position + Vector2(900, 0))
+	var prev: Vector2 = player.global_position
+	var prev_h := NAN
+	var prev_c: Array = []
+	var hs: Array = []
+	var hz: Array = []
+	var slips: Array = []
+	var looked := 0
+	var counted := 0
+	for i in 150:
+		await process_frame
+		var ppm_s: float = v.ppm * absf(player.scale.y)
+		var ox: float = (player.global_position - prev).x / ppm_s
+		prev = player.global_position
+		var hx: float = v.bone_floor("Hips").x
+		var yb := Basis(Vector3.UP, v.get_yaw())
+		var f: Array = _drawn_feet if not _drawn_feet.is_empty() else v.feet_model()
+		var cs: Array = []
+		var slip := 0.0
+		for k in 2:
+			var ha: float = f[k * 2].y - float(v.stride_floor[k * 2])
+			var hb: float = f[k * 2 + 1].y - float(v.stride_floor[k * 2 + 1])
+			var c: int = k * 2 if ha <= hb else k * 2 + 1
+			cs.append([(yb * f[c]).x, minf(ha, hb) < 0.01, c])
+			if prev_c.size() == 2 and bool(cs[k][1]) and bool(prev_c[k][1]) and int(prev_c[k][2]) == c:
+				slip = maxf(slip, absf(float(cs[k][0]) + ox - float(prev_c[k][0])) * 1000.0)
+		prev_c = cs
+		if i > 50 and player.walk_w > 0.99 and v.shown_w() > 0.99 and not is_nan(prev_h):
+			hs.append(absf(hx + ox - prev_h) / maxf(player.get_process_delta_time(), 1e-4))
+			hz.append(v.bone_model("Hips").y)
+			slips.append(slip)
+			counted += 1
+			if v._look_on and v._look_w > 0.2:
+				looked += 1
+		prev_h = hx
+	var lo: float = hz.min()
+	var hi: float = hz.max()
+	var low_sp := [0.0, 0]
+	var high_sp := [0.0, 0]
+	for k in hs.size():
+		var u: float = (float(hz[k]) - lo) / maxf(hi - lo, 0.001)
+		if u < 0.333:
+			low_sp = [low_sp[0] + float(hs[k]), low_sp[1] + 1]
+		elif u > 0.667:
+			high_sp = [high_sp[0] + float(hs[k]), high_sp[1] + 1]
+	slips.sort()
+	return {"low": low_sp[0] / maxf(low_sp[1], 1), "high": high_sp[0] / maxf(high_sp[1], 1), "min": hs.min(), "max": hs.max(),
+		"slip90": slips[int(slips.size() * 0.9)], "slip_max": slips.max(), "looked": float(looked) / maxf(counted, 1), "n": counted}
+
+
+func _test_walk_rhythm() -> void:
+	var v: Actor3D = player.view3d
+	var r: Dictionary = await _rhythm_walk()
+	# self-check: the figure moved by the clip's own stance foot, no stride planting (as before 31.10)
+	var spec_walk: Dictionary = v.spec.get("walk", {})
+	var spec_stride = v.spec.get("feet", {}).get("stride", {})
+	spec_walk["root"] = "foot"
+	v.spec["feet"]["stride"] = {}
+	v.build_root_motion()
+	var old: Dictionary = await _rhythm_walk()
+	spec_walk["root"] = "even"
+	v.spec["feet"]["stride"] = spec_stride
+	v.build_root_motion()
+	print("        hips on the floor: %.2f m/s low (between the steps), %.2f high (over the planted foot), %.2f–%.2f; drawn foot contacts move %.1f mm a frame (90%%), %.1f at most; looking ahead %.0f%% of %d frames" % [r["low"], r["high"], r["min"], r["max"], r["slip90"], r["slip_max"], 100.0 * float(r["looked"]), r["n"]])
+	print("        before (root from the clip's stance foot): %.2f low, %.2f high, %.2f–%.2f" % [old["low"], old["high"], old["min"], old["max"]])
+	_check(float(r["low"]) >= float(r["high"]) + 0.05, "the hips go %.2f m/s between the steps and %.2f over the planted foot — not a walking body's pace (quickest low, slowest high)" % [r["low"], r["high"]])
+	_check(float(r["max"]) - float(r["min"]) <= 0.6, "the hips' speed swings %.2f–%.2f m/s within a step: a lurch" % [r["min"], r["max"]])
+	_check(float(r["slip90"]) <= 1.5 and float(r["slip_max"]) <= 4.0, "a foot on the floor moves %.1f mm a frame (90%%; at most %.1f) — it skates (≤ 1.5 / 4)" % [r["slip90"], r["slip_max"]])
+	_check(float(r["looked"]) >= 0.9, "walking with nothing to look at, she looks ahead only %.0f%% of the time (the clip's head is bowed to the floor)" % (100.0 * float(r["looked"])))
+	_check(float(old["low"]) < float(old["high"]), "self-check: the old walk (root from the clip's foot) went %.2f low and %.2f high — the metric would not tell the pace apart" % [old["low"], old["high"]])
+	_completed = true
+

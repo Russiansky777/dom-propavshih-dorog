@@ -20,6 +20,8 @@ func _grab(dir: String, n: int) -> void:
 	var at: Vector2 = ct * player.global_position
 	var ppm_s: float = player.view3d.ppm * absf(player.scale.y) * ct.get_scale().y
 	var r := Rect2i(int(at.x - 0.6 * ppm_s), int(at.y - 1.95 * ppm_s), int(1.2 * ppm_s), int(2.1 * ppm_s))
+	if OS.get_environment("FEET") != "":
+		r = Rect2i(int(at.x - 0.45 * ppm_s), int(at.y - 0.55 * ppm_s), int(0.9 * ppm_s), int(0.7 * ppm_s))
 	r = r.intersection(Rect2i(Vector2i.ZERO, img.get_size()))
 	DirAccess.make_dir_recursive_absolute(out + "/" + dir)
 	img.get_region(r).save_png("%s/%s/%03d.png" % [out, dir, n])
@@ -55,6 +57,8 @@ func _place(room: String, pos: Vector2, yaw: float) -> void:
 func _run() -> void:
 	var args := OS.get_cmdline_user_args()
 	out = args[0]
+	if OS.get_environment("EVERY") != "":
+		every = int(OS.get_environment("EVERY"))
 	var only: Array = args.slice(1)
 	var PS = load("res://scripts/actors/player.gd")
 	PS.forced_render = "3d"
