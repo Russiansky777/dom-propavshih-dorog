@@ -1,0 +1,14 @@
+{
+  "character": "agata_v4_moves",
+  "_note": "31.10 (Директор 15:04: «Агата также ходит странно… если нужно что-то перерисовать — можем… Агата должна быть идеальной»; 15:52: «делай всё, что нужно»). Новые клипы библиотеки Meshy для живой Агаты v4 на выбор: ходьбы 121 Thoughtful_Walk, 115 Quick_Walk, 341 Walk_Slowly_and_Look_Around, 566 walking_2; «взять» с приседом 274 Female_Crouch_Pick_Up_Place_Side и наклоном 281 Female_Bend_Over_Pick_Up_Inspect (сейчас «взять» — наклон на прямых ногах). Риг прежний вход agata_v4_rig_input.glb (задачи рига 01a16dea истекли 27.10): 5 кредитов + 6 × 3 = 23 кредита. Листы не рендерятся; GLB — в релиз agata-v4-moves, оттуда перенос клипов на игровую модель (retarget_clips.py, 0 кредитов).",
+  "height_m": 1.65,
+  "stages": ["rig", "actions"],
+  "rig": {
+    "model_url": "https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/agata-v4-work/agata_v4_rig_input.glb",
+    "height_meters": 1.65
+  },
+  "actions": {"action_ids": [121, 115, 341, 566, 274, 281]},
+  "retarget": false,
+  "render": false,
+  "release": "agata-v4-moves"
+}

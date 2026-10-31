@@ -117,6 +117,23 @@ jobs:
           done
           exit $fail
 
+      - name: GLB в релиз (поле release в запросе)
+        if: steps.req.outputs.files != '' && github.event.inputs.from_run == ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # 31.10 (Директор 15:52 «делай всё, что нужно»): новые клипы на риг Агаты v4 — GLB нужен сессии координатора,
+          # а артефакты Actions из сессии не скачиваются; релиз — скачивается (как agata-v4-work)
+          for f in ${{ steps.req.outputs.files }}; do
+            tag=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('release',''))" "$f")
+            [ -n "$tag" ] || continue
+            name=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
+            gh release view "$tag" >/dev/null 2>&1 || gh release create "$tag" --prerelease --title "$tag" --notes "GLB прогона pipeline-character (запрос $f)"
+            for g in pipeline/3d/out/$name/*.glb; do
+              [ -f "$g" ] && gh release upload "$tag" "$g" --clobber && echo "в релизе $tag: $(basename $g)"
+            done
+          done
+
       - name: Перенос клипов на риг персонажа (retarget_clips.py, 0 кредитов)
         if: steps.req.outputs.files != ''
         run: |
@@ -137,6 +154,8 @@ jobs:
           set -e
           for f in ${{ steps.req.outputs.files }}; do
             name=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['character'])" "$f")
+            # "render": false — только задачи Meshy и GLB (клипы для живой модели), без листов
+            [ "$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('render', True))" "$f")" = "False" ] && { echo "$name: без рендера листов"; continue; }
             args=$(python -c "import json,sys;r=json.load(open(sys.argv[1]));print(' '.join(f'{a}={r.get(\"frames\",{}).get(a, 12 if a==\"walk\" else 8)}' for a in r.get('actions',['idle','walk'])))" "$f")
             elev=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('elev',14))" "$f")
             yaw=$(python -c "import json,sys;print(json.load(open(sys.argv[1])).get('front_yaw',0))" "$f")
