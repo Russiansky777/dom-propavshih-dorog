@@ -98,6 +98,7 @@ func _run() -> void:
 	await _test("Actions open/pick/reach in 3D: once, on the key fraction; fade into idle; room change cancels", _test_actions)
 	await _test("Drawing: live figure under the y-sorted node (same z, occluders as before), facade invisible, shadow kept, footsteps on contacts", _test_drawing)
 	await _test("Talking (Director 30.10 «как живая»): her line → the talk gesture fades in over the stance, feet stay; line over → fades out; short line — none", _test_gesture)
+	await _test("Talking to someone (Director 31.10, lines 30 and 45): her hands talk only in a conversation, not over a thing she found or her own thought", _test_gesture_addressed)
 	await _test("Skirt (Director 30.10 «сгибы юбки не красиво»): on its own spring bones, not on the legs — no «trouser legs»; the knees push it, standing it settles", _test_skirt)
 	await _test("Look (Director 30.10 «идеальная Агата»): a villager's line — her head turns to him (within the neck's limits), softly; line over — back", _test_look)
 	await _test("Setting off (Director 30.10 «идеальная Агата»): the planted foot stays put as the stance blends into the stride (it skated 12–15 cm)", _test_set_off)
@@ -107,6 +108,7 @@ func _run() -> void:
 	await _test("Boots (Director 31.10, 02:14 «сапоги с задёрнутыми носами»): a boot set down stands on its sole at the height it was made at, its toe not turned up", _test_boots)
 	await _test("Stopping (Director 31.10, 15:04 «мельтешит в конце хода»): she stops in the steps a person stops in — the last one shorter, the other foot closing up — not a run of quick little steps", _test_stop_steps)
 	await _test("Pick from the floor (Director 31.10, 17:45 and 18:32 «с пола заменить»): things on the floor and snow are taken with a bend down to the floor, not a crouch to table height; the thing is not lifted to the face (G1); the feet stay", _test_pick_floor)
+	await _test("Corners near the end (Director 31.10, lines 8–9 «застревает и идёт на одном месте… от писем до стола»): a walk whose path turns a corner just before its end arrives — no walking on the spot against the counter, no stopping off past the corner", _test_walk_corners)
 	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; arms swing by her sides; she looks ahead", _test_walk_rhythm)
 	PlayerScript.forced_render = ""
 	gs.reset()
@@ -490,7 +492,7 @@ func _test_gesture() -> void:
 	_check(v.clips.has("talk"), "talk clip resolved (rt3d.clips.talk)")
 	await _wait_s(0.5)
 	var feet0: Array = v.feet_model()
-	sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "T_gesture", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут."}
+	sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "T_gesture", "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут."}
 	await _wait_s(1.0)
 	_check(player._gest_w > 0.6, "her line: the gesture is in (weight %.2f)" % player._gest_w)
 	var feet1: Array = v.feet_model()
@@ -1002,7 +1004,7 @@ func _bag_runs(on: bool) -> Array:
 	await _wait_s(3.0)
 	player.click_at(player.global_position + Vector2(-420, 0))
 	await _wait_s(3.0)
-	sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
+	sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
 	await _wait_s(4.5)
 	sr.current_beat = {}
 	await _wait_s(0.6)
@@ -1377,4 +1379,90 @@ func _test_pick_floor() -> void:
 	_check(float(low[3]) <= 0.02, "a foot set down skates %.0f mm along the floor while she bends (≤ 20)" % (float(low[3]) * 1000.0))
 	_check(float(low[4]) <= 3.0, "the floor pick takes %.2f s (≤ 3)" % float(low[4]))
 	_check(float(old[0]) > 0.5, "self-check: the crouch pick also reaches %.0f mm — the metric would not tell a floor pick from it" % (float(old[0]) * 1000.0))
+	_completed = true
+
+
+# --- Corners near the end ---------------------------------------------------------------------------
+
+## Walks between the post office's stands (Z1: behind the counter, in front of it, beside Tamara) as a player clicks
+## them: each must arrive (within 60 px) without walking on the spot (walk weight up, the body under 25 px/s for 0.6 s).
+## Returns [walks that failed, their words].
+func _corner_walks() -> Array:
+	await _enter("Z1", Vector2(250, 900))
+	await _frames(30)
+	var stands := [Vector2(740, 712), Vector2(840, 940), Vector2(1510, 800), Vector2(1260, 712), Vector2(740, 712), Vector2(1510, 800), Vector2(840, 940)]
+	var bad := 0
+	var words := ""
+	var prev := Vector2(250, 900)
+	for to in stands:
+		player.walk_to(to)
+		var t := 0.0
+		var stall := 0.0
+		var worst := 0.0
+		var last: Vector2 = player.global_position
+		while t < 10.0:
+			await process_frame
+			var d: float = player.get_process_delta_time()
+			t += d
+			var v: float = player.global_position.distance_to(last) / maxf(d, 0.001)
+			last = player.global_position
+			if player.is_walking() and float(player.walk_w) > 0.5 and v < 25.0:
+				stall += d
+				worst = maxf(worst, stall)
+			else:
+				stall = 0.0
+			if t > 0.3 and not player.is_walking():
+				break
+		var left: float = player.global_position.distance_to(to)
+		if left > 60.0 or worst >= 0.6:
+			bad += 1
+			words += " %s→%s: %.0f px short, on the spot %.1f s;" % [str(prev), str(to), left, worst]
+		prev = to
+		await _frames(20)
+	return [bad, words]
+
+
+func _test_walk_corners() -> void:
+	if not player.is_3d():
+		_completed = true
+		return
+	var on: Array = await _corner_walks()
+	player.stop_straight_only = false
+	var off: Array = await _corner_walks()
+	player.stop_straight_only = true
+	print("        corners: %d of 7 walks failed%s; with the stop planned before the corner: %d%s" % [on[0], on[1], off[0], off[1]])
+	_check(int(on[0]) == 0, "walks near the counter's corners failed:%s" % on[1])
+	_check(int(off[0]) > 0, "self-check: with the stop planned before the last corner every walk arrived — the case is not reproduced")
+	_completed = true
+
+
+# --- Talking to someone -----------------------------------------------------------------------------
+
+func _test_gesture_addressed() -> void:
+	var PL = load("res://scripts/actors/player.gd")
+	var cases := [
+		[{"type": "line", "speaker": "agata", "text_key": "H4.chest.open", "line_id": "agata:H4.chest.open"}, false, "the chest's text — her own words over what she found"],
+		[{"type": "line", "speaker": "agata", "text_key": "M2.mirror.look", "line_id": "agata:M2.mirror.look"}, false, "a look at the office mirror"],
+		[{"type": "line", "speaker": "agata", "text_key": "H1.tikhon.cream_2", "line_id": "agata:H1.tikhon.cream_2"}, true, "a line of the talk with Tikhon"],
+		[{"type": "line", "speaker": "agata", "text_key": "O1d.ulyana.ttt_q", "line_id": "agata:O1d.ulyana.ttt_q"}, true, "asking Ulyana to play"],
+		[{"type": "line", "speaker": "agata", "scene": "M01", "line_id": "M01_2"}, true, "the talk with Tamara (M01)"],
+		[{"type": "line", "speaker": "agata", "scene": "M02", "line_id": "M02_0"}, true, "the talk with Pelageya (M02)"],
+	]
+	for c in cases:
+		var got: bool = PL.gesture_addressed(c[0])
+		_check(got == bool(c[1]), "%s: talking hands %s, expected %s" % [c[2], got, c[1]])
+	# a scene of her own words only (no one else speaks) — none
+	var own := ""
+	for id in root.get_node("StoryData").scenes.keys():
+		var only_her := true
+		var lines: Array = root.get_node("StoryData").scenes[id].get("mandatory_lines", [])
+		for ln in lines:
+			var sp := String((ln as Dictionary).get("speaker", ""))
+			if sp != "" and sp != "agata" and sp != "narrator":
+				only_her = false
+		if only_her and not lines.is_empty():
+			own = String(id)
+			break
+	if own != "":
+		_check(not PL.gesture_addressed({"type": "line", "speaker": "agata", "scene": own}), "%s has no one else speaking: no talking hands" % own)
 	_completed = true

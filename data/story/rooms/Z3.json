@@ -29,14 +29,15 @@
   "hotspots": [
     {
       "id": "old_pier_base", "kind": "object", "label": "@Z3.old_pier_base.label", "rect": [1240, 510, 240, 100], "_rect_note": "H36: левее x 1240 — лодка у плиты («В лодку»)", "stand": [1120, 730], "color": "#6f6a5a", "draw": false,
-      "item_use": {"photo_bridge": {"text": "@Z3.old_pier_base.photo", "_note": "снимок старого моста (M07): канат сидел на плите этой опоры; не расходуется"}},
+      "item_use": {"photo_bridge": {"text": "@Z3.old_pier_base.photo", "_note": "снимок старого моста (M07): канат сидел на плите этой опоры; не расходуется"}, "brace_plate": {"text": "@Z3.plate.brace_high", "_note": "31.10 (Директор, стр. 70): пока вода высоко — почему скобу не поставить; не расходуется"}},
       "look": "@Z3.old_pier_base.look",
       "hidden_if": ["evening_dusk"]
     },
     {
       "id": "plate", "kind": "object", "label": "@Z3.plate.label", "rect": [1480, 600, 200, 190], "stand": [1370, 850], "color": "#8a8a7a", "draw": false, "hidden_if": ["evening_dusk"],
       "_evening_note": "вечером — без подписи: плита у поворота — pier_plate на опоре в воде; камень и днём, и вечером без плиты (слои stone_no_plate / stone_no_plate_dusk, партия 7)",
-      "look": "@Z3.plate.look"
+      "look": "@Z3.plate.look",
+      "item_use": {"brace_plate": {"text": "@Z3.plate.brace_high", "_note": "31.10 (Директор, стр. 70): пока вода высоко — почему скобу не поставить; не расходуется"}}
     },
     {
       "id": "pier_plate", "kind": "object", "label": "@Z3d.plate_dry.label", "rect": [1240, 500, 240, 120], "_rect_note": "H36: опора с плитой (кольцо ≈ 1277, 577) и правее; левее — лодка («В лодку»)", "stand": [1300, 790], "draw": false, "visible_if": ["evening_dusk"],

@@ -132,7 +132,7 @@ func _run() -> void:
 		"talk": func():
 			await _place("H1", Vector2(1200, 960), 0.6)
 			var sr = root.get_node("StoryRunner")
-			sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
+			sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
 			await _rec("talk", 240, func(i): if i == 200: sr.current_beat = {}),
 		"idle": func():
 			await _place("H1", Vector2(1200, 960), 0.4)

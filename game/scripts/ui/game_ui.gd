@@ -19,6 +19,8 @@ signal item_hover_ended(item_id: String)
 ## «Меню» on the top bar: the pause menu (PauseMenu, Main wires it). Without a listener the button opens the
 ## save / settings panel itself, as before.
 signal pause_requested
+## The saves on disk may have changed (a save deleted, the panel closed): the title re-reads its «Продолжить».
+signal saves_changed
 
 const QUICK_SLOT: String = "quick"
 const HINT_SECONDS: float = 7.0
@@ -378,6 +380,9 @@ func _build() -> void:
 	# G4/G5: the autosave (room changes, scene beats, every 5 minutes of play) — its own row, «Загрузить» only; it never
 	# overwrites the player's slots. Shown once it exists.
 	_slot_row_load_only(mv, RoomManager.autosave_slot, StoryData.text("@ui.autosave"), "Autosave")
+	# The quick save (F5 / F9) — its own row too (31.10, Director line 4: with every save deleted in «Загрузить» the title
+	# still offered «Продолжить»): every save the title may continue from is in the list and can be deleted.
+	_slot_row_load_only(mv, QUICK_SLOT, StoryData.text("@ui.quicksave"), "Quicksave")
 	for slot in GameState.MANUAL_SLOTS:
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 12)
@@ -890,6 +895,7 @@ func close_menu_panel() -> bool:
 		return false
 	menu_panel.visible = false
 	_update_modal()
+	saves_changed.emit()
 	return true
 
 
@@ -1115,6 +1121,7 @@ func _close_delete(confirmed: bool) -> void:
 		GameState.delete_save(delete_slot)
 	delete_slot = ""
 	_refresh_slots()
+	saves_changed.emit()
 
 
 func delete_dialog_open() -> bool:

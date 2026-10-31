@@ -1401,6 +1401,8 @@ func _test_office_mirror_mouse() -> void:
 	await _drive_wedges()
 	await _finish()
 	_check(gs.has_flag("office_mirror_clamped"), "four wedges, three hits each — the frame is clamped")
+	# 31.10 (Director, line 56): the status under the picture no longer says the frame is loose
+	_check(String(_panel().get("status", "")) != "label_status_loose", "clamped — the status still says «Рама не зажата — подбить клинья» (%s)" % _panel().get("status", ""))
 	_check(String(_panel().get("wedge_timing", {}).get("state", "gone")) == "gone" or _panel().get("wedge_timing", {}).is_empty(), "the wedges' bar is gone once clamped")
 	_check(p.office_vp.render_target_update_mode == SubViewport.UPDATE_ALWAYS, "the office view is redrawn every frame")
 	# H26: the bell of партия 10б on its suspension over the trestles — stand (with the fixed hook), body, clapper; the

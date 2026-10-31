@@ -376,7 +376,9 @@ func _test_small() -> void:
 	sr.use_exit(e)
 	await _frames(1)
 	var seen := await _drain()
-	_check(seen.any(func(x): return String(x).contains("Z2.exit_H1.unlock_after")), "after unlocking Agata says the house is open from here: %s" % str(seen))
+	# 31.10 (Director, line 21): «Теперь и отсюда в дом заходить смогу» belongs to the second way in (the side door, Z4) —
+	# not to the first unlocking of the house door
+	_check(not seen.any(func(x): return String(x).contains("Z2.exit_H1.unlock_after")), "the house door's first unlocking says nothing of «и отсюда»: %s" % str(seen))
 	if rm.current_room.room_id != "Z2":
 		await _enter("Z2")
 	e = _exit("H1")

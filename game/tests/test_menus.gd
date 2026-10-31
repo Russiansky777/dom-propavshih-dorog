@@ -58,7 +58,7 @@ func _run() -> void:
 	rm.autosave_slot = AUTO
 	await _test("A test runner (a -s script) skips the title: the game starts at once, as before", _test_skip)
 	await _test("The title on launch: the panel art, the signature layer, the animated background; the game waits, paused", _test_title_launch)
-	await _test("Title items: «Продолжить» only with a save; «Загрузить» / «Настройки» open the panel in their mode; «Новая игра» starts", _test_title_items)
+	await _test("Title items: «Продолжить» only with a save (and gone once the saves are deleted in «Загрузить»); «Загрузить» / «Настройки» open the panel in their mode; «Новая игра» starts", _test_title_items)
 	await _test("Esc opens the pause over the blurred game, the game stands still; Esc again closes it; «Меню» opens it too", _test_pause_esc)
 	await _test("Esc closes a close-up, the journal, the save panel first — only then the pause", _test_esc_order)
 	await _test("Pause items: Save / Load / Settings panels, held during a line; «В главное меню» → title → «Продолжить» loads the save", _test_pause_items)
@@ -222,6 +222,33 @@ func _test_title_items() -> void:
 	_check(not title.call("is_open") and not paused, "«Продолжить» closes the title")
 	_check(_room_id() == root.get_node("StoryData").start_location and player.global_position.distance_to(Vector2(900, 880)) < 2.0,
 		"«Продолжить» loaded the save (room %s, at %s)" % [_room_id(), str(player.global_position)])
+	# 31.10 (Director, line 4: «При нажатии продолжить и отсутствии сохранений — в недопиленную рыбу игры пускает…
+	# Перед этим сохранения удалял»): the saves deleted in «Загрузить» under the title — «Продолжить» goes away when
+	# the panel closes, and an old «Продолжить» does nothing (it used to stay, pointing at the deleted save).
+	title.call("open")
+	await _frames(2)
+	_check((title.get("order") as Array).has("continue"), "a save — «Продолжить» on the title")
+	title.call("activate", "load")
+	await _frames(2)
+	ui.set("delete_slot", SLOT)
+	if ui.get("delete_dialog") != null:
+		(ui.get("delete_dialog") as Control).visible = true
+		ui.call("_close_delete", true)
+	else:
+		gs.delete_save(SLOT)
+	gs.delete_save(AUTO)
+	_check(not gs.has_save(SLOT), "the save is deleted in the panel")
+	ui.call("close_menu_panel")
+	await _frames(2)
+	_check(title.call("is_open") and not (title.get("order") as Array).has("continue"), "no saves left — no «Продолжить» on the title (%s)" % str(title.get("order")))
+	var room_before := _room_id()
+	title.call("activate", "continue")
+	await _frames(3)
+	_check(title.call("is_open") and _room_id() == room_before, "a «Продолжить» with no save does nothing — the title stays (room %s)" % _room_id())
+	# every save «Продолжить» may take is a row of «Загрузить» (the quick save F5 had none)
+	var rows: Dictionary = ui.get("slot_rows")
+	for sl in title.call("default_slots"):
+		_check(rows.has(String(sl)), "«Продолжить» may load slot «%s» — it must be in «Загрузить» to be seen and deleted" % sl)
 	_reached_end = true
 
 

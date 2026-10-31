@@ -57,7 +57,7 @@
       "_hidden_note": "вечером до узла Пелагея с лодкой у поворота; H36: после ответа огней (M16) — снова у лодки у поворота (M17, посадка — rooms/Z3.json); после переправы — с Митей на дальней опоре, пока лодка не ходит в обе стороны (boat_shuttle_open — блоки 3–5, день третий)"
     },
     {
-      "id": "rope", "action_anim": "reach", "kind": "object", "label": "@R1.rope.label", "rect": [1470, 420, 75, 280], "stand": [1580, 815], "color": "#b09a70", "draw": false,
+      "id": "rope", "_no_action": "31.10 (Директор, стр. 17): «при взаимодействии с канатом анимации действия не надо — Агата ничего не берёт»", "kind": "object", "label": "@R1.rope.label", "rect": [1470, 420, 75, 280], "stand": [1580, 815], "color": "#b09a70", "draw": false,
       "hidden_if": ["rope_brought"],
       "use": {"sets": ["r1_seen_rope"], "text": "@R1.rope.use", "once_flag": "r1_seen_rope", "scene": "M02"},
       "item_use": {"photo_bridge": {"text": "@R1.rope.photo", "_note": "снимок старого моста (M07): канат держался за плиту опоры, не за стопор; не расходуется"}},

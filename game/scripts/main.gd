@@ -51,6 +51,7 @@ func _ready() -> void:
 
 	if title != null and pause_menu != null:
 		title.game_ui = game_ui
+		game_ui.saves_changed.connect(func(): if title.is_open(): title.refresh())
 		pause_menu.game_ui = game_ui
 		pause_menu.title = title
 		if frame_view != null:

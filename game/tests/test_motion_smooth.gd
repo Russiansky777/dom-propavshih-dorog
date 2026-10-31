@@ -302,7 +302,7 @@ func _test_villagers() -> void:
 
 func _gesture_beat(t: float) -> void:
 	if t == 0.0:
-		_sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
+		_sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
 	elif t > 4.0 and not _sr.current_beat.is_empty():
 		_sr.current_beat = {}
 

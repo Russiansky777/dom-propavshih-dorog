@@ -92,6 +92,8 @@ var _closest_px: float = INF    # nearest the figure has come to the walk's end 
 ## the last one or two steps carry her to the end, else empty. _stop_hold_t: the stride planting goes on holding the
 ## feet this long after (the pose still blending into the stance).
 var _stop_plan: Dictionary = {}
+var _stop_straight: bool = true   # the path's last straight stretch, the end ahead: a planned stop may start (_walk_step_3d)
+var stop_straight_only: bool = true   # tests' self-check: off — the planned stop may start before the path's last corner
 var _stop_last_phase: float = 0.0
 var _path_seg: int = 0           # 3D: the path segment she has reached (path_follow; never goes back)
 var _path_n: int = 0
@@ -1215,13 +1217,35 @@ func _speaker_node(who: String) -> Node2D:
 ## standing) starts the clip at a random early point, so lines do not all open with the same hand; the clip is
 ## blended in its whole length (it starts and ends in the stance) and, while the line lasts, its end fades into
 ## its start again (gesture.crossfade_s) — no seam.
+## Whether Agata's line is said to somebody (31.10, Director lines 30, 45: «убрать анимацию действия при разговоре
+## после того как сундук открыла агата… нужны ли анимации, когда Агата просто закадрово говорит, а не с кем-то»): her
+## hands talk only in a conversation — a scene with another speaker, or a line of a talk with a villager (the text key
+## names him: «H1.tikhon.cream_2», «O1d.ulyana.ttt_q»). Her thoughts over a thing she found — none.
+static func gesture_addressed(b: Dictionary) -> bool:
+	if b.has("to"):
+		return true
+	var sc := String(b.get("scene", ""))
+	if sc != "":
+		var spec: Dictionary = StoryData.scene(sc)
+		for ln in spec.get("mandatory_lines", spec.get("lines", [])):
+			var sp := String((ln as Dictionary).get("speaker", ""))
+			if sp != "" and sp != "agata" and sp != "narrator":
+				return true
+		return false
+	var parts := String(b.get("text_key", "")).split(".")
+	for i in range(1, parts.size() - 1):
+		if StoryData.characters.has(parts[i]) and parts[i] != "agata":
+			return true
+	return false
+
+
 func _gesture_3d(delta: float) -> bool:
 	var g: Dictionary = _rt.get("gesture", {})
 	if g.is_empty() or view3d == null or not view3d.clips.has("talk"):
 		return false
 	var b: Dictionary = StoryRunner.current_beat
 	var talking := String(b.get("type", "")) == "line" and String(b.get("speaker", "")) == "agata" and not _walking \
-		and String(b.get("text", "")).length() >= int(g.get("min_chars", 24))
+		and String(b.get("text", "")).length() >= int(g.get("min_chars", 24)) and gesture_addressed(b)
 	var key := String(b.get("line_id", "")) + "|" + String(b.get("text", ""))
 	var len_s := view3d.action_length("talk")
 	if talking and key != _gest_key:
@@ -1354,16 +1378,24 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 func _walk_step_3d(delta: float) -> void:
 	walk_time += delta
 	if not _stop_plan.is_empty():
-		# the planned stop runs to its last step whatever the agent says (it calls _arrive itself); she keeps heading for
-		# the end (the root motion carries her as she faces)
+		# the planned stop runs to its last step whatever the agent says (it calls _arrive itself). She follows the path
+		# itself, as walking (31.10, Director lines 8–9 «застревает и идёт на одном месте… от писем до стола»): heading
+		# straight for the path's end she cut the counter's corner — the floor holds the body at the hole's edge and the
+		# legs walked on the spot; past the corner she went on straight ahead and stopped 23 cm off. What is left is
+		# measured along the path too.
 		var npath := nav_agent.get_current_navigation_path()
-		var to_t := (npath[npath.size() - 1] if npath.size() > 0 else _target) - global_position   # the path's end
-		if to_t.length() > 24.0:
-			var want := _yaw_for_screen(to_t)
-			if absf(angle_difference(yaw3d, want)) < deg_to_rad(40.0):
-				yaw3d_target = want   # steering on; an end beside or behind her (passing it by a hair) never turns her round
+		var rem_px := global_position.distance_to(_target)
+		if npath.size() > 0:
+			var pfs := path_follow(npath, global_position, _path_seg, _rtf("walk", "lookahead_m", 0.25) * view3d.ppm * absf(scale.y))
+			_path_seg = int(pfs[1])
+			rem_px = float(pfs[2])
+			var to_c: Vector2 = (pfs[0] as Vector2) - global_position
+			if to_c.length() > 8.0:
+				var want := _yaw_for_screen(to_c)
+				if absf(angle_difference(yaw3d, want)) < deg_to_rad(40.0):
+					yaw3d_target = want   # steering on; an end beside or behind her (passing it by a hair) never turns her round
 		var px_m0 := view3d.ppm * absf(scale.y) * _floor_proj(yaw3d)
-		_planned_stop_3d(to_t.length() / maxf(px_m0, 0.001), delta)
+		_planned_stop_3d(rem_px / maxf(px_m0, 0.001), delta)
 		return
 	if nav_agent.is_navigation_finished():
 		_arrive()  # within the agent's tolerance (target_desired_distance), like the sheets
@@ -1404,6 +1436,9 @@ func _walk_step_3d(delta: float) -> void:
 		_arrive()
 		return
 	var to_next: Vector2 = (pf[0] as Vector2) - global_position
+	# the planned stop only on the last, straight stretch: no corner left and the end ahead of her (31.10: a stop planned
+	# before the counter's corner walked her on past it, or into the counter)
+	_stop_straight = _path_seg >= n - 2 and absf(angle_difference(yaw3d, _yaw_for_screen(goal_pt - global_position))) < deg_to_rad(35.0)
 	_move_3d(to_next, to_next.length(), rem, delta)
 
 
@@ -1518,7 +1553,7 @@ func _planned_stop_3d(rem_m: float, delta: float) -> bool:
 		var crossed := _contact_between(_stop_last_phase, walk_phase)
 		_stop_last_phase = walk_phase
 		var step_m := view3d.stride_m * 0.5
-		if not crossed or walk_w < 0.5 or view3d.shown_w() < 0.5 or rem_m > 1.5 * step_m or view3d.stride_m <= 0.01:
+		if not crossed or (stop_straight_only and not _stop_straight) or walk_w < 0.5 or view3d.shown_w() < 0.5 or rem_m > 1.5 * step_m or view3d.stride_m <= 0.01:
 			return false
 		var n := 1 if rem_m <= 0.75 * step_m else 2
 		var dph := _time_to_contact(walk_phase, n)      # the plan in the clip's phase: the ground is per phase

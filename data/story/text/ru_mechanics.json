@@ -22,6 +22,10 @@
       "text": "Автосохранение",
       "draft": false
     },
+    "ui.quicksave": {
+      "text": "Быстрое сохранение (F5)",
+      "draft": false
+    },
     "ui.timing_slow_short": {
       "text": "Облегчить",
       "draft": false

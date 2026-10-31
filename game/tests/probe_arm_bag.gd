@@ -46,7 +46,7 @@ func _run() -> void:
 		["idle", 300, func(_i): pass],
 		["walk", 200, func(i): if i == 0: player.click_at(player.global_position + Vector2(-420, 0))],
 		["talk", 300, func(i):
-			if i == 0: sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
+			if i == 0: sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
 			if i == 280: sr.current_beat = {}],
 		["open", 260, func(i): if i == 0: player._start_action("open", null)],
 		["pick", 200, func(i): if i == 0: player._start_action("pick", null)],

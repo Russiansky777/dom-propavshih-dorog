@@ -272,6 +272,10 @@ func activate(id: String) -> void:
 	action_taken.emit(id)
 	match id:
 		"continue":
+			# the saves may have changed under the title (deleted in «Загрузить»: 31.10, Director line 4)
+			refresh()
+			if continue_slot == "":
+				return
 			var slot := continue_slot
 			close()
 			if not RoomManager.load_game(slot):

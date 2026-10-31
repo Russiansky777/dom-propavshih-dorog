@@ -427,6 +427,10 @@ func _on_wedge_struck(r: String) -> void:
 			if wedge_slips == 1:
 				say("wedge_slipped")
 	_refresh_wedges()
+	# the status under the picture follows the frame (31.10, Director line 56: «надпись рама зажата — подбить клинья
+	# остаётся, даже когда подбили»): it was set only on the bell and the hook
+	_set_status()
+	_set_status.call_deferred()
 
 
 func opened() -> void:

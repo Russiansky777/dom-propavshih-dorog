@@ -28,7 +28,7 @@ extends SceneTree
 ##   E7 (стр. 72): a lit window is covered by a figure in front of it (its light no longer on her), dimmer at the curtains;
 ##   E6 (a real-game frame): R1 at dusk with the rope off the stopper — no white streak over the dark far bank;
 ##   E5 (стр. 95, 46): the H1 mug as big as the chosen cup (the painted clay mug under it gone); the H4 bed larger;
-##   E4 (стр. 9): the Z1 counter lower (same width, ×0.84 from the front legs); Tamara clicked through it too;
+##   E4 (стр. 9): the Z1 counter lower (same width, ×0.84 from the front legs); Tamara clicked only on her figure (31.10);
 ##   E1 (Р2): river fog over the far bank in R1 / Z3 / M1 / H4 until the knot (road_held_both_ends); the knot tied
 ##      with the room on screen — the fog lifts (eases out, then hidden); a load after the knot — no fog at once;
 ##      at dusk the painted-dusk rooms (R1, Z3) switch to their dusk fog; snow on the far bank only after the knot.
@@ -93,7 +93,7 @@ func _run() -> void:
 	await _test("J-A10 Р5: the tar — «not now» before Pavel asks, then once; the tar on the winch opens the sluice", _test_tar)
 	await _test("J-E3 the last frame: the candle burns, snow behind the window, the cup on the table, Tikhon to the people", _test_last_frame)
 	await _test("J-B1 intro: three cards on black with the voice-over, a click goes on, then «День первый», once", _test_intro)
-	await _test("J-E4 Z1 (стр. 9): the counter lower (×0.84, legs in place); Tamara is clicked through the counter too", _test_counter)
+	await _test("J-E4 Z1 (стр. 9): the counter lower (×0.84, legs in place); Tamara is clicked only on her figure, not through the counter (31.10, line 5)", _test_counter)
 	await _test("J-E5 sizes: the H1 mug as big as the chosen cup (стр. 95), no clay mug under it; the H4 bed larger (стр. 46)", _test_sizes)
 	await _test("J-E6 R1 dusk, the rope off the stopper: before the knot the patch is the dark bank's, after it the snowy one's", _test_rope_patch)
 	await _test("J-E7 lit windows (стр. 72): a figure in front covers the light, it comes back behind her; dimmer at the curtains", _test_windows)
@@ -392,16 +392,19 @@ func _test_counter() -> void:
 		var legs_y := spr.position.y + 775.0 * spr.scale.y
 		_check(absf(legs_y - 890.0) < 2.0, "the front legs stay on the floor at y 890, got %.1f" % legs_y)
 	_check(_pick_id(Vector2(1070, 350)) == "tamara", "Tamara above the counter, got %s" % _pick_id(Vector2(1070, 350)))
-	_check(_pick_id(Vector2(1070, 820)) == "tamara", "through the counter in front of her — Tamara, got %s" % _pick_id(Vector2(1070, 820)))
 	_check(_pick_id(Vector2(1000, 530)) == "drawings", "the sheets on the counter stay the drawings, got %s" % _pick_id(Vector2(1000, 530)))
+	# 31.10 (Director, line 5: «На Тамару могу нажимать сквозь стол… 2 раза говорил»): only her figure above the counter
+	# is Tamara — the counter's front below the sheets is not (29.10 line 9 was read the other way round).
+	for y in [600, 680, 820]:
+		_check(_pick_id(Vector2(1070, y)) != "tamara", "the counter in front of her at y %d is not Tamara, got %s" % [y, _pick_id(Vector2(1070, y))])
 	_check(_pick_id(Vector2(800, 820)) != "tamara", "the counter away from her is not Tamara")
-	# Morning of day 3 (M22): Tamara has crossed to Olkhovka — her click area through the counter goes with her.
+	# Morning of day 3 (M22): Tamara has crossed to Olkhovka.
 	_set_flags(["done_M22"])
 	for h in rm.current_room.get_hotspots():
 		h.call("refresh")
 	await physics_frame
 	await physics_frame
-	_check(_pick_id(Vector2(1070, 820)) != "tamara", "no Tamara through the counter after M22, got %s" % _pick_id(Vector2(1070, 820)))
+	_check(_pick_id(Vector2(1070, 350)) != "tamara", "no Tamara at the post office after M22, got %s" % _pick_id(Vector2(1070, 350)))
 
 
 # --- E5. Sizes: the mug and the cup, the attic bed --------------------------------------------
