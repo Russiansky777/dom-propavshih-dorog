@@ -202,7 +202,9 @@ func _test_day_one() -> void:
 	_flags_before("M21")
 	await _enter("H1", "from_H4")
 	b = await _click("lezhanka")
-	_check(_key(b) == "H1.lezhanka.after_d1", "the lezhanka on day three: «теперь сплю у мамы» (%s)" % str(b))
+	# K (Director 31.10, стр. 105: «можно и там и там»): the night of day three may be slept here too — before the four
+	# deeds the bench says it is early and what is left, as the bed at mum's (test_batch_k «K-105»)
+	_check(_key(b) == "H4.bed.early_short", "the lezhanka on day three, deeds left: «Рано ещё спать» (%s)" % str(b))
 	await _drain()
 
 

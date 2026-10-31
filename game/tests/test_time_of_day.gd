@@ -241,7 +241,8 @@ func _test_rooms() -> void:
 			spec_w2 = w
 	if samples.has("house_w2") and not spec_w2.is_empty():
 		var a: Array = samples["house_w2"]
-		var base := float(spec_w2.get("alpha", 0.5))
+		# K (стр. 46): every lit window × the index's window_gain
+		var base := float(spec_w2.get("alpha", 0.5)) * float(TOD.index().get("window_gain", 1.0))
 		var amt := float(spec_w2.get("flicker", {}).get("amount", 0.0))
 		_check(a.max() - a.min() > base * 0.02, "G25: the aunt's window is not a flat pane (alpha %.3f…%.3f)" % [a.min(), a.max()])
 		_check(a.min() >= base * (1.0 - amt) - 0.01 and a.max() <= base * (1.0 + amt) + 0.01, "G25: and only slightly — within ±%d %% (%.3f…%.3f)" % [int(amt * 100), a.min(), a.max()])

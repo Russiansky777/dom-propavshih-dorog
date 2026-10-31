@@ -127,7 +127,10 @@ func _make_window(w: Dictionary, mat: CanvasItemMaterial) -> Node2D:
 	var pane := Polygon2D.new()
 	pane.name = "Pane"
 	pane.polygon = pts
-	pane.color = col if dark else Color(col.r, col.g, col.b, float(w.get("alpha", 0.5)))
+	# K (Director 31.10, стр. 46: «чуть меньше сделать свечение окон ночью всех»): every lit window × the index's
+	# `window_gain` (time/_index.json), the pane and its halo alike
+	var gain := 1.0 if dark else float(TimeOfDay.index().get("window_gain", 1.0))
+	pane.color = col if dark else Color(col.r, col.g, col.b, float(w.get("alpha", 0.5)) * gain)
 	pane.material = mat
 	if not dark:
 		# H19 (Director 24.10: «свет в окнах — всё ещё жёлтый квадрат»): the pane is a soft glow in the window's shape —
@@ -159,7 +162,7 @@ func _make_window(w: Dictionary, mat: CanvasItemMaterial) -> Node2D:
 		for p in pts:
 			box = box.expand(p)
 		var g := Gradient.new()
-		g.set_color(0, Color(col.r, col.g, col.b, float(w.get("halo_alpha", 0.22))))
+		g.set_color(0, Color(col.r, col.g, col.b, float(w.get("halo_alpha", 0.22)) * gain))
 		g.set_color(1, Color(col.r, col.g, col.b, 0.0))
 		var gt := GradientTexture2D.new()
 		gt.gradient = g

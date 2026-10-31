@@ -283,7 +283,9 @@ func _test_letters_both_orders() -> void:
 	# Order 1: letters first, then Dunya's house.
 	_flags_before("M23a")
 	var lines := await _run_letters()
-	_check(lines.any(func(t): return String(t).contains("Нина к письмам вернулась")), "M23a: Nina's coming back is shown: %s" % str(lines))
+	# K (Director 31.10, стр. 93–94): the words are his now — «…а Нина рядом стоит, слушает»; her coming is shown by the
+	# staging (she walks up to Tamara from the river path, no fade — test_batch_j / M23a stage)
+	_check(lines.any(func(t): return String(t).contains("а Нина рядом стоит")), "M23a: Nina's coming back is shown: %s" % str(lines))
 	_check(lines.any(func(t): return String(t).contains("в Дунин дом")), "M23a: Nina goes back to Dunya's house: %s" % str(lines))
 	await _enter("H1")
 	_check(gs.has_flag("done_M23c") or _nina_shown("H1") or gs.has_flag("started_M23c"), "then Dunya's house: Nina there (M23c)")
@@ -300,7 +302,7 @@ func _test_letters_both_orders() -> void:
 	await _enter("H1")
 	_check(_nina_shown("H1"), "M23c done first: Nina in her sister's house")
 	lines = await _run_letters()
-	_check(lines.any(func(t): return String(t).contains("Нина к письмам вернулась")) and lines.any(func(t): return String(t).contains("в Дунин дом")), "order 2: Nina comes to the letters and goes back: %s" % str(lines))
+	_check(lines.any(func(t): return String(t).contains("а Нина рядом стоит")) and lines.any(func(t): return String(t).contains("в Дунин дом")), "order 2: Nina comes to the letters and goes back: %s" % str(lines))
 	await _enter("H1")
 	_check(_nina_shown("H1"), "order 2: after the letters Nina is in her sister's house again")
 
