@@ -12,6 +12,8 @@
   B  image-to-3d meshy-7.1, геометрия 4k (есть только у одного вида), фронт листа, текстура 4k PBR, A-поза
   C  image-to-3d smart-topology meshy-t2.5 — чистая сетка ≤ 30 тыс. (сгибы юбки и локтей), текстура 4k PBR, A-поза
   D  multi-image-to-3d meshy-7.1, как A, но remesh quad 150 тыс. (ровная сетка под риг при прежней детальности)
+  E, F  multi-image-to-3d по фронту и спине (без профиля: у A и D сумка вышла дважды на правом боку); F — вторая проба E
+  G  как A, но профиль отражён (фигура смотрит влево) — проверка, как Meshy читает сторону второго вида
 Задача создаётся один раз; повторный запуск с --resume id продолжает без новых кредитов.
 Модуль-клиент — pipeline/3d/meshy_client.py (только импорт; pipeline/ — зона Codex, не правится).
 """
@@ -45,7 +47,22 @@ def bodies(views: list[Path]) -> dict[str, tuple[str, dict]]:
     common_tex = {"should_texture": True, "enable_pbr": True, "texture_resolution": "4k", "pose_mode": "a-pose",
                   "target_formats": ["glb"], "auto_size": True, "origin_at": "bottom", "multi_view_thumbnails": True,
                   "alpha_thumbnail": True}
+    # E/F: front + back only — with the profile in A and D the satchel came out twice on her right side (Meshy previews
+    # «left»: two bags at the hip); the braid and the strap come from the back view. F — a second sample of E.
+    # G: the profile mirrored (a left-facing figure) — whether Meshy reads the second view as the other side.
+    fb = [uris[0], uris[2]] if len(uris) > 2 else uris
+    fb_tex = [tex[0], tex[2]] if len(tex) > 2 else tex
+    mirrored = uris
+    if len(views) > 2:
+        from PIL import Image, ImageOps
+        mp = views[1].with_name(views[1].stem + "_mirror.png")
+        ImageOps.mirror(Image.open(views[1])).save(mp)
+        mirrored = [uris[0], mc.data_uri(mp), uris[2]]
+    two = {"ai_model": "meshy-7.1", "geometry_resolution": "2k", "should_remesh": False, **common_tex}
     return {
+        "E": ("/multi-image-to-3d", {"image_urls": fb, "texture_image_urls": fb_tex, **two}),
+        "F": ("/multi-image-to-3d", {"image_urls": fb, "texture_image_urls": fb_tex, **two}),
+        "G": ("/multi-image-to-3d", {"image_urls": mirrored, "texture_image_urls": tex, **two}),
         "A": ("/multi-image-to-3d", {"image_urls": uris, "ai_model": "meshy-7.1", "geometry_resolution": "2k",
                                      "should_remesh": False, "texture_image_urls": tex, **common_tex}),
         "B": ("/image-to-3d", {"image_url": front, "ai_model": "meshy-7.1", "geometry_resolution": "4k",
