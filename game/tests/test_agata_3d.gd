@@ -1046,7 +1046,9 @@ func _on_boot_updated() -> void:
 		var el := rad_to_deg(atan2(d.y, Vector2(d.x, d.z).length()))
 		var el_r := rad_to_deg(atan2(r.y, Vector2(r.x, r.z).length()))
 		var ank: float = (xf * sk.get_bone_global_pose(fb).origin).y - float(v._foot_bind_h[i])
-		row.append([el - el_r, ank])
+		# set down: locked and not stepping (a settle step lifts the boot off the floor on purpose — CI 8bf352c6 caught
+		# one mid-step: 51 mm up, 9.9°)
+		row.append([el - el_r, ank, v._foot_lock[i] != null and v._foot_step[i] == null and float(v._foot_w[i]) >= 0.999])
 	_boot_rows.append(row)
 
 
@@ -1063,11 +1065,15 @@ func _boot_stand(fix: bool) -> Array:
 	v.boot.active = true
 	var up := 0.0
 	var high := 0.0
+	var n := 0
 	for row in _boot_rows:
 		for i in 2:
+			if not bool(row[i][2]):
+				continue
+			n += 1
 			up = maxf(up, absf(float(row[i][0])))
 			high = maxf(high, absf(float(row[i][1])))
-	return [up, high]
+	return [up, high, n]
 
 
 func _test_boots() -> void:
@@ -1079,6 +1085,7 @@ func _test_boots() -> void:
 	var on: Array = await _boot_stand(true)
 	var off: Array = await _boot_stand(false)
 	print("        standing, the boot off its bind pitch %.1f° at most, the ankle off its height in the boot %.0f mm; without the boot fix %.1f° (the toe turned up)" % [on[0], on[1] * 1000.0, off[0]])
+	_check(int(on[2]) >= 200, "only %d set-down boot frames measured" % int(on[2]))
 	_check(float(on[0]) <= 6.0, "standing, the boot is turned %.1f° off the pose it was made in (≤ 6°): its toe turns up or digs in" % on[0])
 	_check(float(on[1]) <= 0.012, "standing, the ankle is %.0f mm off its height in the boot (≤ 12): the sole off the floor or in it" % (float(on[1]) * 1000.0))
 	_check(float(off[0]) > float(on[0]) + 10.0, "self-check: without the boot fix the boot is off only %.1f° — the metric would not see the toe turned up" % off[0])
