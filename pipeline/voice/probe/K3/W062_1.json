@@ -1,0 +1,81 @@
+{
+  "id": "W062_1",
+  "speaker": "agata",
+  "voice_name": "Agata",
+  "model_id": "eleven_v4",
+  "text": "[curious] Где?",
+  "duration_s": 0.88,
+  "character_cost": "6",
+  "alignment": {
+    "characters": [
+      "[",
+      "c",
+      "u",
+      "r",
+      "i",
+      "o",
+      "u",
+      "s",
+      "]",
+      " ",
+      "Г",
+      "д",
+      "е",
+      "?"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.1,
+      0.12,
+      0.14,
+      0.16,
+      0.18,
+      0.2,
+      0.22,
+      0.24,
+      0.32,
+      0.4,
+      0.48,
+      0.52,
+      0.56
+    ],
+    "character_end_times_seconds": [
+      0.1,
+      0.12,
+      0.14,
+      0.16,
+      0.18,
+      0.2,
+      0.22,
+      0.24,
+      0.32,
+      0.4,
+      0.48,
+      0.52,
+      0.56,
+      0.88
+    ]
+  },
+  "expect": null,
+  "variant": "с интересом",
+  "line": "agata:H1.tikhon.cream_2",
+  "take": "1",
+  "voice_settings": {
+    "stability": 0.6,
+    "similarity_boost": 0.75
+  },
+  "previous_text": "",
+  "dropped_params": [],
+  "history_item_id": "BRlbErFhMt9a0hCvsr8S",
+  "stt": {
+    "model": "scribe_v2",
+    "text": "Где?",
+    "words": [
+      "Где?"
+    ],
+    "missing": [],
+    "extra": [],
+    "ratio": 1.0
+  },
+  "run": "41239972411"
+}

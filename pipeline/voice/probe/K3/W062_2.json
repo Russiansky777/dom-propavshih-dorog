@@ -1,0 +1,51 @@
+{
+  "id": "W062_2",
+  "speaker": "agata",
+  "voice_name": "Agata",
+  "model_id": "eleven_v4",
+  "text": "Где?",
+  "duration_s": 0.8,
+  "character_cost": "2",
+  "alignment": {
+    "characters": [
+      "Г",
+      "д",
+      "е",
+      "?"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.24,
+      0.36,
+      0.48
+    ],
+    "character_end_times_seconds": [
+      0.24,
+      0.36,
+      0.48,
+      0.8
+    ]
+  },
+  "expect": null,
+  "variant": "ровно",
+  "line": "agata:H1.tikhon.cream_2",
+  "take": "2",
+  "voice_settings": {
+    "stability": 0.75,
+    "similarity_boost": 0.75
+  },
+  "previous_text": "",
+  "dropped_params": [],
+  "history_item_id": "9eKqwCbGpB3ZdKRaYktI",
+  "stt": {
+    "model": "scribe_v2",
+    "text": "Где?",
+    "words": [
+      "Где?"
+    ],
+    "missing": [],
+    "extra": [],
+    "ratio": 1.0
+  },
+  "run": "41239972411"
+}
