@@ -47,7 +47,21 @@ func _run() -> void:
 			continue
 		if v.life != null:
 			v.life.active = false
-		var nm: String = v.clips["walk"]
+		var names: Array = [v.clips["walk"]]
+		if OS.get_environment("WALK_CLIPS") != "":
+			names = []
+			for c in OS.get_environment("WALK_CLIPS").split(","):
+				for an in v.anim.get_animation_list():
+					if String(an).ends_with(c):
+						names.append(String(an))
+		for nm in names:
+			await _best_loop(v, id, nm)
+		v.queue_free()
+		await process_frame
+	quit(0)
+
+
+func _best_loop(v: Actor3D, id: String, nm: String) -> void:
 		var L := v.anim.get_animation(nm).length
 		var n := int(floor(L / H)) + 1
 		var P: Array = []
@@ -100,7 +114,4 @@ func _run() -> void:
 			s1n = maxf(s1n, (P[0][k] - 2.0 * P[n - 1][k] + P[n - 2][k]).length())
 			s2n = maxf(s2n, (P[1][k] - 2.0 * P[0][k] + P[n - 1][k]).length())
 		line += "  | now: %.1f/%.1f" % [s1n * 1000.0, s2n * 1000.0]
-		print(line)
-		v.queue_free()
-		await process_frame
-	quit(0)
+		print(line.replace("walk %.2fs" % L, "%s %.2fs" % [nm, L]))
