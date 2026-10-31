@@ -173,7 +173,7 @@ func _test_applied() -> void:
 func _test_director_words() -> void:
 	var water: String = sd.text("@H1.tikhon.water")
 	_check(water.contains("Мамино зеркало") and water.contains("Струбцину"), "the hint after the water stays (Director, page 19:01): %s" % water)
-	_check(sd.text("@H1.after_mirror.tikhon_2").contains("покуда день — делами займись") and sd.text("@H1.after_mirror.tikhon_2").contains("Печь я догляжу"),
+	_check(sd.text("@H1.after_mirror.tikhon_2").contains("покуда не спишь — делами займись") and sd.text("@H1.after_mirror.tikhon_2").contains("Печь я догляжу"),
 		"Tikhon after the mirror: the Director's words of 29.10 (стр. 116: not «ляг поспи» in the daytime)")
 	_check(sd.text("@O1.board.use").contains("Вот бы и моё послание кто прочёл"), "the board: map 59 → the Director's approved text of 30.10 (F10)")
 	_check(sd.text("@R1.pelageya.manager").contains("в тот вечер, перед паводком, год назад"), "Pelageya on the manager: map 23")
@@ -182,7 +182,7 @@ func _test_director_words() -> void:
 		"scene:M01/lines[9].text": "Лодочницу сама спрошу — что за чертовщина, что лодки назад приходят.",
 		"scene:M09/lines[1].text": "как воду спустить-то?",
 		"scene:M10/lines[1].text": "Да не бухти ты, для дела нужно.",
-		"scene:M17/lines[0].text": "Проверю так — как на лодке полагается.",
+		"scene:M17/lines[0].text": "Проверю так, как на лодке полагается.",
 		"scene:M23c/lines[8].text": "Задания к уроку. Да тебе — письма, из раза в раз.",
 	}
 	for id in said.keys():
@@ -213,4 +213,4 @@ func _test_play() -> void:
 	_check(seen.any(func(x): return String(x) == "agata:Так здесь всё это время учились!"), "M06: the joy of the class: %s" % str(seen))
 	seen = await _play("M17")
 	_check(seen.any(func(x): return String(x) == "agata:Не сворачивает! По канату идёт!"), "M17: the boat goes on: %s" % str(seen))
-	_check(seen.any(func(x): return String(x).begins_with("pelageya:Проверю так — как на лодке полагается")), "M17: the Director's words heard: %s" % str(seen))
+	_check(seen.any(func(x): return String(x).begins_with("pelageya:Проверю так, как на лодке полагается")), "M17: the Director's words heard: %s" % str(seen))

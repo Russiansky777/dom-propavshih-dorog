@@ -1284,15 +1284,15 @@ func _test_q02_q06_traces() -> void:
 	# Epilogue lines by the four choices; none when skipped; the last word is still Ulyana's.
 	var a := _beats_of("M26", ["q02_old_under_new", "q06_table_at_ilya"])
 	_check(a.any(func(x): return x.contains("Нина детям показывает, как место менялось")) and a.any(func(x): return x.contains("Рядом сохнет их полка")), "A/A: the lesson shows the map with the tracing; the oarlock and the drying shelf")
-	_check(not a.any(func(x): return x.contains("растолковывает гостю дорогу") or x.contains("резную рамку")), "A/A: no B lines")
+	_check(not a.any(func(x): return x.contains("Тихону дорогу растолковывает") or x.contains("резную рамку")), "A/A: no B lines")
 	var b := _beats_of("M26", ["q02_new_primary", "q06_table_at_agata", "v01_photo_table"])
-	_check(b.any(func(x): return x.contains("Ульяна по нему растолковывает гостю дорогу")) and b.any(func(x): return x.contains("Для семейного снимка Илья на новом верстаке резную рамку смастерил")), "B/B: Ulyana's drawing by the door; the frame for the family photo")
+	_check(b.any(func(x): return x.contains("Ульяна по нему Тихону дорогу растолковывает")) and b.any(func(x): return x.contains("Для семейного снимка Илья на новом верстаке резную рамку смастерил")), "B/B: Ulyana's drawing by the door; the frame for the family photo")
 	_check(b.any(func(x): return x.contains("на столике")), "B: the photo stays where it was put on day one (the frame is for it)")
 	_check(not b.any(func(x): return x.contains("как место менялось") or x.contains("уключину")), "B/B: no A lines")
 	_check(String(b[b.size() - 2]).begins_with("ulyana:") and String(b[b.size() - 2]).contains("завтра тоже можно") and b[b.size() - 1].begins_with("agata:Можно, Уля"),
 		"the last lines are still Ulyana's question and Agata's answer (H55): %s" % str(b.slice(-2)))
 	var none := _beats_of("M26", [])
-	for t in ["как место менялось", "растолковывает гостю дорогу", "уключину", "резную рамку"]:
+	for t in ["как место менялось", "Тихону дорогу растолковывает", "уключину", "резную рамку"]:
 		_check(not none.any(func(x): return x.contains(t)), "skipped: no «%s»" % t)
 	# The stagings still come on their lines.
 	var lines: Array = sd.scene("M26").get("mandatory_lines", [])
@@ -1362,7 +1362,7 @@ func _test_q02_q06_traces() -> void:
 	var seen := await _finish()
 	Engine.time_scale = 1.0
 	_check(gs.has_flag("done_M26") and not gs.has_flag("done_Q02") and not gs.has_flag("done_Q06"), "skipped: the game ends as before")
-	_check(not seen.any(func(x): return x.contains("как место менялось") or x.contains("уключину") or x.contains("резную рамку") or x.contains("растолковывает гостю дорогу")), "skipped: no trace lines")
+	_check(not seen.any(func(x): return x.contains("как место менялось") or x.contains("уключину") or x.contains("резную рамку") or x.contains("Тихону дорогу растолковывает")), "skipped: no trace lines")
 	sr.set_frame("")
 	gs.reset()
 	_reached_end = true

@@ -887,6 +887,55 @@ def check_main_takes(takes_man: dict | None, game_man: dict | None, takes_dir: P
     return errs
 
 
+PENDING = STORY / "voice_pending.json"
+
+
+def check_coverage(lines: dict, manifest: dict | None, pending: dict) -> tuple[list[str], list[str]]:
+    """31.10 (Директор: «нет озвучки» — 9 строк, а по сверке всей игры их было 33): каждая озвучиваемая строка должна
+    иметь запись. Строка сцены — по своему id; закадровый ключ — его запись или запись персонажа «<персонаж>:<ключ>».
+    Строка, ждущая выбора Директора (data/story/voice_pending.json → lines: {id: заход}), — предупреждение, не ошибка;
+    у персонажа без голоса в cast.json (Савелий) — тоже предупреждение: голос ещё не подобран."""
+    have = set(((manifest or {}).get("lines") or {}).keys())
+    cdoc = load(CAST) or {}
+    cast = cdoc.get("cast") or cdoc.get("speakers") or {}
+    errs, warns = [], []
+    waiting = {str(k): str(v) for k, v in ((pending or {}).get("lines") or {}).items()}
+    keys_done = set()
+    for lid, ln in sorted(lines.items()):
+        if not str(ln.get("text", "")).strip():
+            continue
+        if ln.get("kind") == "narration":
+            key = str(ln.get("key", lid))
+            if key in keys_done:
+                continue
+            ids = [key] + [x for x in lines if x.endswith(":" + key)]
+            if any(i in have for i in ids):
+                keys_done.add(key)
+                continue
+            keys_done.add(key)
+            name = next((i for i in ids if ":" in i), key)
+        else:
+            if lid in have:
+                continue
+            name = lid
+        sp = str(lines.get(name, ln).get("speaker", ""))
+        if name in waiting or key_in(waiting, name):
+            warns.append(f"{name}: без записи — ждёт выбора ({waiting.get(name) or key_in(waiting, name)})")
+        elif sp and sp not in cast:
+            warns.append(f"{name}: без записи — у персонажа «{sp}» нет голоса в cast.json")
+        else:
+            errs.append(f"{name}: озвучиваемая строка без записи (нет в манифесте и не ждёт выбора в data/story/voice_pending.json)")
+    return errs, warns
+
+
+def key_in(waiting: dict, name: str) -> str:
+    key = name.split(":", 1)[-1]
+    for k, v in waiting.items():
+        if k.split(":", 1)[-1] == key:
+            return v
+    return ""
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
     strict = "--strict" in sys.argv
@@ -930,6 +979,13 @@ def main() -> int:
     warns += l_warn
     errors += check_ask_prompts(voice_cfg, texts)
     errors += check_main_takes(load(VOICE_SRC.parent / "ru_takes" / "manifest.json"), manifests.get("ru"))
+    c_err, c_warn = check_coverage(lines, manifests.get("ru"), load(PENDING) or {})
+    errors += c_err
+    warns += c_warn
+    # самопроверка покрытия: строка без записи — ошибка; та же в списке ожидания — нет
+    _cl = {"T_1": {"speaker": "agata", "text": "Проба."}}
+    if not check_coverage(_cl, {"lines": {}}, {})[0] or check_coverage(_cl, {"lines": {}}, {"lines": {"T_1": "K"}})[0]:
+        errors.append("самопроверка: строка без записи не поймана (или поймана, хотя ждёт выбора)")
     missed = selftest(lines, cast, voice_cfg, scenes)
     # самопроверка H5/H4: шёпот вне списка ожидания и вопрос персонажа без ограничения повтора — ошибки
     _sp = {"lines": {f"T_{i}": {"speaker": "tst", "source_lufs": -16.0} for i in range(5)}}

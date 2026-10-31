@@ -975,7 +975,7 @@ func _test_walkthrough() -> void:
 	_check(gs.has_flag("sluice_opened") and gs.has_flag("pond_lowered") and gs.has_flag("done_M14"), "the sluice opened notch by notch («точный удар», G23) → M14: %s" % str(seen))
 	_check(sr.journal_goal().contains("струбцин"), "goal: the clamp to mother's mirror")
 	# F10 (Director 23.10): why the water goes down — the plate comes out; the boat alone is turned back, the rope on the ring is not.
-	_check(sr.journal_goal().contains("плита на опоре выйдет") and seen.any(func(x): return x.contains("Лодка туда не довезёт")),
+	_check(sr.journal_goal().contains("плита на опоре выйдет") and seen.any(func(x): return x.contains("Канат за кольцо закрепишь — дорога будет")),
 			"at the sluice: the plate comes out of the water; a boat is turned back, the rope on the ring is another matter: %s / %s" % [sr.journal_goal(), str(seen)])
 	# Mother's mirror.
 	_check(await _go("M1"), "M4→M1")
@@ -1176,14 +1176,14 @@ func _test_walkthrough() -> void:
 	seen = await _finish()
 	_check(gs.has_flag("done_M17") and gs.has_item("school_ribbon") and gs.has_flag("ferry_verified"), "the empty boat returns with the ribbon: %s" % str(seen))
 	# Director 22.10: shown directly — the boat goes along the rope on its ring and no longer turns back to its pier.
-	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю так — как на лодке")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("на канат надену"), "Pelageya puts the ring on the rope: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("pelageya:Проверю так, как на лодке")) and String(sd.scene("M17")["mandatory_lines"][0]["text"]).contains("на канат надену"), "Pelageya puts the ring on the rope: %s" % str(seen))
 	var m17_text := ""
 	for ln in sd.scene("M17").get("mandatory_lines", []):
 		m17_text += String(ln.get("text", "")) + "\n"
 	_check(seen.any(func(x): return x.begins_with("narration:Течение повело лодку")) and m17_text.contains("Теперь идёт прямо"),
 		"the empty boat follows the ring along the rope, not back to the pier: %s" % str(seen))
 	_check(seen.any(func(x): return x == "agata:Не сворачивает! По канату идёт!"), "Agata: it did not turn back")
-	_check(seen.any(func(x): return x.contains("Не вернуло её! Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("бечевой вытягивала! Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
 	_check(sr.journal_goal().contains("по канату"), "goal: into the boat, along the rope: %s" % sr.journal_goal())
 	var n_before: int = gs.inventory.count("school_ribbon")
 	await _use("pelageya")

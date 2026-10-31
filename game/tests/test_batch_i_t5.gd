@@ -400,7 +400,7 @@ func _test_director_words() -> void:
 			if String(ln.get("text", "")).contains(said[id]):
 				found = true
 		_check(found, "%s: the Director's words «%s»" % [id, said[id]])
-	_check(sd.text("@H1.after_mirror.tikhon_2").contains("покуда день — делами займись"), "Tikhon after the mirror: the Director's words of 29.10 (стр. 116, batch J)")
+	_check(sd.text("@H1.after_mirror.tikhon_2").contains("покуда не спишь — делами займись"), "Tikhon after the mirror: the Director's words of 29.10 (стр. 116, batch J)")
 	_check(sd.text("@Z2.exit_H1.unlock_after").contains("Теперь и отсюда"), "the house door: the Director's own words stay (map 34–35)")
 	_check(sd.text("@O1.board.use").contains("моё послание кто прочёл"), "the board: the Director's words (map 59 → his approved text of 30.10, F10)")
 	var m20 := _lines_of("M20")

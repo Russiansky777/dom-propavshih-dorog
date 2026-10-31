@@ -50,7 +50,7 @@
         "status_pos": [1460, 230],
         "done_flag": "sluice_opened",
         "texts": {"label_hint": "@mech.sluice.label_hint", "slipped": "@mech.sluice.slipped", "label_status_slipped": "@mech.sluice.label_status_slipped", "label_gauge": "@M4.sluice.label_gauge", "label_status_settled": "@M4.sluice.label_status_settled", "label_status_falling": "@M4.sluice.label_status_falling", "label_status_open": "@M4.sluice.label_status_open", "label_status_drained": "@M4.sluice.label_status_drained", "wait": "@M4.sluice.wait"},
-        "events": {"opened": {"sets": ["sluice_opened", "pond_lowered"], "close": true}}
+        "events": {"opened": {"sets": ["sluice_opened", "pond_lowered"], "text": "@M4.sluice.done", "close": true, "_k": "31.10 (Директор, стр. 67): после всех зарубок Агата говорит «получилось»"}}
       },
       "look": "@M4.gate.look"
     },

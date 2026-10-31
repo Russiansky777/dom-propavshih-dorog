@@ -1,0 +1,1297 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 8891,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Восьмой заход (K8, прохождение Директора 31.10): перезапись по замечаниям (акценты, паузы, подача), новые и изменённые тексты, строки без записи — по 2 записи на замечание, по 1 на новую строку; выбор — на странице «Восьмой заход», в игру — voice_K8_adopt.json",
+ "items": [
+  {
+   "id": "W056_1",
+   "line": "Z1.letters.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Письма ПО ДОМАМ разобраны. Для Ольховки Тамара особо складывает — за год целый мешок набрался.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ПО ДОМАМ"
+  },
+  {
+   "id": "W056_2",
+   "line": "Z1.letters.look",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Письма… ПО ДОМАМ разобраны. Для Ольховки Тамара особо складывает — за год целый мешок набрался.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "пауза, ПО ДОМАМ"
+  },
+  {
+   "id": "W057_1",
+   "line": "M01_2",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Вы мне писали: мост паводком снесло, лодки назад приходят. Не ехать, пока не переменится. А теперь — «переменилось». Я в тот же день и поехала.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W057_2",
+   "line": "M01_2",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[thoughtful] Вы мне писали: мост паводком снесло, лодки назад приходят. Не ехать, пока не переменится. А теперь — «переменилось». Я в тот же день и поехала.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W058_1",
+   "line": "M02_3",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "Зимой ПО ЛЬДУ пробовали, к своему же берегу вышли. Не в воде дело. Нет дороги.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ПО ЛЬДУ"
+  },
+  {
+   "id": "W058_2",
+   "line": "M02_3",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "Зимой — ПО ЛЬДУ пробовали, к своему же берегу вышли. Не в воде дело. Нет дороги.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "пауза, ПО ЛЬДУ"
+  },
+  {
+   "id": "W059_1",
+   "line": "pelageya:R1.pelageya.marsh",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "Ходили. Обойдёшь болотом — к своей же околице выйдешь.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W059_2",
+   "line": "pelageya:R1.pelageya.marsh",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[tired] Ходили. Обойдёшь болотом — к своей же ОКОЛИЦЕ выйдешь.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "устало, ОКОЛИЦЕ"
+  },
+  {
+   "id": "W060_1",
+   "line": "agata:R1.boat.look_no_plan",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Лодку К НАШЕМУ ПРИЧАЛУ вернёт. Сперва надо понять, как дорогу вернуть.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "К НАШЕМУ ПРИЧАЛУ"
+  },
+  {
+   "id": "W060_2",
+   "line": "agata:R1.boat.look_no_plan",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Лодку — к НАШЕМУ причалу вернёт. Сперва надо понять, как дорогу вернуть.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "пауза, НАШЕМУ"
+  },
+  {
+   "id": "W061_1",
+   "line": "M03_5",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Так… год уже прошёл.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "пауза после «так»"
+  },
+  {
+   "id": "W061_2",
+   "line": "M03_5",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[softly] Так… год уже прошёл.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "мягко, пауза после «так»"
+  },
+  {
+   "id": "W062_1",
+   "line": "agata:H1.tikhon.cream_2",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[curious] Где?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "с интересом"
+  },
+  {
+   "id": "W062_2",
+   "line": "agata:H1.tikhon.cream_2",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Где?",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W063_1",
+   "line": "H4.v02.done",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "СВЕТЛО́ под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "СВЕТЛО"
+  },
+  {
+   "id": "W063_2",
+   "line": "H4.v02.done",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "СВЕТЛО́… под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "СВЕТЛО, пауза"
+  },
+  {
+   "id": "W064_1",
+   "line": "agata:H3.school_door.use",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Из нашей ШКОЛЫ — дверь. На бирке: «Школа Ольховки. В ремонт от Нины». На брусе зарубка, а петли сняты.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ШКОЛЫ, пауза"
+  },
+  {
+   "id": "W064_2",
+   "line": "agata:H3.school_door.use",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Из НАШЕЙ ШКОЛЫ дверь. На бирке: «Школа Ольховки. В ремонт от Нины». На брусе зарубка, а петли сняты.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "НАШЕЙ ШКОЛЫ"
+  },
+  {
+   "id": "W065_1",
+   "line": "H2.bundle_nina.done",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "[softly] Мамино зеркало… Схватишь — рама разойдётся. Без струбцины не обойтись.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "мягко"
+  },
+  {
+   "id": "W065_2",
+   "line": "H2.bundle_nina.done",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[thoughtful] Мамино зеркало… Схватишь — рама разойдётся. Без струбцины не обойтись.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W066_1",
+   "line": "H2.bell.use",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери КОНТОРЫ висел — по нему на мельнице работу начинали и кончали». Ниже — её всегдашнее присловье: «Иные вещи помнят место, которому служили».",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "КОНТОРЫ"
+  },
+  {
+   "id": "W066_2",
+   "line": "H2.bell.use",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери конторы висел — по нему на мельнице работу начинали и кончали». Ниже — её всегдашнее присловье: «Иные вещи помнят место, которому служили».",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W067_1",
+   "line": "agata:H2.bell.thought",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[warmly] Коли вещи своё место помнят… что ж будет, если школьную дверь на родные петли вернуть?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W067_2",
+   "line": "agata:H2.bell.thought",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Коли вещи своё место помнят… что ж будет, если школьную дверь на родные петли вернуть?",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W068_1",
+   "line": "M07_4",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Дверь на родных петлях свой проём вспомнила. Значит, и КАНАТ на своём кольце мост вспомнит.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "КАНАТ"
+  },
+  {
+   "id": "W068_2",
+   "line": "M07_4",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Дверь на родных петлях свой проём вспомнила. Значит, и канат… на своём кольце мост вспомнит.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "пауза после «канат»"
+  },
+  {
+   "id": "W069_1",
+   "line": "agata:O2.exit_O4.loop",
+   "take": "1",
+   "speaker": "agata",
+   "text": "От калитки к деревне ПОШЛА — а тропа вокруг школы завернула, и я опять у школьного крыльца. Да что ж это за наваждение? Кругами тропа водит!",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ПОШЛА"
+  },
+  {
+   "id": "W069_2",
+   "line": "agata:O2.exit_O4.loop",
+   "take": "2",
+   "speaker": "agata",
+   "text": "От калитки к деревне ПОШЛА́ — а тропа вокруг школы завернула, и я опять у школьного крыльца. Да что ж это за наваждение? Кругами тропа водит!",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "ПОШЛА́"
+  },
+  {
+   "id": "W070_1",
+   "line": "pavel:M1.pavel.before_agree",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "В сеня́х на ДВЕРЬ конторы да СНИМОК на стене погляди. ПОРЯДОК на мельнице во дворе, на доске, прочти. Тогда и поговорим.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ДВЕРЬ, СНИМОК, ПОРЯДОК"
+  },
+  {
+   "id": "W070_2",
+   "line": "pavel:M1.pavel.before_agree",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "В сеня́х на дверь конторы да снимок на стене погляди. Порядок на мельнице — во дворе, на доске — прочти. Тогда и поговорим.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "ровно, с паузами"
+  },
+  {
+   "id": "W071_1",
+   "line": "agata:M2.mirror.look",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Конторское зеркало. Без ПАВЛОВА слова не возьму.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ПАВЛОВА"
+  },
+  {
+   "id": "W071_2",
+   "line": "agata:M2.mirror.look",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Конторское зеркало. Без Павлова слова не возьму.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W072_1",
+   "line": "pavel:M2.mirror.take",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "Бери. /ˈt͡sɛɫə/ стекло, да рама по углам разошлась.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "це́ло стекло"
+  },
+  {
+   "id": "W072_2",
+   "line": "pavel:M2.mirror.take",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "Бери. Це́ло стекло, да рама по углам разошлась.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "це́ло стекло, ровнее"
+  },
+  {
+   "id": "W073_1",
+   "line": "item.mirror_mill",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Конторское зеркало: ЦЕ́ЛО стекло, углы рамы разошлись.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ЦЕ́ЛО"
+  },
+  {
+   "id": "W073_2",
+   "line": "item.mirror_mill",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Конторское зеркало: це́ло… стекло, углы рамы разошлись.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "це́ло, пауза"
+  },
+  {
+   "id": "W074_1",
+   "line": "M13_1_promise",
+   "take": "1",
+   "speaker": "agata",
+   "text": "К зиме пруд НАБЕРЁМ. Слово даю.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "НАБЕРЁМ"
+  },
+  {
+   "id": "W074_2",
+   "line": "M13_1_promise",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[firm] К зиме пруд НАБЕРЁМ. Слово даю.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "твёрдо, НАБЕРЁМ"
+  },
+  {
+   "id": "W075_1",
+   "line": "M16_0",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "[excited] Ответили! Целый год ни огонька!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно"
+  },
+  {
+   "id": "W075_2",
+   "line": "M16_0",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[laughs] Ответили! Целый год ни огонька!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "со смехом"
+  },
+  {
+   "id": "W076_1",
+   "line": "M17_0",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "Проверю так, как на лодке полагается. Кольцо на канат надену да пустую пущу: течение её само поведёт. А бечеву в руках оставлю — вот и глянем, что из того выйдет.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "так, как"
+  },
+  {
+   "id": "W076_2",
+   "line": "M17_0",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[thoughtful] Проверю так, как на лодке полагается. Кольцо на канат надену да пустую пущу: течение её само поведёт. А бечеву в руках оставлю — вот и глянем, что из того выйдет.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W077_1",
+   "line": "M17_1",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Течение повело лодку: по канату СКОЛЬЗИТ кольцо, пустая лодка в туман уходит. Весь год её возвращало к родному причалу. Теперь идёт прямо. ДЁРНУЛАСЬ бечева — раз, и ещё раз.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "СКОЛЬЗИТ"
+  },
+  {
+   "id": "W077_2",
+   "line": "M17_1",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Течение повело лодку: по канату СКОЛЬЗИ́Т кольцо, пустая лодка в туман уходит. Весь год её возвращало к родному причалу. Теперь идёт прямо. ДЁРНУЛАСЬ бечева — раз, и ещё раз.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "СКОЛЬЗИ́Т"
+  },
+  {
+   "id": "W078_1",
+   "line": "M18p_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Туман. По канату КОЛЬЦО со скрипом идёт, за ним лодка. Назад уже не сворачивает. На мокрые до́ски ложится снег.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "КОЛЬЦО, до́ски"
+  },
+  {
+   "id": "W078_2",
+   "line": "M18p_0",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Туман. По канату КОЛЬЦО́ со скрипом идёт, за ним лодка. Назад уже не сворачивает. На мокрые до́ски ложится снег.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "КОЛЬЦО́, до́ски"
+  },
+  {
+   "id": "W079_1",
+   "line": "M18p_1",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "[excited] Теперь назад не вынесет. По канату идём.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно"
+  },
+  {
+   "id": "W079_2",
+   "line": "M18p_1",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[laughs] Теперь назад не вынесет. По канату идём.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "со смехом"
+  },
+  {
+   "id": "W080_1",
+   "line": "agata:O4.nina_house.look",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Мамин дом. Всё ТО ЖЕ… крыльцо, лишь ступеньку перестелили.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ТО ЖЕ, пауза"
+  },
+  {
+   "id": "W080_2",
+   "line": "agata:O4.nina_house.look",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Мамин дом. Всё ТО ЖЕ крыльцо, лишь ступеньку перестелили.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "ТО ЖЕ, ровнее"
+  },
+  {
+   "id": "W081_1",
+   "line": "agata:O1d.ulyana.ttt_q",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[playful] Уля, сыграем в крестики-нолики? Мелом, прямо на доске.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "игриво"
+  },
+  {
+   "id": "W081_2",
+   "line": "agata:O1d.ulyana.ttt_q",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Уля, сыграем в крестики-нолики? Мелом, прямо на доске.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W082_1",
+   "line": "agata:O4.mitya.fish_q",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Митя, а ты рыбу уди́шь?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "уди́шь"
+  },
+  {
+   "id": "W082_2",
+   "line": "agata:O4.mitya.fish_q",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[curious] Митя, а ты рыбу уди́шь?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "с интересом, уди́шь"
+  },
+  {
+   "id": "W083_1",
+   "line": "M23b_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "С палкой, старик во дворе мельницы стоит. Вернулся управляющий. Илья с ним пришёл.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "запятая"
+  },
+  {
+   "id": "W083_2",
+   "line": "M23b_0",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "С палкой… старик во дворе мельницы стоит. Вернулся управляющий. Илья с ним пришёл.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "пауза"
+  },
+  {
+   "id": "W084_1",
+   "line": "M23d_5",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "Теперь ТЕБЕ хозяйкой быть. Кастрюлю только её не трогай пока. Пусть стоит.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ТЕБЕ"
+  },
+  {
+   "id": "W084_2",
+   "line": "M23d_5",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "Теперь — ТЕБЕ хозяйкой быть. Кастрюлю только её не трогай пока. Пусть стоит.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "пауза, ТЕБЕ"
+  },
+  {
+   "id": "W085_1",
+   "line": "M26_10",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "[warmly] Слово сдержала Агата! Вода как прежде — по самую отметку.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W085_2",
+   "line": "M26_10",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "[excited] Слово сдержала Агата! Вода как прежде — по самую отметку.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно"
+  },
+  {
+   "id": "W086_1",
+   "line": "M26_18",
+   "take": "1",
+   "speaker": "nina",
+   "text": "[chuckling] Среда Тихон.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "с усмешкой"
+  },
+  {
+   "id": "W086_2",
+   "line": "M26_18",
+   "take": "2",
+   "speaker": "nina",
+   "text": "[mischievously] Среда Тихон.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "лукаво"
+  },
+  {
+   "id": "W087_1",
+   "line": "intro.opening_3",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Весь год Агата писала домой — и ни строчки в ответ. Этой осенью вода упала, и показалась старая опора моста. Агата едет в Заречье, в дом тёти Дуни: ближе к дому не подобраться. Она хочет сама понять, что стряслось с Ольховкой.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "как прежние"
+  },
+  {
+   "id": "W088_1",
+   "line": "M03_6_then0",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[thoughtful] Дуня всё приговаривала: вещи своё место помнят. Вот и я своё помню — при печи.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W088_2",
+   "line": "M03_6_then0",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Дуня всё приговаривала: вещи своё место помнят. Вот и я своё помню — при печи.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "с ворчливой усмешкой"
+  },
+  {
+   "id": "W089_1",
+   "line": "M03_7_then0",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[chuckling] Нет, Тихон, не среда.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "с усмешкой"
+  },
+  {
+   "id": "W089_2",
+   "line": "M03_7_then0",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[laughs] Нет, Тихон, не среда.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "смеясь"
+  },
+  {
+   "id": "W090_1",
+   "line": "M09_6",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "Пробовал. Ломом — только косяк крошить. Окно узкое, под самым потолком — не пролезть. А вслепую крюком скрести — засов глубже в скобы загонишь. Так и стоит.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "как прежняя запись"
+  },
+  {
+   "id": "W091_1",
+   "line": "M14_1",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "Канат за кольцо ЗАКРЕПИШЬ — дорога будет. А пока — ступай.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "ЗАКРЕПИШЬ, как прежняя"
+  },
+  {
+   "id": "W092_1",
+   "line": "tikhon:H1.after_mirror.tikhon_2",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "Как, как… Лёг да уснул — вот как. Я вон каждую ночь сплю, и ничего, мир стоит. А покуда не спишь — делами займись. Печь я догляжу.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "ворчливо"
+  },
+  {
+   "id": "W093_1",
+   "line": "M17_5",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "[excited] Сама назад не пришла — бечевой вытягивала! Значит, держат там.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно"
+  },
+  {
+   "id": "W093_2",
+   "line": "M17_5",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[animated] Сама назад не пришла — бечевой вытягивала! Значит, держат там.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "живо"
+  },
+  {
+   "id": "W094_1",
+   "line": "M19c_8",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[softly] Год… А у тебя — больше, чем я на свете живу. Как же так, мама?",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "мягко"
+  },
+  {
+   "id": "W094_2",
+   "line": "M19c_8",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[voice breaking] Год… А у тебя — больше, чем я на свете живу. Как же так, мама?",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "дрогнувшим голосом"
+  },
+  {
+   "id": "W095_1",
+   "line": "M23a_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Тамара и сама переправилась — с мешком писем. Посреди улицы адреса читает, а Нина рядом стоит, слушает.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W096_1",
+   "line": "M23b_7",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Помню, Павел. Наберём — только сперва мост поставить надо. Канат-то ненадолго: первый паводок сорвёт — опять без дороги останемся.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W096_2",
+   "line": "M23b_7",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[firm] Помню, Павел. Наберём — только сперва мост поставить надо. Канат-то ненадолго: первый паводок сорвёт — опять без дороги останемся.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "твёрдо"
+  },
+  {
+   "id": "W097_1",
+   "line": "M23d_2",
+   "take": "1",
+   "speaker": "nina",
+   "text": "Тихон, не придёт Дуня. Два года назад у меня на руках умерла, по нашему счёту. Вспоминала тебя.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "как прежняя"
+  },
+  {
+   "id": "W098_1",
+   "line": "M26_14",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Зимнее утро, класс. Нина на доске число выводит — теперь на обоих берегах одно. Дети с обоих берегов за партами, Ульяна среди них. А сзади, за той самой партой, где когда-то синице шапку рисовала, стоит Агата.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W099_1",
+   "line": "M26_35_then0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "У двери приколот рисунок сада. Ульяна по нему Тихону дорогу растолковывает.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W100_1",
+   "line": "M26_37",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[warmly] Можно, Уля! Теперь мост есть — хоть каждый день приходи. И завтра у нас одно на всех.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W100_2",
+   "line": "M26_37",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[excited] Можно, Уля! Теперь мост есть — хоть каждый день приходи. И завтра у нас ОДНО НА ВСЕХ.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно, ОДНО НА ВСЕХ"
+  },
+  {
+   "id": "W101_1",
+   "line": "Z2.landmarks.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Мельничная крыша, к воде спуск. Почта позади осталась.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W102_1",
+   "line": "H4.window.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Заречье отсюда всё как на ладони: крыши, почта, поворот реки́. А тот берег — в тумане.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "реки́"
+  },
+  {
+   "id": "W103_1",
+   "line": "H4.window.look_snow",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Заречье отсюда всё как на ладони: крыши, почта, поворот реки́. А на том берегу — снег.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "реки́"
+  },
+  {
+   "id": "W104_1",
+   "line": "agata:M4.sluice.done",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[excited] Получилось! Пошла вода.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно"
+  },
+  {
+   "id": "W104_2",
+   "line": "agata:M4.sluice.done",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[laughs] Получилось! Пошла вода.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "со смехом"
+  },
+  {
+   "id": "W105_1",
+   "line": "agata:Z3.plate.brace_high",
+   "take": "1",
+   "speaker": "agata",
+   "text": "До плиты сейчас не достать — вода высоко. Сперва бы её спустить.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W106_1",
+   "line": "Q05_0",
+   "take": "1",
+   "speaker": "ulyana",
+   "text": "Значит, кружка не неправильная?",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W107_1",
+   "line": "Q05_1",
+   "take": "1",
+   "speaker": "nina",
+   "text": "Надо только знать, чья она.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W108_1",
+   "line": "Q10_0",
+   "take": "1",
+   "speaker": "ulyana",
+   "text": "Когда будут яблоки?",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W109_1",
+   "line": "agata:Z2.exit_Z3.closed",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Тамара меня на почте ждёт. Не поговорив с ней, не уйду.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W110_1",
+   "line": "R1.boat.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Лодка цела, вёсла на месте. Только куда ни плыви — опять к этому причалу вынесет.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W111_1",
+   "line": "agata:H1.photo.look",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Наш семейный снимок, в рамке.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W112_1",
+   "line": "H2.clapper_box.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "На коробке у колокола выведено: «Язык колокола».",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W113_1",
+   "line": "H2.tar_pot.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Жестяной кувшин с дёгтем. Дуня им петли да засовы смазывала.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W114_1",
+   "line": "agata:H2.tar_pot.not_now",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Дёготь. Сейчас он мне ни к чему.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W115_1",
+   "line": "agata:H2.tar_pot.take",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Отолью дёгтя в баночку — Павлу ворот смазать.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W116_1",
+   "line": "agata:H2.tar_pot.taken",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Дёготь у меня. Скорей к затвору.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W117_1",
+   "line": "H3.exit_R4.closed",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "У стены пустая рама. Для неё в мастерской двери нет.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W118_1",
+   "line": "agata:H4.bed.late_d1",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Поздно, пора спать. Да наверху стыло… Внизу лягу, у печи.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W119_1",
+   "line": "pavel:M4.pavel.rusty",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "Погоди-ка. Ворот год не крутили — заржавел, не провернёшь. Дёготь у Дуни в мастерской был — принеси, смажем.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W120_1",
+   "line": "pavel:M4.pavel.turn",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "Смазан ворот — теперь крути. По зарубке, как записано.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W121_1",
+   "line": "agata:M4.gate.rusty",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Не провернуть — ворот заржавел. Дёготь у Дуни в мастерской, на верстаке.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W122_1",
+   "line": "M4.gate.tarred",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Агата смазывает ось ворота дёгтем. Скрипнул ворот — и пошёл.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W123_1",
+   "line": "agata:item.tar",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Баночка дёгтя — ворот смазать.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W124_1",
+   "line": "pelageya:R2.pelageya.after",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "За кольцо держись.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W125_1",
+   "line": "H2d.bell.need_mirror",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Звонить надо да в конторское зеркало смотреть. А его на стойке ещё нет.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W126_1",
+   "line": "H2d.nina_mirror.watch_wait",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Стрелка ходиков и деления ещё не прошла. Надо подольше посмотреть.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W127_1",
+   "line": "Z3d.plate.rope_at_ring",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Кольца коснулся конец каната. Пелагея показывает, как вязать: сначала под кольцо, потом вокруг — и в петлю.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W128_1",
+   "line": "pelageya:Z3d.pelageya.done",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "Держит! Теперь к причалу — за фонарь берись.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W129_1",
+   "line": "R1d.lantern.use_day",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Пелагеин сигнальный фонарь. Рано огни подавать: канат ещё не на плите.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W130_1",
+   "line": "O4.mitya.prompt",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "О чём бы с Митей поговорить?",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W131_1",
+   "line": "agata:item.letter_tamara",
+   "take": "1",
+   "speaker": "agata",
+   "text": "С этого письма моя дорога сюда и началась.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W132_1",
+   "line": "agata:examine.tar",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Чёрный, густой, берёзой пахнет. С ним ворот провернётся.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W133_1",
+   "line": "agata:mech.shutter.stuck",
+   "take": "1",
+   "speaker": "agata",
+   "text": "От сырости разбухла. Щеколду поддеть надо, чтоб как следует встала.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W134_1",
+   "line": "agata:mech.shutter.dropped",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Опять в скобу упала. Ещё повыше надо.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  }
+ ]
+}
