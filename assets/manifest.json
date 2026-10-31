@@ -2695,6 +2695,168 @@
       "use": "items.json → tar.examine.art",
       "pack": "Партия 10г, п. 6",
       "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "H2_state_bundle_v2",
+      "kind": "prop_states",
+      "files": [
+        "incoming/H2_state_bundle_v2.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0,0), 1:1; [940,500,1330,710)",
+      "spec": "Мамино зеркало в холстине на ближнем большом верстаке — нарисовано сразу в этом размере (стр. 33: мыльное и маловато)",
+      "use": "H2.json → слой bundle (вместо растянутого state_bundle.png)",
+      "g": "K стр. 33"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "H2_state_nina_mirror_v2",
+      "kind": "prop_states",
+      "files": [
+        "incoming/H2_state_nina_mirror_v2.png"
+      ],
+      "base": "H2_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0,0), 1:1; [940,500,1330,710)",
+      "spec": "То же зеркало развёрнутым: рама разошлась по углам, стекло мутное",
+      "use": "H2.json → слой nina_mirror",
+      "g": "K стр. 33"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "H1_state_shelf_A_wide",
+      "kind": "prop_states",
+      "files": [
+        "incoming/H1_state_shelf_A_wide.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст; [340,395,530,505)",
+      "spec": "Полка Тихона у печи шире и глубже (≈160 px), подстилка",
+      "use": "H1.json → слой shelf_stove; tikhon.json place.H1 (q04_corner_stove) и хотспот tikhon",
+      "g": "K стр. 25, 113"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "H1_state_holes_stove_wide",
+      "kind": "prop_states",
+      "files": [
+        "incoming/H1_state_holes_stove_wide.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст; под кронштейнами полки A wide",
+      "spec": "Гнёзда креплений под широкую полку",
+      "use": "H1.json → слой holes_stove",
+      "g": "K стр. 25, 113"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "Tikhon_poses_armchair",
+      "kind": "character_pose",
+      "files": [
+        "incoming/Tikhon_pose_loaf.png",
+        "incoming/Tikhon_pose_sit.png",
+        "incoming/Tikhon_pose_lounge.png"
+      ],
+      "base": "characters/tikhon/tikhon.png",
+      "size": "1254×1254",
+      "placement": "прозрачный фон, низ фигуры на одной горизонтали",
+      "spec": "Три позы Тихона на подушке кресла на выбор Директору (стр. 25: «столбиком» неестественно)",
+      "use": "game/data/actors/tikhon.json → place.H1 (до полки) — отдельная картинка куклы с костями",
+      "g": "K стр. 25"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "R2_fg_rope_v2",
+      "kind": "foreground",
+      "files": [
+        "incoming/R2_fg_rope_v2.png"
+      ],
+      "base": "R2 fg_rope.png",
+      "size": "1672×941",
+      "placement": "полный холст; правка в [1080,580,1320,780)",
+      "spec": "Канат продет в кольцо на борту: ближняя дуга кольца перед канатом",
+      "use": "R2.json → слой fg_rope",
+      "g": "K стр. 106"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "M1_state_water_low",
+      "kind": "prop_states",
+      "files": [
+        "incoming/M1_state_water_low.png"
+      ],
+      "base": "M1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст; [1000,520,1672,941)",
+      "spec": "Вода под колесом ниже после спуска пруда, мокрая полоса",
+      "use": "M1.json → слой wheel_water_still (if pond_lowered)",
+      "g": "K стр. 100"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 12 (по прохождению Директора 31.10)",
+      "batch": "12",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 12",
+      "brief": "Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "M4_state_pond_low",
+      "kind": "prop_states",
+      "files": [
+        "incoming/M4_state_pond_low.png"
+      ],
+      "base": "M4_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст; гладь пруда и берега",
+      "spec": "Пруд у затвора ниже после спуска, полоса ила",
+      "use": "M4.json → новый слой if sluice_opened",
+      "g": "K стр. 100"
     }
   ]
 }
