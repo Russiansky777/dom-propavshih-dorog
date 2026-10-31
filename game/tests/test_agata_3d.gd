@@ -94,6 +94,7 @@ func _run() -> void:
 	await _test("Look (Director 30.10 «идеальная Агата»): a villager's line — her head turns to him (within the neck's limits), softly; line over — back", _test_look)
 	await _test("Setting off (Director 30.10 «идеальная Агата»): the planted foot stays put as the stance blends into the stride (it skated 12–15 cm)", _test_set_off)
 	await _test("Braid (Director 30.10, 23:22 «коса и сумка на пружинах»): on its own spring chain from the head — swings walking and turning, settles standing, stays clear of the back", _test_braid)
+	await _test("Arm and bag (Director 31.10 «пересмотри и увидь сам»): the right hand and forearm stay out of the bag at her hip — standing, walking, talking, opening", _test_arm_bag)
 	await _test("Feet hold the floor (Director 30.10 «идеальная Агата»): stopping and turning on the spot, a foot set down does not skate (14–21 cm before) — it stays or steps", _test_feet_hold)
 	PlayerScript.forced_render = ""
 	gs.reset()
@@ -646,6 +647,9 @@ func _test_look() -> void:
 	var a_npc := atan2(dir_floor.x, dir_floor.y)
 	player.yaw3d = a_npc + deg_to_rad(50.0)
 	player.yaw3d_target = player.yaw3d
+	# her stance gaze straight ahead (no glance aside during the measure)
+	player._glance_a = 0.0
+	player._glance_t = 1e9
 	await _wait_s(1.0)
 	var before := absf(rad_to_deg(dir_floor.angle_to(_head_dir(v))))
 	sr.current_beat = {"type": "line", "speaker": String(npc.get("actor_id")), "line_id": "T_1", "text": "Погляди-ка!"}
@@ -665,6 +669,7 @@ func _test_look() -> void:
 	_check(during < before * 0.65, "the villager's line: the head did not turn to him (%.0f° → %.0f°)" % [before, during])
 	_check(max_step < 4.0, "the head turned %.1f° in a frame (soft turn expected)" % max_step)
 	_check(after > during + 15.0, "line over: the head stays on him (%.0f°)" % after)
+	player._glance_t = 0.0
 	npc.queue_free()
 	v.skeleton.skeleton_updated.disconnect(_on_head_updated)
 	_completed = true
@@ -903,4 +908,60 @@ func _test_braid() -> void:
 	_check(swing > 0.02, "walking and turning, the braid does not swing (%.1f cm): no spring" % (swing * 100.0))
 	_check(settle < 0.03 and settle < swing * 0.5, "standing, the braid keeps swinging (%.1f cm, moving %.1f cm)" % [settle * 100.0, swing * 100.0])
 	_check(clear >= radius, "the braid's tip goes into the back (%.1f cm from the spine axis, the back %.1f)" % [clear * 100.0, radius * 100.0])
+	_completed = true
+
+
+# --- Arm and bag ---------------------------------------------------------------------------------------
+
+var _bag_rows: Array = []
+
+
+func _on_bag_updated() -> void:
+	var v: Actor3D = player.view3d
+	var sk := v.skeleton
+	var tm := v._skel_to_model()
+	var hips: Transform3D = tm * sk.get_bone_global_pose(sk.find_bone("Hips"))
+	var hand: Vector3 = tm * sk.get_bone_global_pose(sk.find_bone("RightHand")).origin
+	var fore: Vector3 = tm * sk.get_bone_global_pose(sk.find_bone("RightForeArm")).origin
+	_bag_rows.append([v.bag_depth(hand, hips), v.bag_depth(hand.lerp(fore, 0.5), hips)])
+
+
+## Deepest the drawn right hand and forearm go into the bag's box over a stance, a walk, a talk gesture and «open».
+func _bag_runs(on: bool) -> Array:
+	await _enter("H1", Vector2(1200, 960))
+	var v: Actor3D = player.view3d
+	v.arm_clear_on = on
+	_bag_rows = []
+	v.skeleton.skeleton_updated.connect(_on_bag_updated)
+	await _wait_s(3.0)
+	player.click_at(player.global_position + Vector2(-420, 0))
+	await _wait_s(3.0)
+	sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
+	await _wait_s(4.5)
+	sr.current_beat = {}
+	await _wait_s(0.6)
+	player._start_action("open", null)
+	await _wait_s(4.0)
+	v.skeleton.skeleton_updated.disconnect(_on_bag_updated)
+	v.arm_clear_on = true
+	var hand := 0.0
+	var fore := 0.0
+	for r in _bag_rows:
+		hand = maxf(hand, float(r[0]))
+		fore = maxf(fore, float(r[1]))
+	return [hand, fore]
+
+
+func _test_arm_bag() -> void:
+	var v: Actor3D = player.view3d
+	_check(v != null and v.arm_ik != null, "no arm clearance (rt3d.bag_clear)")
+	if v == null or v.arm_ik == null:
+		_completed = true
+		return
+	var on: Array = await _bag_runs(true)
+	var off: Array = await _bag_runs(false)
+	print("        arm and bag: the hand goes %.0f mm into the bag at most, the forearm %.0f; without the clearance %.0f / %.0f" % [float(on[0]) * 1000.0, float(on[1]) * 1000.0, float(off[0]) * 1000.0, float(off[1]) * 1000.0])
+	_check(float(on[0]) <= 0.012, "the right hand goes %.0f mm into the bag (≤ 12)" % (float(on[0]) * 1000.0))
+	_check(float(on[1]) <= 0.03, "the right forearm goes %.0f mm into the bag (≤ 30)" % (float(on[1]) * 1000.0))
+	_check(float(off[0]) > 0.025, "self-check: without the clearance the hand goes only %.0f mm into the bag — the case is not reproduced" % (float(off[0]) * 1000.0))
 	_completed = true

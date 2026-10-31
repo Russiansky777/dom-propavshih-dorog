@@ -147,7 +147,9 @@ func setup(actor_spec: Dictionary) -> bool:
 	life.name = "Life"
 	life.setup(spec.get("life", {}), skeleton)
 	skeleton.add_child(life)
+	_setup_limit()   # the clips' pose first: the IKs and the look come after it and are not slowed by it
 	_setup_feet()    # legs first: the skirt's pushers ride on the legs as the IK leaves them
+	_setup_arm_clear()
 	_setup_look()    # before the skirt: the springs run last, once per frame
 	_setup_skirt()
 	_setup_springs()
@@ -407,6 +409,26 @@ func _setup_skirt() -> void:
 		cap.position_offset = Vector3(0.0, h * 0.5, 0.0)   # the bone's own +Y runs along it (Blender rig)
 
 
+## A safety net for the joints (Director 30.10, «идеальная Агата»: «иногда странные или рваные»): whatever the clips do
+## — a clip switch, a fade cut short — no joint of the body turns faster than rt3d.limit_deg_s
+## (LimitAngularVelocityModifier3D over all bones, right after the clips; the IKs, the look and the springs come after
+## it with their own smoothing — limited, a locked foot lagged 25 mm off its spot). Fast natural motions stay well under it
+## (a gesture, the walk's arm swing: up to some 600°/s); a pop of 30° in one 1/60 s frame (1800°/s) is spread over a
+## few frames instead. A cut (room change, load) resets it.
+var limiter: LimitAngularVelocityModifier3D = null
+
+
+func _setup_limit() -> void:
+	var deg := float(spec.get("limit_deg_s", 0.0))
+	if deg <= 0.0:
+		return
+	limiter = LimitAngularVelocityModifier3D.new()
+	limiter.name = "JointLimit"
+	skeleton.add_child(limiter)
+	limiter.exclude = true          # no chains excluded: every bone is limited
+	limiter.max_angular_velocity = deg_to_rad(deg)
+
+
 ## Other things that hang and swing (Director 30.10, 23:22 — the braid and the bag on springs): each entry of
 ## rt3d.springs is a bone chain the rig gives it (tools/rig_skirt.py: Braid0..2 under Head) with its own
 ## SpringBoneSimulator3D — after the skirt, so it swings off the finished pose — and its own pushers (the back for the
@@ -451,6 +473,135 @@ func _setup_springs() -> void:
 			var off: Array = col.get("offset_m", [0.0, 0.0, 0.0])
 			cap.position_offset = Vector3(float(off[0]), h * 0.5 + float(off[1]), float(off[2]))
 		springs[String(sp.get("name", root))] = sim
+
+
+## The arm kept out of the bag (Director 31.10, 00:01 «пересмотри и увидь сам, что недоработано»): the bag hangs at
+## her right hip, and the clips were recorded without it — the walk's arm swing, the talk gesture and «open» put the
+## right hand through it. A TwoBoneIK3D on that arm moves the hand out past the bag's outer side whenever the clip
+## puts it inside the bag (a box at rest by the hips, model metres), softly, only as deep as it goes in. Data
+## rt3d.bag_clear {arm, box_min_m, box_max_m, hand_r_m}.
+var arm_ik: TwoBoneIK3D = null
+var _arm_target: Node3D = null
+var _arm_pole: Node3D = null
+var _arm_w: float = 0.0
+var _arm_box: AABB = AABB()
+var _arm_rest_hips: Transform3D = Transform3D.IDENTITY   # the hips at rest, model space (metres)
+var _arm_bones: Array = []                                # [upper arm, forearm, hand, hips]
+var arm_push_m: float = 0.0                               # how deep the clip put the hand in this frame (tests)
+var arm_clear_on: bool = true                             # off — probes and the tests' self-check
+
+
+## How deep a hand at `hand_m` (model space) is inside the bag, seen from hips `hips_now` (model space); 0 outside.
+func bag_depth(hand_m: Vector3, hips_now: Transform3D) -> float:
+	var bc: Dictionary = spec.get("bag_clear", {})
+	if bc.is_empty():
+		return 0.0
+	var r := float(bc.get("hand_r_m", 0.04))
+	var q: Vector3 = _arm_rest_hips * (hips_now.affine_inverse() * hand_m)
+	if q.y < _arm_box.position.y or q.y > _arm_box.end.y or q.z < _arm_box.position.z or q.z > _arm_box.end.z:
+		return 0.0
+	if q.x < _arm_box.position.x - r or q.x > _arm_box.end.x:
+		return 0.0
+	return q.x - (_arm_box.position.x - r)
+
+
+func _skel_to_model() -> Transform3D:
+	var xf := Transform3D.IDENTITY
+	var n: Node = skeleton
+	while n != null and n != model:
+		if n is Node3D:
+			xf = (n as Node3D).transform * xf
+		n = n.get_parent()
+	return xf
+
+
+func _setup_arm_clear() -> void:
+	var bc: Dictionary = spec.get("bag_clear", {})
+	if bc.is_empty():
+		return
+	var side := String(bc.get("arm", "Right"))
+	var names := [side + "Arm", side + "ForeArm", side + "Hand", "Hips"]
+	_arm_bones = []
+	for nm in names:
+		var b := skeleton.find_bone(nm)
+		if b < 0:
+			return
+		_arm_bones.append(b)
+	var lo: Array = bc.get("box_min_m", [0, 0, 0])
+	var hi: Array = bc.get("box_max_m", [0, 0, 0])
+	var a := Vector3(float(lo[0]), float(lo[1]), float(lo[2]))
+	_arm_box = AABB(a, Vector3(float(hi[0]), float(hi[1]), float(hi[2])) - a)
+	_arm_rest_hips = _skel_to_model() * skeleton.get_bone_global_rest(int(_arm_bones[3]))
+	arm_ik = TwoBoneIK3D.new()
+	arm_ik.name = "ArmClear_" + side
+	skeleton.add_child(arm_ik)
+	arm_ik.setting_count = 1
+	arm_ik.set_root_bone_name(0, names[0])
+	arm_ik.set_middle_bone_name(0, names[1])
+	arm_ik.set_end_bone_name(0, names[2])
+	_arm_target = Node3D.new()
+	_arm_target.name = "ArmTarget"
+	oblique.add_child(_arm_target)
+	_arm_pole = Node3D.new()
+	_arm_pole.name = "ArmPole"
+	oblique.add_child(_arm_pole)
+	arm_ik.set_target_node(0, arm_ik.get_path_to(_arm_target))
+	arm_ik.set_pole_node(0, arm_ik.get_path_to(_arm_pole))
+	arm_ik.influence = 0.0
+
+
+## One frame, after the pose: where the clip has the hand, seen from the hips as they stood at rest; inside the bag's
+## box (grown by the hand's radius) it is moved out past the box's outer side (the side away from the body: −x for
+## the right hip), the IK fading in with the depth and out as the hand leaves.
+func arm_clear_step(delta: float) -> void:
+	if arm_ik == null:
+		return
+	var bc: Dictionary = spec.get("bag_clear", {})
+	var r := float(bc.get("hand_r_m", 0.04))
+	var to_turn := _skel_to_turn()
+	var to_model := _skel_to_model()
+	var hips_now: Transform3D = to_model * skeleton.get_bone_global_pose(int(_arm_bones[3]))
+	# model-space hand → as if the hips stood at rest
+	var hand_m: Vector3 = to_model * skeleton.get_bone_global_pose(int(_arm_bones[2])).origin
+	var q: Vector3 = _arm_rest_hips * (hips_now.affine_inverse() * hand_m)
+	var outer := _arm_box.position.x if float(bc.get("out_sign", -1.0)) < 0.0 else _arm_box.end.x
+	var depth := (q.x - (outer - r)) if outer == _arm_box.position.x else ((outer + r) - q.x)
+	var far_side := (q.x - (_arm_box.end.x + r)) if outer == _arm_box.position.x else ((_arm_box.position.x - r) - q.x)
+	# in y and z: full inside the box, fading over 3 cm outside it
+	var out_yz := maxf(maxf(_arm_box.position.y - q.y, q.y - _arm_box.end.y), maxf(_arm_box.position.z - q.z, q.z - _arm_box.end.z))
+	var f_yz := clampf(1.0 - out_yz / 0.03, 0.0, 1.0)
+	var want := 0.0
+	if depth > 0.0 and far_side < 0.0 and arm_clear_on:
+		want = clampf(depth / 0.02, 0.0, 1.0) * f_yz
+	arm_push_m = maxf(depth, 0.0) * (1.0 if far_side < 0.0 else 0.0) * f_yz
+	# the forearm as well: its middle (half-way to the elbow) kept out too — a hand moved out past the bag with the
+	# forearm still through it was half the cure (probe_arm_bag: forearm 41 mm in the bag, hand 3–6)
+	var fore_m: Vector3 = to_model * skeleton.get_bone_global_pose(int(_arm_bones[1])).origin
+	var qf: Vector3 = _arm_rest_hips * (hips_now.affine_inverse() * hand_m.lerp(fore_m, 0.5))
+	var out_yz_f := maxf(maxf(_arm_box.position.y - qf.y, qf.y - _arm_box.end.y), maxf(_arm_box.position.z - qf.z, qf.z - _arm_box.end.z))
+	var f_yz_f := clampf(1.0 - out_yz_f / 0.03, 0.0, 1.0)
+	var depth_f := (qf.x - (outer - r)) if outer == _arm_box.position.x else ((outer + r) - qf.x)
+	var far_f := (qf.x - (_arm_box.end.x + r)) if outer == _arm_box.position.x else ((_arm_box.position.x - r) - qf.x)
+	var extra := 0.0
+	if depth_f > 0.0 and far_f < 0.0 and arm_clear_on:
+		extra = depth_f * 2.0 * f_yz_f   # the middle of the forearm goes half as far as the hand
+		want = maxf(want, clampf(depth_f / 0.02, 0.0, 1.0) * f_yz_f)
+	_arm_w = move_toward(_arm_w, want, delta / 0.08)
+	var qt := q
+	qt.x = (outer - r - extra) if outer == _arm_box.position.x else (outer + r + extra)
+	var target_m: Vector3 = hips_now * (_arm_rest_hips.affine_inverse() * qt)
+	var yaw_b := Basis(Vector3.UP, get_yaw())
+	var model_to_turn := to_turn * to_model.affine_inverse()
+	_arm_target.position = yaw_b * (model_to_turn * target_m)
+	# the elbow keeps the way it bends: the pole a little beyond the elbow, away from the shoulder–hand line
+	var sh: Vector3 = to_turn * skeleton.get_bone_global_pose(int(_arm_bones[0])).origin
+	var el: Vector3 = to_turn * skeleton.get_bone_global_pose(int(_arm_bones[1])).origin
+	var hd: Vector3 = to_turn * skeleton.get_bone_global_pose(int(_arm_bones[2])).origin
+	var bend := el - (sh + hd) * 0.5
+	if bend.length() < 0.01:
+		bend = Vector3(0.0, 0.0, -1.0)
+	_arm_pole.position = yaw_b * (el + bend.normalized() * 0.3)
+	arm_ik.influence = _arm_w * _arm_w * (3.0 - 2.0 * _arm_w)
 
 
 ## Feet that stay where they stand (Director 30.10 «идеальная Агата»: stopping, a foot set down skated 14 cm on
@@ -645,6 +796,8 @@ func _out_of_reach(p: Vector3, hip: Vector3, reach: float) -> bool:
 
 ## A cut (room change, load): the feet stand where the new pose puts them.
 func feet_reset() -> void:
+	if limiter != null:
+		limiter.reset()
 	for i in 2:
 		_foot_lock[i] = null
 		_foot_step[i] = null
@@ -696,23 +849,45 @@ func _setup_look() -> void:
 
 
 ## The point to look at, in the floor frame (x right, y up, z towards the viewer; metres from the feet), or off.
-func set_look(p_floor: Vector3, on: bool) -> void:
+var _look_weight: float = -1.0   # this look's share of the head turn (< 0: rt3d.look.weight)
+
+
+var _look_goal := Vector3.ZERO
+var _look_vel := Vector3.ZERO
+
+
+## Where to look (floor frame, metres from her feet): the point itself glides there (a critically damped follower,
+## look.target_omega) — a new target while she already looks somewhere (the stance's gaze → the one who speaks) used to
+## jump, and the head turned 8° in a frame.
+func set_look(p_floor: Vector3, on: bool, weight: float = -1.0) -> void:
 	if look == null:
 		return
+	if on and (not _look_on or _look_w < 0.02):
+		look_target.position = p_floor      # from looking nowhere: the influence fades in, the point can start there
+		_look_vel = Vector3.ZERO
 	_look_on = on
+	_look_weight = weight
 	if on:
-		look_target.position = p_floor
+		_look_goal = p_floor
 
 
 func _advance_look(delta: float) -> void:
 	if look == null:
 		return
-	var w := float(spec.get("look", {}).get("weight", 0.8)) if _look_on else 0.0
+	var w := (_look_weight if _look_weight >= 0.0 else float(spec.get("look", {}).get("weight", 0.8))) if _look_on else 0.0
 	if delta > 0.0:
 		var r := spring(_look_w, _look_v, w, float(spec.get("look", {}).get("fade_omega", 6.0)), delta)
 		_look_w = r.x
 		_look_v = r.y
 	look.influence = clampf(_look_w, 0.0, 1.0)
+	if _look_on and delta > 0.0:
+		var om := float(spec.get("look", {}).get("target_omega", 5.0))
+		var p := look_target.position
+		for ax in 3:
+			var r2 := spring(p[ax], _look_vel[ax], _look_goal[ax], om, delta)
+			p[ax] = r2.x
+			_look_vel[ax] = r2.y
+		look_target.position = p
 
 
 ## A critically damped follower, exact for any step: position and velocity after `dt` going to `target`

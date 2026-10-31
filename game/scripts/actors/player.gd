@@ -1104,6 +1104,7 @@ func _process_3d(delta: float) -> void:
 	if foot_lock_3d:
 		var ppm_s := view3d.ppm * maxf(absf(scale.y), 0.01)
 		view3d.feet_step(delta, global_position, Vector2(ppm_s, ppm_s * maxf(floor_foreshortening(), 0.05)))
+	view3d.arm_clear_step(delta)
 	_sync_facade_3d()
 	_sync_body3d()
 	if _acting and _act_t >= _act_len - 0.0001:
@@ -1113,6 +1114,11 @@ func _process_3d(delta: float) -> void:
 ## Where Agata looks (rt3d.look; Actor3D.set_look): at the one who has the line — or, her own line, at the one she
 ## speaks to (beat `to`) — then at the thing she does (action) or goes to (a hotspot within walk_look_px); else nowhere
 ## in particular (the clip and the breathing lead the head). A villager is looked at in the eyes, a thing at thing_m.
+var _look_partner: Node2D = null    # the one she was last spoken to by (her own lines with no `to` look at them)
+var _glance_t: float = 0.0
+var _glance_a: float = 0.0
+
+
 func _look_3d() -> void:
 	if view3d == null or view3d.look == null:
 		return
@@ -1125,6 +1131,12 @@ func _look_3d() -> void:
 		var sp := String(b.get("speaker", ""))
 		var who := String(b.get("to", "")) if sp == "agata" else sp
 		var n := _speaker_node(who)
+		if n != null and sp != "agata":
+			_look_partner = n
+		# her own line to no one named: to the one she has been talking with (Director 31.10, «пересмотри»: she spoke
+		# with her head down at her hand — the talk clip's own look)
+		if n == null and sp == "agata" and _look_partner != null and is_instance_valid(_look_partner) and _look_partner.is_inside_tree():
+			n = _look_partner
 		if n != null:
 			target = n.global_position
 			if n.get("actor_id") != null:
@@ -1140,7 +1152,21 @@ func _look_3d() -> void:
 		if lp.distance_to(global_position) < float(lk.get("walk_look_px", 520.0)):
 			target = lp
 	if target == Vector2.INF:
-		view3d.set_look(Vector3.ZERO, false)
+		# nothing to look at, standing: ahead at eye level, now and then a glance aside (Director 31.10: in the stance
+		# and the gesture the clips keep her head down at the floor — a downcast girl all the time)
+		var idle: Dictionary = lk.get("idle", {})
+		if idle.is_empty() or _walking:
+			view3d.set_look(Vector3.ZERO, false)
+			return
+		_glance_t -= get_process_delta_time()
+		if _glance_t <= 0.0:
+			var gs: Array = idle.get("glance_s", [3.0, 7.0])
+			_glance_t = randf_range(float(gs[0]), float(gs[1]))
+			var gd := deg_to_rad(float(idle.get("glance_deg", 30.0)))
+			_glance_a = 0.0 if randf() < 0.45 else randf_range(-gd, gd)
+		var a := yaw3d + _glance_a
+		var ahead := float(idle.get("ahead_m", 3.0))
+		view3d.set_look(Vector3(sin(a) * ahead, float(idle.get("eye_m", 1.5)), cos(a) * ahead), true, float(idle.get("weight", 0.6)))
 		return
 	var s := absf(scale.y)
 	var ppm_s := view3d.ppm * maxf(s, 0.01)
