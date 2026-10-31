@@ -12,7 +12,7 @@
   5. loops: файлы есть, импорт loop=true; огонь — комната существует, флаги «if» стоят в «if» огня
      этой комнаты в data/story/lights/<room>.json; дождь — outside ровно комнаты с дождём в
      data/story/ambient (сам файл или его пресет), inside и outside не пересекаются, все — локации;
-  6. громкость относительно музыки (музыка — −18 LUFS + volume_db темы, кроме нецикличного финала):
+  6. громкость относительно музыки (музыка — −18 LUFS + volume_db темы, кроме нецикличного финала и тем над кадрами — over_frames):
      шаг (максимум momentary + volume_db + разброс) не громче самой тихой темы; дверь громче самой
      громкой темы, но не более чем на 6 dB; дождь снаружи (LUFS integrated + outside_db) — −28 ± 1,5;
      огонь у печи тише самой тихой темы.
@@ -189,7 +189,10 @@ def check(data: dict, ctx_files: bool = True) -> None:
     if not levels:
         return
     music = load(STORY / "music.json")["themes"]
-    looped = [MUSIC_LUFS + float(t.get("volume_db", 0.0)) for t in music.values() if t.get("loop", True)]
+    # K (31.10): финал закольцован до титров (стр. 112), но звучит только над кадрами эпилога — ни дверей, ни шагов;
+    # такие темы помечены over_frames и в мерку громкости не входят (иначе −4 dB финала поднимали планку дверей)
+    looped = [MUSIC_LUFS + float(t.get("volume_db", 0.0)) for t in music.values()
+              if t.get("loop", True) and not t.get("over_frames", False)]
     m_min, m_max = min(looped), max(looped)
     def eff(sid: str, key: str = "lufs_m_max") -> float:
         spec = sounds[sid]

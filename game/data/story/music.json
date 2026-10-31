@@ -41,7 +41,9 @@
       "title": "Последняя нота",
       "loop": true,
       "volume_db": -4.0,
-      "source_track": "Последняя нота, Suno id 76b81a2b"
+      "source_track": "Последняя нота, Suno id 76b81a2b",
+      "over_frames": true,
+      "_over_frames": "Звучит только в эпилоге кадрами (ни дверей, ни шагов) — громкость дверей и шагов меряется не по нему (tools/validate_sfx.py); с K закольцован до титров"
     }
   },
   "rooms": {
