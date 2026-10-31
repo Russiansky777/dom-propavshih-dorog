@@ -1,0 +1,29 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Девятый заход (K9): записи, выбранные Директором 31.10 (23:14–23:22) на странице «Девятый заход голоса», — в игру без нового синтеза; H2.bell.use — запись K8 W066_1 («до этого… было отлично»). Строки с «Ни одна» — в K10.",
+ "picks": {
+  "M03_5": "W135_2",
+  "H2.bundle_nina.done": "W136_1",
+  "agata:H2.bell.thought": "W138_2",
+  "pavel:M1.pavel.before_agree": "W140_2",
+  "agata:M2.mirror.look": "W141_1",
+  "pavel:M2.mirror.take": "W142_1",
+  "item.mirror_mill": "W143_2",
+  "M13_1_promise": "W144_2",
+  "M18p_1": "W145_1",
+  "M23b_0": "W146_1",
+  "M26_10": "W147_1",
+  "M23a_0": "W148_1",
+  "H4.window.look": "W149_2",
+  "H4.window.look_snow": "W150_2",
+  "agata:M4.sluice.done": "W151_2",
+  "agata:H2.tar_pot.take": "W152_1",
+  "agata:M4.gate.rusty": "W155_1",
+  "agata:item.tar": "W157_1",
+  "Z3d.plate.rope_at_ring": "W159_2",
+  "R1d.lantern.use_day": "W160_2",
+  "agata:mech.shutter.stuck": "W162_2",
+  "H2.bell.use": "W066_1"
+ }
+}

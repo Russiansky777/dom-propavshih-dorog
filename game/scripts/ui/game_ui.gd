@@ -1322,7 +1322,9 @@ func _process(_delta: float) -> void:
 	elif cursor_item.visible:
 		cursor_item.visible = false
 	var room := RoomManager.current_room
-	var blocked := StoryRunner.is_busy() or modal.visible or map_view.visible
+	# K (31.10): a bag item's close-up open (its words read) — no room caption over it («На крыльцо» showed over the
+	# office journal)
+	var blocked := StoryRunner.is_busy() or modal.visible or map_view.visible or StoryRunner.examined_item != ""
 	ExitCue.suppressed = blocked   # exit marks fade out under a dialogue / panel / the plan
 	if blocked and reveal.active():
 		reveal.cancel()

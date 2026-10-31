@@ -17,6 +17,9 @@ extends SceneTree
 ##     baked again when the flags change who is shown (Pavel in the office on the first visit — visited_M3 comes after
 ##     the room is built); the walk tour (probe_walk_tour.gd) counts frames inside their feet;
 ##   стр. 105: the night of day three (M24) — the stove bench in Dunya's house (H1) as well as the bed at mum's (O3);
+##   стр. 46: night fog — a dark thin haze (every daytime fog has its `_night` twin under tod_dark), lit windows ×0.78;
+##   стр. 62, 87: the pond at the sluice moves on both sides, the winter water at the far pier livelier;
+##   стр. 61: the office journal written on the page's ruling (10°, the lines' pitch);
 ##   стр. 108: from the laid log to the epilogue's bridge one black (keep_black), and a kept black never sticks;
 ## (in other files: стр. 5 — test_batch_j «J-E4»; стр. 4 — test_menus «Title items»; стр. 56 — test_day2 office mirror;
 ##  стр. 8–9 — test_agata_3d «Corners near the end»; стр. 30, 45 — test_agata_3d «Talking to someone»;
@@ -89,6 +92,7 @@ func _run() -> void:
 	await _test("K-1/3/11 menus: a soft tick on hover and a click on press; «Сохранений нет» centred, names in one column; the hint is in the journal", _test_menus_k)
 	await _test("K-59/78 Agata walks round the villagers: their feet are out of the floor, also when one shows up after the room is built", _test_feet_off_floor)
 	await _test("K-105 the night before day four: on the stove bench in Dunya's house as well as at mum's", _test_sleep_either)
+	await _test("K-46/62/87/61 the world: night fog dark, windows dimmer; the pond at the sluice moves; the journal written on its ruling", _test_world_k)
 	await _test("K-108 the first span → the bridge: one black, never lifted in between", _test_one_black)
 	await _test("K-108 a kept black that no scene takes up lifts by itself", _test_kept_black_lifts)
 	gs.reset()
@@ -511,6 +515,14 @@ func _test_side_door_sound() -> void:
 	var heard: Array[String] = []
 	var on_snd := func(sid: String): heard.append(sid)
 	sr.stage_sound_requested.connect(on_snd)
+	# From the lane the side door stays shut until the bolt has been drawn from inside (AI review №11) — and that
+	# one-way rule must not shut it from inside too (the edge in locations.json goes both ways).
+	await _enter("Z4")
+	var back: Node = null
+	for e in rm.current_room.get_exits():
+		if String(e.get("target_room")) == "H3":
+			back = e
+	_check(back != null and not back.is_open(), "the lane: the side door is shut before the first pass")
 	for round_i in 2:
 		await _enter("H3")
 		var ex: Node = null
@@ -521,10 +533,20 @@ func _test_side_door_sound() -> void:
 		if ex == null:
 			break
 		heard.clear()
+		var opens_inside: bool = ex.is_open()
 		sr.use_exit(ex)
 		await _frames(4)
 		if round_i == 0:
+			_check(opens_inside, "the gallery: the side door opens from inside before the first pass")
 			_check(heard.has("synth:bolt_unlock"), "the first time: the bolt is heard (%s)" % str(heard))
+			for i in 120:
+				if rm.current_room != null and rm.current_room.room_id == "Z4":
+					break
+				await process_frame
+			_check(rm.current_room != null and rm.current_room.room_id == "Z4", "the first pass leads into the lane")
+			for e in rm.current_room.get_exits():
+				if String(e.get("target_room")) == "H3":
+					_check(e.is_open(), "the lane: after the first pass the side door opens from outside")
 		else:
 			_check(not heard.has("synth:bolt_unlock"), "after that: no bolt (%s)" % str(heard))
 	sr.stage_sound_requested.disconnect(on_snd)
@@ -572,3 +594,31 @@ func _test_menus_k() -> void:
 		names.append(int((row.get_child(0) as Control).custom_minimum_size.x))
 	_check(not names.is_empty() and names.all(func(w): return w == int(names[0])) and int(names[0]) >= 220, "every slot name in one column (%s)" % str(names))
 	sfx.sound_played.disconnect(on_snd)
+
+
+func _test_world_k() -> void:
+	var dark_fog := 0
+	for rid in ["Z3", "H4", "R1", "M1"]:
+		var amb = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/ambient/%s.json" % rid))
+		var fogs: Array = amb.get("fog", [])
+		var ids: Array = fogs.map(func(f): return String(f.get("id", "")))
+		for f in fogs:
+			if f.has("if"):
+				continue
+			_check((f.get("unless", []) as Array).has("tod_dark"), "%s %s: the daytime fog is off in the dark" % [rid, f.get("id")])
+			_check(ids.has(String(f.get("id", "")) + "_night"), "%s %s: a night twin" % [rid, f.get("id")])
+		for f in fogs:
+			if String(f.get("id", "")).ends_with("_night"):
+				dark_fog += 1
+				_check(Color.html(String(f.get("color", "#ffffff"))).get_luminance() < 0.3, "%s %s: dark at night (%s)" % [rid, f.get("id"), f.get("color")])
+	_check(dark_fog >= 5, "night fogs: %d" % dark_fog)
+	var gain := float(load("res://scripts/core/time_of_day.gd").index().get("window_gain", 1.0))
+	_check(gain < 0.9 and gain > 0.6, "lit windows a little dimmer: × %.2f" % gain)
+	var m4 = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/ambient/M4.json"))
+	var ws := {}
+	for w in m4.get("water", []):
+		ws[String(w.get("id", ""))] = w
+	_check(ws.has("pond_left") and ws.has("pond_rails"), "M4: the pond left of the sluice and between the rails move (%s)" % str(ws.keys()))
+	_check(ws.has("river") and ws["river"].has("flow") and float(ws["river"]["ripple_px"][1]) >= 2.5, "M4: the pond right of the sluice drifts and ripples")
+	var wr: Dictionary = sd.item("journal_manager").get("examine", {}).get("writing", {})
+	_check(absf(float(wr.get("angle_deg", 0)) - 10.0) < 1.5 and absf(float(wr.get("line_pitch", 0)) - 27.0) < 1.5, "the journal on its ruling: %s°, pitch %s" % [wr.get("angle_deg"), wr.get("line_pitch")])

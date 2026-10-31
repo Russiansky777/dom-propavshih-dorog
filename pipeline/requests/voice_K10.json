@@ -1,0 +1,307 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 2363,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "Десятый заход (K10, отметки Директора 31.10, 23:14–23:22 на странице «Девятый заход голоса»): строки с «Ни одна» и заметками — акцент, подача; плюс новая строка у боковой двери (ИИ-разбор №11). По 3 записи (кредиты пополнены Директором 23:23). Выбор — на странице «Десятый заход», в игру — voice_K10_adopt.json",
+ "items": [
+  {
+   "id": "W163_1",
+   "line": "H2.bell.use",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери КОНТОРЫ висел — по нему на мельнице работу начинали и кончали». Ниже — её всегдашнее присловье: «Иные вещи ПОМНЯТ место, которому служили».",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "как K8 А, ПОМНЯТ"
+  },
+  {
+   "id": "W163_2",
+   "line": "H2.bell.use",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери КОНТОРЫ висел — по нему на мельнице работу начинали и кончали». Ниже — её всегдашнее присловье: «Иные вещи помнят место, которому служили».",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "как K8 А, другой прочёт"
+  },
+  {
+   "id": "W163_3",
+   "line": "H2.bell.use",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "На ярлыке Дуниной рукой: «Колокол с мельницы. У двери КОНТОРЫ висел — по нему на мельнице работу начинали и кончали». Ниже — её всегдашнее присловье: «Иные вещи ПОМНЯТ место, которому служили».",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "ПОМНЯТ, живее"
+  },
+  {
+   "id": "W164_1",
+   "line": "agata:O2.exit_O4.loop",
+   "take": "1",
+   "speaker": "agata",
+   "text": "От калитки к деревне ПОШЛА, а тропа вокруг школы ЗАВЕРНУЛА, и я опять у школьного крыльца. Да что ж это за наваждение? Кругами тропа водит!",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ПОШЛА / ЗАВЕРНУЛА"
+  },
+  {
+   "id": "W164_2",
+   "line": "agata:O2.exit_O4.loop",
+   "take": "2",
+   "speaker": "agata",
+   "text": "От калитки к деревне пошла, а тропа вокруг школы ЗАВЕРНУЛА, и я опять у школьного крыльца. Да что ж это за наваждение? Кругами тропа водит!",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ЗАВЕРНУЛА"
+  },
+  {
+   "id": "W164_3",
+   "line": "agata:O2.exit_O4.loop",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[surprised] От калитки к деревне ПОШЛА, а тропа вокруг школы ЗАВЕРНУЛА, и я опять у школьного крыльца. Да что ж это за наваждение? Кругами тропа водит!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с удивлением"
+  },
+  {
+   "id": "W165_1",
+   "line": "agata:H2.tar_pot.taken",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Дёготь У МЕНЯ. Скорей к затвору.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "У МЕНЯ, дальше ровно"
+  },
+  {
+   "id": "W165_2",
+   "line": "agata:H2.tar_pot.taken",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Дёготь У МЕНЯ. СКОРЕЙ к затвору.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "У МЕНЯ, СКОРЕЙ"
+  },
+  {
+   "id": "W165_3",
+   "line": "agata:H2.tar_pot.taken",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[warmly] Дёготь у МЕНЯ. Скорей к затвору.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "спокойно, У МЕНЯ"
+  },
+  {
+   "id": "W166_1",
+   "line": "pavel:M4.pavel.turn",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "СМАЗАН во́рот — теперь крути. По зарубке, как записано.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "СМАЗАН, во́рот без нажима"
+  },
+  {
+   "id": "W166_2",
+   "line": "pavel:M4.pavel.turn",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "[firm] СМАЗАН ворот — теперь крути. По зарубке, как записано.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "твёрдо, СМАЗАН"
+  },
+  {
+   "id": "W166_3",
+   "line": "pavel:M4.pavel.turn",
+   "take": "3",
+   "speaker": "pavel",
+   "text": "СМАЗАН! ворот — теперь крути. По зарубке, как записано.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "СМАЗАН резче"
+  },
+  {
+   "id": "W167_1",
+   "line": "M4.gate.tarred",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Агата смазывает ось во́рота дёгтем. СКРИПНУЛ ворот — и пошёл.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "СКРИПНУЛ, второй «ворот» без знака"
+  },
+  {
+   "id": "W167_2",
+   "line": "M4.gate.tarred",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Агата смазывает ось во́рота дёгтем. [slowly] СКРИПНУЛ ворот — и пошёл.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "СКРИПНУЛ протяжнее"
+  },
+  {
+   "id": "W167_3",
+   "line": "M4.gate.tarred",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Агата смазывает ось во́рота дёгтем. СКРИПНУЛ во́рот — и пошёл.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "СКРИПНУЛ, живее"
+  },
+  {
+   "id": "W168_1",
+   "line": "H2d.nina_mirror.watch_wait",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Стрелка ходиков И ДЕЛЕНИЯ ещё не прошла. Надо подольше посмотреть.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "И ДЕЛЕНИЯ, живее"
+  },
+  {
+   "id": "W168_2",
+   "line": "H2d.nina_mirror.watch_wait",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Стрелка ходиков — И ДЕЛЕНИЯ ещё не прошла. Надо подольше посмотреть.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "И ДЕЛЕНИЯ отдельно"
+  },
+  {
+   "id": "W168_3",
+   "line": "H2d.nina_mirror.watch_wait",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Стрелка ходиков и ДЕЛЕНИЯ ещё не прошла. Надо подольше посмотреть.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ДЕЛЕНИЯ"
+  },
+  {
+   "id": "W169_1",
+   "line": "Z3d.plate.rope_at_ring",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Кольца́ КОСНУЛСЯ конец каната. Пелагея показывает, как вязать: сначала под кольцо, потом вокруг — и в петлю.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "как Б, КОСНУЛСЯ"
+  },
+  {
+   "id": "W169_2",
+   "line": "Z3d.plate.rope_at_ring",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "КОЛЬЦА́ КОСНУЛСЯ конец каната. Пелагея показывает, как вязать: сначала под кольцо, потом вокруг — и в петлю.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "КОЛЬЦА́ КОСНУЛСЯ"
+  },
+  {
+   "id": "W169_3",
+   "line": "Z3d.plate.rope_at_ring",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Кольца́ КОСНУЛСЯ конец каната. Пелагея показывает, как вязать: сначала под кольцо, потом вокруг — и в петлю.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "КОСНУЛСЯ, живее"
+  },
+  {
+   "id": "W170_1",
+   "line": "agata:examine.tar",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Чёрный, густой, берёзой пахнет. [mischievously] С ним во́рот ПРОВЕРНЁТСЯ.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "заигрывающе"
+  },
+  {
+   "id": "W170_2",
+   "line": "agata:examine.tar",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Чёрный, густой, берёзой пахнет. [playfully] С ним во́рот провернётся.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "игриво"
+  },
+  {
+   "id": "W170_3",
+   "line": "agata:examine.tar",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[warmly] Чёрный, густой, берёзой пахнет. С ним во́рот провернётся!",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "тепло, с улыбкой"
+  },
+  {
+   "id": "W171_1",
+   "line": "Z4.exit_H3.closed",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Дверь можно отпереть только изнутри, из галереи.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно, как прежняя"
+  },
+  {
+   "id": "W171_2",
+   "line": "Z4.exit_H3.closed",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Дверь можно отпереть только изнутри, из галереи.",
+   "voice_settings": {
+    "stability": 0.72
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W171_3",
+   "line": "Z4.exit_H3.closed",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Дверь можно отпереть только ИЗНУТРИ, из галереи.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ИЗНУТРИ"
+  }
+ ]
+}

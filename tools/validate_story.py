@@ -151,6 +151,21 @@ for rf in sorted((STORY / "rooms").glob("*.json")):
         room_unlocks.append(ul)
         granted_flags.setdefault(once, []).append(f"{ul['loc']}:вход")
 
+# Флаги прохода через выход (rooms/<LOC>.json → exits[].on_pass.sets; K, 31.10: боковая дверь галереи — засов
+# отодвинут при первом выходе, side_door_passed открывает вход из переулка): симуляция ставит их, как только комната
+# достижима (проход в сам выход — ребро из этой комнаты).
+for rf in sorted((STORY / "rooms").glob("*.json")):
+    if rf.name.startswith("_"):
+        continue
+    room_doc = json.loads(rf.read_text(encoding="utf-8"))
+    for ex in room_doc.get("exits", []) or []:
+        for fl in (ex.get("on_pass") or {}).get("sets", []) or []:
+            if room_doc["id"] not in loc_ids:
+                continue
+            ul = {"loc": room_doc["id"], "item": "", "sets": [fl], "req": []}
+            room_unlocks.append(ul)
+            granted_flags.setdefault(fl, []).append(f"{ul['loc']}:проход в {ex.get('to')}")
+
 # Предметы, которые игрок берёт сам хотспотом комнаты (items.json → source_hotspot «<комната>.<хотспот>»):
 # use.gives с use.requires. Не выдача сцены: симуляция даёт предмет, как только requires выполнены и комната
 # достижима; сцена такой предмет выдавать не должна (единственный источник).
