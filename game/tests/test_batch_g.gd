@@ -169,7 +169,8 @@ func _test_rope_where() -> void:
 		_check(not _visible(z3, "Effects/" + id), "before the knot no rope at the turn (%s)" % id)
 	# The lines that carry the chain (G17): why the water, why the boat returns, what the rope on the ring changes, where the rope goes.
 	var m14: String = String(sd.scene("M14")["mandatory_lines"][1]["text"])
-	_check(m14.contains("вынесет") and m14.contains("дороги нет") and m14.contains("За кольцо канат") and m14.contains("По ней лодка и пойдёт"), "G17: Pavel — the boat comes back for there is no road; the rope on the ring is the road: %s" % m14)
+	# K (31.10, the Director's text: Pavel without repeating what was said before) — the rope on the ring is the road
+	_check(m14.contains("Канат за кольцо закрепишь") and m14.contains("дорога будет"), "G17: Pavel — the rope on the ring is the road: %s" % m14)
 	var ww: String = sd.text("@R1d.pelageya.wait_water")
 	_check(ww.contains("сниму канат со стопора") and ww.contains("к опоре"), "G28: Pelageya says where the rope will go (F09, 30.10): %s" % ww)
 	var s15: Array = sd.scene("M15s")["mandatory_lines"]

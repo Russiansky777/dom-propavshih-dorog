@@ -94,7 +94,7 @@
   ],
   "exits": [
     {"to": "H1", "label": "@H3.exit_H1.label", "rect": [1800, 560, 120, 520], "stand": [1810, 900], "spawn": "from_H3", "draw": false},
-    {"to": "Z4", "label": "@H3.exit_Z4.label", "side": "bottom", "x": 700, "spawn": "from_H3", "draw": false, "states": [{"unless": ["side_door_passed"], "label": "@H3.exit_Z4.label_unbolt"}], "on_pass": {"sets": ["side_door_passed"]}, "_i_t2": "I-T2 (Директор, стр. 34–35): Агата сказала, что боковую дверь надо отпереть, — до первого выхода подпись «Отпереть дверь»; в переулке реплика «Теперь и отсюда в дом заходить смогу» (Z4 on_enter), дальше обычная подпись", "_note": "боковое крыльцо галереи выходит в переулок у почты Z4"},
+    {"to": "Z4", "label": "@H3.exit_Z4.label", "side": "bottom", "x": 700, "spawn": "from_H3", "draw": false, "states": [{"unless": ["side_door_passed"], "label": "@H3.exit_Z4.label_unbolt"}], "on_pass": {"sets": ["side_door_passed"], "sounds": ["synth:bolt_unlock"], "_k": "K (Директор 31.10, стр. 31): первое отпирание боковой двери — звук засова"}, "_i_t2": "I-T2 (Директор, стр. 34–35): Агата сказала, что боковую дверь надо отпереть, — до первого выхода подпись «Отпереть дверь»; в переулке реплика «Теперь и отсюда в дом заходить смогу» (Z4 on_enter), дальше обычная подпись", "_note": "боковое крыльцо галереи выходит в переулок у почты Z4"},
     {"to": "O1", "label": "@H3.exit_O1.label", "rect": [610, 140, 330, 580], "stand": [770, 790], "spawn": "from_H3", "closed_text": "@H3.exit_O1.closed", "draw": false,
       "states": [{"if": ["door_school_installed"], "label": "@H3.exit_O1.label_open"}]}
   ],

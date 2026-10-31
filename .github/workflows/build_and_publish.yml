@@ -94,6 +94,11 @@ jobs:
         run: tools/run_tests.sh
 
       # Веб не должен мешать exe: при ошибке веба (размер, атласы) Windows всё равно собирается и публикуется.
+      # K (31.10): the title shows which build this is (TitleScreen.build_stamp) — the commit and the time
+      - name: Stamp game
+        run: |
+          printf '{"sha": "%s", "utc": "%s"}\n' "${GITHUB_SHA::7}" "$(date -u +%Y-%m-%dT%H:%MZ)" > game/build_info.json
+
       - name: Export web
         id: export_web
         continue-on-error: true

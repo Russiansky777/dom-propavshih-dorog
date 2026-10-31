@@ -41,7 +41,7 @@ const DUCK_FADE_S: float = 0.4
 const SILENCE_DB: float = -80.0
 const SAVE_DELAY_S: float = 0.5
 const WEB_STATE_INTERVAL_S: float = 0.25
-const UNTIL_VALUES: Array[String] = ["scene_end", "track_end"]
+const UNTIL_VALUES: Array[String] = ["scene_end", "track_end", "game_end"]   # game_end — till the title / a new game / a load (K: the finale)
 
 
 class Deck:

@@ -15,7 +15,7 @@
       "draft": false
     },
     "ui.fullscreen": {
-      "text": "Полный экран (F11); выключено — окно",
+      "text": "Полный экран (F11)",
       "draft": false
     },
     "ui.autosave": {

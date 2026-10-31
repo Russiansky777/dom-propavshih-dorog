@@ -18,3 +18,4 @@ Thumbs.db
 .claude/
 game/override.cfg
 game/assets/characters_web/
+game/build_info.json

@@ -657,12 +657,17 @@ for s in scenes:
             v = st.get(k, 0)
             if not isinstance(v, (int, float)) or v < 0 or v > 10:
                 err(f"{sctx}: {k} {v!r} — секунды 0..10")
+        # K (стр. 108): `keep_black` — чёрное переходит в следующую сцену; только последняя постановка сцены
+        if st.get("keep_black") and at != "end":
+            err(f"{sctx}: keep_black только у постановки at \"end\" (реплики под чёрным не видны)")
         dim = st.get("dim", 0.0)
         if not isinstance(dim, (int, float)) or not 0 <= dim < 1:
             err(f"{sctx}: dim {dim!r} — 0 ≤ dim < 1 (полумрак поверх комнаты, реплики видны)")
         if "room" in st:
-            if st["room"] not in s["locations"]:
-                err(f"{sctx}: комната {st['room']} не из locations сцены {s['locations']}")
+            # stage_rooms (K, стр. 57–58): куда постановка уводит после начала сцены (не место её начала — путь
+            # туда открывает сама сцена, симуляция пути их не требует)
+            if st["room"] not in s["locations"] and st["room"] not in s.get("stage_rooms", []):
+                err(f"{sctx}: комната {st['room']} не из locations / stage_rooms сцены {s['locations']}")
             room_f = STORY / "rooms" / f"{st['room']}.json"
             spawns_ = json.loads(room_f.read_text(encoding="utf-8")).get("spawns", {}) if room_f.exists() else {}
             if st.get("spawn", "default") not in spawns_:

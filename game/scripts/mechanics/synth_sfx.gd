@@ -63,6 +63,12 @@ static func stream(sound_name: String) -> AudioStreamWAV:
 			pcm = _creak(0.38, 780.0, 89)
 		"line_snap":      # the string snaps
 			pcm = _snap()
+		"bolt_unlock":    # K (31.10, стр. 31): the side door's iron bolt drawn back — a scrape, then the clack
+			pcm = _bolt()
+		"ui_hover":       # K (31.10, стр. 1): the pointer over a menu item — a faint dry tick of wood
+			pcm = _ui_tick(0.035, 2400.0, 0.16, 101)
+		"ui_click":       # a menu item pressed — a soft wooden click, quiet
+			pcm = _ui_tick(0.075, 1250.0, 0.34, 103)
 		_:
 			pcm = PackedFloat32Array([0.0])
 	var s := _to_wav(pcm)
@@ -171,6 +177,53 @@ static func _shutter() -> PackedFloat32Array:
 	for i in n:
 		var t := float(i) / RATE
 		out[i] = (rng.randf_range(-1.0, 1.0) * exp(-60.0 * t) + 0.4 * sin(TAU * 900.0 * t) * exp(-50.0 * t)) * 0.35
+	return out
+
+
+## A menu tick (K, стр. 1: «приятный негромкий щелчок на наведение и нажатие»): a short burst of low-passed noise with
+## a damped wooden resonance at `freq`, `amp` loud — under the music, not a beep.
+static func _ui_tick(seconds: float, freq: float, amp: float, seed_n: int) -> PackedFloat32Array:
+	var n := int(seconds * RATE)
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_n
+	var lp := 0.0
+	var decay := 5.0 / seconds
+	for i in n:
+		var t := float(i) / RATE
+		lp = lp * 0.55 + rng.randf_range(-1.0, 1.0) * 0.45
+		var att := clampf(t / 0.002, 0.0, 1.0)
+		out[i] = (lp * 0.7 + 0.6 * sin(TAU * freq * t) + 0.25 * sin(TAU * freq * 2.7 * t)) * exp(-decay * t) * att * amp
+	return out
+
+
+## An iron door bolt drawn back (K, стр. 31: the gallery side door unlocked the first time): the bar scrapes in its
+## staples for a quarter second, then knocks against the stop — iron on iron and the wooden door answering low.
+static func _bolt() -> PackedFloat32Array:
+	var n := int(0.62 * RATE)
+	var out := PackedFloat32Array()
+	out.resize(n)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 97
+	var bp := 0.0
+	var bp2 := 0.0
+	for i in n:
+		var t := float(i) / RATE
+		var v := 0.0
+		if t < 0.27:
+			# the scrape: band-passed noise with a rough judder, swelling and easing
+			var x := rng.randf_range(-1.0, 1.0)
+			bp = bp * 0.62 + x * 0.38
+			bp2 = bp2 * 0.62 + bp * 0.38
+			var env := sin(PI * t / 0.27) * (0.75 + 0.25 * sin(TAU * 38.0 * t))
+			v += (bp - bp2) * env * 1.6
+		var t2 := t - 0.27
+		if t2 >= 0.0:
+			# the clack against the stop: iron partials, a wooden thump under them
+			v += (0.55 * sin(TAU * 1460.0 * t2) * exp(-30.0 * t2) + 0.32 * sin(TAU * 2310.0 * t2) * exp(-42.0 * t2)
+				+ 0.5 * sin(TAU * 140.0 * t2) * exp(-18.0 * t2) + rng.randf_range(-1.0, 1.0) * exp(-110.0 * t2) * 0.6)
+		out[i] = v * 0.42
 	return out
 
 

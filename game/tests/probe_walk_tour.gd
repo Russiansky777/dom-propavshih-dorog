@@ -37,6 +37,9 @@ func _run() -> void:
 		gs.reset()
 		for f in ["done_M01", "done_M02", "house_unlocked", "house_open", "done_M03", "met_tikhon"]:
 			gs.set_flag(f, true)
+		# FLAGS=a,b,… — a later state (villagers shown: K, стр. 59, 78 — Agata walks round them)
+		for f in OS.get_environment("FLAGS").split(",", false):
+			gs.set_flag(f, true)
 		rm.change_room(String(rid), "default", Vector2(-1, -1))
 		for i in 30:
 			await process_frame
@@ -44,8 +47,14 @@ func _run() -> void:
 			print("TOUR %s: not entered" % rid)
 			continue
 		var stands: Array = []
+		var npcs: Array = load("res://scripts/rooms/room_builder.gd").npc_footprints(rm.current_room, sd.rooms[rid], String(sd.rooms[rid].get("background", {}).get("kind", "interior")), sd.rooms_index)
+		if not npcs.is_empty():
+			print("TOUR %s: feet of %s" % [rid, str(npcs.map(func(f): return "%s %s ±%s" % [f[0], str(f[2]), str(f[3])]))])
 		for h in sd.rooms[rid].get("hotspots", []):
-			var st = h.get("stand", null)
+			var SH = load("res://scripts/rooms/story_hotspot.gd")
+			if not SH.data_active(h):
+				continue
+			var st = SH.state_of(h).get("stand", h.get("stand", null))
 			if st is Array and st.size() >= 2:
 				stands.append([String(h.get("id", "")), Vector2(float(st[0]), float(st[1]))])
 		if stands.size() < 2:
@@ -82,11 +91,15 @@ func _run() -> void:
 			var worst_stall := 0.0
 			var last := player.global_position
 			var started := false
+			var through := 0
 			while t < TIMEOUT_S:
 				await process_frame
 				var d: float = player.get_process_delta_time()
 				t += d
 				var moved: float = player.global_position.distance_to(last) / maxf(d, 0.001) / maxf(absf(player.scale.y), 0.05)
+				for f in npcs:
+					if Geometry2D.is_point_in_polygon(player.global_position, f[4]):
+						through += 1
 				last = player.global_position
 				if player.is_walking():
 					started = true
@@ -108,6 +121,9 @@ func _run() -> void:
 			if turn_steps > 0.8:
 				print("TOUR %s: %s → %s: steps on the spot turning for %.2f s after arriving" % [rid, from_id, stands[idx][0], turn_steps])
 			var left := player.global_position.distance_to(to)
+			if through > 0:
+				bad += 1
+				print("TOUR %s: %s → %s: through a villager's feet (%d frames)" % [rid, from_id, stands[idx][0], through])
 			var arrived: bool = not player.is_walking() and left < 60.0
 			if worst_stall >= STALL_S or t >= TIMEOUT_S or not arrived:
 				bad += 1

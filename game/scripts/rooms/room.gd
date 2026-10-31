@@ -32,6 +32,9 @@ var art_scale: float = 0.0
 ## into the distance as on a flat floor.
 var stairs: Array = []
 
+var walk_feet_sig: String = ""   # whose feet the floor was baked around (RoomBuilder.feet_signature)
+var _feet_queued: bool = false
+
 @export_group("Flags")
 ## { "Hotspots/Door/DoorOpen": "office_latch_open", "Hotspots/Door/DoorClosed": "!office_latch_open" }
 @export var flag_visibility: Dictionary = {}
@@ -44,6 +47,16 @@ func _ready() -> void:
 
 func _on_flag_changed(_flag: String, _value: bool) -> void:
 	apply_flags()
+	# K (стр. 59, 78): the villagers shown changed → the floor around their feet is baked again (once a frame at most)
+	if not _feet_queued:
+		_feet_queued = true
+		_refresh_feet.call_deferred()
+
+
+func _refresh_feet() -> void:
+	_feet_queued = false
+	if is_inside_tree():
+		RoomBuilder.refresh_walkable(self)
 
 
 ## Shows/hides mapped nodes according to the current flags. Safe to call any time.

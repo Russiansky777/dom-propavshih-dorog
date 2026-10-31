@@ -110,6 +110,34 @@ static func _label_variation(t: Theme, name: StringName, f: String, size: int, c
 		t.set_constant(&"outline_size", name, outline)
 
 
+## A settings switch, drawn: a pill 64×32 px with a round knob (anti-aliased by distance).
+static func switch_icon(on: bool) -> ImageTexture:
+	var w := 64
+	var h := 32
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var r := h * 0.5
+	var track := GOLD if on else Color(0.16, 0.115, 0.08, 1.0)
+	var edge := GOLD_BRIGHT if on else BORDER
+	var knob_c := Vector2(w - r, r) if on else Vector2(r, r)
+	var knob := Color(0.13, 0.095, 0.068, 1.0) if on else MUTED
+	for y in h:
+		for x in w:
+			var p := Vector2(x + 0.5, y + 0.5)
+			var cx := clampf(p.x, r, w - r)
+			var d := p.distance_to(Vector2(cx, r)) - (r - 0.5)     # < 0 inside the pill
+			var a := clampf(0.5 - d, 0.0, 1.0)
+			if a <= 0.0:
+				continue
+			var c := track
+			if d > -2.0:
+				c = edge   # the brass rim
+			var dk := p.distance_to(knob_c) - (r - 5.0)
+			var ka := clampf(0.5 - dk, 0.0, 1.0)
+			c = c.lerp(knob, ka)
+			img.set_pixel(x, y, Color(c.r, c.g, c.b, a))
+	return ImageTexture.create_from_image(img)
+
+
 static func _build() -> Theme:
 	var t := Theme.new()
 	t.default_font = font("body")
@@ -118,6 +146,13 @@ static func _build() -> Theme:
 	# Plain labels: body face, cream.
 	t.set_color(&"font_color", &"Label", CREAM)
 	t.set_color(&"font_outline_color", &"Label", OUTLINE)
+
+	# K (Director 31.10, стр. 2: «Облегчить мини-игры» looked switched on while off): the settings switches are a
+	# brass pill — off: dark, the knob at the left; on: gold, the knob at the right (Godot's default was a faint dot).
+	for st in [&"checked", &"checked_disabled", &"checked_mirrored", &"checked_disabled_mirrored"]:
+		t.set_icon(st, &"CheckButton", switch_icon(true))
+	for st in [&"unchecked", &"unchecked_disabled", &"unchecked_mirrored", &"unchecked_disabled_mirrored"]:
+		t.set_icon(st, &"CheckButton", switch_icon(false))
 
 	_label_variation(t, &"RoomTitle", "head_bold", 33, CREAM)
 	t.set_color(&"font_shadow_color", &"RoomTitle", Color(0, 0, 0, 0.55))

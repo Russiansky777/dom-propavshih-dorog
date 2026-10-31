@@ -1244,8 +1244,10 @@ func _gesture_3d(delta: float) -> bool:
 	if g.is_empty() or view3d == null or not view3d.clips.has("talk"):
 		return false
 	var b: Dictionary = StoryRunner.current_beat
+	# K (Director 31.10, стр. 12): the hands only while the line is being said (its voice, or the time to say it) —
+	# not on, round and round, while the words wait on screen for the click
 	var talking := String(b.get("type", "")) == "line" and String(b.get("speaker", "")) == "agata" and not _walking \
-		and String(b.get("text", "")).length() >= int(g.get("min_chars", 24)) and gesture_addressed(b)
+		and String(b.get("text", "")).length() >= int(g.get("min_chars", 24)) and gesture_addressed(b) and VoiceDirector.line_being_said(b)
 	var key := String(b.get("line_id", "")) + "|" + String(b.get("text", ""))
 	var len_s := view3d.action_length("talk")
 	if talking and key != _gest_key:

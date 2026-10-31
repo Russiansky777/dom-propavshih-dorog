@@ -75,6 +75,8 @@ var examined_item: String = ""   # the bag item looked at up close ("" — none)
 var stage_dim: float = 0.0   # the overlay level a staging left on screen (dusk at night), 0 — none
 var current_frame: String = ""   # the frame a staging put over the world (FrameView), "" — none
 var frame_hold: bool = false     # the frame stays after its scene (the end of the game)
+var _keep_black: bool = false    # a scene's last staging left the screen black for the next one (K, стр. 108)
+const KEEP_BLACK_S := 0.6
 
 var _beats: Array[Dictionary] = []
 ## A close-up opened by a scene (scenes data `mechanics` [{at, spec, until}] — the windlass of the first span):
@@ -477,7 +479,10 @@ func _complete_scene(scene_id: String) -> void:
 		_beats.push_front(_text_beat(String(room_spec["complete_text"])))
 	if active_scene == scene_id:
 		active_scene = ""
-	if stage_dim > 0.0:   # a scene never leaves its dusk behind
+	if _keep_black:
+		# the black goes on into the next scene (K, стр. 108); if none takes it up, it lifts after a moment
+		get_tree().create_timer(KEEP_BLACK_S, false).timeout.connect(_lift_kept_black)
+	elif stage_dim > 0.0:   # a scene never leaves its dusk behind
 		stage_dim = 0.0
 		stage_fade.emit(0.0, 0.5)
 	# … nor its frame, unless it is the last shot (scenes data `hold_frame`: the end of the game).
@@ -529,6 +534,8 @@ func _run_stage(spec: Dictionary) -> void:
 		var room := RoomManager.current_room
 		for g in spec["npc_face"]:
 			var other := room.get_node_or_null("npc_" + String(g.get("face", ""))) as Node2D if room != null else null
+			if String(g.get("face", "")) == "agata":
+				other = RoomManager.player   # 31.10 (стр. 86): a villager turns to Agata herself
 			if String(g.get("id", "")) == "agata":
 				# J, стр. 167: «agata» — Agata herself turns to that villager where she stands
 				var pl: Node2D = RoomManager.player
@@ -559,6 +566,7 @@ func _run_stage(spec: Dictionary) -> void:
 		for snd in spec.get("sounds", []):
 			stage_sound_requested.emit(String(snd.get("id", "")))
 		_stage_apply(spec)
+		_keep_black = false
 		stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
 		stage_fade.emit(stage_dim, 0.0)
 		_stage_running = false
@@ -567,6 +575,10 @@ func _run_stage(spec: Dictionary) -> void:
 	var serial := _stage_serial
 	var tree := get_tree()
 	var fade_out := float(spec.get("fade_out_s", 0.6))
+	# K (стр. 108): the black handed over by the scene before (`keep_black`) is already there — no second fade
+	if stage_dim >= 1.0:
+		fade_out = 0.0
+	_keep_black = false
 	stage_fade.emit(1.0, fade_out)
 	for snd in spec.get("sounds", []):
 		var sid := String(snd.get("id", ""))
@@ -584,6 +596,16 @@ func _run_stage(spec: Dictionary) -> void:
 		hold = maxf(hold, DayCard.seconds() + 0.3)
 	await tree.create_timer(hold, false).timeout
 	if serial != _stage_serial:
+		return
+	# K (Director 31.10, стр. 108: «перед сценой с мостом 2 фейда, сделать один»): `keep_black` on a scene's last
+	# staging — the screen stays black into the next scene, whose first staging comes up from it (the first span →
+	# the epilogue's bridge: the end of the scene lifted the black to the empty turn for a moment, then the epilogue
+	# faded to black again). Nothing follows → _complete_scene lifts it after a moment.
+	if bool(spec.get("keep_black", false)):
+		stage_dim = 1.0
+		_keep_black = true
+		_stage_running = false
+		_next()
 		return
 	stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
 	var fade_in := float(spec.get("fade_in_s", 0.6))
@@ -853,10 +875,20 @@ func set_frame(frame_id: String, hold: bool = false) -> void:
 	frame_changed.emit(current_frame, frame_hold)
 
 
+## The black kept by a scene's last staging (K, стр. 108) and taken up by no next scene: back to the room.
+func _lift_kept_black() -> void:
+	if not _keep_black or _stage_running:
+		return
+	_keep_black = false
+	stage_dim = 0.0
+	stage_fade.emit(0.0, 0.5)
+
+
 func _cancel_stage() -> void:
 	_stage_serial += 1
 	var had := _stage_running or stage_dim > 0.0
 	_stage_running = false
+	_keep_black = false
 	stage_dim = 0.0
 	if had:
 		stage_fade.emit(0.0, 0.0)
@@ -1506,7 +1538,14 @@ func use_exit(e: StoryExit) -> void:
 		return
 	# I-T2 (Director, lines 34–35): exit `on_pass` {sets} — flags set when Agata walks through (the gallery side door:
 	# «Отпереть дверь» until the first pass, then her line in the lane, then the usual label).
-	for f in (e.data.get("on_pass", {}) as Dictionary).get("sets", []):
+	var op: Dictionary = e.data.get("on_pass", {})
+	# K (Director 31.10, стр. 31: the side door unlocked the first time — no sound): `sounds` play on the passes that
+	# still set something (the first one), before the door's own sound in the change of room
+	var first := (op.get("sets", []) as Array).any(func(f): return not GameState.has_flag(String(f)))
+	if first:
+		for snd in op.get("sounds", []):
+			stage_sound_requested.emit(String(snd))
+	for f in op.get("sets", []):
 		GameState.set_flag(String(f), true)
 	RoomManager.call_deferred("change_room", e.target_room, e.target_spawn)
 

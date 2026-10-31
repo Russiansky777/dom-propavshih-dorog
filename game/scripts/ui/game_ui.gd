@@ -60,6 +60,7 @@ var text_label: GlossText
 var continue_label: Label
 var options_box: VBoxContainer
 var journal_panel: PanelContainer
+var journal_hint_label: Label
 var journal_goal_label: Label
 var journal_time_label: Label    # «День второй · сумерки» — время суток (F17, TimeOfDay)
 var journal_facts_label: GlossText
@@ -72,6 +73,9 @@ var menu_layer: CanvasLayer
 var menu_mode: String = "all"
 var menu_title: Label
 var menu_empty_label: Label      # «Загрузить» with no save at all
+## K (Director 31.10, стр. 3: «выравнивание панели сделать красивее»): the slot names in one column (the details of
+## every row start at one line, a long name — «День четвёртый: мост» — wraps instead of pushing them)
+const SLOT_NAME_W := 250.0
 var settings_rows: Array = []    # the settings controls (hidden in "save" / "load")
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button, delete: Button}
 var delete_dialog: Control = null   # J (стр. 7): «Вы действительно хотите удалить это сохранение?»
@@ -160,6 +164,7 @@ func _build() -> void:
 
 	# Top bar
 	top_bar = PanelContainer.new()
+	top_bar.set_meta("ui_click", true)   # K (стр. 1): its buttons tick and click (SfxDirector)
 	top_bar.name = "TopBar"
 	top_bar.theme_type_variation = &"TopBarPanel"   # 64 px pockets + 2×4 strip + 2×4 bar margins = TOP_H
 	top_bar.position = Vector2(0, 0)
@@ -200,10 +205,11 @@ func _build() -> void:
 	journal_button.name = "JournalButton"
 	journal_button.pressed.connect(toggle_journal)
 	h.add_child(journal_button)
-	hint_button = _button(StoryData.text("@ui.button_hint"), 160, &"BarButton")
+	# K (Director 31.10, стр. 11: «убрать меню „Подсказка“, что нужно — в журнал: у них одинаковая функция»): the hint
+	# button lives in the journal now (built with it below); the top bar has «Журнал» and «Меню».
+	hint_button = _button(StoryData.text("@ui.button_hint"), 220, &"BarButton")
 	hint_button.name = "HintButton"
 	hint_button.pressed.connect(_on_hint_pressed)
-	h.add_child(hint_button)
 	menu_button = _button(StoryData.text("@ui.button_menu"), 120, &"BarButton")
 	menu_button.name = "MenuButton"
 	menu_button.pressed.connect(_on_menu_button)
@@ -294,6 +300,7 @@ func _build() -> void:
 
 	# Journal panel
 	journal_panel = PanelContainer.new()
+	journal_panel.set_meta("ui_click", true)   # K (стр. 1): its buttons tick and click (SfxDirector)
 	journal_panel.name = "Journal"
 	journal_panel.position = Vector2(360, 140)
 	journal_panel.size = Vector2(1200, 760)
@@ -323,6 +330,14 @@ func _build() -> void:
 	jf.text = StoryData.text("@ui.journal_facts")
 	jf.theme_type_variation = &"HeaderSmall"
 	jv.add_child(jf)
+	# the hint asked for in the journal (K, стр. 11): «Подсказка N из 3» and its text, under the goal
+	journal_hint_label = Label.new()
+	journal_hint_label.name = "JournalHint"
+	journal_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	journal_hint_label.theme_type_variation = &"BodyLabel"
+	journal_hint_label.add_theme_color_override("font_color", UiTheme.GOLD)
+	journal_hint_label.visible = false
+	jv.add_child(journal_hint_label)
 	journal_facts_label = GlossText.new()
 	journal_facts_label.name = "Facts"
 	journal_facts_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -336,6 +351,7 @@ func _build() -> void:
 	jclose.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	jclose.pressed.connect(toggle_journal)
 	jbuttons.add_child(jclose)
+	jbuttons.add_child(hint_button)
 	# «План»: the Zarechye plan, once it has been looked at on the post-office wall (map journal_flag).
 	journal_plan_button = _button(StoryData.text("@ui.button_plan"), 220)
 	journal_plan_button.name = "JournalPlan"
@@ -349,6 +365,7 @@ func _build() -> void:
 	menu_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(menu_layer)
 	menu_panel = PanelContainer.new()
+	menu_panel.set_meta("ui_click", true)   # K (стр. 1): its buttons tick and click (SfxDirector)
 	menu_panel.name = "Menu"
 	menu_panel.theme = UiTheme.get_theme()
 	menu_panel.position = Vector2(510, 220)
@@ -375,6 +392,11 @@ func _build() -> void:
 	menu_empty_label.name = "NoSaves"
 	menu_empty_label.text = StoryData.text("@ui.menu_no_saves")
 	menu_empty_label.theme_type_variation = &"MutedLabel"
+	# K (Director 31.10, стр. 3: «„Сохранений нет“ — по центру»)
+	menu_empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	menu_empty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	menu_empty_label.custom_minimum_size = Vector2(0, 90)
+	menu_empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	menu_empty_label.visible = false
 	mv.add_child(menu_empty_label)
 	# G4/G5: the autosave (room changes, scene beats, every 5 minutes of play) — its own row, «Загрузить» only; it never
@@ -390,7 +412,8 @@ func _build() -> void:
 		row.name = "Slot" + slot
 		var name_l := Label.new()
 		name_l.text = StoryData.text("@ui.slot", {"n": slot})
-		name_l.custom_minimum_size = Vector2(120, 0)
+		name_l.custom_minimum_size = Vector2(SLOT_NAME_W, 0)   # K (стр. 3): one column for every row's name
+		name_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		name_l.theme_type_variation = &"SlotNameLabel"
 		row.add_child(name_l)
 		var info := Label.new()
@@ -409,6 +432,8 @@ func _build() -> void:
 		row.add_child(lb)
 		var db := _delete_button(slot)
 		row.add_child(db)
+		for b in [sb, lb, db]:
+			(b as Control).size_flags_vertical = Control.SIZE_SHRINK_CENTER   # K (стр. 3): a tall row keeps its buttons
 		slot_rows[slot] = {"info": info, "save": sb, "load": lb, "delete": db, "row": row, "manual": true}
 	# Checkpoint saves of scenes (scenes data `checkpoint`: «День второй» after the night by the stove): a row
 	# with the title and «Загрузить» only, shown once the save exists.
@@ -760,7 +785,7 @@ func show_hint(text: String) -> void:
 
 
 func _on_hint_pressed() -> void:
-	if StoryRunner.is_busy():
+	if StoryRunner.is_busy() and not journal_panel.visible:
 		return
 	StoryRunner.next_hint()
 
@@ -768,6 +793,11 @@ func _on_hint_pressed() -> void:
 ## A hint tier (StoryRunner.next_hint): the panel with «Подсказка N из 3», the hint in large letters and
 ## the Space tip (Director 18.10: «доп. подсказать, что пробел показывает все места и действия»).
 func _on_hint_revealed(tier: int, text: String) -> void:
+	if journal_panel.visible:
+		# asked in the journal: the hint stays there, under the goal, with the Space tip (K, стр. 11)
+		journal_hint_label.text = "%s: %s\n%s" % [StoryData.text("@ui.hint_title", {"tier": tier}), text, StoryData.text("@ui.hint_space_tip")]
+		journal_hint_label.visible = true
+		return
 	show_hint_panel(StoryData.text("@ui.hint_title", {"tier": tier}), text)
 	GameState.show_hint(_hint_panel_line)
 
@@ -841,6 +871,7 @@ func toggle_journal() -> void:
 	journal_panel.visible = not journal_panel.visible
 	menu_panel.visible = false
 	if journal_panel.visible:
+		journal_hint_label.visible = false
 		journal_plan_button.visible = map_view.available_in_journal()
 		journal_goal_label.text = Gloss.plain(StoryRunner.journal_goal())
 		journal_time_label.text = TimeOfDay.label(GameState.current_room)
@@ -948,7 +979,8 @@ func _slot_row_load_only(parent: Control, slot: String, title: String, row_name:
 	parent.add_child(row)
 	var name_l := Label.new()
 	name_l.text = title
-	name_l.custom_minimum_size = Vector2(120, 0)
+	name_l.custom_minimum_size = Vector2(SLOT_NAME_W, 0)   # K (стр. 3): one column for every row's name
+	name_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_l.theme_type_variation = &"SlotNameLabel"
 	row.add_child(name_l)
 	var info := Label.new()
@@ -963,6 +995,8 @@ func _slot_row_load_only(parent: Control, slot: String, title: String, row_name:
 	row.add_child(lb)
 	var db := _delete_button(slot)
 	row.add_child(db)
+	for b in [lb, db]:
+		(b as Control).size_flags_vertical = Control.SIZE_SHRINK_CENTER   # K (стр. 3): a tall row keeps its buttons
 	slot_rows[slot] = {"info": info, "save": null, "load": lb, "delete": db, "row": row, "checkpoint": true}
 
 

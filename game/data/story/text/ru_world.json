@@ -8,7 +8,7 @@
     "ui.day_card_4": {"text": "День четвёртый", "draft": true},
     "ui.bedtime_d2_goal": {"text": "Ночь. Пора спать: моя старая кровать — у мамы в горнице.", "draft": true},
     "ui.bedtime_d1_goal": {"text": "Ночь. Пора спать: лежанка у печи в тётином доме.", "draft": true},
-    "ui.bedtime_d3_goal": {"text": "Дела дня сделаны. Пора спать: кровать у мамы в горнице, в Ольховке.", "draft": true},
+    "ui.bedtime_d3_goal": {"text": "Дела дня сделаны. Пора спать — у мамы в горнице или в Дунином доме, на лежанке у печи.", "draft": true},
     "ui.time_d1_afternoon": {"text": "День первый · после полудня", "draft": true},
     "ui.time_d1_dusk": {"text": "День первый · сумерки", "draft": true},
     "ui.time_d1_night": {"text": "День первый · ночь", "draft": true},

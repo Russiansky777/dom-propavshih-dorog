@@ -41,6 +41,7 @@ var _glow: GradientTexture2D = null
 
 
 func _ready() -> void:
+	set_meta("ui_click", true)   # K (Director 31.10, стр. 1): the menu's buttons tick and click (SfxDirector)
 	layer = LAYER
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false

@@ -39,6 +39,7 @@ var _glow: GradientTexture2D
 
 
 func _ready() -> void:
+	set_meta("ui_click", true)   # K (Director 31.10, стр. 1): the menu's buttons tick and click (SfxDirector)
 	layer = LAYER
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
@@ -49,6 +50,23 @@ func _ready() -> void:
 	_font.spacing_glyph = int(_lay.get("glyph_spacing", 0))
 	_build(t)
 	GameState.state_loaded.connect(_on_state_loaded)
+
+
+## «сборка 1a2b3c4 · 31.10 23:40» (local time of the build) from res://build_info.json {sha, utc}; "" without it.
+static func build_stamp() -> String:
+	if not FileAccess.file_exists("res://build_info.json"):
+		return ""
+	var d = JSON.parse_string(FileAccess.get_file_as_string("res://build_info.json"))
+	if not (d is Dictionary) or String(d.get("sha", "")) == "":
+		return ""
+	var when := ""
+	var utc := String(d.get("utc", ""))
+	if utc.length() >= 16:
+		var unix := Time.get_unix_time_from_datetime_string(utc.substr(0, 16) + ":00")
+		var bias: int = int(Time.get_time_zone_from_system().get("bias", 0))
+		var loc := Time.get_datetime_dict_from_unix_time(unix + bias * 60)
+		when = " · %02d.%02d %02d:%02d" % [loc.day, loc.month, loc.hour, loc.minute]
+	return "сборка %s%s" % [String(d["sha"]), when]
 
 
 func _build(t: Dictionary) -> void:
@@ -81,12 +99,25 @@ func _build(t: Dictionary) -> void:
 	signature.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	signature.visible = signature.texture != null
 	add_child(signature)
+	# K (31.10): which build this is — the commit and the time of the build (game/build_info.json, written by the
+	# build workflow; absent in the editor), small in the bottom right corner, so a playthrough names its build.
+	var stamp := Label.new()
+	stamp.name = "BuildStamp"
+	stamp.text = build_stamp()
+	stamp.visible = stamp.text != ""
+	stamp.add_theme_font_size_override("font_size", 15)
+	stamp.add_theme_color_override("font_color", Color(0.94, 0.89, 0.79, 0.55))
+	stamp.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	stamp.size = Vector2(520, 24)
+	stamp.position = MenuConfig.SCREEN - Vector2(540, 34)
+	stamp.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	decor = Control.new()
 	decor.name = "Decor"
 	decor.size = MenuConfig.SCREEN
 	decor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	decor.draw.connect(_draw_decor)
 	add_child(decor)
+	add_child(stamp)
 	var box: Array = t.get("leaf_box", [110, 378, 166, 438])
 	leaf = TextureRect.new()
 	leaf.name = "Leaf"

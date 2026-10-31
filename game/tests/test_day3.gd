@@ -91,7 +91,7 @@ func _run() -> void:
 	sr.frame_changed.connect(func(f, _h): if f != "": frame_titles[f] = title_label.text)
 	await _test("Data: blocks 3–4 scenes, frames, texts — no old chain, goals without codes", _test_data)
 	await _test("Frames: every frame room builds over the world (layers by flags, no hotspots)", _test_frames_build)
-	await _test("G46: the windlass by real clicks — mark, gauge = rest ± tolerance, bump → «Подымай», stop up and down", _test_windlass_panel)
+	await _test("G46: the windlass by real clicks — mark (no gauge, K-107), bump → «Подымай», stop up and down", _test_windlass_panel)
 	await _test("G43: the boat both ways by pulls on the rope — day three, day four before and after the log", _test_shuttle)
 	await _test("Start points: the state up to their scene, the right room, items in the bag", _test_start_points)
 	await _test("Blocks 3–4 by script: far pier → mother → … → first span by mouse → epilogue → end", _test_walkthrough)
@@ -384,12 +384,8 @@ func _test_windlass_panel() -> void:
 		var figs: Array = pr.get("figures", [])
 		_check(figs.has("pelageya") and figs.has("agata") and figs.has("ilya"), "G42: Pelageya, Agata and Ilya are in the close-up (%s)" % str(figs))
 		_check(String(pr.get("hint", "")).contains("кольцо") and String(pr.get("hint", "")).contains("отметк"), "the hint says where: «%s»" % String(pr.get("hint", "")))
-		var gg: Dictionary = pr.get("gauge", {})
-		var h := float(gg.get("bottom", 0)) - float(gg.get("top", 0))
-		var zt := (float(gg.get("zone_top", 0)) - float(gg.get("top", 0))) / maxf(h, 1.0)
-		var zb := (float(gg.get("zone_bottom", 0)) - float(gg.get("top", 0))) / maxf(h, 1.0)
-		_check(h > 150.0 and absf(zt - (p.logic.rest - p.logic.tolerance)) < 0.01 and absf(zb - (p.logic.rest + p.logic.tolerance)) < 0.01,
-			"the gauge's green band «у кольца» = rest ± tolerance (%.3f–%.3f vs %.3f ± %.3f, %d px)" % [zt, zb, p.logic.rest, p.logic.tolerance, int(h)])
+		# K (Director 31.10, стр. 107): no gauge beside the board — the mark on the ring is the cue
+		_check((pr.get("gauge", {}) as Dictionary).is_empty() and p.get_node_or_null("Gauge") == null, "K-107: no height gauge in the close-up")
 		var rm_: Dictionary = pr.get("ring_mark", {})
 		var fe: Dictionary = pr.get("far_end", {})
 		var d0 := _v(rm_).distance_to(_v(fe))
@@ -429,7 +425,7 @@ func _test_windlass_panel() -> void:
 				g += 1
 			_check(p.logic.state == "up" and p.logic.at_ring(), "hauled up into the zone (%s %.3f)" % [p.logic.state, p.logic.pos])
 			pr = mv.probe().get("panel", {})
-			_check(bool(pr.get("gauge", {}).get("in_zone", false)) and float(pr.get("ring_mark", {}).get("lit", 0)) > 0.5, "in the zone: the green band and the mark light up")
+			_check(float(pr.get("ring_mark", {}).get("lit", 0)) > 0.5, "in the zone: the mark on the ring lights up")
 			await _click(pst)
 		else:
 			# bump → raise → lower → stop at the ring.

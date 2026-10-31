@@ -122,9 +122,118 @@ static func _build_background(room: Room, room_id: String, bg: Dictionary, horiz
 
 
 static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dictionary) -> void:
-	var pts: Array = spec.get("walkable", idx.get("defaults", {}).get("walkable_exterior" if kind == "exterior" else "walkable_interior", []))
 	var region := NavigationRegion2D.new()
 	region.name = "Walkable"
+	room.walk_feet_sig = feet_signature(room, spec, kind, idx)
+	region.navigation_polygon = _bake_walkable(room, spec, kind, idx)
+	room.add_child(region)
+
+
+## K (Director 31.10, стр. 59, 78 — the third time: «Агата проходит сквозь Павла… сквозь Пелагею»): the flags changed
+## who stands in the room (Pavel shows up in the office on the first visit — visited_M3 is set after the room is
+## built) → the floor is baked again with their feet as obstructions. Nothing changed → nothing done.
+static func refresh_walkable(room: Room) -> void:
+	var spec: Dictionary = StoryData.room(room.room_id)
+	if spec.is_empty():
+		return
+	var idx: Dictionary = StoryData.rooms_index
+	var kind := String(spec.get("background", {}).get("kind", "interior"))
+	var sig := feet_signature(room, spec, kind, idx)
+	if sig == room.walk_feet_sig:
+		return
+	room.walk_feet_sig = sig
+	var region := room.get_walkable()
+	if region != null:
+		region.navigation_polygon = _bake_walkable(room, spec, kind, idx)
+
+
+static func feet_signature(room: Room, spec: Dictionary, kind: String, idx: Dictionary) -> String:
+	var parts: Array[String] = []
+	for f in npc_footprints(room, spec, kind, idx):
+		parts.append("%s@%s" % [String(f[0]), str(f[2])])
+	return ",".join(parts)
+
+
+## Villagers' feet as floor obstructions: [[id, outline (feet + Agata's half width), centre, its half size, the feet
+## alone]] for every npc hotspot shown now
+## whose feet (the bottom centre of its rect in the current state) are on the floor. Its size: `footprint` [w, h]
+## (px), else FOOT_W_M metres wide at the room's depth there × FOOT_DEPTH_K deep; `footprint: false` — none (a
+## villager on a bench, at a doorway that must stay open). Shrunk so that no stand, spawn or exit stand of the room
+## falls inside (the place Agata walks to for talking to them stays reachable).
+const FOOT_W_M := 0.42
+const FOOT_DEPTH_K := 0.36
+const PX_PER_M := 231.9   # Agata's sheet at scale 1: 1.656 m → 384 px (data/actors/agata.json)
+const AGATA_HALF_M := 0.17
+
+
+static func npc_footprints(room: Room, spec: Dictionary, kind: String, idx: Dictionary) -> Array:
+	var out: Array = []
+	var floor := _walk_outline(spec, kind, idx)
+	var keep_clear: Array[Vector2] = []
+	for h in spec.get("hotspots", []):
+		if h is Dictionary:
+			var st = StoryHotspot.state_of(h).get("stand", h.get("stand", null))
+			if st is Array and st.size() >= 2:
+				keep_clear.append(Vector2(float(st[0]), float(st[1])))
+	for e in spec.get("exits", []):
+		if e is Dictionary and e.get("stand", null) is Array:
+			keep_clear.append(Vector2(float(e["stand"][0]), float(e["stand"][1])))
+	for sp in spec.get("spawns", {}).values():
+		if sp is Array and sp.size() >= 2:
+			keep_clear.append(Vector2(float(sp[0]), float(sp[1])))
+	for h in spec.get("hotspots", []):
+		if not (h is Dictionary) or String(h.get("kind", "")) != "npc" or not StoryHotspot.data_active(h):
+			continue
+		if h.get("footprint", null) is bool and not bool(h["footprint"]):
+			continue
+		var r: Array = _state_rect(h)
+		var c := Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]))
+		if not h.has("footprint") and not Geometry2D.is_point_in_polygon(c, floor):
+			continue   # not standing on the floor (Tikhon on the stove)
+		var feet: Vector2
+		var ds := room.depth_scale_at(c)
+		if h.has("footprint") and h["footprint"] is Array:
+			feet = Vector2(float(h["footprint"][0]), float(h["footprint"][1])) * 0.5
+		else:
+			var w := FOOT_W_M * PX_PER_M * ds
+			feet = Vector2(w, w * FOOT_DEPTH_K) * 0.5
+		# + Agata's own half width: the floor is baked for her centre (agent_radius 0), so without it her body
+		# brushed through theirs along the edge (the walk tour: 3–9 frames inside Pelageya's feet at R1)
+		var m := AGATA_HALF_M * PX_PER_M * ds
+		var half := feet + Vector2(m, m * FOOT_DEPTH_K)
+		# the places Agata walks to stay outside (with a little room for her own feet)
+		var k := 1.0
+		for p in keep_clear:
+			var d := p - c
+			var e := sqrt(pow(d.x / maxf(half.x, 1.0), 2.0) + pow(d.y / maxf(half.y, 1.0), 2.0))
+			if e < 1.15:
+				k = minf(k, e / 1.15)
+		half *= k
+		feet = Vector2(minf(feet.x, half.x), minf(feet.y, half.y))
+		if half.x < 6.0 or half.y < 3.0:
+			continue
+		var fv := PackedVector2Array()
+		for i in 12:
+			var a := TAU * float(i) / 12.0
+			fv.append(c + Vector2(cos(a) * half.x, sin(a) * half.y))
+		var fe := PackedVector2Array()
+		for i in 12:
+			var a := TAU * float(i) / 12.0
+			fe.append(c + Vector2(cos(a) * feet.x, sin(a) * feet.y))
+		out.append([String(h.get("id", "")), fv, Vector2(roundf(c.x), roundf(c.y)), half, fe])
+	return out
+
+
+static func _walk_outline(spec: Dictionary, kind: String, idx: Dictionary) -> PackedVector2Array:
+	var pts: Array = spec.get("walkable", idx.get("defaults", {}).get("walkable_exterior" if kind == "exterior" else "walkable_interior", []))
+	var verts := PackedVector2Array()
+	for i in pts.size():
+		verts.append(Vector2(float(pts[i][0]), float(pts[i][1])))
+	return verts
+
+
+static func _bake_walkable(room: Room, spec: Dictionary, kind: String, idx: Dictionary) -> NavigationPolygon:
+	var pts: Array = spec.get("walkable", idx.get("defaults", {}).get("walkable_exterior" if kind == "exterior" else "walkable_interior", []))
 	var poly := NavigationPolygon.new()
 	var verts := PackedVector2Array()
 	for i in pts.size():
@@ -139,18 +248,10 @@ static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dic
 		for p in hole:
 			hv.append(Vector2(float(p[0]), float(p[1])))
 		source.add_obstruction_outline(hv)
-	# I-T2 (Director, line 147: «Агата проходит насквозь модели Пелагеи»): an npc hotspot with `footprint` [w, h]
-	# is an obstruction around its feet (the bottom centre of its rect) while it is shown when the room is built.
-	for h in spec.get("hotspots", []):
-		if h is Dictionary and h.has("footprint") and StoryHotspot.data_active(h):
-			var r: Array = _state_rect(h)   # J, стр. 177: where the villager stands now (Mitya by the fence on day 3)
-			var c := Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]))
-			var half := Vector2(float(h["footprint"][0]), float(h["footprint"][1])) * 0.5
-			var fv := PackedVector2Array()
-			for k in 12:
-				var a := TAU * float(k) / 12.0
-				fv.append(c + Vector2(cos(a) * half.x, sin(a) * half.y))
-			source.add_obstruction_outline(fv)
+	# I-T2 (Director, line 147: «Агата проходит насквозь модели Пелагеи»), K (31.10, стр. 59, 78): every villager shown
+	# now is an obstruction around the feet (npc_footprints) — re-baked when the flags change who stands here.
+	for f in npc_footprints(room, spec, kind, idx):
+		source.add_obstruction_outline(f[1])
 	poly.agent_radius = 0.0
 	# Bake synchronously: the outline may be concave (e.g. H1 floor around the armchair) and the
 	# navigation server needs convex polygons.
@@ -162,21 +263,12 @@ static func _build_walkable(room: Room, spec: Dictionary, kind: String, idx: Dic
 			indices.append(i)
 		poly.vertices = verts
 		poly.add_polygon(indices)
-	region.navigation_polygon = poly
-	room.add_child(region)
+	return poly
 
 
 ## The hotspot's rect in its current state: the first `states` entry whose `if` flags all hold and that moves it.
 static func _state_rect(h: Dictionary) -> Array:
-	for st in h.get("states", []):
-		var ok := true
-		for f in st.get("if", []):
-			if not GameState.has_flag(String(f)):
-				ok = false
-				break
-		if ok:
-			return st.get("rect", h.get("rect", [0, 0, 0, 0]))
-	return h.get("rect", [0, 0, 0, 0])
+	return StoryHotspot.state_of(h).get("rect", h.get("rect", [0, 0, 0, 0]))
 
 
 static func _build_props(room: Room, spec: Dictionary) -> void:

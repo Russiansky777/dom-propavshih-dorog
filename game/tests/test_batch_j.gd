@@ -119,7 +119,7 @@ func _run() -> void:
 	await _test("J-R11b the boat on the free day (29.10 стр. 189: «лодки на втором берегу нет, а «К лодке» есть»): the boat is where it was last taken along the rope; «К лодке» over it, «Подтянуть лодку по канату» when it is on the other side", _test_boat_follows)
 	await _test("J-E14 the beam end (25.10 стр. 165): the choice «Агата» shows «Агата» cut in the wood, not the painted «Дуня»", _test_beam_agata)
 	await _test("J-P161 sheets in the hands sway so one sees it (29.10 стр. 161; 30.10: ±0.32° was not seen): Nina's letters turn about their middle by ≥0.5°, the writing stays readable", _test_paper_sway)
-	await _test("J-N67 the night by the stove (25.10 стр. 67): after her two lines Agata is asleep — out of sight at «Спи уж», up again in the morning", _test_night_asleep)
+	await _test("J-N67 the night by the stove (25.10 стр. 67, 31.10 стр. 47): no fade before «Спи уж», Agata stays by the stove; one fade to the morning", _test_night_asleep)
 	await _test("J-T145 Tikhon after the news (25.10 стр. 145: «на деле он только выше на печь залезает»): he settles on Agata's bench by the stove, not higher up the stove than his shelf", _test_tikhon_bench)
 	await _test("J-H41 the school porch (25.10 стр. 12): Agata climbs the steps up to the door — higher on the screen, not shrinking into the distance", _test_school_steps)
 	gs.reset()
@@ -1842,8 +1842,15 @@ func _test_night_asleep() -> void:
 				morning_seen = rm.player.visible
 			sr.advance()
 		await process_frame
-	_check(at_sleep == "hidden", "at «Спи уж» Agata is not standing by the stove (%s)" % at_sleep)
-	_check(morning_seen and rm.player.visible and gs.has_flag("done_N01"), "in the morning she is up again")
+	# 31.10 (Director, line 47: «фейд не нужен + Агата пропадает, а не должна»): she stays by the stove, no fade at «Спи уж»
+	_check(at_sleep == "visible", "at «Спи уж» Agata stays by the stove, not hidden (%s)" % at_sleep)
+	var n01: Dictionary = sd.scene("N01")
+	var fades_before_morning := 0
+	for st in n01.get("stage", []):
+		if float(st.get("fade_out_s", 0.0)) > 0.0 and int(st.get("at", 0)) > 0 and int(st.get("at", 0)) < 3:
+			fades_before_morning += 1
+	_check(fades_before_morning == 0, "no fade between her words and «Спи уж» (%d)" % fades_before_morning)
+	_check(morning_seen and rm.player.visible and gs.has_flag("done_N01"), "in the morning she is up")
 
 
 func _test_tikhon_bench() -> void:

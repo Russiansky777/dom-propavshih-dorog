@@ -319,7 +319,8 @@ func _test_coat() -> void:
 func _test_finale() -> void:
 	var lines: Array = sd.scene("M26")["mandatory_lines"]
 	_check(String(lines[-2].get("text", "")).contains("завтра тоже можно") and String(lines[-2].get("speaker", "")) == "ulyana" and String(lines[-1].get("speaker", "")) == "agata"
-		and String(lines[-1].get("text", "")).contains("с обоих концов"), "H55: the last question and Agata's answer: %s" % [lines[-1]])
+		and String(lines[-1].get("text", "")).contains("Теперь мост есть") and String(lines[-1].get("text", "")).contains("одно на всех"),
+		"H55 (K, 31.10, стр. 115 — the Director's words): the last question and Agata's answer: %s" % [lines[-1]])
 	var fv: Node = main_node.get_node("FrameView")
 	var title: Node = main_node.get_node("Title")
 	var credits: Node = fv.get("credits")

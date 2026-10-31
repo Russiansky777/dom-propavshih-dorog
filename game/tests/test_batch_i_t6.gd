@@ -19,7 +19,7 @@ var main_node: Node = null
 const APPLIED := "Docs/review_chatgpt_2026-10-25_r3/review3_applied.json"
 ## Lines the Director rewrote later, in his playthrough of 29.10 (batch J, Docs/FEEDBACK_DIRECTOR_2026-10-29_map.md):
 ## review-3's text no longer applies to them — the J tests pin the new ones.
-const J_SUPERSEDED := [21, 22, 23, 24, 25, 26, 27, 28, 32, 34, 35, 41, 42, 47, 48, 80, 81, 96, 18, 95]   # 32: M4.gate.key — J (Р5): ворот заржавел, «теперь можно поворачивать» снято; 18 (доска) и 95 (снег на том берегу) — тексты, утверждённые Директором 30.10 на странице сверки (F10, F07)
+const J_SUPERSEDED := [21, 22, 23, 24, 25, 26, 27, 28, 32, 34, 35, 41, 42, 47, 48, 80, 81, 96, 18, 95, 110, 113]   # 110 (M23a_0), 113 (M23b_7): rewritten 31.10 by the Director's playthrough (batch K, стр. 94, 99)   # 32: M4.gate.key — J (Р5): ворот заржавел, «теперь можно поворачивать» снято; 18 (доска) и 95 (снег на том берегу) — тексты, утверждённые Директором 30.10 на странице сверки (F10, F07)
 
 
 func _initialize() -> void:

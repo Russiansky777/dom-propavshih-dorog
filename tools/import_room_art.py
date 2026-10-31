@@ -7,8 +7,9 @@
                                  (иначе после отражения он сдвинется на недостающие пиксели)
    "own_size": ["wheel.png"], — файлы со своим размером (отдельный спрайт, не слой холста: колесо M1 1024×1024)
    "alpha_min": 9,            — пиксели с alpha < alpha_min обнуляются (цветной мусор генератора)
-   "mirror_x": true}          — отразить по горизонтали (решение Директора: Z4 зеркально, чтобы
+   "mirror_x": true,          — отразить по горизонтали (решение Директора: Z4 зеркально, чтобы
                                  боковое крыльцо было справа — продолжение дома с улицы Z2)
+   "retouch": {"bg.png": "tools/retouch/F_hug_pelageya.py"}}  — правка дефекта генератора (функция retouch(im))
 Файл, которого ещё нет в assets/incoming (арт заказан — слой с `pending`, партия 8б), пропускается: в игре до него
 заглушка движка (stub), после доставки тот же запуск кладёт картинку на место заглушки.
 Оригиналы в assets/incoming не меняются. Повторный импорт без mirror_x вернул бы неотражённую
@@ -74,6 +75,15 @@ def main() -> int:
             print(f"wait {src} — ещё не доставлен (в игре заглушка движка)")
             continue
         im = build(ROOT / src, None if dst in spec.get("own_size", []) else canvas, int(spec.get("alpha_min", 0)), bool(spec.get("mirror_x", False)))
+        # `retouch` {файл: модуль tools/retouch/<имя>.py с retouch(im) -> im}: правка дефекта генератора поверх
+        # оригинала (K, 31.10: третий сапог Пелагеи в F_hug_pelageya) — повторный импорт даёт ту же правленую копию
+        rt = spec.get("retouch", {}).get(dst)
+        if rt:
+            import importlib.util
+            sp = importlib.util.spec_from_file_location("retouch_mod", ROOT / rt)
+            mod = importlib.util.module_from_spec(sp)
+            sp.loader.exec_module(mod)
+            im = mod.retouch(im)
         target = out_dir / dst
         if check:
             same = target.exists() and ImageChops.difference(Image.open(target).convert(im.mode), im).getbbox() is None

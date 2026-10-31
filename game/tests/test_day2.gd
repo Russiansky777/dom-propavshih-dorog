@@ -916,9 +916,10 @@ func _test_walkthrough() -> void:
 	await _use("office_door_open")
 	seen = await _finish()
 	_check(gs.has_flag("office_door_opened") and gs.has_flag("done_M13a"), "the shelf lifted together: %s" % str(seen))
-	# G21 (Director 23.10: «открываем вдвоём — мужик пропадает будто за дверь, а она закрыта»): he stays by the door.
-	_check(_hotspot("pavel") != null and _hotspot("pavel").visible, "G21: after the shelf Pavel is still in the passage by the door")
-	_check(await _go("M3"), "M2→M3 (the office)")
+	# K (Director 31.10, стр. 57–58): the door pulled open together in the black, both go in — Pavel's «Слышал я твой
+	# звон» is said in the office (G21 still holds: he never vanishes behind a shut door — he is in the office with her).
+	_check(_room() == "M3", "K-58: after the door — in the office together (%s)" % _room())
+	_check(seen.any(func(x): return String(x).begins_with("pavel:Слышал я твой звон")), "K-58: «Слышал я твой звон» heard: %s" % str(seen))
 	_check(_hotspot("pavel") != null and _hotspot("pavel").visible, "G21: Pavel is in the office when Agata comes in")
 	# G22: Pavel names the clamp and what it is for; the clamp lies on the table (layer), not on the shelf.
 	await _use("pavel")
@@ -1183,7 +1184,9 @@ func _test_walkthrough() -> void:
 	_check(seen.any(func(x): return x.begins_with("narration:Течение повело лодку")) and m17_text.contains("Теперь идёт прямо"),
 		"the empty boat follows the ring along the rope, not back to the pier: %s" % str(seen))
 	_check(seen.any(func(x): return x == "agata:Не сворачивает! По канату идёт!"), "Agata: it did not turn back")
-	_check(seen.any(func(x): return x.contains("бечевой вытягивала! Значит, держат")), "F15: Pelageya — «Не вернуло. Значит, держат»: %s" % str(seen))
+	# (the seen lines are cut to 40 letters: the start is heard, the rest is the data — K, 31.10, стр. 81)
+	_check(seen.any(func(x): return x.begins_with("pelageya:Сама назад не пришла — бечевой")) and JSON.stringify(sd.scene("M17")).contains("бечевой вытягивала! Значит, держат там."),
+		"F15/K-81: Pelageya — «Сама назад не пришла — бечевой вытягивала! Значит, держат там.»: %s" % str(seen))
 	_check(sr.journal_goal().contains("по канату"), "goal: into the boat, along the rope: %s" % sr.journal_goal())
 	var n_before: int = gs.inventory.count("school_ribbon")
 	await _use("pelageya")
@@ -1742,7 +1745,7 @@ func _test_save_load() -> void:
 	await _use("office_door_open")
 	await _finish()
 	_check(gs.has_flag("done_M13a"), "the day goes on after the load: the shelf")
-	_check(await _go("M3"), "into the office after the load")
+	_check(_room() == "M3", "into the office after the load, with the door (K-58): %s" % _room())
 	await _use("key_nail")
 	await _finish()
 	_check(gs.inventory.count("key_sluice") == 1, "the key once")

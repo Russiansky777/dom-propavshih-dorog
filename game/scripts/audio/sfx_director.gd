@@ -281,6 +281,49 @@ func suppress_next_door() -> void:
 func _on_node_added(n: Node) -> void:
 	if n.has_signal("bag_sound_requested"):
 		_connect_bag(n)
+	if n is BaseButton:
+		_wire_ui_button.call_deferred(n)
+
+
+# --- Menu clicks (K, Director 31.10, стр. 1: «приятный негромкий щелчок на наведение и нажатие пунктов») ----------
+## Buttons under a node with meta `ui_click` (the title screen, the pause menu, the save / load / settings board, the
+## journal, the top bar) tick softly when the pointer comes over them and click when pressed — on their own quiet player
+## that also sounds over the paused game.
+const UI_CLICK_DB := -9.0
+var _ui_player: AudioStreamPlayer = null
+
+
+func _wire_ui_button(b: BaseButton) -> void:
+	if not is_instance_valid(b) or b.has_meta("ui_click_wired") or not _in_ui_menu(b):
+		return
+	b.set_meta("ui_click_wired", true)
+	b.mouse_entered.connect(func():
+		if not b.disabled and b.is_visible_in_tree():
+			play_ui("ui_hover"))
+	b.pressed.connect(func(): play_ui("ui_click"))
+
+
+static func _in_ui_menu(n: Node) -> bool:
+	var p := n
+	while p != null:
+		if p.has_meta("ui_click"):
+			return bool(p.get_meta("ui_click"))
+		p = p.get_parent()
+	return false
+
+
+func play_ui(sound_name: String) -> void:
+	if _ui_player == null:
+		_ui_player = AudioStreamPlayer.new()
+		_ui_player.name = "UiClick"
+		_ui_player.bus = BUS_NAME
+		_ui_player.volume_db = UI_CLICK_DB
+		_ui_player.process_mode = Node.PROCESS_MODE_ALWAYS
+		add_child(_ui_player)
+	var synth = load("res://scripts/mechanics/synth_sfx.gd")
+	_ui_player.stream = synth.stream(sound_name)
+	_ui_player.play()
+	sound_played.emit("ui", sound_name, "")
 
 
 func _connect_bag_sources(n: Node) -> void:

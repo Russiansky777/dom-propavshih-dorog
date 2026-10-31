@@ -21,6 +21,7 @@ var direction: int = 0
 var shown_dir: int = 0
 var _turn_t: float = 0.0
 var talking: bool = false
+var _said_check_t: float = 0.0
 ## I-T4: walking off in a staging (go_off with a walk sheet) — beats do not switch the clip meanwhile.
 var walking: bool = false
 ## I-T2 (Director 02:34): three states of every villager — "idle" (just stands: breathing, rare small
@@ -32,6 +33,8 @@ const DEFAULT_STATES: Dictionary = {
 	"idle": {"action": "", "speed": 1.0, "face_agata": false},
 	"listen": {"action": "listen", "speed": 0.6, "face_agata": true},
 	"talk": {"action": "", "speed": 1.0, "face_agata": true},
+	# K (стр. 12): the line said, still on screen — the idle stance, facing kept (no turn back as in idle)
+	"quiet": {"action": "", "speed": 1.0, "face_agata": false},
 }
 var states: Dictionary = {}
 ## I-T2 (Director 25.10 14:07: «повороты — с человеческой скоростью»): 180° in `turn.seconds_180` of the actor data
@@ -222,6 +225,12 @@ func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
 func _process(delta: float) -> void:
 	if live != null:
 		live.process(delta)
+	# the voice of the line ends while it is still on screen (K, стр. 12): the hands come to rest then
+	if (state == "talk" or state == "listen") and not StoryRunner.current_beat.is_empty():
+		_said_check_t += delta
+		if _said_check_t >= 0.1:
+			_said_check_t = 0.0
+			_on_beat_changed()
 	if sheet == null or sprite == null or shown_dir == direction:
 		_turn_t = 0.0
 		return
@@ -323,15 +332,24 @@ func in_active_scene() -> bool:
 	return false
 
 
-## The state the current beat asks for.
+## The state the current beat asks for. K (Director 31.10, стр. 12: «анимации при разговорах циклично идут, даже если
+## уже все закончили говорить»): talk and listen last while the line is being said (VoiceDirector.line_being_said —
+## its recording, or the time to say it); after that, till the click, the speaker and the listeners stand quiet —
+## the idle stance, still facing whom they spoke to (state "quiet": no turn back to the rest facing as in idle).
 func wanted_state() -> String:
 	var b: Dictionary = StoryRunner.current_beat
 	var is_line: bool = String(b.get("type", "")) == "line"
+	var said := _being_said(b)
 	if is_line and String(b.get("speaker", "")) == actor_id:
-		return "talk"
+		return "talk" if said else "quiet"
 	if not b.is_empty() and in_active_scene():
-		return "listen"
+		return "listen" if said else "quiet"
 	return "idle"
+
+
+func _being_said(b: Dictionary) -> bool:
+	var vd := get_node_or_null("/root/VoiceDirector")
+	return vd == null or bool(vd.call("line_being_said", b))
 
 
 ## A line of this character → talk (facing the player); a scene with them, someone else speaking → listen;

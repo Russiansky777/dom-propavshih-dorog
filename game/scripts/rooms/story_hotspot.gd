@@ -74,12 +74,20 @@ static func data_active(data: Dictionary) -> bool:
 	return true
 
 
-## The first `states` entry whose `if` flags all hold, else {}.
+## The first `states` entry whose `if` flags all hold and none of its `unless`, else {}.
 func current_state() -> Dictionary:
-	for st in data.get("states", []):
+	return state_of(data)
+
+
+static func state_of(d: Dictionary) -> Dictionary:
+	for st in d.get("states", []):
 		var ok := true
 		for f in st.get("if", []):
 			if not GameState.has_flag(String(f)):
+				ok = false
+				break
+		for f in st.get("unless", []):
+			if GameState.has_flag(String(f)):
 				ok = false
 				break
 		if ok:

@@ -1273,7 +1273,10 @@ func _test_stop_steps() -> void:
 	sf.sort()
 	print("        stopping, feet lifted per stop: %s (median %d); easing the walk down as before: %s (median %d)" % [str(on), so[so.size() / 2], str(off), sf[sf.size() / 2]])
 	_check(int(so[so.size() / 2]) <= 2 and int(so[so.size() - 1]) <= 4, "stopping takes %s steps (median ≤ 2, at most 4): quick little steps" % str(on))
-	_check(int(sf[sf.size() / 2]) >= 4, "self-check: the old stop took only %s steps — the metric would not see the fidgeting" % str(off))
+	# self-check: the metric sees the fidgeting of the old stop — more steps than the new one and at least four in a stop
+	# (31.10, K: the median alone moved with the tests run before it — 3 in the whole file, 4 alone)
+	_check(int(sf[sf.size() / 2]) > int(so[so.size() / 2]) and int(sf[sf.size() - 1]) >= 4,
+		"self-check: the old stop took only %s steps (the new %s) — the metric would not see the fidgeting" % [str(off), str(on)])
 	_completed = true
 
 

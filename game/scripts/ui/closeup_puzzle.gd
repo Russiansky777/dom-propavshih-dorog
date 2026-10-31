@@ -51,10 +51,11 @@ var beam_node: Control           # beam image + notch markers; moves by `_beam_s
 var handle_glow: Panel
 var tray_node: Panel              # hinge tray: framed, captioned, dims when empty (Director 18.10: looked like a placeholder)
 var handle_label: Label
-var guide_line: ColorRect        # door mark ↔ aligned notch
+var guide_line: TextureRect      # door mark ↔ aligned notch (a soft line, fading at both ends — K, стр. 39)
+var guide_color: Color = Color(0, 0, 0, 0)
 var piece_nodes: Dictionary = {}   # piece id -> Control (hinge picture)
 var slot_glows: Dictionary = {}    # slot id -> Panel
-var notch_marks: Array[ColorRect] = []
+var notch_marks: Array[TextureRect] = []   # a soft warm glow over a notch (K, стр. 39: not a yellow rectangle)
 ## Kept for older probes/tests: slot id -> centre (Vector2).
 var slot_centers: Dictionary = {}
 
@@ -341,12 +342,49 @@ func _build() -> void:
 		beam_node.add_child(beam)
 	else:
 		beam_node.add_child(_rect(Color(0.42, 0.30, 0.18), beam_hit_base))
+	# K (Director 31.10, стр. 39: «зелёная полоска и жёлтый прямоугольник выделяются — как-то красивее обыграть»): the
+	# notch glows softly (a radial light, no edges) and the line to the door's mark is a thin ray fading at its ends
+	var glow_tex := GradientTexture2D.new()
+	glow_tex.fill = GradientTexture2D.FILL_RADIAL
+	glow_tex.fill_from = Vector2(0.5, 0.5)
+	glow_tex.fill_to = Vector2(1.0, 0.5)
+	glow_tex.width = 64
+	glow_tex.height = 64
+	var gg := Gradient.new()
+	gg.set_color(0, Color(1, 1, 1, 0.9))
+	gg.add_point(0.45, Color(1, 1, 1, 0.35))
+	gg.set_color(gg.get_point_count() - 1, Color(1, 1, 1, 0.0))
+	glow_tex.gradient = gg
 	for i in notch_base.size():
-		var m := _rect(Color(GLOW.r, GLOW.g, GLOW.b, 0.0), Rect2(notch_base[i] + Vector2(-5, -4), Vector2(10, 26)))
+		var m := TextureRect.new()
+		m.texture = glow_tex
+		m.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		m.stretch_mode = TextureRect.STRETCH_SCALE
+		m.position = notch_base[i] + Vector2(-22, -18)
+		m.size = Vector2(44, 52)
+		m.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		m.modulate = Color(GLOW.r, GLOW.g, GLOW.b, 0.0)
 		m.name = "Mark_%d" % i
 		beam_node.add_child(m)
 		notch_marks.append(m)
-	guide_line = _rect(Color(GLOW.r, GLOW.g, GLOW.b, 0.85), Rect2(anchor.x - 1.5, anchor.y, 3, 30))
+	var ray := GradientTexture2D.new()
+	ray.fill_from = Vector2(0.5, 0.0)
+	ray.fill_to = Vector2(0.5, 1.0)
+	ray.width = 8
+	ray.height = 64
+	var rg := Gradient.new()
+	rg.set_color(0, Color(1, 1, 1, 0.0))
+	rg.add_point(0.2, Color(1, 1, 1, 0.85))
+	rg.add_point(0.8, Color(1, 1, 1, 0.85))
+	rg.set_color(rg.get_point_count() - 1, Color(1, 1, 1, 0.0))
+	ray.gradient = rg
+	guide_line = TextureRect.new()
+	guide_line.texture = ray
+	guide_line.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	guide_line.stretch_mode = TextureRect.STRETCH_SCALE
+	guide_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guide_line.position = Vector2(anchor.x - 1.5, anchor.y)
+	guide_line.size = Vector2(3, 30)
 	guide_line.name = "Guide"
 	guide_line.visible = false
 	root.add_child(guide_line)
@@ -786,20 +824,22 @@ func _update_beam_visuals() -> void:
 	for i in notch_marks.size():
 		var on := i == mark and absf(_beam_shown_dx - _beam_dx) < 1.0
 		var a := 0.9 if on else (0.55 if i == preview else 0.0)
-		notch_marks[i].color = Color(GLOW.r, GLOW.g, GLOW.b, a)
+		notch_marks[i].modulate = Color(GLOW.r, GLOW.g, GLOW.b, a)
 	if not seat.is_empty() and preview < 0 and mark < 0:
 		preview = _notch_at_anchor(_beam_shown_dx)   # resting near a notch, not seated: still shown (amber)
 	var aligned := (mark >= 0 and absf(_beam_shown_dx - _beam_dx) < 1.0) or preview >= 0
 	guide_line.visible = aligned
 	var seated := mark >= 0 and absf(_beam_shown_dx - _beam_dx) < 1.0
-	guide_line.color = Color(0.55, 0.85, 0.45, 0.95) if seated or (preview >= 0 and _seat_off(preview, _beam_shown_dx) <= seat_tol_px) \
-		else (Color(1.0, 0.62, 0.25, 0.95) if not seat.is_empty() else Color(GLOW.r, GLOW.g, GLOW.b, 0.85))
+	# seated — a soft gold-green (the old flat green bar), near — warm amber, as the hand-lit glow of the notch
+	guide_color = Color(0.74, 0.88, 0.56, 0.9) if seated or (preview >= 0 and _seat_off(preview, _beam_shown_dx) <= seat_tol_px) \
+		else (Color(1.0, 0.72, 0.38, 0.85) if not seat.is_empty() else Color(GLOW.r, GLOW.g, GLOW.b, 0.8))
+	guide_line.modulate = guide_color
 	_update_seat_arrows(preview if not seated else -1)
 	if aligned and notch_base.size() > 0:
 		var i := mark if preview < 0 else preview
 		var ny := notch_base[i].y
-		guide_line.position = Vector2(anchor.x - 1.5, minf(anchor.y, ny))
-		guide_line.size = Vector2(3, maxf(absf(ny - anchor.y), 6.0))
+		guide_line.position = Vector2(anchor.x - 2.0, minf(anchor.y, ny) - 6.0)
+		guide_line.size = Vector2(4, maxf(absf(ny - anchor.y), 6.0) + 12.0)
 
 
 ## How far notch i is from the door's mark at shift dx (px, signed: + — the notch is right of the mark).
@@ -1220,7 +1260,7 @@ func probe_positions() -> Dictionary:
 	out["near"] = near
 	out["near_off"] = _notch_off(near, _beam_shown_dx) if near >= 0 else 0.0
 	out["seat_hint"] = seat_hint != null and seat_hint.visible
-	out["guide_color"] = guide_line.color.to_html() if guide_line != null else ""
+	out["guide_color"] = guide_color.to_html() if guide_line != null else ""
 	if handle_rect.size != Vector2.ZERO:
 		out["handle"] = _xy(handle_rect.get_center())
 	out["tray"] = {}

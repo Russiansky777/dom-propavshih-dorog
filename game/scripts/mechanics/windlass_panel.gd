@@ -95,20 +95,23 @@ func build() -> void:
 		add_child(b)
 		plaques[sig] = b
 		y += 84.0
-	gauge = HeightGauge.new()
-	gauge.name = "Gauge"
-	gauge.position = GAUGE_RECT.position
-	gauge.size = GAUGE_RECT.size
-	gauge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	gauge.zone = logic.zone()
-	add_child(gauge)
-	var zl := label(text("label_gauge"), Vector2(GAUGE_RECT.end.x + 8, GAUGE_RECT.position.y + gauge.y_of(logic.rest) - 16), 110)
-	zl.name = "GaugeZoneLabel"
-	zl.add_theme_font_size_override("font_size", 20)
-	zl.add_theme_color_override("font_color", TimingBar.GREEN.lightened(0.45))
-	var sl := label(text("label_stone"), Vector2(GAUGE_RECT.end.x + 8, GAUGE_RECT.position.y + gauge.y_of(logic.rest + logic.tolerance) + 2), 110)
-	sl.name = "GaugeStoneLabel"
-	sl.add_theme_font_size_override("font_size", 18)
+	# K (Director 31.10, стр. 107: «шкала не нужна — у самого бревна и обведено, и подсвечивает в нужной зоне»): the
+	# gauge of the log's height only when the data asks for it (`gauge: true`); the mark on the ring is the cue.
+	if bool(spec.get("gauge", false)):
+		gauge = HeightGauge.new()
+		gauge.name = "Gauge"
+		gauge.position = GAUGE_RECT.position
+		gauge.size = GAUGE_RECT.size
+		gauge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		gauge.zone = logic.zone()
+		add_child(gauge)
+		var zl := label(text("label_gauge"), Vector2(GAUGE_RECT.end.x + 8, GAUGE_RECT.position.y + gauge.y_of(logic.rest) - 16), 110)
+		zl.name = "GaugeZoneLabel"
+		zl.add_theme_font_size_override("font_size", 20)
+		zl.add_theme_color_override("font_color", TimingBar.GREEN.lightened(0.45))
+		var sl := label(text("label_stone"), Vector2(GAUGE_RECT.end.x + 8, GAUGE_RECT.position.y + gauge.y_of(logic.rest + logic.tolerance) + 2), 110)
+		sl.name = "GaugeStoneLabel"
+		sl.add_theme_font_size_override("font_size", 18)
 	call_label = label("", v2(spec.get("call_pos", [850, 868])), 700, &"CloseupTitle")
 	reply_label = label("", v2(spec.get("reply_pos", [700, 520])) * _k, 520, &"CloseupLabel")
 	hint_label = label(text("label_hint"), v2(spec.get("hint_pos", [560, 948])), 1080)
@@ -181,10 +184,11 @@ func _redraw() -> void:
 	ring_mark.done = logic.state in ["settling", "solved"]
 	ring_mark.t = clock
 	ring_mark.queue_redraw()
-	gauge.pos = logic.pos
-	gauge.in_zone = in_zone or logic.state in ["settling", "solved"]
-	gauge.bumped = logic.state == "bumped"
-	gauge.queue_redraw()
+	if gauge != null:
+		gauge.pos = logic.pos
+		gauge.in_zone = in_zone or logic.state in ["settling", "solved"]
+		gauge.bumped = logic.state == "bumped"
+		gauge.queue_redraw()
 	var bumped := logic.state == "bumped" and not laid_sent
 	raise_glow.visible = bumped
 	if bumped:

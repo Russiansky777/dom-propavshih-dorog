@@ -104,6 +104,13 @@ var item_last_ms: Dictionary = {}     # item id -> Time.get_ticks_msec() of its 
 var _fade: Tween = null
 var _save_timer: Timer
 var _web_state_t: float = 0.0
+# K (Director 31.10, стр. 12: «анимации при разговорах циклично идут, даже если уже все закончили говорить»): the
+# line on screen and whether its voice has been heard — line_being_said() tells the hands when to rest.
+const SPEAK_S_PER_CHAR := 0.065       # no recording: about as long as the line takes to say (the recorded lines run
+const SPEAK_MIN_S := 1.6              # 13–16 letters a second), never under this
+var _beat_key: String = ""
+var _beat_t0: float = 0.0             # play_time_s when the beat came up
+var _beat_voiced: bool = false        # its recording started (once over, the line is said)
 
 
 func _ready() -> void:
@@ -311,7 +318,34 @@ func _narration_item(key: String, text: String, kind: String) -> Dictionary:
 	return v
 
 
+## The line on screen is still being said: its recording is playing, or — with none (subtitles only, the web before
+## the first click) — for about as long as saying it takes. Once the voice is over the speaker's hands rest and the
+## listeners stop nodding, though the words stay on screen until the click (K, стр. 12).
+func line_being_said(b: Dictionary = {}) -> bool:
+	if b.is_empty():
+		b = StoryRunner.current_beat
+	if b.is_empty():
+		return false
+	var lid := String(beat_voice(b).get("id", ""))
+	if lid != "" and lid == current_line and is_playing():
+		return true
+	if _key_of(b) != _beat_key:
+		return true   # the beat is just up (its beat_changed not handled yet)
+	if _beat_voiced:
+		return false
+	return play_time_s - _beat_t0 < maxf(SPEAK_MIN_S, String(b.get("text", "")).length() * SPEAK_S_PER_CHAR)
+
+
+static func _key_of(b: Dictionary) -> String:
+	return "%s|%s|%s" % [String(b.get("type", "")), String(b.get("line_id", b.get("text_key", ""))), String(b.get("text", ""))]
+
+
 func _on_beat_changed() -> void:
+	var bk := _key_of(StoryRunner.current_beat)
+	if bk != _beat_key:
+		_beat_key = bk
+		_beat_t0 = play_time_s
+		_beat_voiced = false
 	var v := beat_voice(StoryRunner.current_beat)
 	var lid := String(v.get("id", ""))
 	if lid != "" and lid == current_line and is_playing():
@@ -393,6 +427,8 @@ func play_line(line_id: String, speaker: String, text: String, kind: String = "l
 		_plain.stream = s
 		_plain.play()
 	plays += 1
+	if line_id == String(beat_voice(StoryRunner.current_beat).get("id", "")):
+		_beat_voiced = true
 	_event({"kind": "start", "line": line_id, "speaker": speaker, "mode": current_mode, "pan": current_pan, "voice": kind})
 	voice_started.emit(line_id, speaker)
 	voice_kind_started.emit(line_id, kind)

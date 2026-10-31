@@ -11,7 +11,11 @@
       1672,
       941
     ],
-    "alpha_min": 0
+    "alpha_min": 0,
+    "retouch": {
+      "bg.png": "tools/retouch/F_hug_pelageya.py"
+    },
+    "_k": "K (Директор 31.10, стр. 85: «у Пелагеи на кадре с Митей три ноги»): лишний левый сапог закрыт снегом — tools/retouch/F_hug_pelageya.py"
   },
   "background": {
     "kind": "exterior",

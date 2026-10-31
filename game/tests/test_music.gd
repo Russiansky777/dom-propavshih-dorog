@@ -12,7 +12,7 @@ extends SceneTree
 ##     two cross; the outgoing deck stops at the end;
 ##   - scene event: M10 in H2 → «mirror» over «home» (ducked under its line), scene end → home resumes
 ##     on its own deck where it was paused (not restarted);
-##   - finale (loop: false, until track_end): the epilogue M26 → finale not ducked, holds through all its shots and
+##   - finale (loop: true, until game_end — K, 31.10, стр. 112): the epilogue M26 → finale not ducked, holds through all its shots and
 ##     the scene end, fades over end_fade_s at the end, then the room theme returns;
 ##   - dialogue ducking: scene lines lower by duck_dialogue_db over ≈0.4 s (gradual), narration does not;
 ##   - music volume: slider/setting → Music bus, kept in user:// settings (not in a save slot),
@@ -80,7 +80,7 @@ func _run() -> void:
 	await _test("Seamless loop: loop_crossfade_s before the end the track restarts on the other deck and crosses", _test_loop)
 	await _test("Dialogue ducking: scene lines −duck_dialogue_db over ≈0.4 s, narration not ducked", _test_duck)
 	await _test("Scene event M10 → mirror over home (ducked), scene end → home resumes on its deck", _test_scene_event)
-	await _test("Finale M26 (epilogue): not ducked, holds through every shot and past scene end, fades at the end, room theme returns", _test_finale)
+	await _test("Finale M26 (epilogue): not ducked, holds through every shot and past scene end, goes round over the dinner (K-112), room theme only after the game", _test_finale)
 	await _test("Music volume: setting → Music bus, user:// settings (not the save slot), menu slider, 0 % mutes", _test_volume)
 	await _test("Web gating: nothing starts before the first user input; the first click starts the theme", _test_gating)
 	gs.reset()
@@ -395,14 +395,20 @@ func _test_finale() -> void:
 	_check(gs.has_flag("done_M26"), "M26 must complete")
 	_check(md.target_theme == "finale" and md.active_deck_index() == f and int(_deck(f)["starts"]) == starts,
 		"finale holds through all epilogue shots on the same deck without restart")
+	# K (Director 31.10, стр. 112: «на общем кадре музыку не переключать — оставить прежнюю»): the finale goes round
+	# (loop, until game_end) over the dinner and the credits — no room theme under the last shot
 	var length := float(_deck(f)["length"])
-	(md.get_child(f) as AudioStreamPlayer).seek(length - md.end_fade_s - 1.0)
-	await _wait(1.6)
-	_check(float(_deck(f)["fade_to"]) == 0.0 and float(_deck(f)["gain"]) < 0.95, "finale fades over its last end_fade_s (gain %.2f)" % _deck(f)["gain"])
-	await _wait(md.end_fade_s + 0.5)
-	_check(not _deck(f)["playing"], "finale must have ended")
-	_check(md.active_events.is_empty() and md.target_theme == "roads", "after the finale: events %s, target %s" % [md.state()["events"], md.target_theme])
-	_check(await _wait_settled("roads", md.crossfade_s + 2.0), "after the finale the room theme (roads) returns")
+	(md.get_child(f) as AudioStreamPlayer).seek(length - md.loop_crossfade_s - 1.0)
+	await _wait(md.loop_crossfade_s + 2.5)
+	_check(md.target_theme == "finale" and not md.active_events.is_empty(), "K-112: past the end of the track the finale still rules (target %s)" % md.target_theme)
+	var playing_finale := false
+	for i in 2:
+		var d: Dictionary = _deck(i)
+		playing_finale = playing_finale or (bool(d["playing"]) and String(d.get("theme", "")) == "finale")
+	_check(playing_finale, "K-112: the finale plays on round (not the turn's theme): %s" % str(md.state()))
+	# the title screen / a new game ends it: the room theme comes back
+	md.clear_events()
+	_check(await _wait_settled("roads", md.crossfade_s + 2.0), "after the game (title, new game, load) the room theme (roads) returns")
 
 
 func _test_volume() -> void:

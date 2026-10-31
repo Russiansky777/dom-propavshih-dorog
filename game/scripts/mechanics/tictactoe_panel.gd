@@ -391,7 +391,7 @@ func _on_draw() -> void:
 	CarvedFrame.shade(c, outer, false)
 
 
-## A chalk stroke drawn up to `frac` of its length: a soft wide dust under a firm core, broken here and there.
+## A chalk stroke drawn up to `frac` of its length: a soft wide dust under a firm core.
 func _chalk(c: CanvasItem, pts: PackedVector2Array, frac: float, w: float) -> void:
 	if frac <= 0.0 or pts.size() < 2:
 		return
@@ -405,8 +405,8 @@ func _chalk(c: CanvasItem, pts: PackedVector2Array, frac: float, w: float) -> vo
 		part[part.size() - 1] = pts[i0].lerp(pts[mini(i0 + 1, pts.size() - 1)], last - i0)
 	c.draw_polyline(part, Color(CHALK, 0.22), w * 2.2, true)
 	c.draw_polyline(part, CHALK, w, true)
-	for i in range(1, part.size(), 3):
-		c.draw_circle(part[i] + Vector2(1.5, -1.0), w * 0.3, Color(SLATE, 0.5))   # the chalk skips on the board
+	# K (Director 31.10, стр. 92): no dark «skips» along the strokes — at every third point they read as marking dots
+	# on the crosses, the noughts and the grid
 
 
 ## «Ещё» shows once the word after the game is read (the text box would cover it).

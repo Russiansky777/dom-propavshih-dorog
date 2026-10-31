@@ -30,7 +30,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STORY = ROOT / "data" / "story"
 SRC_DIR = ROOT / "assets" / "music"
 GAME_DIR = ROOT / "game" / "assets" / "music"
-UNTIL = ("scene_end", "track_end")
+UNTIL = ("scene_end", "track_end", "game_end")   # game_end — до титульного экрана / новой игры / загрузки (K: финал)
 
 errors: list[str] = []
 notes: list[str] = []
@@ -147,7 +147,7 @@ def check(data: dict, files: bool = True) -> None:
             tid, until = val, None
         elif isinstance(val, dict):
             tid, until = val.get("theme"), val.get("until")
-            extra = set(val) - {"theme", "until"}
+            extra = {k for k in set(val) - {"theme", "until"} if not str(k).startswith("_")}
             if extra:
                 err(f"{ctx}: лишние поля {sorted(extra)}")
         else:
@@ -163,6 +163,8 @@ def check(data: dict, files: bool = True) -> None:
             err(f"{ctx}.until {until!r}: ожидается одно из {UNTIL}")
         elif loops and until == "track_end":
             err(f"{ctx}: цикличная тема {tid} с until=track_end никогда не закончится")
+        elif not loops and until == "game_end":
+            err(f"{ctx}: нецикличная тема {tid} до game_end кончится тишиной — нужна цикличная")
         elif not loops and until == "scene_end":
             err(f"{ctx}: нецикличная тема {tid} должна дослушиваться (until=track_end)")
         notes.append(f"{key} → {tid} до {until}")
