@@ -791,6 +791,12 @@ var _feet_still_t: float = 0.0
 var _st_t: Array = [null, null]          # shown ankle (screen floor point) or null
 var _st_prev: Array = [null, null]       # last frame's clip [ankle, ball] (floor frame, body-relative)
 var _st_w: Array = [0.0, 0.0]
+## The player's planned stop (Player._planned_stop_3d): the stride planting goes on holding the feet through the stop
+## and until the stance is shown, though the walk weight falls (stride_hold_keep: while the stop itself runs).
+var stride_hold: bool = false
+var stride_hold_keep: bool = false
+var _closing: int = -1        # closing steps left after a planned stop (−1: none going on)
+var _closing_t: float = 0.0
 var stride_off: Array = [Vector3.ZERO, Vector3.ZERO]   # shown − clip ankle on the floor (m; tests, probes)
 
 
@@ -841,7 +847,15 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	_feet_yaw = yaw
 	var lead_b := Basis(Vector3.UP, yaw + _feet_yaw_v * float(fk.get("lead_s", 0.12)))
 	var turning := absf(_feet_yaw_v) > 0.6
-	var walking := _w_s > float(fk.get("walk_off", 0.97))
+	var walking := _w_s > float(fk.get("walk_off", 0.97)) or stride_hold
+	if stride_hold and _w_s < 0.03 and not stride_hold_keep:
+		stride_hold = false   # the stance is in: the locks take the feet from the stride planting
+		_closing = 1          # after a planned stop: the foot left behind closes up — one step, not a shuffle
+		_closing_t = 0.0
+	if _closing >= 0:
+		_closing_t += delta
+		if _w_s > 0.05:
+			_closing = -1   # walking again (or stepping round on the spot: the turn's own steps)
 	var o := origin_px
 	var k := Vector2(maxf(px_per_m.x, 1e-3), maxf(px_per_m.y, 1e-3))
 	var step_s := maxf(float(fk.get("step_s", 0.24)), 0.05)
@@ -927,7 +941,12 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	var first := 0 if float(errs[0]) >= float(errs[1]) else 1
 	for i in [first, 1 - first]:
 		var other = _foot_step[1 - i]
-		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need and (other == null or float(other[1]) >= 0.75):
+		var need_i := need
+		if _closing == 0 and not turning:
+			need_i = maxf(need, float(fk.get("close_m", 0.15)))   # closed up: the other foot stays unless far off
+		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need_i and (other == null or float(other[1]) >= 0.75):
+			if _closing > 0:
+				_closing -= 1
 			# it leaves from the height it stands at now (the lock or the stance, whichever is higher — as drawn)
 			# and lands where the stance will be when it is set down (the turn going on at its present speed)
 			var t_land := float(fk.get("lead_s", 0.08)) + step_s * 0.85
@@ -994,6 +1013,11 @@ func _out_of_reach(p: Vector3, hip: Vector3, reach: float) -> bool:
 func feet_reset() -> void:
 	if limiter != null:
 		limiter.reset()
+	stride_hold = false
+	stride_hold_keep = false
+	_closing = -1
+	_calm_lp = Vector2.INF
+	_calm_off = Vector2.ZERO
 	for i in 2:
 		_foot_lock[i] = null
 		_foot_step[i] = null
@@ -1357,6 +1381,32 @@ func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: Str
 	_shown_mix = act_mix
 	_shown_phase = walk_phase
 	_apply(walk_phase, _w_s, _a_s, act_name, act_t, act_t2, act_mix)
+	_calm_step(delta, act_name)
+
+
+## Standing still without floating (Director 31.10, 15:04: «фигуры типа Пелагеи тупо плавают влево-вправо, это не
+## айдл»): the Meshy stance clips carry the hips 9–14 cm side to side in a few seconds (Pelageya 13.8 cm every 5 s, the
+## talk clips ~10 cm; tests/probe_npc_clips.gd) — a body rocking, not a weight shift. Standing (and in the clips listed
+## in `acts`), the hips' wander from their slow average (low-passed over `tau_s`) is kept at `keep`: the whole figure
+## is moved back by the rest, the feet held where they stand by the foot locks. Data rt3d.calm {keep, tau_s, acts}.
+var _calm_lp := Vector2.INF   # the hips' slow average (model frame x, z, m)
+var _calm_off := Vector2.ZERO  # the figure moved back by this (model frame x, z, m)
+
+
+func _calm_step(delta: float, act_name: String) -> void:
+	var c: Dictionary = spec.get("calm", {})
+	if c.is_empty() or delta <= 0.0:
+		return
+	var h := bone_model("Hips") - model.position
+	var hv := Vector2(h.x, h.z)
+	if _calm_lp == Vector2.INF:
+		_calm_lp = hv
+	_calm_lp += (hv - _calm_lp) * (1.0 - exp(-delta / maxf(float(c.get("tau_s", 2.5)), 0.1)))
+	var act_k := 1.0
+	if act_name != "" and not (c.get("acts", []) as Array).has(act_name):
+		act_k = 1.0 - clampf(_a_s, 0.0, 1.0)
+	var wgt := (1.0 - clampf(_w_s, 0.0, 1.0)) * act_k
+	_calm_off = (hv - _calm_lp) * (1.0 - float(c.get("keep", 0.4))) * wgt
 
 
 ## A cut (room change, load, render switch): the shown weights jump to zero at once, no fade from before.
@@ -1411,7 +1461,7 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 		var mid := loco_mid.lerp(_mid_of(clips.get(_act_name, "")), aw)
 		# out of the stride the clips (captured on a flat-footed body) hold her 4 cm up off her boots — down by that much
 		_bob_y = _bob_at(walk_phase) * wc
-		model.position = Vector3(-mid.x, -_boot_drop * (1.0 - wc) + _bob_y, -mid.y)
+		model.position = Vector3(-mid.x - _calm_off.x, -_boot_drop * (1.0 - wc) + _bob_y, -mid.y - _calm_off.y)
 	tree.advance(0.0)
 
 

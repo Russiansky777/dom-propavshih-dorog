@@ -30,6 +30,8 @@ var act_name: String = ""
 var act_w: float = 0.0
 var act_t: float = 0.0
 var _hide_mat: ShaderMaterial = null
+var room_floor_k: float = 0.5          # the room floor's foreshortening (screen depth px per floor metre across)
+var _last_pos := Vector2.INF           # feet locks: a jump of the villager (staging places it) lets the feet go
 
 
 ## True when this villager should be drawn live: data `render` "3d" (desktop), the web build and runs without a
@@ -58,6 +60,7 @@ func setup(the_npc: Node2D, spec: Dictionary, floor_k: float) -> bool:
 		view = null
 		return false
 	view.set_floor_k(floor_k)
+	room_floor_k = floor_k
 	body = Sprite2D.new()
 	body.name = "Body3D"
 	body.centered = false
@@ -136,6 +139,16 @@ func process(delta: float) -> void:
 		act_t += delta * sp
 		lt = Actor3D.loop_times(act_t, maxf(view.action_length(act_name), 0.1), float(rt.get("loop_crossfade_s", 0.8)))
 	view.pose(delta, fposmod(walk_phase, 1.0), maxf(walk_w, step_w), act_w, act_name, float(lt[0]), float(lt[1]), float(lt[2]))
+	# feet on the floor (Director 31.10, 15:04: «плавают влево-вправо… ноги идут сами по себе»): the stance clips shift
+	# the weight with the feet sliding under it and the walk's feet skate against the staging's pace — the same foot
+	# locks and stride planting as Agata's (data rt3d.feet)
+	if not view.foot_ik.is_empty():
+		var p: Vector2 = npc.global_position
+		var ppm_s := view.ppm * maxf(absf(npc.scale.y), 0.01)
+		if _last_pos != Vector2.INF and p.distance_to(_last_pos) > 0.5 * ppm_s:
+			view.feet_reset()   # placed elsewhere by the staging, not walked there
+		_last_pos = p
+		view.feet_step(delta, p, Vector2(ppm_s, ppm_s * maxf(room_floor_k, 0.05)))
 	_update_scale()
 	body.self_modulate = (npc.get("sprite") as CanvasItem).self_modulate
 

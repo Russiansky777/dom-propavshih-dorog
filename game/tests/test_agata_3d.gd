@@ -105,6 +105,7 @@ func _run() -> void:
 	await _test("Arm and bag (Director 31.10 «пересмотри и увидь сам»): the right hand and forearm stay out of the bag at her hip — standing, walking, talking, opening", _test_arm_bag)
 	await _test("Feet hold the floor (Director 30.10 «идеальная Агата»): stopping and turning on the spot, a foot set down does not skate (14–21 cm before) — it stays or steps", _test_feet_hold)
 	await _test("Boots (Director 31.10, 02:14 «сапоги с задёрнутыми носами»): a boot set down stands on its sole at the height it was made at, its toe not turned up", _test_boots)
+	await _test("Stopping (Director 31.10, 15:04 «мельтешит в конце хода»): she stops in the steps a person stops in — the last one shorter, the other foot closing up — not a run of quick little steps", _test_stop_steps)
 	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; arms swing by her sides; she looks ahead", _test_walk_rhythm)
 	PlayerScript.forced_render = ""
 	gs.reset()
@@ -271,7 +272,8 @@ func _test_feet_planted() -> void:
 		if absf(sin(deg_to_rad(float(r["elev"]))) * float(r["stretch"]) - float(r["k"])) < 0.02:
 			# camera at the room's own elevation: the drawn foot must stay put on screen too
 			_check(float(r["scr_px"]) <= 3.0, "%s: drawn planted foot moved %.1f px on screen (≤ 3 px at scale 1)" % [leg[0], r["scr_px"]])
-		_check(r["stances"] >= 2, "%s: only %d stances measured" % [leg[0], r["stances"]])
+		# the walks to and from the viewer are short (≈ 1.8 s; the planned stop takes the last two steps): one flat stance
+		_check(r["stances"] >= (1 if String(leg[0]) in ["towards viewer", "away"] else 2), "%s: only %d stances measured" % [leg[0], r["stances"]])
 		_check(r["worst_m"] <= 0.010, "%s: stance foot slid %.1f mm (≤ 10 mm)" % [leg[0], r["worst_m"] * 1000.0])
 		_check(r["arrived"], "%s: did not arrive" % leg[0])
 	# Self-check of the metric: the same walk with the figure sliding along the path at the clip's mean
@@ -890,7 +892,9 @@ func _test_feet_hold() -> void:
 	_check(float(on["miss"]) <= 0.02, "a locked foot is %.0f mm off its spot along the floor — dragged (≤ 20)" % (float(on["miss"]) * 1000.0))
 	_check(float(on["lift"]) <= 0.05, "a locked foot comes %.0f mm up off the floor — the leg cannot reach and it does not step (≤ 50)" % (float(on["lift"]) * 1000.0))
 	_check(float(on["sep"]) >= 0.09, "turning on the spot, the feet stand %.0f mm apart — one on the other, in one line (≥ 90)" % (float(on["sep"]) * 1000.0))
-	_check(float(on["off_stance"]) <= 0.05, "settled, a foot stays %.0f mm off where the stance has it (≤ 50)" % (float(on["off_stance"]) * 1000.0))
+	# ≤ 90 mm (31.10, 15:04 «мельтешит в конце хода»): a foot within settle_m (8 cm) of the stance stays where it was set
+	# down — a person does not shuffle into an exact stance; farther, it steps
+	_check(float(on["off_stance"]) <= 0.09, "settled, a foot stays %.0f mm off where the stance has it (≤ 90)" % (float(on["off_stance"]) * 1000.0))
 	_completed = true
 
 
@@ -1195,5 +1199,75 @@ func _test_walk_rhythm() -> void:
 	_check(float(ao[0]) > 60.0 and float(ao[1]) > 30.0, "self-check: the clip's own arms bend only %.0f° and spread %.0f° — the metric would not see them" % [ao[0], ao[1]])
 	_check(float(r["looked"]) >= 0.9, "walking with nothing to look at, she looks ahead only %.0f%% of the time (the clip's head is bowed to the floor)" % (100.0 * float(r["looked"])))
 	_check(float(old["low"]) < float(old["high"]), "self-check: the old walk (root from the clip's foot) went %.2f low and %.2f high — the metric would not tell the pace apart" % [old["low"], old["high"]])
+	_completed = true
+
+
+# --- Stopping -----------------------------------------------------------------------------------------
+
+## Six walks across Z2: from the moment the walk starts slowing until 1.5 s after she stands still, how many times a
+## drawn foot leaves the floor (ankle and ball both over 2 cm above the stride's floor).
+func _stop_lifts(planned: bool) -> Array:
+	var walk: Dictionary = player.view3d.spec.get("walk", {})
+	var keep = walk.get("stop", "")
+	if not planned:
+		walk["stop"] = ""
+	var out: Array = []
+	for k in 6:
+		await _enter("Z2", Vector2(500 + (k % 3) * 150, 860 + (k % 2) * 80))
+		var v: Actor3D = player.view3d
+		v.seed_idle(60 + k)
+		seed(60 + k)
+		if not v.skeleton.skeleton_updated.is_connected(_on_skel_updated):
+			v.skeleton.skeleton_updated.connect(_on_skel_updated)
+		_drawn_feet = []
+		var ang := PI * 0.5 + (k - 2.5) * 0.25
+		player.yaw3d = ang
+		player.yaw3d_target = ang
+		await _frames(30)
+		var kf: float = player.floor_foreshortening()
+		player.click_at(player.global_position + Vector2(sin(ang), cos(ang) * kf) * (500.0 + k * 40.0))
+		var slowing := false
+		var after := 0.0
+		var t := 0.0
+		var up: Array = [false, false]
+		var lifts := 0
+		var first := true
+		while after < 1.5 and t < 8.0:
+			await process_frame
+			var d: float = player.get_process_delta_time()
+			t += d
+			if not slowing and player.is_walking() and player.walk_w < 0.99 and player.walk_time > 0.6:
+				slowing = true
+			if not slowing:
+				continue
+			if not player.is_walking():
+				after += d
+			var f: Array = _drawn_feet if not _drawn_feet.is_empty() else v.feet_model()
+			for i in 2:
+				var h: float = minf(f[i * 2].y - float(v.stride_floor[i * 2]), f[i * 2 + 1].y - float(v.stride_floor[i * 2 + 1]))
+				# up over 2.5 cm, down under 1.5 (no flicker at the line); a foot already in the air as the slowing
+				# starts is that step, not a new one
+				var now_up: bool = h > 0.025 or (up[i] and h > 0.015)
+				if now_up and not up[i] and not first:
+					lifts += 1
+				up[i] = now_up
+			if first:
+				lifts += int(up[0]) + int(up[1])
+				first = false
+		out.append(lifts)
+	walk["stop"] = keep
+	return out
+
+
+func _test_stop_steps() -> void:
+	var on: Array = await _stop_lifts(true)
+	var off: Array = await _stop_lifts(false)
+	var so := on.duplicate()
+	so.sort()
+	var sf := off.duplicate()
+	sf.sort()
+	print("        stopping, feet lifted per stop: %s (median %d); easing the walk down as before: %s (median %d)" % [str(on), so[so.size() / 2], str(off), sf[sf.size() / 2]])
+	_check(int(so[so.size() / 2]) <= 2 and int(so[so.size() - 1]) <= 4, "stopping takes %s steps (median ≤ 2, at most 4): quick little steps" % str(on))
+	_check(int(sf[sf.size() / 2]) >= 4, "self-check: the old stop took only %s steps — the metric would not see the fidgeting" % str(off))
 	_completed = true
 

@@ -258,6 +258,8 @@ func _test_villagers() -> void:
 	var NL = load("res://scripts/actors/npc_live_3d.gd")
 	for id in NPCS:
 		var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+		if OS.get_environment("RT3D_DIR") != "":
+			spec["rt3d"]["scene"] = "%s/%s/%s_rt.glb" % [OS.get_environment("RT3D_DIR"), id, id]   # a local copy of the models
 		var n := _fake_npc()
 		var live = NL.new()
 		n.add_child(live)
@@ -399,6 +401,7 @@ func _test_agata() -> void:
 			var last: float = player.yaw3d
 			var guard := 0
 			var need := -1.0
+			var yaw_arrived := INF   # her yaw as the walk ends: a turn after it faces what she walked to (a hotspot)
 			while (player.is_walking() or absf(player._yaw_v) > 0.05) and guard < 900 and rm.current_room == in_room:
 				if need < 0.0:
 					need = _path_turn(player, yaw0)
@@ -406,6 +409,8 @@ func _test_agata() -> void:
 				guard += 1
 				if rm.current_room != in_room:
 					break
+				if yaw_arrived == INF and not player.is_walking():
+					yaw_arrived = player.yaw3d
 				var stp := angle_difference(last, player.yaw3d)
 				last = player.yaw3d
 				if absf(stp) > 1e-4:
@@ -414,6 +419,8 @@ func _test_agata() -> void:
 					max_run = maxf(max_run, run)
 			longest = maxf(longest, max_run)
 			need = maxf(need, 0.0)
+			if yaw_arrived != INF:
+				need += absf(angle_difference(yaw_arrived, player.yaw3d_target))   # facing the hotspot she walked to
 			worst_excess = maxf(worst_excess, max_run - need)
 			_check(max_run <= need + deg_to_rad(120.0), "agata %s walk %d: turned %.0f° one way for a path asking %.0f° (circling)" % [room[0], wk, rad_to_deg(max_run), rad_to_deg(need)])
 	print("        agata: %d walks, the longest one-way turn %.0f°, at most %.0f° beyond what its path asks" % [walks, rad_to_deg(longest), rad_to_deg(worst_excess)])

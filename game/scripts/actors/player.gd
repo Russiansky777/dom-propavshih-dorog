@@ -88,6 +88,11 @@ var _carry_stage: String = ""
 var _settling: bool = false       # logical position arrived; the drawn figure is finishing its steps
 var walk_time: float = 0.0      # game seconds spent in the current walk (probe/measurements)
 var _closest_px: float = INF    # nearest the figure has come to the walk's end (3D: passing by is arriving)
+## A planned stop (data rt3d.walk.stop "planned"; Director 31.10, 15:04 «мельтешит в конце хода»): {t, T, p, rem0} while
+## the last one or two steps carry her to the end, else empty. _stop_hold_t: the stride planting goes on holding the
+## feet this long after (the pose still blending into the stance).
+var _stop_plan: Dictionary = {}
+var _stop_last_phase: float = 0.0
 var _path_seg: int = 0           # 3D: the path segment she has reached (path_follow; never goes back)
 var _path_n: int = 0
 var _path_first := Vector2.INF
@@ -515,6 +520,9 @@ func walk_to_and_interact(node: Node2D) -> void:
 
 func _start_walk(target: Vector2) -> void:
 	_turn_hold = []
+	_stop_plan = {}
+	if view3d != null:
+		view3d.stride_hold_keep = false
 	if _walking:
 		_adopt_drawn_position()  # a new target mid-walk: continue from where the figure is drawn
 	_target = target
@@ -1304,7 +1312,7 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 			# hold that foot; going on evenly ahead of the half-blended stance, the lock fell behind and stepped 50 cm)
 			var ground := view3d.root_between(_rm_phase, walk_phase)
 			var even: Vector3 = r_old * Vector3(0.0, 0.0, ground) * clampf(walk_w, 0.0, 1.0)
-			walk_part = walk_part.lerp(even, smoothstep(0.85, 0.98, view3d.shown_w()))
+			walk_part = walk_part.lerp(even, 1.0 if not _stop_plan.is_empty() else smoothstep(0.85, 0.98, view3d.shown_w()))
 		# setting off (the shown walk weight rising; Director 30.10 «идеальная Агата»): the planted foot is kept on the
 		# floor through the blend from the stance into the stride too — it skated 10–15 cm back as she set off. Only
 		# while the weight rises: stopping keeps the figure exactly at the end of its path.
@@ -1345,6 +1353,18 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 
 func _walk_step_3d(delta: float) -> void:
 	walk_time += delta
+	if not _stop_plan.is_empty():
+		# the planned stop runs to its last step whatever the agent says (it calls _arrive itself); she keeps heading for
+		# the end (the root motion carries her as she faces)
+		var npath := nav_agent.get_current_navigation_path()
+		var to_t := (npath[npath.size() - 1] if npath.size() > 0 else _target) - global_position   # the path's end
+		if to_t.length() > 24.0:
+			var want := _yaw_for_screen(to_t)
+			if absf(angle_difference(yaw3d, want)) < deg_to_rad(40.0):
+				yaw3d_target = want   # steering on; an end beside or behind her (passing it by a hair) never turns her round
+		var px_m0 := view3d.ppm * absf(scale.y) * _floor_proj(yaw3d)
+		_planned_stop_3d(to_t.length() / maxf(px_m0, 0.001), delta)
+		return
 	if nav_agent.is_navigation_finished():
 		_arrive()  # within the agent's tolerance (target_desired_distance), like the sheets
 		return
@@ -1457,7 +1477,11 @@ func _move_3d(dir: Vector2, seg_len: float, remaining: float, delta: float) -> v
 	if global_position.distance_to(_target) > 24.0 or walk_time < 0.2:
 		yaw3d_target = yaw_dir  # the last few px: keep the heading (the direction to a point that close jitters)
 	var px_per_m := view3d.ppm * s * _floor_proj(yaw_dir)
+	if _planned_stop_3d(remaining / maxf(px_per_m, 0.001), delta):
+		return
 	var stop_px := _rtf("walk", "stop_m", 0.45) * px_per_m
+	if str(_rt.get("walk", {}).get("stop", "")) == "planned" and view3d.even_root() and root_motion_3d:
+		stop_px = 0.25 * px_per_m   # the planned stop takes the last steps; this only for an end too near for one
 	var goal := 1.0 if remaining > stop_px else sqrt(clampf(remaining / maxf(stop_px, 0.001), 0.0, 1.0))
 	var off := absf(angle_difference(yaw3d, yaw3d_target))
 	# facing away from the path: turn first (on the spot, with small steps), then walk on — also in the last stretch
@@ -1476,6 +1500,96 @@ func _move_3d(dir: Vector2, seg_len: float, remaining: float, delta: float) -> v
 		var step := minf(walk_speed_mps_3d() * walk_w * px_per_m * delta * speed_factor, seg_len)
 		global_position += dir.normalized() * step
 		_update_depth()
+
+
+## Stopping in the steps a person stops in (Director 31.10, 15:04: «мельтешит в конце хода» — easing the walk weight down
+## over the last 45 cm while the legs kept their cadence made 5–7 quick little steps, and the frozen stride then settled
+## in 2–3 more: tests/probe_stop_steps.gd). A person stops in about two: the last stride shorter, the trailing foot
+## closing up. In the full stride, at a step boundary of the clip (its stance changes foot) with the end within 1.5
+## steps: the last one step (≤ 0.75 step left) or two carry her there at the clip's own cadence while the walk weight
+## eases from 1 to 0 as 1 − uᵖ, p set so the ground covered is the distance left (and corrected each frame by what is
+## really left); the feet stay held by the stride planting, and the foot left behind closes up with one step of the
+## foot locks. Returns true while the stop is under way (it moved the phase and set the weight). Data rt3d.walk.stop.
+func _planned_stop_3d(rem_m: float, delta: float) -> bool:
+	if str(_rt.get("walk", {}).get("stop", "")) != "planned" or not view3d.even_root() or not root_motion_3d:
+		return false
+	var rate := walk_rate_3d()
+	var vbar := view3d.walk_speed_mps * rate
+	var cyc := view3d.walk_len / maxf(rate, 0.01)      # seconds per cycle
+	if _stop_plan.is_empty():
+		var crossed := _contact_between(_stop_last_phase, walk_phase)
+		_stop_last_phase = walk_phase
+		var step_m := view3d.stride_m * 0.5
+		if crossed and OS.get_environment("PLANDBG") != "":
+			print("PLAN contact rem %.3f ww %.2f sw %.2f" % [rem_m, walk_w, view3d.shown_w()])
+		if not crossed or walk_w < 0.5 or view3d.shown_w() < 0.5 or rem_m > 1.5 * step_m or vbar <= 0.01:
+			return false
+		var n := 1 if rem_m <= 0.75 * step_m else 2
+		var T := _time_to_contact(walk_phase, n) * cyc
+		if T < 0.1:
+			return false
+		var w0 := walk_w
+		var r := clampf(rem_m / (vbar * w0 * T), 0.2, 0.9)
+		_stop_plan = {"t": 0.0, "T": T, "p": r / (1.0 - r), "rem0": rem_m, "w0": w0}
+		if OS.get_environment("PLANDBG") != "":
+			print("PLAN start n %d T %.3f phase %.3f contacts %s" % [n, T, fposmod(walk_phase, 1.0), str(view3d.contacts)])
+	var pl := _stop_plan
+	pl["t"] = float(pl["t"]) + delta * speed_factor
+	var u := clampf(float(pl["t"]) / maxf(float(pl["T"]), 0.01), 0.0, 1.0)
+	var p: float = pl["p"]
+	var w := float(pl.get("w0", 1.0)) * (1.0 - pow(u, p))
+	# the ground the plan still has to cover (as a share of rem0) — and what is really left: the weight corrects for it
+	var f := ((1.0 - u) - (1.0 - pow(u, p + 1.0)) / (p + 1.0)) / maxf(p / (p + 1.0), 1e-4)
+	var rem_plan := float(pl["rem0"]) * f
+	if rem_plan > 0.02:
+		w *= clampf(rem_m / rem_plan, 0.6, 1.6)
+	walk_w = clampf(w, 0.0, 1.0)
+	# the legs at the clip's cadence (as fast as the weight shows the stride — a half-blended stride at half speed)
+	walk_phase += delta * speed_factor * rate * (0.55 + 0.45 * float(pl.get("w0", 1.0))) / maxf(view3d.walk_len, 0.01)
+	_stop_last_phase = walk_phase
+	view3d.stride_hold = true
+	view3d.stride_hold_keep = true
+	if u >= 1.0:
+		if OS.get_environment("PLANDBG") != "":
+			print("PLAN end rem %.3f t %.3f" % [rem_m, float(pl["t"])])
+		walk_w = 0.0
+		_stop_plan = {}
+		view3d.stride_hold_keep = false   # held until the stance is shown (Actor3D.feet_step lets go)
+		_arrive()
+	return true
+
+
+## Whether the walk clip changes its stance foot between unwrapped phases p0 and p1.
+func _contact_between(p0: float, p1: float) -> bool:
+	if p1 <= p0 or p1 - p0 > 0.5:
+		return false
+	for c in view3d.contacts:
+		var k := ceilf(p0 - float(c))
+		if float(c) + k > p0 and float(c) + k <= p1:
+			return true
+	return false
+
+
+## Cycles from phase `ph` (unwrapped) to the clip's n-th stance change after it.
+func _time_to_contact(ph: float, n: int) -> float:
+	var x := fposmod(ph, 1.0)
+	var cs: Array = []
+	for c in view3d.contacts:
+		cs.append(float(c))
+	cs.sort()
+	if cs.is_empty():
+		return 0.5 * n
+	var found := 0
+	var k := 0
+	while k < 8:
+		for c in cs:
+			var cc: float = c + float(k)
+			if cc > x + 1e-4:
+				found += 1
+				if found == n:
+					return cc - x
+		k += 1
+	return 0.5 * n
 
 
 ## One-shot action in 3D. Data rt3d.actions[act]: the part of the clip played (`from`, `to`, s), an optional cut
