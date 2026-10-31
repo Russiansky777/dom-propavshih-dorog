@@ -14,6 +14,7 @@
   D  multi-image-to-3d meshy-7.1, как A, но remesh quad 150 тыс. (ровная сетка под риг при прежней детальности)
   E, F  multi-image-to-3d по фронту и спине (без профиля: у A и D сумка вышла дважды на правом боку); F — вторая проба E
   G  как A, но профиль отражён (фигура смотрит влево) — проверка, как Meshy читает сторону второго вида
+  H, I  фронт и профиль (E, F, G тоже удвоили сумку — её даёт вид со спины); I — вторая проба H
 Задача создаётся один раз; повторный запуск с --resume id продолжает без новых кредитов.
 Модуль-клиент — pipeline/3d/meshy_client.py (только импорт; pipeline/ — зона Codex, не правится).
 """
@@ -60,6 +61,10 @@ def bodies(views: list[Path]) -> dict[str, tuple[str, dict]]:
         mirrored = [uris[0], mc.data_uri(mp), uris[2]]
     two = {"ai_model": "meshy-7.1", "geometry_resolution": "2k", "should_remesh": False, **common_tex}
     return {
+        # H: front + profile — E (front + back) doubled the satchel as well, so the back view is what makes the second
+        # bag (from behind the hip bag reads as another one); the braid is still seen in the profile.
+        "H": ("/multi-image-to-3d", {"image_urls": uris[:2], "texture_image_urls": tex[:2], **two}),
+        "I": ("/multi-image-to-3d", {"image_urls": uris[:2], "texture_image_urls": tex[:2], **two}),
         "E": ("/multi-image-to-3d", {"image_urls": fb, "texture_image_urls": fb_tex, **two}),
         "F": ("/multi-image-to-3d", {"image_urls": fb, "texture_image_urls": fb_tex, **two}),
         "G": ("/multi-image-to-3d", {"image_urls": mirrored, "texture_image_urls": tex, **two}),
