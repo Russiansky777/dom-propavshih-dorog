@@ -97,6 +97,7 @@ func _run() -> void:
 	await _test("K-108 a kept black that no scene takes up lifts by itself", _test_kept_black_lifts)
 	await _test("K-16 a room change: a villager drawn live does not read its sheets, a 3D model is read once a game", _test_room_change_cost)
 	await _test("K-74 the far pier by day: the lanterns do not glow and the figures keep daylight; in the evening both lanterns burn", _test_r3_day_lights)
+	await _test("K (AI №4) the mill on day three: «Помню, Павел» only after the promise; after «матушка и брат» — «Наберём, Павел» without it", _test_m23b_promise)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -700,4 +701,31 @@ func _test_r3_day_lights() -> void:
 			_check(src != null, "R3: source " + sid)
 			if src != null:
 				_check(is_equal_approx(src.presence(), float(case[2])), "%s: %s presence %.2f, expected %.0f" % [case[0], sid, src.presence(), case[2]])
+
+
+func _test_m23b_promise() -> void:
+	for answer in ["pavel_answer_promise", "pavel_answer_family"]:
+		gs.reset()
+		sr.call("_on_state_reset")
+		_set_flags(["done_N02", "done_M22", answer])
+		await _enter("M1")
+		sr.start_scene("M23b")
+		var texts := ""
+		var guard := 0
+		while (not sr.current_beat.is_empty() or sr.is_busy()) and guard < 400:
+			guard += 1
+			var b: Dictionary = sr.current_beat
+			if not b.is_empty():
+				texts += String(b.get("text", "")) + "\n"
+			if b.get("type") == "options":
+				sr.choose(String(b.get("options", [])[0].get("id", "")))
+			elif not b.is_empty():
+				sr.advance()
+			await process_frame
+		var remembers := texts.contains("Помню, Павел")
+		var plain := texts.contains("Наберём, Павел")
+		if answer == "pavel_answer_promise":
+			_check(remembers and not plain, "promise: «Помню, Павел», not the plain line (%s)" % [texts.substr(0, 400)])
+		else:
+			_check(plain and not remembers, "family: «Наберём, Павел» without «Помню» (%s)" % [texts.substr(0, 400)])
 
