@@ -36,5 +36,12 @@ func _run() -> void:
 	var sr = root.get_node("StoryRunner")
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png(a[0])
+	# SHOTS=n: n more frames 0.3 s apart (<out>_1.png …) — a figure's motion (Tikhon's tail, 31.10 стр. 25)
+	var extra := int(OS.get_environment("SHOTS")) if OS.get_environment("SHOTS") != "" else 0
+	for k in extra:
+		for i in 18:
+			await process_frame
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png(String(a[0]).replace(".png", "_%d.png" % (k + 1)))
 	print("SHOT %s %s" % [a[0], str(rm.current_room.get("room_id"))])
 	quit(0)

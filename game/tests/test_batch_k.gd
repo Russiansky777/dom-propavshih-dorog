@@ -96,6 +96,7 @@ func _run() -> void:
 	await _test("K-108 the first span → the bridge: one black, never lifted in between", _test_one_black)
 	await _test("K-108 a kept black that no scene takes up lifts by itself", _test_kept_black_lifts)
 	await _test("K-16 a room change: a villager drawn live does not read its sheets, a 3D model is read once a game", _test_room_change_cost)
+	await _test("K-74 the far pier by day: the lanterns do not glow and the figures keep daylight; in the evening both lanterns burn", _test_r3_day_lights)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -679,4 +680,24 @@ func _test_room_change_cost() -> void:
 	# a model that failed to load is not remembered (locally the villagers' models are not imported)
 	for n in [A3._packed("res://no/such/model.glb")]:
 		_check(n == null and not A3._scene_cache.has("res://no/such/model.glb"), "a missing model is not cached")
+
+
+func _test_r3_day_lights() -> void:
+	var ids := ["post_lantern", "mitya_lantern", "evening_figures"]
+	for case in [["day 3 morning", ["done_N02"], 0.0], ["day 4", ["done_N02", "done_M22", "done_M24"], 0.0], ["day 2 evening", ["done_N01", "done_M15"], 1.0]]:
+		gs.reset()
+		sr.call("_on_state_reset")
+		_set_flags(case[1])
+		await _enter("R3")
+		var rl = rm.current_room.get_node_or_null("Lighting")
+		_check(rl != null, "R3 has its lighting")
+		if rl == null:
+			return
+		for i in 6:
+			await process_frame
+		for sid in ids:
+			var src = rl.source(sid)
+			_check(src != null, "R3: source " + sid)
+			if src != null:
+				_check(is_equal_approx(src.presence(), float(case[2])), "%s: %s presence %.2f, expected %.0f" % [case[0], sid, src.presence(), case[2]])
 
