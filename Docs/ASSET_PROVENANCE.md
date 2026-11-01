@@ -200,3 +200,6 @@ R2_fg_rope_v3 (канат сквозь кольцо, правка R2_fg_rope_v2 
 rope_prompts.txt, validation.json, превью — `assets/incoming/_meta_p15/`). Права — как у прочего арта ChatGPT проекта.
 R3_state_mitya_lantern_lit — горящий фонарь Мити на стенке опоры (слой R3 mitya_lantern, заменил вырезку из крупного плана);
 R2_fg_rope_v4 — канат сквозь кольцо без рыжего пятна (правка только в [1180,625,1240,695) относительно v3).
+
+## Живая Агата v4 — перевес юбки, 01.11.2026
+`game/assets/characters/agata/rt3d/agata_v4_rt.glb`: веса юбки перевешены `tools/reweight_skirt_glb.py` (leg_reach 0,06 / leg_top 0,26 — только JOINTS_0/WEIGHTS_0); md5 2394f6def34d787884f02c8d376d163f (было 17765b89…). Права — как у модели v4 (Meshy, справка в разделе «Живая Агата v4»).
