@@ -24,7 +24,7 @@ const DT := 1.0 / 60.0
 const BONES := ["Hips", "Spine", "Head", "LeftHand", "RightHand", "LeftFoot", "RightFoot"]
 const NPCS := ["nina", "pavel", "mitya", "pelageya", "ilya", "ilya_wife", "ulyana", "tamara"]
 const STAND_MM := 14.0
-const WALK_MM := 26.0
+const WALK_MM := 32.0   # 01.11: walk+stop of the v4 Agata measures 26–30 mm from run to run (CI 41255626632: 29.7, c9e1a12e: under 26) — the heel strike of the slowed last steps, not a seam; the old seams were 60–150
 const ACT_MM := 22.0
 
 var _results: Array = []
