@@ -52,6 +52,7 @@
     "similarity_boost": 0.75
    },
    "_settings_reason": "«тёплая, разговорчивая» — чуть свободнее подача.",
+   "alternates": {"_voloshina": {"voice_id": "nkvv6waLzFah2jTNUZGT", "voice_name": "Tatyana Voloshina - Dramatic, Rich", "voice_settings": {"stability": 0.45, "similarity_boost": 0.75}, "_note": "Директор 01.11 20:21: «Tatyana Voloshina — возможно, стоит заменить Тамару на неё»; голос из библиотеки ElevenLabs в аккаунте (voices.json, прогон 41341365909, professional). «_» — только пробы say (запрос K26), не полный набор ru_alt"}},
    "choice": "Единственный голос с именем Тамары в My Voices."
   },
   "pelageya": {

@@ -763,7 +763,16 @@ def cmd_say(req_path: Path) -> int:
             log(f"  СТОП {it['id']}: списано {spent}, следующая фраза зашла бы в запас квоты")
             break
         sp = str(it.get("speaker", "narrator"))
-        spec = cast_for(cast, sp, None, str(it.get("profile", "")))
+        # «alt» — проба другим голосом персонажа: cast.<персонаж>.alternates.<alt> (Директор 01.11: Татьяна Волошина
+        # вместо Тамары — сравнить на тех же фразах). Варианты с «_» не входят в полные наборы ru_alt (voice_sets).
+        alt = None
+        if it.get("alt"):
+            alt = ((cast.get("cast", {}).get(sp) or {}).get("alternates") or {}).get(str(it["alt"]))
+            if not alt:
+                failed.append(f"{it['id']}: у {sp} нет голоса alternates.{it['alt']} в cast.json")
+                log(f"  ОШИБКА {it['id']}: нет alternates.{it['alt']}")
+                continue
+        spec = cast_for(cast, sp, alt, str(it.get("profile", "")))
         if it.get("voice_settings"):   # проба: своя устойчивость и т. п. поверх настроек персонажа
             spec["voice_settings"] = dict(spec["voice_settings"], **it["voice_settings"])
         text = str(it["text"])
@@ -785,7 +794,7 @@ def cmd_say(req_path: Path) -> int:
                 + (f" | нет слов: {heard.get('missing')}" if heard.get("missing") else ""))
         cc = str(info.get("character_cost", ""))
         spent += int(cc) if cc.isdigit() else len(text)
-        write_json(out / f"{it['id']}.json", {"id": it["id"], "speaker": sp, "voice_name": spec["voice_name"],
+        write_json(out / f"{it['id']}.json", {"id": it["id"], "speaker": sp, "voice_name": spec["voice_name"], "alt": it.get("alt", ""),
                                                "model_id": spec["model_id"], "text": text, "duration_s": duration_s(f),
                                                "character_cost": cc, "alignment": info.get("alignment"),
                                                "expect": it.get("expect"), "variant": it.get("variant", ""),
