@@ -98,6 +98,7 @@ func _run() -> void:
 	await _test("K-16 a room change: a villager drawn live does not read its sheets", _test_room_change_cost)
 	await _test("K-74 the far pier by day: the lanterns do not glow and the figures keep daylight; in the evening both lanterns burn", _test_r3_day_lights)
 	await _test("K (AI №4) the mill on day three: «Помню, Павел» only after the promise; after «матушка и брат» — «Наберём, Павел» without it", _test_m23b_promise)
+	await _test("Ревью 01.11 (Б-2): after mother's answer the chalk, the bird and the mitten do not take a choice any more (no answer out of time); before it they do", _test_late_choices)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -723,4 +724,57 @@ func _test_m23b_promise() -> void:
 			_check(remembers and not plain, "promise: «Помню, Павел», not the plain line (%s)" % [texts.substr(0, 400)])
 		else:
 			_check(plain and not remembers, "family: «Наберём, Павел» without «Помню» (%s)" % [texts.substr(0, 400)])
+
+
+## Ревью 01.11 (логика, Б-2): the board's chalk choice, the bird's drawing and the mitten on the step leave traces that
+## get their answer in M22 (Nina on the board, Ulyana on the bird, the mitten found on the path). Done after M22 they
+## would get the answer at once, out of time — so they refuse with a word once the answer has been given.
+func _test_late_choices() -> void:
+	# before: the chalk opens the choice
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "done_M04", "done_M05", "done_M06", "house_unlocked", "house_open"])
+	gs.add_item("chalk")
+	await _enter("O1", "from_H3")
+	await _drain()
+	var h: Node = _hotspot("board")
+	sr.select_item("chalk")
+	sr.interact(h)
+	var tw := 0
+	while sr.current_options().is_empty() and tw < 120 and sr.current_beat.get("type", "") != "options":
+		tw += 1
+		await process_frame
+	_check(not sr.current_options().is_empty(), "before M22 the chalk opens the choice of what to write")
+	sr.choose("none")
+	await _drain()
+	# after: mother has answered — the chalk only says why not, nothing is set
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "done_M04", "done_M05", "done_M06", "house_unlocked", "house_open", "started_M19", "done_M19", "done_M21b", "done_M22", "nina_answered_board", "school_path_open", "free_walk_day3", "morning_day3", "met_nina", "met_ulyana"])
+	gs.add_item("chalk")
+	gs.add_item("mitten")
+	await _enter("O1", "from_O2")
+	await _drain()
+	h = _hotspot("board")
+	sr.select_item("chalk")
+	sr.interact(h)
+	var seen := await _drain()
+	_check(sr.current_options().is_empty() and seen.any(func(x): return String(x).contains("chalk_late")) and not gs.has_flag("board_here") and not gs.has_flag("board_mama") and gs.has_item("chalk"),
+		"after M22 the chalk is refused with a word, nothing written, the chalk stays: %s" % str(seen))
+	var bird: Node = _hotspot("bird_drawing")
+	if bird != null:
+		sr.interact(bird)
+		seen = await _drain()
+		_check(sr.current_options().is_empty() and seen.any(func(x): return String(x).contains("bird_drawing.late")) and not gs.has_flag("v03_marked"), "after M22 the bird takes no drawing: %s" % str(seen))
+	else:
+		_check(false, "the bird drawing hotspot is in the class")
+	await _enter("O2", "from_O1")
+	await _drain()
+	var step: Node = _hotspot("porch_step")
+	_check(step != null, "the porch step is in the yard")
+	if step != null:
+		sr.select_item("mitten")
+		sr.interact(step)
+		seen = await _drain()
+		_check(seen.any(func(x): return String(x).contains("mitten_late")) and not gs.has_flag("mitten_placed") and gs.has_item("mitten"), "once the path is open the mitten stays in the bag: %s" % str(seen))
 

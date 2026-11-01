@@ -95,6 +95,7 @@
         "mitten": {
           "sets": ["mitten_placed"],
           "consumes": true,
+          "requires": {"not_flags": ["school_path_open"]}, "fail_text": "@O2.porch_step.mitten_late", "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом: класть варежку есть смысл, пока двор водит по кругу",
           "_consumes_note": "варежка остаётся у ступени (слой mitten), из сумки уходит — сценарий M08 «вещь остаётся там, где положена»",
           "text": "@O2.porch_step.mitten",
           "scene": "M08",

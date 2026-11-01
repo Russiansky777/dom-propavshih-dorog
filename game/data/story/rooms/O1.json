@@ -40,7 +40,7 @@
       "states": [{"if": ["board_here"], "label": "@O1.board.label_here"}, {"if": ["board_mama"], "label": "@O1.board.label_mama"}, {"if": ["board_ilya"], "label": "@O1.board.label_ilya"}],
       "use": {"sets": ["o1_seen_board_task"], "text": "@O1.board.use", "once_flag": "o1_seen_board_task", "scene": "M06"},
       "item_use": {"chalk": {"choice": {
-        "prompt": "@O1.board.prompt",
+        "prompt": "@O1.board.prompt", "requires": {"not_flags": ["nina_answered_board"]}, "fail_text": "@O1.board.chalk_late", "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом: писать можно, пока мама не ответила (M22)",
         "_note": "Надпись на доске (Docs/SCENARIO_FINAL.md, M08 и раздел 9): одна из трёх или ни одной — флаг на будущее (мать ответит в M22). Написанное расходует мел (остаётся у доски), «Не писать» оставляет его в сумке; «Илюша…» — только когда рисунок брата найден.",
         "options": [
           {"id": "here", "label": "@O1.board.opt_here", "sets": "board_here", "text": "@O1.board.chalk", "consumes_item": true},
@@ -109,7 +109,7 @@
       "id": "bird_drawing", "kind": "object", "label": "@O1.bird_drawing.label", "rect": [1440, 150, 210, 300], "stand": [1540, 770], "color": "#e0d8c0", "draw": false,
       "visible_if": ["seen_class_traces"],
       "states": [{"if": ["v03_marked"], "label": "@O1.bird_drawing.label_marked"}],
-      "choice": {"prompt": "@O1.bird_drawing.prompt", "scene": "V03", "once_any": true,
+      "choice": {"prompt": "@O1.bird_drawing.prompt", "scene": "V03", "once_any": true, "requires": {"not_flags": ["done_M22"]}, "fail_text": "@O1.bird_drawing.late", "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом: пририсовать можно, пока Уля не ответила (M22)",
         "_g37": "G37 (Директор 23.10: «эпизод подрисовать птице — пусть будет, и ответ Ульяны зависит от выбора»): что пририсовать синице — шарф, лодку с дымом (как Илья), мостик на каменных опорах — или оставить; v03_marked — «Агата что-то пририсовала» (also), вариант — v03_add_*; след — ответ Ульяны в M22 и на плакате",
         "options": [
           {"id": "scarf", "label": "@O1.bird_drawing.opt_scarf", "sets": "v03_add_scarf", "also": ["v03_marked"], "text": "@O1.bird_drawing.react_scarf"},
