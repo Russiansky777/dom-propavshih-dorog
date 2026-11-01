@@ -2,7 +2,7 @@
  "mode": "say",
  "set": "K3",
  "stt": true,
- "max_chars": 900,
+ "max_chars": 5300,
  "credits_per_char_assumed": 0.46,
  "_comment": "K24 (прохождение Директора 01.11, группа Т — тексты и голос, Docs/FEEDBACK_DIRECTOR_2026-11-01_raw.txt): акценты — стр. 4 (Z2.landmarks.look), 11 (M02_2), 14 (R1.pelageya.manager), 18 (spoons_done), 27 (H4.v02.done), 30 (examine.photo_bridge), 47 (M17_1 «бечева́»), 64 (nina_coat.look_done), 76 (M26_37); новый текст — стр. 24 (O1.enter.winter), 25 (O1.board.chalk*), 26 (spoons_quit), 32 (H2.bell.look), 33 (H2d.bell.ring_far), 36 (H2d.office_mirror.clamped), 40 (quiet_3), 46 (M16_0_then0), 50 (M18_7), 62 (M23d_4_then0 — новая фраза), 65 (M23b_0), 66 (M23b_2), 70 (M25_3). Стр. 12: M02_6 «Вот стопор — кол с замком» снята — записи не нужно. Take _1 = voice_text в data/story/voice_direction.json.",
  "new_text_lines": [
