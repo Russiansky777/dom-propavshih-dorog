@@ -33,7 +33,7 @@
   "variants": {
     "_comment": "Другие позы той же куклы (партия 12, Директор 01.11): картинка со своими костями и областями веса; место (place) выбирает позу ключом variant. Чего в варианте нет — берётся из основы (anim, shadow, mesh_cell_px); кадров рта у позы нет — на реплике только поднимает голову (вырезки рта для калачика — заказать художнику).",
     "loaf": {
-      "image": "res://assets/characters/tikhon/tikhon_loaf.png",
+      "image": "res://assets/characters/tikhon/tikhon_loaf.png", "mouth_frames": {"_comment": "Партия 13 (ChatGPT 01.11, assets/incoming/_meta_p13/README.txt): рот калачика — щель, открытый с языком, широкая пасть; вырезки [865,655,1000,760) холста позы, нос остаётся с рисунка", "images": ["res://assets/characters/tikhon/loaf_mouth_1.png", "res://assets/characters/tikhon/loaf_mouth_2.png", "res://assets/characters/tikhon/loaf_mouth_3.png"], "region": [865, 655, 1000, 760], "bone": "head", "step_s": 0.09, "level_db": [-38.0, -26.0, -15.0]},
       "source_size": 1254,
       "feet_px": [800, 1120],
       "figure_top_px": 268,

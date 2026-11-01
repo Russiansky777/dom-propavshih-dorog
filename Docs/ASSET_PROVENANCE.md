@@ -172,3 +172,11 @@ README, промпты и проверки — в `assets/incoming/_meta_p<па�
 `game/assets/trailer/house_front.png`, `house_far.png`, `house_depth.png` — из пейзажа главного меню (арт ChatGPT, см. «главное меню»)
 разрезаны по карте глубины `tools/make_trailer_layers.py`; карта глубины — модель Depth Anything V2 Small (ONNX,
 onnx-community/depth-anything-v2-small; лицензия модели — Apache-2.0, https://huggingface.co/depth-anything/Depth-Anything-V2-Small).
+
+## Партия 13 — ChatGPT (imagegen), 01.11.2026
+Заказ `Docs/art_pack_13/00_ТЕКСТ_для_ChatGPT.txt` (сборщик `tools/make_art_pack_13.py`), архив `Dom_propavshih_dorog_part13_2026-11-01.zip`
+(README, prompts.json, validation.json, final_corrections_prompt.txt, OVERVIEW — `assets/incoming/_meta_p13/`). Права — как у прочего
+арта ChatGPT проекта. Файлы: Tikhon_loaf_mouth_1–3 (рот позы «калачиком»; в игре — вырезка [865,655,1000,760) в
+`game/assets/characters/tikhon/loaf_mouth_1–3.png`, `variants.loaf.mouth_frames` в game/data/actors/tikhon.json),
+H1_state_bench_wide_shelf_v2 и H1_state_bench_wide_scarf_v2 (та же широкая полка, что висит у печи, лежит на лежанке; копии —
+`tools/import_room_art.py H1`).

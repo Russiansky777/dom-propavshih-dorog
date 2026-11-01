@@ -2909,7 +2909,8 @@
     },
     {
       "id": "tikhon_loaf_mouth",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part13_2026-11-01; README assets/incoming/_meta_p13; копии в игре — import_room_art H1 / вырезка рта в game/assets/characters/tikhon/loaf_mouth_1–3.png)",
       "block": "Партия 13 (по партии 12 и приёмке K)",
       "batch": "13",
       "owner": "ChatGPT + Директор",
@@ -2929,7 +2930,8 @@
     },
     {
       "id": "H1_bench_wide_shelf_v2",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part13_2026-11-01; README assets/incoming/_meta_p13; копии в игре — import_room_art H1 / вырезка рта в game/assets/characters/tikhon/loaf_mouth_1–3.png)",
       "block": "Партия 13 (по партии 12 и приёмке K)",
       "batch": "13",
       "owner": "ChatGPT + Директор",

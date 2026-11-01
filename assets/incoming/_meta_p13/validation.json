@@ -1,0 +1,107 @@
+[
+  {
+    "file": "H1_state_bench_wide_scarf_v2.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      360,
+      462,
+      712,
+      684
+    ],
+    "allowed_rect": [
+      360,
+      462,
+      712,
+      684
+    ],
+    "outside_alpha_max": 0
+  },
+  {
+    "file": "H1_state_bench_wide_shelf_v2.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      360,
+      462,
+      712,
+      684
+    ],
+    "allowed_rect": [
+      360,
+      462,
+      712,
+      684
+    ],
+    "outside_alpha_max": 0
+  },
+  {
+    "file": "Tikhon_loaf_mouth_1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      866,
+      656,
+      999,
+      759
+    ],
+    "allowed_rect": [
+      865,
+      655,
+      1000,
+      760
+    ],
+    "outside_alpha_max": 0
+  },
+  {
+    "file": "Tikhon_loaf_mouth_2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      866,
+      656,
+      999,
+      759
+    ],
+    "allowed_rect": [
+      865,
+      655,
+      1000,
+      760
+    ],
+    "outside_alpha_max": 0
+  },
+  {
+    "file": "Tikhon_loaf_mouth_3.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      866,
+      656,
+      999,
+      759
+    ],
+    "allowed_rect": [
+      865,
+      655,
+      1000,
+      760
+    ],
+    "outside_alpha_max": 0
+  }
+]
