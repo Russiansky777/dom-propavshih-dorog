@@ -1960,6 +1960,14 @@ func journal_facts() -> Array[String]:
 	for f in GameState.flags.keys():
 		if not GameState.flags[f]:
 			continue
+		# flags.json `desc_unless`: the fact is left out while any of those flags is set (ревью 01.11, Г-24: «я сыграла»
+		# gives way to the game's result, «я порыбачила» to the catch — one line per event)
+		var skip := false
+		for u in StoryData.flag_entry(String(f)).get("desc_unless", []):
+			if GameState.has_flag(String(u)):
+				skip = true
+		if skip:
+			continue
 		var d := StoryData.flag_description(String(f))
 		if d != "":
 			out.append(d)

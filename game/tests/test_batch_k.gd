@@ -101,6 +101,7 @@ func _run() -> void:
 	await _test("Ревью 01.11 (Б-2): after mother's answer the chalk, the bird and the mitten do not take a choice any more (no answer out of time); before it they do", _test_late_choices)
 	await _test("Ревью 01.11 (В-2, В-13): a villager walking off waits through a pause (the walk ends where the tween does); the yard loop's black survives a reset", _test_pause_timers)
 	await _test("Ревью 01.11 (Б-9, Б-6): the optional stories close on quests.json closes_on (the first span); Esc inside an unclosable close-up is not eaten", _test_closes_on_and_esc)
+	await _test("Ревью 01.11 (Г-24): the journal keeps one line per event — «сыграла» gives way to the result, «порыбачила» to the catch (flags.json desc_unless)", _test_journal_dupes)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -857,4 +858,21 @@ func _test_closes_on_and_esc() -> void:
 	_check(sr.mechanic_open and not root.is_input_handled(), "Esc is left for the pause menu, the close-up stays")
 	sr.close_mechanic()
 	await _frames(2)
+
+
+func _test_journal_dupes() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	gs.set_flag("ttt_played", true)
+	var f: Array = sr.journal_facts()
+	_check(f.any(func(x): return String(x).contains("сыграла с Ульяной")), "played, no result yet: «сыграла»: %s" % str(f))
+	gs.set_flag("ttt_won", true)
+	f = sr.journal_facts()
+	_check(f.any(func(x): return String(x).contains("обыграла Ульяну")) and not f.any(func(x): return String(x).contains("сыграла с Ульяной")), "with the result only the result: %s" % str(f))
+	gs.set_flag("mitya_fished", true)
+	f = sr.journal_facts()
+	_check(f.any(func(x): return String(x).contains("порыбачила")), "fished, nothing caught: «порыбачила»")
+	gs.set_flag("mitya_fish_caught", true)
+	f = sr.journal_facts()
+	_check(f.any(func(x): return String(x).contains("окуня")) and not f.any(func(x): return String(x).contains("порыбачила")), "with the perch only the perch: %s" % str(f))
 

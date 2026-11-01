@@ -361,7 +361,7 @@ func _test_finale() -> void:
 			phases.append(p)
 		if p == "hold":
 			var pr: Dictionary = credits.call("probe")
-			thanks_ok = String(pr.get("thanks", "")) == "Спасибо за уделённое внимание, надеюсь, у Вас получилось проникнуться историей Агаты и её семьи." \
+			thanks_ok = String(pr.get("thanks", "")) == "Спасибо за уделённое внимание, надеюсь, у вас получилось проникнуться историей Агаты и её семьи." \
 				and String(pr.get("author", "")) == "Made by Yahor Zavatski" and float(pr.get("black", 0)) > 0.99 and float(pr.get("text", 0)) > 0.99
 		if p == "done":
 			break

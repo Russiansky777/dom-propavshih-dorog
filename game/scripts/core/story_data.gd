@@ -358,6 +358,12 @@ func flag_description(flag: String) -> String:
 	return String(d.get("desc", ""))
 
 
+## The whole flags.json entry of a flag ({} — none): desc, desc_unless, notes.
+func flag_entry(flag: String) -> Dictionary:
+	var d = flag_desc.get(flag, {})
+	return d if d is Dictionary else {}
+
+
 ## Hints for a scene as a 3-tier list (data `hints` array, or single `hint`, padded by generic UI hints).
 func scene_hints(scene_id: String) -> Array[String]:
 	var out: Array[String] = []
