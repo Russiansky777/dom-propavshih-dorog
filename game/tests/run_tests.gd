@@ -2001,7 +2001,9 @@ func _test_tikhon() -> void:
 	var agata_h: float = 337.0 * room.depth_scale(t.depth_y)
 	var ratio: float = t.figure_height_px() / agata_h
 	print("    tikhon: %d vertices, %d triangles; height %.0f px = %.2f × Agata at depth y %.0f; feet %s" % [poly.polygon.size(), poly.polygons.size(), t.figure_height_px(), ratio, t.depth_y, str(t.global_position)])
-	_check(absf(ratio - 0.33) < 0.02, "Tikhon ≈ 0.33 of Agata's height, got %.2f" % ratio)
+	# (01.11: on the chair he lies curled up — the «loaf» pose of batch 12, 0.248 of Agata at the same drawing scale)
+	var want_h: float = 0.248 if String(t.get("variant")) == "loaf" else 0.33
+	_check(absf(ratio - want_h) < 0.02, "Tikhon ≈ %.2f of Agata's height (%s), got %.2f" % [want_h, String(t.get("variant")), ratio])
 	# Breathing + tail: one seamless loop (first and last key equal on every track), body scale ±2 %.
 	var idle: Animation = t.life.get_animation("idle")
 	_check(t.life.is_playing() and t.life.current_animation == "idle" and idle.loop_mode == Animation.LOOP_LINEAR, "the idle loop plays")

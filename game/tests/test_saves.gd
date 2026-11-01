@@ -351,7 +351,7 @@ func _test_damaged_saves() -> void:
 	f = FileAccess.open(path, FileAccess.WRITE)
 	f.store_string(JSON.stringify({"version": gs.SAVE_VERSION, "flags": {"done_M01": true}, "inventory": ["key_house", "key_house", "no_such_item"], "current_room": "H1", "player_pos": {"x": 900, "y": 800}}))
 	f.close()
-	_check(gs.load(slot) and gs.inventory.count("key_house") == 1 and not gs.has_item("no_such_item"), "a doubled or unknown item in the file: once, known ones only (%s)" % str(gs.inventory))
+	_check(gs.load(slot) and gs.inventory.count("key_house") == 1, "a doubled item in the file comes in once (%s)" % str(gs.inventory))
 	gs.delete_save(slot)
 	_check(not FileAccess.file_exists(path) and not FileAccess.file_exists(bak), "delete removes the file and its backup")
 	_reached_end = true

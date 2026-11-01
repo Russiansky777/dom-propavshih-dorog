@@ -50,7 +50,7 @@
         {"name": "tail4", "parent": "tail3", "from": [250, 640], "to": [560, 660]}
       ],
       "regions": {"_comment": "хвост — левее x 640…580 (обратный порядок = слева), голова — выше y 780…720, уши — выше y 560…480, левое/правое ухо — по x 870", "tail_x": [640, 580], "head_y": [780, 720], "ear_y": [560, 480], "ear_split_x": 870},
-      "anim": {"breath_period_s": 3.6, "breath_scale": 0.015, "tail_period_s": 5.5, "tail_amp_deg": [1.0, 1.5, 2.0, 2.5], "tail_phase_rad": 0.7, "accent_every_s": [5.0, 11.0], "head_tilt_share": 0.4, "ear_twitch_deg": 12.0, "head_tilt_deg": 4.0, "talk_lift_deg": -8.0},
+      "anim": {"breath_period_s": 3.6, "breath_scale": 0.02, "tail_period_s": 5.4, "tail_amp_deg": [1.0, 1.5, 2.0, 2.5], "tail_phase_rad": 0.7, "accent_every_s": [5.0, 11.0], "head_tilt_share": 0.4, "ear_twitch_deg": 12.0, "head_tilt_deg": 4.0, "talk_lift_deg": -8.0},
       "shadow": {"width_rel": 0.9, "height_ratio": 0.22, "alpha": 0.4}
     }
   },

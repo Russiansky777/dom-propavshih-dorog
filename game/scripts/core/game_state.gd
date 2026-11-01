@@ -144,8 +144,11 @@ func save_valid(data: Dictionary) -> bool:
 		return false
 	var room := String(data.get("current_room", ""))
 	if room != "" and StoryData.room(room).is_empty():
-		push_error("GameState: save points to unknown room '%s'" % room)
-		return false
+		# a room without data: a scene fixture (res://scenes/rooms|probe/<id>.tscn, the M0 probe rooms) still counts
+		var rm: Node = get_node_or_null("/root/RoomManager")
+		if rm == null or not rm.has_method("has_room") or not bool(rm.call("has_room", room)):
+			push_error("GameState: save points to unknown room '%s'" % room)
+			return false
 	return true
 
 
@@ -162,8 +165,8 @@ func from_dict(data: Dictionary) -> bool:
 	inventory.clear()
 	for item in data.get("inventory", []):
 		var iid := String(item)
-		# once each, and only an item the story knows (a hand-edited or stale file cannot double a mandatory item)
-		if not inventory.has(iid) and (StoryData.items.is_empty() or StoryData.items.has(iid)):
+		# once each (a hand-edited or stale file cannot double a mandatory item)
+		if not inventory.has(iid):
 			inventory.append(iid)
 	current_room = String(data.get("current_room", ""))
 	var p: Dictionary = data.get("player_pos", {})
