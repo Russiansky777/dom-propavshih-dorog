@@ -1,0 +1,21 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Четырнадцатый заход (K14, K15, K18, K19): записи, выбранные Директором 01.11 (12:31–12:36) — в игру без нового синтеза. W201 (M23c_0) — «Ни одна»: «перед «все» пауза не нужна» — перезапись K20; W208 (H1.shelf.look) взята, но «у печИ ударение» — перезапись K20 с ударением.",
+ "picks": {
+  "M24_0": "W181_2",
+  "intro.opening_2": "W182_3",
+  "R1.instruction.paper": "W193_2",
+  "pelageya:R3.exit_R2.closed_morning": "W194_2",
+  "Z3.old_pier_base.look_early": "W195_2",
+  "ulyana:O1d.ulyana.hat_q": "W196_2",
+  "M03_8": "W198_1",
+  "M20_9": "W203_1",
+  "H3.puzzle.seat_hint": "W204_1",
+  "M26_14": "W205_1",
+  "tamara:O4.tamara.after": "W206_1",
+  "tikhon:H1.tikhon.ask_shelf": "W207_1",
+  "H1.shelf.look": "W208_1",
+  "H1.shelf.look_wet": "W209_3"
+ }
+}
