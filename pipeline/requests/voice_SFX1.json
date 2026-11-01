@@ -1,0 +1,51 @@
+{
+ "mode": "sfx",
+ "set": "SFX1",
+ "max_items": 6,
+ "model_id": "eleven_text_to_sound_v2",
+ "_comment": "SFX1 (Директор 01.11, 21:59, стр. 22): звук первого открытия боковой двери — «типа щеколды или засова, дай несколько на выбор». 6 вариантов ElevenLabs (text-to-sound-effects), на страницу выбора; в игру — по выбору (sfx.json / H3 on_pass)",
+ "items": [
+  {
+   "id": "SFX_door_1",
+   "text": "Heavy old iron door bolt slid open with a rusty scrape, then an old wooden cottage door creaks open slowly, quiet interior, no music",
+   "duration_seconds": 2.6,
+   "prompt_influence": 0.6,
+   "variant": "засов, скрип и дверь"
+  },
+  {
+   "id": "SFX_door_2",
+   "text": "Stiff old iron sliding bolt on a wooden door pulled back in two short jerks, ending with a metallic clack, quiet room, no music",
+   "duration_seconds": 1.6,
+   "prompt_influence": 0.6,
+   "variant": "засов тугой, рывками"
+  },
+  {
+   "id": "SFX_door_3",
+   "text": "Wooden thumb latch of an old village cottage door lifted with a click and a dry wooden rattle, quiet room, no music",
+   "duration_seconds": 1.3,
+   "prompt_influence": 0.6,
+   "variant": "деревянная щеколда"
+  },
+  {
+   "id": "SFX_door_4",
+   "text": "Rusty iron hook-and-eye door latch unhooked with a small metallic tick, then old door hinges creak briefly, quiet room, no music",
+   "duration_seconds": 2.2,
+   "prompt_influence": 0.6,
+   "variant": "крючок и петли"
+  },
+  {
+   "id": "SFX_door_5",
+   "text": "Heavy wooden crossbar lifted out of iron brackets on an old door, wood scraping on iron, a dull wooden thunk as it is set down, no music",
+   "duration_seconds": 2.2,
+   "prompt_influence": 0.6,
+   "variant": "деревянный засов-брус"
+  },
+  {
+   "id": "SFX_door_6",
+   "text": "Old iron door bolt drawn back once, a single clean metallic clack, small quiet room, no music",
+   "duration_seconds": 1.0,
+   "prompt_influence": 0.6,
+   "variant": "засов одним щелчком"
+  }
+ ]
+}

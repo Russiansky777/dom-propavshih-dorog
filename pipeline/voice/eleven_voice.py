@@ -731,6 +731,43 @@ def cmd_adopt(req_path: Path) -> int:
     return 1 if failed else 0
 
 
+def cmd_sfx(req_path: Path) -> int:
+    """Режим sfx (Директор 01.11, 21:59: звук первого открытия боковой двери — «типа щеколды или засова, дать несколько на
+    выбор»): звуковые эффекты по описанию — POST /v1/sound-generation {text, duration_seconds, prompt_influence, model_id}
+    (документация ElevenLabs: text-to-sound-effects/convert) → pipeline/voice/probe/<набор>/<id>.mp3 и .json. Это пробы на
+    выбор Директору, в игру — отдельным решением. Потолок — max_items запроса."""
+    req = read_json(req_path, {})
+    set_name = str(req.get("set", req_path.stem))
+    items = [it for it in req.get("items", []) if it.get("id") and it.get("text")]
+    if len(items) > int(req.get("max_items", 0)):
+        raise VoiceError(f"sfx: {len(items)} звуков > max_items {req.get('max_items')}")
+    out = PROBE_DIR / set_name
+    out.mkdir(parents=True, exist_ok=True)
+    failed = []
+    for it in items:
+        body = {"text": str(it["text"]), "prompt_influence": float(it.get("prompt_influence", 0.5)),
+                "model_id": str(it.get("model_id", req.get("model_id", "eleven_text_to_sound_v2")))}
+        if it.get("duration_seconds") is not None:
+            body["duration_seconds"] = float(it["duration_seconds"])
+        status, headers, payload = http("POST", "/v1/sound-generation", {"output_format": "mp3_44100_128"}, body,
+                                        accept="audio/mpeg")
+        if status != 200:
+            failed.append(f"{it['id']}: HTTP {status} {error_text(status, payload)}")
+            log(f"  ОШИБКА {it['id']}: HTTP {status} {error_text(status, payload)}")
+            continue
+        f = out / f"{it['id']}.mp3"
+        f.write_bytes(payload)
+        write_json(out / f"{it['id']}.json", {"id": it["id"], "text": body["text"], "variant": it.get("variant", ""),
+                                               "duration_s": duration_s(f), "request": body,
+                                               "character_cost": headers.get("character-cost", ""),
+                                               "run": os.environ.get("GITHUB_RUN_ID", "local")})
+        log(f"  {it['id']:16} {duration_s(f):5.2f} с  {it.get('variant', '')}")
+    log(f"[sfx {set_name}] звуков {len(items) - len(failed)}, ошибок {len(failed)}")
+    for e in failed:
+        log("  " + e)
+    return 1 if failed else 0
+
+
 def cmd_say(req_path: Path) -> int:
     """Режим say: короткие пробные фразы (не реплики игры) голосом персонажа с выравниванием по символам →
     pipeline/voice/probe/<набор>/<id>.mp3 и <id>.json. Для проверки способов задать ударение (pronounce.py) —
@@ -1448,7 +1485,7 @@ def _manifest_doc(manifest: dict, cast: dict, vs: dict) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "say", "transcribe", "adopt", "run"])
+    ap.add_argument("mode", choices=["check", "list", "generate", "design", "create_voice", "say", "sfx", "transcribe", "adopt", "run"])
     ap.add_argument("--request")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
@@ -1462,10 +1499,10 @@ def main() -> int:
             return cmd_check()
         if mode == "list":
             return cmd_list()
-        if mode in ("design", "create_voice", "say", "transcribe", "adopt"):
+        if mode in ("design", "create_voice", "say", "sfx", "transcribe", "adopt"):
             if not a.request:
                 raise VoiceError(f"{mode}: нужен --request")
-            return {"design": cmd_design, "create_voice": cmd_create_voice, "say": cmd_say, "transcribe": cmd_transcribe,
+            return {"design": cmd_design, "create_voice": cmd_create_voice, "say": cmd_say, "sfx": cmd_sfx, "transcribe": cmd_transcribe,
                     "adopt": cmd_adopt}[mode](Path(a.request))
         if mode == "generate":
             if not a.request:
