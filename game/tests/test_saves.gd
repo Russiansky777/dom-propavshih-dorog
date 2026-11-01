@@ -347,6 +347,16 @@ func _test_damaged_saves() -> void:
 	f.close()
 	_check(not gs.load(slot) and gs.has_flag("marker_before_load") and not gs.has_flag("done_M01"), "an unknown room: refused, nothing replaced")
 	_check(not rm.load_game(slot) and gs.has_flag("marker_before_load"), "RoomManager.load_game refuses it too and keeps the game")
+	# ревью 01.11 (В-18): the refusal is said to the player — the menu's load says why (@ui.load_failed)
+	if ui != null:
+		var hints: Array[String] = []
+		var cb := func(t: String): hints.append(t)
+		gs.hint_shown.connect(cb)
+		ui.call("_do_load", slot)
+		await process_frame
+		await process_frame
+		gs.hint_shown.disconnect(cb)
+		_check(hints.has(sd.text("@ui.load_failed")) and gs.has_flag("marker_before_load"), "a damaged slot from the menu: «не прочиталось» in the hint, the game stays: %s" % str(hints))
 	# 4. a doubled item in the file comes into the bag once
 	f = FileAccess.open(path, FileAccess.WRITE)
 	f.store_string(JSON.stringify({"version": gs.SAVE_VERSION, "flags": {"done_M01": true}, "inventory": ["key_house", "key_house", "no_such_item"], "current_room": "H1", "player_pos": {"x": 900, "y": 800}}))

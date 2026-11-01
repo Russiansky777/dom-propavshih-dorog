@@ -494,7 +494,8 @@ func _update_walk_anim() -> void:
 # --- Input -----------------------------------------------------------------
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_F8 or event.physical_keycode == KEY_F8):
+	if event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_F8 or event.physical_keycode == KEY_F8) \
+			and load("res://scripts/main.gd").debug_keys_allowed():   # ревью 01.11 (В-19): not on a player's web page
 		# Comparison switch (Director): sprites ↔ live 3D, same place, same state.
 		set_render_mode("sprites" if is_3d() else "3d")
 		get_viewport().set_input_as_handled()

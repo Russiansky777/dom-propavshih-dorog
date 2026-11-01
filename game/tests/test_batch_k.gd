@@ -102,6 +102,7 @@ func _run() -> void:
 	await _test("Ревью 01.11 (В-2, В-13): a villager walking off waits through a pause (the walk ends where the tween does); the yard loop's black survives a reset", _test_pause_timers)
 	await _test("Ревью 01.11 (Б-9, Б-6): the optional stories close on quests.json closes_on (the first span); Esc inside an unclosable close-up is not eaten", _test_closes_on_and_esc)
 	await _test("Ревью 01.11 (Г-24): the journal keeps one line per event — «сыграла» gives way to the result, «порыбачила» to the catch (flags.json desc_unless)", _test_journal_dupes)
+	await _test("Ревью 01.11 (А-13/А-14): the pier base before Pelageya says nothing of the rope; «кто затвором ведал» only after the sluice answer", _test_early_knowledge)
 	await _test("Ревью 01.11 (Б-5/А-16): the jetty's «К лодке» on the morning of day three says «сперва с матерью», not «завтра отвезу»; before that morning the old word", _test_morning_jetty_exit)
 	gs.reset()
 	Engine.time_scale = 1.0
@@ -907,3 +908,55 @@ func _test_morning_jetty_exit() -> void:
 	gs.set_flag("boat_shuttle_open", true)
 	_check(e.is_open(), "with boat_shuttle_open the way to the boat is open")
 	_check(String(e.current_state().get("label", "")) == "@R3.exit_R2.label_pull", "the pull label follows the open shuttle: %s" % str(e.current_state()))
+
+
+## Ревью 01.11 (А-14): the look at the old pier base (Z3) spoke of the rope on the plate and «ближний конец» before
+## Pelageya had said it (M02) — now a state `unless done_M02` keeps to Dunya's sheet (M01). (А-13): «А управляющий
+## мельницы?» named a man nobody had mentioned — now the question is «А кто затвором ведал?» and follows the sluice answer.
+func _test_early_knowledge() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "met_tamara", "knows_pier_trace"])
+	gs.add_item("key_house")
+	await _enter("Z3", "from_R1")
+	await _drain()
+	var base: Node = _hotspot("old_pier_base")
+	_check(base != null, "the pier base is at the turn")
+	if base != null:
+		sr.interact(base)
+		var seen := await _drain()
+		_check(seen.has("Z3.old_pier_base.look_early") and not seen.has("Z3.old_pier_base.look"), "before M02: the early look (Dunya's sheet, no rope): %s" % str(seen))
+		var early: String = sd.text("@Z3.old_pier_base.look_early")
+		_check(not early.contains("канат") and not early.contains("ближний"), "the early look has no rope and no «ближний конец»: %s" % early)
+		_set_flags(["done_M02", "met_pelageya", "knows_no_road", "knows_rope_on_plate"])
+		sr.interact(base)
+		seen = await _drain()
+		_check(seen.has("Z3.old_pier_base.look") and not seen.has("Z3.old_pier_base.look_early"), "after M02: the full look: %s" % str(seen))
+	# the questions at the pier: the sluice-keeper only after the sluice
+	await _enter("R1", "from_Z3")
+	await _drain()
+	var pel: Node = _hotspot("pelageya")
+	_check(pel != null, "Pelageya is at the pier on day one")
+	if pel == null:
+		return
+	sr.interact(pel)
+	var tw := 0
+	while sr.current_options().is_empty() and tw < 120:
+		tw += 1
+		await process_frame
+	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids.has("sluice") and not ids.has("manager"), "before the sluice answer no question about its keeper: %s" % str(ids))
+	sr.choose("sluice")
+	await _drain()
+	_check(gs.has_flag("knows_sluice_key"), "the sluice answer is known")
+	sr.interact(pel)
+	tw = 0
+	while sr.current_options().is_empty() and tw < 120:
+		tw += 1
+		await process_frame
+	ids = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids.has("manager"), "after it — «А кто затвором ведал?»: %s" % str(ids))
+	var lab: String = sd.text("@R1.pelageya.opt_manager")
+	_check(not lab.contains("управляющ"), "the question names no manager: %s" % lab)
+	sr.choose("leave")
+	await _drain()

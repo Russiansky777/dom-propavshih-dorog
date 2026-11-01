@@ -30,7 +30,7 @@
     {
       "id": "old_pier_base", "kind": "object", "label": "@Z3.old_pier_base.label", "rect": [1240, 510, 240, 100], "_rect_note": "H36: левее x 1240 — лодка у плиты («В лодку»)", "stand": [1120, 730], "color": "#6f6a5a", "draw": false,
       "item_use": {"photo_bridge": {"text": "@Z3.old_pier_base.photo", "_note": "снимок старого моста (M07): канат сидел на плите этой опоры; не расходуется"}, "brace_plate": {"text": "@Z3.plate.brace_high", "_note": "31.10 (Директор, стр. 70): пока вода высоко — почему скобу не поставить; не расходуется"}},
-      "look": "@Z3.old_pier_base.look",
+      "look": "@Z3.old_pier_base.look", "states": [{"unless": ["done_M02"], "look": "@Z3.old_pier_base.look_early", "_k": "Ревью 01.11 (А-14): до разговора с Пелагеей (M02) Агата не знает про канат на плите и «ближний конец» — только лист Дуни (M01)"}],
       "hidden_if": ["evening_dusk"]
     },
     {

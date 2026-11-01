@@ -66,7 +66,7 @@ static func build_stamp() -> String:
 		var bias: int = int(Time.get_time_zone_from_system().get("bias", 0))
 		var loc := Time.get_datetime_dict_from_unix_time(unix + bias * 60)
 		when = " · %02d.%02d %02d:%02d" % [loc.day, loc.month, loc.hour, loc.minute]
-	return "сборка %s%s" % [String(d["sha"]), when]
+	return StoryData.text("@ui.build_stamp", {"sha": String(d["sha"]), "when": when})   # ревью 01.11 (В-18): the words are data
 
 
 func _build(t: Dictionary) -> void:
@@ -311,6 +311,7 @@ func activate(id: String) -> void:
 			close()
 			if not RoomManager.load_game(slot):
 				open()
+				GameState.show_hint(StoryData.text("@ui.load_failed"))   # ревью 01.11 (В-18): the player hears why
 		"new_game":
 			close()
 			RoomManager.new_game()

@@ -31,6 +31,13 @@ var _probe_paused: bool = false
 static var probe_wanted: bool = false
 
 
+## Ревью 01.11 (В-19): the service keys (F2/F3/F4 effects and the frame counter, F8 sprites ↔ live 3D) stay in the
+## desktop builds, where the Director compares (ACCEPTANCE_J, M1 п. 130–138), and go off in a player's browser page:
+## a stray F8 there would pull the GLB and freeze the tab. The probe page (Playwright, ?probe…) keeps them.
+static func debug_keys_allowed() -> bool:
+	return probe_wanted or not OS.has_feature("web")
+
+
 static func web_probe_wanted() -> bool:
 	if not OS.has_feature("web"):
 		return false

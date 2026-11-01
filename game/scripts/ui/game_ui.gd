@@ -1262,6 +1262,8 @@ func _do_load(slot: String) -> void:
 	if RoomManager.load_game(slot):
 		var shown := StoryData.text("@ui.autosave") if slot == RoomManager.autosave_slot else slot
 		GameState.show_hint(StoryData.text("@ui.loaded", {"slot": shown}))
+	else:
+		GameState.show_hint(StoryData.text("@ui.load_failed"))   # ревью 01.11 (В-18): a damaged slot says so, the game stays
 
 
 func _on_new_game() -> void:

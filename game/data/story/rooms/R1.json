@@ -49,7 +49,7 @@
           {"id": "boats", "label": "@R1.pelageya.opt_boats", "sets": "r1_asked_boats", "text": "@R1.pelageya.boats"},
           {"id": "marsh", "label": "@R1.pelageya.opt_marsh", "sets": "r1_asked_marsh", "text": "@R1.pelageya.marsh"},
           {"id": "sluice", "label": "@R1.pelageya.opt_sluice", "sets": "knows_sluice_key", "text": "@R1.pelageya.sluice"},
-          {"id": "manager", "label": "@R1.pelageya.opt_manager", "sets": "r1_asked_manager", "text": "@R1.pelageya.manager"},
+          {"id": "manager", "label": "@R1.pelageya.opt_manager", "sets": "r1_asked_manager", "requires": {"flags": ["knows_sluice_key"]}, "_k": "Ревью 01.11 (А-13): вопрос про затвор открывает вопрос, кто им ведал", "text": "@R1.pelageya.manager"},
           {"id": "leave", "label": "@R1.pelageya.opt_leave", "sets": "r1_pelageya_bye", "text": "@R1.pelageya.after"}
         ]},
       "hidden_when": [{"all": ["boat_shuttle_open"]}, {"all": ["evening_dusk"], "not": ["done_M15", "boat_to_pier"]}, {"all": ["done_M16"], "not": ["boat_shuttle_open"]}, {"all": ["boat_back_at_turn"], "not": ["boat_shuttle_open"]}, {"all": ["started_M18p"], "not": ["boat_shuttle_open"]}, {"all": ["done_M18p"], "not": ["boat_shuttle_open"]}],

@@ -51,6 +51,8 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if not (event is InputEventKey) or not event.pressed or event.echo:
 		return
+	if not load("res://scripts/main.gd").debug_keys_allowed():   # ревью 01.11 (В-19): service keys off on a player's web page
+		return
 	match (event as InputEventKey).physical_keycode:
 		KEY_F3:
 			visible = not visible
