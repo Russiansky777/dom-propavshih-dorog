@@ -12,6 +12,8 @@ rows = json.load(open(sys.argv[1], encoding='utf-8'))
 OUT = Path(sys.argv[2])
 OUT.mkdir(parents=True, exist_ok=True)
 TITLE = sys.argv[3] if len(sys.argv) > 3 else 'На выбор'
+# the page's lead line (01.11: it was hard-coded from the morning page and showed on every page)
+LEAD = sys.argv[5] if len(sys.argv) > 5 else 'В каждой карточке выберите вариант («Эта») или напишите своё; отметки сохраняются сами, выбранное сразу пойдёт в работу.'
 MEDIA = Path(sys.argv[4]) if len(sys.argv) > 4 else Path(sys.argv[1]).parent / 'media'
 head = open(ROOT / 'Docs/decision_pages/template_head.html', encoding='utf-8').read().replace('{{TITLE}}', TITLE)
 extra_css = '''
@@ -31,7 +33,7 @@ extra_css = '''
 body = '''</style></head><body>
 <div class="wrap">
   <h1>{{TITLE}} — на выбор</h1>
-  <p class="lead">Ночью сделано всё по вашему прохождению, что не требовало выбора. Здесь — то, что решаете вы: новая Агата, рыбалка и верстак, Тихон, вступление. В каждой карточке выберите вариант («Эта») или напишите своё; отметки сохраняются сами, выбранное сразу пойдёт в работу.</p>
+  <p class="lead">{{LEAD}}</p>
   <div class="bar" role="status">
     <span class="count" id="count">Отмечено 0 из 0</span>
     <span class="meter" aria-hidden="true"><i id="meterfill"></i></span>
@@ -149,7 +151,7 @@ render();
 </body></html>'''
 html = head + extra_css + body
 import hashlib
-html = html.replace('{{TITLE}}', TITLE).replace('{{KEY}}', 'decision_' + hashlib.sha1(TITLE.encode('utf-8')).hexdigest()[:8])   # localStorage key per page (the marks themselves live in the page's db)
+html = html.replace('{{TITLE}}', TITLE).replace('{{LEAD}}', LEAD).replace('{{KEY}}', 'decision_' + hashlib.sha1(TITLE.encode('utf-8')).hexdigest()[:8])   # localStorage key per page (the marks themselves live in the page's db)
 open(OUT / 'index.html', 'w', encoding='utf-8').write(html)
 # media files referenced
 files = [{"as": "index.html", "path": str(OUT / 'index.html')}]
