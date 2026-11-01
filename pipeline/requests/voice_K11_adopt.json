@@ -1,0 +1,15 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Одиннадцатый заход (K11–K13): записи, выбранные Директором 01.11 (00:57–01:00), — в игру без нового синтеза; где выбран новый текст, субтитр поправлен. M24_0 — «Ни одна», в K14 (без «письма дошли»).",
+ "picks": {
+  "H2.bell.use": "W172_3",
+  "agata:H2.tar_pot.taken": "W173_2",
+  "pavel:M4.pavel.turn": "W174_2",
+  "M4.gate.tarred": "W175_2",
+  "H2d.nina_mirror.watch_wait": "W176_2",
+  "agata:examine.tar": "W177_2",
+  "M23b_7_then0": "W178_2",
+  "pelageya:R1.pelageya.sluice": "W179_1"
+ }
+}
