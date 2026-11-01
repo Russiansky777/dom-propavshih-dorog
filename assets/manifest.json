@@ -2947,6 +2947,61 @@
       "size": "1672×941",
       "placement": "полный холст в (0,0), 1:1; [360, 462, 712, 684)",
       "spec": "На лежанке — та же широкая полка с кронштейнами, что повешена у печи (H1_state_shelf_A_wide, партия 12); вторая — под мокрым платком"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 14 (рыбалка и ритм: вещи вместо значков движка)",
+      "batch": "14",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 14",
+      "brief": "Docs/art_pack_14/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "fishing_perch",
+      "kind": "mechanic_sprite",
+      "files": [
+        "incoming/perch_caught.png",
+        "incoming/perch_lying.png"
+      ],
+      "size": "720×360, 480×200",
+      "placement": "рыбалка R3 (fishing_panel.gd): пойманный окунь у поплавка, ряд пойманных",
+      "spec": "Речной окунь живописью, головой влево; 1a — на леске, 1b — лежит (ряд пойманных); прозрачный фон"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 14 (рыбалка и ритм: вещи вместо значков движка)",
+      "batch": "14",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 14",
+      "brief": "Docs/art_pack_14/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "fishing_float",
+      "kind": "mechanic_sprite",
+      "files": [
+        "incoming/float_on_water.png",
+        "incoming/float_tilted.png"
+      ],
+      "size": "120×300, 160×300",
+      "placement": "рыбалка R3: поплавок Агаты и Мити на воде, ватерлиния y=200 холста",
+      "spec": "Поплавок из гусиного пера, красная верхушка; стоит / лёг набок (поклёвка)"
+    },
+    {
+      "status": "requested",
+      "block": "Партия 14 (рыбалка и ритм: вещи вместо значков движка)",
+      "batch": "14",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 14",
+      "brief": "Docs/art_pack_14/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "id": "rhythm_cups_spoon",
+      "kind": "mechanic_sprite",
+      "files": [
+        "incoming/cup_tikhon.png",
+        "incoming/cup_agata.png",
+        "incoming/spoon.png"
+      ],
+      "size": "300×260, 300×260, 320×110",
+      "placement": "ритм с Тихоном (rhythm_panel.gd): чашки в начале желобков, ложечка над каждой",
+      "spec": "Пустая глиняная кружка Тихона, белая чашка с синей полоской и чаем, чайная ложечка тусклого металла"
     }
   ]
 }
