@@ -99,6 +99,7 @@ func _run() -> void:
 	await _test("K-74 the far pier by day: the lanterns do not glow and the figures keep daylight; in the evening both lanterns burn", _test_r3_day_lights)
 	await _test("K (AI №4) the mill on day three: «Помню, Павел» only after the promise; after «матушка и брат» — «Наберём, Павел» without it", _test_m23b_promise)
 	await _test("Ревью 01.11 (Б-2): after mother's answer the chalk, the bird and the mitten do not take a choice any more (no answer out of time); before it they do", _test_late_choices)
+	await _test("Ревью 01.11 (В-2, В-13): a villager walking off waits through a pause (the walk ends where the tween does); the yard loop's black survives a reset", _test_pause_timers)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -117,6 +118,13 @@ func _run() -> void:
 
 func _frames(n: int = 2) -> void:
 	for i in n:
+		await process_frame
+
+
+## Wall-clock seconds by process frames (process_frame runs on pause too — that is the point of the pause test).
+func _secs(t: float) -> void:
+	var end := Time.get_ticks_msec() + int(t * 1000.0)
+	while Time.get_ticks_msec() < end:
 		await process_frame
 
 
@@ -777,4 +785,50 @@ func _test_late_choices() -> void:
 		sr.interact(step)
 		seen = await _drain()
 		_check(seen.any(func(x): return String(x).contains("mitten_late")) and not gs.has_flag("mitten_placed") and gs.has_item("mitten"), "once the path is open the mitten stays in the bag: %s" % str(seen))
+
+
+## Ревью 01.11 (В-2): NpcActor.go_off ended the walk by a timer that kept running while the tree was paused (Esc): after
+## the pause the figure stood in idle in the middle of the way while the tween went on. Now the timer waits with the tree.
+## (В-13): a new game during the yard loop's black (_run_loop) touched a freed exit — now the loop is dropped with the stage.
+func _test_pause_timers() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["started_M19", "done_M19", "done_M21b", "done_M22", "free_walk_day3", "morning_day3", "house_open", "met_nina", "met_tamara", "m23a_nina_here"])
+	await _enter("O4", "from_O2")
+	await _drain()
+	var nina: Node = rm.current_room.get_node_or_null("npc_nina")
+	_check(nina != null and nina.visible, "Nina on the street (the letters, day three)")
+	if nina == null:
+		return
+	var from: Vector2 = nina.global_position
+	var secs := 1.0
+	nina.call("go_off", from + Vector2(-240, 0), secs, false, rm.current_room)
+	await _secs(0.3)
+	var mid: Vector2 = nina.global_position
+	_check(bool(nina.get("walking")) and mid.distance_to(from) > 20.0, "she is on her way (%.0f px)" % mid.distance_to(from))
+	paused = true   # the SceneTree itself
+	await _secs(secs + 0.3)   # longer than the whole walk: an unpaused timer would have ended it by now
+	_check(bool(nina.get("walking")) and nina.global_position.distance_to(mid) < 2.0, "paused: still walking in place, nothing ended (%s)" % str(nina.get("walking")))
+	paused = false
+	await _secs(secs)
+	_check(not bool(nina.get("walking")) and nina.global_position.distance_to(from + Vector2(-240, 0)) < 3.0, "after the pause she finishes the way and stops at its end: %s" % str(nina.global_position))
+	# В-13: the yard loop's black, then a reset before it lifts — no error, nothing left running
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "done_M04", "done_M05", "done_M06", "done_M07", "house_unlocked", "house_open"])
+	await _enter("O2", "from_O1")
+	await _drain()
+	var ex: Node = null
+	for e in rm.current_room.get_exits():
+		if String(e.get("data").get("to", "")) == "O4":
+			ex = e
+	_check(ex != null, "the yard's way to the street (looped before the knot)")
+	if ex != null:
+		sr.use_exit(ex)
+		await process_frame
+		_check(bool(sr.get("_loop_running")), "the loop runs (black)")
+		gs.reset()
+		sr.call("_on_state_reset")
+		await _secs(0.6)
+		_check(not bool(sr.get("_loop_running")) and sr.current_beat.is_empty(), "a reset during the loop's black drops it: no loop running, no closed text")
 

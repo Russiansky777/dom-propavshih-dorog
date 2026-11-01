@@ -554,7 +554,7 @@ func _run_stage(spec: Dictionary) -> void:
 	var go_serial := _stage_serial
 	var go_s := maxf(_stage_npc_go(spec), _stage_layer_go(spec))
 	if go_s > 0.0:
-		await get_tree().create_timer(go_s).timeout
+		await get_tree().create_timer(go_s, false).timeout   # ревью 01.11 (В-2): stands still with the tree on pause
 		if go_serial != _stage_serial:
 			return
 	# H36: a picture that moves by itself (`layer_go` — the empty boat off along the rope) needs no fade of its own.
@@ -629,7 +629,8 @@ func _stage_agata_go(ag: Dictionary) -> void:
 	var t := 0.0
 	while t < 8.0 and (bool(pl.call("is_walking")) or bool(pl.call("is_acting"))):
 		await get_tree().process_frame
-		t += get_process_delta_time()
+		if not get_tree().paused:   # ревью 01.11 (В-14): a pause does not use up her eight seconds
+			t += get_process_delta_time()
 	pl.set("speed_factor", keep)
 
 
@@ -658,7 +659,7 @@ func _stage_npc_go(spec: Dictionary) -> float:
 			# I-T2 (lines 128–129): `face` "<id>" — on arrival the villager turns to that one and keeps to them.
 			var other := room.get_node_or_null("npc_" + String(g.get("face", ""))) as Node2D
 			if other != null and npc.has_method("set_partner"):
-				get_tree().create_timer(secs).timeout.connect(func():
+				get_tree().create_timer(secs, false).timeout.connect(func():
 					if is_instance_valid(npc) and is_instance_valid(other):
 						npc.call("set_partner", other))
 	return longest
@@ -888,6 +889,7 @@ func _cancel_stage() -> void:
 	_stage_serial += 1
 	var had := _stage_running or stage_dim > 0.0
 	_stage_running = false
+	_loop_running = false   # ревью 01.11 (В-13): the yard loop's black is dropped with the rest
 	_keep_black = false
 	stage_dim = 0.0
 	if had:
@@ -1587,7 +1589,12 @@ func _enter_room(room_id: String, spawn_id: String) -> void:
 func _run_loop(e: StoryExit, oc: Dictionary) -> void:
 	_loop_running = true
 	loop_transition.emit(oc)
+	var loop_serial := _stage_serial
 	await get_tree().create_timer(LOOP_FADE_SECONDS, false).timeout
+	# ревью 01.11 (В-13): a new game or a load during the loop's black — the exit is gone, the loop with it
+	if loop_serial != _stage_serial or not is_instance_valid(e):
+		_loop_running = false
+		return
 	var room := RoomManager.current_room
 	if room != null and RoomManager.player != null:
 		var spawn := room.get_spawn(String(oc.get("spawn", "default")))

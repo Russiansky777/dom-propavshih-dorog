@@ -207,7 +207,7 @@ func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
 		walking = true
 		live.walk(true, global_position.distance_to(target) / maxf(seconds, 0.01), scale.x)
 		tw.tween_property(self, "global_position", target, seconds)
-		get_tree().create_timer(seconds).timeout.connect(_end_walk)
+		get_tree().create_timer(seconds, false).timeout.connect(_end_walk)   # ревью 01.11 (В-2): waits through a pause, like the tween
 	elif walks_off():
 		walking = true
 		shown_dir = direction
@@ -215,7 +215,7 @@ func go_off(target: Vector2, seconds: float, fade: bool, room: Node) -> float:
 		_play(sheet.anim_name(sheet.walk_action, shown_dir))
 		sprite.speed_scale = sheet.walk_fps(speed_px, scale.x) / maxf(float(sheet.actions[sheet.walk_action].get("fps", 24)), 0.01)
 		tw.tween_property(self, "global_position", target, seconds)
-		get_tree().create_timer(seconds).timeout.connect(_end_walk)
+		get_tree().create_timer(seconds, false).timeout.connect(_end_walk)
 	else:
 		tw.tween_property(self, "global_position", target, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	if room != null and room.has_method("depth_scale_at") and sheet != null:
