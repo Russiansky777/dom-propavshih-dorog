@@ -194,3 +194,9 @@ R2_fg_rope_v3 (канат сквозь кольцо, правка R2_fg_rope_v2 
 `pipeline/voice/probe/SFX1/`; выбор Директора на странице «Звук боковой двери — засов» — SFX_door_2 «тугой засов, рывками» →
 `game/assets/sfx/sfx_door_bolt_stiff.wav` (срез тишины, ВЧ 40 Гц, пик −1 dBFS — функции tools/prepare_sfx.py), `sfx.json` door_bolt.
 Права — по подписке ElevenLabs проекта (как голоса).
+
+## Партия 15 — ChatGPT (imagegen), 02.11.2026
+Заказ `Docs/art_pack_15/00_ТЕКСТ_для_ChatGPT.txt`, архив `Dom_propavshih_dorog_part15_2026-11-02.zip` (README, prompts.json,
+rope_prompts.txt, validation.json, превью — `assets/incoming/_meta_p15/`). Права — как у прочего арта ChatGPT проекта.
+R3_state_mitya_lantern_lit — горящий фонарь Мити на стенке опоры (слой R3 mitya_lantern, заменил вырезку из крупного плана);
+R2_fg_rope_v4 — канат сквозь кольцо без рыжего пятна (правка только в [1180,625,1240,695) относительно v3).

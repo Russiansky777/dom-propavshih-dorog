@@ -1,0 +1,49 @@
+[
+  {
+    "file": "R3_state_mitya_lantern_lit.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      490,
+      537,
+      583,
+      608
+    ],
+    "opaque_gt200_bbox": [
+      523,
+      537,
+      550,
+      587
+    ],
+    "lamp_nominal_size": [
+      27,
+      50
+    ],
+    "base_center": [
+      536,
+      587
+    ],
+    "light_alpha_outside_body_max": 115,
+    "alpha_outside_allowed_rect_max": 0
+  },
+  {
+    "file": "R2_fg_rope_v4.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_preserved": true,
+    "diff_bbox": [
+      1195,
+      626,
+      1239,
+      693
+    ],
+    "changed_pixels": 1575,
+    "changed_pixels_outside_allowed_rect": 0
+  }
+]

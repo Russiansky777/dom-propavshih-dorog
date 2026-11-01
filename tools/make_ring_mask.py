@@ -15,7 +15,7 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "assets/incoming/R2_fg_rope_v3.png"
+SRC = ROOT / "assets/incoming/R2_fg_rope_v4.png"   # партия 15: пятно у правой дуги снято
 DST = ROOT / "game/assets/rooms/R2/fg_rope_iron_mask.png"
 EYE = (1181, 652, 43, 41)          # центр и радиусы с запасом (данные R2 eye: r [41, 39])
 BRACKET = (1123, 670, 74, 68)

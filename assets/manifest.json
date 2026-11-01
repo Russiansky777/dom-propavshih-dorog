@@ -3023,6 +3023,44 @@
       "size": "1672×941",
       "placement": "полный холст; правка в [1080,580,1320,780)",
       "spec": "Канат сквозь кольцо без круглой заплатки и тёмной дуги (кадры 01.11, стр. 106)"
+    },
+    {
+      "id": "R3_state_mitya_lantern_lit",
+      "status": "imported",
+      "imported": "2026-11-02 (ChatGPT, архив part15_2026-11-02; README assets/incoming/_meta_p15; в игре — game/assets/rooms/R3/state_mitya_lantern.png (art_source R3.json, слой mitya_lantern))",
+      "block": "Партия 15 (фонарь Мити, пятно у кольца каната)",
+      "batch": "15",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 15",
+      "brief": "Docs/art_pack_15/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "kind": "room_layer",
+      "files": [
+        "incoming/R3_state_mitya_lantern_lit.png"
+      ],
+      "base": "R3_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0,0), 1:1; фонарь в [505, 520, 570, 595), свет на снегу не дальше [440, 480, 640, 620); заменит game/assets/rooms/R3/state_mitya_lantern.png (слой mitya_lantern, rooms/R3.json — сейчас вырезка из closeup_lantern_closed, compose)",
+      "spec": "Директор 01.11, стр. 49: горящий фонарь «летучая мышь» стоит на снегу на стенке справа от ног Мити, ~50 px с дужкой, тёплый ореол и пятно света на снегу; негорящий не нужен (слой только до done_M18, вечером)"
+    },
+    {
+      "id": "R2_fg_rope_v4",
+      "status": "imported",
+      "imported": "2026-11-02 (ChatGPT, архив part15_2026-11-02; README assets/incoming/_meta_p15; в игре — game/assets/rooms/R2/fg_rope.png (art_source R2.json) + маска кольца tools/make_ring_mask.py)",
+      "block": "Партия 15 (фонарь Мити, пятно у кольца каната)",
+      "batch": "15",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 15",
+      "brief": "Docs/art_pack_15/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "kind": "room_layer",
+      "files": [
+        "incoming/R2_fg_rope_v4.png"
+      ],
+      "base": "R2_fg_rope_v3.png",
+      "size": "1672×941",
+      "placement": "полный холст; правка только в [1180, 625, 1240, 695), остальное как v3 (при импорте берём только этот прямоугольник; маску кольца пересобрать tools/make_ring_mask.py)",
+      "spec": "Директор 01.11, стр. 48: рыже-бурое пятно в правой нижней части кольца, где канат выходит из проушины, — чистое железо дуги за канатом и чистый канат, без смазанной тени"
     }
   ]
 }
