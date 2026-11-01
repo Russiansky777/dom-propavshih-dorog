@@ -1,0 +1,355 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 2627,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K27 (Директор 01.11, «Семнадцатый заход», 21:13): «ни одна» — новые формулировки и подача: W219 перечисление, W220 «гребу», W221 «домой», W228 «под крышей светло», W232 стекло проясняется, W238 «зашит», W239 управляющий во дворе, W240 акцент на ГОД, W266 тон как прежняя Q017_1, W267 затвор у Пелагеи",
+ "new_text_lines": [
+  "Z2.landmarks.look",
+  "M02_2",
+  "pelageya:R1.pelageya.manager",
+  "H4.v02.done",
+  "H2d.office_mirror.clamped",
+  "H1d.nina_coat.look_done",
+  "M23b_0",
+  "M23b_2",
+  "M26_16",
+  "M02_7_then0"
+ ],
+ "items": [
+  {
+   "id": "W290_1",
+   "line": "Z2.landmarks.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Тут и мельничная крыша, и спуск к воде, а почта позади осталась.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровно, перечисление через «и… и…»"
+  },
+  {
+   "id": "W290_2",
+   "line": "Z2.landmarks.look",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Тут и мельничная крыша, и спуск к воде, а почта позади осталась.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "чуть живее, перечисление"
+  },
+  {
+   "id": "W290_3",
+   "line": "Z2.landmarks.look",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "[calmly] Тут и мельничная крыша, и спуск к воде, а почта позади осталась.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "спокойно"
+  },
+  {
+   "id": "W291_1",
+   "line": "M02_2",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "[firm] Гребу-то я на тот берег, а выхожу всё к своему причалу.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с нажимом на «гребу»"
+  },
+  {
+   "id": "W291_2",
+   "line": "M02_2",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[frustrated] Гребу-то я на тот берег, а выхожу всё к своему причалу.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "с досадой"
+  },
+  {
+   "id": "W291_3",
+   "line": "M02_2",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "Гребу-то я на тот берег, а выхожу всё к своему причалу.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W292_1",
+   "line": "pelageya:R1.pelageya.manager",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "Фёдор Лукич, управляющий мельницей, в тот вечер, перед паводком, год назад, затвор запер. Сам ушёл домой, в Ольховку, там и остался. А ночью вода пришла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "ровно, «домой» в конце оборота"
+  },
+  {
+   "id": "W292_2",
+   "line": "pelageya:R1.pelageya.manager",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "Фёдор Лукич, управляющий мельницей, в тот вечер, перед паводком, год назад, затвор запер. Сам ушёл домой, в Ольховку, там и остался. А ночью вода пришла.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W292_3",
+   "line": "pelageya:R1.pelageya.manager",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "[sadly] Фёдор Лукич, управляющий мельницей, в тот вечер, перед паводком, год назад, затвор запер. Сам ушёл домой, в Ольховку, там и остался. А ночью вода пришла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с горечью к концу"
+  },
+  {
+   "id": "W293_1",
+   "line": "H4.v02.done",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Под крышей светло. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "нейтрально, без нажима"
+  },
+  {
+   "id": "W293_2",
+   "line": "H4.v02.done",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Под крышей светло. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.75
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W293_3",
+   "line": "H4.v02.done",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "[calmly] Под крышей светло. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "спокойно"
+  },
+  {
+   "id": "W294_1",
+   "line": "H2d.office_mirror.clamped",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Клинья сели. Стекло прояснилось — в нём контора, какая она сейчас: дверь изнутри, засов в скобах.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W294_2",
+   "line": "H2d.office_mirror.clamped",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Клинья сели. Стекло прояснилось — в нём контора, какая она сейчас: дверь изнутри, засов в скобах.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "чуть живее на «прояснилось»"
+  },
+  {
+   "id": "W294_3",
+   "line": "H2d.office_mirror.clamped",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "[calmly] Клинья сели. Стекло прояснилось — в нём контора, какая она сейчас: дверь изнутри, засов в скобах.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "спокойно"
+  },
+  {
+   "id": "W295_1",
+   "line": "H1d.nina_coat.look_done",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "На своём крючке Дунино пальто висит. Рукав теперь зашит.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "«зашит» в конце фразы"
+  },
+  {
+   "id": "W295_2",
+   "line": "H1d.nina_coat.look_done",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[warmly] На своём крючке Дунино пальто висит. Рукав теперь зашит.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W295_3",
+   "line": "H1d.nina_coat.look_done",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "На своём крючке Дунино пальто висит. Рукав теперь зашит.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W296_1",
+   "line": "M23b_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Во дворе мельницы стоит старик — вернулся управляющий. С ним и Илья пришёл.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W296_2",
+   "line": "M23b_0",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Во дворе мельницы стоит старик — вернулся управляющий. С ним и Илья пришёл.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W296_3",
+   "line": "M23b_0",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "[calmly] Во дворе мельницы стоит старик — вернулся управляющий. С ним и Илья пришёл.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "спокойно"
+  },
+  {
+   "id": "W297_1",
+   "line": "M23b_2",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "ГОД на гвозде рычаг провисел. Как вы повесили, так и висел.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как А прошлого захода, акцент на ГОД"
+  },
+  {
+   "id": "W297_2",
+   "line": "M23b_2",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "[firm] ГОД на гвозде рычаг провисел. Как вы повесили, так и висел.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с нажимом на ГОД"
+  },
+  {
+   "id": "W297_3",
+   "line": "M23b_2",
+   "take": "3",
+   "speaker": "pavel",
+   "text": "ГОД на гвозде рычаг провисел. Как вы повесили, так и висел.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее, ГОД"
+  },
+  {
+   "id": "W298_1",
+   "line": "M26_16",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "[tenderly] Вечером ужинают в Дунином доме. Нина, Илья с женой, Агата. Тихон на своей полке. Тамарина кастрюля на столе.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "как прежняя Q017_1 (тон, устойчивость 0,55, с контекстом «Начнём.»)",
+   "previous_text": "Начнём."
+  },
+  {
+   "id": "W298_2",
+   "line": "M26_16",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[tenderly] Вечером ужинают в Дунином доме. Нина, Илья с женой, Агата. Тихон на своей полке. Тамарина кастрюля на столе.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "то же, другой дубль",
+   "previous_text": "Начнём."
+  },
+  {
+   "id": "W298_3",
+   "line": "M26_16",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "[tenderly] Вечером ужинают в Дунином доме. Нина, Илья с женой, Агата. Тихон на своей полке. Тамарина кастрюля на столе.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "то же, ровнее",
+   "previous_text": "Начнём."
+  },
+  {
+   "id": "W299_1",
+   "line": "M02_7_then0",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "А воду там мельничный затвор держит. Про него Павла на мельнице спроси.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "буднично"
+  },
+  {
+   "id": "W299_2",
+   "line": "M02_7_then0",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[matter-of-fact] А воду там мельничный затвор держит. Про него Павла на мельнице спроси.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "к делу"
+  },
+  {
+   "id": "W299_3",
+   "line": "M02_7_then0",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "А воду там мельничный затвор держит. Про него Павла на мельнице спроси.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  }
+ ]
+}
