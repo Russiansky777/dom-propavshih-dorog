@@ -17,6 +17,9 @@ for src in "$SRC_ROOT"/*/; do
   src="${src%/}"
   [[ -f "$src/manifest.json" ]] || continue
   lang="$(basename "$src")"
+  # ru_takes — дубли для страницы прослушивания (tools/listen_page.py, apply_takes.py): игра их не читает, в сборку не идут
+  # (ревью 01.11, Д-2: 30 МБ дублей ехали в каждую сборку)
+  [[ "$lang" == *_takes ]] && continue
   dst="$DST_ROOT/$lang"
   mkdir -p "$dst"
   if ! cmp -s "$src/manifest.json" "$dst/manifest.json"; then
