@@ -791,8 +791,9 @@ func _test_walkthrough() -> void:
 	_check(seen.any(func(x): return x.begins_with("pelageya:Садись, перевезу")), "Pelageya: the boat goes both ways now, from the turn (H36, T9: %s)" % str(seen))
 	_check(rm.current_room.get_node("Layers/boat_day").visible, "H36: the boat at the plate on day three")
 	_check(await _cross_by_rope("R3"), "the crossing by pulls → the far pier (G43)")
-	_check((_hotspot("mitya") == null or not _hotspot("mitya").visible) and (_hotspot("pelageya") == null or not _hotspot("pelageya").visible),
-		"the far pier on the free day: Mitya is on the street, Pelageya at her own pier — nobody here twice")
+	# 01.11 (утренняя страница, рыбалка — вариант А): on the free day Mitya fishes from the jetty here, not on the street
+	_check(_hotspot("mitya") != null and _hotspot("mitya").visible and (_hotspot("pelageya") == null or not _hotspot("pelageya").visible),
+		"the far pier on the free day: Mitya on the jetty with his rod, Pelageya at her own pier — nobody here twice")
 	_check(await _route(["O4"]), "the far pier → Olkhovka")
 	await _use("tamara")
 	seen = await _finish()
