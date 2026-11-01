@@ -1475,7 +1475,7 @@ func _corner_walks() -> Array:
 		var left: float = player.global_position.distance_to(to)
 		if left > 60.0 or worst >= 0.6:
 			bad += 1
-			words += " %s→%s: %.0f px short, on the spot %.1f s;" % [str(prev), str(to), left, worst]
+			words += " %s→%s: %.0f px short (stopped at %s), on the spot %.1f s;" % [str(prev), str(to), left, str(player.global_position.round()), worst]
 		prev = to
 		await _frames(20)
 	return [bad, words]
@@ -1487,7 +1487,9 @@ func _test_walk_corners() -> void:
 		return
 	var on: Array = await _corner_walks()
 	player.stop_straight_only = false
+	player.stop_short_rescue = false   # the self-check reproduces the old fault: no walking the rest after a short stop
 	var off: Array = await _corner_walks()
+	player.stop_short_rescue = true
 	player.stop_straight_only = true
 	print("        corners: %d of 7 walks failed%s; with the stop planned before the corner: %d%s" % [on[0], on[1], off[0], off[1]])
 	_check(int(on[0]) == 0, "walks near the counter's corners failed:%s" % on[1])

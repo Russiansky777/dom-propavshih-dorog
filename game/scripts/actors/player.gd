@@ -98,6 +98,8 @@ var _stop_plan: Dictionary = {}
 ## of the foot being dragged back to the body and then stepping up to it. On while the glide runs.
 var _stop_glide: bool = false
 var _glide_side: int = 0   # the front foot of the glide (the one the stop's last step set down)
+var stop_short_rescue: bool = true   # tests' self-check: off — a planned stop that ends short is the arrival
+var _stop_replanned: bool = false   # this walk's planned stop already ran out short once (_planned_stop_3d)
 var _stop_straight: bool = true   # the path's last straight stretch, the end ahead: a planned stop may start (_walk_step_3d)
 var stop_straight_only: bool = true   # tests' self-check: off — the planned stop may start before the path's last corner
 var _stop_last_phase: float = 0.0
@@ -578,6 +580,7 @@ func _start_walk(target: Vector2) -> void:
 	if _walking:
 		_adopt_drawn_position()  # a new target mid-walk: continue from where the figure is drawn
 	_target = target
+	_stop_replanned = false
 	_path_ready = false
 	_path_wait_frames = 0
 	nav_agent.target_position = target
@@ -1542,6 +1545,8 @@ func _walk_step_3d(delta: float) -> void:
 ## never going back past a segment she has reached: it rounds the corners and is always in front of her.
 ## Returns [that point, the segment she is on, the path left from her (px), her nearest point on it].
 const SHARP_TURN_COS := 0.34   # a path turning by more than 70° at a corner is rounded at the corner itself (path_follow)
+const STOP_SHORT_M := 0.15   # a planned stop that ends farther than this from the end walks the rest (once per walk)
+const SHARP_TURN_MIN_LEG := 40.0   # px: both legs of such a corner longer than this (a navmesh jog is not a corner)
 
 
 static func path_follow(path: PackedVector2Array, pos: Vector2, seg_from: int, lookahead: float) -> Array:
@@ -1583,7 +1588,10 @@ static func path_follow(path: PackedVector2Array, pos: Vector2, seg_from: int, l
 		if j < n - 1 and j > 0:
 			var din: Vector2 = (path[j] - path[j - 1]).normalized()
 			var dout: Vector2 = (path[j + 1] - path[j]).normalized()
-			if din.dot(dout) < SHARP_TURN_COS and (pos - path[j]).dot(din) < 0.0:
+			# only a real corner: both legs longer than a step (a navmesh jog of a few px near the end is no corner —
+			# pinned to it, she stopped 89 px short of the counter's front, test_agata_3d «Corners near the end»)
+			var legs_ok: bool = path[j].distance_to(path[j - 1]) > SHARP_TURN_MIN_LEG and path[j + 1].distance_to(path[j]) > SHARP_TURN_MIN_LEG
+			if legs_ok and din.dot(dout) < SHARP_TURN_COS and (pos - path[j]).dot(din) < 0.0:
 				carrot = path[j]
 				break
 	var rem := best_d
@@ -1658,7 +1666,7 @@ func _planned_stop_3d(rem_m: float, delta: float) -> bool:
 		var crossed := _contact_between(_stop_last_phase, walk_phase)
 		_stop_last_phase = walk_phase
 		var step_m := view3d.stride_m * 0.5
-		if not crossed or (stop_straight_only and not _stop_straight) or walk_w < 0.5 or view3d.shown_w() < 0.5 or rem_m > 1.5 * step_m or view3d.stride_m <= 0.01:
+		if _stop_replanned or not crossed or (stop_straight_only and not _stop_straight) or walk_w < 0.5 or view3d.shown_w() < 0.5 or rem_m > 1.5 * step_m or view3d.stride_m <= 0.01:
 			return false
 		# one step when the end is within about a step (01.11: two steps squeezed into 0.6 m fell to a shallow, early-landing
 		# shuffle — a person stopping within a step's distance takes one step), two up to a step and a half
@@ -1690,6 +1698,13 @@ func _planned_stop_3d(rem_m: float, delta: float) -> bool:
 	walk_w = clampf(w, 0.0, 1.0)
 	view3d.stride_hold = true
 	view3d.stride_hold_keep = true
+	if u >= 1.0 and stop_short_rescue and rem_m > STOP_SHORT_M and not _stop_replanned:
+		# the plan ran out with the end still ahead (01.11: after the turn on the spot at the counter's corner the shown
+		# weight lagged the plan and she came to rest 89 px short — test_agata_3d «Corners near the end»): no arrival
+		# there — she walks the rest, once, and stops the plain way
+		_stop_plan = {}
+		_stop_replanned = true
+		return false
 	if u >= 1.0:
 		walk_w = 0.0
 		_stop_plan = {}

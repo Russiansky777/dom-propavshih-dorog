@@ -1,0 +1,15 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Директор 01.11, «Восемнадцатый заход» (K27): выбор Директора 01.11 20:49–20:54; W296, W297 — «ни одна» → K28",
+ "picks": {
+  "Z2.landmarks.look": "W290_3",
+  "M02_2": "W291_1",
+  "pelageya:R1.pelageya.manager": "W292_1",
+  "H4.v02.done": "W293_3",
+  "H2d.office_mirror.clamped": "W294_1",
+  "H1d.nina_coat.look_done": "W295_1",
+  "M26_16": "W298_2",
+  "M02_7_then0": "W299_1"
+ }
+}

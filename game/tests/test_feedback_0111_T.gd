@@ -39,7 +39,7 @@ const ACCENT := {
 	"M26_37": "ОДНО НА ВСЕХ!",
 	"H4.v02.done": "Под крышей светло",
 }
-const REQUESTS := ["voice_K24.json", "voice_K25.json", "voice_K27.json"]
+const REQUESTS := ["voice_K24.json", "voice_K25.json", "voice_K27.json", "voice_K28.json"]
 
 
 func _initialize() -> void:

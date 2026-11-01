@@ -74,9 +74,9 @@ func refresh() -> void:
 
 ## A figure of a composed frame (a layer with `compose.char`, tools/make_frame_layers.py) is not a still picture
 ## (Director 01.11, lines 61 and 68): it breathes and sways a little, and moves its head with its own line while
-## that line is being said — game/shaders/frame_figure.gdshader, values game/data/actors/frame_life.json, the
+## that line is being said — game/shaders/frame_figure.gdshader, values game/data/frame_life.json, the
 ## layer's `life` {…} overrides them, `life: false` keeps it still.
-const LIFE_PATH := "res://data/actors/frame_life.json"
+const LIFE_PATH := "res://data/frame_life.json"   # not in data/actors: every file there is an actor sheet (run_tests «Loop seams»)
 const LIFE_SHADER := preload("res://shaders/frame_figure.gdshader")
 var life_mat: ShaderMaterial = null
 var life_char: String = ""

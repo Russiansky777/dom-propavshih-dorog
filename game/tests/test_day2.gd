@@ -550,7 +550,12 @@ func _test_whereabouts() -> void:
 	_check(_hotspot("pelageya") != null and _hotspot("pelageya").visible, "evening: Pelageya at the turn")
 	gs.set_flag("done_M15", true)
 	await _frames(2)
-	_check(not _hotspot("pelageya").visible, "after the knot she leaves the turn")
+	# 01.11 стр. 44: right after the knot she is still here — she tells of the white bank (M16s) and only then rows off
+	_check(_hotspot("pelageya").visible, "the knot tied: she is still at the turn for M16s")
+	gs.set_flag("done_M16s", true)
+	gs.set_flag("boat_to_pier", true)
+	await _frames(2)
+	_check(not _hotspot("pelageya").visible, "after M16s she leaves the turn")
 	rm.change_room("R1", "default")
 	await _frames(3)
 	await _finish()
@@ -997,8 +1002,10 @@ func _test_walkthrough() -> void:
 		seen_frames[ww.frame_index()] = true
 	_check(wheel.is_spinning() and ww.visible and wwat.visible and int(wwat.probe()["poured"]) > 0 and not wlay.get_node("wheel_water_still").visible,
 		"H9: water runs — the wheel spins, water drawn, the buckets pour (%s)" % str(wwat.probe()))
-	_check(not is_equal_approx(rot0, wheel.get_node("Image").rotation_degrees) and seen_frames.size() == 3,
-		"H9: the wheel turns and the water cycles through all 3 frames (%s)" % str(seen_frames.keys()))
+	# Director 01.11 стр. 7: the three-frame loop under the wheel flipped 7 times a second («дёргающаяся наложенная
+	# картинка») — one picture now, the foam driven on by the water shader (ambient/M1.json wheel_foam; test_feedback_0111_k2)
+	_check(not is_equal_approx(rot0, wheel.get_node("Image").rotation_degrees) and seen_frames.size() == 1,
+		"H9: the wheel turns; the water under it is one picture, no frame loop (%s)" % str(seen_frames.keys()))
 	gs.set_flag("pond_lowered", true)
 	await _frames(2)
 	var rot1: float = wheel.get_node("Image").rotation_degrees

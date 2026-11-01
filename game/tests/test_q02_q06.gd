@@ -441,8 +441,8 @@ func _test_q06_a() -> void:
 	await _use("ilya_workshop")
 	var seen := await _finish(["A"])
 	sr.stage_fade.disconnect(on_fade)
-	_check(seen.any(func(x): return x.begins_with("mitya:У одного верстака и двоим тесно")) and seen.any(func(x): return x.begins_with("ilya:А мы ещё и третьему место")) and seen.any(func(x): return x.begins_with("ilya:Уля за мной")),
-		"Mitya / Ilya / the goal — a bench for Ulya: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("ilya:У одного верстака и нам с Митей тесно")) and seen.any(func(x): return x.begins_with("ilya:А мы ещё и третьему место")) and seen.any(func(x): return x.begins_with("ilya:Уля за мной")),
+		"Ilya (01.11 стр. 58: Mitya is not at the shed) / the goal — a bench for Ulya: %s" % str(seen))
 	_check(not sr.mechanic_open, "no close-up opens")
 	_check(black[0], "the screen went black for the building")
 	_check(seen.any(func(x): return x.begins_with("narration:К вечеру Илья с Митей собрали верстак")), "the narrator: the bench built by the evening: %s" % str(seen))
@@ -454,7 +454,7 @@ func _test_q06_a() -> void:
 	_check(i_n >= 0 and i_o > i_n, "the choice comes after the narrator, not before: %s" % str(seen))
 	_check(gs.has_flag("q06_bench_built") and gs.has_flag("done_Q06a"), "the bench is built (flags)")
 	_check(gs.has_flag("q06_table_at_ilya") and not gs.has_flag("q06_table_at_agata") and gs.has_flag("done_Q06"), "A — the bench stays at Ilya's; Q06 done")
-	_check(seen.any(func(x): return x.begins_with("mitya:Вот и втроём")) and seen.any(func(x): return x.contains("полку уж вместе")), "A: Mitya and Ilya after the choice: %s" % str(seen))
+	_check(seen.any(func(x): return x.begins_with("ilya:Вот и втроём")) and seen.any(func(x): return x.contains("полку уж все вместе")), "A: Ilya after the choice (01.11 стр. 58): %s" % str(seen))
 	_check(_layer_visible("bench_shed"), "A: the shed door on the street is open, the bench inside")
 	await _use("ilya_workshop")
 	seen = await _finish()

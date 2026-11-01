@@ -54,7 +54,7 @@ func _run() -> void:
 	cp = main_node.get_node("Closeup")
 	cv = main_node.get_node("CloseupView")
 	await _test("F19 board: a sheet on the board in M1; a click rides the close-up in from the board, the game's words «Распорядок смен» and the bell signals; text over it; a click closes", _test_board)
-	await _test("F18 door: the open door shows the winter classroom (O1 crop in the opening), cold light on the threshold, snow drifting out, breath of cold; nothing of it while the leaf is shut", _test_door)
+	await _test("F18 door: the open door shows the winter classroom (O1 crop in the opening), cold light on the threshold, snow only behind its windows, breath of cold; nothing of it while the leaf is shut", _test_door)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -226,7 +226,9 @@ func _test_door() -> void:
 	var snow_out: CPUParticles2D = wf.get_node_or_null("SnowOut")
 	var breath: CPUParticles2D = wf.get_node_or_null("Breath")
 	var light: Polygon2D = wf.get_node_or_null("Light")
-	_check(snow_out != null and snow_out.emitting and snow_out.amount <= 80, "snow drifts out of the doorway (cheap: ≤ 80 flakes)")
+	# Director 01.11 стр. 23 («зима и снег в двери везде, а должен быть только за окнами класса»): no snow drifts out of
+	# the doorway any more — it falls behind the classroom windows only (test_feedback_0111_k2 «door snow only behind windows»)
+	_check(snow_out == null, "no snow drifting out of the doorway onto the gallery (стр. 23)")
 	_check(breath != null and breath.emitting and breath.amount <= 10, "a faint breath of cold at the threshold")
 	_check(light != null and light.polygon[0].y >= float(op[1]) + float(op[3]) - 10.0, "cold light spills from the doorway onto the threshold")
 	# K-40 (Director 31.10: «свечение снизу явно контрастирует и в линию»): at the threshold line the light is weak and
