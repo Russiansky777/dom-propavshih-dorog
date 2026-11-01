@@ -2,10 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://ch5w5lnxalgl5"
+path="res://.godot/imported/state_water_low.png-6eebea6724f76e405bd9de12d289c621.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/rooms/M1/state_water_low.png"
+dest_files=["res://.godot/imported/state_water_low.png-6eebea6724f76e405bd9de12d289c621.ctex"]
 
 [params]
 

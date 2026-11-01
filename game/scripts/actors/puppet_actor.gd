@@ -20,11 +20,16 @@ extends Node2D
 ## `anim.accent_weights`, the yawn more often in the dark (`anim.night_flags`, `night_yawn_k`).
 ## Mouth (I-T3, art 10g): data `mouth_frames` — cut-outs of the mouth on the head bone; while the voice of his own line
 ## sounds the frame follows the Voice bus level (no level, as on the web — a steady 1-2-1-3), silent — the drawn mouth.
+## Poses (партия 12, Директор 01.11: «калачиком» на кресле): data `variants.<name>` — another picture with its own
+## bones, regions, feet, height and (if drawn) mouth frames; a place entry names it (`variant`). The rig is rebuilt
+## when the place that holds switches to another variant (the chair → the shelf).
 
 const TONE_RATE := 6.0
 
 var actor_id: String = ""
 var spec: Dictionary = {}
+var base_spec: Dictionary = {}
+var variant: String = ""
 var hotspot: Node2D = null
 var player: Node2D = null
 var poly: Polygon2D = null
@@ -68,19 +73,12 @@ func setup(id: String, h: Node2D, room: Node, the_player: Node2D) -> bool:
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return false
-	spec = parsed
-	var tex_path := String(spec.get("image", ""))
-	if not ResourceLoader.exists(tex_path):
-		push_warning("PuppetActor %s: no image %s" % [id, tex_path])
+	base_spec = parsed
+	spec = parsed   # current_place reads `spec`; the variant lays its keys over it below
+	var rid0 := String(room.get("room_id")) if room != null else ""
+	_apply_variant(String(current_place(rid0)[1].get("variant", "")))
+	if not _build_all(room, h):
 		return false
-	var tex: Texture2D = load(tex_path)
-	var src: float = float(spec.get("source_size", tex.get_width()))
-	tex_scale = float(tex.get_width()) / src
-	_build_rig(tex)
-	_build_mouth()
-	_place(room, h)
-	_build_shadow()
-	_build_animations()
 	# The puppet replaces the placeholder box with the name (like NpcActor hides the static image);
 	# the hotspot itself (shape, hover label, clicks) stays as it is.
 	var placeholder := h.get_node_or_null("Visual")
@@ -278,7 +276,8 @@ func _skin(verts: PackedVector2Array) -> void:
 	var feet := _v(spec.get("feet_px", [0, 0]))
 	for i in verts.size():
 		var p: Vector2 = verts[i] / tex_scale + feet   # back to source px
-		var t_tail := smoothstep(float(tx[0]), float(tx[1]), p.x)
+		# the tail region: right of tail_x (the standing Tikhon) or, with tail_x reversed, left of it (the loaf)
+		var t_tail := smoothstep(float(tx[0]), float(tx[1]), p.x) if float(tx[0]) <= float(tx[1]) else 1.0 - smoothstep(float(tx[1]), float(tx[0]), p.x)
 		var t_head := smoothstep(float(hy[0]), float(hy[1]), p.y) * (1.0 - t_tail)
 		var t_ear := smoothstep(float(ey[0]), float(ey[1]), p.y) * t_head
 		t_head -= t_ear
@@ -298,6 +297,68 @@ func _skin(verts: PackedVector2Array) -> void:
 				weights[String(tails[k]["name"])][i] = t_tail * float(ws[k]) / maxf(sum, 0.000001)
 	for name in bones.keys():
 		poly.add_bone(skeleton.get_path_to(bones[name]), weights[name])
+
+
+## `spec` = the base data with the variant's keys laid over it (image, bones, regions, feet_px, figure_top_px,
+## height_rel_agata, mouth_frames, anim, shadow — whatever the variant gives).
+func _apply_variant(name: String) -> void:
+	variant = name
+	spec = base_spec.duplicate(true)
+	if name == "":
+		return
+	var v: Dictionary = base_spec.get("variants", {}).get(name, {})
+	if v.is_empty():
+		push_warning("PuppetActor %s: no variant %s" % [actor_id, name])
+		variant = ""
+		return
+	for k in v.keys():
+		if String(k).begins_with("_"):
+			continue
+		# a dictionary (anim, shadow, regions) is laid over the base one key by key, so a pose names only what differs
+		if v[k] is Dictionary and spec.get(k) is Dictionary:
+			var merged: Dictionary = (spec[k] as Dictionary).duplicate(true)
+			for kk in (v[k] as Dictionary).keys():
+				merged[kk] = v[k][kk]
+			spec[k] = merged
+		else:
+			spec[k] = v[k]
+	# the mouth cut-outs belong to the picture they were cut from: a variant without its own has none
+	if not v.has("mouth_frames"):
+		spec.erase("mouth_frames")
+
+
+## The picture, the rig, the mouth, the place, the shadow and the animations from `spec`.
+func _build_all(room: Node, h: Node2D) -> bool:
+	var tex_path := String(spec.get("image", ""))
+	if not ResourceLoader.exists(tex_path):
+		push_warning("PuppetActor %s: no image %s" % [actor_id, tex_path])
+		return false
+	var tex: Texture2D = load(tex_path)
+	var src: float = float(spec.get("source_size", tex.get_width()))
+	tex_scale = float(tex.get_width()) / src
+	_build_rig(tex)
+	_build_mouth()
+	_place(room, h)
+	_build_shadow()
+	_build_animations()
+	return true
+
+
+## Everything _build_all made goes away (another variant takes the place).
+func _teardown() -> void:
+	for c in get_children():
+		remove_child(c)
+		c.queue_free()
+	bones.clear()
+	_bone_from.clear()
+	poly = null
+	skeleton = null
+	life = null
+	accent = null
+	mouth = null
+	mouth_frames.clear()
+	mouth_frame = 0
+	talking = false
 
 
 ## The place entry for this room that holds now: `place.<room>` is one entry or a list; in a list the
@@ -360,8 +421,19 @@ func _replace() -> void:
 	if hotspot == null or not is_instance_valid(hotspot) or _room == null or not is_instance_valid(_room):
 		return
 	var rid := String(_room.get("room_id"))
-	var idx := int(current_place(rid)[0])
+	var cur := current_place(rid)
+	var idx := int(cur[0])
 	if idx == place_index and idx >= 0:
+		return
+	var want := String(cur[1].get("variant", ""))
+	if want != variant:
+		_teardown()
+		_apply_variant(want)
+		if not _build_all(_room, hotspot):
+			return
+		if life != null:
+			life.play("idle")
+		_tone_set = false
 		return
 	_place(_room, hotspot)
 	_tone_set = false

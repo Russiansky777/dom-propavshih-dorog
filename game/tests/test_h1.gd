@@ -302,9 +302,13 @@ func _test_tikhon_start() -> void:
 	var px_m: float = 345.0 * room.depth_scale(t.depth_y) / 1.657
 	var seat_m: float = (t.depth_y - t.global_position.y) / px_m
 	_check(seat_m > 0.25 and seat_m < 0.6, "feet on a seat: %.2f m above the floor under the chair" % seat_m)
-	# Size: ≈ 0.33 of Agata's height at his floor depth (Director: «быть побольше немного»; was 0.28).
+	# Size: the drawing's own scale — standing ≈ 0.33 of Agata's height at his floor depth (Director: «быть побольше
+	# немного»; was 0.28); on the chair he lies curled up (партия 12, Директор 01.11 — the «loaf» variant: 852 of the
+	# standing 1133 source px → 0.248), the same scale of the picture.
 	var ratio: float = t.figure_height_px() / (337.0 * room.depth_scale(t.depth_y))
-	_check(absf(ratio - 0.33) < 0.02, "Tikhon ≈ 0.33 of Agata's height, got %.2f" % ratio)
+	var want: float = 0.248 if String(t.get("variant")) == "loaf" else 0.33
+	_check(absf(ratio - want) < 0.02, "Tikhon ≈ %.2f of Agata's height (%s), got %.2f" % [want, String(t.get("variant")), ratio])
+	_check(String(t.get("variant")) == "loaf" and String(t.spec.get("image", "")).ends_with("tikhon_loaf.png"), "on the chair — curled up (the loaf picture of batch 12): %s" % String(t.spec.get("image", "")))
 	print("        armchair: feet %s, floor %.0f, seat %.2f m, height %.0f px (%.2f × Agata), z %d, mirror %s" % [str(t.global_position), t.depth_y, seat_m, t.figure_height_px(), ratio, t.z_index, str(t.scale.x < 0)])
 	# Clicks on his body pick him (over the chair and the stove rect).
 	await physics_frame
@@ -616,7 +620,10 @@ func _test_shelf_sizes() -> void:
 		"the towel hangs on the left hook (≈1217, 247 on screen), not the middle one where Nina's coat goes: %s" % str(towel))
 	# I-T2 (Director, line 32: «снятая полка крупнее»): the lying shelf is the same board drawn ×1.4 (± 25 %) — nearer the eye
 	var lying_k := 1.4
-	_check(absf(lying.size.x / lying_k - a.size.x) / a.size.x < 0.25, "the shelf on the bench is the same shelf (%.0f / %.2f vs board %.0f)" % [lying.size.x, lying_k, a.size.x])
+	# Партия 12 (01.11): the hung shelf A is the wide one (160 px of canvas, Director стр. 25, 113) while the board lying
+	# on the bench is still the narrow one of batch 11 — a wider lying board is on the list for the next art batch; until
+	# then the hung shelf may be wider than the lying one, never narrower.
+	_check(a.size.x >= lying.size.x / lying_k * 0.75, "the hung shelf is not narrower than the one that lay on the bench (%.0f / %.2f vs board %.0f)" % [lying.size.x, lying_k, a.size.x])
 	print("        shelf A %s, on the bench %s, towel %s" % [str(a), str(lying), str(towel)])
 
 ## G13 (Director 23.10: «топящаяся печь разорвана»): every state layer with `align` (rooms data) puts its detail onto the

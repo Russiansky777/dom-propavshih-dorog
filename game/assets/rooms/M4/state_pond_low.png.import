@@ -2,10 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://t70xhg0thfw7"
+path="res://.godot/imported/state_pond_low.png-53813293529602f4fccecaaff8c02039.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/rooms/M4/state_pond_low.png"
+dest_files=["res://.godot/imported/state_pond_low.png-53813293529602f4fccecaaff8c02039.ctex"]
 
 [params]
 

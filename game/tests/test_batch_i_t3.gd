@@ -274,7 +274,9 @@ func _test_hugs() -> void:
 func _test_mouth() -> void:
 	gs.reset()
 	sr.call("_on_state_reset")
-	for f in ["house_unlocked", "h1_shutter_open", "stove_lit", "done_M01", "done_M02", "done_M03"]:
+	# the mouth cut-outs are of the standing picture — on his shelf (партия 12, 01.11: on the chair he lies curled up,
+	# the «loaf» pose, whose mouth frames are still to be drawn)
+	for f in ["house_unlocked", "h1_shutter_open", "stove_lit", "done_M01", "done_M02", "done_M03", "met_tikhon", "h1_scarf_removed", "q04_corner_stove", "done_Q04"]:
 		gs.set_flag(f, true)
 	rm.change_room("H1", "default")
 	await _frames(6)
