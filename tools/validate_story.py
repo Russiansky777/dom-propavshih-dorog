@@ -224,6 +224,29 @@ for fl, srcs in granted_flags.items():
                 and not all(str(sid).endswith(":вход") for sid in srcs):   # флаг входа объявлен в своей комнате (rooms/*.json → flags)
             warn(f"флаг {fl} выдаётся ({', '.join(srcs)}), но не описан в flags.json")
 
+# ---------- 1а2. как стартует сцена с местом (ревью 01.11, Б-3) ----------
+# Сцена с locations, которую не объявляет ни одна комната (rooms/*.json → scenes.<id>) и не называет ни хотспот, ни выход
+# (talk.scenes, choice.scene, use…), стартует по неявному правилу «при входе в любую из её комнат». Объявление её в
+# одной комнате молча выключит автостарт в остальных — поэтому объявлять явно: {"trigger": "enter"}.
+_room_texts: dict[str, str] = {}
+_room_docs: dict[str, dict] = {}
+for _rp in sorted((STORY / "rooms").glob("*.json")):
+    if _rp.name.startswith("_"):
+        continue
+    _room_texts[_rp.stem] = _rp.read_text(encoding="utf-8")
+    _room_docs[_rp.stem] = json.loads(_room_texts[_rp.stem])
+for _s in scenes:
+    _locs = _s.get("locations") or []
+    if not _locs or _s.get("reserve"):
+        continue   # резерв (quests.json reserve) не стартует сам
+    _sid = _s["id"]
+    if any(_sid in (_d.get("scenes") or {}) for _d in _room_docs.values()):
+        continue
+    if any(f'"{_sid}"' in _t for _t in _room_texts.values()):
+        continue
+    warn(f"сцена {_sid}: стартует неявно при входе в {', '.join(_locs)} — объявить в комнате: \"scenes\": {{\"{_sid}\": {{\"trigger\": \"enter\"}}}} (ревью Б-3)")
+
+
 # ---------- 1б. цели журнала для игрока (goal) без служебных кодов ----------
 # Игра показывает goal (или result, если goal нет). Коды комнат/эпизодов/сцен игроку не показываем
 # (решение 17.10: «Цели журнала и любой текст для игрока не содержат кодов»). Для сыгранных эпизодов goal обязателен.

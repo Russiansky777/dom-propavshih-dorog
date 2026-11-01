@@ -128,7 +128,9 @@ func _enter(room: String, pos: Vector2) -> void:
 		gs.set_flag(f, true)
 	gs.add_item("key_house")
 	rm.change_room(room, "default", pos)
-	await _frames(6)
+	await _frames(1)
+	player.seed_motion(1031)   # ревью 01.11 (В-8): the same random motion every run (tests seed the idle clips on top)
+	await _frames(5)
 
 
 # --- Model ---------------------------------------------------------------------------------------

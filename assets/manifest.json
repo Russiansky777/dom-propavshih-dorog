@@ -834,7 +834,8 @@
     },
     {
       "id": "icons_day2_block2",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-22 (Meshy text-to-image, pipeline-bot 3f231d72, run 39866959176; статус проставлен 01.11 по ревью Д-5)",
       "kind": "icons",
       "block": "2 (день второй, 22.10)",
       "spec": "Иконки сумки 512×512 на прозрачном: зеркало конторы в деревянной раме (стекло целое, углы расходятся); язык мельничного колокола (железный, с петлёй)",
@@ -1714,7 +1715,8 @@
     },
     {
       "id": "M1_wheel_v2",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "layer_rotating",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1733,7 +1735,8 @@
     },
     {
       "id": "M1_state_wheel_pit",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "background_fix",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1752,7 +1755,8 @@
     },
     {
       "id": "M1_wheel_water_front",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "anim_frames",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1773,7 +1777,8 @@
     },
     {
       "id": "M1_wheel_water_still",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1792,7 +1797,8 @@
     },
     {
       "id": "M1_wheel_drips",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "anim_frames",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1813,7 +1819,8 @@
     },
     {
       "id": "closeup_bell_stand",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "closeup",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1832,7 +1839,8 @@
     },
     {
       "id": "closeup_bell_clapper_hung",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1851,7 +1859,8 @@
     },
     {
       "id": "closeup_bell_swing_layers",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1871,7 +1880,8 @@
     },
     {
       "id": "H2_state_wedges_v2",
-      "status": "requested",
+      "status": "rejected",
+      "rejected": "2026-11-01: в 10б не вошли (пункт 3 — по отдельному подтверждению); заменены v3 из партии 10в (6154556d) — статус по ревью Д-5",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1892,7 +1902,8 @@
     },
     {
       "id": "H4_state_bed",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1911,7 +1922,8 @@
     },
     {
       "id": "H4_state_chest_open",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1930,7 +1942,8 @@
     },
     {
       "id": "H4_state_chest_clapper",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1949,7 +1962,8 @@
     },
     {
       "id": "H2_state_crate_blank",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "background_fix",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1968,7 +1982,8 @@
     },
     {
       "id": "H1_state_scarf_over_shelf",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "background_fix",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -1987,7 +2002,8 @@
     },
     {
       "id": "H1_state_shelf_on_bench",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -2006,7 +2022,8 @@
     },
     {
       "id": "O4_state_mitya_board_fence",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -2025,7 +2042,8 @@
     },
     {
       "id": "closeup_second_bench_clean",
-      "status": "requested",
+      "status": "delivered",
+      "delivered_note": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5); в игре не используются — мини-игра верстака снята 01.11 (выбор Директора, верстак рассказом Q06a)",
       "kind": "closeup",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -2044,7 +2062,8 @@
     },
     {
       "id": "bench_parts",
-      "status": "requested",
+      "status": "delivered",
+      "delivered_note": "2026-10-24 (ChatGPT, партия 10б, коммит 2f4b557d, README assets/incoming/_meta_p10b; статус проставлен 01.11 по ревью Д-5); в игре не используются — мини-игра верстака снята 01.11 (выбор Директора, верстак рассказом Q06a)",
       "kind": "prop_states",
       "block": "Партия 10б (ChatGPT, правки H, 24.10)",
       "batch": "10b",
@@ -2887,6 +2906,45 @@
       "spec": "План Заречья по игре: мельница по другую сторону от дома (как на улице Z2), плотина не до того берега, карандашный кружок у поворота, вывеска «ПОЧТА», один причал без лодки после переправы, тропа к улице Ольховки",
       "use": "data/story/map_zarechye.json → image, overlays; точки мест — по ответу художника",
       "g": "K стр. 10; сверка плана 01.11 П1, П2, П5–П8"
+    },
+    {
+      "id": "tikhon_loaf_mouth",
+      "status": "requested",
+      "block": "Партия 13 (по партии 12 и приёмке K)",
+      "batch": "13",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 13",
+      "brief": "Docs/art_pack_13/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "kind": "character_frames",
+      "files": [
+        "incoming/Tikhon_loaf_mouth_1.png",
+        "incoming/Tikhon_loaf_mouth_2.png",
+        "incoming/Tikhon_loaf_mouth_3.png"
+      ],
+      "base": "characters/tikhon/tikhon_loaf.png (Tikhon_pose_loaf, партия 12)",
+      "size": "1254×1254",
+      "placement": "холст позы, непрозрачно только [865, 655, 1000, 760)",
+      "spec": "Три кадра рта (щель, открытый с языком, широкая пасть) для позы «калачиком»; нос и выше — альфа 0"
+    },
+    {
+      "id": "H1_bench_wide_shelf_v2",
+      "status": "requested",
+      "block": "Партия 13 (по партии 12 и приёмке K)",
+      "batch": "13",
+      "owner": "ChatGPT + Директор",
+      "pack": "Партия 13",
+      "brief": "Docs/art_pack_13/00_ТЕКСТ_для_ChatGPT.txt",
+      "requested": "2026-11-01",
+      "kind": "prop_states",
+      "files": [
+        "incoming/H1_state_bench_wide_shelf_v2.png",
+        "incoming/H1_state_bench_wide_scarf_v2.png"
+      ],
+      "base": "H1_bg.png",
+      "size": "1672×941",
+      "placement": "полный холст в (0,0), 1:1; [360, 462, 712, 684)",
+      "spec": "На лежанке — та же широкая полка с кронштейнами, что повешена у печи (H1_state_shelf_A_wide, партия 12); вторая — под мокрым платком"
     }
   ]
 }

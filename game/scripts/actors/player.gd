@@ -141,6 +141,17 @@ var _gest_t: float = 0.0
 var _gest_w: float = 0.0
 var _gest_on: bool = false
 var _gest_rng := RandomNumberGenerator.new()
+var _look_rng := RandomNumberGenerator.new()   # ревью 01.11 (В-8): the glances draw from their own generator — seed_motion makes a run repeatable
+
+
+## Ревью 01.11 (В-8): every random choice of the figure's motion (talk gesture start, idle glances, the idle clips)
+## from one seed — the 3D tests call it so a run repeats exactly (before: the global RNG and an unseeded generator,
+## the flakes were masked by a retry in run_tests.sh).
+func seed_motion(s: int) -> void:
+	_gest_rng.seed = s
+	_look_rng.seed = s + 1
+	if view3d != null:
+		view3d.seed_idle(s)
 var _facade_row: int = -1
 var _facade_anim: String = ""
 
@@ -1226,9 +1237,9 @@ func _look_3d() -> void:
 		_glance_t -= get_process_delta_time()
 		if _glance_t <= 0.0:
 			var gs: Array = idle.get("glance_s", [3.0, 7.0])
-			_glance_t = randf_range(float(gs[0]), float(gs[1]))
+			_glance_t = _look_rng.randf_range(float(gs[0]), float(gs[1]))
 			var gd := deg_to_rad(float(idle.get("glance_deg", 30.0)))
-			_glance_a = 0.0 if randf() < 0.45 else randf_range(-gd, gd)
+			_glance_a = 0.0 if _look_rng.randf() < 0.45 else _look_rng.randf_range(-gd, gd)
 		var a := yaw3d + _glance_a
 		var ahead := float(idle.get("ahead_m", 3.0))
 		view3d.set_look(Vector3(sin(a) * ahead, float(idle.get("eye_m", 1.5)), cos(a) * ahead), true, float(idle.get("weight", 0.6)))

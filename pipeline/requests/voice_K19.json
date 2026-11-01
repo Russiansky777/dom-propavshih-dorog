@@ -1,0 +1,352 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 2919,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K19 (01.11, утро, Opus по ревью Г-9…Г-29, А-5, А-11, А-12): изменённые озвученные строки — по 3 записи; выбор на странице «Четырнадцатый заход» вместе с K18. Г-28 (M01_9) не тронут: это слова Директора (test_batch_i_t6, карта 9). Г-26 (O4 дощечка/мешок) не тронут: тексты приняты Директором (ревью-3, test_batch_i_t6). Г-10: одно слово — «лежанка» (арт партии 11, Директор 29.10 «на ней спят — значит лежанка»), а не «лавка»",
+ "new_text_lines": [
+  "ulyana:O1d.ulyana.hat_q",
+  "M03_8",
+  "M23c_0",
+  "M20_9",
+  "H3.puzzle.seat_hint",
+  "M26_14",
+  "tamara:O4.tamara.after",
+  "tikhon:H1.tikhon.ask_shelf",
+  "H1.shelf.look",
+  "H1.shelf.look_wet"
+ ],
+ "items": [
+  {
+   "id": "W196_1",
+   "line": "ulyana:O1d.ulyana.hat_q",
+   "take": "1",
+   "speaker": "ulyana",
+   "text": "Агата, это ты птице шапку нарисовала? Вправду? А я думала, она всегда в шапке была.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W196_2",
+   "line": "ulyana:O1d.ulyana.hat_q",
+   "take": "2",
+   "speaker": "ulyana",
+   "text": "Агата, это ты птице шапку нарисовала? Вправду? А я думала, она всегда в шапке была.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W196_3",
+   "line": "ulyana:O1d.ulyana.hat_q",
+   "take": "3",
+   "speaker": "ulyana",
+   "text": "Агата, это ты птице шапку нарисовала? Вправду? А я думала, она всегда в шапке была.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W198_1",
+   "line": "M03_8",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[playful] Раз печь затопила, полку мне повесь, а? На лежанке вон лежит. С неё и печь видно, и кастрюлю.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W198_2",
+   "line": "M03_8",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[playful] Раз печь затопила, полку мне повесь, а? На лежанке вон лежит. С неё и печь видно, и кастрюлю.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W198_3",
+   "line": "M03_8",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[playful] Раз печь затопила, полку мне повесь, а? На лежанке вон лежит. С неё и печь видно, и кастрюлю.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W201_1",
+   "line": "M23c_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Нина входит в се́стрин дом — теперь как /fsʲe/, с крыльца. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W201_2",
+   "line": "M23c_0",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Нина входит в се́стрин дом — теперь как /fsʲe/, с крыльца. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W201_3",
+   "line": "M23c_0",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Нина входит в се́стрин дом — теперь как /fsʲe/, с крыльца. Дунино пальто принесла. Вешает на пустой крючок, где до беды оно висело.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W203_1",
+   "line": "M20_9",
+   "take": "1",
+   "speaker": "nina",
+   "text": "Тут и ляжешь, на своей кровати. Ульяна на ней спит — потеснитесь вдвоём.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W203_2",
+   "line": "M20_9",
+   "take": "2",
+   "speaker": "nina",
+   "text": "Тут и ляжешь, на своей кровати. Ульяна на ней спит — потеснитесь вдвоём.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W203_3",
+   "line": "M20_9",
+   "take": "3",
+   "speaker": "nina",
+   "text": "Тут и ляжешь, на своей кровати. Ульяна на ней спит — потеснитесь вдвоём.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W204_1",
+   "line": "H3.puzzle.seat_hint",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Брус ещё не сел — подбить: щелчок по стрелке у торца.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W204_2",
+   "line": "H3.puzzle.seat_hint",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Брус ещё не сел — подбить: щелчок по стрелке у торца.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W204_3",
+   "line": "H3.puzzle.seat_hint",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Брус ещё не сел — подбить: щелчок по стрелке у торца.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W205_1",
+   "line": "M26_14",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Зимнее утро, класс. Нина на доске число выводит — теперь на обоих берегах одно. Дети с обоих берегов за партами, Ульяна среди них. А сзади, за той самой партой, где когда-то синице шапку рисовала, сидит Агата.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W205_2",
+   "line": "M26_14",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Зимнее утро, класс. Нина на доске число выводит — теперь на обоих берегах одно. Дети с обоих берегов за партами, Ульяна среди них. А сзади, за той самой партой, где когда-то синице шапку рисовала, сидит Агата.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W205_3",
+   "line": "M26_14",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Зимнее утро, класс. Нина на доске число выводит — теперь на обоих берегах одно. Дети с обоих берегов за партами, Ульяна среди них. А сзади, за той самой партой, где когда-то синице шапку рисовала, сидит Агата.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W206_1",
+   "line": "tamara:O4.tamara.after",
+   "take": "1",
+   "speaker": "tamara",
+   "text": "За год вон сколько писем набралось… А тут за этот год двадцать лет прошло. Как же так-то?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W206_2",
+   "line": "tamara:O4.tamara.after",
+   "take": "2",
+   "speaker": "tamara",
+   "text": "За год вон сколько писем набралось… А тут за этот год двадцать лет прошло. Как же так-то?",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W206_3",
+   "line": "tamara:O4.tamara.after",
+   "take": "3",
+   "speaker": "tamara",
+   "text": "За год вон сколько писем набралось… А тут за этот год двадцать лет прошло. Как же так-то?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W207_1",
+   "line": "tikhon:H1.tikhon.ask_shelf",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[playful] Полку-то повесишь? Вон она, на лежанке лежит. Сам я её, что ли, лапами прибью?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W207_2",
+   "line": "tikhon:H1.tikhon.ask_shelf",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[playful] Полку-то повесишь? Вон она, на лежанке лежит. Сам я её, что ли, лапами прибью?",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W207_3",
+   "line": "tikhon:H1.tikhon.ask_shelf",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[playful] Полку-то повесишь? Вон она, на лежанке лежит. Сам я её, что ли, лапами прибью?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W208_1",
+   "line": "H1.shelf.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Под платком на лежанке лежала снятая полка. А крепления для неё — у печи.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W208_2",
+   "line": "H1.shelf.look",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Под платком на лежанке лежала снятая полка. А крепления для неё — у печи.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W208_3",
+   "line": "H1.shelf.look",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Под платком на лежанке лежала снятая полка. А крепления для неё — у печи.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W209_1",
+   "line": "H1.shelf.look_wet",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Снятая полка на лежанке лежит, под мокрым платком. Сперва платок убрать.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "как прежняя манера"
+  },
+  {
+   "id": "W209_2",
+   "line": "H1.shelf.look_wet",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Снятая полка на лежанке лежит, под мокрым платком. Сперва платок убрать.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W209_3",
+   "line": "H1.shelf.look_wet",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Снятая полка на лежанке лежит, под мокрым платком. Сперва платок убрать.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  }
+ ]
+}

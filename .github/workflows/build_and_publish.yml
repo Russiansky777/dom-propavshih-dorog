@@ -40,6 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     # 120: с жителями v2 (атласы ~1,2 ГБ) импорт и тесты дольше 40 минут — сборка 40231228355 оборвалась по времени на тестах.
     timeout-minutes: 120
+    # ревью 01.11 (В-10): the site goes out only when the smoke run of the built wasm passed (deploy below)
+    outputs:
+      site_ok: ${{ steps.smoke_web.outcome == 'success' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -117,6 +120,20 @@ jobs:
           mkdir -p /tmp/pw && npm i --prefix /tmp/pw --no-save --silent playwright@1.48.2
           PLAYWRIGHT_FROM=/tmp/pw/x.js node tools/listen_review_web.mjs || { echo "::error title=listen/::▶ в режиме проверки играет не ту запись (tools/listen_review_web.mjs)"; exit 1; }
 
+      # Ревью 01.11 (В-10): the built wasm is started in a browser before the site is published — title, «Новая игра»,
+      # the first room, a few seconds of play, no console errors (tools/smoke_web.mjs). A failure keeps the old site
+      # (deploy is skipped) and is an error annotation; the exe below goes out regardless.
+      - name: Web smoke run (the built game starts in a browser)
+        id: smoke_web
+        if: steps.export_web.outcome == 'success'
+        continue-on-error: true
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+          SMOKE_CHROME_CHANNEL: chrome
+        run: |
+          mkdir -p /tmp/pw && npm i --prefix /tmp/pw --no-save --silent playwright@1.48.2
+          PLAYWRIGHT_FROM=/tmp/pw/x.js node tools/smoke_web.mjs || { echo "::error title=web smoke::собранная веб-игра не прошла дымовой прогон (build/shots/smoke/report.json) — сайт не обновлён"; exit 1; }
+
       - name: Stamp build
         run: |
           echo "${GITHUB_SHA::7} $(date -u +%Y-%m-%dT%H:%MZ)" > build/web/version.txt
@@ -175,6 +192,7 @@ jobs:
 
   deploy:
     needs: build
+    if: needs.build.outputs.site_ok == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

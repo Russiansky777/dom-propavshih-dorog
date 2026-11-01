@@ -340,6 +340,8 @@ func _test_agata() -> void:
 	rm.change_room("H1", "default", Vector2(1200, 960))
 	for i in 8:
 		await process_frame
+	if player.has_method("seed_motion"):
+		player.seed_motion(2027)   # ревью 01.11 (В-8): the same random motion every run
 	_check(player.is_3d(), "Agata is not drawn in 3D (forced): %s" % (player.view3d.load_error if player.view3d else "no view"))
 	if not player.is_3d():
 		PS.forced_render = ""
@@ -387,6 +389,7 @@ func _test_agata() -> void:
 		rm.change_room(room[0], "default", room[1])
 		for i in 10:
 			await process_frame
+		player.seed_motion(2027)
 		for wk in 15:
 			var yaw0: float = player.yaw3d
 			player.click_at(player.global_position + Vector2(wrng.randf_range(-600, 600), wrng.randf_range(-250, 250)))

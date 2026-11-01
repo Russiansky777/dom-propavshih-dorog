@@ -29,6 +29,11 @@ const CURSOR_ITEM_SIZE: float = 52.0
 ## Dialogue box: 60 % of the width, centred, as tall as its text, pressed to the bottom edge —
 ## the characters above it stay visible (Director/coordinator 17.10, frame ui_10).
 const DIALOGUE_W: float = 1152.0
+## Ревью 01.11 (Г-5…Г-8, Г-33): a line longer than this (characters, without gloss markup) is shown in pages split at
+## a sentence end — the voice plays on across them; a click turns the page, the last click goes on as before.
+const PAGE_CHARS: int = 160
+var dialogue_pages: Array[String] = []   # the current line's pages (tests, probe)
+var dialogue_page: int = 0
 const DIALOGUE_BOTTOM: float = 1062.0
 const HINT_Y: float = 996.0
 const CURSOR_ITEM_OFFSET := Vector2(12, 16)   # below-right of the pointer tip
@@ -746,10 +751,57 @@ func _render_dialogue() -> void:
 			options_box.add_child(b)
 	else:
 		text_label.visible = true
-		text_label.set_story_text(String(beat.get("text", "")))
+		dialogue_pages = split_pages(String(beat.get("text", "")))
+		dialogue_page = 0
+		text_label.set_story_text(dialogue_pages[0])
 		continue_label.visible = true
 	_update_modal()
 	_fit_dialogue.call_deferred()
+
+
+## Pages of a subtitle: one if it is short; else split at sentence ends (. ! ? … followed by a space, outside
+## [[gloss|marks]]) into the fewest pages of at most PAGE_CHARS, as even as the sentences allow.
+static func split_pages(t: String) -> Array[String]:
+	var out: Array[String] = []
+	if _plain_len(t) <= PAGE_CHARS + 10:
+		out.append(t)
+		return out
+	var cuts: Array[int] = []   # positions right after a sentence end (the space after it is dropped)
+	var depth := 0
+	for i in t.length() - 1:
+		var c := t[i]
+		if c == "[" and i + 1 < t.length() and t[i + 1] == "[":
+			depth += 1
+		elif c == "]" and i + 1 < t.length() and t[i + 1] == "]":
+			depth = maxi(depth - 1, 0)
+		if depth == 0 and ".!?…".contains(c) and t[i + 1] == " ":
+			# a closing quote or bracket stays with its sentence
+			cuts.append(i + 1)
+		elif depth == 0 and "»)".contains(c) and i > 0 and ".!?…".contains(t[i - 1]) and t[i + 1] == " ":
+			cuts.append(i + 1)
+	if cuts.is_empty():
+		out.append(t)
+		return out
+	var n := int(ceil(float(_plain_len(t)) / float(PAGE_CHARS)))
+	var start := 0
+	for k in range(1, n):
+		var want := int(float(t.length()) * float(k) / float(n))
+		var best := -1
+		for c in cuts:
+			if c <= start:
+				continue
+			if best < 0 or absi(c - want) < absi(best - want):
+				best = c
+		if best < 0 or best >= t.length() - 1:
+			break
+		out.append(t.substr(start, best - start).strip_edges())
+		start = best
+	out.append(t.substr(start).strip_edges())
+	return out
+
+
+static func _plain_len(t: String) -> int:
+	return Gloss.plain(t).length()
 
 
 ## As tall as the content (name + 1–3 lines, or the options), centred, pressed to the bottom; the
@@ -770,7 +822,12 @@ func _update_modal() -> void:
 func _on_modal_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if dialogue.visible and StoryRunner.current_beat.get("type", "") != "options":
-			StoryRunner.advance()
+			if dialogue_page < dialogue_pages.size() - 1:
+				dialogue_page += 1   # the next page of a long line; the beat (and its voice) goes on
+				text_label.set_story_text(dialogue_pages[dialogue_page])
+				_fit_dialogue.call_deferred()
+			else:
+				StoryRunner.advance()
 			get_viewport().set_input_as_handled()
 
 

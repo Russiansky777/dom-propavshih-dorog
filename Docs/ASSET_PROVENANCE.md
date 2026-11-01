@@ -131,3 +131,44 @@ map/zarechye_plan.png, map/zarechye_plan_overlay.png (план Заречья п
 одна лодка; прежние — `_zarechye_plan_v1.png`, `_zarechye_plan_overlay_v1.png`). Копии в игре — `tools/import_room_art.py`
 (H2, H1, R2, M1, M4), `tools/sync_map.sh`.
 
+
+## Партии 10а–10д и 11 — ChatGPT (imagegen), 24–30.10.2026 (дописано 01.11 по ревью Д-4)
+Права у всех — как у прочего арта ChatGPT проекта: сгенерировано ChatGPT по заказу проекта для проекта, автор заказа — Директор.
+README, промпты и проверки — в `assets/incoming/_meta_p<партия>/`; копии в игре — `tools/import_room_art.py` (слои комнат,
+поле `art_source` в `data/story/rooms/<ID>.json`), крупные планы — `tools/import_closeups.py`/вручную по README.
+- **10а** (24.10, коммит 2e211907, `_meta_p10a/README_RU.txt`, `prompts.json`): cup_blue, cup_white, mug_blue (чашки H1/O3),
+  pause_panel_wood, main_menu_signature_v2; зеркальный вариант меню не использован (`main_menu_mirrored_clean_UNUSED.png`).
+- **10б** (24.10, 2f4b557d, `_meta_p10b/README.txt`, `generation_prompts.json`, `manifest.json`, `validation.json`): колесо мельницы
+  (M1_wheel_v2, кадры воды и капель, M1_state_wheel_pit), полка под платком (H1_state_scarf_over_shelf, H1_state_shelf_on_bench),
+  кровать и сундук на чердаке (H4_state_bed, H4_state_chest_open/clapper), ящик без бирки H2, дощечка Мити на заборе (O4),
+  детали верстака (bench_part_*, closeup_second_bench_clean — механика верстака снята 01.11, файлы остались в incoming),
+  колокол крупно (closeup_bell_*).
+- **10в** (24–25.10, 6154556d, `_meta_p10c/README.txt`, `PROMPTS.json`, `manifest.json`): лодка у поворота днём/в сумерках (Z3),
+  причал без лодки (R1), клинья зеркала v3 (H2), прилавок Z1 v2, дощечка O4 v2, снимок школы (H3), фон бревна EP_beam,
+  кадр моста для эпилога (ep_tamara_bridge).
+- **10г** (25.10, f6ba1d9d, `_meta_p10g/README.txt`, `PROMPTS.txt`, `F_hug_pelageya_v2_README.txt`): объятия F_hug_nina,
+  F_hug_pelageya (v2 — «материнское», Директор 25.10), кадры рта Тихона tikhon_mouth_1–3 (в игре — вырезка `tools/import_tikhon_mouth.py`
+  → `game/assets/characters/tikhon/mouth_1–3.png`), сезон Z3/R1 днём (v2), кровать H4 v2, стена за дверью галереи
+  (M05_wall_behind → `game/assets/puzzle/M05/wall_behind.png`), синица O1 v2, старый снимок H3, карта Ули в кадре ужина.
+- **10д / J** (29.10, fbf1c3fd, `_meta_p10d/README_RU.txt`, `prompts.json`, `source_task.txt`, `validation.json`): лодка Пелагеи у дальней
+  опоры днём/вечером (R3), снег того берега в окнах H4/M1/Z3, стол Нины без зеркальца (O3, день/ночь), колокол на подвесе H2,
+  дощечка сигналов крупно, дёготь (крупно и иконка).
+- **11** (30.10, 478bc721, `_meta_p11/README.txt`, `PROMPTS.txt`, `QA.json`): широкая лежанка у печи — три состояния
+  (H1_state_bench_wide_scarf/shelf/bare), резьба «Агата» на бревне без подложки (EP_beam_cut_agata).
+
+## Жители и Агата из Meshy: листы v2 и живые модели (дописано 01.11 по ревью Д-4)
+- **Листы жителей v2** (`assets/characters/<имя>_v2/`, конвейер pipeline-character — Codex; первые — pipeline-bot c82843f2, 25.10,
+  run 40200743689): модели и анимации Meshy (meshy.ai, платная подписка проекта; по справке Meshy на платных планах «you retain full private
+  ownership of all assets you create», https://help.meshy.ai/en/articles/10137554-what-is-the-ownership-of-the-generated-models), рендер листов — Blender в CI. Запросы — `pipeline/requests/npc_*.json`.
+- **Живые модели жителей** (`game/assets/characters/<имя>_v2/rt3d/<имя>_rt.glb` + baseColor jpg; коммиты cef72959 и 800e637f, 30.10,
+  Директор: «остальные можно чуточку попроще»): те же модели Meshy, что в листах v2, упрощены до ~120 тыс. треугольников; клипы —
+  из риггинга/анимаций Meshy, перенесённые на модель.
+- **Живая Агата v4** — см. запись выше (6e58da14, 30.10). Прежние `agata_rt.glb` (18.10, pipeline-bot e585a35d/8c6a4640) — пробная модель,
+  в сборки не идёт (exclude `assets/characters/*/rt3d/*` в вебе; в exe — только v4 по `game/data/actors/agata.json`).
+- **Нина в мамином зеркале** (`assets/characters/nina_mirror/`, pipeline-bot 999cc535, 23.10, run 39943705621): позы Нины для крупного
+  плана зеркала — та же модель Meshy; доработка — задание Codex `Docs/tasks/K_mirror_nina_rev6.md`.
+
+## Трейлер: слои глубины пейзажа (24.10, 19097350)
+`game/assets/trailer/house_front.png`, `house_far.png`, `house_depth.png` — из пейзажа главного меню (арт ChatGPT, см. «главное меню»)
+разрезаны по карте глубины `tools/make_trailer_layers.py`; карта глубины — модель Depth Anything V2 Small (ONNX,
+onnx-community/depth-anything-v2-small; лицензия модели — Apache-2.0, https://huggingface.co/depth-anything/Depth-Anything-V2-Small).

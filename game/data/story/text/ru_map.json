@@ -9,7 +9,7 @@
     "map.ferry_shed": {"text": "Сарайчик переправы", "draft": false, "_k": "K (сверка плана 01.11, П3): в игре R3.shed — «Сарайчик переправы»; комнаты R4 нет"},
     "map.ilya_house": {"text": "Дом Ильи", "draft": false, "_k": "K (сверка плана 01.11, П8)"},
     "map.here": {"text": "Вы здесь", "draft": false},
-    "map.close_hint": {"text": "Щёлкните или нажмите Esc, чтобы вернуться", "draft": false},
+    "map.close_hint": {"text": "Щелчок или Esc — вернуться", "draft": false},
     "ui.button_plan": {"text": "План", "draft": false}
   }
 }

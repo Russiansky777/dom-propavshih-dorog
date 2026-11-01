@@ -150,6 +150,28 @@ def slice_hits(x: np.ndarray, min_gap_s: float, max_len_s: float, keep: int, det
     return [fade(c[2], 0.002, 0.04) for c in sorted(best, key=lambda c: c[1])]
 
 
+def quiet_seam(x: np.ndarray) -> np.ndarray:
+    """Ревью 01.11 (Д-7): a seamless loop turned round so its seam falls where the 0,5 s and 2 s before and after it are
+    equally loud and near the median (the fire's last second was a crackle burst, ~5 dB over its first — a step every
+    18,5 s). Turning a seamless loop keeps it seamless."""
+    n, m = len(x), x.mean(axis=1) if x.ndim == 2 else x
+
+    def db(a: np.ndarray) -> float:
+        return float(20 * np.log10(np.sqrt(np.mean(a ** 2)) + 1e-9))
+
+    def win(r: int, a: int, b: int) -> np.ndarray:
+        idx = np.arange(r + a, r + b) % n
+        return m[idx]
+    med = float(np.median([db(m[i:i + SR]) for i in range(0, n - SR, SR // 4)]))
+    best = (1e9, 0)
+    for r in range(SR, n - SR, SR // 20):
+        a, b = db(win(r, -2 * SR, 0)), db(win(r, 0, 2 * SR))
+        a1, b1 = db(win(r, -SR // 2, 0)), db(win(r, 0, SR // 2))
+        best = min(best, (abs(a - b) + abs(a1 - b1) + 0.5 * abs((a + b) / 2 - med), r))
+    r = best[1]
+    return np.concatenate([x[r:], x[:r]], axis=0)
+
+
 def seamless_loop(x: np.ndarray, xf_s: float) -> np.ndarray:
     n, xf = len(x), int(xf_s * SR)
     t = np.linspace(0.0, np.pi / 2, xf)[:, None]
@@ -251,7 +273,7 @@ def main() -> int:
         made.append(write_wav(f"sfx_bag_leather_short_{i:02d}.wav", peak_normalize(h.mean(axis=1, keepdims=True))))
     rain = to_loudness(seamless_loop(read("amb_rain.wav"), 2.0), -28.0)
     made.append(write_ogg("amb_rain.ogg", rain))
-    fire = to_loudness(seamless_loop(highpass(read("amb_stove_fire.wav"), 150.0), 1.5), -24.0)
+    fire = to_loudness(quiet_seam(seamless_loop(highpass(read("amb_stove_fire.wav"), 150.0), 1.5)), -24.0)
     made.append(write_ogg("amb_stove_fire.ogg", fire))
     # Takes that are no longer produced (fewer slices than last time) go, with their .import; the
     # .import of a rewritten file is kept (Godot re-imports by checksum, the uid stays).

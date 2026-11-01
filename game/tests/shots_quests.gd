@@ -12,7 +12,6 @@ var mv: Node
 var out_dir := ""
 
 const SHOTS := ["q02_O1_map", "q02_map_route", "q02_map_route_two", "q02_map_done", "q06_O4_workshop",
-	"q06_bench_step1", "q06_bench_drag", "q06_bench_step2", "q06_bench_step3", "q06_bench_turn", "q06_bench_step5", "q06_bench_done",
 	"q06_O4_shed_A", "q06_H2_bench_B",
 	"ep_lesson_A", "ep_dinner_B", "ep_boat_A",
 	# партия 8 in the old places
@@ -238,44 +237,7 @@ func _shot(n: String) -> void:
 			await _frames(70)
 		"q06_O4_workshop":
 			await _state([], "O4", "from_O2")
-		"q06_bench_step1":
-			await _state(["q06_started"], "O4", "from_O2")
-			await _open("ilya_workshop")
-		"q06_bench_drag":
-			# H48: the key carried over the groove — lifted (shadow further), the place glowing
-			await _state(["q06_started"], "O4", "from_O2")
-			await _open("ilya_workshop")
-			var p = _panel()
-			var kn: Node2D = p.parts["key"]["node"]
-			p.drag_id = "key"
-			var to: Vector2 = p.call("_seat_of_step", "key")["pos"]
-			kn.position = to + Vector2(-20, -26)
-			p.call("_set_lift", "key", 1.0)
-			p.over_target = true
-			await _frames(20)
-		"q06_bench_step2":
-			await _state(["q06_started", "q06_fastening_fit"], "O4", "from_O2")
-			await _open("ilya_workshop")
-		"q06_bench_step3":
-			await _state(["q06_started", "q06_fastening_fit", "q06_stop_in"], "O4", "from_O2")
-			await _open("ilya_workshop")
-		"q06_bench_turn":
-			await _state(["q06_started", "q06_fastening_fit", "q06_stop_in", "q06_screw_set"], "O4", "from_O2")
-			await _open("ilya_workshop")
-			var p2 = _panel()
-			p2.turn_progress = 0.4
-			p2.call("_apply_turn")
-			p2.call("_draw_ring")
-			await _frames(10)
-		"q06_bench_step5":
-			await _state(["q06_started", "q06_fastening_fit", "q06_stop_in", "q06_screw_set", "q06_vise_tight"], "O4", "from_O2")
-			await _open("ilya_workshop")
-		"q06_bench_done":
-			await _state(["q06_started", "q06_fastening_fit", "q06_stop_in", "q06_screw_set", "q06_vise_tight"], "O4", "from_O2")
-			await _open("ilya_workshop")
-			var p3 = _panel()
-			p3.call("_apply", "board", p3.call("_xf", "board", "seat"))
-			await _frames(10)
+		# q06_bench_* (сборка верстака крупным планом) сняты 01.11: мини-игры больше нет — верстак рассказом (Q06a)
 		"q06_O4_shed_A":
 			await _state(["q06_started", "q06_bench_built", "q06_table_at_ilya", "done_Q06"], "O4", "from_O2")
 		"q06_H2_bench_B":

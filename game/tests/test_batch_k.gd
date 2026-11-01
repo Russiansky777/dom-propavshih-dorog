@@ -102,6 +102,7 @@ func _run() -> void:
 	await _test("Ревью 01.11 (В-2, В-13): a villager walking off waits through a pause (the walk ends where the tween does); the yard loop's black survives a reset", _test_pause_timers)
 	await _test("Ревью 01.11 (Б-9, Б-6): the optional stories close on quests.json closes_on (the first span); Esc inside an unclosable close-up is not eaten", _test_closes_on_and_esc)
 	await _test("Ревью 01.11 (Г-24): the journal keeps one line per event — «сыграла» gives way to the result, «порыбачила» to the catch (flags.json desc_unless)", _test_journal_dupes)
+	await _test("Ревью 01.11 (Г-5…Г-8, Г-33): a long line is shown in pages split at sentence ends; a click turns the page, the beat (and its voice) goes on", _test_subtitle_pages)
 	await _test("Ревью 01.11 (Б-4): day four by the boat — out of the crossing's black straight into the first span's frame, no empty turn between", _test_day4_arrival)
 	await _test("Ревью 01.11 (А-13/А-14): the pier base before Pelageya says nothing of the rope; «кто затвором ведал» only after the sluice answer", _test_early_knowledge)
 	await _test("Ревью 01.11 (Б-5/А-16): the jetty's «К лодке» on the morning of day three says «сперва с матерью», not «завтра отвезу»; before that morning the old word", _test_morning_jetty_exit)
@@ -1020,3 +1021,52 @@ func _test_day4_arrival() -> void:
 	_check(glimpse < 0.0, "the turn is never seen before the frame (the black gave way by %.2f)" % glimpse)
 	_check(lifted_after, "the frame comes up out of the black (a fade-in on the frame, within %.1f s)" % t)
 	await _drain()
+
+
+## Ревью 01.11 (Г-5…Г-8, Г-33): subtitles over 160 characters (Pelageya's rope, Nina's mirror, the long looks) — pages.
+func _test_subtitle_pages() -> void:
+	var GU = load("res://scripts/ui/game_ui.gd")
+	# every line and look of the story: no page over 200 characters where a sentence end allows it
+	var worst := 0
+	var worst_txt := ""
+	var split := 0
+	var all: Array[String] = []
+	for id in sd.scene_order:
+		for ln in sd.scene(id).get("mandatory_lines", []):
+			all.append(String(ln.get("text", "")))
+	for k in sd.texts.keys():
+		all.append(String(sd.texts[k].get("text", "")))
+	for t in all:
+		var pages: Array = GU.split_pages(t)
+		if pages.size() > 1:
+			split += 1
+		for p in pages:
+			var n: int = Gloss.plain(String(p)).length()
+			if n > worst and String(p).count(". ") + String(p).count("! ") + String(p).count("? ") + String(p).count("… ") > 0:
+				worst = n
+				worst_txt = String(p)
+	print("  pages: %d long texts split; longest page with a sentence end inside: %d" % [split, worst])
+	_check(split >= 10, "the long texts are split (%d)" % split)
+	_check(worst <= 200, "no page over 200 characters that could have been cut (%d): %s" % [worst, worst_txt])
+	var rope := ""
+	for ln in sd.scene("M02").get("mandatory_lines", []):
+		if String(ln.get("text", "")).begins_with("Канат от мостового"):
+			rope = String(ln["text"])
+	var rp: Array = GU.split_pages(rope)
+	_check(rp.size() == 2 and String(rp[0]).ends_with(".") and Gloss.plain(String(rp[0])).length() <= 170 and Gloss.plain(String(rp[1])).length() <= 170, "Pelageya's rope: two pages cut at a sentence end: %s" % str(rp))
+	# in the dialogue box: the click turns the page, then advances
+	gs.reset()
+	sr.call("_on_state_reset")
+	await _enter("H1")
+	sr.call("_push", {"type": "line", "speaker": "pelageya", "speaker_name": "Пелагея", "text": rope, "line_id": "M02_5"})
+	await _frames(2)
+	_check(ui.get("dialogue_pages").size() == 2 and int(ui.get("dialogue_page")) == 0, "two pages, the first shown")
+	var ev := InputEventMouseButton.new()
+	ev.button_index = MOUSE_BUTTON_LEFT
+	ev.pressed = true
+	ui.call("_on_modal_input", ev)
+	await _frames(2)
+	_check(int(ui.get("dialogue_page")) == 1 and String(sr.current_beat.get("line_id", "")) == "M02_5", "the click shows the second page, the line goes on")
+	ui.call("_on_modal_input", ev)
+	await _frames(2)
+	_check(sr.current_beat.is_empty(), "the next click goes on past the line")
