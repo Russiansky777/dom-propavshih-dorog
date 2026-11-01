@@ -102,6 +102,7 @@ func _run() -> void:
 	await _test("Ревью 01.11 (В-2, В-13): a villager walking off waits through a pause (the walk ends where the tween does); the yard loop's black survives a reset", _test_pause_timers)
 	await _test("Ревью 01.11 (Б-9, Б-6): the optional stories close on quests.json closes_on (the first span); Esc inside an unclosable close-up is not eaten", _test_closes_on_and_esc)
 	await _test("Ревью 01.11 (Г-24): the journal keeps one line per event — «сыграла» gives way to the result, «порыбачила» to the catch (flags.json desc_unless)", _test_journal_dupes)
+	await _test("Ревью 01.11 (Б-5/А-16): the jetty's «К лодке» on the morning of day three says «сперва с матерью», not «завтра отвезу»; before that morning the old word", _test_morning_jetty_exit)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -876,3 +877,33 @@ func _test_journal_dupes() -> void:
 	f = sr.journal_facts()
 	_check(f.any(func(x): return String(x).contains("окуня")) and not f.any(func(x): return String(x).contains("порыбачила")), "with the perch only the perch: %s" % str(f))
 
+
+## Ревью 01.11 (Б-5/А-16): the exit R3→R2 is closed until the boat goes both ways (M23, blocks 3–5); its closed word was
+## Pelageya's of the evening before («Сейчас — к матери. Завтра покатаю») — on the morning of day three «завтра» is today.
+## Now the exit's `states` give the morning its own word (@R3.exit_R2.closed_morning) while `morning_day3` is set.
+func _test_morning_jetty_exit() -> void:
+	# the evening of day two: the old word
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["done_M01", "done_M02", "done_M03", "done_M04", "done_M05", "done_M06", "house_unlocked", "house_open", "done_M16", "done_M17", "ferry_verified", "crossing_hauled", "done_M18p", "done_M18", "met_mitya", "knows_twenty_years"])
+	await _enter("R3", "from_R2")
+	await _drain()
+	var e: Node = rm.current_room.get_node_or_null("Exits/to_R2")
+	_check(e != null, "R3 has an exit to R2 (the jetty — to the boat)")
+	if e == null:
+		return
+	_check(not e.is_open(), "the boat back is closed before the shuttle (boat_shuttle_open)")
+	sr.use_exit(e)
+	var seen := await _drain()
+	_check(seen.any(func(x): return String(x) == "R3.exit_R2.closed") and not seen.any(func(x): return String(x).contains("closed_morning")), "the evening before: the old word («завтра»): %s" % str(seen))
+	_check(gs.current_room == "R3", "the closed exit keeps the room")
+	# the morning of day three before mother's answer (M22 opens the shuttle): «сперва с матерью»
+	_set_flags(["done_M19", "met_nina", "in_olkhovka", "done_M19c", "done_M20", "met_ilya", "met_ulyana", "done_N02", "morning_day3"])
+	sr.use_exit(e)
+	seen = await _drain()
+	_check(seen.any(func(x): return String(x) == "R3.exit_R2.closed_morning") and not seen.any(func(x): return String(x) == "R3.exit_R2.closed"), "the morning of day three: «сперва с матерью», no «завтра»: %s" % str(seen))
+	_check(gs.current_room == "R3", "still the jetty")
+	# once the boat goes both ways the exit opens and the pull label is on it
+	gs.set_flag("boat_shuttle_open", true)
+	_check(e.is_open(), "with boat_shuttle_open the way to the boat is open")
+	_check(String(e.current_state().get("label", "")) == "@R3.exit_R2.label_pull", "the pull label follows the open shuttle: %s" % str(e.current_state()))
