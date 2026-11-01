@@ -1377,24 +1377,27 @@ func _start_idle_slot(slot: int, e: Dictionary, t0: float) -> void:
 	_slot_active = slot
 
 
-## Data `idle.desync` {phase, rate_jitter}: this figure's idle starts at its own point of the clip and
-## plays a few percent faster or slower — seeded by the actor id, so the same figure moves the same way
-## every run and two figures never move alike.
+## Data `idle.desync` {slot, phase, rate_jitter}: this figure's idle starts at its own point of the clip and
+## plays a few percent faster or slower. `slot` (unique per villager) places the figure on a golden-ratio
+## sequence, so any two figures are guaranteed apart in phase and rate (Godot's generator seeded with
+## two different ids gave Mitya and Tamara the same draw — CI 01.11). Same figure, same motion every run.
 func _desync_idle(actor_id: String) -> void:
 	var d: Dictionary = spec.get("idle", {}).get("desync", {})
 	if d.is_empty():
 		return
-	var rng := RandomNumberGenerator.new()
-	rng.seed = hash("idle:" + actor_id)
-	_idle_rng.seed = rng.randi()
+	var k := int(d.get("slot", absi(hash(actor_id)) % 97))
+	var u_rate := fposmod(0.1 + k * 0.6180339887, 1.0)
+	var u_phase := fposmod(0.5 + k * 0.3819660113, 1.0)
+	var u_breath := fposmod(0.7 + k * 0.3819660113, 1.0)
 	var jit := float(d.get("rate_jitter", 0.0))
-	idle_rate = 1.0 + rng.randf_range(-jit, jit)
+	idle_rate = 1.0 + jit * (2.0 * u_rate - 1.0)
+	_idle_rng.seed = 1000003 * (k + 1)
 	if bool(d.get("phase", true)):
 		var room := float(_slot_len[0]) - float(_slot_t[0]) - idle_crossfade_s() - 0.1
 		if room > 0.0:
-			_slot_t[0] = float(_slot_t[0]) + rng.randf() * room
+			_slot_t[0] = float(_slot_t[0]) + u_phase * room
 	if life != null:
-		life.desync(rng)
+		life.desync(u_breath, 7919 * (k + 1))
 
 
 ## Where this figure's idle is now (tests): clip name and time in it.

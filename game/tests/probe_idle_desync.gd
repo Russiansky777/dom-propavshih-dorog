@@ -9,7 +9,8 @@ func _init() -> void:
 		var spec: Dictionary = base.duplicate(true)
 		spec["id"] = id
 		spec["rt3d"]["idle"]["pool"] = [spec["rt3d"]["idle"]["pool"][0]]
-		spec["rt3d"]["idle"]["desync"] = {"phase": true, "rate_jitter": 0.07}
+		spec["rt3d"]["idle"]["desync"] = {"slot": out.size(), "phase": true, "rate_jitter": 0.07}
+		out.append(id)
 		var v := Actor3D.new()
 		root.add_child(v)
 		print(id, " ok=", v.setup(spec), " idle=", v.idle_phase(), " rate=%.3f breath=%.2f t=%.2f" % [v.idle_rate, v.life.breath_period_s, v.life.t])
