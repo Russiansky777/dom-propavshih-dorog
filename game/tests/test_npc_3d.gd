@@ -104,6 +104,7 @@ func _find_live() -> Node:
 
 func _test_models() -> void:
 	var ids := ["nina", "pavel", "mitya", "pelageya", "ilya", "ilya_wife", "ulyana", "tamara"]
+	var moves := {}   # id -> [idle time now, idle rate, breath period, breath t]
 	for id in ids:
 		var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 		_check(spec is Dictionary and spec.has("rt3d"), "%s: actor data without rt3d" % id)
@@ -118,10 +119,20 @@ func _test_models() -> void:
 			_check(tris > 80000 and tris < 160000, "%s: %d triangles (expected ≈120k)" % [id, tris])
 			for role in ["idle", "listen", "talk"]:
 				_check(v.clips.has(role), "%s: clip %s missing" % [id, role])
+			moves[id] = [float(v.idle_phase()[1]), v.idle_rate, v.life.breath_period_s, v.life.t]
 			if v.clips.has("walk"):
 				_check(v.stride_m > 0.5 and v.stride_m < 3.5, "%s: ground covered by one walk clip %.2f m (Ilya's clip has two cycles)" % [id, v.stride_m])
 		v.queue_free()
 		await _frames(1)
+	# Director 01.11: Ilya and Ulyana stood and swayed exactly alike. Every pair of villagers: the idle starts
+	# at another point of the clip or runs at another rate, and they do not breathe in step.
+	var keys := moves.keys()
+	for i in keys.size():
+		for j in range(i + 1, keys.size()):
+			var a: Array = moves[keys[i]]
+			var b: Array = moves[keys[j]]
+			_check(absf(a[0] - b[0]) > 0.15 or absf(a[1] - b[1]) > 0.01, "%s and %s: idle in step (t %.2f/%.2f, rate %.3f/%.3f)" % [keys[i], keys[j], a[0], b[0], a[1], b[1]])
+			_check(absf(a[2] - b[2]) > 0.02 or absf(a[3] - b[3]) > 0.3, "%s and %s: breathe in step" % [keys[i], keys[j]])
 
 
 func _test_states() -> void:

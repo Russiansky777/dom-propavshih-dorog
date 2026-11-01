@@ -48,6 +48,16 @@ func setup(d: Dictionary, skel: Skeleton3D) -> void:
 	_new_glance()
 
 
+## A figure of its own (Actor3D._desync_idle): breath period ±8 %, breath phase and the glance timing
+## from this figure's generator — villagers sharing one data block do not breathe or glance together.
+func desync(rng: RandomNumberGenerator) -> void:
+	breath_period_s *= 1.0 + rng.randf_range(-0.08, 0.08)
+	t = rng.randf() * breath_period_s
+	_rng.seed = rng.randi()
+	_g_start = t + _rng.randf_range(glance_every_s.x * 0.3, glance_every_s.y * 0.8)
+	_new_glance()
+
+
 func _new_glance() -> void:
 	_g_hold = _rng.randf_range(glance_hold_s.x, glance_hold_s.y)
 	_g_dir = -1.0 if _rng.randf() < 0.5 else 1.0

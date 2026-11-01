@@ -78,6 +78,9 @@ var _slot_len: Array = [1.0, 1.0]
 var _slot_active: int = 0
 var _slot_mix: float = 0.0       # 0 = slot A, 1 = slot B (eased towards the active slot)
 var _idle_rng := RandomNumberGenerator.new()
+## Playback rate of the idle clips for this figure (data `idle.desync.rate_jitter`): two villagers built
+## from the same library idle never breathe and sway in step (Director 01.11).
+var idle_rate: float = 1.0
 var _act_name: String = ""
 
 # Weights as shown (critically damped followers of what the callers ask) and the action slot as shown.
@@ -165,6 +168,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	if clips.has("walk"):
 		build_root_motion()
 	_start_idle_slot(0, _pick_idle(""), 0.0)
+	_desync_idle(String(actor_spec.get("id", "")))
 	pose(0.0, 0.0, 0.0, 0.0)
 	_measure_foot_rest()
 	_measure_arm_ref()
@@ -1373,6 +1377,31 @@ func _start_idle_slot(slot: int, e: Dictionary, t0: float) -> void:
 	_slot_active = slot
 
 
+## Data `idle.desync` {phase, rate_jitter}: this figure's idle starts at its own point of the clip and
+## plays a few percent faster or slower — seeded by the actor id, so the same figure moves the same way
+## every run and two figures never move alike.
+func _desync_idle(actor_id: String) -> void:
+	var d: Dictionary = spec.get("idle", {}).get("desync", {})
+	if d.is_empty():
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash("idle:" + actor_id)
+	_idle_rng.seed = rng.randi()
+	var jit := float(d.get("rate_jitter", 0.0))
+	idle_rate = 1.0 + rng.randf_range(-jit, jit)
+	if bool(d.get("phase", true)):
+		var room := float(_slot_len[0]) - float(_slot_t[0]) - idle_crossfade_s() - 0.1
+		if room > 0.0:
+			_slot_t[0] = float(_slot_t[0]) + rng.randf() * room
+	if life != null:
+		life.desync(rng)
+
+
+## Where this figure's idle is now (tests): clip name and time in it.
+func idle_phase() -> Array:
+	return [String(_slot_name[_slot_active]), float(_slot_t[_slot_active])]
+
+
 func seed_idle(s: int) -> void:
 	_idle_rng.seed = s
 
@@ -1390,7 +1419,7 @@ func idle_crossfade_s() -> float:
 ## starts in the other slot and fades in (eased), so no seam is ever seen.
 func _advance_idle(delta: float) -> void:
 	for s in 2:
-		_slot_t[s] = minf(float(_slot_t[s]) + delta, float(_slot_len[s]))
+		_slot_t[s] = minf(float(_slot_t[s]) + delta * idle_rate, float(_slot_len[s]))
 	var xf := idle_crossfade_s()
 	if float(_slot_len[_slot_active]) - float(_slot_t[_slot_active]) <= xf:
 		var other := 1 - _slot_active
