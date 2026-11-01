@@ -54,7 +54,10 @@ func _process(delta: float) -> void:
 func can_autosave() -> bool:
 	if current_room == null or not is_instance_valid(current_room):
 		return false
-	if StoryRunner.is_busy() or StoryRunner.examined_item != "" or StoryRunner.current_frame != "" or StoryRunner.stage_dim > 0.0:
+	# Ревью 01.11 (Б-1): the last shot of a finished game is a held frame (`end_frame`, frame_hold) — the game is over
+	# and quiet, and this is exactly the save «Продолжить» must find (the shot with «Конец», not day four again).
+	var end_shot := StoryRunner.current_frame != "" and StoryRunner.frame_hold and StoryRunner.end_frame_now() == StoryRunner.current_frame
+	if StoryRunner.is_busy() or StoryRunner.examined_item != "" or (StoryRunner.current_frame != "" and not end_shot) or (StoryRunner.stage_dim > 0.0 and not end_shot):
 		return false
 	if player != null and player.has_method("is_acting") and bool(player.call("is_acting")):
 		return false

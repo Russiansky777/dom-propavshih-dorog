@@ -329,12 +329,30 @@ func _test_finale() -> void:
 		return
 	_check(fv.get("title") == title, "Main gives FrameView the title screen")
 	_flags_before("M26")
+	var slot_end := "test_batch_h_end_%d" % OS.get_process_id()
+	rm.autosave_slot = slot_end
+	rm.autosave_enabled = true
+	gs.delete_save(slot_end)
 	await _enter("Z3")
 	_check(sr.active_scene == "M26", "the epilogue starts at the turn: %s" % sr.active_scene)
 	Engine.time_scale = 4.0
 	var seen := await _drain()
 	_check(String(seen[-1]).begins_with("agata:Можно, Уля"), "Agata's answer is the last line: %s" % str(seen.slice(-2)))
 	_check(gs.has_flag("game_finished"), "the game is finished")
+	# Ревью 01.11 (Б-1): the save after the end is written — over the held last shot (can_autosave lets the end shot
+	# through); «Продолжить» then finds the finished game, not day four
+	var saved_end := false
+	for i in 300:
+		var inf: Dictionary = gs.save_info(rm.autosave_slot)
+		if not inf.is_empty():
+			var d: Dictionary = gs.read_save(rm.autosave_slot)
+			if bool((d.get("flags", {}) as Dictionary).get("credits_seen", false)) and bool((d.get("flags", {}) as Dictionary).get("done_M26", false)):
+				saved_end = true
+				break
+		await process_frame
+	_check(saved_end, "the autosave after the end holds done_M26 and credits_seen")
+	rm.autosave_enabled = false
+	gs.delete_save(slot_end)
 	var phases: Array = []
 	var thanks_ok := false
 	for i in 1200:
