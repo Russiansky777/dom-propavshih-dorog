@@ -1198,7 +1198,9 @@ func _test_dinner_door() -> void:
 func _test_tikhon_life() -> void:
 	gs.reset()
 	sr.call("_on_state_reset")
-	_set_flags(["done_M01", "done_M02", "done_M03", "house_unlocked", "house_open", "met_tikhon"])
+	# on his shelf: the yawn's wide-open mouth is a cut-out of the standing picture (01.11: on the chair he lies curled
+	# up — the loaf pose — without mouth frames yet)
+	_set_flags(["done_M01", "done_M02", "done_M03", "house_unlocked", "house_open", "met_tikhon", "h1_scarf_removed", "q04_corner_stove", "done_Q04"])
 	await _enter("H1")
 	await _drain()
 	var pup: Node = null

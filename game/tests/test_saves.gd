@@ -68,8 +68,9 @@ func _run() -> void:
 	await _test("G5: every interval of play an autosave — never in a line, a close-up, an item close-up; it waits and then saves; manual slots untouched", _test_timer)
 	await _test("G5: entering a new day saves («День второй» in the autosave)", _test_new_day)
 	await _test("G5: loading the autosave repeats no one-off event and blocks nothing; the menu's «Автосохранение» row loads it", _test_load_no_repeat)
+	await _test("Ревью 01.11 (В-1): a save is written through a temporary file with a .bak of the old one; a cut-off file, wrong kinds or an unknown room leave the running game as it was and read the backup", _test_damaged_saves)
 	gs.reset()
-	for s in [SLOT, MANUAL, CP + "day2", CP + "day3", CP + "day4"]:
+	for s in [SLOT, MANUAL, CP + "day2", CP + "day3", CP + "day4", SLOT + "_dmg"]:
 		gs.delete_save(s)
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -303,3 +304,55 @@ func _test_load_no_repeat() -> void:
 	_check(lost.is_empty(), "every done scene stays done (%s)" % str(lost))
 	_check(not sr.is_busy(), "nothing blocks: the player can act")
 	_reached_end = true
+
+
+func _test_damaged_saves() -> void:
+	var slot := SLOT + "_dmg"
+	gs.delete_save(slot)
+	gs.reset()
+	gs.set_flag("done_M01", true)
+	gs.set_flag("house_unlocked", true)
+	gs.add_item("key_house")
+	_check(rm.start_at("house"), "a game to save")
+	await process_frame
+	gs.set_flag("marker_first", true)
+	_check(rm.save_game(slot), "first save")
+	var path: String = gs.save_path(slot)
+	var bak: String = gs.backup_path(slot)
+	_check(FileAccess.file_exists(path) and not FileAccess.file_exists(path + ".tmp"), "the file is in place, no temporary left")
+	var first := FileAccess.get_file_as_string(path)
+	gs.set_flag("marker_second", true)
+	_check(rm.save_game(slot) and FileAccess.file_exists(bak) and FileAccess.get_file_as_string(bak) == first, "the second save keeps the first as .bak")
+	var second := FileAccess.get_file_as_string(path)
+	# 1. a cut-off write: half a file — the backup is read instead, the game state untouched
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(second.left(second.length() / 2))
+	f.close()
+	var info: Dictionary = gs.save_info(slot)
+	_check(not info.is_empty() and gs.has_save(slot), "a cut-off file: the slot still shows in the menu (from the backup): %s" % str(info.get("label", "")))
+	gs.reset()
+	gs.set_flag("marker_before_load", true)
+	_check(gs.load(slot) and gs.has_flag("marker_first") and not gs.has_flag("marker_second") and not gs.has_flag("marker_before_load"), "a cut-off file: the backup (the first save) loads")
+	# 2. a sound JSON with fields of the wrong kind: refused, the running state stays
+	f = FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"version": gs.SAVE_VERSION, "flags": [], "inventory": [], "current_room": "H1"}))
+	f.close()
+	DirAccess.remove_absolute(bak)
+	gs.reset()
+	gs.set_flag("marker_before_load", true)
+	_check(not gs.load(slot) and gs.has_flag("marker_before_load") and gs.flags.size() == 1, "flags not a dictionary: refused, nothing replaced")
+	# 3. an unknown room (a renamed room, a hand-edited file): refused before the state changes
+	f = FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"version": gs.SAVE_VERSION, "flags": {"done_M01": true}, "inventory": ["key_house", "key_house"], "current_room": "NO_SUCH_ROOM"}))
+	f.close()
+	_check(not gs.load(slot) and gs.has_flag("marker_before_load") and not gs.has_flag("done_M01"), "an unknown room: refused, nothing replaced")
+	_check(not rm.load_game(slot) and gs.has_flag("marker_before_load"), "RoomManager.load_game refuses it too and keeps the game")
+	# 4. a doubled item in the file comes into the bag once
+	f = FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"version": gs.SAVE_VERSION, "flags": {"done_M01": true}, "inventory": ["key_house", "key_house", "no_such_item"], "current_room": "H1", "player_pos": {"x": 900, "y": 800}}))
+	f.close()
+	_check(gs.load(slot) and gs.inventory.count("key_house") == 1 and not gs.has_item("no_such_item"), "a doubled or unknown item in the file: once, known ones only (%s)" % str(gs.inventory))
+	gs.delete_save(slot)
+	_check(not FileAccess.file_exists(path) and not FileAccess.file_exists(bak), "delete removes the file and its backup")
+	_reached_end = true
+

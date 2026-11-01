@@ -187,6 +187,8 @@ func save_game(slot: String, title: String = "") -> bool:
 
 ## Loads a slot and rebuilds the scene from it. Returns false when the slot is missing.
 func load_game(slot: String) -> bool:
+	# Ревью 01.11 (В-1): the file is checked before the state changes (GameState.save_valid — version, kinds, the
+	# room); a damaged slot leaves the running game untouched and the menu stays where it was.
 	if not GameState.load(slot):
 		return false
 	var room_id := GameState.current_room

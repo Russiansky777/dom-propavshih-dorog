@@ -130,10 +130,27 @@ func to_dict(title: String = "") -> Dictionary:
 	return d
 
 
-func from_dict(data: Dictionary) -> bool:
+## Ревью 01.11 (В-1): a save file is checked whole before anything of the state is replaced — a damaged file
+## (a cut-off write, flags that are not a dictionary, a room that no longer exists) leaves the running game as it
+## was and returns false instead of a half-loaded mix; items come in once each and only if the story knows them.
+func save_valid(data: Dictionary) -> bool:
 	var version := int(data.get("version", 0))
 	if version < 1 or version > SAVE_VERSION:
 		push_error("GameState: unsupported save version %s" % str(data.get("version")))
+		return false
+	if not (data.get("flags", {}) is Dictionary) or not (data.get("inventory", []) is Array) \
+			or not (data.get("counters", {}) is Dictionary) or not (data.get("player_pos", {}) is Dictionary):
+		push_error("GameState: save fields of the wrong kind")
+		return false
+	var room := String(data.get("current_room", ""))
+	if room != "" and StoryData.room(room).is_empty():
+		push_error("GameState: save points to unknown room '%s'" % room)
+		return false
+	return true
+
+
+func from_dict(data: Dictionary) -> bool:
+	if not save_valid(data):
 		return false
 	# version 1 (M0 probe) lacks journal/counters: defaults below cover it.
 	flags.clear()
@@ -144,7 +161,10 @@ func from_dict(data: Dictionary) -> bool:
 		flags[key] = bool(raw_flags[k]) or bool(flags.get(key, false))
 	inventory.clear()
 	for item in data.get("inventory", []):
-		inventory.append(String(item))
+		var iid := String(item)
+		# once each, and only an item the story knows (a hand-edited or stale file cannot double a mandatory item)
+		if not inventory.has(iid) and (StoryData.items.is_empty() or StoryData.items.has(iid)):
+			inventory.append(iid)
 	current_room = String(data.get("current_room", ""))
 	var p: Dictionary = data.get("player_pos", {})
 	player_pos = Vector2(float(p.get("x", 0.0)), float(p.get("y", 0.0)))
@@ -182,23 +202,60 @@ static func save_path(slot: String) -> String:
 	return "%s/%s.json" % [SAVE_DIR, slot]
 
 
+## The copy of the slot as it was before the last write (ревью 01.11, В-1): a write that broke off, or a file
+## damaged later, falls back to it on reading.
+static func backup_path(slot: String) -> String:
+	return "%s/%s.json.bak" % [SAVE_DIR, slot]
+
+
+## Written to a temporary file first, then moved over the slot; the previous file becomes the `.bak` copy.
 func save(slot: String, title: String = "") -> bool:
 	var err := DirAccess.make_dir_recursive_absolute(SAVE_DIR)
 	if err != OK and err != ERR_ALREADY_EXISTS:
 		push_error("GameState: cannot create %s (%s)" % [SAVE_DIR, error_string(err)])
 		return false
-	var f := FileAccess.open(save_path(slot), FileAccess.WRITE)
+	var tmp := save_path(slot) + ".tmp"
+	var f := FileAccess.open(tmp, FileAccess.WRITE)
 	if f == null:
-		push_error("GameState: cannot open %s for writing (%s)" % [save_path(slot), error_string(FileAccess.get_open_error())])
+		push_error("GameState: cannot open %s for writing (%s)" % [tmp, error_string(FileAccess.get_open_error())])
 		return false
 	f.store_string(JSON.stringify(to_dict(title), "\t"))
 	f.close()
+	if FileAccess.file_exists(save_path(slot)):
+		var old := FileAccess.get_file_as_string(save_path(slot))
+		if typeof(JSON.parse_string(old)) == TYPE_DICTIONARY:   # keep a copy only of a sound file
+			var b := FileAccess.open(backup_path(slot), FileAccess.WRITE)
+			if b != null:
+				b.store_string(old)
+				b.close()
+	var mv := DirAccess.rename_absolute(tmp, save_path(slot))
+	if mv != OK:
+		push_error("GameState: cannot move %s into place (%s)" % [tmp, error_string(mv)])
+		return false
 	state_saved.emit(slot)
 	return true
 
 
 func has_save(slot: String) -> bool:
-	return FileAccess.file_exists(save_path(slot))
+	return FileAccess.file_exists(save_path(slot)) or FileAccess.file_exists(backup_path(slot))
+
+
+## The slot's content as a dictionary: the file, or — when it is missing or damaged — its `.bak` copy; {} if neither.
+func read_save(slot: String) -> Dictionary:
+	for path in [save_path(slot), backup_path(slot)]:
+		if not FileAccess.file_exists(path):
+			continue
+		var f := FileAccess.open(path, FileAccess.READ)
+		if f == null:
+			continue
+		var parsed = JSON.parse_string(f.get_as_text())
+		f.close()
+		if typeof(parsed) == TYPE_DICTIONARY and save_valid(parsed):
+			if path != save_path(slot):
+				push_warning("GameState: slot '%s' read from its backup copy" % slot)
+			return parsed
+		push_warning("GameState: save file %s is damaged" % path)
+	return {}
 
 
 func load(slot: String) -> bool:
@@ -207,15 +264,9 @@ func load(slot: String) -> bool:
 	if not has_save(slot):
 		push_warning("GameState: no save in slot '%s'" % slot)
 		return false
-	var f := FileAccess.open(save_path(slot), FileAccess.READ)
-	if f == null:
-		push_error("GameState: cannot read %s" % save_path(slot))
-		return false
-	var text := f.get_as_text()
-	f.close()
-	var parsed = JSON.parse_string(text)
-	if typeof(parsed) != TYPE_DICTIONARY:
-		push_error("GameState: save '%s' is not a JSON object" % slot)
+	var parsed := read_save(slot)
+	if parsed.is_empty():
+		push_error("GameState: save '%s' is damaged (and no sound copy)" % slot)
 		return false
 	if not from_dict(parsed):
 		return false
@@ -232,12 +283,8 @@ func load(slot: String) -> bool:
 func save_info(slot: String) -> Dictionary:
 	if not has_save(slot):
 		return {}
-	var f := FileAccess.open(save_path(slot), FileAccess.READ)
-	if f == null:
-		return {}
-	var parsed = JSON.parse_string(f.get_as_text())
-	f.close()
-	if typeof(parsed) != TYPE_DICTIONARY:
+	var parsed := read_save(slot)
+	if parsed.is_empty():
 		return {}
 	var room := String(parsed.get("current_room", ""))
 	var fl: Dictionary = parsed.get("flags", {}) if parsed.get("flags", {}) is Dictionary else {}
@@ -295,5 +342,6 @@ func place_label() -> String:
 
 
 func delete_save(slot: String) -> void:
-	if has_save(slot):
-		DirAccess.remove_absolute(save_path(slot))
+	for path in [save_path(slot), backup_path(slot), save_path(slot) + ".tmp"]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(path)
