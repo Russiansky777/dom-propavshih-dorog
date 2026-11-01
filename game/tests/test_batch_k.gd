@@ -11,7 +11,7 @@ extends SceneTree
 ##   стр. 3: «Загрузить» — «Сохранений нет» centred, the slot names in one column; стр. 11: no «Подсказка» on the top bar —
 ##     the hint button is in the journal and its hint is shown there;
 ##   стр. 2: the settings switches — a brass pill, dark with the knob left when off, gold with it right when on;
-##   стр. 31: the gallery side door's first unlocking — the bolt drawn back (synth:bolt_unlock), once;
+##   стр. 31: the gallery side door's first unlocking — the bolt drawn back (sfx door_bolt — настоящий засов, выбор Директора 01.11), once;
 ##   стр. 85: the hug frame F_hug_pelageya — the third boot under Pelageya's skirt is snow (tools/retouch);
 ##   стр. 59, 78: every villager standing on the floor is an obstruction at the feet (+ Agata's half width), the floor
 ##     baked again when the flags change who is shown (Pavel in the office on the first visit — visited_M3 comes after
@@ -795,7 +795,7 @@ func _test_side_door_sound() -> void:
 		await _frames(4)
 		if round_i == 0:
 			_check(opens_inside, "the gallery: the side door opens from inside before the first pass")
-			_check(heard.has("synth:bolt_unlock"), "the first time: the bolt is heard (%s)" % str(heard))
+			_check(heard.has("door_bolt"), "the first time: the bolt is heard (%s)" % str(heard))
 			for i in 120:
 				if rm.current_room != null and rm.current_room.room_id == "Z4":
 					break
@@ -805,7 +805,7 @@ func _test_side_door_sound() -> void:
 				if String(e.get("target_room")) == "H3":
 					_check(e.is_open(), "the lane: after the first pass the side door opens from outside")
 		else:
-			_check(not heard.has("synth:bolt_unlock"), "after that: no bolt (%s)" % str(heard))
+			_check(not heard.has("door_bolt"), "after that: no bolt (%s)" % str(heard))
 	sr.stage_sound_requested.disconnect(on_snd)
 	var st: AudioStreamWAV = load("res://scripts/mechanics/synth_sfx.gd").stream("bolt_unlock")
 	_check(st != null and st.data.size() > 20000, "the engine makes the bolt sound (%d bytes)" % (st.data.size() if st != null else 0))

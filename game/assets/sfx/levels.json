@@ -179,5 +179,11 @@
     "lufs_i": -26.4,
     "lufs_m_max": -25.3,
     "duration_s": 0.415
+  },
+  "sfx_door_bolt_stiff.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -11.1,
+    "lufs_m_max": -9.3,
+    "duration_s": 1.425
   }
 }

@@ -1,6 +1,7 @@
 {
   "_comment": "Звуки (ElevenLabs, таблица Директора 17.10): SfxDirector (game/scripts/audio/sfx_director.gd), шина SFX (ползунок «Звуки» в меню). Файлы — res://assets/sfx/<file> (tools/prepare_sfx.sh из assets/sfx_src; измерения громкости — game/assets/sfx/levels.json). volume_db — поправка к файлу; соотношение с музыкой проверяет tools/validate_sfx.py: шаги не громче музыки, двери чуть громче (до +6 dB), дождь снаружи ≈ −28 LUFS. Проверка данных — tools/validate_sfx.py, поведение — game/tests/test_sfx.gd.",
   "sounds": {
+    "door_bolt": {"files": ["sfx_door_bolt_stiff.wav"], "volume_db": -14.0, "_note": "Директор 01.11 23:29 (страница «Звук боковой двери — засов», вариант В «тугой засов, рывками», ElevenLabs SFX1/SFX_door_2): первое отпирание боковой двери галереи (H3 on_pass)"},
     "door_passage": {"files": ["sfx_door_passage.wav"], "volume_db": -6.0, "_note": "открыть и закрыть дверь — по умолчанию для выходов-дверей"},
     "door_heavy": {"files": ["sfx_door_variant_01.wav"], "volume_db": -2.0, "_note": "variant_01 «opening old door»: тяжёлая старая дверь"},
     "door_light": {"files": ["sfx_door_variant_02.wav"], "volume_db": -6.0, "_note": "variant_02 «subtle realistic wooden door»: лёгкая деревянная"},

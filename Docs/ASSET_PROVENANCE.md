@@ -188,3 +188,9 @@ rope_prompts.txt, spoon_prompt.txt, validation.json, OVERVIEW — `assets/incomi
 `game/assets/mechanics/fishing/` (fishing_panel.gd); cup_tikhon, cup_agata, spoon — `game/assets/mechanics/rhythm/` (rhythm_panel.gd);
 R2_fg_rope_v3 (канат сквозь кольцо, правка R2_fg_rope_v2 только в [1080,580,1320,780)) — `game/assets/rooms/R2/fg_rope.png`
 (art_source в R2.json), маска железа кольца `fg_rope_iron_mask.png` строится из него `tools/make_ring_mask.py`.
+
+## Звук боковой двери — ElevenLabs (text-to-sound-effects), 01.11.2026
+Запрос `pipeline/requests/voice_SFX1.json` (режим sfx конвейера, /v1/sound-generation, eleven_text_to_sound_v2), шесть вариантов в
+`pipeline/voice/probe/SFX1/`; выбор Директора на странице «Звук боковой двери — засов» — SFX_door_2 «тугой засов, рывками» →
+`game/assets/sfx/sfx_door_bolt_stiff.wav` (срез тишины, ВЧ 40 Гц, пик −1 dBFS — функции tools/prepare_sfx.py), `sfx.json` door_bolt.
+Права — по подписке ElevenLabs проекта (как голоса).
