@@ -7,6 +7,11 @@ mkdir -p "$BUILD_DIR/web" "$BUILD_DIR/logs"
 # I-T4b: листы 2,25× (жители v2, Агата) в вебе — уменьшенные копии (предел сайта GitHub Pages 1 ГБ); настольные сборки
 # берут полные листы. Копии — game/assets/characters_web/ (не в git), фича экспорта web_atlas.
 python3 -I "$ROOT/tools/make_web_sheets.py"
+# Ревью 01.11 (В-9): данные и звук игры — всегда из data/story и assets/ (не только через run_tests.sh)
+"$ROOT/tools/sync_story_data.sh" >/dev/null
+"$ROOT/tools/sync_voice.sh" >/dev/null
+"$ROOT/tools/sync_music.sh" >/dev/null
+python3 "$ROOT/tools/validate_story.py" >/dev/null
 godot_import
 
 echo "[godot] export: $GODOT --headless --path $GAME_DIR --export-release Web ../build/web/index.html"

@@ -10,6 +10,12 @@ cd "$(dirname "$0")/.."
 source tools/godot_env.sh
 mkdir -p build/windows build/logs
 python3 -I tools/make_web_sheets.py   # веб-копии листов для Lite (готовые пропускаются)
+# Ревью 01.11 (В-9): сборка берёт данные игры из копий game/data, game/assets/voice|music — синхронизировать с
+# data/story и assets/ всегда (раньше только run_tests.sh), иначе «без тестов» собирался устаревший сценарий.
+tools/sync_story_data.sh >/dev/null
+tools/sync_voice.sh >/dev/null
+tools/sync_music.sh >/dev/null
+python3 tools/validate_story.py >/dev/null
 t0=$(date +%s)
 godot_import   # не полагаться на импорт из тестов или веба: их могут пропустить
 echo "[godot] import: $(( $(date +%s) - t0 )) s"
