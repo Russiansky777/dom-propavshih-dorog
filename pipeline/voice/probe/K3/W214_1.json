@@ -1,0 +1,90 @@
+{
+  "id": "W214_1",
+  "speaker": "mitya",
+  "voice_name": "МИТЯ",
+  "model_id": "eleven_v4",
+  "text": "[surprised] Мама?",
+  "duration_s": 1.12,
+  "character_cost": "7",
+  "alignment": {
+    "characters": [
+      "[",
+      "s",
+      "u",
+      "r",
+      "p",
+      "r",
+      "i",
+      "s",
+      "e",
+      "d",
+      "]",
+      " ",
+      "М",
+      "а",
+      "м",
+      "а",
+      "?"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.12,
+      0.16,
+      0.176,
+      0.192,
+      0.208,
+      0.224,
+      0.232,
+      0.24,
+      0.248,
+      0.256,
+      0.288,
+      0.32,
+      0.44,
+      0.5,
+      0.56,
+      0.8
+    ],
+    "character_end_times_seconds": [
+      0.12,
+      0.16,
+      0.176,
+      0.192,
+      0.208,
+      0.224,
+      0.232,
+      0.24,
+      0.248,
+      0.256,
+      0.288,
+      0.32,
+      0.44,
+      0.5,
+      0.56,
+      0.8,
+      1.12
+    ]
+  },
+  "expect": null,
+  "variant": "удивлённо",
+  "line": "M18_1",
+  "take": "1",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.75
+  },
+  "previous_text": "",
+  "dropped_params": [],
+  "history_item_id": "Wf2BuWw4U5qRrq3NMURf",
+  "stt": {
+    "model": "scribe_v2",
+    "text": "Мама?",
+    "words": [
+      "Мама?"
+    ],
+    "missing": [],
+    "extra": [],
+    "ratio": 1.0
+  },
+  "run": "41326306336"
+}

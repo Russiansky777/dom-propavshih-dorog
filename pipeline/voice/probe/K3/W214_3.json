@@ -1,0 +1,78 @@
+{
+  "id": "W214_3",
+  "speaker": "mitya",
+  "voice_name": "МИТЯ",
+  "model_id": "eleven_v4",
+  "text": "[gasps] Мама?",
+  "duration_s": 1.52,
+  "character_cost": "6",
+  "alignment": {
+    "characters": [
+      "[",
+      "g",
+      "a",
+      "s",
+      "p",
+      "s",
+      "]",
+      " ",
+      "М",
+      "а",
+      "м",
+      "а",
+      "?"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.06,
+      0.08,
+      0.16,
+      0.24,
+      0.32,
+      0.4,
+      0.64,
+      0.72,
+      0.8,
+      0.92,
+      1.04,
+      1.36
+    ],
+    "character_end_times_seconds": [
+      0.06,
+      0.08,
+      0.16,
+      0.24,
+      0.32,
+      0.4,
+      0.64,
+      0.72,
+      0.8,
+      0.92,
+      1.04,
+      1.36,
+      1.52
+    ]
+  },
+  "expect": null,
+  "variant": "выдох — и удивление",
+  "line": "M18_1",
+  "take": "3",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.75
+  },
+  "previous_text": "",
+  "dropped_params": [],
+  "history_item_id": "K4fXtmV5nwKcTxXkrgvN",
+  "stt": {
+    "model": "scribe_v2",
+    "text": "Мама?",
+    "words": [
+      "Мама?"
+    ],
+    "missing": [],
+    "extra": [],
+    "ratio": 1.0
+  },
+  "run": "41326306336"
+}
