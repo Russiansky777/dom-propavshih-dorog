@@ -368,6 +368,10 @@ func _test_brace_mirror() -> void:
 		var k := String(sr.current_beat.get("text_key", ""))
 		var want := "H2d.nina_mirror.watch_again_common" if common else "H2d.nina_mirror.watch_again"
 		_check(k == want, "%s: the watch again says %s, got %s" % ["common time" if common else "20:1", want, k])
+		if not common:
+			# Director 25.10, стр. 108 (сверка 01.11): not Agata repeating M15a's «Здесь минута — там двадцать» — Tikhon grumbles
+			var said := String(sr.current_beat.get("text", ""))
+			_check(String(sr.current_beat.get("speaker", "")) == "tikhon" and not said.contains("Здесь минута"), "25.10-108: the watch again — Tikhon's word, not the repeat (%s: %s)" % [sr.current_beat.get("speaker", ""), said])
 		while not sr.current_beat.is_empty():
 			sr.advance()
 			await process_frame

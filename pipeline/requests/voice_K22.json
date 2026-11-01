@@ -1,0 +1,146 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 900,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K22 (сверка 01.11 прежних прохождений): M18_1 «Мама?» удивлённо (29.10 стр. 138); M26_0 уверенно и радостно (29.10 стр. 193); M26_5 без акцентов, уверенно и радостно (29.10 стр. 194); Тихон при повторном сравнении часов — новая реплика (25.10 стр. 108)",
+ "new_text_lines": [
+  "M18_1",
+  "tikhon:H2d.nina_mirror.watch_again"
+ ],
+ "items": [
+  {
+   "id": "W214_1",
+   "line": "M18_1",
+   "take": "1",
+   "speaker": "mitya",
+   "text": "[surprised] Мама?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "удивлённо"
+  },
+  {
+   "id": "W214_2",
+   "line": "M18_1",
+   "take": "2",
+   "speaker": "mitya",
+   "text": "[surprised] Мама?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "удивлённо, тише"
+  },
+  {
+   "id": "W214_3",
+   "line": "M18_1",
+   "take": "3",
+   "speaker": "mitya",
+   "text": "[gasps] Мама?",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "выдох — и удивление"
+  },
+  {
+   "id": "W215_1",
+   "line": "M26_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "[confidently] Три недели спустя, среда. На обоих берегах зима. Мост — ГОТОВ, пруд — НАПОЛНЕН, мельница — МЕЛЕТ.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "уверенно"
+  },
+  {
+   "id": "W215_2",
+   "line": "M26_0",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[cheerfully] Три недели спустя, среда. На обоих берегах зима. Мост — ГОТОВ, пруд — НАПОЛНЕН, мельница — МЕЛЕТ.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно"
+  },
+  {
+   "id": "W215_3",
+   "line": "M26_0",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "[warmly] Три недели спустя, среда. На обоих берегах зима. Мост — ГОТОВ, пруд — НАПОЛНЕН, мельница — МЕЛЕТ.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "тепло-радостно"
+  },
+  {
+   "id": "W216_1",
+   "line": "M26_5",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "[cheerfully] На зиму лодку Пелагея с Митей смолят.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно, без акцентов"
+  },
+  {
+   "id": "W216_2",
+   "line": "M26_5",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[confidently] На зиму лодку Пелагея с Митей смолят.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "уверенно, без акцентов"
+  },
+  {
+   "id": "W216_3",
+   "line": "M26_5",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "[warmly] На зиму лодку Пелагея с Митей смолят.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "тепло, без акцентов"
+  },
+  {
+   "id": "W217_1",
+   "line": "tikhon:H2d.nina_mirror.watch_again",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[grumbling] Опять часы к стеклу? Сверяй не сверяй — там всё одно быстрее бежит. Шла бы делом занялась.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "ворчливо"
+  },
+  {
+   "id": "W217_2",
+   "line": "tikhon:H2d.nina_mirror.watch_again",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Опять часы к стеклу? Сверяй не сверяй — там всё одно быстрее бежит. Шла бы делом занялась.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с усмешкой"
+  },
+  {
+   "id": "W217_3",
+   "line": "tikhon:H2d.nina_mirror.watch_again",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[lazily] Опять часы к стеклу? Сверяй не сверяй — там всё одно быстрее бежит. Шла бы делом занялась.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "лениво"
+  }
+ ]
+}
