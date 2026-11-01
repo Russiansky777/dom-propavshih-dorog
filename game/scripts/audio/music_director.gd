@@ -563,4 +563,6 @@ func state() -> Dictionary:
 
 
 func _publish_web_state() -> void:
+	if not load("res://scripts/main.gd").probe_wanted:   # ревью 01.11 (В-3): the checks only, not a player's page
+		return
 	JavaScriptBridge.eval("window.musicState = %s;" % JSON.stringify(state()), true)

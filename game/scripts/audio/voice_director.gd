@@ -746,5 +746,5 @@ func state() -> Dictionary:
 
 
 func _publish_web_state() -> void:
-	if OS.has_feature("web"):
+	if OS.has_feature("web") and load("res://scripts/main.gd").probe_wanted:   # ревью 01.11 (В-3): the checks only
 		JavaScriptBridge.eval("window.voiceState = %s;" % JSON.stringify(state()), true)

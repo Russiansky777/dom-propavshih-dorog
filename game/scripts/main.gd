@@ -25,8 +25,28 @@ var _clear_color_saved: Color = Color.BLACK
 var _js_title_cb: JavaScriptObject = null
 var _probe_paused: bool = false
 
+## Ревью 01.11 (В-3): the web probe (window.probeState, the audio states, the JS callbacks) is for the checks —
+## Playwright (navigator.webdriver) and a page opened with ?probe / ?start / ?test / ?title. A player's page does none
+## of it: no state serialised four times a second, no JS-eval per flag. Decided once at start; read by the directors.
+static var probe_wanted: bool = false
+
+
+static func web_probe_wanted() -> bool:
+	if not OS.has_feature("web"):
+		return false
+	var v = JavaScriptBridge.eval("""(function () {
+		if (navigator.webdriver) return 1;
+		var q = new URLSearchParams(window.location.search);
+		var flags = ['start', 'test', 'title', 'agata', 'notitle'];
+		for (var i = 0; i < flags.length; i++) if (q.has(flags[i])) return 1;
+		for (const k of q.keys()) if (k.indexOf('probe') >= 0) return 1;
+		return 0;
+	})()""", true)
+	return int(v) == 1
+
 
 func _ready() -> void:
+	probe_wanted = web_probe_wanted()
 	DisplaySettings.apply_saved()   # I-T3 §2а: full screen / window as the player left it
 	RoomManager.setup(world, player)
 	RoomManager.room_changed.connect(_mark_probe)
@@ -73,7 +93,7 @@ func _ready() -> void:
 	elif sp == "" or not RoomManager.start_at(sp):
 		RoomManager.new_game()
 	_publish_probe_state()
-	if OS.has_feature("web"):
+	if probe_wanted:
 		# window.probePause(true/false): freezes the tree so a screenshot and the published state
 		# describe the same instant (used by tools/screenshots.mjs for the stride frame series).
 		_js_pause_cb = JavaScriptBridge.create_callback(_on_probe_pause)
@@ -189,7 +209,7 @@ func _on_hint_shown(text: String) -> void:
 
 
 func _mark_probe(_a = null) -> void:
-	if not OS.has_feature("web") or _probe_dirty:
+	if not probe_wanted or _probe_dirty:
 		return
 	_probe_dirty = true
 	_publish_after_layout()
@@ -220,7 +240,7 @@ func _layer_states(room: Node) -> Dictionary:
 ## `window.probeState`: game state plus click targets (world coords == canvas coords at 1920x1080).
 func _publish_probe_state() -> void:
 	_probe_dirty = false
-	if not OS.has_feature("web"):
+	if not probe_wanted:
 		return
 	var room := RoomManager.current_room
 	var hotspots := {}

@@ -502,7 +502,7 @@ func _process(delta: float) -> void:
 			_rain.volume_db = maxf(base + linear_to_db(maxf(_rain_gain, 0.0001)), SILENCE_DB)
 			if _rain_gain <= 0.0 and not want_r:
 				_rain.stop()
-	if OS.has_feature("web"):
+	if OS.has_feature("web") and load("res://scripts/main.gd").probe_wanted:   # ревью 01.11 (В-3): the checks only
 		_web_state_t -= delta
 		if _web_state_t <= 0.0:
 			_web_state_t = WEB_STATE_INTERVAL_S
