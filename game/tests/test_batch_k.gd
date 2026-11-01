@@ -94,6 +94,7 @@ func _run() -> void:
 	await _test("K-105 the night before day four: on the stove bench in Dunya's house as well as at mum's", _test_sleep_either)
 	await _test("K-46/62/87/61 the world: night fog dark, windows dimmer; the pond at the sluice moves; the journal written on its ruling", _test_world_k)
 	await _test("K-108 the first span → the bridge: one black, never lifted in between", _test_one_black)
+	await _test("K-75 Pelageya goes for the rope: the narration plays in deep dusk, the light comes back after it", _test_m15s_dusk)
 	await _test("K-108 a kept black that no scene takes up lifts by itself", _test_kept_black_lifts)
 	await _test("K-16 a room change: a villager drawn live does not read its sheets", _test_room_change_cost)
 	await _test("K-74 the far pier by day: the lanterns do not glow and the figures keep daylight; in the evening both lanterns burn", _test_r3_day_lights)
@@ -132,6 +133,10 @@ func _secs(t: float) -> void:
 	var end := Time.get_ticks_msec() + int(t * 1000.0)
 	while Time.get_ticks_msec() < end:
 		await process_frame
+
+
+func _wait(sec: float) -> void:
+	await create_timer(sec).timeout
 
 
 func _enter(room: String, spawn: String = "default") -> void:
@@ -350,6 +355,46 @@ func _test_one_black() -> void:
 	while not sr.current_beat.is_empty() or sr.is_staging():
 		await _drain()
 		await process_frame
+	sr.call("_on_state_reset")
+
+
+## Director 01.11, 14:47 (стр. 75: «сам подумай, как гармоничнее»): the black before «Пелагея на свой причал
+## возвращается…» covers the time the narration tells — the line comes in deep dusk, then the turn is lit again.
+func _test_m15s_dusk() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	for id in sd.scene_order:
+		if id == "M15s":
+			break
+		var sc: Dictionary = sd.scene(id)
+		gs.set_flag("done_" + id, true)
+		for f in sc.get("grants", {}).get("flags", []):
+			gs.set_flag(String(f), true)
+	await _enter("Z3")
+	if sr.current_beat.is_empty():
+		sr.start_scene("M15s")
+	var dusk_at_line := -1.0
+	var since := 0.0
+	var t := 0.0
+	while t < 30.0 and not sr.is_done("M15s"):
+		await process_frame
+		var d: float = root.get_process_delta_time()
+		t += d
+		since += d
+		var b: Dictionary = sr.current_beat
+		if b.is_empty() or since < 0.4 or sr.is_staging():
+			continue
+		if String(b.get("line_id", "")) == "M15s_2" and dusk_at_line < 0.0:
+			await _wait(0.8)
+			dusk_at_line = float(ui.call("stage_probe").get("alpha", 0.0))
+		since = 0.0
+		if b.get("type") == "options":
+			sr.choose(String(b.get("options", [])[0].get("id", "")))
+		elif b.get("type") in ["line", "narration"]:
+			sr.advance()
+	_check(dusk_at_line >= 0.7, "«Пелагея на свой причал возвращается…» is told in deep dusk (%.2f)" % dusk_at_line)
+	await _wait(1.0)
+	_check(float(ui.call("stage_probe").get("alpha", 1.0)) < 0.05, "after the narration the turn is lit again")
 	sr.call("_on_state_reset")
 
 
