@@ -1200,9 +1200,10 @@ func interact(h: StoryHotspot) -> void:
 				narrate_key(_talk_before_text(t, scn))
 				return
 		# What the person says depends on how far things went (Pelageya at the turn: before the brace,
-		# with the rope): `by_flags` [{if: [flags], text}] — the first entry whose flags all hold.
+		# with the rope): `by_flags` [{if: [flags], unless: [flags], text}] — the first entry whose flags all hold
+		# (and none of `unless`: Mitya on the jetty, 01.11 — his old word until the free day, then his questions).
 		for e in t.get("by_flags", []):
-			if requires_met({"flags": e.get("if", [])}):
+			if requires_met({"flags": e.get("if", []), "not_flags": e.get("unless", [])}):
 				narrate_key(String(e.get("text", "")))
 				return
 		if t.has("after_text"):

@@ -17,6 +17,10 @@ extends MechanicPanel
 ## the gold leaf of the string, a little fish climbing the gauge beside it as it comes in, the bar shaking near the
 ## snap and the green pulsing while the string hangs slack; the perches caught lie in a row in the corner;
 ## «Облегчить» under the bar (a wider green). The picture sits higher so the hint and «Ещё» stay above the text box.
+## In the room (утренняя страница 01.11, Директор: «перенести на мостки», вариант А): spec `in_room` — no frame, no
+## picture, no backdrop: the float sits on the water of the room itself (`float`, screen coordinates), the rod comes
+## from Agata's hands where she stands (RoomManager.player), Mitya's own rod from his (npc_mitya) to `mitya.float`;
+## `simple` — no fight: the float goes under → a strike → the perch at once (too early / too late as before).
 
 const FLOAT_RED := Color(0.82, 0.16, 0.1)
 const FLOAT_WHITE := Color(0.95, 0.93, 0.88)
@@ -47,37 +51,45 @@ var hint: Label = null
 var again_btn: Button = null
 var slow_check: CheckButton = null
 var _taut_snd: float = 0.0       # time to the next creak of the taut string
+var in_room: bool = false
+var simple: bool = false
+var _mitya_float: Vector2 = Vector2.ZERO
 
 
 func build() -> void:
 	_rng.seed = int(spec.get("seed", Time.get_ticks_usec()))
 	eased()
+	in_room = bool(spec.get("in_room", false))
+	simple = bool(spec.get("simple", false))
 	var art: Dictionary = spec.get("art", {})
 	var pr: Array = spec.get("picture", [260, 130, 1400, 788])
 	_pic = Rect2(float(pr[0]), float(pr[1]), float(pr[2]), float(pr[3]))
 	var fp: Array = spec.get("float", [980, 560])
 	_float0 = Vector2(float(fp[0]), float(fp[1]))
+	var mf: Array = spec.get("mitya", {}).get("float", [])
+	_mitya_float = Vector2(float(mf[0]), float(mf[1])) if mf.size() == 2 else Vector2.ZERO
 	_bar = Rect2(_pic.end.x + 40.0, _pic.position.y + 60.0, 46.0, _pic.size.y - 120.0)
-	var frame := Control.new()
-	frame.name = "Frame"
-	frame.size = Vector2(1920, 1080)
-	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	frame.draw.connect(func(): CarvedFrame.draw_frame(frame, _pic, 16.0))
-	add_child(frame)
-	# the river as it is now: `image` (the day), or the first of `variants` whose `if_any` flags are set (dusk, night)
-	var img := String(art.get("image", ""))
-	for v in art.get("variants", []):
-		var hit := false
-		for f in v.get("if_any", []):
-			hit = hit or flag(String(f))
-		if hit:
-			img = String(v.get("image", img))
-			break
-	if img != "":
-		var r: Array = art.get("region", [880, 420, 792, 446])
-		var tr := crop(img, r, _pic.position, _pic.size.x / float(r[2]), self)
-		tr.name = "River"
-		tr.size = _pic.size
+	if not in_room:
+		var frame := Control.new()
+		frame.name = "Frame"
+		frame.size = Vector2(1920, 1080)
+		frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		frame.draw.connect(func(): CarvedFrame.draw_frame(frame, _pic, 16.0))
+		add_child(frame)
+		# the river as it is now: `image` (the day), or the first of `variants` whose `if_any` flags are set (dusk, night)
+		var img := String(art.get("image", ""))
+		for v in art.get("variants", []):
+			var hit := false
+			for f in v.get("if_any", []):
+				hit = hit or flag(String(f))
+			if hit:
+				img = String(v.get("image", img))
+				break
+		if img != "":
+			var r: Array = art.get("region", [880, 420, 792, 446])
+			var tr := crop(img, r, _pic.position, _pic.size.x / float(r[2]), self)
+			tr.name = "River"
+			tr.size = _pic.size
 	_draw = Control.new()
 	_draw.name = "Water"
 	_draw.size = Vector2(1920, 1080)
@@ -85,11 +97,17 @@ func build() -> void:
 	_draw.draw.connect(_on_draw)
 	_draw.gui_input.connect(_on_input)
 	add_child(_draw)
-	hint = label(text("wait"), Vector2(_pic.position.x, _pic.end.y + 26.0), _pic.size.x, &"CloseupLabel")
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	again_btn = _button(text("again"), Vector2(_pic.get_center().x - 100.0, _pic.end.y + 66.0), "Again")
+	if in_room:
+		# the hint under the title at the upper left (the text box is at the bottom, the water at the right)
+		hint = label(text("wait"), Vector2(40, 160), 760, &"CloseupLabel")
+		again_btn = _button(text("again"), Vector2(40, 250), "Again")
+	else:
+		hint = label(text("wait"), Vector2(_pic.position.x, _pic.end.y + 26.0), _pic.size.x, &"CloseupLabel")
+		hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		again_btn = _button(text("again"), Vector2(_pic.get_center().x - 100.0, _pic.end.y + 66.0), "Again")
 	again_btn.pressed.connect(_restart)
-	slow_check = easy_toggle(Vector2(_bar.get_center().x - 60.0, _pic.end.y + 20.0))
+	if not simple:
+		slow_check = easy_toggle(Vector2(_bar.get_center().x - 60.0, _pic.end.y + 20.0))
 	_restart()
 
 
@@ -191,14 +209,18 @@ func _fight(delta: float) -> void:
 		say("escaped")
 		_to_wait()
 	elif progress >= 1.0:
-		phase = "caught"
-		phase_t = 0.0
-		caught += 1
-		pulling = false
-		sound("water_slap")
-		hint.text = ""
-		event("caught")
-		say("caught")
+		_catch()
+
+
+func _catch() -> void:
+	phase = "caught"
+	phase_t = 0.0
+	caught += 1
+	pulling = false
+	sound("water_slap")
+	hint.text = ""
+	event("caught")
+	say("caught")
 
 
 ## A strike or a pull: a press (mouse button / Space) — `down` true, a release — false.
@@ -212,6 +234,9 @@ func press(down: bool) -> void:
 				say("early")
 				_to_wait()
 		"bite":
+			if simple:
+				_catch()
+				return
 			phase = "fight"
 			phase_t = 0.0
 			tension = (green.x + green.y) * 0.5
@@ -258,30 +283,18 @@ func _on_draw() -> void:
 	var c := _draw
 	var fp := _float_pos()
 	var taut := tension if phase == "fight" else 0.1
+	if in_room and _mitya_float != Vector2.ZERO:
+		_rod(c, _hands("npc_mitya", 1.1), _mitya_float, 0.0, 0.1)
+		_float_shape(c, _mitya_float + Vector2(0.0, sin(clock * 1.7 + 1.0) * 2.0), false)
 	# the rod: from her hands below the lower left corner up over the water; it bends to the fish as the string tightens
 	var butt := Vector2(_pic.position.x + 64.0, _pic.end.y - 3.0)   # it comes in at the frame's lower edge
 	var tip0 := Vector2(_pic.position.x + _pic.size.x * 0.24, _pic.position.y + _pic.size.y * 0.16)
+	if in_room:
+		butt = _hands("", 1.0)
+		tip0 = butt + (fp - butt).normalized().slerp(Vector2.UP, 0.45) * minf(260.0, (fp - butt).length() * 0.55)
 	var bend := (taut if phase == "fight" else 0.0) + (0.25 if phase == "bite" else 0.0)
 	var tip := tip0 + (fp - tip0).normalized() * 70.0 * bend + Vector2(0.0, sin(clock * 1.3) * 2.0)
-	var ctrl := butt.lerp(tip0, 0.55) + (fp - tip0).normalized() * 40.0 * bend
-	var rod := PackedVector2Array()
-	for i in 17:
-		var tt := float(i) / 16.0
-		rod.append(butt.lerp(ctrl, tt).lerp(ctrl.lerp(tip, tt), tt))
-	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	for i in rod.size() - 1:
-		var w := lerpf(11.0, 2.5, float(i) / (rod.size() - 1))
-		c.draw_line(rod[i] + Vector2(2, 3), rod[i + 1] + Vector2(2, 3), Color(0, 0, 0, 0.3), w + 1.0, true)
-		c.draw_line(rod[i], rod[i + 1], Color(0.33, 0.22, 0.12), w, true)
-		c.draw_line(rod[i] + Vector2(-w * 0.2, -w * 0.25), rod[i + 1] + Vector2(-w * 0.2, -w * 0.25), Color(0.6, 0.45, 0.28, 0.6), maxf(w * 0.25, 1.0), true)
-	# the string: sags while slack, straight when taut
-	var mid := tip.lerp(fp, 0.5) + Vector2(0.0, 60.0 * (1.0 - taut))
-	var pts := PackedVector2Array()
-	for i in 21:
-		var t := float(i) / 20.0
-		pts.append(tip.lerp(mid, t).lerp(mid.lerp(fp, t), t))
-	c.draw_polyline(pts, Color(0, 0, 0, 0.35), 3.0, true)
-	c.draw_polyline(pts, LINE, 1.6, true)
+	_rod(c, butt, fp, bend, taut, tip)
 	if phase != "caught":
 		# rings on the water round the float
 		for k in 3:
@@ -297,23 +310,72 @@ func _on_draw() -> void:
 				var ang := -PI * (0.15 + 0.7 * float(d) / 5.0)
 				var dp := fp + Vector2(cos(ang), sin(ang)) * (10.0 + 34.0 * k) + Vector2(0.0, 60.0 * k * k)
 				c.draw_circle(dp, 3.0 * (1.0 - k) + 1.0, Color(1, 1, 1, 0.75 * (1.0 - k)))
-		if not under:   # the float: white top over red, its stick
-			c.draw_line(fp + Vector2(0, -24), fp + Vector2(0, -8), Color(0.2, 0.15, 0.1), 2.0, true)
-			c.draw_set_transform(fp, 0.0, Vector2(1.0, 1.6))
-			c.draw_circle(Vector2(0, -2), 9.0, FLOAT_RED)
-			c.draw_circle(Vector2(0, -6), 6.0, FLOAT_WHITE)
-			c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		else:
-			c.draw_circle(fp + Vector2(0, 8), 5.0, Color(FLOAT_RED, 0.45))   # seen under the water
+		_float_shape(c, fp, under)
 	else:
 		_fish(c, fp + Vector2(0, 30))
 	if phase == "fight":
 		_tension_bar(c)
-	# the perches caught so far, in a row in the upper corner of the picture
+	# the perches caught so far, in a row in the upper corner of the picture (in the room — under the hint)
 	for k in caught:
-		c.draw_set_transform(Vector2(_pic.end.x - 60.0 - 66.0 * k, _pic.position.y + 40.0), 0.0, Vector2(0.38, 0.38))
+		var at := Vector2(80.0 + 66.0 * k, 330.0) if in_room else Vector2(_pic.end.x - 60.0 - 66.0 * k, _pic.position.y + 40.0)
+		c.draw_set_transform(at, 0.0, Vector2(0.38, 0.38))
 		_fish_shape(c)
 		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## The float: white top over red, its stick; under the water — a red shadow.
+func _float_shape(c: CanvasItem, fp: Vector2, under: bool) -> void:
+	if not under:
+		c.draw_line(fp + Vector2(0, -24), fp + Vector2(0, -8), Color(0.2, 0.15, 0.1), 2.0, true)
+		c.draw_set_transform(fp, 0.0, Vector2(1.0, 1.6))
+		c.draw_circle(Vector2(0, -2), 9.0, FLOAT_RED)
+		c.draw_circle(Vector2(0, -6), 6.0, FLOAT_WHITE)
+		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	else:
+		c.draw_circle(fp + Vector2(0, 8), 5.0, Color(FLOAT_RED, 0.45))   # seen under the water
+
+
+## The rod from `butt` (the hands) bending towards `fp` (the float), and the string from its tip to the float.
+func _rod(c: CanvasItem, butt: Vector2, fp: Vector2, bend: float, taut: float, tip: Vector2 = Vector2.ZERO) -> void:
+	var tip0 := Vector2(_pic.position.x + _pic.size.x * 0.24, _pic.position.y + _pic.size.y * 0.16)
+	if in_room:
+		tip0 = butt + (fp - butt).normalized().slerp(Vector2.UP, 0.45) * minf(260.0, (fp - butt).length() * 0.55)
+	if tip == Vector2.ZERO:
+		tip = tip0 + Vector2(0.0, sin(clock * 1.3) * 2.0)
+	var ctrl := butt.lerp(tip0, 0.55) + (fp - tip0).normalized() * 40.0 * bend
+	var rod := PackedVector2Array()
+	for i in 17:
+		var tt := float(i) / 16.0
+		rod.append(butt.lerp(ctrl, tt).lerp(ctrl.lerp(tip, tt), tt))
+	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	var k := 0.55 if in_room else 1.0   # thinner in the room: the figures are smaller than in the close-up
+	for i in rod.size() - 1:
+		var w := lerpf(11.0, 2.5, float(i) / (rod.size() - 1)) * k
+		c.draw_line(rod[i] + Vector2(2, 3), rod[i + 1] + Vector2(2, 3), Color(0, 0, 0, 0.3), w + 1.0, true)
+		c.draw_line(rod[i], rod[i + 1], Color(0.33, 0.22, 0.12), w, true)
+		c.draw_line(rod[i] + Vector2(-w * 0.2, -w * 0.25), rod[i + 1] + Vector2(-w * 0.2, -w * 0.25), Color(0.6, 0.45, 0.28, 0.6), maxf(w * 0.25, 1.0), true)
+	# the string: sags while slack, straight when taut
+	var mid := tip.lerp(fp, 0.5) + Vector2(0.0, 60.0 * (1.0 - taut) * k)
+	var pts := PackedVector2Array()
+	for i in 21:
+		var t := float(i) / 20.0
+		pts.append(tip.lerp(mid, t).lerp(mid.lerp(fp, t), t))
+	c.draw_polyline(pts, Color(0, 0, 0, 0.35), 3.0 * k, true)
+	c.draw_polyline(pts, LINE, maxf(1.6 * k, 1.0), true)
+
+
+## Where a figure's hands are on screen: the player (`who` empty) or an NPC node of the room, at its feet plus
+## `up` × 0.55 of her height (345 px × the depth scale) and a little forward (towards the water, to the right).
+func _hands(who: String, up: float) -> Vector2:
+	var room: Node = RoomManager.current_room
+	var n: Node2D = RoomManager.player if who == "" else (room.get_node_or_null(who) as Node2D if room != null else null)
+	if n == null or not is_instance_valid(n):
+		return Vector2(_pic.position.x + 64.0, _pic.end.y - 3.0)
+	var sc := 0.5
+	if room != null and room.has_method("depth_scale_at"):
+		sc = float(room.call("depth_scale_at", n.position))
+	var h := 345.0 * sc * up
+	return n.position + Vector2(h * 0.18, -h * 0.55)
 
 
 func _tension_bar(c: CanvasItem) -> void:
@@ -378,4 +440,5 @@ func probe() -> Dictionary:
 	_sync_again()
 	return {"phase": phase, "tension": tension, "progress": progress, "caught": caught, "lost": lost, "nibbles": nibbles,
 		"green": [green.x, green.y], "again": again_btn.visible, "picture": {"x": _pic.get_center().x, "y": _pic.get_center().y},
-		"slow": {"x": slow_check.get_global_rect().get_center().x, "y": slow_check.get_global_rect().get_center().y} if slow_check != null else {}}
+		"slow": {"x": slow_check.get_global_rect().get_center().x, "y": slow_check.get_global_rect().get_center().y} if slow_check != null else {},
+		"in_room": in_room, "simple": simple, "float": {"x": _float_pos().x, "y": _float_pos().y}}

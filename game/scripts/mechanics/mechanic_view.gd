@@ -75,6 +75,9 @@ func _open(s: Dictionary) -> void:
 	bg.color = Color(0.04, 0.035, 0.03, 1.0)
 	bg.size = root.size
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# `in_room: true` (the fishing on the jetty, 01.11): no backdrop — the game goes on over the room itself, the
+	# player sees where she stands; the panel draws its float and rod in screen coordinates (= room coordinates).
+	bg.visible = not bool(spec.get("in_room", false))
 	root.add_child(bg)
 	panel = script.new()
 	panel.name = "Panel"

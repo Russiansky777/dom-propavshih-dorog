@@ -110,7 +110,7 @@ func _run() -> void:
 	await _test("J-G2 crosses and noughts with Ulyana: from her choice in class; chalk grid and marks by hand; she plays well, not perfectly; a game ends in a word and «Ещё раз» / «Хватит»", _test_ttt)
 	await _test("J-G3 the spoons with Tikhon: from his questions; he taps, Agata answers in the same rhythm; a miss — the same round again; «Хватит» puts it away", _test_rhythm)
 	await _test("J-G5 the knot's rope is alive (стр. 125): the lead-in sways and tightens as the end goes through; the end follows the hand off the path; the knot logic is the same", _test_rope_alive)
-	await _test("J-G4 the string with Mitya (fishing): from his questions on the free day; strike when the float dives; keep the string in the green — the perch comes in; too hard — it snaps", _test_fishing)
+	await _test("J-G4 fishing with Mitya on the jetty (01.11, вариант А): on the free day he is on the far support, not on the street; the game in the room, one action — the float dives, a strike, the perch; too early, too late", _test_fishing)
 	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks out through the class door, gone in the black", _test_staging_d3)
 	await _test("J-E11 the dinner (стр. 203): the main door shut and an empty chair first; Ulyana comes in through it at «Ульяна по новому мосту прибежала»", _test_dinner_door)
 	await _test("J-T51 Tikhon livelier (25.10 стр. 51): besides ears and head — a tail flick, a yawn with the wide mouth, a stretch; more yawns in the dark", _test_tikhon_life)
@@ -1081,15 +1081,24 @@ func _test_rope_alive() -> void:
 
 
 func _test_fishing() -> void:
+	# Утренняя страница 01.11 (Директор, «Рыбалка», вариант А): on the free day Mitya is on the jetty of the far
+	# support with his rod — not by Ilya's fence; the game goes on in the room (no backdrop, no river crop), one
+	# action: the float goes under — a strike — the perch at once.
 	gs.reset()
 	sr.call("_on_state_reset")
-	_set_flags(["started_M19", "done_M19", "done_M21b", "done_M22", "free_walk_day3", "morning_day3", "house_open", "met_nina", "met_mitya"])
+	_set_flags(["started_M19", "done_M19", "done_M21b", "done_M22", "free_walk_day3", "morning_day3", "house_open", "met_nina", "met_mitya", "started_M18p", "boat_shuttle_open", "tod_d3_day"])
 	await _enter("O4", "from_O2")
 	await _drain()
 	var h: Node = _hotspot("mitya")
-	_check(h != null and h.visible, "Mitya by the fence")
+	_check(h == null or not h.visible, "on the free day Mitya is not on the street (O4)")
+	await _enter("R3", "from_O4")
+	await _drain()
+	h = _hotspot("mitya")
+	_check(h != null and h.visible, "Mitya on the jetty of the far support (R3)")
 	if h == null:
 		return
+	var hr: Array = h.call("current_state").get("rect", h.get("data").get("rect", []))
+	_check(hr.size() == 4 and float(hr[0]) > 1100.0 and float(hr[1]) + float(hr[3]) > 560.0 and float(hr[1]) + float(hr[3]) < 620.0, "on the jetty, by the water: %s" % str(hr))
 	sr.interact(h)
 	var tw := 0
 	while sr.current_options().is_empty() and tw < 300:
@@ -1106,45 +1115,58 @@ func _test_fishing() -> void:
 		if not sr.current_beat.is_empty():
 			sr.advance()
 		await process_frame
-	var panel = main_node.get_node("MechanicView").get("panel")
-	_check(sr.mechanic_open and panel != null, "the river opens")
+	var mvf: Node = main_node.get_node("MechanicView")
+	var panel = mvf.get("panel")
+	_check(sr.mechanic_open and panel != null, "the fishing opens")
 	if panel == null:
 		return
-	_check(panel.find_child("River", true, false) != null, "the river is a part of the painting")
-	# the float dives: strike, then keep the string in the green
+	var pr: Dictionary = panel.call("probe")
+	_check(bool(pr["in_room"]) and bool(pr["simple"]), "in the room, one action: %s" % str(pr))
+	var bd: ColorRect = mvf.get("root").get_node_or_null("Backdrop")
+	_check(bd != null and not bd.visible, "no backdrop — the room stays in view")
+	_check(panel.find_child("River", true, false) == null and panel.find_child("Slow", true, false) == null, "no river crop, no «Облегчить» (nothing to ease)")
+	var fx := float(pr["float"]["x"])
+	var fy := float(pr["float"]["y"])
+	_check(fx > 1500.0 and fy > 560.0 and fy < 712.0, "the float on the water right of the jetty, above the boat layer: %.0f, %.0f" % [fx, fy])
+	var stand: Vector2 = h.call("get_stand_position")
+	var walk: Array = sd.call("room", "R3").get("walkable", [])
+	var poly := PackedVector2Array()
+	for q in walk:
+		poly.append(Vector2(float(q[0]), float(q[1])))
+	_check(stand.x > 1100.0 and absf(stand.y - 585.0) < 40.0 and Geometry2D.is_point_in_polygon(stand, poly), "her place beside him at the edge of the support, on the floor: %s" % str(stand))
+	# too early: a strike while the float only nibbles
+	panel.set("phase", "wait")
+	panel.set("nibbles", 1)
+	panel.call("press", true)
+	_check(String(panel.call("probe")["phase"]) == "wait", "a strike at a nibble — «Рано», wait again")
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	# the float dives: a strike — the perch at once, no fight
 	panel.set("phase", "bite")
 	panel.set("phase_t", 0.0)
 	panel.call("press", true)
-	_check(String(panel.call("probe")["phase"]) == "fight", "a strike in time hooks the fish")
-	var g: Array = panel.call("probe")["green"]
-	var mid := (float(g[0]) + float(g[1])) * 0.5
-	var t0 := Time.get_ticks_msec()
-	while String(panel.call("probe")["phase"]) == "fight" and Time.get_ticks_msec() - t0 < 25000:
-		panel.call("press", float(panel.call("probe")["tension"]) < mid)
-		await process_frame
-	_check(String(panel.call("probe")["phase"]) == "caught" and gs.has_flag("mitya_fish_caught"), "kept in the green — the perch is in: %s" % str(panel.call("probe")))
+	_check(String(panel.call("probe")["phase"]) == "caught" and gs.has_flag("mitya_fish_caught"), "a strike in time — the perch is in at once: %s" % str(panel.call("probe")))
+	var snd: Array = mvf.get("sounds_played")
+	_check(snd.has("water_slap"), "the perch comes out with a splash: %s" % str(snd))
 	while not sr.current_beat.is_empty():
 		sr.advance()
 		await process_frame
 	_check(bool(panel.call("probe")["again"]), "«Ещё» after the catch")
 	panel.get("again_btn").emit_signal("pressed")
+	# too late: the float was under and came up
 	panel.set("phase", "bite")
-	panel.set("phase_t", 0.0)
-	panel.call("press", true)
+	panel.set("phase_t", 5.0)
 	var lost0 := int(panel.call("probe")["lost"])
-	t0 = Time.get_ticks_msec()
-	while String(panel.call("probe")["phase"]) == "fight" and Time.get_ticks_msec() - t0 < 10000:
-		panel.call("press", true)   # pulling all the time
+	await process_frame
+	await process_frame
+	_check(String(panel.call("probe")["phase"]) == "wait" and int(panel.call("probe")["lost"]) == lost0 + 1, "missed — «Прозевала», wait again")
+	while not sr.current_beat.is_empty():
+		sr.advance()
 		await process_frame
-	_check(String(panel.call("probe")["phase"]) == "wait" and int(panel.call("probe")["lost"]) == lost0 + 1, "pulled too hard — the string snaps, wait again")
-	var mvf: Node = main_node.get_node("MechanicView")
-	var snd: Array = mvf.get("sounds_played")
-	_check(snd.has("line_snap") and snd.has("water_slap"), "the string snaps with a crack, the perch comes out with a splash: %s" % str(snd))
-	_check(panel.find_child("Slow", true, false) != null, "«Облегчить» under the bar")
 	var hint_l: Label = panel.get("hint")
 	var hb := hint_l.get_global_rect().end.y
-	var ab := (panel.get("again_btn") as Button).get_global_rect().end.y
-	_check(hb < 930.0 and ab < 940.0, "the hint and «Ещё» stay above the text box (hint bottom %.0f, «Ещё» %.0f)" % [hb, ab])
+	_check(hb < 400.0, "the hint at the upper left, off the water and the text box (bottom %.0f)" % hb)
 	mvf.get("close_button").emit_signal("pressed")
 	tw = 0
 	while (sr.mechanic_open or not sr.current_beat.is_empty()) and tw < 300:
@@ -1152,7 +1174,7 @@ func _test_fishing() -> void:
 		if not sr.current_beat.is_empty():
 			sr.advance()
 		await process_frame
-	_check(not sr.mechanic_open and gs.has_flag("mitya_fished"), "«Хватит» — back on the street")
+	_check(not sr.mechanic_open and gs.has_flag("mitya_fished"), "«Хватит» — back on the jetty")
 
 
 func _test_dinner_door() -> void:
@@ -1313,27 +1335,33 @@ func _test_staging_d3() -> void:
 	if nina != null and alpha_at_black[0] >= 0.0:
 		_check(alpha_at_black[0] > 0.95 and door_seen[0], "she is still there, in the open door, when the black comes — no dissolve on screen (alpha %.2f, door %s)" % [alpha_at_black[0], str(door_seen[0])])
 	_check(rm.current_room.get_node_or_null("StageDoor") == null, "the door is shut again after the black")
-	# 177: on the free day Agata walks round Mitya by the fence in O4, not through him
+	# 177: Agata walks round Mitya, not through him — the night of M19 he stands by Ilya's house (01.11: on the free
+	# day he is on the jetty of R3 with his rod, no longer by the fence; the obstacle at his feet stays in the data)
 	gs.reset()
 	sr.call("_on_state_reset")
-	_set_flags(["started_M19", "done_M19", "done_M21b", "done_M22", "free_walk_day3", "morning_day3", "house_open", "met_nina", "met_mitya"])
+	_set_flags(["started_M19", "done_M21b", "house_open", "met_nina", "met_mitya"])
 	await _enter("O4", "from_O2")
 	await _drain()
 	await physics_frame
 	await physics_frame
 	var reg := rm.current_room.get_node_or_null("Walkable") as NavigationRegion2D
 	_check(reg != null, "O4 has its floor")
-	if reg != null:
+	var mh: Node = _hotspot("mitya")
+	_check(mh != null and mh.visible and (mh.get("data").get("footprint", []) as Array).size() == 2, "Mitya on the street at night (M19) with an obstacle at his feet")
+	if reg != null and mh != null:
+		var fp: Array = mh.get("data").get("footprint", [96, 34])
+		var ra: Array = mh.call("current_state").get("rect", mh.get("data").get("rect", [1612, 448, 80, 185]))
+		var feet := Vector2(float(ra[0]) + float(ra[2]) * 0.5, float(ra[1]) + float(ra[3]))
 		var nm := reg.get_navigation_map()
-		var path := NavigationServer2D.map_get_path(nm, Vector2(1150, 822), Vector2(1600, 822), true)
+		var path := NavigationServer2D.map_get_path(nm, feet + Vector2(-220, 0), feet + Vector2(220, 0), true)
 		var inside := 0
 		for i in range(1, path.size()):
 			for k in 11:
 				var q := path[i - 1].lerp(path[i], float(k) / 10.0)
-				var dq := (q - Vector2(1367, 820)) / Vector2(44, 15)
+				var dq := (q - feet) / Vector2(float(fp[0]) * 0.5 - 4.0, float(fp[1]) * 0.5 - 2.0)
 				if dq.length() < 1.0:
 					inside += 1
-		_check(path.size() >= 2 and inside == 0, "the way past Mitya goes round his feet (%d points inside, path %d)" % [inside, path.size()])
+		_check(path.size() >= 2 and inside == 0, "the way past Mitya goes round his feet (%d points inside, path %d, feet %s)" % [inside, path.size(), str(feet)])
 
 
 func _water(id: String) -> Polygon2D:
