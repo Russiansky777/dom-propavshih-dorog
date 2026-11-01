@@ -44,6 +44,13 @@ jobs:
     outputs:
       site_ok: ${{ steps.smoke_web.outcome == 'success' }}
     steps:
+      # 01.11 (прогон 41350615425): «No space left on device» сразу после checkout — рабочее дерево ~6,8 ГБ, а свободного
+      # места на образе раннера бывает меньше. Убираем то, что сборке не нужно (dotnet, Android SDK, GHC, CodeQL): +20–30 ГБ.
+      - name: Free disk space
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
       - uses: actions/checkout@v4
 
       - name: Cache Godot and export templates
