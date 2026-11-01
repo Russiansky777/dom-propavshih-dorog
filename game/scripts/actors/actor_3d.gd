@@ -839,8 +839,9 @@ func _stride_plant(i: int, a: Vector3, b: Vector3, delta: float, o: Vector2, k: 
 	# back to it); now it is held only from the clip's own heel strike, and until then kept a little up, as the clip has it)
 	var ha := a.y - float(stride_floor[i * 2])
 	var hb := b.y - float(stride_floor[i * 2 + 1])
-	var ca := clip_foot_h(i * 2, _shown_phase)
-	var cb := clip_foot_h(i * 2 + 1, _shown_phase)
+	var has_clip := clip_feet_h.size() >= 4   # no walk table (an actor without a walk clip): the blended heights, as before
+	var ca := clip_foot_h(i * 2, _shown_phase) if has_clip else ha
+	var cb := clip_foot_h(i * 2 + 1, _shown_phase) if has_clip else hb
 	var wa := 1.0 - smoothstep(lo, hi, ca)
 	var wb := 1.0 - smoothstep(lo, hi, cb)
 	var p := maxf(wa, wb)

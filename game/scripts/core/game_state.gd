@@ -123,6 +123,10 @@ func to_dict(title: String = "") -> Dictionary:
 		"journal_goal": journal_goal,
 		"journal_goal_scene": journal_goal_scene,
 		"counters": counters.duplicate(),
+		# ревью 01.11 (Б-7): which story data and which build wrote the save — a later fix-up of old saves (meta.json
+		# save_fixups) can be keyed by them instead of guessed from the flags; the menu may show it one day
+		"story_version": StoryData.story_version,
+		"build": build_sha(),
 	}
 	# A named save (a scene's checkpoint, e.g. «День второй» after the night by the stove): the menu shows the title.
 	if title != "":
@@ -177,6 +181,11 @@ func from_dict(data: Dictionary) -> bool:
 	var raw_counters: Dictionary = data.get("counters", {})
 	for k in raw_counters.keys():
 		counters[String(k)] = int(raw_counters[k])
+	# ревью 01.11 (Б-7): a save from other story data is loaded all the same (the fix-ups above are for that), noted in
+	# the log for the one reading a bug report
+	var sv := String(data.get("story_version", ""))
+	if sv != "" and sv != StoryData.story_version:
+		push_warning("GameState: save from story data %s (now %s), build %s" % [sv, StoryData.story_version, String(data.get("build", ""))])
 	_apply_save_fixups()
 	return true
 
@@ -295,8 +304,17 @@ func save_info(slot: String) -> Dictionary:
 	var parts := place_parts(room, fl)
 	return {"saved_at": String(parsed.get("saved_at", "")), "saved_unix": _saved_unix(parsed), "room": room,
 		"goal": String(parsed.get("journal_goal", "")), "title": String(parsed.get("title", "")),
+		"story_version": String(parsed.get("story_version", "")), "build": String(parsed.get("build", "")),
 		"label": " · ".join(PackedStringArray([parts["day"], parts["place"], parts["time"]].filter(func(x): return x != ""))),
 		"place_time": " · ".join(PackedStringArray([parts["place"], parts["time"]].filter(func(x): return x != "")))}
+
+
+## The build's commit (res://build_info.json, written by CI; "" in the editor).
+static func build_sha() -> String:
+	if not FileAccess.file_exists("res://build_info.json"):
+		return ""
+	var d = JSON.parse_string(FileAccess.get_file_as_string("res://build_info.json"))
+	return String(d.get("sha", "")) if d is Dictionary else ""
 
 
 ## When a save was written, seconds since the epoch: `saved_unix`, or `saved_at` (whole seconds) for older saves.

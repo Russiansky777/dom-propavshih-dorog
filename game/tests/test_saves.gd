@@ -320,6 +320,10 @@ func _test_damaged_saves() -> void:
 	var path: String = gs.save_path(slot)
 	var bak: String = gs.backup_path(slot)
 	_check(FileAccess.file_exists(path) and not FileAccess.file_exists(path + ".tmp"), "the file is in place, no temporary left")
+	# ревью 01.11 (Б-7): the save names the story data it was written with; the menu's info carries it
+	var written = JSON.parse_string(FileAccess.get_file_as_string(path))
+	_check(written is Dictionary and String(written.get("story_version", "")) == sd.story_version and sd.story_version != "", "the save carries story_version %s" % str(written.get("story_version", "") if written is Dictionary else ""))
+	_check(String(gs.save_info(slot).get("story_version", "")) == sd.story_version, "save_info shows it")
 	var first := FileAccess.get_file_as_string(path)
 	gs.set_flag("marker_second", true)
 	_check(rm.save_game(slot) and FileAccess.file_exists(bak) and FileAccess.get_file_as_string(bak) == first, "the second save keeps the first as .bak")

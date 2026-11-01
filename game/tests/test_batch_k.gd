@@ -102,6 +102,7 @@ func _run() -> void:
 	await _test("Ревью 01.11 (В-2, В-13): a villager walking off waits through a pause (the walk ends where the tween does); the yard loop's black survives a reset", _test_pause_timers)
 	await _test("Ревью 01.11 (Б-9, Б-6): the optional stories close on quests.json closes_on (the first span); Esc inside an unclosable close-up is not eaten", _test_closes_on_and_esc)
 	await _test("Ревью 01.11 (Г-24): the journal keeps one line per event — «сыграла» gives way to the result, «порыбачила» to the catch (flags.json desc_unless)", _test_journal_dupes)
+	await _test("Ревью 01.11 (Б-4): day four by the boat — out of the crossing's black straight into the first span's frame, no empty turn between", _test_day4_arrival)
 	await _test("Ревью 01.11 (А-13/А-14): the pier base before Pelageya says nothing of the rope; «кто затвором ведал» only after the sluice answer", _test_early_knowledge)
 	await _test("Ревью 01.11 (Б-5/А-16): the jetty's «К лодке» on the morning of day three says «сперва с матерью», not «завтра отвезу»; before that morning the old word", _test_morning_jetty_exit)
 	gs.reset()
@@ -969,5 +970,53 @@ func _test_early_knowledge() -> void:
 	_check(ids.has("manager"), "after it — «А кто затвором ведал?»: %s" % str(ids))
 	var lab: String = sd.text("@R1.pelageya.opt_manager")
 	_check(not lab.contains("управляющ"), "the question names no manager: %s" % lab)
+	# А-17: day one is a Sunday (the epilogue's «три недели спустя, среда» is day four) and the mill runs — the shifts
+	# paper names no Sunday rest
+	_check(not String(sd.text("@M1.schedule.paper_shifts")).contains("оскресен"), "А-17: the shifts paper has no «по воскресеньям стоять»")
 	sr.choose("leave")
+	await _drain()
+
+
+## Ревью 01.11 (Б-4): on day four the boat's crossing (R3 → Z3 through `close_black`) came up out of the black onto the
+## empty turn for its fade-in (0,7 s) and only then M25 cut to the first span's frame with the people — against G42.
+## Now the black is handed over to the cut and the frame comes up out of it (StoryRunner._next_is_cut_frame).
+func _test_day4_arrival() -> void:
+	_flags_before("M25")
+	_set_flags(["boat_shuttle_open", "boat_at_far"])
+	await _enter("R3", "from_Z3")
+	await _drain()
+	var e: Node = rm.current_room.get_node_or_null("Exits/to_R2")
+	_check(e != null and e.is_open(), "on day four the way to the boat is open")
+	if e == null:
+		return
+	sr.use_exit(e)
+	await _frames(3)
+	_check(sr.mechanic_open, "the crossing opens as a close-up")
+	if not sr.mechanic_open:
+		return
+	sr.mechanic_event("crossed")
+	# from the moment the turn is the room until its frame is up, the screen stays black (no glimpse of the empty turn)
+	var seen_turn := false
+	var glimpse := -1.0
+	var frame_up := false
+	var t := 0.0
+	var lifted_after := false
+	while t < 6.0:
+		await process_frame
+		t += 1.0 / 60.0
+		var a: float = float(ui.call("stage_probe").get("alpha", 0.0))
+		if gs.current_room == "Z3":
+			seen_turn = true
+		if seen_turn and not frame_up:
+			if sr.current_frame == "F_span":
+				frame_up = true
+			elif a < 0.95:
+				glimpse = maxf(glimpse, 1.0 - a)
+		if frame_up and a < 0.1:
+			lifted_after = true
+			break
+	_check(seen_turn, "the boat brings her to the turn (Z3)")
+	_check(frame_up, "M25 puts the first span's frame up")
+	_check(glimpse < 0.0, "the turn is never seen before the frame (the black gave way by %.2f)" % glimpse)
+	_check(lifted_after, "the frame comes up out of the black (a fade-in on the frame, within %.1f s)" % t)
 	await _drain()

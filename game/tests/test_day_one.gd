@@ -429,9 +429,15 @@ func _test_pier_attempt() -> void:
 	sr.interact(_hotspot("pelageya"))
 	await process_frame
 	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
-	_check(ids == ["boats", "marsh", "sluice", "manager", "leave"], "Pelageya's questions: %s" % str(ids))
+	# ревью 01.11 (А-13): «А кто затвором ведал?» comes only after the sluice answer — nobody has named a manager yet
+	_check(ids == ["boats", "marsh", "sluice", "leave"], "Pelageya's questions: %s" % str(ids))
 	var ans := await _drain(["sluice"])
 	_check(gs.has_flag("knows_sluice_key") and ans.any(func(x): return x.contains("рычаг в конторе остался")), "the sluice question: the lever is in the office (G20): %s" % str(ans))
+	sr.interact(_hotspot("pelageya"))
+	await process_frame
+	ids = sr.current_options().map(func(o): return String(o.get("id", "")))
+	_check(ids == ["boats", "marsh", "sluice", "manager", "leave"], "after the sluice — who kept it: %s" % str(ids))
+	await _drain(["leave"])
 	ans = await _interact(_hotspot("pelageya"), ["leave"])
 	_check(not ans.any(func(x): return x.contains("Ступай") or x.contains("дом")), "leaving Pelageya sends Agata nowhere: %s" % str(ans))
 	_check(seen[2].contains("к своему причалу") and seen[1].contains("не перевезу"), "«Не довезу. Год пробую.» — «Гребу к тому берегу…» (H3, %s)" % str(seen))

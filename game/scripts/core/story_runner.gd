@@ -565,18 +565,28 @@ func _run_stage(spec: Dictionary) -> void:
 		_stage_running = false
 		_next()
 		return
+	var serial := _stage_serial
+	var tree := get_tree()
 	if bool(spec.get("cut", false)):
 		for snd in spec.get("sounds", []):
 			stage_sound_requested.emit(String(snd.get("id", "")))
+		var from_black := stage_dim >= 1.0
 		_stage_apply(spec)
 		_keep_black = false
 		stage_dim = clampf(float(spec.get("dim", 0.0)), 0.0, 0.95)
-		stage_fade.emit(stage_dim, 0.0)
+		if from_black:
+			# ревью 01.11 (Б-4): a cut that comes out of a black handed over (the boat's crossing to the turn on day four,
+			# then the first span's frame): the frame is set while black and comes up out of it — no empty turn between
+			var fi := float(spec.get("fade_in_s", 0.6))
+			stage_fade.emit(stage_dim, fi)
+			await tree.create_timer(fi, false).timeout
+			if serial != _stage_serial:
+				return
+		else:
+			stage_fade.emit(stage_dim, 0.0)
 		_stage_running = false
 		_next()
 		return
-	var serial := _stage_serial
-	var tree := get_tree()
 	var fade_out := float(spec.get("fade_out_s", 0.6))
 	# K (стр. 108): the black handed over by the scene before (`keep_black`) is already there — no second fade
 	if stage_dim >= 1.0:
@@ -604,7 +614,10 @@ func _run_stage(spec: Dictionary) -> void:
 	# staging — the screen stays black into the next scene, whose first staging comes up from it (the first span →
 	# the epilogue's bridge: the end of the scene lifted the black to the empty turn for a moment, then the epilogue
 	# faded to black again). Nothing follows → _complete_scene lifts it after a moment.
-	if bool(spec.get("keep_black", false)):
+	# ревью 01.11 (Б-4): the same when what comes next is a cut to a frame (a scene the room entered while black has
+	# started on it — day four's first span after the boat): the black is handed over and the frame comes up out of it
+	# instead of the room showing for the fade-in and then being cut away (the empty turn for 0,7 s)
+	if bool(spec.get("keep_black", false)) or _next_is_cut_frame():
 		stage_dim = 1.0
 		_keep_black = true
 		_stage_running = false
@@ -618,6 +631,18 @@ func _run_stage(spec: Dictionary) -> void:
 		return
 	_stage_running = false
 	_next()
+
+
+## Whether the beat queue's first beat is a staging that cuts to a frame (ревью 01.11, Б-4).
+func _next_is_cut_frame() -> bool:
+	for b in _beats:
+		if not beat_allowed(b):
+			continue
+		if b.get("type") != "stage":
+			return false
+		var sp: Dictionary = b.get("spec", {})
+		return bool(sp.get("cut", false)) and sp.has("frame")
+	return false
 
 
 func _stage_agata_go(ag: Dictionary) -> void:
