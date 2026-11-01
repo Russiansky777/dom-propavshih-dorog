@@ -2,12 +2,14 @@
  "mode": "say",
  "set": "K3",
  "stt": true,
- "max_chars": 609,
+ "max_chars": 840,
  "credits_per_char_assumed": 0.46,
- "_comment": "K20 (Директор 01.11, «Четырнадцатый заход»): W201 M23c_0 — «перед «все» пауза не нужна» (без IPA-вставки); W208 H1.shelf.look — «у печИ ударение»",
+ "_comment": "K20 (Директор 01.11, «Четырнадцатый заход»): W201 M23c_0 — «перед «все» пауза не нужна» (без IPA-вставки); W208 H1.shelf.look — «у печИ ударение»; Уля: ttt_bye и mech.ttt.lose — на +4 LU громче её медианы после W196_2, тише",
  "new_text_lines": [
   "M23c_0",
-  "H1.shelf.look"
+  "H1.shelf.look",
+  "ulyana:O1d.ulyana.ttt_bye",
+  "ulyana:mech.ttt.lose"
  ],
  "items": [
   {
@@ -75,6 +77,72 @@
     "stability": 0.6
    },
    "variant": "то же, ровнее"
+  },
+  {
+   "id": "W212_1",
+   "line": "ulyana:O1d.ulyana.ttt_bye",
+   "take": "1",
+   "speaker": "ulyana",
+   "text": "Ладно. Завтра ещё сыграем — я тогда буду первая!",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "спокойнее и тише прежнего (громкость как у остальных реплик Ули)"
+  },
+  {
+   "id": "W212_2",
+   "line": "ulyana:O1d.ulyana.ttt_bye",
+   "take": "2",
+   "speaker": "ulyana",
+   "text": "Ладно. Завтра ещё сыграем — я тогда буду первая!",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "то же, ровнее"
+  },
+  {
+   "id": "W212_3",
+   "line": "ulyana:O1d.ulyana.ttt_bye",
+   "take": "3",
+   "speaker": "ulyana",
+   "text": "Ладно. Завтра ещё сыграем — я тогда буду первая!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "то же, живее, но не громче"
+  },
+  {
+   "id": "W213_1",
+   "line": "ulyana:mech.ttt.lose",
+   "take": "1",
+   "speaker": "ulyana",
+   "text": "Я выиграла! Три нолика в ряд!",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "спокойнее и тише прежнего (громкость как у остальных реплик Ули)"
+  },
+  {
+   "id": "W213_2",
+   "line": "ulyana:mech.ttt.lose",
+   "take": "2",
+   "speaker": "ulyana",
+   "text": "Я выиграла! Три нолика в ряд!",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "то же, ровнее"
+  },
+  {
+   "id": "W213_3",
+   "line": "ulyana:mech.ttt.lose",
+   "take": "3",
+   "speaker": "ulyana",
+   "text": "Я выиграла! Три нолика в ряд!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "то же, живее, но не громче"
   }
  ]
 }
