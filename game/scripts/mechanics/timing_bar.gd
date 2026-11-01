@@ -70,6 +70,8 @@ func setup(cfg: Dictionary, p_vertical: bool = false) -> void:
 		hint.name = "Hint"
 		hint.text = StoryData.text(h)
 		hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		# frames 01.11: the wedges' long hint ran off the screen («…По три точных уд») — it wraps within the bar
+		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		hint.theme_type_variation = &"CloseupLabel"
 		hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(hint)
@@ -95,12 +97,16 @@ func restart() -> void:
 
 
 func _layout_hint() -> void:
+	var hint_h := 0.0
 	if hint != null:
 		hint.position = Vector2(0, size.y + 20)   # below the carved frame (H34)
-		hint.size = Vector2(size.x, 36)
+		hint.custom_minimum_size = Vector2(size.x, 0)
+		hint.size = Vector2(size.x, 0)
+		hint_h = maxf(36.0, hint.get_combined_minimum_size().y)
+		hint.size = Vector2(size.x, hint_h)
 	if slow_check != null:
 		if String(_cfg.get("slow_at", "right")) == "below":   # no room to the right (the wedges' bar at the screen edge)
-			slow_check.position = Vector2(0, size.y + (62.0 if hint != null else 22.0))
+			slow_check.position = Vector2(0, size.y + (26.0 + hint_h if hint != null else 22.0))
 		else:
 			slow_check.position = Vector2(size.x + 36, (size.y - 44) * 0.5)
 		slow_check.size = Vector2(240, 44)

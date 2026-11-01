@@ -11,7 +11,7 @@
     {"id": "house", "locs": ["H1", "H2", "H3", "H4"], "label": "@map.house", "point": [602, 452], "align": "above"},
     {"id": "street", "locs": ["Z2"], "point": [521, 533], "align": "below"},
     {"id": "shore", "locs": ["Z3"], "point": [771, 455], "align": "below"},
-    {"id": "pier", "locs": ["R1"], "point": [787, 426], "align": "above"},
+    {"id": "pier", "locs": ["R1"], "point": [787, 426], "align": "above_left", "_k10": "Кадры 01.11: подпись над столбиком закрывала лодку на канате — теперь кончается у столбика, тянется влево"},
     {"id": "mill", "locs": ["M1", "M2", "M3", "M4"], "label": "@map.mill", "point": [1066, 544], "align": "below"},
     {"id": "olkhovka", "locs": ["O1", "O2"], "label": "@map.olkhovka", "point": [670, 143], "align": "above", "hidden_until_visited": true, "_g2_note": "G2 (партия 9): школа с оградой на слое плана — табличка «Школа»"},
     {"id": "olkhovka_street", "locs": ["O4"], "point": [980, 244], "align": "below", "hidden_until_visited": true},

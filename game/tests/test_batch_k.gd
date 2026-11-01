@@ -95,6 +95,8 @@ func _run() -> void:
 	await _test("K-46/62/87/61 the world: night fog dark, windows dimmer; the pond at the sluice moves; the journal written on its ruling", _test_world_k)
 	await _test("K-108 the first span → the bridge: one black, never lifted in between", _test_one_black)
 	await _test("K-75 Pelageya goes for the rope: the narration plays in deep dusk, the light comes back after it", _test_m15s_dusk)
+	await _test("K-93 M23a: Nina comes up to Tamara with no black before «Тамара и сама…»", _test_m23a_no_black)
+	await _test("Frames 01.11: a timing bar's long hint wraps within the bar; «Облегчить» below it does not overlap", _test_hint_wraps)
 	await _test("K-108 a kept black that no scene takes up lifts by itself", _test_kept_black_lifts)
 	await _test("K-16 a room change: a villager drawn live does not read its sheets", _test_room_change_cost)
 	await _test("K-74 the far pier by day: the lanterns do not glow and the figures keep daylight; in the evening both lanterns burn", _test_r3_day_lights)
@@ -396,6 +398,53 @@ func _test_m15s_dusk() -> void:
 	await _wait(1.0)
 	_check(float(ui.call("stage_probe").get("alpha", 1.0)) < 0.05, "after the narration the turn is lit again")
 	sr.call("_on_state_reset")
+
+
+## Director 31.10, стр. 93 (frames 01.11): Nina walks up from the path to Tamara and the line comes — no fade between.
+func _test_m23a_no_black() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	for id in sd.scene_order:
+		if id == "M23a":
+			break
+		var sc: Dictionary = sd.scene(id)
+		gs.set_flag("done_" + id, true)
+		for f in sc.get("grants", {}).get("flags", []):
+			gs.set_flag(String(f), true)
+	await _enter("O4")
+	if sr.current_beat.is_empty():
+		sr.start_scene("M23a")
+	var darkest := 0.0
+	var t := 0.0
+	var reached := false
+	while t < 15.0:
+		await process_frame
+		t += root.get_process_delta_time()
+		darkest = maxf(darkest, float(ui.call("stage_probe").get("alpha", 0.0)))
+		if String(sr.current_beat.get("line_id", "")) == "M23a_0":
+			reached = true
+			break
+	_check(reached, "the first line of M23a comes")
+	_check(darkest < 0.2, "no black before it (darkest %.2f)" % darkest)
+	while not sr.current_beat.is_empty() or sr.is_staging():
+		await _drain()
+		await process_frame
+	sr.call("_on_state_reset")
+
+
+func _test_hint_wraps() -> void:
+	var TB = load("res://scripts/mechanics/timing_bar.gd")
+	var bar = TB.new()
+	root.add_child(bar)
+	bar.size = Vector2(360, 40)
+	bar.setup({"period_s": 2.0, "green": 0.2, "hint": "@mech.office_mirror.wedges_hint", "slow_at": "below"})
+	await _frames(3)
+	var h: Label = bar.hint
+	_check(h != null and h.size.x <= 361.0 and h.get_line_count() >= 2, "the hint wraps inside the bar's width (%s, %d lines)" % [str(h.size) if h != null else "-", h.get_line_count() if h != null else 0])
+	var sc: Control = bar.slow_check
+	_check(sc == null or sc.position.y >= h.position.y + h.size.y - 1.0, "«Облегчить» sits below the wrapped hint")
+	bar.queue_free()
+	await _frames(1)
 
 
 func _test_kept_black_lifts() -> void:

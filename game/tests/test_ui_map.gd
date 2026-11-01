@@ -155,7 +155,7 @@ func _test_data() -> void:
 		_check(float(pt[0]) > 0 and float(pt[0]) < float(isz[0]) and float(pt[1]) > 0 and float(pt[1]) < float(isz[1]), "%s: point on the picture" % id)
 		if p.has("label"):
 			_check(sd.texts.has(String(p["label"]).substr(1)), "%s: text %s" % [id, p["label"]])
-		_check(String(p.get("align", "above")) in ["above", "below", "left", "right", "center"], "%s: align" % id)
+		_check(String(p.get("align", "above")) in ["above", "below", "left", "right", "center", "above_left"], "%s: align" % id)
 	for k in ["map.here", "map.close_hint", "ui.button_plan"]:
 		_check(sd.texts.has(k), "text %s" % k)
 	# Z1.plan → this panel; its flag is the journal flag and a known room flag.
@@ -271,6 +271,13 @@ func _test_here_and_visits() -> void:
 	mp.call("open_from", Rect2())
 	_check(await _open_settled(), "open after the rope is tied")
 	_check((mp.call("probe")["overlays"] as Array) == ["Overlay_zarechye_plan_rope"], "K-10: after M15 only the rope with the boat appears (%s)" % str(mp.call("probe")["overlays"]))
+	# frames 01.11: the «Ближний причал» plaque must not cover the boat on the rope (picture px ~ 835–890 × 385–425)
+	var pe: Dictionary = (mp.get("place_nodes") as Dictionary).get("pier", {})
+	var pl: Control = pe.get("label") as Control
+	_check(pl != null, "K-10: the pier plaque is built")
+	if pl != null:
+		var boat_scr := Rect2(mp.call("pic_to_screen", Vector2(835, 385)), Vector2.ZERO).expand(mp.call("pic_to_screen", Vector2(890, 425)))
+		_check(not pl.get_global_rect().intersects(boat_scr), "K-10: the pier plaque %s leaves the boat %s visible" % [str(pl.get_global_rect()), str(boat_scr)])
 	mp.call("close_now")
 	var base_img: Image = (load("res://assets/ui/map/zarechye_plan.png") as Texture2D).get_image()
 	if base_img.is_compressed():

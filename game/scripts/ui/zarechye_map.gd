@@ -163,6 +163,11 @@ func place_of_room(room_id: String) -> String:
 	return ""
 
 
+## A point of the picture (px of `image`) on screen, as the marks are drawn (tests).
+func pic_to_screen(v: Vector2) -> Vector2:
+	return marks.get_global_transform() * (v * _scale)
+
+
 func _point(p: Dictionary) -> Vector2:
 	var pt: Array = p.get("point", [0, 0])
 	return Vector2(float(pt[0]), float(pt[1])) * _scale
@@ -230,6 +235,10 @@ static func _aligned(at: Vector2, sz: Vector2, align: String, gap: float) -> Vec
 			return (at + Vector2(gap, -sz.y / 2.0)).round()
 		"center":
 			return (at - sz / 2.0).round()
+		"above_left":
+			# above, ending at the point (the near pier: «Ближний причал» centred above covered the boat on the rope —
+			# frames 01.11)
+			return (at + Vector2(-sz.x + 18.0, -sz.y - gap)).round()
 	return (at + Vector2(-sz.x / 2.0, -sz.y - gap)).round()
 
 

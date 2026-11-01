@@ -21,6 +21,8 @@ BASE_FILES = {
     "H1_state_cup_table_white.png": "game/assets/rooms/H1/state_cup_table_white.png",
     "H1_state_cup_table_blue.png": "game/assets/rooms/H1/state_cup_table_blue.png",
     "Tikhon_sheet.png": "assets/reference/tikhon_sheet.png",
+    "R2_fg_rope_v2.png": "game/assets/rooms/R2/fg_rope.png",
+    "R2_bg.png": "game/assets/rooms/R2/bg.png",
 }
 
 
