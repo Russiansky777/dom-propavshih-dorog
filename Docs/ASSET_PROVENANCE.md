@@ -119,3 +119,15 @@
 - Пункты меню, подсветка (золотые линии, тёплое свечение), разделители, вышитая рамка наведения паузы и строка «Esc — вернуться» рисуются кодом (`game/scripts/ui/title_screen.gd`, `pause_menu.gd`) шрифтом **PT Serif** (Regular — титул, Bold — пауза; SIL OFL 1.1, уже в игре с 17.10, см. выше: `game/assets/fonts/pt_serif/` + `OFL.txt`, кириллица полная). Новый шрифт не добавлялся: запечённые в референс пункты набраны той же гарнитурой (сверено наложением).
 - Права — как у прочего арта ChatGPT проекта (пакеты Директора); подпись — авторская подпись Директора по его запросу.
 - **Живая Агата v4** (`game/assets/characters/agata/rt3d/agata_v4_rt.glb` и вынесенные Godot текстуры рядом, 30.10, решение Директора «модели — живое 3D»): та же модель Meshy, что в листах Агаты v4 (`pipeline/requests/agata_v4_t5c.json`, релиз `agata-v4-work` → `agata_v4_animations_t5c.glb`); клипы — её собственные и перенесённые с библиотеки прежней Агаты `pipeline/3d/motions/agata_rev10_clips.glb` (каталог анимаций Meshy, задачи 17–20.10); сетка упрощена до 250 тыс. треугольников. Сборка — `tools/build_agata_live.sh` (bpy 5.2.2, `pipeline/3d/retarget_clips.py`, `pipeline/3d/build_rt3d_glb.py`), 0 кредитов.
+
+## Партия 12 — ChatGPT (imagegen), 01.11.2026
+Заказ `Docs/art_pack_12/00_ТЕКСТ_для_ChatGPT.txt` (сборщик `tools/make_art_pack_12.py`), архив от ChatGPT
+`Dom_propavshih_dorog_part12_2026-11-01_1.zip` (README, validation.txt, превью). Права: изображения сгенерированы
+ChatGPT по заказу проекта для проекта, автор заказа — Директор. Файлы в `assets/incoming/`: H2_state_bundle_v2,
+H2_state_nina_mirror_v2 (свёрток и мамино зеркало на ближнем верстаке), H1_state_shelf_A_wide, H1_state_holes_stove_wide
+(полка Тихона шире), R2_fg_rope_v2 (канат сквозь кольцо, правка только [1080,580,1320,780)), M1_state_water_low,
+M4_state_pond_low (вода ниже после спуска пруда), Tikhon_pose_loaf / sit / lounge (позы на кресле — на выбор Директору),
+map/zarechye_plan.png, map/zarechye_plan_overlay.png (план Заречья перерисован: мельница справа, плотина короткая,
+одна лодка; прежние — `_zarechye_plan_v1.png`, `_zarechye_plan_overlay_v1.png`). Копии в игре — `tools/import_room_art.py`
+(H2, H1, R2, M1, M4), `tools/sync_map.sh`.
+

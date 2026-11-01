@@ -2697,7 +2697,8 @@
       "brief": "Docs/art_pack_10g/00_ТЕКСТ_для_ChatGPT.txt"
     },
     {
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part12_2026-11-01_1; копии в игре — import_room_art / sync_map)",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",
@@ -2717,7 +2718,8 @@
       "g": "K стр. 33"
     },
     {
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part12_2026-11-01_1; копии в игре — import_room_art / sync_map)",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",
@@ -2737,7 +2739,8 @@
       "g": "K стр. 33"
     },
     {
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part12_2026-11-01_1; копии в игре — import_room_art / sync_map)",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",
@@ -2757,7 +2760,8 @@
       "g": "K стр. 25, 113"
     },
     {
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part12_2026-11-01_1; копии в игре — import_room_art / sync_map)",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",
@@ -2777,7 +2781,8 @@
       "g": "K стр. 25, 113"
     },
     {
-      "status": "requested",
+      "status": "delivered",
+      "delivered": "2026-11-01: три позы в assets/incoming, выбор Директора на утренней странице",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",
@@ -2799,7 +2804,8 @@
       "g": "K стр. 25"
     },
     {
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part12_2026-11-01_1; копии в игре — import_room_art / sync_map)",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",
@@ -2819,7 +2825,8 @@
       "g": "K стр. 106"
     },
     {
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part12_2026-11-01_1; копии в игре — import_room_art / sync_map)",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",
@@ -2839,7 +2846,8 @@
       "g": "K стр. 100"
     },
     {
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part12_2026-11-01_1; копии в игре — import_room_art / sync_map)",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",
@@ -2860,7 +2868,8 @@
     },
     {
       "id": "map_zarechye_v2",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-01 (ChatGPT, архив part12_2026-11-01_1; копии в игре — import_room_art / sync_map)",
       "block": "Партия 12 (по прохождению Директора 31.10)",
       "batch": "12",
       "owner": "ChatGPT + Директор",

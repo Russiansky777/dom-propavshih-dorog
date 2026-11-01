@@ -2,16 +2,10 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpcfeug5u35g3"
-path="res://.godot/imported/water_still.png-2b1b65f7cddf0c65c5511c9b9959e416.ctex"
-metadata={
-"vram_texture": false
-}
 
 [deps]
 
-source_file="res://assets/rooms/M1/water_still.png"
-dest_files=["res://.godot/imported/water_still.png-2b1b65f7cddf0c65c5511c9b9959e416.ctex"]
+source_file="res://assets/rooms/M4/state_pond_low.png"
 
 [params]
 

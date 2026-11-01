@@ -1,7 +1,7 @@
 {
   "id": "R2",
   "_art": "Партия 3 (ChatGPT 22.10, assets/incoming/_meta_p3/README_RU.txt): R2_bg.png — вид из лодки Пелагеи с кормы: туман, натянутый канат моста уходит к тому берегу, вдоль него снег на берегах; R2_fg_rope.png — канат с кольцом-направляющей на правом борту (кольцо скользит по канату, узла нет), поверх всего. Кадр — глазами Агаты: её фигуры в комнате нет (player_hidden), Пелагея гребёт за спиной (её слышно, в кадре её нет).",
-  "art_source": {"files": {"bg.png": "assets/incoming/R2_bg.png", "day.png": "assets/incoming/R2_day.png", "fg_rope.png": "assets/incoming/R2_fg_rope.png"}, "canvas": [1672, 941], "alpha_min": 0,
+  "art_source": {"files": {"bg.png": "assets/incoming/R2_bg.png", "day.png": "assets/incoming/R2_day.png", "fg_rope.png": "assets/incoming/R2_fg_rope_v2.png"}, "canvas": [1672, 941], "alpha_min": 0,
     "_note": "Копии — tools/import_room_art.py R2; слой в координатах фона, (0,0) 1:1"},
   "background": {"kind": "exterior", "image": "res://assets/rooms/R2/bg.png", "wall": "#3c4458", "floor": "#4a3a2a", "accent": "#7a6040", "horizon": 220},
   "player_hidden": true,
