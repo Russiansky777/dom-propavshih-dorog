@@ -272,9 +272,10 @@ func load(slot: String) -> bool:
 		return false
 	state_loaded.emit(slot)
 	goal_changed.emit(journal_goal)
-	# Re-announce every flag so listeners (rooms, HUD, mirror) resync.
-	for k in flags.keys():
-		flag_changed.emit(k, flags[k])
+	# One resync for the listeners (rooms, layers, hotspots, lights, the puppet): every one of them refreshes whole
+	# on any flag, so one announcement does what hundreds did (ревью 01.11, В-12: a late save re-announced every
+	# flag — O(flags × nodes) refreshes on «Продолжить»). "*" — no flag of that name exists.
+	flag_changed.emit("*", true)
 	return true
 
 
