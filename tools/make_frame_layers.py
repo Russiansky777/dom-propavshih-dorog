@@ -24,7 +24,9 @@ compose — персонаж:
    "hide_feather": 1.0}       — мягкость края скрытия, px.
 compose — вещь (кусок другой картинки):
   {"src": "game/assets/rooms/H1/state_cup_table_blue.png", "crop": [x, y, w, h], "at": [x, y], "width": w,
-   "tint": [...], "rotate": градусы, "alpha": 0..1, "shadow": 0, "mirror": false}
+   "tint": [...], "rotate": градусы, "alpha": 0..1, "shadow": 0, "mirror": false,
+   "mask": {"poly": [[[x, y], …]], "lines": [{"pts": [[x, y], …], "width": px}], "feather": px}}
+                                — вырезать вещь из картинки без прозрачности (пиксели источника, до crop)
 Повторный запуск с теми же исходниками даёт те же файлы; --check сверяет без записи (код 1 — расходятся или нет файла).
 Когда приходят листы 3D (assets/characters/<имя>/), запуск без правки данных заменяет заглушки фигурами из листов.
 Нужен Pillow. Запуск: python3 tools/make_frame_layers.py [--check] [ID …]
@@ -133,6 +135,18 @@ def render(c: dict, size: tuple[int, int]) -> Image.Image:
         out.alpha_composite(layer)
         return out
     src = Image.open(ROOT / c["src"]).convert("RGBA")
+    if "mask" in c:
+        # a thing cut out of a picture without alpha (01.11, стр. 49: Mitya's lantern from the lantern close-up):
+        # mask {poly: [[[x, y], …], …], lines: [{pts: [[x, y], …], width: px}], feather: px} in the source's pixels
+        mk = Image.new("L", src.size, 0)
+        dm = ImageDraw.Draw(mk)
+        for poly in c["mask"].get("poly", []):
+            dm.polygon([(float(x), float(y)) for x, y in poly], fill=255)
+        for ln in c["mask"].get("lines", []):
+            dm.line([(float(x), float(y)) for x, y in ln["pts"]], fill=255, width=int(ln.get("width", 8)), joint="curve")
+        if float(c["mask"].get("feather", 1.5)) > 0:
+            mk = mk.filter(ImageFilter.GaussianBlur(float(c["mask"].get("feather", 1.5))))
+        src.putalpha(ImageChops.multiply(src.getchannel("A"), mk))
     if "crop" in c:
         x, y, w, h = (int(v) for v in c["crop"])
         src = src.crop((x, y, x + w, y + h))

@@ -195,11 +195,26 @@ func _build() -> void:
 	room_code_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	room_code_label.modulate = Color(1, 1, 1, 0.6)
 	title.add_child(room_code_label)
+	# Директор 01.11, стр. 15: the bag in the middle of the screen, not of the space between the title and the buttons —
+	# its own full-width layer of the bar (PanelContainer stacks it over the row); the row keeps a spring in its place.
+	var spring := Control.new()
+	spring.name = "BagSpring"
+	spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	h.add_child(spring)
+	var bag_layer := MarginContainer.new()   # evens out the bar's own unequal side margins (22 / 14): the middle is x 960
+	bag_layer.name = "BagLayer"
+	bag_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var bar_sb := UiTheme.get_theme().get_stylebox(&"panel", &"TopBarPanel")
+	if bar_sb != null:
+		var d := bar_sb.content_margin_left - bar_sb.content_margin_right
+		bag_layer.add_theme_constant_override("margin_left", int(maxf(-d, 0.0)))
+		bag_layer.add_theme_constant_override("margin_right", int(maxf(d, 0.0)))
+	top_bar.add_child(bag_layer)
 	var bag_center := CenterContainer.new()
 	bag_center.name = "BagCenter"
-	bag_center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bag_center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	h.add_child(bag_center)
+	bag_layer.add_child(bag_center)
 	bag = InventoryBag.new()
 	bag.tooltip_top = TOP_H
 	bag.sound_requested.connect(func(kind): bag_sound_requested.emit(kind))

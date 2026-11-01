@@ -181,7 +181,9 @@ def check(data: dict, ctx_files: bool = True) -> None:
                 err(f"loops.rain: нет локации {rid}")
         if outside & inside:
             err(f"loops.rain: и снаружи, и внутри: {sorted(outside & inside)}")
-        amb = rain_rooms_from_ambient()
+        # Кадры (F_*, EP_* — не локации) звучат дождём своей комнаты: морось в кадре совета у мельницы
+        # (F_mill_manager, 01.11 стр. 67) — под звук дождя M1; в список комнат звука они не входят.
+        amb = {r for r in rain_rooms_from_ambient() if r in locations}
         if amb and outside != amb:
             err(f"loops.rain.outside {sorted(outside)} ≠ комнаты с дождём в data/story/ambient {sorted(amb)}")
 

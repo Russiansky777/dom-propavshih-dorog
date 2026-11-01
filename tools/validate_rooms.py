@@ -1383,6 +1383,9 @@ for rid, room in rooms.items():
     def hs_rects(h: dict) -> list:
         """Базовый прямоугольник хотспота, прямоугольники его состояний (states[].rect) и добавочные места щелчка
         (pick_rects — J, Z1: Тамару щёлкают и сквозь стойку)."""
+        if isinstance(h.get("click_rect"), list):
+            # click_rect (Директор 01.11, стр. 1): щёлкают только его, rect лишь ставит фигуру (ноги NPC на полу)
+            return [h["click_rect"]] + list(h.get("pick_rects", []))
         return [h["rect"]] + [s["rect"] for s in h.get("states", []) if "rect" in s] + list(h.get("pick_rects", []))
 
     for h in room.get("hotspots", []):

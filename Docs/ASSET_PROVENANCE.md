@@ -180,3 +180,11 @@ onnx-community/depth-anything-v2-small; лицензия модели — Apache
 `game/assets/characters/tikhon/loaf_mouth_1–3.png`, `variants.loaf.mouth_frames` в game/data/actors/tikhon.json),
 H1_state_bench_wide_shelf_v2 и H1_state_bench_wide_scarf_v2 (та же широкая полка, что висит у печи, лежит на лежанке; копии —
 `tools/import_room_art.py H1`).
+
+## Партия 14 — ChatGPT (imagegen), 01.11.2026
+Заказ `Docs/art_pack_14/00_ТЕКСТ_для_ChatGPT.txt`, архив `Dom_propavshih_dorog_part14_2026-11-01.zip` (README, prompts.json,
+rope_prompts.txt, spoon_prompt.txt, validation.json, OVERVIEW — `assets/incoming/_meta_p14/`). Права — как у прочего арта ChatGPT
+проекта. Файлы: perch_caught, perch_lying (окунь), float_on_water, float_tilted (поплавок из пера) — копии в
+`game/assets/mechanics/fishing/` (fishing_panel.gd); cup_tikhon, cup_agata, spoon — `game/assets/mechanics/rhythm/` (rhythm_panel.gd);
+R2_fg_rope_v3 (канат сквозь кольцо, правка R2_fg_rope_v2 только в [1080,580,1320,780)) — `game/assets/rooms/R2/fg_rope.png`
+(art_source в R2.json), маска железа кольца `fg_rope_iron_mask.png` строится из него `tools/make_ring_mask.py`.

@@ -288,6 +288,16 @@ func _build_mirror() -> void:
 	mirror_material.set_shader_parameter("canvas_size", canvas)
 	mirror_material.set_shader_parameter("src_size", src_size)
 	mirror_material.set_shader_parameter("glass_rect", Color(glass_pos.x, glass_pos.y, glass.x, glass.y))
+	# стр. 35: `frame.outline` — the mirror's silhouette in canvas px: the wall around it is cut away exactly
+	var ol := PackedVector2Array()
+	for q in fr.get("outline", []):
+		ol.append(_v2(q))
+	ol.resize(mini(ol.size(), 48))
+	var ol_n := ol.size()
+	while ol.size() < 48:
+		ol.append(Vector2.ZERO)
+	mirror_material.set_shader_parameter("outline", ol)
+	mirror_material.set_shader_parameter("outline_n", ol_n if ol_n > 2 else 0)
 	var rf: Dictionary = spec.get("reflection", {})
 	if rf.has("tint"):
 		mirror_material.set_shader_parameter("tint", Color.html(String(rf["tint"])))

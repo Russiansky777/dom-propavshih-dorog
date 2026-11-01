@@ -1334,6 +1334,18 @@ func set_render_scale(q: float) -> void:
 	size = Vector2i(int(round(frame_px.x * q)), int(round(frame_px.y * q)))
 
 
+## Where a bone is in this frame's texture (px), as the camera sees it; Vector2.INF without it. Директор 01.11,
+## стр. 59: the fishing rod comes out of Agata's hand (FishingPanel → Player.bone_screen).
+func bone_frame_px(bone: String) -> Vector2:
+	if skeleton == null or camera == null:
+		return Vector2.INF
+	var b := skeleton.find_bone(bone)
+	if b < 0:
+		return Vector2.INF
+	var p: Vector3 = skeleton.global_transform * skeleton.get_bone_global_pose(b).origin
+	return camera.unproject_position(p)
+
+
 ## Sprite2D offset/scale that put this texture's pivot at the parent's origin, frame in sheet px.
 func sprite_offset() -> Vector2:
 	return -Vector2(pivot.x * size.x, pivot.y * size.y)

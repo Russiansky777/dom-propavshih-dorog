@@ -1099,12 +1099,22 @@ func _test_walkthrough() -> void:
 		sr.close_mechanic()
 		await _frames(2)
 	# Three lights.
-	_check(await _go("R1"), "Z3→R1")
-	# A1: back at the pier the far bank is white for the first time — Pelageya sees it first (M16s), then the lantern.
-	seen = await _finish()
-	_check(gs.has_flag("done_M16s") and gs.has_flag("far_snow_seen") and not gs.has_flag("started_M16"), "M16s at the pier, the lights still the player's: %s" % str(seen))
-	_check(seen.size() >= 2 and seen[1].begins_with("pelageya:") and seen[1].contains("черным-черно"), "Pelageya notices the snow first: %s" % str(seen))
+	# A1 + Director 01.11 стр. 44: the far bank turns white right where the rope was tied (Z3), not only at the old pier.
+	if not gs.has_flag("done_M16s"):
+		seen.append_array(await _finish())
+	_check(gs.has_flag("done_M16s") and gs.has_flag("far_snow_seen") and not gs.has_flag("started_M16"), "M16s right after the knot at Z3, the lights still the player's: %s" % str(seen))
+	var i16 := -1
+	for k in seen.size():
+		if str(seen[k]).contains("черным-черно"):
+			i16 = k
+			break
+	_check(i16 >= 0 and str(seen[i16]).begins_with("pelageya:"), "Pelageya notices the snow first: %s" % str(seen))
+	if sr.mechanic_open:
+		sr.close_mechanic()
+		await _frames(2)
 	_check(seen.any(func(x): return x.contains("Раз — пускай, два — стой")), "B10: three lights are «живые»: %s" % str(seen))
+	_check(await _go("R1"), "Z3→R1")
+	seen = await _finish()
 	var lay0: Node = rm.current_room.get_node("Layers")
 	_check(lay0.get_node("far_snow").visible and not lay0.get_node("far_dark").visible and not rm.current_room.get_node("Effects/far_light").visible,
 			"before the lantern: the far bank white, no lights yet")

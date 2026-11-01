@@ -25,6 +25,22 @@ extends MechanicPanel
 const FLOAT_RED := Color(0.82, 0.16, 0.1)
 const FLOAT_WHITE := Color(0.95, 0.93, 0.88)
 const LINE := Color(0.88, 0.84, 0.74, 0.85)
+## Партия 14 (01.11, по замечанию Директора стр. 59): the perch and the floats are painted — sprites instead of the shapes
+## drawn by the engine. Paths and anchors may come from the data (`sprites`); the README of партия 14 gives these:
+## floats on a 300 px tall sheet with the waterline at y 200 (anchor — the contact ring), the tilted one drawn ×1.75 the
+## upright scale to keep one length; the caught perch 600 px long with its line from the mouth up to y 0 at x 77.
+const SPRITES := {
+	"float": {"image": "res://assets/mechanics/fishing/float_on_water.png", "anchor": [60, 200], "scale": 0.227},
+	"float_tilted": {"image": "res://assets/mechanics/fishing/float_tilted.png", "anchor": [100, 200], "scale": 0.40},
+	"perch_caught": {"image": "res://assets/mechanics/fishing/perch_caught.png", "anchor": [77, 0], "scale": 0.283},
+	"perch_lying": {"image": "res://assets/mechanics/fishing/perch_lying.png", "anchor": [240, 100], "scale": 0.136},
+}
+const WATERLINE := 200.0
+## Директор 01.11, стр. 59 («удочка… должна как бы из руки Агаты идти»; «хватит» и «ещё» разнесены): the rod's butt in
+## her hand (the 3D figure's hand bone, `hand_bone`), the rod held up at `rod_deg` above the level towards the water,
+## `rod_len` × her height; «Ещё» beside «Хватит» at the bottom right.
+const ROD_DEG := 38.0
+const ROD_LEN := 1.25
 
 var phase: String = "wait"       # wait | bite | fight | caught | lost
 var phase_t: float = 0.0
@@ -54,6 +70,7 @@ var _taut_snd: float = 0.0       # time to the next creak of the taut string
 var in_room: bool = false
 var simple: bool = false
 var _mitya_float: Vector2 = Vector2.ZERO
+var _tex: Dictionary = {}           # sprite id -> {tex, anchor, scale}
 
 
 func build() -> void:
@@ -69,6 +86,12 @@ func build() -> void:
 	var mf: Array = spec.get("mitya", {}).get("float", [])
 	_mitya_float = Vector2(float(mf[0]), float(mf[1])) if mf.size() == 2 else Vector2.ZERO
 	_bar = Rect2(_pic.end.x + 40.0, _pic.position.y + 60.0, 46.0, _pic.size.y - 120.0)
+	var sp: Dictionary = spec.get("sprites", {})
+	for id in SPRITES.keys():
+		var d: Dictionary = SPRITES[id].merged(sp.get(id, {}), true)
+		var path := String(d["image"])
+		if ResourceLoader.exists(path):
+			_tex[id] = {"tex": load(path), "anchor": Vector2(float(d["anchor"][0]), float(d["anchor"][1])), "scale": float(d["scale"])}
 	if not in_room:
 		var frame := Control.new()
 		frame.name = "Frame"
@@ -94,13 +117,19 @@ func build() -> void:
 	_draw.name = "Water"
 	_draw.size = Vector2(1920, 1080)
 	_draw.mouse_filter = Control.MOUSE_FILTER_STOP
+	_draw.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS   # the painted perch at a fifth of its size
 	_draw.draw.connect(_on_draw)
 	_draw.gui_input.connect(_on_input)
 	add_child(_draw)
 	if in_room:
 		# the hint under the title at the upper left (the text box is at the bottom, the water at the right)
 		hint = label(text("wait"), Vector2(40, 160), 760, &"CloseupLabel")
-		again_btn = _button(text("again"), Vector2(40, 250), "Again")
+		# стр. 59: «Ещё» right beside «Хватит» (MechanicView's own button, 200 × 56 at (1680, 990))
+		var ag: Array = spec.get("again_at", [1460, 990])
+		again_btn = _button(text("again"), Vector2(float(ag[0]), float(ag[1])), "Again")
+		var pl: Node = RoomManager.player
+		if pl != null and is_instance_valid(pl) and pl.has_method("face_screen_dir"):
+			pl.call("face_screen_dir", Vector2(signf(_float0.x - (pl as Node2D).position.x), 0.0))   # she faces her float
 	else:
 		hint = label(text("wait"), Vector2(_pic.position.x, _pic.end.y + 26.0), _pic.size.x, &"CloseupLabel")
 		hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -264,6 +293,11 @@ func _unhandled_key_input(ev: InputEvent) -> void:
 
 # --- Drawing ------------------------------------------------------------------------------------
 
+## The water's surface at the float (it rises and falls with the swell; the float may be under it).
+func _float_wl() -> Vector2:
+	return Vector2(_float_pos().x, _float0.y + sin(clock * 2.1) * 2.5)
+
+
 func _float_pos() -> Vector2:
 	var p := _float0 + Vector2(0.0, sin(clock * 2.1) * 2.5)
 	match phase:
@@ -275,7 +309,7 @@ func _float_pos() -> Vector2:
 		"fight":
 			p += Vector2(fish_x * 160.0 * (1.0 - progress * 0.7), 22.0 + 200.0 * progress)
 		"caught":
-			p += Vector2(0.0, -40.0)
+			p += Vector2(0.0, -40.0 if not _tex.has("perch_caught") else -130.0)   # the painted perch hangs clear of the water
 	return p
 
 
@@ -290,8 +324,9 @@ func _on_draw() -> void:
 	var butt := Vector2(_pic.position.x + 64.0, _pic.end.y - 3.0)   # it comes in at the frame's lower edge
 	var tip0 := Vector2(_pic.position.x + _pic.size.x * 0.24, _pic.position.y + _pic.size.y * 0.16)
 	if in_room:
-		butt = _hands("", 1.0)
-		tip0 = butt + (fp - butt).normalized().slerp(Vector2.UP, 0.45) * minf(260.0, (fp - butt).length() * 0.55)
+		var hand := _hands("", 1.0)
+		tip0 = rod_tip(hand, _float0, _figure_h(""))
+		butt = hand - (tip0 - hand) * 0.12   # the butt a hand's breadth behind her grip: the rod goes through her hand
 	var bend := (taut if phase == "fight" else 0.0) + (0.25 if phase == "bite" else 0.0)
 	var tip := tip0 + (fp - tip0).normalized() * 70.0 * bend + Vector2(0.0, sin(clock * 1.3) * 2.0)
 	_rod(c, butt, fp, bend, taut, tip)
@@ -300,7 +335,7 @@ func _on_draw() -> void:
 		for k in 3:
 			var age := fposmod(clock * 0.6 + k / 3.0, 1.0)
 			var big := 1.0 + (2.5 if phase == "bite" or phase == "fight" else 0.0)
-			c.draw_set_transform(fp + Vector2(0, 10), 0.0, Vector2(1.0, 0.32))
+			c.draw_set_transform(_float_wl() + (Vector2(0, 1) if _tex.has("float") else Vector2(0, 10)), 0.0, Vector2(1.0, 0.32))
 			c.draw_arc(Vector2.ZERO, 14.0 + age * 40.0 * big, 0.0, TAU, 40, Color(1, 1, 1, 0.35 * (1.0 - age)), 2.0, true)
 			c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		var under := phase == "bite" or phase == "fight"
@@ -310,21 +345,27 @@ func _on_draw() -> void:
 				var ang := -PI * (0.15 + 0.7 * float(d) / 5.0)
 				var dp := fp + Vector2(cos(ang), sin(ang)) * (10.0 + 34.0 * k) + Vector2(0.0, 60.0 * k * k)
 				c.draw_circle(dp, 3.0 * (1.0 - k) + 1.0, Color(1, 1, 1, 0.75 * (1.0 - k)))
-		_float_shape(c, fp, under)
+		var tilt := (phase == "wait" and _dip > 0.0) or phase == "bite"
+		_float_shape(c, _float_wl(), under and phase_t >= 0.15, tilt, fp.y - _float_wl().y)
 	else:
-		_fish(c, fp + Vector2(0, 30))
+		_fish(c, fp)
 	if phase == "fight":
 		_tension_bar(c)
 	# the perches caught so far, in a row in the upper corner of the picture (in the room — under the hint)
 	for k in caught:
-		var at := Vector2(80.0 + 66.0 * k, 330.0) if in_room else Vector2(_pic.end.x - 60.0 - 66.0 * k, _pic.position.y + 40.0)
-		c.draw_set_transform(at, 0.0, Vector2(0.38, 0.38))
-		_fish_shape(c)
-		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		var at := Vector2(80.0 + 70.0 * k, 330.0) if in_room else Vector2(_pic.end.x - 60.0 - 70.0 * k, _pic.position.y + 40.0)
+		_perch_small(c, at, 60.0)
 
 
-## The float: white top over red, its stick; under the water — a red shadow.
-func _float_shape(c: CanvasItem, fp: Vector2, under: bool) -> void:
+## The float: the painted one (партия 14) — upright at rest, tilted at a nibble and as it goes under (`sink` px down,
+## the part under the waterline dimmed); without the sprites — the old white-over-red shape.
+func _float_shape(c: CanvasItem, fp: Vector2, under: bool, tilted: bool = false, sink: float = 0.0) -> void:
+	var id := "float_tilted" if tilted and _tex.has("float_tilted") else "float"
+	if _tex.has(id):
+		_float_sprite(c, _tex[id], fp, 0.0 if not under else maxf(sink, 1000.0))
+		if under:
+			c.draw_circle(fp + Vector2(0, 8), 5.0, Color(FLOAT_RED, 0.35))   # seen under the water
+		return
 	if not under:
 		c.draw_line(fp + Vector2(0, -24), fp + Vector2(0, -8), Color(0.2, 0.15, 0.1), 2.0, true)
 		c.draw_set_transform(fp, 0.0, Vector2(1.0, 1.6))
@@ -335,11 +376,27 @@ func _float_shape(c: CanvasItem, fp: Vector2, under: bool) -> void:
 		c.draw_circle(fp + Vector2(0, 8), 5.0, Color(FLOAT_RED, 0.45))   # seen under the water
 
 
+## A float sprite with its contact ring at `wl` (the waterline on screen): above the water as painted, under it dimmed;
+## `sink` — screen px the float has gone down (a part of it passes under the waterline).
+func _float_sprite(c: CanvasItem, t: Dictionary, wl: Vector2, sink: float) -> void:
+	var tex: Texture2D = t["tex"]
+	var k: float = t["scale"]
+	var an: Vector2 = t["anchor"]
+	var ts := tex.get_size()
+	var cut := clampf(WATERLINE - sink / k, 0.0, ts.y)    # texture rows above this stay above the water
+	var top := wl + (Vector2(0.0, -WATERLINE) - Vector2(an.x, 0.0)) * k + Vector2(0.0, sink)
+	if cut > 0.0:
+		c.draw_texture_rect_region(tex, Rect2(top, Vector2(ts.x, cut) * k), Rect2(0, 0, ts.x, cut))
+	if cut < ts.y:
+		var under_h := minf(ts.y - cut, 60.0)              # the painted part under the water, a little of it
+		c.draw_texture_rect_region(tex, Rect2(Vector2(top.x, wl.y), Vector2(ts.x, under_h) * k), Rect2(0, cut, ts.x, under_h), Color(1, 1, 1, 0.45))
+
+
 ## The rod from `butt` (the hands) bending towards `fp` (the float), and the string from its tip to the float.
 func _rod(c: CanvasItem, butt: Vector2, fp: Vector2, bend: float, taut: float, tip: Vector2 = Vector2.ZERO) -> void:
 	var tip0 := Vector2(_pic.position.x + _pic.size.x * 0.24, _pic.position.y + _pic.size.y * 0.16)
 	if in_room:
-		tip0 = butt + (fp - butt).normalized().slerp(Vector2.UP, 0.45) * minf(260.0, (fp - butt).length() * 0.55)
+		tip0 = rod_tip(butt, fp, _figure_h("npc_mitya" if fp == _mitya_float else ""))
 	if tip == Vector2.ZERO:
 		tip = tip0 + Vector2(0.0, sin(clock * 1.3) * 2.0)
 	var ctrl := butt.lerp(tip0, 0.55) + (fp - tip0).normalized() * 40.0 * bend
@@ -364,18 +421,55 @@ func _rod(c: CanvasItem, butt: Vector2, fp: Vector2, bend: float, taut: float, t
 	c.draw_polyline(pts, LINE, maxf(1.6 * k, 1.0), true)
 
 
-## Where a figure's hands are on screen: the player (`who` empty) or an NPC node of the room, at its feet plus
-## `up` × 0.55 of her height (345 px × the depth scale) and a little forward (towards the water, to the right).
+## Where a figure's hands are on screen: Agata's — her 3D figure's hand bone as the camera sees it (Директор 01.11,
+## стр. 59: the rod comes out of her hand); else (sprites, an NPC) at its feet plus `up` × 0.55 of its height
+## (345 px × the depth scale) and a little forward (towards the water, to the right).
 func _hands(who: String, up: float) -> Vector2:
 	var room: Node = RoomManager.current_room
 	var n: Node2D = RoomManager.player if who == "" else (room.get_node_or_null(who) as Node2D if room != null else null)
 	if n == null or not is_instance_valid(n):
 		return Vector2(_pic.position.x + 64.0, _pic.end.y - 3.0)
+	if who == "":
+		var hb := hand_bone_screen(n, String(spec.get("hand_bone", "RightHand")))
+		if hb != Vector2.INF:
+			return hb
+	var h := _figure_h(who) * up
+	var fwd := signf(_float0.x - n.position.x) if who == "" else 1.0
+	return n.position + Vector2(h * 0.18 * (fwd if fwd != 0.0 else 1.0), -h * 0.55)
+
+
+## A figure's height on screen (345 px × the room's depth scale where it stands).
+func _figure_h(who: String) -> float:
+	var room: Node = RoomManager.current_room
+	var n: Node2D = RoomManager.player if who == "" else (room.get_node_or_null(who) as Node2D if room != null else null)
 	var sc := 0.5
-	if room != null and room.has_method("depth_scale_at"):
+	if n != null and is_instance_valid(n) and room != null and room.has_method("depth_scale_at"):
 		sc = float(room.call("depth_scale_at", n.position))
-	var h := 345.0 * sc * up
-	return n.position + Vector2(h * 0.18, -h * 0.55)
+	return 345.0 * sc
+
+
+## The player's hand bone on screen (her live 3D frame: Actor3D.bone_frame_px → the Body3D sprite), Vector2.INF when
+## she is drawn from sheets or the bone is missing.
+static func hand_bone_screen(pl: Node, bone: String) -> Vector2:
+	var v3 = pl.get("view3d")
+	var b3 = pl.get("body3d")
+	if v3 == null or b3 == null or not is_instance_valid(v3) or not is_instance_valid(b3) or not (b3 as Sprite2D).is_visible_in_tree():
+		return Vector2.INF
+	var px: Vector2 = v3.call("bone_frame_px", bone)
+	if px == Vector2.INF:
+		return Vector2.INF
+	var spr := b3 as Sprite2D
+	return spr.get_global_transform_with_canvas() * (px + spr.offset)
+
+
+## The rod held as an angler holds it: from the hand up at `rod_deg` above the level, towards the float's side,
+## `rod_len` × the figure's height long.
+func rod_tip(butt: Vector2, float_at: Vector2, fig_h: float) -> Vector2:
+	var side := signf(float_at.x - butt.x)
+	if side == 0.0:
+		side = 1.0
+	var a := deg_to_rad(float(spec.get("rod_deg", ROD_DEG)))
+	return butt + Vector2(cos(a) * side, -sin(a)) * fig_h * float(spec.get("rod_len", ROD_LEN))
 
 
 func _tension_bar(c: CanvasItem) -> void:
@@ -399,14 +493,37 @@ func _tension_bar(c: CanvasItem) -> void:
 	var pr := Rect2(bar.end.x + 18.0, bar.position.y, 10.0, bar.size.y)
 	c.draw_rect(pr, Color(0, 0, 0, 0.45))
 	c.draw_rect(Rect2(pr.position.x, pr.end.y - pr.size.y * progress, pr.size.x, pr.size.y * progress), CarvedFrame.GOLD_DIM)
-	c.draw_set_transform(Vector2(pr.get_center().x, pr.end.y - pr.size.y * progress), -PI * 0.5, Vector2(0.2, 0.2))
+	_perch_small(c, Vector2(pr.get_center().x, pr.end.y - pr.size.y * progress), 30.0, -PI * 0.5)
+
+
+## The perch caught, held up on the string: the painted one (партия 14, ~170 px long) hanging from `at` (its line's top);
+## without the sprite — the shape drawn by the engine.
+func _fish(c: CanvasItem, at: Vector2) -> void:
+	if _tex.has("perch_caught"):
+		var t: Dictionary = _tex["perch_caught"]
+		var tex: Texture2D = t["tex"]
+		var k: float = t["scale"]
+		var sway := sin(clock * 2.3) * 0.06
+		c.draw_set_transform(at, sway, Vector2.ONE * k)
+		c.draw_texture(tex, -(t["anchor"] as Vector2))
+		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		return
+	c.draw_set_transform(at + Vector2(0, 30), deg_to_rad(-12.0), Vector2.ONE)
 	_fish_shape(c)
 	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
-## A perch, drawn: olive back, golden flank, dark bands, red fins, held up on the string.
-func _fish(c: CanvasItem, at: Vector2) -> void:
-	c.draw_set_transform(at, deg_to_rad(-12.0), Vector2.ONE)
+## A small lying perch (the row of those caught, the gauge): the painted one, `len_px` long, centred at `at`, turned by
+## `ang`; without the sprite — the drawn shape.
+func _perch_small(c: CanvasItem, at: Vector2, len_px: float, ang: float = 0.0) -> void:
+	if _tex.has("perch_lying"):
+		var t: Dictionary = _tex["perch_lying"]
+		var k := len_px / 440.0
+		c.draw_set_transform(at, ang, Vector2.ONE * k)
+		c.draw_texture(t["tex"], -(t["anchor"] as Vector2))
+		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		return
+	c.draw_set_transform(at, ang, Vector2.ONE * len_px / 150.0)
 	_fish_shape(c)
 	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 

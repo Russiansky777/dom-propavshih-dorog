@@ -110,6 +110,7 @@ func _run() -> void:
 	await _test("Stopping (Director 01.11 «семенит, доступает»): the closing step at once and nothing after it; she rests on the end of her path", _test_stop_settles)
 	await _test("Pick from the floor (Director 31.10, 17:45 and 18:32 «с пола заменить»): things on the floor and snow are taken with a bend down to the floor, not a crouch to table height; the thing is not lifted to the face (G1); the feet stay", _test_pick_floor)
 	await _test("Corners near the end (Director 31.10, lines 8–9 «застревает и идёт на одном месте… от писем до стола»): a walk whose path turns a corner just before its end arrives — no walking on the spot against the counter, no stopping off past the corner", _test_walk_corners)
+	await _test("Round the counter's corner (Director 01.11, line 2 «сначала письма, потом в центр снизу… в стол идёт, вместо того чтобы обойти угол»): letters ↔ the bottom of the screen — no walking on the spot at the front-left corner, the feet a body's depth in front of the counter", _test_walk_corner_front)
 	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; arms swing by her sides; she looks ahead", _test_walk_rhythm)
 	PlayerScript.forced_render = ""
 	gs.reset()
@@ -1491,6 +1492,64 @@ func _test_walk_corners() -> void:
 	print("        corners: %d of 7 walks failed%s; with the stop planned before the corner: %d%s" % [on[0], on[1], off[0], off[1]])
 	_check(int(on[0]) == 0, "walks near the counter's corners failed:%s" % on[1])
 	_check(int(off[0]) > 0, "self-check: with the stop planned before the last corner every walk arrived — the case is not reproduced")
+	_completed = true
+
+
+## Director 01.11, line 2: the letters' stand (behind the counter) → points at the bottom of the screen and back. The path
+## rounds the counter's front-left corner (a 130° turn): heading for a point past the corner she pushed into the counter
+## and the floor held her — 8–9 s on the spot (probe zz_k1_walk, 01.11); in front of it the feet went 10–27 px from the
+## front legs (y 890), the skirt into the counter. Unit check of the follower at that corner (deterministic) + the walks.
+func _test_walk_corner_front() -> void:
+	# the follower: approaching the corner along the front edge, the point she heads for is the corner, not past it
+	var PL = load("res://scripts/actors/player.gd")
+	var path := PackedVector2Array([Vector2(960, 1040), Vector2(417, 930), Vector2(567, 751), Vector2(740, 712)])
+	var hole := PackedVector2Array([Vector2(567, 751), Vector2(1445, 751), Vector2(1602, 930), Vector2(417, 930)])
+	var inner: PackedVector2Array = Geometry2D.offset_polygon(hole, -3.0)[0]   # the edge itself is floor
+	for pos in [Vector2(470, 941), Vector2(440, 935), Vector2(425, 931)]:
+		var pf: Array = PL.path_follow(path, pos, 0, 127.0)
+		var c: Vector2 = pf[0]
+		var crosses := false
+		for k in 21:
+			crosses = crosses or Geometry2D.is_point_in_polygon((pos as Vector2).lerp(c, float(k) / 20.0), inner)
+		_check(not crosses, "from %s the follower heads for %s — across the counter's corner" % [str(pos), str(c.round())])
+	var past: Array = PL.path_follow(path, Vector2(414, 931), 0, 127.0)
+	_check((past[0] as Vector2).y < 900.0, "past the corner she heads on up the side, got %s" % str((past[0] as Vector2).round()))
+	if not player.is_3d():
+		_completed = true
+		return
+	await _enter("Z1", Vector2(740, 712))
+	await _frames(30)
+	var bad := ""
+	var near := 999.0
+	for to in [Vector2(960, 1040), Vector2(740, 712), Vector2(960, 1000), Vector2(740, 712), Vector2(800, 1000), Vector2(740, 712), Vector2(1100, 1050), Vector2(740, 712)]:
+		player.walk_to(to)
+		var t := 0.0
+		var stall := 0.0
+		var worst := 0.0
+		var last: Vector2 = player.global_position
+		while t < 10.0:
+			await process_frame
+			var d: float = player.get_process_delta_time()
+			t += d
+			var p: Vector2 = player.global_position
+			var v: float = p.distance_to(last) / maxf(d, 0.001)
+			last = p
+			if p.y > 890.0 and p.x > 598.0 - 70.0 * absf(player.scale.y) and p.x < 1422.0 + 70.0 * absf(player.scale.y):
+				near = minf(near, p.y - 890.0)
+			if player.is_walking() and float(player.walk_w) > 0.5 and v < 25.0:
+				stall += d
+				worst = maxf(worst, stall)
+			else:
+				stall = 0.0
+			if t > 0.3 and not player.is_walking():
+				break
+		var left: float = player.global_position.distance_to(to)
+		if left > 60.0 or worst >= 0.6:
+			bad += " →%s: %.0f px short, on the spot %.1f s;" % [str(to), left, worst]
+		await _frames(20)
+	print("        letters ↔ bottom: nearest to the counter's front legs %.0f px%s" % [near, bad])
+	_check(bad == "", "walks round the counter's corner failed:%s" % bad)
+	_check(near >= 30.0, "her feet came %.0f px to the counter's front legs (y 890) — the body goes into it" % near)
 	_completed = true
 
 

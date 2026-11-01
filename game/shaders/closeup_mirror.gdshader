@@ -22,6 +22,27 @@ uniform float haze : hint_range(0.0, 1.0) = 0.16;
 uniform float waviness : hint_range(0.0, 0.05) = 0.006;
 uniform float feather_px = 70.0;
 uniform float reflection_on = 1.0;
+// Директор 01.11, стр. 35 («зеркало — как и фотографии, обрезать идеально»): the mirror's own outline (canvas px; the
+// frame, its crown and its feet) — outside it nothing of the wall is drawn; `outline_n` 0 — the old soft fade of the wall.
+uniform vec2 outline[48];
+uniform int outline_n = 0;
+
+float outline_alpha(vec2 d) {
+	bool inside = false;
+	float dist = 1e9;
+	for (int i = 0; i < 48; i++) {
+		if (i >= outline_n) { break; }
+		vec2 a = outline[i];
+		vec2 b = outline[(i + 1) % outline_n];
+		if (((a.y > d.y) != (b.y > d.y)) && (d.x < (b.x - a.x) * (d.y - a.y) / (b.y - a.y) + a.x)) {
+			inside = !inside;
+		}
+		vec2 ab = b - a;
+		float t = clamp(dot(d - a, ab) / max(dot(ab, ab), 1e-6), 0.0, 1.0);
+		dist = min(dist, length(d - a - ab * t));
+	}
+	return inside ? smoothstep(0.0, 1.5, dist) : 0.0;
+}
 
 void fragment() {
 	vec2 d = UV * canvas_size;
@@ -50,6 +71,6 @@ void fragment() {
 		col = r;
 	}
 	vec2 m = min(d, canvas_size - d);
-	float a = smoothstep(0.0, feather_px, min(m.x, m.y));
+	float a = outline_n > 2 ? outline_alpha(d) : smoothstep(0.0, feather_px, min(m.x, m.y));
 	COLOR = vec4(col, a);
 }

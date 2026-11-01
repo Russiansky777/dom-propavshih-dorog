@@ -100,7 +100,7 @@ func refresh() -> void:
 	visible = active
 	for c in get_children():  # "Shape" and the extra `pick_rects` shapes (PickShape0…)
 		if c is CollisionShape2D:
-			c.set_deferred("disabled", not active)
+			c.set_deferred("disabled", not active or c.has_meta("no_pick"))   # `click_rect`: the rect only places
 	var st := current_state()
 	_apply_geometry(st)
 	if fill != null:

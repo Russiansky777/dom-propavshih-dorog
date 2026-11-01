@@ -48,6 +48,11 @@ uniform float lap = 0.0;
 uniform float lap_px = 10.0;
 uniform float lap_period = 3.2;
 uniform vec4 lap_foam : source_color = vec4(0.86, 0.88, 0.86, 1.0);
+// Директор 01.11, стр. 39 («не плещется и не делает прилив-отлив к берегу — говорил уже!»): the wave runs up the bank
+// fast and slides back slowly (`lap_period` s, out of phase along the shore), its reach `lap_px`; behind it the bank stays
+// wet a while — a darker band (`lap_wet` 0..1, `lap_wet_color`) up to where the highest wave reached.
+uniform float lap_wet = 0.0;
+uniform vec4 lap_wet_color : source_color = vec4(0.16, 0.13, 0.10, 1.0);
 uniform vec4 exclude[4];
 uniform int exclude_n = 0;
 
@@ -166,27 +171,43 @@ void fragment() {
 	}
 	float out_a = src_alpha ? base.a : 1.0;
 	if (lap > 0.0 && src_alpha) {
-		// The wave's reach here: in and out with its own phase along the shore.
-		float ph = 0.5 + 0.5 * sin(6.2831853 * t / max(lap_period, 0.3) + amb_noise2(vec2(p.x / 70.0, p.y / 50.0)) * 4.0);
-		float r = mix(3.0, lap_px, ph * ph);
-		vec2 dirs[8] = vec2[8](vec2(1.0, 0.0), vec2(-1.0, 0.0), vec2(0.0, 1.0), vec2(0.0, -1.0),
-			vec2(0.71, 0.71), vec2(-0.71, 0.71), vec2(0.71, -0.71), vec2(-0.71, -0.71));
+		// The wave's reach here: a run up the bank and a slow slide back, its own phase along the shore.
+		float off = amb_noise2(vec2(p.x / 70.0, p.y / 50.0)) * 0.6;
+		float f = fract(t / max(lap_period, 0.3) + off);
+		float wave = smoothstep(0.0, 0.32, f) * (1.0 - smoothstep(0.38, 1.0, f));
+		float r = mix(min(6.0, lap_px * 0.5), lap_px, wave);   // never the raw cut-out edge (25.10 стр. 21: «не рваная»)
 		float sa = base.a;
 		vec3 sc = base.rgb * base.a;
-		for (int i = 0; i < 8; i++) {
-			vec4 sm = amb_src(p + dirs[i] * r);
-			sa += sm.a;
-			sc += sm.rgb * sm.a;
+		float cnt = 1.0;
+		float sw = 0.0;
+		for (int i = 0; i < 12; i++) {
+			float ang = float(i) * 0.5235988;
+			vec2 dv = vec2(cos(ang), sin(ang));
+			vec4 s1 = amb_src(p + dv * r);
+			vec4 s2 = amb_src(p + dv * r * 0.5);
+			sa += s1.a + s2.a;
+			sc += s1.rgb * s1.a + s2.rgb * s2.a;
+			cnt += 2.0;
+			if (lap_wet > 0.0 && (i % 2) == 0) {
+				sw += amb_src(p + dv * lap_px).a;           // how far the highest wave reaches
+			}
 		}
-		float aw = sa / 9.0;                                // how much water is around within the wave's reach
+		float aw = sa / cnt;                                // how much water is around within the wave's reach
 		vec3 wc = sc / max(sa, 0.001);                      // the water's colour there
-		float a_lap = smoothstep(0.2, 0.5, aw);             // smoothed edge, pushed out by the reach
+		float a_lap = smoothstep(0.18, 0.42, aw);           // smoothed edge, pushed out by the reach
 		if (base.a < 0.99) {
 			col = mix(wc, col, base.a);                     // past the cut-out edge: the water's own colour
 		}
-		float foam = (smoothstep(0.12, 0.3, aw) - smoothstep(0.38, 0.62, aw)) * (0.45 + 0.55 * ph);
-		col = mix(col, lap_foam.rgb, clamp(foam * lap * 0.75, 0.0, 1.0));
+		float foam = (smoothstep(0.1, 0.24, aw) - smoothstep(0.3, 0.55, aw)) * (0.35 + 0.65 * wave);
+		col = mix(col, lap_foam.rgb, clamp(foam * lap * 0.8, 0.0, 1.0));
 		out_a = max(max(base.a * (1.0 - lap), a_lap), base.a * smoothstep(0.55, 0.9, aw));
+		if (lap_wet > 0.0) {
+			float zone = smoothstep(0.03, 0.25, max(sw / 6.0, aw));
+			float wet = zone * (1.0 - a_lap) * lap_wet * (0.45 + 0.55 * (1.0 - wave)) * (1.0 - step(0.5, base.a));
+			float a2 = out_a + wet * (1.0 - out_a);
+			col = mix(lap_wet_color.rgb, col, out_a / max(a2, 0.001));
+			out_a = a2;
+		}
 	}
 	COLOR = vec4(col * COLOR.rgb, out_a * COLOR.a);
 }

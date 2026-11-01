@@ -388,9 +388,10 @@ func start_scene(scene_id: String) -> bool:
 		var sp := String(line.get("speaker", ""))
 		# line_id <scene>_<index>: the stable id of the recorded voice (VoiceDirector, assets/voice/ru).
 		var lb: Dictionary
-		if String(line.get("text", "")).strip_edges() == "" and line.has("then"):
-			# a line taken out but whose follow-ups stay (M23d: the narration said twice): no beat of its own, the
-			# `then` lines keep their ids <scene>_<index>_then<k> and recorded voices
+		if String(line.get("text", "")).strip_edges() == "":
+			# a line taken out (M23d: the narration said twice; M02_6 «Вот стопор — кол с замком», Director 01.11
+			# стр. 12): no beat of its own — the lines after it keep their indices <scene>_<index> and recorded
+			# voices; its `then` lines, if any, stay with their ids <scene>_<index>_then<k>
 			lb = {}
 		elif sp == "narrator":
 			# What nobody says (the empty boat goes into the fog): a narration beat inside the scene.
@@ -400,6 +401,8 @@ func start_scene(scene_id: String) -> bool:
 				"speaker_name": StoryData.character_name(sp), "text": String(line.get("text", ""))}
 			if line.has("to"):
 				lb["to"] = String(line["to"])  # I-T2: whom the speaker turns to (NpcActor partner)
+			if line.get("face", null) is Array:
+				lb["face"] = line["face"]  # 01.11 (стр. 51): a point the speaker calls to (Mitya at Ilya's shutter), not Agata
 		if not lb.is_empty():
 			lb.merge(cond)
 			beats.append(lb)
@@ -516,6 +519,11 @@ func _run_stage(spec: Dictionary) -> void:
 	# J (стр. 137): `only_if_elsewhere` — a move to `room` that is skipped when the player is already there (the
 	# crossing's close-up took her to the far pier through the black itself; a load after it still needs the move).
 	if bool(spec.get("only_if_elsewhere", false)) and String(spec.get("room", "")) == current_room_id():
+		_next()
+		return
+	# 01.11 (стр. 44): `only_in` — a staging that belongs to one room only (M16s plays at Z3 right after the knot,
+	# then Pelageya takes the boat to her pier; heard at R1 instead, she is there already).
+	if spec.has("only_in") and String(spec["only_in"]) != current_room_id():
 		_next()
 		return
 	# Timers below stop with the tree (create_timer(…, false)): the pause menu holds a staging where it is.
@@ -1085,6 +1093,9 @@ func check_room_triggers() -> void:
 		var sspec: Dictionary = spec.get("scenes", {}).get(id, {})
 		if sspec.is_empty() and not StoryData.scene_trigger_rooms(id).is_empty():
 			continue  # declared in another of its rooms: never auto here
+		# 01.11 (стр. 44): `unless` — not here once any of these flags is set (M16s at Z3: Pelageya already left).
+		if (sspec.get("unless", []) as Array).any(func(f): return GameState.has_flag(String(f))):
+			continue
 		var trig := String(sspec.get("trigger", ""))
 		if trig.begins_with("talk:") or trig.begins_with("puzzle:"):
 			continue
@@ -1524,14 +1535,38 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 		var t = act["text"]
 		if t is Array:
 			for k in t:
-				narrate_key(String(k))
+				# an entry may be {"key", "if", "unless"} — said only when its flags allow (Director 01.11, стр. 19:
+				# the bell's thought about the school door only once Agata has seen the door)
+				if k is Dictionary:
+					if _flags_allow(k):
+						narrate_key(String(k.get("key", "")))
+				else:
+					narrate_key(String(k))
 		else:
 			narrate_key(String(t))
+	# `then_choice` (Director 01.11, стр. 63: «чтобы зашить пальто, надо взаимодействовать 2 раза — почему не с первого»):
+	# the hotspot's own choice follows the action's words in the same click once its requirements hold (the action has
+	# just set them) — the sleeve close-up, «Шов разошёлся…», then «как зашить?».
+	if bool(act.get("then_choice", false)) and h != null and h.data.has("choice"):
+		var tch: Dictionary = h.data["choice"]
+		if requires_met(tch.get("requires", {})):
+			_offer_choice(h, tch)
 	# The item put in place opens the close-up at once (the clamp on mother's mirror, the brace on the plate).
 	if bool(act.get("open_mechanic", false)) and h.data.has("mechanic"):
 		var ms := mechanic_spec(h)
 		if mechanic_available(ms):
 			open_mechanic(ms, h.hotspot_id)
+
+
+## `if` flags all set and no `unless` flag set (a text entry, a staging step).
+func _flags_allow(d: Dictionary) -> bool:
+	for f in d.get("if", []):
+		if not GameState.has_flag(String(f)):
+			return false
+	for f in d.get("unless", []):
+		if GameState.has_flag(String(f)):
+			return false
+	return true
 
 
 # --- Exits -------------------------------------------------------------------

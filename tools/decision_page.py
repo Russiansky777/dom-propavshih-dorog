@@ -57,6 +57,7 @@ function el(tag, attrs = {}, kids = []) {
 }
 function media(m) {
   if (!m) return null;
+  if (m.endsWith(".mp3")) return el("audio", {src: m, controls: "", preload: "metadata", style: "width:100%"});
   if (m.endsWith(".mp4")) return el("video", {src: m, poster: m.replace(".mp4", "_poster.jpg"), controls: "", loop: "", muted: "", playsinline: "", preload: "metadata"});
   return el("img", {src: m, alt: "", loading: "lazy"});
 }

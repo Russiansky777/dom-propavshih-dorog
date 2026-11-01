@@ -8,6 +8,8 @@ extends CanvasLayer
 ##   art         the thing's own close-up picture (photo print, child's drawing, the plan…); without it — the bag
 ##               icon enlarged on the backdrop (a gap for the art queue, listed in the report)
 ##   region      [x, y, w, h] — a part of `art` (a crop of a room painting)
+##   crop        [x, y, w, h] in fractions of `art` — the thing itself without what it lies on (Директор 01.11,
+##               стр. 31: «обрезать по самой фотографии, без кусков дерева рядом»); `writing` keeps its place on it
 ##   width       display width of the picture (px at 1920×1080; height by aspect; default fits 1300×700)
 ##   angle_deg   the picture lies slightly askew
 ##   backdrop    what it lies on: "cloth" (linen, default), "table" (scrubbed wood), "paper"
@@ -122,6 +124,17 @@ func _build() -> void:
 	root.add_child(close_button)
 
 
+## The part of the art shown: `region` (texture px) or `crop` (fractions of the art), else all of it.
+static func crop_rect(sp: Dictionary, size: Vector2) -> Rect2:
+	if sp.has("crop"):
+		var c: Array = sp["crop"]
+		return Rect2(float(c[0]) * size.x, float(c[1]) * size.y, float(c[2]) * size.x, float(c[3]) * size.y)
+	if sp.has("region"):
+		var r: Array = sp["region"]
+		return Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
+	return Rect2(Vector2.ZERO, size)
+
+
 ## The thing itself, fitted into `area`: its art, or the bag icon enlarged, or (no icon) a patch with a letter.
 func _build_picture(area: Rect2) -> void:
 	var tex: Texture2D = null
@@ -129,11 +142,10 @@ func _build_picture(area: Rect2) -> void:
 	if path != "" and ResourceLoader.exists(path):
 		tex = load(path)
 		picture_source = "art"
-		if spec.has("region"):
-			var r: Array = spec["region"]
+		if spec.has("region") or spec.has("crop"):
 			var at := AtlasTexture.new()
 			at.atlas = tex
-			at.region = Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
+			at.region = crop_rect(spec, tex.get_size())
 			tex = at
 	else:
 		# No close-up art yet: the bag icon, from its large copy (tools/make_examine_icons.py) when there is one.
@@ -196,6 +208,10 @@ func _build_picture(area: Rect2) -> void:
 		var isz: Array = wr.get("image_size", [src.x, src.y])
 		var k := w / maxf(float(isz[0]), 1.0)
 		var trc: Array = wr.get("text_rect", [0, 0, isz[0], isz[1]])
+		if spec.has("crop"):   # стр. 31: the words stay where they are written on the cropped sheet
+			var cf: Array = spec["crop"]
+			k = w / maxf(float(isz[0]) * float(cf[2]), 1.0)
+			trc = [float(trc[0]) - float(cf[0]) * float(isz[0]), float(trc[1]) - float(cf[1]) * float(isz[1]), trc[2], trc[3]]
 		var hand := String(wr.get("font", "")) == "hand"   # H31: the manager's journal written by hand on the ruling
 		var l: Label = HandWriting.new() if hand else Label.new()
 		l.name = "Writing"

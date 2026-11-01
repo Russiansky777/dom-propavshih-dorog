@@ -48,7 +48,7 @@
     {
       "id": "photo_bridge",
       "name": "Фотография старого моста",
-      "examine": {"text": "@examine.photo_bridge", "art": "res://assets/closeups/closeup_bridge_photo.png", "held": true, "width": 1180, "angle_deg": -1.5, "backdrop": "table"},
+      "examine": {"text": "@examine.photo_bridge", "art": "res://assets/closeups/closeup_bridge_photo.png", "crop": [0.02857, 0.05285, 0.9381, 0.89218], "_crop_k0111": "Директор 01.11, стр. 31 («при осмотре 3 фото обрезать по самой фотографии, без кусков дерева рядом»): crop — доли рисунка по самому листу (наибольший прямоугольник внутри бумаги, отступ 2–3 px; замер маски бумаги), ширина уменьшена в ту же долю — лист того же размера, что был. Тест test_feedback_0111_k2 «examine crops: no wood»", "held": true, "width": 1107, "angle_deg": -1.5, "backdrop": "table"},
       "icon": "bridge_photo",
       "inventory": true,
       "source_location": "O1",
@@ -59,7 +59,7 @@
     {
       "id": "drawing_ilya",
       "name": "Детский рисунок моста",
-      "examine": {"text": "@examine.drawing_ilya", "art": "res://assets/closeups/closeup_ilya_drawing.png", "held": true, "width": 1120, "angle_deg": 1.5, "backdrop": "table"},
+      "examine": {"text": "@examine.drawing_ilya", "art": "res://assets/closeups/closeup_ilya_drawing.png", "crop": [0.02857, 0.05074, 0.94048, 0.90275], "_crop_k0111": "Директор 01.11, стр. 31 («при осмотре 3 фото обрезать по самой фотографии, без кусков дерева рядом»): crop — доли рисунка по самому листу (наибольший прямоугольник внутри бумаги, отступ 2–3 px; замер маски бумаги), ширина уменьшена в ту же долю — лист того же размера, что был. Тест test_feedback_0111_k2 «examine crops: no wood»", "held": true, "width": 1053, "angle_deg": 1.5, "backdrop": "table"},
       "icon": "ilya_drawing",
       "inventory": true,
       "source_location": "O1",
@@ -71,7 +71,7 @@
     {
       "id": "plan_crossing",
       "name": "План переправы",
-      "examine": {"text": "@examine.plan_crossing", "art": "res://assets/closeups/closeup_plan.png", "held": true, "width": 1500, "angle_deg": -0.6, "backdrop": "table", "writing": {"text": "@O1.teacher_drawer.paper_plan", "image_size": [1672, 941], "text_rect": [150, 625, 1360, 245], "font_size": 25, "ink": "#2a2117"}},
+      "examine": {"text": "@examine.plan_crossing", "art": "res://assets/closeups/closeup_plan.png", "crop": [0.04375, 0.04198, 0.92292, 0.88889], "_crop_k0111": "Директор 01.11, стр. 31 («при осмотре 3 фото обрезать по самой фотографии, без кусков дерева рядом»): crop — доли рисунка по самому листу (наибольший прямоугольник внутри бумаги, отступ 2–3 px; замер маски бумаги), ширина уменьшена в ту же долю — лист того же размера, что был. Тест test_feedback_0111_k2 «examine crops: no wood»", "held": true, "width": 1330, "angle_deg": -0.6, "backdrop": "table", "writing": {"text": "@O1.teacher_drawer.paper_plan", "image_size": [1672, 941], "text_rect": [150, 625, 1360, 245], "font_size": 25, "ink": "#2a2117"}},
       "icon": "crossing_plan",
       "inventory": true,
       "source_location": "O1",
@@ -133,7 +133,7 @@
       "id": "mirror_mill",
       "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.mirror_mill.wrong', 'rooms': ['H1', 'H2', 'H3']}"},
       "name": "Зеркало конторы",
-      "examine": {"text": "@examine.mirror_mill", "art": "res://assets/rooms/M2/bg.png", "region": [855, 100, 220, 385], "width": 400, "backdrop": "table"},
+      "examine": {"text": "@examine.mirror_mill", "art": "res://assets/rooms/M2/bg.png", "region": [860, 123, 203, 347], "_region_k0111": "Директор 01.11, стр. 35 («зеркало — как и фотографии, обрезать идеально»): по самой раме (было [855, 100, 220, 385] — со стеной вокруг); тест test_feedback_0111_k2 «examine crops: no wood»", "width": 400, "backdrop": "table"},
       "inventory": true,
       "source_location": "M2",
       "source_hotspot": "M2.mirror",
@@ -223,7 +223,7 @@
     {
       "id": "pocket_watch",
       "name": "Карманные часы Агаты",
-      "examine": {"text": "@examine.pocket_watch", "watch": {"center": [0.5, 0.4995], "r": 0.157, "face": false, "_note": "партия 8: ось стрелок (836, 470), циферблат ≈ 300 px по высоте на холсте 1672×941 (README 8); стрелок на рисунке нет — их рисует игра"}, "art": "res://assets/closeups/closeup_pocket_watch.png"},
+      "examine": {"text": "@examine.pocket_watch", "watch": {"center": [0.5, 0.4995], "r": 0.157, "face": false, "dial_deg": 12.6, "turn_deg": 10.7, "_dial_k0111": "Директор 01.11, стр. 21: XII нарисована на 12,6° по часовой от вертикали (замер центров цифр, все 12 — 12,6±1,3°), тёмная защёлка на ободе — на 23,3°; эмаль повёрнута на 10,7° по часовой, стрелки считают от XII (было: стрелки от вертикали — на 12,6° мимо цифр). Тест test_feedback_0111_k2 «watch XII under the latch»", "_note": "партия 8: ось стрелок (836, 470), циферблат ≈ 300 px по высоте на холсте 1672×941 (README 8); стрелок на рисунке нет — их рисует игра"}, "art": "res://assets/closeups/closeup_pocket_watch.png"},
       "inventory": true,
       "source_location": "Z1",
       "source_scene": "M01",

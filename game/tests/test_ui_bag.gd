@@ -69,7 +69,7 @@ func _run() -> void:
 	ui = main_node.get_node("GameUi")
 	bag = ui.get("bag")
 	ui.connect("bag_sound_requested", func(kind): sounds.append(kind))
-	await _test("Bag: 8 pockets in the top bar, above every room's floor; an empty bag says so", _test_layout)
+	await _test("Bag: 10 pockets in the middle of the top bar, above every room's floor; an empty bag says so", _test_layout)
 	await _test("Icons by name: every E0–E1 item has res://assets/icons/<id>.png; no icon → patch, no error", _test_icons)
 	await _test("Hover a pocket: items.json name + short line from data, tooltip under the bar", _test_hover)
 	await _test("Real click: in hand (pocket glows, cursor carries the icon); again / right click: back; sounds", _test_select)
@@ -144,7 +144,9 @@ func _wait_settled(timeout: float = 4.0) -> bool:
 func _test_layout() -> void:
 	await _fresh()
 	var top: float = ui.get("TOP_H")
-	_check(bag.slots.size() == bag.SLOTS and bag.SLOTS == 8, "8 pockets (%d)" % bag.slots.size())
+	_check(bag.slots.size() == bag.SLOTS and bag.SLOTS == 10, "10 pockets (%d; Директор 01.11, стр. 15)" % bag.slots.size())
+	var bc := bag.get_global_rect().get_center().x
+	_check(absf(bc - 960.0) <= 2.0, "the bag in the middle of the screen (centre x %.1f; стр. 15)" % bc)
 	var br := bag.get_global_rect()
 	_check(br.position.y >= 0.0 and br.end.y <= top, "bag inside the top bar: %s, bar %d" % [str(br), int(top)])
 	for s in bag.slots:
@@ -302,10 +304,11 @@ func _test_pages() -> void:
 	for id in sd.items.keys():
 		if bool(sd.items[id].get("inventory", false)):
 			many.append(id)
-	_check(many.size() >= 12, "at least 12 inventory items in items.json (%d)" % many.size())
-	await _fresh(many.slice(0, 11))
-	_check(bag.pages() == 2 and bag.page == 0, "11 items → 2 pages (%d)" % bag.pages())
-	_check(bag.visible_items().size() == 8, "page 1 shows 8 items")
+	_check(many.size() >= bag.SLOTS + 4, "at least SLOTS+4 inventory items in items.json (%d)" % many.size())
+	var n: int = bag.SLOTS + 3
+	await _fresh(many.slice(0, n))
+	_check(bag.pages() == 2 and bag.page == 0, "%d items → 2 pages (%d)" % [n, bag.pages()])
+	_check(bag.visible_items().size() == bag.SLOTS, "page 1 shows %d items" % bag.SLOTS)
 	_check(bag.prev_button.disabled, "‹ disabled on the first page")
 	_check(not bag.next_button.disabled and bag.next_button.modulate.a > 0.5, "› active")
 	bag.next_button.pressed.emit()
@@ -326,13 +329,13 @@ func _test_pages() -> void:
 	root.push_input(wheel, true)
 	await _frames(2)
 	_check(bag.page == 1, "wheel down → next page (%d)" % bag.page)
-	# A received 12th item flies to page 2 even when page 1 is shown.
+	# A received item flies to page 2 even when page 1 is shown.
 	bag.flip(-1)
-	sr.grant_item(String(many[11]))
+	sr.grant_item(String(many[n]))
 	await _frames(1)
 	_check(bag.page == 1, "received item turns the bag to its page (%d)" % bag.page)
 	_check(await _wait_settled(), "flight lands")
-	_check(bag.slot_of(String(many[11])) != null, "item in its pocket on page 2")
+	_check(bag.slot_of(String(many[n])) != null, "item in its pocket on page 2")
 	# One page again: arrows hidden and not clickable.
 	await _fresh(many.slice(0, 3))
 	_check(bag.pages() == 1 and bag.next_button.modulate.a == 0.0 and bag.next_button.disabled, "one page: arrows hidden")
