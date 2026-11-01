@@ -50,6 +50,7 @@ var root_d: PackedFloat32Array = PackedFloat32Array()  # cumulative stance-foot 
 var contacts: PackedFloat32Array = PackedFloat32Array()  # phases where a foot gets planted
 var stance_side: PackedByteArray = PackedByteArray()    # 0 = left, 1 = right planted, per phase sample
 var stride_floor: Array = [0.0, 0.0, 0.0, 0.0]           # lowest height of [L ankle, L ball, R ankle, R ball] walking
+var clip_feet_h: Array = []                               # the walk clip's [L ankle, L ball, R ankle, R ball] heights per phase sample (m)
 var hips_h: PackedFloat32Array = PackedFloat32Array()    # the walk's hips height per phase sample (model m)
 ## The walk's bob deepened (data walk.bob_deepen): the body goes down this much more at the bottom of each step — the
 ## figure lowered by it, the feet kept where the clip has them by the leg IK (stride planting). Metres, ≤ 0, shown now.
@@ -817,15 +818,33 @@ var stride_hold: bool = false
 var stride_hold_keep: bool = false
 var _closing: int = -1        # closing steps left after a planned stop (−1: none going on)
 var _closing_t: float = 0.0
+## 01.11 (Director, morning page: «при остановке — семенит, доступает»): the closing step used to wait until the stance
+## had fully blended in (shown weight < 0.03) and then landed on the half-blended pose, so a settling step followed it.
+## Now Player calls stop_done() the moment its planned stop ends: the feet pass from the stride planting to the locks at
+## once, and the foot left behind steps straight to where the stance itself puts it (`_close_feet`, the pose at
+## weight 0). The closing is dropped only when a walk is asked for again (`w_cmd`), not while the stance still blends.
+var _close_feet: Array = []
+var _close_unit: float = 0.0   # the body's glide still to come per unit of shown weight (pivot +z, m): the closing step reckons with it
+var w_cmd: float = 0.0        # the locomotion weight asked for this frame (pose(w)), before the follower
+var dbg_errs: Array = []      # probes: this frame's lock errors per foot
+var dbg_reach: Array = [0.0, 0.0]   # probes: the leg's reach less the distance hip → lock, per foot
 var stride_off: Array = [Vector3.ZERO, Vector3.ZERO]   # shown − clip ankle on the floor (m; tests, probes)
 
 
 func _stride_plant(i: int, a: Vector3, b: Vector3, delta: float, o: Vector2, k: Vector2, sk: Dictionary) -> void:
 	var lo := 0.008
 	var hi := float(sk.get("down_m", 0.025))
-	var wa := 1.0 - smoothstep(lo, hi, a.y - float(stride_floor[i * 2]))
-	var wb := 1.0 - smoothstep(lo, hi, b.y - float(stride_floor[i * 2 + 1]))
+	# down when the *clip* has the foot down (01.11, the stop: blended with the stance the swing foot came to floor level
+	# while the clip still carried it forward — planted there, it was dragged back under the body (or the body pulled
+	# back to it); now it is held only from the clip's own heel strike, and until then kept a little up, as the clip has it)
+	var ha := a.y - float(stride_floor[i * 2])
+	var hb := b.y - float(stride_floor[i * 2 + 1])
+	var ca := clip_foot_h(i * 2, _shown_phase)
+	var cb := clip_foot_h(i * 2 + 1, _shown_phase)
+	var wa := 1.0 - smoothstep(lo, hi, ca)
+	var wb := 1.0 - smoothstep(lo, hi, cb)
 	var p := maxf(wa, wb)
+	var lift := maxf(minf(ca, cb) - minf(ha, hb), 0.0) * float(sk.get("lift_keep", 0.6)) * (1.0 - p)
 	var off := Vector3.ZERO
 	if _st_t[i] != null:
 		off = _floor_local(_st_t[i], o, k) - a
@@ -843,7 +862,7 @@ func _stride_plant(i: int, a: Vector3, b: Vector3, delta: float, o: Vector2, k: 
 		off.y = 0.0
 		off = off.limit_length(float(sk.get("max_m", 0.12)))
 	stride_off[i] = off
-	_st_t[i] = _floor_screen(a + off, o, k)
+	_st_t[i] = _floor_screen(a + off + Vector3(0.0, lift, 0.0), o, k)
 	_st_prev[i] = [a, b]
 
 
@@ -872,10 +891,14 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 		stride_hold = false   # the stance is in: the locks take the feet from the stride planting
 		_closing = 1          # after a planned stop: the foot left behind closes up — one step, not a shuffle
 		_closing_t = 0.0
+		_close_feet = []
 	if _closing >= 0:
 		_closing_t += delta
-		if _w_s > 0.05:
+		if w_cmd > 0.05:
 			_closing = -1   # walking again (or stepping round on the spot: the turn's own steps)
+			_close_feet = []
+	# the closing step lands where the stance puts the foot, not where the half-blended pose has it this frame
+	var closing_to: Array = _close_feet if (_closing > 0 and _close_feet.size() >= 4) else []
 	var o := origin_px
 	var k := Vector2(maxf(px_per_m.x, 1e-3), maxf(px_per_m.y, 1e-3))
 	var step_s := maxf(float(fk.get("step_s", 0.24)), 0.05)
@@ -885,6 +908,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	var locks: Array = []
 	var errs: Array = []
 	var targets: Array = []
+	var from_y: Array = [-INF, -INF]   # a closing step sets off from the height the stride held the foot at (heel up)
 	var xf := _skel_to_turn()
 	for i in 2:
 		var a: Vector3 = yaw_b * f[i * 2]                     # the animated ankle in the floor frame
@@ -903,6 +927,8 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 		var knee: Vector3 = yaw_b * (xf * skeleton.get_bone_global_pose(skeleton.find_bone(side + "Leg")).origin)
 		var reach: float = ((knee - hip).length() + (a - knee).length()) * float(fk.get("reach", 1.0))
 		var lifted: bool = a.y > float(_foot_rest_h[i]) + float(fk.get("lift_m", 0.035))
+		if _closing >= 0 and _a_s < 0.05:
+			lifted = false   # after a stop the toe-off of the last stride blends out of the pose: not a lift, the lock holds
 		var lock = null if _foot_lock[i] == null else _floor_local(_foot_lock[i], o, k)
 		var st = _foot_step[i]
 		var err := 0.0
@@ -929,6 +955,11 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			_foot_step[i] = st
 		elif lock != null:
 			err = Vector2(lock.x - a.x, lock.z - a.z).length()
+			if not closing_to.is_empty():
+				# measured against the stance she is coming to, where it will stand once the body's glide is over
+				var ac: Vector3 = yaw_b * ((closing_to[i * 2] as Vector3) + Vector3(0.0, 0.0, _close_unit * _w_s))
+				err = Vector2(lock.x - ac.x, lock.z - ac.z).length()
+			dbg_reach[i] = reach - Vector3(lock.x, _planted_y(i, a), lock.z).distance_to(hip)
 			if lifted or walking or err > float(fk.get("release_m", 0.3)):
 				lock = null
 				err = 0.0
@@ -942,15 +973,21 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 				# out of the stride: locked where the stride planting holds it, the IK staying on
 				var held := _floor_local(_st_t[i], o, k)
 				lock = Vector3(held.x, a.y, held.z)
+				from_y[i] = held.y
 				_foot_w[i] = _st_w[i]
 				_st_w[i] = 0.0
 				_st_t[i] = null
 				_st_prev[i] = null
 				stride_off[i] = Vector3.ZERO
+			if not closing_to.is_empty():
+				# after a stop the foot left behind may step in this same frame — no setting its heel down first
+				var ac0: Vector3 = yaw_b * ((closing_to[i * 2] as Vector3) + Vector3(0.0, 0.0, _close_unit * _w_s))
+				err = Vector2(lock.x - ac0.x, lock.z - ac0.z).length()
 		locks.append(lock)
 		errs.append(err)
 		# held at the lock's spot, at the height a set-down foot stands at
 		targets.append(null if lock == null else (lock if _foot_step[i] != null else Vector3(lock.x, _planted_y(i, a), lock.z)))
+	dbg_errs = errs.duplicate()
 	# a foot the stance has moved away from steps after it — the farther one first, one foot in the air at a time
 	# (the next may leave as the other is being set down)
 	# once she has come to rest after a turn or a stop, a foot left off its stance steps into place once more
@@ -962,7 +999,9 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	for i in [first, 1 - first]:
 		var other = _foot_step[1 - i]
 		var need_i := need
-		if _closing == 0 and not turning:
+		if _closing > 0 and not closing_to.is_empty():
+			need_i = float(fk.get("close_need_m", 0.03))   # the closing step itself: taken even from a little behind
+		elif _closing == 0 and not turning:
 			need_i = maxf(need, float(fk.get("close_m", 0.15)))   # closed up: the other foot stays unless far off
 		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need_i and (other == null or float(other[1]) >= 0.75):
 			var dur := step_s
@@ -973,9 +1012,17 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			# and lands where the stance will be when it is set down (the turn going on at its present speed)
 			var t_land := float(fk.get("lead_s", 0.08)) + step_s * 0.85
 			var land_b := Basis(Vector3.UP, yaw + _feet_yaw_v * t_land)
-			var land := _clear_of_other(land_b * f[i * 2], i, yaw_b, f, o, k, float(fk.get("min_sep_m", 0.12)))
+			var land_src: Vector3 = closing_to[i * 2] if not closing_to.is_empty() else f[i * 2]
+			var land := _clear_of_other(land_b * land_src, i, yaw_b, f, o, k, float(fk.get("min_sep_m", 0.12)))
 			# kept by the body (it goes with her as she still comes to a stop), not turned with her
-			_foot_step[i] = [_floor_screen(locks[i], o, k), 0.0, _planted_y(i, anim[i]), land, dur]
+			var y0 := _planted_y(i, anim[i])
+			var u0 := 0.0
+			if float(from_y[i]) > y0 + 0.01:
+				y0 = float(from_y[i])   # the closing step: the heel is already up from the toe-off — no setting it down first
+				u0 = 0.15
+			_foot_step[i] = [_floor_screen(locks[i], o, k), u0, y0, land, dur]
+			if u0 > 0.0:
+				targets[i] = Vector3((locks[i] as Vector3).x, y0 + float(fk.get("step_lift_m", 0.05)) * sin(PI * u0), (locks[i] as Vector3).z)
 	for i in 2:
 		var lock = locks[i]
 		var a: Vector3 = anim[i]
@@ -1038,6 +1085,7 @@ func feet_reset() -> void:
 	stride_hold = false
 	stride_hold_keep = false
 	_closing = -1
+	_close_feet = []
 	_calm_lp = Vector2.INF
 	_calm_off = Vector2.ZERO
 	for i in 2:
@@ -1376,6 +1424,7 @@ func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: Str
 		act_t = _shown_t
 		act_t2 = _shown_t2
 		act_mix = _shown_mix
+	w_cmd = clampf(w, 0.0, 1.0)
 	if delta > 0.0:
 		var r := spring(_w_s, _w_v, clampf(w, 0.0, 1.0), om, delta)
 		_w_s = r.x
@@ -1442,6 +1491,32 @@ func snap_weights() -> void:
 ## Locomotion and action weights as shown this frame (after the followers).
 func shown_w() -> float:
 	return _w_s
+
+
+## The follower's speed on the locomotion weight (Player's planned stop runs the follower ahead to plan its curve).
+func shown_v() -> float:
+	return _w_v
+
+
+## The feet (pivot frame, as feet_model) at walk phase `phase` with the locomotion weight `w`, everything else as shown
+## last frame; the shown pose is put back. For the planned stop: the stance's feet (w 0) against the stride's (w 1).
+func feet_at_weights(phase: float, w: float) -> Array:
+	_apply(phase, w, _a_s, _act_name, _shown_t, _shown_t2, _shown_mix)
+	var out := feet_model()
+	_apply(_shown_phase, _w_s, _a_s, _act_name, _shown_t, _shown_t2, _shown_mix)
+	return out
+
+
+## Player: the planned stop has ended (its last step is down). The stride planting lets go now, the locks hold the feet
+## where they are, and the foot left behind steps once to where the stance puts it. (Before: the hold went on until
+## the stance had fully blended in, and the step then landed on a half-blended pose — a settling step after it.)
+func stop_done(glide_unit: float = 0.0) -> void:
+	stride_hold = false
+	stride_hold_keep = false
+	_closing = 1
+	_closing_t = 0.0
+	_close_unit = glide_unit
+	_close_feet = feet_at_weights(_shown_phase, 0.0)
 
 
 func shown_act_w() -> float:
@@ -1571,11 +1646,16 @@ func build_root_motion() -> void:
 	for v in hips_h:
 		_hips_top = maxf(_hips_top, v)
 	# the stance's floor: per foot the lowest the clip puts the ankle and the ball (stride planting, feet_step)
+	clip_feet_h = []
 	for k in 4:
 		var lo := INF
+		var col := PackedFloat32Array()
+		col.resize(RM_N + 1)
 		for i in RM_N + 1:
 			lo = minf(lo, (samples[i][k] as Vector3).y)
+			col[i] = (samples[i][k] as Vector3).y
 		stride_floor[k] = lo
+		clip_feet_h.append(col)
 	# an even walk (data walk.root "even"; Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the figure goes on at
 	# the speed a flat-set foot slides back in the clip — the median over the phases both its ankle and ball are down
 	# — and the hips' own swing inside the figure makes the pace: quickest between the steps, slowest over the planted
@@ -1646,6 +1726,17 @@ func _bob_at(phase: float) -> float:
 	var i := int(floor(x))
 	var h := lerpf(hips_h[i], hips_h[mini(i + 1, RM_N)], x - float(i))
 	return -k * (_hips_top - h)
+
+
+## The walk clip's own height of foot point k ([L ankle, L ball, R ankle, R ball]) above its stance floor at phase ph.
+func clip_foot_h(k: int, ph: float) -> float:
+	if clip_feet_h.size() < 4:
+		return 0.0
+	var col: PackedFloat32Array = clip_feet_h[k]
+	var x := fposmod(ph, 1.0) * RM_N
+	var i := int(floor(x))
+	var h := lerpf(col[i], col[mini(i + 1, RM_N)], x - float(i))
+	return h - float(stride_floor[k])
 
 
 ## The walk goes on evenly (data walk.root "even"), the feet held by the stride planting.

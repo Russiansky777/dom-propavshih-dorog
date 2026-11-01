@@ -87,7 +87,37 @@ static func _read_json(path: String) -> Variant:
 ## and the sheet only places it — sizes, pivot, directions, timing — so its pages (up to 8192² px each, ~150 MB
 ## of PNG per villager) are not read: every frame points at one shared 1-px texture with the same region and
 ## margin, i.e. the same size on screen. The facade sprite is drawn invisible anyway (NpcLive3D._hide_mat).
+## Ревью 01.11 (В-6): a sheet is built once per actor and kept — every room entry used to read the sheets again and
+## rebuild the SpriteFrames (in the web, with the villagers drawn from sheets, that was the lag of a room change). The
+## sheet is never changed after loading (tests pass their changes as `overrides`, part of the key), so one serves every
+## figure of that actor. Kept for the last `CACHE_MAX` actors: the textures are the memory (a villager's web sheets are
+## tens of MB), and a room has one to three villagers.
+const CACHE_MAX := 4
+static var _cache: Dictionary = {}      # key → ActorSheet
+static var _cache_order: Array = []     # keys, oldest first
+
+
+static func clear_cache() -> void:
+	_cache.clear()
+	_cache_order.clear()
+
+
 static func load_actor(actor_id: String, overrides: Dictionary = {}, with_textures: bool = true) -> ActorSheet:
+	var key := "%s|%s|%s|%s" % [actor_id, with_textures, force_web_sheets, JSON.stringify(overrides)]
+	if _cache.has(key):
+		_cache_order.erase(key)
+		_cache_order.append(key)
+		return _cache[key]
+	var a := _load_actor_fresh(actor_id, overrides, with_textures)
+	if a.load_error == "":
+		_cache[key] = a
+		_cache_order.append(key)
+		while _cache_order.size() > CACHE_MAX:
+			_cache.erase(_cache_order.pop_front())
+	return a
+
+
+static func _load_actor_fresh(actor_id: String, overrides: Dictionary, with_textures: bool) -> ActorSheet:
 	var a := ActorSheet.new()
 	a.id = actor_id
 	a.textures_loaded = with_textures

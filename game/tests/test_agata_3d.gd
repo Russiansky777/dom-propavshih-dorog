@@ -107,6 +107,7 @@ func _run() -> void:
 	await _test("Feet hold the floor (Director 30.10 «идеальная Агата»): stopping and turning on the spot, a foot set down does not skate (14–21 cm before) — it stays or steps", _test_feet_hold)
 	await _test("Boots (Director 31.10, 02:14 «сапоги с задёрнутыми носами»): a boot set down stands on its sole at the height it was made at, its toe not turned up", _test_boots)
 	await _test("Stopping (Director 31.10, 15:04 «мельтешит в конце хода»): she stops in the steps a person stops in — the last one shorter, the other foot closing up — not a run of quick little steps", _test_stop_steps)
+	await _test("Stopping (Director 01.11 «семенит, доступает»): the closing step at once and nothing after it; she rests on the end of her path", _test_stop_settles)
 	await _test("Pick from the floor (Director 31.10, 17:45 and 18:32 «с пола заменить»): things on the floor and snow are taken with a bend down to the floor, not a crouch to table height; the thing is not lifted to the face (G1); the feet stay", _test_pick_floor)
 	await _test("Corners near the end (Director 31.10, lines 8–9 «застревает и идёт на одном месте… от писем до стола»): a walk whose path turns a corner just before its end arrives — no walking on the spot against the counter, no stopping off past the corner", _test_walk_corners)
 	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; arms swing by her sides; she looks ahead", _test_walk_rhythm)
@@ -1213,12 +1214,18 @@ func _test_walk_rhythm() -> void:
 
 ## Six walks across Z2: from the moment the walk starts slowing until 1.5 s after she stands still, how many times a
 ## drawn foot leaves the floor (ankle and ball both over 2 cm above the stride's floor).
+var _stop_late: Array = []   # per stop: the last moment (s after she stood still) a foot left the floor
+var _stop_end: Array = []    # per stop: how far (px) from the end of her path she came to rest
+
+
 func _stop_lifts(planned: bool) -> Array:
 	var walk: Dictionary = player.view3d.spec.get("walk", {})
 	var keep = walk.get("stop", "")
 	if not planned:
 		walk["stop"] = ""
 	var out: Array = []
+	_stop_late = []
+	_stop_end = []
 	for k in 6:
 		await _enter("Z2", Vector2(500 + (k % 3) * 150, 860 + (k % 2) * 80))
 		var v: Actor3D = player.view3d
@@ -1239,10 +1246,17 @@ func _stop_lifts(planned: bool) -> Array:
 		var up: Array = [false, false]
 		var lifts := 0
 		var first := true
+		var late := -1.0
+		var path_end: Vector2 = player.global_position
+		var room0: String = rm.current_room.room_id
 		while after < 1.5 and t < 8.0:
 			await process_frame
 			var d: float = player.get_process_delta_time()
 			t += d
+			if player.is_walking():
+				var pth: PackedVector2Array = player.nav_agent.get_current_navigation_path()
+				if pth.size() > 0:
+					path_end = pth[pth.size() - 1]
 			if not slowing and player.is_walking() and player.walk_w < 0.99 and player.walk_time > 0.6:
 				slowing = true
 			if not slowing:
@@ -1257,11 +1271,17 @@ func _stop_lifts(planned: bool) -> Array:
 				var now_up: bool = h > 0.025 or (up[i] and h > 0.015)
 				if now_up and not up[i] and not first:
 					lifts += 1
+					if not player.is_walking():
+						late = maxf(late, after)
 				up[i] = now_up
 			if first:
 				lifts += int(up[0]) + int(up[1])
 				first = false
 		out.append(lifts)
+		_stop_late.append(late)
+		# a walk that is still going on as the watch ends (the click off the floor: a long way round) is no stop to measure
+		# (walk 4 runs into the street's exit: the room changes under her — no stop to measure either)
+		_stop_end.append(player.global_position.distance_to(path_end) if not player.is_walking() and rm.current_room.room_id == room0 else -1.0)
 	walk["stop"] = keep
 	return out
 
@@ -1274,11 +1294,42 @@ func _test_stop_steps() -> void:
 	var sf := off.duplicate()
 	sf.sort()
 	print("        stopping, feet lifted per stop: %s (median %d); easing the walk down as before: %s (median %d)" % [str(on), so[so.size() / 2], str(off), sf[sf.size() / 2]])
-	_check(int(so[so.size() / 2]) <= 2 and int(so[so.size() - 1]) <= 4, "stopping takes %s steps (median ≤ 2, at most 4): quick little steps" % str(on))
-	# self-check: the metric sees the fidgeting of the old stop — more steps than the new one and at least four in a stop
-	# (31.10, K: the median alone moved with the tests run before it — 3 in the whole file, 4 alone)
-	_check(int(sf[sf.size() / 2]) > int(so[so.size() / 2]) and int(sf[sf.size() - 1]) >= 4,
+	# 01.11 (Director, morning page: «семенит, доступает»): a stop is its last one or two steps and the closing step of the
+	# foot left behind — two or three lifts, never more, and nothing after (the closing step now starts the moment the
+	# last step is down and lands in the stance; before, a settling step came a second later)
+	var sum_on := 0
+	var sum_off := 0
+	for x in on:
+		sum_on += int(x)
+	for x in off:
+		sum_off += int(x)
+	_check(int(so[so.size() / 2]) <= 3 and int(so[so.size() - 1]) <= 3, "stopping takes %s steps (median ≤ 3, at most 3): quick little steps" % str(on))
+	# self-check: the metric sees the fidgeting of the old stop — more steps in all than the new one and at least four in
+	# a stop (31.10, K: the median alone moved with the tests run before it — 3 in the whole file, 4 alone)
+	_check(sum_off > sum_on and int(sf[sf.size() - 1]) >= 4,
 		"self-check: the old stop took only %s steps (the new %s) — the metric would not see the fidgeting" % [str(off), str(on)])
+	_completed = true
+
+
+## 01.11 (Director, morning page: «при остановке — семенит, доступает»): once she stands, the only foot still to move is
+## the one closing up, and it sets off at once — no foot leaves the floor later than 0.12 s after the stop (before: a
+## settling step 0.3–1.5 s later, from the stride planting's offset or a leg out of reach); and she comes to rest on the
+## end of her path (the planned stop reckons with the follower's lag and the glide over the front foot).
+func _test_stop_settles() -> void:
+	var on: Array = await _stop_lifts(true)
+	var late_max := -1.0
+	for x in _stop_late:
+		late_max = maxf(late_max, float(x))
+	var end_max := 0.0
+	for x in _stop_end:
+		end_max = maxf(end_max, float(x))
+	var measured := 0
+	for x in _stop_end:
+		if float(x) >= 0.0:
+			measured += 1
+	print("        stops %s; last lift after the stop: %s s; from the path's end: %s px" % [str(on), str(_stop_late.map(func(x): return snappedf(float(x), 0.01))), str(_stop_end.map(func(x): return snappedf(float(x), 0.1)))])
+	_check(late_max <= 0.12, "a foot leaves the floor %.2f s after she stood still (≤ 0.12: the closing step starts at once, nothing after it): %s" % [late_max, str(_stop_late)])
+	_check(measured >= 4 and end_max <= 6.0, "she comes to rest %.1f px from the end of her path (≤ 6; %d stops measured): %s" % [end_max, measured, str(_stop_end)])
 	_completed = true
 
 

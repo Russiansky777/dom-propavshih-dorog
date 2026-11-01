@@ -651,6 +651,17 @@ func _test_room_change_cost() -> void:
 	var t_full := (Time.get_ticks_usec() - t0) / 1000.0
 	print("  K-16: nina placement-only %.0f ms, full %.0f ms" % [t_bare, t_full])
 	_check(full.is_loaded() and bare.is_loaded(), "both sheets load")
+	# ревью 01.11 (В-6): the sheet is kept — a second load of the same actor is the same sheet, at once; the last four
+	# actors stay, the fifth pushes the oldest out
+	t0 = Time.get_ticks_usec()
+	var again = AS.load_actor("nina")
+	var t_again := (Time.get_ticks_usec() - t0) / 1000.0
+	_check(again == full and t_again < 5.0, "the second load of nina is the kept sheet, %.2f ms (was %.0f)" % [t_again, t_full])
+	for id in ["pavel", "mitya", "tamara", "ulyana"]:
+		AS.load_actor(id)
+	_check(AS.load_actor("nina") != full, "after four other actors nina's sheet is read anew (the cache keeps %d)" % AS.CACHE_MAX)
+	AS.clear_cache()
+	full = AS.load_actor("nina")
 	_check(not bare.textures_loaded and full.textures_loaded, "the placement-only sheet says so")
 	var names: PackedStringArray = full.frames.get_animation_names()
 	_check(names == bare.frames.get_animation_names(), "the same animations")

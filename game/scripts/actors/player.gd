@@ -92,6 +92,12 @@ var _closest_px: float = INF    # nearest the figure has come to the walk's end 
 ## the last one or two steps carry her to the end, else empty. _stop_hold_t: the stride planting goes on holding the
 ## feet this long after (the pose still blending into the stance).
 var _stop_plan: Dictionary = {}
+## 01.11 (Director, morning page: «при остановке — семенит, доступает»): after the planned stop's last step is down,
+## the stance still blends in for a few frames; the front foot's own place in the stance is nearer the body than in the
+## stride, so the body glides on over the planted foot by that much (root motion goes on through the blend) instead
+## of the foot being dragged back to the body and then stepping up to it. On while the glide runs.
+var _stop_glide: bool = false
+var _glide_side: int = 0   # the front foot of the glide (the one the stop's last step set down)
 var _stop_straight: bool = true   # the path's last straight stretch, the end ahead: a planned stop may start (_walk_step_3d)
 var stop_straight_only: bool = true   # tests' self-check: off — the planned stop may start before the path's last corner
 var _stop_last_phase: float = 0.0
@@ -555,6 +561,7 @@ func walk_to_and_interact(node: Node2D) -> void:
 func _start_walk(target: Vector2) -> void:
 	_turn_hold = []
 	_stop_plan = {}
+	_stop_glide = false
 	if view3d != null:
 		view3d.stride_hold_keep = false
 	if _walking:
@@ -693,6 +700,7 @@ func _cancel_walk() -> void:
 	if _carry_stage == "walk":
 		_carry_finish_now()
 	_walking = false
+	_stop_glide = false
 	_settling = false
 	_pending = null
 	_adopt_drawn_position()
@@ -1140,7 +1148,9 @@ func _process_3d(delta: float) -> void:
 	_look_3d()
 	var blend := maxf(walk_w, _turn_step_w)
 	var probe: Array = []
-	if root_motion_3d and _walking and _rm_side >= 0:
+	if _stop_glide and (_walking or view3d.shown_w() < 0.005):
+		_stop_glide = false   # the stance is in (or a new walk has begun): the glide is over
+	if root_motion_3d and (_walking or _stop_glide) and _rm_side >= 0:
 		# new phase, everything else as shown last frame: only the walk itself moves the planted foot
 		probe = view3d.feet_at_phase(fposmod(walk_phase, 1.0))
 	view3d.pose(delta, fposmod(walk_phase, 1.0), blend, act_w, act_name, float(ct[0]), float(ct[1]), float(ct[2]))
@@ -1355,7 +1365,23 @@ var _turn_step_tail: bool = false   # the turn's stepping still fading out of th
 
 func _root_motion_3d(probe: Array, blend: float) -> void:
 	rm_last_px = Vector2.ZERO
-	if not probe.is_empty() and not _rm_feet.is_empty() and _rm_blend > 0.001 and walk_w > 0.001:
+	var stopping := not _stop_plan.is_empty() or _stop_glide
+	if _stop_glide and not probe.is_empty():
+		# the last step is down (01.11): the body comes on over the planted front foot as the stance blends in — the
+		# figure moves by the front foot's own motion in the blend (same phase, the weight falling), never past the end
+		var gs := _glide_side
+		var posed_g: Array = view3d.feet_model()
+		var dg: Vector3 = Basis(Vector3.UP, _rm_yaw) * ((probe[gs * 2] as Vector3) - (posed_g[gs * 2] as Vector3))
+		var ppm_g := view3d.ppm * absf(scale.y)
+		var mvg := Vector2(dg.x * ppm_g, dg.z * ppm_g * floor_foreshortening())
+		var remg := global_position.distance_to(_target)
+		if mvg.length() > remg:
+			mvg = mvg.normalized() * remg
+		if mvg.length() > 0.01:
+			global_position += mvg
+			_update_depth()
+		rm_last_px = mvg
+	elif not probe.is_empty() and not _rm_feet.is_empty() and _rm_blend > 0.001 and walk_w > 0.001:
 		var f_old: Vector3 = _rm_feet[_rm_side * 2]
 		var f_new: Vector3 = probe[_rm_side * 2]
 		var r_old := Basis(Vector3.UP, _rm_yaw)
@@ -1370,8 +1396,29 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 			# full stride: setting off and stopping, the body goes as the shown planted foot pushes it (the foot locks
 			# hold that foot; going on evenly ahead of the half-blended stance, the lock fell behind and stepped 50 cm)
 			var ground := view3d.root_between(_rm_phase, walk_phase)
-			var even: Vector3 = r_old * Vector3(0.0, 0.0, ground) * clampf(walk_w, 0.0, 1.0)
-			walk_part = walk_part.lerp(even, 1.0 if not _stop_plan.is_empty() else smoothstep(0.85, 0.98, view3d.shown_w()))
+			# in the stop the figure goes by the weight that is shown, not the one asked for: the blended stride slides the
+			# feet by that much, so the stride planting has nothing to hold back (asked-for weight: the planting saturated
+			# at its 12 cm and the feet skated the rest — 01.11, «семенит»)
+			var even: Vector3 = r_old * Vector3(0.0, 0.0, ground) * clampf(view3d.shown_w() if stopping else walk_w, 0.0, 1.0)
+			walk_part = walk_part.lerp(even, 1.0 if stopping else smoothstep(0.85, 0.98, view3d.shown_w()))
+			if not _stop_plan.is_empty() and int(_stop_plan.get("side", -1)) >= 0:
+				# the stop's last step: once its front foot is down the body comes on over it by the foot's own motion in
+				# the blend (01.11: held by the IK instead, the foot was dragged 5–10 cm back under the body and then
+				# stepped up to it — «доступает»)
+				var sf_ := int(_stop_plan["side"])
+				var posed_p: Array = view3d.feet_model()
+				var ff: Vector3 = posed_p[sf_ * 2]
+				# down when the clip itself sets the foot down (the stride planting holds it from then: Actor3D._stride_plant);
+				# the foot has to leave the floor first (with two steps it is the one planted as the plan begins)
+				var fh := minf(view3d.clip_foot_h(sf_ * 2, walk_phase), view3d.clip_foot_h(sf_ * 2 + 1, walk_phase))
+				if fh > 0.04:
+					_stop_plan["lifted"] = true
+				elif bool(_stop_plan.get("lifted", false)) and fh < float(view3d.spec.get("feet", {}).get("stride", {}).get("down_m", 0.025)):
+					_stop_plan["touched"] = true
+				if bool(_stop_plan.get("touched", false)):
+					# from here the front foot is planted: the body moves by exactly that foot's displacement (the stride's
+					# slide and the blend together), as on any planted foot — whatever the clip's own stance says
+					walk_part = r_old * ((_rm_feet[sf_ * 2] as Vector3) - ff)
 		# setting off (the shown walk weight rising; Director 30.10 «идеальная Агата»): the planted foot is kept on the
 		# floor through the blend from the stance into the stride too — it skated 10–15 cm back as she set off. Only
 		# while the weight rises: stopping keeps the figure exactly at the end of its path.
@@ -1590,13 +1637,16 @@ func _planned_stop_3d(rem_m: float, delta: float) -> bool:
 		var step_m := view3d.stride_m * 0.5
 		if not crossed or (stop_straight_only and not _stop_straight) or walk_w < 0.5 or view3d.shown_w() < 0.5 or rem_m > 1.5 * step_m or view3d.stride_m <= 0.01:
 			return false
-		var n := 1 if rem_m <= 0.75 * step_m else 2
+		# one step when the end is within about a step (01.11: two steps squeezed into 0.6 m fell to a shallow, early-landing
+		# shuffle — a person stopping within a step's distance takes one step), two up to a step and a half
+		var n := 1 if rem_m <= float(_rt.get("walk", {}).get("stop_one_step", 1.05)) * step_m else 2
 		var dph := _time_to_contact(walk_phase, n)      # the plan in the clip's phase: the ground is per phase
 		if dph < 0.1:
 			return false
 		var w0 := walk_w
-		var r := clampf(rem_m / (view3d.stride_m * dph * w0), 0.2, 0.9)
-		_stop_plan = {"ph0": walk_phase, "dph": dph, "p": r / (1.0 - r), "rem0": rem_m, "w0": w0}
+		_stop_plan = _plan_stop(rem_m, dph, w0, delta)
+		if _stop_plan.is_empty():
+			return false
 	var pl := _stop_plan
 	var w0p := float(pl.get("w0", 1.0))
 	# the legs slow down with the body (Director 31.10, 17:45: «всё ещё мельтешит ногами при окончании движения»: at the
@@ -1608,20 +1658,135 @@ func _planned_stop_3d(rem_m: float, delta: float) -> bool:
 	var u := clampf((walk_phase - float(pl["ph0"])) / maxf(float(pl["dph"]), 0.01), 0.0, 1.0)
 	var p: float = pl["p"]
 	var w := w0p * (1.0 - pow(u, p))
-	# the ground the plan still has to cover (as a share of rem0) — and what is really left: the weight corrects for it
-	var f := ((1.0 - u) - (1.0 - pow(u, p + 1.0)) / (p + 1.0)) / maxf(p / (p + 1.0), 1e-4)
-	var rem_plan := float(pl["rem0"]) * f
+	# the ground the plan still has to cover (its own run of the follower, _plan_stop) — and what is really left:
+	# the weight corrects for the difference
+	var rem_plan := _plan_left(pl, u) + (float(pl.get("unit", 0.0)) * view3d.shown_w() if bool(pl.get("touched", false)) else float(pl.get("drift", 0.0)))
+	pl["dbg"] = [rem_m, rem_plan]
 	if rem_plan > 0.02:
-		w *= clampf(rem_m / rem_plan, 0.6, 1.6)
+		w *= clampf(rem_m / rem_plan, 0.7, 1.4)
 	walk_w = clampf(w, 0.0, 1.0)
 	view3d.stride_hold = true
 	view3d.stride_hold_keep = true
 	if u >= 1.0:
 		walk_w = 0.0
 		_stop_plan = {}
-		view3d.stride_hold_keep = false   # held until the stance is shown (Actor3D.feet_step lets go)
+		# the last step is down: the locks take the feet now and the foot left behind closes up at once; the body glides
+		# on over the front foot while the stance blends in (_root_motion_3d; 01.11 «семенит, доступает»)
+		_stop_glide = true
+		_glide_side = int(pl.get("side", view3d.stance_at(walk_phase + 0.02)))
+		view3d.stop_done(float(pl.get("unit", 0.0)))
 		_arrive()
 	return true
+
+
+## The stop's curve (01.11): the weight asked for is w0·(1 − uᵖ) over the plan's phase, but the figure moves by the
+## weight that is *shown* — the follower (Actor3D.spring, blend_omega) lags the ask, and the cadence slows with the ask —
+## so p is found by running that follower ahead frame by frame (bisection on p: more p, more ground) until the ground
+## it covers is the distance left less the glide after the last step. The run's ground by u is kept for the per-frame
+## correction (_plan_left). {} when no p fits (the plan then does not start this step).
+func _plan_stop(rem_m: float, dph: float, w0: float, delta: float) -> Dictionary:
+	var ph_end := walk_phase + dph
+	var side := view3d.stance_at(ph_end + 0.02)   # the foot set down last: the front foot she comes to rest over
+	# the glide: from the front foot's touchdown (the clip's own contact, where the plan ends) the body comes on over it
+	# by the foot's own motion in the blend — (stride − stance) × the weight still shown at the end (the run tells it;
+	# it depends on p, so two passes)
+	var unit := _stance_drift_m(ph_end)
+	var drift := unit * float(_sim_stop(1.0, dph, w0, delta)[1])
+	var p := 1.0
+	var sim: Array = []
+	var g_lo := 0.0
+	var g_hi := 0.0
+	var rem_g := rem_m
+	for pass_i in 2:
+		rem_g = maxf(rem_m - drift, 0.03)
+		var lo := 0.15
+		var hi := 12.0
+		g_lo = float(_sim_stop(lo, dph, w0, delta)[0])
+		g_hi = float(_sim_stop(hi, dph, w0, delta)[0])
+		if rem_g <= g_lo:
+			hi = lo   # even the quickest fade overshoots a little: the correction and the end clamp take the rest
+		elif rem_g >= g_hi:
+			lo = hi
+		else:
+			for i in 14:
+				var mid := sqrt(lo * hi)
+				if float(_sim_stop(mid, dph, w0, delta)[0]) < rem_g:
+					lo = mid
+				else:
+					hi = mid
+		p = sqrt(lo * hi)
+		sim = _sim_stop(p, dph, w0, delta)
+		drift = unit * float(sim[1])
+	if OS.has_feature("editor") and OS.get_environment("STOP_DEBUG") != "":
+		print("plan: rem_m %.3f rem_g %.3f dph %.3f stride %.3f w0 %.2f g(0.15) %.3f g(12) %.3f → p %.2f ground %.3f shown_end %.2f drift %.3f" % [rem_m, rem_g, dph, view3d.stride_m, w0, g_lo, g_hi, p, float(sim[0]), float(sim[1]), drift])
+	return {"ph0": walk_phase, "dph": dph, "p": p, "rem0": float(sim[0]), "w0": w0, "drift": drift, "unit": unit, "curve": sim[2], "side": side, "touched": false, "lifted": false}
+
+
+## The shown weight of a run (its curve) at u.
+static func _sim_w_at(curve: Array, u: float) -> float:
+	for e in curve:
+		if float(e[0]) >= u:
+			return float(e[2])
+	return float(curve[-1][2]) if not curve.is_empty() else 0.0
+
+
+## One run of the stop's curve with exponent p: [ground covered (floor m), the weight still shown at the end,
+## the curve as [[u, ground so far], …]].
+func _sim_stop(p: float, dph: float, w0: float, delta: float) -> Array:
+	var om := float(view3d.spec.get("blend_omega", 16.0))
+	var dt := clampf(delta, 1.0 / 240.0, 1.0 / 20.0)
+	var sf := maxf(speed_factor, 1.0)
+	var rate := walk_rate_3d()
+	var c0 := float(_rt.get("walk", {}).get("stop_cadence", 0.55))
+	var ph := walk_phase
+	var shown := view3d.shown_w()
+	var v := view3d.shown_v()
+	var ground := 0.0
+	var curve: Array = []
+	var u := 0.0
+	var guard := 0
+	while u < 1.0 and guard < 2000:
+		guard += 1
+		u = clampf((ph - walk_phase) / maxf(dph, 0.01), 0.0, 1.0)
+		var cmd := w0 * (1.0 - pow(u, p))
+		var r := Actor3D.spring(shown, v, cmd, om, dt)
+		shown = r.x
+		v = r.y
+		var ph2 := ph + dt * sf * rate * (c0 + (1.0 - c0) * cmd) / maxf(view3d.walk_len, 0.01)
+		var u2 := clampf((ph2 - walk_phase) / maxf(dph, 0.01), 0.0, 1.0)
+		if u2 >= 1.0:
+			ph2 = walk_phase + dph
+		ground += view3d.root_between(ph, ph2) * clampf(shown, 0.0, 1.0)
+		ph = ph2
+		u = u2
+		curve.append([u, ground, shown])
+	return [ground, shown, curve]
+
+
+## Ground (floor m) the plan's own run still had to cover at u.
+func _plan_left(pl: Dictionary, u: float) -> float:
+	var curve: Array = pl.get("curve", [])
+	var total := float(pl.get("rem0", 0.0))
+	if curve.is_empty():
+		return total * (1.0 - u)
+	var sofar := 0.0
+	for e in curve:
+		if float(e[0]) >= u:
+			sofar = float(e[1])
+			break
+		sofar = float(e[1])
+	return maxf(total - sofar, 0.0)
+
+
+## Forward distance (floor metres) the foot set down at the contact `ph` would move from the stride (weight 1) to the
+## stance (weight 0) — the body's glide over it once the stop's last step is down.
+func _stance_drift_m(ph: float) -> float:
+	var side := view3d.stance_at(ph + 0.02)
+	var f1: Array = view3d.feet_at_weights(ph, 1.0)
+	var f0: Array = view3d.feet_at_weights(ph, 0.0)
+	if f1.size() < 4 or f0.size() < 4:
+		return 0.0
+	return maxf((f1[side * 2] as Vector3).z - (f0[side * 2] as Vector3).z, 0.0)
 
 
 ## Whether the walk clip changes its stance foot between unwrapped phases p0 and p1.

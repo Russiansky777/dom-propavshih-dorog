@@ -73,7 +73,7 @@ func _run() -> void:
 						events += " %s↓%.2f" % ["L" if i == 0 else "R", t]
 					up[i] = now_up
 		var dist: float = (player.global_position - p0).length() / ppm_s
-		print("walk %d: slowing to still %.2f s over %.2f m, %d lifts:%s" % [k, t - after, dist, lifts, events])
+		print("walk %d: slowing to still %.2f s over %.2f m, %d lifts:%s; end %.1f px from the target" % [k, t - after, dist, lifts, events, player.global_position.distance_to(player._target)])
 	PS.forced_render = ""
 	quit(0)
 
