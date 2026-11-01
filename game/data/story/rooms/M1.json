@@ -69,7 +69,8 @@
   "scenes": {
     "M09": {"trigger": "talk:pavel"},
     "M09s": {"complete_when": [{"all": ["seen_office_door", "seen_office_photo", "seen_shift_schedule"]}]},
-    "M09b": {"trigger": "talk:pavel"}
+    "M09b": {"trigger": "talk:pavel"},
+    "M23b": {"trigger": "enter", "_k": "Ревью 01.11 (Б-3): объявлена явно — раньше шла по неявному правилу «не объявлена нигде → авто при входе»"}
   },
   "flags": {}
 }
