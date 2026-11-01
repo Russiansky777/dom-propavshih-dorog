@@ -1,0 +1,28 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Семнадцатый заход (K24/K25): выбор Директора 01.11 19:59–20:09; W231 — оставлена прежняя запись (текст возвращён); «ни одна» — K27; проба голоса Волошиной (W270–W279) отклонена Директором 21:13",
+ "picks": {
+  "tikhon:H1.tikhon.spoons_done": "W222_3",
+  "agata:O1.enter.winter": "W223_3",
+  "agata:O1.board.chalk": "W224_1",
+  "O1.board.chalk_mama": "W225_1",
+  "O1.board.chalk_ilya": "W226_1",
+  "tikhon:H1.tikhon.spoons_quit": "W227_1",
+  "agata:examine.photo_bridge": "W229_1",
+  "H2.bell.look": "W230_1",
+  "tikhon:H1.tikhon.quiet_3": "W233_1",
+  "M16_0_then0": "W234_1",
+  "M17_1": "W235_1",
+  "M18_7": "W236_1",
+  "M23d_4_then0": "W237_2",
+  "M25_3": "W241_1",
+  "M26_37": "W242_3",
+  "agata:H2.bell.thought_early": "W260_1",
+  "agata:H4.bed.early_d1_street": "W261_1",
+  "agata:O4.mitya_board.use": "W262_2",
+  "ilya:O4q.workshop.mitya_cramped": "W263_2",
+  "Q06_0": "W264_2",
+  "Q06_1": "W265_1"
+ }
+}

@@ -96,6 +96,10 @@ func _run() -> void:
 	await _test("K-108 the first span → the bridge: one black, never lifted in between", _test_one_black)
 	await _test("K-75 Pelageya goes for the rope: the narration plays in deep dusk, the light comes back after it", _test_m15s_dusk)
 	await _test("K-93 M23a: Nina comes up to Tamara with no black before «Тамара и сама…»", _test_m23a_no_black)
+	await _test("01.11-19: the bell before the school door is seen — Agata's thought without the door; after — about the door", _test_bell_thought)
+	await _test("01.11-34: class seen but not the street — the bed says to go out through the yard, not «в классе не всё»", _test_bed_street)
+	await _test("01.11-44: the rope tied at the turn — «Впервые за год туман сошёл» comes right there (Z3), not only at the old pier", _test_fog_lift_at_turn)
+	await _test("01.11-13: Pavel and the sluice are named in the main talk with Pelageya (M02), before M09 calls him by name", _test_pavel_line_opened)
 	await _test("Frames 01.11: a timing bar's long hint wraps within the bar; «Облегчить» below it does not overlap", _test_hint_wraps)
 	await _test("K-108 a kept black that no scene takes up lifts by itself", _test_kept_black_lifts)
 	await _test("K-16 a room change: a villager drawn live does not read its sheets", _test_room_change_cost)
@@ -376,6 +380,7 @@ func _test_m15s_dusk() -> void:
 	if sr.current_beat.is_empty():
 		sr.start_scene("M15s")
 	var dusk_at_line := -1.0
+	var boat_at_line := false
 	var since := 0.0
 	var t := 0.0
 	while t < 30.0 and not sr.is_done("M15s"):
@@ -389,12 +394,15 @@ func _test_m15s_dusk() -> void:
 		if String(b.get("line_id", "")) == "M15s_2" and dusk_at_line < 0.0:
 			await _wait(0.8)
 			dusk_at_line = float(ui.call("stage_probe").get("alpha", 0.0))
+			boat_at_line = gs.has_flag("rope_brought")
 		since = 0.0
 		if b.get("type") == "options":
 			sr.choose(String(b.get("options", [])[0].get("id", "")))
 		elif b.get("type") in ["line", "narration"]:
 			sr.advance()
-	_check(dusk_at_line >= 0.7, "«Пелагея на свой причал возвращается…» is told in deep dusk (%.2f)" % dusk_at_line)
+	# 01.11 (Director, line 41: «всё ещё слишком мрачно на сцене, где лодка»): a dusk, not near-black — 0.82 → 0.5
+	_check(dusk_at_line >= 0.4 and dusk_at_line <= 0.6, "«Пелагея на свой причал возвращается…» is told in dusk, the scene seen (%.2f)" % dusk_at_line)
+	_check(boat_at_line, "01.11 (line 41): the boat at the plate already under the narration (rope_brought)")
 	await _wait(1.0)
 	_check(float(ui.call("stage_probe").get("alpha", 1.0)) < 0.05, "after the narration the turn is lit again")
 	sr.call("_on_state_reset")
@@ -445,6 +453,129 @@ func _test_hint_wraps() -> void:
 	_check(sc == null or sc.position.y >= h.position.y + h.size.y - 1.0, "«Облегчить» sits below the wrapped hint")
 	bar.queue_free()
 	await _frames(1)
+
+
+func _test_bell_thought() -> void:
+	for door_seen in [false, true]:
+		gs.reset()
+		sr.call("_on_state_reset")
+		_set_flags(["done_M01", "done_M02", "done_M03", "house_unlocked", "house_open"] + (["seen_school_door"] if door_seen else []))
+		await _enter("H2")
+		var h := _hotspot("bell")
+		_check(h != null, "the bell is in the workshop")
+		if h == null:
+			return
+		sr.interact(h)
+		await _frames(1)
+		var seen := await _drain()
+		if door_seen:
+			_check(seen.has("H2.bell.thought") and not seen.has("H2.bell.thought_early"), "door seen: the thought about the school door (%s)" % str(seen))
+		else:
+			_check(seen.has("H2.bell.thought_early") and not seen.has("H2.bell.thought"), "door not seen: no word about the school door (%s)" % str(seen))
+
+
+func _test_bed_street() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	for id in sd.scene_order:
+		if id == "M08":
+			break
+		var sc: Dictionary = sd.scene(id)
+		gs.set_flag("done_" + id, true)
+		for f in sc.get("grants", {}).get("flags", []):
+			gs.set_flag(String(f), true)
+	await _enter("H1")
+	await _drain()
+	var h := _hotspot("lezhanka")
+	_check(h != null, "the bed by the stove")
+	if h == null:
+		return
+	sr.interact(h)
+	await _frames(1)
+	var seen := await _drain()
+	_check(seen.has("H4.bed.early_d1_street") and not sr.is_done("N01"), "before the street: «…тропа к деревне идёт…», no night yet (%s)" % str(seen))
+
+
+## Director 01.11, стр. 13: «нужен ли доп. диалог с Пелагеей, чтобы открыть линию Павла? без него странно» — in M09 Agata
+## calls Pavel by name and knows the sluice holds the water; the only place that named him was an optional question.
+## Now a mandatory line of M02 names the sluice and Pavel, and M02 grants knows_sluice_key.
+func _test_pavel_line_opened() -> void:
+	var m02: Dictionary = sd.scene("M02")
+	var said := ""
+	for l in m02.get("mandatory_lines", []):
+		said += " " + String(l.get("text", ""))
+		for t in l.get("then", []):
+			said += " " + String(t.get("text", ""))
+	_check(said.contains("Павл") and said.contains("затвор"), "M02 (mandatory) names Pavel and the sluice")
+	_check((m02.get("grants", {}).get("flags", []) as Array).has("knows_sluice_key"), "M02 grants knows_sluice_key (the «кто затвором ведал» question is open right after)")
+	var m09: Dictionary = sd.scene("M09")
+	var named_in_m09 := false
+	for l in m09.get("mandatory_lines", []):
+		if String(l.get("speaker", "")) == "agata" and String(l.get("text", "")).contains("Павел"):
+			named_in_m09 = true
+	_check(not named_in_m09 or said.contains("Павл"), "Agata may call him «Павел» in M09 only because Pelageya named him before")
+
+
+func _test_fog_lift_at_turn() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	for id in sd.scene_order:
+		if id == "M16s":
+			break
+		var sc: Dictionary = sd.scene(id)
+		gs.set_flag("done_" + id, true)
+		for f in sc.get("grants", {}).get("flags", []):
+			gs.set_flag(String(f), true)
+	await _enter("Z3")
+	var seen := false
+	var t := 0.0
+	while t < 6.0 and not seen:
+		await process_frame
+		t += root.get_process_delta_time()
+		seen = sr.active_scene == "M16s" or sr.is_done("M16s")
+	_check(seen, "M16s starts at the turn (Z3) once M15 is done (active: %s)" % sr.active_scene)
+	# She speaks M16s here, so she is here while she speaks (Director 01.11, стр. 57–58: no voice from nowhere);
+	# the boat leaves for her pier only after it (the staging moved from the end of M15 to the end of M16s).
+	var heard := false
+	var present_all := true
+	t = 0.0
+	while (not sr.current_beat.is_empty() or sr.is_staging() or not sr.is_done("M16s")) and t < 40.0:
+		var b: Dictionary = sr.current_beat
+		if String(b.get("speaker", "")) == "pelageya":
+			heard = true
+			var hp := _hotspot("pelageya")
+			present_all = present_all and hp != null and hp.visible
+		if not b.is_empty() and String(b.get("type", "")) != "options":
+			await _frames(2)
+			sr.advance()
+		await process_frame
+		t += root.get_process_delta_time()
+	_check(heard and present_all, "Pelageya is at the turn while she speaks M16s (heard %s, present %s)" % [heard, present_all])
+	_check(gs.has_flag("boat_to_pier") and _hotspot("pelageya") != null and not _hotspot("pelageya").visible,
+		"after M16s she takes the boat to her pier (boat_to_pier %s)" % gs.has_flag("boat_to_pier"))
+	# An older save: the boat already went to the pier at the end of M15 — then M16s waits for the pier, not here.
+	gs.reset()
+	sr.call("_on_state_reset")
+	for id in sd.scene_order:
+		if id == "M16s":
+			break
+		gs.set_flag("done_" + id, true)
+		for f in sd.scene(id).get("grants", {}).get("flags", []):
+			gs.set_flag(String(f), true)
+	gs.set_flag("boat_to_pier", true)
+	await _enter("Z3")
+	await _frames(20)
+	_check(sr.active_scene != "M16s" and not sr.is_done("M16s"), "old save (boat already at the pier): M16s not at the turn")
+	await _enter("R1")
+	t = 0.0
+	while t < 6.0 and sr.active_scene != "M16s":
+		await process_frame
+		t += root.get_process_delta_time()
+	_check(sr.active_scene == "M16s", "…it comes at the pier instead (active: %s)" % sr.active_scene)
+	while not sr.current_beat.is_empty() or sr.is_staging():
+		await _drain()
+		await process_frame
+	sr.call("_on_state_reset")
 
 
 func _test_kept_black_lifts() -> void:

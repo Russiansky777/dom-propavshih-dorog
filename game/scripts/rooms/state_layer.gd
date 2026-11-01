@@ -13,6 +13,7 @@ var forced: bool = false
 
 func setup(p_data: Dictionary) -> void:
 	data = p_data
+	_setup_life()
 	if data.has("if") or data.has("unless") or data.has("hidden_when") or data.has("spin") or data.has("swing") or data.has("frames"):
 		if not GameState.flag_changed.is_connected(_on_flag_changed):
 			GameState.flag_changed.connect(_on_flag_changed)
@@ -68,7 +69,73 @@ func is_active() -> bool:
 
 func refresh() -> void:
 	visible = is_active()
-	set_process(visible and (_spin_on() or data.has("swing") or data.has("frames")))
+	set_process(visible and (_spin_on() or data.has("swing") or data.has("frames") or life_mat != null))
+
+
+## A figure of a composed frame (a layer with `compose.char`, tools/make_frame_layers.py) is not a still picture
+## (Director 01.11, lines 61 and 68): it breathes and sways a little, and moves its head with its own line while
+## that line is being said — game/shaders/frame_figure.gdshader, values game/data/actors/frame_life.json, the
+## layer's `life` {…} overrides them, `life: false` keeps it still.
+const LIFE_PATH := "res://data/actors/frame_life.json"
+const LIFE_SHADER := preload("res://shaders/frame_figure.gdshader")
+var life_mat: ShaderMaterial = null
+var life_char: String = ""
+var life_talk: float = 0.0       # 0..1 as shown (tests)
+var _life_t: float = 0.0
+var _life_cfg: Dictionary = {}
+
+
+func _setup_life() -> void:
+	var c = data.get("compose", {})
+	if not (c is Dictionary) or String(c.get("char", "")) == "" or not c.has("feet"):
+		return
+	var lf = data.get("life", true)
+	if lf is bool and not lf:
+		return
+	var img := get_node_or_null("Image") as Sprite2D
+	if img == null:
+		return
+	var cfg: Dictionary = {}
+	if FileAccess.file_exists(LIFE_PATH):
+		var doc = JSON.parse_string(FileAccess.get_file_as_string(LIFE_PATH))
+		if doc is Dictionary:
+			cfg = (doc as Dictionary).duplicate()
+			var by: Dictionary = cfg.get("by_action", {})
+			cfg.merge(by.get(String(c.get("action", "")), {}), true)
+	if data.get("life") is Dictionary:
+		cfg.merge(data["life"], true)
+	_life_cfg = cfg
+	life_char = String(c["char"])
+	life_mat = ShaderMaterial.new()
+	life_mat.shader = LIFE_SHADER
+	var feet: Array = c["feet"]
+	life_mat.set_shader_parameter("feet_px", Vector2(float(feet[0]), float(feet[1])))
+	life_mat.set_shader_parameter("height_px", float(c.get("height", 300.0)))
+	# each figure its own moment: from its id and place, the same from run to run
+	life_mat.set_shader_parameter("phase", fposmod(float(hash(life_char + String(name))) * 0.618034, TAU))
+	var hpx := maxf(float(c.get("height", 300.0)), 1.0)
+	for k in ["breath_frac", "breath_period_s", "sway_frac", "sway_period_s", "talk_frac"]:
+		if cfg.has(k):
+			var v := float(cfg[k])
+			# a small figure: its share of the height would be under a pixel — at least `<x>_min_px` picture pixels
+			var mk := String(k).replace("_frac", "_min_px")
+			if String(k).ends_with("_frac") and cfg.has(mk):
+				v = maxf(v, float(cfg[mk]) / hpx)
+			life_mat.set_shader_parameter(k, v)
+	img.material = life_mat
+
+
+func _life_step(delta: float) -> void:
+	_life_t += delta
+	var b: Dictionary = StoryRunner.current_beat
+	var want := 0.0
+	if String(b.get("type", "")) == "line" and String(b.get("speaker", "")) == life_char:
+		var vd := get_node_or_null("/root/VoiceDirector")
+		want = 1.0 if vd == null or bool(vd.call("line_being_said", b)) else 0.0
+	var tau := float(_life_cfg.get("talk_in_s" if want > life_talk else "talk_out_s", 0.4))
+	life_talk = move_toward(life_talk, want, delta / maxf(tau, 0.01))
+	life_mat.set_shader_parameter("talk", smoothstep(0.0, 1.0, life_talk))
+	life_mat.set_shader_parameter("time_s", _life_t)
 
 
 ## `spin` {deg_per_s, if, unless}: the layer turns about its `pivot` while the flags allow (the M1 water
@@ -103,6 +170,8 @@ var _swing_t: float = 0.0
 
 
 func _process(delta: float) -> void:
+	if life_mat != null:
+		_life_step(delta)
 	if data.has("frames"):
 		_frame_t += delta
 		var sprites := get_children().filter(func(c): return c is Sprite2D)

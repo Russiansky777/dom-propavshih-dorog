@@ -424,6 +424,9 @@ func _make_water(w: Dictionary, style: Dictionary, rain_amount: float, mode: int
 	m.set_shader_parameter("lap_period", float(e.get("lap_period_s", 3.2)))
 	if e.has("lap_foam"):
 		m.set_shader_parameter("lap_foam", Color.html(String(e["lap_foam"])))
+	m.set_shader_parameter("lap_wet", float(e.get("lap_wet", 0.0)))   # стр. 39: the wet band left on the bank
+	if e.has("lap_wet_color"):
+		m.set_shader_parameter("lap_wet_color", Color.html(String(e["lap_wet_color"])))
 	if e.has("streak_color"):
 		m.set_shader_parameter("streak_color", Color.html(String(e["streak_color"])))
 	m.set_shader_parameter("depth", ground.depth_uniform())

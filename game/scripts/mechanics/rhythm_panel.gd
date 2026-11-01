@@ -12,6 +12,14 @@ extends MechanicPanel
 ## whose turn it is glows; brass pips in the corner count the rounds; «Облегчить» under the board (wider tolerance).
 
 const STUD := Color(0.86, 0.68, 0.36)
+const CUP_TIKHON: Texture2D = preload("res://assets/mechanics/rhythm/cup_tikhon.png")
+const CUP_AGATA: Texture2D = preload("res://assets/mechanics/rhythm/cup_agata.png")
+const SPOON: Texture2D = preload("res://assets/mechanics/rhythm/spoon.png")
+const CUP_BOX_TIKHON := Rect2(11, 10, 278, 240)    # the drawing in its 300×260 canvas
+const CUP_BOX_AGATA := Rect2(10, 34, 280, 192)
+const SPOON_BOWL := Vector2(45, 75)                # the bowl's centre in spoon.png
+const SPOON_LEN := 250.0                           # bowl → handle end, px of spoon.png
+const SPOON_ANGLE := -0.182                        # its angle in the picture (rad)
 const CHALK := Color(0.93, 0.93, 0.88, 0.95)
 const OFF := Color(0.8, 0.3, 0.22)
 
@@ -225,30 +233,26 @@ func _on_draw() -> void:
 ## A cup at the head of a groove with a spoon over it; `age` — seconds since its last tap: the spoon comes down on the
 ## rim and lifts, the ring of it spreads. His — an empty earthen cup; hers — a white one with a blue band and tea.
 func _cup(c: CanvasItem, at: Vector2, tea: bool, age: float) -> void:
-	var body := Color(0.93, 0.91, 0.86) if tea else Color(0.72, 0.56, 0.38)
-	var band := Color(0.22, 0.36, 0.62) if tea else Color(0.42, 0.27, 0.15)
-	var top := 34.0
-	var bot := 24.0
-	var h := 50.0
-	var y0 := at.y - h * 0.5
-	c.draw_colored_polygon(PackedVector2Array([Vector2(at.x - top, y0), Vector2(at.x + top, y0), Vector2(at.x + bot, y0 + h),
-			Vector2(at.x - bot, y0 + h)]), body)
-	c.draw_line(Vector2(at.x - top + 3.0, y0 + 9.0), Vector2(at.x + top - 3.0, y0 + 9.0), band, 5.0, true)
-	c.draw_arc(Vector2(at.x - top - 2.0, y0 + 20.0), 12.0, PI * 0.5, PI * 1.5, 14, body, 5.0, true)   # the handle
-	c.draw_line(Vector2(at.x - bot - 4.0, y0 + h), Vector2(at.x + bot + 4.0, y0 + h), Color(0, 0, 0, 0.35), 3.0, true)
-	# the mouth: an ellipse, dark inside (his) or tea (hers)
-	c.draw_set_transform(Vector2(at.x, y0), 0.0, Vector2(1.0, 0.22))
-	c.draw_circle(Vector2.ZERO, top, body.darkened(0.25))
-	c.draw_circle(Vector2.ZERO, top - 4.0, Color(0.42, 0.22, 0.08) if tea else Color(0.2, 0.13, 0.08))
-	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	# Партия 14 (ChatGPT 01.11; Директор: «мультяшные… такие моменты исправлять»): painted cups and spoon instead of
+	# the engine's trapezoids — his earthen mug, her white cup with the blue band and tea; the spoon is the same
+	# painted teaspoon over each. Sizes on screen as before: the cup ≈ 80 px wide, the spoon ≈ 90 px.
+	var tex: Texture2D = CUP_AGATA if tea else CUP_TIKHON
+	var box: Rect2 = CUP_BOX_AGATA if tea else CUP_BOX_TIKHON
+	var kc := 82.0 / box.size.x
+	var bottom := at.y + 25.0
+	var dst := Rect2(Vector2(at.x - box.size.x * kc * 0.5, bottom - box.size.y * kc), box.size * kc)
+	c.draw_texture_rect_region(tex, dst, box)
+	var y0 := dst.position.y + (12.0 if tea else 6.0) * kc / 0.29
+	var top := box.size.x * kc * 0.38
 	# the spoon: comes down on the far rim at a tap, then up again
 	var hit := clampf(1.0 - age / 0.16, 0.0, 1.0) if age < 0.16 else 0.0
 	var rim := Vector2(at.x + top * 0.7, y0)
 	var bowl := rim + Vector2(8.0, -4.0 - 30.0 * (1.0 - hit))
 	var handle := bowl + Vector2(64.0, -46.0 + 14.0 * hit)
-	c.draw_line(bowl, handle, Color(0.78, 0.76, 0.72), 4.0, true)
-	c.draw_set_transform(bowl, (handle - bowl).angle(), Vector2(1.0, 0.6))
-	c.draw_circle(Vector2.ZERO, 8.0, Color(0.82, 0.8, 0.76))
+	var ks := 92.0 / SPOON_LEN
+	var ang := (handle - bowl).angle() - SPOON_ANGLE
+	c.draw_set_transform(bowl, ang, Vector2(ks, ks))
+	c.draw_texture(SPOON, -SPOON_BOWL)
 	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	# the ring of it
 	if age >= 0.0 and age < 0.6:

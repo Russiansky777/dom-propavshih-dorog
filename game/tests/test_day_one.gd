@@ -421,16 +421,20 @@ func _test_pier_attempt() -> void:
 	var seen := await _interact(_hotspot("pelageya"))
 	_check(gs.has_flag("done_M02"), "M02 done")
 	# Polish 22.10 (D23, B9, B15): the boat shown, one line about the ice, the rope and its stopper, the plate, Mitya's post.
-	_check(seen.size() == 10 and not seen.has("stage") and not sr.is_staging(), "G16: ten lines (J, Р2: + the fog over the river), no fade (the shown attempt is gone): %s" % str(seen))
-	_check(seen.any(func(x): return x.contains("по льду пробовали, к своему же берегу")) and seen.any(func(x): return x.contains("Вот стопор — кол с замком"))
-			and seen.any(func(x): return x.contains("на той опоре фонарь зажигал")), "ice, the stopper shown, Mitya's post: %s" % str(seen))
+	# Director 01.11, стр. 12: «Вот стопор — кол с замком» taken out (the line above already names the stopper) — nine lines;
+	# стр. 13: + Pelageya names the sluice and Pavel (M02_7_then0) — ten.
+	_check(seen.size() == 10 and seen.any(func(x): return String(x).contains("Павла") and String(x).contains("затвор")) and not seen.has("stage") and not sr.is_staging(), "G16: ten lines (J, Р2: + the fog over the river; 01.11: − «Вот стопор», + затвор и Павел), no fade (the shown attempt is gone): %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("по льду пробовали, к своему же берегу")) and seen.any(func(x): return x.contains("к своему стопору перевязала"))
+			and not seen.any(func(x): return x.contains("кол с замком") or x.strip_edges().ends_with(":"))
+			and seen.any(func(x): return x.contains("на той опоре фонарь зажигал")), "ice, the stopper named, no empty beat for the line taken out, Mitya's post: %s" % str(seen))
 	_check(not seen.any(func(x): return x.contains("болотом") or x.contains("Воду держит мельничный затвор")), "the marsh and the sluice are questions now, not the talk: %s" % str(seen))
 	# The rest — by the player's questions (any order, as often as wanted); the sluice question tells about the key.
 	sr.interact(_hotspot("pelageya"))
 	await process_frame
 	var ids: Array = sr.current_options().map(func(o): return String(o.get("id", "")))
 	# ревью 01.11 (А-13): «А кто затвором ведал?» comes only after the sluice answer — nobody has named a manager yet
-	_check(ids == ["boats", "marsh", "sluice", "leave"], "Pelageya's questions: %s" % str(ids))
+	# 01.11 стр. 13: M02 names the sluice (knows_sluice_key) — «кто затвором ведал» is open at once.
+	_check(ids == ["boats", "marsh", "sluice", "manager", "leave"], "Pelageya's questions: %s" % str(ids))
 	var ans := await _drain(["sluice"])
 	_check(gs.has_flag("knows_sluice_key") and ans.any(func(x): return x.contains("рычаг в конторе остался")), "the sluice question: the lever is in the office (G20): %s" % str(ans))
 	sr.interact(_hotspot("pelageya"))
@@ -533,7 +537,8 @@ func _test_winter() -> void:
 	await _enter("H3", flags)
 	rm.change_room("O1", "from_H3")
 	await _frames(3)
-	_check(String(sr.current_beat.get("text", "")) == "Тут уж зима?.. А у нас ещё октябрь! Как же это?", "first entry: «Там зима…» (%s)" % sr.current_beat.get("text", ""))
+	# Director 01.11, стр. 24: «Как же это?» taken out — at the door Agata has just said «Да как же это…» (M05_0).
+	_check(String(sr.current_beat.get("text", "")) == "Тут уж зима?.. А у нас ещё октябрь!", "first entry: «Там зима…» (%s)" % sr.current_beat.get("text", ""))
 	await _drain()
 	_check(gs.has_flag("o1_saw_winter"), "flag set")
 	_check(rm.save_game(SLOT), "save")

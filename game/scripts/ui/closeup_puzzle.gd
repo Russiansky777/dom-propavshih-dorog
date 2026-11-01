@@ -45,6 +45,11 @@ var winter_label: Label
 var winter_view: TextureRect = null   # the classroom through the open door (F18)
 var wall_view: TextureRect = null     # the gallery wall behind the open door when the leaf is hung wrong (I-T3, art 10g)
 var winter_front: Node2D = null       # cold light on the threshold, snow drifting out, breath of cold (F18)
+## Директор 01.11, стр. 23 («зима и снег в двери везде, а должен быть только в области за окнами класса»): with
+## `winter_view.windows` (rects of the window glass in the crop's own pixels) the snow falls only behind those panes —
+## one clipped emitter per window, a child of the winter picture; the doorway-wide fall and the flakes drifting out
+## of the door onto the gallery are off (`snow.out` false). The floor and the walls of the classroom stay dry.
+var window_snow: Array[CPUParticles2D] = []
 var check_button: Button
 var close_button: Button
 var beam_node: Control           # beam image + notch markers; moves by `_beam_shown_dx`
@@ -530,7 +535,53 @@ func _winter_picture(wv: Dictionary, opening: Rect2) -> TextureRect:
 	tr.modulate = Color.html(String(wv.get("modulate", "#ffffff")))
 	tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tr.visible = false
+	var k := opening.size / at.region.size
+	for w in wv.get("windows", []):
+		var pane := Control.new()
+		pane.name = "WindowSnow%d" % window_snow.size()
+		pane.clip_contents = true
+		pane.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		pane.position = Vector2(float(w[0]), float(w[1])) * k
+		pane.size = Vector2(float(w[2]), float(w[3])) * k
+		var fl := CPUParticles2D.new()
+		fl.name = "Snow"
+		# distant snow outside the glass: small, slow, a light slant; as many as the pane is big
+		fl.amount = maxi(8, int(pane.size.x * pane.size.y / 260.0))
+		fl.lifetime = 6.0
+		fl.preprocess = 6.0
+		fl.position = Vector2(pane.size.x * 0.5, -4.0)
+		fl.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		fl.emission_rect_extents = Vector2(pane.size.x * 0.6, 4.0)
+		fl.direction = Vector2(0.25, 1.0)
+		fl.spread = 14.0
+		fl.gravity = Vector2(0, 6)
+		fl.initial_velocity_min = 22.0
+		fl.initial_velocity_max = 48.0
+		fl.scale_amount_min = 1.2
+		fl.scale_amount_max = 2.6
+		fl.color = Color(1, 1, 1, 0.85)
+		fl.material = _behind_glass_material()   # not over the frames, the mullions, the vase on the sill
+		pane.add_child(fl)
+		tr.add_child(pane)
+		window_snow.append(fl)
 	return tr
+
+
+## Flakes seen through the glass only: a flake fades where the picture under it is dark (window frames, mullions,
+## the vase on the sill) — the bright daylight of the panes is where the snow is.
+static func _behind_glass_material() -> ShaderMaterial:
+	var sh := Shader.new()
+	sh.code = """shader_type canvas_item;
+uniform sampler2D screen_tex : hint_screen_texture, filter_linear;
+void fragment() {
+	vec3 under = texture(screen_tex, SCREEN_UV).rgb;
+	float lum = dot(under, vec3(0.299, 0.587, 0.114));
+	COLOR.a *= smoothstep(0.50, 0.68, lum);
+}
+"""
+	var m := ShaderMaterial.new()
+	m.shader = sh
+	return m
 
 
 ## Over the frame and the threshold: cold light spilling out of the doorway, flakes drifting out toward the
@@ -591,6 +642,9 @@ func _winter_front(wv: Dictionary, opening: Rect2) -> Node2D:
 	glow.material = add
 	front.add_child(glow)
 	var sn: Dictionary = wv.get("snow", {})
+	if not bool(sn.get("out", true)):   # стр. 23: no snow drifting out of the door — it falls behind the windows only
+		_winter_breath(front, wv, opening, cx, y0)
+		return front
 	var flakes := CPUParticles2D.new()
 	flakes.name = "SnowOut"
 	flakes.amount = int(sn.get("amount", 60))
@@ -617,6 +671,14 @@ func _winter_front(wv: Dictionary, opening: Rect2) -> Node2D:
 	fade.set_color(fade.get_point_count() - 1, Color(1, 1, 1, 0.0))
 	flakes.color_ramp = fade
 	front.add_child(flakes)
+	_winter_breath(front, wv, opening, cx, y0)
+	return front
+
+
+## A few slow puffs of cold air at the threshold (`breath` {amount, alpha}). Additive.
+func _winter_breath(front: Node2D, wv: Dictionary, opening: Rect2, cx: float, y0: float) -> void:
+	var add := CanvasItemMaterial.new()
+	add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	var br: Dictionary = wv.get("breath", {})
 	if int(br.get("amount", 0)) > 0:
 		var bg := Gradient.new()
@@ -657,7 +719,6 @@ func _winter_front(wv: Dictionary, opening: Rect2) -> Node2D:
 		puff.color_ramp = pr
 		puff.material = add
 		front.add_child(puff)
-	return front
 
 
 # --- Geometry -------------------------------------------------------------------------------
@@ -788,7 +849,7 @@ func _render() -> void:
 		door_view.color = Color(0.62, 0.72, 0.86)
 		# The classroom itself when the data gives its picture (F18); the old caption only on the flat colour.
 		winter_label.text = "" if winter_view != null else StoryData.location_name("O1")
-		snow.emitting = true
+		snow.emitting = window_snow.is_empty()   # стр. 23: with window panes the snow is behind the glass only
 	else:
 		door_view.color = Color(0.36, 0.30, 0.25)
 		winter_label.text = ""

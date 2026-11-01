@@ -398,6 +398,27 @@ func _test_counter() -> void:
 	for y in [600, 680, 820]:
 		_check(_pick_id(Vector2(1070, y)) != "tamara", "the counter in front of her at y %d is not Tamara, got %s" % [y, _pick_id(Vector2(1070, y))])
 	_check(_pick_id(Vector2(800, 820)) != "tamara", "the counter away from her is not Tamara")
+	# 01.11 (Director, line 1: «Тамара стоит НА СТОЛЕ… зону, где она прокликивается, поменять, а не на стол её посадить»):
+	# the click area is her figure, but she stands on the floor BEHIND the counter — feet past its back edge (y 761),
+	# drawn under it (z below the counter's 885), not up on the counter top (31.10 her feet were at y 510).
+	var tam: Node = rm.current_room.get_node_or_null("npc_tamara")
+	var feet_y := -1.0
+	var hs_feet_y := -1.0
+	var th: Node = null
+	for h in rm.current_room.get_hotspots():
+		if h.hotspot_id == "tamara":
+			th = h
+	if th != null:
+		var shp: Node = th.get_node_or_null("Shape")
+		if shp is CollisionShape2D:
+			hs_feet_y = th.global_position.y + (shp.shape as RectangleShape2D).size.y / 2.0
+			_check((shp as CollisionShape2D).disabled, "Tamara's rect only places her (click_rect is the click area)")
+	if tam != null:
+		feet_y = (tam as Node2D).global_position.y
+		_check((tam as Node2D).z_index < 885, "Tamara drawn under the counter (z %d < 885)" % (tam as Node2D).z_index)
+	else:
+		feet_y = hs_feet_y   # no sheet: the static picture stands at the rect's bottom too
+	_check(feet_y > 684.0 and feet_y < 761.0, "Tamara's feet on the floor behind the counter (684..761), got y %.0f" % feet_y)
 	# Morning of day 3 (M22): Tamara has crossed to Olkhovka.
 	_set_flags(["done_M22"])
 	for h in rm.current_room.get_hotspots():
@@ -1576,15 +1597,22 @@ func _pel_vis() -> bool:
 
 func _test_boat_with_pelageya() -> void:
 	var ends := {}
-	for sid in ["M15", "M16"]:
+	for sid in ["M16s", "M16"]:
 		for st in sd.scene(sid).get("stage", []):
 			if str(st.get("at", "")) == "end":
 				ends[sid] = st.get("sets", [])
-	_check((ends.get("M15", []) as Array).has("boat_to_pier"), "M15 ends rowing the boat to the pier (%s)" % str(ends))
+	# 01.11 стр. 44: the white bank (M16s) comes right at the knot, at the turn — Pelageya says it there and only then
+	# rows the boat to her pier (the staging moved from the end of M15 to the end of M16s).
+	_check((ends.get("M16s", []) as Array).has("boat_to_pier"), "M16s ends rowing the boat to the pier (%s)" % str(ends))
 	_check((ends.get("M16", []) as Array).has("boat_back_at_turn"), "M16 ends rowing it back to the plate (%s)" % str(ends))
-	# The knot tied: the boat and Pelageya at her pier, none at the turn.
+	# The knot just tied, M16s not yet: both still at the turn.
 	gs.reset()
-	_set_flags(["evening_dusk", "rope_brought", "done_M15s", "done_M15", "rope_on_ring", "road_held_both_ends", "boat_to_pier"])
+	_set_flags(["evening_dusk", "rope_brought", "done_M15s", "done_M15", "rope_on_ring", "road_held_both_ends"])
+	await _enter("Z3")
+	_check(_layer_vis("boat_dusk") and _pel_vis(), "the knot tied, before M16s, at the turn: the boat and Pelageya")
+	# After M16s: the boat and Pelageya at her pier, none at the turn.
+	gs.reset()
+	_set_flags(["evening_dusk", "rope_brought", "done_M15s", "done_M15", "rope_on_ring", "road_held_both_ends", "done_M16s", "far_snow_seen", "boat_to_pier"])
 	await _enter("Z3")
 	_check(not _layer_vis("boat_dusk") and not _pel_vis(), "after the knot, at the turn: neither the boat nor Pelageya")
 	await _enter("R1")

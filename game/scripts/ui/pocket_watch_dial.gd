@@ -21,6 +21,13 @@ var run: bool = true              # advances `seconds` by real time
 var zoom: float = 1.0             # >1: the watch drawn larger with its dial in the middle (clip the parent)
 var texture: Texture2D = null
 var face: bool = true             # the enamel disc over the painted hands (the icon); false — the dial has none
+## Директор 01.11, стр. 21 («циферблат чуть по часовой развернуть, чтобы 12 было посередине тёмной штуки»): where XII
+## is painted (degrees clockwise from straight up, `dial_deg`) and how far the painted enamel disc is turned clockwise about
+## the axis (`turn_deg`, the disc of `disc_r` × dial radius drawn again turned). The hands count from XII as it is drawn
+## then (dial_deg + turn_deg) — they show the right time against the painted numerals.
+var dial_deg: float = 0.0
+var turn_deg: float = 0.0
+var disc_r: float = 1.0
 
 
 func _init() -> void:
@@ -49,6 +56,9 @@ func configure(cfg: Dictionary) -> void:
 		texture = load(art)
 	if cfg.has("zoom"):
 		zoom = float(cfg["zoom"])
+	dial_deg = float(cfg.get("dial_deg", dial_deg))
+	turn_deg = float(cfg.get("turn_deg", turn_deg))
+	disc_r = float(cfg.get("disc_r", disc_r))
 
 
 func _process(delta: float) -> void:
@@ -85,6 +95,8 @@ func _draw() -> void:
 		draw_texture_rect(texture, Rect2(o, ps), false)
 	var c := center()
 	var r := radius()
+	if texture != null and absf(turn_deg) > 0.01:
+		_draw_turned_disc(c, r * disc_r, o, ps)
 	if face:
 		# The dial's middle (under the painted hands), a little darker towards the rim like old enamel.
 		draw_circle(c, r * 0.74, FACE.darkened(0.06))
@@ -101,9 +113,10 @@ func _draw() -> void:
 	# 30.10 (сверка, 25.10 стр. 10 «стрелки сгладить до реализма»): гладкие края были, но стрелки — плоские чёрные
 	# клинья. Теперь как у старых карманных часов: тонкая воронёная сталь с бликом вдоль оси, у часовой — кольцо
 	# «яблоко» (бреге), под стрелками мягкая тень на эмали, секундная — тонкая с противовесом.
-	_hand(c, h / 12.0 * TAU, r * 0.42, r * 0.034, true)
-	_hand(c, m / 60.0 * TAU, r * 0.62, r * 0.026, false)
-	var sa := floorf(sec) / 60.0 * TAU     # the second hand ticks
+	var zero := twelve_rad()   # стр. 21: XII as drawn (the painted numeral, turned with the disc)
+	_hand(c, zero + h / 12.0 * TAU, r * 0.42, r * 0.034, true)
+	_hand(c, zero + m / 60.0 * TAU, r * 0.62, r * 0.026, false)
+	var sa := zero + floorf(sec) / 60.0 * TAU     # the second hand ticks
 	var sd := Vector2(sin(sa), -cos(sa))
 	var sh := Vector2(1.0, 1.6) * maxf(1.0, r * 0.012)
 	draw_line(c - sd * r * 0.16 + sh, c + sd * r * 0.64 + sh, Color(0, 0, 0, 0.18), maxf(1.2, r * 0.013), true)
@@ -145,6 +158,28 @@ func _hand(c: Vector2, ang: float, length: float, width: float, ring: bool) -> v
 	draw_line(c + d * length * 0.02 + n * width * 0.12, c + d * length * 0.85 + n * width * 0.08, Color(STEEL_LIGHT, 0.55), maxf(0.8, width * 0.28), true)
 
 
-## Minute hand angle in degrees (tests).
+## Minute hand angle in degrees (tests): from XII of the dial.
 func minute_deg() -> float:
 	return fmod(seconds / 60.0, 60.0) * 6.0
+
+
+## Where XII is on screen, radians clockwise from straight up: the painted numeral plus the disc's turn.
+func twelve_rad() -> float:
+	return deg_to_rad(dial_deg + turn_deg)
+
+
+## The enamel disc of the picture (radius `rd` about the axis) drawn again, turned by `turn_deg` clockwise: each rim
+## point of the turned disc takes the picture's colour from where it was before the turn (a fan of UV'd triangles).
+func _draw_turned_disc(c: Vector2, rd: float, o: Vector2, ps: Vector2) -> void:
+	var n := 120
+	var pts := PackedVector2Array()
+	var uvs := PackedVector2Array()
+	var cols := PackedColorArray()
+	var t := deg_to_rad(turn_deg)
+	for i in n:
+		var a := TAU * i / n
+		var v := Vector2(cos(a), sin(a)) * rd
+		pts.append(c + v.rotated(t))
+		uvs.append((c + v - o) / ps)
+		cols.append(Color.WHITE)
+	draw_polygon(pts, cols, uvs, texture)

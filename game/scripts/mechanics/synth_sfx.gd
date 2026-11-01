@@ -65,6 +65,13 @@ static func stream(sound_name: String) -> AudioStreamWAV:
 			pcm = _snap()
 		"bolt_unlock":    # K (31.10, стр. 31): the side door's iron bolt drawn back — a scrape, then the clack
 			pcm = _bolt()
+		"bolt_creak":     # 01.11 стр. 22 (на выбор): the bolt, then the old door swings on its hinges — a slow creak
+			pcm = _bolt()
+			var cr := _creak(0.9, 190.0, 109)
+			var off := int(0.5 * RATE)
+			pcm.resize(off + cr.size())
+			for i in cr.size():
+				pcm[off + i] = (pcm[off + i] if off + i < int(0.62 * RATE) else 0.0) + cr[i] * 1.3
 		"ui_hover":       # K (31.10, стр. 1): the pointer over a menu item — a faint dry tick of wood
 			pcm = _ui_tick(0.035, 2400.0, 0.16, 101)
 		"ui_click":       # a menu item pressed — a soft wooden click, quiet

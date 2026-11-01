@@ -465,7 +465,15 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 		# `pick_rects` [[x, y, w, h]] (screen): more click area for the same hotspot — J, Z1: Tamara is clicked
 		# through the counter in front of her too. Same pick_priority; the picture and the label stay on `rect`.
 		var pi := 0
-		for pr in h.get("pick_rects", []):
+		# `click_rect` [x, y, w, h] (screen): the ONLY click area — `rect` still places the figure (an npc's feet at its
+		# bottom) but is not clicked (Director 01.11, стр. 1: Tamara is clicked on her figure above the counter, while
+		# she stands on the floor behind it; 31.10 the rect was cut to the counter's top and her feet went up on it).
+		var picks: Array = h.get("pick_rects", []).duplicate()
+		if h.get("click_rect", null) is Array and (h["click_rect"] as Array).size() == 4:
+			picks.append(h["click_rect"])
+			shape.set_meta("no_pick", true)
+			shape.disabled = true
+		for pr in picks:
 			var extra := CollisionShape2D.new()
 			extra.name = "PickShape%d" % pi
 			pi += 1

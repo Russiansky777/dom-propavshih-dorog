@@ -287,8 +287,17 @@ func set_state(st: String) -> void:
 	state = st
 	talking = st == "talk"
 	var spec: Dictionary = states.get(st, {})
-	if partner != null and is_instance_valid(partner) and not (st == "talk" and _line_to_agata()):
+	var bface = StoryRunner.current_beat.get("face", null)
+	if st == "talk" and bface is Array and (bface as Array).size() >= 2 and String(StoryRunner.current_beat.get("speaker", "")) == actor_id:
+		# 01.11 (Director, стр. 51: «Илью зовёт Митя, но повёрнут к маминому дому»): a line with `face` [x, y] is called
+		# to that point (Ilya's shutter), not said to Agata
+		face_towards(Vector2(float(bface[0]), float(bface[1])))
+	elif partner != null and is_instance_valid(partner) and not (st == "talk" and _line_to_agata()):
 		face_towards(partner.global_position)
+	elif st == "listen" and hotspot != null and is_instance_valid(hotspot) and bool(hotspot.current_state().get("listen_keeps_face", hotspot.data.get("listen_keeps_face", false))):
+		# 01.11 (стр. 51): rooms data `listen_keeps_face` — listening, the villager keeps to his own `face` (Mitya at Ilya's
+		# shutter while the narrator tells of his knocking), not turning to Agata
+		_face_data()
 	elif bool(spec.get("face_agata", st == "talk")) and player != null and is_instance_valid(player):
 		# J (Director 29.10, стр. 157: «не смотрят на собеседника»): talking, a person turns to Agata unless the data
 		# says otherwise (`face_agata: false`) or they talk to someone else (partner, above)

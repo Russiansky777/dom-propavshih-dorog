@@ -1541,6 +1541,9 @@ func _walk_step_3d(delta: float) -> void:
 ## she heads for a point `lookahead` px ahead of her along the path, measured from where she is nearest to it and
 ## never going back past a segment she has reached: it rounds the corners and is always in front of her.
 ## Returns [that point, the segment she is on, the path left from her (px), her nearest point on it].
+const SHARP_TURN_COS := 0.34   # a path turning by more than 70° at a corner is rounded at the corner itself (path_follow)
+
+
 static func path_follow(path: PackedVector2Array, pos: Vector2, seg_from: int, lookahead: float) -> Array:
 	var n := path.size()
 	if n == 0:
@@ -1574,6 +1577,15 @@ static func path_follow(path: PackedVector2Array, pos: Vector2, seg_from: int, l
 		left -= seg
 		at = nxt
 		j += 1
+		# a sharp corner (Director 01.11, стр. 2: «застревает… в стол идёт… вместо того чтобы обойти угол» — Z1, round
+		# the counter's front-left corner, a 130° turn): a point past it lies across the obstacle — the floor held her at
+		# the edge and she walked on the spot for seconds. Until she has reached the corner she heads for the corner itself.
+		if j < n - 1 and j > 0:
+			var din: Vector2 = (path[j] - path[j - 1]).normalized()
+			var dout: Vector2 = (path[j + 1] - path[j]).normalized()
+			if din.dot(dout) < SHARP_TURN_COS and (pos - path[j]).dot(din) < 0.0:
+				carrot = path[j]
+				break
 	var rem := best_d
 	at = best_p
 	for k in range(best_j, n - 1):

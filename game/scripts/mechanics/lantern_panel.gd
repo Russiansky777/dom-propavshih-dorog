@@ -74,8 +74,10 @@ func build() -> void:
 	far_lights.append(gl)
 	var lb: Array = spec.get("lantern_box", [560, 60, 420, 820])
 	lantern_hit = hit_area(Rect2(Vector2(float(lb[0]), float(lb[1])) * k, Vector2(float(lb[2]), float(lb[3])) * k), _on_lantern_input, "LanternHit")
-	var fp := v2(spec.get("far_label_pos", [1250, 300]))
-	label(text("label_far"), fp, 420)
+	# Директор 01.11, стр. 45 («при мини-игре с фонарём убрать обозначение „тот берег“»): the caption over the far bank
+	# only when the data still asks for it (`far_label_pos`); R1 no longer does — the far bank is seen, not named.
+	if spec.has("far_label_pos"):
+		label(text("label_far"), v2(spec["far_label_pos"]), 420)
 	var hp := v2(spec.get("hint_pos", [1180, 860]))
 	label(text("label_count"), hp, 640)
 	marks = label("", hp + Vector2(0, 84), 640)   # under the two lines of the hint

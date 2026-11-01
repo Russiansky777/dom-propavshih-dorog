@@ -1036,11 +1036,20 @@ func _test_optional() -> void:
 	_check(await _route(["O2", "O4"]), "O1→O2→O4")
 	if _hotspot("mitya_board") != null:
 		await _use("mitya_board")
-		await _finish()
+		var read := await _finish()
 		await _close_view()
-		await _use("mitya_board")
-		var seen := await _finish(["B"])
-		_check(gs.has_flag("q07_board_to_pelageya") and gs.has_flag("done_Q07"), "Q07: the board to Pelageya: %s" % str(seen))
+		# Director 01.11, стр. 57: Mitya is on the pier with his rod — Agata reads the board herself; where the board goes
+		# is decided with Mitya at R3 (the Q07 talk with him and Pelageya plays there)
+		_check(gs.has_flag("q07_seen_board") and not gs.has_flag("q07_board_to_pelageya"), "Q07: the board read at the fence, no choice there: %s" % str(read))
+		rm.change_room("R3", "default")
+		await _frames(10)
+		await _finish()
+		await _use("mitya")
+		var seen := await _finish(["board_mother"])
+		_check(gs.has_flag("q07_board_to_pelageya") and gs.has_flag("done_Q07"), "Q07: the board to Pelageya, chosen with Mitya on the pier: %s" % str(seen))
+		rm.change_room("O4", "default")
+		await _frames(10)
+		await _finish()
 		_check(not _hotspot("mitya_board").visible and not gs.has_flag("q07_board_with_mitya"), "the choice is made once — the board is put away")
 	else:
 		_check(false, "Q07: no board hotspot in O4")
@@ -1070,11 +1079,10 @@ func _test_optional() -> void:
 	_check(await _go("O4"), "O3→O4")
 	_check(await _route(["O2", "O1", "H3", "H1"]), "through the school door home")
 	await _finish()
-	await _use("nina_coat")
-	await _finish()
-	await _close_view()
+	# 01.11 (Director, line 63): one click — the sleeve close-up, its words and the choice of the seam together
 	await _use("nina_coat")
 	var seen4 := await _finish(["A"])
+	await _close_view()
 	_check(gs.has_flag("q03_hidden_seam") and gs.has_flag("done_Q03"), "Q03: the sleeve sewn: %s" % str(seen4))
 	await _use("tea_corner")
 	var seen5 := await _finish(["A"])
@@ -1195,8 +1203,8 @@ func _test_batch8() -> void:
 		and ((coat_n as CanvasItem).z_index > (scarf_n as CanvasItem).z_index
 			or ((coat_n as CanvasItem).z_index == (scarf_n as CanvasItem).z_index and coat_n.get_index() > scarf_n.get_index())),
 		"H1: mum's coat over Agata's scarf on the same hook")
-	# The street: Tamara's bag (M23a until Q01), Mitya's board (after M22 until Q07 gives it away).
-	await _enter_with(["done_M22", "done_M23a"], "O4", "from_O2")
+	# The street: Tamara's bag (from M22 — 01.11 стр. 57: there from the start, until Q01), Mitya's board (at the fence from the morning of day three until Q07 gives it away).
+	await _enter_with(["done_M22", "done_M23a", "morning_day3"], "O4", "from_O2")
 	_check(_layer_visible(rm.current_room, "letters_bag") and _layer_visible(rm.current_room, "mitya_board"), "O4: Tamara's bag and Mitya's board drawn")
 	await _enter_with(["done_M22", "done_M23a", "done_Q01", "q07_board_to_pelageya"], "O4", "from_O2")
 	_check(not _layer_visible(rm.current_room, "letters_bag") and not _layer_visible(rm.current_room, "mitya_board"), "O4: after Q01 / Q07 B — the bag and the board are gone")

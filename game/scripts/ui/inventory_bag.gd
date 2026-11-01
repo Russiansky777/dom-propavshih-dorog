@@ -22,7 +22,11 @@ signal sound_requested(kind: String)
 signal pocket_hover_changed(old_item: String, new_item: String)
 signal examine_requested(item_id: String)
 
-const SLOTS: int = 8
+## Директор 01.11, стр. 15 («сколько всего может быть предметов… будто на 1–2 больше, чем слотов без листания —
+## расширить и выровнять по центру»): at most 9 things are in the bag at once over the whole game (M13–M14: watch, photo,
+## drawing, plan, chalk kept, brace plate, journal, sluice lever / tar, clamp — test_feedback_0111_k2 «bag: max at once ≤
+## pockets» counts it from the data), so 10 pockets — one spare; pages stay for safety. GameUi centres the strip on screen.
+const SLOTS: int = 10
 const SLOT_SIZE := Vector2(64, 64)
 const SLOT_GAP: int = 8
 const ICON_DIR := "res://assets/icons/"

@@ -41,7 +41,7 @@
     },
     {
       "id": "bell", "action_anim": "reach", "kind": "object", "label": "@H2.bell.label", "rect": [1585, 225, 225, 310], "_rect_j": "J (10д): колокол на подвесе — выше на ≈ 20 px холста, с перекладиной", "stand": [1450, 692], "color": "#b8a040", "draw": false,
-      "use": {"sets": ["seen_bell", "knows_rule_things_remember"], "text": ["@H2.bell.use", "@H2.bell.thought"], "once_flag": "seen_bell", "scene": "M04",
+      "use": {"sets": ["seen_bell", "knows_rule_things_remember"], "text": ["@H2.bell.use", {"key": "@H2.bell.thought", "if": ["seen_school_door"]}, {"key": "@H2.bell.thought_early", "unless": ["seen_school_door"], "_k19": "Директор 01.11, стр. 19: школьной двери Агата ещё не видела — мысль без неё"}], "once_flag": "seen_bell", "scene": "M04",
         "_text_note": "ярлык колокола (закадровый голос), затем мысль Агаты её голосом — причина вешать школьную дверь (Docs/SCENARIO_FINAL.md, M04); text — список ключей, читаются по очереди"},
       "look": "@H2.bell.look",
       "item_use": {"bell_clapper": {"sets": ["bell_clapper_hung"], "consumes": true, "text": "@H2d.bell.hang"}},
@@ -118,7 +118,7 @@
           "compare_s": 10,
           "watch_hint_s": 20,
           "loupe": {"region": [893, 148, 100, 180], "_note": "ходики крупно рядом со стеклом (F4): часть холста горницы — циферблат и маятник; те же слои стрелок и маятника, что в стекле"},
-          "watch_dial": {"art": "res://assets/closeups/closeup_pocket_watch.png", "center": [0.5, 0.4995], "r": 0.157, "face": false, "zoom": 4.0, "_note": "H32: часы Агаты — крупный план партии 8 (циферблат без стрелок, стрелки рисует игра) — один цвет и фон, без диска другого цвета; zoom — корпус часов заполняет круглое окно"},
+          "watch_dial": {"art": "res://assets/closeups/closeup_pocket_watch.png", "center": [0.5, 0.4995], "r": 0.157, "face": false, "dial_deg": 12.6, "turn_deg": 10.7, "_dial_k0111": "Директор 01.11, стр. 21: XII нарисована на 12,6° по часовой от вертикали (замер центров цифр, все 12 — 12,6±1,3°), тёмная защёлка на ободе — на 23,3°; эмаль повёрнута на 10,7° по часовой, стрелки считают от XII (было: стрелки от вертикали — на 12,6° мимо цифр). Тест test_feedback_0111_k2 «watch XII under the latch»", "zoom": 4.0, "_note": "H32: часы Агаты — крупный план партии 8 (циферблат без стрелок, стрелки рисует игра) — один цвет и фон, без диска другого цвета; zoom — корпус часов заполняет круглое окно"},
           "window": {"feather": 0.12, "vignette": 0.45, "rim_width": 3, "shadow": 0.5, "_note": "H32: ходики и часы Агаты в круглых окнах (SoftWindow): эллипс по рамке с мягким краем, латунный ободок, тень и виньетка — один стиль у обоих"},
           "_watch_note": "F4 (Директор 23.10): часы Агаты не лежат рядом сами — предмет pocket_watch из сумки на стекло; обои идут рядом, через compare_s реальных секунд — событие compared (флаг nina_time_compared → сцена M15a). watch_hint_s — через столько секунд без часов мысль Агаты о своих часах"
         }

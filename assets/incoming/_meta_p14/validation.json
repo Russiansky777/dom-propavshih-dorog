@@ -1,0 +1,125 @@
+[
+  {
+    "file": "perch_caught.png",
+    "size": [
+      720,
+      360
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      60,
+      0,
+      660,
+      343
+    ]
+  },
+  {
+    "file": "perch_lying.png",
+    "size": [
+      480,
+      200
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      20,
+      11,
+      460,
+      189
+    ]
+  },
+  {
+    "file": "float_on_water.png",
+    "size": [
+      120,
+      300
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      40,
+      24,
+      80,
+      290
+    ]
+  },
+  {
+    "file": "float_tilted.png",
+    "size": [
+      160,
+      300
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      13,
+      154,
+      151,
+      229
+    ]
+  },
+  {
+    "file": "cup_tikhon.png",
+    "size": [
+      300,
+      260
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      11,
+      10,
+      289,
+      250
+    ]
+  },
+  {
+    "file": "cup_agata.png",
+    "size": [
+      300,
+      260
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      10,
+      34,
+      290,
+      226
+    ]
+  },
+  {
+    "file": "spoon.png",
+    "size": [
+      320,
+      110
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      20,
+      17,
+      300,
+      96
+    ]
+  },
+  {
+    "file": "R2_fg_rope_v3.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      742,
+      357,
+      1672,
+      941
+    ]
+  },
+  {
+    "rope_diff_bbox": [
+      1163,
+      635,
+      1252,
+      705
+    ],
+    "rope_changed_pixels": 3304,
+    "rope_changes_outside_allowed_rect": 0,
+    "float_waterline_y": 200
+  }
+]

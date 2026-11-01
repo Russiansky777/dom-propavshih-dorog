@@ -293,16 +293,14 @@ func _test_coat() -> void:
 	if coat == null:
 		return
 	_check(sd.text("@H1d.nina_coat.label") == "Дунино пальто", "its name: Дунино пальто")
-	sr.interact(coat)
-	await _frames(2)
-	await _drain()
-	if sr.view_open:
-		sr.close_view()
-	await _frames(2)
-	await _drain()
+	# 01.11 (Director, line 63: «чтобы зашить пальто, надо взаимодействовать 2 раза»): one click — the sleeve close-up,
+	# its words and the choice together
 	sr.interact(coat)
 	await _frames(2)
 	var seen := await _drain(["B"])
+	if sr.view_open:
+		sr.close_view()
+	await _frames(2)
 	_check(gs.has_flag("q03_patch_drawing") and gs.has_flag("done_Q03"), "Q03 done by the patch: %s" % str(seen))
 	_check(seen.any(func(x): return String(x).begins_with("narration:") and String(x).contains("зашивает рукав Дуниного пальто")),
 		"H50: what happened is shown: %s" % str(seen))
@@ -313,7 +311,7 @@ func _test_coat() -> void:
 		sr.interact(coat)
 		await _frames(2)
 		var look := await _drain()
-		_check(look.size() == 1 and String(look[0]).contains("Зашит рукав"), "a click: «рукав зашит»: %s" % str(look))
+		_check(look.size() == 1 and String(look[0]).contains("Рукав теперь зашит"), "a click: «рукав зашит»: %s" % str(look))
 
 
 func _test_finale() -> void:
