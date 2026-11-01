@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-11-01T13:27:44+00:00",
+  "updated_at": "2026-11-01T13:30:47+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -40264,8 +40264,8 @@
       "source_true_peak_db": -0.3,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-11-01T13:27:44+00:00",
-      "run": "41311124791",
+      "generated_at": "2026-11-01T13:30:46+00:00",
+      "run": "41311126053",
       "adopted_from": "probe/K3/W212_1",
       "api": {
         "history_item_id": "Qr5eVyxlzJzAH4Th5Ynw",
@@ -40584,8 +40584,8 @@
       "source_true_peak_db": -1.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-11-01T13:27:44+00:00",
-      "run": "41311124791",
+      "generated_at": "2026-11-01T13:30:47+00:00",
+      "run": "41311126053",
       "adopted_from": "probe/K3/W213_1",
       "api": {
         "history_item_id": "YjW8otlwxqKnjs6It1R0",

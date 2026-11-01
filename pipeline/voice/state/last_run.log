@@ -1,4 +1,4 @@
-run 41311124791 2026-11-01T13:27:41Z requests: pipeline/requests/voice_K20b_adopt.json
+run 41311126053 2026-11-01T13:30:45Z requests: pipeline/requests/voice_K20b_adopt.json 
 ключ: есть, длина 51, формат sk_…: да
 план: creator (active), израсходовано 130681 из 152389 символов
 ключ принят API (GET /v2/voices → 200)
