@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-11-01T11:43:58+00:00",
+  "updated_at": "2026-11-01T13:27:44+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -40245,7 +40245,7 @@
       "voice_name": "ЛУНЯ",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.55,
         "similarity_boost": 0.75
       },
       "file": "character_lines/O1d.ulyana.ttt_bye.ogg",
@@ -40255,27 +40255,40 @@
       "tags": [],
       "characters": 48,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.06,
-      "lufs": -17.2,
-      "true_peak_db": -2.0,
-      "gain_db": -1.1,
+      "duration_s": 4.11,
+      "lufs": -16.8,
+      "true_peak_db": -1.6,
+      "gain_db": -1.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.9,
-      "source_true_peak_db": -0.8,
+      "source_lufs": -15.7,
+      "source_true_peak_db": -0.3,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T22:43:57+00:00",
-      "run": "40967362464",
+      "generated_at": "2026-11-01T13:27:44+00:00",
+      "run": "41311124791",
+      "adopted_from": "probe/K3/W212_1",
       "api": {
-        "request_id": "CcXTKHUuAyOtZ0EBr8qg",
-        "history_item_id": "VcHBfAuA3gSAk8lknh18",
+        "history_item_id": "Qr5eVyxlzJzAH4Th5Ynw",
         "character_cost": "21",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 883547856
-        }
+        "previous_text": "",
+        "probe_run": "41308326307"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Ладно, завтра еще сыграем. Я тогда буду первая",
+        "words": [
+          "Ладно,",
+          "завтра",
+          "еще",
+          "сыграем.",
+          "Я",
+          "тогда",
+          "буду",
+          "первая"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "ulyana:O1q.village_map.ulyana_apple": {
@@ -40552,7 +40565,7 @@
       "voice_name": "ЛУНЯ",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.55,
         "similarity_boost": 0.75
       },
       "file": "character_lines/mech.ttt.lose.ogg",
@@ -40562,27 +40575,38 @@
       "tags": [],
       "characters": 29,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.02,
-      "lufs": -16.9,
-      "true_peak_db": -3.3,
-      "gain_db": -1.2,
+      "duration_s": 3.1,
+      "lufs": -17.0,
+      "true_peak_db": -3.2,
+      "gain_db": -1.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -15.8,
-      "source_true_peak_db": -2.1,
+      "source_lufs": -15.2,
+      "source_true_peak_db": -1.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T22:44:00+00:00",
-      "run": "40967362464",
+      "generated_at": "2026-11-01T13:27:44+00:00",
+      "run": "41311124791",
+      "adopted_from": "probe/K3/W213_1",
       "api": {
-        "request_id": "frOBdyN0QCnhPsbd89j6",
-        "history_item_id": "TZHyNQJP8RyKVz3pCGAV",
+        "history_item_id": "YjW8otlwxqKnjs6It1R0",
         "character_cost": "13",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 4207875003
-        }
+        "previous_text": "",
+        "probe_run": "41308326307"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Я выиграла! Три нолика в ряд",
+        "words": [
+          "Я",
+          "выиграла!",
+          "Три",
+          "нолика",
+          "в",
+          "ряд"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "ulyana:mech.ttt.win": {
