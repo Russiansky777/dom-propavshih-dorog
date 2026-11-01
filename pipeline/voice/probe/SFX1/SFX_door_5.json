@@ -1,0 +1,14 @@
+{
+  "id": "SFX_door_5",
+  "text": "Heavy wooden crossbar lifted out of iron brackets on an old door, wood scraping on iron, a dull wooden thunk as it is set down, no music",
+  "variant": "деревянный засов-брус",
+  "duration_s": 2.2,
+  "request": {
+    "text": "Heavy wooden crossbar lifted out of iron brackets on an old door, wood scraping on iron, a dull wooden thunk as it is set down, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 2.2
+  },
+  "character_cost": "24",
+  "run": "41351165179"
+}

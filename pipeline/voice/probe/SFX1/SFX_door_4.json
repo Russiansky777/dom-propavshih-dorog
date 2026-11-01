@@ -1,0 +1,14 @@
+{
+  "id": "SFX_door_4",
+  "text": "Rusty iron hook-and-eye door latch unhooked with a small metallic tick, then old door hinges creak briefly, quiet room, no music",
+  "variant": "крючок и петли",
+  "duration_s": 2.2,
+  "request": {
+    "text": "Rusty iron hook-and-eye door latch unhooked with a small metallic tick, then old door hinges creak briefly, quiet room, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 2.2
+  },
+  "character_cost": "24",
+  "run": "41351165179"
+}

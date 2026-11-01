@@ -1,0 +1,14 @@
+{
+  "id": "SFX_door_3",
+  "text": "Wooden thumb latch of an old village cottage door lifted with a click and a dry wooden rattle, quiet room, no music",
+  "variant": "деревянная щеколда",
+  "duration_s": 1.28,
+  "request": {
+    "text": "Wooden thumb latch of an old village cottage door lifted with a click and a dry wooden rattle, quiet room, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 1.3
+  },
+  "character_cost": "14",
+  "run": "41351165179"
+}

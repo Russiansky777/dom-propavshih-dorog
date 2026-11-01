@@ -1,0 +1,14 @@
+{
+  "id": "SFX_door_6",
+  "text": "Old iron door bolt drawn back once, a single clean metallic clack, small quiet room, no music",
+  "variant": "засов одним щелчком",
+  "duration_s": 1.0,
+  "request": {
+    "text": "Old iron door bolt drawn back once, a single clean metallic clack, small quiet room, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 1.0
+  },
+  "character_cost": "11",
+  "run": "41351165179"
+}

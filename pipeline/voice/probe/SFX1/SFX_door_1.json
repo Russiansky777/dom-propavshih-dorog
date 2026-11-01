@@ -1,0 +1,14 @@
+{
+  "id": "SFX_door_1",
+  "text": "Heavy old iron door bolt slid open with a rusty scrape, then an old wooden cottage door creaks open slowly, quiet interior, no music",
+  "variant": "засов, скрип и дверь",
+  "duration_s": 2.56,
+  "request": {
+    "text": "Heavy old iron door bolt slid open with a rusty scrape, then an old wooden cottage door creaks open slowly, quiet interior, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 2.6
+  },
+  "character_cost": "29",
+  "run": "41351165179"
+}

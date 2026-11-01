@@ -1,0 +1,14 @@
+{
+  "id": "SFX_door_2",
+  "text": "Stiff old iron sliding bolt on a wooden door pulled back in two short jerks, ending with a metallic clack, quiet room, no music",
+  "variant": "засов тугой, рывками",
+  "duration_s": 1.6,
+  "request": {
+    "text": "Stiff old iron sliding bolt on a wooden door pulled back in two short jerks, ending with a metallic clack, quiet room, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 1.6
+  },
+  "character_cost": "18",
+  "run": "41351165179"
+}
