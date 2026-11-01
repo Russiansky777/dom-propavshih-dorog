@@ -71,9 +71,9 @@ func _run() -> void:
 	await _test("H47 data: the way of three places in order, decoys, Ulyana never sent off, texts", _test_q02_data)
 	await _test("H47 Q02: the way by clicks — right ones coloured, wrong resets, save/load midway, choice A to the end", _test_q02_a)
 	await _test("H47 Q02: choice B to the end — the tracing to Ulyana, her reaction, the look, once", _test_q02_b)
-	await _test("H48 data: five steps, parts from the 10b art, zones, one hint per step", _test_q06_data)
-	await _test("H48 Q06: drags onto lit places, wrong part / wrong place glide home, turning, save/load, choice A", _test_q06_a)
-	await _test("H48 Q06: choice B to the end — the bench in Dunya's workshop", _test_q06_b)
+	await _test("Q06 data (01.11): no close-up — the shed talk, a black with knocks, the narrator, the choice", _test_q06_data)
+	await _test("Q06 (01.11): the shed talk → black with knocks → «К вечеру… собрали верстак» → choice A; once; save/load", _test_q06_a)
+	await _test("Q06 (01.11): choice B to the end — the bench in Dunya's workshop", _test_q06_b)
 	await _test("H47/H48 traces: epilogue lines by both choices of each story", _test_traces)
 	gs.reset()
 	for s in [AUTOSAVE, SLOT + "_q02_mid", SLOT + "_q02_done", SLOT + "_q06_mid", CP + "day3", CP + "day4"]:
@@ -397,24 +397,26 @@ func _test_q02_b() -> void:
 	_reached_end = true
 
 
-# --- H48: Q06 ----------------------------------------------------------------------------------
+# --- Q06 (01.11, утренняя страница «Верстак для Ули», вариант А): no mini-game — a black with the knocking, the
+# narrator, then the choice where the bench stands. The old drag-and-drop close-up (H48) is gone from the data.
 
 func _test_q06_data() -> void:
-	var m: Dictionary = _room_hotspot("O4", "ilya_workshop").get("mechanic", {})
-	_check(String(m.get("type", "")) == "workbench" and (m.get("steps", []) as Array).size() == 5, "five steps (%s)" % str(m.get("steps")))
-	_check(String(m.get("art", {}).get("bg", "")).ends_with("closeup_second_bench_clean.png") and ResourceLoader.exists(String(m.get("art", {}).get("bg", ""))), "the clean bench of batch 10b")
-	for id in ["wedge", "key", "stop", "screw", "board"]:
-		var p: Dictionary = m.get("parts", {}).get(id, {})
-		_check(String(p.get("image", "")).ends_with("bench_part_%s.png" % id) and ResourceLoader.exists(String(p.get("image", ""))), "part %s — its own layer of batch 10b" % id)
-	for i in range(1, 6):
-		var h: String = sd.text(String(m.get("texts", {}).get("label_hint%d" % i, "")))
-		_check(h != "" and not h.contains("\n") and h.length() < 110, "step %d: one line of hint (%s)" % [i, h])
-	_check(sd.text(String(m.get("texts", {}).get("label_goal", ""))).contains("Ули"), "the goal names what and for whom")
+	var h: Dictionary = _room_hotspot("O4", "ilya_workshop")
+	_check(not h.has("mechanic") and not bool(h.get("use", {}).get("open_mechanic", false)), "no close-up on the workshop any more")
 	var said := ""
-	for k in _room_hotspot("O4", "ilya_workshop").get("use", {}).get("text", []):
+	for k in h.get("use", {}).get("text", []):
 		said += sd.text(String(k)) + " "
-	_check(said.contains("верстак") and said.contains("Уля"), "the goal is told before the close-up: %s" % said)
-	_check(not m.has("timing"), "no «точный удар» bar on the bench any more (turning by the mouse)")
+	_check(said.contains("верстак") and said.contains("Уля"), "the goal is told at the shed: %s" % said)
+	var sc: Dictionary = sd.scene("Q06a")
+	_check(not sc.is_empty() and String(sc.get("type", "")) == "minor" and (sc.get("locations", []) as Array).has("O4"), "Q06a — a minor scene on the street")
+	var st: Array = sc.get("stage", [])
+	_check(st.size() == 1 and float(st[0].get("fade_out_s", 0.0)) > 0.0 and (st[0].get("sounds", []) as Array).size() >= 3, "one staging: black with knocks (%s)" % str(st))
+	var lines: Array = sc.get("mandatory_lines", [])
+	_check(lines.size() == 2 and String(lines[0].get("speaker", "")) == "narrator" and String(lines[0].get("text", "")).contains("Уля подавала гвозди"), "the narrator tells the building")
+	var opts: Array = lines[1].get("options", []) if lines.size() > 1 else []
+	_check(opts.size() == 2 and String(opts[0].get("sets", "")) == "q06_table_at_ilya" and String(opts[1].get("sets", "")) == "q06_table_at_agata", "then the choice: at Ilya's or in Dunya's workshop")
+	var rs: Dictionary = sd.room("O4").get("scenes", {})
+	_check(rs.has("Q06a") and rs.has("Q06"), "the street starts Q06a after the talk and Q06 after the choice")
 	_reached_end = true
 
 
@@ -425,146 +427,48 @@ func _q06_open() -> void:
 	_check(await _route(["O2", "O4"]), "class → yard → street")
 
 
-func _part(id: String) -> Vector2:
-	return _v(_panel().get("parts", {}).get(id, {}))
-
-
-func _wait_free() -> void:
-	await _wait(func(): return not bool(_panel().get("busy", true)) or not sr.current_beat.is_empty(), 300)
-
-
-func _drag_to_target(id: String) -> void:
-	await _wait_free()
-	await _drag(_part(id), _v(_panel().get("target", {})))
-
-
-## Drive the mouse round the screw's handle `turns` times (pressed all the way), then let go.
-func _turn(turns: float) -> void:
-	var t: Dictionary = _panel().get("turn", {})
-	var c := _v(t.get("pivot", {}))
-	var r := float(t.get("radius", 100.0))
-	var ry := float(t.get("radius_y", r))
-	var a0 := 0.0
-	var start := c + Vector2(cos(a0) * r, sin(a0) * ry)
-	await _move(start)
-	await _button(start, true)
-	var n := int(turns * 32.0)
-	var last := start
-	for i in n:
-		var a := a0 + TAU * turns * float(i + 1) / n
-		last = c + Vector2(cos(a) * r, sin(a) * ry)
-		await _move(last, true)
-		if gs.has_flag("q06_vise_tight"):
-			break
-	await _button(last, false)
-	await _frames(2)
-
-
 func _test_q06_a() -> void:
 	Engine.time_scale = 1.0
 	await _q06_open()
 	_check(not _layer_visible("bench_shed"), "the shed door is shut before the choice")
+	var mvf: Node = main_node.get_node("MechanicView")
+	var snd0: int = (mvf.get("sounds_played") as Array).size() if mvf != null else 0
+	var black := [false]
+	var on_fade := func(to: float, _s: float) -> void:
+		if to >= 0.99:
+			black[0] = true
+	sr.stage_fade.connect(on_fade)
 	await _use("ilya_workshop")
-	var seen := await _finish()
+	var seen := await _finish(["A"])
+	sr.stage_fade.disconnect(on_fade)
 	_check(seen.any(func(x): return x.begins_with("mitya:У одного верстака и двоим тесно")) and seen.any(func(x): return x.begins_with("ilya:А мы ещё и третьему место")) and seen.any(func(x): return x.begins_with("ilya:Уля за мной")),
 		"Mitya / Ilya / the goal — a bench for Ulya: %s" % str(seen))
-	_check(sr.mechanic_open and String(mv.spec.get("type", "")) == "workbench", "the second bench close-up")
-	var pr := _panel()
-	_check(int(pr.get("step", -1)) == 0 and String(pr.get("goal", "")).contains("Ули") and String(pr.get("hint", "")) != "" and String(pr.get("step_text", "")).contains("1 из 5"), "step 1: goal, step and one hint on screen (%s / %s)" % [pr.get("step_text"), pr.get("hint")])
-	_check(bool(pr.get("art_parts", false)) and not bool(pr.get("stand_in", true)), "all parts drawn from the 10b layers")
-	_check(bool(pr.get("zone_visible", false)) and not bool(pr.get("ghost_visible", true)), "step 1: the groove lit, no ghost (which fastening fits is the question)")
-	var home_wedge := _v(pr["parts"]["wedge"]["home"])
-	var home_key := _v(pr["parts"]["key"]["home"])
-	# The wedge into the groove: it sits, wobbles, glides home; Ilya says why.
-	await _drag_to_target("wedge")
-	await _wait(func(): return not sr.current_beat.is_empty(), 300)
-	seen = await _finish()
-	await _wait(func(): return not bool(_panel().get("busy", true)), 300)
-	pr = _panel()
-	_check(int(pr.get("step", -1)) == 0 and int(pr.get("tries_wrong", 0)) == 1 and seen.any(func(x): return x.contains("болтаться")), "the wedge does not fit — Ilya: «…болтаться будет»: %s" % str(seen))
-	_check(_v(pr["parts"]["wedge"]["at"]).distance_to(home_wedge) < 3.0, "the wedge glided back to where it lay")
-	# The key let go away from the groove: glides home, nothing else.
-	await _drag(_part("key"), Vector2(900, 800))
-	await _wait(func(): return not bool(_panel().get("busy", true)), 300)
-	pr = _panel()
-	_check(int(pr.get("returns", 0)) == 1 and int(pr.get("step", -1)) == 0 and sr.current_beat.is_empty(), "let go elsewhere — no penalty, no words")
-	_check(_v(pr["parts"]["key"]["at"]).distance_to(home_key) < 3.0, "the key glided back home")
-	# While dragged over the groove the place lights up.
-	await _wait_free()
-	var a := _part("key")
-	var b := _v(_panel().get("target", {}))
-	await _move(a)
-	await _button(a, true)
-	for i in 12:
-		await _move(a.lerp(b, float(i + 1) / 12.0), true)
-	_check(String(_panel().get("dragging", "")) == "key" and bool(_panel().get("over_target", false)), "over the groove: the place glows brighter")
-	await _button(b, false)
-	await _wait(func(): return gs.has_flag("q06_fastening_fit"), 300)
-	seen = await _finish()
-	_check(gs.has_flag("q06_fastening_fit") and int(_panel().get("step", -1)) == 1 and seen.any(func(x): return x.contains("шпонка")), "the key sits — step 2: %s" % str(seen))
-	# Put away midway; saved; opens again at the same step, the key in its seat, without the first words.
-	sr.close_mechanic()
-	await _frames(2)
-	_check(rm.save_game(SLOT + "_q06_mid") and rm.load_game(SLOT + "_q06_mid"), "save/load in the middle of the bench")
-	await _frames(4)
-	_check(sr.current_beat.is_empty() and not sr.mechanic_open, "load mid-way: nothing replays")
-	await _use("ilya_workshop")
-	seen = await _finish()
-	pr = _panel()
-	_check(sr.mechanic_open and int(pr.get("step", -1)) == 1 and not seen.any(func(x): return x.contains("не поместиться")), "reopened at the same step, the first words not repeated: %s" % str(seen))
-	_check(_v(pr["parts"]["key"]["at"]).distance_to(_v(pr["parts"]["key"]["home"])) < 3.0 and _v(pr["parts"]["key"]["home"]).distance_to(home_key) > 100.0, "the key stays in the groove after the load")
-	_check(bool(pr.get("ghost_visible", false)), "step 2: the stop block's place shown")
-	await _q06_rest("A")
-	seen = _last_seen
+	_check(not sr.mechanic_open, "no close-up opens")
+	_check(black[0], "the screen went black for the building")
+	_check(seen.any(func(x): return x.begins_with("narration:К вечеру Илья с Митей собрали верстак")), "the narrator: the bench built by the evening: %s" % str(seen))
+	var i_n := -1
+	for i in seen.size():
+		if seen[i].begins_with("narration:К вечеру"):
+			i_n = i
+	var i_o := seen.find("options:A")
+	_check(i_n >= 0 and i_o > i_n, "the choice comes after the narrator, not before: %s" % str(seen))
+	_check(gs.has_flag("q06_bench_built") and gs.has_flag("done_Q06a"), "the bench is built (flags)")
 	_check(gs.has_flag("q06_table_at_ilya") and not gs.has_flag("q06_table_at_agata") and gs.has_flag("done_Q06"), "A — the bench stays at Ilya's; Q06 done")
 	_check(seen.any(func(x): return x.begins_with("mitya:Вот и втроём")) and seen.any(func(x): return x.contains("полку уж вместе")), "A: Mitya and Ilya after the choice: %s" % str(seen))
-	_check(not sr.mechanic_open and _layer_visible("bench_shed"), "A: the shed door on the street is open, the bench inside")
+	_check(_layer_visible("bench_shed"), "A: the shed door on the street is open, the bench inside")
 	await _use("ilya_workshop")
 	seen = await _finish()
-	_check(not sr.mechanic_open and seen.any(func(x): return x.contains("второй верстак")) and not seen.any(func(x): return x.begins_with("options")), "once: afterwards the workshop is only looked at: %s" % str(seen))
+	_check(not sr.mechanic_open and seen.any(func(x): return x.contains("второй верстак")) and not seen.any(func(x): return x.begins_with("options")) and not seen.any(func(x): return x.begins_with("narration:К вечеру")), "once: afterwards the workshop is only looked at: %s" % str(seen))
+	_check(rm.save_game(SLOT + "_q06_done") and rm.load_game(SLOT + "_q06_done"), "save/load after the bench")
+	await _frames(4)
+	_check(sr.current_beat.is_empty() and gs.has_flag("done_Q06") and _layer_visible("bench_shed"), "the load keeps the bench where it was chosen")
 	_reached_end = true
 
 
-var _last_seen: Array[String] = []
-
-
-## From step 2 (the key in) to the choice: the stop block, the screw, the turning, the board.
-func _q06_rest(choice: String) -> void:
-	await _drag_to_target("stop")
-	await _wait(func(): return gs.has_flag("q06_stop_in"), 300)
-	await _finish()
-	_check(gs.has_flag("q06_stop_in") and int(_panel().get("step", -1)) == 2, "the stop block in — step 3")
-	await _drag_to_target("screw")
-	await _wait(func(): return gs.has_flag("q06_screw_set"), 300)
-	var seen := await _finish()
-	var pr := _panel()
-	_check(gs.has_flag("q06_screw_set") and int(pr.get("step", -1)) == 3 and not pr.get("turn", {}).is_empty(), "the screw on its place — step 4: turn it (%s)" % str(seen))
-	_check(String(pr.get("hint", "")).contains("по кругу"), "the hint says how: round and round (%s)" % pr.get("hint"))
-	# Half the turning, let go: kept.
-	await _turn(0.9)
-	pr = _panel()
-	var half := float(pr.get("turn", {}).get("progress", 0.0))
-	_check(half > 0.3 and half < 0.7 and not gs.has_flag("q06_vise_tight"), "let go midway: the turns done are kept (%.2f)" % half)
-	await _turn(1.4)
-	await _wait(func(): return gs.has_flag("q06_vise_tight"), 300)
-	seen = await _finish()
-	_check(gs.has_flag("q06_vise_tight") and int(_panel().get("step", -1)) == 4 and seen.any(func(x): return x.contains("Туго")), "two turns: tight — step 5: %s" % str(seen))
-	await _drag_to_target("board")
-	await _wait(func(): return not sr.current_beat.is_empty() or gs.has_flag("q06_bench_built"), 400)
-	_last_seen = await _finish([choice])
-	_check(gs.has_flag("q06_bench_built") and _last_seen.any(func(x): return x.contains("Держит")), "the board on the bench — it holds: %s" % str(_last_seen))
-	_check(_last_seen.any(func(x): return x == "options:" + choice), "the choice comes at once")
-
-
 func _test_q06_b() -> void:
-	_check(rm.load_game(SLOT + "_q06_mid"), "load the middle of the bench (the key in)")
-	await _frames(4)
-	_check(not gs.has_flag("done_Q06") and gs.has_flag("q06_fastening_fit") and not gs.has_flag("q06_stop_in"), "the load: step 2, nothing beyond")
+	await _q06_open()
 	await _use("ilya_workshop")
-	await _finish()
-	_check(sr.mechanic_open and int(_panel().get("step", -1)) == 1, "the close-up on step 2")
-	await _q06_rest("B")
-	var seen := _last_seen
+	var seen := await _finish(["B"])
 	_check(gs.has_flag("q06_table_at_agata") and not gs.has_flag("q06_table_at_ilya") and gs.has_flag("done_Q06"), "B — the bench to Dunya's workshop; Q06 done")
 	_check(seen.any(func(x): return x.contains("Дуниной мастерской")) and not seen.any(func(x): return x.contains("втроём")), "B: Ilya's line, no A lines: %s" % str(seen))
 	_check(not _layer_visible("bench_shed"), "B: the shed door on the street stays shut")

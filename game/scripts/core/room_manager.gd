@@ -249,10 +249,17 @@ func start_with(p: Dictionary) -> bool:
 			break
 	# Optional scenes of the days before (V01–V03 of day one): done, so they do not play on arrival; first-entry
 	# texts of every room (on_enter once_flag) count as seen.
+	# (01.11: a minor scene of the same episode that comes AFTER the start point in file order has not happened yet —
+	# Q06a, the bench built on the free day, sits after M22 in E4 and must still play from the «freewalk» start.)
 	var upto_ep := int(StoryData.scene(upto).get("episode", 0))
-	for id in StoryData.scene_order:
+	var upto_i := StoryData.scene_order.find(upto)
+	for i in StoryData.scene_order.size():
+		var id: String = StoryData.scene_order[i]
 		var sc: Dictionary = StoryData.scene(id)
-		if String(sc.get("type", "")) == "minor" and int(sc.get("episode", 0)) <= upto_ep:
+		if String(sc.get("type", "")) != "minor":
+			continue
+		var ep := int(sc.get("episode", 0))
+		if ep < upto_ep or (ep == upto_ep and (upto_i < 0 or i < upto_i)):
 			GameState.set_flag("done_" + id, true)
 	for rid in StoryData.rooms.keys():
 		for oe in StoryData.room(String(rid)).get("on_enter", []):
