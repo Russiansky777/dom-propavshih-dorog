@@ -5,12 +5,12 @@ extends MechanicPanel
 ##   wait   — the float rests and bobs; a while (`wait_s`) and a nibble or two (small dips) — don't strike yet;
 ##   bite   — the float goes under: strike now (a click on the picture or Space) within `bite_s`; too early — the fish
 ##            only tried it (texts.early), too late — it is gone (texts.late); both — wait again;
-##   fight  — hold the mouse button or Space to pull: the string's tension rises; let go — it falls; the fish surges
-##            now and then. In the green (`green`, wider with «Облегчить») the fish comes nearer (progress); past the
-##            red the string snaps (texts.snap), slack too long — it gets away (texts.escaped);
+##   fight  — hold the mouse button or Space to pull: the string's tension rises; let go — it falls; the perch runs
+##            now and then (FishingLogic, data `fight`). In the green (wider with «Облегчить») it comes nearer; held too
+##            hard too long the string snaps (texts.snap); slack — it swims off and is gone (texts.escaped);
 ##   caught — the perch shown (drawn by the engine), Mitya's word (texts.caught), event "caught"; «Ещё»; «Хватит» is the
 ##            close-up's own button, bottom right (spec `close_label`, `close_event` "done" — his word).
-## Everything is data: art (image, variants by time of day), wait_s, bite_s, green, pull, surge, texts, events.
+## Everything is data: art (image, variants by time of day), wait_s, bite_s, fight (FishingLogic), gauge, far, texts, events.
 ## Polish (J, ночь 30.10, «как в прошлых мини-играх»): the rod comes in from her hands at the lower left and bends to
 ## the fish as the string tightens; the float plops at a nibble and goes under with a splash (sounds — SynthSfx);
 ## the string creaks taut, snaps with a crack; the tension bar in the carved frame — red at the top, the green band,
@@ -21,6 +21,15 @@ extends MechanicPanel
 ## picture, no backdrop: the float sits on the water of the room itself (`float`, screen coordinates), the rod comes
 ## from Agata's hands where she stands (RoomManager.player), Mitya's own rod from his (npc_mitya) to `mitya.float`;
 ## `simple` — no fight: the float goes under → a strike → the perch at once (too early / too late as before).
+## Вечер 01.11 (Директор, 21:59: «вернуть натяжение и шкалу сразу красивой сделать… окунь вытягивался независимо от
+## натяжения; а в обычной рыбалке смысл другой: он уплывает, если не тянуть»): the fight is back and is the default in
+## R3 (`simple` false). Its logic — FishingLogic (the perch runs and takes line; slack — it swims away and works the
+## hook loose, too hard — the string snaps; only the string held right brings it in). Its gauge — a carved plaque on
+## the water (`gauge`, screen [x, y, w, h] of its field): the tension scale painted in three zones with their words
+## («уйдёт» — river-slate, «держи» — green, «лопнет» — amber to red), the brass needle with the gold leaf, the risk
+## of losing the fish filling its zone; under it the way to the jetty — the water, the jetty's posts, the painted
+## perch at its distance with the metres. In the room the perch is seen under the water where it is (`far` — the
+## farthest it gets, screen), dragging the float, a wake on its runs.
 
 const FLOAT_RED := Color(0.82, 0.16, 0.1)
 const FLOAT_WHITE := Color(0.95, 0.93, 0.88)
@@ -50,18 +59,20 @@ var _nibbles_to: int = 1
 var _dip: float = 0.0
 var tension: float = 0.0
 var progress: float = 0.0
-var slack_t: float = 0.0
-var over_t: float = 0.0
 var pulling: bool = false
-var surge: float = 0.0
-var fish_x: float = 0.0          # where the fish pulls the float in the fight (-1 … 1)
+var fight: FishingLogic = null   # the fight (FishingLogic) while phase is "fight"; the last one after it
+var last_end: String = ""        # how the last fight ended: landed | escaped | snapped (tests)
+var fish_x: float = 0.0          # the perch's sideways swing in the fight (-1 … 1)
+var _fish_at: Vector2 = Vector2.ZERO   # where the perch is under the water now (screen; eased after the logic's distance)
+var _face: float = 1.0           # +1 — it heads in (to the left, to the stones), −1 — away
+var _gauge: Rect2 = Rect2(1430, 818, 440, 144)
+var _far: Vector2 = Vector2(1760, 730)
 var caught: int = 0
 var lost: int = 0
 var green: Vector2 = Vector2(0.35, 0.75)
 var _rng := RandomNumberGenerator.new()
 var _pic: Rect2 = Rect2(260, 130, 1400, 788)
 var _float0: Vector2 = Vector2(980, 560)
-var _bar: Rect2 = Rect2(1700, 200, 46, 640)
 var _draw: Control = null
 var hint: Label = null
 var again_btn: Button = null
@@ -85,7 +96,10 @@ func build() -> void:
 	_float0 = Vector2(float(fp[0]), float(fp[1]))
 	var mf: Array = spec.get("mitya", {}).get("float", [])
 	_mitya_float = Vector2(float(mf[0]), float(mf[1])) if mf.size() == 2 else Vector2.ZERO
-	_bar = Rect2(_pic.end.x + 40.0, _pic.position.y + 60.0, 46.0, _pic.size.y - 120.0)
+	var gr: Array = spec.get("gauge", [1430, 818, 440, 144] if in_room else [_pic.end.x - 470.0, _pic.end.y - 180.0, 440, 150])
+	_gauge = Rect2(float(gr[0]), float(gr[1]), float(gr[2]), float(gr[3]))
+	var fr: Array = spec.get("far", [_float0.x + 450.0, _float0.y + 60.0])
+	_far = Vector2(float(fr[0]), float(fr[1]))
 	var sp: Dictionary = spec.get("sprites", {})
 	for id in SPRITES.keys():
 		var d: Dictionary = SPRITES[id].merged(sp.get(id, {}), true)
@@ -136,14 +150,27 @@ func build() -> void:
 		again_btn = _button(text("again"), Vector2(_pic.get_center().x - 100.0, _pic.end.y + 66.0), "Again")
 	again_btn.pressed.connect(_restart)
 	if not simple:
-		slow_check = easy_toggle(Vector2(_bar.get_center().x - 60.0, _pic.end.y + 20.0))
+		var ea: Array = spec.get("easy_at", [40, 262] if in_room else [_pic.end.x - 240.0, _pic.end.y + 20.0])
+		slow_check = easy_toggle(Vector2(float(ea[0]), float(ea[1])))
 	_restart()
 
 
+## «Облегчить мини-игры» (G3, TimingBar.slow): a wider green, the perch weaker and slower, the risks slower to fill —
+## FishingLogic.configure; toggled mid-fight the fight goes on as it is.
 func eased() -> void:
 	var easy := TimingBar.slow_k() > 1.0
-	var g: Array = spec.get("green_easy", [0.25, 0.85]) if easy else spec.get("green", [0.35, 0.75])
-	green = Vector2(float(g[0]), float(g[1]))
+	if fight != null:
+		fight.configure(easy)
+		green = fight.green
+		return
+	green = FishingLogic.new(spec.get("fight", {}), easy).green
+
+
+## The fight's logic for a new strike, from the data (`fight`), eased if «Облегчить» is on.
+func new_fight() -> FishingLogic:
+	var l := FishingLogic.new(spec.get("fight", {}), TimingBar.slow_k() > 1.0, _rng.randi() & 0x7fffffff)
+	l.event.connect(_on_fight_event)
+	return l
 
 
 func _button(t: String, at: Vector2, node_name: String) -> Button:
@@ -209,36 +236,43 @@ func tick(delta: float) -> void:
 
 
 func _fight(delta: float) -> void:
-	var pull := float(spec.get("pull", 0.55))
-	tension += (pull if pulling else -pull * 0.9) * delta
-	# the fish: a surge now and then (a run), and a steady tug
-	if _rng.randf() < delta * 0.9:
-		surge = _rng.randf_range(0.18, 0.36) * float(spec.get("surge", 1.0))
-		fish_x = clampf(fish_x + _rng.randf_range(-0.8, 0.8), -1.0, 1.0)
-	tension += surge * delta * 3.0
-	surge = maxf(surge - delta * 0.9, 0.0)
-	tension = clampf(tension, 0.0, 1.0)
+	fight.pulling = pulling
+	fight.step(delta)
+	if phase != "fight":   # it ended in this step (landed / escaped / snapped — _on_fight_event)
+		return
+	tension = fight.tension
+	progress = clampf(fight.progress(), 0.0, 1.0)
+	# where the perch is: out on the water by its distance (the float's place by the stones at 0, `far` at max_m)
+	var to := _float0.lerp(_far, clampf(fight.dist / maxf(fight.max_m, 0.01), 0.0, 1.0))
+	fish_x = sin(clock * (2.6 if fight.running() else 1.1)) * (1.0 if fight.running() else 0.45)
+	to += Vector2(-0.35, 1.0).normalized() * fish_x * 22.0
+	_fish_at = _fish_at.lerp(to, clampf(delta * 3.0, 0.0, 1.0))
+	if absf(fight.away) > 0.05:
+		_face = -1.0 if fight.away > 0.0 else 1.0
 	_taut_snd -= delta
 	if pulling and tension > green.x and _taut_snd <= 0.0:
 		sound("line_taut")
-		_taut_snd = lerpf(0.75, 0.35, tension)
-	if tension >= green.x and tension <= green.y:
-		progress += delta * float(spec.get("reel", 0.16))
-	elif tension > green.y:
-		progress += delta * 0.04
-	slack_t = slack_t + delta if tension < green.x * 0.5 else 0.0
-	over_t = over_t + delta if tension > 0.97 else 0.0
-	if over_t > 0.35:
-		lost += 1
-		sound("line_snap")
-		say("snap")
-		_to_wait()
-	elif slack_t > 2.2:
-		lost += 1
-		say("escaped")
-		_to_wait()
-	elif progress >= 1.0:
-		_catch()
+		_taut_snd = lerpf(0.75, 0.3, tension)
+
+
+func _on_fight_event(ev: String) -> void:
+	match ev:
+		"run":
+			sound("plop")
+		"landed":
+			last_end = ev
+			_catch()
+		"escaped":
+			last_end = ev
+			lost += 1
+			say("escaped")
+			_to_wait()
+		"snapped":
+			last_end = ev
+			lost += 1
+			sound("line_snap")
+			say("snap")
+			_to_wait()
 
 
 func _catch() -> void:
@@ -268,11 +302,13 @@ func press(down: bool) -> void:
 				return
 			phase = "fight"
 			phase_t = 0.0
-			tension = (green.x + green.y) * 0.5
+			fight = new_fight()
+			green = fight.green
+			tension = fight.tension
 			progress = 0.0
-			slack_t = 0.0
-			over_t = 0.0
 			fish_x = 0.0
+			_fish_at = _float0
+			_face = -1.0
 			pulling = true
 			hint.text = text("fight")
 		"fight":
@@ -307,7 +343,7 @@ func _float_pos() -> Vector2:
 		"bite":
 			p.y += 18.0 * minf(phase_t / 0.15, 1.0)
 		"fight":
-			p += Vector2(fish_x * 160.0 * (1.0 - progress * 0.7), 22.0 + 200.0 * progress)
+			p = _fish_at + Vector2(0.0, sin(clock * 2.1) * 2.5)
 		"caught":
 			p += Vector2(0.0, -40.0 if not _tex.has("perch_caught") else -130.0)   # the painted perch hangs clear of the water
 	return p
@@ -333,9 +369,10 @@ func _on_draw() -> void:
 	if phase != "caught":
 		# rings on the water round the float
 		for k in 3:
-			var age := fposmod(clock * 0.6 + k / 3.0, 1.0)
-			var big := 1.0 + (2.5 if phase == "bite" or phase == "fight" else 0.0)
-			c.draw_set_transform(_float_wl() + (Vector2(0, 1) if _tex.has("float") else Vector2(0, 10)), 0.0, Vector2(1.0, 0.32))
+			var age := fposmod(clock * (0.6 if phase != "fight" else 1.1) + k / 3.0, 1.0)
+			var big := 1.0 + (2.5 if phase == "bite" else 1.4 if phase == "fight" else 0.0)
+			var ring_at := fp if phase == "fight" else _float_wl()
+			c.draw_set_transform(ring_at + (Vector2(0, 1) if _tex.has("float") else Vector2(0, 10)), 0.0, Vector2(1.0, 0.32))
 			c.draw_arc(Vector2.ZERO, 14.0 + age * 40.0 * big, 0.0, TAU, 40, Color(1, 1, 1, 0.35 * (1.0 - age)), 2.0, true)
 			c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		var under := phase == "bite" or phase == "fight"
@@ -346,14 +383,17 @@ func _on_draw() -> void:
 				var dp := fp + Vector2(cos(ang), sin(ang)) * (10.0 + 34.0 * k) + Vector2(0.0, 60.0 * k * k)
 				c.draw_circle(dp, 3.0 * (1.0 - k) + 1.0, Color(1, 1, 1, 0.75 * (1.0 - k)))
 		var tilt := (phase == "wait" and _dip > 0.0) or phase == "bite"
-		_float_shape(c, _float_wl(), under and phase_t >= 0.15, tilt, fp.y - _float_wl().y)
+		if phase == "fight":
+			_fight_water(c, fp)
+		else:
+			_float_shape(c, _float_wl(), under and phase_t >= 0.15, tilt, fp.y - _float_wl().y)
 	else:
 		_fish(c, fp)
 	if phase == "fight":
-		_tension_bar(c)
-	# the perches caught so far, in a row in the upper corner of the picture (in the room — under the hint)
+		draw_gauge(c)
+	# the perches caught so far, in a row in the upper corner of the picture (in the room — under the hint and «Облегчить»)
 	for k in caught:
-		var at := Vector2(80.0 + 70.0 * k, 330.0) if in_room else Vector2(_pic.end.x - 60.0 - 70.0 * k, _pic.position.y + 40.0)
+		var at := Vector2(80.0 + 70.0 * k, 345.0) if in_room else Vector2(_pic.end.x - 60.0 - 70.0 * k, _pic.position.y + 40.0)
 		_perch_small(c, at, 60.0)
 
 
@@ -413,6 +453,8 @@ func _rod(c: CanvasItem, butt: Vector2, fp: Vector2, bend: float, taut: float, t
 		c.draw_line(rod[i] + Vector2(-w * 0.2, -w * 0.25), rod[i + 1] + Vector2(-w * 0.2, -w * 0.25), Color(0.6, 0.45, 0.28, 0.6), maxf(w * 0.25, 1.0), true)
 	# the string: sags while slack, straight when taut
 	var mid := tip.lerp(fp, 0.5) + Vector2(0.0, 60.0 * (1.0 - taut) * k)
+	if phase == "fight" and fp != _mitya_float and fight != null and fight.zone() == "over":
+		mid += Vector2(sin(clock * 83.0), cos(clock * 71.0)) * 2.5   # the string hums, held too hard
 	var pts := PackedVector2Array()
 	for i in 21:
 		var t := float(i) / 20.0
@@ -472,28 +514,201 @@ func rod_tip(butt: Vector2, float_at: Vector2, fig_h: float) -> Vector2:
 	return butt + Vector2(cos(a) * side, -sin(a)) * fig_h * float(spec.get("rod_len", ROD_LEN))
 
 
-func _tension_bar(c: CanvasItem) -> void:
-	# near the snap the bar shakes; slack — the green band pulses (pull!)
-	var shake := Vector2(sin(clock * 61.0), cos(clock * 47.0)) * 3.0 * clampf(over_t / 0.35 + (tension - 0.9) * 4.0, 0.0, 1.0)
-	var bar := Rect2(_bar.position + shake, _bar.size)
-	CarvedFrame.draw_frame(c, bar, 12.0)
-	c.draw_rect(bar, TimingBar.TRACK)
-	var y := func(v: float) -> float: return bar.end.y - bar.size.y * v
-	var gl := 0.85 if slack_t <= 0.4 else 0.6 + 0.35 * sin(clock * 10.0)
-	c.draw_rect(Rect2(bar.position.x, y.call(green.y), bar.size.x, y.call(green.x) - y.call(green.y)), Color(TimingBar.GREEN, gl))
-	c.draw_rect(Rect2(bar.position.x, bar.position.y, bar.size.x, y.call(0.92) - bar.position.y), Color(TimingBar.RED, 0.9))
-	for k in range(1, 10):   # carved notches
-		var ny: float = y.call(k / 10.0)
-		c.draw_line(Vector2(bar.position.x, ny), Vector2(bar.position.x + (14.0 if k % 5 == 0 else 8.0), ny), Color(0, 0, 0, 0.45), 2.0)
-	var ty: float = y.call(tension)
-	CarvedFrame.leaf(c, Vector2(bar.position.x - 6.0, ty), Vector2.RIGHT, 30.0)
-	c.draw_line(Vector2(bar.position.x, ty), Vector2(bar.end.x, ty), TimingBar.BRASS, 3.0)
-	CarvedFrame.shade(c, bar, true)
-	# how near the fish is: a gauge beside, a little fish climbing it
-	var pr := Rect2(bar.end.x + 18.0, bar.position.y, 10.0, bar.size.y)
-	c.draw_rect(pr, Color(0, 0, 0, 0.45))
-	c.draw_rect(Rect2(pr.position.x, pr.end.y - pr.size.y * progress, pr.size.x, pr.size.y * progress), CarvedFrame.GOLD_DIM)
-	_perch_small(c, Vector2(pr.get_center().x, pr.end.y - pr.size.y * progress), 30.0, -PI * 0.5)
+## The fight on the water: the perch under the surface where it is (dim, its head to the stones while it comes in, away
+## on a run), a wake when it runs; the float dragged after it, pulled under the more the string is held.
+func _fight_water(c: CanvasItem, fp: Vector2) -> void:
+	var running := fight != null and fight.running()
+	var fish_at := fp + Vector2(46.0, 16.0)   # a body's length past the float, under the water
+	if running:
+		# the wake: a V from its head along the way it goes
+		var dir := Vector2(-_face, 0.0)
+		for sgn in [-1.0, 1.0]:
+			var pts := PackedVector2Array()
+			for i in 9:
+				var t := float(i) / 8.0
+				var back := -dir * (8.0 + 70.0 * t)
+				pts.append(fish_at + Vector2(back.x, -14.0 + sgn * 26.0 * t * 0.35) + Vector2(0.0, sin(clock * 9.0 + t * 6.0) * 1.5))
+			c.draw_polyline(pts, Color(1, 1, 1, 0.45), 2.0, true)
+	if _tex.has("perch_lying"):
+		var t: Dictionary = _tex["perch_lying"]
+		var k := 78.0 / 440.0
+		var wig := sin(clock * (15.0 if running else 6.0)) * (0.09 if running else 0.04)
+		c.draw_set_transform(fish_at, wig, Vector2(k * _face, k))
+		c.draw_texture(t["tex"], -(t["anchor"] as Vector2), Color(0.22, 0.34, 0.38, 0.42))
+		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	if _tex.has("float_tilted"):
+		_float_sprite(c, _tex["float_tilted"], fp, 5.0 + 14.0 * tension)
+	else:
+		_float_shape(c, fp, true)
+
+
+const SLATE_DEEP := Color(0.1, 0.19, 0.24)
+const SLATE := Color(0.3, 0.44, 0.48)
+const RED_DEEP := Color(0.42, 0.07, 0.04)
+
+
+## A word of the gauge: `texts.<key>` of the spec, else the game's own (@mech.fish.<key>).
+func _word(key: String) -> String:
+	if spec.get("texts", {}).has(key):
+		return text(key)
+	return StoryData.text("@mech.fish." + key)
+
+
+## The tension scale's field inside the gauge (screen).
+func scale_rect() -> Rect2:
+	return Rect2(_gauge.position + Vector2(18.0, 16.0), Vector2(_gauge.size.x - 36.0, 42.0))
+
+
+## The way to the jetty inside the gauge (screen).
+func way_rect() -> Rect2:
+	return Rect2(_gauge.position + Vector2(18.0, _gauge.size.y - 54.0), Vector2(_gauge.size.x - 36.0, 38.0))
+
+
+## The colour painted at tension `v`: river-slate where the string hangs (the perch leaves), the green where it is held
+## right (brightest in its middle), amber to deep red where it is held too hard.
+func zone_color(v: float) -> Color:
+	var g := fight.green if fight != null else green
+	if v < g.x:
+		return SLATE_DEEP.lerp(SLATE, pow(v / maxf(g.x, 0.01), 1.3))
+	if v <= g.y:
+		var mid := (g.x + g.y) * 0.5
+		var t := 1.0 - absf(v - mid) / maxf((g.y - g.x) * 0.5, 0.01)
+		return TimingBar.GREEN.darkened(0.12).lerp(TimingBar.GREEN.lightened(0.2), t)
+	var u := (v - g.y) / maxf(1.0 - g.y, 0.01)
+	return TimingBar.AMBER.lerp(TimingBar.RED, minf(u * 1.7, 1.0)).lerp(RED_DEEP, clampf((u - 0.6) / 0.4, 0.0, 1.0))
+
+
+## The gauge in the fight: a carved plaque on the water — the tension scale in three painted zones with their words
+## («уйдёт», «держи», «лопнет»), the brass needle with the gold leaf, the risk of losing the perch filling the zone the
+## needle is in (from its outer end); under it the way to the jetty — the water, the jetty's posts, the metre notches,
+## the hooking place (a red float), the painted perch at its distance with the metres over it.
+func draw_gauge(c: CanvasItem) -> void:
+	if fight == null:
+		return
+	var gr := _gauge
+	CarvedFrame.draw_frame(c, gr, 14.0)
+	# the plaque: dark wood with its grain
+	c.draw_rect(gr, CarvedFrame.WOOD.darkened(0.25))
+	for i in 9:
+		var y := gr.position.y + 6.0 + (gr.size.y - 12.0) * i / 8.0
+		var pts := PackedVector2Array()
+		for j in 13:
+			var x := gr.position.x + gr.size.x * j / 12.0
+			pts.append(Vector2(x, y + sin(j * 0.9 + i * 1.7) * 2.2))
+		c.draw_polyline(pts, Color(CarvedFrame.WOOD_LIGHT, 0.14), 1.0, true)
+	var s := scale_rect()
+	var gz := fight.green
+	var xa := func(v: float) -> float: return s.position.x + s.size.x * clampf(v, 0.0, 1.0)
+	var x_g0: float = xa.call(gz.x)
+	var x_g1: float = xa.call(gz.y)
+	c.draw_rect(s.grow(3.0), CarvedFrame.WOOD_DARK)
+	var n := 96
+	for i in n:
+		var v0 := float(i) / n
+		var v1 := float(i + 1) / n
+		var x0: float = xa.call(v0)
+		c.draw_rect(Rect2(x0, s.position.y, float(xa.call(v1)) - x0 + 0.6, s.size.y), zone_color((v0 + v1) * 0.5))
+	# the slack: the river moving in it
+	for r in 3:
+		var y := s.position.y + s.size.y * (0.28 + 0.24 * r)
+		var pts := PackedVector2Array()
+		for j in 17:
+			var x := s.position.x + (x_g0 - s.position.x) * j / 16.0
+			pts.append(Vector2(x, y + sin(x * 0.11 + clock * 2.4 + r * 1.9) * 1.6))
+		c.draw_polyline(pts, Color(0.8, 0.92, 0.98, 0.16), 1.2, true)
+	# the risk of losing it fills its zone from the outer end, pulsing
+	var pulse := 0.55 + 0.45 * sin(clock * 11.0)
+	if fight.slack_risk > 0.01:
+		var wr := (x_g0 - s.position.x) * fight.slack_risk
+		c.draw_rect(Rect2(s.position.x, s.position.y, wr, s.size.y), Color(0.86, 0.95, 1.0, 0.24 + 0.2 * pulse))
+		c.draw_rect(Rect2(s.position.x, s.position.y, x_g0 - s.position.x, s.size.y).grow(-1.5), Color(0.92, 0.98, 1.0, 0.35 + 0.6 * pulse * fight.slack_risk), false, 3.0)
+	if fight.over_risk > 0.01:
+		var wr := (s.end.x - x_g1) * fight.over_risk
+		c.draw_rect(Rect2(s.end.x - wr, s.position.y, wr, s.size.y), Color(1.0, 0.88, 0.6, 0.24 + 0.24 * pulse))
+		c.draw_rect(Rect2(x_g1, s.position.y, s.end.x - x_g1, s.size.y).grow(-1.5), Color(1.0, 0.85, 0.5, 0.35 + 0.6 * pulse * fight.over_risk), false, 3.0)
+	CarvedFrame.shade(c, s)
+	# the band's edges: brass ticks past the field
+	for e in [x_g0, x_g1]:
+		c.draw_line(Vector2(e, s.position.y - 5.0), Vector2(e, s.end.y + 5.0), Color(0, 0, 0, 0.5), 4.0)
+		c.draw_line(Vector2(e, s.position.y - 5.0), Vector2(e, s.end.y + 5.0), TimingBar.BRASS, 2.0)
+	# the words of the zones, painted on; the one the needle is in lit
+	var font := UiTheme.font("body_bold")
+	var z := fight.zone()
+	var words := [["slack", s.position.x, x_g0, "label_slack"], ["green", x_g0, x_g1, "label_hold"], ["over", x_g1, s.end.x, "label_over"]]
+	for wd in words:
+		var on: bool = String(wd[0]) == z
+		var col := CarvedFrame.GOLD.lightened(0.15) if on else Color(UiTheme.CREAM, 0.5)
+		var fs := 24 if on else 20
+		var wdt: float = float(wd[2]) - float(wd[1])
+		while fs > 13 and font.get_string_size(_word(String(wd[3])), HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > wdt - 8.0:
+			fs -= 1   # a narrow zone (the red with «Облегчить»): the word smaller, never cut
+		var at := Vector2(float(wd[1]), s.position.y + s.size.y * 0.5 + fs * 0.36)
+		c.draw_string_outline(font, at, _word(String(wd[3])), HORIZONTAL_ALIGNMENT_CENTER, wdt, fs, 6 if on else 4, Color(0.05, 0.03, 0.02, 0.9 if on else 0.6))
+		c.draw_string(font, at, _word(String(wd[3])), HORIZONTAL_ALIGNMENT_CENTER, wdt, fs, col)
+	# the needle: a brass line across the field, the gold leaf over it; it trembles held too hard
+	var shake := sin(clock * 61.0) * 3.0 * clampf(fight.over_risk * 1.5, 0.0, 1.0) if z == "over" else 0.0
+	var nx: float = float(xa.call(fight.tension)) + shake
+	c.draw_line(Vector2(nx, s.position.y - 2.0), Vector2(nx, s.end.y + 4.0), Color(0, 0, 0, 0.6), 7.0)
+	c.draw_line(Vector2(nx, s.position.y - 2.0), Vector2(nx, s.end.y + 4.0), TimingBar.BRASS if z != "over" else Color(1.0, 0.7, 0.55), 3.5)
+	CarvedFrame.leaf(c, Vector2(nx, s.position.y + 2.0), Vector2.DOWN, 30.0, CarvedFrame.GOLD)
+	_draw_way(c)
+
+
+## The way to the jetty: water from the jetty's posts (at the left, where Agata stands) out to where the perch is gone.
+func _draw_way(c: CanvasItem) -> void:
+	var w := way_rect()
+	c.draw_rect(w.grow(3.0), CarvedFrame.WOOD_DARK)
+	var rows := 8
+	for i in rows:
+		var t := float(i) / rows
+		c.draw_rect(Rect2(w.position.x, w.position.y + w.size.y * t, w.size.x, w.size.y / rows + 0.5), Color(0.24, 0.38, 0.42).lerp(Color(0.08, 0.16, 0.2), t))
+	# the far end: where it is gone — the water darker there
+	for i in 10:
+		var t := float(i) / 10.0
+		c.draw_rect(Rect2(w.end.x - 46.0 + 4.6 * i, w.position.y, 4.7, w.size.y), Color(0.03, 0.06, 0.08, 0.05 + 0.05 * t))
+	for r in 3:
+		var y := w.position.y + 8.0 + r * 10.0
+		var x := w.position.x + fposmod(-clock * (16.0 + r * 5.0) + r * 61.0, w.size.x)
+		for q in 3:
+			var xx := w.position.x + fposmod(x - w.position.x + q * w.size.x / 3.0, w.size.x)
+			c.draw_line(Vector2(xx, y), Vector2(minf(xx + 14.0, w.end.x - 1.0), y), Color(0.85, 0.95, 1.0, 0.3), 1.4, true)
+	var j0 := w.position.x + 50.0      # the jetty's edge: 0 m
+	var j1 := w.end.x - 16.0           # max_m: gone
+	var mx := func(m: float) -> float: return lerpf(j0, j1, clampf(m / maxf(fight.max_m, 0.01), 0.0, 1.0))
+	# metre notches cut along the bottom (longer every five)
+	for m in range(1, int(fight.max_m) + 1):
+		var x: float = mx.call(float(m))
+		c.draw_line(Vector2(x, w.end.y), Vector2(x, w.end.y - (9.0 if m % 5 == 0 else 5.0)), Color(UiTheme.CREAM, 0.45), 1.5)
+	# the jetty: posts in the water, the boards over them, snow on the boards
+	c.draw_rect(Rect2(w.position.x, w.position.y, 50.0, w.size.y), Color(0.05, 0.1, 0.13, 0.35))
+	for px in [8.0, 24.0, 40.0]:
+		c.draw_rect(Rect2(w.position.x + px - 3.5, w.position.y + 6.0, 7.0, w.size.y - 6.0), CarvedFrame.WOOD)
+		c.draw_line(Vector2(w.position.x + px - 3.5, w.position.y + 8.0), Vector2(w.position.x + px - 3.5, w.end.y), Color(CarvedFrame.WOOD_LIGHT, 0.6), 1.5)
+	c.draw_rect(Rect2(w.position.x - 2.0, w.position.y + 2.0, 52.0, 7.0), CarvedFrame.WOOD_LIGHT)
+	c.draw_rect(Rect2(w.position.x - 2.0, w.position.y - 1.0, 52.0, 4.0), Color(0.93, 0.95, 0.97))
+	# where it took the hook: the red float, small
+	var hx: float = mx.call(fight.start_m)
+	c.draw_circle(Vector2(hx, w.position.y + 6.0), 4.0, Color(0.82, 0.16, 0.1, 0.9))
+	c.draw_circle(Vector2(hx, w.position.y + 3.5), 2.5, Color(0.95, 0.93, 0.88, 0.9))
+	# the perch at its distance: its head to the jetty while it comes in, away while it runs off
+	var fx: float = mx.call(fight.dist)
+	var fy := w.get_center().y + 2.0
+	if _tex.has("perch_lying"):
+		var t: Dictionary = _tex["perch_lying"]
+		var k := 62.0 / 440.0
+		var wig := sin(clock * (14.0 if fight.running() else 5.0)) * (0.08 if fight.running() else 0.03)
+		c.draw_set_transform(Vector2(fx, fy), wig, Vector2(k * _face, k))
+		c.draw_texture(t["tex"], -(t["anchor"] as Vector2))
+		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	else:
+		_perch_small(c, Vector2(fx, fy), 50.0)
+	# the metres beside it, on the water (behind its tail; before its head near the far end)
+	var font := UiTheme.font("body_bold")
+	var label_t := _word("label_metres").format({"n": str(int(ceil(fight.dist - 0.05)))})
+	var lx := fx + 38.0 if fx + 100.0 < w.end.x else fx - 98.0
+	var at := Vector2(lx, w.get_center().y + 7.0)
+	c.draw_string_outline(font, at, label_t, HORIZONTAL_ALIGNMENT_LEFT if lx > fx else HORIZONTAL_ALIGNMENT_RIGHT, 60.0, 20, 5, Color(0.03, 0.05, 0.06, 0.9))
+	c.draw_string(font, at, label_t, HORIZONTAL_ALIGNMENT_LEFT if lx > fx else HORIZONTAL_ALIGNMENT_RIGHT, 60.0, 20, UiTheme.CREAM)
 
 
 ## The perch caught, held up on the string: the painted one (партия 14, ~170 px long) hanging from `at` (its line's top);
@@ -558,4 +773,8 @@ func probe() -> Dictionary:
 	return {"phase": phase, "tension": tension, "progress": progress, "caught": caught, "lost": lost, "nibbles": nibbles,
 		"green": [green.x, green.y], "again": again_btn.visible, "picture": {"x": _pic.get_center().x, "y": _pic.get_center().y},
 		"slow": {"x": slow_check.get_global_rect().get_center().x, "y": slow_check.get_global_rect().get_center().y} if slow_check != null else {},
-		"in_room": in_room, "simple": simple, "float": {"x": _float_pos().x, "y": _float_pos().y}}
+		"in_room": in_room, "simple": simple, "float": {"x": _float_pos().x, "y": _float_pos().y},
+		"dist": fight.dist if fight != null else 0.0, "zone": fight.zone() if fight != null else "",
+		"slack_risk": fight.slack_risk if fight != null else 0.0, "over_risk": fight.over_risk if fight != null else 0.0,
+		"last_end": last_end, "easy": TimingBar.slow_k() > 1.0,
+		"gauge": [_gauge.position.x, _gauge.position.y, _gauge.size.x, _gauge.size.y]}

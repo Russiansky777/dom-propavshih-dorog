@@ -110,7 +110,7 @@ func _run() -> void:
 	await _test("J-G2 crosses and noughts with Ulyana: from her choice in class; chalk grid and marks by hand; she plays well, not perfectly; a game ends in a word and «Ещё раз» / «Хватит»", _test_ttt)
 	await _test("J-G3 the spoons with Tikhon: from his questions; he taps, Agata answers in the same rhythm; a miss — the same round again; «Хватит» puts it away", _test_rhythm)
 	await _test("J-G5 the knot's rope is alive (стр. 125): the lead-in sways and tightens as the end goes through; the end follows the hand off the path; the knot logic is the same", _test_rope_alive)
-	await _test("J-G4 fishing with Mitya on the jetty (01.11, вариант А): on the free day he is on the far support, not on the street; the game in the room, one action — the float dives, a strike, the perch; too early, too late", _test_fishing)
+	await _test("J-G4 fishing with Mitya on the jetty (01.11, вариант А): on the free day he is on the far support, not on the street; the game in the room — the float dives, a strike, the fight with tension (21:59), the perch; too early, too late", _test_fishing)
 	await _test("J-D3 staging (стр. 147, 167, 172): Nina at her porch in O4; in class Agata turns to whoever speaks; Nina walks out through the class door, gone in the black", _test_staging_d3)
 	await _test("J-E11 the dinner (стр. 203): the main door shut and an empty chair first; Ulyana comes in through it at «Ульяна по новому мосту прибежала»", _test_dinner_door)
 	await _test("J-T51 Tikhon livelier (25.10 стр. 51): besides ears and head — a tail flick, a yawn with the wide mouth, a stretch; more yawns in the dark", _test_tikhon_life)
@@ -1142,10 +1142,12 @@ func _test_fishing() -> void:
 	if panel == null:
 		return
 	var pr: Dictionary = panel.call("probe")
-	_check(bool(pr["in_room"]) and bool(pr["simple"]), "in the room, one action: %s" % str(pr))
+	# Директор 01.11, 21:59: «вернуть натяжение» — after the strike a fight with tension (was simple: the perch at once)
+	_check(bool(pr["in_room"]) and not bool(pr["simple"]), "in the room, with the fight: %s" % str(pr))
 	var bd: ColorRect = mvf.get("root").get_node_or_null("Backdrop")
 	_check(bd != null and not bd.visible, "no backdrop — the room stays in view")
-	_check(panel.find_child("River", true, false) == null and panel.find_child("Slow", true, false) == null, "no river crop, no «Облегчить» (nothing to ease)")
+	_check(panel.find_child("River", true, false) == null, "no river crop")
+	_check(panel.find_child("Slow", true, false) != null, "«Облегчить» for the fight (the green wider, the perch weaker)")
 	var fx := float(pr["float"]["x"])
 	var fy := float(pr["float"]["y"])
 	# 01.11 стр. 59: Agata's float just past the stone edge, left of the jetty (was right of it, the line across Mitya)
@@ -1164,11 +1166,18 @@ func _test_fishing() -> void:
 	while not sr.current_beat.is_empty():
 		sr.advance()
 		await process_frame
-	# the float dives: a strike — the perch at once, no fight
+	# the float dives: a strike — the fight; the string held in the green brings the perch to the stones
 	panel.set("phase", "bite")
 	panel.set("phase_t", 0.0)
 	panel.call("press", true)
-	_check(String(panel.call("probe")["phase"]) == "caught" and gs.has_flag("mitya_fish_caught"), "a strike in time — the perch is in at once: %s" % str(panel.call("probe")))
+	_check(String(panel.call("probe")["phase"]) == "fight" and not gs.has_flag("mitya_fish_caught"), "a strike in time — the fight, not the perch at once: %s" % str(panel.call("probe")))
+	var ft := 0.0
+	while String(panel.call("probe")["phase"]) == "fight" and ft < 20.0:
+		var g: Array = panel.call("probe")["green"]
+		panel.call("press", float(panel.call("probe")["tension"]) < (float(g[0]) + float(g[1])) * 0.5)
+		panel.call("tick", 1.0 / 60.0)
+		ft += 1.0 / 60.0
+	_check(String(panel.call("probe")["phase"]) == "caught" and gs.has_flag("mitya_fish_caught"), "held in the green — the perch is in (%.1f s): %s" % [ft, str(panel.call("probe"))])
 	var snd: Array = mvf.get("sounds_played")
 	_check(snd.has("water_slap"), "the perch comes out with a splash: %s" % str(snd))
 	while not sr.current_beat.is_empty():

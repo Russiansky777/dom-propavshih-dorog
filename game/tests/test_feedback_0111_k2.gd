@@ -44,7 +44,7 @@ func _run() -> void:
 	await _test("стр. 31/35: examine crops: no wood or wall around the photo, drawing, plan and the office mirror", _test_examine_crops)
 	await _test("стр. 35: mirror outline cuts the wall off the home mirror", _test_mirror_outline)
 	await _test("стр. 45: lantern: no far caption", _test_lantern_caption)
-	await _test("стр. 59: fishing — painted sprites, rod from the hand, «Ещё» beside «Хватит»", _test_fishing)
+	await _test("стр. 59: fishing — painted sprites, rod from the hand, «Ещё» beside «Хватит»; 21:59: the fight with tension (no pull — gone, right — landed, too hard — snapped, easy — wider)", _test_fishing)
 	await _test("стр. 71: windlass caption says what the plaques do", _test_windlass_caption)
 	await _test("стр. 7: M1 water: no frame flip — the foam flows by the shader", _test_m1_water)
 	await _test("стр. 38: sluice water alive (M4 flume, M1 race)", _test_sluice_water)
@@ -341,6 +341,110 @@ func _test_fishing() -> void:
 	var ang := rad_to_deg(atan2(-(tip.y - 540.0), tip.x - 800.0))
 	_check(ang > 25.0 and ang < 55.0 and tip.distance_to(Vector2(800, 540)) > 200.0, "the rod held up towards the water (%.0f°, %.0f px)" % [ang, tip.distance_to(Vector2(800, 540))])
 	fp.queue_free()
+	await _test_fishing_fight(sp)
+
+
+## Директор 01.11, 21:59: «вернуть натяжение и шкалу… окунь вытягивался независимо от натяжения; а в обычной рыбалке смысл
+## другой: он уплывает, если не тянуть». Was: `simple: true` — the float dives, a click, the perch out at once whatever
+## the player did after. Now a fight: no pull — the perch swims off and is gone; held right — landed; held too hard —
+## the string snaps; «Облегчить» — a wider green, a weaker perch.
+func _test_fishing_fight(sp: Dictionary) -> void:
+	_check(not bool(sp.get("simple", false)), "the fight is back by default (was simple: true — the perch out at once)")
+	_check(sp.has("fight") and sp.has("gauge"), "the fight's data and its gauge in R3")
+	for k in ["label_slack", "label_hold", "label_over", "label_metres"]:
+		var t := String(sd.text("@mech.fish." + k))
+		_check(t != "" and not t.begins_with("@") and not t.contains("mech.fish"), "the gauge word %s: «%s»" % [k, t])
+	var none := await _fish_fight(sp, "none", 7)
+	_check(String(none["phase"]) != "caught" and int(none["caught"]) == 0, "no pull — not landed: %s" % str(none))
+	_check(String(none["last_end"]) == "escaped", "no pull — the perch swims off and is gone (escaped): %s" % str(none))
+	_check(float(none["max_dist"]) > float(none["start"]) + 0.3, "slack — it swims away, further than where it took (%.1f → %.1f m)" % [float(none["start"]), float(none["max_dist"])])
+	var right := await _fish_fight(sp, "right", 8)
+	_check(String(right["phase"]) == "caught" and int(right["caught"]) == 1 and String(right["last_end"]) == "landed", "the string held in the green — landed: %s" % str(right))
+	_check(float(right["min_dist"]) < 0.5 and bool(right["came_in"]), "it comes in by the metres, visibly: %s" % str(right))
+	var hard := await _fish_fight(sp, "hard", 9)
+	_check(String(hard["phase"]) != "caught" and int(hard["caught"]) == 0 and String(hard["last_end"]) == "snapped", "held too hard — the string snaps, the perch lost: %s" % str(hard))
+	# the gauge: on the water, clear of the float, of the perch's way, of «Ещё»/«Хватит» (y 990)
+	var gr: Array = sp.get("gauge", [0, 0, 0, 0])
+	var g := Rect2(float(gr[0]), float(gr[1]), float(gr[2]), float(gr[3])).grow(14.0)
+	var fl: Array = sp.get("float", [0, 0])
+	var far: Array = sp.get("far", [0, 0])
+	_check(g.position.x >= 0.0 and g.end.x <= 1920.0 and g.end.y < 986.0, "the gauge on screen, above the buttons: %s" % str(g))
+	_check(not g.has_point(Vector2(float(fl[0]), float(fl[1]))) and not g.has_point(Vector2(float(far[0]), float(far[1])) + Vector2(46, 30)), "the gauge clear of the float and of the perch's way")
+	# «Облегчить» (easy_minigames): a wider green, a weaker, slower perch
+	var normal := FishingLogic.new(sp.get("fight", {}), false, 1)
+	var easy := FishingLogic.new(sp.get("fight", {}), true, 1)
+	_check(easy.green.y - easy.green.x > (normal.green.y - normal.green.x) + 0.1, "easy: the green wider (%s vs %s)" % [str(easy.green), str(normal.green)])
+	_check(easy.swim < normal.swim and easy.run_force.y < normal.run_force.y and easy.slack_s > normal.slack_s, "easy: the perch weaker and slower, the slack forgiven longer")
+	var tb = load("res://scripts/mechanics/timing_bar.gd")
+	var keep_path: String = tb.settings_path
+	var keep_slow: bool = tb.slow
+	tb.settings_path = "user://test_fish_settings.cfg"
+	tb.set_slow(true)
+	var ez := await _fish_fight(sp, "none", 11)
+	var ez_green: Array = ez["green"]
+	tb.set_slow(false)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(tb.settings_path))
+	tb.settings_path = keep_path
+	tb.slow = keep_slow
+	_check(float(ez_green[1]) - float(ez_green[0]) > float(none["green"][1]) - float(none["green"][0]) + 0.1, "the panel eased: the green %s (normal %s)" % [str(ez_green), str(none["green"])])
+	_check(float(ez["time"]) > float(none["time"]) + 0.5 and String(ez["last_end"]) == "escaped", "easy: still gone with no pull, but later (%.1f s vs %.1f s)" % [float(ez["time"]), float(none["time"])])
+	_check(bool(ez["toggle"]), "«Облегчить» beside the game in the room")
+
+
+## One fight on a fresh panel from the R3 spec (`seed` fixed): the float dives, a strike, then `how` — "none" (let go),
+## "right" (hold below the green's middle, let go above), "hard" (hold all along) — for up to 20 s of game time.
+func _fish_fight(sp: Dictionary, how: String, seed_v: int) -> Dictionary:
+	var sr: Node = root.get_node("StoryRunner")
+	var spec := sp.duplicate(true)
+	spec["seed"] = seed_v
+	var fp = load("res://scripts/mechanics/fishing_panel.gd").new()
+	fp.spec = spec
+	root.add_child(fp)
+	fp.build()
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	fp.set("phase", "bite")
+	fp.set("phase_t", 0.0)
+	fp.call("press", true)
+	var pr: Dictionary = fp.call("probe")
+	var start := float(pr["dist"])
+	var out := {"start": start, "max_dist": start, "min_dist": start, "came_in": false, "green": pr["green"], "toggle": fp.get("slow_check") != null}
+	var t := 0.0
+	var last_d := start
+	var steps_in := 0
+	while String(fp.get("phase")) == "fight" and t < 20.0:
+		var g: Array = fp.call("probe")["green"]
+		var mid := (float(g[0]) + float(g[1])) * 0.5
+		match how:
+			"none":
+				fp.call("press", false)
+			"hard":
+				fp.call("press", true)
+			"right":
+				fp.call("press", float(fp.call("probe")["tension"]) < mid)
+		fp.call("tick", 1.0 / 60.0)
+		t += 1.0 / 60.0
+		if String(fp.get("phase")) == "fight":
+			var d := float(fp.call("probe")["dist"])
+			out["max_dist"] = maxf(float(out["max_dist"]), d)
+			out["min_dist"] = minf(float(out["min_dist"]), d)
+			if d < last_d:
+				steps_in += 1
+			last_d = d
+		else:
+			out["min_dist"] = minf(float(out["min_dist"]), float(fp.get("fight").dist))
+	pr = fp.call("probe")
+	out["came_in"] = steps_in > 60
+	out["phase"] = pr["phase"]
+	out["caught"] = pr["caught"]
+	out["last_end"] = pr["last_end"]
+	out["time"] = t
+	fp.queue_free()
+	while not sr.current_beat.is_empty():
+		sr.advance()
+		await process_frame
+	return out
 	var a3 = load("res://scripts/actors/actor_3d.gd")
 	_check(a3 != null and (a3 as Script).get_script_method_list().any(func(m): return m.name == "bone_frame_px"), "Actor3D gives a bone's place in its frame (the rod from her hand)")
 

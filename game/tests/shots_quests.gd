@@ -127,8 +127,9 @@ func _shot(n: String) -> void:
 			await _frames(60)
 		"j_ttt", "j_rhythm", "j_fish_wait", "j_fish_fight", "j_fish_caught":   # часть G: the games from the choices
 			var gm := {"j_ttt": [["done_M03", "met_ulyana"], "O1", "ulyana", "tictactoe"], "j_rhythm": [["done_M03", "done_M23c", "nina_visited_house"], "H1", "tikhon", "rhythm"]}   # M23c played: its frame and lines are not over the game (shot 30.10)
-			var g: Array = gm.get(n, [["done_M22", "met_mitya"], "O4", "mitya", "fishing"])
-			await _state(g[0], g[1], "from_O2" if g[1] != "H1" else "default")
+			# the fishing: on the jetty of the far support since 01.11 (was the street O4)
+			var g: Array = gm.get(n, [["done_M22", "met_mitya", "started_M18p", "boat_shuttle_open", "tod_d3_day"], "R3", "mitya", "fishing"])
+			await _state(g[0], g[1], {"H1": "default", "R3": "from_O4"}.get(g[1], "from_O2"))
 			var hm = rm.current_room.get_node_or_null("Hotspots/" + String(g[2]))
 			var spec := {}
 			if hm != null:
