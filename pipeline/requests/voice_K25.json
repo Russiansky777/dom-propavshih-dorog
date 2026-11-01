@@ -1,0 +1,284 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 1200,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K25 (прохождение 01.11, координатор): стр. 19 — мысль у колокола до школьной двери; стр. 34 — лежанка: на улицу ещё не выходили; стр. 57 — дощечку Мити читает Агата (Мити у забора нет); стр. 58 — у сарая Илья, слова Мити отданы ему; M26_16 «Тихон на своей полке» — перезапись без шёпота (Директор 01.11 19:19: «разве первую фразу закадр шептал?»); стр. 13 — про затвор и Павла Пелагея говорит в обязательной части M02 (M02_7_then0)",
+ "new_text_lines": [
+  "agata:H2.bell.thought_early",
+  "agata:H4.bed.early_d1_street",
+  "agata:O4.mitya_board.use",
+  "ilya:O4q.workshop.mitya_cramped",
+  "Q06_0",
+  "Q06_1",
+  "M26_16",
+  "M02_7_then0"
+ ],
+ "items": [
+  {
+   "id": "W260_1",
+   "line": "agata:H2.bell.thought_early",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[softly] Ко́ли вещи своё место помнят… что ж будет, если им родные места вернуть?",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "тихо, как прежняя мысль у колокола"
+  },
+  {
+   "id": "W260_2",
+   "line": "agata:H2.bell.thought_early",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[thoughtful] Ко́ли вещи своё место помнят… что ж будет, если им родные места вернуть?",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W260_3",
+   "line": "agata:H2.bell.thought_early",
+   "take": "3",
+   "speaker": "agata",
+   "text": "Ко́ли вещи своё место помнят… что ж будет, если им родные места вернуть?",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W261_1",
+   "line": "agata:H4.bed.early_d1_street",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Не до лежанки сейчас — со школьного двора тропа к деревне идёт. Поглядеть бы, куда она выводит.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W261_2",
+   "line": "agata:H4.bed.early_d1_street",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[curious] Не до лежанки сейчас — со школьного двора тропа к деревне идёт. Поглядеть бы, куда она выводит.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с интересом"
+  },
+  {
+   "id": "W261_3",
+   "line": "agata:H4.bed.early_d1_street",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[thoughtful] Не до лежанки сейчас — со школьного двора тропа к деревне идёт. Поглядеть бы, куда она выводит.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W262_1",
+   "line": "agata:O4.mitya_board.use",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[softly] Двадцать зарубок — по одной за каждую зиму, что Митя у фонаря стоял. Отдать бы ему.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "тихо"
+  },
+  {
+   "id": "W262_2",
+   "line": "agata:O4.mitya_board.use",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[thoughtful] Двадцать зарубок — по одной за каждую зиму, что Митя у фонаря стоял. Отдать бы ему.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W262_3",
+   "line": "agata:O4.mitya_board.use",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[warmly] Двадцать зарубок — по одной за каждую зиму, что Митя у фонаря стоял. Отдать бы ему.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W263_1",
+   "line": "ilya:O4q.workshop.mitya_cramped",
+   "take": "1",
+   "speaker": "ilya",
+   "text": "[chuckling] У одного верстака и нам с Митей тесно.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "добродушно, с усмешкой"
+  },
+  {
+   "id": "W263_2",
+   "line": "ilya:O4q.workshop.mitya_cramped",
+   "take": "2",
+   "speaker": "ilya",
+   "text": "[warmly] У одного верстака и нам с Митей тесно.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W263_3",
+   "line": "ilya:O4q.workshop.mitya_cramped",
+   "take": "3",
+   "speaker": "ilya",
+   "text": "У одного верстака и нам с Митей тесно.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W264_1",
+   "line": "Q06_0",
+   "take": "1",
+   "speaker": "ilya",
+   "text": "[warmly] Вот и втроём поработаем: Уля — за новым верстаком, а Митя пусть уключину чинит. Давно пора.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "по-деловому, с удовольствием"
+  },
+  {
+   "id": "W264_2",
+   "line": "Q06_0",
+   "take": "2",
+   "speaker": "ilya",
+   "text": "[chuckling] Вот и втроём поработаем: Уля — за новым верстаком, а Митя пусть уключину чинит. Давно пора.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с усмешкой"
+  },
+  {
+   "id": "W264_3",
+   "line": "Q06_0",
+   "take": "3",
+   "speaker": "ilya",
+   "text": "Вот и втроём поработаем: Уля — за новым верстаком, а Митя пусть уключину чинит. Давно пора.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W265_1",
+   "line": "Q06_1",
+   "take": "1",
+   "speaker": "ilya",
+   "text": "[warmly] А полку уж все вместе сколотим.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W265_2",
+   "line": "Q06_1",
+   "take": "2",
+   "speaker": "ilya",
+   "text": "А полку уж все вместе сколотим.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W265_3",
+   "line": "Q06_1",
+   "take": "3",
+   "speaker": "ilya",
+   "text": "[chuckling] А полку уж все вместе сколотим.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с усмешкой"
+  },
+  {
+   "id": "W266_1",
+   "line": "M26_16",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Вечером ужинают в Дунином доме. Нина, Илья с женой, Агата. Тихон на своей полке. Тамарина кастрюля на столе.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "ровно, обычным голосом рассказчика — как прежняя Q017_1, не шёпотом"
+  },
+  {
+   "id": "W266_2",
+   "line": "M26_16",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[warmly] Вечером ужинают в Дунином доме. Нина, Илья с женой, Агата. Тихон на своей полке. Тамарина кастрюля на столе.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "тепло, в полный голос"
+  },
+  {
+   "id": "W266_3",
+   "line": "M26_16",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "[calmly] Вечером ужинают в Дунином доме. Нина, Илья с женой, Агата. Тихон на своей полке. Тамарина кастрюля на столе.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "спокойно"
+  },
+  {
+   "id": "W267_1",
+   "line": "M02_7_then0",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "А воду у плиты мельничный затвор держит. Про него — к Павлу, на мельницу.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "буднично, по-деловому, как прежние строки Пелагеи"
+  },
+  {
+   "id": "W267_2",
+   "line": "M02_7_then0",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[thoughtfully] А воду у плиты мельничный затвор держит. Про него — к Павлу, на мельницу.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "задумчиво, с паузой на тире"
+  },
+  {
+   "id": "W267_3",
+   "line": "M02_7_then0",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "[matter-of-fact] А воду у плиты мельничный затвор держит. Про него — к Павлу, на мельницу.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "сухо, к делу"
+  }
+ ]
+}

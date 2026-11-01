@@ -1,0 +1,809 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 900,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K24 (прохождение Директора 01.11, группа Т — тексты и голос, Docs/FEEDBACK_DIRECTOR_2026-11-01_raw.txt): акценты — стр. 4 (Z2.landmarks.look), 11 (M02_2), 14 (R1.pelageya.manager), 18 (spoons_done), 27 (H4.v02.done), 30 (examine.photo_bridge), 47 (M17_1 «бечева́»), 64 (nina_coat.look_done), 76 (M26_37); новый текст — стр. 24 (O1.enter.winter), 25 (O1.board.chalk*), 26 (spoons_quit), 32 (H2.bell.look), 33 (H2d.bell.ring_far), 36 (H2d.office_mirror.clamped), 40 (quiet_3), 46 (M16_0_then0), 50 (M18_7), 62 (M23d_4_then0 — новая фраза), 65 (M23b_0), 66 (M23b_2), 70 (M25_3). Стр. 12: M02_6 «Вот стопор — кол с замком» снята — записи не нужно. Take _1 = voice_text в data/story/voice_direction.json.",
+ "new_text_lines": [
+  "agata:O1.enter.winter",
+  "agata:O1.board.chalk",
+  "O1.board.chalk_mama",
+  "O1.board.chalk_ilya",
+  "tikhon:H1.tikhon.spoons_quit",
+  "H2.bell.look",
+  "agata:H2d.bell.ring_far",
+  "H2d.office_mirror.clamped",
+  "tikhon:H1.tikhon.quiet_3",
+  "M16_0_then0",
+  "M18_7",
+  "M23d_4_then0",
+  "M23b_0",
+  "M23b_2",
+  "M25_3"
+ ],
+ "items": [
+  {
+   "id": "W219_1",
+   "line": "Z2.landmarks.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Мельничная крыша… к воде спуск. Почта позади осталась.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "пауза после «крыша», перечислением"
+  },
+  {
+   "id": "W219_2",
+   "line": "Z2.landmarks.look",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Мельничная крыша, [short pause] к воде спуск. Почта позади осталась.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "короткая пауза-запятая"
+  },
+  {
+   "id": "W219_3",
+   "line": "Z2.landmarks.look",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Мельничная крыша, — к воде спуск. Почта позади осталась.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "запятая с тире"
+  },
+  {
+   "id": "W220_1",
+   "line": "M02_2",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "[firm] На тот берег ГРЕБУ — а всё к своему причалу выхожу.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "твёрдо, акцент «ГРЕБУ», пауза"
+  },
+  {
+   "id": "W220_2",
+   "line": "M02_2",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[firm] На тот берег ГРЕБУ… а всё к своему причалу выхожу.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "твёрдо, пауза длиннее"
+  },
+  {
+   "id": "W220_3",
+   "line": "M02_2",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "[sighs] На тот берег ГРЕБУ — а всё к своему причалу выхожу.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "со вздохом"
+  },
+  {
+   "id": "W221_1",
+   "line": "pelageya:R1.pelageya.manager",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "Фёдор Лукич, управляющий мельницей, в тот вечер, перед паводком, год назад, затвор запер. Сам ДОМОЙ ушёл, в Ольховку… там и остался. А ночью вода пришла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "акцент «ДОМОЙ», пауза после «Ольховку»"
+  },
+  {
+   "id": "W221_2",
+   "line": "pelageya:R1.pelageya.manager",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[thoughtful] Фёдор Лукич, управляющий мельницей, в тот вечер, перед паводком, год назад, затвор запер. Сам ДОМОЙ ушёл, в Ольховку… там и остался. А ночью вода пришла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W221_3",
+   "line": "pelageya:R1.pelageya.manager",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "Фёдор Лукич, управляющий мельницей, в тот вечер, перед паводком, год назад, затвор запер. Сам ДОМОЙ ушёл — в Ольховку… там и остался. А ночью вода пришла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "пауза и после «ушёл»"
+  },
+  {
+   "id": "W222_1",
+   "line": "tikhon:H1.tikhon.spoons_done",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "Сойдёт. За такое бы СМЕТАНКИ… да где ж её взять.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "как было, акцент «СМЕТАНКИ»"
+  },
+  {
+   "id": "W222_2",
+   "line": "tikhon:H1.tikhon.spoons_done",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[grumbling] Сойдёт. За такое бы СМЕТАНКИ… да где ж её взять.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ворчливо"
+  },
+  {
+   "id": "W222_3",
+   "line": "tikhon:H1.tikhon.spoons_done",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[sighs] Сойдёт. За такое бы СМЕТАНКИ… да где ж её взять.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "со вздохом"
+  },
+  {
+   "id": "W223_1",
+   "line": "agata:O1.enter.winter",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[surprised] Тут уж зима?.. [hesitant] А у нас ещё октябрь!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "удивлённо, потом растерянно (как W020_4)"
+  },
+  {
+   "id": "W223_2",
+   "line": "agata:O1.enter.winter",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[surprised] Тут уж зима?.. А у нас ещё октябрь!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "удивлённо"
+  },
+  {
+   "id": "W223_3",
+   "line": "agata:O1.enter.winter",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[hesitant] Тут уж зима?.. А у нас ещё октябрь!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "растерянно"
+  },
+  {
+   "id": "W224_1",
+   "line": "agata:O1.board.chalk",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[warmly] Теперь и на доске́ мой след: «Я была здесь. Агата».",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W224_2",
+   "line": "agata:O1.board.chalk",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[softly] Теперь и на доске́ мой след: «Я была здесь. Агата».",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "мягко"
+  },
+  {
+   "id": "W224_3",
+   "line": "agata:O1.board.chalk",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[warmly] Теперь и на доске́ мой след… «Я была здесь. Агата».",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "тепло, пауза перед надписью"
+  },
+  {
+   "id": "W225_1",
+   "line": "O1.board.chalk_mama",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Мелом на доске́ выведено: «Мама, я иду».",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W225_2",
+   "line": "O1.board.chalk_mama",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[softly] Мелом на доске́ выведено: «Мама, я иду».",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "мягко"
+  },
+  {
+   "id": "W226_1",
+   "line": "O1.board.chalk_ilya",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Мелом на доске́ выведено: «Илюша, я нашла твой рисунок».",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W226_2",
+   "line": "O1.board.chalk_ilya",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[softly] Мелом на доске́ выведено: «Илюша, я нашла твой рисунок».",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "мягко"
+  },
+  {
+   "id": "W227_1",
+   "line": "tikhon:H1.tikhon.spoons_quit",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Устала? То-то. Это тебе не на печи́ лежать.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "с усмешкой"
+  },
+  {
+   "id": "W227_2",
+   "line": "tikhon:H1.tikhon.spoons_quit",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[grumbling] Устала? То-то. Это тебе не на печи́ лежать.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ворчливо"
+  },
+  {
+   "id": "W227_3",
+   "line": "tikhon:H1.tikhon.spoons_quit",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[chuckling] Устала? То-то. Это тебе не на печи́ лежать.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "посмеиваясь"
+  },
+  {
+   "id": "W228_1",
+   "line": "H4.v02.done",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Светло́ под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "нейтрально, без акцентов"
+  },
+  {
+   "id": "W228_2",
+   "line": "H4.v02.done",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[softly] Светло́ под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "мягко"
+  },
+  {
+   "id": "W228_3",
+   "line": "H4.v02.done",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Светло́ под крышей. Знакомые вещи по-прежнему на своих местах.",
+   "voice_settings": {
+    "stability": 0.85
+   },
+   "variant": "ровнее (стабильность выше)"
+  },
+  {
+   "id": "W229_1",
+   "line": "agata:examine.photo_bridge",
+   "take": "1",
+   "speaker": "agata",
+   "text": "ЦЕЛ ещё мост. На каменных опорах пролёты, а за плиту ближней опоры канат закреплён. У берега — Пелаге́ина лодка.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "пауза-тире после «берега»",
+   "previous_text": "Мост на снимке — цел или нет?"
+  },
+  {
+   "id": "W229_2",
+   "line": "agata:examine.photo_bridge",
+   "take": "2",
+   "speaker": "agata",
+   "text": "ЦЕЛ ещё мост. На каменных опорах пролёты, а за плиту ближней опоры канат закреплён. У берега… Пелаге́ина лодка.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "пауза длиннее",
+   "previous_text": "Мост на снимке — цел или нет?"
+  },
+  {
+   "id": "W229_3",
+   "line": "agata:examine.photo_bridge",
+   "take": "3",
+   "speaker": "agata",
+   "text": "ЦЕЛ ещё мост. На каменных опорах пролёты, а за плиту ближней опоры канат закреплён. У берега — Пелаге́ина лодка.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "спокойнее (стабильность выше)",
+   "previous_text": "Мост на снимке — цел или нет?"
+  },
+  {
+   "id": "W230_1",
+   "line": "H2.bell.look",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "На ПОДВЕСЕ колокол, языка к нему нет.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "акцент «ПОДВЕСЕ»"
+  },
+  {
+   "id": "W230_2",
+   "line": "H2.bell.look",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "На ПОДВЕСЕ колокол… языка к нему нет.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "акцент и пауза"
+  },
+  {
+   "id": "W230_3",
+   "line": "H2.bell.look",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "На ПОДВЕ́СЕ колокол, языка к нему нет.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "акцент, ударение помечено"
+  },
+  {
+   "id": "W231_1",
+   "line": "agata:H2d.bell.ring_far",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[surprised] Не здесь звенит — где-то далеко.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "удивлённо"
+  },
+  {
+   "id": "W231_2",
+   "line": "agata:H2d.bell.ring_far",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[thoughtful] Не здесь звенит… где-то далеко.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W231_3",
+   "line": "agata:H2d.bell.ring_far",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[quietly] Не здесь звенит — где-то далеко.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "тихо"
+  },
+  {
+   "id": "W232_1",
+   "line": "H2d.office_mirror.clamped",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Клинья сели. Потемнев, стекло показывает дверь конторы изнутри: засов в скобах. Ни звука.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W232_2",
+   "line": "H2d.office_mirror.clamped",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[quietly] Клинья сели. Потемнев, стекло показывает дверь конторы изнутри: засов в скобах. Ни звука.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "тихо"
+  },
+  {
+   "id": "W232_3",
+   "line": "H2d.office_mirror.clamped",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Клинья сели. Потемнев… стекло показывает дверь конторы изнутри: засов в скобах. Ни звука.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "пауза после «потемнев»"
+  },
+  {
+   "id": "W233_1",
+   "line": "tikhon:H1.tikhon.quiet_3",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Давал. Ворчал только по делу. Раз в час, не чаще.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "с усмешкой"
+  },
+  {
+   "id": "W233_2",
+   "line": "tikhon:H1.tikhon.quiet_3",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[grumbling] Давал. Ворчал только по делу. Раз в час, не чаще.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ворчливо"
+  },
+  {
+   "id": "W233_3",
+   "line": "tikhon:H1.tikhon.quiet_3",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[chuckling] Давал. Ворчал только по делу. Раз в час, не чаще.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "посмеиваясь"
+  },
+  {
+   "id": "W234_1",
+   "line": "M16_0_then0",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "Лодку опять к /plʲɪˈtʲe/ отведу, к повороту. Туда приходи, там и проверим.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "как K014_A",
+   "previous_text": "Лодку к плите отведу, к повороту. Туда приходи, там и проверим."
+  },
+  {
+   "id": "W234_2",
+   "line": "M16_0_then0",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[animated] Лодку опять к /plʲɪˈtʲe/ отведу, к повороту. Туда приходи, там и проверим.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "оживлённо",
+   "previous_text": "Лодку к плите отведу, к повороту. Туда приходи, там и проверим."
+  },
+  {
+   "id": "W234_3",
+   "line": "M16_0_then0",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "[firm] Лодку опять к /plʲɪˈtʲe/ отведу, к повороту. Туда приходи, там и проверим.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "деловито",
+   "previous_text": "Лодку к плите отведу, к повороту. Туда приходи, там и проверим."
+  },
+  {
+   "id": "W235_1",
+   "line": "M17_1",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Течение повело лодку: по канату СКОЛЬЗИТ кольцо, пустая лодка в туман уходит. Весь год её возвращало к родному причалу. Теперь идёт прямо. ДЁРНУЛАСЬ бечева́ — раз, и ещё раз.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ударение «бечева́» (знак)",
+   "previous_text": "И что бечева?"
+  },
+  {
+   "id": "W235_2",
+   "line": "M17_1",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "Течение повело лодку: по канату СКОЛЬЗИТ кольцо, пустая лодка в туман уходит. Весь год её возвращало к родному причалу. Теперь идёт прямо. ДЁРНУЛАСЬ /bʲɪt͡ɕɪˈva/ — раз, и ещё раз.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ударение «бечева́» (IPA)",
+   "previous_text": "И что бечева?"
+  },
+  {
+   "id": "W235_3",
+   "line": "M17_1",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Течение повело лодку: по канату СКОЛЬЗИТ кольцо, пустая лодка в туман уходит. Весь год её возвращало к родному причалу. Теперь идёт прямо. ДЁРНУЛАСЬ бечева́… раз, и ещё раз.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "знак ударения, пауза",
+   "previous_text": "И что бечева?"
+  },
+  {
+   "id": "W236_1",
+   "line": "M18_7",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "[warmly] Ты мне теперь /pət͡ɕɪˈtaj/ ровесник. А я всё мальчишку своего ждала.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "растроганно (как Q007_3)",
+   "previous_text": "А я всё фонарь зажигал, всякий вечер. Чтоб ты знала, где меня искать."
+  },
+  {
+   "id": "W236_2",
+   "line": "M18_7",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "[softly] Ты мне теперь /pət͡ɕɪˈtaj/ ровесник. А я всё мальчишку своего ждала.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "мягко",
+   "previous_text": "А я всё фонарь зажигал, всякий вечер. Чтоб ты знала, где меня искать."
+  },
+  {
+   "id": "W236_3",
+   "line": "M18_7",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "[warmly] Ты мне теперь /pət͡ɕɪˈtaj/ ровесник… А я всё мальчишку своего ждала.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "растроганно, пауза",
+   "previous_text": "А я всё фонарь зажигал, всякий вечер. Чтоб ты знала, где меня искать."
+  },
+  {
+   "id": "W237_1",
+   "line": "M23d_4_then0",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[sighs] Ну, что ж… Печь-то всё одно́ караулить надо. Она не ждёт.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "со вздохом, к будничному"
+  },
+  {
+   "id": "W237_2",
+   "line": "M23d_4_then0",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[slowly] Ну, что ж… Печь-то всё одно́ караулить надо. Она не ждёт.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "медленно"
+  },
+  {
+   "id": "W237_3",
+   "line": "M23d_4_then0",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[sighs] Ну, что ж… [grumbling] Печь-то всё одно́ караулить надо. Она не ждёт.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "вздох, потом привычное ворчание"
+  },
+  {
+   "id": "W238_1",
+   "line": "H1d.nina_coat.look_done",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "На своём крючке Дунино пальто висит. ЗАШИТ рукав.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "акцент «ЗАШИТ»"
+  },
+  {
+   "id": "W238_2",
+   "line": "H1d.nina_coat.look_done",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[softly] На своём крючке Дунино пальто висит. ЗАШИТ рукав.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "мягко"
+  },
+  {
+   "id": "W238_3",
+   "line": "H1d.nina_coat.look_done",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "На своём крючке Дунино пальто висит. ЗАШИТ рукав.",
+   "voice_settings": {
+    "stability": 0.8
+   },
+   "variant": "ровнее (стабильность выше)"
+  },
+  {
+   "id": "W239_1",
+   "line": "M23b_0",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "Старик во дворе мельницы стои́т. Вернулся управляющий. Илья с ним пришёл.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W239_2",
+   "line": "M23b_0",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "[slowly] Старик во дворе мельницы стои́т. Вернулся управляющий. Илья с ним пришёл.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "медленно"
+  },
+  {
+   "id": "W239_3",
+   "line": "M23b_0",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "Старик во дворе мельницы стои́т… Вернулся управляющий. Илья с ним пришёл.",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "пауза после первой фразы"
+  },
+  {
+   "id": "W240_1",
+   "line": "M23b_2",
+   "take": "1",
+   "speaker": "pavel",
+   "text": "Год на гвозде рычаг провисел. Как вы повесили, так и висел.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "ровно"
+  },
+  {
+   "id": "W240_2",
+   "line": "M23b_2",
+   "take": "2",
+   "speaker": "pavel",
+   "text": "[thoughtful] Год на гвозде рычаг провисел. Как вы повесили, так и висел.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "задумчиво"
+  },
+  {
+   "id": "W240_3",
+   "line": "M23b_2",
+   "take": "3",
+   "speaker": "pavel",
+   "text": "[chuckling] Год на гвозде рычаг провисел. Как вы повесили, так и висел.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "с усмешкой"
+  },
+  {
+   "id": "W241_1",
+   "line": "M25_3",
+   "take": "1",
+   "speaker": "ilya",
+   "text": "[warmly] Про крюк не знаю. А тебя я и так слышу — командуй!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "тепло"
+  },
+  {
+   "id": "W241_2",
+   "line": "M25_3",
+   "take": "2",
+   "speaker": "ilya",
+   "text": "[chuckling] Про крюк не знаю. А тебя я и так слышу — командуй!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "посмеиваясь"
+  },
+  {
+   "id": "W241_3",
+   "line": "M25_3",
+   "take": "3",
+   "speaker": "ilya",
+   "text": "[animated] Про крюк не знаю. А тебя я и так слышу — командуй!",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "живо"
+  },
+  {
+   "id": "W242_1",
+   "line": "M26_37",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[warmly] Можно, Уля! Теперь мост есть — хоть каждый день приходи. И завтра у нас… ОДНО НА ВСЕХ!",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "тепло, пауза, «ОДНО НА ВСЕХ!»"
+  },
+  {
+   "id": "W242_2",
+   "line": "M26_37",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[excited] Можно, Уля! Теперь мост есть — хоть каждый день приходи. И завтра у нас… ОДНО НА ВСЕХ!",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "радостно"
+  },
+  {
+   "id": "W242_3",
+   "line": "M26_37",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[warmly] Можно, Уля! Теперь мост есть — хоть каждый день приходи. И завтра у нас — ОДНО НА ВСЕХ!",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "тепло, пауза-тире"
+  }
+ ]
+}
