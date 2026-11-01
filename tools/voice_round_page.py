@@ -12,7 +12,7 @@ w — номер записей (W193 → дубли W193_1…3 из запро�
 Шаблон — Docs/voice_pages/template_round.html (страница «Тринадцатый заход» с подстановками).
 """
 from __future__ import annotations
-import argparse, json, re, shutil
+import argparse, json, re, shutil, subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -70,6 +70,14 @@ def main() -> int:
         if not its:
             raise SystemExit(f"{r['w']}: нет дублей в запросах для строки {r['line']}")
         takes = [take_entry(it['id'], LABELS[k], it['text'], it.get('variant', '')) for k, it in enumerate(its)]
+        # current_game: the recording that plays in the game now (assets/voice/ru/<file>.ogg → a/<id>_game.mp3) —
+        # for comparing a new voice on the same line (K26, Director 01.11: Tatyana Voloshina instead of Tamara).
+        if r.get('current_game'):
+            src = ROOT / 'assets/voice/ru' / r['current_game']
+            dst = out / 'a' / (re.sub(r'[^A-Za-z0-9_]+', '_', r['line']) + '_game.mp3')
+            subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-b:a', '128k', str(dst)], check=True)
+            takes.insert(0, {"take": "game_" + r['w'], "label": "Сейчас", "file": f"a/{dst.name}", "miss": [],
+                             "variant": r.get('current_note', 'как сейчас в игре'), "game": True})
         if r.get('current'):
             tid = r['current'].split()[0]
             g = take_entry(tid, 'В игре', r['subtitle'], 'сейчас в игре (' + r['current'].split(' ', 1)[1].strip('()') + ')')

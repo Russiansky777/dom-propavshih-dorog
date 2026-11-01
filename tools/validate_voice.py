@@ -936,6 +936,33 @@ def key_in(waiting: dict, name: str) -> str:
     return ""
 
 
+def check_say_requests(req_dir: Path | None = None, probe_root: Path | None = None, cast: dict | None = None) -> list[str]:
+    """01.11 (прогон 41341755157): запрос say с суммой символов больше своего max_chars падает в конвейере и
+    останавливает все запросы после него в том же прогоне. Ловим до пуша — только не записанные ещё запросы
+    (все дубли уже есть в pipeline/voice/probe/<набор>/ — запрос отработал, его не трогаем). Там же: `alt` — голос
+    должен быть в cast.<персонаж>.alternates."""
+    req_dir = req_dir or ROOT / "pipeline" / "requests"
+    probe_root = probe_root or ROOT / "pipeline" / "voice" / "probe"
+    errors = []
+    for f in sorted(req_dir.glob("voice_*.json")):
+        d = load(f, {}) or {}
+        if d.get("mode") != "say":
+            continue
+        items = [it for it in d.get("items", []) if it.get("id") and it.get("text")]
+        pdir = probe_root / str(d.get("set", f.stem))
+        if items and all((pdir / f"{it['id']}.mp3").is_file() for it in items):
+            continue
+        chars = sum(len(str(it["text"])) for it in items)
+        if chars > int(d.get("max_chars", 0)):
+            errors.append(f"{f.name}: {chars} символов > max_chars {d.get('max_chars')} — конвейер остановится на этом запросе")
+        for it in items:
+            if it.get("alt") and cast is not None:
+                alts = ((cast.get("cast", {}).get(str(it.get("speaker", ""))) or {}).get("alternates") or {})
+                if str(it["alt"]) not in alts:
+                    errors.append(f"{f.name} {it['id']}: голоса {it.get('speaker')}.alternates.{it['alt']} нет в cast.json")
+    return errors
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
     strict = "--strict" in sys.argv
@@ -978,6 +1005,14 @@ def main() -> int:
     errors += l_err
     warns += l_warn
     errors += check_ask_prompts(voice_cfg, texts)
+    errors += check_say_requests(cast=cast)
+    # самопроверка: незаписанный запрос say сверх max_chars — ошибка
+    import tempfile
+    with tempfile.TemporaryDirectory() as _td:
+        _rq = Path(_td) / "voice_T.json"
+        _rq.write_text(json.dumps({"mode": "say", "set": "T", "max_chars": 5, "items": [{"id": "T_1", "text": "Проба длиннее"}]}), encoding="utf-8")
+        if not check_say_requests(Path(_td), Path(_td)):
+            errors.append("самопроверка: запрос say сверх max_chars не пойман")
     errors += check_main_takes(load(VOICE_SRC.parent / "ru_takes" / "manifest.json"), manifests.get("ru"))
     c_err, c_warn = check_coverage(lines, manifests.get("ru"), load(PENDING) or {})
     errors += c_err
