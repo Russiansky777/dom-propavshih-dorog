@@ -1,0 +1,46 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 173,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K30: подпись сигнала «раз» под новую механику крюка (Директор 01.11 22:26: Павел ведёт крюк снизу вверх)",
+ "new_text_lines": [
+  "mech.office_mirror.sig_one"
+ ],
+ "items": [
+  {
+   "id": "W303_1",
+   "line": "mech.office_mirror.sig_one",
+   "take": "1",
+   "speaker": "narrator",
+   "text": "1 удар — «пускай»: Павел ведёт крюк вверх",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "как прежняя запись строки"
+  },
+  {
+   "id": "W303_2",
+   "line": "mech.office_mirror.sig_one",
+   "take": "2",
+   "speaker": "narrator",
+   "text": "1 удар — «пускай»: Павел ведёт крюк вверх",
+   "voice_settings": {
+    "stability": 0.7
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W303_3",
+   "line": "mech.office_mirror.sig_one",
+   "take": "3",
+   "speaker": "narrator",
+   "text": "1 удар — «пускай»: Павел ведёт крюк вверх",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "чуть живее"
+  }
+ ]
+}
