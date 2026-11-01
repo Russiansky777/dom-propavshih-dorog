@@ -336,7 +336,11 @@ func lock_lag_px() -> float:
 func _setup_sprite() -> void:
 	if actor_id == "":
 		return
-	sheet = ActorSheet.load_actor(actor_id)
+	# Ревью 01.11 (В-5): when the live model is the figure, the sheets are only the clock of the clips (frames, fps,
+	# regions) — their pictures (≈ 400 МБ of ctex, ≈ 0,4 ГБ of video memory) stay unread until the sprites are asked
+	# for (F8 / set_render_mode("sprites")), as NpcActor already does for the villagers (K-16).
+	var want0 := _wanted_render()
+	sheet = ActorSheet.load_actor(actor_id, {}, want0 != "3d")
 	if sheet == null or not sheet.is_loaded():
 		push_warning("Player: actor '%s' sheet not loaded (%s); using placeholder body" % [actor_id, sheet.load_error if sheet else "?"])
 		sheet = null
@@ -362,18 +366,45 @@ func _setup_sprite() -> void:
 	if tn.has("seconds_180"):
 		turn_step_s = maxf(float(tn["seconds_180"]) / maxf(float(sheet.directions) * 0.5, 1.0), 0.02)
 	turn_blend_s = float(tn.get("blend_s", 0.0))
+	var want := _wanted_render()
+	if want == "3d" and not set_render_mode("3d") and not sheet.textures_loaded:
+		_load_sheet_textures()   # the model did not load: the sheets draw her after all
+	_play_idle()
+
+
+## The render mode the data, the environment or a test asks for ("3d" / "sprites"); the actor data is read here
+## when _spec is not in yet (the sheets are loaded before it).
+func _wanted_render() -> String:
 	var want := forced_render if forced_render != "" else _render_from_env()
 	if want == "":
+		var spec: Dictionary = _spec
+		if spec.is_empty():
+			var parsed = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % actor_id))
+			spec = parsed if parsed is Dictionary else {}
 		# Director 30.10 (14:38, 14:47): the live model is the figure of the game (Steam); the web build keeps the
 		# sheets (`render_web`) — the site has no GPU budget to count on and a 1 GB limit.
-		want = String(_spec.get("render_web" if OS.has_feature("web") else "render", "sprites"))
+		want = String(spec.get("render_web" if OS.has_feature("web") else "render", "sprites"))
 		# Headless test runs keep the sheets (their timings were measured on them); tests of the live model force
 		# "3d" (forced_render), the game and the frame shots (a display) get the data's mode.
 		if DisplayServer.get_name() == "headless":
 			want = "sprites"
-	if want == "3d":
-		set_render_mode("3d")
-	_play_idle()
+	return want
+
+
+## The sheets' pictures, read when the sprites are needed after all (placement-only sheet so far).
+func _load_sheet_textures() -> void:
+	if sheet == null or sheet.textures_loaded or sprite == null:
+		return
+	var full := ActorSheet.load_actor(actor_id)
+	if full == null or not full.is_loaded():
+		return
+	var anim := sprite.animation
+	var fr := sprite.frame
+	sheet = full
+	sprite.sprite_frames = sheet.frames
+	if sheet.frames.has_animation(anim):
+		sprite.animation = anim
+		sprite.frame = fr
 
 
 func uses_sheet() -> bool:
@@ -1033,6 +1064,7 @@ func set_render_mode(mode: String) -> bool:
 		_process_3d(0.0)
 	else:
 		render_mode = "sprites"
+		_load_sheet_textures()   # В-5: the pictures come in now, if the figure started as the live model
 		if view3d != null:
 			view3d.render_target_update_mode = SubViewport.UPDATE_DISABLED
 		if body3d != null:

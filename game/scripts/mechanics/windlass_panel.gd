@@ -224,8 +224,9 @@ func _voice(tkey: String) -> void:
 
 
 func _voice_later(tkey: String, s: float) -> void:
-	get_tree().create_timer(s).timeout.connect(func():
-		if is_inside_tree() and not laid_sent:
+	var me := self
+	get_tree().create_timer(s, false).timeout.connect(func():
+		if is_instance_valid(me) and me.is_inside_tree() and not laid_sent:   # ревью 01.11 (В-16): the panel may be gone
 			_voice(tkey))
 
 

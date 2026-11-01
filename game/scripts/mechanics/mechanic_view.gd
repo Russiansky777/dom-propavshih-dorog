@@ -119,6 +119,7 @@ func _close() -> void:
 
 func _free_nodes() -> void:
 	if root != null and is_instance_valid(root):
+		remove_child(root)   # ревью 01.11 (В-17): the next «Mechanic» keeps its name (no «Mechanic2» while the old one waits to be freed)
 		root.queue_free()
 	root = null
 	panel = null

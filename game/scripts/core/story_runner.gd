@@ -1166,6 +1166,9 @@ func _use_when(d: Dictionary) -> Dictionary:
 func interact(h: StoryHotspot) -> void:
 	if is_busy():
 		return
+	# ревью 01.11 (В-15): a hotspot hidden while she walked up to it (a villager who left by flags) no longer acts
+	if not h.is_active():
+		return
 	var d := h.data
 	# A state may say its own look (rooms data `states[].look` — G14: the stove after the shelf is hung no longer talks
 	# of the mount sockets; G9: the leaning shelf while the wet towel is on the bench) and its own refusal of a choice

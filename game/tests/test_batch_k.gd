@@ -759,7 +759,7 @@ func _test_late_choices() -> void:
 	# after: mother has answered — the chalk only says why not, nothing is set
 	gs.reset()
 	sr.call("_on_state_reset")
-	_set_flags(["done_M01", "done_M02", "done_M03", "done_M04", "done_M05", "done_M06", "house_unlocked", "house_open", "started_M19", "done_M19", "done_M21b", "done_M22", "nina_answered_board", "school_path_open", "free_walk_day3", "morning_day3", "met_nina", "met_ulyana"])
+	_set_flags(["done_M01", "done_M02", "done_M03", "done_M04", "done_M05", "done_M06", "house_unlocked", "house_open", "started_M19", "done_M19", "done_M21b", "done_M22", "nina_answered_board", "school_path_open", "free_walk_day3", "morning_day3", "met_nina", "met_ulyana", "seen_class_traces"])
 	gs.add_item("chalk")
 	gs.add_item("mitten")
 	await _enter("O1", "from_O2")
