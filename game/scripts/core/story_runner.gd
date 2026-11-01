@@ -143,6 +143,9 @@ func can_start(scene_id: String) -> bool:
 	# A reserve story (quests.json `reserve`: kept for later, not in the build) never starts by itself.
 	if bool(sc.get("reserve", false)):
 		return false
+	# An optional story is closed once its `closes_on` flag is set (quests.json: finale_confirmed — the first span).
+	if sc.has("closes_on") and GameState.has_flag(String(sc["closes_on"])):
+		return false
 	if _beats.any(func(b): return b.get("scene", "") == scene_id):
 		return false
 	return requires_met(sc.get("requires", {}))

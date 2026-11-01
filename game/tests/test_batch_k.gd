@@ -100,6 +100,7 @@ func _run() -> void:
 	await _test("K (AI №4) the mill on day three: «Помню, Павел» only after the promise; after «матушка и брат» — «Наберём, Павел» without it", _test_m23b_promise)
 	await _test("Ревью 01.11 (Б-2): after mother's answer the chalk, the bird and the mitten do not take a choice any more (no answer out of time); before it they do", _test_late_choices)
 	await _test("Ревью 01.11 (В-2, В-13): a villager walking off waits through a pause (the walk ends where the tween does); the yard loop's black survives a reset", _test_pause_timers)
+	await _test("Ревью 01.11 (Б-9, Б-6): the optional stories close on quests.json closes_on (the first span); Esc inside an unclosable close-up is not eaten", _test_closes_on_and_esc)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -831,4 +832,29 @@ func _test_pause_timers() -> void:
 		sr.call("_on_state_reset")
 		await _secs(0.6)
 		_check(not bool(sr.get("_loop_running")) and sr.current_beat.is_empty(), "a reset during the loop's black drops it: no loop running, no closed text")
+
+
+func _test_closes_on_and_esc() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	_set_flags(["started_M19", "done_M19", "done_M21b", "done_M22", "free_walk_day3", "morning_day3", "house_open", "met_nina", "met_ilya", "met_mitya"])
+	_check(String(sd.scene("Q06").get("closes_on", "")) == "finale_confirmed" and String(sd.scene("Q07").get("closes_on", "")) == "finale_confirmed", "quests carry closes_on from quests.json")
+	_check(sr.can_start("Q07") and sr.can_start("Q06"), "on the free day the stories can start")
+	gs.set_flag("finale_confirmed", true)
+	_check(not sr.can_start("Q07") and not sr.can_start("Q06") and not sr.can_start("Q02"), "after the first span (finale_confirmed) none of them starts")
+	gs.set_flag("finale_confirmed", false)
+	# Б-6: an unclosable close-up (the windlass of M25 is one; here any spec with closable false) lets Esc through
+	var mvf: Node = main_node.get_node("MechanicView")
+	var spec := {"type": "fishing", "title": "@mech.fish.label_title", "closable": false, "in_room": true, "simple": true, "float": [1600, 640], "texts": {"wait": "@mech.fish.label_wait", "again": "@mech.fish.label_again", "caught": "@mech.fish.caught", "early": "@mech.fish.early", "late": "@mech.fish.late"}}
+	sr.open_mechanic(spec, "test")
+	await _frames(2)
+	_check(sr.mechanic_open and not (mvf.get("close_button") as Button).visible, "an unclosable close-up: no «Закрыть»")
+	var ev := InputEventKey.new()
+	ev.keycode = KEY_ESCAPE
+	ev.physical_keycode = KEY_ESCAPE
+	ev.pressed = true
+	mvf.call("_input", ev)
+	_check(sr.mechanic_open and not root.is_input_handled(), "Esc is left for the pause menu, the close-up stays")
+	sr.close_mechanic()
+	await _frames(2)
 

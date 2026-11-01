@@ -159,6 +159,10 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey and event.pressed and not event.echo and \
 			(event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE):
+		# ревью 01.11 (Б-6): a close-up that cannot be closed (the crossing, the windlass) lets Esc through to the
+		# pause menu instead of eating it — the player can still save or leave from inside it
+		if not bool(spec.get("closable", true)):
+			return
 		get_viewport().set_input_as_handled()
 		if bool(spec.get("closable", true)):
 			# a game's farewell (`close_event`) waits for the text on screen; a plain close-up goes at once, as before

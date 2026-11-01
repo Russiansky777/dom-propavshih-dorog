@@ -968,6 +968,12 @@ func _test_crossing() -> void:
 	_check(not mv.close_button.visible, "no «Закрыть»: the only way is across")
 	await _key(KEY_ESCAPE)
 	_check(sr.mechanic_open, "Esc does not leave the boat")
+	# ревью 01.11 (Б-6): Esc is not eaten by the boat any more — it opens the pause menu over it; close that and go on
+	var pm: Node = main_node.get_node_or_null("Pause")
+	if pm != null and bool(pm.get("visible")):
+		pm.call("close")
+		await _frames(2)
+	_check(sr.mechanic_open and (pm == null or not bool(pm.get("visible"))), "the pause menu closed, the boat still here")
 	var p = mv.panel
 	var pr := _panel()
 	_check(int(pr.get("pulls_total", 0)) >= 8 and int(pr.get("pulls_total", 0)) <= 12, "about ten pulls (%d)" % int(pr.get("pulls_total", 0)))

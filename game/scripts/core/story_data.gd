@@ -147,9 +147,14 @@ func _load_scenes() -> void:
 			scene_order.append(id)
 	var qdoc = _read_json(DATA_DIR + "/quests.json")
 	if qdoc != null:
+		var closes_on := String(qdoc.get("closes_on", ""))
 		for q in qdoc.get("quests", []):
 			var id := String(q["id"])
 			q["type"] = "quest"
+			# quests.json `closes_on`: the flag after which no optional story starts any more (ревью 01.11, Б-9: the
+			# field was data without a reader — the stories went on offering themselves after the first span)
+			if closes_on != "" and not q.has("closes_on"):
+				q["closes_on"] = closes_on
 			if not q.has("grants"):
 				q["grants"] = {"flags": [], "items": []}
 			if not q.has("mandatory_lines"):
