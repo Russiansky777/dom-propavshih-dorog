@@ -58,6 +58,21 @@ func _run() -> void:
 		print("%s  geometry %s  (%d ms)" % ["PASS" if passed else "FAIL", rid, Time.get_ticks_msec() - started])
 		for f in _fails:
 			print("        - " + f)
+	# Frames (blocks 3–5, «frame»: true) are not locations — only their layers are checked: drawn on screen.
+	for rid in _sd.rooms.keys():
+		if not bool(_sd.room(String(rid)).get("frame", false)):
+			continue
+		_fails = []
+		var fr = _builder.build(String(rid))
+		if fr != null:
+			root.add_child(fr)
+			_check_on_screen(fr, _sd.room(String(rid)))
+			root.remove_child(fr)
+			fr.free()
+		_results.append([rid, _fails.is_empty(), _fails.duplicate()])
+		print("%s  layers on screen %s" % ["PASS" if _fails.is_empty() else "FAIL", rid])
+		for f in _fails:
+			print("        - " + f)
 	var failed := 0
 	for r in _results:
 		if not r[1]:
@@ -118,6 +133,7 @@ func _test_room(rid: String) -> void:
 		return
 	root.add_child(room)
 	_check_scales(room, spec)
+	_check_on_screen(room, spec)
 	var region: NavigationRegion2D = room.get_walkable()
 	var map := NavigationServer2D.map_create()
 	NavigationServer2D.map_set_active(map, true)
@@ -265,6 +281,39 @@ func _check_scales(room: Node, spec: Dictionary) -> void:
 			"layer %s scale %s, expected background scale × %s = %s" % [lid, str(img.scale), str(sv), str(want)])
 		if String(l.get("scale_reason", "")).strip_edges() == "":
 			_check(absf(img.scale.x - bg.scale.x) <= 0.001, "layer %s is drawn at %.4f, not the background's %.4f, and the data gives no scale_reason" % [lid, img.scale.x, bg.scale.x])
+
+
+## Every picture layer's drawn pixels are on the 1920×1080 screen (at least ON_SCREEN_MIN of their box): the
+## H2 mirror and bundle of batch 12 came drawn in place on the canvas but kept the old scale/offset of the small
+## drawing and went off screen (check 01.11, Director's line 33) while every scale test stayed green.
+const ON_SCREEN_MIN := 0.6
+
+func _check_on_screen(room: Node, spec: Dictionary) -> void:
+	var screen := Rect2(0, 0, 1920, 1080)
+	for l in spec.get("layers", []):
+		var lid := String(l.get("id", ""))
+		var node: Node = room.get_node_or_null("Occluders/" + lid)
+		if node == null:
+			node = room.get_node_or_null("Layers/" + lid)
+		if node == null or node.has_meta("stub"):
+			continue
+		var img: Sprite2D = node.get_node_or_null("Image")
+		if img == null or img.texture == null:
+			continue
+		var im := img.texture.get_image()
+		if im == null:
+			continue
+		if im.is_compressed():
+			im.decompress()
+		var used := Rect2(im.get_used_rect())
+		if used.size.x <= 0 or used.size.y <= 0:
+			continue
+		var xf := img.get_global_transform()
+		var box := Rect2(xf * (used.position + img.offset), Vector2.ZERO)
+		for c in [Vector2(used.end.x, used.position.y), used.end, Vector2(used.position.x, used.end.y)]:
+			box = box.expand(xf * (c + img.offset))
+		var inside := box.intersection(screen).get_area() / maxf(box.get_area(), 1.0)
+		_check(inside >= ON_SCREEN_MIN, "layer %s: its drawing %s is only %d %% on the screen — scale/offset left from an older picture?" % [lid, str(box), int(inside * 100.0)])
 
 
 ## No vertex and no 8-px step of a path lies inside an obstacle or outside the floor outline.

@@ -557,7 +557,8 @@ func _winter_front(wv: Dictionary, opening: Rect2) -> Node2D:
 	# feathered sides, fading with depth), cut only at the threshold line itself, where the floor begins.
 	var trap := [[x0 + 6.0, y0 - 30.0], [x1 - 6.0, y0 - 30.0], [cx + hw, y0 + depth], [cx - hw, y0 + depth]]
 	var m := LightMask.build([trap], maxf(depth * 0.28, 24.0),
-		{"from": [cx, y0], "to": [cx, y0 + depth * 1.1], "alpha_from": 1.0, "alpha_to": 0.0})
+		{"from": [cx, y0], "to": [cx, y0 + depth * 1.1], "alpha_from": 1.0, "alpha_to": 0.0,
+		"rise": float(lt.get("rise", 0.0)), "alpha_edge": float(lt.get("edge_alpha", 1.0))})
 	var mr: Rect2 = m["rect"]
 	var mt: Texture2D = m["texture"]
 	var mts := Vector2(mt.get_width(), mt.get_height())

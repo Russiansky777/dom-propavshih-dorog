@@ -78,6 +78,10 @@ static func build(polys: Array, feather: float, gradient: Dictionary = {}) -> Di
 		g_len2 = maxf(g_axis.length_squared(), 1.0)
 		af = float(gradient.get("alpha_from", 1.0))
 		at = float(gradient.get("alpha_to", 0.0))
+	# `rise` (0..1 of the axis) + `alpha_edge`: the light grows in from the `from` end instead of starting at full
+	# strength — no hard bright line where the mask is cut (K-40, Director 31.10: the classroom door's threshold)
+	var g_rise := float(gradient.get("rise", 0.0))
+	var g_edge := float(gradient.get("alpha_edge", 1.0))
 	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
 	for y in h:
 		for x in w:
@@ -86,6 +90,8 @@ static func build(polys: Array, feather: float, gradient: Dictionary = {}) -> Di
 				var p: Vector2 = bounds.position + (Vector2(x, y) + Vector2(0.5, 0.5)) * texel
 				var k := clampf((p - g_from).dot(g_axis) / g_len2, 0.0, 1.0)
 				v *= lerpf(af, at, smoothstep(0.0, 1.0, k))
+				if g_rise > 0.0:
+					v *= lerpf(g_edge, 1.0, smoothstep(0.0, g_rise, k))
 			if s_depth > 0.0:
 				var px: float = bounds.position.x + (float(x) + 0.5) * texel
 				v *= 1.0 - s_depth * smoothstep(0.3, 1.0, absf(px - s_cx) / s_half)

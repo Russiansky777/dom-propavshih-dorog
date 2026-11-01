@@ -1,0 +1,11 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Пятнадцатый заход (K20): записи, выбранные Директором 01.11 (14:20, страница https://claude.ai/artifact/G85tAeuDmWxV3SuSFU9U8j) — в игру без нового синтеза: M23c_0 без паузы перед «все», H1.shelf.look с ударением «у печИ», две реплики Ули тише (после W196_2).",
+ "picks": {
+  "M23c_0": "W210_1",
+  "H1.shelf.look": "W211_1",
+  "ulyana:O1d.ulyana.ttt_bye": "W212_1",
+  "ulyana:mech.ttt.lose": "W213_1"
+ }
+}

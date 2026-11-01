@@ -266,6 +266,17 @@ func _test_here_and_visits() -> void:
 	mp.call("close_now")
 	# G2 (Director 23.10: «нанести на карту то, что изменилось или добавилось»): once Agata has been on the far bank —
 	# the batch-9 layer (school, houses, the rope crossing, the boat, the shed) and the plaques of the new places.
+	# Сверка 01.11 (стр. 10): канат с лодкой — не на основе плана, а слоем с rope_on_ring (канат завязан в M15)
+	gs.set_flag("rope_on_ring", true)
+	mp.call("open_from", Rect2())
+	_check(await _open_settled(), "open after the rope is tied")
+	_check((mp.call("probe")["overlays"] as Array) == ["Overlay_zarechye_plan_rope"], "K-10: after M15 only the rope with the boat appears (%s)" % str(mp.call("probe")["overlays"]))
+	mp.call("close_now")
+	var base_img: Image = (load("res://assets/ui/map/zarechye_plan.png") as Texture2D).get_image()
+	if base_img.is_compressed():
+		base_img.decompress()
+	var boat_px := base_img.get_pixel(858, 400)
+	_check(boat_px.get_luminance() > 0.6, "K-10: no boat drawn on the plan's base at (858, 400) — water there (luminance %.2f)" % boat_px.get_luminance())
 	gs.set_flag("visited_R3", true)
 	mp.call("open_from", Rect2())
 	_check(await _open_settled(), "open after the far pier")

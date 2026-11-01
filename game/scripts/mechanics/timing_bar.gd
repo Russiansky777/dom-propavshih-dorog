@@ -11,8 +11,8 @@ extends Control
 ## the bar beside the glass shows where the bolt zone is. `drive = false` — the owner steps the logic
 ## itself (the hook moves the marker with the hook).
 ##
-## Accessibility (G3, Director 23.10): menu «Облегчить мини-игры» (user://settings.cfg [access] timing_slow — the key
-## kept from «Точный удар — медленнее», so an old setting still holds) — every timing mini-game, now and to come, is
+## Accessibility (G3, Director 23.10): menu «Облегчить мини-игры» (user://settings.cfg [access] easy_minigames — since 01.11
+## a new key: the old timing_slow, set in early builds, turned it on for the Director without his asking) — every timing mini-game, now and to come, is
 ## easier: the sweep SLOW_K times slower and the green zone EASY_GREEN_K times wider (apply_ease on a TimingLogic;
 ## the hook in the office mirror and the log at the windlass read slow_k()/green_k() too).
 
@@ -262,13 +262,18 @@ func _draw() -> void:
 
 # --- Settings (accessibility) -----------------------------------------------------------------
 
+const SLOW_KEY := "easy_minigames"
+
+
 static func load_settings(force: bool = false) -> void:
 	if _loaded and not force:
 		return
 	_loaded = true
 	var cf := ConfigFile.new()
 	if FileAccess.file_exists(settings_path) and cf.load(settings_path) == OK:
-		slow = bool(cf.get_value("access", "timing_slow", false))
+		# K-2 (Director 31.10: «по умолчанию выключено» — it came on from an old setting): the switch lives under a new
+		# key; the old `timing_slow` (kept since «Точный удар — медленнее») no longer turns it on by itself
+		slow = bool(cf.get_value("access", SLOW_KEY, false))
 
 
 static func set_slow(on: bool) -> bool:
@@ -277,7 +282,7 @@ static func set_slow(on: bool) -> bool:
 	var cf := ConfigFile.new()
 	if FileAccess.file_exists(settings_path):
 		cf.load(settings_path)   # keep the other settings (volumes)
-	cf.set_value("access", "timing_slow", on)
+	cf.set_value("access", SLOW_KEY, on)
 	return cf.save(settings_path) == OK
 
 

@@ -338,13 +338,18 @@ func _test_slow_setting() -> void:
 	bar2.setup({"period_s": 2.0, "green": 0.2})
 	_check(bar2.logic.slow_k == 1.0 and is_equal_approx(bar2.logic.zone().y - bar2.logic.zone().x, 0.2 * _TB.NORMAL_GREEN_K), "off again: normal speed, the normal zone narrower than the data (J, стр. 192)")
 	bar2.free()
-	# The setting key stays [access] timing_slow (an old settings file from «Точный удар — медленнее» still holds).
+	# K-2 (Director 31.10: «по умолчанию выключено»): the early key timing_slow no longer turns it on; the switch is
+	# [access] easy_minigames (TimingBar.SLOW_K… SLOW_KEY), set by the player in the menu.
 	var old := ConfigFile.new()
 	old.set_value("access", "timing_slow", true)
 	old.save(SETTINGS)
 	_TB.slow = false
 	_TB.load_settings(true)
-	_check(_TB.slow and _TB.slow_k() == _TB.SLOW_K and _TB.green_k() == _TB.EASY_GREEN_K, "an old settings file (timing_slow = true) turns «Облегчить» on")
+	_check(not _TB.slow, "an old settings file (timing_slow = true) no longer turns «Облегчить» on (K-2)")
+	old.set_value("access", _TB.SLOW_KEY, true)
+	old.save(SETTINGS)
+	_TB.load_settings(true)
+	_check(_TB.slow and _TB.slow_k() == _TB.SLOW_K and _TB.green_k() == _TB.EASY_GREEN_K, "the switch saved by the player (easy_minigames = true) turns «Облегчить» on")
 	# The hook in the office mirror and the log at the windlass read it too.
 	var hk := HookPuzzle.new({"bar": 0.5, "tolerance": 0.07, "sway": [0.2, 0.8], "timing": {"period_s": 2.0}})
 	var g0 := hk.timing.green_w()

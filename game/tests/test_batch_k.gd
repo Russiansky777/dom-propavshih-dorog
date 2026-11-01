@@ -502,7 +502,21 @@ func _test_switches() -> void:
 		and ii.get_pixel(12, mid).get_luminance() > 0.5, "off: dark track at the right; on: gold track at the left, dark knob at the right")
 	var cfg := ConfigFile.new()
 	var tb = load("res://scripts/mechanics/timing_bar.gd")
-	_check(cfg.load("user://settings.cfg") != OK or not bool(cfg.get_value("access", "timing_slow", false)) or bool(tb.slow), "the setting as saved")
+	# an old settings file with the early key on (the Director's: «по умолчанию выключено», 31.10) — the switch stays off
+	var keep_path: String = tb.settings_path
+	var keep_slow: bool = tb.slow
+	tb.settings_path = "user://test_k2_settings.cfg"
+	var old_cfg := ConfigFile.new()
+	old_cfg.set_value("access", "timing_slow", true)
+	old_cfg.save(tb.settings_path)
+	tb.load_settings(true)
+	_check(not bool(tb.slow), "K-2: the old key timing_slow = true no longer turns «Облегчить мини-игры» on")
+	tb.set_slow(true)
+	tb.load_settings(true)
+	_check(bool(tb.slow), "K-2: the player's own choice is kept (new key)")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(tb.settings_path))
+	tb.settings_path = keep_path
+	tb.slow = keep_slow
 	var src := FileAccess.get_file_as_string("res://scripts/mechanics/timing_bar.gd")
 	_check(src.contains("static var slow: bool = false"), "«Облегчить мини-игры» is off in a new game")
 

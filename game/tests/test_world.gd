@@ -229,6 +229,19 @@ func _test_door() -> void:
 	_check(snow_out != null and snow_out.emitting and snow_out.amount <= 80, "snow drifts out of the doorway (cheap: ≤ 80 flakes)")
 	_check(breath != null and breath.emitting and breath.amount <= 10, "a faint breath of cold at the threshold")
 	_check(light != null and light.polygon[0].y >= float(op[1]) + float(op[3]) - 10.0, "cold light spills from the doorway onto the threshold")
+	# K-40 (Director 31.10: «свечение снизу явно контрастирует и в линию»): at the threshold line the light is weak and
+	# grows in below it — no bright straight edge where the spill is cut
+	if light != null and light.texture != null:
+		var li := light.texture.get_image()
+		var col := li.get_width() / 2
+		var top_a := li.get_pixel(col, int(light.uv[0].y) + 1).a
+		var peak := 0.0
+		for yy in range(int(light.uv[0].y), li.get_height()):
+			peak = maxf(peak, li.get_pixel(col, yy).a)
+		_check(peak > 0.1 and top_a < 0.45 * peak, "K-40: the cold light starts soft at the threshold line (%.2f there, %.2f at its strongest)" % [top_a, peak])
+	if OS.get_environment("K40_SHOT") != "":
+		await _wait(0.6)
+		root.get_texture().get_image().save_png(OS.get_environment("K40_SHOT"))
 	_check(wf.get_index() > (cp.get("beam_node") as Node).get_index(), "the cold lies over the threshold beam")
 	await _wait_until(func(): return not sr.puzzle_open, 12.0)
 	sr.call("_on_state_reset")
