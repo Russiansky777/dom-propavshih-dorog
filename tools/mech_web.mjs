@@ -512,11 +512,12 @@ async function main() {
         `H27: the legend «1 удар — пускай / 2 удара быстро — стой / держать — подымай», now «${s.mechanic.panel.wanted_signal}»`);
       await shot("H27_bell_legend");
       await click("«пускай»", bell);
-      s = await waitFor("swaying", (t) => t.mechanic.panel.hook && t.mechanic.panel.hook.state === "sway", 60000);
-      await shot("10_hook_sway");
-      await strikeTiming("«стой» at the bar", (t) => t.mechanic.panel.hook.timing, bell, true, "double");
-      s = await waitFor("caught", (t) => t.mechanic.panel.hook.state === "stopped" || t.mechanic.panel.hook.misses > 0, 60000);
-      check(s.mechanic.panel.hook.state === "stopped", `«стой» in the green catches the hook (${s.mechanic.panel.hook.state})`);
+      // Director 01.11: Pavel leads the hook up from the bottom; it stops against the bar from below — «стой» then.
+      s = await waitFor("against the bar", (t) => t.mechanic.panel.hook && t.mechanic.panel.hook.state === "contact", 60000);
+      await shot("10_hook_contact");
+      await page.mouse.click(bell.x, bell.y); await sleep(90); await page.mouse.click(bell.x, bell.y);   // «два — стой»
+      s = await waitFor("stopped", (t) => t.mechanic.panel.hook.state === "stopped" || t.mechanic.panel.hook.misses > 0, 60000);
+      check(s.mechanic.panel.hook.state === "stopped", `«стой» against the bar stops the hook under it (${s.mechanic.panel.hook.state})`);
       await page.mouse.move(bell.x, bell.y);
       await page.mouse.down();
       // Held until the long ring is heard (the bell counts the hold on the game's clock — slow here), ≤ 20 s.

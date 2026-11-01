@@ -397,7 +397,7 @@ async function main() {
   // «Точный удар» (F7 brace, H1 shutter latch): Space while timing.in_green and state run; until done / 12 strikes.
   const timingSeries = async (events) => {
     let strikes = 0, last = null;
-    const bar = (s) => { const p = panelOf(s); return p && (p.timing || p.wedge_timing || (p.hook && p.hook.timing)) || null; };   // T6: клинья зеркала конторы публикуют полосу как wedge_timing
+    const bar = (s) => { const p = panelOf(s); return p && (p.timing || p.wedge_timing) || null; };   // T6: клинья зеркала конторы публикуют полосу как wedge_timing
     const t0 = Date.now();
     while (strikes < 12 && Date.now() - t0 < 240000) {
       const s = await fresh();
@@ -417,8 +417,9 @@ async function main() {
     events.push(`Точный удар (рефлекс программы): ударов ${strikes}${b ? `, попаданий подряд ${b.hits} из ${b.needed}, промахов всего ${b.misses}${b.state === "done" ? " — серия пройдена" : ""}` : ""}.`);
   };
 
-  // Hook F8 (H2, stand «ЗМ»): ring once → wait «sway» → double ring while the hook is in the bolt zone → hold the
-  // bell until the bar lifts. A stop outside the zone: the hook falls, slips back to «wait» — start again.
+  // Hook (H2, stand «ЗМ»; Director 01.11): ring once → Pavel leads the hook up from the bottom → when it comes against
+  // the bar from below («contact») double ring → hold the bell until the bar lifts. Too late with «стой»: the bar goes
+  // deeper, the hook slips back to «wait» — start again.
   const hookSequence = async (events) => {
     const hk = (s) => { const p = panelOf(s); return p && p.hook ? { p, h: p.hook } : null; };
     let tries = 0, s = await fresh(), c = hk(s);
@@ -432,15 +433,17 @@ async function main() {
       if (c.h.state === "solved") break;
       if (c.h.state === "wait") {
         await page.mouse.click(bell.x, bell.y);
-        if (!(await waitFor((x) => { const k = hk(x); return k && k.h.state === "sway"; }, 60000))) { events.push("Крюк не пошёл после первого удара."); break; }
+        if (!(await waitFor((x) => { const k = hk(x); return k && k.h.state === "up"; }, 60000))) { events.push("Крюк не пошёл после первого удара."); break; }
+      } else if (c.h.state === "held") {
+        await page.mouse.click(bell.x, bell.y);
       }
-      const inZone = await waitFor((x) => { const k = hk(x); return k && (k.h.in_zone || (k.h.timing && k.h.timing.in_green)) && k.h.state === "sway"; }, 90000);
-      if (!inZone) { events.push("Крюк не дошёл до зоны засова."); break; }
+      const inZone = await waitFor((x) => { const k = hk(x); return k && k.h.state === "contact"; }, 90000);
+      if (!inZone) { events.push("Крюк не дошёл до засова."); break; }
       await page.mouse.click(bell.x, bell.y); await sleep(90); await page.mouse.click(bell.x, bell.y);   // «два — стой»
-      const st = await waitFor((x) => { const k = hk(x); return k && ["stopped", "falling", "slipping", "wait"].includes(k.h.state); }, 30000);
+      const st = await waitFor((x) => { const k = hk(x); return k && ["stopped", "jam", "falling", "wait"].includes(k.h.state); }, 30000);
       const k2 = st && hk(st);
       if (!k2 || k2.h.state !== "stopped") {
-        events.push("Крюк остановился мимо засова и сорвался — заново.");
+        events.push("«Стой» опоздал: засов глубже в скобы, крюк сорвался — заново.");
         await waitFor((x) => { const k = hk(x); return k && k.h.state === "wait"; }, 60000);
         continue;
       }

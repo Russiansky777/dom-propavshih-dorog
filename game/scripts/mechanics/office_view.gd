@@ -8,6 +8,9 @@ extends Node2D
 ## fallen shelf of the delivery lies outside `region` — Р4, Director 29.10: no shelf anywhere), and layers on the same 1672×941 canvas, placed at (0, 0): the lantern light in the gap,
 ## the hook (drawn at the lowered bar), the bar in its brackets. Order: bg → light → hook → bar. The bar
 ## lifted is the same layer 46 px higher (bar_up_translation_px of the delivery), the hook goes up with it.
+## Director 01.11 (the hook reworked): the hook comes up from the bottom of the gap and stops with its bent tip
+## against the bar's underside (HookPuzzle.stop_at — `bar` + `under`, 18 canvas px under the layer's drawn place);
+## `region` takes in the bent tip (x 786…795), so the contact is seen in the glass, not cut off at its edge.
 ## Data (mechanic.office.art): images, `region` [x, y, w, h] — the part of the canvas the glass shows,
 ## `gap` [top, bottom] — the gap's span in canvas px, `bar_y` — the bar's centre, `lift_px`.
 
@@ -16,7 +19,8 @@ var light_on: bool = false
 var hook_visible: bool = false
 var hook_frac: float = 0.0       # 0 top of the gap … 1 bottom
 var hook_bar: float = 0.5        # where the hook meets the bar (HookPuzzle.bar)
-var bar_lift: float = 0.0        # 0 in the brackets … 1 out (lifted by the hook)
+var bar_lift: float = 0.0        # 0 in the brackets … 1 out (lifted by the hook); a small + nudge when the hook
+                                 # comes against it, a small − jolt when Pavel drives it deeper (HookPuzzle.bar_shift)
 var door_given: bool = false     # the door has moved a little (bar out)
 var door_shut: bool = true       # the door not yet opened together with Pavel (Р4: no shelf anywhere — the glass shows only the door)
 

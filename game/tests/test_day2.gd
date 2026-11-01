@@ -2,7 +2,7 @@ extends SceneTree
 ## Headless tests of day two (E2–E3, Docs/SCENARIO_FINAL.md §7, block 2). Usage:
 ##   godot --headless --audio-driver Dummy --path game -s res://tests/test_day2.gd
 ## What the coordinator asked to prove (block 2 brief):
-##   - the hook puzzle is solved and slips back to the top without any penalty;
+##   - the hook puzzle is solved; mistakes (late «стой», «подымай» far below) cost nothing;
 ##   - the sluice (G23): «точный удар» — a hit a notch and a step of water down, a miss back to the first notch;
 ##   - the office mirror shows Pavel's light in the same frame as the bell strike;
 ##   - time in mother's mirror is exactly 20:1 (1:1 once the road is held from both ends);
@@ -62,7 +62,7 @@ func _run() -> void:
 	sd = root.get_node("StoryData")
 	gs.reset()
 	await _test("Logic: bell signals (one / two / long) from presses and pauses", _test_bell_logic)
-	await _test("Logic: hook — slips and comes back to the top without penalty, then lifts the bar", _test_hook_logic)
+	await _test("Logic: hook (Director 01.11) — led up from the bottom, stops under the bar; late «стой» drives the bar deeper and the hook slips down; «подымай» far below jerks empty; easy mode slower and wider", _test_hook_logic)
 	await _test("Logic: sluice (G23) — the water follows the winch: a step down per notch, back up on a slip", _test_sluice_logic)
 	await _test("Logic: mother's mirror — Nina's clock runs exactly 20× Agata's watch; 1× once the road is held", _test_clock_logic)
 	main_node = load("res://scenes/Main.tscn").instantiate()
@@ -353,60 +353,193 @@ func _test_bell_logic() -> void:
 
 
 func _test_hook_logic() -> void:
-	# F8 (Director 23.10): after «пускай» the hook sways along the gap; «стой» must catch it at the bar.
-	var h := HookPuzzle.new({"bar": 0.5, "tolerance": 0.07, "speed": 0.35, "return_speed": 0.6, "sway": [0.2, 0.8], "timing": {"period_s": 2.0}})
+	# Director 01.11, 22:26 (the hook reworked; F8's sway along the gap is gone): «пускай» — Pavel feeds the hook into the
+	# gap from the bottom and leads it slowly UP; it stops against the bar from below — «стой»; «подымай» — a short jerk
+	# lifts the bar. Mistakes as in life, no penalty.
+	var cfg := {"bar": 0.5, "under": 0.03, "start": 0.93, "speed": 0.1, "reach": 0.07, "contact_s": 1.5, "jerk_s": 0.6, "jam_s": 0.35, "fall_s": 0.8, "lift_s": 0.9}
+	var h := HookPuzzle.new(cfg)
 	var events: Array[String] = []
 	h.event.connect(func(n): events.append(n))
-	_check(h.state == "wait" and h.pos == 0.0, "the hook starts at the top, waiting")
+	# old: pos 0.0 — the hook began at the TOP and went down
+	_check(h.state == "wait" and is_equal_approx(h.pos, 0.93), "the hook starts at the bottom of the gap, waiting (%s %.2f)" % [h.state, h.pos])
 	h.apply("two")
 	_check(h.state == "wait", "stop before go does nothing")
 	h.apply("one")
-	_check(h.state == "down", "one → down")
-	for i in 10:
-		h.step(0.1)
-	_check(h.state == "sway" and "swaying" in events, "it reaches where Pavel feels for the bar and sways (%s %.2f)" % [h.state, h.pos])
-	var p0 := h.pos
-	h.step(0.3)
-	_check(h.pos != p0 and h.pos >= 0.2 and h.pos <= 0.8, "the hook goes up and down within the sway (%.2f → %.2f)" % [p0, h.pos])
-	# Wrong: «стой» away from the bar — it slips off and falls; Pavel brings it back to the top.
+	_check(h.state == "up" and "moving" in events, "one → Pavel leads it up (%s)" % h.state)
+	# Only upward, steadily, and never past the bar's underside (old: it went DOWN 0.0 → 0.18, then swayed 0.18…0.74 —
+	# above the bar 0.5 and back down).
+	var prev := h.pos
+	var only_up := true
+	var steady := true
+	var above := false
 	var g := 0
-	while absf(h.pos - 0.5) < 0.2 and g < 200:
-		h.step(0.02)
+	while h.state == "up" and g < 400:
+		h.step(0.05)
+		var d := prev - h.pos
+		if d < -1e-6:
+			only_up = false
+		if h.state == "up" and absf(d - 0.1 * 0.05) > 1e-4:
+			steady = false
+		if h.pos < h.stop_at() - 1e-6:
+			above = true
+		prev = h.pos
 		g += 1
-	h.apply("two")
-	_check(h.state == "falling" and h.misses == 1 and "missed" in events, "stopped away from the bar → it falls (%s)" % h.state)
-	for i in 10:
-		h.step(0.1)
-	_check(h.pos > 0.0 and ("slipped" in events), "it slipped off, Pavel lifts it")
-	for i in 30:
-		h.step(0.1)
-	_check(h.state == "wait" and h.pos == 0.0 and "returned" in events and not h.solved(), "back at the top, nothing lost (%s %.2f)" % [h.state, h.pos])
-	# «Подымай» before it is caught — empty: falls as well.
-	h.apply("one")
-	for i in 10:
-		h.step(0.1)
-	h.apply("long")
-	_check(h.state == "falling", "lifted before it is caught → falls")
-	for i in 40:
-		h.step(0.1)
-	_check(h.state == "wait", "and comes back to the top")
-	# Judged where it was when «стой» began (its first strike): a phase in the green counts even if it moved on.
-	h.apply("one")
-	for i in 10:
-		h.step(0.1)
-	var green_phase := 0.25    # the middle of the sweep = the bar
-	while absf(h.pos - 0.5) < 0.2:
-		h.step(0.02)
-	h.apply("two", green_phase)
-	_check(h.state == "stopped" and h.at_bar(), "«стой» begun at the bar catches it (%s %.2f)" % [h.state, h.pos])
+	_check(only_up and steady, "the hook goes only up, at an even pace (no sway)")
+	_check(not above and h.state == "contact" and "contact" in events, "it stops against the bar from below (%s %.3f, underside %.3f)" % [h.state, h.pos, h.stop_at()])
+	_check(h.stop_at() > h.bar and is_equal_approx(h.pos, h.stop_at()), "it stops UNDER the bar, not on it (%.3f > %.3f)" % [h.pos, h.bar])
+	_check(h.bar_shift() > 0.0, "the bar gives a tiny nudge when the hook comes against it (%.3f)" % h.bar_shift())
 	h.step(1.0)
-	_check(h.state == "stopped", "a caught hook stays")
+	_check(h.state == "contact" and h.pos >= h.stop_at() - 1e-6, "against the bar it waits for «стой» a while, no farther up")
+	h.apply("two")
+	_check(h.state == "stopped" and h.at_bar(), "«стой» at the bar — it stands under the bar (%s)" % h.state)
+	h.step(3.0)
+	_check(h.state == "stopped" and is_equal_approx(h.pos, h.stop_at()), "a stopped hook stays")
 	h.apply("long")
-	_check(h.state == "lift_bar", "«подымай» at the bar → takes the bar")
+	_check(h.state == "lift_bar", "«подымай» from under the bar → takes the bar")
 	for i in 12:
 		h.step(0.1)
-	_check(h.solved() and "solved" in events, "the bar is out of the brackets")
+	_check(h.solved() and "solved" in events and h.lift_amount == 1.0, "the bar is out of the brackets")
+
+	# Late «стой»: Pavel pushes on blind — the bar jolts deeper, the hook slips to the bottom; «пускай» again
+	# (old: no such thing — against the bar it swayed on, state "sway", never fell by itself).
+	h = HookPuzzle.new(cfg)
+	events.clear()
+	h.event.connect(func(n): events.append(n))
+	h.apply("one")
+	g = 0
+	while h.state == "up" and g < 400:
+		h.step(0.05)
+		g += 1
+	var min_shift := 0.0
+	var t := 0.0
+	while h.state in ["contact", "jam"] and t < 5.0:
+		h.step(0.05)
+		t += 0.05
+		min_shift = minf(min_shift, h.bar_shift())
+	_check(h.state == "falling" and "missed" in events and h.misses == 1, "no «стой» in %.1f s → Pavel pushes on, the hook slips (%s)" % [h.contact_time(), h.state])
+	_check(min_shift < -0.05, "the bar jolts DEEPER into the brackets (%.3f of a lift)" % min_shift)
+	for i in 30:
+		h.step(0.05)
+	_check(h.state == "wait" and is_equal_approx(h.pos, 0.93) and "returned" in events and not h.solved() and h.lift_amount == 0.0,
+		"back at the bottom, nothing lifted, nothing lost (%s %.2f)" % [h.state, h.pos])
+	h.apply("one")
+	_check(h.state == "up", "«пускай» again — he brings it in from below")
+
+	# «Подымай» well below the bar: a jerk into empty air, the hook back where it was (old: it fell to the bottom).
+	h = HookPuzzle.new(cfg)
+	h.apply("one")
+	h.step(1.0)
+	var here := h.pos
+	_check(here - h.stop_at() > h.jerk_reach(), "still well below the bar (%.2f from it)" % (here - h.stop_at()))
+	h.apply("long")
+	_check(h.state == "jerk", "«подымай» far below → an empty jerk (%s)" % h.state)
+	var top := here
+	for i in 20:
+		h.step(0.05)
+		top = minf(top, h.pos)
+	_check(top < here - 0.03 and top > h.stop_at() + 1e-3, "the hook jumps up a bit (%.3f → %.3f) and does not reach the bar (%.3f)" % [here, top, h.stop_at()])
+	_check(h.state == "held" and is_equal_approx(h.pos, here) and h.lift_amount == 0.0 and not h.solved(), "it falls back where it was, nothing lifted (%s %.3f)" % [h.state, h.pos])
+	# «Стой» far below: it just stands; «пускай» leads it on.
+	h.step(2.0)
+	_check(h.state == "held" and is_equal_approx(h.pos, here), "held far below — it just stands there")
+	h.apply("one")
+	h.step(0.5)
+	_check(h.state == "up" and h.pos < here, "«пускай» — up again from there")
+	h.apply("two")
+	_check(h.state == "held", "«стой» far below — stops where it is (%s)" % h.state)
+	# «Стой» just under the bar (within a jerk's reach, not yet against it) — «подымай» from there lifts it.
+	h.apply("one")
+	g = 0
+	while h.pos - h.stop_at() > h.jerk_reach() * 0.6 and g < 400:
+		h.step(0.05)
+		g += 1
+	h.apply("two")
+	_check(h.state == "stopped" and h.pos > h.stop_at(), "«стой» just under the bar → stopped within reach (%s %.3f)" % [h.state, h.pos - h.stop_at()])
+	h.apply("long")
+	for i in 15:
+		h.step(0.1)
+	_check(h.solved(), "«подымай» from just under the bar → the bar is out")
+
+	# While the bell rings Pavel holds still to hear the signal: «стой» is judged where its first strike found him.
+	h = HookPuzzle.new(cfg)
+	h.apply("one")
+	h.step(0.5)
+	var p0 := h.pos
+	h.listening = true
+	h.step(0.5)
+	_check(is_equal_approx(h.pos, p0), "while the bell rings the hook holds still")
+	h.listening = false
+
+	# «Облегчить мини-игры»: Pavel slower, longer against the bar, the jerk reaches farther (old: ease touched only the
+	# sway's TimingLogic — speed stayed 0.35, there was no jerk reach).
+	var e := HookPuzzle.new(cfg)
+	# TimingBar by load(), not by its class name: a SceneTree test compiles before the autoloads (StoryData) exist
+	var tb = load("res://scripts/mechanics/timing_bar.gd")
+	e.ease(tb.SLOW_K, tb.EASY_GREEN_K / tb.NORMAL_GREEN_K)
+	_check(e.lead_speed() < 0.1 * 0.6 and e.jerk_reach() > 0.07 * 1.4 and e.contact_time() > 1.5 * 1.5,
+		"easy: slower (%.3f/s), wider jerk (%.3f), longer against the bar (%.2f s)" % [e.lead_speed(), e.jerk_reach(), e.contact_time()])
+	var n := HookPuzzle.new(cfg)
+	for hk in [n, e]:
+		hk.apply("one")
+		var gg := 0
+		while hk.pos - hk.stop_at() > 0.07 * 1.3 and gg < 800:
+			hk.step(0.02)
+			gg += 1
+		hk.apply("two")
+		hk.apply("long")
+	_check(n.state == "jerk" and e.state == "lift_bar", "1.3 × the normal reach under the bar: normal — empty jerk, easy — lifts (%s / %s)" % [n.state, e.state])
+
+	# The picture: at the stop the hook's bent tip touches the bar's underside in the glass — no overlap of the solid
+	# (alpha > 0.5) pixels, inside the glass's region (old region [496, 80, 276, 660] ended at x 772: the tip at x 786…795 was cut off).
+	_check_hook_art()
 	_reached_end = true
+
+
+func _check_hook_art() -> void:
+	var spec: Dictionary = {}
+	for hs in sd.room("H2").get("hotspots", []):
+		if String(hs.get("mechanic", {}).get("type", "")) == "office_mirror":
+			spec = hs["mechanic"]
+	var art: Dictionary = spec.get("office", {}).get("art", {})
+	var hcfg: Dictionary = spec.get("hook", {})
+	var hk := HookPuzzle.new(hcfg)
+	var gap: Array = art.get("gap", [95, 705])
+	var off := int(round((hk.stop_at() - hk.bar) * (float(gap[1]) - float(gap[0]))))
+	var him: Image = (load(String(art.get("hook", ""))) as Texture2D).get_image()
+	var bim: Image = (load(String(art.get("bar", ""))) as Texture2D).get_image()
+	if him.is_compressed():
+		him.decompress()
+	if bim.is_compressed():
+		bim.decompress()
+	var reg: Array = art.get("region", [0, 0, 0, 0])
+	var overlap := 0
+	var touch_x := -1
+	var min_gap := 999
+	for x in range(int(reg[0]), mini(int(reg[0]) + int(reg[2]), him.get_width())):
+		var htop := -1
+		for y in him.get_height():
+			if him.get_pixel(x, y).a > 0.5:
+				htop = y + off
+				break
+		if htop < 0:
+			continue
+		var bbot := -1
+		for y in range(bim.get_height() - 1, -1, -1):
+			if bim.get_pixel(x, y).a > 0.5:
+				bbot = y
+				break
+		if bbot < 0:
+			continue
+		for y in range(maxi(htop, 0), mini(bbot + 1, bim.get_height())):
+			var hy := y - off
+			if hy >= 0 and hy < him.get_height() and him.get_pixel(x, hy).a > 0.5 and bim.get_pixel(x, y).a > 0.5:
+				overlap += 1
+		if htop - bbot < min_gap:
+			min_gap = htop - bbot
+			touch_x = x
+	_check(overlap == 0, "at the stop the hook does not overlap the bar in the glass (%d px overlap, offset %d px)" % [overlap, off])
+	_check(min_gap >= 1 and min_gap <= 2, "at the stop the hook's tip touches the bar's underside (gap %d px at x %d)" % [min_gap, touch_x])
+	_check(touch_x >= int(reg[0]) + 8 and touch_x <= int(reg[0]) + int(reg[2]) - 8, "the touch is inside the glass, not at its edge (x %d in %s)" % [touch_x, str(reg)])
 
 
 func _test_sluice_logic() -> void:
@@ -897,11 +1030,11 @@ func _test_walkthrough() -> void:
 	await _button(bell, false)
 	seen = await _finish()
 	_check(gs.has_flag("lantern_check_seen") and gs.has_flag("done_M11"), "one strike — the light — M11: %s" % str(seen))
-	# The hook: go, catch it at the bar while it sways (F8), lift.
+	# The hook: up from the bottom, «стой» against the bar, lift (Director 01.11).
 	await _ring(bell, 1)
 	await _ring_stop_at_bar(bell)
 	var guard := 0
-	_check(p.hook.state == "stopped" and p.hook.at_bar(), "caught at the bar by two strikes (%s %.2f)" % [p.hook.state, p.hook.pos])
+	_check(p.hook.state == "stopped" and p.hook.at_bar(), "stopped against the bar by two strikes (%s %.2f)" % [p.hook.state, p.hook.pos])
 	await _ring_long(bell)
 	guard = 0
 	while not gs.has_flag("office_unbolted") and guard < 600:
@@ -1326,31 +1459,18 @@ func _ring(at: Vector2, n: int) -> void:
 		await process_frame
 
 
-## F8: «стой» while the hook is at the bar — the first strike when the sway marker is near the middle of the green.
+## Director 01.11: «стой» when the hook has come up against the bar (seen in the glass; the probe says "contact").
 func _ring_stop_at_bar(at: Vector2) -> void:
 	var p = mv.panel
 	var g := 0
 	while g < 1500:
 		var hk: Dictionary = p.probe().get("hook", {})
-		if String(hk.get("state", "")) == "sway":
-			var lg = p.hook.timing
-			if absf(lg.pos() - lg.center) < 0.04:
-				break
-		await process_frame
-		g += 1
-	await _ring(at, 2)
-
-
-## F8: «стой» while the hook is far from the bar.
-func _ring_stop_away(at: Vector2) -> void:
-	var p = mv.panel
-	var g := 0
-	while g < 1500:
-		if String(p.hook.state) == "sway" and absf(p.hook.timing.pos() - p.hook.timing.center) > 0.35:
+		if String(hk.get("state", "")) == "contact":
 			break
 		await process_frame
 		g += 1
 	await _ring(at, 2)
+
 
 
 func _ring_long(at: Vector2) -> void:
@@ -1464,31 +1584,93 @@ func _test_office_mirror_mouse() -> void:
 	_check(is_equal_approx(bwin.content.get_node("Stand").rotation, 0.0), "the hook and the stand stay still")
 	await _button(bell, false)
 	await _finish()
-	_check(p.wanted_signal() == "one", "the hook at the top: «1 удар — пускай» is lit (%s)" % p.wanted_signal())
-	# The hook: wrong first («стой» away from the bar) — it falls, back to the top, nothing lost.
+	# «Облегчить мини-игры» reaches the hook (old: only the sway's TimingLogic was eased — the hook's speed 0.35 stayed):
+	# the close-up opened with it on — Pavel leads slower, the jerk reaches farther; off again — the data's values.
+	var hdata: Dictionary = p.spec.get("hook", {})
+	sr.close_mechanic()
+	await _frames(2)
+	var tbs = load("res://scripts/mechanics/timing_bar.gd")
+	tbs.slow = true
+	tbs._loaded = true
+	await _use("stand_zm")
+	await _frames(2)
+	await _finish()
+	p = mv.panel
+	_check(p.hook.lead_speed() < float(hdata.get("speed", 0)) * 0.7 and p.hook.jerk_reach() > float(hdata.get("reach", 1)) * 1.3,
+		"easy mode: Pavel slower (%.3f < %.3f), the jerk reaches farther (%.3f > %.3f)" % [p.hook.lead_speed(), float(hdata.get("speed", 0)), p.hook.jerk_reach(), float(hdata.get("reach", 1))])
+	sr.close_mechanic()
+	await _frames(2)
+	tbs.slow = false
+	await _use("stand_zm")
+	await _frames(2)
+	await _finish()
+	p = mv.panel
+	_check(is_equal_approx(p.hook.lead_speed(), float(hdata.get("speed", 0))) and is_equal_approx(p.hook.jerk_reach(), float(hdata.get("reach", 0))),
+		"normal mode: the data's pace and reach (%.3f, %.3f)" % [p.hook.lead_speed(), p.hook.jerk_reach()])
+	_check(p.wanted_signal() == "one", "the hook at the bottom: «1 удар — пускай» is lit (%s)" % p.wanted_signal())
+	# Director 01.11, 22:26: everything is read in the glass — no «Точный удар» bar for the hook (old: the upright HookBar
+	# beside the glass, visible in this stage). The wedges' bar (a different stage) is hidden once the frame is clamped.
+	var bars_seen: Array[String] = []
+	for tb in p.find_children("*", "TimingBar", true, false):
+		if (tb as CanvasItem).is_visible_in_tree():
+			bars_seen.append(String(tb.name))
+	_check(bars_seen.is_empty() and p.find_child("HookBar", true, false) == null, "no timing bar beside the glass in the hook stage (%s)" % str(bars_seen))
+	_check(p.hook.state == "wait" and p.hook.pos > p.hook.stop_at() + 0.3 and p.office.hook_visible, "the hook waits at the bottom of the gap, seen in the glass (%.2f)" % p.hook.pos)
 	var counters_before: Dictionary = gs.counters.duplicate()
+	# «Подымай» far below: an empty jerk — nothing lifted, the hook back where it was (old: it fell to the bottom, then
+	# was carried to the top).
 	await _ring(bell, 1)
-	_check(p.hook.state in ["down", "sway"], "one strike — the hook goes down (%s)" % p.hook.state)
+	_check(p.hook.state == "up", "one strike — Pavel leads the hook up (%s)" % p.hook.state)
 	_check(p.wanted_signal() == "two", "the hook goes: «2 удара быстро — стой» is lit (%s)" % p.wanted_signal())
-	var hb: Dictionary = _panel().get("hook", {}).get("timing", {})
-	_check(not hb.is_empty() and float(hb.get("zone", [0, 0])[1]) > float(hb.get("zone", [0, 0])[0]), "the upright bar beside the glass shows the bolt zone")
-	await _ring_stop_away(bell)
-	_check(p.hook.state in ["falling", "slipping", "wait"] and p.hook.misses == 1, "«стой» away from the bar — the hook falls (%s)" % p.hook.state)
+	var hy0: float = p.office.hook_y()
+	var lowest: float = p.hook.pos
+	var only_up := true
 	var guard := 0
-	while p.hook.state != "wait" and guard < 900:
+	while guard < 40:
 		await process_frame
+		if p.hook.pos > lowest + 1e-6:
+			only_up = false
+		lowest = minf(lowest, p.hook.pos)
 		guard += 1
+	_check(only_up and p.office.hook_y() < hy0, "in the glass the hook goes up the gap (%.0f → %.0f px)" % [hy0, p.office.hook_y()])
+	var far_at: float = p.hook.pos
+	_check(far_at - p.hook.stop_at() > p.hook.jerk_reach(), "still well below the bar (%.2f > reach %.2f)" % [far_at - p.hook.stop_at(), p.hook.jerk_reach()])
+	await _ring_long(bell)
+	var max_lift := 0.0
+	guard = 0
+	while p.hook.state == "jerk" and guard < 300:
+		await process_frame
+		max_lift = maxf(max_lift, p.office.bar_lift)
+		guard += 1
+	_check(p.hook.state == "held" and absf(p.hook.pos - far_at) < 0.02 and max_lift <= 0.0 and not gs.has_flag("office_unbolted"),
+		"«подымай» far below — an empty jerk: nothing lifted, the hook back where it was (%s %.3f, lift %.2f)" % [p.hook.state, p.hook.pos - far_at, max_lift])
+	_check(p.wanted_signal() == "one", "held below: «пускай» is lit again (%s)" % p.wanted_signal())
+	# Late «стой»: against the bar Pavel waits a moment, then pushes on blind — the bar jolts deeper, the hook slips to the
+	# bottom (old: against the bar it swayed on and never fell by itself).
+	await _ring(bell, 1)
+	var above := false
+	var min_lift := 0.0
+	guard = 0
+	while p.hook.state != "wait" and guard < 2000:
+		await process_frame
+		if p.hook.pos < p.hook.stop_at() - 1e-6:
+			above = true
+		min_lift = minf(min_lift, p.office.bar_lift)
 		if not sr.current_beat.is_empty():
 			await _finish()
-	_check(p.hook.state == "wait" and p.hook.pos == 0.0, "back at the top after the slip")
+		guard += 1
+	_check(not above, "the hook never goes past the bar's underside without lifting")
+	_check(p.hook.misses == 2 and min_lift < -0.05, "no «стой» in time — the bar jolts deeper into the brackets (%.2f), the hook slips (misses %d)" % [min_lift, p.hook.misses])
+	_check(p.hook.state == "wait" and p.hook.pos > p.hook.stop_at() + 0.3, "back at the bottom, «пускай» again (%s %.2f)" % [p.hook.state, p.hook.pos])
 	_check(not gs.has_flag("office_unbolted") and gs.counters == counters_before, "no penalty: no flag lost, no counter grown")
-	_check(p.signals_seen.has("one") and p.signals_seen.has("two"), "signals from the mouse: %s" % str(p.signals_seen))
+	_check(p.signals_seen.has("one") and p.signals_seen.has("long"), "signals from the mouse: %s" % str(p.signals_seen))
 	var legend: Node = p.find_child("BellLegend", true, false)
 	_check(legend != null and legend.is_visible_in_tree() and p.legend_text().contains("держать") and p.legend_text().contains("2 удара"), "the bell legend on screen: one / two / hold for long (logic review M2, item 2)")
-	# Right.
+	# Right: up to the bar, «стой» against it, «подымай».
 	await _ring(bell, 1)
 	await _ring_stop_at_bar(bell)
-	_check(p.signals_seen.has("two") and p.hook.state == "stopped", "two strikes at the bar catch the hook (%s)" % p.hook.state)
+	_check(p.signals_seen.has("two") and p.hook.state == "stopped" and is_equal_approx(p.hook.pos, p.hook.stop_at()), "two strikes against the bar stop the hook under it (%s)" % p.hook.state)
+	_check(p.office.hook_y() > p.office.bar_y(), "in the glass the hook stands under the bar (%.0f > %.0f px)" % [p.office.hook_y(), p.office.bar_y()])
 	_check(p.wanted_signal() == "long", "the hook under the bar: the long ring is lit (%s)" % p.wanted_signal())
 	await _ring_long(bell)
 	guard = 0

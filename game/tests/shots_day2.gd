@@ -163,9 +163,10 @@ func _shot(name: String) -> void:
 			await _open("stand_zm")
 			var p = mv.panel
 			p.hook.apply("one")
-			for i in 40:
-				p.hook.step(0.1)
-			p.hook.apply("two")
+			for i in 80:
+				if p.hook.state == "up":
+					p.hook.step(0.1)
+			p.hook.apply("two")   # against the bar from below — stopped under it (Director 01.11)
 			p.office.hook_frac = p.hook.pos
 			p._set_status()
 			p.office.refresh()

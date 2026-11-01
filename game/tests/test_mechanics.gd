@@ -351,10 +351,12 @@ func _test_slow_setting() -> void:
 	_TB.load_settings(true)
 	_check(_TB.slow and _TB.slow_k() == _TB.SLOW_K and _TB.green_k() == _TB.EASY_GREEN_K, "the switch saved by the player (easy_minigames = true) turns «Облегчить» on")
 	# The hook in the office mirror and the log at the windlass read it too.
-	var hk := HookPuzzle.new({"bar": 0.5, "tolerance": 0.07, "sway": [0.2, 0.8], "timing": {"period_s": 2.0}})
-	var g0 := hk.timing.green_w()
-	_TB.apply_ease(hk.timing)
-	_check(is_equal_approx(hk.timing.green_w(), g0 * _TB.EASY_GREEN_K) and hk.timing.slow_k == _TB.SLOW_K, "the hook: wider bolt zone, slower sway")
+	# Director 01.11 (the hook reworked — no sway, no timing bar): Pavel leads the hook slower, waits longer against the
+	# bar, the jerk («подымай») reaches farther.
+	var hk := HookPuzzle.new({"bar": 0.5, "under": 0.03, "speed": 0.1, "reach": 0.07, "contact_s": 1.5})
+	hk.ease(_TB.slow_k(), _TB.green_k() / _TB.NORMAL_GREEN_K)
+	_check(is_equal_approx(hk.lead_speed(), 0.1 / _TB.SLOW_K) and is_equal_approx(hk.jerk_reach(), 0.07 * _TB.EASY_GREEN_K / _TB.NORMAL_GREEN_K)
+		and is_equal_approx(hk.contact_time(), 1.5 * _TB.SLOW_K), "the hook: Pavel slower (%.3f/s), the jerk reaches farther (%.3f)" % [hk.lead_speed(), hk.jerk_reach()])
 	var wl := WindlassLogic.new({"rest": 0.82, "tolerance": 0.09, "speed": 0.1, "raise_speed": 0.25})
 	wl.ease(_TB.slow_k(), _TB.green_k())
 	_check(wl.tolerance > 0.09 and wl.rest + wl.tolerance + wl.bump_over <= 1.0 + 1e-6 and is_equal_approx(wl.speed, 0.1 / _TB.SLOW_K),

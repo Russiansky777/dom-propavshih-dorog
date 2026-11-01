@@ -9,11 +9,14 @@ extends MechanicPanel
 ##   2. With the clapper hung (`bell_clapper_hung`), one strike: Pavel's lantern lights the gap at once —
 ##      the same frame as the strike (canon: the mirror shows now; test_day2 checks the frame numbers).
 ##      Event "lantern".
-##   3. The hook (HookPuzzle): the bell's presses become the mill signals (BellSignal): one — go on, two —
-##      stop, long — lift. Director 23.10 (F8): after «пускай» Pavel feels for the bar — the hook sways up and
-##      down along the gap; «стой» must catch it in the bolt zone (a «Точный удар» sweep: the upright bar beside
-##      the glass shows the zone in green and the hook as its marker). Caught — «подымай» lifts the bar.
-##      Stopped elsewhere — the hook slips off and falls, Pavel brings it up again; no penalty. Event "unbolted".
+##   3. The hook (HookPuzzle): the bell's presses become the mill signals (BellSignal): one — «пускай», two —
+##      «стой», long — «подымай». Director 01.11, 22:26: Pavel feeds the hook into the gap from the bottom and leads
+##      it slowly up; it comes against the bar from below and stops there (seen in the glass: the bent tip under the
+##      bar, the bar nudged) — «стой»; then «подымай» — a short jerk lifts the bar out of the brackets. Everything is
+##      read in the glass: no «Точный удар» bar for the hook (the old sway and its upright bar are gone). Too late
+##      with «стой» — he pushes on blind, the bar jolts deeper, the hook slips to the bottom; «подымай» from far
+##      below — an empty jerk. No penalty. «Облегчить мини-игры»: Pavel slower, the jerk reaches farther.
+##      Event "unbolted".
 ## The bell is pressed with the mouse: a click is a strike, two quick clicks — «стой», a press held ~0.6 s — the
 ## long ring; the legend is on screen under the shift schedule (logic review M2, item 2).
 ## Art: the stand «ЗМ» is the tall carved frame in the middle of Dunya's workshop (Director 23.10); the close-up
@@ -45,8 +48,7 @@ var hook: HookPuzzle = null
 var strike_frame: int = -1      # process frame of the last strike (press on the bell)
 var light_frame: int = -1       # process frame the lantern light came on in the glass
 var signals_seen: Array[String] = []
-var hook_bar: TimingBar = null    # upright «точный удар» bar beside the glass: the bolt zone, the hook as marker
-var _press_phases: Array[float] = []   # the sway phase at the last bell presses («стой» is judged at its first)
+var _last_press_t: float = -99.0   # clock of the last press on the bell (Pavel holds still while it rings)
 var _bell_swing: float = 0.0
 var _status: String = ""
 
@@ -128,8 +130,10 @@ func build() -> void:
 	_build_signal_card(bs)
 	status_label = label("", v2(spec.get("status_pos", [1120, 950])), float(spec.get("status_w", 540)))
 	hook = HookPuzzle.new(spec.get("hook", {}))
+	# «Облегчить мини-игры» (G3): Pavel leads the hook slower, the jerk reaches farther (normal mode: as in the data).
+	hook.ease(TimingBar.slow_k(), TimingBar.green_k() / TimingBar.NORMAL_GREEN_K)
 	hook.event.connect(_on_hook_event)
-	_build_hook_bar()
+	office.hook_frac = hook.pos
 	_sync_from_flags()
 
 
@@ -230,8 +234,9 @@ func legend_text() -> String:
 	return "\n".join(parts)
 
 
-## The signal wanted now (H27): by the stage — the lantern check and the hook at the top want one strike, the hook
-## swinging wants «стой», the hook under the bar wants the long ring. "" — none (the wedges, the end).
+## The signal wanted now (H27): by the stage — the lantern check and the hook waiting (at the bottom, or stopped far
+## below) want one strike, the hook going up or against the bar wants «стой», the hook stopped under the bar wants the
+## long ring (data `bell.signals[].for` — HookPuzzle states). "" — none (the wedges, the hook busy, the end).
 func wanted_signal() -> String:
 	if not clamped() or not flag("bell_clapper_hung") or flag("office_unbolted"):
 		return ""
@@ -276,29 +281,6 @@ class SignalGlyph extends Control:
 				draw_rect(Rect2(14, cy - 4, 44, 8), ink)
 		if lit:
 			draw_line(Vector2(2, size.y - 2), Vector2(size.x - 4, size.y - 2), ink, 2.0)
-
-
-## The upright bar beside the glass, level with the gap: its green is the bolt zone, its marker the hook.
-func _build_hook_bar() -> void:
-	var oa: Dictionary = spec.get("office", {}).get("art", {})
-	var reg: Array = oa.get("region", [520, 80, 380, 660])
-	var gap: Array = oa.get("gap", [95, 705])
-	var g0 := float(gap[0]) + (float(gap[1]) - float(gap[0])) * hook.sway.x
-	var g1 := float(gap[0]) + (float(gap[1]) - float(gap[0])) * hook.sway.y
-	var y0 := glass_rect.position.y + (g0 - float(reg[1])) / float(reg[3]) * glass_rect.size.y
-	var y1 := glass_rect.position.y + (g1 - float(reg[1])) / float(reg[3]) * glass_rect.size.y
-	hook_bar = TimingBar.new()
-	hook_bar.name = "HookBar"
-	var bx := float(spec.get("hook_bar_x", glass_rect.end.x + 120.0))
-	hook_bar.position = Vector2(bx, y0 - 6.0)
-	hook_bar.size = Vector2(46, y1 - y0 + 12.0)
-	hook_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hook_bar.space_key = false
-	hook_bar.drive = false
-	add_child(hook_bar)
-	hook_bar.setup({"hint": ""}, true)
-	hook_bar.logic = hook.timing
-	TimingBar.apply_ease(hook_bar.logic)   # «Облегчить мини-игры» (G3): slower sway, wider bolt zone
 
 
 ## The four wedges of the frame (G19): each a holder at its box with the three painted states cut from their layers
@@ -484,9 +466,7 @@ func bell_press() -> void:
 		say("bell_unclamped")
 		return
 	strike_frame = Engine.get_process_frames()
-	_press_phases.append(hook.timing.phase)
-	if _press_phases.size() > 2:
-		_press_phases.pop_front()
+	_last_press_t = clock
 	sound("bell")
 	_bell_swing = 1.0
 	if not flag("lantern_check_seen"):
@@ -516,8 +496,7 @@ func _handle_signals(sigs: Array[String]) -> void:
 		signals_seen.append(s)
 		if s == "long":
 			sound("bell_long")
-		# «стой» is judged where the hook was when its first strike rang.
-		hook.apply(s, _press_phases[0] if s == "two" and _press_phases.size() == 2 else -1.0)
+		hook.apply(s)
 	if not sigs.is_empty():
 		_set_status()
 
@@ -530,13 +509,15 @@ func tick(delta: float) -> void:
 		_refresh_wedges()
 	if hook_active():
 		_handle_signals(signal_parser.tick(clock))
+		# While the bell rings Pavel holds still to hear the signal: «стой» is judged where its first strike found him.
+		hook.listening = signal_parser.pressed or clock - _last_press_t < signal_parser.gap_s
+		var st := hook.state
 		hook.step(delta)
+		if hook.state != st:
+			_set_status()
 		office.hook_frac = hook.pos
-		office.bar_lift = hook.lift_amount if hook.state == "lift_bar" else 0.0
+		office.bar_lift = hook.bar_shift()
 		office.refresh()
-	if hook_bar != null:
-		hook_bar.visible = hook_active() or (hook != null and hook.state in ["lift_bar", "solved"] and not flag("office_unbolted"))
-		hook_bar.modulate.a = 1.0 if hook.state in ["sway", "stopped", "lift_bar"] else 0.45
 	if _bell_swing > 0.0:
 		_bell_swing = maxf(_bell_swing - delta * 1.6, 0.0)
 		var amp := float(spec.get("bell", {}).get("swing_deg", 6.0))
@@ -555,6 +536,7 @@ func tick(delta: float) -> void:
 func _on_hook_event(name: String) -> void:
 	match name:
 		"missed":
+			# no «стой» in time: Pavel pushed on blind, the bar went deeper, the hook slipped down
 			sound("clank")
 			say("hook_slipped")
 		"solved":
@@ -616,10 +598,9 @@ func probe() -> Dictionary:
 		if wedge_in_work() >= 0 and not clamped():
 			out["strike"] = {"x": out["wedge_strike"].get("x", 0), "y": out["wedge_strike"].get("y", 0), "how": "click, when wedge_timing marker is in the green"}
 		else:
-			out["strike"] = {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "double_click (= «стой»), when timing.in_green"}
-		out["hook"] = {"pos": hook.pos, "state": hook.state, "bar": hook.bar, "tolerance": hook.tolerance, "misses": hook.misses,
-			"sway": [hook.sway.x, hook.sway.y], "in_zone": hook.state == "sway" and hook.timing.in_green(hook.timing.pos()),
-			"timing": hook_bar.probe() if hook_bar != null else {}}
+			out["strike"] = {"x": bc.get("x", 0), "y": bc.get("y", 0), "how": "double_click (= «стой») when hook.state == contact, then hold (= «подымай»)"}
+		out["hook"] = {"pos": hook.pos, "state": hook.state, "bar": hook.bar, "stop_at": hook.stop_at(), "reach": hook.jerk_reach(),
+			"in_reach": hook.in_reach(), "contact": hook.state == "contact", "misses": hook.misses, "speed": hook.lead_speed()}
 	return out
 
 
