@@ -22,6 +22,7 @@ func _run() -> void:
 	for f in ["done_M01", "done_M02", "house_unlocked", "house_open", "done_M03", "done_M04"]:
 		gs.set_flag(f, true)
 	gs.add_item("door_hinges")
+	gs.add_item("door_drawing")   # 02.11: the fit wants Dunya's drawing too
 	rm.change_room("H3", "default")
 	for i in 10:
 		await process_frame

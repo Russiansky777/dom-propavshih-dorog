@@ -195,6 +195,10 @@ R2_fg_rope_v3 (канат сквозь кольцо, правка R2_fg_rope_v2 
 `game/assets/sfx/sfx_door_bolt_stiff.wav` (срез тишины, ВЧ 40 Гц, пик −1 dBFS — функции tools/prepare_sfx.py), `sfx.json` door_bolt.
 Права — по подписке ElevenLabs проекта (как голоса).
 
+## Партии 16 и 16б — ChatGPT (imagegen), 02.11.2026
+- **Мамины ходики крупно** (`assets/incoming/O3_clock_hi_{bg,pendulum,hand_min,hand_hour}.png`, 400×720 — прямоугольник [893, 148, 993, 328) горницы ×4; README и промпты — `assets/incoming/_meta_p16/`): стрелки — партия 16, корпус с арабскими цифрами и латунный маятник — партия 16б (в ТЗ 16 ошибочно стояли римские цифры и бронза). Нарисованы ChatGPT (built-in imagegen) по слоям горницы партии 3 (O3_*), заказ Директора через его подписку. В игру — `tools/retouch_art.py` (у корпуса закрыт бледный след римской «VII» справа от 7, `tools/retouch/O3_clock_hi_bg.py`; остальные без правки).
+- **Значок «Дунин рисунок посадки»** (`game/assets/icons/door_drawing.png`) — не генерация: вырезан из игровой копии рисунка M05 (`tools/make_icon_door_drawing.py`), 0 кредитов.
+
 ## Партия 15 — ChatGPT (imagegen), 02.11.2026
 Заказ `Docs/art_pack_15/00_ТЕКСТ_для_ChatGPT.txt`, архив `Dom_propavshih_dorog_part15_2026-11-02.zip` (README, prompts.json,
 rope_prompts.txt, validation.json, превью — `assets/incoming/_meta_p15/`). Права — как у прочего арта ChatGPT проекта.

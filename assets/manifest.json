@@ -3064,7 +3064,8 @@
     },
     {
       "id": "O3_clock_hi",
-      "status": "requested",
+      "status": "imported",
+      "imported": "2026-11-02 (ChatGPT, архивы part16_ready и part16b_ready; README assets/incoming/_meta_p16; в игре — game/assets/closeups/O3_clock_hi_*.png через tools/retouch_art.py, у корпуса закрыт след римской VII у цифры 7; H2.json loupe.hi)",
       "_p16": "02.11 17:00: партия 16 пришла (архив part16_ready; стрелки годны — /home/claude/work/p16_ready/assets) — но в нашем ТЗ ошибка: цифры римские и маятник тёмной бронзы, а у ходиков горницы арабские цифры и светлая латунь. Правка — партия 16б (Docs/art_pack_16b): корпус-циферблат и маятник заново",
       "block": "Партия 16 (мамины ходики крупно)",
       "batch": "16",

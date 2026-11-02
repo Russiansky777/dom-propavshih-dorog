@@ -20,6 +20,10 @@ TABLE = {
     "game/assets/puzzle/M05/drawing.png": ("assets/incoming/M05_drawing.png", "tools/retouch/M05_drawing.py"),
     "game/assets/rooms/H1/state_shelf_A.png": ("assets/incoming/H1_state_shelf_A_wide.png", "tools/retouch/H1_shelf_stove.py"),
     "game/assets/rooms/H1/state_holes_stove.png": ("assets/incoming/H1_state_holes_stove_wide.png", "tools/retouch/H1_shelf_stove.py"),
+    "game/assets/closeups/O3_clock_hi_bg.png": ("assets/incoming/O3_clock_hi_bg.png", "tools/retouch/O3_clock_hi_bg.py"),
+    "game/assets/closeups/O3_clock_hi_pendulum.png": ("assets/incoming/O3_clock_hi_pendulum.png", "tools/retouch/identity.py"),
+    "game/assets/closeups/O3_clock_hi_hand_min.png": ("assets/incoming/O3_clock_hi_hand_min.png", "tools/retouch/identity.py"),
+    "game/assets/closeups/O3_clock_hi_hand_hour.png": ("assets/incoming/O3_clock_hi_hand_hour.png", "tools/retouch/identity.py"),
     "game/assets/ui/map/zarechye_plan.png": ("assets/incoming/map/zarechye_plan.png", "tools/retouch/zarechye_plan.py"),
     "game/assets/ui/map/zarechye_plan_rope.png": ("assets/incoming/map/zarechye_plan.png", "tools/retouch/zarechye_plan_rope.py"),
 }

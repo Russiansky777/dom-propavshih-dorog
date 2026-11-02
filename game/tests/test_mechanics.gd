@@ -573,7 +573,10 @@ func _test_fast_mirror() -> void:
 	var hi: float = pend.max()
 	_check(hi - lo > 10.0, "the pendulum swings (%.1f…%.1f°)" % [lo, hi])
 	# H32 (Director 24.10): the second hand on the ходики (in the glass and up close), a turn per Nina's minute.
-	_check(p.loupe_sec != null and p.hand_sec != null and p.loupe_sec.get_parent() == p.loupe_art, "the ходики have a second hand")
+	_check(p.loupe_sec != null and p.hand_sec != null and (p.loupe_sec.get_parent() == p.loupe_art or p.loupe_sec.get_parent().get_parent() == p.loupe_art), "the ходики have a second hand")
+	# 02.11 (стр. 15): the clock up close is the hi-res set (партия 16/16б), its hands at the room clock's angles
+	var hi_node: Node = p.loupe_art.get_node_or_null("Hi")
+	_check(hi_node != null and p.loupe_min.get_parent() == hi_node, "the clock up close: the ×4 layers (Hi), not the room's small clock blown up")
 	_check(absf(p.loupe_sec.rotation_degrees - p.fclock.second_hand_deg()) < 0.01 and is_equal_approx(p.loupe_sec.rotation_degrees, p.hand_sec.rotation_degrees), "the second hand goes with Nina's clock")
 	var c2 := FastClock.new(20.0, 0.0)
 	c2.advance(1.5)
@@ -612,6 +615,9 @@ func _test_fast_mirror() -> void:
 	_check(p.holding and p.watch.visible and gs.has_item("pocket_watch") and sr.selected_item == "", "held to the glass: both clocks side by side; the watch stays Agata's")
 	_check(not gs.has_flag("nina_time_compared"), "no realisation at once")
 	seen = await _finish()
+	# 02.11 (Director 17:18: «стрелки разное время показывают у Агаты и мамы»): Agata's watch keeps the story's evening —
+	# the time the glass cleared plus her seconds at the mirror (was: the player's computer clock)
+	_check(absf(p.watch.seconds - (p.fclock.start_minutes * 60.0 + p.fclock.real_s)) < 1.0, "Agata's watch: the story's evening (%.0f s vs %.0f s)" % [p.watch.seconds, p.fclock.start_minutes * 60.0 + p.fclock.real_s])
 	var w0: float = p.watch.minute_deg()
 	var n0: float = p.fclock.nina_elapsed_minutes()
 	Engine.time_scale = 4.0

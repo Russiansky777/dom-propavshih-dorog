@@ -220,16 +220,46 @@ func _build_side() -> void:
 	loupe_art.position = -Vector2(float(reg[0]), float(reg[1])) * k
 	(loupe as SoftWindow).content.add_child(loupe_art)
 	_sprite(loupe_art, "Room", String(ra.get("bg", "")), Vector2.ZERO)
-	_sprite(loupe_art, "ClockFace", String(ra.get("clock_face", "")), Vector2.ZERO)
+	# 02.11 (Director, стр. 15: «мамины ходики в приближении размыты»): `loupe.hi` {bg, pendulum, hand_min, hand_hour,
+	# scale, hands_axis, pendulum_axis} — the same clock drawn `scale` times larger (партия 16/16б, canvas = region × scale):
+	# the window shows it instead of the room's small clock blown up; axes in the hi canvas' pixels.
+	var hi: Dictionary = lp.get("hi", {})
+	var art_parent: Node2D = loupe_art
+	var face_img := String(ra.get("clock_face", ""))
+	var pend_img := String(ra.get("pendulum", ""))
+	var min_img := String(ra.get("hand_min", ""))
+	var hour_img := String(ra.get("hand_hour", ""))
 	var pax := v2(ra.get("pendulum_axis", [942, 259]))
+	var hax := v2(ra.get("hands_axis", [942, 201]))
+	var sec_cfg: Dictionary = ra.get("second_hand", {})
+	if not hi.is_empty() and ResourceLoader.exists(String(hi.get("bg", ""))):
+		var hs := float(hi.get("scale", 4.0))
+		art_parent = Node2D.new()
+		art_parent.name = "Hi"
+		art_parent.position = Vector2(float(reg[0]), float(reg[1]))
+		art_parent.scale = Vector2.ONE / hs
+		loupe_art.add_child(art_parent)
+		face_img = String(hi["bg"])
+		pend_img = String(hi.get("pendulum", pend_img))
+		min_img = String(hi.get("hand_min", min_img))
+		hour_img = String(hi.get("hand_hour", hour_img))
+		pax = v2(hi.get("pendulum_axis", [196, 444]))
+		hax = v2(hi.get("hands_axis", [196, 212]))
+		sec_cfg = sec_cfg.duplicate()
+		for key in ["length", "tail", "width"]:
+			if sec_cfg.has(key):
+				sec_cfg[key] = float(sec_cfg[key]) * hs
+	_sprite(art_parent, "ClockFace", face_img, Vector2.ZERO)
 	for i in 2:   # the blur trail of a pendulum beating too fast to follow
-		var g := _pivot(loupe_art, "PendulumGhost%d" % i, String(ra.get("pendulum", "")), pax)
+		var g := _pivot(art_parent, "PendulumGhost%d" % i, pend_img, pax)
 		g.modulate.a = 0.28 - i * 0.1
 		loupe_ghosts.append(g)
-	loupe_pend = _pivot(loupe_art, "Pendulum", String(ra.get("pendulum", "")), pax)
-	loupe_min = _pivot(loupe_art, "HandMin", String(ra.get("hand_min", "")), v2(ra.get("hands_axis", [942, 201])))
-	loupe_hour = _pivot(loupe_art, "HandHour", String(ra.get("hand_hour", "")), v2(ra.get("hands_axis", [942, 201])))
-	loupe_sec = _second_hand(loupe_art)
+	loupe_pend = _pivot(art_parent, "Pendulum", pend_img, pax)
+	loupe_min = _pivot(art_parent, "HandMin", min_img, hax)
+	loupe_hour = _pivot(art_parent, "HandHour", hour_img, hax)
+	loupe_sec = _second_hand(art_parent)
+	loupe_sec.position = hax
+	loupe_sec.configure(sec_cfg)
 	label(text("label_nina_clock"), Vector2(x0, top + h + 10.0), w, &"CloseupLabel").horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	elapsed_nina = label("", Vector2(x0, top + h + 46.0), w, &"CloseupLabel")
 	elapsed_nina.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -548,6 +578,11 @@ func hold_watch() -> bool:
 	hold_start_nina = fclock.nina_elapsed_minutes()
 	watch.visible = true
 	watch.run = false   # the panel's clock drives it: Agata's seconds are exactly the mirror's real seconds
+	# 02.11 (Director, 17:18: «стрелки часов вроде как разное время показывают у Агаты и мамы»): Agata's watch showed
+	# the player's computer clock. Now it keeps the story's evening: both clocks read the same time when the glass
+	# cleared (start_minutes), then hers goes at her pace and mother's twenty times faster — until the road is held from
+	# both ends (ratio 1), when the two keep the same time.
+	watch.seconds = fclock.start_minutes * 60.0 + fclock.real_s
 	slot_hint.visible = false
 	sound("knock")
 	if flag(String(spec.get("compared_flag", "nina_time_compared"))):
