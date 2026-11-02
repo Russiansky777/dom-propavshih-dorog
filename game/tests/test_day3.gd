@@ -406,7 +406,10 @@ func _test_windlass_panel() -> void:
 		_check(p.logic.state == "bumped" and bool(pr.get("raise_highlight", false)), "%s: bumped — «Подымай» glows" % run)
 		_check(String(pr.get("reply", "")).contains("Подымай"), "Ilya's answer says «Подымай»: «%s»" % String(pr.get("reply", "")))
 		# G50: Ilya's recorded line is heard, not only read.
-		_check(String(pr.get("bump_line", "")) == "ilya:E5.windlass.bump" and String(pr.get("bump_voice", "")) in ["playing", "waiting"],
+		# while a re-recorded line waits for the Director's pick (data/story/voice_pending.json) it is subtitles only
+		var pend: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/voice_pending.json")).get("lines", {})
+		var ok_voice: Array = ["playing", "waiting"] + (["text_changed", "none"] if pend.has("ilya:E5.windlass.bump") else [])
+		_check(String(pr.get("bump_line", "")) == "ilya:E5.windlass.bump" and String(pr.get("bump_voice", "")) in ok_voice,
 			"G50: «Стукнулось о камень!» in Ilya's voice (%s → %s)" % [String(pr.get("bump_line", "")), String(pr.get("bump_voice", ""))])
 		await _click(pst)
 		await _click(plz)
