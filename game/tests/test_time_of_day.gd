@@ -219,7 +219,7 @@ func _test_rooms() -> void:
 	tg = _grade_node()
 	p = tg.call("probe")
 	poly = tg.get("tint")
-	_check(poly.visible and poly.color.is_equal_approx(Color.html("#8a90b4")), "Z2 at dusk: #8a90b4 (%s)" % poly.color.to_html(false))
+	_check(poly.visible and _z2_dusk_ok(poly.color), "Z2 at dusk: #8a90b4 × gain [0.988, 1.061, 1.162] (%s)" % poly.color.to_html(false))
 	_check(poly.z_index == 4090 and not poly.z_as_relative, "Z2: the grade over the art and figures, under the drizzle and marks (z 4090)")
 	var lit: Array = p["windows_lit"]
 	_check(lit.has("far_1") and lit.has("mill_far") and lit.has("house_w2"), "Z2 at dusk: far windows and the aunt's (stove lit) glow (%s)" % [lit])
@@ -335,7 +335,7 @@ func _test_transitions() -> void:
 	var t0 := Time.get_ticks_msec()
 	while Time.get_ticks_msec() - t0 < int((fade + 0.6) * 1000.0):
 		await process_frame
-	_check(poly.color.is_equal_approx(Color.html("#8a90b4")), "after fade_s: dusk (%s)" % poly.color.to_html(false))
+	_check(_z2_dusk_ok(poly.color), "after fade_s: dusk (%s)" % poly.color.to_html(false))
 	_check((tg.call("probe")["windows_lit"] as Array).has("far_1"), "windows lit with the dusk")
 	# Save at dusk, back to afternoon, load: dusk at once.
 	_check(gs.save(SLOT, "tod"), "save at dusk")
@@ -343,7 +343,7 @@ func _test_transitions() -> void:
 	await _frames(2)
 	_check(gs.load(SLOT), "load")
 	await _frames(2)
-	_check(poly.visible and poly.color.is_equal_approx(Color.html("#8a90b4")), "load: the final look at once (%s)" % poly.color.to_html(false))
+	_check(poly.visible and _z2_dusk_ok(poly.color), "load: the final look at once (%s)" % poly.color.to_html(false))
 	gs.reset()
 
 
@@ -378,3 +378,11 @@ func _test_local_and_journal() -> void:
 	_check(jl.text == sd.text("@ui.time_d2_midday"), "journal in the workshop at the mirror: «%s»" % jl.text)
 	ui.call("toggle_journal")
 	gs.reset()
+
+
+## Z2 at dusk: the class's exterior dusk tone #8a90b4 times the per-channel gain that brings the second day's dusk to one
+## look with the street and the pier (Director 02.11, line 17) — within one step of 8 bits.
+func _z2_dusk_ok(c: Color) -> bool:
+	var t := Color.html("#8a90b4")
+	var want := Color(t.r * 0.988, t.g * 1.061, t.b * 1.162)
+	return absf(c.r - want.r) <= 1.5 / 255.0 and absf(c.g - want.g) <= 1.5 / 255.0 and absf(c.b - want.b) <= 1.5 / 255.0
