@@ -1,0 +1,46 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 191,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K34 (02.11, блок 2, стр. 28): Митя приходит к сараю Ильи помочь с верстаком (Q06m_0, новая). Take _1 = voice_text в data/story/voice_direction.json.",
+ "new_text_lines": [
+  "Q06m_0"
+ ],
+ "items": [
+  {
+   "id": "W313_1",
+   "line": "Q06m_0",
+   "take": "1",
+   "speaker": "mitya",
+   "text": "[cheerfully] Я подсоблю — втроём быстрее. Окунь подождёт.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "по-дружески, легко"
+  },
+  {
+   "id": "W313_2",
+   "line": "Q06m_0",
+   "take": "2",
+   "speaker": "mitya",
+   "text": "[cheerfully] Я подсоблю — втроём быстрее. Окунь подождёт.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W313_3",
+   "line": "Q06m_0",
+   "take": "3",
+   "speaker": "mitya",
+   "text": "[cheerfully] Я подсоблю — втроём быстрее. Окунь подождёт.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  }
+ ]
+}
