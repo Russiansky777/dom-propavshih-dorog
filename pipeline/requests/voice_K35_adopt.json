@@ -1,0 +1,12 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Двадцать третий заход (K35): выбор Директора 02.11 22:59–23:00",
+ "picks": {
+  "tikhon:H1.tikhon.spoons_a": "W314_3",
+  "agata:examine.school_ribbon": "W315_1",
+  "ilya:E5.windlass.bump": "W316_3",
+  "agata:mech.fish.caught_agata": "W317_2",
+  "mitya:mech.fish.escaped": "W318_2"
+ }
+}
