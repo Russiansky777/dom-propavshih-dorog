@@ -18,7 +18,8 @@ G53 (Директор: «Агата стоит у края стола») — к�
      слой стоит раньше слоя с семьёй (если он указан в compose.below) — нарисованные руки и посуда поверх;
   6. картинки слоёв совпадают с данными (tools/make_frame_layers.py --check для этих кадров);
 01.11 (Директор, стр. 61, 68: фигуры кадров неподвижны) — фигура с клипами (compose.anim):
-  7. набор листов — compose.sheet (иначе как у make_frame_layers), клипы anim.rest / anim.talk есть в листе;
+  7. набор листов — compose.sheet (иначе как у make_frame_layers), клипы anim.rest / anim.talk есть в листе (или в копии
+     игры как game_only — клипы кадров tools/render_sheet_clips.py, 02.11 — и отрендерены в строке compose.dir);
   8. атлас кадров <image>_anim.png и его описание <image>_anim.json есть и собраны по этим данным (отпечаток key —
      make_frame_layers.anim_key: правка compose без пересборки атласа ловится).
 
@@ -154,9 +155,10 @@ def check_frames(quiet: bool) -> list:
                 continue
             cset = str(c.get("sheet") or {"tamara": "tamara_v3"}.get(c["char"], c["char"]))
             sp_path = ROOT / "assets" / "characters" / cset / "sprites.json"
-            if not sp_path.exists():
+            if not sp_path.exists() and not (ROOT / "game" / "assets" / "characters" / cset / "sprites.json").exists():
                 continue
-            sp = json.loads(sp_path.read_text(encoding="utf-8"))
+            # лист assets/ и действия только копии игры (клипы кадров tools/render_sheet_clips.py — game_only)
+            sp = _mfl().sheet_meta(cset)
             a = c.get("action", "idle")
             where = f"{room['id']}.{l.get('id')}"
             if a not in sp.get("actions", {}):
@@ -173,6 +175,8 @@ def check_frames(quiet: bool) -> list:
                         bad.append(f"{where}: anim без клипа покоя (rest)")
                     if ca and ca not in sp.get("actions", {}):
                         bad.append(f"{where}: клипа «{ca}» ({role}) нет в листе {cset}")
+                    elif ca and sp["actions"][ca].get("game_only") and int(c.get("dir", 0)) not in sp["actions"][ca].get("rows", []):
+                        bad.append(f"{where}: клип «{ca}» листа {cset} не отрендерен в строке {c.get('dir')} — tools/render_sheet_clips.py --dirs")
                 img = ROOT / "game" / str(l.get("image", "res://"))[len("res://"):]
                 aj = img.with_name(img.stem + "_anim.json")
                 if not aj.exists() or not img.with_name(img.stem + "_anim.png").exists():

@@ -8,6 +8,17 @@ extends SceneTree
 ##     the one whose line is being said plays the talk clip (hands, head, mouth) — cells the rest clip never shows; the
 ##     others stay in their rest clip; when the line is over it goes back. A figure without a talk clip (Agata) moves
 ##     its head with the words (warp). Self-check: the old still / warp-only layer (no anim) fails these checks.
+##   02.11 (the same lines, the talk clip itself; Docs/tasks/frame_talk_sheets.json): the villagers' sheet talk clip stood
+##     in another stance (legs 10–12 cm forward, soles higher, torso leaning back) — on the rest → talk dissolve the legs
+##     crossfaded (a step) and late in the gesture the body leaned. Now the talk clip of every frame figure keeps the legs
+##     of its rest frame (lower third of the silhouette: IoU with the rest frame 0 ≥ LEGS_IOU_MIN in every talk cell),
+##     starts in the rest pose (talk cell 0 ≈ rest cell 0) and does not lean: the talk action of the sheet is the clip
+##     derived from the raw one (sprites.json actions.<talk>.derived, tools/render_sheet_clips.py: hips and legs of the
+##     stance, spine 0.3 of the clip) and its measured torso tilt from the stance (hips → neck, in 3D) is ≤ TILT_MAX_DEG
+##     (the raw clip's — 5–8°); Agata in the frames has her own talk clip (agata_frames) and gestures with her line
+##     instead of the warp. Self-check: the old atlas cells (tests/fixtures/frame_talk_raw_pavel_anim.png — the raw talk
+##     clip as it was in F_mill_manager) fail the legs check; the raw clip's own tilt (derived.source_torso_tilt_max_deg)
+##     fails the tilt check.
 ##   godot --headless --audio-driver Dummy --path game -s res://tests/test_feedback_0111_d.gd
 ## Exit code 0 only when every check passed.
 
@@ -64,6 +75,7 @@ func _run() -> void:
 	rm.autosave_enabled = false
 	await _test("стр. 56: Nina walks to Tamara in M23a half as fast (5.2 s, was 2.6)", _test_nina_pace)
 	await _test("стр. 61, 68: frame figures play their sheet clips; the speaker plays the talk gesture, the others do not", _test_frame_life)
+	await _test("02.11 frame talk clips: legs stay in the rest stance (no step on the dissolve), no lean, start in the rest pose", _test_talk_stance)
 	var failed := 0
 	for r in _results:
 		if not r[1]:
@@ -213,12 +225,17 @@ func _test_frame_life() -> void:
 		await create_timer(1.0).timeout   # anim_talk_out_s 0.4
 		var after := await _sample_cells([m], 0.5)
 		_check(m.life_talk < 0.01 and all_in_clip(after[m], m.anim, "rest"), "%s: line over — still gesturing (talk %.2f, frames %s)" % [speaker, m.life_talk, _uniq(after[m])])
-	# Agata's sheet has no talk clip yet: her head moves with her words (warp), her rest clip goes on
+	# Agata (02.11: her own talk clip, agata_frames) gestures with her line like the others, the rest stay at rest
 	if live.has("agata"):
 		var a = live["agata"]
+		_check(a.anim.get("clips", {}).has("talk"), "Agata: no talk clip in the frame atlas (agata_frames)")
 		sr.current_beat = {"type": "line", "speaker": "agata", "text": "Помню, Павел. Наберём — только сперва мост поставить надо."}
 		await create_timer(0.6).timeout
-		_check(float(a.life_mat.get_shader_parameter("warp_talk")) > 0.9, "Agata's own line: she does not move with the words (warp %.2f)" % float(a.life_mat.get_shader_parameter("warp_talk")))
+		var asmp := await _sample_cells(all_l, 1.5)
+		_check(a.life_talk > 0.9 and all_in_clip(asmp[a], a.anim, "talk") and plays_sheet(asmp[a], 2), "Agata's own line: she does not gesture — shown frames %s (talk %.2f)" % [_uniq(asmp[a]), a.life_talk])
+		for other in live:
+			if other != "agata":
+				_check(all_in_clip(asmp[live[other]], live[other].anim, "rest"), "%s gestures with Agata's words" % other)
 		sr.current_beat = {}
 		await create_timer(1.0).timeout
 	# two figures do not move in step
@@ -248,6 +265,160 @@ func _test_frame_life() -> void:
 	old_layer.queue_free()
 	sr.set_frame("", false)
 	await _frames(2)
+
+
+const LEGS_IOU_MIN := 0.9
+const START_IOU_MIN := 0.9
+const TILT_MAX_DEG := 3.0
+## Figures on sheets the 02.11 re-render did not reach (Docs/tasks/frame_talk_sheets.json): their talk legs are the
+## stance already (the legs check holds), the lean is not measured — no derived clip.
+const LEAN_OPEN := {"manager": "лист v1 управляющего; listen/talk2 v2 ждут GLB (только в артефакте Actions glb-39879335278)",
+		"tamara": "лист tamara_v3 вне задания 02.11"}
+
+
+## The sheet's description of an action (the game copy game/assets/characters/<set>/sprites.json; read as a file —
+## the folder is not imported).
+static func sheet_action(sheet_set: String, action: String) -> Dictionary:
+	var sp = JSON.parse_string(FileAccess.get_file_as_string("res://assets/characters/%s/sprites.json" % sheet_set))
+	if not (sp is Dictionary):
+		return {}
+	return (sp as Dictionary).get("actions", {}).get(action, {})
+
+
+## Alpha masks (alpha >= 128) of atlas cells, sampled every `step` px: {w, h, m: PackedByteArray}.
+static func _cell_mask(data: PackedByteArray, iw: int, meta: Dictionary, k: int, step: int) -> Dictionary:
+	var cw := int(meta["cell"][0])
+	var ch := int(meta["cell"][1])
+	var cols := int(meta["cols"])
+	var gap := int(meta["gap"])
+	var x0 := (k % cols) * (cw + gap)
+	var y0 := (k / cols) * (ch + gap)
+	var w := cw / step
+	var h := ch / step
+	var m := PackedByteArray()
+	m.resize(w * h)
+	for y in h:
+		var row := ((y0 + y * step) * iw + x0) * 4 + 3
+		for x in w:
+			m[y * w + x] = 1 if data[row + x * step * 4] >= 128 else 0
+	return {"w": w, "h": h, "m": m}
+
+
+static func _rows_box(mk: Dictionary) -> Vector2i:
+	var w: int = mk["w"]
+	var top := -1
+	var bottom := -1
+	for y in int(mk["h"]):
+		for x in w:
+			if mk["m"][y * w + x] == 1:
+				if top < 0:
+					top = y
+				bottom = y
+				break
+	return Vector2i(top, bottom)
+
+
+static func _band_mid_x(mk: Dictionary, y_from: int, y_to: int) -> float:
+	var w: int = mk["w"]
+	var lo := w
+	var hi := -1
+	for y in range(maxi(0, y_from), mini(int(mk["h"]), y_to)):
+		for x in w:
+			if mk["m"][y * w + x] == 1:
+				lo = mini(lo, x)
+				hi = maxi(hi, x)
+	return (lo + hi) / 2.0 if hi >= 0 else -1.0
+
+
+static func _band_iou(a: Dictionary, b: Dictionary, y_from: int, y_to: int) -> float:
+	var w: int = a["w"]
+	var inter := 0
+	var uni := 0
+	for y in range(maxi(0, y_from), mini(int(a["h"]), y_to)):
+		for x in w:
+			var i := y * w + x
+			var p: int = a["m"][i]
+			var q: int = b["m"][i]
+			inter += p & q
+			uni += p | q
+	return float(inter) / float(maxi(uni, 1))
+
+
+## Talk clip vs the rest stance in a frame atlas (<image>_anim.png + its description): legs — the lower 35 % of the
+## rest frame 0 silhouette, IoU of every talk cell with it (min); start — IoU of the whole talk cell 0 with rest cell 0;
+## lean — the sideways shift of the head (top eighth) from the rest frame 0, share of the height (max).
+static func talk_stance_metrics(img: Image, meta: Dictionary) -> Dictionary:
+	var cl: Dictionary = meta.get("clips", {})
+	if not cl.has("talk") or not cl.has("rest"):
+		return {}
+	if img.get_format() != Image.FORMAT_RGBA8:
+		img.convert(Image.FORMAT_RGBA8)
+	var data := img.get_data()
+	var step := maxi(1, int(meta["cell"][1]) / 200)
+	var r0 := _cell_mask(data, img.get_width(), meta, int(cl["rest"]["first"]), step)
+	var rb := _rows_box(r0)
+	var hgt := float(rb.y - rb.x)
+	var legs_from := int(rb.y - 0.35 * hgt)
+	var head_to := int(rb.x + hgt / 8.0)
+	var head0 := _band_mid_x(r0, rb.x, head_to)
+	var legs_min := 1.0
+	var dx_max := 0.0
+	var start := 0.0
+	for i in int(cl["talk"]["frames"]):
+		var t := _cell_mask(data, img.get_width(), meta, int(cl["talk"]["first"]) + i, step)
+		legs_min = minf(legs_min, _band_iou(t, r0, legs_from, rb.y + 1))
+		var tb := _rows_box(t)
+		dx_max = maxf(dx_max, absf(_band_mid_x(t, tb.x, tb.x + int(hgt / 8.0)) - head0) / hgt)
+		if i == 0:
+			start = _band_iou(t, r0, 0, int(t["h"]))
+	return {"legs_iou_min": legs_min, "head_dx_max": dx_max, "start_iou": start}
+
+
+func _test_talk_stance() -> void:
+	var dir := DirAccess.open("res://data/story/rooms")
+	var seen := 0
+	var agata_talk := 0
+	for f in dir.get_files():
+		if not (f.ends_with(".json") and (f.begins_with("F_") or f.begins_with("EP_"))):
+			continue
+		var doc = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rooms/" + f))
+		for l in doc.get("layers", []):
+			var c = l.get("compose", {})
+			if not (c is Dictionary and c.has("anim") and c.has("char")):
+				continue
+			var ch := String(c["char"])
+			var where := "%s.%s" % [doc.get("id", f), l.get("id", "")]
+			if not (c["anim"] as Dictionary).has("talk"):
+				_check(ch != "agata", "%s: Agata has no talk clip (agata_frames talk)" % where)
+				continue
+			var base := String(l["image"]).get_basename()
+			var meta = JSON.parse_string(FileAccess.get_file_as_string(base + "_anim.json"))
+			var img := Image.load_from_file(ProjectSettings.globalize_path(base + "_anim.png"))
+			if meta == null or img == null:
+				_check(false, "%s: no frame atlas %s_anim.png" % [where, base])
+				continue
+			var mt := talk_stance_metrics(img, meta)
+			seen += 1
+			agata_talk += 1 if ch == "agata" else 0
+			print("        %s (%s): legs IoU min %.3f, start IoU %.3f" % [where, (meta["clips"]["talk"] as Dictionary).get("action", ""), mt["legs_iou_min"], mt["start_iou"]])
+			_check(float(mt["legs_iou_min"]) >= LEGS_IOU_MIN, "%s: the legs of the talk clip are not the rest stance (IoU %.3f < %.2f) — they step on the dissolve" % [where, mt["legs_iou_min"], LEGS_IOU_MIN])
+			if LEAN_OPEN.has(ch):
+				continue
+			_check(float(mt["start_iou"]) >= START_IOU_MIN, "%s: the talk clip does not start in the rest pose (IoU %.3f)" % [where, mt["start_iou"]])
+			var der: Dictionary = sheet_action(String(meta.get("sheet", "")), String(meta["clips"]["talk"]["action"])).get("derived", {})
+			_check(not der.is_empty(), "%s: the talk clip %s/%s is the raw clip (no derived: hips, legs and spine as in the clip)" % [where, meta.get("sheet"), meta["clips"]["talk"]["action"]])
+			if not der.is_empty():
+				_check(der.has("torso_tilt_max_deg") and float(der["torso_tilt_max_deg"]) <= TILT_MAX_DEG, "%s: the body leans in the talk clip (%s° > %.1f°)" % [where, der.get("torso_tilt_max_deg"), TILT_MAX_DEG])
+				# self-check: the raw clip's own tilt fails the same bound
+				_check(float(der.get("source_torso_tilt_max_deg", 0.0)) > TILT_MAX_DEG, "self-check: %s — the raw clip's tilt %s° passes the lean bound" % [where, der.get("source_torso_tilt_max_deg")])
+	_check(seen >= 10, "frame figures with a talk clip: %d (≥ 10 expected)" % seen)
+	_check(agata_talk >= 4, "Agata's talk clip in %d frames (the council, the gallery, the span, the lesson expected)" % agata_talk)
+	# self-check: the raw talk clip as it was (F_mill_manager.pavel, commit 7ba00368) fails the legs and the lean checks
+	var fx = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/frame_talk_raw_pavel_anim.json"))
+	var fimg := Image.load_from_file(ProjectSettings.globalize_path("res://tests/fixtures/frame_talk_raw_pavel_anim.png"))
+	var old := talk_stance_metrics(fimg, fx)
+	_check(not old.is_empty() and float(old["legs_iou_min"]) < LEGS_IOU_MIN, "self-check: the raw talk clip's legs pass as the stance (IoU %s)" % [old.get("legs_iou_min")])
+	_check(not old.is_empty() and float(old["start_iou"]) < START_IOU_MIN, "self-check: the raw talk clip passes as starting in the rest pose (IoU %s)" % [old.get("start_iou")])
 
 
 func _uniq(cells: Array) -> Array:

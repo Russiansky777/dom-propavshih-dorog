@@ -36,6 +36,11 @@ compose — вещь (кусок другой картинки):
                                   между соседними кадрами (редкие кадры: лист v1 — 16 кадров на 9 с жеста);
             "align": "head"}   — как клип реплики сводится с клипом покоя (clip_shift: низ подошв — всегда, по
                                   горизонтали — голова; "feet", "none").
+Клип реплики жителей — talk_steady (покой listen) / talk_steady_idle (покой idle): Talk_with_Hands_Open, где таз и ноги —
+поза кадра 0 стойки, спина — 0,3 клипа, начало и конец — в стойке (02.11: у сырого talk ноги в другой стойке — на
+наплыве переступали, корпус откидывался); Агата — набор agata_frames (живая модель, стойка idle и реплика talk).
+Эти клипы — только в копии игры (game/assets/characters/<набор>/sprites.json, "game_only": tools/render_sheet_clips.py
++ tools/pack_sheet_clips.py; строки — "rows").
 Тогда рядом с картинкой слоя пишутся <image>_anim.png — атлас кадров обоих клипов, каждый собран как сам слой
 (тот же масштаб и опорная точка, что у кадра покоя action/frame: рост height, середина подошв feet; тот же tint,
 та же тень, hide и cut_below — рука не проходит сквозь стол) и обрезан общей рамкой, — и <image>_anim.json (рамка на
@@ -96,6 +101,41 @@ def _md5(p: Path) -> str:
     return _MD5[p]
 
 
+def sheet_meta(cset: str) -> dict:
+    """Описание листа: assets/characters/<набор>/sprites.json (истина для сеток) и действия только копии игры
+    ("game_only": клипы кадров, отрендеренные tools/render_sheet_clips.py и упакованные tools/pack_sheet_clips.py —
+    реплика жителей с ногами из стойки talk_steady, Агата agata_frames, управляющий manager_v2); нет листа в assets/ —
+    только копия игры."""
+    src = CHARS / cset / "sprites.json"
+    gp = GAME_CHARS / cset / "sprites.json"
+    meta = json.loads(src.read_text(encoding="utf-8")) if src.exists() else None
+    if gp.exists():
+        game = json.loads(gp.read_text(encoding="utf-8"))
+        if meta is None:
+            meta = game
+        else:
+            for a, act in game.get("actions", {}).items():
+                if act.get("game_only") and a not in meta.get("actions", {}):
+                    meta["actions"][a] = act
+    if meta is None:
+        raise SystemExit(f"нет листа {cset}: ни {src}, ни {gp}")
+    return meta
+
+
+def sheet_meta_bytes(cset: str) -> bytes:
+    """Отпечаток описания листа для anim_key: sprites.json assets/ и действия только копии игры (без них — как прежде)."""
+    src = CHARS / cset / "sprites.json"
+    out = src.read_bytes() if src.exists() else b""
+    gp = GAME_CHARS / cset / "sprites.json"
+    if gp.exists():
+        base = json.loads(out.decode("utf-8")).get("actions", {}) if out else {}
+        extra = {a: v for a, v in json.loads(gp.read_text(encoding="utf-8")).get("actions", {}).items()
+                 if v.get("game_only") and a not in base}
+        if extra:
+            out += json.dumps(extra, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    return out
+
+
 def _sheet_image(p: Path) -> Image.Image:
     if _SHEET[0] != p:
         _SHEET[0], _SHEET[1] = None, None
@@ -113,14 +153,25 @@ def sheet_cell(cset: str, action: str, row: int, col: int) -> Image.Image:
     if key in _CELLS:
         return _CELLS[key]
     src = CHARS / cset
-    meta = json.loads((src / "sprites.json").read_text(encoding="utf-8"))
+    meta = sheet_meta(cset)
     fw, fh = int(meta["frame_w"]), int(meta["frame_h"])
     act = meta["actions"][action]
     n = int(act["frames"])
     grid = src / str(act.get("sheet", f"{action}.png"))
     cell = None
     gmeta_p = GAME_CHARS / cset / "sprites.json"
-    if gmeta_p.exists():
+    if act.get("game_only"):
+        # клип только копии игры: сетки нет, кадр — из атласа; пустую (не отрендеренную) строку не берём
+        if row not in act.get("rows", []):
+            raise SystemExit(f"{cset}/{action}: направление {row} не отрендерено (есть {act.get('rows')}) — "
+                             f"tools/render_sheet_clips.py --dirs {row}, затем tools/pack_sheet_clips.py")
+        atl = act["atlas"]
+        r = atl["rects"][row * n + col]
+        pages = atl.get("pages") or [act.get("sheet", f"{action}.png")]
+        page = _sheet_image(GAME_CHARS / cset / pages[r[6] if len(r) > 6 else 0])
+        cell = Image.new("RGBA", (fw, fh), (0, 0, 0, 0))
+        cell.paste(page.crop((r[0], r[1], r[0] + r[2], r[1] + r[3])), (r[4], r[5]))
+    elif gmeta_p.exists():
         gact = json.loads(gmeta_p.read_text(encoding="utf-8")).get("actions", {}).get(action, {})
         atl = gact.get("atlas")
         if atl and atl.get("src_md5") == _md5(grid):
@@ -142,7 +193,10 @@ def figure(c: dict) -> Image.Image:
     sheet_dir = CHARS / cset
     action = c.get("action", "idle")
     sprites = sheet_dir / "sprites.json"
-    if sprites.exists() and (sheet_dir / f"{action}.png").exists():
+    gact = {}
+    if (GAME_CHARS / cset / "sprites.json").exists():
+        gact = sheet_meta(cset).get("actions", {}).get(action, {})
+    if (sprites.exists() and (sheet_dir / f"{action}.png").exists()) or gact.get("game_only"):
         im = sheet_cell(cset, action, int(c.get("dir", 0)), int(c.get("frame", 0)))
     else:
         im = Image.open(STUBS / f"{cid}_v1.png").convert("RGBA")
@@ -292,7 +346,7 @@ def clip_shift(pl: Placement, c: dict, action: str) -> tuple[float, float]:
 def anim_clips(c: dict) -> list:
     """[(роль, действие листа, кадров, кадр/с, туда-обратно, сглаживать)] — клипы атласа фигуры по compose.anim."""
     an = c["anim"]
-    meta = json.loads((CHARS / sheet_set(c) / "sprites.json").read_text(encoding="utf-8"))
+    meta = sheet_meta(sheet_set(c))
     out = []
     for role in ("rest", "talk"):
         action = an.get(role)
@@ -309,7 +363,7 @@ def anim_key(c: dict) -> str:
     """Отпечаток данных атласа: compose слоя и описания листов — атлас устарел, если он не совпадает."""
     cset = sheet_set(c)
     h = hashlib.md5(json.dumps(c, sort_keys=True, ensure_ascii=False).encode("utf-8"))
-    h.update((CHARS / cset / "sprites.json").read_bytes())
+    h.update(sheet_meta_bytes(cset))
     h.update(b"frame_anim v2")
     return h.hexdigest()
 

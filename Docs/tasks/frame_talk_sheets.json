@@ -6,24 +6,57 @@
     {
       "character": "agata",
       "target": "assets/characters/agata/ (+ копия игры tools/pack_sheets.py)",
-      "add_actions": {"talk": {"clip": "Talk_with_Right_Hand_Open", "frames": 36, "fps": 9, "legs_from": "Idle_T2M_idle"}},
+      "add_actions": {
+        "talk": {
+          "clip": "Talk_with_Right_Hand_Open",
+          "frames": 36,
+          "fps": 9,
+          "legs_from": "Idle_T2M_idle"
+        }
+      },
       "_note": "У листа Агаты нет клипа реплики — в кадрах (совет на мельнице M23b, пролёт F_span) её голова движется со словами только мягкой деформацией картинки. Клип — тот, что у живой Агаты (game/data/actors/agata.json rt3d.clips.talk, GLB agata_v4_rt.glb), ноги и таз — из стойки (как act_body у жителей), начало и конец — в позе кадра 0 idle, 8 направлений, render_size 864, elev 14."
     },
     {
       "character": "manager",
       "target": "assets/characters/manager/ (новые действия listen и talk2 рядом с прежними; прежние не трогать)",
       "add_actions": {
-        "listen": {"clip": "как listen жителей v2 (Text to Motion «слушает», руки у тела)", "frames": 24, "fps": 12, "playback": "pingpong"},
-        "talk2": {"clip": "Talk_with_Hands_Open (перенос с рига жителей, retarget_clips.py)", "frames": 36, "fps": 9, "legs_from": "Idle_4"}
+        "listen": {
+          "clip": "как listen жителей v2 (Text to Motion «слушает», руки у тела)",
+          "frames": 24,
+          "fps": 12,
+          "playback": "pingpong"
+        },
+        "talk2": {
+          "clip": "Talk_with_Hands_Open (перенос с рига жителей, retarget_clips.py)",
+          "frames": 36,
+          "fps": 9,
+          "legs_from": "Idle_4"
+        }
       },
-      "frame_w_h": [648, 864],
+      "frame_w_h": [
+        648,
+        864
+      ],
       "_note": "Управляющий (Лукич) говорит в M23b четыре реплики, а его лист v1 — 16 кадров на 9 с «Listening_Gesture»: в кадре жест редкий (3,4 к/с с растворением кадров). Нужен жест как у жителей v2 и тот же размер кадра (render_size 864). После поставки кадр F_mill_manager переключается правкой данных (compose.anim.talk = talk2)."
     },
     {
       "character": "nina_v2, ilya_v2, pavel_v2, pelageya_v2, mitya_v2",
       "target": "assets/characters/<имя>_v2/ — действие talk_steady рядом с talk",
-      "add_actions": {"talk_steady": {"clip": "talk (Talk_with_Hands_Open), бёдра, спина и ноги — 0,3 клипа + 0,7 позы listen кадра 0 (как act_body.keep 0.3 у живых жителей)", "frames": 36, "fps": 9}},
+      "add_actions": {
+        "talk_steady": {
+          "clip": "talk (Talk_with_Hands_Open), бёдра, спина и ноги — 0,3 клипа + 0,7 позы listen кадра 0 (как act_body.keep 0.3 у живых жителей)",
+          "frames": 36,
+          "fps": 9
+        }
+      },
       "_note": "Клип talk листов v2 стоит иначе, чем listen: ноги на 10–12 см вперёд, подошвы на 2–3 см выше (floor_shift_m), корпус откинут — в кадре на наплыве «слушает → говорит» ноги переступают растворением (голову tools/make_frame_layers.py сводит, ноги свести нельзя). talk_steady с ногами из стойки уберёт двоение ног; Директор жаловался на то же у живых жителей (01.11, стр. 6, 10), там это исправлено фильтром дорожек."
     }
-  ]
+  ],
+  "status_0211": {
+    "done": "Перерендер на месте (python3.13 + bpy 5.2.2, 0 кредитов): tools/render_sheet_clips.py — то же кадрирование, камера, свет, материалы, пол, ширина кадра, что pipeline/render/render_sprites.py (проба: кадр idle 0 каждого набора, отрендеренный заново, совпал с листом попиксельно — макс. разница 0–7 из 255 на ≤ 5 пикселях, силуэт IoU 1,0); tools/pack_sheet_clips.py — атлас в копию игры (game_only, rows).",
+    "villagers": "nina_v2, pelageya_v2, pavel_v2, ilya_v2, mitya_v2: talk_steady (стойка listen) и talk_steady_idle (стойка idle) — Talk_with_Hands_Open, таз и спина 0,3 клипа (как rt3d.act_body), смещение таза — стойки, бёдра доворачиваются в мировой поворот стойки (стопы ≤ 1 см), руки/шея/голова — клип, начало и конец — в стойке (0,5 с). Наклон корпуса от стойки ≤ 2° (сырой talk — 5–6°). Вариант «таз из стойки, спина 0,3» отвергнут: корпус наклонялся вперёд до 3,4–4,4°.",
+    "agata": "agata_frames (game/assets/characters/agata_frames, .gdignore): стойка Idle_T2M_idle и реплика Talk_with_Right_Hand_Open из game/assets/characters/agata/rt3d/agata_v4_rt.glb (юбка 02.11), таз и ноги — стойки (в GLB уже), спина 0,3 — наклон 2,2° (клип как есть — 8,8°). Покой в кадрах тоже из этого GLB: живая модель отличается от листа v4 (юбка, коса, сумка; силуэт IoU 0,74–0,95), наплыв покой → реплика без смены модели.",
+    "rows": "Отрендерены только строки, которые стоят в кадрах (nina 0/2/7, pelageya 1/6, pavel 6/7, ilya 1, mitya 6, agata 2/3/4/6); остальные строки пустые и помечены rows — make_frame_layers и validate_actor_actions ловят кадр на неотрендеренной строке. Добавить: tools/render_sheet_clips.py --dirs N + tools/pack_sheet_clips.py (готовые строки берутся из атласа).",
+    "manager": "НЕ СДЕЛАНО: GLB управляющего (animations.glb прогона 39879335278) есть только в артефакте Actions glb-39879335278 (875 МБ), а хранилище артефактов (*.blob.core.windows.net) из сессии закрыто прокси (403). Нужно: прогон конвейера с from_run=39879335278 и полем release (как agata-v4-work) — тогда тот же инструмент: listen (retarget с nina_v2_game_r4.glb), talk2 (Talk_with_Hands_Open, ноги — Idle_4), набор manager_v2 648×864; кадр F_mill_manager — compose.sheet manager_v2, anim {rest: listen, talk: talk2}."
+  }
 }

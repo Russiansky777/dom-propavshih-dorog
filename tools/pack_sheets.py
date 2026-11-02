@@ -153,6 +153,11 @@ def main() -> int:
         sizes = ", ".join(f"{a.width}×{a.height}" for a in atlases)
         print(f"  {dst.name}/{sheet.name}: сетка {n * fw}×{rows * fh} → атлас {sizes} "
               f"({sum(a.width * a.height for a in atlases) / (n * fw * rows * fh) * 100:.0f} % пикселей)")
+    # действия только копии игры (tools/pack_sheet_clips.py: клипы кадров, отрендеренные на месте, сетки в assets/
+    # нет) — остаются, пока в assets/ не появится действие с тем же именем
+    for action, act in old.items():
+        if act.get("game_only") and action not in meta.get("actions", {}):
+            meta.setdefault("actions", {})[action] = act
     for action, act in meta.get("actions", {}).items():
         ref = meta["actions"].get(act.get("same_as", ""))
         if ref is not None and "atlas" in ref:

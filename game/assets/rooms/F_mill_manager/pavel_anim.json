@@ -1,26 +1,26 @@
 {
  "_comment": "tools/make_frame_layers.py (compose.anim): кадры фигуры для StateLayer — клип покоя и клип реплики, каждый кадр собран как картинка слоя; не править руками.",
  "image": "res://assets/rooms/F_mill_manager/pavel.png",
- "key": "1fafee08ab9f021cb745f7ac32ec0467",
+ "key": "988c20b919f34cd262000836d6105d13",
  "char": "pavel",
  "sheet": "pavel_v2",
  "dir": 7,
  "origin": [
-  542,
+  535,
   369
  ],
  "cell": [
-  97,
+  101,
   221
  ],
  "cols": 60,
  "gap": 4,
  "size": [
-  6056,
+  6296,
   221
  ],
  "feet": [
-  58.0,
+  65.0,
   206.0
  ],
  "height": 205.0,
@@ -38,15 +38,15 @@
    ]
   },
   "talk": {
-   "action": "talk",
+   "action": "talk_steady",
    "first": 24,
    "frames": 36,
    "fps": 9.0,
    "playback": "loop",
    "blend": false,
    "shift_sheet_px": [
-    -2,
-    6
+    0,
+    0
    ]
   }
  }

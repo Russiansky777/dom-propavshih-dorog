@@ -77,7 +77,7 @@
         "dir": 0,
         "action": "idle",
         "frame": 0,
-        "anim": {"rest": "idle", "talk": "talk"},
+        "anim": {"rest": "idle", "talk": "talk_steady_idle"},
         "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           1.0,
@@ -106,7 +106,8 @@
         "dir": 4,
         "action": "idle",
         "frame": 0,
-        "anim": {"rest": "idle"},
+        "sheet": "agata_frames",
+        "anim": {"rest": "idle", "talk": "talk"},
         "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           1.0,
