@@ -13,7 +13,7 @@
   2. основная история по порядку (сцены E*.json type main, выдачи копятся, как в RoomManager.start_at):
      каждая сцена начинается ровно в одном состоянии — том, что записано в scenes (таблица
      Docs/TIME_OF_DAY.md); время внутри дня не идёт назад, а день не убывает; в scenes нет лишних сцен;
-  3. оттенки (grades и grade комнат): ключ — состояние или фаза, значение {tint: «#rrggbb»} или "painted";
+  3. оттенки (grades и grade комнат): ключ — состояние или фаза, значение {tint: «#rrggbb», gain?: число или [r, g, b]} или "painted";
      inherit — существующий класс; классы комнат (class) существуют;
   4. файлы комнат: комната есть в rooms/; replaces_effects — эффекты, которые в комнате есть; окна в кадре
      1920×1080, условия if/unless — известные флаги (flags.json, выдачи, автопрефиксы) или виртуальные tod_*;
@@ -158,6 +158,12 @@ def check_grade_map(ctx: str, g: dict, states: set[str], phases: set[str]) -> No
             continue
         if not isinstance(v, dict) or not COLOR.match(str(v.get("tint", ""))):
             err(f"{ctx}.{k}: ожидается {{\"tint\": \"#rrggbb\"}} или \"painted\"")
+            continue
+        # gain (01.11, стр. 41): число или [r, g, b] — множитель оттенка; выше 1 — поднятый свет (только комнаты с картой света)
+        gain = v.get("gain", 1.0)
+        vals = gain if isinstance(gain, list) else [gain]
+        if (isinstance(gain, list) and len(gain) != 3) or not all(isinstance(x, (int, float)) and 0.3 <= x <= 1.6 for x in vals):
+            err(f"{ctx}.{k}.gain: ожидается число или [r, g, b] в пределах 0,3–1,6, а не {gain}")
 
 
 def main() -> int:

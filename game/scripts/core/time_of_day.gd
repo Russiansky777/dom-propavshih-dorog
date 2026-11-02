@@ -223,8 +223,16 @@ static func _grade_value(v) -> Dictionary:
 	return {}   # "none" / "painted" / null — as painted
 
 
+## The grade's multiplier: `tint` «#rrggbb» × optional `gain` (a number or [r, g, b]). A gain may lift a channel
+## above 1 (Director 01.11, стр. 41: the pier's painted dusk is darker than the turn's — one evening in both
+## places): a light-map room takes the part over 1 as added light (light_sources), the polygon route can only
+## darken (TimeGrade clamps it).
 static func tint_of(g: Dictionary) -> Color:
-	return Color.html(String(g.get("tint", "#ffffff")))
+	var c := Color.html(String(g.get("tint", "#ffffff")))
+	var k = g.get("gain", 1.0)
+	if k is Array and k.size() >= 3:
+		return Color(c.r * float(k[0]), c.g * float(k[1]), c.b * float(k[2]), 1.0)
+	return Color(c.r * float(k), c.g * float(k), c.b * float(k), 1.0)
 
 
 ## Ambient light sources a room with a light map takes instead of the tint polygon (RoomLighting.build merges
@@ -251,12 +259,23 @@ static func light_sources(room_id: String) -> Array:
 		var t := tint_of(g)
 		# No actor_tint: the lowered light map already reaches the figures (RoomLighting.actor_tone_at — the ambient
 		# field), a tint on top darkened them twice (Agata black in Z4 at dusk, 23.10).
-		var src := {"id": "tod_" + id, "type": "ambient", "subtract": [1.0 - t.r, 1.0 - t.g, 1.0 - t.b], "energy": 1.0,
-			"fade_s": float(index().get("fade_s", 2.0)),
-			"_note": "время суток (TimeOfDay, data/story/time)"}
-		if fixed == "":
-			src["if"] = [FLAG_PREFIX + id]
-		out.append(src)
+		# Channels under 1 lower the light map (subtract), channels over 1 (`gain`) raise it (add) — two sources.
+		var sub := [maxf(1.0 - t.r, 0.0), maxf(1.0 - t.g, 0.0), maxf(1.0 - t.b, 0.0)]
+		var lift := [maxf(t.r - 1.0, 0.0), maxf(t.g - 1.0, 0.0), maxf(t.b - 1.0, 0.0)]
+		var lifted: bool = lift[0] + lift[1] + lift[2] > 0.0
+		var parts: Array = []
+		if sub[0] + sub[1] + sub[2] > 0.0 or not lifted:
+			parts.append(["", "subtract", sub])
+		if lifted:
+			parts.append(["_lift", "add", lift])
+		for part in parts:
+			var v: Array = part[2]
+			var src := {"id": "tod_" + id + String(part[0]), "type": "ambient", String(part[1]): v, "energy": 1.0,
+				"fade_s": float(index().get("fade_s", 2.0)),
+				"_note": "время суток (TimeOfDay, data/story/time)"}
+			if fixed == "":
+				src["if"] = [FLAG_PREFIX + id]
+			out.append(src)
 	return out
 
 

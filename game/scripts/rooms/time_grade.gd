@@ -308,6 +308,8 @@ func _apply(st: String, ease: bool) -> void:
 				(rain as CanvasItem).modulate = rk
 	if route != "tint":
 		target = Color.WHITE
+	# a multiply polygon only darkens: a grade's gain over 1 (TimeOfDay.tint_of) lifts light-map rooms only
+	target = Color(minf(target.r, 1.0), minf(target.g, 1.0), minf(target.b, 1.0), 1.0)
 	if tint != null:
 		# White = as painted: the polygon is hidden (no full-frame blend pass in the web build by day).
 		if ease and is_inside_tree() and not tint.color.is_equal_approx(target):

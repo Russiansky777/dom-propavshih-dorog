@@ -2,7 +2,8 @@ class_name LightSource
 extends Node2D
 ## One entry of `sources[]` in data/story/lights/<LOC>.json. Types:
 ##   ambient — room-wide darkening: the room's light map is lowered by `subtract` (every lit surface
-##             × (1 − subtract)); fire, glows and the UI keep their brightness;
+##             × (1 − subtract)); fire, glows and the UI keep their brightness; `add` instead — raised
+##             (× (1 + add): a time grade's gain over 1, TimeOfDay.light_sources);
 ##   point   — radial light (`mode: "sub"` darkens): `pos`, `radius`, optional non-uniform `scale`
 ##             [sx, sy] (a light pool on the floor is an ellipse), `falloff`;
 ##   mask    — soft polygon (`polygons`, `feather`): light or darkness exactly where the painted
@@ -140,8 +141,10 @@ func _make_lm(tex: Texture2D, sub: bool) -> Sprite2D:
 
 
 func _build_ambient() -> void:
-	lm_color = _color(data.get("subtract", [0.5, 0.5, 0.5]), Color(0.5, 0.5, 0.5))
-	var s := _make_lm(white_texture(), true)
+	# `add` [r, g, b] instead of `subtract`: room-wide added light (a time grade's `gain` over 1 — TimeOfDay)
+	var lift: bool = data.has("add") and not data.has("subtract")
+	lm_color = _color(data.get("add" if lift else "subtract", [0.5, 0.5, 0.5]), Color(0.5, 0.5, 0.5))
+	var s := _make_lm(white_texture(), not lift)
 	s.centered = false
 	s.scale = Vector2(1920.0, 1080.0) / float(QUAD_SIZE)
 

@@ -14,7 +14,10 @@ extends SceneTree
 ##   стр. 63: the sleeve — one click: the close-up, its words and the choice of the seam together;
 ##   стр. 67: the council frame at the mill (F_mill_manager) has the yard's drizzle, as its rain is heard;
 ##   стр. 69: the first span's frames show the crossing rope on the plate's ring;
-##   стр. 43: «В лодку» at the turn only where the boat is (not while Pelageya has taken it to her pier, M15 → M16).
+##   стр. 43: «В лодку» at the turn only where the boat is (not while Pelageya has taken it to her pier, M15 → M16);
+##   стр. 41: the brace (M15s) — the pier R1 (where Pelageya's boat stands) and the turn Z3 (the support) are one evening:
+##            the mean luminance of the two backgrounds as drawn (painted dusk layers × the room's time grade) within 15 %,
+##            the same at evening and night; self-check — the old grades (both «painted») fail it (×1,6).
 ## (in other files: стр. 1 — test_batch_j «J-E4» (Tamara's feet behind the counter, click_rect); стр. 2 — test_agata_3d
 ##  «Round the counter's corner»; стр. 28, 54 floor — data clearance / no_walk_samples, test_room_geometry.)
 ## Exit code 0 only when every check passed.
@@ -86,6 +89,7 @@ func _run() -> void:
 	await _test("K1-43 «В лодку» at the turn only where the boat is", _test_boat_exit)
 	await _test("K1-16 Tikhon curled on the armchair faces into the room (right), not the chair's arm", _test_tikhon_chair)
 	await _test("K1-42 the evening support in the water has its iron plate with the ring — the rope ends at the ring, not in bare stone", _test_plate_dusk)
+	await _test("K1-41 the brace (M15s): the pier (R1) and the turn (Z3) — one evening, their backgrounds' luminance within 15 %; the narration's dusk no darker than before", _test_one_evening)
 	gs.reset()
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
@@ -281,15 +285,22 @@ func _test_lantern() -> void:
 	var lamp := Rect2(box.position * k, box.size * k)   # screen
 	_check(lamp.size.y > 40.0 and lamp.size.y < 70.0, "a lantern ≈ 0.38 m by Mitya (1.8 m = 250 px): %.0f px" % lamp.size.y)
 	var mitya_feet := Vector2(520, 666)
-	_check(absf(lamp.end.y - mitya_feet.y) < 6.0 and lamp.position.x > mitya_feet.x + 30.0 and lamp.position.x < mitya_feet.x + 130.0, "standing on the stone beside his feet (%s)" % str(lamp))
+	# партия 15 (02.11): the painted lantern stands on the snow of the wall top, base centre canvas (536, 587) — screen
+	# (615, 674), a little in front of his feet line (the wall's edge), right of them
+	var base := Vector2(box.get_center().x, box.end.y)
+	_check(base.distance_to(Vector2(536, 587)) < 8.0, "the painted lantern's base on the wall at canvas (536, 587): %s" % str(base))
+	_check(absf(lamp.end.y - mitya_feet.y) < 12.0 and lamp.position.x > mitya_feet.x + 30.0 and lamp.position.x < mitya_feet.x + 130.0, "standing on the stone beside his feet (%s)" % str(lamp))
 	var lt: Dictionary = {}
 	var doc = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/lights/R3.json"))
 	for s in (doc.get("sources", []) if doc is Dictionary else []):
 		if String(s.get("id", "")) == "mitya_lantern":
 			lt = s
 	var r: Array = lt.get("rect", [0, 0, 0, 0])
-	var glow := Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]) * 0.5)
-	_check(lamp.has_point(glow), "the glow on the lantern's glass (%s in %s)" % [str(glow), str(lamp)])
+	var gc: Array = lt.get("params", {}).get("glass_center", [0.5, 0.5])
+	var glow := Vector2(float(r[0]) + float(r[2]) * float(gc[0]), float(r[1]) + float(r[3]) * float(gc[1]))
+	_check(lamp.has_point(glow) and glow.distance_to(Vector2(616, 652)) < 8.0, "the glow on the painted glass (screen 616, 652): %s in %s" % [str(glow), str(lamp)])
+	# партия 15: the flame is painted — the engine's own flame over it burnt the painted one white (render 02.11)
+	_check(float(lt.get("params", {}).get("flame", 1.0)) <= 0.01 and float(lt.get("params", {}).get("glass", 1.0)) <= 0.4, "the engine glow only breathes over the painted flame (flame %s, glass %s)" % [str(lt.get("params", {}).get("flame")), str(lt.get("params", {}).get("glass"))])
 	_check((lt.get("unless", []) as Array).has("done_M18"), "the glow goes with Mitya after M18")
 	# in the room: on the evening of day two, before M18
 	_fresh()
@@ -527,3 +538,107 @@ func _test_boat_exit() -> void:
 		var boat := _layer_visible(rm.current_room, "boat_dusk") or _layer_visible(rm.current_room, "boat_shuttle_dusk") or _layer_visible(rm.current_room, "boat_day")
 		_check(boat == bool(case[1]), "%s — boat layer %s" % [case[2], boat])
 		_check(shown == boat, "%s — «В лодку» %s, boat %s" % [case[2], shown, boat])
+
+
+# --- стр. 41: one evening at the pier and at the turn --------------------------------------------------------------
+
+## Mean linear luminance (Rec.709) of the room as built now — the background and every visible full-canvas layer, alpha
+## composited at 1/8 size — times the grade multiplier `grade` (TimeOfDay.tint_of; the light map multiplies the art).
+## The figures, the living-world shaders and the lamps' glow are not in it: the backgrounds only (Director 23:32).
+func _bg_luminance(room: Node, grade: Color) -> float:
+	var bg_spr: Sprite2D = null
+	var bgn = room.get_node_or_null("Background")
+	if bgn != null:
+		for c in ([bgn] + bgn.get_children()):
+			if c is Sprite2D:
+				bg_spr = c
+	var base: Image = null
+	if bg_spr != null and bg_spr.texture != null:
+		base = bg_spr.texture.get_image()
+	if base == null:
+		var spec: Dictionary = sd.rooms.get(String(room.get("room_id")), {})
+		base = (load(String(spec.get("background", {}).get("image", ""))) as Texture2D).get_image()
+	if base.is_compressed():
+		base.decompress()
+	base.convert(Image.FORMAT_RGBA8)
+	var full := base.get_size()
+	var w := base.get_width() / 8
+	var h := base.get_height() / 8
+	base.resize(w, h, Image.INTERPOLATE_BILINEAR)
+	for box in ["Layers", "Occluders"]:
+		var cont = room.get_node_or_null(box)
+		if cont == null:
+			continue
+		for n in cont.get_children():
+			if not n.has_method("setup") or not (n as CanvasItem).visible:
+				continue
+			var spr := n.get_node_or_null("Image") as Sprite2D
+			if spr == null or spr.texture == null or spr.position != Vector2.ZERO:
+				continue
+			var img: Image = spr.texture.get_image()
+			if img.is_compressed():
+				img.decompress()
+			if img.get_size() != full:
+				continue
+			img.convert(Image.FORMAT_RGBA8)
+			img.resize(w, h, Image.INTERPOLATE_BILINEAR)
+			var mod := spr.modulate
+			for y in h:
+				for x in w:
+					var c := img.get_pixel(x, y)
+					if c.a <= 0.0:
+						continue
+					var d := base.get_pixel(x, y)
+					base.set_pixel(x, y, Color(lerpf(d.r, c.r * mod.r, c.a), lerpf(d.g, c.g * mod.g, c.a), lerpf(d.b, c.b * mod.b, c.a), 1.0))
+	var sum := 0.0
+	for y in h:
+		for x in w:
+			var c := base.get_pixel(x, y)
+			var r := Color(minf(c.r * grade.r, 1.0), minf(c.g * grade.g, 1.0), minf(c.b * grade.b, 1.0)).srgb_to_linear()
+			sum += r.r * 0.2126 + r.g * 0.7152 + r.b * 0.0722
+	return sum / float(w * h)
+
+
+## The two backgrounds at the scene's moment (flags before `upto`, evening_dusk), each under `grades` [R1, Z3].
+func _evening_pair(upto: String, grades: Array) -> Array:
+	var out := []
+	var rooms := ["R1", "Z3"]
+	for i in 2:
+		_fresh()
+		_flags_before(upto)
+		gs.set_flag("evening_dusk", true)
+		await _enter(rooms[i])
+		out.append(_bg_luminance(rm.current_room, grades[i]))
+	return out
+
+
+func _test_one_evening() -> void:
+	const LIMIT := 1.15
+	# by path, not class name: a class_name script referring to autoloads must not compile before them (-s run)
+	var TOD = load("res://scripts/core/time_of_day.gd")
+	var RL = load("res://scripts/lighting/room_lighting.gd")
+	for case in [["M15s", "d2_dusk", "the brace (dusk)"], ["M16", "d2_evening", "the lights (evening)"], ["M18p", "d2_night", "the crossing (night)"]]:
+		var st := String(case[1])
+		var grades := [TOD.tint_of(TOD.grade("R1", st)), TOD.tint_of(TOD.grade("Z3", st))]
+		var now: Array = await _evening_pair(String(case[0]), grades)
+		var ratio: float = float(now[1]) / maxf(float(now[0]), 0.0001)
+		_check(ratio <= LIMIT and ratio >= 1.0 / LIMIT, "%s: the turn / the pier %.2f (Y %.4f / %.4f), must be within ×%.2f" % [case[2], ratio, now[1], now[0], LIMIT])
+		if st == "d2_dusk":
+			# self-check: the grades before стр. 41 (both «painted» at dusk) — the turn 1,6 × the pier — must fail the same bound
+			var old: Array = await _evening_pair("M15s", [Color.WHITE, Color.WHITE])
+			var old_ratio: float = float(old[1]) / maxf(float(old[0]), 0.0001)
+			_check(old_ratio > LIMIT, "self-check: the old «painted» dusk must be caught (turn / pier %.2f > %.2f)" % [old_ratio, LIMIT])
+			# the pier is lifted, the turn lowered (not one of them dragged all the way)
+			_check(grades[0].get_luminance() > 1.02 and grades[1].get_luminance() < 0.98, "R1 lifted (%s), Z3 lowered (%s)" % [grades[0], grades[1]])
+	# the narration's dusk (stage dim of M15s) over the lowered turn: no darker than the 0,5 over the old painted turn
+	var dim := 0.0
+	for stg in sd.scene("M15s").get("stage", []):
+		dim = maxf(dim, float(stg.get("dim", 0.0)))
+	var zg: Color = TOD.tint_of(TOD.grade("Z3", "d2_dusk"))
+	_check((1.0 - dim) * zg.get_luminance() >= 0.47, "the narration under dim %.2f over the turn (×%.2f): about as light as 0,5 over the painted turn (≥ 0,47; the Director's 0,82 gave 0,18)" % [dim, zg.get_luminance()])
+	# the figures were not what was too bright (23:32): the turn's dusk tone on them back to 0,62
+	var t: Array = []
+	for src in (RL.load_data("Z3").get("sources", []) as Array):
+		if String(src.get("id", "")) == "dusk_figures":
+			t = src.get("actor_tint", [])
+	_check(t.size() >= 3 and float(t[0]) >= 0.6, "Z3 dusk_figures actor_tint back to ≈0,62 (the background is lowered by the grade, which reaches the figures too): %s" % str(t))
