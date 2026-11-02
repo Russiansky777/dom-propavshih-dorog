@@ -361,12 +361,12 @@ def error_text(status: int, payload: bytes) -> str:
 STT_MODELS = ("scribe_v2", "scribe_v1")
 
 
-def stt(audio: bytes, filename: str = "line.mp3") -> dict:
+def stt(audio: bytes, filename: str = "line.mp3", language: str = "ru") -> dict:
     boundary = "----dpd" + hashlib.sha1(audio[:4096]).hexdigest()[:16]
     last = ""
     for model in STT_MODELS:
         parts = []
-        for k, v in (("model_id", model), ("language_code", "ru"), ("tag_audio_events", "false"), ("timestamps_granularity", "word")):
+        for k, v in (("model_id", model), ("language_code", language or "ru"), ("tag_audio_events", "false"), ("timestamps_granularity", "word")):
             parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'.encode("utf-8"))
         parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{filename}"\r\n'
                      f'Content-Type: audio/mpeg\r\n\r\n'.encode("utf-8") + audio + b"\r\n")
@@ -814,8 +814,12 @@ def cmd_say(req_path: Path) -> int:
             spec["voice_settings"] = dict(spec["voice_settings"], **it["voice_settings"])
         text = str(it["text"])
         seed = int(hashlib.sha1(f"probe|{it['id']}".encode("utf-8")).hexdigest()[:8], 16)
+        # «language_code» фразы или запроса — проба на другом языке тем же голосом (Директор 02.11, 22:25: английский —
+        # по 3 фразы каждого персонажа рядом с русскими); без поля — язык cast.json
+        lang = str(it.get("language_code", req.get("language_code", cast.get("language_code", ""))))
+        cast_it = dict(cast, language_code=lang) if lang else cast
         try:
-            audio, info = synth(text, spec, cast, seed, {k: it.get(k) for k in ("previous_text", "next_text")})
+            audio, info = synth(text, spec, cast_it, seed, {k: it.get(k) for k in ("previous_text", "next_text")})
         except VoiceError as e:
             failed.append(f"{it['id']}: {e}")
             log(f"  ОШИБКА {it['id']}: {e}")
@@ -824,7 +828,7 @@ def cmd_say(req_path: Path) -> int:
         f.write_bytes(audio)
         heard = {}
         if req.get("stt"):
-            heard = stt(audio, f.name)
+            heard = stt(audio, f.name, lang or "ru")
             if heard.get("text"):
                 heard.update(stt_compare(re.sub(r"/[^/]+/", " ", text), heard["text"]))
             log(f"    распознано: {heard.get('text', heard.get('error', ''))[:160]}"
@@ -833,6 +837,7 @@ def cmd_say(req_path: Path) -> int:
         spent += int(cc) if cc.isdigit() else len(text)
         write_json(out / f"{it['id']}.json", {"id": it["id"], "speaker": sp, "voice_name": spec["voice_name"], "alt": it.get("alt", ""),
                                                "model_id": spec["model_id"], "text": text, "duration_s": duration_s(f),
+                                               "language_code": lang,
                                                "character_cost": cc, "alignment": info.get("alignment"),
                                                "expect": it.get("expect"), "variant": it.get("variant", ""),
                                                "line": it.get("line", ""), "take": it.get("take", ""),

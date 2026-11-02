@@ -1,0 +1,314 @@
+{
+ "mode": "say",
+ "set": "EN1",
+ "stt": true,
+ "max_chars": 2838,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "EN1 (Директор 02.11, 22:25): проба английского — по 3 фразы каждого персонажа (Агата 5) теми же голосами, рядом с русскими записями игры (страница прослушивания). Перевод — Claude, для теста; language_code en. Субтитры поверх русского голоса — делать в любом случае.",
+ "items": [
+  {
+   "id": "EN_01",
+   "line": "M19c_8",
+   "speaker": "agata",
+   "text": "A year… And for you — longer than I've been alive. How can that be, Mama?",
+   "language_code": "en",
+   "variant": "Год… А у тебя — больше, чем я на свете живу. Как же так, мама?"
+  },
+  {
+   "id": "EN_02",
+   "line": "agata:H1.after_mirror.agata",
+   "speaker": "agata",
+   "text": "I saw, Tikhon. I'll sleep one night, and Mama will live a whole week over there… How am I supposed to sleep now?",
+   "language_code": "en",
+   "variant": "Видела, Тихон. Я ночь просплю, а мама там целую неделю проживёт… Как же мне теперь спать?"
+  },
+  {
+   "id": "EN_03",
+   "line": "M02_0",
+   "speaker": "agata",
+   "text": "I need to get to Olkhovka. Will you take me across?",
+   "language_code": "en",
+   "variant": "В Ольховку мне надо. Перевезёте?"
+  },
+  {
+   "id": "EN_04",
+   "line": "agata:O1d.ulyana.ttt_q",
+   "speaker": "agata",
+   "text": "Ulya, shall we play noughts and crosses? In chalk, right on the board.",
+   "language_code": "en",
+   "variant": "Уля, сыграем в крестики-нолики? Мелом, прямо на доске."
+  },
+  {
+   "id": "EN_05",
+   "line": "M23d_1",
+   "speaker": "agata",
+   "text": "Tikhon… Dunya isn't coming back. She died at Mama's. Two years ago, by their count.",
+   "language_code": "en",
+   "variant": "Тихон… Дуня не придёт. У матушки умерла. Два года назад, по их счёту."
+  },
+  {
+   "id": "EN_06",
+   "line": "tikhon:H1.tikhon.first_name",
+   "speaker": "tikhon",
+   "text": "Tikhon. Keeper of the stove, at your service. A demanding post: lie here and make sure it doesn't go cold.",
+   "language_code": "en",
+   "variant": "Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла."
+  },
+  {
+   "id": "EN_07",
+   "line": "tikhon:H1.tikhon.spoons_a",
+   "speaker": "tikhon",
+   "text": "Out-tap me, will she… Well, listen. Repeat it — then we'll see.",
+   "language_code": "en",
+   "variant": "Перестучит она… Ну, слушай. Повторишь — поглядим."
+  },
+  {
+   "id": "EN_08",
+   "line": "tikhon:mech.rhythm.miss_1",
+   "speaker": "tikhon",
+   "text": "Missed. Tin ear, have we? Listen again.",
+   "language_code": "en",
+   "variant": "Мимо. Медведь на ухо наступил? Слушай ещё."
+  },
+  {
+   "id": "EN_09",
+   "line": "M19_5",
+   "speaker": "nina",
+   "text": "Come inside where it's warm, my girl. You're all covered in snow.",
+   "language_code": "en",
+   "variant": "Пойдём в тепло, доченька. Ты вся в снегу."
+  },
+  {
+   "id": "EN_10",
+   "line": "M21b_1",
+   "speaker": "nina",
+   "text": "Not as it was… And I wouldn't give back my twenty years. Ulyana is in them.",
+   "language_code": "en",
+   "variant": "Как прежде — нет… Да и свои двадцать лет я не отдам. В них Ульяна."
+  },
+  {
+   "id": "EN_11",
+   "line": "M26_34",
+   "speaker": "nina",
+   "text": "Finish your studies. There's a bridge now — you'll come home often.",
+   "language_code": "en",
+   "variant": "Доучись. Теперь мост есть — станешь приезжать."
+  },
+  {
+   "id": "EN_12",
+   "line": "M20_2",
+   "speaker": "ilya",
+   "text": "You're just the same… You haven't grown at all.",
+   "language_code": "en",
+   "variant": "Да ты всё такая же… Не выросла."
+  },
+  {
+   "id": "EN_13",
+   "line": "M25_8",
+   "speaker": "ilya",
+   "text": "I waited twenty years for you. And now we hold it together.",
+   "language_code": "en",
+   "variant": "Двадцать лет тебя ждал. А теперь вместе держим."
+  },
+  {
+   "id": "EN_14",
+   "line": "ilya:O4q.workshop.ilya_ulya",
+   "speaker": "ilya",
+   "text": "Ulya trails after me with a plane like a little tail. Let's build her a workbench of her own.",
+   "language_code": "en",
+   "variant": "Уля за мной с рубанком хвостиком ходит. Давай ей свой верстак соберём, второй."
+  },
+  {
+   "id": "EN_15",
+   "line": "M20_4",
+   "speaker": "ulyana",
+   "text": "Is that Aunt Agata? Papa, you said she used to be older than you!",
+   "language_code": "en",
+   "variant": "Это тётя Агата? Папа, ты говорил, раньше она тебя старше была!"
+  },
+  {
+   "id": "EN_16",
+   "line": "M26_36",
+   "speaker": "ulyana",
+   "text": "Agata! I came over the bridge — all by myself! Can I come tomorrow too?",
+   "language_code": "en",
+   "variant": "Сестрица Агата! Я по мосту пришла — сама! А завтра тоже можно?"
+  },
+  {
+   "id": "EN_17",
+   "line": "ulyana:O1d.ulyana.ttt_a",
+   "speaker": "ulyana",
+   "text": "Yes! Dibs on noughts. You're crosses then — you go first.",
+   "language_code": "en",
+   "variant": "Давай! Чур, у меня нолики. А у тебя тогда крестики — ты и начинай."
+  },
+  {
+   "id": "EN_18",
+   "line": "M18_6",
+   "speaker": "mitya",
+   "text": "And I kept lighting the lantern, every single evening. So you'd know where to look for me.",
+   "language_code": "en",
+   "variant": "А я всё фонарь зажигал, всякий вечер. Чтоб ты знала, где меня искать."
+  },
+  {
+   "id": "EN_19",
+   "line": "M19_1",
+   "speaker": "mitya",
+   "text": "Ilya! Ilya, come out — your sister's here!",
+   "language_code": "en",
+   "variant": "Илья! Илья, выходи — сестра твоя пришла!"
+  },
+  {
+   "id": "EN_20",
+   "line": "mitya:O4.mitya.fish_bye",
+   "speaker": "mitya",
+   "text": "Come again. The fish are in no hurry — and neither are we.",
+   "language_code": "en",
+   "variant": "Приходи ещё. Рыба не торопится — и нам спешить некуда."
+  },
+  {
+   "id": "EN_21",
+   "line": "M02_1",
+   "speaker": "pelageya",
+   "text": "Oh, I can't take you across. I've been at it a whole year.",
+   "language_code": "en",
+   "variant": "Эх, не перевезу. Год уж бьюсь."
+  },
+  {
+   "id": "EN_22",
+   "line": "M16_0",
+   "speaker": "pelageya",
+   "text": "They answered! A whole year without a single light!",
+   "language_code": "en",
+   "variant": "Ответили! Целый год ни огонька!"
+  },
+  {
+   "id": "EN_23",
+   "line": "M26_6",
+   "speaker": "pelageya",
+   "text": "Don't you throw that board away. All your twenty years are in those notches.",
+   "language_code": "en",
+   "variant": "Дощечку-то не выкидывай. Все твои двадцать лет в этих зарубках."
+  },
+  {
+   "id": "EN_24",
+   "line": "M09_0",
+   "speaker": "pavel",
+   "text": "Dunya's niece, you say?.. Well… You do look like her. Same frown.",
+   "language_code": "en",
+   "variant": "Ты племянница Дунина, говоришь?.. Хотя… Похожа. Хмуришься так же."
+  },
+  {
+   "id": "EN_25",
+   "line": "M13a_0",
+   "speaker": "pavel",
+   "text": "I heard your bell! I heard it! Without it I'd have stood here another year.",
+   "language_code": "en",
+   "variant": "Слышал я твой звон! Слышал! Без него ещё год бы простоял."
+  },
+  {
+   "id": "EN_26",
+   "line": "M26_10",
+   "speaker": "pavel",
+   "text": "Agata kept her word! The water's back where it was — right up to the mark.",
+   "language_code": "en",
+   "variant": "Слово сдержала Агата! Вода как прежде — по самую отметку."
+  },
+  {
+   "id": "EN_27",
+   "line": "M01_0",
+   "speaker": "tamara",
+   "text": "Good heavens… Agata? Nina's girl! You sent your letters home through me.",
+   "language_code": "en",
+   "variant": "Батюшки… Агата? Нинина дочка! Ты ж через меня домой письма слала."
+  },
+  {
+   "id": "EN_28",
+   "line": "tamara:Z1.tamara.late",
+   "speaker": "tamara",
+   "text": "Don't blame yourself, dear. You'd have sat on the bank a whole year, like Pelageya. That's why I wrote — so you wouldn't come for nothing.",
+   "language_code": "en",
+   "variant": "Не кори себя, милая. Сидела бы год на берегу, как Пелагея. Потому и писала, чтоб ты зря не ехала."
+  },
+  {
+   "id": "EN_29",
+   "line": "M26_4",
+   "speaker": "tamara",
+   "text": "Three weeks I've been carrying it, and the bag's still full! Now they write from both banks.",
+   "language_code": "en",
+   "variant": "Третью неделю ношу, а мешок всё полный! Теперь с обоих берегов пишут."
+  },
+  {
+   "id": "EN_30",
+   "line": "intro.opening_2",
+   "speaker": "narrator",
+   "text": "A year ago, on the night of the flood, the water took the bridge. Since then there's no reaching the other bank: whatever boat you send comes back to its own pier.",
+   "language_code": "en",
+   "variant": "Год назад, в ночь паводка, вода унесла мост. С тех пор на тот берег не попасть: какую лодку ни пусти — приходит назад, к своему причалу."
+  },
+  {
+   "id": "EN_31",
+   "line": "M22_1",
+   "speaker": "narrator",
+   "text": "On the board Nina reads: \"Mama, I'm coming.\" She takes the chalk. Beneath it she writes: \"I waited.\"",
+   "language_code": "en",
+   "variant": "На доске Нина читает: «Мама, я иду». Берёт мел. Ниже одно слово выводит: «Дождалась»."
+  },
+  {
+   "id": "EN_32",
+   "line": "H1.cups.look",
+   "speaker": "narrator",
+   "text": "One blue, one white. Both washed clean, waiting on the windowsill.",
+   "language_code": "en",
+   "variant": "Синяя да белая. Обе чисто вымыты, на подоконнике дожидаются."
+  },
+  {
+   "id": "EN_33",
+   "line": "M20_8",
+   "speaker": "ilya_wife",
+   "text": "Ulyana, it's bedtime. Your aunt is here — she's not going anywhere tonight.",
+   "language_code": "en",
+   "variant": "Ульяна, пора спать. Тётя здесь, нынче никуда не уйдёт."
+  },
+  {
+   "id": "EN_34",
+   "line": "M26_25",
+   "speaker": "ilya_wife",
+   "text": "Agata, look: the patch on Dunya's coat is holding! And Ulyana's bird looks almost alive.",
+   "language_code": "en",
+   "variant": "Агата, погляди-ка: заплатка на Дунином пальто держится! А Ульянина птица словно живая."
+  },
+  {
+   "id": "EN_35",
+   "line": "ilya_wife:O3.ilya_wife.after",
+   "speaker": "ilya_wife",
+   "text": "You sit and rest. I'll set out the lamp and put Ulyana to bed.",
+   "language_code": "en",
+   "variant": "Ты посиди, отдохни. Лампу поставлю да Ульяну спать уложу."
+  },
+  {
+   "id": "EN_36",
+   "line": "M23b_1",
+   "speaker": "manager",
+   "text": "Is the sluice gate intact? Where's the lever?",
+   "language_code": "en",
+   "variant": "А затвор-то цел? Где рычаг?"
+  },
+  {
+   "id": "EN_37",
+   "line": "M23b_3",
+   "speaker": "manager",
+   "text": "A year… I thought I'd be back by morning. And twenty years have gone by.",
+   "language_code": "en",
+   "variant": "Год… Я-то к утру вернуться думал. А двадцать лет миновало."
+  },
+  {
+   "id": "EN_38",
+   "line": "M23b_5",
+   "speaker": "manager",
+   "text": "The pond has to be filled before winter. Or Zarechye will be left without flour.",
+   "language_code": "en",
+   "variant": "К зиме пруд набрать надо. Не то Заречье без муки останется."
+  }
+ ]
+}
