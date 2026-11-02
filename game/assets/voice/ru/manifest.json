@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-11-02T22:46:41+00:00",
+  "updated_at": "2026-11-02T23:26:38+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -40364,8 +40364,8 @@
       "alignment": "src/character_lines/H1.tikhon.spoons_a.align.json",
       "as_line": true,
       "speaker": "tikhon",
-      "text": "Перестучит она… Ну, слушай. Повторишь — поглядим.",
-      "text_sha1": "ed1886214079d8fe052b8b9b862f18ed5d38bbe1",
+      "text": "Перестучит она! Ха… Ну, слушай. Повторишь — поглядим.",
+      "text_sha1": "44e9b341e277cf35000bdcd643269d03d2d14a8b",
       "voice_id": "RRgQuGjVvCeyNderlonu",
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
@@ -40389,8 +40389,8 @@
       "source_true_peak_db": -3.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-11-02T22:46:41+00:00",
-      "run": "41539271298",
+      "generated_at": "2026-11-02T23:26:38+00:00",
+      "run": "41540435077",
       "adopted_from": "probe/K3/W314_3",
       "api": {
         "history_item_id": "zfGsdzfLaMcQbYVW2NAF",
