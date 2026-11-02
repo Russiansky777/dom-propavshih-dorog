@@ -309,8 +309,11 @@ def main() -> int:
     ap.add_argument("--chains", type=int, default=8)
     ap.add_argument("--levels", default="0.80,0.62,0.44,0.26", help="высоты суставов цепочки сверху вниз, м (последняя — низ третьей кости)")
     ap.add_argument("--hem", type=float, default=0.19, help="ниже — сапоги, не юбка")
-    ap.add_argument("--leg_reach", type=float, default=0.15, help="ближе к голени — низ юбки частично идёт за ногой (м)")
-    ap.add_argument("--leg_top", type=float, default=0.40, help="выше — юбка совсем не идёт за голенью (м)")
+    # 01.11 (Директор, стр. 3 «штаны из-под юбки»): с тех пор как подол несут ноги (rt3d.skirt.drive), за голенью идёт
+    # только ткань у самого верха сапог — было 0.15 / 0.40 (полосы-«штанины»); игровая модель перевешена этими же
+    # значениями tools/reweight_skirt_glb.py
+    ap.add_argument("--leg_reach", type=float, default=0.06, help="ближе к голени — низ юбки частично идёт за ногой (м)")
+    ap.add_argument("--leg_top", type=float, default=0.26, help="выше — юбка совсем не идёт за голенью (м)")
     ap.add_argument("--fade", default="0.72,0.86", help="наплыв к прежним весам у пояса: полностью кости юбки ниже первой, прежние — выше второй")
     ap.add_argument("--inset", type=float, default=0.85, help="сустав внутри юбки: доля её радиуса")
     ap.add_argument("--braid", default="1.36,1.30,1.25,1.20", help="суставы косы сверху вниз, м (пусто — без косы)")

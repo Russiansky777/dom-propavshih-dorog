@@ -132,6 +132,8 @@ func _pass_by(gs: Node, rm: Node, player: Node2D, on: bool) -> bool:
 	if not on:
 		walk_rt["pass_m"] = 0.0
 	var goal: Vector2 = player.global_position + Vector2(-100, 0)
+	# the walk's own passing-by: a move this short is a «переступ» (Player._shuffle_begin, 01.11) — walked here
+	player.shuffle_on = false
 	player.click_at(goal)
 	var guard := 0
 	while (player.nav_agent.get_current_navigation_path().size() < 2 or not player.is_walking()) and guard < 120:
@@ -146,6 +148,7 @@ func _pass_by(gs: Node, rm: Node, player: Node2D, on: bool) -> bool:
 	await process_frame
 	await process_frame
 	var arrived: bool = not player.is_walking()
+	player.shuffle_on = true
 	if keep == null:
 		walk_rt.erase("pass_m")
 	else:

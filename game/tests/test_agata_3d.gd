@@ -112,6 +112,9 @@ func _run() -> void:
 	await _test("Corners near the end (Director 31.10, lines 8–9 «застревает и идёт на одном месте… от писем до стола»): a walk whose path turns a corner just before its end arrives — no walking on the spot against the counter, no stopping off past the corner", _test_walk_corners)
 	await _test("Round the counter's corner (Director 01.11, line 2 «сначала письма, потом в центр снизу… в стол идёт, вместо того чтобы обойти угол»): letters ↔ the bottom of the screen — no walking on the spot at the front-left corner, the feet a body's depth in front of the counter", _test_walk_corner_front)
 	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; arms swing by her sides; she looks ahead", _test_walk_rhythm)
+	await _test("Right arm without jerks (Director 01.11, line 20 «правая рука иногда резко дёргается»): the arm kept out of the bag changes its way out softly — no jump", _test_arm_no_jerk)
+	await _test("Short moves (Director 01.11, line 3 «мельтешит… куча перестановок ног»): 15–45 cm from standing is a step and the other foot closing up — two lifts, at the target", _test_short_moves)
+	await _test("Skirt with the legs (Director 01.11, line 3 «ботинки сами шагают… юбка не двигается»): walking, the hem goes with the shins — they do not step out from under it", _test_skirt_with_legs)
 	PlayerScript.forced_render = ""
 	gs.reset()
 	var failed := 0
@@ -1584,4 +1587,209 @@ func _test_gesture_addressed() -> void:
 			break
 	if own != "":
 		_check(not PL.gesture_addressed({"type": "line", "speaker": "agata", "scene": own}), "%s has no one else speaking: no talking hands" % own)
+	_completed = true
+
+
+# --- 01.11 playthrough: the right arm, short moves, the skirt with the legs ------------------------------------------------
+
+var _jerk_rows: Array = []
+
+
+func _on_jerk_updated() -> void:
+	var v: Actor3D = player.view3d
+	var sk := v.skeleton
+	var tm := v._skel_to_model()
+	var chest: Vector3 = tm * sk.get_bone_global_pose(sk.find_bone("Spine02")).origin
+	_jerk_rows.append([tm * sk.get_bone_global_pose(sk.find_bone("RightHand")).origin - chest,
+		tm * sk.get_bone_global_pose(sk.find_bone("LeftHand")).origin - chest,
+		tm * sk.get_bone_global_pose(sk.find_bone("RightForeArm")).origin - chest])
+
+
+## Standing (stance variants crossfading) and talking: the largest second difference of each hand against the chest, mm
+## per 1/60 s² — [right hand, left hand, right elbow].
+func _jerk_run(soft: bool) -> Array:
+	await _enter("H1", Vector2(1200, 960))
+	var v: Actor3D = player.view3d
+	v.seed_idle(5)
+	v.arm_soft_switch = soft
+	await _wait_s(1.0)   # past the room change (a cut: the pose may jump there, as it should)
+	_jerk_rows = []
+	v.skeleton.skeleton_updated.connect(_on_jerk_updated)
+	await _wait_s(30.0)
+	for k in 2:
+		sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "J_%d" % k, "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут, и всё тут."}
+		await _wait_s(5.0)
+		sr.current_beat = {}
+		await _wait_s(1.0 + k * 0.7)
+	v.skeleton.skeleton_updated.disconnect(_on_jerk_updated)
+	v.arm_soft_switch = true
+	var mx := [0.0, 0.0, 0.0]
+	for i in range(1, _jerk_rows.size() - 1):
+		for h in 3:
+			var a: Vector3 = (_jerk_rows[i + 1][h] as Vector3) - 2.0 * (_jerk_rows[i][h] as Vector3) + (_jerk_rows[i - 1][h] as Vector3)
+			mx[h] = maxf(mx[h], a.length() * 1000.0)
+	return mx
+
+
+## Director 01.11, line 20: «Агатина правая рука иногда резко дёргается, будто конец анимации и начало снова её, но места
+## не сходятся». Not a clip's seam (the clips alone: the right hand ≤ 2.3 mm/frame² standing, ≤ 4.2 talking — like the
+## left): the arm kept out of the bag chose the shorter way out — sideways or behind — and the choice flipped as the stance
+## swayed the hand across the line where both were equal: the hand jumped 7–9 cm in one frame (87 mm/frame²). And the
+## elbow: the hanging arm is nearly straight, the pushed target lay at its full length, and the two-bone solution swung
+## the elbow 30–53 mm/frame² (the clip's own ≤ 4) — now a soft reach and the elbow's pole a little back.
+func _test_arm_no_jerk() -> void:
+	var on: Array = await _jerk_run(true)
+	var off: Array = await _jerk_run(false)
+	print("        right hand: max %.1f mm/frame² (left %.1f), right elbow %.1f; as before (the way out flipping, full reach): hand %.1f, elbow %.1f" % [float(on[0]), float(on[1]), float(on[2]), float(off[0]), float(off[2])])
+	_check(float(on[0]) <= 8.0, "the right hand jerks: %.1f mm/frame² (≤ 8; the left hand %.1f)" % [float(on[0]), float(on[1])])
+	_check(float(on[2]) <= 8.0, "the right elbow jerks: %.1f mm/frame² (≤ 8)" % float(on[2]))
+	_check(float(off[0]) > 30.0 and float(off[2]) > 15.0, "self-check: as before the right hand jerks only %.1f mm/frame², the elbow %.1f — the case is not reproduced" % [float(off[0]), float(off[2])])
+	_completed = true
+
+
+## Short moves from standing, per move: [lifts of a drawn foot, last lift (s after the click), px from the target at rest].
+func _short_moves(shuffle: bool) -> Array:
+	var out: Array = []
+	var cases := [[0.2, 0], [0.3, 90], [0.25, 180], [0.4, 135], [0.15, -45], [0.45, 0]]
+	for ci in cases.size():
+		var c: Array = cases[ci]
+		await _enter("H1", Vector2(1100, 960))
+		player.shuffle_on = shuffle
+		var v: Actor3D = player.view3d
+		v.seed_idle(60 + ci)
+		if not v.skeleton.skeleton_updated.is_connected(_on_skel_updated):
+			v.skeleton.skeleton_updated.connect(_on_skel_updated)
+		var face := PI * 0.5
+		player.yaw3d = face
+		player.yaw3d_target = face
+		await _wait_s(1.5)
+		_drawn_feet = []
+		var ang := face + deg_to_rad(float(c[1]))
+		var target: Vector2 = player.global_position + Vector2(sin(ang), cos(ang) * player.floor_foreshortening()) * float(c[0]) * v.ppm * absf(player.scale.y)
+		player.click_at(target)
+		var t := 0.0
+		var up: Array = [false, false]
+		var lifts := 0
+		var last := 0.0
+		var arrived_t := -1.0
+		# until a second after she has arrived: the move's own steps (later, a stance variant's crossfade may step anyway)
+		while t < 3.5 and (arrived_t < 0.0 or t < arrived_t + 1.0):
+			await process_frame
+			t += player.get_process_delta_time()
+			if arrived_t < 0.0 and not player.is_walking():
+				arrived_t = t
+			var f: Array = _drawn_feet if not _drawn_feet.is_empty() else v.feet_model()
+			for i in 2:
+				var h: float = minf(f[i * 2].y - float(v.stride_floor[i * 2]), f[i * 2 + 1].y - float(v.stride_floor[i * 2 + 1]))
+				var now_up: bool = h > 0.025 or (up[i] and h > 0.015)
+				if now_up and not up[i]:
+					lifts += 1
+					last = t
+				up[i] = now_up
+		out.append([lifts, last, player.global_position.distance_to(target), player.is_walking()])
+	player.shuffle_on = true
+	return out
+
+
+## Director 01.11, line 3: «АГАТА ТАКЖЕ МЕЛЬТЕШИТ!!! куча перестановок ног ненужных». A move of 15–45 cm from standing
+## (a hotspot beside her, a correction) was walked with the walk clip whose weight never got to half: partial steps at
+## the clip's cadence, the turn before it stepped on the spot — 5–8 lifts, the last up to 1.5 s after the click
+## (tests/probe_short_moves.gd). Now a «переступ»: one foot to where it will stand, the other closes up — two lifts, there.
+func _test_short_moves() -> void:
+	var on: Array = await _short_moves(true)
+	var off: Array = await _short_moves(false)
+	print("        short moves [lifts, last lift s, px off, walking]: %s; walked as before: %s" % [str(on.map(func(r): return [r[0], snappedf(r[1], 0.01), snappedf(r[2], 0.1), r[3]])), str(off.map(func(r): return r[0]))])
+	var worst_off := 0
+	for i in on.size():
+		_check(int(on[i][0]) <= 2, "short move %d: %d lifts (≤ 2: a step and the other foot closing up)" % [i, int(on[i][0])])
+		_check(float(on[i][1]) <= 1.0, "short move %d: a foot still lifts %.2f s after the click (≤ 1.0)" % [i, float(on[i][1])])
+		_check(float(on[i][2]) <= 3.0 and not bool(on[i][3]), "short move %d: comes to rest %.1f px from the target (≤ 3), walking %s" % [i, float(on[i][2]), str(on[i][3])])
+		worst_off = maxi(worst_off, int(off[i][0]))
+	_check(worst_off >= 5, "self-check: walked as before, the short moves took at most %d lifts — the fidgeting is not reproduced" % worst_off)
+	_completed = true
+
+
+var _hem_rows: Array = []
+
+
+func _on_hem_updated() -> void:
+	_hem_rows.append(float(_ProbeSkirt.measure(player.view3d)[0]))
+
+
+const _ProbeSkirt := preload("res://tests/probe_skirt_drive.gd")
+
+
+## Walking 2.5 s (after the start): how far a shin's axis goes out of the ring of the hem points at the hem's height, m.
+func _hem_run(drive: bool) -> float:
+	await _enter("H1", Vector2(1500, 960))
+	var v: Actor3D = player.view3d
+	if v.skirt_drive != null:
+		v.skirt_drive.on = drive
+	_hem_rows = []
+	player.click_at(player.global_position + Vector2(-700, 0))
+	await _wait_s(0.6)
+	v.skeleton.skeleton_updated.connect(_on_hem_updated)
+	await _wait_s(1.6)
+	v.skeleton.skeleton_updated.disconnect(_on_hem_updated)
+	await _wait_s(2.0)
+	if v.skirt_drive != null:
+		v.skirt_drive.on = true
+	var mx := 0.0
+	for x in _hem_rows:
+		mx = maxf(mx, float(x))
+	return mx
+
+
+## Vertices of the figure's mesh between lo and hi metres up with more than 0.3 of their weight on a shin bone.
+func _shin_bound(v: Actor3D, lo: float, hi: float) -> int:
+	var mi: MeshInstance3D = null
+	for m in v.meshes:
+		if mi == null or (m.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] as PackedVector3Array).size() > (mi.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] as PackedVector3Array).size():
+			mi = m
+	var n := 0
+	for si in mi.mesh.get_surface_count():
+		var arr := mi.mesh.surface_get_arrays(si)
+		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var bones = arr[Mesh.ARRAY_BONES]
+		var weights = arr[Mesh.ARRAY_WEIGHTS]
+		if bones == null or weights == null or verts.is_empty():
+			continue
+		var per := int(bones.size() / verts.size())
+		for i in verts.size():
+			if verts[i].y < lo or verts[i].y > hi:
+				continue
+			var w := 0.0
+			for j in per:
+				var nm := String(mi.skin.get_bind_name(int(bones[i * per + j])))
+				if nm == "LeftLeg" or nm == "RightLeg":
+					w += float(weights[i * per + j])
+			if w > 0.3:
+				n += 1
+	return n
+
+
+## Director 01.11, line 3: «ноги неестественно, будто 2 не связанных с юбкой ботинка сами шагают, а при шагании ноги
+## выпирают будто штаны из-под юбки, а сама юбка не двигается». The springs' pushers on the shins moved the hem 2–7 cm:
+## walking, a shin came 16–19 cm out of the hem ring (the boots stepping from under a still bell of a skirt, the hem
+## pieces bound to the shins dragged after them). Now the skirt's chains are carried by the legs (SkirtDrive).
+func _test_skirt_with_legs() -> void:
+	var v: Actor3D = player.view3d
+	_check(v != null and v.skirt_drive != null, "no skirt drive (rt3d.skirt.drive)")
+	if v == null or v.skirt_drive == null:
+		_completed = true
+		return
+	# the strips of the hem bound to the shins («штаны»): tools/rig_skirt.py bound the skirt within 15 cm of a shin and below
+	# 0.40 m partly to it (419 vertices at 0.27–0.45 m mostly on a shin); since the drive carries the hem, only the cloth
+	# at the boot tops is (tools/reweight_skirt_glb.py --leg_reach 0.06 --leg_top 0.26). Self-check: the count sees the
+	# boot shafts below the hem (on the shins by design).
+	var strips := _shin_bound(v, 0.27, 0.45)
+	var shafts := _shin_bound(v, 0.15, 0.20)
+	print("        skirt vertices at 0.27–0.45 m mostly on a shin: %d (before the re-weight 419); boot shafts at 0.15–0.20 m: %d" % [strips, shafts])
+	_check(strips <= 20, "%d skirt vertices at 0.27–0.45 m follow a shin (≤ 20): trouser strips" % strips)
+	_check(shafts > 1000, "self-check: only %d boot-shaft vertices found on the shins — the count does not work" % shafts)
+	var on: float = await _hem_run(true)
+	var off: float = await _hem_run(false)
+	print("        walking, a shin goes %.1f cm out of the hem at most; without the drive %.1f cm" % [on * 100.0, off * 100.0])
+	_check(on <= 0.05, "walking, a shin goes %.1f cm out of the skirt's hem (≤ 5): the boots step out from under a still skirt" % (on * 100.0))
+	_check(off >= 0.10, "self-check: without the drive a shin goes only %.1f cm out of the hem — the case is not reproduced" % (off * 100.0))
 	_completed = true

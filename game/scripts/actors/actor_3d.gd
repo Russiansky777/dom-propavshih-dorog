@@ -429,6 +429,39 @@ func _setup_skirt() -> void:
 		cap.radius = float(col.get("radius_m", 0.07)) * u
 		cap.height = h + 2.0 * cap.radius
 		cap.position_offset = Vector3(0.0, h * 0.5, 0.0)   # the bone's own +Y runs along it (Blender rig)
+	# after the springs (a pose turned before them is not taken by the simulator: it swings the chains from its own state)
+	var dr: Dictionary = sk.get("drive", {})
+	if not dr.is_empty():
+		_setup_skirt_drive(dr, n, last)
+
+
+## The skirt carried by the legs before its springs (SkirtDrive; data rt3d.skirt.drive {leg_r_m, spread_m, reach_k,
+## max_deg}): nothing when absent.
+const SkirtDrive := preload("res://scripts/actors/skirt_drive_modifier.gd")
+var skirt_drive: SkeletonModifier3D = null    # SkirtDrive
+
+
+func _setup_skirt_drive(dr: Dictionary, n: int, last: int) -> void:
+	var hips := skeleton.find_bone("Hips")
+	var ids := ["LeftLeg", "LeftFoot", "RightLeg", "RightFoot"].map(func(b): return skeleton.find_bone(b))
+	if hips < 0 or ids.has(-1) or last < 2:
+		return
+	skirt_drive = SkirtDrive.new()
+	skirt_drive.name = "SkirtDrive"
+	skeleton.add_child(skirt_drive)
+	var ch: Array = []
+	for c in n:
+		ch.append([skeleton.find_bone("Skirt%d_0" % c), skeleton.find_bone("Skirt%d_%d" % [c, last - 1]), skeleton.find_bone("Skirt%d_%d" % [c, last])])
+	skirt_drive.chains = ch
+	skirt_drive.shin_bones = [[ids[0], ids[1]], [ids[2], ids[3]]]
+	skirt_drive.hips_bone = hips
+	var ank := (skeleton.get_bone_global_rest(ids[1]).origin + skeleton.get_bone_global_rest(ids[3]).origin) * 0.5
+	skirt_drive.up = (skeleton.get_bone_global_rest(hips).origin - ank).normalized()
+	skirt_drive.units_per_m = 1.0 / maxf(_skel_to_model().basis.get_scale().x, 1e-6)
+	skirt_drive.leg_r_m = float(dr.get("leg_r_m", 0.075))
+	skirt_drive.spread_m = float(dr.get("spread_m", 0.16))
+	skirt_drive.reach_k = float(dr.get("reach_k", 1.0))
+	skirt_drive.max_deg = float(dr.get("max_deg", 35.0))
 
 
 ## A safety net for the joints (Director 30.10, «идеальная Агата»: «иногда странные или рваные»): whatever the clips do
@@ -562,6 +595,13 @@ var _arm_rest_hips: Transform3D = Transform3D.IDENTITY   # the hips at rest, mod
 var _arm_bones: Array = []                                # [upper arm, forearm, hand, hips]
 var arm_push_m: float = 0.0                               # how deep the clip put the hand in this frame (tests)
 var arm_clear_on: bool = true                             # off — probes and the tests' self-check
+var arm_soft_switch: bool = true                          # off — the tests' self-check: out/behind flips in one frame, full reach
+var _arm_back_s: float = 0.0                              # 0 — the hand goes out past the bag, 1 — behind it
+var _arm_off := Vector3.ZERO                               # the push shown (hips-at-rest frame, m) and its speed
+var _arm_off_v := Vector3.ZERO
+var _arm_inf: float = 0.0                                 # the IK's weight shown and its speed
+var _arm_inf_v: float = 0.0
+var _arm_snap: bool = true                                # a cut: the push is taken as it is, not followed
 
 
 ## How deep a hand at `hand_m` (model space) is inside the bag, seen from hips `hips_now` (model space); 0 outside.
@@ -670,22 +710,81 @@ func arm_clear_step(delta: float) -> void:
 		var back_f := (qf.z - (_arm_box.position.z - r)) * float(bc.get("forearm_k", 2.0)) if (depth_f > 0.0 and far_f < 0.0) else 0.0
 		var need_back := maxf(back_h, back_f)
 		var need_out := absf(qt.x - q.x)
-		if need_back > 0.0 and need_back < need_out:
-			qt = q
-			qt.z = q.z - need_back
+		# the way out changes softly (Director 01.11, line 20: «правая рука иногда резко дёргается… места не сходятся»):
+		# the shorter of the two flipped as the stance swayed the hand across the line where both are equal, and the
+		# target jumped 7–9 cm in one frame with the IK at full weight (tests/probe_arm_jerk.gd: 87 mm/frame² against
+		# the left hand's 2). Now the choice holds until the other way is shorter by `switch_m`, and the target goes over
+		# `switch_s` through the bag's back-outer corner (out and back both) — outside the bag all the way.
+		var want_back := _arm_back_s > 0.5
+		var hyst := float(bc.get("switch_m", 0.015))
+		if need_back <= 0.0 or need_back > need_out + hyst:
+			want_back = false
+		elif need_back < need_out - hyst:
+			want_back = true
+		if not arm_soft_switch:
+			want_back = need_back > 0.0 and need_back < need_out
+			_arm_back_s = 1.0 if want_back else 0.0
+		elif _arm_w <= 0.001:
+			_arm_back_s = 1.0 if want_back else 0.0   # not pushed: nothing shown to switch from
+		else:
+			_arm_back_s = move_toward(_arm_back_s, 1.0 if want_back else 0.0, delta / maxf(float(bc.get("switch_s", 0.3)), 0.01))
+		var sb := _arm_back_s * _arm_back_s * (3.0 - 2.0 * _arm_back_s)
+		var out_k := clampf(2.0 * (1.0 - sb), 0.0, 1.0)
+		var back_k := clampf(2.0 * sb, 0.0, 1.0)
+		qt = q
+		qt.x = q.x + ((outer - r - extra) - q.x if outer == _arm_box.position.x else (outer + r + extra) - q.x) * out_k
+		qt.z = q.z - maxf(need_back, 0.0) * back_k
+	# the push itself follows softly (a critically damped follower, `smooth_omega` /s): the hand still goes with the clip
+	# frame by frame, only the push away from the bag can no longer change in one frame (the gates of the forearm's own
+	# push, entering and leaving the box)
+	var off := qt - q
+	var inf := _arm_w * _arm_w * (3.0 - 2.0 * _arm_w)
+	if arm_soft_switch and delta > 0.0 and not _arm_snap:
+		var om := float(bc.get("smooth_omega", 30.0))
+		for c in 3:
+			var rs := spring(_arm_off[c], _arm_off_v[c], off[c], om, delta)
+			_arm_off[c] = rs.x
+			_arm_off_v[c] = rs.y
+		var ri := spring(_arm_inf, _arm_inf_v, inf, om, delta)
+		_arm_inf = clampf(ri.x, 0.0, 1.0)
+		_arm_inf_v = ri.y
+	else:
+		_arm_off = off
+		_arm_off_v = Vector3.ZERO
+		_arm_inf = inf
+		_arm_inf_v = 0.0
+		_arm_snap = false
+	qt = q + _arm_off
 	var target_m: Vector3 = hips_now * (_arm_rest_hips.affine_inverse() * qt)
 	var yaw_b := Basis(Vector3.UP, get_yaw())
 	var model_to_turn := to_turn * to_model.affine_inverse()
-	_arm_target.position = yaw_b * (model_to_turn * target_m)
-	# the elbow keeps the way it bends: the pole a little beyond the elbow, away from the shoulder–hand line
 	var sh: Vector3 = to_turn * skeleton.get_bone_global_pose(int(_arm_bones[0])).origin
 	var el: Vector3 = to_turn * skeleton.get_bone_global_pose(int(_arm_bones[1])).origin
 	var hd: Vector3 = to_turn * skeleton.get_bone_global_pose(int(_arm_bones[2])).origin
+	var tt: Vector3 = model_to_turn * target_m
+	# a soft reach (01.11, line 20): the hanging arm is nearly straight, and a target pushed out and back from the clip's
+	# hand lay at or past the arm's full length — there the two-bone solution swings the elbow centimetres for a
+	# millimetre of the hand (the elbow 22–53 mm/frame² standing and as the talk gesture set in, against the clip's own 2–4). The
+	# target's distance from the shoulder eases into soft_k of the arm's length instead of reaching it.
+	if arm_soft_switch:
+		var reach := el.distance_to(sh) + hd.distance_to(el)
+		var sk0 := float(bc.get("soft_k", 0.94)) * reach
+		var dv := tt - sh
+		var dl := dv.length()
+		if dl > sk0 and reach > 1e-4:
+			var rest := reach - sk0
+			tt = sh + dv / dl * (sk0 + rest * (1.0 - exp(-(dl - sk0) / maxf(rest, 1e-5))))
+	_arm_target.position = yaw_b * tt
+	# the elbow keeps the way it bends: the pole a little beyond the elbow, away from the shoulder–hand line
 	var bend := el - (sh + hd) * 0.5
+	if arm_soft_switch:
+		# the hanging arm is almost straight: the clip's bend is a few millimetres and its direction swung round from frame
+		# to frame, the elbow with it (01.11, line 20: 30–50 mm/frame²); a little of «elbow back» (pole_back_m) keeps it
+		bend += Vector3(0.0, 0.0, -float(bc.get("pole_back_m", 0.03)))
 	if bend.length() < 0.01:
 		bend = Vector3(0.0, 0.0, -1.0)
 	_arm_pole.position = yaw_b * (el + bend.normalized() * 0.3)
-	arm_ik.influence = _arm_w * _arm_w * (3.0 - 2.0 * _arm_w)
+	arm_ik.influence = _arm_inf
 
 
 ## Feet that stay where they stand (Director 30.10 «идеальная Агата»: stopping, a foot set down skated 14 cm on
@@ -835,6 +934,76 @@ var dbg_reach: Array = [0.0, 0.0]   # probes: the leg's reach less the distance 
 var stride_off: Array = [Vector3.ZERO, Vector3.ZERO]   # shown − clip ankle on the floor (m; tests, probes)
 
 
+## A «переступ» (Player._shuffle_begin; Director 01.11, line 3 «мельтешит… куча перестановок ног»): a short move from
+## standing is two steps — the lead foot (the one on the side she moves to) to where it will stand at the end, then the
+## other, overlapping by `ov` of a step — each landing on a fixed spot of the floor (the stance at the end of the move,
+## turned the way she will face), while the body goes over. No other step is taken and no lock let go meanwhile; the body
+## dips a little (`dip`) so the legs reach both spots at the widest.
+var shuffle: Dictionary = {}
+var _shuffle_dip: float = 0.0
+
+
+func shuffle_begin(end_px: Vector2, yaw_f: float, t0: float, dur: float, ov: float, dip: float) -> void:
+	_closing = -1
+	_close_feet = []
+	shuffle = {"t": 0.0, "end": end_px, "yaw": yaw_f, "t0": t0, "dur": dur, "ov": ov, "dip": dip, "started": [false, false], "land": [], "lead": -1}
+
+
+## True while a step of the «переступ» is still to come or going on.
+func shuffle_busy() -> bool:
+	if shuffle.is_empty():
+		return false
+	var st: Array = shuffle["started"]
+	return not (bool(st[0]) and bool(st[1])) or _foot_step[0] != null or _foot_step[1] != null
+
+
+func shuffle_end() -> void:
+	shuffle = {}
+	_shuffle_dip = 0.0
+
+
+## Per frame, inside feet_step before the feet: the landings (first frame) and the steps' starts.
+func _shuffle_feet(delta: float, f: Array, anim: Array, o: Vector2, k: Vector2) -> void:
+	var sh := shuffle
+	sh["t"] = float(sh["t"]) + delta
+	var t: float = sh["t"]
+	var dur: float = sh["dur"]
+	var t0: float = sh["t0"]
+	var T := t0 + dur * (2.0 - float(sh["ov"]))
+	_shuffle_dip = float(sh["dip"]) * sin(PI * clampf((t - t0) / maxf(T - t0, 0.05), 0.0, 1.0))
+	if (sh["land"] as Array).is_empty():
+		var yb := Basis(Vector3.UP, float(sh["yaw"]))
+		var end: Vector2 = sh["end"]
+		var land: Array = []
+		var cur: Array = []
+		for i in 2:
+			land.append(_floor_screen(yb * (f[i * 2] as Vector3), end, k))
+			cur.append(_floor_local(_foot_lock[i], o, k) if _foot_lock[i] != null else (anim[i] as Vector3))
+		sh["land"] = land
+		var dl := Vector2((end.x - o.x) / k.x, (end.y - o.y) / k.y)
+		var mid: Vector3 = ((cur[0] as Vector3) + (cur[1] as Vector3)) * 0.5
+		var lead := 0
+		if dl.length() > 0.03:
+			# the foot on the side she moves to goes first (moving right, the right foot): the feet never cross
+			var d0 := Vector2((cur[0] as Vector3).x - mid.x, (cur[0] as Vector3).z - mid.z).dot(dl)
+			lead = 0 if d0 >= 0.0 else 1
+		else:
+			# turning on the spot: the foot that has farther to go
+			var e0 := Vector2(_floor_local(land[0], o, k).x - (cur[0] as Vector3).x, _floor_local(land[0], o, k).z - (cur[0] as Vector3).z).length()
+			var e1 := Vector2(_floor_local(land[1], o, k).x - (cur[1] as Vector3).x, _floor_local(land[1], o, k).z - (cur[1] as Vector3).z).length()
+			lead = 0 if e0 >= e1 else 1
+		sh["lead"] = lead
+	var lead_i: int = sh["lead"]
+	var started: Array = sh["started"]
+	for i in [lead_i, 1 - lead_i]:
+		var start := t0 if i == lead_i else t0 + dur * (1.0 - float(sh["ov"]))
+		if bool(started[i]) or t < start:
+			continue
+		started[i] = true
+		var from: Vector3 = _foot_lock[i] if _foot_lock[i] != null else _floor_screen(anim[i], o, k)
+		_foot_step[i] = [from, 0.0, _planted_y(i, anim[i]), Vector3.ZERO, dur, sh["land"][i]]
+
+
 func _stride_plant(i: int, a: Vector3, b: Vector3, delta: float, o: Vector2, k: Vector2, sk: Dictionary) -> void:
 	var lo := 0.008
 	var hi := float(sk.get("down_m", 0.025))
@@ -915,6 +1084,11 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	var targets: Array = []
 	var from_y: Array = [-INF, -INF]   # a closing step sets off from the height the stride held the foot at (heel up)
 	var xf := _skel_to_turn()
+	if not shuffle.is_empty():
+		var an: Array = []
+		for i in 2:
+			an.append(yaw_b * (f[i * 2] as Vector3) - Vector3(0.0, _bob_y, 0.0))
+		_shuffle_feet(delta, f, an, o, k)
 	for i in 2:
 		var a: Vector3 = yaw_b * f[i * 2]                     # the animated ankle in the floor frame
 		a.y -= _bob_y                                         # where the clip has it: the deepened bob is the body's only
@@ -947,7 +1121,9 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			# the landing spot was chosen as the foot left the floor (st[3], by the body, the turn foreseen): a foot that
 			# follows a spot turning with her and then stops dead on it jolts (17.6 mm per frame turning on the spot)
 			var to: Vector3 = st[3]
-			if _w_v > 0.0 and _w_s > 0.02:
+			if st.size() > 5:
+				to = _floor_local(st[5], o, k)   # a «переступ»: a fixed spot of the floor, whatever the body does meanwhile
+			elif _w_v > 0.0 and _w_s > 0.02:
 				# setting off, this step is the stride's first swing: it lands where the stride sets the foot down, not
 				# where the stance stood as it left (it then stood 10–12 cm behind its foot and stepped again at once)
 				to = to.lerp(Vector3(a.x, to.y, a.z), smoothstep(0.02, 0.2, _w_s))
@@ -965,7 +1141,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 				var ac: Vector3 = yaw_b * ((closing_to[i * 2] as Vector3) + Vector3(0.0, 0.0, _close_unit * _w_s))
 				err = Vector2(lock.x - ac.x, lock.z - ac.z).length()
 			dbg_reach[i] = reach - Vector3(lock.x, _planted_y(i, a), lock.z).distance_to(hip)
-			if lifted or walking or err > float(fk.get("release_m", 0.3)):
+			if lifted or walking or (err > float(fk.get("release_m", 0.3)) and shuffle.is_empty()):
 				lock = null
 				err = 0.0
 			elif _out_of_reach(Vector3(lock.x, _planted_y(i, a), lock.z), hip, reach):
@@ -1008,7 +1184,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			need_i = float(fk.get("close_need_m", 0.03))   # the closing step itself: taken even from a little behind
 		elif _closing == 0 and not turning:
 			need_i = maxf(need, float(fk.get("close_m", 0.15)))   # closed up: the other foot stays unless far off
-		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need_i and (other == null or float(other[1]) >= 0.75):
+		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need_i and (other == null or float(other[1]) >= 0.75) and shuffle.is_empty():
 			var dur := step_s
 			if _closing > 0:
 				_closing -= 1
@@ -1087,6 +1263,9 @@ func _out_of_reach(p: Vector3, hip: Vector3, reach: float) -> bool:
 func feet_reset() -> void:
 	if limiter != null:
 		limiter.reset()
+	_arm_snap = true
+	shuffle = {}
+	_shuffle_dip = 0.0
 	stride_hold = false
 	stride_hold_keep = false
 	_closing = -1
@@ -1241,6 +1420,60 @@ static func loop_times(tau: float, len_s: float, xf: float) -> Array:
 	return [u, 0.0, 0.0]
 
 
+## Talking and listening with the hands and the head, the body kept (Director 01.11, line 6: «фигура Павла, когда Агата
+## с ним говорит, слишком резко меняющаяся… изгиб не совсем естественный, разом выпирает»; line 10: Pelageya «тело
+## само её кидает из стороны в сторону»): every villager's talk clip (Talk_with_Hands_Open) pushes the hips 7–12 cm out
+## to the side and forward, leans the torso 5° back (the belly «выпирает»), bends the knees to 49° and turns both toes
+## up 18–27° (tests/probe_villager_motion.gd). Data rt3d.act_body {keep, bones}: the listed bones (hips, spine, legs)
+## take only `keep` of the action clip, the arms, the neck and the head all of it (a second Blend2 with track filters).
+var act_body_k: float = -1.0     # < 0: no act_body — the action clip drives every bone alike
+
+
+func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> bool:
+	var ab: Dictionary = spec.get("act_body", {})
+	if ab.is_empty():
+		return false
+	var body := {}
+	for b in ab.get("bones", ["Hips", "Spine02", "Spine01", "Spine", "LeftUpLeg", "LeftLeg", "LeftFoot", "LeftToeBase", "RightUpLeg", "RightLeg", "RightFoot", "RightToeBase"]):
+		body[String(b)] = true
+	var paths := {}
+	for role in clips.keys():
+		var a := anim.get_animation(clips[role])
+		if a == null:
+			continue
+		for i in a.get_track_count():
+			paths[a.track_get_path(i)] = true
+	for e in idle_pool:
+		var a2 := anim.get_animation(e["name"])
+		for i in a2.get_track_count():
+			paths[a2.track_get_path(i)] = true
+	var actb_body := AnimationNodeBlend2.new()
+	actb.filter_enabled = true
+	actb_body.filter_enabled = true
+	for p in paths.keys():
+		var np: NodePath = p
+		var bone := String(np.get_concatenated_subnames())
+		if body.has(bone):
+			actb_body.set_filter_path(np, true)
+		else:
+			actb.set_filter_path(np, true)
+	# a node's output feeds one input only: the body branch has its own copy of the action slots (same clip, same times)
+	for slot in ["act_b", "act2_b"]:
+		var an := AnimationNodeAnimation.new()
+		an.animation = idle_pool[0]["name"]
+		bt.add_node(slot, an)
+		bt.add_node(slot + "_seek", AnimationNodeTimeSeek.new())
+		bt.connect_node(slot + "_seek", 0, slot)
+	bt.add_node("act_mix_b", AnimationNodeBlend2.new())
+	bt.connect_node("act_mix_b", 0, "act_b_seek")
+	bt.connect_node("act_mix_b", 1, "act2_b_seek")
+	bt.add_node("actb_body", actb_body)
+	bt.connect_node("actb_body", 0, "actb")
+	bt.connect_node("actb_body", 1, "act_mix_b")
+	act_body_k = clampf(float(ab.get("keep", 0.3)), 0.0, 1.0)
+	return true
+
+
 func _build_tree() -> void:
 	tree = AnimationTree.new()
 	tree.name = "Tree"
@@ -1270,7 +1503,10 @@ func _build_tree() -> void:
 	bt.add_node("actb", actb)
 	bt.connect_node("actb", 0, "loco")
 	bt.connect_node("actb", 1, "act_mix")
-	bt.connect_node("output", 0, "actb")
+	if _setup_act_body(bt, actb):
+		bt.connect_node("output", 0, "actb_body")
+	else:
+		bt.connect_node("output", 0, "actb")
 	tree.tree_root = bt
 	tree.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 	tree.active = true
@@ -1587,11 +1823,21 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 			var bt := tree.tree_root as AnimationNodeBlendTree
 			(bt.get_node("act") as AnimationNodeAnimation).animation = clips[act_name]
 			(bt.get_node("act2") as AnimationNodeAnimation).animation = clips[act_name]
+			if act_body_k >= 0.0:
+				(bt.get_node("act_b") as AnimationNodeAnimation).animation = clips[act_name]
+				(bt.get_node("act2_b") as AnimationNodeAnimation).animation = clips[act_name]
 			_act_name = act_name
 		tree.set("parameters/act_seek/seek_request", act_t)
 		tree.set("parameters/act2_seek/seek_request", act_t2)
+		if act_body_k >= 0.0:
+			tree.set("parameters/act_b_seek/seek_request", act_t)
+			tree.set("parameters/act2_b_seek/seek_request", act_t2)
 	tree.set("parameters/act_mix/blend_amount", clampf(act_mix, 0.0, 1.0))
+	if act_body_k >= 0.0:
+		tree.set("parameters/act_mix_b/blend_amount", clampf(act_mix, 0.0, 1.0))
 	tree.set("parameters/actb/blend_amount", clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0)
+	if act_body_k >= 0.0:
+		tree.set("parameters/actb_body/blend_amount", (clampf(act_w, 0.0, 1.0) * act_body_k) if _act_name != "" else 0.0)
 	if arm_tone != null:
 		arm_tone.weight = clampf(w, 0.0, 1.0) * (1.0 - (clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0))
 	if bool(spec.get("center_feet", true)):
@@ -1600,10 +1846,10 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 		var wc := clampf(w, 0.0, 1.0)
 		var loco_mid := idle_mid.lerp(_mid_of(clips.get("walk", "")), wc)
 		var aw := clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0
-		var mid := loco_mid.lerp(_mid_of(clips.get(_act_name, "")), aw)
+		var mid := loco_mid.lerp(_mid_of(clips.get(_act_name, "")), aw * (act_body_k if act_body_k >= 0.0 else 1.0))   # the feet: as much of the clip as the legs take
 		# out of the stride the clips (captured on a flat-footed body) hold her 4 cm up off her boots — down by that much
 		_bob_y = _bob_at(walk_phase) * wc
-		model.position = Vector3(-mid.x - _calm_off.x, -_boot_drop * (1.0 - wc) + _bob_y, -mid.y - _calm_off.y)
+		model.position = Vector3(-mid.x - _calm_off.x, -_boot_drop * (1.0 - wc) + _bob_y - _shuffle_dip, -mid.y - _calm_off.y)
 	tree.advance(0.0)
 
 
@@ -1628,6 +1874,8 @@ func _measure_mids() -> void:
 			tree.set("parameters/idle_mix/blend_amount", 0.0)
 			tree.set("parameters/loco/blend_amount", 0.0)
 			tree.set("parameters/actb/blend_amount", 0.0)
+			if act_body_k >= 0.0:
+				tree.set("parameters/actb_body/blend_amount", 0.0)
 			tree.advance(0.0)
 			var f := feet_model()
 			acc += Vector2((f[0].x + f[2].x) * 0.5, (f[0].z + f[2].z) * 0.5)
@@ -1667,6 +1915,8 @@ func build_root_motion() -> void:
 		tree.set("parameters/walk_seek/seek_request", fposmod(ph, 1.0) * walk_len * (0.999999 if i == RM_N else 1.0))
 		tree.set("parameters/loco/blend_amount", 1.0)
 		tree.set("parameters/actb/blend_amount", 0.0)
+		if act_body_k >= 0.0:
+			tree.set("parameters/actb_body/blend_amount", 0.0)
 		tree.advance(0.0)
 		samples.append(feet_model())
 		hips_h[i] = bone_model("Hips").y

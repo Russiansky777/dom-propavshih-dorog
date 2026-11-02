@@ -31,6 +31,7 @@ var act_w: float = 0.0
 var act_t: float = 0.0
 var _hide_mat: ShaderMaterial = null
 var room_floor_k: float = 0.5          # the room floor's foreshortening (screen depth px per floor metre across)
+var _close_pending := false            # a walk has ended: the closing step once its fade is over (data feet.close_on_stop)
 var _last_pos := Vector2.INF           # feet locks: a jump of the villager (staging places it) lets the feet go
 
 
@@ -61,6 +62,7 @@ func setup(the_npc: Node2D, spec: Dictionary, floor_k: float) -> bool:
 		return false
 	view.set_floor_k(floor_k)
 	room_floor_k = floor_k
+	_setup_arm_body()
 	body = Sprite2D.new()
 	body.name = "Body3D"
 	body.centered = false
@@ -79,6 +81,26 @@ func setup(the_npc: Node2D, spec: Dictionary, floor_k: float) -> bool:
 	view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_update_scale()
 	return true
+
+
+## Hands kept out of the body (data rt3d.arm_body; Director 01.11, lines 10 and 52): a BodyClear modifier after all the
+## others on the villager's skeleton.
+const BodyClear := preload("res://scripts/actors/body_clear_modifier.gd")
+var arm_body: SkeletonModifier3D = null    # BodyClear
+
+
+func _setup_arm_body() -> void:
+	var d: Dictionary = rt.get("arm_body", {})
+	if d.is_empty():
+		return
+	var bc = BodyClear.new()
+	bc.name = "BodyClear"
+	view.skeleton.add_child(bc)
+	var unit := 1.0 / maxf(view._skel_to_turn().basis.get_scale().y, 1e-6)
+	if bc.setup(d, view.skeleton, view.meshes, unit, String(rt.get("scene", ""))):
+		arm_body = bc
+	else:
+		bc.queue_free()
 
 
 ## Where the villager looks (screen vector from the feet): the body yaw eases there.
@@ -106,6 +128,16 @@ func set_state(st: String) -> void:
 
 ## Walking off in a staging at `speed_px` screen px/s (node scale `s`): the cycle's cadence follows the speed.
 func walk(on: bool, speed_px: float = 0.0, s: float = 1.0) -> void:
+	if walking and not on and view != null and bool(rt.get("feet", {}).get("close_on_stop", false)):
+		# Director 01.11, line 55 «Нина тоже мельтешит»: coming to a stop the feet took three quick steps in 0.75 s (the
+		# locks catching up with the stance one after another, while the walk faded out); now, as Agata's planned stop,
+		# the stride planting holds the feet through the fade and then (Actor3D.stop_done) the foot left behind closes up
+		# once, to where the stance puts it — the other stays unless far off
+		view.stride_hold = true
+		view.stride_hold_keep = true
+		_close_pending = true
+	elif on:
+		_close_pending = false
 	walking = on
 	if on and view != null:
 		var mps := speed_px / maxf(view.ppm * maxf(s, 0.01), 1.0)
@@ -123,6 +155,9 @@ func process(delta: float) -> void:
 	_yaw_dir_target = r.w
 	view.set_yaw(yaw)
 	walk_w = move_toward(walk_w, 1.0 if walking else 0.0, delta / 0.3)
+	if _close_pending and walk_w <= 0.0:
+		_close_pending = false
+		view.stop_done(0.0)
 	# a big turn standing: small steps on the spot (a little of the walk), as Agata
 	var stepping := not walking and view.clips.has("walk") and absf(diff) > deg_to_rad(float(rt.get("step_above_deg", 50.0)))
 	step_w = move_toward(step_w, float(rt.get("step_weight", 0.3)) if stepping else 0.0, delta / 0.25)
@@ -147,6 +182,8 @@ func process(delta: float) -> void:
 		var ppm_s := view.ppm * maxf(absf(npc.scale.y), 0.01)
 		if _last_pos != Vector2.INF and p.distance_to(_last_pos) > 0.5 * ppm_s:
 			view.feet_reset()   # placed elsewhere by the staging, not walked there
+			if arm_body != null:
+				arm_body.snap = true
 		_last_pos = p
 		view.feet_step(delta, p, Vector2(ppm_s, ppm_s * maxf(room_floor_k, 0.05)))
 	_update_scale()

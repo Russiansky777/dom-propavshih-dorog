@@ -574,6 +574,8 @@ func walk_to_and_interact(node: Node2D) -> void:
 func _start_walk(target: Vector2) -> void:
 	_turn_hold = []
 	_stop_plan = {}
+	if not _shuffle.is_empty():
+		_shuffle_cancel()
 	_stop_glide = false
 	if view3d != null:
 		view3d.stride_hold_keep = false
@@ -635,6 +637,7 @@ func face_screen_dir(v: Vector2) -> void:
 func enter_room(new_room: Room, pos: Vector2) -> void:
 	room = new_room
 	_walking = false
+	_shuffle = {}
 	_pending = null
 	_cancel_action()
 	_lock_active = false
@@ -711,6 +714,8 @@ func _walk_step(delta: float) -> void:
 
 ## Stops without reaching the target: no interaction is triggered.
 func _cancel_walk() -> void:
+	if not _shuffle.is_empty():
+		_shuffle_cancel()
 	if _carry_stage == "walk":
 		_carry_finish_now()
 	_walking = false
@@ -1340,7 +1345,7 @@ func _turn_3d(delta: float) -> void:
 	_yaw_v = r.y
 	_yaw_dir = r.z
 	_yaw_dir_target = r.w
-	var stepping := not _acting and walk_w < 0.3 and absf(diff) > deg_to_rad(_rtf("turn", "step_above_deg", 50.0))
+	var stepping := not _acting and walk_w < 0.3 and absf(diff) > deg_to_rad(_rtf("turn", "step_above_deg", 50.0)) and _shuffle.is_empty()
 	var sw := _rtf("turn", "step_weight", 0.3) if stepping else 0.0
 	_turn_step_w = move_toward(_turn_step_w, sw, delta / 0.2)
 	# the stepping goes on while any of it is still shown (the weight reaches the pose through a follower): a phase
@@ -1375,6 +1380,13 @@ var plant_on_start: bool = true
 var foot_lock_3d: bool = true
 var _rm_shown_w: float = 0.0
 var _turn_step_tail: bool = false   # the turn's stepping still fading out of the shown pose
+## A short move from standing — a «переступ» (Director 01.11, line 3: «АГАТА ТАКЖЕ МЕЛЬТЕШИТ!!! куча перестановок ног
+## ненужных»): a path shorter than rt3d.shuffle.max_m is not walked with the walk clip (its weight never got to half
+## before the end — the legs made partial steps at the clip's cadence, and the turn before it stepped on the spot: 5–8
+## lifts for 20–50 cm, tests/probe_short_moves.gd). One foot steps to where it will stand at the end, the other closes up
+## to it, the body goes over with them and turns to the way it will face — two lifts. Off — the tests' self-check.
+var shuffle_on: bool = true
+var _shuffle: Dictionary = {}
 
 
 func _root_motion_3d(probe: Array, blend: float) -> void:
@@ -1473,6 +1485,9 @@ func _root_motion_3d(probe: Array, blend: float) -> void:
 
 func _walk_step_3d(delta: float) -> void:
 	walk_time += delta
+	if not _shuffle.is_empty():
+		_shuffle_step(delta)
+		return
 	if not _stop_plan.is_empty():
 		# the planned stop runs to its last step whatever the agent says (it calls _arrive itself). She follows the path
 		# itself, as walking (31.10, Director lines 8–9 «застревает и идёт на одном месте… от писем до стола»): heading
@@ -1506,6 +1521,9 @@ func _walk_step_3d(delta: float) -> void:
 	_path_ready = true
 	nav_agent.get_next_path_position()   # the agent keeps its own bookkeeping (path updates, finished)
 	var path := nav_agent.get_current_navigation_path()
+	if _shuffle_begin(path):
+		_shuffle_step(delta)
+		return
 	var n := path.size()
 	if n != _path_n or path[0] != _path_first or path[n - 1] != _path_last:
 		_path_n = n
@@ -1536,6 +1554,86 @@ func _walk_step_3d(delta: float) -> void:
 	# before the counter's corner walked her on past it, or into the counter)
 	_stop_straight = _path_seg >= n - 2 and absf(angle_difference(yaw3d, _yaw_for_screen(goal_pt - global_position))) < deg_to_rad(35.0)
 	_move_3d(to_next, to_next.length(), rem, delta)
+
+
+## Starts a «переступ» when this walk is one (rt3d.shuffle {max_m, min_m, step_s, step_per_m, overlap, turn_deg_s,
+## dip_m}): from standing (nothing of the walk shown), the path short and straight. Its end and the way she will face
+## there (the thing she goes to, or the way she moves) are fixed now; Actor3D steps the feet (shuffle_begin).
+func _shuffle_begin(path: PackedVector2Array) -> bool:
+	var sh: Dictionary = _rt.get("shuffle", {})
+	if not shuffle_on or sh.is_empty() or view3d == null or walk_time > 0.1 or _acting or walk_w > 0.01 or view3d.shown_w() > 0.03 \
+			or _stop_glide or path.size() < 1 or not root_motion_3d:
+		return false
+	var end: Vector2 = path[path.size() - 1]
+	var plen := global_position.distance_to(path[0]) if path.size() > 0 else 0.0
+	for i in range(path.size() - 1):
+		plen += path[i].distance_to(path[i + 1])
+	var straight := global_position.distance_to(end)
+	var k := maxf(floor_foreshortening(), 0.05)
+	var ppm_s := view3d.ppm * absf(scale.y)
+	var dv := end - global_position
+	var d_m := Vector2(dv.x, dv.y / k).length() / maxf(ppm_s, 0.001)
+	if d_m > float(sh.get("max_m", 0.5)) or plen > straight * 1.15 + 2.0:
+		return false
+	# the way she faces at the end: the thing she goes to, as on arrival; a plain click — the way she moves
+	var face := Vector2.ZERO
+	if not _then_act.is_empty():
+		face = (_then_act["face"] as Vector2) - end
+	elif _pending != null and is_instance_valid(_pending):
+		face = _look_point(_pending) - end
+	if face.length_squared() <= 1.0:
+		face = dv if d_m >= float(sh.get("min_m", 0.04)) else _screen_of_yaw(yaw3d)
+	var yaw_f := _yaw_for_screen(face)
+	var turn := absf(angle_difference(yaw3d, yaw_f))
+	# each foot's step: longer for a longer way; the turn has time to be made at the standing turn's pace
+	var dur := float(sh.get("step_s", 0.32)) + float(sh.get("step_per_m", 0.3)) * d_m
+	var ov := float(sh.get("overlap", 0.35))
+	dur = maxf(dur, (turn / deg_to_rad(float(sh.get("turn_deg_s", 200.0))) - 0.05) / (2.0 - ov))
+	var steps := 2 if (d_m >= float(sh.get("min_m", 0.04)) or turn > deg_to_rad(20.0)) else 0
+	_shuffle = {"t": 0.0, "p0": global_position, "p1": end, "yaw": yaw_f, "dur": dur, "t0": 0.04, "ov": ov, "d_m": d_m,
+		"T": 0.04 + dur * (2.0 - ov) if steps > 0 else 0.2}
+	yaw3d_target = yaw_f
+	walk_w = 0.0
+	_turn_step_w = 0.0
+	if steps > 0:
+		view3d.shuffle_begin(end, yaw_f, 0.04, dur, ov, float(sh.get("dip_m", 0.03)) * clampf(d_m / maxf(float(sh.get("max_m", 0.5)), 0.01), 0.3, 1.0))
+	return true
+
+
+## One frame of the «переступ»: the body goes from where it stood to the end of the path while the feet step (the
+## glide spans the first foot's lift to the second's landing, easing in and out); she has arrived when both are down.
+func _shuffle_step(delta: float) -> void:
+	var sh := _shuffle
+	sh["t"] = float(sh["t"]) + delta
+	var t: float = sh["t"]
+	var T: float = sh["T"]
+	var t0: float = sh["t0"]
+	var u := clampf((t - t0) / maxf(T - t0 - 0.06, 0.05), 0.0, 1.0)
+	var s := u * u * (3.0 - 2.0 * u)
+	var np: Vector2 = (sh["p0"] as Vector2).lerp(sh["p1"], s)
+	var nm := nav_agent.get_navigation_map()
+	if nm.is_valid() and NavigationServer2D.map_get_iteration_id(nm) > 0:
+		var cp := NavigationServer2D.map_get_closest_point(nm, np)
+		if cp.distance_to(np) > 0.5:
+			np = cp
+	var mv := np - global_position
+	global_position = np
+	if absf(mv.x) > 0.01:
+		facing = 1 if mv.x > 0.0 else -1
+	_update_depth()
+	walk_w = 0.0
+	yaw3d_target = float(sh["yaw"])
+	if t >= T and (view3d == null or not view3d.shuffle_busy()) and absf(angle_difference(yaw3d, float(sh["yaw"]))) < 0.05:
+		_shuffle = {}
+		if view3d != null:
+			view3d.shuffle_end()
+		_arrive()
+
+
+func _shuffle_cancel() -> void:
+	_shuffle = {}
+	if view3d != null:
+		view3d.shuffle_end()
 
 
 ## Following the path (Director 30.10 «крутится»): she used to steer at the agent's next corner; a body that turns
