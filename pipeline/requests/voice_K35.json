@@ -1,0 +1,180 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 805,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K35 (02.11 вечер, блок А): № 4 «Перестучит она…» — насмешливо; № 10 «Синяя лента…» — другая интонация; № 22 «Стукнулось о камень!» (без «О, …»); № 15 новая фраза Агаты на поимке; № 12 «Провисла леска». Take _1 = voice_text в data/story/voice_direction.json.",
+ "new_text_lines": [
+  "agata:mech.fish.caught_agata",
+  "ilya:E5.windlass.bump",
+  "mitya:mech.fish.escaped"
+ ],
+ "items": [
+  {
+   "id": "W314_1",
+   "line": "tikhon:H1.tikhon.spoons_a",
+   "take": "1",
+   "speaker": "tikhon",
+   "text": "[mockingly] Перестучит она… Ну, слушай. Повторишь — поглядим.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "насмешливо"
+  },
+  {
+   "id": "W314_2",
+   "line": "tikhon:H1.tikhon.spoons_a",
+   "take": "2",
+   "speaker": "tikhon",
+   "text": "[sarcastic] Перестучит она… [chuckles] Ну, слушай. Повторишь — поглядим.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "с усмешкой и смешком"
+  },
+  {
+   "id": "W314_3",
+   "line": "tikhon:H1.tikhon.spoons_a",
+   "take": "3",
+   "speaker": "tikhon",
+   "text": "[mockingly] Перестучит она! Ха… Ну, слушай. Повторишь — поглядим.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "насмешливо, с «ха»"
+  },
+  {
+   "id": "W315_1",
+   "line": "agata:examine.school_ribbon",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[tenderly] Синяя лента, кайма узкая… Сберегла её мама.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "нежно, ровно"
+  },
+  {
+   "id": "W315_2",
+   "line": "agata:examine.school_ribbon",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Синяя лента, кайма узкая. [warmly] Сберегла её мама.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "просто, тепло на «Сберегла»"
+  },
+  {
+   "id": "W315_3",
+   "line": "agata:examine.school_ribbon",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[quietly] Синяя лента… кайма узкая. [moved] Сберегла её мама.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "тихо, растроганно"
+  },
+  {
+   "id": "W316_1",
+   "line": "ilya:E5.windlass.bump",
+   "take": "1",
+   "speaker": "ilya",
+   "text": "[shouting] Стукнулось о камень! Мимо кольца. Подымай, переложим.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "окрик"
+  },
+  {
+   "id": "W316_2",
+   "line": "ilya:E5.windlass.bump",
+   "take": "2",
+   "speaker": "ilya",
+   "text": "[urgently] Стукнулось о камень! Мимо кольца. Подымай, переложим.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "быстро, по делу"
+  },
+  {
+   "id": "W316_3",
+   "line": "ilya:E5.windlass.bump",
+   "take": "3",
+   "speaker": "ilya",
+   "text": "[calling out] Стукнулось о камень! Мимо кольца. [calmer] Подымай, переложим.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "окрик, потом спокойнее"
+  },
+  {
+   "id": "W317_1",
+   "line": "agata:mech.fish.caught_agata",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[excited] Есть! Гляди, Митя, — и я с уловом.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "радостно"
+  },
+  {
+   "id": "W317_2",
+   "line": "agata:mech.fish.caught_agata",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[laughing] Есть! Гляди, Митя, — и я с уловом.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "со смехом"
+  },
+  {
+   "id": "W317_3",
+   "line": "agata:mech.fish.caught_agata",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[proudly] Есть! Гляди, Митя, — и я с уловом.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "с гордостью"
+  },
+  {
+   "id": "W318_1",
+   "line": "mitya:mech.fish.escaped",
+   "take": "1",
+   "speaker": "mitya",
+   "text": "[chuckles] Провисла леска — она и ушла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "со смешком"
+  },
+  {
+   "id": "W318_2",
+   "line": "mitya:mech.fish.escaped",
+   "take": "2",
+   "speaker": "mitya",
+   "text": "Провисла леска — она и ушла.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "спокойно"
+  },
+  {
+   "id": "W318_3",
+   "line": "mitya:mech.fish.escaped",
+   "take": "3",
+   "speaker": "mitya",
+   "text": "[sighs] Провисла леска — она и ушла.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "со вздохом"
+  }
+ ]
+}
