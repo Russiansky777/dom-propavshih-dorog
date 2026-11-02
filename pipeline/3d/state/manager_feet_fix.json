@@ -3,7 +3,7 @@
  "clips": [
   {
    "kind": "idle",
-   "frames": 45,
+   "frames": 47,
    "cyclic": false,
    "body_yaw_deg": 3.2,
    "floor_m": 0.0019,
@@ -34,9 +34,9 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0857,
+     "sole_lift_mid_stance_max_m": 0.0858,
      "slide_max_mm": 0.0,
-     "contact_frames": 45,
+     "contact_frames": 47,
      "floor_m": 0.0019,
      "body_yaw_deg": 3.2
     },
@@ -48,9 +48,9 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0744,
+     "sole_lift_mid_stance_max_m": 0.0749,
      "slide_max_mm": 0.0,
-     "contact_frames": 45,
+     "contact_frames": 47,
      "floor_m": 0.0019,
      "body_yaw_deg": 3.2
     }
@@ -66,7 +66,7 @@
      "toe_abs_max_deg": 3.0,
      "sole_lift_mid_stance_max_m": 0.0856,
      "slide_max_mm": 0.0,
-     "contact_frames": 45,
+     "contact_frames": 47,
      "floor_m": 0.0039,
      "body_yaw_deg": 3.2
     },
@@ -78,9 +78,9 @@
      ],
      "swing_toe_abs_max_deg": 0.0,
      "toe_abs_max_deg": 3.0,
-     "sole_lift_mid_stance_max_m": 0.0724,
+     "sole_lift_mid_stance_max_m": 0.0729,
      "slide_max_mm": 0.0,
-     "contact_frames": 45,
+     "contact_frames": 47,
      "floor_m": 0.0039,
      "body_yaw_deg": 3.2
     }

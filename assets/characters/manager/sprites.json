@@ -8,7 +8,7 @@
   },
   "directions": 8,
   "direction_order": "d=0 анфас, далее по часовой стрелке (камера вокруг персонажа)",
-  "character_height_m": 1.676,
+  "character_height_m": 1.669,
   "actions": {
     "idle": {
       "sheet": "idle.png",
@@ -30,13 +30,13 @@
       "clip": "Listening_Gesture_talk",
       "clip_seconds": 9.3333,
       "natural_fps": 1.71,
-      "floor_shift_m": -0.0001
+      "floor_shift_m": -0.0013
     }
   },
   "fit": {
-    "half_width_m": 0.583,
-    "top_m": 0.859,
-    "frame_top_m": 0.939,
+    "half_width_m": 0.608,
+    "top_m": 0.861,
+    "frame_top_m": 0.935,
     "frame_w": 288
   },
   "matte_materials": true
