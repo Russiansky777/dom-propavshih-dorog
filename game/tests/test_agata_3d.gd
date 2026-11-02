@@ -270,7 +270,16 @@ func _walk_and_measure(room: String, a: Vector2, b: Vector2) -> Dictionary:
 				yaw_change = maxf(yaw_change, absf(angle_difference(float(stance_yaw[i]), player.yaw3d)))
 				worst_scr = maxf(worst_scr, scr.distance_to(stance_scr[i]) / maxf(s, 0.01))
 		speeds.append(d.length() / maxf(player.get_process_delta_time(), 0.0001) / ppm_s)
-	return {"worst_m": worst, "scr_px": worst_scr, "elev": v.elev_deg, "stretch": v.depth_stretch(), "k": k, "fwd_m": worst_fwd, "lat_m": worst_lat, "yaw_deg": rad_to_deg(yaw_change), "stances": stances, "arrived": player.global_position.distance_to(b) < 12.0, "frames": guard}
+	var off_end: float = player.global_position.distance_to(b)
+	# where she comes to rest: after the last step the body still glides on over the front foot while the stance blends
+	# in (player._stop_glide) — the walk's flag is already down then (CI 02.11: diagonal 11.9 px at the flag, the glide
+	# still to come)
+	var settle := 0
+	while bool(player.get("_stop_glide")) and settle < 120:
+		await process_frame
+		settle += 1
+	var off: float = player.global_position.distance_to(b)
+	return {"worst_m": worst, "scr_px": worst_scr, "elev": v.elev_deg, "stretch": v.depth_stretch(), "k": k, "fwd_m": worst_fwd, "lat_m": worst_lat, "yaw_deg": rad_to_deg(yaw_change), "stances": stances, "arrived": off < 12.0, "off_px": off, "off_end_px": off_end, "frames": guard}
 
 
 func _test_feet_planted() -> void:
@@ -279,14 +288,14 @@ func _test_feet_planted() -> void:
 		["diagonal", "Z2", Vector2(600, 720), Vector2(1300, 1020)]]
 	for leg in legs:
 		var r: Dictionary = await _walk_and_measure(leg[1], leg[2], leg[3])
-		print("        feet %s: stance drift max %.1f mm on the floor (along %.1f, across %.1f; body turned up to %.1f° in a stance), as drawn %.1f px (scale 1; camera %.1f°, depth ×%.2f, floor k %.2f) over %d stances, %d frames" % [leg[0], r["worst_m"] * 1000.0, r["fwd_m"] * 1000.0, r["lat_m"] * 1000.0, r["yaw_deg"], r["scr_px"], r["elev"], r["stretch"], r["k"], r["stances"], r["frames"]])
+		print("        feet %s: stance drift max %.1f mm on the floor (along %.1f, across %.1f; body turned up to %.1f° in a stance), as drawn %.1f px (scale 1; camera %.1f°, depth ×%.2f, floor k %.2f) over %d stances, %d frames, %.1f px from the target at the last step, %.1f at rest" % [leg[0], r["worst_m"] * 1000.0, r["fwd_m"] * 1000.0, r["lat_m"] * 1000.0, r["yaw_deg"], r["scr_px"], r["elev"], r["stretch"], r["k"], r["stances"], r["frames"], float(r["off_end_px"]), float(r["off_px"])])
 		if absf(sin(deg_to_rad(float(r["elev"]))) * float(r["stretch"]) - float(r["k"])) < 0.02:
 			# camera at the room's own elevation: the drawn foot must stay put on screen too
 			_check(float(r["scr_px"]) <= 3.0, "%s: drawn planted foot moved %.1f px on screen (≤ 3 px at scale 1)" % [leg[0], r["scr_px"]])
 		# the walks to and from the viewer are short (≈ 1.8 s; the planned stop takes the last two steps): one flat stance
 		_check(r["stances"] >= (1 if String(leg[0]) in ["towards viewer", "away"] else 2), "%s: only %d stances measured" % [leg[0], r["stances"]])
 		_check(r["worst_m"] <= 0.010, "%s: stance foot slid %.1f mm (≤ 10 mm)" % [leg[0], r["worst_m"] * 1000.0])
-		_check(r["arrived"], "%s: did not arrive" % leg[0])
+		_check(r["arrived"], "%s: did not arrive (%.1f px from the target)" % [leg[0], float(r["off_px"])])
 	# Self-check of the metric: the same walk with the figure sliding along the path at the clip's mean
 	# speed (no root motion — what the sheets did) must be caught.
 	player.root_motion_3d = false
