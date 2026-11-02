@@ -1,0 +1,88 @@
+{
+  "parts": [
+    {
+      "part": 1,
+      "rows": 249,
+      "filled": 249,
+      "source_words": 2034,
+      "translated_words": 2536
+    },
+    {
+      "part": 2,
+      "rows": 249,
+      "filled": 249,
+      "source_words": 1997,
+      "translated_words": 2512
+    },
+    {
+      "part": 3,
+      "rows": 249,
+      "filled": 249,
+      "source_words": 2326,
+      "translated_words": 2941
+    },
+    {
+      "part": 4,
+      "rows": 249,
+      "filled": 249,
+      "source_words": 1980,
+      "translated_words": 2542
+    },
+    {
+      "part": 5,
+      "rows": 249,
+      "filled": 249,
+      "source_words": 1942,
+      "translated_words": 2403
+    },
+    {
+      "part": 6,
+      "rows": 249,
+      "filled": 248,
+      "source_words": 2318,
+      "translated_words": 2729
+    },
+    {
+      "part": 7,
+      "rows": 249,
+      "filled": 249,
+      "source_words": 2417,
+      "translated_words": 2862
+    },
+    {
+      "part": 8,
+      "rows": 245,
+      "filled": 245,
+      "source_words": 2157,
+      "translated_words": 2495
+    }
+  ],
+  "total_rows": 1988,
+  "errors": [],
+  "warnings": [],
+  "unchanged_columns": [
+    "id",
+    "speaker",
+    "scene_room",
+    "context",
+    "prev",
+    "ru",
+    "max_len"
+  ],
+  "empty_source_preserved": "part6:scene:M02/lines[6].text",
+  "max_len_rows_checked": 846,
+  "placeholder_rows_checked": 12,
+  "literal_newline_rows_checked": 17,
+  "duplicate_variant_context_reviewed": "Far rope clamp / The far rope clamp: UI label versus written title",
+  "game_engine_tested": false,
+  "sha256": {
+    "en_part1_of8_done.tsv": "4c8d001dadf6a1246bb588969fcce63beda2b1bcbe15ec7dc739181c7869859a",
+    "en_part2_of8_done.tsv": "b88b4b2800b1a33ccea65b65ab19ef790a5721ece571437d0e21d4b44437239e",
+    "en_part3_of8_done.tsv": "be6709bbd4849a90e539008b60abb4f90e9cf105773fa7e8c789970e1868ce5e",
+    "en_part4_of8_done.tsv": "44a20d67a6da304b45fbd3d8df4fa0d4d6822eab2e872e9101b0d8d8b7b3a9d0",
+    "en_part5_of8_done.tsv": "f6bd7578379ca990bf9d911ff5188ce9767f62e49a58200d096d031fded54ac7",
+    "en_part6_of8_done.tsv": "8c84521a3f6de466b0c266d7509a0a9a02dd84cece0761067d1130a7025e7ec0",
+    "en_part7_of8_done.tsv": "b2bd32a3cf8e98831a6aeb0f18385591183977322ab07f6e910ac80fe1dd6339",
+    "en_part8_of8_done.tsv": "db1525a9792b23965812793ab4633451812bbd4c21c1df706146240fc662a47f"
+  }
+}
