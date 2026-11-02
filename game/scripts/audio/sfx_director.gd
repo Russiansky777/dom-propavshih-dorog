@@ -320,7 +320,13 @@ func play_ui(sound_name: String) -> void:
 		_ui_player.volume_db = UI_CLICK_DB
 		_ui_player.process_mode = Node.PROCESS_MODE_ALWAYS
 		add_child(_ui_player)
+	# Director 02.11, 21:26 («звуки в меню мягче и приятнее, может, по дереву»; выбор 21:55 на странице «Звуки меню —
+	# по дереву» — А и А): a recorded take from sfx.json when the sound is there; else the synthesized tick
+	if sounds.has(sound_name) and not (sounds[sound_name].get("files", []) as Array).is_empty():
+		_play(_ui_player, sound_name, "ui")
+		return
 	var synth = load("res://scripts/mechanics/synth_sfx.gd")
+	_ui_player.volume_db = UI_CLICK_DB
 	_ui_player.stream = synth.stream(sound_name)
 	_ui_player.play()
 	sound_played.emit("ui", sound_name, "")

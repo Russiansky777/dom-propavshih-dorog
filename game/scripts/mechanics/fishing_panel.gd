@@ -283,7 +283,8 @@ func _catch() -> void:
 	sound("water_slap")
 	hint.text = ""
 	event("caught")
-	say("caught")
+	# 02.11 вечер, № 15: the words of a catch alternate — Mitya's on the odd ones, Agata's on the even (texts.caught_alt)
+	say("caught_alt" if caught % 2 == 0 and spec.get("texts", {}).has("caught_alt") else "caught")
 
 
 ## A strike or a pull: a press (mouse button / Space) — `down` true, a release — false.

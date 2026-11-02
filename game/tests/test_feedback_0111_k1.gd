@@ -504,10 +504,14 @@ func _test_tikhon_chair() -> void:
 
 
 func _test_plate_dusk() -> void:
-	var l := _layer("Z3", "plate_dusk")
+	# 02.11 вечер, № 7: the plate with the rope and its knot only after the knot (plate_rope_dusk); before it — the same
+	# plate and ring without the rope (plate_dusk). Both with the evening's low water
+	var l := _layer("Z3", "plate_rope_dusk")
+	var l0 := _layer("Z3", "plate_dusk")
 	var wl := _layer("Z3", "water_low")
-	_check(str(l.get("if", [])) == str(wl.get("if", [])) and str(l.get("unless", [])) == str(wl.get("unless", [])), "the plate shows with the evening's low water (%s / %s)" % [str(l.get("if")), str(l.get("unless"))])
-	_check(int(l.get("z", 0)) >= 2, "the plate over the live water of the low pond (ambient draws it over layers z ≤ 1, as boat_day): z %s" % str(l.get("z", 0)))
+	_check(str(wl.get("unless", [])) == str(l.get("unless", [])) and (l.get("if", []) as Array).has("evening_dusk") and (l.get("if", []) as Array).has("rope_on_ring"), "the plate with the rope shows with the evening's low water, after the knot (%s / %s)" % [str(l.get("if")), str(l.get("unless"))])
+	_check((l0.get("if", []) as Array).has("evening_dusk") and (l0.get("unless", []) as Array).has("rope_on_ring"), "the plate without the rope — at dusk until the knot (%s / %s)" % [str(l0.get("if")), str(l0.get("unless"))])
+	_check(int(l.get("z", 0)) >= 2 and int(l0.get("z", 0)) >= 2, "the plate over the live water of the low pond (ambient draws it over layers z ≤ 1, as boat_day): z %s" % str(l.get("z", 0)))
 	var box := _opaque_box(String(l.get("image", "")))
 	var k := 1920.0 / 1672.0
 	var plate := Rect2(box.position * k, box.size * k)
@@ -521,7 +525,7 @@ func _test_plate_dusk() -> void:
 	_flags_before("M16s")
 	gs.set_flag("evening_dusk", true)
 	await _enter("Z3")
-	_check(_layer_visible(rm.current_room, "plate_dusk"), "after the knot, at dusk: the plate on the support")
+	_check(_layer_visible(rm.current_room, "plate_rope_dusk") and not _layer_visible(rm.current_room, "plate_dusk"), "after the knot, at dusk: the plate on the support, with the rope")
 
 
 func _test_boat_exit() -> void:

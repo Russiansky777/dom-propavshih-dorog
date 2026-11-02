@@ -185,5 +185,17 @@
     "lufs_i": -11.1,
     "lufs_m_max": -9.3,
     "duration_s": 1.425
+  },
+  "sfx_ui_hover_wood.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -24.0,
+    "lufs_m_max": -24.0,
+    "duration_s": 0.3
+  },
+  "sfx_ui_click_wood.wav": {
+    "peak_db": -1.0,
+    "lufs_i": -27.6,
+    "lufs_m_max": -27.6,
+    "duration_s": 0.14
   }
 }

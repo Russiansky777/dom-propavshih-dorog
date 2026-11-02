@@ -24,6 +24,7 @@ TABLE = {
     "game/assets/closeups/O3_clock_hi_pendulum.png": ("assets/incoming/O3_clock_hi_pendulum.png", "tools/retouch/identity.py"),
     "game/assets/closeups/O3_clock_hi_hand_min.png": ("assets/incoming/O3_clock_hi_hand_min.png", "tools/retouch/identity.py"),
     "game/assets/closeups/O3_clock_hi_hand_hour.png": ("assets/incoming/O3_clock_hi_hand_hour.png", "tools/retouch/identity.py"),
+    "game/assets/rooms/Z3/state_plate_ring_dusk.png": ("assets/incoming/Z3_state_plate_rope_dusk.png", "tools/retouch/Z3_plate_no_rope.py"),
     "game/assets/ui/map/zarechye_plan.png": ("assets/incoming/map/zarechye_plan.png", "tools/retouch/zarechye_plan.py"),
     "game/assets/ui/map/zarechye_plan_rope.png": ("assets/incoming/map/zarechye_plan.png", "tools/retouch/zarechye_plan_rope.py"),
 }
