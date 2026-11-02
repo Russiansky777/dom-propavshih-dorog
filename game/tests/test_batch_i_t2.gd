@@ -240,8 +240,9 @@ func _test_mechanics() -> void:
 		"Z4: Agata's word in the lane after the first pass")
 	# 52: the hinges — a click on the door only says what to do; the close-up opens from the item.
 	gs.reset()
-	_set_flags(["done_M04"])
+	_set_flags(["done_M04", "seen_school_door", "seen_workshop"])   # M04 done: the door looked at, the bench too
 	gs.add_item("door_hinges")
+	gs.add_item("door_drawing")   # 02.11 (стр. 8–10): the drawing from the bench, wanted by the fit with the hinges
 	await _enter("H3", "default")
 	var door: Node = null
 	for h in rm.current_room.get_hotspots():

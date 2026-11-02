@@ -23,11 +23,11 @@
       "hidden_if": ["door_school_installed"],
       "states": [{"if": ["seen_school_door"], "label": "@H3.school_door.label_seen"}],
       "use": {"sets": ["seen_school_door"], "text": "@H3.school_door.use", "once_flag": "seen_school_door", "scene": "M04"},
-      "item_use": {"door_hinges": {"puzzle": true}},
+      "item_use": {"door_hinges": {"puzzle": true}, "door_drawing": {"puzzle": true}},
       "puzzle": {
         "id": "school_door_fit", "type": "match_marks", "title": "@H3.puzzle.title",
-        "by_item_text": "@H3.puzzle.by_item", "_by_item_note": "I-T2 (Директор, стр. 52): петли — мышкой из сумки на дверь, как ключ; простой щелчок по двери только подсказывает",
-        "requires": {"flags": ["done_M04"], "items": ["door_hinges"]},
+        "by_item_text": "@H3.puzzle.by_item", "use_first": true, "_use_first_k0211": "02.11 (стр. 9–10): петли и рисунок в сумке открывают крупный план сразу, а первый простой щелчок по двери — по-прежнему её осмотр (use: seen_school_door, M04 «Не успела тётя…»); дальше простой щелчок — подсказка", "_by_item_note": "I-T2 (Директор, стр. 52): петли — мышкой из сумки на дверь, как ключ; простой щелчок по двери только подсказывает",
+        "requires": {"flags": [], "items": ["door_hinges", "door_drawing"]}, "_requires_k0211": "Директор 02.11, стр. 9–10 (БАГ: «родные петли да рисунок посадки — не применяется, даже после того как я взял петли и на рисунок уже посмотрел»): дверь ждала done_M04, а M04 кончается, только когда осмотрены ещё и колокол, и сама дверь щелчком. Теперь — ровно то, что называет fail_text: петли и рисунок в сумке",
         "fail_text": "@H3.puzzle.need",
         "intro": "@H3.puzzle.intro",
         "art": {

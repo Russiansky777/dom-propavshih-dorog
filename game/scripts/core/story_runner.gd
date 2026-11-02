@@ -279,7 +279,7 @@ func _face_speaker(b: Dictionary) -> void:
 	var pl: Node2D = RoomManager.player
 	if room == null or pl == null or not is_instance_valid(pl):
 		return
-	var npc := room.get_node_or_null("npc_" + sp) as Node2D
+	var npc := _actor_node(room, sp)
 	if npc == null or not npc.visible:
 		return
 	if pl.has_method("is_walking") and bool(pl.call("is_walking")):
@@ -288,6 +288,28 @@ func _face_speaker(b: Dictionary) -> void:
 		return
 	if pl.has_method("face_towards"):
 		pl.call("face_towards", npc.global_position)
+
+
+## 02.11 (стр. 9–10): the school door's fit no longer waits for the door to be looked at — so a puzzle `use_first`
+## true lets the first plain click still play the hotspot's own `use` (its once_flag not set yet: «Не успела тётя…»,
+## M04); after it a plain click gives the puzzle's hint as before. The item in hand opens the close-up at once.
+func _puzzle_use_first(d: Dictionary) -> bool:
+	if not bool(d.get("puzzle", {}).get("use_first", false)) or not d.has("use"):
+		return false
+	var once := String(d["use"].get("once_flag", ""))
+	return once != "" and not GameState.has_flag(once)
+
+
+## A villager's figure in the room: npc_<id>, or puppet_<id> for the one-picture rig (Tikhon) — 02.11 (Director,
+## стр. 24: «когда Агата с Ниной говорит с Тихоном — она не повёрнута к нему»): Tikhon's node is a puppet, and
+## turning to the speaker / `npc_face` looked only for npc_<id>.
+func _actor_node(room: Node, id: String) -> Node2D:
+	if room == null or id == "":
+		return null
+	var n := room.get_node_or_null("npc_" + id) as Node2D
+	if n == null:
+		n = room.get_node_or_null("puppet_" + id) as Node2D
+	return n
 
 
 ## A beat's own conditions (copied from its line / stage in data): every `if` flag set, no `unless` flag set,
@@ -544,7 +566,7 @@ func _run_stage(spec: Dictionary) -> void:
 	if spec.has("npc_face"):
 		var room := RoomManager.current_room
 		for g in spec["npc_face"]:
-			var other := room.get_node_or_null("npc_" + String(g.get("face", ""))) as Node2D if room != null else null
+			var other := _actor_node(room, String(g.get("face", "")))
 			if String(g.get("face", "")) == "agata":
 				other = RoomManager.player   # 31.10 (стр. 86): a villager turns to Agata herself
 			if String(g.get("id", "")) == "agata":
@@ -1161,7 +1183,7 @@ func planned_interaction(h: StoryHotspot) -> String:
 	if d.has("puzzle"):
 		var pz: Dictionary = d["puzzle"]
 		var success_scene := String(pz.get("success", {}).get("scene", ""))
-		if requires_met(pz.get("requires", {})) and (success_scene == "" or not is_done(success_scene)):
+		if requires_met(pz.get("requires", {})) and (success_scene == "" or not is_done(success_scene)) and not _puzzle_use_first(d):
 			return "text" if pz.has("by_item_text") else "puzzle"
 		if _use_state(d) != "ready":
 			return "text"
@@ -1276,7 +1298,7 @@ func interact(h: StoryHotspot) -> void:
 	if d.has("puzzle"):
 		var pz: Dictionary = d["puzzle"]
 		var success_scene := String(pz.get("success", {}).get("scene", ""))
-		if requires_met(pz.get("requires", {})) and (success_scene == "" or not is_done(success_scene)):
+		if requires_met(pz.get("requires", {})) and (success_scene == "" or not is_done(success_scene)) and not _puzzle_use_first(d):
 			# I-T2 (Director, line 52: «петли мышкой применить, как и ключ»): puzzle `by_item_text` — a plain click
 			# only says what to do; the close-up opens from the item in hand (item_use {puzzle: true}).
 			if pz.has("by_item_text"):
@@ -1604,6 +1626,14 @@ func use_exit(e: StoryExit) -> void:
 	# goes both ways, G43): the close-up opens here, and its event takes the player across (`events.<name>.room`).
 	if e.data.has("mechanic") and mechanic_available(e.data["mechanic"]):
 		open_mechanic(e.data["mechanic"], "exit_" + e.target_room)
+		return
+	# 02.11 (Director, стр. 11: «если в двор не выйти и назад пойти — фразу: вторая дверь во двор ведёт, так я домой
+	# попаду»): exit `stop_once` {if, unless, once_flag, text} — the first time the flags allow, Agata stops at the
+	# door and says the line instead of going through; the next click on the exit takes her as usual.
+	var so: Dictionary = e.data.get("stop_once", {})
+	if not so.is_empty() and _flags_allow(so) and not GameState.has_flag(String(so.get("once_flag", ""))):
+		GameState.set_flag(String(so.get("once_flag", "")), true)
+		narrate_key(String(so.get("text", "")))
 		return
 	# I-T2 (Director, lines 34–35): exit `on_pass` {sets} — flags set when Agata walks through (the gallery side door:
 	# «Отпереть дверь» until the first pass, then her line in the lane, then the usual label).

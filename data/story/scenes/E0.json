@@ -337,6 +337,7 @@
         "items": [
           "school_door",
           "door_hinges",
+          "door_drawing",
           "bell",
           "mirror_home",
           "bundle_nina"

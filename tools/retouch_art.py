@@ -18,6 +18,8 @@ ROOT = Path(__file__).resolve().parent.parent
 TABLE = {
     "game/assets/puzzle/M05/beam.png": ("assets/incoming/M05_beam.png", "tools/retouch/M05_beam.py"),
     "game/assets/puzzle/M05/drawing.png": ("assets/incoming/M05_drawing.png", "tools/retouch/M05_drawing.py"),
+    "game/assets/rooms/H1/state_shelf_A.png": ("assets/incoming/H1_state_shelf_A_wide.png", "tools/retouch/H1_shelf_stove.py"),
+    "game/assets/rooms/H1/state_holes_stove.png": ("assets/incoming/H1_state_holes_stove_wide.png", "tools/retouch/H1_shelf_stove.py"),
     "game/assets/ui/map/zarechye_plan.png": ("assets/incoming/map/zarechye_plan.png", "tools/retouch/zarechye_plan.py"),
     "game/assets/ui/map/zarechye_plan_rope.png": ("assets/incoming/map/zarechye_plan.png", "tools/retouch/zarechye_plan_rope.py"),
 }

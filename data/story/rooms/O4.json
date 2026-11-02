@@ -23,7 +23,7 @@
   "props": [],
   "hotspots": [
     {
-      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [420, 610, 130, 250], "stand": [660, 880], "draw": false, "pick_priority": 2,
+      "id": "tamara", "kind": "npc", "label": "@char.tamara", "rect": [420, 610, 130, 250], "stand": [660, 880], "face": [1100, 850], "_face_k0211": "Директор 02.11, стр. 29: «Тамара повёрнута к нам, а должна быть вбок» — стоит боком, к улице (вправо, к дому Ильи); Нине на её реплике — к Нине (M23a npc_face)", "draw": false, "pick_priority": 2,
       "visible_if": ["done_M22"],
       "_rect_note": "Тамара с мешком на левой стороне улицы, не на дороге к реке: ноги y 860 (масштаб 0,80 → Агата 276 px; Тамара 1,74 м ≈ 290)",
       "talk": {"scene": "M23a", "after_text": "@O4.tamara.after"}
@@ -31,7 +31,7 @@
     {
       "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1695, 455, 80, 185], "footprint": [80, 30], "stand": [1630, 690], "draw": false, "pick_priority": 3,
       "visible_if": ["done_M22", "met_ilya"], "hidden_when": [{"all": ["done_M24"]}], "states": [{"if": ["done_M22"], "face": [1560, 700]}],
-      "talk": {"intro": [{"unless": ["q06_started"], "text": "@O4q.workshop.ilya_ulya"}, {"if": ["q06_started"], "text": "@O4q.workshop.ilya_third"}]},
+      "talk": {"intro": [{"unless": ["q06_started"], "text": "@O4q.workshop.ilya_invite"}, {"if": ["q06_started"], "text": "@O4q.workshop.ilya_after"}], "_k0211": "Директор 02.11, стр. 28: слова у сарая (тесно, третьему место, Уля) — только у сарая; Илья сам зовёт туда, а после — о том, что вышло"},
       "_k58": "Директор 01.11, стр. 58: «когда мастерит верстак, Илья отвечает, а его рядом нет — где он занят?» — в свободный день Илья у своего сарая-мастерской (ноги ≈ (1735, 640), правее сарая у тропы), его слова о верстаке звучат при нём; до ночи третьего дня"
     },
     {

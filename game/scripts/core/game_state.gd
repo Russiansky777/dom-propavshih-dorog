@@ -201,8 +201,18 @@ func _apply_save_fixups() -> void:
 		for f in fx.get("unless", []):
 			if bool(flags.get(String(f), false)):
 				ok = false
+		if not ok:
+			continue
+		# 02.11 (стр. 8–10): `give_items` — a thing the game now hands over where it did not before (Dunya's drawing
+		# from the bench): a save made after that moment gets it once (has_<id> marks it, as grant_item does)
+		for it in fx.get("give_items", []):
+			var iid := String(it)
+			if not bool(flags.get("has_" + iid, false)):
+				if not inventory.has(iid):
+					inventory.append(iid)
+				flags["has_" + iid] = true
 		var id := String(fx.get("scene", ""))
-		if not ok or id == "":
+		if id == "":
 			continue
 		flags["started_" + id] = true
 		flags["done_" + id] = true

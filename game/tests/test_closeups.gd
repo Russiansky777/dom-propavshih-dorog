@@ -151,6 +151,7 @@ func _to_h3_before_m05(extra_flags: Array = []) -> void:
 			"seen_mirror_home"] + extra_flags:   # M04's grants (it completes at the door, before any look at the mirror)
 		gs.set_flag(String(f), true)
 	sr.grant_item("door_hinges")
+	sr.grant_item("door_drawing")   # 02.11 (стр. 8–10): Dunya's drawing comes from the bench with M04's looks
 	rm.change_room("H3", "default")
 	await _frames(6)
 	await _wait(0.3)

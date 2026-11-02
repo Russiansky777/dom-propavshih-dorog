@@ -33,6 +33,19 @@
       "consumed": false
     },
     {
+      "id": "door_drawing",
+      "wrong_target": {"text": "@item.wrong_generic"},
+      "name": "Дунин рисунок посадки двери",
+      "examine": {"text": "@examine.door_drawing", "art": "res://assets/puzzle/M05/drawing.png"},
+      "icon": "door_drawing",
+      "inventory": true,
+      "source_location": "H2",
+      "source_scene": "M04",
+      "use": "Рисунок школьной двери с Дуниными пометками: три родные петли и нужная зарубка порога; ставится вместе с петлями в M05",
+      "consumed": true,
+      "_k0211": "Директор 02.11, стр. 8–10: «чертежи Агата не подбирает, а только смотрит — не добавить ли их в инвентарь, а как дверь откроем — убрать». Берётся с верстака (H2 bench), расходуется по завершении M05 вместе с петлями; значок — tools/make_icon_door_drawing.py"
+    },
+    {
       "id": "door_hinges",
       "wrong_target": {"text": "@item.wrong_generic", "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.door_hinges.wrong'}"},
       "name": "Родные петли школьной двери",

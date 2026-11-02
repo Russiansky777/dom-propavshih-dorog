@@ -1656,6 +1656,10 @@ func _start_idle_slot(slot: int, e: Dictionary, t0: float) -> void:
 ## sequence, so any two figures are guaranteed apart in phase and rate (Godot's generator seeded with
 ## two different ids gave Mitya and Tamara the same draw — CI 01.11). Same figure, same motion every run.
 func _desync_idle(actor_id: String) -> void:
+	# 02.11 (Director, стр. 36: «Ульяна в классе — слишком быстро качается»): data `idle.rate` — the figure's own
+	# idle tempo (a child's stance clip from the Meshy library sways at an adult's pace); the jitter multiplies it.
+	var base_rate := float(spec.get("idle", {}).get("rate", 1.0))
+	idle_rate = base_rate
 	var d: Dictionary = spec.get("idle", {}).get("desync", {})
 	if d.is_empty():
 		return
@@ -1664,7 +1668,7 @@ func _desync_idle(actor_id: String) -> void:
 	var u_phase := fposmod(0.5 + k * 0.3819660113, 1.0)
 	var u_breath := fposmod(0.7 + k * 0.3819660113, 1.0)
 	var jit := float(d.get("rate_jitter", 0.0))
-	idle_rate = 1.0 + jit * (2.0 * u_rate - 1.0)
+	idle_rate = base_rate * (1.0 + jit * (2.0 * u_rate - 1.0))
 	_idle_rng.seed = 1000003 * (k + 1)
 	if bool(d.get("phase", true)):
 		var room := float(_slot_len[0]) - float(_slot_t[0]) - idle_crossfade_s() - 0.1

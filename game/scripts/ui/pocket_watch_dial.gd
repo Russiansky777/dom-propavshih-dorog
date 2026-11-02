@@ -28,6 +28,10 @@ var face: bool = true             # the enamel disc over the painted hands (the 
 var dial_deg: float = 0.0
 var turn_deg: float = 0.0
 var disc_r: float = 1.0
+## 02.11 (Director, стр. 15: «часы, когда к маминым подносит — в идеале выровнять, чтобы 12 было сверху, повернуть всю
+## картинку»): the whole watch picture (case, bow, enamel) turned by `picture_deg` clockwise about the dial's axis;
+## −(dial_deg + turn_deg) puts the painted XII straight up. The hands follow the turned XII.
+var picture_deg: float = 0.0
 
 
 func _init() -> void:
@@ -59,6 +63,7 @@ func configure(cfg: Dictionary) -> void:
 	dial_deg = float(cfg.get("dial_deg", dial_deg))
 	turn_deg = float(cfg.get("turn_deg", turn_deg))
 	disc_r = float(cfg.get("disc_r", disc_r))
+	picture_deg = float(cfg.get("picture_deg", picture_deg))
 
 
 func _process(delta: float) -> void:
@@ -90,13 +95,19 @@ func radius() -> float:
 func _draw() -> void:
 	var ps := picture_size()
 	var o := _origin()
-	if texture != null:
-		draw_texture_rect(texture, Rect2(o + Vector2(3, 5), ps), false, Color(0, 0, 0, 0.35))
-		draw_texture_rect(texture, Rect2(o, ps), false)
 	var c := center()
 	var r := radius()
+	if absf(picture_deg) > 0.01:
+		# the picture turned about the axis: rotate the canvas about c for the painted parts only
+		var rot := deg_to_rad(picture_deg)
+		draw_set_transform(c - c.rotated(rot), rot, Vector2.ONE)
+	if texture != null:
+		draw_texture_rect(texture, Rect2(o + Vector2(3, 5).rotated(-deg_to_rad(picture_deg)), ps), false, Color(0, 0, 0, 0.35))
+		draw_texture_rect(texture, Rect2(o, ps), false)
 	if texture != null and absf(turn_deg) > 0.01:
 		_draw_turned_disc(c, r * disc_r, o, ps)
+	if absf(picture_deg) > 0.01:
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	if face:
 		# The dial's middle (under the painted hands), a little darker towards the rim like old enamel.
 		draw_circle(c, r * 0.74, FACE.darkened(0.06))
@@ -165,7 +176,7 @@ func minute_deg() -> float:
 
 ## Where XII is on screen, radians clockwise from straight up: the painted numeral plus the disc's turn.
 func twelve_rad() -> float:
-	return deg_to_rad(dial_deg + turn_deg)
+	return deg_to_rad(dial_deg + turn_deg + picture_deg)
 
 
 ## The enamel disc of the picture (radius `rd` about the axis) drawn again, turned by `turn_deg` clockwise: each rim

@@ -55,7 +55,7 @@
       "talk": {"after_text": "@O3.ulyana.after"}
     },
     {
-      "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "rect": [1775, 162, 140, 623], "stand": [1065, 1055], "scene_only": "M20", "draw": false, "pick_priority": 3,
+      "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "rect": [1712, 170, 140, 623], "_rect_k0211": "Директор 02.11, стр. 22: «жену Ильи чуть ближе к Илье поставить и ноги ровнее на пол» — было [1775, 162, 140, 623]: левее на 63 px, к плечу Ильи, ноги на 8 px ниже — на одной глубине с ним", "stand": [1065, 1055], "scene_only": "M20", "draw": false, "pick_priority": 3,
       "visible_if": ["wife_came"], "hidden_if": ["morning_day3"],
       "_rect_note": "Жена Ильи с лампой позади, между Ниной и Ильёй (голова видна между ними), ноги (1450, 775) (масштаб 1,81; 1,63 м ≈ 616 px); приходит по ходу M20 (wife_came)",
       "talk": {"after_text": "@O3.ilya_wife.after"}

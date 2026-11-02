@@ -15,22 +15,24 @@
         "H3"
       ],
       "requires": {
-        "flags": [
-          "done_M04"
-        ],
+        "flags": [],
         "items": [
-          "door_hinges"
+          "door_hinges",
+          "door_drawing"
         ]
       },
+      "_requires_k0211": "Директор 02.11, стр. 9–10: дверь ставится, когда в сумке петли и Дунин рисунок — без осмотра колокола и щелчка по проёму (M04 тогда закрывается здесь же, без своей реплики: done_M04 в grants)",
       "grants": {
         "flags": [
           "done_M05",
-          "door_school_installed"
+          "door_school_installed",
+          "done_M04"
         ],
         "items": []
       },
       "consumes": [
-        "door_hinges"
+        "door_hinges",
+        "door_drawing"
       ],
       "puzzle": {
         "verb": "match_marks",

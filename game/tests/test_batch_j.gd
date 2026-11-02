@@ -238,6 +238,7 @@ func _to_h3() -> void:
 	_set_flags(["done_M01", "done_M02", "done_M03", "house_open", "done_M04", "seen_school_door", "seen_workshop",
 		"seen_bell", "knows_rule_things_remember", "has_school_door", "has_bell", "has_mirror_home", "seen_mirror_home"])
 	sr.grant_item("door_hinges")
+	sr.grant_item("door_drawing")   # 02.11 (стр. 8–10): the fit wants Dunya's drawing in the bag too
 	await _enter("H3")
 	await _wait(0.3)
 

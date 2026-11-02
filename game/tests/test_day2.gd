@@ -1252,7 +1252,7 @@ func _test_walkthrough() -> void:
 	if sr.mechanic_open:
 		sr.close_mechanic()
 		await _frames(2)
-	_check(seen.any(func(x): return x.contains("Раз — пускай, два — стой")), "B10: three lights are «живые»: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("наш огонь там увидят")) and String(sd.scene("M16s")["mandatory_lines"][2]["text"]).contains("Три — «живые»"), "B10: three lights are «живые» (02.11, стр. 18: Pelageya without the mill's signals): %s" % str(seen))
 	_check(await _go("R1"), "Z3→R1")
 	seen = await _finish()
 	var lay0: Node = rm.current_room.get_node("Layers")

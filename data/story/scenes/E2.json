@@ -119,6 +119,7 @@
     {
       "id": "M13", "type": "main", "title": "Контора",
       "locations": ["M3"],
+      "stage": [{"at": 0, "npc_face": [{"id": "agata", "face": "pavel"}, {"id": "pavel", "face": "agata"}], "_k0211": "Директор 02.11, стр. 13: «когда Павел начинает говорить с Агатой про пруд, а Агата уговаривает его или слово даёт — она не повёрнута к нему»: оба друг к другу с первой реплики"}, {"at": 1, "npc_face": [{"id": "agata", "face": "pavel"}], "_k0211": "свой ответ (выбор) Агата говорит, повернувшись к Павлу"}],
       "requires": {"flags": ["done_M13a"], "items": []},
       "grants": {"flags": ["done_M13"], "items": ["key_sluice", "journal_manager", "clamp"]},
       "mandatory_lines": [
