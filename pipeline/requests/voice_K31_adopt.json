@@ -1,0 +1,12 @@
+{
+ "mode": "adopt",
+ "set": "K3",
+ "_comment": "Двадцатый заход (K31–K32): выбор Директора 02.11 16:47–16:49 (страница «Двадцатый заход голоса», база marks). M16s_2 — «ни одна» (ударение «ко́локолом»), examine.door_drawing — текст изменён по пометке: обе в K33.",
+ "picks": {
+  "agata:O1.exit_H3.yard_first": "W304_1",
+  "agata:H4.bed.early_d2": "W305_2",
+  "M22_15_then1": "W307_1",
+  "ilya:O4q.workshop.ilya_invite": "W308_1",
+  "ilya:O4q.workshop.ilya_after": "W309_1"
+ }
+}
