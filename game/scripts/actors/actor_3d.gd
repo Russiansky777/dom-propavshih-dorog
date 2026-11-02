@@ -597,11 +597,10 @@ var arm_push_m: float = 0.0                               # how deep the clip pu
 var arm_clear_on: bool = true                             # off — probes and the tests' self-check
 var arm_soft_switch: bool = true                          # off — the tests' self-check: out/behind flips in one frame, full reach
 var _arm_back_s: float = 0.0                              # 0 — the hand goes out past the bag, 1 — behind it
+var _arm_inf: float = 0.0                                 # the IK's weight shown
 var _arm_off := Vector3.ZERO                               # the push shown (hips-at-rest frame, m) and its speed
 var _arm_off_v := Vector3.ZERO
-var _arm_inf: float = 0.0                                 # the IK's weight shown and its speed
-var _arm_inf_v: float = 0.0
-var _arm_snap: bool = true                                # a cut: the push is taken as it is, not followed
+var _arm_wi: float = 0.0
 
 
 ## How deep a hand at `hand_m` (model space) is inside the bag, seen from hips `hips_now` (model space); 0 outside.
@@ -682,34 +681,44 @@ func arm_clear_step(delta: float) -> void:
 	var far_side := (q.x - (_arm_box.end.x + r)) if outer == _arm_box.position.x else ((_arm_box.position.x - r) - q.x)
 	# in y and z: full inside the box, fading over 3 cm outside it
 	var out_yz := maxf(maxf(_arm_box.position.y - q.y, q.y - _arm_box.end.y), maxf(_arm_box.position.z - q.z, q.z - _arm_box.end.z))
-	var f_yz := clampf(1.0 - out_yz / 0.03, 0.0, 1.0)
-	var want := 0.0
-	if depth > 0.0 and far_side < 0.0 and arm_clear_on:
-		want = clampf(depth / 0.02, 0.0, 1.0) * f_yz
+	var gw := float(bc.get("gate_m", 0.05))
+	var f_yz := clampf(1.0 - out_yz / gw, 0.0, 1.0)
+	# every gate fades over 2 cm (01.11, line 20: gates that switched in one frame — the hand or the forearm passing the
+	# bag's inner side — moved the target by centimetres at once)
+	var gate_h := clampf(-far_side / gw, 0.0, 1.0) * f_yz * (1.0 if arm_clear_on else 0.0)
+	var want := clampf(depth / 0.02, 0.0, 1.0) * gate_h
 	arm_push_m = maxf(depth, 0.0) * (1.0 if far_side < 0.0 else 0.0) * f_yz
 	# the forearm as well: its middle (half-way to the elbow) kept out too — a hand moved out past the bag with the
 	# forearm still through it was half the cure (probe_arm_bag: forearm 41 mm in the bag, hand 3–6)
 	var fore_m: Vector3 = to_model * skeleton.get_bone_global_pose(int(_arm_bones[1])).origin
 	var qf: Vector3 = _arm_rest_hips * (hips_now.affine_inverse() * hand_m.lerp(fore_m, 0.5))
 	var out_yz_f := maxf(maxf(_arm_box.position.y - qf.y, qf.y - _arm_box.end.y), maxf(_arm_box.position.z - qf.z, qf.z - _arm_box.end.z))
-	var f_yz_f := clampf(1.0 - out_yz_f / 0.03, 0.0, 1.0)
+	var f_yz_f := clampf(1.0 - out_yz_f / gw, 0.0, 1.0)
 	var depth_f := (qf.x - (outer - r)) if outer == _arm_box.position.x else ((outer + r) - qf.x)
 	var far_f := (qf.x - (_arm_box.end.x + r)) if outer == _arm_box.position.x else ((_arm_box.position.x - r) - qf.x)
-	var extra := 0.0
-	if depth_f > 0.0 and far_f < 0.0 and arm_clear_on:
-		extra = depth_f * float(bc.get("forearm_k", 2.0)) * f_yz_f   # the middle of the forearm goes half as far as the hand
-		want = maxf(want, clampf(depth_f / 0.02, 0.0, 1.0) * f_yz_f)
+	var gate_f := clampf(-far_f / gw, 0.0, 1.0) * f_yz_f * (1.0 if arm_clear_on else 0.0)
+	var fk := float(bc.get("forearm_k", 2.0))
+	var extra := maxf(depth_f, 0.0) * fk * gate_f   # the middle of the forearm goes as far as the hand (forearm_k)
+	want = maxf(want, clampf(depth_f / 0.02, 0.0, 1.0) * gate_f)
 	_arm_w = move_toward(_arm_w, want, delta / 0.08)
+	# out past the bag's outer side: never in towards it (the push is outward only), as deep as each part is in, gated
+	# softly — the target never jumps whatever the IK's weight is
+	# plus margin_m as the hand or the forearm comes near (CI 01.11: in the talk gesture the arm's reach held the hand
+	# 6–11 mm short of the bag's side — the test's limit 12)
+	var near0 := maxf(gate_h * clampf((depth + gw) / gw, 0.0, 1.0), gate_f * clampf((depth_f + gw) / gw, 0.0, 1.0))
+	var margin := float(bc.get("margin_m", 0.0)) * near0
+	var out_d := maxf(maxf(depth, 0.0) * gate_h, extra) + margin
+	var sgn := -1.0 if outer == _arm_box.position.x else 1.0
 	var qt := q
-	qt.x = (outer - r - extra) if outer == _arm_box.position.x else (outer + r + extra)
+	qt.x = q.x + sgn * out_d
 	# or behind the bag (Director 31.10, 17:45: «рука, которая у сумки, чуть более оттопырена»): standing, the hand and
 	# the forearm hang over the bag's back edge — out sideways that took the arm a hand's breadth off the coat; behind
 	# it, a few centimetres back. Whichever way is shorter (the forearm's middle counts double, as above).
 	if bool(bc.get("behind", false)):
-		var back_h := q.z - (_arm_box.position.z - r)
-		var back_f := (qf.z - (_arm_box.position.z - r)) * float(bc.get("forearm_k", 2.0)) if (depth_f > 0.0 and far_f < 0.0) else 0.0
-		var need_back := maxf(back_h, back_f)
-		var need_out := absf(qt.x - q.x)
+		var back_h := (q.z - (_arm_box.position.z - r)) * clampf(depth / 0.01, 0.0, 1.0) * gate_h
+		var back_f := (qf.z - (_arm_box.position.z - r)) * fk * clampf(depth_f / 0.01, 0.0, 1.0) * gate_f
+		var need_back := maxf(maxf(back_h, back_f), 0.0) + margin * clampf(maxf(back_h, back_f) / 0.01, 0.0, 1.0)
+		var need_out := out_d
 		# the way out changes softly (Director 01.11, line 20: «правая рука иногда резко дёргается… места не сходятся»):
 		# the shorter of the two flipped as the stance swayed the hand across the line where both are equal, and the
 		# target jumped 7–9 cm in one frame with the IK at full weight (tests/probe_arm_jerk.gd: 87 mm/frame² against
@@ -729,32 +738,33 @@ func arm_clear_step(delta: float) -> void:
 		else:
 			_arm_back_s = move_toward(_arm_back_s, 1.0 if want_back else 0.0, delta / maxf(float(bc.get("switch_s", 0.3)), 0.01))
 		var sb := _arm_back_s * _arm_back_s * (3.0 - 2.0 * _arm_back_s)
-		var out_k := clampf(2.0 * (1.0 - sb), 0.0, 1.0)
-		var back_k := clampf(2.0 * sb, 0.0, 1.0)
-		qt = q
-		qt.x = q.x + ((outer - r - extra) - q.x if outer == _arm_box.position.x else (outer + r + extra) - q.x) * out_k
-		qt.z = q.z - maxf(need_back, 0.0) * back_k
-	# the push itself follows softly (a critically damped follower, `smooth_omega` /s): the hand still goes with the clip
-	# frame by frame, only the push away from the bag can no longer change in one frame (the gates of the forearm's own
-	# push, entering and leaving the box)
+		qt.x = q.x + sgn * out_d * clampf(2.0 * (1.0 - sb), 0.0, 1.0)
+		qt.z = q.z - need_back * clampf(2.0 * sb, 0.0, 1.0)
+	# the push itself through a quick follower (`push_omega`, 1/s): continuous, but the talk gesture's loop carries the hand
+	# across its gates in a few frames — kinks of 2 cm/frame²; quick, so it never lags the hand into the bag (at 30/s the
+	# hand went 15 mm in: CI 01.11)
 	var off := qt - q
-	var inf := _arm_w * _arm_w * (3.0 - 2.0 * _arm_w)
-	if arm_soft_switch and delta > 0.0 and not _arm_snap:
-		var om := float(bc.get("smooth_omega", 30.0))
+	if arm_soft_switch and delta > 0.0:
+		var om := float(bc.get("push_omega", 60.0))
 		for c in 3:
 			var rs := spring(_arm_off[c], _arm_off_v[c], off[c], om, delta)
 			_arm_off[c] = rs.x
 			_arm_off_v[c] = rs.y
-		var ri := spring(_arm_inf, _arm_inf_v, inf, om, delta)
-		_arm_inf = clampf(ri.x, 0.0, 1.0)
-		_arm_inf_v = ri.y
-	else:
-		_arm_off = off
-		_arm_off_v = Vector3.ZERO
-		_arm_inf = inf
-		_arm_inf_v = 0.0
-		_arm_snap = false
-	qt = q + _arm_off
+		qt = q + _arm_off
+	# the IK's weight by how near the hand or the forearm is to the bag (full inside, fading over gate_m outside it):
+	# continuous with the hand's own motion, and full wherever a push can be (by the push's size it was a third of the
+	# way at 12 mm of push and the hand went 13 mm into the bag; on its own timer it jumped the hand 2–3 cm a frame)
+	var near_h := gate_h * clampf((depth + gw) / gw, 0.0, 1.0)
+	var near_f := gate_f * clampf((depth_f + gw) / gw, 0.0, 1.0)
+	# walking, as before — by how deep the clip swings the hand in (_arm_w): at full weight near the bag the clearance spread
+	# the swinging arm 31° (the clip's own 25°, «Walk rhythm» ≤ 28: a doll's paw held out)
+	var wi := lerpf(maxf(near_h, near_f), _arm_w, clampf(_w_s, 0.0, 1.0)) if arm_soft_switch else _arm_w
+	if arm_soft_switch:
+		# up with the push at once, down no faster than over release_s (the gesture pulls the hand out of the box in two
+		# frames: the IK's weight fell 0.9 → 0.2 and the hand jumped back onto the clip)
+		_arm_wi = maxf(wi, move_toward(_arm_wi, wi, delta / maxf(float(bc.get("release_s", 0.15)), 0.01)))
+		wi = _arm_wi
+	_arm_inf = wi * wi * (3.0 - 2.0 * wi)
 	var target_m: Vector3 = hips_now * (_arm_rest_hips.affine_inverse() * qt)
 	var yaw_b := Basis(Vector3.UP, get_yaw())
 	var model_to_turn := to_turn * to_model.affine_inverse()
@@ -941,12 +951,19 @@ var stride_off: Array = [Vector3.ZERO, Vector3.ZERO]   # shown − clip ankle on
 ## dips a little (`dip`) so the legs reach both spots at the widest.
 var shuffle: Dictionary = {}
 var _shuffle_dip: float = 0.0
+var _shuffle_grace: float = 0.0
 
 
 func shuffle_begin(end_px: Vector2, yaw_f: float, t0: float, dur: float, ov: float, dip: float) -> void:
 	_closing = -1
 	_close_feet = []
 	shuffle = {"t": 0.0, "end": end_px, "yaw": yaw_f, "t0": t0, "dur": dur, "ov": ov, "dip": dip, "started": [false, false], "land": [], "lead": -1}
+
+
+## True while a foot is in the air in a step of the locks (Player waits with a «переступ» until it is down: taken over
+## mid-air, the foot was set straight down to the floor and lifted again — a third lift, CI 01.11 «short move 1»).
+func feet_stepping() -> bool:
+	return _foot_step[0] != null or _foot_step[1] != null
 
 
 ## True while a step of the «переступ» is still to come or going on.
@@ -960,6 +977,9 @@ func shuffle_busy() -> bool:
 func shuffle_end() -> void:
 	shuffle = {}
 	_shuffle_dip = 0.0
+	# just set down, the feet stay a moment whatever the stance does (CI 01.11 «short move 1: 3 lifts»: a stance variant's
+	# crossfade or its own weight shift right after the «переступ» made a third step at once)
+	_shuffle_grace = float(spec.get("shuffle", {}).get("grace_s", 1.0)) if not spec.is_empty() else 1.0
 
 
 ## Per frame, inside feet_step before the feet: the landings (first frame) and the steps' starts.
@@ -1176,6 +1196,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	_feet_still_t = (_feet_still_t + delta) if still else 0.0
 	var settling := _feet_still_t > 0.15 and _feet_still_t < float(fk.get("settle_s", 0.8))
 	var need := float(fk.get("step_turn_m", 0.035)) if turning else (float(fk.get("settle_m", 0.035)) if settling else float(fk.get("step_m", 0.07)))
+	_shuffle_grace = maxf(_shuffle_grace - delta, 0.0) if w_cmd < 0.05 else 0.0
 	var first := 0 if float(errs[0]) >= float(errs[1]) else 1
 	for i in [first, 1 - first]:
 		var other = _foot_step[1 - i]
@@ -1184,6 +1205,8 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			need_i = float(fk.get("close_need_m", 0.03))   # the closing step itself: taken even from a little behind
 		elif _closing == 0 and not turning:
 			need_i = maxf(need, float(fk.get("close_m", 0.15)))   # closed up: the other foot stays unless far off
+		if _shuffle_grace > 0.0:
+			need_i = maxf(need_i, float(fk.get("close_m", 0.15)))
 		if _foot_step[i] == null and locks[i] != null and float(errs[i]) > need_i and (other == null or float(other[1]) >= 0.75) and shuffle.is_empty():
 			var dur := step_s
 			if _closing > 0:
@@ -1263,9 +1286,12 @@ func _out_of_reach(p: Vector3, hip: Vector3, reach: float) -> bool:
 func feet_reset() -> void:
 	if limiter != null:
 		limiter.reset()
-	_arm_snap = true
+	_arm_off = Vector3.ZERO
+	_arm_off_v = Vector3.ZERO
+	_arm_wi = 0.0
 	shuffle = {}
 	_shuffle_dip = 0.0
+	_shuffle_grace = 0.0
 	stride_hold = false
 	stride_hold_keep = false
 	_closing = -1

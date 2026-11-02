@@ -6,6 +6,9 @@ extends SceneTree
 ##   godot --headless --fixed-fps 60 --path game -s res://tests/probe_short_moves.gd [-- noshuffle]
 
 var _drawn: Array = []
+var _errs: Array = []
+var _still := 0.0
+var _yawv := 0.0
 
 
 func _initialize() -> void:
@@ -33,6 +36,13 @@ func _run() -> void:
 	var rows: Array = []
 	# [distance on the floor (m), direction relative to her facing (deg)]
 	var cases := [[0.1, 0], [0.2, 0], [0.3, 0], [0.45, 0], [0.6, 0], [0.8, 0], [0.2, 45], [0.3, 90], [0.4, -90], [0.25, 180], [0.4, 135], [0.15, -45], [0.5, 60], [1.2, 0]]
+	var waits: Array = []
+	if OS.get_environment("REPEAT") != "":
+		# one move again and again, the stance at another point each time (the idle variants run on across rooms)
+		cases = []
+		for k in int(OS.get_environment("REPEAT")):
+			cases.append([0.3, 90])
+			waits.append(30 + k * 17)
 	var room_id := "H1" if not OS.get_cmdline_user_args().has("z2") else "Z2"
 	var start := Vector2(1100, 960) if room_id == "H1" else Vector2(700, 880)
 	for ci in cases.size():
@@ -51,7 +61,7 @@ func _run() -> void:
 		var face := PI * 0.5   # facing screen right
 		player.yaw3d = face
 		player.yaw3d_target = face
-		for i in 90:
+		for i in (90 if waits.is_empty() else int(waits[ci])):
 			await process_frame
 		_drawn = []
 		var kf: float = player.floor_foreshortening()
@@ -85,8 +95,13 @@ func _run() -> void:
 				if now_up and not up[i]:
 					lifts += 1
 					last_lift = t
-					ev += " %s%.2f" % ["L" if i == 0 else "R", t]
+					ev += " %s%.2f%s" % ["L" if i == 0 else "R", t, "(shuffle)" if not v.shuffle.is_empty() else ("(step)" if v._foot_step[i] != null else "")]
+					if v.shuffle.is_empty() and t > 0.2:
+						ev += "[errs %s still %.2f idle %s mix %.2f yawv %.2f w %.3f]" % [str(_errs.map(func(x): return snappedf(x, 0.001))), _still, str(v.idle_phase()), v._slot_mix, _yawv, v.shown_w()]
 				up[i] = now_up
+			_errs = v.dbg_errs.duplicate()
+			_still = v._feet_still_t
+			_yawv = v._feet_yaw_v
 		var moved: float = (player.global_position - p0).length()
 		rows.append([c[0], c[1], lifts])
 		print("%.2f m (%3.0f px) at %4d°: %d lifts, last %.2f s, arrived %.2f s, moved %.0f px, %.1f px off, max walk w %.2f, leg reach spare min %.1f cm |%s" % [

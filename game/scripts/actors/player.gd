@@ -574,6 +574,7 @@ func walk_to_and_interact(node: Node2D) -> void:
 func _start_walk(target: Vector2) -> void:
 	_turn_hold = []
 	_stop_plan = {}
+	_shuffle_wait = 0.0
 	if not _shuffle.is_empty():
 		_shuffle_cancel()
 	_stop_glide = false
@@ -1387,6 +1388,7 @@ var _turn_step_tail: bool = false   # the turn's stepping still fading out of th
 ## to it, the body goes over with them and turns to the way it will face — two lifts. Off — the tests' self-check.
 var shuffle_on: bool = true
 var _shuffle: Dictionary = {}
+var _shuffle_wait: float = 0.0   # seconds this walk has waited for a foot in the air before its «переступ»
 
 
 func _root_motion_3d(probe: Array, blend: float) -> void:
@@ -1521,7 +1523,10 @@ func _walk_step_3d(delta: float) -> void:
 	_path_ready = true
 	nav_agent.get_next_path_position()   # the agent keeps its own bookkeeping (path updates, finished)
 	var path := nav_agent.get_current_navigation_path()
-	if _shuffle_begin(path):
+	var sb := _shuffle_begin(path)
+	if sb == 2:
+		return   # a foot is still in the air (a step of the stance): the «переступ» sets off once it is down
+	if sb == 1:
 		_shuffle_step(delta)
 		return
 	var n := path.size()
@@ -1559,11 +1564,13 @@ func _walk_step_3d(delta: float) -> void:
 ## Starts a «переступ» when this walk is one (rt3d.shuffle {max_m, min_m, step_s, step_per_m, overlap, turn_deg_s,
 ## dip_m}): from standing (nothing of the walk shown), the path short and straight. Its end and the way she will face
 ## there (the thing she goes to, or the way she moves) are fixed now; Actor3D steps the feet (shuffle_begin).
-func _shuffle_begin(path: PackedVector2Array) -> bool:
+func _shuffle_begin(path: PackedVector2Array) -> int:
 	var sh: Dictionary = _rt.get("shuffle", {})
-	if not shuffle_on or sh.is_empty() or view3d == null or walk_time > 0.1 or _acting or walk_w > 0.01 or view3d.shown_w() > 0.03 \
+	if not shuffle_on or sh.is_empty() or view3d == null or _acting or walk_w > 0.01 or view3d.shown_w() > 0.03 \
 			or _stop_glide or path.size() < 1 or not root_motion_3d:
-		return false
+		return 0
+	if walk_time > 0.1 + _shuffle_wait:
+		return 0
 	var end: Vector2 = path[path.size() - 1]
 	var plen := global_position.distance_to(path[0]) if path.size() > 0 else 0.0
 	for i in range(path.size() - 1):
@@ -1574,7 +1581,10 @@ func _shuffle_begin(path: PackedVector2Array) -> bool:
 	var dv := end - global_position
 	var d_m := Vector2(dv.x, dv.y / k).length() / maxf(ppm_s, 0.001)
 	if d_m > float(sh.get("max_m", 0.5)) or plen > straight * 1.15 + 2.0:
-		return false
+		return 0
+	if view3d.feet_stepping() and _shuffle_wait < 0.5:
+		_shuffle_wait += get_physics_process_delta_time() if Engine.is_in_physics_frame() else get_process_delta_time()
+		return 2
 	# the way she faces at the end: the thing she goes to, as on arrival; a plain click — the way she moves
 	var face := Vector2.ZERO
 	if not _then_act.is_empty():
@@ -1597,7 +1607,7 @@ func _shuffle_begin(path: PackedVector2Array) -> bool:
 	_turn_step_w = 0.0
 	if steps > 0:
 		view3d.shuffle_begin(end, yaw_f, 0.04, dur, ov, float(sh.get("dip_m", 0.03)) * clampf(d_m / maxf(float(sh.get("max_m", 0.5)), 0.01), 0.3, 1.0))
-	return true
+	return 1
 
 
 ## One frame of the «переступ»: the body goes from where it stood to the end of the path while the feet step (the

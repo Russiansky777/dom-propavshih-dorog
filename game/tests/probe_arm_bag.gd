@@ -16,7 +16,7 @@ func _on_updated() -> void:
 	var hips: Transform3D = tm * sk.get_bone_global_pose(sk.find_bone("Hips"))
 	var hand: Vector3 = tm * sk.get_bone_global_pose(sk.find_bone("RightHand")).origin
 	var fore: Vector3 = tm * sk.get_bone_global_pose(sk.find_bone("RightForeArm")).origin
-	_rows.append([_v.bag_depth(hand, hips), _v.bag_depth(hand.lerp(fore, 0.5), hips)])
+	_rows.append([_v.bag_depth(hand, hips), _v.bag_depth(hand.lerp(fore, 0.5), hips), "inf %.2f off %.1f mm back %.2f" % [_v._arm_inf, _v._arm_off.length() * 1000.0, _v._arm_back_s] if "_arm_off" in _v else ""])
 
 
 func _run() -> void:
@@ -61,13 +61,16 @@ func _run() -> void:
 		var worst := 0.0
 		var nf := 0
 		var worst_f := 0.0
+		var wst := ""
 		for r in _rows:
+			if float(r[0]) > worst:
+				wst = String(r[2])
 			if float(r[0]) > 0.0:
 				n += 1
 			worst = maxf(worst, float(r[0]))
 			if float(r[1]) > 0.0:
 				nf += 1
 			worst_f = maxf(worst_f, float(r[1]))
-		print("%-6s hand in the bag %3d of %3d frames, deepest %.0f mm; forearm %3d, deepest %.0f mm" % [sc[0], n, _rows.size(), worst * 1000.0, nf, worst_f * 1000.0])
+		print("%-6s hand in the bag %3d of %3d frames, deepest %.0f mm; forearm %3d, deepest %.0f mm | at the hand's deepest: %s" % [sc[0], n, _rows.size(), worst * 1000.0, nf, worst_f * 1000.0, wst])
 	PS.forced_render = ""
 	quit(0)
