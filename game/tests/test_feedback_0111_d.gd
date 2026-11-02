@@ -212,6 +212,11 @@ func _test_frame_life() -> void:
 			continue
 		var m = live[speaker]
 		_check(m.anim.get("clips", {}).has("talk"), "%s: no talk clip in the frame atlas" % speaker)
+		# 02.11: the gesture is the stance-kept clip of the sheet (derived: legs of the stance, spine 0.3), not the raw
+		# clip — for the manager too (manager_v2 talk2, no longer the v1 sheet's rare 16-frame Listening_Gesture)
+		var tk: Dictionary = m.anim.get("clips", {}).get("talk", {})
+		_check(not sheet_action(String(m.anim.get("sheet", "")), String(tk.get("action", ""))).get("derived", {}).is_empty(), "%s: the talk clip %s/%s is not the stance-kept one" % [speaker, m.anim.get("sheet"), tk.get("action")])
+		_check(int(tk.get("frames", 0)) >= 24 and not bool(tk.get("blend", false)), "%s: the talk clip has %d frames%s — a rare gesture" % [speaker, int(tk.get("frames", 0)), " with dissolves" if bool(tk.get("blend", false)) else ""])
 		sr.current_beat = {"type": "line", "speaker": speaker, "text": "Год рычаг провисел — проверка: эта реплика длинная, её говорят."}
 		await create_timer(0.6).timeout   # anim_talk_in_s 0.25
 		_check(m.life_talk > 0.9, "%s's own line: the talk clip has not come in (talk %.2f)" % [speaker, m.life_talk])
@@ -261,6 +266,10 @@ func _test_frame_life() -> void:
 	_check(not plays_sheet(old_smp[old_layer]), "self-check: the old still/warp figure passes as playing its sheet")
 	_check(not all_in_clip(old_smp[old_layer], live.get("manager", old_layer).anim, "talk"), "self-check: the old still/warp figure passes as gesturing")
 	_check(not plays_sheet([5, 5, 5, 5]) and not plays_sheet([-1, -1, -1]), "self-check: a frozen frame passes as playing")
+	# self-check: the manager's old talk clip (v1 sheet: 16 frames over 9 s with dissolves, raw Listening_Gesture) fails
+	var old_tk := {"action": "talk", "frames": 16, "fps": 3.4, "blend": true}
+	_check(not (int(old_tk["frames"]) >= 24 and not bool(old_tk["blend"])), "self-check: the v1 manager's rare gesture passes")
+	_check(sheet_action("manager", "talk").get("derived", {}).is_empty(), "self-check: the v1 manager's raw clip passes as stance-kept")
 	sr.current_beat = {}
 	old_layer.queue_free()
 	sr.set_frame("", false)
@@ -271,9 +280,9 @@ const LEGS_IOU_MIN := 0.9
 const START_IOU_MIN := 0.9
 const TILT_MAX_DEG := 3.0
 ## Figures on sheets the 02.11 re-render did not reach (Docs/tasks/frame_talk_sheets.json): their talk legs are the
-## stance already (the legs check holds), the lean is not measured — no derived clip.
-const LEAN_OPEN := {"manager": "лист v1 управляющего; listen/talk2 v2 ждут GLB (только в артефакте Actions glb-39879335278)",
-		"tamara": "лист tamara_v3 вне задания 02.11"}
+## stance already (the legs check holds), the lean is not measured — no derived clip. The manager (Лукич) is on
+## manager_v2 since 02.11: listen (Pavel's, retargeted) and talk2 (Talk_with_Hands_Open, stance-kept) — checked.
+const LEAN_OPEN := {"tamara": "лист tamara_v3 вне задания 02.11"}
 
 
 ## The sheet's description of an action (the game copy game/assets/characters/<set>/sprites.json; read as a file —
