@@ -1,0 +1,65 @@
+{
+ "mode": "sfx",
+ "set": "SFX2",
+ "max_items": 8,
+ "model_id": "eleven_text_to_sound_v2",
+ "_comment": "SFX2 (Директор 02.11 21:26): звуки меню — наведение и щелчок мягче и приятнее, «может, типа по дереву». Сейчас — синтез (scripts/mechanics/synth_sfx.gd ui_hover/ui_click). 4 пары на выбор, страница выбора; в игру — sfx ui_hover/ui_click по выбору",
+ "items": [
+  {
+   "id": "SFX_ui_A_hover",
+   "text": "A single very soft muted tap of a fingertip on a smooth wooden tabletop, short, warm, close-up, dry, no reverb, no music",
+   "duration_seconds": 0.5,
+   "prompt_influence": 0.6,
+   "variant": "А: палец по столу — наведение"
+  },
+  {
+   "id": "SFX_ui_A_click",
+   "text": "A single soft muted knock of a knuckle on a thick wooden tabletop, short, warm, close-up, dry, no reverb, no music",
+   "duration_seconds": 0.5,
+   "prompt_influence": 0.6,
+   "variant": "А: костяшкой по столу — щелчок"
+  },
+  {
+   "id": "SFX_ui_B_hover",
+   "text": "One wooden abacus bead sliding a short way along its rod and lightly touching the next bead, very soft, close-up, dry, no music",
+   "duration_seconds": 0.5,
+   "prompt_influence": 0.6,
+   "variant": "Б: косточка счётов скользит — наведение"
+  },
+  {
+   "id": "SFX_ui_B_click",
+   "text": "One wooden abacus bead flicked against another with a soft clean wooden clack, single hit, close-up, dry, no music",
+   "duration_seconds": 0.5,
+   "prompt_influence": 0.6,
+   "variant": "Б: косточка счётов щёлкает — щелчок"
+  },
+  {
+   "id": "SFX_ui_C_hover",
+   "text": "A very soft hollow wooden tick, like a small wooden spoon lightly touching a wooden bowl, single, muted, close-up, dry, no music",
+   "duration_seconds": 0.5,
+   "prompt_influence": 0.6,
+   "variant": "В: ложка о деревянную миску — наведение"
+  },
+  {
+   "id": "SFX_ui_C_click",
+   "text": "A small wooden peg pressed into a wooden board with a soft hollow wooden pop, single, warm, close-up, dry, no music",
+   "duration_seconds": 0.5,
+   "prompt_influence": 0.6,
+   "variant": "В: деревянный колышек — щелчок"
+  },
+  {
+   "id": "SFX_ui_D_hover",
+   "text": "A soft brush of a fingertip over an old wooden piano key without pressing it, faint wooden tick, close-up, dry, no music",
+   "duration_seconds": 0.5,
+   "prompt_influence": 0.6,
+   "variant": "Г: по клавише, не нажимая — наведение"
+  },
+  {
+   "id": "SFX_ui_D_click",
+   "text": "An old wooden drawer knob tapped once with a soft rounded wooden click, single, warm, muted, close-up, dry, no music",
+   "duration_seconds": 0.5,
+   "prompt_influence": 0.6,
+   "variant": "Г: деревянная ручка ящика — щелчок"
+  }
+ ]
+}
