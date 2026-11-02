@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-11-02T20:55:49+00:00",
+  "updated_at": "2026-11-02T22:46:41+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -32066,33 +32066,33 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.4,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "character_lines/examine.school_ribbon.ogg",
       "source": "src/character_lines/examine.school_ribbon.mp3",
-      "voice_text": "Синяя лента, кайма узкая. [softly] Сберегла её мама.",
-      "voice_sha1": "8c1d7245f447dcb16b05c41f12adc821ad1a2af2",
+      "voice_text": "[tenderly] Синяя лента, кайма узкая… Сберегла её мама.",
+      "voice_sha1": "0fd131f3a66019203ad07f17e8cb241515249b1a",
       "tags": [],
-      "characters": 52,
+      "characters": 54,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.4,
+      "duration_s": 4.58,
       "lufs": -16.9,
-      "true_peak_db": -4.9,
-      "gain_db": 4.0,
+      "true_peak_db": -3.8,
+      "gain_db": 3.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -21.0,
-      "source_true_peak_db": -9.0,
+      "source_lufs": -20.1,
+      "source_true_peak_db": -6.9,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T23:53:52+00:00",
-      "run": "40975795968",
-      "adopted_from": "probe/K2/Q034_3",
+      "generated_at": "2026-11-02T22:46:41+00:00",
+      "run": "41539271298",
+      "adopted_from": "probe/K3/W315_1",
       "api": {
-        "history_item_id": "1Y6OgQff2Sugty01b53M",
-        "character_cost": "23",
+        "history_item_id": "6pzPwCWJlR4gAaaEQW5d",
+        "character_cost": "24",
         "previous_text": "",
-        "probe_run": "40969602571"
+        "probe_run": "41530815853"
       },
       "stt": {
         "model": "scribe_v2",
@@ -32934,6 +32934,64 @@
         }
       }
     },
+    "agata:mech.fish.caught_agata": {
+      "kind": "narration",
+      "key": "mech.fish.caught_agata",
+      "source_text": "ru_mechanics",
+      "alignment": "src/character_lines/mech.fish.caught_agata.align.json",
+      "as_line": true,
+      "speaker": "agata",
+      "text": "Есть! Гляди, Митя, — и я с уловом.",
+      "text_sha1": "58ff74cdb809098aa9e6b23fb83140497289ffa2",
+      "voice_id": "ReYqW64ePwZHQReEArbt",
+      "voice_name": "Agata",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.4,
+        "similarity_boost": 0.75
+      },
+      "file": "character_lines/mech.fish.caught_agata.ogg",
+      "source": "src/character_lines/mech.fish.caught_agata.mp3",
+      "voice_text": "[laughing] Есть! Гляди, Митя, — и я с уловом.",
+      "voice_sha1": "c430e9dda99f34d6aa806374b2260f93fbffaebc",
+      "tags": [],
+      "characters": 45,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 4.25,
+      "lufs": -17.1,
+      "true_peak_db": -5.0,
+      "gain_db": -3.5,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -13.5,
+      "source_true_peak_db": -1.5,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-11-02T22:46:41+00:00",
+      "run": "41539271298",
+      "adopted_from": "probe/K3/W317_2",
+      "api": {
+        "history_item_id": "mNWbRtMHvbkrvm34vZii",
+        "character_cost": "20",
+        "previous_text": "",
+        "probe_run": "41530815853"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Есть! Гляди, Митя, и я с уловом",
+        "words": [
+          "Есть!",
+          "Гляди,",
+          "Митя,",
+          "и",
+          "я",
+          "с",
+          "уловом"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
+      }
+    },
     "agata:mech.nina_mirror.watch_hint": {
       "kind": "narration",
       "key": "mech.nina_mirror.watch_hint",
@@ -33382,43 +33440,59 @@
       "alignment": "src/character_lines/E5.windlass.bump.align.json",
       "as_line": true,
       "speaker": "ilya",
-      "text": "О камень стукнулось! Мимо кольца. Подымай, переложим.",
-      "text_sha1": "389a7d1b6724997580f22dbfd3dfc11e1bfe8cf0",
+      "text": "Стукнулось о камень! Мимо кольца. Подымай, переложим.",
+      "text_sha1": "f635a00d6d15f70b9e2720111abe0715ff7255fe",
       "voice_id": "YmNNmdPsbLNfVc6yh4G1",
       "voice_name": "ИЛЬЯ",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.5,
+        "stability": 0.45,
         "similarity_boost": 0.75
       },
       "file": "character_lines/E5.windlass.bump.ogg",
       "source": "src/character_lines/E5.windlass.bump.mp3",
-      "voice_text": "О камень стукнулось! Мимо кольца. Подымай, переложим.",
-      "voice_sha1": "389a7d1b6724997580f22dbfd3dfc11e1bfe8cf0",
+      "voice_text": "[calling out] Стукнулось о камень! Мимо кольца. [calmer] Подымай, переложим.",
+      "voice_sha1": "5c3a3f9371d025591ceb3148f276426f5421f786",
       "tags": [],
-      "characters": 53,
+      "characters": 76,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.22,
-      "lufs": -17.0,
-      "true_peak_db": -5.9,
-      "gain_db": -4.4,
+      "duration_s": 4.62,
+      "lufs": -16.8,
+      "true_peak_db": -5.3,
+      "gain_db": -3.4,
       "limiter_extra_db": 0.0,
-      "source_lufs": -12.6,
-      "source_true_peak_db": -1.5,
+      "source_lufs": -13.6,
+      "source_true_peak_db": -2.0,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-24T14:56:10+00:00",
-      "run": "40103298522",
+      "generated_at": "2026-11-02T22:46:41+00:00",
+      "run": "41539271298",
+      "adopted_from": "probe/K3/W316_3",
       "api": {
-        "request_id": "trypt0te09pRQKMsCCbM",
-        "history_item_id": "oMsTyn7otiilYNF7GZ5J",
-        "character_cost": "23",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 32182369
-        }
+        "history_item_id": "A5A7kZWkPBAMSV8cYRgK",
+        "character_cost": "33",
+        "previous_text": "",
+        "probe_run": "41530815853"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Стукнулась о камень, мимо кольца. Подымай, переложим",
+        "words": [
+          "Стукнулась",
+          "о",
+          "камень,",
+          "мимо",
+          "кольца.",
+          "Подымай,",
+          "переложим"
+        ],
+        "missing": [
+          "стукнулось"
+        ],
+        "extra": [
+          "стукнулась"
+        ],
+        "ratio": 0.857
       }
     },
     "ilya:E5.windlass.voice_reply_lower": {
@@ -36034,8 +36108,8 @@
       "alignment": "src/character_lines/mech.fish.escaped.align.json",
       "as_line": true,
       "speaker": "mitya",
-      "text": "Провисла бечёвка — она и ушла.",
-      "text_sha1": "e69cbd46e41320df60ae5124fff50e437add7e2d",
+      "text": "Провисла леска — она и ушла.",
+      "text_sha1": "d9908a5d77302c728d066f74b562a86849a68e24",
       "voice_id": "k3EpbtdM71O2VjgMkr1g",
       "voice_name": "МИТЯ",
       "model_id": "eleven_v4",
@@ -36045,32 +36119,42 @@
       },
       "file": "character_lines/mech.fish.escaped.ogg",
       "source": "src/character_lines/mech.fish.escaped.mp3",
-      "voice_text": "Провисла бечёвка — она и ушла.",
-      "voice_sha1": "e69cbd46e41320df60ae5124fff50e437add7e2d",
+      "voice_text": "Провисла леска — она и ушла.",
+      "voice_sha1": "d9908a5d77302c728d066f74b562a86849a68e24",
       "tags": [],
-      "characters": 30,
+      "characters": 28,
       "loudness_target_lufs": -17.0,
-      "duration_s": 2.46,
-      "lufs": -16.9,
-      "true_peak_db": -3.2,
-      "gain_db": -0.9,
+      "duration_s": 2.39,
+      "lufs": -17.0,
+      "true_peak_db": -4.8,
+      "gain_db": -2.1,
       "limiter_extra_db": 0.0,
-      "source_lufs": -16.1,
-      "source_true_peak_db": -2.4,
+      "source_lufs": -14.9,
+      "source_true_peak_db": -2.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T22:44:11+00:00",
-      "run": "40967362464",
+      "generated_at": "2026-11-02T22:46:41+00:00",
+      "run": "41539271298",
+      "adopted_from": "probe/K3/W318_2",
       "api": {
-        "request_id": "rYw9OAWAtAsujDLyjX0Z",
-        "history_item_id": "VhVWXxA9g2A4jfqJGOmF",
-        "character_cost": "13",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 458228676
-        }
+        "history_item_id": "rpC0ZV400aXUicwYL3hW",
+        "character_cost": "12",
+        "previous_text": "",
+        "probe_run": "41530815853"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Провисла леска, она и ушла",
+        "words": [
+          "Провисла",
+          "леска,",
+          "она",
+          "и",
+          "ушла"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
       }
     },
     "mitya:mech.fish.late": {
@@ -40286,37 +40370,51 @@
       "voice_name": "CAT-2",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.6,
+        "stability": 0.35,
         "similarity_boost": 0.8
       },
       "file": "character_lines/H1.tikhon.spoons_a.ogg",
       "source": "src/character_lines/H1.tikhon.spoons_a.mp3",
-      "voice_text": "Перестучит она… Ну, слушай. Повторишь — поглядим.",
-      "voice_sha1": "ed1886214079d8fe052b8b9b862f18ed5d38bbe1",
+      "voice_text": "[mockingly] Перестучит она! Ха… Ну, слушай. Повторишь — поглядим.",
+      "voice_sha1": "f7d6d18b6e6175acb7cfc0a9ba6a4ff5a23c0e69",
       "tags": [],
-      "characters": 49,
+      "characters": 65,
       "loudness_target_lufs": -17.0,
-      "duration_s": 5.13,
+      "duration_s": 5.29,
       "lufs": -17.0,
-      "true_peak_db": -3.7,
-      "gain_db": 0.4,
+      "true_peak_db": -4.7,
+      "gain_db": -1.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -17.4,
-      "source_true_peak_db": -3.9,
+      "source_lufs": -15.7,
+      "source_true_peak_db": -3.5,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-29T22:43:45+00:00",
-      "run": "40967362464",
+      "generated_at": "2026-11-02T22:46:41+00:00",
+      "run": "41539271298",
+      "adopted_from": "probe/K3/W314_3",
       "api": {
-        "request_id": "gVonxCwhyO0H3uKQSI8Y",
-        "history_item_id": "W777cpeLFEoboTBIm7US",
-        "character_cost": "22",
-        "dropped_params": [],
-        "output_format": "mp3_44100_192",
-        "sent": {
-          "language_code": "ru",
-          "seed": 3653769812
-        }
+        "history_item_id": "zfGsdzfLaMcQbYVW2NAF",
+        "character_cost": "29",
+        "previous_text": "",
+        "probe_run": "41530815853"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Перестучит она! Ну слушай, повторишь — поглядим",
+        "words": [
+          "Перестучит",
+          "она!",
+          "Ну",
+          "слушай,",
+          "повторишь",
+          "—",
+          "поглядим"
+        ],
+        "missing": [
+          "ха"
+        ],
+        "extra": [],
+        "ratio": 0.923
       }
     },
     "tikhon:H1.tikhon.spoons_done": {
