@@ -1,0 +1,46 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 299,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K32 (02.11, блок 1, стр. 8): осмотр Дуниного рисунка в сумке — слова Агаты (examine.door_drawing, новая). Take _1 = voice_text в data/story/voice_direction.json.",
+ "new_text_lines": [
+  "agata:examine.door_drawing"
+ ],
+ "items": [
+  {
+   "id": "W310_1",
+   "line": "agata:examine.door_drawing",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Тётин рисунок школьной двери. Три петли — на свои места, а на пороге нужная зарубка обведена.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "спокойно, рассматривает"
+  },
+  {
+   "id": "W310_2",
+   "line": "agata:examine.door_drawing",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Тётин рисунок школьной двери. Три петли — на свои места, а на пороге нужная зарубка обведена.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W310_3",
+   "line": "agata:examine.door_drawing",
+   "take": "3",
+   "speaker": "agata",
+   "text": "Тётин рисунок школьной двери. Три петли — на свои места, а на пороге нужная зарубка обведена.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "живее"
+  }
+ ]
+}
