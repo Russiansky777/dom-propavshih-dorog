@@ -1,16 +1,86 @@
-run 41522888478 2026-11-02T20:55:47Z requests: pipeline/requests/voice_stale0211.json 
+run 41528554391 2026-11-02T21:30:36Z requests: pipeline/requests/voice_EN1.json 
 ключ: есть, длина 51, формат sk_…: да
 план: creator (active), израсходовано 138762 из 152389 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_stale0211.json
-  skip (не записывать сейчас): 10 строк запроса по шаблонам ['*']
-  манифест ru: M02_6: нет в сценах
-  манифест ru: H2d.nina_mirror.watch_again: текст изменён
-  манифест ru: mitya:O4.mitya_board.use: текст изменён
-  манифест ru: mitya:O4q.workshop.mitya_cramped: текст изменён
-  only_changed: к работе 0 из 0 реплик/фраз запроса
-[stale0211] реплик в сценах запроса: 0; файлов с вариантами голосов: 0; к синтезу: 0 (0 символов); переобработка: 0
-[stale0211] синтезировано 0, переобработано 0, ошибок 0; символов текста 0; списано кредитов (character-cost): н/д, изменение счётчика подписки: н/д
+=== pipeline/requests/voice_EN1.json
+  квота: осталось 13627, запас 0, к синтезу ≈ 1305 кредитов (2838 символов × 0.46)
+    распознано: A year and for you longer than I've been alive. How can that be, Mama?
+  EN_01                         5.92 с  выравнивание: есть  A year… And for you — longer than I've been alive. How can that be, Mama?
+    распознано: I saw, Teakin. I'll sleep one night, and Mama will live a whole week over there. How am I supposed to sleep now? | нет слов: ['tikhon']
+  EN_02                         7.76 с  выравнивание: есть  I saw, Tikhon. I'll sleep one night, and Mama will live a whole week over there… How am I supposed to sleep now?
+    распознано: I need to get to Olhovka. Will you take me across? | нет слов: ['olkhovka']
+  EN_03                         3.36 с  выравнивание: есть  I need to get to Olkhovka. Will you take me across?
+    распознано: Ulya, shall we play noughts and crosses in chalk right on the board?
+  EN_04                         4.64 с  выравнивание: есть  Ulya, shall we play noughts and crosses? In chalk, right on the board.
+    распознано: Tikhon, Dunya isn't coming back. She died at mama's two years ago by their count
+  EN_05                         6.64 с  выравнивание: есть  Tikhon… Dunya isn't coming back. She died at Mama's. Two years ago, by their count.
+    распознано: Tikhon, keeper of the stove, at your service. A demanding post. Lie here and make sure it doesn't go cold
+  EN_06                         8.64 с  выравнивание: есть  Tikhon. Keeper of the stove, at your service. A demanding post: lie here and make sure it doesn't go cold.
+    распознано: Out-tap me, will she? Well, listen. Repeat it, then we'll see
+  EN_07                         5.28 с  выравнивание: есть  Out-tap me, will she… Well, listen. Repeat it — then we'll see.
+    распознано: Missed? 'Tis near, have we? Listen again | нет слов: ['tin', 'ear']
+  EN_08                         3.76 с  выравнивание: есть  Missed. Tin ear, have we? Listen again.
+    распознано: Come inside where it's warm, my girl. You're all covered in snow
+  EN_09                         4.40 с  выравнивание: есть  Come inside where it's warm, my girl. You're all covered in snow.
+    распознано: Not as it was, and I wouldn't give back my 20 years. Uliana is in them | нет слов: ['twenty', 'ulyana']
+  EN_10                         6.32 с  выравнивание: есть  Not as it was… And I wouldn't give back my twenty years. Ulyana is in them.
+    распознано: Finish your studies. There's a bridge now. You'll come home often
+  EN_11                         4.48 с  выравнивание: есть  Finish your studies. There's a bridge now — you'll come home often.
+    распознано: You're just the same. You haven't grown at all
+  EN_12                         3.60 с  выравнивание: есть  You're just the same… You haven't grown at all.
+    распознано: I waited 20 years for you, and now we hold it together | нет слов: ['twenty']
+  EN_13                         4.64 с  выравнивание: есть  I waited twenty years for you. And now we hold it together.
+    распознано: Ulya trails after me with a plane like a little tail. Let's build her a workbench of her own
+  EN_14                         5.68 с  выравнивание: есть  Ulya trails after me with a plane like a little tail. Let's build her a workbench of her own.
+    распознано: Is that Aunt Agata? Papa, you said she used to be older than you
+  EN_15                         4.80 с  выравнивание: есть  Is that Aunt Agata? Papa, you said she used to be older than you!
+    распознано: Agata, I came over the bridge all by myself. Can I come tomorrow too?
+  EN_16                         5.76 с  выравнивание: есть  Agata! I came over the bridge — all by myself! Can I come tomorrow too?
+    распознано: Yes! Dibs on noughts. You're crosses then. You go first
+  EN_17                         4.48 с  выравнивание: есть  Yes! Dibs on noughts. You're crosses then — you go first.
+    распознано: And I kept lighting the lantern every single evening so you'd know where to look for me
+  EN_18                         5.20 с  выравнивание: есть  And I kept lighting the lantern, every single evening. So you'd know where to look for me.
+    распознано: Ilya, Ilya, come out. Your sister's here
+  EN_19                         3.20 с  выравнивание: есть  Ilya! Ilya, come out — your sister's here!
+    распознано: Come again. The fish are in no hurry, and neither are we
+  EN_20                         3.92 с  выравнивание: есть  Come again. The fish are in no hurry — and neither are we.
+    распознано: Oh, I can't take you across. I've been at it a whole year
+  EN_21                         4.32 с  выравнивание: есть  Oh, I can't take you across. I've been at it a whole year.
+    распознано: They answered a whole year without a single light
+  EN_22                         4.00 с  выравнивание: есть  They answered! A whole year without a single light!
+    распознано: Don't you throw that board away. All your twenty years are in those notches
+  EN_23                         4.72 с  выравнивание: есть  Don't you throw that board away. All your twenty years are in those notches.
+    распознано: Dunya's niece, you say? Well, you do look like her. Same frown
+  EN_24                         5.84 с  выравнивание: есть  Dunya's niece, you say?.. Well… You do look like her. Same frown.
+    распознано: I heard your bell. I heard it! Without it, I'd have stood here another year
+  EN_25                         5.12 с  выравнивание: есть  I heard your bell! I heard it! Without it I'd have stood here another year.
+    распознано: Agata kept her word. The water's back where it was, right up to the mark
+  EN_26                         5.04 с  выравнивание: есть  Agata kept her word! The water's back where it was — right up to the mark.
+    распознано: Good heavens! Agata? Nina's girl. You sent your letters home through me
+  EN_27                         6.16 с  выравнивание: есть  Good heavens… Agata? Nina's girl! You sent your letters home through me.
+    распознано: Don't blame yourself, dear. You'd have sat on the bank a whole year like Pelageya. That's why I wrote, so you wouldn't come for nothing
+  EN_28                         8.64 с  выравнивание: есть  Don't blame yourself, dear. You'd have sat on the bank a whole year, like Pelageya. That's why I wrote — so you wouldn't come for nothing.
+    распознано: Three weeks I've been carrying it, and the bag's still full. Now they write from both banks
+  EN_29                         6.08 с  выравнивание: есть  Three weeks I've been carrying it, and the bag's still full! Now they write from both banks.
+    распознано: A year ago, on the night of the flood, the water took the bridge. Since then, there's no reaching the other bank. Whatever boat you send comes back to its own p
+  EN_30                        10.24 с  выравнивание: есть  A year ago, on the night of the flood, the water took the bridge. Since then there's no reaching the other bank: whatever boat you send comes back to its own pier.
+    распознано: On the board, Nina reads, "Mama, I'm coming." She takes the chalk. Beneath it, she writes, "I waited."
+  EN_31                         7.84 с  выравнивание: есть  On the board Nina reads: "Mama, I'm coming." She takes the chalk. Beneath it she writes: "I waited."
+    распознано: One blue, one white. Both washed clean, waiting on the windowsill.
+  EN_32                         5.12 с  выравнивание: есть  One blue, one white. Both washed clean, waiting on the windowsill.
+    распознано: Ulyana, it's bedtime. Your aunt is here. She's not going anywhere tonight
+  EN_33                         5.28 с  выравнивание: есть  Ulyana, it's bedtime. Your aunt is here — she's not going anywhere tonight.
+    распознано: Agata, look! The patch on Dunya's coat is holding, and Uliana's bird looks almost alive | нет слов: ['ulyana']
+  EN_34                         6.96 с  выравнивание: есть  Agata, look: the patch on Dunya's coat is holding! And Ulyana's bird looks almost alive.
+    распознано: You sit and rest. I'll set out the lamp and put Ulyana to bed
+  EN_35                         4.32 с  выравнивание: есть  You sit and rest. I'll set out the lamp and put Ulyana to bed.
+    распознано: Is the sluice gate intact? Where's the lever?
+  EN_36                         3.04 с  выравнивание: есть  Is the sluice gate intact? Where's the lever?
+    распознано: A year. I thought I'd be back by morning, and twenty years have gone by
+  EN_37                         5.92 с  выравнивание: есть  A year… I thought I'd be back by morning. And twenty years have gone by.
+    распознано: The pond has to be filled before winter or Zarychye will be left without flour. | нет слов: ['zarechye']
+  EN_38                         6.00 с  выравнивание: есть  The pond has to be filled before winter. Or Zarechye will be left without flour.
+[say EN1] фраз 38, ошибок 0, символов 2838, кредитов 1251
   предупреждение: H2d.nina_mirror.watch_again: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: M02_6: устарела (нет в сценах) — игра покажет только субтитры
   предупреждение: mitya:O4.mitya_board.use: устарела (текст изменён) — игра покажет только субтитры
