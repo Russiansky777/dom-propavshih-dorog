@@ -1,0 +1,10 @@
+{
+ "mode": "generate",
+ "set": "stale0211",
+ "probe": true,
+ "only_changed": true,
+ "prune_stale": false,
+ "_comment": "Обслуживание 02.11, без записи: строгая проверка манифеста в workflow озвучки красная с правок блока 1 (H2d.nina_mirror.watch_again, mitya:O4.mitya_board.use, mitya:O4q.workshop.mitya_cramped — запасные записи под старым текстом; M02_6 — реплики нет). Запрос ничего не записывает (skip *) — только помечает такие записи stale (mark_stale), как требует tools/validate_voice.py --strict.",
+ "scenes": ["M02"],
+ "skip": ["*"]
+}
