@@ -114,6 +114,7 @@ func _run() -> void:
 	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; arms swing by her sides; she looks ahead", _test_walk_rhythm)
 	await _test("Right arm without jerks (Director 01.11, line 20 «правая рука иногда резко дёргается»): the arm kept out of the bag changes its way out softly — no jump", _test_arm_no_jerk)
 	await _test("Short moves (Director 01.11, line 3 «мельтешит… куча перестановок ног»): 15–45 cm from standing is a step and the other foot closing up — two lifts, at the target", _test_short_moves)
+	await _test("After arriving (Director 02.11, line 7 «переставляются зачем-то много раз после того, как она доходит»): a walk, then the turn to what she came to — the closing step and a few turn steps (≤ 4, 3,4 on average), fewer than the old 3,5-cm turn steps", _test_after_arrive)
 	await _test("Skirt with the legs (Director 01.11, line 3 «ботинки сами шагают… юбка не двигается»): walking, the hem goes with the shins — they do not step out from under it", _test_skirt_with_legs)
 	PlayerScript.forced_render = ""
 	gs.reset()
@@ -1697,7 +1698,16 @@ func _short_moves(shuffle: bool) -> Array:
 ## (tests/probe_short_moves.gd). Now a «переступ»: one foot to where it will stand, the other closes up — two lifts, there.
 func _test_short_moves() -> void:
 	var on: Array = await _short_moves(true)
+	# as before: no «переступ», and (02.11, стр. 7) the walk's stepping still mixed into a standing turn over 50°
+	var tk: Dictionary = player.get("_rt").get("turn", {})
+	var fk: Dictionary = player.view3d.spec.get("feet", {})
+	var keep_w := float(tk.get("step_weight", 0.0))
+	var keep_st := float(fk.get("step_turn_m", 0.085))
+	tk["step_weight"] = 0.3
+	fk["step_turn_m"] = 0.035   # and the turn's own steps every 3,5 cm, as before 02.11
 	var off: Array = await _short_moves(false)
+	tk["step_weight"] = keep_w
+	fk["step_turn_m"] = keep_st
 	print("        short moves [lifts, last lift s, px off, walking]: %s; walked as before: %s" % [str(on.map(func(r): return [r[0], snappedf(r[1], 0.01), snappedf(r[2], 0.1), r[3]])), str(off.map(func(r): return r[0]))])
 	var worst_off := 0
 	for i in on.size():
@@ -1792,4 +1802,72 @@ func _test_skirt_with_legs() -> void:
 	print("        walking, a shin goes %.1f cm out of the hem at most; without the drive %.1f cm" % [on * 100.0, off * 100.0])
 	_check(on <= 0.05, "walking, a shin goes %.1f cm out of the skirt's hem (≤ 5): the boots step out from under a still skirt" % (on * 100.0))
 	_check(off >= 0.10, "self-check: without the drive a shin goes only %.1f cm out of the hem — the case is not reproduced" % (off * 100.0))
+	_completed = true
+
+
+## Walks of 1,2–2,4 m, then the turn to the thing she came to (as a click on a hotspot does: Player.face_towards):
+## per walk [lifts after arriving (closing step included), the last one s after arriving].
+func _after_arrive_runs() -> Array:
+	var out: Array = []
+	var cases := [[1.6, 0, 90], [2.0, 45, 150], [1.2, -60, -90], [2.4, 180, 120], [1.8, 90, -150], [1.4, 30, 60]]
+	for ci in cases.size():
+		var c: Array = cases[ci]
+		await _enter("H1", Vector2(1000, 940))
+		var v: Actor3D = player.view3d
+		v.seed_idle(80 + ci)
+		if not v.skeleton.skeleton_updated.is_connected(_on_skel_updated):
+			v.skeleton.skeleton_updated.connect(_on_skel_updated)
+		await _wait_s(1.2)
+		_drawn_feet = []
+		var ang := deg_to_rad(float(c[1]))
+		var target: Vector2 = player.global_position + Vector2(sin(ang), cos(ang) * player.floor_foreshortening()) * float(c[0]) * v.ppm * absf(player.scale.y)
+		player.click_at(target)
+		var t := 0.0
+		var up: Array = [false, false]
+		var lifts := 0
+		var last := 0.0
+		var arrived_t := -1.0
+		while t < 9.0 and (arrived_t < 0.0 or t < arrived_t + 3.0):
+			await process_frame
+			t += player.get_process_delta_time()
+			if arrived_t < 0.0 and not player.is_walking():
+				arrived_t = t
+				var fa := float(player.yaw3d) + deg_to_rad(float(c[2]))
+				player.face_towards(player.global_position + Vector2(sin(fa), cos(fa)) * 200.0)
+			var f: Array = _drawn_feet if not _drawn_feet.is_empty() else v.feet_model()
+			for i in 2:
+				var h: float = minf(f[i * 2].y - float(v.stride_floor[i * 2]), f[i * 2 + 1].y - float(v.stride_floor[i * 2 + 1]))
+				var now_up: bool = h > 0.025 or (up[i] and h > 0.015)
+				if now_up and not up[i] and arrived_t >= 0.0:
+					lifts += 1
+					last = t - arrived_t
+				up[i] = now_up
+		out.append([lifts, last])
+	return out
+
+
+func _test_after_arrive() -> void:
+	var runs: Array = await _after_arrive_runs()
+	var mean := 0.0
+	for r in runs:
+		mean += float(r[0]) / float(runs.size())
+	print("        after arriving: %s (mean %.2f)" % [str(runs), mean])
+	for i in runs.size():
+		_check(int(runs[i][0]) <= 4, "walk %d: %d lifts after arriving, the last %.2f s after (≤ 4: the closing step and up to three turn steps)" % [i + 1, int(runs[i][0]), float(runs[i][1])])
+	_check(mean <= 3.4, "on average %.2f lifts after arriving (≤ 3,4)" % mean)
+	# self-check: the turn as before (steps every 3,5 cm of the stance's drift, the walk's stepping mixed in) — more lifts on the same walks
+	var fk: Dictionary = player.view3d.spec.get("feet", {})
+	var tk: Dictionary = player.get("_rt").get("turn", {})
+	var keep := float(fk.get("step_turn_m", 0.085))
+	var keep_w := float(tk.get("step_weight", 0.0))
+	fk["step_turn_m"] = 0.035
+	tk["step_weight"] = 0.3   # and the walk's stepping mixed into a standing turn over 50°, as before
+	var old: Array = await _after_arrive_runs()
+	fk["step_turn_m"] = keep
+	tk["step_weight"] = keep_w
+	var old_mean := 0.0
+	for r in old:
+		old_mean += float(r[0]) / float(old.size())
+	print("        as before (3,5 cm): %s (mean %.2f)" % [str(old), old_mean])
+	_check(old_mean > mean, "self-check: the old 3,5 cm turn steps give more lifts (%.2f > %.2f)" % [old_mean, mean])
 	_completed = true

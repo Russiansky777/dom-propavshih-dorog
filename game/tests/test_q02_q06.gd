@@ -470,7 +470,7 @@ func _test_q06_b() -> void:
 	await _use("ilya_workshop")
 	var seen := await _finish(["B"])
 	_check(gs.has_flag("q06_table_at_agata") and not gs.has_flag("q06_table_at_ilya") and gs.has_flag("done_Q06"), "B — the bench to Dunya's workshop; Q06 done")
-	_check(seen.any(func(x): return x.contains("Дуниной мастерской")) and not seen.any(func(x): return x.contains("втроём")), "B: Ilya's line, no A lines: %s" % str(seen))
+	_check(seen.any(func(x): return x.contains("Дуниной мастерской")) and not seen.any(func(x): return x.contains("втроём поработаем")), "B: Ilya's line, no A lines (02.11: Mitya's «втроём быстрее» when he comes to help is not A's): %s" % str(seen))
 	_check(not _layer_visible("bench_shed"), "B: the shed door on the street stays shut")
 	_check(await _route(["O2", "O1", "H3", "H1", "H2"]), "through the school door to Dunya's workshop")
 	await _finish()

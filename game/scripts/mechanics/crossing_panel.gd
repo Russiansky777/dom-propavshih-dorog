@@ -21,7 +21,7 @@ const FOG_SHADER := "shader_type canvas_item;\nuniform float density = 0.8;\nuni
 ## The painted rope runs back through the ring: pixels of the rope layer are sampled further along the rope's
 ## axis (towards the vanishing point) by `phase` — scaled by the distance from the vanishing point, so near strands
 ## move faster than far ones; the ring (a circle) stays still.
-const ROPE_SHADER := "shader_type canvas_item;\nuniform vec2 vp;\nuniform vec2 dir;\nuniform float phase = 0.0;\nuniform float period = 60.0;\nuniform float ref_dist = 600.0;\nuniform vec2 tex_size;\nuniform vec2 ring;\nuniform float ring_r = 40.0;\nuniform bool use_eye = false;\nuniform vec2 eye;\nuniform vec2 eye_r = vec2(40.0);\nuniform vec2 hole;\nuniform vec2 hole_r = vec2(20.0);\nuniform vec4 bracket;\nvarying vec2 pos;\nvoid vertex() { pos = VERTEX; }\nuniform sampler2D iron_mask;\nuniform bool use_mask = false;\nbool in_iron(vec2 p) {\n\tif (use_mask) { return texture(iron_mask, p / tex_size).r > 0.5; }\n\tvec2 e = (p - eye) / eye_r;\n\tvec2 h = (p - hole) / hole_r;\n\tbool ring_part = dot(e, e) < 1.0 && dot(h, h) >= 1.0;\n\tbool plate = p.x > bracket.x && p.x < bracket.x + bracket.z && p.y > bracket.y && p.y < bracket.y + bracket.w;\n\treturn ring_part || plate;\n}\nvoid fragment() {\n\tvec4 here = texture(TEXTURE, UV);\n\tif (use_eye && in_iron(pos)) { COLOR = here; } else {\n\tfloat d = max(dot(pos - vp, dir), 1.0);\n\tfloat k = d / ref_dist;\n\tfloat per = period * k;\n\tfloat off = mod(phase * k, per);\n\tfloat keep = use_eye ? 1.0 : smoothstep(ring_r, ring_r * 1.25, length(pos - ring));\n\tvec2 q = pos - dir * off * keep;\n\tif (use_eye) { for (int i = 0; i < 4; i++) { if (!in_iron(q)) { break; } q -= dir * per; } }\n\tvec4 moved = texture(TEXTURE, q / tex_size);\n\tCOLOR = (moved.a > 0.5 && here.a > 0.5) ? moved : here;\n\t}\n}\n"
+const ROPE_SHADER := "shader_type canvas_item;\nuniform vec2 vp;\nuniform vec2 dir;\nuniform float phase = 0.0;\nuniform float period = 60.0;\nuniform float ref_dist = 600.0;\nuniform vec2 tex_size;\nuniform vec2 ring;\nuniform float ring_r = 40.0;\nuniform bool use_eye = false;\nuniform bool slide_all = false;\nuniform vec2 eye;\nuniform vec2 eye_r = vec2(40.0);\nuniform vec2 hole;\nuniform vec2 hole_r = vec2(20.0);\nuniform vec4 bracket;\nvarying vec2 pos;\nvoid vertex() { pos = VERTEX; }\nuniform sampler2D iron_mask;\nuniform bool use_mask = false;\nbool in_iron(vec2 p) {\n\tif (use_mask) { return texture(iron_mask, p / tex_size).r > 0.5; }\n\tvec2 e = (p - eye) / eye_r;\n\tvec2 h = (p - hole) / hole_r;\n\tbool ring_part = dot(e, e) < 1.0 && dot(h, h) >= 1.0;\n\tbool plate = p.x > bracket.x && p.x < bracket.x + bracket.z && p.y > bracket.y && p.y < bracket.y + bracket.w;\n\treturn ring_part || plate;\n}\nvoid fragment() {\n\tvec4 here = texture(TEXTURE, UV);\n\tif (use_eye && in_iron(pos)) { COLOR = here; } else {\n\tfloat d = max(dot(pos - vp, dir), 1.0);\n\tfloat k = d / ref_dist;\n\tfloat per = period * k;\n\tfloat off = mod(phase * k, per);\n\tfloat keep = (use_eye || slide_all) ? 1.0 : smoothstep(ring_r, ring_r * 1.25, length(pos - ring));\n\tvec2 q = pos - dir * off * keep;\n\tif (use_eye) { for (int i = 0; i < 4; i++) { if (!in_iron(q)) { break; } q -= dir * per; } }\n\tvec4 moved = texture(TEXTURE, q / tex_size);\n\tCOLOR = (moved.a > 0.5 && here.a > 0.5) ? moved : here;\n\t}\n}\n"
 ## J (Директор 29.10, стр. 137: «кольцо и канат у кольца стоят, движется только остальной канат»): with the iron eye
 ## given (`eye` in the data), the rope runs on through the eye's hole too; samples are never taken from the iron (they
 ## step a twist further along), so the eye stays put and the rope slides through it. The overlay on top keeps the iron
@@ -38,6 +38,7 @@ var rope: TextureRect = null
 var rope_mat: ShaderMaterial = null
 var ring: TextureRect = null
 var arrival: TextureRect = null
+var ring_back: TextureRect = null   # партия 17: the ring's arc behind the rope (data art.ring_back)
 var snow: SnowField = null
 var hint: Label = null
 var pulls_total: int = 10
@@ -110,6 +111,14 @@ func build() -> void:
 	snow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	snow.setup(int(spec.get("snow_amount", 160)))
 	stage.add_child(snow)
+	# 02.11 (Director, стр. 20) — партия 17: the ring split by depth. `ring_back` (the arc behind the rope) is drawn
+	# under the sliding rope, `ring_front` (the near arcs and the plate) over it; the rope layer `rope` is then the
+	# painted rope alone (tools/make_rope_clean.py) — no mask, no iron carried along with the strands.
+	var split := art.has("ring_back") and art.has("ring_front") and ResourceLoader.exists(String(art["ring_front"]))
+	var rr0: Array = spec.get("ring_box", [1105, 590, 110, 110])
+	if split:
+		ring_back = crop(String(art["ring_back"]), rr0, Vector2(float(rr0[0]), float(rr0[1])) * k, k, stage)
+		ring_back.name = "RingBack"
 	# The rope (the painted layer, its strands sliding back through the ring) and the ring over it.
 	rope = crop(String(art.get("rope", "")), full, Vector2.ZERO, k, stage)
 	rope.name = "Rope"
@@ -123,11 +132,14 @@ func build() -> void:
 	rope_mat.set_shader_parameter("ring", _ring)
 	rope_mat.set_shader_parameter("ring_r", float(spec.get("ring_r", 46.0)) * k)
 	rope.material = rope_mat
+	rope_mat.set_shader_parameter("slide_all", split)   # партия 17: the rope runs on through the eye; the iron is its own layers
 	var rr: Array = spec.get("ring_box", [1105, 590, 110, 110])
-	ring = crop(String(art.get("rope", "")), rr, Vector2(float(rr[0]), float(rr[1])) * k, k, stage)
+	ring = crop(String(art.get("ring_front" if split else "rope", "")), rr, Vector2(float(rr[0]), float(rr[1])) * k, k, stage)
 	ring.name = "Ring"
 	ring.pivot_offset = _ring - ring.position
-	var eye: Dictionary = spec.get("eye", {})
+	if ring_back != null:
+		ring_back.pivot_offset = _ring - ring_back.position
+	var eye: Dictionary = spec.get("eye", {}) if not split else {}
 	if not eye.is_empty():
 		var bk: Array = eye.get("bracket", [0, 0, 0, 0])
 		var bracket := Vector4(float(bk[0]) * k, float(bk[1]) * k, float(bk[2]) * k, float(bk[3]) * k)
@@ -207,6 +219,12 @@ func _apply_view() -> void:
 	var ar := smoothstep(af, 1.0, p)
 	arrival.modulate.a = ar
 	arrival.scale = Vector2.ONE * lerpf(1.25, 1.0, ar)
+	# 02.11 (Director, стр. 20: «доделать эти 10 кадров — последний уж сильно резко меняется кадр»): the whole arrival
+	# painting faded in over the last pulls at its own framing — the view jumped from the far pier in the fog to the
+	# painted shore. Data `arrival_fade` false: no painting over the crossing — the pier keeps coming closer to the
+	# last pull, then the black of the `crossed` event takes us ashore (J-137: «через чёрное»).
+	if not bool(spec.get("arrival_fade", true)):
+		arrival.modulate.a = 0.0
 
 
 func tick(delta: float) -> void:
@@ -235,6 +253,9 @@ func tick(delta: float) -> void:
 	stage.rotation = sin(clock * 0.7) * 0.003
 	ring.rotation_degrees = sin(_jolt * 30.0) * 3.5 * _jolt
 	ring.position = v2(spec.get("ring_box", [1105, 590, 110, 110])) * k + Vector2(-_jolt * 4.0, 0)
+	if ring_back != null:
+		ring_back.rotation_degrees = ring.rotation_degrees
+		ring_back.position = ring.position
 	_apply_view()
 	if pulls >= pulls_total and not pulling and not crossed_sent:
 		_done_t += delta

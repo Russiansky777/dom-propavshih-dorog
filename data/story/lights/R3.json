@@ -61,7 +61,8 @@
     },
     {
       "id": "mitya_lantern",
-      "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day", "tod_ep_morning", "tod_ep_evening", "done_M18"],
+      "unless": ["tod_d3_morning", "tod_d3_day", "tod_d4_day", "tod_ep_morning", "tod_ep_evening", "done_M18", "mitya_lantern_taken"],
+      "_k0211": "02.11 (стр. 21): Митя поднял фонарь — ореол на камне гаснет, свет идёт с ним (HeldProp)",
       "_k1_0111": "01.11 (стр. 49): фонарь стоит на камне справа от Мити (слой rooms/R3 mitya_lantern) — свет на его стекле (615, 643), не у руки; после M18 Митя уходит с фонарём — свет гаснет с ним",
       "_k": "K (стр. 74): фонарь Мити — только вечером второго дня; днём ореол светился на снегу, где Мити нет",
       "type": "glow",

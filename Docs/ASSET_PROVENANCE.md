@@ -195,6 +195,11 @@ R2_fg_rope_v3 (канат сквозь кольцо, правка R2_fg_rope_v2 
 `game/assets/sfx/sfx_door_bolt_stiff.wav` (срез тишины, ВЧ 40 Гц, пик −1 dBFS — функции tools/prepare_sfx.py), `sfx.json` door_bolt.
 Права — по подписке ElevenLabs проекта (как голоса).
 
+## Партия 17 — ChatGPT (imagegen), 02.11.2026
+- **Кольцо на борту по глубине** (`assets/incoming/R2_ring_back.png`, `R2_ring_front.png`; README и промпты — `assets/incoming/_meta_p17/`): разделение железа проушины партии 15 (R2_fg_rope_v4) на заднюю дугу и передние дуги с пластиной, скрытая часть дуги дорисована. Канат для переправы — не генерация: `game/assets/rooms/R2/fg_rope_clean.png` из v4 без железа, железо заменено тем же канатом на виток дальше (`tools/make_rope_clean.py`), 0 кредитов.
+- **Плита с кольцом и узлом у поворота** (`assets/incoming/Z3_state_plate_rope_dusk.png`): заказ Директора через его подписку, по основе Z3 (партии 3, 7).
+- **Фонарь в руке Мити** (`game/assets/props/held_lantern.png`) — не генерация: вырезан из фонаря партии 15 (`tools/make_held_lantern.py`), 0 кредитов.
+
 ## Партии 16 и 16б — ChatGPT (imagegen), 02.11.2026
 - **Мамины ходики крупно** (`assets/incoming/O3_clock_hi_{bg,pendulum,hand_min,hand_hour}.png`, 400×720 — прямоугольник [893, 148, 993, 328) горницы ×4; README и промпты — `assets/incoming/_meta_p16/`): стрелки — партия 16, корпус с арабскими цифрами и латунный маятник — партия 16б (в ТЗ 16 ошибочно стояли римские цифры и бронза). Нарисованы ChatGPT (built-in imagegen) по слоям горницы партии 3 (O3_*), заказ Директора через его подписку. В игру — `tools/retouch_art.py` (у корпуса закрыт бледный след римской «VII» справа от 7, `tools/retouch/O3_clock_hi_bg.py`; остальные без правки).
 - **Значок «Дунин рисунок посадки»** (`game/assets/icons/door_drawing.png`) — не генерация: вырезан из игровой копии рисунка M05 (`tools/make_icon_door_drawing.py`), 0 кредитов.

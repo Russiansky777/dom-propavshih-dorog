@@ -1037,7 +1037,9 @@ func _test_crossing() -> void:
 	pr = _panel()
 	_check(float(pr.get("band_scale", 0)) > b0 + 0.3 and float(pr.get("fog", 1)) < f0 - 0.4 and float(pr.get("snow", 0)) > s0 + 0.5,
 		"the far bank grew (%.2f→%.2f), fog thinned (%.2f→%.2f), snow (%.2f→%.2f)" % [b0, float(pr.get("band_scale", 0)), f0, float(pr.get("fog", 1)), s0, float(pr.get("snow", 0))])
-	_check(float(pr.get("arrival", 0)) > 0.9, "the far pier's own painting at the end")
+	# 02.11 (Director, стр. 20: «последний уж сильно резко меняется кадр»): no painted shore fading in over the boat's
+	# view — the far pier keeps growing to the last pull (ashore through the black of `crossed`)
+	_check(float(pr.get("arrival", 1)) < 0.01 and float(pr.get("pier_w", 0)) > 700.0, "at the end: the far pier close (%.0f px wide), no arrival painting over it (%.2f)" % [float(pr.get("pier_w", 0)), float(pr.get("arrival", 1))])
 	g = 0
 	while not gs.has_flag("crossing_hauled") and g < 400:
 		await process_frame

@@ -49,6 +49,7 @@ var turn_blend_s: float = DEFAULT_TURN_BLEND
 var partner: Node2D = null
 ## Director 30.10: the villager drawn live (NpcLive3D, actor data `rt3d` + `render` "3d") — null on sheets.
 var live: NpcLive3D = null
+var held: HeldProp = null   # 02.11 (стр. 21): rooms data `held` — a thing in the villager's hand
 var _floor_k: float = ActorSheet.FLOOR_FORESHORTENING_DEFAULT
 
 
@@ -146,6 +147,9 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 		else:
 			live.queue_free()
 			live = null
+	# 02.11 (стр. 21): a thing carried in the hand (rooms data `held` on the hotspot — Mitya's lantern)
+	if h.data is Dictionary and (h.data as Dictionary).has("held"):
+		held = HeldProp.attach(self, h.data["held"])
 	if live == null and not sheet.textures_loaded:
 		sheet = ActorSheet.load_actor(id)
 		sprite.sprite_frames = sheet.frames

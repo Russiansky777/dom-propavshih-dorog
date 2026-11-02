@@ -754,6 +754,7 @@ func _test_narration_puzzle() -> void:
 	await _enter("H3")
 	gs.set_flag("done_M04")
 	gs.add_item("door_hinges")
+	gs.add_item("door_drawing")   # 02.11 (стр. 8–10): the fit (M05) wants Dunya's drawing with the hinges
 	await _frames(2)
 	for k in ["H3.puzzle.intro", "H3.puzzle.error", "H3.puzzle.error_pieces", "H3.puzzle.error_mark", "H3.puzzle.success"]:
 		_ensure_key(k)
