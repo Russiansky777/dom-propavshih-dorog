@@ -1,0 +1,250 @@
+id	speaker	scene_room	context	prev	ru	max_len	en
+text:ui.not_built	ui	UI	интерфейс		Продолжение этой дороги появится в следующем эпизоде.	72	
+text:ui.closed_generic	ui	UI	интерфейс		Пока не пройти.	23	
+text:intro.opening_1	narrator	intro	opening_1 · где: menu: intro.keys.0		Агате восемнадцать. Она учится в уездном городе, а дома, в Ольховке, за рекой, остались мама и младший брат.		
+text:intro.opening_2	narrator	intro	opening_2 · где: menu: intro.keys.1		Год назад, в ночь паводка, вода унесла мост. С тех пор на тот берег не попасть: какую лодку ни пусти — приходит назад, к своему причалу.		
+text:intro.opening_3	narrator	intro	opening_3 · где: menu: intro.keys.2		Весь год Агата писала домой — и ни строчки в ответ. Этой осенью вода упала, и показалась старая опора моста. Агата едет в Заречье, в дом тёти Дуни: ближе к дому не подобраться. Она хочет сама понять, что стряслось с Ольховкой.		
+text:ui.item_no_effect	ui	UI	интерфейс		Сюда не подходит.	26	
+text:ui.nothing_here	ui	UI	интерфейс		Ничего нового.	22	
+text:ui.got_item	ui	UI	интерфейс		В сумке: {item}	23	
+text:ui.item_selected	ui	UI	интерфейс		Выбрано: {item} — щёлкнуть по месту, где его применить. Повторный щелчок по предмету отменит выбор.	132	
+text:ui.hint_generic_1	ui	UI	интерфейс		У вещей здесь есть что рассказать: осмотреть предметы, чьи названия появляются при наведении	123	
+text:ui.hint_generic_2	ui	UI	интерфейс		В журнале — нынешняя цель и всё, что уже удалось узнать	75	
+text:ui.hint_generic_3	ui	UI	интерфейс		Попробовать выйти из комнаты: у закрытого прохода будет сказано, почему туда пока нельзя	118	
+text:ui.hint_title	ui	UI	интерфейс		Подсказка {tier} из 3	31	
+text:ui.journal_title	ui	UI	интерфейс		Журнал	12	
+text:ui.journal_goal	ui	UI	интерфейс		Что дальше	17	
+text:ui.journal_facts	ui	UI	интерфейс		Что я знаю	17	
+text:ui.journal_empty	ui	UI	интерфейс		Пока ни одной записи.	31	
+text:ui.goal_start	ui	UI	интерфейс		Ключ от дома тёти Дуни, маминой сестры, хранится у Тамары на почте.	91	
+text:ui.button_journal	ui	UI	интерфейс		Журнал	12	
+text:ui.button_hint	ui	UI	интерфейс		Подсказка	15	
+text:ui.button_menu	ui	UI	интерфейс		Меню	12	
+text:ui.menu_title	ui	UI	интерфейс		Сохранения	17	
+text:ui.slot	ui	UI	интерфейс		Слот {n}	14	
+text:ui.slot_empty	ui	UI	интерфейс		Пусто	12	
+text:ui.save	ui	UI	интерфейс		Сохранить	15	
+text:ui.load	ui	UI	интерфейс		Загрузить	15	
+text:ui.delete	ui	UI	интерфейс		Удалить	13	
+text:ui.delete_confirm	ui	UI	интерфейс		Вы действительно хотите удалить это сохранение?	65	
+text:ui.delete_yes	ui	UI	интерфейс		Да, удалить	18	
+text:ui.delete_no	ui	UI	интерфейс		Нет, оставить	20	
+text:ui.saved_when	ui	UI	интерфейс		{date}, {time}	22	
+text:ui.new_game	ui	UI	интерфейс		Новая игра	17	
+text:ui.music_volume	ui	UI	интерфейс		Музыка	12	
+text:ui.sfx_volume	ui	UI	интерфейс		Звуки	12	
+text:ui.voice_volume	ui	UI	интерфейс		Голос	12	
+text:ui.close	ui	UI	интерфейс · где: rooms/H1: hotspots.nina_coat.view.close_label		Закрыть	13	
+text:ui.saved	ui	UI	интерфейс		Сохранено: {slot}	26	
+text:ui.loaded	ui	UI	интерфейс		Загружено: {slot}	26	
+text:ui.no_save	ui	UI	интерфейс		Здесь ещё нет сохранения.	36	
+text:ui.load_failed	ui	UI	интерфейс		Сохранение не прочиталось: файл повреждён или от другой версии игры.	92	
+text:ui.build_stamp	ui	UI	интерфейс		сборка {sha}{when}	27	
+text:ui.continue	ui	UI	интерфейс		Дальше	12	
+text:ui.inventory_empty	ui	UI	интерфейс		Сумка пуста	18	
+text:ui.busy	ui	UI	интерфейс		Разговор ещё не закончен.	36	
+text:ui.checkpoint_day2	ui	UI	интерфейс · где: scenes/E1: scenes.N01.checkpoint.title		День второй	18	
+text:Z1.counter.label	ui	Z1 Почта Тамары	«Почтовая стойка» (counter) · подпись при наведении (label)		Почтовая стойка	23	
+text:Z1.tamara.after	narrator	Z1 Почта Тамары	tamara · повторный разговор (after) · запасной закадровый вариант (звучит line) · где: rooms/Z1: hotspots.tamara.choice.options.leave.text		«Ключ у тебя, а я тут, на почте, — говорит Тамара. — Будет нужда — заходи».		
+text:Z1.tamara.after#line	tamara	Z1 Почта Тамары	tamara · повторный разговор (after) · реплика персонажа · где: rooms/Z1: hotspots.tamara.choice.options.leave.text		Ключ у тебя, а я тут, на почте. Будет нужда — заходи.		
+text:Z1.drawings.label	ui	Z1 Почта Тамары	«Два рисунка» (drawings) · подпись при наведении (label) · где: rooms/Z1: hotspots.drawings.label		Два рисунка	18	
+text:Z1.drawings.use	narrator	Z1 Почта Тамары	«Два рисунка» (drawings) · действие с объектом (use) · где: rooms/Z1: hotspots.drawings.use.text		На Дунином листе — опора моста у поворота; её рукой приписано: плита треснула, чинить надо. А на свежем рисунке Тамары от той же опоры — одна верхушка над водой.		
+text:Z1.drawings.look	narrator	Z1 Почта Тамары	«Два рисунка» (drawings) · осмотр (look) · где: rooms/Z1: hotspots.drawings.look		Старый Дунин лист и свежий Тамарин набросок — на обоих одна мостовая опора.		
+text:Z1.drawings.photo	narrator	Z1 Почта Тамары	«Два рисунка» (drawings) · photo · где: rooms/Z1: hotspots.drawings.item_use.photo_bridge.text		На старом снимке — та самая опора с Дуниного листа. И мостовой канат на её плите закреплён.		
+text:Z1.letters.label	ui	Z1 Почта Тамары	«Письма» (letters) · подпись при наведении (label) · где: rooms/Z1: hotspots.letters.label		Письма	12	
+text:Z1.letters.look	narrator	Z1 Почта Тамары	«Письма» (letters) · осмотр (look) · где: rooms/Z1: hotspots.letters.look		Письма по домам разобраны. Для Ольховки Тамара особо складывает — за год целый мешок набрался.		
+text:Z1.plan.label	ui	Z1 Почта Тамары	«План Заречья» (plan) · подпись при наведении (label) · где: rooms/Z1: hotspots.plan.label		План Заречья	19	
+text:Z1.plan.look	narrator	Z1 Почта Тамары	«План Заречья» (plan) · осмотр (look) · где: rooms/Z1: hotspots.plan.look		Почта, Дунин дом, спуск к воде, мельница. Береговой поворот карандашом отмечен.		
+text:Z1.exit_Z4.label	ui	Z1 Почта Тамары	выход → Z4 Переулок у почты · подпись при наведении (label) · где: rooms/Z1: exits.Z4.label		На улицу	14	
+text:Z1.exit_Z4.closed	agata	Z1 Почта Тамары	выход → Z4 Переулок у почты · закрытый выход: почему не пройти (closed) · где: rooms/Z1: exits.Z4.closed_text		Я ещё не поговорила с Тамарой, ключ-то у неё.		
+text:Z2.house.label	ui	Z2 Улица Заречья	«Дом тёти Дуни» (house) · подпись при наведении (label)		Дом тёти Дуни	20	
+text:Z2.mill_far.label	ui	Z2 Улица Заречья	«Дальняя мельница» (mill_far) · подпись при наведении (label)		Дальняя мельница	24	
+text:Z2.landmarks.label	ui	Z2 Улица Заречья	«Вид на Заречье» (landmarks) · подпись при наведении (label) · где: rooms/Z2: hotspots.landmarks.label		Вид на Заречье	22	
+text:Z2.landmarks.look	narrator	Z2 Улица Заречья	«Вид на Заречье» (landmarks) · осмотр (look) · где: rooms/Z2: hotspots.landmarks.look		Тут и мельничная крыша, и спуск к воде, а почта позади осталась.		
+text:Z2.exit_Z4.label	ui	Z2 Улица Заречья	выход → Z4 Переулок у почты · подпись при наведении (label) · где: rooms/Z2: exits.Z4.label		В переулок к почте	27	
+text:Z2.exit_H1.label	ui	Z2 Улица Заречья	выход → H1 Жилая комната · подпись при наведении (label) · где: rooms/Z2: exits.H1.states.0.label		На крыльцо дома	23	
+text:Z2.exit_H1.closed	agata	Z2 Улица Заречья	выход → H1 Жилая комната · закрытый выход: почему не пройти (closed) · где: rooms/Z2: exits.H1.states.1.closed_text		Заперто. Ключ от Дуниного дома у меня в сумке.		
+text:Z2.exit_H1.not_yet	narrator	Z2 Улица Заречья	выход → H1 Жилая комната · not_yet · запасной закадровый вариант (звучит line) · где: rooms/Z2: exits.H1.closed_text		Записи подождут. Сперва лодочницу спрошу — что за диковина такая.		
+text:Z2.exit_H1.not_yet#line	agata	Z2 Улица Заречья	выход → H1 Жилая комната · not_yet · реплика персонажа · где: rooms/Z2: exits.H1.closed_text		Записи подождут. Сперва лодочницу спрошу — что за диковина такая.		
+text:H1.dark_enter	agata	H1 Жилая комната	dark_enter · где: rooms/H1: on_enter.0.text		Темень — хоть глаз выколи.		
+text:Z2.exit_H1.label_unlock	ui	Z2 Улица Заречья	выход → H1 Жилая комната · подпись при наведении (другое состояние) (label_unlock) · где: rooms/Z2: exits.H1.label		Отпереть дверь	22	
+text:Z2.exit_H1.unlock_after	agata	Z2 Улица Заречья	выход → H1 Жилая комната · unlock_after		Теперь и отсюда в дом заходить смогу.		
+text:Z2.exit_H1.unlock	narrator	Z2 Улица Заречья	выход → H1 Жилая комната · unlock · где: rooms/Z2: exits.H1.item_use.key_house.text		Ключ теперь в двери, а дом опять открыт.		
+text:Z2.exit_M1.label	ui	Z2 Улица Заречья	выход → M1 Двор мельницы · подпись при наведении (label) · где: rooms/Z2: exits.M1.label		К мельнице	17	
+text:Z2.exit_M1.closed	agata	Z2 Улица Заречья	выход → M1 Двор мельницы · закрытый выход: почему не пройти (closed) · где: rooms/Z2: exits.M1.closed_text		Без ключа и в Дунин дом не войти. Сперва к Тамаре схожу.		
+text:Z2.exit_Z3.label	ui	Z2 Улица Заречья	выход → Z3 Береговой поворот · подпись при наведении (label)		К повороту	17	
+text:Z2.exit_Z3.closed	agata	Z2 Улица Заречья	выход → Z3 Береговой поворот · закрытый выход: почему не пройти (closed)		Тамара меня на почте ждёт. Не поговорив с ней, не уйду.		
+text:Z2.exit_R1.label	ui	Z2 Улица Заречья	выход → R1 Ближний причал · подпись при наведении (label) · где: rooms/Z2: exits.R1.label		Спуск к причалу	23	
+text:Z2.exit_R1.closed	agata	Z2 Улица Заречья	выход → R1 Ближний причал · закрытый выход: почему не пройти (closed) · где: rooms/Z2: exits.R1.closed_text		Сперва узнаю, что у Тамары. К причалу ещё поспею.		
+text:Z4.exit_Z1.label	ui	Z4 Переулок у почты	выход → Z1 Почта Тамары · подпись при наведении (label) · где: rooms/Z4: exits.Z1.label		На почту	14	
+text:Z4.exit_Z2.label	ui	Z4 Переулок у почты	выход → Z2 Улица Заречья · подпись при наведении (label) · где: rooms/Z4: exits.Z2.label		На улицу	14	
+text:Z4.exit_H3.label	ui	Z4 Переулок у почты	выход → H3 Галерея порогов · подпись при наведении (label) · где: rooms/Z4: exits.H3.label		Боковое крыльцо тётиного дома	41	
+text:Z4.exit_H3.closed	narrator	Z4 Переулок у почты	выход → H3 Галерея порогов · закрытый выход: почему не пройти (closed) · где: rooms/Z4: exits.H3.closed_text		Дверь можно отпереть только изнутри, из галереи.		
+text:Z4.post_sign.label	ui	Z4 Переулок у почты	«Вывеска почты» (post_sign) · подпись при наведении (label) · где: rooms/Z4: hotspots.post_sign.label		Вывеска почты	20	
+text:Z4.post_sign.look	narrator	Z4 Переулок у почты	«Вывеска почты» (post_sign) · осмотр (look) · где: rooms/Z4: hotspots.post_sign.look		«Почта». На старой доске буквы уж не раз подновляли.		
+text:Z4.lantern.label	ui	Z4 Переулок у почты	«Фонарь над дверью» (lantern) · подпись при наведении (label) · где: rooms/Z4: hotspots.lantern.label		Фонарь над дверью	26	
+text:Z4.lantern.look	narrator	Z4 Переулок у почты	«Фонарь над дверью» (lantern) · осмотр (look) · где: rooms/Z4: hotspots.lantern.look		От мороси стекло покрылось мелкими каплями.		
+text:Z3.water.label	ui	Z3 Береговой поворот	«Пруд» (water) · подпись при наведении (label)		Пруд	12	
+text:Z3.old_pier_base.label	ui	Z3 Береговой поворот	«Опора моста» (old_pier_base) · подпись при наведении (label) · где: rooms/Z3: hotspots.old_pier_base.label		Опора моста	18	
+text:Z3.old_pier_base.look	narrator	Z3 Береговой поворот	«Опора моста» (old_pier_base) · осмотр (look) · где: rooms/Z3: hotspots.old_pier_base.look		Мостовая опора — та самая, с Дуниного листа. Вода спала, верхушка показалась. Ниже, под водой, — плита с кольцом. За него держался мостовой канат — ближний конец дороги на тот берег. Отсюда плиты не разглядеть.		
+text:Z3.old_pier_base.look_early	narrator	Z3 Береговой поворот	«Опора моста» (old_pier_base) · осмотр (look_early) · где: rooms/Z3: hotspots.old_pier_base.states.0.look		Мостовая опора — та самая, с Дуниного листа. Вода спала, верхушка показалась. Плита с трещиной, что на листе, — ниже, под водой. Отсюда её не разглядеть.		
+text:Z3.old_pier_base.photo	narrator	Z3 Береговой поворот	«Опора моста» (old_pier_base) · photo · где: rooms/Z3: hotspots.old_pier_base.item_use.photo_bridge.text		На снимке канат за плиту этой опоры закреплён. Нынче плита под водой.		
+text:M4.sluice.done	narrator	M4 Затвор	sluice · после выбора (done) · запасной закадровый вариант (звучит line) · где: rooms/M4: hotspots.gate.mechanic.events.opened.text		Получилось! Пошла вода.		
+text:M4.sluice.done#line	agata	M4 Затвор	sluice · после выбора (done) · реплика персонажа · где: rooms/M4: hotspots.gate.mechanic.events.opened.text		Получилось! Пошла вода.		
+text:Z3.plate.brace_high	narrator	Z3 Береговой поворот	«Камень на берегу» (plate) · brace_high · запасной закадровый вариант (звучит line) · где: rooms/Z3: hotspots.old_pier_base.item_use.brace_plate.text		До плиты сейчас не достать — вода высоко. Сперва бы её спустить.		
+text:Z3.plate.brace_high#line	agata	Z3 Береговой поворот	«Камень на берегу» (plate) · brace_high · реплика персонажа · где: rooms/Z3: hotspots.old_pier_base.item_use.brace_plate.text		До плиты сейчас не достать — вода высоко. Сперва бы её спустить.		
+text:Z3.plate.label	ui	Z3 Береговой поворот	«Камень на берегу» (plate) · подпись при наведении (label) · где: rooms/Z3: hotspots.plate.label		Камень на берегу	24	
+text:Z3.plate.look	narrator	Z3 Береговой поворот	«Камень на берегу» (plate) · осмотр (look) · где: rooms/Z3: hotspots.plate.look		У воды — большой замшелый камень. А плита с Дуниного листа не здесь: на опоре она, под водой.		
+text:Z3.exit_Z2.label	ui	Z3 Береговой поворот	выход → Z2 Улица Заречья · подпись при наведении (label)		На улицу	14	
+text:Z3.exit_R1.label	ui	Z3 Береговой поворот	выход → R1 Ближний причал · подпись при наведении (label) · где: rooms/Z3: exits.R1.label		К причалу	15	
+text:R1.water.label	ui	R1 Ближний причал	«Пруд» (water) · подпись при наведении (label)		Пруд	12	
+text:R1.pier.label	ui	R1 Ближний причал	«Ближний причал» (pier) · подпись при наведении (label)		Ближний причал	22	
+text:R1.pelageya.after	narrator	R1 Ближний причал	pelageya · повторный разговор (after) · запасной закадровый вариант (звучит line) · где: rooms/R1: hotspots.pelageya.choice.options.leave.text		«Без плиты, как видишь, лодку сюда же и вернёт, — говорит Пелагея. — А я, коль понадоблюсь, — у лодки буду».		
+text:R1.pelageya.after#line	pelageya	R1 Ближний причал	pelageya · повторный разговор (after) · реплика персонажа · где: rooms/R1: hotspots.pelageya.choice.options.leave.text		Без плиты, как видишь, лодку сюда же и вернёт. А я, коль понадоблюсь, — у лодки буду.		
+text:R1.boat.label	ui	R1 Ближний причал	«Лодка Пелагеи» (boat) · подпись при наведении (label) · где: rooms/R1: hotspots.boat.label		Лодка Пелагеи	20	
+text:R1.boat.look	narrator	R1 Ближний причал	«Лодка Пелагеи» (boat) · осмотр (look)		Лодка цела, вёсла на месте. Только куда ни плыви — опять к этому причалу вынесет.		
+text:R1.rope.label	ui	R1 Ближний причал	«Канат моста» (rope) · подпись при наведении (label) · где: rooms/R1: hotspots.rope.label		Канат моста	18	
+text:R1.rope.use	narrator	R1 Ближний причал	«Канат моста» (rope) · действие с объектом (use) · где: rooms/R1: hotspots.rope.use.text		Канат от моста, от поручня. Мост у поворота стоял — там этот конец на плите опоры и сидел. Пелагея его к своему стопору перевязала: держит, а дороги нет.		
+text:R1.rope.look	narrator	R1 Ближний причал	«Канат моста» (rope) · осмотр (look) · где: rooms/R1: hotspots.rope.look		Канат от моста, от поручня. Мост у поворота стоял — там этот конец на плите опоры и сидел. Пелагея его к своему стопору перевязала: держит, а дороги нет.		
+text:R1.rope.photo	narrator	R1 Ближний причал	«Канат моста» (rope) · photo · где: rooms/R1: hotspots.rope.item_use.photo_bridge.text		На снимке канат не за стопор держится — за плиту опоры.		
+text:R1.lantern.label	ui	R1 Ближний причал	«Сигнальный фонарь» (lantern) · подпись при наведении (label) · где: rooms/R1: hotspots.lantern.label		Сигнальный фонарь	26	
+text:R1.lantern.use	narrator	R1 Ближний причал	«Сигнальный фонарь» (lantern) · действие с объектом (use) · где: rooms/R1: hotspots.lantern.use.text		Фонарь в гнезде стоит: стекло чисто, фитиль сух. Видно, приглядывают за ним.		
+text:R1.lantern.look	narrator	R1 Ближний причал	«Сигнальный фонарь» (lantern) · осмотр (look) · где: rooms/R1: hotspots.lantern.look		Этим фонарём на тот берег знак подают.		
+text:R1.instruction.label	ui	R1 Ближний причал	«Порядок сигналов» (instruction) · подпись при наведении (label) · где: rooms/R1: hotspots.instruction.label		Порядок сигналов	24	
+text:R1.instruction.use	narrator	R1 Ближний причал	«Порядок сигналов» (instruction) · действие с объектом (use) · где: rooms/R1: hotspots.instruction.use.text		На дощечке расписано, как фонарём сигналить и как с того берега отвечать. Только за целый год оттуда ни одного ответа.		
+text:R1.instruction.paper_title	written	R1 Ближний причал	«Порядок сигналов» (instruction) · текст листа крупного плана (paper_title) · где: rooms/R1: hotspots.instruction.view.papers.0.blocks.0.title		Порядок сигналов		
+text:R1.instruction.paper	narrator	R1 Ближний причал	«Порядок сигналов» (instruction) · paper · где: rooms/R1: hotspots.instruction.view.papers.0.blocks.1.text		Как стемнеет, подавать с причала знаки фонарём.\n\nОдин огонь — пускай.\nДва огня — стой.\nДолгий огонь — подымай.\nТри огня — живые: есть кто на берегу.\n\nС того берега отвечать тем же.		
+text:R1.instruction.board	narrator	R1 Ближний причал	«Порядок сигналов» (instruction) · board		Порядок сигналов: один огонь — пускай, два огня — стой, долгий — подымай. Три огня — живые.		
+text:R1.instruction.paper_carving	written	R1 Ближний причал	«Порядок сигналов» (instruction) · текст листа крупного плана (paper_carving) · где: rooms/R1: layers.signal_board_text.text		Порядок сигналов\nОдин — пускай.\nДва — стой.\nДолгий — подымай.\nТри — живые.		
+text:R1.instruction.look	narrator	R1 Ближний причал	«Порядок сигналов» (instruction) · осмотр (look) · где: rooms/R1: hotspots.instruction.look		Дощечка: как сигналы подавать.		
+text:R1.exit_Z3.label	ui	R1 Ближний причал	выход → Z3 Береговой поворот · подпись при наведении (label) · где: rooms/R1: exits.Z3.label		Вдоль берега к повороту	33	
+text:R1.exit_Z2.label	ui	R1 Ближний причал	выход → Z2 Улица Заречья · подпись при наведении (label) · где: rooms/R1: exits.Z2.label		Подъём к улице	22	
+text:R1.exit_Z2.closed	agata	R1 Ближний причал	выход → Z2 Улица Заречья · закрытый выход: почему не пройти (closed) · где: rooms/R1: exits.Z2.closed_text		Тамара меня всё ещё на почте дожидается.		
+text:R1.exit_R2.label	ui	R1 Ближний причал	выход → R2 Переправа · подпись при наведении (label) · где: rooms/Z3: exits.R2.label		В лодку	13	
+text:R1.exit_R2.closed	narrator	R1 Ближний причал	выход → R2 Переправа · закрытый выход: почему не пройти (closed) · запасной закадровый вариант (звучит line) · где: rooms/R1: hotspots.boat.states.0.look		Без дороги лодку назад к причалу вынесет. А дороги нет, пока канат за кольцо плиты не закреплён.		
+text:R1.exit_R2.closed#line	agata	R1 Ближний причал	выход → R2 Переправа · закрытый выход: почему не пройти (closed) · реплика персонажа · где: rooms/R1: hotspots.boat.states.0.look		Без дороги лодку назад к причалу вынесет. А дороги нет, пока канат за кольцо плиты не закреплён.		
+text:R1.exit_R2.closed_first	narrator	R1 Ближний причал	выход → R2 Переправа · закрытый выход: почему не пройти (closed_first) · запасной закадровый вариант (звучит line) · где: rooms/R1: hotspots.boat.look		Сперва с лодочницей поговорю.		
+text:R1.exit_R2.closed_first#line	agata	R1 Ближний причал	выход → R2 Переправа · закрытый выход: почему не пройти (closed_first) · реплика персонажа · где: rooms/R1: hotspots.boat.look		Сперва с лодочницей поговорю.		
+text:R1.boat.look_no_plan	narrator	R1 Ближний причал	«Лодка Пелагеи» (boat) · осмотр (look_no_plan) · запасной закадровый вариант (звучит line) · где: rooms/R1: hotspots.boat.states.1.look		Лодку к нашему причалу вернёт. Сперва надо понять, как дорогу вернуть.		
+text:R1.boat.look_no_plan#line	agata	R1 Ближний причал	«Лодка Пелагеи» (boat) · осмотр (look_no_plan) · реплика персонажа · где: rooms/R1: hotspots.boat.states.1.look		Лодку к нашему причалу вернёт. Сперва надо понять, как дорогу вернуть.		
+text:H1.table.label	ui	H1 Жилая комната	«Стол» (table) · подпись при наведении (label)		Стол	12	
+text:H1.stove.label	ui	H1 Жилая комната	«Печь» (stove) · подпись при наведении (label) · где: rooms/H1: hotspots.stove.label		Печь	12	
+text:H1.stove.label_lit	ui	H1 Жилая комната	«Печь» (stove) · подпись при наведении (другое состояние) (label_lit) · где: rooms/H1: hotspots.stove.states.0.label		Топящаяся печь	22	
+text:H1.stove.use	narrator	H1 Жилая комната	«Печь» (stove) · действие с объектом (use) · где: rooms/H1: hotspots.stove.use.text		Рядом сухие дрова были сложены. В печи сразу занялись.		
+text:H1.stove.look	narrator	H1 Жилая комната	«Печь» (stove) · осмотр (look) · где: rooms/H1: hotspots.stove.look		Печь с лежанкой — Тихоново место. Сбоку, в побелке, старые гнёзда креплений для полки.		
+text:H1.stove.look_settled	narrator	H1 Жилая комната	«Печь» (stove) · осмотр (look_settled) · где: rooms/H1: hotspots.stove.states.0.look		Ровно топится печь, лежанка — сухая. Тихон уже улёгся — теперь до утра с места не сгонишь.		
+text:H1.shutter.label	ui	H1 Жилая комната	«Ставня» (shutter) · подпись при наведении (label) · где: rooms/H1: hotspots.shutter.label		Ставня	12	
+text:H1.shutter.label_open	ui	H1 Жилая комната	«Ставня» (shutter) · подпись при наведении (другое состояние) (label_open) · где: rooms/H1: hotspots.shutter.states.0.label		Открытая ставня	23	
+text:H1.shutter.use	narrator	H1 Жилая комната	«Ставня» (shutter) · действие с объектом (use) · где: rooms/H1: hotspots.shutter.use.text		Подалась ставня, светлее стало в комнате.		
+text:H1.shutter.look	narrator	H1 Жилая комната	«Ставня» (shutter) · осмотр (look) · где: rooms/H1: hotspots.shutter.look		У окна — тяжёлая деревянная ставня.		
+text:H1.scarf.label	ui	H1 Жилая комната	«Мокрый платок» (scarf) · подпись при наведении (label) · где: rooms/H1: hotspots.scarf.label		Мокрый платок	20	
+text:H1.scarf.use	narrator	H1 Жилая комната	«Мокрый платок» (scarf) · действие с объектом (use) · где: rooms/H1: hotspots.scarf.use.text.0		На крючке у двери платок просохнет. Так-то лучше.		
+text:H1.scarf.look	narrator	H1 Жилая комната	«Мокрый платок» (scarf) · осмотр (look) · где: rooms/H1: hotspots.scarf.look		Насквозь платок вымок. Повешу-ка его сушиться.		
+text:H1.tikhon.look	narrator	H1 Жилая комната	tikhon · осмотр (look) · где: rooms/H1: hotspots.tikhon.look		Тихон дежурит [[подле|возле]] печи. С таким видом, будто без него печи не обойтись.		
+text:H1.tikhon.prompt	narrator	H1 Жилая комната	tikhon · вопрос выбора (prompt) · где: rooms/H1: hotspots.tikhon.choice.prompt		О чём бы Тихона спросить?		
+text:H1.tikhon.opt_door	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_door) · где: rooms/H1: hotspots.tikhon.choice.options.door.label		Что за дверь в галерее?	33	
+text:H1.tikhon.opt_bundle	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_bundle) · где: rooms/H1: hotspots.tikhon.choice.options.bundle.label		Что в тряпке на верстаке?	36	
+text:H1.tikhon.opt_bell	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_bell) · где: rooms/H1: hotspots.tikhon.choice.options.bell.label		А колокол в мастерской?	33	
+text:H1.tikhon.opt_leave	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_leave) · где: rooms/H1: hotspots.tikhon.choice.options.leave.label		Ничего. Дежурь.	23	
+text:H1.tikhon.opt_spoons	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_spoons) · где: rooms/H1: hotspots.tikhon.choice.options.spoons.label		Постучим ложечками?	28	
+text:H1.tikhon.spoons_q	narrator	H1 Жилая комната	tikhon · spoons_q · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.spoons.text		Тихон, постучим ложечками? Кто кого перестучит.		
+text:H1.tikhon.spoons_q#line	agata	H1 Жилая комната	tikhon · spoons_q · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.spoons.text		Тихон, постучим ложечками? Кто кого перестучит.		
+text:H1.tikhon.spoons_a	narrator	H1 Жилая комната	tikhon · spoons_a · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.spoons.then.0		Перестучит она… Ну, слушай. Повторишь — поглядим.		
+text:H1.tikhon.spoons_a#line	tikhon	H1 Жилая комната	tikhon · spoons_a · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.spoons.then.0		Перестучит она… Ну, слушай. Повторишь — поглядим.		
+text:H1.tikhon.spoons_done	narrator	H1 Жилая комната	tikhon · spoons_done · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.spoons.mechanic.events.done.text		Сойдёт. За такое бы сметанки… да где ж её взять.		
+text:H1.tikhon.spoons_done#line	tikhon	H1 Жилая комната	tikhon · spoons_done · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.spoons.mechanic.events.done.text		Сойдёт. За такое бы сметанки… да где ж её взять.		
+text:H1.tikhon.spoons_quit	narrator	H1 Жилая комната	tikhon · spoons_quit · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.spoons.mechanic.events.quit.text		Устала? То-то. Это тебе не на печи лежать.		
+text:H1.tikhon.spoons_quit#line	tikhon	H1 Жилая комната	tikhon · spoons_quit · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.spoons.mechanic.events.quit.text		Устала? То-то. Это тебе не на печи лежать.		
+text:H1.tikhon.door	narrator	H1 Жилая комната	tikhon · door · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.door.text		«Из школы дверь, — ворчит Тихон. — Нина просила».		
+text:H1.tikhon.door#line	tikhon	H1 Жилая комната	tikhon · door · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.door.text		Из школы дверь — Нина просила.		
+text:H1.tikhon.bundle	narrator	H1 Жилая комната	tikhon · bundle · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.bundle.text		«На верстаке, в тряпке — Нинино зеркало, — ворчит Тихон. — Не тронь: рама на честном слове держится».		
+text:H1.tikhon.bundle#line	tikhon	H1 Жилая комната	tikhon · bundle · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.bundle.text		На верстаке, в тряпке — Нинино зеркало. Не тронь: рама на честном слове держится.		
+text:H1.tikhon.bell	narrator	H1 Жилая комната	tikhon · bell · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.bell.text		«С мельницы колокол, — ворчит Тихон. — Дурной он. Не здесь звенит».		
+text:H1.tikhon.bell#line	tikhon	H1 Жилая комната	tikhon · bell · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.bell.text		С мельницы колокол. Дурной он. Не здесь звенит.		
+text:H1.tikhon.leave	narrator	H1 Жилая комната	tikhon · leave · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.leave.text		«Не сплю я, — ворчит Тихон. — Лёжа дежурю».		
+text:H1.tikhon.leave#line	tikhon	H1 Жилая комната	tikhon · leave · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.leave.text		Не сплю я. Лёжа дежурю.		
+text:H1.tikhon.ask_shelf	narrator	H1 Жилая комната	tikhon · ask_shelf · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.talk.intro.1.text		«Полку-то повесишь? Вон она, на лежанке лежит. Сам я её, что ли, лапами прибью?» — ворчит Тихон.		
+text:H1.tikhon.ask_shelf#line	tikhon	H1 Жилая комната	tikhon · ask_shelf · реплика персонажа · где: rooms/H1: hotspots.tikhon.talk.intro.1.text		Полку-то повесишь? Вон она, на лежанке лежит. Сам я её, что ли, лапами прибью?		
+text:H1.tikhon.first_who	narrator	H1 Жилая комната	tikhon · first_who · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.talk.intro.0.text		«Кто там топчется?..» — ворчит кто-то из кресла.		
+text:H1.tikhon.first_who#line	tikhon	H1 Жилая комната	tikhon · first_who · реплика персонажа · где: rooms/H1: hotspots.tikhon.talk.intro.0.text		Кто там топчется?..		
+text:H1.tikhon.first_ask	narrator	H1 Жилая комната	tikhon · first_ask · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.talk.intro.0.then.0		Ой!.. А ты кто такой будешь?		
+text:H1.tikhon.first_ask#line	agata	H1 Жилая комната	tikhon · first_ask · реплика персонажа · где: rooms/H1: hotspots.tikhon.talk.intro.0.then.0		Ой!.. А ты кто такой будешь?		
+text:H1.tikhon.first_name	narrator	H1 Жилая комната	tikhon · first_name · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.talk.intro.0.then.1		«Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла».		
+text:H1.tikhon.first_name#line	tikhon	H1 Жилая комната	tikhon · first_name · реплика персонажа · где: rooms/H1: hotspots.tikhon.talk.intro.0.then.1		Тихон. При печи смотрителем состою. Должность хлопотная: лежи да гляди, чтоб не остыла.		
+text:H1.tikhon.first_alone	narrator	H1 Жилая комната	tikhon · first_alone · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.talk.intro.0.then.2		А ты один здесь?		
+text:H1.tikhon.first_alone#line	agata	H1 Жилая комната	tikhon · first_alone · реплика персонажа · где: rooms/H1: hotspots.tikhon.talk.intro.0.then.2		А ты один здесь?		
+text:H1.tikhon.first_stove	narrator	H1 Жилая комната	tikhon · first_stove · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.talk.intro.0.then.3		«И печь тут, [[вестимо|конечно]]».		
+text:H1.tikhon.first_stove#line	tikhon	H1 Жилая комната	tikhon · first_stove · реплика персонажа · где: rooms/H1: hotspots.tikhon.talk.intro.0.then.3		И печь тут, [[вестимо|конечно]].		
+text:H1.tikhon.before_met_shutter	narrator	H1 Жилая комната	tikhon · до разговора (before_met_shutter) · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.states.3.fail_text		«Затопила — и ладно. Теперь ставню открой: темень, как в подпечье», — ворчит Тихон.		
+text:H1.tikhon.before_met_shutter#line	tikhon	H1 Жилая комната	tikhon · до разговора (before_met_shutter) · реплика персонажа · где: rooms/H1: hotspots.tikhon.states.3.fail_text		Затопила — и ладно. Теперь ставню открой: темень, как в подпечье.		
+text:H1.tikhon.before_met_scarf	narrator	H1 Жилая комната	tikhon · до разговора (before_met_scarf) · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.states.2.fail_text		«Платок-то мокрый с лежанки прибери. От него сырость на всю избу», — ворчит Тихон.		
+text:H1.tikhon.before_met_scarf#line	tikhon	H1 Жилая комната	tikhon · до разговора (before_met_scarf) · реплика персонажа · где: rooms/H1: hotspots.tikhon.states.2.fail_text		Платок-то мокрый с лежанки прибери. От него сырость на всю избу.		
+text:H1.tikhon.before_met	narrator	H1 Жилая комната	tikhon · до разговора (before_met) · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.fail_text		«Сыро. Печь сперва затопи — потом поговорим», — ворчит Тихон.		
+text:H1.tikhon.before_met#line	tikhon	H1 Жилая комната	tikhon · до разговора (before_met) · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.fail_text		Сыро. Печь сперва затопи — потом поговорим.		
+text:H1.tikhon.opt_mend	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_mend) · где: rooms/H1: hotspots.tikhon.choice.options.dunya_mend.label		Тётя много чинила?	27	
+text:H1.tikhon.mend	narrator	H1 Жилая комната	tikhon · mend · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.dunya_mend.text		«Всё чинила, что люди несли: двери, зеркала, колокол вон. Говорила: вещь своё место помнит, ей только помочь надо. А мне полку год повесить не могла» — ворчит Тихон.		
+text:H1.tikhon.mend#line	tikhon	H1 Жилая комната	tikhon · mend · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.dunya_mend.text		Всё чинила, что люди несли: двери, зеркала, колокол вон. Говорила: вещь своё место помнит, ей только помочь надо. А мне полку год повесить не могла.		
+text:H1.tikhon.opt_tamara	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_tamara) · где: rooms/H1: hotspots.tikhon.choice.options.tamara.label		Тамара тебя кормила?	30	
+text:H1.tikhon.tamara	narrator	H1 Жилая комната	tikhon · tamara · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.tamara.text		«По средам. Щи, каша, по праздникам — пирог с рыбой. Добрая женщина. Только солит скупо» — ворчит Тихон.		
+text:H1.tikhon.tamara#line	tikhon	H1 Жилая комната	tikhon · tamara · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.tamara.text		По средам. Щи, каша, по праздникам — пирог с рыбой. Добрая женщина. Только солит скупо.		
+text:H1.tikhon.opt_night	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_night) · где: rooms/H1: hotspots.tikhon.choice.options.night.label		Ты всю ночь караулил?	31	
+text:H1.tikhon.night	narrator	H1 Жилая комната	tikhon · night · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.night.text		«Всю ночь. Глаз не сомкнул. Ну, один сомкнул — второй-то дежурил. Мне и лёжа [[сподручно|удобно]]» — ворчит Тихон.		
+text:H1.tikhon.night#line	tikhon	H1 Жилая комната	tikhon · night · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.night.text		Всю ночь. Глаз не сомкнул. Ну, один сомкнул — второй-то дежурил. Мне и лёжа [[сподручно|удобно]].		
+text:H1.tikhon.opt_stove_mirror	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_stove_mirror) · где: rooms/H1: hotspots.tikhon.choice.options.stove_mirror.label		А что у тёти над печью висело?	43	
+text:H1.tikhon.stove_mirror	narrator	H1 Жилая комната	tikhon · stove_mirror · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.stove_mirror.text		«Зеркальце висело, круглое, в деревянной оправе. Хозяйка в тот день сняла, в платок завернула — сестре, говорит, гостинец. С ним и ушла» — ворчит Тихон.		
+text:H1.tikhon.stove_mirror#line	tikhon	H1 Жилая комната	tikhon · stove_mirror · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.stove_mirror.text		Зеркальце висело, круглое, в деревянной оправе. Хозяйка в тот день сняла, в платок завернула — сестре, говорит, гостинец. С ним и ушла.		
+text:H1.tikhon.opt_water	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_water) · где: rooms/H1: hotspots.tikhon.choice.options.water.label		Вода сходит. А ты всё лежишь?	41	
+text:H1.tikhon.water	narrator	H1 Жилая комната	tikhon · water · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.water.text		«Сходит — и пусть себе сходит, без тебя управится. А мне бы у печи полежать спокойно: то в доме сырость, то колокол трезвонит. И это ты ещё только приехала! …Струбцину-то зачем таскаешь? Мамино зеркало твоё на верстаке, в тряпице, — рама там на честном слове» — ворчит Тихон.		
+text:H1.tikhon.water#line	tikhon	H1 Жилая комната	tikhon · water · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.water.text		Сходит — и пусть себе сходит, без тебя управится. А мне бы у печи полежать спокойно: то в доме сырость, то колокол трезвонит. И это ты ещё только приехала! …Струбцину-то зачем таскаешь? Мамино зеркало твоё на верстаке, в тряпице, — рама там на честном слове.		
+text:H1.tikhon.opt_nina	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_nina) · где: rooms/H1: hotspots.tikhon.choice.options.nina.label		Ты маму мою знал?	26	
+text:H1.tikhon.nina	narrator	H1 Жилая комната	tikhon · nina · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.nina.text		«Нину-то? Девчонкой ещё помню, с косами, как у тебя. К хозяйке по субботам ходила. Пирогов ни разу не принесла — до сих пор помню» — ворчит Тихон.		
+text:H1.tikhon.nina#line	tikhon	H1 Жилая комната	tikhon · nina · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.nina.text		Нину-то? Девчонкой ещё помню, с косами, как у тебя. К хозяйке по субботам ходила. Пирогов ни разу не принесла — до сих пор помню.		
+text:H1.tikhon.opt_after_dunya	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_after_dunya) · где: rooms/H1: hotspots.tikhon.choice.options.after_dunya.label		Как ты, Тихон?	22	
+text:H1.tikhon.after_dunya	narrator	H1 Жилая комната	tikhon · повторный разговор (after_dunya) · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.after_dunya.text		«Лежу. Ждать некого — так просто лежу. Печь топится, кастрюля на месте… Хозяйка бы сказала: и то ладно» — ворчит Тихон.		
+text:H1.tikhon.after_dunya#line	tikhon	H1 Жилая комната	tikhon · повторный разговор (after_dunya) · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.after_dunya.text		Лежу. Ждать некого — так просто лежу. Печь топится, кастрюля на месте… Хозяйка бы сказала: и то ладно.		
+text:H1.tikhon.opt_cream	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_cream) · где: rooms/H1: hotspots.tikhon.choice.options.cream.label		Тётя тебя часто бранила?	35	
+text:H1.tikhon.cream	narrator	H1 Жилая комната	tikhon · cream · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.cream.text		«Если сметану находила» — ворчит Тихон.		
+text:H1.tikhon.cream#line	tikhon	H1 Жилая комната	tikhon · cream · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.cream.text		Если сметану находила.		
+text:H1.tikhon.cream_2	narrator	H1 Жилая комната	tikhon · cream_2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.cream.then.0		Где?		
+text:H1.tikhon.cream_2#line	agata	H1 Жилая комната	tikhon · cream_2 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.cream.then.0		Где?		
+text:H1.tikhon.cream_3	narrator	H1 Жилая комната	tikhon · cream_3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.cream.then.1		«На усах. В горшке уже нечего было искать» — ворчит Тихон.		
+text:H1.tikhon.cream_3#line	tikhon	H1 Жилая комната	tikhon · cream_3 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.cream.then.1		На усах. В горшке уже нечего было искать.		
+text:H1.tikhon.opt_supper	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_supper) · где: rooms/H1: hotspots.tikhon.choice.options.supper.label		Тётя за ужином тоже о починках толковала?	57	
+text:H1.tikhon.supper	narrator	H1 Жилая комната	tikhon · supper · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.supper.text		«За ужином она велела помалкивать» — ворчит Тихон.		
+text:H1.tikhon.supper#line	tikhon	H1 Жилая комната	tikhon · supper · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.supper.text		За ужином она велела помалкивать.		
+text:H1.tikhon.supper_2	narrator	H1 Жилая комната	tikhon · supper_2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.supper.then.0		И ты слушался?		
+text:H1.tikhon.supper_2#line	agata	H1 Жилая комната	tikhon · supper_2 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.supper.then.0		И ты слушался?		
+text:H1.tikhon.supper_3	narrator	H1 Жилая комната	tikhon · supper_3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.supper.then.1		«С полным ртом — охотно» — ворчит Тихон.		
+text:H1.tikhon.supper_3#line	tikhon	H1 Жилая комната	tikhon · supper_3 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.supper.then.1		С полным ртом — охотно.		
+text:H1.tikhon.opt_tea	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_tea) · где: rooms/H1: hotspots.tikhon.choice.options.tea.label		Матушка и здесь уроки спрашивала?	46	
+text:H1.tikhon.tea	narrator	H1 Жилая комната	tikhon · tea · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.tea.text		«Здесь ей Дуня выговоры делала» — ворчит Тихон.		
+text:H1.tikhon.tea#line	tikhon	H1 Жилая комната	tikhon · tea · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.tea.text		Здесь ей Дуня выговоры делала.		
+text:H1.tikhon.tea_2	narrator	H1 Жилая комната	tikhon · tea_2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.tea.then.0		За что?		
+text:H1.tikhon.tea_2#line	agata	H1 Жилая комната	tikhon · tea_2 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.tea.then.0		За что?		
+text:H1.tikhon.tea_3	narrator	H1 Жилая комната	tikhon · tea_3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.tea.then.1		«Чай у неё остывал, покуда она с тетрадями возилась», — ворчит Тихон.		
+text:H1.tikhon.tea_3#line	tikhon	H1 Жилая комната	tikhon · tea_3 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.tea.then.1		Чай у неё остывал, покуда она с тетрадями возилась.		
+text:H1.tikhon.opt_snow	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_snow) · где: rooms/H1: hotspots.tikhon.choice.options.snow.label		В классе снег за окнами. А здесь дождь…	54	
+text:H1.tikhon.snow	narrator	H1 Жилая комната	tikhon · snow · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.snow.text		«Мокрые лапы и там и тут» — ворчит Тихон.		
+text:H1.tikhon.snow#line	tikhon	H1 Жилая комната	tikhon · snow · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.snow.text		Мокрые лапы и там и тут.		
+text:H1.tikhon.snow_2	narrator	H1 Жилая комната	tikhon · snow_2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.snow.then.0		Тебя этим не удивишь?		
+text:H1.tikhon.snow_2#line	agata	H1 Жилая комната	tikhon · snow_2 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.snow.then.0		Тебя этим не удивишь?		
+text:H1.tikhon.snow_3	narrator	H1 Жилая комната	tikhon · snow_3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.snow.then.1		«Удивить можно. Пирогом без начинки» — ворчит Тихон.		
+text:H1.tikhon.snow_3#line	tikhon	H1 Жилая комната	tikhon · snow_3 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.snow.then.1		Удивить можно. Пирогом без начинки.		
+text:H1.tikhon.opt_duty	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_duty) · где: rooms/H1: hotspots.tikhon.choice.options.duty.label		Ты весь дом караулишь или одну кастрюлю?	56	
+text:H1.tikhon.duty	narrator	H1 Жилая комната	tikhon · duty · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.duty.text		«Весь дом. Кастрюля в него входит» — ворчит Тихон.		
+text:H1.tikhon.duty#line	tikhon	H1 Жилая комната	tikhon · duty · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.duty.text		Весь дом. Кастрюля в него входит.		
+text:H1.tikhon.duty_2	narrator	H1 Жилая комната	tikhon · duty_2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.duty.then.0		Достойная служба.		
+text:H1.tikhon.duty_2#line	agata	H1 Жилая комната	tikhon · duty_2 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.duty.then.0		Достойная служба.		
+text:H1.tikhon.duty_3	narrator	H1 Жилая комната	tikhon · duty_3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.duty.then.1		«Тяжёлая. Потому и лежу» — ворчит Тихон.		
+text:H1.tikhon.duty_3#line	tikhon	H1 Жилая комната	tikhon · duty_3 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.duty.then.1		Тяжёлая. Потому и лежу.		
+text:H1.tikhon.opt_quiet	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_quiet) · где: rooms/H1: hotspots.tikhon.choice.options.quiet.label		У тебя тут тихо. После мельницы в ушах шумит.	62	
+text:H1.tikhon.quiet	narrator	H1 Жилая комната	tikhon · quiet · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.quiet.text		«Дуня тоже любила у печи помолчать» — ворчит Тихон.		
+text:H1.tikhon.quiet#line	tikhon	H1 Жилая комната	tikhon · quiet · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.quiet.text		Дуня тоже любила у печи помолчать.		
+text:H1.tikhon.quiet_2	narrator	H1 Жилая комната	tikhon · quiet_2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.quiet.then.0		А ты ей давал?		
+text:H1.tikhon.quiet_2#line	agata	H1 Жилая комната	tikhon · quiet_2 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.quiet.then.0		А ты ей давал?		
+text:H1.tikhon.quiet_3	narrator	H1 Жилая комната	tikhon · quiet_3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.quiet.then.1		«Давал. Ворчал только по делу. Раз в час, не чаще» — ворчит Тихон.		
+text:H1.tikhon.quiet_3#line	tikhon	H1 Жилая комната	tikhon · quiet_3 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.quiet.then.1		Давал. Ворчал только по делу. Раз в час, не чаще.		
+text:H1.tikhon.opt_hear	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_hear) · где: rooms/H1: hotspots.tikhon.choice.options.hear.label		Матушкин голос бы услышать…	39	
+text:H1.tikhon.hear	narrator	H1 Жилая комната	tikhon · hear · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.hear.text		«Всё одно отругает. Хоть и выросла» — ворчит Тихон.		
+text:H1.tikhon.hear#line	tikhon	H1 Жилая комната	tikhon · hear · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.hear.text		Всё одно отругает. Хоть и выросла.		
+text:H1.tikhon.hear_2	narrator	H1 Жилая комната	tikhon · hear_2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.hear.then.0		Пусть. Только бы услышать.		

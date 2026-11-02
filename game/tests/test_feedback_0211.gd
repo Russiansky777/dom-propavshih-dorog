@@ -225,7 +225,9 @@ func _test_shelf() -> void:
 	var used := img.get_used_rect()
 	var left := _top_at(img, used.position.x + 12)
 	var right := _top_at(img, used.end.x - 12)
-	_check(left > 0 and right > 0 and left > right + 4, "the board's top runs up to the right: left end y %d, right end y %d (стр. 6)" % [left, right])
+	# 02.11 вечер, № 3: «совсем немного выровнять» — still not down to the right, the slope itself is checked in
+	# test_feedback_0211b «0211b-3» (0,5–2,8°)
+	_check(left > 0 and right > 0 and left >= right, "the board's top does not run down to the right: left end y %d, right end y %d (стр. 6)" % [left, right])
 	# Tikhon's feet on the board: within its width and at its top (screen = canvas × 1920/1672)
 	var k := 1920.0 / 1672.0
 	var feet := Vector2.ZERO

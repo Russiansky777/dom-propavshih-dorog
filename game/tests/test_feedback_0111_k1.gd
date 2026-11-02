@@ -74,7 +74,7 @@ func _run() -> void:
 	player = main_node.get_node("World/Player")
 	player.set("walk_speed", 1600.0)
 	player.set("speed_factor", 6.0)
-	await _test("K1-17/74 Tikhon's shelf in the dinner frame runs right and up (the board mirrored, turned 3°), Tikhon on its middle", _test_shelf)
+	await _test("K1-17/74 Tikhon's shelf in the dinner frame: the board mirrored, nearly level (02.11 вечер), Tikhon on its middle", _test_shelf)
 	await _test("K1-73 the titmouse in the lesson frame: hat and boots as in the class (O1), Agata's drawing by its flag", _test_bird)
 	await _test("K1-72 Pelageya by the tarred boat: feet on the snow in front of the trestle (not above its feet)", _test_pelageya_boat)
 	await _test("K1-75 the dinner cup stands on the table top, clear of the bowl behind it", _test_cup)
@@ -211,7 +211,9 @@ func _free(room: Node) -> void:
 func _test_shelf() -> void:
 	var l := _layer("EP_dinner", "tikhon_shelf")
 	var c: Dictionary = l.get("compose", {})
-	_check(bool(c.get("mirror", false)) and float(c.get("rotate", 0.0)) > 0.0, "the board mirrored and turned up to the right: %s" % str(c))
+	# 02.11 вечер (Директор 22:50: «убрать наклон практически до горизонтальной») supersedes 01.11 «направо и вверх»:
+	# the board mirrored, turned back to nearly level (test_feedback_0211b «0211b-24»)
+	_check(bool(c.get("mirror", false)), "the board mirrored: %s" % str(c.get("mirror")))
 	# the picture itself: the board's top edge is higher (smaller y) at its right end than at its left
 	var tex = load(String(l.get("image", "")))
 	_check(tex != null, "the shelf picture")
@@ -230,7 +232,7 @@ func _test_shelf() -> void:
 				top = float(y)
 				break
 		tops.append(top)
-	_check(tops[1] < tops[0] - 4.0, "the board rises to the right: top at 20%% y %.0f, at 80%% y %.0f" % [tops[0], tops[1]])
+	_check(absf(tops[1] - tops[0]) <= 3.0, "the board nearly level (02.11 вечер): top at 20%% y %.0f, at 80%% y %.0f" % [tops[0], tops[1]])
 	# Tikhon sits on its middle: his feet over the board
 	var tk := _opaque_box(String(_layer("EP_dinner", "tikhon").get("image", "")))
 	_check(tk.get_center().x > box.position.x + box.size.x * 0.25 and tk.get_center().x < box.position.x + box.size.x * 0.75, "Tikhon on the middle of the board (%s on %s)" % [str(tk), str(box)])

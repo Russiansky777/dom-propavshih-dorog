@@ -1,0 +1,250 @@
+id	speaker	scene_room	context	prev	ru	max_len	en
+text:H1.tikhon.hear_2#line	agata	H1 Жилая комната	tikhon · hear_2 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.hear.then.0		Пусть. Только бы услышать.		
+text:H1.tikhon.hear_3	narrator	H1 Жилая комната	tikhon · hear_3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.hear.then.1		«Я бы тоже послушал. Разок» — ворчит Тихон.		
+text:H1.tikhon.hear_3#line	tikhon	H1 Жилая комната	tikhon · hear_3 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.hear.then.1		Я бы тоже послушал. Разок.		
+text:H1.tikhon.opt_home	ui	H1 Жилая комната	tikhon · вариант выбора (кнопка) (opt_home) · где: rooms/H1: hotspots.tikhon.choice.options.home.label		Тётя бы нас всех к столу усадила.	46	
+text:H1.tikhon.home	narrator	H1 Жилая комната	tikhon · home · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.home.text		«И велела есть, пока горячее» — ворчит Тихон.		
+text:H1.tikhon.home#line	tikhon	H1 Жилая комната	tikhon · home · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.home.text		И велела есть, пока горячее.		
+text:H1.tikhon.home_2	narrator	H1 Жилая комната	tikhon · home_2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.home.then.0		Как будто мы дома.		
+text:H1.tikhon.home_2#line	agata	H1 Жилая комната	tikhon · home_2 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.home.then.0		Как будто мы дома.		
+text:H1.tikhon.home_3	narrator	H1 Жилая комната	tikhon · home_3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.tikhon.choice.options.home.then.1		«А ты где, по-твоему?» — ворчит Тихон.		
+text:H1.tikhon.home_3#line	tikhon	H1 Жилая комната	tikhon · home_3 · реплика персонажа · где: rooms/H1: hotspots.tikhon.choice.options.home.then.1		А ты где, по-твоему?		
+text:H1.photo.label	ui	H1 Жилая комната	«Семейная фотография» (photo) · подпись при наведении (label) · где: rooms/H1: hotspots.photo.label		Семейная фотография	28	
+text:H1.photo.label_table	ui	H1 Жилая комната	«Семейная фотография» (photo) · подпись при наведении (другое состояние) (label_table) · где: rooms/H1: hotspots.photo.states.0.label		Семейная фотография на столе	40	
+text:H1.photo.label_shelf	ui	H1 Жилая комната	«Семейная фотография» (photo) · подпись при наведении (другое состояние) (label_shelf) · где: rooms/H1: hotspots.photo.states.1.label		Семейная фотография на полке	40	
+text:H1.photo.prompt	narrator	H1 Жилая комната	«Семейная фотография» (photo) · вопрос выбора (prompt) · где: rooms/H1: hotspots.photo.choice.prompt		Где поставить фотографию?		
+text:H1.photo.opt_table	ui	H1 Жилая комната	«Семейная фотография» (photo) · вариант выбора (кнопка) (opt_table) · где: rooms/H1: hotspots.photo.choice.options.table.label		На столе	14	
+text:H1.photo.opt_shelf	ui	H1 Жилая комната	«Семейная фотография» (photo) · вариант выбора (кнопка) (opt_shelf) · где: rooms/H1: hotspots.photo.choice.options.shelf.label		На полке	14	
+text:H1.photo.react_table	agata	H1 Жилая комната	«Семейная фотография» (photo) · реакция после выбора (react_table) · где: rooms/H1: hotspots.photo.choice.options.table.text		У кресла пусть стоит — все наши рядом будут.		
+text:H1.photo.react_shelf	agata	H1 Жилая комната	«Семейная фотография» (photo) · реакция после выбора (react_shelf) · где: rooms/H1: hotspots.photo.choice.options.shelf.text		На полке пусть стоит — оттуда всю комнату видно.		
+text:H1.photo.look	agata	H1 Жилая комната	«Семейная фотография» (photo) · осмотр (look) · где: rooms/H1: hotspots.photo.look		Наш семейный снимок, в рамке.		
+text:H1.cups.label	ui	H1 Жилая комната	«Две чашки» (cups) · подпись при наведении (label) · где: rooms/H1: hotspots.cups.label		Две чашки	15	
+text:H1.cups.label_blue	ui	H1 Жилая комната	«Две чашки» (cups) · подпись при наведении (другое состояние) (label_blue) · где: rooms/H1: hotspots.cups.states.0.label		Чашки: выбрана синяя	30	
+text:H1.cups.label_white	ui	H1 Жилая комната	«Две чашки» (cups) · подпись при наведении (другое состояние) (label_white) · где: rooms/H1: hotspots.cups.states.1.label		Чашки: выбрана белая	30	
+text:H1.cups.prompt	agata	H1 Жилая комната	«Две чашки» (cups) · вопрос выбора (prompt) · где: rooms/H1: hotspots.cups.choice.prompt		Которую же чашку мне взять?		
+text:H1.cups.opt_blue	ui	H1 Жилая комната	«Две чашки» (cups) · вариант выбора (кнопка) (opt_blue) · где: rooms/H1: hotspots.cups.choice.options.blue.label		Синяя	12	
+text:H1.cups.opt_white	ui	H1 Жилая комната	«Две чашки» (cups) · вариант выбора (кнопка) (opt_white) · где: rooms/H1: hotspots.cups.choice.options.white.label		Белая	12	
+text:H1.cups.react_blue	agata	H1 Жилая комната	«Две чашки» (cups) · реакция после выбора (react_blue) · где: rooms/H1: hotspots.cups.choice.options.blue.text		Синюю себе возьму. Пусть ждёт на столике у кресла.		
+text:H1.cups.react_white	agata	H1 Жилая комната	«Две чашки» (cups) · реакция после выбора (react_white) · где: rooms/H1: hotspots.cups.choice.options.white.text		Белую себе возьму. Пусть ждёт на столике у кресла.		
+text:H1.cups.look	narrator	H1 Жилая комната	«Две чашки» (cups) · осмотр (look) · где: rooms/H1: hotspots.cups.look		Синяя да белая. Обе чисто вымыты, на подоконнике дожидаются.		
+text:H1.v01.done	narrator	H1 Жилая комната	v01 · после выбора (done) · запасной закадровый вариант (звучит line) · где: rooms/H1: scenes.V01.complete_text		Тихон своё место оглядывает: «Не занято. Переставлять дозволяю».		
+text:H1.v01.done#line	tikhon	H1 Жилая комната	v01 · после выбора (done) · реплика персонажа · где: rooms/H1: scenes.V01.complete_text		Не занято. Переставлять дозволяю.		
+text:H1.shelf.label	ui	H1 Жилая комната	«Снятая полка» (shelf) · подпись при наведении (label) · где: rooms/H1: hotspots.shelf.label		Снятая полка	19	
+text:H1.shelf.label_done	ui	H1 Жилая комната	«Снятая полка» (shelf) · подпись при наведении (другое состояние) (label_done) · где: rooms/H1: hotspots.shelf_done.label		Полка Тихона	19	
+text:H1.shelf.label_stove	ui	H1 Жилая комната	«Снятая полка» (shelf) · подпись при наведении (другое состояние) (label_stove) · где: rooms/H1: hotspots.shelf.states.0.label		Полка у печи	19	
+text:H1.scarf.shelf_under	narrator	H1 Жилая комната	«Мокрый платок» (scarf) · shelf_under · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.scarf.use.text.1		А под платком-то полка. Дунина, с кронштейнами.		
+text:H1.scarf.shelf_under#line	agata	H1 Жилая комната	«Мокрый платок» (scarf) · shelf_under · реплика персонажа · где: rooms/H1: hotspots.scarf.use.text.1		А под платком-то полка. Дунина, с кронштейнами.		
+text:H1.shelf.react_b	narrator	H1 Жилая комната	«Снятая полка» (shelf) · реакция после выбора (react_b) · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.shelf.choice.options.B.text		Подумаешь! Подстилка — тоже ведь мебель.		
+text:H1.shelf.react_b#line	tikhon	H1 Жилая комната	«Снятая полка» (shelf) · реакция после выбора (react_b) · реплика персонажа · где: rooms/H1: hotspots.shelf.choice.options.B.text		Подумаешь! Подстилка — тоже ведь мебель.		
+text:H1.shelf.prompt	narrator	H1 Жилая комната	«Снятая полка» (shelf) · вопрос выбора (prompt) · где: rooms/H1: hotspots.shelf.choice.prompt		Тихон то на полку поглядит, то на печь: крепления-то для неё там. Повесить ему полку?		
+text:H1.shelf.opt_a	ui	H1 Жилая комната	«Снятая полка» (shelf) · вариант выбора (кнопка) (opt_a) · где: rooms/H1: hotspots.shelf.choice.options.A.label		Повесить полку у печи	31	
+text:H1.shelf.opt_b	ui	H1 Жилая комната	«Снятая полка» (shelf) · вариант выбора (кнопка) (opt_b) · где: rooms/H1: hotspots.shelf.choice.options.B.label		Не сейчас	15	
+text:H1.shelf.look	narrator	H1 Жилая комната	«Снятая полка» (shelf) · осмотр (look) · где: rooms/H1: hotspots.shelf.look		Под платком на лежанке лежала снятая полка. А крепления для неё — у печи.		
+text:H1.shelf.look_wet	narrator	H1 Жилая комната	«Снятая полка» (shelf) · осмотр (look_wet) · где: rooms/H1: hotspots.shelf.choice.fail_text		Снятая полка на лежанке лежит, под мокрым платком. Сперва платок убрать.		
+text:H1.shelf.not_yet	narrator	H1 Жилая комната	«Снятая полка» (shelf) · not_yet · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.shelf.states.2.fail_text		Полку [[покуда|пока]] оставлю. Сперва печь затопить надо: холодно в избе и сыро.		
+text:H1.shelf.not_yet#line	agata	H1 Жилая комната	«Снятая полка» (shelf) · not_yet · реплика персонажа · где: rooms/H1: hotspots.shelf.states.2.fail_text		Полку [[покуда|пока]] оставлю. Сперва печь затопить надо: холодно в избе и сыро.		
+text:H1.shelf.not_yet_dark	narrator	H1 Жилая комната	«Снятая полка» (shelf) · not_yet_dark · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.shelf.states.1.fail_text		В темноте полку вешать? Сперва ставню открою.		
+text:H1.shelf.not_yet_dark#line	agata	H1 Жилая комната	«Снятая полка» (shelf) · not_yet_dark · реплика персонажа · где: rooms/H1: hotspots.shelf.states.1.fail_text		В темноте полку вешать? Сперва ставню открою.		
+text:H1.shelf.look_done	narrator	H1 Жилая комната	«Снятая полка» (shelf) · осмотр (look_done) · где: rooms/H1: hotspots.shelf_done.look		Полку повесили, подстилку постелили. Тихон оглядел — принял.		
+text:H1.exit_Z2.label	ui	H1 Жилая комната	выход → Z2 Улица Заречья · подпись при наведении (label) · где: rooms/H1: exits.Z2.label		На крыльцо	17	
+text:H1.exit_H2.label	ui	H1 Жилая комната	выход → H2 Мастерская · подпись при наведении (label) · где: rooms/H1: exits.H2.label		В мастерскую	19	
+text:H1.exit_H3.label	ui	H1 Жилая комната	выход → H3 Галерея порогов · подпись при наведении (label) · где: rooms/H1: exits.H3.label		В галерею	15	
+text:H1.exit_H4.label	ui	H1 Жилая комната	выход → H4 Чердак · подпись при наведении (label) · где: rooms/H1: exits.H4.label		На чердак	15	
+text:H1.exit_H2.dark	narrator	H1 Жилая комната	выход → H2 Мастерская · dark · запасной закадровый вариант (звучит line) · где: rooms/H1: exits.H2.closed_text		В мастерской — хоть глаз выколи. Сперва ставню открою, пусть в доме посветлеет.		
+text:H1.exit_H2.dark#line	agata	H1 Жилая комната	выход → H2 Мастерская · dark · реплика персонажа · где: rooms/H1: exits.H2.closed_text		В мастерской — хоть глаз выколи. Сперва ставню открою, пусть в доме посветлеет.		
+text:H1.exit_H3.dark	narrator	H1 Жилая комната	выход → H3 Галерея порогов · dark · запасной закадровый вариант (звучит line) · где: rooms/H1: exits.H3.closed_text		В галерее ни зги. Ставню открою, тогда и пойду.		
+text:H1.exit_H3.dark#line	agata	H1 Жилая комната	выход → H3 Галерея порогов · dark · реплика персонажа · где: rooms/H1: exits.H3.closed_text		В галерее ни зги. Ставню открою, тогда и пойду.		
+text:H1.exit_H4.dark	narrator	H1 Жилая комната	выход → H4 Чердак · dark · запасной закадровый вариант (звучит line) · где: rooms/H1: exits.H4.closed_text		Впотьмах на чердак не полезу. Сперва ставню открою.		
+text:H1.exit_H4.dark#line	agata	H1 Жилая комната	выход → H4 Чердак · dark · реплика персонажа · где: rooms/H1: exits.H4.closed_text		Впотьмах на чердак не полезу. Сперва ставню открою.		
+text:H2.bench_front.label	ui	H2 Мастерская	«Верстак» (bench_front) · подпись при наведении (label)		Верстак	13	
+text:H2.bench.label	ui	H2 Мастерская	«Тётины чертежи и записи» (bench) · подпись при наведении (label) · где: rooms/H2: hotspots.bench.label		Тётины чертежи и записи	33	
+text:H2.bench.use	narrator	H2 Мастерская	«Тётины чертежи и записи» (bench) · действие с объектом (use) · где: rooms/H2: hotspots.bench.use.text		На рисунке школьной двери Дуня приписала: петли родные — их сберечь, а порог по зарубке выставить.		
+text:H2.bench.look	narrator	H2 Мастерская	«Тётины чертежи и записи» (bench) · осмотр (look) · где: rooms/H2: hotspots.bench.look		Над ящиком «Петли» Дунины чертежи школьной двери приколоты. На полях её пометки.		
+text:H2.hinges_box.label	ui	H2 Мастерская	«Коробка с петлями» (hinges_box) · подпись при наведении (label) · где: rooms/H2: hotspots.hinges_box.label		Коробка с петлями	26	
+text:H2.hinges_box.use	narrator	H2 Мастерская	«Коробка с петлями» (hinges_box) · действие с объектом (use) · где: rooms/H2: hotspots.hinges_box.use.text.0		Дуниной рукой написано: «Школьная дверь. Петли». Внутри их три штуки.		
+text:H2.hinges_box.look	narrator	H2 Мастерская	«Коробка с петлями» (hinges_box) · осмотр (look) · где: rooms/H2: hotspots.hinges_box.look		На коробке Дуниным почерком: «Петли».		
+text:H2.bell.label	ui	H2 Мастерская	«Мельничный колокол» (bell) · подпись при наведении (label) · где: rooms/H2: hotspots.bell.label		Мельничный колокол	27	
+text:H2.bell.use	narrator	H2 Мастерская	«Мельничный колокол» (bell) · действие с объектом (use) · где: rooms/H2: hotspots.bell.use.text.0		На ярлыке Дуниной рукой: «Колокол с мельницы. У двери конторы висел — по нему на мельнице работу начинали и кончали». Ниже — её всегдашнее присловье: «Иные вещи помнят место, которому служили».		
+text:H2.bell.look	narrator	H2 Мастерская	«Мельничный колокол» (bell) · осмотр (look) · где: rooms/H2: hotspots.bell.look		На подвесе колокол, языка к нему нет.		
+text:H2.bell.thought_early	agata	H2 Мастерская	«Мельничный колокол» (bell) · thought_early · где: rooms/H2: hotspots.bell.use.text.2.key		Коли вещи своё место помнят… что ж будет, если им родные места вернуть?		
+text:H2.bell.thought	agata	H2 Мастерская	«Мельничный колокол» (bell) · мысль (thought) · где: rooms/H2: hotspots.bell.use.text.1.key		Коли вещи своё место помнят… что ж будет, если школьную дверь на родные петли вернуть?		
+text:H2.stand_zm.label	ui	H2 Мастерская	«Резная стойка для зеркала» (stand_zm) · подпись при наведении (label) · где: rooms/H2: hotspots.stand_zm.label		Резная стойка для зеркала	36	
+text:H2.stand_zm.look	narrator	H2 Мастерская	«Резная стойка для зеркала» (stand_zm) · осмотр (look) · где: rooms/H2: hotspots.stand_zm.look		Высокая резная рама на ножках, тяжёлая, к полу прибита. Пустая. На бирке Дуниной рукой: «ЗМ» — значит, зеркало мельницы. И ниже: «Зеркало конторы — забрать у Павла».		
+text:H2.clapper_box.label	ui	H2 Мастерская	«Коробка у колокола» (clapper_box) · подпись при наведении (label)		Коробка у колокола	27	
+text:H2.clapper_box.look	narrator	H2 Мастерская	«Коробка у колокола» (clapper_box) · осмотр (look)		На коробке у колокола выведено: «Язык колокола».		
+text:H2.exit_H1.label	ui	H2 Мастерская	выход → H1 Жилая комната · подпись при наведении (label) · где: rooms/H2: exits.H1.label		В жилую комнату	23	
+text:H2.bundle_nina.label	ui	H2 Мастерская	«Мамино зеркало» (bundle_nina) · подпись при наведении (label) · где: rooms/H2: hotspots.bundle_nina.label		Мамино зеркало	22	
+text:H2.bundle_nina.look	narrator	H2 Мастерская	«Мамино зеркало» (bundle_nina) · осмотр (look) · где: rooms/H2: hotspots.bundle_nina.look		Что-то в тряпку завёрнуто. На бирке Дуниной рукой: «Нина. Горница». Мамино зеркало, из её горницы.		
+text:H2.bundle_nina.use	narrator	H2 Мастерская	«Мамино зеркало» (bundle_nina) · действие с объектом (use) · где: rooms/H2: hotspots.bundle_nina.use.text		Под тряпкой зеркало в старой раме. Стекло мутно, рама в руках расходится — не удержишь. На бирке: «Нужна струбцина, моя сломана». Струбцины здесь нет — придётся отложить.		
+text:H2.bundle_nina.done	narrator	H2 Мастерская	«Мамино зеркало» (bundle_nina) · после выбора (done) · где: rooms/H2: hotspots.bundle_nina.use.text_done		Мамино зеркало… Схватишь — рама разойдётся. Без струбцины не обойтись.		
+text:H2.tar_pot.label	ui	H2 Мастерская	«Дёготь» (tar_pot) · подпись при наведении (label) · где: rooms/H2: hotspots.tar_pot.label		Дёготь	12	
+text:H2.tar_pot.look	narrator	H2 Мастерская	«Дёготь» (tar_pot) · осмотр (look) · где: rooms/H2: hotspots.tar_pot.look		Жестяной кувшин с дёгтем. Дуня им петли да засовы смазывала.		
+text:H2.tar_pot.not_now	agata	H2 Мастерская	«Дёготь» (tar_pot) · not_now · где: rooms/H2: hotspots.tar_pot.use.fail_text		Дёготь. Сейчас он мне ни к чему.		
+text:H2.tar_pot.take	agata	H2 Мастерская	«Дёготь» (tar_pot) · взять в сумку (take) · где: rooms/H2: hotspots.tar_pot.use.text		Отолью дёгтя в баночку — Павлу ворот смазать.		
+text:H2.tar_pot.taken	agata	H2 Мастерская	«Дёготь» (tar_pot) · taken · где: rooms/H2: hotspots.tar_pot.use.text_done		Вот и дёготь. Пора к затвору.		
+text:H2.brace.label	ui	H2 Мастерская	«Скоба для плиты» (brace) · подпись при наведении (label) · где: rooms/H2: hotspots.brace.label		Скоба для плиты	23	
+text:H2.brace.look	narrator	H2 Мастерская	«Скоба для плиты» (brace) · осмотр (look) · где: rooms/H2: hotspots.brace.look		Кованая скоба, а под ней бумага из управы: плита на мосту треснула, чинить надо. И опора нарисована та же, что у Тамары.		
+text:H2.brace.before_plan	agata	H2 Мастерская	«Скоба для плиты» (brace) · до разговора (before_plan) · где: rooms/H2: hotspots.brace.use.fail_text		Скоба для трещины в плите — так и не поставили. Плита под водой, на что мне скоба теперь?		
+text:H2.brace.take	agata	H2 Мастерская	«Скоба для плиты» (brace) · взять в сумку (take) · где: rooms/H2: hotspots.brace.use.text		«Скоба для неё у Дуни на верстаке» — так в плане написано. Возьму — за тётю доделаю.		
+text:H3.school_door.label	ui	H3 Галерея порогов	«Дверь у рамы» (school_door) · подпись при наведении (label) · где: rooms/H3: hotspots.school_door.label		Дверь у рамы	19	
+text:H3.school_door.label_seen	ui	H3 Галерея порогов	«Дверь у рамы» (school_door) · подпись при наведении (другое состояние) (label_seen) · где: rooms/H3: hotspots.school_door.states.0.label		Школьная дверь	22	
+text:H3.school_door.use	agata	H3 Галерея порогов	«Дверь у рамы» (school_door) · действие с объектом (use) · где: rooms/H3: hotspots.school_door.use.text		Из нашей школы дверь. На бирке: «Школа Ольховки. В ремонт от Нины». На брусе зарубка, а петли сняты.		
+text:H3.school_door.look	narrator	H3 Галерея порогов	«Дверь у рамы» (school_door) · осмотр (look) · где: rooms/H3: hotspots.school_door.look		К раме прислонена дверь. Где родным петлям быть — пусто.		
+text:H3.puzzle.title	ui	H3 Галерея порогов	puzzle · заголовок крупного плана (title) · где: rooms/H3: hotspots.school_door.puzzle.title		Школьная дверь и рама	31	
+text:H3.puzzle.need	narrator	H3 Галерея порогов	puzzle · need · где: rooms/H3: hotspots.school_door.puzzle.fail_text		Родные петли нужны да рисунок посадки из мастерской. Без них дверь как следует не поставить.		
+text:H3.puzzle.intro	narrator	H3 Галерея порогов	puzzle · intro · где: rooms/H3: hotspots.school_door.puzzle.intro		Три родные петли — на свои места, как на Дунином рисунке, да зарубку на пороге с меткой свести. Тогда и дверь закрыть можно.		
+text:H3.puzzle.slot_top	ui	H3 Галерея порогов	puzzle · slot_top · где: rooms/H3: hotspots.school_door.puzzle.slots.top.label		Верхнее гнездо	22	
+text:H3.puzzle.slot_middle	ui	H3 Галерея порогов	puzzle · slot_middle · где: rooms/H3: hotspots.school_door.puzzle.slots.middle.label		Среднее гнездо	22	
+text:H3.puzzle.slot_bottom	ui	H3 Галерея порогов	puzzle · slot_bottom · где: rooms/H3: hotspots.school_door.puzzle.slots.bottom.label		Нижнее гнездо	20	
+text:H3.puzzle.hinge	ui	H3 Галерея порогов	puzzle · hinge · где: rooms/H3: hotspots.school_door.puzzle.pieces.hinge_1.label		Родная петля	19	
+text:H3.puzzle.seat_hint	narrator	H3 Галерея порогов	puzzle · seat_hint · где: rooms/H3: hotspots.school_door.puzzle.marks.seat.label		Брус ещё не сел — подбить: щелчок по стрелке у торца.		
+text:H3.puzzle.marks	ui	H3 Галерея порогов	puzzle · marks · где: rooms/H3: hotspots.school_door.puzzle.marks.label		Зарубка на пороге	26	
+text:H3.puzzle.drawing	ui	H3 Галерея порогов	puzzle · drawing · где: rooms/H3: hotspots.school_door.puzzle.marks.drawing_label		Дунин рисунок	20	
+text:H3.puzzle.label_tray	ui	H3 Галерея порогов	puzzle · подпись при наведении (другое состояние) (label_tray) · где: rooms/H3: hotspots.school_door.puzzle.marks.tray_label		Петли из мастерской	28	
+text:H3.puzzle.check	ui	H3 Галерея порогов	puzzle · check · где: rooms/H3: hotspots.school_door.puzzle.check_label		Закрыть дверь	20	
+text:H3.puzzle.error	narrator	H3 Галерея порогов	puzzle · error · где: rooms/H3: hotspots.school_door.puzzle.error_text		За дверью та же стена галереи. Видно, петли либо порог ещё не на своё место встали.		
+text:H3.puzzle.error_pieces	narrator	H3 Галерея порогов	puzzle · error_pieces · где: rooms/H3: hotspots.school_door.puzzle.error_text_pieces		За дверью всё та же стена галереи. Не все петли на месте — все три должны сесть в гнёзда на раме.		
+text:H3.puzzle.error_mark	narrator	H3 Галерея порогов	puzzle · error_mark · где: rooms/H3: hotspots.school_door.puzzle.error_text_mark		За дверью всё та же стена галереи. Порог не по зарубке: под меткой двери должна встать та, что на Дунином рисунке.		
+text:H3.puzzle.success	narrator	H3 Галерея порогов	puzzle · success · где: rooms/H3: hotspots.school_door.puzzle.success_text		Легли петли в гнёзда, зарубки сошлись. А за дверью — класс, за окнами его — зима.		
+text:H3.mirror_home.label	ui	H3 Галерея порогов	«Домашнее зеркало» (mirror_home) · подпись при наведении (label) · где: rooms/H3: hotspots.mirror_home.label		Домашнее зеркало	24	
+text:H3.mirror_home.use	agata	H3 Галерея порогов	«Домашнее зеркало» (mirror_home) · действие с объектом (use) · где: rooms/H3: hotspots.mirror_home.use.text		На старом снимке это зеркало на том же месте висит. А в нём — я, маленькая. И галерея та же, что за моей спиной.		
+text:H3.mirror_home.look	narrator	H3 Галерея порогов	«Домашнее зеркало» (mirror_home) · осмотр (look) · где: rooms/H3: hotspots.mirror_home.look		Домашнее зеркало в раме. Дунина пометка на нём — «ЗГ»: зеркало галерейное, стало быть.		
+text:H3.mirror_home.label_photo	ui	H3 Галерея порогов	«Домашнее зеркало» (mirror_home) · подпись при наведении (другое состояние) (label_photo) · где: rooms/H3: hotspots.mirror_home.view.photo.label		Старый снимок	20	
+text:H3.photo_school.label	ui	H3 Галерея порогов	«Снимок школы» (photo_school) · подпись при наведении (label) · где: rooms/H3: hotspots.photo_school.label		Снимок школы	19	
+text:H3.photo_school.look	narrator	H3 Галерея порогов	«Снимок школы» (photo_school) · осмотр (look) · где: rooms/H3: hotspots.photo_school.look		Школа, её крыльцо и дверь. Ещё различимы петли и зарубка на брусе.		
+text:H3.exit_H1.label	ui	H3 Галерея порогов	выход → H1 Жилая комната · подпись при наведении (label) · где: rooms/H3: exits.H1.label		В жилую комнату	23	
+text:H3.exit_Z4.label	ui	H3 Галерея порогов	выход → Z4 Переулок у почты · подпись при наведении (label) · где: rooms/H3: exits.Z4.label		На боковое крыльцо	27	
+text:H3.puzzle.by_item	narrator	H3 Галерея порогов	puzzle · by_item · запасной закадровый вариант (звучит line) · где: rooms/H3: hotspots.school_door.puzzle.by_item_text		Петли родные в сумке. Достану да к двери приложу.		
+text:H3.puzzle.by_item#line	agata	H3 Галерея порогов	puzzle · by_item · реплика персонажа · где: rooms/H3: hotspots.school_door.puzzle.by_item_text		Петли родные в сумке. Достану да к двери приложу.		
+text:H3.exit_Z4.label_unbolt	ui	H3 Галерея порогов	выход → Z4 Переулок у почты · подпись при наведении (другое состояние) (label_unbolt) · где: rooms/H3: exits.Z4.states.0.label		Отпереть дверь	22	
+text:Z4.side_door.now_open	narrator	Z4 Переулок у почты	side_door · now_open · запасной закадровый вариант (звучит line) · где: rooms/Z4: on_enter.0.text		Теперь и отсюда в дом заходить смогу.		
+text:Z4.side_door.now_open#line	agata	Z4 Переулок у почты	side_door · now_open · реплика персонажа · где: rooms/Z4: on_enter.0.text		Теперь и отсюда в дом заходить смогу.		
+text:H3.exit_O1.label	ui	H3 Галерея порогов	выход → O1 Зимний класс · подпись при наведении (label) · где: rooms/H3: exits.O1.label		Рама для школьной двери	33	
+text:H3.exit_O1.label_open	ui	H3 Галерея порогов	выход → O1 Зимний класс · подпись при наведении (другое состояние) (label_open) · где: rooms/H3: exits.O1.states.0.label		Через дверь в зимний класс	37	
+text:H3.exit_O1.closed	narrator	H3 Галерея порогов	выход → O1 Зимний класс · закрытый выход: почему не пройти (closed) · где: rooms/H3: exits.O1.closed_text		Полотно рядом стоит. В пустой раме прохода ещё нет.		
+text:H3.side_door.unbolt	narrator	H3 Галерея порогов	side_door · unbolt · запасной закадровый вариант (звучит line) · где: rooms/H3: on_enter.1.text		Боковая дверь галереи изнутри на засов заперта. Отодвину — и из переулка в дом войти можно будет.		
+text:H3.side_door.unbolt#line	agata	H3 Галерея порогов	side_door · unbolt · реплика персонажа · где: rooms/H3: on_enter.1.text		Боковая дверь галереи изнутри на засов заперта. Отодвину — и из переулка в дом войти можно будет.		
+text:H3.exit_R4.label	ui	H3 Галерея порогов	выход → R4 Мастерская переправы · подпись при наведении (label)		Вторая дверная рама	28	
+text:H3.exit_R4.closed	narrator	H3 Галерея порогов	выход → R4 Мастерская переправы · закрытый выход: почему не пройти (closed)		У стены пустая рама. Для неё в мастерской двери нет.		
+text:H4.boxes.label	ui	H4 Чердак	«Пустые коробки» (boxes) · подпись при наведении (label)		Пустые коробки	22	
+text:H4.window.label	ui	H4 Чердак	«Чердачное окно» (window) · подпись при наведении (label) · где: rooms/H4: hotspots.window.label		Чердачное окно	22	
+text:H4.window.look_snow	narrator	H4 Чердак	«Чердачное окно» (window) · осмотр (look_snow) · где: rooms/H4: hotspots.window.states.0.look		Заречье отсюда всё как на ладони: крыши, почта, поворот реки. А на том берегу — снег.		
+text:H4.window.look	narrator	H4 Чердак	«Чердачное окно» (window) · осмотр (look) · где: rooms/H4: hotspots.window.look		Заречье отсюда всё как на ладони: крыши, почта, поворот реки. А тот берег — в тумане.		
+text:H4.chest.label	ui	H4 Чердак	«Сундук» (chest) · подпись при наведении (label) · где: rooms/H4: hotspots.chest.label		Сундук	12	
+text:H4.chest.look	narrator	H4 Чердак	«Сундук» (chest) · осмотр (look) · где: rooms/H4: hotspots.chest.look		Старый сундук железными полосами окован. Крышка на щеколде, без замка.		
+text:H4.chest.open	narrator	H4 Чердак	«Сундук» (chest) · open · запасной закадровый вариант (звучит line) · где: rooms/H4: hotspots.chest.use.text		Под крышкой лежал язык колокола, Дуня его в [[холстину|грубую ткань]] завернула. Возьму — мало ли где пригодится.		
+text:H4.chest.open#line	agata	H4 Чердак	«Сундук» (chest) · open · реплика персонажа · где: rooms/H4: hotspots.chest.use.text		Под крышкой лежал язык колокола, Дуня его в [[холстину|грубую ткань]] завернула. Возьму — мало ли где пригодится.		
+text:H4.chest.open_done	narrator	H4 Чердак	«Сундук» (chest) · open_done · где: rooms/H4: hotspots.chest.use.text_done		Сундук открыт: старое покрывало да Дунины мелочи. Колокольный язык уж взяли.		
+text:H1.lezhanka.label	ui	H1 Жилая комната	«Лежанка у печи» (lezhanka) · подпись при наведении (label) · где: rooms/H1: hotspots.lezhanka.label		Лежанка у печи	22	
+text:H1.lezhanka.late_d1	narrator	H1 Жилая комната	«Лежанка у печи» (lezhanka) · late_d1 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.late.N01		Поздно уже — пора спать. Лягу тут, у печи: от неё тепло.		
+text:H1.lezhanka.late_d1#line	agata	H1 Жилая комната	«Лежанка у печи» (lezhanka) · late_d1 · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.late.N01		Поздно уже — пора спать. Лягу тут, у печи: от неё тепло.		
+text:H1.lezhanka.after_d1	narrator	H1 Жилая комната	«Лежанка у печи» (lezhanka) · повторный разговор (after_d1) · запасной закадровый вариант (звучит line)		Тут я спала первую ночь. Теперь сплю у мамы.		
+text:H1.lezhanka.after_d1#line	agata	H1 Жилая комната	«Лежанка у печи» (lezhanka) · повторный разговор (after_d1) · реплика персонажа		Тут я спала первую ночь. Теперь сплю у мамы.		
+text:H4.bed.dunya_night	narrator	H4 Чердак	«Кровать» (bed) · dunya_night · запасной закадровый вариант (звучит line) · где: rooms/H4: hotspots.bed.states.0.look		Дунина… Лягу у печи — там теплее.		
+text:H4.bed.dunya_night#line	agata	H4 Чердак	«Кровать» (bed) · dunya_night · реплика персонажа · где: rooms/H4: hotspots.bed.states.0.look		Дунина… Лягу у печи — там теплее.		
+text:H4.bed.label	ui	H4 Чердак	«Кровать» (bed) · подпись при наведении (label) · где: rooms/H4: hotspots.bed.label		Кровать	13	
+text:H4.bed.look	narrator	H4 Чердак	«Кровать» (bed) · осмотр (look) · где: rooms/H4: hotspots.bed.look		Узкая Дунина кровать, лоскутное одеяло. Застелена, как при ней было.		
+text:H4.bed.early_d1_door	narrator	H4 Чердак	«Кровать» (bed) · early_d1_door · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.0.text		Не до лежанки сейчас — дверь в галерее ждёт.		
+text:H4.bed.early_d1_door#line	agata	H4 Чердак	«Кровать» (bed) · early_d1_door · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.0.text		Не до лежанки сейчас — дверь в галерее ждёт.		
+text:H4.bed.early_d1_street	narrator	H4 Чердак	«Кровать» (bed) · early_d1_street · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.2.text		Не до лежанки сейчас — со школьного двора тропа к деревне идёт. Поглядеть бы, куда она выводит.		
+text:H4.bed.early_d1_street#line	agata	H4 Чердак	«Кровать» (bed) · early_d1_street · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.2.text		Не до лежанки сейчас — со школьного двора тропа к деревне идёт. Поглядеть бы, куда она выводит.		
+text:H4.bed.early_d1_class	narrator	H4 Чердак	«Кровать» (bed) · early_d1_class · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.1.text		Не до лежанки сейчас — в классе за школьной дверью я ещё не всё разглядела.		
+text:H4.bed.early_d1_class#line	agata	H4 Чердак	«Кровать» (bed) · early_d1_class · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.1.text		Не до лежанки сейчас — в классе за школьной дверью я ещё не всё разглядела.		
+text:H4.bed.early_d2	narrator	H4 Чердак	«Кровать» (bed) · early_d2 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.4.text		Не до сна мне сейчас — дела не переделаны.		
+text:H4.bed.early_d2#line	agata	H4 Чердак	«Кровать» (bed) · early_d2 · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.4.text		Не до сна мне сейчас — дела не переделаны.		
+text:H4.bed.early_d3	narrator	H4 Чердак	«Кровать» (bed) · early_d3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.5.text		Рано ещё спать. Надо ещё {left}.		
+text:H4.bed.early_d3#line	agata	H4 Чердак	«Кровать» (bed) · early_d3 · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.5.text		Рано ещё спать. Надо ещё {left}.		
+text:H4.bed.early_short	narrator	H4 Чердак	«Кровать» (bed) · early_short · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.5.say_head		Рано ещё спать.		
+text:H4.bed.early_short#line	agata	H4 Чердак	«Кровать» (bed) · early_short · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.5.say_head		Рано ещё спать.		
+text:H4.bed.todo_M23a	narrator	H4 Чердак	«Кровать» (bed) · todo_M23a · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.0.say		Надо ещё Тамару повидать — она письма раздаёт.		
+text:H4.bed.todo_M23a#line	agata	H4 Чердак	«Кровать» (bed) · todo_M23a · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.0.say		Надо ещё Тамару повидать — она письма раздаёт.		
+text:H4.bed.todo_M23b	narrator	H4 Чердак	«Кровать» (bed) · todo_M23b · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.1.say		Надо ещё к Павлу на мельницу зайти.		
+text:H4.bed.todo_M23b#line	agata	H4 Чердак	«Кровать» (bed) · todo_M23b · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.1.say		Надо ещё к Павлу на мельницу зайти.		
+text:H4.bed.todo_M23c	narrator	H4 Чердак	«Кровать» (bed) · todo_M23c · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.2.say		Надо ещё к маме сходить, в Дунин дом.		
+text:H4.bed.todo_M23c#line	agata	H4 Чердак	«Кровать» (bed) · todo_M23c · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.2.say		Надо ещё к маме сходить, в Дунин дом.		
+text:H4.bed.todo_M23d	narrator	H4 Чердак	«Кровать» (bed) · todo_M23d · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.3.say		Надо ещё с Тихоном о Дуне поговорить.		
+text:H4.bed.todo_M23d#line	agata	H4 Чердак	«Кровать» (bed) · todo_M23d · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.3.say		Надо ещё с Тихоном о Дуне поговорить.		
+text:H4.bed.left_M23a	narrator	H4 Чердак	«Кровать» (bed) · left_M23a · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.0.text		повидать Тамару на раздаче писем		
+text:H4.bed.left_M23b	narrator	H4 Чердак	«Кровать» (bed) · left_M23b · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.1.text		зайти к Павлу на мельницу		
+text:H4.bed.left_M23c	narrator	H4 Чердак	«Кровать» (bed) · left_M23c · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.2.text		сходить к маме в Дунин дом		
+text:H4.bed.left_M23d	narrator	H4 Чердак	«Кровать» (bed) · left_M23d · где: rooms/H1: hotspots.lezhanka.sleep.early.5.left.3.text		поговорить с Тихоном о Дуне		
+text:H4.bed.after_d4	narrator	H4 Чердак	«Кровать» (bed) · повторный разговор (after_d4) · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.6.text		Выспалась. У поворота Илья с Пелагеей дожидаются.		
+text:H4.bed.after_d4#line	agata	H4 Чердак	«Кровать» (bed) · повторный разговор (after_d4) · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.6.text		Выспалась. У поворота Илья с Пелагеей дожидаются.		
+text:H4.bed.after_all	narrator	H4 Чердак	«Кровать» (bed) · повторный разговор (after_all) · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.early.7.text		Не спится. До сих пор не верится: дорогу с обоих концов держат.		
+text:H4.bed.after_all#line	agata	H4 Чердак	«Кровать» (bed) · повторный разговор (after_all) · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.early.7.text		Не спится. До сих пор не верится: дорогу с обоих концов держат.		
+text:H3.night.to_bed	narrator	H3 Галерея порогов	night · to_bed · запасной закадровый вариант (звучит line) · где: rooms/H3: on_enter.0.text		Уж ночь на дворе. Поздно, спать пора. Лягу у печи, на лежанке.		
+text:H3.night.to_bed#line	agata	H3 Галерея порогов	night · to_bed · реплика персонажа · где: rooms/H3: on_enter.0.text		Уж ночь на дворе. Поздно, спать пора. Лягу у печи, на лежанке.		
+text:H4.bed.late_d1	narrator	H4 Чердак	«Кровать» (bed) · late_d1 · запасной закадровый вариант (звучит line)		Поздно, пора спать. Да наверху стыло… Внизу лягу, у печи.		
+text:H4.bed.late_d1#line	agata	H4 Чердак	«Кровать» (bed) · late_d1 · реплика персонажа		Поздно, пора спать. Да наверху стыло… Внизу лягу, у печи.		
+text:H4.bed.late_d3	narrator	H4 Чердак	«Кровать» (bed) · late_d3 · запасной закадровый вариант (звучит line) · где: rooms/H1: hotspots.lezhanka.sleep.late.M24		На сегодня довольно. Поздно уж, спать пора.		
+text:H4.bed.late_d3#line	agata	H4 Чердак	«Кровать» (bed) · late_d3 · реплика персонажа · где: rooms/H1: hotspots.lezhanka.sleep.late.M24		На сегодня довольно. Поздно уж, спать пора.		
+text:H4.bed.bedtime_d3	narrator	H4 Чердак	«Кровать» (bed) · bedtime_d3 · запасной закадровый вариант (звучит line) · где: time/_index: states.d3_evening.bedtime.text		Уже вечер. Всё, что хотела, сделала. Домой пора, спать.		
+text:H4.bed.bedtime_d3#line	agata	H4 Чердак	«Кровать» (bed) · bedtime_d3 · реплика персонажа · где: time/_index: states.d3_evening.bedtime.text		Уже вечер. Всё, что хотела, сделала. Домой пора, спать.		
+text:H4.exit_H1.label	ui	H4 Чердак	выход → H1 Жилая комната · подпись при наведении (label) · где: rooms/H4: exits.H1.label		Вниз, в комнату	23	
+text:H4.v02.done	narrator	H4 Чердак	v02 · после выбора (done) · где: rooms/H4: scenes.V02.complete_text		Под крышей светло. Знакомые вещи по-прежнему на своих местах.		
+text:O1.desks_front.label	ui	O1 Зимний класс	«Школьные парты» (desks_front) · подпись при наведении (label)		Школьные парты	22	
+text:O1.board.label	ui	O1 Зимний класс	«Классная доска» (board) · подпись при наведении (label) · где: rooms/O1: hotspots.board.label		Классная доска	22	
+text:O1.board.use	agata	O1 Зимний класс	«Классная доска» (board) · действие с объектом (use) · где: rooms/O1: hotspots.board.use.text		Доску недавно вытирали — мел свежий. Учились тут. Вот бы и моё послание кто прочёл.		
+text:O1.board.chalk	agata	O1 Зимний класс	«Классная доска» (board) · chalk · где: rooms/O1: hotspots.board.item_use.chalk.choice.options.here.text		Теперь и на доске мой след: «Я была здесь. Агата».		
+text:O1.board.look	narrator	O1 Зимний класс	«Классная доска» (board) · осмотр (look) · где: rooms/O1: hotspots.board.look		По доске — меловые разводы.		
+text:O1.board.label_here	ui	O1 Зимний класс	«Классная доска» (board) · подпись при наведении (другое состояние) (label_here) · где: rooms/O1: hotspots.board.states.0.label		Доска: «Я была здесь. Агата»	40	
+text:O1.board.label_mama	ui	O1 Зимний класс	«Классная доска» (board) · подпись при наведении (другое состояние) (label_mama) · где: rooms/O1: hotspots.board.states.1.label		Доска: «Мама, я иду»	30	
+text:O1.board.label_ilya	ui	O1 Зимний класс	«Классная доска» (board) · подпись при наведении (другое состояние) (label_ilya) · где: rooms/O1: hotspots.board.states.2.label		Доска: «Илюша, я нашла твой рисунок»	50	
+text:O1.board.prompt	narrator	O1 Зимний класс	«Классная доска» (board) · вопрос выбора (prompt) · где: rooms/O1: hotspots.board.item_use.chalk.choice.prompt		Что бы на доске написать?		
+text:O1.board.opt_here	ui	O1 Зимний класс	«Классная доска» (board) · вариант выбора (кнопка) (opt_here) · где: rooms/O1: hotspots.board.item_use.chalk.choice.options.here.label		«Я была здесь. Агата»	31	
+text:O1.board.opt_mama	ui	O1 Зимний класс	«Классная доска» (board) · вариант выбора (кнопка) (opt_mama) · где: rooms/O1: hotspots.board.item_use.chalk.choice.options.mama.label		«Мама, я иду»	20	
+text:O1.board.opt_ilya	ui	O1 Зимний класс	«Классная доска» (board) · вариант выбора (кнопка) (opt_ilya) · где: rooms/O1: hotspots.board.item_use.chalk.choice.options.ilya.label		«Илюша, я нашла твой рисунок»	41	
+text:O1.board.opt_none	ui	O1 Зимний класс	«Классная доска» (board) · вариант выбора (кнопка) (opt_none) · где: rooms/O1: hotspots.board.item_use.chalk.choice.options.none.label		Пока ничего не писать	31	
+text:O1.board.chalk_mama	narrator	O1 Зимний класс	«Классная доска» (board) · chalk_mama · где: rooms/O1: hotspots.board.item_use.chalk.choice.options.mama.text		Мелом на доске выведено: «Мама, я иду».		
+text:O1.board.chalk_ilya	narrator	O1 Зимний класс	«Классная доска» (board) · chalk_ilya · где: rooms/O1: hotspots.board.item_use.chalk.choice.options.ilya.text		Мелом на доске выведено: «Илюша, я нашла твой рисунок».		
+text:O1.board.chalk_none	narrator	O1 Зимний класс	«Классная доска» (board) · chalk_none · где: rooms/O1: hotspots.board.item_use.chalk.choice.options.none.text		Мел в сумке остался. Доска подождёт.		
+text:O1.board.chalk_late	narrator	O1 Зимний класс	«Классная доска» (board) · chalk_late · где: rooms/O1: hotspots.board.item_use.chalk.choice.fail_text		Теперь-то что писать. Мама сама пришла.		
+text:O1.board.written_mama	written	O1 Зимний класс	«Классная доска» (board) · надпись мелом/карандашом (written_mama)		Мама, я иду		
+text:O1.board.written_ilya	written	O1 Зимний класс	«Классная доска» (board) · надпись мелом/карандашом (written_ilya)		Илюша, я нашла\nтвой рисунок		
+text:O1.sack.label	ui	O1 Зимний класс	«Залатанный мешок» (sack) · подпись при наведении (label) · где: rooms/O1: hotspots.sack.label		Залатанный мешок	24	
+text:O1.sack.use	narrator	O1 Зимний класс	«Залатанный мешок» (sack) · действие с объектом (use) · где: rooms/O1: hotspots.sack.use.text		На латке латка. Старую ткань берегли, пока было к чему новую пришивать.		
+text:O1.sack.look	narrator	O1 Зимний класс	«Залатанный мешок» (sack) · осмотр (look) · где: rooms/O1: hotspots.sack.look		Мешок у стены — заплата на заплате.		
+text:O1.notebooks.label	ui	O1 Зимний класс	«Стопка тетрадей» (notebooks) · подпись при наведении (label) · где: rooms/O1: hotspots.notebooks.label		Стопка тетрадей	23	
+text:O1.notebooks.use	agata	O1 Зимний класс	«Стопка тетрадей» (notebooks) · действие с объектом (use) · где: rooms/O1: hotspots.notebooks.use.text		До последнего листа исписаны — а почерки-то, что ни лист, то другой! Учились тут, все эти годы! Жива та сторона.		
+text:O1.notebooks.look	narrator	O1 Зимний класс	«Стопка тетрадей» (notebooks) · осмотр (look) · где: rooms/O1: hotspots.notebooks.look		На подоконнике исписанные тетради сложены.		
+text:O1.teacher_drawer.label	ui	O1 Зимний класс	«Ящик учительского стола» (teacher_drawer) · подпись при наведении (label) · где: rooms/O1: hotspots.teacher_drawer.label		Ящик учительского стола	33	
+text:O1.teacher_drawer.label_open	ui	O1 Зимний класс	«Ящик учительского стола» (teacher_drawer) · подпись при наведении (другое состояние) (label_open) · где: rooms/O1: hotspots.teacher_drawer.states.0.label		Пустой ящик учительского стола	43	
+text:O1.teacher_drawer.use	narrator	O1 Зимний класс	«Ящик учительского стола» (teacher_drawer) · действие с объектом (use) · где: rooms/O1: hotspots.teacher_drawer.use.text		В ящике со школьной печатью — старого моста снимок: канат-поручень за плиту ближней опоры закреплён, рядом Пелагеина лодка. Под снимком — детский рисунок моста с лодкой. Тут же лист: чернила разные, края пожелтели.		
+text:O1.teacher_drawer.look	narrator	O1 Зимний класс	«Ящик учительского стола» (teacher_drawer) · осмотр (look) · где: rooms/O1: hotspots.teacher_drawer.look		На ящике учительского стола — печать школы.		
+text:O1.teacher_drawer.paper_plan	written	O1 Зимний класс	«Ящик учительского стола» (teacher_drawer) · текст листа крупного плана (paper_plan) · где: rooms/O1: hotspots.teacher_drawer.view.papers.0.text		Тому, кто через эту дверь придёт. Дорогу с двух концов держат. Дальний держим мы. Ближний — плита на опоре у поворота: под водой она, с трещиной. Скоба для неё у Дуни на верстаке. Канат только за её кольцо крепить — за камень опоры не держит, мы со своей стороны пробовали. Наш конец в старое кольцо дальней опоры заведён. Воду мельничный затвор держит, рычаг от него — в конторе управляющего. Закрепишь — дай три огня с причала.		
+text:O1.chalk.label	ui	O1 Зимний класс	«Кусочек мела» (chalk) · подпись при наведении (label) · где: rooms/O1: hotspots.chalk.label		Кусочек мела	19	
+text:O1.chalk.use	narrator	O1 Зимний класс	«Кусочек мела» (chalk) · действие с объектом (use) · где: rooms/O1: hotspots.chalk.use.text		От мела с парты на пальцах белый след остаётся.		
+text:O1.chalk.look	narrator	O1 Зимний класс	«Кусочек мела» (chalk) · осмотр (look) · где: rooms/O1: hotspots.chalk.look		На парте — кусочек мела.		
+text:O1.bird_drawing.label	ui	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · подпись при наведении (label) · где: rooms/O1: hotspots.bird_drawing.label		Плакат с синицей	24	
+text:O1.bird_drawing.label_marked	ui	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · подпись при наведении (другое состояние) (label_marked) · где: rooms/O1: hotspots.bird_drawing.states.0.label		Синица с моим рисунком	32	
+text:O1.bird_drawing.prompt	agata	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · вопрос выбора (prompt) · где: rooms/O1: hotspots.bird_drawing.choice.prompt		Шапку синице я рисовала. А сапоги уж после кто-то добавил. Что бы ещё пририсовать?		
+text:O1.bird_drawing.opt_scarf	ui	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · вариант выбора (кнопка) (opt_scarf) · где: rooms/O1: hotspots.bird_drawing.choice.options.scarf.label		Шарф — у них тут зима	31	
+text:O1.bird_drawing.opt_boat	ui	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · вариант выбора (кнопка) (opt_boat) · где: rooms/O1: hotspots.bird_drawing.choice.options.boat.label		Лодку с дымом — как Илюша рисовал	46	
+text:O1.bird_drawing.opt_bridge	ui	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · вариант выбора (кнопка) (opt_bridge) · где: rooms/O1: hotspots.bird_drawing.choice.options.bridge.label		Мостик на каменных опорах	36	
+text:O1.bird_drawing.late	narrator	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · late · где: rooms/O1: hotspots.bird_drawing.choice.fail_text		Уля синицу уже видела. Пусть остаётся как есть.		
+text:O1.bird_drawing.opt_leave	ui	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · вариант выбора (кнопка) (opt_leave) · где: rooms/O1: hotspots.bird_drawing.choice.options.leave.label		Оставить как есть	26	
+text:O1.bird_drawing.react_scarf	narrator	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · реакция после выбора (react_scarf) · запасной закадровый вариант (звучит line) · где: rooms/O1: hotspots.bird_drawing.choice.options.scarf.text		Полосатый шарф. Пусть ей тепло будет.		
+text:O1.bird_drawing.react_scarf#line	agata	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · реакция после выбора (react_scarf) · реплика персонажа · где: rooms/O1: hotspots.bird_drawing.choice.options.scarf.text		Полосатый шарф. Пусть ей тепло будет.		
+text:O1.bird_drawing.react_boat	narrator	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · реакция после выбора (react_boat) · запасной закадровый вариант (звучит line) · где: rooms/O1: hotspots.bird_drawing.choice.options.boat.text		Дымок из трубы. Илюша бы свою лодку узнал.		
+text:O1.bird_drawing.react_boat#line	agata	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · реакция после выбора (react_boat) · реплика персонажа · где: rooms/O1: hotspots.bird_drawing.choice.options.boat.text		Дымок из трубы. Илюша бы свою лодку узнал.		
+text:O1.bird_drawing.react_bridge	narrator	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · реакция после выбора (react_bridge) · запасной закадровый вариант (звучит line) · где: rooms/O1: hotspots.bird_drawing.choice.options.bridge.text		Мостик на опорах. Хоть на рисунке пусть будет.		
+text:O1.bird_drawing.react_bridge#line	agata	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · реакция после выбора (react_bridge) · реплика персонажа · где: rooms/O1: hotspots.bird_drawing.choice.options.bridge.text		Мостик на опорах. Хоть на рисунке пусть будет.		
+text:O1.bird_drawing.look	narrator	O1 Зимний класс	«Плакат с синицей» (bird_drawing) · осмотр (look) · где: rooms/O1: hotspots.bird_drawing.look		На полях учебного плаката синица нарисована — в шапке да сапогах.		
+text:O1.v03.done	narrator	O1 Зимний класс	v03 · после выбора (done) · где: rooms/O1: scenes.V03.complete_text		Сапоги пусть остаются. Жаль, кто дорисовал, имени не оставил.		
+text:O1.exit_H3.label	ui	O1 Зимний класс	выход → H3 Галерея порогов · подпись при наведении (label) · где: rooms/O1: exits.H3.label		Через дверь домой, в галерею	40	
+text:O1.exit_H3.yard_first	narrator	O1 Зимний класс	выход → H3 Галерея порогов · yard_first · запасной закадровый вариант (звучит line) · где: rooms/O1: exits.H3.stop_once.text		Эта дверь — домой. А вторая во двор школы ведёт… Глянуть бы сперва, куда там тропа.		
+text:O1.exit_H3.yard_first#line	agata	O1 Зимний класс	выход → H3 Галерея порогов · yard_first · реплика персонажа · где: rooms/O1: exits.H3.stop_once.text		Эта дверь — домой. А вторая во двор школы ведёт… Глянуть бы сперва, куда там тропа.		
+text:O1.exit_H3.closed	narrator	O1 Зимний класс	выход → H3 Галерея порогов · закрытый выход: почему не пройти (closed) · где: rooms/O1: exits.H3.closed_text		В раме дверь пока не держится.		
+text:O1.exit_O2.label	ui	O1 Зимний класс	выход → O2 Школьный двор · подпись при наведении (label) · где: rooms/O1: exits.O2.label		На школьное крыльцо	28	
+text:O1.enter.winter	agata	O1 Зимний класс	enter · winter · где: rooms/O1: on_enter.0.text		Тут уж зима?.. А у нас ещё октябрь!		
+text:O2.school_wall.label	ui	O2 Школьный двор	«Школьная стена» (school_wall) · подпись при наведении (label)		Школьная стена	22	
+text:O2.tree.label	ui	O2 Школьный двор	«Дерево у школы» (tree) · подпись при наведении (label) · где: rooms/O2: hotspots.tree.label		Дерево у школы	22	
+text:O2.tree.look	agata	O2 Школьный двор	«Дерево у школы» (tree) · осмотр (look) · где: rooms/O2: hotspots.tree.look		Помню, ниже было это дерево. Теперь ветви выше крыльца поднялись.		
+text:O2.porch_step.label	ui	O2 Школьный двор	«Ступень крыльца» (porch_step) · подпись при наведении (label) · где: rooms/O2: hotspots.porch_step.label		Ступень крыльца	23	
+text:O2.porch_step.label_mitten	ui	O2 Школьный двор	«Ступень крыльца» (porch_step) · подпись при наведении (другое состояние) (label_mitten) · где: rooms/O2: hotspots.porch_step.states.1.label		Ступень с моей варежкой	33	
+text:O2.porch_step.mitten	agata	O2 Школьный двор	«Ступень крыльца» (porch_step) · mitten · где: rooms/O2: hotspots.porch_step.item_use.mitten.text		Варежку на ступени оставлю. К ней же вернусь — значит, по кругу дорога водит.		
+text:O2.porch_step.mitten_late	narrator	O2 Школьный двор	«Ступень крыльца» (porch_step) · mitten_late · где: rooms/O2: hotspots.porch_step.item_use.mitten.fail_text		Дорога больше не кружит. Варежка пусть в сумке лежит.		
+text:O2.porch_step.look	narrator	O2 Школьный двор	«Ступень крыльца» (porch_step) · осмотр (look) · где: rooms/O2: hotspots.porch_step.look		На ступенях снег утоптан.		
+text:O2.mitten.label	ui	O2 Школьный двор	«Моя варежка» (mitten) · подпись при наведении (label) · где: rooms/O2: hotspots.mitten.label		Моя варежка	18	
+text:O2.mitten.look	agata	O2 Школьный двор	«Моя варежка» (mitten) · осмотр (look) · где: rooms/O2: hotspots.mitten.look		На ступени — моя шерстяная варежка.		
+text:O2.mitten.take	agata	O2 Школьный двор	«Моя варежка» (mitten) · взять в сумку (take) · где: rooms/O2: hotspots.mitten.use.text		С собой её заберу.		
