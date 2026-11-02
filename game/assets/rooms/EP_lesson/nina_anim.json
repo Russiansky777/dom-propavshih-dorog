@@ -1,0 +1,53 @@
+{
+ "_comment": "tools/make_frame_layers.py (compose.anim): кадры фигуры для StateLayer — клип покоя и клип реплики, каждый кадр собран как картинка слоя; не править руками.",
+ "image": "res://assets/rooms/EP_lesson/nina.png",
+ "key": "c68acf4bcb373faa6a36410f4149a9eb",
+ "char": "nina",
+ "sheet": "nina_v2",
+ "dir": 0,
+ "origin": [
+  735,
+  261
+ ],
+ "cell": [
+  155,
+  363
+ ],
+ "cols": 51,
+ "gap": 4,
+ "size": [
+  8105,
+  730
+ ],
+ "feet": [
+  77.0,
+  337.0
+ ],
+ "height": 336.0,
+ "clips": {
+  "rest": {
+   "action": "idle",
+   "first": 0,
+   "frames": 24,
+   "fps": 12.0,
+   "playback": "pingpong",
+   "blend": false,
+   "shift_sheet_px": [
+    0,
+    0
+   ]
+  },
+  "talk": {
+   "action": "talk",
+   "first": 24,
+   "frames": 36,
+   "fps": 9.0,
+   "playback": "loop",
+   "blend": false,
+   "shift_sheet_px": [
+    -2,
+    22
+   ]
+  }
+ }
+}

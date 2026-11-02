@@ -73,9 +73,10 @@ func refresh() -> void:
 
 
 ## A figure of a composed frame (a layer with `compose.char`, tools/make_frame_layers.py) is not a still picture
-## (Director 01.11, lines 61 and 68): it breathes and sways a little, and moves its head with its own line while
-## that line is being said — game/shaders/frame_figure.gdshader, values game/data/frame_life.json, the
-## layer's `life` {…} overrides them, `life: false` keeps it still.
+## (Director 01.11, lines 61 and 68). With sheet clips (`compose.anim`) it plays them — see _setup_anim; a figure
+## without them (Agata seated at the dinner: a one-frame sheet) breathes and sways a little, and moves its head with
+## its own line while that line is being said — game/shaders/frame_figure.gdshader. Values game/data/frame_life.json,
+## the layer's `life` {…} overrides them, `life: false` keeps it still.
 const LIFE_PATH := "res://data/frame_life.json"   # not in data/actors: every file there is an actor sheet (run_tests «Loop seams»)
 const LIFE_SHADER := preload("res://shaders/frame_figure.gdshader")
 var life_mat: ShaderMaterial = null
@@ -106,6 +107,8 @@ func _setup_life() -> void:
 		cfg.merge(data["life"], true)
 	_life_cfg = cfg
 	life_char = String(c["char"])
+	if c.has("anim") and _setup_anim(img, c):
+		return
 	life_mat = ShaderMaterial.new()
 	life_mat.shader = LIFE_SHADER
 	var feet: Array = c["feet"]
@@ -132,10 +135,148 @@ func _life_step(delta: float) -> void:
 	if String(b.get("type", "")) == "line" and String(b.get("speaker", "")) == life_char:
 		var vd := get_node_or_null("/root/VoiceDirector")
 		want = 1.0 if vd == null or bool(vd.call("line_being_said", b)) else 0.0
+	if not anim.is_empty():
+		_anim_step(delta, want)
+		return
 	var tau := float(_life_cfg.get("talk_in_s" if want > life_talk else "talk_out_s", 0.4))
 	life_talk = move_toward(life_talk, want, delta / maxf(tau, 0.01))
 	life_mat.set_shader_parameter("talk", smoothstep(0.0, 1.0, life_talk))
 	life_mat.set_shader_parameter("time_s", _life_t)
+
+
+## A frame figure with sheet clips (compose.anim, tools/make_frame_layers.py → <image>_anim.png + .json): the layer
+## plays the figure's own motion instead of a still picture — the rest clip (listen / idle, to and fro) all the time,
+## each figure from its own moment; while its own line is being said the talk clip (the gesture of the villagers'
+## sheets: hands, head, mouth) dissolves in from its start and loops, and when the line is over it dissolves back.
+## The still picture (`Image`, the rest clip's first frame) stays as the fallback and is hidden.
+const ANIM_SHADER := preload("res://shaders/frame_anim.gdshader")
+var anim: Dictionary = {}          # the atlas description (<image>_anim.json)
+var anim_sprite: Sprite2D = null
+var anim_rest_cell: int = -1       # shown cells (tests): the rest clip's and the talk clip's
+var anim_talk_cell: int = -1
+var _talk_t: float = 0.0
+var _anim_phase: float = 0.0
+
+
+func _setup_anim(img: Sprite2D, c: Dictionary) -> bool:
+	var base := String(data.get("image", "")).get_basename()
+	var mpath := base + "_anim.json"
+	var apath := base + "_anim.png"
+	if not FileAccess.file_exists(mpath) or not ResourceLoader.exists(apath):
+		push_warning("StateLayer %s: compose.anim without its atlas (%s) — tools/make_frame_layers.py" % [name, apath])
+		return false
+	var meta = JSON.parse_string(FileAccess.get_file_as_string(mpath))
+	if not (meta is Dictionary) or not (meta as Dictionary).has("clips") or not meta["clips"].has("rest"):
+		return false
+	anim = meta
+	var cell := Vector2(float(anim["cell"][0]), float(anim["cell"][1]))
+	var origin := Vector2(float(anim["origin"][0]), float(anim["origin"][1]))
+	anim_sprite = Sprite2D.new()
+	anim_sprite.name = "Anim"
+	anim_sprite.texture = load(apath)
+	anim_sprite.centered = false
+	anim_sprite.region_enabled = true
+	anim_sprite.region_rect = Rect2(Vector2.ZERO, cell)
+	anim_sprite.scale = img.scale
+	anim_sprite.position = img.position + origin * img.scale
+	life_mat = ShaderMaterial.new()
+	life_mat.shader = ANIM_SHADER
+	life_mat.set_shader_parameter("atlas_px", Vector2(float(anim["size"][0]), float(anim["size"][1])))
+	life_mat.set_shader_parameter("cell_px", cell)
+	life_mat.set_shader_parameter("feet_px", Vector2(float(anim["feet"][0]), float(anim["feet"][1])))
+	var hpx := maxf(float(anim.get("height", 300.0)), 1.0)
+	life_mat.set_shader_parameter("height_px", hpx)
+	_anim_phase = fposmod(float(hash(life_char + String(name))) * 0.618034, 1.0)
+	life_mat.set_shader_parameter("phase", _anim_phase * TAU)
+	life_mat.set_shader_parameter("talk_frac", maxf(float(_life_cfg.get("talk_frac", 0.008)), float(_life_cfg.get("talk_min_px", 0.0)) / hpx))
+	anim_sprite.material = life_mat
+	add_child(anim_sprite)
+	img.visible = false
+	_anim_step(0.0, 0.0)
+	return true
+
+
+## Cell `i` of the atlas: its top-left, px.
+func _anim_cell_px(i: int) -> Vector2:
+	var cols := maxi(int(anim.get("cols", 1)), 1)
+	var g := float(anim.get("gap", 0))
+	var row := floori(float(i) / float(cols))
+	return Vector2(float(i % cols) * (float(anim["cell"][0]) + g), float(row) * (float(anim["cell"][1]) + g))
+
+
+## Position `pos` (frames, fractional) in a clip → [cell, next cell, share of the next].
+func _anim_clip_at(cl: Dictionary, pos: float) -> Array:
+	var n := maxi(int(cl.get("frames", 1)), 1)
+	var first := int(cl.get("first", 0))
+	if n == 1:
+		return [first, first, 0.0]
+	var a: int
+	var b: int
+	var f: float
+	if String(cl.get("playback", "loop")) == "pingpong":
+		var per := float(2 * (n - 1))
+		var m := fposmod(pos, per)
+		if m < float(n - 1):
+			a = int(floor(m))
+			b = a + 1
+			f = m - floor(m)
+		else:
+			var back := m - float(n - 1)
+			a = n - 1 - int(floor(back))
+			b = a - 1
+			f = back - floor(back)
+	else:
+		var m2 := fposmod(pos, float(n))
+		a = int(floor(m2))
+		b = (a + 1) % n
+		f = m2 - floor(m2)
+	if not bool(cl.get("blend", false)):
+		f = 0.0
+		b = a
+	else:
+		f = smoothstep(float(_life_cfg.get("anim_blend_hold", 0.5)), 1.0, f)
+	return [first + a, first + b, f]
+
+
+func _anim_step(delta: float, want: float) -> void:
+	var clips: Dictionary = anim["clips"]
+	var rest: Dictionary = clips["rest"]
+	var r := _anim_clip_at(rest, (_life_t + _anim_phase * 9.7) * float(rest.get("fps", 12.0)))
+	anim_rest_cell = int(r[0])
+	life_mat.set_shader_parameter("rest_a", _anim_cell_px(int(r[0])))
+	life_mat.set_shader_parameter("rest_b", _anim_cell_px(int(r[1])))
+	life_mat.set_shader_parameter("rest_mix", float(r[2]))
+	life_mat.set_shader_parameter("time_s", _life_t)
+	var fade_in := float(_life_cfg.get("anim_talk_in_s", 0.25))
+	var fade_out := float(_life_cfg.get("anim_talk_out_s", 0.4))
+	if not clips.has("talk"):
+		# no gesture in the sheet: the head moves with the words (soft warp), the rest clip goes on
+		life_talk = move_toward(life_talk, want, delta / maxf(fade_in if want > life_talk else fade_out, 0.01))
+		life_mat.set_shader_parameter("warp_talk", smoothstep(0.0, 1.0, life_talk))
+		life_mat.set_shader_parameter("talk_w", 0.0)
+		anim_talk_cell = -1
+		return
+	if want > 0.0 and life_talk <= 0.0:
+		_talk_t = 0.0     # a new line: the gesture starts from its beginning (the sheet's talk starts in the stance)
+	life_talk = move_toward(life_talk, want, delta / maxf(fade_in if want > life_talk else fade_out, 0.01))
+	if life_talk > 0.0:
+		_talk_t += delta
+	var talk: Dictionary = clips["talk"]
+	var t := _anim_clip_at(talk, _talk_t * float(talk.get("fps", 9.0)))
+	anim_talk_cell = int(t[0]) if life_talk > 0.0 else -1
+	life_mat.set_shader_parameter("talk_a", _anim_cell_px(int(t[0])))
+	life_mat.set_shader_parameter("talk_b", _anim_cell_px(int(t[1])))
+	life_mat.set_shader_parameter("talk_mix", float(t[2]))
+	life_mat.set_shader_parameter("talk_w", smoothstep(0.0, 1.0, life_talk))
+	life_mat.set_shader_parameter("warp_talk", 0.0)
+
+
+## The cell the figure shows now (tests): the talk clip's once it has mostly dissolved in, else the rest clip's;
+## -1 — the layer is a still picture.
+func anim_cell() -> int:
+	if anim.is_empty():
+		return -1
+	return anim_talk_cell if life_talk >= 0.5 and anim_talk_cell >= 0 else anim_rest_cell
 
 
 ## `spin` {deg_per_s, if, unless}: the layer turns about its `pivot` while the flags allow (the M1 water

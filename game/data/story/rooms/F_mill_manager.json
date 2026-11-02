@@ -37,14 +37,17 @@
       "image": "res://assets/rooms/F_mill_manager/pavel.png",
       "compose": {
         "char": "pavel",
+        "sheet": "pavel_v2",
         "feet": [
           600,
           575
         ],
         "height": 205,
         "dir": 7,
-        "action": "idle",
+        "action": "listen",
         "frame": 0,
+        "anim": {"rest": "listen", "talk": "talk"},
+        "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           0.95,
           0.93,
@@ -64,8 +67,10 @@
         ],
         "height": 195,
         "dir": 1,
-        "action": "talk",
+        "action": "idle",
         "frame": 0,
+        "anim": {"rest": "idle", "talk": "talk", "fps": {"talk": 3.4}, "blend": ["talk"]},
+        "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           0.95,
           0.93,
@@ -79,14 +84,17 @@
       "image": "res://assets/rooms/F_mill_manager/ilya.png",
       "compose": {
         "char": "ilya",
+        "sheet": "ilya_v2",
         "feet": [
           975,
           600
         ],
         "height": 215,
         "dir": 1,
-        "action": "talk",
+        "action": "listen",
         "frame": 0,
+        "anim": {"rest": "listen", "talk": "talk"},
+        "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           0.95,
           0.93,
@@ -108,6 +116,8 @@
         "dir": 6,
         "action": "idle",
         "frame": 0,
+        "anim": {"rest": "idle"},
+        "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           0.95,
           0.93,

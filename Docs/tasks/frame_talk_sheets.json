@@ -1,0 +1,29 @@
+{
+  "request": "frame_talk_sheets",
+  "from": "Claude Code, 02.11",
+  "_why": "Директор 01.11, стр. 61 («на кадрах с двери, мастерской и т. д. с Ниной она статична») и стр. 68 («в сценке, где Лукич, Илья и т. д., никто не двигается, когда говорит»). Фигуры кадров (data/story/rooms/F_*.json, EP_*.json, слои compose) теперь играют клипы листов: покой (listen / idle) и жест своей реплики (talk) — tools/make_frame_layers.py собирает атлас кадров, StateLayer играет. Чего не хватает в листах — ниже. Кредитов Meshy не нужно: клипы уже есть в GLB, это перерендер.",
+  "items": [
+    {
+      "character": "agata",
+      "target": "assets/characters/agata/ (+ копия игры tools/pack_sheets.py)",
+      "add_actions": {"talk": {"clip": "Talk_with_Right_Hand_Open", "frames": 36, "fps": 9, "legs_from": "Idle_T2M_idle"}},
+      "_note": "У листа Агаты нет клипа реплики — в кадрах (совет на мельнице M23b, пролёт F_span) её голова движется со словами только мягкой деформацией картинки. Клип — тот, что у живой Агаты (game/data/actors/agata.json rt3d.clips.talk, GLB agata_v4_rt.glb), ноги и таз — из стойки (как act_body у жителей), начало и конец — в позе кадра 0 idle, 8 направлений, render_size 864, elev 14."
+    },
+    {
+      "character": "manager",
+      "target": "assets/characters/manager/ (новые действия listen и talk2 рядом с прежними; прежние не трогать)",
+      "add_actions": {
+        "listen": {"clip": "как listen жителей v2 (Text to Motion «слушает», руки у тела)", "frames": 24, "fps": 12, "playback": "pingpong"},
+        "talk2": {"clip": "Talk_with_Hands_Open (перенос с рига жителей, retarget_clips.py)", "frames": 36, "fps": 9, "legs_from": "Idle_4"}
+      },
+      "frame_w_h": [648, 864],
+      "_note": "Управляющий (Лукич) говорит в M23b четыре реплики, а его лист v1 — 16 кадров на 9 с «Listening_Gesture»: в кадре жест редкий (3,4 к/с с растворением кадров). Нужен жест как у жителей v2 и тот же размер кадра (render_size 864). После поставки кадр F_mill_manager переключается правкой данных (compose.anim.talk = talk2)."
+    },
+    {
+      "character": "nina_v2, ilya_v2, pavel_v2, pelageya_v2, mitya_v2",
+      "target": "assets/characters/<имя>_v2/ — действие talk_steady рядом с talk",
+      "add_actions": {"talk_steady": {"clip": "talk (Talk_with_Hands_Open), бёдра, спина и ноги — 0,3 клипа + 0,7 позы listen кадра 0 (как act_body.keep 0.3 у живых жителей)", "frames": 36, "fps": 9}},
+      "_note": "Клип talk листов v2 стоит иначе, чем listen: ноги на 10–12 см вперёд, подошвы на 2–3 см выше (floor_shift_m), корпус откинут — в кадре на наплыве «слушает → говорит» ноги переступают растворением (голову tools/make_frame_layers.py сводит, ноги свести нельзя). talk_steady с ногами из стойки уберёт двоение ног; Директор жаловался на то же у живых жителей (01.11, стр. 6, 10), там это исправлено фильтром дорожек."
+    }
+  ]
+}

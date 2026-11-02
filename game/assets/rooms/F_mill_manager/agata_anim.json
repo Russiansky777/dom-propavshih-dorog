@@ -1,0 +1,41 @@
+{
+ "_comment": "tools/make_frame_layers.py (compose.anim): кадры фигуры для StateLayer — клип покоя и клип реплики, каждый кадр собран как картинка слоя; не править руками.",
+ "image": "res://assets/rooms/F_mill_manager/agata.png",
+ "key": "2c61c4236ec7ad9bb9e936e7ffceede6",
+ "char": "agata",
+ "sheet": "agata",
+ "dir": 6,
+ "origin": [
+  1096,
+  429
+ ],
+ "cell": [
+  70,
+  226
+ ],
+ "cols": 30,
+ "gap": 4,
+ "size": [
+  2216,
+  226
+ ],
+ "feet": [
+  34.0,
+  211.0
+ ],
+ "height": 210.0,
+ "clips": {
+  "rest": {
+   "action": "idle",
+   "first": 0,
+   "frames": 30,
+   "fps": 24.0,
+   "playback": "pingpong",
+   "blend": false,
+   "shift_sheet_px": [
+    0,
+    0
+   ]
+  }
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "_comment": "tools/make_frame_layers.py (compose.anim): кадры фигуры для StateLayer — клип покоя и клип реплики, каждый кадр собран как картинка слоя; не править руками.",
+ "image": "res://assets/rooms/EP_boat/mitya.png",
+ "key": "d804582a43da834624631b506d9106f5",
+ "char": "mitya",
+ "sheet": "mitya_v2",
+ "dir": 6,
+ "origin": [
+  946,
+  460
+ ],
+ "cell": [
+  159,
+  307
+ ],
+ "cols": 50,
+ "gap": 4,
+ "size": [
+  8146,
+  618
+ ],
+ "feet": [
+  114.0,
+  290.0
+ ],
+ "height": 285.0,
+ "clips": {
+  "rest": {
+   "action": "idle",
+   "first": 0,
+   "frames": 24,
+   "fps": 12.0,
+   "playback": "pingpong",
+   "blend": false,
+   "shift_sheet_px": [
+    0,
+    0
+   ]
+  },
+  "talk": {
+   "action": "talk",
+   "first": 24,
+   "frames": 36,
+   "fps": 9.0,
+   "playback": "loop",
+   "blend": false,
+   "shift_sheet_px": [
+    4,
+    5
+   ]
+  }
+ }
+}

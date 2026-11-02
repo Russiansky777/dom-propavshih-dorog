@@ -80,6 +80,7 @@
       "image": "res://assets/rooms/EP_boat/pelageya.png",
       "compose": {
         "char": "pelageya",
+        "sheet": "pelageya_v2",
         "feet": [
           850,
           800
@@ -89,6 +90,8 @@
         "dir": 6,
         "action": "idle",
         "frame": 0,
+        "anim": {"rest": "idle", "talk": "talk"},
+        "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           0.97,
           0.95,
@@ -102,6 +105,7 @@
       "image": "res://assets/rooms/EP_boat/mitya.png",
       "compose": {
         "char": "mitya",
+        "sheet": "mitya_v2",
         "feet": [
           1060,
           750
@@ -110,6 +114,8 @@
         "dir": 6,
         "action": "idle",
         "frame": 0,
+        "anim": {"rest": "idle", "talk": "talk"},
+        "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           0.97,
           0.95,

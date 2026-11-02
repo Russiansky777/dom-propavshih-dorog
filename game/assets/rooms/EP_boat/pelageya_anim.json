@@ -1,0 +1,53 @@
+{
+ "_comment": "tools/make_frame_layers.py (compose.anim): кадры фигуры для StateLayer — клип покоя и клип реплики, каждый кадр собран как картинка слоя; не править руками.",
+ "image": "res://assets/rooms/EP_boat/pelageya.png",
+ "key": "160f4ca1b2f2680f55dc2a289ce8e56b",
+ "char": "pelageya",
+ "sheet": "pelageya_v2",
+ "dir": 6,
+ "origin": [
+  751,
+  522
+ ],
+ "cell": [
+  140,
+  294
+ ],
+ "cols": 56,
+ "gap": 4,
+ "size": [
+  8060,
+  592
+ ],
+ "feet": [
+  99.0,
+  278.0
+ ],
+ "height": 274.0,
+ "clips": {
+  "rest": {
+   "action": "idle",
+   "first": 0,
+   "frames": 24,
+   "fps": 12.0,
+   "playback": "pingpong",
+   "blend": false,
+   "shift_sheet_px": [
+    0,
+    0
+   ]
+  },
+  "talk": {
+   "action": "talk",
+   "first": 24,
+   "frames": 36,
+   "fps": 9.0,
+   "playback": "loop",
+   "blend": false,
+   "shift_sheet_px": [
+    -8,
+    -3
+   ]
+  }
+ }
+}

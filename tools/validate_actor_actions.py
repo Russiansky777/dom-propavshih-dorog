@@ -16,7 +16,11 @@ G53 (Директор: «Агата стоит у края стола») — к�
      compose.frame — кадр;
   5. сидячая поза за столом (compose.action == "sit"): у слоя есть hide (что на картине перед ней) и
      слой стоит раньше слоя с семьёй (если он указан в compose.below) — нарисованные руки и посуда поверх;
-  6. картинки слоёв совпадают с данными (tools/make_frame_layers.py --check для этих кадров).
+  6. картинки слоёв совпадают с данными (tools/make_frame_layers.py --check для этих кадров);
+01.11 (Директор, стр. 61, 68: фигуры кадров неподвижны) — фигура с клипами (compose.anim):
+  7. набор листов — compose.sheet (иначе как у make_frame_layers), клипы anim.rest / anim.talk есть в листе;
+  8. атлас кадров <image>_anim.png и его описание <image>_anim.json есть и собраны по этим данным (отпечаток key —
+     make_frame_layers.anim_key: правка compose без пересборки атласа ловится).
 
   python3 tools/validate_actor_actions.py [--quiet]
 Код 1 — порок (числа печатаются).
@@ -128,6 +132,14 @@ def check_actor(path: Path, quiet: bool) -> list:
     return bad
 
 
+def _mfl():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("make_frame_layers", ROOT / "tools" / "make_frame_layers.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def check_frames(quiet: bool) -> list:
     bad, ids = [], []
     for rf in sorted(ROOMS.glob("*.json")):
@@ -140,7 +152,7 @@ def check_frames(quiet: bool) -> list:
             c = l.get("compose") or {}
             if "char" not in c:
                 continue
-            cset = {"tamara": "tamara_v3"}.get(c["char"], c["char"])
+            cset = str(c.get("sheet") or {"tamara": "tamara_v3"}.get(c["char"], c["char"]))
             sp_path = ROOT / "assets" / "characters" / cset / "sprites.json"
             if not sp_path.exists():
                 continue
@@ -154,6 +166,23 @@ def check_frames(quiet: bool) -> list:
                 bad.append(f"{where}: строка {c.get('dir')} вне листа")
             if not (0 <= int(c.get("frame", 0)) < int(sp["actions"][a]["frames"])):
                 bad.append(f"{where}: кадр {c.get('frame')} вне листа {a}")
+            if "anim" in c:
+                for role in ("rest", "talk"):
+                    ca = c["anim"].get(role)
+                    if role == "rest" and not ca:
+                        bad.append(f"{where}: anim без клипа покоя (rest)")
+                    if ca and ca not in sp.get("actions", {}):
+                        bad.append(f"{where}: клипа «{ca}» ({role}) нет в листе {cset}")
+                img = ROOT / "game" / str(l.get("image", "res://"))[len("res://"):]
+                aj = img.with_name(img.stem + "_anim.json")
+                if not aj.exists() or not img.with_name(img.stem + "_anim.png").exists():
+                    bad.append(f"{where}: нет атласа кадров {aj.with_suffix('.png').name} — tools/make_frame_layers.py {room['id']}.{l.get('id')}")
+                elif json.loads(aj.read_text(encoding="utf-8")).get("key") != _mfl().anim_key(c):
+                    bad.append(f"{where}: атлас кадров собран по другим данным — tools/make_frame_layers.py {room['id']}.{l.get('id')}")
+                elif not quiet:
+                    m = json.loads(aj.read_text(encoding="utf-8"))
+                    print(f"  {where}: клипы " + ", ".join(f"{r}={v['action']}×{v['frames']}" for r, v in m["clips"].items())
+                          + f" (лист {cset}, строка {c.get('dir')})")
             if a == "sit":
                 ids.append(room["id"])
                 if not c.get("hide"):

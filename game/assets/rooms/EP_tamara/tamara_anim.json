@@ -1,0 +1,53 @@
+{
+ "_comment": "tools/make_frame_layers.py (compose.anim): кадры фигуры для StateLayer — клип покоя и клип реплики, каждый кадр собран как картинка слоя; не править руками.",
+ "image": "res://assets/rooms/EP_tamara/tamara.png",
+ "key": "ed0af85565f169a905d28124e2f0022b",
+ "char": "tamara",
+ "sheet": "tamara_v3",
+ "dir": 3,
+ "origin": [
+  1436,
+  352
+ ],
+ "cell": [
+  116,
+  323
+ ],
+ "cols": 40,
+ "gap": 4,
+ "size": [
+  4796,
+  323
+ ],
+ "feet": [
+  54.0,
+  303.0
+ ],
+ "height": 300.0,
+ "clips": {
+  "rest": {
+   "action": "idle",
+   "first": 0,
+   "frames": 24,
+   "fps": 24.0,
+   "playback": "pingpong",
+   "blend": false,
+   "shift_sheet_px": [
+    0,
+    0
+   ]
+  },
+  "talk": {
+   "action": "talk",
+   "first": 24,
+   "frames": 16,
+   "fps": 3.4,
+   "playback": "loop",
+   "blend": true,
+   "shift_sheet_px": [
+    0,
+    0
+   ]
+  }
+ }
+}

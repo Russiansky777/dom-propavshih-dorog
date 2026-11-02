@@ -39,14 +39,17 @@
       "image": "res://assets/rooms/F_workshop_nina/nina.png",
       "compose": {
         "char": "nina",
+        "sheet": "nina_v2",
         "feet": [
           758,
           688
         ],
         "height": 537,
         "dir": 2,
-        "action": "talk",
+        "action": "listen",
         "frame": 0,
+        "anim": {"rest": "listen", "talk": "talk"},
+        "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
         "tint": [
           1.0,
           0.93,
