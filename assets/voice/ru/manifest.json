@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-11-02T16:19:13+00:00",
+  "updated_at": "2026-11-02T18:40:38+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -14959,6 +14959,61 @@
           "Уля",
           "подавала",
           "гвозди"
+        ],
+        "missing": [],
+        "extra": [],
+        "ratio": 1.0
+      }
+    },
+    "Q06m_0": {
+      "scene": "Q06m",
+      "index": 0,
+      "alignment": "src/Q06m_0.align.json",
+      "speaker": "mitya",
+      "text": "Я подсоблю — втроём быстрее. Окунь подождёт.",
+      "text_sha1": "56c949bf3d41ceb0c5339ffc3e9d73b4ee02d662",
+      "voice_id": "k3EpbtdM71O2VjgMkr1g",
+      "voice_name": "МИТЯ",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.6,
+        "similarity_boost": 0.75
+      },
+      "file": "Q06m_0.ogg",
+      "source": "src/Q06m_0.mp3",
+      "voice_text": "[cheerfully] Я подсоблю — втроём быстрее. Окунь подождёт.",
+      "voice_sha1": "00d7a5f18e25e2e1b2b5043f7c63d01786d54488",
+      "tags": [],
+      "characters": 57,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 3.52,
+      "lufs": -17.1,
+      "true_peak_db": -5.1,
+      "gain_db": -2.3,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -14.7,
+      "source_true_peak_db": -2.8,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-11-02T18:40:38+00:00",
+      "run": "41502411701",
+      "adopted_from": "probe/K3/W313_3",
+      "api": {
+        "history_item_id": "vRrn57INCmek27wV9PTD",
+        "character_cost": "25",
+        "previous_text": "",
+        "probe_run": "41499332994"
+      },
+      "stt": {
+        "model": "scribe_v2",
+        "text": "Я подсоблю. Втроем быстрее. Окунь подождет",
+        "words": [
+          "Я",
+          "подсоблю.",
+          "Втроем",
+          "быстрее.",
+          "Окунь",
+          "подождет"
         ],
         "missing": [],
         "extra": [],
