@@ -1,0 +1,14 @@
+{
+  "id": "SFX_ui_A_hover",
+  "text": "A single very soft muted tap of a fingertip on a smooth wooden tabletop, short, warm, close-up, dry, no reverb, no music",
+  "variant": "А: палец по столу — наведение",
+  "duration_s": 0.48,
+  "request": {
+    "text": "A single very soft muted tap of a fingertip on a smooth wooden tabletop, short, warm, close-up, dry, no reverb, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 0.5
+  },
+  "character_cost": "6",
+  "run": "41519621000"
+}

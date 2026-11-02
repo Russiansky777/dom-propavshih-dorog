@@ -1,0 +1,14 @@
+{
+  "id": "SFX_ui_D_hover",
+  "text": "A soft brush of a fingertip over an old wooden piano key without pressing it, faint wooden tick, close-up, dry, no music",
+  "variant": "Г: по клавише, не нажимая — наведение",
+  "duration_s": 0.48,
+  "request": {
+    "text": "A soft brush of a fingertip over an old wooden piano key without pressing it, faint wooden tick, close-up, dry, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 0.5
+  },
+  "character_cost": "6",
+  "run": "41519621000"
+}

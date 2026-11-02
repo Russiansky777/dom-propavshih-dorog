@@ -1,0 +1,14 @@
+{
+  "id": "SFX_ui_C_hover",
+  "text": "A very soft hollow wooden tick, like a small wooden spoon lightly touching a wooden bowl, single, muted, close-up, dry, no music",
+  "variant": "В: ложка о деревянную миску — наведение",
+  "duration_s": 0.48,
+  "request": {
+    "text": "A very soft hollow wooden tick, like a small wooden spoon lightly touching a wooden bowl, single, muted, close-up, dry, no music",
+    "prompt_influence": 0.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "duration_seconds": 0.5
+  },
+  "character_cost": "6",
+  "run": "41519621000"
+}
