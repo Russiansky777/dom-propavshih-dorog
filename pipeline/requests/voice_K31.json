@@ -1,0 +1,222 @@
+{
+ "mode": "say",
+ "set": "K3",
+ "stt": true,
+ "max_chars": 1421,
+ "credits_per_char_assumed": 0.46,
+ "_comment": "K31 (прохождение Директора 02.11, блок 1; «озвучивай окей» 15:41): стр. 11 — у двери из класса домой (O1.exit_H3.yard_first, новая); стр. 16 — лежанка вечером второго дня без «самый день» (H4.bed.early_d2); стр. 18 — Пелагея после «черным-черно» без порядка мельничных знаков (M16s_2); рыбалка — Уля зовёт к Мите, по желанию (M22_15_then1, новая); стр. 28 — Илья зовёт в мастерскую и после неё (ilya_invite, ilya_after, новые). Take _1 = voice_text в data/story/voice_direction.json.",
+ "new_text_lines": [
+  "agata:O1.exit_H3.yard_first",
+  "agata:H4.bed.early_d2",
+  "M16s_2",
+  "M22_15_then1",
+  "ilya:O4q.workshop.ilya_invite",
+  "ilya:O4q.workshop.ilya_after"
+ ],
+ "items": [
+  {
+   "id": "W304_1",
+   "line": "agata:O1.exit_H3.yard_first",
+   "take": "1",
+   "speaker": "agata",
+   "text": "[thoughtful] Эта дверь — домой. А вторая во двор школы ведёт… Глянуть бы сперва, куда там тропа.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "задумчиво, себе"
+  },
+  {
+   "id": "W304_2",
+   "line": "agata:O1.exit_H3.yard_first",
+   "take": "2",
+   "speaker": "agata",
+   "text": "[thoughtful] Эта дверь — домой. А вторая во двор школы ведёт… Глянуть бы сперва, куда там тропа.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W304_3",
+   "line": "agata:O1.exit_H3.yard_first",
+   "take": "3",
+   "speaker": "agata",
+   "text": "[thoughtful] Эта дверь — домой. А вторая во двор школы ведёт… Глянуть бы сперва, куда там тропа.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W305_1",
+   "line": "agata:H4.bed.early_d2",
+   "take": "1",
+   "speaker": "agata",
+   "text": "Не до сна мне сейчас — дела не переделаны.",
+   "voice_settings": {
+    "stability": 0.35
+   },
+   "variant": "живо: не до сна",
+   "previous_text": "Какой теперь сон — самый день. Я ещё дел не переделала."
+  },
+  {
+   "id": "W305_2",
+   "line": "agata:H4.bed.early_d2",
+   "take": "2",
+   "speaker": "agata",
+   "text": "Не до сна мне сейчас — дела не переделаны.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "ровнее",
+   "previous_text": "Какой теперь сон — самый день. Я ещё дел не переделала."
+  },
+  {
+   "id": "W305_3",
+   "line": "agata:H4.bed.early_d2",
+   "take": "3",
+   "speaker": "agata",
+   "text": "Не до сна мне сейчас — дела не переделаны.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "живее",
+   "previous_text": "Какой теперь сон — самый день. Я ещё дел не переделала."
+  },
+  {
+   "id": "W306_1",
+   "line": "M16s_2",
+   "take": "1",
+   "speaker": "pelageya",
+   "text": "Теперь и наш огонь там увидят. Знаки те же, что колоко́лом, только три — не для работы. Три — «живые»: на них всякий ответит.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "радостно, но твёрдо: «три — живые» — с весом",
+   "previous_text": "Раз — пускай, два — стой, долгий — подымай. Что звоном, что огнём — знаки одни. А три не для работы. Три — «живые»."
+  },
+  {
+   "id": "W306_2",
+   "line": "M16s_2",
+   "take": "2",
+   "speaker": "pelageya",
+   "text": "Теперь и наш огонь там увидят. Знаки те же, что колоко́лом, только три — не для работы. Три — «живые»: на них всякий ответит.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "живее",
+   "previous_text": "Раз — пускай, два — стой, долгий — подымай. Что звоном, что огнём — знаки одни. А три не для работы. Три — «живые»."
+  },
+  {
+   "id": "W306_3",
+   "line": "M16s_2",
+   "take": "3",
+   "speaker": "pelageya",
+   "text": "Теперь и наш огонь там увидят. Знаки те же, что колоко́лом, только три — не для работы. Три — «живые»: на них всякий ответит.",
+   "voice_settings": {
+    "stability": 0.6
+   },
+   "variant": "ровнее",
+   "previous_text": "Раз — пускай, два — стой, долгий — подымай. Что звоном, что огнём — знаки одни. А три не для работы. Три — «живые»."
+  },
+  {
+   "id": "W307_1",
+   "line": "M22_15_then1",
+   "take": "1",
+   "speaker": "ulyana",
+   "text": "[excited] А дядя Митя на мостках окуня ловит! Захочешь — сходи к нему, он и тебя научит.",
+   "voice_settings": {
+    "stability": 0.4
+   },
+   "variant": "радостно, торопится рассказать"
+  },
+  {
+   "id": "W307_2",
+   "line": "M22_15_then1",
+   "take": "2",
+   "speaker": "ulyana",
+   "text": "[excited] А дядя Митя на мостках окуня ловит! Захочешь — сходи к нему, он и тебя научит.",
+   "voice_settings": {
+    "stability": 0.3
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W307_3",
+   "line": "M22_15_then1",
+   "take": "3",
+   "speaker": "ulyana",
+   "text": "[excited] А дядя Митя на мостках окуня ловит! Захочешь — сходи к нему, он и тебя научит.",
+   "voice_settings": {
+    "stability": 0.5
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W308_1",
+   "line": "ilya:O4q.workshop.ilya_invite",
+   "take": "1",
+   "speaker": "ilya",
+   "text": "[warmly] Загляни-ка ко мне в мастерскую — дело есть.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "по-братски, с хитринкой"
+  },
+  {
+   "id": "W308_2",
+   "line": "ilya:O4q.workshop.ilya_invite",
+   "take": "2",
+   "speaker": "ilya",
+   "text": "[warmly] Загляни-ка ко мне в мастерскую — дело есть.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W308_3",
+   "line": "ilya:O4q.workshop.ilya_invite",
+   "take": "3",
+   "speaker": "ilya",
+   "text": "[warmly] Загляни-ка ко мне в мастерскую — дело есть.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровнее"
+  },
+  {
+   "id": "W309_1",
+   "line": "ilya:O4q.workshop.ilya_after",
+   "take": "1",
+   "speaker": "ilya",
+   "text": "[warmly] Уля от верстака теперь не отходит. Стружки — по колено.",
+   "voice_settings": {
+    "stability": 0.55
+   },
+   "variant": "довольно, с улыбкой"
+  },
+  {
+   "id": "W309_2",
+   "line": "ilya:O4q.workshop.ilya_after",
+   "take": "2",
+   "speaker": "ilya",
+   "text": "[warmly] Уля от верстака теперь не отходит. Стружки — по колено.",
+   "voice_settings": {
+    "stability": 0.45
+   },
+   "variant": "живее"
+  },
+  {
+   "id": "W309_3",
+   "line": "ilya:O4q.workshop.ilya_after",
+   "take": "3",
+   "speaker": "ilya",
+   "text": "[warmly] Уля от верстака теперь не отходит. Стружки — по колено.",
+   "voice_settings": {
+    "stability": 0.65
+   },
+   "variant": "ровнее"
+  }
+ ]
+}
