@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-11-02T18:40:38+00:00",
+  "updated_at": "2026-11-02T20:55:49+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -929,7 +929,8 @@
           "language_code": "ru",
           "seed": 4193872963
         }
-      }
+      },
+      "stale": "нет в сценах"
     },
     "M02_7": {
       "scene": "M02",
@@ -17629,7 +17630,8 @@
           "language_code": "ru",
           "seed": 3847433384
         }
-      }
+      },
+      "stale": "текст изменён"
     },
     "H2d.nina_mirror.watch_wait": {
       "kind": "narration",
@@ -35791,7 +35793,8 @@
           "language_code": "ru",
           "seed": 972733777
         }
-      }
+      },
+      "stale": "текст изменён"
     },
     "mitya:O4q.workshop.mitya_cramped": {
       "kind": "narration",
@@ -35837,7 +35840,8 @@
           "language_code": "ru",
           "seed": 942273157
         }
-      }
+      },
+      "stale": "текст изменён"
     },
     "mitya:R3.mitya.after": {
       "kind": "narration",
