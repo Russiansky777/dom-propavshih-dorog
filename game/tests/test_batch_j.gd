@@ -1386,7 +1386,11 @@ func _test_staging_d3() -> void:
 		var ra: Array = mh.call("current_state").get("rect", mh.get("data").get("rect", [1612, 448, 80, 185]))
 		var feet := Vector2(float(ra[0]) + float(ra[2]) * 0.5, float(ra[1]) + float(ra[3]))
 		var nm := reg.get_navigation_map()
-		var path := NavigationServer2D.map_get_path(nm, feet + Vector2(-220, 0), feet + Vector2(220, 0), true)
+		# 01.11 стр. 51: Mitya stands right of the road at Ilya's house (feet x 1840) — 220 px to the right is off the
+		# floor (x 2060): both ends are the floor's nearest points, so the way still has to pass him
+		var a_end := NavigationServer2D.map_get_closest_point(nm, feet + Vector2(-220, 0))
+		var b_end := NavigationServer2D.map_get_closest_point(nm, feet + Vector2(220, 0))
+		var path := NavigationServer2D.map_get_path(nm, a_end, b_end, true)
 		var inside := 0
 		for i in range(1, path.size()):
 			for k in 11:

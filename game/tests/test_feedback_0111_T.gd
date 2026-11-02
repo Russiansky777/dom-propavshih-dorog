@@ -39,7 +39,7 @@ const ACCENT := {
 	"M26_37": "ОДНО НА ВСЕХ!",
 	"H4.v02.done": "Под крышей светло",
 }
-const REQUESTS := ["voice_K24.json", "voice_K25.json", "voice_K27.json", "voice_K28.json", "voice_K29.json"]
+const REQUESTS := ["voice_K24.json", "voice_K25.json", "voice_K27.json", "voice_K28.json", "voice_K29.json", "voice_K30.json"]
 
 
 func _initialize() -> void:
@@ -256,4 +256,4 @@ func _test_voice_request() -> void:
 	for id in NEW_TEXT:
 		var vt := String(vd.get(id, {}).get("voice_text", ""))
 		_check((takes.get(id, []) as Array).has(vt), "%s: voice_text is one of its recorded takes (%s)" % [id, vt])
-		_check(pend.has(id) or String(vd.get(id, {}).get("k17", "")) != "" or String(vd.get(id, {}).get("k18", "")) != "", "%s: chosen on «Семнадцатый» / «Восемнадцатый заход» or waits for its take" % id)
+		_check(pend.has(id) or String(vd.get(id, {}).get("k17", "")) != "" or String(vd.get(id, {}).get("k18", "")) != "" or String(vd.get(id, {}).get("k19", "")) != "", "%s: chosen on «Семнадцатый» – «Девятнадцатый заход» or waits for its take" % id)
