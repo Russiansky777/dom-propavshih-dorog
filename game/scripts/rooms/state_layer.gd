@@ -88,10 +88,18 @@ var _life_cfg: Dictionary = {}
 
 func _setup_life() -> void:
 	var c = data.get("compose", {})
-	if not (c is Dictionary) or String(c.get("char", "")) == "" or not c.has("feet"):
-		return
 	var lf = data.get("life", true)
 	if lf is bool and not lf:
+		return
+	# Director 02.11 вечер, № 25 («Тихон на последнем кадре двигался и говорил — почему убрали?»): a figure pasted from
+	# a picture (compose src, not a sheet) — Tikhon at the dinner — breathes and moves his head with his words when the
+	# layer's `life` names him: {"char", "feet", "height"} in canvas px (the sheet figures take these from compose)
+	if c is Dictionary and String(c.get("char", "")) == "" and lf is Dictionary and String(lf.get("char", "")) != "":
+		c = (c as Dictionary).duplicate()
+		for k in ["char", "feet", "height"]:
+			if lf.has(k):
+				c[k] = lf[k]
+	if not (c is Dictionary) or String(c.get("char", "")) == "" or not c.has("feet"):
 		return
 	var img := get_node_or_null("Image") as Sprite2D
 	if img == null:

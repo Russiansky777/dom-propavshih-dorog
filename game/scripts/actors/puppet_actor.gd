@@ -53,6 +53,13 @@ var mouth_frames: Array[Texture2D] = []
 var mouth_frame: int = 0            # 0 — the drawn mouth, 1..n — mouth_frames (tests)
 var _mouth_t: float = 0.0
 var _mouth_seq: int = 0
+## Director 02.11 вечер, № 6 («Тихону ещё чуть движения лап: ухо чешет или живот почёсывает»): `gestures` [{image,
+## every_s [a, b], hold_s, fade_s}] — the same pose drawn with one paw elsewhere (партия 18), on the same mesh and bones
+## over the body; now and then it dissolves in, stays `hold_s`, dissolves out (never while he speaks or is scared)
+var gesture_polys: Array[Polygon2D] = []
+var gesture_on: int = -1            # which gesture is showing (tests), -1 — none
+var _next_gesture: float = 0.0
+var _gesture_tw: Tween = null
 
 
 static func all_in(room: Node) -> Array:
@@ -265,6 +272,10 @@ func _skin(verts: PackedVector2Array) -> void:
 	var hy: Array = reg.get("head_y", [600, 520])
 	var ey: Array = reg.get("ear_y", [330, 265])
 	var split_x := float(reg.get("ear_split_x", 470))
+	var tail_poly := PackedVector2Array()
+	for q in reg.get("tail_poly", []):
+		tail_poly.append(Vector2(float(q[0]), float(q[1])))
+	var tail_feather := float(reg.get("tail_feather", 30.0))
 	var tails: Array = []
 	for b in spec.get("bones", []):
 		if String(b["name"]).begins_with("tail"):
@@ -278,6 +289,17 @@ func _skin(verts: PackedVector2Array) -> void:
 		var p: Vector2 = verts[i] / tex_scale + feet   # back to source px
 		# the tail region: right of tail_x (the standing Tikhon) or, with tail_x reversed, left of it (the loaf)
 		var t_tail := smoothstep(float(tx[0]), float(tx[1]), p.x) if float(tx[0]) <= float(tx[1]) else 1.0 - smoothstep(float(tx[1]), float(tx[0]), p.x)
+		# Director 02.11 вечер, № 2 («хвост затмевает модель… хвост и ухо как будто склеены»): in the loaf the tail wraps
+		# round the body and the left ear stands right over it — a vertical line cannot part them. `tail_poly` (source
+		# px) outlines the tail itself; outside it the weight fades over `tail_feather` px
+		if tail_poly.size() >= 3:
+			if Geometry2D.is_point_in_polygon(p, tail_poly):
+				t_tail = 1.0
+			else:
+				var dmin := INF
+				for k in tail_poly.size():
+					dmin = minf(dmin, Geometry2D.get_closest_point_to_segment(p, tail_poly[k], tail_poly[(k + 1) % tail_poly.size()]).distance_to(p))
+				t_tail = 1.0 - smoothstep(0.0, tail_feather, dmin)
 		var t_head := smoothstep(float(hy[0]), float(hy[1]), p.y) * (1.0 - t_tail)
 		var t_ear := smoothstep(float(ey[0]), float(ey[1]), p.y) * t_head
 		t_head -= t_ear
@@ -325,6 +347,8 @@ func _apply_variant(name: String) -> void:
 	# the mouth cut-outs belong to the picture they were cut from: a variant without its own has none
 	if not v.has("mouth_frames"):
 		spec.erase("mouth_frames")
+	if not v.has("gestures"):   # the same for the gestures: drawn on the base pose only
+		spec.erase("gestures")
 
 
 ## The picture, the rig, the mouth, the place, the shadow and the animations from `spec`.
@@ -337,6 +361,7 @@ func _build_all(room: Node, h: Node2D) -> bool:
 	var src: float = float(spec.get("source_size", tex.get_width()))
 	tex_scale = float(tex.get_width()) / src
 	_build_rig(tex)
+	_build_gestures()
 	_build_mouth()
 	_place(room, h)
 	_build_shadow()
@@ -358,6 +383,8 @@ func _teardown() -> void:
 	mouth = null
 	mouth_frames.clear()
 	mouth_frame = 0
+	gesture_polys.clear()
+	gesture_on = -1
 	talking = false
 
 
@@ -617,6 +644,7 @@ static func _common_period(a: float, b: float) -> float:
 func _process(delta: float) -> void:
 	_update_tone(delta)
 	_update_mouth(delta)
+	_update_gestures(delta)
 	if not visible or talking or scared or accent.is_playing():
 		return
 	_next_accent -= delta
@@ -705,3 +733,89 @@ func _update_tone(delta: float) -> void:
 	poly.self_modulate = _tone
 	if mouth != null:
 		mouth.self_modulate = _tone
+
+
+## The gesture pictures on the body's own mesh: the same polygon, the uv scaled to the picture's size, the same bones
+## and weights — breathing, the head and the ears move them exactly as the body.
+func _build_gestures() -> void:
+	gesture_polys.clear()
+	if poly == null or poly.texture == null:
+		return
+	var base_w := float(poly.texture.get_width())
+	var i := 0
+	for g in spec.get("gestures", []):
+		var path := String(g.get("image", ""))
+		if not ResourceLoader.exists(path):
+			continue
+		var t: Texture2D = load(path)
+		var k := float(t.get_width()) / maxf(base_w, 1.0)
+		var gp := Polygon2D.new()
+		gp.name = "Gesture%d" % i
+		gp.texture = t
+		gp.polygon = poly.polygon
+		var uv2 := PackedVector2Array()
+		for u in poly.uv:
+			uv2.append(u * k)
+		gp.uv = uv2
+		gp.polygons = poly.polygons
+		gp.texture_filter = poly.texture_filter
+		gp.modulate.a = 0.0
+		gp.set_meta("spec", g)
+		poly.get_parent().add_child(gp)
+		poly.get_parent().move_child(gp, poly.get_index() + 1)
+		gp.skeleton = gp.get_path_to(skeleton)
+		for b in poly.get_bone_count():
+			gp.add_bone(poly.get_bone_path(b), poly.get_bone_weights(b))
+		gesture_polys.append(gp)
+		i += 1
+	_next_gesture = _gesture_wait()
+
+
+func _gesture_wait() -> float:
+	if gesture_polys.is_empty():
+		return INF
+	var every: Array = gesture_polys[0].get_meta("spec").get("every_s", [18.0, 40.0])
+	return _rng.randf_range(float(every[0]), float(every[1]))
+
+
+func _update_gestures(delta: float) -> void:
+	if gesture_polys.is_empty():
+		return
+	if gesture_on >= 0:
+		# a line or a fright — the paw goes back at once
+		if (talking or scared or _speaking()) and _gesture_tw != null and _gesture_tw.is_valid() and gesture_polys[gesture_on].modulate.a > 0.0 and not bool(gesture_polys[gesture_on].get_meta("leaving", false)):
+			_gesture_tw.kill()
+			var gp := gesture_polys[gesture_on]
+			gp.set_meta("leaving", true)
+			_gesture_tw = create_tween()
+			_gesture_tw.tween_property(gp, "modulate:a", 0.0, 0.15)
+			_gesture_tw.tween_callback(func():
+				gp.set_meta("leaving", false)
+				gesture_on = -1
+				_next_gesture = _gesture_wait())
+		return
+	if not visible or talking or scared or _speaking():
+		return
+	_next_gesture -= delta
+	if _next_gesture > 0.0:
+		return
+	play_gesture(_rng.randi_range(0, gesture_polys.size() - 1))
+
+
+## One gesture: dissolve in, hold, dissolve out (tests call it directly).
+func play_gesture(i: int) -> void:
+	if i < 0 or i >= gesture_polys.size():
+		return
+	var gp := gesture_polys[i]
+	var g: Dictionary = gp.get_meta("spec")
+	var fade := float(g.get("fade_s", 0.25))
+	gesture_on = i
+	if _gesture_tw != null and _gesture_tw.is_valid():
+		_gesture_tw.kill()
+	_gesture_tw = create_tween()
+	_gesture_tw.tween_property(gp, "modulate:a", 1.0, fade)
+	_gesture_tw.tween_interval(float(g.get("hold_s", 1.6)))
+	_gesture_tw.tween_property(gp, "modulate:a", 0.0, fade)
+	_gesture_tw.tween_callback(func():
+		gesture_on = -1
+		_next_gesture = _gesture_wait())

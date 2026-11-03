@@ -41,7 +41,9 @@ const LINE := Color(0.88, 0.84, 0.74, 0.85)
 const SPRITES := {
 	"float": {"image": "res://assets/mechanics/fishing/float_on_water.png", "anchor": [60, 200], "scale": 0.227},
 	"float_tilted": {"image": "res://assets/mechanics/fishing/float_tilted.png", "anchor": [100, 200], "scale": 0.40},
-	"perch_caught": {"image": "res://assets/mechanics/fishing/perch_caught.png", "anchor": [77, 0], "scale": 0.283},
+	# Director 02.11 вечер, № 14 («окуня поменьше сделать и вниз практически висящим»): ×0.7 (0.283 → 0.2) and turned
+	# 72° about the line's top — head up at the hook, tail hanging down (was level, as if swimming in the air)
+	"perch_caught": {"image": "res://assets/mechanics/fishing/perch_caught.png", "anchor": [77, 0], "scale": 0.2, "rot_deg": 72.0},
 	"perch_lying": {"image": "res://assets/mechanics/fishing/perch_lying.png", "anchor": [240, 100], "scale": 0.136},
 }
 const WATERLINE := 200.0
@@ -77,6 +79,7 @@ var _draw: Control = null
 var hint: Label = null
 var again_btn: Button = null
 var slow_check: CheckButton = null
+var rod_seen: Dictionary = {}       # where the rod was drawn last (in the room): hand bone, grip, butt, tip (tests)
 var _taut_snd: float = 0.0       # time to the next creak of the taut string
 var in_room: bool = false
 var simple: bool = false
@@ -105,7 +108,7 @@ func build() -> void:
 		var d: Dictionary = SPRITES[id].merged(sp.get(id, {}), true)
 		var path := String(d["image"])
 		if ResourceLoader.exists(path):
-			_tex[id] = {"tex": load(path), "anchor": Vector2(float(d["anchor"][0]), float(d["anchor"][1])), "scale": float(d["scale"])}
+			_tex[id] = {"tex": load(path), "anchor": Vector2(float(d["anchor"][0]), float(d["anchor"][1])), "scale": float(d["scale"]), "rot": deg_to_rad(float(d.get("rot_deg", 0.0)))}
 	if not in_room:
 		var frame := Control.new()
 		frame.name = "Frame"
@@ -346,7 +349,8 @@ func _float_pos() -> Vector2:
 		"fight":
 			p = _fish_at + Vector2(0.0, sin(clock * 2.1) * 2.5)
 		"caught":
-			p += Vector2(0.0, -40.0 if not _tex.has("perch_caught") else -130.0)   # the painted perch hangs clear of the water
+			# the painted perch hangs clear of the water — hanging down it is longer than it was wide (600 × 0.2 ≈ 120 px)
+			p += Vector2(0.0, -40.0 if not _tex.has("perch_caught") else -150.0)
 	return p
 
 
@@ -363,7 +367,14 @@ func _on_draw() -> void:
 	if in_room:
 		var hand := _hands("", 1.0)
 		tip0 = rod_tip(hand, _float0, _figure_h(""))
-		butt = hand - (tip0 - hand) * 0.12   # the butt a hand's breadth behind her grip: the rod goes through her hand
+		# Director 02.11 вечер, № 16 («конец удочки должен быть ровно в руке; по слоям — под рукой, но над телом»): the hand
+		# bone is the wrist — the fingers close a palm lower (`grip_drop_rel` × her height, as the lantern's bail); the rod
+		# begins at the fist's far side (`grip_out_rel`), so the fist stays in front of it and nothing sticks out behind
+		var fh := _figure_h("")
+		var grip := hand + Vector2(0.0, fh * float(spec.get("grip_drop_rel", 0.05)))
+		tip0 = rod_tip(grip, _float0, fh)
+		butt = grip + (tip0 - grip).normalized() * fh * float(spec.get("grip_out_rel", 0.022))
+		rod_seen = {"hand": hand, "grip": grip, "butt": butt, "tip": tip0}
 	var bend := (taut if phase == "fight" else 0.0) + (0.25 if phase == "bite" else 0.0)
 	var tip := tip0 + (fp - tip0).normalized() * 70.0 * bend + Vector2(0.0, sin(clock * 1.3) * 2.0)
 	_rod(c, butt, fp, bend, taut, tip)
@@ -720,7 +731,7 @@ func _fish(c: CanvasItem, at: Vector2) -> void:
 		var tex: Texture2D = t["tex"]
 		var k: float = t["scale"]
 		var sway := sin(clock * 2.3) * 0.06
-		c.draw_set_transform(at, sway, Vector2.ONE * k)
+		c.draw_set_transform(at, float(t.get("rot", 0.0)) + sway, Vector2.ONE * k)
 		c.draw_texture(tex, -(t["anchor"] as Vector2))
 		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		return
