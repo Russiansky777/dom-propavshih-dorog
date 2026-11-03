@@ -3,7 +3,8 @@
 #   1. «Windows Lite» → build/windows/DomPropavshihDorog.exe — один exe (PCK вшит), листы жителей и Агаты — веб-копии
 #      (tools/make_web_sheets.py, фича web_atlas), размер ≈ как у сайта. Этот файл выкладывает workflow.
 #   2. «Windows» (полное качество, листы 2,25×) → build/windows/full/ (exe + .pck рядом, не вшит: PCK > 2 ГиБ)
-#      → zip build/windows/DomPropavshihDorog_win.zip, предел 1,9 ГБ (ассет релиза GitHub ≤ 2 ГиБ).
+#      → zip build/windows/DomPropavshihDorog_win.zip, предел 2 100 МБ (ассет релиза GitHub < 2 ГиБ = 2 147 МБ;
+#        03.11: с английским голосом zip 1 905 МБ — прежний предел 1 900 МБ не пустил его в релиз).
 # Падение полной сборки не мешает Lite (код 0), если не задано WIN_FULL_REQUIRED=1; WIN_FULL=0 — только Lite.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -65,8 +66,11 @@ t=$(date +%s)
   $(ls DomPropavshihDorog.console.exe 2>/dev/null))
 zip_mb=$(( $(stat -c %s build/windows/DomPropavshihDorog_win.zip) / 1000000 ))
 echo "[godot] Windows full: zip ${zip_mb} MB за $(( $(date +%s) - t )) s; pck $(( $(stat -c %s build/windows/full/DomPropavshihDorog.pck) / 1000000 )) MB"
-if [[ "$zip_mb" -gt 1900 ]]; then
+if [[ "$zip_mb" -gt 2100 ]]; then
   rm -f build/windows/DomPropavshihDorog_win.zip
-  full_fail "zip ${zip_mb} MB > 1900 MB (release asset limit 2 GiB)"
+  full_fail "zip ${zip_mb} MB > 2100 MB (release asset limit 2 GiB = 2147 MB)"
+fi
+if [[ "$zip_mb" -gt 2000 ]]; then
+  echo "::warning title=Windows full build::zip ${zip_mb} MB — close to the 2 GiB release asset limit (2147 MB)"
 fi
 ls -la build/windows build/windows/full
