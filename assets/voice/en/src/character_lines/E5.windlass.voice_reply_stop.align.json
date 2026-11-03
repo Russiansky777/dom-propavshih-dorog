@@ -1,0 +1,35 @@
+{
+  "text": "Holding!",
+  "alignment": {
+    "characters": [
+      "H",
+      "o",
+      "l",
+      "d",
+      "i",
+      "n",
+      "g",
+      "!"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.16,
+      0.24,
+      0.32,
+      0.4,
+      0.48,
+      0.56,
+      0.64
+    ],
+    "character_end_times_seconds": [
+      0.16,
+      0.24,
+      0.32,
+      0.4,
+      0.48,
+      0.56,
+      0.64,
+      1.04
+    ]
+  }
+}

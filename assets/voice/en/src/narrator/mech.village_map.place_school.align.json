@@ -1,0 +1,29 @@
+{
+  "text": "School",
+  "alignment": {
+    "characters": [
+      "S",
+      "c",
+      "h",
+      "o",
+      "o",
+      "l"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.373,
+      0.427,
+      0.48,
+      0.533,
+      0.587
+    ],
+    "character_end_times_seconds": [
+      0.373,
+      0.427,
+      0.48,
+      0.533,
+      0.587,
+      0.96
+    ]
+  }
+}

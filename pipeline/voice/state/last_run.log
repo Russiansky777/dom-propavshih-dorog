@@ -1,432 +1,423 @@
-run 41654188250 2026-11-03T14:32:46Z requests: pipeline/requests/voice_EN_full_3.json 
+run 41655889590 2026-11-03T14:42:45Z requests: pipeline/requests/voice_EN_full_4.json 
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 154642 из 179889 символов
+план: creator (active), израсходовано 160879 из 179889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_EN_full_3.json
-  mirror_part 3/4: 206 строк
-  задание: Директор, 2026-11-03 — английский голос целиком, часть 3/4 (mirror ru, один дубль) (потолок 220 файлов, 14769 символов)
-[EN_full] реплик в сценах запроса: 206; файлов с вариантами голосов: 206; к синтезу: 206 (14169 символов); переобработка: 0
-  Q06m_0  mitya     ru           МИТЯ       eleven_v4    I'll help — quicker with three. The perch can wait.
-  Q06a_0  narrator  ru           ZAKADR     eleven_v4    By evening, Ilya and Mitya have built the bench: Agata held the boards; Ulya passed the nails.
-  Q01_0   tamara    ru           TAMARA-1   eleven_v4    Here, Aksinya's letter, from her brother. But the house at this address is gone… Where does it go now?
-  Q01_1   agata     ru           Agata      eleven_v4    Aksinya is alive. I saw her in Mama's list.
-  Q01_2   tamara    ru           TAMARA-1   eleven_v4    Good, then. She'll get her letters, and her brother will get an answer.
-  Q02_0   agata     ru           Agata      eleven_v4    You can see the old map under the new drawing. Mama can show the class: how it was, and how it is now.
-  Q02_1   ulyana    ru           ЛУНЯ       eleven_v4    Let it hang there! Everyone will see our garden.
-  Q02_2   agata     ru           Agata      eleven_v4    I'll give it to Ulyana. Her garden — her map.
-  Q02_3   ulyana    ru           ЛУНЯ       eleven_v4    My map! I'll hang it by our door, to show visitors the way.
-  Q03_0   narrator  ru           ZAKADR     eleven_v4    Agata mends the sleeve of Dunya's coat and hangs it back on its hook.
-  Q03_1   nina      ru           НИНА       eleven_v4    I kept meaning to mend that sleeve for Dunya. Never did.
-  Q03_2   nina      ru           НИНА       eleven_v4    A patch is good. Ulya can draw a bird on it. Dunya would have laughed.
-  Q03_3   nina      ru           НИНА       eleven_v4    Let it hang. As if she's just stepped out.
-  Q04_0   tikhon    ru           CAT-2      eleven_v4    This is an office. Only the door's missing.
-  Q04_1   tikhon    ru           CAT-2      eleven_v4    Now I have office hours, too.
-  Q04_2   agata     ru           Agata      eleven_v4    [curious] When?
-  Q04_3   tikhon    ru           CAT-2      eleven_v4    [sarcastic] When I'm not asleep. Sometimes.
-  Q05_0   ulyana    ru           ЛУНЯ       eleven_v4    So there's nothing wrong with the cup?
-  Q05_1   nina      ru           НИНА       eleven_v4    You only need to know whose it is.
-  Q06_0   ilya      ru           ИЛЬЯ       eleven_v4    Now all three of us can work: Ulya at the new bench, Mitya fixing the oarlock. About time.
-  Q06_1   ilya      ru           ИЛЬЯ       eleven_v4    Then we'll all make the shelf together.
-  Q06_2   ilya      ru           ИЛЬЯ       eleven_v4    Mitya and I will carry it to Dunya's workshop. By the window, beside her bench.
-  Q07_0   mitya     ru           МИТЯ       eleven_v4    Twenty notches. One for every winter I lit the lantern by the far pier.
-  Q07_1   pelageya  ru           PELAGEYA   eleven_v4    I still remember how little your hand was.
-  Q07_2   mitya     ru           МИТЯ       eleven_v4    This hand's mine, too.
-  Q08_0   tamara    ru           TAMARA-1   eleven_v4    Oh, I remember this kettle when it was new!
-  Q08_1_then0 narrator  ru           ZAKADR     eleven_v4    Tea finished. Tamara goes back to her letters, Ulyana to her father.
-  Q08_1   ulyana    ru           ЛУНЯ       eleven_v4    I thought it had always looked like that.
-  Q10_0   ulyana    ru           ЛУНЯ       eleven_v4    When will there be apples?
-  Z1.drawings.use narrator  ru           ZAKADR     eleven_v4    Dunya's drawing shows the bridge pier by the bend. In her own hand: the plate is cracked and needs mending. Tamara's new sketch shows the same pier — only its top is above water now.
-  Z1.drawings.look narrator  ru           ZAKADR     eleven_v4    Dunya's old drawing and Tamara's fresh sketch — both show the same bridge pier.
-  Z1.drawings.photo narrator  ru           ZAKADR     eleven_v4    The old photograph shows the pier from Dunya's drawing. The bridge rope is fastened to its plate.
-  Z1.letters.look narrator  ru           ZAKADR     eleven_v4    The letters are sorted by household. Tamara keeps Olkhovka's apart — a whole sackful in a year.
-  Z1.plan.look narrator  ru           ZAKADR     eleven_v4    The post office, Dunya's house, the path down to the water, the mill. The bend in the bank is marked in pencil.
-  agata:Z1.exit_Z4.closed agata     ru           Agata      eleven_v4    I haven't spoken to Tamara yet. She has the key.
-  Z2.landmarks.look narrator  ru           ZAKADR     eleven_v4    The mill roof, the path down to the water… The post office is behind me now.
-  agata:Z2.exit_H1.closed agata     ru           Agata      eleven_v4    Locked. The key to Dunya's house is in my bag.
-  agata:Z2.exit_H1.not_yet agata     ru           Agata      eleven_v4    The notes can wait. First I'll ask the boatwoman what this strange business is.
-  agata:H1.dark_enter agata     ru           Agata      eleven_v4    So dark I can't see a thing.
-  agata:Z2.exit_H1.unlock_after agata     ru           Agata      eleven_v4    Now I can get into the house from here, too.
-  Z2.exit_H1.unlock narrator  ru           ZAKADR     eleven_v4    The key is in the door now. The house is open again.
-  agata:Z2.exit_M1.closed agata     ru           Agata      eleven_v4    I can't even get into Dunya's house without the key. I'll see Tamara first.
-  agata:Z2.exit_Z3.closed agata     ru           Agata      eleven_v4    Tamara's waiting at the post office. I won't leave before I've spoken to her.
-  agata:Z2.exit_R1.closed agata     ru           Agata      eleven_v4    First I'll hear what Tamara has to say. The pier can wait.
-  Z4.exit_H3.closed narrator  ru           ZAKADR     eleven_v4    This door can only be unlocked from inside, in the gallery.
-  Z4.post_sign.look narrator  ru           ZAKADR     eleven_v4    "Post Office." The lettering on the old board has been touched up more than once.
-  Z4.lantern.look narrator  ru           ZAKADR     eleven_v4    Fine drops of drizzle cover the glass.
-  Z3.old_pier_base.look narrator  ru           ZAKADR     eleven_v4    The bridge pier from Dunya's drawing. The water has fallen, exposing its top. Below the water is a plate with a ring. The bridge rope was fastened there — the near end of the road across. I can't make out the plate from here.
-  Z3.old_pier_base.look_early narrator  ru           ZAKADR     eleven_v4    The bridge pier from Dunya's drawing. The water has fallen, exposing its top. The cracked plate in the drawing is lower down, underwater. I can't make it out from here.
-  Z3.old_pier_base.photo narrator  ru           ZAKADR     eleven_v4    The photograph shows the rope fastened to this pier's plate. The plate is underwater now.
-  agata:M4.sluice.done agata     ru           Agata      eleven_v4    It worked! The water's flowing.
-  agata:Z3.plate.brace_high agata     ru           Agata      eleven_v4    The water's too high to reach the plate. I'll have to drain it first.
-  Z3.plate.look narrator  ru           ZAKADR     eleven_v4    A large mossy stone by the water. But the plate in Dunya's drawing isn't here: it's on the pier, underwater.
-  R1.boat.look narrator  ru           ZAKADR     eleven_v4    The boat is sound, the oars are in place. But wherever you row, you end up back at this pier.
-  R1.rope.use narrator  ru           ZAKADR     eleven_v4    The old bridge handrail rope. The bridge stood at the bend — this end was fastened to the plate on the pier. Pelageya tied it to her rope clamp instead. It holds, but there's no road.
-  R1.rope.look narrator  ru           ZAKADR     eleven_v4    The old bridge handrail rope. The bridge stood at the bend — this end was fastened to the plate on the pier. Pelageya tied it to her rope clamp instead. It holds, but there's no road.
-  R1.rope.photo narrator  ru           ZAKADR     eleven_v4    In the photograph, the rope is held by the pier's plate, not the rope clamp.
-  R1.lantern.use narrator  ru           ZAKADR     eleven_v4    The lantern is in its holder: clean glass, dry wick. Someone has been looking after it.
-  R1.lantern.look narrator  ru           ZAKADR     eleven_v4    This lantern is used to signal across the water.
-  R1.instruction.use narrator  ru           ZAKADR     eleven_v4    The board explains how to signal with the lantern and how the far bank should answer. But there hasn't been a single reply in a year.
-  R1.instruction.paper narrator  ru           ZAKADR     eleven_v4    After dark, signal from the pier with a lantern.
-
-One flash — go.
-Two flashes — stop.
-One long flash — raise.
-Three flashes — alive: someone is on the bank.
-
-The far bank must repeat the signal in reply.
-  R1.instruction.board narrator  ru           ZAKADR     eleven_v4    Signal code: one light — go; two lights — stop; one long light — raise. Three flashes — alive.
-  R1.instruction.look narrator  ru           ZAKADR     eleven_v4    A board explaining the signals.
-  agata:R1.exit_Z2.closed agata     ru           Agata      eleven_v4    Tamara's still waiting for me at the post office.
-  agata:R1.exit_R2.closed agata     ru           Agata      eleven_v4    Without a road, the boat will come back to the pier. And there is no road until the rope is fastened to the ring on the plate.
-  agata:R1.exit_R2.closed_first agata     ru           Agata      eleven_v4    I'll speak to the boatwoman first.
-  agata:R1.boat.look_no_plan agata     ru           Agata      eleven_v4    The boat will come back to our pier. First I must find out how to restore the road.
-  agata:H1.tikhon.spoons_q agata     ru           Agata      eleven_v4    Tikhon, shall we play the spoons? See who can outplay whom.
-  agata:H1.tikhon.first_ask agata     ru           Agata      eleven_v4    [surprised] Oh!… Who are you, then?
-  agata:H1.tikhon.first_alone agata     ru           Agata      eleven_v4    [curious] Are you here alone?
-  agata:H1.tikhon.cream_2 agata     ru           Agata      eleven_v4    [surprised] Where?
-  agata:H1.tikhon.supper_2 agata     ru           Agata      eleven_v4    And you obeyed?
-  agata:H1.tikhon.tea_2 agata     ru           Agata      eleven_v4    What for?
-  agata:H1.tikhon.snow_2 agata     ru           Agata      eleven_v4    Doesn't that surprise you?
-  agata:H1.tikhon.duty_2 agata     ru           Agata      eleven_v4    [chuckling] A worthy calling.
-  agata:H1.tikhon.quiet_2 agata     ru           Agata      eleven_v4    And you let her?
-  agata:H1.tikhon.hear_2 agata     ru           Agata      eleven_v4    Let her. If only I could hear her.
-  agata:H1.tikhon.home_2 agata     ru           Agata      eleven_v4    As though we were home.
-  agata:H1.photo.react_table agata     ru           Agata      eleven_v4    By the armchair — then we'll all be together.
-  agata:H1.photo.react_shelf agata     ru           Agata      eleven_v4    On the shelf — you can see the whole room from there.
-  agata:H1.photo.look agata     ru           Agata      eleven_v4    Our family photograph, in its frame.
-  agata:H1.cups.prompt agata     ru           Agata      eleven_v4    Which cup shall I have?
-  agata:H1.cups.react_blue agata     ru           Agata      eleven_v4    I'll have the blue one. It can wait on the table by the armchair.
-  agata:H1.cups.react_white agata     ru           Agata      eleven_v4    I'll have the white one. It can wait on the table by the armchair.
-  agata:H1.scarf.shelf_under agata     ru           Agata      eleven_v4    There's a shelf under the shawl. Dunya's, with its brackets.
-  agata:H1.shelf.not_yet agata     ru           Agata      eleven_v4    I'll leave the shelf for now. First I must light the stove: the house is cold and damp.
-  agata:H1.shelf.not_yet_dark agata     ru           Agata      eleven_v4    Hang a shelf in the dark? I'll open the shutter first.
-  agata:H1.exit_H2.dark agata     ru           Agata      eleven_v4    I can't see a thing in the workshop. I'll open the shutter first and let some light into the house.
-  agata:H1.exit_H3.dark agata     ru           Agata      eleven_v4    The gallery is pitch-dark. I'll open the shutter before I go in.
-  agata:H1.exit_H4.dark agata     ru           Agata      eleven_v4    I'm not climbing into the attic in the dark. I'll open the shutter first.
-  agata:H2.bell.thought_early agata     ru           Agata      eleven_v4    If things remember their place… what happens if we put them back where they belong?
-  agata:H2.bell.thought agata     ru           Agata      eleven_v4    [warmly] If things remember their place… what happens if I put the school door back on its own hinges?
-  agata:H2.tar_pot.not_now agata     ru           Agata      eleven_v4    Tar. I have no use for it just now.
-  agata:H2.tar_pot.take agata     ru           Agata      eleven_v4    I'll pour some tar into a jar — to grease Pavel's winch.
-  agata:H2.tar_pot.taken agata     ru           Agata      eleven_v4    That's the tar. Back to the sluice.
-  agata:H2.brace.before_plan agata     ru           Agata      eleven_v4    A bracket for the crack in the plate — never fitted. The plate's underwater. What use is the bracket to me now?
-  agata:H2.brace.take agata     ru           Agata      eleven_v4    "Dunya has a bracket for it on her workbench," the plan says. I'll take it — finish the work for her.
-  agata:H3.school_door.use agata     ru           Agata      eleven_v4    Our school door. Label: "Olkhovka School. Nina sent it for repair." A notch in the beam; the hinges are off.
-  agata:H3.mirror_home.use agata     ru           Agata      eleven_v4    [warmly] In the old photograph, this mirror hangs in the same place. And there I am in it, as a child. The same gallery is behind me now.
-  agata:H3.puzzle.by_item agata     ru           Agata      eleven_v4    The original hinges are in my bag. I'll try them on the door.
-  agata:Z4.side_door.now_open agata     ru           Agata      eleven_v4    Now I can get into the house from here, too.
-  agata:H3.side_door.unbolt agata     ru           Agata      eleven_v4    The gallery's side door is bolted from inside. Slide the bolt back, and I'll be able to enter from the lane.
-  agata:H4.chest.open agata     ru           Agata      eleven_v4    Under the lid was the bell clapper, wrapped in coarse cloth by Dunya. I'll take it — it may come in useful.
-  agata:H1.lezhanka.late_d1 agata     ru           Agata      eleven_v4    It's late — time to sleep. I'll lie here beside the stove, in the warmth.
-  agata:H1.lezhanka.after_d1 agata     ru           Agata      eleven_v4    I slept here the first night. Now I sleep at Mama's.
-  agata:H4.bed.dunya_night agata     ru           Agata      eleven_v4    Dunya's… I'll sleep by the stove. It's warmer there.
-  agata:H4.bed.early_d1_door agata     ru           Agata      eleven_v4    No time to lie down — the door in the gallery is waiting.
-  agata:H4.bed.early_d1_street agata     ru           Agata      eleven_v4    No time to lie down — there's a path from the schoolyard to the village. I should see where it leads.
-  agata:H4.bed.early_d1_class agata     ru           Agata      eleven_v4    No time to lie down — I haven't finished looking round the classroom beyond the school door.
-  agata:H4.bed.early_d2 agata     ru           Agata      eleven_v4    No time to sleep — there's work still to do.
-  agata:H4.bed.early_d3 agata     ru           Agata      eleven_v4    Too early to sleep. I still have to {left}.
-  agata:H4.bed.early_short agata     ru           Agata      eleven_v4    Too early to sleep.
-  agata:H4.bed.todo_M23a agata     ru           Agata      eleven_v4    I still need to see Tamara — she's handing out the letters.
-  agata:H4.bed.todo_M23b agata     ru           Agata      eleven_v4    I still need to call on Pavel at the mill.
-  agata:H4.bed.todo_M23c agata     ru           Agata      eleven_v4    I still need to see Mama at Dunya's house.
-  agata:H4.bed.todo_M23d agata     ru           Agata      eleven_v4    I still need to talk to Tikhon about Dunya.
-  agata:H4.bed.after_d4 agata     ru           Agata      eleven_v4    I've had a good sleep. Ilya and Pelageya are waiting at the bend.
-  agata:H4.bed.after_all agata     ru           Agata      eleven_v4    I can't sleep. Still can't believe it: the road is held from both ends.
-  agata:H3.night.to_bed agata     ru           Agata      eleven_v4    It's night outside. Late — time to sleep. I'll lie on the sleeping ledge by the stove.
-  agata:H4.bed.late_d1 agata     ru           Agata      eleven_v4    Late. Cold upstairs… I'll sleep downstairs by the stove.
-  agata:H4.bed.late_d3 agata     ru           Agata      eleven_v4    Enough for today. It's late — time to sleep.
-  agata:H4.bed.bedtime_d3 agata     ru           Agata      eleven_v4    Evening already. I've done all I meant to do. Time to go home and sleep.
-  agata:O1.board.use agata     ru           Agata      eleven_v4    Fresh chalk; the board was wiped recently. Someone's been studying. If only they'd read my message.
-  agata:O1.board.chalk agata     ru           Agata      eleven_v4    [warmly] Now I've left my mark on the board, too: "I was here. Agata."
-  agata:O1.notebooks.use agata     ru           Agata      eleven_v4    Filled to the last page — and such different hands on every sheet! They've been studying here all these years! The far side is alive.
-  agata:O1.bird_drawing.prompt agata     ru           Agata      eleven_v4    [warmly] I drew the bird's cap. Someone added boots later. What else shall I draw?
-  agata:O1.bird_drawing.react_scarf agata     ru           Agata      eleven_v4    A striped scarf. To keep it warm.
-  agata:O1.bird_drawing.react_boat agata     ru           Agata      eleven_v4    Smoke from the funnel. Ilyusha would know his boat.
-  agata:O1.bird_drawing.react_bridge agata     ru           Agata      eleven_v4    A little bridge on piers. Let there be one in a drawing, at least.
-  agata:O1.exit_H3.yard_first agata     ru           Agata      eleven_v4    This door leads home. The other goes to the schoolyard… I should see where that path leads first.
-  agata:O1.enter.winter agata     ru           Agata      eleven_v4    [hesitant] Winter already?… It's still October back home!
-  agata:O2.tree.look agata     ru           Agata      eleven_v4    [thoughtful] I remember this tree being shorter. Now its branches reach above the porch.
-  agata:O2.porch_step.mitten agata     ru           Agata      eleven_v4    I'll leave a mitten on the step. If I come back to it, the road is taking me in circles.
-  agata:O2.mitten.look agata     ru           Agata      eleven_v4    My woollen mitten, on the step.
-  agata:O2.mitten.take agata     ru           Agata      eleven_v4    I'll take it with me.
-  agata:O2.window_other.look agata     ru           Agata      eleven_v4    The same school's side window. I took the path towards the village, but it led me round the school and back here.
-  agata:O2.exit_O4.loop agata     ru           Agata      eleven_v4    I set off for the village, but the path curled round the school and brought me back to the porch. What is this? It's leading me in circles!
-  agata:O2.exit_O4.wait_signal agata     ru           Agata      eleven_v4    The path goes on. They're waiting for my signal on the far bank — the pier first.
-  agata:O2.exit_O4.wait_crossing agata     ru           Agata      eleven_v4    Pelageya first. I need to cross.
-  R1.pelageya.prompt narrator  ru           ZAKADR     eleven_v4    What shall I ask Pelageya?
-  Z1.tamara.prompt narrator  ru           ZAKADR     eleven_v4    What shall I ask Tamara?
-  agata:H1.wave.use agata     ru           Agata      eleven_v4    Mama, it's me. If you can see me at all — I'm here, by Dunya's stove.
-  agata:M1.exit_M2.closed agata     ru           Agata      eleven_v4    Pavel is in charge here. I won't go in without him. Tomorrow, then.
-  agata:M1.exit_M4.closed agata     ru           Agata      eleven_v4    I won't meddle with the sluice without Pavel. I'll come tomorrow.
-  agata:H2.hinges_box.thought agata     ru           Agata      eleven_v4    These hinges belong to the school door in the gallery.
-  agata:H2.hinges_box.empty agata     ru           Agata      eleven_v4    The "Hinges" box is empty. I've got them — for the school door in the gallery.
-  agata:H2.hinges_box.empty_hung agata     ru           Agata      eleven_v4    The box is empty. All three hinges are on the school door now.
-  agata:M2.mirror.look agata     ru           Agata      eleven_v4    The office mirror. I won't take it without Pavel's say-so.
-  agata:M3.clamp.use agata     ru           Agata      eleven_v4    A clamp! Dunya's label said: "Clamp needed. Mine is broken." I'll take it for Mother's mirror. Once we've drained the water, I'll see to that.
-  agata:M4.gate.rusty agata     ru           Agata      eleven_v4    It won't turn — the winch is rusted. There's tar on the workbench in Dunya's workshop.
-  R2.rope.look narrator  ru           ZAKADR     eleven_v4    The rope is taut. Along it, the ring slides into the mist.
-  R3.stopor.look narrator  ru           ZAKADR     eleven_v4    The far rope clamp is fitted into the pier's old ring. This is where they hold the rope.
-  R3.lamp_post.look narrator  ru           ZAKADR     eleven_v4    A lantern on a post beside the path. They lit it here every evening.
-  agata:R3.shed.look agata     ru           Agata      eleven_v4    Mitya's little shed by the pier. He spent nights here, waiting for the lights.
-  agata:H2d.nina_mirror.watch_again_common agata     ru           Agata      eleven_v4    I'll compare it with my watch again.
-  Z3d.plate_dry.look narrator  ru           ZAKADR     eleven_v4    The water has fallen, exposing the pier's plate: "Olkhovka" in cast letters, a ring for the rope, and a crack right across it.
-  agata:Z3d.plate_dry.use_skoba agata     ru           Agata      eleven_v4    The cracked plate won't hold the rope. I'll fit the bracket first — it's in my bag.
-  agata:Z3d.plate_dry.no_skoba agata     ru           Agata      eleven_v4    The cracked plate won't hold the rope. I need the bracket — left on Dunya's workbench. I'll have to go back.
-  Z3d.plate_dry.skoba narrator  ru           ZAKADR     eleven_v4    With a little trouble, the bracket fits over the crack. Good thing the slots are still there. Now to hammer it home.
-  Z3d.plate.rope_at_ring narrator  ru           ZAKADR     eleven_v4    The rope's end touches the ring. Pelageya shows me the knot: under the ring first, then round — and through the loop.
-  R1d.lantern.use_day narrator  ru           ZAKADR     eleven_v4    Pelageya's signal lantern. Too soon to send flashes: the rope isn't on the plate yet.
-  agata:R1d.pelageya.at_turn agata     ru           Agata      eleven_v4    Pelageya isn't at the pier. She's by the bridge pier at the bend, waiting for me to fit the bracket.
-  agata:R1d.pelageya.at_turn_d3 agata     ru           Agata      eleven_v4    Pelageya isn't here — she's at the bend, by the boat. That's where to find her.
-  agata:H2d.stand_zm.enter agata     ru           Agata      eleven_v4    Here's Dunya's stand for the mill mirror: the tall carved frame in the middle of the workshop.
-  agata:H2d.bell.after_office agata     ru           Agata      eleven_v4    The bell has done its work: the office is open. It can hang in peace now.
-  agata:H2d.bell.ring_far agata     ru           Agata      eleven_v4    It doesn't ring here — it rings far away, at the mill.
-  R1.exit_R2.closed_check narrator  ru           ZAKADR     eleven_v4    Let Pelageya test it with the empty boat first.
-  R1.stopper.look_empty narrator  ru           ZAKADR     eleven_v4    Pelageya's rope clamp is empty: she's taken the rope to the bridge pier at the bend.
-  R1.stopper.look_ring narrator  ru           ZAKADR     eleven_v4    An empty rope clamp. The rope is fastened to the plate's ring at the bend now. There it runs above the water to the far bank. They're holding it there.
-  agata:H2d.nina_mirror.clamp_early agata     ru           Agata      eleven_v4    The sluice first — Pavel's waiting by the winch. Once we've drained the water, I'll see to the mirror.
-  agata:H1.after_mirror.agata agata     ru           Agata      eleven_v4    [surprised] I did, Tikhon. While I sleep one night, Mama will live a whole week… How can I sleep now?
-  agata:O4.nina_house.look agata     ru           Agata      eleven_v4    Mama's house. The same porch — only the step has been replaced.
-  agata:O4.ilya_house.look agata     ru           Agata      eleven_v4    Ilya's house, at the edge. Mitya knocked on that shutter.
-  agata:O4.river.look agata     ru           Agata      eleven_v4    The river below, and the far pier. I followed Mitya's lantern up from there.
-  agata:O3.bed.early_d2 agata     ru           Agata      eleven_v4    My bed — Mama never put it away. But it's too early to lie down.
-  agata:O3.bed.late_d2 agata     ru           Agata      eleven_v4    It's late. Ulya and I will share — we'll make room.
-  agata:O3.clock.look_common agata     ru           Agata      eleven_v4    Keeping time with my watch — minute for minute.
-  agata:O3.clock.watch agata     ru           Agata      eleven_v4    I compare them: my second hand and the pendulum move in step. Minute for minute.
-  agata:O3.notebooks.look agata     ru           Agata      eleven_v4    A stack of notebooks, filled in Dunya's hand. How much she wrote…
-  agata:O3.notebooks.use agata     ru           Agata      eleven_v4    Eighteen years trying to restore the road. So many notebooks… Every one filled in her own hand.
-  agata:O3.notebooks.again agata     ru           Agata      eleven_v4    Dunya's notebooks. I'll read them again.
-  agata:O3.village_list.look agata     ru           Agata      eleven_v4    The names of the whole village, on one sheet. Mama wrote them down.
-  agata:O3.village_list.use agata     ru           Agata      eleven_v4    Twenty-two alive. Fifteen of the original eighteen remain; seven were born here. Three died. Dunya among them.
-  agata:O3.village_list.again agata     ru           Agata      eleven_v4    The residents' list. Twenty-two people alive.
-  agata:O3.notches.look agata     ru           Agata      eleven_v4    Yearly notches — someone else's height. Ulyana was measured every year. Mine were here too, lower down.
-  agata:E5.windlass.voice_call_lower agata     ru           Agata      eleven_v4    Go!
-  agata:E5.windlass.voice_call_stop agata     ru           Agata      eleven_v4    Stop!
-  agata:E5.windlass.voice_call_raise agata     ru           Agata      eleven_v4    Raise!
-  agata:O1d.ulyana.hat_a agata     ru           Agata      eleven_v4    I did. I was eight, just like you. Mama saw it, but didn't rub it off. Let the bird be warm, she said.
-  agata:O1d.ulyana.lights_a agata     ru           Agata      eleven_v4    He was waiting for a light from our bank. All twenty of your years.
-  agata:O1d.ulyana.lights_c agata     ru           Agata      eleven_v4    Not again, Ulya. I promise.
-  agata:O4.mitya.fish_q agata     ru           Agata      eleven_v4    Mitya, do you fish?
-  agata:O1d.ulyana.ttt_q agata     ru           Agata      eleven_v4    Ulya, shall we play noughts and crosses? In chalk, right on the board.
-  agata:O4.mitya_board.use agata     ru           Agata      eleven_v4    Twenty notches — one for every winter Mitya stood by the lantern. I should give it to him.
-  agata:O3.nina.ribbon_again agata     ru           Agata      eleven_v4    The ribbon in my braid. Just as before.
-  agata:O3.nina_letters.look agata     ru           Agata      eleven_v4    A bundle of letters tied with string on the chest of drawers. My name on every one.
-  agata:O3.nina_letters.use agata     ru           Agata      eleven_v4    Mama wrote to me every winter. Twenty letters, with nowhere to send them.
-  agata:O3.nina_letters.again agata     ru           Agata      eleven_v4    Mama's letters from twenty winters.
-  agata:H1d.nina_coat.use agata     ru           Agata      eleven_v4    The sleeve seam's split. I'll mend it — it should hang here at home, in one piece.
-  agata:O1q.village_map.use agata     ru           Agata      eleven_v4    We drew this map as a class. There's the house at the edge — Ilya's now. Beside it, just a fence and empty space.
-  agata:O1q.village_map.agata_help agata     ru           Agata      eleven_v4    Help me find it, then. How do I get to your house?
-  agata:O1q.village_map.agata_mark agata     ru           Agata      eleven_v4    I'll mark the tracing paper: school, your house, then the garden.
-  agata:O1q.village_map.traced agata     ru           Agata      eleven_v4    Currants grow there now.
-  O4q.workshop.prompt narrator  ru           ZAKADR     eleven_v4    Where shall the second bench go?
-  agata:examine.brace_plate agata     ru           Agata      eleven_v4    Heavy, forged iron. Dunya bent it to follow the crack in the plate exactly.
-  agata:examine.bell_clapper agata     ru           Agata      eleven_v4    The mill bell's clapper. Without it, the bell is mute.
-  квота: осталось 25247 из 179889, запас 0, к синтезу ≤ 7084 кредитов (оценка сверху)
-  Q06m_0             синтез: 3.37 с, -17.0 LUFS, TP -2.9 dB (усиление +0.1 dB)
-  Q06a_0             синтез: 7.22 с, -16.9 LUFS, TP -3.8 dB (усиление -1.9 dB)
-  Q01_0              синтез: 7.00 с, -17.0 LUFS, TP -5.3 dB (усиление -0.8 dB)
-  Q01_1              синтез: 3.41 с, -17.0 LUFS, TP -6.3 dB (усиление -1.5 dB)
-  Q01_2              синтез: 4.86 с, -17.0 LUFS, TP -6.0 dB (усиление -2.9 dB)
-  Q02_0              синтез: 6.82 с, -16.9 LUFS, TP -4.0 dB (усиление -0.9 dB)
-  Q02_1              синтез: 3.21 с, -16.9 LUFS, TP -3.5 dB (усиление +2.2 dB)
-  Q02_2              синтез: 3.22 с, -17.0 LUFS, TP -3.6 dB (усиление -0.6 dB)
-  Q02_3              синтез: 4.24 с, -17.1 LUFS, TP -1.9 dB (усиление +2.6 dB)
-  Q03_0              синтез: 4.34 с, -17.0 LUFS, TP -4.4 dB (усиление -2.4 dB)
-  Q03_1              синтез: 4.25 с, -17.0 LUFS, TP -8.9 dB (усиление -1.5 dB)
-  Q03_2              синтез: 5.32 с, -17.0 LUFS, TP -7.4 dB (усиление -1.4 dB)
-  Q03_3              синтез: 3.32 с, -17.0 LUFS, TP -5.3 dB (усиление +0.1 dB)
-  Q04_0              синтез: 3.20 с, -16.8 LUFS, TP -4.5 dB (усиление -0.2 dB)
-  Q04_1              синтез: 2.27 с, -17.0 LUFS, TP -5.4 dB (усиление -3.0 dB)
-  Q04_2              синтез: 0.67 с, -16.8 LUFS, TP -5.1 dB (усиление +0.1 dB)
-  Q04_3              синтез: 2.67 с, -16.8 LUFS, TP -4.4 dB (усиление -1.3 dB)
-  Q05_0              синтез: 2.40 с, -17.0 LUFS, TP -3.4 dB (усиление +5.6 dB)
-  Q05_1              синтез: 2.47 с, -17.1 LUFS, TP -9.5 dB (усиление -4.3 dB)
-  Q06_0              синтез: 6.34 с, -17.0 LUFS, TP -4.2 dB (усиление -2.5 dB)
-  Q06_1              синтез: 2.13 с, -16.9 LUFS, TP -6.4 dB (усиление -4.4 dB)
-  Q06_2              синтез: 5.12 с, -17.0 LUFS, TP -5.6 dB (усиление -3.2 dB)
-  Q07_0              синтез: 5.26 с, -17.0 LUFS, TP -3.9 dB (усиление -1.3 dB)
-  Q07_1              синтез: 2.71 с, -16.9 LUFS, TP -5.0 dB (усиление +1.0 dB)
-  Q07_2              синтез: 1.48 с, -17.0 LUFS, TP -7.2 dB (усиление -3.2 dB)
-  Q08_0              синтез: 3.34 с, -17.0 LUFS, TP -5.1 dB (усиление -1.0 dB)
-  Q08_1_then0        синтез: 5.04 с, -17.0 LUFS, TP -4.2 dB (усиление -1.6 dB)
-  Q08_1              синтез: 2.40 с, -16.9 LUFS, TP -2.6 dB (усиление +6.8 dB)
-  Q10_0              синтез: 1.82 с, -17.2 LUFS, TP -1.9 dB (усиление +5.7 dB)
-  Z1.drawings.use    синтез: 12.47 с, -16.9 LUFS, TP -4.1 dB (усиление -1.8 dB)
-  Z1.drawings.look   синтез: 5.44 с, -17.1 LUFS, TP -4.7 dB (усиление -2.6 dB)
-  Z1.drawings.photo  синтез: 5.94 с, -17.0 LUFS, TP -4.2 dB (усиление -2.2 dB)
-  Z1.letters.look    синтез: 6.81 с, -16.9 LUFS, TP -4.1 dB (усиление -1.9 dB)
-  Z1.plan.look       синтез: 8.29 с, -17.0 LUFS, TP -3.4 dB (усиление -1.0 dB)
-  agata:Z1.exit_Z4.closed синтез: 3.17 с, -16.9 LUFS, TP -1.9 dB (усиление +0.5 dB)
-  Z2.landmarks.look  синтез: 4.99 с, -16.9 LUFS, TP -4.7 dB (усиление -1.9 dB)
-  agata:Z2.exit_H1.closed синтез: 3.32 с, -17.1 LUFS, TP -4.4 dB (усиление -1.4 dB)
-  agata:Z2.exit_H1.not_yet синтез: 4.85 с, -17.1 LUFS, TP -1.9 dB (усиление -0.5 dB)
-  agata:H1.dark_enter синтез: 2.49 с, -17.0 LUFS, TP -2.8 dB (усиление +5.0 dB)
-  agata:Z2.exit_H1.unlock_after синтез: 2.39 с, -16.9 LUFS, TP -3.5 dB (усиление -1.5 dB)
-  Z2.exit_H1.unlock  синтез: 3.29 с, -17.0 LUFS, TP -5.2 dB (усиление -3.1 dB)
-  agata:Z2.exit_M1.closed синтез: 4.37 с, -17.0 LUFS, TP -1.8 dB (усиление -1.0 dB)
-  agata:Z2.exit_Z3.closed синтез: 4.34 с, -17.0 LUFS, TP -2.1 dB (усиление -1.0 dB)
-  agata:Z2.exit_R1.closed синтез: 3.64 с, -16.8 LUFS, TP -4.9 dB (усиление -1.1 dB)
-  Z4.exit_H3.closed  синтез: 3.88 с, -17.0 LUFS, TP -5.9 dB (усиление -3.1 dB)
-  Z4.post_sign.look  синтез: 4.91 с, -17.0 LUFS, TP -4.9 dB (усиление -2.8 dB)
-  Z4.lantern.look    синтез: 2.62 с, -17.0 LUFS, TP -3.2 dB (усиление -1.4 dB)
-  Z3.old_pier_base.look синтез: 14.55 с, -17.0 LUFS, TP -2.9 dB (усиление -1.4 dB)
-  Z3.old_pier_base.look_early синтез: 10.89 с, -17.0 LUFS, TP -2.3 dB (усиление -0.6 dB)
-  Z3.old_pier_base.photo синтез: 5.56 с, -17.0 LUFS, TP -4.5 dB (усиление -2.1 dB)
-  agata:M4.sluice.done синтез: 2.30 с, -17.0 LUFS, TP -4.9 dB (усиление -3.8 dB)
-  agata:Z3.plate.brace_high синтез: 4.01 с, -16.9 LUFS, TP -3.6 dB (усиление -0.8 dB)
-  Z3.plate.look      синтез: 7.18 с, -17.0 LUFS, TP -4.7 dB (усиление -2.4 dB)
-  R1.boat.look       синтез: 6.62 с, -16.9 LUFS, TP -4.0 dB (усиление -2.4 dB)
-  R1.rope.use        синтез: 12.19 с, -17.0 LUFS, TP -4.4 dB (усиление -1.7 dB)
-  R1.rope.look       синтез: 12.03 с, -17.0 LUFS, TP -4.1 dB (усиление -1.6 dB)
-  R1.rope.photo      синтез: 4.90 с, -17.0 LUFS, TP -4.7 dB (усиление -2.5 dB)
-  R1.lantern.use     синтез: 6.12 с, -17.0 LUFS, TP -4.8 dB (усиление -2.3 dB)
-  R1.lantern.look    синтез: 3.16 с, -17.0 LUFS, TP -4.7 dB (усиление -2.2 dB)
-  R1.instruction.use синтез: 7.93 с, -17.0 LUFS, TP -4.6 dB (усиление -1.8 dB)
-  R1.instruction.paper синтез: 16.34 с, -17.0 LUFS, TP -3.9 dB (усиление -2.0 dB)
-  R1.instruction.board синтез: 9.52 с, -16.9 LUFS, TP -3.5 dB (усиление -1.6 dB)
-  R1.instruction.look синтез: 2.09 с, -17.0 LUFS, TP -5.8 dB (усиление -2.8 dB)
-  agata:R1.exit_Z2.closed синтез: 2.69 с, -16.9 LUFS, TP -4.0 dB (усиление -0.8 dB)
-  agata:R1.exit_R2.closed синтез: 7.08 с, -16.9 LUFS, TP -2.5 dB (усиление -0.1 dB)
-  agata:R1.exit_R2.closed_first синтез: 1.94 с, -16.9 LUFS, TP -4.9 dB (усиление -2.3 dB)
-  agata:R1.boat.look_no_plan синтез: 5.01 с, -17.1 LUFS, TP -1.8 dB (усиление -0.6 dB)
-  agata:H1.tikhon.spoons_q синтез: 3.99 с, -17.0 LUFS, TP -5.7 dB (усиление -2.6 dB)
-  agata:H1.tikhon.first_ask синтез: 2.25 с, -16.9 LUFS, TP -7.5 dB (усиление -1.1 dB)
-  agata:H1.tikhon.first_alone синтез: 1.31 с, -16.9 LUFS, TP -6.9 dB (усиление -0.6 dB)
-  agata:H1.tikhon.cream_2 синтез: 0.90 с, -17.0 LUFS, TP -3.2 dB (усиление -0.1 dB)
-  agata:H1.tikhon.supper_2 синтез: 1.07 с, -17.0 LUFS, TP -7.5 dB (усиление +0.4 dB)
-  agata:H1.tikhon.tea_2 синтез: 0.93 с, -16.9 LUFS, TP -2.6 dB (усиление +0.4 dB)
-  agata:H1.tikhon.snow_2 синтез: 1.40 с, -16.9 LUFS, TP -6.8 dB (усиление +0.4 dB)
-  agata:H1.tikhon.duty_2 синтез: 2.34 с, -17.0 LUFS, TP -3.8 dB (усиление +1.6 dB)
-  agata:H1.tikhon.quiet_2 синтез: 1.34 с, -17.0 LUFS, TP -5.9 dB (усиление +3.8 dB)
-  agata:H1.tikhon.hear_2 синтез: 3.03 с, -17.1 LUFS, TP -1.9 dB (усиление +3.2 dB)
-  agata:H1.tikhon.home_2 синтез: 1.54 с, -17.0 LUFS, TP -5.9 dB (усиление -0.5 dB)
-  agata:H1.photo.react_table синтез: 2.95 с, -17.0 LUFS, TP -5.4 dB (усиление -2.6 dB)
-  agata:H1.photo.react_shelf синтез: 3.28 с, -17.1 LUFS, TP -4.6 dB (усиление -1.1 dB)
-  agata:H1.photo.look синтез: 2.57 с, -16.9 LUFS, TP -3.1 dB (усиление -0.2 dB)
-  agata:H1.cups.prompt синтез: 1.43 с, -17.0 LUFS, TP -2.3 dB (усиление -0.3 dB)
-  agata:H1.cups.react_blue синтез: 3.52 с, -16.9 LUFS, TP -3.4 dB (усиление -0.5 dB)
-  agata:H1.cups.react_white синтез: 3.46 с, -16.9 LUFS, TP -4.4 dB (усиление -1.5 dB)
-  agata:H1.scarf.shelf_under синтез: 3.85 с, -17.0 LUFS, TP -2.9 dB (усиление -0.6 dB)
-  agata:H1.shelf.not_yet синтез: 5.50 с, -16.9 LUFS, TP -2.8 dB (усиление +0.7 dB)
-  agata:H1.shelf.not_yet_dark синтез: 3.42 с, -17.0 LUFS, TP -3.5 dB (усиление -1.5 dB)
-  agata:H1.exit_H2.dark синтез: 5.47 с, -17.0 LUFS, TP -1.8 dB (усиление -0.5 dB)
-  agata:H1.exit_H3.dark синтез: 4.17 с, -16.9 LUFS, TP -4.2 dB (усиление -0.7 dB)
-  agata:H1.exit_H4.dark синтез: 4.08 с, -16.9 LUFS, TP -3.6 dB (усиление -1.7 dB)
-  agata:H2.bell.thought_early синтез: 5.00 с, -16.9 LUFS, TP -5.0 dB (усиление -1.4 dB)
-  agata:H2.bell.thought синтез: 5.37 с, -16.9 LUFS, TP -4.9 dB (усиление -0.1 dB)
-  agata:H2.tar_pot.not_now синтез: 2.94 с, -17.0 LUFS, TP -4.9 dB (усиление -1.1 dB)
-  agata:H2.tar_pot.take синтез: 3.85 с, -17.0 LUFS, TP -4.8 dB (усиление +0.1 dB)
-  agata:H2.tar_pot.taken синтез: 2.33 с, -17.4 LUFS, TP -1.8 dB (усиление +0.4 dB)
-  agata:H2.brace.before_plan синтез: 6.92 с, -17.0 LUFS, TP -1.9 dB (усиление +1.3 dB)
-  agata:H2.brace.take синтез: 5.92 с, -16.8 LUFS, TP -2.4 dB (усиление -0.6 dB)
-  agata:H3.school_door.use синтез: 8.44 с, -16.9 LUFS, TP -2.3 dB (усиление -0.6 dB)
-  agata:H3.mirror_home.use синтез: 7.90 с, -16.9 LUFS, TP -3.2 dB (усиление -1.5 dB)
-  agata:H3.puzzle.by_item синтез: 3.64 с, -16.9 LUFS, TP -5.9 dB (усиление -2.1 dB)
-  agata:Z4.side_door.now_open синтез: 2.39 с, -17.0 LUFS, TP -4.0 dB (усиление -1.2 dB)
-  agata:H3.side_door.unbolt синтез: 6.15 с, -16.9 LUFS, TP -2.9 dB (усиление -0.6 dB)
-  agata:H4.chest.open синтез: 6.64 с, -17.0 LUFS, TP -3.0 dB (усиление -0.9 dB)
-  agata:H1.lezhanka.late_d1 синтез: 5.04 с, -17.0 LUFS, TP -2.4 dB (усиление -0.1 dB)
-  agata:H1.lezhanka.after_d1 синтез: 3.64 с, -16.8 LUFS, TP -3.2 dB (усиление +0.7 dB)
-  agata:H4.bed.dunya_night синтез: 3.76 с, -17.0 LUFS, TP -2.3 dB (усиление +0.0 dB)
-  agata:H4.bed.early_d1_door синтез: 3.59 с, -17.0 LUFS, TP -5.7 dB (усиление -1.4 dB)
-  agata:H4.bed.early_d1_street синтез: 5.74 с, -17.0 LUFS, TP -3.0 dB (усиление -0.4 dB)
-  agata:H4.bed.early_d1_class синтез: 4.87 с, -17.0 LUFS, TP -1.9 dB (усиление -0.2 dB)
-  agata:H4.bed.early_d2 синтез: 3.03 с, -17.2 LUFS, TP -1.8 dB (усиление +0.9 dB)
-  agata:H4.bed.early_d3 синтез: 3.05 с, -16.9 LUFS, TP -5.4 dB (усиление -1.1 dB)
-  agata:H4.bed.early_short синтез: 1.59 с, -16.9 LUFS, TP -7.7 dB (усиление -1.5 dB)
-  agata:H4.bed.todo_M23a синтез: 3.55 с, -17.0 LUFS, TP -6.1 dB (усиление -0.5 dB)
-  agata:H4.bed.todo_M23b синтез: 2.26 с, -16.9 LUFS, TP -6.1 dB (усиление -0.2 dB)
-  agata:H4.bed.todo_M23c синтез: 2.56 с, -17.0 LUFS, TP -6.4 dB (усиление -1.3 dB)
-  agata:H4.bed.todo_M23d синтез: 2.55 с, -17.0 LUFS, TP -4.8 dB (усиление +0.8 dB)
-  agata:H4.bed.after_d4 синтез: 4.06 с, -17.0 LUFS, TP -3.8 dB (усиление -1.2 dB)
-  agata:H4.bed.after_all синтез: 5.00 с, -16.9 LUFS, TP -3.0 dB (усиление -1.3 dB)
-  agata:H3.night.to_bed синтез: 6.04 с, -16.9 LUFS, TP -2.6 dB (усиление -1.0 dB)
-  agata:H4.bed.late_d1 синтез: 4.49 с, -17.0 LUFS, TP -2.6 dB (усиление -0.5 dB)
-  agata:H4.bed.late_d3 синтез: 3.43 с, -17.5 LUFS, TP -1.9 dB (усиление +3.1 dB)
-  agata:H4.bed.bedtime_d3 синтез: 4.82 с, -16.9 LUFS, TP -2.3 dB (усиление +0.1 dB)
-  agata:O1.board.use синтез: 6.92 с, -17.0 LUFS, TP -1.9 dB (усиление +1.1 dB)
-  agata:O1.board.chalk синтез: 4.40 с, -17.0 LUFS, TP -3.0 dB (усиление -1.5 dB)
-  agata:O1.notebooks.use синтез: 9.60 с, -17.0 LUFS, TP -4.2 dB (усиление -0.6 dB)
-  agata:O1.bird_drawing.prompt синтез: 4.76 с, -16.9 LUFS, TP -3.6 dB (усиление -0.9 dB)
-  agata:O1.bird_drawing.react_scarf синтез: 2.56 с, -17.0 LUFS, TP -3.8 dB (усиление -0.3 dB)
-  agata:O1.bird_drawing.react_boat синтез: 3.54 с, -17.0 LUFS, TP -5.9 dB (усиление -0.7 dB)
-  agata:O1.bird_drawing.react_bridge синтез: 4.28 с, -16.9 LUFS, TP -5.8 dB (усиление -2.1 dB)
-  agata:O1.exit_H3.yard_first синтез: 6.21 с, -17.1 LUFS, TP -1.8 dB (усиление +0.4 dB)
-  agata:O1.enter.winter синтез: 3.46 с, -17.0 LUFS, TP -3.3 dB (усиление -0.8 dB)
-  agata:O2.tree.look синтез: 4.86 с, -17.0 LUFS, TP -3.9 dB (усиление +2.3 dB)
-  agata:O2.porch_step.mitten синтез: 5.16 с, -17.0 LUFS, TP -5.0 dB (усиление -1.9 dB)
-  agata:O2.mitten.look синтез: 2.29 с, -16.9 LUFS, TP -5.6 dB (усиление -1.1 dB)
-  agata:O2.mitten.take синтез: 1.20 с, -16.9 LUFS, TP -3.9 dB (усиление -0.3 dB)
-  agata:O2.window_other.look синтез: 6.60 с, -16.9 LUFS, TP -2.8 dB (усиление -0.5 dB)
-  agata:O2.exit_O4.loop синтез: 8.05 с, -17.0 LUFS, TP -4.3 dB (усиление -1.8 dB)
-  agata:O2.exit_O4.wait_signal синтез: 4.97 с, -16.9 LUFS, TP -4.4 dB (усиление +0.0 dB)
-  agata:O2.exit_O4.wait_crossing синтез: 2.54 с, -17.0 LUFS, TP -2.7 dB (усиление -0.9 dB)
-  R1.pelageya.prompt синтез: 2.00 с, -17.0 LUFS, TP -5.5 dB (усиление -1.7 dB)
-  Z1.tamara.prompt   синтез: 1.67 с, -17.0 LUFS, TP -4.2 dB (усиление -1.8 dB)
-  agata:H1.wave.use  синтез: 5.34 с, -16.9 LUFS, TP -4.0 dB (усиление -0.2 dB)
-  agata:M1.exit_M2.closed синтез: 4.19 с, -16.8 LUFS, TP -3.7 dB (усиление -2.6 dB)
-  agata:M1.exit_M4.closed синтез: 3.57 с, -17.1 LUFS, TP -1.9 dB (усиление +0.6 dB)
-  agata:H2.hinges_box.thought синтез: 2.94 с, -17.0 LUFS, TP -4.9 dB (усиление -1.4 dB)
-  agata:H2.hinges_box.empty синтез: 4.47 с, -17.0 LUFS, TP -3.9 dB (усиление -1.3 dB)
-  agata:H2.hinges_box.empty_hung синтез: 3.97 с, -17.0 LUFS, TP -3.0 dB (усиление -1.0 dB)
-  agata:M2.mirror.look синтез: 3.65 с, -17.1 LUFS, TP -1.8 dB (усиление +1.2 dB)
-  agata:M3.clamp.use синтез: 8.92 с, -16.9 LUFS, TP -3.2 dB (усиление -1.2 dB)
-  agata:M4.gate.rusty синтез: 5.42 с, -17.1 LUFS, TP -2.2 dB (усиление -1.1 dB)
-  R2.rope.look       синтез: 4.66 с, -17.1 LUFS, TP -3.5 dB (усиление -1.7 dB)
-  R3.stopor.look     синтез: 5.58 с, -17.0 LUFS, TP -4.4 dB (усиление -2.0 dB)
-  R3.lamp_post.look  синтез: 4.77 с, -17.0 LUFS, TP -4.2 dB (усиление -2.3 dB)
-  agata:R3.shed.look синтез: 4.98 с, -17.0 LUFS, TP -1.9 dB (усиление +2.1 dB)
-  agata:H2d.nina_mirror.watch_again_common синтез: 1.76 с, -17.0 LUFS, TP -5.3 dB (усиление -1.9 dB)
-  Z3d.plate_dry.look синтез: 8.93 с, -17.0 LUFS, TP -2.0 dB (усиление -1.4 dB)
-  agata:Z3d.plate_dry.use_skoba синтез: 4.77 с, -17.0 LUFS, TP -1.9 dB (усиление +0.4 dB)
-  agata:Z3d.plate_dry.no_skoba синтез: 6.41 с, -17.0 LUFS, TP -1.9 dB (усиление +0.6 dB)
-  Z3d.plate_dry.skoba синтез: 6.96 с, -17.0 LUFS, TP -4.0 dB (усиление -1.4 dB)
-  Z3d.plate.rope_at_ring синтез: 7.99 с, -17.0 LUFS, TP -5.0 dB (усиление -2.3 dB)
-  R1d.lantern.use_day синтез: 5.82 с, -17.1 LUFS, TP -5.4 dB (усиление -2.4 dB)
-  agata:R1d.pelageya.at_turn синтез: 5.46 с, -17.0 LUFS, TP -2.9 dB (усиление -1.0 dB)
-  agata:R1d.pelageya.at_turn_d3 синтез: 4.97 с, -16.9 LUFS, TP -2.2 dB (усиление -0.2 dB)
-  agata:H2d.stand_zm.enter синтез: 5.23 с, -17.0 LUFS, TP -5.2 dB (усиление -0.4 dB)
-  agata:H2d.bell.after_office синтез: 4.87 с, -17.2 LUFS, TP -3.1 dB (усиление +0.1 dB)
-  agata:H2d.bell.ring_far синтез: 3.73 с, -16.9 LUFS, TP -5.5 dB (усиление -2.3 dB)
-  R1.exit_R2.closed_check синтез: 3.17 с, -17.0 LUFS, TP -3.5 dB (усиление -2.3 dB)
-  R1.stopper.look_empty синтез: 4.78 с, -17.0 LUFS, TP -5.4 dB (усиление -2.9 dB)
-  R1.stopper.look_ring синтез: 9.66 с, -17.1 LUFS, TP -4.9 dB (усиление -2.7 dB)
-  agata:H2d.nina_mirror.clamp_early синтез: 5.97 с, -16.9 LUFS, TP -2.7 dB (усиление -0.6 dB)
-  agata:H1.after_mirror.agata синтез: 6.57 с, -17.0 LUFS, TP -5.0 dB (усиление -1.4 dB)
-  agata:O4.nina_house.look синтез: 4.28 с, -17.0 LUFS, TP -4.0 dB (усиление -0.6 dB)
-  agata:O4.ilya_house.look синтез: 4.03 с, -17.1 LUFS, TP -3.4 dB (усиление +0.6 dB)
-  agata:O4.river.look синтез: 5.09 с, -17.0 LUFS, TP -2.5 dB (усиление -1.0 dB)
-  agata:O3.bed.early_d2 синтез: 5.08 с, -16.9 LUFS, TP -4.8 dB (усиление +0.4 dB)
-  agata:O3.bed.late_d2 синтез: 3.74 с, -17.0 LUFS, TP -7.0 dB (усиление -1.1 dB)
-  agata:O3.clock.look_common синтез: 3.33 с, -17.0 LUFS, TP -5.9 dB (усиление -0.2 dB)
-  agata:O3.clock.watch синтез: 5.49 с, -17.0 LUFS, TP -4.8 dB (усиление -0.1 dB)
-  agata:O3.notebooks.look синтез: 4.85 с, -17.0 LUFS, TP -3.1 dB (усиление +1.8 dB)
-  agata:O3.notebooks.use синтез: 6.67 с, -17.0 LUFS, TP -1.8 dB (усиление +0.5 dB)
-  agata:O3.notebooks.again синтез: 2.69 с, -16.9 LUFS, TP -5.5 dB (усиление -2.2 dB)
-  agata:O3.village_list.look синтез: 4.52 с, -16.9 LUFS, TP -4.6 dB (усиление -0.9 dB)
-  agata:O3.village_list.use синтез: 8.34 с, -17.0 LUFS, TP -2.0 dB (усиление +1.3 dB)
-  agata:O3.village_list.again синтез: 3.52 с, -16.9 LUFS, TP -2.6 dB (усиление -1.5 dB)
-  agata:O3.notches.look синтез: 7.27 с, -17.0 LUFS, TP -5.5 dB (усиление -1.5 dB)
-  agata:E5.windlass.voice_call_lower синтез: 0.68 с, -17.0 LUFS, TP -8.0 dB (усиление -5.3 dB)
-  agata:E5.windlass.voice_call_stop синтез: 0.74 с, -17.0 LUFS, TP -6.0 dB (усиление -4.7 dB)
-  agata:E5.windlass.voice_call_raise синтез: 0.75 с, -16.9 LUFS, TP -6.1 dB (усиление -2.9 dB)
-  agata:O1d.ulyana.hat_a синтез: 7.57 с, -16.8 LUFS, TP -4.0 dB (усиление +0.3 dB)
-  agata:O1d.ulyana.lights_a синтез: 4.39 с, -16.8 LUFS, TP -2.2 dB (усиление +0.0 dB)
-  agata:O1d.ulyana.lights_c синтез: 2.59 с, -16.9 LUFS, TP -4.8 dB (усиление +3.2 dB)
-  agata:O4.mitya.fish_q синтез: 1.84 с, -17.0 LUFS, TP -5.1 dB (усиление +1.9 dB)
-  agata:O1d.ulyana.ttt_q синтез: 4.49 с, -17.0 LUFS, TP -3.1 dB (усиление -1.9 dB)
-  agata:O4.mitya_board.use синтез: 6.55 с, -17.0 LUFS, TP -2.4 dB (усиление +0.3 dB)
-  agata:O3.nina.ribbon_again синтез: 2.92 с, -16.9 LUFS, TP -5.0 dB (усиление +0.5 dB)
-  agata:O3.nina_letters.look синтез: 5.47 с, -17.0 LUFS, TP -2.2 dB (усиление +0.9 dB)
-  agata:O3.nina_letters.use синтез: 5.04 с, -17.0 LUFS, TP -3.5 dB (усиление -0.2 dB)
-  agata:O3.nina_letters.again синтез: 2.56 с, -17.0 LUFS, TP -2.4 dB (усиление +0.7 dB)
-  agata:H1d.nina_coat.use синтез: 5.26 с, -16.9 LUFS, TP -3.0 dB (усиление -0.1 dB)
-  agata:O1q.village_map.use синтез: 7.53 с, -17.1 LUFS, TP -1.9 dB (усиление +0.3 dB)
-  agata:O1q.village_map.agata_help синтез: 3.05 с, -17.0 LUFS, TP -5.8 dB (усиление -1.6 dB)
-  agata:O1q.village_map.agata_mark синтез: 4.39 с, -16.8 LUFS, TP -3.2 dB (усиление +0.5 dB)
-  agata:O1q.village_map.traced синтез: 1.40 с, -16.9 LUFS, TP -2.9 dB (усиление +1.0 dB)
-  O4q.workshop.prompt синтез: 1.83 с, -17.0 LUFS, TP -3.1 dB (усиление -1.6 dB)
-  agata:examine.brace_plate синтез: 5.65 с, -17.0 LUFS, TP -4.0 dB (усиление -0.1 dB)
-  agata:examine.bell_clapper синтез: 3.84 с, -16.8 LUFS, TP -2.4 dB (усиление -1.1 dB)
-[EN_full] синтезировано 206, переобработано 0, ошибок 0; символов текста 14169; списано кредитов (character-cost): 6237, изменение счётчика подписки: 5633
+=== pipeline/requests/voice_EN_full_4.json
+  mirror_part 4/4: 205 строк
+  задание: Директор, 2026-11-03 — английский голос целиком, часть 4/4 (mirror ru, один дубль) (потолок 220 файлов, 14150 символов)
+[EN_full] реплик в сценах запроса: 205; файлов с вариантами голосов: 205; к синтезу: 205 (13550 символов); переобработка: 0
+  intro.opening_1 narrator  ru           ZAKADR     eleven_v4    Agata is eighteen. She studies in the district town. Back home in Olkhovka, across the river, are Mama and her younger brother.
+  intro.opening_2 narrator  ru           ZAKADR     eleven_v4    A year ago, on the night of the flood, the water swept the bridge away. Since then, no one has reached the far bank: send any boat across, and it comes back to its own pier.
+  intro.opening_3 narrator  ru           ZAKADR     eleven_v4    Agata wrote home all year — not a word came back. This autumn the water fell, exposing an old bridge pier. She is going to Aunt Dunya's house in Zarechye: it is as close to home as she can get. She means to find out for herself what happened to Olkhovka.
+  tamara:Z1.tamara.after tamara    ru           TAMARA-1   eleven_v4    [warmly] You have the key. I'm at the post office if you need me.
+  pelageya:R1.pelageya.after pelageya  ru           PELAGEYA   eleven_v4    [firm] Without the plate, the boat comes straight back here, as you see. I'll be by the boat if you need me.
+  tikhon:H1.tikhon.spoons_a tikhon    ru           CAT-2      eleven_v4    Outplay me, will she! Ha… Listen, then. Let's see if you can repeat it.
+  tikhon:H1.tikhon.spoons_done tikhon    ru           CAT-2      eleven_v4    That will do. Worth a little sour cream… if there were any to be had.
+  tikhon:H1.tikhon.spoons_quit tikhon    ru           CAT-2      eleven_v4    Tired? Thought so. Not as easy as lying on a stove, is it?
+  tikhon:H1.tikhon.door tikhon    ru           CAT-2      eleven_v4    From the school — Nina asked for it.
+  tikhon:H1.tikhon.bundle tikhon    ru           CAT-2      eleven_v4    [sarcastic] Nina's mirror is on the workbench, wrapped in a cloth. Leave it alone: the frame's barely holding together.
+  tikhon:H1.tikhon.bell tikhon    ru           CAT-2      eleven_v4    [sarcastic] The bell's from the mill. An odd one. Rings somewhere else.
+  tikhon:H1.tikhon.leave tikhon    ru           CAT-2      eleven_v4    [sleepy] I'm not asleep. I'm on duty lying down.
+  tikhon:H1.tikhon.ask_shelf tikhon    ru           CAT-2      eleven_v4    [playful] Will you hang that shelf? There, on the sleeping ledge. Am I meant to hammer it up with my paws?
+  tikhon:H1.tikhon.first_who tikhon    ru           CAT-2      eleven_v4    [grumbling] Who's that shuffling about?…
+  tikhon:H1.tikhon.first_name tikhon    ru           CAT-2      eleven_v4    [sarcastic] Tikhon. Keeper of the stove. A demanding post: lie here and see it doesn't go cold.
+  tikhon:H1.tikhon.first_stove tikhon    ru           CAT-2      eleven_v4    [sarcastic] The stove's here too, of course.
+  tikhon:H1.tikhon.before_met_shutter tikhon    ru           CAT-2      eleven_v4    [grumbling] Fire's lit. Good. Now open the shutter: it's as dark as the space beneath the stove.
+  tikhon:H1.tikhon.before_met_scarf tikhon    ru           CAT-2      eleven_v4    [grumbling] Get that wet shawl off the sleeping ledge. It's making the whole house damp.
+  tikhon:H1.tikhon.before_met tikhon    ru           CAT-2      eleven_v4    [grumbling] Damp in here. Light the stove first — then we'll talk.
+  tikhon:H1.tikhon.mend tikhon    ru           CAT-2      eleven_v4    [sarcastic] Whatever people brought: doors, mirrors, that bell. Said a thing remembers its place; it only needs a little help. But she couldn't hang my shelf in a whole year.
+  tikhon:H1.tikhon.tamara tikhon    ru           CAT-2      eleven_v4    [playful] Wednesdays. Cabbage soup, porridge. Fish pie on feast days. A kind woman. Stingy with the salt.
+  tikhon:H1.tikhon.night tikhon    ru           CAT-2      eleven_v4    [sleepy] All night. Didn't close an eye. Well, one — the other was on duty. I work quite comfortably lying down.
+  tikhon:H1.tikhon.stove_mirror tikhon    ru           CAT-2      eleven_v4    [thoughtful] A little round mirror in a wooden frame. That day, the mistress took it down and wrapped it in a shawl. A gift for her sister, she said. Took it with her when she left.
+  tikhon:H1.tikhon.water tikhon    ru           CAT-2      eleven_v4    [grumbling] Let it fall. It can manage without you. I'd like some peace by the stove: first the damp, then that bell. And you've only just arrived! …Why are you lugging that clamp about? Your mama's mirror is on the workbench, in a cloth. The frame's barely holding together.
+  tikhon:H1.tikhon.nina tikhon    ru           CAT-2      eleven_v4    [playful] Nina? I remember her as a girl. Braids like yours. Came to see the mistress on Saturdays. Never brought a single pie — I remember that still.
+  tikhon:H1.tikhon.after_dunya tikhon    ru           CAT-2      eleven_v4    [thoughtful] Lying here. No one to wait for — so I just lie here. Stove's burning, pot's in its place… The mistress would say: that's something.
+  tikhon:H1.tikhon.cream tikhon    ru           CAT-2      eleven_v4    If she found the sour cream.
+  tikhon:H1.tikhon.cream_3 tikhon    ru           CAT-2      eleven_v4    On my whiskers. Nothing left to find in the pot.
+  tikhon:H1.tikhon.supper tikhon    ru           CAT-2      eleven_v4    At supper she told me to keep quiet.
+  tikhon:H1.tikhon.supper_3 tikhon    ru           CAT-2      eleven_v4    Gladly — with my mouth full.
+  tikhon:H1.tikhon.tea tikhon    ru           CAT-2      eleven_v4    Here it was Dunya who scolded her.
+  tikhon:H1.tikhon.tea_3 tikhon    ru           CAT-2      eleven_v4    Letting her tea go cold while she fussed over exercise books.
+  tikhon:H1.tikhon.snow tikhon    ru           CAT-2      eleven_v4    Wet paws either way.
+  tikhon:H1.tikhon.snow_3 tikhon    ru           CAT-2      eleven_v4    I can be surprised. A pie with no filling would do it.
+  tikhon:H1.tikhon.duty tikhon    ru           CAT-2      eleven_v4    The whole house. Pot's part of it.
+  tikhon:H1.tikhon.duty_3 tikhon    ru           CAT-2      eleven_v4    A weighty one. That's why I lie down.
+  tikhon:H1.tikhon.quiet tikhon    ru           CAT-2      eleven_v4    Dunya liked sitting quietly by the stove, too.
+  tikhon:H1.tikhon.quiet_3 tikhon    ru           CAT-2      eleven_v4    I did. Only grumbled when necessary. Once an hour, no more.
+  tikhon:H1.tikhon.hear tikhon    ru           CAT-2      eleven_v4    She'll scold you all the same. Grown or not.
+  tikhon:H1.tikhon.hear_3 tikhon    ru           CAT-2      eleven_v4    I'd listen too. Just once.
+  tikhon:H1.tikhon.home tikhon    ru           CAT-2      eleven_v4    And tell us to eat while it's hot.
+  tikhon:H1.tikhon.home_3 tikhon    ru           CAT-2      eleven_v4    Where do you think you are?
+  tikhon:H1.v01.done tikhon    ru           CAT-2      eleven_v4    Unoccupied. Rearrangement permitted.
+  tikhon:H1.shelf.react_b tikhon    ru           CAT-2      eleven_v4    So what? A sleeping mat counts as furniture, too.
+  pelageya:R1.pelageya.boats pelageya  ru           PELAGEYA   eleven_v4    Same with them. Not a light or a soul over there for a year. Every boat comes back to its own pier.
+  pelageya:R1.pelageya.marsh pelageya  ru           PELAGEYA   eleven_v4    [animated] People tried. Go round through the marsh — come out at the edge of your own village.
+  pelageya:R1.pelageya.sluice pelageya  ru           PELAGEYA   eleven_v4    The mill sluice holds back the water. I asked Pavel to drain it, but the lever's in the office, and that hasn't opened since the flood. Ask Pavel. He knows more.
+  pelageya:R1.pelageya.manager pelageya  ru           PELAGEYA   eleven_v4    Fyodor Lukich, the mill manager, shut the sluice that evening, before the flood, a year ago. Went home to Olkhovka and stayed there. The water came that night.
+  tamara:Z1.tamara.school tamara    ru           TAMARA-1   eleven_v4    One school for both banks. We used to take our children over the bridge. And now, a whole year with no one to teach them.
+  tamara:Z1.tamara.sheet tamara    ru           TAMARA-1   eleven_v4    Dunya left it here as she went: send it to the district office, she said. That night came the flood. Here it lies.
+  tamara:Z1.tamara.late tamara    ru           TAMARA-1   eleven_v4    Don't blame yourself, my dear. You'd have sat by the water all year, like Pelageya. I wrote so you wouldn't come in vain.
+  pavel:M1.pavel.day1 pavel     ru           Павел      eleven_v4    Evening soon. Come in the morning, while it's light. We'll talk then.
+  pavel:M1.pavel.before_agree pavel     ru           Павел      eleven_v4    Look at the office door and the photograph in the entrance hall. Read the mill rules on the board outside. We'll talk after.
+  pavel:M1.pavel.after pavel     ru           Павел      eleven_v4    Ring from the workshop. I'll stand by the office door with a lantern.
+  pavel:M2.mirror.take pavel     ru           Павел      eleven_v4    Take it. Glass is sound, but the frame's coming apart at the corners.
+  pavel:M2.pavel.after pavel     ru           Павел      eleven_v4    The bolt's out! The door's moved — put your shoulder to it with me.
+  pavel:M2.pavel.at_mirror pavel     ru           Павел      eleven_v4    There, by the wall. Take it.
+  pavel:M2.pavel.after_lifted pavel     ru           Павел      eleven_v4    Go in. I'll follow.
+  pavel:M3.pavel.before pavel     ru           Павел      eleven_v4    Take what you need: lever on the nail, ledger on the desk. Take the clamp from the desk, too. Dunya broke hers. Asked for mine to draw a frame together.
+  pavel:M4.sluice.wait pavel     ru           Павел      eleven_v4    Wait. Let the water fall.
+  pavel:M4.pavel.rusty pavel     ru           Павел      eleven_v4    Wait. That winch hasn't turned in a year — rusted solid. Dunya had tar in her workshop. Bring some; we'll grease it.
+  pavel:M4.pavel.turn pavel     ru           Павел      eleven_v4    Greased! Turn it now. One notch at a time, as it says.
+  agata:item.tar agata     ru           Agata      eleven_v4    A jar of tar to grease the winch.
+  pavel:M4.pavel.before pavel     ru           Павел      eleven_v4    Fit the lever to the winch. One notch at a time, as it says.
+  pavel:M4.pavel.after pavel     ru           Павел      eleven_v4    Water's flowing. Now we wait. Off you go, for now.
+  pavel:M4.pavel.after_dusk pavel     ru           Павел      eleven_v4    Water's down — the plate at the bend is exposed. What else can I do for you?
+  pelageya:R2.pelageya.after pelageya  ru           PELAGEYA   eleven_v4    Hold on to the ring.
+  pelageya:R2.exit_R1.closed pelageya  ru           PELAGEYA   eleven_v4    No turning back. If they're holding their end, we'll go to them.
+  mitya:R3.mitya.after mitya     ru           МИТЯ       eleven_v4    Come on, Agata. Nina's waiting for you.
+  pelageya:R3.pelageya.after pelageya  ru           PELAGEYA   eleven_v4    [warmly] Go on, Agata. I'll stay by the boat for now.
+  tikhon:H2d.nina_mirror.watch_again tikhon    ru           CAT-2      eleven_v4    [grumbling] Your watch against the glass again? Compare all you like — it still runs faster over there. Go and do something useful.
+  pelageya:Z3d.plate.knot_wrong pelageya  ru           PELAGEYA   eleven_v4    Wait, not like that. Watch again: under the ring first, then round — and through the loop.
+  pelageya:Z3d.pelageya.wait_skoba pelageya  ru           PELAGEYA   eleven_v4    Fit the bracket over the crack. Then see to the rope.
+  pelageya:Z3d.pelageya.knot pelageya  ru           PELAGEYA   eleven_v4    [reassuring] Here's the end, by the plate. Now tie it to the ring. Watch; I'll show you.
+  pelageya:Z3d.pelageya.done pelageya  ru           PELAGEYA   eleven_v4    It holds! Back to the pier now — take the lantern.
+  pelageya:R1d.lantern.count_wrong pelageya  ru           PELAGEYA   eleven_v4    Give three flashes. Exactly three — then wait.
+  item.mirror_mill narrator  ru           ZAKADR     eleven_v4    The office mirror: sound glass, frame loose at the corners.
+  item.bell_clapper narrator  ru           ZAKADR     eleven_v4    The clapper from the mill bell.
+  item.key_sluice narrator  ru           ZAKADR     eleven_v4    The sluice lever, from the nail in the office.
+  item.journal_manager narrator  ru           ZAKADR     eleven_v4    The manager's last entry, and how to drain the pond.
+  item.clamp narrator  ru           ZAKADR     eleven_v4    For drawing a loose frame together.
+  item.school_ribbon narrator  ru           ZAKADR     eleven_v4    Mama's blue ribbon, with a narrow border.
+  agata:item.mirror_mill.wrong agata     ru           Agata      eleven_v4    The office mirror belongs in Dunya's stand marked "ЗМ" — the tall carved frame in the middle of the workshop.
+  agata:item.bell_clapper.wrong agata     ru           Agata      eleven_v4    The clapper belongs to the mill bell. It's here in the workshop.
+  agata:item.key_sluice.wrong agata     ru           Agata      eleven_v4    This lever fits the winch at the mill sluice.
+  agata:item.clamp.wrong agata     ru           Agata      eleven_v4    I need to clamp Mama's mirror frame together in the workshop.
+  agata:item.brace_plate.wrong agata     ru           Agata      eleven_v4    The bracket is for the cracked plate at the bend. But the water's too high to reach it.
+  agata:item.brace_plate.wrong_dry agata     ru           Agata      eleven_v4    The bracket is for the cracked plate at the bend. I'll fit it there.
+  agata:item.key_house.wrong agata     ru           Agata      eleven_v4    The key to Dunya's house. The entrance is on the street.
+  agata:item.door_hinges.wrong agata     ru           Agata      eleven_v4    These hinges belong to the school door in the gallery frame.
+  agata:item.chalk.wrong agata     ru           Agata      eleven_v4    Chalk is for writing on the classroom board.
+  agata:item.wrong_generic agata     ru           Agata      eleven_v4    It won't work here.
+  agata:item.mitten.wrong agata     ru           Agata      eleven_v4    My mitten. No use for it here.
+  pelageya:R1d.pelageya.day2 pelageya  ru           PELAGEYA   eleven_v4    While the plate's underwater, the boat will come back. See Pavel at the mill first — the pond needs draining.
+  pelageya:R1d.pelageya.wait_water pelageya  ru           PELAGEYA   eleven_v4    The water's going down! Once the plate is clear, I'll take the rope off the clamp and take the rope to the pier by boat. You can only get it through the ring from the water.
+  pelageya:R1d.pelageya.lantern pelageya  ru           PELAGEYA   eleven_v4    Lantern's on the post. Three flashes — then wait.
+  pelageya:R1d.pelageya.to_boat pelageya  ru           PELAGEYA   eleven_v4    The ring's on the rope. Time to go. Get in.
+  pelageya:R3.exit_R2.closed pelageya  ru           PELAGEYA   eleven_v4    Go to your mother first. I'll take you back tomorrow.
+  pelageya:R3.exit_R2.closed_morning pelageya  ru           PELAGEYA   eleven_v4    Finish talking to your mother first. She'll show you the path to the school.
+  tikhon:H1.after_mirror.tikhon_1 tikhon    ru           CAT-2      eleven_v4    Did you see Nina? All grey… Then the mistress must have grown old there, too.
+  tikhon:H1.after_mirror.tikhon_2 tikhon    ru           CAT-2      eleven_v4    How, how… Lie down and sleep, that's how. I sleep every night, and the world's still standing. While you're awake, get on with things. I'll mind the stove.
+  tamara:O4.tamara.after tamara    ru           TAMARA-1   eleven_v4    So many letters in one year… And here that one year was twenty. How can that be?
+  mitya:O4.mitya.after mitya     ru           МИТЯ       eleven_v4    I come this way now. I'd like to cross by the bridge.
+  nina:O3.nina.before nina      ru           НИНА       eleven_v4    Sit and warm yourself. We can talk in the morning.
+  nina:O3.nina.after nina      ru           НИНА       eleven_v4    The notebooks are on the table. Read them quietly, my girl.
+  ilya:O3.ilya.after ilya      ru           ИЛЬЯ       eleven_v4    Come to the workshop tomorrow morning. I'll show you where we fitted the rope clamp.
+  ilya:O3.ilya.boat_drawing ilya      ru           ИЛЬЯ       eleven_v4    A boat with smoke! I still draw them like that. Ulyana laughs at me for it.
+  ulyana:O3.ulyana.after ulyana    ru           ЛУНЯ       eleven_v4    Has it really only been a year for you? I'm eight already!
+  ilya_wife:O3.ilya_wife.after ilya_wife ru           ВАРВАРА    eleven_v4    Sit down, have a rest. I'll set out the lamp and put Ulyana to bed.
+  nina:O3.notebooks.school_path_late nina      ru           НИНА       eleven_v4    The school path disappeared after Dunya was gone. Last winter.
+  ilya:E5.windlass.voice_reply_lower ilya      ru           ИЛЬЯ       eleven_v4    Here it goes…
+  ilya:E5.windlass.voice_reply_stop ilya      ru           ИЛЬЯ       eleven_v4    Holding!
+  ilya:E5.windlass.voice_reply_raise ilya      ru           ИЛЬЯ       eleven_v4    Pulling!
+  ilya:E5.windlass.bump ilya      ru           ИЛЬЯ       eleven_v4    Hit the stone! Missed the ring. Raise it — we'll try again.
+  pelageya:R1d.pelageya.shuttle pelageya  ru           PELAGEYA   eleven_v4    Get in; I'll take you across. Hold on, though. Come and go all day if you like.
+  pavel:M4d.pavel.after_bridge pavel     ru           Павел      eleven_v4    I'll keep the water low while you lay the spans, so it won't get in the way. Once the last is down, I'll refill the pond before it freezes.
+  nina:O1d.nina.after nina      ru           НИНА       eleven_v4    No lessons today. Everyone's outside. We'll start tomorrow.
+  ulyana:O1d.ulyana.after ulyana    ru           ЛУНЯ       eleven_v4    All right. I'll draw something else on the bird.
+  ulyana:O1d.ulyana.hat_q ulyana    ru           ЛУНЯ       eleven_v4    Agata, did you draw the bird's cap? Really? I thought it had always had one.
+  ulyana:O1d.ulyana.hat_b ulyana    ru           ЛУНЯ       eleven_v4    I drew its boots. Granny left those, too. That makes it our bird — yours and mine.
+  ulyana:O1d.ulyana.lights_q ulyana    ru           ЛУНЯ       eleven_v4    Uncle Mitya took a lantern to the pier every evening. I thought he was talking to the river.
+  ulyana:O1d.ulyana.lights_b ulyana    ru           ЛУНЯ       eleven_v4    Only a year passed for you? Granny says time is the same for everyone now. Does that mean no one will get lost for twenty years again?
+  mitya:O4.mitya.fish_a mitya     ru           МИТЯ       eleven_v4    Of course! Sit beside me. I'll show you how we catch perch here.
+  mitya:O4.mitya.fish_bye mitya     ru           МИТЯ       eleven_v4    Come again. Fish aren't in a hurry — neither are we.
+  ulyana:O1d.ulyana.ttt_a ulyana    ru           ЛУНЯ       eleven_v4    Yes! I get noughts. You have crosses, so you go first.
+  ulyana:O1d.ulyana.ttt_bye ulyana    ru           ЛУНЯ       eleven_v4    All right. We'll play again tomorrow — and I'll go first!
+  nina:H1d.nina.after nina      ru           НИНА       eleven_v4    I'll sit here. Dunya always put the kettle on when I came.
+  tamara:O4.letters_bag.use tamara    ru           TAMARA-1   eleven_v4    A letter for Aksinya from her brother. But the house at this address is gone. Gone twenty years.
+  ulyana:O1q.village_map.ulyana_ours ulyana    ru           ЛУНЯ       eleven_v4    But that's our garden! On your map there's only a fence behind our house.
+  ulyana:O1q.village_map.ulyana_route ulyana    ru           ЛУНЯ       eleven_v4    Take the road down from the school. Our house is the very last one. The garden's behind it, where your map is blank.
+  ulyana:O1q.village_map.ulyana_apple ulyana    ru           ЛУНЯ       eleven_v4    And an apple tree! Papa planted it when I was born.
+  mech.village_map.place_school narrator  ru           ZAKADR     eleven_v4    School
+  mech.village_map.place_house narrator  ru           ZAKADR     eleven_v4    Ulya's house
+  mech.village_map.place_garden narrator  ru           ZAKADR     eleven_v4    Garden
+  ulyana:mech.village_map.wrong ulyana    ru           ЛУНЯ       eleven_v4    Not there! Start again. From the school to our house, then to the garden.
+  ulyana:mech.village_map.wrong_again ulyana    ru           ЛУНЯ       eleven_v4    Not here. Back to the school again.
+  ilya:O4q.workshop.mitya_cramped ilya      ru           ИЛЬЯ       eleven_v4    Even Mitya and I are cramped at one bench.
+  ilya:O4q.workshop.ilya_invite ilya      ru           ИЛЬЯ       eleven_v4    Come into my workshop — there's something to do.
+  ilya:O4q.workshop.ilya_after ilya      ru           ИЛЬЯ       eleven_v4    Can't keep Ulya away from the bench now. Knee-deep in shavings.
+  ilya:O4q.workshop.ilya_third ilya      ru           ИЛЬЯ       eleven_v4    We'll find room for a third, too.
+  ilya:O4q.workshop.ilya_ulya ilya      ru           ИЛЬЯ       eleven_v4    Ulya follows me everywhere with a plane. Let's make her a bench of her own — a second one.
+  ilya:mech.bench.wedge_loose ilya      ru           ИЛЬЯ       eleven_v4    The wedge would be loose here: the slot is straight.
+  ilya:mech.bench.fitted ilya      ru           ИЛЬЯ       eleven_v4    There. The spline fits as though it belongs.
+  mitya:mech.bench.stopped mitya     ru           МИТЯ       eleven_v4    It won't shift now.
+  ilya:mech.bench.screw_set ilya      ru           ИЛЬЯ       eleven_v4    Screw's in place. Tighten it all the way.
+  ilya:mech.bench.tightened ilya      ru           ИЛЬЯ       eleven_v4    Tight. Pass the board.
+  ilya:mech.bench.checked ilya      ru           ИЛЬЯ       eleven_v4    It holds! You could start planing this very moment.
+  agata:item.key_house agata     ru           Agata      eleven_v4    Tamara kept it safe for me.
+  agata:item.letter_tamara agata     ru           Agata      eleven_v4    [warmly] This letter started me on the road here.
+  agata:item.pocket_watch agata     ru           Agata      eleven_v4    [warmly] Wherever I go, the same familiar ticking.
+  agata:item.mitten agata     ru           Agata      eleven_v4    Woollen, and mine. I wouldn't mistake it for another.
+  item.door_hinges narrator  ru           ZAKADR     eleven_v4    Dunya set them aside and labelled the box.
+  item.photo_bridge narrator  ru           ZAKADR     eleven_v4    The old bridge. Its rope fastened to the plate.
+  item.drawing_ilya narrator  ru           ZAKADR     eleven_v4    [warmly] A boat with smoke above it — Ilyusha's drawing.
+  item.plan_crossing narrator  ru           ZAKADR     eleven_v4    They hold the far end. The near end is at the bend, on the plate.
+  item.brace_plate narrator  ru           ZAKADR     eleven_v4    Dunya made the bracket for the crack in the plate.
+  item.chalk narrator  ru           ZAKADR     eleven_v4    My fingers are white already.
+  agata:examine.key_house agata     ru           Agata      eleven_v4    Heavy, with a worn bit. Dunya used it every day.
+  agata:examine.door_drawing agata     ru           Agata      eleven_v4    Aunt's drawing of the school door. Three hinges, and the right threshold notch circled.
+  agata:examine.door_hinges agata     ru           Agata      eleven_v4    All three original school door hinges. Dunya kept them safe.
+  agata:examine.photo_bridge agata     ru           Agata      eleven_v4    The bridge is still whole. Spans on stone piers; rope fastened to the near pier's plate. Pelageya's boat by the bank.
+  agata:examine.drawing_ilya agata     ru           Agata      eleven_v4    A bridge, a boat beneath, smoke above it. Only Ilyusha drew them that way.
+  agata:examine.plan_crossing agata     ru           Agata      eleven_v4    Corrected more than once, in different inks. Someone set it all down in order and waited for it to be read.
+  agata:examine.chalk agata     ru           Agata      eleven_v4    The school chalk crumbles, whitening my fingers at once.
+  agata:examine.mitten agata     ru           Agata      eleven_v4    My woollen mitten, patterned round the edge. I'd know it anywhere.
+  agata:examine.mirror_mill agata     ru           Agata      eleven_v4    Sound glass, but the frame's loose at the corners. It needs drawing together before it falls apart.
+  agata:examine.journal_manager agata     ru           Agata      eleven_v4    The last entry was made the evening before the flood. Blank pages after that.
+  agata:examine.key_sluice agata     ru           Agata      eleven_v4    The sluice lever. An iron shaft, a carved handle, and a square socket to fit the winch.
+  agata:examine.tar agata     ru           Agata      eleven_v4    Black, thick, smelling of birch. Perhaps the winch will turn with this.
+  agata:examine.clamp agata     ru           Agata      eleven_v4    A tight screw. It will hold Mother's mirror frame firmly together.
+  agata:examine.school_ribbon agata     ru           Agata      eleven_v4    Blue, with a narrow border. Mama kept it safe.
+  agata:examine.pocket_watch agata     ru           Agata      eleven_v4    My watch keeps steady time, minute for minute. I can compare it with another clock.
+  mech.nina_mirror.watch_hold narrator  ru           ZAKADR     eleven_v4    Agata holds her watch to the glass. Side by side: her watch, and Mama's clock beyond the glass.
+  agata:mech.nina_mirror.watch_slot_empty agata     ru           Agata      eleven_v4    My watch is in my bag. I'll hold it to the glass and compare.
+  agata:mech.nina_mirror.wrong_item agata     ru           Agata      eleven_v4    Wrong thing. I need to compare it with my watch.
+  agata:mech.nina_mirror.watch_hint agata     ru           Agata      eleven_v4    How fast Mama's clock is running! I should compare it with my watch.
+  agata:mech.plate.count_1 agata     ru           Agata      eleven_v4    One!
+  agata:mech.plate.count_2 agata     ru           Agata      eleven_v4    Two!
+  agata:mech.plate.brace_jumped agata     ru           Agata      eleven_v4    Ah, it slipped off! Three blows in a row — I must strike more evenly.
+  mech.knot.under narrator  ru           ZAKADR     eleven_v4    Under the ring — then up through it
+  mech.knot.around narrator  ru           ZAKADR     eleven_v4    Round — through the bottom of the ring
+  mech.knot.through narrator  ru           ZAKADR     eleven_v4    Through the loop — pull tight
+  mech.office_mirror.schedule_title narrator  ru           ZAKADR     eleven_v4    Bell signals:
+  mech.office_mirror.sig_one narrator  ru           ZAKADR     eleven_v4    1 strike — "go": Pavel guides the hook up
+  mech.office_mirror.sig_two narrator  ru           ZAKADR     eleven_v4    2 quick strikes — "stop"
+  mech.office_mirror.sig_long narrator  ru           ZAKADR     eleven_v4    A long ring (press and hold) — "raise": lift the bolt
+  agata:mech.shutter.stuck agata     ru           Agata      eleven_v4    Swollen with damp. I need to lift the latch so it seats properly.
+  agata:mech.shutter.dropped agata     ru           Agata      eleven_v4    Dropped into the bracket again. A little higher, then.
+  mech.crossing.hint narrator  ru           ZAKADR     eleven_v4    Pull hand over hand: click the rope, or drag towards you (down). Space works, too.
+  mech.office_mirror.wedges_hint narrator  ru           ZAKADR     eleven_v4    Click or press Space with the marker in the green to strike. Three accurate blows to each wedge.
+  agata:mech.office_mirror.wedge_slipped agata     ru           Agata      eleven_v4    Out it came! I'll have to start again — strike more evenly.
+  pavel:mech.sluice.slipped pavel     ru           Павел      eleven_v4    [reassuring] Ah, it slipped… Water came back up. Never mind — first notch again, a little more steadily.
+  ulyana:mech.ttt.win ulyana    ru           ЛУНЯ       eleven_v4    Oh, you beat me! Again — I'll go first this time.
+  ulyana:mech.ttt.lose ulyana    ru           ЛУНЯ       eleven_v4    I won! Three noughts in a row!
+  ulyana:mech.ttt.draw ulyana    ru           ЛУНЯ       eleven_v4    A draw. Papa and I always draw, too.
+  tikhon:mech.rhythm.good_1 tikhon    ru           CAT-2      eleven_v4    Well, now. What about this?
+  tikhon:mech.rhythm.good_2 tikhon    ru           CAT-2      eleven_v4    All right, you have an ear. Last one — a little trickier.
+  tikhon:mech.rhythm.miss_1 tikhon    ru           CAT-2      eleven_v4    Missed. Got a tin ear? Listen again.
+  tikhon:mech.rhythm.miss_2 tikhon    ru           CAT-2      eleven_v4    No hurry. I'm not hurrying.
+  mitya:mech.fish.early mitya     ru           МИТЯ       eleven_v4    Too soon! Just tasting it.
+  mitya:mech.fish.late mitya     ru           МИТЯ       eleven_v4    Missed it. Never mind, plenty here.
+  mitya:mech.fish.snap mitya     ru           МИТЯ       eleven_v4    Snapped… You have to pull with care, too.
+  mitya:mech.fish.escaped mitya     ru           МИТЯ       eleven_v4    Line went slack — away it went.
+  agata:mech.fish.caught_agata agata     ru           Agata      eleven_v4    Got one! Look, Mitya — a catch of my own.
+  mitya:mech.fish.caught mitya     ru           МИТЯ       eleven_v4    A perch! A fine one. Twenty years here with a lantern — never caught one like that.
+  квота: осталось 19010 из 179889, запас 0, к синтезу ≤ 6775 кредитов (оценка сверху)
+  intro.opening_1    синтез: 8.51 с, -16.9 LUFS, TP -3.0 dB (усиление -2.1 dB)
+  intro.opening_2    синтез: 11.46 с, -17.0 LUFS, TP -4.1 dB (усиление -1.3 dB)
+  intro.opening_3    синтез: 17.76 с, -17.0 LUFS, TP -4.2 dB (усиление -2.3 dB)
+  tamara:Z1.tamara.after синтез: 3.56 с, -17.0 LUFS, TP -4.2 dB (усиление -1.3 dB)
+  pelageya:R1.pelageya.after синтез: 5.26 с, -17.0 LUFS, TP -3.4 dB (усиление -0.7 dB)
+  tikhon:H1.tikhon.spoons_a синтез: 5.30 с, -17.0 LUFS, TP -2.7 dB (усиление +0.0 dB)
+  tikhon:H1.tikhon.spoons_done синтез: 5.36 с, -17.0 LUFS, TP -2.0 dB (усиление +1.6 dB)
+  tikhon:H1.tikhon.spoons_quit синтез: 4.57 с, -17.0 LUFS, TP -4.1 dB (усиление -1.8 dB)
+  tikhon:H1.tikhon.door синтез: 3.01 с, -17.0 LUFS, TP -2.2 dB (усиление -0.5 dB)
+  tikhon:H1.tikhon.bundle синтез: 7.01 с, -17.0 LUFS, TP -3.9 dB (усиление -0.9 dB)
+  tikhon:H1.tikhon.bell синтез: 4.50 с, -17.0 LUFS, TP -4.2 dB (усиление -0.1 dB)
+  tikhon:H1.tikhon.leave синтез: 3.61 с, -17.0 LUFS, TP -6.1 dB (усиление +5.4 dB)
+  tikhon:H1.tikhon.ask_shelf синтез: 6.07 с, -17.0 LUFS, TP -3.9 dB (усиление -0.5 dB)
+  tikhon:H1.tikhon.first_who синтез: 2.33 с, -17.1 LUFS, TP -4.3 dB (усиление +4.4 dB)
+  tikhon:H1.tikhon.first_name синтез: 7.14 с, -17.1 LUFS, TP -4.3 dB (усиление -2.1 dB)
+  tikhon:H1.tikhon.first_stove синтез: 2.50 с, -17.0 LUFS, TP -4.4 dB (усиление -1.4 dB)
+  tikhon:H1.tikhon.before_met_shutter синтез: 7.08 с, -17.0 LUFS, TP -1.9 dB (усиление +1.4 dB)
+  tikhon:H1.tikhon.before_met_scarf синтез: 4.61 с, -17.1 LUFS, TP -2.3 dB (усиление +1.2 dB)
+  tikhon:H1.tikhon.before_met синтез: 4.04 с, -17.2 LUFS, TP -1.8 dB (усиление +3.3 dB)
+  tikhon:H1.tikhon.mend синтез: 11.47 с, -17.0 LUFS, TP -2.0 dB (усиление +0.3 dB)
+  tikhon:H1.tikhon.tamara синтез: 8.55 с, -17.0 LUFS, TP -1.9 dB (усиление +0.9 dB)
+  tikhon:H1.tikhon.night синтез: 7.86 с, -17.1 LUFS, TP -1.9 dB (усиление +2.4 dB)
+  tikhon:H1.tikhon.stove_mirror синтез: 10.45 с, -16.9 LUFS, TP -2.6 dB (усиление +1.1 dB)
+  tikhon:H1.tikhon.water синтез: 17.40 с, -17.0 LUFS, TP -1.8 dB (усиление -0.3 dB)
+  tikhon:H1.tikhon.nina синтез: 9.96 с, -17.0 LUFS, TP -4.5 dB (усиление -0.1 dB)
+  tikhon:H1.tikhon.after_dunya синтез: 10.13 с, -17.0 LUFS, TP -1.8 dB (усиление +1.5 dB)
+  tikhon:H1.tikhon.cream синтез: 2.07 с, -17.0 LUFS, TP -5.0 dB (усиление -2.2 dB)
+  tikhon:H1.tikhon.cream_3 синтез: 3.83 с, -17.0 LUFS, TP -3.6 dB (усиление -0.5 dB)
+  tikhon:H1.tikhon.supper синтез: 2.70 с, -17.0 LUFS, TP -1.9 dB (усиление +1.9 dB)
+  tikhon:H1.tikhon.supper_3 синтез: 2.50 с, -17.2 LUFS, TP -3.1 dB (усиление -0.2 dB)
+  tikhon:H1.tikhon.tea синтез: 2.56 с, -16.9 LUFS, TP -3.5 dB (усиление +1.1 dB)
+  tikhon:H1.tikhon.tea_3 синтез: 4.30 с, -17.0 LUFS, TP -2.6 dB (усиление +0.7 dB)
+  tikhon:H1.tikhon.snow синтез: 1.83 с, -16.9 LUFS, TP -3.3 dB (усиление -0.8 dB)
+  tikhon:H1.tikhon.snow_3 синтез: 3.84 с, -17.0 LUFS, TP -5.8 dB (усиление -0.9 dB)
+  tikhon:H1.tikhon.duty синтез: 2.80 с, -17.0 LUFS, TP -4.8 dB (усиление -1.2 dB)
+  tikhon:H1.tikhon.duty_3 синтез: 2.99 с, -17.0 LUFS, TP -4.5 dB (усиление -0.7 dB)
+  tikhon:H1.tikhon.quiet синтез: 3.16 с, -16.9 LUFS, TP -3.8 dB (усиление +0.6 dB)
+  tikhon:H1.tikhon.quiet_3 синтез: 4.91 с, -17.1 LUFS, TP -3.0 dB (усиление +0.0 dB)
+  tikhon:H1.tikhon.hear синтез: 3.61 с, -17.0 LUFS, TP -6.1 dB (усиление -1.3 dB)
+  tikhon:H1.tikhon.hear_3 синтез: 2.43 с, -16.9 LUFS, TP -4.5 dB (усиление +2.1 dB)
+  tikhon:H1.tikhon.home синтез: 2.24 с, -17.1 LUFS, TP -5.0 dB (усиление -0.2 dB)
+  tikhon:H1.tikhon.home_3 синтез: 1.63 с, -16.9 LUFS, TP -6.4 dB (усиление -1.7 dB)
+  tikhon:H1.v01.done синтез: 3.20 с, -16.9 LUFS, TP -4.1 dB (усиление +0.1 dB)
+  tikhon:H1.shelf.react_b синтез: 3.41 с, -16.9 LUFS, TP -4.1 dB (усиление -0.7 dB)
+  pelageya:R1.pelageya.boats синтез: 7.05 с, -17.0 LUFS, TP -3.1 dB (усиление -0.4 dB)
+  pelageya:R1.pelageya.marsh синтез: 4.73 с, -17.0 LUFS, TP -4.4 dB (усиление -1.7 dB)
+  pelageya:R1.pelageya.sluice синтез: 9.74 с, -17.0 LUFS, TP -2.9 dB (усиление -0.8 dB)
+  pelageya:R1.pelageya.manager синтез: 10.80 с, -17.0 LUFS, TP -3.1 dB (усиление -0.2 dB)
+  tamara:Z1.tamara.school синтез: 8.38 с, -17.0 LUFS, TP -3.9 dB (усиление -1.8 dB)
+  tamara:Z1.tamara.sheet синтез: 7.62 с, -17.0 LUFS, TP -3.2 dB (усиление -1.0 dB)
+  tamara:Z1.tamara.late синтез: 8.17 с, -17.0 LUFS, TP -4.4 dB (усиление -2.4 dB)
+  pavel:M1.pavel.day1 синтез: 4.42 с, -17.1 LUFS, TP -5.9 dB (усиление -1.9 dB)
+  pavel:M1.pavel.before_agree синтез: 7.43 с, -16.9 LUFS, TP -5.9 dB (усиление -2.6 dB)
+  pavel:M1.pavel.after синтез: 4.13 с, -16.9 LUFS, TP -7.6 dB (усиление -4.0 dB)
+  pavel:M2.mirror.take синтез: 4.60 с, -17.0 LUFS, TP -3.7 dB (усиление -1.0 dB)
+  pavel:M2.pavel.after синтез: 4.10 с, -16.9 LUFS, TP -5.7 dB (усиление -3.4 dB)
+  pavel:M2.pavel.at_mirror синтез: 2.43 с, -16.9 LUFS, TP -5.9 dB (усиление -2.7 dB)
+  pavel:M2.pavel.after_lifted синтез: 1.72 с, -17.0 LUFS, TP -4.7 dB (усиление -2.0 dB)
+  pavel:M3.pavel.before синтез: 9.58 с, -17.1 LUFS, TP -4.6 dB (усиление -2.6 dB)
+  pavel:M4.sluice.wait синтез: 2.42 с, -17.0 LUFS, TP -4.8 dB (усиление -0.9 dB)
+  pavel:M4.pavel.rusty синтез: 8.31 с, -16.9 LUFS, TP -4.8 dB (усиление -1.6 dB)
+  pavel:M4.pavel.turn синтез: 4.09 с, -17.0 LUFS, TP -5.1 dB (усиление -2.5 dB)
+  agata:item.tar     синтез: 2.49 с, -17.0 LUFS, TP -2.8 dB (усиление -0.1 dB)
+  pavel:M4.pavel.before синтез: 4.08 с, -16.8 LUFS, TP -6.5 dB (усиление -3.3 dB)
+  pavel:M4.pavel.after синтез: 4.49 с, -17.0 LUFS, TP -3.8 dB (усиление -2.1 dB)
+  pavel:M4.pavel.after_dusk синтез: 4.99 с, -17.1 LUFS, TP -5.0 dB (усиление -2.1 dB)
+  pelageya:R2.pelageya.after синтез: 1.39 с, -16.9 LUFS, TP -7.0 dB (усиление -3.9 dB)
+  pelageya:R2.exit_R1.closed синтез: 4.08 с, -17.0 LUFS, TP -6.2 dB (усиление -2.2 dB)
+  mitya:R3.mitya.after синтез: 2.76 с, -17.0 LUFS, TP -4.5 dB (усиление -2.1 dB)
+  pelageya:R3.pelageya.after синтез: 2.92 с, -17.0 LUFS, TP -5.1 dB (усиление -2.6 dB)
+  tikhon:H2d.nina_mirror.watch_again синтез: 7.91 с, -17.0 LUFS, TP -4.3 dB (усиление -0.5 dB)
+  pelageya:Z3d.plate.knot_wrong синтез: 6.80 с, -17.1 LUFS, TP -2.3 dB (усиление -0.3 dB)
+  pelageya:Z3d.pelageya.wait_skoba синтез: 3.57 с, -17.0 LUFS, TP -2.4 dB (усиление -0.2 dB)
+  pelageya:Z3d.pelageya.knot синтез: 4.87 с, -17.0 LUFS, TP -3.8 dB (усиление +1.5 dB)
+  pelageya:Z3d.pelageya.done синтез: 3.42 с, -16.9 LUFS, TP -4.3 dB (усиление -2.8 dB)
+  pelageya:R1d.lantern.count_wrong синтез: 4.10 с, -17.0 LUFS, TP -3.8 dB (усиление +0.0 dB)
+  item.mirror_mill   синтез: 4.45 с, -16.9 LUFS, TP -3.8 dB (усиление -1.3 dB)
+  item.bell_clapper  синтез: 1.83 с, -17.0 LUFS, TP -4.4 dB (усиление -2.2 dB)
+  item.key_sluice    синтез: 2.86 с, -16.8 LUFS, TP -5.6 dB (усиление -2.8 dB)
+  item.journal_manager синтез: 3.77 с, -17.0 LUFS, TP -4.1 dB (усиление -2.0 dB)
+  item.clamp         синтез: 2.11 с, -17.0 LUFS, TP -6.2 dB (усиление -3.6 dB)
+  item.school_ribbon синтез: 2.99 с, -17.1 LUFS, TP -5.8 dB (усиление -3.2 dB)
+  agata:item.mirror_mill.wrong синтез: 6.68 с, -17.0 LUFS, TP -1.9 dB (усиление -0.2 dB)
+  agata:item.bell_clapper.wrong синтез: 3.48 с, -17.0 LUFS, TP -4.3 dB (усиление -2.0 dB)
+  agata:item.key_sluice.wrong синтез: 2.78 с, -17.0 LUFS, TP -4.5 dB (усиление +0.9 dB)
+  agata:item.clamp.wrong синтез: 3.24 с, -17.0 LUFS, TP -6.0 dB (усиление -1.0 dB)
+  agata:item.brace_plate.wrong синтез: 5.05 с, -17.1 LUFS, TP -1.9 dB (усиление +1.7 dB)
+  agata:item.brace_plate.wrong_dry синтез: 3.59 с, -17.2 LUFS, TP -1.9 dB (усиление +1.1 dB)
+  agata:item.key_house.wrong синтез: 3.65 с, -17.0 LUFS, TP -3.2 dB (усиление -0.5 dB)
+  agata:item.door_hinges.wrong синтез: 3.28 с, -16.9 LUFS, TP -3.5 dB (усиление -2.1 dB)
+  agata:item.chalk.wrong синтез: 2.43 с, -16.9 LUFS, TP -2.5 dB (усиление +0.9 dB)
+  agata:item.wrong_generic синтез: 1.50 с, -16.9 LUFS, TP -4.1 dB (усиление -0.5 dB)
+  agata:item.mitten.wrong синтез: 2.49 с, -16.9 LUFS, TP -3.8 dB (усиление +1.2 dB)
+  pelageya:R1d.pelageya.day2 синтез: 6.57 с, -16.9 LUFS, TP -4.3 dB (усиление -0.8 dB)
+  pelageya:R1d.pelageya.wait_water синтез: 9.60 с, -16.9 LUFS, TP -3.2 dB (усиление -1.7 dB)
+  pelageya:R1d.pelageya.lantern синтез: 3.99 с, -17.0 LUFS, TP -3.3 dB (усиление -0.3 dB)
+  pelageya:R1d.pelageya.to_boat синтез: 3.02 с, -16.8 LUFS, TP -6.5 dB (усиление -3.1 dB)
+  pelageya:R3.exit_R2.closed синтез: 3.06 с, -17.0 LUFS, TP -5.4 dB (усиление -1.0 dB)
+  pelageya:R3.exit_R2.closed_morning синтез: 4.07 с, -17.0 LUFS, TP -5.9 dB (усиление -1.5 dB)
+  tikhon:H1.after_mirror.tikhon_1 синтез: 5.44 с, -16.9 LUFS, TP -4.5 dB (усиление +0.5 dB)
+  tikhon:H1.after_mirror.tikhon_2 синтез: 12.15 с, -17.0 LUFS, TP -3.7 dB (усиление -1.2 dB)
+  tamara:O4.tamara.after синтез: 6.32 с, -17.0 LUFS, TP -3.9 dB (усиление -2.0 dB)
+  mitya:O4.mitya.after синтез: 3.12 с, -17.0 LUFS, TP -3.7 dB (усиление -1.4 dB)
+  nina:O3.nina.before синтез: 3.28 с, -16.9 LUFS, TP -9.1 dB (усиление -3.1 dB)
+  nina:O3.nina.after синтез: 4.06 с, -17.0 LUFS, TP -6.5 dB (усиление -0.2 dB)
+  ilya:O3.ilya.after синтез: 4.27 с, -17.0 LUFS, TP -6.1 dB (усиление -4.2 dB)
+  ilya:O3.ilya.boat_drawing синтез: 5.34 с, -17.1 LUFS, TP -4.3 dB (усиление -2.8 dB)
+  ulyana:O3.ulyana.after синтез: 4.14 с, -17.3 LUFS, TP -2.1 dB (усиление +5.3 dB)
+  ilya_wife:O3.ilya_wife.after синтез: 4.53 с, -17.0 LUFS, TP -4.8 dB (усиление -0.4 dB)
+  nina:O3.notebooks.school_path_late синтез: 4.57 с, -17.1 LUFS, TP -6.9 dB (усиление -0.2 dB)
+  ilya:E5.windlass.voice_reply_lower синтез: 1.12 с, -17.0 LUFS, TP -7.8 dB (усиление -5.4 dB)
+  ilya:E5.windlass.voice_reply_stop синтез: 0.83 с, -17.0 LUFS, TP -7.1 dB (усиление -6.3 dB)
+  ilya:E5.windlass.voice_reply_raise синтез: 0.75 с, -16.9 LUFS, TP -7.2 dB (усиление -5.3 dB)
+  ilya:E5.windlass.bump синтез: 4.06 с, -17.0 LUFS, TP -4.5 dB (усиление -3.4 dB)
+  pelageya:R1d.pelageya.shuttle синтез: 5.10 с, -17.0 LUFS, TP -5.2 dB (усиление -2.4 dB)
+  pavel:M4d.pavel.after_bridge синтез: 8.28 с, -17.0 LUFS, TP -5.2 dB (усиление -2.3 dB)
+  nina:O1d.nina.after синтез: 4.31 с, -16.9 LUFS, TP -6.5 dB (усиление -1.0 dB)
+  ulyana:O1d.ulyana.after синтез: 2.82 с, -16.9 LUFS, TP -2.6 dB (усиление +2.5 dB)
+  ulyana:O1d.ulyana.hat_q синтез: 5.58 с, -17.0 LUFS, TP -2.0 dB (усиление +5.4 dB)
+  ulyana:O1d.ulyana.hat_b синтез: 6.27 с, -17.2 LUFS, TP -1.7 dB (усиление +3.5 dB)
+  ulyana:O1d.ulyana.lights_q синтез: 5.79 с, -17.3 LUFS, TP -1.9 dB (усиление +4.9 dB)
+  ulyana:O1d.ulyana.lights_b синтез: 8.66 с, -17.0 LUFS, TP -1.7 dB (усиление +4.2 dB)
+  mitya:O4.mitya.fish_a синтез: 4.03 с, -16.9 LUFS, TP -4.3 dB (усиление -1.9 dB)
+  mitya:O4.mitya.fish_bye синтез: 3.61 с, -17.0 LUFS, TP -5.2 dB (усиление -3.6 dB)
+  ulyana:O1d.ulyana.ttt_a синтез: 4.53 с, -17.0 LUFS, TP -2.2 dB (усиление +3.9 dB)
+  ulyana:O1d.ulyana.ttt_bye синтез: 3.90 с, -17.2 LUFS, TP -1.9 dB (усиление -0.4 dB)
+  nina:H1d.nina.after синтез: 4.17 с, -16.9 LUFS, TP -6.5 dB (усиление -1.3 dB)
+  tamara:O4.letters_bag.use синтез: 6.80 с, -17.0 LUFS, TP -4.2 dB (усиление -1.0 dB)
+  ulyana:O1q.village_map.ulyana_ours синтез: 4.76 с, -17.1 LUFS, TP -1.9 dB (усиление +5.5 dB)
+  ulyana:O1q.village_map.ulyana_route синтез: 7.49 с, -17.4 LUFS, TP -1.9 dB (усиление +3.6 dB)
+  ulyana:O1q.village_map.ulyana_apple синтез: 3.78 с, -17.2 LUFS, TP -2.0 dB (усиление +3.5 dB)
+  mech.village_map.place_school синтез: 0.81 с, -17.0 LUFS, TP -6.4 dB (усиление -2.3 dB)
+  mech.village_map.place_house синтез: 1.13 с, -16.4 LUFS, TP -5.2 dB (усиление -4.1 dB)
+  mech.village_map.place_garden синтез: 0.88 с, -17.0 LUFS, TP -4.9 dB (усиление -2.9 dB)
+  ulyana:mech.village_map.wrong синтез: 5.50 с, -17.0 LUFS, TP -1.7 dB (усиление +2.8 dB)
+  ulyana:mech.village_map.wrong_again синтез: 2.57 с, -17.2 LUFS, TP -2.0 dB (усиление +4.0 dB)
+  ilya:O4q.workshop.mitya_cramped синтез: 2.78 с, -17.1 LUFS, TP -5.8 dB (усиление -4.1 dB)
+  ilya:O4q.workshop.ilya_invite синтез: 2.92 с, -17.0 LUFS, TP -5.2 dB (усиление -3.0 dB)
+  ilya:O4q.workshop.ilya_after синтез: 4.09 с, -17.0 LUFS, TP -6.1 dB (усиление -3.8 dB)
+  ilya:O4q.workshop.ilya_third синтез: 2.03 с, -17.0 LUFS, TP -6.8 dB (усиление -4.7 dB)
+  ilya:O4q.workshop.ilya_ulya синтез: 5.21 с, -17.0 LUFS, TP -4.7 dB (усиление -3.2 dB)
+  ilya:mech.bench.wedge_loose синтез: 3.21 с, -17.0 LUFS, TP -4.1 dB (усиление -1.8 dB)
+  ilya:mech.bench.fitted синтез: 3.08 с, -17.0 LUFS, TP -4.5 dB (усиление -2.4 dB)
+  mitya:mech.bench.stopped синтез: 1.41 с, -17.0 LUFS, TP -5.0 dB (усиление -2.8 dB)
+  ilya:mech.bench.screw_set синтез: 2.98 с, -17.0 LUFS, TP -7.1 dB (усиление -4.2 dB)
+  ilya:mech.bench.tightened синтез: 1.71 с, -17.0 LUFS, TP -2.5 dB (усиление +0.0 dB)
+  ilya:mech.bench.checked синтез: 3.42 с, -16.9 LUFS, TP -6.5 dB (усиление -4.6 dB)
+  agata:item.key_house синтез: 1.78 с, -16.9 LUFS, TP -4.6 dB (усиление +0.0 dB)
+  agata:item.letter_tamara синтез: 2.36 с, -17.0 LUFS, TP -7.4 dB (усиление -1.0 dB)
+  agata:item.pocket_watch синтез: 3.10 с, -17.0 LUFS, TP -4.9 dB (усиление +0.8 dB)
+  agata:item.mitten  синтез: 3.62 с, -17.0 LUFS, TP -3.1 dB (усиление -1.1 dB)
+  item.door_hinges   синтез: 2.87 с, -17.0 LUFS, TP -5.2 dB (усиление -3.1 dB)
+  item.photo_bridge  синтез: 3.61 с, -17.0 LUFS, TP -3.2 dB (усиление -1.0 dB)
+  item.drawing_ilya  синтез: 3.39 с, -17.0 LUFS, TP -4.0 dB (усиление -1.8 dB)
+  item.plan_crossing синтез: 4.33 с, -16.9 LUFS, TP -4.9 dB (усиление -2.3 dB)
+  item.brace_plate   синтез: 2.88 с, -17.0 LUFS, TP -3.3 dB (усиление -2.3 dB)
+  item.chalk         синтез: 1.95 с, -17.0 LUFS, TP -5.0 dB (усиление -2.6 dB)
+  agata:examine.key_house синтез: 3.89 с, -16.9 LUFS, TP -5.4 dB (усиление +0.9 dB)
+  agata:examine.door_drawing синтез: 5.47 с, -16.9 LUFS, TP -1.8 dB (усиление -0.1 dB)
+  agata:examine.door_hinges синтез: 4.22 с, -16.9 LUFS, TP -2.0 dB (усиление +0.6 dB)
+  agata:examine.photo_bridge синтез: 8.51 с, -16.9 LUFS, TP -2.6 dB (усиление +0.3 dB)
+  agata:examine.drawing_ilya синтез: 5.36 с, -17.0 LUFS, TP -4.7 dB (усиление -1.6 dB)
+  agata:examine.plan_crossing синтез: 6.55 с, -16.9 LUFS, TP -4.4 dB (усиление +0.0 dB)
+  agata:examine.chalk синтез: 3.76 с, -16.9 LUFS, TP -1.8 dB (усиление +0.8 dB)
+  agata:examine.mitten синтез: 4.24 с, -16.8 LUFS, TP -5.7 dB (усиление -2.4 dB)
+  agata:examine.mirror_mill синтез: 6.03 с, -16.9 LUFS, TP -2.6 dB (усиление -0.3 dB)
+  agata:examine.journal_manager синтез: 4.81 с, -17.2 LUFS, TP -1.9 dB (усиление +1.6 dB)
+  agata:examine.key_sluice синтез: 6.07 с, -17.0 LUFS, TP -2.1 dB (усиление -0.9 dB)
+  agata:examine.tar  синтез: 5.04 с, -17.0 LUFS, TP -2.0 dB (усиление -0.4 dB)
+  agata:examine.clamp синтез: 4.25 с, -17.0 LUFS, TP -3.1 dB (усиление -0.8 dB)
+  agata:examine.school_ribbon синтез: 3.76 с, -16.9 LUFS, TP -3.9 dB (усиление +0.1 dB)
+  agata:examine.pocket_watch синтез: 5.19 с, -17.0 LUFS, TP -2.9 dB (усиление -0.3 dB)
+  mech.nina_mirror.watch_hold синтез: 6.90 с, -17.0 LUFS, TP -4.0 dB (усиление -1.8 dB)
+  agata:mech.nina_mirror.watch_slot_empty синтез: 3.85 с, -17.0 LUFS, TP -2.7 dB (усиление -0.5 dB)
+  agata:mech.nina_mirror.wrong_item синтез: 3.20 с, -17.2 LUFS, TP -2.4 dB (усиление -0.3 dB)
+  agata:mech.nina_mirror.watch_hint синтез: 4.29 с, -17.0 LUFS, TP -5.0 dB (усиление -0.4 dB)
+  agata:mech.plate.count_1 синтез: 0.65 с, -16.9 LUFS, TP -7.4 dB (усиление -6.0 dB)
+  agata:mech.plate.count_2 синтез: 0.68 с, -17.0 LUFS, TP -6.6 dB (усиление -5.0 dB)
+  agata:mech.plate.brace_jumped синтез: 5.20 с, -16.9 LUFS, TP -2.7 dB (усиление -1.0 dB)
+  mech.knot.under    синтез: 2.57 с, -17.0 LUFS, TP -5.2 dB (усиление -2.3 dB)
+  mech.knot.around   синтез: 2.58 с, -17.2 LUFS, TP -4.6 dB (усиление -2.6 dB)
+  mech.knot.through  синтез: 2.00 с, -17.0 LUFS, TP -6.3 dB (усиление -4.7 dB)
+  mech.office_mirror.schedule_title синтез: 1.15 с, -17.0 LUFS, TP -2.9 dB (усиление -1.6 dB)
+  mech.office_mirror.sig_one синтез: 3.95 с, -17.0 LUFS, TP -4.2 dB (усиление -3.0 dB)
+  mech.office_mirror.sig_two синтез: 2.32 с, -17.0 LUFS, TP -3.4 dB (усиление -2.3 dB)
+  mech.office_mirror.sig_long синтез: 5.00 с, -17.1 LUFS, TP -4.4 dB (усиление -2.1 dB)
+  agata:mech.shutter.stuck синтез: 4.43 с, -17.0 LUFS, TP -3.1 dB (усиление -2.2 dB)
+  agata:mech.shutter.dropped синтез: 3.18 с, -16.9 LUFS, TP -4.3 dB (усиление -2.3 dB)
+  mech.crossing.hint синтез: 6.22 с, -17.1 LUFS, TP -5.0 dB (усиление -3.0 dB)
+  mech.office_mirror.wedges_hint синтез: 6.41 с, -17.0 LUFS, TP -3.7 dB (усиление -2.3 dB)
+  agata:mech.office_mirror.wedge_slipped синтез: 4.41 с, -17.1 LUFS, TP -1.8 dB (усиление +1.5 dB)
+  pavel:mech.sluice.slipped синтез: 6.03 с, -17.0 LUFS, TP -5.3 dB (усиление -1.0 dB)
+  ulyana:mech.ttt.win синтез: 4.49 с, -17.1 LUFS, TP -1.9 dB (усиление -0.6 dB)
+  ulyana:mech.ttt.lose синтез: 2.92 с, -17.0 LUFS, TP -4.4 dB (усиление -0.6 dB)
+  ulyana:mech.ttt.draw синтез: 3.39 с, -17.1 LUFS, TP -2.1 dB (усиление +2.7 dB)
+  tikhon:mech.rhythm.good_1 синтез: 2.50 с, -17.0 LUFS, TP -3.7 dB (усиление -1.2 dB)
+  tikhon:mech.rhythm.good_2 синтез: 4.42 с, -17.2 LUFS, TP -5.1 dB (усиление -1.7 dB)
+  tikhon:mech.rhythm.miss_1 синтез: 3.47 с, -17.0 LUFS, TP -5.4 dB (усиление +0.0 dB)
+  tikhon:mech.rhythm.miss_2 синтез: 2.28 с, -17.1 LUFS, TP -6.2 dB (усиление -2.6 dB)
+  mitya:mech.fish.early синтез: 2.43 с, -17.0 LUFS, TP -3.4 dB (усиление +1.2 dB)
+  mitya:mech.fish.late синтез: 2.85 с, -17.0 LUFS, TP -3.7 dB (усиление -1.9 dB)
+  mitya:mech.fish.snap синтез: 3.09 с, -17.1 LUFS, TP -2.4 dB (усиление +2.6 dB)
+  mitya:mech.fish.escaped синтез: 2.61 с, -17.0 LUFS, TP -4.3 dB (усиление -2.9 dB)
+  agata:mech.fish.caught_agata синтез: 3.28 с, -17.0 LUFS, TP -3.8 dB (усиление -3.1 dB)
+  mitya:mech.fish.caught синтез: 5.87 с, -17.0 LUFS, TP -4.0 dB (усиление -1.9 dB)
+[EN_full] синтезировано 205, переобработано 0, ошибок 0; символов текста 13550; списано кредитов (character-cost): 5961, изменение счётчика подписки: 5961
   предупреждение: H2d.nina_mirror.watch_again: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: M02_6: устарела (нет в сценах) — игра покажет только субтитры
   предупреждение: mitya:O4.mitya_board.use: устарела (текст изменён) — игра покажет только субтитры
