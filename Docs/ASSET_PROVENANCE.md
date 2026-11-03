@@ -195,6 +195,11 @@ R2_fg_rope_v3 (канат сквозь кольцо, правка R2_fg_rope_v2 
 `game/assets/sfx/sfx_door_bolt_stiff.wav` (срез тишины, ВЧ 40 Гц, пик −1 dBFS — функции tools/prepare_sfx.py), `sfx.json` door_bolt.
 Права — по подписке ElevenLabs проекта (как голоса).
 
+## Партия 18 — ChatGPT (imagegen), 03.11.2026
+- **Жесты Тихона** (`assets/incoming/Tikhon_gesture_ear.png`, `Tikhon_gesture_belly.png`, 1254×1254; README, промпты и проверка — `assets/incoming/_meta_p18/`): правка основы `tikhon_assembled.png` (та же поза, одна лапка в жесте; вне правки пиксели основы — сверено: хвост и ноги без изменений), заказ Директора через его подписку. В игре — `game/assets/characters/tikhon/gesture_{ear,belly}.png` (512, Lanczos).
+- **Плита у поворота без каната** (`game/assets/rooms/Z3/state_plate_ring_dusk.png`) — не генерация: ретушь слоя партии 17 (`tools/retouch/Z3_plate_no_rope.py`), 0 кредитов.
+- **Звуки меню** (`game/assets/sfx/sfx_ui_hover_wood.wav`, `sfx_ui_click_wood.wav`) — ElevenLabs text-to-sound (запрос SFX2, выбор Директора А/А), обрезка и нормализация в игре.
+
 ## Партия 17 — ChatGPT (imagegen), 02.11.2026
 - **Кольцо на борту по глубине** (`assets/incoming/R2_ring_back.png`, `R2_ring_front.png`; README и промпты — `assets/incoming/_meta_p17/`): разделение железа проушины партии 15 (R2_fg_rope_v4) на заднюю дугу и передние дуги с пластиной, скрытая часть дуги дорисована. Канат для переправы — не генерация: `game/assets/rooms/R2/fg_rope_clean.png` из v4 без железа, железо заменено тем же канатом на виток дальше (`tools/make_rope_clean.py`), 0 кредитов.
 - **Плита с кольцом и узлом у поворота** (`assets/incoming/Z3_state_plate_rope_dusk.png`): заказ Директора через его подписку, по основе Z3 (партии 3, 7).

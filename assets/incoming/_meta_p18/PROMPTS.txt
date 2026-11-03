@@ -1,0 +1,20 @@
+Инструмент: встроенный imagegen. В итоговую сборку вошли исправленный жест уха и жест живота. Неудачный ранний вариант с противоположной лапкой не используется.
+
+=== Tikhon_gesture_ear.png ===
+Use case: precise-object-edit, identity-preserve. Make the EAR SCRATCH gesture on the LEFT SIDE OF THE PICTURE.
+Image1 originaltransparent1254x1254 Tikhon is the EDIT TARGET. Image2 is ANNOTATED INSTRUCTION REFERENCE ONLY, with RED marks indicating which paw/ear to move and CYAN indicating whichpaw muststay. Do notrendertheseannotations.
+MOST IMPORTANT: lift the paw INSIDE THE RED CIRCLE, at PICTURELEFT chestcenter(265,765), up along PICTURELEFT to the ear INSIDE THE RED CIRCLE at(275,180). It must scratch BEHIND THAT SAME PICTURELEFT EAR, fingersfur touchingearbase around(235,235). The entire raised forearm should be ON THE LEFT SIDE OF THE PICTURE, x100..310. NO lifted arm on the right side ofthepicture. The CYAN-marked paw atpictureRIGHTchest(495,775) MUST STAY FOLDED EXACTLY THERE, untouched.
+Same lazy grumpy stove-keeper, not a petcat. Furry leftarm bends atelbow onleftside, reachupbehindleftear. Removeoldleftpawfromchestandrestorefurunderit. Slight pleasedsquint, closedmouth, grumpycontent expression.
+Head tips TOWARDPICTURELEFT by6degreesonly (max8), littlepressedear being scratched is PICTURELEFT. Keepidentity/muzzle/palette, no newface.
+Absolutely preserveoriginalcanvas1254x1254,originalscale,characterplacement,bodycontour,legsfeet,hugebushytailRIGHT,lighting,allotherfur. No fullspritehorizontalflip. Samefurillustration notnewposeidentity.
+Output ONE transparentRGBA fullcharacter1254x1254, NOred/cyanmarks/labels/arrow, NObackground/floorshadow/props/frame/text, noextraarms. PictureLEFTpaw scratchesPICTURELEFTear; pictureRIGHTpaw staysfoldedonchest.
+
+=== Tikhon_gesture_belly.png ===
+Use case: identity-preserve, precise-object-edit. Asset: alternate pose sprite for a painterly2D game, transparentbackground, EXACT reference squarecanvas/framing1254x1254. Reference is EDIT TARGET. Tikhon, grumpy lazy furry stove-keeper, NOT petcat. Preserveidentityandallbasepixels/stylesascloselyaspossible.
+Change ONLY the front paw on VIEWER'S RIGHT:
+The VIEWER-RIGHT frontpaw currentlyfolded onchest at x398..665,y714..845 moves DOWN and rests/scratches the round belly around(498,945), elbow/upperforearm still attached to rightshoulder. Relaxed bentpaw, gentlyraking bellyfur, PADS PRESSED AGAINST THE BELLY, so show furry BACK/SIDE ofpaw, notpalmhelduptoviewer. NO clawsvisible. Clear distinctloweredpaw gesture, noextraarm. Removeoldfoldedrightpawfromchestandfillvacatedspotwithmatchingchestfur.
+The VIEWER-LEFT paw atx170..365,y700..835 MUST stay exactlyfolded inplace. HEAD/ears/face/eyes MUST remain EXACTLY likebase, DON'Tchangeexpressionorangle. Feet,bigbushytailonright,roundbody,bottomline,furcolors/texturesandlighting unchanged. NO handonface, no rubbingtail, nofacechanges, no new limbor humanhand. Noresize,reframeorbodymovement.
+Same detailedwarm painterlyfur illustration, singlefullcharacter, transparentRGBA outsidecharacter. NO background/floorshadow/props/text/frame/collar.
+
+Сборка: сохранение исходных пикселей вне локальных областей правки; уменьшение наклона головы/верхней части поднятой лапки на3,5° по часовой стрелке с плавным сведением преобразования к нулю ниже плеча; точный холст1254×1254. Иллюстрация не рисовалась программными примитивами.
+

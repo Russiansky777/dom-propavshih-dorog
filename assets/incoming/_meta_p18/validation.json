@@ -1,0 +1,45 @@
+{
+  "ear": {
+    "outside_mask_byte_exact": true,
+    "right_paw_byte_exact": true,
+    "feet_byte_exact": true,
+    "tail_byte_exact": true,
+    "lower_body_byte_exact": true,
+    "changed_bbox": [
+      46,
+      21,
+      715,
+      880
+    ],
+    "changed_pixels": 336886,
+    "head_roll_visual_estimate_degrees": 7,
+    "generated_roll_correction_clockwise_degrees": 3.5,
+    "head_roll_visual_estimate_range_degrees": [
+      7,
+      8
+    ]
+  },
+  "belly": {
+    "head_exact": true,
+    "left_paw_exact": true,
+    "feet_exact": true,
+    "tail_exact": true,
+    "outside_mask_exact": true,
+    "changed_bbox": [
+      375,
+      639,
+      724,
+      1003
+    ],
+    "changed_pixels": 92987,
+    "mask_max": 255,
+    "registration": "none; same native1254x1254 framing"
+  },
+  "canvas": [
+    1254,
+    1254
+  ],
+  "mode": "RGBA",
+  "engine_tested": false,
+  "base_sha256": "c0c65ba68795cd05e6c69314eb8bd7348a683bfdecd14eaeb459743c5533139f"
+}

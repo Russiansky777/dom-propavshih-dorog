@@ -733,6 +733,8 @@ func _update_tone(delta: float) -> void:
 	poly.self_modulate = _tone
 	if mouth != null:
 		mouth.self_modulate = _tone
+	for gp in gesture_polys:   # the gestures in the room's light too (their fade is `modulate.a`)
+		gp.self_modulate = _tone
 
 
 ## The gesture pictures on the body's own mesh: the same polygon, the uv scaled to the picture's size, the same bones

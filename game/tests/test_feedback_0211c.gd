@@ -308,13 +308,17 @@ func _test_gesture() -> void:
 	await _finish()
 	var p := _puppet()
 	_check(p != null and String(p.get("variant")) == "", "Tikhon on his shelf in the base pose")
+	# the loaf on the chair has no gestures of its own (the pictures belong to the base pose)
 	if p == null:
 		return
-	# the mechanism with a stand-in picture (the base one) until партия 18 brings the paws
-	p.get("spec")["gestures"] = [{"image": String(p.get("spec")["image"]), "every_s": [100, 200], "hold_s": 0.4, "fade_s": 0.15}]
-	p.call("_build_gestures")
+	# партия 18: two gestures (the ear, the belly) from the data
 	var gp: Array = p.get("gesture_polys")
-	_check(gp.size() == 1, "the gesture picture built on the mesh")
+	_check(gp.size() == 2, "both gesture pictures built on the mesh: %d" % gp.size())
+	for g0 in gp:
+		_check((g0 as Polygon2D).texture != (p.get("poly") as Polygon2D).texture and (g0 as Polygon2D).modulate.a == 0.0, "a gesture of its own picture, hidden at rest")
+	for g0 in gp:
+		(g0 as Polygon2D).get_meta("spec")["hold_s"] = 0.4
+		(g0 as Polygon2D).get_meta("spec")["fade_s"] = 0.15
 	if gp.is_empty():
 		return
 	var g: Polygon2D = gp[0]
