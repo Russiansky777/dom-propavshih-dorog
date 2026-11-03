@@ -1,0 +1,29 @@
+{
+  "text": "Raise!",
+  "alignment": {
+    "characters": [
+      "R",
+      "a",
+      "i",
+      "s",
+      "e",
+      "!"
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.384,
+      0.448,
+      0.512,
+      0.576,
+      0.64
+    ],
+    "character_end_times_seconds": [
+      0.384,
+      0.448,
+      0.512,
+      0.576,
+      0.64,
+      1.04
+    ]
+  }
+}
