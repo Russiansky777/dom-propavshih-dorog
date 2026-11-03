@@ -1,425 +1,425 @@
-run 41650498378 2026-11-03T14:10:26Z requests: pipeline/requests/voice_EN_full_1.json 
+run 41652423316 2026-11-03T14:21:44Z requests: pipeline/requests/voice_EN_full_2.json 
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 140461 из 179889 символов
+план: creator (active), израсходовано 148084 из 179889 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_EN_full_1.json
-  mirror_part 1/4: 206 строк
-  задание: Директор, 2026-11-03 — английский голос целиком, часть 1/4 (mirror ru, один дубль) (потолок 220 файлов, 17924 символов)
-[EN_full] реплик в сценах запроса: 206; файлов с вариантами голосов: 206; к синтезу: 206 (17324 символов); переобработка: 0
-  M01_0   tamara    ru           TAMARA-1   eleven_v4    [surprised] Good heavens… Agata? Nina's girl! You sent your letters home through me.
-  M01_1   agata     ru           Agata      eleven_v4    [sad] I did. All year — not a word back. Not from Mama or Ilyusha.
-  M01_2   agata     ru           Agata      eleven_v4    [animated] You wrote: the flood took the bridge, the boats come back. Don't come until things change. Now you say they have. I left that very day.
-  M01_3   tamara    ru           TAMARA-1   eleven_v4    [warmly] They have, my dear. The water stayed high all year. This autumn it fell — the bridge pier at the bend appeared. Here, I sketched it from the bank.
-  M01_4   agata     ru           Agata      eleven_v4    [hesitant] That's Aunt's drawing! Aunt Dunya — Evdokia, Mama's sister… She went to Mama's just before the flood. Never came back?
-  M01_5   tamara    ru           TAMARA-1   eleven_v4    [sighs] Never did. Old friends, we are — she left me her house key, as we'd agreed. I've fed her Tikhon every Wednesday all year.
-  M01_6   tamara    ru           TAMARA-1   eleven_v4    Dunya meant to send this drawing to the district office: the plate on the pier was cracked, needed mending. Never had the chance.
-  M01_7   tamara    ru           TAMARA-1   eleven_v4    [sighs] These letters are for Olkhovka. A whole sack in a year. Yours to your mama, too. No one to take them.
-  M01_8   tamara    ru           TAMARA-1   eleven_v4    [slowly] Take the key. Dunya's house is waiting for you.
-  M01_9   agata     ru           Agata      eleven_v4    [surprised] Thank you, Tamara. But I'll go down to the water first. Ask the boatwoman myself what devilry keeps bringing the boats back.
-  M02_0   agata     ru           Agata      eleven_v4    [hesitant] I need to get to Olkhovka. Will you take me across?
-  M02_1   pelageya  ru           PELAGEYA   eleven_v4    [firm] Ah, I can't. Been trying for a year.
-  M02_2_then0 pelageya  ru           PELAGEYA   eleven_v4    And the river's been in mist all year. Can barely see the far bank — not a light.
-  M02_2   pelageya  ru           PELAGEYA   eleven_v4    [firm] I row towards the far bank, but come out at my own pier every time.
-  M02_3   pelageya  ru           PELAGEYA   eleven_v4    [firm] We tried the ice in winter. Came out on our own bank. It's not the water. There's no road.
-  M02_4   agata     ru           Agata      eleven_v4    [surprised] Even over the ice?… What about the rope?
-  M02_5   pelageya  ru           PELAGEYA   eleven_v4    The bridge handrail rope. The bridge was at the bend: flood took the spans, left the stone piers. Far end is still over there. This end was on the near pier's plate — that's where the road ran. I tied it to my rope clamp instead. It holds, but there's no road.
-  M02_7_then0 pelageya  ru           PELAGEYA   eleven_v4    The mill sluice holds back that water. Ask Pavel at the mill about it.
-  M02_7   pelageya  ru           PELAGEYA   eleven_v4    Pull it — feels snagged on a root: no tug, no slack. The plate's deep underwater. Cracked, too. Dunya meant to mend it. Can't reach it down there.
-  M02_8   pelageya  ru           PELAGEYA   eleven_v4    [sad] My Mitya's there. Seventeen. Used to light the lantern on that pier every evening, sleep in the shed. That's where he stayed.
-  M03_0   tikhon    ru           CAT-2      eleven_v4    [sarcastic] Don't put wet things on dry ones.
-  M03_1_then0 tikhon    ru           CAT-2      eleven_v4    [sarcastic] Tikhon. Keeper of the stove. A demanding post: lie here and see it doesn't go cold.
-  M03_1_then1 agata     ru           Agata      eleven_v4    [curious] Are you here alone?
-  M03_1   agata     ru           Agata      eleven_v4    [surprised] Oh!… Who are you, then?
-  M03_2   tikhon    ru           CAT-2      eleven_v4    [sarcastic] The stove's here too, of course.
-  M03_3   agata     ru           Agata      eleven_v4    [hesitant] What did Aunt Dunya tell you when she left?
-  M03_4   tikhon    ru           CAT-2      eleven_v4    Went to her sister's. Said she'd be back by evening.
-  M03_5   agata     ru           Agata      eleven_v4    [thoughtful] It's been a year.
-  M03_6_then0 tikhon    ru           CAT-2      eleven_v4    Dunya always said things remember their place. I remember mine — by the stove.
-  M03_6   tikhon    ru           CAT-2      eleven_v4    [short pause] It's a long evening.
-  M03_7_then0 agata     ru           Agata      eleven_v4    [chuckling] No, Tikhon. Not Wednesday.
-  M03_7   tikhon    ru           CAT-2      eleven_v4    [sarcastic] Tamara brings food on Wednesdays. Is it Wednesday today?
-  M03_8   tikhon    ru           CAT-2      eleven_v4    [playful] Now you've lit the stove, hang my shelf, will you? There, on the sleeping ledge. View of both stove and pot from there.
-  M03_9   agata     ru           Agata      eleven_v4    [playful] Why not do it yourself?
-  M03_10  tikhon    ru           CAT-2      eleven_v4    [sarcastic] Hanging things with my paws isn't my business. Lying on top is my business.
-  M04_0   agata     ru           Agata      eleven_v4    [thoughtful] Aunt never had the chance… Never mind. I'll finish it for her.
-  M05_0   agata     ru           Agata      eleven_v4    [surprised] Our school!… But how…
-  M06_0   agata     ru           Agata      eleven_v4    [curious] So they have been studying here all this time!
-  M07_0   agata     ru           Agata      eleven_v4    [warmly] Ilyusha always drew boats with smoke. Though what boat gives off smoke?
-  M07_1   agata     ru           Agata      eleven_v4    [slowly] "To whoever comes through this door. A road is held from both ends. We hold the far end. The near end is the plate on the pier by the bend: underwater, with a crack in it. Dunya has a bracket for it on her workbench.
-  M07_2   agata     ru           Agata      eleven_v4    Fasten the rope only to its ring — tying it to the pier's stone won't hold. We tried on our side. Our end runs through the old ring on the far pier.
-  M07_3   agata     ru           Agata      eleven_v4    The mill sluice holds back the water; its lever is in the manager's office. Once the rope is fastened, signal three flashes from the pier."
-  M07_4   agata     ru           Agata      eleven_v4    [thoughtful] The door on its own hinges remembered its doorway. Then the rope on its own ring will remember the bridge.
-  M07_5   agata     ru           Agata      eleven_v4    [thoughtful] Piers standing, rope whole. Put the near end back on the ring — the boat will get through.
-  M07_6   agata     ru           Agata      eleven_v4    [excited] "We hold the far end." I'm not the only one looking for a way out!
-  M08_0   agata     ru           Agata      eleven_v4    The door brought back the classroom, but the path still vanishes. To reach all of Olkhovka, I must restore the bridge road.
-  M09_0   pavel     ru           Павел      eleven_v4    [chuckling] Dunya's niece, you say?… Well… You do look like her. Same frown.
-  M09_1   agata     ru           Agata      eleven_v4    Pavel, how do we drain the water? The school plan says the mill sluice holds it back by the pier.
-  M09_2   pavel     ru           Павел      eleven_v4    [thoughtful] Need the lever. It's on a nail in the office. Evening before the flood, the manager shut the sluice, hung it up, locked the office from outside — off home to Olkhovka. That night the water came.
-  M09_3   pavel     ru           Павел      eleven_v4    Water hit, twisted the door, dropped the bolt into its brackets inside. I broke the lock off the first week — door still won't move.
-  M09_4   pavel     ru           Павел      eleven_v4    Can't feel for the bolt with a hook through the gap — can't see where it is. Oak door on forged hinges. No breaking it down.
-  M09_5   agata     ru           Agata      eleven_v4    Didn't you try again?
-  M09_6   pavel     ru           Павел      eleven_v4    I tried. Crowbar just splinters the jamb. Window's narrow, under the ceiling — can't get through. Scrape blindly with the hook, you drive the bolt deeper into its brackets. So there it stands.
-  M09_7   pavel     ru           Павел      eleven_v4    Pelageya asked me to drain it, but the lever's still there. Sluice shut a year. Water higher than the manager left it. I won't break it without the lever.
-  M09s_0  agata     ru           Agata      eleven_v4    There's the office mirror, in the entrance hall. Dunya has an empty stand for it. The door on its own hinges opened into class… Perhaps the mirror will show where it used to hang? The stand should hold its frame. I must tell Pavel.
-  M09b_0  agata     ru           Agata      eleven_v4    Pavel, Dunya has an empty stand in her workshop — just right for your mirror. And your mill bell hangs there.
-  M09b_1  pavel     ru           Павел      eleven_v4    [thoughtful] The bell… I've heard it. Hanging at Dunya's, but ringing here, by the office. Thought I'd lost my mind.
-  M09b_2  agata     ru           Agata      eleven_v4    So it's true?… The stand is heavy, nailed to the floor. Can't bring it here. I'll have to watch from the workshop.
-  M09b_3  pavel     ru           Павел      eleven_v4    Ring from there. Her bell can be heard here. Take the mirror from the entrance hall.
-  M09b_4  pavel     ru           Павел      eleven_v4    Ring once — I'll bring my lantern to the gap. When you see the light in the mirror, I'll guide the hook. Signal as we do: one — go; two — stop; a long ring — raise. Follow me.
-  M10_0   tikhon    ru           CAT-2      eleven_v4    [grumbling] Dunya's contrivances again. Just dozed off — now they'll start clanging.
-  M10_1_then0 agata     ru           Agata      eleven_v4    Did Aunt keep you awake, too?
-  M10_1_then1 tikhon    ru           CAT-2      eleven_v4    She'd hammer in a nail, then whisper: don't wake up.
-  M10_1_then2 agata     ru           Agata      eleven_v4    She was looking after you.
-  M10_1_then3 tikhon    ru           CAT-2      eleven_v4    Loudly.
-  M10_1   agata     ru           Agata      eleven_v4    [playful] Stop grumbling. It's for a good reason.
-  M11_0   agata     ru           Agata      eleven_v4    He's there now! Right now!
-  M12_0   agata     ru           Agata      eleven_v4    [excited] The bolt's out! The door's finally moved!
-  M13a_0  pavel     ru           Павел      eleven_v4    [animated] I heard your bell! I did! I'd have been stuck another year without it.
-  M13_0   pavel     ru           Павел      eleven_v4    [concerned] Drain it, and the pond will be empty. We'll need it full again by winter, or Zarechye won't be able to grind its grain.
-  M13_1_family agata     ru           Agata      eleven_v4    Please help, Pavel. Mother and my brother are stranded over there.
-  M13_1_promise agata     ru           Agata      eleven_v4    [warmly] We'll refill the pond by winter. I swear.
-  M13_2   pavel     ru           Павел      eleven_v4    [sighs] Ah… Very well. To the sluice, then.
-  M14_0   pavel     ru           Павел      eleven_v4    By evening, once the water's down, that plate of yours will show on the pier.
-  M14_1   pavel     ru           Павел      eleven_v4    Fasten the rope to its ring — there'll be a road. Off you go, for now.
-  M15a_0  agata     ru           Agata      eleven_v4    [thoughtful] Three minutes for me, a whole hour for her. One minute here — twenty there.
-  M15a_1  agata     ru           Agata      eleven_v4    I sleep, and a week goes by for her.
-  M15a_2  agata     ru           Agata      eleven_v4    Mama's alive.
-  M15a_3  tikhon    ru           CAT-2      eleven_v4    [thoughtful] [short pause] Nina. All grey.
-  M15s_0  agata     ru           Agata      eleven_v4    [excited] It fits! Dunya's bracket is in its place.
-  M15s_1  pelageya  ru           PELAGEYA   eleven_v4    I'll take the rope off the clamp and row it to the pier now. Wait; I won't be long.
-  M15s_2  narrator  ru           ZAKADR     eleven_v4    Pelageya returns to her pier and takes the rope off the clamp. She rows to the bridge pier and passes up the rope's end to the ring on the plate.
-  M15_0   narrator  ru           ZAKADR     eleven_v4    The rope draws taut. Not as it did on the clamp all year. As though a living person has taken hold of the far end.
-  M15_1   pelageya  ru           PELAGEYA   eleven_v4    That's how it used to be fastened.
-  M15_2   agata     ru           Agata      eleven_v4    [excited] They're holding it! As though someone's holding the far end! A road again — from both ends!
-  M16s_0  narrator  ru           ZAKADR     eleven_v4    For the first time in a year, the mist lifts from the far bank, though it still lies over the river. White roofs, snow along the bank.
-  M16s_1  pelageya  ru           PELAGEYA   eleven_v4    [surprised] Look! Black as pitch there all year… Now — snow!
-  M16s_2  pelageya  ru           PELAGEYA   eleven_v4    Now they'll see our light, too. Same signals as the bell, but three isn't for work. Three means "alive." Anyone will answer that.
-  M16_0_then0 pelageya  ru           PELAGEYA   eleven_v4    I'll take the boat back to the plate at the bend. Come there. That's where we'll test it.
-  M16_0   pelageya  ru           PELAGEYA   eleven_v4    They answered! Not a single light for a year!
-  M17_0   pelageya  ru           PELAGEYA   eleven_v4    We'll test it properly. I'll put her ring on the rope and send her empty. The current will carry her. I'll keep the hauling line in my hands — see what happens.
-  M17_1   narrator  ru           ZAKADR     eleven_v4    The current takes the boat. Its ring slides along the rope; the empty boat enters the mist. All year it came back to its own pier. Now it goes straight. The hauling line tugs — once, then again.
-  M17_2   agata     ru           Agata      eleven_v4    [surprised] It isn't turning back! It's following the rope!
-  M17_3   pelageya  ru           PELAGEYA   eleven_v4    [excited] They're pulling. Look — pulling!
-  M17_4   narrator  ru           ZAKADR     eleven_v4    Pelageya hauls in the line and brings the boat back. A ribbon lies on its seat.
-  M17_5   pelageya  ru           PELAGEYA   eleven_v4    [excited] Didn't come back by herself — I had to haul her in! Someone's holding their end, then.
-  M17_6   agata     ru           Agata      eleven_v4    [excited] Mama's ribbon! She used to weave it into my braid on feast days.
-  M17_7   agata     ru           Agata      eleven_v4    It's Mama! She knows I'm here!
-  M18p_0  narrator  ru           ZAKADR     eleven_v4    Mist. The ring creaks along the rope, the boat behind it. It no longer turns back. Snow falls on the wet boards.
-  M18p_1  pelageya  ru           PELAGEYA   eleven_v4    Won't be brought back now. We're following the rope.
-  M18p_2  agata     ru           Agata      eleven_v4    Will I really reach Mother?
-  M18p_3  pelageya  ru           PELAGEYA   eleven_v4    It's the rope carrying us, not the boat. They're holding the far end.
-  M18p_4  pelageya  ru           PELAGEYA   eleven_v4    [reassuring] Hold the ring. Don't let go.
-  M18_0   narrator  ru           ZAKADR     eleven_v4    A man with a lantern stands by the clamp on the far pier. Bearded, grey in his hair. Pelageya's hands tremble.
-  M18_1   mitya     ru           МИТЯ       eleven_v4    [surprised] Mama?
-  M18_2   pelageya  ru           PELAGEYA   eleven_v4    [voice breaking] Mitya?… My Mitya!
-  M18_3   narrator  ru           ZAKADR     eleven_v4    Pelageya climbs from the boat onto the pier and draws her son's head to her shoulder. Grey in his beard — she still cannot believe it.
-  M18_4   mitya     ru           МИТЯ       eleven_v4    I'm thirty-seven now, Mama. Twenty years I've come here every evening. Never saw one light on your bank.
-  M18_5   pelageya  ru           PELAGEYA   eleven_v4    [crying] Only a year for us. One year, Mitya. Rowed towards you day after day. Always came back to my own pier.
-  M18_6   mitya     ru           МИТЯ       eleven_v4    I kept lighting the lantern, every evening. So you'd know where to look for me.
-  M18_7   pelageya  ru           PELAGEYA   eleven_v4    [warmly] You're almost my age now. And I kept waiting for my boy.
-  M18_8   mitya     ru           МИТЯ       eleven_v4    [surprised] Agata? Nina saw you by Dunya's stove in the little mirror. Gave me the ribbon: send it if the lights come. She's waiting for you.
-  M18_9   narrator  ru           ZAKADR     eleven_v4    Pelageya still holds Mitya's sleeve. At last he lifts his lantern and starts up towards the street. Agata follows the light. Pelageya stays by the boat.
-  M19_0   narrator  ru           ZAKADR     eleven_v4    Snow, lit windows. Mitya walks ahead with the lantern. At the last house, he knocks hard on a shutter.
-  M19_1   mitya     ru           МИТЯ       eleven_v4    [animated] Ilya! Ilya, come out — your sister's here!
-  M19_2   narrator  ru           ZAKADR     eleven_v4    On the next house's porch stands a grey-haired woman in a shawl. She saw the three flashes from her window.
-  M19_3   agata     ru           Agata      eleven_v4    [sad] Mama.
-  M19_4   narrator  ru           ZAKADR     eleven_v4    [warmly] Nina embraces Agata right there on the porch. Tears well in her eyes. For a long time she does not let go.
-  M19_5   nina      ru           НИНА       eleven_v4    [warmly] Come into the warmth, my girl. You're covered in snow.
-  M19_6   agata     ru           Agata      eleven_v4    The very same clock.
-  M19c_0  agata     ru           Agata      eleven_v4    The hands raced in the mirror. Here they keep time with mine.
-  M19c_1  narrator  ru           ZAKADR     eleven_v4    Nina sets a little wooden-framed mirror on the table.
-  M19c_2  nina      ru           НИНА       eleven_v4    Hung above Dunya's stove. She was bringing it to me as a gift that day. It stayed here. Shows her stove.
-  M19c_3  nina      ru           НИНА       eleven_v4    You appeared in it three weeks ago. Slept by her stove a whole week, with Tikhon beside you.
-  H1.stove.use narrator  ru           ZAKADR     eleven_v4    There was dry firewood stacked nearby. It caught at once in the stove.
-  H1.stove.look narrator  ru           ZAKADR     eleven_v4    A stove with a sleeping ledge — Tikhon's place. Old shelf mounting holes remain in the whitewashed side.
-  H1.stove.look_settled narrator  ru           ZAKADR     eleven_v4    [animated] The stove burns steadily; the sleeping ledge is dry. Tikhon has settled down — no shifting him before morning now.
-  H1.shutter.use narrator  ru           ZAKADR     eleven_v4    The shutter opens, letting more light into the room.
-  H1.shutter.look narrator  ru           ZAKADR     eleven_v4    A heavy wooden shutter at the window.
-  H1.scarf.use narrator  ru           ZAKADR     eleven_v4    The shawl can dry on the hook by the door. That's better.
-  H1.scarf.look narrator  ru           ZAKADR     eleven_v4    The shawl is soaked through. I'll hang it up to dry.
-  H1.tikhon.look narrator  ru           ZAKADR     eleven_v4    Tikhon is on duty beside the stove, looking as though it couldn't manage without him.
-  H1.tikhon.prompt narrator  ru           ZAKADR     eleven_v4    What shall I ask Tikhon?
-  H1.photo.prompt narrator  ru           ZAKADR     eleven_v4    Where shall I put the photograph?
-  H1.cups.look narrator  ru           ZAKADR     eleven_v4    One blue, one white. Both washed clean, waiting on the windowsill.
-  H1.shelf.prompt narrator  ru           ZAKADR     eleven_v4    Tikhon looks from the shelf to the stove. That's where its mounts are. Shall I hang it for him?
-  H1.shelf.look narrator  ru           ZAKADR     eleven_v4    The unmounted shelf was lying under the shawl on the sleeping ledge. Its mounts are by the stove.
-  H1.shelf.look_wet narrator  ru           ZAKADR     eleven_v4    The unmounted shelf is on the sleeping ledge, under the wet shawl. The shawl must come off first.
-  H1.shelf.look_done narrator  ru           ZAKADR     eleven_v4    Shelf hung, mat laid out. Tikhon inspected it — and approved.
-  H2.bench.use narrator  ru           ZAKADR     eleven_v4    On the school door drawing, Dunya wrote: keep the original hinges, and align the threshold with the notch.
-  H2.bench.look narrator  ru           ZAKADR     eleven_v4    Dunya's school door drawings are pinned above the box marked "Hinges." Her notes fill the margins.
-  H2.hinges_box.use narrator  ru           ZAKADR     eleven_v4    In Dunya's hand: "School door. Hinges." There are three inside.
-  H2.hinges_box.look narrator  ru           ZAKADR     eleven_v4    In Dunya's handwriting, the box is marked "Hinges."
-  H2.bell.use narrator  ru           ZAKADR     eleven_v4    Dunya's label reads: "Bell from the mill. Hung by the office door — it marked the start and end of work." Below is her familiar saying: "Some things remember the place they served."
-  H2.bell.look narrator  ru           ZAKADR     eleven_v4    The bell is hanging up, but its clapper is missing.
-  H2.stand_zm.look narrator  ru           ZAKADR     eleven_v4    A tall, heavy carved frame on legs, nailed to the floor. Empty. Dunya's label says "ЗМ" — mill mirror. Below: "Office mirror — collect from Pavel."
-  H2.clapper_box.look narrator  ru           ZAKADR     eleven_v4    The box beside the bell is marked "Bell clapper."
-  H2.bundle_nina.look narrator  ru           ZAKADR     eleven_v4    Something wrapped in a cloth. Dunya's label says "Nina. Parlour." Mama's mirror, from her parlour.
-  H2.bundle_nina.use narrator  ru           ZAKADR     eleven_v4    Under the cloth is a mirror in an old frame. The glass is cloudy; the frame comes apart in my hands. A label says: "Clamp needed. Mine is broken." No clamp here — this must wait.
-  H2.bundle_nina.done narrator  ru           ZAKADR     eleven_v4    Mama's mirror… Pick it up and the frame comes apart. I'll need a clamp.
-  H2.tar_pot.look narrator  ru           ZAKADR     eleven_v4    A tin jug of tar. Dunya used it to grease hinges and bolts.
-  H2.brace.look narrator  ru           ZAKADR     eleven_v4    A forged bracket, with a paper from the district office beneath it: the bridge plate is cracked and needs repair. The drawing shows the same pier as Tamara's.
-  H3.school_door.look narrator  ru           ZAKADR     eleven_v4    A door leans against the frame. The places for its original hinges are empty.
-  H3.puzzle.need narrator  ru           ZAKADR     eleven_v4    I need the original hinges and the fitting diagram from the workshop. Without them, I can't fit the door properly.
-  H3.puzzle.intro narrator  ru           ZAKADR     eleven_v4    Three original hinges in their proper places, as in Dunya's drawing. Then align the notch on the threshold with the mark. After that I can close the door.
-  H3.puzzle.seat_hint narrator  ru           ZAKADR     eleven_v4    The beam isn't seated yet. Tap it in: click the arrow at its end.
-  H3.puzzle.error narrator  ru           ZAKADR     eleven_v4    The same gallery wall is behind the door. The hinges or the threshold must still be out of place.
-  H3.puzzle.error_pieces narrator  ru           ZAKADR     eleven_v4    The same gallery wall is behind the door. Some hinges aren't seated — all three must fit into the frame's sockets.
-  H3.puzzle.error_mark narrator  ru           ZAKADR     eleven_v4    Still the gallery wall behind it. The threshold is misaligned: the notch in Dunya's drawing must sit beneath the door's mark.
-  H3.puzzle.success narrator  ru           ZAKADR     eleven_v4    The hinges slip into their sockets; the notches align. Beyond the door is a classroom, with winter outside its windows.
-  H3.mirror_home.look narrator  ru           ZAKADR     eleven_v4    A framed house mirror. Dunya marked it "ЗГ" — gallery mirror.
-  H3.photo_school.look narrator  ru           ZAKADR     eleven_v4    The school, its porch and its door. The hinges and the notch in the beam are still visible.
-  H3.exit_O1.closed narrator  ru           ZAKADR     eleven_v4    The door is standing nearby. There's no way through the empty frame yet.
-  H3.exit_R4.closed narrator  ru           ZAKADR     eleven_v4    An empty frame by the wall. There's no door for it in the workshop.
-  H4.window.look_snow narrator  ru           ZAKADR     eleven_v4    All of Zarechye is laid out below: roofs, post office, river bend. And snow on the far bank.
-  H4.window.look narrator  ru           ZAKADR     eleven_v4    All of Zarechye is laid out below: roofs, post office, river bend. The far bank is lost in mist.
-  H4.chest.look narrator  ru           ZAKADR     eleven_v4    An old chest bound with iron bands. The lid has a latch, but no lock.
-  H4.chest.open_done narrator  ru           ZAKADR     eleven_v4    The chest is open: an old coverlet and Dunya's odds and ends. The bell clapper is gone now.
-  H4.bed.look narrator  ru           ZAKADR     eleven_v4    Dunya's narrow bed, with a patchwork quilt. Made up just as it was when she was here.
-  H4.bed.left_M23a narrator  ru           ZAKADR     eleven_v4    see Tamara as she hands out the letters
-  H4.bed.left_M23b narrator  ru           ZAKADR     eleven_v4    call on Pavel at the mill
-  H4.bed.left_M23c narrator  ru           ZAKADR     eleven_v4    see Mama at Dunya's house
-  H4.bed.left_M23d narrator  ru           ZAKADR     eleven_v4    talk to Tikhon about Dunya
-  H4.v02.done narrator  ru           ZAKADR     eleven_v4    Light beneath the roof. Familiar things still in their familiar places.
-  H1.wave.look narrator  ru           ZAKADR     eleven_v4    The place by Dunya's stove. Mama can't see or hear me through the glass. But perhaps she has something that remembers this house?
-  M1.schedule.use narrator  ru           ZAKADR     eleven_v4    The mill rules have faded. The bell marked the start and end of each shift — and sent signals at the sluice: "One strike — go. Two — stop. A long ring — raise."
-  M1.schedule.look narrator  ru           ZAKADR     eleven_v4    The mill rules give bell signals: "One strike — go. Two — stop. A long ring — raise."
-  M1.wheel.look_still narrator  ru           ZAKADR     eleven_v4    The pond is drained. No water reaches the wheel, so it stands still.
-  M1.wheel.look narrator  ru           ZAKADR     eleven_v4    The wheel has its own water supply. That's why the mill can grind with the sluice shut — as long as the pond is full.
-  M1.bench.look narrator  ru           ZAKADR     eleven_v4    [slowly] Pavel's tools: hammers, a chisel, a plane. Everything in its place — all covered in shavings, or perhaps flour.
-  H2d.stand_zm.mount narrator  ru           ZAKADR     eleven_v4    The office mirror fits into Dunya's stand. The wedges still need tapping in to secure the loose frame.
-  H2d.office_mirror.clamped narrator  ru           ZAKADR     eleven_v4    The wedges are seated. The glass clears — it shows the office as it is now: the inside of the door, bolt in its brackets.
-  H2d.office_mirror.view_first narrator  ru           ZAKADR     eleven_v4    The mill office is visible in the glass. Not a sound.
-  H2d.office_mirror.view_again narrator  ru           ZAKADR     eleven_v4    The mill office in the glass. The same silence.
-  H2d.office_mirror.glass_touch narrator  ru           ZAKADR     eleven_v4    My hand meets glass. No way through.
-  H2d.office_mirror.glass_loose narrator  ru           ZAKADR     eleven_v4    The frame has loosened. The glass trembles and clouds over. The wedges need tapping in.
-  H2d.office_mirror.bell_mute narrator  ru           ZAKADR     eleven_v4    The bell is mute without its clapper. In Dunya's hand, the label says: "Clapper in the attic chest."
-  H2d.office_mirror.bell_unclamped narrator  ru           ZAKADR     eleven_v4    Secure the frame first. Without the wedges driven in, I can't see anything through the glass.
-  H2d.office_mirror.hook_slipped narrator  ru           ZAKADR     eleven_v4    The hook slipped. Pavel lifts it and starts again.
-  H2d.bell.hang narrator  ru           ZAKADR     eleven_v4    The clapper fits. The bell is as good as new again.
-  H2d.bell.need_mirror narrator  ru           ZAKADR     eleven_v4    I must ring and watch the office mirror. But it isn't on the stand yet.
-  H2d.nina_mirror.clamp narrator  ru           ZAKADR     eleven_v4    [warmly] The clamp draws the frame together. Slowly, the cloudy glass begins to clear…
-  H2d.nina_mirror.knock_first narrator  ru           ZAKADR     eleven_v4    [sad] Agata knocks on the glass — no answer. Mama can't hear her.
-  H2d.nina_mirror.watch_wait narrator  ru           ZAKADR     eleven_v4    The clock hand has barely moved. I need to watch longer.
-  E4.M23d.prompt narrator  ru           ZAKADR     eleven_v4    Who should tell Tikhon about Dunya?
-  E5.windlass.laid narrator  ru           ZAKADR     eleven_v4    The beam settles onto the old plate's ring. Just where the bridge beam rested before the flood.
-  E5.M25.prompt narrator  ru           ZAKADR     eleven_v4    What shall I carve on the end?
-  EP.place_bridge narrator  ru           ZAKADR     eleven_v4    The bridge
-  H1d.nina_coat.look narrator  ru           ZAKADR     eleven_v4    Her coat on Dunya's own hook. Mama brought it home from Olkhovka.
-  H1d.nina_coat.look_done narrator  ru           ZAKADR     eleven_v4    Dunya's coat hangs on its own hook. The sleeve is mended now.
-  H1d.nina_coat.prompt narrator  ru           ZAKADR     eleven_v4    How shall I mend it?
-  H1d.tea_corner.look narrator  ru           ZAKADR     eleven_v4    Dunya's kettle is on the windowsill. Mama is here; we could have some tea.
-  H1d.tea_corner.go_home narrator  ru           ZAKADR     eleven_v4    Dunya's kettle went on the stove. We called the family to tea — Tamara and Ulyana came, too.
-  H1d.tea_corner.go_all narrator  ru           ZAKADR     eleven_v4    We took Dunya's kettle to Mama's parlour. Everyone who came outside was invited to tea.
-  H1d.tea_corner.prompt narrator  ru           ZAKADR     eleven_v4    Where shall we have our first tea together?
-  H2q.second_bench.look narrator  ru           ZAKADR     eleven_v4    Ilya and Mitya brought the second bench from Ilya's workshop. There are two in Dunya's now.
-  квота: осталось 39428 из 179889, запас 0, к синтезу ≤ 8662 кредитов (оценка сверху)
-  M01_0              синтез: 5.74 с, -17.0 LUFS, TP -4.9 dB (усиление -1.5 dB)
-  M01_1              синтез: 6.06 с, -17.0 LUFS, TP -2.0 dB (усиление +3.7 dB)
-  M01_2              синтез: 8.73 с, -16.9 LUFS, TP -2.1 dB (усиление -1.2 dB)
-  M01_3              синтез: 9.76 с, -16.9 LUFS, TP -4.6 dB (усиление +0.0 dB)
-  M01_4              синтез: 8.54 с, -17.0 LUFS, TP -2.6 dB (усиление +1.4 dB)
-  M01_5              синтез: 10.02 с, -16.9 LUFS, TP -4.8 dB (усиление -1.3 dB)
-  M01_6              синтез: 7.97 с, -16.9 LUFS, TP -4.3 dB (усиление -0.4 dB)
-  M01_7              синтез: 8.43 с, -17.0 LUFS, TP -2.7 dB (усиление +0.4 dB)
-  M01_8              синтез: 4.04 с, -16.9 LUFS, TP -4.3 dB (усиление +0.1 dB)
-  M01_9              синтез: 7.36 с, -16.9 LUFS, TP -2.4 dB (усиление -1.4 dB)
-  M02_0              синтез: 3.95 с, -16.9 LUFS, TP -5.4 dB (усиление +1.4 dB)
-  M02_1              синтез: 2.96 с, -17.0 LUFS, TP -4.7 dB (усиление -0.6 dB)
-  M02_2_then0        синтез: 5.41 с, -17.0 LUFS, TP -4.7 dB (усиление -0.2 dB)
-  M02_2              синтез: 4.42 с, -17.0 LUFS, TP -5.6 dB (усиление -0.8 dB)
-  M02_3              синтез: 5.99 с, -16.9 LUFS, TP -4.4 dB (усиление -1.6 dB)
-  M02_4              синтез: 2.97 с, -16.9 LUFS, TP -3.8 dB (усиление -2.1 dB)
-  M02_5              синтез: 17.67 с, -17.0 LUFS, TP -2.5 dB (усиление -0.2 dB)
-  M02_7_then0        синтез: 4.28 с, -17.0 LUFS, TP -3.8 dB (усиление -1.7 dB)
-  M02_7              синтез: 11.53 с, -16.9 LUFS, TP -4.0 dB (усиление +1.1 dB)
-  M02_8              синтез: 8.98 с, -17.0 LUFS, TP -3.6 dB (усиление +0.5 dB)
-  M03_0              синтез: 2.88 с, -16.9 LUFS, TP -4.1 dB (усиление -0.2 dB)
-  M03_1_then0        синтез: 6.89 с, -17.1 LUFS, TP -3.4 dB (усиление -1.4 dB)
-  M03_1_then1        синтез: 1.25 с, -17.0 LUFS, TP -7.7 dB (усиление -1.0 dB)
-  M03_1              синтез: 2.77 с, -17.0 LUFS, TP -4.4 dB (усиление -1.1 dB)
-  M03_2              синтез: 2.36 с, -17.0 LUFS, TP -3.6 dB (усиление -1.7 dB)
-  M03_3              синтез: 2.74 с, -17.0 LUFS, TP -5.7 dB (усиление +1.1 dB)
-  M03_4              синтез: 3.53 с, -17.0 LUFS, TP -3.2 dB (усиление +0.4 dB)
-  M03_5              синтез: 1.45 с, -16.9 LUFS, TP -7.5 dB (усиление +3.3 dB)
-  M03_6_then0        синтез: 5.78 с, -17.0 LUFS, TP -6.3 dB (усиление -0.9 dB)
-  M03_6              синтез: 1.72 с, -17.1 LUFS, TP -4.9 dB (усиление +1.9 dB)
-  M03_7_then0        синтез: 3.09 с, -17.1 LUFS, TP -1.8 dB (усиление -0.1 dB)
-  M03_7              синтез: 3.99 с, -17.0 LUFS, TP -4.8 dB (усиление -0.4 dB)
-  M03_8              синтез: 6.93 с, -17.0 LUFS, TP -3.2 dB (усиление -0.5 dB)
-  M03_9              синтез: 1.74 с, -17.0 LUFS, TP -6.2 dB (усиление -0.2 dB)
-  M03_10             синтез: 5.39 с, -17.0 LUFS, TP -3.9 dB (усиление -1.6 dB)
-  M04_0              синтез: 4.46 с, -17.2 LUFS, TP -1.7 dB (усиление +2.2 dB)
-  M05_0              синтез: 2.38 с, -17.0 LUFS, TP -3.5 dB (усиление +0.6 dB)
-  M06_0              синтез: 2.95 с, -17.0 LUFS, TP -5.1 dB (усиление +1.0 dB)
-  M07_0              синтез: 4.85 с, -16.9 LUFS, TP -3.5 dB (усиление +1.3 dB)
-  M07_1              синтез: 14.54 с, -17.0 LUFS, TP -2.2 dB (усиление +0.1 dB)
-  M07_2              синтез: 9.27 с, -17.0 LUFS, TP -3.5 dB (усиление -2.3 dB)
-  M07_3              синтез: 8.54 с, -16.9 LUFS, TP -2.3 dB (усиление -0.9 dB)
-  M07_4              синтез: 6.40 с, -16.9 LUFS, TP -2.5 dB (усиление +0.1 dB)
-  M07_5              синтез: 5.65 с, -17.0 LUFS, TP -2.5 dB (усиление -1.3 dB)
-  M07_6              синтез: 4.00 с, -16.9 LUFS, TP -6.5 dB (усиление -3.9 dB)
-  M08_0              синтез: 7.73 с, -17.0 LUFS, TP -3.3 dB (усиление -0.6 dB)
-  M09_0              синтез: 6.32 с, -17.0 LUFS, TP -3.6 dB (усиление -0.9 dB)
-  M09_1              синтез: 5.79 с, -16.9 LUFS, TP -3.3 dB (усиление -0.9 dB)
-  M09_2              синтез: 12.59 с, -17.0 LUFS, TP -4.8 dB (усиление -0.7 dB)
-  M09_3              синтез: 8.44 с, -17.0 LUFS, TP -4.7 dB (усиление -1.9 dB)
-  M09_4              синтез: 8.44 с, -17.0 LUFS, TP -5.2 dB (усиление -2.1 dB)
-  M09_5              синтез: 1.41 с, -16.9 LUFS, TP -7.5 dB (усиление +0.4 dB)
-  M09_6              синтез: 13.97 с, -17.0 LUFS, TP -3.9 dB (усиление -1.5 dB)
-  M09_7              синтез: 9.58 с, -17.0 LUFS, TP -5.8 dB (усиление -2.5 dB)
-  M09s_0             синтез: 14.11 с, -17.0 LUFS, TP -1.9 dB (усиление +0.4 dB)
-  M09b_0             синтез: 6.50 с, -17.0 LUFS, TP -3.2 dB (усиление -1.5 dB)
-  M09b_1             синтез: 7.55 с, -17.0 LUFS, TP -4.2 dB (усиление -0.8 dB)
-  M09b_2             синтез: 7.02 с, -17.0 LUFS, TP -2.0 dB (усиление -0.2 dB)
-  M09b_3             синтез: 5.52 с, -17.1 LUFS, TP -6.5 dB (усиление -3.3 dB)
-  M09b_4             синтез: 14.02 с, -17.0 LUFS, TP -5.4 dB (усиление -1.7 dB)
-  M10_0              синтез: 5.57 с, -17.0 LUFS, TP -2.6 dB (усиление +0.6 dB)
-  M10_1_then0        синтез: 1.76 с, -16.9 LUFS, TP -3.9 dB (усиление +0.3 dB)
-  M10_1_then1        синтез: 3.74 с, -17.0 LUFS, TP -3.1 dB (усиление +1.6 dB)
-  M10_1_then2        синтез: 1.55 с, -17.0 LUFS, TP -5.0 dB (усиление +1.6 dB)
-  M10_1_then3        синтез: 0.98 с, -17.0 LUFS, TP -6.4 dB (усиление -4.8 dB)
-  M10_1              синтез: 2.95 с, -17.0 LUFS, TP -5.7 dB (усиление +0.2 dB)
-  M11_0              синтез: 2.25 с, -17.0 LUFS, TP -6.1 dB (усиление -5.2 dB)
-  M12_0              синтез: 3.06 с, -16.9 LUFS, TP -6.3 dB (усиление -4.7 dB)
-  M13a_0             синтез: 4.45 с, -17.0 LUFS, TP -5.7 dB (усиление -2.3 dB)
-  M13_0              синтез: 7.01 с, -16.9 LUFS, TP -6.0 dB (усиление -2.3 dB)
-  M13_1_family       синтез: 4.23 с, -17.1 LUFS, TP -4.7 dB (усиление -2.1 dB)
-  M13_1_promise      синтез: 3.05 с, -16.9 LUFS, TP -5.0 dB (усиление -0.1 dB)
-  M13_2              синтез: 4.22 с, -17.0 LUFS, TP -6.0 dB (усиление -1.8 dB)
-  M14_0              синтез: 4.75 с, -16.9 LUFS, TP -5.1 dB (усиление -1.9 dB)
-  M14_1              синтез: 4.70 с, -17.1 LUFS, TP -5.4 dB (усиление -3.2 dB)
-  M15a_0             синтез: 5.17 с, -16.9 LUFS, TP -3.8 dB (усиление +1.0 dB)
-  M15a_1             синтез: 2.73 с, -16.9 LUFS, TP -5.0 dB (усиление +0.0 dB)
-  M15a_2             синтез: 1.30 с, -16.9 LUFS, TP -7.1 dB (усиление -0.4 dB)
-  M15a_3             синтез: 2.14 с, -17.0 LUFS, TP -5.3 dB (усиление +0.2 dB)
-  M15s_0             синтез: 3.26 с, -17.0 LUFS, TP -4.8 dB (усиление -2.8 dB)
-  M15s_1             синтез: 4.95 с, -17.0 LUFS, TP -4.4 dB (усиление -1.8 dB)
-  M15s_2             синтез: 8.71 с, -17.0 LUFS, TP -4.0 dB (усиление -2.2 dB)
-  M15_0              синтез: 7.79 с, -16.9 LUFS, TP -3.7 dB (усиление -1.4 dB)
-  M15_1              синтез: 1.90 с, -17.0 LUFS, TP -5.7 dB (усиление +0.5 dB)
-  M15_2              синтез: 5.54 с, -17.0 LUFS, TP -5.2 dB (усиление -3.5 dB)
-  M16s_0             синтез: 9.29 с, -17.0 LUFS, TP -3.0 dB (усиление -1.2 dB)
-  M16s_1             синтез: 4.38 с, -17.0 LUFS, TP -4.6 dB (усиление -1.4 dB)
-  M16s_2             синтез: 9.20 с, -16.9 LUFS, TP -4.2 dB (усиление -0.5 dB)
-  M16_0_then0        синтез: 4.84 с, -17.0 LUFS, TP -3.1 dB (усиление -0.3 dB)
-  M16_0              синтез: 3.68 с, -17.0 LUFS, TP -4.4 dB (усиление -2.1 dB)
-  M17_0              синтез: 9.62 с, -16.8 LUFS, TP -3.1 dB (усиление -0.3 dB)
-  M17_1              синтез: 15.20 с, -17.1 LUFS, TP -3.3 dB (усиление -1.2 dB)
-  M17_2              синтез: 2.94 с, -16.7 LUFS, TP -7.2 dB (усиление -4.5 dB)
-  M17_3              синтез: 2.41 с, -17.0 LUFS, TP -6.3 dB (усиление -3.9 dB)
-  M17_4              синтез: 5.19 с, -17.0 LUFS, TP -5.0 dB (усиление -3.0 dB)
-  M17_5              синтез: 5.27 с, -17.0 LUFS, TP -6.2 dB (усиление -4.0 dB)
-  M17_6              синтез: 4.39 с, -17.0 LUFS, TP -5.4 dB (усиление -1.9 dB)
-  M17_7              синтез: 2.52 с, -16.9 LUFS, TP -7.6 dB (усиление -5.7 dB)
-  M18p_0             синтез: 8.97 с, -17.0 LUFS, TP -3.4 dB (усиление -0.9 dB)
-  M18p_1             синтез: 3.10 с, -17.0 LUFS, TP -4.9 dB (усиление -2.1 dB)
-  M18p_2             синтез: 1.90 с, -17.0 LUFS, TP -8.6 dB (усиление -0.3 dB)
-  M18p_3             синтез: 4.53 с, -17.0 LUFS, TP -4.6 dB (усиление +0.2 dB)
-  M18p_4             синтез: 2.09 с, -17.0 LUFS, TP -3.9 dB (усиление -0.1 dB)
-  M18_0              синтез: 8.14 с, -17.0 LUFS, TP -4.1 dB (усиление -1.2 dB)
-  M18_1              синтез: 0.98 с, -17.0 LUFS, TP -6.6 dB (усиление -4.1 dB)
-  M18_2              синтез: 2.54 с, -16.7 LUFS, TP -7.6 dB (усиление -6.8 dB)
-  M18_3              синтез: 8.92 с, -16.9 LUFS, TP -2.4 dB (усиление -1.1 dB)
-  M18_4              синтез: 6.84 с, -17.0 LUFS, TP -3.7 dB (усиление -1.1 dB)
-  M18_5              синтез: 9.47 с, -17.0 LUFS, TP -3.7 dB (усиление -0.9 dB)
-  M18_6              синтез: 4.46 с, -17.0 LUFS, TP -5.0 dB (усиление -2.0 dB)
-  M18_7              синтез: 4.07 с, -17.0 LUFS, TP -4.9 dB (усиление -0.1 dB)
-  M18_8              синтез: 7.72 с, -17.0 LUFS, TP -5.4 dB (усиление -2.7 dB)
-  M18_9              синтез: 10.77 с, -17.0 LUFS, TP -3.2 dB (усиление -1.3 dB)
-  M19_0              синтез: 7.72 с, -17.0 LUFS, TP -3.4 dB (усиление -1.6 dB)
-  M19_1              синтез: 3.24 с, -17.0 LUFS, TP -5.5 dB (усиление -3.5 dB)
-  M19_2              синтез: 6.62 с, -17.0 LUFS, TP -4.1 dB (усиление -1.6 dB)
-  M19_3              синтез: 0.80 с, -16.9 LUFS, TP -6.1 dB (усиление +3.8 dB)
-  M19_4              синтез: 7.85 с, -17.0 LUFS, TP -4.4 dB (усиление -0.9 dB)
-  M19_5              синтез: 3.76 с, -17.0 LUFS, TP -6.4 dB (усиление -1.0 dB)
-  M19_6              синтез: 1.74 с, -17.0 LUFS, TP -6.4 dB (усиление -0.6 dB)
-  M19c_0             синтез: 4.04 с, -17.0 LUFS, TP -4.8 dB (усиление +1.2 dB)
-  M19c_1             синтез: 3.31 с, -17.0 LUFS, TP -4.6 dB (усиление -3.2 dB)
-  M19c_2             синтез: 7.45 с, -16.9 LUFS, TP -6.3 dB (усиление -0.6 dB)
-  M19c_3             синтез: 6.83 с, -17.0 LUFS, TP -5.6 dB (усиление +0.0 dB)
-  H1.stove.use       синтез: 4.64 с, -17.0 LUFS, TP -4.0 dB (усиление -1.9 dB)
-  H1.stove.look      синтез: 6.88 с, -17.0 LUFS, TP -3.8 dB (усиление -1.9 dB)
-  H1.stove.look_settled синтез: 6.99 с, -17.1 LUFS, TP -4.5 dB (усиление -1.0 dB)
-  H1.shutter.use     синтез: 3.56 с, -17.0 LUFS, TP -4.2 dB (усиление -1.7 dB)
-  H1.shutter.look    синтез: 2.26 с, -17.0 LUFS, TP -5.5 dB (усиление -1.8 dB)
-  H1.scarf.use       синтез: 3.62 с, -17.0 LUFS, TP -5.4 dB (усиление -2.6 dB)
-  H1.scarf.look      синтез: 3.44 с, -17.1 LUFS, TP -5.5 dB (усиление -3.1 dB)
-  H1.tikhon.look     синтез: 5.14 с, -17.1 LUFS, TP -5.2 dB (усиление -2.2 dB)
-  H1.tikhon.prompt   синтез: 1.87 с, -17.1 LUFS, TP -6.1 dB (усиление -0.7 dB)
-  H1.photo.prompt    синтез: 1.79 с, -17.0 LUFS, TP -4.5 dB (усиление -1.3 dB)
-  H1.cups.look       синтез: 5.23 с, -17.0 LUFS, TP -4.2 dB (усиление -2.1 dB)
-  H1.shelf.prompt    синтез: 5.57 с, -17.0 LUFS, TP -4.6 dB (усиление -1.9 dB)
-  H1.shelf.look      синтез: 5.98 с, -17.0 LUFS, TP -4.8 dB (усиление -2.3 dB)
-  H1.shelf.look_wet  синтез: 6.11 с, -17.0 LUFS, TP -5.6 dB (усиление -2.1 dB)
-  H1.shelf.look_done синтез: 5.59 с, -17.0 LUFS, TP -3.6 dB (усиление -1.6 dB)
-  H2.bench.use       синтез: 6.73 с, -16.9 LUFS, TP -4.9 dB (усиление -2.0 dB)
-  H2.bench.look      синтез: 6.42 с, -17.0 LUFS, TP -4.8 dB (усиление -2.5 dB)
-  H2.hinges_box.use  синтез: 4.96 с, -17.0 LUFS, TP -4.9 dB (усиление -2.7 dB)
-  H2.hinges_box.look синтез: 3.67 с, -16.9 LUFS, TP -4.4 dB (усиление -2.1 dB)
-  H2.bell.use        синтез: 12.58 с, -17.0 LUFS, TP -4.4 dB (усиление -1.9 dB)
-  H2.bell.look       синтез: 3.20 с, -16.9 LUFS, TP -5.0 dB (усиление -1.7 dB)
-  H2.stand_zm.look   синтез: 11.96 с, -17.0 LUFS, TP -4.2 dB (усиление -2.0 dB)
-  H2.clapper_box.look синтез: 3.24 с, -17.0 LUFS, TP -3.8 dB (усиление -1.9 dB)
-  H2.bundle_nina.look синтез: 7.77 с, -17.1 LUFS, TP -4.2 dB (усиление -3.0 dB)
-  H2.bundle_nina.use синтез: 13.52 с, -17.0 LUFS, TP -3.5 dB (усиление -1.8 dB)
-  H2.bundle_nina.done синтез: 5.28 с, -16.9 LUFS, TP -3.8 dB (усиление -0.8 dB)
-  H2.tar_pot.look    синтез: 4.44 с, -17.0 LUFS, TP -4.7 dB (усиление -2.7 dB)
-  H2.brace.look      синтез: 9.71 с, -17.0 LUFS, TP -3.4 dB (усиление -2.1 dB)
-  H3.school_door.look синтез: 5.17 с, -17.0 LUFS, TP -4.3 dB (усиление -2.6 dB)
-  H3.puzzle.need     синтез: 6.78 с, -17.0 LUFS, TP -5.2 dB (усиление -2.7 dB)
-  H3.puzzle.intro    синтез: 10.13 с, -16.9 LUFS, TP -4.7 dB (усиление -2.1 dB)
-  H3.puzzle.seat_hint синтез: 4.71 с, -17.0 LUFS, TP -4.3 dB (усиление -2.4 dB)
-  H3.puzzle.error    синтез: 6.19 с, -17.0 LUFS, TP -4.4 dB (усиление -2.3 dB)
-  H3.puzzle.error_pieces синтез: 7.30 с, -17.0 LUFS, TP -4.1 dB (усиление -2.1 dB)
-  H3.puzzle.error_mark синтез: 8.03 с, -17.0 LUFS, TP -5.2 dB (усиление -2.3 dB)
-  H3.puzzle.success  синтез: 8.08 с, -17.0 LUFS, TP -3.8 dB (усиление -2.1 dB)
-  H3.mirror_home.look синтез: 5.27 с, -17.1 LUFS, TP -5.3 dB (усиление -2.7 dB)
-  H3.photo_school.look синтез: 6.31 с, -16.9 LUFS, TP -4.7 dB (усиление -2.1 dB)
-  H3.exit_O1.closed  синтез: 4.26 с, -16.9 LUFS, TP -6.0 dB (усиление -3.1 dB)
-  H3.exit_R4.closed  синтез: 4.11 с, -17.0 LUFS, TP -4.9 dB (усиление -2.6 dB)
-  H4.window.look_snow синтез: 7.46 с, -17.0 LUFS, TP -3.4 dB (усиление -1.2 dB)
-  H4.window.look     синтез: 7.96 с, -17.0 LUFS, TP -4.1 dB (усиление -0.9 dB)
-  H4.chest.look      синтез: 5.68 с, -17.0 LUFS, TP -4.0 dB (усиление -1.9 dB)
-  H4.chest.open_done синтез: 6.50 с, -16.9 LUFS, TP -4.1 dB (усиление -2.0 dB)
-  H4.bed.look        синтез: 5.84 с, -16.9 LUFS, TP -4.5 dB (усиление -1.7 dB)
-  H4.bed.left_M23a   синтез: 2.64 с, -17.0 LUFS, TP -4.6 dB (усиление -2.8 dB)
-  H4.bed.left_M23b   синтез: 1.78 с, -17.0 LUFS, TP -5.7 dB (усиление -3.7 dB)
-  H4.bed.left_M23c   синтез: 1.98 с, -17.0 LUFS, TP -6.0 dB (усиление -3.5 dB)
-  H4.bed.left_M23d   синтез: 2.06 с, -17.0 LUFS, TP -3.7 dB (усиление -0.6 dB)
-  H4.v02.done        синтез: 4.98 с, -17.0 LUFS, TP -3.9 dB (усиление -1.9 dB)
-  H1.wave.look       синтез: 8.71 с, -17.1 LUFS, TP -2.5 dB (усиление -0.5 dB)
-  M1.schedule.use    синтез: 12.65 с, -17.0 LUFS, TP -4.0 dB (усиление -2.5 dB)
-  M1.schedule.look   синтез: 7.75 с, -17.0 LUFS, TP -5.3 dB (усиление -3.3 dB)
-  M1.wheel.look_still синтез: 4.90 с, -17.0 LUFS, TP -4.3 dB (усиление -1.9 dB)
-  M1.wheel.look      синтез: 6.91 с, -17.0 LUFS, TP -5.4 dB (усиление -2.7 dB)
-  M1.bench.look      синтез: 9.79 с, -17.1 LUFS, TP -2.8 dB (усиление +1.4 dB)
-  H2d.stand_zm.mount синтез: 6.56 с, -17.0 LUFS, TP -5.7 dB (усиление -2.6 dB)
-  H2d.office_mirror.clamped синтез: 8.44 с, -17.0 LUFS, TP -4.5 dB (усиление -2.1 dB)
-  H2d.office_mirror.view_first синтез: 3.76 с, -17.0 LUFS, TP -3.9 dB (усиление -1.4 dB)
-  H2d.office_mirror.view_again синтез: 3.69 с, -17.0 LUFS, TP -3.6 dB (усиление -0.7 dB)
-  H2d.office_mirror.glass_touch синтез: 2.89 с, -17.0 LUFS, TP -4.5 dB (усиление -2.8 dB)
-  H2d.office_mirror.glass_loose синтез: 6.40 с, -17.0 LUFS, TP -3.6 dB (усиление -2.3 dB)
-  H2d.office_mirror.bell_mute синтез: 6.93 с, -16.9 LUFS, TP -3.9 dB (усиление -1.8 dB)
-  H2d.office_mirror.bell_unclamped синтез: 5.77 с, -17.0 LUFS, TP -4.3 dB (усиление -1.5 dB)
-  H2d.office_mirror.hook_slipped синтез: 3.69 с, -17.0 LUFS, TP -3.6 dB (усиление -1.3 dB)
-  H2d.bell.hang      синтез: 3.63 с, -17.0 LUFS, TP -6.0 dB (усиление -3.1 dB)
-  H2d.bell.need_mirror синтез: 4.34 с, -17.0 LUFS, TP -5.6 dB (усиление -2.5 dB)
-  H2d.nina_mirror.clamp синтез: 6.05 с, -17.0 LUFS, TP -2.7 dB (усиление +2.2 dB)
-  H2d.nina_mirror.knock_first синтез: 4.96 с, -17.0 LUFS, TP -4.6 dB (усиление +3.9 dB)
-  H2d.nina_mirror.watch_wait синтез: 3.70 с, -17.0 LUFS, TP -3.6 dB (усиление -1.4 dB)
-  E4.M23d.prompt     синтез: 2.24 с, -17.0 LUFS, TP -4.6 dB (усиление -1.2 dB)
-  E5.windlass.laid   синтез: 5.60 с, -17.0 LUFS, TP -4.7 dB (усиление -2.1 dB)
-  E5.M25.prompt      синтез: 1.84 с, -17.0 LUFS, TP -6.0 dB (усиление -2.4 dB)
-  EP.place_bridge    синтез: 1.04 с, -16.4 LUFS, TP -4.1 dB (усиление -2.1 dB)
-  H1d.nina_coat.look синтез: 4.37 с, -16.9 LUFS, TP -6.0 dB (усиление -3.4 dB)
-  H1d.nina_coat.look_done синтез: 4.32 с, -16.9 LUFS, TP -4.6 dB (усиление -2.1 dB)
-  H1d.nina_coat.prompt синтез: 1.36 с, -17.0 LUFS, TP -9.8 dB (усиление -2.8 dB)
-  H1d.tea_corner.look синтез: 4.95 с, -17.0 LUFS, TP -6.3 dB (усиление -2.5 dB)
-  H1d.tea_corner.go_home синтез: 6.43 с, -17.0 LUFS, TP -4.3 dB (усиление -2.2 dB)
-  H1d.tea_corner.go_all синтез: 5.75 с, -17.0 LUFS, TP -4.9 dB (усиление -2.7 dB)
-  H1d.tea_corner.prompt синтез: 2.29 с, -17.0 LUFS, TP -5.2 dB (усиление -3.1 dB)
-  H2q.second_bench.look синтез: 5.60 с, -17.0 LUFS, TP -5.5 dB (усиление -3.1 dB)
-[EN_full] синтезировано 206, переобработано 0, ошибок 0; символов текста 17324; списано кредитов (character-cost): 7623, изменение счётчика подписки: 7191
+=== pipeline/requests/voice_EN_full_2.json
+  mirror_part 2/4: 206 строк
+  задание: Директор, 2026-11-03 — английский голос целиком, часть 2/4 (mirror ru, один дубль) (потолок 220 файлов, 15506 символов)
+[EN_full] реплик в сценах запроса: 206; файлов с вариантами голосов: 206; к синтезу: 206 (14906 символов); переобработка: 0
+  N01_0   agata     ru           Agata      eleven_v4    [sleepy] Perhaps Ilyusha still draws boats with smoke.
+  N01_1   agata     ru           Agata      eleven_v4    [thoughtful] An adult copied that plan, more than once. Someone is holding the far end. Waiting for three flashes.
+  N01_2   tikhon    ru           CAT-2      eleven_v4    [grumbling] Go to sleep. I'll answer for the stove.
+  N01_3   tikhon    ru           CAT-2      eleven_v4    [sleepy] Don't ring that bell first thing. I've watched the stove all night; I need my sleep.
+  M19c_4  agata     ru           Agata      eleven_v4    But that was yesterday!
+  M19c_5  nina      ru           НИНА       eleven_v4    [warmly] Twenty years I looked into it. Dunya's stove, the little creature beside it. Tamara came to feed him — every few months, by our time. Moved slowly, as though asleep. I knew people lived there. I waited and waited for you.
+  M19c_6  nina      ru           НИНА       eleven_v4    Then you stood by the stove and waved. I saw you.
+  M19c_7  nina      ru           НИНА       eleven_v4    [warmly] So only a year passed for you… One year, my girl.
+  M19c_8  agata     ru           Agata      eleven_v4    A year… For you — longer than I've been alive. How can that be, Mama?
+  M20_0   narrator  ru           ZAKADR     eleven_v4    [firm] The door bangs. A man enters, covered in shavings, a pencil behind his ear. A little girl runs in after him, her coat thrown over her nightdress.
+  M20_1   agata     ru           Agata      eleven_v4    [excited] Ilyusha… Only that pencil behind your ear… I'd never have known you.
+  M20_2   ilya      ru           ИЛЬЯ       eleven_v4    You're just the same… Haven't grown.
+  M20_3   agata     ru           Agata      eleven_v4    Look how you've grown… Twenty whole years — all without me.
+  M20_4_then0 ulyana    ru           ЛУНЯ       eleven_v4    [excited] How is she an aunt? She's like a sister! I've always wanted a sister — a big one.
+  M20_4_then1 agata     ru           Agata      eleven_v4    [warmly] Well, if you wanted one, I'll be your sister, Ulya.
+  M20_4   ulyana    ru           ЛУНЯ       eleven_v4    Is this Aunt Agata? Papa, you said she used to be older than you!
+  M20_5   agata     ru           Agata      eleven_v4    There was a plan in the teacher's drawer. Yours?
+  M20_6   ilya      ru           ИЛЬЯ       eleven_v4    Copied it every winter, put it in the drawer. Dunya said the door was in her workshop. Whoever hung it would reach the classroom.
+  M20_7   narrator  ru           ZAKADR     eleven_v4    Later, Ilya's wife comes in carrying a lamp.
+  M20_8   ilya_wife ru           ВАРВАРА    eleven_v4    Ulyana, time to sleep. Your aunt is here; she won't go away tonight.
+  M20_9   nina      ru           НИНА       eleven_v4    You'll sleep here, in your own bed. Ulyana sleeps in it now — make room for each other.
+  M20_10  narrator  ru           ZAKADR     eleven_v4    In the old room, yearly notches mark the wall. Someone else's growing height.
+  N02_0   narrator  ru           ZAKADR     eleven_v4    The old bed. Beyond the wall, the clock ticks steadily, in time with her pocket watch. Agata falls asleep before she knows it.
+  M21_0_then0 agata     ru           Agata      eleven_v4    [sad] I kept thinking: once I got here, she'd be home again.
+  M21_0   nina      ru           НИНА       eleven_v4    My girl… Dunya died two years ago, by our reckoning. She was seventy-two.
+  M21_1   agata     ru           Agata      eleven_v4    [sad] And Tikhon still expects her back by evening.
+  M21_2   nina      ru           НИНА       eleven_v4    Her notebooks are on the table. Eighteen years she tried to restore the road. Beside them, the list: who is living, who is gone. Look, my girl.
+  M21b_0  agata     ru           Agata      eleven_v4    [hesitant] Can't we make it how it was?
+  M21b_1  nina      ru           НИНА       eleven_v4    Not how it was… And I wouldn't give up my twenty years. They gave us Ulyana.
+  M21b_2  nina      ru           НИНА       eleven_v4    But we can live the years ahead together.
+  M21b_3  narrator  ru           ZAKADR     eleven_v4    Voices outside. Children run towards the school to see: the school path has been there again since last evening.
+  M21b_4  nina      ru           НИНА       eleven_v4    Come, I'll show you the classroom. Through the gate, like ordinary people.
+  M22_0   narrator  ru           ZAKADR     eleven_v4    Nina reads: "I was here. Agata." She takes the chalk and writes beneath: "So was I. All twenty years. Mama."
+  M22_1   narrator  ru           ZAKADR     eleven_v4    On the board Nina reads: "Mama, I'm coming." She takes the chalk. Beneath it she writes only this: "At last."
+  M22_2   narrator  ru           ZAKADR     eleven_v4    Nina reads: "Ilyusha, I found your drawing." She takes the chalk and adds: "He still draws boats with smoke. Mama."
+  M22_3   narrator  ru           ZAKADR     eleven_v4    [firm] Then, from the habit of every lesson, she writes the date in the corner. Her own date, from this side.
+  M22_4   narrator  ru           ZAKADR     eleven_v4    The board is clean. As before every lesson, Nina writes the date in the corner. By the reckoning here.
+  M22_5   agata     ru           Agata      eleven_v4    It's the twenty-fifth of October for us.
+  M22_6   narrator  ru           ZAKADR     eleven_v4    Nina pauses. She writes Agata's date beneath her own, then rubs out the upper one. For the first time, both banks share a date.
+  M22_7   agata     ru           Agata      eleven_v4    I knocked on the glass, but you couldn't hear.
+  M22_8   narrator  ru           ZAKADR     eleven_v4    Nina taps the board with a knuckle.
+  M22_9   nina      ru           НИНА       eleven_v4    Can you hear now?
+  M22_10  agata     ru           Agata      eleven_v4    Now I can.
+  M22_11  ulyana    ru           ЛУНЯ       eleven_v4    I drew the bird's boots! Who drew the cap?
+  M22_12_then0 ulyana    ru           ЛУНЯ       eleven_v4    [excited] There! I'll tell everyone: my sister can draw. Almost a real one!
+  M22_12  agata     ru           Agata      eleven_v4    [laughs] I drew the cap. Long ago, at this desk.
+  M22_13  ulyana    ru           ЛУНЯ       eleven_v4    Who gave it the scarf? I wrote beside it — look! It's warm now.
+  M22_14_then0 ulyana    ru           ЛУНЯ       eleven_v4    Who drew the boat with smoke? Only Papa draws them like that!
+  M22_14_then1 agata     ru           Agata      eleven_v4    I copied your papa, long, long ago.
+  M22_14_then2 ulyana    ru           ЛУНЯ       eleven_v4    Who drew the bridge? I asked beside it, look: will there really be a bridge?
+  M22_14_then3 agata     ru           Agata      eleven_v4    There will, Ulya. That's why I drew it.
+  M22_14  agata     ru           Agata      eleven_v4    I drew the scarf too. It's winter here.
+  M22_15_then0 nina      ru           НИНА       eleven_v4    Call on Ilya in his workshop — the shed by his house. He and Mitya are cramped, and Ulya needs a place of her own. He'll be glad of you.
+  M22_15_then1 ulyana    ru           ЛУНЯ       eleven_v4    Uncle Mitya is catching perch from the landing! Go and see him if you like. He'll teach you, too.
+  M22_15  nina      ru           НИНА       eleven_v4    I'll go home to Dunya's. In through the porch, as before. Pelageya will take me. Walk about a little; everyone's coming outside today.
+  M23a_0  narrator  ru           ZAKADR     eleven_v4    Tamara has crossed too, with the sack of letters. In the middle of the street she reads the addresses. Nina stands beside her, listening.
+  M23a_1  tamara    ru           TAMARA-1   eleven_v4    [warmly] For Nina, from Agata! Every month, all year. Here, Nina, my dear. Yours first.
+  M23a_2  narrator  ru           ZAKADR     eleven_v4    Nina takes Agata's letters and tucks them straight inside her coat.
+  M23a_3  tamara    ru           TAMARA-1   eleven_v4    Savely, from his sister… Aksinya, from her brother… Matryona Petrovna… Do you know her?
+  M23a_4  tamara    ru           TAMARA-1   eleven_v4    [sad] Here I am with a letter, and the person's gone… Another was a boy when his was written — now he has a beard himself.
+  M23a_5_then0 narrator  ru           ZAKADR     eleven_v4    Nina takes the letters towards the river — back to Dunya's house, across the water.
+  M23a_5  tamara    ru           TAMARA-1   eleven_v4    [warmly] And this is for Dunya. From me. I'll put it by her stove. Let it lie there.
+  M23b_0  narrator  ru           ZAKADR     eleven_v4    The manager arrives in the mill yard. Ilya brought him across. Pavel comes out to meet him.
+  M23b_1  manager   ru           ФЁДОР ЛУКИЧ eleven_v4    Is the sluice sound? Where's the lever?
+  M23b_2  pavel     ru           Павел      eleven_v4    Hung on the nail a whole year. Just where you left it.
+  M23b_3  manager   ru           ФЁДОР ЛУКИЧ eleven_v4    A year… I meant to be back by morning. Twenty years have passed.
+  M23b_4  narrator  ru           ZAKADR     eleven_v4    They both laugh awkwardly.
+  M23b_5  manager   ru           ФЁДОР ЛУКИЧ eleven_v4    We must refill the pond before winter. Or Zarechye will have no flour.
+  M23b_6  pavel     ru           Павел      eleven_v4    You promised. I remember.
+  M23b_7_then0 agata     ru           Agata      eleven_v4    We will, Pavel. But first we need a bridge. The rope won't last: the first flood will take it, and we'll lose the road again.
+  M23b_7  agata     ru           Agata      eleven_v4    I remember, Pavel. We will — but first we need a bridge. The rope won't last: the first flood will take it, and we'll lose the road again.
+  M23b_8_then0 ilya      ru           ИЛЬЯ       eleven_v4    Higher spans than before — water can pass beneath. We must work now, while the pond is drained.
+  M23b_8  ilya      ru           ИЛЬЯ       eleven_v4    Need to build the bridge before it freezes. From Dunya's notebook.
+  M23b_9  ilya      ru           ИЛЬЯ       eleven_v4    Tomorrow morning, we lay the first beam. Take it from the empty log frame at the village edge — dry timber there. Come to the bend.
+  M23c_0  narrator  ru           ZAKADR     eleven_v4    Nina enters her sister's house — by the porch, like anyone else now. She has brought Dunya's coat. Hangs it on the empty hook where it hung before the flood.
+  M23c_1  nina      ru           НИНА       eleven_v4    All Dunya's. Even the dust.
+  M23c_2  narrator  ru           ZAKADR     eleven_v4    The school door hangs on its own hinges in the gallery.
+  M23c_3  nina      ru           НИНА       eleven_v4    For twenty years, an empty doorway on our side. And the door stood here all along. Close by. Two steps away.
+  M23c_4  narrator  ru           ZAKADR     eleven_v4    Nina's mirror, on the workshop bench.
+  M23c_5  narrator  ru           ZAKADR     eleven_v4    It shows her parlour. Empty.
+  M23c_6  nina      ru           НИНА       eleven_v4    My parlour… And here I stand.
+  M23c_7  agata     ru           Agata      eleven_v4    I saw you there. Writing something.
+  M23c_8  nina      ru           НИНА       eleven_v4    [warmly] Lessons. And letters to you, again and again.
+  M23d_1  agata     ru           Agata      eleven_v4    Tikhon… Dunya isn't coming. She died at Mother's. Two years ago, by their count.
+  M23d_2  nina      ru           НИНА       eleven_v4    Tikhon, Dunya isn't coming. She died in my arms two years ago, by our count. She spoke of you.
+  M23d_3  narrator  ru           ZAKADR     eleven_v4    Tikhon is silent for a long time. Then he moves closer to Agata's sleeping ledge and settles there.
+  M23d_4_then0 tikhon    ru           CAT-2      eleven_v4    [sighs] Well, then… The stove still needs watching. It won't wait.
+  M23d_4  tikhon    ru           CAT-2      eleven_v4    [slowly] [sad] Then the evening is over.
+  M23d_5  tikhon    ru           CAT-2      eleven_v4    [slowly] You'll be the mistress now. Only leave her pot alone for a while. Let it stand.
+  M23d_6_then0 tikhon    ru           CAT-2      eleven_v4    [warmly] Agata, you… Don't go away for long. I'm used to you. You're my friend, then. Only don't tell Tamara.
+  M23d_6_then1 agata     ru           Agata      eleven_v4    [warmly] I won't, Tikhon. You're my friend, too.
+  M24_0   narrator  ru           ZAKADR     eleven_v4    The third day draws to evening. Family voices in Dunya's house again. Tikhon knows his mistress will not return. Tomorrow, the first beam: a bridge, higher than before.
+  M24_1   narrator  ru           ZAKADR     eleven_v4    The morning of the fourth day. Before dawn, Ilya and Pelageya went to the bend to set up the winch.
+  M25_0   narrator  ru           ZAKADR     eleven_v4    A winch stands at the bend; bridge beams are stacked nearby. Ilya waits. Pelageya has brought the signal board.
+  M25_1   ilya      ru           ИЛЬЯ       eleven_v4    [firm] I'll turn the winch; you give the signals. Go, stop, raise — mill fashion.
+  M25_2   agata     ru           Agata      eleven_v4    Like the hook in the office. The same three signals.
+  M25_3   ilya      ru           ИЛЬЯ       eleven_v4    [warmly] Don't know about the hook. I can hear you here — call out!
+  M25_4   narrator  ru           ZAKADR     eleven_v4    Ilya locks the winch and straightens his back.
+  M25_5   ilya      ru           ИЛЬЯ       eleven_v4    It's down! Here, take the knife. Carve what you like on the end.
+  M25_7   narrator  ru           ZAKADR     eleven_v4    Slowly, Agata cuts the letters into the end of the beam. As she once did on a school desk.
+  M25_8   ilya      ru           ИЛЬЯ       eleven_v4    Twenty years I waited for you. Now we're holding it together.
+  M26_0   narrator  ru           ZAKADR     eleven_v4    Three weeks later. Wednesday. Winter on both banks. Bridge finished, pond full, mill grinding.
+  M26_1   narrator  ru           ZAKADR     eleven_v4    [warmly] Tamara crosses the bridge with the post.
+  M26_2   tamara    ru           TAMARA-1   eleven_v4    For Aksinya, from her brother! Through Nina, as we agreed.
+  M26_3   tamara    ru           TAMARA-1   eleven_v4    Wednesdays, I leave Aksinya's letters in the gallery box at Dunya's. She leaves hers for me there, too.
+  M26_4   tamara    ru           TAMARA-1   eleven_v4    Third week carrying them, and the sack's still full! Both banks are writing now.
+  M26_5   narrator  ru           ZAKADR     eleven_v4    [warmly] Pelageya and Mitya tar the boat for winter.
+  M26_6   pelageya  ru           PELAGEYA   eleven_v4    Don't throw the board away. All twenty of your years are in those notches.
+  M26_7   narrator  ru           ZAKADR     eleven_v4    Mitya's board hangs on the shed, its twenty notches showing. Pelageya hung it herself.
+  M26_8_then0 narrator  ru           ZAKADR     eleven_v4    Mitya repairs an oarlock. Their shelf dries nearby, made on the second bench at Ilya's.
+  M26_8   mitya     ru           МИТЯ       eleven_v4    Mama, hold it a little steadier. The boat has a winter to get through.
+  M26_9   narrator  ru           ZAKADR     eleven_v4    Pavel stands by the gauge, watching the water — keeping an eye on it.
+  M26_10  pavel     ru           Павел      eleven_v4    Agata kept her word! Water's back at the mark, just as before.
+  M26_11  pavel     ru           Павел      eleven_v4    You got your mother and brother out. Didn't believe we'd get the water back, too. But we did — all of us together.
+  M26_12  narrator  ru           ZAKADR     eleven_v4    Agata's inscription on the end of the first beam.
+  M26_13  narrator  ru           ZAKADR     eleven_v4    The first beam's end is blank. Ilya said everyone knows without an inscription.
+  M26_14  narrator  ru           ZAKADR     eleven_v4    Winter morning. The classroom. Nina writes the date, the same on both banks now. Children from both banks sit at the desks, Ulyana among them. At the back stands Agata, by the very desk where she once drew the bird's cap.
+  M26_15_then0 narrator  ru           ZAKADR     eleven_v4    The old map of Olkhovka hangs by the board, the tracing of Ilya's garden pinned over it. Nina shows the children how the place has changed.
+  M26_15  nina      ru           НИНА       eleven_v4    Let us begin.
+  M26_16  narrator  ru           ZAKADR     eleven_v4    Supper at Dunya's house that evening. Nina, Ilya and his wife, Agata. Tikhon on his shelf. Tamara's pot on the table.
+  M26_17  tikhon    ru           CAT-2      eleven_v4    Is it Wednesday today?
+  M26_18  nina      ru           НИНА       eleven_v4    Wednesday, Tikhon.
+  M26_19_then0 agata     ru           Agata      eleven_v4    You grumble, but you're waiting for guests yourself.
+  M26_19_then1 tikhon    ru           CAT-2      eleven_v4    Guests leave crumbs.
+  M26_19_then2 agata     ru           Agata      eleven_v4    Is that all?
+  M26_19_then3 tikhon    ru           CAT-2      eleven_v4    [warmly] They laugh, too. Keep me awake… Yet somehow I'm always very glad of it.
+  M26_19  agata     ru           Agata      eleven_v4    Wednesday.
+  M26_20  nina      ru           НИНА       eleven_v4    The blue one… It was mine! I gave it to Dunya.
+  M26_21  nina      ru           НИНА       eleven_v4    The white one… With the chip. I remember it.
+  M26_22  narrator  ru           ZAKADR     eleven_v4    Nina picks up the family photograph. Still on the little table where Agata put it.
+  M26_23_then0 narrator  ru           ZAKADR     eleven_v4    Ilya made a carved frame for the family photograph on the new workbench.
+  M26_23  narrator  ru           ZAKADR     eleven_v4    Among Dunya's things on the shelf is the family photograph. Nina straightens it.
+  M26_24  nina      ru           НИНА       eleven_v4    Dunya's sleeve is holding. Can't even see the seam.
+  M26_25  ilya_wife ru           ВАРВАРА    eleven_v4    Agata, look — the patch on Dunya's coat is holding! And Ulyana's bird looks alive.
+  M26_26  narrator  ru           ZAKADR     eleven_v4    Cups on the table — the ones they used for their first tea together by Dunya's stove.
+  M26_27  narrator  ru           ZAKADR     eleven_v4    Above the table hangs Ulyana's drawing: the guests at their first tea together.
+  M26_28  ilya      ru           ИЛЬЯ       eleven_v4    The log frame at the village edge gave us our first beam. As if it had been waiting.
+  M26_29  nina      ru           НИНА       eleven_v4    And now the children from Zarechye sit in my classroom, too.
+  M26_30  tikhon    ru           CAT-2      eleven_v4    My reception room: the stove shelf. Office hours are over.
+  M26_31  tikhon    ru           CAT-2      eleven_v4    A mat by the stove makes an office, too. Ilya hung the shelf, you know. Not you.
+  M26_32  narrator  ru           ZAKADR     eleven_v4    At night, Tikhon sleeps beside Agata's sleeping ledge.
+  M26_33  agata     ru           Agata      eleven_v4    I've finished Mama's letters. All twenty winters.
+  M26_34  nina      ru           НИНА       eleven_v4    Finish your studies. There's a bridge now — you can come and visit.
+  M26_35_then0 narrator  ru           ZAKADR     eleven_v4    The garden drawing is pinned by the door. Ulyana uses it to explain the way to Tikhon.
+  M26_35  narrator  ru           ZAKADR     eleven_v4    Ulyana runs over the new bridge — on her own, in through the front door.
+  M26_36  ulyana    ru           ЛУНЯ       eleven_v4    Sister Agata! I came over the bridge — all by myself! Can I come tomorrow, too?
+  M26_37  agata     ru           Agata      eleven_v4    [warmly] You can, Ulya! There's a bridge now — come every day if you like. And now we all share the same tomorrow.
+  O1.board.look narrator  ru           ZAKADR     eleven_v4    Chalk smears across the blackboard.
+  O1.board.prompt narrator  ru           ZAKADR     eleven_v4    What shall I write on the board?
+  O1.board.chalk_mama narrator  ru           ZAKADR     eleven_v4    Written in chalk: "Mama, I'm coming."
+  O1.board.chalk_ilya narrator  ru           ZAKADR     eleven_v4    Written in chalk: "Ilyusha, I found your drawing."
+  O1.board.chalk_none narrator  ru           ZAKADR     eleven_v4    The chalk stays in my bag. The board can wait.
+  O1.board.chalk_late narrator  ru           ZAKADR     eleven_v4    No need to write now. Mama has come herself.
+  O1.sack.use narrator  ru           ZAKADR     eleven_v4    Patch upon patch. They kept the old cloth as long as there was anything left to sew a new patch onto.
+  O1.sack.look narrator  ru           ZAKADR     eleven_v4    A sack by the wall, covered in patches.
+  O1.notebooks.look narrator  ru           ZAKADR     eleven_v4    Filled exercise books are stacked on the windowsill.
+  O1.teacher_drawer.use narrator  ru           ZAKADR     eleven_v4    In the drawer bearing the school seal is a photograph of the old bridge. The handrail rope is fastened to the near pier's plate; Pelageya's boat is beside it. Beneath lies a child's drawing of a bridge and boat. A sheet of paper, too: different inks, yellowed edges.
+  O1.teacher_drawer.look narrator  ru           ZAKADR     eleven_v4    The teacher's desk drawer bears the school seal.
+  O1.chalk.use narrator  ru           ZAKADR     eleven_v4    The chalk from the desk leaves white traces on my fingers.
+  O1.chalk.look narrator  ru           ZAKADR     eleven_v4    A piece of chalk on the desk.
+  O1.bird_drawing.late narrator  ru           ZAKADR     eleven_v4    Ulya has seen the bird already. I'll leave it as it is.
+  O1.bird_drawing.look narrator  ru           ZAKADR     eleven_v4    In the margin of a school poster is a little bird in a cap and boots.
+  O1.v03.done narrator  ru           ZAKADR     eleven_v4    The boots can stay. A pity whoever drew them didn't leave a name.
+  O1.exit_H3.closed narrator  ru           ZAKADR     eleven_v4    The door won't stay in the frame yet.
+  O2.porch_step.mitten_late narrator  ru           ZAKADR     eleven_v4    The road no longer goes in circles. My mitten can stay in my bag.
+  O2.porch_step.look narrator  ru           ZAKADR     eleven_v4    The steps are covered in trampled snow.
+  M2.office_door.use narrator  ru           ZAKADR     eleven_v4    The office door won't budge. The gap by the jamb is dark: a bolt holds it shut from inside.
+  M2.office_door.look narrator  ru           ZAKADR     eleven_v4    It won't open: bolted from inside. No breaking down that oak door.
+  M2.office_door_open.use narrator  ru           ZAKADR     eleven_v4    Pavel and Agata lean against the door together. It gives with a creak. The office is open.
+  M2.office_door_open.look narrator  ru           ZAKADR     eleven_v4    The bolt is out of its brackets; the door has moved a little.
+  M2.photo.use narrator  ru           ZAKADR     eleven_v4    An old photograph of the office interior. The framed mirror hangs in its proper place on the wall.
+  M2.photo.look narrator  ru           ZAKADR     eleven_v4    The old photograph shows the office interior.
+  M2.exit_M3.closed narrator  ru           ZAKADR     eleven_v4    The office won't open: the bolt holds it shut from inside.
+  M3.key_nail.use narrator  ru           ZAKADR     eleven_v4    Agata lifts the lever off the nail. Heavy and cold — into the bag it goes.
+  M3.key_nail.look narrator  ru           ZAKADR     eleven_v4    An iron lever with a carved handle hangs on a nail. Its socket is square.
+  M3.journal.use narrator  ru           ZAKADR     eleven_v4    The manager's last entry: "Sluice shut for the night. Lever on the nail. Gone home." Last year's date. Below: "Drain one notch at a time and wait, or the banks will give way." The water needed for milling is marked, too.
+  M3.journal.look narrator  ru           ZAKADR     eleven_v4    The office ledgers lie open.
+  M3.clamp.look narrator  ru           ZAKADR     eleven_v4    A sound clamp on the manager's desk.
+  M3.gauge.look narrator  ru           ZAKADR     eleven_v4    A measuring staff stands in the water outside the window. It shows the level in the pond.
+  M3.answer.prompt narrator  ru           ZAKADR     eleven_v4    How can I persuade Pavel?
+  M4.gate.key narrator  ru           ZAKADR     eleven_v4    The lever fits into the winch's socket.
+  M4.gate.look narrator  ru           ZAKADR     eleven_v4    The pond sluice: a winch and a notched arc. The ledger says: open one notch at a time, then wait for the water to fall.
+  M4.gate.locked narrator  ru           ZAKADR     eleven_v4    I can't turn the winch without its lever. The sluice lever is in the office.
+  M4.gate.tarred narrator  ru           ZAKADR     eleven_v4    Agata greases the winch's axle with tar. The winch creaks — and turns.
+  M4.water.look narrator  ru           ZAKADR     eleven_v4    Water in the channel by the sluice. The mill pond holds it back.
+  O4.exit_O2.closed narrator  ru           ZAKADR     eleven_v4    The school path is buried knee-deep in snow. I can't get through alone.
+  O3.clock.look narrator  ru           ZAKADR     eleven_v4    Mama's wall clock. Its pendulum swings steadily, without hurry.
+  O3.dunya_mirror.look narrator  ru           ZAKADR     eleven_v4    A little mirror in a wooden frame. It doesn't show the parlour — it shows Dunya's stove. And the armchair.
+  O3.window.look narrator  ru           ZAKADR     eleven_v4    Snow outside. Twenty winters spent apart. This is the first we'll share.
+  O3.icon.look narrator  ru           ZAKADR     eleven_v4    An embroidered towel hangs by the icon, and the little oil lamp is lit.
+  O1d.ulyana.prompt narrator  ru           ZAKADR     eleven_v4    What shall I ask Ulyana?
+  O4.mitya.prompt narrator  ru           ZAKADR     eleven_v4    What shall I talk to Mitya about?
+  O2d.mitten_path.take narrator  ru           ZAKADR     eleven_v4    Agata picks up her mitten without a word. Beyond the gate, the path leads home now.
+  O2d.mitten_path.look narrator  ru           ZAKADR     eleven_v4    The mitten lies where Agata left it. But beyond the gate, the road has changed.
+  O4.mitya_board.look narrator  ru           ZAKADR     eleven_v4    A little notched board — Mitya's.
+  O4.mitya_board.prompt narrator  ru           ZAKADR     eleven_v4    What should happen to the board?
+  O4.letters_bag.look narrator  ru           ZAKADR     eleven_v4    A year's worth of letters. The sack is almost empty.
+  O4.letters_bag.prompt narrator  ru           ZAKADR     eleven_v4    How will Aksinya get her letters now?
+  O3.nina.ribbon narrator  ru           ZAKADR     eleven_v4    Mama's ribbon. Nina weaves it into Agata's braid without a word — as she used to on feast days.
+  O1q.village_map.look narrator  ru           ZAKADR     eleven_v4    Nina has hung up the school map of Olkhovka for the lesson.
+  O1q.village_map.prompt narrator  ru           ZAKADR     eleven_v4    Where should the tracing go?
+  O1q.village_map.look_old narrator  ru           ZAKADR     eleven_v4    Tracing paper over the old map of Olkhovka, with Ilya's garden drawn on it.
+  O1q.village_map.look_new narrator  ru           ZAKADR     eleven_v4    The old map of Olkhovka. We gave Ulyana the tracing with the garden.
+  O4q.workshop.look narrator  ru           ZAKADR     eleven_v4    Ilya's workshop shed, in his yard. Wood shavings spill right to the doorstep.
+  O4q.workshop.look_ilya narrator  ru           ZAKADR     eleven_v4    Ilya's workshop. A second bench by the door — room for three now.
+  O4q.workshop.look_agata narrator  ru           ZAKADR     eleven_v4    Ilya's workshop. We moved the second bench to Dunya's workshop.
+  квота: осталось 31805 из 179889, запас 0, к синтезу ≤ 7453 кредитов (оценка сверху)
+  N01_0              синтез: 3.06 с, -17.0 LUFS, TP -4.3 dB (усиление +4.1 dB)
+  N01_1              синтез: 6.49 с, -17.0 LUFS, TP -2.3 dB (усиление +0.2 dB)
+  N01_2              синтез: 3.34 с, -17.0 LUFS, TP -2.0 dB (усиление +2.3 dB)
+  N01_3              синтез: 5.76 с, -17.1 LUFS, TP -2.0 dB (усиление +5.5 dB)
+  M19c_4             синтез: 1.40 с, -17.0 LUFS, TP -3.9 dB (усиление -1.5 dB)
+  M19c_5             синтез: 17.86 с, -17.0 LUFS, TP -4.1 dB (усиление +0.7 dB)
+  M19c_6             синтез: 3.64 с, -16.9 LUFS, TP -7.5 dB (усиление -1.7 dB)
+  M19c_7             синтез: 4.33 с, -17.0 LUFS, TP -8.6 dB (усиление -1.8 dB)
+  M19c_8             синтез: 5.76 с, -16.9 LUFS, TP -5.4 dB (усиление -0.2 dB)
+  M20_0              синтез: 9.80 с, -17.0 LUFS, TP -3.4 dB (усиление -1.6 dB)
+  M20_1              синтез: 4.83 с, -17.0 LUFS, TP -5.0 dB (усиление -2.0 dB)
+  M20_2              синтез: 2.70 с, -17.0 LUFS, TP -3.0 dB (усиление +0.7 dB)
+  M20_3              синтез: 4.55 с, -16.9 LUFS, TP -5.1 dB (усиление +3.2 dB)
+  M20_4_then0        синтез: 6.14 с, -17.0 LUFS, TP -1.9 dB (усиление +2.8 dB)
+  M20_4_then1        синтез: 3.55 с, -17.1 LUFS, TP -4.6 dB (усиление -0.6 dB)
+  M20_4              синтез: 5.04 с, -17.0 LUFS, TP -3.9 dB (усиление +4.3 dB)
+  M20_5              синтез: 2.99 с, -16.9 LUFS, TP -7.1 dB (усиление +0.3 dB)
+  M20_6              синтез: 7.76 с, -17.0 LUFS, TP -5.1 dB (усиление -3.1 dB)
+  M20_7              синтез: 3.41 с, -17.0 LUFS, TP -5.3 dB (усиление -3.0 dB)
+  M20_8              синтез: 5.11 с, -17.0 LUFS, TP -4.1 dB (усиление +0.2 dB)
+  M20_9              синтез: 5.96 с, -16.9 LUFS, TP -8.6 dB (усиление -2.1 dB)
+  M20_10             синтез: 5.44 с, -16.9 LUFS, TP -5.6 dB (усиление -2.2 dB)
+  N02_0              синтез: 9.10 с, -17.0 LUFS, TP -3.2 dB (усиление -0.9 dB)
+  M21_0_then0        синтез: 4.35 с, -17.3 LUFS, TP -1.9 dB (усиление +6.2 dB)
+  M21_0              синтез: 6.59 с, -16.9 LUFS, TP -6.7 dB (усиление -0.6 dB)
+  M21_1              синтез: 2.86 с, -16.9 LUFS, TP -4.1 dB (усиление +4.7 dB)
+  M21_2              синтез: 11.21 с, -17.0 LUFS, TP -5.6 dB (усиление -0.6 dB)
+  M21b_0             синтез: 2.10 с, -17.0 LUFS, TP -8.7 dB (усиление +2.6 dB)
+  M21b_1             синтез: 6.15 с, -16.8 LUFS, TP -5.8 dB (усиление -0.9 dB)
+  M21b_2             синтез: 2.60 с, -16.9 LUFS, TP -8.7 dB (усиление -1.8 dB)
+  M21b_3             синтез: 7.17 с, -17.0 LUFS, TP -5.6 dB (усиление -3.0 dB)
+  M21b_4             синтез: 4.82 с, -17.0 LUFS, TP -5.6 dB (усиление -0.4 dB)
+  M22_0              синтез: 9.71 с, -17.0 LUFS, TP -2.3 dB (усиление -0.5 dB)
+  M22_1              синтез: 8.94 с, -17.0 LUFS, TP -2.7 dB (усиление -0.9 dB)
+  M22_2              синтез: 8.25 с, -17.0 LUFS, TP -4.2 dB (усиление -1.7 dB)
+  M22_3              синтез: 6.25 с, -17.0 LUFS, TP -3.5 dB (усиление -1.8 dB)
+  M22_4              синтез: 6.88 с, -17.0 LUFS, TP -5.2 dB (усиление -2.5 dB)
+  M22_5              синтез: 2.42 с, -17.0 LUFS, TP -4.8 dB (усиление +0.8 dB)
+  M22_6              синтез: 8.97 с, -17.0 LUFS, TP -3.1 dB (усиление -1.5 dB)
+  M22_7              синтез: 2.69 с, -17.0 LUFS, TP -2.1 dB (усиление +0.2 dB)
+  M22_8              синтез: 2.59 с, -16.9 LUFS, TP -5.4 dB (усиление -3.2 dB)
+  M22_9              синтез: 1.27 с, -16.9 LUFS, TP -9.2 dB (усиление -4.5 dB)
+  M22_10             синтез: 1.11 с, -17.0 LUFS, TP -7.9 dB (усиление -3.5 dB)
+  M22_11             синтез: 3.19 с, -16.8 LUFS, TP -1.9 dB (усиление +3.2 dB)
+  M22_12_then0       синтез: 5.43 с, -17.2 LUFS, TP -1.9 dB (усиление +1.0 dB)
+  M22_12             синтез: 4.32 с, -17.0 LUFS, TP -2.0 dB (усиление +0.9 dB)
+  M22_13             синтез: 4.86 с, -17.0 LUFS, TP -2.9 dB (усиление +4.9 dB)
+  M22_14_then0       синтез: 4.35 с, -17.1 LUFS, TP -1.9 dB (усиление +2.0 dB)
+  M22_14_then1       синтез: 3.24 с, -16.9 LUFS, TP -4.6 dB (усиление +0.2 dB)
+  M22_14_then2       синтез: 5.31 с, -17.0 LUFS, TP -1.9 dB (усиление +5.4 dB)
+  M22_14_then3       синтез: 2.68 с, -17.0 LUFS, TP -3.9 dB (усиление -0.2 dB)
+  M22_14             синтез: 2.84 с, -17.0 LUFS, TP -5.1 dB (усиление +0.0 dB)
+  M22_15_then0       синтез: 9.53 с, -17.0 LUFS, TP -7.4 dB (усиление -0.7 dB)
+  M22_15_then1       синтез: 6.01 с, -17.2 LUFS, TP -2.0 dB (усиление +4.4 dB)
+  M22_15             синтез: 9.14 с, -16.9 LUFS, TP -6.8 dB (усиление -0.8 dB)
+  M23a_0             синтез: 9.07 с, -17.0 LUFS, TP -4.7 dB (усиление -2.0 dB)
+  M23a_1             синтез: 7.06 с, -17.0 LUFS, TP -4.4 dB (усиление -1.8 dB)
+  M23a_2             синтез: 4.17 с, -17.0 LUFS, TP -2.7 dB (усиление -1.8 dB)
+  M23a_3             синтез: 6.90 с, -16.9 LUFS, TP -5.6 dB (усиление -1.7 dB)
+  M23a_4             синтез: 8.23 с, -17.0 LUFS, TP -3.4 dB (усиление -1.1 dB)
+  M23a_5_then0       синтез: 5.05 с, -17.0 LUFS, TP -3.8 dB (усиление -1.5 dB)
+  M23a_5             синтез: 5.11 с, -16.9 LUFS, TP -3.8 dB (усиление -0.3 dB)
+  M23b_0             синтез: 5.85 с, -16.9 LUFS, TP -4.0 dB (усиление -2.8 dB)
+  M23b_1             синтез: 2.79 с, -17.0 LUFS, TP -4.9 dB (усиление -2.4 dB)
+  M23b_2             синтез: 3.80 с, -17.0 LUFS, TP -5.3 dB (усиление -3.0 dB)
+  M23b_3             синтез: 5.08 с, -17.0 LUFS, TP -3.0 dB (усиление +0.0 dB)
+  M23b_4             синтез: 2.14 с, -17.0 LUFS, TP -4.5 dB (усиление -1.2 dB)
+  M23b_5             синтез: 5.51 с, -17.0 LUFS, TP -3.3 dB (усиление -1.2 dB)
+  M23b_6             синтез: 2.33 с, -17.0 LUFS, TP -6.5 dB (усиление -1.7 dB)
+  M23b_7_then0       синтез: 7.78 с, -17.0 LUFS, TP -2.1 dB (усиление -0.9 dB)
+  M23b_7             синтез: 8.96 с, -17.0 LUFS, TP -2.4 dB (усиление -1.3 dB)
+  M23b_8_then0       синтез: 6.55 с, -16.9 LUFS, TP -4.5 dB (усиление -2.0 dB)
+  M23b_8             синтез: 4.26 с, -17.0 LUFS, TP -4.5 dB (усиление -2.6 dB)
+  M23b_9             синтез: 7.87 с, -17.0 LUFS, TP -5.5 dB (усиление -3.3 dB)
+  M23c_0             синтез: 9.78 с, -17.0 LUFS, TP -3.1 dB (усиление -1.4 dB)
+  M23c_1             синтез: 2.69 с, -17.0 LUFS, TP -7.7 dB (усиление -1.4 dB)
+  M23c_2             синтез: 3.43 с, -16.9 LUFS, TP -6.9 dB (усиление -3.7 dB)
+  M23c_3             синтез: 9.01 с, -17.0 LUFS, TP -6.5 dB (усиление +0.1 dB)
+  M23c_4             синтез: 2.68 с, -17.0 LUFS, TP -6.9 dB (усиление -4.7 dB)
+  M23c_5             синтез: 2.42 с, -16.9 LUFS, TP -3.9 dB (усиление -1.2 dB)
+  M23c_6             синтез: 3.24 с, -17.0 LUFS, TP -5.1 dB (усиление +1.5 dB)
+  M23c_7             синтез: 2.47 с, -17.0 LUFS, TP -4.0 dB (усиление +0.5 dB)
+  M23c_8             синтез: 4.19 с, -16.9 LUFS, TP -6.0 dB (усиление +0.8 dB)
+  M23d_1             синтез: 6.20 с, -17.0 LUFS, TP -3.6 dB (усиление +1.6 dB)
+  M23d_2             синтез: 7.65 с, -17.0 LUFS, TP -6.7 dB (усиление +0.5 dB)
+  M23d_3             синтез: 6.51 с, -17.0 LUFS, TP -4.1 dB (усиление -1.6 dB)
+  M23d_4_then0       синтез: 5.42 с, -16.9 LUFS, TP -3.1 dB (усиление +0.0 dB)
+  M23d_4             синтез: 2.35 с, -16.9 LUFS, TP -3.0 dB (усиление +3.6 dB)
+  M23d_5             синтез: 6.19 с, -17.0 LUFS, TP -4.4 dB (усиление +1.4 dB)
+  M23d_6_then0       синтез: 8.15 с, -17.0 LUFS, TP -3.6 dB (усиление +1.6 dB)
+  M23d_6_then1       синтез: 2.96 с, -17.0 LUFS, TP -4.2 dB (усиление +1.8 dB)
+  M24_0              синтез: 12.77 с, -17.0 LUFS, TP -4.1 dB (усиление -1.0 dB)
+  M24_1              синтез: 6.86 с, -17.0 LUFS, TP -4.1 dB (усиление -1.9 dB)
+  M25_0              синтез: 7.58 с, -17.0 LUFS, TP -3.7 dB (усиление -2.4 dB)
+  M25_1              синтез: 5.19 с, -17.0 LUFS, TP -5.1 dB (усиление -2.8 dB)
+  M25_2              синтез: 3.36 с, -17.0 LUFS, TP -1.9 dB (усиление +0.6 dB)
+  M25_3              синтез: 3.63 с, -17.0 LUFS, TP -6.8 dB (усиление -4.2 dB)
+  M25_4              синтез: 2.96 с, -17.0 LUFS, TP -5.0 dB (усиление -3.1 dB)
+  M25_5              синтез: 4.10 с, -17.0 LUFS, TP -4.8 dB (усиление -3.0 dB)
+  M25_7              синтез: 6.14 с, -17.0 LUFS, TP -2.7 dB (усиление -1.0 dB)
+  M25_8              синтез: 4.38 с, -17.0 LUFS, TP -3.6 dB (усиление -0.1 dB)
+  M26_0              синтез: 8.09 с, -17.0 LUFS, TP -4.1 dB (усиление -2.0 dB)
+  M26_1              синтез: 2.42 с, -17.0 LUFS, TP -5.2 dB (усиление -1.3 dB)
+  M26_2              синтез: 4.55 с, -16.8 LUFS, TP -5.3 dB (усиление -3.3 dB)
+  M26_3              синтез: 6.48 с, -17.0 LUFS, TP -4.6 dB (усиление -2.0 dB)
+  M26_4              синтез: 5.31 с, -16.9 LUFS, TP -3.8 dB (усиление -1.3 dB)
+  M26_5              синтез: 2.96 с, -17.0 LUFS, TP -7.3 dB (усиление -3.1 dB)
+  M26_6              синтез: 4.49 с, -16.9 LUFS, TP -5.5 dB (усиление -1.6 dB)
+  M26_7              синтез: 5.91 с, -17.0 LUFS, TP -5.1 dB (усиление -2.2 dB)
+  M26_8_then0        синтез: 5.91 с, -17.0 LUFS, TP -4.7 dB (усиление -2.5 dB)
+  M26_8              синтез: 4.30 с, -17.0 LUFS, TP -4.6 dB (усиление -1.6 dB)
+  M26_9              синтез: 4.38 с, -17.0 LUFS, TP -5.1 dB (усиление -1.9 dB)
+  M26_10             синтез: 4.56 с, -17.0 LUFS, TP -6.5 dB (усиление -3.0 dB)
+  M26_11             синтез: 6.80 с, -17.0 LUFS, TP -6.0 dB (усиление -3.0 dB)
+  M26_12             синтез: 3.11 с, -17.1 LUFS, TP -3.6 dB (усиление -1.7 dB)
+  M26_13             синтез: 6.17 с, -17.0 LUFS, TP -4.2 dB (усиление -2.5 dB)
+  M26_14             синтез: 15.82 с, -17.0 LUFS, TP -2.6 dB (усиление -1.5 dB)
+  M26_15_then0       синтез: 8.90 с, -17.0 LUFS, TP -4.7 dB (усиление -2.5 dB)
+  M26_15             синтез: 1.20 с, -17.0 LUFS, TP -6.0 dB (усиление -0.7 dB)
+  M26_16             синтез: 8.98 с, -17.0 LUFS, TP -3.0 dB (усиление -1.7 dB)
+  M26_17             синтез: 1.66 с, -16.9 LUFS, TP -3.2 dB (усиление -0.3 dB)
+  M26_18             синтез: 1.79 с, -17.0 LUFS, TP -6.5 dB (усиление -0.9 dB)
+  M26_19_then0       синтез: 3.25 с, -17.1 LUFS, TP -3.5 dB (усиление -0.1 dB)
+  M26_19_then1       синтез: 1.84 с, -17.0 LUFS, TP -3.0 dB (усиление +0.7 dB)
+  M26_19_then2       синтез: 0.98 с, -16.9 LUFS, TP -5.9 dB (усиление -3.2 dB)
+  M26_19_then3       синтез: 6.22 с, -17.1 LUFS, TP -4.6 dB (усиление -0.9 dB)
+  M26_19             синтез: 0.81 с, -16.9 LUFS, TP -3.3 dB (усиление -1.1 dB)
+  M26_20             синтез: 4.19 с, -16.9 LUFS, TP -8.2 dB (усиление -2.7 dB)
+  M26_21             синтез: 4.08 с, -16.9 LUFS, TP -7.2 dB (усиление -0.4 dB)
+  M26_22             синтез: 5.06 с, -17.0 LUFS, TP -4.5 dB (усиление -1.8 dB)
+  M26_23_then0       синтез: 4.32 с, -17.0 LUFS, TP -4.4 dB (усиление -2.6 dB)
+  M26_23             синтез: 5.25 с, -17.0 LUFS, TP -4.4 dB (усиление -2.8 dB)
+  M26_24             синтез: 3.64 с, -17.0 LUFS, TP -7.6 dB (усиление -1.5 dB)
+  M26_25             синтез: 6.19 с, -17.0 LUFS, TP -5.3 dB (усиление -2.3 dB)
+  M26_26             синтез: 5.09 с, -17.0 LUFS, TP -4.9 dB (усиление -2.3 dB)
+  M26_27             синтез: 5.44 с, -17.0 LUFS, TP -4.2 dB (усиление -1.9 dB)
+  M26_28             синтез: 5.08 с, -17.0 LUFS, TP -4.4 dB (усиление -1.9 dB)
+  M26_29             синтез: 3.74 с, -16.9 LUFS, TP -7.5 dB (усиление -2.0 dB)
+  M26_30             синтез: 4.92 с, -17.0 LUFS, TP -2.9 dB (усиление -0.9 dB)
+  M26_31             синтез: 5.73 с, -17.1 LUFS, TP -3.0 dB (усиление -0.7 dB)
+  M26_32             синтез: 3.86 с, -16.9 LUFS, TP -4.2 dB (усиление -1.5 dB)
+  M26_33             синтез: 3.66 с, -16.9 LUFS, TP -4.3 dB (усиление -0.4 dB)
+  M26_34             синтез: 4.13 с, -16.8 LUFS, TP -8.1 dB (усиление -1.4 dB)
+  M26_35_then0       синтез: 5.50 с, -17.0 LUFS, TP -6.4 dB (усиление -3.3 dB)
+  M26_35             синтез: 4.59 с, -17.0 LUFS, TP -6.5 dB (усиление -3.5 dB)
+  M26_36             синтез: 6.01 с, -17.0 LUFS, TP -1.9 dB (усиление +2.5 dB)
+  M26_37             синтез: 6.95 с, -17.0 LUFS, TP -4.1 dB (усиление -1.8 dB)
+  O1.board.look      синтез: 2.34 с, -17.0 LUFS, TP -4.9 dB (усиление -2.9 dB)
+  O1.board.prompt    синтез: 1.77 с, -17.0 LUFS, TP -6.1 dB (усиление -3.2 dB)
+  O1.board.chalk_mama синтез: 3.28 с, -17.1 LUFS, TP -4.7 dB (усиление -2.3 dB)
+  O1.board.chalk_ilya синтез: 3.66 с, -16.9 LUFS, TP -5.3 dB (усиление -3.4 dB)
+  O1.board.chalk_none синтез: 3.18 с, -17.2 LUFS, TP -5.6 dB (усиление -3.2 dB)
+  O1.board.chalk_late синтез: 3.08 с, -17.2 LUFS, TP -5.3 dB (усиление -3.1 dB)
+  O1.sack.use        синтез: 6.33 с, -17.0 LUFS, TP -4.9 dB (усиление -2.5 dB)
+  O1.sack.look       синтез: 2.89 с, -17.0 LUFS, TP -4.0 dB (усиление -1.4 dB)
+  O1.notebooks.look  синтез: 3.26 с, -17.0 LUFS, TP -5.5 dB (усиление -2.1 dB)
+  O1.teacher_drawer.use синтез: 17.60 с, -17.0 LUFS, TP -4.1 dB (усиление -2.2 dB)
+  O1.teacher_drawer.look синтез: 3.07 с, -17.0 LUFS, TP -5.1 dB (усиление -1.5 dB)
+  O1.chalk.use       синтез: 3.61 с, -17.0 LUFS, TP -3.8 dB (усиление -1.5 dB)
+  O1.chalk.look      синтез: 1.93 с, -17.0 LUFS, TP -5.1 dB (усиление -2.0 dB)
+  O1.bird_drawing.late синтез: 3.44 с, -16.9 LUFS, TP -6.0 dB (усиление -3.6 dB)
+  O1.bird_drawing.look синтез: 4.47 с, -17.0 LUFS, TP -3.8 dB (усиление -2.6 dB)
+  O1.v03.done        синтез: 4.18 с, -17.0 LUFS, TP -3.0 dB (усиление -1.0 dB)
+  O1.exit_H3.closed  синтез: 2.10 с, -17.0 LUFS, TP -6.0 dB (усиление -4.3 dB)
+  O2.porch_step.mitten_late синтез: 4.43 с, -16.9 LUFS, TP -5.7 dB (усиление -3.5 dB)
+  O2.porch_step.look синтез: 2.59 с, -17.0 LUFS, TP -4.7 dB (усиление -0.9 dB)
+  M2.office_door.use синтез: 6.32 с, -17.0 LUFS, TP -4.1 dB (усиление -1.5 dB)
+  M2.office_door.look синтез: 4.85 с, -17.0 LUFS, TP -5.8 dB (усиление -3.4 dB)
+  M2.office_door_open.use синтез: 6.45 с, -17.0 LUFS, TP -3.6 dB (усиление -2.1 dB)
+  M2.office_door_open.look синтез: 3.76 с, -17.0 LUFS, TP -4.8 dB (усиление -2.2 dB)
+  M2.photo.use       синтез: 6.17 с, -17.0 LUFS, TP -4.3 dB (усиление -2.0 dB)
+  M2.photo.look      синтез: 2.82 с, -17.0 LUFS, TP -5.2 dB (усиление -3.6 dB)
+  M2.exit_M3.closed  синтез: 3.92 с, -17.0 LUFS, TP -4.7 dB (усиление -2.7 dB)
+  M3.key_nail.use    синтез: 5.59 с, -17.0 LUFS, TP -4.2 dB (усиление -2.3 dB)
+  M3.key_nail.look   синтез: 5.27 с, -17.0 LUFS, TP -4.6 dB (усиление -1.9 dB)
+  M3.journal.use     синтез: 15.90 с, -17.0 LUFS, TP -3.5 dB (усиление -2.1 dB)
+  M3.journal.look    синтез: 2.11 с, -17.2 LUFS, TP -4.7 dB (усиление -2.3 dB)
+  M3.clamp.look      синтез: 2.33 с, -17.0 LUFS, TP -4.5 dB (усиление -2.0 dB)
+  M3.gauge.look      синтез: 5.47 с, -17.0 LUFS, TP -5.3 dB (усиление -2.2 dB)
+  M3.answer.prompt   синтез: 1.95 с, -17.0 LUFS, TP -3.5 dB (усиление +0.2 dB)
+  M4.gate.key        синтез: 2.42 с, -17.0 LUFS, TP -4.4 dB (усиление -2.7 dB)
+  M4.gate.look       синтез: 8.74 с, -17.0 LUFS, TP -3.3 dB (усиление -1.4 dB)
+  M4.gate.locked     синтез: 4.52 с, -17.0 LUFS, TP -5.3 dB (усиление -2.6 dB)
+  M4.gate.tarred     синтез: 5.76 с, -17.0 LUFS, TP -3.5 dB (усиление -1.1 dB)
+  M4.water.look      синтез: 4.18 с, -17.0 LUFS, TP -5.4 dB (усиление -2.1 dB)
+  O4.exit_O2.closed  синтез: 4.80 с, -17.0 LUFS, TP -4.2 dB (усиление -1.4 dB)
+  O3.clock.look      синтез: 4.90 с, -17.0 LUFS, TP -4.1 dB (усиление -1.8 dB)
+  O3.dunya_mirror.look синтез: 6.84 с, -16.8 LUFS, TP -5.3 dB (усиление -2.7 dB)
+  O3.window.look     синтез: 5.69 с, -17.0 LUFS, TP -3.8 dB (усиление +0.0 dB)
+  O3.icon.look       синтез: 4.71 с, -16.9 LUFS, TP -4.3 dB (усиление -2.2 dB)
+  O1d.ulyana.prompt  синтез: 1.72 с, -17.0 LUFS, TP -6.7 dB (усиление -2.5 dB)
+  O4.mitya.prompt    синтез: 2.02 с, -17.0 LUFS, TP -6.8 dB (усиление -2.4 dB)
+  O2d.mitten_path.take синтез: 5.53 с, -17.0 LUFS, TP -3.6 dB (усиление -1.1 dB)
+  O2d.mitten_path.look синтез: 5.10 с, -17.0 LUFS, TP -4.8 dB (усиление -2.9 dB)
+  O4.mitya_board.look синтез: 2.43 с, -17.0 LUFS, TP -6.0 dB (усиление -3.6 dB)
+  O4.mitya_board.prompt синтез: 1.76 с, -17.0 LUFS, TP -4.6 dB (усиление -1.4 dB)
+  O4.letters_bag.look синтез: 3.78 с, -17.0 LUFS, TP -4.3 dB (усиление -1.4 dB)
+  O4.letters_bag.prompt синтез: 2.28 с, -17.0 LUFS, TP -5.6 dB (усиление -2.7 dB)
+  O3.nina.ribbon     синтез: 6.67 с, -17.0 LUFS, TP -4.2 dB (усиление -1.7 dB)
+  O1q.village_map.look синтез: 3.51 с, -17.0 LUFS, TP -5.1 dB (усиление -2.8 dB)
+  O1q.village_map.prompt синтез: 1.62 с, -17.1 LUFS, TP -5.0 dB (усиление -1.7 dB)
+  O1q.village_map.look_old синтез: 4.99 с, -17.0 LUFS, TP -4.1 dB (усиление -2.5 dB)
+  O1q.village_map.look_new синтез: 4.79 с, -16.9 LUFS, TP -5.6 dB (усиление -3.5 dB)
+  O4q.workshop.look  синтез: 5.30 с, -17.0 LUFS, TP -4.7 dB (усиление -2.5 dB)
+  O4q.workshop.look_ilya синтез: 4.61 с, -16.9 LUFS, TP -4.6 dB (усиление -3.3 dB)
+  O4q.workshop.look_agata синтез: 4.32 с, -17.0 LUFS, TP -5.5 dB (усиление -2.7 dB)
+[EN_full] синтезировано 206, переобработано 0, ошибок 0; символов текста 14906; списано кредитов (character-cost): 6558, изменение счётчика подписки: 5762
   предупреждение: H2d.nina_mirror.watch_again: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: M02_6: устарела (нет в сценах) — игра покажет только субтитры
   предупреждение: mitya:O4.mitya_board.use: устарела (текст изменён) — игра покажет только субтитры
