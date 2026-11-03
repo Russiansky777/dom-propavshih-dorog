@@ -24,11 +24,13 @@ python3 -I "$ROOT/tools/validate_actor_actions.py" --quiet 2>&1 | tee -a "$BUILD
 python3 -I "$ROOT/tools/test_web_sheets.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # I-T4b: веб-копии листов k× (доля, поля, без смешения кусков), пресеты: веб — web_atlas без полных листов, ПК — 2,25×
 
 "$ROOT/tools/sync_story_data.sh" | tee -a "$BUILD_DIR/logs/tests.log"
+python3 -I "$ROOT/tools/build_story_en.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английская копия свежая (03.11)
 "$ROOT/tools/sync_music.sh" | tee -a "$BUILD_DIR/logs/tests.log"  # музыка: assets/music → game/assets/music (импорт loop=false)
 "$ROOT/tools/sync_voice.sh" | tee -a "$BUILD_DIR/logs/tests.log"  # голос: assets/voice/ru → game/assets/voice/ru (импорт loop=false)
 python3 -I "$ROOT/tools/validate_music.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # музыка: data/story/music.json
 python3 -I "$ROOT/tools/validate_sfx.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # звуки: data/story/sfx.json, громкость относительно музыки
 python3 -I "$ROOT/tools/validate_voice.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # голос: манифест ↔ сцены (sha1), cast.json, громкость, копия игры
+python3 -I "$ROOT/tools/validate_voice_en.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский голос (03.11): assets/voice/en ↔ game/data/story_en, копия игры
 python3 -I "$ROOT/tools/voice_after_h59.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || echo "[voice] список перезаписи после H59 устарел — python3 tools/voice_after_h59.py (предупреждение)" | tee -a "$BUILD_DIR/logs/tests.log"  # H5/H44/G57: строки, ждущие финальной записи после H59
 godot_import
 
@@ -88,6 +90,10 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0111_k1.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение Директора 01.11, группа К1: полка Тихона вверх, синица в шапке, Пелагея у лодки, чашка, фонарь Мити, Митя у дома Ильи, стул у мамы, мешок и дощечка, пальто на крючке, рукав одним щелчком, дождь в кадре мельницы, канат в кадрах пролёта, «В лодку» только при лодке
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0111_k2.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение Директора 01.11, группа К2+В: дощечка сигналов, лист на мельнице, сумка на 10, часы, снег за окнами, туман чердака, обрезка осмотров и зеркала, фонарь, рыбалка, подпись ворота, вода M1/M4/Z3
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0111_T.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение Директора 01.11, группа Т: снятые/новые слова (стр. 12, 24–70), фраза-переход Тихона (стр. 62), акценты в запросе K24 и ожидание перезаписи
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0211.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение Директора 02.11 (утро)
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0211b.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение 02.11 (вечер), блок А: мел у парты, плита без каната, свет окон, рыбалка, полки
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0211c.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение 02.11 (вечер), блок Б: хвост и жесты Тихона, окунь, удочка, переправа, Тихон в кадре ужина
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_l10n.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский (03.11): копия story_en, английские субтитры поверх русского голоса, «без субтитров», меню языка с предупреждением
 # K (31.10): правки дефектов генератора — третий сапог Пелагеи (F_hug_pelageya), одинаковые зарубки бруса и обведённая
 # нужная на рисунке Дуни (M05): копии в игре = оригинал + правка (нужен Pillow; numpy — для кадра объятия)
 if python3 -c "import PIL, numpy" 2>/dev/null; then

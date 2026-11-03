@@ -1,0 +1,782 @@
+{
+ "episode": 2,
+ "title": "Мельница: зеркало конторы и колокол",
+ "target_minutes": [
+  12,
+  16
+ ],
+ "premise": "День второй, первая половина (Docs/SCENARIO_FINAL.md §7, M09–M14; «Утро» — конец сцены N01 блока 1). Мельник Павел год живёт один; контора заперта изнутри: в ночь паводка дверь перекосило, засов сам упал в скобы (Р4). Зеркало конторы на тётиной стойке показывает контору сейчас — это проверяется фонарём Павла; звоном колокола Агата ведёт его крюк к засову. В конторе — рычаг затвора, журнал и струбцина; затвор открывают по зарубке и ждут спада. Эха нет: в зеркале живой Павел.",
+ "scenes": [
+  {
+   "id": "M09",
+   "type": "main",
+   "title": "Запертая контора",
+   "locations": [
+    "M1"
+   ],
+   "requires": {
+    "flags": [
+     "done_N01"
+    ],
+    "items": []
+   },
+   "_requires_note": "День второй начинается после «Ночи у печи» (N01, блок 1): её утро — Тихон просит не звонить в колокол с утра (H23) и сохранение «День второй»; цель в журнале со вчера — цель N01.",
+   "grants": {
+    "flags": [
+     "done_M09",
+     "met_pavel"
+    ],
+    "items": []
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "pavel",
+     "text": "Dunya's niece, you say?… Well… You do look like her. Same frown.",
+     "_k5": "K5 (Директор 30.10, 02:17, страница «Пятый заход», W025_2): «попробовать добавить „ты“ в начало» — выбрана запись с «Ты» (было «Племянница Дунина, говоришь?..»)",
+     "direction": {
+      "stress": "Племянница; Хмуришься",
+      "emotion": "акцент на первом слове «Племянница», потом на «Хмуришься»; сначала недоверчиво, потом смеясь",
+      "pace": "с остановками на многоточиях",
+      "takes": 3,
+      "map": [
+       75
+      ],
+      "voice_fb": [
+       6
+      ]
+     },
+     "tags": [
+      "chuckling"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "Pavel, how do we drain the water? The school plan says the mill sluice holds it back by the pier.",
+     "direction": {
+      "stress": "спустить",
+      "emotion": "просит помощи, не требует",
+      "pace": "живо",
+      "takes": 1,
+      "map": [
+       76
+      ]
+     }
+    },
+    {
+     "speaker": "pavel",
+     "text": "Need the lever. It's on a nail in the office. Evening before the flood, the manager shut the sluice, hung it up, locked the office from outside — off home to Olkhovka. That night the water came.",
+     "direction": {
+      "stress": "Рычаг",
+      "emotion": "акцент на первом слове «Рычаг», дальше как было",
+      "pace": "ровно, последняя фраза тише",
+      "takes": 3,
+      "map": [
+       77,
+       23
+      ],
+      "voice_fb": [
+       7
+      ]
+     },
+     "tags": [
+      "thoughtful"
+     ]
+    },
+    {
+     "speaker": "pavel",
+     "text": "Water hit, twisted the door, dropped the bolt into its brackets inside. I broke the lock off the first week — door still won't move.",
+     "direction": {
+      "stress": "перекосило",
+      "emotion": "досада, первые две фразы — как удар",
+      "pace": "первые две — коротко и твёрдо",
+      "takes": 3,
+      "map": [
+       78
+      ]
+     }
+    },
+    {
+     "speaker": "pavel",
+     "text": "Can't feel for the bolt with a hook through the gap — can't see where it is. Oak door on forged hinges. No breaking it down."
+    },
+    {
+     "speaker": "agata",
+     "text": "Didn't you try again?"
+    },
+    {
+     "speaker": "pavel",
+     "text": "I tried. Crowbar just splinters the jamb. Window's narrow, under the ceiling — can't get through. Scrape blindly with the hook, you drive the bolt deeper into its brackets. So there it stands."
+    },
+    {
+     "speaker": "pavel",
+     "text": "Pelageya asked me to drain it, but the lever's still there. Sluice shut a year. Water higher than the manager left it. I won't break it without the lever."
+    }
+   ],
+   "result": "Причина запертой конторы известна; что делать — ещё нет. Агата осматривает сени.",
+   "hints": [
+    "Morning — to the mill",
+    "Mill: right along the street, past the path down to the pier",
+    "Speak to Pavel in the mill yard"
+   ],
+   "goal": "Office bolted from inside. Examine the entry hall and the mill rules board in the yard.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Контора заперта изнутри. Осмотреть сени: дверь конторы, фотографию на стене, а во дворе — доску «Порядок на мельнице».»)"
+  },
+  {
+   "id": "M09s",
+   "type": "main",
+   "title": "Сени",
+   "locations": [
+    "M2",
+    "M1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M09"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M09s",
+     "seen_office_door",
+     "seen_office_photo",
+     "seen_shift_schedule"
+    ],
+    "items": []
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "There's the office mirror, in the entrance hall. Dunya has an empty stand for it. The door on its own hinges opened into class… Perhaps the mirror will show where it used to hang? The stand should hold its frame. I must tell Pavel."
+    }
+   ],
+   "result": "Агата связывает тётину стойку и колокол с запертой конторой.",
+   "hints": [
+    "Entry hall: through the mill door from the yard",
+    "The mill rules board is in the yard",
+    "Examine the office door and hall photograph, and the mill rules board outside"
+   ],
+   "goal": "Tell Pavel about Dunya's mirror stand and the bell."
+  },
+  {
+   "id": "M09b",
+   "type": "main",
+   "title": "Договор с Павлом",
+   "locations": [
+    "M1",
+    "M2"
+   ],
+   "requires": {
+    "flags": [
+     "done_M09s"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M09b",
+     "pavel_agreed_signals",
+     "pavel_blessed_mirror"
+    ],
+    "items": []
+   },
+   "_g18": "G18 (Директор 23.10: «Павел даёт добро забрать зеркало, сам идёт в дом, „иди за мной“»): зеркало конторы стоит в сенях мельницы (SCENARIO_FINAL M09) — Павел разрешает его взять и идёт туда первым (stage end: npc_go к двери сеней, затемнение со шагами, сени M2, Павел у зеркала); берёт Агата сама — хотспот M2.mirror, только после добра (pavel_blessed_mirror), один раз (has_mirror_mill). Зеркало больше не выдаётся сценой",
+   "stage": [
+    {
+     "at": "end",
+     "npc_go": [
+      {
+       "id": "pavel",
+       "to": [
+        684,
+        575
+       ],
+       "s": 1.8,
+       "fade": true,
+       "door": {
+        "rect": [
+         620,
+         322,
+         122,
+         238
+        ],
+        "hinge": "left"
+       },
+       "_h24": "H24 (Директор 24.10): Павел идёт к двери сеней — дверь открывается, он входит в тёмный проём, дверь закрывается (story_runner._stage_door: створка — вырез двери из фона M1, поворот на петлях слева)"
+      }
+     ],
+     "fade_out_s": 0.5,
+     "hold_s": 0.9,
+     "fade_in_s": 0.6,
+     "room": "M2",
+     "spawn": "from_M1",
+     "sets": [
+      "pavel_blessed_mirror"
+     ],
+     "sounds": [
+      {
+       "id": "steps_soft",
+       "at_s": 0.1
+      },
+      {
+       "id": "door_heavy",
+       "at_s": 0.6
+      }
+     ],
+     "_note": "«Иди за мной»: Павел идёт к двери сеней и скрывается в ней (у жителей нет листа ходьбы — шаги, поворот к двери и растворение), затемнение со шагами — Агата следом, в сенях Павел у зеркала"
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "Pavel, Dunya has an empty stand in her workshop — just right for your mirror. And your mill bell hangs there.",
+     "direction": {
+      "stress": "точь-в-точь",
+      "emotion": "живо, делится находкой",
+      "pace": "ровно",
+      "takes": 3,
+      "map": [
+       81
+      ]
+     },
+     "_f02": "F02 (Директор 30.10): не повторяет Павлу «вдруг покажет» — это она уже подумала вслух"
+    },
+    {
+     "speaker": "pavel",
+     "text": "The bell… I've heard it. Hanging at Dunya's, but ringing here, by the office. Thought I'd lost my mind.",
+     "tags": [
+      "thoughtful"
+     ],
+     "direction": {
+      "stress": "здесь",
+      "emotion": "сухо, но видно, что до сих пор не по себе",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       81,
+       48
+      ]
+     }
+    },
+    {
+     "speaker": "agata",
+     "text": "So it's true?… The stand is heavy, nailed to the floor. Can't bring it here. I'll have to watch from the workshop.",
+     "direction": {
+      "emotion": "рассуждает вслух",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       81
+      ]
+     }
+    },
+    {
+     "speaker": "pavel",
+     "text": "Ring from there. Her bell can be heard here. Take the mirror from the entrance hall.",
+     "direction": {
+      "emotion": "решился",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       81,
+       82
+      ]
+     }
+    },
+    {
+     "speaker": "pavel",
+     "text": "Ring once — I'll bring my lantern to the gap. When you see the light in the mirror, I'll guide the hook. Signal as we do: one — go; two — stop; a long ring — raise. Follow me.",
+     "direction": {
+      "emotion": "по-деловому",
+      "pace": "ровно, сигналы раздельно",
+      "takes": 1,
+      "map": [
+       81
+      ]
+     }
+    }
+   ],
+   "result": "Павел разрешает взять зеркало конторы и ведёт в сени. Договорённость: один удар — фонарь к щели; потом крюк по мельничным сигналам.",
+   "hints": [
+    "Pavel is in the mill yard",
+    "Go up to Pavel and speak",
+    "Speak to Pavel again"
+   ],
+   "goal": "Office mirror from the entry hall into Aunt's \"ЗМ\" stand in the workshop. Ring once.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Павел разрешил: взять зеркало конторы в сенях. Поставить его в тётину стойку «ЗМ» — высокую резную раму посреди мастерской. Позвонить один раз.»)"
+  },
+  {
+   "id": "M10",
+   "type": "main",
+   "title": "Зеркало конторы",
+   "locations": [
+    "H2"
+   ],
+   "requires": {
+    "flags": [
+     "done_M09b"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M10",
+     "office_mirror_mounted",
+     "office_mirror_clamped",
+     "has_mirror_mill"
+    ],
+    "items": []
+   },
+   "_grants_note": "has_mirror_mill: зеркало взято в сенях (G18, хотспот M2.mirror) — в игре флаг уже стоит; здесь — для точек старта и симуляции (сени без зеркала после M10)",
+   "puzzle": {
+    "verb": "clamp_frame",
+    "solution": "Поставить зеркало на стойку из сумки, подбить клинья мышью",
+    "error": "Пока клинья не подбиты, стекло мутное и дрожит; ничего не ломается"
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "tikhon",
+     "text": "Dunya's contrivances again. Just dozed off — now they'll start clanging.",
+     "tags": [
+      "grumbling"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "Stop grumbling. It's for a good reason.",
+     "tags": [
+      "playful"
+     ],
+     "direction": {
+      "stress": "для дела",
+      "emotion": "с улыбкой, по-дружески",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       86
+      ]
+     },
+     "then": [
+      {
+       "speaker": "agata",
+       "text": "Did Aunt keep you awake, too?",
+       "direction": {
+        "emotion": "с улыбкой",
+        "pace": "живо",
+        "takes": 1,
+        "map": [
+         "R2-N6"
+        ]
+       }
+      },
+      {
+       "speaker": "tikhon",
+       "text": "She'd hammer in a nail, then whisper: don't wake up.",
+       "direction": {
+        "emotion": "ворчливо, передразнивает",
+        "pace": "лениво",
+        "takes": 1,
+        "map": [
+         "R2-N6"
+        ]
+       }
+      },
+      {
+       "speaker": "agata",
+       "text": "She was looking after you.",
+       "direction": {
+        "emotion": "тепло",
+        "pace": "живо",
+        "takes": 1,
+        "map": [
+         "R2-N6"
+        ]
+       }
+      },
+      {
+       "speaker": "tikhon",
+       "text": "Loudly.",
+       "direction": {
+        "emotion": "сухо, но с нежностью",
+        "pace": "лениво",
+        "takes": 1,
+        "map": [
+         "R2-N6"
+        ]
+       }
+      }
+     ],
+     "_then_i_t5": "I-T5 (вычитка-2, разговор 6 «Громкая забота»): внутри сцены, после ответа Агаты; then не сдвигает записанные M10_*"
+    }
+   ],
+   "result": "Стекло показывает контору с фотографии — сейчас. Звука нет, рука упирается в стекло.",
+   "hints": [
+    "Put the office mirror in Aunt's workshop stand",
+    "The \"ЗМ\" stand is the tall carved frame in the middle of the workshop",
+    "Use the mirror on the carved frame; in close-up, tap in all the wedges"
+   ],
+   "goal": "The office is in the glass. Ring the workshop bell once. Without its clapper, it's mute.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «В стекле — контора. Ударить в колокол мастерской один раз. Без языка он молчит — язык тётя убрала в сундук на чердаке.»)"
+  },
+  {
+   "id": "M11",
+   "type": "main",
+   "title": "Проверка фонарём",
+   "locations": [
+    "H2"
+   ],
+   "requires": {
+    "flags": [
+     "done_M10"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M11",
+     "bell_clapper_hung",
+     "lantern_check_seen"
+    ],
+    "items": []
+   },
+   "puzzle": {
+    "verb": "signal_check",
+    "solution": "Язык из сундука на чердаке — на колокол; один удар: в щели двери в стекле в тот же миг загорается свет фонаря",
+    "error": "Колокол без языка молчит; подсказка — коробка на полке"
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "He's there now! Right now!",
+     "direction": {
+      "stress": "сейчас",
+      "emotion": "узнавание и радость: Павел жив, сейчас",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       "R3-90"
+      ]
+     }
+    }
+   ],
+   "result": "Ключевое открытие дня: зеркало показывает не прошлое, а то, что происходит теперь. Игрок проверил это сам.",
+   "hints": [
+    "Ring the bell while watching the mirror",
+    "Bell clapper in the attic chest: fetch it and fit it to the bell",
+    "In the mirror close-up, ring the bell once"
+   ],
+   "goal": "Guide Pavel's hook by bell: one — go, two — stop, a long ring — raise."
+  },
+  {
+   "id": "M12",
+   "type": "main",
+   "title": "Крюк и засов",
+   "locations": [
+    "H2"
+   ],
+   "requires": {
+    "flags": [
+     "done_M11"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M12",
+     "office_unbolted"
+    ],
+    "items": []
+   },
+   "puzzle": {
+    "verb": "guide_by_signal",
+    "solution": "Один удар — Павел заводит крюк в щель снизу и ведёт вверх; крюк упирается в засов снизу — два удара, стоп; долгий — подымай: короткий рывок, засов выходит из скоб",
+    "error": "Не дали «стой» — Павел давит вслепую, засов уходит глубже в скобы, крюк срывается вниз, его заводят снова; «подымай» далеко под засовом — рывок вхолостую; наказания нет",
+    "_k": "Директор 01.11, 22:26: крюк идёт снизу вверх, без качания и шкалы «Точный удар». Было: «Один удар — крюк идёт вниз…»; «…Павел возвращает его наверх»"
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "The bolt's out! The door's finally moved!",
+     "_k4": "K4 (Директор 30.10, 01:48, страница «Четвёртый заход», W022): его фраза «Ну вот, вышел засов! Наконец подалась дверь!» — запись В в игру, акцент на «подалась» — заход K5",
+     "tags": [
+      "excited"
+     ],
+     "direction": {
+      "stress": "подалась",
+      "emotion": "радостно, с облегчением; акцент на «подалась» (Директор 30.10, K4)",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       88
+      ],
+      "voice_fb": [
+       8
+      ]
+     }
+    }
+   ],
+   "result": "Засов поднят. Перекошенная дверь конторы чуть подалась.",
+   "hints": [
+    "Pavel's hook is visible in the office mirror, moving up the door gap",
+    "One strike — Pavel guides the hook up. Wait until it reaches the bolt",
+    "Hook touches the bolt from below: two quick strikes, then a long ring (hold the bell)"
+   ],
+   "goal": "To the mill: open the warped office door together with Pavel."
+  },
+  {
+   "id": "M13a",
+   "type": "main",
+   "title": "Дверь конторы",
+   "locations": [
+    "M2"
+   ],
+   "stage_rooms": [
+    "M3"
+   ],
+   "_stage_rooms": "K (стр. 57–58): постановка уводит в контору — дверь открыли вдвоём, входят вместе, реплика Павла там",
+   "requires": {
+    "flags": [
+     "done_M12"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M13a",
+     "office_door_opened"
+    ],
+    "items": []
+   },
+   "stage": [
+    {
+     "at": 0,
+     "fade_out_s": 0.5,
+     "hold_s": 1.0,
+     "fade_in_s": 0.6,
+     "sounds": [
+      {
+       "id": "door_heavy",
+       "at_s": 0.7
+      }
+     ],
+     "room": "M3",
+     "spawn": "from_M2",
+     "_note": "Р4 (Директор 29.10: стеллажа нет): перекошенную дверь конторы тянут вдвоём — затемнение и тяжёлый деревянный стук (звуки sfx.json), без нового арта.",
+     "_k": "K (Директор 31.10, стр. 57–58: «Слышал я твой звон, слышал — может после захождения в контору эту фразу сказать»): в темноте оба входят в контору — Павел говорит уже там (M3, у окна), а не в сенях у двери"
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "pavel",
+     "text": "I heard your bell! I did! I'd have been stuck another year without it.",
+     "direction": {
+      "stress": "Слышал",
+      "emotion": "в первой фразе ударное — первое слово «Слышал»; волнение у сухого человека",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       91
+      ],
+      "voice_fb": [
+       9
+      ]
+     },
+     "tags": [
+      "animated"
+     ]
+    }
+   ],
+   "result": "Вдвоём Агата и Павел вытягивают перекошенную дверь; контора открыта.",
+   "hints": [
+    "Bolt's out — back to the mill",
+    "Mill entry hall: office door",
+    "Click the office door to push it open together with Pavel"
+   ],
+   "goal": "Office: sluice lever on the nail, ledger and clamp."
+  },
+  {
+   "id": "M13",
+   "type": "main",
+   "title": "Контора",
+   "locations": [
+    "M3"
+   ],
+   "stage": [
+    {
+     "at": 0,
+     "npc_face": [
+      {
+       "id": "agata",
+       "face": "pavel"
+      },
+      {
+       "id": "pavel",
+       "face": "agata"
+      }
+     ],
+     "_k0211": "Директор 02.11, стр. 13: «когда Павел начинает говорить с Агатой про пруд, а Агата уговаривает его или слово даёт — она не повёрнута к нему»: оба друг к другу с первой реплики"
+    },
+    {
+     "at": 1,
+     "npc_face": [
+      {
+       "id": "agata",
+       "face": "pavel"
+      }
+     ],
+     "_k0211": "свой ответ (выбор) Агата говорит, повернувшись к Павлу"
+    }
+   ],
+   "requires": {
+    "flags": [
+     "done_M13a"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M13"
+    ],
+    "items": [
+     "key_sluice",
+     "journal_manager",
+     "clamp"
+    ]
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "pavel",
+     "text": "Drain it, and the pond will be empty. We'll need it full again by winter, or Zarechye won't be able to grind its grain.",
+     "direction": {
+      "stress": "воду; пруд; заново; молоть",
+      "emotion": "объясняет ясно: коль воду спущу — то пруд пустой; к зиме заново; Заречью молоть нечем",
+      "pace": "ровно, с весом на ударных словах",
+      "takes": 3,
+      "map": [
+       97,
+       152
+      ],
+      "voice_fb": [
+       10
+      ]
+     },
+     "tags": [
+      "concerned"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "prompt": "@M3.answer.prompt",
+     "options": [
+      {
+       "id": "family",
+       "label": "@M3.answer.opt_family",
+       "text": "Please help, Pavel. Mother and my brother are stranded over there.",
+       "sets": "pavel_answer_family"
+      },
+      {
+       "id": "promise",
+       "label": "@M3.answer.opt_promise",
+       "text": "We'll refill the pond by winter. I swear.",
+       "direction": {
+        "stress": "пруд",
+        "emotion": "твёрдо, обещает",
+        "pace": "ровно",
+        "takes": 1,
+        "map": [
+         "R3-91"
+        ]
+       },
+       "tags": [
+        "warmly"
+       ],
+       "sets": "pavel_answer_promise"
+      }
+     ]
+    },
+    {
+     "speaker": "pavel",
+     "text": "Ah… Very well. To the sluice, then.",
+     "direction": {
+      "stress": "добро",
+      "emotion": "нехотя соглашается",
+      "pace": "пауза после «Эх»",
+      "takes": 3,
+      "map": [
+       99
+      ]
+     },
+     "tags": [
+      "sighs"
+     ]
+    }
+   ],
+   "result": "Рычаг, журнал (последняя запись управляющего, правило спуска пруда, рабочая отметка воды) и струбцина у Агаты. Ответ Павлу слышен потом, в эпилоге; помогает он в любом случае.",
+   "hints": [
+    "The things needed for the sluice are in the office",
+    "Lever on the nail; ledger and clamp on the desk",
+    "Take the lever, ledger and clamp"
+   ],
+   "goal": "To the sluice. Open one notch at a time and wait for the water to fall, as the ledger says."
+  },
+  {
+   "id": "M14",
+   "type": "main",
+   "title": "Затвор",
+   "locations": [
+    "M4"
+   ],
+   "requires": {
+    "flags": [
+     "done_M13"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M14",
+     "sluice_key_inserted",
+     "windlass_rusty",
+     "windlass_tarred",
+     "sluice_opened",
+     "pond_lowered"
+    ],
+    "items": []
+   },
+   "puzzle": {
+    "verb": "notch_and_wait",
+    "solution": "Рычаг в ворот; ворот на одну зарубку, дождаться спада по рейке, потом на следующую",
+    "error": "Разом нельзя: пока вода не сошла, Павел придерживает ворот; рычаг дальше следующей зарубки не идёт"
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "pavel",
+     "text": "By evening, once the water's down, that plate of yours will show on the pier.",
+     "direction": {
+      "stress": "покажется",
+      "emotion": "обещает, чуть теплее",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       101
+      ]
+     }
+    },
+    {
+     "speaker": "pavel",
+     "text": "Fasten the rope to its ring — there'll be a road. Off you go, for now.",
+     "_g17": "G17 (Директор 23.10: «как связано, что плита под водой и что лодку вернёт»): вода сходит — плита с кольцом выходит; лодку возвращает, потому что дороги нет; канат на своём кольце — дорога, лодка пойдёт по канату"
+    }
+   ],
+   "result": "Пруд спускается. Колесо мельницы встало. Вечер наступит после сцены с маминым зеркалом.",
+   "hints": [
+    "To Pavel at the sluice",
+    "Lever to the winch; tar in Dunya's workshop, in the jug by the \"Hinges\" box",
+    "Tar from the bag onto the winch; turn one notch, wait for the gauge to settle, then repeat"
+   ],
+   "_hints_r5": "J (Р5): подсказки ведут через дёготь",
+   "goal": "Water falling: plate exposed by evening. Meanwhile, clamp Mama's mirror frame in the workshop, wrapped on the workbench.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Вода сходит: к вечеру плита на опоре выйдет — на её кольцо завести канат. А пока — стянуть струбциной мамино зеркало: оно в мастерской, на верстаке, в тряпке.»)"
+  }
+ ]
+}

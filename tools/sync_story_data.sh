@@ -37,3 +37,5 @@ sync_dir "$ROOT/data/story" "$ROOT/game/data/story"
 if [[ -d "$ROOT/data/trailer" ]]; then
   sync_dir "$ROOT/data/trailer" "$ROOT/game/data/trailer"
 fi
+# Английская копия данных (субтитры English): data/story + data/l10n/en.json → game/data/story_en (tools/build_story_en.py)
+python3 -I "$ROOT/tools/build_story_en.py"

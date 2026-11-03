@@ -1,0 +1,89 @@
+{
+ "_comment": "Фоновая музыка (Suno, инструментал; решение Директора 17.10). Тема задаётся комнатой (rooms); переход между комнатами одной темы музыку не перезапускает, другой — кроссфейд crossfade_s. Файлы — res://assets/music/<file> (копия assets/music, tools/sync_music.sh; импорт loop=false). loop: true — бесшовный цикл кроссфейдом loop_crossfade_s от конца трека к его началу (MusicDirector, game/scripts/audio/music_director.gd); loop: false — дослушивается до конца, последние end_fade_s секунд затухают. Громкость треков выровнена к −18 LUFS (pipeline/audio/prepare_music.sh); volume_db — поправка темы. Проверка — tools/validate_music.py.",
+ "themes": {
+  "home": {
+   "file": "01_home.ogg",
+   "title": "Дом",
+   "loop": true,
+   "volume_db": -6.0,
+   "source_track": "Suno id 9f42b23d (19:10Z)"
+  },
+  "roads": {
+   "file": "02_roads.ogg",
+   "title": "Деревня и дорога",
+   "loop": true,
+   "volume_db": -7.0,
+   "source_track": "Quiet Northern Roads, Suno id fd4151f1"
+  },
+  "mill": {
+   "file": "03_mill.ogg",
+   "title": "Река и мельница",
+   "loop": true,
+   "volume_db": -7.0,
+   "source_track": "The Gusli Circle, Suno id 397391d6"
+  },
+  "school": {
+   "file": "04_school.ogg",
+   "title": "Школьный класс",
+   "loop": true,
+   "volume_db": -6.0,
+   "source_track": "Frost in the Schoolroom, Suno id 2c0105a9"
+  },
+  "mirror": {
+   "file": "05_mirror.ogg",
+   "title": "Зеркало",
+   "loop": true,
+   "volume_db": -6.0,
+   "source_track": "Suno id afddd82a (19:20Z, перегенерация)"
+  },
+  "finale": {
+   "file": "06_finale.ogg",
+   "title": "Последняя нота",
+   "loop": true,
+   "volume_db": -4.0,
+   "source_track": "Последняя нота, Suno id 76b81a2b",
+   "over_frames": true,
+   "_over_frames": "Звучит только в эпилоге кадрами (ни дверей, ни шагов) — громкость дверей и шагов меряется не по нему (tools/validate_sfx.py); с K закольцован до титров"
+  }
+ },
+ "rooms": {
+  "H1": "home",
+  "H2": "home",
+  "H3": "home",
+  "H4": "home",
+  "Z1": "roads",
+  "Z2": "roads",
+  "Z3": "roads",
+  "Z4": "roads",
+  "R1": "roads",
+  "R2": "roads",
+  "R3": "roads",
+  "R4": "roads",
+  "M1": "mill",
+  "M2": "mill",
+  "M3": "mill",
+  "M4": "mill",
+  "O1": "school",
+  "O2": "school",
+  "O3": "home",
+  "O4": "roads"
+ },
+ "events": {
+  "_comment": "Тема поверх комнатной, затем возврат к комнатной; из нескольких активных звучит последняя начавшаяся. Ключ — scene:<id> (сцена из scenes/*.json или quests.json): тема с StoryRunner.scene_started. Значение — тема или {theme, until}: until «scene_end» — до scene_completed (по умолчанию для цикличных тем), «track_end» — до конца трека, через смены комнат и следующие сцены (по умолчанию и единственно допустимо для loop: false). Зеркала — сцены, где зеркало показывает другое место сейчас: M10 (зеркало конторы на стойке), M11 (фонарь Павла в стекле), M15a (мамино зеркало: горница Нины), Финал — эпилог M26 «Три недели спустя» (блок 4, 22.10): до конца трека, через все кадры эпилога.",
+  "scene:M10": "mirror",
+  "scene:M11": "mirror",
+  "scene:M15a": "mirror",
+  "scene:M26": {
+   "theme": "finale",
+   "until": "game_end",
+   "_k": "K (Директор 31.10, стр. 112: «на общем кадре ужина музыку не переключать — оставить прежнюю»): финал звучит до конца игры — через ужин и титры, по кругу (loop), до титульного экрана; раньше трек (168 с) кончался посреди эпилога и на ужине возвращалась тема поворота"
+  }
+ },
+ "crossfade_s": 2.5,
+ "loop_crossfade_s": 4.0,
+ "end_fade_s": 2.0,
+ "duck_dialogue_db": -5.0,
+ "duck_except": [
+  "finale"
+ ]
+}

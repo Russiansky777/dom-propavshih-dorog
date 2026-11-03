@@ -1,0 +1,505 @@
+{
+ "id": "M4",
+ "_art": "Фон M4_bg.png (затвор, ChatGPT v3): деревянный щит затвора с дугой делений и красной рабочей меткой, гнездо ворота, шестерня, настил, перила, сруб мельницы слева, вода в лотке. Рычаг M4_lever_up.png — отдельный слой, поворачивается кодом вокруг втулки (слой M4_lever_work не совпал с осью и не подключён, _meta_v3/M3_M4.md). Павел — 3D-фигура Meshy (листы idle/talk, data/actors/pavel.json). Рейка уровня у затвора в арте нет — в крупном плане её рисует движок.",
+ "art_source": {
+  "files": {
+   "bg.png": "assets/incoming/M4_bg.png",
+   "lever_up.png": "assets/incoming/M4_lever_up.png",
+   "state_dial_mark_last.png": "assets/incoming/M4_state_dial_mark_last.png",
+   "state_pond_low.png": "assets/incoming/M4_state_pond_low.png"
+  },
+  "canvas": [
+   1672,
+   941
+  ],
+  "alpha_min": 16
+ },
+ "background": {
+  "kind": "exterior",
+  "image": "res://assets/rooms/M4/bg.png",
+  "wall": "#6a5a48",
+  "floor": "#5a4632",
+  "accent": "#3a2e22",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   738,
+   708
+  ],
+  [
+   1000,
+   702
+  ],
+  [
+   1450,
+   714
+  ],
+  [
+   1530,
+   740
+  ],
+  [
+   1780,
+   748
+  ],
+  [
+   1880,
+   762
+  ],
+  [
+   1915,
+   772
+  ],
+  [
+   1915,
+   1070
+  ],
+  [
+   1442,
+   1070
+  ],
+  [
+   1442,
+   945
+  ],
+  [
+   1265,
+   935
+  ],
+  [
+   1000,
+   865
+  ],
+  [
+   745,
+   798
+  ]
+ ],
+ "no_walk_samples": [
+  [
+   600,
+   900,
+   "вода и сваи"
+  ],
+  [
+   1350,
+   1010,
+   "столб на переднем плане"
+  ],
+  [
+   850,
+   600,
+   "щит затвора"
+  ],
+  [
+   1300,
+   640,
+   "перила"
+  ]
+ ],
+ "walk_samples": [
+  [
+   1100,
+   800
+  ],
+  [
+   1700,
+   900
+  ],
+  [
+   850,
+   740
+  ],
+  [
+   1600,
+   1040
+  ]
+ ],
+ "door_ref": "none — затвор под открытым небом, дверей в кадре нет",
+ "depth": {
+  "top_y": 700,
+  "bottom_y": 1070,
+  "scale_top": 0.85,
+  "scale_bottom": 1.6
+ },
+ "_depth_note": "Рост Агаты = 345 px × scale. У перил (настил y 700, верхний брус y 500, перила 1,1 м) scale 0.85 → 293 px при ожидаемых 301.",
+ "height_refs": [
+  {
+   "what": "перила настила (верхний брус y 500, настил y 700)",
+   "y": 700,
+   "px": 200,
+   "m": 1.1
+  }
+ ],
+ "layers": [
+  {
+   "id": "pond_low",
+   "image": "res://assets/rooms/M4/state_pond_low.png",
+   "z": 0,
+   "if": [
+    "pond_lowered"
+   ],
+   "_p12": "партия 12 (ChatGPT 01.11, по прохождению Директора 31.10), стр. 100: пруд спущен — вода слева от щита ниже на 45–55 px, полоса мокрого ила и камней у берега и щита (слой [0, 480, 700, 941) холста)"
+  },
+  {
+   "id": "dial_mark_last",
+   "image": "res://assets/rooms/M4/state_dial_mark_last.png",
+   "z": 0,
+   "_note": "G24 (Директор 23.10: красная метка на шкале затвора — на последней зарубке): заявка партии 9 — полный холст 1672×941 в (0, 0), прежняя метка (x 744–767, y 408–441) светлая, красная на последней зарубке (x 811–840, y 503–524, ≈ 86° — последняя ступень «точного удара» G23, lever_open). Арт пришёл (партия 9, assets/incoming/M4_state_dial_mark_last.png → tools/import_room_art.py M4). Тот же слой кладётся в крупный план затвора (mechanic.gate.overlay_layers)"
+  },
+  {
+   "id": "lever_closed",
+   "image": "res://assets/rooms/M4/lever_up.png",
+   "z": 0,
+   "scale": 0.6,
+   "scale_reason": "рычаг в слое длиннее дуги затвора (312 px исходника); 0.7 — по дуге делений; I-T2 (Директор, стр. 96: «чуть меньше») — 0.6, втулка в том же гнезде (offset пересчитан)",
+   "pivot": [
+    738.5,
+    610
+   ],
+   "offset": [
+    291.6,
+    180.3
+   ],
+   "rotation_deg": -29,
+   "if": [
+    "sluice_key_inserted"
+   ],
+   "unless": [
+    "sluice_opened"
+   ],
+   "_note": "втулка рычага (738.5, 610 в слое) — в гнездо ворота (исходник фона 697, 523 → экран 800, 601); закрыт — на первой зарубке слева"
+  },
+  {
+   "id": "lever_open",
+   "image": "res://assets/rooms/M4/lever_up.png",
+   "z": 0,
+   "scale": 0.6,
+   "scale_reason": "тот же рычаг, что lever_closed",
+   "pivot": [
+    738.5,
+    610
+   ],
+   "offset": [
+    291.6,
+    180.3
+   ],
+   "rotation_deg": 86,
+   "if": [
+    "sluice_opened"
+   ],
+   "_note": "G23: затвор открыт — рычаг на последней зарубке (86°), как в крупном плане"
+  }
+ ],
+ "effects": [
+  {
+   "id": "dusk",
+   "type": "tint",
+   "color": "#8a90b4",
+   "blend": "mul",
+   "z": 4090,
+   "if": [
+    "evening_dusk"
+   ]
+  }
+ ],
+ "spawns": {
+  "default": [
+   1300,
+   850
+  ],
+  "from_M1": [
+   1650,
+   950
+  ]
+ },
+ "props": [],
+ "hotspots": [
+  {
+   "id": "gate",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@M4.gate.label",
+   "rect": [
+    690,
+    420,
+    330,
+    280
+   ],
+   "stand": [
+    880,
+    760
+   ],
+   "draw": false,
+   "item_use": {
+    "key_sluice": {
+     "sets": [
+      "sluice_key_inserted",
+      "windlass_rusty"
+     ],
+     "consumes": true,
+     "text": [
+      "@M4.gate.key",
+      "@M4.pavel.rusty"
+     ],
+     "goal": "@ui.goal_tar_fetch"
+    },
+    "tar": {
+     "requires": {
+      "flags": [
+       "sluice_key_inserted"
+      ]
+     },
+     "fail_text": "@M4.gate.locked",
+     "sets": [
+      "windlass_tarred"
+     ],
+     "consumes": true,
+     "text": "@M4.gate.tarred",
+     "goal": "@ui.goal_tar_back",
+     "scene": "M14",
+     "open_mechanic": true
+    }
+   },
+   "_r5": "J (Р5, Директор 29.10): рычаг сел в ворот — Павел: ворот заржавел, нужен дёготь из Дуниной мастерской; дёготь на затвор — ворот смазан, открывается крупный план (mini-игра затвора после задания)",
+   "use": {
+    "requires": {
+     "flags": [
+      "sluice_key_inserted",
+      "windlass_tarred"
+     ]
+    },
+    "text": "@M4.gate.look",
+    "fail_text": "@M4.gate.locked"
+   },
+   "use_when": [
+    {
+     "if": [
+      "sluice_key_inserted"
+     ],
+     "unless": [
+      "windlass_tarred"
+     ],
+     "text": "@M4.gate.rusty"
+    }
+   ],
+   "mechanic": {
+    "type": "sluice",
+    "requires": {
+     "flags": [
+      "sluice_key_inserted",
+      "windlass_tarred"
+     ]
+    },
+    "title": "@M4.sluice.title",
+    "gate": {
+     "image": "res://assets/rooms/M4/bg.png",
+     "region": [
+      512,
+      234,
+      386,
+      394
+     ],
+     "pos": [
+      230,
+      120
+     ],
+     "scale": 2.0,
+     "socket": [
+      697,
+      523
+     ],
+     "overlay_layers": [
+      "dial_mark_last"
+     ],
+     "_overlay_note": "слои комнаты M4 (по id) поверх вырезки фона, если их картинка уже есть — G24: метка на последней зарубке (партия 9)"
+    },
+    "lever": {
+     "image": "res://assets/rooms/M4/lever_up.png",
+     "pivot": [
+      738.5,
+      610
+     ],
+     "scale": 0.7
+    },
+    "notch_angles": [
+     -29,
+     0,
+     30,
+     57,
+     86
+    ],
+    "_notch_note": "G23: пять зарубок дуги — закрыт на −29°, четыре ступени до последней нарисованной зарубки 86° (по рисунку M4: зарубки на −52, −30, 0, 30, 57, 86°)",
+    "water": {
+     "levels": [
+      1.0,
+      0.8,
+      0.6,
+      0.38,
+      0.15
+     ],
+     "fall_per_s": 0.25,
+     "rise_per_s": 0.9,
+     "settle_tol": 0.015
+    },
+    "timing": {
+     "period_s": 2.0,
+     "green": 0.22,
+     "hit_s": 0.9,
+     "miss_s": 1.1,
+     "hint": "@ui.timing_hint",
+     "_note": "G23 (Директор 23.10): уровень воды — «точный удар»: попал в зелёное — ворот на зарубку дальше, вода сходит на ступень (пока сходит — hit_s, удар рано — «Погоди. Пусть сойдёт»); промах — ворот срывается на первую зарубку, вода поднимается; ступеней — levels − 1 (4) подряд. «Облегчить мини-игры» — медленнее и шире"
+    },
+    "timing_rect": [
+     250,
+     950,
+     730,
+     50
+    ],
+    "gauge_rect": [
+     1300,
+     170,
+     110,
+     760
+    ],
+    "_gauge_note": "G24: на рейке — зарубка на каждой ступени и красная метка на ПОСЛЕДНЕЙ (work_mark по умолчанию — уровень последней зарубки); красная метка на дуге затвора нарисована в арте M4 на третьей зарубке — заявка в арт 9",
+    "status_pos": [
+     1460,
+     230
+    ],
+    "done_flag": "sluice_opened",
+    "texts": {
+     "label_hint": "@mech.sluice.label_hint",
+     "slipped": "@mech.sluice.slipped",
+     "label_status_slipped": "@mech.sluice.label_status_slipped",
+     "label_gauge": "@M4.sluice.label_gauge",
+     "label_status_settled": "@M4.sluice.label_status_settled",
+     "label_status_falling": "@M4.sluice.label_status_falling",
+     "label_status_open": "@M4.sluice.label_status_open",
+     "label_status_drained": "@M4.sluice.label_status_drained",
+     "wait": "@M4.sluice.wait"
+    },
+    "events": {
+     "opened": {
+      "sets": [
+       "sluice_opened",
+       "pond_lowered"
+      ],
+      "text": "@M4.sluice.done",
+      "close": true,
+      "_k": "31.10 (Директор, стр. 67): после всех зарубок Агата говорит «получилось»"
+     }
+    }
+   },
+   "look": "@M4.gate.look"
+  },
+  {
+   "id": "pavel",
+   "kind": "npc",
+   "label": "@char.pavel",
+   "rect": [
+    1060,
+    406,
+    130,
+    354
+   ],
+   "stand": [
+    950,
+    800
+   ],
+   "draw": false,
+   "pick_priority": 2,
+   "visible_if": [
+    "done_M13"
+   ],
+   "talk": {
+    "by_flags": [
+     {
+      "if": [
+       "bridge_decided"
+      ],
+      "text": "@M4d.pavel.after_bridge"
+     },
+     {
+      "if": [
+       "evening_dusk"
+      ],
+      "text": "@M4.pavel.after_dusk",
+      "_j": "J-A4 (Директор 29.10, стр. 117): вода сошла — Павел больше не говорит «теперь ждать надо»"
+     },
+     {
+      "if": [
+       "sluice_opened"
+      ],
+      "text": "@M4.pavel.after"
+     },
+     {
+      "if": [
+       "windlass_tarred"
+      ],
+      "text": "@M4.pavel.turn",
+      "_r5": "J (Р5): ворот смазан — крути"
+     },
+     {
+      "if": [
+       "sluice_key_inserted"
+      ],
+      "text": "@M4.pavel.rusty",
+      "_r5": "J (Р5): ворот заржавел — за дёгтем"
+     }
+    ],
+    "after_text": "@M4.pavel.before"
+   },
+   "_talk_note": "один хотспот — одна 3D-фигура (data/actors/pavel.json): до открытия затвора — «Ключ в ворот — и по зарубке», после — «К вечеру сойдёт. Ступай пока» (раньше — два хотспота pavel / pavel_rest с плоской картинкой)"
+  },
+  {
+   "id": "water",
+   "kind": "object",
+   "label": "@M4.water.label",
+   "rect": [
+    80,
+    780,
+    440,
+    260
+   ],
+   "stand": [
+    850,
+    760
+   ],
+   "draw": false,
+   "look": "@M4.water.look"
+  }
+ ],
+ "exits": [
+  {
+   "to": "M1",
+   "label": "@M4.exit_M1.label",
+   "cue": "down",
+   "rect": [
+    1500,
+    1000,
+    420,
+    80
+   ],
+   "stand": [
+    1700,
+    1035
+   ],
+   "spawn": "from_M4",
+   "draw": false
+  }
+ ],
+ "scenes": {
+  "M14": {
+   "complete_when": [
+    {
+     "all": [
+      "sluice_opened"
+     ]
+    }
+   ]
+  }
+ },
+ "flags": {}
+}

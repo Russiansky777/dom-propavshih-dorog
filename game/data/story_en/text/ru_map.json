@@ -1,0 +1,45 @@
+{
+ "_comment": "План Заречья (data/story/map_zarechye.json, game/scripts/ui/zarechye_map.gd): подписи мест из нескольких комнат и строки интерфейса плана. Названия отдельных комнат берутся из locations.json.",
+ "lang": "ru",
+ "texts": {
+  "map.house": {
+   "text": "Aunt Dunya's house",
+   "draft": false
+  },
+  "map.mill": {
+   "text": "Mill",
+   "draft": false
+  },
+  "map.olkhovka": {
+   "text": "School",
+   "draft": false
+  },
+  "map.nina_house": {
+   "text": "Mama's house",
+   "draft": false,
+   "_k": "K (сверка плана 01.11, П4): в игре — «Дом мамы»"
+  },
+  "map.ferry_shed": {
+   "text": "Ferry shed",
+   "draft": false,
+   "_k": "K (сверка плана 01.11, П3): в игре R3.shed — «Сарайчик переправы»; комнаты R4 нет"
+  },
+  "map.ilya_house": {
+   "text": "Ilya's house",
+   "draft": false,
+   "_k": "K (сверка плана 01.11, П8)"
+  },
+  "map.here": {
+   "text": "You are here",
+   "draft": false
+  },
+  "map.close_hint": {
+   "text": "Click or Esc — return",
+   "draft": false
+  },
+  "ui.button_plan": {
+   "text": "Map",
+   "draft": false
+  }
+ }
+}

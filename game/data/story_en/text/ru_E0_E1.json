@@ -1,0 +1,2966 @@
+{
+ "_comment": "Черновые тексты осмотров, подписей и реакций для E0–E1 (M1). Ключи @секция.ключ используются в data/story/rooms/*.json. Все записи draft: true — заменяет владелец текста (ChatGPT с Директором). Обязательные реплики сцен берутся из scenes/*.json и здесь не дублируются. Новых сюжетных фактов нет: только то, что уже есть в сценах, locations.json, items.json и каноне. Поле tags у записи — теги подачи закадрового голоса (pipeline/voice/tags.json, Docs/VOICE_DIRECTION.md: 0–1 тег, не на каждую фразу); в субтитры не попадают. Поле line {speaker, text[, tags]} — реплика персонажа рядом с Агатой (повторный разговор, его слова): показывается как реплика (имя говорящего) и звучит его голосом вместо text; text остаётся запасным закадровым вариантом (убрать line — снова закадровый). Правка в line — только структурная: прямая речь без авторской ремарки (решение Директора 18.10, 01:52).",
+ "lang": "ru",
+ "texts": {
+  "ui.not_built": {
+   "text": "This road continues in the next episode.",
+   "draft": false
+  },
+  "ui.closed_generic": {
+   "text": "No way through yet.",
+   "draft": false
+  },
+  "intro.opening_1": {
+   "text": "Agata is eighteen. She studies in the district town. Back home in Olkhovka, across the river, are Mama and her younger brother.",
+   "draft": false,
+   "_j": "J (Р13, Директор 29.10; 18:30 — три карточки на чёрном с озвучкой): вступление новой игры, menu.json → intro.keys; текст одобрен Директором, разбит на три кадра без правки слов"
+  },
+  "intro.opening_2": {
+   "text": "A year ago, on the night of the flood, the water swept the bridge away. Since then, no one has reached the far bank: send any boat across, and it comes back to its own pier.",
+   "_k": "K (ИИ-разбор №15; Директор 01.11, 01:03, утренняя страница): без «будто сама река не пускает» — закон мира говорит обратное (было «…её кружит и приносит назад, будто сама река не пускает»)",
+   "draft": false
+  },
+  "intro.opening_3": {
+   "text": "Agata wrote home all year — not a word came back. This autumn the water fell, exposing an old bridge pier. She is going to Aunt Dunya's house in Zarechye: it is as close to home as she can get. She means to find out for herself what happened to Olkhovka.",
+   "draft": false
+  },
+  "ui.item_no_effect": {
+   "text": "It won't work here.",
+   "draft": false
+  },
+  "ui.nothing_here": {
+   "text": "Nothing new.",
+   "draft": false
+  },
+  "ui.got_item": {
+   "text": "In bag: {item}",
+   "draft": false
+  },
+  "ui.item_selected": {
+   "text": "Selected: {item} — click where you want to use it. Click the item again to cancel.",
+   "draft": false
+  },
+  "ui.hint_generic_1": {
+   "text": "Things here have stories to tell: examine objects whose names appear when you point at them",
+   "draft": false
+  },
+  "ui.hint_generic_2": {
+   "text": "Your journal keeps your current goal and everything you have learned",
+   "draft": false
+  },
+  "ui.hint_generic_3": {
+   "text": "Try leaving the room: a blocked passage will tell you why you cannot go that way yet",
+   "draft": false
+  },
+  "ui.hint_title": {
+   "text": "Hint {tier} of 3",
+   "draft": false
+  },
+  "ui.journal_title": {
+   "text": "Journal",
+   "draft": false
+  },
+  "ui.journal_goal": {
+   "text": "What's next",
+   "draft": false
+  },
+  "ui.journal_facts": {
+   "text": "What I know",
+   "draft": false
+  },
+  "ui.journal_empty": {
+   "text": "No entries yet.",
+   "draft": false
+  },
+  "ui.goal_start": {
+   "text": "Tamara at the post office has the key to Aunt Dunya's house. Dunya was Mama's sister.",
+   "draft": false
+  },
+  "ui.button_journal": {
+   "text": "Journal",
+   "draft": false
+  },
+  "ui.button_hint": {
+   "text": "Hint",
+   "draft": false
+  },
+  "ui.button_menu": {
+   "text": "Menu",
+   "draft": false
+  },
+  "ui.menu_title": {
+   "text": "Saved games",
+   "draft": false
+  },
+  "ui.slot": {
+   "text": "Slot {n}",
+   "draft": false
+  },
+  "ui.slot_empty": {
+   "text": "Empty",
+   "draft": false
+  },
+  "ui.save": {
+   "text": "Save",
+   "draft": false
+  },
+  "ui.load": {
+   "text": "Load",
+   "draft": false
+  },
+  "ui.delete": {
+   "text": "Delete",
+   "draft": false
+  },
+  "ui.delete_confirm": {
+   "text": "Do you want to delete this saved game?",
+   "draft": false
+  },
+  "ui.delete_yes": {
+   "text": "Yes, delete",
+   "draft": false
+  },
+  "ui.delete_no": {
+   "text": "No, keep it",
+   "draft": false
+  },
+  "ui.saved_when": {
+   "text": "{date}, {time}",
+   "draft": false
+  },
+  "ui.new_game": {
+   "text": "New game",
+   "draft": false
+  },
+  "ui.music_volume": {
+   "text": "Music",
+   "draft": false
+  },
+  "ui.sfx_volume": {
+   "text": "Sounds",
+   "draft": false
+  },
+  "ui.voice_volume": {
+   "text": "Voice",
+   "draft": false
+  },
+  "ui.close": {
+   "text": "Close",
+   "draft": false
+  },
+  "ui.saved": {
+   "text": "Saved: {slot}",
+   "draft": false
+  },
+  "ui.loaded": {
+   "text": "Loaded: {slot}",
+   "draft": false
+  },
+  "ui.no_save": {
+   "text": "No saved game here yet.",
+   "draft": false
+  },
+  "ui.load_failed": {
+   "text": "Cannot read this save: the file is damaged or from another game version.",
+   "draft": false,
+   "_k": "Ревью 01.11 (В-18): провал загрузки больше не молчит — слово в подсказке; сама игра и меню остаются как были"
+  },
+  "ui.build_stamp": {
+   "text": "build {sha}{when}",
+   "draft": false,
+   "_k": "Ревью 01.11 (В-18): подпись сборки на заставке — из текстов, не из кода"
+  },
+  "ui.continue": {
+   "text": "Continue",
+   "draft": false
+  },
+  "ui.inventory_empty": {
+   "text": "Your bag is empty",
+   "draft": false
+  },
+  "ui.busy": {
+   "text": "The conversation is not over yet.",
+   "draft": false
+  },
+  "ui.checkpoint_day2": {
+   "text": "Day two",
+   "draft": false
+  },
+  "Z1.counter.label": {
+   "text": "Post office counter",
+   "draft": false
+  },
+  "Z1.tamara.after": {
+   "text": "\"You have the key. I'm at the post office if you need me,\" says Tamara.",
+   "draft": false,
+   "line": {
+    "speaker": "tamara",
+    "text": "You have the key. I'm at the post office if you need me.",
+    "tags": [
+     "warmly"
+    ]
+   }
+  },
+  "Z1.drawings.label": {
+   "text": "Two drawings",
+   "draft": false
+  },
+  "Z1.drawings.use": {
+   "text": "Dunya's drawing shows the bridge pier by the bend. In her own hand: the plate is cracked and needs mending. Tamara's new sketch shows the same pier — only its top is above water now.",
+   "direction": {
+    "emotion": "просто, по-человечески",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     3
+    ]
+   },
+   "draft": false
+  },
+  "Z1.drawings.look": {
+   "text": "Dunya's old drawing and Tamara's fresh sketch — both show the same bridge pier.",
+   "draft": false
+  },
+  "Z1.drawings.photo": {
+   "text": "The old photograph shows the pier from Dunya's drawing. The bridge rope is fastened to its plate.",
+   "draft": false
+  },
+  "Z1.letters.label": {
+   "text": "Letters",
+   "draft": false
+  },
+  "Z1.letters.look": {
+   "_tags_i_t1": "I-T1 (стр. 5): без softly — подача как у следующей фразы",
+   "text": "The letters are sorted by household. Tamara keeps Olkhovka's apart — a whole sackful in a year.",
+   "direction": {
+    "emotion": "спокойно, полным голосом — как следующая фраза",
+    "pace": "ровно",
+    "takes": 3,
+    "map": [
+     5
+    ]
+   },
+   "draft": false,
+   "tags": []
+  },
+  "Z1.plan.label": {
+   "text": "Map of Zarechye",
+   "draft": false
+  },
+  "Z1.plan.look": {
+   "text": "The post office, Dunya's house, the path down to the water, the mill. The bend in the bank is marked in pencil.",
+   "direction": {
+    "emotion": "спокойно, разглядывает план",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-1"
+    ]
+   },
+   "draft": false
+  },
+  "Z1.exit_Z4.label": {
+   "text": "Outside",
+   "draft": false
+  },
+  "Z1.exit_Z4.closed": {
+   "text": "I haven't spoken to Tamara yet. She has the key.",
+   "draft": false
+  },
+  "Z2.house.label": {
+   "text": "Aunt Dunya's house",
+   "draft": false
+  },
+  "Z2.mill_far.label": {
+   "text": "The distant mill",
+   "draft": false
+  },
+  "Z2.landmarks.label": {
+   "text": "View of Zarechye",
+   "draft": false
+  },
+  "Z2.landmarks.look": {
+   "text": "The mill roof, the path down to the water… The post office is behind me now.",
+   "_k27": "Директор 01.11, «Семнадцатый заход» (W219): «нет перечисления — изменить фразу». Было: «Мельничная крыша, к воде спуск. Почта позади осталась.»",
+   "draft": false
+  },
+  "Z2.exit_Z4.label": {
+   "text": "Post office lane",
+   "draft": false
+  },
+  "Z2.exit_H1.label": {
+   "text": "To the house porch",
+   "draft": false
+  },
+  "Z2.exit_H1.closed": {
+   "text": "Locked. The key to Dunya's house is in my bag.",
+   "draft": false
+  },
+  "Z2.exit_H1.not_yet": {
+   "text": "The notes can wait. First I'll ask the boatwoman what this strange business is.",
+   "direction": {
+    "stress": "диковина",
+    "emotion": "удивлённо",
+    "pace": "живо",
+    "takes": 3,
+    "map": [
+     13
+    ],
+    "voice_fb": [
+     48
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The notes can wait. First I'll ask the boatwoman what this strange business is."
+   }
+  },
+  "H1.dark_enter": {
+   "text": "So dark I can't see a thing.",
+   "draft": true,
+   "direction": {
+    "stress": "Темень",
+    "emotion": "растерянно, с опаской",
+    "pace": "медленно",
+    "takes": 1,
+    "map": [
+     30
+    ]
+   }
+  },
+  "Z2.exit_H1.label_unlock": {
+   "text": "Unlock the door",
+   "draft": true
+  },
+  "Z2.exit_H1.unlock_after": {
+   "text": "Now I can get into the house from here, too.",
+   "draft": true,
+   "direction": {
+    "emotion": "довольно, с облегчением",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     35
+    ]
+   }
+  },
+  "Z2.exit_H1.unlock": {
+   "text": "The key is in the door now. The house is open again.",
+   "draft": false
+  },
+  "Z2.exit_M1.label": {
+   "text": "To the mill",
+   "draft": false
+  },
+  "Z2.exit_M1.closed": {
+   "text": "I can't even get into Dunya's house without the key. I'll see Tamara first.",
+   "draft": false
+  },
+  "Z2.exit_Z3.label": {
+   "text": "To the bend",
+   "draft": false
+  },
+  "Z2.exit_Z3.closed": {
+   "text": "Tamara's waiting at the post office. I won't leave before I've spoken to her.",
+   "draft": false
+  },
+  "Z2.exit_R1.label": {
+   "text": "Down to the pier",
+   "draft": false
+  },
+  "Z2.exit_R1.closed": {
+   "text": "First I'll hear what Tamara has to say. The pier can wait.",
+   "draft": false
+  },
+  "Z4.exit_Z1.label": {
+   "text": "Post office",
+   "draft": false
+  },
+  "Z4.exit_Z2.label": {
+   "text": "Outside",
+   "draft": false
+  },
+  "Z4.exit_H3.label": {
+   "text": "Side porch of Aunt Dunya's house",
+   "draft": false
+  },
+  "Z4.exit_H3.closed": {
+   "text": "This door can only be unlocked from inside, in the gallery.",
+   "_k": "K (ИИ-разбор 31.10, №11): дверь — в галерее, не в жилой комнате",
+   "direction": {
+    "emotion": "голос рассказчика",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     11
+    ]
+   },
+   "draft": false
+  },
+  "Z4.post_sign.label": {
+   "text": "Post office sign",
+   "draft": false
+  },
+  "Z4.post_sign.look": {
+   "text": "\"Post Office.\" The lettering on the old board has been touched up more than once.",
+   "draft": false
+  },
+  "Z4.lantern.label": {
+   "text": "Lantern over the door",
+   "draft": false
+  },
+  "Z4.lantern.look": {
+   "text": "Fine drops of drizzle cover the glass.",
+   "draft": false
+  },
+  "Z3.water.label": {
+   "text": "Mill pond",
+   "draft": false
+  },
+  "Z3.old_pier_base.label": {
+   "text": "Bridge pier",
+   "draft": false
+  },
+  "Z3.old_pier_base.look": {
+   "text": "The bridge pier from Dunya's drawing. The water has fallen, exposing its top. Below the water is a plate with a ring. The bridge rope was fastened there — the near end of the road across. I can't make out the plate from here.",
+   "draft": false
+  },
+  "Z3.old_pier_base.look_early": {
+   "text": "The bridge pier from Dunya's drawing. The water has fallen, exposing its top. The cracked plate in the drawing is lower down, underwater. I can't make it out from here.",
+   "draft": true,
+   "_k": "Ревью 01.11 (А-14): осмотр опоры до Пелагеи — без каната и «ближнего конца» (это она скажет в M02); плита и трещина — с Дуниного листа у Тамары (M01)"
+  },
+  "Z3.old_pier_base.photo": {
+   "text": "The photograph shows the rope fastened to this pier's plate. The plate is underwater now.",
+   "draft": false
+  },
+  "M4.sluice.done": {
+   "text": "It worked! The water's flowing.",
+   "draft": false,
+   "line": {
+    "speaker": "agata",
+    "text": "It worked! The water's flowing."
+   },
+   "_k": "31.10 (Директор, стр. 67)"
+  },
+  "Z3.plate.brace_high": {
+   "text": "The water's too high to reach the plate. I'll have to drain it first.",
+   "draft": false,
+   "line": {
+    "speaker": "agata",
+    "text": "The water's too high to reach the plate. I'll have to drain it first."
+   },
+   "_k": "31.10 (Директор, стр. 70): скоба на опору, пока вода высоко, — не «Сюда не подходит», а почему нельзя"
+  },
+  "Z3.plate.label": {
+   "text": "Stone by the water",
+   "draft": false
+  },
+  "Z3.plate.look": {
+   "text": "A large mossy stone by the water. But the plate in Dunya's drawing isn't here: it's on the pier, underwater.",
+   "draft": false
+  },
+  "Z3.exit_Z2.label": {
+   "text": "Outside",
+   "draft": false
+  },
+  "Z3.exit_R1.label": {
+   "text": "To the pier",
+   "draft": false
+  },
+  "R1.water.label": {
+   "text": "Mill pond",
+   "draft": false
+  },
+  "R1.pier.label": {
+   "text": "Near pier",
+   "draft": false
+  },
+  "R1.pelageya.after": {
+   "text": "\"Without the plate, the boat comes straight back here, as you see,\" says Pelageya. \"I'll be by the boat if you need me.\"",
+   "draft": false,
+   "line": {
+    "speaker": "pelageya",
+    "text": "Without the plate, the boat comes straight back here, as you see. I'll be by the boat if you need me.",
+    "tags": [
+     "firm"
+    ]
+   }
+  },
+  "R1.boat.label": {
+   "text": "Pelageya's boat",
+   "draft": false
+  },
+  "R1.boat.look": {
+   "text": "The boat is sound, the oars are in place. But wherever you row, you end up back at this pier.",
+   "draft": false
+  },
+  "R1.rope.label": {
+   "text": "Bridge rope",
+   "draft": false
+  },
+  "R1.rope.use": {
+   "text": "The old bridge handrail rope. The bridge stood at the bend — this end was fastened to the plate on the pier. Pelageya tied it to her rope clamp instead. It holds, but there's no road.",
+   "draft": false
+  },
+  "R1.rope.look": {
+   "text": "The old bridge handrail rope. The bridge stood at the bend — this end was fastened to the plate on the pier. Pelageya tied it to her rope clamp instead. It holds, but there's no road.",
+   "draft": false
+  },
+  "R1.rope.photo": {
+   "text": "In the photograph, the rope is held by the pier's plate, not the rope clamp.",
+   "draft": false
+  },
+  "R1.lantern.label": {
+   "text": "Signal lantern",
+   "draft": false
+  },
+  "R1.lantern.use": {
+   "text": "The lantern is in its holder: clean glass, dry wick. Someone has been looking after it.",
+   "draft": false
+  },
+  "R1.lantern.look": {
+   "text": "This lantern is used to signal across the water.",
+   "draft": false
+  },
+  "R1.instruction.label": {
+   "text": "Signal code",
+   "draft": false
+  },
+  "R1.instruction.use": {
+   "text": "The board explains how to signal with the lantern and how the far bank should answer. But there hasn't been a single reply in a year.",
+   "draft": false
+  },
+  "R1.instruction.paper_title": {
+   "text": "Signal code",
+   "draft": true
+  },
+  "R1.instruction.paper": {
+   "text": "After dark, signal from the pier with a lantern.\n\nOne flash — go.\nTwo flashes — stop.\nOne long flash — raise.\nThree flashes — alive: someone is on the bank.\n\nThe far bank must repeat the signal in reply.",
+   "_k": "Ревью 01.11 (А-1, Г-13): знаки на дощечке — те же, что у Пелагеи (M16s) и на мельнице: раз — пускай, два — стой, долгий — подымай, три — живые (было: три — держим, два — не пускать, кругом — подмога)",
+   "draft": true
+  },
+  "R1.instruction.board": {
+   "text": "Signal code: one light — go; two lights — stop; one long light — raise. Three flashes — alive.",
+   "_k": "Ревью 01.11 (А-1, Г-13): знаки на дощечке — те же, что у Пелагеи (M16s) и на мельнице (было: три — держим, два — не пускать, кругом — подмога). K17 (Директор 01.11, 02:58 «запутанно, набор слов», 03:42 выбор W192_1): читать фразой — так и в субтитре; резьба на самой доске прежняя (арт)",
+   "draft": true
+  },
+  "R1.instruction.paper_carving": {
+   "text": "Signal code\nOne — go.\nTwo — stop.\nLong — raise.\nThree — alive.",
+   "_k": "Директор 01.11, стр. 8 (снимок 05: «ПОРЯДОК СИГНАЛОВ — баг»): резьба на дощечке в общем плане — своими строками; фраза K17 (R1.instruction.board) осталась для голоса и субтитра, на доске она шла одной строкой по небу",
+   "draft": true
+  },
+  "R1.instruction.look": {
+   "text": "A board explaining the signals.",
+   "draft": false
+  },
+  "R1.exit_Z3.label": {
+   "text": "Along the bank to the bend",
+   "draft": false
+  },
+  "R1.exit_Z2.label": {
+   "text": "Up to the street",
+   "draft": false
+  },
+  "R1.exit_Z2.closed": {
+   "text": "Tamara's still waiting for me at the post office.",
+   "draft": false
+  },
+  "R1.exit_R2.label": {
+   "text": "Into the boat",
+   "draft": false
+  },
+  "R1.exit_R2.closed": {
+   "text": "Without a road, the boat will come back to the pier. And there is no road until the rope is fastened to the ring on the plate.",
+   "draft": false,
+   "line": {
+    "speaker": "agata",
+    "text": "Without a road, the boat will come back to the pier. And there is no road until the rope is fastened to the ring on the plate."
+   }
+  },
+  "R1.exit_R2.closed_first": {
+   "text": "I'll speak to the boatwoman first.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I'll speak to the boatwoman first."
+   }
+  },
+  "R1.boat.look_no_plan": {
+   "text": "The boat will come back to our pier. First I must find out how to restore the road.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The boat will come back to our pier. First I must find out how to restore the road."
+   }
+  },
+  "H1.table.label": {
+   "text": "Table",
+   "draft": false
+  },
+  "H1.stove.label": {
+   "text": "Stove",
+   "draft": false
+  },
+  "H1.stove.label_lit": {
+   "text": "Lit stove",
+   "draft": false
+  },
+  "H1.stove.use": {
+   "text": "There was dry firewood stacked nearby. It caught at once in the stove.",
+   "direction": {
+    "emotion": "просто",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-2"
+    ]
+   },
+   "draft": false
+  },
+  "H1.stove.look": {
+   "text": "A stove with a sleeping ledge — Tikhon's place. Old shelf mounting holes remain in the whitewashed side.",
+   "draft": false
+  },
+  "H1.stove.look_settled": {
+   "text": "The stove burns steadily; the sleeping ledge is dry. Tikhon has settled down — no shifting him before morning now.",
+   "direction": {
+    "stress": "Ровно; сухая",
+    "emotion": "живо; «Ровно» — ударное; лежанка — пауза — сухая; Тихон уже улёгся — пауза — теперь до утра с места не сгонишь",
+    "pace": "медленно",
+    "takes": 3,
+    "map": [
+     89
+    ],
+    "voice_fb": [
+     36
+    ]
+   },
+   "draft": true
+  },
+  "H1.shutter.label": {
+   "text": "Shutter",
+   "draft": false
+  },
+  "H1.shutter.label_open": {
+   "text": "Open shutter",
+   "draft": false
+  },
+  "H1.shutter.use": {
+   "text": "The shutter opens, letting more light into the room.",
+   "draft": false
+  },
+  "H1.shutter.look": {
+   "text": "A heavy wooden shutter at the window.",
+   "draft": false
+  },
+  "H1.scarf.label": {
+   "text": "Wet shawl",
+   "draft": false
+  },
+  "H1.scarf.use": {
+   "text": "The shawl can dry on the hook by the door. That's better.",
+   "draft": false
+  },
+  "H1.scarf.look": {
+   "text": "The shawl is soaked through. I'll hang it up to dry.",
+   "draft": false
+  },
+  "H1.tikhon.look": {
+   "text": "Tikhon is on duty beside the stove, looking as though it couldn't manage without him.",
+   "draft": false
+  },
+  "H1.tikhon.prompt": {
+   "text": "What shall I ask Tikhon?",
+   "draft": false
+  },
+  "H1.tikhon.opt_door": {
+   "text": "The door in the gallery?",
+   "draft": false
+  },
+  "H1.tikhon.opt_bundle": {
+   "text": "The bundle on the workbench?",
+   "draft": false
+  },
+  "H1.tikhon.opt_bell": {
+   "text": "The bell in the workshop?",
+   "draft": false
+  },
+  "H1.tikhon.opt_leave": {
+   "text": "Nothing. Carry on.",
+   "draft": false
+  },
+  "H1.tikhon.opt_spoons": {
+   "text": "Play the spoons?",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "_j": "J (часть G, Директор 25.10 / 29.10: ритм ложечкой с Тихоном); черновик Claude — на утверждение"
+  },
+  "H1.tikhon.spoons_q": {
+   "text": "Tikhon, shall we play the spoons? See who can outplay whom.",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "agata",
+    "text": "Tikhon, shall we play the spoons? See who can outplay whom."
+   }
+  },
+  "H1.tikhon.spoons_a": {
+   "text": "Outplay me, will she! Ha… Listen, then. Let's see if you can repeat it.",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "tikhon",
+    "text": "Outplay me, will she! Ha… Listen, then. Let's see if you can repeat it."
+   }
+  },
+  "H1.tikhon.spoons_done": {
+   "text": "That will do. Worth a little sour cream… if there were any to be had.",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "tikhon",
+    "text": "That will do. Worth a little sour cream… if there were any to be had."
+   }
+  },
+  "H1.tikhon.spoons_quit": {
+   "text": "Tired? Thought so. Not as easy as lying on a stove, is it?",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "_k24": "Директор 01.11, стр. 26 («разве Тихон знает о мосте?»): ложечки доступны с первого вечера (done_M03), а мост решают только на третий день (M23b) — Тихону о стройке знать неоткуда. Было: «Это тебе не мост строить.»",
+   "line": {
+    "speaker": "tikhon",
+    "text": "Tired? Thought so. Not as easy as lying on a stove, is it?"
+   }
+  },
+  "H1.tikhon.door": {
+   "text": "\"From the school,\" Tikhon grumbles. \"Nina asked for it.\"",
+   "direction": {
+    "emotion": "«Из школы дверь» — пауза — «Нина просила»; акцент на «школы»",
+    "pace": "лениво",
+    "takes": 3,
+    "map": [
+     44
+    ],
+    "voice_fb": [
+     52
+    ],
+    "stress": "школы"
+   },
+   "draft": false,
+   "line": {
+    "speaker": "tikhon",
+    "text": "From the school — Nina asked for it."
+   }
+  },
+  "H1.tikhon.bundle": {
+   "text": "\"Nina's mirror is on the workbench, wrapped in a cloth,\" Tikhon grumbles. \"Leave it alone: the frame's barely holding together.\"",
+   "draft": false,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Nina's mirror is on the workbench, wrapped in a cloth. Leave it alone: the frame's barely holding together.",
+    "tags": [
+     "sarcastic"
+    ],
+    "_j": "J (стр. 59): меньше агрессии"
+   }
+  },
+  "H1.tikhon.bell": {
+   "text": "\"The bell's from the mill,\" Tikhon grumbles. \"An odd one. Rings somewhere else.\"",
+   "draft": false,
+   "line": {
+    "speaker": "tikhon",
+    "text": "The bell's from the mill. An odd one. Rings somewhere else.",
+    "tags": [
+     "sarcastic"
+    ]
+   }
+  },
+  "H1.tikhon.leave": {
+   "text": "\"I'm not asleep,\" Tikhon grumbles. \"I'm on duty lying down.\"",
+   "draft": false,
+   "line": {
+    "speaker": "tikhon",
+    "text": "I'm not asleep. I'm on duty lying down.",
+    "tags": [
+     "sleepy"
+    ]
+   }
+  },
+  "H1.tikhon.ask_shelf": {
+   "text": "\"Will you hang that shelf? There, on the sleeping ledge. Am I meant to hammer it up with my paws?\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Will you hang that shelf? There, on the sleeping ledge. Am I meant to hammer it up with my paws?",
+    "tags": [
+     "playful"
+    ]
+   },
+   "direction": {
+    "stress": "по́лку-то",
+    "emotion": "первый вопрос громко и разборчиво, по норме голоса Тихона, менее угрюмо; «по́лку-то» — ударение на «о»",
+    "pace": "лениво",
+    "takes": 3,
+    "map": [
+     38,
+     66
+    ],
+    "voice_fb": [
+     51
+    ]
+   }
+  },
+  "H1.tikhon.first_who": {
+   "text": "\"Who's that shuffling about?…\" someone grumbles from the armchair.",
+   "draft": true,
+   "_k7": "К7 (Директор 30.10, 14:30): при первой встрече Агата удивляется и сразу спрашивает, кто он; Тихон ворчит по тому, что в избе ещё не сделано",
+   "line": {
+    "speaker": "tikhon",
+    "text": "Who's that shuffling about?…",
+    "tags": [
+     "grumbling"
+    ]
+   },
+   "direction": {
+    "emotion": "ворчливо, спросонья",
+    "pace": "лениво",
+    "takes": 3,
+    "map": [
+     "30.10"
+    ]
+   }
+  },
+  "H1.tikhon.first_ask": {
+   "text": "Oh!… Who are you, then?",
+   "draft": true,
+   "_k7": "К7 (Директор 30.10, 14:30): при первой встрече Агата удивляется и сразу спрашивает, кто он; Тихон ворчит по тому, что в избе ещё не сделано",
+   "line": {
+    "speaker": "agata",
+    "text": "Oh!… Who are you, then?",
+    "tags": [
+     "surprised"
+    ]
+   },
+   "direction": {
+    "stress": "кто такой",
+    "emotion": "испуг и удивление: зверёк заговорил",
+    "pace": "с остановкой после «Ой»",
+    "takes": 3,
+    "map": [
+     "30.10",
+     39
+    ]
+   }
+  },
+  "H1.tikhon.first_name": {
+   "text": "\"Tikhon. Keeper of the stove. A demanding post: lie here and see it doesn't go cold.\"",
+   "draft": true,
+   "_k7": "К7 (Директор 30.10, 14:30): при первой встрече Агата удивляется и сразу спрашивает, кто он; Тихон ворчит по тому, что в избе ещё не сделано",
+   "line": {
+    "speaker": "tikhon",
+    "text": "Tikhon. Keeper of the stove. A demanding post: lie here and see it doesn't go cold.",
+    "tags": [
+     "sarcastic"
+    ]
+   },
+   "direction": {
+    "emotion": "важно и с ленцой",
+    "pace": "лениво",
+    "takes": 3,
+    "map": [
+     "30.10"
+    ]
+   }
+  },
+  "H1.tikhon.first_alone": {
+   "text": "Are you here alone?",
+   "draft": true,
+   "_k7": "К7 (Директор 30.10, 14:30): при первой встрече Агата удивляется и сразу спрашивает, кто он; Тихон ворчит по тому, что в избе ещё не сделано",
+   "line": {
+    "speaker": "agata",
+    "text": "Are you here alone?",
+    "tags": [
+     "curious"
+    ]
+   },
+   "direction": {
+    "emotion": "осторожно, оглядываясь",
+    "pace": "тихо",
+    "takes": 3,
+    "map": [
+     "30.10"
+    ]
+   }
+  },
+  "H1.tikhon.first_stove": {
+   "text": "\"The stove's here too, of course.\"",
+   "draft": true,
+   "_k7": "К7 (Директор 30.10, 14:30): при первой встрече Агата удивляется и сразу спрашивает, кто он; Тихон ворчит по тому, что в избе ещё не сделано",
+   "line": {
+    "speaker": "tikhon",
+    "text": "The stove's here too, of course.",
+    "tags": [
+     "sarcastic"
+    ]
+   },
+   "direction": {
+    "emotion": "сухо, с насмешкой",
+    "pace": "лениво",
+    "takes": 3,
+    "map": [
+     "30.10"
+    ]
+   }
+  },
+  "H1.tikhon.before_met_shutter": {
+   "text": "\"Fire's lit. Good. Now open the shutter: it's as dark as the space beneath the stove,\" Tikhon grumbles.",
+   "draft": true,
+   "_k7": "К7 (Директор 30.10, 14:30): при первой встрече Агата удивляется и сразу спрашивает, кто он; Тихон ворчит по тому, что в избе ещё не сделано",
+   "line": {
+    "speaker": "tikhon",
+    "text": "Fire's lit. Good. Now open the shutter: it's as dark as the space beneath the stove.",
+    "tags": [
+     "grumbling"
+    ]
+   },
+   "direction": {
+    "emotion": "ворчливо, но уже теплее",
+    "pace": "лениво",
+    "takes": 3,
+    "map": [
+     "30.10"
+    ]
+   }
+  },
+  "H1.tikhon.before_met_scarf": {
+   "text": "\"Get that wet shawl off the sleeping ledge. It's making the whole house damp,\" Tikhon grumbles.",
+   "draft": true,
+   "_k7": "К7 (Директор 30.10, 14:30): при первой встрече Агата удивляется и сразу спрашивает, кто он; Тихон ворчит по тому, что в избе ещё не сделано",
+   "line": {
+    "speaker": "tikhon",
+    "text": "Get that wet shawl off the sleeping ledge. It's making the whole house damp.",
+    "tags": [
+     "grumbling"
+    ]
+   },
+   "direction": {
+    "emotion": "ворчливо, по-хозяйски",
+    "pace": "лениво",
+    "takes": 3,
+    "map": [
+     "30.10"
+    ]
+   }
+  },
+  "H1.tikhon.before_met": {
+   "text": "\"Damp in here. Light the stove first — then we'll talk,\" Tikhon grumbles.",
+   "draft": true,
+   "_k7": "К7 (30.10): «Кто там топчется?..» — теперь первая фраза знакомства (H1.tikhon.first_who)",
+   "line": {
+    "speaker": "tikhon",
+    "text": "Damp in here. Light the stove first — then we'll talk.",
+    "tags": [
+     "grumbling"
+    ]
+   },
+   "direction": {
+    "emotion": "ворчливо, с хозяйской обидой",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     38
+    ]
+   }
+  },
+  "H1.tikhon.opt_mend": {
+   "text": "Did Aunt do much mending?",
+   "draft": true
+  },
+  "H1.tikhon.mend": {
+   "text": "\"Whatever people brought: doors, mirrors, that bell. Said a thing remembers its place; it only needs a little help. But she couldn't hang my shelf in a whole year,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Whatever people brought: doors, mirrors, that bell. Said a thing remembers its place; it only needs a little help. But she couldn't hang my shelf in a whole year.",
+    "tags": [
+     "sarcastic"
+    ]
+   },
+   "direction": {
+    "stress": "полку",
+    "emotion": "гордость за хозяйку, в конце — колкость",
+    "pace": "неторопливо",
+    "takes": 1,
+    "map": [
+     "4"
+    ]
+   }
+  },
+  "H1.tikhon.opt_tamara": {
+   "text": "Did Tamara feed you?",
+   "draft": true
+  },
+  "H1.tikhon.tamara": {
+   "text": "\"Wednesdays. Cabbage soup, porridge. Fish pie on feast days. A kind woman. Stingy with the salt,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Wednesdays. Cabbage soup, porridge. Fish pie on feast days. A kind woman. Stingy with the salt.",
+    "tags": [
+     "playful"
+    ]
+   },
+   "direction": {
+    "stress": "скупо",
+    "emotion": "сытая придирчивость",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "4"
+    ]
+   }
+  },
+  "H1.tikhon.opt_night": {
+   "text": "Were you on watch all night?",
+   "draft": true
+  },
+  "H1.tikhon.night": {
+   "text": "\"All night. Didn't close an eye. Well, one — the other was on duty. I work quite comfortably lying down,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "All night. Didn't close an eye. Well, one — the other was on duty. I work quite comfortably lying down.",
+    "tags": [
+     "sleepy"
+    ]
+   },
+   "direction": {
+    "stress": "второй",
+    "emotion": "важно, сонно",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "4"
+    ]
+   }
+  },
+  "H1.tikhon.opt_stove_mirror": {
+   "text": "What hung above Aunt's stove?",
+   "draft": true
+  },
+  "H1.tikhon.stove_mirror": {
+   "text": "\"A little round mirror in a wooden frame. That day, the mistress took it down and wrapped it in a shawl. A gift for her sister, she said. Took it with her when she left,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "A little round mirror in a wooden frame. That day, the mistress took it down and wrapped it in a shawl. A gift for her sister, she said. Took it with her when she left.",
+    "tags": [
+     "thoughtful"
+    ]
+   },
+   "direction": {
+    "stress": "гостинец",
+    "emotion": "тихо вспоминает",
+    "pace": "медленно",
+    "takes": 1,
+    "map": [
+     "4"
+    ]
+   }
+  },
+  "H1.tikhon.opt_water": {
+   "text": "The water's falling. Still lying there?",
+   "draft": true
+  },
+  "H1.tikhon.water": {
+   "text": "\"Let it fall. It can manage without you. I'd like some peace by the stove: first the damp, then that bell. And you've only just arrived! …Why are you lugging that clamp about? Your mama's mirror is on the workbench, in a cloth. The frame's barely holding together,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Let it fall. It can manage without you. I'd like some peace by the stove: first the damp, then that bell. And you've only just arrived! …Why are you lugging that clamp about? Your mama's mirror is on the workbench, in a cloth. The frame's barely holding together.",
+    "tags": [
+     "grumbling"
+    ]
+   },
+   "direction": {
+    "stress": "мамино зеркало",
+    "emotion": "ворчит, но подсказывает",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     103
+    ]
+   }
+  },
+  "H1.tikhon.opt_nina": {
+   "text": "Did you know my mama?",
+   "draft": true
+  },
+  "H1.tikhon.nina": {
+   "text": "\"Nina? I remember her as a girl. Braids like yours. Came to see the mistress on Saturdays. Never brought a single pie — I remember that still,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Nina? I remember her as a girl. Braids like yours. Came to see the mistress on Saturdays. Never brought a single pie — I remember that still.",
+    "tags": [
+     "playful"
+    ]
+   },
+   "direction": {
+    "stress": "Пирогов",
+    "emotion": "нежность под сарказмом",
+    "pace": "неторопливо",
+    "takes": 1,
+    "map": [
+     "4"
+    ]
+   }
+  },
+  "H1.tikhon.opt_after_dunya": {
+   "text": "How are you, Tikhon?",
+   "draft": true
+  },
+  "H1.tikhon.after_dunya": {
+   "text": "\"Lying here. No one to wait for — so I just lie here. Stove's burning, pot's in its place… The mistress would say: that's something,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Lying here. No one to wait for — so I just lie here. Stove's burning, pot's in its place… The mistress would say: that's something.",
+    "tags": [
+     "thoughtful"
+    ]
+   },
+   "direction": {
+    "stress": "некого",
+    "emotion": "тихая перемена: не ждёт, а живёт",
+    "pace": "медленно",
+    "takes": 3,
+    "map": [
+     "4"
+    ]
+   }
+  },
+  "H1.tikhon.opt_cream": {
+   "text": "Did Aunt often scold you?",
+   "draft": true
+  },
+  "H1.tikhon.cream": {
+   "text": "\"If she found the sour cream,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "If she found the sour cream."
+   },
+   "direction": {
+    "emotion": "ворчливо, нехотя признаётся",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N1"
+    ]
+   }
+  },
+  "H1.tikhon.cream_2": {
+   "text": "Where?",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Where?"
+   },
+   "direction": {
+    "emotion": "с любопытством, сдерживая смех",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R2-N1"
+    ]
+   }
+  },
+  "H1.tikhon.cream_3": {
+   "text": "\"On my whiskers. Nothing left to find in the pot,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "On my whiskers. Nothing left to find in the pot."
+   },
+   "direction": {
+    "emotion": "невозмутимо, с достоинством",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N1"
+    ]
+   }
+  },
+  "H1.tikhon.opt_supper": {
+   "text": "Did Aunt talk of repairs over supper, too?",
+   "draft": true
+  },
+  "H1.tikhon.supper": {
+   "text": "\"At supper she told me to keep quiet,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "At supper she told me to keep quiet."
+   },
+   "direction": {
+    "emotion": "ворчливо",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N2"
+    ]
+   }
+  },
+  "H1.tikhon.supper_2": {
+   "text": "And you obeyed?",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "And you obeyed?"
+   },
+   "direction": {
+    "emotion": "лукаво",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R2-N2"
+    ]
+   }
+  },
+  "H1.tikhon.supper_3": {
+   "text": "\"Gladly — with my mouth full,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Gladly — with my mouth full."
+   },
+   "direction": {
+    "emotion": "довольно, с ленцой",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N2"
+    ]
+   }
+  },
+  "H1.tikhon.opt_tea": {
+   "text": "Did Mother quiz people here, too?",
+   "draft": true
+  },
+  "H1.tikhon.tea": {
+   "text": "\"Here it was Dunya who scolded her,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Here it was Dunya who scolded her."
+   },
+   "direction": {
+    "emotion": "с удовольствием вспоминает",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N3"
+    ]
+   }
+  },
+  "H1.tikhon.tea_2": {
+   "text": "What for?",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "What for?"
+   },
+   "direction": {
+    "emotion": "удивлённо, тепло",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R2-N3"
+    ]
+   }
+  },
+  "H1.tikhon.tea_3": {
+   "text": "\"Letting her tea go cold while she fussed over exercise books,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Letting her tea go cold while she fussed over exercise books."
+   },
+   "direction": {
+    "emotion": "ворчливо-нежно",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N3"
+    ]
+   }
+  },
+  "H1.tikhon.opt_snow": {
+   "text": "Snow outside the classroom. Rain here…",
+   "draft": true
+  },
+  "H1.tikhon.snow": {
+   "text": "\"Wet paws either way,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Wet paws either way."
+   },
+   "direction": {
+    "emotion": "брюзгливо",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N4"
+    ]
+   }
+  },
+  "H1.tikhon.snow_2": {
+   "text": "Doesn't that surprise you?",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Doesn't that surprise you?"
+   },
+   "direction": {
+    "emotion": "с улыбкой",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R2-N4"
+    ]
+   }
+  },
+  "H1.tikhon.snow_3": {
+   "text": "\"I can be surprised. A pie with no filling would do it,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "I can be surprised. A pie with no filling would do it."
+   },
+   "direction": {
+    "emotion": "саркастично, обиженно",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N4"
+    ]
+   }
+  },
+  "H1.tikhon.opt_duty": {
+   "text": "Do you guard the house or just the pot?",
+   "draft": true
+  },
+  "H1.tikhon.duty": {
+   "text": "\"The whole house. Pot's part of it,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "The whole house. Pot's part of it."
+   },
+   "direction": {
+    "emotion": "важно",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N5"
+    ]
+   }
+  },
+  "H1.tikhon.duty_2": {
+   "text": "A worthy calling.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "A worthy calling."
+   },
+   "direction": {
+    "emotion": "поддразнивая",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R2-N5"
+    ]
+   }
+  },
+  "H1.tikhon.duty_3": {
+   "text": "\"A weighty one. That's why I lie down,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "A weighty one. That's why I lie down."
+   },
+   "direction": {
+    "emotion": "лениво, с достоинством",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N5"
+    ]
+   }
+  },
+  "H1.tikhon.opt_quiet": {
+   "text": "It's quiet here. The mill left my ears ringing.",
+   "draft": true
+  },
+  "H1.tikhon.quiet": {
+   "text": "\"Dunya liked sitting quietly by the stove, too,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Dunya liked sitting quietly by the stove, too."
+   },
+   "direction": {
+    "emotion": "тихо, тепло",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N7"
+    ]
+   }
+  },
+  "H1.tikhon.quiet_2": {
+   "text": "And you let her?",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "And you let her?"
+   },
+   "direction": {
+    "emotion": "с улыбкой",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R2-N7"
+    ]
+   }
+  },
+  "H1.tikhon.quiet_3": {
+   "text": "\"I did. Only grumbled when necessary. Once an hour, no more,\" Tikhon grumbles.",
+   "draft": true,
+   "_k24": "Директор 01.11, стр. 40 («За двоих молчал, старательно — изменить фразу»). Было: «За двоих молчал. Старательно.»",
+   "line": {
+    "speaker": "tikhon",
+    "text": "I did. Only grumbled when necessary. Once an hour, no more."
+   },
+   "direction": {
+    "emotion": "сухо, с гордостью",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N7"
+    ]
+   }
+  },
+  "H1.tikhon.opt_hear": {
+   "text": "If only I could hear Mother's voice…",
+   "draft": true
+  },
+  "H1.tikhon.hear": {
+   "text": "\"She'll scold you all the same. Grown or not,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "She'll scold you all the same. Grown or not."
+   },
+   "direction": {
+    "emotion": "ворчливо, но мягко",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N8"
+    ]
+   }
+  },
+  "H1.tikhon.hear_2": {
+   "text": "Let her. If only I could hear her.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Let her. If only I could hear her."
+   },
+   "direction": {
+    "emotion": "тихо, с тоской",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R2-N8"
+    ]
+   }
+  },
+  "H1.tikhon.hear_3": {
+   "text": "\"I'd listen too. Just once,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "I'd listen too. Just once."
+   },
+   "direction": {
+    "emotion": "тихо, нехотя признаётся",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N8"
+    ]
+   }
+  },
+  "H1.tikhon.opt_home": {
+   "text": "Aunt would have us all round the table.",
+   "draft": true
+  },
+  "H1.tikhon.home": {
+   "text": "\"And tell us to eat while it's hot,\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "And tell us to eat while it's hot."
+   },
+   "direction": {
+    "emotion": "тихо, вспоминая",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N9"
+    ]
+   }
+  },
+  "H1.tikhon.home_2": {
+   "text": "As though we were home.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "As though we were home."
+   },
+   "direction": {
+    "emotion": "тепло, с грустью",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R2-N9"
+    ]
+   }
+  },
+  "H1.tikhon.home_3": {
+   "text": "\"Where do you think you are?\" Tikhon grumbles.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Where do you think you are?"
+   },
+   "direction": {
+    "emotion": "ворчливо-ласково",
+    "pace": "лениво",
+    "takes": 1,
+    "map": [
+     "R2-N9"
+    ]
+   }
+  },
+  "H1.photo.label": {
+   "text": "Family photograph",
+   "draft": false
+  },
+  "H1.photo.label_table": {
+   "text": "Family photograph on the table",
+   "draft": false
+  },
+  "H1.photo.label_shelf": {
+   "text": "Family photograph on the shelf",
+   "draft": false
+  },
+  "H1.photo.prompt": {
+   "text": "Where shall I put the photograph?",
+   "draft": false
+  },
+  "H1.photo.opt_table": {
+   "text": "On the table",
+   "draft": false
+  },
+  "H1.photo.opt_shelf": {
+   "text": "On the shelf",
+   "draft": false
+  },
+  "H1.photo.react_table": {
+   "text": "By the armchair — then we'll all be together.",
+   "draft": false
+  },
+  "H1.photo.react_shelf": {
+   "text": "On the shelf — you can see the whole room from there.",
+   "draft": false
+  },
+  "H1.photo.look": {
+   "text": "Our family photograph, in its frame.",
+   "draft": false,
+   "tags": [
+    "warmly"
+   ]
+  },
+  "H1.cups.label": {
+   "text": "Two cups",
+   "draft": false
+  },
+  "H1.cups.label_blue": {
+   "text": "Cups: blue chosen",
+   "draft": false
+  },
+  "H1.cups.label_white": {
+   "text": "Cups: white chosen",
+   "draft": false
+  },
+  "H1.cups.prompt": {
+   "text": "Which cup shall I have?",
+   "draft": false
+  },
+  "H1.cups.opt_blue": {
+   "text": "Blue",
+   "draft": false
+  },
+  "H1.cups.opt_white": {
+   "text": "White",
+   "draft": false
+  },
+  "H1.cups.react_blue": {
+   "text": "I'll have the blue one. It can wait on the table by the armchair.",
+   "draft": false
+  },
+  "H1.cups.react_white": {
+   "text": "I'll have the white one. It can wait on the table by the armchair.",
+   "draft": false
+  },
+  "H1.cups.look": {
+   "text": "One blue, one white. Both washed clean, waiting on the windowsill.",
+   "draft": false
+  },
+  "H1.v01.done": {
+   "text": "Tikhon surveys his domain. \"Unoccupied. Rearrangement permitted.\"",
+   "draft": false,
+   "line": {
+    "speaker": "tikhon",
+    "text": "Unoccupied. Rearrangement permitted."
+   }
+  },
+  "H1.shelf.label": {
+   "text": "Unmounted shelf",
+   "draft": false
+  },
+  "H1.shelf.label_done": {
+   "text": "Tikhon's shelf",
+   "draft": false
+  },
+  "H1.shelf.label_stove": {
+   "text": "Shelf by the stove",
+   "draft": false
+  },
+  "H1.scarf.shelf_under": {
+   "text": "There's a shelf under the shawl. Dunya's, with its brackets.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "There's a shelf under the shawl. Dunya's, with its brackets."
+   }
+  },
+  "H1.shelf.react_b": {
+   "text": "So what? A sleeping mat counts as furniture, too.",
+   "draft": true,
+   "line": {
+    "speaker": "tikhon",
+    "text": "So what? A sleeping mat counts as furniture, too."
+   }
+  },
+  "H1.shelf.prompt": {
+   "text": "Tikhon looks from the shelf to the stove. That's where its mounts are. Shall I hang it for him?",
+   "direction": {
+    "stress": "там; Повесить ему полку",
+    "emotion": "акцент на «там»; последняя фраза — живее",
+    "pace": "ровно",
+    "takes": 3,
+    "map": [
+     65
+    ],
+    "voice_fb": [
+     35
+    ]
+   },
+   "draft": false
+  },
+  "H1.shelf.opt_a": {
+   "text": "Hang the shelf by the stove",
+   "draft": false
+  },
+  "H1.shelf.opt_b": {
+   "text": "Not now",
+   "draft": false
+  },
+  "H1.shelf.look": {
+   "text": "The unmounted shelf was lying under the shawl on the sleeping ledge. Its mounts are by the stove.",
+   "draft": false
+  },
+  "H1.shelf.look_wet": {
+   "text": "The unmounted shelf is on the sleeping ledge, under the wet shawl. The shawl must come off first.",
+   "draft": true
+  },
+  "H1.shelf.not_yet": {
+   "text": "I'll leave the shelf for now. First I must light the stove: the house is cold and damp.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I'll leave the shelf for now. First I must light the stove: the house is cold and damp."
+   }
+  },
+  "H1.shelf.not_yet_dark": {
+   "text": "Hang a shelf in the dark? I'll open the shutter first.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Hang a shelf in the dark? I'll open the shutter first."
+   }
+  },
+  "H1.shelf.look_done": {
+   "text": "Shelf hung, mat laid out. Tikhon inspected it — and approved.",
+   "direction": {
+    "emotion": "с усмешкой",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-7"
+    ]
+   },
+   "draft": false
+  },
+  "H1.exit_Z2.label": {
+   "text": "To the porch",
+   "draft": false
+  },
+  "H1.exit_H2.label": {
+   "text": "Workshop",
+   "draft": false
+  },
+  "H1.exit_H3.label": {
+   "text": "Gallery",
+   "draft": false
+  },
+  "H1.exit_H4.label": {
+   "text": "Attic",
+   "draft": false
+  },
+  "H1.exit_H2.dark": {
+   "text": "I can't see a thing in the workshop. I'll open the shutter first and let some light into the house.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I can't see a thing in the workshop. I'll open the shutter first and let some light into the house."
+   }
+  },
+  "H1.exit_H3.dark": {
+   "text": "The gallery is pitch-dark. I'll open the shutter before I go in.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The gallery is pitch-dark. I'll open the shutter before I go in."
+   }
+  },
+  "H1.exit_H4.dark": {
+   "text": "I'm not climbing into the attic in the dark. I'll open the shutter first.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I'm not climbing into the attic in the dark. I'll open the shutter first."
+   }
+  },
+  "H2.bench_front.label": {
+   "text": "Workbench",
+   "draft": false
+  },
+  "H2.bench.label": {
+   "text": "Aunt's drawings and notes",
+   "draft": false
+  },
+  "H2.bench.use": {
+   "text": "On the school door drawing, Dunya wrote: keep the original hinges, and align the threshold with the notch.",
+   "direction": {
+    "emotion": "спокойно",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-8"
+    ]
+   },
+   "draft": false
+  },
+  "H2.bench.look": {
+   "text": "Dunya's school door drawings are pinned above the box marked \"Hinges.\" Her notes fill the margins.",
+   "direction": {
+    "emotion": "спокойно",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-9"
+    ]
+   },
+   "draft": false
+  },
+  "H2.hinges_box.label": {
+   "text": "Box of hinges",
+   "draft": false
+  },
+  "H2.hinges_box.use": {
+   "text": "In Dunya's hand: \"School door. Hinges.\" There are three inside.",
+   "draft": false
+  },
+  "H2.hinges_box.look": {
+   "text": "In Dunya's handwriting, the box is marked \"Hinges.\"",
+   "draft": false
+  },
+  "H2.bell.label": {
+   "text": "Mill bell",
+   "draft": false
+  },
+  "H2.bell.use": {
+   "text": "Dunya's label reads: \"Bell from the mill. Hung by the office door — it marked the start and end of work.\" Below is her familiar saying: \"Some things remember the place they served.\"",
+   "direction": {
+    "stress": "конторы",
+    "emotion": "«На ярлыке, Дуниной рукой» и «Ниже, с нажимом» — как добавления после запятой; акцент на «конторы»",
+    "pace": "ровно",
+    "takes": 3,
+    "map": [
+     48
+    ],
+    "voice_fb": [
+     37
+    ]
+   },
+   "draft": false
+  },
+  "H2.bell.look": {
+   "text": "The bell is hanging up, but its clapper is missing.",
+   "draft": false,
+   "_k24": "Директор 01.11, стр. 32: акцент «На ПОДВЕСЕ», фразу про ярлык убрать — ярлык и так читается при «Использовать» (H2.bell.use). Было: «На подвесе колокол, языка нет. Привязан к нему ярлык.»"
+  },
+  "H2.bell.thought_early": {
+   "text": "If things remember their place… what happens if we put them back where they belong?",
+   "draft": false,
+   "tags": [
+    "softly"
+   ],
+   "_k19": "Директор 01.11, стр. 19: колокол раньше школьной двери — мысль без двери"
+  },
+  "H2.bell.thought": {
+   "text": "If things remember their place… what happens if I put the school door back on its own hinges?",
+   "draft": false,
+   "tags": [
+    "softly"
+   ]
+  },
+  "H2.stand_zm.label": {
+   "text": "Carved mirror stand",
+   "draft": false
+  },
+  "H2.stand_zm.look": {
+   "text": "A tall, heavy carved frame on legs, nailed to the floor. Empty. Dunya's label says \"ЗМ\" — mill mirror. Below: \"Office mirror — collect from Pavel.\"",
+   "draft": false
+  },
+  "H2.clapper_box.label": {
+   "text": "Box by the bell",
+   "draft": false
+  },
+  "H2.clapper_box.look": {
+   "text": "The box beside the bell is marked \"Bell clapper.\"",
+   "draft": false
+  },
+  "H2.exit_H1.label": {
+   "text": "Living room",
+   "draft": false
+  },
+  "H2.bundle_nina.label": {
+   "text": "Mama's mirror",
+   "draft": false
+  },
+  "H2.bundle_nina.look": {
+   "text": "Something wrapped in a cloth. Dunya's label says \"Nina. Parlour.\" Mama's mirror, from her parlour.",
+   "draft": false
+  },
+  "H2.bundle_nina.use": {
+   "text": "Under the cloth is a mirror in an old frame. The glass is cloudy; the frame comes apart in my hands. A label says: \"Clamp needed. Mine is broken.\" No clamp here — this must wait.",
+   "draft": false
+  },
+  "H2.bundle_nina.done": {
+   "text": "Mama's mirror… Pick it up and the frame comes apart. I'll need a clamp.",
+   "direction": {
+    "emotion": "бережно, с досадой: рама не удержится",
+    "pace": "неторопливо",
+    "takes": 3,
+    "map": [
+     "R3-10"
+    ]
+   },
+   "draft": false
+  },
+  "H2.tar_pot.label": {
+   "text": "Tar",
+   "draft": false,
+   "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора"
+  },
+  "H2.tar_pot.look": {
+   "text": "A tin jug of tar. Dunya used it to grease hinges and bolts.",
+   "draft": false,
+   "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора"
+  },
+  "H2.tar_pot.not_now": {
+   "text": "Tar. I have no use for it just now.",
+   "draft": false,
+   "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора — до просьбы Павла взять нельзя, и Агата говорит почему (Директор 29.10, 18:51)"
+  },
+  "H2.tar_pot.take": {
+   "text": "I'll pour some tar into a jar — to grease Pavel's winch.",
+   "draft": false,
+   "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора"
+  },
+  "H2.tar_pot.taken": {
+   "text": "That's the tar. Back to the sluice.",
+   "draft": false,
+   "_k11": "K11 (Директор 01.11, 00:57–01:00, «Одиннадцатый заход»): выбран новый текст (было «Дёготь у меня. Скорей к затвору.»)",
+   "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора"
+  },
+  "H2.brace.label": {
+   "text": "Plate bracket",
+   "draft": false
+  },
+  "H2.brace.look": {
+   "text": "A forged bracket, with a paper from the district office beneath it: the bridge plate is cracked and needs repair. The drawing shows the same pier as Tamara's.",
+   "draft": false
+  },
+  "H2.brace.before_plan": {
+   "text": "A bracket for the crack in the plate — never fitted. The plate's underwater. What use is the bracket to me now?",
+   "draft": false
+  },
+  "H2.brace.take": {
+   "text": "\"Dunya has a bracket for it on her workbench,\" the plan says. I'll take it — finish the work for her.",
+   "direction": {
+    "stress": "за тётю",
+    "emotion": "решительно и тепло — за тётю доделает",
+    "pace": "ровно",
+    "takes": 3,
+    "map": [
+     "R3-11"
+    ]
+   },
+   "draft": false
+  },
+  "H3.school_door.label": {
+   "text": "Door by the frame",
+   "draft": false
+  },
+  "H3.school_door.label_seen": {
+   "text": "School door",
+   "draft": false
+  },
+  "H3.school_door.use": {
+   "text": "Our school door. Label: \"Olkhovka School. Nina sent it for repair.\" A notch in the beam; the hinges are off.",
+   "draft": false
+  },
+  "H3.school_door.look": {
+   "text": "A door leans against the frame. The places for its original hinges are empty.",
+   "draft": false
+  },
+  "H3.puzzle.title": {
+   "text": "School door and frame",
+   "draft": false
+  },
+  "H3.puzzle.need": {
+   "text": "I need the original hinges and the fitting diagram from the workshop. Without them, I can't fit the door properly.",
+   "draft": false
+  },
+  "H3.puzzle.intro": {
+   "text": "Three original hinges in their proper places, as in Dunya's drawing. Then align the notch on the threshold with the mark. After that I can close the door.",
+   "draft": false
+  },
+  "H3.puzzle.slot_top": {
+   "text": "Top socket",
+   "draft": false
+  },
+  "H3.puzzle.slot_middle": {
+   "text": "Middle socket",
+   "draft": false
+  },
+  "H3.puzzle.slot_bottom": {
+   "text": "Bottom socket",
+   "draft": false
+  },
+  "H3.puzzle.hinge": {
+   "text": "Original hinge",
+   "draft": false
+  },
+  "H3.puzzle.seat_hint": {
+   "text": "The beam isn't seated yet. Tap it in: click the arrow at its end.",
+   "draft": true,
+   "_j": "J-A1 (29.10): стрелки сами подбивают брус"
+  },
+  "H3.puzzle.marks": {
+   "text": "Threshold notch",
+   "draft": false
+  },
+  "H3.puzzle.drawing": {
+   "text": "Dunya's drawing",
+   "draft": false
+  },
+  "H3.puzzle.label_tray": {
+   "text": "Hinges from the workshop",
+   "draft": false
+  },
+  "H3.puzzle.check": {
+   "text": "Close the door",
+   "draft": false
+  },
+  "H3.puzzle.error": {
+   "text": "The same gallery wall is behind the door. The hinges or the threshold must still be out of place.",
+   "draft": false
+  },
+  "H3.puzzle.error_pieces": {
+   "text": "The same gallery wall is behind the door. Some hinges aren't seated — all three must fit into the frame's sockets.",
+   "draft": true,
+   "_j": "J-A1 (Директор 29.10, стр. 47): ошибка говорит, что не так — петли"
+  },
+  "H3.puzzle.error_mark": {
+   "text": "Still the gallery wall behind it. The threshold is misaligned: the notch in Dunya's drawing must sit beneath the door's mark.",
+   "draft": true,
+   "_j": "J-A1 (Директор 29.10, стр. 47): ошибка говорит, что не так — порог"
+  },
+  "H3.puzzle.success": {
+   "text": "The hinges slip into their sockets; the notches align. Beyond the door is a classroom, with winter outside its windows.",
+   "direction": {
+    "emotion": "тихая радость, дверь в класс открылась",
+    "pace": "неторопливо",
+    "takes": 3,
+    "map": [
+     "R3-12"
+    ]
+   },
+   "draft": false
+  },
+  "H3.mirror_home.label": {
+   "text": "House mirror",
+   "draft": false
+  },
+  "H3.mirror_home.use": {
+   "text": "In the old photograph, this mirror hangs in the same place. And there I am in it, as a child. The same gallery is behind me now.",
+   "draft": false
+  },
+  "H3.mirror_home.look": {
+   "text": "A framed house mirror. Dunya marked it \"ЗГ\" — gallery mirror.",
+   "draft": false
+  },
+  "H3.mirror_home.label_photo": {
+   "text": "Old photograph",
+   "draft": false
+  },
+  "H3.photo_school.label": {
+   "text": "School photograph",
+   "draft": false
+  },
+  "H3.photo_school.look": {
+   "text": "The school, its porch and its door. The hinges and the notch in the beam are still visible.",
+   "draft": false
+  },
+  "H3.exit_H1.label": {
+   "text": "Living room",
+   "draft": false
+  },
+  "H3.exit_Z4.label": {
+   "text": "To the side porch",
+   "draft": false
+  },
+  "H3.puzzle.by_item": {
+   "text": "The original hinges are in my bag. I'll try them on the door.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The original hinges are in my bag. I'll try them on the door."
+   }
+  },
+  "H3.exit_Z4.label_unbolt": {
+   "text": "Unlock the door",
+   "draft": false
+  },
+  "Z4.side_door.now_open": {
+   "text": "Now I can get into the house from here, too.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Now I can get into the house from here, too."
+   }
+  },
+  "H3.exit_O1.label": {
+   "text": "Frame for the school door",
+   "draft": false
+  },
+  "H3.exit_O1.label_open": {
+   "text": "Through to the winter classroom",
+   "draft": false
+  },
+  "H3.exit_O1.closed": {
+   "text": "The door is standing nearby. There's no way through the empty frame yet.",
+   "draft": false
+  },
+  "H3.side_door.unbolt": {
+   "text": "The gallery's side door is bolted from inside. Slide the bolt back, and I'll be able to enter from the lane.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The gallery's side door is bolted from inside. Slide the bolt back, and I'll be able to enter from the lane."
+   }
+  },
+  "H3.exit_R4.label": {
+   "text": "Second door frame",
+   "draft": false
+  },
+  "H3.exit_R4.closed": {
+   "text": "An empty frame by the wall. There's no door for it in the workshop.",
+   "draft": false
+  },
+  "H4.boxes.label": {
+   "text": "Empty boxes",
+   "draft": false
+  },
+  "H4.window.label": {
+   "text": "Attic window",
+   "draft": false
+  },
+  "H4.window.look_snow": {
+   "text": "All of Zarechye is laid out below: roofs, post office, river bend. And snow on the far bank.",
+   "draft": false
+  },
+  "H4.window.look": {
+   "text": "All of Zarechye is laid out below: roofs, post office, river bend. The far bank is lost in mist.",
+   "direction": {
+    "stress": "реки́",
+    "emotion": "«поворот реки́» — ударение на последний слог",
+    "pace": "ровно",
+    "takes": 3,
+    "map": [
+     45
+    ],
+    "voice_fb": [
+     41
+    ]
+   },
+   "draft": false
+  },
+  "H4.chest.label": {
+   "text": "Chest",
+   "draft": false
+  },
+  "H4.chest.look": {
+   "text": "An old chest bound with iron bands. The lid has a latch, but no lock.",
+   "draft": false
+  },
+  "H4.chest.open": {
+   "text": "Under the lid was the bell clapper, wrapped in coarse cloth by Dunya. I'll take it — it may come in useful.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Under the lid was the bell clapper, wrapped in coarse cloth by Dunya. I'll take it — it may come in useful."
+   }
+  },
+  "H4.chest.open_done": {
+   "text": "The chest is open: an old coverlet and Dunya's odds and ends. The bell clapper is gone now.",
+   "direction": {
+    "emotion": "просто",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-13"
+    ]
+   },
+   "draft": true
+  },
+  "H1.lezhanka.label": {
+   "text": "Stove sleeping ledge",
+   "draft": true
+  },
+  "H1.lezhanka.late_d1": {
+   "text": "It's late — time to sleep. I'll lie here beside the stove, in the warmth.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "It's late — time to sleep. I'll lie here beside the stove, in the warmth."
+   }
+  },
+  "H1.lezhanka.after_d1": {
+   "text": "I slept here the first night. Now I sleep at Mama's.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I slept here the first night. Now I sleep at Mama's."
+   }
+  },
+  "H4.bed.dunya_night": {
+   "text": "Dunya's… I'll sleep by the stove. It's warmer there.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Dunya's… I'll sleep by the stove. It's warmer there."
+   }
+  },
+  "H4.bed.label": {
+   "text": "Bed",
+   "draft": true
+  },
+  "H4.bed.look": {
+   "text": "Dunya's narrow bed, with a patchwork quilt. Made up just as it was when she was here.",
+   "draft": true
+  },
+  "H4.bed.early_d1_door": {
+   "text": "No time to lie down — the door in the gallery is waiting.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "No time to lie down — the door in the gallery is waiting."
+   }
+  },
+  "H4.bed.early_d1_street": {
+   "text": "No time to lie down — there's a path from the schoolyard to the village. I should see where it leads.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "No time to lie down — there's a path from the schoolyard to the village. I should see where it leads."
+   },
+   "_k34": "Директор 01.11, стр. 34"
+  },
+  "H4.bed.early_d1_class": {
+   "text": "No time to lie down — I haven't finished looking round the classroom beyond the school door.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "No time to lie down — I haven't finished looking round the classroom beyond the school door."
+   }
+  },
+  "H4.bed.early_d2": {
+   "text": "No time to sleep — there's work still to do.",
+   "direction": {
+    "emotion": "живо: не до сна",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R3-14"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "No time to sleep — there's work still to do."
+   },
+   "_k0211": "Директор 02.11, стр. 16: после маминого зеркала на дворе уже не день — «самый день» убрано. Было: «Какой теперь сон — самый день. Я ещё дел не переделала.»"
+  },
+  "H4.bed.early_d3": {
+   "text": "Too early to sleep. I still have to {left}.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Too early to sleep. I still have to {left}."
+   }
+  },
+  "H4.bed.early_short": {
+   "text": "Too early to sleep.",
+   "draft": true,
+   "_j": "J (стр. 178): отдельная запись вместо составной фразы",
+   "line": {
+    "speaker": "agata",
+    "text": "Too early to sleep."
+   }
+  },
+  "H4.bed.todo_M23a": {
+   "text": "I still need to see Tamara — she's handing out the letters.",
+   "draft": true,
+   "_j": "J (стр. 178): отдельная запись вместо составной фразы",
+   "line": {
+    "speaker": "agata",
+    "text": "I still need to see Tamara — she's handing out the letters."
+   }
+  },
+  "H4.bed.todo_M23b": {
+   "text": "I still need to call on Pavel at the mill.",
+   "draft": true,
+   "_j": "J (стр. 178): отдельная запись вместо составной фразы",
+   "line": {
+    "speaker": "agata",
+    "text": "I still need to call on Pavel at the mill."
+   }
+  },
+  "H4.bed.todo_M23c": {
+   "text": "I still need to see Mama at Dunya's house.",
+   "draft": true,
+   "_j": "J (стр. 178): отдельная запись вместо составной фразы",
+   "line": {
+    "speaker": "agata",
+    "text": "I still need to see Mama at Dunya's house."
+   }
+  },
+  "H4.bed.todo_M23d": {
+   "text": "I still need to talk to Tikhon about Dunya.",
+   "draft": true,
+   "_j": "J (стр. 178): отдельная запись вместо составной фразы",
+   "line": {
+    "speaker": "agata",
+    "text": "I still need to talk to Tikhon about Dunya."
+   }
+  },
+  "H4.bed.left_M23a": {
+   "text": "see Tamara as she hands out the letters",
+   "draft": true
+  },
+  "H4.bed.left_M23b": {
+   "text": "call on Pavel at the mill",
+   "draft": true
+  },
+  "H4.bed.left_M23c": {
+   "text": "see Mama at Dunya's house",
+   "draft": true
+  },
+  "H4.bed.left_M23d": {
+   "text": "talk to Tikhon about Dunya",
+   "draft": true
+  },
+  "H4.bed.after_d4": {
+   "text": "I've had a good sleep. Ilya and Pelageya are waiting at the bend.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I've had a good sleep. Ilya and Pelageya are waiting at the bend."
+   }
+  },
+  "H4.bed.after_all": {
+   "text": "I can't sleep. Still can't believe it: the road is held from both ends.",
+   "direction": {
+    "stress": "не верится",
+    "emotion": "взволнованно, радость ещё не улеглась",
+    "pace": "неторопливо",
+    "takes": 3,
+    "map": [
+     "R3-16"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I can't sleep. Still can't believe it: the road is held from both ends."
+   }
+  },
+  "H3.night.to_bed": {
+   "text": "It's night outside. Late — time to sleep. I'll lie on the sleeping ledge by the stove.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "It's night outside. Late — time to sleep. I'll lie on the sleeping ledge by the stove."
+   }
+  },
+  "H4.bed.late_d1": {
+   "text": "Late. Cold upstairs… I'll sleep downstairs by the stove.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Late. Cold upstairs… I'll sleep downstairs by the stove."
+   }
+  },
+  "H4.bed.late_d3": {
+   "text": "Enough for today. It's late — time to sleep.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Enough for today. It's late — time to sleep."
+   }
+  },
+  "H4.bed.bedtime_d3": {
+   "text": "Evening already. I've done all I meant to do. Time to go home and sleep.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Evening already. I've done all I meant to do. Time to go home and sleep."
+   }
+  },
+  "H4.exit_H1.label": {
+   "text": "Down to the living room",
+   "draft": false
+  },
+  "H4.v02.done": {
+   "text": "Light beneath the roof. Familiar things still in their familiar places.",
+   "draft": false,
+   "_k27": "Директор 01.11, «Семнадцатый заход» (W228): «изменить фразу» — нейтрально, без нажима и без тега warmly. Было: «Светло под крышей…»"
+  },
+  "O1.desks_front.label": {
+   "text": "School desks",
+   "draft": false
+  },
+  "O1.board.label": {
+   "text": "Blackboard",
+   "draft": false
+  },
+  "O1.board.use": {
+   "text": "Fresh chalk; the board was wiped recently. Someone's been studying. If only they'd read my message.",
+   "direction": {
+    "stress": "послание",
+    "emotion": "душевно, с надеждой",
+    "pace": "мягко",
+    "takes": 3,
+    "map": [
+     59
+    ]
+   },
+   "_f10": "F10 (Директор 30.10): на доске задачи нет — она вытертая",
+   "draft": false
+  },
+  "O1.board.chalk": {
+   "text": "Now I've left my mark on the board, too: \"I was here. Agata.\"",
+   "draft": false,
+   "_k24": "Директор 01.11, стр. 25 («он не в углу на деле»): надпись (state_board_written) — посреди доски. Было: «Теперь и мой след в углу доски…»",
+   "tags": [
+    "warmly"
+   ]
+  },
+  "O1.board.look": {
+   "text": "Chalk smears across the blackboard.",
+   "draft": false
+  },
+  "O1.board.label_here": {
+   "text": "Board: \"I was here. Agata.\"",
+   "draft": false
+  },
+  "O1.board.label_mama": {
+   "text": "Board: \"Mama, I'm coming.\"",
+   "draft": false
+  },
+  "O1.board.label_ilya": {
+   "text": "Board: \"Ilyusha, I found your drawing.\"",
+   "draft": false
+  },
+  "O1.board.prompt": {
+   "text": "What shall I write on the board?",
+   "draft": false
+  },
+  "O1.board.opt_here": {
+   "text": "\"I was here. Agata.\"",
+   "draft": false
+  },
+  "O1.board.opt_mama": {
+   "text": "\"Mama, I'm coming.\"",
+   "draft": false
+  },
+  "O1.board.opt_ilya": {
+   "text": "\"Ilyusha, I found your drawing.\"",
+   "draft": false
+  },
+  "O1.board.opt_none": {
+   "text": "Don't write anything yet",
+   "draft": false
+  },
+  "O1.board.chalk_mama": {
+   "text": "Written in chalk: \"Mama, I'm coming.\"",
+   "draft": false,
+   "_k24": "Директор 01.11, стр. 25: надписи мелом — посреди доски, не в углу (state_board_mama). Было: «Мелом в углу доски выведено…»"
+  },
+  "O1.board.chalk_ilya": {
+   "text": "Written in chalk: \"Ilyusha, I found your drawing.\"",
+   "draft": false,
+   "_k24": "Директор 01.11, стр. 25: надписи мелом — посреди доски, не в углу (state_board_ilya). Было: «Мелом в углу доски выведено…»"
+  },
+  "O1.board.chalk_none": {
+   "text": "The chalk stays in my bag. The board can wait.",
+   "draft": false
+  },
+  "O1.board.chalk_late": {
+   "text": "No need to write now. Mama has come herself.",
+   "draft": true,
+   "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом; закадровая мысль Агаты (запись K16)"
+  },
+  "O1.board.written_mama": {
+   "text": "Mama, I'm coming",
+   "draft": false
+  },
+  "O1.board.written_ilya": {
+   "text": "Ilyusha, I found\nyour drawing",
+   "draft": false
+  },
+  "O1.sack.label": {
+   "text": "Patched sack",
+   "draft": false
+  },
+  "O1.sack.use": {
+   "text": "Patch upon patch. They kept the old cloth as long as there was anything left to sew a new patch onto.",
+   "draft": false
+  },
+  "O1.sack.look": {
+   "text": "A sack by the wall, covered in patches.",
+   "draft": false
+  },
+  "O1.notebooks.label": {
+   "text": "Stack of exercise books",
+   "draft": false
+  },
+  "O1.notebooks.use": {
+   "text": "Filled to the last page — and such different hands on every sheet! They've been studying here all these years! The far side is alive.",
+   "direction": {
+    "stress": "почерки; Учились тут; все",
+    "emotion": "удивлённо-радостно: «почерки» — удивлённо; «Учились тут» — как открытие; в «все эти годы» акцент на «все»",
+    "pace": "живо к концу",
+    "takes": 3,
+    "map": [
+     55,
+     56
+    ],
+    "voice_fb": [
+     47
+    ]
+   },
+   "tags": [
+    "excited"
+   ],
+   "draft": false
+  },
+  "O1.notebooks.look": {
+   "text": "Filled exercise books are stacked on the windowsill.",
+   "draft": false
+  },
+  "O1.teacher_drawer.label": {
+   "text": "Teacher's desk drawer",
+   "draft": false
+  },
+  "O1.teacher_drawer.label_open": {
+   "text": "Empty teacher's desk drawer",
+   "draft": false
+  },
+  "O1.teacher_drawer.use": {
+   "text": "In the drawer bearing the school seal is a photograph of the old bridge. The handrail rope is fastened to the near pier's plate; Pelageya's boat is beside it. Beneath lies a child's drawing of a bridge and boat. A sheet of paper, too: different inks, yellowed edges.",
+   "draft": false
+  },
+  "O1.teacher_drawer.look": {
+   "text": "The teacher's desk drawer bears the school seal.",
+   "draft": false
+  },
+  "O1.teacher_drawer.paper_plan": {
+   "text": "To whoever comes through this door. A road is held from both ends. We hold the far end. The near end is the plate on the pier by the bend: underwater, with a crack in it. Dunya has a bracket for it on her workbench. Fasten the rope only to its ring — tying it to the pier's stone won't hold. We tried on our side. Our end runs through the old ring on the far pier. The mill sluice holds back the water; its lever is in the manager's office. Once the rope is fastened, signal three flashes from the pier.",
+   "draft": false
+  },
+  "O1.chalk.label": {
+   "text": "Piece of chalk",
+   "draft": false
+  },
+  "O1.chalk.use": {
+   "text": "The chalk from the desk leaves white traces on my fingers.",
+   "draft": false
+  },
+  "O1.chalk.look": {
+   "text": "A piece of chalk on the desk.",
+   "draft": false
+  },
+  "O1.bird_drawing.label": {
+   "text": "Bird poster",
+   "draft": false
+  },
+  "O1.bird_drawing.label_marked": {
+   "text": "Bird with my drawing",
+   "draft": false
+  },
+  "O1.bird_drawing.prompt": {
+   "text": "I drew the bird's cap. Someone added boots later. What else shall I draw?",
+   "direction": {
+    "stress": "я",
+    "emotion": "акцент на «я»",
+    "pace": "живо",
+    "takes": 3,
+    "map": [
+     57
+    ],
+    "voice_fb": [
+     46
+    ]
+   },
+   "draft": false
+  },
+  "O1.bird_drawing.opt_scarf": {
+   "text": "A scarf — it's winter here",
+   "draft": true
+  },
+  "O1.bird_drawing.opt_boat": {
+   "text": "A steamboat, like Ilyusha's",
+   "draft": true
+  },
+  "O1.bird_drawing.opt_bridge": {
+   "text": "A bridge on stone piers",
+   "draft": true
+  },
+  "O1.bird_drawing.late": {
+   "text": "Ulya has seen the bird already. I'll leave it as it is.",
+   "draft": true,
+   "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом; закадровая мысль Агаты (запись K16)"
+  },
+  "O1.bird_drawing.opt_leave": {
+   "text": "Leave it as it is",
+   "draft": false
+  },
+  "O1.bird_drawing.react_scarf": {
+   "text": "A striped scarf. To keep it warm.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "A striped scarf. To keep it warm."
+   }
+  },
+  "O1.bird_drawing.react_boat": {
+   "text": "Smoke from the funnel. Ilyusha would know his boat.",
+   "direction": {
+    "stress": "свою лодку",
+    "emotion": "тепло, с улыбкой",
+    "pace": "неторопливо",
+    "takes": 3,
+    "map": [
+     "R3-19"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Smoke from the funnel. Ilyusha would know his boat."
+   }
+  },
+  "O1.bird_drawing.react_bridge": {
+   "text": "A little bridge on piers. Let there be one in a drawing, at least.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "A little bridge on piers. Let there be one in a drawing, at least."
+   }
+  },
+  "O1.bird_drawing.look": {
+   "text": "In the margin of a school poster is a little bird in a cap and boots.",
+   "draft": false
+  },
+  "O1.v03.done": {
+   "text": "The boots can stay. A pity whoever drew them didn't leave a name.",
+   "draft": false
+  },
+  "O1.exit_H3.label": {
+   "text": "Through the door to the gallery",
+   "draft": false
+  },
+  "O1.exit_H3.yard_first": {
+   "text": "This door leads home. The other goes to the schoolyard… I should see where that path leads first.",
+   "direction": {
+    "emotion": "задумчиво, себе",
+    "pace": "ровно",
+    "takes": 3
+   },
+   "draft": false,
+   "line": {
+    "speaker": "agata",
+    "text": "This door leads home. The other goes to the schoolyard… I should see where that path leads first."
+   },
+   "_k0211": "Директор 02.11, стр. 11: в класс попала, во двор не вышла — без этого второй день не начнётся"
+  },
+  "O1.exit_H3.closed": {
+   "text": "The door won't stay in the frame yet.",
+   "draft": false
+  },
+  "O1.exit_O2.label": {
+   "text": "To the school porch",
+   "draft": false
+  },
+  "O1.enter.winter": {
+   "text": "Winter already?… It's still October back home!",
+   "draft": false,
+   "_k24": "Директор 01.11, стр. 24 («Как же это?» — два раза в соседних фразах): у двери Агата уже сказала «Наша школа!.. Да как же это…» (M05_0) — здесь вопрос снят. Было: «…А у нас ещё октябрь! Как же это?»",
+   "tags": [
+    "hesitant"
+   ],
+   "_j": "J (стр. 50): растерянно"
+  },
+  "O2.school_wall.label": {
+   "text": "School wall",
+   "draft": false
+  },
+  "O2.tree.label": {
+   "text": "Tree by the school",
+   "draft": false
+  },
+  "O2.tree.look": {
+   "text": "I remember this tree being shorter. Now its branches reach above the porch.",
+   "direction": {
+    "stress": "ниже; выше",
+    "emotion": "раздумчиво; акценты на «ниже» и «выше»",
+    "pace": "неторопливо",
+    "takes": 3,
+    "map": [
+     61
+    ],
+    "voice_fb": [
+     49
+    ]
+   },
+   "draft": false,
+   "tags": [
+    "warmly"
+   ]
+  },
+  "O2.porch_step.label": {
+   "text": "Porch step",
+   "draft": false
+  },
+  "O2.porch_step.label_mitten": {
+   "text": "Step with my mitten",
+   "draft": false
+  },
+  "O2.porch_step.mitten": {
+   "text": "I'll leave a mitten on the step. If I come back to it, the road is taking me in circles.",
+   "draft": false
+  },
+  "O2.porch_step.mitten_late": {
+   "text": "The road no longer goes in circles. My mitten can stay in my bag.",
+   "draft": true,
+   "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом; закадровая мысль Агаты (запись K16)"
+  },
+  "O2.porch_step.look": {
+   "text": "The steps are covered in trampled snow.",
+   "draft": false
+  },
+  "O2.mitten.label": {
+   "text": "My mitten",
+   "draft": false
+  },
+  "O2.mitten.look": {
+   "text": "My woollen mitten, on the step.",
+   "draft": false
+  },
+  "O2.mitten.take": {
+   "text": "I'll take it with me.",
+   "draft": false
+  },
+  "O2.window_other.label": {
+   "text": "School window",
+   "draft": false
+  },
+  "O2.window_other.look": {
+   "text": "The same school's side window. I took the path towards the village, but it led me round the school and back here.",
+   "draft": false
+  },
+  "O2.exit_O1.label": {
+   "text": "Back to the classroom",
+   "draft": false
+  },
+  "O2.exit_O4.label": {
+   "text": "Gate to the village",
+   "draft": false
+  },
+  "O2.exit_O4.loop": {
+   "text": "I set off for the village, but the path curled round the school and brought me back to the porch. What is this? It's leading me in circles!",
+   "direction": {
+    "stress": "к деревне; наваждение",
+    "emotion": "«к деревне» — акцент; «а тропа» — пауза — «вокруг школы завернула»; дальше удивлённо",
+    "pace": "живо",
+    "takes": 3,
+    "map": [
+     62
+    ],
+    "voice_fb": [
+     48
+    ]
+   },
+   "tags": [
+    "surprised"
+   ],
+   "draft": false
+  },
+  "O2.exit_O4.wait_signal": {
+   "text": "The path goes on. They're waiting for my signal on the far bank — the pier first.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The path goes on. They're waiting for my signal on the far bank — the pier first."
+   }
+  },
+  "O2.exit_O4.wait_crossing": {
+   "text": "Pelageya first. I need to cross.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Pelageya first. I need to cross."
+   }
+  },
+  "R1.pelageya.prompt": {
+   "draft": true,
+   "text": "What shall I ask Pelageya?"
+  },
+  "R1.pelageya.opt_boats": {
+   "draft": true,
+   "text": "What of other boats?"
+  },
+  "R1.pelageya.opt_marsh": {
+   "draft": true,
+   "text": "What about round through the marsh?"
+  },
+  "R1.pelageya.opt_sluice": {
+   "draft": true,
+   "text": "Why is the plate underwater?"
+  },
+  "R1.pelageya.opt_manager": {
+   "draft": true,
+   "text": "Who worked the sluice?",
+   "_k": "Ревью 01.11 (А-13): было «А управляющий мельницы?» — Агата называла человека, которого никто не поминал; теперь вопрос следует за ответом про затвор (knows_sluice_key), а управляющего называет Пелагея"
+  },
+  "R1.pelageya.opt_leave": {
+   "draft": true,
+   "text": "Nothing for now."
+  },
+  "R1.pelageya.boats": {
+   "draft": true,
+   "text": "\"Same with them,\" says Pelageya. \"Not a light or a soul over there for a year. Every boat comes back to its own pier.\"",
+   "line": {
+    "speaker": "pelageya",
+    "text": "Same with them. Not a light or a soul over there for a year. Every boat comes back to its own pier."
+   }
+  },
+  "R1.pelageya.marsh": {
+   "draft": true,
+   "text": "\"People tried,\" says Pelageya. \"Go round through the marsh — come out at the edge of your own village.\"",
+   "line": {
+    "speaker": "pelageya",
+    "text": "People tried. Go round through the marsh — come out at the edge of your own village."
+   }
+  },
+  "R1.pelageya.sluice": {
+   "draft": true,
+   "text": "\"The mill sluice holds back the water,\" says Pelageya. \"I asked Pavel to drain it, but the lever's in the office, and that hasn't opened since the flood. Ask Pavel. He knows more.\"",
+   "line": {
+    "speaker": "pelageya",
+    "text": "The mill sluice holds back the water. I asked Pavel to drain it, but the lever's in the office, and that hasn't opened since the flood. Ask Pavel. He knows more.",
+    "_k": "K (сверка журнала 01.11, крит. 4): «а её завалило» — остаток стеллажа (Р4 29.10: дверь перекосило, засов сам упал)"
+   }
+  },
+  "R1.pelageya.manager": {
+   "draft": true,
+   "text": "\"Fyodor Lukich, the mill manager, shut the sluice that evening, before the flood, a year ago,\" says Pelageya. \"Went home to Olkhovka and stayed there. The water came that night.\"",
+   "direction": {
+    "stress": "год назад",
+    "emotion": "рассказывает, ровно",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-21"
+    ]
+   },
+   "line": {
+    "speaker": "pelageya",
+    "text": "Fyodor Lukich, the mill manager, shut the sluice that evening, before the flood, a year ago. Went home to Olkhovka and stayed there. The water came that night.",
+    "_k27": "Директор 01.11, «Семнадцатый заход» (W221): акцент на «домой» не выходил, «снять с САМ» — «домой» в конец оборота. Было: «Сам домой ушёл…»"
+   }
+  },
+  "Z1.tamara.prompt": {
+   "draft": true,
+   "text": "What shall I ask Tamara?"
+  },
+  "Z1.tamara.opt_school": {
+   "draft": true,
+   "text": "Who is the school in Olkhovka for?"
+  },
+  "Z1.tamara.opt_sheet": {
+   "draft": true,
+   "text": "How did you get Dunya's drawing?"
+  },
+  "Z1.tamara.opt_late": {
+   "draft": true,
+   "text": "I should have come at once."
+  },
+  "Z1.tamara.opt_leave": {
+   "draft": true,
+   "text": "I'll be off."
+  },
+  "Z1.tamara.school": {
+   "draft": true,
+   "text": "\"One school for both banks. We used to take our children over the bridge,\" says Tamara. \"And now, a whole year with no one to teach them.\"",
+   "line": {
+    "speaker": "tamara",
+    "text": "One school for both banks. We used to take our children over the bridge. And now, a whole year with no one to teach them."
+   }
+  },
+  "Z1.tamara.sheet": {
+   "draft": true,
+   "text": "\"Dunya left it here as she went: send it to the district office, she said. That night came the flood. Here it lies,\" says Tamara.",
+   "direction": {
+    "emotion": "по-свойски",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-23"
+    ]
+   },
+   "line": {
+    "speaker": "tamara",
+    "text": "Dunya left it here as she went: send it to the district office, she said. That night came the flood. Here it lies."
+   }
+  },
+  "Z1.tamara.late": {
+   "draft": true,
+   "text": "\"Don't blame yourself, my dear. You'd have sat by the water all year, like Pelageya. I wrote so you wouldn't come in vain,\" says Tamara.",
+   "line": {
+    "speaker": "tamara",
+    "text": "Don't blame yourself, my dear. You'd have sat by the water all year, like Pelageya. I wrote so you wouldn't come in vain."
+   }
+  },
+  "H1.wave.label": {
+   "draft": true,
+   "text": "Stand by the stove and wave"
+  },
+  "H1.wave.look": {
+   "draft": true,
+   "text": "The place by Dunya's stove. Mama can't see or hear me through the glass. But perhaps she has something that remembers this house?"
+  },
+  "H1.wave.use": {
+   "draft": true,
+   "text": "Mama, it's me. If you can see me at all — I'm here, by Dunya's stove.",
+   "line": {
+    "speaker": "agata",
+    "text": "Mama, it's me. If you can see me at all — I'm here, by Dunya's stove."
+   }
+  },
+  "M1.exit_M2.closed": {
+   "text": "Pavel is in charge here. I won't go in without him. Tomorrow, then.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Pavel is in charge here. I won't go in without him. Tomorrow, then."
+   }
+  },
+  "M1.exit_M4.closed": {
+   "text": "I won't meddle with the sluice without Pavel. I'll come tomorrow.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I won't meddle with the sluice without Pavel. I'll come tomorrow."
+   }
+  },
+  "H2.hinges_box.thought": {
+   "text": "These hinges belong to the school door in the gallery.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "These hinges belong to the school door in the gallery."
+   }
+  },
+  "H2.hinges_box.empty": {
+   "text": "The \"Hinges\" box is empty. I've got them — for the school door in the gallery.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The \"Hinges\" box is empty. I've got them — for the school door in the gallery."
+   }
+  },
+  "H2.hinges_box.empty_hung": {
+   "text": "The box is empty. All three hinges are on the school door now.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The box is empty. All three hinges are on the school door now."
+   }
+  }
+ }
+}

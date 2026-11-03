@@ -30,6 +30,12 @@ var _probe_paused: bool = false
 ## of it: no state serialised four times a second, no JS-eval per flag. Decided once at start; read by the directors.
 static var probe_wanted: bool = false
 
+## Director 03.11 (language in the menu): the words change language — the data are read again and the scene is built
+## anew; a running game goes on from where it was (a hidden slot, loaded and removed at once), the title stays the title.
+const LANG_SLOT := "_language_switch"
+static var _resume_slot: String = ""
+static var _reopen: String = ""      # "title_settings" | "pause_settings" — the panel the player changed it in
+
 
 ## Ревью 01.11 (В-19): the service keys (F2/F3/F4 effects and the frame counter, F8 sprites ↔ live 3D) stay in the
 ## desktop builds, where the Director compares (ACCEPTANCE_J, M1 п. 130–138), and go off in a player's browser page:
@@ -95,7 +101,9 @@ func _ready() -> void:
 	# `-- --start=<id>`. Without one — the title screen (the player starts or continues from it); a test run or an
 	# automated browser without one — a new game from the post office, as before the title existed.
 	var sp := _start_point_arg()
-	if sp == "" and _title_wanted():
+	if _resume_slot != "" or _reopen != "":
+		_resume_after_language()
+	elif sp == "" and _title_wanted():
 		title.open()
 	elif sp == "" or not RoomManager.start_at(sp):
 		RoomManager.new_game()
@@ -345,3 +353,39 @@ func _hotspot_rect(area: Area2D) -> Rect2:
 		var size: Vector2 = shape.shape.size
 		return Rect2(area.global_position - size / 2, size)
 	return Rect2(area.global_position, Vector2.ZERO)
+
+
+
+## The language of the words was changed in the menu (LanguageSettings.set_voice / set_subtitles returned true):
+## keep the game, read the data in the new language, rebuild the scene. A voice-only change reloads the recordings.
+func apply_language(text_changed: bool, from_pause: bool) -> void:
+	VoiceDirector.reload_config()
+	if not text_changed:
+		return
+	var in_game := title == null or not title.is_open()
+	_resume_slot = ""
+	if in_game and RoomManager.current_room != null and RoomManager.save_game(LANG_SLOT):
+		_resume_slot = LANG_SLOT
+	_reopen = "pause_settings" if from_pause and in_game else "title_settings"
+	StoryData.reload()
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+
+func _resume_after_language() -> void:
+	var slot := _resume_slot
+	var reopen := _reopen
+	_resume_slot = ""
+	_reopen = ""
+	if slot != "" and RoomManager.load_game(slot):
+		GameState.delete_save(slot)
+		if reopen == "pause_settings" and pause_menu != null:
+			pause_menu.open()
+			pause_menu.activate("settings")
+		return
+	if slot != "":
+		GameState.delete_save(slot)
+	if title != null:
+		title.open()
+		if reopen == "title_settings":
+			title.activate("settings")

@@ -67,6 +67,34 @@ TEXT_DIR = STORY_DIR / "text"
 ITEMS_PATH = STORY_DIR / "items.json"
 VOICE_CFG_PATH = STORY_DIR / "voice.json"
 
+# Язык набора (запрос "lang": "en", Директор 03.11, 14:35 «английский голос»): тексты — английская копия данных
+# game/data/story_<lang> (tools/build_story_en.py), записи — assets/voice/<lang>/ с теми же id и путями файлов, что у
+# русского набора; language_code запроса — этот язык. Русские правила произношения, режиссура слов (капс ударения,
+# voice_text выбранных русских записей) и дубли к другому языку не применяются; теги подачи — те же.
+LANG = "ru"
+
+
+def use_language(lang: str) -> None:
+    global LANG, OUT_DIR, SCENES_DIR, QUESTS_PATH, META_PATH, STORY_DIR, TEXT_DIR, ITEMS_PATH, VOICE_CFG_PATH
+    lang = str(lang or "ru")
+    if lang == "ru":
+        return
+    if not re.fullmatch(r"[a-z]{2}", lang):
+        raise VoiceError(f"lang {lang!r}: двухбуквенный код языка")
+    story = ROOT / "game" / "data" / f"story_{lang}"
+    if not (story / "scenes").is_dir():
+        raise VoiceError(f"нет копии данных на языке {lang}: {story.relative_to(ROOT)} (tools/sync_story_data.sh)")
+    LANG = lang
+    STORY_DIR = story
+    SCENES_DIR = story / "scenes"
+    QUESTS_PATH = story / "quests.json"
+    META_PATH = story / "meta.json"
+    TEXT_DIR = story / "text"
+    ITEMS_PATH = story / "items.json"
+    VOICE_CFG_PATH = story / "voice.json"
+    OUT_DIR = ROOT / "assets" / "voice" / lang
+
+
 PROBE_MAX_LINES = 40          # пока text_freeze=false — только проба (решение Директора 17.10)
 ORDER_KEYS = ("by", "date", "what", "max_lines", "max_chars")   # явное задание Директора на объём сверх пробы
 RETRY_STATUSES = (429, 500, 502, 503, 504)
@@ -285,6 +313,15 @@ def api_text(ln: dict) -> str:
     """Текст запроса к API: voice_text (теги внутри фразы) или теги перед текстом; субтитры — text без тегов.
     Произношение (pipeline/voice/pronunciation_ru.json, pronounce.py) — только здесь, не в субтитрах."""
     lid = str(ln.get("id", ""))
+    if LANG != "ru":
+        # Другой язык: слова — текст строки этого языка; теги — правки Директора (voice_direction) или теги строки, а у
+        # строк с русским voice_text — его теги до первого слова («[short pause] Вечер долгий.» → «[short pause] It's…»).
+        tags = list(direction.for_line(lid).get("tags") or ln.get("tags") or [])
+        if not tags and ln.get("voice_text"):
+            m = re.match(r"^(\s*\[[^\[\]]+\]\s*)+", str(ln["voice_text"]))
+            tags = TAG_IN_TEXT.findall(m.group(0)) if m else []
+            tags = [t[1:-1] for t in tags]
+        return "".join(f"[{t}] " for t in tags) + GLOSS_IN_TEXT.sub(r"\1", str(ln["text"]))
     # Партия K (проба 29.10): выбранная Директором запись — её текст запроса целиком (voice_direction.json → voice_text:
     # знаки, капс, IPA ударения); правила произношения к нему уже не применяются.
     ov = direction.for_line(lid).get("voice_text")
@@ -970,6 +1007,8 @@ def voice_sets(cast: dict) -> list[dict]:
     """Основной набор assets/voice/ru (все персонажи) + по набору на каждый альтернативный голос персонажа:
     assets/voice/ru_alt/<персонаж>_<вариант>/ (только его реплики) — чтобы Директор сравнил голоса на слух."""
     sets = [{"variant": "", "dir": OUT_DIR, "speaker": None, "alt": None}]
+    if LANG != "ru":
+        return sets   # другой язык — только основной набор
     for sp, c in sorted(cast.get("cast", {}).items()):
         for alt_id, alt in sorted((c.get("alternates") or {}).items()):
             if alt_id.startswith("_"):
@@ -1067,11 +1106,33 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
     cast = read_json(CAST_PATH, None)
     if cast is None:
         raise VoiceError(f"нет {CAST_PATH.relative_to(ROOT)} — сначала режим list и сопоставление голосов")
+    use_language(str(req.get("lang", "ru")))
+    if LANG != "ru":
+        cast = dict(cast, language_code=LANG)
+        if req.get("credits_per_char_assumed"):
+            # оценка списания по прежним прогонам этого же голоса и модели (журналы state/*.json) — для проверки квоты
+            cast["quota"] = dict(cast.get("quota") or {}, credits_per_char_assumed=float(req["credits_per_char_assumed"]))
     lc = cast.get("loudness", {})
     target = float(lc.get("target_lufs", -17.0))
     lines = all_lines()
     scenes = [str(s) for s in req.get("scenes", [])]
     scope = {lid: ln for lid, ln in lines.items() if ln.get("kind") != "narration" and ln["scene"] in scenes}
+    if req.get("mirror"):
+        # "mirror": "ru" — те же строки, что звучат в русском наборе (актуальные записи его манифеста), на языке запроса.
+        ref = load_manifest(ROOT / "assets" / "voice" / str(req["mirror"]))["lines"]
+        want = {lid for lid, e in ref.items() if "stale" not in e}
+        part = req.get("mirror_part")
+        if part:
+            # [k, n] — k-я из n частей (по порядку id): прогон укладывается в тайм-аут шага workflow (35 мин)
+            k, n = int(part[0]), int(part[1])
+            order_ids = sorted(want)
+            size = -(-len(order_ids) // n)
+            want = set(order_ids[(k - 1) * size: k * size])
+            log(f"  mirror_part {k}/{n}: {len(want)} строк")
+        scope.update({lid: ln for lid, ln in lines.items() if lid in want})
+        absent = sorted(want - set(lines))
+        if absent:
+            log(f"  mirror: {len(absent)} записей {req['mirror']} без строки в текстах {LANG}: {', '.join(absent[:12])}")
     unknown = [s for s in scenes if not any(ln["scene"] == s for ln in lines.values())]
     if unknown:
         raise VoiceError(f"в сценах нет реплик для: {', '.join(unknown)}")
@@ -1161,7 +1222,7 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
         log(f"  only_changed: к работе {len(plan)} из {sum(1 for _ in scope)} реплик/фраз запроса")
     synth_items = [it for it in plan if it["action"] == "synth"]
     chars = sum(len(api_text(it["line"])) for it in synth_items)
-    take_items = plan_takes(req, scope, sets, synth_items, cast)
+    take_items = plan_takes(req, scope, sets, synth_items, cast) if LANG == "ru" else []
     if take_items:
         chars += sum(len(take_api_text(it)) for it in take_items)
         total_lines += len(take_items)
@@ -1234,7 +1295,7 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
                 salt = int((req.get("reseed") or {}).get(lid, 0) or 0)
                 seed = int(hashlib.sha1((f"{lid}|{ln['text']}" + (f"|{salt}" if salt else "")).encode("utf-8")).hexdigest()[:8], 16)
                 dline = direction.for_line(lid)
-                audio, info = synth(api_text(ln), spec, cast, seed, {"previous_text": dline.get("previous_text", "")})
+                audio, info = synth(api_text(ln), spec, cast, seed, {"previous_text": dline.get("previous_text", "") if LANG == "ru" else ""})
                 cc = str(info.get("character_cost", ""))
                 spent_now += int(cc) if cc.isdigit() else len(api_text(ln))
                 src.parent.mkdir(parents=True, exist_ok=True)

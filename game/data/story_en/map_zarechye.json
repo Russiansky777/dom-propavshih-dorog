@@ -1,0 +1,216 @@
+{
+ "_comment": "План Заречья крупно (game/scripts/ui/zarechye_map.gd). Открывается хотспотом с полем panel.id = map_zarechye (Z1.plan) и из журнала (кнопка «План»), когда стоит journal_flag. Точки — в пикселях картинки image (image_size), подпись ставится по align: above | below | left | right | center. Название — из locations.json (первая локация locs), либо label (@ключ) для мест из нескольких комнат. Посещено — есть флаг visited_<комната> хотя бы для одной из locs (ставит StoryRunner при входе); непосещённые — бледнее; hidden_until_visited — не показывается до визита. «Вы здесь» — место, в locs которого текущая комната.",
+ "id": "map_zarechye",
+ "image": "res://assets/ui/map/zarechye_plan.png",
+ "image_size": [
+  1376,
+  768
+ ],
+ "journal_flag": "seen_plan_zarechye",
+ "caption": "@Z1.plan.look",
+ "places": [
+  {
+   "id": "post",
+   "locs": [
+    "Z1"
+   ],
+   "point": [
+    439,
+    451
+   ],
+   "align": "below"
+  },
+  {
+   "id": "lane",
+   "locs": [
+    "Z4"
+   ],
+   "point": [
+    371,
+    418
+   ],
+   "align": "above"
+  },
+  {
+   "id": "house",
+   "locs": [
+    "H1",
+    "H2",
+    "H3",
+    "H4"
+   ],
+   "label": "@map.house",
+   "point": [
+    602,
+    452
+   ],
+   "align": "above"
+  },
+  {
+   "id": "street",
+   "locs": [
+    "Z2"
+   ],
+   "point": [
+    521,
+    533
+   ],
+   "align": "below"
+  },
+  {
+   "id": "shore",
+   "locs": [
+    "Z3"
+   ],
+   "point": [
+    771,
+    455
+   ],
+   "align": "below"
+  },
+  {
+   "id": "pier",
+   "locs": [
+    "R1"
+   ],
+   "point": [
+    787,
+    426
+   ],
+   "align": "above_left",
+   "_k10": "Кадры 01.11: подпись над столбиком закрывала лодку на канате — теперь кончается у столбика, тянется влево"
+  },
+  {
+   "id": "mill",
+   "locs": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+   ],
+   "label": "@map.mill",
+   "point": [
+    1066,
+    544
+   ],
+   "align": "below"
+  },
+  {
+   "id": "olkhovka",
+   "locs": [
+    "O1",
+    "O2"
+   ],
+   "label": "@map.olkhovka",
+   "point": [
+    670,
+    143
+   ],
+   "align": "above",
+   "hidden_until_visited": true,
+   "_g2_note": "G2 (партия 9): школа с оградой на слое плана — табличка «Школа»"
+  },
+  {
+   "id": "olkhovka_street",
+   "locs": [
+    "O4"
+   ],
+   "point": [
+    980,
+    244
+   ],
+   "align": "below",
+   "hidden_until_visited": true
+  },
+  {
+   "id": "nina_house",
+   "locs": [
+    "O3"
+   ],
+   "label": "@map.nina_house",
+   "point": [
+    930,
+    190
+   ],
+   "align": "above",
+   "hidden_until_visited": true
+  },
+  {
+   "id": "crossing",
+   "locs": [
+    "R2"
+   ],
+   "point": [
+    861,
+    406
+   ],
+   "align": "above",
+   "shown_if": [
+    "visited_R3"
+   ]
+  },
+  {
+   "id": "far_pier",
+   "locs": [
+    "R3"
+   ],
+   "point": [
+    984,
+    303
+   ],
+   "align": "below",
+   "shown_if": [
+    "visited_R3"
+   ]
+  },
+  {
+   "id": "ferry_shed",
+   "locs": [
+    "R3"
+   ],
+   "point": [
+    1089,
+    234
+   ],
+   "align": "right",
+   "shown_if": [
+    "visited_R3"
+   ],
+   "label": "@map.ferry_shed",
+   "_k": "K (сверка плана 01.11, П3): подпись «Сарайчик переправы»; комнаты R4 в игре нет — место яркое после дальней опоры"
+  },
+  {
+   "id": "ilya_house",
+   "locs": [
+    "O4"
+   ],
+   "label": "@map.ilya_house",
+   "point": [
+    1150,
+    240
+   ],
+   "align": "right",
+   "shown_if": [
+    "visited_O4"
+   ],
+   "_k": "K (сверка плана 01.11, П8): дом Ильи нарисован, но не был подписан"
+  }
+ ],
+ "overlays": [
+  {
+   "image": "res://assets/ui/map/zarechye_plan_rope.png",
+   "if": [
+    "rope_on_ring"
+   ],
+   "_k10": "Сверка 01.11 (Директор 31.10, стр. 10): канат с лодкой сняты с основы плана — канат завязывают в M15; слой — те же пиксели (tools/retouch/zarechye_plan_rope.py)"
+  },
+  {
+   "image": "res://assets/ui/map/zarechye_plan_overlay.png",
+   "if": [
+    "visited_R3"
+   ],
+   "_p12": "партия 12 (ChatGPT 01.11, по прохождению Директора 31.10), стр. 10: план перерисован (мельница справа, ниже по течению; плотина короткая без настила; одна лодка на канате; кружок у поворота; вывеска ПОЧТА; тропа от дальней опоры к улице Ольховки) — слой того берега новый, стирание нижней улицы (Р10, tools/plan_overlay_r10.py) больше не нужно; точки подписей — по label_points партии 12",
+   "_note": "G2 (Директор 23.10: «нанести на карту то, что изменилось или добавилось»): слой партии 9 на холсте плана 1376×768 — школа, дома Нины и Ильи, улица (нижняя улица стёрта — _r10), канат переправы, лодка, сарай с фонарём; появляется, когда Агата побывала на том берегу (дальняя опора). Таблички — places по таблице README партии 9"
+  }
+ ]
+}

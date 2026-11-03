@@ -1,0 +1,588 @@
+{
+ "_comment": "Необязательные истории (Docs/SCENARIO_FINAL.md §9; блок 5, 22.10). Доступны после requires и до флага finale_confirmed (closes_on — первое бревно M25). Пропуск не влияет на финал. У каждой — выбор A/B с видимым следом в эпилоге (условные реплики M26 и слои кадров EP_*). Запуск — данными комнат: хотспот с крупным планом и выбором, сцена квеста — по complete_when комнаты. Q02 и Q06 включены Директором 23.10 11:51 (Docs/DECISIONS.md): Q02 — карта в классе O1 и Ульяна в саду на улице O4, Q06 — мастерская Ильи на O4 и второй верстак в H2. Q05, Q10 — резерв (reserve: true): в сборку не входят, не выбрасываются; запусков в комнатах у них нет.",
+ "closes_on": "finale_confirmed",
+ "target_minutes_total": [
+  15,
+  25
+ ],
+ "quests": [
+  {
+   "id": "Q01",
+   "title": "Письмо с прежним адресом",
+   "locations": [
+    "O4"
+   ],
+   "requires": {
+    "flags": [
+     "done_M23a"
+    ],
+    "items": []
+   },
+   "minutes": [
+    1,
+    2
+   ],
+   "steps": [
+    "В мешке Тамары — письмо Аксинье от брата по старому адресу",
+    "Рассмотреть конверт: такого дома в Ольховке двадцать лет как нет",
+    "Решить, как Аксинья будет получать почту"
+   ],
+   "choice": {
+    "id": "q01",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q01_mail_at_nina",
+      "epilogue": "Тамара в эпилоге: ответ Аксиньи брату — через Нину"
+     },
+     {
+      "id": "B",
+      "sets": "q01_mail_at_gallery",
+      "epilogue": "Тамара в эпилоге: ящик в галерее, по средам"
+     }
+    ]
+   },
+   "if_skipped": "Тамара отдаст письмо сама",
+   "lines": [
+    {
+     "speaker": "tamara",
+     "text": "Here, Aksinya's letter, from her brother. But the house at this address is gone… Where does it go now?"
+    },
+    {
+     "speaker": "agata",
+     "text": "Aksinya is alive. I saw her in Mama's list."
+    },
+    {
+     "speaker": "tamara",
+     "text": "Good, then. She'll get her letters, and her brother will get an answer."
+    }
+   ]
+  },
+  {
+   "id": "Q02",
+   "title": "На карте вырос сад",
+   "locations": [
+    "O1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22"
+    ],
+    "items": []
+   },
+   "minutes": [
+    2,
+    3
+   ],
+   "steps": [
+    "В классе — старая школьная карта Ольховки (её рисовали ученики больше двадцати лет назад): у крайнего дома, теперь Ильиного, — пустой участок, один забор",
+    "Ульяна тут же, в классе: «На твоей карте моего дома почти нет» — «Тогда помоги мне его найти»; она называет дорогу: от школы — к их дому, крайнему, — и в сад за ним",
+    "На кальке поверх карты показать дорогу Ульяны по порядку тремя кликами: школа, её дом, сад; верные места раскрашиваются, неверное — всё заново; проявляется сад: «Там теперь смородина»",
+    "Решить, что с калькой: поверх старой карты или Ульяне"
+   ],
+   "_lines_note": "H47 (24.10): Ульяна не уходит из класса — начальный разговор («На твоей карте моего дома почти нет» — «Тогда помоги мне его найти», дорога от школы к дому и саду) идёт из первого клика по карте O1 village_map (data/story/text/ru_Q02_Q06.json, O1q.village_map.*), «Там теперь смородина» — событие крупного плана карты. Реплики ниже — сцена задания после выбора (как у Q01, Q07: сцена начинается по complete_when комнаты O1).",
+   "choice": {
+    "id": "q02",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q02_old_under_new",
+      "epilogue": "Нина детям показывает, как место менялось"
+     },
+     {
+      "id": "B",
+      "sets": "q02_new_primary",
+      "epilogue": "Ульяна по нему Тихону дорогу растолковывает"
+     }
+    ]
+   },
+   "if_skipped": "Нина продолжит занятие сама",
+   "lines": [
+    {
+     "speaker": "agata",
+     "if": [
+      "q02_old_under_new"
+     ],
+     "text": "You can see the old map under the new drawing. Mama can show the class: how it was, and how it is now.",
+     "direction": {
+      "emotion": "просто",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-122"
+      ]
+     },
+     "draft": true
+    },
+    {
+     "speaker": "ulyana",
+     "if": [
+      "q02_old_under_new"
+     ],
+     "text": "Let it hang there! Everyone will see our garden.",
+     "draft": true
+    },
+    {
+     "speaker": "agata",
+     "if": [
+      "q02_new_primary"
+     ],
+     "text": "I'll give it to Ulyana. Her garden — her map.",
+     "draft": true
+    },
+    {
+     "speaker": "ulyana",
+     "if": [
+      "q02_new_primary"
+     ],
+     "text": "My map! I'll hang it by our door, to show visitors the way.",
+     "draft": true
+    }
+   ]
+  },
+  {
+   "id": "Q03",
+   "title": "Незашитый рукав",
+   "locations": [
+    "H1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M23c"
+    ],
+    "items": []
+   },
+   "minutes": [
+    1,
+    2
+   ],
+   "steps": [
+    "Дунино пальто, которое мама принесла и повесила на тётин крючок, — рукав разошёлся по шву",
+    "Рассмотреть рукав: шов и ткань",
+    "Зашить потайным швом или наложить заплатку — Ульяна нарисует на ней птицу"
+   ],
+   "choice": {
+    "id": "q03",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q03_hidden_seam",
+      "epilogue": "Нина за ужином: «Рукав держится. И шва не видно»"
+     },
+     {
+      "id": "B",
+      "sets": "q03_patch_drawing",
+      "epilogue": "За ужином: заплатка с Ульяниной птицей на рукаве Дуниного пальто"
+     }
+    ]
+   },
+   "if_skipped": "Дунино пальто так и висит с распоротым рукавом",
+   "lines": [
+    {
+     "speaker": "narrator",
+     "text": "Agata mends the sleeve of Dunya's coat and hangs it back on its hook.",
+     "direction": {
+      "emotion": "просто",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-123"
+      ]
+     },
+     "_h50": "H50 (Директор 24.10: «после зашития ничего не происходит»): итог — слова и пальто на крючке (осмотр: «рукав зашит»); рукав с заплаткой или швом крупно — слой T3"
+    },
+    {
+     "speaker": "nina",
+     "text": "I kept meaning to mend that sleeve for Dunya. Never did."
+    },
+    {
+     "speaker": "nina",
+     "if": [
+      "q03_patch_drawing"
+     ],
+     "text": "A patch is good. Ulya can draw a bird on it. Dunya would have laughed."
+    },
+    {
+     "speaker": "nina",
+     "text": "Let it hang. As if she's just stepped out."
+    }
+   ]
+  },
+  {
+   "id": "Q04",
+   "title": "Угол для Тихона",
+   "locations": [
+    "H1"
+   ],
+   "requires": {
+    "flags": [
+     "met_tikhon"
+    ],
+    "items": []
+   },
+   "minutes": [
+    1,
+    2
+   ],
+   "steps": [
+    "Осмотреть снятую полку",
+    "Приложить к двум креплениям",
+    "Дать Тихону проверить ширину и тепло",
+    "Закрепить и переставить подстилку"
+   ],
+   "choice": {
+    "id": "q04",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q04_corner_stove",
+      "epilogue": "Довольное ворчание, починенный напёрсток на краю"
+     },
+     {
+      "id": "B",
+      "sets": "q04_declined",
+      "epilogue": "H13: полку не повесили — Тихон спит на прежней подстилке у печи"
+     }
+    ]
+   },
+   "if_skipped": "Тихон обустроит прежнюю подстилку",
+   "lines": [
+    {
+     "speaker": "tikhon",
+     "text": "This is an office. Only the door's missing."
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Now I have office hours, too."
+    },
+    {
+     "speaker": "agata",
+     "text": "When?",
+     "tags": [
+      "curious"
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "text": "When I'm not asleep. Sometimes.",
+     "tags": [
+      "sarcastic"
+     ],
+     "_j": "J (стр. 30): без «сонно» — подача как у прочих реплик Тихона"
+    }
+   ]
+  },
+  {
+   "id": "Q05",
+   "title": "Чужая мера",
+   "locations": [
+    "O3",
+    "O4"
+   ],
+   "requires": {
+    "flags": [
+     "met_nina"
+    ],
+    "items": []
+   },
+   "minutes": [
+    2,
+    2
+   ],
+   "steps": [
+    "Поставить обе мерки на поднос",
+    "Перелить воду одинаковым ковшиком (один клик на полную мерку)",
+    "Сопоставить уровни с записью",
+    "Подписать памятку"
+   ],
+   "choice": {
+    "id": "q05",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q05_common_measure",
+      "epilogue": "Готовят вместе, Ульяна показывает гостю отметку"
+     },
+     {
+      "id": "B",
+      "sets": "q05_labeled_cups",
+      "epilogue": "Илья пользуется своей кружкой по общей отметке"
+     }
+    ]
+   },
+   "if_skipped": "Нина отмерит воду сама",
+   "lines": [
+    {
+     "speaker": "ulyana",
+     "text": "So there's nothing wrong with the cup?"
+    },
+    {
+     "speaker": "nina",
+     "text": "You only need to know whose it is."
+    }
+   ],
+   "reserve": true
+  },
+  {
+   "id": "Q06",
+   "title": "Второй верстак",
+   "locations": [
+    "O4",
+    "H2"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22",
+     "met_ilya"
+    ],
+    "items": []
+   },
+   "minutes": [
+    2,
+    3
+   ],
+   "steps": [
+    "Мастерская Ильи — сарай во дворе (крупный план с улицы O4): Митя — «Два человека здесь уже не помещаются», Илья — «Тогда сделаем место третьему»",
+    "Цель — второй верстак, третье место в мастерской, для Ули (Илья говорит до крупного плана, строка цели — на экране)",
+    "Затемнение со стуком; рассказчик: «К вечеру Илья с Митей собрали верстак: Агата держала доски, Уля подавала гвозди» (01.11: игра-сборка снята по выбору Директора)",
+    "Решить, где второму верстаку стоять: у Ильи или в тётиной мастерской"
+   ],
+   "_lines_note": "Начальный разговор Мити и Ильи («Два человека здесь уже не помещаются» — «Тогда сделаем место третьему») звучит при первом клике по мастерской Ильи (O4 ilya_workshop, data/story/text/ru_Q02_Q06.json); шаги — крупный план workbench (H48: всё перетаскиванием на подсвеченное место); реплики ниже — сцена задания после выбора.",
+   "choice": {
+    "id": "q06",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q06_table_at_ilya",
+      "epilogue": "Рядом сохнет их полка"
+     },
+     {
+      "id": "B",
+      "sets": "q06_table_at_agata",
+      "epilogue": "на новом верстаке резную рамку смастерил"
+     }
+    ]
+   },
+   "if_skipped": "Илья продолжит пользоваться своим столом",
+   "lines": [
+    {
+     "speaker": "ilya",
+     "if": [
+      "q06_table_at_ilya"
+     ],
+     "_k58": "Директор 01.11, стр. 58: Митя в свободный день на мостках — его слова отданы Илье, который стоит у сарая",
+     "text": "Now all three of us can work: Ulya at the new bench, Mitya fixing the oarlock. About time.",
+     "direction": {
+      "emotion": "по-деловому, с удовольствием",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-124"
+      ]
+     },
+     "draft": true
+    },
+    {
+     "speaker": "ilya",
+     "if": [
+      "q06_table_at_ilya"
+     ],
+     "text": "Then we'll all make the shelf together.",
+     "draft": true
+    },
+    {
+     "speaker": "ilya",
+     "if": [
+      "q06_table_at_agata"
+     ],
+     "text": "Mitya and I will carry it to Dunya's workshop. By the window, beside her bench.",
+     "draft": true
+    }
+   ]
+  },
+  {
+   "id": "Q07",
+   "title": "Двадцать зарубок",
+   "locations": [
+    "O4",
+    "R3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22"
+    ],
+    "items": []
+   },
+   "minutes": [
+    1,
+    2
+   ],
+   "steps": [
+    "Дощечка Мити на заборе Ильи: одна зарубка — один год вечерних дежурств у фонаря дальней опоры (сам Митя в свободный день — на мостках с удочкой, 01.11)",
+    "Рассмотреть дощечку: двадцать зарубок",
+    "Решить, где дощечке быть"
+   ],
+   "choice": {
+    "id": "q07",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q07_board_with_mitya",
+      "epilogue": "Пелагея в эпилоге: «Дощечку свою не выбрасывай. Двадцать зарубок — это ты»"
+     },
+     {
+      "id": "B",
+      "sets": "q07_board_to_pelageya",
+      "epilogue": "На стене сарая у лодки — Митина дощечка (кадр эпилога)"
+     }
+    ]
+   },
+   "if_skipped": "Митя оставит дощечку у опоры",
+   "lines": [
+    {
+     "speaker": "mitya",
+     "text": "Twenty notches. One for every winter I lit the lantern by the far pier."
+    },
+    {
+     "speaker": "pelageya",
+     "text": "I still remember how little your hand was."
+    },
+    {
+     "speaker": "mitya",
+     "text": "This hand's mine, too."
+    }
+   ]
+  },
+  {
+   "id": "Q08",
+   "title": "Общий чай",
+   "locations": [
+    "H1",
+    "O3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M23c"
+    ],
+    "items": []
+   },
+   "minutes": [
+    1,
+    2
+   ],
+   "steps": [
+    "Мама в доме сестры: поставить чай",
+    "Выбрать, где пить: у тётиной печи — для своих, или в маминой горнице — для всех",
+    "Тамара узнаёт чайник"
+   ],
+   "choice": {
+    "id": "q08",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q08_home_evening",
+      "epilogue": "За ужином — те же чашки, что в первый общий чай у тётиной печи"
+     },
+     {
+      "id": "B",
+      "sets": "q08_open_table",
+      "epilogue": "Над столом — Ульянин рисунок гостей с первого общего чая"
+     }
+    ]
+   },
+   "if_skipped": "Знакомства продолжатся в обычных разговорах",
+   "stage": [
+    {
+     "at": 0,
+     "if": [
+      "q08_home_evening"
+     ],
+     "fade_out_s": 0.7,
+     "hold_s": 0.6,
+     "fade_in_s": 0.7,
+     "_note": "T9 (вычитка R20): чай начинается — затемнение, гости пришли к Дуниной печи (H1)"
+    },
+    {
+     "at": 0,
+     "if": [
+      "q08_open_table"
+     ],
+     "fade_out_s": 0.7,
+     "hold_s": 0.6,
+     "fade_in_s": 0.7,
+     "room": "O3",
+     "spawn": "default",
+     "_note": "T9 (вычитка R20): чай для всех — в маминой горнице: затемнение, Агата с чайником в O3, гости пришли"
+    }
+   ],
+   "lines": [
+    {
+     "speaker": "tamara",
+     "text": "Oh, I remember this kettle when it was new!"
+    },
+    {
+     "speaker": "ulyana",
+     "text": "I thought it had always looked like that.",
+     "then": [
+      {
+       "speaker": "narrator",
+       "text": "Tea finished. Tamara goes back to her letters, Ulyana to her father.",
+       "_t9": "T9 (R20): гости возвращаются к своим делам"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "Q10",
+   "title": "Яблоня для следующей весны",
+   "locations": [
+    "O4",
+    "Z2"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22"
+    ],
+    "items": []
+   },
+   "minutes": [
+    2,
+    2
+   ],
+   "steps": [
+    "Сравнить подпись саженца с отметкой на материнском дереве",
+    "Выбрать участок",
+    "Придержать при посадке",
+    "Подвязать и поставить табличку Ульяны (тугая лента подсвечивается)"
+   ],
+   "choice": {
+    "id": "q10",
+    "options": [
+     {
+      "id": "A",
+      "sets": "q10_ilya_garden",
+      "epilogue": "Семья проверяет опору и укрытие у крыльца"
+     },
+     {
+      "id": "B",
+      "sets": "q10_zarechye_street",
+      "epilogue": "Тамара поправляет опору, Ульяна показывает табличку"
+     }
+    ]
+   },
+   "if_skipped": "Савелий оставит саженец в питомнике",
+   "lines": [
+    {
+     "speaker": "ulyana",
+     "text": "When will there be apples?"
+    },
+    {
+     "speaker": "savely",
+     "text": "Let it take root first. We know how to wait, at least."
+    }
+   ],
+   "reserve": true
+  }
+ ]
+}

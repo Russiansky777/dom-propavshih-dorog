@@ -1,0 +1,1978 @@
+{
+ "id": "H1",
+ "_art": "Настоящий фон assets/reference/H1_bg.png (1672x941 → 1920x1080) и передний план H1_fg_table_chair.png (кресло со столиком, окклюдер z=950; слой нарисован крупнее фона — уменьшен до 0.6 и поставлен перед печью, см. scale_reason). Состояния (слои из assets/incoming, совмещены вручную offset/scale): закрытые ставни пока h1_shutter_open=false (эталон уже с открытыми), открытая печная дверца и программный огонь при stove_lit, платок на крючках после h1_scarf_removed, полка у печи / у стола по выбору Q04. Хотспоты и выходы не рисуются, подпись — при наведении.",
+ "art_source": {
+  "files": {
+   "state_nina_coat.png": "assets/incoming/H1_state_nina_coat.png",
+   "state_bench_bare.png": "assets/incoming/H1_state_bench_bare.png",
+   "state_towel_hook.png": "assets/incoming/H1_state_towel_hook.png",
+   "state_shelf_leaning.png": "assets/incoming/H1_state_shelf_leaning.png",
+   "state_shelf_B.png": "assets/incoming/H1_state_shelf_B.png",
+   "state_scarf_over_shelf.png": "assets/incoming/H1_state_scarf_over_shelf.png",
+   "state_shelf_on_bench.png": "assets/incoming/H1_state_shelf_on_bench.png",
+   "state_bench_wide_scarf.png": "assets/incoming/H1_state_bench_wide_scarf_v2.png",
+   "state_bench_wide_shelf.png": "assets/incoming/H1_state_bench_wide_shelf_v2.png",
+   "state_bench_wide_bare.png": "assets/incoming/H1_state_bench_wide_bare.png"
+  },
+  "canvas": [
+   1672,
+   941
+  ],
+  "alpha_min": 0,
+  "_note": "Полные холсты к H1_bg, (0,0) 1:1: пальто Нины (партия 8), лежанка без платка, платок на левом крючке, полка прислонённая / A / B (партия 9, G9–G12; рамки — assets/incoming/_meta_p9/README.md). Остальные слои H1 совмещены вручную (offset/scale) или построены tools/make_h1_layers.py (гнёзда, подлокотник) и этим импортом не трогаются. Копия — tools/import_room_art.py H1"
+ },
+ "background": {
+  "kind": "interior",
+  "image": "res://assets/rooms/H1/bg.png",
+  "wall": "#6e4e34",
+  "floor": "#8c6a3f",
+  "accent": "#b07a4a",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   20,
+   1070
+  ],
+  [
+   20,
+   780
+  ],
+  [
+   100,
+   772
+  ],
+  [
+   365,
+   778
+  ],
+  [
+   440,
+   782
+  ],
+  [
+   800,
+   778
+  ],
+  [
+   812,
+   740
+  ],
+  [
+   840,
+   692
+  ],
+  [
+   1895,
+   690
+  ],
+  [
+   1910,
+   1070
+  ]
+ ],
+ "walkable_holes": [
+  [
+   [
+    250,
+    990
+   ],
+   [
+    490,
+    932
+   ],
+   [
+    645,
+    995
+   ],
+   [
+    645,
+    1010
+   ],
+   [
+    400,
+    1065
+   ],
+   [
+    250,
+    1005
+   ]
+  ],
+  [
+   [
+    515,
+    950
+   ],
+   [
+    600,
+    908
+   ],
+   [
+    850,
+    938
+   ],
+   [
+    850,
+    952
+   ],
+   [
+    762,
+    1000
+   ],
+   [
+    515,
+    972
+   ]
+  ]
+ ],
+ "no_walk_samples": [
+  [
+   420,
+   1010,
+   "кресло"
+  ],
+  [
+   700,
+   950,
+   "столик"
+  ],
+  [
+   600,
+   730,
+   "лавка у печи"
+  ],
+  [
+   200,
+   720,
+   "печь"
+  ],
+  [
+   1000,
+   560,
+   "дверь"
+  ],
+  [
+   1700,
+   640,
+   "стена под окном"
+  ]
+ ],
+ "walk_samples": [
+  [
+   1200,
+   900
+  ],
+  [
+   980,
+   740
+  ],
+  [
+   1650,
+   740
+  ],
+  [
+   450,
+   830,
+   "проход у печи за креслом"
+  ],
+  [
+   820,
+   990
+  ],
+  [
+   700,
+   1040,
+   "перед столиком"
+  ],
+  [
+   60,
+   900,
+   "слева от кресла"
+  ],
+  [
+   1100,
+   1000
+  ]
+ ],
+ "depth": {
+  "top_y": 700,
+  "bottom_y": 1070,
+  "scale_top": 1.3,
+  "scale_bottom": 2.0
+ },
+ "_depth_note": "Рост Агаты = 345 px × scale (фигура в кадре 384 px, модель 1.657 м) — см. rooms/_index.json agata_ref; ориентиры height_refs проверяет tools/validate_rooms.py (±12 %). у двери (продолжение прямой до y 655) 1.215 → 419 px при ожидаемых 419; у лавки 1.42 → 491 при 529 (−7 %). Ближний край 2.0 — сжатие: перспектива фона (горизонт ≈ y 426, камера ≈ 0.95 м) дала бы ≈ 3; кресло со столиком подогнано под эту глубину (scale 0.6)",
+ "height_refs": [
+  {
+   "what": "дверь избы (полотно, низкая крестьянская)",
+   "y": 655,
+   "px": 455,
+   "m": 1.8,
+   "door": true
+  },
+  {
+   "what": "лавка у печи (сиденье, ножки y 765)",
+   "y": 765,
+   "px": 150,
+   "m": 0.47
+  }
+ ],
+ "layers": [
+  {
+   "id": "table_chair",
+   "image": "res://assets/rooms/H1/fg_table_chair_nomug.png",
+   "_nomug": "J (Директор 29.10, стр. 95): синяя кружка 10а — к размеру выбранной чашки (tools/make_items_layers.py, mug10_table 66 px); нарисованная на столике глиняная кружка, которую она прежде закрывала, снята в копии слоя fg_table_chair_nomug.png того же инструмента (исходник fg_table_chair.png не тронут: из него режут подлокотник и чашки)",
+   "occluder": true,
+   "scale": 0.6,
+   "scale_reason": "слой нарисован крупнее фона: в полном масштабе кресло ≈ 1.6 м и закрывает треть кадра (Директор: «стул слишком большой»). При 0.6 сиденье кресла на высоте лавки у печи, кресло ≈ 1 м против Агаты",
+   "offset": [
+    200,
+    420
+   ],
+   "z": 950,
+   "_z_note": "ножки столика на полу при y≈910–1000 (кресло 930–1065); вырезы пола — walkable_holes"
+  },
+  {
+   "id": "chair_arm",
+   "image": "res://assets/rooms/H1/fg_chair_arm.png",
+   "occluder": true,
+   "scale": 0.6,
+   "scale_reason": "вырез ближнего подлокотника и передней ножки из fg_table_chair.png (тот же холст, tools/make_h1_layers.py) — тот же масштаб и offset, что у кресла, пиксель в пиксель",
+   "offset": [
+    200,
+    420
+   ],
+   "z": 970,
+   "_z_note": "Тихон в кресле рисуется между креслом (950) и подлокотником (970): сидит на подушке, ближний подлокотник перед ним (game/data/actors/tikhon.json place.H1 z 960)"
+  },
+  {
+   "id": "scarf_over_shelf",
+   "image": "res://assets/rooms/H1/state_bench_wide_scarf.png",
+   "unless": [
+    "h1_scarf_removed"
+   ],
+   "_note": "Партия 11 (ChatGPT 30.10, assets/incoming/_meta_p11/README.txt; Директор 29.10 стр. 60–61: на ней спят — значит лежанка, шире): широкая лежанка, на ней снятая полка, поверх — мокрый платок; непрозрачная заплата [360,462,712,684) фона, (0,0) 1:1. Три слоя лежанки рисуют её целиком; левый конец [372,470,480,560) у печи пуст во всех (там сидит Тихон)"
+  },
+  {
+   "id": "bench_bare",
+   "image": "res://assets/rooms/H1/state_bench_wide_bare.png",
+   "if": [
+    "h1_scarf_removed"
+   ],
+   "_note": "Партия 11: платок снят (он на левом крючке, hook_coat) — пустая широкая лежанка; полка, пока лежит, рисуется поверх слоем shelf_on_bench (та же лежанка с полкой)"
+  },
+  {
+   "id": "shelf_on_bench",
+   "image": "res://assets/rooms/H1/state_bench_wide_shelf.png",
+   "if": [
+    "h1_scarf_removed"
+   ],
+   "unless": [
+    "q04_corner_stove"
+   ],
+   "_note": "Партия 11: снятая полка лежит на широкой лежанке (фон [533,487,676,538) — крупнее доски на стене, как просил Директор 25.10 стр. 32), поверх bench_bare; повешена у печи (Q04 A) — слой shelf_stove, лежанка пустая"
+  },
+  {
+   "id": "holes_stove",
+   "image": "res://assets/rooms/H1/state_holes_stove.png",
+   "unless": [
+    "q04_corner_stove"
+   ],
+   "_note": "Гнёзда креплений у печи там, где встанет полка A — под кронштейнами полки партии 9 (G12: повешенная полка закрывает их кронштейнами), и едва заметный след снятых опор («вещи помнят место»). Решение Директора 18.10: «дырки для полки должны быть изначально». Слой строит tools/make_h1_layers.py по геометрии грани"
+  },
+  {
+   "id": "shutter_closed",
+   "image": "res://assets/rooms/H1/state_shutter_closed.png",
+   "offset": [
+    220,
+    25
+   ],
+   "scale": 0.91,
+   "scale_reason": "кадр состояния нарисован с другим кадрированием: окно со ставнями крупнее, чем окно фона; 0.91 и offset совмещают ставни с проёмом окна (подгонка по раме)",
+   "unless": [
+    "h1_shutter_open"
+   ]
+  },
+  {
+   "id": "stove_open",
+   "image": "res://assets/rooms/H1/state_stove_open.png",
+   "offset": [
+    -41,
+    37
+   ],
+   "scale": 0.76,
+   "scale_reason": "кадр состояния нарисован крупнее: рама открытой дверцы ≈ 177×191 px против закрытой дверцы фона 144×143. G13 (Директор 23.10: «топящаяся печь разорвана»): при 0.9 и (−120, −120) рама стояла на 80 px выше и на четверть крупнее — из-под неё торчал низ закрытой дверцы. Теперь низ рамы на приступке под устьем, рама закрывает дверцу фона",
+   "align": {
+    "layer_rect": [
+     207,
+     427,
+     177,
+     191
+    ],
+    "base_rect": [
+     121,
+     359,
+     144,
+     143
+    ],
+    "tol_px": 14,
+    "covers": true,
+    "cover_rect": [
+     205,
+     430,
+     215,
+     185
+    ],
+    "_note": "G13: рама дверцы на слое (пиксели слоя) ложится на дверцу фона (пиксели фона): низ — на приступок (±tol на экране), рама с побелкой вокруг (cover_rect) закрывает дверцу целиком (covers). Проверки — tools/validate_rooms.py (геометрия) и game/tests/test_h1.gd (пиксели: дверца фона тёмная, рама слоя непрозрачна)"
+   },
+   "if": [
+    "stove_lit"
+   ]
+  },
+  {
+   "id": "dunya_letter",
+   "image": "res://assets/rooms/H1/state_dunya_letter.png",
+   "if": [
+    "dunya_letter_on_stove"
+   ],
+   "compose": {
+    "src": "assets/incoming/closeup_envelope.png",
+    "crop": [
+     230,
+     320,
+     1150,
+     440
+    ],
+    "at": [
+     552,
+     404
+    ],
+    "width": 64,
+    "rotate": -9,
+    "tint": [
+     0.92,
+     0.86,
+     0.78
+    ],
+    "shadow": 0.25
+   },
+   "_note": "блок 3 (M23a): письмо Тамары Дуне — невручённым на печи; вклейка из крупного плана конверта (tools/make_frame_layers.py)"
+  },
+  {
+   "id": "hook_coat",
+   "image": "res://assets/rooms/H1/state_towel_hook.png",
+   "if": [
+    "h1_scarf_removed"
+   ],
+   "_note": "G10/G12 (партия 9, H1_state_towel_hook, [1042,215,1086,383) фона, (0,0) 1:1): тот же полосатый мокрый платок, что лежал на лежанке, — на ЛЕВОМ крючке; средний крючок — пальто Нины. Прежний серый платок (state_hook_coat.png, другой предмет) снят"
+  },
+  {
+   "id": "nina_coat",
+   "image": "res://assets/rooms/H1/state_nina_coat.png",
+   "if": [
+    "done_M23c"
+   ],
+   "_note": "M23c «Нина в доме сестры»: тёмное пальто с серой накидкой на крючке у двери (Q03 — рукав) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к H1_bg, (0,0); x1034–1179, y245–575. Платок Агаты с партии 9 — на левом крючке (hook_coat), пальто — на среднем; слой пальто идёт после платка (повешено позже, M23c)."
+  },
+  {
+   "id": "nina_coat_hung",
+   "image": "res://assets/rooms/H1/state_nina_coat.png",
+   "if": [
+    "m23c_coat_hung"
+   ],
+   "unless": [
+    "done_M23c"
+   ],
+   "_k1_0111": "01.11 (Директор, стр. 60: «когда Нина вешает пальто — пальто не появляется»): слой nina_coat включался только флагом конца сцены (done_M23c) — пока рассказчик говорил «вешает на пустой крючок», крючок был пуст. Сцена M23c ставит m23c_coat_hung сразу после этой строки (stage at 1, cut) — то же пальто, тот же холст; после сцены — прежний слой nina_coat (сохранения до 01.11 с done_M23c видят пальто как раньше)."
+  },
+  {
+   "id": "shelf_stove",
+   "image": "res://assets/rooms/H1/state_shelf_A.png",
+   "_k0211": "Директор 02.11, стр. 6: «направлена выше слева и ниже справа, а должна — ровно наоборот» — отражена слева направо на месте и поднята (выше на 30, левее на 15 px холста; вариант снимка shelf_mirror2, «теперь норм»); копия в игре — tools/retouch_art.py (tools/retouch/H1_shelf_stove.py), гнёзда holes_stove — так же",
+   "if": [
+    "q04_corner_stove"
+   ],
+   "_note": "G12 (партия 9, H1_state_shelf_A, [379,414,471,490) фона, (0,0) 1:1): полка Тихона у печи — та же доска 92 px, что прислонённая и полка B, с серой подстилкой; кронштейны закрывают свои гнёзда (holes_stove). Прежняя перспективная полка tools/make_h1_layers.py снята"
+  },
+  {
+   "id": "photo_ledge",
+   "image": "res://assets/rooms/H1/state_photo_ledge.png",
+   "unless": [
+    "v01_photo_table",
+    "v01_photo_shelf"
+   ],
+   "_note": "V01, Директор 18.10: «где будет стоять фотография — никакой выбор ничего не меняет». Семейная фотография в рамке до выбора — на уступе печи у стены, рядом с латунной фигуркой; выбор переносит её на столик или на угловую полку, с уступа она уходит (слой, не часть фона — без «дырки»). Рамка и сепия — tools/make_items_layers.py. Прежний хотспот «фотографии» лежал на иконе у вешалки (это икона, не снимок) — она остаётся убранством"
+  },
+  {
+   "id": "photo_shelf",
+   "image": "res://assets/rooms/H1/state_photo_shelf.png",
+   "if": [
+    "v01_photo_shelf"
+   ],
+   "_note": "«На полке»: средняя полка угловой полки с кувшинами, перед шкатулкой"
+  },
+  {
+   "id": "photo_table",
+   "image": "res://assets/rooms/H1/state_photo_table.png",
+   "if": [
+    "v01_photo_table"
+   ],
+   "occluder": true,
+   "z": 940,
+   "_z_note": "«На столе»: стоит на столике за книгой — под слоем столика (950: книга закрывает низ рамки), над Агатой, когда она за столиком"
+  },
+  {
+   "id": "cup_sill_blue",
+   "scale": 0.88,
+   "scale_pivot": [
+    1385,
+    454
+   ],
+   "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+   "_i_t2": "I-T2 (Директор, стр. 28/31): чашки одного размера — на подоконнике чуть меньше, выбранная на столике крупнее; масштаб вокруг донца",
+   "image": "res://assets/rooms/H1/state_cup_sill_blue.png",
+   "unless": [
+    "v01_cup_blue"
+   ],
+   "_note": "V01: две чашки (синяя и белая) ждут на подоконнике между кувшином и книгами; выбранная уходит на столик. Чашки — кружка со столика в другой глазури, tools/make_items_layers.py"
+  },
+  {
+   "id": "cup_sill_white",
+   "scale": 0.88,
+   "scale_pivot": [
+    1425,
+    454
+   ],
+   "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+   "image": "res://assets/rooms/H1/state_cup_sill_white.png",
+   "unless": [
+    "v01_cup_white"
+   ]
+  },
+  {
+   "id": "mug_table",
+   "image": "res://assets/rooms/H1/state_mug_table.png",
+   "occluder": true,
+   "z": 952,
+   "_note": "H54 (Директор 24.10: «кружка синяя очень маленькая»): синяя кружка партии 10а, донце на месте нарисованной глиняной (tools/make_items_layers.py, mug10_table). J (29.10, стр. 95: «большую неподвижную — к размеру маленькой»): 92 → 66 px, вровень с выбранной чашкой; глиняной под ней больше нет (fg_table_chair_nomug.png)"
+  },
+  {
+   "id": "cup_table_blue",
+   "scale": 1.18,
+   "scale_pivot": [
+    715,
+    680
+   ],
+   "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+   "_i_t2": "I-T2 (Директор, стр. 28/31): чашки одного размера — на подоконнике чуть меньше, выбранная на столике крупнее; масштаб вокруг донца",
+   "image": "res://assets/rooms/H1/state_cup_table_blue.png",
+   "if": [
+    "v01_cup_blue"
+   ],
+   "occluder": true,
+   "z": 955,
+   "_z_note": "выбранная чашка на правом конце столика — поверх столика (950), под Тихоном в кресле (960)"
+  },
+  {
+   "id": "cup_table_white",
+   "scale": 1.18,
+   "scale_pivot": [
+    715,
+    680
+   ],
+   "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+   "image": "res://assets/rooms/H1/state_cup_table_white.png",
+   "if": [
+    "v01_cup_white"
+   ],
+   "occluder": true,
+   "z": 955
+  }
+ ],
+ "effects": [
+  {
+   "id": "dusk",
+   "type": "tint",
+   "color": "#a8a0b4",
+   "blend": "mul",
+   "z": 4090,
+   "if": [
+    "evening_dusk"
+   ],
+   "_note": "сумерки дня второго после маминого зеркала (M15а), как в мастерской — ИИ-разбор логики M2, мелочь 6"
+  },
+  {
+   "id": "stove_fire",
+   "type": "fire",
+   "rect": [
+    161,
+    447,
+    106,
+    111
+   ],
+   "if": [
+    "stove_lit"
+   ],
+   "z": 2,
+   "amount": 50,
+   "_note": "проём открытой печной дверцы после подгонки слоя stove_open (G13: 0.76, −41/+37 → x 161..267, y 447..558); огонь рисует свет комнаты (lights/H1.json stove_fire), этот эффект подавлен"
+  }
+ ],
+ "spawns": {
+  "default": [
+   1200,
+   900
+  ],
+  "from_Z2": [
+   980,
+   770
+  ],
+  "from_H2": [
+   1730,
+   900
+  ],
+  "from_H3": [
+   1100,
+   1000
+  ],
+  "from_H4": [
+   700,
+   800
+  ],
+  "night": [
+   300,
+   830
+  ]
+ },
+ "_night_note": "Спавн night — у печи, слева от кресла: «Ночь у печи» (сцена N01, scenes/E1.json → stage.room/spawn) ставит сюда Агату в затемнении после возвращения из школы.",
+ "on_enter": [
+  {
+   "text": "@H1.dark_enter",
+   "once_flag": "h1_dark_said",
+   "unless": [
+    "h1_shutter_open"
+   ],
+   "spawn": "from_Z2",
+   "_note": "I-T1 (Директор 25.10, стр. 30): первый вход в тёмный дом — реплика Агаты её голосом"
+  },
+  {
+   "text": "@H1.after_mirror.tikhon_1",
+   "then": [
+    "@H1.after_mirror.agata",
+    "@H1.after_mirror.tikhon_2"
+   ],
+   "once_flag": "h1_tikhon_after_mirror",
+   "if": [
+    "done_M15a"
+   ],
+   "unless": [
+    "done_M15s"
+   ],
+   "_note": "H33 (Директор 24.10): после маминого зеркала (M15a, мастерская — выход только в жилую комнату) — короткий разговор с Тихоном при возвращении; один раз (флаг в сохранении)"
+  }
+ ],
+ "props": [],
+ "hotspots": [
+  {
+   "id": "stove",
+   "action_anim": "open",
+   "kind": "object",
+   "label": "@H1.stove.label",
+   "rect": [
+    65,
+    290,
+    500,
+    470
+   ],
+   "stand": [
+    215,
+    795
+   ],
+   "_rect_note": "Директор 18.10: «печь и клик на неё слишком высоко». Прямоугольник — тело печи от карниза вниз: чело с дверцей (устье, экран x 138–304, y 408–574), подпечье с дровами, боковая грань до лежанки; горшки и труба над карнизом (y < 290) не в нём. Стоянка — перед дверцей, слева от кресла: Агата обращена к устью (проход за креслом y 780–930). Хотспоты на теле печи выше по pick_priority: гнёзда полки (shelf), платок (scarf), Тихон, установленная полка",
+   "color": "#8c8278",
+   "draw": false,
+   "states": [
+    {
+     "if": [
+      "done_Q04"
+     ],
+     "label": "@H1.stove.label_lit",
+     "color": "#c8723a",
+     "look": "@H1.stove.look_settled",
+     "_note": "G14: полка повешена — осмотр печи больше не говорит о гнёздах креплений"
+    },
+    {
+     "if": [
+      "stove_lit"
+     ],
+     "label": "@H1.stove.label_lit",
+     "color": "#c8723a"
+    }
+   ],
+   "use": {
+    "sets": [
+     "stove_lit"
+    ],
+    "text": "@H1.stove.use",
+    "once_flag": "stove_lit",
+    "scene": "M03"
+   },
+   "look": "@H1.stove.look"
+  },
+  {
+   "id": "shutter",
+   "action_anim": "open",
+   "kind": "object",
+   "label": "@H1.shutter.label",
+   "rect": [
+    1400,
+    100,
+    500,
+    440
+   ],
+   "stand": [
+    1650,
+    740
+   ],
+   "color": "#4a3a2a",
+   "draw": false,
+   "states": [
+    {
+     "if": [
+      "h1_shutter_open"
+     ],
+     "label": "@H1.shutter.label_open",
+     "color": "#a9c4d8"
+    }
+   ],
+   "use": {
+    "sets": [
+     "h1_shutter_open"
+    ],
+    "text": "@H1.shutter.use",
+    "once_flag": "h1_shutter_open",
+    "scene": "M03",
+    "_note": "G8 (Директор 23.10: «мини-игру с открывания ставней убрать, оставить как было»): ставня открывается простым действием — Агата тянется к ставне (action_anim open), флаг h1_shutter_open на ключевом кадре; крупного плана щеколды (latch, F8) больше нет"
+   },
+   "look": "@H1.shutter.look"
+  },
+  {
+   "id": "scarf",
+   "action_anim": "pick",
+   "carry": {
+    "to": [
+     1215,
+     742
+    ],
+    "face": [
+     1222,
+     330
+    ],
+    "action_anim": "reach",
+    "show_layers": [
+     "bench_bare",
+     "shelf_on_bench"
+    ],
+    "_note": "G10 (Директор 23.10: «Агата забирает платок и относит на крючок»): наклон у лежанки (pick) — на ключевом кадре платок уходит с лежанки (слой bench_bare раньше флага), Агата идёт к вешалке у двери и тянется к левому крючку (reach, крючок [1042,215,1086,383) фона → экран x 1196–1247, y 247–440); флаг h1_scarf_removed, текст и M03 — на ключевом кадре reach. Клик посреди — сразу тот же итог. Новых клипов нет"
+   },
+   "kind": "object",
+   "label": "@H1.scarf.label",
+   "rect": [
+    598,
+    552,
+    190,
+    95
+   ],
+   "_p11_rect": "партия 11: платок на полке, правее середины лежанки — фон [526,486,681,558) → экран 604–782 × 558–641",
+   "pick_priority": 2,
+   "_rect_note": "платок на лежанке (нарисован в фоне: x 378–700, y 480–640 фона → экран 434–804 × 551–735), поверх прямоугольника печи — приоритет 1; левый конец лежанки — снятая полка (shelf), G12",
+   "stand": [
+    640,
+    805
+   ],
+   "color": "#7a4a5a",
+   "draw": false,
+   "hidden_if": [
+    "h1_scarf_removed"
+   ],
+   "use": {
+    "sets": [
+     "h1_scarf_removed"
+    ],
+    "text": [
+     "@H1.scarf.use",
+     "@H1.scarf.shelf_under"
+    ],
+    "once_flag": "h1_scarf_removed",
+    "scene": "M03"
+   },
+   "look": "@H1.scarf.look"
+  },
+  {
+   "id": "nina",
+   "kind": "npc",
+   "label": "@char.nina",
+   "rect": [
+    1342,
+    280,
+    125,
+    476
+   ],
+   "stand": [
+    1130,
+    800
+   ],
+   "draw": false,
+   "pick_priority": 3,
+   "visible_if": [
+    "done_M22"
+   ],
+   "hidden_when": [
+    {
+     "all": [
+      "m23a_nina_here"
+     ],
+     "not": [
+      "m23a_nina_left"
+     ]
+    }
+   ],
+   "_t9": "T9 (R39): пока Нина на раздаче писем (M23a), в доме сестры её нет",
+   "_rect_note": "блок 3 (M23c): Нина в доме сестры у двери в сени, ноги y 756 (масштаб 1,41 → Нина 1,62 м ≈ 476 px); 23.10: сдвинута вправо на 52 px — стояла перед своим пальто на крючке (слой nina_coat партии 8, x 1206–1339) и закрывала его",
+   "talk": {
+    "after_text": "@H1d.nina.after"
+   }
+  },
+  {
+   "id": "nina_coat",
+   "kind": "object",
+   "action_anim": "reach",
+   "label": "@H1d.nina_coat.label",
+   "rect": [
+    1190,
+    282,
+    166,
+    260
+   ],
+   "stand": [
+    1180,
+    740
+   ],
+   "draw": false,
+   "pick_priority": 4,
+   "visible_if": [
+    "done_M23c"
+   ],
+   "states": [
+    {
+     "if": [
+      "done_Q03"
+     ],
+     "look": "@H1d.nina_coat.look_done"
+    }
+   ],
+   "_h49": "H49/H50 (Директор 24.10): на крючке — Дунино пальто, Нина принесла его из Ольховки (M23c), своё на ней; после шва хотспот остаётся — осмотр «рукав зашит»",
+   "_note": "блок 5, Q03: пальто на крючке у сестры — рукав разошёлся по шву (closeup_sleeve). Первый клик — рукав крупно, потом выбор: потайной шов или заплатка с Ульяниной птицей; след — реплика за ужином. Пальто на крючке — слой nina_coat (партия 8).",
+   "use": {
+    "sets": [
+     "q03_seen_sleeve"
+    ],
+    "text": "@H1d.nina_coat.use",
+    "once_flag": "q03_seen_sleeve",
+    "then_choice": true,
+    "_k1_0111": "01.11 (Директор, стр. 63: «чтобы зашить пальто, надо взаимодействовать 2 раза — зачем лишний раз и почему не с первого»): выбор шва идёт сразу за словами первого клика, поверх рукава крупно (then_choice); прежде первый клик только показывал рукав, выбор — со второго"
+   },
+   "view": {
+    "id": "sleeve",
+    "type": "papers",
+    "title": "@H1d.nina_coat.title",
+    "close_label": "@ui.close",
+    "unless": [
+     "q03_seen_sleeve"
+    ],
+    "pictures": [
+     {
+      "image": "res://assets/closeups/closeup_sleeve.png",
+      "rect": [
+       260,
+       130,
+       1400,
+       0
+      ],
+      "angle_deg": 0.0
+     }
+    ]
+   },
+   "choice": {
+    "prompt": "@H1d.nina_coat.prompt",
+    "requires": {
+     "flags": [
+      "q03_seen_sleeve"
+     ]
+    },
+    "once_any": true,
+    "options": [
+     {
+      "id": "A",
+      "label": "@H1d.nina_coat.opt_seam",
+      "sets": "q03_hidden_seam"
+     },
+     {
+      "id": "B",
+      "label": "@H1d.nina_coat.opt_patch",
+      "sets": "q03_patch_drawing"
+     }
+    ]
+   },
+   "look": "@H1d.nina_coat.look"
+  },
+  {
+   "id": "tea_corner",
+   "kind": "object",
+   "action_anim": "reach",
+   "label": "@H1d.tea_corner.label",
+   "rect": [
+    1450,
+    468,
+    110,
+    52
+   ],
+   "stand": [
+    1560,
+    740
+   ],
+   "draw": false,
+   "pick_priority": 4,
+   "visible_if": [
+    "done_M23c"
+   ],
+   "hidden_if": [
+    "done_Q08"
+   ],
+   "_note": "блок 5, Q08: общий чай — мама в доме сестры. Выбор: у тётиной печи для своих или в маминой горнице для всех; след — кадр ужина (реплика). Стол с самоваром (H1_state_tea) в комнату не ставится: он перегородил бы пол — в эпилоге он на кадре ужина.",
+   "choice": {
+    "prompt": "@H1d.tea_corner.prompt",
+    "once_any": true,
+    "options": [
+     {
+      "id": "A",
+      "label": "@H1d.tea_corner.opt_home",
+      "sets": "q08_home_evening",
+      "text": "@H1d.tea_corner.go_home"
+     },
+     {
+      "id": "B",
+      "label": "@H1d.tea_corner.opt_all",
+      "sets": "q08_open_table",
+      "text": "@H1d.tea_corner.go_all"
+     }
+    ]
+   },
+   "look": "@H1d.tea_corner.look"
+  },
+  {
+   "id": "tikhon",
+   "kind": "npc",
+   "label": "@char.tikhon",
+   "rect": [
+    405,
+    690,
+    130,
+    200
+   ],
+   "footprint": false,
+   "_footprint": "K (стр. 59, 78): жители на полу — препятствие у ног; Тихон — на печи, полке, кресле, пол под ним свободен",
+   "stand": [
+    700,
+    860
+   ],
+   "pick_priority": 2,
+   "states": [
+    {
+     "if": [
+      "tikhon_knows_dunya"
+     ],
+     "rect": [
+      426,
+      462,
+      110,
+      156
+     ],
+     "stand": [
+      700,
+      800
+     ],
+     "_p11": "партия 11: на середине верха широкой лежанки",
+     "_30_10": "сверка 30.10: на самой лежанке у печного конца (было — верх ступени печи, выше прежнего)",
+     "_note": "блок 3 (M23d): узнал о Дуне — перебрался поближе к Агатиной лежанке; I-T2 (Директор, стр. 145): прежде он лез выше на печь, а по смыслу — к лежанке"
+    },
+    {
+     "if": [
+      "q04_corner_stove"
+     ],
+     "rect": [
+      444,
+      309,
+      98,
+      152
+     ],
+     "_k0211": "Директор 02.11, стр. 6: полка отражена и поднята (tools/retouch/H1_shelf_stove.py) — Тихон с ней: −17, −34 экрана",
+     "stand": [
+      700,
+      795
+     ],
+     "_p12": "партия 12 (ChatGPT 01.11, по прохождению Директора 31.10), стр. 25, 113: полка шире (доска 355–515 × 413–489 холста, подстилка) — Тихон по центру доски"
+    },
+    {
+     "if": [
+      "stove_lit",
+      "h1_shutter_open"
+     ],
+     "fail_text": "@H1.tikhon.before_met_scarf",
+     "_k7": "К7 (Директор 30.10): до знакомства (M03) — ворчит о том, что ещё не сделано: печь топится, ставня открыта — платок на лежанке"
+    },
+    {
+     "if": [
+      "stove_lit"
+     ],
+     "fail_text": "@H1.tikhon.before_met_shutter",
+     "_k7": "К7: печь затоплена, ставня закрыта — про ставню (раньше твердил «печь сперва затопи»)"
+    }
+   ],
+   "_stand_note": "Директор 18.10: «Тихон изначально в комнате, а не появляется … посадить на кресло, пока нет полки». Без visible_if: виден с первого входа. До Q04 сидит на подушке переднего кресла (под ближним подлокотником — слой chair_arm), после Q04 — на выбранной полке (states: rect/stand по флагу; кукла — game/data/actors/tikhon.json place.H1 с теми же флагами, validate_rooms.py п. 9 сверяет ноги с rect). Стоянки — сбоку, Агата его не заслоняет. Приоритет 2: поверх печи, гнёзд и полки. Разговор M03 запускается, как раньше, третьим шагом (платок), не кликом по Тихону",
+   "color": "#9a7a5a",
+   "talk": {
+    "scene": "M23d",
+    "_note": "блок 3: кто скажет Тихону о Дуне (M23d) — когда мама побывала в доме; до и после — прежние вопросы (choice)",
+    "intro": [
+     {
+      "unless": [
+       "met_tikhon",
+       "tikhon_introduced"
+      ],
+      "text": "@H1.tikhon.first_who",
+      "then": [
+       "@H1.tikhon.first_ask",
+       "@H1.tikhon.first_name",
+       "@H1.tikhon.first_alone",
+       "@H1.tikhon.first_stove"
+      ],
+      "sets": "tikhon_introduced",
+      "_k7": "К7 (Директор 30.10, 14:30: «удивляется и спрашивает, кто он такой, уже после диалога про печь — должна сразу»): первый клик по Тихону до M03 — знакомство; дальше его ворчание по состоянию избы (states.fail_text). M03 знакомство тогда пропускает"
+     },
+     {
+      "if": [
+       "met_tikhon"
+      ],
+      "unless": [
+       "q04_corner_stove"
+      ],
+      "text": "@H1.tikhon.ask_shelf"
+     }
+    ],
+    "_intro_note": "I-T1 (Директор 25.10, стр. 38, 66): пока полка не висит, Тихон при каждом разговоре сам просит её повесить — его реплика перед вопросами (talk.intro: первая запись, чьи if есть и unless нет)"
+   },
+   "choice": {
+    "prompt": "@H1.tikhon.prompt",
+    "requires": {
+     "flags": [
+      "met_tikhon"
+     ]
+    },
+    "fail_text": "@H1.tikhon.before_met",
+    "_fail_i_t1": "I-T1 (стр. 38): говорить с Тихоном можно всегда — до знакомства (M03, платок на лежанке) он ворчит своё, а не молчит осмотром",
+    "_note": "Домашнее знание Тихона по вопросам (Docs/SCENARIO_FINAL.md, M03): дверь из школы, свёрток на верстаке, колокол с мельницы. Спрашивать можно сколько угодно (без once_any), но только о том, что Агата уже видела (C13, ИИ-чтение 23.10: дверь — побывав в галерее, свёрток и колокол — в мастерской); ответы — реплики Тихона его голосом (поле line у текста). До знакомства (M03) — только осмотр. Загадок не решает, мир не объясняет.",
+    "_i_t5": "I-T5 (вычитка-2 ChatGPT, 10 новых разговоров Тихона; Директор просил больше разговоров с ним): 8 тем здесь — однократные (not_flags — свой sets), необязательные, по флагам дня; ещё две — внутри сцен M10 и M26 (then). Вопрос — подпись кнопки, дальше Тихон, Агата, Тихон",
+    "options": [
+     {
+      "id": "door",
+      "label": "@H1.tikhon.opt_door",
+      "sets": "h1_asked_door",
+      "text": "@H1.tikhon.door",
+      "requires": {
+       "flags": [
+        "visited_H3"
+       ],
+       "not_flags": [
+        "done_N01"
+       ]
+      }
+     },
+     {
+      "id": "bundle",
+      "label": "@H1.tikhon.opt_bundle",
+      "sets": "h1_asked_bundle",
+      "text": "@H1.tikhon.bundle",
+      "requires": {
+       "flags": [
+        "visited_H2"
+       ],
+       "not_flags": [
+        "done_M15a"
+       ]
+      }
+     },
+     {
+      "id": "bell",
+      "label": "@H1.tikhon.opt_bell",
+      "sets": "h1_asked_bell",
+      "text": "@H1.tikhon.bell",
+      "requires": {
+       "flags": [
+        "visited_H2"
+       ],
+       "not_flags": [
+        "done_M12"
+       ]
+      }
+     },
+     {
+      "id": "dunya_mend",
+      "label": "@H1.tikhon.opt_mend",
+      "sets": "h1_asked_mend",
+      "text": "@H1.tikhon.mend",
+      "requires": {
+       "flags": [
+        "visited_H2"
+       ],
+       "not_flags": [
+        "done_N01"
+       ]
+      }
+     },
+     {
+      "id": "tamara",
+      "label": "@H1.tikhon.opt_tamara",
+      "sets": "h1_asked_tamara",
+      "text": "@H1.tikhon.tamara",
+      "requires": {
+       "not_flags": [
+        "done_N01"
+       ]
+      }
+     },
+     {
+      "id": "night",
+      "label": "@H1.tikhon.opt_night",
+      "sets": "h1_asked_night",
+      "text": "@H1.tikhon.night",
+      "requires": {
+       "flags": [
+        "done_N01"
+       ],
+       "not_flags": [
+        "done_M14"
+       ]
+      }
+     },
+     {
+      "id": "stove_mirror",
+      "label": "@H1.tikhon.opt_stove_mirror",
+      "sets": "h1_asked_stove_mirror",
+      "text": "@H1.tikhon.stove_mirror",
+      "requires": {
+       "flags": [
+        "done_N01"
+       ],
+       "not_flags": [
+        "done_M18p"
+       ]
+      }
+     },
+     {
+      "id": "water",
+      "label": "@H1.tikhon.opt_water",
+      "sets": "h1_asked_water",
+      "text": "@H1.tikhon.water",
+      "requires": {
+       "flags": [
+        "done_M14"
+       ],
+       "not_flags": [
+        "done_M15a"
+       ]
+      }
+     },
+     {
+      "id": "nina",
+      "label": "@H1.tikhon.opt_nina",
+      "sets": "h1_asked_nina",
+      "text": "@H1.tikhon.nina",
+      "requires": {
+       "flags": [
+        "done_M15a"
+       ],
+       "not_flags": [
+        "done_M18p"
+       ]
+      }
+     },
+     {
+      "id": "after_dunya",
+      "label": "@H1.tikhon.opt_after_dunya",
+      "sets": "h1_asked_after_dunya",
+      "text": "@H1.tikhon.after_dunya",
+      "requires": {
+       "flags": [
+        "tikhon_knows_dunya"
+       ]
+      }
+     },
+     {
+      "id": "cream",
+      "label": "@H1.tikhon.opt_cream",
+      "sets": "h1_asked_cream",
+      "text": "@H1.tikhon.cream",
+      "then": [
+       "@H1.tikhon.cream_2",
+       "@H1.tikhon.cream_3"
+      ],
+      "requires": {
+       "flags": [
+        "done_M03"
+       ],
+       "not_flags": [
+        "done_N01",
+        "h1_asked_cream"
+       ]
+      }
+     },
+     {
+      "id": "supper",
+      "label": "@H1.tikhon.opt_supper",
+      "sets": "h1_asked_supper",
+      "text": "@H1.tikhon.supper",
+      "then": [
+       "@H1.tikhon.supper_2",
+       "@H1.tikhon.supper_3"
+      ],
+      "requires": {
+       "flags": [
+        "visited_H2",
+        "h1_asked_mend"
+       ],
+       "not_flags": [
+        "done_N01",
+        "h1_asked_supper"
+       ]
+      }
+     },
+     {
+      "id": "tea",
+      "label": "@H1.tikhon.opt_tea",
+      "sets": "h1_asked_tea",
+      "text": "@H1.tikhon.tea",
+      "then": [
+       "@H1.tikhon.tea_2",
+       "@H1.tikhon.tea_3"
+      ],
+      "requires": {
+       "flags": [
+        "visited_H3",
+        "h1_asked_door"
+       ],
+       "not_flags": [
+        "done_N01",
+        "h1_asked_tea"
+       ]
+      }
+     },
+     {
+      "id": "snow",
+      "label": "@H1.tikhon.opt_snow",
+      "sets": "h1_asked_snow",
+      "text": "@H1.tikhon.snow",
+      "then": [
+       "@H1.tikhon.snow_2",
+       "@H1.tikhon.snow_3"
+      ],
+      "requires": {
+       "flags": [
+        "done_M06"
+       ],
+       "not_flags": [
+        "done_N01",
+        "h1_asked_snow"
+       ]
+      }
+     },
+     {
+      "id": "duty",
+      "label": "@H1.tikhon.opt_duty",
+      "sets": "h1_asked_duty",
+      "text": "@H1.tikhon.duty",
+      "then": [
+       "@H1.tikhon.duty_2",
+       "@H1.tikhon.duty_3"
+      ],
+      "requires": {
+       "flags": [
+        "done_N01"
+       ],
+       "not_flags": [
+        "done_M09",
+        "h1_asked_duty"
+       ]
+      }
+     },
+     {
+      "id": "quiet",
+      "label": "@H1.tikhon.opt_quiet",
+      "sets": "h1_asked_quiet",
+      "text": "@H1.tikhon.quiet",
+      "then": [
+       "@H1.tikhon.quiet_2",
+       "@H1.tikhon.quiet_3"
+      ],
+      "requires": {
+       "flags": [
+        "done_M14"
+       ],
+       "not_flags": [
+        "done_M15a",
+        "h1_asked_quiet"
+       ]
+      }
+     },
+     {
+      "id": "hear",
+      "label": "@H1.tikhon.opt_hear",
+      "sets": "h1_asked_hear",
+      "text": "@H1.tikhon.hear",
+      "then": [
+       "@H1.tikhon.hear_2",
+       "@H1.tikhon.hear_3"
+      ],
+      "requires": {
+       "flags": [
+        "done_M15a",
+        "h1_tikhon_after_mirror"
+       ],
+       "not_flags": [
+        "done_M15s",
+        "h1_asked_hear"
+       ]
+      }
+     },
+     {
+      "id": "home",
+      "label": "@H1.tikhon.opt_home",
+      "sets": "h1_asked_home",
+      "text": "@H1.tikhon.home",
+      "then": [
+       "@H1.tikhon.home_2",
+       "@H1.tikhon.home_3"
+      ],
+      "requires": {
+       "flags": [
+        "done_M23d",
+        "tikhon_knows_dunya",
+        "h1_asked_after_dunya"
+       ],
+       "not_flags": [
+        "done_M24",
+        "h1_asked_home"
+       ]
+      }
+     },
+     {
+      "id": "spoons",
+      "label": "@H1.tikhon.opt_spoons",
+      "sets": "h1_tikhon_spoons",
+      "text": "@H1.tikhon.spoons_q",
+      "then": [
+       "@H1.tikhon.spoons_a"
+      ],
+      "requires": {
+       "flags": [
+        "done_M03"
+       ]
+      },
+      "_j": "J, часть G (Директор 25.10 / 29.10): ритм ложечкой — Тихон стучит по пустой чашке, Агата повторяет по своей; можно сколько угодно",
+      "mechanic": {
+       "type": "rhythm",
+       "title": "@mech.rhythm.label_title",
+       "closable": true,
+       "close_label": "@mech.rhythm.label_stop",
+       "close_event": "quit",
+       "rounds": [
+        [
+         0.0,
+         0.5,
+         1.0
+        ],
+        [
+         0.0,
+         0.4,
+         0.8,
+         1.4
+        ],
+        [
+         0.0,
+         0.3,
+         0.6,
+         0.8,
+         1.4
+        ]
+       ],
+       "tol": 0.25,
+       "tol_easy": 0.36,
+       "board": [
+        410,
+        300,
+        1100,
+        420
+       ],
+       "texts": {
+        "listen": "@mech.rhythm.label_listen",
+        "repeat": "@mech.rhythm.label_repeat",
+        "right": "@mech.rhythm.label_right",
+        "wrong": "@mech.rhythm.label_wrong",
+        "who_tikhon": "@mech.rhythm.label_who_tikhon",
+        "who_agata": "@mech.rhythm.label_who_agata",
+        "stop": "@mech.rhythm.label_stop",
+        "good_1": "@mech.rhythm.good_1",
+        "good_2": "@mech.rhythm.good_2",
+        "miss_1": "@mech.rhythm.miss_1",
+        "miss_2": "@mech.rhythm.miss_2"
+       },
+       "events": {
+        "done": {
+         "sets": [
+          "tikhon_rhythm_done"
+         ],
+         "text": "@H1.tikhon.spoons_done",
+         "close": true
+        },
+        "quit": {
+         "text": "@H1.tikhon.spoons_quit",
+         "close": true
+        }
+       }
+      }
+     },
+     {
+      "id": "leave",
+      "label": "@H1.tikhon.opt_leave",
+      "sets": "h1_tikhon_left",
+      "text": "@H1.tikhon.leave"
+     }
+    ]
+   },
+   "look": "@H1.tikhon.look"
+  },
+  {
+   "id": "wave",
+   "kind": "object",
+   "label": "@H1.wave.label",
+   "rect": [
+    90,
+    765,
+    360,
+    110
+   ],
+   "stand": [
+    215,
+    795
+   ],
+   "draw": false,
+   "pick_priority": 1,
+   "visible_if": [
+    "nina_time_compared"
+   ],
+   "hidden_if": [
+    "done_M15s",
+    "waved_at_stove"
+   ],
+   "_note": "Полировка 22.10 (C17): мамино зеркальце на столе Нины показывает Дунину печь — после маминого зеркала (M15а) и до плиты у поворота можно встать у печи и помахать (пол перед печью). Флаг waved_at_stove читает блок 3 (M19, Нина: «…ты встала у печи и махала»).",
+   "use": {
+    "sets": [
+     "waved_at_stove"
+    ],
+    "text": "@H1.wave.use",
+    "once_flag": "waved_at_stove"
+   },
+   "look": "@H1.wave.look"
+  },
+  {
+   "id": "photo",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@H1.photo.label",
+   "rect": [
+    686,
+    462,
+    36,
+    42
+   ],
+   "stand": [
+    700,
+    800
+   ],
+   "pick_priority": 2,
+   "_rect_note": "18.10: фотография — своя вещь (слои photo_ledge / photo_table / photo_shelf), хотспот идёт за ней по выбору (states rect/stand). Было [1230,150,80,90] — икона над вешалкой",
+   "color": "#e8e0c8",
+   "draw": false,
+   "states": [
+    {
+     "if": [
+      "v01_photo_table"
+     ],
+     "label": "@H1.photo.label_table",
+     "agata_face": [
+      676,
+      980
+     ],
+     "_face_j": "J (Директор 29.10, стр. 44): столик между Агатой и экраном — она тянется к нему лицом к экрану, а не спиной",
+     "rect": [
+      647,
+      676,
+      58,
+      66
+     ],
+     "stand": [
+      690,
+      840
+     ]
+    },
+    {
+     "if": [
+      "v01_photo_shelf"
+     ],
+     "label": "@H1.photo.label_shelf",
+     "rect": [
+      680,
+      296,
+      26,
+      30
+     ],
+     "stand": [
+      700,
+      790
+     ]
+    }
+   ],
+   "choice": {
+    "prompt": "@H1.photo.prompt",
+    "exclusive": true,
+    "scene": "V01",
+    "options": [
+     {
+      "id": "table",
+      "label": "@H1.photo.opt_table",
+      "sets": "v01_photo_table",
+      "text": "@H1.photo.react_table"
+     },
+     {
+      "id": "shelf",
+      "label": "@H1.photo.opt_shelf",
+      "sets": "v01_photo_shelf",
+      "text": "@H1.photo.react_shelf"
+     }
+    ]
+   },
+   "look": "@H1.photo.look"
+  },
+  {
+   "id": "cups",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@H1.cups.label",
+   "rect": [
+    1580,
+    478,
+    74,
+    38
+   ],
+   "stand": [
+    1595,
+    745
+   ],
+   "agata_face": [
+    1617,
+    500
+   ],
+   "pick_priority": 2,
+   "_h15_note": "H15: Агата тянется к чашкам (agata_face), выбранную несёт к столику и касается её (choice.options[].agata_go); стоянка — не в фигуре Нины (M23c, ноги 1404)",
+   "_rect_note": "18.10: две чашки на подоконнике (слои cup_sill_*; было [660,290,140,90] — угловая полка, где чашек не нарисовано); после выбора хотспот — на выбранной чашке на столике. Приоритет 2: поверх ставни",
+   "color": "#d8d0c0",
+   "draw": false,
+   "states": [
+    {
+     "if": [
+      "v01_cup_blue"
+     ],
+     "label": "@H1.cups.label_blue",
+     "color": "#7090c0",
+     "agata_face": [
+      800,
+      980
+     ],
+     "_face_j": "J (Директор 29.10, стр. 44): столик между Агатой и экраном — она тянется к нему лицом к экрану, а не спиной",
+     "rect": [
+      800,
+      733,
+      56,
+      40
+     ],
+     "stand": [
+      800,
+      840
+     ]
+    },
+    {
+     "if": [
+      "v01_cup_white"
+     ],
+     "label": "@H1.cups.label_white",
+     "color": "#f0ece0",
+     "agata_face": [
+      800,
+      980
+     ],
+     "_face_j": "J (Директор 29.10, стр. 44): столик между Агатой и экраном — она тянется к нему лицом к экрану, а не спиной",
+     "rect": [
+      800,
+      733,
+      56,
+      40
+     ],
+     "stand": [
+      800,
+      840
+     ]
+    }
+   ],
+   "choice": {
+    "prompt": "@H1.cups.prompt",
+    "exclusive": true,
+    "scene": "V01",
+    "options": [
+     {
+      "id": "blue",
+      "label": "@H1.cups.opt_blue",
+      "sets": "v01_cup_blue",
+      "text": "@H1.cups.react_blue",
+      "agata_go": {
+       "to": [
+        885,
+        790
+       ],
+       "face": [
+        800,
+        760
+       ],
+       "action": "reach",
+       "_h15": "H15 (Директор 24.10): Агата несёт выбранную чашку к столику и касается её — лицом к чашке, не к окну"
+      }
+     },
+     {
+      "id": "white",
+      "label": "@H1.cups.opt_white",
+      "sets": "v01_cup_white",
+      "text": "@H1.cups.react_white",
+      "agata_go": {
+       "to": [
+        885,
+        790
+       ],
+       "face": [
+        800,
+        760
+       ],
+       "action": "reach",
+       "_h15": "H15 (Директор 24.10): Агата несёт выбранную чашку к столику и касается её — лицом к чашке, не к окну"
+      }
+     }
+    ]
+   },
+   "look": "@H1.cups.look"
+  },
+  {
+   "id": "shelf",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@H1.shelf.label",
+   "rect": [
+    606,
+    552,
+    176,
+    72
+   ],
+   "_p11_rect": "партия 11: снятая полка на широкой лежанке — фон [533,487,676,538) → экран 612–776 × 559–618",
+   "visible_if": [
+    "h1_scarf_removed"
+   ],
+   "stand": [
+    700,
+    800
+   ],
+   "_rect_note": "H12 (партия 10б): снятая полка лежит на лавке под платком (слой shelf_on_bench, [584,488,676,526) фона → экран 671–776 × 560–604); видна, когда платок убран. Стоянка справа: после выбора A Агата не заслоняет Тихона на полке",
+   "color": "#7a5a3a",
+   "draw": false,
+   "pick_priority": 2,
+   "states": [
+    {
+     "if": [
+      "q04_corner_stove"
+     ],
+     "label": "@H1.shelf.label_stove"
+    },
+    {
+     "if": [
+      "h1_scarf_removed",
+      "stove_lit"
+     ],
+     "fail_text": "@H1.shelf.not_yet_dark",
+     "_note": "G11: печь топится, а ставня закрыта — разговора у печи ещё не было"
+    },
+    {
+     "if": [
+      "h1_scarf_removed"
+     ],
+     "fail_text": "@H1.shelf.not_yet",
+     "_note": "G11: лежанка свободна, печь холодная — полку потом, сперва обогреть избу"
+    }
+   ],
+   "hidden_if": [
+    "done_Q04"
+   ],
+   "choice": {
+    "prompt": "@H1.shelf.prompt",
+    "requires": {
+     "flags": [
+      "met_tikhon"
+     ]
+    },
+    "fail_text": "@H1.shelf.look_wet",
+    "_fail_note": "G9/G11: повесить полку можно после первого разговора у затопленной печи (M03 → met_tikhon) — там Тихон и просит её повесить; до того клик по полке объясняет, почему не сейчас (states.fail_text): платок на лежанке — ни сесть, ни лечь; потом — сперва обогреть избу; печь топится — сперва ставню",
+    "scene": "Q04",
+    "options": [
+     {
+      "id": "A",
+      "label": "@H1.shelf.opt_a",
+      "sets": "q04_corner_stove"
+     },
+     {
+      "id": "B",
+      "label": "@H1.shelf.opt_b",
+      "sets": "q04_declined",
+      "text": "@H1.shelf.react_b"
+     }
+    ],
+    "_options_note": "H13 (Директор 24.10): одно место — у печи; выбор — помочь Тихону (повесить полку) или нет. «Нет» не закрывает историю: полка остаётся на лавке, к выбору можно вернуться"
+   },
+   "look": "@H1.shelf.look"
+  },
+  {
+   "id": "lezhanka",
+   "kind": "object",
+   "action_anim": "reach",
+   "label": "@H1.lezhanka.label",
+   "rect": [
+    412,
+    578,
+    404,
+    182
+   ],
+   "_p11_rect": "партия 11 (30.10): широкая лежанка — экран x 412–816, y 578–760 (верх ниже повешенной полки A, низ — ножки над полом прохода)",
+   "stand": [
+    640,
+    805
+   ],
+   "pick_priority": 1,
+   "_j_rect": "J-A3 (Директор 29.10, стр. 60: «кликать надо на печь почему-то»): лежанку игрок видит как лавку с покрывалом перед печью (фон 960-шкалы x 205–400, y 268–350 → экран 410–800 × 536–700; верх с 556 — ниже повешенной полки A, она кликается своей областью), а не узкую ступень над ней; приоритет 1 — выше тела печи (0), ниже платка и снятой полки (2), что лежат на ней",
+   "color": "#8a5a3a",
+   "draw": false,
+   "_rect_note": "T6: лежанка — тёплая ступень печи над лавкой (фон: x 566–720, y 330–550 экрана); лавка ниже — платок и снятая полка (их хотспоты), фотография на уступе (686–722 × 462–504) выше по pick_priority, тело печи левее x 566",
+   "sleep": {
+    "scenes": [
+     "N01",
+     "M24"
+    ],
+    "late": {
+     "N01": "@H1.lezhanka.late_d1",
+     "M24": "@H4.bed.late_d3"
+    },
+    "early": [
+     {
+      "unless": [
+       "done_M05"
+      ],
+      "text": "@H4.bed.early_d1_door"
+     },
+     {
+      "unless": [
+       "done_M07"
+      ],
+      "text": "@H4.bed.early_d1_class"
+     },
+     {
+      "unless": [
+       "done_M08"
+      ],
+      "text": "@H4.bed.early_d1_street",
+      "_k34": "Директор 01.11, стр. 34: класс осмотрен, а на улицу не вышли — второй день не начинается и непонятно почему; теперь Агата говорит, куда идти"
+     },
+     {
+      "unless": [
+       "done_N01"
+      ],
+      "text": "@H4.bed.early_d1_class"
+     },
+     {
+      "unless": [
+       "done_N02"
+      ],
+      "text": "@H4.bed.early_d2"
+     },
+     {
+      "unless": [
+       "done_M24"
+      ],
+      "text": "@H4.bed.early_d3",
+      "say_head": "@H4.bed.early_short",
+      "left_sep": ", ",
+      "left_last": " и ",
+      "left": [
+       {
+        "unless": "done_M23a",
+        "text": "@H4.bed.left_M23a",
+        "say": "@H4.bed.todo_M23a"
+       },
+       {
+        "unless": "done_M23b",
+        "text": "@H4.bed.left_M23b",
+        "say": "@H4.bed.todo_M23b"
+       },
+       {
+        "unless": "done_M23c",
+        "text": "@H4.bed.left_M23c",
+        "say": "@H4.bed.todo_M23c"
+       },
+       {
+        "unless": "done_M23d",
+        "text": "@H4.bed.left_M23d",
+        "say": "@H4.bed.todo_M23d"
+       }
+      ]
+     },
+     {
+      "unless": [
+       "done_M25"
+      ],
+      "text": "@H4.bed.after_d4"
+     },
+     {
+      "text": "@H4.bed.after_all"
+     }
+    ],
+    "_k": "K (Директор 31.10, стр. 105: «перед четвёртым днём — правда ли нам нужно ограничивать Агату, где спать? По сути можно и там и там»): ночь третьего дня (M24) — и здесь, на лежанке у Дуниной печи, и у мамы (O3.bed); «рано ещё» — тот же перечень несделанного, что у мамы. Ночь второго дня — по-прежнему у мамы (N02: «ляжем с Улей вдвоём»)."
+   },
+   "_note": "T6 (решение Директора 24.10 «Сон и смена дня»): день первый кончается сном на лежанке у Дуниной печи — там Нина видит Агату в зеркальце (M19, канон). Дела дня не сделаны — «рано ложиться» (sleep.early); сделаны — «пора спать» и ночь N01 (затемнение, «День второй», утро). Дни 2–3 спят у Нины (O3.bed)."
+  },
+  {
+   "id": "shelf_done",
+   "kind": "object",
+   "label": "@H1.shelf.label_done",
+   "rect": [
+    415,
+    436,
+    108,
+    84
+   ],
+   "_k0211": "Директор 02.11, стр. 6: полка у печи отражена, выше на 30 и левее на 15 px холста (−17, −34 экрана; tools/retouch/H1_shelf_stove.py)",
+   "stand": [
+    700,
+    800
+   ],
+   "_rect_note": "по установленной полке (G12, партия 9: обе — доска 92 px фона): A — у печи [379,414,471,490) фона (слой shelf_stove), B — задняя стена слева от двери на крыльцо, над столиком (слой shelf_table)",
+   "color": "#7a5a3a",
+   "draw": false,
+   "pick_priority": 1,
+   "visible_if": [
+    "done_Q04"
+   ],
+   "states": [
+    {
+     "if": [
+      "q04_corner_stove"
+     ],
+     "label": "@H1.shelf.label_stove"
+    }
+   ],
+   "look": "@H1.shelf.look_done"
+  }
+ ],
+ "exits": [
+  {
+   "to": "Z2",
+   "label": "@H1.exit_Z2.label",
+   "rect": [
+    860,
+    150,
+    240,
+    540
+   ],
+   "stand": [
+    980,
+    740
+   ],
+   "spawn": "from_H1",
+   "draw": false,
+   "cue": "door",
+   "_cue_note": "единственная нарисованная дверь H1 — в сени и на крыльцо (с улицы Z2 Агата входит ею, спавн from_Z2 у этой двери)"
+  },
+  {
+   "to": "H2",
+   "label": "@H1.exit_H2.label",
+   "side": "right",
+   "spawn": "from_H1",
+   "draw": false,
+   "requires": [
+    "h1_shutter_open"
+   ],
+   "closed_text": "@H1.exit_H2.dark",
+   "_requires_note": "G7 (Директор 23.10: «при закрытых ставнях свет из соседней комнаты»): пока ставня закрыта, Агата не идёт в тёмные комнаты — сначала ставня"
+  },
+  {
+   "to": "H3",
+   "label": "@H1.exit_H3.label",
+   "side": "bottom",
+   "x": 1100,
+   "spawn": "from_H1",
+   "draw": false,
+   "cue": "down",
+   "requires": [
+    "h1_shutter_open"
+   ],
+   "closed_text": "@H1.exit_H3.dark",
+   "_cue_note": "Директор 18.10: «проход в галерею не интуитивен». Двери в галерею на фоне H1 нет (видимая дверь — на крыльцо), стены слева (печь, окно) и справа (мастерская H2) заняты — галерея за спиной зрителя, выход к нижнему краю с меткой «вниз» (ExitCue). В галерее H3 проход в комнату — у правого края"
+  },
+  {
+   "to": "H4",
+   "label": "@H1.exit_H4.label",
+   "rect": [
+    590,
+    84,
+    250,
+    116
+   ],
+   "stand": [
+    700,
+    790
+   ],
+   "spawn": "from_H1",
+   "draw": false,
+   "cue": "up",
+   "requires": [
+    "h1_shutter_open"
+   ],
+   "closed_text": "@H1.exit_H4.dark",
+   "_cue_note": "18.10: чердак наверху — метка «вверх» под потолком в углу у печи, где труба уходит на чердак (лаз у трубы). Было: нижний край (вниз к зрителю — неочевидно). Лестницы на фоне нет; в прямоугольнике нет хотспотов (полки с чашками ниже y 290, печь левее x 565, дверь Z2 правее). На чердаке H4 выход обратно — вниз (нижний край), Агата спускается сюда же (спавн from_H4)"
+  }
+ ],
+ "scenes": {
+  "N01": {
+   "trigger": "sleep:lezhanka",
+   "_note": "T6: ночь первого дня — лежанка у печи (раньше — кровать на чердаке, H17)"
+  },
+  "M24": {
+   "trigger": "sleep:lezhanka",
+   "_k": "K (стр. 105): ночь третьего дня можно и здесь — не только у мамы (O3)"
+  },
+  "Q03": {
+   "complete_when": [
+    {
+     "any": [
+      "q03_hidden_seam",
+      "q03_patch_drawing"
+     ]
+    }
+   ]
+  },
+  "Q08": {
+   "complete_when": [
+    {
+     "any": [
+      "q08_home_evening",
+      "q08_open_table"
+     ]
+    }
+   ]
+  },
+  "M23c": {
+   "trigger": "enter"
+  },
+  "M23d": {
+   "trigger": "talk:tikhon"
+  },
+  "M03": {
+   "complete_when": [
+    {
+     "all": [
+      "h1_shutter_open",
+      "stove_lit",
+      "h1_scarf_removed"
+     ]
+    }
+   ]
+  },
+  "V01": {
+   "complete_when": [
+    {
+     "any": [
+      "v01_cup_blue",
+      "v01_cup_white"
+     ]
+    },
+    {
+     "any": [
+      "v01_photo_table",
+      "v01_photo_shelf"
+     ]
+    }
+   ],
+   "complete_text": "@H1.v01.done"
+  },
+  "Q04": {
+   "complete_when": [
+    {
+     "any": [
+      "q04_corner_stove"
+     ]
+    }
+   ]
+  }
+ },
+ "flags": {
+  "h1_tikhon_after_mirror": "После маминого зеркала Тихон поговорил с Агатой (H33)",
+  "h1_shutter_open": "Ставня в жилой комнате открыта",
+  "h1_scarf_removed": "Мокрая дорожная вещь убрана с лежанки",
+  "q04_declined": "Агата не стала вешать полку Тихону (Q04, «нет»)",
+  "v01_photo_table": "Семейная фотография поставлена на стол (V01)",
+  "v01_photo_shelf": "Семейная фотография поставлена на полку (V01)",
+  "v01_cup_blue": "Выбрана синяя чашка (V01)",
+  "v01_cup_white": "Выбрана белая чашка (V01)",
+  "h1_asked_door": "Тихон рассказал про школьную дверь: «Нина просила»",
+  "h1_asked_bundle": "Тихон рассказал про свёрток на верстаке: Нинино зеркало, рама на честном слове",
+  "h1_asked_bell": "Тихон рассказал про мельничный колокол: «Звенит не здесь»",
+  "h1_tikhon_left": "Агата оставила Тихона дежурить",
+  "h1_dark_said": "Агата вошла в тёмный дом",
+  "h1_asked_mend": "Тихон рассказал, как Дуня чинила вещи: «вещь своё место помнит»",
+  "h1_asked_tamara": "Тихон рассказал, как Тамара его кормила по средам",
+  "h1_asked_night": "Тихон всю ночь «караулил» печь",
+  "h1_asked_stove_mirror": "Тихон рассказал про Дунино зеркальце над печью: в тот день она унесла его сестре в подарок",
+  "h1_asked_water": "Агата поговорила с Тихоном, пока вода сходит: он поворчал на сырость и колокол и напомнил про мамино зеркало на верстаке",
+  "h1_asked_nina": "Тихон помнит Нину девчонкой",
+  "h1_asked_after_dunya": "Тихон больше никого не ждёт к вечеру",
+  "h1_asked_cream": "Тихон вспомнил, как Дуня бранила его за сметану на усах",
+  "h1_asked_supper": "Тихон вспомнил, что за Дуниным ужином велено было помалкивать",
+  "h1_asked_tea": "Тихон вспомнил, как Дуня выговаривала Нине за остывший чай",
+  "h1_asked_snow": "Агата рассказала Тихону про снег в классе",
+  "h1_asked_duty": "Тихон караулит весь дом — кастрюля в него входит",
+  "h1_asked_quiet": "Тихон вспомнил, как Дуня любила у печи помолчать",
+  "h1_asked_hear": "Агата сказала Тихону, как хочет услышать мамин голос",
+  "h1_asked_home": "Тихон напомнил Агате, что она дома",
+  "q03_seen_sleeve": "У Дуниного пальто разошёлся рукав"
+ }
+}

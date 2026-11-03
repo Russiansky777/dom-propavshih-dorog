@@ -1,0 +1,100 @@
+{
+ "id": "EP_tamara",
+ "frame": true,
+ "title": "@EP.place_bridge",
+ "_art": "Эпилог: Тамара несёт почту по мосту (ep_tamara_bridge, партия 5 — окружение без персонажей).",
+ "art_source": {
+  "files": {
+   "bg.png": "assets/incoming/ep_tamara_bridge.png"
+  },
+  "canvas": [
+   1672,
+   941
+  ],
+  "alpha_min": 0
+ },
+ "background": {
+  "kind": "exterior",
+  "image": "res://assets/rooms/EP_tamara/bg.png",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   0,
+   1000
+  ],
+  [
+   1920,
+   1000
+  ],
+  [
+   1920,
+   1078
+  ],
+  [
+   0,
+   1078
+  ]
+ ],
+ "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
+ "player_hidden": true,
+ "layers": [
+  {
+   "id": "tamara",
+   "image": "res://assets/rooms/EP_tamara/tamara.png",
+   "compose": {
+    "char": "tamara",
+    "feet": [
+     1490,
+     655
+    ],
+    "height": 300,
+    "dir": 3,
+    "action": "idle",
+    "frame": 0,
+    "anim": {
+     "rest": "idle",
+     "talk": "talk",
+     "fps": {
+      "talk": 3.4
+     },
+     "blend": [
+      "talk"
+     ]
+    },
+    "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
+    "tint": [
+     1.0,
+     0.98,
+     0.97
+    ],
+    "shadow": 0.35
+   }
+  }
+ ],
+ "effects": [
+  {
+   "id": "snow",
+   "type": "snow",
+   "rect": [
+    0,
+    0,
+    1920,
+    1080
+   ],
+   "amount": 70,
+   "z": 4000
+  }
+ ],
+ "spawns": {
+  "default": [
+   960,
+   1040
+  ]
+ },
+ "props": [],
+ "hotspots": [],
+ "exits": [],
+ "scenes": {},
+ "flags": {}
+}

@@ -1,0 +1,128 @@
+{
+ "_comment": "Главное меню и меню паузы (запрос Директора 23.10): пункты рисует игра поверх арта ChatGPT (data/story/menu.json, game/scripts/ui/title_screen.gd, pause_menu.gd), поэтому тексты здесь — для перевода и правки. Заголовки панели сохранений и настроек, открытой из паузы или с титульного экрана (game_ui.gd open_menu_panel). Ключи ui.* не озвучиваются (data/story/voice.json).",
+ "lang": "ru",
+ "texts": {
+  "ui.title_continue": {
+   "text": "Continue",
+   "draft": false
+  },
+  "ui.title_new_game": {
+   "text": "New game",
+   "draft": false
+  },
+  "ui.title_load": {
+   "text": "Load",
+   "draft": false
+  },
+  "ui.title_settings": {
+   "text": "Settings",
+   "draft": false
+  },
+  "ui.title_quit": {
+   "text": "Quit",
+   "draft": false
+  },
+  "ui.pause_continue": {
+   "text": "Continue",
+   "draft": false
+  },
+  "ui.pause_save": {
+   "text": "Save",
+   "draft": false
+  },
+  "ui.pause_load": {
+   "text": "Load",
+   "draft": false
+  },
+  "ui.pause_settings": {
+   "text": "Settings",
+   "draft": false
+  },
+  "ui.pause_main_menu": {
+   "text": "Main menu",
+   "draft": false
+  },
+  "ui.pause_quit": {
+   "text": "Quit game",
+   "draft": false
+  },
+  "ui.pause_esc_hint": {
+   "text": "Esc — return",
+   "draft": false
+  },
+  "ui.pause_busy": {
+   "text": "Saving and loading are available when the scene ends",
+   "draft": false
+  },
+  "ui.menu_title_save": {
+   "text": "Save game",
+   "draft": false
+  },
+  "ui.menu_title_load": {
+   "text": "Load game",
+   "draft": false
+  },
+  "ui.menu_title_settings": {
+   "text": "Settings",
+   "draft": false
+  },
+  "ui.menu_no_saves": {
+   "text": "No saved games yet.",
+   "draft": false
+  },
+  "ui.back": {
+   "text": "Back",
+   "draft": false
+  },
+  "ui.lang_voice": {
+   "text": "Voice-over",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_subtitles": {
+   "text": "Subtitles",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_voice_ru": {
+   "text": "Русский",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_voice_en": {
+   "text": "English",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_subs_ru": {
+   "text": "Русские",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_subs_en": {
+   "text": "English",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_subs_none": {
+   "text": "No subtitles\nБез субтитров",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_en_warning": {
+   "text": "English subtitles and voice-over are experimental and may contain mistakes.\nАнглийские субтитры и озвучка — экспериментальные и могут содержать ошибки.",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_en_yes": {
+   "text": "I understand — switch to English",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.lang_en_no": {
+   "text": "Keep as it was",
+   "draft": false,
+   "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  }
+ }
+}

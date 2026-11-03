@@ -1,0 +1,1123 @@
+{
+ "_comment": "Тексты блоков 3–5 (E4–E5: M19–M26, Docs/SCENARIO_FINAL.md §8–9; необязательные истории Q01, Q03, Q07, Q08, Q09, письма Нины): осмотры, подписи, тексты крупных планов (тетради, список деревни, письма), ворот первого пролёта, надписи кадров эпилога. Все draft: true — текст доводит владелец текста (ChatGPT с Директором); голоса не записаны (после текстового прохода). Поле line {speaker, text} — слова персонажа рядом с Агатой или мысль Агаты от первого лица: показывается репликой и звучит голосом персонажа; text — запасной закадровый вариант. Обязательные реплики сцен — в scenes/E4.json, E5.json и quests.json.",
+ "lang": "ru",
+ "texts": {
+  "ui.checkpoint_day3": {
+   "text": "Day three: Olkhovka",
+   "draft": true
+  },
+  "ui.checkpoint_day4": {
+   "text": "Day four: the bridge",
+   "draft": true
+  },
+  "ui.the_end": {
+   "text": "The end",
+   "draft": true
+  },
+  "ui.traces_title": {
+   "text": "What your choices left behind:",
+   "draft": true
+  },
+  "ui.new_game_again": {
+   "text": "Begin again",
+   "draft": true
+  },
+  "ui.credits_thanks": {
+   "text": "Thank you for your time. I hope Agata and her family's story has stayed with you.",
+   "draft": false
+  },
+  "ui.credits_author": {
+   "text": "Made by Yahor Zavatski",
+   "draft": false
+  },
+  "ui.page_prev": {
+   "text": "‹ Back",
+   "draft": true
+  },
+  "ui.page_next": {
+   "text": "Next ›",
+   "draft": true
+  },
+  "ui.block3_end": {
+   "text": "Next: the village council and the bridge. This part is still being made.",
+   "draft": true
+  },
+  "O4.tamara.after": {
+   "text": "So many letters in one year… And here that one year was twenty. How can that be?",
+   "draft": true,
+   "line": {
+    "speaker": "tamara",
+    "text": "So many letters in one year… And here that one year was twenty. How can that be?"
+   }
+  },
+  "O4.mitya.after": {
+   "text": "I come this way now. I'd like to cross by the bridge.",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "mitya",
+    "text": "I come this way now. I'd like to cross by the bridge."
+   }
+  },
+  "O4.nina_house.label": {
+   "text": "Mama's house",
+   "draft": true
+  },
+  "O4.nina_house.look": {
+   "text": "Mama's house. The same porch — only the step has been replaced.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Mama's house. The same porch — only the step has been replaced."
+   }
+  },
+  "O4.ilya_house.label": {
+   "text": "Ilya's house",
+   "draft": true
+  },
+  "O4.ilya_house.look": {
+   "text": "Ilya's house, at the edge. Mitya knocked on that shutter.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Ilya's house, at the edge. Mitya knocked on that shutter."
+   }
+  },
+  "O4.river.label": {
+   "text": "River",
+   "draft": true
+  },
+  "O4.river.look": {
+   "text": "The river below, and the far pier. I followed Mitya's lantern up from there.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The river below, and the far pier. I followed Mitya's lantern up from there."
+   }
+  },
+  "O4.exit_R3.label": {
+   "text": "Down to the river and far pier",
+   "draft": true
+  },
+  "O4.exit_O3.label": {
+   "text": "Into Mama's house",
+   "draft": true
+  },
+  "O4.exit_O2.label": {
+   "text": "To the school",
+   "draft": true
+  },
+  "O4.exit_O2.closed": {
+   "text": "The school path is buried knee-deep in snow. I can't get through alone.",
+   "draft": true
+  },
+  "O3.bed.label": {
+   "text": "Bed",
+   "draft": true
+  },
+  "O3.bed.early_d2": {
+   "text": "My bed — Mama never put it away. But it's too early to lie down.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "My bed — Mama never put it away. But it's too early to lie down."
+   }
+  },
+  "O3.bed.late_d2": {
+   "text": "It's late. Ulya and I will share — we'll make room.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "It's late. Ulya and I will share — we'll make room."
+   }
+  },
+  "O3.nina.before": {
+   "text": "Sit and warm yourself. We can talk in the morning.",
+   "draft": true,
+   "line": {
+    "speaker": "nina",
+    "text": "Sit and warm yourself. We can talk in the morning."
+   }
+  },
+  "O3.nina.after": {
+   "text": "The notebooks are on the table. Read them quietly, my girl.",
+   "direction": {
+    "stress": "родная",
+    "emotion": "ласково, по-матерински",
+    "pace": "неторопливо",
+    "takes": 3,
+    "map": [
+     "R3-50"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "nina",
+    "text": "The notebooks are on the table. Read them quietly, my girl."
+   }
+  },
+  "O3.ilya.after": {
+   "text": "Come to the workshop tomorrow morning. I'll show you where we fitted the rope clamp.",
+   "direction": {
+    "emotion": "по-братски, просто",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-52"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "Come to the workshop tomorrow morning. I'll show you where we fitted the rope clamp."
+   }
+  },
+  "O3.ilya.boat_drawing": {
+   "text": "A boat with smoke! I still draw them like that. Ulyana laughs at me for it.",
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "A boat with smoke! I still draw them like that. Ulyana laughs at me for it."
+   }
+  },
+  "O3.ulyana.after": {
+   "text": "Has it really only been a year for you? I'm eight already!",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "Has it really only been a year for you? I'm eight already!"
+   }
+  },
+  "O3.ilya_wife.after": {
+   "text": "Sit down, have a rest. I'll set out the lamp and put Ulyana to bed.",
+   "draft": true,
+   "line": {
+    "speaker": "ilya_wife",
+    "text": "Sit down, have a rest. I'll set out the lamp and put Ulyana to bed."
+   }
+  },
+  "O3.clock.label": {
+   "text": "Wall clock",
+   "draft": true
+  },
+  "O3.clock.label_common": {
+   "text": "Clock: keeping the same time",
+   "draft": true
+  },
+  "O3.clock.look": {
+   "text": "Mama's wall clock. Its pendulum swings steadily, without hurry.",
+   "direction": {
+    "stress": "Ровно",
+    "emotion": "акцент на «Ровно»",
+    "pace": "медленно",
+    "takes": 3,
+    "map": [
+     156
+    ],
+    "voice_fb": [
+     43
+    ]
+   },
+   "draft": true
+  },
+  "O3.clock.look_common": {
+   "text": "Keeping time with my watch — minute for minute.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Keeping time with my watch — minute for minute."
+   }
+  },
+  "O3.clock.watch": {
+   "text": "I compare them: my second hand and the pendulum move in step. Minute for minute.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I compare them: my second hand and the pendulum move in step. Minute for minute."
+   }
+  },
+  "O3.dunya_mirror.label": {
+   "text": "Little framed mirror",
+   "draft": true
+  },
+  "O3.dunya_mirror.label_known": {
+   "text": "Dunya's little mirror",
+   "draft": true
+  },
+  "O3.dunya_mirror.look": {
+   "text": "A little mirror in a wooden frame. It doesn't show the parlour — it shows Dunya's stove. And the armchair.",
+   "draft": true
+  },
+  "O3.notebooks.label": {
+   "text": "Aunt's notebooks",
+   "draft": true
+  },
+  "O3.notebooks.look": {
+   "text": "A stack of notebooks, filled in Dunya's hand. How much she wrote…",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "A stack of notebooks, filled in Dunya's hand. How much she wrote…"
+   }
+  },
+  "O3.notebooks.use": {
+   "text": "Eighteen years trying to restore the road. So many notebooks… Every one filled in her own hand.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Eighteen years trying to restore the road. So many notebooks… Every one filled in her own hand."
+   }
+  },
+  "O3.notebooks.school_path_late": {
+   "text": "The school path disappeared after Dunya was gone. Last winter.",
+   "draft": true,
+   "line": {
+    "speaker": "nina",
+    "text": "The school path disappeared after Dunya was gone. Last winter."
+   }
+  },
+  "O3.notebooks.again": {
+   "text": "Dunya's notebooks. I'll read them again.",
+   "direction": {
+    "emotion": "тепло",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-54"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Dunya's notebooks. I'll read them again."
+   }
+  },
+  "O3.notebooks.title": {
+   "text": "Dunya's notebooks",
+   "draft": true
+  },
+  "O3.notebooks.title_paths": {
+   "text": "The lost paths",
+   "draft": true
+  },
+  "O3.notebooks.title_rule": {
+   "text": "The rule",
+   "draft": true
+  },
+  "O3.notebooks.title_stopper": {
+   "text": "The far rope clamp",
+   "draft": true
+  },
+  "O3.notebooks.title_bridge": {
+   "text": "Last notebook: the bridge",
+   "draft": true
+  },
+  "O3.notebooks.paper_paths": {
+   "text": "They vanished in order: in the tenth winter, the path to the old pasture. No one had used it even before the trouble, so it went first. Then the path to the spring; the gardens behind the bathhouse.\nA road lasts longer if people walk it.",
+   "draft": true
+  },
+  "O3.notebooks.paper_rule": {
+   "text": "The world forgets a place with no road to it: time races, paths vanish. Zarechye has other roads. We have none.\nA road is held from both ends.\nI don't know why. I only know it holds.\n\nFrom the little mirror: a day for us is a little over an hour for them.",
+   "draft": true
+  },
+  "O3.notebooks.paper_stopper": {
+   "text": "Pass the far end of the rope through the old ring on the far pier. Secure the rope clamp with a wedge, as drawn. A two-person job. Ilya and Mitya fitted it — it holds.\nThe near end is the plate at the bend. We cannot reach it from our side.",
+   "draft": true
+  },
+  "O3.notebooks.paper_bridge": {
+   "text": "Build the bridge on the old piers. Once the road returns: without it we cannot reach the near pier.\nSet the spans higher than before, to let the flood pass beneath. Fasten the beams to the plates' rings: a road remembers its fastenings, not its planks.",
+   "draft": true
+  },
+  "O3.village_list.label": {
+   "text": "Village list",
+   "draft": true
+  },
+  "O3.village_list.look": {
+   "text": "The names of the whole village, on one sheet. Mama wrote them down.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The names of the whole village, on one sheet. Mama wrote them down."
+   }
+  },
+  "O3.village_list.use": {
+   "text": "Twenty-two alive. Fifteen of the original eighteen remain; seven were born here. Three died. Dunya among them.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Twenty-two alive. Fifteen of the original eighteen remain; seven were born here. Three died. Dunya among them."
+   }
+  },
+  "O3.village_list.again": {
+   "text": "The residents' list. Twenty-two people alive.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The residents' list. Twenty-two people alive."
+   }
+  },
+  "O3.village_list.title": {
+   "text": "Village list",
+   "draft": true
+  },
+  "O3.village_list.title_paper": {
+   "text": "Olkhovka. Who is here",
+   "draft": true
+  },
+  "O3.village_list.paper_list": {
+   "text": "Living — 22.\nOf the original 18, 15 remain: Nina, Ilya, Mitya, the manager, Savely, Aksinya…\nBorn here — 7: Ulyana and six others.\nDied — 3. Dunya, aged 72.\n\nUpdated this winter.",
+   "draft": true
+  },
+  "O3.notches.label": {
+   "text": "Notches on the door jamb",
+   "draft": true
+  },
+  "O3.notches.look": {
+   "text": "Yearly notches — someone else's height. Ulyana was measured every year. Mine were here too, lower down.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Yearly notches — someone else's height. Ulyana was measured every year. Mine were here too, lower down."
+   }
+  },
+  "O3.notches.title": {
+   "text": "Height marks",
+   "draft": true
+  },
+  "O3.window.label": {
+   "text": "Window",
+   "draft": true
+  },
+  "O3.window.look": {
+   "text": "Snow outside. Twenty winters spent apart. This is the first we'll share.",
+   "draft": true
+  },
+  "O3.icon.label": {
+   "text": "Icon shelf",
+   "draft": true
+  },
+  "O3.icon.look": {
+   "text": "An embroidered towel hangs by the icon, and the little oil lamp is lit.",
+   "draft": true
+  },
+  "O3.exit_O4.label": {
+   "text": "Outside",
+   "draft": true
+  },
+  "E4.M23d.prompt": {
+   "text": "Who should tell Tikhon about Dunya?",
+   "draft": true
+  },
+  "E4.M23d.opt_agata": {
+   "text": "I'll tell him",
+   "draft": true
+  },
+  "E4.M23d.opt_nina": {
+   "text": "Let Mama tell him",
+   "draft": true
+  },
+  "E5.windlass.title": {
+   "text": "First beam: signal to Ilya",
+   "draft": true
+  },
+  "E5.windlass.label_board": {
+   "text": "Signal to Ilya:",
+   "_k0111": "Директор 01.11, стр. 71 («подпись в мини-игре — „Дощечка Пелагеи“ — это что и к чему»): подпись над тремя знаками говорит, что они делают; что дощечку принесла Пелагея — сказано во вступлении («Пелагея дощечку с сигналами принесла»). Было: «Дощечка Пелагеи»",
+   "draft": true
+  },
+  "E5.windlass.label_hint": {
+   "text": "The far end of the beam must rest on the plate's ring. Call \"Stop\" when it reaches the mark.",
+   "draft": true
+  },
+  "E5.windlass.label_signal_lower": {
+   "text": "Go",
+   "draft": true
+  },
+  "E5.windlass.label_signal_stop": {
+   "text": "Stop",
+   "draft": true
+  },
+  "E5.windlass.label_signal_raise": {
+   "text": "Raise",
+   "draft": true
+  },
+  "E5.windlass.label_call_lower": {
+   "text": "Agata: \"Go!\"",
+   "draft": true
+  },
+  "E5.windlass.voice_call_lower": {
+   "text": "Go!",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Go!"
+   }
+  },
+  "E5.windlass.label_call_stop": {
+   "text": "Agata: \"Stop!\"",
+   "draft": true
+  },
+  "E5.windlass.voice_call_stop": {
+   "text": "Stop!",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Stop!"
+   }
+  },
+  "E5.windlass.label_call_raise": {
+   "text": "Agata: \"Raise!\"",
+   "draft": true
+  },
+  "E5.windlass.voice_call_raise": {
+   "text": "Raise!",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Raise!"
+   }
+  },
+  "E5.windlass.label_reply_lower": {
+   "text": "Ilya: \"Here it goes…\"",
+   "draft": true
+  },
+  "E5.windlass.voice_reply_lower": {
+   "text": "Here it goes…",
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "Here it goes…"
+   }
+  },
+  "E5.windlass.label_reply_stop": {
+   "text": "Ilya: \"Holding!\"",
+   "draft": true
+  },
+  "E5.windlass.voice_reply_stop": {
+   "text": "Holding!",
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "Holding!"
+   }
+  },
+  "E5.windlass.label_reply_raise": {
+   "text": "Ilya: \"Pulling!\"",
+   "draft": true
+  },
+  "E5.windlass.voice_reply_raise": {
+   "text": "Pulling!",
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "Pulling!"
+   }
+  },
+  "E5.windlass.label_reply_wait": {
+   "text": "Ilya is waiting for another signal.",
+   "draft": true
+  },
+  "E5.windlass.label_reply_bump": {
+   "text": "Ilya: \"Hit the stone! Not the ring. Raise it — we'll try again.\"",
+   "draft": true
+  },
+  "E5.windlass.label_gauge": {
+   "text": "by the ring",
+   "draft": true
+  },
+  "E5.windlass.label_stone": {
+   "text": "stone",
+   "draft": true
+  },
+  "E5.windlass.bump": {
+   "text": "Hit the stone! Missed the ring. Raise it — we'll try again.",
+   "draft": true,
+   "_k0211b": "Директор 02.11 вечер, № 22 («„О камень“ — интонация, запятой быть не должно»): голос читал «О, камень…» как возглас; порядок слов — «Стукнулось о камень!» (как в подсказке рассказчика), перезапись K35",
+   "line": {
+    "speaker": "ilya",
+    "text": "Hit the stone! Missed the ring. Raise it — we'll try again."
+   }
+  },
+  "E5.windlass.laid": {
+   "text": "The beam settles onto the old plate's ring. Just where the bridge beam rested before the flood.",
+   "draft": true
+  },
+  "E5.M25.prompt": {
+   "text": "What shall I carve on the end?",
+   "draft": true
+  },
+  "E5.M25.opt_dunya": {
+   "_i_t1": "D5 (Директор 25.10): вырезка «Агата» вместо «Дуня»; id варианта и флаг beam_dunya оставлены — на них стоят сохранения, ачивка и кадр EP_beam",
+   "text": "\"Agata\"",
+   "draft": true
+  },
+  "E5.M25.opt_roads": {
+   "text": "\"Olkhovka — Zarechye\"",
+   "draft": true
+  },
+  "E5.M25.opt_date": {
+   "text": "The date",
+   "draft": true
+  },
+  "E5.M25.opt_blank": {
+   "text": "Nothing",
+   "draft": true
+  },
+  "R1d.pelageya.shuttle": {
+   "text": "Get in; I'll take you across. Hold on, though. Come and go all day if you like.",
+   "draft": true,
+   "line": {
+    "speaker": "pelageya",
+    "text": "Get in; I'll take you across. Hold on, though. Come and go all day if you like."
+   }
+  },
+  "M4d.pavel.after_bridge": {
+   "text": "I'll keep the water low while you lay the spans, so it won't get in the way. Once the last is down, I'll refill the pond before it freezes.",
+   "draft": true,
+   "line": {
+    "speaker": "pavel",
+    "text": "I'll keep the water low while you lay the spans, so it won't get in the way. Once the last is down, I'll refill the pond before it freezes."
+   }
+  },
+  "EP.place_bridge": {
+   "text": "The bridge",
+   "draft": true
+  },
+  "EP.beam.written_dunya": {
+   "text": "Agata",
+   "draft": true
+  },
+  "EP.beam.written_roads": {
+   "text": "Olkhovka —\nZarechye",
+   "draft": true
+  },
+  "EP.beam.written_date": {
+   "text": "26 October",
+   "draft": true
+  },
+  "EP.lesson.written_date": {
+   "text": "16 November",
+   "draft": true
+  },
+  "O1d.board.written_answer_here": {
+   "text": "So was I. All twenty years. Mama",
+   "draft": true
+  },
+  "O1d.board.written_answer_mama": {
+   "text": "At last",
+   "draft": true
+  },
+  "O1d.board.written_answer_ilya": {
+   "text": "He still draws boats with smoke. Mama",
+   "draft": true
+  },
+  "O1d.board.written_answer_date": {
+   "text": "25 October",
+   "draft": true
+  },
+  "O1d.nina.after": {
+   "text": "No lessons today. Everyone's outside. We'll start tomorrow.",
+   "draft": true,
+   "line": {
+    "speaker": "nina",
+    "text": "No lessons today. Everyone's outside. We'll start tomorrow."
+   }
+  },
+  "O1d.ulyana.after": {
+   "text": "All right. I'll draw something else on the bird.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "All right. I'll draw something else on the bird."
+   }
+  },
+  "O1d.ulyana.prompt": {
+   "text": "What shall I ask Ulyana?",
+   "draft": true
+  },
+  "O1d.ulyana.opt_hat": {
+   "text": "The bird in the cap",
+   "draft": true
+  },
+  "O1d.ulyana.hat_q": {
+   "text": "Agata, did you draw the bird's cap? Really? I thought it had always had one.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "Agata, did you draw the bird's cap? Really? I thought it had always had one."
+   }
+  },
+  "O1d.ulyana.hat_a": {
+   "text": "I did. I was eight, just like you. Mama saw it, but didn't rub it off. Let the bird be warm, she said.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I did. I was eight, just like you. Mama saw it, but didn't rub it off. Let the bird be warm, she said."
+   }
+  },
+  "O1d.ulyana.hat_b": {
+   "text": "I drew its boots. Granny left those, too. That makes it our bird — yours and mine.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "I drew its boots. Granny left those, too. That makes it our bird — yours and mine."
+   }
+  },
+  "O1d.ulyana.opt_lights": {
+   "text": "How you waited here",
+   "draft": true
+  },
+  "O1d.ulyana.lights_q": {
+   "text": "Uncle Mitya took a lantern to the pier every evening. I thought he was talking to the river.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "Uncle Mitya took a lantern to the pier every evening. I thought he was talking to the river."
+   }
+  },
+  "O1d.ulyana.lights_a": {
+   "text": "He was waiting for a light from our bank. All twenty of your years.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "He was waiting for a light from our bank. All twenty of your years."
+   }
+  },
+  "O1d.ulyana.lights_b": {
+   "text": "Only a year passed for you? Granny says time is the same for everyone now. Does that mean no one will get lost for twenty years again?",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "Only a year passed for you? Granny says time is the same for everyone now. Does that mean no one will get lost for twenty years again?"
+   }
+  },
+  "O1d.ulyana.lights_c": {
+   "text": "Not again, Ulya. I promise.",
+   "direction": {
+    "emotion": "тепло, твёрдо",
+    "pace": "неторопливо",
+    "takes": 1,
+    "map": [
+     "J-175"
+    ]
+   },
+   "draft": true,
+   "_j": "J-A8 (Директор 29.10, стр. 175): Агата отвечает Ульяне",
+   "line": {
+    "speaker": "agata",
+    "text": "Not again, Ulya. I promise."
+   }
+  },
+  "O1d.ulyana.opt_leave": {
+   "text": "That's all.",
+   "draft": true
+  },
+  "O4.mitya.prompt": {
+   "text": "What shall I talk to Mitya about?",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "_j": "J (часть G, Директор 25.10 / 29.10: бечёвка с Митей — рыбалка с натяжением, на конце — рыба); черновик Claude — на утверждение"
+  },
+  "O4.mitya.opt_fish": {
+   "text": "Shall we fish?",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
+  },
+  "O4.mitya.opt_leave": {
+   "text": "That's all.",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
+  },
+  "O4.mitya.fish_q": {
+   "text": "Mitya, do you fish?",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "agata",
+    "text": "Mitya, do you fish?"
+   }
+  },
+  "O4.mitya.fish_a": {
+   "text": "Of course! Sit beside me. I'll show you how we catch perch here.",
+   "_k": "Утренняя страница 01.11 (Директор 01:02, «Рыбалка», вариант А): в свободный день Митя с удочкой на мостках дальней опоры, у воды; Агата подходит, рыбачат там же — без затемнения и крупного плана, игра в одно действие (поплавок нырнул — щёлкнуть), окунь сразу (было «Пойдём к причалу» — теперь они уже на мостках; перезапись K16)",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "mitya",
+    "text": "Of course! Sit beside me. I'll show you how we catch perch here."
+   }
+  },
+  "O4.mitya.fish_bye": {
+   "text": "Come again. Fish aren't in a hurry — neither are we.",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "mitya",
+    "text": "Come again. Fish aren't in a hurry — neither are we."
+   }
+  },
+  "O1d.ulyana.opt_ttt": {
+   "text": "Play noughts and crosses?",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "_j": "J (часть G, Директор 25.10 / 29.10: крестики-нолики с Ульяной — мелом, рукой); черновик Claude — на утверждение"
+  },
+  "O1d.ulyana.ttt_q": {
+   "text": "Ulya, shall we play noughts and crosses? In chalk, right on the board.",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "agata",
+    "text": "Ulya, shall we play noughts and crosses? In chalk, right on the board."
+   }
+  },
+  "O1d.ulyana.ttt_a": {
+   "text": "Yes! I get noughts. You have crosses, so you go first.",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "ulyana",
+    "text": "Yes! I get noughts. You have crosses, so you go first."
+   }
+  },
+  "O1d.ulyana.ttt_bye": {
+   "text": "All right. We'll play again tomorrow — and I'll go first!",
+   "draft": false,
+   "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
+   "line": {
+    "speaker": "ulyana",
+    "text": "All right. We'll play again tomorrow — and I'll go first!"
+   }
+  },
+  "O2d.mitten_path.label": {
+   "text": "Mitten on the path",
+   "draft": true
+  },
+  "O2d.mitten_path.take": {
+   "text": "Agata picks up her mitten without a word. Beyond the gate, the path leads home now.",
+   "draft": true
+  },
+  "O2d.mitten_path.look": {
+   "text": "The mitten lies where Agata left it. But beyond the gate, the road has changed.",
+   "draft": true
+  },
+  "H1d.nina.after": {
+   "text": "I'll sit here. Dunya always put the kettle on when I came.",
+   "draft": true,
+   "line": {
+    "speaker": "nina",
+    "text": "I'll sit here. Dunya always put the kettle on when I came."
+   }
+  },
+  "O4.mitya_board.label": {
+   "text": "Mitya's board",
+   "draft": true
+  },
+  "O4.mitya_board.look": {
+   "text": "A little notched board — Mitya's.",
+   "draft": true
+  },
+  "O4.mitya_board.title": {
+   "text": "Twenty notches",
+   "draft": true
+  },
+  "O4.mitya_board.use": {
+   "text": "Twenty notches — one for every winter Mitya stood by the lantern. I should give it to him.",
+   "direction": {
+    "emotion": "тихо",
+    "pace": "неторопливо",
+    "takes": 1,
+    "map": [
+     "R3-56"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Twenty notches — one for every winter Mitya stood by the lantern. I should give it to him."
+   },
+   "_k57": "Директор 01.11, стр. 57: дощечку озвучивал Митя, а его у забора нет (он на мостках с удочкой) — читает Агата; куда дощечку — решается с Митей на мостках (R3)"
+  },
+  "R3.mitya.opt_board_keep": {
+   "text": "Keep your board from the fence",
+   "draft": true
+  },
+  "R3.mitya.opt_board_mother": {
+   "text": "Give your mother the board from the fence",
+   "draft": true
+  },
+  "O4.mitya_board.prompt": {
+   "text": "What should happen to the board?",
+   "draft": true
+  },
+  "O4.mitya_board.opt_keep": {
+   "text": "Keep it",
+   "draft": true
+  },
+  "O4.mitya_board.opt_mother": {
+   "text": "To your mother",
+   "draft": true
+  },
+  "O4.letters_bag.label": {
+   "text": "Tamara's sack",
+   "draft": true
+  },
+  "O4.letters_bag.look": {
+   "text": "A year's worth of letters. The sack is almost empty.",
+   "draft": true
+  },
+  "O4.letters_bag.title": {
+   "text": "Letter to an old address",
+   "draft": true
+  },
+  "O4.letters_bag.use": {
+   "text": "A letter for Aksinya from her brother. But the house at this address is gone. Gone twenty years.",
+   "direction": {
+    "emotion": "грустно",
+    "pace": "неторопливо",
+    "takes": 1,
+    "map": [
+     "R3-58"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "tamara",
+    "text": "A letter for Aksinya from her brother. But the house at this address is gone. Gone twenty years."
+   }
+  },
+  "O4.letters_bag.paper_address": {
+   "text": "Olkhovka, by the mill bridge,\nthe Prokhorovs' house —\nfor Aksinya Prokhorova\nfrom her brother",
+   "draft": true
+  },
+  "O4.letters_bag.prompt": {
+   "text": "How will Aksinya get her letters now?",
+   "draft": true
+  },
+  "O4.letters_bag.opt_nina": {
+   "text": "Through Mama — she knows where Aksinya lives now",
+   "draft": true
+  },
+  "O4.letters_bag.opt_gallery": {
+   "text": "The gallery box — Tamara will bring them on Wednesdays",
+   "draft": true
+  },
+  "O3.nina.ribbon": {
+   "text": "Mama's ribbon. Nina weaves it into Agata's braid without a word — as she used to on feast days.",
+   "draft": true
+  },
+  "O3.nina.ribbon_again": {
+   "text": "The ribbon in my braid. Just as before.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The ribbon in my braid. Just as before."
+   }
+  },
+  "O3.nina_letters.label": {
+   "text": "Mama's letters",
+   "draft": true
+  },
+  "O3.nina_letters.look": {
+   "text": "A bundle of letters tied with string on the chest of drawers. My name on every one.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "A bundle of letters tied with string on the chest of drawers. My name on every one."
+   }
+  },
+  "O3.nina_letters.use": {
+   "text": "Mama wrote to me every winter. Twenty letters, with nowhere to send them.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Mama wrote to me every winter. Twenty letters, with nowhere to send them."
+   }
+  },
+  "O3.nina_letters.again": {
+   "text": "Mama's letters from twenty winters.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Mama's letters from twenty winters."
+   }
+  },
+  "O3.nina_letters.title": {
+   "text": "Nina's letters",
+   "draft": true
+  },
+  "O3.nina_letters.title_bundle": {
+   "text": "Twenty letters",
+   "draft": true
+  },
+  "O3.nina_letters.title_first": {
+   "text": "The first winter",
+   "draft": true
+  },
+  "O3.nina_letters.title_tenth": {
+   "text": "The tenth winter",
+   "draft": true
+  },
+  "O3.nina_letters.title_last": {
+   "text": "The last — three weeks ago",
+   "draft": true
+  },
+  "O3.nina_letters.paper_first": {
+   "text": "Agata, my girl.\nThe bridge is gone; the boats cannot get across. Ilyusha runs to the pier every day and looks towards your bank. It is dark there.\nDunya is with me. She says the school door is still in her workshop. If you find it, come to the classroom. I will be there every morning.\nMama",
+   "draft": true
+  },
+  "O3.nina_letters.paper_tenth": {
+   "text": "Agata.\nThe tenth winter has begun. Ilya is twenty-two. He is rebuilding Mitya's shed by the pier; the old one had sagged badly. The path to the old pasture is gone. Dunya says no one used it even before the trouble.\nFor you, perhaps not even half a year has passed. I think of it every day, but I cannot work it out.\nMama",
+   "draft": true
+  },
+  "O3.nina_letters.paper_last": {
+   "text": "Agata, my girl!\nThis evening I saw you in Dunya's little mirror. Asleep by her stove, with Tikhon beside you. You have not changed a bit.\nI will give Mitya the ribbon. If the lights come, he can send it.\nI am waiting for you, my dear.\nMama",
+   "draft": true
+  },
+  "H1d.nina_coat.label": {
+   "text": "Dunya's coat",
+   "draft": true
+  },
+  "H1d.nina_coat.look": {
+   "text": "Her coat on Dunya's own hook. Mama brought it home from Olkhovka.",
+   "draft": true
+  },
+  "H1d.nina_coat.look_done": {
+   "_k27": "Директор 01.11, «Семнадцатый заход» W238: «изменить фразу, не выходит нужный акцент» — «зашит» в конец фразы. Было: «На своём крючке Дунино пальто висит. Зашит рукав.»",
+   "text": "Dunya's coat hangs on its own hook. The sleeve is mended now.",
+   "draft": true
+  },
+  "H1d.nina_coat.title": {
+   "text": "Sleeve",
+   "draft": true
+  },
+  "H1d.nina_coat.use": {
+   "text": "The sleeve seam's split. I'll mend it — it should hang here at home, in one piece.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "The sleeve seam's split. I'll mend it — it should hang here at home, in one piece."
+   }
+  },
+  "H1d.nina_coat.prompt": {
+   "text": "How shall I mend it?",
+   "draft": true
+  },
+  "H1d.nina_coat.opt_seam": {
+   "text": "An invisible seam",
+   "draft": true
+  },
+  "H1d.nina_coat.opt_patch": {
+   "text": "A patch — Ulyana can draw a bird on it",
+   "draft": true
+  },
+  "H1d.tea_corner.label": {
+   "text": "Tea",
+   "draft": true
+  },
+  "H1d.tea_corner.look": {
+   "text": "Dunya's kettle is on the windowsill. Mama is here; we could have some tea.",
+   "draft": true
+  },
+  "H1d.tea_corner.go_home": {
+   "text": "Dunya's kettle went on the stove. We called the family to tea — Tamara and Ulyana came, too.",
+   "direction": {
+    "emotion": "тепло",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-60"
+    ]
+   },
+   "draft": true
+  },
+  "H1d.tea_corner.go_all": {
+   "text": "We took Dunya's kettle to Mama's parlour. Everyone who came outside was invited to tea.",
+   "direction": {
+    "emotion": "тепло",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-61"
+    ]
+   },
+   "draft": true
+  },
+  "H1d.tea_corner.prompt": {
+   "text": "Where shall we have our first tea together?",
+   "draft": true
+  },
+  "H1d.tea_corner.opt_home": {
+   "text": "Here, by Aunt's stove — just our own",
+   "draft": true
+  },
+  "H1d.tea_corner.opt_all": {
+   "text": "Mama's parlour — everyone who comes outside",
+   "draft": true
+  },
+  "ach.title_board": {
+   "text": "Mama's reply on the blackboard",
+   "draft": true
+  },
+  "ach.title_mitten": {
+   "text": "My mitten on the road home",
+   "draft": true
+  },
+  "ach.title_bird": {
+   "text": "Poster bird: cap, boots and my drawing",
+   "draft": true
+  },
+  "ach.title_promise": {
+   "text": "My word to Pavel kept",
+   "draft": true
+  },
+  "ach.title_family": {
+   "text": "\"My mother and brother are there\" — Pavel understood",
+   "draft": true
+  },
+  "ach.title_tikhon_nina": {
+   "text": "Tikhon calls Mama the mistress",
+   "draft": true
+  },
+  "ach.title_tikhon_agata": {
+   "text": "Tikhon sleeps by Agata's ledge",
+   "draft": true
+  },
+  "ach.title_beam": {
+   "text": "An inscription on the first beam",
+   "draft": true
+  },
+  "ach.title_cup": {
+   "text": "Mama recognised her cup",
+   "draft": true
+  },
+  "ach.title_ribbon": {
+   "text": "Mama's ribbon in my braid again",
+   "draft": true
+  },
+  "ach.title_letters": {
+   "text": "Letters from twenty winters",
+   "draft": true
+  },
+  "ach.title_q01": {
+   "text": "Aksinya gets her brother's letters",
+   "draft": true
+  },
+  "ach.title_q03": {
+   "text": "Dunya's coat sleeve mended",
+   "draft": true
+  },
+  "ach.title_q04": {
+   "text": "Tikhon has his own shelf",
+   "draft": true
+  },
+  "ach.title_q07": {
+   "text": "Mitya's twenty notches",
+   "draft": true
+  },
+  "ach.title_q08": {
+   "text": "Our first tea together",
+   "draft": true
+  }
+ }
+}

@@ -1,0 +1,1761 @@
+{
+ "id": "O1",
+ "_art": "Фон O1_bg.png (зимний класс): доска, учительский стол с ящиком (мелки на нём убраны заплаткой; мел — на левой парте, слой chalk_desk), мешок у левой двери, тетради на лавке справа, картинка с птицей, две двери (левая — обратно в H3, правая — на крыльцо). Слой O1_fg_desks.png — парты на переднем плане (окклюдер z=1080, пол перед ними не проходим). Состояние O1_state_board_written.png — надпись мелом «Я была здесь. Агата» при board_here; две другие надписи — заглушки текстом (board_mama, board_ilya). Учительский ящик — фото моста, рисунок Ильи, план переправы (M07, 22.10).",
+ "art_source": {
+  "_bird_j": "J (Директор 29.10, стр. 53 и 19:19): state_bird_doodles.png и state_bird_add_scarf.png пишет tools/make_bird_layers.py из поставки партии 9 (шапка и сапоги по месту, шарф видимый) — tools/import_room_art.py их не трогает",
+  "files": {
+   "state_board_mama.png": "assets/incoming/O1_state_board_mama.png",
+   "state_board_ilya.png": "assets/incoming/O1_state_board_ilya.png",
+   "state_village_map.png": "assets/incoming/O1_state_village_map.png",
+   "state_answer_here.png": "assets/incoming/O1_state_answer_here.png",
+   "state_answer_mama.png": "assets/incoming/O1_state_answer_mama.png",
+   "state_answer_ilya.png": "assets/incoming/O1_state_answer_ilya.png",
+   "state_date.png": "assets/incoming/O1_state_date.png",
+   "state_sign.png": "assets/incoming/O1_state_sign.png",
+   "state_bird_add_boat.png": "assets/incoming/O1_state_bird_add_boat.png",
+   "state_bird_add_bridge.png": "assets/incoming/O1_state_bird_add_bridge.png",
+   "state_bird_reply_scarf.png": "assets/incoming/O1_state_bird_reply_scarf.png",
+   "state_bird_reply_boat.png": "assets/incoming/O1_state_bird_reply_boat.png",
+   "state_bird_reply_bridge.png": "assets/incoming/O1_state_bird_reply_bridge.png"
+  },
+  "canvas": [
+   1672,
+   941
+  ],
+  "alpha_min": 0,
+  "_note": "Партия 7 (ChatGPT 22.10, assets/incoming/_meta_p7/README_RU.txt): две надписи мелом — полные холсты 1672×940 к O1_bg (дополняются до 941 прозрачной строкой снизу), (0,0) 1:1, мягкий мел — alpha_min 0. Копии — tools/import_room_art.py O1 (только эти два файла)"
+ },
+ "background": {
+  "kind": "interior",
+  "image": "res://assets/rooms/O1/bg.png",
+  "wall": "#5a6c80",
+  "floor": "#6f7d8c",
+  "accent": "#8aa0b8",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   20,
+   1070
+  ],
+  [
+   20,
+   812
+  ],
+  [
+   330,
+   730
+  ],
+  [
+   345,
+   738
+  ],
+  [
+   462,
+   738
+  ],
+  [
+   470,
+   700
+  ],
+  [
+   540,
+   700
+  ],
+  [
+   540,
+   752
+  ],
+  [
+   900,
+   752
+  ],
+  [
+   900,
+   700
+  ],
+  [
+   1495,
+   700
+  ],
+  [
+   1495,
+   742
+  ],
+  [
+   1745,
+   742
+  ],
+  [
+   1745,
+   700
+  ],
+  [
+   1830,
+   700
+  ],
+  [
+   1915,
+   765
+  ],
+  [
+   1915,
+   1070
+  ],
+  [
+   1825,
+   1070
+  ],
+  [
+   1825,
+   830
+  ],
+  [
+   345,
+   830
+  ],
+  [
+   345,
+   1070
+  ]
+ ],
+ "no_walk_samples": [
+  [
+   700,
+   950,
+   "парта"
+  ],
+  [
+   1400,
+   950,
+   "парта"
+  ],
+  [
+   1050,
+   900,
+   "проход между партами"
+  ],
+  [
+   700,
+   725,
+   "учительский стол"
+  ],
+  [
+   1600,
+   715,
+   "лавка с тетрадями"
+  ],
+  [
+   400,
+   705,
+   "мешок"
+  ]
+ ],
+ "walk_samples": [
+  [
+   1000,
+   740
+  ],
+  [
+   1760,
+   740
+  ],
+  [
+   490,
+   745
+  ],
+  [
+   640,
+   780
+  ],
+  [
+   1100,
+   790
+  ],
+  [
+   1870,
+   1000
+  ],
+  [
+   150,
+   1000
+  ]
+ ],
+ "depth": {
+  "top_y": 700,
+  "bottom_y": 1070,
+  "scale_top": 1.4,
+  "scale_bottom": 2.08
+ },
+ "_depth_note": "D3 (координатор 23.10): у порога школьной двери (y 690, по прямой глубины) Агата 0,87 её высоты (477 px; дверь — 1,9 м), у учительского стола −4 % от его ориентира (0,78 м = 233 px). Наклон прямой — прежний (парты у переднего края: крутая перспектива через горизонт делала Агату крупнее парт перед ней). Было 1.3→2.0, стало 1.4→2.08. Рост Агаты = 345 px × масштаб.",
+ "height_refs": [
+  {
+   "what": "дверь в галерею (полотно)",
+   "y": 690,
+   "px": 550,
+   "m": 1.9,
+   "door": true
+  },
+  {
+   "what": "учительский стол (ножки y 688)",
+   "y": 688,
+   "px": 233,
+   "m": 0.78
+  }
+ ],
+ "layers": [
+  {
+   "id": "board_written",
+   "image": "res://assets/rooms/O1/state_board_written.png",
+   "if": [
+    "board_here"
+   ],
+   "_note": "надпись «Я была здесь. Агата» — нарисована (ChatGPT v1)"
+  },
+  {
+   "id": "board_mama",
+   "image": "res://assets/rooms/O1/state_board_mama.png",
+   "if": [
+    "board_mama"
+   ],
+   "_note": "партия 7: «Мама, я иду» мелом (одна строка); выбор на доске один — надпись board_written и вторая надпись при этом не рисуются (флаги взаимоисключающие, проверка tools/validate_rooms.py)"
+  },
+  {
+   "id": "board_ilya",
+   "image": "res://assets/rooms/O1/state_board_ilya.png",
+   "if": [
+    "board_ilya"
+   ],
+   "_note": "партия 7: «Илюша, / я нашла твой рисунок» мелом (две строки)"
+  },
+  {
+   "id": "teacher_chalk_patch",
+   "image": "res://assets/rooms/O1/patch_teacher_chalk.png",
+   "_note": "18.10: мелки, нарисованные на учительском столе фона, убраны заплаткой из окрестной текстуры (tools/make_items_layers.py, cv2.inpaint) — мел один, на парте"
+  },
+  {
+   "id": "chalk_desk",
+   "image": "res://assets/rooms/O1/state_chalk_desk.png",
+   "unless": [
+    "has_chalk"
+   ],
+   "occluder": true,
+   "z": 1081,
+   "_note": "Директор 18.10: «мел … положить на ученический стол, чтобы было видно». Кусочек мела на левой парте переднего плана, с тенью, масштаб парты; поверх парт (1080), пока не взят"
+  },
+  {
+   "id": "bird_doodles",
+   "image": "res://assets/rooms/O1/state_bird_doodles.png",
+   "_i_t3": "I-T3 (партия 10г): выцветшая синяя шапка и приглушённые сапоги в самом рисунке (O1_state_bird_doodles_v2); слой bird_boots_mute снят",
+   "_note": "G37 (партия 9, O1_state_bird_doodles: шапка [1350,185,1396,214), сапоги [1336,268,1378,300) фона): у синицы на плакате шапка (Агата, давно) и сапоги (Ульяна) — базовый слой, всегда"
+  },
+  {
+   "id": "bird_add_scarf",
+   "image": "res://assets/rooms/O1/state_bird_add_scarf.png",
+   "if": [
+    "v03_add_scarf"
+   ],
+   "_note": "G37: Агата пририсовала синице полосатый шарф (V03, v03_add_scarf) — партия 9, O1_state_bird_add_scarf, (0,0) 1:1; один вариант за раз (флаги v03_add_* взаимоисключающие — выбор V03)"
+  },
+  {
+   "id": "bird_add_boat",
+   "image": "res://assets/rooms/O1/state_bird_add_boat.png",
+   "if": [
+    "v03_add_boat"
+   ],
+   "_note": "G37: Агата пририсовала лодочку с трубой и дымом, как рисовал Илья (v03_add_boat) — партия 9, O1_state_bird_add_boat, (0,0) 1:1; один вариант за раз (флаги v03_add_* взаимоисключающие — выбор V03)"
+  },
+  {
+   "id": "bird_add_bridge",
+   "image": "res://assets/rooms/O1/state_bird_add_bridge.png",
+   "if": [
+    "v03_add_bridge"
+   ],
+   "_note": "G37: Агата пририсовала мостик на каменных опорах (v03_add_bridge) — партия 9, O1_state_bird_add_bridge, (0,0) 1:1; один вариант за раз (флаги v03_add_* взаимоисключающие — выбор V03)"
+  },
+  {
+   "id": "bird_mark",
+   "image": "res://assets/rooms/O1/state_bird_mark.png",
+   "if": [
+    "v03_marked"
+   ],
+   "_note": "G37: подпись Агаты карандашом у синицы («Агата», [1390,170,1430,189) фона) — ставится вместе с любым из трёх рисунков (v03_marked — also у вариантов V03); по README партии 9 исходная пометка остаётся поверх doodles и add_*"
+  },
+  {
+   "id": "nina_answer_here",
+   "image": "res://assets/rooms/O1/state_answer_here.png",
+   "if": [
+    "board_here",
+    "nina_answered_board"
+   ],
+   "_note": "Ответ Нины мелом под надписью дочери (M22): «И я. Все двадцать лет. Мама» — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): полный холст 1672×940 к O1_bg, (0,0)"
+  },
+  {
+   "id": "nina_answer_mama",
+   "scale": 1.5,
+   "scale_pivot": [
+    965,
+    363
+   ],
+   "scale_reason": "I-T2 (Директор, стр. 138): «Дождалась» крупнее — ×1,5 вокруг середины слова",
+   "image": "res://assets/rooms/O1/state_answer_mama.png",
+   "if": [
+    "board_mama",
+    "nina_answered_board"
+   ],
+   "_note": "Ответ Нины «Дождалась» под «Мама, я иду» (M22) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): полный холст 1672×940 к O1_bg, (0,0)"
+  },
+  {
+   "id": "nina_answer_ilya",
+   "image": "res://assets/rooms/O1/state_answer_ilya.png",
+   "if": [
+    "board_ilya",
+    "nina_answered_board"
+   ],
+   "_note": "Ответ Нины «Он и сейчас рисует / лодки с дымом. Мама» (M22), мелко — под надписью Агаты места мало (README 8) — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): полный холст 1672×940 к O1_bg, (0,0)"
+  },
+  {
+   "id": "nina_answer_date",
+   "image": "res://assets/rooms/O1/state_date.png",
+   "if": [
+    "nina_wrote_date"
+   ],
+   "_note": "Первое общее число вверху справа (M22, полировка A3): «25 октября», след стёртого Нининого числа еле виден — партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): полный холст 1672×940 к O1_bg, (0,0)"
+  },
+  {
+   "id": "bird_reply_scarf",
+   "image": "res://assets/rooms/O1/state_bird_reply_scarf.png",
+   "if": [
+    "v03_add_scarf",
+    "nina_answered_board"
+   ],
+   "_note": "G37: ответ Ульяны карандашом в левом верхнем углу плаката (M22) — по варианту Агаты (scarf) — партия 9, O1_state_bird_reply_scarf [1272,164,1345,236) фона; прежняя приписка O1_state_bird_reply («И я тут была») снята и вместе с новой не рисуется"
+  },
+  {
+   "id": "bird_reply_boat",
+   "image": "res://assets/rooms/O1/state_bird_reply_boat.png",
+   "if": [
+    "v03_add_boat",
+    "nina_answered_board"
+   ],
+   "_note": "G37: ответ Ульяны карандашом в левом верхнем углу плаката (M22) — по варианту Агаты (boat) — партия 9, O1_state_bird_reply_boat [1272,164,1345,236) фона; прежняя приписка O1_state_bird_reply («И я тут была») снята и вместе с новой не рисуется"
+  },
+  {
+   "id": "bird_reply_bridge",
+   "image": "res://assets/rooms/O1/state_bird_reply_bridge.png",
+   "if": [
+    "v03_add_bridge",
+    "nina_answered_board"
+   ],
+   "_note": "G37: ответ Ульяны карандашом в левом верхнем углу плаката (M22) — по варианту Агаты (bridge) — партия 9, O1_state_bird_reply_bridge [1272,164,1345,236) фона; прежняя приписка O1_state_bird_reply («И я тут была») снята и вместе с новой не рисуется"
+  },
+  {
+   "id": "village_map",
+   "image": "res://assets/rooms/O1/state_village_map.png",
+   "if": [
+    "done_M21b"
+   ],
+   "_note": "Q02 (Директор 23.10 11:51): старая школьная карта Ольховки под доской, между учительским столом и правым столиком (партия 8б, полный холст 1672×940 к O1_bg, (0,0); область x883–1063, y444–548 — README 8б). С утра третьего дня: Нина повесила её к уроку."
+  },
+  {
+   "id": "desks",
+   "image": "res://assets/rooms/O1/fg_desks.png",
+   "occluder": true,
+   "z": 1080
+  }
+ ],
+ "spawns": {
+  "default": [
+   1000,
+   740
+  ],
+  "from_H3": [
+   450,
+   760
+  ],
+  "from_O2": [
+   1760,
+   740
+  ]
+ },
+ "on_enter": [
+  {
+   "text": "@O1.enter.winter",
+   "once_flag": "o1_saw_winter",
+   "_note": "Первый вход в класс (Docs/SCENARIO_FINAL.md, M05–M06): за окном снег — «Там зима. А у нас ещё октябрь». Один раз (флаг в сохранении)"
+  }
+ ],
+ "props": [],
+ "hotspots": [
+  {
+   "id": "board",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@O1.board.label",
+   "rect": [
+    860,
+    170,
+    480,
+    310
+   ],
+   "stand": [
+    1100,
+    740
+   ],
+   "color": "#2e3e3a",
+   "draw": false,
+   "states": [
+    {
+     "if": [
+      "board_here"
+     ],
+     "label": "@O1.board.label_here"
+    },
+    {
+     "if": [
+      "board_mama"
+     ],
+     "label": "@O1.board.label_mama"
+    },
+    {
+     "if": [
+      "board_ilya"
+     ],
+     "label": "@O1.board.label_ilya"
+    }
+   ],
+   "use": {
+    "sets": [
+     "o1_seen_board_task"
+    ],
+    "text": "@O1.board.use",
+    "once_flag": "o1_seen_board_task",
+    "scene": "M06"
+   },
+   "item_use": {
+    "chalk": {
+     "choice": {
+      "prompt": "@O1.board.prompt",
+      "requires": {
+       "not_flags": [
+        "nina_answered_board"
+       ]
+      },
+      "fail_text": "@O1.board.chalk_late",
+      "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом: писать можно, пока мама не ответила (M22)",
+      "_note": "Надпись на доске (Docs/SCENARIO_FINAL.md, M08 и раздел 9): одна из трёх или ни одной — флаг на будущее (мать ответит в M22). Написанное расходует мел (остаётся у доски), «Не писать» оставляет его в сумке; «Илюша…» — только когда рисунок брата найден.",
+      "options": [
+       {
+        "id": "here",
+        "label": "@O1.board.opt_here",
+        "sets": "board_here",
+        "text": "@O1.board.chalk",
+        "consumes_item": true
+       },
+       {
+        "id": "mama",
+        "label": "@O1.board.opt_mama",
+        "sets": "board_mama",
+        "text": "@O1.board.chalk_mama",
+        "consumes_item": true
+       },
+       {
+        "id": "ilya",
+        "label": "@O1.board.opt_ilya",
+        "sets": "board_ilya",
+        "text": "@O1.board.chalk_ilya",
+        "consumes_item": true,
+        "requires": {
+         "items": [
+          "drawing_ilya"
+         ]
+        }
+       },
+       {
+        "id": "none",
+        "label": "@O1.board.opt_none",
+        "sets": "o1_board_left_blank",
+        "text": "@O1.board.chalk_none"
+       }
+      ]
+     },
+     "_consumes_note": "мел после надписи остаётся у доски (на полочке мелки уже нарисованы) — из сумки уходит"
+    }
+   },
+   "look": "@O1.board.look"
+  },
+  {
+   "id": "sack",
+   "action_anim": "pick_low",
+   "kind": "object",
+   "label": "@O1.sack.label",
+   "rect": [
+    330,
+    570,
+    130,
+    150
+   ],
+   "pick_priority": 2,
+   "stand": [
+    470,
+    760
+   ],
+   "color": "#8a7a5a",
+   "draw": false,
+   "use": {
+    "sets": [
+     "o1_seen_sack"
+    ],
+    "text": "@O1.sack.use",
+    "once_flag": "o1_seen_sack",
+    "scene": "M06"
+   },
+   "look": "@O1.sack.look"
+  },
+  {
+   "id": "notebooks",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@O1.notebooks.label",
+   "rect": [
+    1460,
+    480,
+    230,
+    190
+   ],
+   "stand": [
+    1560,
+    770
+   ],
+   "color": "#c8c0a8",
+   "draw": false,
+   "use": {
+    "sets": [
+     "o1_seen_notebooks"
+    ],
+    "text": "@O1.notebooks.use",
+    "once_flag": "o1_seen_notebooks",
+    "scene": "M06"
+   },
+   "look": "@O1.notebooks.look"
+  },
+  {
+   "id": "teacher_drawer",
+   "action_anim": "open",
+   "kind": "object",
+   "label": "@O1.teacher_drawer.label",
+   "rect": [
+    560,
+    500,
+    310,
+    110
+   ],
+   "stand": [
+    720,
+    780
+   ],
+   "color": "#5a4a3a",
+   "draw": false,
+   "states": [
+    {
+     "if": [
+      "has_plan_crossing"
+     ],
+     "label": "@O1.teacher_drawer.label_open"
+    }
+   ],
+   "use": {
+    "gives": [
+     "photo_bridge",
+     "drawing_ilya",
+     "plan_crossing"
+    ],
+    "text": "@O1.teacher_drawer.use",
+    "once_flag": "has_plan_crossing",
+    "scene": "M07",
+    "_requires_note": "G15 (Директор 23.10: «ящик не открывается до мешка и латки — непонятно почему»): условие «сначала два следа» в сюжете ничем не объяснялось (сценарий M06–M07: ящик просто стоит в классе) — снято. Ящик открывается сразу; план, правленный разными чернилами, сам и есть след — M06 завершается и им (scenes.M06 complete_when or), за ним M07. Прежний дефект D1 (ящик выдавал вещи, а M07 не шла) закрыт этим же: M07 больше не ждёт других следов"
+   },
+   "look": "@O1.teacher_drawer.look",
+   "view": {
+    "id": "teacher_drawer",
+    "type": "papers",
+    "close_label": "@ui.close",
+    "unless": [
+     "has_plan_crossing"
+    ],
+    "_note": "Крупный план ящика (M07) — открывается вместе с выдачей трёх вещей, текст ящика и сцена M07 идут поверх. Арт партии 2 (ChatGPT 22.10, 1672×941 — лист на столе; копии tools/import_closeups.py): снимок старого моста и детский рисунок Ильи слева, план справа крупно — текст игры (M07 дословно) в свободной нижней зоне листа (text_rect в пикселях исходника: x 150, y 625, 1360×245, README партии 2). После того как вещи взяты, ящик пуст — крупный план не открывается (unless).",
+    "pictures": [
+     {
+      "image": "res://assets/closeups/closeup_bridge_photo.png",
+      "rect": [
+       24,
+       100,
+       650,
+       0
+      ],
+      "angle_deg": -2.0
+     },
+     {
+      "image": "res://assets/closeups/closeup_ilya_drawing.png",
+      "rect": [
+       44,
+       470,
+       610,
+       0
+      ],
+      "angle_deg": 2.0
+     }
+    ],
+    "papers": [
+     {
+      "image": "res://assets/closeups/closeup_plan.png",
+      "image_size": [
+       1672,
+       941
+      ],
+      "text_rect": [
+       150,
+       625,
+       1360,
+       245
+      ],
+      "text": "@O1.teacher_drawer.paper_plan",
+      "rect": [
+       690,
+       96,
+       1210,
+       0
+      ],
+      "angle_deg": -0.8,
+      "font_size": 25,
+      "ink": "#2a2117",
+      "font": "hand",
+      "_font_note": "H8/H45: план «взрослой рукой» — рукописно (HandWriting)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "chalk",
+   "action_anim": "reach",
+   "kind": "pickup",
+   "label": "@O1.chalk.label",
+   "rect": [
+    584,
+    766,
+    58,
+    34
+   ],
+   "stand": [
+    612,
+    815
+   ],
+   "agata_face": [
+    612,
+    980
+   ],
+   "_face_j": "J (Директор 29.10, стр. 51): мел на передней парте — Агата за ней, берёт его лицом к экрану",
+   "color": "#f0f0e8",
+   "draw": false,
+   "_rect_note": "18.10: на левой парте (слой chalk_desk), было [590,470,90,30] — учительский стол, где мел терялся. Стоянка — в проходе за партами, прямо за мелом",
+   "hidden_if": [
+    "has_chalk"
+   ],
+   "use": {
+    "requires": {
+     "flags": [
+      "door_school_installed"
+     ]
+    },
+    "gives": [
+     "chalk"
+    ],
+    "text": "@O1.chalk.use",
+    "once_flag": "has_chalk"
+   },
+   "_use_k0211b": "Директор 02.11 вечер, № 5: мел — предмет парты (items.json source_hotspot O1.chalk), не сцены M08: сцена выдавала его при обходе тропы",
+   "look": "@O1.chalk.look"
+  },
+  {
+   "id": "nina",
+   "kind": "npc",
+   "label": "@char.nina",
+   "rect": [
+    1248,
+    247,
+    139,
+    488
+   ],
+   "stand": [
+    1100,
+    765
+   ],
+   "draw": false,
+   "pick_priority": 3,
+   "visible_if": [
+    "done_M21b"
+   ],
+   "hidden_if": [
+    "done_M22"
+   ],
+   "_rect_note": "блок 3 (M22): Нина у правого края доски, ноги (1318, 735) (масштаб 1,37 → Нина 1,62 м ≈ 460 px) — между стоянками доски и тетрадей/птицы (validate_rooms 9b); уходит в дом сестры после M22",
+   "talk": {
+    "after_text": "@O1d.nina.after"
+   }
+  },
+  {
+   "id": "ulyana",
+   "kind": "npc",
+   "label": "@char.ulyana",
+   "rect": [
+    852,
+    339,
+    97,
+    376
+   ],
+   "stand": [
+    1130,
+    780
+   ],
+   "face": [
+    1150,
+    1050
+   ],
+   "_face_k0211": "Директор 02.11, стр. 37: «чуть вправо её развернуть, но не полностью» — вполоборота вправо, к классу (было — лицом в кадр)",
+   "draw": false,
+   "pick_priority": 3,
+   "visible_if": [
+    "done_M21b"
+   ],
+   "_q02_note": "H47 (24.10): в Q02 Ульяна не уходит из класса — она у карты и называет дорогу к своему дому (village_map.use); раньше она исчезала и появлялась на улице без объяснения",
+   "_rect_note": "блок 3: Ульяна у правого края учительского стола, ноги (900, 715) (масштаб 1,33 → 1,27 м ≈ 352 px), не на стоянках ящика и мела; с третьего дня учится здесь",
+   "choice": {
+    "prompt": "@O1d.ulyana.prompt",
+    "requires": {
+     "flags": [
+      "done_M22"
+     ]
+    },
+    "_note": "H43 (Директор 24.10: «на вопрос Ульяны про шапку нет ответа»): после урока с мамой — разговор по вопросам; про шапку — её вопрос и ответ Агаты; про огни — 20 лет ожидания Мити глазами ребёнка, родившегося внутри",
+    "options": [
+     {
+      "id": "hat",
+      "label": "@O1d.ulyana.opt_hat",
+      "sets": "o1_ulyana_hat",
+      "text": "@O1d.ulyana.hat_q",
+      "then": [
+       "@O1d.ulyana.hat_a",
+       "@O1d.ulyana.hat_b"
+      ]
+     },
+     {
+      "id": "lights",
+      "label": "@O1d.ulyana.opt_lights",
+      "sets": "o1_ulyana_lights",
+      "text": "@O1d.ulyana.lights_q",
+      "then": [
+       "@O1d.ulyana.lights_a",
+       "@O1d.ulyana.lights_b",
+       "@O1d.ulyana.lights_c"
+      ]
+     },
+     {
+      "id": "ttt",
+      "label": "@O1d.ulyana.opt_ttt",
+      "sets": "o1_ulyana_ttt",
+      "text": "@O1d.ulyana.ttt_q",
+      "then": [
+       "@O1d.ulyana.ttt_a"
+      ],
+      "_j": "J, часть G (Директор 25.10 / 29.10): крестики-нолики мелом на доске, каждый знак рукой и по-своему; Ульяне восемь — играет хорошо, не безошибочно",
+      "mechanic": {
+       "type": "tictactoe",
+       "title": "@mech.ttt.label_title",
+       "closable": true,
+       "close_label": "@mech.ttt.label_stop",
+       "close_event": "done",
+       "skill": 0.7,
+       "think_s": 0.8,
+       "slate": [
+        560,
+        150,
+        800,
+        760
+       ],
+       "texts": {
+        "hint": "@mech.ttt.label_hint",
+        "her_first": "@mech.ttt.label_her_first",
+        "her_turn": "@mech.ttt.label_her_turn",
+        "win": "@mech.ttt.win",
+        "lose": "@mech.ttt.lose",
+        "draw": "@mech.ttt.draw",
+        "again": "@mech.ttt.label_again",
+        "stop": "@mech.ttt.label_stop"
+       },
+       "events": {
+        "won": {
+         "sets": [
+          "ttt_won"
+         ]
+        },
+        "lost": {
+         "sets": [
+          "ttt_lost"
+         ]
+        },
+        "draw": {
+         "sets": [
+          "ttt_draw"
+         ]
+        },
+        "done": {
+         "sets": [
+          "ttt_played"
+         ],
+         "text": "@O1d.ulyana.ttt_bye",
+         "close": true
+        }
+       }
+      }
+     },
+     {
+      "id": "leave",
+      "label": "@O1d.ulyana.opt_leave",
+      "sets": "o1_ulyana_bye",
+      "text": "@O1d.ulyana.after"
+     }
+    ]
+   }
+  },
+  {
+   "id": "village_map",
+   "kind": "object",
+   "action_anim": "reach",
+   "label": "@O1q.village_map.label",
+   "rect": [
+    1010,
+    506,
+    214,
+    128
+   ],
+   "stand": [
+    1120,
+    770
+   ],
+   "draw": false,
+   "pick_priority": 2,
+   "visible_if": [
+    "done_M22"
+   ],
+   "_note": "Q02 «На карте вырос сад» (Директор 23.10 11:51; мини-игра переделана по H47 24.10): первый клик — Агата узнаёт карту, у крайнего дома пустой участок; Ульяна (она тут же, в классе) — «это наш сад», и называет дорогу: от школы — к их дому — в сад; крупный план: на кальке показать три места по порядку кликами, верные раскрашиваются, неверное — всё заново; затем рисунок сада на кальке, «Там теперь смородина», сразу выбор: поверх старой карты или Ульяне. Ульяна никуда не уходит. След — реплика Ульяны после выбора и кадр эпилога (урок или ужин).",
+   "use": {
+    "sets": [
+     "q02_seen_map"
+    ],
+    "text": [
+     "@O1q.village_map.use",
+     "@O1q.village_map.ulyana_ours",
+     "@O1q.village_map.agata_help",
+     "@O1q.village_map.ulyana_route",
+     "@O1q.village_map.agata_mark"
+    ],
+    "once_flag": "q02_seen_map",
+    "open_mechanic": true
+   },
+   "mechanic": {
+    "type": "map_route",
+    "title": "@mech.village_map.title",
+    "requires": {
+     "flags": [
+      "q02_seen_map"
+     ]
+    },
+    "unless": [
+     "q02_traced"
+    ],
+    "done_flag": "q02_traced",
+    "art": {
+     "map": "res://assets/closeups/closeup_village_map_old.png",
+     "tracing": "res://assets/closeups/closeup_village_map_tracing.png"
+    },
+    "_note": "H47 (Директор 24.10): калька поверх старой карты (лист — как на арте кальки, x100–1580, y45–885, ≈18 %); дорогу Ульяны показать кликами по порядку order: школа → дом Ильи и Ули (крайний) → пустой участок за ним. Верное место раскрашивается акварелью по своему контуру (poly, пиксели холста 1672×941) и получает номер; клик по другому дому, мельнице, мосту, причалу (места без order) — короткая реплика Ульяны и сброс всех раскрашенных; клик мимо мест ничего не делает. После третьего — на участке проявляется рисунок кальки (сад: смородина рядами, яблоня, дорожка, сарай) — событие traced.",
+    "sheet": {
+     "rect": [
+      100,
+      45,
+      1480,
+      840
+     ],
+     "color": "#ffffff2e"
+    },
+    "places": [
+     {
+      "id": "school",
+      "poly": [
+       [
+        803,
+        360
+       ],
+       [
+        860,
+        318
+       ],
+       [
+        945,
+        302
+       ],
+       [
+        997,
+        348
+       ],
+       [
+        992,
+        392
+       ],
+       [
+        955,
+        425
+       ],
+       [
+        905,
+        428
+       ],
+       [
+        845,
+        425
+       ],
+       [
+        805,
+        405
+       ]
+      ],
+      "label": "@mech.village_map.place_school",
+      "order": 1,
+      "color": "#d0573e"
+     },
+     {
+      "id": "ilya_house",
+      "poly": [
+       [
+        1105,
+        558
+       ],
+       [
+        1140,
+        522
+       ],
+       [
+        1175,
+        512
+       ],
+       [
+        1225,
+        548
+       ],
+       [
+        1250,
+        575
+       ],
+       [
+        1250,
+        602
+       ],
+       [
+        1225,
+        616
+       ],
+       [
+        1180,
+        626
+       ],
+       [
+        1140,
+        616
+       ],
+       [
+        1108,
+        600
+       ]
+      ],
+      "label": "@mech.village_map.place_house",
+      "order": 2,
+      "color": "#3f78c4"
+     },
+     {
+      "id": "garden",
+      "poly": [
+       [
+        1247,
+        512
+       ],
+       [
+        1445,
+        487
+       ],
+       [
+        1507,
+        675
+       ],
+       [
+        1297,
+        700
+       ]
+      ],
+      "label": "@mech.village_map.place_garden",
+      "order": 3,
+      "color": "#4e9a3a"
+     },
+     {
+      "id": "house_n1",
+      "poly": [
+       [
+        1120,
+        430
+       ],
+       [
+        1180,
+        395
+       ],
+       [
+        1225,
+        400
+       ],
+       [
+        1250,
+        440
+       ],
+       [
+        1240,
+        472
+       ],
+       [
+        1150,
+        476
+       ],
+       [
+        1122,
+        456
+       ]
+      ]
+     },
+     {
+      "id": "house_n2",
+      "poly": [
+       [
+        1125,
+        160
+       ],
+       [
+        1150,
+        128
+       ],
+       [
+        1195,
+        130
+       ],
+       [
+        1215,
+        165
+       ],
+       [
+        1210,
+        196
+       ],
+       [
+        1135,
+        196
+       ]
+      ]
+     },
+     {
+      "id": "house_n3",
+      "poly": [
+       [
+        935,
+        186
+       ],
+       [
+        965,
+        150
+       ],
+       [
+        1010,
+        155
+       ],
+       [
+        1032,
+        190
+       ],
+       [
+        1026,
+        222
+       ],
+       [
+        940,
+        222
+       ]
+      ]
+     },
+     {
+      "id": "house_n4",
+      "poly": [
+       [
+        1298,
+        200
+       ],
+       [
+        1330,
+        163
+       ],
+       [
+        1372,
+        168
+       ],
+       [
+        1402,
+        205
+       ],
+       [
+        1396,
+        252
+       ],
+       [
+        1304,
+        252
+       ]
+      ]
+     },
+     {
+      "id": "house_n5",
+      "poly": [
+       [
+        1180,
+        290
+       ],
+       [
+        1215,
+        255
+       ],
+       [
+        1262,
+        260
+       ],
+       [
+        1302,
+        295
+       ],
+       [
+        1296,
+        342
+       ],
+       [
+        1184,
+        342
+       ]
+      ]
+     },
+     {
+      "id": "house_n6",
+      "poly": [
+       [
+        1423,
+        440
+       ],
+       [
+        1445,
+        414
+       ],
+       [
+        1470,
+        418
+       ],
+       [
+        1488,
+        445
+       ],
+       [
+        1482,
+        472
+       ],
+       [
+        1428,
+        472
+       ]
+      ]
+     },
+     {
+      "id": "house_c1",
+      "poly": [
+       [
+        874,
+        560
+       ],
+       [
+        915,
+        520
+       ],
+       [
+        962,
+        524
+       ],
+       [
+        977,
+        560
+       ],
+       [
+        972,
+        592
+       ],
+       [
+        880,
+        592
+       ]
+      ]
+     },
+     {
+      "id": "house_c2",
+      "poly": [
+       [
+        597,
+        590
+       ],
+       [
+        625,
+        558
+       ],
+       [
+        672,
+        563
+       ],
+       [
+        692,
+        595
+       ],
+       [
+        686,
+        627
+       ],
+       [
+        600,
+        627
+       ]
+      ]
+     },
+     {
+      "id": "house_w1",
+      "poly": [
+       [
+        298,
+        576
+       ],
+       [
+        330,
+        534
+       ],
+       [
+        376,
+        538
+       ],
+       [
+        406,
+        580
+       ],
+       [
+        400,
+        632
+       ],
+       [
+        304,
+        632
+       ]
+      ]
+     },
+     {
+      "id": "house_w2",
+      "poly": [
+       [
+        438,
+        646
+       ],
+       [
+        475,
+        610
+       ],
+       [
+        512,
+        614
+       ],
+       [
+        524,
+        646
+       ],
+       [
+        516,
+        682
+       ],
+       [
+        444,
+        682
+       ]
+      ]
+     },
+     {
+      "id": "house_s1",
+      "poly": [
+       [
+        778,
+        650
+       ],
+       [
+        815,
+        610
+       ],
+       [
+        872,
+        610
+       ],
+       [
+        942,
+        640
+       ],
+       [
+        936,
+        702
+       ],
+       [
+        790,
+        702
+       ]
+      ]
+     },
+     {
+      "id": "house_s2",
+      "poly": [
+       [
+        597,
+        746
+       ],
+       [
+        650,
+        700
+       ],
+       [
+        702,
+        698
+       ],
+       [
+        730,
+        740
+       ],
+       [
+        724,
+        810
+       ],
+       [
+        604,
+        810
+       ]
+      ]
+     },
+     {
+      "id": "mill",
+      "poly": [
+       [
+        272,
+        170
+       ],
+       [
+        305,
+        132
+       ],
+       [
+        352,
+        132
+       ],
+       [
+        390,
+        175
+       ],
+       [
+        440,
+        205
+       ],
+       [
+        440,
+        245
+       ],
+       [
+        278,
+        245
+       ]
+      ]
+     },
+     {
+      "id": "mill_house",
+      "poly": [
+       [
+        302,
+        116
+       ],
+       [
+        320,
+        98
+       ],
+       [
+        346,
+        98
+       ],
+       [
+        362,
+        116
+       ],
+       [
+        360,
+        137
+       ],
+       [
+        304,
+        137
+       ]
+      ]
+     },
+     {
+      "id": "bridge",
+      "poly": [
+       [
+        625,
+        186
+       ],
+       [
+        652,
+        174
+       ],
+       [
+        852,
+        214
+       ],
+       [
+        852,
+        240
+       ],
+       [
+        760,
+        266
+       ],
+       [
+        718,
+        256
+       ],
+       [
+        625,
+        202
+       ]
+      ]
+     },
+     {
+      "id": "pier",
+      "poly": [
+       [
+        248,
+        420
+       ],
+       [
+        292,
+        400
+       ],
+       [
+        318,
+        408
+       ],
+       [
+        340,
+        440
+       ],
+       [
+        300,
+        450
+       ],
+       [
+        250,
+        440
+       ]
+      ]
+     }
+    ],
+    "_places_note": "school / ilya_house / garden — дорога Ульяны (order 1–3, color — акварель раскраски); остальные — другие дома, мельница, мост, причал: неверный выбор",
+    "progress_pos": [
+     560,
+     984
+    ],
+    "hint_pos": [
+     1150,
+     96
+    ],
+    "texts": {
+     "label_hint": "@mech.village_map.label_hint",
+     "wrong": "@mech.village_map.wrong",
+     "wrong_again": "@mech.village_map.wrong_again"
+    },
+    "events": {
+     "traced": {
+      "sets": [
+       "q02_traced"
+      ],
+      "text": [
+       "@O1q.village_map.traced",
+       "@O1q.village_map.ulyana_apple"
+      ],
+      "close": true,
+      "then_choice": true
+     }
+    }
+   },
+   "choice": {
+    "prompt": "@O1q.village_map.prompt",
+    "requires": {
+     "flags": [
+      "q02_traced"
+     ]
+    },
+    "once_any": true,
+    "options": [
+     {
+      "id": "A",
+      "label": "@O1q.village_map.opt_old",
+      "sets": "q02_old_under_new"
+     },
+     {
+      "id": "B",
+      "label": "@O1q.village_map.opt_new",
+      "sets": "q02_new_primary"
+     }
+    ]
+   },
+   "use_when": [
+    {
+     "if": [
+      "q02_old_under_new"
+     ],
+     "text": "@O1q.village_map.look_old"
+    },
+    {
+     "if": [
+      "q02_new_primary"
+     ],
+     "text": "@O1q.village_map.look_new"
+    }
+   ],
+   "look": "@O1q.village_map.look"
+  },
+  {
+   "id": "bird_drawing",
+   "kind": "object",
+   "label": "@O1.bird_drawing.label",
+   "rect": [
+    1440,
+    150,
+    210,
+    300
+   ],
+   "stand": [
+    1540,
+    770
+   ],
+   "color": "#e0d8c0",
+   "draw": false,
+   "visible_if": [
+    "seen_class_traces"
+   ],
+   "states": [
+    {
+     "if": [
+      "v03_marked"
+     ],
+     "label": "@O1.bird_drawing.label_marked"
+    }
+   ],
+   "choice": {
+    "prompt": "@O1.bird_drawing.prompt",
+    "scene": "V03",
+    "once_any": true,
+    "requires": {
+     "not_flags": [
+      "done_M22"
+     ]
+    },
+    "fail_text": "@O1.bird_drawing.late",
+    "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом: пририсовать можно, пока Уля не ответила (M22)",
+    "_g37": "G37 (Директор 23.10: «эпизод подрисовать птице — пусть будет, и ответ Ульяны зависит от выбора»): что пририсовать синице — шарф, лодку с дымом (как Илья), мостик на каменных опорах — или оставить; v03_marked — «Агата что-то пририсовала» (also), вариант — v03_add_*; след — ответ Ульяны в M22 и на плакате",
+    "options": [
+     {
+      "id": "scarf",
+      "label": "@O1.bird_drawing.opt_scarf",
+      "sets": "v03_add_scarf",
+      "also": [
+       "v03_marked"
+      ],
+      "text": "@O1.bird_drawing.react_scarf"
+     },
+     {
+      "id": "boat",
+      "label": "@O1.bird_drawing.opt_boat",
+      "sets": "v03_add_boat",
+      "also": [
+       "v03_marked"
+      ],
+      "text": "@O1.bird_drawing.react_boat"
+     },
+     {
+      "id": "bridge",
+      "label": "@O1.bird_drawing.opt_bridge",
+      "sets": "v03_add_bridge",
+      "also": [
+       "v03_marked"
+      ],
+      "text": "@O1.bird_drawing.react_bridge"
+     },
+     {
+      "id": "leave",
+      "label": "@O1.bird_drawing.opt_leave",
+      "sets": "v03_left"
+     }
+    ]
+   },
+   "look": "@O1.bird_drawing.look"
+  }
+ ],
+ "exits": [
+  {
+   "to": "H3",
+   "label": "@O1.exit_H3.label",
+   "cue": "door",
+   "rect": [
+    380,
+    90,
+    130,
+    610
+   ],
+   "stand": [
+    490,
+    745
+   ],
+   "spawn": "from_O1",
+   "closed_text": "@O1.exit_H3.closed",
+   "draw": false,
+   "stop_once": {
+    "if": [
+     "done_M07"
+    ],
+    "unless": [
+     "done_M08"
+    ],
+    "once_flag": "o1_yard_hint",
+    "text": "@O1.exit_H3.yard_first",
+    "_k0211": "Директор 02.11, стр. 11: попала в класс, но не вышла во двор — второй день не начнётся (ночь ждёт M08 — тропа со двора). В первый раз у двери домой Агата останавливается и говорит про вторую дверь; второй щелчок — домой, как обычно"
+   }
+  },
+  {
+   "to": "O2",
+   "label": "@O1.exit_O2.label",
+   "cue": "door",
+   "rect": [
+    1790,
+    90,
+    130,
+    610
+   ],
+   "stand": [
+    1790,
+    740
+   ],
+   "spawn": "from_O1",
+   "draw": false
+  }
+ ],
+ "scenes": {
+  "M06": {
+   "complete_when": [
+    {
+     "or": [
+      {
+       "any_n": 2,
+       "flags": [
+        "o1_seen_sack",
+        "o1_seen_notebooks",
+        "o1_seen_board_task"
+       ]
+      },
+      {
+       "all": [
+        "has_plan_crossing"
+       ]
+      }
+     ]
+    }
+   ],
+   "_g15": "два следа из трёх — или учительский ящик (план, правленный разными чернилами, — тоже след)"
+  },
+  "M07": {
+   "complete_when": [
+    {
+     "all": [
+      "has_plan_crossing"
+     ]
+    }
+   ]
+  },
+  "M08": {
+   "complete_when": [
+    {
+     "all": [
+      "observed_path_loop"
+     ]
+    }
+   ]
+  },
+  "V03": {
+   "complete_when": [
+    {
+     "any": [
+      "v03_add_scarf",
+      "v03_add_boat",
+      "v03_add_bridge",
+      "v03_left"
+     ]
+    }
+   ],
+   "complete_text": "@O1.v03.done"
+  },
+  "M22": {
+   "trigger": "enter"
+  },
+  "Q02": {
+   "complete_when": [
+    {
+     "any": [
+      "q02_old_under_new",
+      "q02_new_primary"
+     ]
+    }
+   ]
+  }
+ },
+ "flags": {
+  "o1_yard_hint": "02.11 (стр. 11): у двери домой из класса Агата сказала, что вторая дверь — во двор (до M08)",
+  "o1_ulyana_bye": "Поговорили с Ульяной в классе",
+  "o1_ulyana_hat": "Ульяна узнала, кто нарисовал синице шапку (H43)",
+  "o1_ulyana_lights": "Ульяна рассказала, как дядя Митя ждал огней (H43)",
+  "o1_seen_sack": "Замечен залатанный мешок в классе",
+  "o1_seen_notebooks": "Замечена стопка тетрадей в классе",
+  "o1_seen_board_task": "Прочитана задача на доске",
+  "o1_saw_winter": "Агата увидела зиму за окнами класса (первый вход)",
+  "o1_board_left_blank": "Агата решила пока ничего не писать на доске",
+  "v03_marked": "Агата что-то пририсовала синице на плакате (V03; что именно — v03_add_*)",
+  "v03_add_scarf": "G37: Агата пририсовала синице шарф",
+  "v03_add_boat": "G37: Агата пририсовала лодочку с дымом, как рисовал Илья",
+  "v03_add_bridge": "G37: Агата пририсовала мостик на каменных опорах",
+  "v03_left": "Картинка с птицей оставлена как есть (V03)",
+  "q02_seen_map": "Агата увидела на старой школьной карте пустой участок у дома Ильи (Q02)",
+  "q02_traced": "Новый сад Ильи проведён карандашом по кальке поверх старой карты (Q02)"
+ }
+}

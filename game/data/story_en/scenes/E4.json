@@ -1,0 +1,2034 @@
+{
+ "episode": 4,
+ "title": "Двадцать лет",
+ "target_minutes": [
+  14,
+  20
+ ],
+ "premise": "Блок 3 (Docs/SCENARIO_FINAL.md §8, M19–M23). Вечер второго дня и день третий в Ольховке: мама и её ходики, идущие теперь вровень с карманными часами; брат, его дочь и жена; утро — тётины тетради, список деревни, «Как было — нет»; класс с мамой по вернувшейся тропе — ответ на доске, варежка, птица; первый свободный выход: Тамара с годом писем, управляющий у Павла, Нина в доме сестры, Тихон узнаёт о Дуне. Реплики — черновик смысла (draft), голосов нет до текстового прохода Директора. Сцены в рамке кадра (FrameView) — `stage[].frame`: кадр комнаты-картины data/story/rooms/F_*.json поверх мира.",
+ "scenes": [
+  {
+   "id": "M19",
+   "type": "main",
+   "title": "Мама",
+   "locations": [
+    "O4",
+    "O3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M18"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M19",
+     "met_nina",
+     "in_olkhovka"
+    ],
+    "items": []
+   },
+   "stage": [
+    {
+     "at": 1,
+     "cut": true,
+     "sounds": [
+      {
+       "id": "synth:knock_shutter"
+      }
+     ],
+     "_j145": "J (Директор 29.10, стр. 145: «…да в ставню колотит» — и звук стука): Митя колотит в ставню — три удара кулаком по дереву, потом его «Илья! Илья, выходи»"
+    },
+    {
+     "at": 3,
+     "agata_go": {
+      "to": [
+       1305,
+       722
+      ],
+      "face": [
+       1385,
+       640
+      ],
+      "action": "reach",
+      "run": 1.8
+     },
+     "_h39": "H39 (Директор 24.10): перед «Мама» Агата сама бежит к крыльцу, к маме, и тянется к ней — дальше «Нина обнимает Агату» (объятия без нового клипа: Агата вплотную у Нины, руки вперёд)"
+    },
+    {
+     "at": 4,
+     "fade_out_s": 0.6,
+     "hold_s": 0.3,
+     "fade_in_s": 0.7,
+     "frame": "F_hug_nina",
+     "_i_t3": "I-T3 (партия 10г; Директор 24.10 H39, карта 25.10 стр. 128–129): «Нина прямо на крыльце Агату обнимает» — полноэкранный кадр объятия, потом обратно на крыльцо"
+    },
+    {
+     "at": 5,
+     "fade_out_s": 0.6,
+     "hold_s": 0.2,
+     "fade_in_s": 0.6,
+     "frame": ""
+    },
+    {
+     "at": 6,
+     "npc_go": [
+      {
+       "id": "nina",
+       "to": [
+        1432,
+        552
+       ],
+       "s": 1.6,
+       "fade": true,
+       "door": {
+        "rect": [
+         1395,
+         390,
+         75,
+         150
+        ],
+        "hinge": "left",
+        "image": "res://assets/rooms/O4/night.png"
+       },
+       "_j": "J (Директор 29.10, стр. 149: «дверь не открывается и не закрывается; Нина уходит в закрытую»): дверь избы открывается, Нина входит, дверь закрывается — как у Павла (H24); створка — из ночной картины O4"
+      }
+     ],
+     "_g29": "G29: Нина говорит на крыльце «Пойдём в тепло» — потом поворачивается и уходит в дом (у жителей нет листа ходьбы: поворот, шаги к двери, растворение), потом затемнение с дверью",
+     "fade_out_s": 0.8,
+     "hold_s": 1.2,
+     "fade_in_s": 0.8,
+     "room": "O3",
+     "spawn": "from_O4",
+     "sets": [
+      "m19_nina_home"
+     ],
+     "sounds": [
+      {
+       "id": "door_heavy",
+       "at_s": 0.6
+      }
+     ],
+     "_note": "В дом: затемнение, дверь, горница Нины вечером."
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "Snow, lit windows. Mitya walks ahead with the lantern. At the last house, he knocks hard on a shutter."
+    },
+    {
+     "speaker": "mitya",
+     "face": [
+      1920,
+      470
+     ],
+     "_face_k1": "01.11 (Директор, стр. 51: «Илью зовёт Митя, но повёрнут к маминому дому — должен смотреть вправо»): кричит в ставню крайнего дома (Ильи, справа), а не Агате",
+     "text": "Ilya! Ilya, come out — your sister's here!",
+     "direction": {
+      "stress": "сестра",
+      "emotion": "радость и странность",
+      "pace": "громко, на улицу",
+      "takes": 3,
+      "map": [
+       130
+      ]
+     },
+     "tags": [
+      "excited"
+     ]
+    },
+    {
+     "speaker": "narrator",
+     "text": "On the next house's porch stands a grey-haired woman in a shawl. She saw the three flashes from her window."
+    },
+    {
+     "speaker": "agata",
+     "text": "Mama.",
+     "tags": [
+      "sad"
+     ]
+    },
+    {
+     "speaker": "narrator",
+     "text": "Nina embraces Agata right there on the porch. Tears well in her eyes. For a long time she does not let go."
+    },
+    {
+     "speaker": "nina",
+     "text": "Come into the warmth, my girl. You're covered in snow.",
+     "direction": {
+      "stress": "доченька",
+      "emotion": "материнская нежность",
+      "pace": "медленно",
+      "takes": 1,
+      "map": [
+       132
+      ]
+     },
+     "tags": [
+      "warmly"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "The very same clock."
+    }
+   ],
+   "result": "Встреча с мамой на крыльце; дальше — горница.",
+   "goal": "Look at Mama's clock. Its hands raced in the mirror — what about now?",
+   "hints": [
+    "Mitya has gone up the path",
+    "Mama is waiting on her porch — into the parlour",
+    "From the pier, up the path and along the street to Mama's porch"
+   ]
+  },
+  {
+   "id": "M19c",
+   "type": "main",
+   "title": "Ходики",
+   "locations": [
+    "O3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M19"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M19c",
+     "nina_mirror_on_table",
+     "time_common_seen",
+     "knows_nina_saw_agata"
+    ],
+    "items": []
+   },
+   "puzzle": {
+    "verb": "observe_compare",
+    "solution": "Карманные часы — к ходикам горницы: стрелки идут вровень",
+    "error": "—"
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "The hands raced in the mirror. Here they keep time with mine.",
+     "direction": {
+      "emotion": "удивление",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       "R3-102"
+      ]
+     }
+    },
+    {
+     "speaker": "narrator",
+     "text": "Nina sets a little wooden-framed mirror on the table."
+    },
+    {
+     "speaker": "nina",
+     "text": "Hung above Dunya's stove. She was bringing it to me as a gift that day. It stayed here. Shows her stove."
+    },
+    {
+     "speaker": "nina",
+     "text": "You appeared in it three weeks ago. Slept by her stove a whole week, with Tikhon beside you.",
+     "_k": "Ревью 01.11 (А-2/А-3): если полку повесили в первый день, Тихон ночью на полке, не в кресле — слова нейтральные (было «а Тихон в кресле»; перезапись K16)"
+    },
+    {
+     "speaker": "agata",
+     "text": "But that was yesterday!",
+     "direction": {
+      "emotion": "изумление",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       "R3-103"
+      ]
+     }
+    },
+    {
+     "speaker": "nina",
+     "_k": "Ревью 01.11 (А-2/А-3): если полку повесили в первый день, Тихон ночью на полке, не в кресле — слова нейтральные (было «зверёк в кресле»; перезапись K16)",
+     "text": "Twenty years I looked into it. Dunya's stove, the little creature beside it. Tamara came to feed him — every few months, by our time. Moved slowly, as though asleep. I knew people lived there. I waited and waited for you.",
+     "direction": {
+      "stress": "живут",
+      "emotion": "нежность, давнее ожидание; один акцент — на «живут» во фразе «Знала я: там живут»",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       131,
+       132
+      ],
+      "voice_fb": [
+       18
+      ]
+     },
+     "tags": [
+      "warmly"
+     ]
+    },
+    {
+     "speaker": "nina",
+     "if": [
+      "waved_at_stove"
+     ],
+     "text": "Then you stood by the stove and waved. I saw you.",
+     "_note": "C17 (Директор 23:44): необязательное «помахать у печи» во время маминого зеркала — флаг waved_at_stove ставит блок 2 в H1"
+    },
+    {
+     "speaker": "nina",
+     "text": "So only a year passed for you… One year, my girl.",
+     "direction": {
+      "stress": "Один год",
+      "emotion": "удивление и нежность",
+      "pace": "медленно",
+      "takes": 1,
+      "map": [
+       132
+      ]
+     }
+    },
+    {
+     "speaker": "agata",
+     "text": "A year… For you — longer than I've been alive. How can that be, Mama?"
+    }
+   ],
+   "stage": [
+    {
+     "at": 1,
+     "cut": true,
+     "sets": [
+      "nina_mirror_on_table"
+     ],
+     "_j": "J (Директор 29.10, стр. 151: «Нина кладёт зеркальце на стол — на столе его нет, должно появиться»): до этой строки стол горницы без зеркальца (слои O3 table_no_mirror, партия 10д), на ней оно появляется"
+    }
+   ],
+   "result": "Время общее: ходики идут вровень с часами Агаты. Нина двадцать лет смотрела в Дунино зеркальце и видела дочь у печи.",
+   "goal": "Stay with Mama. Someone is running to the house.",
+   "hints": [
+    "The clock on the parlour wall",
+    "Compare it with my pocket watch",
+    "Use the watch on the wall clock"
+   ]
+  },
+  {
+   "id": "M20",
+   "type": "main",
+   "title": "Брат и его дочь",
+   "locations": [
+    "O3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M19c"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M20",
+     "met_ilya",
+     "met_ulyana",
+     "met_ilya_wife",
+     "wife_came"
+    ],
+    "items": []
+   },
+   "stage": [
+    {
+     "at": 0,
+     "fade_out_s": 0.25,
+     "hold_s": 0.35,
+     "fade_in_s": 0.35,
+     "sounds": [
+      {
+       "id": "door_heavy",
+       "at_s": 0.1
+      }
+     ],
+     "_note": "Хлопает дверь — Илья и Ульяна в горнице (их фигуры видны по флагу started_M20)."
+    },
+    {
+     "at": 7,
+     "fade_out_s": 0.2,
+     "hold_s": 0.2,
+     "fade_in_s": 0.3,
+     "sounds": [
+      {
+       "id": "door_heavy",
+       "at_s": 0.1
+      }
+     ],
+     "sets": [
+      "wife_came"
+     ],
+     "_note": "«Позже приходит жена Ильи с лампой» — её фигура появляется (O3 ilya_wife visible_if wife_came)."
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "The door bangs. A man enters, covered in shavings, a pencil behind his ear. A little girl runs in after him, her coat thrown over her nightdress."
+    },
+    {
+     "speaker": "agata",
+     "text": "Ilyusha… Only that pencil behind your ear… I'd never have known you."
+    },
+    {
+     "speaker": "ilya",
+     "text": "You're just the same… Haven't grown.",
+     "direction": {
+      "emotion": "растерянно, тепло",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       "R3-104"
+      ]
+     }
+    },
+    {
+     "speaker": "agata",
+     "text": "Look how you've grown… Twenty whole years — all without me."
+    },
+    {
+     "speaker": "ulyana",
+     "text": "Is this Aunt Agata? Papa, you said she used to be older than you!",
+     "direction": {
+      "stress": "раньше",
+      "emotion": "наивное детское удивление",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       "R3-105"
+      ]
+     },
+     "then": [
+      {
+       "speaker": "ulyana",
+       "text": "How is she an aunt? She's like a sister! I've always wanted a sister — a big one.",
+       "tags": [
+        "excited"
+       ],
+       "direction": {
+        "stress": "сестра",
+        "emotion": "детская радость, по-ульяновски",
+        "pace": "быстро",
+        "takes": 3,
+        "map": [
+         "4а"
+        ]
+       }
+      },
+      {
+       "speaker": "agata",
+       "text": "Well, if you wanted one, I'll be your sister, Ulya.",
+       "tags": [
+        "warmly"
+       ],
+       "direction": {
+        "stress": "буду",
+        "emotion": "тепло; акцент на слове «буду»",
+        "pace": "мягко",
+        "takes": 3,
+        "map": [
+         "4а"
+        ],
+        "voice_fb": [
+         19
+        ]
+       }
+      }
+     ],
+     "_then_i_t1": "I-T1 (Директор 25.10, 02:57): Ульяна всегда мечтала о старшей сестре — по родству Агата ей тётя, по годам как сестра"
+    },
+    {
+     "speaker": "agata",
+     "text": "There was a plan in the teacher's drawer. Yours?",
+     "direction": {
+      "emotion": "с интересом",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-106"
+      ]
+     }
+    },
+    {
+     "speaker": "ilya",
+     "text": "Copied it every winter, put it in the drawer. Dunya said the door was in her workshop. Whoever hung it would reach the classroom."
+    },
+    {
+     "speaker": "narrator",
+     "text": "Later, Ilya's wife comes in carrying a lamp."
+    },
+    {
+     "speaker": "ilya_wife",
+     "text": "Ulyana, time to sleep. Your aunt is here; she won't go away tonight."
+    },
+    {
+     "speaker": "nina",
+     "text": "You'll sleep here, in your own bed. Ulyana sleeps in it now — make room for each other."
+    },
+    {
+     "speaker": "narrator",
+     "text": "In the old room, yearly notches mark the wall. Someone else's growing height."
+    }
+   ],
+   "result": "Агата узнала брата, познакомилась с племянницей и женой брата. Ночь: спать — в старой кровати у мамы (N02, T6).",
+   "goal": "Night. Time to sleep: my old bed in Mama's parlour.",
+   "hints": [
+    "Listen to who has come",
+    "The conversation continues",
+    "Click to read on"
+   ]
+  },
+  {
+   "id": "N02",
+   "type": "main",
+   "title": "Ночь в Ольховке",
+   "locations": [
+    "O3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M20"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_N02",
+     "morning_day3"
+    ],
+    "items": []
+   },
+   "actions": [
+    "T6 (Директор 24.10 «Сон и смена дня»): после разговора с братом — ночь; клик по кровати в горнице: «пора спать», затемнение, Агата в своей старой кровати (Ульяна у стенки — «потеснитесь», M20); затемнение — «День третий» — утро в горнице; сохранение «День третий»"
+   ],
+   "stage": [
+    {
+     "at": 0,
+     "fade_out_s": 1.0,
+     "hold_s": 1.2,
+     "fade_in_s": 1.2,
+     "dim": 0.6,
+     "_note": "Ночь в старой кровати: затемнение, горница в полумраке, родня разошлась (их фигуры гаснут утром — hidden_if morning_day3).",
+     "sets": [
+      "night_olkhovka"
+     ],
+     "_k": "K (сверка журнала 01.11, крит. 2): «Ночь я проспала…» — здесь, в ночь, а не в M20 до сна"
+    },
+    {
+     "at": "end",
+     "fade_out_s": 1.2,
+     "hold_s": 2.2,
+     "fade_in_s": 1.2,
+     "dim": 0.0,
+     "day_card": "@ui.day_card_3",
+     "sets": [
+      "morning_day3"
+     ],
+     "_note": "Утро третьего дня: затемнение, «День третий», горница днём, на улице светло (раньше — конец M20)."
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "The old bed. Beyond the wall, the clock ticks steadily, in time with her pocket watch. Agata falls asleep before she knows it.",
+     "direction": {
+      "stress": "ровно",
+      "emotion": "спокойно",
+      "pace": "медленно",
+      "takes": 1,
+      "map": [
+       134
+      ]
+     }
+    }
+   ],
+   "checkpoint": {
+    "slot": "day3",
+    "title": "@ui.checkpoint_day3"
+   },
+   "result": "Конец дня второго: ночь в старой комнате у мамы.",
+   "goal": "Morning in Olkhovka. Ask Mama about Aunt Dunya, too — it was Mama she went to see.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Утро. Мама обещала: поутру наговоримся. Про тётю Дуню спрошу — она ведь к маме шла.»)",
+   "hints": [
+    "Night — time to sleep",
+    "Sleep in Mama's parlour: my old bed on the left",
+    "Click the bed in the parlour"
+   ]
+  },
+  {
+   "id": "M21",
+   "type": "main",
+   "title": "Что смогла Дуня",
+   "locations": [
+    "O3"
+   ],
+   "requires": {
+    "flags": [
+     "done_N02",
+     "morning_day3"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M21",
+     "knows_evdokia_death"
+    ],
+    "items": []
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "nina",
+     "text": "My girl… Dunya died two years ago, by our reckoning. She was seventy-two.",
+     "then": [
+      {
+       "speaker": "agata",
+       "text": "I kept thinking: once I got here, she'd be home again.",
+       "_t9": "T9 (вычитка R35): личная реакция Агаты до чтения бумаг; then — номера записанных реплик не сдвигаются"
+      }
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "And Tikhon still expects her back by evening."
+    },
+    {
+     "speaker": "nina",
+     "text": "Her notebooks are on the table. Eighteen years she tried to restore the road. Beside them, the list: who is living, who is gone. Look, my girl.",
+     "direction": {
+      "stress": "доченька",
+      "emotion": "материнская нежность",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       "R3-107"
+      ]
+     }
+    }
+   ],
+   "result": "Дуня умерла два местных года назад, в 72. Её тетради и список деревни — у Нины.",
+   "goal": "Aunt's notebooks and the village list are on Mama's table.",
+   "hints": [
+    "Mama's parlour",
+    "Talk to Mama",
+    "Click Mama"
+   ]
+  },
+  {
+   "id": "M21b",
+   "type": "main",
+   "title": "Как было",
+   "locations": [
+    "O3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M21"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M21b",
+     "school_path_open"
+    ],
+    "items": []
+   },
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "Can't we make it how it was?",
+     "direction": {
+      "stress": "нельзя",
+      "emotion": "наивный детский вопрос: «А как прежде сделать» — пауза — «нельзя?», акцент на «нельзя»",
+      "pace": "просто",
+      "takes": 3,
+      "map": [
+       135
+      ],
+      "voice_fb": [
+       20
+      ]
+     },
+     "tags": [
+      "hesitant"
+     ]
+    },
+    {
+     "speaker": "nina",
+     "text": "Not how it was… And I wouldn't give up my twenty years. They gave us Ulyana.",
+     "direction": {
+      "stress": "Ульяна",
+      "emotion": "сначала грусть (не вернуть), потом радость (в них Ульяна)",
+      "pace": "пауза после «нет»",
+      "takes": 3,
+      "map": [
+       136
+      ]
+     }
+    },
+    {
+     "speaker": "nina",
+     "text": "But we can live the years ahead together."
+    },
+    {
+     "speaker": "narrator",
+     "text": "Voices outside. Children run towards the school to see: the school path has been there again since last evening."
+    },
+    {
+     "speaker": "nina",
+     "text": "Come, I'll show you the classroom. Through the gate, like ordinary people.",
+     "direction": {
+      "stress": "как люди",
+      "emotion": "с улыбкой; акцент на «как люди»",
+      "pace": "ровно",
+      "takes": 3,
+      "map": [
+       137
+      ],
+      "voice_fb": [
+       21
+      ]
+     }
+    }
+   ],
+   "result": "Четвёртое правило сказано человеком: прожитое не отдают. Тропы вернулись ещё вечером, с узлом (M15); Нина показывает их — к школе (нижней улицы нет — Р10).",
+   "goal": "Go with Mama along the restored path to class: from the street through the schoolyard.",
+   "hints": [
+    "The table in Mama's parlour",
+    "Read both",
+    "Click the notebooks on the table, then the village list"
+   ]
+  },
+  {
+   "id": "M22",
+   "type": "main",
+   "title": "Класс с мамой",
+   "locations": [
+    "O4",
+    "O2",
+    "O1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M21b"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M22",
+     "q06_hook",
+     "nina_answered_board",
+     "nina_wrote_date",
+     "free_walk_day3",
+     "boat_shuttle_open"
+    ],
+    "items": []
+   },
+   "stage": [
+    {
+     "at": 8,
+     "cut": true,
+     "sounds": [
+      {
+       "id": "synth:knock_board"
+      }
+     ],
+     "_j169": "J (Директор 29.10, стр. 169: «костяшкой по доске» — и сразу звук стука): два лёгких удара костяшкой, потом «Теперь-то слышишь?»",
+     "_j169b": "30.10 (сверка: звук шёл после щелчка по строке «Нина по доске… постучала», а Директор просил «сразу»): стук — вместе с этой строкой (at 8), не со следующей"
+    },
+    {
+     "at": 0,
+     "npc_face": [
+      {
+       "id": "agata",
+       "face": "nina"
+      }
+     ],
+     "_j167": "J (Директор 29.10, стр. 167: «Агата входит в класс — не повёрнута к Ульяне и Нине»): с порога — к маме у доски; дальше по репликам Агата поворачивается к тому, кто говорит (StoryRunner._face_speaker)"
+    },
+    {
+     "at": 3,
+     "cut": true,
+     "sets": [
+      "nina_answered_board"
+     ],
+     "_k_board": "K (сверка журнала 01.11, крит. 3): nina_answered_board ставится всегда — по нему слои ответа Ули на плакате и достижение; запись журнала «под моей надписью» — nina_answered_my_board, следующая постановка, только если Агата писала (if_any board_*)",
+     "layer_write": [
+      {
+       "id": "nina_answer_here",
+       "x": [
+        837,
+        1094
+       ],
+       "s": 2.4
+      },
+      {
+       "id": "nina_answer_mama",
+       "x": [
+        905,
+        1026
+       ],
+       "s": 1.6
+      },
+      {
+       "id": "nina_answer_ilya",
+       "x": [
+        919,
+        1008
+       ],
+       "s": 2.0
+      }
+     ],
+     "_i_t2": "I-T2 (Директор, стр. 138): Нина пишет мелом — ответ проявляется слева направо (сначала нижняя строка, потом число вверху — следующая постановка)",
+     "_note": "H42 (Директор 24.10: «число и послание появляются, когда Нины уже нет»): ответ Нины мелом появляется на доске сразу после реплики, где она его пишет (строки 0–2), пока она в классе."
+    },
+    {
+     "at": 3,
+     "cut": true,
+     "if_any": [
+      "board_here",
+      "board_mama",
+      "board_ilya"
+     ],
+     "sets": [
+      "nina_answered_my_board"
+     ],
+     "_k": "K (сверка журнала 01.11, крит. 3): запись «Мама ответила на доске под моей надписью» — только если Агата в первый день писала на доске"
+    },
+    {
+     "at": 7,
+     "cut": true,
+     "sets": [
+      "nina_wrote_date"
+     ],
+     "layer_write": [
+      {
+       "id": "nina_answer_date",
+       "x": [
+        1034,
+        1142
+       ],
+       "s": 1.4
+      }
+     ],
+     "_note": "H42: первое общее число — на доске сразу после строки 6 («Пишет Агатино число под своим — и стирает верхнее»)."
+    },
+    {
+     "at": "end",
+     "npc_go": [
+      {
+       "id": "nina",
+       "to": [
+        1862,
+        730
+       ],
+       "s": 2.4,
+       "in_black": true,
+       "door": {
+        "rect": [
+         1826,
+         168,
+         94,
+         552
+        ],
+        "hinge": "left"
+       }
+      }
+     ],
+     "_j172": "J (Директор 29.10, стр. 172: «Нина после диалога исчезает в момент затемнения, без видимого растворения»; 25.10, стр. 140: «должна выходить в дверь, с открытием и закрытием»): Нина идёт к двери класса (вдоль парт, ниже учительского стола), дверь открывается, Нина в проёме — затемнение; в чёрном её уже нет и дверь закрыта (npc_go in_black, ночь 30.10; прежде таяла у порога)",
+     "fade_out_s": 0.6,
+     "hold_s": 0.6,
+     "fade_in_s": 0.6,
+     "_note": "Нина уходит из класса — в дом сестры (её фигура в классе гаснет по done_M22)."
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "if": [
+      "board_here"
+     ],
+     "text": "Nina reads: \"I was here. Agata.\" She takes the chalk and writes beneath: \"So was I. All twenty years. Mama.\""
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "board_mama"
+     ],
+     "text": "On the board Nina reads: \"Mama, I'm coming.\" She takes the chalk. Beneath it she writes only this: \"At last.\""
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "board_ilya"
+     ],
+     "text": "Nina reads: \"Ilyusha, I found your drawing.\" She takes the chalk and adds: \"He still draws boats with smoke. Mama.\""
+    },
+    {
+     "speaker": "narrator",
+     "if_any": [
+      "board_here",
+      "board_mama",
+      "board_ilya"
+     ],
+     "text": "Then, from the habit of every lesson, she writes the date in the corner. Her own date, from this side."
+    },
+    {
+     "speaker": "narrator",
+     "unless": [
+      "board_here",
+      "board_mama",
+      "board_ilya"
+     ],
+     "text": "The board is clean. As before every lesson, Nina writes the date in the corner. By the reckoning here."
+    },
+    {
+     "speaker": "agata",
+     "text": "It's the twenty-fifth of October for us."
+    },
+    {
+     "speaker": "narrator",
+     "text": "Nina pauses. She writes Agata's date beneath her own, then rubs out the upper one. For the first time, both banks share a date."
+    },
+    {
+     "speaker": "agata",
+     "text": "I knocked on the glass, but you couldn't hear.",
+     "direction": {
+      "emotion": "с грустью и нежностью",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       "R3-108"
+      ]
+     }
+    },
+    {
+     "speaker": "narrator",
+     "text": "Nina taps the board with a knuckle."
+    },
+    {
+     "speaker": "nina",
+     "text": "Can you hear now?"
+    },
+    {
+     "speaker": "agata",
+     "text": "Now I can."
+    },
+    {
+     "speaker": "ulyana",
+     "text": "I drew the bird's boots! Who drew the cap?"
+    },
+    {
+     "speaker": "agata",
+     "text": "I drew the cap. Long ago, at this desk.",
+     "direction": {
+      "stress": "Я",
+      "emotion": "смеясь",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       139
+      ]
+     },
+     "tags": [
+      "laughs"
+     ],
+     "then": [
+      {
+       "speaker": "ulyana",
+       "text": "There! I'll tell everyone: my sister can draw. Almost a real one!",
+       "tags": [
+        "excited"
+       ],
+       "direction": {
+        "stress": "Почти настоящая",
+        "emotion": "гордость, детская радость",
+        "pace": "быстро",
+        "takes": 3,
+        "map": [
+         "4а",
+         "R2-77"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "speaker": "ulyana",
+     "if": [
+      "v03_add_scarf"
+     ],
+     "text": "Who gave it the scarf? I wrote beside it — look! It's warm now.",
+     "_g37": "G37 (Директор 23.10: «ответ Ульяны зависит от выбора»): что Агата пририсовала птице в первый день — шарф / лодку с дымом / мостик; ответ Ульяны — здесь и карандашом на плакате (O1 bird_reply_*). Лодка и мостик — продолжения then строки 14: записанные M22_15… не сдвигаются"
+    },
+    {
+     "speaker": "agata",
+     "if": [
+      "v03_add_scarf"
+     ],
+     "text": "I drew the scarf too. It's winter here.",
+     "then": [
+      {
+       "speaker": "ulyana",
+       "if": [
+        "v03_add_boat"
+       ],
+       "text": "Who drew the boat with smoke? Only Papa draws them like that!"
+      },
+      {
+       "speaker": "agata",
+       "if": [
+        "v03_add_boat"
+       ],
+       "text": "I copied your papa, long, long ago."
+      },
+      {
+       "speaker": "ulyana",
+       "if": [
+        "v03_add_bridge"
+       ],
+       "text": "Who drew the bridge? I asked beside it, look: will there really be a bridge?"
+      },
+      {
+       "speaker": "agata",
+       "if": [
+        "v03_add_bridge"
+       ],
+       "text": "There will, Ulya. That's why I drew it.",
+       "direction": {
+        "emotion": "тепло",
+        "pace": "ровно",
+        "takes": 1,
+        "map": [
+         "R3-109"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "speaker": "nina",
+     "text": "I'll go home to Dunya's. In through the porch, as before. Pelageya will take me. Walk about a little; everyone's coming outside today.",
+     "then": [
+      {
+       "speaker": "nina",
+       "text": "Call on Ilya in his workshop — the shed by his house. He and Mitya are cramped, and Ulya needs a place of her own. He'll be glad of you.",
+       "direction": {
+        "stress": "загляни",
+        "emotion": "тепло, по-матерински",
+        "pace": "ровно",
+        "takes": 1,
+        "map": [
+         "Q06"
+        ]
+       }
+      },
+      {
+       "speaker": "ulyana",
+       "text": "Uncle Mitya is catching perch from the landing! Go and see him if you like. He'll teach you, too.",
+       "direction": {
+        "emotion": "радостно, торопится рассказать",
+        "pace": "живо",
+        "takes": 3
+       },
+       "_k0211": "Директор 02.11 (бонус: «не нашёл рыбалки вовсе… можно пройти, не наткнувшись?»): в свободный день Митя только на мостках дальней опоры, и нигде о нём ни слова — теперь Уля зовёт туда, и в цели журнала есть Митя"
+      }
+     ],
+     "_then_q06": "I-T1 (Директор 25.10: верстак Q06 за всю игру не найден): крючок словами Нины — флаг q06_hook (grants), цель в журнале (goal, goal_left M23*), подсветка мастерской на улице O4 при первом входе (rooms/O4.json on_enter.reveal)"
+    }
+   ],
+   "result": "Нина ответила на доске и записала первое общее число; Ульяна — про птицу. Первый свободный день.",
+   "goal": "A free day: Tamara has letters outside; Mama is at Dunya's; Pavel at the mill; Ilya in his workshop. Any order. If you wish, Mitya is fishing by the far pier.",
+   "_goal_k0211": "Директор 02.11 (рыбалка): «это должно быть опционально — если хочешь, то можешь сходить к нему»",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Нынче все на улицу выходят — Тамара, говорят, с письмами. Мама пошла в дом Дуни. Пруд ещё спущен: загляну к Павлу, узнаю, когда воду поднимать. Мама звала к Илье в мастерскую — Уле своё место ладить. Побываю у всех — в любом порядке.»)",
+   "hints": [
+    "The school path is back",
+    "From the street through the schoolyard to the school",
+    "On the street, \"To the school\"; in the yard, the classroom door"
+   ]
+  },
+  {
+   "id": "M23a",
+   "type": "main",
+   "title": "Письма",
+   "locations": [
+    "O4"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M23a",
+     "letters_delivered",
+     "dunya_letter_on_stove"
+    ],
+    "items": []
+   },
+   "stage": [
+    {
+     "at": 0,
+     "cut": true,
+     "sets": [
+      "m23a_nina_here"
+     ],
+     "_note": "T9 (R39): Нина на раздаче писем (rooms/O4.json nina)",
+     "_k": "31.10 (Директор, стр. 93): без затемнения — Нина выходит с тропы от реки"
+    },
+    {
+     "at": 0,
+     "cut": true,
+     "_k93": "Сверка кадрами 01.11: без cut после прохода Нины стояло затемнение по умолчанию (0,6 + 1,0 + 0,6 с) — то, что Директор просил убрать (стр. 93)",
+     "npc_go": [
+      {
+       "id": "nina",
+       "to": [
+        575,
+        790
+       ],
+       "_k2": "K (ИИ-разбор 31.10, №12): не в точку Агаты у Тамары (660, 880) — рядом с Тамарой, чуть позади, между ней и тропой",
+       "s": 5.2,
+       "_d56": "Директор 01.11, стр. 56: «Нина слишком быстро идёт к Тамаре, замедлить в 2 раза» — 2,6 → 5,2 с",
+       "fade": false,
+       "face": "tamara"
+      }
+     ],
+     "_k": "…и встаёт рядом с Тамарой (правее, на той же глубине), слушает"
+    },
+    {
+     "at": 1,
+     "npc_face": [
+      {
+       "id": "tamara",
+       "face": "nina"
+      }
+     ],
+     "_k0211": "Директор 02.11, стр. 29: письма Нине Тамара отдаёт, повернувшись к ней (боком к нам), а не лицом в кадр"
+    },
+    {
+     "at": "end",
+     "npc_go": [
+      {
+       "id": "nina",
+       "to": [
+        700,
+        600
+       ],
+       "s": 2.4,
+       "fade": true
+      }
+     ],
+     "fade_out_s": 0.5,
+     "hold_s": 0.3,
+     "fade_in_s": 0.5,
+     "sets": [
+      "m23a_nina_left"
+     ],
+     "_note": "T9 (R39): Нина снова ушла в дом Дуни — её фигура на улице гаснет в затемнении (m23a_nina_left)",
+     "_j": "J-A6 (Директор 29.10, стр. 176: «Нина как бы идёт в дом — а в доме её нет»): уходит не к своему крыльцу, а по тропе к реке (выход к дальней опоре, R3) — на тот берег, в Дунин дом"
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "Tamara has crossed too, with the sack of letters. In the middle of the street she reads the addresses. Nina stands beside her, listening.",
+     "direction": {
+      "emotion": "повествовательно",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-110"
+      ]
+     }
+    },
+    {
+     "speaker": "tamara",
+     "text": "For Nina, from Agata! Every month, all year. Here, Nina, my dear. Yours first.",
+     "direction": {
+      "stress": "Нине",
+      "emotion": "«Нине от Агаты» — ровно, без акцентов и без паузы; дальше тепло",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       141,
+       168
+      ],
+      "voice_fb": [
+       22
+      ]
+     },
+     "tags": [
+      "warmly"
+     ]
+    },
+    {
+     "speaker": "narrator",
+     "text": "Nina takes Agata's letters and tucks them straight inside her coat.",
+     "direction": {
+      "emotion": "повествовательно",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-111"
+      ]
+     }
+    },
+    {
+     "speaker": "tamara",
+     "text": "Savely, from his sister… Aksinya, from her brother… Matryona Petrovna… Do you know her?",
+     "direction": {
+      "stress": "Есть",
+      "emotion": "на каждом «кому» — интонация чуть выше, на «от кого» — чуть ниже; последнее — вопрос",
+      "pace": "с паузами",
+      "takes": 3,
+      "map": [
+       141,
+       168
+      ],
+      "voice_fb": [
+       23
+      ]
+     }
+    },
+    {
+     "speaker": "tamara",
+     "text": "Here I am with a letter, and the person's gone… Another was a boy when his was written — now he has a beard himself.",
+     "direction": {
+      "stress": "мальчишкой; сам с бородой",
+      "emotion": "«А иному» — пауза — «мальчишкой ещё писали…» — «а он теперь и сам с бородой»",
+      "pace": "с паузами",
+      "takes": 3,
+      "map": [
+       141,
+       168
+      ],
+      "voice_fb": [
+       24
+      ]
+     },
+     "tags": [
+      "sad"
+     ]
+    },
+    {
+     "speaker": "tamara",
+     "text": "And this is for Dunya. From me. I'll put it by her stove. Let it lie there.",
+     "direction": {
+      "stress": "от меня; печи; там",
+      "emotion": "«от меня» — теплее; дальше акцент на «печи» и на «там»",
+      "pace": "медленно",
+      "takes": 3,
+      "map": [
+       141,
+       168
+      ],
+      "voice_fb": [
+       25
+      ]
+     },
+     "then": [
+      {
+       "speaker": "narrator",
+       "text": "Nina takes the letters towards the river — back to Dunya's house, across the water.",
+       "_t9": "T9 (вычитка R39): Нина пришла на раздачу и снова уходит в дом сестры — оба порядка M23a/M23c"
+      }
+     ]
+    }
+   ],
+   "result": "Год писем дошёл до Ольховки. Письмо Тамары Дуне легло невручённым на печь.",
+   "goal": "Letters delivered.",
+   "goal_left": {
+    "lead": "Letters delivered.",
+    "head": "Still to do today: ",
+    "items": [
+     {
+      "unless": [
+       "done_M23a"
+      ],
+      "text": "see Tamara with the letters on Olkhovka's street"
+     },
+     {
+      "unless": [
+       "done_M23c"
+      ],
+      "text": "see Mama at Aunt's house"
+     },
+     {
+      "if": [
+       "done_M23c"
+      ],
+      "unless": [
+       "done_M23d"
+      ],
+      "text": "tell Tikhon about Aunt"
+     },
+     {
+      "unless": [
+       "done_M23b"
+      ],
+      "text": "see Pavel at the mill about refilling the pond"
+     },
+     {
+      "if": [
+       "q06_hook"
+      ],
+      "unless": [
+       "q06_started"
+      ],
+      "text": "see Ilya about a workshop place for Ulya"
+     }
+    ],
+    "joiner": ", ",
+    "none": "A free day: Olkhovka is close — walk about and look.",
+    "_note": "T8 (Директор 24.10): цель свободного дня — только несделанное, по флагам (StoryData.scene_goal); goal — запасная строка без перечня"
+   },
+   "hints": [
+    "Tamara has brought a year's letters to Olkhovka; she's on the street",
+    "Olkhovka's street: through the classroom yard; from Zarechye, through the gallery's school door",
+    "Click Tamara on Olkhovka's street"
+   ]
+  },
+  {
+   "id": "M23b",
+   "type": "main",
+   "title": "Мельница: управляющий и мост",
+   "locations": [
+    "M1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M23b",
+     "manager_returned",
+     "council_held",
+     "bridge_decided"
+    ],
+    "items": []
+   },
+   "stage": [
+    {
+     "at": 0,
+     "fade_out_s": 0.6,
+     "hold_s": 0.5,
+     "fade_in_s": 0.7,
+     "frame": "F_mill_manager",
+     "_note": "Кадр: двор мельницы, Павел и старик-управляющий (FrameView)."
+    },
+    {
+     "at": "end",
+     "fade_out_s": 0.6,
+     "hold_s": 0.3,
+     "fade_in_s": 0.6,
+     "frame": ""
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "The manager arrives in the mill yard. Ilya brought him across. Pavel comes out to meet him.",
+     "_k28": "Директор 01.11, «Восемнадцатый заход» (W296): «переработать фразу совсем иначе» — кто пришёл, кто привёл, кто встречает; без имени — Фёдор Лукич назван один раз (Пелагея; тест I-T1 D1). Было: «Во дворе мельницы стоит старик — вернулся управляющий…»",
+     "_k27": "Директор 01.11, «Семнадцатый заход» (W239): «переработать». Было: «Старик во дворе мельницы стоит. Вернулся управляющий. Илья с ним пришёл.»",
+     "_k24": "Директор 01.11, стр. 65 («он без палки»): в кадре F_mill_manager у управляющего палки нет. Было: «С палкой старик во дворе мельницы стоит…»"
+    },
+    {
+     "speaker": "manager",
+     "text": "Is the sluice sound? Where's the lever?",
+     "_k3": "K3 (Директор 30.10, 01:17, страница «Третий заход», W005): «не выходит — поменять саму фразу на „А затвор-то цел? Где рычаг?“» (было «Цел затвор? Где рычаг?»)",
+     "direction": {
+      "stress": "цел",
+      "emotion": "вопрос; акцент на «цел»; пауза между двумя вопросами длиннее",
+      "pace": "с паузой",
+      "takes": 3,
+      "map": [
+       149
+      ],
+      "voice_fb": [
+       26
+      ]
+     }
+    },
+    {
+     "speaker": "pavel",
+     "text": "Hung on the nail a whole year. Just where you left it.",
+     "_k24": "Директор 01.11, стр. 66 («какое слово он говорил и как мог на год вперёд, если на день ушёл»): управляющий ничего не велел — повесил рычаг и ушёл до утра (M09_2); Павел говорит только то, что было. Было: «…провисел. По вашему слову.»"
+    },
+    {
+     "speaker": "manager",
+     "text": "A year… I meant to be back by morning. Twenty years have passed.",
+     "direction": {
+      "stress": "двадцать лет",
+      "emotion": "горько, с тихим изумлением",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       "R3-112"
+      ]
+     }
+    },
+    {
+     "speaker": "narrator",
+     "text": "They both laugh awkwardly."
+    },
+    {
+     "speaker": "manager",
+     "text": "We must refill the pond before winter. Or Zarechye will have no flour."
+    },
+    {
+     "speaker": "pavel",
+     "if": [
+      "pavel_answer_promise"
+     ],
+     "text": "You promised. I remember."
+    },
+    {
+     "speaker": "agata",
+     "if": [
+      "pavel_answer_promise"
+     ],
+     "_k": "K (ИИ-разбор 31.10, №4): «Помню, Павел» — только если в конторе Агата обещала (pavel_answer_promise); ответившей «там матушка и брат» обещать было нечего — ей then-строка без «Помню» (id M23b_<n>_then0, записи этой строки не сдвигаются)",
+     "text": "I remember, Pavel. We will — but first we need a bridge. The rope won't last: the first flood will take it, and we'll lose the road again.",
+     "direction": {
+      "emotion": "трезво",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-113"
+      ]
+     },
+     "then": [
+      {
+       "speaker": "agata",
+       "unless": [
+        "pavel_answer_promise"
+       ],
+       "text": "We will, Pavel. But first we need a bridge. The rope won't last: the first flood will take it, and we'll lose the road again.",
+       "direction": {
+        "emotion": "трезво",
+        "pace": "ровно",
+        "takes": 2
+       },
+       "_k": "K (ИИ-разбор №4): та же мысль без «Помню» — обещания не было; текст на утверждение Директору (ACCEPTANCE_K)"
+      }
+     ]
+    },
+    {
+     "speaker": "ilya",
+     "text": "Need to build the bridge before it freezes. From Dunya's notebook.",
+     "then": [
+      {
+       "speaker": "ilya",
+       "text": "Higher spans than before — water can pass beneath. We must work now, while the pond is drained.",
+       "_t9": "T9 (вычитка R43): причина нового моста — из SCENARIO_FINAL §8 M24"
+      }
+     ]
+    },
+    {
+     "speaker": "ilya",
+     "text": "Tomorrow morning, we lay the first beam. Take it from the empty log frame at the village edge — dry timber there. Come to the bend."
+    }
+   ],
+   "result": "Управляющий вернулся стариком; пруд поднять к зиме, канат — времянка: мост по Дуниной тетради, пока лёд не встал (совет слит со сценой на мельнице — D21, Директор 23:44).",
+   "goal": "Agreed: a bridge before the freeze. First beam at the bend tomorrow morning.",
+   "goal_left": {
+    "lead": "Agreed: a bridge before the freeze. First beam at the bend tomorrow morning.",
+    "head": "Still to do today: ",
+    "items": [
+     {
+      "unless": [
+       "done_M23a"
+      ],
+      "text": "see Tamara with the letters on Olkhovka's street"
+     },
+     {
+      "unless": [
+       "done_M23c"
+      ],
+      "text": "see Mama at Aunt's house"
+     },
+     {
+      "if": [
+       "done_M23c"
+      ],
+      "unless": [
+       "done_M23d"
+      ],
+      "text": "tell Tikhon about Aunt"
+     },
+     {
+      "unless": [
+       "done_M23b"
+      ],
+      "text": "see Pavel at the mill about refilling the pond"
+     },
+     {
+      "if": [
+       "q06_hook"
+      ],
+      "unless": [
+       "q06_started"
+      ],
+      "text": "see Ilya about a workshop place for Ulya"
+     }
+    ],
+    "joiner": ", ",
+    "none": "A free day: Olkhovka is close — walk about and look.",
+    "_note": "T8 (Директор 24.10): цель свободного дня — только несделанное, по флагам (StoryData.scene_goal); goal — запасная строка без перечня"
+   },
+   "hints": [
+    "Pond still drained — call on Pavel at the mill",
+    "Shortest route: school door → gallery → Aunt's house → Zarechye street → mill",
+    "Enter the mill yard; the conversation starts by itself"
+   ],
+   "_merged_note": "D21 (Директор 23:44, SCENARIO_FINAL §8 M23): совет семерых убран; решение о мосте — здесь, вчетвером: управляющий, Павел, Агата, Илья. Срок — лёд и набор пруда (A2): плита при поднятом пруде под воду не уходит."
+  },
+  {
+   "id": "M23c",
+   "type": "main",
+   "title": "Нина в доме сестры",
+   "locations": [
+    "H1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M23c",
+     "nina_visited_house"
+    ],
+    "items": []
+   },
+   "stage": [
+    {
+     "at": 1,
+     "cut": true,
+     "sets": [
+      "m23c_coat_hung"
+     ],
+     "_k1_0111": "01.11 (Директор, стр. 60: «когда Нина вешает пальто — пальто не появляется»): пальто на крючке — сразу после «Вешает на пустой крючок…» (слой H1 nina_coat_hung), без затемнения"
+    },
+    {
+     "at": 2,
+     "fade_out_s": 0.6,
+     "hold_s": 0.4,
+     "fade_in_s": 0.6,
+     "frame": "F_gallery_nina",
+     "_note": "Галерея: школьная дверь на родных петлях."
+    },
+    {
+     "at": 4,
+     "fade_out_s": 0.6,
+     "hold_s": 0.4,
+     "fade_in_s": 0.6,
+     "frame": "F_workshop_nina",
+     "_note": "Мастерская: Нина у верстака, её зеркало в стойке."
+    },
+    {
+     "at": 5,
+     "fade_out_s": 0.5,
+     "hold_s": 0.3,
+     "fade_in_s": 0.6,
+     "frame": "F_mirror_empty",
+     "_note": "В стекле — её горница, пустая (тот же арт горницы, тон старого стекла)."
+    },
+    {
+     "at": "end",
+     "fade_out_s": 0.6,
+     "hold_s": 0.3,
+     "fade_in_s": 0.6,
+     "frame": ""
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "Nina enters her sister's house — by the porch, like anyone else now. She has brought Dunya's coat. Hangs it on the empty hook where it hung before the flood.",
+     "direction": {
+      "stress": "с крыльца",
+      "emotion": "спокойно, повествовательно",
+      "pace": "ровно",
+      "takes": 3,
+      "map": [
+       143
+      ],
+      "voice_fb": [
+       27
+      ]
+     },
+     "_h49": "H49 (Директор 24.10: «вешает пальто, но остаётся в том же пальто»): на крючок Нина вешает не своё, а Дунино пальто — принесла его из Ольховки домой; своё остаётся на ней. Слой nina_coat (партия 8) — это пальто Дуни"
+    },
+    {
+     "speaker": "nina",
+     "text": "All Dunya's. Even the dust."
+    },
+    {
+     "speaker": "narrator",
+     "text": "The school door hangs on its own hinges in the gallery."
+    },
+    {
+     "speaker": "nina",
+     "text": "For twenty years, an empty doorway on our side. And the door stood here all along. Close by. Two steps away."
+    },
+    {
+     "speaker": "narrator",
+     "text": "Nina's mirror, on the workshop bench."
+    },
+    {
+     "speaker": "narrator",
+     "text": "It shows her parlour. Empty."
+    },
+    {
+     "speaker": "nina",
+     "text": "My parlour… And here I stand.",
+     "direction": {
+      "emotion": "растроганно, тихо",
+      "pace": "медленно",
+      "takes": 3,
+      "map": [
+       "R3-114"
+      ]
+     }
+    },
+    {
+     "speaker": "agata",
+     "text": "I saw you there. Writing something."
+    },
+    {
+     "speaker": "nina",
+     "text": "Lessons. And letters to you, again and again.",
+     "direction": {
+      "stress": "письма",
+      "emotion": "нежно",
+      "pace": "пауза перед «Да тебе»",
+      "takes": 1,
+      "map": [
+       144
+      ]
+     },
+     "tags": [
+      "warmly"
+     ]
+    }
+   ],
+   "result": "Нина в доме сестры: школьная дверь, её зеркало, её пустая горница в стекле.",
+   "goal": "Tikhon awaits his mistress by the stove. Who will tell him?",
+   "goal_left": {
+    "lead": "Tikhon awaits his mistress by the stove. Who will tell him?",
+    "head": "Still to do today: ",
+    "items": [
+     {
+      "unless": [
+       "done_M23a"
+      ],
+      "text": "see Tamara with the letters on Olkhovka's street"
+     },
+     {
+      "unless": [
+       "done_M23c"
+      ],
+      "text": "see Mama at Aunt's house"
+     },
+     {
+      "if": [
+       "done_M23c"
+      ],
+      "unless": [
+       "done_M23d"
+      ],
+      "text": "tell Tikhon about Aunt"
+     },
+     {
+      "unless": [
+       "done_M23b"
+      ],
+      "text": "see Pavel at the mill about refilling the pond"
+     },
+     {
+      "if": [
+       "q06_hook"
+      ],
+      "unless": [
+       "q06_started"
+      ],
+      "text": "see Ilya about a workshop place for Ulya"
+     }
+    ],
+    "joiner": ", ",
+    "none": "A free day: Olkhovka is close — walk about and look.",
+    "_k": "K (сверка журнала 01.11, п. 19): после M23c список несделанного не пропадает"
+   },
+   "hints": [
+    "Mama went with Pelageya to Aunt's house, by the porch. The school door is quicker for me",
+    "Classroom → door to gallery → Aunt's house",
+    "Go into Aunt's house"
+   ]
+  },
+  {
+   "id": "M23d",
+   "type": "main",
+   "title": "Тихон узнаёт",
+   "locations": [
+    "H1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M23c"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M23d",
+     "tikhon_knows_dunya"
+    ],
+    "items": []
+   },
+   "stage": [
+    {
+     "at": 1,
+     "npc_face": [
+      {
+       "id": "agata",
+       "face": "tikhon"
+      }
+     ],
+     "_k0211": "Директор 02.11, стр. 24: «когда Агата с Ниной в комнате говорит с Тихоном — она не повёрнута к нему»: к Тихону — на своей реплике ему (узел Тихона — puppet_tikhon, StoryRunner._actor_node)"
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "prompt": "@E4.M23d.prompt",
+     "options": [
+      {
+       "id": "agata",
+       "label": "@E4.M23d.opt_agata",
+       "sets": "tikhon_told_agata"
+      },
+      {
+       "id": "nina",
+       "label": "@E4.M23d.opt_nina",
+       "sets": "tikhon_told_nina"
+      }
+     ]
+    },
+    {
+     "speaker": "agata",
+     "if": [
+      "tikhon_told_agata"
+     ],
+     "text": "Tikhon… Dunya isn't coming. She died at Mother's. Two years ago, by their count."
+    },
+    {
+     "speaker": "nina",
+     "if": [
+      "tikhon_told_nina"
+     ],
+     "text": "Tikhon, Dunya isn't coming. She died in my arms two years ago, by our count. She spoke of you."
+    },
+    {
+     "speaker": "narrator",
+     "text": "Tikhon is silent for a long time. Then he moves closer to Agata's sleeping ledge and settles there.",
+     "direction": {
+      "stress": "поближе",
+      "emotion": "тихо, сочувственно",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       145
+      ]
+     },
+     "_f05": "F05 (Директор 30.10): он и так был на печи — в кадре ложится у лежанки Агаты"
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Then the evening is over.",
+     "tags": [
+      "slowly",
+      "sad"
+     ],
+     "then": [
+      {
+       "speaker": "tikhon",
+       "text": "Well, then… The stove still needs watching. It won't wait.",
+       "tags": [
+        "sighs"
+       ],
+       "_k24": "Директор 01.11, стр. 62 («после „значит, вечер кончился“ нужна ещё фраза — проводник между совсем грустной и чуть более нейтральным следующим диалогом»): Тихон возвращается к своему делу смотрителя печи — дальше обе ветки (хозяйка Нина / «не уходи надолго») идут от будничного тона. then не сдвигает записанные M23d_5, M23d_6_then*"
+      }
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "if": [
+      "tikhon_told_nina"
+     ],
+     "text": "You'll be the mistress now. Only leave her pot alone for a while. Let it stand.",
+     "tags": [
+      "slowly"
+     ],
+     "_f06": "F06 (30.10) снята: «Друг ты мне…» (M23d_6_then0/then1) звучит в обеих ветках — новая строка его повторяла",
+     "_h51": "H51 (Директор 24.10: «слишком весело после грустного известия»): Тихон признаёт Нину хозяйкой и горюет по-своему — Дунину кастрюлю не трогать"
+    },
+    {
+     "_container": "Директор 30.10, 19:15 («ветка — убрать второй раз»): в ветке Агаты рассказчик дважды укладывал Тихона к её лежанке (строка 3 и здесь: «Устраивается Тихон на печи — с того краю, что к Агатиной лежанке поближе.»). Второй раз снят; строка без text — только держит свои продолжения then (их записи голоса M23d_6_then0/then1 не сдвигаются; звучат, как и прежде, по своим условиям).",
+     "then": [
+      {
+       "speaker": "tikhon",
+       "text": "Agata, you… Don't go away for long. I'm used to you. You're my friend, then. Only don't tell Tamara.",
+       "tags": [
+        "thoughtful"
+       ],
+       "direction": {
+        "stress": "Друг",
+        "emotion": "ворчливо, а под этим тепло; паузы между фразами длиннее",
+        "pace": "с длинными паузами",
+        "takes": 3,
+        "map": [
+         145
+        ],
+        "voice_fb": [
+         28
+        ]
+       }
+      },
+      {
+       "speaker": "agata",
+       "text": "I won't, Tikhon. You're my friend, too.",
+       "tags": [
+        "chuckling"
+       ],
+       "direction": {
+        "stress": "друг",
+        "emotion": "чуть посмеиваясь; вторая фраза — тепло и по-дружески",
+        "pace": "мягко",
+        "takes": 3,
+        "map": [
+         145
+        ],
+        "voice_fb": [
+         29
+        ]
+       }
+      }
+     ]
+    }
+   ],
+   "result": "Тихон узнал о Дуне и больше не ждёт её к вечеру; зовёт Нину хозяйкой или спит у лежанки Агаты.",
+   "goal": "Tikhon knows about Aunt.",
+   "goal_left": {
+    "lead": "Tikhon knows about Aunt.",
+    "head": "Still to do today: ",
+    "items": [
+     {
+      "unless": [
+       "done_M23a"
+      ],
+      "text": "see Tamara with the letters on Olkhovka's street"
+     },
+     {
+      "unless": [
+       "done_M23c"
+      ],
+      "text": "see Mama at Aunt's house"
+     },
+     {
+      "if": [
+       "done_M23c"
+      ],
+      "unless": [
+       "done_M23d"
+      ],
+      "text": "tell Tikhon about Aunt"
+     },
+     {
+      "unless": [
+       "done_M23b"
+      ],
+      "text": "see Pavel at the mill about refilling the pond"
+     },
+     {
+      "if": [
+       "q06_hook"
+      ],
+      "unless": [
+       "q06_started"
+      ],
+      "text": "see Ilya about a workshop place for Ulya"
+     }
+    ],
+    "joiner": ", ",
+    "none": "A free day: Olkhovka is close — walk about and look.",
+    "_note": "T8 (Директор 24.10): цель свободного дня — только несделанное, по флагам (StoryData.scene_goal); goal — запасная строка без перечня"
+   },
+   "hints": [
+    "No one has told Tikhon about Aunt yet",
+    "Tikhon is by the stove at Aunt's house",
+    "Click Tikhon"
+   ]
+  },
+  {
+   "id": "Q06m",
+   "type": "minor",
+   "title": "Митя приходит помочь",
+   "locations": [
+    "O4"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22",
+     "met_ilya"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_Q06m"
+    ],
+    "items": []
+   },
+   "_k0211": "Директор 02.11, стр. 28: «Митя появляется в этом деле — добавить фразой, что он пришёл помочь… есть ли рядом тот, кто пришёл помочь?» — Митя поднимается с тропы от реки к сараю Ильи и говорит, что подсобит; потом затемнение сборки (Q06a)",
+   "stage": [
+    {
+     "at": 0,
+     "cut": true,
+     "sets": [
+      "q06_mitya_here"
+     ]
+    },
+    {
+     "at": 0,
+     "cut": true,
+     "npc_go": [
+      {
+       "id": "mitya",
+       "to": [
+        1640,
+        690
+       ],
+       "s": 2.0,
+       "fade": false,
+       "face": "ilya"
+      }
+     ],
+     "_k": "идёт от начала тропы к сараю, встаёт рядом с Ильёй",
+     "_k0211b": "Директор 02.11 вечер, № 18 («Митя к верстаку идёт очень замедленно, ускорить раза в 3»): 6,0 → 2,0 с"
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "mitya",
+     "text": "I'll help — quicker with three. The perch can wait.",
+     "direction": {
+      "emotion": "по-дружески, легко",
+      "pace": "ровно",
+      "takes": 3
+     }
+    }
+   ]
+  },
+  {
+   "id": "Q06a",
+   "type": "minor",
+   "title": "Верстак собран",
+   "locations": [
+    "O4"
+   ],
+   "requires": {
+    "flags": [
+     "done_M22",
+     "met_ilya"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_Q06a",
+     "q06_bench_built"
+    ],
+    "items": []
+   },
+   "_requires_note": "как у Q06; настоящий запуск — complete_when комнаты O4 по q06_started (флаг хотспота сарая)",
+   "summary": "Q06: после разговора у сарая Ильи — затемнение со стуком, рассказчик о сборке верстака, затем выбор места (A — у Ильи, B — в тётину мастерскую). Игра-сборка (крупный план workbench) снята 01.11.",
+   "_k": "Утренняя страница 01.11 (Директор 01:03, «Верстак для Ули», вариант А): игру-сборку убрать — после разговора у сарая затемнение, стук, рассказчик; выбор, куда ставить верстак, остаётся",
+   "stage": [
+    {
+     "at": 0,
+     "fade_out_s": 0.8,
+     "hold_s": 3.8,
+     "fade_in_s": 0.8,
+     "sounds": [
+      {
+       "id": "synth:hammer",
+       "at_s": 1.0
+      },
+      {
+       "id": "synth:hammer",
+       "at_s": 1.6
+      },
+      {
+       "id": "synth:knock",
+       "at_s": 2.3
+      },
+      {
+       "id": "synth:hammer",
+       "at_s": 2.9
+      },
+      {
+       "id": "synth:hammer",
+       "at_s": 3.5
+      }
+     ],
+     "_note": "чёрное со стуком топора и молотка, флаг «верстак собран» — под чёрным"
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "By evening, Ilya and Mitya have built the bench: Agata held the boards; Ulya passed the nails.",
+     "direction": {
+      "emotion": "спокойно, итог дня",
+      "pace": "неторопливо",
+      "takes": 1
+     }
+    },
+    {
+     "speaker": "agata",
+     "prompt": "@O4q.workshop.prompt",
+     "options": [
+      {
+       "id": "A",
+       "label": "@O4q.workshop.opt_ilya",
+       "sets": "q06_table_at_ilya"
+      },
+      {
+       "id": "B",
+       "label": "@O4q.workshop.opt_agata",
+       "sets": "q06_table_at_agata"
+      }
+     ],
+     "_note": "выбор места — прежний (хотспот сарая); сцена Q06 (реплики Мити и Ильи) идёт по complete_when комнаты"
+    }
+   ]
+  }
+ ]
+}

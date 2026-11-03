@@ -1,0 +1,159 @@
+{
+ "id": "EP_boat",
+ "frame": true,
+ "place": "R1",
+ "_art": "Эпилог: Пелагея и Митя смолят лодку на зиму (ep_boat, партия 5). Дощечка Мити на стене сарая — если Q07 «отдать Пелагее».",
+ "art_source": {
+  "files": {
+   "bg.png": "assets/incoming/ep_boat.png",
+   "bench.png": "assets/incoming/ep_boat_bench.png"
+  },
+  "canvas": [
+   1672,
+   941
+  ],
+  "alpha_min": 0
+ },
+ "background": {
+  "kind": "exterior",
+  "image": "res://assets/rooms/EP_boat/bg.png",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   0,
+   1000
+  ],
+  [
+   1920,
+   1000
+  ],
+  [
+   1920,
+   1078
+  ],
+  [
+   0,
+   1078
+  ]
+ ],
+ "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
+ "player_hidden": true,
+ "layers": [
+  {
+   "id": "bench",
+   "image": "res://assets/rooms/EP_boat/bench.png",
+   "if": [
+    "q06_table_at_ilya"
+   ],
+   "_note": "Q06, вариант A: справа от лодки — верстак, уключина, новая полка («Митя чинит уключину; рядом сушится их полка»). Партия 8б ep_boat_bench.png (x1230–1650, y697–927)."
+  },
+  {
+   "id": "mitya_board",
+   "image": "res://assets/rooms/EP_boat/mitya_board.png",
+   "compose": {
+    "src": "assets/incoming/closeup_mitya_board.png",
+    "crop": [
+     300,
+     250,
+     1080,
+     420
+    ],
+    "at": [
+     95,
+     300
+    ],
+    "width": 120,
+    "tint": [
+     0.85,
+     0.85,
+     0.88
+    ]
+   },
+   "if": [
+    "q07_board_to_pelageya"
+   ],
+   "_note": "дощечка с двадцатью зарубками на стене сарая (Q07, вариант B)"
+  },
+  {
+   "id": "pelageya",
+   "image": "res://assets/rooms/EP_boat/pelageya.png",
+   "compose": {
+    "char": "pelageya",
+    "sheet": "pelageya_v2",
+    "feet": [
+     850,
+     800
+    ],
+    "height": 274,
+    "_k1_0111": "01.11 (Директор, стр. 72: «мама стоит слишком высоко, когда лодку смолят»): ноги были на y 720 — выше ног козел (≈ 790), а фигура поверх козел — стояла «на воздухе» за ними. Теперь на снегу перед левыми козлами (y 800), рост по глубине: как у Мити (285 на y 750) × 0,9 (она ниже) × (800 − 340)/(750 − 340) ≈ 274",
+    "dir": 6,
+    "action": "idle",
+    "frame": 0,
+    "anim": {
+     "rest": "idle",
+     "talk": "talk_steady_idle"
+    },
+    "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
+    "tint": [
+     0.97,
+     0.95,
+     0.95
+    ],
+    "shadow": 0.35
+   }
+  },
+  {
+   "id": "mitya",
+   "image": "res://assets/rooms/EP_boat/mitya.png",
+   "compose": {
+    "char": "mitya",
+    "sheet": "mitya_v2",
+    "feet": [
+     1060,
+     750
+    ],
+    "height": 285,
+    "dir": 6,
+    "action": "idle",
+    "frame": 0,
+    "anim": {
+     "rest": "idle",
+     "talk": "talk_steady_idle"
+    },
+    "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
+    "tint": [
+     0.97,
+     0.95,
+     0.95
+    ],
+    "shadow": 0.35
+   }
+  }
+ ],
+ "effects": [
+  {
+   "id": "snow",
+   "type": "snow",
+   "rect": [
+    0,
+    0,
+    1920,
+    1080
+   ],
+   "amount": 70,
+   "z": 4000
+  }
+ ],
+ "spawns": {
+  "default": [
+   960,
+   1040
+  ]
+ },
+ "props": [],
+ "hotspots": [],
+ "exits": [],
+ "scenes": {},
+ "flags": {}
+}

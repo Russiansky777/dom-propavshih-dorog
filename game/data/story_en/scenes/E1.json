@@ -1,0 +1,380 @@
+{
+ "episode": 1,
+ "title": "Зимний класс",
+ "target_minutes": [
+  6,
+  7
+ ],
+ "premise": "Школьная дверь на родных петлях открывает класс в Ольховке. Там зима, хотя снаружи октябрь, на партах чужие почерки. В учительском ящике — план «тому, кто придёт через эту дверь»: на той стороне живы и тоже ищут. Тропа от школы водит по кругу. Вечером — ночь у печи (Docs/SCENARIO_FINAL.md, раздел 6).",
+ "scenes": [
+  {
+   "id": "M05",
+   "type": "main",
+   "title": "Дверь в подготовленной раме",
+   "locations": [
+    "H3"
+   ],
+   "requires": {
+    "flags": [],
+    "items": [
+     "door_hinges",
+     "door_drawing"
+    ]
+   },
+   "_requires_k0211": "Директор 02.11, стр. 9–10: дверь ставится, когда в сумке петли и Дунин рисунок — без осмотра колокола и щелчка по проёму (M04 тогда закрывается здесь же, без своей реплики: done_M04 в grants)",
+   "grants": {
+    "flags": [
+     "done_M05",
+     "door_school_installed",
+     "done_M04"
+    ],
+    "items": []
+   },
+   "consumes": [
+    "door_hinges",
+    "door_drawing"
+   ],
+   "puzzle": {
+    "verb": "match_marks",
+    "solution": "Очистить паз, поставить три родные петли, совместить зарубку порога с рисунком",
+    "error": "За открытым полотном остаётся домашняя стена; ничего не ломается; после повторной ошибки риска подсвечивается на рисунке"
+   },
+   "hints": [
+    "School door in the gallery; hinges in my bag",
+    "Four identical beam notches in the gallery. Aunt circled the right one in her drawing: align it with the door mark",
+    "Gallery: match the threshold mark to the drawing and fit all three original hinges"
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "Our school!… But how…",
+     "tags": [
+      "warmly"
+     ]
+    }
+   ],
+   "result": "Игрок сам нажимает на проход и переводит Агату из H3 в O1. Та же дверь — выход домой. Пока Агата в классе, она живёт его временем (объяснение позже).",
+   "goal": "A winter classroom beyond the door. Look round: sack, notebooks, wiped board. The same door leads home.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «За дверью — зимний класс. Оглядеться: мешок, тетради, задача на доске — кто здесь учился без нас? Та же дверь ведёт домой.»)"
+  },
+  {
+   "id": "M06",
+   "type": "main",
+   "title": "Знакомая комната, чужие следы",
+   "locations": [
+    "O1"
+   ],
+   "requires": {
+    "flags": [
+     "door_school_installed"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M06",
+     "seen_class_traces"
+    ],
+    "items": []
+   },
+   "actions": [
+    "При первом входе: «Там зима. А у нас ещё октябрь» (rooms/O1.json → on_enter)",
+    "Осмотреть два из трёх: залатанный мешок, стопка тетрадей, задача на доске"
+   ],
+   "logic": "Следы свидетельствуют о пользовании классом, не о присутствии жильца. Слова «сегодня» и дат для расчёта двадцати лет здесь нет.",
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "So they have been studying here all this time!",
+     "direction": {
+      "stress": "учились",
+      "emotion": "радостное открытие",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       "R3-85"
+      ]
+     },
+     "tags": [
+      "curious"
+     ]
+    }
+   ],
+   "result": "Учительский ящик со школьной печатью привлекает внимание; видна обычная дверь на крыльцо.",
+   "goal": "Someone went on studying in the classroom. Examine the teacher's desk.",
+   "hints": [
+    "Someone studied here after the flood",
+    "Sack by the door, notebooks on the windowsill, wiped board",
+    "Examine any two traces: sack, notebooks, board — or open the teacher's desk drawer straight away"
+   ]
+  },
+  {
+   "id": "M07",
+   "type": "main",
+   "title": "Учительский ящик",
+   "locations": [
+    "O1"
+   ],
+   "requires": {
+    "flags": [
+     "door_school_installed",
+     "seen_class_traces"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M07",
+     "knows_crossing_plan"
+    ],
+    "items": [
+     "photo_bridge",
+     "drawing_ilya",
+     "plan_crossing"
+    ]
+   },
+   "actions": [
+    "Открыть ящик: фотография старого моста (канат-поручень на плите ближней опоры, рядом лодка Пелагеи), детский рисунок моста с лодкой, план переправы взрослой рукой",
+    "Прочитать план: дальний конец держат они, ближний — плита на опоре у поворота"
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "Ilyusha always drew boats with smoke. Though what boat gives off smoke?",
+     "tags": [
+      "warmly"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "\"To whoever comes through this door. A road is held from both ends. We hold the far end. The near end is the plate on the pier by the bend: underwater, with a crack in it. Dunya has a bracket for it on her workbench.",
+     "tags": [
+      "slowly"
+     ],
+     "_split": "План переправы — одна запись на экране и в сценарии; для озвучки и чтения разбит на три реплики подряд (ИИ-чтение T10: строка > 400 знаков), слова не менялись."
+    },
+    {
+     "speaker": "agata",
+     "text": "Fasten the rope only to its ring — tying it to the pier's stone won't hold. We tried on our side. Our end runs through the old ring on the far pier."
+    },
+    {
+     "speaker": "agata",
+     "text": "The mill sluice holds back the water; its lever is in the manager's office. Once the rope is fastened, signal three flashes from the pier.\""
+    },
+    {
+     "speaker": "agata",
+     "text": "The door on its own hinges remembered its doorway. Then the rope on its own ring will remember the bridge.",
+     "tags": [
+      "thoughtful"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "Piers standing, rope whole. Put the near end back on the ring — the boat will get through.",
+     "tags": [
+      "thoughtful"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "\"We hold the far end.\" I'm not the only one looking for a way out!",
+     "direction": {
+      "stress": "не одна",
+      "emotion": "радость: не одна",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       "R3-86"
+      ]
+     },
+     "tags": [
+      "excited"
+     ]
+    }
+   ],
+   "result": "Этот план — новое знание, которого год не было снаружи: где ближний конец дороги и что держит воду. Фотография, рисунок и план не расходуются. Скобу на верстаке теперь можно взять.",
+   "goal": "The plan: the plate at the bend is the road's near end; the mill sluice holds back the water. Leave the yard towards the village.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «В Ольховке ищут дорогу с другого конца: ближний конец — плита на опоре у поворота, воду держит затвор мельницы, рычаг — в конторе. Школа ведь в Ольховке: выйти через двор к деревне.»)",
+   "hints": [
+    "Teacher's desk",
+    "Teacher's desk drawer with the school seal",
+    "Open the teacher's desk drawer: three things inside"
+   ]
+  },
+  {
+   "id": "M08",
+   "type": "main",
+   "title": "Дорожка, которая возвращает",
+   "locations": [
+    "O2",
+    "O1"
+   ],
+   "requires": {
+    "flags": [
+     "door_school_installed",
+     "done_M07"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M08",
+     "observed_path_loop"
+    ],
+    "items": [],
+    "_items_0211b": "Директор 02.11 вечер, № 5 («если я не беру мел и иду по тропе — он появляется у меня автоматически»): сцена отдавала мел при завершении (обход тропы), мимо парты. Мел — только с парты (O1 chalk), надпись на доске необязательна"
+   },
+   "actions": [
+    "Идти к калитке — тропа обводит вокруг школы и возвращает к её боковому окну (H22: объяснено словами Агаты)",
+    "Необязательно: оставить варежку на ступени («Если вернусь к ней — дорога водит по кругу»); её можно поднять обратно",
+    "Необязательно: написать мелом на доске «Я была здесь. Агата», «Мама, я иду» или «Илюша, я нашла твой рисунок» — или не писать"
+   ],
+   "_hint_note": "После одного проверенного обхода Агата формулирует наблюдение; пробовать все направления не нужно.",
+   "hints": [
+    "The schoolyard gate — might there be a road to the village beyond it?",
+    "Leave a mitten on the step if you wish, to see whether the path brings you back",
+    "Go through the schoolyard gate and see where the path leads"
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "The door brought back the classroom, but the path still vanishes. To reach all of Olkhovka, I must restore the bridge road.",
+     "direction": {
+      "emotion": "рассуждает",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-87"
+      ]
+     }
+    }
+   ],
+   "result": "Вернуться через школьный порог в дом; надпись на доске (если есть) — след на будущее: мать ответит на неё, когда тропа вернётся.",
+   "goal": "The school path goes in circles: no reaching the village this way. Home through the same door."
+  },
+  {
+   "id": "N01",
+   "type": "main",
+   "title": "Ночь у печи",
+   "locations": [
+    "H1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M07",
+     "done_M08"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_N01",
+     "night_day1"
+    ],
+    "items": []
+   },
+   "actions": [
+    "T6 (Директор 24.10): из школы в галерею — ночь («пора спать, лягу у печи»); клик по лежанке у печи в жилой комнате — «пора спать», затемнение: Агата на лежанке, огонь в печи, Тихон на кресле (мамино письмо M19: «спишь у её печи»); кровать на чердаке — Дунина («лягу у печи — там теплее»)",
+    "Две реплики Агаты (об Илье и о плане) и одна ворчливая Тихона; затемнение — «День второй» (T6) — утро — Тихон на кресле просит не звонить в колокол с утра: он ночь стерёг печь и хочет отоспаться (H23: мягче и с причиной) (SCENARIO_FINAL §7 «Утро»); сохранение «День второй»"
+   ],
+   "stage": [
+    {
+     "at": 0,
+     "fade_out_s": 0.9,
+     "hold_s": 1.6,
+     "fade_in_s": 1.4,
+     "dim": 0.55,
+     "room": "H1",
+     "spawn": "night",
+     "_note": "Ночь у печи: затемнение, Агата у печи в жилой комнате (спавн night у лежанки), Тихон на своём месте; комната в полумраке, огонь в печи (stove_lit) — существующие средства, без нового арта."
+    },
+    {
+     "at": 3,
+     "player_hidden": false,
+     "_k": "31.10 (Директор, стр. 47: «после фразы Агаты и перед „Спи уж, за печь я отвечаю“ есть фейд — он не нужен, + Агата пропадает, а не должна»): затемнение и прятанье Агаты на «Спи уж» (25.10 стр. 67) убраны — она остаётся у печи, Тихон говорит ей «Спи уж»; затемнение одно — к утру",
+     "fade_out_s": 1.2,
+     "hold_s": 1.4,
+     "fade_in_s": 1.0,
+     "dim": 0.0,
+     "day_card": "@ui.day_card_2",
+     "_note": "Утро: затемнение и обычный свет; Тихон на кресле говорит своё утреннее (SCENARIO_FINAL §7 «Утро»), затем сохранение «День второй» (checkpoint) — утро входит в сцену, после загрузки ничего не повторяется."
+    }
+   ],
+   "hints": [
+    "Night — time to sleep",
+    "Sleep on the ledge by the warm stove",
+    "From the gallery to the living room; click the sleeping ledge by the stove"
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "Perhaps Ilyusha still draws boats with smoke.",
+     "tags": [
+      "sleepy"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "An adult copied that plan, more than once. Someone is holding the far end. Waiting for three flashes.",
+     "tags": [
+      "thoughtful"
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Go to sleep. I'll answer for the stove.",
+     "direction": {
+      "stress": "я отвечаю",
+      "emotion": "ворчливо-заботливо; ударение на последних двух словах «я отвечаю»",
+      "pace": "лениво",
+      "takes": 3,
+      "map": [
+       67
+      ],
+      "voice_fb": [
+       5
+      ]
+     },
+     "tags": [
+      "grumbling"
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Don't ring that bell first thing. I've watched the stove all night; I need my sleep.",
+     "tags": [
+      "sleepy"
+     ]
+    }
+   ],
+   "checkpoint": {
+    "slot": "day2",
+    "title": "@ui.checkpoint_day2"
+   },
+   "result": "Конец дня первого. Игрок пока не знает, что этот вечер у печи видела его мать (Дунино зеркальце, M19).",
+   "goal": "Morning. To the mill: the sluice lever is in the manager's office.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Утро. На мельницу: по плану рычаг затвора — в конторе управляющего. Там Павел — он знает больше.»)"
+  },
+  {
+   "id": "V03",
+   "type": "minor",
+   "title": "Чужое исправление",
+   "locations": [
+    "O1"
+   ],
+   "requires": {
+    "flags": [
+     "seen_class_traces"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_V03"
+    ],
+    "items": []
+   },
+   "summary": "На полях учебной картинки кто-то дорисовал птице сапоги; Агата сама когда-то пририсовала ей шапку. Можно оставить пометку. Имя рисовавшего не раскрывается."
+  }
+ ]
+}

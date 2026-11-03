@@ -84,6 +84,9 @@ const SLOT_NAME_W := 250.0
 var settings_rows: Array = []    # the settings controls (hidden in "save" / "load")
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button, delete: Button}
 var delete_dialog: Control = null   # J (стр. 7): «Вы действительно хотите удалить это сохранение?»
+var lang_buttons: Dictionary = {}   # "voice:ru" | "voice:en" | "subs:ru" | "subs:en" | "subs:none" -> Button (menu, Director 03.11)
+var lang_dialog: Control = null     # the warning before English: «экспериментальные, могут содержать ошибки» + the tick
+var _lang_pending: Array = []       # [kind, value] waiting for the tick
 var delete_slot: String = ""
 var fade: ColorRect
 var day_card: DayCard          # T6: «День второй» … between the days (StoryRunner.day_card_requested)
@@ -559,6 +562,35 @@ func _build() -> void:
 	fullscreen_check.toggled.connect(func(on): DisplaySettings.set_fullscreen(on))
 	mv.add_child(fullscreen_check)
 	settings_rows.append(fullscreen_check)
+	# Director 02.11 23:39 / 03.11: the voice and the subtitles in Russian or English (LanguageSettings); the names of
+	# the choices are written in their own language, «Без субтитров» with its English below
+	LanguageSettings.load_settings()
+	for spec in [["voice", "@ui.lang_voice", [["ru", "@ui.lang_voice_ru"], ["en", "@ui.lang_voice_en"]]],
+			["subs", "@ui.lang_subtitles", [["ru", "@ui.lang_subs_ru"], ["en", "@ui.lang_subs_en"], ["none", "@ui.lang_subs_none"]]]]:
+		var lrow := HBoxContainer.new()
+		lrow.name = "Lang_" + String(spec[0])
+		lrow.add_theme_constant_override("separation", 12)
+		mv.add_child(lrow)
+		settings_rows.append(lrow)
+		var ll := Label.new()
+		ll.text = StoryData.text(String(spec[1]))
+		ll.custom_minimum_size = Vector2(120, 0)
+		ll.theme_type_variation = &"SlotNameLabel"
+		lrow.add_child(ll)
+		for opt in spec[2]:
+			var lb := Button.new()
+			lb.name = "%s_%s" % [spec[0], opt[0]]
+			lb.text = StoryData.text(String(opt[1]))
+			lb.toggle_mode = true
+			lb.focus_mode = Control.FOCUS_NONE
+			lb.custom_minimum_size = Vector2(190, 52)
+			lb.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			var kind := String(spec[0])
+			var val := String(opt[0])
+			lb.pressed.connect(func(): _on_lang_choice(kind, val))
+			lrow.add_child(lb)
+			lang_buttons["%s:%s" % [kind, val]] = lb
+	_sync_lang_buttons()
 	# Controls line: the reveal key (exit_hints, Director 18.10).
 	var keys_l := Label.new()
 	keys_l.name = "KeysHint"
@@ -767,6 +799,11 @@ func _render_dialogue() -> void:
 	else:
 		text_label.visible = true
 		dialogue_pages = split_pages(String(beat.get("text", "")))
+		# «Без субтитров» (Director 03.11): a line that is heard shows no words — the speaker's name and «дальше» stay;
+		# a line without a recording is still shown (else it would be lost)
+		if LanguageSettings.subtitles == "none" and t == "line" and VoiceDirector.line_status(String(beat.get("line_id", "")), String(beat.get("text", ""))) == "ok":
+			dialogue_pages = [""] as Array[String]
+			text_label.visible = false
 		dialogue_page = 0
 		text_label.set_story_text(dialogue_pages[0])
 		continue_label.visible = true
@@ -996,6 +1033,9 @@ func open_menu_panel(mode: String = "all") -> void:
 func close_menu_panel() -> bool:
 	if delete_dialog_open():
 		_close_delete(false)   # Esc on the question keeps the save and the panel
+		return true
+	if lang_dialog != null and lang_dialog.visible:
+		_close_lang_dialog(false)   # Esc on the warning keeps the language as it was
 		return true
 	if not menu_panel.visible:
 		return false
@@ -1679,3 +1719,121 @@ func _center(c: Control) -> Dictionary:
 		return {}
 	var r := c.get_global_rect()
 	return {"x": r.position.x + r.size.x / 2, "y": r.position.y + r.size.y / 2}
+
+
+
+# --- Language (Director 03.11) -----------------------------------------------------------
+
+func _sync_lang_buttons() -> void:
+	for k in lang_buttons.keys():
+		var parts := String(k).split(":")
+		var on := (LanguageSettings.voice if parts[0] == "voice" else LanguageSettings.subtitles) == parts[1]
+		(lang_buttons[k] as Button).set_pressed_no_signal(on)
+
+
+## A language button: English asks first (both for the voice and the subtitles), the rest applies at once.
+func _on_lang_choice(kind: String, value: String) -> void:
+	_sync_lang_buttons()   # the pressed look waits for the choice to be applied
+	var current := LanguageSettings.voice if kind == "voice" else LanguageSettings.subtitles
+	if value == current:
+		return
+	if value == "en":
+		_lang_pending = [kind, value]
+		_open_lang_dialog()
+		return
+	_apply_lang(kind, value)
+
+
+func _apply_lang(kind: String, value: String) -> void:
+	var changed := LanguageSettings.set_voice(value) if kind == "voice" else LanguageSettings.set_subtitles(value)
+	_sync_lang_buttons()
+	var main := get_tree().current_scene
+	var pm = main.get("pause_menu") if main != null else null
+	var from_pause: bool = pm != null and bool((pm as Node).call("is_open"))
+	if main != null and main.has_method("apply_language"):
+		main.call("apply_language", changed, from_pause)
+
+
+func lang_dialog_open() -> bool:
+	return lang_dialog != null and lang_dialog.visible
+
+
+func _open_lang_dialog() -> void:
+	if lang_dialog == null:
+		_build_lang_dialog()
+	lang_dialog.visible = true
+	(lang_dialog.find_child("No", true, false) as Button).grab_focus()
+
+
+func _close_lang_dialog(confirmed: bool) -> void:
+	if lang_dialog == null or not lang_dialog.visible:
+		return
+	lang_dialog.visible = false
+	var p := _lang_pending
+	_lang_pending = []
+	if confirmed and p.size() == 2:
+		LanguageSettings.acknowledge_en()
+		_apply_lang(String(p[0]), String(p[1]))
+	else:
+		_sync_lang_buttons()
+
+
+## The same board as the save-delete question: the warning in both languages, the tick («понимаю, включить») and the cross.
+func _build_lang_dialog() -> void:
+	lang_dialog = Control.new()
+	lang_dialog.name = "LangDialog"
+	lang_dialog.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lang_dialog.size = Vector2(1920, 1080)
+	lang_dialog.mouse_filter = Control.MOUSE_FILTER_STOP
+	lang_dialog.theme = UiTheme.get_theme()
+	menu_layer.add_child(lang_dialog)
+	var dim := ColorRect.new()
+	dim.name = "Dim"
+	dim.color = Color(0, 0, 0, 0.55)
+	dim.size = Vector2(1920, 1080)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	dim.gui_input.connect(func(e: InputEvent) -> void:
+		if e is InputEventMouseButton and e.pressed:
+			_close_lang_dialog(false))
+	lang_dialog.add_child(dim)
+	var panel := Control.new()
+	panel.name = "Panel"
+	panel.size = Vector2(900, 420)
+	panel.position = (Vector2(1920, 1080) - panel.size) * 0.5
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	var src := MenuConfig.texture("pause_panel.png")
+	var planks: AtlasTexture = null
+	if src != null:
+		planks = AtlasTexture.new()
+		planks.atlas = src
+		planks.region = BOARD_PLANKS
+	panel.draw.connect(func() -> void:
+		var inner := Rect2(Vector2.ZERO, panel.size).grow(-18)
+		CarvedFrame.draw_frame(panel, inner, 18.0)
+		if planks != null:
+			panel.draw_texture_rect(planks, inner, false)
+			panel.draw_rect(inner, Color(0, 0, 0, 0.3))
+		else:
+			panel.draw_rect(inner, Color(0.12, 0.075, 0.045, 0.97)))
+	lang_dialog.add_child(panel)
+	var q := Label.new()
+	q.name = "Warning"
+	q.text = StoryData.text("@ui.lang_en_warning")
+	q.theme_type_variation = &"HeaderSmall"
+	q.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	q.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	q.vertical_alignment = VERTICAL_ALIGNMENT_CENTER   # two languages, four lines — in the middle above the marks
+	q.position = Vector2(60, 36)
+	q.size = Vector2(panel.size.x - 120, 240)
+	panel.add_child(q)
+	var yes := _mark_button("Yes", true)
+	yes.position = Vector2(panel.size.x * 0.5 - 150, 290)
+	yes.tooltip_text = StoryData.text("@ui.lang_en_yes")
+	yes.pressed.connect(_close_lang_dialog.bind(true))
+	panel.add_child(yes)
+	var no := _mark_button("No", false)
+	no.position = Vector2(panel.size.x * 0.5 + 50, 290)
+	no.tooltip_text = StoryData.text("@ui.lang_en_no")
+	no.pressed.connect(_close_lang_dialog.bind(false))
+	panel.add_child(no)
+	lang_dialog.visible = false

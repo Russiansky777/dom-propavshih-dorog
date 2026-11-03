@@ -1,0 +1,183 @@
+{
+ "id": "F_mill_manager",
+ "frame": true,
+ "place": "M1",
+ "_art": "M23b (с D21 — совет вчетвером на мельнице): двор мельницы (фон M1 — тот же файл, что у комнаты M1) — Павел, вернувшийся старик-управляющий, Илья, Агата.",
+ "background": {
+  "kind": "exterior",
+  "image": "res://assets/rooms/M1/bg.png",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   0,
+   1000
+  ],
+  [
+   1920,
+   1000
+  ],
+  [
+   1920,
+   1078
+  ],
+  [
+   0,
+   1078
+  ]
+ ],
+ "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
+ "player_hidden": true,
+ "layers": [
+  {
+   "id": "wheel_pit",
+   "image": "res://assets/rooms/M1/state_wheel_pit.png",
+   "z": 0,
+   "_r12": "J (Р12, Директор 29.10): слой колеса M1 в кадре совета — колесо стоит (пруд спущен), как во дворе"
+  },
+  {
+   "id": "wheel",
+   "image": "res://assets/rooms/M1/wheel.png",
+   "z": 0,
+   "scale": 0.34,
+   "scale_reason": "колесо 10б — отдельный спрайт 1024×1024 (диаметр 1000 px) на колесо диаметром ≈ 340 px фона (_meta_p10b: ступица 1215,435)",
+   "pivot": [
+    512,
+    512
+   ],
+   "offset": [
+    1195.3,
+    299.6
+   ],
+   "_r12": "J (Р12, Директор 29.10): слой колеса M1 в кадре совета — колесо стоит (пруд спущен), как во дворе"
+  },
+  {
+   "id": "wheel_water_still",
+   "image": "res://assets/rooms/M1/state_water_low.png",
+   "z": 0,
+   "_p12": "партия 12: низкая вода (как во дворе M1)",
+   "_r12": "J (Р12, Директор 29.10): слой колеса M1 в кадре совета — колесо стоит (пруд спущен), как во дворе"
+  },
+  {
+   "id": "pavel",
+   "image": "res://assets/rooms/F_mill_manager/pavel.png",
+   "compose": {
+    "char": "pavel",
+    "sheet": "pavel_v2",
+    "feet": [
+     600,
+     575
+    ],
+    "height": 205,
+    "dir": 7,
+    "action": "listen",
+    "frame": 0,
+    "anim": {
+     "rest": "listen",
+     "talk": "talk_steady"
+    },
+    "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
+    "tint": [
+     0.95,
+     0.93,
+     0.9
+    ],
+    "shadow": 0.35
+   }
+  },
+  {
+   "id": "manager",
+   "image": "res://assets/rooms/F_mill_manager/manager.png",
+   "compose": {
+    "char": "manager",
+    "sheet": "manager_v2",
+    "feet": [
+     790,
+     590
+    ],
+    "height": 195,
+    "dir": 1,
+    "action": "listen",
+    "frame": 0,
+    "anim": {
+     "rest": "listen",
+     "talk": "talk2"
+    },
+    "_anim_0211": "02.11: лист manager_v2 (tools/render_sheet_clips.py) — покой listen и жест talk2 (Talk_with_Hands_Open, ноги стойки, спина 0,3), 36 кадров 9 к/с вместо 16 кадров жеста v1 с растворением",
+    "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
+    "tint": [
+     0.95,
+     0.93,
+     0.9
+    ],
+    "shadow": 0.35
+   }
+  },
+  {
+   "id": "ilya",
+   "image": "res://assets/rooms/F_mill_manager/ilya.png",
+   "compose": {
+    "char": "ilya",
+    "sheet": "ilya_v2",
+    "feet": [
+     975,
+     600
+    ],
+    "height": 215,
+    "dir": 1,
+    "action": "listen",
+    "frame": 0,
+    "anim": {
+     "rest": "listen",
+     "talk": "talk_steady"
+    },
+    "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
+    "tint": [
+     0.95,
+     0.93,
+     0.9
+    ],
+    "shadow": 0.35
+   }
+  },
+  {
+   "id": "agata",
+   "image": "res://assets/rooms/F_mill_manager/agata.png",
+   "compose": {
+    "char": "agata",
+    "feet": [
+     1130,
+     640
+    ],
+    "height": 210,
+    "dir": 6,
+    "action": "idle",
+    "frame": 0,
+    "sheet": "agata_frames",
+    "anim": {
+     "rest": "idle",
+     "talk": "talk"
+    },
+    "_anim": "01.11 (Директор, стр. 61 «на кадрах с Ниной она статична», стр. 68 «никто не двигается, когда говорит»): фигура играет клипы листа — покой и жест своей реплики (tools/make_frame_layers.py, StateLayer)",
+    "tint": [
+     0.95,
+     0.93,
+     0.9
+    ],
+    "shadow": 0.35
+   }
+  }
+ ],
+ "effects": [],
+ "spawns": {
+  "default": [
+   960,
+   1040
+  ]
+ },
+ "props": [],
+ "hotspots": [],
+ "exits": [],
+ "scenes": {},
+ "flags": {}
+}

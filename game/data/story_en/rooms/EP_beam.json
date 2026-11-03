@@ -1,0 +1,97 @@
+{
+ "id": "EP_beam",
+ "frame": true,
+ "title": "@EP.place_bridge",
+ "_art": "Эпилог: торец первого прогона (closeup_beam_end, партия 6) с надписью, которую выбрала Агата в M25 (или чистый).",
+ "art_source": {
+  "files": {
+   "bg.png": "assets/incoming/EP_beam_bg.png",
+   "cut_dunya.png": "assets/incoming/EP_beam_cut_dunya.png",
+   "cut_agata.png": "assets/incoming/EP_beam_cut_agata.png",
+   "cut_roads.png": "assets/incoming/EP_beam_cut_roads.png",
+   "cut_date.png": "assets/incoming/EP_beam_cut_date.png"
+  },
+  "canvas": [
+   1672,
+   941
+  ],
+  "alpha_min": 0
+ },
+ "background": {
+  "kind": "exterior",
+  "image": "res://assets/rooms/EP_beam/bg.png",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   0,
+   1000
+  ],
+  [
+   1920,
+   1000
+  ],
+  [
+   1920,
+   1078
+  ],
+  [
+   0,
+   1078
+  ]
+ ],
+ "_frame_note": "Кадр FrameView (не комната для ходьбы): Агаты нет, хотспотов и выходов нет; пол — формальный (RoomBuilder строит навигацию для любой комнаты). Персонажи — слои compose (tools/make_frame_layers.py): кадр 0 листа 3D нужного направления (Нина, Илья, Ульяна, жена Ильи, управляющий — кадр 0 листа talk: их Idle — застывший шаг, ИИ-осмотр спрайтов 22.10).",
+ "player_hidden": true,
+ "layers": [
+  {
+   "id": "cut_dunya",
+   "image": "res://assets/rooms/EP_beam/cut_agata.png",
+   "_d5": "Директор 25.10 стр. 165 (D5): вырезано «Агата», не «Дуня». Партия 11 (ChatGPT 30.10, assets/incoming/_meta_p11): рисованная резьба «Агата» в манере «Дуни» — вместо нарисованной кодом (tools/make_beam_cut.py больше не используется); id и флаг beam_dunya оставлены ради сохранений",
+   "if": [
+    "beam_dunya"
+   ],
+   "_note": "Надпись ножом на торце первого прогона по выбору M25 — варианты, никогда не вместе; партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к closeup_beam_end, (0,0)"
+  },
+  {
+   "id": "cut_roads",
+   "image": "res://assets/rooms/EP_beam/cut_roads.png",
+   "if": [
+    "beam_roads"
+   ],
+   "_note": "Надпись ножом на торце первого прогона по выбору M25 — варианты, никогда не вместе; партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к closeup_beam_end, (0,0)"
+  },
+  {
+   "id": "cut_date",
+   "image": "res://assets/rooms/EP_beam/cut_date.png",
+   "if": [
+    "beam_date"
+   ],
+   "_note": "Надпись ножом на торце первого прогона по выбору M25 — варианты, никогда не вместе; партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md), полный холст к closeup_beam_end, (0,0)"
+  }
+ ],
+ "effects": [
+  {
+   "id": "snow",
+   "type": "snow",
+   "rect": [
+    0,
+    0,
+    1920,
+    1080
+   ],
+   "amount": 70,
+   "z": 4000
+  }
+ ],
+ "spawns": {
+  "default": [
+   960,
+   1040
+  ]
+ },
+ "props": [],
+ "hotspots": [],
+ "exits": [],
+ "scenes": {},
+ "flags": {}
+}

@@ -1,0 +1,451 @@
+{
+ "_comment": "Предметы. inventory=false — тяжёлые или закреплённые вещи, которые не попадают в инвентарь (перевозятся помощниками или остаются на месте). source_scene — единственная сцена, где предмет получают; source_hotspot «<комната>.<хотспот>» — предмет, который игрок берёт сам в комнате (use.gives с requires), без выдачи сцены. icon — имя файла иконки сумки (assets/icons/<icon>.png → game/assets/icons, tools/sync_icons.sh), если оно не совпадает с id.",
+ "items": [
+  {
+   "id": "key_house",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.key_house.wrong'}"
+   },
+   "name": "Aunt Dunya's house key",
+   "examine": {
+    "text": "@examine.key_house",
+    "art": "res://assets/closeups/closeup_key_house.png"
+   },
+   "inventory": true,
+   "source_location": "Z1",
+   "source_scene": "M01",
+   "use": "Открывает дверь дома с улицы (Z2) при первом входе и остаётся в замке",
+   "consumed": true,
+   "_consumed_note": "Решение Директора 18.10: в первый раз ключ нужно применить к двери (сумка → дверь), он уходит из сумки, дверь дальше открыта всегда (флаг house_unlocked, сохраняется). Сценарий v4 говорит «остаётся у Агаты» — правка за владельцем текста (Docs/ITEMS_AUDIT.md)."
+  },
+  {
+   "id": "letter_tamara",
+   "name": "Tamara's letter",
+   "inventory": false,
+   "source_location": "Z1",
+   "source_scene": "M01",
+   "use": "Письмо Тамары, по которому Агата приехала (вода упала, у поворота показалась опора моста); его смысл — в журнале (флаг knows_pier_trace), в сумке его нет",
+   "consumed": false,
+   "_inventory_note": "Docs/SCENARIO_FINAL.md, M01 (принят Директором 22.10): «Письмо Тамары, по которому Агата приехала, уходит в журнал, а не лежит в сумке» — закрывает спорный пункт 18.10 (Docs/ITEMS_AUDIT.md)."
+  },
+  {
+   "id": "school_door",
+   "name": "School door",
+   "inventory": false,
+   "source_location": "H3",
+   "source_scene": "M04",
+   "use": "Полотно, петли и зарубки; устанавливается в раму H3 в M05",
+   "consumed": false
+  },
+  {
+   "id": "door_drawing",
+   "wrong_target": {
+    "text": "@item.wrong_generic"
+   },
+   "name": "Dunya's door-fitting diagram",
+   "examine": {
+    "text": "@examine.door_drawing",
+    "art": "res://assets/puzzle/M05/drawing.png"
+   },
+   "icon": "door_drawing",
+   "inventory": true,
+   "source_location": "H2",
+   "source_scene": "M04",
+   "use": "Рисунок школьной двери с Дуниными пометками: три родные петли и нужная зарубка порога; ставится вместе с петлями в M05",
+   "consumed": true,
+   "_k0211": "Директор 02.11, стр. 8–10: «чертежи Агата не подбирает, а только смотрит — не добавить ли их в инвентарь, а как дверь откроем — убрать». Берётся с верстака (H2 bench), расходуется по завершении M05 вместе с петлями; значок — tools/make_icon_door_drawing.py"
+  },
+  {
+   "id": "door_hinges",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.door_hinges.wrong'}"
+   },
+   "name": "Original school door hinges",
+   "examine": {
+    "text": "@examine.door_hinges",
+    "art": "res://assets/closeups/closeup_door_hinges.png"
+   },
+   "inventory": true,
+   "source_location": "H2",
+   "source_scene": "M04",
+   "use": "Подписанная коробка в мастерской; ставятся в M05",
+   "set_count": 3,
+   "_set_note": "Один предмет сумки — набор из трёх петель (рама, полотно и рисунок Дуни — три петли; замечание Директора 18.10). Крупный план M05 (rooms/H3.json puzzle.pieces) показывает их по одной; предмет расходуется целиком по завершении M05, до того не исчезает и не выдаётся повторно.",
+   "consumed": true
+  },
+  {
+   "id": "photo_bridge",
+   "name": "Photograph of the old bridge",
+   "examine": {
+    "text": "@examine.photo_bridge",
+    "art": "res://assets/closeups/closeup_bridge_photo.png",
+    "crop": [
+     0.02857,
+     0.05285,
+     0.9381,
+     0.89218
+    ],
+    "_crop_k0111": "Директор 01.11, стр. 31 («при осмотре 3 фото обрезать по самой фотографии, без кусков дерева рядом»): crop — доли рисунка по самому листу (наибольший прямоугольник внутри бумаги, отступ 2–3 px; замер маски бумаги), ширина уменьшена в ту же долю — лист того же размера, что был. Тест test_feedback_0111_k2 «examine crops: no wood»",
+    "held": true,
+    "width": 1107,
+    "angle_deg": -1.5,
+    "backdrop": "table"
+   },
+   "icon": "bridge_photo",
+   "inventory": true,
+   "source_location": "O1",
+   "source_scene": "M07",
+   "use": "Как было: деревянные пролёты на каменных опорах, канат-поручень крепится к плите на ближней опоре, рядом лодка Пелагеи. Сверяется с рисунками на почте, с опорой у поворота и с канатом на причале",
+   "consumed": false
+  },
+  {
+   "id": "drawing_ilya",
+   "name": "Child's drawing of a bridge",
+   "examine": {
+    "text": "@examine.drawing_ilya",
+    "art": "res://assets/closeups/closeup_ilya_drawing.png",
+    "crop": [
+     0.02857,
+     0.05074,
+     0.94048,
+     0.90275
+    ],
+    "_crop_k0111": "Директор 01.11, стр. 31 («при осмотре 3 фото обрезать по самой фотографии, без кусков дерева рядом»): crop — доли рисунка по самому листу (наибольший прямоугольник внутри бумаги, отступ 2–3 px; замер маски бумаги), ширина уменьшена в ту же долю — лист того же размера, что был. Тест test_feedback_0111_k2 «examine crops: no wood»",
+    "held": true,
+    "width": 1053,
+    "angle_deg": 1.5,
+    "backdrop": "table"
+   },
+   "icon": "ilya_drawing",
+   "inventory": true,
+   "source_location": "O1",
+   "source_scene": "M07",
+   "use": "Мост с лодкой «с дымом» — Агата узнаёт руку Илюши; след для надписи на доске («Илюша, я нашла твой рисунок») и для встречи с братом",
+   "consumed": false,
+   "later_use": [
+    "M20"
+   ]
+  },
+  {
+   "id": "plan_crossing",
+   "name": "Crossing plan",
+   "examine": {
+    "text": "@examine.plan_crossing",
+    "art": "res://assets/closeups/closeup_plan.png",
+    "crop": [
+     0.04375,
+     0.04198,
+     0.92292,
+     0.88889
+    ],
+    "_crop_k0111": "Директор 01.11, стр. 31 («при осмотре 3 фото обрезать по самой фотографии, без кусков дерева рядом»): crop — доли рисунка по самому листу (наибольший прямоугольник внутри бумаги, отступ 2–3 px; замер маски бумаги), ширина уменьшена в ту же долю — лист того же размера, что был. Тест test_feedback_0111_k2 «examine crops: no wood»",
+    "held": true,
+    "width": 1330,
+    "angle_deg": -0.6,
+    "backdrop": "table",
+    "writing": {
+     "text": "@O1.teacher_drawer.paper_plan",
+     "image_size": [
+      1672,
+      941
+     ],
+     "text_rect": [
+      150,
+      625,
+      1360,
+      245
+     ],
+     "font_size": 25,
+     "ink": "#2a2117"
+    }
+   },
+   "icon": "crossing_plan",
+   "inventory": true,
+   "source_location": "O1",
+   "source_scene": "M07",
+   "use": "«Тому, кто придёт через эту дверь…»: дальний конец держат они, ближний — плита на опоре у поворота (скоба у Дуни на верстаке), воду держит мельничный затвор, рычаг в конторе; три огня с причала",
+   "consumed": false,
+   "later_use": [
+    "M15"
+   ]
+  },
+  {
+   "id": "bundle_nina",
+   "name": "Mama's mirror",
+   "inventory": false,
+   "source_location": "H2",
+   "source_scene": "M04",
+   "use": "Мамино зеркало в тряпке на верстаке: рама разошлась, бирка «нужна струбцина, моя сломана». Развернуть можно, удержать раму — нет; в сумку не берётся. Струбцина из конторы — день второй (M15а)",
+   "consumed": false
+  },
+  {
+   "id": "brace_plate",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.brace_plate.wrong', 'states': [{'if': ['evening_dusk'], 'text': '@item.brace_plate.wrong_dry'}], '_states_note': 'I-T5 (вычитка-2, неопределённо"
+   },
+   "name": "Plate bracket",
+   "examine": {
+    "text": "@examine.brace_plate",
+    "backdrop": "table",
+    "art": "res://assets/closeups/closeup_brace_plate.png"
+   },
+   "icon": "skoba_plate",
+   "inventory": true,
+   "source_location": "H2",
+   "source_hotspot": "H2.brace",
+   "use": "Выкована тётей под трещину плиты моста по заказу управы, так и не поставлена. Взять можно после плана из школы (до того — только осмотр); ставится на трещину плиты опоры у поворота в день второй (M15s) и остаётся там",
+   "consumed": true,
+   "later_use": [
+    "M15s"
+   ],
+   "_source_note": "Источник — хотспот мастерской (rooms/H2.json → brace, use.requires knows_crossing_plan), а не выдача сцены: игрок берёт скобу сам, когда знает, зачем она (Docs/SCENARIO_FINAL.md, M04 и раздел 9). Проверки: tools/validate_story.py (единственный источник, симуляция), tools/validate_rooms.py (хотспот выдаёт ровно его).",
+   "_consumed_note": "Расходуется на плите опоры (rooms/Z3.json → pier_plate.item_use, сцена M15s): из сумки уходит, остаётся на трещине."
+  },
+  {
+   "id": "chalk",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.chalk.wrong'}"
+   },
+   "name": "Chalk",
+   "examine": {
+    "text": "@examine.chalk",
+    "art": "res://assets/closeups/closeup_chalk.png"
+   },
+   "inventory": true,
+   "source_location": "O1",
+   "source_scene": "M08",
+   "source_hotspot": "O1.chalk",
+   "_source_k0211b": "Директор 02.11 вечер, № 5: мел — только с парты (хотспот O1 chalk); сцена M08 его больше не выдаёт (выдавала при обходе тропы, мимо парты)",
+   "use": "Надпись на доске «Я была здесь. Агата»; кусочек остаётся у доски",
+   "consumed": true,
+   "_consumed_note": "Единственное применение — доска (M08); после надписи мел уходит из сумки (на полочке доски мелки уже нарисованы) — «не носим то, что нельзя применить» (Директор 18.10)"
+  },
+  {
+   "id": "mitten",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.mitten.wrong'}"
+   },
+   "name": "Mitten",
+   "examine": {
+    "text": "@examine.mitten",
+    "art": "res://assets/closeups/closeup_mitten.png"
+   },
+   "inventory": true,
+   "source_location": "Z1",
+   "source_scene": "M01",
+   "use": "Своя варежка из дорожной сумки; метка при проверке петли тропы в O2 (необязательно): «Оставлю на ступени. Если вернусь к ней — дорога водит по кругу»; её можно поднять обратно",
+   "consumed": true,
+   "_consumed_note": "Оставленная на ступени варежка уходит из сумки (слой O2 mitten) — «вещь остаётся там, где положена»; поднять обратно можно один раз (хотспот O2 mitten, use.restores — возвращает тот же предмет, не новую выдачу; Docs/SCENARIO_FINAL.md, M08 и раздел 9 «Варежка: оставить или забрать»)",
+   "optional": true
+  },
+  {
+   "id": "mirror_mill",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.mirror_mill.wrong', 'rooms': ['H1', 'H2', 'H3']}"
+   },
+   "name": "Office mirror",
+   "examine": {
+    "text": "@examine.mirror_mill",
+    "art": "res://assets/rooms/M2/bg.png",
+    "region": [
+     860,
+     123,
+     203,
+     347
+    ],
+    "_region_k0111": "Директор 01.11, стр. 35 («зеркало — как и фотографии, обрезать идеально»): по самой раме (было [855, 100, 220, 385] — со стеной вокруг); тест test_feedback_0111_k2 «examine crops: no wood»",
+    "width": 400,
+    "backdrop": "table"
+   },
+   "inventory": true,
+   "source_location": "M2",
+   "source_hotspot": "M2.mirror",
+   "use": "Ставится в тётину стойку «ЗМ» в мастерской (M10): рама держится, только пока зажата; показывает контору мельницы сейчас",
+   "consumed": true,
+   "_consumed_note": "Остаётся в тётиной стойке «ЗМ» — высокой резной раме посреди мастерской (тяжёлая, к полу прибита) — из сумки уходит, как ключ в замке."
+  },
+  {
+   "id": "bell",
+   "name": "Mill bell",
+   "inventory": false,
+   "source_location": "H2",
+   "source_scene": "M04",
+   "use": "После возврата языка — удар в колокол мастерской: Павел в конторе отвечает светом в зеркале; остаётся в H2",
+   "consumed": false
+  },
+  {
+   "id": "bell_clapper",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.bell_clapper.wrong'}"
+   },
+   "name": "Bell clapper",
+   "examine": {
+    "text": "@examine.bell_clapper",
+    "backdrop": "table",
+    "art": "res://assets/closeups/closeup_bell_clapper.png"
+   },
+   "inventory": true,
+   "source_location": "H4",
+   "source_hotspot": "H4.chest",
+   "take_any_time": true,
+   "_source_note": "G44/H17 (Директор 24.10): лежит в сундуке на чердаке (раньше — коробка в мастерской). Берётся когда угодно, хоть в день первый (Директор 23.10 00:03); вешается на колокол тоже когда угодно. Сцена M11 его не выдаёт — язык тратится на колоколе раньше её конца (ИИ-разбор логики 22.10, п. 7).",
+   "use": "Сундук на чердаке (H4); вешается на колокол в мастерской (M11)",
+   "consumed": true
+  },
+  {
+   "id": "journal_manager",
+   "name": "Office ledger",
+   "examine": {
+    "text": "@examine.journal_manager",
+    "backdrop": "table",
+    "art": "res://assets/closeups/closeup_journal_manager.png",
+    "writing": {
+     "text": "@examine.journal_manager.paper_page",
+     "image_size": [
+      1672,
+      941
+     ],
+     "text_rect": [
+      884.7,
+      447.2,
+      380,
+      260
+     ],
+     "font_size": 19,
+     "ink": "#2a2117",
+     "angle_deg": 10.0,
+     "font": "hand",
+     "line_pitch": 27.0,
+     "first_baseline": 30,
+     "_k": "K (Директор 31.10, стр. 61: «в журнале конторы по полям фразу написать, а то она кривовато»): линовка правой страницы на экране — около 10°, запись лежала под 7° и шла поперёк линеек; теперь 10°, шаг 27 px холста поперёк строки (линейки при x 900: y 390 / 417 / 445 / 471 / 497 …, по вертикали 27,4), первая строка — на третьей линейке, начало у поля x 905; подбор по кадру крупного плана (probe_examine_shot)",
+     "_hand_note": "H31 (Директор 24.10): рукописно, по линовке правой страницы — линейки ≈ 27–29 px холста 1672×941 с наклоном ≈ 6° (замер по столбцам x 950/1100/1250); первая строка — на линейке y ≈ 469",
+     "_note": "партия 8: правая страница пустая — запись и правило пруда пишет игра в нижнюю половину страницы (страница наклонена ≈ 8°)"
+    }
+   },
+   "inventory": true,
+   "source_location": "M3",
+   "source_scene": "M13",
+   "use": "Последняя запись управляющего: «Затвор на ночь закрыт. Рычаг на гвозде. Ушёл домой»; правило спуска пруда — по зарубке и ждать; рабочая отметка воды для помола. Вернувшийся управляющий спрашивает про затвор (M23b)",
+   "consumed": false,
+   "later_use": [
+    "M23b"
+   ]
+  },
+  {
+   "id": "key_sluice",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.key_sluice.wrong'}"
+   },
+   "name": "Sluice lever",
+   "examine": {
+    "text": "@examine.key_sluice",
+    "backdrop": "table",
+    "art": "res://assets/closeups/closeup_sluice_lever.png",
+    "_art_note": "партия 9 (G20): рычаг затвора на столе, квадратное гнездо во втулке; иконка — icon_sluice_lever (tools/sync_icons.sh key_sluice=…)"
+   },
+   "inventory": true,
+   "source_location": "M3",
+   "source_scene": "M13",
+   "use": "G20 (Директор 23.10: «визуально — рычаг, как на мельнице; везде звать рычаг затвора»; id прежний — сохранения): висел на гвозде в конторе; вставляется в ворот затвора (M14) и остаётся в нём",
+   "consumed": true
+  },
+  {
+   "id": "clamp",
+   "wrong_target": {
+    "text": "@item.wrong_generic",
+    "_j": "J (Р8, Директор 29.10): чужой предмет — везде коротко «Сюда не подходит»; прежняя подсказка: {'text': '@item.clamp.wrong'}"
+   },
+   "name": "Clamp",
+   "examine": {
+    "text": "@examine.clamp",
+    "backdrop": "table",
+    "art": "res://assets/closeups/closeup_clamp.png"
+   },
+   "inventory": true,
+   "source_location": "M3",
+   "source_scene": "M13",
+   "use": "Стягивает раму маминого зеркала (M15а): «нужна струбцина, моя сломана» — бирка Дуни",
+   "consumed": true,
+   "_consumed_note": "Остаётся на раме маминого зеркала в мастерской."
+  },
+  {
+   "id": "tar",
+   "wrong_target": {
+    "text": "@item.wrong_generic"
+   },
+   "name": "Tar",
+   "examine": {
+    "text": "@examine.tar",
+    "art": "res://assets/closeups/closeup_tar.png",
+    "_j": "J (Р5, партия 10д): баночка дёгтя на верстаке крупно"
+   },
+   "inventory": true,
+   "source_location": "H2",
+   "source_hotspot": "H2.tar_pot",
+   "use": "J (Р5, Директор 29.10): ворот затвора год не крутили — заржавел; Павел просит дёготь из Дуниной мастерской (кувшин на верстаке у ящика «Петли»). Агата отливает его в баночку после того, как рычаг сел в ворот (sluice_key_inserted); смазывает ворот — и открывается крупный план затвора",
+   "consumed": true,
+   "_art_note": "иконка и крупный план — заказ ChatGPT 10д; пока — иконка из фона мастерской (кувшин у ящика «Петли», tools/make_tar_icon.py), на столе крупного плана — она же (ItemExamine)"
+  },
+  {
+   "id": "school_ribbon",
+   "name": "Mama's ribbon",
+   "examine": {
+    "text": "@examine.school_ribbon",
+    "art": "res://assets/closeups/closeup_school_ribbon.png"
+   },
+   "inventory": true,
+   "source_location": "Z3",
+   "source_scene": "M17",
+   "use": "Пустая лодка вернулась с ней с того берега (M17): Нина вплетала её Агате в косу на праздники. В горнице можно отдать маме — она вплетёт её снова (необязательно); лента остаётся у Агаты",
+   "consumed": false,
+   "later_use": [
+    "M19c"
+   ]
+  },
+  {
+   "id": "pocket_watch",
+   "name": "Agata's pocket watch",
+   "examine": {
+    "text": "@examine.pocket_watch",
+    "watch": {
+     "center": [
+      0.5,
+      0.4995
+     ],
+     "r": 0.157,
+     "face": false,
+     "dial_deg": 12.6,
+     "turn_deg": 10.7,
+     "_dial_k0111": "Директор 01.11, стр. 21: XII нарисована на 12,6° по часовой от вертикали (замер центров цифр, все 12 — 12,6±1,3°), тёмная защёлка на ободе — на 23,3°; эмаль повёрнута на 10,7° по часовой, стрелки считают от XII (было: стрелки от вертикали — на 12,6° мимо цифр). Тест test_feedback_0111_k2 «watch XII under the latch»",
+     "_note": "партия 8: ось стрелок (836, 470), циферблат ≈ 300 px по высоте на холсте 1672×941 (README 8); стрелок на рисунке нет — их рисует игра"
+    },
+    "art": "res://assets/closeups/closeup_pocket_watch.png"
+   },
+   "inventory": true,
+   "source_location": "Z1",
+   "source_scene": "M01",
+   "use": "Карманные часы Агаты: по ним видно, что мамины ходики в зеркале бегут в 20 раз быстрее (M15а), а в горнице — идут вровень (M19)",
+   "consumed": false,
+   "later_use": [
+    "M19c"
+   ]
+  },
+  {
+   "id": "mirror_home",
+   "name": "House mirror",
+   "inventory": false,
+   "source_location": "H3",
+   "source_scene": "M04",
+   "use": "Домашнее зеркало на своём месте в галерее: показывает обычное отражение (вещь на родном месте служит своему месту)",
+   "consumed": false
+  }
+ ]
+}

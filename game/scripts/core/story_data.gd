@@ -4,7 +4,12 @@ extends Node
 ## Loads locations, items, flags, characters, scenes (E*.json + quests), rooms/*.json and text/*.json.
 ## Nothing here knows about specific scene ids: the game logic reads this data generically.
 
-const DATA_DIR: String = "res://data/story"
+## The data the game reads: res://data/story (Russian) or res://data/story_en — the same files with the words in English
+## (tools/build_story_en.py), by the subtitles' language (LanguageSettings.text_lang, Director 03.11). reload() picks it.
+const DATA_DIR_RU: String = "res://data/story"
+const DATA_DIR_EN: String = "res://data/story_en"
+var DATA_DIR: String = DATA_DIR_RU
+var lang: String = "ru"
 
 var locations: Dictionary = {}          # id -> location dict
 var edges: Dictionary = {}              # room id -> {other id -> requires: Array[String]}
@@ -36,6 +41,10 @@ func _ready() -> void:
 
 func reload() -> void:
 	load_errors.clear()
+	lang = LanguageSettings.text_lang()
+	DATA_DIR = DATA_DIR_EN if lang == "en" and DirAccess.dir_exists_absolute(DATA_DIR_EN) else DATA_DIR_RU
+	if DATA_DIR == DATA_DIR_RU:
+		lang = "ru"
 	TimeOfDay.reload()   # время суток читает data/story/time заново (F17)
 	_load_locations()
 	_load_items()

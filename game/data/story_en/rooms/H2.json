@@ -1,0 +1,1207 @@
+{
+ "id": "H2",
+ "_art": "Фон H2_bg.png (мастерская): дверь в H1 слева (тёплый свет), верстак и рисунок двери на стене, коробки «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» на полке, высокая резная рама на ножках посреди мастерской — тётина стойка «ЗМ» (Директор 23.10), колокол у окна. Свёрток «Нина. Горница» (и развёрнутое зеркало) и скоба с рисунком плиты — слои партии 2 (22.10) на левом верстаке. Слой H2_fg_bench_front.png — верстак на переднем плане (окклюдер z=1080). Надписи коробок нарисованы (v1).",
+ "art_source": {
+  "files": {
+   "state_bell_hung.png": "assets/incoming/H2_state_bell_hung.png",
+   "state_bundle.png": "assets/incoming/H2_state_bundle_v2.png",
+   "state_nina_mirror.png": "assets/incoming/H2_state_nina_mirror_v2.png",
+   "state_skoba.png": "assets/incoming/H2_state_skoba.png",
+   "state_second_bench.png": "assets/incoming/H2_state_second_bench.png",
+   "state_office_mirror_center.png": "assets/incoming/H2_state_office_mirror_center.png",
+   "state_office_mirror_center_v3.png": "assets/incoming/H2_state_office_mirror_center_v3.png",
+   "state_wedges_loose_v3.png": "assets/incoming/H2_state_wedges_loose_v3.png",
+   "state_wedges_half_v3.png": "assets/incoming/H2_state_wedges_half_v3.png",
+   "state_wedges_driven_v3.png": "assets/incoming/H2_state_wedges_driven_v3.png"
+  },
+  "canvas": [
+   1672,
+   941
+  ],
+  "alpha_min": 9,
+  "_glass_note": "стекло зеркала конторы в раме «ЗМ» — живописный слой партии 8 (state_office_mirror_center.png ← H2_state_office_mirror_center.png); прежний слой движка tools/make_h2_frame_glass.py снят",
+  "_note": "Партия 2 брифа v4 (ChatGPT 22.10, assets/incoming/_meta_p2/README_RU.txt): полные прозрачные холсты в координатах H2_bg, наложение с (0,0) 1:1. Копии — tools/import_room_art.py H2 (только эти три файла; фон и верстак не трогаются)"
+ },
+ "background": {
+  "kind": "interior",
+  "image": "res://assets/rooms/H2/bg.png",
+  "wall": "#5e5040",
+  "floor": "#7a6648",
+  "accent": "#a08a5a",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   60,
+   780
+  ],
+  [
+   240,
+   750
+  ],
+  [
+   365,
+   750
+  ],
+  [
+   380,
+   706
+  ],
+  [
+   880,
+   702
+  ],
+  [
+   1140,
+   695
+  ],
+  [
+   1145,
+   690
+  ],
+  [
+   1400,
+   690
+  ],
+  [
+   1405,
+   682
+  ],
+  [
+   1505,
+   680
+  ],
+  [
+   1505,
+   693
+  ],
+  [
+   1400,
+   704
+  ],
+  [
+   1300,
+   712
+  ],
+  [
+   1200,
+   720
+  ],
+  [
+   1100,
+   728
+  ],
+  [
+   1000,
+   735
+  ],
+  [
+   905,
+   745
+  ],
+  [
+   900,
+   1070
+  ],
+  [
+   60,
+   1070
+  ]
+ ],
+ "no_walk_samples": [
+  [
+   1200,
+   900,
+   "верстак"
+  ],
+  [
+   1600,
+   800,
+   "верстак"
+  ],
+  [
+   960,
+   780,
+   "торец верстака"
+  ],
+  [
+   300,
+   650,
+   "доска у стены"
+  ],
+  [
+   520,
+   650,
+   "верстак у стены"
+  ],
+  [
+   1650,
+   640,
+   "колокол"
+  ]
+ ],
+ "walk_samples": [
+  [
+   500,
+   900
+  ],
+  [
+   280,
+   820
+  ],
+  [
+   1250,
+   705
+  ],
+  [
+   980,
+   715
+  ],
+  [
+   860,
+   760
+  ],
+  [
+   700,
+   1000
+  ]
+ ],
+ "depth": {
+  "top_y": 700,
+  "bottom_y": 1070,
+  "scale_top": 1.424,
+  "scale_bottom": 3.069
+ },
+ "_depth_note": "D3 (координатор 23.10): прямая глубины через горизонт y 380 (по двум ориентирам: дверь в избу у y 740 и верстак у y 700, камера ≈ 1,1 м) и рост у порога двери 0,85 её высоты (553 px). Рост Агаты = 345 px × масштаб. Было 1.35→2.1, стало 1.424→3.069.",
+ "height_refs": [
+  {
+   "what": "верстак у стены (столешница y 470, ножки y 700)",
+   "y": 700,
+   "px": 230,
+   "m": 0.85
+  },
+  {
+   "what": "дверь в избу (проём слева)",
+   "y": 740,
+   "px": 650,
+   "m": 2.0,
+   "door": true
+  }
+ ],
+ "layers": [
+  {
+   "id": "bell_hung",
+   "image": "res://assets/rooms/H2/state_bell_hung.png",
+   "_j": "J (Директор 29.10, стр. 113: «колокол на подвесе виден в зеркале — так же повесить его в комнате»): партия 10д — колокол висит на крюке под перекладиной над козлами, как в крупном плане"
+  },
+  {
+   "id": "crate_blank",
+   "image": "res://assets/rooms/H2/state_crate_blank.png",
+   "_note": "G44/H17 (партия 10б): ящик у колокола без надписи «Язык колокола» — язык теперь в сундуке на чердаке (H4 chest)"
+  },
+  {
+   "id": "bundle",
+   "image": "res://assets/rooms/H2/state_bundle.png",
+   "occluder": true,
+   "z": 1085,
+   "_z_note": "поверх ближнего верстака (окклюдер z 1080)",
+   "unless": [
+    "h2_bundle_unwrapped"
+   ],
+   "_note": "свёрток «Нина. Горница» в ткани на левом верстаке (бирка без текста); развёрнутый — слой nina_mirror (взаимоисключающие)",
+   "_p12": "Партия 12 (ChatGPT 01.11): рисунок уже на ближнем большом верстаке в масштабе фона, (0,0) 1:1 — прежние scale/scale_pivot/offset J (под маленький рисунок дальнего верстака) уводили его за кадр; сверка 01.11, стр. 33"
+  },
+  {
+   "id": "nina_mirror",
+   "image": "res://assets/rooms/H2/state_nina_mirror.png",
+   "occluder": true,
+   "z": 1085,
+   "_z_note": "поверх ближнего верстака (окклюдер z 1080)",
+   "if": [
+    "h2_bundle_unwrapped"
+   ],
+   "_note": "развёрнутое мамино зеркало на ткани, рама разошлась, стекло мутное серебро — после «развернуть»",
+   "_p12": "Партия 12 (ChatGPT 01.11): рисунок уже на ближнем большом верстаке в масштабе фона, (0,0) 1:1 — прежние scale/scale_pivot/offset J (под маленький рисунок дальнего верстака) уводили его за кадр; сверка 01.11, стр. 33"
+  },
+  {
+   "id": "skoba",
+   "image": "res://assets/rooms/H2/state_skoba.png",
+   "unless": [
+    "has_brace_plate"
+   ],
+   "_note": "кованая скоба и маленький рисунок треснувшей плиты на левом верстаке (партия 2); пропадает, когда Агата берёт скобу"
+  },
+  {
+   "id": "office_mirror",
+   "image": "res://assets/rooms/H2/state_office_mirror_center_v3.png",
+   "if": [
+    "office_mirror_mounted"
+   ],
+   "_v2_note": "G19 (партия 9): тот же слой без четырёх светлых брусков-«клиньев» — клинья отдельными слоями ниже",
+   "_note": "Директор 23.10 00:03: тётина стойка «ЗМ» — высокая резная рама посреди мастерской (рисунок фона); после установки в её проёме — зеркало конторы в простой раме с клиньями (стекло без отражений), партия 8 (ChatGPT 23.10, assets/incoming/_meta_p8/README_RU.md): полный холст к H2_bg, (0,0), вставка x1015–1170, y202–519; стекло x1047–1134, y228–483 (mechanic.frame.glass_polygon). Заменил слой движка (прежний tools/make_h2_frame_glass.py). Вид конторы — в крупном плане."
+  },
+  {
+   "id": "wedges_loose",
+   "image": "res://assets/rooms/H2/state_wedges_loose_v3.png",
+   "if": [
+    "office_mirror_mounted"
+   ],
+   "unless": [
+    "office_mirror_clamped"
+   ],
+   "_note": "G19 (партия 9): четыре клина вставлены, не забиты — пока рама не зажата"
+  },
+  {
+   "id": "wedges_driven",
+   "image": "res://assets/rooms/H2/state_wedges_driven_v3.png",
+   "if": [
+    "office_mirror_clamped"
+   ],
+   "_note": "G19: клинья забиты (по три удара в крупном плане) — рама зажата"
+  },
+  {
+   "id": "second_bench",
+   "image": "res://assets/rooms/H2/state_second_bench.png",
+   "if": [
+    "q06_table_at_agata"
+   ],
+   "_note": "Q06, вариант B: второй верстак Ильи в тётиной мастерской — стоит торцом в промежутке справа от резной рамы «ЗМ», раму и колокол не закрывает (партия 8б, полный холст к H2_bg, (0,0); видимая альфа x1221–1355, y410–600)."
+  },
+  {
+   "id": "bench_front",
+   "image": "res://assets/rooms/H2/fg_bench_front.png",
+   "occluder": true,
+   "z": 1080
+  }
+ ],
+ "on_enter": [
+  {
+   "text": "@H2d.stand_zm.enter",
+   "once_flag": "h2_saw_stand_zm",
+   "if": [
+    "has_mirror_mill"
+   ],
+   "unless": [
+    "office_mirror_mounted"
+   ],
+   "_note": "с зеркалом конторы в сумке — один раз мысль Агаты, где стойка: высокая резная рама посреди мастерской (Директор 23:53, 23.10 00:03)"
+  }
+ ],
+ "spawns": {
+  "default": [
+   500,
+   900
+  ],
+  "from_H1": [
+   280,
+   820
+  ]
+ },
+ "props": [],
+ "hotspots": [
+  {
+   "id": "bench",
+   "kind": "object",
+   "label": "@H2.bench.label",
+   "rect": [
+    668,
+    165,
+    260,
+    232
+   ],
+   "stand": [
+    800,
+    760
+   ],
+   "color": "#6a5438",
+   "draw": false,
+   "_rect_note": "F3 (Директор 23.10 00:19 «надо найти записи тёти… не могу найти»): тётины чертежи на стене над ящиками «ПЕТЛИ» и «ЯЗЫК КОЛОКОЛА» — чертёж школьной двери и два листа с петлями (холст 584–805 × 147–342 → экран 671–924 × 169–393); тетради на верстаке не нарисовано — ярлык и тексты про листы на стене",
+   "use": {
+    "sets": [
+     "seen_workshop"
+    ],
+    "gives": [
+     "door_drawing"
+    ],
+    "text": "@H2.bench.use",
+    "once_flag": "seen_workshop",
+    "scene": "M04",
+    "_k0211": "Директор 02.11, стр. 8: рисунок посадки школьной двери Агата берёт в сумку (door_drawing) — дверь в галерее его и требует"
+   },
+   "look": "@H2.bench.look"
+  },
+  {
+   "id": "hinges_box",
+   "action_anim": "reach",
+   "kind": "pickup",
+   "label": "@H2.hinges_box.label",
+   "rect": [
+    800,
+    430,
+    130,
+    80
+   ],
+   "stand": [
+    860,
+    760
+   ],
+   "color": "#c9a86a",
+   "draw": false,
+   "_box_note": "N6 (ИИ-плейтест r7): коробка нарисована и после — хотспот остаётся: пустая, петли — к школьной двери в галерее",
+   "use": {
+    "gives": [
+     "door_hinges"
+    ],
+    "text": [
+     "@H2.hinges_box.use",
+     "@H2.hinges_box.thought"
+    ],
+    "once_flag": "has_door_hinges",
+    "text_done": "@H2.hinges_box.empty",
+    "scene": "M04"
+   },
+   "use_when": [
+    {
+     "if": [
+      "door_school_installed"
+     ],
+     "text": "@H2.hinges_box.empty_hung",
+     "_note": "T9 (вычитка R07): дверь навешена — петли уже не в сумке, а на двери"
+    }
+   ],
+   "look": "@H2.hinges_box.look"
+  },
+  {
+   "id": "bell",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@H2.bell.label",
+   "rect": [
+    1585,
+    225,
+    225,
+    310
+   ],
+   "_rect_j": "J (10д): колокол на подвесе — выше на ≈ 20 px холста, с перекладиной",
+   "stand": [
+    1450,
+    692
+   ],
+   "color": "#b8a040",
+   "draw": false,
+   "use": {
+    "sets": [
+     "seen_bell",
+     "knows_rule_things_remember"
+    ],
+    "text": [
+     "@H2.bell.use",
+     {
+      "key": "@H2.bell.thought",
+      "if": [
+       "seen_school_door"
+      ]
+     },
+     {
+      "key": "@H2.bell.thought_early",
+      "unless": [
+       "seen_school_door"
+      ],
+      "_k19": "Директор 01.11, стр. 19: школьной двери Агата ещё не видела — мысль без неё"
+     }
+    ],
+    "once_flag": "seen_bell",
+    "scene": "M04",
+    "_text_note": "ярлык колокола (закадровый голос), затем мысль Агаты её голосом — причина вешать школьную дверь (Docs/SCENARIO_FINAL.md, M04); text — список ключей, читаются по очереди"
+   },
+   "look": "@H2.bell.look",
+   "item_use": {
+    "bell_clapper": {
+     "sets": [
+      "bell_clapper_hung"
+     ],
+     "consumes": true,
+     "text": "@H2d.bell.hang"
+    }
+   },
+   "use_when": [
+    {
+     "if": [
+      "office_unbolted"
+     ],
+     "text": "@H2d.bell.after_office",
+     "synth_sound": "bell",
+     "_j": "J-A5: колокол своё отзвонил"
+    },
+    {
+     "if": [
+      "bell_clapper_hung"
+     ],
+     "unless": [
+      "office_mirror_mounted"
+     ],
+     "text": "@H2d.bell.ring_far",
+     "synth_sound": "bell",
+     "_note": "язык повешен до зеркала конторы (Директор 23.10): колокол звенит, отзывается далеко на мельнице — ничего не ломается; с зеркалом на стойке колокол открывает крупный план"
+    }
+   ],
+   "mechanic": {
+    "same_as": "stand_zm",
+    "unless": [
+     "office_unbolted"
+    ],
+    "_j": "J-A5 (Директор 29.10, стр. 112): контора открыта — колокол больше не открывает крупный план зеркала, у него свой отклик (use_when)"
+   }
+  },
+  {
+   "id": "stand_zm",
+   "kind": "object",
+   "label": "@H2.stand_zm.label",
+   "rect": [
+    1105,
+    135,
+    290,
+    545
+   ],
+   "stand": [
+    1250,
+    705
+   ],
+   "_rect_note": "Директор 23.10 00:03 («рама новая почти нереальна к нахождению, нужно поменять её с основной рамой»): тётина стойка «ЗМ» — высокая резная рама на ножках посреди мастерской (фон: холст 965–1210 × 120–590 → экран 1108–1390 × 138–677), тяжёлая, к полу прибита; проём 1016–1168 × 197–518 холста",
+   "color": "#7a7a70",
+   "draw": false,
+   "look": "@H2.stand_zm.look",
+   "item_use": {
+    "mirror_mill": {
+     "sets": [
+      "office_mirror_mounted"
+     ],
+     "consumes": true,
+     "text": "@H2d.stand_zm.mount",
+     "scene": "M10",
+     "open_mechanic": true
+    }
+   },
+   "mechanic": {
+    "type": "office_mirror",
+    "requires": {
+     "flags": [
+      "office_mirror_mounted"
+     ]
+    },
+    "title": "@H2d.office_mirror.title",
+    "frame": {
+     "images": [
+      "res://assets/rooms/H2/bg.png",
+      "res://assets/rooms/H2/state_office_mirror_center_v3.png"
+     ],
+     "region": [
+      962,
+      96,
+      254,
+      462
+     ],
+     "window": {
+      "shape": "rect",
+      "feather": 0.1,
+      "vignette": 0.35
+     },
+     "_window_j": "J (Директор 29.10, стр. 77, 79): края кадра уходят в темноту, как у колокола — рама вписана, не вырезанный прямоугольник",
+     "pos": [
+      400,
+      130
+     ],
+     "scale": 1.75,
+     "_region_i_t2": "I-T2 (Директор, стр. 84: «показывает левые фоны, а не только зеркало»): кадр ужат по стойке — без края ящика и досок, гребень рамы целиком",
+     "glass_polygon": [
+      [
+       1033,
+       216
+      ],
+      [
+       1154,
+       216
+      ],
+      [
+       1154,
+       505
+      ],
+      [
+       1033,
+       505
+      ]
+     ],
+     "_note": "мастерская и слой стекла в раме «ЗМ» одним кадром (рама целиком: резной верх, ножки); glass_polygon — стекло зеркала конторы на слое партии 8 (H2_state_office_mirror_center: внутри простой рамы с клиньями), пиксели холста"
+    },
+    "wedges": {
+     "art": {
+      "loose": "res://assets/rooms/H2/state_wedges_loose_v3.png",
+      "half": "res://assets/rooms/H2/state_wedges_half_v3.png",
+      "driven": "res://assets/rooms/H2/state_wedges_driven_v3.png"
+     },
+     "boxes": [
+      [
+       1002,
+       500,
+       31,
+       20
+      ],
+      [
+       1155,
+       500,
+       31,
+       20
+      ],
+      [
+       1002,
+       201,
+       31,
+       20
+      ],
+      [
+       1155,
+       201,
+       31,
+       20
+      ]
+     ],
+     "timing": {
+      "hits": 3,
+      "period_s": 1.9,
+      "green": 0.12,
+      "green_easy": 0.3,
+      "_green_note": "H26 (Директор 24.10): в обычном режиме зелёная зона уже (0,2 → 0,12); «Облегчить» — прежняя (0,2 × 1,5 = 0,3)",
+      "miss_s": 0.8,
+      "hint": "@mech.office_mirror.wedges_hint",
+      "slow_at": "below"
+     },
+     "timing_rect": [
+      1120,
+      720,
+      700,
+      50
+     ],
+     "_note": "G19 (Директор 23.10: клинья «максимально нереалистичные; подбить по 3 раза»): четыре нарисованных клина партии 9 — каждый вырезан по своей рамке из слоёв loose / half / driven (холст 1672×941: 1 — x 1036–1072, y 494–532; 2 — x 1112–1148, y 494–532; 3 — x 1008–1042, y 330–385; 4 — x 1141–1177, y 330–385); по очереди, по три попадания «точного удара» в каждый (0 — вставлен, 1 — наполовину, 2 — почти, 3 — забит); промах — этот клин выскакивает, забитые держатся. Полоса — на месте распорядка смен (он и подпись колокола — после клиньев)"
+    },
+    "office": {
+     "art": {
+      "bg": "res://assets/closeups/M3_view_bg.png",
+      "light": "res://assets/closeups/M3_view_light.png",
+      "hook": "res://assets/closeups/M3_view_hook.png",
+      "bar": "res://assets/closeups/M3_view_bar_down.png",
+      "region": [
+       494,
+       30,
+       316,
+       756
+      ],
+      "_region_k": "Директор 01.11, 22:26 (крюк переделан): кадр захватывает загнутый кончик крюка (x 786…795 холста) — видно, как крюк снизу упирается в засов; был [496, 80, 276, 660] (кончик за краем стекла). Пропорции те же (316/756 ≈ 276/660 ≈ стекло 121/289)",
+      "gap": [
+       95,
+       705
+      ],
+      "bar_y": 346,
+      "lift_px": 46,
+      "_note": "партия 3, «Контора — вид на дверь»: фон → свет → крюк → засов, слои в (0,0); засов поднят — тот же слой на 46 px выше, крюк вместе с ним; region — часть холста в стекле (портрет под контур стекла: стекло партии 8 узкое, 87×255 — ширина 225 при высоте 660 держит пропорции; щель двери у левого края)"
+     }
+    },
+    "bell": {
+     "image": "res://assets/rooms/H2/bg.png",
+     "region": [
+      1376,
+      252,
+      192,
+      236
+     ],
+     "pos": [
+      1180,
+      100
+     ],
+     "scale": 0.6,
+     "signal": {
+      "long_s": 0.6,
+      "gap_s": 0.55
+     },
+     "art": {
+      "stand": "res://assets/closeups/closeup_bell_stand_nobell.png",
+      "body": "res://assets/closeups/closeup_bell_body.png",
+      "clapper": "res://assets/closeups/closeup_bell_clapper_hung.png",
+      "region": [
+       500,
+       40,
+       680,
+       860
+      ],
+      "pivot": [
+       818,
+       252
+      ],
+      "clapper_pivot": [
+       818,
+       562
+      ],
+      "body_box": [
+       659,
+       235,
+       323,
+       360
+      ]
+     },
+     "_art_note": "H26 (Директор 24.10: «колокол вписанный, а не картинка вставленная»): крупный план партии 10б — колокол на подвесе над козлами (assets/incoming/_meta_p10b/README.txt, 16–19): стойка без колокола (крюк неподвижен) → язык (пока bell_clapper_hung) → тело; слои 1672×941 в (0, 0); region — кадр стойки, pivot — точка подвеса (крюк), тело и язык качаются вокруг неё вместе, язык чуть отстаёт вокруг clapper_pivot; body_box — где колокол принимает щелчки. Нет слоёв — прежний кроп H2_bg (image, region)",
+     "window": {
+      "shape": "rect",
+      "feather": 0.1,
+      "vignette": 0.35
+     },
+     "swing_deg": 6.0,
+     "signals": [
+      {
+       "id": "one",
+       "text": "@mech.office_mirror.sig_one",
+       "for": [
+        "lantern",
+        "wait",
+        "held"
+       ]
+      },
+      {
+       "id": "two",
+       "text": "@mech.office_mirror.sig_two",
+       "for": [
+        "up",
+        "contact"
+       ]
+      },
+      {
+       "id": "long",
+       "text": "@mech.office_mirror.sig_long",
+       "for": [
+        "stopped"
+       ]
+      }
+     ],
+     "_signals_note": "H27 (Директор 24.10: «пояснение: позвонить 1 раз для запуска, 2 раза быстро для остановки»): распорядок смен на карточке — по строке на сигнал (id — сигнал BellSignal: one / two / long), как звонить и что делает Павел; for — состояния, в которых этот сигнал нужен сейчас (lantern — проверка фонарём, остальные — HookPuzzle.state): строка подсвечивается"
+    },
+    "hook": {
+     "bar": 0.41,
+     "under": 0.0295,
+     "start": 0.93,
+     "speed": 0.11,
+     "reach": 0.07,
+     "contact_s": 1.5,
+     "jerk_s": 0.6,
+     "jam_s": 0.35,
+     "fall_s": 0.8,
+     "lift_s": 0.9,
+     "_bar_note": "засов на рисунке — y 346 холста в щели 95…705: (346 − 95) / 610 ≈ 0.41; слой крюка нарисован на этом месте. under — крюк снизу упирается в засов загнутым кончиком: плотный верх кончика y 335, плотный низ засова y 352 → кончик на 18 px ниже (18 / 610 ≈ 0.0295) встаёт вплотную под засов (тест test_day2 _check_hook_art сверяет по альфе слоёв: касается, не перекрывает, касание внутри стекла)",
+     "_k": "Директор 01.11, 22:26 (было: «что-то не так в ней… скорее в крюке или в механике»; F8 23.10 — крюк ходил вверх-вниз по щели, «Точный удар» рядом со стеклом — снято): «пускай» — Павел заводит крюк в щель снизу (start) и ведёт вверх ровно и медленно (speed, доли щели в секунду); сквозь засов крюк не проходит — упирается снизу и стоит (contact_s секунд), засов чуть вздрагивает; «стой» — стоит; «подымай» — короткий рывок вверх (reach): из-под засова засов выходит из скоб. Ошибки как в жизни, без наказания: «стой» не дали за contact_s — Павел давит вслепую, засов глубже в скобы, крюк срывается вниз (снова «пускай»); «подымай» дальше reach от засова — рывок вхолостую, крюк возвращается где был. «Облегчить мини-игры»: Павел медленнее (speed / 1.8, contact_s × 1.8), рывок дальше (reach × 1.57)"
+    },
+    "schedule_pos": [
+     1120,
+     632
+    ],
+    "schedule_w": 760,
+    "status_pos": [
+     1120,
+     892
+    ],
+    "status_w": 640,
+    "clamped_flag": "office_mirror_clamped",
+    "texts": {
+     "wedge_slipped": "@mech.office_mirror.wedge_slipped",
+     "view_first": "@H2d.office_mirror.view_first",
+     "view_again": "@H2d.office_mirror.view_again",
+     "glass_touch": "@H2d.office_mirror.glass_touch",
+     "glass_loose": "@H2d.office_mirror.glass_loose",
+     "bell_mute": "@H2d.office_mirror.bell_mute",
+     "bell_unclamped": "@H2d.office_mirror.bell_unclamped",
+     "hook_slipped": "@H2d.office_mirror.hook_slipped",
+     "label_schedule": "@mech.office_mirror.schedule_title",
+     "label_status_loose": "@H2d.office_mirror.label_status_loose",
+     "label_status_ring_once": "@H2d.office_mirror.label_status_ring_once",
+     "label_status_wait": "@H2d.office_mirror.label_status_wait",
+     "label_status_up": "@H2d.office_mirror.label_status_up",
+     "label_status_contact": "@H2d.office_mirror.label_status_contact",
+     "label_status_held": "@H2d.office_mirror.label_status_held",
+     "label_status_stopped": "@mech.office_mirror.label_status_stopped",
+     "label_status_jerk": "@H2d.office_mirror.label_status_lift_empty",
+     "label_status_jam": "@mech.office_mirror.label_status_falling",
+     "label_status_falling": "@mech.office_mirror.label_status_falling",
+     "label_status_lift_bar": "@H2d.office_mirror.label_status_lift_bar",
+     "label_status_solved": "@H2d.office_mirror.label_status_solved",
+     "label_status_open": "@H2d.office_mirror.label_status_open"
+    },
+    "events": {
+     "clamped": {
+      "sets": [
+       "office_mirror_clamped"
+      ],
+      "text": "@H2d.office_mirror.clamped"
+     },
+     "lantern": {
+      "sets": [
+       "lantern_check_seen"
+      ]
+     },
+     "unbolted": {
+      "sets": [
+       "office_unbolted"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "bundle_nina",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@H2.bundle_nina.label",
+   "rect": [
+    1116,
+    592,
+    402,
+    207
+   ],
+   "stand": [
+    875,
+    790
+   ],
+   "_p12": "партия 12 (ChatGPT 01.11, по прохождению Директора 31.10), стр. 33: свёрток и зеркало нарисованы заново крупно на ближнем верстаке (слои v2 в [940, 500, 1330, 710) холста; свёрток 997–1289 × 559–696, зеркало 972–1322 × 516–696) — прямоугольник по обоим состояниям",
+   "_rect_j": "J (стр. 94): зеркало на ближнем большом верстаке; Агата — у его левого торца (вдоль стола прохода нет), приоритет 3 — поверх рамы-стойки за ним",
+   "color": "#a89a80",
+   "draw": false,
+   "pick_priority": 3,
+   "_art_note": "Свёрток «Нина. Горница» (Docs/SCENARIO_FINAL.md, M04): мамино зеркало в тряпке на левом верстаке — слои bundle / nina_mirror (партия 2, непрозрачное — экран 374–533 × 413–494). В сумку не берётся (items.json bundle_nina inventory false, выдаёт M04); струбцина — день второй. Приоритет 1: над верстаком «Записи на верстаке» не лежит, но рядом.",
+   "use": {
+    "sets": [
+     "h2_bundle_unwrapped"
+    ],
+    "text": "@H2.bundle_nina.use",
+    "once_flag": "h2_bundle_unwrapped",
+    "text_done": "@H2.bundle_nina.done"
+   },
+   "look": "@H2.bundle_nina.look",
+   "item_use": {
+    "clamp": {
+     "requires": {
+      "flags": [
+       "done_M14"
+      ]
+     },
+     "fail_text": "@H2d.nina_mirror.clamp_early",
+     "sets": [
+      "h2_bundle_unwrapped",
+      "nina_mirror_clamped"
+     ],
+     "consumes": true,
+     "text": "@H2d.nina_mirror.clamp",
+     "scene": "M15a",
+     "open_mechanic": true,
+     "_requires_note": "ИИ-разбор логики M2 п. 1: до затвора струбцина не тратится (иначе мамино зеркало раньше спуска воды, сумерки без M15а) — Агата говорит, что сначала затвор"
+    }
+   },
+   "mechanic": {
+    "type": "fast_mirror",
+    "requires": {
+     "flags": [
+      "nina_mirror_clamped"
+     ]
+    },
+    "title": "@H2d.nina_mirror.title",
+    "ratio": 20,
+    "common_time_flag": "road_held_both_ends",
+    "start_minutes": 1120,
+    "glass": [
+     150,
+     160,
+     1130,
+     747
+    ],
+    "room_art": {
+     "bg": "res://assets/closeups/O3_bg.png",
+     "clock_face": "res://assets/closeups/O3_clock_face.png",
+     "pendulum": "res://assets/closeups/O3_clock_pendulum.png",
+     "hand_min": "res://assets/closeups/O3_clock_hand_min.png",
+     "hand_hour": "res://assets/closeups/O3_clock_hand_hour.png",
+     "flame": "res://assets/closeups/O3_candle_flame.png",
+     "region": [
+      230,
+      40,
+      1060,
+      700
+     ],
+     "hands_axis": [
+      942,
+      201
+     ],
+     "pendulum_axis": [
+      942,
+      259
+     ],
+     "wick": [
+      445,
+      425
+     ],
+     "second_hand": {
+      "length": 29,
+      "tail": 7,
+      "width": 0.8,
+      "color": [
+       0.19,
+       0.16,
+       0.14
+      ]
+     },
+     "_second_note": "H32 (Директор 24.10): секундная стрелка ходиков рисуется кодом от оси стрелок, px холста; оборот за минуту Нины (3 с Агаты при 20:1)",
+     "_note": "партия 3, «Горница Нины»: фон → циферблат → маятник → минутная → часовая стрелка, пламя свечи; всё на холсте 1672×941 в (0,0); стрелки нарисованы на 12; region — часть горницы в стекле (стол со свечой и зеркальцем, ходики, окно)"
+    },
+    "clamp_at": [
+     1330,
+     500
+    ],
+    "candle_burn_minutes": 120,
+    "compared_flag": "nina_time_compared",
+    "poses": [
+     {
+      "id": "write",
+      "minutes": 7,
+      "sheet": "write",
+      "at": [
+       600.0,
+       738.2
+      ],
+      "height": 499.3,
+      "sitting": true
+     },
+     {
+      "id": "cup",
+      "minutes": 2,
+      "sheet": "cup",
+      "at": [
+       680.0,
+       687.5
+      ],
+      "height": 437.3,
+      "hold": "cup"
+     },
+     {
+      "id": "window",
+      "minutes": 4,
+      "sheet": "window",
+      "at": [
+       1195,
+       690
+      ],
+      "height": 440.4,
+      "shadow_m": 0.55
+     },
+     {
+      "id": "walk",
+      "minutes": 1.5,
+      "sheet": "walk",
+      "at": [
+       1065,
+       700
+      ],
+      "height": 452.6,
+      "path": [
+       [
+        950,
+        700
+       ],
+       [
+        1180,
+        700
+       ]
+      ],
+      "shadow_m": 0.55
+     },
+     {
+      "id": "small_mirror",
+      "minutes": 6,
+      "sheet": "small_mirror",
+      "at": [
+       340.0,
+       693.0
+      ],
+      "height": 444.0,
+      "hold": "mirror",
+      "room_layer": "res://assets/closeups/O3_table_no_mirror.png",
+      "_room_layer_note": "партия 9 (O3_table_no_mirror, [280,385,402,532) холста): пока Нина в стекле держит Дунино зеркальце, на столе его нет"
+     },
+     {
+      "id": "write_again",
+      "minutes": 9.5,
+      "sheet": "write",
+      "at": [
+       600.0,
+       738.2
+      ],
+      "height": 499.3,
+      "sitting": true
+     }
+    ],
+    "_poses_note": "позы Нины — её 3D-фигура (листы nina_sheets, pipeline/requests/mirror_nina.json → pipeline/render/render_mirror.py): sheet — лист позы, at — пол под ней (px холста горницы), height — её рост там (перспектива рисунка: горизонт 330, взгляд 1,35 м — render_spec.room); at и height — те, для которых лист отрисован (тест сверяет с sprites.json). walk — ходит по path (скорость — по опорной стопе листа); shadow_m — мягкая тень у ног; room_layer — слой горницы на время позы (для small_mirror — стол без зеркальца, заявка O3_table_no_mirror в assets/manifest.json; ставится, когда картинка придёт); sitting/hold — для силуэта, если листа нет",
+    "nina_sheets": "res://assets/characters/nina_mirror",
+    "nina_away_if": [
+     "nina_visited_house"
+    ],
+    "_nina_away_note": "I-T2 (Директор, стр. 146): мама побывала в доме сестры — в стекле её пустая горница (ходики и свеча идут, Нины нет)",
+    "motion_speedup": 1.67,
+    "_motion_note": "в позе она движется motion_speedup раз быстрее естественного (20:1 — глазу уже не уследить, как маятник ходиков); при общем времени — 1×. Директор 24.10 (H32): темп на треть медленнее (2,5 → 1,67), каждая поза вдвое короче (minutes поз ÷ 2)",
+    "texts": {
+     "knock_first": "@H2d.nina_mirror.knock_first",
+     "watch_again": "@H2d.nina_mirror.watch_again",
+     "watch_again_common": "@H2d.nina_mirror.watch_again_common",
+     "label_nina_clock": "@mech.nina_mirror.label_nina_clock",
+     "label_my_watch": "@mech.nina_mirror.label_my_watch",
+     "label_watch_slot": "@mech.nina_mirror.label_watch_slot",
+     "label_elapsed": "@mech.nina_mirror.label_elapsed",
+     "watch_hold": "@mech.nina_mirror.watch_hold",
+     "watch_slot_empty": "@mech.nina_mirror.watch_slot_empty",
+     "wrong_item": "@mech.nina_mirror.wrong_item",
+     "watch_hint": "@mech.nina_mirror.watch_hint"
+    },
+    "events": {
+     "compared": {
+      "sets": [
+       "nina_time_compared"
+      ]
+     }
+    },
+    "watch_item": "pocket_watch",
+    "compare_s": 10,
+    "watch_hint_s": 20,
+    "loupe": {
+     "region": [
+      893,
+      148,
+      100,
+      180
+     ],
+     "hi": {
+      "bg": "res://assets/closeups/O3_clock_hi_bg.png",
+      "pendulum": "res://assets/closeups/O3_clock_hi_pendulum.png",
+      "hand_min": "res://assets/closeups/O3_clock_hi_hand_min.png",
+      "hand_hour": "res://assets/closeups/O3_clock_hi_hand_hour.png",
+      "scale": 4,
+      "hands_axis": [
+       196,
+       212
+      ],
+      "pendulum_axis": [
+       196,
+       444
+      ],
+      "_k0211": "Директор 02.11, стр. 15 («мамины ходики в приближении размыты»): те же ходики ×4 слоями — партии 16 (стрелки) и 16б (корпус с арабскими цифрами, латунный маятник), ChatGPT; копии в игре — tools/retouch_art.py"
+     },
+     "_note": "ходики крупно рядом со стеклом (F4): часть холста горницы — циферблат и маятник; те же слои стрелок и маятника, что в стекле"
+    },
+    "watch_dial": {
+     "art": "res://assets/closeups/closeup_pocket_watch.png",
+     "center": [
+      0.5,
+      0.4995
+     ],
+     "r": 0.157,
+     "face": false,
+     "dial_deg": 12.6,
+     "turn_deg": 10.7,
+     "picture_deg": -23.3,
+     "_picture_k0211": "Директор 02.11, стр. 15: «часы Агаты, когда к маминым подносит, — выровнять, чтобы 12 было сверху, повернуть всю картинку»: вся картинка часов повёрнута на −23,3° (= −(dial_deg + turn_deg)) вокруг оси — XII и защёлка ровно сверху, стрелки от неё",
+     "_dial_k0111": "Директор 01.11, стр. 21: XII нарисована на 12,6° по часовой от вертикали (замер центров цифр, все 12 — 12,6±1,3°), тёмная защёлка на ободе — на 23,3°; эмаль повёрнута на 10,7° по часовой, стрелки считают от XII (было: стрелки от вертикали — на 12,6° мимо цифр). Тест test_feedback_0111_k2 «watch XII under the latch»",
+     "zoom": 4.0,
+     "_note": "H32: часы Агаты — крупный план партии 8 (циферблат без стрелок, стрелки рисует игра) — один цвет и фон, без диска другого цвета; zoom — корпус часов заполняет круглое окно"
+    },
+    "window": {
+     "feather": 0.12,
+     "vignette": 0.45,
+     "rim_width": 3,
+     "shadow": 0.5,
+     "_note": "H32: ходики и часы Агаты в круглых окнах (SoftWindow): эллипс по рамке с мягким краем, латунный ободок, тень и виньетка — один стиль у обоих"
+    },
+    "_watch_note": "F4 (Директор 23.10): часы Агаты не лежат рядом сами — предмет pocket_watch из сумки на стекло; обои идут рядом, через compare_s реальных секунд — событие compared (флаг nina_time_compared → сцена M15a). watch_hint_s — через столько секунд без часов мысль Агаты о своих часах"
+   }
+  },
+  {
+   "id": "brace",
+   "action_anim": "reach",
+   "kind": "pickup",
+   "label": "@H2.brace.label",
+   "rect": [
+    562,
+    410,
+    132,
+    80
+   ],
+   "stand": [
+    640,
+    790
+   ],
+   "color": "#7a6a5a",
+   "draw": false,
+   "pick_priority": 2,
+   "_art_note": "Скоба для плиты (Docs/SCENARIO_FINAL.md, M04 и раздел 9): кованая скоба у рисунка треснувшей плиты на левом верстаке — слой skoba (партия 2, непрозрачное — экран 551–687 × 419–485). Взять — только после плана из школы (requires knows_crossing_plan), до того — осмотр и мысль Агаты.",
+   "hidden_if": [
+    "has_brace_plate"
+   ],
+   "use": {
+    "requires": {
+     "flags": [
+      "knows_crossing_plan"
+     ]
+    },
+    "fail_text": "@H2.brace.before_plan",
+    "gives": [
+     "brace_plate"
+    ],
+    "text": "@H2.brace.take",
+    "once_flag": "has_brace_plate"
+   },
+   "look": "@H2.brace.look"
+  },
+  {
+   "id": "tar_pot",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@H2.tar_pot.label",
+   "rect": [
+    704,
+    418,
+    60,
+    54
+   ],
+   "stand": [
+    760,
+    790
+   ],
+   "draw": false,
+   "pick_priority": 2,
+   "_r5": "J (Р5, Директор 29.10; 18:51: «горшок на верстаке ок, но… при нажатии ранее — что взять нельзя»): нарисованный жестяной кувшин на левом верстаке у ящика «Петли»; до просьбы Павла (рычаг в вороте — sluice_key_inserted; так и в сохранениях до Р5) — «сейчас ни к чему», потом Агата отливает дёготь в баночку (tar), кувшин остаётся на месте",
+   "use": {
+    "requires": {
+     "flags": [
+      "sluice_key_inserted"
+     ]
+    },
+    "fail_text": "@H2.tar_pot.not_now",
+    "gives": [
+     "tar"
+    ],
+    "text": "@H2.tar_pot.take",
+    "once_flag": "has_tar",
+    "text_done": "@H2.tar_pot.taken",
+    "goal": "@ui.goal_tar_back"
+   },
+   "look": "@H2.tar_pot.look"
+  },
+  {
+   "id": "second_bench",
+   "kind": "object",
+   "label": "@H2q.second_bench.label",
+   "rect": [
+    1402,
+    471,
+    152,
+    216
+   ],
+   "stand": [
+    1450,
+    692
+   ],
+   "draw": false,
+   "pick_priority": 2,
+   "visible_if": [
+    "q06_table_at_agata"
+   ],
+   "_note": "Q06, вариант B: второй верстак Ильи торцом между рамой «ЗМ» и колоколом (слой second_bench).",
+   "look": "@H2q.second_bench.look"
+  }
+ ],
+ "exits": [
+  {
+   "to": "H1",
+   "label": "@H2.exit_H1.label",
+   "cue": "door",
+   "rect": [
+    60,
+    90,
+    180,
+    650
+   ],
+   "stand": [
+    260,
+    820
+   ],
+   "spawn": "from_H2",
+   "draw": false
+  }
+ ],
+ "scenes": {
+  "M04": {
+   "complete_when": [
+    {
+     "all": [
+      "seen_school_door",
+      "seen_workshop",
+      "has_door_hinges",
+      "seen_bell"
+     ]
+    }
+   ]
+  },
+  "M10": {
+   "complete_when": [
+    {
+     "all": [
+      "office_mirror_clamped"
+     ]
+    }
+   ]
+  },
+  "M11": {
+   "complete_when": [
+    {
+     "all": [
+      "lantern_check_seen"
+     ]
+    }
+   ]
+  },
+  "M12": {
+   "complete_when": [
+    {
+     "all": [
+      "office_unbolted"
+     ]
+    }
+   ]
+  },
+  "M15a": {
+   "complete_when": [
+    {
+     "all": [
+      "nina_time_compared"
+     ]
+    }
+   ]
+  }
+ },
+ "effects": [
+  {
+   "id": "dusk",
+   "type": "tint",
+   "color": "#a8a0b4",
+   "blend": "mul",
+   "z": 4090,
+   "if": [
+    "evening_dusk"
+   ],
+   "_note": "сумерки дня второго (после мамина зеркала, M15а) — до слоёв вечера (BRIEF_CHATGPT_v4 §C)"
+  }
+ ],
+ "flags": {
+  "h2_saw_stand_zm": "С зеркалом конторы в сумке Агата увидела, где тётина стойка «ЗМ»",
+  "h2_bundle_unwrapped": "Свёрток «Нина. Горница» развёрнут: мамино зеркало, рама расходится в руках"
+ }
+}

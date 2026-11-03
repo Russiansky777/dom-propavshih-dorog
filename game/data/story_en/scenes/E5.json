@@ -1,0 +1,875 @@
+{
+ "episode": 5,
+ "title": "Мост и «завтра»",
+ "target_minutes": [
+  8,
+  12
+ ],
+ "premise": "Блок 4 (Docs/SCENARIO_FINAL.md §8, M24–M26, с правками Docs/SCENARIO_POLISH_2026-10-22.md, принятыми Директором 22.10 23:44). Совет семерых слит со сценой на мельнице (D21, M23b): мост — пока лёд не встал. M24 — короткий вечер третьего дня и сохранение «День четвёртый». День четвёртый: первое бревно-прогон — Илья на вороте, Агата на сигналах с дощечки Пелагеи («пускай», «стой», «подымай»), надпись на торце. Эпилог через три недели, в среду (C19) — кадры без управления (FrameView): почта по мосту, лодка на зиму, Павел у рейки, торец бревна, утренний урок, ужин в доме тёти — последним (C18); Нина: «Доучись…» (C20). Следы выборов — условные реплики (`if` / `unless`) и слои кадров по флагам.",
+ "scenes": [
+  {
+   "id": "M24",
+   "type": "main",
+   "title": "Вечер третьего дня",
+   "locations": [
+    "O3",
+    "H1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M23a",
+     "done_M23b",
+     "done_M23c",
+     "done_M23d"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M24",
+     "day3_done",
+     "morning_day4"
+    ],
+    "items": []
+   },
+   "checkpoint": {
+    "slot": "day4",
+    "title": "@ui.checkpoint_day4"
+   },
+   "stage": [
+    {
+     "at": 1,
+     "fade_out_s": 1.0,
+     "hold_s": 1.4,
+     "fade_in_s": 1.0,
+     "sets": [
+      "morning_day4"
+     ],
+     "_note": "Ночь — «День четвёртый» — утро четвёртого дня (в маминой горнице, у кровати: T6).",
+     "day_card": "@ui.day_card_4"
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "The third day draws to evening. Family voices in Dunya's house again. Tikhon knows his mistress will not return. Tomorrow, the first beam: a bridge, higher than before.",
+     "_k11": "K11 (Директор 01.11, 01:00): «письма дошли» убрать — смысл тот же",
+     "_k": "K (сверка журнала 01.11): Илья в M23b — «пролёты выше прежних поставим»; было «мост восстанавливать, как был раньше»"
+    },
+    {
+     "speaker": "narrator",
+     "text": "The morning of the fourth day. Before dawn, Ilya and Pelageya went to the bend to set up the winch.",
+     "direction": {
+      "emotion": "спокойно",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       159
+      ]
+     }
+    }
+   ],
+   "result": "Свободный день закончен; утро четвёртого дня. Сохранение «День четвёртый».",
+   "goal": "To the bend: Ilya is at the winch. Time to lay the first beam.",
+   "goal_left": {
+    "lead": "To the bend: Ilya is at the winch. Time to lay the first beam.",
+    "head": "Once the beam is laid, there won't be time. Until then: ",
+    "items": [
+     {
+      "unless": [
+       "nina_letters_read"
+      ],
+      "text": "read Mama's letters"
+     },
+     {
+      "unless": [
+       "done_Q01"
+      ],
+      "text": "see to Aksinya's letter"
+     },
+     {
+      "unless": [
+       "done_Q08"
+      ],
+      "text": "have tea with Mama"
+     },
+     {
+      "unless": [
+       "done_Q03"
+      ],
+      "text": "mend Dunya's sleeve"
+     },
+     {
+      "unless": [
+       "done_Q07"
+      ],
+      "text": "see to Mitya's board"
+     },
+     {
+      "unless": [
+       "done_Q02"
+      ],
+      "text": "help Ulya with the map"
+     },
+     {
+      "unless": [
+       "done_Q06"
+      ],
+      "text": "build Ulya's workbench"
+     },
+     {
+      "unless": [
+       "done_Q04",
+       "q04_declined"
+      ],
+      "text": "hang Tikhon's shelf"
+     }
+    ],
+    "joiner": ", ",
+    "none": "Everything is done.",
+    "_k": "K (сверка журнала 01.11, п. 9): перечень — только несделанное (раньше стоял весь, даже сделанное), с полкой Тихону; цель пересчитывается и после историй (StoryRunner._complete_scene)"
+   },
+   "hints": [
+    "Today's work is done — time to sleep",
+    "Sleep in Mama's parlour, or on the sleeping ledge by Dunya's stove",
+    "Olkhovka → Nina's house → parlour bed. Or Dunya's house → ledge by the stove"
+   ],
+   "_note": "D21 (Директор 23:44): совета семерых больше нет — решение о мосте принято на мельнице (M23b). H17/T6 (Директор 24.10): сцена запускается кроватью в маминой горнице (rooms/O3.json → bed.sleep; до T6 — чердак), когда сделаны все четыре дела дня; раньше начиналась сама в комнате последнего дела."
+  },
+  {
+   "id": "M25",
+   "type": "main",
+   "title": "Первый пролёт",
+   "locations": [
+    "Z3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M24"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M25",
+     "span_first_laid",
+     "finale_confirmed"
+    ],
+    "items": []
+   },
+   "puzzle": {
+    "verb": "signal_windlass",
+    "solution": "С дощечки Пелагеи: «Пускай» — бревно опускается, «Стой» — у самого кольца плиты; ниже — стукнется о камень, тогда «Подымай» и снова",
+    "error": "Бревно стукается о камень опоры; Илья ждёт «подымай» и переводит наверх — без наказания"
+   },
+   "stage": [
+    {
+     "at": 0,
+     "cut": true,
+     "frame": "F_span",
+     "_note": "День четвёртый у поворота: ворот, прогоны, Илья, Пелагея с дощечкой. G42 (Директор 23.10): склейкой, без затемнения — люди с первого кадра (раньше: пустой берег, чёрное, потом «появляются»)."
+    },
+    {
+     "at": 4,
+     "cut": true,
+     "frame": "F_span_done",
+     "_note": "Бревно на опоре — кадр партии 5 (Z3_state_beam) с фигурами. Склейкой сразу после крупного плана: бревно не пропадает на время затемнения (G42)."
+    },
+    {
+     "at": "end",
+     "fade_out_s": 1.2,
+     "hold_s": 0.3,
+     "keep_black": true,
+     "_note": "G42: в темноту прямо из кадра с бревном и людьми и сразу в эпилог (M26 начинается здесь же) — пустой поворот между ними больше не показывается",
+     "_k": "K (Директор 31.10, стр. 108: «перед сценой с мостом 2 фейда, сделать один»): было — в конце сцены чёрное приподнималось до 0,93 (на миг проступал тёмный пустой поворот), и эпилог снова уводил в чёрное; теперь чёрное остаётся (keep_black), и эпилог выходит из него сразу кадром моста — одно затемнение"
+    }
+   ],
+   "mechanics": [
+    {
+     "at": 4,
+     "until": "span_first_laid",
+     "spec": {
+      "type": "windlass",
+      "closable": false,
+      "_closable_note": "G47 (23.10: «Закрыть» на крупном плане ворота → поворот Z3 пустой, без Ильи и Пелагеи, M25 начинается снова): обязательная сцена первого бревна — без «Закрыть» и Esc, как переправа M18p; выход один — уложить бревно",
+      "title": "@E5.windlass.title",
+      "art": {
+       "waiting": "res://assets/rooms/F_span/beam_waiting.png",
+       "beam": "res://assets/rooms/F_span/beam.png",
+       "_note": "G47/G48: tools/make_span_layers.py — основа дня 4 (низкая вода днём, камень без плиты) + стройка партии 9 без бревна и само бревно Z3_state_span_beam_day4"
+      },
+      "overlays": [
+       "res://assets/rooms/F_span/pelageya.png",
+       "res://assets/rooms/F_span/agata.png",
+       "res://assets/rooms/F_span/ilya.png"
+      ],
+      "_overlays_note": "G42 (Директор 23.10): в крупном плане те же трое, что в кадре F_span под ним — Пелагея с дощечкой, Агата, Илья у ворота; никто не пропадает; G47: фигуры переставлены под стройку партии 9 (F_span compose)",
+      "pivot": [
+       1218,
+       570
+      ],
+      "max_deg": 36.0,
+      "logic": {
+       "_j": "J (Директор 29.10, стр. 191: «красная зона слишком мала»): кольцо выше по шкале — под зелёной полосой красная (камень) почти треть шкалы, не десятая",
+       "rest": 0.66,
+       "tolerance": 0.08,
+       "speed": 0.1,
+       "raise_speed": 0.25,
+       "settle_s": 0.8
+      },
+      "ring": [
+       1112,
+       503
+      ],
+      "ring_r": 18,
+      "_ring_note": "G47 (партия 9, README «Координаты Z3»): береговой конец прогона на ряже — центр вращения (1218, 570), дальний конец на кольце — (1112, 503) при угле 0 (beam.png как нарисован); отметка мелом — там же; ring_r — радиус свечения (торец ≈12 px), px холста. G46: правила, шкала и зона прежние (3eb5ea5)",
+      "_logic_note": "G46 (Директор 23.10): ход крупнее (22° вместо 9° — дальний конец остаётся в кадре), зона кольца шире (±0,09), спуск медленнее (0,1/с: ~1,8 с в зоне); любая «Стой» в зоне кладёт бревно — вниз, вверх, повторная",
+      "reply_pos": [
+       470,
+       420
+      ],
+      "call_pos": [
+       850,
+       868
+      ],
+      "hint_pos": [
+       560,
+       948
+      ],
+      "done_flag": "span_first_laid",
+      "texts": {
+       "label_board": "@E5.windlass.label_board",
+       "label_hint": "@E5.windlass.label_hint",
+       "signal_lower": "@E5.windlass.label_signal_lower",
+       "signal_stop": "@E5.windlass.label_signal_stop",
+       "signal_raise": "@E5.windlass.label_signal_raise",
+       "call_lower": "@E5.windlass.label_call_lower",
+       "call_stop": "@E5.windlass.label_call_stop",
+       "call_raise": "@E5.windlass.label_call_raise",
+       "reply_lower": "@E5.windlass.label_reply_lower",
+       "reply_stop": "@E5.windlass.label_reply_stop",
+       "reply_raise": "@E5.windlass.label_reply_raise",
+       "reply_wait": "@E5.windlass.label_reply_wait",
+       "label_gauge": "@E5.windlass.label_gauge",
+       "label_stone": "@E5.windlass.label_stone",
+       "bump": "@E5.windlass.bump",
+       "reply_bump": "@E5.windlass.label_reply_bump",
+       "voice_call_lower": "@E5.windlass.voice_call_lower",
+       "voice_call_stop": "@E5.windlass.voice_call_stop",
+       "voice_call_raise": "@E5.windlass.voice_call_raise",
+       "voice_reply_lower": "@E5.windlass.voice_reply_lower",
+       "voice_reply_stop": "@E5.windlass.voice_reply_stop",
+       "voice_reply_raise": "@E5.windlass.voice_reply_raise",
+       "_voice_note": "I-T2 (Директор, стр. 163–164): сигналы и ответы Ильи звучат голосом (до записи — только надпись)"
+      },
+      "events": {
+       "laid": {
+        "sets": [
+         "span_first_laid"
+        ],
+        "text": "@E5.windlass.laid",
+        "close": true
+       }
+      },
+      "rope_from": [
+       990,
+       598
+      ],
+      "_rope_note": "G47: канат от барабана ворота (990, 598) к дальнему концу прогона рисует игра (на рисунке партии 9 его нет)",
+      "_maxdeg_note": "G47: прогон партии 9 короче прежнего (≈125 px холста против 272) — 36° вместо 22°, чтобы дальний конец поднимался так же заметно (≈90 px экрана); правила, шкала и зона прежние"
+     }
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "A winch stands at the bend; bridge beams are stacked nearby. Ilya waits. Pelageya has brought the signal board.",
+     "direction": {
+      "emotion": "первые — перечисление одно за другим, акцент на «стоит» и «сложены»; дальше естественно",
+      "pace": "связно",
+      "takes": 3,
+      "map": [
+       160
+      ],
+      "voice_fb": [
+       30
+      ],
+      "stress": "стоит; сложены"
+     }
+    },
+    {
+     "speaker": "ilya",
+     "text": "I'll turn the winch; you give the signals. Go, stop, raise — mill fashion.",
+     "direction": {
+      "stress": "Я; ты",
+      "emotion": "«Я» — пауза — «ворот кручу, а ты» — пауза — «знаки подавай»; командно",
+      "pace": "твёрдо",
+      "takes": 3,
+      "map": [
+       161
+      ],
+      "voice_fb": [
+       31
+      ]
+     },
+     "tags": [
+      "firm"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "Like the hook in the office. The same three signals.",
+     "direction": {
+      "emotion": "вспоминает",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-117"
+      ]
+     }
+    },
+    {
+     "speaker": "ilya",
+     "text": "Don't know about the hook. I can hear you here — call out!",
+     "_k24": "Директор 01.11, стр. 70 («откуда он это знает? это же не Павел»): Илья в конторе не был — говорит только о том, что слышит сам. Было: «Зато теперь тебя слышно!»",
+     "direction": {
+      "stress": "слышу",
+      "emotion": "тепло, с улыбкой",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       162
+      ]
+     },
+     "tags": [
+      "warmly"
+     ]
+    },
+    {
+     "speaker": "narrator",
+     "text": "Ilya locks the winch and straightens his back."
+    },
+    {
+     "speaker": "ilya",
+     "text": "It's down! Here, take the knife. Carve what you like on the end."
+    },
+    {
+     "speaker": "agata",
+     "prompt": "@E5.M25.prompt",
+     "options": [
+      {
+       "id": "dunya",
+       "label": "@E5.M25.opt_dunya",
+       "sets": "beam_dunya"
+      },
+      {
+       "id": "roads",
+       "label": "@E5.M25.opt_roads",
+       "sets": "beam_roads"
+      },
+      {
+       "id": "date",
+       "label": "@E5.M25.opt_date",
+       "sets": "beam_date"
+      },
+      {
+       "id": "blank",
+       "label": "@E5.M25.opt_blank",
+       "sets": "beam_blank"
+      }
+     ]
+    },
+    {
+     "speaker": "narrator",
+     "unless": [
+      "beam_blank"
+     ],
+     "text": "Slowly, Agata cuts the letters into the end of the beam. As she once did on a school desk."
+    },
+    {
+     "speaker": "ilya",
+     "text": "Twenty years I waited for you. Now we're holding it together."
+    }
+   ],
+   "result": "Первый прогон лежит на кольце плиты; на торце — надпись Агаты (или ничего).",
+   "goal": "Three weeks later. Bridge finished, pond full, mill grinding.",
+   "hints": [
+    "Ilya at the winch by the bend: from Zarechye, along the bank from the pier; from Olkhovka, by boat",
+    "Pelageya's board: \"Go\" lowers the beam; \"Stop\" just as it reaches the plate's ring",
+    "Hit the stone? \"Raise,\" then \"Go\" again — and \"Stop\" a little sooner"
+   ]
+  },
+  {
+   "id": "M26",
+   "type": "main",
+   "title": "Три недели спустя",
+   "locations": [
+    "Z3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M25"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M26",
+     "epilogue_seen",
+     "game_finished"
+    ],
+    "items": []
+   },
+   "end_frame": "EP_dinner",
+   "stage": [
+    {
+     "at": 0,
+     "fade_out_s": 1.4,
+     "hold_s": 1.4,
+     "fade_in_s": 1.4,
+     "frame": "EP_tamara"
+    },
+    {
+     "at": 5,
+     "fade_out_s": 0.9,
+     "hold_s": 0.5,
+     "fade_in_s": 0.9,
+     "frame": "EP_boat"
+    },
+    {
+     "at": 9,
+     "fade_out_s": 0.9,
+     "hold_s": 0.5,
+     "fade_in_s": 0.9,
+     "frame": "EP_pavel"
+    },
+    {
+     "at": 12,
+     "fade_out_s": 0.9,
+     "hold_s": 0.5,
+     "fade_in_s": 0.9,
+     "frame": "EP_beam"
+    },
+    {
+     "at": 14,
+     "fade_out_s": 1.0,
+     "hold_s": 0.8,
+     "fade_in_s": 1.0,
+     "frame": "EP_lesson",
+     "_note": "C18: утренний урок — предпоследний кадр"
+    },
+    {
+     "at": 16,
+     "fade_out_s": 1.2,
+     "hold_s": 1.0,
+     "fade_in_s": 1.2,
+     "frame": "EP_dinner",
+     "hold": true,
+     "_note": "C18: ужин — последний кадр игры, остаётся после сцены (FrameView: «Конец», следы выборов)"
+    },
+    {
+     "at": 35,
+     "cut": true,
+     "sets": [
+      "ep_ulyana_came"
+     ],
+     "sounds": [
+      {
+       "id": "door_heavy"
+      }
+     ],
+     "_j": "J (Директор 29.10, стр. 203): Ульяна входит с главной двери — дверь открывается на строке «Ульяна по новому мосту прибежала…», до того закрыта"
+    }
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "narrator",
+     "text": "Three weeks later. Wednesday. Winter on both banks. Bridge finished, pond full, mill grinding.",
+     "direction": {
+      "stress": "готов; наполнен; мелет",
+      "emotion": "бодро; акцент на словах после тире",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       166
+      ],
+      "voice_fb": [
+       32
+      ]
+     }
+    },
+    {
+     "speaker": "narrator",
+     "text": "Tamara crosses the bridge with the post.",
+     "direction": {
+      "emotion": "акцент на «Тамара»",
+      "pace": "ровно",
+      "takes": 3,
+      "map": [
+       167
+      ],
+      "voice_fb": [
+       33
+      ],
+      "stress": "Тамара"
+     }
+    },
+    {
+     "speaker": "tamara",
+     "if": [
+      "q01_mail_at_nina"
+     ],
+     "text": "For Aksinya, from her brother! Through Nina, as we agreed."
+    },
+    {
+     "speaker": "tamara",
+     "if": [
+      "q01_mail_at_gallery"
+     ],
+     "text": "Wednesdays, I leave Aksinya's letters in the gallery box at Dunya's. She leaves hers for me there, too."
+    },
+    {
+     "speaker": "tamara",
+     "unless": [
+      "q01_mail_at_nina",
+      "q01_mail_at_gallery"
+     ],
+     "text": "Third week carrying them, and the sack's still full! Both banks are writing now."
+    },
+    {
+     "speaker": "narrator",
+     "text": "Pelageya and Mitya tar the boat for winter."
+    },
+    {
+     "speaker": "pelageya",
+     "if": [
+      "q07_board_with_mitya"
+     ],
+     "text": "Don't throw the board away. All twenty of your years are in those notches."
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "q07_board_to_pelageya"
+     ],
+     "text": "Mitya's board hangs on the shed, its twenty notches showing. Pelageya hung it herself."
+    },
+    {
+     "speaker": "mitya",
+     "text": "Mama, hold it a little steadier. The boat has a winter to get through.",
+     "then": [
+      {
+       "speaker": "narrator",
+       "if": [
+        "q06_table_at_ilya"
+       ],
+       "text": "Mitya repairs an oarlock. Their shelf dries nearby, made on the second bench at Ilya's.",
+       "draft": true
+      }
+     ]
+    },
+    {
+     "speaker": "narrator",
+     "text": "Pavel stands by the gauge, watching the water — keeping an eye on it."
+    },
+    {
+     "speaker": "pavel",
+     "if": [
+      "pavel_answer_promise"
+     ],
+     "text": "Agata kept her word! Water's back at the mark, just as before."
+    },
+    {
+     "speaker": "pavel",
+     "if": [
+      "pavel_answer_family"
+     ],
+     "text": "You got your mother and brother out. Didn't believe we'd get the water back, too. But we did — all of us together.",
+     "direction": {
+      "stress": "Всем миром",
+      "emotion": "сухой человек признаёт",
+      "pace": "ровно",
+      "takes": 3,
+      "map": [
+       169
+      ]
+     }
+    },
+    {
+     "speaker": "narrator",
+     "unless": [
+      "beam_blank"
+     ],
+     "text": "Agata's inscription on the end of the first beam."
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "beam_blank"
+     ],
+     "text": "The first beam's end is blank. Ilya said everyone knows without an inscription."
+    },
+    {
+     "speaker": "narrator",
+     "text": "Winter morning. The classroom. Nina writes the date, the same on both banks now. Children from both banks sit at the desks, Ulyana among them. At the back stands Agata, by the very desk where she once drew the bird's cap."
+    },
+    {
+     "speaker": "nina",
+     "text": "Let us begin.",
+     "then": [
+      {
+       "speaker": "narrator",
+       "if": [
+        "q02_old_under_new"
+       ],
+       "text": "The old map of Olkhovka hangs by the board, the tracing of Ilya's garden pinned over it. Nina shows the children how the place has changed.",
+       "draft": true
+      }
+     ]
+    },
+    {
+     "speaker": "narrator",
+     "text": "Supper at Dunya's house that evening. Nina, Ilya and his wife, Agata. Tikhon on his shelf. Tamara's pot on the table."
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Is it Wednesday today?"
+    },
+    {
+     "speaker": "nina",
+     "if": [
+      "tikhon_told_nina"
+     ],
+     "text": "Wednesday, Tikhon."
+    },
+    {
+     "speaker": "agata",
+     "unless": [
+      "tikhon_told_nina"
+     ],
+     "text": "Wednesday.",
+     "then": [
+      {
+       "speaker": "agata",
+       "text": "You grumble, but you're waiting for guests yourself.",
+       "direction": {
+        "emotion": "поддразнивая, тепло",
+        "pace": "живо",
+        "takes": 1,
+        "map": [
+         "R2-N10"
+        ]
+       }
+      },
+      {
+       "speaker": "tikhon",
+       "text": "Guests leave crumbs.",
+       "direction": {
+        "emotion": "невозмутимо",
+        "pace": "лениво",
+        "takes": 1,
+        "map": [
+         "R2-N10"
+        ]
+       }
+      },
+      {
+       "speaker": "agata",
+       "text": "Is that all?",
+       "direction": {
+        "emotion": "с улыбкой",
+        "pace": "живо",
+        "takes": 1,
+        "map": [
+         "R2-N10"
+        ]
+       }
+      },
+      {
+       "speaker": "tikhon",
+       "text": "They laugh, too. Keep me awake… Yet somehow I'm always very glad of it.",
+       "direction": {
+        "emotion": "ворчливо, а под конец мягко",
+        "pace": "лениво",
+        "takes": 1,
+        "map": [
+         "R2-N10"
+        ]
+       }
+      }
+     ],
+     "_then_i_t5": "I-T5 (вычитка-2, разговор 10 «Пусть шумят»): после ответа о среде — Нины (строка 18) или Агаты (19); у then свои условия (здесь — никаких), поэтому звучит при любой из двух; последние слова Ульяны и Агаты остаются последними"
+    },
+    {
+     "speaker": "nina",
+     "if": [
+      "v01_cup_blue"
+     ],
+     "text": "The blue one… It was mine! I gave it to Dunya."
+    },
+    {
+     "speaker": "nina",
+     "if": [
+      "v01_cup_white"
+     ],
+     "text": "The white one… With the chip. I remember it.",
+     "direction": {
+      "stress": "Помню",
+      "emotion": "тихо, вспоминает",
+      "pace": "медленно",
+      "takes": 3,
+      "map": [
+       "R3-120"
+      ]
+     }
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "v01_photo_table"
+     ],
+     "text": "Nina picks up the family photograph. Still on the little table where Agata put it.",
+     "direction": {
+      "emotion": "повествовательно",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       "R3-121"
+      ]
+     }
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "v01_photo_shelf"
+     ],
+     "text": "Among Dunya's things on the shelf is the family photograph. Nina straightens it.",
+     "then": [
+      {
+       "speaker": "narrator",
+       "if": [
+        "q06_table_at_agata"
+       ],
+       "text": "Ilya made a carved frame for the family photograph on the new workbench.",
+       "draft": true
+      }
+     ]
+    },
+    {
+     "speaker": "nina",
+     "if": [
+      "q03_hidden_seam"
+     ],
+     "text": "Dunya's sleeve is holding. Can't even see the seam."
+    },
+    {
+     "speaker": "ilya_wife",
+     "if": [
+      "q03_patch_drawing"
+     ],
+     "text": "Agata, look — the patch on Dunya's coat is holding! And Ulyana's bird looks alive."
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "q08_home_evening"
+     ],
+     "text": "Cups on the table — the ones they used for their first tea together by Dunya's stove."
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "q08_open_table"
+     ],
+     "text": "Above the table hangs Ulyana's drawing: the guests at their first tea together."
+    },
+    {
+     "speaker": "ilya",
+     "_j": "J (Р10, 29.10): нижней улицы нет — строка без условия",
+     "text": "The log frame at the village edge gave us our first beam. As if it had been waiting."
+    },
+    {
+     "speaker": "nina",
+     "_j": "J (Р10, 29.10): нижней улицы нет — строка без условия",
+     "text": "And now the children from Zarechye sit in my classroom, too."
+    },
+    {
+     "speaker": "tikhon",
+     "if": [
+      "q04_corner_stove"
+     ],
+     "text": "My reception room: the stove shelf. Office hours are over."
+    },
+    {
+     "speaker": "tikhon",
+     "if": [
+      "q04_declined"
+     ],
+     "unless": [
+      "q04_corner_stove"
+     ],
+     "text": "A mat by the stove makes an office, too. Ilya hung the shelf, you know. Not you.",
+     "_k": "Ревью 01.11 (А-2): в кадре ужина полка у печи есть всегда — за три недели повесил Илья; прежнее «Только без полки» спорило с картиной (перезапись K16)"
+    },
+    {
+     "speaker": "narrator",
+     "if": [
+      "tikhon_told_agata"
+     ],
+     "text": "At night, Tikhon sleeps beside Agata's sleeping ledge."
+    },
+    {
+     "speaker": "agata",
+     "if": [
+      "nina_letters_read"
+     ],
+     "text": "I've finished Mama's letters. All twenty winters."
+    },
+    {
+     "speaker": "nina",
+     "text": "Finish your studies. There's a bridge now — you can come and visit."
+    },
+    {
+     "speaker": "narrator",
+     "text": "Ulyana runs over the new bridge — on her own, in through the front door.",
+     "then": [
+      {
+       "speaker": "narrator",
+       "if": [
+        "q02_new_primary"
+       ],
+       "text": "The garden drawing is pinned by the door. Ulyana uses it to explain the way to Tikhon.",
+       "draft": true
+      }
+     ]
+    },
+    {
+     "speaker": "ulyana",
+     "text": "Sister Agata! I came over the bridge — all by myself! Can I come tomorrow, too?"
+    },
+    {
+     "speaker": "agata",
+     "text": "You can, Ulya! There's a bridge now — come every day if you like. And now we all share the same tomorrow.",
+     "direction": {
+      "stress": "мост есть; одно на всех",
+      "emotion": "радостно; чуть больше паузы перед «Уля», акцент на «мост есть»; «и завтра у нас» — пауза — «одно на всех»",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       173
+      ],
+      "voice_fb": [
+       34
+      ]
+     },
+     "tags": [
+      "excited"
+     ],
+     "_h55": "H55 (Директор 24.10): глубокий короткий ответ на последний вопрос — закон мира и общее время; дальше затухание и титры (EndCredits, H56)"
+    }
+   ],
+   "result": "Эпилог через три недели, в среду: мост, лодка, мельница, надпись на бревне, утренний урок, ужин в доме тёти — последний кадр (C18–C20, Директор 23:44).",
+   "goal": "The end."
+  }
+ ]
+}

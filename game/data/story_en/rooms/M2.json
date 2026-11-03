@@ -1,0 +1,433 @@
+{
+ "id": "M2",
+ "_art": "Фон M2_bg.png (сени мельницы, ChatGPT v3): дверь конторы слева от середины (заперта изнутри), зеркало конторы у стены, фотография конторы рядом, открытая дверь кладовой справа, окно слева. M2_bg_mirror_removed.png — тот же вид без зеркала (полный фон, слой по флагу has_mirror_mill: Павел отдал зеркало). Крупный план фотографии — заглушка (BRIEF_CHATGPT_v4 §C2).",
+ "art_source": {
+  "files": {
+   "bg.png": "assets/incoming/M2_bg.png",
+   "bg_mirror_removed.png": "assets/incoming/M2_bg_mirror_removed.png"
+  },
+  "canvas": [
+   1672,
+   941
+  ]
+ },
+ "background": {
+  "kind": "interior",
+  "image": "res://assets/rooms/M2/bg.png",
+  "wall": "#6a5440",
+  "floor": "#5a4030",
+  "accent": "#3a2a1a",
+  "horizon": 700
+ },
+ "walkable": [
+  [
+   40,
+   800
+  ],
+  [
+   250,
+   728
+  ],
+  [
+   470,
+   708
+  ],
+  [
+   1450,
+   702
+  ],
+  [
+   1740,
+   708
+  ],
+  [
+   1790,
+   790
+  ],
+  [
+   1915,
+   800
+  ],
+  [
+   1915,
+   1070
+  ],
+  [
+   20,
+   1070
+  ]
+ ],
+ "no_walk_samples": [
+  [
+   700,
+   500,
+   "дверь конторы"
+  ],
+  [
+   380,
+   650,
+   "ушат у стены"
+  ],
+  [
+   1100,
+   400,
+   "зеркало"
+  ],
+  [
+   1850,
+   600,
+   "дверь кладовой"
+  ]
+ ],
+ "walk_samples": [
+  [
+   960,
+   900
+  ],
+  [
+   400,
+   900
+  ],
+  [
+   1600,
+   950
+  ],
+  [
+   900,
+   760
+  ]
+ ],
+ "depth": {
+  "top_y": 700,
+  "bottom_y": 1070,
+  "scale_top": 1.417,
+  "scale_bottom": 2.704
+ },
+ "_depth_note": "D3 (ИИ-плейтест 22.10, координатор 23.10): прямая глубины через ноль на горизонте y 292 (горизонт — камера 1,5 м над порогом двери) и через рост Агаты у порога двери (y 690) = 0.9 высоты двери (530 px → 477 px, масштаб 1.383). Рост Агаты = 345 px × масштаб; у нижнего края 2.704 (было 1.95 — вблизи на треть мельче перспективы), в глубине 1.417. Проверка tools/validate_rooms.py: рост у двери 0,85–0,95 её высоты.",
+ "height_refs": [
+  {
+   "what": "дверь конторы (порог y 690, верх y 160)",
+   "y": 690,
+   "px": 530,
+   "m": 2.0,
+   "door": true
+  }
+ ],
+ "layers": [
+  {
+   "id": "mirror_removed",
+   "image": "res://assets/rooms/M2/bg_mirror_removed.png",
+   "z": -9,
+   "if": [
+    "has_mirror_mill"
+   ],
+   "_note": "зеркало отдано Агате — сени без зеркала (полный фон без него, по совету _meta_v3/M2.md)"
+  }
+ ],
+ "effects": [],
+ "spawns": {
+  "default": [
+   960,
+   880
+  ],
+  "from_M1": [
+   1300,
+   980
+  ],
+  "from_M3": [
+   700,
+   780
+  ]
+ },
+ "props": [],
+ "hotspots": [
+  {
+   "id": "office_door",
+   "kind": "object",
+   "label": "@M2.office_door.label",
+   "rect": [
+    622,
+    215,
+    156,
+    430
+   ],
+   "stand": [
+    700,
+    760
+   ],
+   "draw": false,
+   "pick_priority": 2,
+   "hidden_if": [
+    "office_unbolted"
+   ],
+   "use": {
+    "sets": [
+     "seen_office_door"
+    ],
+    "text": "@M2.office_door.use",
+    "once_flag": "seen_office_door",
+    "scene": "M09s"
+   },
+   "look": "@M2.office_door.look"
+  },
+  {
+   "id": "office_door_open",
+   "kind": "object",
+   "label": "@M2.office_door_open.label",
+   "rect": [
+    622,
+    215,
+    156,
+    430
+   ],
+   "stand": [
+    700,
+    760
+   ],
+   "draw": false,
+   "pick_priority": 2,
+   "visible_if": [
+    "office_unbolted"
+   ],
+   "hidden_if": [
+    "office_door_opened"
+   ],
+   "use": {
+    "sets": [
+     "office_door_opened"
+    ],
+    "text": "@M2.office_door_open.use",
+    "once_flag": "office_door_opened",
+    "scene": "M13a"
+   },
+   "look": "@M2.office_door_open.look"
+  },
+  {
+   "id": "mirror",
+   "action_anim": "reach",
+   "kind": "object",
+   "label": "@M2.mirror.label",
+   "rect": [
+    990,
+    130,
+    230,
+    415
+   ],
+   "stand": [
+    1190,
+    770
+   ],
+   "draw": false,
+   "hidden_if": [
+    "has_mirror_mill"
+   ],
+   "use": {
+    "requires": {
+     "flags": [
+      "pavel_blessed_mirror"
+     ]
+    },
+    "fail_text": "@M2.mirror.look",
+    "gives": [
+     "mirror_mill"
+    ],
+    "text": "@M2.mirror.take",
+    "once_flag": "has_mirror_mill",
+    "_note": "G18: взять можно только после добра Павла (M09b → pavel_blessed_mirror) и один раз (has_mirror_mill); без добра — «Без спросу не возьму — это Павла»"
+   },
+   "look": "@M2.mirror.look"
+  },
+  {
+   "id": "photo",
+   "kind": "object",
+   "label": "@M2.photo.label",
+   "rect": [
+    1255,
+    235,
+    150,
+    140
+   ],
+   "stand": [
+    1330,
+    760
+   ],
+   "draw": false,
+   "mechanic": {
+    "type": "photo",
+    "title": "@M2.photo.title",
+    "photo": {
+     "image": "res://assets/closeups/closeup_office_photo.png",
+     "region": [
+      0,
+      0,
+      1672,
+      941
+     ],
+     "pos": [
+      274,
+      130
+     ],
+     "scale": 0.82,
+     "angle_deg": -1.5,
+     "paper": false,
+     "sepia": false,
+     "_note": "партия 3: старая фотография конторы — зеркало на стене напротив двери; своя сепия и потёртый край"
+    },
+    "texts": {
+     "label_caption": "@M2.photo.label_caption"
+    },
+    "events": {
+     "seen": {
+      "sets": [
+       "seen_office_photo"
+      ],
+      "text": "@M2.photo.use"
+     }
+    }
+   },
+   "look": "@M2.photo.look"
+  },
+  {
+   "id": "pavel",
+   "kind": "npc",
+   "label": "@char.pavel",
+   "rect": [
+    1630,
+    190,
+    180,
+    710
+   ],
+   "stand": [
+    1480,
+    900
+   ],
+   "draw": false,
+   "pick_priority": 2,
+   "visible_if": [
+    "pavel_blessed_mirror"
+   ],
+   "hidden_if": [
+    "visited_M3",
+    "done_M13"
+   ],
+   "states": [
+    {
+     "if": [
+      "has_mirror_mill"
+     ],
+     "rect": [
+      870,
+      192,
+      170,
+      508
+     ],
+     "stand": [
+      1150,
+      760
+     ],
+     "face": [
+      700,
+      560
+     ],
+     "_h28": "H28: у двери конторы смотрит влево, на дверь (npc_actor._face_data)",
+     "_note": "с зеркалом у Агаты — Павел у двери конторы, с фонарём (M11), там же после засова"
+    }
+   ],
+   "_g18_g21": "G18: после добра (M09b) Павел в сенях справа впереди, у двери в кладовую — не перед зеркалом и не перед фотографией конторы; зеркало взято — у двери конторы. G21 (Директор 23.10: «открываем вдвоём — мужик пропадает будто за дверь, а она закрыта»): после стеллажа Павел остаётся у двери, пока Агата не войдёт в контору (visited_M3) — там он уже внутри (M3: visible_if visited_M3); в двух местах сразу не стоит",
+   "talk": {
+    "by_flags": [
+     {
+      "if": [
+       "office_door_opened"
+      ],
+      "text": "@M2.pavel.after_lifted"
+     },
+     {
+      "if": [
+       "office_unbolted"
+      ],
+      "text": "@M2.pavel.after"
+     },
+     {
+      "if": [
+       "has_mirror_mill"
+      ],
+      "text": "@M1.pavel.after"
+     },
+     {
+      "if": [
+       "pavel_blessed_mirror"
+      ],
+      "text": "@M2.pavel.at_mirror"
+     }
+    ],
+    "after_text": "@M2.pavel.after"
+   }
+  }
+ ],
+ "exits": [
+  {
+   "to": "M1",
+   "label": "@M2.exit_M1.label",
+   "cue": "down",
+   "cue_at": [
+    1060,
+    990
+   ],
+   "_cue_i_t2": "I-T2 (Директор, стр. 18/74): метка «Во двор» выше и правее (прямоугольник выхода выше на 40 px)",
+   "rect": [
+    640,
+    960,
+    680,
+    120
+   ],
+   "stand": [
+    960,
+    1035
+   ],
+   "spawn": "from_M2",
+   "draw": false
+  },
+  {
+   "to": "M3",
+   "label": "@M2.exit_M3.label",
+   "cue": "door",
+   "rect": [
+    560,
+    160,
+    280,
+    530
+   ],
+   "stand": [
+    700,
+    760
+   ],
+   "spawn": "from_M2",
+   "closed_text": "@M2.exit_M3.closed",
+   "draw": false
+  }
+ ],
+ "scenes": {
+  "M09s": {
+   "complete_when": [
+    {
+     "all": [
+      "seen_office_door",
+      "seen_office_photo",
+      "seen_shift_schedule"
+     ]
+    }
+   ]
+  },
+  "M13a": {
+   "complete_when": [
+    {
+     "all": [
+      "office_door_opened"
+     ]
+    }
+   ]
+  }
+ },
+ "flags": {}
+}

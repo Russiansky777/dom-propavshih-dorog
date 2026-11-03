@@ -1,0 +1,685 @@
+{
+ "episode": 0,
+ "title": "Ключ от дома",
+ "target_minutes": [
+  5,
+  6
+ ],
+ "premise": "Год назад осенний паводок снёс пролёты моста в Ольховку; с тех пор туда нет дороги — лодки возвращает, тот берег стоит тёмным. Тамара написала Агате: вода упала, у поворота показалась опора моста. Агата приезжает; ключ от дома тёти Дуни хранится у Тамары по старому уговору (Docs/SCENARIO_FINAL.md, раздел 6).",
+ "scenes": [
+  {
+   "id": "M01",
+   "type": "main",
+   "title": "Ключ, который берегли",
+   "locations": [
+    "Z1"
+   ],
+   "requires": {
+    "flags": [],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M01",
+     "met_tamara",
+     "knows_bridge_lost",
+     "knows_pier_trace",
+     "knows_letters_bag",
+     "knows_dunya_left"
+    ],
+    "items": [
+     "key_house",
+     "letter_tamara",
+     "pocket_watch",
+     "mitten"
+    ]
+   },
+   "actions": [
+    "Тамара узнаёт Агату с порога; разговор: кто Агата и кого ищет, что случилось с мостом, кто такая Тамара, что изменилось сейчас",
+    "Два рисунка на прилавке: Дунин старый лист (опора моста с плитой, пометка «трещина — чинить») и свежий набросок Тамары (верхушка той же опоры над водой)",
+    "Мешок писем за год в Ольховку; Тамара отдаёт ключ"
+   ],
+   "_lines_i_t1": "I-T1 (Директор 25.10, стр. 8, 141, 168; решение D1): Агата сама говорит, что знает — год без вестей, письмо Тамары про мост и лодки, тётя ушла к маме и не вернулась; Тамара — тёплая и деловая: что на прилавке и зачем, кто она Дуне. Хребет знаний — Docs/SCENARIO_FINAL.md §5а.",
+   "mandatory_lines": [
+    {
+     "speaker": "tamara",
+     "text": "Good heavens… Agata? Nina's girl! You sent your letters home through me.",
+     "tags": [
+      "surprised"
+     ],
+     "direction": {
+      "stress": "Агата",
+      "emotion": "узнала с порога, радость и жалость",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       141
+      ]
+     }
+    },
+    {
+     "speaker": "agata",
+     "text": "I did. All year — not a word back. Not from Mama or Ilyusha.",
+     "tags": [
+      "sad"
+     ],
+     "direction": {
+      "stress": "ни строчки",
+      "emotion": "обида и тревога, сдержанно",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       8,
+       40
+      ]
+     }
+    },
+    {
+     "speaker": "agata",
+     "text": "You wrote: the flood took the bridge, the boats come back. Don't come until things change. Now you say they have. I left that very day.",
+     "tags": [
+      "animated"
+     ],
+     "direction": {
+      "stress": "переменилось",
+      "emotion": "«Не ехать, пока не переменится» — отдельной фразой, с паузой перед ней",
+      "pace": "быстрее к концу",
+      "takes": 3,
+      "map": [
+       8
+      ],
+      "voice_fb": [
+       1
+      ]
+     }
+    },
+    {
+     "speaker": "tamara",
+     "text": "They have, my dear. The water stayed high all year. This autumn it fell — the bridge pier at the bend appeared. Here, I sketched it from the bank.",
+     "tags": [
+      "warmly"
+     ],
+     "direction": {
+      "stress": "спа́ла",
+      "emotion": "тепло, по-деловому; «спа́ла» — ударение на первый слог",
+      "pace": "ровно",
+      "takes": 3,
+      "map": [
+       141
+      ],
+      "voice_fb": [
+       2
+      ]
+     }
+    },
+    {
+     "speaker": "agata",
+     "text": "That's Aunt's drawing! Aunt Dunya — Evdokia, Mama's sister… She went to Mama's just before the flood. Never came back?",
+     "tags": [
+      "hesitant"
+     ],
+     "direction": {
+      "stress": "не вернулась",
+      "emotion": "узнала почерк, страх за тётю",
+      "pace": "с остановкой перед вопросом",
+      "takes": 3,
+      "map": [
+       8,
+       40
+      ]
+     }
+    },
+    {
+     "speaker": "tamara",
+     "text": "Never did. Old friends, we are — she left me her house key, as we'd agreed. I've fed her Tikhon every Wednesday all year.",
+     "tags": [
+      "sighs"
+     ],
+     "direction": {
+      "stress": "не вернулась",
+      "emotion": "грусть, без надрыва",
+      "pace": "ровно",
+      "takes": 3,
+      "map": [
+       141
+      ]
+     }
+    },
+    {
+     "speaker": "tamara",
+     "text": "Dunya meant to send this drawing to the district office: the plate on the pier was cracked, needed mending. Never had the chance.",
+     "direction": {
+      "emotion": "деловито",
+      "pace": "ровно",
+      "takes": 1,
+      "map": [
+       141
+      ]
+     }
+    },
+    {
+     "speaker": "tamara",
+     "text": "These letters are for Olkhovka. A whole sack in a year. Yours to your mama, too. No one to take them.",
+     "tags": [
+      "sighs"
+     ],
+     "direction": {
+      "stress": "целый мешок; тут же",
+      "emotion": "за год — пауза — целый мешок; и твои маме — пауза — тут же",
+      "pace": "с паузами на тире",
+      "takes": 3,
+      "map": [
+       7,
+       141
+      ],
+      "voice_fb": [
+       3
+      ]
+     }
+    },
+    {
+     "speaker": "tamara",
+     "text": "Take the key. Dunya's house is waiting for you.",
+     "tags": [
+      "warmly"
+     ],
+     "direction": {
+      "stress": "дожидается",
+      "emotion": "дом Дунин стоит — пауза — тебя дожидается; тепло",
+      "pace": "ровно",
+      "takes": 3,
+      "map": [
+       141
+      ],
+      "voice_fb": [
+       4
+      ]
+     }
+    },
+    {
+     "speaker": "agata",
+     "text": "Thank you, Tamara. But I'll go down to the water first. Ask the boatwoman myself what devilry keeps bringing the boats back.",
+     "tags": [
+      "surprised"
+     ],
+     "direction": {
+      "stress": "чертовщина",
+      "emotion": "удивление, решимость",
+      "pace": "живо",
+      "takes": 3,
+      "map": [
+       9
+      ]
+     }
+    }
+   ],
+   "result": "Получены ключ и причина действовать сейчас. Письмо Тамары, по которому Агата приехала, — в журнале, не в сумке. Тамара открывает дверь почты.",
+   "goal": "I have Dunya's key. The pier first: ask the boatwoman why the boats come back.",
+   "hints": [
+    "Tamara wants to talk at the post office",
+    "Go to Tamara behind the counter",
+    "Click Tamara — she'll give you Aunt's house key"
+   ]
+  },
+  {
+   "id": "M02",
+   "type": "main",
+   "title": "Берег вижу",
+   "locations": [
+    "Z2",
+    "R1"
+   ],
+   "requires": {
+    "flags": [
+     "done_M01"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M02",
+     "met_pelageya",
+     "knows_no_road",
+     "knows_rope_on_plate",
+     "knows_sluice_key"
+    ],
+    "items": []
+   },
+   "actions": [
+    "Пройти береговой поворот, спуститься к причалу",
+    "Пелагея рассказывает: лодка уходит к тому берегу и возвращается к своему же причалу (G16: без затемнения)",
+    "Осмотреть канат моста на стопоре Пелагеи, сигнальный фонарь, дощечку сигналов"
+   ],
+   "_g16": "G16 (Директор 23.10: «лишний фейд экрана»): показанная попытка затемнением со стуком снята — хватает слов Пелагеи, что лодку возвращает",
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "I need to get to Olkhovka. Will you take me across?",
+     "tags": [
+      "hesitant"
+     ]
+    },
+    {
+     "speaker": "pelageya",
+     "text": "Ah, I can't. Been trying for a year.",
+     "direction": {
+      "emotion": "горькая досада",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       "R3-83"
+      ]
+     },
+     "tags": [
+      "firm"
+     ]
+    },
+    {
+     "speaker": "pelageya",
+     "text": "I row towards the far bank, but come out at my own pier every time.",
+     "_k27": "Директор 01.11, «Семнадцатый заход» (W220): «снова нет акцента, изменить фразу» — «гребу» в начало. Было: «На тот берег гребу, а всё к своему причалу выхожу.»",
+     "tags": [
+      "firm"
+     ],
+     "then": [
+      {
+       "speaker": "pelageya",
+       "text": "And the river's been in mist all year. Can barely see the far bank — not a light.",
+       "_j": "J (Р2, Директор 29.10): туман — тот берег серым силуэтом, пока дорогу не держат; после «гребу… к своему причалу», до льда — чтобы «И по льду?..» Агаты шло сразу за льдом"
+      }
+     ]
+    },
+    {
+     "speaker": "pelageya",
+     "text": "We tried the ice in winter. Came out on our own bank. It's not the water. There's no road.",
+     "tags": [
+      "firm"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "Even over the ice?… What about the rope?",
+     "tags": [
+      "surprised"
+     ]
+    },
+    {
+     "speaker": "pelageya",
+     "text": "The bridge handrail rope. The bridge was at the bend: flood took the spans, left the stone piers. Far end is still over there. This end was on the near pier's plate — that's where the road ran. I tied it to my rope clamp instead. It holds, but there's no road."
+    },
+    {
+     "speaker": "pelageya",
+     "text": "",
+     "_cut": "Директор 01.11, стр. 12 («короткая фраза про кол — нужна ли?»): снята — стопор назван строкой выше («к своему стопору перевязала»), а сам кол виден на причале. Строка без text не показывается (StoryRunner); записи M02_7, M02_8 не сдвигаются. Было: «Вот стопор — кол с замком.»"
+    },
+    {
+     "speaker": "pelageya",
+     "text": "Pull it — feels snagged on a root: no tug, no slack. The plate's deep underwater. Cracked, too. Dunya meant to mend it. Can't reach it down there.",
+     "then": [
+      {
+       "speaker": "pelageya",
+       "text": "The mill sluice holds back that water. Ask Pavel at the mill about it.",
+       "_k27_text": "Директор 01.11, «Семнадцатый заход» (W267): «переработать». Было: «А воду у плиты мельничный затвор держит. Про него — к Павлу, на мельницу.»",
+       "_k13": "Директор 01.11, стр. 13 («нужен ли доп. диалог с Пелагеей, чтобы открыть линию Павла? без него странно»): про затвор и Павла теперь говорит обязательная часть M02 — в M09 Агата зовёт Павла по имени и знает про затвор, а вопрос «А затвор?» после разговора был необязательным; подробности (контора, Фёдор Лукич) — по-прежнему в вопросах"
+      }
+     ]
+    },
+    {
+     "speaker": "pelageya",
+     "text": "My Mitya's there. Seventeen. Used to light the lantern on that pier every evening, sleep in the shed. That's where he stayed.",
+     "direction": {
+      "stress": "Митя",
+      "emotion": "сдержанная боль матери",
+      "pace": "неторопливо",
+      "takes": 3,
+      "map": [
+       "R3-84"
+      ]
+     },
+     "tags": [
+      "sad"
+     ],
+     "_h5": "H5 (Директор 24.10): без шёпота (quietly) — голос и громкость как у остальных реплик Пелагеи"
+    }
+   ],
+   "facts_revealed": [
+    "Лодку возвращает к своему причалу; по льду ходили — к своему же берегу: дело не в воде — дороги нет",
+    "Канат — последний кусок моста, сама дорога: дальний конец закреплён на том берегу, ближний сорвало с плиты опоры; плита под водой и с трещиной",
+    "Стопор — кол с замком на причале: на нём сейчас держится канат",
+    "В Ольховке остался её семнадцатилетний сын Митя: фонарь на дальней опоре — его пост"
+   ],
+   "result": "Игрок знает препятствие (вода и плита), но ещё не знает, почему важна именно плита. Переправа закрыта: без плиты лодку вернёт к своему причалу.",
+   "goal": "The boat returns to its own pier; there's no road. First, Aunt's house and her notes.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Лодку возвращает к своему причалу. Канат держит, а дороги нет; плита под водой и треснула. Сначала — дом тёти и её записи.»)",
+   "_lines_note": "Полировка сценария 22.10 (D23, B9, B15): в обязательном разговоре — показ лодки, одна фраза про лёд, канат со стопором и плита, Митя и его пост на дальней опоре. Другие лодки, болото, затвор и управляющий — по вопросам игрока (rooms/R1.json → pelageya.choice).",
+   "hints": [
+    "Boatwoman down by the water — the house can wait",
+    "The pier: down from the street, right of the house",
+    "At the pier, speak to the woman by the boat"
+   ]
+  },
+  {
+   "id": "M03",
+   "type": "main",
+   "title": "Кто ждёт у печи",
+   "locations": [
+    "H1"
+   ],
+   "requires": {
+    "flags": [
+     "house_unlocked"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M03",
+     "met_tikhon",
+     "stove_lit",
+     "knows_tikhon_waits"
+    ],
+    "items": []
+   },
+   "actions": [
+    "Открыть ставню",
+    "Положить приготовленные дрова в печь",
+    "Убрать мокрый платок с лежанки — этого достаточно для знакомства",
+    "Дальше по вопросам (хотспот Тихона): дверь из школы, свёрток на верстаке, мельничный колокол"
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "tikhon",
+     "text": "Don't put wet things on dry ones.",
+     "tags": [
+      "sarcastic"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "Oh!… Who are you, then?",
+     "unless": [
+      "tikhon_introduced"
+     ],
+     "tags": [
+      "surprised"
+     ],
+     "direction": {
+      "stress": "кто такой",
+      "emotion": "испуг и удивление: зверёк заговорил — сразу спрашивает, кто он",
+      "pace": "с остановкой после «Ой»",
+      "takes": 3,
+      "map": [
+       39,
+       "30.10"
+      ]
+     },
+     "_k7": "К7 (Директор 30.10, 14:30): удивляется и сразу спрашивает, кто он (раньше — после «И печь тут»); знакомство уже было по клику на Тихона (tikhon_introduced) — пропускается",
+     "then": [
+      {
+       "speaker": "tikhon",
+       "text": "Tikhon. Keeper of the stove. A demanding post: lie here and see it doesn't go cold.",
+       "unless": [
+        "tikhon_introduced"
+       ],
+       "tags": [
+        "sarcastic"
+       ],
+       "direction": {
+        "emotion": "важно и с ленцой",
+        "pace": "лениво",
+        "takes": 3,
+        "map": [
+         "30.10"
+        ]
+       }
+      },
+      {
+       "speaker": "agata",
+       "text": "Are you here alone?",
+       "unless": [
+        "tikhon_introduced"
+       ],
+       "tags": [
+        "curious"
+       ],
+       "direction": {
+        "emotion": "осторожно, оглядываясь",
+        "pace": "тихо",
+        "takes": 3,
+        "map": [
+         "30.10"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "text": "The stove's here too, of course.",
+     "unless": [
+      "tikhon_introduced"
+     ],
+     "tags": [
+      "sarcastic"
+     ]
+    },
+    {
+     "speaker": "agata",
+     "text": "What did Aunt Dunya tell you when she left?",
+     "tags": [
+      "hesitant"
+     ],
+     "direction": {
+      "stress": "сказала",
+      "emotion": "осторожно расспрашивает; знает, что год без вестей",
+      "pace": "тихо, с остановкой",
+      "takes": 3,
+      "map": [
+       40
+      ]
+     },
+     "_f01": "F01 (Директор 30.10, страница сверки): Тамара уже ответила «Не вернулась» — Агата спрашивает, что тётя сказала, уходя"
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Went to her sister's. Said she'd be back by evening."
+    },
+    {
+     "speaker": "agata",
+     "text": "It's been a year.",
+     "tags": [
+      "thoughtful"
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "text": "It's a long evening.",
+     "tags": [
+      "short pause"
+     ],
+     "voice_text": "[short pause] Вечер долгий.",
+     "then": [
+      {
+       "speaker": "tikhon",
+       "text": "Dunya always said things remember their place. I remember mine — by the stove.",
+       "_k": "31.10 (Директор: «давай поправим про Дуню и вещи места»): «вещи помнят место» — её давнее присловье мастера, не подсказка, оставленная после паводка (её здесь уже не было)"
+      }
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Tamara brings food on Wednesdays. Is it Wednesday today?",
+     "direction": {
+      "stress": "среда",
+      "emotion": "с надеждой на кастрюлю",
+      "pace": "ленивый",
+      "takes": 1,
+      "map": [
+       41
+      ]
+     },
+     "tags": [
+      "sarcastic"
+     ],
+     "then": [
+      {
+       "speaker": "agata",
+       "text": "No, Tikhon. Not Wednesday.",
+       "tags": [
+        "chuckling"
+       ],
+       "_k": "31.10 (Директор, стр. 24): Агата отвечает — с усмешкой; в эпилоге отзовётся «Среда, Тихон»"
+      }
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Now you've lit the stove, hang my shelf, will you? There, on the sleeping ledge. View of both stove and pot from there.",
+     "tags": [
+      "playful"
+     ],
+     "direction": {
+      "stress": "полку",
+      "emotion": "мягче, не зло — просит по-кошачьи",
+      "pace": "ленивый",
+      "takes": 3,
+      "map": [
+       42
+      ]
+     },
+     "_g11": "G11 (Директор 23.10: «полку нельзя повесить до того, как растопишь печь — объяснить»): после первого разговора у затопленной печи Тихон сам просит повесить полку — ради своего удобства. Реплики добавлены в конец сцены: записанные M03_0…M03_7 не сдвигаются"
+    },
+    {
+     "speaker": "agata",
+     "text": "Why not do it yourself?",
+     "tags": [
+      "playful"
+     ]
+    },
+    {
+     "speaker": "tikhon",
+     "text": "Hanging things with my paws isn't my business. Lying on top is my business.",
+     "tags": [
+      "sarcastic"
+     ]
+    }
+   ],
+   "result": "Дом безопасен, печь тёплая без таймера. Тихон год ждёт хозяйку «к вечеру» и не знает, что произошло за рекой; загадок не решает, мир не объясняет. Проход в мастерскую H2.",
+   "goal": "Aunt's drawings and notes are in the workshop beyond the living room, above the boxes.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Печь затоплена, Тихон дежурит и ждёт тётю «к вечеру». Её чертежи и записи — в мастерской за жилой комнатой, на стене над ящиками.»)",
+   "hints": [
+    "Aunt's house: middle door on the street; Tamara's key is in my bag",
+    "Use the key on the house door. Inside it's dark — open the shutter first",
+    "Living room: open the shutter, put wood in the stove, take the wet shawl off the ledge"
+   ]
+  },
+  {
+   "id": "M04",
+   "type": "main",
+   "title": "Незаконченная работа",
+   "locations": [
+    "H2",
+    "H3"
+   ],
+   "requires": {
+    "flags": [
+     "done_M03"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_M04",
+     "seen_workshop",
+     "seen_school_door",
+     "seen_bell",
+     "seen_mirror_home",
+     "knows_rule_things_remember"
+    ],
+    "items": [
+     "school_door",
+     "door_hinges",
+     "door_drawing",
+     "bell",
+     "mirror_home",
+     "bundle_nina"
+    ]
+   },
+   "actions": [
+    "Тётины чертежи на стене над ящиками: «Сохранить родные части; совместить отметки порога»",
+    "Ярлык колокола (H2.bell.use): «Колокол с мельницы. У двери конторы висел — по нему на мельнице работу начинали и кончали»; языка нет",
+    "Коробка с тремя родными петлями; стойка «ЗМ»; свёрток «Нина. Горница»; скоба для плиты (взять — после плана из школы)",
+    "Школьная дверь в галерее с биркой «Школа Ольховки. В ремонт от Нины»"
+   ],
+   "mandatory_lines": [
+    {
+     "speaker": "agata",
+     "text": "Aunt never had the chance… Never mind. I'll finish it for her.",
+     "direction": {
+      "stress": "доделаю",
+      "emotion": "грусть, потом решимость",
+      "pace": "пауза после «тётя»",
+      "takes": 3,
+      "map": [
+       49
+      ]
+     },
+     "tags": [
+      "thoughtful"
+     ]
+    }
+   ],
+   "result": "Рабочие места понятны: тётя ничего не предвидела, она просто чинила. Следующее действие — у школьного проёма H3. Домашнее зеркало остаётся на стене.",
+   "goal": "I have the hinges. Fit the door in the gallery frame: perhaps it will open into class, as Dunya wrote.",
+   "_goal_k": "Ревью 01.11 (Г-3/Г-12/Г-11, А-8/А-9): цель — одно действие, без пересказа и без ответа (было: «Дуня писала: иные вещи помнят место, которому служили. Неужели дверь из нашей школы откроется в класс? Петли у меня — навесить дверь в раму, в галерее.»)",
+   "hints": [
+    "Aunt's notes are in the workshop beyond the living room",
+    "Workshop: drawings above the boxes, \"Hinges\" box, bell by the window",
+    "Examine the drawings and bell, take the hinges; the gallery is down from the living room"
+   ]
+  },
+  {
+   "id": "V01",
+   "type": "minor",
+   "title": "Чашка на своём месте",
+   "locations": [
+    "H1"
+   ],
+   "requires": {
+    "flags": [
+     "met_tikhon"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_V01"
+    ],
+    "items": []
+   },
+   "summary": "Агата выбирает одну из двух чашек и ставит семейную фотографию на стол или полку. Тихон проверяет, не занято ли его место. Выбор свободно меняется, награды и оценки нет."
+  },
+  {
+   "id": "V02",
+   "type": "minor",
+   "title": "Свет под крышей",
+   "locations": [
+    "H4"
+   ],
+   "requires": {
+    "flags": [
+     "met_tikhon"
+    ],
+    "items": []
+   },
+   "grants": {
+    "flags": [
+     "done_V02"
+    ],
+    "items": []
+   },
+   "summary": "Слуховое окно, вид на Заречье с высоты, окованный сундук (что в нём — по решению G44/H17: язык колокола; скатерть — если Директор подтвердит её смысл) и пустые коробки. Обязательных документов нет. Единственное необязательное расширение осмотра дома.",
+   "proposed_change": "4.6: чердак как коллекция закрытых дверей и знаков Дуни (мир и название), без новых механик."
+  }
+ ]
+}

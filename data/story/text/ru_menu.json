@@ -19,6 +19,16 @@
     "ui.menu_title_load": {"text": "Загрузить игру", "draft": false},
     "ui.menu_title_settings": {"text": "Настройки", "draft": false},
     "ui.menu_no_saves": {"text": "Сохранений пока нет.", "draft": false},
-    "ui.back": {"text": "Назад", "draft": false}
+    "ui.back": {"text": "Назад", "draft": false},
+    "ui.lang_voice": {"text": "Озвучка", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_subtitles": {"text": "Субтитры", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_voice_ru": {"text": "Русский", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_voice_en": {"text": "English", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_subs_ru": {"text": "Русские", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_subs_en": {"text": "English", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_subs_none": {"text": "Без субтитров\nNo subtitles", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_en_warning": {"text": "Английские субтитры и озвучка — экспериментальные и могут содержать ошибки.\nEnglish subtitles and voice-over are experimental and may contain mistakes.", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_en_yes": {"text": "Понятно, включить английский", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
+    "ui.lang_en_no": {"text": "Оставить как было", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"}
   }
 }

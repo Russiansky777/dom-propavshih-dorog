@@ -1,0 +1,417 @@
+{
+ "_comment": "Тексты необязательных историй Q02 «На карте вырос сад» и Q06 «Второй верстак» (включены Директором 23.10 11:51, Docs/DECISIONS.md; данные — rooms/O1.json, O4.json, H2.json, quests.json, scenes/E5.json M26). Все draft: true — текст доводит владелец текста (ChatGPT с Директором); голоса не записаны (после текстового прохода). Поле line {speaker, text} — слова персонажа рядом с Агатой или мысль Агаты от первого лица (её голос); text — запасной закадровый вариант. Подписи (label*, opt_*, title*, written_* — надписи заглушек) не озвучиваются. H47/H48 (24.10): Q02 — дорога Ульяны по карте тремя кликами (Ульяна остаётся в классе), Q06 — верстак перетаскиванием деталей; новые строки тоже draft.",
+ "lang": "ru",
+ "texts": {
+  "O1q.village_map.label": {
+   "text": "Old map of Olkhovka",
+   "draft": true
+  },
+  "O1q.village_map.look": {
+   "text": "Nina has hung up the school map of Olkhovka for the lesson.",
+   "direction": {
+    "emotion": "просто",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-62"
+    ]
+   },
+   "draft": true
+  },
+  "O1q.village_map.use": {
+   "text": "We drew this map as a class. There's the house at the edge — Ilya's now. Beside it, just a fence and empty space.",
+   "direction": {
+    "emotion": "вспоминает",
+    "pace": "неторопливо",
+    "takes": 1,
+    "map": [
+     "R3-63"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "We drew this map as a class. There's the house at the edge — Ilya's now. Beside it, just a fence and empty space."
+   }
+  },
+  "O1q.village_map.ulyana_ours": {
+   "text": "But that's our garden! On your map there's only a fence behind our house.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "But that's our garden! On your map there's only a fence behind our house."
+   }
+  },
+  "O1q.village_map.agata_help": {
+   "text": "Help me find it, then. How do I get to your house?",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Help me find it, then. How do I get to your house?"
+   }
+  },
+  "O1q.village_map.ulyana_route": {
+   "text": "Take the road down from the school. Our house is the very last one. The garden's behind it, where your map is blank.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "Take the road down from the school. Our house is the very last one. The garden's behind it, where your map is blank."
+   }
+  },
+  "O1q.village_map.agata_mark": {
+   "text": "I'll mark the tracing paper: school, your house, then the garden.",
+   "direction": {
+    "emotion": "живо",
+    "pace": "живо",
+    "takes": 1,
+    "map": [
+     "R3-65"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "I'll mark the tracing paper: school, your house, then the garden."
+   }
+  },
+  "O1q.village_map.traced": {
+   "text": "Currants grow there now.",
+   "draft": true,
+   "line": {
+    "speaker": "agata",
+    "text": "Currants grow there now."
+   }
+  },
+  "O1q.village_map.ulyana_apple": {
+   "text": "And an apple tree! Papa planted it when I was born.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "And an apple tree! Papa planted it when I was born."
+   }
+  },
+  "O1q.village_map.prompt": {
+   "text": "Where should the tracing go?",
+   "draft": true
+  },
+  "O1q.village_map.opt_old": {
+   "text": "Pin it over the old map — show what was and what is",
+   "draft": true
+  },
+  "O1q.village_map.opt_new": {
+   "text": "Give it to Ulyana — it's her map now",
+   "draft": true
+  },
+  "O1q.village_map.look_old": {
+   "text": "Tracing paper over the old map of Olkhovka, with Ilya's garden drawn on it.",
+   "draft": true
+  },
+  "O1q.village_map.look_new": {
+   "text": "The old map of Olkhovka. We gave Ulyana the tracing with the garden.",
+   "draft": true
+  },
+  "O1q.village_map.written_title": {
+   "text": "Olkhovka",
+   "draft": true
+  },
+  "O1q.village_map.written_school": {
+   "text": "school",
+   "draft": true
+  },
+  "O1q.village_map.written_river": {
+   "text": "Zarechye",
+   "draft": true
+  },
+  "O1q.village_map.written_pupils": {
+   "text": "drawn by the pupils of Olkhovka School",
+   "draft": true
+  },
+  "mech.village_map.title": {
+   "text": "Map of Olkhovka",
+   "draft": true
+  },
+  "mech.village_map.label_hint": {
+   "text": "Trace Ulya's route in order: school → her house → garden. A mistake means starting again.",
+   "draft": true
+  },
+  "mech.village_map.place_school": {
+   "text": "School",
+   "draft": true
+  },
+  "mech.village_map.place_house": {
+   "text": "Ulya's house",
+   "draft": true
+  },
+  "mech.village_map.place_garden": {
+   "text": "Garden",
+   "draft": true
+  },
+  "mech.village_map.wrong": {
+   "text": "Not there! Start again. From the school to our house, then to the garden.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "Not there! Start again. From the school to our house, then to the garden."
+   }
+  },
+  "mech.village_map.wrong_again": {
+   "text": "Not here. Back to the school again.",
+   "draft": true,
+   "line": {
+    "speaker": "ulyana",
+    "text": "Not here. Back to the school again."
+   }
+  },
+  "O4q.workshop.label": {
+   "text": "Ilya's workshop",
+   "draft": true
+  },
+  "O4q.workshop.look": {
+   "text": "Ilya's workshop shed, in his yard. Wood shavings spill right to the doorstep.",
+   "draft": true
+  },
+  "O4q.workshop.mitya_cramped": {
+   "text": "Even Mitya and I are cramped at one bench.",
+   "direction": {
+    "emotion": "добродушно",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-67"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "Even Mitya and I are cramped at one bench."
+   },
+   "_k58": "Директор 01.11, стр. 58: «Илья отвечает, а его рядом нет» — Илья стоит в дверях своего сарая-мастерской в свободный день; Митя в это время на мостках с удочкой — его слова отданы Илье"
+  },
+  "O4q.workshop.ilya_invite": {
+   "text": "Come into my workshop — there's something to do.",
+   "direction": {
+    "emotion": "по-братски, с хитринкой",
+    "pace": "ровно",
+    "takes": 3
+   },
+   "draft": false,
+   "line": {
+    "speaker": "ilya",
+    "text": "Come into my workshop — there's something to do."
+   },
+   "_k0211": "Директор 02.11, стр. 28 («повторяются фразы, когда и на Илью нажимаешь, и на мастерскую»): у Ильи — только зов в мастерскую; про Улю и верстак — у сарая"
+  },
+  "O4q.workshop.ilya_after": {
+   "text": "Can't keep Ulya away from the bench now. Knee-deep in shavings.",
+   "direction": {
+    "emotion": "довольно, с улыбкой",
+    "pace": "ровно",
+    "takes": 3
+   },
+   "draft": false,
+   "line": {
+    "speaker": "ilya",
+    "text": "Can't keep Ulya away from the bench now. Knee-deep in shavings."
+   },
+   "_k0211": "Директор 02.11, стр. 28: после мастерской Илья не повторяет слова у сарая"
+  },
+  "O4q.workshop.ilya_third": {
+   "text": "We'll find room for a third, too.",
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "We'll find room for a third, too."
+   }
+  },
+  "O4q.workshop.ilya_ulya": {
+   "text": "Ulya follows me everywhere with a plane. Let's make her a bench of her own — a second one.",
+   "direction": {
+    "stress": "хвостиком",
+    "emotion": "с улыбкой",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-69"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "Ulya follows me everywhere with a plane. Let's make her a bench of her own — a second one."
+   }
+  },
+  "O4q.workshop.prompt": {
+   "text": "Where shall the second bench go?",
+   "draft": true
+  },
+  "O4q.workshop.opt_ilya": {
+   "text": "Leave it with Ilya — Ulya can learn beside her father",
+   "draft": true
+  },
+  "O4q.workshop.opt_agata": {
+   "text": "Take it to Aunt's workshop — Ulya can visit me there",
+   "draft": true
+  },
+  "O4q.workshop.look_ilya": {
+   "text": "Ilya's workshop. A second bench by the door — room for three now.",
+   "draft": true
+  },
+  "O4q.workshop.look_agata": {
+   "text": "Ilya's workshop. We moved the second bench to Dunya's workshop.",
+   "draft": true
+  },
+  "mech.bench.title": {
+   "text": "Second workbench",
+   "draft": true
+  },
+  "mech.bench.label_goal": {
+   "text": "Building a second bench — a third place in the workshop, for Ulya.",
+   "draft": true
+  },
+  "mech.bench.label_step1": {
+   "text": "Step 1 of 5 · Slot fitting",
+   "draft": true
+  },
+  "mech.bench.label_step2": {
+   "text": "Step 2 of 5 · Stop",
+   "draft": true
+  },
+  "mech.bench.label_step3": {
+   "text": "Step 3 of 5 · Screw",
+   "draft": true
+  },
+  "mech.bench.label_step4": {
+   "text": "Step 4 of 5 · Tighten the screw",
+   "draft": true
+  },
+  "mech.bench.label_step5": {
+   "text": "Step 5 of 5 · Board",
+   "draft": true
+  },
+  "mech.bench.label_done": {
+   "text": "Workbench ready",
+   "draft": true
+  },
+  "mech.bench.label_hint1": {
+   "text": "Drag in the fitting that sits snugly in the slot — the wedge or the spline.",
+   "draft": true
+  },
+  "mech.bench.label_hint2": {
+   "text": "Drag the stop into the slot, right against the spline.",
+   "draft": true
+  },
+  "mech.bench.label_hint3": {
+   "text": "Drag the screw to the highlighted spot behind the stop.",
+   "draft": true
+  },
+  "mech.bench.label_hint4": {
+   "text": "Click and hold the screw handle, then move the mouse in a circle.",
+   "draft": true
+  },
+  "mech.bench.label_hint5": {
+   "text": "Drag the board onto the bench, its end against the stop.",
+   "draft": true
+  },
+  "mech.bench.label_wedge": {
+   "text": "Wedge",
+   "draft": true
+  },
+  "mech.bench.label_key": {
+   "text": "Spline",
+   "draft": true
+  },
+  "mech.bench.label_stop": {
+   "text": "Stop",
+   "draft": true
+  },
+  "mech.bench.label_screw": {
+   "text": "Screw",
+   "draft": true
+  },
+  "mech.bench.label_board": {
+   "text": "Board",
+   "draft": true
+  },
+  "mech.bench.wedge_loose": {
+   "text": "The wedge would be loose here: the slot is straight.",
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "The wedge would be loose here: the slot is straight."
+   }
+  },
+  "mech.bench.fitted": {
+   "text": "There. The spline fits as though it belongs.",
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "There. The spline fits as though it belongs."
+   }
+  },
+  "mech.bench.stopped": {
+   "text": "It won't shift now.",
+   "draft": true,
+   "line": {
+    "speaker": "mitya",
+    "text": "It won't shift now."
+   }
+  },
+  "mech.bench.screw_set": {
+   "text": "Screw's in place. Tighten it all the way.",
+   "direction": {
+    "emotion": "по-деловому",
+    "pace": "ровно",
+    "takes": 1,
+    "map": [
+     "R3-71"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "Screw's in place. Tighten it all the way."
+   }
+  },
+  "mech.bench.tightened": {
+   "text": "Tight. Pass the board.",
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "Tight. Pass the board."
+   }
+  },
+  "mech.bench.checked": {
+   "text": "It holds! You could start planing this very moment.",
+   "direction": {
+    "stress": "Держит",
+    "emotion": "довольно, радостно",
+    "pace": "живо",
+    "takes": 3,
+    "map": [
+     "R3-73"
+    ]
+   },
+   "draft": true,
+   "line": {
+    "speaker": "ilya",
+    "text": "It holds! You could start planing this very moment."
+   }
+  },
+  "H2q.second_bench.label": {
+   "text": "Second workbench",
+   "draft": true
+  },
+  "H2q.second_bench.look": {
+   "text": "Ilya and Mitya brought the second bench from Ilya's workshop. There are two in Dunya's now.",
+   "draft": true
+  },
+  "ach.title_q02": {
+   "text": "Ilya's garden on the old map",
+   "draft": true
+  },
+  "ach.title_q06": {
+   "text": "Second workbench",
+   "draft": true
+  }
+ }
+}

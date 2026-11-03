@@ -46,6 +46,8 @@ signal voice_volume_changed(volume: float)
 const CONFIG_PATH: String = "res://data/story/voice.json"
 const BUS_NAME: String = "Voice"
 const DEFAULT_DIR: String = "res://assets/voice/ru"
+const EN_DIR: String = "res://assets/voice/en"
+var voice_lang: String = "ru"   # the language of the recordings in voice_dir
 const DEFAULT_SETTINGS_PATH: String = "user://settings.cfg"
 const DEFAULT_VOLUME: float = 1.0
 const SILENCE_DB: float = -80.0
@@ -184,6 +186,12 @@ func reload_config() -> void:
 	else:
 		config_errors.append("missing " + CONFIG_PATH)
 	voice_dir = String(data.get("dir", DEFAULT_DIR)).trim_suffix("/")
+	# Director 03.11: the voice's language is the player's (LanguageSettings.voice) — English recordings live in
+	# res://assets/voice/en with their own manifest (pipeline/voice, the set «en»); without them — the Russian voice
+	voice_lang = "ru"
+	if LanguageSettings.voice == "en" and FileAccess.file_exists(EN_DIR + "/manifest.json"):
+		voice_dir = EN_DIR
+		voice_lang = "en"
 	volume_db = float(data.get("volume_db", 0.0))
 	pan_cfg = {}
 	for k in data.get("pan", {}).keys():
@@ -243,7 +251,9 @@ func line_status(line_id: String, text: String) -> String:
 		return "no_entry"
 	if e.has("stale"):
 		return "stale"
-	if String(e.get("text_sha1", "")) != text.sha1_text():
+	# the sha1 guard compares the words on screen with the words recorded — only when both are in one language
+	# (Russian voice under English subtitles: the subtitle is a translation, the recording is checked by the pipeline)
+	if voice_lang == StoryData.lang and String(e.get("text_sha1", "")) != text.sha1_text():
 		return "text_changed"
 	if not ResourceLoader.exists(file_path(line_id)):
 		return "no_file"

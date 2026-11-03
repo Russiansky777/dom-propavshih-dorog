@@ -1,0 +1,455 @@
+{
+ "_comment": "Описания сюжетных флагов. Флаги done_*, has_<item> и флаги выборов регистрируются автоматически. min_episode — тайна не может быть раскрыта раньше этого эпизода.",
+ "flags": {
+  "q06_mitya_here": {
+   "desc": "",
+   "_note": "Митя пришёл с тропы к сараю Ильи помочь собрать верстак (Q06m; Директор 02.11, стр. 28)"
+  },
+  "mitya_lantern_taken": {
+   "desc": "",
+   "_note": "Митя поднял фонарь со стенки дальней опоры и несёт его в руке (M18, строка «поднимает фонарь и идёт к улице»; Директор 02.11, стр. 21)"
+  },
+  "met_tamara": {
+   "desc": "Tamara, Dunya's old friend, kept Aunt's key as agreed and fed Tikhon every Wednesday all year",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Тамара — Дунина подруга: держит ключ от тётиного дома по старому уговору и весь год кормила Тихона»"
+  },
+  "knows_bridge_lost": {
+   "desc": "Last autumn's flood swept away the bridge to Olkhovka. There has been no road since"
+  },
+  "knows_pier_trace": {
+   "desc": "Tamara wrote: the water fell this autumn, exposing the bridge pier at the bend. Dunya's drawing notes that its plate is cracked and needs repair"
+  },
+  "knows_letters_bag": {
+   "desc": "Tamara has a year's letters for Olkhovka, with no one to take them. My letters to Mama are there"
+  },
+  "knows_dunya_left": {
+   "desc": "Aunt Dunya went to her sister in Olkhovka on the day of the flood and never returned"
+  },
+  "met_pelageya": {
+   "desc": "Pelageya is the boatwoman. Her son Mitya, seventeen, stayed on the far bank"
+  },
+  "knows_no_road": {
+   "desc": "Mist over the river all year; not a light on the far bank. Boats return to their own piers; crossing the ice brought people back, too. It is not the water — there is no road",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): Р2 (туман); было: «Тот берег год стоит тёмным. Лодку возвращает к своему причалу, по льду ходили — к своему же берегу: дело не в воде — дороги нет»"
+  },
+  "knows_rope_on_plate": {
+   "desc": "The bridge stood at the bend. Its handrail rope was fixed to the near pier's plate. Pelageya retied it to her rope clamp: it holds, but no road. The plate is cracked, underwater. Dunya meant to mend it"
+  },
+  "knows_sluice_key": {
+   "desc": "The mill sluice holds back the water. Its lever is in the office, shut since the flood. Pavel knows more",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): Р4: стеллажа нет — «завалило» убрано; было: «Воду у опоры держит мельничный затвор; рычаг затвора — в конторе, контору завалило. Павел знает больше»"
+  },
+  "house_unlocked": {
+   "desc": "I unlocked Aunt's house with the key Tamara kept safe. It stayed in the lock",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Ключ Тамары открыл дверь тётиного дома и остался в замке»"
+  },
+  "house_open": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: ставится при первом входе в галерею, засов ещё не отодвинут — запись про переулок теперь у side_door_passed; было: «Боковая дверь галереи открыта изнутри: в дом можно войти и из переулка»"
+  },
+  "side_door_passed": {
+   "desc": "I unbolted the gallery's side door from inside. Now I can enter from the lane, too",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): ставится при первом выходе через боковую дверь (H3 → Z4, on_pass)"
+  },
+  "met_tikhon": {
+   "desc": "Tikhon is the little house spirit who tends Aunt's stove"
+  },
+  "tikhon_introduced": {
+   "desc": "",
+   "_note": "Служебный флаг — в журнал «Что известно» не выводится (аудит 30.10: пометка для разработчиков была видна игроку): Агата познакомилась с Тихоном, кликнув его до разговора у затопленной печи (M03): знакомство в M03 не повторяется"
+  },
+  "knows_tikhon_waits": {
+   "desc": "Tikhon has waited a year: \"Went to her sister's. Back by evening\"",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): слова — как в M03; было: «Тихон год ждёт тётю: «К сестре ушла. Сказала — к вечеру»»"
+  },
+  "stove_lit": {
+   "desc": "I lit the stove — the house is warm",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Печь растоплена, в доме тепло»"
+  },
+  "seen_workshop": {
+   "desc": "Aunt's notes: keep the school door's original hinges; set the threshold by its notch",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Мастерская: тётины ремонты до беды — школьная дверь, мельничный колокол, мамино зеркало, плита моста»"
+  },
+  "seen_school_door": {
+   "desc": "School door in the gallery: \"Olkhovka School. Sent for repair by Nina\""
+  },
+  "seen_bell": {
+   "desc": "Dunya's mill bell label: it hung by the office door and marked the start and end of work",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Ярлык мельничного колокола: висел у двери конторы, по нему начинали и кончали работу; «Иные вещи помнят место, которому служили»»"
+  },
+  "seen_mirror_home": {
+   "desc": "The gallery's house mirror shows an ordinary reflection"
+  },
+  "knows_rule_things_remember": {
+   "desc": "Dunya's saying: \"Some things remember the place they served\"",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): слова — как H2.bell.use; было: «Тётиной рукой, с нажимом: «Некоторые вещи помнят место, которому служили»»"
+  },
+  "door_school_installed": {
+   "desc": "I hung the school door on its own hinges — it opens into the classroom",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Школьная дверь висит в раме галереи: через неё можно пройти в класс»"
+  },
+  "seen_class_traces": {
+   "desc": "Winter in the classroom, October here. Exercise books in unfamiliar handwriting: lessons went on there"
+  },
+  "knows_crossing_plan": {
+   "desc": "The plan: \"A road is held from both ends. We hold the far end. The near end is the cracked plate underwater on the pier at the bend. Dunya has a bracket on her workbench. Fasten the rope only to its ring… The mill sluice holds back the water; its lever is in the manager's office. Once fastened, signal three flashes from the pier\"",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): цитата — как лист O1.teacher_drawer.paper_plan; было: «План в учительском ящике: «Дорогу держат с двух концов. Дальний держим мы. Ближний — плита на опоре у поворота, она под водой и с трещиной; скоба для неё у Дуни на верстаке. Воду держит мельничный затвор, рычаг затвора в конторе управляющего. Когда закрепишь — три огня с причала»»"
+  },
+  "observed_path_loop": {
+   "desc": "The school path goes in circles. I reached the classroom, but not the village yet"
+  },
+  "board_here": {
+   "desc": "I wrote on the classroom board: \"I was here. Agata\""
+  },
+  "board_mama": {
+   "desc": "I wrote on the classroom board: \"Mama, I'm coming\""
+  },
+  "board_ilya": {
+   "desc": "I wrote on the classroom board: \"Ilyusha, I found your drawing\""
+  },
+  "night_day1": {
+   "desc": "I spent the first night by the stove in Aunt's house"
+  },
+  "met_pavel": {
+   "desc": "Pavel has tended the mill alone a year. The flood warped the office door and dropped its bolt into the brackets inside",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Знакомство с Павлом: контору заперло изнутри в ночь паводка»"
+  },
+  "seen_office_door": {
+   "desc": "The office door is bolted from inside. I can't lift the bolt without seeing it"
+  },
+  "seen_shift_schedule": {
+   "desc": "The mill rules give bell signals: one strike — go, two — stop, a long ring — raise",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Порядок на мельнице: сигналы колоколом — один удар — пускай, два — стой, долгий — подымай»"
+  },
+  "office_unbolted": {
+   "desc": "I guided Pavel's hook with the bell — the office bolt is lifted",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Засов конторы поднят крюком Павла по звону колокола»"
+  },
+  "sluice_opened": {
+   "desc": "Pavel and I opened the sluice notch by notch. The pond is draining; the wheel has stopped",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Затвор открыт по зарубкам: пруд сходит»"
+  },
+  "ferry_verified": {
+   "desc": "The empty boat crossed along the rope and returned with Mama's ribbon"
+  },
+  "met_mitya": {
+   "desc": "Mitya waited at the far pier. Bearded, greying — thirty-seven",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Встреча со взрослым Митей: ему тридцать семь»"
+  },
+  "knows_twenty_years": {
+   "desc": "Twenty years in Olkhovka for our one",
+   "min_episode": 3
+  },
+  "met_nina": {
+   "desc": "Mama is alive. She met me on the porch"
+  },
+  "met_ilya": {
+   "desc": "Ilya, my younger brother, is older than me now: thirty-two"
+  },
+  "q06_hook": {
+   "desc": "Mama asked me to visit Ilya's workshop shed. He and Mitya are cramped; Ulya needs her own place"
+  },
+  "met_ulyana": {
+   "desc": "Ulyana, Ilya's daughter, calls me her sister",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Ульяна, дочь Ильи, — восемь лет»"
+  },
+  "knows_evdokia_death": {
+   "desc": "Aunt Dunya died two years ago by the count here, aged seventy-two",
+   "min_episode": 4
+  },
+  "nina_visited_house": {
+   "desc": "Mama visited her sister's house: the school door, her mirror, her own empty parlour in the glass"
+  },
+  "school_path_open": {
+   "desc": "The school path is back. From Olkhovka's street I can walk through the schoolyard into class"
+  },
+  "finale_confirmed": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: та же минута, что span_first_laid; было: «Первое бревно легло на кольцо плиты»"
+  },
+  "seen_office_photo": {
+   "desc": "The hall photograph shows the office mirror in its proper place"
+  },
+  "pavel_agreed_signals": {
+   "desc": "Pavel agreed: one strike, he lights the gap; then I signal to guide his hook"
+  },
+  "pavel_blessed_mirror": {
+   "desc": "Pavel let me take the office mirror. He led me to the entry hall; it's by the wall"
+  },
+  "office_mirror_mounted": {
+   "desc": "I put the office mirror in Aunt's workshop stand",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Зеркало конторы стоит в тётиной стойке в мастерской»"
+  },
+  "office_mirror_clamped": {
+   "desc": "I wedged the frame tight — the mill office appeared in the glass",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Рама зеркала конторы зажата: в стекле — контора мельницы»"
+  },
+  "bell_clapper_hung": {
+   "desc": "I fetched the clapper from the attic and fitted it to the bell",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Язык колокола на месте»"
+  },
+  "lantern_check_seen": {
+   "desc": "Pavel's lantern lit as I struck: the mirror shows the office as it is now"
+  },
+  "office_door_opened": {
+   "desc": "Pavel and I opened the office door",
+   "_r4": "Р4 (Директор 29.10): стеллажа нет нигде — флаг переименован (было office_shelf_lifted; старые сохранения — meta.json flag_renames)"
+  },
+  "pavel_answer_family": {
+   "desc": "I told Pavel Mother and my brother were stranded there",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Павлу сказано: там мама и брат»"
+  },
+  "pavel_answer_promise": {
+   "desc": "I gave Pavel my word: refill the pond by winter",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Павлу дано слово: к зиме воду поднимут»"
+  },
+  "sluice_key_inserted": {
+   "desc": "I fitted the lever to the sluice winch",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Рычаг затвора вставлен в ворот»"
+  },
+  "pond_lowered": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: та же минута, что sluice_opened (текст — там); было: «Пруд спущен: вода у опоры моста сходит, колесо мельницы стоит»"
+  },
+  "nina_mirror_clamped": {
+   "desc": "I clamped Mama's mirror frame together. It shows her parlour",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Струбцина стянула раму маминого зеркала: в нём горница Нины»"
+  },
+  "nina_time_compared": {
+   "desc": "Mama is alive. By my watch: one minute here is twenty there"
+  },
+  "evening_dusk": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: время — в строке времени журнала; было: «Сумерки второго дня»"
+  },
+  "intro_seen": {
+   "desc": "",
+   "_note": "Служебный флаг — в журнал «Что известно» не выводится (аудит 30.10: пометка для разработчиков была видна игроку): Вступление новой игры показано (Р13, menu.json → intro): при загрузке не повторяется"
+  },
+  "r1_saw_pelageya_at_turn_d3": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: расстановка фигур; было: «Пелагея ждёт у лодки у поворота; на причале её нет»"
+  },
+  "m23a_nina_here": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: расстановка фигур; было: «Мама пришла на раздачу писем на улице Ольховки»"
+  },
+  "m23a_nina_left": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: расстановка фигур; было: «После раздачи писем мама снова ушла в дом Дуни»"
+  },
+  "skoba_on_plate": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: та же минута, что plate_braced; было: «Тётина скоба лежит на трещине плиты»"
+  },
+  "plate_braced": {
+   "desc": "I drove Aunt's bracket home, closing the plate's crack",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Скоба забита: трещина плиты стянута»"
+  },
+  "rope_brought": {
+   "desc": "Pelageya released the bridge rope from her clamp and rowed it to the pier"
+  },
+  "rope_on_ring": {
+   "desc": "I tied the bridge rope to the plate's ring, as it was before",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Канат моста завязан на кольце плиты, как раньше»"
+  },
+  "three_lights_sent": {
+   "desc": "I sent three flashes from the pier",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «С причала поданы три огня»"
+  },
+  "far_lights_answered": {
+   "desc": "The far bank answered with three flashes — the first in a year"
+  },
+  "far_snow_seen": {
+   "desc": "For the first time in a year, the far bank is white with snow. Winter there"
+  },
+  "waved_at_stove": {
+   "desc": "I stood by Aunt's stove and waved to Mama, hoping she could somehow see the house"
+  },
+  "windlass_rusty": {
+   "desc": "The sluice winch rusted in a year. Pavel wants tar from Dunya's workshop bench"
+  },
+  "windlass_tarred": {
+   "desc": "I greased the winch with tar — ready to open notch by notch",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Ворот затвора смазан дёгтем — можно открывать по зарубке»"
+  },
+  "road_held_both_ends": {
+   "desc": "They hold the rope's far end. The road is held from both ends again",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Канат на кольце плиты: дорогу снова держат с двух концов»"
+  },
+  "boat_to_pier": {
+   "desc": "",
+   "_note": "Служебный флаг — в журнал «Что известно» не выводится (аудит 30.10: пометка для разработчиков была видна игроку): Р11 (J): после узла Пелагея увела лодку к своему причалу (затемнение конца M15)"
+  },
+  "boat_back_at_turn": {
+   "desc": "",
+   "_note": "Служебный флаг — в журнал «Что известно» не выводится (аудит 30.10: пометка для разработчиков была видна игроку): Р11 (J): после огней Пелагея вернула лодку к плите у поворота (затемнение конца M16)"
+  },
+  "in_olkhovka": {
+   "desc": "I'm in Olkhovka. Mitya's lantern led me to the street"
+  },
+  "time_common_seen": {
+   "desc": "Mama's clock keeps time with my watch. We share time now"
+  },
+  "knows_nina_saw_agata": {
+   "desc": "Mama saw me by Dunya's stove in the little mirror Aunt brought as a gift"
+  },
+  "met_ilya_wife": {
+   "desc": "Varvara, Ilya's wife, came with a lamp",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Жена Ильи пришла с лампой»"
+  },
+  "night_olkhovka": {
+   "desc": "I slept in my old bed in Mama's parlour, sharing with Ulya",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Ночь я провела в своей старой комнате — теперь там спит Ульяна»"
+  },
+  "morning_day3": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: время — в строке времени журнала; было: «Утро третьего дня в Ольховке»"
+  },
+  "nina_answered_board": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11, крит. 3): ставится всегда в M22 (слои ответа Ули, достижение); запись журнала — nina_answered_my_board; было: «Мама ответила на доске под моей надписью»"
+  },
+  "nina_answered_my_board": {
+   "desc": "Mama answered beneath my writing on the board",
+   "_k": "K (сверка журнала 01.11, крит. 3): только если Агата писала на доске (M22, постановка if_any board_*)"
+  },
+  "nina_wrote_date": {
+   "desc": "Mama wrote our first shared date on the board — the same on both banks"
+  },
+  "free_walk_day3": {
+   "desc": "Our first free day. The villagers are crossing to Zarechye along the rope"
+  },
+  "m23c_coat_hung": {
+   "desc": "",
+   "_note": "01.11 (Директор, стр. 60): ставит сцена M23c (stage at 1) — Дунино пальто на крючке в H1 (слой nina_coat_hung) с той строки, где Нина его вешает, а не с конца сцены; служебный, без текста в журнале"
+  },
+  "m19_nina_home": {
+   "desc": "",
+   "_note": "G29/G41: ставит затемнение M19 (stage at 6); до него Нина на крыльце (O4), в горнице (O3) её нет",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: расстановка фигур (решение 30.10 — служебные без текста); было: «Мама ушла с крыльца в дом — она в горнице»"
+  },
+  "wife_came": {
+   "desc": "",
+   "_note": "T6 (ИИ-разбор): та же строка, что met_ilya_wife, ставится той же сценой M20 — в журнале не дублируется"
+  },
+  "ttt_won": {
+   "desc": "I beat Ulyana at noughts and crosses",
+   "_note": "Аудит 30.10: из записи журнала убрана служебная скобка (было: «Агата обыграла Ульяну в крестики-нолики (O1, мини-игра, J часть G)»). Директор 30.10, 19:15: журнал «Что я знаю» — от первого лица (было: «Агата обыграла Ульяну в крестики-нолики»)."
+  },
+  "ttt_lost": {
+   "desc": "Ulyana beat me at noughts and crosses",
+   "_note": "Директор 30.10, 19:15: журнал «Что я знаю» — от первого лица (было: «Ульяна обыграла Агату в крестики-нолики»)."
+  },
+  "ttt_draw": {
+   "desc": "A draw at noughts and crosses with Ulyana"
+  },
+  "ttt_played": {
+   "desc": "I played noughts and crosses with Ulyana",
+   "desc_unless": [
+    "ttt_won",
+    "ttt_lost",
+    "ttt_draw"
+   ],
+   "_k_review": "Ревью 01.11 (Г-24): пока нет итога партии — «сыграла»; с итогом эта запись уступает ему (desc_unless)",
+   "_note": "Аудит 30.10: из записи журнала убрана служебная скобка (было: «Агата сыграла с Ульяной в крестики-нолики и закончила («Хватит»)»). Директор 30.10, 19:15: журнал «Что я знаю» — от первого лица (было: «Агата сыграла с Ульяной в крестики-нолики»)."
+  },
+  "tikhon_rhythm_done": {
+   "desc": "I repeated all Tikhon's spoon-on-cup rhythms",
+   "_note": "Аудит 30.10: из записи журнала убрана служебная скобка (было: «Агата повторила за Тихоном все ритмы ложечкой по чашке (H1, мини-игра)»). Директор 30.10, 19:15: журнал «Что я знаю» — от первого лица (было: «Агата повторила за Тихоном все ритмы ложечкой по чашке»)."
+  },
+  "mitya_fish_caught": {
+   "desc": "I caught a perch while fishing with Mitya",
+   "_note": "Аудит 30.10: из записи журнала убрана служебная скобка (было: «Агата вытащила окуня на рыбалке с Митей (O4, мини-игра)»). Директор 30.10, 19:15: журнал «Что я знаю» — от первого лица (было: «Агата вытащила окуня на рыбалке с Митей»)."
+  },
+  "mitya_fished": {
+   "desc": "I went fishing with Mitya",
+   "desc_unless": [
+    "mitya_fish_caught"
+   ],
+   "_k_review": "Ревью 01.11 (Г-24): с уловом запись уступает «вытащила окуня» (desc_unless)",
+   "_note": "Аудит 30.10: из записи журнала убрана служебная скобка (было: «Агата порыбачила с Митей и закончила («Хватит»)»). Директор 30.10, 19:15: журнал «Что я знаю» — от первого лица (было: «Агата порыбачила с Митей»)."
+  },
+  "ep_ulyana_came": {
+   "desc": "",
+   "_note": "Служебный флаг — в журнал «Что известно» не выводится (аудит 30.10: пометка для разработчиков была видна игроку): Эпилог, ужин: Ульяна прибежала по мосту и вошла в главную дверь (M26/lines[35]) — до того дверь закрыта"
+  },
+  "nina_mirror_on_table": {
+   "desc": "",
+   "_j": "J стр. 151, партия 10д",
+   "_note": "Служебный флаг — в журнал «Что известно» не выводится (аудит 30.10: пометка для разработчиков была видна игроку): Нина положила Дунино зеркальце на стол горницы (M19c, вторая строка) — до того стол без зеркальца"
+  },
+  "boat_shuttle_open": {
+   "desc": "The boat follows the rope both ways: from the plate at the bend to the far pier",
+   "_note": "F13 (Директор 23.10): ставит M22 — начало свободного дня; проход в комнатах R1/R3 — по этому флагу"
+  },
+  "boat_at_far": {
+   "desc": "",
+   "_note": "J (Директор 29.10 стр. 189, Р11): со свободного дня лодка и Пелагея там, куда лодку последний раз провели по канату; ставит переправа к дальней опоре (crossed.sets), снимает переправа к повороту (crossed.clears) Служебный флаг — в журнал не выводится (аудит 30.10; было: «Лодка у дальней опоры (её последний раз провели по канату туда)»)."
+  },
+  "letters_delivered": {
+   "desc": "Tamara brought a year's letters to Olkhovka"
+  },
+  "dunya_letter_on_stove": {
+   "desc": "Tamara's letter to Dunya lies undelivered on the stove"
+  },
+  "manager_returned": {
+   "desc": "The manager returned an old man: one year for Pavel, twenty for him"
+  },
+  "tikhon_knows_dunya": {
+   "desc": "Tikhon knows Aunt won't return: \"Then the evening is over\""
+  },
+  "tikhon_told_agata": {
+   "desc": "I told Tikhon about Aunt"
+  },
+  "tikhon_told_nina": {
+   "desc": "Mama told Tikhon about Dunya. He calls her the mistress"
+  },
+  "council_held": {
+   "desc": "Agreed at the mill: refill the pond by winter; rope only temporary; build a bridge before it freezes"
+  },
+  "bridge_decided": {
+   "desc": "Build the bridge from Dunya's notebook: higher spans, to let the flood pass beneath",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Мост решено ставить по последней тетради тёти: пролёты выше прежних, прогоны на кольцах плит»"
+  },
+  "morning_day4": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: та же минута, что day3_done; было: «Утро четвёртого дня: первое бревно»"
+  },
+  "crossing_hauled": {
+   "desc": "I hauled the rope myself — the boat's ring carried us to the far pier"
+  },
+  "span_first_laid": {
+   "desc": "Ilya and I laid the first beam from the bank to the near pier's plate ring",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Первое бревно-прогон легло с берега на ближнюю опору»"
+  },
+  "beam_dunya": {
+   "desc": "On the first beam's end I carved \"Agata\""
+  },
+  "beam_roads": {
+   "desc": "On the first beam's end I carved \"Olkhovka — Zarechye\""
+  },
+  "beam_date": {
+   "desc": "I carved the date on the first beam's end"
+  },
+  "beam_blank": {
+   "desc": "I left the first beam's end blank"
+  },
+  "ribbon_braided": {
+   "desc": "Mama wove the ribbon into my braid, as on feast days"
+  },
+  "nina_letters_read": {
+   "desc": "I read Mama's unsent letters — twenty winters"
+  },
+  "epilogue_seen": {
+   "desc": "Three weeks later: bridge standing, pond full, mill grinding"
+  },
+  "game_finished": {
+   "desc": "",
+   "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md): служебный: конец истории; было: «Конец истории»"
+  },
+  "day3_done": {
+   "desc": "The first free day is over. Tomorrow — the first beam"
+  }
+ }
+}

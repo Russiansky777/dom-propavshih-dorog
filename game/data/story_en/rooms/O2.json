@@ -1,0 +1,539 @@
+{
+ "id": "O2",
+ "_art": "Фон O2_bg.png (школьный двор): крыльцо со ступенями и дверью слева, дерево, калитка справа. Слои: O2_fg_wall.png — угол стены слева (окклюдер z=1080), O2_fg_snow_front.png — сугроб на переднем плане (окклюдер z=1080), состояние O2_state_mitten.png — варежка у ступени при mitten_placed. Снег в воздухе — программный (effects: snow).",
+ "background": {
+  "kind": "exterior",
+  "image": "res://assets/rooms/O2/bg.png",
+  "wall": "#aab8c8",
+  "floor": "#c8d0d8",
+  "accent": "#6a7a8a",
+  "horizon": 690
+ },
+ "walkable": [
+  [
+   415,
+   765
+  ],
+  [
+   440,
+   718
+  ],
+  [
+   500,
+   716
+  ],
+  [
+   500,
+   612
+  ],
+  [
+   610,
+   604
+  ],
+  [
+   760,
+   610
+  ],
+  [
+   772,
+   716
+  ],
+  [
+   890,
+   712
+  ],
+  [
+   900,
+   700
+  ],
+  [
+   1440,
+   690
+  ],
+  [
+   1500,
+   680
+  ],
+  [
+   1730,
+   680
+  ],
+  [
+   1800,
+   695
+  ],
+  [
+   1915,
+   722
+  ],
+  [
+   1915,
+   822
+  ],
+  [
+   1800,
+   838
+  ],
+  [
+   1700,
+   858
+  ],
+  [
+   1600,
+   897
+  ],
+  [
+   1500,
+   937
+  ],
+  [
+   1450,
+   992
+  ],
+  [
+   1385,
+   1070
+  ],
+  [
+   695,
+   1070
+  ],
+  [
+   600,
+   997
+  ],
+  [
+   500,
+   947
+  ],
+  [
+   400,
+   890
+  ],
+  [
+   300,
+   870
+  ],
+  [
+   200,
+   850
+  ],
+  [
+   120,
+   832
+  ],
+  [
+   120,
+   808
+  ],
+  [
+   200,
+   793
+  ],
+  [
+   300,
+   778
+  ]
+ ],
+ "no_walk_samples": [
+  [
+   300,
+   990,
+   "сугроб слева"
+  ],
+  [
+   1750,
+   1000,
+   "сугроб справа"
+  ],
+  [
+   150,
+   700,
+   "стена школы"
+  ],
+  [
+   1200,
+   620,
+   "забор"
+  ]
+ ],
+ "walk_samples": [
+  [
+   900,
+   850
+  ],
+  [
+   560,
+   800
+  ],
+  [
+   1600,
+   760
+  ],
+  [
+   300,
+   830
+  ],
+  [
+   1100,
+   1050
+  ],
+  [
+   640,
+   800
+  ],
+  [
+   560,
+   690
+  ],
+  [
+   556,
+   622
+  ]
+ ],
+ "door_ref": "none — школьная дверь на крыльце со ступенями; ориентир — столб калитки",
+ "stairs": [
+  {
+   "rect": [
+    495,
+    596,
+    285,
+    142
+   ],
+   "base_y": 738,
+   "k": 0.1,
+   "_note": "H41 / 25.10 стр. 12: четыре ступени крыльца школы (передний край нижней — y 738, площадка у двери — y ≈ 612); на ступенях глубина читается по полу под лестницей (k 0.1: у двери Агата 247 px при двери ≈ 330 px — по двери она и так чуть мельче нормы, глубже не уводим): Агата поднимается, а не уменьшается, как на ровном снегу"
+  }
+ ],
+ "depth": {
+  "top_y": 690,
+  "bottom_y": 1070,
+  "scale_top": 0.62,
+  "scale_bottom": 1.62
+ },
+ "_depth_note": "Рост Агаты = 345 px × scale (фигура в кадре 384 px, модель 1.657 м) — см. rooms/_index.json agata_ref; ориентиры height_refs проверяет tools/validate_rooms.py (±12 %). было 0.75→1.5: у калитки Агата выходила в 1.4 раза выше нормы (259 px при 182). Стало 0.62→1.62: у калитки 0.53 → 182 px, у нижней ступени крыльца (y 762) 0.81 — ступень 0.18 м ≈ 32 px, у крыльца (y 800) 0.91",
+ "height_refs": [
+  {
+   "what": "столб калитки (низ y 655, верх y 435)",
+   "y": 655,
+   "px": 220,
+   "m": 2.0
+  }
+ ],
+ "layers": [
+  {
+   "id": "wall",
+   "image": "res://assets/rooms/O2/fg_wall.png",
+   "z": 0,
+   "_note": "стена школы — Агата всегда перед ней (пол начинается у фундамента), поэтому не окклюдер: z=1080 рисовал стену поверх Агаты"
+  },
+  {
+   "id": "snow_front",
+   "image": "res://assets/rooms/O2/fg_snow_front.png",
+   "occluder": true,
+   "z": 1080
+  },
+  {
+   "id": "mitten",
+   "scale": 0.5,
+   "scale_pivot": [
+    582,
+    622
+   ],
+   "scale_reason": "I-T2: размер по замечанию Директора 25.10 (масштаб вокруг scale_pivot)",
+   "_i_t2": "I-T2 (Директор, стр. 64): варежка вдвое меньше, на том же месте ступени",
+   "image": "res://assets/rooms/O2/state_mitten.png",
+   "if": [
+    "mitten_placed"
+   ],
+   "unless": [
+    "mitten_taken_back"
+   ]
+  }
+ ],
+ "effects": [
+  {
+   "id": "snowfall",
+   "type": "snow",
+   "rect": [
+    0,
+    0,
+    1920,
+    1080
+   ],
+   "z": 1079,
+   "amount": 220
+  }
+ ],
+ "spawns": {
+  "default": [
+   900,
+   850
+  ],
+  "from_O1": [
+   556,
+   624
+  ],
+  "porch": [
+   560,
+   820
+  ],
+  "from_O4": [
+   1600,
+   780
+  ]
+ },
+ "props": [],
+ "hotspots": [
+  {
+   "id": "tree",
+   "kind": "object",
+   "label": "@O2.tree.label",
+   "rect": [
+    1090,
+    0,
+    220,
+    630
+   ],
+   "stand": [
+    1200,
+    720
+   ],
+   "color": "#4a5a4a",
+   "look": "@O2.tree.look",
+   "draw": false
+  },
+  {
+   "id": "porch_step",
+   "action_anim": "pick_low",
+   "kind": "object",
+   "label": "@O2.porch_step.label",
+   "rect": [
+    420,
+    600,
+    460,
+    160
+   ],
+   "stand": [
+    640,
+    800
+   ],
+   "color": "#8a8a80",
+   "states": [
+    {
+     "if": [
+      "mitten_taken_back"
+     ],
+     "label": "@O2.porch_step.label"
+    },
+    {
+     "if": [
+      "mitten_placed"
+     ],
+     "label": "@O2.porch_step.label_mitten",
+     "color": "#b06060"
+    }
+   ],
+   "item_use": {
+    "mitten": {
+     "sets": [
+      "mitten_placed"
+     ],
+     "consumes": true,
+     "requires": {
+      "not_flags": [
+       "school_path_open"
+      ]
+     },
+     "fail_text": "@O2.porch_step.mitten_late",
+     "_k": "Ревью 01.11 (логика, Б-2): после ответа мамы на доске / открытой тропы след выбора появлялся бы задним числом: класть варежку есть смысл, пока двор водит по кругу",
+     "_consumes_note": "варежка остаётся у ступени (слой mitten), из сумки уходит — сценарий M08 «вещь остаётся там, где положена»",
+     "text": "@O2.porch_step.mitten",
+     "scene": "M08",
+     "once_flag": "mitten_placed"
+    }
+   },
+   "look": "@O2.porch_step.look",
+   "draw": false
+  },
+  {
+   "id": "mitten",
+   "action_anim": "pick_low",
+   "kind": "pickup",
+   "label": "@O2.mitten.label",
+   "rect": [
+    622,
+    662,
+    95,
+    58
+   ],
+   "stand": [
+    640,
+    800
+   ],
+   "color": "#b06060",
+   "pick_priority": 2,
+   "visible_if": [
+    "mitten_placed"
+   ],
+   "hidden_if": [
+    "mitten_taken_back",
+    "school_path_open"
+   ],
+   "_note": "Варежку на ступени можно поднять обратно (Docs/SCENARIO_FINAL.md, M08; раздел 9 «Варежка: оставить или забрать»): use.restores возвращает в сумку тот же предмет, один раз; прямоугольник — по слою mitten (непрозрачные пиксели 599–738 × 644–717)",
+   "use": {
+    "restores": [
+     "mitten"
+    ],
+    "sets": [
+     "mitten_taken_back"
+    ],
+    "text": "@O2.mitten.take",
+    "once_flag": "mitten_taken_back"
+   },
+   "look": "@O2.mitten.look",
+   "draw": false
+  },
+  {
+   "id": "mitten_path",
+   "action_anim": "pick_low",
+   "kind": "pickup",
+   "label": "@O2d.mitten_path.label",
+   "rect": [
+    622,
+    662,
+    95,
+    58
+   ],
+   "stand": [
+    640,
+    800
+   ],
+   "color": "#b06060",
+   "pick_priority": 3,
+   "visible_if": [
+    "mitten_placed",
+    "school_path_open"
+   ],
+   "hidden_if": [
+    "mitten_taken_back"
+   ],
+   "_note": "Блок 3 (M22, SCENARIO_FINAL §8): варежка всё ещё у ступени, но теперь она лежит на дороге, которая ведёт домой, — Агата поднимает её молча. Тот же предмет (use.restores), один раз; прежний хотспот mitten с этого дня скрыт.",
+   "use": {
+    "restores": [
+     "mitten"
+    ],
+    "sets": [
+     "mitten_taken_back",
+     "mitten_found_on_path"
+    ],
+    "text": "@O2d.mitten_path.take",
+    "once_flag": "mitten_taken_back"
+   },
+   "look": "@O2d.mitten_path.look",
+   "draw": false
+  },
+  {
+   "id": "window_other",
+   "kind": "object",
+   "label": "@O2.window_other.label",
+   "rect": [
+    70,
+    190,
+    200,
+    360
+   ],
+   "stand": [
+    300,
+    830
+   ],
+   "color": "#9fb8cc",
+   "visible_if": [
+    "observed_path_loop"
+   ],
+   "look": "@O2.window_other.look",
+   "draw": false
+  }
+ ],
+ "exits": [
+  {
+   "to": "O1",
+   "label": "@O2.exit_O1.label",
+   "cue": "door",
+   "spawn": "from_O2",
+   "draw": false,
+   "rect": [
+    430,
+    230,
+    220,
+    350
+   ],
+   "stand": [
+    556,
+    620
+   ],
+   "_h41": "H41 (24.10) / 25.10 стр. 12 «подъём по лестнице будто бы не поднимается»: Агата поднимается по ступеням крыльца к самой двери (stairs), а не входит от нижней ступени (было stand [560, 800])"
+  },
+  {
+   "to": "O4",
+   "label": "@O2.exit_O4.label",
+   "cue": "door",
+   "spawn": "from_O2",
+   "closed_text": "@O2.exit_O4.loop",
+   "on_closed": {
+    "type": "loop",
+    "spawn": "porch",
+    "sets": [
+     "observed_path_loop"
+    ],
+    "scene": "M08",
+    "fade": true,
+    "unless": [
+     "road_held_both_ends"
+    ]
+   },
+   "states": [
+    {
+     "if": [
+      "done_M16"
+     ],
+     "closed_text": "@O2.exit_O4.wait_crossing"
+    },
+    {
+     "if": [
+      "road_held_both_ends"
+     ],
+     "closed_text": "@O2.exit_O4.wait_signal"
+    }
+   ],
+   "_r36_note": "T9 (R36, Директор 24.10, 19:02): с узла M15 дорогу держат с двух концов — петли больше нет, время общее (time/_index.json locals). До переправы M18 Агата сама не идёт к деревне: до огней — «сперва к причалу», после — «сначала к Пелагее». С M18 она в Ольховке; тропу утром показывает Нина (M21b, school_path_open)",
+   "draw": false,
+   "rect": [
+    1450,
+    410,
+    360,
+    280
+   ],
+   "stand": [
+    1600,
+    760
+   ]
+  }
+ ],
+ "scenes": {
+  "M08": {
+   "complete_when": [
+    {
+     "all": [
+      "observed_path_loop"
+     ]
+    }
+   ]
+  }
+ },
+ "flags": {
+  "mitten_placed": "Варежка оставлена у ступени крыльца как метка",
+  "mitten_taken_back": "Варежку со ступени подняли обратно в сумку",
+  "mitten_found_on_path": "Варежка подобрана на школьной тропе, которая снова ведёт домой"
+ }
+}
