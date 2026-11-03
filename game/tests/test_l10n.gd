@@ -76,6 +76,7 @@ func _run() -> void:
 	await _test("l10n-2 a Russian recording under an English subtitle plays; self-check — the cross-language guard would silence it", _test_voice_under_en)
 	await _test("l10n-3 «Без субтитров»: a heard line shows no words, an unvoiced one does", _test_no_subs)
 	await _test("l10n-4 the menu: the language rows; English asks with the warning and the tick, the cross keeps it; kept in settings", _test_menu)
+	await _test("l10n-5 English voice: an English recording plays under the English subtitle; a changed text silences it (self-check)", _test_voice_en)
 	LS.reset_memory()
 	sd.call("reload")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TB.settings_path))
@@ -285,3 +286,46 @@ func _test_menu() -> void:
 	(lb["voice:ru"] as Button).emit_signal("pressed")
 	_check(LS.voice == "ru", "Russian again without a question")
 	ui.call("close_menu_panel")
+
+
+func _test_voice_en() -> void:
+	var vd: Node = root.get_node("VoiceDirector")
+	if not FileAccess.file_exists("res://assets/voice/en/manifest.json"):
+		print("    (no English recordings yet — res://assets/voice/en; the voice stays Russian)")
+		LS.set_voice("en")
+		vd.call("reload_config")
+		_check(String(vd.get("voice_lang")) == "ru", "English voice chosen without recordings — the Russian ones play")
+		LS.set_voice("ru")
+		vd.call("reload_config")
+		return
+	var man: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/voice/en/manifest.json"))
+	var lines: Dictionary = man.get("lines", {})
+	_check(lines.has("M05_0"), "M05_0 is recorded in English (%d recordings)" % lines.size())
+	LS.set_voice("en")
+	_set_subs("en")
+	_check(String(vd.get("voice_lang")) == "en", "the English recordings are read")
+	var en_text := String(sd.scene("M05")["mandatory_lines"][0]["text"])
+	if lines.has("M05_0"):
+		_check(String(vd.call("line_status", "M05_0", en_text)) == "ok", "M05_0 in English plays: %s" % vd.call("line_status", "M05_0", en_text))
+		_check(String(vd.call("line_status", "M05_0", en_text + " x")) == "text_changed", "self-check: other English words — the recording is silent")
+	var ok := 0
+	var bad := []
+	for lid in lines.keys():
+		var e: Dictionary = lines[lid]
+		if e.has("stale") or not e.has("scene"):
+			continue
+		if e.has("option") or e.has("then"):
+			continue
+		var ml: Array = sd.scene(String(e["scene"])).get("mandatory_lines", [])
+		if int(e["index"]) >= ml.size():
+			bad.append(lid)
+			continue
+		var ln: Dictionary = ml[int(e["index"])]
+		if String(vd.call("line_status", String(lid), String(ln.get("text", "")))) == "ok":
+			ok += 1
+		elif bad.size() < 5:
+			bad.append(lid)
+	_check(bad.is_empty(), "scene recordings in English play under the English words: %d ok, failing %s" % [ok, str(bad)])
+	LS.set_voice("ru")
+	_set_subs("ru")
+	_check(String(vd.get("voice_lang")) == "ru", "back to the Russian voice")
