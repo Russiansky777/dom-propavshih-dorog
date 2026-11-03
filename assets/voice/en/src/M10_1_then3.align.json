@@ -1,0 +1,32 @@
+{
+  "text": "Loudly.",
+  "alignment": {
+    "characters": [
+      "L",
+      "o",
+      "u",
+      "d",
+      "l",
+      "y",
+      "."
+    ],
+    "character_start_times_seconds": [
+      0.0,
+      0.32,
+      0.427,
+      0.533,
+      0.64,
+      0.8,
+      0.96
+    ],
+    "character_end_times_seconds": [
+      0.32,
+      0.427,
+      0.533,
+      0.64,
+      0.8,
+      0.96,
+      1.12
+    ]
+  }
+}
