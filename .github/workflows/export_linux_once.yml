@@ -1,0 +1,98 @@
+name: export-linux
+# Linux-версия по запросу (Директор 03.11, 17:16: «Разово для последней версии собери для линукс»): профиль
+# «Linux Lite» (как Windows Lite: веб-копии листов, живые 3D-модели) → DomPropavshihDorog_linux.tar.gz в релиз latest.
+# Только вручную (workflow_dispatch); в обычную сборку не входит. Тесты не гоняет — их прошла сборка того же коммита.
+# Почему не в сессии Claude: локальная копия проекта прячет папки жителей (.gdignore — места на диске нет), а здесь
+# чистый checkout, как у Windows-сборки.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: export-linux
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_ZIP_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+  TEMPLATES_SHA256: f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot and export templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-web-windows-linux-v1
+
+      - name: Download Godot ${{ env.GODOT_VERSION }}
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          cd ~/godot
+          base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable"
+          curl -sSL --retry 3 -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          echo "${GODOT_ZIP_SHA256}  godot.zip" | sha256sum -c -
+          unzip -q -o godot.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          curl -sSL --retry 3 -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          echo "${TEMPLATES_SHA256}  templates.tpz" | sha256sum -c -
+          unzip -q -o templates.tpz "templates/version.txt" "templates/web_*" "templates/windows_*" "templates/linux_*" -d tpz
+          cp tpz/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          rm -rf godot.zip templates.tpz tpz
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python + Pillow
+        run: python -m pip install -q pillow
+
+      - name: Restore Godot import cache
+        uses: actions/cache/restore@v4
+        with:
+          path: game/.godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('game/assets/**/*.import', 'game/assets/characters/**/sprites.json', 'game/export_presets.cfg') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
+
+      - name: Export Linux Lite
+        env:
+          GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+        run: |
+          set -euo pipefail
+          python3 -I tools/make_web_sheets.py
+          tools/sync_story_data.sh >/dev/null
+          tools/sync_voice.sh >/dev/null
+          tools/sync_music.sh >/dev/null
+          source tools/godot_env.sh
+          godot_import
+          mkdir -p build/linux build/logs
+          (cd game && "$GODOT" --headless --path . --export-release "Linux Lite" ../build/linux/DomPropavshihDorog.x86_64) > build/logs/export_linux.log 2>&1 \
+            || { tail -40 build/logs/export_linux.log; exit 1; }
+          ls -la build/linux
+          # живые модели жителей в сборке (локальная проба 03.11 без них — фигуры падали на листы)
+          for c in tamara_v2/rt3d/tamara_rt pavel_v2/rt3d/pavel_rt nina_v2/rt3d/nina_rt agata/rt3d/agata_v4_rt; do
+            grep -a -q "assets/characters/$c.glb.import" build/linux/DomPropavshihDorog.pck || { echo "::error::нет модели $c в pck"; exit 1; }
+          done
+          cd build/linux && tar -czf ../DomPropavshihDorog_linux.tar.gz DomPropavshihDorog.x86_64 DomPropavshihDorog.pck
+          ls -la ../DomPropavshihDorog_linux.tar.gz
+
+      - name: Upload to release «latest»
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload latest build/DomPropavshihDorog_linux.tar.gz --clobber
