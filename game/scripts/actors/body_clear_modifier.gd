@@ -20,6 +20,13 @@ var omega: float = 12.0
 var hand_r: float = 0.02           # metres
 var fore_r: float = 0.03
 var hand_len: float = 0.45         # the hand's middle: this share of the forearm's length past the wrist
+## Block 3 (Director 02.11, line 12: «пальцы Павла в теле»): the fingertips are checked too — the hand's farthest
+## vertex from the wrist at rest (vertices whose strongest bone is the hand), carried by the hand bone; `tip_r_m` its
+## thickness (data rt3d.arm_body.tip_r_m; 0 — off, as before).
+var tip_r: float = 0.0
+var _tip: Array = [Vector3.ZERO, Vector3.ZERO]   # per side: the fingertip in the hand bone's rest frame (skeleton units)
+static var _tip_cache: Dictionary = {}
+var tip_m: Array = [0.0, 0.0]      # this frame, after the turn: how deep each fingertip is (m, < 0 outside; tests)
 var depth_m: Array = [0.0, 0.0]    # this frame, before the turn: how deep (with thickness) each arm went in (m; tests)
 var shown_m: Array = [0.0, 0.0]    # after the turn (m; tests)
 
@@ -37,6 +44,7 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 	hand_r = float(d.get("hand_r_m", hand_r))
 	fore_r = float(d.get("fore_r_m", fore_r))
 	hand_len = float(d.get("hand_len", hand_len))
+	tip_r = float(d.get("tip_r_m", 0.0))
 	_unit = unit_per_m
 	for side in ["Left", "Right"]:
 		var ids := [sk.find_bone(side + "Arm"), sk.find_bone(side + "ForeArm"), sk.find_bone(side + "Hand")]
@@ -48,6 +56,9 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 	else:
 		_bins = _build_hull(sk, meshes)
 		_hull_cache[cache_key] = _bins
+		_tip_cache[cache_key] = _tip.duplicate()
+	if _tip_cache.has(cache_key):
+		_tip = (_tip_cache[cache_key] as Array).duplicate()
 	return not _bins.is_empty()
 
 
@@ -58,6 +69,8 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 		var b := sk.find_bone(nm)
 		if b >= 0:
 			body[b] = true
+	var hands := {sk.find_bone("LeftHand"): 0, sk.find_bone("RightHand"): 1}
+	var tip_d := [0.0, 0.0]
 	var acc := {}       # bin → [Array of Vector2, {bone: count}]
 	var step := 0.01 * _unit
 	for mi in meshes:
@@ -90,6 +103,15 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 				if best < 0:
 					continue
 				var bone: int = binds[best][0]
+				if hands.has(bone):
+					var hp: Vector3 = (binds[best][1] as Transform3D) * vs[k]
+					var hr := sk.get_bone_global_rest(bone)
+					var side: int = hands[bone]
+					var dist := hp.distance_to(hr.origin)
+					if dist > float(tip_d[side]):
+						tip_d[side] = dist
+						_tip[side] = hr.affine_inverse() * hp
+					continue
 				if not body.has(bone):
 					continue
 				var p: Vector3 = (binds[best][1] as Transform3D) * vs[k]
@@ -159,7 +181,10 @@ func _points(sk: Skeleton3D, i: int) -> Array:
 	var el: Vector3 = sk.get_bone_global_pose(ids[1]).origin
 	var wr: Vector3 = sk.get_bone_global_pose(ids[2]).origin
 	var hm := wr + (wr - el) * hand_len
-	return [[el.lerp(wr, 0.5), fore_r * _unit], [wr, hand_r * _unit], [hm, hand_r * _unit]]
+	var pts := [[el.lerp(wr, 0.5), fore_r * _unit], [wr, hand_r * _unit], [hm, hand_r * _unit]]
+	if tip_r > 0.0 and (_tip[i] as Vector3) != Vector3.ZERO:
+		pts.append([sk.get_bone_global_pose(ids[2]) * (_tip[i] as Vector3), tip_r * _unit])
+	return pts
 
 
 func _process_modification_with_delta(delta: float) -> void:
@@ -204,6 +229,8 @@ func _process_modification_with_delta(delta: float) -> void:
 		for pt in _points(sk, i):
 			after = maxf(after, float(depth_at(sk, pt[0])[0]) + float(pt[1]))
 		shown_m[i] = maxf(after, 0.0) / _unit
+		if (_tip[i] as Vector3) != Vector3.ZERO:
+			tip_m[i] = float(depth_at(sk, sk.get_bone_global_pose(ids[2]) * (_tip[i] as Vector3))[0]) / _unit
 	snap = false
 
 
