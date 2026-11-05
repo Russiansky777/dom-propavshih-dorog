@@ -95,6 +95,8 @@ jobs:
             gh release download npc-v3-work -p "*_rig_task.json" -D _v3 --clobber || true
             gh release download npc-v3-work -p "motions_state.json" -D _v3 --clobber || true
             python tools/meshy_npc_motions.py --request pipeline/requests/v3/npc_v3_motions.json --rigs _v3 --out _v3 --only "${{ github.event.inputs.resume }}" 2>&1 | tee "_v3/motions_run.log"
+          elif [ "${{ github.event.inputs.mode }}" = "sheet" ]; then
+            python tools/meshy_npc_v3.py sheet --who "$w" --samples "${{ github.event.inputs.samples }}" --resume "${{ github.event.inputs.resume }}" --out _v3 2>&1 | tee "_v3/${w}_sheet_run.log"
           elif [ "${{ github.event.inputs.mode }}" = "rig" ]; then
             python tools/meshy_npc_v3.py rig --who "$w" --sample "${{ github.event.inputs.sample }}" --resume "${{ github.event.inputs.resume }}" --out _v3 2>&1 | tee "_v3/${w}_rig_run.log"
           else

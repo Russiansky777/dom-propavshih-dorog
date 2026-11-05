@@ -6,6 +6,7 @@
 Вызов (workflow meshy_npc_v3.yml, секрет MESHY_API_KEY):
   python3 tools/meshy_npc_v3.py generate --who pavel --samples 2 --out _v3 [--resume 1=<task_id>,2=<task_id>]
   python3 tools/meshy_npc_v3.py rig --who pavel --sample 1 --out _v3 [--resume <task_id>]
+  python3 tools/meshy_npc_v3.py sheet --who manager --samples 2 --out _v3   (лист в три вида — у управляющего старый 620 px)
 
 Постановка — по уроку Агаты v5 (DECISIONS 01.11): Multi-Image только фронт и профиль (вид со спины удваивает
 предметы на боку), meshy-7.1, геометрия 2k (4k у Multi-Image нет), текстура 4K PBR по тем же видам
@@ -113,16 +114,60 @@ def rig(a) -> int:
     return 0
 
 
+SHEET_PROMPT = (
+    "Character turnaround sheet in exactly the same art style, rendering quality and lighting as the second reference "
+    "image (photorealistic 3D character render, soft studio light, plain light grey background #DEDEDC): three full-body "
+    "views of the same man as in the first reference image, left to right: front view, right side profile view facing "
+    "right, back view. Same height, evenly spaced, whole figure visible from cap to boots, A-pose with the arms held "
+    "slightly away from the body, relaxed hands with clearly separated fingers. He is Fyodor Lukich, the elderly manager "
+    "of a village water mill in the north of Russia: lean, weathered face, grey moustache, long grey hair from under a "
+    "dark peaked cap, dark navy double-breasted wool frock coat to the knees with two rows of brass buttons, worn and "
+    "dusty at the hem, dark trousers, old leather boots. Keep his face, coat and cap exactly as in the first reference. "
+    "No text, no labels, no props.")
+
+
+def sheet(a) -> int:
+    """Лист в три вида (фронт, профиль, спина) по старому листу персонажа и образцу стиля (лист Павла v2):
+    Image to Image gpt-image-2-5-sunburst, 4:3, 12 кредитов за пробу (docs.meshy.ai/api/changelog, сверено 05.11)."""
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    from PIL import Image
+    refs = []
+    for src in (SHEET[a.who], REF / "pavel_sheet_v2.png"):
+        j = out / (src.stem + "_ref.jpg")
+        im = Image.open(src).convert("RGB")
+        im.thumbnail((2048, 2048))
+        im.save(j, quality=92)
+        refs.append(mc.data_uri(j))
+    print(f"баланс: {mc.balance()}", flush=True)
+    resume = [x for x in a.resume.split(",") if x]
+    tasks = resume or [mc.create("/image-to-image", {"ai_model": "gpt-image-2-5-sunburst", "prompt": SHEET_PROMPT,
+                                                     "reference_image_urls": refs, "aspect_ratio": "4:3"})
+                       for _ in range(a.samples)]
+    for k, tid in enumerate(tasks, 1):
+        print(f"лист {k}: задача {tid}", flush=True)
+        try:
+            r = mc.wait("/image-to-image", tid, poll_s=10, max_s=1800, log=lambda m: None)
+        except mc.MeshyError as e:
+            print(f"лист {k}: {e}", flush=True)
+            continue
+        for i, u in enumerate(r.get("image_urls") or [], 1):
+            mc.download(u, out / f"{a.who}_sheet_v3_{k}{'' if i == 1 else f'_{i}'}.png")
+        print(f"лист {k}: готово, кредитов {r.get('consumed_credits')}", flush=True)
+    print(f"баланс после: {mc.balance()}", flush=True)
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["generate", "rig"])
+    ap.add_argument("mode", choices=["generate", "rig", "sheet"])
     ap.add_argument("--who", required=True, choices=sorted(HEIGHT))
     ap.add_argument("--samples", type=int, default=2)
     ap.add_argument("--sample", default="1")
     ap.add_argument("--out", default="_v3")
     ap.add_argument("--resume", default="")
     a = ap.parse_args()
-    return generate(a) if a.mode == "generate" else rig(a)
+    return generate(a) if a.mode == "generate" else rig(a) if a.mode == "rig" else sheet(a)
 
 
 if __name__ == "__main__":
