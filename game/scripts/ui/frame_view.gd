@@ -8,8 +8,8 @@ extends CanvasLayer
 ## A frame is an ordinary room file of data/story/rooms marked `"frame": true` and built by RoomBuilder: the same
 ## background, state layers by flags (the inscription on the beam end, the cup Nina recognises), text layers,
 ## effects (snow), ambient (smoke, water, fog — data/story/ambient) and lights (flickering windows, candles —
-## data/story/lights). Characters are composited layers (tools/make_frame_layers.py from the 3D sheets) — a frame
-## has no hotspots, exits or walking. Nothing here decides story state.
+## data/story/lights). Characters: live figures from npc hotspots (05.11) or, in frames not yet moved, composited layers
+## (tools/make_frame_layers.py from the 3D sheets) — a frame has no clickable hotspots, exits or walking. Nothing here decides story state.
 ##
 ## `hold` — the last shot of the game: it stays after its scene. The first time the game ends there, the credits
 ## play (EndCredits, H55/H56: thanks, the author, then the title screen); a save made after them shows the shot with
@@ -58,6 +58,10 @@ func _on_frame_changed(id: String, hold: bool) -> void:
 		return
 	room.name = "Frame_" + id
 	add_child(room)
+	# Block 2 (Director 05.11: «5 кадров в секунду», руки в теле, Нина неживая, не смотрят друг на друга): the frame's
+	# people are live figures — npc hotspots of the frame (feet, figure_h, face), the same live 3D models as in the
+	# rooms, talking and listening with the lines. No player here: they face their data `face` / partner.
+	NpcActor.attach_all(room, null)
 	# The frame takes the clicks that would reach the world under it (the dialogue above still gets its own).
 	blocker = Control.new()
 	blocker.name = "Blocker"

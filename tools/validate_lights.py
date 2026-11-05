@@ -193,8 +193,9 @@ def main() -> int:
         if not (is_num(fs) and 0.1 <= fs <= 1.0):
             err(f"{ctx0}: floor_foreshortening {fs!r} вне 0.1..1")
         sources = data.get("sources", [])
-        if not isinstance(sources, list) or not sources:
-            err(f"{ctx0}: sources пуст или не список")
+        if not isinstance(sources, list) or (not sources and "actor_tint" not in data):
+            # 05.11: кадр с живыми фигурами может задавать только тон фигур (actor_tint) без своих источников
+            err(f"{ctx0}: sources пуст или не список (без источников — только с actor_tint)")
             continue
         seen: set[str] = set()
         for i, s in enumerate(sources):

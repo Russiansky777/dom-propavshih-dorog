@@ -124,10 +124,18 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	if shape is CollisionShape2D and shape.shape is RectangleShape2D:
 		size = shape.shape.size
 	global_position = h.global_position + Vector2(0, size.y / 2) + sheet.feet_offset
+	var hd: Dictionary = h.data if h.data is Dictionary else {}
+	# A figure in a frame (Director 05.11, block 2: the frames' figures live, not pictures): `feet` [x, y] — where the
+	# feet stand, `figure_h` — the figure's height on screen (px), as the frame's composition had them; the frame's
+	# own room depth is not the shot's camera.
+	if hd.get("feet", null) is Array and (hd["feet"] as Array).size() >= 2:
+		global_position = Vector2(float(hd["feet"][0]), float(hd["feet"][1])) + sheet.feet_offset
 	var s := 1.0
 	if room.has_method("depth_scale_at"):
 		s = room.depth_scale_at(global_position)
 	s *= sheet.scale_factor
+	if hd.has("figure_h") and sheet.figure_height_px > 1.0:
+		s = float(hd["figure_h"]) / sheet.figure_height_px
 	scale = Vector2(s, s)
 	z_index = clampi(int(global_position.y), -4096, 4096)
 	var img := h.get_node_or_null("Image")

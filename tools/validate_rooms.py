@@ -864,8 +864,14 @@ for rid, room in rooms.items():
     if room.get("frame"):
         if rid in loc_ids or rid in in_scope:
             err(f"{ctx}: кадр не может быть локацией или комнатой in_scope")
-        if room.get("hotspots") or room.get("exits"):
-            err(f"{ctx}: у кадра нет хотспотов и выходов")
+        # 05.11 (блок 2): живые фигуры кадра — хотспоты npc с feet/figure_h/face (не кликаются: кадр закрыт блокером)
+        for h in room.get("hotspots", []):
+            if h.get("kind") != "npc" or not isinstance(h.get("feet"), list) or not h.get("figure_h") or h.get("draw", True):
+                err(f"{ctx}.{h.get('id')}: в кадре — только живые фигуры: kind npc, draw false, feet [x, y], figure_h")
+            elif not (ROOT / "game" / "data" / "actors" / f"{h.get('id')}.json").is_file():
+                err(f"{ctx}.{h.get('id')}: фигуре кадра нужен game/data/actors/{h.get('id')}.json")
+        if room.get("exits"):
+            err(f"{ctx}: у кадра нет выходов")
         if not room.get("player_hidden"):
             err(f"{ctx}: кадр без player_hidden: true")
     poly = walkable_of(room)
@@ -1433,7 +1439,9 @@ for rid, room in rooms.items():
         if hid in ids:
             err(f"{hctx}: повтор id хотспота")
         ids.add(hid)
-        if "rect" not in h or "stand" not in h:
+        if room.get("frame") and h.get("kind") == "npc":
+            pass   # фигура кадра: ноги и рост вместо stand (проверено выше, п. 12)
+        elif "rect" not in h or "stand" not in h:
             err(f"{hctx}: нет rect/stand")
         elif not walkable_point(h["stand"]):
             err(f"{hctx}: stand {h['stand']} вне полигона (или в вырезе)")
