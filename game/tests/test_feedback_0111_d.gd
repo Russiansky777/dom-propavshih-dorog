@@ -172,13 +172,21 @@ func _test_frame_life() -> void:
 				chars.append(String(c["char"]))
 				if c.has("anim"):
 					animated.append(String(c["char"]))
-		if chars.has("nina"):
+		# 05.11 (block 2): most figures of the frames are live 3D figures now — npc hotspots of the frame (NpcActor)
+		var npcs: Array = []
+		for h in doc.get("hotspots", []):
+			if String(h.get("kind", "")) == "npc":
+				npcs.append(String(h["id"]))
+		if chars.has("nina") or npcs.has("nina"):
 			nina_frames.append(fid)
 		sr.set_frame(fid, false)
 		await _frames(2)
 		var live := _life_layers(fv)
 		for ch in chars:
 			_check(live.has(ch), "%s: the figure %s is a still picture (no life)" % [fid, ch])
+		for ch in npcs:
+			var na: Node = fv.room.get_node_or_null("npc_" + ch)
+			_check(na != null and (na as CanvasItem).visible, "%s: the live figure %s is not there" % [fid, ch])
 		for ch in animated:
 			if live.has(ch):
 				var l = live[ch]
@@ -192,6 +200,11 @@ func _test_frame_life() -> void:
 		sr.set_frame(fid, false)
 		await _frames(2)
 		var live := _life_layers(fv)
+		var nn: Node = fv.room.get_node_or_null("npc_nina")
+		if nn != null:
+			# a live figure: she is never a still picture — rest (idle/listen), not talking without a line of hers
+			_check(String(nn.get("state")) != "talk", "%s: no line of hers, but Nina talks (%s)" % [fid, nn.get("state")])
+			continue
 		if not live.has("nina"):
 			continue
 		var smp := await _sample_cells([live["nina"]], 1.5)
@@ -202,12 +215,29 @@ func _test_frame_life() -> void:
 	sr.set_frame("F_mill_manager", false)
 	await _frames(3)
 	var live := _life_layers(fv)
-	_check(live.size() == 4, "F_mill_manager: %d live figures (pavel, manager, ilya, agata expected)" % live.size())
+	# 05.11: Pavel, Ilya and Agata are live 3D figures (NpcActor); the manager (no model yet — block 3) a composed one
+	_check(live.size() == 1 and live.has("manager"), "F_mill_manager: composed figures %s (the manager only expected)" % [live.keys()])
+	for ch in ["pavel", "ilya", "agata"]:
+		var na: Node = fv.room.get_node_or_null("npc_" + ch)
+		_check(na != null, "F_mill_manager: no live %s" % ch)
+		if na == null:
+			continue
+		sr.current_beat = {"type": "line", "speaker": ch, "text": "Проверка живой фигуры кадра: её реплика."}
+		sr.beat_changed.emit()
+		await _frames(3)
+		_check(String(na.get("state")) == "talk", "F_mill_manager: %s's own line — not talking (%s)" % [ch, na.get("state")])
+		for other in ["pavel", "ilya", "agata"]:
+			var no: Node = fv.room.get_node_or_null("npc_" + other)
+			if other != ch and no != null:
+				_check(String(no.get("state")) != "talk", "F_mill_manager: %s talks with %s's words" % [other, ch])
+		sr.current_beat = {}
+		sr.beat_changed.emit()
+		await _frames(2)
 	var all_l: Array = live.values()
 	var quiet := await _sample_cells(all_l, 1.2)
 	for ch in live:
 		_check(plays_sheet(quiet[live[ch]]), "F_mill_manager: %s is still at rest — frames %s" % [ch, _uniq(quiet[live[ch]])])
-	for speaker in ["manager", "pavel", "ilya"]:
+	for speaker in ["manager"]:
 		if not live.has(speaker):
 			continue
 		var m = live[speaker]
@@ -243,7 +273,7 @@ func _test_frame_life() -> void:
 				_check(all_in_clip(asmp[live[other]], live[other].anim, "rest"), "%s gestures with Agata's words" % other)
 		sr.current_beat = {}
 		await create_timer(1.0).timeout
-	# two figures do not move in step
+	# two figures do not move in step (composed ones)
 	if live.has("manager") and live.has("pavel"):
 		_check(absf(float(live["manager"]._anim_phase) - float(live["pavel"]._anim_phase)) > 0.05, "the manager and Pavel move in step")
 	# self-check: the old layer — the same figure as a still picture with the warp only (no compose.anim) — fails
@@ -420,8 +450,9 @@ func _test_talk_stance() -> void:
 				_check(der.has("torso_tilt_max_deg") and float(der["torso_tilt_max_deg"]) <= TILT_MAX_DEG, "%s: the body leans in the talk clip (%s° > %.1f°)" % [where, der.get("torso_tilt_max_deg"), TILT_MAX_DEG])
 				# self-check: the raw clip's own tilt fails the same bound
 				_check(float(der.get("source_torso_tilt_max_deg", 0.0)) > TILT_MAX_DEG, "self-check: %s — the raw clip's tilt %s° passes the lean bound" % [where, der.get("source_torso_tilt_max_deg")])
-	_check(seen >= 10, "frame figures with a talk clip: %d (≥ 10 expected)" % seen)
-	_check(agata_talk >= 4, "Agata's talk clip in %d frames (the council, the gallery, the span, the lesson expected)" % agata_talk)
+	# 05.11 (block 2): the frames' people are live 3D figures — the composed talk clips left: the manager (no model
+	# until block 3); the live ones talk with their model's gesture (test_feedback_0511-6)
+	_check(seen >= 1, "frame figures with a talk clip: %d (the manager expected)" % seen)
 	# self-check: the raw talk clip as it was (F_mill_manager.pavel, commit 7ba00368) fails the legs and the lean checks
 	var fx = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/frame_talk_raw_pavel_anim.json"))
 	var fimg := Image.load_from_file(ProjectSettings.globalize_path("res://tests/fixtures/frame_talk_raw_pavel_anim.png"))

@@ -56,8 +56,12 @@ func build() -> void:
 	ring_mark.at = v2(spec.get("ring", [1000, 446])) * _k
 	ring_mark.radius = float(spec.get("ring_r", 26.0)) * _k
 	add_child(ring_mark)
-	for o in spec.get("overlays", []):
-		crop(String(o), full, Vector2.ZERO, _k).name = "Figure_" + String(o).get_file().get_basename()
+	# Block 2 (Director 05.11; 02.11 стр. 34 «5 кадров в секунду… нет движений»): the people of the frame under the
+	# close-up (F_span — live 3D figures) are taken over it for its time — `live_figures` [ids]; the composed still
+	# pictures (`overlays`) only when the frame has no such live figures.
+	if not _borrow_live(spec.get("live_figures", [])):
+		for o in spec.get("overlays", []):
+			crop(String(o), full, Vector2.ZERO, _k).name = "Figure_" + String(o).get_file().get_basename()
 	logic = WindlassLogic.new(spec.get("logic", {}))
 	logic.ease(TimingBar.slow_k(), TimingBar.green_k())   # «Облегчить мини-игры» (G3): slower log, wider ring zone
 	logic.event.connect(_on_logic_event)
@@ -230,7 +234,56 @@ func _voice_later(tkey: String, s: float) -> void:
 			_voice(tkey))
 
 
+var borrowed: Array = []   # [[figure, its parent, its index]] — the frame's live people shown over the close-up
+
+
+func _borrow_live(ids: Array) -> bool:
+	if ids.is_empty():
+		return false
+	var fv = get_tree().root.find_child("FrameView", true, false)
+	var room: Node = fv.get("room") if fv != null else null
+	if room == null:
+		return false
+	var found: Array = []
+	for id in ids:
+		var n: Node = room.get_node_or_null("npc_" + String(id))
+		if n == null:
+			return false
+		found.append(n)
+	for n in found:
+		borrowed.append([n, n.get_parent(), n.get_index()])
+		var gp: Vector2 = (n as Node2D).global_position
+		n.get_parent().remove_child(n)
+		add_child(n)
+		(n as Node2D).position = gp   # the panel spans the screen from (0, 0)
+		n.name = "Live_" + String(n.name)
+	return true
+
+
+func _return_live() -> void:
+	for b in borrowed:
+		var n: Node = b[0]
+		var parent: Node = b[1]
+		if not is_instance_valid(n):
+			continue
+		var gp: Vector2 = (n as Node2D).position
+		remove_child(n)
+		if is_instance_valid(parent):
+			parent.add_child(n)
+			parent.move_child(n, mini(int(b[2]), parent.get_child_count() - 1))
+			n.name = String(n.name).trim_prefix("Live_")
+			(n as Node2D).global_position = gp
+		else:
+			n.queue_free()
+	borrowed.clear()
+
+
+func _exit_tree() -> void:
+	_return_live()
+
+
 func closing() -> void:
+	_return_live()
 	if _bump_line != "" and VoiceDirector.current_line == _bump_line and VoiceDirector.is_playing():
 		VoiceDirector.stop("closed")
 

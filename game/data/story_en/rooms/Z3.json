@@ -445,6 +445,8 @@
   {
    "id": "old_pier_base",
    "kind": "object",
+   "action_anim": "pick_low",
+   "_anim_0511": "Директор 05.11 (блок 2): скобу на плиту у воды — наклон (было без движения)",
    "label": "@Z3.old_pier_base.label",
    "rect": [
     1240,
@@ -486,6 +488,8 @@
   {
    "id": "plate",
    "kind": "object",
+   "action_anim": "pick_low",
+   "_anim_0511": "Директор 05.11 (блок 2): скобу на плиту у воды — наклон (было без движения)",
    "label": "@Z3.plate.label",
    "rect": [
     1480,
@@ -514,6 +518,8 @@
   {
    "id": "pier_plate",
    "kind": "object",
+   "action_anim": "pick_low",
+   "_anim_0511": "Директор 05.11 (блок 2): скобу на плиту у воды — наклон (было без движения)",
    "label": "@Z3d.plate_dry.label",
    "rect": [
     1240,

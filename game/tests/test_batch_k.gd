@@ -297,14 +297,15 @@ func _test_workshop_frame() -> void:
 	for k in ["scale", "scale_pivot", "offset"]:
 		_check(str(fm.get(k)) == str(h2.get(k)), "the mirror where it lies in H2 — %s %s = %s" % [k, str(fm.get(k)), str(h2.get(k))])
 	_check(ids.find("nina_mirror") > ids.find("bench_front"), "the mirror on the near bench is drawn over its front edge: %s" % str(ids))
-	var c: Dictionary = nina.get("compose", {})
-	var feet := Vector2(float(c.get("feet", [0, 0])[0]), float(c.get("feet", [0, 0])[1])) * (1920.0 / 1672.0)
+	# 05.11 (block 2): Nina is a live figure of the frame — an npc hotspot (feet, face), screen px
+	for h in fr.get("hotspots", []):
+		if String(h.get("id", "")) == "nina":
+			nina = h
+	var feet := Vector2(float(nina.get("feet", [0, 0])[0]), float(nina.get("feet", [0, 0])[1]))
 	var mirror_at := Vector2(1300, 700)   # H2: «середина вещи — экран (1300, 700)»
-	var dir_i := int(c.get("dir", -1))
-	# rows: 0 front, counter-clockwise; 2 — to the right of the screen
-	var dirs := {0: Vector2(0, 1), 1: Vector2(1, 1), 2: Vector2(1, 0), 3: Vector2(1, -1), 4: Vector2(0, -1), 5: Vector2(-1, -1), 6: Vector2(-1, 0), 7: Vector2(-1, 1)}
-	var look: Vector2 = dirs.get(dir_i, Vector2.ZERO)
-	_check(look.normalized().dot((mirror_at - feet).normalized()) > 0.8, "Nina faces her mirror (row %d, feet %s → mirror %s)" % [dir_i, str(feet), str(mirror_at)])
+	var fp: Array = nina.get("face", [0, 0])
+	var look := Vector2(float(fp[0]), float(fp[1])) - feet
+	_check(look.normalized().dot((mirror_at - feet).normalized()) > 0.8, "Nina faces her mirror (face %s, feet %s → mirror %s)" % [str(fp), str(feet), str(mirror_at)])
 	_check(feet.distance_to(Vector2(875, 790)) < 60.0, "Nina where Agata stands for the mirror (%s)" % str(feet))
 
 

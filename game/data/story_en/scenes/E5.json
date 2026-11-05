@@ -198,6 +198,12 @@
        "beam": "res://assets/rooms/F_span/beam.png",
        "_note": "G47/G48: tools/make_span_layers.py — основа дня 4 (низкая вода днём, камень без плиты) + стройка партии 9 без бревна и само бревно Z3_state_span_beam_day4"
       },
+      "live_figures": [
+       "pelageya",
+       "agata",
+       "ilya"
+      ],
+      "_live_figures_0511": "Блок 2 (Директор 02.11 стр. 34: «5 к/с, нет движений» в мини-игре с бревном): живые фигуры кадра F_span под крупным планом — поверх него, пока он открыт; overlays — запас, если кадра нет",
       "overlays": [
        "res://assets/rooms/F_span/pelageya.png",
        "res://assets/rooms/F_span/agata.png",

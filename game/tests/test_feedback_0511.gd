@@ -8,6 +8,8 @@ extends SceneTree
 ##   3 «Пойдём к затвору» (M13): Pavel walks to the office door, it swings open, he goes and it shuts;
 ##   5 hints (вариант А): no button; «Где: …» in the journal; tiers 2–3 as notes after meta hint_notes.after_s of no
 ##     progress, the «Журнал» button glows until opened;
+##   6 block 2 (frames): every npc hotspot of a frame (F_*, EP_*) is a live figure (NpcActor) at its feet, as tall as
+##     figure_h, turned to its `face`; no feet under the line box (y ≥ 905 within x 385–1535);
 ##   4 O3 by Nina: no walking on the spot — the walk that stalled at Nina's feet ends; self-check — without the guard
 ##     the same walk steps in place.
 ## Exit code 0 only when every check passed.
@@ -69,6 +71,7 @@ func _run() -> void:
 	await _test("0511-2b the language changed inside the close-up — the same close-up opens again", _test_lang_closeup)
 	await _test("0511-3 «Пойдём к затвору»: Pavel walks to the office door, it opens and shuts", _test_pavel_door)
 	await _test("0511-5 hints without a button: «Где» under the goal; the next tiers written in after a while without progress, the journal glows; self-check — progress resets the clock", _test_hint_notes)
+	await _test("0511-6 block 2: the frames' people are live figures — feet, height, facing as the data say, feet clear of the line box; self-check — the old span spot is under it", _test_frame_figures)
 	await _test("0511-4 O3 by Nina: no walking on the spot; self-check — without the guard she steps in place", _test_o3_stall)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -499,3 +502,71 @@ func _test_hint_notes() -> void:
 	_check(gs.get_counter("hint_tier." + scn) == 3, "no more than three")
 	gs.reset()
 	sr.call("_on_state_reset")
+
+
+const LINE_BOX := Rect2(385, 905, 1150, 175)   # the dialogue box on a 1920×1080 screen (its top with a two-line text)
+
+
+static func feet_hidden(feet: Vector2) -> bool:
+	return LINE_BOX.has_point(feet)
+
+
+func _test_frame_figures() -> void:
+	var fv = main_node.find_child("FrameView", true, false)
+	_check(fv != null, "FrameView")
+	if fv == null:
+		return
+	var dir := DirAccess.open("res://data/story/rooms")
+	var seen := 0
+	for f in dir.get_files():
+		if not (f.ends_with(".json") and (f.begins_with("F_") or f.begins_with("EP_"))):
+			continue
+		var fid := f.get_basename()
+		var doc = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rooms/" + f))
+		var hs: Array = (doc.get("hotspots", []) as Array).filter(func(h): return String(h.get("kind", "")) == "npc")
+		if hs.is_empty():
+			continue
+		sr.set_frame(fid, false)
+		await _frames(3)
+		for h in hs:
+			var id := String(h["id"])
+			var feet := Vector2(float(h["feet"][0]), float(h["feet"][1]))
+			_check(not feet_hidden(feet), "%s.%s: the feet %s under the line box" % [fid, id, str(feet)])
+			var na: Node2D = fv.room.get_node_or_null("npc_" + id)
+			_check(na != null and na.visible, "%s: the live figure %s" % [fid, id])
+			if na == null:
+				continue
+			seen += 1
+			var sheet = na.get("sheet")
+			var at: Vector2 = na.global_position - sheet.feet_offset
+			_check(at.distance_to(feet) < 2.0, "%s.%s: feet at %s, data %s" % [fid, id, str(at.round()), str(feet)])
+			var tall: float = sheet.figure_height_px * absf(na.scale.y)
+			_check(absf(tall - float(h["figure_h"])) <= float(h["figure_h"]) * 0.03, "%s.%s: %.0f px tall, data %s" % [fid, id, tall, str(h["figure_h"])])
+			var fp := Vector2(float(h["face"][0]), float(h["face"][1]))
+			var want: int = sheet.direction_index(fp - na.global_position)
+			_check(int(na.get("direction")) == want, "%s.%s: faces row %d, toward %s is %d" % [fid, id, int(na.get("direction")), str(fp), want])
+	_check(seen >= 15, "live figures in the frames: %d (the gallery, the council, the span, the epilogue)" % seen)
+	# the log's close-up (M25, 02.11 стр. 34): the span's live people over it while it is open, back in the frame after
+	sr.set_frame("F_span", false)
+	await _frames(3)
+	var wspec: Dictionary = {}
+	for m in sd.scene("M25").get("mechanics", []):
+		if String(m.get("spec", {}).get("type", "")) == "windlass":
+			wspec = m["spec"]
+	_check(not wspec.is_empty() and (wspec.get("live_figures", []) as Array).size() == 3, "the windlass spec names the live figures")
+	sr.open_mechanic(wspec, "")
+	await _frames(4)
+	var wp: Node = null
+	for n in main_node.find_children("*", "", true, false):
+		if n.get_script() != null and String(n.get_script().resource_path).ends_with("windlass_panel.gd"):
+			wp = n
+	_check(wp != null and (wp.get("borrowed") as Array).size() == 3, "the three live figures over the close-up")
+	_check(wp != null and wp.find_child("Figure_pelageya", true, false) == null, "no still overlay pictures")
+	sr.close_mechanic()
+	await _frames(4)
+	for id in ["pelageya", "agata", "ilya"]:
+		_check(fv.room.get_node_or_null("npc_" + id) != null, "after the close-up %s is back in the frame" % id)
+	# self-check: the old span spot (Agata's feet hidden under a two-line text) is caught
+	_check(feet_hidden(Vector2(735, 919)), "self-check: feet under the line box pass")
+	sr.set_frame("", false)
+	await _frames(2)

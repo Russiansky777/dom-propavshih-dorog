@@ -192,7 +192,15 @@ func probe() -> Dictionary:
 		for l in c.get_children():
 			if l is CanvasItem:
 				layers[String(l.name)] = (l as CanvasItem).visible
+	# the live figures (05.11) count as the frame's people too: a figure by its id, as a composed layer was
+	var figures := {}
+	for c in room.get_children():
+		if c is NpcActor:
+			figures[String((c as NpcActor).actor_id)] = (c as CanvasItem).visible
+			if not layers.has(String((c as NpcActor).actor_id)):
+				layers[String((c as NpcActor).actor_id)] = (c as CanvasItem).visible
 	out["layers"] = layers
+	out["figures"] = figures
 	if end_panel != null:
 		var b: Button = end_panel.get_node_or_null("NewGame")
 		if b != null:

@@ -61,7 +61,7 @@
       "talk": {"after_text": "@O3.ilya_wife.after"}
     },
     {
-      "id": "clock", "kind": "object", "label": "@O3.clock.label", "rect": [1010, 120, 150, 320], "stand": [1090, 840], "draw": false, "pick_priority": 3,
+      "id": "clock", "kind": "object", "action_anim": "reach", "_anim_0511": "Директор 05.11 (блок 2): берёт/ставит вещь — рука тянется (было без движения)", "label": "@O3.clock.label", "rect": [1010, 120, 150, 320], "stand": [1090, 840], "draw": false, "pick_priority": 3,
       "use": {"requires": {"items": ["pocket_watch"], "flags": ["done_M19"]}, "sets": ["o3_clock_compared"], "text": "@O3.clock.watch", "once_flag": "o3_clock_compared"},
       "item_use": {"pocket_watch": {"requires": {"flags": ["done_M19"]}, "sets": ["o3_clock_compared"], "text": "@O3.clock.watch", "once_flag": "o3_clock_compared", "text_done": "@O3.clock.look_common"}},
       "states": [{"if": ["o3_clock_compared"], "label": "@O3.clock.label_common"}],

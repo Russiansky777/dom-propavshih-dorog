@@ -743,6 +743,7 @@ func _test_walkthrough() -> void:
 	await bot.use("tamara")
 	_check(gs.has_flag("started_M01"), "talking to Tamara should start M01")
 	seen = await bot.finish()
+	seen = seen.filter(func(x): return String(x) != "stage")   # 05.11: «Бери ключ» — Agata takes the key (a staging)
 	_check(seen.size() == sd.scene("M01")["mandatory_lines"].size() and seen.size() == 10, "M01 should play its 10 lines (I-T1), got %s" % str(seen))
 	_check(gs.has_flag("done_M01") and gs.has_flag("met_tamara") and gs.has_flag("knows_pier_trace") and gs.has_flag("knows_letters_bag")
 		and gs.has_flag("knows_dunya_left") and gs.has_flag("knows_bridge_lost"), "M01 flags missing")

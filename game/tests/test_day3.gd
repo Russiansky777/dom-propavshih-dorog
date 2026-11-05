@@ -596,7 +596,8 @@ func _test_frames_build() -> void:
 			continue
 		root.add_child(r)
 		await _frames(1)
-		_check(r.get_hotspots().is_empty() and r.get_exits().is_empty(), "%s: no hotspots, no exits" % id)
+		# 05.11 (block 2): the only hotspots of a frame are its live figures (kind npc)
+		_check(r.get_hotspots().all(func(h): return h.kind() == "npc") and r.get_exits().is_empty(), "%s: no hotspots but live figures, no exits" % id)
 		root.remove_child(r)
 		r.free()
 	# FrameView over the world.
@@ -836,7 +837,11 @@ func _test_walkthrough() -> void:
 	var ly0: Dictionary = fp0.get("layers", {})
 	_check(String(fp0.get("frame", "")) == "F_span" and float(gui.call("stage_probe").get("alpha", 1.0)) < 0.01 and not sr.is_staging(),
 		"G42: right on entering the turn — the frame F_span, no fade (%s, alpha %.2f)" % [String(fp0.get("frame", "")), float(gui.call("stage_probe").get("alpha", 1.0))])
-	_check(bool(ly0.get("ilya", false)) and bool(ly0.get("pelageya", false)) and bool(ly0.get("agata", false)), "G42: Ilya, Pelageya and Agata in the first shot (%s)" % str(ly0))
+	# 05.11 (block 2): the people are live figures; with the log's close-up open they stand over it (borrowed)
+	var people := ly0.duplicate()
+	for n in main_node.find_children("Live_npc_*", "", true, false):
+		people[String(n.name).trim_prefix("Live_npc_")] = (n as CanvasItem).visible
+	_check(bool(people.get("ilya", false)) and bool(people.get("pelageya", false)) and bool(people.get("agata", false)), "G42: Ilya, Pelageya and Agata in the first shot (%s)" % str(people))
 	await _staging_done()
 	var gw := 0
 	while not sr.mechanic_open and gw < 300:
