@@ -38,6 +38,14 @@ def main() -> int:
     def save() -> None:
         sp.write_text(json.dumps(st, ensure_ascii=False, indent=1), encoding="utf-8")
 
+    # "redo": {движение: метка} — движение переделать один раз (новая формулировка): прежние задачи и наложения
+    # забываются, новая задача запоминает метку
+    for m, tag in (req.get("redo") or {}).items():
+        if st["motions"].get(m, {}).get("tag") != tag:
+            st["motions"].pop(m, None)
+            for k in [k for k in st["apply"] if k.endswith("/" + m)]:
+                st["apply"].pop(k)
+            st.setdefault("redo_pending", {})[m] = tag
     rig_ids = {}
     for who, s in req["rigs"].items():
         f = Path(a.rigs) / f"{who}_v3_{s}_rig_task.json"
@@ -54,6 +62,8 @@ def main() -> int:
         cfg.setdefault("mode", "prime")
         if "task" not in st["motions"].get(m, {}):
             st["motions"][m] = {"task": mc.create("/text-to-motion", cfg)}
+            if m in st.get("redo_pending", {}):
+                st["motions"][m]["tag"] = st["redo_pending"].pop(m)
             save()
             print(f"движение {m}: задача {st['motions'][m]['task']}", flush=True)
     for m in need:
