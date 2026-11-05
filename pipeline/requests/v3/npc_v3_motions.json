@@ -1,6 +1,6 @@
 {
  "_note": "Папка v3/ — вне pipeline/requests/*.json (тот путь запускает pipeline-character при пуше). Блок 3 (Директор 05.11: 12 действий жителей, «не жертвовать реалистичностью или качеством»): Text to Motion prime (10 кр.) → риг жителя v3 (3 кр.). tools/meshy_npc_motions.py, workflow meshy_npc_v3.yml (mode motions). Пробы рига — поле rigs (выбор глазами, Docs/CURRENT_STATE 05.11).",
- "rigs": {"pavel": "1", "nina": "1", "pelageya": "2", "mitya": "1", "ilya": "1", "tamara": "1", "ilya_wife": "1", "ulyana": "2"},
+ "rigs": {"pavel": "1", "nina": "1", "pelageya": "2", "mitya": "1", "ilya": "1", "tamara": "1", "ilya_wife": "2", "ulyana": "2"},
  "motions": {
   "hug_short": {"_for": "1 Пелагея обнимает Митю", "prompt": "A woman steps forward and warmly hugs a taller man standing in front of her, both arms wrapped around his back, her head against his chest, holds the embrace with a gentle sway, then slowly lets go and steps back into a relaxed standing pose.", "duration": 6},
   "hug_tall": {"_for": "1 Митя обнимает мать", "prompt": "A man steps forward and warmly hugs a shorter woman standing in front of him, arms around her shoulders, his head bowed over hers, holds the embrace, then slowly lets go and steps back into a relaxed standing pose.", "duration": 6},
