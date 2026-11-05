@@ -31,7 +31,7 @@ REF = ROOT / "assets" / "reference" / "npc_v2"
 HEIGHT = {"pavel": 1.74, "nina": 1.63, "ilya": 1.82, "ilya_wife": 1.71, "mitya": 1.80, "pelageya": 1.59,
           "tamara": 1.68, "ulyana": 1.28, "manager": 1.76}
 SHEET = {w: REF / f"{w}_sheet_v2.png" for w in HEIGHT}
-SHEET["manager"] = ROOT / "assets" / "incoming" / "cast_v3" / "manager_sheet.png"
+SHEET["manager"] = REF / "manager_sheet_v3.png"   # Image to Image 06.11 по cast_v3/manager_sheet.png (620 px) и стилю листа Павла v2 — проба 2 из 2
 URL = "https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/npc-v3-work/{who}_v3_{s}_rig_input.glb"
 
 
