@@ -1,0 +1,100 @@
+name: meshy-npc-v3
+
+# Жители v3 — новые модели Meshy (блок 3, Директор 05.11 22:51). Ничего не коммитит и в игру не идёт: GLB, превью и
+# журнал — в релиз npc-v3-work; выбор пробы и игровой GLB — координатор локально.
+# Запуск: gh workflow run meshy_npc_v3.yml -f who=pavel -f mode=generate -f samples=2
+#         gh workflow run meshy_npc_v3.yml -f who=pavel -f mode=rig -f sample=1
+# Кредиты Meshy: 35 за пробу (meshy-7.1, геометрия 2k, текстура 4K PBR), риг 5. resume — продолжить без новых кредитов.
+
+on:
+  workflow_dispatch:
+    inputs:
+      who:
+        description: "житель: pavel, nina, ilya, ilya_wife, mitya, pelageya, tamara, ulyana, manager"
+        required: true
+        default: "pavel"
+      mode:
+        description: "generate — пробы модели; rig — риг выбранной пробы (упрощение в Blender до 290 тыс., риг Meshy 5 кр.)"
+        required: true
+        default: "generate"
+      samples:
+        description: "generate: сколько проб"
+        required: false
+        default: "2"
+      sample:
+        description: "rig: номер пробы"
+        required: false
+        default: "1"
+      resume:
+        description: "generate: 1=<id>,2=<id>; rig: <id> — уже созданные задачи (без новых кредитов)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: meshy-npc-v3
+  cancel-in-progress: false
+
+jobs:
+  meshy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Зависимости
+        run: python -m pip install --quiet pillow numpy
+
+      - name: Релиз npc-v3-work
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release view npc-v3-work >/dev/null 2>&1 || gh release create npc-v3-work --title "Жители v3 — пробы Meshy (рабочие файлы)" --notes "Модели жителей v3 (блок 3, 05.11); не в игре. tools/meshy_npc_v3.py" --prerelease
+
+      - name: Blender (bpy) — для рига
+        if: github.event.inputs.mode == 'rig'
+        run: python -m pip install --quiet bpy==5.2.2
+
+      - name: Вход рига — упрощение пробы и в релиз
+        if: github.event.inputs.mode == 'rig'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          w="${{ github.event.inputs.who }}"; s="${{ github.event.inputs.sample }}"
+          mkdir -p _v3
+          gh release download npc-v3-work -p "${w}_v3_${s}.glb" -D _v3 --clobber
+          python tools/v5_rig_input.py -- "_v3/${w}_v3_${s}.glb" "_v3/${w}_v3_${s}_rig_input.glb" 290000
+          gh release upload npc-v3-work "_v3/${w}_v3_${s}_rig_input.glb" --clobber
+          rm -f "_v3/${w}_v3_${s}.glb"
+
+      - name: Meshy
+        env:
+          MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p _v3
+          w="${{ github.event.inputs.who }}"
+          if [ "${{ github.event.inputs.mode }}" = "rig" ]; then
+            python tools/meshy_npc_v3.py rig --who "$w" --sample "${{ github.event.inputs.sample }}" --resume "${{ github.event.inputs.resume }}" --out _v3 2>&1 | tee "_v3/${w}_rig_run.log"
+          else
+            python tools/meshy_npc_v3.py generate --who "$w" --samples "${{ github.event.inputs.samples }}" --resume "${{ github.event.inputs.resume }}" --out _v3 2>&1 | tee "_v3/${w}_gen_run.log"
+          fi
+
+      - name: В релиз npc-v3-work
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          mkdir -p _v3
+          shopt -s nullglob
+          files=(_v3/*.glb _v3/*.png _v3/*.json _v3/*.txt _v3/*.log)
+          [ ${#files[@]} -gt 0 ] && gh release upload npc-v3-work "${files[@]}" --clobber
+          echo "загружено: ${#files[@]}"
