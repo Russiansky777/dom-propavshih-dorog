@@ -34,7 +34,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: meshy-npc-v3
+  group: meshy-npc-v3-${{ github.event.inputs.who }}
   cancel-in-progress: false
 
 jobs:
