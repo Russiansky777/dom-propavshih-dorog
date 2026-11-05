@@ -42,7 +42,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
+      # полный checkout репозитория — ~15 мин (03.11); здесь нужны только инструменты и листы
       - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            pipeline/3d
+            assets/reference
+            assets/incoming/cast_v3
 
       - uses: actions/setup-python@v5
         with:
