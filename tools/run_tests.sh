@@ -94,6 +94,7 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0211b.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение 02.11 (вечер), блок А: мел у парты, плита без каната, свет окон, рыбалка, полки
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0211c.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение 02.11 (вечер), блок Б: хвост и жесты Тихона, окунь, удочка, переправа, Тихон в кадре ужина
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_l10n.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский (03.11): копия story_en, английские субтитры поверх русского голоса, «без субтитров», меню языка с предупреждением
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0511.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # замечания 05.11, блок 1: «Облегчить» у колокола, язык в мини-игре, Павел к двери конторы, Агата не идёт на месте
 # K (31.10): правки дефектов генератора — третий сапог Пелагеи (F_hug_pelageya), одинаковые зарубки бруса и обведённая
 # нужная на рисунке Дуни (M05): копии в игре = оригинал + правка (нужен Pillow; numpy — для кадра объятия)
 if python3 -c "import PIL, numpy" 2>/dev/null; then

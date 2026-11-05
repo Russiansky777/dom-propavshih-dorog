@@ -39,6 +39,7 @@ var wedges: Array[Control] = []        # one holder per wedge (its three state c
 var wedge_hits: Array[int] = []        # hits so far on each wedge (3 — driven)
 var wedge_boxes: Array[Rect2] = []     # screen rects of the wedges' boxes
 var wedge_timing: TimingBar = null
+var easy_check: CheckButton = null   # «Облегчить» for the bell and hook stage (the wedges' bar has its own)
 var wedge_slips: int = 0
 var _wedge_jump: float = -1.0          # the wedge in work jumping out after a miss (0..1)
 var _wedge_jump_i: int = -1
@@ -134,6 +135,10 @@ func build() -> void:
 	hook.ease(TimingBar.slow_k(), TimingBar.green_k() / TimingBar.NORMAL_GREEN_K)
 	hook.event.connect(_on_hook_event)
 	office.hook_frac = hook.pos
+	# «Облегчить» on the close-up (Director 05.11: «Упростить игру нет в мини-игре с клиньями и колоколом»): the wedges'
+	# bar carries its own check; once the frame is clamped the bar goes and the bell/hook stage had none. The same
+	# setting (TimingBar.slow) — above «Закрыть», as in the fishing.
+	easy_check = easy_toggle(v2(spec.get("easy_at", [1640, 932])))
 	_sync_from_flags()
 
 
@@ -377,6 +382,9 @@ func _refresh_wedges() -> void:
 			(n as Control).position = off
 	if wedge_timing != null:
 		wedge_timing.visible = work >= 0 and not clamped()
+	if easy_check != null:
+		easy_check.visible = wedge_timing == null or not wedge_timing.visible
+		easy_check.set_pressed_no_signal(TimingBar.slow)
 	# While the wedges go in, their bar stands where the bell's schedule and legend are (those are for after).
 	for n in ["Schedule", "BellLegend"]:
 		var c := get_node_or_null(n) as CanvasItem
@@ -587,6 +595,8 @@ func probe() -> Dictionary:
 	out["wedge_timing"] = wedge_timing.probe() if wedge_timing != null and wedge_timing.visible else {}
 	out["free_click"] = {"x": 1500.0, "y": 180.0}
 	out["strikes_by_click"] = strikes_by_click
+	out["easy"] = {"visible": easy_check != null and easy_check.visible, "pressed": easy_check != null and easy_check.button_pressed,
+		"at": center_of(easy_check) if easy_check != null else {}}
 	if hook != null:
 		var bc := center_of(bell_hit)
 		# How to ring each signal (bots: tools/ai_playtest): «стой» is judged at its FIRST click.
@@ -608,3 +618,9 @@ func probe() -> Dictionary:
 static func _wedge_tint(ws: Dictionary) -> Color:
 	var t = ws.get("tint", [0.72, 0.53, 0.36])
 	return Color(float(t[0]), float(t[1]), float(t[2]))
+
+
+## «Облегчить» toggled on the close-up: Pavel leads the hook slower, the jerk reaches farther — at once, mid-game.
+func eased() -> void:
+	if hook != null:
+		hook.ease(TimingBar.slow_k(), TimingBar.green_k() / TimingBar.NORMAL_GREEN_K)

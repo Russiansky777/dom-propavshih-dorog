@@ -27,6 +27,8 @@ func _run() -> void:
 		await process_frame
 	rm.autosave_enabled = false
 	var player: Node2D = main_node.get_node("World/Player")
+	if OS.get_environment("NO_GUARD") != "":
+		player.set("stall_guard_s", INF)   # the walk-on-the-spot guard off: what the floor alone does
 	var rooms: Array = Array(OS.get_cmdline_user_args())
 	if rooms.is_empty():
 		rooms = sd.rooms.keys()
@@ -57,16 +59,33 @@ func _run() -> void:
 			var st = SH.state_of(h).get("stand", h.get("stand", null))
 			if st is Array and st.size() >= 2:
 				stands.append([String(h.get("id", "")), Vector2(float(st[0]), float(st[1]))])
+		# GRID=1 (Director 05.11: «в комнате мамы Агата в одном месте идёт на месте») — clicks over the whole floor, not
+		# only the hotspots' stands: a grid of points (on furniture too — the click goes to the nearest floor), visited
+		# in a fixed shuffled order (GRID_N walks, default 60).
+		var grid := OS.get_environment("GRID") != ""
+		if grid:
+			stands.clear()
+			for gy in range(560, 1061, 70):
+				for gx in range(80, 1841, 130):
+					stands.append(["(%d,%d)" % [gx, gy], Vector2(gx, gy)])
 		if stands.size() < 2:
 			continue
 		# a tour: each stand in order, then back across (every neighbour pair both ways, and the far pairs)
 		var order: Array = []
-		for i in stands.size():
-			order.append(i)
-		for i in range(stands.size() - 2, -1, -1):
-			order.append(i)
-		for i in range(0, stands.size(), 2):
-			order.append((i + stands.size() / 2) % stands.size())
+		if grid:
+			var rng := RandomNumberGenerator.new()
+			rng.seed = 5112026
+			var n := int(OS.get_environment("GRID_N")) if OS.get_environment("GRID_N") != "" else 60
+			order.append(0)
+			for i in n:
+				order.append(rng.randi_range(0, stands.size() - 1))
+		else:
+			for i in stands.size():
+				order.append(i)
+			for i in range(stands.size() - 2, -1, -1):
+				order.append(i)
+			for i in range(0, stands.size(), 2):
+				order.append((i + stands.size() / 2) % stands.size())
 		# to the first stand as a player would (a walk, not a jump — a jump leaves the navigation agent behind)
 		player.walk_to(stands[0][1])
 		var w0 := 0.0
@@ -78,17 +97,20 @@ func _run() -> void:
 		for i in 20:
 			await process_frame
 		var prev := 0
+		var step_no := 0
 		for idx in order.slice(1):
+			step_no += 1
 			var from_id: String = stands[prev][0]
 			var to: Vector2 = stands[idx][1]
 			prev = idx
 			if player.global_position.distance_to(to) < 30.0:
 				continue
 			walks += 1
-			player.walk_to(to)
+			player.walk_to(to)   # GRID: a floor point (off the floor — the agent's nearest point; no hotspot talk in the way)
 			var t := 0.0
 			var stall_t := 0.0
 			var worst_stall := 0.0
+			var stall_at := Vector2.ZERO
 			var last := player.global_position
 			var started := false
 			var through := 0
@@ -105,6 +127,8 @@ func _run() -> void:
 					started = true
 					if float(player.walk_w) > 0.5 and moved < STALL_PX_S:
 						stall_t += d
+						if stall_t > worst_stall:
+							stall_at = player.global_position
 						worst_stall = maxf(worst_stall, stall_t)
 					else:
 						stall_t = 0.0
@@ -124,10 +148,10 @@ func _run() -> void:
 			if through > 0:
 				bad += 1
 				print("TOUR %s: %s → %s: through a villager's feet (%d frames)" % [rid, from_id, stands[idx][0], through])
-			var arrived: bool = not player.is_walking() and left < 60.0
+			var arrived: bool = not player.is_walking() and (left < 60.0 or grid)
 			if worst_stall >= STALL_S or t >= TIMEOUT_S or not arrived:
 				bad += 1
-				print("TOUR %s: %s → %s (%s): %s; walked %.1f s, on the spot up to %.2f s, %.0f px short" % [rid, from_id, stands[idx][0], str(to),
-					"STALL" if worst_stall >= STALL_S else ("TIMEOUT" if t >= TIMEOUT_S else "SHORT"), t, worst_stall, left])
+				print("TOUR %s: #%d %s → %s (%s): %s; walked %.1f s, on the spot up to %.2f s, %.0f px short" % [rid, step_no, from_id, stands[idx][0], str(to),
+					"STALL at %s" % str(stall_at.round()) if worst_stall >= STALL_S else ("TIMEOUT" if t >= TIMEOUT_S else "SHORT"), t, worst_stall, left])
 	print("TOUR done: %d walks in %d rooms, %d bad" % [walks, rooms.size(), bad])
 	quit(0)

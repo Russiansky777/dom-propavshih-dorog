@@ -596,6 +596,7 @@ func _start_walk(target: Vector2) -> void:
 			_rm_phase = walk_phase   # the even root motion counts from the new phase, not across the jump
 	_walking = true
 	walk_time = 0.0
+	_stall_t = 0.0
 	_closest_px = INF
 	_path_seg = 0
 	_path_n = 0
@@ -1138,10 +1139,41 @@ func walk_speed_mps_3d() -> float:
 	return view3d.walk_speed_mps * walk_rate_3d() if view3d != null else 0.0
 
 
+## Walking on the spot (Director 05.11: «в комнате мамы Агата в одном месте идёт на месте, упирается»): the legs walk
+## but the floor holds the body — the end of the path in a corner the navigation mesh leaves between a villager's
+## feet and the floor's edge (O3, by Nina). Whatever the cause, this long (s) walking with the body hardly moving
+## (px/s at scale 1) ends the walk where she stands — never steps in place.
+var stall_guard_s: float = 0.5   # INF — off (tests' self-check)
+const STALL_GUARD_PX_S := 20.0
+var _stall_t: float = 0.0
+var _stall_last: Vector2 = Vector2.ZERO   # where the body stood at the last frame
+var stall_stops: int = 0   # walks ended by the guard (tests, probes)
+
+
+func _stall_guard(delta: float, before: Vector2) -> void:
+	if not _walking or not _shuffle.is_empty() or delta <= 0.0:
+		_stall_t = 0.0
+		return
+	var v := global_position.distance_to(before) / delta / maxf(absf(scale.y), 0.05)
+	if walk_w > 0.5 and v < STALL_GUARD_PX_S and walk_time > 0.3:
+		_stall_t += delta
+		if _stall_t >= stall_guard_s:
+			_stall_t = 0.0
+			stall_stops += 1
+			_arrive()
+	else:
+		_stall_t = 0.0
+
+
 func _process_3d(delta: float) -> void:
 	if _walking:
-		_walk_step_3d(delta)
+		# the body moves by root motion further down this function: measured frame to frame
+		_stall_guard(delta, _stall_last)
+		_stall_last = global_position
+		if _walking:
+			_walk_step_3d(delta)
 	else:
+		_stall_last = global_position
 		walk_w = move_toward(walk_w, 0.0, delta / maxf(_rtf("walk", "decel_s", 0.3), 0.01))
 	_turn_3d(delta)
 	var act_name := ""

@@ -35,6 +35,9 @@ static var probe_wanted: bool = false
 const LANG_SLOT := "_language_switch"
 static var _resume_slot: String = ""
 static var _reopen: String = ""      # "title_settings" | "pause_settings" — the panel the player changed it in
+## The close-up the language was changed in (Director 05.11: «из меню колокола нужно обязательно выйти, чтобы применить
+## язык» — the reload closed it): its hotspot, opened again over the reloaded room in the new language.
+static var _reopen_mechanic: String = ""
 
 
 ## Ревью 01.11 (В-19): the service keys (F2/F3/F4 effects and the frame counter, F8 sprites ↔ live 3D) stay in the
@@ -362,14 +365,36 @@ func apply_language(text_changed: bool, from_pause: bool) -> void:
 	VoiceDirector.reload_config()
 	if not text_changed:
 		return
+	_prepare_language_switch(from_pause)
+	StoryData.reload()
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+
+## Before the reload: the hidden save of the game, the panel to reopen, the close-up to reopen (tests call it with
+## _resume_after_language — the reload itself is the engine's).
+func _prepare_language_switch(from_pause: bool) -> void:
 	var in_game := title == null or not title.is_open()
 	_resume_slot = ""
 	if in_game and RoomManager.current_room != null and RoomManager.save_game(LANG_SLOT):
 		_resume_slot = LANG_SLOT
 	_reopen = "pause_settings" if from_pause and in_game else "title_settings"
-	StoryData.reload()
-	get_tree().paused = false
-	get_tree().reload_current_scene()
+	_reopen_mechanic = String(StoryRunner.mechanic.get("hotspot", "")) if in_game and StoryRunner.mechanic_open else ""
+
+
+## Opens again the close-up of `hotspot_id` in the room just loaded (its spec read anew — the texts in the new language).
+func _reopen_closeup(hotspot_id: String) -> void:
+	var room = RoomManager.current_room
+	var h: Node = null
+	if room != null:
+		h = room.get_node_or_null("Hotspots/" + hotspot_id)
+		if h == null:
+			h = room.get_node_or_null("Exits/" + hotspot_id)
+	if h == null:
+		return
+	var spec: Dictionary = StoryRunner.mechanic_spec(h)
+	if not spec.is_empty():
+		StoryRunner.open_mechanic(spec, hotspot_id)
 
 
 func _resume_after_language() -> void:
@@ -377,8 +402,12 @@ func _resume_after_language() -> void:
 	var reopen := _reopen
 	_resume_slot = ""
 	_reopen = ""
+	var mech := _reopen_mechanic
+	_reopen_mechanic = ""
 	if slot != "" and RoomManager.load_game(slot):
 		GameState.delete_save(slot)
+		if mech != "":
+			_reopen_closeup(mech)
 		if reopen == "pause_settings" and pause_menu != null:
 			pause_menu.open()
 			pause_menu.activate("settings")
