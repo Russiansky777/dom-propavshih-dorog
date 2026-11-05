@@ -3,7 +3,8 @@ extends SceneTree
 ##   godot --headless --audio-driver Dummy --path game -s res://tests/test_feedback_0511.gd
 ##   1 «Облегчить» on the bell and hook stage of the office mirror's close-up (the wedges' bar had its own, the bell's
 ##     stage none); toggling it eases Pavel's hook at once; self-check — while the wedges go in it stays hidden;
-##   2 the language changed inside a close-up: the same close-up opens again over the reloaded room;
+##   2 the bell's clapper (язык колокола) used from the bag inside the close-up — no need to leave it; 2b: the language
+##     changed inside a close-up — the same close-up opens again over the reloaded room;
 ##   3 «Пойдём к затвору» (M13): Pavel walks to the office door, it swings open, he goes and it shuts;
 ##   4 O3 by Nina: no walking on the spot — the walk that stalled at Nina's feet ends; self-check — without the guard
 ##     the same walk steps in place.
@@ -62,7 +63,8 @@ func _run() -> void:
 	rm.autosave_enabled = false
 	player = main_node.get_node("World/Player")
 	await _test("0511-1 «Облегчить» on the bell and hook stage; eases Pavel at once; hidden while the wedges go in", _test_easy)
-	await _test("0511-2 the language changed inside the close-up — the same close-up opens again", _test_lang_closeup)
+	await _test("0511-2 the bell's clapper from the bag goes on inside the close-up; self-check — a bare click leaves it mute", _test_clapper_closeup)
+	await _test("0511-2b the language changed inside the close-up — the same close-up opens again", _test_lang_closeup)
 	await _test("0511-3 «Пойдём к затвору»: Pavel walks to the office door, it opens and shuts", _test_pavel_door)
 	await _test("0511-4 O3 by Nina: no walking on the spot; self-check — without the guard she steps in place", _test_o3_stall)
 	gs.reset()
@@ -384,3 +386,68 @@ func _test_o3_stall() -> void:
 	_check(float(free["worst"]) < 0.6 and not bool(free["walking"]) and int(free["stops"]) <= 1, "the real walk from the pocket round Nina: no stepping on the spot (%s)" % str(free))
 	player.set("stall_guard_s", 0.5)
 	PS.forced_render = ""
+
+
+func _omp() -> Node:
+	for n in main_node.find_children("*", "", true, false):
+		if n.get_script() != null and String(n.get_script().resource_path).ends_with("office_mirror_panel.gd"):
+			return n
+	return null
+
+
+func _test_clapper_closeup() -> void:
+	_fresh(["done_M01", "done_M02", "done_M03", "house_open", "house_unlocked", "done_N01", "done_M09", "done_M09s", "done_M09b",
+		"office_mirror_mounted", "has_mirror_mill", "pavel_agreed_signals", "office_mirror_clamped", "has_bell_clapper"])
+	gs.add_item("bell_clapper")
+	await _enter("H2")
+	var h: Node = rm.current_room.get_node_or_null("Hotspots/stand_zm")
+	sr.open_mechanic(sr.mechanic_spec(h), "stand_zm")
+	await _frames(6)
+	var panel := _omp()
+	_check(panel != null, "the bell's close-up is open")
+	if panel == null:
+		return
+	# self-check: a bare click — the bell is mute, nothing changes
+	panel.call("bell_press")
+	panel.call("bell_release")
+	await _frames(2)
+	_check(not gs.has_flag("bell_clapper_hung") and gs.has_item("bell_clapper"), "self-check: a bare click — still mute, the clapper in the bag")
+	await _finish()
+	# the clapper from the bag onto the bell, the close-up open — with the mouse: the pocket in the top bar, then the bell
+	var bag: Node = null
+	for n in main_node.find_children("*", "", true, false):
+		if n.get_script() != null and String(n.get_script().resource_path).ends_with("inventory_bag.gd"):
+			bag = n
+			break
+	var at: Dictionary = (bag.call("probe") as Dictionary).get("items", {}).get("bell_clapper", {}) if bag != null else {}
+	_check(not at.is_empty(), "the clapper's pocket in the bag over the close-up")
+	if not at.is_empty():
+		await _mouse_click(Vector2(float(at["x"]), float(at["y"])))
+	_check(sr.selected_item == "bell_clapper", "a click on the pocket takes the clapper in hand over the close-up (%s)" % sr.selected_item)
+	var bc: Dictionary = (panel.call("probe") as Dictionary).get("bell", {})
+	await _mouse_click(Vector2(float(bc.get("x", 0)), float(bc.get("y", 0))))
+	await _frames(3)
+	var seen := await _finish()
+	_check(gs.has_flag("bell_clapper_hung") and not gs.has_item("bell_clapper") and sr.selected_item == "", "the clapper hung from the close-up, out of the bag (%s)" % str(gs.inventory))
+	_check(sr.mechanic_open, "the close-up stays open")
+	var cl: Control = panel.get("bell_clapper")
+	_check(cl != null and cl.visible, "the clapper shows in the bell's mouth at once")
+	_check(seen.any(func(x): return String(x) == _text("@H2d.bell.hang")), "the same words as in the room (@H2d.bell.hang): %s" % str(seen))
+	sr.close_mechanic()
+	await _frames(3)
+
+
+func _mouse_click(p: Vector2) -> void:
+	var mv := InputEventMouseMotion.new()
+	mv.position = p
+	mv.global_position = p
+	root.push_input(mv, true)
+	await _frames(2)
+	for pressed in [true, false]:
+		var ev := InputEventMouseButton.new()
+		ev.button_index = MOUSE_BUTTON_LEFT
+		ev.pressed = pressed
+		ev.position = p
+		ev.global_position = p
+		root.push_input(ev, true)
+		await _frames(2)

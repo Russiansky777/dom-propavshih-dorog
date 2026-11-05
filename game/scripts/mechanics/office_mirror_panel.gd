@@ -468,6 +468,11 @@ func _on_bell_input(ev: InputEvent) -> void:
 ## Mouse down on the bell: the strike. In the lantern stage Pavel's light is in the glass in this very frame.
 func bell_press() -> void:
 	if not flag("bell_clapper_hung"):
+		# Director 05.11: «чтобы можно было язычок колокола использовать прямо в мини-игре, а не выходить»: the clapper
+		# in hand (from the bag over the close-up) goes onto the bell here — the room bell's own item_use (sets, consumes,
+		# the text), not a copy of it.
+		if StoryRunner.selected_item != "" and _use_item_on_bell(StoryRunner.selected_item):
+			return
 		say("bell_mute")
 		return
 	if not clamped():
@@ -624,3 +629,18 @@ static func _wedge_tint(ws: Dictionary) -> Color:
 func eased() -> void:
 	if hook != null:
 		hook.ease(TimingBar.slow_k(), TimingBar.green_k() / TimingBar.NORMAL_GREEN_K)
+
+
+## An item from the bag used on the bell inside the close-up: the room's bell hotspot (`bell.hotspot`, default «bell»)
+## answers as if clicked in the room — its `item_use` of that item. False — that hotspot takes no such item.
+func _use_item_on_bell(item: String) -> bool:
+	var room = RoomManager.current_room
+	var hid := String(spec.get("bell", {}).get("hotspot", "bell"))
+	var h: Node = room.get_node_or_null("Hotspots/" + hid) if room != null else null
+	if h == null or not (h.get("data") as Dictionary).get("item_use", {}).has(item):
+		return false
+	var act: Dictionary = h.get("data")["item_use"][item]
+	StoryRunner.select_item("")
+	StoryRunner.call("_run_action", h, act, item)
+	_sync_from_flags()
+	return true
