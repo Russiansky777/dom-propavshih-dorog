@@ -49,6 +49,7 @@ jobs:
           sparse-checkout: |
             tools
             pipeline/3d
+            pipeline/requests/v3
             assets/reference
             assets/incoming/cast_v3
 
