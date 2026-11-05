@@ -74,6 +74,12 @@
    "text": "Back",
    "draft": false
   },
+  "ui.journal_where": {
+   "text": "Where: {text}"
+  },
+  "ui.journal_note": {
+   "text": "Note: {text}"
+  },
   "ui.lang_voice": {
    "text": "Voice-over",
    "draft": false,

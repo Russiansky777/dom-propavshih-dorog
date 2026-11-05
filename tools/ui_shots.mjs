@@ -233,8 +233,7 @@ async function main() {
       await shot("07_journal");
       await click("Close journal", (await state()).ui.buttons.CloseJournal);
       await waitFor("journal closed", (t) => !t.ui.journal_open, 5000);
-      await click("Hint", (await state()).ui.buttons.HintButton);
-      await sleep(400);
+      // 05.11 (вариант А): no hint button — the hints are lines of the journal (07_journal)
       await click("Menu", (await state()).ui.buttons.MenuButton);   // «Меню» → the pause over the blurred frame
       await waitFor("pause open", (t) => t.pause && t.pause.open && t.pause.blur > 0.99, 5000);
       await sleep(200);

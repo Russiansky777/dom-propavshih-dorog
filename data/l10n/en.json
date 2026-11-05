@@ -8004,6 +8004,16 @@
    "ru": "Оставить как было",
    "en": "Keep as it was",
    "_note": "03.11: Claude (подписи меню языка)"
+  },
+  "text:ui.journal_where": {
+   "ru": "Где: {text}",
+   "en": "Where: {text}",
+   "_note": "05.11: Claude (журнал без кнопки «Подсказка»)"
+  },
+  "text:ui.journal_note": {
+   "ru": "Заметка: {text}",
+   "en": "Note: {text}",
+   "_note": "05.11: Claude"
   }
  }
 }

@@ -279,13 +279,16 @@ async function main() {
 
     // 5. The hint panel.
     s = await state();
+    // 05.11 (вариант А): the hint button is gone; the panel is checked only on a build that still has it
+    if (s.ui.buttons.HintButton) {
     await click("Подсказка", s.ui.buttons.HintButton);
     s = await waitFor("hint panel shown", (t) => t.ui.exit_hints.hint_panel && t.ui.exit_hints.hint_panel.visible, 8000);
-    let hp = s.ui.exit_hints.hint_panel;
+    var hp = s.ui.exit_hints.hint_panel;
     check(hp.visible && hp.text_px >= 36, "hint text large (≥ 36 px of the 1920 canvas)", `${hp.text_px} px`);
     check(hp.tip === "Пробел — показать все места и действия", "the Space tip in the hint window", hp.tip);
     check(inFrame(hp.rect), "hint panel in the frame under the bar", JSON.stringify(hp.rect));
     report.steps.hint_1920 = hp;
+    }
     await move({ x: 600, y: 960 });   // empty floor (not the drawings on the table: a click there is a look)
     await sleep(300);
     await shot("ui_web_hint_1920");
@@ -337,6 +340,7 @@ async function main() {
     const st2 = () => small.evaluate(() => JSON.parse(JSON.stringify(window.probeState)));
     let s2 = await st2();
     const b = s2.ui.buttons.HintButton;
+    if (b) {
     await small.mouse.move(b.x * k, b.y * k, { steps: 4 });
     await small.mouse.click(b.x * k, b.y * k);
     const t0 = Date.now();
@@ -348,6 +352,7 @@ async function main() {
     hp = s2.ui.exit_hints.hint_panel;
     check(hp.visible && hp.text_px * k >= 24, "1280×720: hint text ≥ 24 screen px", `${(hp.text_px * k).toFixed(1)} px`);
     check(inFrame(hp.rect), "1280×720: hint panel in the frame", JSON.stringify(hp.rect));
+    }
     await small.mouse.move(900, 470);
     await sleep(400);
     await small.screenshot({ path: path.join(OUT_DIR, "ui_web_hint_1280x720.png") });

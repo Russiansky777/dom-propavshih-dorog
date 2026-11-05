@@ -369,7 +369,7 @@ func _test_theme() -> void:
 	var head := "Old Standard TT"
 	var body := "PT Serif"
 	_check(_font_name(ui.get("room_label")) == head, "room name: %s" % _font_name(ui.get("room_label")))
-	for b in ["journal_button", "hint_button", "menu_button"]:
+	for b in ["journal_button", "menu_button"]:
 		_check(_font_name(ui.get(b)) == head, "%s: %s" % [b, _font_name(ui.get(b))])
 	var text: Control = ui.get("text_label")
 	_check(_font_name(text, "normal_font") == body, "dialogue text: %s" % _font_name(text, "normal_font"))

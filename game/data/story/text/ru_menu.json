@@ -20,6 +20,8 @@
     "ui.menu_title_settings": {"text": "Настройки", "draft": false},
     "ui.menu_no_saves": {"text": "Сохранений пока нет.", "draft": false},
     "ui.back": {"text": "Назад", "draft": false},
+    "ui.journal_where": {"text": "Где: {text}"},
+    "ui.journal_note": {"text": "Заметка: {text}"},
     "ui.lang_voice": {"text": "Озвучка", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
     "ui.lang_subtitles": {"text": "Субтитры", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},
     "ui.lang_voice_ru": {"text": "Русский", "draft": false, "_k": "Директор 03.11: язык голоса и субтитров в настройках"},

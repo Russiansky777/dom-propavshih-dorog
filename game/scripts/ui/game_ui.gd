@@ -55,7 +55,7 @@ var bag: InventoryBag
 var fx_layer: Control           # flying icons (above panels, under the fade)
 var cursor_item: BagSlot        # the held item's small icon that follows the pointer
 var journal_button: Button
-var hint_button: Button
+var journal_glow: bool = false   # a hint note written into the journal since it was last opened
 var menu_button: Button
 var hint_line: Label
 var modal: Control
@@ -134,6 +134,7 @@ func _ready() -> void:
 	StoryRunner.loop_transition.connect(_on_loop_transition)
 	StoryRunner.stage_fade.connect(_on_stage_fade)
 	StoryRunner.hint_revealed.connect(_on_hint_revealed)
+	StoryRunner.hint_note_added.connect(_on_hint_note)
 	StoryRunner.hotspots_beckoned.connect(_on_hotspots_beckoned)
 	GameState.inventory_changed.connect(_render_inventory)
 	GameState.state_reset.connect(func(): bag.cancel_flights())
@@ -228,11 +229,9 @@ func _build() -> void:
 	journal_button.name = "JournalButton"
 	journal_button.pressed.connect(toggle_journal)
 	h.add_child(journal_button)
-	# K (Director 31.10, стр. 11: «убрать меню „Подсказка“, что нужно — в журнал: у них одинаковая функция»): the hint
-	# button lives in the journal now (built with it below); the top bar has «Журнал» and «Меню».
-	hint_button = _button(StoryData.text("@ui.button_hint"), 220, &"BarButton")
-	hint_button.name = "HintButton"
-	hint_button.pressed.connect(_on_hint_pressed)
+	# K (Director 31.10, стр. 11): no «Подсказка» on the top bar; 05.11 (вариант А): no hint button at all — the journal
+	# shows «Где: …» under the goal and writes the next hints in by itself after a while without progress
+	# (StoryRunner.hint_note_added → the «Журнал» button glows until the journal is opened).
 	menu_button = _button(StoryData.text("@ui.button_menu"), 120, &"BarButton")
 	menu_button.name = "MenuButton"
 	menu_button.pressed.connect(_on_menu_button)
@@ -375,7 +374,6 @@ func _build() -> void:
 	jclose.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	jclose.pressed.connect(toggle_journal)
 	jbuttons.add_child(jclose)
-	jbuttons.add_child(hint_button)
 	# «План»: the Zarechye plan, once it has been looked at on the post-office wall (map journal_flag).
 	journal_plan_button = _button(StoryData.text("@ui.button_plan"), 220)
 	journal_plan_button.name = "JournalPlan"
@@ -894,10 +892,36 @@ func show_hint(text: String) -> void:
 		hint_line.text = ""
 
 
-func _on_hint_pressed() -> void:
-	if StoryRunner.is_busy() and not journal_panel.visible:
+## A hint note written into the journal by itself: the «Журнал» button glows (gold, a dot) until the journal is opened;
+## open already — the note shows at once.
+func _on_hint_note(_tier: int, _text: String) -> void:
+	if journal_panel.visible:
+		_fill_journal_hints()
 		return
-	StoryRunner.next_hint()
+	journal_glow = true
+	_style_journal_button()
+
+
+func _style_journal_button() -> void:
+	journal_button.text = StoryData.text("@ui.button_journal") + (" •" if journal_glow else "")
+	if journal_glow:
+		journal_button.add_theme_color_override("font_color", UiTheme.GOLD)
+	else:
+		journal_button.remove_theme_color_override("font_color")
+
+
+## Under the goal: «Где: …» (the first hint tier) and the notes written in (tiers 2–3), then the Space tip.
+func _fill_journal_hints() -> void:
+	var lines: Array[String] = []
+	var where := StoryRunner.hint_where()
+	if where != "":
+		lines.append(StoryData.text("@ui.journal_where", {"text": where}))
+	for n in StoryRunner.hint_notes():
+		lines.append(StoryData.text("@ui.journal_note", {"text": n}))
+	if not lines.is_empty():
+		lines.append(StoryData.text("@ui.hint_space_tip"))
+	journal_hint_label.text = "\n".join(PackedStringArray(lines))
+	journal_hint_label.visible = not lines.is_empty()
 
 
 ## A hint tier (StoryRunner.next_hint): the panel with «Подсказка N из 3», the hint in large letters and
@@ -981,7 +1005,9 @@ func toggle_journal() -> void:
 	journal_panel.visible = not journal_panel.visible
 	menu_panel.visible = false
 	if journal_panel.visible:
-		journal_hint_label.visible = false
+		journal_glow = false
+		_style_journal_button()
+		_fill_journal_hints()
 		journal_plan_button.visible = map_view.available_in_journal()
 		journal_goal_label.text = Gloss.plain(StoryRunner.journal_goal())
 		journal_time_label.text = TimeOfDay.label(GameState.current_room)
@@ -1671,8 +1697,9 @@ func probe_positions() -> Dictionary:
 	var out := {"buttons": {}, "inventory": {}, "options": {}, "dialogue_open": dialogue.visible,
 		"map_open": map_view.visible, "map": map_view.probe() if map_view.visible else {},
 		"journal_open": journal_panel.visible, "menu_open": menu_panel.visible, "menu_mode": menu_mode if menu_panel.visible else ""}
-	for b in [journal_button, hint_button, menu_button]:
+	for b in [journal_button, menu_button]:
 		out["buttons"][b.name] = _center(b)
+	out["journal_glow"] = journal_glow
 	if journal_panel.visible:
 		out["buttons"]["CloseJournal"] = _center(journal_panel.find_child("CloseJournal", true, false))
 		if journal_plan_button.visible:

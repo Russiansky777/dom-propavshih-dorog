@@ -6,6 +6,8 @@ extends SceneTree
 ##   2 the bell's clapper (язык колокола) used from the bag inside the close-up — no need to leave it; 2b: the language
 ##     changed inside a close-up — the same close-up opens again over the reloaded room;
 ##   3 «Пойдём к затвору» (M13): Pavel walks to the office door, it swings open, he goes and it shuts;
+##   5 hints (вариант А): no button; «Где: …» in the journal; tiers 2–3 as notes after meta hint_notes.after_s of no
+##     progress, the «Журнал» button glows until opened;
 ##   4 O3 by Nina: no walking on the spot — the walk that stalled at Nina's feet ends; self-check — without the guard
 ##     the same walk steps in place.
 ## Exit code 0 only when every check passed.
@@ -66,6 +68,7 @@ func _run() -> void:
 	await _test("0511-2 the bell's clapper from the bag goes on inside the close-up; self-check — a bare click leaves it mute", _test_clapper_closeup)
 	await _test("0511-2b the language changed inside the close-up — the same close-up opens again", _test_lang_closeup)
 	await _test("0511-3 «Пойдём к затвору»: Pavel walks to the office door, it opens and shuts", _test_pavel_door)
+	await _test("0511-5 hints without a button: «Где» under the goal; the next tiers written in after a while without progress, the journal glows; self-check — progress resets the clock", _test_hint_notes)
 	await _test("0511-4 O3 by Nina: no walking on the spot; self-check — without the guard she steps in place", _test_o3_stall)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -451,3 +454,48 @@ func _mouse_click(p: Vector2) -> void:
 		ev.global_position = p
 		root.push_input(ev, true)
 		await _frames(2)
+
+
+func _test_hint_notes() -> void:
+	gs.reset()
+	sr.call("_on_state_reset")
+	await _enter("H1")
+	var ui: Node = main_node.find_child("GameUI", true, false)
+	if ui == null:
+		for n in main_node.find_children("*", "", true, false):
+			if n.get_script() != null and String(n.get_script().resource_path).ends_with("game_ui.gd"):
+				ui = n
+				break
+	var scn: String = sr.hint_scene()
+	var hints: Array = sd.scene_hints(scn)
+	_check(hints.size() >= 3, "the scene of the hints has three tiers (%s: %d)" % [scn, hints.size()])
+	_check(ui.find_child("HintButton", true, false) == null, "no hint button")
+	var after: Array = sd.hint_notes_after_s
+	_check(after.size() == 2 and float(after[0]) > 60.0 and float(after[1]) > float(after[0]), "the timings come from meta.json: %s" % str(after))
+	ui.call("toggle_journal")
+	await _frames(2)
+	var jh: Label = ui.get("journal_hint_label")
+	_check(jh.visible and jh.text.contains(String(hints[0])) and not jh.text.contains(String(hints[1])), "the journal: «Где» — the first tier only: «%s»" % jh.text)
+	ui.call("toggle_journal")
+	await _frames(2)
+	# self-check: progress (a flag) resets the clock — no note
+	sr.set("hint_idle_s", float(after[0]) - 5.0)
+	gs.set_flag("test_0511_progress", true)
+	sr.call("hint_tick", 10.0)
+	_check(gs.get_counter("hint_tier." + scn) < 2 and not bool(ui.get("journal_glow")), "self-check: a step forward — the clock starts again, no note yet")
+	# no progress past the first mark: tier 2 written in, the button glows
+	sr.set("hint_idle_s", 0.0)
+	sr.call("hint_tick", float(after[0]) + 1.0)
+	await _frames(2)
+	_check(gs.get_counter("hint_tier." + scn) == 2 and bool(ui.get("journal_glow")) and String((ui.get("journal_button") as Button).text).ends_with("•"),
+		"after %ss without progress: the second tier in the journal, «Журнал •» glows" % str(after[0]))
+	ui.call("toggle_journal")
+	await _frames(2)
+	_check(jh.text.contains(String(hints[1])) and not bool(ui.get("journal_glow")), "opened: the note is there, the glow is off: «%s»" % jh.text)
+	ui.call("toggle_journal")
+	sr.call("hint_tick", float(after[1]) - float(after[0]))
+	_check(gs.get_counter("hint_tier." + scn) == 3, "past the second mark: the third tier")
+	sr.call("hint_tick", 1000.0)
+	_check(gs.get_counter("hint_tier." + scn) == 3, "no more than three")
+	gs.reset()
+	sr.call("_on_state_reset")

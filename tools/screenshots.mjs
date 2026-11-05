@@ -702,10 +702,7 @@ async function main() {
     await shot("journal");
     await clickUi("CloseJournal");
     await waitFor("journal closed", (s) => !s.ui.journal_open, 5000);
-    await clickUi("HintButton");
-    await waitFor("hint shown", (s) => s.last_hint && s.last_hint.includes("1"), 5000);
-    await sleep(300);
-    await shot("hint_tier1");
+    // 05.11 (вариант А): no hint button — «Где: …» and the notes are in the journal shot above
     await clickUi("MenuButton");   // «Меню» → the pause → «Сохранить»
     await waitFor("pause open", (s) => s.pause && s.pause.open && s.pause.blur > 0.99, 5000);
     await click("pause «Сохранить»", (await state()).pause.items.save);

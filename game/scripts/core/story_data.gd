@@ -24,6 +24,7 @@ var rooms_index: Dictionary = {}
 var texts: Dictionary = {}              # key -> {text, draft}
 ## Director's switches (data/story/meta.json → switches: the last shot, a word about Agata's future …): one
 ## value each, so an answer of the Director is a one-line change. Lines and stagings name them in `switch`.
+var hint_notes_after_s: Array = []   # meta.json hint_notes.after_s: seconds without progress → the next hint tier as a journal note
 var switches: Dictionary = {}
 var autosave_cfg: Dictionary = {}       # meta.json `autosave` {interval_s} (G5)
 var flag_renames: Dictionary = {}       # meta.json `flag_renames` {old: new} — a flag renamed after saves were made (Р4)
@@ -191,6 +192,8 @@ func _load_meta() -> void:
 	save_fixups = meta.get("save_fixups", []) if meta is Dictionary and meta.get("save_fixups", []) is Array else []
 	flag_renames = meta.get("flag_renames", {}) if meta is Dictionary and meta.get("flag_renames", {}) is Dictionary else {}
 	story_version = String(meta.get("story_version", "")) if meta is Dictionary else ""
+	var hn = meta.get("hint_notes", {}) if meta is Dictionary else {}
+	hint_notes_after_s = (hn.get("after_s", []) if hn is Dictionary else []).map(func(x): return float(x))
 	start_points.clear()
 	if FileAccess.file_exists(DATA_DIR + "/start_points.json"):
 		var sp = _read_json(DATA_DIR + "/start_points.json")

@@ -22,6 +22,8 @@ signal puzzle_closed()
 signal puzzle_state_changed()
 signal loop_transition(spec: Dictionary)
 signal hint_revealed(tier: int, text: String)
+## A hint tier written into the journal by itself (no progress for meta hint_notes.after_s) — the journal button glows.
+signal hint_note_added(tier: int, text: String)
 signal item_received(item_id: String)
 ## A hotspot with `panel: {id, sets}` (rooms data) asks the UI to open a panel (e.g. the Zarechye plan).
 signal panel_requested(panel_id: String, source: Node)
@@ -92,7 +94,13 @@ var player_hidden_by_stage: bool = false   # stage `player_hidden` (N01: Agata a
 var _black_hide: Array = []   # npc_go `in_black`: villagers and their open doors put away in the next black
 
 
+## Seconds of play since the last progress (a flag set) — for the journal's notes (hint_notes); not counted while paused.
+var hint_idle_s: float = 0.0
+var _hint_idle_scene: String = ""
+
+
 func _ready() -> void:
+	GameState.flag_changed.connect(func(_f, _v): hint_idle_s = 0.0)
 	GameState.flag_changed.connect(_on_flag_changed)
 	GameState.state_reset.connect(_on_state_reset)
 	GameState.state_loaded.connect(_on_state_loaded)
@@ -2015,6 +2023,57 @@ func hint_scene() -> String:
 		if requires_met(sc.get("requires", {})):
 			return id
 	return fallback
+
+
+## Hints without a button (Director 05.11, вариант А): the first tier of the current hint scene, shown in the journal
+## under the goal («Где: …»); "" when the scene has no hints.
+func hint_where() -> String:
+	var scn := hint_scene()
+	var hints: Array[String] = StoryData.scene_hints(scn) if scn != "" else []
+	return hints[0] if not hints.is_empty() else ""
+
+
+## The tiers 2..3 of the current hint scene already written into the journal (the notes), in order.
+func hint_notes() -> Array[String]:
+	var out: Array[String] = []
+	var scn := hint_scene()
+	if scn == "":
+		return out
+	var hints: Array[String] = StoryData.scene_hints(scn)
+	var tier: int = GameState.get_counter("hint_tier." + scn)
+	for t in range(2, mini(tier, hints.size()) + 1):
+		out.append(hints[t - 1])
+	return out
+
+
+## Play time without progress: at each of meta hint_notes.after_s the next tier becomes a journal note by itself.
+func hint_tick(delta: float) -> void:
+	if RoomManager.current_room == null or get_tree().paused:
+		return
+	var scn := hint_scene()
+	if scn != _hint_idle_scene:
+		_hint_idle_scene = scn
+		hint_idle_s = 0.0
+	if scn == "" or not current_beat.is_empty() or _stage_running:
+		return
+	hint_idle_s += delta
+	var hints: Array[String] = StoryData.scene_hints(scn)
+	var key := "hint_tier." + scn
+	var tier: int = GameState.get_counter(key)
+	var steps: Array = StoryData.hint_notes_after_s
+	# tier 1 is always shown («Где»); note k (k = 0, 1) brings tier k + 2 once idle passes after_s[k]
+	for k in steps.size():
+		var want := k + 2
+		if want > hints.size() or tier >= want:
+			continue
+		if hint_idle_s >= float(steps[k]):
+			GameState.set_counter(key, want)
+			hint_note_added.emit(want, hints[want - 1])
+		break
+
+
+func _process(delta: float) -> void:
+	hint_tick(delta)
 
 
 ## Reveals the next tier (1..3) for the current hint scene; tiers persist in GameState.counters.
