@@ -43,7 +43,9 @@ def jpeg(v: Path) -> Path:
 
 def body(views: list[Path]) -> dict:
     two = views[:2]  # фронт и профиль
-    return {"image_urls": [mc.data_uri(v) for v in two], "texture_image_urls": [mc.data_uri(jpeg(v)) for v in two],
+    # большой лист (Нина — 15 МБ) даёт виды по 4–5 МБ: тело запроса — JPEG 95 (фон листа сплошной, прозрачности нет)
+    img = [mc.data_uri(v if v.stat().st_size < 3_000_000 else jpeg(v)) for v in two]
+    return {"image_urls": img, "texture_image_urls": [mc.data_uri(jpeg(v)) for v in two],
             "ai_model": "meshy-7.1", "geometry_resolution": "2k", "should_remesh": False, "should_texture": True,
             "enable_pbr": True, "texture_resolution": "4k", "pose_mode": "a-pose", "target_formats": ["glb"],
             "auto_size": True, "origin_at": "bottom", "multi_view_thumbnails": True, "alpha_thumbnail": True}

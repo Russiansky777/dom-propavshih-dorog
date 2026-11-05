@@ -322,6 +322,20 @@ func set_state(st: String) -> void:
 		live.set_state(st)
 
 
+## Block 3 (Director 05.11: villagers do what the story says): a one-shot clip of the live model (rt3d.clips role) —
+## from the stance into the action and back; `hold` keeps the last pose until `release_action`. Returns its seconds
+## (0 — drawn from sheets or no such clip: the staging goes on without it).
+func play_action(role: String, hold: bool = false) -> float:
+	if live == null or not live.play_once(role, hold):
+		return 0.0
+	return live.view.action_length(role) / maxf(float(live.rt.get("act_speed", 1.0)), 0.05)
+
+
+func release_action() -> void:
+	if live != null:
+		live.release_once()
+
+
 func _line_to_agata() -> bool:
 	return String(StoryRunner.current_beat.get("to", "")) == "agata"
 
@@ -382,8 +396,8 @@ func _being_said(b: Dictionary) -> bool:
 ## A line of this character → talk (facing the player); a scene with them, someone else speaking → listen;
 ## anything else → idle.
 func _on_beat_changed() -> void:
-	if walking:
-		return
+	if walking or (live != null and live.once_busy()):
+		return   # block 3: a one-shot action (play_action) plays out — or is held — through the lines
 	var want := wanted_state()
 	if want != state or (want == "talk" and not sprite.animation.begins_with(state_action("talk"))):
 		set_state(want)

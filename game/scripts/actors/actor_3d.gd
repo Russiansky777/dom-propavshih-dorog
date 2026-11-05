@@ -1453,6 +1453,11 @@ static func loop_times(tau: float, len_s: float, xf: float) -> Array:
 ## up 18–27° (tests/probe_villager_motion.gd). Data rt3d.act_body {keep, bones}: the listed bones (hips, spine, legs)
 ## take only `keep` of the action clip, the arms, the neck and the head all of it (a second Blend2 with track filters).
 var act_body_k: float = -1.0     # < 0: no act_body — the action clip drives every bone alike
+var act_body_full: Dictionary = {}   # act_body.full: roles whose clip moves the whole body (block 3: hug, crank, kneel)
+
+
+func _act_body_now() -> float:
+	return 1.0 if act_body_full.has(_act_name) else act_body_k
 
 
 func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> bool:
@@ -1497,6 +1502,8 @@ func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> b
 	bt.connect_node("actb_body", 0, "actb")
 	bt.connect_node("actb_body", 1, "act_mix_b")
 	act_body_k = clampf(float(ab.get("keep", 0.3)), 0.0, 1.0)
+	for r in ab.get("full", []):
+		act_body_full[String(r)] = true
 	return true
 
 
@@ -1867,7 +1874,7 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 		tree.set("parameters/act_mix_b/blend_amount", clampf(act_mix, 0.0, 1.0))
 	tree.set("parameters/actb/blend_amount", clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0)
 	if act_body_k >= 0.0:
-		tree.set("parameters/actb_body/blend_amount", (clampf(act_w, 0.0, 1.0) * act_body_k) if _act_name != "" else 0.0)
+		tree.set("parameters/actb_body/blend_amount", (clampf(act_w, 0.0, 1.0) * _act_body_now()) if _act_name != "" else 0.0)
 	if arm_tone != null:
 		arm_tone.weight = clampf(w, 0.0, 1.0) * (1.0 - (clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0))
 	if bool(spec.get("center_feet", true)):
@@ -1876,7 +1883,7 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 		var wc := clampf(w, 0.0, 1.0)
 		var loco_mid := idle_mid.lerp(_mid_of(clips.get("walk", "")), wc)
 		var aw := clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0
-		var mid := loco_mid.lerp(_mid_of(clips.get(_act_name, "")), aw * (act_body_k if act_body_k >= 0.0 else 1.0))   # the feet: as much of the clip as the legs take
+		var mid := loco_mid.lerp(_mid_of(clips.get(_act_name, "")), aw * (_act_body_now() if act_body_k >= 0.0 else 1.0))   # the feet: as much of the clip as the legs take
 		# out of the stride the clips (captured on a flat-footed body) hold her 4 cm up off her boots — down by that much
 		_bob_y = _bob_at(walk_phase) * wc
 		model.position = Vector3(-mid.x - _calm_off.x, -_boot_drop * (1.0 - wc) + _bob_y - _shuffle_dip, -mid.y - _calm_off.y)

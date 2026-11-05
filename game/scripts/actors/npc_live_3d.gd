@@ -29,6 +29,12 @@ var walk_phase: float = 0.0
 var act_name: String = ""
 var act_w: float = 0.0
 var act_t: float = 0.0
+## One-shot actions (block 3, Director 05.11: villagers do what the story says — hug, hand a key over, crank the
+## windlass): a clip played once forward from the stance and back (`play_once`); `hold` keeps its last pose until
+## `release_once` (a hug held through the lines). While the clip fades out its time stays at the end (no wrap).
+var once := false
+var once_hold := false
+var _once_clip := false
 var _hide_mat: ShaderMaterial = null
 var room_floor_k: float = 0.5          # the room floor's foreshortening (screen depth px per floor metre across)
 var _close_pending := false            # a walk has ended: the closing step once its fade is over (data feet.close_on_stop)
@@ -115,6 +121,8 @@ func face(v: Vector2, floor_k: float, at_once: bool = false) -> void:
 
 
 func set_state(st: String) -> void:
+	if once and st != "act":
+		_end_once()
 	state = st
 	var want := ""
 	if st == "talk" and view.clips.has("talk"):
@@ -124,6 +132,37 @@ func set_state(st: String) -> void:
 	if want != act_name and want != "":
 		act_name = want
 		act_t = 0.0
+		_once_clip = false   # the shown action fades out held where it was (Actor3D.pose), talk/listen loop again
+
+
+## Plays `clip` once (rt3d.clips role or clip name): from the stance into the action and back. False — no such clip.
+func play_once(clip: String, hold: bool = false) -> bool:
+	if view == null or not view.clips.has(clip):
+		return false
+	state = "act"
+	act_name = clip
+	act_t = 0.0
+	once = true
+	once_hold = hold
+	_once_clip = true
+	return true
+
+
+## The held action ends: the clip plays out to its end and the villager goes back to the stance.
+func release_once() -> void:
+	once_hold = false
+
+
+## True while a one-shot action is still playing (or held).
+func once_busy() -> bool:
+	return once
+
+
+func _end_once() -> void:
+	once = false
+	once_hold = false
+	if state == "act":
+		state = "idle"
 
 
 ## Walking off in a staging at `speed_px` screen px/s (node scale `s`): the cycle's cadence follows the speed.
@@ -165,14 +204,25 @@ func process(delta: float) -> void:
 		walk_phase += delta * walk_rate
 	elif step_w > 0.0:
 		walk_phase += delta / maxf(view.walk_len, 0.1)
-	var talk_on := not walking and state in ["talk", "listen"] and act_name != ""
+	var talk_on := not walking and ((state in ["talk", "listen"] and act_name != "") or once)
 	act_w = move_toward(act_w, 1.0 if talk_on else 0.0, delta / float(rt.get("state_fade_s", 0.4)))
 	var lt: Array = [act_t, 0.0, 0.0]
-	if act_name != "" and (act_w > 0.0 or view.shown_act_w() > 0.0):
+	if _once_clip and act_name != "" and (once or act_w > 0.0 or view.shown_act_w() > 0.0):
+		# a one-shot action: forward once, held at its end (`hold`), the end kept while it fades back to the stance
+		var L := maxf(view.action_length(act_name), 0.1)
+		act_t += delta * float(rt.get("act_speed", 1.0))
+		if act_t >= L:
+			act_t = L
+			if once and not once_hold:
+				_end_once()
+		lt = [minf(act_t, L - 0.001), 0.0, 0.0]
+	elif act_name != "" and (act_w > 0.0 or view.shown_act_w() > 0.0):
 		# listen / talk: forward, each pass's end fading into the next one's start (on while it is still shown)
 		var sp := float(rt.get("talk_speed" if act_name == "talk" else "listen_speed", 1.0))
 		act_t += delta * sp
 		lt = Actor3D.loop_times(act_t, maxf(view.action_length(act_name), 0.1), float(rt.get("loop_crossfade_s", 0.8)))
+	if _once_clip and not once and act_w <= 0.0 and view.shown_act_w() <= 0.001:
+		_once_clip = false
 	view.pose(delta, fposmod(walk_phase, 1.0), maxf(walk_w, step_w), act_w, act_name, float(lt[0]), float(lt[1]), float(lt[2]))
 	# feet on the floor (Director 31.10, 15:04: «плавают влево-вправо… ноги идут сами по себе»): the stance clips shift
 	# the weight with the feet sliding under it and the walk's feet skate against the staging's pace — the same foot

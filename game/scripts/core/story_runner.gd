@@ -9,6 +9,7 @@ extends Node
 
 ## A villager walked off in a staging (stage[].npc_go) — tests and probes.
 signal npc_went(npc_id: String)
+signal npc_acted(id: String, action: String, seconds: float)   # block 3: a villager plays a one-shot clip (tests)
 ## Rooms data on_enter `reveal`: these hotspots are lit for a moment (GameUi → HotspotReveal), I-T1.
 signal hotspots_beckoned(ids: Array)
 ## A room layer moved off in a staging (stage[].layer_go — the empty boat along the rope, H36) — tests and probes.
@@ -566,6 +567,36 @@ func _run_stage(spec: Dictionary) -> void:
 		if ag_serial != _stage_serial:
 			return
 		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go"):
+			_stage_running = false
+			_next()
+			return
+	# Block 3 (Director 05.11: «где кто-то делает что-то… отразить анимацией»): `npc_act` [{id, action, hold, wait}] —
+	# villagers play a one-shot clip of their live model (hug, hand over, crank); `hold` keeps its last pose until a
+	# later staging's `npc_release` [ids]. The staging waits for the longest clip unless `wait` is false (a held hug does
+	# not wait for its end). On sheets (web, headless) nothing plays and nothing is waited for.
+	if spec.has("npc_act") or spec.has("npc_release"):
+		var act_serial := _stage_serial
+		var act_room := RoomManager.current_room
+		for id in spec.get("npc_release", []):
+			var rn := act_room.get_node_or_null("npc_" + String(id)) if act_room != null else null
+			if rn != null and rn.has_method("release_action"):
+				rn.call("release_action")
+		var act_s := 0.0
+		for g in spec.get("npc_act", []):
+			var an := act_room.get_node_or_null("npc_" + String(g.get("id", ""))) if act_room != null else null
+			if an == null or not an.has_method("play_action"):
+				continue
+			var hold := bool(g.get("hold", false))
+			var secs := float(an.call("play_action", String(g.get("action", "")), hold))
+			npc_acted.emit(String(g.get("id", "")), String(g.get("action", "")), secs)
+			if bool(g.get("wait", not hold)):
+				act_s = maxf(act_s, secs * clampf(float(g.get("wait_k", 1.0)), 0.0, 1.0))
+		if act_s > 0.0:
+			await get_tree().create_timer(act_s, false).timeout
+			if act_serial != _stage_serial:
+				return
+		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
+				and not spec.has("frame") and not spec.has("layer_go") and not spec.has("npc_face"):
 			_stage_running = false
 			_next()
 			return
