@@ -72,6 +72,11 @@ func _run() -> void:
 			rec_s += 1.0 / 30.0
 			if rec_s > max_s:
 				break
+		# a close-up mini-game opened by the scene (the windlass at M25): played by itself for the video — «Пускай»,
+		# then «Стой» when the log's end is at the mark on the ring
+		if bool(sr.get("mechanic_open")):
+			await _autoplay_mechanic()
+			continue
 		if sr.is_staging():
 			continue
 		if sr.current_beat.is_empty():
@@ -98,3 +103,26 @@ func _run() -> void:
 		await process_frame
 		t += 1.0 / 30.0
 	quit(0)
+
+
+var _mech_done := false
+
+
+func _autoplay_mechanic() -> void:
+	if _mech_done:
+		return
+	_mech_done = true
+	var mv = root.find_child("MechanicView", true, false)
+	var p = mv.get("panel") if mv != null else null
+	if p == null or not p.has_method("signal_pressed"):
+		return
+	for i in 45:
+		await process_frame
+	p.call("signal_pressed", "lower")
+	var g := 0
+	while g < 900 and not p.logic.at_ring():
+		g += 1
+		await process_frame
+	p.call("signal_pressed", "stop")
+	for i in 150:
+		await process_frame
