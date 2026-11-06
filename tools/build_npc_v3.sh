@@ -31,6 +31,11 @@ fi
 # FROM=<житель v2> — чьи клипы и рот брать (у управляющего фигуры v2 не было: FROM=pavel)
 src="${FROM:-$who}"
 lib="$ROOT/game/assets/characters/${src}_v2/rt3d/${src}_rt.glb"
+if [ ! -s "$lib" ]; then
+  # фигуры v2 убраны из игры 06.11 (заменены v3) — их клипы берутся из истории репозитория
+  lib="$W/${src}_v2_rt.glb"
+  [ -s "$lib" ] || git -C "$ROOT" show "a09a189b:game/assets/characters/${src}_v2/rt3d/${src}_rt.glb" > "$lib"
+fi
 "$PY" -I - "$who" "$lib" "$d" "$ROOT" "$src" <<'EOF'
 import json, sys
 who, lib, d, root, src = sys.argv[1:6]

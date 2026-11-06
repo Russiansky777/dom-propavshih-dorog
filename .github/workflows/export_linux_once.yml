@@ -86,7 +86,7 @@ jobs:
             || { tail -40 build/logs/export_linux.log; exit 1; }
           ls -la build/linux
           # живые модели жителей в сборке (локальная проба 03.11 без них — фигуры падали на листы)
-          for c in tamara_v2/rt3d/tamara_rt pavel_v2/rt3d/pavel_rt nina_v2/rt3d/nina_rt agata/rt3d/agata_v4_rt; do
+          for c in tamara_v3/rt3d/tamara_rt pavel_v3/rt3d/pavel_rt nina_v3/rt3d/nina_rt manager_v3/rt3d/manager_rt agata/rt3d/agata_v4_rt; do
             grep -a -q "assets/characters/$c.glb.import" build/linux/DomPropavshihDorog.pck || { echo "::error::нет модели $c в pck"; exit 1; }
           done
           cd build/linux && tar -czf ../DomPropavshihDorog_linux.tar.gz DomPropavshihDorog.x86_64 DomPropavshihDorog.pck
