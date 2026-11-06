@@ -1,0 +1,32 @@
+{
+  "kerosene_lamp": {
+    "task": "01a1ae2e-9c46-7590-bc38-c92d3eed70ef",
+    "prompt": "An old glass kerosene table lamp with a tall clear glass chimney, a small warm lit flame inside, a round brass base and a glass oil reservoir with a little handle on the side. Single object for a painterly 2D adventure game set in the Russian North around 1900-1920, seen from the side at eye level, the whole object visible and upright. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left. No shadow, no text, no letters, no border, no frame, no hands, no people, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "mail_bag": {
+    "task": "01a1ae2e-9d10-7097-8409-fada72072ae6",
+    "prompt": "A worn brown leather postal satchel with a long shoulder strap and a flap with a brass buckle, slightly bulging with letters. Single object for a painterly 2D adventure game set in the Russian North around 1900-1920, seen from the side at eye level, the whole object visible and upright. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left. No shadow, no text, no letters, no border, no frame, no hands, no people, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "carving_knife": {
+    "task": "01a1ae2e-9def-75fd-8cf1-772798273421",
+    "prompt": "A small folk woodworking knife with a short straight steel blade and a worn birch wooden handle, blade pointing up. Single object for a painterly 2D adventure game set in the Russian North around 1900-1920, seen from the side at eye level, the whole object visible and upright. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left. No shadow, no text, no letters, no border, no frame, no hands, no people, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "tar_brush": {
+    "task": "01a1ae2e-9eaa-7716-ae0d-0468379a6a57",
+    "prompt": "A short wide bristle brush with a wooden handle, its bristles black and glossy with fresh pine tar, bristles pointing down. Single object for a painterly 2D adventure game set in the Russian North around 1900-1920, seen from the side at eye level, the whole object visible and upright. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left. No shadow, no text, no letters, no border, no frame, no hands, no people, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  },
+  "dunya_coat": {
+    "task": "01a1ae2e-9f97-7646-8c1d-800ee57c7f34",
+    "prompt": "An old woman's dark brown wool winter coat folded over once as if carried over an arm, a neat patch sewn on one sleeve. Single object for a painterly 2D adventure game set in the Russian North around 1900-1920, seen from the side at eye level, the whole object visible and upright. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left. No shadow, no text, no letters, no border, no frame, no hands, no people, plain empty background",
+    "model": "nano-banana-2",
+    "credits": 6
+  }
+}
