@@ -159,6 +159,12 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	# 02.11 (стр. 21): a thing carried in the hand (rooms data `held` on the hotspot — Mitya's lantern)
 	if h.data is Dictionary and (h.data as Dictionary).has("held"):
 		held = HeldProp.attach(self, h.data["held"])
+	# block 3: a villager busy with something the whole time the room or frame is shown (rooms data `act` on the
+	# hotspot {clip, loop, hold_at, start}: the epilogue's tarring, the postwoman's bag) — from `start` (share of the clip)
+	if live != null and h.data is Dictionary and (h.data as Dictionary).has("act"):
+		var ad: Dictionary = h.data["act"]
+		if live.play_once(String(ad.get("clip", "")), bool(ad.get("hold", false)), float(ad.get("hold_at", -1.0)), bool(ad.get("loop", true))):
+			live.act_t = float(ad.get("start", 0.0)) * live.view.action_length(String(ad.get("clip", "")))
 	# block 3: things in hand during the villager's one-shot actions (actor data rt3d.props {clip: [spec]})
 	var props: Dictionary = ((aspec.get("rt3d", {}) as Dictionary).get("props", {}) as Dictionary) if aspec is Dictionary else {}
 	for clip in props.keys():
@@ -335,10 +341,11 @@ func set_state(st: String) -> void:
 ## Block 3 (Director 05.11: villagers do what the story says): a one-shot clip of the live model (rt3d.clips role) —
 ## from the stance into the action and back; `hold` keeps the last pose until `release_action`. Returns its seconds
 ## (0 — drawn from sheets or no such clip: the staging goes on without it).
-func play_action(role: String, hold: bool = false) -> float:
-	if live == null or not live.play_once(role, hold):
+func play_action(role: String, hold: bool = false, hold_at: float = -1.0, loop: bool = false) -> float:
+	if live == null or not live.play_once(role, hold, hold_at, loop):
 		return 0.0
-	return live.view.action_length(role) / maxf(float(live.rt.get("act_speed", 1.0)), 0.05)
+	var L: float = live.view.action_length(role) / maxf(float(live.rt.get("act_speed", 1.0)), 0.05)
+	return L * clampf(hold_at, 0.0, 1.0) if hold_at >= 0.0 else L
 
 
 func release_action() -> void:

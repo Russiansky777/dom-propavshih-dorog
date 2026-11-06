@@ -35,6 +35,8 @@ var act_t: float = 0.0
 var once := false
 var once_hold := false
 var _once_clip := false
+var once_hold_at := -1.0   # share of the clip where a held action stops (the embrace at its closest); < 0 — at its end
+var once_loop := false      # the action repeats (the tarring), each pass's end fading into the next one's start
 var _hide_mat: ShaderMaterial = null
 var room_floor_k: float = 0.5          # the room floor's foreshortening (screen depth px per floor metre across)
 var _close_pending := false            # a walk has ended: the closing step once its fade is over (data feet.close_on_stop)
@@ -136,14 +138,16 @@ func set_state(st: String) -> void:
 
 
 ## Plays `clip` once (rt3d.clips role or clip name): from the stance into the action and back. False — no such clip.
-func play_once(clip: String, hold: bool = false) -> bool:
+func play_once(clip: String, hold: bool = false, hold_at: float = -1.0, loop: bool = false) -> bool:
 	if view == null or not view.clips.has(clip):
 		return false
 	state = "act"
 	act_name = clip
 	act_t = 0.0
 	once = true
-	once_hold = hold
+	once_hold = hold or loop or hold_at >= 0.0
+	once_hold_at = hold_at
+	once_loop = loop
 	_once_clip = true
 	return true
 
@@ -151,6 +155,11 @@ func play_once(clip: String, hold: bool = false) -> bool:
 ## The held action ends: the clip plays out to its end and the villager goes back to the stance.
 func release_once() -> void:
 	once_hold = false
+	if once_loop:
+		# a loop plays its current pass out to the clip's end, then back to the stance (no jump to the end)
+		once_loop = false
+		if view != null:
+			act_t = float(Actor3D.loop_times(act_t, maxf(view.action_length(act_name), 0.1), float(rt.get("loop_crossfade_s", 0.8)))[0])
 
 
 ## True while a one-shot action is still playing (or held).
@@ -161,6 +170,7 @@ func once_busy() -> bool:
 func _end_once() -> void:
 	once = false
 	once_hold = false
+	once_hold_at = -1.0
 	if state == "act":
 		state = "idle"
 
@@ -210,12 +220,18 @@ func process(delta: float) -> void:
 	if _once_clip and act_name != "" and (once or act_w > 0.0 or view.shown_act_w() > 0.0):
 		# a one-shot action: forward once, held at its end (`hold`), the end kept while it fades back to the stance
 		var L := maxf(view.action_length(act_name), 0.1)
-		act_t += delta * float(rt.get("act_speed", 1.0))
-		if act_t >= L:
-			act_t = L
-			if once and not once_hold:
-				_end_once()
-		lt = [minf(act_t, L - 0.001), 0.0, 0.0]
+		if once_loop and once:
+			act_t += delta * float(rt.get("act_speed", 1.0))
+			lt = Actor3D.loop_times(act_t, L, float(rt.get("loop_crossfade_s", 0.8)))
+		else:
+			act_t += delta * float(rt.get("act_speed", 1.0))
+			if once and once_hold and once_hold_at >= 0.0 and act_t >= once_hold_at * L:
+				act_t = once_hold_at * L
+			if act_t >= L:
+				act_t = L
+				if once and not once_hold:
+					_end_once()
+			lt = [minf(act_t, L - 0.001), 0.0, 0.0]
 	elif act_name != "" and (act_w > 0.0 or view.shown_act_w() > 0.0):
 		# listen / talk: forward, each pass's end fading into the next one's start (on while it is still shown)
 		var sp := float(rt.get("talk_speed" if act_name == "talk" else "listen_speed", 1.0))

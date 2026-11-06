@@ -356,9 +356,10 @@
     ],
     "height_rel": 0.2,
     "drop_rel": 0.07,
-    "bone": "RightHand",
+    "bone": "LeftHand",
+    "_bone_b3": "Блок 3 (06.11): у ставни Митя колотит правым кулаком (knock_shutter) — фонарь в левой",
     "sheet_hand": [
-     0.2,
+     -0.2,
      0.42
     ],
     "glow": {

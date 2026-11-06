@@ -30,6 +30,7 @@ var title: Node = null               # TitleScreen (Main): the credits end on it
 func _ready() -> void:
 	layer = LAYER
 	visible = false
+	add_to_group("frame_view")   # block 3: StoryRunner's npc_act finds the frame's villagers here
 	StoryRunner.frame_changed.connect(_on_frame_changed)
 	# A sibling, not a child: this layer hides when the frame goes (the credits reset the game under them).
 	credits = EndCredits.new()

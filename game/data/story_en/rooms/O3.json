@@ -780,6 +780,32 @@
    "id": "ilya_wife",
    "kind": "npc",
    "label": "@char.ilya_wife",
+   "held": {
+    "image": "res://assets/props/held_lamp.png",
+    "anchor": [
+     56,
+     318
+    ],
+    "height_rel": 0.17,
+    "drop_rel": -0.005,
+    "bone": "RightHand",
+    "sway_deg": 0.8,
+    "sheet_hand": [
+     0.18,
+     0.5
+    ],
+    "glow": {
+     "at": [
+      56,
+      140
+     ],
+     "color": "#ffbe6a",
+     "radius_rel": 0.55,
+     "alpha": 0.45,
+     "flicker": 0.06
+    },
+    "_b3": "Блок 3 (Директор 05.11: «жена Ильи с лампой»): керосиновая лампа в правой руке (картинка — Meshy, assets/props_held/kerosene_lamp.png), свет от стекла; поднимает её клипом hold_lamp (M20, at 7)"
+   },
    "rect": [
     1712,
     170,

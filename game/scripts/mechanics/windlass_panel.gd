@@ -162,10 +162,31 @@ func _on_logic_event(name: String) -> void:
 func tick(delta: float) -> void:
 	if not dialogue_up():
 		logic.step(delta)
+	_ilya_cranks(logic.state in ["down", "up"])
 	if clock - _call_t > 2.2 and logic.state != "bumped":
 		call_label.text = ""
 		reply_label.text = ""
 	_redraw()
+
+
+## Block 3 (Director 05.11: «Илья крутит ворот»): while the log goes down or up, Ilya's live figure (borrowed from the
+## frame) turns the windlass crank — the clip crank_windlass over and over; stopped, he lets go back to the stance.
+var _cranking := false
+
+
+func _ilya_cranks(on: bool) -> void:
+	if on == _cranking:
+		return
+	for b in borrowed:
+		var n: Node = b[0]
+		if is_instance_valid(n) and String(n.name).trim_prefix("Live_") == "npc_ilya" and n.has_method("play_action"):
+			if on:
+				_cranking = float(n.call("play_action", "crank_windlass", true, -1.0, true)) > 0.0
+			else:
+				n.call("release_action")
+				_cranking = false
+			return
+	_cranking = false
 
 
 ## The far end of the log on screen now: the ring point (the far end at angle 0) turned about the pivot.

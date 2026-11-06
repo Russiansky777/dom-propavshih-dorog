@@ -570,13 +570,19 @@ func _run_stage(spec: Dictionary) -> void:
 			_stage_running = false
 			_next()
 			return
-	# Block 3 (Director 05.11: «где кто-то делает что-то… отразить анимацией»): `npc_act` [{id, action, hold, wait}] —
-	# villagers play a one-shot clip of their live model (hug, hand over, crank); `hold` keeps its last pose until a
-	# later staging's `npc_release` [ids]. The staging waits for the longest clip unless `wait` is false (a held hug does
+	# Block 3 (Director 05.11: «где кто-то делает что-то… отразить анимацией»): `npc_act` [{id, action, hold, hold_at,
+	# loop, wait}] — villagers play a one-shot clip of their live model (hug, hand over, crank); `hold` keeps its last
+	# pose, `hold_at` (share of the clip) stops it there — the embrace at its closest — until a later staging's
+	# `npc_release` [ids]; `loop` repeats it (the tarring) until released. The staging waits for the longest clip unless `wait` is false (a held hug does
 	# not wait for its end). On sheets (web, headless) nothing plays and nothing is waited for.
 	if spec.has("npc_act") or spec.has("npc_release"):
 		var act_serial := _stage_serial
 		var act_room := RoomManager.current_room
+		if current_frame != "":
+			# a frame over the world (FrameView): its villagers act — the epilogue's tarring, the knife at the span
+			for fv in get_tree().get_nodes_in_group("frame_view"):
+				if fv.get("room") != null and is_instance_valid(fv.get("room")):
+					act_room = fv.get("room")
 		for id in spec.get("npc_release", []):
 			var rn := act_room.get_node_or_null("npc_" + String(id)) if act_room != null else null
 			if rn != null and rn.has_method("release_action"):
@@ -586,8 +592,8 @@ func _run_stage(spec: Dictionary) -> void:
 			var an := act_room.get_node_or_null("npc_" + String(g.get("id", ""))) if act_room != null else null
 			if an == null or not an.has_method("play_action"):
 				continue
-			var hold := bool(g.get("hold", false))
-			var secs := float(an.call("play_action", String(g.get("action", "")), hold))
+			var hold: bool = bool(g.get("hold", false)) or g.has("hold_at")
+			var secs := float(an.call("play_action", String(g.get("action", "")), hold, float(g.get("hold_at", -1.0)), bool(g.get("loop", false))))
 			npc_acted.emit(String(g.get("id", "")), String(g.get("action", "")), secs)
 			if bool(g.get("wait", not hold)):
 				act_s = maxf(act_s, secs * clampf(float(g.get("wait_k", 1.0)), 0.0, 1.0))
