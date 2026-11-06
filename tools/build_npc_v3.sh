@@ -8,7 +8,7 @@
 #   3. сетка до TRIS треугольников (pipeline/3d/build_rt3d_glb.py; v2 — 120 тыс., Агата v4 — 250 тыс.), текстуры
 #      (цвет и нормали Meshy 4K) — до MAXTEX px: житель на экране 400–700 px ростом, 2K дают больше точек текстуры,
 #      чем пикселей экрана; 4K без сжатия — по ~20 МБ на текстуру в сборке (как у Агаты v4).
-#   4. MOTIONS="give_small bag_strap" — движения действий (tools/meshy_npc_motions.py: релиз npc-v3-work,
+#   4. MOTIONS="give_small bag_strap" (и EXTRA="<glb>…" — клипы, перенесённые на этот риг локально) — движения действий (tools/meshy_npc_motions.py: релиз npc-v3-work,
 #      <имя>_m_<движение>.glb, тот же риг) добавляются клипами с именем движения (build_rt3d_glb --extra).
 # Итог — game/assets/characters/<имя>_v3/rt3d/<имя>_rt.glb. Шаги 1–2 пропускаются, если <имя>_v3_game.glb уже собран.
 #   W=/home/claude/work/v3 PY=python3 TRIS=200000 [MOTIONS="…"] tools/build_npc_v3.sh pavel 1
@@ -59,6 +59,9 @@ for m in ${MOTIONS:-}; do
   [ -s "$d/m_$m.glb" ] || { get "${who}_m_${m}.glb" "$d/raw_$m.glb"; "$PY" -I "$ROOT/tools/glb_rename_clip.py" "$d/raw_$m.glb" "$d/m_$m.glb" "$m" >/dev/null; rm -f "$d/raw_$m.glb"; }
   extra+=("$d/m_$m.glb")
 done
+# EXTRA="a.glb b.glb" — ещё клипы на том же риге (Митя: «pick_up» — перенос клипа Агаты Female_Bend_Over_Pick_Up_Inspect,
+# pipeline/3d/retarget_clips.py по <имя>_v3_game.glb, имя клипа — tools/glb_rename_clip.py)
+for e in ${EXTRA:-}; do extra+=("$e"); done
 (cd "$ROOT" && timeout 2400 "$PY" pipeline/3d/build_rt3d_glb.py --base "$d/${who}_v3_game.glb" ${extra[@]+--extra "${extra[@]}"} --tris "$TRIS" --max-tex "${MAXTEX:-2048}" --matte \
    --out "$d/${who}_rt.glb" --check-out "$d/${who}_rt_check.json") > "$d/rt.log" 2>&1 || true
 # проверка build_rt3d: у ходьбы после переноса 125 кадров, экспорт оставляет 124 — расходится только последний кадр
