@@ -1,0 +1,152 @@
+{
+ "_comment": "Кадр F_hug_nina (блок 3, Директор 05.11: «объятия» — живее): картина объятия на крыльце остаётся (3D-фигуры так обняться не могут, картина утверждена), оживает свет: окна избы и фонарь у двери чуть дышат, как свет лампы и печи; снег — живой (effects).",
+ "room": "F_hug_nina",
+ "actor_tint": [
+  1.0,
+  1.0,
+  1.0
+ ],
+ "sources": [
+  {
+   "id": "win_left",
+   "type": "glow",
+   "rect": [
+    777,
+    291,
+    54,
+    217
+   ],
+   "z": 3,
+   "params": {
+    "glass_center": [
+     0.5,
+     0.5
+    ],
+    "glass_size": [
+     0.8,
+     0.9
+    ],
+    "glass_box": 1.0,
+    "glass": 0.3,
+    "halo": 0.1,
+    "halo_aspect": 1.4,
+    "halo_power": 2.2,
+    "flame": 0.0,
+    "color": "#ffb45e",
+    "seed": 11.14
+   },
+   "flicker": {
+    "group": "house",
+    "amount": 0.1,
+    "speed": 0.9
+   },
+   "fade_s": 0.0
+  },
+  {
+   "id": "win_right",
+   "type": "glow",
+   "rect": [
+    982,
+    243,
+    63,
+    274
+   ],
+   "z": 3,
+   "params": {
+    "glass_center": [
+     0.5,
+     0.5
+    ],
+    "glass_size": [
+     0.8,
+     0.9
+    ],
+    "glass_box": 1.0,
+    "glass": 0.3,
+    "halo": 0.1,
+    "halo_aspect": 1.4,
+    "halo_power": 2.2,
+    "flame": 0.0,
+    "color": "#ffb45e",
+    "seed": 1.43
+   },
+   "flicker": {
+    "group": "house",
+    "amount": 0.1,
+    "speed": 0.9
+   },
+   "fade_s": 0.0
+  },
+  {
+   "id": "door",
+   "type": "glow",
+   "rect": [
+    1501,
+    126,
+    52,
+    308
+   ],
+   "z": 3,
+   "params": {
+    "glass_center": [
+     0.5,
+     0.5
+    ],
+    "glass_size": [
+     0.8,
+     0.9
+    ],
+    "glass_box": 1.0,
+    "glass": 0.25,
+    "halo": 0.08,
+    "halo_aspect": 1.4,
+    "halo_power": 2.2,
+    "flame": 0.0,
+    "color": "#ffbe70",
+    "seed": 6.71
+   },
+   "flicker": {
+    "group": "door",
+    "amount": 0.12,
+    "speed": 1.1
+   },
+   "fade_s": 0.0
+  },
+  {
+   "id": "lamp",
+   "type": "glow",
+   "rect": [
+    1424,
+    250,
+    76,
+    112
+   ],
+   "z": 3,
+   "params": {
+    "glass_center": [
+     0.5,
+     0.5
+    ],
+    "glass_size": [
+     0.8,
+     0.9
+    ],
+    "glass_box": 0.0,
+    "glass": 0.0,
+    "halo": 0.5,
+    "halo_aspect": 1.4,
+    "halo_power": 2.2,
+    "flame": 0.0,
+    "color": "#ffc070",
+    "seed": 2.71
+   },
+   "flicker": {
+    "group": "lamp",
+    "amount": 0.3,
+    "speed": 1.7
+   },
+   "fade_s": 0.0,
+   "_note": "фонарь у двери — дрожащий ореол"
+  }
+ ]
+}
