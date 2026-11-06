@@ -96,11 +96,17 @@ def fx_mask(src: np.ndarray, masks: dict) -> np.ndarray:
     water = np.clip(water * 1.25, 0, 1)
     # J (Директор 29.10, стр. 4: «ближняя вода тоже качается»): лужи на тропинке у крыльца — свой отбор, мягче (в
     # них листья и блики заката), и слабее (`water_near_weight`): рябь лужи, не течение реки.
+    # Блок 3 (Директор 02.11, стр. 39: «ближняя вода в главном меню — всё так же не доделана»): лужи и мокрая тропа у
+    # крыльца — свой канал A маски (у шейдера своя рябь: ветер набегает полосами, мелкая зыбь и блики заката), не
+    # слабая копия речной; снег у края луж (белый, бледный) и комья земли (тёмные) не плывут.
+    near = np.zeros((H, W), np.float32)
     if masks.get("water_near"):
         zn = poly_mask(masks["water_near"], feather=6.0)
         smooth_n = 1.0 - smoothstep(180.0, 900.0, var)
-        near = cv2.GaussianBlur(zn * smooth_n, (0, 0), 2.0) * float(masks.get("water_near_weight", 0.6))
-        water = np.maximum(water, np.clip(near, 0, 1))
+        snow = smoothstep(185.0, 215.0, val) * (1.0 - smoothstep(18.0, 40.0, sat))
+        mud = 1.0 - smoothstep(35.0, 60.0, val)
+        near = cv2.GaussianBlur(zn * smooth_n * (1.0 - snow) * (1.0 - mud), (0, 0), 2.0)
+        near = np.clip(near * float(masks.get("water_near_weight", 1.0)), 0, 1)
     # Директор 25.10 стр. 2, 29.10 стр. 4: «вода ближе к берегу статична» — полоса озера у ближнего берега, между
     # верхушками прибрежных деревьев, и дорожка солнца у берега. Здесь вода в бликах (рябь заката) — отбор мягче, чем
     # у открытой воды, но без деревьев: кроны тёплые/тёмные, стволы и ветки дают вертикальные перепады (|gx| > |gy|),
@@ -145,7 +151,7 @@ def fx_mask(src: np.ndarray, masks: dict) -> np.ndarray:
     win = poly_mask([masks["window"]], feather=1.5)
     light = smoothstep(95, 170, L) * smoothstep(20, 60, src[..., 0] - src[..., 2])
     glow = np.clip(cv2.GaussianBlur(win * light, (0, 0), 2.5) * 1.15, 0, 1)
-    out = np.dstack([water, sway, glow]) * 255.0
+    out = np.dstack([water, sway, glow, near]) * 255.0
     half = cv2.resize(out, (W // 2, H // 2), interpolation=cv2.INTER_AREA)
     return half
 
@@ -189,6 +195,8 @@ def main() -> int:
         ov[..., 0] += big[..., 1] * 200          # sway — red
         ov[..., 2] += big[..., 0] * 220          # water — blue
         ov[..., 1] += big[..., 2] * 220          # window — green
+        ov[..., 1] += big[..., 3] * 160          # near water (puddles) — cyan
+        ov[..., 2] += big[..., 3] * 160
         save_png(np.clip(ov, 0, 255), DEBUG / "fx_mask_overlay.png")
     for k, v in record.items():
         print(f"{k}: {v}")

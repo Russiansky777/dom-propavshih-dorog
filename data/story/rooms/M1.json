@@ -3,7 +3,7 @@
   "_art": "Фон M1_bg.png (двор мельницы, ChatGPT v3): сруб, дверь в сени слева от середины, верстак у стены, пустая доска распорядка, ось колеса на правой стене, лоток с водой справа, тропа к улице слева вверху. Слои: M1_wheel.png — колесо (крутится кодом вокруг ступицы; стоит, пока пруд спущен), M1_fg_sacks.png — мешки в левом нижнем углу (окклюдер). Павел — 3D-фигура Meshy (листы idle/talk, data/actors/pavel.json).png → tools/import_npc_front.py), пока нет 3D-фигуры. Импорт арта — tools/import_room_art.py M1 (art_source).",
   "art_source": {
     "files": {"state_far_snow.png": "assets/incoming/M1_state_far_snow.png", "bg.png": "assets/incoming/M1_bg.png", "wheel.png": "assets/incoming/M1_wheel_v2.png", "state_wheel_pit.png": "assets/incoming/M1_state_wheel_pit.png", "water_1.png": "assets/incoming/M1_wheel_water_front_1.png", "water_2.png": "assets/incoming/M1_wheel_water_front_2.png", "water_3.png": "assets/incoming/M1_wheel_water_front_3.png", "state_water_low.png": "assets/incoming/M1_state_water_low.png", "drips_1.png": "assets/incoming/M1_wheel_drips_1.png", "drips_2.png": "assets/incoming/M1_wheel_drips_2.png", "drips_3.png": "assets/incoming/M1_wheel_drips_3.png", "fg_sacks.png": "assets/incoming/M1_fg_sacks.png", "state_schedule_sheet.png": "assets/incoming/M1_state_schedule_sheet.png"},
-    "canvas": [1672, 941],
+    "retouch": {"water_1.png": "tools/retouch/M1_water_clean.py"}, "_retouch_b3": "Блок 3 (Директор 02.11, стр. 1: «брызги статичны и нарисованы, что нереально»): с воды перед колесом сняты нарисованная пена и столб брызг — живые пена, струи и брызги дают шейдер воды и частицы колеса", "canvas": [1672, 941],
     "own_size": ["wheel.png"],
     "alpha_min": 16
   },

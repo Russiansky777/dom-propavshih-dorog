@@ -84,7 +84,7 @@ func _build(t: Dictionary) -> void:
 		mat.set_shader_parameter("mask_tex", mask)
 		mat.set_shader_parameter("art_size", MenuConfig.ART_SIZE)
 		var fx: Dictionary = t.get("fx", {})
-		for group in ["water", "sway", "window"]:
+		for group in ["water", "sway", "window", "near"]:
 			var g: Dictionary = fx.get(group, {})
 			for k in g.keys():
 				mat.set_shader_parameter("%s_%s" % [group, k], float(g[k]))

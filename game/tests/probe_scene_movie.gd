@@ -4,7 +4,8 @@ extends SceneTree
 ## `from` are clicked through at once, from `from` on each line stays while it is being said (voice) plus `hold` s,
 ## stagings run as in play. Run with a display and Godot's movie writer:
 ##   xvfb-run godot --path game --write-movie out.avi --fixed-fps 30 --resolution 1920x1080 \
-##       -s res://tests/probe_scene_movie.gd -- <scene> <room> [from=0] [to=-1] [flag,flag] [tail_s=2]
+##       -s res://tests/probe_scene_movie.gd -- <scene> <room> [from=0] [to=-1] [flag,flag] [tail_s=2] [max_s=90]
+## max_s — the recording stops after that many seconds from line `from` whatever happens (a staging that waits).
 
 var gs
 var rm
@@ -42,6 +43,8 @@ func _run() -> void:
 	var from := int(a[2]) if a.size() > 2 else 0
 	var to := int(a[3]) if a.size() > 3 else -1
 	var tail := float(a[5]) if a.size() > 5 else 2.0
+	var max_s := float(a[6]) if a.size() > 6 else 90.0
+	var rec_s := 0.0
 	gs.reset()
 	var main_node = load("res://scenes/Main.tscn").instantiate()
 	main_node.set("title_mode", "skip")
@@ -65,6 +68,10 @@ func _run() -> void:
 	while g < 60000:
 		g += 1
 		await process_frame
+		if idx >= from:
+			rec_s += 1.0 / 30.0
+			if rec_s > max_s:
+				break
 		if sr.is_staging():
 			continue
 		if sr.current_beat.is_empty():

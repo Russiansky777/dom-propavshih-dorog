@@ -1,7 +1,7 @@
 shader_type canvas_item;
 // Title screen background (menu art 1672×941 stretched over the canvas): one pass, two texture reads per pixel.
 // mask_tex (half size, tools/import_menu_art.py): R — open water, G — leaves and grass tips (weight = reach),
-// B — the lit window. Everything outside the masks — the camera, the house, the piers, the panel, its title and
+// B — the lit window, A — the near puddles on the path (block 3, Director 02.11 line 39: their own ripple). Everything outside the masks — the camera, the house, the piers, the panel, its title and
 // the signature — stays still. Parameters come from data/story/menu.json title.fx (TitleScreen).
 
 uniform sampler2D mask_tex : filter_linear;
@@ -10,6 +10,10 @@ uniform float water_amp_px = 1.4;        // ripple displacement, art px
 uniform float water_period_s = 8.0;
 uniform float water_wavelength_px = 26.0;
 uniform float water_shimmer = 0.07;      // glints on the bright water, ± share of brightness
+uniform float near_amp_px = 2.4;          // the puddles: wind ripple displacement, art px
+uniform float near_wavelength_px = 9.0;
+uniform float near_speed_px_s = 22.0;     // ripple fronts running across the puddle with the wind
+uniform float near_glint = 0.22;          // ± brightness of the sunset in the puddle as it trembles
 uniform float sway_amp_px = 2.2;         // at full mask weight (the tips)
 uniform float sway_period_s = 7.0;
 uniform float sway_noise_scale = 0.012;  // phase field: neighbouring branches move out of step
@@ -54,11 +58,20 @@ void fragment() {
 	float shiver = sin(t * TAU_ / (sway_period_s * 0.17) + ph2 * 3.0) * gust;   // leaves flutter faster in a gust
 	float amp = sway_amp_px * (1.0 + sway_gust * gust);
 	off += m.g * (amp * vec2(s + 0.35 * shiver, 0.3 * cos(t * TAU_ / (sway_period_s * 0.83) + ph)) + vec2(sway_lean * gust, 0.0));
+	// Near puddles: gusts run over them as bands of fine ripple (the wind's envelope, the same gusts the leaves feel),
+	// a steady faint tremble between, and the bright reflection breaks into glints while a band passes.
+	float band_x = px.x * 0.6 + px.y * 0.8 - t * near_speed_px_s;
+	float bands = smoothstep(0.35, 0.9, vnoise(vec2(band_x * 0.018, t * 0.15)));
+	float fine = sin(px.x / near_wavelength_px * TAU_ * 0.8 + px.y / near_wavelength_px * TAU_ * 0.6 - t * 5.3)
+		+ 0.6 * sin(px.y / (near_wavelength_px * 0.7) * TAU_ - t * 7.1 + px.x * 0.05);
+	float near_w = m.a * (0.25 + 0.75 * max(bands, gust * 0.8));
+	off += near_w * near_amp_px * vec2(0.6 * fine, 0.8 * fine + 0.4 * (vnoise(px * 0.08 + t) - 0.5));
 	vec4 c = texture(TEXTURE, UV + off / art_size);
 	// Glints: only on the bright parts of the water (the sun's path).
 	float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
 	float glint = sin(px.x * 0.09 + t * 1.7 + w1 * 2.0) * sin(px.y * 0.35 - t * 1.1);
 	c.rgb *= 1.0 + m.r * water_shimmer * glint * smoothstep(0.25, 0.7, lum);
+	c.rgb *= 1.0 + near_w * near_glint * fine * 0.5 * smoothstep(0.2, 0.65, lum);
 	// The window: a slow breath and a faint lamp flicker.
 	float breathe = sin(t * TAU_ / window_period_s) * window_breathe;
 	float flick = ((vnoise(vec2(t * window_flicker_hz, 0.5)) - 0.5) * 1.4 + (vnoise(vec2(t * window_flicker_hz * 2.7, 7.5)) - 0.5) * 0.6) * 2.0 * window_flicker;

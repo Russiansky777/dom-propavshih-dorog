@@ -17,6 +17,10 @@
    "fg_sacks.png": "assets/incoming/M1_fg_sacks.png",
    "state_schedule_sheet.png": "assets/incoming/M1_state_schedule_sheet.png"
   },
+  "retouch": {
+   "water_1.png": "tools/retouch/M1_water_clean.py"
+  },
+  "_retouch_b3": "Блок 3 (Директор 02.11, стр. 1: «брызги статичны и нарисованы, что нереально»): с воды перед колесом сняты нарисованная пена и столб брызг — живые пена, струи и брызги дают шейдер воды и частицы колеса",
   "canvas": [
    1672,
    941
