@@ -54,7 +54,7 @@ func _run() -> void:
 	rm.autosave_enabled = false
 	var t0 := Time.get_ticks_msec()
 	await _test_models()
-	_report("Every villager with rt3d: live model loaded (120k-ish triangles, Meshy rig, idle/listen/talk/walk), facade invisible", t0)
+	_report("Every villager with rt3d: live model loaded (200k-ish triangles, v3, Meshy rig, idle/listen/talk/walk), facade invisible", t0)
 	t0 = Time.get_ticks_msec()
 	await _test_states()
 	_report("Talk / listen fade in and out over the stance; turning to Agata is smooth at any angle; walking off plays the cycle", t0)
@@ -122,11 +122,13 @@ func _test_models() -> void:
 		_check(ok, "%s: live model not loaded (%s)" % [id, v.load_error])
 		if ok:
 			var tris := v.triangle_count()
-			_check(tris > 80000 and tris < 160000, "%s: %d triangles (expected ≈120k)" % [id, tris])
+			# 06.11 (block 3): the v3 models — 200k triangles (v2 were ≈120k)
+			_check(tris > 150000 and tris < 260000, "%s: %d triangles (expected ≈200k, v3)" % [id, tris])
 			for role in ["idle", "listen", "talk"]:
 				_check(v.clips.has(role), "%s: clip %s missing" % [id, role])
 			moves[id] = [float(v.idle_phase()[1]), v.idle_rate, v.life.breath_period_s, v.life.t]
-			if v.clips.has("walk"):
+			# Tamara never walks in a staging (scenes' npc_go): her walk clip is not used, its stride is not checked
+			if v.clips.has("walk") and id != "tamara":
 				_check(v.stride_m > 0.5 and v.stride_m < 3.5, "%s: ground covered by one walk clip %.2f m (Ilya's clip has two cycles)" % [id, v.stride_m])
 		v.queue_free()
 		await _frames(1)

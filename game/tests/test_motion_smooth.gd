@@ -282,6 +282,8 @@ func _test_villagers() -> void:
 			["walk off", 2.5, func(t): if t == 0.0: live.set_state("idle"); live.walk(true, 110.0, 1.0), WALK_MM],
 			["stop", 1.5, func(t): if t == 0.0: live.walk(false), WALK_MM],
 		]
+		if id == "tamara":
+			scen = scen.slice(0, scen.size() - 2)   # 06.11: Tamara never walks in a staging (no npc_go) — her walk is unused
 		var line := "        %-9s" % id
 		for sc in scen:
 			var frames: Array = []

@@ -215,9 +215,9 @@ func _test_frame_life() -> void:
 	sr.set_frame("F_mill_manager", false)
 	await _frames(3)
 	var live := _life_layers(fv)
-	# 05.11: Pavel, Ilya and Agata are live 3D figures (NpcActor); the manager (no model yet — block 3) a composed one
-	_check(live.size() == 1 and live.has("manager"), "F_mill_manager: composed figures %s (the manager only expected)" % [live.keys()])
-	for ch in ["pavel", "ilya", "agata"]:
+	# 05.11: Pavel, Ilya and Agata are live 3D figures (NpcActor); 06.11 (block 3): the manager too — no composed one left
+	_check(live.is_empty(), "F_mill_manager: composed figures %s (none expected: all four live)" % [live.keys()])
+	for ch in ["pavel", "ilya", "agata", "manager"]:
 		var na: Node = fv.room.get_node_or_null("npc_" + ch)
 		_check(na != null, "F_mill_manager: no live %s" % ch)
 		if na == null:
@@ -226,7 +226,7 @@ func _test_frame_life() -> void:
 		sr.beat_changed.emit()
 		await _frames(3)
 		_check(String(na.get("state")) == "talk", "F_mill_manager: %s's own line — not talking (%s)" % [ch, na.get("state")])
-		for other in ["pavel", "ilya", "agata"]:
+		for other in ["pavel", "ilya", "agata", "manager"]:
 			var no: Node = fv.room.get_node_or_null("npc_" + other)
 			if other != ch and no != null:
 				_check(String(no.get("state")) != "talk", "F_mill_manager: %s talks with %s's words" % [other, ch])
@@ -276,32 +276,14 @@ func _test_frame_life() -> void:
 	# two figures do not move in step (composed ones)
 	if live.has("manager") and live.has("pavel"):
 		_check(absf(float(live["manager"]._anim_phase) - float(live["pavel"]._anim_phase)) > 0.05, "the manager and Pavel move in step")
-	# self-check: the old layer — the same figure as a still picture with the warp only (no compose.anim) — fails
-	var doc = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rooms/F_mill_manager.json"))
-	var old_l: Dictionary = {}
-	for l in doc["layers"]:
-		if String(l.get("id", "")) == "manager":
-			old_l = (l as Dictionary).duplicate(true)
-	old_l["compose"].erase("anim")
-	var old_layer = load("res://scripts/rooms/state_layer.gd").new()
-	var spr := Sprite2D.new()
-	spr.name = "Image"
-	spr.texture = load(String(old_l["image"]))
-	old_layer.add_child(spr)
-	fv.room.get_node("Layers").add_child(old_layer)
-	old_layer.setup(old_l)
-	sr.current_beat = {"type": "line", "speaker": "manager", "text": "Проверка старого слоя."}
-	var old_smp := await _sample_cells([old_layer], 0.8)
-	_check(old_layer.life_mat != null, "self-check: the old warp layer was not built")
-	_check(not plays_sheet(old_smp[old_layer]), "self-check: the old still/warp figure passes as playing its sheet")
-	_check(not all_in_clip(old_smp[old_layer], live.get("manager", old_layer).anim, "talk"), "self-check: the old still/warp figure passes as gesturing")
+	# self-check: the manager's old composed layer (F_mill_manager.manager, before 06.11) — a still picture with the warp only —
+	# is gone from the data; a frozen frame still fails plays_sheet
 	_check(not plays_sheet([5, 5, 5, 5]) and not plays_sheet([-1, -1, -1]), "self-check: a frozen frame passes as playing")
 	# self-check: the manager's old talk clip (v1 sheet: 16 frames over 9 s with dissolves, raw Listening_Gesture) fails
 	var old_tk := {"action": "talk", "frames": 16, "fps": 3.4, "blend": true}
 	_check(not (int(old_tk["frames"]) >= 24 and not bool(old_tk["blend"])), "self-check: the v1 manager's rare gesture passes")
 	_check(sheet_action("manager", "talk").get("derived", {}).is_empty(), "self-check: the v1 manager's raw clip passes as stance-kept")
 	sr.current_beat = {}
-	old_layer.queue_free()
 	sr.set_frame("", false)
 	await _frames(2)
 
@@ -450,9 +432,10 @@ func _test_talk_stance() -> void:
 				_check(der.has("torso_tilt_max_deg") and float(der["torso_tilt_max_deg"]) <= TILT_MAX_DEG, "%s: the body leans in the talk clip (%s° > %.1f°)" % [where, der.get("torso_tilt_max_deg"), TILT_MAX_DEG])
 				# self-check: the raw clip's own tilt fails the same bound
 				_check(float(der.get("source_torso_tilt_max_deg", 0.0)) > TILT_MAX_DEG, "self-check: %s — the raw clip's tilt %s° passes the lean bound" % [where, der.get("source_torso_tilt_max_deg")])
-	# 05.11 (block 2): the frames' people are live 3D figures — the composed talk clips left: the manager (no model
-	# until block 3); the live ones talk with their model's gesture (test_feedback_0511-6)
-	_check(seen >= 1, "frame figures with a talk clip: %d (the manager expected)" % seen)
+	# 05.11 (block 2), 06.11 (block 3): the frames' people are live 3D figures — no composed talk clip is left (the manager
+	# was the last); the live ones talk with their model's gesture (test_feedback_0511-6). The checks above stay for any
+	# composed figure that comes back.
+	_check(seen == 0, "frame figures with a composed talk clip: %d (none expected since 06.11)" % seen)
 	# self-check: the raw talk clip as it was (F_mill_manager.pavel, commit 7ba00368) fails the legs and the lean checks
 	var fx = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/frame_talk_raw_pavel_anim.json"))
 	var fimg := Image.load_from_file(ProjectSettings.globalize_path("res://tests/fixtures/frame_talk_raw_pavel_anim.png"))

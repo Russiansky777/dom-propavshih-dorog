@@ -366,9 +366,14 @@ func _test_cut() -> void:
 	# The last click of the scene: the beat goes away, the voice with it (M01 is 9 lines since 22.10 — click to the last).
 	var lines: Array = sd.scene("M01").get("mandatory_lines", [])
 	var last_id := "M01_%d" % (lines.size() - 1)
-	for i in 20:
-		if String(sr.current_beat.get("line_id", "")) == last_id or sr.current_beat.is_empty():
+	# 05.11–06.11 (blocks 2–3): «Бери ключ» has stagings — Tamara hands the key over, Agata walks to the counter and
+	# takes it (agata_go, seconds of walking): the click-through waits for them as a player would
+	for i in 400:
+		if String(sr.current_beat.get("line_id", "")) == last_id:
 			break
+		if sr.is_staging() or sr.current_beat.is_empty():
+			await _frames(2)
+			continue
 		sr.advance()
 		await _frames(2)
 	_ensure_voice(last_id)
