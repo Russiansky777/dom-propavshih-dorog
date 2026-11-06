@@ -351,9 +351,9 @@ func _smooth_kinks() -> void:
 
 ## Arms hanging, not spread (Director 06.11, 15:56: «остальных тоже явно коробит»): Meshy's talk clip takes the upper
 ## arms out sideways to 30–34° (Mitya, Nina, Ilya's wife, Tamara — tests/probe_villager_arm_spread.gd; a relaxed arm
-## hangs at 5–12°). Data rt3d.arm_hang {from_deg, k, roles}: in those clips, at every key of the upper arm, its sideways angle in the hips' frame beyond `from_deg` is kept at `k` (the
-## rest is turned down toward the body in the plane of the arm and the side); an arm brought forward in a gesture has
-## little sideways angle and keeps it. BodyClear later takes the hand out of the clothes as before.
+## hangs at 5–12°). Data rt3d.arm_hang {from_deg, k, roles}: in those clips, at every key of the upper arm, its
+## sideways angle in the hips' frame beyond `from_deg` is kept at `k` (the rest is turned down toward the body in the
+## plane of the arm and the side); an arm brought forward in a gesture has little sideways angle and keeps it. BodyClear later takes the hand out of the clothes as before.
 func _hang_arms() -> void:
 	var ah: Dictionary = spec.get("arm_hang", {})
 	if ah.is_empty():
