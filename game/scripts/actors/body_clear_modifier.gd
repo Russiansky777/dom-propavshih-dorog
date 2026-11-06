@@ -33,6 +33,8 @@ static var _tip_cache: Dictionary = {}
 ## (farthest-point sampled from its vertices at rest, carried by the hand bone; data rt3d.arm_body.shell, 0 — off), each
 ## with `shell_r_m` thickness.
 var shell_n: int = 0
+var no_back: bool = false          # data arm_body.no_back: never take the arm out backwards (see _want)
+var _hips: int = -1
 var shell_r: float = 0.015
 var _shell: Array = [[], []]       # per side: [[2 (the hand), point in the hand bone's rest frame], …]
 static var _shell_cache: Dictionary = {}   # model → per side the hand's vertices in the hand bone's rest frame
@@ -57,8 +59,10 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 	hand_len = float(d.get("hand_len", hand_len))
 	tip_r = float(d.get("tip_r_m", 0.0))
 	shell_n = int(d.get("shell", 0))
+	no_back = bool(d.get("no_back", false))
 	shell_r = float(d.get("shell_r_m", shell_r))
 	_unit = unit_per_m
+	_hips = sk.find_bone("Hips")
 	for side in ["Left", "Right"]:
 		var ids := [sk.find_bone(side + "Arm"), sk.find_bone(side + "ForeArm"), sk.find_bone(side + "Hand")]
 		if ids.has(-1):
@@ -308,7 +312,19 @@ func _want(sk: Skeleton3D, i: int, g: Transform3D) -> Array:
 		if dep <= 0.0 or not enabled:
 			continue
 		var arm_v := p - sh
-		var axis := arm_v.cross(da[1] as Vector3)
+		var way: Vector3 = da[1]
+		if no_back and _hips >= 0:
+			# Director 06.11, 18:48 («Пелагея… плечи прячут куда-то в тело»): a hand at the front of the quilted jacket was
+			# taken out backwards — the whole arm swung behind her, the hand 18 cm behind the shoulder. Out sideways or
+			# forward only; the hips' +z is forward on these rigs (toes)
+			var fwd: Vector3 = sk.get_bone_global_pose(_hips).basis.z.normalized()
+			var back := way.dot(fwd)
+			if back < 0.0:
+				way -= fwd * back
+				if way.length() < 0.2:
+					way = sk.get_bone_global_pose(_hips).basis.x.normalized() * (1.0 if i == 0 else -1.0)
+				way = way.normalized()
+		var axis := arm_v.cross(way)
 		if axis.length() < 1e-6 or arm_v.length() < 1e-4:
 			continue
 		var rv := axis.normalized() * minf(dep / arm_v.length(), deg_to_rad(max_deg))
