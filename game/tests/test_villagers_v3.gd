@@ -16,11 +16,23 @@ extends SceneTree
 ##     through the action clips (as before 06.11) Mitya's lantern pick-up and Pelageya's rope steps several times;
 ##   6 hands without a twitch (Director 06.11, 15:08: «руки всё ещё иногда дёргаются»): through idle → talk → listen →
 ##     idle and each one-shot action no hand jolts more than 6 mm per 1/60 s² (the clips' wrist flicks smoothed,
-##     the clip switch gated); self-check — without the smoothing (data rt3d.smooth off) Pavel's talk jolts over 6.
+##     the clip switch gated); self-check — without the smoothing (data rt3d.smooth off) Pavel's talk jolts over 6;
+##   7 the whole hand out of the clothes (Director 06.11, 15:56: «Павел слушает… руки въезжают в тело»): the figure
+##     skinned on the CPU as posed through idle → talk → listen, every hand vertex at most 2 cm inside the posed
+##     silhouette of the body and clothes (per centimetre of height) and at most 2 cm behind the nearest clothes
+##     surface; self-check — with only the hand's axis and fingertip checked (data arm_body.shell off, as before)
+##     Pavel's listening hand goes deeper than 3 cm;
+##   8 no scarecrow arms (same note: «остальных тоже коробит»): talking and listening the upper arm stands out sideways
+##     (before the hands are cleared of the clothes) at most 22° on average and 28° at most; self-check — with the
+##     stance's shoulders under the clip's arms (act_body.upper with the shoulders, tried 06.11) Nina's listening arms
+##     spread over 35°.
 ## Exit code 0 only when every check passed.
 
 const V3 := ["pavel"]
 const Probe := preload("res://tests/probe_fingertips.gd")
+const Pen := preload("res://tests/probe_hand_penetration.gd")
+const Spread := preload("res://tests/probe_arm_spread.gd")
+const ALL := ["pavel", "mitya", "pelageya", "nina", "ilya", "ilya_wife", "tamara", "ulyana", "manager"]
 const DT := 1.0 / 60.0
 
 var _results: Array = []
@@ -61,6 +73,8 @@ func _run() -> void:
 	await _test("V3-3 one-shot action plays once / holds / unknown clip is refused", _t3)
 	await _test("V3-4 every npc_act / act / prop names a clip and a picture that exist; self-check catches made-up ones", _t4)
 	await _test("V3-6 hands do not twitch talking, listening, switching, acting; self-check — unsmoothed clips do", _t6)
+	await _test("V3-7 the whole hand out of the clothes talking and listening; self-check — axis and fingertip only go in", _t7)
+	await _test("V3-8 arms not spread like a scarecrow talking and listening; self-check — stance shoulders spread them", _t8)
 	await _test("V3-5 no stepping about standing or in the action clips (Mitya, Pelageya…); self-check — locks held through the clips step", _t5)
 	var failed := _results.filter(func(r): return not r[1]).size()
 	print("\n%d/%d passed" % [_results.size() - failed, _results.size()])
@@ -349,3 +363,113 @@ func _t6() -> void:
 		_check(j <= 6.0, "%s: a hand jolts %.1f mm per 1/60 s² (≤ 6)" % [id, j])
 	var raw: float = await _hand_jolt("pavel", [], false)
 	_check(raw > 6.0, "self-check: Pavel's unsmoothed talk — only %.1f mm (the test sees no twitch)" % raw)
+
+
+## A live villager as the game poses it (NpcLive3D, every modifier), not drawn: [holder node, live].
+func _live(spec: Dictionary) -> Array:
+	var s := GDScript.new()
+	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
+	s.reload()
+	var n := Node2D.new()
+	n.set_script(s)
+	var sp := Sprite2D.new()
+	n.add_child(sp)
+	n.set("sprite", sp)
+	var sh := GDScript.new()
+	sh.source_code = "extends RefCounted\nvar texture_scale: float = 2.25\n"
+	sh.reload()
+	n.set("sheet", sh.new())
+	root.add_child(n)
+	var live = load("res://scripts/actors/npc_live_3d.gd").new()
+	n.add_child(live)
+	if not live.setup(n, spec, 0.55):
+		n.queue_free()
+		return [null, null]
+	live.view.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	live.face(Vector2(0.4, 0.5), 0.55, true)
+	return [n, live]
+
+
+## The deepest hand vertex through idle → talk → listen: [inside the posed silhouette (cm), behind the clothes (cm)].
+func _hand_depth(spec: Dictionary) -> Array:
+	var nl := _live(spec)
+	if nl[1] == null:
+		return [999.0, 999.0]
+	var live = nl[1]
+	var sk: Skeleton3D = live.view.skeleton
+	var g = Pen.Grab.new()
+	sk.add_child(g)
+	var unit := float(live.arm_body.get("_unit")) if live.arm_body != null else 1.0
+	var prepped := Pen.prep(sk, live.view.meshes)
+	var worst := [-99.0, -99.0]
+	var f := 0
+	for st in [["idle", 3.0], ["talk", 6.0], ["listen", 6.0]]:
+		live.set_state(st[0])
+		var t := 0.0
+		while t < float(st[1]):
+			live.process(DT)
+			await process_frame
+			t += DT
+			f += 1
+			if f % 20 == 0 and t > 0.3:
+				var m: Array = Pen.measure(prepped, g.out, unit)
+				for i in 2:
+					worst[0] = maxf(worst[0], float(m[2][i]) * 100.0)
+					worst[1] = maxf(worst[1], float(m[0][i]) * 100.0)
+	nl[0].queue_free()
+	await process_frame
+	return worst
+
+
+func _t7() -> void:
+	for id in ALL:
+		var w: Array = await _hand_depth(_spec(id))
+		_check(float(w[0]) <= 2.0, "%s: a hand %.1f cm inside the body's silhouette (≤ 2)" % [id, float(w[0])])
+		_check(float(w[1]) <= 2.0, "%s: a hand %.1f cm behind the clothes (≤ 2)" % [id, float(w[1])])
+	var sp := _spec("pavel")
+	(sp["rt3d"]["arm_body"] as Dictionary).erase("shell")
+	var raw: Array = await _hand_depth(sp)
+	_check(float(raw[0]) > 3.0, "self-check: Pavel with axis and fingertip only — %.1f cm (the test sees nothing)" % float(raw[0]))
+
+
+## Upper arm sideways angle before the hands are cleared, talking and listening: [mean, max] (degrees).
+func _spread(spec: Dictionary) -> Array:
+	var nl := _live(spec)
+	if nl[1] == null:
+		return [999.0, 999.0]
+	var live = nl[1]
+	var sk: Skeleton3D = live.view.skeleton
+	var g = Spread.Grab.new()
+	sk.add_child(g)
+	if live.arm_body != null:
+		sk.move_child(g, live.arm_body.get_index())
+	var sum := 0.0
+	var k := 0
+	var mx := -99.0
+	for st in ["talk", "listen"]:
+		live.set_state(st)
+		var t := 0.0
+		while t < 6.0:
+			live.process(DT)
+			await process_frame
+			t += DT
+			if t < 1.0 or g.out.is_empty():
+				continue
+			for side in ["Left", "Right"]:
+				var a: float = Spread.spread(sk, g.out, side)
+				sum += a
+				k += 1
+				mx = maxf(mx, a)
+	nl[0].queue_free()
+	await process_frame
+	return [sum / maxf(1.0, k), mx]
+
+
+func _t8() -> void:
+	for id in ALL:
+		var w: Array = await _spread(_spec(id))
+		_check(float(w[0]) <= 22.0 and float(w[1]) <= 28.0, "%s: arms spread %.0f° on average, %.0f° at most (≤ 22 / 28)" % [id, float(w[0]), float(w[1])])
+	var sp := _spec("nina")
+	sp["rt3d"]["act_body"]["upper"] = ["LeftShoulder", "RightShoulder", "neck", "Head"]
+	var raw: Array = await _spread(sp)
+	_check(float(raw[1]) > 35.0, "self-check: Nina with the stance's shoulders — only %.0f° (the test sees no scarecrow)" % float(raw[1]))

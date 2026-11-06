@@ -4,10 +4,11 @@ extends SkeletonModifier3D
 ## wider than it — standing, a hanging hand sinks 2–7 cm into Pelageya's hip, Ulyana's listening hands 2 cm into her
 ## coat (tests/probe_villager_motion.gd). After the clips: per arm, the forearm's middle, the wrist and the middle of
 ## the hand are looked up in the body's hull (from the mesh's own bind pose: the vertices of the hips, the spine and
-## the thighs, the farthest one per 6° around the middle of each centimetre of height, followed with the body bone that
-## carries that height); one inside (with its own thickness) turns the upper arm about the shoulder away from the body
-## just enough, at most `max_deg`. The turn follows softly (critically damped, `omega` /s): it never pops. Data
-## rt3d.arm_body {max_deg, omega, hand_r_m, fore_r_m, hand_len}; NpcLive3D adds it after the other modifiers.
+## the thighs, the farthest one per 6° around the middle of each centimetre of height, followed with the body bone
+## that carries most of that height; a profile per bone was tried 06.11 and pushed the arms the wrong way); one inside
+## (with its own thickness) turns the upper arm about the shoulder away from the body just enough, at most `max_deg`.
+## The turn follows softly (critically damped, `omega` /s): it never pops. Data rt3d.arm_body {max_deg, omega, hand_r_m,
+## fore_r_m, hand_len, tip_r_m, shell, shell_r_m}; NpcLive3D adds it after the other modifiers.
 
 const SECTORS := 60
 const BODY := ["Hips", "Spine02", "Spine01", "Spine", "LeftUpLeg", "RightUpLeg"]
@@ -26,11 +27,20 @@ var hand_len: float = 0.45         # the hand's middle: this share of the forear
 var tip_r: float = 0.0
 var _tip: Array = [Vector3.ZERO, Vector3.ZERO]   # per side: the fingertip in the hand bone's rest frame (skeleton units)
 static var _tip_cache: Dictionary = {}
+## Director 06.11, 15:56 («Павел слушает… руки въезжают в тело»): the centre line and the fingertip are not the
+## whole hand — a hanging hand turns its palm and thumb to the thigh, and they went 5 cm into Pavel's apron while every
+## checked point was outside (tests/probe_hand_penetration.gd). `shell` points spread over the hand's own surface
+## (farthest-point sampled from its vertices at rest, carried by the hand bone; data rt3d.arm_body.shell, 0 — off), each
+## with `shell_r_m` thickness.
+var shell_n: int = 0
+var shell_r: float = 0.015
+var _shell: Array = [[], []]       # per side: [[2 (the hand), point in the hand bone's rest frame], …]
+static var _shell_cache: Dictionary = {}
 var tip_m: Array = [0.0, 0.0]      # this frame, after the turn: how deep each fingertip is (m, < 0 outside; tests)
 var depth_m: Array = [0.0, 0.0]    # this frame, before the turn: how deep (with thickness) each arm went in (m; tests)
 var shown_m: Array = [0.0, 0.0]    # after the turn (m; tests)
 
-var _bins: Dictionary = {}         # int bin → [centre Vector2 (x, z), PackedFloat32Array radii, bone]
+var _bins: Dictionary = {}         # int bin → [[centre Vector2 (x, z), PackedFloat32Array radii, carrying bone]]
 var _unit: float = 100.0           # skeleton units per metre
 var _arm: Array = []               # per side [upper arm, forearm, hand]
 var _rot: Array = [Vector3.ZERO, Vector3.ZERO]   # rotation vector shown (skeleton space) and its speed
@@ -45,6 +55,8 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 	fore_r = float(d.get("fore_r_m", fore_r))
 	hand_len = float(d.get("hand_len", hand_len))
 	tip_r = float(d.get("tip_r_m", 0.0))
+	shell_n = int(d.get("shell", 0))
+	shell_r = float(d.get("shell_r_m", shell_r))
 	_unit = unit_per_m
 	for side in ["Left", "Right"]:
 		var ids := [sk.find_bone(side + "Arm"), sk.find_bone(side + "ForeArm"), sk.find_bone(side + "Hand")]
@@ -57,8 +69,11 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 		_bins = _build_hull(sk, meshes)
 		_hull_cache[cache_key] = _bins
 		_tip_cache[cache_key] = _tip.duplicate()
+		_shell_cache[cache_key] = _shell.duplicate(true)
 	if _tip_cache.has(cache_key):
 		_tip = (_tip_cache[cache_key] as Array).duplicate()
+	if _shell_cache.has(cache_key):
+		_shell = (_shell_cache[cache_key] as Array).duplicate(true)
 	return not _bins.is_empty()
 
 
@@ -70,6 +85,7 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 		if b >= 0:
 			body[b] = true
 	var hands := {sk.find_bone("LeftHand"): 0, sk.find_bone("RightHand"): 1}
+	var surf := [[[], []], [[], []]]   # side → [unused, hand points in the hand bone's rest frame]
 	var tip_d := [0.0, 0.0]
 	var acc := {}       # bin → [Array of Vector2, {bone: count}]
 	var step := 0.01 * _unit
@@ -111,6 +127,7 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 					if dist > float(tip_d[side]):
 						tip_d[side] = dist
 						_tip[side] = hr.affine_inverse() * hp
+					surf[side][1].append(hr.affine_inverse() * hp)
 					continue
 				if not body.has(bone):
 					continue
@@ -120,6 +137,13 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 					acc[key] = [[], {}]
 				(acc[key][0] as Array).append(Vector2(p.x, p.z))
 				acc[key][1][bone] = int(acc[key][1].get(bone, 0)) + 1
+	_shell = [[], []]
+	if shell_n > 0:
+		for side in 2:
+			# the hand only: points on the sleeve (tried) found the elbow against the back of the waistcoat and swung the
+			# whole arm backwards
+			for q in _farthest(surf[side][1], shell_n):
+				_shell[side].append([2, q])
 	var out := {}
 	for key in acc.keys():
 		var pts: Array = acc[key][0]
@@ -139,7 +163,31 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 			if int(acc[key][1][b]) > n:
 				n = int(acc[key][1][b])
 				top = int(b)
-		out[key] = [c, r, top]
+		out[key] = [[c, r, top]]
+	return out
+
+
+## n points spread over pts (farthest-point sampling, from the first).
+static func _farthest(pts: Array, n: int) -> Array:
+	var out: Array = []
+	if pts.is_empty() or n <= 0:
+		return out
+	var dist := PackedFloat32Array()
+	dist.resize(pts.size())
+	dist.fill(INF)
+	var cur := 0
+	for i in mini(n, pts.size()):
+		out.append(pts[cur])
+		var far := -1.0
+		var nxt := 0
+		for k in pts.size():
+			var d: float = (pts[k] as Vector3).distance_squared_to(pts[cur])
+			if d < dist[k]:
+				dist[k] = d
+			if dist[k] > far:
+				far = dist[k]
+				nxt = k
+		cur = nxt
 	return out
 
 
@@ -155,23 +203,23 @@ func depth_at(sk: Skeleton3D, p: Vector3) -> Array:
 	for kk in [key - 1, key, key + 1]:
 		if not _bins.has(kk):
 			continue
-		var e: Array = _bins[kk]
-		var bone: int = e[2]
-		var rest := sk.get_bone_global_rest(bone)
-		var pose := sk.get_bone_global_pose(bone)
-		var q: Vector3 = rest * (pose.affine_inverse() * p)
-		var c: Vector2 = e[0]
-		var r: PackedFloat32Array = e[1]
-		var d := Vector2(q.x, q.z) - c
-		var s := int(fposmod(atan2(d.y, d.x), TAU) / TAU * SECTORS) % SECTORS
-		var rr := maxf(maxf(r[s], r[(s + 1) % SECTORS]), r[(s + SECTORS - 1) % SECTORS])
-		if rr <= 0.0:
-			continue
-		var dep := rr - d.length()
-		if dep > best:
-			best = dep
-			var out_rest := Vector3(d.x, 0.0, d.y).normalized() if d.length() > 1e-4 else Vector3(1, 0, 0)
-			way = (pose.basis * (rest.basis.inverse() * out_rest)).normalized()
+		for e in _bins[kk]:
+			var bone: int = e[2]
+			var rest := sk.get_bone_global_rest(bone)
+			var pose := sk.get_bone_global_pose(bone)
+			var q: Vector3 = rest * (pose.affine_inverse() * p)
+			var c: Vector2 = e[0]
+			var r: PackedFloat32Array = e[1]
+			var d := Vector2(q.x, q.z) - c
+			var s := int(fposmod(atan2(d.y, d.x), TAU) / TAU * SECTORS) % SECTORS
+			var rr := maxf(maxf(r[s], r[(s + 1) % SECTORS]), r[(s + SECTORS - 1) % SECTORS])
+			if rr <= 0.0:
+				continue
+			var dep := rr - d.length()
+			if dep > best:
+				best = dep
+				var out_rest := Vector3(d.x, 0.0, d.y).normalized() if d.length() > 1e-4 else Vector3(1, 0, 0)
+				way = (pose.basis * (rest.basis.inverse() * out_rest)).normalized()
 	return [best, way]
 
 
@@ -184,6 +232,11 @@ func _points(sk: Skeleton3D, i: int) -> Array:
 	var pts := [[el.lerp(wr, 0.5), fore_r * _unit], [wr, hand_r * _unit], [hm, hand_r * _unit]]
 	if tip_r > 0.0 and (_tip[i] as Vector3) != Vector3.ZERO:
 		pts.append([sk.get_bone_global_pose(ids[2]) * (_tip[i] as Vector3), tip_r * _unit])
+	if not (_shell[i] as Array).is_empty():
+		var gf := sk.get_bone_global_pose(ids[1])
+		var gh := sk.get_bone_global_pose(ids[2])
+		for e in _shell[i]:
+			pts.append([(gh if int(e[0]) == 2 else gf) * (e[1] as Vector3), shell_r * _unit])
 	return pts
 
 

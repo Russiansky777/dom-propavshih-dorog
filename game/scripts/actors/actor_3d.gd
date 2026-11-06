@@ -144,6 +144,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	_resolve_clips()
 	_smooth_tracks()
 	_smooth_kinks()
+	_hang_arms()
 	_bake_walk_loop()
 	# A villager may have no walk clip (data `require_walk` false: Pavel, Mitya, Ilya's wife — their stagings slide):
 	# the stance stands in for it, nothing walks.
@@ -346,6 +347,77 @@ func _smooth_kinks() -> void:
 					acc = Quaternion(acc.x + qj.x * w[j + r], acc.y + qj.y * w[j + r], acc.z + qj.z * w[j + r], acc.w + qj.w * w[j + r])
 					ws += w[j + r]
 				a.track_set_key_value(i, k, acc.normalized())
+
+
+## Arms hanging, not spread (Director 06.11, 15:56: «остальных тоже явно коробит»): Meshy's talk clip takes the upper
+## arms out sideways to 30–34° (Mitya, Nina, Ilya's wife, Tamara — tests/probe_arm_spread.gd; a relaxed arm hangs at
+## 5–12°). Data rt3d.arm_hang {from_deg, k, roles}: in those
+## clips, at every key of the upper arm, its sideways angle in the hips' frame beyond `from_deg` is kept at `k` (the
+## rest is turned down toward the body in the plane of the arm and the side); an arm brought forward in a gesture has
+## little sideways angle and keeps it. BodyClear later takes the hand out of the clothes as before.
+func _hang_arms() -> void:
+	var ah: Dictionary = spec.get("arm_hang", {})
+	if ah.is_empty():
+		return
+	var s0 := deg_to_rad(float(ah.get("from_deg", 12.0)))
+	var k := clampf(float(ah.get("k", 0.35)), 0.0, 1.0)
+	var names := {}
+	for role in ah.get("roles", ["idle", "talk", "listen"]):
+		if clips.has(role):
+			names[clips[role]] = true
+	for e in idle_pool:
+		names[e["name"]] = true
+	var hips := skeleton.find_bone("Hips")
+	if hips < 0:
+		return
+	# the hips' frame at rest: up toward the head, `out` toward the left arm's side
+	var head := skeleton.find_bone("Head")
+	var la := skeleton.find_bone("LeftArm")
+	if head < 0 or la < 0:
+		return
+	var hr := skeleton.get_bone_global_rest(hips)
+	var up: Vector3 = (hr.affine_inverse() * skeleton.get_bone_global_rest(head).origin).normalized()
+	var lp: Vector3 = hr.affine_inverse() * skeleton.get_bone_global_rest(la).origin
+	var out_l: Vector3 = (lp - up * lp.dot(up)).normalized()
+	for nm in names.keys():
+		var a := anim.get_animation(nm)
+		if a == null or a.has_meta("arms_hung"):
+			continue   # shared by every copy of the model: once
+		a.set_meta("arms_hung", true)
+		var tr := {}
+		for i in a.get_track_count():
+			if a.track_get_type(i) == Animation.TYPE_ROTATION_3D:
+				tr[String(a.track_get_path(i).get_concatenated_subnames())] = i
+		for side in ["Left", "Right"]:
+			var arm := skeleton.find_bone(side + "Arm")
+			var fore := skeleton.find_bone(side + "ForeArm")
+			if arm < 0 or fore < 0 or not tr.has(side + "Arm"):
+				continue
+			var out: Vector3 = out_l if side == "Left" else -out_l
+			var chain: Array = []   # the arm's parents below the hips, hips first
+			var b := skeleton.get_bone_parent(arm)
+			while b >= 0 and b != hips:
+				chain.push_front(b)
+				b = skeleton.get_bone_parent(b)
+			var along: Vector3 = skeleton.get_bone_rest(fore).origin.normalized()
+			var ti: int = tr[side + "Arm"]
+			for key in a.track_get_key_count(ti):
+				var t := a.track_get_key_time(ti, key)
+				var qp := Quaternion.IDENTITY
+				for cb in chain:
+					var bn := skeleton.get_bone_name(cb)
+					var ql: Quaternion = a.rotation_track_interpolate(tr[bn], t) if tr.has(bn) else skeleton.get_bone_rest(cb).basis.get_rotation_quaternion()
+					qp = qp * ql
+				var qa: Quaternion = a.track_get_key_value(ti, key)
+				var d: Vector3 = (qp * qa) * along
+				var sa := asin(clampf(d.dot(out), -1.0, 1.0))
+				if sa <= s0:
+					continue
+				var axis := d.cross(out)
+				if axis.length() < 1e-5:
+					continue
+				var turn := Quaternion(axis.normalized(), -(sa - (s0 + (sa - s0) * k)))
+				a.track_set_key_value(ti, key, (qp.inverse() * turn * qp * qa).normalized())
 
 
 ## The walk as a seamless loop (data `walk_loop` [from, to], seconds of the clip): keys every 1/30 s from `from`,
@@ -1532,6 +1604,11 @@ func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> b
 		return false
 	var body := {}
 	for b in ab.get("bones", ["Hips", "Spine02", "Spine01", "Spine", "LeftUpLeg", "LeftLeg", "LeftFoot", "LeftToeBase", "RightUpLeg", "RightLeg", "RightFoot", "RightToeBase"]):
+		body[String(b)] = true
+	# Director 06.11, 15:56 («остальных тоже коробит»): the talk clip drops the head every gesture — the neck and the
+	# head (act_body.upper) are kept at `keep` too. Not the shoulders: a stance shoulder under the clip's arm spreads the
+	# arms like a scarecrow (Nina listening 44°, tests/probe_arm_spread.gd)
+	for b in ab.get("upper", []):
 		body[String(b)] = true
 	var paths := {}
 	for role in clips.keys():
