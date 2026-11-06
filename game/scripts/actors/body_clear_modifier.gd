@@ -36,6 +36,10 @@ static var _tip_cache: Dictionary = {}
 ## with `shell_r_m` thickness.
 var shell_n: int = 0
 var no_back: bool = false
+## How much of the turn is shown (NpcLive3D: data arm_body.stance_free — the turn only as much as talk or an action is
+## shown; standing, the arms hang as the clip has them — Director 06.11, 23:0x, «Г: руки как в клипе»: pushed out of
+## the apron the arms stood off the body like a wrestler's)
+var strength: float = 1.0
 var legacy_zero_dt: bool = false   # tests only: the follower skipped on passes with no time step, as before 19:27          # data arm_body.no_back: never take the arm out backwards (see _want)
 var _hips: int = -1
 var shell_r: float = 0.015
@@ -464,7 +468,7 @@ func _process_modification_with_delta(delta: float) -> void:
 				vel[c] = s.y
 			_rot[i] = cur
 			_rot_v[i] = vel
-		var rot: Vector3 = _rot[i]
+		var rot: Vector3 = (_rot[i] as Vector3) * clampf(strength, 0.0, 1.0)
 		if rot.length() > 1e-5:
 			var nb := Basis(rot.normalized(), rot.length()) * g.basis
 			sk.set_bone_global_pose(ids[0], Transform3D(nb, g.origin))
@@ -476,8 +480,9 @@ func _process_modification_with_delta(delta: float) -> void:
 		if delta > 0.0 and after > catch_m * _unit and want.length() > rot.length() and enabled:
 			_rot[i] = want
 			_rot_v[i] = Vector3.ZERO
-			rot = want
-			sk.set_bone_global_pose(ids[0], Transform3D(Basis(rot.normalized(), rot.length()) * g.basis, g.origin))
+			rot = want * clampf(strength, 0.0, 1.0)
+			if rot.length() > 1e-5:
+				sk.set_bone_global_pose(ids[0], Transform3D(Basis(rot.normalized(), rot.length()) * g.basis, g.origin))
 			after = -INF
 			for pt in _points(sk, i):
 				after = maxf(after, float(depth_at(sk, pt[0])[0]) + float(pt[1]))

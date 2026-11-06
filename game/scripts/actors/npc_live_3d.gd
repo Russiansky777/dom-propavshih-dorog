@@ -110,11 +110,13 @@ func _setup_arm_body() -> void:
 		# the clearing baked into the stance clips (data arm_body.bake; BodyClear.bake)
 		if d.has("bake"):
 			var names := {}
-			for role in d["bake"].get("roles", ["idle", "talk", "listen"]):
+			var roles: Array = d["bake"].get("roles", ["idle", "talk", "listen"])
+			for role in roles:
 				if view.clips.has(role):
 					names[view.clips[role]] = true
-			for e in view.idle_pool:
-				names[e["name"]] = true
+			if roles.has("idle"):
+				for e in view.idle_pool:
+					names[e["name"]] = true
 			var t0 := Time.get_ticks_msec()
 			bc.bake(view.anim, names.keys())
 			if OS.get_environment("BAKE_DBG") != "":
@@ -263,6 +265,8 @@ func process(delta: float) -> void:
 	if _once_clip and not once and act_w <= 0.0 and view.shown_act_w() <= 0.001:
 		_once_clip = false
 	view.pose(delta, fposmod(walk_phase, 1.0), maxf(walk_w, step_w), act_w, act_name, float(lt[0]), float(lt[1]), float(lt[2]))
+	if arm_body != null and bool(rt.get("arm_body", {}).get("stance_free", false)):
+		arm_body.strength = view.shown_act_w()
 	# feet on the floor (Director 31.10, 15:04: «плавают влево-вправо… ноги идут сами по себе»): the stance clips shift
 	# the weight with the feet sliding under it and the walk's feet skate against the staging's pace — the same foot
 	# locks and stride planting as Agata's (data rt3d.feet)

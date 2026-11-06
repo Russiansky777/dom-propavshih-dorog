@@ -18,7 +18,8 @@ extends SceneTree
 ##     idle and each one-shot action no hand jolts more than 6 mm per 1/60 s² (the clips' wrist flicks smoothed,
 ##     the clip switch gated); self-check — without the smoothing (data rt3d.smooth off) Pavel's talk jolts over 6;
 ##   7 the whole hand out of the clothes (Director 06.11, 15:56: «Павел слушает… руки въезжают в тело»): the figure
-##     skinned on the CPU as posed through idle → talk → listen, every hand vertex at most 2 cm inside the posed
+##     skinned on the CPU as posed through idle → talk → listen (counted while talking: standing the arms hang as the
+##     clip has them, Director 06.11, 23:0x), every hand vertex at most 2 cm inside the posed
 ##     silhouette of the body and clothes (per centimetre of height) and at most 2 cm behind the nearest clothes
 ##     surface; self-check — with only the hand's axis and fingertip checked (data arm_body.shell off, as before)
 ##     Pavel's listening hand goes deeper than 3 cm;
@@ -425,13 +426,16 @@ func _hand_depth(spec: Dictionary) -> Array:
 	var f := 0
 	for st in [["idle", 3.0], ["talk", 6.0], ["listen", 6.0]]:
 		live.set_state(st[0])
+		# standing and listening the arms hang as the clip has them (Director 06.11, 23:0x: «Г: руки как в клипе»);
+		# measured while talking — and in the self-check, as before
+		var counted: bool = st[0] == "talk" or not bool(spec["rt3d"]["arm_body"].get("stance_free", false))
 		var t := 0.0
 		while t < float(st[1]):
 			live.process(DT)
 			await process_frame
 			t += DT
 			f += 1
-			if f % 20 == 0 and t > 0.3:
+			if f % 20 == 0 and t > 0.3 and counted:
 				var m: Array = Pen.measure(prepped, g.out, unit)
 				for i in 2:
 					if float(m[2][i]) * 100.0 > float(worst[0]):
@@ -648,6 +652,8 @@ static func _before_2100(spec: Dictionary, listen := "idle") -> Dictionary:
 		r["idle"]["pool"] = [{"clip": "idle", "weight": 1}]
 	for k in ["concat", "calm_shoulders", "shoulder_weights"]:
 		r.erase(k)
+	if r.has("arm_body"):
+		(r["arm_body"] as Dictionary).erase("stance_free")
 	return spec
 
 
