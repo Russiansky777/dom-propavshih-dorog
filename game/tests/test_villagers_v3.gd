@@ -7,7 +7,10 @@ extends SceneTree
 ##     hand's farthest point stays outside the body's hull (≤ 0.5 cm in); self-check — without the fingertip check
 ##     (data tip_r_m off) the same sequence puts them in deeper than 2 cm;
 ##   3 one-shot actions (play_once / npc_act): a clip plays once from the stance and back, `hold` keeps it until
-##     released; self-check — an unknown clip plays nothing (false) and the villager stays in the stance.
+##     released; self-check — an unknown clip plays nothing (false) and the villager stays in the stance;
+##   4 the data of the actions: every scene staging's npc_act and every hotspot's `act` names a clip the villager's
+##     model has (actor data rt3d.clips), every thing in hand (rt3d.props, hotspot `held`) has its picture and its
+##     clip; self-check — a made-up clip and a missing picture are caught.
 ## Exit code 0 only when every check passed.
 
 const V3 := ["pavel"]
@@ -50,6 +53,7 @@ func _run() -> void:
 	await _test("V3-1 v3 model in data, loads with its clips", _t1)
 	await _test("V3-2 fingertips out of the body (self-check: without the check they go in)", _t2)
 	await _test("V3-3 one-shot action plays once / holds / unknown clip is refused", _t3)
+	await _test("V3-4 every npc_act / act / prop names a clip and a picture that exist; self-check catches made-up ones", _t4)
 	var failed := _results.filter(func(r): return not r[1]).size()
 	print("\n%d/%d passed" % [_results.size() - failed, _results.size()])
 	quit(1 if failed > 0 or _results.is_empty() else 0)
@@ -154,3 +158,61 @@ func _t3() -> void:
 	_check(not live.once_busy() and live.view.shown_act_w() < 0.02, "a released action did not go back to the stance")
 	n.queue_free()
 	await process_frame
+
+
+## The faults of the actions' data (npc_act, hotspot act/held, actor props) — "" lists nothing wrong.
+static func action_faults(scenes: Array, rooms: Array, actors: Dictionary) -> Array:
+	var bad: Array = []
+	var clips_of := func(id: String) -> Dictionary:
+		var a: Dictionary = actors.get(id, {})
+		return (a.get("rt3d", {}) as Dictionary).get("clips", {})
+	for sc in scenes:
+		for st in (sc as Dictionary).get("stage", []):
+			for g in (st as Dictionary).get("npc_act", []):
+				var id := String(g.get("id", ""))
+				if not (clips_of.call(id) as Dictionary).has(String(g.get("action", ""))):
+					bad.append("%s: npc_act %s.%s — no such clip" % [sc.get("id"), id, g.get("action")])
+	for r in rooms:
+		for h in (r as Dictionary).get("hotspots", []):
+			var hd: Dictionary = h
+			if hd.has("act") and not (clips_of.call(String(hd.get("id", ""))) as Dictionary).has(String(hd["act"].get("clip", ""))):
+				bad.append("%s.%s: act %s — no such clip" % [r.get("id"), hd.get("id"), hd["act"].get("clip")])
+			if hd.has("held") and not ResourceLoader.exists(String(hd["held"].get("image", ""))):
+				bad.append("%s.%s: held picture %s missing" % [r.get("id"), hd.get("id"), hd["held"].get("image")])
+	for id in actors.keys():
+		var props: Dictionary = ((actors[id] as Dictionary).get("rt3d", {}) as Dictionary).get("props", {})
+		for clip in props.keys():
+			if not (clips_of.call(String(id)) as Dictionary).has(String(clip)):
+				bad.append("%s: props for %s — no such clip" % [id, clip])
+			for ps in props[clip]:
+				if not ResourceLoader.exists(String(ps.get("image", ""))):
+					bad.append("%s: prop picture %s missing" % [id, ps.get("image")])
+	return bad
+
+
+func _t4() -> void:
+	var sd = root.get_node("StoryData")
+	var scenes: Array = []
+	for sid in sd.scene_order:
+		scenes.append(sd.scene(sid))
+	var rooms: Array = []
+	for f in DirAccess.get_files_at("res://data/story/rooms"):
+		if f.ends_with(".json"):
+			rooms.append(JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rooms/" + f)))
+	var actors := {}
+	for f in DirAccess.get_files_at("res://data/actors"):
+		if f.ends_with(".json"):
+			actors[f.get_basename()] = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/" + f))
+	var bad := action_faults(scenes, rooms, actors)
+	_check(bad.is_empty(), "faults: %s" % str(bad))
+	var n_act := 0
+	for sc in scenes:
+		for st in (sc as Dictionary).get("stage", []):
+			n_act += ((st as Dictionary).get("npc_act", []) as Array).size()
+	_check(n_act >= 9, "only %d npc_act in the scenes (block 3 placed 9+)" % n_act)
+	# self-check: a made-up clip in a staging and a missing picture in a prop are both caught
+	var fake_sc := [{"id": "X", "stage": [{"npc_act": [{"id": "nina", "action": "juggle"}]}]}]
+	var fake_actors := actors.duplicate(true)
+	fake_actors["tamara"]["rt3d"]["props"]["give_small"][0]["image"] = "res://nope.png"
+	var caught := action_faults(fake_sc, [], fake_actors)
+	_check(caught.size() == 2, "self-check: made-up clip and missing picture → %s" % str(caught))
