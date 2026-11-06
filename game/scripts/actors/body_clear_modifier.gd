@@ -18,6 +18,7 @@ static var _hull_cache: Dictionary = {}   # model path → [bins, unit]
 var enabled: bool = true           # off — the tests' self-check (the clip's hands as they were)
 var max_deg: float = 15.0
 var omega: float = 12.0
+var omega_back: float = 3.0
 var hand_r: float = 0.02           # metres
 var fore_r: float = 0.03
 var hand_len: float = 0.45         # the hand's middle: this share of the forearm's length past the wrist
@@ -33,7 +34,8 @@ static var _tip_cache: Dictionary = {}
 ## (farthest-point sampled from its vertices at rest, carried by the hand bone; data rt3d.arm_body.shell, 0 — off), each
 ## with `shell_r_m` thickness.
 var shell_n: int = 0
-var no_back: bool = false          # data arm_body.no_back: never take the arm out backwards (see _want)
+var no_back: bool = false
+var legacy_zero_dt: bool = false   # tests only: the follower skipped on passes with no time step, as before 19:27          # data arm_body.no_back: never take the arm out backwards (see _want)
 var _hips: int = -1
 var shell_r: float = 0.015
 var _shell: Array = [[], []]       # per side: [[2 (the hand), point in the hand bone's rest frame], …]
@@ -54,6 +56,7 @@ var snap: bool = true
 func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cache_key: String) -> bool:
 	max_deg = float(d.get("max_deg", max_deg))
 	omega = float(d.get("omega", omega))
+	omega_back = float(d.get("omega_back", omega_back))
 	hand_r = float(d.get("hand_r_m", hand_r))
 	fore_r = float(d.get("fore_r_m", fore_r))
 	hand_len = float(d.get("hand_len", hand_len))
@@ -205,33 +208,67 @@ static func _farthest(pts: Array, n: int) -> Array:
 ## How deep a skeleton-space point is inside the hull (skeleton units, < 0 outside, -INF off the body's heights) and the
 ## way out of it (skeleton space, unit, horizontal of the carrying bone).
 func depth_at(sk: Skeleton3D, p: Vector3) -> Array:
+	# Director 06.11, 19:27 («руки дергаются как сумасшедшие, меняя положение туда и назад»): the depth was a step
+	# function — the radius of a 6° sector (the most of three), the deepest of three 1-cm slices — and the turn jumped
+	# with it, back and forth, 20–40 times in 6 s (tests/probe_bc_trace.gd). Now it is continuous: the radius
+	# interpolated between sectors, the slices blended by height.
 	var step := 0.01 * _unit
 	var hips := sk.find_bone("Hips")
 	var q0: Vector3 = sk.get_bone_global_rest(hips) * (sk.get_bone_global_pose(hips).affine_inverse() * p)
-	var key := int(floor(q0.y / step))
+	var fy := q0.y / step - 0.5
+	var key := int(floor(fy))
+	var fr := fy - float(key)   # 0 at the middle of slice `key`, 1 at the middle of slice key + 1
+	var dk := {}
+	for kk in [key - 1, key, key + 1, key + 2]:
+		dk[kk] = _slice_depth(sk, p, kk)
+	var lo: Array = _deeper(dk[key - 1], dk[key])
+	var mid: Array = _deeper(dk[key], dk[key + 1])
+	var hi: Array = _deeper(dk[key + 1], dk[key + 2])
+	# the deeper of each slice with its neighbour, blended between the two nearest slices
+	var aa: Array = _deeper(lo, mid)
+	var bb: Array = _deeper(mid, hi)
+	if float(aa[0]) == -INF or float(bb[0]) == -INF:
+		return aa if float(bb[0]) == -INF else bb
+	var w: Vector3 = (aa[1] as Vector3).lerp(bb[1] as Vector3, fr)
+	return [lerpf(float(aa[0]), float(bb[0]), fr), w.normalized() if w.length() > 1e-6 else aa[1]]
+
+
+static func _deeper(x: Array, y: Array) -> Array:
+	return x if float(x[0]) >= float(y[0]) else y
+
+
+## Depth in one slice, the radius interpolated between the sectors (each sector the most of itself and its neighbours).
+func _slice_depth(sk: Skeleton3D, p: Vector3, kk: int) -> Array:
+	if not _bins.has(kk):
+		return [-INF, Vector3.ZERO]
 	var best := -INF
 	var way := Vector3.ZERO
-	for kk in [key - 1, key, key + 1]:
-		if not _bins.has(kk):
+	for e in _bins[kk]:
+		var bone: int = e[2]
+		var rest := sk.get_bone_global_rest(bone)
+		var pose := sk.get_bone_global_pose(bone)
+		var q: Vector3 = rest * (pose.affine_inverse() * p)
+		var c: Vector2 = e[0]
+		var r: PackedFloat32Array = e[1]
+		var d := Vector2(q.x, q.z) - c
+		var u := fposmod(atan2(d.y, d.x), TAU) / TAU * SECTORS - 0.5
+		var s0 := int(floor(u))
+		var f := u - float(s0)
+		var r_a := _rad3(r, s0)
+		var r_b := _rad3(r, s0 + 1)
+		if r_a <= 0.0 and r_b <= 0.0:
 			continue
-		for e in _bins[kk]:
-			var bone: int = e[2]
-			var rest := sk.get_bone_global_rest(bone)
-			var pose := sk.get_bone_global_pose(bone)
-			var q: Vector3 = rest * (pose.affine_inverse() * p)
-			var c: Vector2 = e[0]
-			var r: PackedFloat32Array = e[1]
-			var d := Vector2(q.x, q.z) - c
-			var s := int(fposmod(atan2(d.y, d.x), TAU) / TAU * SECTORS) % SECTORS
-			var rr := maxf(maxf(r[s], r[(s + 1) % SECTORS]), r[(s + SECTORS - 1) % SECTORS])
-			if rr <= 0.0:
-				continue
-			var dep := rr - d.length()
-			if dep > best:
-				best = dep
-				var out_rest := Vector3(d.x, 0.0, d.y).normalized() if d.length() > 1e-4 else Vector3(1, 0, 0)
-				way = (pose.basis * (rest.basis.inverse() * out_rest)).normalized()
+		var dep := lerpf(r_a, r_b, f) - d.length()
+		if dep > best:
+			best = dep
+			var out_rest := Vector3(d.x, 0.0, d.y).normalized() if d.length() > 1e-4 else Vector3(1, 0, 0)
+			way = (pose.basis * (rest.basis.inverse() * out_rest)).normalized()
 	return [best, way]
+
+
+static func _rad3(r: PackedFloat32Array, s: int) -> float:
+	var i := posmod(s, SECTORS)
+	return maxf(maxf(r[i], r[(i + 1) % SECTORS]), r[(i + SECTORS - 1) % SECTORS])
 
 
 ## The points of an arm checked: [position, thickness (skeleton units)].
@@ -273,14 +310,22 @@ func _process_modification_with_delta(delta: float) -> void:
 		if want.length() > deg_to_rad(max_deg):
 			want = want.normalized() * deg_to_rad(max_deg)
 		depth_m[i] = maxf(deepest, 0.0) / _unit
-		if snap or delta <= 0.0:
+		# Director 06.11, 19:27 («руки дергаются как сумасшедшие, меняя положение туда и назад»): the skeleton is
+		# updated more than once a frame (the stance's own passes with no time step) and every such pass set the turn
+		# straight to the frame's raw target — the follower was skipped half the time and the arm jumped to and fro
+		# (tests/probe_bc_trace.gd). A pass with no time step now keeps the turn as it is; only a placing snaps it.
+		if snap or (legacy_zero_dt and delta <= 0.0):
 			_rot[i] = want
 			_rot_v[i] = Vector3.ZERO
-		else:
+		elif delta > 0.0:
 			var cur: Vector3 = _rot[i]
 			var vel: Vector3 = _rot_v[i]
+			# (19:27) out of the clothes at `omega`, back toward the clip's own pose slowly (`omega_back`): a turn that
+			# was needed a moment ago is not dropped and taken again — no back and forth
+			# (a hand still in — last frame's `shown_m` — is taken out fast whatever the turn's size does)
+			var om := omega if want.length() >= cur.length() or float(shown_m[i]) > 0.0 else omega_back
 			for c in 3:
-				var s := _spring(cur[c], vel[c], want[c], omega, delta)
+				var s := _spring(cur[c], vel[c], want[c], om, delta)
 				cur[c] = s.x
 				vel[c] = s.y
 			_rot[i] = cur
@@ -302,6 +347,8 @@ func _process_modification_with_delta(delta: float) -> void:
 ## deepest point is (with its thickness, skeleton units).
 func _want(sk: Skeleton3D, i: int, g: Transform3D) -> Array:
 	var want := Vector3.ZERO
+	var dir_sum := Vector3.ZERO
+	var size := 0.0
 	var deepest := -INF
 	var sh: Vector3 = sk.get_bone_global_pose(int(_arm[i][0])).origin
 	for pt in _points(sk, i):
@@ -317,19 +364,24 @@ func _want(sk: Skeleton3D, i: int, g: Transform3D) -> Array:
 			# Director 06.11, 18:48 («Пелагея… плечи прячут куда-то в тело»): a hand at the front of the quilted jacket was
 			# taken out backwards — the whole arm swung behind her, the hand 18 cm behind the shoulder. Out sideways or
 			# forward only; the hips' +z is forward on these rigs (toes)
-			var fwd: Vector3 = sk.get_bone_global_pose(_hips).basis.z.normalized()
+			var hb := sk.get_bone_global_pose(_hips).basis
+			var fwd: Vector3 = hb.z.normalized()
 			var back := way.dot(fwd)
 			if back < 0.0:
 				way -= fwd * back
-				if way.length() < 0.2:
-					way = sk.get_bone_global_pose(_hips).basis.x.normalized() * (1.0 if i == 0 else -1.0)
+				# what is left sideways, and as much more of the arm's own side as was taken (smoothly: no jump)
+				way += hb.x.normalized() * (1.0 if i == 0 else -1.0) * (-back) * 0.5
 				way = way.normalized()
 		var axis := arm_v.cross(way)
 		if axis.length() < 1e-6 or arm_v.length() < 1e-4:
 			continue
 		var rv := axis.normalized() * minf(dep / arm_v.length(), deg_to_rad(max_deg))
-		if rv.length() > want.length():
-			want = rv
+		# (19:27) the deepest point alone set the direction, and it hopped between the hand's points — the turn's
+		# direction is now every point in, weighted by how deep, its size the largest needed
+		dir_sum += rv * dep
+		size = maxf(size, rv.length())
+	if dir_sum.length() > 1e-9:
+		want = dir_sum.normalized() * size
 	return [want, deepest]
 
 

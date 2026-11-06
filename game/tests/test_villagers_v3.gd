@@ -30,7 +30,11 @@ extends SceneTree
 ##     arm joints) as wide apart listening as in the stance (≥ 97 %), the elbows not rolled in front of the chest and
 ##     the hands not behind the shoulders (hips' frame); self-check — with the listen clip carried from the v2 figures
 ##     (clips.listen "listen") Pavel's shoulders close to 80 %. Pelageya's arm taken out backwards (18 cm behind the
-##     shoulder) is what arm_body.no_back stops.
+##     shoulder) is what arm_body.no_back stops;
+##  10 hands steady (Director 06.11, 19:27: «руки дергаются как сумасшедшие, меняя положение туда и назад»): standing,
+##     talking and listening the hands make no more jerks (over 2 mm/frame²) or back-and-forth turns than the clip itself
+##     (BodyClear on the figure, not turning) plus 3; self-check — with the follower skipped on the skeleton's passes
+##     with no time step (as before) Pelageya's or Pavel's hands go back and forth.
 ## Exit code 0 only when every check passed.
 
 const V3 := ["pavel"]
@@ -80,6 +84,7 @@ func _run() -> void:
 	await _test("V3-6 hands do not twitch talking, listening, switching, acting; self-check — unsmoothed clips do", _t6)
 	await _test("V3-7 the whole hand out of the clothes talking and listening; self-check — axis and fingertip only go in", _t7)
 	await _test("V3-8 arms not spread like a scarecrow talking and listening; self-check — stance shoulders spread them", _t8)
+	await _test("V3-10 hands steady: clearing them of the clothes adds no back-and-forth; self-check — the follower skipped does", _t10)
 	await _test("V3-9 listening: shoulders square, hands not behind the back; self-check — the v2 listen clip rolls them", _t9)
 	await _test("V3-5 no stepping about standing or in the action clips (Mitya, Pelageya…); self-check — locks held through the clips step", _t5)
 	var failed := _results.filter(func(r): return not r[1]).size()
@@ -408,6 +413,7 @@ func _hand_depth(spec: Dictionary) -> Array:
 	var unit := float(live.arm_body.get("_unit")) if live.arm_body != null else 1.0
 	var prepped := Pen.prep(sk, live.view.meshes)
 	var worst := [-99.0, -99.0]
+	var worst_at := ""
 	var f := 0
 	for st in [["idle", 3.0], ["talk", 6.0], ["listen", 6.0]]:
 		live.set_state(st[0])
@@ -420,17 +426,19 @@ func _hand_depth(spec: Dictionary) -> Array:
 			if f % 20 == 0 and t > 0.3:
 				var m: Array = Pen.measure(prepped, g.out, unit)
 				for i in 2:
-					worst[0] = maxf(worst[0], float(m[2][i]) * 100.0)
+					if float(m[2][i]) * 100.0 > float(worst[0]):
+						worst[0] = float(m[2][i]) * 100.0
+						worst_at = "%s %.2f s, %s hand" % [st[0], t, ["left", "right"][i]]
 					worst[1] = maxf(worst[1], float(m[0][i]) * 100.0)
 	nl[0].queue_free()
 	await process_frame
-	return worst
+	return [worst[0], worst[1], worst_at]
 
 
 func _t7() -> void:
 	for id in ALL:
 		var w: Array = await _hand_depth(_spec(id))
-		_check(float(w[0]) <= 2.0, "%s: a hand %.1f cm inside the body's silhouette (≤ 2)" % [id, float(w[0])])
+		_check(float(w[0]) <= 2.0, "%s: a hand %.1f cm inside the body's silhouette (≤ 2), %s" % [id, float(w[0]), w[2]])
 		_check(float(w[1]) <= 2.0, "%s: a hand %.1f cm behind the clothes (≤ 2)" % [id, float(w[1])])
 	var sp := _spec("pavel")
 	(sp["rt3d"]["arm_body"] as Dictionary).erase("shell")
@@ -551,3 +559,65 @@ func _t9() -> void:
 			float(raw[0]) * 100.0, float(raw[1]) * 100.0, float(raw[2]) * 100.0])
 	_check(float(raw[0]) < 0.97 or float(raw[1]) > 0.12 or float(raw[2]) > 0.12,
 			"self-check: Pavel with the v2 listen clip passes (the test sees nothing)")
+
+
+## Jerks (frames with the hand's acceleration over 2 mm/frame²) and back-and-forth reversals, the worse hand, after
+## the first half second of the state.
+func _jitter(spec: Dictionary, state: String, turning: bool, legacy: bool) -> Array:
+	var nl := _live(spec)
+	if nl[1] == null:
+		return [999, 999]
+	var live = nl[1]
+	var sk: Skeleton3D = live.view.skeleton
+	var g = Spread.Grab.new()
+	sk.add_child(g)
+	var unit := float(live.arm_body.get("_unit"))
+	live.arm_body.set("enabled", turning)
+	live.arm_body.set("legacy_zero_dt", legacy)
+	var hb := [sk.find_bone("LeftHand"), sk.find_bone("RightHand")]
+	live.set_state("idle")
+	for i in 30:
+		live.process(DT)
+		await process_frame
+	live.set_state(state)
+	var prev := [Vector3.ZERO, Vector3.ZERO]
+	var pd := [Vector3.ZERO, Vector3.ZERO]
+	var jerks := [0, 0]
+	var flips := [0, 0]
+	for f in 300:
+		live.process(DT)
+		await process_frame
+		if g.out.is_empty():
+			continue
+		for s in 2:
+			var p: Vector3 = (g.out[hb[s]] as Transform3D).origin / unit
+			var d: Vector3 = p - (prev[s] as Vector3)
+			if f > 30:
+				if (d - (pd[s] as Vector3)).length() * 1000.0 > 2.0:
+					jerks[s] += 1
+				if d.length() > 0.0005 and (pd[s] as Vector3).length() > 0.0005 and d.dot(pd[s] as Vector3) < 0.0:
+					flips[s] += 1
+			pd[s] = d
+			prev[s] = p
+	nl[0].queue_free()
+	await process_frame
+	return [maxi(jerks[0], jerks[1]), maxi(flips[0], flips[1])]
+
+
+func _t10() -> void:
+	for id in ["pavel", "pelageya", "mitya", "ilya", "manager"]:
+		for st in ["idle", "talk", "listen"]:
+			var on: Array = await _jitter(_spec(id), st, true, false)
+			var off: Array = await _jitter(_spec(id), st, false, false)
+			_check(int(on[0]) <= int(off[0]) + 3 and int(on[1]) <= int(off[1]) + 3,
+					"%s %s: jerks %d, back-and-forth %d with the clearing; the clip alone %d, %d (+3 at most)" % [id, st,
+					int(on[0]), int(on[1]), int(off[0]), int(off[1])])
+	var bad := 0
+	for id in ["pelageya", "pavel"]:
+		var raw: Array = await _jitter(_spec(id), "listen", true, true)
+		var off: Array = await _jitter(_spec(id), "listen", false, false)
+		print("    follower skipped, %s listening: jerks %d, back-and-forth %d (clip alone %d, %d)" % [id, int(raw[0]),
+				int(raw[1]), int(off[0]), int(off[1])])
+		if int(raw[0]) > int(off[0]) + 3 or int(raw[1]) > int(off[1]) + 3:
+			bad += 1
+	_check(bad >= 1, "self-check: with the follower skipped neither Pelageya nor Pavel jerks (the test sees nothing)")
