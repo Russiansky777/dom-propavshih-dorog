@@ -138,15 +138,22 @@ func set_state(st: String) -> void:
 	if once and st != "act":
 		_end_once()
 	state = st
-	var want := ""
-	if st == "talk" and view.clips.has("talk"):
-		want = "talk"
-	elif st == "listen" and view.clips.has("listen"):
-		want = "listen"
+	var want := _state_action(st)
 	if want != act_name and want != "":
 		act_name = want
 		act_t = 0.0
 		_once_clip = false   # the shown action fades out held where it was (Actor3D.pose), talk/listen loop again
+
+
+## When listening uses the idle clip (06.11, 18:48), the stance goes on as it is — its phase and its life (breath,
+## glances): a second copy of idle in the action layer, at another time, blended with the first and switching life off
+## made the listener stiff (the reviewing AI, 06.11, 21:16). A distinct listen clip still plays in the action layer.
+func _state_action(st: String) -> String:
+	if st not in ["talk", "listen"] or not view.clips.has(st):
+		return ""
+	if st == "listen" and view.clips.get("listen") == view.clips.get("idle"):
+		return ""
+	return st
 
 
 ## Plays `clip` once (rt3d.clips role or clip name): from the stance into the action and back. False — no such clip.
@@ -226,7 +233,7 @@ func process(delta: float) -> void:
 		walk_phase += delta * walk_rate
 	elif step_w > 0.0:
 		walk_phase += delta / maxf(view.walk_len, 0.1)
-	var talk_on := not walking and ((state in ["talk", "listen"] and act_name != "") or once)
+	var talk_on := not walking and (_state_action(state) != "" or once)
 	act_w = move_toward(act_w, 1.0 if talk_on else 0.0, delta / float(rt.get("state_fade_s", 0.4)))
 	var lt: Array = [act_t, 0.0, 0.0]
 	if _once_clip and act_name != "" and (once or act_w > 0.0 or view.shown_act_w() > 0.0):

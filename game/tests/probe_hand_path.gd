@@ -2,7 +2,8 @@ extends SceneTree
 ## The hand's path frame by frame through a state switch (Director 06.11, 20:21, a second look at the video: «кисть
 ## Павла 5,2–5,6 с сначала опускается к фартуку, затем уходит обратно наружу и вверх»): talk for `talk_s`, then
 ## listen; from `from` s to `to` s each frame the hands' sideways (out from the body) and up positions, cm, in the hips'
-## frame — with BodyClear turning (on) and not (off), side by side, and BodyClear's turn (deg).
+## frame in three modes: unbaked with runtime off, baked with runtime off, baked with runtime on.
+## All modes retain Actor3D smoothing, arm_hang and pose blending. "Unbaked" is not the raw Meshy clip.
 ##   godot --headless --fixed-fps 60 --path game -s res://tests/probe_hand_path.gd -- id [talk_s=5] [from=4.9] [to=6.2]
 
 const DT := 1.0 / 60.0
@@ -21,8 +22,10 @@ func _initialize() -> void:
 	_run()
 
 
-func _one(id: String, turning: bool, talk_s: float, from: float, to: float) -> Array:
+func _one(id: String, bake_clearing: bool, runtime_clearing: bool, talk_s: float, from: float, to: float) -> Array:
 	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	if not bake_clearing:
+		(spec["rt3d"]["arm_body"] as Dictionary).erase("bake")
 	var sc := GDScript.new()
 	sc.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
 	sc.reload()
@@ -45,7 +48,7 @@ func _one(id: String, turning: bool, talk_s: float, from: float, to: float) -> A
 	var g := Grab.new()
 	sk.add_child(g)
 	var unit := float(live.arm_body.get("_unit"))
-	live.arm_body.set("enabled", turning)
+	live.arm_body.set("enabled", runtime_clearing)
 	var hb := [sk.find_bone("LeftHand"), sk.find_bone("RightHand")]
 	var hips := sk.find_bone("Hips")
 	var rows: Array = []
@@ -86,12 +89,12 @@ func _run() -> void:
 	var talk_s := float(a[1]) if a.size() > 1 else 5.0
 	var from := float(a[2]) if a.size() > 2 else 4.9
 	var to := float(a[3]) if a.size() > 3 else 6.2
-	var off: Array = await _one(id, false, talk_s, from, to)
-	var on: Array = await _one(id, true, talk_s, from, to)
-	print("t     | clip alone: L out/up/fwd   R out/up/fwd | with clearing: L out/up/fwd   R out/up/fwd | turn L/R | in L/R")
-	for k in mini(off.size(), on.size()):
-		var o: Array = off[k]
-		var c: Array = on[k]
-		print("%.2f | %5.1f %5.1f %5.1f  %5.1f %5.1f %5.1f | %5.1f %5.1f %5.1f  %5.1f %5.1f %5.1f | %4.1f %4.1f | %.1f %.1f" % [
-				o[0], o[1], o[2], o[3], o[4], o[5], o[6], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10]])
+	var modes := [["unbaked_runtime_off", false, false], ["baked_runtime_off", true, false], ["baked_runtime_on", true, true]]
+	print("All modes retain Actor3D smoothing, arm_hang and blending; unbaked is not raw Meshy.")
+	print("mode,t_s,L_out_cm,L_up_cm,L_fwd_cm,R_out_cm,R_up_cm,R_fwd_cm,L_turn_deg,R_turn_deg,L_in_cm,R_in_cm")
+	for mode in modes:
+		var rows: Array = await _one(id, mode[1], mode[2], talk_s, from, to)
+		for r in rows:
+			print("%s,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f" % [
+					mode[0], r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10]])
 	quit(0)

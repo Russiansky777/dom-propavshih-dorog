@@ -188,7 +188,7 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 ## taken the hand in — 0.3 s later, 6 cm out again (tests/probe_hand_path.gd). Now every key of the upper arm in these
 ## clips already holds the turn it needs: the need reckoned on the clip's own pose every `every` keys, held for ±`hold`
 ## s and smoothed (σ `sigma` s) so it comes before the hand reaches the clothes and leaves after; the live turn is left
-## only what the blending of clips adds. Data rt3d.arm_body.bake {every, hold, sigma}; each clip once per model.
+## only what the blending of clips adds. Data rt3d.arm_body.bake {every, hold, sigma}; each clip of the figure's own copy once.
 func bake(anim: AnimationPlayer, names: Array) -> void:
 	var cfg = _bake_cfg
 	if cfg == null or anim == null:
@@ -207,19 +207,11 @@ func bake(anim: AnimationPlayer, names: Array) -> void:
 	var was := enabled
 	enabled = true
 	for nm in names:
-		var orig := anim.get_animation(nm)
-		if orig == null:
+		var a := anim.get_animation(nm)
+		# the figure's own copy of the clip (Actor3D copies the model's libraries per figure): changed in place, once
+		if a == null or a.has_meta("arms_cleared"):
 			continue
-		# the baked clip is a copy, made once per clip of the model and put into this figure's own library: a figure
-		# without `bake` (a test's self-check) still plays the clip as it came
-		var a: Animation = _baked.get(orig.get_instance_id())
-		var fresh := a == null
-		if fresh:
-			a = orig.duplicate(true)
-			_baked[orig.get_instance_id()] = a
-		_put_own(anim, String(nm), a)
-		if not fresh:
-			continue
+		a.set_meta("arms_cleared", true)
 		var tr := {}
 		for i in a.get_track_count():
 			var bn := String(a.track_get_path(i).get_concatenated_subnames())
@@ -310,31 +302,6 @@ func bake(anim: AnimationPlayer, names: Array) -> void:
 
 
 var _bake_cfg = null
-static var _baked: Dictionary = {}   # original clip's instance id → its baked copy
-
-
-## Puts `a` as `nm` into this figure's AnimationPlayer through a library of its own (the model's library is shared by
-## every copy of the model).
-static func _put_own(anim: AnimationPlayer, nm: String, a: Animation) -> void:
-	var lib_name := ""
-	var clip := nm
-	if nm.contains("/"):
-		lib_name = nm.get_slice("/", 0)
-		clip = nm.substr(lib_name.length() + 1)
-	var lib := anim.get_animation_library(lib_name)
-	if lib == null:
-		return
-	if not lib.has_meta("own"):
-		var mine := AnimationLibrary.new()
-		for k in lib.get_animation_list():
-			mine.add_animation(k, lib.get_animation(k))
-		mine.set_meta("own", true)
-		anim.remove_animation_library(lib_name)
-		anim.add_animation_library(lib_name, mine)
-		lib = mine
-	lib.add_animation(clip, a)
-
-
 ## The skeleton put in the clip's own pose at time t (its tracks; the bones it has none for at rest).
 static func _pose_clip(sk: Skeleton3D, a: Animation, tr: Dictionary, t: float) -> void:
 	for b in sk.get_bone_count():
@@ -478,7 +445,10 @@ func _process_modification_with_delta(delta: float) -> void:
 		# updated more than once a frame (the stance's own passes with no time step) and every such pass set the turn
 		# straight to the frame's raw target — the follower was skipped half the time and the arm jumped to and fro
 		# (tests/probe_bc_trace.gd). A pass with no time step now keeps the turn as it is; only a placing snaps it.
-		if snap or (legacy_zero_dt and delta <= 0.0):
+		if not enabled:
+			_rot[i] = Vector3.ZERO
+			_rot_v[i] = Vector3.ZERO
+		elif snap or (legacy_zero_dt and delta <= 0.0):
 			_rot[i] = want
 			_rot_v[i] = Vector3.ZERO
 		elif delta > 0.0:
@@ -502,9 +472,10 @@ func _process_modification_with_delta(delta: float) -> void:
 		for pt in _points(sk, i):
 			after = maxf(after, float(depth_at(sk, pt[0])[0]) + float(pt[1]))
 		# the follower lagging while the clip brings the hand into the clothes (a state's switch, a gesture coming down):
-		# more than `catch_m` in — the turn goes straight to what is needed (the need is continuous now, so no jump back)
-		if after > catch_m * _unit and want.length() > rot.length() and enabled:
+		# more than `catch_m` in — catch up on a timed pass. An extra zero-time pass must preserve the follower.
+		if delta > 0.0 and after > catch_m * _unit and want.length() > rot.length() and enabled:
 			_rot[i] = want
+			_rot_v[i] = Vector3.ZERO
 			rot = want
 			sk.set_bone_global_pose(ids[0], Transform3D(Basis(rot.normalized(), rot.length()) * g.basis, g.origin))
 			after = -INF

@@ -137,10 +137,12 @@ func setup(actor_spec: Dictionary) -> bool:
 	if skeleton == null or anim == null:
 		load_error = "model without Skeleton3D/AnimationPlayer"
 		return false
+	_copy_animation_libraries()
 	for n in _all(model):
 		if n is MeshInstance3D:
 			meshes.append(n)
 	_apply_material()
+	_concat_clips()
 	_resolve_clips()
 	_smooth_tracks()
 	_smooth_kinks()
@@ -195,16 +197,23 @@ func _all(n: Node) -> Array:
 	return out
 
 
-## The model's own albedo, lit like the sprite renders (shaders/actor_3d.gdshader, values from data).
-## K (стр. 16): the model was briefly kept for the whole game — but the instances share the scene's Animation resources,
-## which setup tunes in place (loop modes, cubic keys), so a second instance (tests that vary the data, a reload) started
-## from already tuned clips (CI 41249423897: the walk-stop jolt and the braid's rest changed). Back to the resource
-## cache: the model stays loaded while a figure uses it. The big cost of a room change was the villagers' sheets
-## (NpcActor: placement-only sheet for a live villager).
+## The imported model (cached by the resource loader while a figure uses it).
 static func _packed(path: String) -> Resource:
 	return load(path)
 
 
+## The figure's own copies of the model's clip libraries (a second look at the animations, 06.11, 21:16 — proposed by
+## the reviewing AI, test_animation_state.gd): setup tunes the clips in place (loop modes, smoothing, arm hanging, the
+## clearing baked in), and the copies of one model used to share them — a figure set up with other data (a test's
+## self-check, another villager's settings) got clips already tuned by the first. Each figure now tunes its own.
+func _copy_animation_libraries() -> void:
+	for library_name in anim.get_animation_library_list():
+		var library := anim.get_animation_library(library_name).duplicate(true) as AnimationLibrary
+		anim.remove_animation_library(library_name)
+		anim.add_animation_library(library_name, library)
+
+
+## The model's own albedo, lit like the sprite renders (shaders/actor_3d.gdshader, values from data).
 func _apply_material() -> void:
 	var tex: Texture2D = null
 	for mi in meshes:
@@ -236,6 +245,98 @@ func _apply_material() -> void:
 				kept = true
 		if not kept:
 			mi.material_override = material
+
+
+## Clips joined one after another into one (data `concat` {name: {of: [clip, clip…], overlap_s}}): several talk
+## gestures played in turn as one «talk» (Director 06.11, 20:21, a second look at the video: «почти все дважды
+## повторяют одинаковое раскрытие ладоней»). Each joint is a cross-fade of `overlap_s` (the gestures start and end
+## standing). Rotation and position tracks; the result goes into the figure's own default library.
+func _concat_clips() -> void:
+	var cc: Dictionary = spec.get("concat", {})
+	if cc.is_empty():
+		return
+	var lib := anim.get_animation_library("")
+	if lib == null:
+		return
+	var all := anim.get_animation_list()
+	var find := func(want: String) -> Animation:
+		for n in all:
+			var bare := String(n).get_slice("/", String(n).get_slice_count("/") - 1)
+			if bare == want or bare.get_slice(".", 0) == want:
+				return anim.get_animation(n)
+		return null
+	for out_name in cc.keys():
+		if String(out_name).begins_with("_") or lib.has_animation(out_name):
+			continue
+		var e: Dictionary = cc[out_name]
+		var parts: Array = []
+		for nm in e.get("of", []):
+			var a: Animation = find.call(String(nm))
+			if a != null:
+				parts.append(a)
+		if parts.size() < 2:
+			continue
+		var ov := float(e.get("overlap_s", 0.6))
+		var fps := 30.0
+		# where each part starts on the joined clip's time
+		var starts: Array = []
+		var t0 := 0.0
+		for a in parts:
+			starts.append(t0)
+			t0 += (a as Animation).length - ov
+		var total := t0 + ov
+		var out := Animation.new()
+		out.length = total
+		# every track path any part has
+		var paths := {}
+		for a in parts:
+			for i in (a as Animation).get_track_count():
+				var ty := (a as Animation).track_get_type(i)
+				if ty == Animation.TYPE_ROTATION_3D or ty == Animation.TYPE_POSITION_3D:
+					paths[[String((a as Animation).track_get_path(i)), ty]] = true
+		for key in paths.keys():
+			var path: String = key[0]
+			var ty: int = key[1]
+			var ti := out.add_track(ty)
+			out.track_set_path(ti, NodePath(path))
+			var n := int(ceil(total * fps)) + 1
+			for f in n:
+				var t := minf(float(f) / fps, total)
+				# the parts covering t, weighted across each joint
+				var val = null
+				var acc_w := 0.0
+				for pi in parts.size():
+					var a: Animation = parts[pi]
+					var lt := t - float(starts[pi])
+					if lt < -1e-4 or lt > a.length + 1e-4:
+						continue
+					var w := 1.0
+					if pi > 0 and lt < ov:
+						w = smoothstep(0.0, ov, lt)
+					if pi < parts.size() - 1 and lt > a.length - ov:
+						w = minf(w, 1.0 - smoothstep(a.length - ov, a.length, lt))
+					var tr := a.find_track(NodePath(path), ty)
+					var v
+					if tr < 0:
+						continue
+					if ty == Animation.TYPE_ROTATION_3D:
+						v = a.rotation_track_interpolate(tr, clampf(lt, 0.0, a.length))
+					else:
+						v = a.position_track_interpolate(tr, clampf(lt, 0.0, a.length))
+					if val == null:
+						val = v
+						acc_w = w
+					else:
+						var k := w / maxf(acc_w + w, 1e-6)
+						val = (val as Quaternion).slerp(v, k) if ty == Animation.TYPE_ROTATION_3D else (val as Vector3).lerp(v, k)
+						acc_w += w
+				if val == null:
+					continue
+				if ty == Animation.TYPE_ROTATION_3D:
+					out.rotation_track_insert_key(ti, t, val)
+				else:
+					out.position_track_insert_key(ti, t, val)
+		lib.add_animation(out_name, out)
 
 
 ## Roles → clip names from data (`clips`, `idle.pool`); a name is matched against the player's

@@ -482,7 +482,9 @@ func _spread(spec: Dictionary) -> Array:
 
 func _t8() -> void:
 	for id in ALL:
-		var w: Array = await _spread(_spec(id))
+		var sp0 := _spec(id)
+		(sp0["rt3d"]["arm_body"] as Dictionary).erase("bake")   # the clips and their blending, not the clearing
+		var w: Array = await _spread(sp0)
 		_check(float(w[0]) <= 22.0 and float(w[1]) <= 28.0, "%s: arms spread %.0f° on average, %.0f° at most (≤ 22 / 28)" % [id, float(w[0]), float(w[1])])
 	var sp := _spec("nina")
 	sp["rt3d"]["act_body"]["upper"] = ["LeftShoulder", "RightShoulder", "neck", "Head"]
@@ -614,8 +616,10 @@ func _t10() -> void:
 					int(on[0]), int(on[1]), int(off[0]), int(off[1])])
 	var bad := 0
 	for id in ["pelageya", "pavel"]:
-		var raw: Array = await _jitter(_spec(id), "listen", true, true)
-		var off: Array = await _jitter(_spec(id), "listen", false, false)
+		var sp := _spec(id)
+		(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")   # as before 20:21: the clearing done live only
+		var raw: Array = await _jitter(sp, "listen", true, true)
+		var off: Array = await _jitter(sp, "listen", false, false)
 		print("    follower skipped, %s listening: jerks %d, back-and-forth %d (clip alone %d, %d)" % [id, int(raw[0]),
 				int(raw[1]), int(off[0]), int(off[1])])
 		if int(raw[0]) > int(off[0]) + 3 or int(raw[1]) > int(off[1]) + 3:

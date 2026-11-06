@@ -245,6 +245,8 @@ func _body_run(id: String, old: bool, clear_off: bool = false) -> Dictionary:
 			(spec["rt3d"] as Dictionary).erase(k)
 		(spec["rt3d"]["feet"] as Dictionary).erase("boot")
 		spec["rt3d"]["state_fade_s"] = 0.4
+	if clear_off and spec["rt3d"].has("arm_body"):
+		(spec["rt3d"]["arm_body"] as Dictionary).erase("bake")   # the clips as they came (06.11: the clearing is baked in)
 	var n := _fake_npc()
 	var live = LiveScript.new()
 	n.add_child(live)
@@ -317,15 +319,16 @@ func _test_bodies() -> void:
 		_check(r["legs"] <= LEGS_SWING_MAX, "%s: talking, the legs' slope swings %.1f° — the feet left behind the body (≤ %.0f; line 53 «как цапля»)" % [id, r["legs"], LEGS_SWING_MAX])
 		_check(int(r["steps"]) <= STEPS_MAX, "%s: %d steps standing through a conversation (≤ %d; line 55 «мельтешит»)" % [id, r["steps"], STEPS_MAX])
 		_check(r["hand"] <= HAND_MAX_M, "%s: a hand %.1f cm in the body as drawn (≤ %.1f; lines 10, 52)" % [id, r["hand"] * 100.0, HAND_MAX_M * 100.0])
-		if id == "pelageya":
-			# self-check of the hand metric: her clip does put the left hand into her hip (06.png)
-			_check(r["hand_in"] >= 0.03, "self-check: Pelageya's clip hand only %.1f cm in her body — the hull would not catch the 06.png hand" % (r["hand_in"] * 100.0))
+
 	# self-check: the data as it was fails the same metrics where the Director saw it
 	var p_old: Dictionary = await _body_run("pavel", true)
 	print("        pavel (old) toe %4.1f°  lean %4.1f°/s  side %3.1f°  legs %3.1f°  steps %d" % [p_old["toe"], p_old["lean_v"], p_old["side"], p_old["legs"], p_old["steps"]])
 	_check(p_old["toe"] > TOE_MAX_DEG and p_old["lean_v"] > LEAN_V_MAX and p_old["side"] > SIDE_MAX and int(p_old["steps"]) > STEPS_MAX, "self-check: Pavel with the old data passes (toe %.1f°, lean %.0f°/s, side %.1f°, steps %d) — the metrics would not catch line 6" % [p_old["toe"], p_old["lean_v"], p_old["side"], p_old["steps"]])
 	var pe_off: Dictionary = await _body_run("pelageya", false, true)
 	print("        pelageya (hands not kept out) drawn %.1f cm" % (pe_off["hand"] * 100.0))
+	# self-check of the hand metric: her clip as it came (the clearing not baked in) does put the left hand into her hip
+	# (06.png)
+	_check(pe_off["hand_in"] >= 0.03, "self-check: Pelageya's clip hand only %.1f cm in her body — the hull would not catch the 06.png hand" % (pe_off["hand_in"] * 100.0))
 	_check(pe_off["hand"] > 0.03, "self-check: Pelageya's hands as the clip has them measure %.1f cm in the body as drawn — the metric would not catch 06.png" % (pe_off["hand"] * 100.0))
 	var u_old: Dictionary = await _body_run("ulyana", true)
 	print("        ulyana (old) legs %3.1f°  steps %d" % [u_old["legs"], u_old["steps"]])

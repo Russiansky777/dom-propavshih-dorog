@@ -96,6 +96,8 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_l10n.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский (03.11): копия story_en, английские субтитры поверх русского голоса, «без субтитров», меню языка с предупреждением
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0511.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # замечания 05.11, блок 1: «Облегчить» у колокола, язык в мини-игре, Павел к двери конторы, Агата не идёт на месте
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_villagers_v3.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # блок 3: жители v3 (модель, кончики пальцев не в теле, разовые действия)
+"$GODOT" --headless --audio-driver Dummy --fixed-fps 60 --path "$GAME_DIR" -s res://tests/test_animation_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: свои копии клипов у каждой фигуры, «слушает»=стойка без второй копии idle (предложение второго ИИ)
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_body_clear_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: BodyClear — проходы без шага времени, догон, выключение
 # K (31.10): правки дефектов генератора — третий сапог Пелагеи (F_hug_pelageya), одинаковые зарубки бруса и обведённая
 # нужная на рисунке Дуни (M05): копии в игре = оригинал + правка (нужен Pillow; numpy — для кадра объятия)
 if python3 -c "import PIL, numpy" 2>/dev/null; then
