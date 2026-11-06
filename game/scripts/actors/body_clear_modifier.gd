@@ -19,6 +19,7 @@ var enabled: bool = true           # off — the tests' self-check (the clip's h
 var max_deg: float = 15.0
 var omega: float = 12.0
 var omega_back: float = 3.0
+var catch_m: float = 0.005         # deeper than this after the follower — straight to the needed turn
 var hand_r: float = 0.02           # metres
 var fore_r: float = 0.03
 var hand_len: float = 0.45         # the hand's middle: this share of the forearm's length past the wrist
@@ -63,6 +64,7 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 	tip_r = float(d.get("tip_r_m", 0.0))
 	shell_n = int(d.get("shell", 0))
 	no_back = bool(d.get("no_back", false))
+	_bake_cfg = d.get("bake", null)
 	shell_r = float(d.get("shell_r_m", shell_r))
 	_unit = unit_per_m
 	_hips = sk.find_bone("Hips")
@@ -179,6 +181,168 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 				top = int(b)
 		out[key] = [[c, r, top]]
 	return out
+
+
+## The clearing baked into the stance clips (Director 06.11, 20:21, a second look at the video: «кисть Павла сначала
+## опускается к фартуку, затем уходит обратно наружу и вверх»): done live, the turn always came after the clip had
+## taken the hand in — 0.3 s later, 6 cm out again (tests/probe_hand_path.gd). Now every key of the upper arm in these
+## clips already holds the turn it needs: the need reckoned on the clip's own pose every `every` keys, held for ±`hold`
+## s and smoothed (σ `sigma` s) so it comes before the hand reaches the clothes and leaves after; the live turn is left
+## only what the blending of clips adds. Data rt3d.arm_body.bake {every, hold, sigma}; each clip once per model.
+func bake(anim: AnimationPlayer, names: Array) -> void:
+	var cfg = _bake_cfg
+	if cfg == null or anim == null:
+		return
+	var sk := get_skeleton()
+	if sk == null:
+		sk = get_parent() as Skeleton3D
+	if sk == null or _arm.size() < 2:
+		return
+	var every := maxi(1, int(cfg.get("every", 2)))
+	var hold := float(cfg.get("hold", 0.25))
+	var sigma := float(cfg.get("sigma", 0.12))
+	var keep_poses: Array = []
+	for b in sk.get_bone_count():
+		keep_poses.append([sk.get_bone_pose_position(b), sk.get_bone_pose_rotation(b)])
+	var was := enabled
+	enabled = true
+	for nm in names:
+		var orig := anim.get_animation(nm)
+		if orig == null:
+			continue
+		# the baked clip is a copy, made once per clip of the model and put into this figure's own library: a figure
+		# without `bake` (a test's self-check) still plays the clip as it came
+		var a: Animation = _baked.get(orig.get_instance_id())
+		var fresh := a == null
+		if fresh:
+			a = orig.duplicate(true)
+			_baked[orig.get_instance_id()] = a
+		_put_own(anim, String(nm), a)
+		if not fresh:
+			continue
+		var tr := {}
+		for i in a.get_track_count():
+			var bn := String(a.track_get_path(i).get_concatenated_subnames())
+			if a.track_get_type(i) == Animation.TYPE_ROTATION_3D:
+				tr[bn] = i
+		for side in 2:
+			var ids: Array = _arm[side]
+			var arm_name := sk.get_bone_name(ids[0])
+			if not tr.has(arm_name):
+				continue
+			var ti: int = tr[arm_name]
+			var n := a.track_get_key_count(ti)
+			if n < 2:
+				continue
+			var times := PackedFloat32Array()
+			times.resize(n)
+			for k in n:
+				times[k] = a.track_get_key_time(ti, k)
+			# the need (rotation vector at the shoulder, skeleton space) on the clip's own pose
+			var need: Array = []
+			need.resize(n)
+			var last := Vector3.ZERO
+			for k in n:
+				if k % every != 0 and k != n - 1:
+					need[k] = null
+					continue
+				_pose_clip(sk, a, tr, times[k])
+				var g := sk.get_bone_global_pose(ids[0])
+				var r0 := _want(sk, side, g)
+				var want: Vector3 = r0[0]
+				for it in 2:
+					if want.length() < 1e-6:
+						break
+					sk.set_bone_global_pose(ids[0], Transform3D(Basis(want.normalized(), want.length()) * g.basis, g.origin))
+					want += _want(sk, side, g)[0] as Vector3
+					sk.set_bone_global_pose(ids[0], g)
+				if want.length() > deg_to_rad(max_deg):
+					want = want.normalized() * deg_to_rad(max_deg)
+				need[k] = want
+				last = want
+			# the keys between: interpolated
+			var prev_k := 0
+			for k in n:
+				if need[k] != null:
+					if k - prev_k > 1:
+						for j in range(prev_k + 1, k):
+							need[j] = (need[prev_k] as Vector3).lerp(need[k], float(j - prev_k) / float(k - prev_k))
+					prev_k = k
+			# held (the largest size within ±hold, its own direction), then smoothed: the turn starts before the
+			# hand would reach the clothes and stays a little after
+			var held: Array = []
+			held.resize(n)
+			for k in n:
+				var best: Vector3 = need[k]
+				var j := k
+				while j > 0 and times[k] - times[j - 1] <= hold:
+					j -= 1
+				while j < n and times[j] - times[k] <= hold:
+					if (need[j] as Vector3).length() > best.length():
+						best = need[j]
+					j += 1
+				held[k] = best
+			for k in n:
+				var acc := Vector3.ZERO
+				var wsum := 0.0
+				var j := k
+				while j > 0 and times[k] - times[j - 1] <= 3.0 * sigma:
+					j -= 1
+				while j < n and times[j] - times[k] <= 3.0 * sigma:
+					var w := exp(-0.5 * pow((times[j] - times[k]) / maxf(sigma, 1e-4), 2.0))
+					acc += (held[j] as Vector3) * w
+					wsum += w
+					j += 1
+				var rv: Vector3 = acc / maxf(wsum, 1e-6)
+				if rv.length() < 1e-5:
+					continue
+				# into the key: the arm's parent at that time, the turn in skeleton space → the local rotation
+				_pose_clip(sk, a, tr, times[k])
+				var par := sk.get_bone_parent(ids[0])
+				var pq: Quaternion = sk.get_bone_global_pose(par).basis.get_rotation_quaternion() if par >= 0 else Quaternion.IDENTITY
+				var turn := Quaternion(rv.normalized(), rv.length())
+				var ql: Quaternion = a.track_get_key_value(ti, k)
+				a.track_set_key_value(ti, k, (pq.inverse() * turn * pq * ql).normalized())
+	enabled = was
+	for b in sk.get_bone_count():
+		sk.set_bone_pose_position(b, keep_poses[b][0])
+		sk.set_bone_pose_rotation(b, keep_poses[b][1])
+
+
+var _bake_cfg = null
+static var _baked: Dictionary = {}   # original clip's instance id → its baked copy
+
+
+## Puts `a` as `nm` into this figure's AnimationPlayer through a library of its own (the model's library is shared by
+## every copy of the model).
+static func _put_own(anim: AnimationPlayer, nm: String, a: Animation) -> void:
+	var lib_name := ""
+	var clip := nm
+	if nm.contains("/"):
+		lib_name = nm.get_slice("/", 0)
+		clip = nm.substr(lib_name.length() + 1)
+	var lib := anim.get_animation_library(lib_name)
+	if lib == null:
+		return
+	if not lib.has_meta("own"):
+		var mine := AnimationLibrary.new()
+		for k in lib.get_animation_list():
+			mine.add_animation(k, lib.get_animation(k))
+		mine.set_meta("own", true)
+		anim.remove_animation_library(lib_name)
+		anim.add_animation_library(lib_name, mine)
+		lib = mine
+	lib.add_animation(clip, a)
+
+
+## The skeleton put in the clip's own pose at time t (its tracks; the bones it has none for at rest).
+static func _pose_clip(sk: Skeleton3D, a: Animation, tr: Dictionary, t: float) -> void:
+	for b in sk.get_bone_count():
+		var bn := sk.get_bone_name(b)
+		if tr.has(bn):
+			sk.set_bone_pose_rotation(b, a.rotation_track_interpolate(tr[bn], t))
+		else:
+			sk.set_bone_pose_rotation(b, sk.get_bone_rest(b).basis.get_rotation_quaternion())
 
 
 ## n points spread over pts (farthest-point sampling, from the first).
@@ -337,6 +501,15 @@ func _process_modification_with_delta(delta: float) -> void:
 		var after := -INF
 		for pt in _points(sk, i):
 			after = maxf(after, float(depth_at(sk, pt[0])[0]) + float(pt[1]))
+		# the follower lagging while the clip brings the hand into the clothes (a state's switch, a gesture coming down):
+		# more than `catch_m` in — the turn goes straight to what is needed (the need is continuous now, so no jump back)
+		if after > catch_m * _unit and want.length() > rot.length() and enabled:
+			_rot[i] = want
+			rot = want
+			sk.set_bone_global_pose(ids[0], Transform3D(Basis(rot.normalized(), rot.length()) * g.basis, g.origin))
+			after = -INF
+			for pt in _points(sk, i):
+				after = maxf(after, float(depth_at(sk, pt[0])[0]) + float(pt[1]))
 		shown_m[i] = maxf(after, 0.0) / _unit
 		if (_tip[i] as Vector3) != Vector3.ZERO:
 			tip_m[i] = float(depth_at(sk, sk.get_bone_global_pose(ids[2]) * (_tip[i] as Vector3))[0]) / _unit

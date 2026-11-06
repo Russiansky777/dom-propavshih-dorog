@@ -107,6 +107,18 @@ func _setup_arm_body() -> void:
 	var unit := 1.0 / maxf(view._skel_to_turn().basis.get_scale().y, 1e-6)
 	if bc.setup(d, view.skeleton, view.meshes, unit, String(rt.get("scene", ""))):
 		arm_body = bc
+		# the clearing baked into the stance clips (data arm_body.bake; BodyClear.bake)
+		if d.has("bake"):
+			var names := {}
+			for role in d["bake"].get("roles", ["idle", "talk", "listen"]):
+				if view.clips.has(role):
+					names[view.clips[role]] = true
+			for e in view.idle_pool:
+				names[e["name"]] = true
+			var t0 := Time.get_ticks_msec()
+			bc.bake(view.anim, names.keys())
+			if OS.get_environment("BAKE_DBG") != "":
+				print("bake %s: %d ms" % [rt.get("scene", ""), Time.get_ticks_msec() - t0])
 	else:
 		bc.queue_free()
 
