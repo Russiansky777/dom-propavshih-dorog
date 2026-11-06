@@ -1,0 +1,29 @@
+; Engine configuration file.
+; Минимальный проект для доработки анимаций Павла и Ильи («Дом пропавших дорог»).
+; Рендер и формат кадра — как в игре (GL Compatibility, кадр 1920×1080 с растяжением canvas_items).
+
+config_version=5
+
+[application]
+
+config/name="Anim Lab — Павел и Илья"
+config/description="Отдельный стенд анимаций жителей v3 (Павел, Илья) из «Дома пропавших дорог»."
+run/main_scene="res://lab/anim_lab.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/window_width_override=1600
+window/size/window_height_override=900
+window/size/resizable=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.3, 0.29, 0.27, 1)
+textures/vram_compression/import_etc2_astc=false
