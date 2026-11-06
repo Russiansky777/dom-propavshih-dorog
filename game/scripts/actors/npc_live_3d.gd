@@ -220,11 +220,15 @@ func process(delta: float) -> void:
 	if _once_clip and act_name != "" and (once or act_w > 0.0 or view.shown_act_w() > 0.0):
 		# a one-shot action: forward once, held at its end (`hold`), the end kept while it fades back to the stance
 		var L := maxf(view.action_length(act_name), 0.1)
+		# 06.11 («руки дёргаются»): while the previous clip still gives way, this one waits at its first key — it used
+		# to run on underneath and came in half-way through its quickest part (Mitya's knock at 0.9 s)
+		var waiting: bool = String(view.get("_act_name")) != act_name
+		var dt_act := 0.0 if waiting else delta
 		if once_loop and once:
-			act_t += delta * float(rt.get("act_speed", 1.0))
+			act_t += dt_act * float(rt.get("act_speed", 1.0))
 			lt = Actor3D.loop_times(act_t, L, float(rt.get("loop_crossfade_s", 0.8)))
 		else:
-			act_t += delta * float(rt.get("act_speed", 1.0))
+			act_t += dt_act * float(rt.get("act_speed", 1.0))
 			if once and once_hold and once_hold_at >= 0.0 and act_t >= once_hold_at * L:
 				act_t = once_hold_at * L
 			if act_t >= L:

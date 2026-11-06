@@ -143,6 +143,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	_apply_material()
 	_resolve_clips()
 	_smooth_tracks()
+	_smooth_kinks()
 	_bake_walk_loop()
 	# A villager may have no walk clip (data `require_walk` false: Pavel, Mitya, Ilya's wife — their stagings slide):
 	# the stance stands in for it, nothing walks.
@@ -287,6 +288,64 @@ func _smooth_tracks() -> void:
 			var ty := a.track_get_type(i)
 			if ty == Animation.TYPE_POSITION_3D or ty == Animation.TYPE_ROTATION_3D or ty == Animation.TYPE_SCALE_3D:
 				a.track_set_interpolation_type(i, Animation.INTERPOLATION_CUBIC)
+
+
+## Hands and arms without a twitch (Director 06.11, 15:08: «руки всё ещё иногда дёргаются»): the Meshy clips carry
+## single-key kinks — Talk_with_Hands_Open has two in the left hand at 0.52 and 0.68 s (7 mm per 1/60 s² against
+## 1–2 mm around them, tests/probe_hand_spikes.gd), the loop met them every 3.2 s. The rotation keys of the arm and
+## hand bones of every clip but the walk get a gaussian (data rt3d.smooth {sigma_frames, bones}). The kinks were not
+## one key: the gesture flicks the wrist in 2–3 keys (Mitya talk 0.75 s: 6.6 mm per 1/60 s² — the arm root 0.6);
+## σ 1.5 / 2.5 / 3.5 keys left 9 / 8 / 7 spikes over 4 mm, σ 5 none (worst 3.6 mm) — the villagers take 5 (≈ 0.17 s:
+## a gesture of half a second and more keeps its shape). Every key, the ends too (clamped: an end key kept as it was
+## stood out against its smoothed neighbours — a kink at the end of each one-shot action).
+const SMOOTH_BONES := ["LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm", "RightForeArm", "RightHand", "Neck", "Head"]
+
+
+func _smooth_kinks() -> void:
+	var sm: Dictionary = spec.get("smooth", {})
+	var sigma := float(sm.get("sigma_frames", 0.0))   # off unless the actor's data ask (villagers: 5)
+	if sigma <= 0.0:
+		return
+	var bones: Array = sm.get("bones", SMOOTH_BONES)
+	var per_clip: Dictionary = sm.get("clips", {})   # role → its own σ (a clip borrowed from another body: pick_up)
+	var done := {}
+	for role in clips.keys():
+		if role == "walk" or done.has(clips[role]):
+			continue
+		var sg := float(per_clip.get(role, sigma))
+		var r := int(ceil(sg * 2.5))
+		var w := PackedFloat32Array()
+		for k in range(-r, r + 1):
+			w.append(exp(-0.5 * float(k * k) / (sg * sg)))
+		done[clips[role]] = true
+		var a := anim.get_animation(clips[role])
+		if a == null or a.has_meta("kinks_smoothed"):
+			continue   # the clips are shared by every copy of the model (one load per game): smoothed once
+		a.set_meta("kinks_smoothed", true)
+		for i in a.get_track_count():
+			if a.track_get_type(i) != Animation.TYPE_ROTATION_3D:
+				continue
+			var bone := String(a.track_get_path(i).get_concatenated_subnames())
+			if not bones.has(bone):
+				continue
+			var n := a.track_get_key_count(i)
+			if n < 2 * r + 3:
+				continue
+			var q: Array = []
+			for k in n:
+				q.append(a.track_get_key_value(i, k))
+			for k in range(0, n):
+				var acc := Quaternion(0, 0, 0, 0)
+				var ws := 0.0
+				var q0: Quaternion = q[k]
+				for j in range(-r, r + 1):
+					var kk := clampi(k + j, 0, n - 1)
+					var qj: Quaternion = q[kk]
+					if q0.dot(qj) < 0.0:
+						qj = -qj
+					acc = Quaternion(acc.x + qj.x * w[j + r], acc.y + qj.y * w[j + r], acc.z + qj.z * w[j + r], acc.w + qj.w * w[j + r])
+					ws += w[j + r]
+				a.track_set_key_value(i, k, acc.normalized())
 
 
 ## The walk as a seamless loop (data `walk_loop` [from, to], seconds of the clip): keys every 1/30 s from `from`,
@@ -1458,6 +1517,7 @@ static func loop_times(tau: float, len_s: float, xf: float) -> Array:
 ## up 18–27° (tests/probe_villager_motion.gd). Data rt3d.act_body {keep, bones}: the listed bones (hips, spine, legs)
 ## take only `keep` of the action clip, the arms, the neck and the head all of it (a second Blend2 with track filters).
 var act_body_k: float = -1.0     # < 0: no act_body — the action clip drives every bone alike
+var _gate := 1.0   # the action weight's gate while one clip gives way to the next (pose)
 var act_body_full: Dictionary = {}   # act_body.full: roles whose clip moves the whole body (block 3: hug, crank, kneel)
 var feet_free_in_acts := true        # block 3: the foot locks let go during those clips (off — the tests' self-check)
 
@@ -1737,12 +1797,28 @@ func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: Str
 	_advance_idle(delta)
 	var om := float(spec.get("blend_omega", 16.0))
 	var a_target := clampf(act_w, 0.0, 1.0)
-	if act_name != "" and act_name != _act_name and _act_name != "" and _a_s > 0.01:
-		a_target = 0.0   # the previous clip fades out first
-		act_name = _act_name
+	# Director 06.11, 15:08 («руки всё ещё иногда дёргаются»): a change of clip (talk → listen, an action after a line)
+	# used to drop the old clip's weight to 0 and then call the new one in at full — a step for the spring, whose
+	# answer to a step starts at its highest acceleration (ω²): the arms jolted 7–12 mm per 1/60 s² off the stance
+	# (tests/probe_hand_spikes.gd, probe_action_jitter). Now a gate eases the weight down and back up (smoothstep over
+	# switch_fade_s): no step reaches the spring, the hands set off and settle softly.
+	var switching := act_name != "" and act_name != _act_name and _act_name != ""
+	if switching and _gate <= 0.0 and _a_s <= 0.002:
+		_a_s = 0.0
+		_a_v = 0.0
+		switching = false   # the old clip is out: _apply takes the new one, the gate opens
+	if switching:
+		act_name = _act_name   # the previous clip fades out first
 		act_t = _shown_t
 		act_t2 = _shown_t2
 		act_mix = _shown_mix
+	if delta > 0.0:
+		_gate = move_toward(_gate, 0.0 if switching else 1.0, delta / maxf(float(spec.get("switch_fade_s", 0.35)), 0.01))
+	else:
+		_gate = 0.0 if switching else 1.0
+	a_target *= smoothstep(0.0, 1.0, _gate)
+	if switching:
+		pass
 	elif act_name == "":
 		act_name = _act_name
 		act_t = _shown_t

@@ -13,7 +13,10 @@ extends SceneTree
 ##     clip; self-check — a made-up clip and a missing picture are caught;
 ##   5 no patter (Director 06.11, 12:30: «Митя и Пелагея постоянно дёргаются, мельтешат»): standing, talking, listening
 ##     and through every whole-body action clip the feet take at most one step; self-check — with the foot locks held
-##     through the action clips (as before 06.11) Mitya's lantern pick-up and Pelageya's rope steps several times.
+##     through the action clips (as before 06.11) Mitya's lantern pick-up and Pelageya's rope steps several times;
+##   6 hands without a twitch (Director 06.11, 15:08: «руки всё ещё иногда дёргаются»): through idle → talk → listen →
+##     idle and each one-shot action no hand jolts more than 6 mm per 1/60 s² (the clips' wrist flicks smoothed,
+##     the clip switch gated); self-check — without the smoothing (data rt3d.smooth off) Pavel's talk jolts over 6.
 ## Exit code 0 only when every check passed.
 
 const V3 := ["pavel"]
@@ -57,6 +60,7 @@ func _run() -> void:
 	await _test("V3-2 fingertips out of the body (self-check: without the check they go in)", _t2)
 	await _test("V3-3 one-shot action plays once / holds / unknown clip is refused", _t3)
 	await _test("V3-4 every npc_act / act / prop names a clip and a picture that exist; self-check catches made-up ones", _t4)
+	await _test("V3-6 hands do not twitch talking, listening, switching, acting; self-check — unsmoothed clips do", _t6)
 	await _test("V3-5 no stepping about standing or in the action clips (Mitya, Pelageya…); self-check — locks held through the clips step", _t5)
 	var failed := _results.filter(func(r): return not r[1]).size()
 	print("\n%d/%d passed" % [_results.size() - failed, _results.size()])
@@ -284,3 +288,64 @@ func _t5() -> void:
 	var self_m: int = await _steps("mitya", "act:pick_up", 0.0, false)
 	var self_p: int = await _steps("pelageya", "act:pull_rope", 0.0, false)
 	_check(self_m > 3 and self_p > 3, "self-check: locks held through the clips — Mitya %d, Pelageya %d steps (the test sees no patter)" % [self_m, self_p])
+
+
+## The worst hand jolt (mm per 1/60 s²) of `id` through idle → talk → listen → idle, then each clip in `acts`.
+func _hand_jolt(id: String, acts: Array, smooth := true) -> float:
+	var spec := _spec(id)
+	if not smooth:
+		(spec["rt3d"] as Dictionary).erase("smooth")
+	var s := GDScript.new()
+	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
+	s.reload()
+	var n := Node2D.new()
+	n.set_script(s)
+	var sp := Sprite2D.new()
+	n.add_child(sp)
+	n.set("sprite", sp)
+	var sh := GDScript.new()
+	sh.source_code = "extends RefCounted\nvar texture_scale: float = 2.25\n"
+	sh.reload()
+	n.set("sheet", sh.new())
+	root.add_child(n)
+	var live = load("res://scripts/actors/npc_live_3d.gd").new()
+	n.add_child(live)
+	if not live.setup(n, spec, 0.55):
+		n.queue_free()
+		return 999.0
+	var v: Actor3D = live.view
+	v.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	live.face(Vector2(0.4, 0.5), 0.55, true)
+	var seq: Array = [["idle", 2.0], ["talk", 8.0], ["listen", 5.0], ["idle", 2.0]]
+	for c in acts:
+		seq.append(["act:" + String(c), v.action_length(String(c)) + 1.5])
+	var worst := 0.0
+	var h: Array = []
+	for sq in seq:
+		if String(sq[0]).begins_with("act:"):
+			live.play_once(String(sq[0]).substr(4))
+		else:
+			live.set_state(String(sq[0]))
+		var t := 0.0
+		while t < float(sq[1]):
+			live.process(DT)
+			h.append([v.turn.transform * v.bone_model("LeftHand"), v.turn.transform * v.bone_model("RightHand")])
+			if h.size() >= 3:
+				for i in 2:
+					var acc: Vector3 = h[-1][i] - 2.0 * h[-2][i] + h[-3][i]
+					worst = maxf(worst, acc.length() * 1000.0)
+			t += DT
+	n.queue_free()
+	await process_frame
+	return worst
+
+
+func _t6() -> void:
+	var acts := {"mitya": ["raise_lantern", "knock_shutter", "tar_brush"], "pelageya": ["pull_rope", "tar_brush"],
+		"nina": ["place_table", "write_board", "hang_coat"], "tamara": ["give_small", "bag_strap"], "ilya": ["crank_windlass", "give_small"],
+		"ilya_wife": ["hold_lamp"]}
+	for id in ["mitya", "pelageya", "pavel", "nina", "ilya", "ilya_wife", "ulyana", "tamara", "manager"]:
+		var j: float = await _hand_jolt(id, acts.get(id, []))
+		_check(j <= 6.0, "%s: a hand jolts %.1f mm per 1/60 s² (≤ 6)" % [id, j])
+	var raw: float = await _hand_jolt("pavel", [], false)
+	_check(raw > 6.0, "self-check: Pavel's unsmoothed talk — only %.1f mm (the test sees no twitch)" % raw)

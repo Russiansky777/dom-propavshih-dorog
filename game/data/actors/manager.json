@@ -44,6 +44,7 @@
   "render": "3d",
   "render_web": "sprites",
   "rt3d": {
+    "smooth": {"sigma_frames": 5.0, "_b3": "Директор 06.11, 15:08: «руки всё ещё иногда дёргаются» — щелчки кисти в клипах Meshy сглажены (Actor3D._smooth_kinks, tests/probe_hand_spikes.gd)"},
     "_comment": "Блок 3 (06.11): та же постановка, что у Павла v3 (data/actors/pavel.json rt3d) — свет, наплывы, руки и кончики пальцев вне тела.",
     "scene": "res://assets/characters/manager_v3/rt3d/manager_rt.glb",
     "camera_elev_deg": 14.0,

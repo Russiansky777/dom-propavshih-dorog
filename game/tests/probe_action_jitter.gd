@@ -21,6 +21,7 @@ func _fake() -> Node2D:
 static func measure(frames: Array) -> Array:
 	var worst := 0.0
 	var wb := ""
+	var wi := 0
 	var n := 0
 	for i in range(2, frames.size()):
 		var fm := 0.0
@@ -34,9 +35,10 @@ static func measure(frames: Array) -> Array:
 			if mm > worst:
 				worst = mm
 				wb = b
+				wi = i
 		if fm > TREMBLE_MM:
 			n += 1
-	return [worst, wb, n, frames.size()]
+	return [worst, "%s at %.2f s" % [wb, wi * DT], n, frames.size()]
 
 func _run() -> void:
 	await process_frame
@@ -78,8 +80,6 @@ func _run() -> void:
 			var was := [false, false]
 			while t < float(sq[1]):
 				live.process(DT)
-				if not v.foot_ik.is_empty():
-					v.feet_step(DT, n.global_position, Vector2(v.ppm, v.ppm * 0.55))
 				var f := {}
 				for b in BONES:
 					if v.skeleton.find_bone(b) >= 0:
