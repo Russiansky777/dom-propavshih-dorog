@@ -435,7 +435,7 @@ func _hand_depth(spec: Dictionary) -> Array:
 			await process_frame
 			t += DT
 			f += 1
-			if f % 20 == 0 and t > 0.3 and counted:
+			if f % 20 == 0 and t > 0.3 and counted and (live.view.shown_act_w() > 0.95 or st[0] != "talk" or not bool(spec["rt3d"]["arm_body"].get("stance_free", false))):
 				var m: Array = Pen.measure(prepped, g.out, unit)
 				for i in 2:
 					if float(m[2][i]) * 100.0 > float(worst[0]):

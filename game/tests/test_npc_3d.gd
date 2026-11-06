@@ -301,7 +301,7 @@ func _body_run(id: String, old: bool, clear_off: bool = false) -> Dictionary:
 				legs = [minf(legs[0], float(m["legs"])), maxf(legs[1], float(m["legs"]))]
 			# (06.11, 23:0x: standing and listening the arms hang as the clip has them — the Director's choice; the
 			# hands are kept out of the clothes while talking)
-			if live.arm_body != null and t > 0.3 and (seg[0] == "talk" or clear_off):
+			if live.arm_body != null and t > 0.3 and ((seg[0] == "talk" and v.shown_act_w() > 0.95) or clear_off):
 				for i in 2:
 					out["hand_in"] = maxf(out["hand_in"], float(live.arm_body.depth_m[i]))
 					out["hand"] = maxf(out["hand"], float(live.arm_body.shown_m[i]))

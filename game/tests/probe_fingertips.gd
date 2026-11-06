@@ -50,6 +50,8 @@ static func run_one(tree: SceneTree, id: String, on: bool) -> Dictionary:
 	if not on:
 		ab.erase("tip_r_m")
 		ab.erase("shell")   # the hand's surface points (06.11, 15:56) cover the fingertip too
+		ab.erase("stance_free")
+		ab.erase("bake")
 	var s := GDScript.new()
 	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
 	s.reload()
@@ -80,6 +82,9 @@ static func run_one(tree: SceneTree, id: String, on: bool) -> Dictionary:
 			await tree.process_frame
 			t += DT
 			if bc == null:
+				continue
+			# standing the arms hang as the clip has them (Director 06.11, 23:0x): the clothes counted while talking
+			if bool(ab.get("stance_free", false)) and live.view.shown_act_w() < 0.95:
 				continue
 			out["frames"] = int(out["frames"]) + 1
 			for i in 2:
