@@ -25,7 +25,11 @@ extends SceneTree
 ##   8 no scarecrow arms (same note: «остальных тоже коробит»): talking and listening the upper arm stands out sideways
 ##     (before the hands are cleared of the clothes) at most 22° on average and 28° at most; self-check — with the
 ##     stance's shoulders under the clip's arms (act_body.upper with the shoulders, tried 06.11) Nina's listening arms
-##     spread over 35°.
+##     spread over 35°;
+##   9 listening as standing (Director 06.11, 18:48: «в слушает… плечи прячут куда-то в тело»): the shoulders (upper
+##     arm joints) as wide apart listening as in the stance (≥ 97 %), the elbows not rolled in front of the chest and
+##     the hands not behind the back (hips' frame); self-check — with the listen clip carried from the v2 figures
+##     (clips.listen "listen") Pavel's or Pelageya's fail it.
 ## Exit code 0 only when every check passed.
 
 const V3 := ["pavel"]
@@ -75,6 +79,7 @@ func _run() -> void:
 	await _test("V3-6 hands do not twitch talking, listening, switching, acting; self-check — unsmoothed clips do", _t6)
 	await _test("V3-7 the whole hand out of the clothes talking and listening; self-check — axis and fingertip only go in", _t7)
 	await _test("V3-8 arms not spread like a scarecrow talking and listening; self-check — stance shoulders spread them", _t8)
+	await _test("V3-9 listening: shoulders square, hands not behind the back; self-check — the v2 listen clip rolls them", _t9)
 	await _test("V3-5 no stepping about standing or in the action clips (Mitya, Pelageya…); self-check — locks held through the clips step", _t5)
 	var failed := _results.filter(func(r): return not r[1]).size()
 	print("\n%d/%d passed" % [_results.size() - failed, _results.size()])
@@ -473,3 +478,74 @@ func _t8() -> void:
 	sp["rt3d"]["act_body"]["upper"] = ["LeftShoulder", "RightShoulder", "neck", "Head"]
 	var raw: Array = await _spread(sp)
 	_check(float(raw[1]) > 35.0, "self-check: Nina with the stance's shoulders — only %.0f° (the test sees no scarecrow)" % float(raw[1]))
+
+
+## Listening pose against the stance: [shoulder width listening / standing, the farthest elbow forward of the
+## shoulder (m, hips' frame), the farthest hand behind the hips (m)] — after every modifier.
+func _listen_pose(spec: Dictionary) -> Array:
+	var nl := _live(spec)
+	if nl[1] == null:
+		return [0.0, 99.0, 99.0]
+	var live = nl[1]
+	var sk: Skeleton3D = live.view.skeleton
+	var g = Spread.Grab.new()
+	sk.add_child(g)
+	var unit := float(live.arm_body.get("_unit")) if live.arm_body != null else 1.0
+	var ids := {}
+	for b in ["Hips", "LeftArm", "RightArm", "LeftForeArm", "RightForeArm", "LeftHand", "RightHand"]:
+		ids[b] = sk.find_bone(b)
+	var width := [0.0, 0.0]
+	var fwd := -99.0
+	var back := -99.0
+	# forward in the hips' frame: the side the toes point to at rest
+	var hr := sk.get_bone_global_rest(ids["Hips"])
+	var toe := sk.find_bone("LeftToeBase")
+	var foot := sk.find_bone("LeftFoot")
+	var f: Vector3 = hr.basis.inverse() * (sk.get_bone_global_rest(toe).origin - sk.get_bone_global_rest(foot).origin)
+	f.y = 0.0
+	f = f.normalized()
+	for i in 2:
+		live.set_state(["idle", "listen"][i])
+		var t := 0.0
+		var n := 0
+		while t < 5.0:
+			live.process(DT)
+			await process_frame
+			t += DT
+			if t < 1.5 or g.out.is_empty():
+				continue
+			var hips: Transform3D = g.out[ids["Hips"]]
+			var inv := hips.affine_inverse()
+			var la: Vector3 = inv * (g.out[ids["LeftArm"]] as Transform3D).origin
+			var ra: Vector3 = inv * (g.out[ids["RightArm"]] as Transform3D).origin
+			width[i] += la.distance_to(ra)
+			n += 1
+			if i == 1:
+				for sd in ["Left", "Right"]:
+					var a: Vector3 = inv * (g.out[ids[sd + "Arm"]] as Transform3D).origin
+					var e: Vector3 = inv * (g.out[ids[sd + "ForeArm"]] as Transform3D).origin
+					var h: Vector3 = inv * (g.out[ids[sd + "Hand"]] as Transform3D).origin
+					fwd = maxf(fwd, (e - a).dot(f) / unit)
+					back = maxf(back, -h.dot(f) / unit)
+		width[i] /= maxf(1.0, n)
+	nl[0].queue_free()
+	await process_frame
+	return [width[1] / maxf(1e-6, width[0]), fwd, back]
+
+
+func _t9() -> void:
+	for id in ALL:
+		var w: Array = await _listen_pose(_spec(id))
+		_check(float(w[0]) >= 0.97, "%s: shoulders listening %.0f %% of standing (≥ 97)" % [id, float(w[0]) * 100.0])
+		_check(float(w[1]) <= 0.12, "%s: elbow %.0f cm in front of the shoulder listening (≤ 12)" % [id, float(w[1]) * 100.0])
+		_check(float(w[2]) <= 0.12, "%s: hand %.0f cm behind the hips listening (≤ 12)" % [id, float(w[2]) * 100.0])
+	var bad := 0
+	for id in ["pavel", "pelageya"]:
+		var sp := _spec(id)
+		sp["rt3d"]["clips"]["listen"] = "listen"
+		var raw: Array = await _listen_pose(sp)
+		print("    v2 listen clip, %s: shoulders %.0f %%, elbow %.0f cm forward, hand %.0f cm behind" % [id,
+				float(raw[0]) * 100.0, float(raw[1]) * 100.0, float(raw[2]) * 100.0])
+		if float(raw[0]) < 0.97 or float(raw[1]) > 0.12 or float(raw[2]) > 0.12:
+			bad += 1
+	_check(bad == 2, "self-check: the v2 listen clip passes for %d of Pavel and Pelageya (the test sees nothing)" % (2 - bad))
