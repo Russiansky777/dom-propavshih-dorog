@@ -223,6 +223,8 @@ func _run() -> void:
 		var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 		for k in off:
 			(spec["rt3d"] as Dictionary).erase(k)
+		if OS.get_environment("PEN_NOSHELL") != "":   # the hand's axis and fingertip only (as before 06.11, 15:56)
+			(spec["rt3d"]["arm_body"] as Dictionary).erase("shell")
 		var n := _fake_npc()
 		var live = NL.new()
 		n.add_child(live)

@@ -49,6 +49,7 @@ static func run_one(tree: SceneTree, id: String, on: bool) -> Dictionary:
 	var ab: Dictionary = spec["rt3d"].get("arm_body", {})
 	if not on:
 		ab.erase("tip_r_m")
+		ab.erase("shell")   # the hand's surface points (06.11, 15:56) cover the fingertip too
 	var s := GDScript.new()
 	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
 	s.reload()

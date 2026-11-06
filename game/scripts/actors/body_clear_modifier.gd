@@ -35,7 +35,8 @@ static var _tip_cache: Dictionary = {}
 var shell_n: int = 0
 var shell_r: float = 0.015
 var _shell: Array = [[], []]       # per side: [[2 (the hand), point in the hand bone's rest frame], …]
-static var _shell_cache: Dictionary = {}
+static var _shell_cache: Dictionary = {}   # model → per side the hand's vertices in the hand bone's rest frame
+var _surf: Array = [[], []]
 var tip_m: Array = [0.0, 0.0]      # this frame, after the turn: how deep each fingertip is (m, < 0 outside; tests)
 var depth_m: Array = [0.0, 0.0]    # this frame, before the turn: how deep (with thickness) each arm went in (m; tests)
 var shown_m: Array = [0.0, 0.0]    # after the turn (m; tests)
@@ -69,11 +70,23 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 		_bins = _build_hull(sk, meshes)
 		_hull_cache[cache_key] = _bins
 		_tip_cache[cache_key] = _tip.duplicate()
-		_shell_cache[cache_key] = _shell.duplicate(true)
+		_shell_cache[cache_key] = _surf
 	if _tip_cache.has(cache_key):
 		_tip = (_tip_cache[cache_key] as Array).duplicate()
-	if _shell_cache.has(cache_key):
-		_shell = (_shell_cache[cache_key] as Array).duplicate(true)
+	# the hand's points are spread per figure (its own data `shell`: a test may switch them off), from the model's cached
+	# hand vertices
+	_shell = [[], []]
+	var surf: Array = _shell_cache.get(cache_key, [[], []])
+	var sk_n := "%s#%d" % [cache_key, shell_n]
+	if _shell_cache.has(sk_n):
+		_shell = (_shell_cache[sk_n] as Array).duplicate(true)
+	elif shell_n > 0:
+		for side in 2:
+			# the hand only: points on the sleeve (tried) found the elbow against the back of the waistcoat and swung the
+			# whole arm backwards
+			for q in _farthest(surf[side], shell_n):
+				_shell[side].append([2, q])
+		_shell_cache[sk_n] = _shell.duplicate(true)
 	return not _bins.is_empty()
 
 
@@ -137,13 +150,7 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 					acc[key] = [[], {}]
 				(acc[key][0] as Array).append(Vector2(p.x, p.z))
 				acc[key][1][bone] = int(acc[key][1].get(bone, 0)) + 1
-	_shell = [[], []]
-	if shell_n > 0:
-		for side in 2:
-			# the hand only: points on the sleeve (tried) found the elbow against the back of the waistcoat and swung the
-			# whole arm backwards
-			for q in _farthest(surf[side][1], shell_n):
-				_shell[side].append([2, q])
+	_surf = [surf[0][1], surf[1][1]]
 	var out := {}
 	for key in acc.keys():
 		var pts: Array = acc[key][0]
