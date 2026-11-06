@@ -34,7 +34,11 @@ extends SceneTree
 ##  10 hands steady (Director 06.11, 19:27: «руки дергаются как сумасшедшие, меняя положение туда и назад»): standing,
 ##     talking and listening the hands make no more jerks (over 2 mm/frame²) or back-and-forth turns than the clip itself
 ##     (BodyClear on the figure, not turning) plus 3; self-check — with the follower skipped on the skeleton's passes
-##     with no time step (as before) Pelageya's or Pavel's hands go back and forth.
+##     with no time step (as before) Pelageya's or Pavel's hands go back and forth;
+##  11 shoulders not jelly (Director 06.11, 22:02: «плечи ходят как желейные, хотя по идее почти не двигаются»): the
+##     vertices between the neck and the shoulder joints, followed in the chest bone's frame, slide at most 6 mm on
+##     average standing and 15 mm talking; self-check — with the clips' own clavicles (calm_shoulders off) Ilya's slide
+##     over 20 mm talking.
 ## Exit code 0 only when every check passed.
 
 const V3 := ["pavel"]
@@ -85,6 +89,7 @@ func _run() -> void:
 	await _test("V3-7 the whole hand out of the clothes talking and listening; self-check — axis and fingertip only go in", _t7)
 	await _test("V3-8 arms not spread like a scarecrow talking and listening; self-check — stance shoulders spread them", _t8)
 	await _test("V3-10 hands steady: clearing them of the clothes adds no back-and-forth; self-check — the follower skipped does", _t10)
+	await _test("V3-11 shoulders not jelly: the skin of the shoulder tops stays on the chest; self-check — the clips' clavicles slide it", _t11)
 	await _test("V3-9 listening: shoulders square, hands not behind the back; self-check — the v2 listen clip rolls them", _t9)
 	await _test("V3-5 no stepping about standing or in the action clips (Mitya, Pelageya…); self-check — locks held through the clips step", _t5)
 	var failed := _results.filter(func(r): return not r[1]).size()
@@ -644,3 +649,77 @@ static func _before_2100(spec: Dictionary, listen := "idle") -> Dictionary:
 	for k in ["concat", "calm_shoulders", "shoulder_weights"]:
 		r.erase(k)
 	return spec
+
+
+## How far the skin of the shoulder tops and the upper chest slides on the chest (mm, mean over the vertices) through
+## `state` (tests/probe_shoulder_jelly.gd).
+func _jelly(spec: Dictionary, state: String, secs := 5.0) -> float:
+	var nl := _live(spec)
+	if nl[1] == null:
+		return 999.0
+	var live = nl[1]
+	var sk: Skeleton3D = live.view.skeleton
+	var g = Pen.Grab.new()
+	sk.add_child(g)
+	var unit := float(live.arm_body.get("_unit")) if live.arm_body != null else 1.0
+	var chest := sk.find_bone("Spine02")
+	var pn: Vector3 = sk.get_bone_global_rest(sk.find_bone("neck")).origin
+	var la: Vector3 = sk.get_bone_global_rest(sk.find_bone("LeftArm")).origin
+	var ra: Vector3 = sk.get_bone_global_rest(sk.find_bone("RightArm")).origin
+	var ysh := (la.y + ra.y) * 0.5
+	var prepped: Array = Pen.prep(sk, live.view.meshes)
+	var rest_poses: Array = []
+	for b in sk.get_bone_count():
+		rest_poses.append(sk.get_bone_global_rest(b))
+	var picks: Array = []
+	for ei in prepped.size():
+		var vs: PackedVector3Array = prepped[ei][0]
+		var mats := {}
+		for k in range(0, vs.size(), 5):
+			var p: Vector3 = Pen.skin_pt(prepped[ei], k, rest_poses, mats)[0]
+			if absf(p.y - ysh) > 0.06 * unit:
+				continue
+			if (p.x < la.x and p.x > pn.x + 0.03 * unit) or (p.x > ra.x and p.x < pn.x - 0.03 * unit):
+				picks.append([ei, k])
+	live.set_state(state)
+	var lo: Array = []
+	var hi: Array = []
+	for i in picks.size():
+		lo.append(Vector3(INF, INF, INF))
+		hi.append(Vector3(-INF, -INF, -INF))
+	var t := 0.0
+	var f := 0
+	while t < secs:
+		live.process(DT)
+		await process_frame
+		t += DT
+		f += 1
+		if t < 1.0 or g.out.is_empty() or f % 6 != 0:
+			continue
+		var inv: Transform3D = (g.out[chest] as Transform3D).affine_inverse()
+		var mats_by := {}
+		for i in picks.size():
+			var ei: int = picks[i][0]
+			if not mats_by.has(ei):
+				mats_by[ei] = {}
+			var q: Vector3 = inv * (Pen.skin_pt(prepped[ei], picks[i][1], g.out, mats_by[ei])[0] as Vector3) / unit
+			lo[i] = Vector3(minf(lo[i].x, q.x), minf(lo[i].y, q.y), minf(lo[i].z, q.z))
+			hi[i] = Vector3(maxf(hi[i].x, q.x), maxf(hi[i].y, q.y), maxf(hi[i].z, q.z))
+	var mean := 0.0
+	for i in picks.size():
+		mean += ((hi[i] as Vector3) - (lo[i] as Vector3)).length() * 1000.0
+	nl[0].queue_free()
+	await process_frame
+	return mean / maxf(1.0, picks.size())
+
+
+func _t11() -> void:
+	for id in ["ilya", "pavel", "pelageya", "mitya", "nina"]:
+		var st: float = await _jelly(_spec(id), "idle")
+		var tk: float = await _jelly(_spec(id), "talk")
+		print("    %s: shoulder skin slides %.1f mm standing, %.1f mm talking" % [id, st, tk])
+		_check(st <= 6.0 and tk <= 15.0, "%s: the shoulder skin slides %.1f mm standing (≤ 6), %.1f mm talking (≤ 15)" % [id, st, tk])
+	var sp := _spec("ilya")
+	(sp["rt3d"] as Dictionary).erase("calm_shoulders")
+	var raw: float = await _jelly(sp, "talk")
+	_check(raw > 20.0, "self-check: Ilya with the clips' own clavicles — only %.1f mm talking (the test sees no jelly)" % raw)
