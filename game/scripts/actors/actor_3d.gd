@@ -350,9 +350,8 @@ func _smooth_kinks() -> void:
 
 
 ## Arms hanging, not spread (Director 06.11, 15:56: «остальных тоже явно коробит»): Meshy's talk clip takes the upper
-## arms out sideways to 30–34° (Mitya, Nina, Ilya's wife, Tamara — tests/probe_arm_spread.gd; a relaxed arm hangs at
-## 5–12°). Data rt3d.arm_hang {from_deg, k, roles}: in those
-## clips, at every key of the upper arm, its sideways angle in the hips' frame beyond `from_deg` is kept at `k` (the
+## arms out sideways to 30–34° (Mitya, Nina, Ilya's wife, Tamara — tests/probe_villager_arm_spread.gd; a relaxed arm
+## hangs at 5–12°). Data rt3d.arm_hang {from_deg, k, roles}: in those clips, at every key of the upper arm, its sideways angle in the hips' frame beyond `from_deg` is kept at `k` (the
 ## rest is turned down toward the body in the plane of the arm and the side); an arm brought forward in a gesture has
 ## little sideways angle and keeps it. BodyClear later takes the hand out of the clothes as before.
 func _hang_arms() -> void:
@@ -1607,7 +1606,7 @@ func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> b
 		body[String(b)] = true
 	# Director 06.11, 15:56 («остальных тоже коробит»): the talk clip drops the head every gesture — the neck and the
 	# head (act_body.upper) are kept at `keep` too. Not the shoulders: a stance shoulder under the clip's arm spreads the
-	# arms like a scarecrow (Nina listening 44°, tests/probe_arm_spread.gd)
+	# arms like a scarecrow (Nina listening 44°, tests/probe_villager_arm_spread.gd)
 	for b in ab.get("upper", []):
 		body[String(b)] = true
 	var paths := {}

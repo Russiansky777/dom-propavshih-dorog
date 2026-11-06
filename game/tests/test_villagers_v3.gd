@@ -31,7 +31,7 @@ extends SceneTree
 const V3 := ["pavel"]
 const Probe := preload("res://tests/probe_fingertips.gd")
 const Pen := preload("res://tests/probe_hand_penetration.gd")
-const Spread := preload("res://tests/probe_arm_spread.gd")
+const Spread := preload("res://tests/probe_villager_arm_spread.gd")
 const ALL := ["pavel", "mitya", "pelageya", "nina", "ilya", "ilya_wife", "tamara", "ulyana", "manager"]
 const DT := 1.0 / 60.0
 
