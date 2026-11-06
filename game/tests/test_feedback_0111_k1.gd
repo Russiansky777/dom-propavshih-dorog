@@ -262,12 +262,18 @@ func _test_bird() -> void:
 
 
 func _test_pelageya_boat() -> void:
-	var c: Dictionary = _layer("EP_boat", "pelageya").get("compose", {})
+	# 05.11 (block 2): the frame's people are live figures — the npc hotspots' feet and figure_h (screen px), not the
+	# composed layers (canvas px ×1.148): the trestle's feet ≈ y 907 on screen; below 905 is the line box (0511-6)
+	var room = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rooms/EP_boat.json"))
+	var hs := {}
+	for h in room.get("hotspots", []):
+		hs[String(h.get("id", ""))] = h
+	var c: Dictionary = hs.get("pelageya", {})
 	var feet: Array = c.get("feet", [0, 0])
-	_check(float(feet[1]) >= 790.0, "her feet on the snow in front of the trestle (its feet ≈ y 790): y %s" % str(feet[1]))
-	var m: Dictionary = _layer("EP_boat", "mitya").get("compose", {})
-	# depth: nearer than Mitya (feet y 750) → not smaller than him × 0.9 (she is the shorter) × the depth ratio
-	_check(float(c.get("height", 0)) >= float(m.get("height", 0)) * 0.9, "her height by the depth (%s vs Mitya %s)" % [str(c.get("height")), str(m.get("height"))])
+	_check(float(feet[1]) >= 900.0 and float(feet[1]) < 905.0, "her feet on the snow in front of the trestle (its feet ≈ y 907, the line box from 905): y %s" % str(feet[1]))
+	var m: Dictionary = hs.get("mitya", {})
+	# depth: nearer than Mitya → not smaller than him × 0.9 (she is the shorter)
+	_check(float(c.get("figure_h", 0)) >= float(m.get("figure_h", 0)) * 0.9, "her height by the depth (%s vs Mitya %s)" % [str(c.get("figure_h")), str(m.get("figure_h"))])
 
 
 func _test_cup() -> void:
