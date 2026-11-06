@@ -91,7 +91,7 @@ func _run() -> void:
 				await RenderingServer.frame_post_draw
 				await RenderingServer.frame_post_draw
 				var img: Image = live.view.get_texture().get_image()
-				img.save_png("%s/%s_%s_%04.1f_%03d.png" % [out, id, state.replace("clip:", ""), float(shots[0]), int(float(yv))])
+				img.save_png("%s/%s_%s_%06.3f_%03d.png" % [out, id, state.replace("clip:", ""), float(shots[0]), int(float(yv))])
 				shots.pop_front()
 		n.queue_free()
 		await process_frame

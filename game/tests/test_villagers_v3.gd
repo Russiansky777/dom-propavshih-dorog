@@ -254,6 +254,8 @@ func _t4() -> void:
 ## Foot-lock steps while `id` stands in `state` for `secs`, or plays the one-shot `clip` (state "act:<clip>").
 func _steps(id: String, what: String, secs: float, free := true) -> int:
 	var spec := _spec(id)
+	if not free:
+		_before_2100(spec)
 	var s := GDScript.new()
 	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
 	s.reload()
@@ -320,6 +322,7 @@ func _hand_jolt(id: String, acts: Array, smooth := true) -> float:
 	var spec := _spec(id)
 	if not smooth:
 		(spec["rt3d"] as Dictionary).erase("smooth")
+		_before_2100(spec)
 	var s := GDScript.new()
 	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
 	s.reload()
@@ -442,7 +445,8 @@ func _t7() -> void:
 		_check(float(w[1]) <= 2.0, "%s: a hand %.1f cm behind the clothes (≤ 2)" % [id, float(w[1])])
 	var sp := _spec("pavel")
 	(sp["rt3d"]["arm_body"] as Dictionary).erase("shell")
-	sp["rt3d"]["clips"]["listen"] = "listen"   # as he was at 15:56: the v2 listen clip, hands at the apron
+	(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")
+	_before_2100(sp, "listen")   # as he was at 15:56: the v2 listen clip, hands at the apron
 	var raw: Array = await _hand_depth(sp)
 	_check(float(raw[0]) > 3.0, "self-check: Pavel with axis and fingertip only — %.1f cm (the test sees nothing)" % float(raw[0]))
 
@@ -488,7 +492,8 @@ func _t8() -> void:
 		_check(float(w[0]) <= 22.0 and float(w[1]) <= 28.0, "%s: arms spread %.0f° on average, %.0f° at most (≤ 22 / 28)" % [id, float(w[0]), float(w[1])])
 	var sp := _spec("nina")
 	sp["rt3d"]["act_body"]["upper"] = ["LeftShoulder", "RightShoulder", "neck", "Head"]
-	sp["rt3d"]["clips"]["listen"] = "listen"   # where it was seen (15:56): the v2 listen clip
+	_before_2100(sp, "listen")   # where it was seen (15:56): the v2 listen clip
+	(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")
 	var raw: Array = await _spread(sp)
 	_check(float(raw[1]) > 35.0, "self-check: Nina with the stance's shoulders — only %.0f° (the test sees no scarecrow)" % float(raw[1]))
 
@@ -554,8 +559,7 @@ func _t9() -> void:
 		print("    %s listening: shoulders %.0f %%, elbow %.0f cm forward, hand %.0f cm behind the shoulder" % [id,
 				float(w[0]) * 100.0, float(w[1]) * 100.0, float(w[2]) * 100.0])
 		_check(float(w[2]) <= 0.12, "%s: hand %.0f cm behind the shoulder listening (≤ 12)" % [id, float(w[2]) * 100.0])
-	var sp := _spec("pavel")
-	sp["rt3d"]["clips"]["listen"] = "listen"
+	var sp := _before_2100(_spec("pavel"), "listen")
 	var raw: Array = await _listen_pose(sp)
 	print("    v2 listen clip, pavel: shoulders %.0f %%, elbow %.0f cm forward, hand %.0f cm behind" % [
 			float(raw[0]) * 100.0, float(raw[1]) * 100.0, float(raw[2]) * 100.0])
@@ -616,7 +620,7 @@ func _t10() -> void:
 					int(on[0]), int(on[1]), int(off[0]), int(off[1])])
 	var bad := 0
 	for id in ["pelageya", "pavel"]:
-		var sp := _spec(id)
+		var sp := _before_2100(_spec(id))
 		(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")   # as before 20:21: the clearing done live only
 		var raw: Array = await _jitter(sp, "listen", true, true)
 		var off: Array = await _jitter(sp, "listen", false, false)
@@ -625,3 +629,18 @@ func _t10() -> void:
 		if int(raw[0]) > int(off[0]) + 3 or int(raw[1]) > int(off[1]) + 3:
 			bad += 1
 	_check(bad >= 1, "self-check: with the follower skipped neither Pelageya nor Pavel jerks (the test sees nothing)")
+
+
+## The data as the defects were seen (before 06.11, 21:xx): the stance, «listen» and «talk» clips carried from the v2
+## figures, none of the later additions (new Meshy motions joined, calm clavicles, shoulder weights). The self-checks
+## reproduce what the Director saw on it.
+static func _before_2100(spec: Dictionary, listen := "idle") -> Dictionary:
+	var r: Dictionary = spec["rt3d"]
+	r["clips"]["idle"] = "idle"
+	r["clips"]["listen"] = listen
+	r["clips"]["talk"] = "talk"
+	if r.has("idle"):
+		r["idle"]["pool"] = [{"clip": "idle", "weight": 1}]
+	for k in ["concat", "calm_shoulders", "shoulder_weights"]:
+		r.erase(k)
+	return spec

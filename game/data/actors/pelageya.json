@@ -156,6 +156,7 @@
       "pull_rope": "pull_rope",
       "tar_brush": "tar_brush"
     },
+    "calm_shoulders": {"keep": 0.25, "roles": ["idle", "talk", "listen"], "_comment": "Директор 06.11, 22:02 («плечи ходят как желейные»): ключицы в клипах Meshy ходят сильно — кожа верха плеч скользила по груди (у Ильи 28 мм, стало 9); ключица берёт 25 % своего хода, плечевая кость доворачивается — рука показывает туда же (Actor3D._calm_shoulders)."},
     "concat": {"talk_mix": {"of": ["talk_a", "talk_b"], "overlap_s": 0.7}, "_comment": "Actor3D._concat_clips: жесты разговора по очереди, стык — переход 0,7 с (оба начинаются и кончаются стоя)."},
     "idle": {"crossfade_s": 1.0, "pool": [{"clip": "stance_calm", "weight": 1}], "desync": {"slot": 3, "phase": true, "rate_jitter": 0.07}},
     "listen_speed": 0.8,

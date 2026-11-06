@@ -146,6 +146,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	_resolve_clips()
 	_smooth_tracks()
 	_smooth_kinks()
+	_calm_shoulders()
 	_hang_arms()
 	_bake_walk_loop()
 	# A villager may have no walk clip (data `require_walk` false: Pavel, Mitya, Ilya's wife — their stagings slide):
@@ -448,6 +449,75 @@ func _smooth_kinks() -> void:
 					acc = Quaternion(acc.x + qj.x * w[j + r], acc.y + qj.y * w[j + r], acc.z + qj.z * w[j + r], acc.w + qj.w * w[j + r])
 					ws += w[j + r]
 				a.track_set_key_value(i, k, acc.normalized())
+
+
+## Shoulders that stay put (Director 06.11, 22:02: «у них плечи ходят как желейные, хотя по идее почти не
+## двигаются»): Meshy's stance and talk clips roll the clavicles a lot (Pavel standing: 26°), and the skin of the
+## shoulder tops and the upper chest slid on the chest with them — 36 mm on average talking (tests/probe_shoulder_jelly
+## .gd). Data rt3d.calm_shoulders {keep, roles}: in those clips each clavicle keeps `keep` of its swing about its own
+## mean; the upper arm under it is turned back by what the clavicle no longer does, so the arm points where the clip
+## had it (the gesture stays, the hand moves only by the joint's own small shift).
+func _calm_shoulders() -> void:
+	var cs: Dictionary = spec.get("calm_shoulders", {})
+	if cs.is_empty():
+		return
+	var keep := clampf(float(cs.get("keep", 0.25)), 0.0, 1.0)
+	var names := {}
+	for role in cs.get("roles", ["idle", "talk", "listen"]):
+		if clips.has(role):
+			names[clips[role]] = true
+	for e in idle_pool:
+		names[e["name"]] = true
+	for nm in names.keys():
+		var a := anim.get_animation(nm)
+		if a == null or a.has_meta("shoulders_calmed"):
+			continue
+		a.set_meta("shoulders_calmed", true)
+		var tr := {}
+		for i in a.get_track_count():
+			if a.track_get_type(i) == Animation.TYPE_ROTATION_3D:
+				tr[String(a.track_get_path(i).get_concatenated_subnames())] = i
+		for side in ["Left", "Right"]:
+			var cn: String = side + "Shoulder"
+			var an: String = side + "Arm"
+			if not tr.has(cn):
+				continue
+			var ci: int = tr[cn]
+			var n := a.track_get_key_count(ci)
+			if n < 2:
+				continue
+			# the clavicle's mean turn (normalized sum, same hemisphere)
+			var q0: Quaternion = a.track_get_key_value(ci, 0)
+			var acc := Vector4.ZERO
+			for k in n:
+				var q: Quaternion = a.track_get_key_value(ci, k)
+				if q.dot(q0) < 0.0:
+					q = -q
+				acc += Vector4(q.x, q.y, q.z, q.w)
+			acc = acc.normalized()
+			var qm := Quaternion(acc.x, acc.y, acc.z, acc.w)
+			# the clavicle's new keys; the old and new at any time (for the arm's keys)
+			var old_keys: Array = []
+			var times := PackedFloat32Array()
+			for k in n:
+				old_keys.append(a.track_get_key_value(ci, k))
+				times.append(a.track_get_key_time(ci, k))
+			for k in n:
+				a.track_set_key_value(ci, k, qm.slerp(old_keys[k], keep).normalized())
+			if not tr.has(an):
+				continue
+			var ai: int = tr[an]
+			# the arm: new_clav · new_arm = old_clav · old_arm  →  new_arm = new_clav⁻¹ · old_clav · old_arm
+			var tmp := Animation.new()
+			var ti := tmp.add_track(Animation.TYPE_ROTATION_3D)
+			for k in n:
+				tmp.rotation_track_insert_key(ti, times[k], old_keys[k])
+			for k in a.track_get_key_count(ai):
+				var t := a.track_get_key_time(ai, k)
+				var oc: Quaternion = tmp.rotation_track_interpolate(ti, t)
+				var nc: Quaternion = a.rotation_track_interpolate(ci, t)
+				var ql: Quaternion = a.track_get_key_value(ai, k)
+				a.track_set_key_value(ai, k, (nc.inverse() * oc * ql).normalized())
 
 
 ## Arms hanging, not spread (Director 06.11, 15:56: «остальных тоже явно коробит»): Meshy's talk clip takes the upper

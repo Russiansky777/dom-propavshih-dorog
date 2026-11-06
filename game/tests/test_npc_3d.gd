@@ -241,8 +241,14 @@ func _body_measure(v: Actor3D) -> Dictionary:
 func _body_run(id: String, old: bool, clear_off: bool = false) -> Dictionary:
 	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 	if old:
-		for k in ["act_body", "arm_body"]:
+		for k in ["act_body", "arm_body", "concat", "calm_shoulders", "shoulder_weights"]:
 			(spec["rt3d"] as Dictionary).erase(k)
+		# the clips of that time (the v2 stance and talk; 06.11 the new Meshy motions came)
+		spec["rt3d"]["clips"]["idle"] = "idle"
+		spec["rt3d"]["clips"]["listen"] = "listen"
+		spec["rt3d"]["clips"]["talk"] = "talk"
+		if spec["rt3d"].has("idle"):
+			spec["rt3d"]["idle"]["pool"] = [{"clip": "idle", "weight": 1}]
 		(spec["rt3d"]["feet"] as Dictionary).erase("boot")
 		spec["rt3d"]["state_fade_s"] = 0.4
 	if clear_off and spec["rt3d"].has("arm_body"):
