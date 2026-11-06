@@ -10,7 +10,10 @@ extends SceneTree
 ##     released; self-check — an unknown clip plays nothing (false) and the villager stays in the stance;
 ##   4 the data of the actions: every scene staging's npc_act and every hotspot's `act` names a clip the villager's
 ##     model has (actor data rt3d.clips), every thing in hand (rt3d.props, hotspot `held`) has its picture and its
-##     clip; self-check — a made-up clip and a missing picture are caught.
+##     clip; self-check — a made-up clip and a missing picture are caught;
+##   5 no patter (Director 06.11, 12:30: «Митя и Пелагея постоянно дёргаются, мельтешат»): standing, talking, listening
+##     and through every whole-body action clip the feet take at most one step; self-check — with the foot locks held
+##     through the action clips (as before 06.11) Mitya's lantern pick-up and Pelageya's rope steps several times.
 ## Exit code 0 only when every check passed.
 
 const V3 := ["pavel"]
@@ -54,6 +57,7 @@ func _run() -> void:
 	await _test("V3-2 fingertips out of the body (self-check: without the check they go in)", _t2)
 	await _test("V3-3 one-shot action plays once / holds / unknown clip is refused", _t3)
 	await _test("V3-4 every npc_act / act / prop names a clip and a picture that exist; self-check catches made-up ones", _t4)
+	await _test("V3-5 no stepping about standing or in the action clips (Mitya, Pelageya…); self-check — locks held through the clips step", _t5)
 	var failed := _results.filter(func(r): return not r[1]).size()
 	print("\n%d/%d passed" % [_results.size() - failed, _results.size()])
 	quit(1 if failed > 0 or _results.is_empty() else 0)
@@ -216,3 +220,67 @@ func _t4() -> void:
 	fake_actors["tamara"]["rt3d"]["props"]["give_small"][0]["image"] = "res://nope.png"
 	var caught := action_faults(fake_sc, [], fake_actors)
 	_check(caught.size() == 2, "self-check: made-up clip and missing picture → %s" % str(caught))
+
+
+## Foot-lock steps while `id` stands in `state` for `secs`, or plays the one-shot `clip` (state "act:<clip>").
+func _steps(id: String, what: String, secs: float, free := true) -> int:
+	var spec := _spec(id)
+	var s := GDScript.new()
+	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\n"
+	s.reload()
+	var n := Node2D.new()
+	n.set_script(s)
+	var sp := Sprite2D.new()
+	n.add_child(sp)
+	n.set("sprite", sp)
+	var sh := GDScript.new()
+	sh.source_code = "extends RefCounted\nvar texture_scale: float = 2.25\n"
+	sh.reload()
+	n.set("sheet", sh.new())
+	root.add_child(n)
+	var live = load("res://scripts/actors/npc_live_3d.gd").new()
+	n.add_child(live)
+	if not live.setup(n, spec, 0.55):
+		n.queue_free()
+		return -1
+	var v: Actor3D = live.view
+	v.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	v.feet_free_in_acts = free
+	live.face(Vector2(0.4, 0.5), 0.55, true)
+	for i in 30:
+		live.process(DT)
+	if what.begins_with("act:"):
+		live.play_once(what.substr(4))
+		secs = maxf(secs, v.action_length(what.substr(4)) + 1.5)
+	else:
+		live.set_state(what)
+	var steps := 0
+	var was := [false, false]
+	var t := 0.0
+	while t < secs:
+		live.process(DT)
+		for i in 2:
+			var on: bool = v._foot_step[i] != null
+			if on and not was[i]:
+				steps += 1
+			was[i] = on
+		t += DT
+	n.queue_free()
+	await process_frame
+	return steps
+
+
+func _t5() -> void:
+	var acts := {"mitya": ["pick_up", "raise_lantern", "knock_shutter", "tar_brush"], "pelageya": ["pull_rope", "tar_brush"],
+		"nina": ["place_table", "write_board", "hang_coat"], "tamara": ["give_small", "bag_strap"], "ilya": ["crank_windlass", "give_small"],
+		"ilya_wife": ["hold_lamp"]}
+	for id in ["mitya", "pelageya", "pavel", "nina", "ilya", "ilya_wife", "ulyana", "tamara", "manager"]:
+		for st in ["idle", "talk", "listen"]:
+			var k: int = await _steps(id, st, 6.0)
+			_check(k >= 0 and k <= 1, "%s %s: %d steps standing (≤ 1)" % [id, st, k])
+		for c in acts.get(id, []):
+			var k2: int = await _steps(id, "act:" + c, 0.0)
+			_check(k2 >= 0 and k2 <= 1, "%s %s: %d steps in the action (≤ 1)" % [id, c, k2])
+	var self_m: int = await _steps("mitya", "act:pick_up", 0.0, false)
+	var self_p: int = await _steps("pelageya", "act:pull_rope", 0.0, false)
+	_check(self_m > 3 and self_p > 3, "self-check: locks held through the clips — Mitya %d, Pelageya %d steps (the test sees no patter)" % [self_m, self_p])

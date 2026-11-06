@@ -1081,6 +1081,11 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	var lead_b := Basis(Vector3.UP, yaw + _feet_yaw_v * float(fk.get("lead_s", 0.12)))
 	var turning := absf(_feet_yaw_v) > 0.6
 	var walking := _w_s > float(fk.get("walk_off", 0.97)) or stride_hold
+	# block 3 (Director 06.11, 12:30: «Митя и Пелагея постоянно дёргаются, мельтешат»): a whole-body action clip (act_body
+	# full — the villager bends for the lantern, hauls the rope, tars the boat) moves the legs itself; the foot locks
+	# fought it and stepped 6–16 times in one action. While such a clip is shown the feet follow it, the locks let go;
+	# after it they are set where the feet stand, and one step brings them back to the stance if needed.
+	var act_free := feet_free_in_acts and act_body_full.has(_act_name) and _a_s > 0.05
 	if stride_hold and _w_s < 0.03 and not stride_hold_keep:
 		stride_hold = false   # the stance is in: the locks take the feet from the stride planting
 		_closing = 1          # after a planned stop: the foot left behind closes up — one step, not a shuffle
@@ -1161,14 +1166,14 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 				var ac: Vector3 = yaw_b * ((closing_to[i * 2] as Vector3) + Vector3(0.0, 0.0, _close_unit * _w_s))
 				err = Vector2(lock.x - ac.x, lock.z - ac.z).length()
 			dbg_reach[i] = reach - Vector3(lock.x, _planted_y(i, a), lock.z).distance_to(hip)
-			if lifted or walking or (err > float(fk.get("release_m", 0.3)) and shuffle.is_empty()):
+			if lifted or walking or act_free or (err > float(fk.get("release_m", 0.3)) and shuffle.is_empty()):
 				lock = null
 				err = 0.0
 			elif _out_of_reach(Vector3(lock.x, _planted_y(i, a), lock.z), hip, reach):
 				# the body has gone on past the leg's reach: the leg straightens, the heel comes up — and this foot
 				# steps first
 				err = maxf(err, 10.0)
-		elif not lifted and not walking and float(_foot_w[i]) <= 0.001:
+		elif not lifted and not walking and not act_free and float(_foot_w[i]) <= 0.001:
 			lock = Vector3(a.x, a.y, a.z)
 			if _st_t[i] != null and float(_st_w[i]) > 0.0:
 				# out of the stride: locked where the stride planting holds it, the IK staying on
@@ -1454,6 +1459,7 @@ static func loop_times(tau: float, len_s: float, xf: float) -> Array:
 ## take only `keep` of the action clip, the arms, the neck and the head all of it (a second Blend2 with track filters).
 var act_body_k: float = -1.0     # < 0: no act_body — the action clip drives every bone alike
 var act_body_full: Dictionary = {}   # act_body.full: roles whose clip moves the whole body (block 3: hug, crank, kneel)
+var feet_free_in_acts := true        # block 3: the foot locks let go during those clips (off — the tests' self-check)
 
 
 func _act_body_now() -> float:
