@@ -1,0 +1,14 @@
+{
+ "set": "images_held_props",
+ "_note": "Блок 3 (Директор 05.11: действия жителей с вещами в руках): картинки вещей, которые житель держит в руке, пока играет клип действия (data/actors/<житель>.json rt3d.props → HeldProp). Стиль — как у значков предметов, но вид сбоку, вещь целиком, без тени: на экране 20–60 px.",
+ "ai_model": "nano-banana-2",
+ "out_dir": "assets/props_held",
+ "style": "Single object for a painterly 2D adventure game set in the Russian North around 1900-1920, seen from the side at eye level, the whole object visible and upright. Soft hand-painted digital painting with visible brushstrokes, warm muted palette of umber, ochre, faded green and cream, gentle light from the upper left. No shadow, no text, no letters, no border, no frame, no hands, no people, plain empty background",
+ "items": {
+  "kerosene_lamp": "An old glass kerosene table lamp with a tall clear glass chimney, a small warm lit flame inside, a round brass base and a glass oil reservoir with a little handle on the side",
+  "mail_bag": "A worn brown leather postal satchel with a long shoulder strap and a flap with a brass buckle, slightly bulging with letters",
+  "carving_knife": "A small folk woodworking knife with a short straight steel blade and a worn birch wooden handle, blade pointing up",
+  "tar_brush": "A short wide bristle brush with a wooden handle, its bristles black and glossy with fresh pine tar, bristles pointing down",
+  "dunya_coat": "An old woman's dark brown wool winter coat folded over once as if carried over an arm, a neat patch sewn on one sleeve"
+ }
+}

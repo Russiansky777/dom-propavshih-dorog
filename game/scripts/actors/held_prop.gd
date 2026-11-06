@@ -8,6 +8,10 @@ extends Node2D
 ## the glass centre in picture px, flicker}}. The picture hangs straight down (a bail swings, it does not turn with the
 ## wrist); with the figure drawn from sheets (no live 3D), it hangs at `sheet_hand` [x, y] — share of the figure's
 ## width/height from the feet — so tests and the web build still see it.
+## Block 3 (Director 05.11: villagers' actions with things in hand — Tamara's key, Nina's chalk, Ilya's knife): actor
+## data rt3d.props {clip: [spec]} — a picture shown only while that one-shot clip plays (`during`), between the
+## shares `from`..`until` of it, fading with the clip; `grip` "wrist" — it turns with the hand (forearm → hand on
+## screen, plus `turn_deg`), held `out_rel` of the figure's height past the wrist, not hanging on a bail.
 
 var npc: Node2D = null
 var data: Dictionary = {}
@@ -71,6 +75,20 @@ static func _radial() -> Texture2D:
 	return _radial_tex
 
 
+## The share of its one-shot clip now and how much of the clip is shown (0 — not playing `during`).
+func _during_w() -> float:
+	var live = npc.get("live")
+	if live == null or not is_instance_valid(live) or live.get("view") == null:
+		return 0.0
+	if not bool(live.get("_once_clip")) or String(live.get("act_name")) != String(data["during"]):
+		return 0.0
+	var L: float = live.view.action_length(String(data["during"]))
+	var f := float(live.get("act_t")) / maxf(L, 0.01)
+	if f < float(data.get("from", 0.0)) or f > float(data.get("until", 1.0)):
+		return 0.0
+	return clampf(live.view.shown_act_w(), 0.0, 1.0)
+
+
 func flags_allow() -> bool:
 	for f in data.get("if", []):
 		if not GameState.has_flag(String(f)):
@@ -119,9 +137,14 @@ func hand_screen() -> Vector2:
 func _process(delta: float) -> void:
 	_t += delta
 	var on := flags_allow() and npc.is_visible_in_tree()
+	var dw := 1.0
+	if data.has("during"):
+		dw = _during_w()
+		on = on and dw > 0.01
 	visible = on
 	if not on or pic.texture == null:
 		return
+	modulate.a = dw
 	var h := _figure_h()
 	var ts := pic.texture.get_size()
 	var k := h * float(data.get("height_rel", 0.2)) / maxf(ts.y, 1.0)
@@ -132,6 +155,14 @@ func _process(delta: float) -> void:
 	var sway := sin(_t * 3.1 + _seed) * deg_to_rad(float(data.get("sway_deg", 2.5)))
 	global_position = hand
 	rotation = sway
+	if String(data.get("grip", "")) == "wrist":
+		var side := "Left" if String(data.get("bone", "RightHand")).begins_with("Left") else "Right"
+		var fa := _bone_world(side + "ForeArm")
+		var hb := _bone_world(side + "Hand")
+		if fa != Vector2.INF and hb != Vector2.INF and fa.distance_to(hb) > 1.0:
+			var dir := (hb - fa).normalized()
+			global_position = hb + dir * h * float(data.get("out_rel", 0.04))
+			rotation = dir.angle() - PI * 0.5 + deg_to_rad(float(data.get("turn_deg", 0.0)))
 	pic.scale = Vector2(k, k)
 	pic.position = -Vector2(float(a[0]), float(a[1])) * k
 	z_index = clampi(int(npc.z_index) + 1, -4096, 4096)

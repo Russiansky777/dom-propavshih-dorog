@@ -50,6 +50,7 @@ var partner: Node2D = null
 ## Director 30.10: the villager drawn live (NpcLive3D, actor data `rt3d` + `render` "3d") — null on sheets.
 var live: NpcLive3D = null
 var held: HeldProp = null   # 02.11 (стр. 21): rooms data `held` — a thing in the villager's hand
+var action_props: Array = []   # block 3: HeldProp per thing in hand of a one-shot action (actor data rt3d.props)
 var _floor_k: float = ActorSheet.FLOOR_FORESHORTENING_DEFAULT
 
 
@@ -158,6 +159,15 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	# 02.11 (стр. 21): a thing carried in the hand (rooms data `held` on the hotspot — Mitya's lantern)
 	if h.data is Dictionary and (h.data as Dictionary).has("held"):
 		held = HeldProp.attach(self, h.data["held"])
+	# block 3: things in hand during the villager's one-shot actions (actor data rt3d.props {clip: [spec]})
+	var props: Dictionary = ((aspec.get("rt3d", {}) as Dictionary).get("props", {}) as Dictionary) if aspec is Dictionary else {}
+	for clip in props.keys():
+		if String(clip).begins_with("_"):
+			continue
+		for ps in props[clip]:
+			var spec2: Dictionary = (ps as Dictionary).duplicate()
+			spec2["during"] = String(clip)
+			action_props.append(HeldProp.attach(self, spec2))
 	if live == null and not sheet.textures_loaded:
 		sheet = ActorSheet.load_actor(id)
 		sprite.sprite_frames = sheet.frames
