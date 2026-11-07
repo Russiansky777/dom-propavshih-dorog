@@ -1,13 +1,13 @@
 ; Engine configuration file.
-; Минимальный проект для доработки анимаций Павла и Ильи («Дом пропавших дорог»).
+; Минимальный проект для доработки анимаций живых фигур «Дома пропавших дорог» (жители и Агата).
 ; Рендер и формат кадра — как в игре (GL Compatibility, кадр 1920×1080 с растяжением canvas_items).
 
 config_version=5
 
 [application]
 
-config/name="Anim Lab — Павел и Илья"
-config/description="Отдельный стенд анимаций жителей v3 (Павел, Илья) из «Дома пропавших дорог»."
+config/name="Anim Lab — живые фигуры"
+config/description="Отдельный стенд анимаций живых 3D-фигур (жители и Агата) из «Дома пропавших дорог»."
 run/main_scene="res://lab/anim_lab.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 

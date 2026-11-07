@@ -1,17 +1,18 @@
 extends Node2D
-## Стенд анимаций Павла и Ильи. Фигура создаётся тем же кодом, что в игре: NpcLive3D → Actor3D (SubViewport,
+## Стенд анимаций живых фигур (жители и Агата). Фигура создаётся тем же кодом, что в игре: NpcLive3D → Actor3D (SubViewport,
 ## ортокамера, шейдер actor_3d) → цепочка модификаторов скелета → BodyClear последним. Настройки — data/actors/<id>.json
 ## (блок rt3d), как в игре. Камера стенда — та же ортокамера Actor3D, её можно вращать вокруг фигуры; при повороте 0°
 ## и высоте 14° кадр совпадает с игровым.
 
-const IDS := ["pavel", "ilya"]
-const NAMES := {"pavel": "Павел", "ilya": "Илья"}
+const CHARACTERS := "res://lab/characters.json"   # [{id, name, age, role}] — порядок кнопок и клавиш 1…9, 0
 const ROLES := ["walk", "idle", "listen", "talk"]
 const FLOOR_K := 0.55            # ракурс пола типичной комнаты (влияет на шаги стоп, не на картинку: oblique_floor выключен)
 const GAME_ELEV := 14.0
 const SPEEDS := [0.1, 0.25, 0.5, 1.0]
 const LabNpc := preload("res://lab/lab_npc.gd")
 
+var IDS: Array = []
+var INFO := {}                   # id → {name, age, role}
 var who := 0
 var npc: Node2D = null
 var live: NpcLive3D = null
@@ -34,10 +35,14 @@ var _t := 0.0
 var hud: Label = null
 var panel: VBoxContainer = null
 var ui: CanvasLayer = null
-var actions_box: HBoxContainer = null
+var actions_box: HFlowContainer = null
 
 
 func _ready() -> void:
+	var list = JSON.parse_string(FileAccess.get_file_as_string(CHARACTERS))
+	for c in list:
+		IDS.append(String(c["id"]))
+		INFO[String(c["id"])] = c
 	_build_ui()
 	_spawn()
 
@@ -92,7 +97,7 @@ func _place_npc() -> void:
 		return
 	var vs := get_viewport_rect().size
 	npc.scale = Vector2.ONE * zoom
-	npc.position = Vector2(vs.x * 0.56, vs.y * 0.93) + pan
+	npc.position = Vector2(maxf(vs.x * 0.66, 1100.0), vs.y * 0.93) + pan   # правее панели (≈ 800 px)
 
 
 func _set_state(st: String) -> void:
@@ -181,7 +186,7 @@ func _update_hud() -> void:
 	var v: Actor3D = live.view
 	var act := String(v.get("_act_name"))
 	var lines := [
-		"%s   %s" % [NAMES[IDS[who]], "(БЕЗ поправок движка)" if raw else ""],
+		"%s, %d — %s   %s" % [INFO[IDS[who]]["name"], int(INFO[IDS[who]]["age"]), INFO[IDS[who]].get("role", ""), "(БЕЗ поправок движка)" if raw else ""],
 		"Состояние: %s   слой действия: %s, вес %.2f" % [state, act if act != "" else "—", v.shown_act_w()],
 		"Камера: поворот %d°, высота %d°%s   масштаб ×%.2f" % [roundi(cam_yaw), roundi(cam_elev), "  (= игровой ракурс)" if roundi(cam_yaw) % 360 == 0 and roundi(cam_elev) == 14 else "", zoom],
 		"Свет: %s   BodyClear живой: %s" % ["за камерой (как в игре)" if light_follows else "неподвижен", _bc_text()],
@@ -228,8 +233,9 @@ func _unhandled_input(ev: InputEvent) -> void:
 
 func _key(k: int) -> void:
 	match k:
-		KEY_1: _switch(0)
-		KEY_2: _switch(1)
+		KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9: _switch(k - KEY_1)
+		KEY_0: _switch(9)
+		KEY_TAB: _switch(posmod(who + (-1 if Input.is_key_pressed(KEY_SHIFT) else 1), IDS.size()))
 		KEY_I: _set_state("idle")
 		KEY_T: _set_state("talk")
 		KEY_L: _set_state("listen")
@@ -244,7 +250,7 @@ func _key(k: int) -> void:
 		KEY_F: _view(0.0)
 		KEY_S: _view(90.0)
 		KEY_B: _view(180.0)
-		KEY_0, KEY_HOME: _reset_view()
+		KEY_HOME: _reset_view()
 		KEY_SPACE: paused = not paused
 		KEY_PERIOD:
 			paused = true
@@ -265,7 +271,7 @@ func _key(k: int) -> void:
 
 
 func _switch(i: int) -> void:
-	if i == who and live != null:
+	if i < 0 or i >= IDS.size() or (i == who and live != null):
 		return
 	who = i
 	if state.begins_with("act:"):
@@ -313,6 +319,7 @@ func _build_ui() -> void:
 	add_child(ui)
 	var root := PanelContainer.new()
 	root.position = Vector2(16, 16)
+	root.custom_minimum_size = Vector2(760, 0)
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.08, 0.075, 0.07, 0.82)
 	sb.set_content_margin_all(12)
@@ -323,18 +330,27 @@ func _build_ui() -> void:
 	panel.add_theme_constant_override("separation", 8)
 	root.add_child(panel)
 	hud = Label.new()
+	hud.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # длинная роль персонажа переносится, панель не растёт
+	hud.custom_minimum_size = Vector2(736, 0)
 	hud.add_theme_font_size_override("font_size", 18)
 	panel.add_child(hud)
-	panel.add_child(_row([["Павел [1]", func(): _switch(0)], ["Илья [2]", func(): _switch(1)]]))
+	var people := []
+	for i in IDS.size():
+		var n: int = i
+		people.append(["%s [%d]" % [INFO[IDS[i]]["name"], (i + 1) % 10], func(): _switch(n)])
+	panel.add_child(_row(people))
 	panel.add_child(_row([["idle [I]", func(): _set_state("idle")], ["talk [T]", func(): _set_state("talk")], ["listen [L]", func(): _set_state("listen")]]))
-	panel.add_child(_row([["Спереди [F]", func(): _view(0.0)], ["Сбоку [S]", func(): _view(90.0)], ["Сзади [B]", func(): _view(180.0)], ["Сброс [0]", func(): _reset_view()]]))
-	actions_box = HBoxContainer.new()
+	panel.add_child(_row([["Спереди [F]", func(): _view(0.0)], ["Сбоку [S]", func(): _view(90.0)], ["Сзади [B]", func(): _view(180.0)], ["Сброс [Home]", func(): _reset_view()]]))
+	actions_box = HFlowContainer.new()
 	actions_box.add_theme_constant_override("separation", 6)
 	panel.add_child(actions_box)
 	var help := Label.new()
 	help.add_theme_font_size_override("font_size", 15)
 	help.modulate = Color(1, 1, 1, 0.75)
+	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	help.custom_minimum_size = Vector2(736, 0)
 	help.text = "\n".join([
+		"1…9, 0 — персонаж (Tab / Shift+Tab — следующий / предыдущий)",
 		"Левая кнопка мыши + тянуть — камера вокруг фигуры (влево-вправо — поворот, вверх-вниз — высота)",
 		"← → — поворот на 15°, ↑ ↓ — высота на 5°; колесо — масштаб; правая/средняя кнопка + тянуть — сдвиг",
 		"Пробел — пауза, «.» — кадр вперёд (1/60 с), [ ] — скорость ×0.1…×1; N — следующее разовое действие",
@@ -344,8 +360,8 @@ func _build_ui() -> void:
 	panel.add_child(help)
 
 
-func _row(items: Array) -> HBoxContainer:
-	var h := HBoxContainer.new()
+func _row(items: Array) -> HFlowContainer:
+	var h := HFlowContainer.new()
 	h.add_theme_constant_override("separation", 6)
 	for it in items:
 		var b := Button.new()
