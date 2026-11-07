@@ -15,6 +15,9 @@ const BODY := ["Hips", "Spine02", "Spine01", "Spine", "LeftUpLeg", "RightUpLeg"]
 
 static var _hull_cache: Dictionary = {}   # model path → [bins, unit]
 
+## Include separately rigged garment vertices in the body envelope; defaults preserve other actors.
+var garment_hull: bool = false
+var garment_hull_margin: float = 0.0
 var enabled: bool = true           # off — the tests' self-check (the clip's hands as they were)
 var max_deg: float = 15.0
 var omega: float = 12.0
@@ -60,6 +63,9 @@ var snap: bool = true
 
 
 func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cache_key: String) -> bool:
+	garment_hull = bool(d.get("garment_hull", false))
+	garment_hull_margin = maxf(float(d.get("garment_hull_margin_m", 0.0)),0.0)
+	cache_key += "#garment:%s" % garment_hull_margin if garment_hull else ""
 	max_deg = float(d.get("max_deg", max_deg))
 	omega = float(d.get("omega", omega))
 	omega_back = float(d.get("omega_back", omega_back))
@@ -117,6 +123,7 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 	var tip_d := [0.0, 0.0]
 	var acc := {}       # bin → [Array of Vector2, {bone: count}]
 	var step := 0.01 * _unit
+	var garment_bins := {}
 	for mi in meshes:
 		var skin: Skin = (mi as MeshInstance3D).skin
 		if skin == null:
@@ -157,14 +164,18 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 						_tip[side] = hr.affine_inverse() * hp
 					surf[side][1].append(hr.affine_inverse() * hp)
 					continue
-				if not body.has(bone):
+				var garment := garment_hull and sk.get_bone_name(bone).begins_with("Skirt")
+				if not body.has(bone) and not garment:
 					continue
 				var p: Vector3 = (binds[best][1] as Transform3D) * vs[k]
 				var key := int(floor(p.y / step))
 				if not acc.has(key):
 					acc[key] = [[], {}]
 				(acc[key][0] as Array).append(Vector2(p.x, p.z))
-				acc[key][1][bone] = int(acc[key][1].get(bone, 0)) + 1
+				if garment:
+					garment_bins[key] = true
+				var carrier := _hips if garment else bone
+				acc[key][1][carrier] = int(acc[key][1].get(carrier, 0)) + 1
 	_surf = [surf[0][1], surf[1][1]]
 	var out := {}
 	for key in acc.keys():
@@ -179,6 +190,10 @@ func _build_hull(sk: Skeleton3D, meshes: Array) -> Dictionary:
 			var dd: Vector2 = q - c
 			var s := int(fposmod(atan2(dd.y, dd.x), TAU) / TAU * SECTORS) % SECTORS
 			r[s] = maxf(r[s], dd.length())
+		if garment_bins.has(key) and garment_hull_margin > 0.0:
+			for sector in SECTORS:
+				if r[sector] > 0.0:
+					r[sector] += garment_hull_margin * _unit
 		var top := -1
 		var n := -1
 		for b in (acc[key][1] as Dictionary).keys():
@@ -470,6 +485,13 @@ func _process_modification_with_delta(delta: float) -> void:
 				vel[c] = s.y
 			_rot[i] = cur
 			_rot_v[i] = vel
+		# The follower can overshoot a moving target even when the target itself is capped.
+		var follower: Vector3 = _rot[i]
+		if follower.length() > deg_to_rad(max_deg):
+			var axis := follower.normalized()
+			_rot[i] = axis * deg_to_rad(max_deg)
+			var velocity: Vector3 = _rot_v[i]
+			_rot_v[i] = velocity - axis * maxf(velocity.dot(axis), 0.0)
 		var rot: Vector3 = (_rot[i] as Vector3) * clampf(strength, 0.0, 1.0)
 		if rot.length() > 1e-5:
 			var nb := Basis(rot.normalized(), rot.length()) * g.basis
@@ -479,7 +501,8 @@ func _process_modification_with_delta(delta: float) -> void:
 			after = maxf(after, float(depth_at(sk, pt[0])[0]) + float(pt[1]))
 		# the follower lagging while the clip brings the hand into the clothes (a state's switch, a gesture coming down):
 		# more than `catch_m` in — catch up on a timed pass. An extra zero-time pass must preserve the follower.
-		if delta > 0.0 and after > catch_m * _unit and want.length() > rot.length() and enabled:
+		# Compare the target with the unscaled follower. During a strength fade, a smaller target must still decay softly.
+		if delta > 0.0 and after > catch_m * _unit and want.length() > (_rot[i] as Vector3).length() and enabled:
 			_rot[i] = want
 			_rot_v[i] = Vector3.ZERO
 			rot = want * clampf(strength, 0.0, 1.0)
