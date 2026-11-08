@@ -1,0 +1,39 @@
+{
+  "_comment": "Ужин в доме тёти (Директор 09.11, 00:29 «ужин давай попробуем»): 4 варианта картины по выборам игрока (семья с Ульяной / без, чашка синяя / белая — люди и чашка впечатаны в кадр; карта Ульяны и фотография остаются слоями поверх видео). Kling 3.0, 10 с, последний кадр = картина; в игре клипы чередуются (сцена ~90 с).",
+  "trial": "dinner_1",
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "EP_dinner_closed_blue",
+      "image": "assets/incoming/video/dinner/base_closed_blue.png",
+      "prompt": "Static camera, warm candlelit room. Everyone stays seated and keeps their places; they breathe softly, heads turn slightly as they listen to each other, a faint smile. The candle flame flickers, glints play on the samovar, light snow falls outside the window. The cat on the stove flicks an ear. Nobody stands up, no hands move the dishes or the cup. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    },
+    {
+      "id": "EP_dinner_closed_white",
+      "image": "assets/incoming/video/dinner/base_closed_white.png",
+      "prompt": "Static camera, warm candlelit room. Everyone stays seated and keeps their places; they breathe softly, heads turn slightly as they listen to each other, a faint smile. The candle flame flickers, glints play on the samovar, light snow falls outside the window. The cat on the stove flicks an ear. Nobody stands up, no hands move the dishes or the cup. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    },
+    {
+      "id": "EP_dinner_open_blue",
+      "image": "assets/incoming/video/dinner/base_open_blue.png",
+      "prompt": "Static camera, warm candlelit room. Everyone stays seated and keeps their places; they breathe softly, heads turn slightly as they listen to each other, a faint smile. The candle flame flickers, glints play on the samovar, light snow falls outside the window. The cat on the stove flicks an ear. Nobody stands up, no hands move the dishes or the cup. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    },
+    {
+      "id": "EP_dinner_open_white",
+      "image": "assets/incoming/video/dinner/base_open_white.png",
+      "prompt": "Static camera, warm candlelit room. Everyone stays seated and keeps their places; they breathe softly, heads turn slightly as they listen to each other, a faint smile. The candle flame flickers, glints play on the samovar, light snow falls outside the window. The cat on the stove flicks an ear. Nobody stands up, no hands move the dishes or the cup. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/standard/image-to-video",
+      "image_key": [
+        "image_url",
+        "tail_image_url"
+      ],
+      "args": {
+        "duration": "10"
+      }
+    }
+  ]
+}
