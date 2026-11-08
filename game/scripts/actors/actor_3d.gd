@@ -401,7 +401,7 @@ func _smooth_tracks() -> void:
 ## σ 1.5 / 2.5 / 3.5 keys left 9 / 8 / 7 spikes over 4 mm, σ 5 none (worst 3.6 mm) — the villagers take 5 (≈ 0.17 s:
 ## a gesture of half a second and more keeps its shape). Every key, the ends too (clamped: an end key kept as it was
 ## stood out against its smoothed neighbours — a kink at the end of each one-shot action).
-const SMOOTH_BONES := ["LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm", "RightForeArm", "RightHand", "Neck", "Head"]
+const SMOOTH_BONES := ["LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm", "RightForeArm", "RightHand", "Neck", "neck", "Head"]
 
 
 func _smooth_kinks() -> void:
@@ -416,6 +416,8 @@ func _smooth_kinks() -> void:
 		if role == "walk" or done.has(clips[role]):
 			continue
 		var sg := float(per_clip.get(role, sigma))
+		if sg <= 0.0:
+			continue
 		var r := int(ceil(sg * 2.5))
 		var w := PackedFloat32Array()
 		for k in range(-r, r + 1):
@@ -531,6 +533,10 @@ func _hang_arms() -> void:
 		return
 	var s0 := deg_to_rad(float(ah.get("from_deg", 12.0)))
 	var k := clampf(float(ah.get("k", 0.35)), 0.0, 1.0)
+	# Director 08.11, 13:04 («опять какая-то хрень с плечами»): the angle measured as the lateral share of the upper arm
+	# (asin) missed arms held out-and-forward with the elbows out — 22° on average from the front, under 14° by asin;
+	# `frontal` measures it as the camera sees it, in the body's frontal plane, and turns the arm in that plane only.
+	var frontal := bool(ah.get("frontal", false))
 	var names := {}
 	for role in ah.get("roles", ["idle", "talk", "listen"]):
 		if clips.has(role):
@@ -581,6 +587,14 @@ func _hang_arms() -> void:
 				var qa: Quaternion = a.track_get_key_value(ti, key)
 				var d: Vector3 = (qp * qa) * along
 				var sa := asin(clampf(d.dot(out), -1.0, 1.0))
+				if frontal:
+					var dp: Vector3 = d - up * 0.0
+					var fwd: Vector3 = up.cross(out_l).normalized()
+					dp = d - fwd * d.dot(fwd)
+					if dp.length() < 1e-4 or d.dot(up) > 0.0:
+						continue
+					sa = atan2(dp.dot(out), -dp.dot(up))
+					d = dp.normalized()
 				if sa <= s0:
 					continue
 				var axis := d.cross(out)
@@ -763,6 +777,20 @@ func _setup_skirt_drive(dr: Dictionary, n: int, last: int) -> void:
 	skirt_drive.spread_m = float(dr.get("spread_m", 0.16))
 	skirt_drive.reach_k = float(dr.get("reach_k", 1.0))
 	skirt_drive.max_deg = float(dr.get("max_deg", 35.0))
+	skirt_drive.collision_sweep = bool(dr.get("collision_sweep", false))
+	skirt_drive.sweep_margin_m = float(dr.get("sweep_margin_m", 0.003))
+	skirt_drive.sweep_release_s = float(dr.get("sweep_release_s", 0.0))
+	skirt_drive.sweep_inner_k = float(dr.get("sweep_inner_k", -1.0))
+	var sweep_start: Array = dr.get("sweep_start_ratio", [0.0,0.0])
+	skirt_drive.sweep_start_ratio = Vector2(float(sweep_start[0]),float(sweep_start[1]))
+	skirt_drive.sector_half_angle_deg = float(dr.get("sector_half_angle_deg", -1.0))
+	for segment in dr.get("collision_segments", []):
+		var from_bone := skeleton.find_bone(String(segment.get("from", "")))
+		var to_bone := skeleton.find_bone(String(segment.get("to", "")))
+		if from_bone < 0 or to_bone < 0:
+			push_error("Unknown skirt collision segment bone: " + str(segment))
+			continue
+		skirt_drive.collision_segments.append([from_bone,to_bone,float(segment.get("radius_m",skirt_drive.leg_r_m))])
 
 
 ## A safety net for the joints (Director 30.10, «идеальная Агата»: «иногда странные или рваные»): whatever the clips do
@@ -1190,12 +1218,14 @@ func _measure_foot_rest() -> void:
 	var f := feet_model()
 	_foot_rest_h = [f[0].y, f[2].y]
 	if boot != null:
-		# the stance's ankles above where the boots stand them: the whole figure goes down by it out of the stride
-		_boot_drop = maxf(minf(f[0].y, f[2].y) - minf(float(_foot_bind_h[0]), float(_foot_bind_h[1])), 0.0)
+		# Align the whole figure to the boot floor; signed alignment also permits raising it.
+		var offset := minf(f[0].y, f[2].y) - minf(float(_foot_bind_h[0]), float(_foot_bind_h[1]))
+		var signed_alignment := bool(spec.get("feet", {}).get("boot", {}).get("signed_alignment", false))
+		_boot_drop = offset if signed_alignment else maxf(offset, 0.0)
 		_foot_rest_h = [f[0].y - _boot_drop, f[2].y - _boot_drop]
 
 
-var _boot_drop: float = 0.0     # metres the stance clips hold the body above its boots (rt3d.feet.boot)
+var _boot_drop: float = 0.0     # metres to lower the stance; signed_alignment also permits raising it
 
 
 ## One frame of the foot locks, after the pose and the body's move: `origin_px` — where the figure stands on the
@@ -1761,11 +1791,14 @@ static func loop_times(tau: float, len_s: float, xf: float) -> Array:
 var act_body_k: float = -1.0     # < 0: no act_body — the action clip drives every bone alike
 var _gate := 1.0   # the action weight's gate while one clip gives way to the next (pose)
 var act_body_full: Dictionary = {}   # act_body.full: roles whose clip moves the whole body (block 3: hug, crank, kneel)
+var act_body_keep_by_role: Dictionary = {}  # optional body blending without releasing foot locks
 var feet_free_in_acts := true        # block 3: the foot locks let go during those clips (off — the tests' self-check)
 
 
 func _act_body_now() -> float:
-	return 1.0 if act_body_full.has(_act_name) else act_body_k
+	if act_body_full.has(_act_name):
+		return 1.0
+	return float(act_body_keep_by_role.get(_act_name, act_body_k))
 
 
 func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> bool:
@@ -1815,6 +1848,8 @@ func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> b
 	bt.connect_node("actb_body", 0, "actb")
 	bt.connect_node("actb_body", 1, "act_mix_b")
 	act_body_k = clampf(float(ab.get("keep", 0.3)), 0.0, 1.0)
+	for role in ab.get("keep_by_role", {}):
+		act_body_keep_by_role[String(role)] = clampf(float(ab["keep_by_role"][role]), 0.0, 1.0)
 	for r in ab.get("full", []):
 		act_body_full[String(r)] = true
 	return true
@@ -2091,7 +2126,8 @@ func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: Str
 		_w_v = 0.0
 		_a_v = 0.0
 	if life != null:
-		life.idle_weight = (1.0 - _w_s) * (1.0 - _a_s)
+		var talk_life := clampf(float(spec.get("life", {}).get("talk_weight", 0.0)), 0.0, 1.0) if act_name == "talk" else 0.0
+		life.idle_weight = (1.0 - _w_s) * lerpf(1.0, talk_life, _a_s)
 		life.advance(delta)
 	_advance_look(delta)
 	_shown_t = act_t
