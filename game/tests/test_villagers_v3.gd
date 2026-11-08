@@ -461,9 +461,9 @@ func _t7() -> void:
 	# 08.11: the apron on its own bones (second AI's model) — the v2 hand sits 2 cm in it with axis+tip clearing; the
 	# measure must still read it as inside (> 1.5), and with no clearing at all deeper (> 3)
 	_check(float(raw[0]) > 1.5, "self-check: Pavel with axis and fingertip only — %.1f cm (the test sees nothing)" % float(raw[0]))
-	(sp["rt3d"] as Dictionary).erase("arm_body")
+	(sp["rt3d"]["arm_body"] as Dictionary)["max_deg"] = 0.0   # the clearing kept but allowed no turn at all
 	var raw0: Array = await _hand_depth(sp)
-	_check(float(raw0[0]) > 3.0, "self-check: Pavel with no clearing at all — %.1f cm (the test sees nothing)" % float(raw0[0]))
+	_check(raw0.size() == 3 and float(raw0[0]) > 3.0, "self-check: Pavel with no clearing at all — %s cm (the test sees nothing)" % str(raw0))
 
 
 ## Upper arm sideways angle before the hands are cleared, talking and listening: [mean, max] (degrees).
