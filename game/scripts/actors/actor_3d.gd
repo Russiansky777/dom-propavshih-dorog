@@ -1791,11 +1791,14 @@ static func loop_times(tau: float, len_s: float, xf: float) -> Array:
 var act_body_k: float = -1.0     # < 0: no act_body — the action clip drives every bone alike
 var _gate := 1.0   # the action weight's gate while one clip gives way to the next (pose)
 var act_body_full: Dictionary = {}   # act_body.full: roles whose clip moves the whole body (block 3: hug, crank, kneel)
+var act_body_keep_by_role: Dictionary = {}  # optional body blending without releasing foot locks
 var feet_free_in_acts := true        # block 3: the foot locks let go during those clips (off — the tests' self-check)
 
 
 func _act_body_now() -> float:
-	return 1.0 if act_body_full.has(_act_name) else act_body_k
+	if act_body_full.has(_act_name):
+		return 1.0
+	return float(act_body_keep_by_role.get(_act_name, act_body_k))
 
 
 func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> bool:
@@ -1845,6 +1848,8 @@ func _setup_act_body(bt: AnimationNodeBlendTree, actb: AnimationNodeBlend2) -> b
 	bt.connect_node("actb_body", 0, "actb")
 	bt.connect_node("actb_body", 1, "act_mix_b")
 	act_body_k = clampf(float(ab.get("keep", 0.3)), 0.0, 1.0)
+	for role in ab.get("keep_by_role", {}):
+		act_body_keep_by_role[String(role)] = clampf(float(ab["keep_by_role"][role]), 0.0, 1.0)
 	for r in ab.get("full", []):
 		act_body_full[String(r)] = true
 	return true

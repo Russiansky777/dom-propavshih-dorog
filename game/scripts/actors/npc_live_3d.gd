@@ -29,6 +29,8 @@ var walk_phase: float = 0.0
 var act_name: String = ""
 var act_w: float = 0.0
 var act_t: float = 0.0
+var _dialogue_clock_speed: float = 1.0
+var _dialogue_clock_v: float = 0.0
 ## One-shot actions (block 3, Director 05.11: villagers do what the story says — hug, hand a key over, crank the
 ## windlass): a clip played once forward from the stance and back (`play_once`); `hold` keeps its last pose until
 ## `release_once` (a hug held through the lines). While the clip fades out its time stays at the end (no wrap).
@@ -214,6 +216,26 @@ func walk(on: bool, speed_px: float = 0.0, s: float = 1.0) -> void:
 		walk_rate = clampf(mps / maxf(view.stride_m, 0.1), 0.2, 2.5)
 
 
+## Optional authored-dialogue exit: ease the outgoing clip's clock to rest while its pose fades.
+## Without this setting the legacy clock is unchanged. Keeping speed and its derivative also
+## makes a quick listen -> talk reversal continuous. Integrate the critically damped speed
+## analytically, so remaining clip travel does not depend on the render/physics frame rate.
+func _dialogue_phase_step(delta: float, playing: bool) -> float:
+	var omega := float(rt.get("dialogue_clock_omega", 0.0))
+	if omega <= 0.0:
+		return delta
+	if delta <= 0.0:
+		return 0.0
+	var target := 1.0 if playing else 0.0
+	var x := _dialogue_clock_speed - target
+	var b := _dialogue_clock_v + omega * x
+	var e := exp(-omega * delta)
+	var travel := target * delta + x * (1.0 - e) / omega + b * (1.0 - e * (1.0 + omega * delta)) / (omega * omega)
+	_dialogue_clock_speed = target + (x + b * delta) * e
+	_dialogue_clock_v = (_dialogue_clock_v - omega * b * delta) * e
+	return maxf(travel, 0.0)
+
+
 func process(delta: float) -> void:
 	if view == null:
 		return
@@ -260,7 +282,7 @@ func process(delta: float) -> void:
 	elif act_name != "" and (act_w > 0.0 or view.shown_act_w() > 0.0):
 		# listen / talk: forward, each pass's end fading into the next one's start (on while it is still shown)
 		var sp := float(rt.get("talk_speed" if act_name == "talk" else "listen_speed", 1.0))
-		act_t += delta * sp
+		act_t += _dialogue_phase_step(delta, talk_on) * sp
 		lt = Actor3D.loop_times(act_t, maxf(view.action_length(act_name), 0.1), float(rt.get("loop_crossfade_s", 0.8)))
 	if _once_clip and not once and act_w <= 0.0 and view.shown_act_w() <= 0.001:
 		_once_clip = false

@@ -73,6 +73,7 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 	max_deg = float(d.get("max_deg", max_deg))
 	omega = float(d.get("omega", omega))
 	omega_back = float(d.get("omega_back", omega_back))
+	catch_m = maxf(float(d.get("catch_m", catch_m)), 0.0)
 	hand_r = float(d.get("hand_r_m", hand_r))
 	fore_r = float(d.get("fore_r_m", fore_r))
 	hand_len = float(d.get("hand_len", hand_len))
