@@ -1008,7 +1008,7 @@
       }
     },
     "listen_speed": 0.8,
-    "talk_speed": 1.0,
+    "talk_speed": 1.3,
     "state_fade_s": 0.7,
     "_state_fade_s": "01.11 (Директор, стр. 6: фигура Павла при разговоре «слишком резко меняющаяся»): наплыв «говорит»/«слушает» 0,4 → 0,7 с.",
     "act_body": {
@@ -1126,6 +1126,7 @@
     "center_feet": true,
     "oblique_floor": false,
     "_pilot_0811": "Ilya-only pilot: body-fitted forward gestures authored into GLB; no arm_hang/calm_shoulders or BodyClear baking. Live safety remains, and its measured contribution must be small. Full source geometry and old clips retained.",
-    "dialogue_clock_omega": 26.0
+    "dialogue_clock_omega": 26.0,
+    "_talk_speed_0811": "Директор 08.11, 21:21: клипы разговора второго ИИ в 2,5 раза спокойнее прежних (кисти 8–14 см/с против 20–35) — «темп больше принимаю»; 1,3× даёт ~11–18 см/с"
   }
 }
