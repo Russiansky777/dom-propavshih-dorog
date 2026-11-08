@@ -79,35 +79,42 @@ def main() -> int:
         im.save(buf, "JPEG", quality=92)
         image_url = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
         print(f"   картинка {im.width}x{im.height}, {len(buf.getvalue()) // 1024} КБ")
-        for m in req["models"]:
+        # все модели разом (Директор 22:40 «почему так долго?»): время прогона — самая медленная модель, не сумма
+        from concurrent.futures import ThreadPoolExecutor
+
+        def one(m, n):
             mid = m["id"]
-            for n in range(1, attempts + 1):
-                name = f"{fr['id']}__{slug(mid)}_{n}.mp4"
-                dst = os.path.join(out_dir, name)
-                if os.path.exists(dst):
-                    print(f"   {name}: уже есть")
-                    continue
-                args = {"prompt": fr["prompt"], "image_url": image_url}
-                args.update(m.get("args", {}))
-                row = {"frame": fr["id"], "model": mid, "attempt": n, "file": name, "args": {k: v for k, v in args.items() if k != "image_url"}}
-                t1 = time.time()
-                try:
-                    res = fal_client.subscribe(mid, arguments=args, with_logs=False)
-                    url = find_video_url(res)
-                    if not url:
-                        raise RuntimeError("в ответе нет video.url: %s" % json.dumps(res)[:400])
-                    urllib.request.urlretrieve(url, dst)
-                    row["seconds"] = round(time.time() - t1, 1)
-                    row["bytes"] = os.path.getsize(dst)
-                    print(f"   {mid} #{n}: OK {row['seconds']} с, {row['bytes'] // 1024} КБ")
-                except Exception as e:  # noqa: BLE001 — одна модель не должна валить остальные
-                    msg = str(e)
-                    msg = re.sub(r"(?i)key [a-z0-9:_-]+", "key …", msg)
-                    row["error"] = msg[:800]
-                    row["seconds"] = round(time.time() - t1, 1)
-                    print(f"   {mid} #{n}: ОШИБКА {msg[:300]}")
-                report["runs"].append(row)
-                json.dump(report, open(report_p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+            name = f"{fr['id']}__{slug(mid)}_{n}.mp4"
+            dst = os.path.join(out_dir, name)
+            if os.path.exists(dst):
+                print(f"   {name}: уже есть")
+                return None
+            args = {"prompt": fr["prompt"], "image_url": image_url}
+            args.update(m.get("args", {}))
+            row = {"frame": fr["id"], "model": mid, "attempt": n, "file": name, "args": {k: v for k, v in args.items() if k != "image_url"}}
+            t1 = time.time()
+            try:
+                res = fal_client.subscribe(mid, arguments=args, with_logs=False)
+                url = find_video_url(res)
+                if not url:
+                    raise RuntimeError("в ответе нет video.url: %s" % json.dumps(res)[:400])
+                urllib.request.urlretrieve(url, dst)
+                row["seconds"] = round(time.time() - t1, 1)
+                row["bytes"] = os.path.getsize(dst)
+                print(f"   {mid} #{n}: OK {row['seconds']} с, {row['bytes'] // 1024} КБ", flush=True)
+            except Exception as e:  # noqa: BLE001 — одна модель не должна валить остальные
+                msg = re.sub(r"(?i)key [a-z0-9:_-]+", "key …", str(e))
+                row["error"] = msg[:800]
+                row["seconds"] = round(time.time() - t1, 1)
+                print(f"   {mid} #{n}: ОШИБКА {msg[:300]}", flush=True)
+            return row
+
+        jobs = [(m, n) for m in req["models"] for n in range(1, attempts + 1)]
+        with ThreadPoolExecutor(max_workers=max(1, len(jobs))) as ex:
+            for row in ex.map(lambda j: one(*j), jobs):
+                if row is not None:
+                    report["runs"].append(row)
+                    json.dump(report, open(report_p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for r in report["runs"] if "error" not in r)
     print(f"готово: {ok} клипов, {len(report['runs']) - ok} ошибок → {out_dir}")
     return 0
