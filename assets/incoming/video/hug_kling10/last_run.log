@@ -1,0 +1,8 @@
+run 42530248646 2026-11-08T22:30:24Z request: pipeline/requests/video_hug_kling10.json
+== кадр F_hug_pelageya: game/assets/rooms/F_hug_pelageya/bg.png
+   картинка 1280x720, 366 КБ
+   fal-ai/kling-video/v3/standard/image-to-video #1: OK 157.6 с, 25100 КБ
+== кадр F_hug_nina: game/assets/rooms/F_hug_nina/bg.png
+   картинка 1280x720, 374 КБ
+   fal-ai/kling-video/v3/standard/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+готово: 1 клипов, 1 ошибок → assets/incoming/video/hug_kling10
