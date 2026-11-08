@@ -1,32 +1,16 @@
-run 42524225322 2026-11-08T21:17:44Z request: pipeline/requests/video_hug_1.json
+run 42524744060 2026-11-08T21:23:55Z request: pipeline/requests/video_hug_1.json
 == кадр F_hug_pelageya: game/assets/rooms/F_hug_pelageya/bg.png
-Traceback (most recent call last):
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/video_trial.py", line 109, in <module>
-    sys.exit(main())
-             ~~~~^^
-  File "/home/runner/work/dom-propavshih-dorog/dom-propavshih-dorog/tools/video_trial.py", line 72, in main
-    image_url = fal_client.upload_file(fr["image"])
-  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/fal_client/client.py", line 2633, in upload_file
-    return self.upload(
-           ~~~~~~~~~~~^
-        file.read(),
-        ^^^^^^^^^^^^
-    ...<4 lines>...
-        lifecycle=lifecycle,
-        ^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/fal_client/client.py", line 2570, in upload
-    client = self._get_cdn_client()
-  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/fal_client/client.py", line 2255, in _get_cdn_client
-    token = self._token_manager.get_token()
-  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/fal_client/client.py", line 197, in get_token
-    self._token = self._refresh_token()
-                  ~~~~~~~~~~~~~~~~~~~^^
-  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/fal_client/client.py", line 184, in _refresh_token
-    response.raise_for_status()
-    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
-  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/httpx/_models.py", line 829, in raise_for_status
-    raise HTTPStatusError(message, request=request, response=self)
-httpx.HTTPStatusError: Client error '403 Forbidden' for url 'https://rest.fal.ai/storage/auth/token?storage_type=fal-cdn-v3'
-For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+   картинка 1280x720, 366 КБ
+   fal-ai/kling-video/v3/standard/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   fal-ai/veo3.1/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   bytedance/seedance-2.0/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   minimax/h3/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   alibaba/wan-3.0/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+== кадр F_hug_nina: game/assets/rooms/F_hug_nina/bg.png
+   картинка 1280x720, 374 КБ
+   fal-ai/kling-video/v3/standard/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   fal-ai/veo3.1/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   bytedance/seedance-2.0/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   minimax/h3/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   alibaba/wan-3.0/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+готово: 0 клипов, 10 ошибок → assets/incoming/video/hug_1
