@@ -703,9 +703,10 @@ func _on_room_changed(room_id: String) -> void:
 	reveal.cancel()
 	var name := StoryData.location_name(room_id)
 	room_label.text = name
-	# Служебный код комнаты игроку не показываем (решение 17.10: в тексте для игрока нет кодов);
-	# виден только при отладке (OS.is_debug_build — сборка из редактора) или если имени нет.
-	room_code_label.text = room_id if (name == room_id or OS.has_feature("editor")) else ""
+	# Служебный код комнаты игроку не показываем (решение 17.10: в тексте для игрока нет кодов); в exe его нет.
+	# В редакторе — только по DPD_ROOM_CODE=1 (Директор 08.11, 19:47 увидел «R3» на кадре со стенда и спросил,
+	# не артефакт ли: кадры снимаются редакторской сборкой — теперь они как в игре) или если имени нет.
+	room_code_label.text = room_id if (name == room_id or (OS.has_feature("editor") and OS.get_environment("DPD_ROOM_CODE") == "1")) else ""
 
 
 ## A frame over the world (FrameView: the mill yard, the class three weeks later…) names its own place in the title
