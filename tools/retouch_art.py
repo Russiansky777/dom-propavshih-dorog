@@ -27,6 +27,9 @@ TABLE = {
     "game/assets/rooms/Z3/state_plate_ring_dusk.png": ("assets/incoming/Z3_state_plate_rope_dusk.png", "tools/retouch/Z3_plate_no_rope.py"),
     "game/assets/ui/map/zarechye_plan.png": ("assets/incoming/map/zarechye_plan.png", "tools/retouch/zarechye_plan.py"),
     "game/assets/ui/map/zarechye_plan_rope.png": ("assets/incoming/map/zarechye_plan.png", "tools/retouch/zarechye_plan_rope.py"),
+    # Директор 08.11, 20:14: красный кончик поплавка ярче и чуть длиннее
+    "game/assets/mechanics/fishing/float_on_water.png": ("assets/incoming/float_on_water.png", "tools/retouch/fishing_float_tip.py"),
+    "game/assets/mechanics/fishing/float_tilted.png": ("assets/incoming/float_tilted.png", "tools/retouch/fishing_float_tip.py"),
 }
 
 

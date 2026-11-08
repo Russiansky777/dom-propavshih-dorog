@@ -39,9 +39,10 @@ const LINE := Color(0.88, 0.84, 0.74, 0.85)
 ## floats on a 300 px tall sheet with the waterline at y 200 (anchor — the contact ring), the tilted one drawn ×1.75 the
 ## upright scale to keep one length; the caught perch 600 px long with its line from the mouth up to y 0 at x 77.
 const SPRITES := {
-	# Директор 08.11, 19:47 («пожирнее немного, чтобы заметнее»): ×1.32 — 0.227 → 0.3 (9 × 60 px → 12 × 80), наклонный тоже
-	"float": {"image": "res://assets/mechanics/fishing/float_on_water.png", "anchor": [60, 200], "scale": 0.30},
-	"float_tilted": {"image": "res://assets/mechanics/fishing/float_tilted.png", "anchor": [100, 200], "scale": 0.53},
+	# Директор 08.11, 19:47 («пожирнее немного, чтобы заметнее») 0.227 → 0.3; 20:14 («ещё увеличить немного») → 0.36
+	# (9 × 60 px → 14 × 96), наклонный тоже; красный кончик ярче и длиннее — tools/retouch/fishing_float_tip.py
+	"float": {"image": "res://assets/mechanics/fishing/float_on_water.png", "anchor": [60, 200], "scale": 0.36},
+	"float_tilted": {"image": "res://assets/mechanics/fishing/float_tilted.png", "anchor": [100, 200], "scale": 0.64},
 	# Director 02.11 вечер, № 14 («окуня поменьше сделать и вниз практически висящим»): ×0.7 (0.283 → 0.2) and turned
 	# 72° about the line's top — head up at the hook, tail hanging down (was level, as if swimming in the air)
 	"perch_caught": {"image": "res://assets/mechanics/fishing/perch_caught.png", "anchor": [77, 0], "scale": 0.2, "rot_deg": 72.0},
