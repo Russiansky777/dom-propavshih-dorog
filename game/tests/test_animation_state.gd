@@ -53,6 +53,8 @@ func _run() -> void:
 	spec["rt3d"].erase("arm_body")
 	spec["rt3d"].erase("feet")
 	spec["rt3d"].erase("arm_hang")
+	if spec["rt3d"].has("smooth"):
+		(spec["rt3d"]["smooth"] as Dictionary).erase("clips")   # 08.11: the dialogue clips come unsmoothed by data; here the smoothing itself is under test
 	var first := _make_live(spec)
 	if first == null:
 		quit(1)

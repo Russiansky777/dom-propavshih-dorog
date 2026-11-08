@@ -44,9 +44,18 @@ func _run() -> void:
 	quit(0)
 
 
-static func run_one(tree: SceneTree, id: String, on: bool) -> Dictionary:
+static func run_one(tree: SceneTree, id: String, on: bool, old_clips: bool = false) -> Dictionary:
 	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 	var ab: Dictionary = spec["rt3d"].get("arm_body", {})
+	if old_clips:   # the v2 stance and talk (before 06.11), the hands at the apron
+		spec["rt3d"]["clips"]["idle"] = "idle"
+		spec["rt3d"]["clips"]["listen"] = "idle"
+		spec["rt3d"]["clips"]["talk"] = "talk"
+		if spec["rt3d"].has("idle"):
+			spec["rt3d"]["idle"]["pool"] = [{"clip": "idle", "weight": 1}]
+		for k in ["concat", "calm_shoulders", "shoulder_weights"]:
+			(spec["rt3d"] as Dictionary).erase(k)
+		ab.erase("stance_free")
 	if not on:
 		ab.erase("tip_r_m")
 		ab.erase("shell")   # the hand's surface points (06.11, 15:56) cover the fingertip too

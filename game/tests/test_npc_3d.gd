@@ -238,8 +238,18 @@ func _body_measure(v: Actor3D) -> Dictionary:
 
 ## A villager through idle → talk → idle → listen → idle as NpcLive3D poses it. `old`: the data as before 01.11 (no
 ## act_body, arm_body, boots; the state fade 0.4 s) — the self-check.
-func _body_run(id: String, old: bool, clear_off: bool = false) -> Dictionary:
+func _body_run(id: String, old: bool, clear_off: bool = false, old_clips: bool = false) -> Dictionary:
 	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	if old_clips:   # 08.11: the v2 stance and talk only (the clearing kept, to measure what it sees)
+		spec["rt3d"]["clips"]["idle"] = "idle"
+		spec["rt3d"]["clips"]["listen"] = "listen"
+		spec["rt3d"]["clips"]["talk"] = "talk"
+		if spec["rt3d"].has("idle"):
+			spec["rt3d"]["idle"]["pool"] = [{"clip": "idle", "weight": 1}]
+		for k in ["concat", "calm_shoulders", "shoulder_weights"]:
+			(spec["rt3d"] as Dictionary).erase(k)
+		if spec["rt3d"].has("arm_body"):
+			(spec["rt3d"]["arm_body"] as Dictionary).erase("stance_free")
 	if old:
 		for k in ["act_body", "arm_body", "concat", "calm_shoulders", "shoulder_weights"]:
 			(spec["rt3d"] as Dictionary).erase(k)
@@ -331,8 +341,10 @@ func _test_bodies() -> void:
 	# self-check: the data as it was fails the same metrics where the Director saw it
 	var p_old: Dictionary = await _body_run("pavel", true)
 	print("        pavel (old) toe %4.1f°  lean %4.1f°/s  side %3.1f°  legs %3.1f°  steps %d" % [p_old["toe"], p_old["lean_v"], p_old["side"], p_old["legs"], p_old["steps"]])
-	_check(p_old["toe"] > TOE_MAX_DEG and p_old["lean_v"] > LEAN_V_MAX and p_old["side"] > SIDE_MAX and int(p_old["steps"]) > STEPS_MAX, "self-check: Pavel with the old data passes (toe %.1f°, lean %.0f°/s, side %.1f°, steps %d) — the metrics would not catch line 6" % [p_old["toe"], p_old["lean_v"], p_old["side"], p_old["steps"]])
-	var pe_off: Dictionary = await _body_run("pelageya", false, true)
+	# 08.11: in the second AI's rebuilt figures the v2 talk no longer steps (steps 0) — the step metric's own self-check is
+	# V3-5 (locks held through the clips); here the toe, the lean and the rocking
+	_check(p_old["toe"] > TOE_MAX_DEG and p_old["lean_v"] > LEAN_V_MAX and p_old["side"] > SIDE_MAX, "self-check: Pavel with the old data passes (toe %.1f°, lean %.0f°/s, side %.1f°) — the metrics would not catch line 6" % [p_old["toe"], p_old["lean_v"], p_old["side"]])
+	var pe_off: Dictionary = await _body_run("pelageya", false, true, true)   # 08.11: her new clips keep the hands out even unbaked — the v2 clip is the one of 06.png
 	print("        pelageya (hands not kept out) drawn %.1f cm" % (pe_off["hand"] * 100.0))
 	# self-check of the hand metric: her clip as it came (the clearing not baked in) does put the left hand into her hip
 	# (06.png)

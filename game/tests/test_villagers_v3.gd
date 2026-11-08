@@ -131,7 +131,8 @@ func _t1() -> void:
 func _t2() -> void:
 	for id in V3:
 		var on: Dictionary = await Probe.run_one(self, id, true)
-		var off: Dictionary = await Probe.run_one(self, id, false)
+		# 08.11 (клипы второго ИИ): без защиты кисти и так снаружи — старый клип стойки (v2) кладёт их в фартук
+		var off: Dictionary = await Probe.run_one(self, id, false, true)
 		_check(int(on["frames"]) > 100, "%s: the hands were not measured" % id)
 		for i in 2:
 			_check(float(on["tip"][i]) <= 0.5, "%s: fingertip %s %.1f cm in the body" % [id, ["L", "R"][i], float(on["tip"][i])])
@@ -457,7 +458,12 @@ func _t7() -> void:
 	(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")
 	_before_2100(sp, "listen")   # as he was at 15:56: the v2 listen clip, hands at the apron
 	var raw: Array = await _hand_depth(sp)
-	_check(float(raw[0]) > 3.0, "self-check: Pavel with axis and fingertip only — %.1f cm (the test sees nothing)" % float(raw[0]))
+	# 08.11: the apron on its own bones (second AI's model) — the v2 hand sits 2 cm in it with axis+tip clearing; the
+	# measure must still read it as inside (> 1.5), and with no clearing at all deeper (> 3)
+	_check(float(raw[0]) > 1.5, "self-check: Pavel with axis and fingertip only — %.1f cm (the test sees nothing)" % float(raw[0]))
+	(sp["rt3d"] as Dictionary).erase("arm_body")
+	var raw0: Array = await _hand_depth(sp)
+	_check(float(raw0[0]) > 3.0, "self-check: Pavel with no clearing at all — %.1f cm (the test sees nothing)" % float(raw0[0]))
 
 
 ## Upper arm sideways angle before the hands are cleared, talking and listening: [mean, max] (degrees).
@@ -498,7 +504,9 @@ func _t8() -> void:
 		var sp0 := _spec(id)
 		(sp0["rt3d"]["arm_body"] as Dictionary).erase("bake")   # the clips and their blending, not the clearing
 		var w: Array = await _spread(sp0)
-		_check(float(w[0]) <= 22.0 and float(w[1]) <= 28.0, "%s: arms spread %.0f° on average, %.0f° at most (≤ 22 / 28)" % [id, float(w[0]), float(w[1])])
+		# 08.11, 21:21: the second AI's clips (Nina 25°/29°, Varvara 23°/33°, Ulyana 23°/28°, Pelageya 17°/30°) accepted
+		# by the Director («в целом норм, я не вижу проблем у других») — the bar is a scarecrow (31–63° on 07.11), not these
+		_check(float(w[0]) <= 26.0 and float(w[1]) <= 34.0, "%s: arms spread %.0f° on average, %.0f° at most (≤ 26 / 34)" % [id, float(w[0]), float(w[1])])
 	var sp := _spec("nina")
 	sp["rt3d"]["act_body"]["upper"] = ["LeftShoulder", "RightShoulder", "neck", "Head"]
 	_before_2100(sp, "listen")   # where it was seen (15:56): the v2 listen clip
@@ -726,6 +734,7 @@ func _t11() -> void:
 		print("    %s: shoulder skin slides %.1f mm standing, %.1f mm talking" % [id, st, tk])
 		_check(st <= 6.0 and tk <= 15.0, "%s: the shoulder skin slides %.1f mm standing (≤ 6), %.1f mm talking (≤ 15)" % [id, st, tk])
 	var sp := _spec("ilya")
+	_before_2100(sp)   # 08.11: the second AI's clips do not slide even uncalmed — the v2 talk clip's clavicles do
 	(sp["rt3d"] as Dictionary).erase("calm_shoulders")
 	var raw: float = await _jelly(sp, "talk")
 	_check(raw > 20.0, "self-check: Ilya with the clips' own clavicles — only %.1f mm talking (the test sees no jelly)" % raw)
