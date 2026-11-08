@@ -1,0 +1,24 @@
+{
+  "_comment": "Проба оживления кадров-объятий (Директор 08.11, 21:57–22:06): один и тот же кадр через несколько моделей fal.ai, сравнить глазами. Промпты — только про движение (15–40 слов): так модели меньше «переписывают» сцену. tools/video_trial.py, workflow pipeline-video.",
+  "trial": "hug_1",
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "F_hug_pelageya",
+      "image": "game/assets/rooms/F_hug_pelageya/bg.png",
+      "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements."
+    },
+    {
+      "id": "F_hug_nina",
+      "image": "game/assets/rooms/F_hug_nina/bg.png",
+      "prompt": "Static camera. The old woman and the young woman keep their embrace; the mother's hand gently strokes the daughter's hair, both breathe softly. Lamp light flickers in the window, light snow drifts down. Painterly look unchanged, no new elements."
+    }
+  ],
+  "models": [
+    {"id": "fal-ai/kling-video/v3/standard/image-to-video", "args": {"duration": "5"}},
+    {"id": "fal-ai/veo3.1/image-to-video", "args": {"generate_audio": false, "resolution": "720p"}},
+    {"id": "bytedance/seedance-2.0/image-to-video", "args": {}},
+    {"id": "minimax/h3/image-to-video", "args": {}},
+    {"id": "alibaba/wan-3.0/image-to-video", "args": {}}
+  ]
+}
