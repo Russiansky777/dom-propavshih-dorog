@@ -39,17 +39,32 @@ func _run() -> void:
 	root.add_child(main_node)
 	for i in 3:
 		await process_frame
-	var spec: Dictionary = sd.room("F_hug_pelageya")
+	for fid in ["F_hug_pelageya", "F_hug_nina"]:
+		await _frame(fid, sd, sr, main_node)
+	# FV-4: the staging's exit fade (both hug scenes)
+	for sid in ["M18", "M19"]:
+		var sc: Dictionary = sd.scene(sid)
+		var fade := 0.0
+		for st in sc.get("stage", []):
+			if st.get("frame", "x") == "":
+				fade = float(st.get("fade_out_s", 0.0))
+		_check(fade >= 2.0, "FV-4 %s leaves the hug frame with a %.1f s fade (≥ 2)" % [sid, fade])
+	print("==== frame video: %d tests, %d passed, %d failed ====" % [passes + fails, passes, fails])
+	quit(1 if fails > 0 else 0)
+
+
+func _frame(fid: String, sd, sr, main_node) -> void:
+	print("  -- %s" % fid)
+	var spec: Dictionary = sd.room(fid)
 	var video := String(spec.get("background", {}).get("video", ""))
-	_check(video != "" and ResourceLoader.exists(video), "FV-1 F_hug_pelageya has no background.video (%s)" % video)
-	sr.set_frame("F_hug_pelageya", false)
+	_check(video != "" and ResourceLoader.exists(video), "FV-1 %s has no background.video (%s)" % [fid, video])
+	sr.set_frame(fid, false)
 	for i in 3:
 		await process_frame
 	var fv = main_node.find_child("FrameView", true, false)
 	var room = fv.room if fv != null else null
 	_check(room != null, "FV-1 the frame did not open in FrameView")
 	if room == null:
-		quit(1)
 		return
 	var v: VideoStreamPlayer = room.get_node_or_null("Background/Video")
 	var img: Sprite2D = room.get_node_or_null("Background/Image")
@@ -60,6 +75,11 @@ func _run() -> void:
 		var pic_h := roundf(img.texture.get_size().y * room.art_scale)
 		_check(v.position == img.position and v.size == Vector2(1920.0, pic_h), "FV-1 player at %s size %s; picture at %s height %.0f" % [v.position, v.size, img.position, pic_h])
 		_check(v.get_index() > img.get_index(), "FV-1 the video is under the picture")
+		# Director 08.11, 23:47 «фонарь не живой здесь»: the lantern's glow (data/story/lights, a flickering source) draws
+		# above the video — the Lighting node comes after the background and keeps its source
+		var lighting = room.get_node_or_null("Lighting")
+		if fid == "F_hug_pelageya":
+			_check(lighting != null and lighting.sources.size() >= 1 and lighting.get_index() > room.get_node("Background").get_index(), "FV-1 no flickering lantern source above the video (Lighting %s)" % lighting)
 	_check(spec.get("effects", []).filter(func(e): return e.get("type") == "snow").is_empty(), "FV-3 the frame still has its own snow effect over the video's snow")
 	# FV-2: it plays and wraps
 	var p0 := -1.0
@@ -88,7 +108,31 @@ func _run() -> void:
 		if out != "":
 			await process_frame
 			var shot: Image = root.get_viewport().get_texture().get_image()
-			shot.save_png(out.path_join("frame_video_ingame.png"))
+			shot.save_png(out.path_join("frame_video_ingame_%s.png" % fid))
+	if v != null and fid == "F_hug_pelageya":
+		# the lantern flickers on screen over the video (data lights rect 466,618,100,130, screen px)
+		v.paused = true   # the video still: what changes now is the lantern's flicker alone
+		await process_frame
+		var ra := Rect2i(466, 618, 100, 130)   # the lantern's glow rect (data/story/lights, screen px)
+		var shots: Array = []
+		for k in 6:
+			shots.append(root.get_viewport().get_texture().get_image().get_region(ra))
+			for i in 15:
+				await process_frame
+		v.paused = false
+		var d_l := 0.0
+		for k in range(1, shots.size()):
+			d_l = maxf(d_l, _mean_diff(shots[0], shots[k]))
+		var lt = room.get_node_or_null("Lighting")
+		var src = lt.sources[0] if lt != null and lt.sources.size() > 0 else null
+		print("    lantern region over 1.5 s: max mean |diff| %.2f / 255; source %s level %s energy %s visible %s z %s" % [d_l, src.name if src else "-", src.level if src else "-", src.energy if src else "-", src.visible if src else "-", src.z_index if src else "-"])
+		_check(d_l > 0.3, "FV-2 the lantern does not flicker over the video (%.2f)" % d_l)
+	await _seam(v)
+	sr.set_frame("", false)
+	await process_frame
+
+
+func _seam(v: VideoStreamPlayer) -> void:
 	# FV-3: first vs last frame of the game's own OGV
 	if v != null and v.stream != null:
 		var probe := VideoStreamPlayer.new()
@@ -115,17 +159,6 @@ func _run() -> void:
 			print("    loop seam: first↔last mean |diff| %.1f / 255" % d)
 			_check(d <= 8.0, "FV-3 the loop's last frame differs from the first by %.1f (> 8)" % d)
 		probe.queue_free()
-	# FV-4: the staging's exit fade
-	var e3: Dictionary = sd.scene("M18")
-	var fade := 0.0
-	for st in e3.get("stage", []):
-		if st.get("frame", "x") == "":
-			fade = float(st.get("fade_out_s", 0.0))
-	_check(fade >= 2.0, "FV-4 M18 leaves the hug frame with a %.1f s fade (≥ 2)" % fade)
-	sr.set_frame("", false)
-	await process_frame
-	print("==== frame video: %d tests, %d passed, %d failed ====" % [passes + fails, passes, fails])
-	quit(1 if fails > 0 else 0)
 
 
 func _mean_diff(a: Image, b: Image) -> float:

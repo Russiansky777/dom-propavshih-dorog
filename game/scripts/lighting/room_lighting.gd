@@ -146,7 +146,9 @@ func _lm_root() -> Node2D:
 func _receive(n: Node) -> void:
 	if n == self:
 		return
-	if (n is Sprite2D or n is Polygon2D or n is AnimatedSprite2D) and (n as CanvasItem).material == null:
+	# 08.11: the frame's video (RoomBuilder background.video) is art under the lights too — Director: «фонарь не живой»:
+	# the lantern's flicker is the light map on the picture, and the video covered it
+	if (n is Sprite2D or n is Polygon2D or n is AnimatedSprite2D or n is VideoStreamPlayer) and (n as CanvasItem).material == null:
 		(n as CanvasItem).material = receive_material
 	for c in n.get_children():
 		_receive(c)
