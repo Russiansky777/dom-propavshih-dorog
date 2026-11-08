@@ -533,6 +533,10 @@ func _hang_arms() -> void:
 		return
 	var s0 := deg_to_rad(float(ah.get("from_deg", 12.0)))
 	var k := clampf(float(ah.get("k", 0.35)), 0.0, 1.0)
+	# Director 08.11, 13:04 («опять какая-то хрень с плечами»): the angle measured as the lateral share of the upper arm
+	# (asin) missed arms held out-and-forward with the elbows out — 22° on average from the front, under 14° by asin;
+	# `frontal` measures it as the camera sees it, in the body's frontal plane, and turns the arm in that plane only.
+	var frontal := bool(ah.get("frontal", false))
 	var names := {}
 	for role in ah.get("roles", ["idle", "talk", "listen"]):
 		if clips.has(role):
@@ -583,6 +587,14 @@ func _hang_arms() -> void:
 				var qa: Quaternion = a.track_get_key_value(ti, key)
 				var d: Vector3 = (qp * qa) * along
 				var sa := asin(clampf(d.dot(out), -1.0, 1.0))
+				if frontal:
+					var dp: Vector3 = d - up * 0.0
+					var fwd: Vector3 = up.cross(out_l).normalized()
+					dp = d - fwd * d.dot(fwd)
+					if dp.length() < 1e-4 or d.dot(up) > 0.0:
+						continue
+					sa = atan2(dp.dot(out), -dp.dot(up))
+					d = dp.normalized()
 				if sa <= s0:
 					continue
 				var axis := d.cross(out)
