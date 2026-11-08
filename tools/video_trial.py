@@ -68,9 +68,17 @@ def main() -> int:
     report = json.load(open(report_p, encoding="utf-8")) if os.path.exists(report_p) else {"trial": trial, "runs": []}
     for fr in req["frames"]:
         print(f"== кадр {fr['id']}: {fr['image']}")
-        t0 = time.time()
-        image_url = fal_client.upload_file(fr["image"])
-        print(f"   загружен за {time.time() - t0:.1f} с")
+        # картинка идёт прямо в запросе (data URI, JPEG до 1280 px): загрузка в хранилище fal отвечала 403 на
+        # токен хранилища (run 42524225322) — ключу она не нужна
+        from PIL import Image
+        import base64, io
+        im = Image.open(fr["image"]).convert("RGB")
+        if im.width > 1280:
+            im = im.resize((1280, round(im.height * 1280 / im.width)), Image.LANCZOS)
+        buf = io.BytesIO()
+        im.save(buf, "JPEG", quality=92)
+        image_url = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+        print(f"   картинка {im.width}x{im.height}, {len(buf.getvalue()) // 1024} КБ")
         for m in req["models"]:
             mid = m["id"]
             for n in range(1, attempts + 1):
