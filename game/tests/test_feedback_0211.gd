@@ -329,7 +329,10 @@ func _test_small() -> void:
 	var amb = load("res://scripts/ambient/ambient_data.gd").room("F_mill_manager")
 	_check(float(amb.get("rain", {}).get("intensity", 0.0)) >= 0.85, "стр. 33: the council's drizzle is dense enough to see")
 	var uly = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/ulyana.json"))
-	_check(float(uly["rt3d"]["idle"].get("rate", 1.0)) <= 0.7, "стр. 36: Ulyana's idle slower")
+	# 08.11: the stance is the second AI's own clip (stance_ulyana_hybrid), accepted by the Director at its own pace
+	# (21:21); the 0.6 rate was for the old stance_calm (стр. 36)
+	var uly_clip := String(uly["rt3d"]["idle"].get("pool", [{}])[0].get("clip", ""))
+	_check(float(uly["rt3d"]["idle"].get("rate", 1.0)) <= 0.7 or uly_clip == "stance_ulyana_hybrid", "стр. 36: Ulyana's idle slower (clip %s, rate %s)" % [uly_clip, str(uly["rt3d"]["idle"].get("rate", 1.0))])
 	_check(_hotspot("O1", "ulyana").has("face"), "стр. 37: Ulyana half-turned right in the class")
 	var ag: Dictionary = {}
 	for l in sd.rooms["EP_dinner"]["layers"]:
