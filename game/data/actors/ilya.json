@@ -219,14 +219,13 @@
       "_comment": "Директор 06.11, 15:56 («остальных тоже явно коробит»): в «говорит» Meshy руки уходят в стороны до 30–34° (Митя, Нина, жена Ильи, Тамара; tests/probe_villager_arm_spread.gd) — сверх from_deg в сторону остаётся k (Actor3D._hang_arms)."
     },
     "arm_body": {
-      "max_deg": 9.0,
+      "max_deg": 22.0,
       "omega": 60.0,
       "omega_back": 3.0,
-      "hand_r_m": 0.005,
-      "fore_r_m": 0.01,
-      "tip_r_m": 0.0,
+      "hand_r_m": 0.02,
+      "fore_r_m": 0.03,
+      "tip_r_m": 0.012,
       "shell": 16,
-      "shell_r_m": 0.0,
       "stance_free": false,
       "forward_only": false,
       "bake": {
