@@ -329,7 +329,11 @@ func _test_fishing() -> void:
 	# «Хватит» — MechanicView's own button at (1680, 990), 200 × 56; «Ещё» was at (40, 250)
 	_check(absf(float(ag[1]) - 990.0) <= 4.0 and float(ag[0]) + 200.0 <= 1680.0 and 1680.0 - (float(ag[0]) + 200.0) <= 40.0, "«Ещё» %s right beside «Хватит»" % str(ag))
 	var fl: Array = sp.get("float", [0, 0])
-	_check(float(fl[0]) < 1400.0 and float(fl[0]) > 1280.0 and float(fl[1]) < 711.0, "Agata's float just past the stones, left of the jetty, above the boat layer (%s; was [1630, 643] — the line across Mitya)" % str(fl))
+	# Director 08.11, 19:38 «подальше от берега», 19:47 «чуть ниже»: on the open water left of Mitya's float (x < 1548),
+	# off the stones (x > 1400), above the boat's rope at the far support (y < 711); was [1330, 700] — at the stones' edge
+	var mf: Array = sp.get("mitya", {}).get("float", [1548, 632])
+	_check(float(fl[0]) > 1400.0 and float(fl[0]) < float(mf[0]) and float(fl[1]) < 711.0 and float(fl[1]) > float(mf[1]),
+		"Agata's float on the open water, off the stones, left of and below Mitya's, above the boat's rope (%s, Mitya %s; was [1330, 700] at the stones)" % [str(fl), str(mf)])
 	var fp = load("res://scripts/mechanics/fishing_panel.gd").new()
 	fp.spec = sp
 	root.add_child(fp)
