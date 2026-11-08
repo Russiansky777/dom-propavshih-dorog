@@ -174,6 +174,42 @@
    },
    "error": "User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.",
    "seconds": 0.3
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "fal-ai/kling-video/v3/standard/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__fal-ai-kling-video-v3-standard-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements.",
+    "duration": "5"
+   },
+   "seconds": 150.5,
+   "bytes": 14058968
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "fal-ai/veo3.1/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__fal-ai-veo3-1-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements.",
+    "generate_audio": false,
+    "resolution": "720p"
+   },
+   "seconds": 282.4,
+   "bytes": 2876678
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "alibaba/wan-3.0/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__alibaba-wan-3-0-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements."
+   },
+   "error": "[{'type': 'missing', 'loc': ['body', 'start_image_url'], 'msg': 'Field required', 'input': {'prompt': 'Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements.', 'image_url': 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCALQBQADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1d",
+   "seconds": 1.7
   }
  ]
 }
