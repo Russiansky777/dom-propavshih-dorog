@@ -1,0 +1,29 @@
+{
+  "_comment": "Вторая сцена (Директор 08.11, 23:07: «Клинг и минимакс будто бы лучше, ван тоже неплохо — вторую сцену в них троих тоже просмотрим»). Тот же промпт-стиль: только движение.",
+  "trial": "hug_2",
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "F_hug_nina",
+      "image": "game/assets/rooms/F_hug_nina/bg.png",
+      "prompt": "Static camera. The old woman and the young woman keep their embrace; the mother's hand gently strokes the daughter's hair, both breathe softly. Lamp light flickers in the window, light snow drifts down. Painterly look unchanged, no new elements."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/standard/image-to-video",
+      "args": {
+        "duration": "5"
+      }
+    },
+    {
+      "id": "minimax/h3/image-to-video",
+      "args": {}
+    },
+    {
+      "id": "alibaba/wan-3.0/image-to-video",
+      "args": {},
+      "image_key": "start_image_url"
+    }
+  ]
+}
