@@ -40,6 +40,10 @@ static var _tip_cache: Dictionary = {}
 var shell_n: int = 0
 var no_back: bool = false
 var forward_only: bool = false     # data arm_body.forward_only: out of the clothes forward only (see _want)
+## Share of the way out turned forward (data arm_body.forward_bias, 0 — off): Director 08.11, 13:04 («опять какая-то
+## хрень с плечами») — a hand at the hip side was taken out sideways, the upper arm stood off 22° and the shoulder top
+## rose square; mostly forward, the hand comes out in front of the hip and the shoulder stays down.
+var forward_bias: float = 0.0
 ## How much of the turn is shown (NpcLive3D: data arm_body.stance_free — the turn only as much as talk or an action is
 ## shown; standing, the arms hang as the clip has them — Director 06.11, 23:0x, «Г: руки как в клипе»: pushed out of
 ## the apron the arms stood off the body like a wrestler's)
@@ -76,6 +80,7 @@ func setup(d: Dictionary, sk: Skeleton3D, meshes: Array, unit_per_m: float, cach
 	shell_n = int(d.get("shell", 0))
 	no_back = bool(d.get("no_back", false))
 	forward_only = bool(d.get("forward_only", false))
+	forward_bias = clampf(float(d.get("forward_bias", 0.0)), 0.0, 1.0)
 	_bake_cfg = d.get("bake", null)
 	shell_r = float(d.get("shell_r_m", shell_r))
 	_unit = unit_per_m
@@ -546,6 +551,16 @@ func _want(sk: Skeleton3D, i: int, g: Transform3D) -> Array:
 				# what is left sideways, and as much more of the arm's own side as was taken (smoothly: no jump)
 				way += hb.x.normalized() * (1.0 if i == 0 else -1.0) * (-back) * 0.5
 				way = way.normalized()
+		var reach := 1.0   # how much of a step along `way` goes out of the body (1 — straight out)
+		if forward_bias > 0.0 and not forward_only and _hips >= 0:
+			var w0 := way
+			var fwb: Vector3 = sk.get_bone_global_pose(_hips).basis.z.normalized()
+			# continuous in the way out (a switch at a threshold jolted the hand as the way swung round the hip)
+			var fb := forward_bias * smoothstep(-0.7, 0.0, way.dot(fwb))
+			way = (way * (1.0 - fb) + fwb * fb).normalized()
+			# a way slanted off straight out clears less per degree: turn as much more (one bake pass leaves nothing for
+			# the live follower to chase — it jerked the hand, V3-10)
+			reach = maxf(way.dot(w0), 0.35)
 		if forward_only and _hips >= 0:
 			# Director 06.11, 23:0x («Г: руки как в клипе»; then the talk took the arms out sideways like a wrestler's
 			# again): a hand at the side behind the apron's edge stays as the clip has it; only a hand in front, in the
@@ -558,7 +573,7 @@ func _want(sk: Skeleton3D, i: int, g: Transform3D) -> Array:
 		var axis := arm_v.cross(way)
 		if axis.length() < 1e-6 or arm_v.length() < 1e-4:
 			continue
-		var rv := axis.normalized() * minf(dep / arm_v.length(), deg_to_rad(max_deg))
+		var rv := axis.normalized() * minf(dep / reach / arm_v.length(), deg_to_rad(max_deg))
 		# (19:27) the deepest point alone set the direction, and it hopped between the hand's points — the turn's
 		# direction is now every point in, weighted by how deep, its size the largest needed
 		dir_sum += rv * dep
