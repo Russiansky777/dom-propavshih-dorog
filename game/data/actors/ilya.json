@@ -231,7 +231,7 @@
       "shell": 16,
       "stance_free": false,
       "forward_only": false,
-    "forward_bias": 0.8,
+    "forward_bias": 0.6,
       "bake": {
         "every": 2,
         "hold": 0.4,
