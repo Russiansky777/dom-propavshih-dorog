@@ -485,8 +485,24 @@ def render(c: dict, size: tuple[int, int]) -> Image.Image:
     return out
 
 
+# Разные версии Pillow по-разному округляют сглаживание на краю фигуры: 08.11 слой EP_dinner/agata расходился локально
+# (Pillow 12.3) с собранным в CI: 109 пикселей больше чем на 2 единицы (9 — больше чем на 8, до 98 на краю), в сборке —
+# совпадал. Допуск: пикселей с разницей больше SAME_TOL — не больше доли SAME_SHARE от непрозрачных (у Агаты за ужином ≈ 1 %
+# от неё — сотни), но не меньше 8; сдвиг фигуры на 1 px даёт ≈ 13 тыс. — ловится (самопроверка в --check — на каждом слое).
+SAME_TOL = 2
+SAME_SHARE = 0.01
+
+
 def _same(path: Path, im: Image.Image) -> bool:
-    return path.exists() and ImageChops.difference(Image.open(path).convert("RGBA"), im).getbbox() is None
+    if not path.exists():
+        return False
+    d = ImageChops.difference(Image.open(path).convert("RGBA"), im)
+    if d.getbbox() is None:
+        return True
+    mx = ImageChops.lighter(ImageChops.lighter(d.getchannel(0), d.getchannel(1)),
+                            ImageChops.lighter(d.getchannel(2), d.getchannel(3)))
+    opaque = sum(im.getchannel("A").point(lambda v: 255 if v > 0 else 0).histogram()[255:])
+    return sum(mx.point(lambda v: 255 if v > SAME_TOL else 0).histogram()[255:]) <= max(8, int(opaque * SAME_SHARE))
 
 
 def main() -> int:
@@ -531,6 +547,9 @@ def main() -> int:
                 same = _same(target, im)
                 print(f"{'OK  ' if same else 'DIFF'} {target.relative_to(ROOT)}")
                 bad += 0 if same else 1
+                if same and _same(target, ImageChops.offset(im, 1, 0)):   # самопроверка допуска: сдвиг на 1 px — уже не то
+                    print(f"FAIL допуск SAME_SHARE пропускает сдвиг слоя на 1 px: {target.relative_to(ROOT)}")
+                    bad += 1
             else:
                 target.parent.mkdir(parents=True, exist_ok=True)
                 im.save(target, optimize=True)
