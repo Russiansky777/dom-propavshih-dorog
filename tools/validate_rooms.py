@@ -880,13 +880,18 @@ for rid, room in rooms.items():
     walk_texts(ctx, room)
     if "image" in room.get("background", {}):
         check_res_path(f"{ctx}.background.image", room["background"]["image"])
-    if "video" in room.get("background", {}):   # 08.11: a painted frame alive (Ogg Theora loop over the picture)
-        v = room["background"]["video"]
+    bgd = room.get("background", {})
+    vids = ([bgd["video"]] if "video" in bgd else []) + [f for e in bgd.get("videos", []) for f in e.get("files", [])]
+    for v in vids:   # 08.11: a painted frame alive (Ogg Theora clips over the picture; `videos` — by flags, taking turns)
         check_res_path(f"{ctx}.background.video", v)
         if not str(v).endswith(".ogv"):
             err(f"{ctx}.background.video: Godot играет только Ogg Theora (.ogv): {v}")
-        if not room.get("frame"):
-            err(f"{ctx}.background.video: видео-фон только у кадров (frame: true)")
+    if vids and not room.get("frame"):
+        err(f"{ctx}.background.video: видео-фон только у кадров (frame: true)")
+    for e in bgd.get("videos", []):
+        for f in e.get("if", []) + e.get("unless", []):
+            if f not in known_flags:
+                err(f"{ctx}.background.videos: неизвестный флаг {f}")
     for p in room.get("props", []):
         if "image" in p:
             check_res_path(f"{ctx}.props.{p.get('id')}.image", p["image"])

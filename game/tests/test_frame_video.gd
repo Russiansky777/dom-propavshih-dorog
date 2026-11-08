@@ -70,7 +70,7 @@ func _frame(fid: String, sd, sr, main_node) -> void:
 	var img: Sprite2D = room.get_node_or_null("Background/Image")
 	_check(v != null and img != null, "FV-1 no Video player / Image under the frame's background")
 	if v != null and img != null:
-		_check(v.stream != null and v.loop and v.autoplay and v.volume_db <= -60.0, "FV-1 stream %s loop %s autoplay %s volume %s" % [v.stream, v.loop, v.autoplay, v.volume_db])
+		_check(v.stream != null and v.loop and v.is_playing() and v.volume_db <= -60.0, "FV-1 stream %s loop %s playing %s volume %s" % [v.stream, v.loop, v.is_playing(), v.volume_db])
 		_check(v.mouse_filter == Control.MOUSE_FILTER_IGNORE, "FV-1 the player takes the mouse")
 		var pic_h := roundf(img.texture.get_size().y * room.art_scale)
 		_check(v.position == img.position and v.size == Vector2(1920.0, pic_h), "FV-1 player at %s size %s; picture at %s height %.0f" % [v.position, v.size, img.position, pic_h])

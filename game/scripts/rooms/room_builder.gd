@@ -96,22 +96,14 @@ static func _build_background(room: Room, room_id: String, bg: Dictionary, horiz
 			s.scale = Vector2(room.art_scale, room.art_scale)
 			s.position = Vector2(0.0, roundf((1080.0 - tex_size.y * room.art_scale) / 2.0))
 		container.add_child(s)
-		# 08.11 (Director, 21:57–23:26: «из статичных кадров с объятиями сделаем видео… луп»): a painted frame comes
-		# alive — data `background.video` (Ogg Theora, tools/video_loop.py from the fal.ai clip, its first frame is the
-		# painting itself) plays over the picture, looped, silent, at the picture's place and scale; the picture stays
-		# under it (the first frame while the stream opens, and the frame without the file).
-		var video := String(bg.get("video", ""))
-		if video != "" and ResourceLoader.exists(video):
-			var v := VideoStreamPlayer.new()
-			v.name = "Video"
-			v.stream = load(video)
-			v.loop = true
-			v.autoplay = true
-			v.expand = true
-			v.volume_db = -80.0
-			v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			v.position = s.position
-			v.size = Vector2(1920.0, roundf(tex_size.y * room.art_scale))
+		# 08.11 (Director, 21:57 — 09.11, 00:29: «из статичных кадров с объятиями сделаем видео… луп», the dinner): a painted
+		# frame comes alive — data `background.video` (one looped clip) or `background.videos` (clips by the player's
+		# flags, taking turns) over the picture, silent, at the picture's place and scale (FrameVideo); the picture stays
+		# under it (the first frame while the stream opens, and the frame without the files).
+		var files: Array = FrameVideo.pick(bg)
+		if not files.is_empty():
+			var v := FrameVideo.new()
+			v.setup(files, s.position, Vector2(1920.0, roundf(tex_size.y * room.art_scale)))
 			container.add_child(v)
 		return
 	# Fallback: flat colours.
