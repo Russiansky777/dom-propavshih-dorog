@@ -1,0 +1,142 @@
+extends SceneTree
+## 08.11 (Director, 21:57–23:26: «из статичных кадров с объятиями сделаем видео… луп… фейд 2 секунды»): a painted
+## frame alive — data `background.video` (Ogg Theora loop made by tools/video_loop.py from the fal.ai clip).
+##   FV-1 the frame F_hug_pelageya builds with a Video player over the picture: the stream loads, loops, is silent,
+##        covers the picture exactly (1920 wide, the picture's height and place) and ignores the mouse; the picture
+##        stays under it; self-check — a frame without the key has no player;
+##   FV-2 it plays: the stream position advances over real frames (x11, not headless) and wraps round (the loop);
+##   FV-3 the loop's first and last frames agree (tools/video_loop.py: seam blended into the first frame) — measured
+##        on the game's own OGV via the player's texture: the last frame against the first ≤ 8/255 mean; the
+##        picture's snow effect is off (the snow falls in the video);
+##   FV-4 the scene leaves the hug frame with a 2-second fade (E3 M18 staging), both hug frames' exits ≥ 2 s where
+##        a video exists.
+##   godot --path game --display-driver x11 --rendering-driver opengl3 -s res://tests/test_frame_video.gd
+
+var fails := 0
+var passes := 0
+
+
+func _initialize() -> void:
+	_run()
+
+
+func _check(ok: bool, what: String) -> void:
+	if ok:
+		passes += 1
+	else:
+		fails += 1
+		print("FAIL  " + what)
+
+
+func _run() -> void:
+	await process_frame
+	var sd = root.get_node("StoryData")
+	var gs = root.get_node("GameState")
+	var sr = root.get_node("StoryRunner")
+	gs.reset()
+	var main_node = load("res://scenes/Main.tscn").instantiate()
+	main_node.set("title_mode", "skip")
+	root.add_child(main_node)
+	for i in 3:
+		await process_frame
+	var spec: Dictionary = sd.room("F_hug_pelageya")
+	var video := String(spec.get("background", {}).get("video", ""))
+	_check(video != "" and ResourceLoader.exists(video), "FV-1 F_hug_pelageya has no background.video (%s)" % video)
+	sr.set_frame("F_hug_pelageya", false)
+	for i in 3:
+		await process_frame
+	var fv = main_node.find_child("FrameView", true, false)
+	var room = fv.room if fv != null else null
+	_check(room != null, "FV-1 the frame did not open in FrameView")
+	if room == null:
+		quit(1)
+		return
+	var v: VideoStreamPlayer = room.get_node_or_null("Background/Video")
+	var img: Sprite2D = room.get_node_or_null("Background/Image")
+	_check(v != null and img != null, "FV-1 no Video player / Image under the frame's background")
+	if v != null and img != null:
+		_check(v.stream != null and v.loop and v.autoplay and v.volume_db <= -60.0, "FV-1 stream %s loop %s autoplay %s volume %s" % [v.stream, v.loop, v.autoplay, v.volume_db])
+		_check(v.mouse_filter == Control.MOUSE_FILTER_IGNORE, "FV-1 the player takes the mouse")
+		var pic_h := roundf(img.texture.get_size().y * room.art_scale)
+		_check(v.position == img.position and v.size == Vector2(1920.0, pic_h), "FV-1 player at %s size %s; picture at %s height %.0f" % [v.position, v.size, img.position, pic_h])
+		_check(v.get_index() > img.get_index(), "FV-1 the video is under the picture")
+	_check(spec.get("effects", []).filter(func(e): return e.get("type") == "snow").is_empty(), "FV-3 the frame still has its own snow effect over the video's snow")
+	# FV-2: it plays and wraps
+	var p0 := -1.0
+	var wrapped := false
+	var advanced := false
+	if v != null:
+		var t := 0.0
+		var last := -1.0
+		while t < 13.0:
+			await process_frame
+			t += 1.0 / 60.0
+			var p: float = v.stream_position
+			if p0 < 0.0 and p > 0.0:
+				p0 = p
+			if last >= 0.0 and p > last + 0.01:
+				advanced = true
+			if last >= 0.0 and p < last - 1.0:
+				wrapped = true
+			last = p
+			if wrapped and advanced:
+				break
+		_check(advanced, "FV-2 the stream position never advanced (headless? x11 needed)")
+		_check(wrapped, "FV-2 the video did not wrap round in 13 s (loop)")
+		# a frame of the game itself for the Director (OUT dir from env), mid-clip
+		var out := OS.get_environment("FV_OUT")
+		if out != "":
+			await process_frame
+			var shot: Image = root.get_viewport().get_texture().get_image()
+			shot.save_png(out.path_join("frame_video_ingame.png"))
+	# FV-3: first vs last frame of the game's own OGV
+	if v != null and v.stream != null:
+		var probe := VideoStreamPlayer.new()
+		probe.stream = v.stream
+		probe.loop = false
+		probe.autoplay = false
+		probe.volume_db = -80.0
+		root.add_child(probe)
+		probe.play()
+		var first: Image = null
+		var lastimg: Image = null
+		var t2 := 0.0
+		while t2 < 12.0 and probe.is_playing():
+			await process_frame
+			t2 += 1.0 / 60.0
+			var tex := probe.get_video_texture()
+			if tex != null and probe.stream_position > 0.05 and first == null:
+				first = tex.get_image()
+			if tex != null and probe.stream_position > probe.get_stream_length() - 0.12:
+				lastimg = tex.get_image()
+		_check(first != null and lastimg != null, "FV-3 could not grab the first/last frames (first %s last %s)" % [first != null, lastimg != null])
+		if first != null and lastimg != null:
+			var d := _mean_diff(first, lastimg)
+			print("    loop seam: first↔last mean |diff| %.1f / 255" % d)
+			_check(d <= 8.0, "FV-3 the loop's last frame differs from the first by %.1f (> 8)" % d)
+		probe.queue_free()
+	# FV-4: the staging's exit fade
+	var e3: Dictionary = sd.scene("M18")
+	var fade := 0.0
+	for st in e3.get("stage", []):
+		if st.get("frame", "x") == "":
+			fade = float(st.get("fade_out_s", 0.0))
+	_check(fade >= 2.0, "FV-4 M18 leaves the hug frame with a %.1f s fade (≥ 2)" % fade)
+	sr.set_frame("", false)
+	await process_frame
+	print("==== frame video: %d tests, %d passed, %d failed ====" % [passes + fails, passes, fails])
+	quit(1 if fails > 0 else 0)
+
+
+func _mean_diff(a: Image, b: Image) -> float:
+	var s := 0.0
+	var n := 0
+	var w := mini(a.get_width(), b.get_width())
+	var h := mini(a.get_height(), b.get_height())
+	for y in range(0, h, 8):
+		for x in range(0, w, 8):
+			var ca := a.get_pixel(x, y)
+			var cb := b.get_pixel(x, y)
+			s += (absf(ca.r - cb.r) + absf(ca.g - cb.g) + absf(ca.b - cb.b)) / 3.0 * 255.0
+			n += 1
+	return s / maxf(1.0, n)

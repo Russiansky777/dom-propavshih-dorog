@@ -121,6 +121,13 @@ run_3d() {
 run_3d test_agata_3d  # Агата в 3D (render "3d"): любой угол поворота без скачков, стопа на полу ≤ 1 см, idle без рывков, старт/стоп, действия, отрисовка
 run_3d test_npc_3d  # жители в 3D (Директор 30.10): живая модель каждого, «говорит»/«слушает» наплывом, поворот без скачков, уход шагом
 run_3d test_motion_smooth  # плавность живых фигур (Директор 30.10, 17:36 «рваные»): швы петли ходьбы, наплывы, поворот, действия в темпе записи — без рывков
+# 08.11: a painted frame alive (background.video, Ogg Theora loop): the player over the picture, plays and wraps, the
+# loop's seam, the 2-second exit fade. Video decodes only with a display — under xvfb (CI, here); without it skipped.
+if command -v xvfb-run >/dev/null; then
+  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --audio-driver Dummy -s res://tests/test_frame_video.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+else
+  echo "[tests] test_frame_video skipped: no xvfb-run" | tee -a "$BUILD_DIR/logs/tests.log"
+fi
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_trailer.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # TR1: режим съёмки трейлера (data/trailer) — планы читаются, планы собираются, комната в нужном состоянии, сохранения не пишутся
 # CI: every failure becomes an annotation (title, test, its messages) — the checks API shows annotations without the
 # job log, whose download host agents cannot reach (22.10: two red runs with no way to read why).
