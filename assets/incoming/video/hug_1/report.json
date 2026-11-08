@@ -116,6 +116,64 @@
    },
    "error": "User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.",
    "seconds": 0.0
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "fal-ai/kling-video/v3/standard/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__fal-ai-kling-video-v3-standard-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements.",
+    "duration": "5"
+   },
+   "error": "User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.",
+   "seconds": 0.2
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "fal-ai/veo3.1/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__fal-ai-veo3-1-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements.",
+    "generate_audio": false,
+    "resolution": "720p"
+   },
+   "error": "User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.",
+   "seconds": 0.0
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "bytedance/seedance-2.0/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__bytedance-seedance-2-0-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements."
+   },
+   "seconds": 259.7,
+   "bytes": 9434024
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "minimax/h3/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__minimax-h3-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements."
+   },
+   "seconds": 430.6,
+   "bytes": 7972036
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "alibaba/wan-3.0/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__alibaba-wan-3-0-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements."
+   },
+   "error": "User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.",
+   "seconds": 0.3
   }
  ]
 }

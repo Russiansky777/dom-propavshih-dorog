@@ -1,16 +1,9 @@
-run 42524744060 2026-11-08T21:23:55Z request: pipeline/requests/video_hug_1.json
+run 42525582032 2026-11-08T21:34:08Z request: pipeline/requests/video_hug_1.json
 == кадр F_hug_pelageya: game/assets/rooms/F_hug_pelageya/bg.png
    картинка 1280x720, 366 КБ
    fal-ai/kling-video/v3/standard/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
    fal-ai/veo3.1/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
-   bytedance/seedance-2.0/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
-   minimax/h3/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   bytedance/seedance-2.0/image-to-video #1: OK 259.7 с, 9212 КБ
+   minimax/h3/image-to-video #1: OK 430.6 с, 7785 КБ
    alibaba/wan-3.0/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
-== кадр F_hug_nina: game/assets/rooms/F_hug_nina/bg.png
-   картинка 1280x720, 374 КБ
-   fal-ai/kling-video/v3/standard/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
-   fal-ai/veo3.1/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
-   bytedance/seedance-2.0/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
-   minimax/h3/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
-   alibaba/wan-3.0/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
-готово: 0 клипов, 10 ошибок → assets/incoming/video/hug_1
+готово: 2 клипов, 13 ошибок → assets/incoming/video/hug_1
