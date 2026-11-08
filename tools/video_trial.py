@@ -89,7 +89,7 @@ def main() -> int:
             if os.path.exists(dst):
                 print(f"   {name}: уже есть")
                 return None
-            args = {"prompt": fr["prompt"], "image_url": image_url}
+            args = {"prompt": fr["prompt"], m.get("image_key", "image_url"): image_url}   # Wan 3.0: start_image_url
             args.update(m.get("args", {}))
             row = {"frame": fr["id"], "model": mid, "attempt": n, "file": name, "args": {k: v for k, v in args.items() if k != "image_url"}}
             t1 = time.time()

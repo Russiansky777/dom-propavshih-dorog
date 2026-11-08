@@ -33,7 +33,8 @@
     },
     {
       "id": "alibaba/wan-3.0/image-to-video",
-      "args": {}
+      "args": {},
+      "image_key": "start_image_url"
     }
   ]
 }
