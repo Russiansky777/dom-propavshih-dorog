@@ -1,0 +1,7 @@
+run 42528687128 2026-11-08T22:11:18Z request: pipeline/requests/video_hug_2.json
+== кадр F_hug_nina: game/assets/rooms/F_hug_nina/bg.png
+   картинка 1280x720, 374 КБ
+   minimax/h3/image-to-video #1: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   alibaba/wan-3.0/image-to-video #1: OK 109.6 с, 18943 КБ
+   fal-ai/kling-video/v3/standard/image-to-video #1: OK 139.4 с, 17175 КБ
+готово: 2 клипов, 1 ошибок → assets/incoming/video/hug_2
