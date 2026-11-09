@@ -131,7 +131,14 @@ func _frame(fid: String, sd, sr, main_node) -> void:
 		var lighting = room.get_node_or_null("Lighting")
 		if fid == "F_hug_pelageya":
 			_check(lighting != null and lighting.sources.size() >= 1 and lighting.get_index() > room.get_node("Background").get_index(), "FV-1 no flickering lantern source above the video (Lighting %s)" % lighting)
-	_check(spec.get("effects", []).filter(func(e): return e.get("type") == "snow").is_empty(), "FV-3 the frame still has its own snow effect over the video's snow")
+	_check(spec.get("effects", []).filter(func(e): return e.get("type") == "snow" and not bool(e.get("unless_video", false))).is_empty(), "FV-3 the frame's snow effect is not unless_video (it would fall over the video's snow)")
+	var fx: Node = room.get_node_or_null("Effects")
+	var snow_built := false
+	if fx != null:
+		for n in fx.get_children():
+			if String(n.name).contains("snow"):
+				snow_built = true
+	_check(not snow_built, "FV-3 the snow effect is built over the video")
 	# FV-2: it plays and wraps
 	var p0 := -1.0
 	var wrapped := false

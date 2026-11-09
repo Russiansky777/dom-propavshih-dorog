@@ -401,7 +401,73 @@
       "unless_video": true
     }
   ],
-  "effects": [],
+  "effects": [
+    {
+      "id": "window_snow_tl",
+      "type": "snow",
+      "far": true,
+      "rect": [
+        1534,
+        196,
+        86,
+        84
+      ],
+      "amount": 7,
+      "speed_px_s": 24,
+      "alpha": 0.8,
+      "z": -5,
+      "_note": "J (Директор 29.10, стр. 202: «снег за окном»): снег идёт за стёклами — по каждой створке (переплёт рамы на рисунке), z −5: под людьми и слоями кадра",
+      "unless_video": true
+    },
+    {
+      "id": "window_snow_bl",
+      "type": "snow",
+      "far": true,
+      "rect": [
+        1534,
+        294,
+        86,
+        186
+      ],
+      "amount": 14,
+      "speed_px_s": 24,
+      "alpha": 0.8,
+      "z": -5,
+      "unless_video": true
+    },
+    {
+      "id": "window_snow_tr",
+      "type": "snow",
+      "far": true,
+      "rect": [
+        1647,
+        196,
+        92,
+        84
+      ],
+      "amount": 7,
+      "speed_px_s": 24,
+      "alpha": 0.8,
+      "z": -5,
+      "unless_video": true
+    },
+    {
+      "id": "window_snow_br",
+      "type": "snow",
+      "far": true,
+      "rect": [
+        1647,
+        294,
+        92,
+        186
+      ],
+      "amount": 14,
+      "speed_px_s": 24,
+      "alpha": 0.8,
+      "z": -5,
+      "unless_video": true
+    }
+  ],
   "spawns": {
     "default": [
       960,
@@ -414,5 +480,5 @@
   "scenes": {},
   "flags": {},
   "_layers_0811": "слои людей и чашки — unless_video: при идущем видео они внутри клипа (RoomBuilder снимает их, когда FrameVideo нашёл файл для варианта)",
-  "_effects_0911": "снег за окнами — в видео; у варианта без клипа (open_white до генерации) окна без снега — временно"
+  "_effects_0911": "снег кадра — unless_video: пока идёт клип (снег в нём), эффект не строится; без клипа (вариант без файла) — снег эффектом, как раньше"
 }
