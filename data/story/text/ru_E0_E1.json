@@ -79,6 +79,14 @@
       "text": "Журнал",
       "draft": false
     },
+    "ui.pad_cursor_speed": {
+      "text": "Курсор",
+      "draft": false
+    },
+    "ui.pad_vibration": {
+      "text": "Вибрация геймпада",
+      "draft": false
+    },
     "ui.pad_hints": {
       "text": "A — действие · B — назад · X — журнал · Y — подсветить · LB / RB — предметы · крестовина — к ближайшему",
       "draft": false

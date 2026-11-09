@@ -9,8 +9,10 @@ extends SceneTree
 ##   GP-3 B = Esc: the pause menu opens; B again closes it;
 ##   GP-4 X opens and closes the journal; Y reveals the spots (the Space action);
 ##   GP-5 LB / RB take the bag's items into the hand in turn, B puts the item back;
-##   GP-6 the D-pad jumps the cursor to the nearest active spot in that direction.
-##   godot --path game --display-driver x11 --rendering-driver opengl3 -s res://tests/test_gamepad.gd
+##   GP-6 the D-pad jumps the cursor to the nearest active spot in that direction;
+##   GP-7 the vibration comes with the jolts of data/story/rumble.json only, with the pad and the setting on;
+##   GP-8 the settings have «Курсор» and «Вибрация геймпада», shown only with a controller.
+##   godot --path game --display-driver x11 --rendering-driver opengl3 --fixed-fps 60 -s res://tests/test_gamepad.gd
 
 var fails := 0
 var passes := 0
@@ -81,7 +83,7 @@ func _run() -> void:
 	# GP-1 the stick moves the cursor
 	Input.warp_mouse(Vector2(600, 600))
 	await _frames(2)
-	var p0: Vector2 = pad.probe()["pos"]
+	var p0 := Vector2(600, 600)   # the pad takes the mouse where it is when it wakes
 	_axis(JOY_AXIS_LEFT_X, 1.0)
 	await _frames(30)
 	_axis(JOY_AXIS_LEFT_X, 0.0)
@@ -93,6 +95,8 @@ func _run() -> void:
 	await _frames(10)
 	_check(pad.probe()["pos"] == p1, "GP-1 the cursor drifts with the stick released")
 	_check(bool(pad.probe()["active"]) and ui.pad_hints.visible, "GP-2 the hints are not shown while the pad is active")
+	if OS.get_environment("GP_OUT") != "":
+		root.get_viewport().get_texture().get_image().save_png(OS.get_environment("GP_OUT").path_join("gamepad_hints.png"))
 	# the speed setting
 	pad.set_cursor_speed(2.0)
 	_axis(JOY_AXIS_LEFT_X, -1.0)
@@ -122,7 +126,7 @@ func _run() -> void:
 	_check(not bool(pad.probe()["active"]) and not ui.pad_hints.visible, "GP-2 the hints stay after the real mouse moved")
 
 	# GP-3 B = Esc: the pause menu
-	var pm = main_node.find_child("PauseMenu", true, false)
+	var pm = main_node.get_node_or_null("Pause")
 	_check(pm != null, "GP-3 no PauseMenu")
 	if pm != null:
 		await _button(JOY_BUTTON_B)
@@ -174,5 +178,50 @@ func _run() -> void:
 			if (t["at"] as Vector2).distance_to(at) < 3.0:
 				hit = true
 		_check(hit, "GP-6 D-pad right did not land on a spot (%s)" % at)
+	# GP-7 the vibration: a jolt with the sounds of rumble.json (the bite, the bell), none with the others (a click of
+	# the menu, the spoon), none when the mouse plays, none with «Вибрация» off
+	var sfx = root.get_node("SfxDirector")
+	pad.rumbles.clear()
+	_axis(JOY_AXIS_LEFT_X, 0.5)
+	await _frames(2)
+	_axis(JOY_AXIS_LEFT_X, 0.0)
+	await _frames(1)
+	sfx.play_synth("float_dive")
+	sfx.play_synth("bell")
+	sfx.play_synth("ui_click")
+	sfx.play_synth("spoon_tikhon")
+	var names: Array = pad.rumbles.map(func(r): return r[0])
+	_check(names == ["float_dive", "bell"], "GP-7 rumbles %s (want the bite and the bell only)" % [names])
+	pad.set_vibration(false)
+	sfx.play_synth("line_snap")
+	_check(pad.rumbles.size() == 2, "GP-7 a rumble with «Вибрация» off")
+	pad.set_vibration(true)
+	var mm2 := InputEventMouseMotion.new()
+	mm2.position = Vector2(500, 500)
+	mm2.global_position = mm2.position
+	mm2.relative = Vector2(30, 0)
+	Input.parse_input_event(mm2)
+	await _frames(2)
+	sfx.play_synth("line_snap")
+	_check(pad.rumbles.size() == 2, "GP-7 a rumble while the mouse plays")
+	# self-check: every rumble name is a synthesised sound that exists
+	var synth = load("res://scripts/mechanics/synth_sfx.gd")
+	var data = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rumble.json"))
+	for k in data["sounds"].keys():
+		_check(synth.stream(String(k)) != null, "GP-7 rumble.json names a sound that is not synthesised: %s" % k)
+	# GP-8 the settings: the cursor speed and the vibration rows exist; hidden without a controller
+	ui.open_menu_panel("settings")
+	await _frames(2)
+	var row: Control = ui.menu_panel.find_child("PadSpeedRow", true, false)
+	var vib: Control = ui.menu_panel.find_child("PadVibration", true, false)
+	_check(row != null and vib != null, "GP-8 no gamepad rows in the settings")
+	if row != null and Input.get_connected_joypads().is_empty():
+		_check(not row.visible and not vib.visible, "GP-8 gamepad rows shown with no controller connected")
+	ui.set_meta("pad_rows_forced", true)
+	ui.open_menu_panel("settings")
+	await _frames(2)
+	_check(row != null and row.visible and vib.visible, "GP-8 gamepad rows hidden with a controller")
+	ui.set_meta("pad_rows_forced", false)
+	ui.close_menu_panel()
 	print("==== gamepad: %d tests, %d passed, %d failed ====" % [passes + fails, passes, fails])
 	quit(1 if fails > 0 else 0)

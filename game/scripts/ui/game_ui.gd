@@ -83,6 +83,7 @@ var menu_empty_label: Label      # «Загрузить» with no save at all
 ## every row start at one line, a long name — «День четвёртый: мост» — wraps instead of pushing them)
 const SLOT_NAME_W := 250.0
 var settings_rows: Array = []    # the settings controls (hidden in "save" / "load")
+var pad_rows: Array = []         # gamepad settings (shown only with a controller connected)
 var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: Button, delete: Button}
 var delete_dialog: Control = null   # J (стр. 7): «Вы действительно хотите удалить это сохранение?»
 var lang_buttons: Dictionary = {}   # "voice:ru" | "voice:en" | "subs:ru" | "subs:en" | "subs:none" -> Button (menu, Director 03.11)
@@ -561,6 +562,41 @@ func _build() -> void:
 	fullscreen_check.toggled.connect(func(on): DisplaySettings.set_fullscreen(on))
 	mv.add_child(fullscreen_check)
 	settings_rows.append(fullscreen_check)
+	# Steam Deck / gamepad (09.11): the cursor's speed and the vibration — only while a controller is connected
+	var pad := get_node_or_null("/root/PadInput")
+	if pad != null:
+		pad_rows.clear()
+		var prow := HBoxContainer.new()
+		prow.name = "PadSpeedRow"
+		prow.add_theme_constant_override("separation", 12)
+		mv.add_child(prow)
+		settings_rows.append(prow)
+		pad_rows.append(prow)
+		var pl := Label.new()
+		pl.text = StoryData.text("@ui.pad_cursor_speed")
+		pl.custom_minimum_size = Vector2(120, 0)
+		pl.theme_type_variation = &"SlotNameLabel"
+		prow.add_child(pl)
+		var ps := HSlider.new()
+		ps.name = "PadSpeed"
+		ps.min_value = 40
+		ps.max_value = 250
+		ps.step = 10
+		ps.custom_minimum_size = Vector2(420, 40)
+		ps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		ps.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		ps.value = roundf(float(pad.cursor_speed) * 100.0)
+		ps.value_changed.connect(func(v): pad.set_cursor_speed(v / 100.0))
+		prow.add_child(ps)
+		var vib := CheckButton.new()
+		vib.name = "PadVibration"
+		vib.text = StoryData.text("@ui.pad_vibration")
+		vib.focus_mode = Control.FOCUS_NONE
+		vib.button_pressed = bool(pad.vibration)
+		vib.toggled.connect(func(on): pad.set_vibration(on))
+		mv.add_child(vib)
+		settings_rows.append(vib)
+		pad_rows.append(vib)
 	# Director 02.11 23:39 / 03.11: the voice and the subtitles in Russian or English (LanguageSettings); the names of
 	# the choices are written in their own language, «Без субтитров» with its English below
 	LanguageSettings.load_settings()
@@ -687,7 +723,12 @@ func _build() -> void:
 	pad_hints.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pad_hints.position = Vector2(0, 1080 - 34)
 	pad_hints.size = Vector2(1920, 30)
-	pad_hints.modulate = Color(1, 1, 1, 0.75)
+	pad_hints.add_theme_font_size_override("font_size", 24)   # ≈ 16 px on the Deck's 800p (Valve: ≥ 9, better 12)
+	pad_hints.add_theme_color_override("font_color", UiTheme.CREAM)
+	pad_hints.add_theme_color_override("font_outline_color", UiTheme.OUTLINE)
+	pad_hints.add_theme_constant_override("outline_size", 8)
+	pad_hints.position = Vector2(0, 1080 - 40)
+	pad_hints.size = Vector2(1920, 36)
 	pad_hints.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pad_hints.visible = false
 	add_child(pad_hints)
@@ -1128,6 +1169,9 @@ func _apply_menu_mode() -> void:
 	menu_title.text = StoryData.text(String(titles.get(menu_mode, "@ui.menu_title")))
 	for c in settings_rows:
 		(c as Control).visible = menu_mode == "all" or menu_mode == "settings"
+	if Input.get_connected_joypads().is_empty() and not bool(get_meta("pad_rows_forced", false)):
+		for c in pad_rows:
+			(c as Control).visible = false
 	var ng: Control = menu_panel.find_child("NewGame", true, false)
 	if ng != null:
 		ng.visible = menu_mode == "all"

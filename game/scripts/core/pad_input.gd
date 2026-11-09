@@ -21,6 +21,10 @@ const CANVAS := Vector2(1920.0, 1080.0)
 
 var active: bool = false            # the pad gave the last input
 var cursor_speed: float = 1.0
+var vibration: bool = true          # settings.cfg [gamepad] vibration
+var _device: int = 0                # the pad of the last event
+var _rumble: Dictionary = {}        # synth sound → [weak, strong, s] (data/story/rumble.json)
+var rumbles: Array = []             # tests: the rumbles started (sound, weak, strong, s)
 var _axes: Dictionary = {}          # axis → value, from InputEventJoypadMotion (a real pad or a test's events)
 var _pos: Vector2 = CANVAS * 0.5
 var _lmb_down: bool = false
@@ -33,6 +37,9 @@ signal pad_active_changed(on: bool)
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_load_settings()
+	var d = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rumble.json")) if FileAccess.file_exists("res://data/story/rumble.json") else null
+	if d is Dictionary:
+		_rumble = d.get("sounds", {})
 	Input.joy_connection_changed.connect(func(_d: int, c: bool): if c: _set_active(true))
 
 
@@ -40,6 +47,7 @@ func _load_settings() -> void:
 	var cf := ConfigFile.new()
 	if FileAccess.file_exists("user://settings.cfg") and cf.load("user://settings.cfg") == OK:
 		cursor_speed = clampf(float(cf.get_value("gamepad", "cursor_speed", 1.0)), 0.4, 2.5)
+		vibration = bool(cf.get_value("gamepad", "vibration", true))
 
 
 func set_cursor_speed(v: float) -> void:
@@ -49,6 +57,25 @@ func set_cursor_speed(v: float) -> void:
 		cf.load("user://settings.cfg")
 	cf.set_value("gamepad", "cursor_speed", cursor_speed)
 	cf.save("user://settings.cfg")
+
+
+func set_vibration(on: bool) -> void:
+	vibration = on
+	var cf := ConfigFile.new()
+	if FileAccess.file_exists("user://settings.cfg"):
+		cf.load("user://settings.cfg")
+	cf.set_value("gamepad", "vibration", vibration)
+	cf.save("user://settings.cfg")
+
+
+## A synthesised sound just played (MechanicView.play, SfxDirector.play_synth): its jolt on the pad, if it has one in
+## data/story/rumble.json, the pad gives the input and «Вибрация» is on.
+func rumble_for(sound_name: String) -> void:
+	if not active or not vibration or not _rumble.has(sound_name):
+		return
+	var r: Array = _rumble[sound_name]
+	rumbles.append([sound_name, float(r[0]), float(r[1]), float(r[2])])
+	Input.start_joy_vibration(_device, float(r[0]), float(r[1]), float(r[2]))
 
 
 ## GameUi registers itself: where the spots are (D-pad jumps) and where to show the hints.
@@ -105,6 +132,8 @@ func _input(event: InputEvent) -> void:
 		if (event as InputEventMouseMotion).position.distance_to(_pos) > 2.0:
 			_set_active(false)
 		return
+	if event is InputEventJoypadMotion or event is InputEventJoypadButton:
+		_device = event.device
 	if event is InputEventJoypadMotion:
 		var jm := event as InputEventJoypadMotion
 		_axes[jm.axis] = jm.axis_value

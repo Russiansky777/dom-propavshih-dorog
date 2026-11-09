@@ -77,6 +77,14 @@
    "ru": "Журнал",
    "en": "Journal"
   },
+  "text:ui.pad_cursor_speed": {
+   "ru": "Курсор",
+   "en": "Cursor"
+  },
+  "text:ui.pad_vibration": {
+   "ru": "Вибрация геймпада",
+   "en": "Controller vibration"
+  },
   "text:ui.pad_hints": {
    "ru": "A — действие · B — назад · X — журнал · Y — подсветить · LB / RB — предметы · крестовина — к ближайшему",
    "en": "A — act · B — back · X — journal · Y — highlight · LB / RB — items · D-pad — nearest spot"

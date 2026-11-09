@@ -80,6 +80,14 @@
    "text": "Journal",
    "draft": false
   },
+  "ui.pad_cursor_speed": {
+   "text": "Cursor",
+   "draft": false
+  },
+  "ui.pad_vibration": {
+   "text": "Controller vibration",
+   "draft": false
+  },
   "ui.pad_hints": {
    "text": "A — act · B — back · X — journal · Y — highlight · LB / RB — items · D-pad — nearest spot",
    "draft": false
