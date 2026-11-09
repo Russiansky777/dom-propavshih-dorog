@@ -111,6 +111,59 @@ func _run() -> void:
 			_check(switched, "FV-6 Ulyana came mid-frame: clip %s → %s" % [before6, after6])
 		sr.set_frame("", false)
 		await process_frame
+	# FV-7 (Director 09.11, 21:58 / 22:32: «экран „моргает“ постоянно в последней сцене… целиком»): when one clip of the
+	# dinner ends and the next begins, no drawn frame may show the empty room under the player (a new stream starts
+	# with an empty texture). The clip is taken close to its end and every frame through the change is compared with
+	# the one before it, over the family's part of the picture. Self-check first: the change without the held picture
+	# (as built before) does show the empty room.
+	for old_way7 in [true, false]:
+		gs.reset()
+		gs.set_flag("v01_cup_blue", true)
+		sr.set_frame("EP_dinner", false)
+		for i in 6:
+			await process_frame
+		var v7 = fv.room.get_node_or_null("Background/Video") if fv.room != null else null
+		if v7 == null:
+			_check(false, "FV-7 no player on the dinner frame")
+			continue
+		v7.set("hold_enabled", not old_way7)
+		v7.stream_position = 9.4
+		var clip7 := String(v7.stream.resource_path)
+		var ref7: Image = null
+		var worst := 0.0
+		var changed_at := -1
+		var n7 := 0
+		while n7 < 200 and (changed_at < 0 or n7 - changed_at < 6):
+			n7 += 1
+			await RenderingServer.frame_post_draw
+			var shot: Image = root.get_viewport().get_texture().get_image()
+			shot.resize(96, 54, Image.INTERPOLATE_BILINEAR)
+			if changed_at < 0 and String(v7.stream.resource_path) != clip7:
+				changed_at = n7
+			if changed_at < 0:
+				ref7 = shot
+				continue
+			if ref7 == null:
+				continue
+			# the family's part of the picture (design px 640..1840 × 300..800 → 96×54)
+			var sum := 0.0
+			var cnt := 0
+			for y in range(15, 40):
+				for x in range(32, 92):
+					sum += absf(shot.get_pixel(x, y).get_luminance() - ref7.get_pixel(x, y).get_luminance())
+					cnt += 1
+			worst = maxf(worst, sum / cnt * 255.0)
+		print("    FV-7 %s: the clip changed at frame %d, the family's part differs from the frame before by at most %.1f/255" % ["without the held picture" if old_way7 else "as built", changed_at, worst])
+		if changed_at < 0:
+			_check(false, "FV-7 the clip never changed in 200 frames")
+		elif old_way7:
+			_check(worst > 6.0, "FV-7 self-check: without the held picture the change shows no empty frame (%.1f) — the test sees nothing" % worst)
+		else:
+			_check(worst <= 3.0, "FV-7 a frame at the clip change differs by %.1f/255 (> 3) — the empty room shows" % worst)
+			var hold7 = v7.get_node_or_null("Hold")
+			_check(hold7 != null and not (hold7 as CanvasItem).visible, "FV-7 the held picture stays over the new clip")
+		sr.set_frame("", false)
+		await process_frame
 	var m26: Dictionary = sd.scene("M26")
 	var sets_at_line := false
 	for st in m26.get("stage", []):
