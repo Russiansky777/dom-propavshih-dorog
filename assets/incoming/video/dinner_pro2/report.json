@@ -1,0 +1,18 @@
+{
+ "trial": "dinner_pro2",
+ "runs": [
+  {
+   "frame": "EP_dinner_closed_blue",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_closed_blue__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room. Everyone keeps their seats; they breathe softly, heads turn slightly as they listen to each other, a faint smile, the man nods. The candle flame sways, glints play on the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands. Painterly look unchanged, no new elements. Ends exactly in the starting pose.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 329.1,
+   "bytes": 27525060
+  }
+ ]
+}
