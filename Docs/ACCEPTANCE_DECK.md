@@ -4,7 +4,7 @@
 
 ## Где проверять
 
-- **Windows-сборка** из релиза latest — после слияния ветки `deck-gamepad` и сборки по вашей команде (в сборке 09.11 ночью этого ещё нет — по вашему слову «сборку до Steam Deck части»).
+- **Windows-сборка** из релиза latest — сборка 09.11 вечером (run 42677910736), та же, что для `Docs/ACCEPTANCE_HANDS.md`: https://github.com/Russiansky777/dom-propavshih-dorog/releases/tag/latest → `DomPropavshihDorog.exe`.
 - Подключите контроллер до или после запуска — подсказки появятся при первом нажатии кнопки или движении стика.
 
 ## Кнопки
