@@ -11,7 +11,8 @@ extends SceneTree
 ##   GP-5 LB / RB take the bag's items into the hand in turn, B puts the item back;
 ##   GP-6 the D-pad jumps the cursor to the nearest active spot in that direction;
 ##   GP-7 the vibration comes with the jolts of data/story/rumble.json only, with the pad and the setting on;
-##   GP-8 the settings have «Курсор» and «Вибрация геймпада», shown only with a controller.
+##   GP-8 the settings have «Курсор» and «Вибрация геймпада», shown only with a controller;
+##   GP-9 A held + the stick is a drag (motion with the left button down).
 ##   godot --path game --display-driver x11 --rendering-driver opengl3 --fixed-fps 60 -s res://tests/test_gamepad.gd
 
 var fails := 0
@@ -178,6 +179,43 @@ func _run() -> void:
 			if (t["at"] as Vector2).distance_to(at) < 3.0:
 				hit = true
 		_check(hit, "GP-6 D-pad right did not land on a spot (%s)" % at)
+	# GP-9 a drag: A held + the stick = mouse motion with the left button down, released with A (the lantern, the
+	# crossing, the knot are dragged)
+	var cl := CanvasLayer.new()
+	cl.layer = 120
+	root.add_child(cl)
+	var probe := Control.new()
+	probe.size = Vector2(1920, 1080)
+	probe.mouse_filter = Control.MOUSE_FILTER_STOP
+	var seen: Array = []
+	probe.gui_input.connect(func(ev):
+		if ev is InputEventMouseMotion:
+			seen.append(["move", (ev as InputEventMouseMotion).button_mask])
+		elif ev is InputEventMouseButton:
+			seen.append(["button", (ev as InputEventMouseButton).pressed]))
+	cl.add_child(probe)
+	await _frames(2)
+	var e_down := InputEventJoypadButton.new()
+	e_down.button_index = JOY_BUTTON_A
+	e_down.pressed = true
+	Input.parse_input_event(e_down)
+	await _frames(1)
+	_axis(JOY_AXIS_LEFT_Y, 1.0)
+	await _frames(10)
+	_axis(JOY_AXIS_LEFT_Y, 0.0)
+	await _frames(1)
+	var e_up := InputEventJoypadButton.new()
+	e_up.button_index = JOY_BUTTON_A
+	e_up.pressed = false
+	Input.parse_input_event(e_up)
+	await _frames(2)
+	var moves_down := seen.filter(func(x): return x[0] == "move" and int(x[1]) & MOUSE_BUTTON_MASK_LEFT)
+	var presses := seen.filter(func(x): return x[0] == "button")
+	_check(moves_down.size() >= 5, "GP-9 no drag motion with the button held (%d moves)" % moves_down.size())
+	_check(presses.size() >= 2 and presses[0][1] == true and presses[-1][1] == false, "GP-9 the drag's press/release %s" % [presses])
+	cl.queue_free()
+	await _frames(1)
+
 	# GP-7 the vibration: a jolt with the sounds of rumble.json (the bite, the bell), none with the others (a click of
 	# the menu, the spoon), none when the mouse plays, none with «Вибрация» off
 	var sfx = root.get_node("SfxDirector")

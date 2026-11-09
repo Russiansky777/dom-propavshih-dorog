@@ -123,6 +123,7 @@ func _move_cursor(p: Vector2) -> void:
 	m.position = _pos
 	m.global_position = _pos
 	m.relative = Vector2.ZERO
+	m.button_mask = MOUSE_BUTTON_MASK_LEFT if _lmb_down else 0   # A held + stick = a drag (lantern, crossing, knot)
 	Input.parse_input_event(m)
 
 
@@ -192,6 +193,7 @@ func _mouse_button(idx: int, pressed: bool) -> void:
 	b.pressed = pressed
 	b.position = _pos
 	b.global_position = _pos
+	b.button_mask = MOUSE_BUTTON_MASK_LEFT if _lmb_down else 0
 	Input.parse_input_event(b)
 
 
