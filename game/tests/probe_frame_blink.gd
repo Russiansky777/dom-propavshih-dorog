@@ -21,6 +21,12 @@ func _mean(img: Image) -> float:
 	return s / (64.0 * 36.0) * 255.0
 
 
+func _video() -> Node:
+	for n in root.find_children("*", "VideoStreamPlayer", true, false):
+		return n
+	return null
+
+
 func _run() -> void:
 	await process_frame
 	var rm = root.get_node("RoomManager"); var sr = root.get_node("StoryRunner"); var gs = root.get_node("GameState")
@@ -50,7 +56,7 @@ func _run() -> void:
 		nf += 1
 		await RenderingServer.frame_post_draw
 		var img: Image = root.get_viewport().get_texture().get_image()
-		var v = root.find_child("Video", true, false)
+		var v = _video()
 		var clip := ""
 		var pos := -1.0
 		if v != null and v is VideoStreamPlayer:
@@ -62,12 +68,12 @@ func _run() -> void:
 			imgs.pop_front()
 		means.append(_mean(img))
 		info.append("%.2f %s %.2f" % [nf / 30.0, clip, pos])
-		if means.size() >= 2 and absf(float(means[-1]) - float(means[-2])) > 1.5:
+		if nf > 150 and means.size() >= 2 and absf(float(means[-1]) - float(means[-2])) > 0.8:
 			print("JUMP %.2f → %.2f at %s (prev %s)" % [means[-2], means[-1], info[-1], info[-2]])
 			for k in imgs.size():
 				(imgs[k] as Image).save_jpg("%s/jump_%d_%d.jpg" % [out, means.size(), k], 0.8)
 	var steps: Array = []
-	for i in range(1, means.size()):
+	for i in range(151, means.size()):
 		steps.append(absf(float(means[i]) - float(means[i - 1])))
 	steps.sort()
 	print("frames %d, mean %.1f, step p50 %.3f p95 %.3f max %.3f" % [means.size(), means.reduce(func(x, y): return x + y, 0.0) / means.size(), steps[steps.size() / 2], steps[int(steps.size() * 0.95)], steps[-1]])
