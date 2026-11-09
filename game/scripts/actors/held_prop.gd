@@ -122,11 +122,19 @@ func flags_allow() -> bool:
 
 
 ## The figure's height on screen now (px): the sheet's figure at the villager's depth scale.
+var _h_per_scale: float = 0.0   # the live figure's standing height per unit of its scale (the largest seen)
+
+
 func _figure_h() -> float:
-	# the live figure: feet to the top of the head as drawn now (the head bone sits ~0.9 of the height)
+	# the live figure: feet to the top of the head (the head bone sits ~0.9 of the height) — standing: 09.11, Mitya bent
+	# down to the lantern and it shrank with his lowered head; now the tallest seen per unit of the figure's scale, so
+	# a bow does not shrink the thing and a walk into the distance still does
 	var head := _bone_world("Head")
+	var sc := maxf(absf(npc.global_scale.y), 0.001)
 	if head != Vector2.INF and npc.global_position.y - head.y > 10.0:
-		return (npc.global_position.y - head.y) / 0.9
+		_h_per_scale = maxf(_h_per_scale, (npc.global_position.y - head.y) / 0.9 / sc)
+	if _h_per_scale > 0.0:
+		return _h_per_scale * sc
 	var sheet = npc.get("sheet")
 	var spr: Node2D = npc.get("sprite")
 	var fh := float(sheet.figure_height_px) if sheet != null else 380.0
@@ -182,6 +190,7 @@ func hand_screen() -> Vector2:
 
 func _process(delta: float) -> void:
 	_t += delta
+	_figure_h()   # measured while hidden too: the standing height is known before the thing is first shown
 	var on := flags_allow() and npc.is_visible_in_tree()
 	var dw := 1.0
 	if data.has("during"):

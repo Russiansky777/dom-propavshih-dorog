@@ -2658,7 +2658,7 @@ func hand_grip_frame_px(side: String) -> Vector2:
 
 
 func _place_hand_props() -> void:
-	if camera == null:
+	if camera == null or not camera.is_inside_tree():
 		return
 	var cb := camera.global_transform.basis.orthonormalized()
 	for mi in hand_props:

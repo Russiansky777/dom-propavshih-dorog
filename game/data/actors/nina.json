@@ -939,22 +939,7 @@
     },
     "_props": "Блок 3 (Директор 05.11: Нина — мел, зеркальце, пальто): вещь в руке, пока играет клип действия — мел (значок), зеркальце (значок зеркала в деревянной оправе), Дунино пальто (вырезка слоя H1 state_nina_coat — то самое, что потом висит на крючке); до доли клипа until — потом вещь уже на месте (слой комнаты)",
     "props": {
-      "write_board": [
-        {
-          "image": "res://assets/icons/chalk.png",
-          "anchor": [
-            60,
-            125
-          ],
-          "height_rel": 0.035,
-          "bone": "RightHand",
-          "grip": "wrist",
-          "turn_deg": 124,
-          "out_rel": 0.03,
-          "from": 0.0,
-          "until": 1.0
-        }
-      ],
+      "write_board": [{"image": "res://assets/icons/chalk.png", "anchor": [60, 125], "size_m": 0.07, "bone": "RightHand", "grip": "fingers", "tip_k": 0.6, "turn_deg": 124, "from": 0.0, "until": 1.0, "_0911": "09.11: мел в пальцах (3D у кончиков пальцев) — прежде картинка поверх ладони у запястья, как ключ Тамары"}],
       "place_table": [
         {
           "image": "res://assets/icons/mirror_mill.png",
@@ -982,7 +967,7 @@
           "drop_rel": 0.0,
           "sway_deg": 1.0,
           "from": 0.0,
-          "until": 0.62
+          "until": 0.38
         }
       ]
     },

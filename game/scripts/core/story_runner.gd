@@ -614,6 +614,10 @@ func _run_stage(spec: Dictionary) -> void:
 			npc_acted.emit(String(g.get("id", "")), String(g.get("action", "")), secs)
 			# 09.11 (Director 12:35: Pelageya pulls the line of the boat, not the air): `rope_to` [x, y] — a line from her
 			# hands to that point of the room while the clip plays (hand_line.gd)
+			# 09.11 (Mitya's lantern: it was in his hand before his hand reached it — a timer ran from the call while the
+			# clip came in later): `sets` with `sets_at` (share of the clip) — the flags go when the clip itself is there
+			if g.has("sets_at") and secs > 0.0:
+				_sets_at_share(an, float(g["sets_at"]), g.get("sets", []), _stage_serial)
 			if g.has("rope_to") and secs > 0.0:
 				var rt: Array = g["rope_to"]
 				load("res://scripts/actors/hand_line.gd").attach(an, Vector2(float(rt[0]), float(rt[1])))
@@ -757,6 +761,23 @@ func _stage_agata_go(ag: Dictionary) -> void:
 		if not get_tree().paused:   # ревью 01.11 (В-14): a pause does not use up her eight seconds
 			t += get_process_delta_time()
 	pl.set("speed_factor", keep)
+
+
+func _sets_at_share(npc: Node, share: float, flags: Array, serial: int) -> void:
+	var live = npc.get("live")
+	var t := 0.0
+	while t < 10.0:
+		await get_tree().process_frame
+		if serial != _stage_serial or not is_instance_valid(npc):
+			return
+		t += get_process_delta_time()
+		if live == null or not is_instance_valid(live):
+			break
+		var L: float = live.view.action_length(String(live.get("act_name"))) if live.get("view") != null else 1.0
+		if bool(live.get("_once_clip")) and float(live.get("act_t")) / maxf(L, 0.01) >= share:
+			break
+	for f in flags:
+		GameState.set_flag(String(f), true)
 
 
 func _stage_handover(ho: Dictionary) -> void:

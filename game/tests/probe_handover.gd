@@ -31,7 +31,7 @@ func _props() -> String:
 	var s := ""
 	for n in root.find_children("Held", "", true, false):
 		if n is CanvasItem and (n as CanvasItem).visible:
-			s += " %s@%s a%.2f" % [String(n.get_parent().name), (n as Node2D).global_position.round(), (n as CanvasItem).modulate.a]
+			s += " %s@%s a%.2f sc %.3f hps %.1f" % [String(n.get_parent().name), (n as Node2D).global_position.round(), (n as CanvasItem).modulate.a, n.get("pic").scale.x if n.get("pic") else -1.0, float(n.get("_h_per_scale"))]
 	for n in root.find_children("HeldKey*", "", true, false):
 		s += " %s vis %s" % [n.name, n.visible]
 	return s

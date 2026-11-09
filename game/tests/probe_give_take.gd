@@ -49,6 +49,8 @@ func _run() -> void:
 	for i in 4:
 		await process_frame
 	rm.autosave_enabled = false
+	for f in OS.get_environment("PG_FLAGS").split(",", false):
+		gs.set_flag(f, true)
 	rm.change_room(room_id, "default")
 	for i in 20:
 		await process_frame
