@@ -89,7 +89,7 @@
    "draft": false
   },
   "ui.pad_hints": {
-   "text": "A — act · B — back · X — journal · Y — highlight · LB / RB — items · D-pad — nearest spot",
+   "text": "A — act · B — back · X — journal · Y — highlight · L / R — items · D-pad — nearest spot",
    "draft": false
   },
   "ui.button_hint": {

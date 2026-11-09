@@ -7,7 +7,8 @@ extends Node
 ##   B            — a held item goes back into the bag, otherwise Esc (close / pause);
 ##   X            — the journal;
 ##   Y            — reveal the active spots (Space);
-##   LB / RB      — the previous / next item of the bag into the hand;
+##   LB / RB      — the previous / next item of the bag into the hand (L1 / R1 on the Deck: the hints say «L / R»,
+##                  Valve: the glyphs must match the device in use);
 ##   D-pad        — jump the cursor to the nearest active spot or exit in that direction;
 ##   Start        — Esc (the pause menu);
 ## Mouse events are synthesised through Input.parse_input_event, so every existing handler sees ordinary clicks. The

@@ -439,7 +439,10 @@ static func _build_effects(room: Room, spec: Dictionary) -> void:
 	var container := Node2D.new()
 	container.name = "Effects"
 	room.add_child(container)
+	var has_video: bool = room.get_node_or_null("Background/Video") != null
 	for e in spec.get("effects", []):
+		if has_video and bool(e.get("unless_video", false)):
+			continue   # 09.11: the frame's clip has this (the snow falls in the video)
 		var node := RoomEffect.new()
 		node.name = String(e.get("id", e.get("type", "effect")))
 		node.z_index = clampi(int(e.get("z", 1)), -10, 4096)
