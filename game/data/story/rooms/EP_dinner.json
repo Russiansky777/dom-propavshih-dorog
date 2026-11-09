@@ -27,8 +27,7 @@
           "v01_cup_blue"
         ],
         "files": [
-          "res://assets/rooms/EP_dinner/open_blue_a.ogv",
-          "res://assets/rooms/EP_dinner/open_blue_b.ogv"
+          "res://assets/rooms/EP_dinner/open_blue_a.ogv"
         ]
       },
       {
@@ -37,8 +36,7 @@
           "v01_cup_white"
         ],
         "files": [
-          "res://assets/rooms/EP_dinner/open_white_a.ogv",
-          "res://assets/rooms/EP_dinner/open_white_b.ogv"
+          "res://assets/rooms/EP_dinner/open_white_a.ogv"
         ]
       },
       {
@@ -49,8 +47,7 @@
           "v01_cup_blue"
         ],
         "files": [
-          "res://assets/rooms/EP_dinner/closed_blue_a.ogv",
-          "res://assets/rooms/EP_dinner/closed_blue_b.ogv"
+          "res://assets/rooms/EP_dinner/closed_blue_a.ogv"
         ]
       },
       {
@@ -61,12 +58,11 @@
           "v01_cup_white"
         ],
         "files": [
-          "res://assets/rooms/EP_dinner/closed_white_a.ogv",
-          "res://assets/rooms/EP_dinner/closed_white_b.ogv"
+          "res://assets/rooms/EP_dinner/closed_white_a.ogv"
         ]
       }
     ],
-    "_videos": "09.11 (Директор 00:29–01:26): ужин оживлён — Kling 3.0 через fal (pipeline/requests/video_dinner_1/2/3.json), 10 с, по варианту картины (семья с Ульяной / без × чашка синяя / белая — люди и чашка внутри видео, карта и фото — слоями поверх); по 2 клипа на вариант, чередуются (сцена ~90 с); closed_blue — клипы A (ночь 09.11) и B (09.11 11:19, run 42599181789, Директор 11:08 «есть ещё бюджет, попробуй»; Тихон с пустыми лапами, чашка на столе весь клип); первые два closed_blue с Тихоном, взявшим чашку, отбракованы; петли tools/video_loop.py."
+    "_videos": "09.11 (Директор 00:29–01:26): ужин оживлён — Kling 3.0 через fal (pipeline/requests/video_dinner_1/2/3.json), 10 с, по варианту картины (семья с Ульяной / без × чашка синяя / белая — люди и чашка внутри видео, карта и фото — слоями поверх); по 2 клипа на вариант, чередуются (сцена ~90 с); closed_blue — клипы A (ночь 09.11) и B (09.11 11:19, run 42599181789, Директор 11:08 «есть ещё бюджет, попробуй»; Тихон с пустыми лапами, чашка на столе весь клип); первые два closed_blue с Тихоном, взявшим чашку, отбракованы; петли tools/video_loop.py. 09.11 вечер (Директор 17:42–17:49: «пополнил ещё на 10 долларов, давай делать что нужно»): все четыре варианта — Kling 3.0 Pro, 1080p, без звука, последний кадр = картина (end_image_url) — петля без наплыва (разница первого и последнего кадра ~1,5/255), по одному клипу на вариант, клип повторяется сам (pipeline/requests/video_dinner_pro2/pro3.json)."
   },
   "walkable": [
     [

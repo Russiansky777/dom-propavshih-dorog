@@ -18,7 +18,7 @@
   "image": "res://assets/rooms/F_hug_nina/bg.png",
   "horizon": 700,
   "video": "res://assets/rooms/F_hug_nina/loop.ogv",
-  "_video": "08.11 (Директор 23:26): картина оживлена — Kling 3.0 (fal.ai, pipeline/requests/video_hug_kling10.json), 10 с, петля наплывом хвоста в первый кадр (tools/video_loop.py); снег — в видео, эффект снега кадра снят"
+  "_video": "08.11 (Директор 23:26): картина оживлена — Kling 3.0 (fal.ai, pipeline/requests/video_hug_kling10.json), 10 с, петля наплывом хвоста в первый кадр (tools/video_loop.py); снег — в видео, эффект снега кадра снят 09.11 вечер (Директор 17:49): переделано на Kling 3.0 Pro, 1080p, без звука, последний кадр = картина (end_image_url) — петля без наплыва (pipeline/requests/video_dinner_pro3.json)."
  },
  "walkable": [
   [

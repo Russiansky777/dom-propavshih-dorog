@@ -45,10 +45,11 @@ func _run() -> void:
 	# layers go; a variant without a clip yet falls back to the painting with its layers
 	var fv = main_node.find_child("FrameView", true, false)
 	var cases := [
-		[["v01_cup_blue"], ["closed_blue_a", "closed_blue_b"], ["agata", "family_closed", "cup_blue", "tikhon"]],   # B: 09.11 11:19
-		[["v01_cup_white"], ["closed_white_a", "closed_white_b"], ["agata", "family_closed", "cup_white", "tikhon"]],
-		[["ep_ulyana_came", "v01_cup_blue"], ["open_blue_a", "open_blue_b"], ["agata", "family", "cup_blue", "tikhon"]],
-		[["ep_ulyana_came", "v01_cup_white"], ["open_white_a", "open_white_b"], ["agata", "family", "cup_white", "tikhon"]],
+		# 09.11 evening: one Kling Pro clip per variant, its last frame is the painting — it loops by itself
+		[["v01_cup_blue"], ["closed_blue_a"], ["agata", "family_closed", "cup_blue", "tikhon"]],
+		[["v01_cup_white"], ["closed_white_a"], ["agata", "family_closed", "cup_white", "tikhon"]],
+		[["ep_ulyana_came", "v01_cup_blue"], ["open_blue_a"], ["agata", "family", "cup_blue", "tikhon"]],
+		[["ep_ulyana_came", "v01_cup_white"], ["open_white_a"], ["agata", "family", "cup_white", "tikhon"]],
 	]
 	for c in cases:
 		gs.reset()
@@ -78,6 +79,8 @@ func _run() -> void:
 			await process_frame
 			_check(String(v.stream.resource_path) != first and v.is_playing(), "FV-5 the next clip repeats %s" % first)
 			_check(not v.loop, "FV-5 two clips but the player loops one")
+		if v != null and v.files.size() == 1:
+			_check(v.loop and v.is_playing(), "FV-5 one clip %s but it does not loop" % names)
 		var out5 := OS.get_environment("FV_OUT")
 		if out5 != "" and want[0] == "open_blue_a":
 			for i in 150:
