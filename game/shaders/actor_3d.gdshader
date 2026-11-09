@@ -24,6 +24,13 @@ uniform float inside_light = 0.45;   // back faces (the inside of the clothes): 
 uniform float debug_flat = -1.0;   // >= 0: output this grey (colour-pipeline probe)
 uniform bool debug_albedo = false; // output the texture as sampled (no light)
 uniform bool as_painted = false;   // a held thing's picture (Actor3D hand props): already painted with its light, shown as is
+// The inside of the mouth (villagers' jaw by the voice, 09.11): back faces near the mouth are the inside of the head seen
+// through the opened lips — painted with the coat/shawl texture they showed yellow or knitted; here they are the dark
+// of a mouth. World point (JawModifier, follows the head) and radius; 0 — off (Agata, things in hands).
+uniform vec3 mouth_center = vec3(0.0);
+uniform float mouth_r = 0.0;
+uniform vec3 mouth_color : source_color = vec3(0.09, 0.035, 0.03);
+uniform bool debug_mouth = false;   // probe: in the mouth radius front faces green, back faces red
 
 // The Compatibility renderer samples and writes this viewport in sRGB codes (measured: a flat 0.5 comes
 // out as 128, the texture comes out as stored) — lighting is done in linear like Cycles, then encoded.
@@ -73,6 +80,18 @@ void fragment() {
 	}
 	vec3 lin = (to_linear(a.rgb) * light * (1.0 - fr_env) + spec * spec_gain) * inside;
 	ALBEDO = to_srgb(lin * gain);
+	if (mouth_r > 0.0 && !FRONT_FACING) {
+		vec3 wp = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		if (distance(wp, mouth_center) < mouth_r) {
+			ALBEDO = mouth_color;
+		}
+	}
+	if (debug_mouth && mouth_r > 0.0) {
+		vec3 wp2 = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		if (distance(wp2, mouth_center) < mouth_r) {
+			ALBEDO = FRONT_FACING ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
+		}
+	}
 	if (debug_albedo || as_painted) {
 		ALBEDO = a.rgb;
 	}

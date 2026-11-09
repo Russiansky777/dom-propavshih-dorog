@@ -73,6 +73,7 @@ func setup(the_npc: Node2D, spec: Dictionary, floor_k: float) -> bool:
 	view.set_floor_k(floor_k)
 	room_floor_k = floor_k
 	_setup_arm_body()
+	_setup_jaw()
 	body = Sprite2D.new()
 	body.name = "Body3D"
 	body.centered = false
@@ -91,6 +92,27 @@ func setup(the_npc: Node2D, spec: Dictionary, floor_k: float) -> bool:
 	view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_update_scale()
 	return true
+
+
+## The mouth by the voice of the villager's own line (data rt3d.jaw; Director 09.11, 21:21) — after the clip and the
+## life: the jaw of the model opens with the loudness (scripts/actors/jaw_modifier.gd).
+const JawModifier := preload("res://scripts/actors/jaw_modifier.gd")
+var jaw: SkeletonModifier3D = null
+
+
+func _setup_jaw() -> void:
+	var d: Dictionary = rt.get("jaw", {})
+	if d.is_empty():
+		return
+	var jm = JawModifier.new()
+	jm.name = "Jaw"
+	view.skeleton.add_child(jm)
+	var id = npc.get("actor_id") if npc != null else null
+	if jm.setup(d, view.skeleton, String(id) if id != null else ""):
+		jaw = jm
+		jm.setup_mouth(view.meshes, view.material, view.skeleton)
+	else:
+		jm.queue_free()
 
 
 ## Hands kept out of the body (data rt3d.arm_body; Director 01.11, lines 10 and 52): a BodyClear modifier after all the
