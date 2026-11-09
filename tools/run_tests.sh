@@ -31,6 +31,7 @@ python3 -I "$ROOT/tools/validate_music.py" --quiet 2>&1 | tee -a "$BUILD_DIR/log
 python3 -I "$ROOT/tools/validate_sfx.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # звуки: data/story/sfx.json, громкость относительно музыки
 python3 -I "$ROOT/tools/validate_voice.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # голос: манифест ↔ сцены (sha1), cast.json, громкость, копия игры
 python3 -I "$ROOT/tools/validate_voice_en.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский голос (03.11): assets/voice/en ↔ game/data/story_en, копия игры
+bash "$ROOT/tools/test_voice_trim_stdin.sh" 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1  # 09.11: обрезка голоса не читает stdin (sync_voice терял «/» следующего пути)
 python3 -I "$ROOT/tools/voice_after_h59.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || echo "[voice] список перезаписи после H59 устарел — python3 tools/voice_after_h59.py (предупреждение)" | tee -a "$BUILD_DIR/logs/tests.log"  # H5/H44/G57: строки, ждущие финальной записи после H59
 godot_import
 

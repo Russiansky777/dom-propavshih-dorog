@@ -35,7 +35,7 @@ for src in "$SRC_ROOT"/*/; do
     total=$((total + 1))
     mkdir -p "$(dirname "$dst/$name")"
     # 09.11: a line shortened for the game (data/story/voice_trim.json — the lamp of Ilya's wife taken out of M20_7)
-    if [[ -n "${TRIM["$lang/$name"]:-}" ]] && python3 "$ROOT/tools/voice_trim.py" "$f" "$dst/$name" "$lang/$name"; then
+    if [[ -n "${TRIM["$lang/$name"]:-}" ]] && python3 "$ROOT/tools/voice_trim.py" "$f" "$dst/$name" "$lang/$name" </dev/null; then
       :
     elif ! cmp -s "$f" "$dst/$name"; then
       cp "$f" "$dst/$name"

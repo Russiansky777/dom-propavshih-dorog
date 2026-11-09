@@ -3320,12 +3320,12 @@
    "en": "Has it really only been a year for you? I'm eight already!"
   },
   "text:O3.ilya_wife.after": {
-   "ru": "Ты посиди, отдохни. Лампу поставлю да Ульяну спать уложу.",
-   "en": "Sit down, have a rest. I'll set out the lamp and put Ulyana to bed."
+   "ru": "Ты посиди, отдохни.",
+   "en": "Sit down, have a rest."
   },
   "text:O3.ilya_wife.after#line": {
-   "ru": "Ты посиди, отдохни. Лампу поставлю да Ульяну спать уложу.",
-   "en": "Sit down, have a rest. I'll set out the lamp and put Ulyana to bed."
+   "ru": "Ты посиди, отдохни.",
+   "en": "Sit down, have a rest."
   },
   "text:O3.clock.label": {
    "ru": "Ходики",

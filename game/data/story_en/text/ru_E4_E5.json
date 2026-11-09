@@ -189,11 +189,11 @@
    }
   },
   "O3.ilya_wife.after": {
-   "text": "Sit down, have a rest. I'll set out the lamp and put Ulyana to bed.",
+   "text": "Sit down, have a rest.",
    "draft": true,
    "line": {
     "speaker": "ilya_wife",
-    "text": "Sit down, have a rest. I'll set out the lamp and put Ulyana to bed."
+    "text": "Sit down, have a rest."
    }
   },
   "O3.clock.label": {

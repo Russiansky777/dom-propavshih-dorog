@@ -30518,8 +30518,8 @@
       "alignment": "src/character_lines/O3.ilya_wife.after.align.json",
       "as_line": true,
       "speaker": "ilya_wife",
-      "text": "Sit down, have a rest. I'll set out the lamp and put Ulyana to bed.",
-      "text_sha1": "39f36d48908fa62702e02cf94efad2f5df93b642",
+      "text": "Sit down, have a rest.",
+      "text_sha1": "a29f6baa374789e40aa7a6128cecf02f40ebf669",
       "voice_id": "rfeIEKYjOpWdFvzoGtOY",
       "voice_name": "ВАРВАРА",
       "model_id": "eleven_v4",
@@ -30555,6 +30555,10 @@
           "language_code": "en",
           "seed": 3529466121
         }
+      },
+      "trimmed": {
+        "to_s": 1.98,
+        "from_text_sha1": "39f36d48908fa62702e02cf94efad2f5df93b642"
       }
     },
     "intro.opening_1": {

@@ -34247,8 +34247,8 @@
       "alignment": "src/character_lines/O3.ilya_wife.after.align.json",
       "as_line": true,
       "speaker": "ilya_wife",
-      "text": "Ты посиди, отдохни. Лампу поставлю да Ульяну спать уложу.",
-      "text_sha1": "f79836441c3c65a0989172f8d5b1bb66558e8617",
+      "text": "Ты посиди, отдохни.",
+      "text_sha1": "4cb899a934be8bd07c81aeed714471eade1bd113",
       "voice_id": "rfeIEKYjOpWdFvzoGtOY",
       "voice_name": "ВАРВАРА",
       "model_id": "eleven_v4",
@@ -34284,6 +34284,10 @@
           "language_code": "ru",
           "seed": 2402718712
         }
+      },
+      "trimmed": {
+        "to_s": 1.9,
+        "from_text_sha1": "f79836441c3c65a0989172f8d5b1bb66558e8617"
       }
     },
     "intro.opening_1": {

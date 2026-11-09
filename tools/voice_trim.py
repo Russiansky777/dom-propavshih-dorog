@@ -74,8 +74,11 @@ def main() -> int:
     fade = float(mark["fade_s"])
     af = f"atrim=0:{to},afade=t=out:st={max(to - fade, 0.0):.3f}:d={fade:.3f},apad=pad_dur={float(mark['tail_s']):.3f}"
     tmp = dst + ".tmp.ogg"
-    r = subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-af", af, "-c:a", "libvorbis", "-q:a", "7",
-                        "-map_metadata", "-1", tmp])
+    # -nostdin + stdin=DEVNULL (09.11, 20:30): sync_voice.sh calls this inside `while read … done < <(find -print0)`;
+    # ffmpeg read that stream as its console — it ate the "/" of the next path (cp: cannot stat 'home/…') and the run
+    # stopped before ru/. Test: tools/test_voice_trim_stdin.sh
+    r = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-i", src, "-af", af, "-c:a", "libvorbis", "-q:a", "7",
+                        "-map_metadata", "-1", tmp], stdin=subprocess.DEVNULL)
     if r.returncode != 0 or not os.path.exists(tmp):
         print(f"  voice trim {key}: ffmpeg failed", file=sys.stderr)
         return 2
