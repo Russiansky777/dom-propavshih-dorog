@@ -41,6 +41,49 @@ func _run() -> void:
 		await process_frame
 	for fid in ["F_hug_pelageya", "F_hug_nina"]:
 		await _frame(fid, sd, sr, main_node)
+	# FV-5: the dinner (09.11) — the clip follows the player's choices; the people and the cup are inside it, so their
+	# layers go; a variant without a clip yet falls back to the painting with its layers
+	var fv = main_node.find_child("FrameView", true, false)
+	var cases := [
+		[["v01_cup_blue"], "closed_blue_a", ["agata", "family_closed", "cup_blue", "tikhon"]],
+		[["v01_cup_white"], "closed_white_a", ["agata", "family_closed", "cup_white", "tikhon"]],
+		[["ep_ulyana_came", "v01_cup_blue"], "open_blue_a", ["agata", "family", "cup_blue", "tikhon"]],
+	]
+	for c in cases:
+		gs.reset()
+		for f in c[0]:
+			gs.set_flag(String(f), true)
+		sr.set_frame("EP_dinner", false)
+		for i in 3:
+			await process_frame
+		var room = fv.room
+		var v: VideoStreamPlayer = room.get_node_or_null("Background/Video") if room != null else null
+		var ok_file: bool = v != null and v.stream != null and String(v.stream.resource_path).ends_with(String(c[1]) + ".ogv")
+		_check(ok_file, "FV-5 flags %s → clip %s, got %s" % [c[0], c[1], v.stream.resource_path if v != null and v.stream != null else "none"])
+		var layers: Node = room.get_node_or_null("Layers") if room != null else null
+		for lid in c[2]:
+			_check(layers == null or layers.get_node_or_null(NodePath(String(lid))) == null, "FV-5 layer %s drawn over the video (it is inside the clip)" % lid)
+		_check(layers != null and layers.get_node_or_null("tikhon_shelf") == null, "FV-5 the shelf layer stays over the video")
+		var out5 := OS.get_environment("FV_OUT")
+		if out5 != "" and String(c[1]) == "open_blue_a":
+			for i in 150:
+				await process_frame
+			root.get_viewport().get_texture().get_image().save_png(out5.path_join("frame_video_ingame_EP_dinner.png"))
+		sr.set_frame("", false)
+		await process_frame
+	# the variant without a clip: the painting with its people
+	gs.reset()
+	gs.set_flag("ep_ulyana_came", true)
+	gs.set_flag("v01_cup_white", true)
+	sr.set_frame("EP_dinner", false)
+	for i in 3:
+		await process_frame
+	var room_nv = fv.room
+	var fallback_ok: bool = room_nv != null and room_nv.get_node_or_null("Background/Video") == null and room_nv.get_node_or_null("Layers/family") != null and room_nv.get_node_or_null("Layers/cup_white") != null
+	_check(fallback_ok, "FV-5 the variant without a clip (open_white) does not fall back to the painting with its layers")
+	sr.set_frame("", false)
+	await process_frame
+	gs.reset()
 	# FV-4: the staging's exit fade (both hug scenes)
 	for sid in ["M18", "M19"]:
 		var sc: Dictionary = sd.scene(sid)

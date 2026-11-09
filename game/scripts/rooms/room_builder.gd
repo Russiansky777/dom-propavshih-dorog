@@ -334,7 +334,12 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 	var container := Node2D.new()
 	container.name = "Layers"
 	room.add_child(container)
+	# 09.11 (the dinner alive): the people and the cup are inside the frame's video — their layers stay only for the
+	# variant without a clip (`unless_video`; FrameVideo.pick decided at build time, data background.videos by flags)
+	var has_video: bool = room.get_node_or_null("Background/Video") != null
 	for l in spec.get("layers", []):
+		if has_video and bool(l.get("unless_video", false)):
+			continue
 		if not l.has("image") and l.has("text"):
 			_build_text_layer(container, l)
 			continue
