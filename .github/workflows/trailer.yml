@@ -1,0 +1,118 @@
+name: trailer
+
+# Трейлер из настоящей игры (TR2 / v2): tools/trailer_render.sh <план> → кадры Movie Maker под Xvfb (Mesa llvmpipe) →
+# монтаж ffmpeg (tools/trailer_assemble.py) → build/trailer/<план>.mp4. На машине агента рендер не помещается на диск
+# (кадры PNG ~6 ГБ на минуту 1080p), поэтому здесь. Результат: релиз «trailer-<план>» (полное качество, для Директора) и
+# в репозиторий — лёгкое превью 960×540 и лист кадров (Docs/evidence/<план>/), чтобы агент мог посмотреть.
+# Запуск: workflow_dispatch (план, размер, fps). Директор 09.11 01:19: «изучаем, где лучше всего сделать топовый трейлер».
+
+on:
+  workflow_dispatch:
+    inputs:
+      plan:
+        description: "план, напр. data/trailer/trailer_v2.json"
+        required: true
+        default: "data/trailer/trailer_v2.json"
+      size:
+        description: "размер рендера WxH"
+        required: true
+        default: "1920x1080"
+      fps:
+        description: "кадров в секунду (Steam: 30 или 60)"
+        required: true
+        default: "30"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trailer
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_ZIP_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}-editor-only-v1
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot && cd ~/godot
+          curl -sSL --retry 3 -o godot.zip "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          echo "${GODOT_ZIP_SHA256}  godot.zip" | sha256sum -c -
+          unzip -q -o godot.zip && rm godot.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Xvfb, Mesa, ffmpeg
+        timeout-minutes: 12
+        run: |
+          python -m pip install -q pillow numpy
+          timeout 600 bash -c 'sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends xvfb xauth mesa-utils libgl1-mesa-dri ffmpeg'
+          ffmpeg -hide_banner -version | head -1
+
+      - name: Cache Godot import
+        uses: actions/cache@v4
+        with:
+          path: game/.godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('game/assets/**/*.import', 'game/assets/characters/**/sprites.json', 'game/export_presets.cfg') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
+
+      - name: Render
+        timeout-minutes: 120
+        env:
+          GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+          RENDER_SIZE: ${{ github.event.inputs.size }}
+          FPS: ${{ github.event.inputs.fps }}
+        run: |
+          set -eo pipefail
+          "$GODOT" --headless --path game --import > /dev/null 2>&1 || true
+          tools/trailer_render.sh "${{ github.event.inputs.plan }}" 2>&1 | grep -E "^\[trailer\]|rror" || true
+          plan=$(basename "${{ github.event.inputs.plan }}" .json)
+          ls -la build/trailer/$plan.mp4
+
+      - name: Release (full quality) and preview (repo)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eo pipefail
+          plan=$(basename "${{ github.event.inputs.plan }}" .json)
+          tag="trailer-$plan"
+          notes="Трейлер $plan из настоящей игры (run ${{ github.run_id }}, $(git rev-parse --short HEAD)), ${{ github.event.inputs.size }} @ ${{ github.event.inputs.fps }} fps."
+          if gh release view "$tag" >/dev/null 2>&1; then gh release edit "$tag" --notes "$notes"; else gh release create "$tag" --title "Трейлер $plan" --notes "$notes" --prerelease; fi
+          gh release upload "$tag" "build/trailer/$plan.mp4" --clobber
+          mkdir -p "Docs/evidence/$plan"
+          ffmpeg -loglevel error -y -i "build/trailer/$plan.mp4" -vf scale=960:540 -c:v libx264 -preset slow -crf 26 -c:a aac -b:a 128k "Docs/evidence/$plan/${plan}_preview.mp4"
+          ffmpeg -loglevel error -y -i "build/trailer/$plan.mp4" -vf "fps=1/3,scale=480:270,tile=5x5" -frames:v 1 "Docs/evidence/$plan/${plan}_contact_sheet.jpg"
+          git config user.name "pipeline-bot"
+          git config user.email "pipeline-bot@users.noreply.github.com"
+          git add "Docs/evidence/$plan"
+          git commit -q -m "trailer: превью $plan (run ${{ github.run_id }}) [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git fetch -q origin "${GITHUB_REF_NAME}"
+            if git rebase -q "origin/${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}"; then echo "запушено"; exit 0; fi
+            git rebase --abort 2>/dev/null || true; sleep 10
+          done
+          exit 1
