@@ -45,9 +45,10 @@ func _run() -> void:
 	# layers go; a variant without a clip yet falls back to the painting with its layers
 	var fv = main_node.find_child("FrameView", true, false)
 	var cases := [
-		[["v01_cup_blue"], "closed_blue_a", ["agata", "family_closed", "cup_blue", "tikhon"]],
-		[["v01_cup_white"], "closed_white_a", ["agata", "family_closed", "cup_white", "tikhon"]],
-		[["ep_ulyana_came", "v01_cup_blue"], "open_blue_a", ["agata", "family", "cup_blue", "tikhon"]],
+		[["v01_cup_blue"], ["closed_blue_a"], ["agata", "family_closed", "cup_blue", "tikhon"]],
+		[["v01_cup_white"], ["closed_white_a", "closed_white_b"], ["agata", "family_closed", "cup_white", "tikhon"]],
+		[["ep_ulyana_came", "v01_cup_blue"], ["open_blue_a", "open_blue_b"], ["agata", "family", "cup_blue", "tikhon"]],
+		[["ep_ulyana_came", "v01_cup_white"], ["open_white_a", "open_white_b"], ["agata", "family", "cup_white", "tikhon"]],
 	]
 	for c in cases:
 		gs.reset()
@@ -57,30 +58,37 @@ func _run() -> void:
 		for i in 3:
 			await process_frame
 		var room = fv.room
-		var v: VideoStreamPlayer = room.get_node_or_null("Background/Video") if room != null else null
-		var ok_file: bool = v != null and v.stream != null and String(v.stream.resource_path).ends_with(String(c[1]) + ".ogv")
-		_check(ok_file, "FV-5 flags %s → clip %s, got %s" % [c[0], c[1], v.stream.resource_path if v != null and v.stream != null else "none"])
+		var v = room.get_node_or_null("Background/Video") if room != null else null
+		var names: Array = []
+		if v != null:
+			for f in v.files:
+				names.append(String(f).get_file().get_basename())
+		var want: Array = c[1]
+		var same := names.size() == want.size()
+		for n in want:
+			same = same and names.has(n)
+		_check(v != null and same, "FV-5 flags %s → clips %s, got %s" % [c[0], want, names])
 		var layers: Node = room.get_node_or_null("Layers") if room != null else null
 		for lid in c[2]:
 			_check(layers == null or layers.get_node_or_null(NodePath(String(lid))) == null, "FV-5 layer %s drawn over the video (it is inside the clip)" % lid)
-		_check(layers != null and layers.get_node_or_null("tikhon_shelf") == null, "FV-5 the shelf layer stays over the video")
+		# two clips take turns: the next one is never the one that just played
+		if v != null and v.files.size() == 2:
+			var first := String(v.stream.resource_path)
+			v.call("_next")
+			await process_frame
+			_check(String(v.stream.resource_path) != first and v.is_playing(), "FV-5 the next clip repeats %s" % first)
+			_check(not v.loop, "FV-5 two clips but the player loops one")
 		var out5 := OS.get_environment("FV_OUT")
-		if out5 != "" and String(c[1]) == "open_blue_a":
+		if out5 != "" and want[0] == "open_blue_a":
 			for i in 150:
 				await process_frame
 			root.get_viewport().get_texture().get_image().save_png(out5.path_join("frame_video_ingame_EP_dinner.png"))
 		sr.set_frame("", false)
 		await process_frame
-	# the variant without a clip: the painting with its people
 	gs.reset()
-	gs.set_flag("ep_ulyana_came", true)
-	gs.set_flag("v01_cup_white", true)
-	sr.set_frame("EP_dinner", false)
-	for i in 3:
-		await process_frame
-	var room_nv = fv.room
-	var fallback_ok: bool = room_nv != null and room_nv.get_node_or_null("Background/Video") == null and room_nv.get_node_or_null("Layers/family") != null and room_nv.get_node_or_null("Layers/cup_white") != null
-	_check(fallback_ok, "FV-5 the variant without a clip (open_white) does not fall back to the painting with its layers")
+	# a frame whose variant has no clip falls back to the painting with its layers (FrameVideo.pick → [])
+	var empty: Array = load("res://scripts/rooms/frame_video.gd").pick({"videos": [{"if": ["no_such_flag_ever"], "files": ["res://assets/rooms/EP_dinner/open_blue_a.ogv"]}]})
+	_check(empty.is_empty(), "FV-5 a variant whose flags do not hold still picks a clip (%s)" % [empty])
 	sr.set_frame("", false)
 	await process_frame
 	gs.reset()

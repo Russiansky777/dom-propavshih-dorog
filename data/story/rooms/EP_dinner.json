@@ -27,7 +27,18 @@
           "v01_cup_blue"
         ],
         "files": [
-          "res://assets/rooms/EP_dinner/open_blue_a.ogv"
+          "res://assets/rooms/EP_dinner/open_blue_a.ogv",
+          "res://assets/rooms/EP_dinner/open_blue_b.ogv"
+        ]
+      },
+      {
+        "if": [
+          "ep_ulyana_came",
+          "v01_cup_white"
+        ],
+        "files": [
+          "res://assets/rooms/EP_dinner/open_white_a.ogv",
+          "res://assets/rooms/EP_dinner/open_white_b.ogv"
         ]
       },
       {
@@ -49,11 +60,12 @@
           "v01_cup_white"
         ],
         "files": [
-          "res://assets/rooms/EP_dinner/closed_white_a.ogv"
+          "res://assets/rooms/EP_dinner/closed_white_a.ogv",
+          "res://assets/rooms/EP_dinner/closed_white_b.ogv"
         ]
       }
     ],
-    "_videos": "09.11 (Директор 00:29): ужин оживлён — Kling 3.0 через fal (pipeline/requests/video_dinner_1.json), 10 с, по варианту картины (семья с Ульяной / без × чашка синяя / белая — люди и чашка внутри видео, карта и фото — слоями поверх); петли tools/video_loop.py; второй клип на вариант (_b) — для чередования в долгой сцене. вариант open_white (Ульяна пришла, чашка белая) ещё не сгенерирован (баланс fal) — записи нет, показывается картина со слоями; добавить после генерации."
+    "_videos": "09.11 (Директор 00:29–01:26): ужин оживлён — Kling 3.0 через fal (pipeline/requests/video_dinner_1/2/3.json), 10 с, по варианту картины (семья с Ульяной / без × чашка синяя / белая — люди и чашка внутри видео, карта и фото — слоями поверх); по 2 клипа на вариант, чередуются (сцена ~90 с); closed_blue — пока один клип (второй не сгенерирован — кончился баланс; первые два с Тихоном, взявшим чашку, отбракованы); петли tools/video_loop.py."
   },
   "walkable": [
     [
