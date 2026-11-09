@@ -55,6 +55,7 @@ var bag: InventoryBag
 var fx_layer: Control           # flying icons (above panels, under the fade)
 var cursor_item: BagSlot        # the held item's small icon that follows the pointer
 var journal_button: Button
+var pad_hints: Label                 # gamepad button hints (PadInput active)
 var journal_glow: bool = false   # a hint note written into the journal since it was last opened
 var menu_button: Button
 var hint_line: Label
@@ -677,6 +678,23 @@ func _build() -> void:
 	add_child(fx_layer)
 	bag.fx_parent = fx_layer
 
+	# Steam Deck / gamepad (09.11): the button hints at the bottom while the pad gives the input (PadInput), gone when
+	# the mouse moves; the pad drives the mouse, so nothing else in the UI knows about it.
+	pad_hints = Label.new()
+	pad_hints.name = "PadHints"
+	pad_hints.theme_type_variation = &"RoomCode"
+	pad_hints.text = StoryData.text("@ui.pad_hints")
+	pad_hints.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pad_hints.position = Vector2(0, 1080 - 34)
+	pad_hints.size = Vector2(1920, 30)
+	pad_hints.modulate = Color(1, 1, 1, 0.75)
+	pad_hints.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pad_hints.visible = false
+	add_child(pad_hints)
+	add_to_group("game_ui")
+	if get_node_or_null("/root/PadInput") != null:
+		get_node("/root/PadInput").call("bind_ui", Callable(self, "reveal_targets"), Callable(self, "set_pad_hints"))
+
 	# Fade overlay
 	fade = ColorRect.new()
 	fade.name = "Fade"
@@ -998,6 +1016,12 @@ func _open_map_from_journal() -> void:
 func _on_map_closed(reopen_journal: bool) -> void:
 	if reopen_journal and not journal_panel.visible:
 		toggle_journal()
+
+
+## PadInput: the pad gave the last input → the hints; the mouse moved → gone.
+func set_pad_hints(on: bool) -> void:
+	if pad_hints != null:
+		pad_hints.visible = on
 
 
 func toggle_journal() -> void:

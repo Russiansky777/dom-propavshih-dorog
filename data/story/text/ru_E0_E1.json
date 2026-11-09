@@ -79,6 +79,10 @@
       "text": "Журнал",
       "draft": false
     },
+    "ui.pad_hints": {
+      "text": "A — действие · B — назад · X — журнал · Y — подсветить · LB / RB — предметы · крестовина — к ближайшему",
+      "draft": false
+    },
     "ui.button_hint": {
       "text": "Подсказка",
       "draft": false

@@ -26,6 +26,7 @@ StoryRunner="*res://scripts/core/story_runner.gd"
 MusicDirector="*res://scripts/audio/music_director.gd"
 SfxDirector="*res://scripts/audio/sfx_director.gd"
 VoiceDirector="*res://scripts/audio/voice_director.gd"
+PadInput="*res://scripts/core/pad_input.gd"
 
 [audio]
 
