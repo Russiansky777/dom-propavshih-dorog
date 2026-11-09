@@ -133,6 +133,9 @@ if command -v xvfb-run >/dev/null; then
 else
   echo "[tests] test_frame_video skipped: no xvfb-run" | tee -a "$BUILD_DIR/logs/tests.log"
 fi
+# 09.11 вечер: петли-картины без рывков — один ключевой кадр на ролик (Theora выдавала скачок раз в 0,5 с), шов ≤ 3/255,
+# без звука; самопроверка: ролик с ключевым кадром каждые 12 кадров ловится
+python3 -I "$ROOT/tools/validate_video_loops.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_trailer.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # TR1: режим съёмки трейлера (data/trailer) — планы читаются, планы собираются, комната в нужном состоянии, сохранения не пишутся
 # CI: every failure becomes an annotation (title, test, its messages) — the checks API shows annotations without the
 # job log, whose download host agents cannot reach (22.10: two red runs with no way to read why).

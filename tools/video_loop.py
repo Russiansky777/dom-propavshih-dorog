@@ -66,7 +66,15 @@ def main() -> int:
         loop_mp4 = a.out + ".mp4"
         run(["ffmpeg", "-loglevel", "error", "-y", "-i", a.src, "-loop", "1", "-t", f"{seam + 0.5:.3f}", "-i", first,
              "-filter_complex", filt, "-map", "[v]", "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", loop_mp4])
-        run(["ffmpeg", "-loglevel", "error", "-y", "-i", loop_mp4, "-an", "-c:v", "libtheora", "-q:v", str(a.quality), a.out + ".ogv"])
+        # Один ключевой кадр на петлю (09.11, вечер): Theora даже на q10 не кодирует мелкое «дыхание» картинки в
+        # промежуточных кадрах — оно копится и выскакивает на каждом ключевом кадре (ffmpeg ставит их каждые 12 кадров),
+        # то есть рывок раз в 0,5 с (лица: шаг на ключевом кадре 1,07 против 0,35 между ними, у исходника 0,38/0,45).
+        # С одним ключевым кадром в начале рывков нет, расхождение с исходником то же (1,4 против 1,05 из 255), файл
+        # в 3–7 раз меньше; петля начинается с ключевого кадра, плеер её не перематывает. Проверка — tools/validate_video_loops.py.
+        # (Проверено и отброшено: петля, записанная в файл трижды подряд, — стык внутри файла даёт тот же шаг ~1,0–1,2,
+        # что и переход на ключевой кадр; выигрыша нет.)
+        frames = int(round(duration(loop_mp4) * a.fps)) + 1
+        run(["ffmpeg", "-loglevel", "error", "-y", "-i", loop_mp4, "-an", "-c:v", "libtheora", "-q:v", str(a.quality), "-g", str(frames + 8), a.out + ".ogv"])
     d2 = duration(loop_mp4)
     before = frame_diff(a.src, 0.0, d - 0.1)
     after = frame_diff(loop_mp4, 0.0, d2 - 0.06)
