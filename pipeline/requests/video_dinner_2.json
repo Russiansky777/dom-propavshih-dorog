@@ -1,0 +1,39 @@
+{
+  "_comment": "Вторые клипы ужина (чередование в сцене ~90 с, Директор 09.11 01:19 «доделываем»): те же 4 картины, другой рисунок движения, чтобы клипы A и B различались.",
+  "trial": "dinner_2",
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "EP_dinner_closed_blue",
+      "image": "assets/incoming/video/dinner/base_closed_blue.png",
+      "prompt": "Static camera, warm candlelit room. Everyone keeps their seats. The man nods slowly and glances at the old woman; the old woman turns her head a little toward the young woman at the samovar and smiles; the woman in the shawl lowers her eyes to her bowl and looks up again. The candle flame sways, a glint runs over the samovar, snow drifts past the window, the cat on the stove stretches a paw. Nobody stands up, no hands move the dishes or the cup. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    },
+    {
+      "id": "EP_dinner_closed_white",
+      "image": "assets/incoming/video/dinner/base_closed_white.png",
+      "prompt": "Static camera, warm candlelit room. Everyone keeps their seats. The man nods slowly and glances at the old woman; the old woman turns her head a little toward the young woman at the samovar and smiles; the woman in the shawl lowers her eyes to her bowl and looks up again. The candle flame sways, a glint runs over the samovar, snow drifts past the window, the cat on the stove stretches a paw. Nobody stands up, no hands move the dishes or the cup. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    },
+    {
+      "id": "EP_dinner_open_blue",
+      "image": "assets/incoming/video/dinner/base_open_blue.png",
+      "prompt": "Static camera, warm candlelit room. Everyone keeps their seats. The man nods slowly and glances at the old woman; the old woman turns her head a little toward the young woman at the samovar and smiles; the woman in the shawl lowers her eyes to her bowl and looks up again. The candle flame sways, a glint runs over the samovar, snow drifts past the window, the cat on the stove stretches a paw. Nobody stands up, no hands move the dishes or the cup. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    },
+    {
+      "id": "EP_dinner_open_white",
+      "image": "assets/incoming/video/dinner/base_open_white.png",
+      "prompt": "Static camera, warm candlelit room. Everyone keeps their seats. The man nods slowly and glances at the old woman; the old woman turns her head a little toward the young woman at the samovar and smiles; the woman in the shawl lowers her eyes to her bowl and looks up again. The candle flame sways, a glint runs over the samovar, snow drifts past the window, the cat on the stove stretches a paw. Nobody stands up, no hands move the dishes or the cup. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/standard/image-to-video",
+      "image_key": [
+        "image_url",
+        "tail_image_url"
+      ],
+      "args": {
+        "duration": "10"
+      }
+    }
+  ]
+}
