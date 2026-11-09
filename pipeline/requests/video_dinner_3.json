@@ -1,0 +1,29 @@
+{
+  "_comment": "Переделка ужина (Директор 09.11 01:26 «если плохо — переделывать, пока есть кредиты»): в клипах closed_blue A, closed_blue B и open_white B Тихон взял в лапы чашку (новый предмет, и она не исчезает к концу — петля рвётся). Промпт: зверёк на полке только моргает и шевелит ухом, лапы пустые; «чашка» не упоминается. По 2 клипа на эти два варианта (A и B; open_white A ещё не было).",
+  "trial": "dinner_3",
+  "attempts": 2,
+  "frames": [
+    {
+      "id": "EP_dinner_closed_blue",
+      "image": "assets/incoming/video/dinner/base_closed_blue.png",
+      "prompt": "Static camera, warm candlelit room. Everyone keeps their seats; they breathe softly, heads turn slightly as they listen to each other, a faint smile, the man nods. The candle flame sways, glints play on the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    },
+    {
+      "id": "EP_dinner_open_white",
+      "image": "assets/incoming/video/dinner/base_open_white.png",
+      "prompt": "Static camera, warm candlelit room. Everyone keeps their seats; they breathe softly, heads turn slightly as they listen to each other, a faint smile, the man nods. The candle flame sways, glints play on the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/standard/image-to-video",
+      "image_key": [
+        "image_url",
+        "tail_image_url"
+      ],
+      "args": {
+        "duration": "10"
+      }
+    }
+  ]
+}
