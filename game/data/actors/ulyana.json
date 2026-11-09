@@ -1000,7 +1000,7 @@
       }
     },
     "arm_body": {
-      "max_deg": 22.0,
+      "max_deg": 8.0,
       "omega": 60.0,
       "omega_back": 3.0,
       "hand_r_m": 0.02,
@@ -1008,27 +1008,29 @@
       "tip_r_m": 0.012,
       "shell": 16,
       "stance_free": false,
-      "no_back": true
+      "no_back": true,
+      "_0911": "Директор 09.11, 17:37 («вроде стало лучше» — проба на Тамаре): руки ближе к телу — отвод от одежды до 8° (было 22°; в той же доле, что у Тамары 22→8)"
     },
     "turn_deg_s": 240.0,
     "turn_ease_per_s": 7.0,
     "step_weight": 0.0,
     "life": {
-      "breath_deg": 0.7,
+      "breath_deg": 1.5,
       "breath_period_s": 4.4,
-      "head_drift_deg": 0.8,
-      "glance_deg": 3.0,
+      "head_drift_deg": 2.0,
+      "glance_deg": 8.0,
       "glance_every_s": [
-        9,
-        16
+        4,
+        8
       ],
       "glance_hold_s": [
-        1.2,
-        2.2
+        1.0,
+        2.0
       ],
-      "glance_move_s": 1.0,
+      "glance_move_s": 0.8,
       "seed": 11,
-      "talk_weight": 0.25
+      "talk_weight": 0.7,
+      "_0911": "Директор 09.11, 17:37: как у Тамары после пробы — дыхание 1,5°, дрейф головы 2°, взгляды 8° каждые 4–8 с, жизнь в речи 0,7"
     },
     "light": {
       "_comment": "Свет рендера листов (pipeline/render/render_sprites.py): солнца Key 4.5 / Fill 2.0 / Rim 2.5 (÷π), фон мира 0.6/0.6/0.65; направления — к свету, оси Godot.",
