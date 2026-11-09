@@ -1376,7 +1376,7 @@ func _test_npc_actors() -> void:
 	await process_frame
 	var seen := []
 	var guard := 0
-	while not sr.current_beat.is_empty() and guard < 50:
+	while (not sr.current_beat.is_empty() or sr.is_staging()) and guard < 3000:   # 09.11: stagings take seconds (frames)
 		guard += 1
 		var b: Dictionary = sr.current_beat
 		if b.get("type") == "line":
