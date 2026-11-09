@@ -56,6 +56,7 @@ var fx_layer: Control           # flying icons (above panels, under the fade)
 var cursor_item: BagSlot        # the held item's small icon that follows the pointer
 var journal_button: Button
 var pad_hints: Label                 # gamepad button hints (PadInput active)
+var _pad_on: bool = false
 var journal_glow: bool = false   # a hint note written into the journal since it was last opened
 var menu_button: Button
 var hint_line: Label
@@ -288,6 +289,7 @@ func _build() -> void:
 	dialogue.mouse_filter = Control.MOUSE_FILTER_STOP
 	dialogue.gui_input.connect(_on_modal_input)
 	dialogue.minimum_size_changed.connect(func(): _fit_dialogue.call_deferred())
+	dialogue.visibility_changed.connect(func(): _sync_pad_hints())
 	add_child(dialogue)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 4)
@@ -1061,8 +1063,15 @@ func _on_map_closed(reopen_journal: bool) -> void:
 
 ## PadInput: the pad gave the last input → the hints; the mouse moved → gone.
 func set_pad_hints(on: bool) -> void:
+	_pad_on = on
+	_sync_pad_hints()
+
+
+## The hint line sits where the dialogue box ends (DIALOGUE_BOTTOM 1062): while a line is shown, the box's own «Дальше»
+## is the hint (A advances) — the line hides and comes back with the box gone.
+func _sync_pad_hints() -> void:
 	if pad_hints != null:
-		pad_hints.visible = on
+		pad_hints.visible = _pad_on and not (dialogue != null and dialogue.visible)
 
 
 func toggle_journal() -> void:

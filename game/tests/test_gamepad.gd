@@ -96,6 +96,13 @@ func _run() -> void:
 	await _frames(10)
 	_check(pad.probe()["pos"] == p1, "GP-1 the cursor drifts with the stick released")
 	_check(bool(pad.probe()["active"]) and ui.pad_hints.visible, "GP-2 the hints are not shown while the pad is active")
+	# the hint line and the dialogue box share the bottom: with a line shown the hints step aside
+	ui.dialogue.visible = true
+	await _frames(1)
+	_check(not ui.pad_hints.visible, "GP-2 the hints stay over the dialogue box")
+	ui.dialogue.visible = false
+	await _frames(1)
+	_check(ui.pad_hints.visible, "GP-2 the hints do not come back after the dialogue box")
 	if OS.get_environment("GP_OUT") != "":
 		root.get_viewport().get_texture().get_image().save_png(OS.get_environment("GP_OUT").path_join("gamepad_hints.png"))
 	# the speed setting
