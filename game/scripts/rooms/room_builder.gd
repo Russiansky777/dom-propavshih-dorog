@@ -160,7 +160,26 @@ static func feet_signature(room: Room, spec: Dictionary, kind: String, idx: Dict
 	var parts: Array[String] = []
 	for f in npc_footprints(room, spec, kind, idx):
 		parts.append("%s@%s" % [String(f[0]), str(f[2])])
+	var n := 0
+	for e in spec.get("walkable_holes_if", []):
+		if e is Dictionary and FrameVideo._holds(e):
+			parts.append("hole%d" % n)
+		n += 1
 	return ",".join(parts)
+
+
+## The floor's obstructions that depend on the story (data `walkable_holes_if`): the outlines whose flags hold now.
+static func state_holes(spec: Dictionary) -> Array:
+	var out: Array = []
+	for e in spec.get("walkable_holes_if", []):
+		if not (e is Dictionary) or not FrameVideo._holds(e):
+			continue
+		var hv := PackedVector2Array()
+		for p in e.get("hole", []):
+			hv.append(Vector2(float(p[0]), float(p[1])))
+		if hv.size() >= 3:
+			out.append(hv)
+	return out
 
 
 ## Villagers' feet as floor obstructions: [[id, outline (feet + Agata's half width), centre, its half size, the feet
@@ -257,6 +276,11 @@ static func _bake_walkable(room: Room, spec: Dictionary, kind: String, idx: Dict
 		for p in hole:
 			hv.append(Vector2(float(p[0]), float(p[1])))
 		source.add_obstruction_outline(hv)
+	# 09.11 (Director 22:18: «Агата… почему-то стоит на… на точке загрузки» — on the beams of day four): things that
+	# come to stand on the floor with the story (data `walkable_holes_if` [{if, unless, hole}]: the beam stack, the
+	# windlass) are obstructions while their flags hold; re-baked with the flags (feet_signature).
+	for hole in state_holes(spec):
+		source.add_obstruction_outline(hole)
 	# I-T2 (Director, line 147: «Агата проходит насквозь модели Пелагеи»), K (31.10, стр. 59, 78): every villager shown
 	# now is an obstruction around the feet (npc_footprints) — re-baked when the flags change who stands here.
 	for f in npc_footprints(room, spec, kind, idx):
@@ -374,6 +398,14 @@ static func _build_layers(room: Room, spec: Dictionary) -> void:
 		# without a plate over the batch-3 dusk layer).
 		if l.has("modulate"):
 			spr.modulate = Color.html(String(l["modulate"]))
+		# `clip` [x, y, w, h] in the layer's own pixels: only that part of the picture, at its own place — one drawing
+		# with several things on the floor (Z3: the beam stack, the windlass, the log pile of day four) given as
+		# several occluders, each with its own y-sort line.
+		if l.has("clip"):
+			var cl: Array = l["clip"]
+			spr.region_enabled = true
+			spr.region_rect = Rect2(float(cl[0]), float(cl[1]), float(cl[2]), float(cl[3]))
+			spr.position += Vector2(float(cl[0]), float(cl[1])) * art * sc
 		# `pivot` [x, y] in the layer's own pixels: the sprite turns about it — static `rotation_deg` (the M4
 		# lever in a notch) or `spin` (the M1 wheel); the canvas origin still lands at `offset`.
 		# `scale_pivot` [x, y] in the layer's own pixels: `scale` resizes the drawing about that point, which stays

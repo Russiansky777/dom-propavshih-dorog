@@ -1213,6 +1213,17 @@ for rid, room in rooms.items():
         if not any(point_in_poly(p, poly) for p in h) and not any(point_in_poly(p, h) for p in poly):
             err(f"{ctx}: вырез walkable_holes[{i}] не пересекает пол — опечатка в координатах?")
 
+    # 09.11: вырезы по состоянию (штабель и ворот дня четвёртого): та же проверка + флаги
+    for i, e in enumerate(room.get("walkable_holes_if", [])):
+        h = e.get("hole", []) if isinstance(e, dict) else []
+        if len(h) < 3:
+            err(f"{ctx}: вырез walkable_holes_if[{i}] короче 3 точек")
+            continue
+        if not any(point_in_poly(p, poly) for p in h) and not any(point_in_poly(p, h) for p in poly):
+            err(f"{ctx}: вырез walkable_holes_if[{i}] не пересекает пол — опечатка в координатах?")
+        check_flags(f"{ctx}.walkable_holes_if[{i}].if", e.get("if"))
+        check_flags(f"{ctx}.walkable_holes_if[{i}].unless", e.get("unless"))
+
     # спавны
     spawns = room.get("spawns", {})
     if "default" not in spawns:

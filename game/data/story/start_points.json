@@ -168,7 +168,7 @@
       "title": "Блок 4: утро четвёртого дня — первое бревно",
       "done_through": "M24",
       "room": "Z3",
-      "spawn": "from_Z2",
+      "spawn": "from_R1",
       "flags": [
         "board_mama",
         "v03_marked", "v03_add_boat",
@@ -196,7 +196,7 @@
       "title": "Блок 4: эпилог через три недели",
       "done_through": "M25",
       "room": "Z3",
-      "spawn": "from_Z2",
+      "spawn": "from_R1",
       "flags": [
         "board_mama",
         "v03_marked", "v03_add_boat",

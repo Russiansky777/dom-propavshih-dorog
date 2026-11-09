@@ -118,7 +118,11 @@ func _setup_jaw() -> void:
 ## Hands kept out of the body (data rt3d.arm_body; Director 01.11, lines 10 and 52): a BodyClear modifier after all the
 ## others on the villager's skeleton.
 const BodyClear := preload("res://scripts/actors/body_clear_modifier.gd")
+const ArmRest := preload("res://scripts/actors/arm_rest.gd")
+static var _rest_cache: Dictionary = {}    # rest file path → its data
 var arm_body: SkeletonModifier3D = null    # BodyClear
+var _rested := false                       # the arms' turn-in is in this figure's clips (arm_body.rest)
+var _bc_strength := 0.0
 
 
 func _setup_arm_body() -> void:
@@ -131,6 +135,17 @@ func _setup_arm_body() -> void:
 	var unit := 1.0 / maxf(view._skel_to_turn().basis.get_scale().y, 1e-6)
 	if bc.setup(d, view.skeleton, view.meshes, unit, String(rt.get("scene", ""))):
 		arm_body = bc
+		# arms along the body (data arm_body.rest {file, gap_m, min_deg}; scripts/actors/arm_rest.gd): the baked turn-in
+		# of each hanging arm, into this figure's copies of the clips
+		var rest: Dictionary = d.get("rest", {})
+		var rest_path := String(rest.get("file", ""))
+		if rest_path != "" and OS.get_environment("DPD_ARM_REST_OFF") == "":   # the switch: probes' «before» shots
+			if not _rest_cache.has(rest_path):
+				var parsed = JSON.parse_string(FileAccess.get_file_as_string(rest_path)) if FileAccess.file_exists(rest_path) else null
+				_rest_cache[rest_path] = parsed if parsed is Dictionary else {}
+			_rested = ArmRest.apply(view.skeleton, view.anim, _rest_cache[rest_path], float(rest.get("scale", 1.0))) > 0
+			if _rested:
+				bc.strength = 0.0
 		# the clearing baked into the stance clips (data arm_body.bake; BodyClear.bake)
 		if d.has("bake"):
 			var names := {}
@@ -315,6 +330,12 @@ func process(delta: float) -> void:
 	view.pose(delta, fposmod(walk_phase, 1.0), maxf(walk_w, step_w), act_w, act_name, float(lt[0]), float(lt[1]), float(lt[2]))
 	if arm_body != null and bool(rt.get("arm_body", {}).get("stance_free", false)):
 		arm_body.strength = view.shown_act_w()
+	elif arm_body != null and _rested:
+		# arms along the body (arm_body.rest): the stance, talk and listen clips are already as close to the clothes as
+		# the real surface lets them — BodyClear's hull (the farthest fold per sector) would push them back out. It stays
+		# for the one-shot actions (their clips are not baked), coming in and out softly with them.
+		_bc_strength = move_toward(_bc_strength, view.shown_act_w() if _once_clip else 0.0, delta / 0.25)
+		arm_body.strength = _bc_strength
 	# feet on the floor (Director 31.10, 15:04: «плавают влево-вправо… ноги идут сами по себе»): the stance clips shift
 	# the weight with the feet sliding under it and the walk's feet skate against the staging's pace — the same foot
 	# locks and stride planting as Agata's (data rt3d.feet)

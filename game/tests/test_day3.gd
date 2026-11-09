@@ -339,7 +339,8 @@ func _test_windlass_panel() -> void:
 	_check(rm.start_at("span"), "start at the turn, day four")
 	await _frames(3)
 	var lay: Node = rm.current_room.get_node_or_null("Layers")
-	_check(lay != null and lay.get_node("span_site_day4").visible and not lay.get_node("span_beam_day4").visible,
+	var occ: Node = rm.current_room.get_node_or_null("Occluders")   # 09.11: the site's three things hide the figure behind them
+	_check(lay != null and occ != null and occ.get_node("span_site_day4").visible and occ.get_node("span_windlass_day4").visible and occ.get_node("span_logs_day4").visible and not lay.get_node("span_beam_day4").visible,
 		"G47: Z3 on day four shows the site (stack, windlass, crib), no log on the pier yet — the turn is not empty under the close-up")
 	gs.set_flag("span_first_laid", true)
 	await _frames(2)

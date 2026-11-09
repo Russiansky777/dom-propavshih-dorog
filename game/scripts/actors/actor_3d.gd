@@ -160,6 +160,7 @@ func setup(actor_spec: Dictionary) -> bool:
 		foot_bones.append(skeleton.find_bone(b))
 	life = ActorLife3D.new()
 	life.name = "Life"
+	life.unit = 1.0 / maxf(_skel_to_turn().basis.get_scale().y, 1e-6)
 	life.setup(spec.get("life", {}), skeleton)
 	skeleton.add_child(life)
 	_setup_arm_tone()
