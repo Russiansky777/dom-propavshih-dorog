@@ -45,7 +45,7 @@ func _run() -> void:
 	# layers go; a variant without a clip yet falls back to the painting with its layers
 	var fv = main_node.find_child("FrameView", true, false)
 	var cases := [
-		[["v01_cup_blue"], ["closed_blue_a"], ["agata", "family_closed", "cup_blue", "tikhon"]],
+		[["v01_cup_blue"], ["closed_blue_a", "closed_blue_b"], ["agata", "family_closed", "cup_blue", "tikhon"]],   # B: 09.11 11:19
 		[["v01_cup_white"], ["closed_white_a", "closed_white_b"], ["agata", "family_closed", "cup_white", "tikhon"]],
 		[["ep_ulyana_came", "v01_cup_blue"], ["open_blue_a", "open_blue_b"], ["agata", "family", "cup_blue", "tikhon"]],
 		[["ep_ulyana_came", "v01_cup_white"], ["open_white_a", "open_white_b"], ["agata", "family", "cup_white", "tikhon"]],
